@@ -27,6 +27,7 @@
 - Jalon 1.6 (fond) : `PlaybackService` (service de premier plan « lecture multimédia ») démarré avec le transport, notification avec bouton Arrêter ; le moteur reste allumé en arrière-plan seulement pendant la lecture. Page Outils › Arrière-plan : notification, batterie sans restriction, réglage Honor « Lancement d'applications » guidé.
 
 ## À retenir pour la suite
+- Demande de Benjamin : mode paysage (en particulier pour le synthé : clavier plus large). À prévoir dans la mise en page des écrans.
 - Afficher une « latence de jeu » (sortie + tactile) à côté de l'aller-retour ; essayer un buffer d'un seul burst.
 - MagicOS chiffre logcat (bloc HKS…HKE) : remplacer `LogTail` par un journal circulaire interne à l'appli.
 - Recette phase 0 : issues #2 et #3 (doublon), 8/8 ✅, fermées.

@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CORE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../src/main/cpp/core)
-file(GLOB CORE_SOURCES ${CORE_DIR}/*.cpp ${CORE_DIR}/*.c)
+file(GLOB CORE_SOURCES CONFIGURE_DEPENDS ${CORE_DIR}/*.cpp ${CORE_DIR}/*.c)
 include(${CMAKE_CURRENT_SOURCE_DIR}/../third_party/daisysp.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/../third_party/open303.cmake)
 

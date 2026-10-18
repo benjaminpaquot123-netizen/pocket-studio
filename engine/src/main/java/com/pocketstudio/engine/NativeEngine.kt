@@ -104,7 +104,38 @@ object NativeEngine {
     /** Microphone configuration used by the last latency test, in French, for reports. */
     external fun inputDescription(): String
     private external fun nativeStartLatencyTest(): Int
-    private fun post(type: Int, value: Float, a: Int = 0, b: Int = 0): Boolean = nativePost(type, value, a, b)
+    // When non-zero, commands go to an offline export engine instead of the live one.
+    private var captureTarget = 0L
+
+    private fun post(type: Int, value: Float, a: Int = 0, b: Int = 0): Boolean {
+        val target = captureTarget
+        if (target != 0L) {
+            exportPost(target, type, value, a, b)
+            return true
+        }
+        return nativePost(type, value, a, b)
+    }
+
+    /**
+     * Runs [block] (on the main thread, like every other command) with all commands sent
+     * to [export]'s private engine, so the same sync code describes the project to both.
+     */
+    fun captureInto(export: OfflineExport, block: () -> Unit) {
+        check(captureTarget == 0L)
+        captureTarget = export.handle
+        try {
+            block()
+        } finally {
+            captureTarget = 0L
+        }
+    }
+
+    internal external fun exportCreate(): Long
+    private external fun exportPost(handle: Long, type: Int, value: Float, a: Int, b: Int)
+    internal external fun exportRender(handle: Long, path: String, frames: Long, tail: Long): Int
+    internal external fun exportProgress(handle: Long): Float
+    internal external fun exportCancel(handle: Long)
+    internal external fun exportDestroy(handle: Long)
     private external fun nativePost(type: Int, value: Float, a: Int, b: Int): Boolean
     private external fun nativeStreamInfo(): DoubleArray
     private external fun latencyTestState(): Int

@@ -3,7 +3,10 @@ package com.pocketstudio.app.rhythm
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.pocketstudio.app.export.WavExporter
+import com.pocketstudio.engine.ExportResult
 import com.pocketstudio.engine.NativeEngine
+import com.pocketstudio.engine.OfflineExport
 import com.pocketstudio.model.AcidGenerator
 import com.pocketstudio.model.AcidPattern
 import com.pocketstudio.model.AcidStep
@@ -23,6 +26,15 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.io.File
+
+data class ExportUi(
+    val bars: Int = 4,
+    val running: Boolean = false,
+    val progress: Float = 0f,
+    val file: File? = null,
+    val savedInMusic: Boolean = false,
+    val error: String? = null,
+)
 
 /** What the audio engine is doing right now, polled for the playhead and pad lights. */
 data class LiveUi(val currentStep: Int = -1, val litPads: Set<Int> = emptySet())
@@ -328,11 +340,70 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         for (step in 0 until DrumPattern.MAX_STEPS) NativeEngine.setDrumHit(lane, step, hits[step]?.velocity ?: 0f)
     }
 
+    // --- Export ----------------------------------------------------------------------------
+
+    private val _export = MutableStateFlow(ExportUi())
+    val export: StateFlow<ExportUi> = _export.asStateFlow()
+    private var running: OfflineExport? = null
+
+    fun setExportBars(bars: Int) {
+        _export.value = _export.value.copy(bars = bars.coerceIn(1, 64))
+    }
+
+    /** Renders the project offline (not the live engine) into a WAV, then copies it to Music. */
+    fun exportWav() {
+        if (!NativeEngine.isAvailable || running != null) return
+        val app = getApplication<Application>()
+        val p = project.value
+        val bars = _export.value.bars
+        val job = OfflineExport()
+        NativeEngine.captureInto(job) {
+            syncEngine()
+            NativeEngine.setMetronome(false)
+        }
+        running = job
+        val file = WavExporter.newFile(app, p.name)
+        _export.value = ExportUi(bars = bars, running = true)
+        viewModelScope.launch {
+            // Progress is polled on the main thread, and the job is closed on it too, so
+            // the native renderer is never read after it is freed.
+            val poll = launch {
+                while (true) {
+                    _export.value = _export.value.copy(progress = job.progress)
+                    kotlinx.coroutines.delay(100)
+                }
+            }
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    val r = job.render(file, OfflineExport.framesFor(bars, p.tempoBpm), TAIL_FRAMES)
+                    r to (r == ExportResult.Ok && WavExporter.copyToMusic(app, file))
+                }
+                _export.value = when (result.first) {
+                    ExportResult.Ok -> ExportUi(bars = bars, file = file, savedInMusic = result.second)
+                    ExportResult.Cancelled -> ExportUi(bars = bars)
+                    ExportResult.IoError -> ExportUi(bars = bars, error = "L'écriture du fichier a échoué (stockage plein ?).")
+                }
+                if (result.first != ExportResult.Ok) file.delete()
+            } finally {
+                poll.cancel()
+                job.close()
+                running = null
+            }
+        }
+    }
+
+    fun cancelExport() {
+        running?.cancel()
+    }
+
     override fun onCleared() {
+        running?.cancel()
         if (NativeEngine.isAvailable) NativeEngine.stopTransport()
     }
 
     companion object {
         const val PROJECT_ID = "projet-1"
+        /** Two seconds after the last bar so releases and the acid tail ring out. */
+        const val TAIL_FRAMES = 2L * OfflineExport.SAMPLE_RATE
     }
 }

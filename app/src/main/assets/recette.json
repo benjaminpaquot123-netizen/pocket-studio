@@ -91,6 +91,11 @@
       "id": "mixer_vu",
       "title": "Les VU-mètres bougent et le son ne sature pas",
       "hint": "Monte tous les volumes au maximum : le son doit rester propre."
+    },
+    {
+      "id": "export_wav",
+      "title": "L'export WAV s'écoute bien et se partage",
+      "hint": "Mixeur › Exporter 4 mesures, puis Partager (par exemple vers WhatsApp) et écoute le fichier."
     }
   ]
 }

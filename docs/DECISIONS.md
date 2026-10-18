@@ -39,3 +39,5 @@
 | 2026-10-18 | Basse acide : note relâchée à mi-pas, slide = gate tenue + glissement vers la note suivante ; saturation tanh avec compensation de volume | Comportement des machines acides d'origine | Paramètres dans `AcidTrack` |
 | 2026-10-18 | Mixeur : volume en loi quadratique (0,8 = 0 dB), pan à puissance constante normalisé au centre, limiteur de crête master (plafond 0,89, retour 120 ms) à la place de l'écrêtage doux | Ne jamais saturer le téléphone sans colorer le son à volume normal | Paramètres dans `Mixer.h` |
 | 2026-10-18 | Onglet Recette déplacé dans Outils pour laisser la place à l'onglet Mixeur (5 onglets max en bas) | Lisibilité de la barre du bas | Remettre l'onglet dans `AppRoot.kt` |
+| 2026-10-18 | Export WAV par un moteur hors-ligne privé (`OfflineRenderer`), jamais le moteur en direct | Rendu plus rapide que le temps réel, sans couper la lecture ni toucher au fil audio | Aucun |
+| 2026-10-18 | Export copié dans Musique › Pocket Studio (MediaStore, sans permission) + partage via FileProvider | Retrouvable dans n'importe quel lecteur ; partage direct WhatsApp/Drive | Retirer la copie dans `WavExporter` |

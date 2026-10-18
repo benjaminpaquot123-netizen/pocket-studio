@@ -23,6 +23,7 @@
 - Jalon 1.4 : `Synth` 8 voix (moteur) ; `SynthPatch` (24 réglages, 4 préréglages Basse/Lead/Nappe/Pluck) dans le projet ; onglet Synthé (clavier 2 octaves multi-doigts, octave, préréglages, réglages faciles + avancés). Le synthé se joue en direct ; l'enregistrement de notes arrive avec le piano roll (phase 2).
 
 - Jalon 1.5 : `Mixer` moteur (3 tranches Batterie / Basse acide / Synthé : volume 0,8 = 0 dB, pan à puissance constante, muet, solo, gains lissés ; limiteur de crête master à −1 dB, attaque instantanée) remplace l'ancien écrêtage doux ; VU-mètres par atomiques ; onglet Mixeur. La Recette passe dans Outils.
+- Jalon 1.6 (export) : `WavWriter` (24 bits, dither triangulaire) + `OfflineRenderer` (moteur privé, plus rapide que le temps réel, arrêt pile à la fin + 2 s de queue) ; le projet lui est décrit par le même code de synchro que le moteur en direct (`NativeEngine.captureInto`). Carte « Exporter en WAV » dans le Mixeur (1 à 16 mesures, progression, annuler), copie dans Musique › Pocket Studio, bouton Partager. Tests Linux : en-tête, écrêtage sans retournement, rendu identique à l'échantillon près, annulation, erreur disque.
 
 ## À retenir pour la suite
 - Afficher une « latence de jeu » (sortie + tactile) à côté de l'aller-retour ; essayer un buffer d'un seul burst.
@@ -30,5 +31,5 @@
 - Recette phase 0 : issues #2 et #3 (doublon), 8/8 ✅, fermées.
 
 ## Prochaine étape exacte
-1. 1.6 : export WAV 24 bits/48 kHz (rendu hors-ligne du moteur dans un thread à part, N mesures) + partage ; lecture en Foreground Service + exclusion batterie guidée.
+1. Fin de 1.6 : lecture en Foreground Service (le son continue écran éteint) + exclusion batterie guidée.
 2. Puis revue critique de fin de phase 1 (sous-agent neuf), REVIEW.md, résumé 3 lignes, PR #4 prête, feu vert.

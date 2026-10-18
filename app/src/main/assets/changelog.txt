@@ -1,5 +1,4 @@
 Nouveau : le Mixeur ! Volume, panoramique, muet et solo pour la batterie, la basse et le synthé.
 VU-mètres et limiteur général : ça tape fort, mais ça ne sature plus. « C'est pas faux. »
 Basse acide (Open303) : accents, slides et « Génère-moi un pattern ».
-Synthé à 8 voix avec clavier et 4 sons prêts à jouer.
-La Recette se trouve maintenant dans Outils.
+Export WAV (Mixeur) : ton morceau dans Musique, prêt à partager. La Recette est dans Outils.

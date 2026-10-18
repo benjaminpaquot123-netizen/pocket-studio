@@ -16,6 +16,8 @@
 #include "AcidTrack.h"
 #include "DrumKit.h"
 #include "Mixer.h"
+#include "OfflineRenderer.h"
+#include "WavWriter.h"
 #include "Engine.h"
 #include "RoundTripMeter.h"
 #include "Sequencer.h"
@@ -861,6 +863,79 @@ void testMixerPanMuteSolo() {
     CHECK(std::fabs(last(quiet, 0) - 0.1f) < 1e-3f);
 }
 
+std::vector<uint8_t> readFile(const std::string& path) {
+    std::ifstream in(path, std::ios::binary);
+    return std::vector<uint8_t>((std::istreambuf_iterator<char>(in)), std::istreambuf_iterator<char>());
+}
+
+uint32_t le32(const uint8_t* p) { return p[0] | (p[1] << 8) | (p[2] << 16) | (uint32_t(p[3]) << 24); }
+
+int32_t sample24(const std::vector<uint8_t>& f, size_t index) {
+    const uint8_t* p = f.data() + 44 + index * 3;
+    int32_t v = p[0] | (p[1] << 8) | (p[2] << 16);
+    return (v & 0x800000) ? v - 0x1000000 : v;
+}
+
+void testWavWriterRoundTrip() {
+    const std::string path = (std::filesystem::temp_directory_path() / "ps_wav_test.wav").string();
+    ps::WavWriter wav;
+    CHECK(wav.open(path.c_str(), kRate, 2));
+    std::vector<float> data(10000 * 2);
+    for (size_t i = 0; i < data.size(); ++i) data[i] = (i % 2 == 0) ? 0.5f : -1.5f;  // right clips
+    CHECK(wav.write(data.data(), 10000));
+    CHECK(wav.close());
+    const auto f = readFile(path);
+    CHECK(f.size() == 44 + 10000 * 2 * 3);
+    CHECK(std::memcmp(f.data(), "RIFF", 4) == 0 && std::memcmp(f.data() + 8, "WAVE", 4) == 0);
+    CHECK(le32(f.data() + 4) == f.size() - 8);
+    CHECK(le32(f.data() + 40) == 10000 * 2 * 3);
+    CHECK(f[34] == 24 && f[22] == 2 && le32(f.data() + 24) == kRate);
+    CHECK(std::abs(sample24(f, 100) - 4194304) <= 2);  // 0.5 within dither
+    CHECK(sample24(f, 101) == -8388608);                 // clamped, no wrap-around
+    std::filesystem::remove(path);
+}
+
+void testOfflineExportRendersTheBeat() {
+    const std::string path = (std::filesystem::temp_directory_path() / "ps_export_test.wav").string();
+    ps::OfflineRenderer r(kRate);
+    r.post({ps::CommandType::SetTempo, 120.0f});
+    for (int step = 0; step < 16; step += 4) r.post({ps::CommandType::SetDrumHit, 1.0f, 0, step});
+    // Far more commands than the queue holds must still all arrive.
+    for (int i = 0; i < 10000; ++i) r.post({ps::CommandType::SetDrumHit, 0.0f, 5, 3});
+    const int64_t bar = kRate * 2;  // one bar at 120 BPM
+    CHECK(r.renderToWav(path.c_str(), bar, kRate / 2) == ps::OfflineRenderer::Result::Ok);
+    CHECK(r.progress() == 1.0f);
+    const auto f = readFile(path);
+    CHECK(f.size() == 44 + size_t(bar + kRate / 2) * 2 * 3);
+    // A kick on every beat: energy right after each beat, from the very first sample.
+    int32_t firstPeak = 0, peak = 0;
+    for (size_t i = 0; i < size_t(kRate / 50) * 2; ++i) firstPeak = std::max(firstPeak, std::abs(sample24(f, i)));
+    for (size_t i = 0; i < (f.size() - 44) / 3; ++i) peak = std::max(peak, std::abs(sample24(f, i)));
+    CHECK(firstPeak > 8388607 / 10);
+    CHECK(peak <= int32_t(8388607 * 0.9f));  // limiter ceiling holds
+    // Same beat without the hit on beat 2: identical up to beat 2 (sample-accurate), different after.
+    const std::string path2 = path + ".b.wav";
+    ps::OfflineRenderer r2(kRate);
+    r2.post({ps::CommandType::SetTempo, 120.0f});
+    for (int step = 0; step < 16; step += 4) r2.post({ps::CommandType::SetDrumHit, step == 4 ? 0.0f : 1.0f, 0, step});
+    CHECK(r2.renderToWav(path2.c_str(), bar, kRate / 2) == ps::OfflineRenderer::Result::Ok);
+    const auto g = readFile(path2);
+    CHECK(g.size() == f.size());
+    const size_t beat2 = size_t(kRate / 2) * 2;
+    int32_t diffBefore = 0, diffAfter = 0;
+    for (size_t i = 0; i < beat2; ++i) diffBefore = std::max(diffBefore, std::abs(sample24(f, i) - sample24(g, i)));
+    for (size_t i = beat2; i < beat2 + 2000; ++i) diffAfter = std::max(diffAfter, std::abs(sample24(f, i) - sample24(g, i)));
+    CHECK(diffBefore <= 4);  // dither only (same seed, so in practice 0)
+    CHECK(diffAfter > 8388607 / 10);
+    std::filesystem::remove(path2);
+
+    ps::OfflineRenderer cancelled(kRate);
+    cancelled.cancel();
+    CHECK(cancelled.renderToWav(path.c_str(), bar, 0) == ps::OfflineRenderer::Result::Cancelled);
+    CHECK(ps::OfflineRenderer(kRate).renderToWav("/nonexistent-dir/x.wav", bar, 0) == ps::OfflineRenderer::Result::IoError);
+    std::filesystem::remove(path);
+}
+
 void testLimiterHoldsTheCeiling() {
     ps::Mixer mixer;
     mixer.prepare(kRate);
@@ -926,6 +1001,8 @@ int main(int argc, char** argv) {
         {"synth_through_engine", testSynthThroughEngine},
         {"mixer_pan_mute_solo", testMixerPanMuteSolo},
         {"limiter_ceiling", testLimiterHoldsTheCeiling},
+        {"wav_writer", testWavWriterRoundTrip},
+        {"offline_export", testOfflineExportRendersTheBeat},
     };
     for (const auto& t : tests) {
         const int before = g_failures;

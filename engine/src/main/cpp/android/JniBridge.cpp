@@ -4,6 +4,7 @@
 #include <mutex>
 
 #include "AudioHost.h"
+#include "OfflineRenderer.h"
 
 namespace {
 
@@ -35,6 +36,40 @@ JNIEXPORT jboolean JNICALL Java_com_pocketstudio_engine_NativeEngine_nativePost(
 
 JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_currentStep(JNIEnv*, jobject) {
     return host().engine().currentStep();
+}
+
+// --- Offline export: a private engine rendered on the caller's (worker) thread. ---
+
+static ps::OfflineRenderer* renderer(jlong handle) { return reinterpret_cast<ps::OfflineRenderer*>(handle); }
+
+JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_exportCreate(JNIEnv*, jobject) {
+    return reinterpret_cast<jlong>(new ps::OfflineRenderer(48000));
+}
+
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportPost(JNIEnv*, jobject, jlong handle, jint type,
+                                                                          jfloat value, jint a, jint b) {
+    renderer(handle)->post({static_cast<ps::CommandType>(type), value, a, b});
+}
+
+JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_exportRender(JNIEnv* env, jobject, jlong handle,
+                                                                            jstring path, jlong frames, jlong tail) {
+    const char* p = env->GetStringUTFChars(path, nullptr);
+    if (!p) return static_cast<jint>(ps::OfflineRenderer::Result::IoError);
+    const auto result = renderer(handle)->renderToWav(p, frames, tail);
+    env->ReleaseStringUTFChars(path, p);
+    return static_cast<jint>(result);
+}
+
+JNIEXPORT jfloat JNICALL Java_com_pocketstudio_engine_NativeEngine_exportProgress(JNIEnv*, jobject, jlong handle) {
+    return renderer(handle)->progress();
+}
+
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportCancel(JNIEnv*, jobject, jlong handle) {
+    renderer(handle)->cancel();
+}
+
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportDestroy(JNIEnv*, jobject, jlong handle) {
+    delete renderer(handle);
 }
 
 // Fills `out` (5 floats): channel peaks (drums, acid, synth), master peak, limiter gain.

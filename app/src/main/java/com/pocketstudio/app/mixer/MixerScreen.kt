@@ -9,7 +9,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
@@ -20,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import com.pocketstudio.app.rhythm.ExportUi
 import com.pocketstudio.model.Channel
 import com.pocketstudio.ui.LevelMeter
 import com.pocketstudio.ui.MonoStyle
@@ -36,7 +41,13 @@ data class MixerActions(
     val setPan: (Int, Float) -> Unit = { _, _ -> },
     val toggleMute: (Int) -> Unit = {},
     val toggleSolo: (Int) -> Unit = {},
+    val setExportBars: (Int) -> Unit = {},
+    val export: () -> Unit = {},
+    val cancelExport: () -> Unit = {},
+    val share: () -> Unit = {},
 )
+
+val EXPORT_BARS = listOf(1, 2, 4, 8, 16)
 
 /** Fader position (0.8 = unity, quadratic law, as in the engine) shown in dB. */
 fun faderDb(v: Float): String {
@@ -47,7 +58,13 @@ fun faderDb(v: Float): String {
 }
 
 @Composable
-fun MixerScreen(channels: List<Channel>, meters: FloatArray, actions: MixerActions, modifier: Modifier = Modifier) {
+fun MixerScreen(
+    channels: List<Channel>,
+    meters: FloatArray,
+    actions: MixerActions,
+    modifier: Modifier = Modifier,
+    export: ExportUi = ExportUi(),
+) {
     Column(
         modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp).testTag("mixer"),
         verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -66,6 +83,7 @@ fun MixerScreen(channels: List<Channel>, meters: FloatArray, actions: MixerActio
                 color = if (gain < 0.7f) Neon.Amber else Neon.TextSecondary,
             )
         }
+        ExportCard(export, actions)
     }
 }
 
@@ -107,5 +125,51 @@ private fun Strip(name: String, c: Channel, meter: Float, index: Int, actions: M
             )
         }
         Slider(value = c.pan, onValueChange = { v -> actions.setPan(index, if (kotlin.math.abs(v) < 0.04f) 0f else v) }, valueRange = -1f..1f)
+    }
+}
+
+@Composable
+internal fun ExportCard(export: ExportUi, actions: MixerActions) {
+    NeonCard(accent = Neon.Acid) {
+        SectionLabel("Exporter en WAV", color = Neon.Acid)
+        Text("Longueur", style = MaterialTheme.typography.bodyMedium)
+        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            EXPORT_BARS.forEach { bars ->
+                FilterChip(
+                    selected = export.bars == bars,
+                    onClick = { actions.setExportBars(bars) },
+                    enabled = !export.running,
+                    label = { Text(if (bars == 1) "1 mesure" else "$bars") },
+                )
+            }
+        }
+        when {
+            export.running -> {
+                LinearProgressIndicator(
+                    progress = { export.progress },
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
+                    color = Neon.Acid,
+                    trackColor = Neon.SurfaceHigh,
+                )
+                OutlinedButton(onClick = actions.cancelExport, modifier = Modifier.fillMaxWidth()) { Text("Annuler") }
+            }
+            else -> {
+                Button(
+                    onClick = actions.export,
+                    modifier = Modifier.fillMaxWidth().testTag("export"),
+                    colors = ButtonDefaults.buttonColors(containerColor = Neon.Acid, contentColor = Color.Black),
+                ) { Text("Exporter ${export.bars} mesure${if (export.bars > 1) "s" else ""}") }
+            }
+        }
+        export.file?.let { file ->
+            Text(
+                if (export.savedInMusic) "Enregistré dans Musique › Pocket Studio : ${file.name}"
+                else "Fichier prêt : ${file.name}",
+                style = MaterialTheme.typography.bodySmall,
+                color = Neon.TextSecondary,
+            )
+            OutlinedButton(onClick = actions.share, modifier = Modifier.fillMaxWidth().testTag("share")) { Text("Partager") }
+        }
+        export.error?.let { Text(it, color = Neon.Red, style = MaterialTheme.typography.bodySmall) }
     }
 }

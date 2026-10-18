@@ -50,6 +50,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.pocketstudio.app.Metrics
 import com.pocketstudio.app.acid.AcidActions
 import com.pocketstudio.app.acid.AcidScreen
+import com.pocketstudio.app.export.WavExporter
 import com.pocketstudio.app.latency.LatencyScreen
 import com.pocketstudio.app.mixer.MixerActions
 import com.pocketstudio.app.mixer.MixerScreen
@@ -216,6 +217,7 @@ fun AppRoot() {
                 AppTab.Mixeur -> {
                     val project by rhythmVm.project.collectAsStateWithLifecycle()
                     val meters by rhythmVm.meters.collectAsStateWithLifecycle()
+                    val export by rhythmVm.export.collectAsStateWithLifecycle()
                     LaunchedEffect(Unit) {
                         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollMeters() }
                     }
@@ -227,7 +229,12 @@ fun AppRoot() {
                             setPan = rhythmVm::setChannelPan,
                             toggleMute = rhythmVm::toggleMute,
                             toggleSolo = rhythmVm::toggleSolo,
+                            setExportBars = rhythmVm::setExportBars,
+                            export = rhythmVm::exportWav,
+                            cancelExport = rhythmVm::cancelExport,
+                            share = { export.file?.let { WavExporter.share(context, it) } },
                         ),
+                        export = export,
                     )
                 }
                 AppTab.Outils -> Column {

@@ -3,6 +3,7 @@ package com.pocketstudio.app
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -150,6 +151,21 @@ class ScreenshotTest {
             channels = channels,
             meters = floatArrayOf(0.62f, 0.81f, 0f, 0.88f, 0.8f),
             actions = com.pocketstudio.app.mixer.MixerActions(),
+            export = com.pocketstudio.app.rhythm.ExportUi(bars = 4, file = java.io.File("Mon-premier-rythme-20261018-221500.wav"), savedInMusic = true),
         )
+    }
+
+    @Test
+    fun mixerExporting() = shoot("mixer_export") {
+        androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
+            com.pocketstudio.app.mixer.ExportCard(
+                com.pocketstudio.app.rhythm.ExportUi(bars = 8, running = true, progress = 0.4f),
+                com.pocketstudio.app.mixer.MixerActions(),
+            )
+            com.pocketstudio.app.mixer.ExportCard(
+                com.pocketstudio.app.rhythm.ExportUi(bars = 4, file = java.io.File("Mon-premier-rythme-20261018-221500.wav"), savedInMusic = true),
+                com.pocketstudio.app.mixer.MixerActions(),
+            )
+        }
     }
 }

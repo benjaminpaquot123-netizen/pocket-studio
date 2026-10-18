@@ -6,10 +6,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(oboe REQUIRED CONFIG)
 
-file(GLOB CORE_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/core/*.cpp ${CMAKE_CURRENT_SOURCE_DIR}/core/*.c)
+file(GLOB CORE_SOURCES CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/core/*.cpp ${CMAKE_CURRENT_SOURCE_DIR}/core/*.c)
 include(${CMAKE_CURRENT_SOURCE_DIR}/../../../third_party/daisysp.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/../../../third_party/open303.cmake)
-file(GLOB ANDROID_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/android/*.cpp)
+file(GLOB ANDROID_SOURCES CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/android/*.cpp)
 
 add_library(pocketstudio_engine SHARED ${CORE_SOURCES} ${ANDROID_SOURCES} ${DAISYSP_SOURCES} ${OPEN303_SOURCES})
 target_include_directories(pocketstudio_engine PRIVATE core android)

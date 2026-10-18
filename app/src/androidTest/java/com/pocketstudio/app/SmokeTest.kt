@@ -4,7 +4,9 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.pocketstudio.engine.NativeEngine
 import androidx.test.platform.app.InstrumentationRegistry
@@ -105,6 +107,20 @@ class SmokeTest {
         compose.onNodeWithTag("mixer").assertIsDisplayed()
         compose.onNodeWithTag("mute_0").performClick()
         compose.onNodeWithTag("mute_0").performClick()
+
+        // Export: 4 bars rendered offline into a real 24-bit WAV with sound in it.
+        compose.onNodeWithTag("export").performScrollTo().performClick()
+        compose.waitUntil(60_000) { compose.onAllNodesWithTag("share").fetchSemanticsNodes().isNotEmpty() }
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val wav = File(context.cacheDir, "exports").listFiles()!!.single()
+        val bytes = wav.readBytes()
+        assertEquals("RIFF", String(bytes, 0, 4))
+        assertEquals(24, bytes[34].toInt())
+        val loudest = (44 until bytes.size - 2 step 3).maxOf { i ->
+            val v = (bytes[i].toInt() and 0xFF) or ((bytes[i + 1].toInt() and 0xFF) shl 8) or (bytes[i + 2].toInt() shl 16)
+            kotlin.math.abs(v)
+        }
+        assertTrue("export has sound: $loudest", loudest > 800_000)
         assertTrue("no NaN in the output", !NativeEngine.streamInfo().nonFinite)
     }
 }

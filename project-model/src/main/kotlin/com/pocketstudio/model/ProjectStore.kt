@@ -3,7 +3,9 @@ package com.pocketstudio.model
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.nio.channels.FileChannel
 import java.nio.file.Files
+import java.nio.file.StandardOpenOption
 import java.nio.file.StandardCopyOption
 
 /**
@@ -32,8 +34,13 @@ class ProjectStore(private val root: File) {
             out.write(ProjectJson.encode(project).toByteArray(Charsets.UTF_8))
             out.fd.sync()
         }
-        if (main.exists()) Files.copy(main.toPath(), File(dir, BACKUP).toPath(), StandardCopyOption.REPLACE_EXISTING)
+        if (main.exists()) {
+            val backup = File(dir, BACKUP)
+            Files.copy(main.toPath(), backup.toPath(), StandardCopyOption.REPLACE_EXISTING)
+            FileOutputStream(backup, true).use { it.fd.sync() }
+        }
         Files.move(tmp.toPath(), main.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE)
+        syncDirectory(dir)
     }
 
     /** Loads a project, or null if it does not exist. Throws only if every copy is unreadable. */
@@ -51,6 +58,11 @@ class ProjectStore(private val root: File) {
             }
         }
         throw IOException("Project $id is unreadable", lastError)
+    }
+
+    // Makes the rename itself durable (power cut right after a save). Best effort: not every platform allows it.
+    private fun syncDirectory(dir: File) {
+        runCatching { FileChannel.open(dir.toPath(), StandardOpenOption.READ).use { it.force(true) } }
     }
 
     fun delete(id: String) {

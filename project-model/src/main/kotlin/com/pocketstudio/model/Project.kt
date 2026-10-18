@@ -29,6 +29,7 @@ data class Project(
         drums = drums.sanitized(),
         acid = acid.sanitized(),
         synth = synth.sanitized(),
+        mixer = mixer.sanitized(),
     )
 
     companion object {
@@ -73,7 +74,17 @@ data class DrumLane(
 data class Hit(val velocity: Float = 1f)
 
 @Serializable
-data class Mixer(val channels: List<Channel> = List(16) { Channel() })
+data class Mixer(val channels: List<Channel> = List(CHANNELS) { Channel() }) {
+    fun sanitized(): Mixer = copy(
+        channels = (channels + List((CHANNELS - channels.size).coerceAtLeast(0)) { Channel() })
+            .take(CHANNELS)
+            .map { it.copy(volume = it.volume.coerceIn(0f, 1f), pan = it.pan.coerceIn(-1f, 1f)) },
+    )
+
+    companion object {
+        const val CHANNELS = 16
+    }
+}
 
 @Serializable
 data class Channel(

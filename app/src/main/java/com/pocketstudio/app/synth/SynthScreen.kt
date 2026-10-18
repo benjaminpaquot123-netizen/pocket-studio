@@ -212,9 +212,13 @@ private fun Key(note: Int, isBlack: Boolean, modifier: Modifier, onNoteOn: (Int)
                 detectTapGestures(onPress = {
                     down = true
                     onNoteOn(note)
-                    tryAwaitRelease()
-                    down = false
-                    onNoteOff(note)
+                    try {
+                        tryAwaitRelease()
+                    } finally {
+                        // Also when the gesture is cancelled (octave change, tab switch): no stuck note.
+                        down = false
+                        onNoteOff(note)
+                    }
                 })
             }
             .testTag("key_$note"),

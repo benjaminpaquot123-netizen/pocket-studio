@@ -270,3 +270,15 @@ class SynthPatchTest {
         assertEquals(4, SynthPatch.PRESETS.map { it.second }.toSet().size)
     }
 }
+
+class MixerModelTest {
+    @Test
+    fun brokenMixerIsRepaired() {
+        val broken = Project(mixer = Mixer(listOf(Channel(volume = 7f, pan = -3f))))
+        val fixed = broken.sanitized().mixer
+        assertEquals(Mixer.CHANNELS, fixed.channels.size)
+        assertEquals(1f, fixed.channels[0].volume)
+        assertEquals(-1f, fixed.channels[0].pan)
+        assertEquals(Channel(), fixed.channels[2])
+    }
+}

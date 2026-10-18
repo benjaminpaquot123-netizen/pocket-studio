@@ -25,16 +25,21 @@ import kotlinx.coroutines.flow.SharedFlow
 class PlaybackService : Service() {
     override fun onBind(intent: Intent?): IBinder? = null
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        if (intent?.action == ACTION_STOP) {
-            _stopRequests.tryEmit(Unit)
-            stopSelf()
-            return START_NOT_STICKY
-        }
+    // startForeground in onCreate: it runs even when play/stop are tapped so fast that
+    // stopService arrives before onStartCommand, so Android never sees a broken promise.
+    override fun onCreate() {
+        super.onCreate()
         ServiceCompat.startForeground(
             this, NOTIFICATION_ID, buildNotification(),
             ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK,
         )
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if (intent?.action == ACTION_STOP) {
+            _stopRequests.tryEmit(Unit)
+            stopSelf()
+        }
         return START_NOT_STICKY
     }
 

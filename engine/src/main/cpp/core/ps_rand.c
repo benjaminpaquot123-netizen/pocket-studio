@@ -1,10 +1,10 @@
 /* Lock-free replacement for rand() inside DaisySP (compiled with -Drand=ps_fast_rand).
  * Bionic's rand() takes a mutex, which is forbidden on the audio thread.
- * Only the audio thread (or a single test thread) calls it. */
+ * Per-thread state: the live audio thread and an export worker each get their own. */
 #include <stdint.h>
 #include <stdlib.h>
 
-static uint32_t ps_rand_state = 0x9E3779B9u;
+static _Thread_local uint32_t ps_rand_state = 0x9E3779B9u;
 
 int ps_fast_rand(void) {
     uint32_t x = ps_rand_state;

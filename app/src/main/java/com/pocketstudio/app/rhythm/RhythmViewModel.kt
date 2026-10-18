@@ -53,6 +53,12 @@ data class TransportUi(
  */
 class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     private val store = ProjectStore(File(app.filesDir, "projects"))
+
+    /** A one-off message for the user (e.g. an unreadable project was set aside). Declared before `session`. */
+    private val _notice = MutableStateFlow<String?>(null)
+    val notice: StateFlow<String?> = _notice.asStateFlow()
+    fun dismissNotice() { _notice.value = null }
+
     val session: ProjectSession = ProjectSession(
         id = PROJECT_ID,
         initial = loadOrCreate(),
@@ -91,8 +97,19 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     private fun loadOrCreate(): Project {
-        val loaded = runCatching { runBlocking(Dispatchers.IO) { store.load(PROJECT_ID) } }.getOrNull()
-        if (loaded != null) return loaded
+        try {
+            val loaded = runBlocking(Dispatchers.IO) { store.load(PROJECT_ID) }
+            if (loaded != null) return loaded
+        } catch (e: Exception) {
+            // Never let the first autosave overwrite files we could not read: move them aside.
+            val aside = File(store.folder(PROJECT_ID).parentFile, "$PROJECT_ID-illisible-${System.currentTimeMillis()}")
+            val moved = store.folder(PROJECT_ID).renameTo(aside)
+            _notice.value = if (moved) {
+                "Le projet n'a pas pu être relu. Il est mis de côté (${aside.name}) et un nouveau projet commence."
+            } else {
+                "Le projet n'a pas pu être relu ; un nouveau projet commence."
+            }
+        }
         var drums = DrumPattern()
         DrumKitInfo.starterHits.forEach { (lane, steps) -> steps.forEach { drums = drums.toggle(lane, it) } }
         val acid = AcidGenerator().generate(AcidPattern(), AcidGenerator.NOTE_SETS[5])
@@ -176,6 +193,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     fun synthNoteOff(note: Int) {
         if (NativeEngine.isAvailable) NativeEngine.synthNoteOff(note)
+    }
+
+    /** Safety net: releases every synth voice (leaving the synth tab or the app). */
+    fun synthAllOff() {
+        if (NativeEngine.isAvailable) NativeEngine.synthAllOff()
     }
 
     fun setSynthParam(index: Int, value: Float) {
@@ -374,13 +396,16 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val app = getApplication<Application>()
         val p = project.value
         val bars = _export.value.bars
+        val file = runCatching { WavExporter.newFile(app, p.name) }.getOrElse {
+            _export.value = ExportUi(bars = bars, error = "Impossible de préparer le fichier d'export.")
+            return
+        }
         val job = OfflineExport()
         NativeEngine.captureInto(job) {
             syncEngine()
             NativeEngine.setMetronome(false)
         }
         running = job
-        val file = WavExporter.newFile(app, p.name)
         _export.value = ExportUi(bars = bars, running = true)
         viewModelScope.launch {
             // Progress is polled on the main thread, and the job is closed on it too, so

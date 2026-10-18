@@ -1,6 +1,6 @@
 # Avancement
 
-**Phase 0 terminée et fusionnée le 2026-10-18.** Phase en cours : 1 (MVP jouable).
+**Phase 0 terminée et fusionnée le 2026-10-18.** Phase 1 (MVP jouable) terminée et relue, en attente du feu vert.
 
 ## Fait
 - Démarrage : SPEC, CLAUDE.md, ROADMAP, DECISIONS, ARCHITECTURE, THIRD_PARTY, README.
@@ -33,4 +33,5 @@
 - Recette phase 0 : issues #2 et #3 (doublon), 8/8 ✅, fermées.
 
 ## Prochaine étape exacte
-1. Revue critique de fin de phase 1 (sous-agent neuf), REVIEW.md, résumé 3 lignes, PR #4 prête, feu vert.
+1. Phase 1 terminée et relue (docs/REVIEW.md, graves corrigés). PR #4 prête : attendre la recette et le feu vert de Benjamin (fusion).
+2. Après fusion : phase 2 (2.1 import audio, enregistrement micro, forme d'onde), sur une nouvelle branche et une nouvelle PR. Penser au mode paysage (synthé d'abord).

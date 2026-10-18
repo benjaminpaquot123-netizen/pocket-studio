@@ -31,6 +31,7 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -106,8 +107,17 @@ fun AppRoot() {
         latencyVm.cancel()
         rhythmVm.flush()
         rhythmVm.visible = false
+        rhythmVm.synthAllOff()
         // While the transport plays, PlaybackService keeps the music going in the background.
         if (engineAvailable && !rhythmVm.keepsRunningInBackground) NativeEngine.stop()
+    }
+    val notice by rhythmVm.notice.collectAsStateWithLifecycle()
+    notice?.let { text ->
+        AlertDialog(
+            onDismissRequest = rhythmVm::dismissNotice,
+            confirmButton = { TextButton(onClick = rhythmVm::dismissNotice) { Text("Compris") } },
+            text = { Text(text) },
+        )
     }
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(engineAvailable) {
@@ -204,6 +214,7 @@ fun AppRoot() {
                     )
                 }
                 AppTab.Synthe -> {
+                    DisposableEffect(Unit) { onDispose { rhythmVm.synthAllOff() } }
                     val project by rhythmVm.project.collectAsStateWithLifecycle()
                     val octave by rhythmVm.keyboardOctave.collectAsStateWithLifecycle()
                     SynthScreen(

@@ -13,6 +13,7 @@
 
 #include "Engine.h"
 #include "RoundTripMeter.h"
+#include "SpscFloatRing.h"
 #include "SpscQueue.h"
 
 namespace {
@@ -66,6 +67,23 @@ void testSpscQueue() {
         CHECK(v == i);
     }
     CHECK(!q.pop(v));
+}
+
+void testSpscFloatRing() {
+    ps::SpscFloatRing ring(8);
+    const float stereo[] = {1, -1, 2, -2, 3, -3, 4, -4, 5, -5};
+    CHECK(ring.write(stereo, 5, 2) == 5);  // channel 0 only
+    float out[16] = {};
+    CHECK(ring.read(out, 3) == 3);
+    CHECK(out[0] == 1 && out[1] == 2 && out[2] == 3);
+    const float more[] = {6, 7, 8, 9, 10, 11, 12};
+    CHECK(ring.write(more, 7) == 6);  // 2 still buffered, capacity 8
+    CHECK(ring.available() == 8);
+    CHECK(ring.read(out, 16) == 8);
+    CHECK(out[0] == 4 && out[2] == 6 && out[7] == 11);
+    ring.write(more, 3);
+    ring.discard();
+    CHECK(ring.available() == 0);
 }
 
 void testSilentWhenStopped() {
@@ -337,6 +355,7 @@ int main(int argc, char** argv) {
     }
     const TestCase tests[] = {
         {"spsc_queue", testSpscQueue},
+        {"spsc_float_ring", testSpscFloatRing},
         {"silent_when_stopped", testSilentWhenStopped},
         {"sine_four_bars", testSineFourBars},
         {"block_size_independence", testBlockSizeIndependence},

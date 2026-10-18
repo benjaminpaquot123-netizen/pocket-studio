@@ -7,6 +7,10 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.pocketstudio.engine.NativeEngine
+import androidx.test.rule.GrantPermissionRule
+import com.pocketstudio.engine.LatencyStart
+import com.pocketstudio.engine.LatencyState
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -15,7 +19,10 @@ import org.junit.runner.RunWith
 /** Emulator smoke test run by CI: the app starts, plays, and every tab opens without crashing. */
 @RunWith(AndroidJUnit4::class)
 class SmokeTest {
-    @get:Rule
+    @get:Rule(order = 0)
+    val mic: GrantPermissionRule = GrantPermissionRule.grant(android.Manifest.permission.RECORD_AUDIO)
+
+    @get:Rule(order = 1)
     val compose = createAndroidComposeRule<MainActivity>()
 
     @Test
@@ -37,6 +44,13 @@ class SmokeTest {
         assertTrue("engine must produce sound after Play", heard)
         compose.onNodeWithTag("play").performClick()
         assertTrue("no NaN in the output", !NativeEngine.streamInfo().nonFinite)
+
+        // The microphone path delivers samples to the latency meter (the emulator mic is silent,
+        // so only the plumbing is checked here, not the measured value).
+        assertEquals(LatencyStart.Ok, NativeEngine.startLatencyTest())
+        compose.waitUntil(6_000) { NativeEngine.latencyState() == LatencyState.Done }
+        val result = NativeEngine.latencyResult()
+        assertTrue("microphone delivered ${result.inputFrames} frames (${NativeEngine.inputDescription()})", result.inputFrames > 0)
 
         compose.onNodeWithTag("tab_Latence").performClick()
         compose.onNodeWithTag("latency").assertIsDisplayed()

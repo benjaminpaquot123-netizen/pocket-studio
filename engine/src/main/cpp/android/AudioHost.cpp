@@ -3,6 +3,7 @@
 #include <android/log.h>
 
 #include <algorithm>
+#include <cstdio>
 #include <chrono>
 #include <thread>
 
@@ -16,7 +17,7 @@ namespace {
 constexpr int kSampleRate = 48000;
 constexpr int kOutputChannels = 2;
 constexpr int kMaxInputFrames = 8192;
-constexpr int kMaxInputChannels = 2;
+constexpr std::size_t kInputRingSize = 1 << 16;  // ~1.4 s at 48 kHz
 
 struct InputConfig {
     oboe::InputPreset preset;
@@ -34,7 +35,8 @@ constexpr InputConfig kInputConfigs[] = {
 };
 }  // namespace
 
-AudioHost::AudioHost() : engine_(kSampleRate), inputBuffer_(kMaxInputFrames * kMaxInputChannels, 0.0f) {}
+AudioHost::AudioHost()
+    : engine_(kSampleRate), inputBuffer_(kMaxInputFrames, 0.0f), inputRing_(kInputRingSize), inputCallback_(inputRing_) {}
 
 AudioHost::~AudioHost() { stop(); }
 
@@ -66,8 +68,15 @@ bool AudioHost::openOutputLocked() {
     return true;
 }
 
+void AudioHost::describeInputLocked(const char* config, const char* status) {
+    inputDescription_ = std::string(config) + " (" + status + ")";
+}
+
 bool AudioHost::openInputLocked() {
-    for (const auto& config : kInputConfigs) {
+    constexpr int count = static_cast<int>(sizeof(kInputConfigs) / sizeof(kInputConfigs[0]));
+    for (int attempt = 0; attempt < count; ++attempt) {
+        const int index = (nextInputConfig_ + attempt) % count;
+        const auto& config = kInputConfigs[index];
         oboe::AudioStreamBuilder builder;
         builder.setDirection(oboe::Direction::Input)
             ->setPerformanceMode(oboe::PerformanceMode::LowLatency)
@@ -76,25 +85,21 @@ bool AudioHost::openInputLocked() {
             ->setChannelCount(1)
             ->setSampleRate(kSampleRate)
             ->setSampleRateConversionQuality(oboe::SampleRateConversionQuality::Medium)
-            ->setInputPreset(config.preset);
+            ->setInputPreset(config.preset)
+            ->setDataCallback(&inputCallback_);
         const auto result = builder.openStream(input_);
         if (result != oboe::Result::OK) {
             LOGW("openStream(input, %s) failed: %s", config.description, oboe::convertToText(result));
+            describeInputLocked(config.description, "ouverture refusée");
             input_.reset();
             continue;
         }
-        // inputBuffer_ holds kMaxInputFrames frames of up to kMaxInputChannels channels.
-        if (input_->getChannelCount() > kMaxInputChannels) {
-            input_->close();
-            input_.reset();
-            continue;
-        }
-        inputChannels_ = input_->getChannelCount();
-        inputDescription_ = config.description;
-        LOGI("input: %s, rate=%d channels=%d", config.description, input_->getSampleRate(), inputChannels_);
+        currentInputConfig_ = index;
+        describeInputLocked(config.description, "ouvert");
+        LOGI("input: %s, rate=%d channels=%d", config.description, input_->getSampleRate(),
+             input_->getChannelCount());
         return true;
     }
-    inputDescription_ = "impossible à ouvrir";
     return false;
 }
 
@@ -154,7 +159,17 @@ AudioHost::LatencyStart AudioHost::startLatencyTest() {
         return inputOk ? LatencyStart::OutputFailed : LatencyStart::MicUnavailable;
     }
     engine_.prepare(output_->getSampleRate());
-    input_->requestStart();
+    inputCallback_.reset();
+    if (input_->requestStart() != oboe::Result::OK) {
+        describeInputLocked(kInputConfigs[currentInputConfig_].description, "démarrage refusé");
+        nextInputConfig_ = currentInputConfig_ + 1;
+        closeLocked();
+        if (openOutputLocked()) {
+            engine_.prepare(output_->getSampleRate());
+            output_->requestStart();
+        }
+        return LatencyStart::MicUnavailable;
+    }
     drainInput_.store(true, std::memory_order_release);
     {
         std::lock_guard<std::mutex> postGuard(postLock_);
@@ -172,9 +187,15 @@ AudioHost::LatencyStart AudioHost::startLatencyTest() {
     return LatencyStart::Ok;
 }
 
-void AudioHost::finishLatencyTest() {
+void AudioHost::finishLatencyTest(bool gotInput) {
     std::lock_guard<std::mutex> guard(lock_);
     if (!input_) return;
+    const auto frames = inputCallback_.frames();
+    char status[96];
+    snprintf(status, sizeof(status), "%lld échantillons reçus", static_cast<long long>(frames));
+    describeInputLocked(kInputConfigs[currentInputConfig_].description, status);
+    // This configuration gave nothing on this phone: try the next one next time.
+    if (!gotInput) nextInputConfig_ = currentInputConfig_ + 1;
     closeLocked();
     // Streams are closed: no audio thread touches the meter now.
     engine_.latencyMeter().cancel();
@@ -191,23 +212,14 @@ oboe::DataCallbackResult AudioHost::onAudioReady(oboe::AudioStream* stream, void
     int inFrames = 0;
     oboe::AudioStream* input = input_.get();
     if (input != nullptr) {
-        if (drainInput_.exchange(false, std::memory_order_acq_rel)) {
-            // Drop stale input so both directions start aligned.
-            for (int i = 0; i < 16; ++i) {
-                auto drained = input->read(inputBuffer_.data(), kMaxInputFrames, 0);
-                if (!drained || drained.value() == 0) break;
-            }
-        }
-        // Take everything the microphone has delivered so far, without blocking.
-        // The meter records it back to back, so uneven chunks don't distort the timing.
-        while (inFrames < kMaxInputFrames) {
-            auto read = input->read(inputBuffer_.data() + inFrames * inputChannels_, kMaxInputFrames - inFrames, 0);
-            if (!read || read.value() <= 0) break;
-            inFrames += read.value();
-        }
+        // Drop samples captured before the output started so both directions start aligned.
+        if (drainInput_.exchange(false, std::memory_order_acq_rel)) inputRing_.discard();
+        // Take everything the microphone thread has delivered so far. The meter records it
+        // back to back, so uneven chunks don't distort the timing.
+        inFrames = static_cast<int>(inputRing_.read(inputBuffer_.data(), kMaxInputFrames));
         in = inputBuffer_.data();
     }
-    engine_.process(in, inFrames, inputChannels_, out, numFrames, stream->getChannelCount());
+    engine_.process(in, inFrames, 1, out, numFrames, stream->getChannelCount());
     return oboe::DataCallbackResult::Continue;
 }
 
@@ -232,6 +244,11 @@ void AudioHost::onErrorAfterClose(oboe::AudioStream* stream, oboe::Result error)
         if (output_->requestStart() == oboe::Result::OK) return;
         closeLocked();
     }
+}
+
+std::string AudioHost::inputDescription() {
+    std::lock_guard<std::mutex> guard(lock_);
+    return inputDescription_;
 }
 
 StreamInfo AudioHost::info() {

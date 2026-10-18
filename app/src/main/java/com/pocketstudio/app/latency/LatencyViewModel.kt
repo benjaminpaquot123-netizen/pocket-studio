@@ -27,7 +27,7 @@ sealed interface LatencyUiState {
 }
 
 /** Outcome of one run: either the native start failed, or the meter produced a result. */
-private data class RunOutcome(val start: LatencyStart, val result: LatencyResult?)
+private data class RunOutcome(val start: LatencyStart, val result: LatencyResult?, val mic: String)
 
 class LatencyViewModel : ViewModel() {
     private val _state = MutableStateFlow<LatencyUiState>(LatencyUiState.Idle)
@@ -67,7 +67,7 @@ class LatencyViewModel : ViewModel() {
         var finished = false
         try {
             val start = NativeEngine.startLatencyTest()
-            if (start != LatencyStart.Ok) return RunOutcome(start, null)
+            if (start != LatencyStart.Ok) return RunOutcome(start, null, NativeEngine.inputDescription())
             var waited = 0
             while (NativeEngine.latencyState() == LatencyState.Running && waited < 4000) {
                 delay(50)
@@ -75,7 +75,7 @@ class LatencyViewModel : ViewModel() {
             }
             val result = NativeEngine.latencyResult()
             finished = true
-            return RunOutcome(start, result)
+            return RunOutcome(start, result, NativeEngine.inputDescription())
         } finally {
             // Closes the microphone even if the measurement was cancelled.
             if (!finished) withContext(NonCancellable) { NativeEngine.latencyResult() }
@@ -89,24 +89,23 @@ class LatencyViewModel : ViewModel() {
             o.start == LatencyStart.NotForeground -> "Mesure interrompue : l'appli est passée en arrière-plan."
             o.start == LatencyStart.OutputFailed -> "Le haut-parleur n'a pas pu démarrer. Réessaie dans quelques secondes."
             o.result?.failure == LatencyFailure.NoInput ->
-                "Le micro ne livre aucun son. Un autre usage du micro est peut-être en cours."
+                "Le micro ne livre aucun son malgré plusieurs réglages essayés. Relance la mesure : l'appli continue d'essayer d'autres réglages."
             o.result?.failure == LatencyFailure.SilentInput ->
                 "Le micro n'entend que du silence absolu : l'accès au micro est sans doute coupé dans les réglages rapides (icône Micro)."
             else -> "Signal trop faible pour être repéré. Volume média à fond, téléphone posé sur une table, et réessaie."
         }
 
         private fun diagnostic(outcomes: List<RunOutcome>): String {
-            val mic = runCatching { NativeEngine.inputDescription() }.getOrDefault("?")
-            val runs = outcomes.joinToString(" | ") { o ->
+            return outcomes.joinToString(" | ") { o ->
                 val r = o.result
-                if (r == null) "départ ${o.start}"
+                val detail = if (r == null) "départ ${o.start}"
                 else String.format(
                     Locale.FRANCE, "%s, niveau %.4f, confiance %.1f, %d éch.",
                     if (r.valid) "OK %.1f ms".format(Locale.FRANCE, r.latencyMs) else r.failure.name,
                     r.inputPeak, r.confidence, r.inputFrames,
                 )
+                "micro ${o.mic} : $detail"
             }
-            return "Micro $mic : $runs"
         }
     }
 }

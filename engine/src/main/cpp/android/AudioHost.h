@@ -5,9 +5,11 @@
 #include <atomic>
 #include <memory>
 #include <mutex>
+#include <string>
 #include <vector>
 
 #include "Engine.h"
+#include "SpscFloatRing.h"
 
 namespace ps {
 
@@ -23,6 +25,26 @@ struct StreamInfo {
     int xruns = 0;
     double outputLatencyMs = -1.0;
     bool running = false;
+};
+
+// Input-stream callback: pushes microphone samples (first channel) into a lock-free ring
+// that the output callback drains. Each stream keeps its own audio thread, which works on
+// devices where reading the input from the output thread returns nothing.
+class InputCallback : public oboe::AudioStreamDataCallback {
+public:
+    explicit InputCallback(SpscFloatRing& ring) : ring_(ring) {}
+    oboe::DataCallbackResult onAudioReady(oboe::AudioStream* stream, void* audioData, int32_t numFrames) override {
+        ring_.write(static_cast<const float*>(audioData), static_cast<std::size_t>(numFrames),
+                    static_cast<std::size_t>(stream->getChannelCount()));
+        frames_.fetch_add(numFrames, std::memory_order_relaxed);
+        return oboe::DataCallbackResult::Continue;
+    }
+    void reset() { frames_.store(0, std::memory_order_relaxed); }
+    int64_t frames() const { return frames_.load(std::memory_order_relaxed); }
+
+private:
+    SpscFloatRing& ring_;
+    std::atomic<int64_t> frames_{0};
 };
 
 // Owns the Oboe output stream (and the input stream during latency tests)
@@ -42,10 +64,11 @@ public:
 
     // Re-opens streams in full duplex and launches the round-trip measurement.
     LatencyStart startLatencyTest();
-    // Human-readable description of the microphone configuration in use (for reports).
-    const char* inputDescription() const { return inputDescription_; }
-    // Closes the input stream once the measurement is finished.
-    void finishLatencyTest();
+    // Human-readable description of the last microphone attempt (for reports).
+    std::string inputDescription();
+    // Closes the input stream once the measurement is finished. When the microphone
+    // delivered nothing, the next test starts with the next input configuration.
+    void finishLatencyTest(bool gotInput);
 
     oboe::DataCallbackResult onAudioReady(oboe::AudioStream* stream, void* audioData,
                                           int32_t numFrames) override;
@@ -54,6 +77,7 @@ public:
 private:
     bool openOutputLocked();
     bool openInputLocked();
+    void describeInputLocked(const char* config, const char* status);
     void closeLocked();
 
     std::mutex lock_;
@@ -62,8 +86,11 @@ private:
     std::shared_ptr<oboe::AudioStream> output_;
     std::shared_ptr<oboe::AudioStream> input_;
     std::vector<float> inputBuffer_;
-    int inputChannels_ = 1;
-    const char* inputDescription_ = "aucun";
+    SpscFloatRing inputRing_;
+    InputCallback inputCallback_;
+    int nextInputConfig_ = 0;
+    int currentInputConfig_ = 0;
+    std::string inputDescription_ = "aucun";
     std::atomic<bool> drainInput_{false};
     bool wantRunning_ = false;
     int xrunBase_ = 0;

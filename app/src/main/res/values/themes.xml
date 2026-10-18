@@ -5,7 +5,7 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
-    <color name="background">#FF101318</color>
-    <color name="neon_cyan">#FF5BD6E3</color>
-    <color name="neon_magenta">#FFE879B9</color>
+    <color name="background">#FF3A3E44</color>
+    <color name="neon_cyan">#FFFFA347</color>
+    <color name="neon_magenta">#FF7FD46B</color>
 </resources>

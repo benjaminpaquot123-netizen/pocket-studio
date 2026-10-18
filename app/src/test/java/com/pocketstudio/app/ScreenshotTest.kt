@@ -19,6 +19,8 @@ import com.pocketstudio.app.studio.StudioScreen
 import com.pocketstudio.app.studio.StudioUiState
 import com.pocketstudio.engine.StreamInfo
 import com.pocketstudio.ui.Neon
+import com.pocketstudio.ui.Palette
+import com.pocketstudio.ui.Palettes
 import com.pocketstudio.ui.PocketStudioTheme
 import org.junit.Rule
 import org.junit.Test
@@ -42,9 +44,9 @@ class ScreenshotTest {
         running = true, callbacks = 1000, peak = 0.42f,
     )
 
-    private fun shoot(name: String, content: @Composable () -> Unit) {
+    private fun shoot(name: String, palette: Palette = Palettes.Studio, content: @Composable () -> Unit) {
         compose.setContent {
-            PocketStudioTheme {
+            PocketStudioTheme(palette) {
                 Box(Modifier.fillMaxSize().background(Neon.Background)) { content() }
             }
         }

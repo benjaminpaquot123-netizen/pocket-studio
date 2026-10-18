@@ -16,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Checklist
 import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.GridView
+import androidx.compose.material.icons.filled.Piano
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
@@ -56,6 +57,8 @@ import com.pocketstudio.app.rhythm.RhythmActions
 import com.pocketstudio.app.rhythm.RhythmScreen
 import com.pocketstudio.app.rhythm.RhythmViewModel
 import com.pocketstudio.app.studio.StudioScreen
+import com.pocketstudio.app.synth.SynthActions
+import com.pocketstudio.app.synth.SynthScreen
 import com.pocketstudio.app.studio.StudioViewModel
 import com.pocketstudio.engine.NativeEngine
 import com.pocketstudio.ui.Neon
@@ -64,6 +67,7 @@ import kotlinx.coroutines.delay
 enum class AppTab(val label: String, val icon: ImageVector) {
     Rythme("Rythme", Icons.Filled.GridView),
     Acide("Acide", Icons.Filled.GraphicEq),
+    Synthe("Synthé", Icons.Filled.Piano),
     Outils("Outils", Icons.Filled.Tune),
     Recette("Recette", Icons.Filled.Checklist),
 }
@@ -188,6 +192,21 @@ fun AppRoot() {
                             setSound = rhythmVm::setAcidSound,
                             shiftRoot = rhythmVm::shiftAcidRoot,
                             setDensity = rhythmVm::setAcidDensity,
+                        ),
+                    )
+                }
+                AppTab.Synthe -> {
+                    val project by rhythmVm.project.collectAsStateWithLifecycle()
+                    val octave by rhythmVm.keyboardOctave.collectAsStateWithLifecycle()
+                    SynthScreen(
+                        patch = project.synth,
+                        octave = octave,
+                        actions = SynthActions(
+                            noteOn = rhythmVm::synthNoteOn,
+                            noteOff = rhythmVm::synthNoteOff,
+                            shiftOctave = rhythmVm::shiftKeyboardOctave,
+                            setParam = rhythmVm::setSynthParam,
+                            applyPreset = rhythmVm::applySynthPreset,
                         ),
                     )
                 }

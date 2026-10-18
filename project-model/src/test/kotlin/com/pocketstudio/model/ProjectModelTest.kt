@@ -252,3 +252,21 @@ class AcidTest {
         assertEquals(AcidPattern().sanitized(), ProjectJson.decode("""{"name":"Vieux"}""").acid)
     }
 }
+
+class SynthPatchTest {
+    @Test
+    fun shortOrLongListsAreRepaired() {
+        val p = ProjectJson.decode("""{"synth":{"values":[0.9, 2.0]}}""").synth
+        assertEquals(SynthPatch.PARAM_COUNT, p.values.size)
+        assertEquals(0.9f, p.get(0), 0f)
+        assertEquals(1f, p.get(1), 0f)
+        assertEquals(SynthPatch.DEFAULTS[5], p.get(5), 0f)
+    }
+
+    @Test
+    fun presetsAreCompleteAndDistinct() {
+        assertEquals(4, SynthPatch.PRESETS.size)
+        SynthPatch.PRESETS.forEach { (_, patch) -> assertEquals(SynthPatch.PARAM_COUNT, patch.values.size) }
+        assertEquals(4, SynthPatch.PRESETS.map { it.second }.toSet().size)
+    }
+}

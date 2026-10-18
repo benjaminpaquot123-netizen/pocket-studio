@@ -20,6 +20,10 @@ object NativeEngine {
     private const val CMD_SET_ACID_LENGTH = 13
     private const val CMD_SET_ACID_ROOT = 14
     private const val CMD_SET_ACID_PARAM = 15
+    private const val CMD_SYNTH_NOTE_ON = 16
+    private const val CMD_SYNTH_NOTE_OFF = 17
+    private const val CMD_SYNTH_PARAM = 18
+    private const val CMD_SYNTH_ALL_OFF = 19
 
     const val LANES = 16
 
@@ -48,6 +52,12 @@ object NativeEngine {
     fun setAcidRoot(midiNote: Int) = post(CMD_SET_ACID_ROOT, 0f, midiNote)
     /** [param] in AcidTrack::Param order, [value] 0..1. */
     fun setAcidParam(param: Int, value: Float) = post(CMD_SET_ACID_PARAM, value, param)
+
+    fun synthNoteOn(note: Int, velocity: Float) = post(CMD_SYNTH_NOTE_ON, velocity, note)
+    fun synthNoteOff(note: Int) = post(CMD_SYNTH_NOTE_OFF, 0f, note)
+    /** [param] in Synth::Param order, [value] 0..1. */
+    fun setSynthParam(param: Int, value: Float) = post(CMD_SYNTH_PARAM, value, param)
+    fun synthAllOff() = post(CMD_SYNTH_ALL_OFF, 0f)
 
     /** Plays a pad right now (live). */
     fun triggerPad(lane: Int, velocity: Float) = post(CMD_TRIGGER_PAD, velocity, lane)

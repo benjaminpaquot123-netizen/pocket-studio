@@ -20,6 +20,7 @@
 - Jalon Acide A.1–A.3 (moteur) : `AcidTrack` = Open303 + séquenceur par pas (note, octave, accent, slide, silence, 1–64 pas), 9 réglages (cutoff, résonance, env mod, decay, accent, accord ±1 octave, onde scie→carré, saturation, niveau). Tests : départ à l'échantillon près, accent ×2,2 en énergie, slide qui tient la note, arrêt propre, 1,2 % du temps réel.
 - Jalon Acide A.4–A.5 : `AcidGenerator` (inspiré de The Endless Acid Banger, CC BY 4.0, crédité), densité, verrous ; `AcidPattern` dans le projet ; onglet Acide (générer, grille, éditeur de pas, 9 curseurs de son).
 - Dette : la logique Acide vit dans `RhythmViewModel` (transport et projet partagés) ; à extraire dans un contrôleur de session partagé quand le synthé arrivera.
+- Jalon 1.4 : `Synth` 8 voix (moteur) ; `SynthPatch` (24 réglages, 4 préréglages Basse/Lead/Nappe/Pluck) dans le projet ; onglet Synthé (clavier 2 octaves multi-doigts, octave, préréglages, réglages faciles + avancés). Le synthé se joue en direct ; l'enregistrement de notes arrive avec le piano roll (phase 2).
 
 ## À retenir pour la suite
 - Afficher une « latence de jeu » (sortie + tactile) à côté de l'aller-retour ; essayer un buffer d'un seul burst.
@@ -28,4 +29,4 @@
 
 ## Prochaine étape exacte
 1. Recette 1.2/1.3 par Benjamin (aperçu de la PR de phase 1).
-2. Recette du jalon Acide par Benjamin ; puis 1.4 synthé soustractif.
+2. Recette Acide + Synthé par Benjamin ; puis 1.5 mixeur simple (volume, pan, mute, solo, VU-mètres, limiteur master), puis 1.6 export WAV + service de lecture.

@@ -131,4 +131,13 @@ class ScreenshotTest {
             actions = com.pocketstudio.app.acid.AcidActions(),
         )
     }
+
+    @Test
+    fun synth() = shoot("synth") {
+        com.pocketstudio.app.synth.SynthScreen(
+            patch = com.pocketstudio.model.SynthPatch.PRESETS[1].second,
+            octave = 4,
+            actions = com.pocketstudio.app.synth.SynthActions(),
+        )
+    }
 }

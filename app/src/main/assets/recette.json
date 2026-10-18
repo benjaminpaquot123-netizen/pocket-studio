@@ -1,6 +1,6 @@
 {
-  "id": "phase1-rythme-acide",
-  "milestone": "Phase 1 : boîte à rythmes et basse acide",
+  "id": "phase1-rythme-acide-synthe",
+  "milestone": "Phase 1 : rythmes, basse acide et synthé",
   "items": [
     {
       "id": "play",
@@ -71,6 +71,16 @@
       "id": "acid_sound",
       "title": "Les curseurs de son répondent (surtout Coupure et Résonance)",
       "hint": "Bouge Coupure, Résonance, Enveloppe et Saturation pendant la lecture : le son « miaule »."
+    },
+    {
+      "id": "synth_keys",
+      "title": "Le clavier du synthé joue, même à plusieurs doigts",
+      "hint": "Onglet Synthé : joue un accord de 3 notes, change d'octave avec −/+."
+    },
+    {
+      "id": "synth_presets",
+      "title": "Les sons Basse, Lead, Nappe et Pluck sont bien différents",
+      "hint": "Essaie chaque son prêt à jouer, puis bouge Coupure et Résonance."
     }
   ]
 }

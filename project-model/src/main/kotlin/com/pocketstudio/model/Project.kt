@@ -20,6 +20,7 @@ data class Project(
     val drums: DrumPattern = DrumPattern(),
     val mixer: Mixer = Mixer(),
     val acid: AcidPattern = AcidPattern(),
+    val synth: SynthPatch = SynthPatch(),
 ) {
     /** Returns a copy with every value inside its allowed range. */
     fun sanitized(): Project = copy(
@@ -27,6 +28,7 @@ data class Project(
         swing = swing.coerceIn(0.0, MAX_SWING),
         drums = drums.sanitized(),
         acid = acid.sanitized(),
+        synth = synth.sanitized(),
     )
 
     companion object {

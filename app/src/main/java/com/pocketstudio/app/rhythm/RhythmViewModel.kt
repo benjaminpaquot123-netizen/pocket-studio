@@ -12,6 +12,7 @@ import com.pocketstudio.model.Hit
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.ProjectSession
 import com.pocketstudio.model.ProjectStore
+import com.pocketstudio.model.SynthPatch
 import com.pocketstudio.model.TapTempo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
@@ -99,6 +100,39 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
         NativeEngine.setMetronome(_transport.value.metronome)
         pushAcid(p.acid)
+        pushSynth(p.synth)
+    }
+
+    // --- Subtractive synth -------------------------------------------------------------------
+
+    private val _keyboardOctave = MutableStateFlow(4)
+    val keyboardOctave: StateFlow<Int> = _keyboardOctave.asStateFlow()
+
+    fun shiftKeyboardOctave(delta: Int) {
+        _keyboardOctave.value = (_keyboardOctave.value + delta).coerceIn(1, 7)
+    }
+
+    fun synthNoteOn(note: Int) {
+        if (NativeEngine.isAvailable) NativeEngine.synthNoteOn(note, 0.85f)
+    }
+
+    fun synthNoteOff(note: Int) {
+        if (NativeEngine.isAvailable) NativeEngine.synthNoteOff(note)
+    }
+
+    fun setSynthParam(index: Int, value: Float) {
+        session.edit("synth-$index") { p -> p.copy(synth = p.synth.with(index, value)) }
+        if (NativeEngine.isAvailable) NativeEngine.setSynthParam(index, project.value.synth.get(index))
+    }
+
+    fun applySynthPreset(patch: SynthPatch) {
+        session.edit { p -> p.copy(synth = patch) }
+        pushSynth(project.value.synth)
+    }
+
+    private fun pushSynth(patch: SynthPatch) {
+        if (!NativeEngine.isAvailable) return
+        patch.sanitized().values.forEachIndexed { i, v -> NativeEngine.setSynthParam(i, v) }
     }
 
     // --- Acid bass -------------------------------------------------------------------------

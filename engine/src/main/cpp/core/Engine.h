@@ -4,6 +4,7 @@
 #include <atomic>
 #include <cstdint>
 
+#include "AcidTrack.h"
 #include "DrumKit.h"
 #include "Metronome.h"
 #include "RoundTripMeter.h"
@@ -27,6 +28,10 @@ enum class CommandType : uint8_t {
     SetPatternSteps,  // a: 16..64
     SetDrumHit,       // a: lane, b: step, value: velocity (0 = remove)
     TriggerPad,       // a: lane, value: velocity (live play, sounds immediately)
+    SetAcidStep,      // a: step index, b: AcidStep::pack()
+    SetAcidLength,    // a: 1..64
+    SetAcidRoot,      // a: MIDI note of the root
+    SetAcidParam,     // a: AcidTrack::Param, value: 0..1
 };
 
 struct Command {
@@ -74,6 +79,7 @@ public:
     // Increments every time a lane is triggered (pad lights, tests).
     uint32_t laneTriggerCount(int lane) const { return laneTriggers_[lane].load(std::memory_order_relaxed); }
     // Number of metronome clicks triggered since startup (tests).
+    uint32_t acidNotesPlayed() const { return acid_.notesPlayed(); }
     uint64_t metronomeClicks() const { return metronomeClicks_.load(std::memory_order_relaxed); }
 
 private:
@@ -94,6 +100,7 @@ private:
     Sequencer sequencer_;
     Metronome metronome_;
     DrumKit drums_;
+    AcidTrack acid_;
     bool metronomeOn_ = false;
     int patternSteps_ = 16;
     float pattern_[kLanes][kMaxSteps] = {};

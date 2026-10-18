@@ -43,6 +43,7 @@ void Engine::prepare(int sampleRate) {
     sequencer_.prepare(sampleRate);
     metronome_.prepare(sampleRate);
     drums_.prepare(sampleRate);
+    acid_.prepare(sampleRate);
 }
 
 void Engine::applyCommand(const Command& command) {
@@ -67,6 +68,7 @@ void Engine::applyCommand(const Command& command) {
                 sequencer_.start(std::clamp(command.a, 0, 4));
             } else {
                 sequencer_.stop();
+                acid_.stop();
                 currentStep_.store(-1, std::memory_order_relaxed);
             }
             break;
@@ -81,6 +83,20 @@ void Engine::applyCommand(const Command& command) {
             break;
         case CommandType::SetPatternSteps:
             patternSteps_ = std::clamp(command.a, 16, kMaxSteps);
+            break;
+        case CommandType::SetAcidStep:
+            acid_.setStep(command.a, AcidStep::unpack(command.b));
+            break;
+        case CommandType::SetAcidLength:
+            acid_.setLength(command.a);
+            break;
+        case CommandType::SetAcidRoot:
+            acid_.setRoot(command.a);
+            break;
+        case CommandType::SetAcidParam:
+            if (command.a >= 0 && command.a < AcidTrack::ParamCount) {
+                acid_.setParam(static_cast<AcidTrack::Param>(command.a), command.value);
+            }
             break;
         case CommandType::TriggerPad:
             if (command.a >= 0 && command.a < kLanes) {
@@ -105,6 +121,7 @@ void Engine::onStep(int offset, int step) {
         metronomeClicks_.fetch_add(1, std::memory_order_relaxed);
     }
     if (step < 0) return;
+    acid_.onStep(offset, step, sequencer_.samplesPerStep());
     const int patternStep = step % patternSteps_;
     currentStep_.store(patternStep, std::memory_order_relaxed);
     for (int lane = 0; lane < kLanes; ++lane) {
@@ -121,6 +138,7 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
     sequencer_.advance(numFrames, [this](int offset, int step) { onStep(offset, step); });
     metronome_.render(mix, numFrames);
     drums_.render(mix, numFrames);
+    acid_.render(mix, numFrames);
 
     gain_.setTarget(playing_.load(std::memory_order_relaxed) ? volume_ : 0.0f);
     const double invRate = 1.0 / sampleRate_;

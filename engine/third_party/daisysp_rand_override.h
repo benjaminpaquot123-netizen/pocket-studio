@@ -3,6 +3,8 @@
  * generator. Standard headers that mention rand are included first, so they are unaffected. */
 #pragma once
 #include <stdlib.h>
+#include <limits.h> /* Open303 uses INT_MAX, memcpy, memmove without including them */
+#include <string.h>
 #ifdef __cplusplus
 #include <algorithm>
 #include <cstdlib>

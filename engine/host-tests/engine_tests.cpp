@@ -13,6 +13,7 @@
 #include <tuple>
 #include <vector>
 
+#include "AcidTrack.h"
 #include "DrumKit.h"
 #include "Engine.h"
 #include "RoundTripMeter.h"
@@ -597,6 +598,139 @@ void testTomsHaveBody() {
     }
 }
 
+
+// Renders the acid track alone, driven by a 120 BPM clock (6000 frames per 16th).
+std::vector<float> renderAcid(ps::AcidTrack& acid, int steps, int block = 256) {
+    ps::Sequencer seq;
+    seq.prepare(kRate);
+    seq.setTempo(120.0);
+    seq.start(0);
+    const int frames = steps * 6000;
+    std::vector<float> out(static_cast<size_t>(frames), 0.0f);
+    for (int pos = 0; pos < frames; pos += block) {
+        const int n = std::min(block, frames - pos);
+        seq.advance(n, [&](int offset, int step) { acid.onStep(offset, step, seq.samplesPerStep()); });
+        acid.render(out.data() + pos, n);
+    }
+    return out;
+}
+
+ps::AcidStep note(int n, bool accent = false, bool slide = false) {
+    ps::AcidStep s;
+    s.note = n;
+    s.accent = accent;
+    s.slide = slide;
+    s.gate = true;
+    return s;
+}
+
+void testAcidStepPacking() {
+    for (int n = 0; n <= 12; ++n) {
+        for (int o = -1; o <= 1; ++o) {
+            ps::AcidStep s{n, o, (n & 1) != 0, (n & 2) != 0, true};
+            const auto u = ps::AcidStep::unpack(s.pack());
+            CHECK(u.note == n && u.octave == o && u.accent == s.accent && u.slide == s.slide && u.gate);
+        }
+    }
+    CHECK(!ps::AcidStep::unpack(0).gate);
+}
+
+void testAcidNotesStartOnTheStep() {
+    ps::AcidTrack acid;
+    acid.prepare(kRate);
+    acid.setLength(16);
+    acid.setStep(4, note(0));
+    const auto out = renderAcid(acid, 8, 333);
+    int first = -1;
+    for (int i = 0; i < static_cast<int>(out.size()) && first < 0; ++i) {
+        if (std::fabs(out[static_cast<size_t>(i)]) > 1e-6f) first = i;
+    }
+    CHECK(first >= 24000 && first < 24000 + 48);  // within 1 ms of step 4
+    CHECK(acid.notesPlayed() == 1);
+    bool finite = true;
+    float peak = 0.0f;
+    for (float v : out) {
+        finite &= std::isfinite(v);
+        peak = std::max(peak, std::fabs(v));
+    }
+    CHECK(finite);
+    CHECK(peak > 0.1f && peak < 1.0f);
+}
+
+void testAcidAccentIsLouder() {
+    // Measured on the voice itself (no saturation), as energy over the note.
+    auto rmsOf = [](bool accent) {
+        ps::AcidTrack acid;
+        acid.prepare(kRate);
+        acid.setParam(ps::AcidTrack::Drive, 0.0f);
+        acid.setStep(0, note(0, accent));
+        const auto out = renderAcid(acid, 1);
+        double e = 0.0;
+        for (float v : out) e += static_cast<double>(v) * v;
+        return std::sqrt(e / static_cast<double>(out.size()));
+    };
+    const double plain = rmsOf(false);
+    const double accented = rmsOf(true);
+    std::printf("  acid rms: plain %.3f, accent %.3f\n", plain, accented);
+    CHECK(accented > plain * 1.15);
+}
+
+void testAcidSlideHoldsTheNote() {
+    // Without slide the note is released after half a step: just before step 1 it is fading.
+    // With slide the gate stays open and the pitch glides: the level stays up.
+    auto levelBeforeStep1 = [](bool slide) {
+        ps::AcidTrack acid;
+        acid.prepare(kRate);
+        acid.setParam(ps::AcidTrack::Decay, 1.0f);
+        acid.setStep(0, note(0, false, slide));
+        acid.setStep(1, note(12));
+        const auto out = renderAcid(acid, 2);
+        double e = 0.0;
+        for (int i = 5000; i < 6000; ++i) e += out[static_cast<size_t>(i)] * out[static_cast<size_t>(i)];
+        return std::sqrt(e / 1000.0);
+    };
+    const double plain = levelBeforeStep1(false);
+    const double slid = levelBeforeStep1(true);
+    std::printf("  acid level before step 2: no slide %.4f, slide %.4f\n", plain, slid);
+    CHECK(slid > 2.0 * plain);
+
+    // A slid pair counts two notes but only the first one retriggers the envelope.
+    ps::AcidTrack acid;
+    acid.prepare(kRate);
+    acid.setStep(0, note(0, false, true));
+    acid.setStep(1, note(7));
+    renderAcid(acid, 2);
+    CHECK(acid.notesPlayed() == 2);
+}
+
+void testAcidStopsCleanly() {
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SetTempo, 120.0f});
+    for (int i = 0; i < 16; ++i) engine.post({ps::CommandType::SetAcidStep, 0.0f, i, note(i % 3 * 5, i % 4 == 0, i % 5 == 0).pack()});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    render(engine, 6000 * 16, 256);
+    CHECK(engine.acidNotesPlayed() == 16);
+    engine.post({ps::CommandType::SetTransport, 0.0f});
+    const auto after = render(engine, kRate, 256);
+    float tail = 0.0f;
+    for (size_t i = after.size() - 4800; i < after.size(); ++i) tail = std::max(tail, std::fabs(after[i]));
+    CHECK(tail < 1e-3f);  // silent half a second after stop
+}
+
+void testAcidCpuBudget() {
+    ps::AcidTrack acid;
+    acid.prepare(kRate);
+    for (int i = 0; i < 16; ++i) acid.setStep(i, note(i % 12, i % 3 == 0, i % 4 == 0));
+    const auto start = std::chrono::steady_clock::now();
+    renderAcid(acid, 64);
+    const double seconds = std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count();
+    const double load = seconds / (64 * 6000.0 / kRate);
+    std::printf("  acid voice: %.1f %% of real time on this machine\n", load * 100.0);
+#if !defined(__SANITIZE_ADDRESS__)
+    CHECK(load < 0.05);
+#endif
+}
+
 struct TestCase {
     const char* name;
     std::function<void()> fn;
@@ -632,6 +766,12 @@ int main(int argc, char** argv) {
         {"full_kit_cpu", testFullKitCpuBudget},
         {"kicks_are_punchy", testKicksArePunchy},
         {"toms_have_body", testTomsHaveBody},
+        {"acid_step_packing", testAcidStepPacking},
+        {"acid_notes_on_step", testAcidNotesStartOnTheStep},
+        {"acid_accent", testAcidAccentIsLouder},
+        {"acid_slide", testAcidSlideHoldsTheNote},
+        {"acid_stops_cleanly", testAcidStopsCleanly},
+        {"acid_cpu", testAcidCpuBudget},
     };
     for (const auto& t : tests) {
         const int before = g_failures;

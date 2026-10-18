@@ -3,14 +3,17 @@
 
 #include <cmath>
 #include <cstdio>
+#include <chrono>
 #include <cstring>
 #include <filesystem>
 #include <fstream>
 #include <functional>
 #include <random>
 #include <string>
+#include <tuple>
 #include <vector>
 
+#include "DrumKit.h"
 #include "Engine.h"
 #include "RoundTripMeter.h"
 #include "Sequencer.h"
@@ -450,6 +453,111 @@ void testMetronomeIsSampleAccurate() {
     CHECK(peak > 0.3f && peak <= 0.5f);
 }
 
+
+std::vector<float> renderKit(ps::DrumKit& kit, int frames, int block,
+                             const std::vector<std::tuple<int, int, float>>& hits) {  // frame, voice, velocity
+    std::vector<float> out(static_cast<size_t>(frames), 0.0f);
+    for (int pos = 0; pos < frames; pos += block) {
+        const int n = std::min(block, frames - pos);
+        for (const auto& [frame, voice, velocity] : hits) {
+            if (frame >= pos && frame < pos + n) kit.trigger(voice, velocity, frame - pos);
+        }
+        kit.render(out.data() + pos, n);
+    }
+    return out;
+}
+
+double energy(const std::vector<float>& v, int from, int to) {
+    double e = 0.0;
+    for (int i = from; i < to; ++i) e += static_cast<double>(v[static_cast<size_t>(i)]) * v[static_cast<size_t>(i)];
+    return e;
+}
+
+void testEveryDrumVoiceSoundsAndDecays() {
+    for (int voice = 0; voice < ps::DrumKit::kVoices; ++voice) {
+        ps::DrumKit kit;
+        kit.prepare(kRate);
+        const auto out = renderKit(kit, kRate * 3, 256, {{1000, voice, 1.0f}});
+        bool silentBefore = true;
+        for (int i = 0; i < 1000; ++i) silentBefore &= out[static_cast<size_t>(i)] == 0.0f;
+        float peak = 0.0f;
+        bool finite = true;
+        for (float v : out) {
+            finite &= std::isfinite(v);
+            peak = std::max(peak, std::fabs(v));
+        }
+        float tail = 0.0f;
+        for (int i = kRate * 3 - 4800; i < kRate * 3; ++i) tail = std::max(tail, std::fabs(out[static_cast<size_t>(i)]));
+        const bool ok = silentBefore && finite && peak > 0.05f && peak < 1.5f && tail < 0.01f;
+        if (!ok) std::fprintf(stderr, "  voice %d: silentBefore=%d finite=%d peak=%.3f tail=%.4f\n", voice, silentBefore, finite, peak, tail);
+        CHECK(ok);
+    }
+}
+
+void testVelocityChangesLoudness() {
+    for (int voice : {ps::DrumKit::Kick, ps::DrumKit::Snare, ps::DrumKit::Clap, ps::DrumKit::ClosedHat}) {
+        ps::DrumKit soft, loud;
+        soft.prepare(kRate);
+        loud.prepare(kRate);
+        const auto a = renderKit(soft, kRate / 2, 256, {{0, voice, 0.2f}});
+        const auto b = renderKit(loud, kRate / 2, 256, {{0, voice, 1.0f}});
+        CHECK(energy(b, 0, kRate / 2) > 1.5 * energy(a, 0, kRate / 2));
+    }
+}
+
+void testClosedHatChokesOpenHat() {
+    ps::DrumKit alone, choked;
+    alone.prepare(kRate);
+    choked.prepare(kRate);
+    const auto a = renderKit(alone, kRate, 256, {{0, ps::DrumKit::OpenHat, 1.0f}});
+    const auto b = renderKit(choked, kRate, 256, {{0, ps::DrumKit::OpenHat, 1.0f}, {4800, ps::DrumKit::ClosedHat, 1.0f}});
+    // 150 ms after the closed hat, the open hat must be gone (the closed one is short).
+    CHECK(energy(b, 12000, 24000) < 0.2 * energy(a, 12000, 24000));
+    // Before the choke both are the same sound.
+    CHECK(energy(a, 0, 4800) > 0.0);
+}
+
+void testPatternDrivesDrums() {
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SetTempo, 120.0f});
+    engine.post({ps::CommandType::SetDrumHit, 1.0f, ps::DrumKit::Kick, 4});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    const auto out = render(engine, 6000 * 8, 200);
+    // Nothing until step 4 (frame 24000), then the kick.
+    int first = -1;
+    for (int i = 0; i < 6000 * 8 && first < 0; ++i) {
+        if (out[static_cast<size_t>(i) * kChannels] != 0.0f) first = i;
+    }
+    CHECK(first >= 24000 && first <= 24001);
+    float peak = 0.0f;
+    for (float v : out) peak = std::max(peak, std::fabs(v));
+    CHECK(peak > 0.1f && peak < 1.5f);
+}
+
+void testFullKitCpuBudget() {
+    // Worst case: all 16 voices on every step of 4 bars at 160 BPM.
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SetTempo, 160.0f});
+    for (int lane = 0; lane < 16; ++lane) {
+        for (int step = 0; step < 16; ++step) engine.post({ps::CommandType::SetDrumHit, 0.8f, lane, step});
+    }
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    const int frames = kRate * 6;
+    const auto start = std::chrono::steady_clock::now();
+    const auto out = render(engine, frames, 256);
+    const double seconds = std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count();
+    const double load = seconds / (static_cast<double>(frames) / kRate);
+    std::printf("  full kit: %.1f %% of real time on this machine\n", load * 100.0);
+#if defined(__SANITIZE_ADDRESS__)
+    (void)load;  // sanitizer builds are several times slower: timing is meaningless there
+#else
+    CHECK(load < 0.10);  // leaves a large margin for a phone and for synths/effects
+#endif
+    bool finite = true;
+    for (float v : out) finite &= std::isfinite(v);
+    CHECK(finite);
+}
+
 struct TestCase {
     const char* name;
     std::function<void()> fn;
@@ -478,6 +586,11 @@ int main(int argc, char** argv) {
         {"sequencer_tempo_change", testSequencerTempoChangeKeepsGroove},
         {"count_in_and_pattern_triggers", testCountInAndPatternTriggers},
         {"metronome_sample_accurate", testMetronomeIsSampleAccurate},
+        {"every_drum_voice", testEveryDrumVoiceSoundsAndDecays},
+        {"drum_velocity", testVelocityChangesLoudness},
+        {"hat_choke", testClosedHatChokesOpenHat},
+        {"pattern_drives_drums", testPatternDrivesDrums},
+        {"full_kit_cpu", testFullKitCpuBudget},
     };
     for (const auto& t : tests) {
         const int before = g_failures;

@@ -1,0 +1,3 @@
+[submodule "engine/third_party/DaisySP"]
+	path = engine/third_party/DaisySP
+	url = https://github.com/electro-smith/DaisySP

@@ -26,6 +26,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          submodules: true
       - uses: hendrikmuhs/ccache-action@v1.2
         with:
           key: engine-host
@@ -57,6 +59,8 @@ jobs:
       SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
     steps:
       - uses: actions/checkout@v7
+        with:
+          submodules: true
       - uses: actions/setup-java@v6
         with:
           distribution: temurin
@@ -90,6 +94,8 @@ jobs:
     needs: engine
     steps:
       - uses: actions/checkout@v7
+        with:
+          submodules: true
       - uses: actions/setup-java@v6
         with:
           distribution: temurin
@@ -132,6 +138,8 @@ jobs:
       EXPECTED_CERT_SHA256: f7b61d03e07c5514caa1d961acb400dc63d60659ae71cd4a2cbfb06eaf4dc646
     steps:
       - uses: actions/checkout@v7
+        with:
+          submodules: true
       - uses: actions/download-artifact@v7
         with:
           name: apk

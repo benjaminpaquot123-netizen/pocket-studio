@@ -1,5 +1,7 @@
 #include "Engine.h"
 
+#include "DenormalGuard.h"
+
 #include <algorithm>
 #include <cmath>
 
@@ -30,6 +32,7 @@ void Engine::prepare(int sampleRate) {
     meter_.prepare(sampleRate);
     sequencer_.prepare(sampleRate);
     metronome_.prepare(sampleRate);
+    drums_.prepare(sampleRate);
 }
 
 void Engine::applyCommand(const Command& command) {
@@ -69,6 +72,12 @@ void Engine::applyCommand(const Command& command) {
         case CommandType::SetPatternSteps:
             patternSteps_ = std::clamp(command.a, 16, kMaxSteps);
             break;
+        case CommandType::TriggerPad:
+            if (command.a >= 0 && command.a < kLanes) {
+                drums_.trigger(command.a, command.value, 0);
+                laneTriggers_[static_cast<size_t>(command.a)].fetch_add(1, std::memory_order_relaxed);
+            }
+            break;
         case CommandType::SetDrumHit:
             if (command.a >= 0 && command.a < kLanes && command.b >= 0 && command.b < kMaxSteps) {
                 pattern_[command.a][command.b] = std::clamp(command.value, 0.0f, 1.0f);
@@ -90,8 +99,8 @@ void Engine::onStep(int offset, int step) {
     currentStep_.store(patternStep, std::memory_order_relaxed);
     for (int lane = 0; lane < kLanes; ++lane) {
         if (pattern_[lane][patternStep] > 0.0f) {
-            laneTriggers_[lane].fetch_add(1, std::memory_order_relaxed);
-            // Drum voices are rendered here from milestone 1.3 on.
+            laneTriggers_[static_cast<size_t>(lane)].fetch_add(1, std::memory_order_relaxed);
+            drums_.trigger(lane, pattern_[lane][patternStep], offset);
         }
     }
 }
@@ -101,6 +110,7 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
     std::fill(mix, mix + numFrames, 0.0f);
     sequencer_.advance(numFrames, [this](int offset, int step) { onStep(offset, step); });
     metronome_.render(mix, numFrames);
+    drums_.render(mix, numFrames);
 
     gain_.setTarget(playing_.load(std::memory_order_relaxed) ? volume_ : 0.0f);
     const double invRate = 1.0 / sampleRate_;
@@ -114,6 +124,7 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
 
 void Engine::process(const float* input, int numInputFrames, int inputChannels,
                      float* output, int numFrames, int outputChannels) {
+    DenormalGuard denormals;
     Command command;
     while (commands_.pop(command)) applyCommand(command);
 

@@ -15,6 +15,7 @@
 
 - Jalon 1.1 : module `project-model` (Kotlin pur) : format JSON tolérant aux versions, `ProjectStore` à écriture atomique + sauvegarde de secours, `History` annuler/rétablir illimité avec regroupement des gestes, `ProjectSession` à sauvegarde automatique différée. 15 tests, dont plantage en pleine écriture.
 - Jalon 1.2 : `Sequencer` (horloge de doubles-croches à l'échantillon près, swing, changement de tempo sans à-coup, décompte), `Metronome`, commandes moteur (transport, tempo, swing, métronome, pas de batterie), `TapTempo`. Tests : timing exact quelle que soit la taille de bloc, swing, changement de tempo, décompte, métronome à l'échantillon près.
+- Jalon 1.3 (moteur) : `DrumKit` 16 sons synthétisés (DaisySP + clap/rim/cloche/shaker maison), déclenchés à l'échantillon près par le séquenceur, pads en direct (`TriggerPad`), charleston fermé qui coupe l'ouvert. Kit complet à 5,9 % du temps réel (x86). Tests : chaque son démarre pile et s'éteint, vélocité, étouffement, motif → batterie, budget CPU.
 
 ## À retenir pour la suite
 - Afficher une « latence de jeu » (sortie + tactile) à côté de l'aller-retour ; essayer un buffer d'un seul burst.
@@ -22,4 +23,4 @@
 - Recette phase 0 : issues #2 et #3 (doublon), 8/8 ✅, fermées.
 
 ## Prochaine étape exacte
-1. Phase 1, jalon 1.3 : kit de batterie synthétisé (évaluer les voix de batterie de DaisySP, MIT), rendu dans `Engine::onStep`, puis écran Boîte à rythmes (grille 16 pas, pads, transport, tempo/tap/swing/métronome) branché sur `ProjectSession` (sauvegarde forcée à la mise en arrière-plan).
+1. Phase 1, jalon 1.3 (suite) : écran Boîte à rythmes (grille 16 pas, pads, transport, tempo/tap/swing/métronome) branché sur `ProjectSession` (sauvegarde forcée à la mise en arrière-plan).

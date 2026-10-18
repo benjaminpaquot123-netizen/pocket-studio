@@ -4,6 +4,7 @@
 #include <atomic>
 #include <cstdint>
 
+#include "DrumKit.h"
 #include "Metronome.h"
 #include "RoundTripMeter.h"
 #include "Sequencer.h"
@@ -25,6 +26,7 @@ enum class CommandType : uint8_t {
     SetMetronome,     // value: 1 = on
     SetPatternSteps,  // a: 16..64
     SetDrumHit,       // a: lane, b: step, value: velocity (0 = remove)
+    TriggerPad,       // a: lane, value: velocity (live play, sounds immediately)
 };
 
 struct Command {
@@ -91,6 +93,7 @@ private:
 
     Sequencer sequencer_;
     Metronome metronome_;
+    DrumKit drums_;
     bool metronomeOn_ = false;
     int patternSteps_ = 16;
     float pattern_[kLanes][kMaxSteps] = {};

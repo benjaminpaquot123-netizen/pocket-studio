@@ -28,6 +28,8 @@ void Engine::prepare(int sampleRate) {
     gain_.snap(0.0f);
     phase_ = 0.0;
     meter_.prepare(sampleRate);
+    sequencer_.prepare(sampleRate);
+    metronome_.prepare(sampleRate);
 }
 
 void Engine::applyCommand(const Command& command) {
@@ -47,6 +49,66 @@ void Engine::applyCommand(const Command& command) {
         case CommandType::CancelLatencyTest:
             meter_.cancel();
             break;
+        case CommandType::SetTransport:
+            if (command.value > 0.5f) {
+                sequencer_.start(std::clamp(command.a, 0, 4));
+            } else {
+                sequencer_.stop();
+                currentStep_.store(-1, std::memory_order_relaxed);
+            }
+            break;
+        case CommandType::SetTempo:
+            sequencer_.setTempo(command.value);
+            break;
+        case CommandType::SetSwing:
+            sequencer_.setSwing(command.value);
+            break;
+        case CommandType::SetMetronome:
+            metronomeOn_ = command.value > 0.5f;
+            break;
+        case CommandType::SetPatternSteps:
+            patternSteps_ = std::clamp(command.a, 16, kMaxSteps);
+            break;
+        case CommandType::SetDrumHit:
+            if (command.a >= 0 && command.a < kLanes && command.b >= 0 && command.b < kMaxSteps) {
+                pattern_[command.a][command.b] = std::clamp(command.value, 0.0f, 1.0f);
+            }
+            break;
+    }
+}
+
+void Engine::onStep(int offset, int step) {
+    const int beatStep = ((step % Sequencer::kStepsPerBar) + Sequencer::kStepsPerBar) % Sequencer::kStepsPerBar;
+    const bool onBeat = beatStep % Sequencer::kStepsPerBeat == 0;
+    // Clicks during the count-in always; afterwards only with the metronome on.
+    if (onBeat && (step < 0 || metronomeOn_)) {
+        metronome_.trigger(beatStep == 0, offset);
+        metronomeClicks_.fetch_add(1, std::memory_order_relaxed);
+    }
+    if (step < 0) return;
+    const int patternStep = step % patternSteps_;
+    currentStep_.store(patternStep, std::memory_order_relaxed);
+    for (int lane = 0; lane < kLanes; ++lane) {
+        if (pattern_[lane][patternStep] > 0.0f) {
+            laneTriggers_[lane].fetch_add(1, std::memory_order_relaxed);
+            // Drum voices are rendered here from milestone 1.3 on.
+        }
+    }
+}
+
+void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
+    float* mix = mix_.data();
+    std::fill(mix, mix + numFrames, 0.0f);
+    sequencer_.advance(numFrames, [this](int offset, int step) { onStep(offset, step); });
+    metronome_.render(mix, numFrames);
+
+    gain_.setTarget(playing_.load(std::memory_order_relaxed) ? volume_ : 0.0f);
+    const double invRate = 1.0 / sampleRate_;
+    for (int i = 0; i < numFrames; ++i) {
+        const float sample = static_cast<float>(std::sin(phase_)) * gain_.next() + mix[i];
+        phase_ += kTwoPi * frequency_.next() * invRate;
+        if (phase_ >= kTwoPi) phase_ -= kTwoPi;
+        for (int c = 0; c < outputChannels; ++c) output[i * outputChannels + c] = sample;
     }
 }
 
@@ -59,13 +121,11 @@ void Engine::process(const float* input, int numInputFrames, int inputChannels,
         meter_.process(input, numInputFrames, inputChannels, output, numFrames, outputChannels);
         gain_.snap(0.0f);
     } else {
-        gain_.setTarget(playing_.load(std::memory_order_relaxed) ? volume_ : 0.0f);
-        const double invRate = 1.0 / sampleRate_;
-        for (int i = 0; i < numFrames; ++i) {
-            const float sample = static_cast<float>(std::sin(phase_)) * gain_.next();
-            phase_ += kTwoPi * frequency_.next() * invRate;
-            if (phase_ >= kTwoPi) phase_ -= kTwoPi;
-            for (int c = 0; c < outputChannels; ++c) output[i * outputChannels + c] = sample;
+        // Fixed-size scratch buffers: render long callbacks in chunks.
+        for (int done = 0; done < numFrames;) {
+            const int n = std::min(kMaxBlock, numFrames - done);
+            renderBlock(output + done * outputChannels, n, outputChannels);
+            done += n;
         }
     }
 

@@ -192,3 +192,22 @@ class ProjectSessionTest {
         assertNotNull(session.lastSaveError.value)
     }
 }
+
+class TapTempoTest {
+    @Test
+    fun steadyTapsGiveTheTempo() {
+        val tap = TapTempo()
+        assertNull(tap.tap(0))
+        assertEquals(120.0, tap.tap(500)!!, 0.01)
+        tap.tap(1000)
+        assertEquals(120.0, tap.tap(1500)!!, 0.01)
+    }
+
+    @Test
+    fun longPauseStartsOverAndRangeIsClamped() {
+        val tap = TapTempo()
+        tap.tap(0); tap.tap(500)
+        assertNull("pause resets", tap.tap(10_000))
+        assertEquals(Project.MAX_TEMPO, tap.tap(10_050)!!, 0.0)
+    }
+}

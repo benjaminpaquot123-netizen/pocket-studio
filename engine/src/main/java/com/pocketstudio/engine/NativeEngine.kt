@@ -8,6 +8,15 @@ object NativeEngine {
     private const val CMD_SET_PLAYING = 0
     private const val CMD_SET_FREQUENCY = 1
     private const val CMD_SET_GAIN = 2
+    // 3, 4: latency test (native only)
+    private const val CMD_SET_TRANSPORT = 5
+    private const val CMD_SET_TEMPO = 6
+    private const val CMD_SET_SWING = 7
+    private const val CMD_SET_METRONOME = 8
+    private const val CMD_SET_PATTERN_STEPS = 9
+    private const val CMD_SET_DRUM_HIT = 10
+
+    const val LANES = 16
 
     val isAvailable: Boolean = try {
         System.loadLibrary("pocketstudio_engine")
@@ -19,6 +28,20 @@ object NativeEngine {
     fun setPlaying(playing: Boolean) = post(CMD_SET_PLAYING, if (playing) 1f else 0f)
     fun setFrequency(hz: Float) = post(CMD_SET_FREQUENCY, hz)
     fun setGain(gain: Float) = post(CMD_SET_GAIN, gain)
+
+    fun play(countInBars: Int = 0) = post(CMD_SET_TRANSPORT, 1f, countInBars)
+    fun stopTransport() = post(CMD_SET_TRANSPORT, 0f)
+    fun setTempo(bpm: Double) = post(CMD_SET_TEMPO, bpm.toFloat())
+    fun setSwing(swing: Double) = post(CMD_SET_SWING, swing.toFloat())
+    fun setMetronome(on: Boolean) = post(CMD_SET_METRONOME, if (on) 1f else 0f)
+    fun setPatternSteps(steps: Int) = post(CMD_SET_PATTERN_STEPS, 0f, steps)
+    /** velocity 0 removes the hit. */
+    fun setDrumHit(lane: Int, step: Int, velocity: Float) = post(CMD_SET_DRUM_HIT, velocity, lane, step)
+
+    /** Current pattern step, or -1 when stopped or counting in. */
+    external fun currentStep(): Int
+    /** Writes into [out] (size [LANES]) how many times each lane has fired. */
+    external fun laneTriggers(out: IntArray)
 
     fun streamInfo(): StreamInfo = StreamInfo.fromArray(nativeStreamInfo())
 
@@ -43,7 +66,8 @@ object NativeEngine {
     /** Microphone configuration used by the last latency test, in French, for reports. */
     external fun inputDescription(): String
     private external fun nativeStartLatencyTest(): Int
-    private external fun post(type: Int, value: Float): Boolean
+    private fun post(type: Int, value: Float, a: Int = 0, b: Int = 0): Boolean = nativePost(type, value, a, b)
+    private external fun nativePost(type: Int, value: Float, a: Int, b: Int): Boolean
     private external fun nativeStreamInfo(): DoubleArray
     private external fun latencyTestState(): Int
     private external fun finishLatencyTest(): DoubleArray

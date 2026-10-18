@@ -13,6 +13,7 @@
 
 #include "Engine.h"
 #include "RoundTripMeter.h"
+#include "Sequencer.h"
 #include "SpscFloatRing.h"
 #include "SpscQueue.h"
 
@@ -342,6 +343,113 @@ void testLatencyTestThroughEngine() {
     CHECK(peak > 0.45f);
 }
 
+
+// Absolute frame of every step event over `frames` frames, rendered in blocks of `block`.
+std::vector<std::pair<int64_t, int>> collectSteps(ps::Sequencer& seq, int frames, int block,
+                                                  const std::function<void(int64_t, ps::Sequencer&)>& midway = {}) {
+    std::vector<std::pair<int64_t, int>> events;
+    for (int64_t pos = 0; pos < frames; pos += block) {
+        const int n = static_cast<int>(std::min<int64_t>(block, frames - pos));
+        if (midway) midway(pos, seq);
+        seq.advance(n, [&](int offset, int step) { events.push_back({pos + offset, step}); });
+    }
+    return events;
+}
+
+void testSequencerTiming() {
+    for (int block : {256, 97, 1024}) {
+        ps::Sequencer seq;
+        seq.prepare(kRate);
+        seq.setTempo(120.0);  // 16th = 6000 samples at 48 kHz
+        seq.start(0);
+        const auto events = collectSteps(seq, kFourBarsFrames, block);
+        CHECK(events.size() == 64);
+        bool exact = true;
+        for (size_t i = 0; i < events.size(); ++i) {
+            exact &= events[i].first == static_cast<int64_t>(i) * 6000 && events[i].second == static_cast<int>(i);
+        }
+        CHECK(exact);
+    }
+}
+
+void testSequencerSwing() {
+    ps::Sequencer seq;
+    seq.prepare(kRate);
+    seq.setTempo(120.0);
+    seq.setSwing(0.5);
+    seq.start(0);
+    const auto events = collectSteps(seq, 6000 * 16, 128);
+    CHECK(events.size() == 16);
+    bool ok = true;
+    for (size_t i = 0; i < events.size(); ++i) {
+        const int64_t expected = static_cast<int64_t>(i) * 6000 + ((i % 2) ? 3000 : 0);
+        ok &= events[i].first == expected;
+    }
+    CHECK(ok);
+}
+
+void testSequencerTempoChangeKeepsGroove() {
+    ps::Sequencer seq;
+    seq.prepare(kRate);
+    seq.setTempo(120.0);
+    seq.start(0);
+    // Halve the tempo once the 8th step has played (frame 48000 > step 7 at 42000).
+    const auto events = collectSteps(seq, 200000, 100, [](int64_t pos, ps::Sequencer& s) {
+        if (pos == 45000) s.setTempo(60.0);
+    });
+    CHECK(events.size() > 12);
+    // Steps 0..7 every 6000; step 8 was already scheduled on the old grid (48000), then 12000 apart.
+    CHECK(events[7].first == 42000);
+    CHECK(events[8].first == 48000);
+    CHECK(events[9].first == 60000);
+    CHECK(events[10].first == 72000);
+}
+
+void testCountInAndPatternTriggers() {
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SetTempo, 120.0f});
+    for (int step : {0, 4, 8, 12}) engine.post({ps::CommandType::SetDrumHit, 1.0f, 0, step});
+    engine.post({ps::CommandType::SetDrumHit, 0.8f, 2, 6});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 1});  // one bar of count-in
+    // One bar of count-in (16 x 6000) then exactly two pattern bars.
+    render(engine, 6000 * 16 * 3, 256);
+    CHECK(engine.metronomeClicks() == 4);  // count-in only: metronome is off
+    CHECK(engine.laneTriggerCount(0) == 8);
+    CHECK(engine.laneTriggerCount(2) == 2);
+    CHECK(engine.laneTriggerCount(1) == 0);
+    CHECK(engine.currentStep() == 15);
+
+    // Removing a hit and stopping.
+    engine.post({ps::CommandType::SetDrumHit, 0.0f, 0, 4});
+    render(engine, 6000 * 16, 256);
+    CHECK(engine.laneTriggerCount(0) == 11);
+    engine.post({ps::CommandType::SetTransport, 0.0f});
+    render(engine, 6000 * 16, 256);
+    CHECK(engine.laneTriggerCount(0) == 11);
+    CHECK(engine.currentStep() == -1);
+}
+
+void testMetronomeIsSampleAccurate() {
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SetTempo, 120.0f});
+    engine.post({ps::CommandType::SetMetronome, 1.0f});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    const auto out = render(engine, kRate, 333);
+    // Quarter notes at 120 BPM = every 24000 samples; a click starts exactly there.
+    auto firstSoundAfter = [&](int from) {
+        for (int i = from; i < kRate; ++i) {
+            if (std::fabs(out[static_cast<size_t>(i) * kChannels]) > 1e-6f) return i;
+        }
+        return -1;
+    };
+    // sin(0) = 0 at the onset, so the first non-zero sample is the one right after.
+    CHECK(firstSoundAfter(0) == 1);
+    CHECK(firstSoundAfter(20000) == 24001);
+    float peak = 0.0f;
+    for (float v : out) peak = std::max(peak, std::fabs(v));
+    CHECK(peak > 0.3f && peak <= 0.5f);
+}
+
 struct TestCase {
     const char* name;
     std::function<void()> fn;
@@ -365,6 +473,11 @@ int main(int argc, char** argv) {
         {"reference_render", testReferenceRender},
         {"round_trip_meter", testRoundTripMeter},
         {"latency_test_through_engine", testLatencyTestThroughEngine},
+        {"sequencer_timing", testSequencerTiming},
+        {"sequencer_swing", testSequencerSwing},
+        {"sequencer_tempo_change", testSequencerTempoChangeKeepsGroove},
+        {"count_in_and_pattern_triggers", testCountInAndPatternTriggers},
+        {"metronome_sample_accurate", testMetronomeIsSampleAccurate},
     };
     for (const auto& t : tests) {
         const int before = g_failures;

@@ -28,9 +28,20 @@ JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_stop(JNIEnv*, j
     host().stop();
 }
 
-JNIEXPORT jboolean JNICALL Java_com_pocketstudio_engine_NativeEngine_post(JNIEnv*, jobject, jint type,
-                                                                          jfloat value) {
-    return host().post({static_cast<ps::CommandType>(type), value}) ? JNI_TRUE : JNI_FALSE;
+JNIEXPORT jboolean JNICALL Java_com_pocketstudio_engine_NativeEngine_nativePost(JNIEnv*, jobject, jint type,
+                                                                          jfloat value, jint a, jint b) {
+    return host().post({static_cast<ps::CommandType>(type), value, a, b}) ? JNI_TRUE : JNI_FALSE;
+}
+
+JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_currentStep(JNIEnv*, jobject) {
+    return host().engine().currentStep();
+}
+
+// Fills `out` (16 ints) with how many times each drum lane has fired, for pad lights.
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_laneTriggers(JNIEnv* env, jobject, jintArray out) {
+    jint values[ps::Engine::kLanes];
+    for (int i = 0; i < ps::Engine::kLanes; ++i) values[i] = static_cast<jint>(host().engine().laneTriggerCount(i));
+    env->SetIntArrayRegion(out, 0, ps::Engine::kLanes, values);
 }
 
 // Layout must match NativeEngine.StreamInfo.fromArray.

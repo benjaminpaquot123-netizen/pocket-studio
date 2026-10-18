@@ -1,6 +1,6 @@
 # Avancement
 
-**Phase en cours : 0 (fondations)**, code terminé, en attente de recette sur le Honor.
+**Phase 0 terminée et fusionnée le 2026-10-18.** Phase en cours : 1 (MVP jouable).
 
 ## Fait
 - Démarrage : SPEC, CLAUDE.md, ROADMAP, DECISIONS, ARCHITECTURE, THIRD_PARTY, README.
@@ -11,10 +11,12 @@
 - Revue critique de fin de phase faite (docs/REVIEW.md) : graves corrigés.
 - Jalon Acide (Open303) ajouté entre la phase 1 et la phase 2.
 
-## En attente de Benjamin
-- Ajouter le secret GitHub `SIGNING_PASSWORD` (marche à suivre dans le message de la PR de phase 0).
-- Recette phase 0 sur le téléphone, puis fusion de la PR.
+- Recette sur le Honor Magic 8 Pro : sortie 10 ms (AAudio exclusif MMAP, burst 96), aller-retour haut-parleur → micro 44,5 ms stable (45,2 / 44,4 / 44,5).
+
+## À retenir pour la suite
+- Afficher une « latence de jeu » (sortie + tactile) à côté de l'aller-retour ; essayer un buffer d'un seul burst.
+- MagicOS chiffre logcat (bloc HKS…HKE) : remplacer `LogTail` par un journal circulaire interne à l'appli.
+- Recette phase 0 : issues #2 et #3 (doublon), 8/8 ✅, fermées.
 
 ## Prochaine étape exacte
-1. Lire les issues ouvertes (rapports de recette) et corriger ce qui est ❌.
-2. Phase 1, jalon 1.1 : module `project-model` (projet JSON, écritures atomiques, sauvegarde auto, annuler/rétablir illimité).
+1. Phase 1, jalon 1.1 : module `project-model` (projet JSON, écritures atomiques, sauvegarde auto, annuler/rétablir illimité).

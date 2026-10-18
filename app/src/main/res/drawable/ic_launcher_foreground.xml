@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Neon equaliser bars on the 108dp adaptive icon canvas (safe zone 18..90). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path android:fillColor="@color/neon_cyan" android:pathData="M32,50h6a2,2 0,0 1,2 2v18a2,2 0,0 1,-2 2h-6a2,2 0,0 1,-2 -2v-18a2,2 0,0 1,2 -2z" />
+    <path android:fillColor="@color/neon_magenta" android:pathData="M44,36h6a2,2 0,0 1,2 2v32a2,2 0,0 1,-2 2h-6a2,2 0,0 1,-2 -2v-32a2,2 0,0 1,2 -2z" />
+    <path android:fillColor="@color/neon_cyan" android:pathData="M56,44h6a2,2 0,0 1,2 2v24a2,2 0,0 1,-2 2h-6a2,2 0,0 1,-2 -2v-24a2,2 0,0 1,2 -2z" />
+    <path android:fillColor="@color/neon_magenta" android:pathData="M68,56h6a2,2 0,0 1,2 2v12a2,2 0,0 1,-2 2h-6a2,2 0,0 1,-2 -2v-12a2,2 0,0 1,2 -2z" />
+</vector>

@@ -41,14 +41,16 @@ class LatencyViewModel : ViewModel() {
         if (_state.value is LatencyUiState.Running) _state.value = LatencyUiState.Idle
     }
 
-    fun measure(runs: Int = 3) {
+    /** Up to [maxAttempts] runs; each failure moves the engine to the next audio configuration. */
+    fun measure(wanted: Int = 3, maxAttempts: Int = 6) {
         if (_state.value is LatencyUiState.Running || !NativeEngine.isAvailable) return
         job = viewModelScope.launch {
             val outcomes = mutableListOf<RunOutcome>()
-            for (run in 1..runs) {
-                _state.value = LatencyUiState.Running(run, runs)
+            for (attempt in 1..maxAttempts) {
+                _state.value = LatencyUiState.Running(attempt, maxAttempts)
                 outcomes += withContext(Dispatchers.Default) { singleRun() }
-                delay(200)
+                if (outcomes.count { it.result?.valid == true } >= wanted) break
+                delay(300)
             }
             val values = outcomes.mapNotNull { o -> o.result?.takeIf { it.valid }?.latencyMs }
             val diagnostic = diagnostic(outcomes)
@@ -88,6 +90,8 @@ class LatencyViewModel : ViewModel() {
                 "Le micro refuse de s'ouvrir. Vérifie que l'accès au micro est autorisé pour Pocket Studio, et qu'aucune autre appli ne l'utilise (appel, dictée)."
             o.start == LatencyStart.NotForeground -> "Mesure interrompue : l'appli est passée en arrière-plan."
             o.start == LatencyStart.OutputFailed -> "Le haut-parleur n'a pas pu démarrer. Réessaie dans quelques secondes."
+            o.start == LatencyStart.MicSilent || o.result?.failure == LatencyFailure.Interrupted ->
+                "Le téléphone coupe le son dès que le micro démarre, sur tous les réglages essayés. Envoie-moi une capture de cette page."
             o.result?.failure == LatencyFailure.NoInput ->
                 "Le micro ne livre aucun son malgré plusieurs réglages essayés. Relance la mesure : l'appli continue d'essayer d'autres réglages."
             o.result?.failure == LatencyFailure.SilentInput ->

@@ -60,25 +60,30 @@ public:
     StreamInfo info();
     Engine& engine() { return engine_; }
 
-    enum class LatencyStart : int { Ok = 0, MicUnavailable = 1, OutputFailed = 2, NotForeground = 3 };
+    enum class LatencyStart : int { Ok = 0, MicUnavailable = 1, OutputFailed = 2, NotForeground = 3, MicSilent = 4 };
 
-    // Re-opens streams in full duplex and launches the round-trip measurement.
+    // Opens output then microphone with the current latency configuration, waits until the
+    // microphone really delivers, then launches the round-trip measurement.
     LatencyStart startLatencyTest();
+    // True when a stream was cut (e.g. audio rerouting) during the last test.
+    bool latencyTestInterrupted() const { return testInterrupted_.load(std::memory_order_acquire); }
     // Human-readable description of the last microphone attempt (for reports).
     std::string inputDescription();
-    // Closes the input stream once the measurement is finished. When the microphone
-    // delivered nothing, the next test starts with the next input configuration.
-    void finishLatencyTest(bool gotInput);
+    // Closes the input stream once the measurement is finished. When the test failed for lack
+    // of microphone data, the next test uses the next configuration.
+    void finishLatencyTest(bool succeededInput);
 
     oboe::DataCallbackResult onAudioReady(oboe::AudioStream* stream, void* audioData,
                                           int32_t numFrames) override;
     void onErrorAfterClose(oboe::AudioStream* stream, oboe::Result error) override;
 
 private:
-    bool openOutputLocked();
+    bool openOutputLocked(oboe::SharingMode sharing = oboe::SharingMode::Exclusive);
     bool openInputLocked();
-    void describeInputLocked(const char* config, const char* status);
     void closeLocked();
+    void restoreOutputLocked();
+    void describeLocked(const char* status);
+    void advanceConfigLocked();
 
     std::mutex lock_;
     std::mutex postLock_;
@@ -88,10 +93,10 @@ private:
     std::vector<float> inputBuffer_;
     SpscFloatRing inputRing_;
     InputCallback inputCallback_;
-    int nextInputConfig_ = 0;
-    int currentInputConfig_ = 0;
+    int config_ = 0;
     std::string inputDescription_ = "aucun";
     std::atomic<bool> drainInput_{false};
+    std::atomic<bool> testInterrupted_{false};
     bool wantRunning_ = false;
     int xrunBase_ = 0;
     int lastXruns_ = 0;

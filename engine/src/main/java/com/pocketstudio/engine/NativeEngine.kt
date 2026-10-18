@@ -52,10 +52,10 @@ object NativeEngine {
 enum class LatencyState { Idle, Running, Done }
 
 /** Order must match AudioHost::LatencyStart. */
-enum class LatencyStart { Ok, MicUnavailable, OutputFailed, NotForeground }
+enum class LatencyStart { Ok, MicUnavailable, OutputFailed, NotForeground, MicSilent }
 
 /** Order must match RoundTripMeter::Failure. */
-enum class LatencyFailure { None, NoInput, SilentInput, LowConfidence }
+enum class LatencyFailure { None, NoInput, SilentInput, LowConfidence, Interrupted }
 
 data class LatencyResult(
     val valid: Boolean,

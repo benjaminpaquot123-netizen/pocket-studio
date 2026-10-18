@@ -60,7 +60,7 @@ fun LatencyScreen(
             )
             when (state) {
                 is LatencyUiState.Running -> {
-                    Text("Mesure ${state.run} sur ${state.total}… chut !", color = Neon.Cyan)
+                    Text("Essai ${state.run}… chut !", color = Neon.Cyan)
                     LinearProgressIndicator(
                         progress = { (state.run - 1f) / state.total },
                         modifier = Modifier.fillMaxWidth(),

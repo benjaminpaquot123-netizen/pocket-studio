@@ -78,6 +78,7 @@ JNIEXPORT jdoubleArray JNICALL Java_com_pocketstudio_engine_NativeEngine_finishL
     ps::RoundTripMeter::Result result;
     const bool done = h.engine().latencyMeter().state() == ps::RoundTripMeter::State::Done;
     if (done) result = h.engine().latencyMeter().analyze();
+    if (!done && h.latencyTestInterrupted()) result.failure = ps::RoundTripMeter::Failure::Interrupted;
     // A cancelled run says nothing about the microphone configuration.
     h.finishLatencyTest(!done || result.inputFrames > 0);
     const double values[] = {

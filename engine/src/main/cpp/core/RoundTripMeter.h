@@ -14,7 +14,8 @@ public:
     enum class State : int { Idle = 0, Running = 1, Done = 2 };
 
     // Why a measurement failed, so the UI can tell the user what to fix.
-    enum class Failure : int { None = 0, NoInput = 1, SilentInput = 2, LowConfidence = 3 };
+    // Interrupted is set by the platform layer when a stream is cut during the test.
+    enum class Failure : int { None = 0, NoInput = 1, SilentInput = 2, LowConfidence = 3, Interrupted = 4 };
 
     struct Result {
         bool valid = false;

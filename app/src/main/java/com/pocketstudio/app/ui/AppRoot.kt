@@ -14,8 +14,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Checklist
-import androidx.compose.material.icons.filled.GraphicEq
-import androidx.compose.material.icons.filled.Timer
+import androidx.compose.material.icons.filled.GridView
+import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
@@ -23,6 +23,8 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -47,17 +49,22 @@ import com.pocketstudio.app.latency.LatencyScreen
 import com.pocketstudio.app.latency.LatencyViewModel
 import com.pocketstudio.app.recette.RecetteScreen
 import com.pocketstudio.app.recette.RecetteViewModel
+import com.pocketstudio.app.rhythm.RhythmActions
+import com.pocketstudio.app.rhythm.RhythmScreen
+import com.pocketstudio.app.rhythm.RhythmViewModel
 import com.pocketstudio.app.studio.StudioScreen
 import com.pocketstudio.app.studio.StudioViewModel
 import com.pocketstudio.engine.NativeEngine
 import com.pocketstudio.ui.Neon
 import kotlinx.coroutines.delay
 
-enum class Tab(val label: String, val icon: ImageVector) {
-    Studio("Studio", Icons.Filled.GraphicEq),
-    Latence("Latence", Icons.Filled.Timer),
+enum class AppTab(val label: String, val icon: ImageVector) {
+    Rythme("Rythme", Icons.Filled.GridView),
+    Outils("Outils", Icons.Filled.Tune),
     Recette("Recette", Icons.Filled.Checklist),
 }
+
+private enum class ToolPage(val label: String) { Latence("Latence"), Son("Son de test") }
 
 @Composable
 fun AppRoot() {
@@ -66,7 +73,9 @@ fun AppRoot() {
     val studioVm: StudioViewModel = viewModel()
     val latencyVm: LatencyViewModel = viewModel()
     val recetteVm: RecetteViewModel = viewModel()
-    var tab by rememberSaveable { mutableStateOf(Tab.Studio) }
+    val rhythmVm: RhythmViewModel = viewModel()
+    var tab by rememberSaveable { mutableStateOf(AppTab.Rythme) }
+    var toolPage by rememberSaveable { mutableStateOf(ToolPage.Latence) }
 
     val engineAvailable = NativeEngine.isAvailable
     val stream by Metrics.streamInfo.collectAsStateWithLifecycle()
@@ -74,10 +83,14 @@ fun AppRoot() {
 
     // The audio stream lives while the app is visible (background playback arrives in phase 1).
     LifecycleEventEffect(Lifecycle.Event.ON_START) {
-        if (engineAvailable && NativeEngine.start()) studioVm.pushAll()
+        if (engineAvailable && NativeEngine.start()) {
+            studioVm.pushAll()
+            rhythmVm.syncEngine()
+        }
     }
     LifecycleEventEffect(Lifecycle.Event.ON_STOP) {
         latencyVm.cancel()
+        rhythmVm.flush()
         if (engineAvailable) NativeEngine.stop()
     }
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -99,7 +112,7 @@ fun AppRoot() {
         containerColor = Neon.Background,
         bottomBar = {
             NavigationBar(containerColor = Neon.Surface) {
-                Tab.entries.forEach { t ->
+                AppTab.entries.forEach { t ->
                     NavigationBarItem(
                         selected = tab == t,
                         onClick = { tab = t },
@@ -118,31 +131,76 @@ fun AppRoot() {
     ) { padding ->
         Box(Modifier.padding(padding)) {
             when (tab) {
-                Tab.Studio -> {
-                    val state by studioVm.state.collectAsStateWithLifecycle()
-                    StudioScreen(
-                        state = state,
-                        stream = stream,
-                        engineAvailable = engineAvailable,
-                        onTogglePlay = studioVm::togglePlaying,
-                        onFrequency = studioVm::setFrequency,
-                        onVolume = studioVm::setVolume,
+                AppTab.Rythme -> {
+                    val project by rhythmVm.project.collectAsStateWithLifecycle()
+                    val transport by rhythmVm.transport.collectAsStateWithLifecycle()
+                    val live by rhythmVm.live.collectAsStateWithLifecycle()
+                    val canUndo by rhythmVm.session.canUndo.collectAsStateWithLifecycle()
+                    val canRedo by rhythmVm.session.canRedo.collectAsStateWithLifecycle()
+                    LaunchedEffect(Unit) {
+                        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollLive() }
+                    }
+                    RhythmScreen(
+                        project = project,
+                        transport = transport,
+                        live = live,
+                        canUndo = canUndo,
+                        canRedo = canRedo,
+                        actions = RhythmActions(
+                            togglePlay = rhythmVm::togglePlay,
+                            toggleMetronome = rhythmVm::toggleMetronome,
+                            toggleCountIn = rhythmVm::toggleCountIn,
+                            hitPad = rhythmVm::hitPad,
+                            toggleStep = rhythmVm::toggleStep,
+                            cycleVelocity = rhythmVm::cycleVelocity,
+                            clearPad = rhythmVm::clearPad,
+                            nudgeTempo = rhythmVm::nudgeTempo,
+                            tapTempo = rhythmVm::tapTempo,
+                            setSwing = rhythmVm::setSwing,
+                            undo = rhythmVm::undo,
+                            redo = rhythmVm::redo,
+                        ),
                     )
                 }
-                Tab.Latence -> {
-                    val state by latencyVm.state.collectAsStateWithLifecycle()
-                    LatencyScreen(
-                        state = state,
-                        stream = stream,
-                        lastRoundTripMs = roundTrip,
-                        engineAvailable = engineAvailable,
-                        onMeasure = {
-                            if (hasMic(context)) latencyVm.measure()
-                            else micPermission.launch(Manifest.permission.RECORD_AUDIO)
-                        },
-                    )
+                AppTab.Outils -> Column {
+                    TabRow(selectedTabIndex = toolPage.ordinal, containerColor = Neon.Surface, contentColor = Neon.Cyan) {
+                        ToolPage.entries.forEach { page ->
+                            Tab(
+                                selected = toolPage == page,
+                                onClick = { toolPage = page },
+                                text = { Text(page.label) },
+                                modifier = Modifier.testTag("tool_${page.name}"),
+                            )
+                        }
+                    }
+                    when (toolPage) {
+                        ToolPage.Latence -> {
+                            val state by latencyVm.state.collectAsStateWithLifecycle()
+                            LatencyScreen(
+                                state = state,
+                                stream = stream,
+                                lastRoundTripMs = roundTrip,
+                                engineAvailable = engineAvailable,
+                                onMeasure = {
+                                    if (hasMic(context)) latencyVm.measure()
+                                    else micPermission.launch(Manifest.permission.RECORD_AUDIO)
+                                },
+                            )
+                        }
+                        ToolPage.Son -> {
+                            val state by studioVm.state.collectAsStateWithLifecycle()
+                            StudioScreen(
+                                state = state,
+                                stream = stream,
+                                engineAvailable = engineAvailable,
+                                onTogglePlay = studioVm::togglePlaying,
+                                onFrequency = studioVm::setFrequency,
+                                onVolume = studioVm::setVolume,
+                            )
+                        }
+                    }
                 }
-                Tab.Recette -> {
+                AppTab.Recette -> {
                     val state by recetteVm.state.collectAsStateWithLifecycle()
                     RecetteScreen(
                         state = state,

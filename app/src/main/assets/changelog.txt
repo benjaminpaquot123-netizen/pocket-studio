@@ -1,5 +1,4 @@
-Premier son ! Le moteur audio tient la note : une sinusoïde, mais une sinusoïde fière.
-Mesure de latence réparée : le micro est lu en continu, et si ça coince, l'appli dit pourquoi.
-Écran Recette : tu coches, l'appli rédige le rapport, tu appuies sur Envoyer.
-Mises à jour proposées au lancement, et rapport de crash si l'appli tombe.
-« C'est pas faux » : tout le reste arrive en phase 1.
+Boîte à rythmes : 16 pads synthétisés, grille de 16 pas, un premier groove prêt à jouer.
+Tempo, Tap, swing, métronome et décompte, tout calé à l'échantillon près.
+Annuler, rétablir, et sauvegarde automatique : « On en a gros », mais on ne perd rien.
+Nouveau look façon FL Studio, en plus clair ; latence et son de test dans Outils.

@@ -72,8 +72,8 @@ fun StudioScreen(
         modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp).testTag("studio"),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        Text("Pocket Studio", style = MaterialTheme.typography.headlineMedium, color = Neon.TextPrimary)
-        Text("Phase 0 : le moteur audio prend la parole", color = Neon.TextSecondary)
+        Text("Son de test", style = MaterialTheme.typography.headlineMedium, color = Neon.TextPrimary)
+        Text("Une note pure pour vérifier que le moteur audio sonne juste.", color = Neon.TextSecondary)
 
         NeonCard(accent = if (state.playing) Neon.Cyan else Neon.Outline) {
             SectionLabel("Oscillateur de test")

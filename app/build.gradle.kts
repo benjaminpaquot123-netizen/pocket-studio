@@ -89,6 +89,7 @@ roborazzi {
 dependencies {
     implementation(project(":engine"))
     implementation(project(":ui-components"))
+    implementation(project(":project-model"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)

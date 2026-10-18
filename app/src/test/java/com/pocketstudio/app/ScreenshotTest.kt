@@ -15,7 +15,14 @@ import com.pocketstudio.app.recette.CheckStatus
 import com.pocketstudio.app.recette.ChecklistParser
 import com.pocketstudio.app.recette.RecetteScreen
 import com.pocketstudio.app.recette.RecetteUiState
+import com.pocketstudio.app.rhythm.DrumKitInfo
+import com.pocketstudio.app.rhythm.LiveUi
+import com.pocketstudio.app.rhythm.RhythmActions
+import com.pocketstudio.app.rhythm.RhythmScreen
+import com.pocketstudio.app.rhythm.TransportUi
 import com.pocketstudio.app.studio.StudioScreen
+import com.pocketstudio.model.DrumPattern
+import com.pocketstudio.model.Project
 import com.pocketstudio.app.studio.StudioUiState
 import com.pocketstudio.engine.StreamInfo
 import com.pocketstudio.ui.Neon
@@ -95,5 +102,20 @@ class ScreenshotTest {
         shoot("recette") {
             RecetteScreen(RecetteUiState(checklist, results, changelog), stream, 17.3, { _, _ -> }, {}, {})
         }
+    }
+
+    @Test
+    fun rhythm() = shoot("rhythm") {
+        var drums = DrumPattern()
+        DrumKitInfo.starterHits.forEach { (lane, steps) -> steps.forEach { drums = drums.toggle(lane, it) } }
+        drums = drums.toggle(0, 10, 0.6f)
+        RhythmScreen(
+            project = Project(tempoBpm = 124.0, swing = 0.2, drums = drums),
+            transport = TransportUi(playing = true, metronome = true, selectedPad = 0),
+            live = LiveUi(currentStep = 5, litPads = setOf(5)),
+            canUndo = true,
+            canRedo = false,
+            actions = RhythmActions(),
+        )
     }
 }

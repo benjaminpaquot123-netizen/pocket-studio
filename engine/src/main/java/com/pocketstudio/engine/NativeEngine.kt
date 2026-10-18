@@ -15,6 +15,7 @@ object NativeEngine {
     private const val CMD_SET_METRONOME = 8
     private const val CMD_SET_PATTERN_STEPS = 9
     private const val CMD_SET_DRUM_HIT = 10
+    private const val CMD_TRIGGER_PAD = 11
 
     const val LANES = 16
 
@@ -37,6 +38,8 @@ object NativeEngine {
     fun setPatternSteps(steps: Int) = post(CMD_SET_PATTERN_STEPS, 0f, steps)
     /** velocity 0 removes the hit. */
     fun setDrumHit(lane: Int, step: Int, velocity: Float) = post(CMD_SET_DRUM_HIT, velocity, lane, step)
+    /** Plays a pad right now (live). */
+    fun triggerPad(lane: Int, velocity: Float) = post(CMD_TRIGGER_PAD, velocity, lane)
 
     /** Current pattern step, or -1 when stopped or counting in. */
     external fun currentStep(): Int

@@ -1,4 +1,4 @@
 Nouveau : le Mixeur ! Volume, panoramique, muet et solo pour la batterie, la basse et le synthé.
 VU-mètres et limiteur général : ça tape fort, mais ça ne sature plus. « C'est pas faux. »
-Basse acide (Open303) : accents, slides et « Génère-moi un pattern ».
+La musique continue écran éteint (Outils › Arrière-plan pour bien régler le Honor).
 Export WAV (Mixeur) : ton morceau dans Musique, prêt à partager. La Recette est dans Outils.

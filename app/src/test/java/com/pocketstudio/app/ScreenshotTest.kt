@@ -168,4 +168,12 @@ class ScreenshotTest {
             )
         }
     }
+
+    @Test
+    fun background() = shoot("background") {
+        com.pocketstudio.app.playback.BackgroundScreen(
+            com.pocketstudio.app.playback.BackgroundState(notifications = true, batteryFree = false, honor = true),
+            {}, {}, {},
+        )
+    }
 }

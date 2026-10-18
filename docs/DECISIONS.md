@@ -41,3 +41,4 @@
 | 2026-10-18 | Onglet Recette déplacé dans Outils pour laisser la place à l'onglet Mixeur (5 onglets max en bas) | Lisibilité de la barre du bas | Remettre l'onglet dans `AppRoot.kt` |
 | 2026-10-18 | Export WAV par un moteur hors-ligne privé (`OfflineRenderer`), jamais le moteur en direct | Rendu plus rapide que le temps réel, sans couper la lecture ni toucher au fil audio | Aucun |
 | 2026-10-18 | Export copié dans Musique › Pocket Studio (MediaStore, sans permission) + partage via FileProvider | Retrouvable dans n'importe quel lecteur ; partage direct WhatsApp/Drive | Retirer la copie dans `WavExporter` |
+| 2026-10-18 | Service de premier plan sans MediaSession ni audio propre : il garde seulement le processus vivant, le moteur Oboe continue | Le plus simple qui marche ; MediaSession viendra si on veut les commandes casque | Retirer `PlaybackService` et remettre `NativeEngine.stop()` à ON_STOP |

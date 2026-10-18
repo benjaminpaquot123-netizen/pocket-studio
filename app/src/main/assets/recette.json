@@ -96,6 +96,11 @@
       "id": "export_wav",
       "title": "L'export WAV s'écoute bien et se partage",
       "hint": "Mixeur › Exporter 4 mesures, puis Partager (par exemple vers WhatsApp) et écoute le fichier."
+    },
+    {
+      "id": "background_play",
+      "title": "La musique continue écran éteint, et Arrêter dans la notification la coupe",
+      "hint": "Fais d'abord les réglages d'Outils › Arrière-plan. Lance le rythme, éteins l'écran 2 minutes, puis rallume et touche Arrêter dans la notification."
     }
   ]
 }

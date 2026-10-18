@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.pocketstudio.app.export.WavExporter
+import com.pocketstudio.app.playback.PlaybackService
 import com.pocketstudio.engine.ExportResult
 import com.pocketstudio.engine.NativeEngine
 import com.pocketstudio.engine.OfflineExport
@@ -251,6 +252,23 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         _transport.value = t.copy(playing = playing)
         if (!NativeEngine.isAvailable) return
         if (playing) NativeEngine.play(if (t.countIn) 1 else 0) else NativeEngine.stopTransport()
+        val app = getApplication<Application>()
+        if (playing) PlaybackService.start(app) else PlaybackService.stop(app)
+    }
+
+    /** True while the activity is on screen; set by the UI. */
+    var visible = true
+
+    /** The engine must keep running in the background only while the transport plays. */
+    val keepsRunningInBackground: Boolean get() = _transport.value.playing
+
+    init {
+        viewModelScope.launch {
+            PlaybackService.stops.collect {
+                if (_transport.value.playing) togglePlay()
+                if (!visible && NativeEngine.isAvailable) NativeEngine.stop()
+            }
+        }
     }
 
     fun toggleMetronome() {
@@ -399,6 +417,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     override fun onCleared() {
         running?.cancel()
         if (NativeEngine.isAvailable) NativeEngine.stopTransport()
+        PlaybackService.stop(getApplication())
     }
 
     companion object {

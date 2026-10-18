@@ -52,6 +52,7 @@ import com.pocketstudio.app.acid.AcidActions
 import com.pocketstudio.app.acid.AcidScreen
 import com.pocketstudio.app.export.WavExporter
 import com.pocketstudio.app.latency.LatencyScreen
+import com.pocketstudio.app.playback.BackgroundPage
 import com.pocketstudio.app.mixer.MixerActions
 import com.pocketstudio.app.mixer.MixerScreen
 import com.pocketstudio.app.latency.LatencyViewModel
@@ -76,7 +77,7 @@ enum class AppTab(val label: String, val icon: ImageVector) {
     Outils("Outils", Icons.Filled.Tune),
 }
 
-private enum class ToolPage(val label: String) { Recette("Recette"), Latence("Latence"), Son("Son test") }
+private enum class ToolPage(val label: String) { Recette("Recette"), Fond("Arrière-plan"), Latence("Latence"), Son("Son test") }
 
 @Composable
 fun AppRoot() {
@@ -95,6 +96,7 @@ fun AppRoot() {
 
     // The audio stream lives while the app is visible (background playback arrives in phase 1).
     LifecycleEventEffect(Lifecycle.Event.ON_START) {
+        rhythmVm.visible = true
         if (engineAvailable && NativeEngine.start()) {
             studioVm.pushAll()
             rhythmVm.syncEngine()
@@ -103,7 +105,9 @@ fun AppRoot() {
     LifecycleEventEffect(Lifecycle.Event.ON_STOP) {
         latencyVm.cancel()
         rhythmVm.flush()
-        if (engineAvailable) NativeEngine.stop()
+        rhythmVm.visible = false
+        // While the transport plays, PlaybackService keeps the music going in the background.
+        if (engineAvailable && !rhythmVm.keepsRunningInBackground) NativeEngine.stop()
     }
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(engineAvailable) {
@@ -260,6 +264,7 @@ fun AppRoot() {
                                 onReportProblem = { text -> recetteVm.buildProblem(text) { openUri(context, it) } },
                             )
                         }
+                        ToolPage.Fond -> BackgroundPage()
                         ToolPage.Latence -> {
                             val state by latencyVm.state.collectAsStateWithLifecycle()
                             LatencyScreen(

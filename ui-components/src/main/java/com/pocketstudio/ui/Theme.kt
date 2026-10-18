@@ -12,18 +12,19 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
+/** Palette: calm dark blue-grey, one soft accent, one "playing" colour (see docs/DESIGN.md). */
 object Neon {
-    val Background = Color(0xFF0A0A12)
-    val Surface = Color(0xFF14141F)
-    val SurfaceHigh = Color(0xFF1E1E2D)
-    val Outline = Color(0xFF2E2E44)
-    val Cyan = Color(0xFF00E5FF)
-    val Magenta = Color(0xFFFF2BD6)
-    val Acid = Color(0xFFB6FF3B)
-    val Amber = Color(0xFFFFB300)
-    val Red = Color(0xFFFF4D6D)
-    val TextPrimary = Color(0xFFF2F2F7)
-    val TextSecondary = Color(0xFF9A9AB0)
+    val Background = Color(0xFF101318)
+    val Surface = Color(0xFF181C23)
+    val SurfaceHigh = Color(0xFF222731)
+    val Outline = Color(0xFF2E3440)
+    val Cyan = Color(0xFF5BD6E3)
+    val Magenta = Color(0xFFE879B9)
+    val Acid = Color(0xFF9ED36A)
+    val Amber = Color(0xFFF2B84B)
+    val Red = Color(0xFFEF6F7E)
+    val TextPrimary = Color(0xFFECEFF4)
+    val TextSecondary = Color(0xFF9AA3B2)
 }
 
 private val colors = darkColorScheme(

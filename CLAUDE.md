@@ -12,6 +12,7 @@ Au début de chaque session : lire ce fichier, `docs/PROGRESS.md` et les issues 
 - Tout le reste : décider, noter une ligne dans `docs/DECISIONS.md` (choix, raison, retour arrière), avancer.
 - Messages pour lui : français, courts, sans jargon, écoutables en audio. Humour Kaamelott bienvenu dans les changelogs.
 - Interface en français. Code, commentaires et commits en anglais.
+- Design : moderne mais pas trop, facile à prendre en main. Règles dans `docs/DESIGN.md`, à respecter sur chaque écran.
 
 ## Règle d'or
 Réutiliser l'open source éprouvé (GPL/AGPL acceptées, usage personnel). Vérifier licence et dernière version, tenir `THIRD_PARTY.md` à jour. Trois échecs sérieux sur une brique = alternative suivante + ligne dans DECISIONS.md.

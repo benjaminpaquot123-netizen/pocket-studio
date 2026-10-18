@@ -4,6 +4,9 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.pocketstudio.engine.NativeEngine
+import com.pocketstudio.model.AcidGenerator
+import com.pocketstudio.model.AcidPattern
+import com.pocketstudio.model.AcidStep
 import com.pocketstudio.model.DrumPattern
 import com.pocketstudio.model.Hit
 import com.pocketstudio.model.Project
@@ -78,7 +81,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (loaded != null) return loaded
         var drums = DrumPattern()
         DrumKitInfo.starterHits.forEach { (lane, steps) -> steps.forEach { drums = drums.toggle(lane, it) } }
-        return Project(name = "Mon premier rythme", drums = drums)
+        val acid = AcidGenerator().generate(AcidPattern(), AcidGenerator.NOTE_SETS[5])
+        return Project(name = "Mon premier rythme", drums = drums, acid = acid)
     }
 
     /** Sends the whole project to the engine, e.g. after the audio stream (re)started. */
@@ -94,6 +98,60 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             }
         }
         NativeEngine.setMetronome(_transport.value.metronome)
+        pushAcid(p.acid)
+    }
+
+    // --- Acid bass -------------------------------------------------------------------------
+
+    private val acidGenerator = AcidGenerator()
+
+    private val _selectedAcidStep = MutableStateFlow(0)
+    val selectedAcidStep: StateFlow<Int> = _selectedAcidStep.asStateFlow()
+
+    fun selectAcidStep(step: Int) {
+        _selectedAcidStep.value = step
+    }
+
+    /** New random line (locked steps kept). */
+    fun generateAcid() {
+        session.edit { it.copy(acid = acidGenerator.generate(it.acid)) }
+        pushAcid(project.value.acid)
+    }
+
+    fun editAcidStep(transform: (AcidStep) -> AcidStep) {
+        val index = _selectedAcidStep.value
+        session.edit { p -> p.copy(acid = p.acid.withStep(index, transform(p.acid.steps[index]))) }
+        if (NativeEngine.isAvailable) NativeEngine.setAcidStep(index, project.value.acid.steps[index].pack())
+    }
+
+    fun toggleAcidLock() {
+        val index = _selectedAcidStep.value
+        session.edit { p ->
+            val locked = p.acid.locked.let { if (index in it) it - index else it + index }
+            p.copy(acid = p.acid.copy(locked = locked))
+        }
+    }
+
+    fun setAcidSound(index: Int, value: Float) {
+        session.edit("acid-sound-$index") { p -> p.copy(acid = p.acid.copy(sound = p.acid.sound.with(index, value))) }
+        if (NativeEngine.isAvailable) NativeEngine.setAcidParam(index, project.value.acid.sound.values()[index])
+    }
+
+    fun shiftAcidRoot(semitones: Int) {
+        session.edit { p -> p.copy(acid = p.acid.copy(root = p.acid.root + semitones)) }
+        if (NativeEngine.isAvailable) NativeEngine.setAcidRoot(project.value.acid.root)
+    }
+
+    fun setAcidDensity(density: Float) {
+        session.edit("acid-density") { p -> p.copy(acid = p.acid.copy(density = density)) }
+    }
+
+    private fun pushAcid(acid: AcidPattern) {
+        if (!NativeEngine.isAvailable) return
+        NativeEngine.setAcidLength(acid.length)
+        NativeEngine.setAcidRoot(acid.root)
+        acid.steps.forEachIndexed { i, s -> NativeEngine.setAcidStep(i, s.pack()) }
+        acid.sound.values().forEachIndexed { i, v -> NativeEngine.setAcidParam(i, v) }
     }
 
     fun togglePlay() {

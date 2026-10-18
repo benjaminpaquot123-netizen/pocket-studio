@@ -23,14 +23,14 @@ public:
 };
 
 int32_t AcidStep::pack() const {
-    return (note & 0xF) | ((std::clamp(octave, -1, 1) + 1) << 4) | (accent ? 1 << 6 : 0) |
+    return (note & 0xF) | ((std::clamp(octave, -1, 2) + 1) << 4) | (accent ? 1 << 6 : 0) |
            (slide ? 1 << 7 : 0) | (gate ? 1 << 8 : 0);
 }
 
 AcidStep AcidStep::unpack(int32_t bits) {
     AcidStep s;
     s.note = std::clamp(bits & 0xF, 0, 12);
-    s.octave = std::clamp(((bits >> 4) & 0x3) - 1, -1, 1);
+    s.octave = std::clamp(((bits >> 4) & 0x3) - 1, -1, 2);
     s.accent = (bits >> 6) & 1;
     s.slide = (bits >> 7) & 1;
     s.gate = (bits >> 8) & 1;

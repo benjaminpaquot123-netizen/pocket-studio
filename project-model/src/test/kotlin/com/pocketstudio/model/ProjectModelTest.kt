@@ -211,3 +211,44 @@ class TapTempoTest {
         assertEquals(Project.MAX_TEMPO, tap.tap(10_050)!!, 0.0)
     }
 }
+
+class AcidTest {
+    @Test
+    fun packMatchesEngineLayout() {
+        assertEquals(0x110, AcidStep(gate = true).pack())  // octave 0 is stored as 1
+        assertEquals(7 or (3 shl 4) or (1 shl 6) or (1 shl 7) or (1 shl 8), AcidStep(7, 2, accent = true, slide = true, gate = true).pack())
+        assertEquals(1 shl 4, AcidStep(octave = 0).pack())
+    }
+
+    @Test
+    fun generatorUsesTheNoteSetAndAnchorsTheOne() {
+        val gen = AcidGenerator(kotlin.random.Random(1))
+        repeat(50) {
+            val set = listOf(0, 7, 12, 15)
+            val p = gen.generate(AcidPattern(), set)
+            assertTrue(p.steps[0].gate)
+            p.steps.take(16).filter { it.gate }.forEach { s ->
+                assertTrue("note ${s.note} oct ${s.octave}", (s.octave * 12 + s.note) in set)
+            }
+            assertTrue("steps past the length untouched", p.steps.drop(16).none { it.gate })
+        }
+    }
+
+    @Test
+    fun densityAndLocksAreRespected() {
+        val gen = AcidGenerator(kotlin.random.Random(7))
+        fun gates(d: Float) = (0 until 200).sumOf { gen.generate(AcidPattern(density = d)).steps.take(16).count { it.gate } }
+        assertTrue(gates(1.0f) > gates(0.3f) * 2)
+
+        val mine = AcidStep(note = 5, octave = 1, accent = true, gate = true)
+        val locked = AcidPattern(locked = setOf(3)).withStep(3, mine)
+        repeat(20) { assertEquals(mine, gen.generate(locked).steps[3]) }
+    }
+
+    @Test
+    fun acidSurvivesSaveAndOldFilesGetDefaults() {
+        val p = Project(acid = AcidPattern(root = 40).withStep(2, AcidStep(note = 3, gate = true)))
+        assertEquals(p, ProjectJson.decode(ProjectJson.encode(p)))
+        assertEquals(AcidPattern().sanitized(), ProjectJson.decode("""{"name":"Vieux"}""").acid)
+    }
+}

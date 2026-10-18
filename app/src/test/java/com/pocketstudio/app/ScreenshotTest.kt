@@ -118,4 +118,17 @@ class ScreenshotTest {
             actions = RhythmActions(),
         )
     }
+
+    @Test
+    fun acid() = shoot("acid") {
+        val pattern = com.pocketstudio.model.AcidGenerator(kotlin.random.Random(3))
+            .generate(com.pocketstudio.model.AcidPattern(locked = setOf(2)))
+        com.pocketstudio.app.acid.AcidScreen(
+            acid = pattern,
+            playing = true,
+            currentStep = 6,
+            selected = 2,
+            actions = com.pocketstudio.app.acid.AcidActions(),
+        )
+    }
 }

@@ -1,15 +1,76 @@
 {
-  "id": "phase1-rythme",
-  "milestone": "Phase 1 : la boîte à rythmes",
+  "id": "phase1-rythme-acide",
+  "milestone": "Phase 1 : boîte à rythmes et basse acide",
   "items": [
-    { "id": "play", "title": "Jouer lance un rythme tout de suite", "hint": "Onglet Rythme : appuie sur Jouer. Un premier groove (kick, caisse, charley) doit tourner." },
-    { "id": "pads", "title": "Les 16 pads sonnent et s'allument", "hint": "Tape chaque pad : chacun a son son, et s'allume quand il joue." },
-    { "id": "steps", "title": "La grille de pas réagit au doigt", "hint": "Choisis un pad, touche des cases : le coup s'ajoute ou s'enlève pendant la lecture, sans décalage." },
-    { "id": "velocity", "title": "L'appui long rend un coup plus doux", "hint": "Appui long sur une case allumée : elle pâlit et le coup sonne moins fort." },
-    { "id": "tempo", "title": "Tempo, Tap et swing changent le groove sans à-coup", "hint": "Joue avec −/+, tape 4 fois sur Tap, bouge le swing pendant la lecture." },
-    { "id": "metronome", "title": "Métronome et décompte", "hint": "Active Métronome puis Décompte et relance : 4 clics avant le rythme." },
-    { "id": "undo", "title": "Annuler et rétablir", "hint": "Fais quelques changements puis utilise les flèches en haut à droite." },
-    { "id": "save", "title": "Le rythme est retrouvé après fermeture", "hint": "Modifie le rythme, ferme complètement l'appli, rouvre : tout est là." },
-    { "id": "sound", "title": "Aucun craquement, même tout le kit en même temps", "hint": "Remplis plusieurs pads sur beaucoup de pas et écoute une minute." }
+    {
+      "id": "play",
+      "title": "Jouer lance un rythme tout de suite",
+      "hint": "Onglet Rythme : appuie sur Jouer. Un premier groove (kick, caisse, charley) doit tourner."
+    },
+    {
+      "id": "pads",
+      "title": "Les 16 pads sonnent et s'allument",
+      "hint": "Tape chaque pad : chacun a son son, et s'allume quand il joue."
+    },
+    {
+      "id": "steps",
+      "title": "La grille de pas réagit au doigt",
+      "hint": "Choisis un pad, touche des cases : le coup s'ajoute ou s'enlève pendant la lecture, sans décalage."
+    },
+    {
+      "id": "velocity",
+      "title": "L'appui long rend un coup plus doux",
+      "hint": "Appui long sur une case allumée : elle pâlit et le coup sonne moins fort."
+    },
+    {
+      "id": "tempo",
+      "title": "Tempo, Tap et swing changent le groove sans à-coup",
+      "hint": "Joue avec −/+, tape 4 fois sur Tap, bouge le swing pendant la lecture."
+    },
+    {
+      "id": "metronome",
+      "title": "Métronome et décompte",
+      "hint": "Active Métronome puis Décompte et relance : 4 clics avant le rythme."
+    },
+    {
+      "id": "undo",
+      "title": "Annuler et rétablir",
+      "hint": "Fais quelques changements puis utilise les flèches en haut à droite."
+    },
+    {
+      "id": "save",
+      "title": "Le rythme est retrouvé après fermeture",
+      "hint": "Modifie le rythme, ferme complètement l'appli, rouvre : tout est là."
+    },
+    {
+      "id": "sound",
+      "title": "Aucun craquement, même tout le kit en même temps",
+      "hint": "Remplis plusieurs pads sur beaucoup de pas et écoute une minute."
+    },
+    {
+      "id": "acid_play",
+      "title": "La basse acide joue avec le rythme",
+      "hint": "Onglet Acide : Jouer. La basse doit tourner, calée sur la batterie."
+    },
+    {
+      "id": "acid_generate",
+      "title": "« Génère-moi un pattern » donne une nouvelle ligne à chaque fois",
+      "hint": "Appuie plusieurs fois, en lecture : chaque ligne doit sonner acide et rester dans le temps."
+    },
+    {
+      "id": "acid_edit",
+      "title": "Modifier un pas : note, accent, slide, octave",
+      "hint": "Touche un pas, change la note avec −/+, active Accent puis Slide : on doit l'entendre."
+    },
+    {
+      "id": "acid_lock",
+      "title": "Le verrou garde un pas quand on régénère",
+      "hint": "Verrouille un pas, régénère : ce pas ne bouge pas."
+    },
+    {
+      "id": "acid_sound",
+      "title": "Les curseurs de son répondent (surtout Coupure et Résonance)",
+      "hint": "Bouge Coupure, Résonance, Enveloppe et Saturation pendant la lecture : le son « miaule »."
+    }
   ]
 }

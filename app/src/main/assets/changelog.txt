@@ -1,4 +1,5 @@
-Boîte à rythmes : 16 pads synthétisés, grille de 16 pas, un premier groove prêt à jouer.
-Tempo, Tap, swing, métronome et décompte, tout calé à l'échantillon près.
-Annuler, rétablir, et sauvegarde automatique : « On en a gros », mais on ne perd rien.
-Nouveau look façon FL Studio, en plus clair ; latence et son de test dans Outils.
+Basse acide (onglet Acide) : Open303, accents, slides, et « Génère-moi un pattern ».
+Neuf réglages de son, dont la coupure et la résonance qui font « miauler » la basse.
+Boîte à rythmes : kicks musclés, toms et conga avec du corps, sortie protégée contre la saturation.
+Tempo, Tap, swing, métronome, décompte ; annuler, rétablir et sauvegarde automatique.
+« Le gras, c'est la vie » : la basse est grasse, et c'est voulu.

@@ -32,8 +32,8 @@ Feu vert de Benjamin (D4 = A) : fusion de la pull request en fin de phase.
 - [x] A.1 Intégrer Open303 (Robin Schmidt, MIT) dans `dsp/`, voix monophonique dans le graphe audio ; tests Linux (pas de NaN, slide continu, accent plus fort)
 - [x] A.2 Séquenceur acide par pas (16 pas, jusqu'à 64) : note, accent, slide, octave haut/bas, silence ; à l'échantillon près dans le thread audio
 - [x] A.3 Réglages : cutoff, résonance, env mod, decay, accent, accord, onde scie/carré ; saturation juste derrière la voix
-- [ ] A.4 Générateur de patterns acides façon The Endless Acid Banger (gamme, densité, accents, slides), avec verrous
-- [ ] A.5 Écran « Acide » : grille de pas lisible au doigt, potards, bouton « Génère-moi un pattern »
+- [x] A.4 Générateur de patterns acides façon The Endless Acid Banger (gamme, densité, accents, slides), avec verrous
+- [x] A.5 Écran « Acide » : grille de pas lisible au doigt, potards, bouton « Génère-moi un pattern »
 - Critères : un pattern généré tourne en boucle avec la boîte à rythmes, sans craquement à 256 échantillons ; slide et accent audibles ; aucun nom de marque Roland dans l'interface.
 - [ ] 1.4 Synthé soustractif (2 osc, sub, bruit, ladder + SVF, 2 env, 2 LFO), clavier simple
 - [ ] 1.5 Mixeur simple (volume, pan, mute, solo, VU-mètres, limiteur master)

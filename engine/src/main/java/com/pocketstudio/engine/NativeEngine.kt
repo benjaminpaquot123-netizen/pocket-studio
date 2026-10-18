@@ -16,6 +16,10 @@ object NativeEngine {
     private const val CMD_SET_PATTERN_STEPS = 9
     private const val CMD_SET_DRUM_HIT = 10
     private const val CMD_TRIGGER_PAD = 11
+    private const val CMD_SET_ACID_STEP = 12
+    private const val CMD_SET_ACID_LENGTH = 13
+    private const val CMD_SET_ACID_ROOT = 14
+    private const val CMD_SET_ACID_PARAM = 15
 
     const val LANES = 16
 
@@ -38,6 +42,13 @@ object NativeEngine {
     fun setPatternSteps(steps: Int) = post(CMD_SET_PATTERN_STEPS, 0f, steps)
     /** velocity 0 removes the hit. */
     fun setDrumHit(lane: Int, step: Int, velocity: Float) = post(CMD_SET_DRUM_HIT, velocity, lane, step)
+    /** [packed] = AcidStep.pack() from project-model (same layout as the engine). */
+    fun setAcidStep(index: Int, packed: Int) = post(CMD_SET_ACID_STEP, 0f, index, packed)
+    fun setAcidLength(steps: Int) = post(CMD_SET_ACID_LENGTH, 0f, steps)
+    fun setAcidRoot(midiNote: Int) = post(CMD_SET_ACID_ROOT, 0f, midiNote)
+    /** [param] in AcidTrack::Param order, [value] 0..1. */
+    fun setAcidParam(param: Int, value: Float) = post(CMD_SET_ACID_PARAM, value, param)
+
     /** Plays a pad right now (live). */
     fun triggerPad(lane: Int, velocity: Float) = post(CMD_TRIGGER_PAD, velocity, lane)
 

@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Checklist
+import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.AlertDialog
@@ -45,6 +46,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.pocketstudio.app.Metrics
+import com.pocketstudio.app.acid.AcidActions
+import com.pocketstudio.app.acid.AcidScreen
 import com.pocketstudio.app.latency.LatencyScreen
 import com.pocketstudio.app.latency.LatencyViewModel
 import com.pocketstudio.app.recette.RecetteScreen
@@ -60,6 +63,7 @@ import kotlinx.coroutines.delay
 
 enum class AppTab(val label: String, val icon: ImageVector) {
     Rythme("Rythme", Icons.Filled.GridView),
+    Acide("Acide", Icons.Filled.GraphicEq),
     Outils("Outils", Icons.Filled.Tune),
     Recette("Recette", Icons.Filled.Checklist),
 }
@@ -159,6 +163,31 @@ fun AppRoot() {
                             setSwing = rhythmVm::setSwing,
                             undo = rhythmVm::undo,
                             redo = rhythmVm::redo,
+                        ),
+                    )
+                }
+                AppTab.Acide -> {
+                    val project by rhythmVm.project.collectAsStateWithLifecycle()
+                    val transport by rhythmVm.transport.collectAsStateWithLifecycle()
+                    val live by rhythmVm.live.collectAsStateWithLifecycle()
+                    val selected by rhythmVm.selectedAcidStep.collectAsStateWithLifecycle()
+                    LaunchedEffect(Unit) {
+                        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollLive() }
+                    }
+                    AcidScreen(
+                        acid = project.acid,
+                        playing = transport.playing,
+                        currentStep = live.currentStep,
+                        selected = selected,
+                        actions = AcidActions(
+                            togglePlay = rhythmVm::togglePlay,
+                            generate = rhythmVm::generateAcid,
+                            selectStep = rhythmVm::selectAcidStep,
+                            editStep = rhythmVm::editAcidStep,
+                            toggleLock = rhythmVm::toggleAcidLock,
+                            setSound = rhythmVm::setAcidSound,
+                            shiftRoot = rhythmVm::shiftAcidRoot,
+                            setDensity = rhythmVm::setAcidDensity,
                         ),
                     )
                 }

@@ -626,7 +626,7 @@ ps::AcidStep note(int n, bool accent = false, bool slide = false) {
 
 void testAcidStepPacking() {
     for (int n = 0; n <= 12; ++n) {
-        for (int o = -1; o <= 1; ++o) {
+        for (int o = -1; o <= 2; ++o) {
             ps::AcidStep s{n, o, (n & 1) != 0, (n & 2) != 0, true};
             const auto u = ps::AcidStep::unpack(s.pack());
             CHECK(u.note == n && u.octave == o && u.accent == s.accent && u.slide == s.slide && u.gate);

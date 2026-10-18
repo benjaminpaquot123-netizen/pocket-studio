@@ -11,7 +11,7 @@ class AcidVoice;
 // One step of an acid bass line, the way the classic machines store it.
 struct AcidStep {
     int note = 0;       // 0..12 semitones above the root
-    int octave = 0;     // -1, 0, +1
+    int octave = 0;     // -1..+2
     bool accent = false;
     bool slide = false;  // glide into the next step (which then sounds legato)
     bool gate = false;   // false = rest

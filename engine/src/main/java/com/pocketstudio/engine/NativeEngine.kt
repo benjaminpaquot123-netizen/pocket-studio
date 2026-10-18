@@ -130,12 +130,13 @@ object NativeEngine {
         }
     }
 
-    internal external fun exportCreate(): Long
+    // Export natives stay public: `internal` would mangle their JNI names. Use OfflineExport.
+    external fun exportCreate(): Long
     private external fun exportPost(handle: Long, type: Int, value: Float, a: Int, b: Int)
-    internal external fun exportRender(handle: Long, path: String, frames: Long, tail: Long): Int
-    internal external fun exportProgress(handle: Long): Float
-    internal external fun exportCancel(handle: Long)
-    internal external fun exportDestroy(handle: Long)
+    external fun exportRender(handle: Long, path: String, frames: Long, tail: Long): Int
+    external fun exportProgress(handle: Long): Float
+    external fun exportCancel(handle: Long)
+    external fun exportDestroy(handle: Long)
     private external fun nativePost(type: Int, value: Float, a: Int, b: Int): Boolean
     private external fun nativeStreamInfo(): DoubleArray
     private external fun latencyTestState(): Int

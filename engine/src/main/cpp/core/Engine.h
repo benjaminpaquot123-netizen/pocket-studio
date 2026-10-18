@@ -7,6 +7,7 @@
 #include "AcidTrack.h"
 #include "DrumKit.h"
 #include "Metronome.h"
+#include "Mixer.h"
 #include "RoundTripMeter.h"
 #include "Sequencer.h"
 #include "Synth.h"
@@ -37,6 +38,10 @@ enum class CommandType : uint8_t {
     SynthNoteOff,     // a: MIDI note
     SynthParam,       // a: Synth::Param, value: 0..1
     SynthAllOff,
+    SetChannelVolume,  // a: channel (Mixer), value: 0..1
+    SetChannelPan,     // a: channel, value: -1..1
+    SetChannelMute,    // a: channel, value: 1 = muted
+    SetChannelSolo,    // a: channel, value: 1 = solo
 };
 
 struct Command {
@@ -84,6 +89,7 @@ public:
     // Increments every time a lane is triggered (pad lights, tests).
     uint32_t laneTriggerCount(int lane) const { return laneTriggers_[lane].load(std::memory_order_relaxed); }
     // Number of metronome clicks triggered since startup (tests).
+    Mixer& mixer() { return mixer_; }
     int synthActiveVoices() const { return synth_.activeVoices(); }
     uint32_t acidNotesPlayed() const { return acid_.notesPlayed(); }
     uint64_t metronomeClicks() const { return metronomeClicks_.load(std::memory_order_relaxed); }
@@ -108,6 +114,10 @@ private:
     DrumKit drums_;
     AcidTrack acid_;
     Synth synth_;
+    Mixer mixer_;
+    std::array<float, kMaxBlock> drumsBuf_{};
+    std::array<float, kMaxBlock> acidBuf_{};
+    std::array<float, kMaxBlock> synthBuf_{};
     bool metronomeOn_ = false;
     int patternSteps_ = 16;
     float pattern_[kLanes][kMaxSteps] = {};

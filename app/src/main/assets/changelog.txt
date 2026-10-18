@@ -1,5 +1,5 @@
-Basse acide (onglet Acide) : Open303, accents, slides, et « Génère-moi un pattern ».
-Neuf réglages de son, dont la coupure et la résonance qui font « miauler » la basse.
-Boîte à rythmes : kicks musclés, toms et conga avec du corps, sortie protégée contre la saturation.
-Tempo, Tap, swing, métronome, décompte ; annuler, rétablir et sauvegarde automatique.
-Synthé à 8 voix avec clavier et 4 sons prêts à jouer (Basse, Lead, Nappe, Pluck).
+Nouveau : le Mixeur ! Volume, panoramique, muet et solo pour la batterie, la basse et le synthé.
+VU-mètres et limiteur général : ça tape fort, mais ça ne sature plus. « C'est pas faux. »
+Basse acide (Open303) : accents, slides et « Génère-moi un pattern ».
+Synthé à 8 voix avec clavier et 4 sons prêts à jouer.
+La Recette se trouve maintenant dans Outils.

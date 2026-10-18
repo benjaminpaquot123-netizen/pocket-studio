@@ -98,8 +98,13 @@ class SmokeTest {
         compose.onNodeWithTag("tool_Latence").performClick()
         compose.onNodeWithTag("latency").assertIsDisplayed()
 
-        compose.onNodeWithTag("tab_Recette").performClick()
+        compose.onNodeWithTag("tool_Recette").performClick()
         compose.onNodeWithTag("recette").assertIsDisplayed()
+
+        compose.onNodeWithTag("tab_Mixeur").performClick()
+        compose.onNodeWithTag("mixer").assertIsDisplayed()
+        compose.onNodeWithTag("mute_0").performClick()
+        compose.onNodeWithTag("mute_0").performClick()
         assertTrue("no NaN in the output", !NativeEngine.streamInfo().nonFinite)
     }
 }

@@ -140,4 +140,16 @@ class ScreenshotTest {
             actions = com.pocketstudio.app.synth.SynthActions(),
         )
     }
+
+    @Test
+    fun mixer() = shoot("mixer") {
+        val channels = com.pocketstudio.model.Project().mixer.channels.toMutableList()
+        channels[1] = channels[1].copy(solo = true, pan = -0.4f)
+        channels[2] = channels[2].copy(mute = true, volume = 0.5f)
+        com.pocketstudio.app.mixer.MixerScreen(
+            channels = channels,
+            meters = floatArrayOf(0.62f, 0.81f, 0f, 0.88f, 0.8f),
+            actions = com.pocketstudio.app.mixer.MixerActions(),
+        )
+    }
 }

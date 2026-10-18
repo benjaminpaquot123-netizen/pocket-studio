@@ -101,6 +101,51 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         NativeEngine.setMetronome(_transport.value.metronome)
         pushAcid(p.acid)
         pushSynth(p.synth)
+        pushMixer(p)
+    }
+
+    // --- Mixer -----------------------------------------------------------------------------
+
+    private val _meters = MutableStateFlow(FloatArray(5))
+    val meters: StateFlow<FloatArray> = _meters.asStateFlow()
+
+    /** Polls meter peaks about 20 times a second while the mixer is visible. */
+    suspend fun pollMeters() {
+        if (!NativeEngine.isAvailable) return
+        val decayed = FloatArray(5)
+        while (true) {
+            val fresh = FloatArray(5)
+            NativeEngine.mixerMeters(fresh)
+            // Peak hold with a gentle fall so the bars are readable.
+            for (i in 0 until 4) decayed[i] = maxOf(fresh[i], decayed[i] * 0.85f)
+            decayed[4] = fresh[4]
+            _meters.value = decayed.copyOf()
+            kotlinx.coroutines.delay(50)
+        }
+    }
+
+    fun setChannelVolume(ch: Int, v: Float) = editChannel(ch, "vol") { it.copy(volume = v) }
+    fun setChannelPan(ch: Int, pan: Float) = editChannel(ch, "pan") { it.copy(pan = pan) }
+    fun toggleMute(ch: Int) = editChannel(ch, null) { it.copy(mute = !it.mute) }
+    fun toggleSolo(ch: Int) = editChannel(ch, null) { it.copy(solo = !it.solo) }
+
+    private fun editChannel(ch: Int, key: String?, transform: (com.pocketstudio.model.Channel) -> com.pocketstudio.model.Channel) {
+        session.edit(key?.let { "mix-$ch-$it" }) { p ->
+            val channels = p.mixer.channels.toMutableList()
+            channels[ch] = transform(channels[ch])
+            p.copy(mixer = p.mixer.copy(channels = channels))
+        }
+        pushMixer(project.value)
+    }
+
+    private fun pushMixer(p: Project) {
+        if (!NativeEngine.isAvailable) return
+        p.mixer.channels.take(NativeEngine.MIXER_CHANNELS).forEachIndexed { i, c ->
+            NativeEngine.setChannelVolume(i, c.volume)
+            NativeEngine.setChannelPan(i, c.pan)
+            NativeEngine.setChannelMute(i, c.mute)
+            NativeEngine.setChannelSolo(i, c.solo)
+        }
     }
 
     // --- Subtractive synth -------------------------------------------------------------------

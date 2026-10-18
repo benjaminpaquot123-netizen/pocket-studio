@@ -81,6 +81,16 @@
       "id": "synth_presets",
       "title": "Les sons Basse, Lead, Nappe et Pluck sont bien différents",
       "hint": "Essaie chaque son prêt à jouer, puis bouge Coupure et Résonance."
+    },
+    {
+      "id": "mixer_mute_solo",
+      "title": "Muet et Solo coupent bien la bonne piste",
+      "hint": "Lance le rythme et la basse, puis dans Mixeur essaie Muet et Solo sur chaque piste."
+    },
+    {
+      "id": "mixer_vu",
+      "title": "Les VU-mètres bougent et le son ne sature pas",
+      "hint": "Monte tous les volumes au maximum : le son doit rester propre."
     }
   ]
 }

@@ -36,7 +36,7 @@ Feu vert de Benjamin (D4 = A) : fusion de la pull request en fin de phase.
 - [x] A.5 Écran « Acide » : grille de pas lisible au doigt, potards, bouton « Génère-moi un pattern »
 - Critères : un pattern généré tourne en boucle avec la boîte à rythmes, sans craquement à 256 échantillons ; slide et accent audibles ; aucun nom de marque Roland dans l'interface.
 - [x] 1.4 Synthé soustractif (2 osc, sub, bruit, ladder + SVF, 2 env, 2 LFO), clavier simple
-- [ ] 1.5 Mixeur simple (volume, pan, mute, solo, VU-mètres, limiteur master)
+- [x] 1.5 Mixeur simple (volume, pan, mute, solo, VU-mètres, limiteur master)
 - [ ] 1.6 Export WAV 24 bits/48 kHz + partage ; lecture en Foreground Service + exclusion batterie guidée
 - Critères : un beat de 4 mesures composé, sauvegardé, rouvert et exporté ; 0 craquement à 256 échantillons.
 

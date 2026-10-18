@@ -29,7 +29,17 @@ ui-components : thème sombre néon, cartes, VU-mètre (réutilisés par tous le
 
 ## Règles du thread audio
 Aucune allocation, aucun verrou, aucun log dans `Engine::process`. Tout ce qui vient de l'interface passe par `SpscQueue<Command>`.
-Le séquenceur (phase 1) vivra dans `core/` et avancera à l'échantillon près dans le callback.
+Le séquenceur vit dans `core/` et avance à l'échantillon près dans le callback.
+
+## Graphe audio (phase 1)
+```
+Sequencer ──(pas, à l'échantillon près)──► DrumKit ─► tampon Batterie ─┐
+                                      └──► AcidTrack (Open303) ─► tampon Acide ──┤
+Clavier (file d'événements) ─────────────► Synth 8 voix ─► tampon Synthé ─┤
+                                                                       ▼
+Metronome + son de test ─► tampon direct ──► Mixer (volume, pan, muet, solo,
+                                              limiteur master) ─► sortie stéréo
+```
 
 ## Livraison
 `.github/workflows/ci.yml` : tests moteur (avec ASan/UBSan) → tests Kotlin + captures → APK signé → pré-release `preview` (PR) ou Release `v0.<phase>.<run>` (main). Test de fumée sur émulateur x86_64 en parallèle.

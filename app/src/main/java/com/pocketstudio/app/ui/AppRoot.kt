@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Checklist
 import androidx.compose.material.icons.filled.GraphicEq
+import androidx.compose.material.icons.filled.Equalizer
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.Piano
 import androidx.compose.material.icons.filled.Tune
@@ -50,6 +51,8 @@ import com.pocketstudio.app.Metrics
 import com.pocketstudio.app.acid.AcidActions
 import com.pocketstudio.app.acid.AcidScreen
 import com.pocketstudio.app.latency.LatencyScreen
+import com.pocketstudio.app.mixer.MixerActions
+import com.pocketstudio.app.mixer.MixerScreen
 import com.pocketstudio.app.latency.LatencyViewModel
 import com.pocketstudio.app.recette.RecetteScreen
 import com.pocketstudio.app.recette.RecetteViewModel
@@ -68,11 +71,11 @@ enum class AppTab(val label: String, val icon: ImageVector) {
     Rythme("Rythme", Icons.Filled.GridView),
     Acide("Acide", Icons.Filled.GraphicEq),
     Synthe("Synthé", Icons.Filled.Piano),
+    Mixeur("Mixeur", Icons.Filled.Equalizer),
     Outils("Outils", Icons.Filled.Tune),
-    Recette("Recette", Icons.Filled.Checklist),
 }
 
-private enum class ToolPage(val label: String) { Latence("Latence"), Son("Son de test") }
+private enum class ToolPage(val label: String) { Recette("Recette"), Latence("Latence"), Son("Son test") }
 
 @Composable
 fun AppRoot() {
@@ -83,7 +86,7 @@ fun AppRoot() {
     val recetteVm: RecetteViewModel = viewModel()
     val rhythmVm: RhythmViewModel = viewModel()
     var tab by rememberSaveable { mutableStateOf(AppTab.Rythme) }
-    var toolPage by rememberSaveable { mutableStateOf(ToolPage.Latence) }
+    var toolPage by rememberSaveable { mutableStateOf(ToolPage.Recette) }
 
     val engineAvailable = NativeEngine.isAvailable
     val stream by Metrics.streamInfo.collectAsStateWithLifecycle()
@@ -210,6 +213,23 @@ fun AppRoot() {
                         ),
                     )
                 }
+                AppTab.Mixeur -> {
+                    val project by rhythmVm.project.collectAsStateWithLifecycle()
+                    val meters by rhythmVm.meters.collectAsStateWithLifecycle()
+                    LaunchedEffect(Unit) {
+                        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollMeters() }
+                    }
+                    MixerScreen(
+                        channels = project.mixer.channels,
+                        meters = meters,
+                        actions = MixerActions(
+                            setVolume = rhythmVm::setChannelVolume,
+                            setPan = rhythmVm::setChannelPan,
+                            toggleMute = rhythmVm::toggleMute,
+                            toggleSolo = rhythmVm::toggleSolo,
+                        ),
+                    )
+                }
                 AppTab.Outils -> Column {
                     TabRow(selectedTabIndex = toolPage.ordinal, containerColor = Neon.Surface, contentColor = Neon.Cyan) {
                         ToolPage.entries.forEach { page ->
@@ -222,6 +242,17 @@ fun AppRoot() {
                         }
                     }
                     when (toolPage) {
+                        ToolPage.Recette -> {
+                            val state by recetteVm.state.collectAsStateWithLifecycle()
+                            RecetteScreen(
+                                state = state,
+                                stream = stream,
+                                roundTripMs = roundTrip,
+                                onUpdate = recetteVm::update,
+                                onSendReport = { recetteVm.buildReport { openUri(context, it) } },
+                                onReportProblem = { text -> recetteVm.buildProblem(text) { openUri(context, it) } },
+                            )
+                        }
                         ToolPage.Latence -> {
                             val state by latencyVm.state.collectAsStateWithLifecycle()
                             LatencyScreen(
@@ -247,17 +278,6 @@ fun AppRoot() {
                             )
                         }
                     }
-                }
-                AppTab.Recette -> {
-                    val state by recetteVm.state.collectAsStateWithLifecycle()
-                    RecetteScreen(
-                        state = state,
-                        stream = stream,
-                        roundTripMs = roundTrip,
-                        onUpdate = recetteVm::update,
-                        onSendReport = { recetteVm.buildReport { openUri(context, it) } },
-                        onReportProblem = { text -> recetteVm.buildProblem(text) { openUri(context, it) } },
-                    )
                 }
             }
         }

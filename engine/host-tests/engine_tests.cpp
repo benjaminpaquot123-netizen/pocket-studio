@@ -15,6 +15,7 @@
 
 #include "AcidTrack.h"
 #include "DrumKit.h"
+#include "Mixer.h"
 #include "Engine.h"
 #include "RoundTripMeter.h"
 #include "Sequencer.h"
@@ -822,6 +823,62 @@ void testSynthThroughEngine() {
     CHECK(tail < 1e-3f);
 }
 
+
+// Feeds constant-level mono sources through the mixer and returns interleaved stereo.
+std::vector<float> mixConstant(ps::Mixer& mixer, float drums, float acid, float synth, int frames = 9600) {
+    std::vector<float> a(static_cast<size_t>(frames), drums), b(static_cast<size_t>(frames), acid),
+        c(static_cast<size_t>(frames), synth), out(static_cast<size_t>(frames) * 2);
+    const float* ch[ps::Mixer::kChannels] = {a.data(), b.data(), c.data()};
+    mixer.process(ch, nullptr, out.data(), frames, 2);
+    return out;
+}
+
+void testMixerPanMuteSolo() {
+    ps::Mixer mixer;
+    mixer.prepare(kRate);
+    auto last = [](const std::vector<float>& v, int side) { return v[v.size() - 2 + static_cast<size_t>(side)]; };
+
+    auto centre = mixConstant(mixer, 0.2f, 0.0f, 0.0f);
+    CHECK(std::fabs(last(centre, 0) - 0.2f) < 1e-3f && std::fabs(last(centre, 1) - 0.2f) < 1e-3f);  // unity at centre
+
+    mixer.setPan(0, -1.0f);
+    auto left = mixConstant(mixer, 0.2f, 0.0f, 0.0f);
+    CHECK(last(left, 1) < 1e-3f && last(left, 0) > 0.25f);
+    mixer.setPan(0, 0.0f);
+
+    mixer.setMute(1, true);
+    auto muted = mixConstant(mixer, 0.0f, 0.3f, 0.0f);
+    CHECK(std::fabs(last(muted, 0)) < 1e-4f);
+    mixer.setMute(1, false);
+
+    mixer.setSolo(2, true);
+    auto solo = mixConstant(mixer, 0.2f, 0.2f, 0.1f);
+    CHECK(std::fabs(last(solo, 0) - 0.1f) < 1e-3f);  // only the synth
+    mixer.setSolo(2, false);
+
+    mixer.setVolume(0, 0.4f);  // half the unity fader -> -12 dB with the quadratic law
+    auto quiet = mixConstant(mixer, 0.4f, 0.0f, 0.0f);
+    CHECK(std::fabs(last(quiet, 0) - 0.1f) < 1e-3f);
+}
+
+void testLimiterHoldsTheCeiling() {
+    ps::Mixer mixer;
+    mixer.prepare(kRate);
+    auto loud = mixConstant(mixer, 0.9f, 0.9f, 0.9f);  // 2.7 summed
+    float peak = 0.0f;
+    for (float v : loud) peak = std::max(peak, std::fabs(v));
+    CHECK(peak <= ps::Mixer::kCeiling + 1e-6f);
+    CHECK(mixer.limiterGain() < 0.5f);
+    CHECK(mixer.takeMasterPeak() > 0.8f);
+    CHECK(mixer.takeChannelPeak(0) > 0.8f);
+    CHECK(mixer.takeChannelPeak(0) == 0.0f);  // reading resets the meter
+
+    // Quiet material passes untouched once the limiter has recovered.
+    mixConstant(mixer, 0.0f, 0.0f, 0.0f, kRate);
+    auto quiet = mixConstant(mixer, 0.3f, 0.0f, 0.0f);
+    CHECK(std::fabs(quiet.back() - 0.3f) < 1e-3f);
+}
+
 struct TestCase {
     const char* name;
     std::function<void()> fn;
@@ -867,6 +924,8 @@ int main(int argc, char** argv) {
         {"synth_on_time_and_release", testSynthNoteStartsOnTimeAndReleases},
         {"synth_voices_and_cpu", testSynthVoiceStealingAndCpu},
         {"synth_through_engine", testSynthThroughEngine},
+        {"mixer_pan_mute_solo", testMixerPanMuteSolo},
+        {"limiter_ceiling", testLimiterHoldsTheCeiling},
     };
     for (const auto& t : tests) {
         const int before = g_failures;

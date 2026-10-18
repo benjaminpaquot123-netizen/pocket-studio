@@ -24,6 +24,13 @@ object NativeEngine {
     private const val CMD_SYNTH_NOTE_OFF = 17
     private const val CMD_SYNTH_PARAM = 18
     private const val CMD_SYNTH_ALL_OFF = 19
+    private const val CMD_CHANNEL_VOLUME = 20
+    private const val CMD_CHANNEL_PAN = 21
+    private const val CMD_CHANNEL_MUTE = 22
+    private const val CMD_CHANNEL_SOLO = 23
+
+    /** Mixer channels: 0 drums, 1 acid bass, 2 synth. */
+    const val MIXER_CHANNELS = 3
 
     const val LANES = 16
 
@@ -58,6 +65,13 @@ object NativeEngine {
     /** [param] in Synth::Param order, [value] 0..1. */
     fun setSynthParam(param: Int, value: Float) = post(CMD_SYNTH_PARAM, value, param)
     fun synthAllOff() = post(CMD_SYNTH_ALL_OFF, 0f)
+
+    fun setChannelVolume(ch: Int, v: Float) = post(CMD_CHANNEL_VOLUME, v, ch)
+    fun setChannelPan(ch: Int, pan: Float) = post(CMD_CHANNEL_PAN, pan, ch)
+    fun setChannelMute(ch: Int, on: Boolean) = post(CMD_CHANNEL_MUTE, if (on) 1f else 0f, ch)
+    fun setChannelSolo(ch: Int, on: Boolean) = post(CMD_CHANNEL_SOLO, if (on) 1f else 0f, ch)
+    /** Writes into [out] (size 5): peaks of drums, acid, synth, master, then limiter gain. */
+    external fun mixerMeters(out: FloatArray)
 
     /** Plays a pad right now (live). */
     fun triggerPad(lane: Int, velocity: Float) = post(CMD_TRIGGER_PAD, velocity, lane)

@@ -10,15 +10,6 @@ namespace ps {
 namespace {
 constexpr double kTwoPi = 6.28318530717958647692;
 
-// Safety stage until the master limiter (milestone 1.5): transparent below 0.8,
-// rounds peaks above instead of hard clipping, never exceeds 1.
-inline float softClip(float x) {
-    const float a = std::fabs(x);
-    if (a <= 0.8f) return x;
-    const float over = (a - 0.8f) / 0.2f;
-    const float shaped = 0.8f + 0.2f * (over / (1.0f + over));
-    return x < 0.0f ? -shaped : shaped;
-}
 }  // namespace
 
 Engine::Engine(int sampleRate) {
@@ -45,6 +36,7 @@ void Engine::prepare(int sampleRate) {
     drums_.prepare(sampleRate);
     acid_.prepare(sampleRate);
     synth_.prepare(sampleRate);
+    mixer_.prepare(sampleRate);
 }
 
 void Engine::applyCommand(const Command& command) {
@@ -113,6 +105,18 @@ void Engine::applyCommand(const Command& command) {
         case CommandType::SynthAllOff:
             synth_.allNotesOff();
             break;
+        case CommandType::SetChannelVolume:
+            mixer_.setVolume(command.a, command.value);
+            break;
+        case CommandType::SetChannelPan:
+            mixer_.setPan(command.a, command.value);
+            break;
+        case CommandType::SetChannelMute:
+            mixer_.setMute(command.a, command.value > 0.5f);
+            break;
+        case CommandType::SetChannelSolo:
+            mixer_.setSolo(command.a, command.value > 0.5f);
+            break;
         case CommandType::TriggerPad:
             if (command.a >= 0 && command.a < kLanes) {
                 drums_.trigger(command.a, command.value, 0);
@@ -148,22 +152,31 @@ void Engine::onStep(int offset, int step) {
 }
 
 void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
-    float* mix = mix_.data();
-    std::fill(mix, mix + numFrames, 0.0f);
+    float* direct = mix_.data();  // metronome + test tone: straight to the master
+    float* drums = drumsBuf_.data();
+    float* acid = acidBuf_.data();
+    float* synth = synthBuf_.data();
+    std::fill(direct, direct + numFrames, 0.0f);
+    std::fill(drums, drums + numFrames, 0.0f);
+    std::fill(acid, acid + numFrames, 0.0f);
+    std::fill(synth, synth + numFrames, 0.0f);
+
     sequencer_.advance(numFrames, [this](int offset, int step) { onStep(offset, step); });
-    metronome_.render(mix, numFrames);
-    drums_.render(mix, numFrames);
-    acid_.render(mix, numFrames);
-    synth_.render(mix, numFrames);
+    metronome_.render(direct, numFrames);
+    drums_.render(drums, numFrames);
+    acid_.render(acid, numFrames);
+    synth_.render(synth, numFrames);
 
     gain_.setTarget(playing_.load(std::memory_order_relaxed) ? volume_ : 0.0f);
     const double invRate = 1.0 / sampleRate_;
     for (int i = 0; i < numFrames; ++i) {
-        const float sample = softClip(static_cast<float>(std::sin(phase_)) * gain_.next() + mix[i]);
+        direct[i] += static_cast<float>(std::sin(phase_)) * gain_.next();
         phase_ += kTwoPi * frequency_.next() * invRate;
         if (phase_ >= kTwoPi) phase_ -= kTwoPi;
-        for (int c = 0; c < outputChannels; ++c) output[i * outputChannels + c] = sample;
     }
+
+    const float* channels[Mixer::kChannels] = {drums, acid, synth};
+    mixer_.process(channels, direct, output, numFrames, outputChannels);
 }
 
 void Engine::process(const float* input, int numInputFrames, int inputChannels,

@@ -25,7 +25,7 @@ Feu vert de Benjamin (D4 = A) : fusion de la pull request en fin de phase.
 - Critères : un rapport envoyé depuis le téléphone arrive en issue avec version, appareil, latence, décrochages et journal.
 
 ## Phase 1 : MVP jouable
-- [ ] 1.1 Modèle de projet (module project-model, JSON, écritures atomiques, sauvegarde auto, annuler/rétablir)
+- [x] 1.1 Modèle de projet (module project-model, JSON, écritures atomiques, sauvegarde auto, annuler/rétablir) : branché dans l'appli avec 1.2/1.3
 - [ ] 1.2 Transport : tempo 40-300 BPM, tap tempo, swing, métronome, décompte ; séquenceur à l'échantillon près
 - [ ] 1.3 Boîte à rythmes 16 pas, 16 pads, kit 808/909 synthétisé (DaisySP), vélocité
 - [ ] 1.4 Synthé soustractif (2 osc, sub, bruit, ladder + SVF, 2 env, 2 LFO), clavier simple

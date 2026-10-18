@@ -5,6 +5,7 @@
 | [Oboe](https://github.com/google/oboe) | 1.11.0 | Apache-2.0 | Flux audio temps réel (AAudio, exclusif, basse latence) |
 | [Jetpack Compose](https://developer.android.com/jetpack/compose) (BOM) | 2026.09.00 | Apache-2.0 | Interface |
 | AndroidX Activity / Lifecycle / Core | 1.13.0 / 2.11.0 / 1.19.1 | Apache-2.0 | Socle Android, ViewModel |
+| [kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization) | 1.11.0 | Apache-2.0 | Format JSON des projets |
 | [kotlinx.coroutines](https://github.com/Kotlin/kotlinx.coroutines) | 1.11.0 | Apache-2.0 | Tâches asynchrones |
 | [Robolectric](https://github.com/robolectric/robolectric) | 4.17 | MIT | Tests sur JVM (tests uniquement) |
 | [Roborazzi](https://github.com/takahirom/roborazzi) | 1.76.0 | Apache-2.0 | Captures d'écran automatiques (tests uniquement) |

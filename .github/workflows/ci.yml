@@ -69,7 +69,7 @@ jobs:
           key: android-ndk
       - uses: gradle/actions/setup-gradle@v6
       - name: Unit tests and screenshots
-        run: ./gradlew :app:testDebugUnitTest :app:recordRoborazziDebug
+        run: ./gradlew :project-model:test :app:testDebugUnitTest :app:recordRoborazziDebug
       - name: Build release APK
         run: |
           ./gradlew :app:assembleRelease

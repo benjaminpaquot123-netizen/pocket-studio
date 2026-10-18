@@ -13,10 +13,12 @@
 
 - Recette sur le Honor Magic 8 Pro : sortie 10 ms (AAudio exclusif MMAP, burst 96), aller-retour haut-parleur → micro 44,5 ms stable (45,2 / 44,4 / 44,5).
 
+- Jalon 1.1 : module `project-model` (Kotlin pur) : format JSON tolérant aux versions, `ProjectStore` à écriture atomique + sauvegarde de secours, `History` annuler/rétablir illimité avec regroupement des gestes, `ProjectSession` à sauvegarde automatique différée. 15 tests, dont plantage en pleine écriture.
+
 ## À retenir pour la suite
 - Afficher une « latence de jeu » (sortie + tactile) à côté de l'aller-retour ; essayer un buffer d'un seul burst.
 - MagicOS chiffre logcat (bloc HKS…HKE) : remplacer `LogTail` par un journal circulaire interne à l'appli.
 - Recette phase 0 : issues #2 et #3 (doublon), 8/8 ✅, fermées.
 
 ## Prochaine étape exacte
-1. Phase 1, jalon 1.1 : module `project-model` (projet JSON, écritures atomiques, sauvegarde auto, annuler/rétablir illimité).
+1. Phase 1, jalon 1.2 : transport (tempo, tap tempo, swing, métronome, décompte) et séquenceur à l'échantillon près dans `engine/core`, avec tests Linux de timing ; brancher `ProjectSession` dans l'appli (sauvegarde forcée à la mise en arrière-plan).

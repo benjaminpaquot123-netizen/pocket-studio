@@ -23,7 +23,7 @@ ui-components : thème sombre néon, cartes, VU-mètre (réutilisés par tous le
 | `app` | Activité unique, écrans, rapports, mises à jour | Phase 0 |
 | `engine` | Moteur C++ + JNI | Phase 0 |
 | `ui-components` | Thème et composants | Phase 0 |
-| `project-model` | Projet JSON + audio, écritures atomiques, annuler/rétablir | Phase 1 |
+| `project-model` | Projet JSON (Kotlin pur), écritures atomiques + secours, annuler/rétablir, sauvegarde auto | Phase 1 (1.1 fait) |
 | `dsp` | Briques DSP tierces (DaisySP, Airwindows…) | Phase 1 |
 | `separation` | StemSeparator, Demucs ONNX | Phase 3 |
 

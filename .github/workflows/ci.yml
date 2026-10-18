@@ -36,10 +36,10 @@ jobs:
       - name: Run host tests with sanitizers
         env:
           HOST_TESTS_BUILD_DIR: build/host-tests-asan
-          CMAKE_EXTRA_ARGS: >-
-            -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
-            "-DCMAKE_CXX_FLAGS=-fsanitize=address,undefined -fno-sanitize-recover=all"
-            -DCMAKE_EXE_LINKER_FLAGS=-fsanitize=address,undefined
+          CMAKE_EXTRA_ARGS: -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+          # Picked up by CMake at configure time; recover=all makes UBSan findings fatal.
+          CXXFLAGS: -fsanitize=address,undefined -fno-sanitize-recover=all
+          LDFLAGS: -fsanitize=address,undefined
         run: ./scripts/host-tests.sh
       - uses: actions/upload-artifact@v7
         if: always()

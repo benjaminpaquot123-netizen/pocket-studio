@@ -7,7 +7,10 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.pocketstudio.engine.NativeEngine
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
+import com.pocketstudio.app.latency.LatencyUiState
+import com.pocketstudio.app.latency.LatencyViewModel
 import com.pocketstudio.engine.LatencyStart
 import com.pocketstudio.engine.LatencyState
 import org.junit.Assert.assertEquals
@@ -51,6 +54,18 @@ class SmokeTest {
         compose.waitUntil(6_000) { NativeEngine.latencyState() == LatencyState.Done }
         val result = NativeEngine.latencyResult()
         assertTrue("microphone delivered ${result.inputFrames} frames (${NativeEngine.inputDescription()})", result.inputFrames > 0)
+
+        // Same path as the Latence screen (ViewModel -> JNI -> engine). The emulator mic is silent,
+        // so the run may fail, but never because the meter did not run (NoInput) or was cut.
+        val vm = LatencyViewModel()
+        InstrumentationRegistry.getInstrumentation().runOnMainSync { vm.measure(wanted = 1, maxAttempts = 2) }
+        compose.waitUntil(30_000) { vm.state.value.let { it is LatencyUiState.Measured || it is LatencyUiState.Failed } }
+        val diagnostic = when (val s = vm.state.value) {
+            is LatencyUiState.Measured -> s.diagnostic
+            is LatencyUiState.Failed -> s.diagnostic
+            else -> ""
+        }
+        assertTrue("meter must run: $diagnostic", !diagnostic.contains("NoInput") && !diagnostic.contains("Interrupted"))
 
         compose.onNodeWithTag("tab_Latence").performClick()
         compose.onNodeWithTag("latency").assertIsDisplayed()

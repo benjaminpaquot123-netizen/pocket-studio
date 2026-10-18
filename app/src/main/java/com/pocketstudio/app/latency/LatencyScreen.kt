@@ -45,7 +45,12 @@ fun LatencyScreen(
 
         NeonCard(accent = Neon.Cyan) {
             SectionLabel("Aller-retour mesuré")
-            val shown = (state as? LatencyUiState.Measured)?.roundTripMs ?: lastRoundTripMs
+            // A failed run shows no number: the previous success is mentioned below instead.
+            val shown = when (state) {
+                is LatencyUiState.Measured -> state.roundTripMs
+                is LatencyUiState.Failed -> null
+                else -> lastRoundTripMs
+            }
             val color = when {
                 shown == null -> Neon.TextSecondary
                 shown < TARGET_MS -> Neon.Acid
@@ -73,6 +78,9 @@ fun LatencyScreen(
                 )
                 is LatencyUiState.Failed -> {
                     Text(state.message, color = Neon.Red)
+                    lastRoundTripMs?.let {
+                        Text("Dernière mesure réussie : ${IssueReport.formatMs(it)}", color = Neon.TextSecondary)
+                    }
                     Text(
                         "Détails techniques (joints au rapport) : ${state.diagnostic}",
                         color = Neon.TextSecondary,

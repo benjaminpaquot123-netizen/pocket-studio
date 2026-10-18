@@ -207,6 +207,18 @@ AudioHost::LatencyStart AudioHost::startLatencyTest() {
         std::lock_guard<std::mutex> postGuard(postLock_);
         engine_.post({CommandType::StartLatencyTest, 0.0f});
     }
+    // The audio thread picks the command up on its next callback: only report "started"
+    // once the meter really runs, so callers never mistake "not started yet" for "finished".
+    for (int waited = 0; waited < 500; waited += 2) {
+        if (engine_.latencyMeter().state() != RoundTripMeter::State::Idle) break;
+        std::this_thread::sleep_for(std::chrono::milliseconds(2));
+    }
+    if (engine_.latencyMeter().state() == RoundTripMeter::State::Idle) {
+        describeLocked("le moteur n'a pas lancé la mesure");
+        closeLocked();
+        restoreOutputLocked();
+        return LatencyStart::OutputFailed;
+    }
     describeLocked("en cours");
     return LatencyStart::Ok;
 }

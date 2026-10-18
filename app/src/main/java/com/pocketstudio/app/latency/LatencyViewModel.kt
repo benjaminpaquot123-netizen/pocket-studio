@@ -70,8 +70,9 @@ class LatencyViewModel : ViewModel() {
         try {
             val start = NativeEngine.startLatencyTest()
             if (start != LatencyStart.Ok) return RunOutcome(start, null, NativeEngine.inputDescription())
+            // Wait for Done (not merely "not Running"): the engine reports Done when the recording is full.
             var waited = 0
-            while (NativeEngine.latencyState() == LatencyState.Running && waited < 4000) {
+            while (NativeEngine.latencyState() != LatencyState.Done && waited < 4000) {
                 delay(50)
                 waited += 50
             }

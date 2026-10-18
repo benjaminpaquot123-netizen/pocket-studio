@@ -14,3 +14,6 @@
 | 2026-10-18 | Buffer = 2 bursts | Compromis classique latence/sûreté ; à ajuster avec les mesures de décrochages | `setBufferSizeInFrames` dans `AudioHost.cpp` |
 | 2026-10-18 | Captures d'écran Roborazzi enregistrées dans `app/screenshots/` et commitées | Visibles directement dans la pull request | Ne plus les commiter, garder l'artefact CI |
 | 2026-10-18 | Couleurs : cyan #00E5FF, magenta #FF2BD6, vert acide #B6FF3B sur fond #0A0A12 | Thème sombre néon demandé | `ui-components/.../Theme.kt` |
+| 2026-10-18 | Jalon « Acide » (Open303, MIT) inséré entre la phase 1 et la phase 2 | Décision de Benjamin (D5) | Déplacer le jalon dans ROADMAP.md |
+| 2026-10-18 | Aucun nom de marque Roland dans l'interface : on parle de « basse acide » | Demande de Benjamin | Aucun |
+| 2026-10-18 | Revue critique par un sous-agent neuf à chaque fin de phase | Règle permanente demandée par Benjamin | Aucun |

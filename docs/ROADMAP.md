@@ -33,6 +33,14 @@ Feu vert de Benjamin (D4 = A) : fusion de la pull request en fin de phase.
 - [ ] 1.6 Export WAV 24 bits/48 kHz + partage ; lecture en Foreground Service + exclusion batterie guidée
 - Critères : un beat de 4 mesures composé, sauvegardé, rouvert et exporté ; 0 craquement à 256 échantillons.
 
+## Jalon Acide (priorité de Benjamin, entre la phase 1 et la phase 2)
+- [ ] A.1 Intégrer Open303 (Robin Schmidt, MIT) dans `dsp/`, voix monophonique dans le graphe audio ; tests Linux (pas de NaN, slide continu, accent plus fort)
+- [ ] A.2 Séquenceur acide par pas (16 pas, jusqu'à 64) : note, accent, slide, octave haut/bas, silence ; à l'échantillon près dans le thread audio
+- [ ] A.3 Réglages : cutoff, résonance, env mod, decay, accent, accord, onde scie/carré ; saturation juste derrière la voix
+- [ ] A.4 Générateur de patterns acides façon The Endless Acid Banger (gamme, densité, accents, slides), avec verrous
+- [ ] A.5 Écran « Acide » : grille de pas lisible au doigt, potards, bouton « Génère-moi un pattern »
+- Critères : un pattern généré tourne en boucle avec la boîte à rythmes, sans craquement à 256 échantillons ; slide et accent audibles ; aucun nom de marque Roland dans l'interface.
+
 ## Phase 2 : sampler et notes
 - [ ] 2.1 Import MP3/WAV/FLAC/M4A, enregistrement micro, forme d'onde zoomable
 - [ ] 2.2 Découpe (attaques avec aubio, grille, manuelle), tranches vers pads, ADSR, pitch, reverse, boucle, groupes d'étouffement
@@ -53,7 +61,7 @@ Feu vert de Benjamin (D4 = A) : fusion de la pull request en fin de phase.
 - [ ] 4.4 Effets de performance, pad XY
 
 ## Phase 5 : synthèse avancée et connectivité
-- [ ] 5.1 Plaits, FM 4 opérateurs, basse 303
+- [ ] 5.1 Plaits, FM 4 opérateurs
 - [ ] 5.2 Presets classés, favoris, randomisation intelligente
 - [ ] 5.3 MIDI USB/BLE, horloge MIDI, Ableton Link
 - [ ] 5.4 Basic Pitch (audio vers MIDI)

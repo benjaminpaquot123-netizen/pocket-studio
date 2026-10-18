@@ -4,6 +4,7 @@ Seul endroit à relire avant de lancer. Change une lettre si tu n'es pas d'accor
 - D2 Nom de l'appli : « Pocket Studio »
 - D3 Priorité : A = bases musicales d'abord, remix en phase 3 (recommandé) | B = séparation de pistes et remix juste après la phase 0. Choix : A
 - D4 Mon feu vert : A = à la fin de chaque phase (recommandé) | B = à la fin de chaque jalon. Choix : A
+- D5 (ajoutée le 2026-10-18) Priorité acid : un jalon « Acide » (basse acide sur Open303 + séquenceur + générateur de patterns) passe juste après la phase 1, avant la phase 2.
 
 # Mission
 Tu es un développeur Android senior spécialisé en audio temps réel et en DSP, et tu pilotes ce projet de bout en bout. Construis l'application nommée en D2 : une appli Android native de création de musique électronique, facile à prendre en main mais complète et soignée, au niveau de Koala Sampler, Ableton Note, Novation Groovebox ou FL Studio Mobile.
@@ -34,6 +35,7 @@ Pistes à évaluer en priorité :
 - Audio temps réel : Google Oboe (AAudio, mode exclusif, LowLatency).
 - DSP de base : DaisySP (oscillateurs, filtres, enveloppes, effets), Airwindows (réverbes, saturations, compresseurs).
 - Moteurs de synthèse : algorithmes Mutable Instruments (Plaits, Braids, Rings, Clouds), MSFA/Dexed pour la FM, Surge XT comme référence (wavetable, filtres).
+- Basse acide : Open303 de Robin Schmidt (licence MIT), émulation open source de la célèbre basse acide des années 80.
 - Time-stretch et pitch-shift : Signalsmith Stretch (sinon Rubber Band).
 - Analyse : aubio (tempo, attaques, beat tracking), libKeyFinder (tonalité, comme Mixxx).
 - Décodage/encodage : MediaExtractor/MediaCodec d'Android, dr_libs ou miniaudio, LAME pour le MP3, libFLAC.
@@ -57,7 +59,7 @@ Pistes à évaluer en priorité :
 1. Projet et transport : tempo 40-300 BPM avec tap tempo, swing global, métronome, décompte, sauvegarde automatique à chaque action, annuler/rétablir illimité.
 2. Boîte à rythmes : 16 pads, patterns de 16 à 64 pas, vélocité, probabilité, ratchets, micro-décalage, conditions de déclenchement, verrous de paramètres par pas (façon Elektron), générateur euclidien, randomisation avec verrous. Kits fournis générés par synthèse (type 808/909) ou en CC0, aucun sample sous copyright.
 3. Sampler : import MP3/WAV/FLAC/M4A ou enregistrement micro, forme d'onde zoomable, découpe automatique (attaques, grille) ou manuelle, tranches vers pads, ADSR, pitch, time-stretch, reverse, boucle, groupes d'étouffement, rééchantillonnage du master (façon Koala).
-4. Synthés : soustractif analogique (2 oscillateurs, sub, bruit, filtre ladder et SVF, 2 enveloppes, 2 LFO), macro-oscillateur type Plaits, FM 4 opérateurs, basse 303 avec slide et accent. Nombreux presets classés (basses, leads, pads, plucks, claviers, FX), favoris, randomisation intelligente.
+4. Synthés : soustractif analogique (2 oscillateurs, sub, bruit, filtre ladder et SVF, 2 enveloppes, 2 LFO), macro-oscillateur type Plaits, FM 4 opérateurs, basse acide (Open303) avec slide et accent : voir le jalon Acide. Nombreux presets classés (basses, leads, pads, plucks, claviers, FX), favoris, randomisation intelligente.
 5. Piano roll : vélocité, quantification avec intensité, verrouillage de gamme, accords en un geste, progressions courantes, arpégiateur, strum, notes fantômes des autres pistes.
 6. Jeu en direct : clavier limité à la gamme, pads d'accords, note repeat, position du doigt sur le pad comme modulation, enregistrement quantifié.
 7. Arrangement : vue Session (clips × scènes, lancement quantifié) et vue Morceau (timeline linéaire), automation dessinée ou enregistrée depuis les potards.
@@ -96,10 +98,11 @@ Je ne dois jamais être le premier à découvrir qu'un APK ne s'installe pas, pl
 Travaille par phases, découpées en jalons dans ROADMAP.md. Chaque jalon livre un APK d'aperçu, la liste de recette à jour dans l'appli et son changelog. Mon feu vert (selon D4) se résume à fusionner une pull request : organise tes branches comme tu veux, pourvu que ça tienne en un seul bouton pour moi. Si D3 = B, la phase 3 passe juste après la phase 0.
 - Phase 0 : squelette, CI et Releases, moteur Oboe qui joue une sinusoïde, écran de mesure de latence, outils de recette.
 - Phase 1 (MVP jouable) : transport, boîte à rythmes 16 pas avec kit synthétisé, un synthé soustractif, mixeur simple, sauvegarde, export WAV.
+- Jalon Acide (juste après la phase 1, avant la phase 2) : basse acide basée sur Open303 (Robin Schmidt, licence MIT) ; séquenceur façon boîte acide des années 80, par pas : note, accent, slide, octave haut/bas ; réglages cutoff, résonance, env mod, decay, accent, accord, onde scie/carré ; une saturation juste derrière ; générateur de patterns acides façon The Endless Acid Banger. Aucun nom de marque Roland dans l'appli (ni « Roland », ni « TB-303 », ni « 303 » dans l'interface).
 - Phase 2 : sampler, découpe, import audio, piano roll, verrouillage de gamme, accords.
 - Phase 3 : séparation Demucs sur l'appareil, détection tempo/tonalité, mode Remix.
 - Phase 4 : effets complets, sidechain, automation, vues Session et Morceau, effets de performance.
-- Phase 5 : synthés Plaits, FM et 303, presets, MIDI, Ableton Link, Basic Pitch.
+- Phase 5 : synthés Plaits et FM, presets, MIDI, Ableton Link, Basic Pitch.
 - Phase 6 : génération Stable Audio Open Small, modèles par genre, tutoriel, finitions.
 
 # Barre de qualité

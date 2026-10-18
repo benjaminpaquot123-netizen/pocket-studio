@@ -1,6 +1,6 @@
 # Pocket Studio : règles permanentes
 
-Référence complète : `docs/SPEC.md` (le prompt d'origine, ne jamais le modifier).
+Référence complète : `docs/SPEC.md` (le prompt d'origine ; ne le modifier que sur demande de Benjamin).
 Au début de chaque session : lire ce fichier, `docs/PROGRESS.md` et les issues GitHub ouvertes (rapports de recette et bugs).
 À la fin de chaque session : commit poussé (même en plein travail) et `docs/PROGRESS.md` à jour.
 « continue » = reprendre la prochaine étape notée dans `docs/PROGRESS.md`, sans rien demander.
@@ -29,6 +29,12 @@ Réutiliser l'open source éprouvé (GPL/AGPL acceptées, usage personnel). Vér
 - `./gradlew :app:assembleRelease` doit passer. La CI ajoute un test de fumée sur émulateur x86_64.
 - CI rouge : lire les journaux, corriger, relancer. N'en parler que si réglé ou vraiment bloqué.
 
+## Revue de fin de phase (obligatoire)
+À la fin de chaque phase, AVANT de demander le feu vert : faire relire par un sous-agent neuf qui n'a pas écrit le code.
+- Cible : les fichiers modifiés pendant la phase et les zones sensibles : callback audio sans allocation ni verrou, sauvegarde sans perte, plantages, fuites mémoire, tests qui vérifient vraiment quelque chose.
+- Corriger tout ce qui est grave, noter le reste dans `docs/REVIEW.md`.
+- Résumer le tout à Benjamin en trois lignes.
+
 ## Livraison
 - Une branche et une pull request par phase ; chaque PR publie l'aperçu sur la pré-release fixe `preview`.
 - Chaque fusion sur main publie une Release ; `releases/latest/download/pocket-studio.apk` = dernière version stable.
@@ -40,4 +46,5 @@ Réutiliser l'open source éprouvé (GPL/AGPL acceptées, usage personnel). Vér
 - `docs/ROADMAP.md` : phases, jalons, critères d'acceptation.
 - `docs/PROGRESS.md` : où on en est, prochaine étape exacte.
 - `docs/DECISIONS.md` : journal des décisions.
+- `docs/REVIEW.md` : revues de fin de phase et points restants.
 - `docs/ARCHITECTURE.md` : schéma et modules.

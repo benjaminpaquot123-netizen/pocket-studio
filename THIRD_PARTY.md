@@ -9,4 +9,4 @@
 | [Robolectric](https://github.com/robolectric/robolectric) | 4.17 | MIT | Tests sur JVM (tests uniquement) |
 | [Roborazzi](https://github.com/takahirom/roborazzi) | 1.76.0 | Apache-2.0 | Captures d'écran automatiques (tests uniquement) |
 
-Prévu dans les phases suivantes (à vérifier au moment de l'intégration) : DaisySP (MIT), Airwindows (MIT), Mutable Instruments (MIT/GPL), MSFA/Dexed (Apache-2.0/GPL), Signalsmith Stretch (MIT), aubio (GPL-3.0), libKeyFinder (GPL-3.0), ONNX Runtime (MIT), HT-Demucs (MIT), Basic Pitch (Apache-2.0), Ableton Link (GPL-2.0), LiteRT (Apache-2.0).
+Prévu dans les phases suivantes (à vérifier au moment de l'intégration) : Open303 (MIT, vérifiée le 2026-10-18, jalon Acide), DaisySP (MIT), Airwindows (MIT), Mutable Instruments (MIT/GPL), MSFA/Dexed (Apache-2.0/GPL), Signalsmith Stretch (MIT), aubio (GPL-3.0), libKeyFinder (GPL-3.0), ONNX Runtime (MIT), HT-Demucs (MIT), Basic Pitch (Apache-2.0), Ableton Link (GPL-2.0), LiteRT (Apache-2.0).

@@ -128,6 +128,8 @@ jobs:
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     env:
       VERSION_CODE: ${{ github.run_number }}
+      # Certificate of signing/release.p12; installs over previous versions only if it matches.
+      EXPECTED_CERT_SHA256: f7b61d03e07c5514caa1d961acb400dc63d60659ae71cd4a2cbfb06eaf4dc646
     steps:
       - uses: actions/checkout@v7
       - uses: actions/download-artifact@v7
@@ -143,6 +145,12 @@ jobs:
             echo "::error::Secret SIGNING_PASSWORD missing: the APK is not signed with the stable key, nothing is published."
             exit 1
           fi
+      - name: Verify APK is signed with the stable key
+        run: |
+          APKSIGNER=$(ls -d "$ANDROID_HOME"/build-tools/*/apksigner | sort -V | tail -1)
+          "$APKSIGNER" verify --print-certs dist/pocket-studio.apk | tee dist/certs.txt
+          grep -q "SHA-256 digest: ${EXPECTED_CERT_SHA256}" dist/certs.txt || {
+            echo "::error::APK is not signed with the stable release key."; exit 1; }
       - name: Publish preview (pull request)
         if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
         env:

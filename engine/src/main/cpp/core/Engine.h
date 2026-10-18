@@ -9,6 +9,7 @@
 #include "Metronome.h"
 #include "RoundTripMeter.h"
 #include "Sequencer.h"
+#include "Synth.h"
 #include "Smoother.h"
 #include "SpscQueue.h"
 
@@ -32,6 +33,10 @@ enum class CommandType : uint8_t {
     SetAcidLength,    // a: 1..64
     SetAcidRoot,      // a: MIDI note of the root
     SetAcidParam,     // a: AcidTrack::Param, value: 0..1
+    SynthNoteOn,      // a: MIDI note, value: velocity
+    SynthNoteOff,     // a: MIDI note
+    SynthParam,       // a: Synth::Param, value: 0..1
+    SynthAllOff,
 };
 
 struct Command {
@@ -79,6 +84,7 @@ public:
     // Increments every time a lane is triggered (pad lights, tests).
     uint32_t laneTriggerCount(int lane) const { return laneTriggers_[lane].load(std::memory_order_relaxed); }
     // Number of metronome clicks triggered since startup (tests).
+    int synthActiveVoices() const { return synth_.activeVoices(); }
     uint32_t acidNotesPlayed() const { return acid_.notesPlayed(); }
     uint64_t metronomeClicks() const { return metronomeClicks_.load(std::memory_order_relaxed); }
 
@@ -101,6 +107,7 @@ private:
     Metronome metronome_;
     DrumKit drums_;
     AcidTrack acid_;
+    Synth synth_;
     bool metronomeOn_ = false;
     int patternSteps_ = 16;
     float pattern_[kLanes][kMaxSteps] = {};

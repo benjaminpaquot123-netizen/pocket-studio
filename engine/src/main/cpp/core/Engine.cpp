@@ -44,6 +44,7 @@ void Engine::prepare(int sampleRate) {
     metronome_.prepare(sampleRate);
     drums_.prepare(sampleRate);
     acid_.prepare(sampleRate);
+    synth_.prepare(sampleRate);
 }
 
 void Engine::applyCommand(const Command& command) {
@@ -98,6 +99,20 @@ void Engine::applyCommand(const Command& command) {
                 acid_.setParam(static_cast<AcidTrack::Param>(command.a), command.value);
             }
             break;
+        case CommandType::SynthNoteOn:
+            synth_.noteOn(command.a, command.value);
+            break;
+        case CommandType::SynthNoteOff:
+            synth_.noteOff(command.a);
+            break;
+        case CommandType::SynthParam:
+            if (command.a >= 0 && command.a < Synth::ParamCount) {
+                synth_.setParam(static_cast<Synth::Param>(command.a), command.value);
+            }
+            break;
+        case CommandType::SynthAllOff:
+            synth_.allNotesOff();
+            break;
         case CommandType::TriggerPad:
             if (command.a >= 0 && command.a < kLanes) {
                 drums_.trigger(command.a, command.value, 0);
@@ -139,6 +154,7 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
     metronome_.render(mix, numFrames);
     drums_.render(mix, numFrames);
     acid_.render(mix, numFrames);
+    synth_.render(mix, numFrames);
 
     gain_.setTarget(playing_.load(std::memory_order_relaxed) ? volume_ : 0.0f);
     const double invRate = 1.0 / sampleRate_;

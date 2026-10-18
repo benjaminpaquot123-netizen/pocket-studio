@@ -8,6 +8,7 @@ set(DAISYSP_SOURCES
     ${DAISYSP_ROOT}/Drums/synthsnaredrum.cpp
     ${DAISYSP_ROOT}/Filters/svf.cpp
     ${DAISYSP_ROOT}/Filters/ladder.cpp
+    ${DAISYSP_ROOT}/Control/adsr.cpp
     ${DAISYSP_ROOT}/Synthesis/oscillator.cpp
 )
 set(DAISYSP_INCLUDES ${DAISYSP_ROOT} ${DAISYSP_ROOT}/Utility)

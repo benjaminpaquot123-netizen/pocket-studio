@@ -18,6 +18,7 @@
 #include "Engine.h"
 #include "RoundTripMeter.h"
 #include "Sequencer.h"
+#include "Synth.h"
 #include "SpscFloatRing.h"
 #include "SpscQueue.h"
 
@@ -731,6 +732,96 @@ void testAcidCpuBudget() {
 #endif
 }
 
+
+std::vector<float> renderSynth(ps::Synth& synth, int frames, int block = 256) {
+    std::vector<float> out(static_cast<size_t>(frames), 0.0f);
+    for (int pos = 0; pos < frames; pos += block) synth.render(out.data() + pos, std::min(block, frames - pos));
+    return out;
+}
+
+void openFilter(ps::Synth& s) {
+    s.setParam(ps::Synth::Cutoff, 1.0f);
+    s.setParam(ps::Synth::Resonance, 0.0f);
+    s.setParam(ps::Synth::FilterEnvAmount, 0.0f);
+    s.setParam(ps::Synth::SubLevel, 0.0f);
+}
+
+void testSynthPitchIsRight() {
+    ps::Synth synth;
+    synth.prepare(kRate);
+    openFilter(synth);
+    synth.setParam(ps::Synth::Osc1Wave, 1.0f);  // triangle: clean zero crossings
+    synth.setParam(ps::Synth::Osc2Wave, 1.0f);
+    synth.setParam(ps::Synth::Osc2Detune, 0.0f);
+    synth.noteOn(69, 1.0f);  // A4
+    const auto out = renderSynth(synth, kRate);
+    int crossings = 0;
+    for (int i = kRate / 2 + 1; i < kRate; ++i) {
+        if (out[static_cast<size_t>(i - 1)] < 0.0f && out[static_cast<size_t>(i)] >= 0.0f) ++crossings;
+    }
+    std::printf("  synth A4: %d Hz\n", crossings * 2);
+    CHECK(std::abs(crossings * 2 - 440) <= 4);
+}
+
+void testSynthNoteStartsOnTimeAndReleases() {
+    ps::Synth synth;
+    synth.prepare(kRate);
+    synth.setParam(ps::Synth::AmpRelease, 0.2f);
+    synth.noteOn(60, 0.8f, 100);
+    synth.noteOff(60, 12000);
+    const auto out = renderSynth(synth, kRate, 333);
+    bool silentBefore = true;
+    for (int i = 0; i < 100; ++i) silentBefore &= out[static_cast<size_t>(i)] == 0.0f;
+    CHECK(silentBefore);
+    float during = 0.0f;
+    for (int i = 2000; i < 12000; ++i) during = std::max(during, std::fabs(out[static_cast<size_t>(i)]));
+    std::printf("  synth single note peak %.3f\n", during);
+    CHECK(during > 0.15f);
+    float tail = 0.0f;
+    for (int i = kRate - 4800; i < kRate; ++i) tail = std::max(tail, std::fabs(out[static_cast<size_t>(i)]));
+    CHECK(tail < 1e-3f);
+    CHECK(synth.activeVoices() == 0);
+}
+
+void testSynthVoiceStealingAndCpu() {
+    ps::Synth synth;
+    synth.prepare(kRate);
+    synth.setParam(ps::Synth::Resonance, 0.9f);
+    synth.setParam(ps::Synth::NoiseLevel, 0.3f);
+    synth.setParam(ps::Synth::Lfo1ToPitch, 0.5f);
+    synth.setParam(ps::Synth::Lfo2ToCutoff, 0.5f);
+    for (int n = 0; n < 10; ++n) synth.noteOn(48 + n * 3, 1.0f);
+    const auto start = std::chrono::steady_clock::now();
+    const auto out = renderSynth(synth, kRate * 2);
+    const double load = std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count() / 2.0;
+    std::printf("  synth 8 voices: %.1f %% of real time on this machine\n", load * 100.0);
+    CHECK(synth.activeVoices() == ps::Synth::kVoices);
+    bool finite = true;
+    float peak = 0.0f;
+    for (float v : out) {
+        finite &= std::isfinite(v);
+        peak = std::max(peak, std::fabs(v));
+    }
+    CHECK(finite);
+    CHECK(peak < 4.0f);  // a loud 8-note cluster; the engine's master soft clip tames it
+#if !defined(__SANITIZE_ADDRESS__)
+    CHECK(load < 0.15);
+#endif
+}
+
+void testSynthThroughEngine() {
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SynthNoteOn, 0.9f, 64});
+    render(engine, kRate / 4, 256);
+    CHECK(engine.synthActiveVoices() == 1);
+    engine.post({ps::CommandType::SynthAllOff, 0.0f});
+    const auto out = render(engine, kRate * 3, 256);
+    CHECK(engine.synthActiveVoices() == 0);
+    float tail = 0.0f;
+    for (size_t i = out.size() - 4800; i < out.size(); ++i) tail = std::max(tail, std::fabs(out[i]));
+    CHECK(tail < 1e-3f);
+}
+
 struct TestCase {
     const char* name;
     std::function<void()> fn;
@@ -772,6 +863,10 @@ int main(int argc, char** argv) {
         {"acid_slide", testAcidSlideHoldsTheNote},
         {"acid_stops_cleanly", testAcidStopsCleanly},
         {"acid_cpu", testAcidCpuBudget},
+        {"synth_pitch", testSynthPitchIsRight},
+        {"synth_on_time_and_release", testSynthNoteStartsOnTimeAndReleases},
+        {"synth_voices_and_cpu", testSynthVoiceStealingAndCpu},
+        {"synth_through_engine", testSynthThroughEngine},
     };
     for (const auto& t : tests) {
         const int before = g_failures;

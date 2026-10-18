@@ -1,0 +1,14 @@
+{
+  "id": "phase0",
+  "milestone": "Phase 0 : fondations",
+  "items": [
+    { "id": "install", "title": "L'appli s'installe et s'ouvre sans planter", "hint": "Installe l'APK d'aperçu puis ouvre Pocket Studio." },
+    { "id": "sine", "title": "La sinusoïde est audible et propre", "hint": "Onglet Studio : appuie sur Jouer. Le son doit être continu, sans craquement." },
+    { "id": "controls", "title": "Hauteur et volume réagissent en douceur", "hint": "Bouge les deux curseurs pendant la lecture : pas de clic ni de saut." },
+    { "id": "xruns", "title": "Zéro décrochage après une minute", "hint": "Laisse jouer une minute, puis regarde « Décrochages » dans Studio." },
+    { "id": "headphones", "title": "Le son survit au branchement d'un casque", "hint": "Branche puis débranche un casque filaire ou USB-C pendant la lecture." },
+    { "id": "latency", "title": "La mesure de latence donne un résultat", "hint": "Onglet Latence, sans casque, volume à fond : lance la mesure (autorise le micro)." },
+    { "id": "update", "title": "Le lien de mise à jour fonctionne", "hint": "Au lancement, si une version plus récente existe, l'appli te la propose." },
+    { "id": "problem", "title": "« Signaler un problème » ouvre GitHub pré-rempli", "hint": "Bouton en bas de cet écran : vérifie que la page GitHub s'ouvre, inutile d'envoyer." }
+  ]
+}

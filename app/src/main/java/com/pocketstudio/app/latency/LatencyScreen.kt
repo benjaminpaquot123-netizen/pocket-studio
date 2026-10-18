@@ -71,7 +71,14 @@ fun LatencyScreen(
                     color = Neon.TextSecondary,
                     style = MaterialTheme.typography.bodySmall,
                 )
-                is LatencyUiState.Failed -> Text(state.message, color = Neon.Red)
+                is LatencyUiState.Failed -> {
+                    Text(state.message, color = Neon.Red)
+                    Text(
+                        "Détails techniques (joints au rapport) : ${state.diagnostic}",
+                        color = Neon.TextSecondary,
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                }
                 LatencyUiState.Idle -> Text(
                     "Le téléphone émet un petit « pschht » et l'écoute avec son micro.",
                     color = Neon.TextSecondary,

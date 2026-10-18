@@ -27,6 +27,8 @@ void RoundTripMeter::prepare(int sampleRate) {
 
 void RoundTripMeter::start() {
     position_ = 0;
+    recordPos_ = 0;
+    inputPeak_ = 0.0f;
     std::fill(record_.begin(), record_.end(), 0.0f);
     state_.store(static_cast<int>(State::Running), std::memory_order_release);
 }
@@ -41,22 +43,41 @@ void RoundTripMeter::process(const float* input, int numInputFrames, int inputCh
     const int recordLength = static_cast<int>(record_.size());
     const int burstLength = static_cast<int>(burst_.size());
     for (int i = 0; i < numOutputFrames; ++i) {
-        const int pos = position_ + i;
         float sample = 0.0f;
-        const int burstIndex = pos - burstStart_;
+        const int burstIndex = position_ + i - burstStart_;
         if (burstIndex >= 0 && burstIndex < burstLength) sample = burst_[static_cast<size_t>(burstIndex)];
         for (int c = 0; c < outputChannels; ++c) output[i * outputChannels + c] = sample;
-        if (pos < recordLength) {
-            record_[static_cast<size_t>(pos)] =
-                (input != nullptr && i < numInputFrames) ? input[i * inputChannels] : 0.0f;
-        }
     }
     position_ += numOutputFrames;
-    if (position_ >= recordLength) state_.store(static_cast<int>(State::Done), std::memory_order_release);
+
+    if (input != nullptr) {
+        const int n = std::min(numInputFrames, recordLength - recordPos_);
+        for (int i = 0; i < n; ++i) {
+            const float v = input[i * inputChannels];
+            record_[static_cast<size_t>(recordPos_ + i)] = v;
+            inputPeak_ = std::max(inputPeak_, std::fabs(v));
+        }
+        recordPos_ += std::max(n, 0);
+    }
+    // Done when the recording is full, or after a grace second if the microphone stays mute.
+    if (recordPos_ >= recordLength || position_ >= recordLength + sampleRate_) {
+        state_.store(static_cast<int>(State::Done), std::memory_order_release);
+    }
 }
 
 RoundTripMeter::Result RoundTripMeter::analyze() const {
     Result result;
+    result.inputFrames = recordPos_;
+    result.inputPeak = inputPeak_;
+    if (recordPos_ < static_cast<int>(record_.size()) / 2) {
+        result.failure = Failure::NoInput;
+        return result;
+    }
+    if (inputPeak_ < kSilenceThreshold) {
+        result.failure = Failure::SilentInput;
+        return result;
+    }
+    result.failure = Failure::LowConfidence;
     const int recordLength = static_cast<int>(record_.size());
     const int burstLength = static_cast<int>(burst_.size());
     const int maxLag = recordLength - burstLength;
@@ -86,6 +107,7 @@ RoundTripMeter::Result RoundTripMeter::analyze() const {
     result.latencyMs = 1000.0 * result.latencyFrames / sampleRate_;
     result.confidence = bestValue / rms;
     result.valid = result.confidence >= kMinConfidence;
+    if (result.valid) result.failure = Failure::None;
     return result;
 }
 

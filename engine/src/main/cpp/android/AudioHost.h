@@ -38,8 +38,12 @@ public:
     StreamInfo info();
     Engine& engine() { return engine_; }
 
+    enum class LatencyStart : int { Ok = 0, MicUnavailable = 1, OutputFailed = 2, NotForeground = 3 };
+
     // Re-opens streams in full duplex and launches the round-trip measurement.
-    bool startLatencyTest();
+    LatencyStart startLatencyTest();
+    // Human-readable description of the microphone configuration in use (for reports).
+    const char* inputDescription() const { return inputDescription_; }
     // Closes the input stream once the measurement is finished.
     void finishLatencyTest();
 
@@ -58,6 +62,8 @@ private:
     std::shared_ptr<oboe::AudioStream> output_;
     std::shared_ptr<oboe::AudioStream> input_;
     std::vector<float> inputBuffer_;
+    int inputChannels_ = 1;
+    const char* inputDescription_ = "aucun";
     std::atomic<bool> drainInput_{false};
     bool wantRunning_ = false;
     int xrunBase_ = 0;

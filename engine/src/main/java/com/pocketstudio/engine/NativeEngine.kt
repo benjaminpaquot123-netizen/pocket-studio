@@ -24,14 +24,25 @@ object NativeEngine {
 
     fun latencyState(): LatencyState = LatencyState.entries[latencyTestState()]
 
+    fun startLatencyTest(): LatencyStart = LatencyStart.entries[nativeStartLatencyTest()]
+
     fun latencyResult(): LatencyResult {
-        val values = finishLatencyTest()
-        return LatencyResult(valid = values[0] > 0.5, latencyMs = values[1], confidence = values[2])
+        val v = finishLatencyTest()
+        return LatencyResult(
+            valid = v[0] > 0.5,
+            latencyMs = v[1],
+            confidence = v[2],
+            inputPeak = v[3].toFloat(),
+            inputFrames = v[4].toInt(),
+            failure = LatencyFailure.entries[v[5].toInt()],
+        )
     }
 
     external fun start(): Boolean
     external fun stop()
-    external fun startLatencyTest(): Boolean
+    /** Microphone configuration used by the last latency test, in French, for reports. */
+    external fun inputDescription(): String
+    private external fun nativeStartLatencyTest(): Int
     private external fun post(type: Int, value: Float): Boolean
     private external fun nativeStreamInfo(): DoubleArray
     private external fun latencyTestState(): Int
@@ -40,7 +51,20 @@ object NativeEngine {
 
 enum class LatencyState { Idle, Running, Done }
 
-data class LatencyResult(val valid: Boolean, val latencyMs: Double, val confidence: Double)
+/** Order must match AudioHost::LatencyStart. */
+enum class LatencyStart { Ok, MicUnavailable, OutputFailed, NotForeground }
+
+/** Order must match RoundTripMeter::Failure. */
+enum class LatencyFailure { None, NoInput, SilentInput, LowConfidence }
+
+data class LatencyResult(
+    val valid: Boolean,
+    val latencyMs: Double,
+    val confidence: Double,
+    val inputPeak: Float = 0f,
+    val inputFrames: Int = 0,
+    val failure: LatencyFailure = LatencyFailure.None,
+)
 
 data class StreamInfo(
     val sampleRate: Int = 0,

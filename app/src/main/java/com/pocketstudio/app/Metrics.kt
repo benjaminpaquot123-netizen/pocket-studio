@@ -28,6 +28,14 @@ object Metrics {
         _streamInfo.value = info
     }
 
+    private val _latencyDiagnostic = MutableStateFlow<String?>(null)
+    /** Technical details of the last latency measurement, attached to reports. */
+    val latencyDiagnostic: StateFlow<String?> = _latencyDiagnostic.asStateFlow()
+
+    fun updateLatencyDiagnostic(text: String) {
+        _latencyDiagnostic.value = text
+    }
+
     fun updateRoundTrip(ms: Double) {
         _roundTripMs.value = ms
         prefs?.edit()?.putFloat(KEY_ROUND_TRIP, ms.toFloat())?.apply()

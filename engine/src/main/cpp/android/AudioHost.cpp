@@ -16,9 +16,25 @@ namespace {
 constexpr int kSampleRate = 48000;
 constexpr int kOutputChannels = 2;
 constexpr int kMaxInputFrames = 8192;
+constexpr int kMaxInputChannels = 2;
+
+struct InputConfig {
+    oboe::InputPreset preset;
+    oboe::SharingMode sharing;
+    const char* description;
+};
+
+// Tried in order: some phones refuse the raw microphone or exclusive mode.
+constexpr InputConfig kInputConfigs[] = {
+    {oboe::InputPreset::Unprocessed, oboe::SharingMode::Exclusive, "brut, exclusif"},
+    {oboe::InputPreset::VoiceRecognition, oboe::SharingMode::Exclusive, "reconnaissance vocale, exclusif"},
+    {oboe::InputPreset::Unprocessed, oboe::SharingMode::Shared, "brut, partagé"},
+    {oboe::InputPreset::VoiceRecognition, oboe::SharingMode::Shared, "reconnaissance vocale, partagé"},
+    {oboe::InputPreset::Generic, oboe::SharingMode::Shared, "standard, partagé"},
+};
 }  // namespace
 
-AudioHost::AudioHost() : engine_(kSampleRate), inputBuffer_(kMaxInputFrames, 0.0f) {}
+AudioHost::AudioHost() : engine_(kSampleRate), inputBuffer_(kMaxInputFrames * kMaxInputChannels, 0.0f) {}
 
 AudioHost::~AudioHost() { stop(); }
 
@@ -51,28 +67,35 @@ bool AudioHost::openOutputLocked() {
 }
 
 bool AudioHost::openInputLocked() {
-    oboe::AudioStreamBuilder builder;
-    builder.setDirection(oboe::Direction::Input)
-        ->setPerformanceMode(oboe::PerformanceMode::LowLatency)
-        ->setSharingMode(oboe::SharingMode::Exclusive)
-        ->setFormat(oboe::AudioFormat::Float)
-        ->setChannelCount(1)
-        ->setSampleRate(kSampleRate)
-        ->setSampleRateConversionQuality(oboe::SampleRateConversionQuality::Medium)
-        ->setInputPreset(oboe::InputPreset::Unprocessed);
-    const auto result = builder.openStream(input_);
-    if (result != oboe::Result::OK) {
-        LOGW("openStream(input) failed: %s", oboe::convertToText(result));
-        input_.reset();
-        return false;
+    for (const auto& config : kInputConfigs) {
+        oboe::AudioStreamBuilder builder;
+        builder.setDirection(oboe::Direction::Input)
+            ->setPerformanceMode(oboe::PerformanceMode::LowLatency)
+            ->setSharingMode(config.sharing)
+            ->setFormat(oboe::AudioFormat::Float)
+            ->setChannelCount(1)
+            ->setSampleRate(kSampleRate)
+            ->setSampleRateConversionQuality(oboe::SampleRateConversionQuality::Medium)
+            ->setInputPreset(config.preset);
+        const auto result = builder.openStream(input_);
+        if (result != oboe::Result::OK) {
+            LOGW("openStream(input, %s) failed: %s", config.description, oboe::convertToText(result));
+            input_.reset();
+            continue;
+        }
+        // inputBuffer_ holds kMaxInputFrames frames of up to kMaxInputChannels channels.
+        if (input_->getChannelCount() > kMaxInputChannels) {
+            input_->close();
+            input_.reset();
+            continue;
+        }
+        inputChannels_ = input_->getChannelCount();
+        inputDescription_ = config.description;
+        LOGI("input: %s, rate=%d channels=%d", config.description, input_->getSampleRate(), inputChannels_);
+        return true;
     }
-    // inputBuffer_ holds kMaxInputFrames mono frames; refuse anything else.
-    if (input_->getChannelCount() != 1) {
-        input_->close();
-        input_.reset();
-        return false;
-    }
-    return true;
+    inputDescription_ = "impossible à ouvrir";
+    return false;
 }
 
 void AudioHost::closeLocked() {
@@ -116,18 +139,19 @@ bool AudioHost::post(const Command& command) {
     return engine_.post(command);
 }
 
-bool AudioHost::startLatencyTest() {
+AudioHost::LatencyStart AudioHost::startLatencyTest() {
     std::lock_guard<std::mutex> guard(lock_);
     // The app went to the background meanwhile: never open the mic behind the user's back.
-    if (!wantRunning_) return false;
+    if (!wantRunning_) return LatencyStart::NotForeground;
     closeLocked();
-    if (!openInputLocked() || !openOutputLocked()) {
+    const bool inputOk = openInputLocked();
+    if (!inputOk || !openOutputLocked()) {
         closeLocked();
         if (openOutputLocked()) {
             engine_.prepare(output_->getSampleRate());
             output_->requestStart();
         }
-        return false;
+        return inputOk ? LatencyStart::OutputFailed : LatencyStart::MicUnavailable;
     }
     engine_.prepare(output_->getSampleRate());
     input_->requestStart();
@@ -143,9 +167,9 @@ bool AudioHost::startLatencyTest() {
             engine_.prepare(output_->getSampleRate());
             output_->requestStart();
         }
-        return false;
+        return LatencyStart::OutputFailed;
     }
-    return true;
+    return LatencyStart::Ok;
 }
 
 void AudioHost::finishLatencyTest() {
@@ -174,14 +198,16 @@ oboe::DataCallbackResult AudioHost::onAudioReady(oboe::AudioStream* stream, void
                 if (!drained || drained.value() == 0) break;
             }
         }
-        const int wanted = std::min(numFrames, kMaxInputFrames);
-        auto read = input->read(inputBuffer_.data(), wanted, 0);
-        inFrames = read ? read.value() : 0;
-        if (inFrames < wanted) std::fill(inputBuffer_.begin() + inFrames, inputBuffer_.begin() + wanted, 0.0f);
+        // Take everything the microphone has delivered so far, without blocking.
+        // The meter records it back to back, so uneven chunks don't distort the timing.
+        while (inFrames < kMaxInputFrames) {
+            auto read = input->read(inputBuffer_.data() + inFrames * inputChannels_, kMaxInputFrames - inFrames, 0);
+            if (!read || read.value() <= 0) break;
+            inFrames += read.value();
+        }
         in = inputBuffer_.data();
-        inFrames = wanted;
     }
-    engine_.process(in, inFrames, 1, out, numFrames, stream->getChannelCount());
+    engine_.process(in, inFrames, inputChannels_, out, numFrames, stream->getChannelCount());
     return oboe::DataCallbackResult::Continue;
 }
 

@@ -18,6 +18,7 @@ object IssueReport {
         val stream: StreamInfo,
         val roundTripMs: Double?,
         val log: String,
+        val latencyDiagnostic: String? = null,
     )
 
     fun currentContext(stream: StreamInfo, roundTripMs: Double?, log: String) = Context(
@@ -26,6 +27,7 @@ object IssueReport {
         stream = stream,
         roundTripMs = roundTripMs,
         log = log,
+        latencyDiagnostic = com.pocketstudio.app.Metrics.latencyDiagnostic.value,
     )
 
     fun environmentSection(c: Context): String = buildString {
@@ -36,6 +38,7 @@ object IssueReport {
         appendLine("- Latence de sortie estimée : ${formatMs(c.stream.outputLatencyMs)}")
         appendLine("- Latence aller-retour mesurée : ${c.roundTripMs?.let { formatMs(it) } ?: "non mesurée"}")
         appendLine("- Décrochages audio : ${c.stream.xruns}")
+        c.latencyDiagnostic?.let { appendLine("- Dernière mesure de latence : $it") }
     }
 
     fun describeStream(s: StreamInfo): String =

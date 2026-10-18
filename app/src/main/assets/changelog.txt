@@ -1,5 +1,5 @@
 Premier son ! Le moteur audio tient la note : une sinusoïde, mais une sinusoïde fière.
-Écran Latence : on mesure le temps entre ton doigt et tes oreilles.
+Mesure de latence réparée : le micro est lu en continu, et si ça coince, l'appli dit pourquoi.
 Écran Recette : tu coches, l'appli rédige le rapport, tu appuies sur Envoyer.
 Mises à jour proposées au lancement, et rapport de crash si l'appli tombe.
 « C'est pas faux » : tout le reste arrive en phase 1.

@@ -223,24 +223,36 @@ void testReferenceRender() {
 }
 
 // Simulates the speaker -> microphone path with a delay, attenuation and noise.
-ps::RoundTripMeter::Result simulateRoundTrip(int delayFrames, float gain, float noise, int blockSize) {
+// The microphone delivers its frames through a FIFO in irregular chunks (sometimes none,
+// sometimes a backlog), like a real input stream read without blocking.
+ps::RoundTripMeter::Result simulateRoundTrip(int delayFrames, float gain, float noise, int blockSize,
+                                             bool irregular = false, bool micDead = false) {
     ps::RoundTripMeter meter;
     meter.prepare(kRate);
     meter.start();
-    std::vector<float> line(static_cast<size_t>(meter.recordLength() + delayFrames + blockSize), 0.0f);
+    std::vector<float> mic;  // everything the microphone has captured so far
+    std::vector<float> pending(static_cast<size_t>(delayFrames), 0.0f);  // sound still travelling
     std::mt19937 rng(42);
     std::normal_distribution<float> dist(0.0f, noise);
+    std::uniform_int_distribution<int> chunk(0, 2 * blockSize);
     std::vector<float> out(static_cast<size_t>(blockSize) * kChannels);
-    std::vector<float> in(static_cast<size_t>(blockSize));
-    int pos = 0;
-    while (meter.state() == ps::RoundTripMeter::State::Running) {
-        for (int i = 0; i < blockSize; ++i) in[static_cast<size_t>(i)] = line[static_cast<size_t>(pos + i)] + dist(rng);
-        meter.process(in.data(), blockSize, 1, out.data(), blockSize, kChannels);
+    std::vector<float> in(static_cast<size_t>(4 * blockSize));
+    size_t readPos = 0;
+    int guard = 0;
+    while (meter.state() == ps::RoundTripMeter::State::Running && ++guard < 100000) {
+        size_t available = mic.size() - readPos;
+        size_t want = irregular ? static_cast<size_t>(chunk(rng)) : static_cast<size_t>(blockSize);
+        size_t n = std::min({available, want, in.size()});
+        for (size_t i = 0; i < n; ++i) in[i] = mic[readPos + i];
+        readPos += n;
+        meter.process(micDead ? nullptr : in.data(), micDead ? 0 : static_cast<int>(n), 1,
+                      out.data(), blockSize, kChannels);
+        // Speaker output reaches the microphone delayFrames later.
         for (int i = 0; i < blockSize; ++i) {
-            const size_t target = static_cast<size_t>(pos + i + delayFrames);
-            if (target < line.size()) line[target] += gain * out[static_cast<size_t>(i) * kChannels];
+            pending.push_back(gain * out[static_cast<size_t>(i) * kChannels]);
+            mic.push_back(pending.front() + dist(rng));
+            pending.erase(pending.begin());
         }
-        pos += blockSize;
     }
     CHECK(meter.state() == ps::RoundTripMeter::State::Done);
     return meter.analyze();
@@ -251,13 +263,29 @@ void testRoundTripMeter() {
     CHECK(r.valid);
     CHECK(std::abs(r.latencyFrames - 1234) <= 1);
     CHECK(std::fabs(r.latencyMs - 1234.0 * 1000.0 / kRate) < 0.05);
+    CHECK(r.failure == ps::RoundTripMeter::Failure::None);
 
     const auto r2 = simulateRoundTrip(480, 0.3f, 0.0f, 256);
     CHECK(r2.valid);
     CHECK(r2.latencyFrames == 480);
 
-    const auto silent = simulateRoundTrip(1000, 0.0f, 0.01f, 256);
+    // Real phones: input arrives in uneven bursts. The measurement must not drift.
+    const auto bursty = simulateRoundTrip(900, 0.02f, 0.005f, 96, true);
+    CHECK(bursty.valid);
+    CHECK(std::abs(bursty.latencyFrames - 900) <= 1);
+
+    const auto quiet = simulateRoundTrip(1000, 0.0f, 0.01f, 256);
+    CHECK(!quiet.valid);
+    CHECK(quiet.failure == ps::RoundTripMeter::Failure::LowConfidence);
+
+    const auto silent = simulateRoundTrip(1000, 0.0f, 0.0f, 256);
     CHECK(!silent.valid);
+    CHECK(silent.failure == ps::RoundTripMeter::Failure::SilentInput);
+
+    const auto dead = simulateRoundTrip(1000, 0.3f, 0.0f, 256, false, true);
+    CHECK(!dead.valid);
+    CHECK(dead.failure == ps::RoundTripMeter::Failure::NoInput);
+    CHECK(dead.inputFrames == 0);
 }
 
 // Full path through Engine::process: speaker -> simulated room (delay + noise) -> microphone.

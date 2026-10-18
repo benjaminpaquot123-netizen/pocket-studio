@@ -59,15 +59,20 @@ JNIEXPORT jdoubleArray JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeS
     return array;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_pocketstudio_engine_NativeEngine_startLatencyTest(JNIEnv*, jobject) {
-    return host().startLatencyTest() ? JNI_TRUE : JNI_FALSE;
+// Returns an AudioHost::LatencyStart code (0 = started).
+JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeStartLatencyTest(JNIEnv*, jobject) {
+    return static_cast<jint>(host().startLatencyTest());
+}
+
+JNIEXPORT jstring JNICALL Java_com_pocketstudio_engine_NativeEngine_inputDescription(JNIEnv* env, jobject) {
+    return env->NewStringUTF(host().inputDescription());
 }
 
 JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_latencyTestState(JNIEnv*, jobject) {
     return static_cast<jint>(host().engine().latencyMeter().state());
 }
 
-// Returns [valid, latencyMs, confidence] and closes the input stream.
+// Returns [valid, latencyMs, confidence, inputPeak, inputFrames, failure] and closes the input stream.
 JNIEXPORT jdoubleArray JNICALL Java_com_pocketstudio_engine_NativeEngine_finishLatencyTest(JNIEnv* env, jobject) {
     auto& h = host();
     ps::RoundTripMeter::Result result;
@@ -75,9 +80,16 @@ JNIEXPORT jdoubleArray JNICALL Java_com_pocketstudio_engine_NativeEngine_finishL
         result = h.engine().latencyMeter().analyze();
     }
     h.finishLatencyTest();
-    const double values[] = {result.valid ? 1.0 : 0.0, result.latencyMs, result.confidence};
-    jdoubleArray array = env->NewDoubleArray(3);
-    env->SetDoubleArrayRegion(array, 0, 3, values);
+    const double values[] = {
+        result.valid ? 1.0 : 0.0,
+        result.latencyMs,
+        result.confidence,
+        static_cast<double>(result.inputPeak),
+        static_cast<double>(result.inputFrames),
+        static_cast<double>(result.failure),
+    };
+    jdoubleArray array = env->NewDoubleArray(6);
+    env->SetDoubleArrayRegion(array, 0, 6, values);
     return array;
 }
 

@@ -17,3 +17,4 @@
 | 2026-10-18 | Jalon « Acide » (Open303, MIT) inséré entre la phase 1 et la phase 2 | Décision de Benjamin (D5) | Déplacer le jalon dans ROADMAP.md |
 | 2026-10-18 | Aucun nom de marque Roland dans l'interface : on parle de « basse acide » | Demande de Benjamin | Aucun |
 | 2026-10-18 | Revue critique par un sous-agent neuf à chaque fin de phase | Règle permanente demandée par Benjamin | Aucun |
+| 2026-10-18 | Mesure de latence : entrée micro enregistrée bout à bout (plus de remplissage par des zéros), 5 configurations de micro essayées tour à tour, cause d'échec précise affichée et jointe aux rapports | Échec « signal non détecté » sur le Honor sans cause identifiable | Revenir à l'alignement trame par trame dans `RoundTripMeter::process` |

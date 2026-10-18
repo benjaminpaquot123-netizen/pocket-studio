@@ -63,7 +63,18 @@ class ScreenshotTest {
 
     @Test
     fun latencyMeasured() = shoot("latency_measured") {
-        LatencyScreen(LatencyUiState.Measured(17.3, listOf(17.1, 17.3, 18.0)), stream, 17.3, true, {})
+        LatencyScreen(LatencyUiState.Measured(17.3, listOf(17.1, 17.3, 18.0), ""), stream, 17.3, true, {})
+    }
+
+    @Test
+    fun latencyFailed() = shoot("latency_failed") {
+        LatencyScreen(
+            LatencyUiState.Failed(
+                "Le micro n'entend que du silence absolu : l'accès au micro est sans doute coupé dans les réglages rapides (icône Micro).",
+                "Micro brut, exclusif : SilentInput, niveau 0,0000, confiance 0,0, 60000 éch.",
+            ),
+            stream, null, true, {},
+        )
     }
 
     @Test

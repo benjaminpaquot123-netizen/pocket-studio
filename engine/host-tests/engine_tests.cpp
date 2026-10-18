@@ -104,13 +104,6 @@ void testSineFourBars() {
     const double measured = crossings / 7.0;
     CHECK(std::fabs(measured - 440.0) < 0.5);
 
-    // Fade-in must not click: max sample-to-sample step stays small.
-    float maxStep = 0.0f;
-    for (int i = 1; i < kRate / 10; ++i) {
-        maxStep = std::max(maxStep, std::fabs(out[static_cast<size_t>(i) * kChannels] -
-                                              out[static_cast<size_t>(i - 1) * kChannels]));
-    }
-    CHECK(maxStep < 0.06f);
     CHECK(engine.framesRendered() == static_cast<uint64_t>(kFourBarsFrames));
     writeWav(std::string(PS_OUTPUT_DIR) + "/sine_four_bars.wav", out);
 }
@@ -133,20 +126,75 @@ void testBlockSizeIndependence() {
     CHECK(maxDiff < 1e-6f);
 }
 
+// Largest sample-to-sample step of a full-scale sine at [hz]: anything bigger is a click.
+float naturalStep(float hz) { return static_cast<float>(2.0 * 3.14159265358979 * hz / kRate); }
+
+void testStartRampsUp() {
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SetFrequency, 1000.0f});
+    engine.post({ps::CommandType::SetGain, 1.0f});
+    engine.post({ps::CommandType::SetPlaying, 1.0f});
+    const auto out = render(engine, kRate / 10, 256);
+    // 1 ms after start the 10 ms ramp is still below 20 %; a hard start would already be at full scale.
+    float firstMs = 0.0f;
+    for (int i = 0; i < kRate / 1000; ++i) firstMs = std::max(firstMs, std::fabs(out[static_cast<size_t>(i) * kChannels]));
+    CHECK(firstMs < 0.2f);
+    float lastMs = 0.0f;
+    for (int i = kRate / 10 - kRate / 1000; i < kRate / 10; ++i) {
+        lastMs = std::max(lastMs, std::fabs(out[static_cast<size_t>(i) * kChannels]));
+    }
+    CHECK(lastMs > 0.99f);
+    float maxStep = 0.0f;
+    for (int i = 1; i < kRate / 10; ++i) {
+        maxStep = std::max(maxStep, std::fabs(out[static_cast<size_t>(i) * kChannels] -
+                                              out[static_cast<size_t>(i - 1) * kChannels]));
+    }
+    CHECK(maxStep <= naturalStep(1000.0f) * 1.01f);
+}
+
 void testStopFadesOut() {
     ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SetFrequency, 1000.0f});
+    engine.post({ps::CommandType::SetGain, 1.0f});
     engine.post({ps::CommandType::SetPlaying, 1.0f});
-    render(engine, kRate / 4, 256);
+    // Advance until the waveform sits near a peak, where a hard cut would click loudly.
+    auto before = render(engine, 12000, 256);
+    for (int i = 0; i < 48 && std::fabs(before[before.size() - kChannels]) < 0.95f; ++i) before = render(engine, 1, 1);
+    CHECK(std::fabs(before[before.size() - kChannels]) >= 0.95f);
     engine.post({ps::CommandType::SetPlaying, 0.0f});
     const auto out = render(engine, kRate / 4, 256);
+    float previous = before[before.size() - kChannels];
     float maxStep = 0.0f;
-    for (size_t i = 1; i < out.size() / kChannels; ++i) {
-        maxStep = std::max(maxStep, std::fabs(out[i * kChannels] - out[(i - 1) * kChannels]));
+    for (size_t i = 0; i < out.size() / kChannels; ++i) {
+        maxStep = std::max(maxStep, std::fabs(out[i * kChannels] - previous));
+        previous = out[i * kChannels];
     }
-    CHECK(maxStep < 0.06f);
+    CHECK(maxStep <= naturalStep(1000.0f) * 1.01f);
+    // Still sounding 1 ms after the stop (fading, not cut)...
+    float firstMs = 0.0f;
+    for (int i = 0; i < kRate / 1000; ++i) firstMs = std::max(firstMs, std::fabs(out[static_cast<size_t>(i) * kChannels]));
+    CHECK(firstMs > 0.7f);
+    // ...and silent at the end.
     float tail = 0.0f;
     for (size_t i = out.size() - 200; i < out.size(); ++i) tail = std::max(tail, std::fabs(out[i]));
     CHECK(tail < 1e-4f);
+}
+
+void testSettingsSurvivePrepare() {
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SetFrequency, 1000.0f});
+    engine.post({ps::CommandType::SetPlaying, 1.0f});
+    render(engine, 256, 256);
+    engine.post({ps::CommandType::StartLatencyTest, 0.0f});  // stale request, must not replay
+    engine.prepare(kRate);                                    // e.g. stream reopened after unplugging headphones
+    CHECK(engine.latencyMeter().state() == ps::RoundTripMeter::State::Idle);
+    const auto out = render(engine, kRate, 256);
+    CHECK(engine.latencyMeter().state() == ps::RoundTripMeter::State::Idle);
+    int crossings = 0;
+    for (int i = kRate / 2 + 1; i < kRate; ++i) {
+        if (out[static_cast<size_t>(i - 1) * kChannels] < 0.0f && out[static_cast<size_t>(i) * kChannels] >= 0.0f) ++crossings;
+    }
+    CHECK(std::abs(crossings - 500) <= 1);
 }
 
 void testReferenceRender() {
@@ -212,18 +260,40 @@ void testRoundTripMeter() {
     CHECK(!silent.valid);
 }
 
+// Full path through Engine::process: speaker -> simulated room (delay + noise) -> microphone.
 void testLatencyTestThroughEngine() {
+    constexpr int kDelay = 777;
+    constexpr int kBlock = 192;
     ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SetFrequency, 1000.0f});
     engine.post({ps::CommandType::SetPlaying, 1.0f});
     engine.post({ps::CommandType::StartLatencyTest, 0.0f});
-    std::vector<float> out(256 * kChannels);
-    std::vector<float> in(256, 0.0f);
-    int guard = 0;
-    do {
-        engine.process(in.data(), 256, 1, out.data(), 256, kChannels);
-    } while (engine.latencyMeter().state() != ps::RoundTripMeter::State::Done && ++guard < 10000);
+    std::vector<float> out(kBlock * kChannels);
+    std::vector<float> in(kBlock, 0.0f);
+    std::vector<float> line(static_cast<size_t>(kRate) * 4, 0.0f);
+    std::mt19937 rng(7);
+    std::normal_distribution<float> noise(0.0f, 0.005f);
+    int pos = 0;
+    bool started = false;
+    while (pos + kBlock + kDelay < static_cast<int>(line.size())) {
+        for (int i = 0; i < kBlock; ++i) in[static_cast<size_t>(i)] = line[static_cast<size_t>(pos + i)] + noise(rng);
+        engine.process(in.data(), kBlock, 1, out.data(), kBlock, kChannels);
+        for (int i = 0; i < kBlock; ++i) line[static_cast<size_t>(pos + i + kDelay)] += 0.1f * out[static_cast<size_t>(i) * kChannels];
+        pos += kBlock;
+        if (engine.latencyMeter().state() == ps::RoundTripMeter::State::Running) started = true;
+        if (started && engine.latencyMeter().state() == ps::RoundTripMeter::State::Done) break;
+    }
+    CHECK(started);
     CHECK(engine.latencyMeter().state() == ps::RoundTripMeter::State::Done);
-    CHECK(!engine.latencyMeter().analyze().valid);
+    const auto r = engine.latencyMeter().analyze();
+    CHECK(r.valid);
+    CHECK(std::abs(r.latencyFrames - kDelay) <= 1);
+
+    // The test tone comes back once the measurement is over.
+    const auto after = render(engine, kRate / 2, 256);
+    float peak = 0.0f;
+    for (size_t i = after.size() / 2; i < after.size(); ++i) peak = std::max(peak, std::fabs(after[i]));
+    CHECK(peak > 0.45f);
 }
 
 struct TestCase {
@@ -242,7 +312,9 @@ int main(int argc, char** argv) {
         {"silent_when_stopped", testSilentWhenStopped},
         {"sine_four_bars", testSineFourBars},
         {"block_size_independence", testBlockSizeIndependence},
+        {"start_ramps_up", testStartRampsUp},
         {"stop_fades_out", testStopFadesOut},
+        {"settings_survive_prepare", testSettingsSurvivePrepare},
         {"reference_render", testReferenceRender},
         {"round_trip_meter", testRoundTripMeter},
         {"latency_test_through_engine", testLatencyTestThroughEngine},

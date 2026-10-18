@@ -4,9 +4,12 @@
 
 ## Fait
 - Démarrage : SPEC, CLAUDE.md, ROADMAP, DECISIONS, ARCHITECTURE, THIRD_PARTY, README.
-- Moteur C++ : sinusoïde lissée (sans clic), file SPSC, compteur de crêtes, mesure aller-retour. 8 tests Linux verts (rendu 4 mesures, fréquence, blocs de tailles variées, référence, latence simulée).
+- Moteur C++ : sinusoïde lissée (sans clic), file SPSC, compteur de crêtes, mesure aller-retour. 10 tests Linux verts, aussi sous ASan/UBSan.
 - Android : Oboe AAudio exclusif LowLatency, reconnexion casque, écrans Studio / Latence / Recette, rapports GitHub, crash au lancement suivant, mise à jour intégrée.
 - CI : tests moteur (+ ASan/UBSan), tests Kotlin, captures, APK signé, aperçu sur PR, Release sur main, test de fumée émulateur.
+
+- Revue critique de fin de phase faite (docs/REVIEW.md) : graves corrigés.
+- Jalon Acide (Open303) ajouté entre la phase 1 et la phase 2.
 
 ## En attente de Benjamin
 - Ajouter le secret GitHub `SIGNING_PASSWORD` (marche à suivre dans le message de la PR de phase 0).

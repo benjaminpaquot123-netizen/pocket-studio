@@ -6,6 +6,8 @@ import com.pocketstudio.app.Metrics
 import com.pocketstudio.engine.LatencyState
 import com.pocketstudio.engine.NativeEngine
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,9 +26,17 @@ class LatencyViewModel : ViewModel() {
     private val _state = MutableStateFlow<LatencyUiState>(LatencyUiState.Idle)
     val state: StateFlow<LatencyUiState> = _state.asStateFlow()
 
+    private var job: Job? = null
+
+    /** Called when the app leaves the screen: never keep the microphone open in the background. */
+    fun cancel() {
+        job?.cancel()
+        if (_state.value is LatencyUiState.Running) _state.value = LatencyUiState.Idle
+    }
+
     fun measure(runs: Int = 3) {
         if (_state.value is LatencyUiState.Running || !NativeEngine.isAvailable) return
-        viewModelScope.launch {
+        job = viewModelScope.launch {
             val values = mutableListOf<Double>()
             for (run in 1..runs) {
                 _state.value = LatencyUiState.Running(run, runs)
@@ -47,16 +57,20 @@ class LatencyViewModel : ViewModel() {
     }
 
     private suspend fun singleRun(): Double? {
-        if (!NativeEngine.startLatencyTest()) {
-            NativeEngine.latencyResult()
-            return null
+        var finished = false
+        try {
+            if (!NativeEngine.startLatencyTest()) return null
+            var waited = 0
+            while (NativeEngine.latencyState() == LatencyState.Running && waited < 4000) {
+                delay(50)
+                waited += 50
+            }
+            val result = NativeEngine.latencyResult()
+            finished = true
+            return if (result.valid) result.latencyMs else null
+        } finally {
+            // Closes the microphone even if the measurement was cancelled.
+            if (!finished) withContext(NonCancellable) { NativeEngine.latencyResult() }
         }
-        var waited = 0
-        while (NativeEngine.latencyState() == LatencyState.Running && waited < 4000) {
-            delay(50)
-            waited += 50
-        }
-        val result = NativeEngine.latencyResult()
-        return if (result.valid) result.latencyMs else null
     }
 }

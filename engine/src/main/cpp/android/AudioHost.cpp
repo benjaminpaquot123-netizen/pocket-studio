@@ -3,6 +3,8 @@
 #include <android/log.h>
 
 #include <algorithm>
+#include <chrono>
+#include <thread>
 
 #define LOG_TAG "PocketStudioEngine"
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
@@ -64,6 +66,12 @@ bool AudioHost::openInputLocked() {
         input_.reset();
         return false;
     }
+    // inputBuffer_ holds kMaxInputFrames mono frames; refuse anything else.
+    if (input_->getChannelCount() != 1) {
+        input_->close();
+        input_.reset();
+        return false;
+    }
     return true;
 }
 
@@ -86,10 +94,15 @@ void AudioHost::closeLocked() {
 bool AudioHost::start() {
     std::lock_guard<std::mutex> guard(lock_);
     wantRunning_ = true;
-    if (output_) return true;
+    if (output_ && output_->getState() == oboe::StreamState::Started) return true;
+    closeLocked();
     if (!openOutputLocked()) return false;
     engine_.prepare(output_->getSampleRate());
-    return output_->requestStart() == oboe::Result::OK;
+    if (output_->requestStart() != oboe::Result::OK) {
+        closeLocked();
+        return false;
+    }
+    return true;
 }
 
 void AudioHost::stop() {
@@ -105,10 +118,15 @@ bool AudioHost::post(const Command& command) {
 
 bool AudioHost::startLatencyTest() {
     std::lock_guard<std::mutex> guard(lock_);
+    // The app went to the background meanwhile: never open the mic behind the user's back.
+    if (!wantRunning_) return false;
     closeLocked();
     if (!openInputLocked() || !openOutputLocked()) {
         closeLocked();
-        if (wantRunning_ && openOutputLocked()) output_->requestStart();
+        if (openOutputLocked()) {
+            engine_.prepare(output_->getSampleRate());
+            output_->requestStart();
+        }
         return false;
     }
     engine_.prepare(output_->getSampleRate());
@@ -118,14 +136,28 @@ bool AudioHost::startLatencyTest() {
         std::lock_guard<std::mutex> postGuard(postLock_);
         engine_.post({CommandType::StartLatencyTest, 0.0f});
     }
-    return output_->requestStart() == oboe::Result::OK;
+    if (output_->requestStart() != oboe::Result::OK) {
+        closeLocked();
+        engine_.latencyMeter().cancel();
+        if (openOutputLocked()) {
+            engine_.prepare(output_->getSampleRate());
+            output_->requestStart();
+        }
+        return false;
+    }
+    return true;
 }
 
 void AudioHost::finishLatencyTest() {
     std::lock_guard<std::mutex> guard(lock_);
     if (!input_) return;
     closeLocked();
-    if (wantRunning_ && openOutputLocked()) output_->requestStart();
+    // Streams are closed: no audio thread touches the meter now.
+    engine_.latencyMeter().cancel();
+    if (wantRunning_ && openOutputLocked()) {
+        engine_.prepare(output_->getSampleRate());
+        output_->requestStart();
+    }
 }
 
 oboe::DataCallbackResult AudioHost::onAudioReady(oboe::AudioStream* stream, void* audioData,
@@ -158,20 +190,32 @@ void AudioHost::onErrorAfterClose(oboe::AudioStream* stream, oboe::Result error)
     LOGW("stream closed: %s", oboe::convertToText(error));
     std::lock_guard<std::mutex> guard(lock_);
     if (stream != output_.get()) return;
+    xrunBase_ = lastXruns_;
     output_.reset();
     if (input_) {
         input_->stop();
         input_->close();
         input_.reset();
     }
-    if (wantRunning_ && openOutputLocked()) output_->requestStart();
+    engine_.latencyMeter().cancel();
+    // A freshly (un)plugged device is often not ready yet: retry a few times.
+    for (int attempt = 0; attempt < 5 && wantRunning_; ++attempt) {
+        if (attempt > 0) std::this_thread::sleep_for(std::chrono::milliseconds(200));
+        if (!openOutputLocked()) continue;
+        engine_.prepare(output_->getSampleRate());
+        if (output_->requestStart() == oboe::Result::OK) return;
+        closeLocked();
+    }
 }
 
 StreamInfo AudioHost::info() {
-    std::lock_guard<std::mutex> guard(lock_);
+    // Called from the UI thread: never wait for a stream being opened or closed.
+    std::unique_lock<std::mutex> guard(lock_, std::try_to_lock);
+    if (!guard.owns_lock()) return lastInfo_;
     StreamInfo info;
     if (!output_) {
         info.xruns = lastXruns_;
+        lastInfo_ = info;
         return info;
     }
     info.running = output_->getState() == oboe::StreamState::Started;
@@ -188,6 +232,7 @@ StreamInfo AudioHost::info() {
     info.xruns = lastXruns_;
     auto latency = output_->calculateLatencyMillis();
     info.outputLatencyMs = latency ? latency.value() : -1.0;
+    lastInfo_ = info;
     return info;
 }
 

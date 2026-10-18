@@ -1,10 +1,12 @@
 package com.pocketstudio.app.ui
 
 import android.Manifest
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
@@ -75,6 +77,7 @@ fun AppRoot() {
         if (engineAvailable && NativeEngine.start()) studioVm.pushAll()
     }
     LifecycleEventEffect(Lifecycle.Event.ON_STOP) {
+        latencyVm.cancel()
         if (engineAvailable) NativeEngine.stop()
     }
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -170,8 +173,9 @@ private fun LaunchPrompts(vm: MainViewModel) {
             text = { Text("Elle s'est fermée brutalement la dernière fois. Envoyer le rapport ? Il est déjà rédigé, tu n'as qu'à appuyer sur Envoyer.") },
             confirmButton = {
                 TextButton(onClick = {
-                    vm.crashReportUri()?.let { openUri(context, it) }
+                    val uri = vm.crashReportUri()
                     vm.dismissCrash()
+                    uri?.let { openUri(context, it) }
                 }) { Text("Envoyer le rapport") }
             },
             dismissButton = { TextButton(onClick = vm::dismissCrash) { Text("Ignorer") } },
@@ -209,5 +213,9 @@ private fun hasMic(context: Context) =
     ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
 
 private fun openUri(context: Context, uri: Uri) {
-    context.startActivity(Intent(Intent.ACTION_VIEW, uri).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+    try {
+        context.startActivity(Intent(Intent.ACTION_VIEW, uri).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+    } catch (_: ActivityNotFoundException) {
+        Toast.makeText(context, "Aucun navigateur pour ouvrir GitHub", Toast.LENGTH_LONG).show()
+    }
 }

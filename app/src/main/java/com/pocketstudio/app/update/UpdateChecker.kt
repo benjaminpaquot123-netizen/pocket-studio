@@ -21,8 +21,11 @@ object UpdateChecker {
             connection.connectTimeout = 8000
             connection.readTimeout = 8000
             connection.setRequestProperty("Accept", "application/vnd.github+json")
-            val body = connection.inputStream.bufferedReader().use { it.readText() }
-            parse(body)
+            try {
+                parse(connection.inputStream.bufferedReader().use { it.readText() })
+            } finally {
+                connection.disconnect()
+            }
         }.getOrNull()?.takeIf { it.versionCode > AppInfo.versionCode }
     }
 

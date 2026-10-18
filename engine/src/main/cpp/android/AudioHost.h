@@ -62,6 +62,7 @@ private:
     bool wantRunning_ = false;
     int xrunBase_ = 0;
     int lastXruns_ = 0;
+    StreamInfo lastInfo_;
 };
 
 }  // namespace ps

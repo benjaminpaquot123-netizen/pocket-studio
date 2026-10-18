@@ -9,13 +9,22 @@ namespace {
 constexpr double kTwoPi = 6.28318530717958647692;
 }
 
-Engine::Engine(int sampleRate) { prepare(sampleRate); }
+Engine::Engine(int sampleRate) {
+    frequency_.snap(440.0f);
+    prepare(sampleRate);
+}
 
 void Engine::prepare(int sampleRate) {
+    // Apply pending UI commands so a reopened stream keeps the user's settings,
+    // but never replay a stale latency test request.
+    Command command;
+    while (commands_.pop(command)) {
+        if (command.type != CommandType::StartLatencyTest) applyCommand(command);
+    }
     sampleRate_ = sampleRate;
     frequency_.configure(static_cast<float>(sampleRate), 20.0f);
     gain_.configure(static_cast<float>(sampleRate), 10.0f);
-    frequency_.snap(440.0f);
+    frequency_.snap(frequency_.target());
     gain_.snap(0.0f);
     phase_ = 0.0;
     meter_.prepare(sampleRate);

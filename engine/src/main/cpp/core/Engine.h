@@ -31,7 +31,7 @@ public:
 
     explicit Engine(int sampleRate = 48000);
 
-    // Not real-time safe: call while no stream is running.
+    // Not real-time safe: call while no stream is running. Keeps frequency, volume and play state.
     void prepare(int sampleRate);
 
     // Producer side; callers must serialise (single producer).

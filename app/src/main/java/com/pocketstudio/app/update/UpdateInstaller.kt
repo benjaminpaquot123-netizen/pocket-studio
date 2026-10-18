@@ -25,34 +25,45 @@ object UpdateInstaller {
     }
 
     suspend fun downloadAndInstall(context: Context, info: UpdateInfo, onProgress: (Float) -> Unit) {
-        val apk = withContext(Dispatchers.IO) { download(context, info.apkUrl, onProgress) }
-        withContext(Dispatchers.IO) { install(context, apk) }
+        withContext(Dispatchers.IO) {
+            val apk = download(context, info.apkUrl, onProgress)
+            try {
+                install(context, apk)
+            } finally {
+                apk.delete()
+            }
+        }
     }
 
     private fun download(context: Context, url: String, onProgress: (Float) -> Unit): File {
         val dir = File(context.cacheDir, "updates").apply { mkdirs() }
         val target = File(dir, "update.apk")
         var connection = URL(url).openConnection() as HttpURLConnection
-        // GitHub answers with redirects to its CDN.
-        var redirects = 0
-        while (connection.responseCode in 300..399 && redirects++ < 5) {
-            val next = connection.getHeaderField("Location")
-            connection.disconnect()
-            connection = URL(next).openConnection() as HttpURLConnection
-        }
-        val total = connection.contentLengthLong
-        connection.inputStream.use { input ->
-            target.outputStream().use { output ->
-                val buffer = ByteArray(64 * 1024)
-                var done = 0L
-                while (true) {
-                    val n = input.read(buffer)
-                    if (n < 0) break
-                    output.write(buffer, 0, n)
-                    done += n
-                    if (total > 0) onProgress(done.toFloat() / total)
+        try {
+            // GitHub answers with redirects to its CDN.
+            var redirects = 0
+            while (connection.responseCode in 300..399 && redirects++ < 5) {
+                val next = connection.getHeaderField("Location")
+                connection.disconnect()
+                connection = URL(next).openConnection() as HttpURLConnection
+            }
+            if (connection.responseCode != HttpURLConnection.HTTP_OK) error("HTTP ${connection.responseCode}")
+            val total = connection.contentLengthLong
+            connection.inputStream.use { input ->
+                target.outputStream().use { output ->
+                    val buffer = ByteArray(64 * 1024)
+                    var done = 0L
+                    while (true) {
+                        val n = input.read(buffer)
+                        if (n < 0) break
+                        output.write(buffer, 0, n)
+                        done += n
+                        if (total > 0) onProgress(done.toFloat() / total)
+                    }
                 }
             }
+        } finally {
+            connection.disconnect()
         }
         return target
     }
@@ -65,16 +76,22 @@ object UpdateInstaller {
         }
         val sessionId = installer.createSession(params)
         installer.openSession(sessionId).use { session ->
-            session.openWrite("pocket-studio.apk", 0, apk.length()).use { out ->
-                apk.inputStream().use { it.copyTo(out) }
-                session.fsync(out)
+            try {
+                session.openWrite("pocket-studio.apk", 0, apk.length()).use { out ->
+                    apk.inputStream().use { it.copyTo(out) }
+                    session.fsync(out)
+                }
+                val intent = Intent(context, InstallResultReceiver::class.java)
+                val pending = PendingIntent.getBroadcast(
+                    context, sessionId, intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE,
+                )
+                session.commit(pending.intentSender)
+            } catch (e: Exception) {
+                // Sessions survive reboots: never leave a broken one behind.
+                session.abandon()
+                throw e
             }
-            val intent = Intent(context, InstallResultReceiver::class.java)
-            val pending = PendingIntent.getBroadcast(
-                context, sessionId, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE,
-            )
-            session.commit(pending.intentSender)
         }
     }
 }

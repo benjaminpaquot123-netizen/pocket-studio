@@ -9,7 +9,8 @@ file(GLOB CORE_SOURCES ${CORE_DIR}/*.cpp)
 
 add_library(ps_core STATIC ${CORE_SOURCES})
 target_include_directories(ps_core PUBLIC ${CORE_DIR})
-target_compile_options(ps_core PRIVATE -Wall -Wextra -Werror)
+# Same math flags as the device build (engine/src/main/cpp/CMakeLists.txt).
+target_compile_options(ps_core PRIVATE -Wall -Wextra -Werror -O3 -ffast-math -fno-finite-math-only)
 
 add_executable(engine_tests engine_tests.cpp)
 target_link_libraries(engine_tests PRIVATE ps_core)

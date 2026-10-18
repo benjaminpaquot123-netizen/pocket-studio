@@ -23,10 +23,20 @@ class SmokeTest {
         assertTrue("native engine must load", NativeEngine.isAvailable)
         compose.onNodeWithText("Pocket Studio").assertIsDisplayed()
 
+        // The engine really runs: stream started and audio callbacks flowing.
+        compose.waitUntil(10_000) { NativeEngine.streamInfo().let { it.running && it.callbacks > 0 } }
+
+        // Pressing play makes the engine output signal, not just the button change.
         compose.onNodeWithTag("play").performClick()
-        compose.waitUntil(5_000) { NativeEngine.streamInfo().callbacks > 0 || !NativeEngine.streamInfo().running }
         compose.onNodeWithText("Arrêter").assertIsDisplayed()
+        var heard = false
+        compose.waitUntil(5_000) {
+            heard = heard || Metrics.streamInfo.value.peak > 0.1f
+            heard
+        }
+        assertTrue("engine must produce sound after Play", heard)
         compose.onNodeWithTag("play").performClick()
+        assertTrue("no NaN in the output", !NativeEngine.streamInfo().nonFinite)
 
         compose.onNodeWithTag("tab_Latence").performClick()
         compose.onNodeWithTag("latency").assertIsDisplayed()

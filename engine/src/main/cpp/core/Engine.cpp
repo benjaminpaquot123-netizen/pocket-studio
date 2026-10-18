@@ -9,7 +9,17 @@ namespace ps {
 
 namespace {
 constexpr double kTwoPi = 6.28318530717958647692;
+
+// Safety stage until the master limiter (milestone 1.5): transparent below 0.8,
+// rounds peaks above instead of hard clipping, never exceeds 1.
+inline float softClip(float x) {
+    const float a = std::fabs(x);
+    if (a <= 0.8f) return x;
+    const float over = (a - 0.8f) / 0.2f;
+    const float shaped = 0.8f + 0.2f * (over / (1.0f + over));
+    return x < 0.0f ? -shaped : shaped;
 }
+}  // namespace
 
 Engine::Engine(int sampleRate) {
     frequency_.snap(440.0f);
@@ -115,7 +125,7 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
     gain_.setTarget(playing_.load(std::memory_order_relaxed) ? volume_ : 0.0f);
     const double invRate = 1.0 / sampleRate_;
     for (int i = 0; i < numFrames; ++i) {
-        const float sample = static_cast<float>(std::sin(phase_)) * gain_.next() + mix[i];
+        const float sample = softClip(static_cast<float>(std::sin(phase_)) * gain_.next() + mix[i]);
         phase_ += kTwoPi * frequency_.next() * invRate;
         if (phase_ >= kTwoPi) phase_ -= kTwoPi;
         for (int c = 0; c < outputChannels; ++c) output[i * outputChannels + c] = sample;

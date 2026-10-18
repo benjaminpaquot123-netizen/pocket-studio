@@ -8,7 +8,7 @@ namespace ps {
 namespace {
 // Per-voice output level, balanced by ear against the kick.
 constexpr float kLevels[DrumKit::kVoices] = {
-    0.9f, 0.8f, 0.7f, 0.6f, 0.7f, 0.45f, 0.4f, 0.7f,
+    1.0f, 1.0f, 0.7f, 0.6f, 0.7f, 0.45f, 0.4f, 0.7f,
     0.7f, 0.65f, 0.6f, 0.45f, 0.35f, 0.35f, 0.6f, 0.5f,
 };
 // Longest a hit may ring (seconds). Past it the voice fades out over kFadeSeconds and sleeps:
@@ -19,8 +19,42 @@ constexpr float kMaxSeconds[DrumKit::kVoices] = {
 };
 constexpr float kFadeSeconds = 0.06f;
 
+// Drives the kicks into a soft saturation: more body and loudness without hard clipping.
+constexpr float kKickDrive = 2.2f;
+inline float punch(float x) { return std::tanh(kKickDrive * x) * 0.9f; }
+
 float decayFor(float seconds, int sampleRate) { return std::exp(-1.0f / (seconds * sampleRate)); }
 }  // namespace
+
+void DrumKit::PitchedDrum::configure(int sampleRate, float hz, float sweepRatio, float sweepSeconds,
+                                     float decaySeconds, float clickAmount) {
+    baseHz = hz;
+    sweep = sweepRatio;
+    pitchDecay = decayFor(sweepSeconds, sampleRate);
+    ampDecay = decayFor(decaySeconds, sampleRate);
+    click = clickAmount;
+}
+
+void DrumKit::PitchedDrum::hit(float velocity) {
+    phase = 0.0f;
+    pitchEnv = 1.0f;
+    amp = velocity;
+    clickEnv = velocity;
+}
+
+float DrumKit::PitchedDrum::process(int sampleRate) {
+    if (amp < 1e-5f) return 0.0f;
+    const float hz = baseHz * (1.0f + (sweep - 1.0f) * pitchEnv);
+    phase += hz / static_cast<float>(sampleRate);
+    if (phase >= 1.0f) phase -= 1.0f;
+    const float body = std::sin(6.2831853f * phase) * amp;
+    // Attack click: a few milliseconds of the waveform's own transient, brightened.
+    const float clickSample = clickEnv * click * (phase < 0.5f ? 1.0f : -1.0f);
+    pitchEnv *= pitchDecay;
+    amp *= ampDecay;
+    clickEnv *= 0.97f;
+    return body + clickSample;
+}
 
 void DrumKit::prepare(int sampleRate) {
     sampleRate_ = sampleRate;
@@ -28,33 +62,21 @@ void DrumKit::prepare(int sampleRate) {
     pending_.fill(-1);
     activeFrames_.fill(0);
 
-    kick_.Init(sr);
-    kick_.SetFreq(50.0f);
-    kick_.SetTone(0.45f);
-    kick_.SetDecay(0.55f);
-    kick_.SetAttackFmAmount(0.4f);
-    kick_.SetSelfFmAmount(0.3f);
+    // Kicks: low, long and punchy (Benjamin: "pas assez puissants"); see kKickDrive below.
+    kick_.configure(sampleRate, 47.0f, 3.2f, 0.035f, 0.42f, 0.35f);
 
     kick2_.Init(sr);
-    kick2_.SetFreq(55.0f);
-    kick2_.SetTone(0.5f);
-    kick2_.SetDecay(0.4f);
-    kick2_.SetDirtiness(0.3f);
-    kick2_.SetFmEnvelopeAmount(0.6f);
-    kick2_.SetFmEnvelopeDecay(0.3f);
+    kick2_.SetFreq(50.0f);
+    kick2_.SetTone(0.45f);
+    kick2_.SetDecay(0.55f);
+    kick2_.SetDirtiness(0.45f);
+    kick2_.SetFmEnvelopeAmount(0.8f);
+    kick2_.SetFmEnvelopeDecay(0.35f);
 
-    auto tom = [sr](daisysp::AnalogBassDrum& d, float freq, float decay) {
-        d.Init(sr);
-        d.SetFreq(freq);
-        d.SetTone(0.6f);
-        d.SetDecay(decay);
-        d.SetAttackFmAmount(0.2f);
-        d.SetSelfFmAmount(0.1f);
-    };
-    tom(lowTom_, 95.0f, 0.45f);
-    tom(midTom_, 135.0f, 0.4f);
-    tom(highTom_, 190.0f, 0.35f);
-    tom(conga_, 260.0f, 0.2f);
+    lowTom_.configure(sampleRate, 95.0f, 1.7f, 0.05f, 0.30f, 0.15f);
+    midTom_.configure(sampleRate, 135.0f, 1.6f, 0.05f, 0.25f, 0.15f);
+    highTom_.configure(sampleRate, 190.0f, 1.5f, 0.04f, 0.20f, 0.15f);
+    conga_.configure(sampleRate, 260.0f, 1.3f, 0.02f, 0.12f, 0.25f);
 
     snare_.Init(sr);
     snare_.SetFreq(190.0f);
@@ -139,14 +161,14 @@ float DrumKit::noise() {
 
 float DrumKit::renderVoice(int voice, bool trig, float v) {
     switch (voice) {
-        case Kick: if (trig) kick_.SetAccent(v); return kick_.Process(trig);
-        case Kick2: if (trig) kick2_.SetAccent(v); return kick2_.Process(trig);
+        case Kick: if (trig) kick_.hit(v); return punch(kick_.process(sampleRate_));
+        case Kick2: if (trig) kick2_.SetAccent(v); return punch(kick2_.Process(trig));
         case Snare: if (trig) snare_.SetAccent(v); return snare_.Process(trig);
         case Snare2: if (trig) snare2_.SetAccent(v); return snare2_.Process(trig);
-        case LowTom: if (trig) lowTom_.SetAccent(v); return lowTom_.Process(trig);
-        case MidTom: if (trig) midTom_.SetAccent(v); return midTom_.Process(trig);
-        case HighTom: if (trig) highTom_.SetAccent(v); return highTom_.Process(trig);
-        case Conga: if (trig) conga_.SetAccent(v); return conga_.Process(trig);
+        case LowTom: if (trig) lowTom_.hit(v); return lowTom_.process(sampleRate_);
+        case MidTom: if (trig) midTom_.hit(v); return midTom_.process(sampleRate_);
+        case HighTom: if (trig) highTom_.hit(v); return highTom_.process(sampleRate_);
+        case Conga: if (trig) conga_.hit(v); return conga_.process(sampleRate_);
         case Zap: if (trig) zap_.SetAccent(v); return zap_.Process(trig);
         case ClosedHat:
             if (trig) closedHat_.SetAccent(v);

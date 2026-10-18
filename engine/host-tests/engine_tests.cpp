@@ -151,38 +151,41 @@ void testBlockSizeIndependence() {
 // Largest sample-to-sample step of a full-scale sine at [hz]: anything bigger is a click.
 float naturalStep(float hz) { return static_cast<float>(2.0 * 3.14159265358979 * hz / kRate); }
 
+// Below the master soft clipper's threshold, so the tone itself is measured.
+constexpr float kRampGain = 0.75f;
+
 void testStartRampsUp() {
     ps::Engine engine(kRate);
     engine.post({ps::CommandType::SetFrequency, 1000.0f});
-    engine.post({ps::CommandType::SetGain, 1.0f});
+    engine.post({ps::CommandType::SetGain, kRampGain});
     engine.post({ps::CommandType::SetPlaying, 1.0f});
     const auto out = render(engine, kRate / 10, 256);
     // 1 ms after start the 10 ms ramp is still below 20 %; a hard start would already be at full scale.
     float firstMs = 0.0f;
     for (int i = 0; i < kRate / 1000; ++i) firstMs = std::max(firstMs, std::fabs(out[static_cast<size_t>(i) * kChannels]));
-    CHECK(firstMs < 0.2f);
+    CHECK(firstMs < 0.2f * kRampGain);
     float lastMs = 0.0f;
     for (int i = kRate / 10 - kRate / 1000; i < kRate / 10; ++i) {
         lastMs = std::max(lastMs, std::fabs(out[static_cast<size_t>(i) * kChannels]));
     }
-    CHECK(lastMs > 0.99f);
+    CHECK(lastMs > 0.99f * kRampGain);
     float maxStep = 0.0f;
     for (int i = 1; i < kRate / 10; ++i) {
         maxStep = std::max(maxStep, std::fabs(out[static_cast<size_t>(i) * kChannels] -
                                               out[static_cast<size_t>(i - 1) * kChannels]));
     }
-    CHECK(maxStep <= naturalStep(1000.0f) * 1.01f);
+    CHECK(maxStep <= naturalStep(1000.0f) * kRampGain * 1.01f);
 }
 
 void testStopFadesOut() {
     ps::Engine engine(kRate);
     engine.post({ps::CommandType::SetFrequency, 1000.0f});
-    engine.post({ps::CommandType::SetGain, 1.0f});
+    engine.post({ps::CommandType::SetGain, kRampGain});
     engine.post({ps::CommandType::SetPlaying, 1.0f});
     // Advance until the waveform sits near a peak, where a hard cut would click loudly.
     auto before = render(engine, 12000, 256);
-    for (int i = 0; i < 48 && std::fabs(before[before.size() - kChannels]) < 0.95f; ++i) before = render(engine, 1, 1);
-    CHECK(std::fabs(before[before.size() - kChannels]) >= 0.95f);
+    for (int i = 0; i < 48 && std::fabs(before[before.size() - kChannels]) < 0.95f * kRampGain; ++i) before = render(engine, 1, 1);
+    CHECK(std::fabs(before[before.size() - kChannels]) >= 0.95f * kRampGain);
     engine.post({ps::CommandType::SetPlaying, 0.0f});
     const auto out = render(engine, kRate / 4, 256);
     float previous = before[before.size() - kChannels];
@@ -191,11 +194,11 @@ void testStopFadesOut() {
         maxStep = std::max(maxStep, std::fabs(out[i * kChannels] - previous));
         previous = out[i * kChannels];
     }
-    CHECK(maxStep <= naturalStep(1000.0f) * 1.01f);
+    CHECK(maxStep <= naturalStep(1000.0f) * kRampGain * 1.01f);
     // Still sounding 1 ms after the stop (fading, not cut)...
     float firstMs = 0.0f;
     for (int i = 0; i < kRate / 1000; ++i) firstMs = std::max(firstMs, std::fabs(out[static_cast<size_t>(i) * kChannels]));
-    CHECK(firstMs > 0.7f);
+    CHECK(firstMs > 0.7f * kRampGain);
     // ...and silent at the end.
     float tail = 0.0f;
     for (size_t i = out.size() - 200; i < out.size(); ++i) tail = std::max(tail, std::fabs(out[i]));
@@ -554,8 +557,44 @@ void testFullKitCpuBudget() {
     CHECK(load < 0.10);  // leaves a large margin for a phone and for synths/effects
 #endif
     bool finite = true;
-    for (float v : out) finite &= std::isfinite(v);
+    float peak = 0.0f;
+    for (float v : out) {
+        finite &= std::isfinite(v);
+        peak = std::max(peak, std::fabs(v));
+    }
     CHECK(finite);
+    CHECK(peak <= 1.0f);  // the master soft clipper never lets the output clip
+}
+
+void testKicksArePunchy() {
+    for (int voice : {ps::DrumKit::Kick, ps::DrumKit::Kick2}) {
+        ps::DrumKit kit;
+        kit.prepare(kRate);
+        const auto out = renderKit(kit, kRate / 2, 256, {{0, voice, 1.0f}});
+        const double rms = std::sqrt(energy(out, 0, kRate * 3 / 10) / (kRate * 3 / 10));
+        float peak = 0.0f;
+        for (float v : out) peak = std::max(peak, std::fabs(v));
+        if (rms < 0.25 || peak < 0.8f) std::fprintf(stderr, "  kick %d: rms=%.3f peak=%.3f\n", voice, rms, peak);
+        CHECK(rms >= 0.25);
+        CHECK(peak >= 0.8f);
+    }
+}
+
+void testTomsHaveBody() {
+    for (int voice : {ps::DrumKit::LowTom, ps::DrumKit::MidTom, ps::DrumKit::HighTom, ps::DrumKit::Conga}) {
+        ps::DrumKit kit;
+        kit.prepare(kRate);
+        const auto out = renderKit(kit, kRate / 2, 256, {{0, voice, 1.0f}});
+        const double rms = std::sqrt(energy(out, 0, kRate / 10) / (kRate / 10));
+        std::printf("  voice %d: rms(100 ms) %.3f\n", voice, rms);
+        CHECK(rms >= 0.12);
+    }
+    for (int voice : {ps::DrumKit::Kick, ps::DrumKit::Kick2}) {
+        ps::DrumKit kit;
+        kit.prepare(kRate);
+        const auto out = renderKit(kit, kRate / 2, 256, {{0, voice, 1.0f}});
+        std::printf("  kick %d: rms(300 ms) %.3f\n", voice, std::sqrt(energy(out, 0, kRate * 3 / 10) / (kRate * 3 / 10)));
+    }
 }
 
 struct TestCase {
@@ -591,6 +630,8 @@ int main(int argc, char** argv) {
         {"hat_choke", testClosedHatChokesOpenHat},
         {"pattern_drives_drums", testPatternDrivesDrums},
         {"full_kit_cpu", testFullKitCpuBudget},
+        {"kicks_are_punchy", testKicksArePunchy},
+        {"toms_have_body", testTomsHaveBody},
     };
     for (const auto& t : tests) {
         const int before = g_failures;

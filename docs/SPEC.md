@@ -72,6 +72,8 @@ Pistes à évaluer en priorité :
 14. Prise en main : projets de démo, modèles par genre (house, techno, drum & bass, trap, lo-fi, synthwave) qui préparent kit, tempo et gamme, astuces contextuelles.
 15. Outils de recette, dès la phase 0 : écran « Recette » listant les vérifications du jalon en cours (rédigées par toi), que je coche ✅ ou ❌ avec un commentaire facultatif ; bouton « Signaler un problème » ; rapport de crash proposé au lancement suivant. Chacun ouvre une issue GitHub pré-remplie (version, appareil, résultats, latence mesurée, nombre de décrochages audio, fin du journal) : je n'ai qu'à appuyer sur Envoyer. Si D1 = A, l'appli vérifie aussi les mises à jour au lancement et s'installe par-dessus en un geste.
 
+16. (Ajout de Benjamin, 2026-10-18) Bibliothèque de sons : tous les instruments classiques via une banque General MIDI libre (piano, cordes, cuivres, guitares, basses, orgues, batteries…), téléchargée au premier usage ; navigateur de sons ; import de packs de samples libres trouvés sur internet ou dans le téléphone.
+
 # Architecture technique
 - Kotlin + Jetpack Compose (Material 3), une seule activité, MVVM avec flux de données unidirectionnel, coroutines. Vues personnalisées sur Canvas pour formes d'onde, piano roll et grille de pas.
 - Moteur audio en C++20 (NDK, CMake) relié par JNI. Dans le callback audio : aucune allocation, aucun verrou, aucun log. Files lock-free SPSC pour les commandes et les mesures. Séquenceur à l'échantillon près dans le thread audio, jamais via des timers Kotlin.

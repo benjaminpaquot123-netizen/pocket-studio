@@ -3,7 +3,6 @@
 #include <array>
 #include <cstdint>
 
-#include "Drums/analogbassdrum.h"
 #include "Drums/analogsnaredrum.h"
 #include "Drums/hihat.h"
 #include "Drums/synthbassdrum.h"
@@ -42,6 +41,24 @@ private:
         }
     };
 
+    // 808-style pitched drum: sine with a fast downward pitch sweep, amplitude decay and a
+    // short attack click. Used for the main kick, toms and conga (DaisySP's AnalogBassDrum
+    // only produced a click without body).
+    struct PitchedDrum {
+        float baseHz = 50.0f;
+        float sweep = 3.0f;         // start frequency = baseHz * sweep
+        float pitchDecay = 0.999f;  // per-sample decay of the sweep
+        float ampDecay = 0.9999f;
+        float click = 0.3f;
+        float phase = 0.0f;
+        float pitchEnv = 0.0f;
+        float amp = 0.0f;
+        float clickEnv = 0.0f;
+        void configure(int sampleRate, float hz, float sweepRatio, float sweepSeconds, float decaySeconds, float clickAmount);
+        void hit(float velocity);
+        float process(int sampleRate);
+    };
+
     float renderVoice(int voice, bool trig, float velocity);
     float noise();
 
@@ -53,7 +70,7 @@ private:
     float openHatChoke_ = 1.0f;
     float chokeDecay_ = 0.99f;
 
-    daisysp::AnalogBassDrum kick_, lowTom_, midTom_, highTom_, conga_;
+    PitchedDrum kick_, lowTom_, midTom_, highTom_, conga_;
     daisysp::SyntheticBassDrum kick2_, zap_;
     daisysp::AnalogSnareDrum snare_;
     daisysp::SyntheticSnareDrum snare2_;

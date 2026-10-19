@@ -82,15 +82,23 @@ void Synth::updateVoiceSettings(Voice& v) {
     v.svf.SetRes(param(Resonance) * 0.95f);
 }
 
-void Synth::noteOn(int midiNote, float velocity, int frameOffset) {
+void Synth::queue(const Event& e) {
     if (eventCount_ >= static_cast<int>(events_.size())) return;  // burst of events: drop extras
-    events_[static_cast<size_t>(eventCount_++)] = {std::max(0, frameOffset), std::clamp(midiNote, 0, 127),
-                                                   std::clamp(velocity, 0.0f, 1.0f), true};
+    // Keep the queue sorted by offset (stable): notes from the piano roll and the keyboard mix.
+    int i = eventCount_++;
+    while (i > 0 && events_[static_cast<size_t>(i - 1)].offset > e.offset) {
+        events_[static_cast<size_t>(i)] = events_[static_cast<size_t>(i - 1)];
+        --i;
+    }
+    events_[static_cast<size_t>(i)] = e;
+}
+
+void Synth::noteOn(int midiNote, float velocity, int frameOffset) {
+    queue({std::max(0, frameOffset), std::clamp(midiNote, 0, 127), std::clamp(velocity, 0.0f, 1.0f), true});
 }
 
 void Synth::noteOff(int midiNote, int frameOffset) {
-    if (eventCount_ >= static_cast<int>(events_.size())) return;
-    events_[static_cast<size_t>(eventCount_++)] = {std::max(0, frameOffset), midiNote, 0.0f, false};
+    queue({std::max(0, frameOffset), midiNote, 0.0f, false});
 }
 
 void Synth::allNotesOff() {
@@ -155,7 +163,7 @@ void Synth::render(float* mono, int numFrames) {
     const float nyquistGuard = 0.45f * static_cast<float>(sampleRate_);
 
     int nextEvent = 0;
-    // Events are queued in arrival order; their offsets are non-decreasing in practice.
+    // Events are kept sorted by offset (queue()).
     for (int i = 0; i < numFrames; ++i) {
         while (nextEvent < eventCount_ && events_[static_cast<size_t>(nextEvent)].offset <= i) {
             applyEvent(events_[static_cast<size_t>(nextEvent++)]);

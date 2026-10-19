@@ -1,5 +1,7 @@
 package com.pocketstudio.app.synth
 
+import com.pocketstudio.model.NoteClip
+import com.pocketstudio.model.Note
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -79,16 +81,45 @@ private val ADVANCED = listOf(
 private val WAVES = listOf(0f to "Scie", 0.5f to "Carré", 1f to "Triangle")
 private val FILTERS = listOf(0f to "Ladder", 0.3f to "Passe-bas", 0.6f to "Passe-haut", 0.9f to "Passe-bande")
 
+/** The piano roll's data, when the screen shows it (null: keyboard only, e.g. in tests). */
+class NotesUi(val clip: NoteClip, val ghosts: List<Note>, val playStep: Int, val actions: PianoRollActions)
+
 @Composable
-fun SynthScreen(patch: SynthPatch, octave: Int, actions: SynthActions, modifier: Modifier = Modifier) {
+fun SynthScreen(
+    patch: SynthPatch,
+    octave: Int,
+    actions: SynthActions,
+    modifier: Modifier = Modifier,
+    notes: NotesUi? = null,
+    startWithNotes: Boolean = false,
+) {
     var advanced by rememberSaveable { mutableStateOf(false) }
+    var showNotes by rememberSaveable { mutableStateOf(startWithNotes) }
     BoxWithConstraints(modifier.fillMaxSize().testTag("synth")) {
         val keyboardHeight = (maxHeight * 0.45f).coerceIn(110.dp, 220.dp)
-        if (maxWidth > maxHeight) {
+        val landscape = maxWidth > maxHeight
+        val rollHeight = if (landscape) (maxHeight - 140.dp).coerceAtLeast(160.dp) else 380.dp
+        if (notes != null && showNotes) {
+            Column(
+                Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(if (landscape) 8.dp else 12.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
+                ModeSwitch(showNotes) { showNotes = it }
+                NeonCard {
+                    PianoRoll(
+                        notes.clip, notes.ghosts, notes.playStep, notes.actions,
+                        gridHeight = rollHeight,
+                    )
+                }
+                PresetsCard(patch, actions)
+                SoundCard(patch, actions, advanced) { advanced = it }
+            }
+        } else if (landscape) {
             // Landscape: one compact line (presets, octave), the settings scroll, and a wide
             // three-octave keyboard stays under the thumbs.
             Column(Modifier.fillMaxSize().padding(8.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    if (notes != null) ModeSwitch(showNotes) { showNotes = it }
                     PresetChips(patch, actions)
                     Box(Modifier.weight(1f))
                     OctaveControl(octave, actions)
@@ -106,6 +137,7 @@ fun SynthScreen(patch: SynthPatch, octave: Int, actions: SynthActions, modifier:
                 Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
+                if (notes != null) ModeSwitch(showNotes) { showNotes = it }
                 KeyboardCard(octave, octaves = 2, height = 150.dp, actions = actions)
                 PresetsCard(patch, actions)
                 SoundCard(patch, actions, advanced) { advanced = it }
@@ -160,6 +192,16 @@ private fun SoundCard(patch: SynthPatch, actions: SynthActions, advanced: Boolea
                 ADVANCED.forEach { (index, label) -> ParamSlider(label, patch.get(index)) { actions.setParam(index, it) } }
             }
         }
+    }
+}
+
+@Composable
+private fun ModeSwitch(showNotes: Boolean, onChange: (Boolean) -> Unit) {
+    Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        FilterChip(selected = !showNotes, onClick = { onChange(false) }, label = { Text("Clavier") }, colors = chipColors(),
+            modifier = Modifier.testTag("mode_keyboard"))
+        FilterChip(selected = showNotes, onClick = { onChange(true) }, label = { Text("Notes") }, colors = chipColors(),
+            modifier = Modifier.testTag("mode_notes"))
     }
 }
 

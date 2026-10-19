@@ -151,6 +151,15 @@ class SmokeTest {
         assertEquals("Morceau 1 mesure", rhythm.project.value.drums.lanes[10].sample!!.name)
         assertEquals(1, rhythm.project.value.drums.lanes[9].sample!!.fitBeats)
 
+        // Piano roll: the Notes view opens and a note added through the screen's path is kept.
+        compose.onNodeWithTag("tab_Synthe").performClick()
+        compose.onNodeWithTag("mode_notes").performClick()
+        compose.onNodeWithTag("piano_roll").assertExists()
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            rhythm.addNote(com.pocketstudio.model.Note(start = 0, length = 48, pitch = 60))
+        }
+        assertEquals(1, rhythm.project.value.synthNotes.notes.size)
+
         assertTrue("no NaN in the output", !NativeEngine.streamInfo().nonFinite)
     }
 

@@ -1224,6 +1224,37 @@ void testTimeStretchKeepsPitchAndLength() {
     CHECK(ps::timeStretch(nullptr, n, 2, n, 0.0f, kRate).empty());
 }
 
+void testPianoRollNotesAreSampleAccurate() {
+    // 120 BPM: a step is 6000 frames, a tick 250. A note at tick 36 (1.5 steps), 48 ticks long.
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SetTempo, 120.0f});
+    engine.post({ps::CommandType::SetSynthSteps, 0.0f, 16});
+    engine.post({ps::CommandType::SetSynthNote, 0.9f, 0, ps::NoteTrack::pack(36, 48, 57)});
+    engine.post({ps::CommandType::SetSynthNoteCount, 0.0f, 1});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    const auto out = render(engine, 6000 * 16 + 20000, 256);
+    auto firstSound = [&](int from) {
+        for (int i = from; i < int(out.size() / kChannels); ++i) if (out[size_t(i) * kChannels] != 0.0f) return i;
+        return -1;
+    };
+    const int first = firstSound(0);
+    CHECK(first >= 9000 && first <= 9002);
+    // Released at 9000 + 12000: by the next loop's note (96000 + 9000) it has died away, then sounds again.
+    float quiet = 0.0f;
+    for (int i = 96000 + 8000; i < 96000 + 9000; ++i) quiet = std::max(quiet, std::fabs(out[size_t(i) * kChannels]));
+    float again = 0.0f;
+    for (int i = 96000 + 9000; i < 96000 + 12000; ++i) again = std::max(again, std::fabs(out[size_t(i) * kChannels]));
+    CHECK(again > 10.0f * quiet && again > 0.01f);
+    // Stop: nothing left queued; a deleted note (count 0) is not played.
+    engine.post({ps::CommandType::SetTransport, 0.0f, 0});
+    render(engine, 256, 256);
+    CHECK(engine.notesPending() == 0);
+    engine.post({ps::CommandType::SetSynthNoteCount, 0.0f, 0});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    render(engine, 6000 * 3, 256);
+    CHECK(engine.notesPending() == 0);
+}
+
 void testLimiterHoldsTheCeiling() {
     ps::Mixer mixer;
     mixer.prepare(kRate);
@@ -1300,6 +1331,7 @@ int main(int argc, char** argv) {
         {"pad_param_commands", testPadParamCommandsReachTheSampler},
         {"onsets", testOnsetsFindTheHits},
         {"time_stretch", testTimeStretchKeepsPitchAndLength},
+        {"piano_roll", testPianoRollNotesAreSampleAccurate},
     };
     for (const auto& t : tests) {
         const int before = g_failures;

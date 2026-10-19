@@ -8,6 +8,7 @@
 #include "DrumKit.h"
 #include "Metronome.h"
 #include "Mixer.h"
+#include "NoteTrack.h"
 #include "RoundTripMeter.h"
 #include "Sampler.h"
 #include "Sequencer.h"
@@ -45,6 +46,9 @@ enum class CommandType : uint8_t {
     SetChannelSolo,    // a: channel, value: 1 = solo
     InstallSample,     // a: pad, sample: owned reference (nullptr = back to the drum sound)
     SetPadParam,       // a: pad, b: Sampler::Param, value in that parameter's unit
+    SetSynthNote,      // a: index, b: NoteTrack::pack(start, length, pitch), value: velocity
+    SetSynthNoteCount, // a: number of notes in use
+    SetSynthSteps,     // a: piano-roll pattern length in steps (1..128)
 };
 
 struct Command {
@@ -98,12 +102,15 @@ public:
 
     // Transport state for the UI: current pattern step (-1 when stopped or counting in).
     int currentStep() const { return currentStep_.load(std::memory_order_relaxed); }
+    // Steps since play (no wrap), -1 when stopped: the piano roll has its own loop length.
+    int absoluteStep() const { return absoluteStep_.load(std::memory_order_relaxed); }
     bool transportRunning() const { return sequencer_.running(); }
     // Increments every time a lane is triggered (pad lights, tests).
     uint32_t laneTriggerCount(int lane) const { return laneTriggers_[lane].load(std::memory_order_relaxed); }
     // Number of metronome clicks triggered since startup (tests).
     Mixer& mixer() { return mixer_; }
     int synthActiveVoices() const { return synth_.activeVoices(); }
+    int notesPending() const { return notes_.pendingCount(); }  // tests
     uint32_t acidNotesPlayed() const { return acid_.notesPlayed(); }
     uint64_t metronomeClicks() const { return metronomeClicks_.load(std::memory_order_relaxed); }
 
@@ -127,6 +134,7 @@ private:
     DrumKit drums_;
     AcidTrack acid_;
     Synth synth_;
+    NoteTrack notes_;
     Sampler sampler_;
     Mixer mixer_;
     std::array<float, kMaxBlock> drumsBuf_{};
@@ -137,6 +145,7 @@ private:
     float pattern_[kLanes][kMaxSteps] = {};
     std::array<float, kMaxBlock> mix_{};
     std::atomic<int> currentStep_{-1};
+    std::atomic<int> absoluteStep_{-1};
     std::array<std::atomic<uint32_t>, kLanes> laneTriggers_{};
     std::atomic<uint64_t> metronomeClicks_{0};
 

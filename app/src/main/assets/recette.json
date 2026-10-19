@@ -71,6 +71,16 @@
       "id": "export_sample",
       "title": "L'export WAV contient ton son",
       "hint": "Mixeur › Exporter, écoute le fichier."
+    },
+    {
+      "id": "piano_roll",
+      "title": "Composer au piano roll du synthé",
+      "hint": "Synthé › Notes : touche des cases pour poser des notes, glisse-les, allonge-les par le bout, puis lance Jouer dans Rythme. Les notes doivent tomber pile en rythme."
+    },
+    {
+      "id": "quantize",
+      "title": "Quantifier et notes fantômes",
+      "hint": "Décale une note à la main, puis « Quantifier 50 % » (elle se rapproche de la grille) et « 100 % » (pile dessus). La basse acide apparaît en transparence."
     }
   ]
 }

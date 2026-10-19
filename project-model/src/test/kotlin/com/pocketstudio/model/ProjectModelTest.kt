@@ -333,3 +333,50 @@ class FitToTempoTest {
         assertEquals(0f, neutral[0]); assertEquals(1f, neutral[1]); assertEquals(0f, neutral[2])
     }
 }
+
+class NoteClipTest {
+    @Test
+    fun quantizeMovesTowardTheGridByTheStrength() {
+        val clip = NoteClip(notes = listOf(Note(start = 30, length = 24, pitch = 60)))  // grid 24: target 24
+        assertEquals(24, clip.quantized(24, 1f).notes[0].start)
+        assertEquals(27, clip.quantized(24, 0.5f).notes[0].start)
+        assertEquals(30, clip.quantized(24, 0f).notes[0].start)
+        assertEquals(24, clip.quantized(24, 1f).notes[0].length)  // lengths kept
+    }
+
+    @Test
+    fun badNotesAreDroppedOrRepaired() {
+        val clip = NoteClip(
+            steps = 20,
+            notes = listOf(
+                Note(start = -5, length = 10, pitch = 60),       // before the clip: dropped
+                Note(start = 10, length = 99999, pitch = 300),   // repaired
+                Note(start = 500, length = 10, pitch = 60, velocity = Float.NaN),  // dropped
+            ),
+        ).sanitized()
+        assertEquals(16, clip.steps)
+        assertEquals(1, clip.notes.size)
+        assertEquals(NoteClip.MAX_TICKS, clip.notes[0].length)
+        assertEquals(127, clip.notes[0].pitch)
+    }
+
+    @Test
+    fun tapFindsTheNoteAndGhostsFollowTheAcidLine() {
+        val n = Note(start = 48, length = 24, pitch = 64)
+        val clip = NoteClip().add(n)
+        assertEquals(n, clip.noteAt(60, 64))
+        assertNull(clip.noteAt(72, 64))
+        val acid = AcidPattern(length = 2, root = 36).let { a ->
+            a.withStep(0, AcidStep(note = 3, octave = 1, gate = true)).withStep(1, AcidStep())
+        }
+        val ghosts = NoteClip.ghostsOf(acid, 4)
+        assertEquals(listOf(0, 48), ghosts.map { it.start })
+        assertEquals(36 + 3 + 12, ghosts[0].pitch)
+    }
+
+    @Test
+    fun notesSurviveSaveAndLoad() {
+        val p = Project(synthNotes = NoteClip(steps = 32, notes = listOf(Note(12, 36, 62, 0.5f))))
+        assertEquals(p.synthNotes, ProjectJson.decode(ProjectJson.encode(p)).synthNotes)
+    }
+}

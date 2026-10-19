@@ -228,4 +228,25 @@ class ScreenshotTest {
             )
         }
     }
+
+    @Test
+    fun pianoRoll() = shoot("piano_roll") {
+        val chords = listOf(60, 64, 67, 57, 60, 64, 65, 69, 72, 67, 71, 74)
+        val notes = chords.mapIndexed { i, p ->
+            com.pocketstudio.model.Note(start = (i / 3) * 4 * 24 * 1, length = 3 * 24, pitch = p, velocity = if (i % 3 == 0) 1f else 0.5f)
+        } + com.pocketstudio.model.Note(start = 13 * 24 + 7, length = 30, pitch = 76, velocity = 0.2f)
+        val acid = com.pocketstudio.model.AcidGenerator(kotlin.random.Random(3)).generate(com.pocketstudio.model.AcidPattern(root = 48))
+        com.pocketstudio.app.synth.SynthScreen(
+            patch = com.pocketstudio.model.SynthPatch.PRESETS[2].second,
+            octave = 4,
+            actions = com.pocketstudio.app.synth.SynthActions(),
+            notes = com.pocketstudio.app.synth.NotesUi(
+                com.pocketstudio.model.NoteClip(16, notes),
+                com.pocketstudio.model.NoteClip.ghostsOf(acid, 16),
+                playStep = 6,
+                actions = com.pocketstudio.app.synth.PianoRollActions(),
+            ),
+            startWithNotes = true,
+        )
+    }
 }

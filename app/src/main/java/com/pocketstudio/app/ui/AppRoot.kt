@@ -1,5 +1,8 @@
 package com.pocketstudio.app.ui
 
+import com.pocketstudio.app.synth.NotesUi
+import com.pocketstudio.app.synth.PianoRollActions
+import com.pocketstudio.model.NoteClip
 import com.pocketstudio.app.report.AppLog
 import android.Manifest
 import android.content.ActivityNotFoundException
@@ -298,6 +301,10 @@ fun AppRoot() {
                         DisposableEffect(Unit) { onDispose { rhythmVm.synthAllOff() } }
                         val project by rhythmVm.project.collectAsStateWithLifecycle()
                         val octave by rhythmVm.keyboardOctave.collectAsStateWithLifecycle()
+                        val live by rhythmVm.live.collectAsStateWithLifecycle()
+                        LaunchedEffect(Unit) {
+                            lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollLive() }
+                        }
                         SynthScreen(
                             patch = project.synth,
                             octave = octave,
@@ -307,6 +314,19 @@ fun AppRoot() {
                                 shiftOctave = rhythmVm::shiftKeyboardOctave,
                                 setParam = rhythmVm::setSynthParam,
                                 applyPreset = rhythmVm::applySynthPreset,
+                            ),
+                            notes = NotesUi(
+                                clip = project.synthNotes,
+                                ghosts = NoteClip.ghostsOf(project.acid, project.synthNotes.steps),
+                                playStep = live.absoluteStep,
+                                actions = PianoRollActions(
+                                    add = rhythmVm::addNote,
+                                    remove = rhythmVm::removeNote,
+                                    change = rhythmVm::changeNote,
+                                    quantize = rhythmVm::quantizeNotes,
+                                    setSteps = rhythmVm::setNoteClipSteps,
+                                    clear = rhythmVm::clearNotes,
+                                ),
                             ),
                         )
                     }

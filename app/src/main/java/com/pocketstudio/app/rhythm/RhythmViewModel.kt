@@ -19,6 +19,8 @@ import com.pocketstudio.model.AcidPattern
 import com.pocketstudio.model.AcidStep
 import com.pocketstudio.model.DrumPattern
 import com.pocketstudio.model.Hit
+import com.pocketstudio.model.Note
+import com.pocketstudio.model.NoteClip
 import com.pocketstudio.model.PadSample
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.ProjectSession
@@ -52,7 +54,7 @@ data class ExportUi(
 )
 
 /** What the audio engine is doing right now, polled for the playhead and pad lights. */
-data class LiveUi(val currentStep: Int = -1, val litPads: Set<Int> = emptySet())
+data class LiveUi(val currentStep: Int = -1, val litPads: Set<Int> = emptySet(), val absoluteStep: Int = -1)
 
 data class TransportUi(
     val playing: Boolean = false,
@@ -105,7 +107,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 lastTriggers[i] = triggers[i]
             }
             val lit = (0 until NativeEngine.LANES).filter { litUntil[it] > now }.toSet()
-            _live.value = LiveUi(NativeEngine.currentStep(), lit)
+            _live.value = LiveUi(NativeEngine.currentStep(), lit, NativeEngine.absoluteStep())
             kotlinx.coroutines.delay(33)
         }
     }
@@ -148,6 +150,45 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         pushSynth(p.synth)
         pushMixer(p)
         pushPads(p)
+        pushNotes(p.synthNotes)
+    }
+
+    // --- Piano roll ------------------------------------------------------------------------
+
+    private fun pushNotes(clip: NoteClip) {
+        if (!NativeEngine.isAvailable) return
+        NativeEngine.setSynthSteps(clip.steps)
+        clip.notes.forEachIndexed { i, n -> NativeEngine.setSynthNote(i, n.start, n.length, n.pitch, n.velocity) }
+        NativeEngine.setSynthNoteCount(clip.notes.size)
+    }
+
+    private fun editNotes(key: String? = null, transform: (NoteClip) -> NoteClip) {
+        session.edit(key) { p -> p.copy(synthNotes = transform(p.synthNotes)) }
+        pushNotes(project.value.synthNotes)
+    }
+
+    fun addNote(note: Note) {
+        editNotes { it.add(note) }
+        if (NativeEngine.isAvailable && !_transport.value.playing) previewNote(note.pitch)
+    }
+
+    fun removeNote(note: Note) = editNotes { it.remove(note) }
+
+    fun changeNote(old: Note, new: Note) = editNotes { it.replace(old, new) }
+
+    fun quantizeNotes(gridTicks: Int, strength: Float) = editNotes { it.quantized(gridTicks, strength) }
+
+    fun setNoteClipSteps(steps: Int) = editNotes { it.copy(steps = steps).sanitized() }
+
+    fun clearNotes() = editNotes { it.copy(notes = emptyList()) }
+
+    /** A short note so the user hears what they placed. */
+    private fun previewNote(pitch: Int) {
+        NativeEngine.synthNoteOn(pitch, 0.8f)
+        viewModelScope.launch {
+            kotlinx.coroutines.delay(250)
+            NativeEngine.synthNoteOff(pitch)
+        }
     }
 
     // --- Pad samples (import, microphone) --------------------------------------------------

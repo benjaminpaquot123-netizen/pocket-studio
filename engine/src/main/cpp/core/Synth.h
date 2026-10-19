@@ -58,6 +58,7 @@ private:
     };
 
     void applyEvent(const Event& e);
+    void queue(const Event& e);
     void updateVoiceSettings(Voice& v);
     float noise();
 
@@ -65,7 +66,7 @@ private:
     bool prepared_ = false;
     std::array<Voice, kVoices> voices_{};
     std::array<float, ParamCount> params_{};
-    std::array<Event, 32> events_{};
+    std::array<Event, 64> events_{};
     int eventCount_ = 0;
     daisysp::Oscillator lfo1_, lfo2_;
     uint32_t clock_ = 0;

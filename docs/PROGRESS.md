@@ -41,6 +41,8 @@
 
 - Jalon 2.3 : « Calé au tempo » (0/1/2/4/8/16/32 temps, suggestion ★) : une copie de la zone du pad, étirée par Signalsmith Stretch (MIT) et transposée sans changer sa durée, calculée hors fil audio, recalculée quand le tempo change (le son d'origine joue en attendant). Rééchantillonnage : « Enregistrer le morceau » rend 1, 2 ou 4 mesures du morceau (moteur hors-ligne) sur le pad choisi. Tests Linux : hauteur gardée à 1 000 Hz sur une durée ×1,5, +12 demi-tons = 1 998 Hz à durée égale ; rendu en mémoire identique au fichier.
 
+- Jalon 2.4 : piano roll du synthé (onglet Synthé › Notes). Moteur : `NoteTrack` (512 notes, 24 ticks par double-croche, départs et fins à l'échantillon près, boucle de 1 à 8 mesures indépendante de la batterie, notes relâchées à l'arrêt) ; file d'événements du synthé triée. Écran : toucher pour ajouter/enlever, glisser pour déplacer, glisser le bout pour allonger, appui long pour la force, quantifier 50 %/100 %, basse acide en notes fantômes, tête de lecture. Test Linux : note à 1,5 pas qui part pile au bon échantillon et se répète à chaque boucle.
+
 ## Prochaine étape exacte
-1. Jalon 2.4 : piano roll (notes avec durée et vélocité, quantification avec intensité, notes fantômes), d'abord pour le synthé.
+1. Jalon 2.5 : verrouillage de gamme (piano roll + clavier), accords en un geste, progressions, arpégiateur, strum.
 2. Reste du 2.3 : lever la limite de 60 s par son (stockage 16 bits ou lecture en flux), utile pour découper des morceaux entiers.

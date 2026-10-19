@@ -43,6 +43,10 @@ JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_currentStep(JNI
     return host().engine().currentStep();
 }
 
+JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_absoluteStep(JNIEnv*, jobject) {
+    return host().engine().absoluteStep();
+}
+
 // --- Samples: created and released off the audio thread, shared by reference. ---
 
 JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_sampleCreate(JNIEnv* env, jobject, jfloatArray data,

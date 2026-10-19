@@ -30,6 +30,9 @@ object NativeEngine {
     private const val CMD_CHANNEL_SOLO = 23
     // 24: InstallSample (native only)
     private const val CMD_PAD_PARAM = 25
+    private const val CMD_SYNTH_NOTE = 26
+    private const val CMD_SYNTH_NOTE_COUNT = 27
+    private const val CMD_SYNTH_STEPS = 28
 
     /** Mixer channels: 0 drums, 1 acid bass, 2 synth. */
     const val MIXER_CHANNELS = 3
@@ -80,6 +83,14 @@ object NativeEngine {
 
     /** Current pattern step, or -1 when stopped or counting in. */
     external fun currentStep(): Int
+    /** Steps since play without wrapping (-1 stopped): the piano roll loops on its own length. */
+    external fun absoluteStep(): Int
+
+    /** Piano-roll note [index] (ticks: 24 per sixteenth). Packing matches NoteTrack::pack. */
+    fun setSynthNote(index: Int, start: Int, length: Int, pitch: Int, velocity: Float) =
+        post(CMD_SYNTH_NOTE, velocity, index, (start and 0xFFF) or ((length and 0xFFF) shl 12) or ((pitch and 0x7F) shl 24))
+    fun setSynthNoteCount(count: Int) = post(CMD_SYNTH_NOTE_COUNT, 0f, count)
+    fun setSynthSteps(steps: Int) = post(CMD_SYNTH_STEPS, 0f, steps)
     /** Writes into [out] (size [LANES]) how many times each lane has fired. */
     external fun laneTriggers(out: IntArray)
 

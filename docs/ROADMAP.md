@@ -44,7 +44,7 @@ Feu vert de Benjamin (D4 = A) : fusion de la pull request en fin de phase.
 - [x] 2.1 Import MP3/WAV/FLAC/M4A, enregistrement micro, forme d'onde zoomable
 - [x] 2.2 Découpe (attaques avec aubio, grille, manuelle), tranches vers pads, ADSR, pitch, reverse, boucle, groupes d'étouffement
 - [x] 2.3 Time-stretch (Signalsmith Stretch), rééchantillonnage du master
-- [ ] 2.4 Piano roll : vélocité, quantification avec intensité, notes fantômes
+- [x] 2.4 Piano roll : vélocité, quantification avec intensité, notes fantômes
 - [ ] 2.5 Verrouillage de gamme, accords en un geste, progressions, arpégiateur, strum
 - [ ] 2.6 Bibliothèque d'instruments : banque General MIDI GeneralUser GS (128 instruments + kits) jouée par TinySoundFont (MIT), téléchargée au premier usage depuis notre propre Release (empreinte vérifiée) ; navigateur de sons par famille ; import de packs de samples (zip/dossier) et packs libres CC0
 

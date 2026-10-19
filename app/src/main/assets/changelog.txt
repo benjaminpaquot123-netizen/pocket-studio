@@ -1,4 +1,4 @@
-Phase 2, premier pas : mets TES sons sur les pads !
+Phase 2 : tes sons sur les pads, et un piano roll pour le synthé (Synthé › Notes) !
 Importer un fichier du téléphone (MP3, WAV, FLAC, M4A…) ou enregistrer au micro.
 Cale une boucle au tempo sans changer sa note, et enregistre ton morceau sur un pad.
 Règle chaque son : début, fin, hauteur, à l'envers, en boucle, enveloppe, groupes d'étouffement.

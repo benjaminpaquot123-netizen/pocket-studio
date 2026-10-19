@@ -1,5 +1,5 @@
 Phase 2, premier pas : mets TES sons sur les pads !
 Importer un fichier du téléphone (MP3, WAV, FLAC, M4A…) ou enregistrer au micro.
 La forme d'onde s'affiche ; pince pour zoomer.
-« Revenir au son du kit » si ça ne te plaît pas (et Annuler marche aussi).
+Règle chaque son : début, fin, hauteur, à l'envers, en boucle, enveloppe, groupes d'étouffement.
 Le son importé joue dans le rythme, le mixeur et l'export. « C'est pas faux ! »

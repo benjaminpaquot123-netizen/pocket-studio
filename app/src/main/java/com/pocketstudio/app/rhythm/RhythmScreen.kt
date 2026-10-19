@@ -1,5 +1,10 @@
 package com.pocketstudio.app.rhythm
 
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import com.pocketstudio.model.PadSample
 import com.pocketstudio.ui.LevelMeter
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.FolderOpen
@@ -77,6 +82,7 @@ data class RhythmActions(
     val stopRecording: () -> Unit = {},
     val removeSample: () -> Unit = {},
     val dismissSampleError: () -> Unit = {},
+    val editSample: (key: String?, transform: (PadSample) -> PadSample) -> Unit = { _, _ -> },
 )
 
 /** The selected pad's own sound, if any, and what the sampler is busy with. */
@@ -282,7 +288,7 @@ private fun GrooveCard(project: Project, transport: TransportUi, actions: Rhythm
 }
 
 @Composable
-private fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: RhythmActions) {
+internal fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: RhythmActions) {
     val color = DrumKitInfo.colors[lane]
     val sample = project.drums.lanes[lane].sample
     NeonCard(modifier = Modifier.testTag("pad_sound")) {
@@ -296,13 +302,14 @@ private fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: R
             )
         }
         val info = sample?.let { ui.info[it.file] }
-        if (info != null) {
-            Waveform(info.peaks, color)
+        if (sample != null && info != null) {
+            Waveform(info.peaks, color, region = sample.start to sample.end)
             Text(
-                String.format(java.util.Locale.FRANCE, "%.2f s · pince pour zoomer", info.seconds),
+                String.format(java.util.Locale.FRANCE, "%.2f s · pince pour zoomer", info.seconds * (sample.end - sample.start)),
                 style = MaterialTheme.typography.bodySmall,
                 color = Neon.TextSecondary,
             )
+            PadSampleControls(sample, info.seconds, actions.editSample)
         }
         when (val task = ui.task) {
             is SampleTask.Busy -> Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -344,4 +351,65 @@ private fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: R
             }
         }
     }
+}
+
+@Composable
+private fun PadSampleControls(s: PadSample, seconds: Double, edit: (String?, (PadSample) -> PadSample) -> Unit) {
+    var advanced by rememberSaveable { mutableStateOf(false) }
+    val chipColors = FilterChipDefaults.filterChipColors(selectedContainerColor = Neon.Cyan.copy(alpha = 0.25f), selectedLabelColor = Neon.Cyan)
+    LabeledSlider("Début", String.format(java.util.Locale.FRANCE, "%.2f s", s.start * seconds), s.start, 0f..1f) { v ->
+        edit("start") { it.copy(start = minOf(v, it.end - 0.001f)) }
+    }
+    LabeledSlider("Fin", String.format(java.util.Locale.FRANCE, "%.2f s", s.end * seconds), s.end, 0f..1f) { v ->
+        edit("end") { it.copy(end = maxOf(v, it.start + 0.001f)) }
+    }
+    val semis = s.pitch.roundToInt()
+    LabeledSlider("Hauteur", if (semis == 0) "normale" else "${if (semis > 0) "+" else ""}$semis demi-tons", s.pitch, -24f..24f) { v ->
+        edit("pitch") { it.copy(pitch = v.roundToInt().toFloat()) }
+    }
+    Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        FilterChip(selected = s.reverse, onClick = { edit(null) { it.copy(reverse = !it.reverse) } }, label = { Text("À l'envers") }, colors = chipColors)
+        FilterChip(selected = s.loop, onClick = { edit(null) { it.copy(loop = !it.loop) } }, label = { Text("En boucle") }, colors = chipColors)
+    }
+    TextButton(onClick = { advanced = !advanced }) {
+        Text(if (advanced) "Masquer l'enveloppe et les groupes" else "Enveloppe, volume, groupe d'étouffement")
+    }
+    if (advanced) {
+        LabeledSlider("Volume", "${(s.gain * 100).roundToInt()} %", s.gain, 0f..2f) { v -> edit("gain") { it.copy(gain = v) } }
+        LabeledSlider("Attaque", ms(s.attack), s.attack, 0f..1f) { v -> edit("attack") { it.copy(attack = v) } }
+        LabeledSlider("Décroissance", ms(s.decay), s.decay, 0f..2f) { v -> edit("decay") { it.copy(decay = v) } }
+        LabeledSlider("Maintien", "${(s.sustain * 100).roundToInt()} %", s.sustain, 0f..1f) { v -> edit("sustain") { it.copy(sustain = v) } }
+        LabeledSlider("Relâche", ms(s.release), s.release, 0f..2f) { v -> edit("release") { it.copy(release = v) } }
+        Text("Groupe d'étouffement : un coup coupe les autres pads du même groupe (charleston ouvert/fermé).",
+            style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            (0..PadSample.CHOKE_GROUPS).forEach { g ->
+                FilterChip(
+                    selected = s.choke == g,
+                    onClick = { edit(null) { it.copy(choke = g) } },
+                    label = { Text(if (g == 0) "Aucun" else "$g") },
+                    colors = chipColors,
+                )
+            }
+        }
+    }
+}
+
+private fun ms(seconds: Float) =
+    if (seconds < 1f) "${(seconds * 1000).roundToInt()} ms" else String.format(java.util.Locale.FRANCE, "%.2f s", seconds)
+
+@Composable
+private fun LabeledSlider(
+    label: String,
+    value: String,
+    v: Float,
+    range: ClosedFloatingPointRange<Float>,
+    steps: Int = 0,
+    onChange: (Float) -> Unit,
+) {
+    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        Text(label, Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
+        Text(value, style = MonoStyle, color = Neon.Cyan)
+    }
+    Slider(value = v.coerceIn(range), onValueChange = onChange, valueRange = range, steps = steps)
 }

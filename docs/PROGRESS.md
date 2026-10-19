@@ -35,6 +35,7 @@
 - Recette phase 0 : issues #2 et #3 (doublon), 8/8 ✅, fermées.
 
 - Jalon 2.1 : sons perso sur les pads. Moteur : `Sample` (immuable, compté par références, rééchantillonné en 48 kHz par libsamplerate hors fil audio) et `Sampler` (16 pads, déclenchement à l'échantillon près, fondu de 2 ms au redéclenchement, rendu dans la tranche Batterie) ; le fil audio ne libère jamais : les sons lâchés reviennent par une file au fil principal. Appli : décodage par les codecs Android (MP3, WAV, FLAC, M4A, OGG…, 60 s max), micro 48 kHz brut (30 s max, silence de début coupé), stockage en WAV float dans `samples/` du projet, carte « Son du pad » avec forme d'onde zoomable (pincer), retour au son du kit annulable. Tests Linux (rééchantillonnage, départ pile sur le pas, références sous ASan), tests JVM, test émulateur (import WAV 44,1 kHz → pad qui sonne).
+- Jalon 2.2 (partie 1) : réglages par pad dans le moteur (début/fin, hauteur ±24 demi-tons en interpolation Hermite, à l'envers, en boucle jusqu'au coup suivant ou à l'arrêt, enveloppe ADSR, volume, 4 groupes d'étouffement coupés à l'échantillon près) ; dans le projet (`PadSample`, réparé au chargement) ; contrôles sur la carte « Son du pad ».
 
 ## Prochaine étape exacte
-1. Jalon 2.2 : découpe (attaques avec aubio, grille, manuelle), tranches vers pads, ADSR, pitch, reverse, boucle, groupes d'étouffement. Penser à stocker les longs morceaux en 16 bits ou en flux pour dépasser 60 s.
+1. Jalon 2.2 (partie 2) : découpe d'un son en tranches (attaques avec aubio, grille, manuelle) et tranches vers les pads (un même fichier, début/fin différents). Penser à stocker les longs morceaux en 16 bits ou en flux pour dépasser 60 s.

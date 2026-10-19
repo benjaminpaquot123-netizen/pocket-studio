@@ -206,6 +206,15 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         padSamples.pushPads(project.value.drums.lanes.map { it.sample })
     }
 
+    /** Changes the selected pad's sound settings; the same [key] in a quick burst is one undo step. */
+    fun editPadSample(key: String?, transform: (PadSample) -> PadSample) {
+        val lane = _transport.value.selectedPad
+        val current = project.value.drums.lanes[lane].sample ?: return
+        session.edit(key?.let { "pad-$lane-$it" }) { p -> p.copy(drums = p.drums.withSample(lane, transform(current))) }
+        val updated = project.value.drums.lanes[lane].sample ?: return
+        if (NativeEngine.isAvailable) NativeEngine.setPadParams(lane, updated.engineParams())
+    }
+
     fun dismissSampleError() {
         if (_sampleTask.value is SampleTask.Failed) _sampleTask.value = SampleTask.Idle
     }

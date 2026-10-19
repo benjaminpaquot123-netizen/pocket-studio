@@ -28,6 +28,16 @@
       "hint": "Pince avec deux doigts sur la forme d'onde, puis fais-la glisser."
     },
     {
+      "id": "pad_params",
+      "title": "Début, fin, hauteur, à l'envers et boucle changent bien le son",
+      "hint": "Sur un pad avec ton son : bouge Début et Fin (la forme d'onde se grise hors zone), Hauteur, puis essaie « À l'envers » et « En boucle » (la boucle s'arrête à Stop)."
+    },
+    {
+      "id": "choke",
+      "title": "Un groupe d'étouffement coupe l'autre pad",
+      "hint": "Mets deux pads avec un son long dans le groupe 1 (Enveloppe, volume, groupe…) : taper l'un coupe l'autre."
+    },
+    {
       "id": "sequencer",
       "title": "Le son perso joue dans le rythme, au bon moment",
       "hint": "Mets des coups sur la grille du pad et lance la lecture : pas de décalage, pas de craquement."

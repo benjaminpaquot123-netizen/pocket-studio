@@ -110,7 +110,7 @@ class ScreenshotTest {
         var drums = DrumPattern()
         DrumKitInfo.starterHits.forEach { (lane, steps) -> steps.forEach { drums = drums.toggle(lane, it) } }
         drums = drums.toggle(0, 10, 0.5f).toggle(0, 14, 0.2f)
-            .withSample(0, com.pocketstudio.model.PadSample("k.wav", "Kick de ma voix"))
+            .withSample(0, com.pocketstudio.model.PadSample("k.wav", "Kick de ma voix", start = 0.05f, end = 0.8f, pitch = -3f, loop = true))
         val wave = FloatArray(24000) { i -> (kotlin.math.sin(i * 0.02) * kotlin.math.exp(-i / 6000.0)).toFloat() }
         val info = com.pocketstudio.app.rhythm.SampleInfo(
             0.5, com.pocketstudio.app.rhythm.PadSamples.peaks(com.pocketstudio.app.audio.Pcm(wave, 1, 48000)),
@@ -191,5 +191,21 @@ class ScreenshotTest {
             octave = 3,
             actions = com.pocketstudio.app.synth.SynthActions(),
         )
+    }
+
+    @Test
+    fun padSound() = shoot("pad_sound") {
+        val wave = FloatArray(24000) { i -> (kotlin.math.sin(i * 0.02) * kotlin.math.exp(-i / 6000.0)).toFloat() }
+        val info = com.pocketstudio.app.rhythm.SampleInfo(
+            0.5, com.pocketstudio.app.rhythm.PadSamples.peaks(com.pocketstudio.app.audio.Pcm(wave, 1, 48000)),
+        )
+        val drums = DrumPattern().withSample(
+            2, com.pocketstudio.model.PadSample("k.wav", "Clap de cuisine", start = 0.05f, end = 0.7f, pitch = 5f, reverse = true, choke = 1),
+        )
+        androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
+            com.pocketstudio.app.rhythm.PadSoundCard(
+                Project(drums = drums), 2, com.pocketstudio.app.rhythm.PadSoundUi(mapOf("k.wav" to info)), RhythmActions(),
+            )
+        }
     }
 }

@@ -255,6 +255,7 @@ fun AppRoot() {
                                 stopRecording = rhythmVm::stopRecording,
                                 removeSample = rhythmVm::removeSample,
                                 dismissSampleError = rhythmVm::dismissSampleError,
+                                editSample = rhythmVm::editPadSample,
                             ),
                             padSound = PadSoundUi(sampleInfo, sampleTask),
                         )

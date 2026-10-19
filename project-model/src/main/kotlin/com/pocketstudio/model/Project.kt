@@ -51,7 +51,7 @@ data class DrumPattern(
         return copy(
             steps = s,
             lanes = fixedLanes.map { lane ->
-                lane.copy(hits = lane.hits.filterKeys { it in 0 until s }, sample = lane.sample?.takeIf { it.isSafe })
+                lane.copy(hits = lane.hits.filterKeys { it in 0 until s }, sample = lane.sample?.takeIf { it.isSafe }?.sanitized())
             },
         )
     }
@@ -80,12 +80,58 @@ data class DrumLane(
     val sample: PadSample? = null,
 )
 
-/** [file] lives in the project folder under `samples/`; [name] is what the user sees. */
+/**
+ * A pad's own sound. [file] lives in the project folder under `samples/`; [name] is what the
+ * user sees. The rest shapes playback (units match the engine's Sampler::Param).
+ */
 @Serializable
-data class PadSample(val file: String, val name: String) {
+data class PadSample(
+    val file: String,
+    val name: String,
+    val start: Float = 0f,
+    val end: Float = 1f,
+    val pitch: Float = 0f,
+    val reverse: Boolean = false,
+    val loop: Boolean = false,
+    val attack: Float = 0f,
+    val decay: Float = 0f,
+    val sustain: Float = 1f,
+    val release: Float = 0.003f,
+    val choke: Int = 0,
+    val gain: Float = 1f,
+) {
     /** Only a plain file name may come from disk: never a path. */
     val isSafe: Boolean get() = file.isNotEmpty() && file.length <= 80 && file.matches(Regex("[A-Za-z0-9._-]+")) && !file.startsWith(".")
+
+    fun sanitized(): PadSample {
+        val s = start.finite(0f).coerceIn(0f, 0.999f)
+        val e = end.finite(1f).coerceIn(0.001f, 1f)
+        return copy(
+            name = name.take(40),
+            start = minOf(s, e - 0.001f).coerceAtLeast(0f),
+            end = maxOf(e, s + 0.001f).coerceAtMost(1f),
+            pitch = pitch.finite(0f).coerceIn(-24f, 24f),
+            attack = attack.finite(0f).coerceIn(0f, 2f),
+            decay = decay.finite(0f).coerceIn(0f, 2f),
+            sustain = sustain.finite(1f).coerceIn(0f, 1f),
+            release = release.finite(0.003f).coerceIn(0f, 2f),
+            choke = choke.coerceIn(0, CHOKE_GROUPS),
+            gain = gain.finite(1f).coerceIn(0f, 2f),
+        )
+    }
+
+    /** Values in engine order (Sampler::Param). */
+    fun engineParams(): FloatArray = floatArrayOf(
+        start, end, pitch, if (reverse) 1f else 0f, if (loop) 1f else 0f,
+        attack, decay, sustain, release, choke.toFloat(), gain,
+    )
+
+    companion object {
+        const val CHOKE_GROUPS = 4
+    }
 }
+
+private fun Float.finite(default: Float) = if (isFinite()) this else default
 
 @Serializable
 data class Hit(val velocity: Float = 1f)

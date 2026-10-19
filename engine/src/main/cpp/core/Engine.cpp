@@ -45,6 +45,7 @@ void Engine::prepare(int sampleRate) {
     acid_.prepare(sampleRate);
     synth_.prepare(sampleRate);
     mixer_.prepare(sampleRate);
+    sampler_.prepare(sampleRate);
 }
 
 void Engine::applyCommand(const Command& command) {
@@ -70,6 +71,7 @@ void Engine::applyCommand(const Command& command) {
             } else {
                 sequencer_.stop();
                 acid_.stop();
+                sampler_.releaseLoops();
                 currentStep_.store(-1, std::memory_order_relaxed);
             }
             break;
@@ -127,6 +129,9 @@ void Engine::applyCommand(const Command& command) {
             break;
         case CommandType::InstallSample:
             sampler_.install(command.a, command.sample);  // takes the command's reference
+            break;
+        case CommandType::SetPadParam:
+            sampler_.setParam(command.a, command.b, command.value);
             break;
         case CommandType::TriggerPad:
             if (command.a >= 0 && command.a < kLanes) {

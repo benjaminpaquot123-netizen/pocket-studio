@@ -44,6 +44,7 @@ enum class CommandType : uint8_t {
     SetChannelMute,    // a: channel, value: 1 = muted
     SetChannelSolo,    // a: channel, value: 1 = solo
     InstallSample,     // a: pad, sample: owned reference (nullptr = back to the drum sound)
+    SetPadParam,       // a: pad, b: Sampler::Param, value in that parameter's unit
 };
 
 struct Command {
@@ -90,6 +91,7 @@ public:
     // Not the audio thread (one caller at a time): frees samples the audio thread let go of.
     void collectGarbage() { sampler_.collectGarbage(); }
     bool padHasSample(int pad) const { return sampler_.has(pad); }  // tests
+    const Sampler::PadParams& padParams(int pad) const { return sampler_.params(pad); }  // tests
 
     static constexpr int kLanes = 16;
     static constexpr int kMaxSteps = 64;

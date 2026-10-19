@@ -28,6 +28,8 @@ object NativeEngine {
     private const val CMD_CHANNEL_PAN = 21
     private const val CMD_CHANNEL_MUTE = 22
     private const val CMD_CHANNEL_SOLO = 23
+    // 24: InstallSample (native only)
+    private const val CMD_PAD_PARAM = 25
 
     /** Mixer channels: 0 drums, 1 acid bass, 2 synth. */
     const val MIXER_CHANNELS = 3
@@ -135,6 +137,11 @@ object NativeEngine {
         val target = captureTarget
         if (target != 0L) exportInstallSample(target, pad, sample?.handle ?: 0L)
         else nativeInstallSample(pad, sample?.handle ?: 0L)
+    }
+
+    /** [values] in Sampler::Param order (see PadSample.engineParams). */
+    fun setPadParams(pad: Int, values: FloatArray) {
+        values.forEachIndexed { param, v -> post(CMD_PAD_PARAM, v, pad, param) }
     }
 
     external fun sampleCreate(data: FloatArray, channels: Int, sampleRate: Int): Long

@@ -33,7 +33,7 @@ data class WaveWindow(val start: Float = 0f, val width: Float = 1f) {
 
 /** Min/max outline of a sound ([peaks] from [PadSamples.peaks]); pinch to zoom, drag to move. */
 @Composable
-fun Waveform(peaks: FloatArray, color: Color, modifier: Modifier = Modifier) {
+fun Waveform(peaks: FloatArray, color: Color, modifier: Modifier = Modifier, region: Pair<Float, Float> = 0f to 1f) {
     var start by remember(peaks) { mutableFloatStateOf(0f) }
     var width by remember(peaks) { mutableFloatStateOf(1f) }
     Canvas(
@@ -51,6 +51,7 @@ fun Waveform(peaks: FloatArray, color: Color, modifier: Modifier = Modifier) {
     ) {
         val buckets = peaks.size / 2
         if (buckets == 0) return@Canvas
+        val dim = color.copy(alpha = 0.3f)
         val mid = size.height / 2
         val columns = size.width.toInt().coerceAtLeast(1)
         for (x in 0 until columns) {
@@ -62,8 +63,9 @@ fun Waveform(peaks: FloatArray, color: Color, modifier: Modifier = Modifier) {
                 lo = minOf(lo, peaks[b * 2])
                 hi = maxOf(hi, peaks[b * 2 + 1])
             }
+            val where = start + width * (x + 0.5f) / columns
             drawLine(
-                color,
+                if (where < region.first || where > region.second) dim else color,
                 Offset(x.toFloat(), mid - hi.coerceIn(-1f, 1f) * mid),
                 Offset(x.toFloat(), mid - lo.coerceIn(-1f, 1f) * mid + 1f),
                 strokeWidth = 1f,

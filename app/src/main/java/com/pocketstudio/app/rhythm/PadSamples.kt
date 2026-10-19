@@ -62,7 +62,10 @@ class PadSamples(private val dir: File) {
     /** Main thread: gives every pad its sample (or its drum sound). */
     fun pushPads(samples: List<PadSample?>) {
         if (!NativeEngine.isAvailable) return
-        samples.forEachIndexed { pad, s -> NativeEngine.setPadSample(pad, s?.let { loaded[it.file] }) }
+        samples.forEachIndexed { pad, s ->
+            if (s != null) NativeEngine.setPadParams(pad, s.engineParams())
+            NativeEngine.setPadSample(pad, s?.let { loaded[it.file] })
+        }
     }
 
     fun close() {

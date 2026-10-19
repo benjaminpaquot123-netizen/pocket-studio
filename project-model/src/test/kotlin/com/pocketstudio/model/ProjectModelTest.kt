@@ -294,3 +294,24 @@ class PadSampleModelTest {
         assertNull(back.drums.lanes[0].sample)
     }
 }
+
+class PadSampleParamsTest {
+    @Test
+    fun paramsAreRepairedOnLoad() {
+        val bad = PadSample("a.wav", "x", start = 0.9f, end = 0.2f, pitch = 99f, sustain = Float.NaN, choke = 9, gain = -1f)
+        val ok = Project(drums = DrumPattern().withSample(0, bad)).sanitized().drums.lanes[0].sample!!
+        assertTrue(ok.start < ok.end)
+        assertEquals(24f, ok.pitch)
+        assertEquals(1f, ok.sustain)
+        assertEquals(4, ok.choke)
+        assertEquals(0f, ok.gain)
+        assertEquals(11, ok.engineParams().size)
+    }
+
+    @Test
+    fun olderFilesWithoutParamsGetDefaults() {
+        val json = """{"drums":{"lanes":[{"hits":{},"sample":{"file":"a.wav","name":"x"}}]}}"""
+        val s = ProjectJson.decode(json).drums.lanes[0].sample!!
+        assertEquals(PadSample("a.wav", "x"), s)
+    }
+}

@@ -1058,6 +1058,98 @@ void testRetriggerFadesInsteadOfClicking() {
     CHECK(out[600] > 0.99f * 0.5f);
 }
 
+// Renders one hit of `pad` straight from a Sampler (mono), for parameter tests.
+std::vector<float> hitSampler(ps::Sampler& sampler, int pad, int frames, int block = 128) {
+    std::vector<float> out(static_cast<size_t>(frames), 0.0f);
+    sampler.trigger(pad, 1.0f, 0);
+    for (int done = 0; done < frames; done += block) sampler.render(out.data() + done, std::min(block, frames - done));
+    return out;
+}
+
+int zeroCrossingsUp(const std::vector<float>& x, int from, int to) {
+    int n = 0;
+    for (int i = from + 1; i < to; ++i) if (x[size_t(i) - 1] < 0.0f && x[size_t(i)] >= 0.0f) ++n;
+    return n;
+}
+
+void testPadPitchRegionAndReverse() {
+    // 1 s ramp 0 -> 1 (to see direction and region), and a 1 s 500 Hz sine (to see pitch).
+    std::vector<float> ramp(48000), sine(48000);
+    for (int i = 0; i < 48000; ++i) {
+        ramp[size_t(i)] = i / 48000.0f;
+        sine[size_t(i)] = 0.5f * std::sin(2.0f * float(M_PI) * 500.0f * i / 48000.0f);
+    }
+    ps::Sampler sampler;
+    sampler.install(0, ps::Sample::create(sine.data(), 48000, 1, kRate, kRate));
+    sampler.install(1, ps::Sample::create(ramp.data(), 48000, 1, kRate, kRate));
+
+    // +12 semitones: twice the pitch, half the length.
+    sampler.setParam(0, ps::Sampler::Pitch, 12.0f);
+    auto up = hitSampler(sampler, 0, 48000);
+    CHECK(std::abs(zeroCrossingsUp(up, 0, 20000) - 1000 * 20000 / 48000) <= 2);
+    float after = 0.0f;
+    for (int i = 24100; i < 48000; ++i) after = std::max(after, std::fabs(up[size_t(i)]));
+    CHECK(after == 0.0f);
+
+    // Region 25 %..75 %, backwards: starts near 0.75 and falls to 0.25, lasts half a second.
+    sampler.setParam(1, ps::Sampler::Start, 0.25f);
+    sampler.setParam(1, ps::Sampler::End, 0.75f);
+    sampler.setParam(1, ps::Sampler::Reverse, 1.0f);
+    sampler.setParam(1, ps::Sampler::Release, 0.0f);
+    auto rev = hitSampler(sampler, 1, 30000);
+    CHECK(std::fabs(rev[0] - 0.75f) < 0.001f);
+    CHECK(std::fabs(rev[23990] - (0.75f - 23990 / 48000.0f)) < 0.001f);
+    CHECK(rev[24010] == 0.0f);
+}
+
+void testPadLoopEnvelopeAndChoke() {
+    std::vector<float> dc(4800, 0.5f);  // 100 ms of DC
+    ps::Sampler sampler;
+    sampler.install(0, ps::Sample::create(dc.data(), 4800, 1, kRate, kRate));
+    sampler.install(1, ps::Sample::create(dc.data(), 4800, 1, kRate, kRate));
+
+    // Loop: keeps sounding well past the sound's length, until released.
+    sampler.setParam(0, ps::Sampler::Loop, 1.0f);
+    auto looped = hitSampler(sampler, 0, 24000);
+    CHECK(std::fabs(looped[20000] - 0.5f) < 1e-4f);
+    sampler.releaseLoops();
+    std::vector<float> tail(1000, 0.0f);
+    sampler.render(tail.data(), 1000);
+    CHECK(tail[0] > 0.4f && tail[200] == 0.0f);  // 2 ms fade, then silence
+
+    // Attack 10 ms: half way up after 5 ms; release 20 ms: fading at the end.
+    sampler.setParam(1, ps::Sampler::Attack, 0.010f);
+    sampler.setParam(1, ps::Sampler::Release, 0.020f);
+    auto shaped = hitSampler(sampler, 1, 4800);
+    CHECK(std::fabs(shaped[240] - 0.25f) < 0.01f);
+    CHECK(std::fabs(shaped[2400] - 0.5f) < 1e-4f);
+    CHECK(std::fabs(shaped[4800 - 480] - 0.25f) < 0.01f);
+
+    // Choke group: hitting pad 1 silences pad 0 within 2 ms.
+    sampler.setParam(0, ps::Sampler::Choke, 1.0f);
+    sampler.setParam(1, ps::Sampler::Choke, 1.0f);
+    sampler.setParam(1, ps::Sampler::Gain, 0.0f);  // pad 1 itself silent: only pad 0 is heard
+    std::vector<float> out(2000, 0.0f);
+    sampler.trigger(0, 1.0f, 0);
+    sampler.render(out.data(), 1000);
+    CHECK(std::fabs(out[999] - 0.5f) < 1e-4f);
+    sampler.trigger(1, 1.0f, 0);
+    sampler.render(out.data() + 1000, 1000);
+    CHECK(out[1000 + 200] == 0.0f);
+}
+
+void testPadParamCommandsReachTheSampler() {
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SetPadParam, 7.0f, 2, ps::Sampler::Pitch});
+    engine.post({ps::CommandType::SetPadParam, 99.0f, 2, ps::Sampler::Pitch});  // clamped
+    engine.post({ps::CommandType::SetPadParam, 1.0f, 99, ps::Sampler::Pitch});  // bad pad: ignored
+    engine.post({ps::CommandType::SetPadParam, 1.0f, 2, 999});                  // bad param: ignored
+    engine.post({ps::CommandType::SetPadParam, NAN, 2, ps::Sampler::Gain});     // NaN: ignored
+    render(engine, 64, 64);
+    CHECK(engine.padParams(2).pitch == 24.0f);
+    CHECK(engine.padParams(2).gain == 1.0f);
+}
+
 void testLimiterHoldsTheCeiling() {
     ps::Mixer mixer;
     mixer.prepare(kRate);
@@ -1129,6 +1221,9 @@ int main(int argc, char** argv) {
         {"pad_sample", testPadSampleReplacesTheDrum},
         {"sample_refs", testSampleReferencesAreNeverLeakedOrFreedEarly},
         {"sample_retrigger", testRetriggerFadesInsteadOfClicking},
+        {"pad_pitch_region_reverse", testPadPitchRegionAndReverse},
+        {"pad_loop_envelope_choke", testPadLoopEnvelopeAndChoke},
+        {"pad_param_commands", testPadParamCommandsReachTheSampler},
     };
     for (const auto& t : tests) {
         const int before = g_failures;

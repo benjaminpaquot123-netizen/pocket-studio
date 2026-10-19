@@ -49,3 +49,4 @@
 | 2026-10-19 | Décodage par MediaExtractor/MediaCodec (codecs du téléphone), rééchantillonnage libsamplerate « best » | Aucun code de décodage à maintenir ; libsamplerate éprouvé (BSD) | r8brain (MIT) |
 | 2026-10-19 | Stockage des sons en WAV float 32 bits à leur fréquence d'origine ; 60 s max à l'import, 30 s au micro | Sans perte ; la mémoire reste raisonnable (~23 Mo par minute stéréo) | Lever la limite en 2.2 (16 bits ou lecture en flux) |
 | 2026-10-19 | Sample joué en mono (somme G+D) dans la tranche Batterie | Les tranches du mixeur sont mono + pan ; suffisant pour des one-shots | Tranche stéréo pour les boucles en 2.3 |
+| 2026-10-19 | « En boucle » d'un pad : répète la zone jusqu'au coup suivant du pad, d'un pad du même groupe, ou l'arrêt | Le séquenceur ne connaît pas de durée de note ; comportement prévisible | Mode « tant que le doigt reste » quand le piano roll arrivera |

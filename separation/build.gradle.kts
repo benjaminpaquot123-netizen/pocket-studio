@@ -18,6 +18,7 @@ android {
 
     defaultConfig {
         minSdk = 31
+        consumerProguardFiles("consumer-rules.pro")
         externalNativeBuild {
             cmake {
                 arguments += listOf("-DANDROID_STL=c++_shared", "-DORT_DIR=${ortDir.get().asFile.absolutePath}")

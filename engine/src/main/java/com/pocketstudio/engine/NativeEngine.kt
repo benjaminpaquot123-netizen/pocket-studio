@@ -36,6 +36,13 @@ object NativeEngine {
     // 29: SetInstrument, 30: InstallStems (native only)
     private const val CMD_STEM_PARAM = 31
     private const val CMD_STEM_START = 32
+    private const val CMD_INSERT_TYPE = 33
+    private const val CMD_INSERT_PARAM = 34
+    private const val CMD_SEND = 35
+    private const val CMD_BUS_PARAM = 36
+
+    /** Insert slots per channel (and on the master, whose channel index is [MIXER_CHANNELS]). */
+    const val INSERTS = 4
 
     /** Mixer channels: 0 drums, 1 acid bass, 2 synth, 3 remix stems. */
     const val MIXER_CHANNELS = 4
@@ -78,6 +85,12 @@ object NativeEngine {
     fun setChannelPan(ch: Int, pan: Float) = post(CMD_CHANNEL_PAN, pan, ch)
     fun setChannelMute(ch: Int, on: Boolean) = post(CMD_CHANNEL_MUTE, if (on) 1f else 0f, ch)
     fun setChannelSolo(ch: Int, on: Boolean) = post(CMD_CHANNEL_SOLO, if (on) 1f else 0f, ch)
+    /** [ch] 0..MIXER_CHANNELS (the last is the master); [type] in EffectType order. */
+    fun setInsertType(ch: Int, slot: Int, type: Int) = post(CMD_INSERT_TYPE, 0f, ch * INSERTS + slot, type)
+    fun setInsertParam(ch: Int, slot: Int, param: Int, value: Float) = post(CMD_INSERT_PARAM, value, ch * INSERTS + slot, param)
+    /** Post-fader send of [ch] to [bus] (0 reverb, 1 delay), 0..1. */
+    fun setSend(ch: Int, bus: Int, level: Float) = post(CMD_SEND, level, ch, bus)
+    fun setBusParam(bus: Int, param: Int, value: Float) = post(CMD_BUS_PARAM, value, bus, param)
     /** Writes into [out] (size MIXER_CHANNELS + 2): channel peaks, master peak, then limiter gain. */
     external fun mixerMeters(out: FloatArray)
 

@@ -323,4 +323,26 @@ class ScreenshotTest {
             actions = com.pocketstudio.app.acid.AcidActions(),
         )
     }
+
+    @Test
+    @Config(qualifiers = "w400dp-h1300dp-xxhdpi")
+    fun mixerEffects() = shoot("mixer_effects") {
+        val inserts = listOf(
+            com.pocketstudio.model.Insert.of(com.pocketstudio.model.EffectType.COMPRESSOR),
+            com.pocketstudio.model.Insert.of(com.pocketstudio.model.EffectType.EQ).copy(params = listOf(0.75f, 0.45f, 0.6f, 0f)),
+            com.pocketstudio.model.Insert(), com.pocketstudio.model.Insert(),
+        )
+        val actions = com.pocketstudio.app.mixer.MixerActions()
+        androidx.compose.foundation.layout.Column(
+            androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f)),
+            verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(androidx.compose.ui.unit.Dp(10f)),
+        ) {
+            com.pocketstudio.ui.NeonCard {
+                com.pocketstudio.ui.SectionLabel("Batterie · effets")
+                com.pocketstudio.app.mixer.InsertRack(0, inserts, actions)
+                com.pocketstudio.app.mixer.SendSliders(0, listOf(0.35f, 0.1f), actions)
+            }
+            com.pocketstudio.app.mixer.BusesCard(com.pocketstudio.model.Buses.DEFAULTS, actions)
+        }
+    }
 }

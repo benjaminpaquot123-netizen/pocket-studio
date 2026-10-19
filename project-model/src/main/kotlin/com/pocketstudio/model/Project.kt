@@ -164,15 +164,27 @@ private fun Float.finite(default: Float) = if (isFinite()) this else default
 data class Hit(val velocity: Float = 1f)
 
 @Serializable
-data class Mixer(val channels: List<Channel> = List(CHANNELS) { Channel() }) {
+data class Mixer(
+    val channels: List<Channel> = List(CHANNELS) { Channel() },
+    /** Inserts on the master, after the send returns and before the limiter. */
+    val master: List<Insert> = List(INSERTS) { Insert() },
+    /** Parameters of the send buses (see [Buses]). */
+    val buses: List<List<Float>> = Buses.DEFAULTS,
+) {
     fun sanitized(): Mixer = copy(
         channels = (channels + List((CHANNELS - channels.size).coerceAtLeast(0)) { Channel() })
             .take(CHANNELS)
-            .map { it.copy(volume = it.volume.coerceIn(0f, 1f), pan = it.pan.coerceIn(-1f, 1f)) },
+            .map { it.sanitized() },
+        master = sanitizeInserts(master),
+        buses = Buses.sanitized(buses),
     )
 
     companion object {
         const val CHANNELS = 16
+        const val INSERTS = 4
+
+        fun sanitizeInserts(inserts: List<Insert>): List<Insert> =
+            (inserts + List((INSERTS - inserts.size).coerceAtLeast(0)) { Insert() }).take(INSERTS).map { it.sanitized() }
     }
 }
 
@@ -182,4 +194,15 @@ data class Channel(
     val pan: Float = 0f,
     val mute: Boolean = false,
     val solo: Boolean = false,
-)
+    val inserts: List<Insert> = List(Mixer.INSERTS) { Insert() },
+    /** Post-fader sends to the buses (0 = reverb, 1 = delay), 0..1. */
+    val sends: List<Float> = List(Buses.COUNT) { 0f },
+) {
+    fun sanitized(): Channel = copy(
+        volume = volume.coerceIn(0f, 1f),
+        pan = pan.coerceIn(-1f, 1f),
+        inserts = Mixer.sanitizeInserts(inserts),
+        sends = (sends + List((Buses.COUNT - sends.size).coerceAtLeast(0)) { 0f }).take(Buses.COUNT)
+            .map { v -> v.takeIf { it.isFinite() }?.coerceIn(0f, 1f) ?: 0f },
+    )
+}

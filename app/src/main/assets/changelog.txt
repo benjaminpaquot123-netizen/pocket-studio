@@ -1,5 +1,5 @@
-Remix : la séparation ne plante plus au départ (elle prenait trop de mémoire) ; message clair si la mémoire manque.
-« Jouer avec le projet » : les pistes partent avec ta batterie, muet / solo / volume pour chacune.
+Remix : la séparation ne plante plus au démarrage (un nom de fonction effacé par l'optimiseur).
+Mixeur : 4 effets par voie et sur la sortie (égaliseur, compresseur, saturation, chorus, filtre), réverbe et écho.
 « → Pad » : un bout de basse ou de voix sur un pad, pour le découper ensuite.
 Acide : un mini-clavier pour choisir n'importe quelle note, noms Do Ré Mi ou C D E, jusqu'à 8 mesures.
 « Le chant, c'est une chose, la voix c'en est une autre. » Maintenant elles sont séparées.

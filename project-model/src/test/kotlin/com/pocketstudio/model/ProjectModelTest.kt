@@ -457,4 +457,28 @@ class AcidPagesTest {
         assertEquals(1f, bad.stems[0].volume, 0f)
         assertEquals(null, ProjectJson.decode("""{"name":"Vieux"}""").remix.setId)
     }
+
+    @Test
+    fun effectsSurviveSavingAndBadValues() {
+        val ch = Channel(inserts = listOf(Insert.of(EffectType.COMPRESSOR), Insert(), Insert.of(EffectType.EQ).copy(params = listOf(1f, 0.5f, 0.5f, 0f)), Insert()), sends = listOf(0.3f, 0f))
+        val p = Project(mixer = Mixer(channels = List(Mixer.CHANNELS) { if (it == 0) ch else Channel() }, master = List(4) { Insert.of(EffectType.SATURATION) }))
+        assertEquals(p, ProjectJson.decode(ProjectJson.encode(p)))
+        val bad = Mixer(
+            channels = listOf(Channel(inserts = listOf(Insert(type = 42, params = listOf(Float.NaN))), sends = listOf(9f))),
+            master = emptyList(),
+            buses = listOf(listOf(2f)),
+        ).sanitized()
+        assertEquals(EffectType.NONE, bad.channels[0].inserts[0].effect)
+        assertEquals(4, bad.channels[0].inserts.size)
+        assertEquals(4, bad.channels[0].inserts[0].params.size)
+        assertEquals(1f, bad.channels[0].sends[0], 0f)
+        assertEquals(4, bad.master.size)
+        assertEquals(listOf(1f, 0.5f, 1f, 0.1f), bad.buses[0])
+        assertEquals(Buses.DEFAULTS[1], bad.buses[1])
+        // Older files without effects load with empty slots.
+        val old = ProjectJson.decode("""{"mixer":{"channels":[{"volume":0.5}]}}""").mixer
+        assertEquals(EffectType.NONE, old.channels[0].inserts[3].effect)
+        assertEquals(Buses.DEFAULTS, old.buses)
+        assertEquals("+12.0 dB".replace('.', ','), EffectType.EQ.params[0].format(1f).replace('.', ','))
+    }
 }

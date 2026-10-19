@@ -16,6 +16,13 @@ JNIEXPORT jint JNICALL Java_com_pocketstudio_separation_Demucs_nativeSeparate(JN
     const char* dir = env->GetStringUTFChars(outDir, nullptr);
     jclass cls = env->GetObjectClass(listener);
     jmethodID onProgress = env->GetMethodID(cls, "onProgress", "(F)Z");
+    if (!onProgress) {
+        // Renamed by a shrinker or wrong listener: report instead of a JNI abort mid-run.
+        env->ExceptionClear();
+        env->ReleaseStringUTFChars(model, modelPath);
+        env->ReleaseStringUTFChars(outDir, dir);
+        return static_cast<jint>(ps::SeparationResult::ModelError);
+    }
     const jsize length = env->GetArrayLength(audio);
     std::vector<float> samples(static_cast<size_t>(length));
     env->GetFloatArrayRegion(audio, 0, length, samples.data());
@@ -46,6 +53,14 @@ JNIEXPORT jint JNICALL Java_com_pocketstudio_separation_Demucs_nativeSeparateFil
     const char* dir = env->GetStringUTFChars(outDir, nullptr);
     jclass cls = env->GetObjectClass(listener);
     jmethodID onProgress = env->GetMethodID(cls, "onProgress", "(F)Z");
+    if (!onProgress) {
+        // Renamed by a shrinker or wrong listener: report instead of a JNI abort mid-run.
+        env->ExceptionClear();
+        env->ReleaseStringUTFChars(model, modelPath);
+        env->ReleaseStringUTFChars(raw, rawPath);
+        env->ReleaseStringUTFChars(outDir, dir);
+        return static_cast<jint>(ps::SeparationResult::ModelError);
+    }
     const int threads = std::max(2, static_cast<int>(std::thread::hardware_concurrency()) / 2);
     const auto result = ps::separateFile(modelPath, rawPath, channels, sampleRate, dir,
                                          [&](float p) {

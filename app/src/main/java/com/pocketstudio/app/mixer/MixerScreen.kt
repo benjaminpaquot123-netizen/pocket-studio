@@ -25,7 +25,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.pocketstudio.app.rhythm.ExportUi
+import com.pocketstudio.model.Buses
 import com.pocketstudio.model.Channel
+import com.pocketstudio.model.EffectType
+import com.pocketstudio.model.Insert
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material3.Icon
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import com.pocketstudio.ui.LevelMeter
 import com.pocketstudio.ui.MonoStyle
 import com.pocketstudio.ui.Neon
@@ -45,6 +57,10 @@ data class MixerActions(
     val export: () -> Unit = {},
     val cancelExport: () -> Unit = {},
     val share: () -> Unit = {},
+    val setInsertType: (ch: Int, slot: Int, type: EffectType) -> Unit = { _, _, _ -> },
+    val setInsertParam: (ch: Int, slot: Int, param: Int, value: Float) -> Unit = { _, _, _, _ -> },
+    val setSend: (ch: Int, bus: Int, level: Float) -> Unit = { _, _, _ -> },
+    val setBusParam: (bus: Int, param: Int, value: Float) -> Unit = { _, _, _ -> },
 )
 
 val EXPORT_BARS = listOf(1, 2, 4, 8, 16)
@@ -64,6 +80,8 @@ fun MixerScreen(
     actions: MixerActions,
     modifier: Modifier = Modifier,
     export: ExportUi = ExportUi(),
+    master: List<Insert> = List(4) { Insert() },
+    buses: List<List<Float>> = Buses.DEFAULTS,
 ) {
     Column(
         modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp).testTag("mixer"),
@@ -82,7 +100,11 @@ fun MixerScreen(
                 style = MaterialTheme.typography.bodySmall,
                 color = if (gain < 0.7f) Neon.Amber else Neon.TextSecondary,
             )
+            var open by rememberSaveable { mutableStateOf(false) }
+            EffectsToggle(effectsSummary(master), open) { open = !open }
+            if (open) InsertRack(CHANNEL_NAMES.size, master, actions)
         }
+        BusesCard(buses, actions)
         ExportCard(export, actions)
     }
 }
@@ -125,6 +147,20 @@ private fun Strip(name: String, c: Channel, meter: Float, index: Int, actions: M
             )
         }
         Slider(value = c.pan, onValueChange = { v -> actions.setPan(index, if (kotlin.math.abs(v) < 0.04f) 0f else v) }, valueRange = -1f..1f)
+        var open by rememberSaveable(index) { mutableStateOf(false) }
+        EffectsToggle(effectsSummary(c.inserts, c.sends), open, Modifier.testTag("effects_$index")) { open = !open }
+        if (open) {
+            InsertRack(index, c.inserts, actions)
+            SendSliders(index, c.sends, actions)
+        }
+    }
+}
+
+@Composable
+private fun EffectsToggle(summary: String, open: Boolean, modifier: Modifier = Modifier, toggle: () -> Unit) {
+    TextButton(onClick = toggle, modifier = modifier.fillMaxWidth()) {
+        Text("Effets : $summary", Modifier.weight(1f), color = Neon.Cyan)
+        Icon(if (open) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore, contentDescription = null, tint = Neon.Cyan)
     }
 }
 

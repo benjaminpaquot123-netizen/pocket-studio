@@ -21,6 +21,8 @@ import com.pocketstudio.engine.NativeStems
 import com.pocketstudio.app.remix.StemSet
 import com.pocketstudio.app.remix.StemStore
 import com.pocketstudio.model.Remix
+import com.pocketstudio.model.EffectType
+import com.pocketstudio.model.Insert
 import com.pocketstudio.engine.OfflineExport
 import com.pocketstudio.model.AcidGenerator
 import com.pocketstudio.model.AcidPattern
@@ -829,6 +831,67 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             NativeEngine.setChannelPan(i, c.pan)
             NativeEngine.setChannelMute(i, c.mute)
             NativeEngine.setChannelSolo(i, c.solo)
+            pushInserts(i, c.inserts)
+            c.sends.forEachIndexed { bus, level -> NativeEngine.setSend(i, bus, level) }
+        }
+        pushInserts(NativeEngine.MIXER_CHANNELS, p.mixer.master)
+        p.mixer.buses.forEachIndexed { bus, params -> params.forEachIndexed { k, v -> NativeEngine.setBusParam(bus, k, v) } }
+    }
+
+    private fun pushInserts(ch: Int, inserts: List<Insert>) {
+        inserts.forEachIndexed { slot, ins ->
+            NativeEngine.setInsertType(ch, slot, ins.type)
+            ins.params.forEachIndexed { k, v -> NativeEngine.setInsertParam(ch, slot, k, v) }
+        }
+    }
+
+    // --- Effects (inserts on channels and master, sends, buses) ------------------------------
+
+    /** [ch] 0..3 = a channel, [MASTER] = the master. A new type starts from its defaults. */
+    fun setInsertType(ch: Int, slot: Int, type: EffectType) = editInserts(ch, null) { list ->
+        list.mapIndexed { i, ins -> if (i == slot) Insert.of(type) else ins }
+    }
+
+    // Sliders send only the value that moved (the whole mixer is ~130 commands).
+    fun setInsertParam(ch: Int, slot: Int, param: Int, value: Float) {
+        val v = value.coerceIn(0f, 1f)
+        editInserts(ch, "fx-$slot-$param", push = false) { list ->
+            list.mapIndexed { i, ins -> if (i == slot) ins.copy(params = ins.params.mapIndexed { k, old -> if (k == param) v else old }) else ins }
+        }
+        if (NativeEngine.isAvailable) NativeEngine.setInsertParam(ch, slot, param, v)
+    }
+
+    fun setSend(ch: Int, bus: Int, level: Float) {
+        val v = level.coerceIn(0f, 1f)
+        session.edit("mix-$ch-send-$bus") { p ->
+            val channels = p.mixer.channels.toMutableList()
+            channels[ch] = channels[ch].let { c -> c.copy(sends = c.sends.mapIndexed { b, old -> if (b == bus) v else old }) }
+            p.copy(mixer = p.mixer.copy(channels = channels))
+        }
+        if (NativeEngine.isAvailable) NativeEngine.setSend(ch, bus, v)
+    }
+
+    fun setBusParam(bus: Int, param: Int, value: Float) {
+        val v = value.coerceIn(0f, 1f)
+        session.edit("bus-$bus-$param") { p ->
+            val buses = p.mixer.buses.mapIndexed { b, ps -> if (b == bus) ps.mapIndexed { k, old -> if (k == param) v else old } else ps }
+            p.copy(mixer = p.mixer.copy(buses = buses))
+        }
+        if (NativeEngine.isAvailable) NativeEngine.setBusParam(bus, param, v)
+    }
+
+    private fun editInserts(ch: Int, key: String?, push: Boolean = true, transform: (List<Insert>) -> List<Insert>) {
+        session.edit(key?.let { "fx-$ch-$it" }) { p ->
+            if (ch == MASTER) {
+                p.copy(mixer = p.mixer.copy(master = transform(p.mixer.master)))
+            } else {
+                val channels = p.mixer.channels.toMutableList()
+                channels[ch] = channels[ch].let { c -> c.copy(inserts = transform(c.inserts)) }
+                p.copy(mixer = p.mixer.copy(channels = channels))
+            }
+        }
+        if (push && NativeEngine.isAvailable) {
+            pushInserts(ch, if (ch == MASTER) project.value.mixer.master else project.value.mixer.channels[ch].inserts)
         }
     }
 
@@ -1135,5 +1198,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         /** Two seconds after the last bar so releases and the acid tail ring out. */
         const val TAIL_FRAMES = 2L * OfflineExport.SAMPLE_RATE
         private val STEM_LABELS = listOf("Batterie", "Basse", "Autres", "Voix")
+        /** Insert "channel" index of the master. */
+        const val MASTER = NativeEngine.MIXER_CHANNELS
     }
 }

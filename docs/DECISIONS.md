@@ -77,3 +77,4 @@
 | 2026-10-19 | Acide : choix de note par mini-clavier de 12 touches (plus de +/−) et noms anglais au choix (mémorisé sur le téléphone) | Les tablatures 303 trouvées en ligne sont en C D E ; avec +/− certaines notes étaient pénibles à atteindre | Revenir aux boutons +/− |
 | 2026-10-19 | ONNX Runtime sans arène CPU ni motifs mémoire pour la séparation | Mesuré sur Linux : 5,1 Go → 2,6 Go pour 30 s (et plus rapide) ; le téléphone tuait l'appli à 0 % | Réactiver si un futur modèle est plus léger |
 | 2026-10-19 | Plantage natif : le rapport joint les chaînes lisibles du tombstone et le journal de la session plantée (écrit sur disque) | Les rapports natifs ne disaient que « crash » | Aucun |
+| 2026-10-19 | Règles R8 du module séparation + contrôle dexdump dans check-jni.sh | R8 renommait Demucs.Progress.onProgress, appelé par nom depuis le C++ : abandon JNI au premier progrès (rapports n° 14, 15) | Aucun |

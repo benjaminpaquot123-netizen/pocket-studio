@@ -387,7 +387,13 @@ fun AppRoot() {
                                 export = rhythmVm::exportWav,
                                 cancelExport = rhythmVm::cancelExport,
                                 share = { export.file?.let { WavExporter.share(context, it) } },
+                                setInsertType = rhythmVm::setInsertType,
+                                setInsertParam = rhythmVm::setInsertParam,
+                                setSend = rhythmVm::setSend,
+                                setBusParam = rhythmVm::setBusParam,
                             ),
+                            master = project.mixer.master,
+                            buses = project.mixer.buses,
                             export = export,
                         )
                     }

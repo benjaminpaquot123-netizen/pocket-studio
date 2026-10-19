@@ -9,6 +9,7 @@
 #include "Metronome.h"
 #include "Mixer.h"
 #include "RoundTripMeter.h"
+#include "Sampler.h"
 #include "Sequencer.h"
 #include "Synth.h"
 #include "Smoother.h"
@@ -42,6 +43,7 @@ enum class CommandType : uint8_t {
     SetChannelPan,     // a: channel, value: -1..1
     SetChannelMute,    // a: channel, value: 1 = muted
     SetChannelSolo,    // a: channel, value: 1 = solo
+    InstallSample,     // a: pad, sample: owned reference (nullptr = back to the drum sound)
 };
 
 struct Command {
@@ -49,6 +51,8 @@ struct Command {
     float value = 0.0f;
     int32_t a = 0;
     int32_t b = 0;
+    // InstallSample only: a reference the engine takes over (released if the command is dropped).
+    Sample* sample = nullptr;
 };
 
 // Platform-independent audio core. The platform layer (Oboe on Android,
@@ -59,6 +63,9 @@ public:
     static constexpr float kMaxFrequency = 20000.0f;
 
     explicit Engine(int sampleRate = 48000);
+    ~Engine();
+    Engine(const Engine&) = delete;
+    Engine& operator=(const Engine&) = delete;
 
     // Not real-time safe: call while no stream is running. Keeps frequency, volume and play state.
     void prepare(int sampleRate);
@@ -79,6 +86,10 @@ public:
     bool hasNonFinite() const { return nonFinite_.load(std::memory_order_relaxed); }
 
     RoundTripMeter& latencyMeter() { return meter_; }
+
+    // Not the audio thread (one caller at a time): frees samples the audio thread let go of.
+    void collectGarbage() { sampler_.collectGarbage(); }
+    bool padHasSample(int pad) const { return sampler_.has(pad); }  // tests
 
     static constexpr int kLanes = 16;
     static constexpr int kMaxSteps = 64;
@@ -114,6 +125,7 @@ private:
     DrumKit drums_;
     AcidTrack acid_;
     Synth synth_;
+    Sampler sampler_;
     Mixer mixer_;
     std::array<float, kMaxBlock> drumsBuf_{};
     std::array<float, kMaxBlock> acidBuf_{};

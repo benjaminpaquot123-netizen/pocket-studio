@@ -1,5 +1,9 @@
 package com.pocketstudio.app.rhythm
 
+import com.pocketstudio.ui.LevelMeter
+import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.FolderOpen
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -68,6 +72,17 @@ data class RhythmActions(
     val setSwing: (Double) -> Unit = {},
     val undo: () -> Unit = {},
     val redo: () -> Unit = {},
+    val importSample: () -> Unit = {},
+    val startRecording: () -> Unit = {},
+    val stopRecording: () -> Unit = {},
+    val removeSample: () -> Unit = {},
+    val dismissSampleError: () -> Unit = {},
+)
+
+/** The selected pad's own sound, if any, and what the sampler is busy with. */
+data class PadSoundUi(
+    val info: Map<String, SampleInfo> = emptyMap(),
+    val task: SampleTask = SampleTask.Idle,
 )
 
 @Composable
@@ -79,6 +94,7 @@ fun RhythmScreen(
     canRedo: Boolean,
     actions: RhythmActions,
     modifier: Modifier = Modifier,
+    padSound: PadSoundUi = PadSoundUi(),
 ) {
     Column(
         modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp).testTag("rhythm"),
@@ -87,6 +103,7 @@ fun RhythmScreen(
         TransportBar(project, transport, canUndo, canRedo, actions)
         PadGrid(project, transport.selectedPad, live.litPads, actions.hitPad)
         StepGrid(project, transport.selectedPad, live.currentStep, actions)
+        PadSoundCard(project, transport.selectedPad, padSound, actions)
         GrooveCard(project, transport, actions)
     }
 }
@@ -261,5 +278,70 @@ private fun GrooveCard(project: Project, transport: TransportUi, actions: Rhythm
             value = (project.swing / Project.MAX_SWING).toFloat(),
             onValueChange = { actions.setSwing(it * Project.MAX_SWING) },
         )
+    }
+}
+
+@Composable
+private fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: RhythmActions) {
+    val color = DrumKitInfo.colors[lane]
+    val sample = project.drums.lanes[lane].sample
+    NeonCard(modifier = Modifier.testTag("pad_sound")) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            SectionLabel("Son du pad", color = color)
+            Box(Modifier.weight(1f))
+            Text(
+                sample?.name ?: "${DrumKitInfo.names[lane]} (synthétisé)",
+                style = MaterialTheme.typography.bodyMedium,
+                color = if (sample != null) Neon.TextPrimary else Neon.TextSecondary,
+            )
+        }
+        val info = sample?.let { ui.info[it.file] }
+        if (info != null) {
+            Waveform(info.peaks, color)
+            Text(
+                String.format(java.util.Locale.FRANCE, "%.2f s · pince pour zoomer", info.seconds),
+                style = MaterialTheme.typography.bodySmall,
+                color = Neon.TextSecondary,
+            )
+        }
+        when (val task = ui.task) {
+            is SampleTask.Busy -> Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp, color = color)
+                Text(task.message)
+            }
+            is SampleTask.Recording -> {
+                Text(String.format(java.util.Locale.FRANCE, "Enregistrement… %.1f s / 30 s", task.seconds), color = Neon.Red)
+                LevelMeter(task.level)
+                Button(
+                    onClick = actions.stopRecording,
+                    modifier = Modifier.fillMaxWidth().testTag("record_stop"),
+                    colors = ButtonDefaults.buttonColors(containerColor = Neon.Red, contentColor = Color.Black),
+                ) { Icon(Icons.Filled.Stop, contentDescription = null); Text(" Arrêter") }
+            }
+            else -> {
+                if (task is SampleTask.Failed) {
+                    Text(task.message, color = Neon.Red, style = MaterialTheme.typography.bodySmall)
+                }
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    OutlinedButton(onClick = { actions.dismissSampleError(); actions.importSample() }, modifier = Modifier.weight(1f).testTag("import_sample")) {
+                        Icon(Icons.Filled.FolderOpen, contentDescription = null); Text(" Importer")
+                    }
+                    OutlinedButton(onClick = { actions.dismissSampleError(); actions.startRecording() }, modifier = Modifier.weight(1f).testTag("record_sample")) {
+                        Icon(Icons.Filled.Mic, contentDescription = null); Text(" Micro")
+                    }
+                }
+                if (sample != null) {
+                    TextButton(onClick = actions.removeSample, modifier = Modifier.testTag("remove_sample")) {
+                        Text("Revenir au son ${DrumKitInfo.names[lane]}")
+                    }
+                } else {
+                    Text(
+                        "Mets ton propre son sur ce pad : un fichier du téléphone (MP3, WAV, FLAC, M4A…) ou le micro.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Neon.TextSecondary,
+                    )
+                }
+            }
+        }
     }
 }

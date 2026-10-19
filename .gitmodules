@@ -4,3 +4,6 @@
 [submodule "engine/third_party/Open303"]
 	path = engine/third_party/Open303
 	url = https://github.com/RobinSchmidt/Open303
+[submodule "engine/third_party/libsamplerate"]
+	path = engine/third_party/libsamplerate
+	url = https://github.com/libsndfile/libsamplerate

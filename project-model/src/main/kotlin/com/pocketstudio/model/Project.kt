@@ -48,8 +48,16 @@ data class DrumPattern(
     fun sanitized(): DrumPattern {
         val s = steps.coerceIn(MIN_STEPS, MAX_STEPS)
         val fixedLanes = (lanes + List((PAD_COUNT - lanes.size).coerceAtLeast(0)) { DrumLane() }).take(PAD_COUNT)
-        return copy(steps = s, lanes = fixedLanes.map { lane -> lane.copy(hits = lane.hits.filterKeys { it in 0 until s }) })
+        return copy(
+            steps = s,
+            lanes = fixedLanes.map { lane ->
+                lane.copy(hits = lane.hits.filterKeys { it in 0 until s }, sample = lane.sample?.takeIf { it.isSafe })
+            },
+        )
     }
+
+    fun withSample(lane: Int, sample: PadSample?): DrumPattern =
+        copy(lanes = lanes.toMutableList().also { it[lane] = it[lane].copy(sample = sample) })
 
     fun toggle(lane: Int, step: Int, velocity: Float = 1f): DrumPattern {
         val current = lanes[lane]
@@ -68,7 +76,16 @@ data class DrumPattern(
 data class DrumLane(
     /** step index -> hit. A map keeps sparse patterns small on disk. */
     val hits: Map<Int, Hit> = emptyMap(),
+    /** A sound of the user's that replaces the synthesized drum (null = the kit sound). */
+    val sample: PadSample? = null,
 )
+
+/** [file] lives in the project folder under `samples/`; [name] is what the user sees. */
+@Serializable
+data class PadSample(val file: String, val name: String) {
+    /** Only a plain file name may come from disk: never a path. */
+    val isSafe: Boolean get() = file.isNotEmpty() && file.length <= 80 && file.matches(Regex("[A-Za-z0-9._-]+")) && !file.startsWith(".")
+}
 
 @Serializable
 data class Hit(val velocity: Float = 1f)

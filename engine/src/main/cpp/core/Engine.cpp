@@ -17,6 +17,14 @@ Engine::Engine(int sampleRate) {
     prepare(sampleRate);
 }
 
+Engine::~Engine() {
+    // Commands never applied may still own sample references.
+    Command command;
+    while (commands_.pop(command)) {
+        if (command.sample && command.sample->release()) delete command.sample;
+    }
+}
+
 void Engine::prepare(int sampleRate) {
     // Apply pending UI commands so a reopened stream keeps the user's settings,
     // but never replay a stale latency test request.
@@ -117,9 +125,13 @@ void Engine::applyCommand(const Command& command) {
         case CommandType::SetChannelSolo:
             mixer_.setSolo(command.a, command.value > 0.5f);
             break;
+        case CommandType::InstallSample:
+            sampler_.install(command.a, command.sample);  // takes the command's reference
+            break;
         case CommandType::TriggerPad:
             if (command.a >= 0 && command.a < kLanes) {
-                drums_.trigger(command.a, command.value, 0);
+                if (sampler_.has(command.a)) sampler_.trigger(command.a, command.value, 0);
+                else drums_.trigger(command.a, command.value, 0);
                 laneTriggers_[static_cast<size_t>(command.a)].fetch_add(1, std::memory_order_relaxed);
             }
             break;
@@ -146,7 +158,8 @@ void Engine::onStep(int offset, int step) {
     for (int lane = 0; lane < kLanes; ++lane) {
         if (pattern_[lane][patternStep] > 0.0f) {
             laneTriggers_[static_cast<size_t>(lane)].fetch_add(1, std::memory_order_relaxed);
-            drums_.trigger(lane, pattern_[lane][patternStep], offset);
+            if (sampler_.has(lane)) sampler_.trigger(lane, pattern_[lane][patternStep], offset);
+            else drums_.trigger(lane, pattern_[lane][patternStep], offset);
         }
     }
 }
@@ -164,6 +177,7 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
     sequencer_.advance(numFrames, [this](int offset, int step) { onStep(offset, step); });
     metronome_.render(direct, numFrames);
     drums_.render(drums, numFrames);
+    sampler_.render(drums, numFrames);
     acid_.render(acid, numFrames);
     synth_.render(synth, numFrames);
 

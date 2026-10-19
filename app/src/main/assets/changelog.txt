@@ -1,4 +1,5 @@
-Nouveau : le Mixeur ! Volume, panoramique, muet et solo pour la batterie, la basse et le synthé.
-Coups doux bien visibles : la case se vide selon la force. VU-mètres et limiteur : « C'est pas faux. »
-La musique continue écran éteint (Outils › Arrière-plan pour bien régler le Honor).
-Export WAV (Mixeur) : ton morceau dans Musique, prêt à partager. La Recette est dans Outils.
+Phase 2, premier pas : mets TES sons sur les pads !
+Importer un fichier du téléphone (MP3, WAV, FLAC, M4A…) ou enregistrer au micro.
+La forme d'onde s'affiche ; pince pour zoomer.
+« Revenir au son du kit » si ça ne te plaît pas (et Annuler marche aussi).
+Le son importé joue dans le rythme, le mixeur et l'export. « C'est pas faux ! »

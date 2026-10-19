@@ -121,6 +121,38 @@ class SmokeTest {
             kotlin.math.abs(v)
         }
         assertTrue("export has sound: $loudest", loudest > 800_000)
+
+        // Import: a 44.1 kHz 16-bit WAV goes through Android's decoder and the resampler onto pad 9.
+        val context2 = InstrumentationRegistry.getInstrumentation().targetContext
+        val wavFile = File(context2.cacheDir, "test-hit.wav").apply { writeBytes(testWav()) }
+        val rhythm = androidx.lifecycle.ViewModelProvider(compose.activity)[RhythmViewModel::class.java]
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            rhythm.hitPad(9)
+            rhythm.importSample(android.net.Uri.fromFile(wavFile))
+        }
+        compose.waitUntil(20_000) { rhythm.project.value.drums.lanes[9].sample != null }
+        assertEquals("test-hit", rhythm.project.value.drums.lanes[9].sample!!.name)
+        var padPeak = 0f
+        for (attempt in 0 until 20) {
+            InstrumentationRegistry.getInstrumentation().runOnMainSync { NativeEngine.triggerPad(9, 1f) }
+            Thread.sleep(150)
+            padPeak = maxOf(padPeak, Metrics.streamInfo.value.peak, NativeEngine.streamInfo().peak)
+            if (padPeak > 0.2f) break
+        }
+        assertTrue("imported sound plays on the pad (peak $padPeak)", padPeak > 0.2f)
+
         assertTrue("no NaN in the output", !NativeEngine.streamInfo().nonFinite)
+    }
+
+    /** 0.3 s of a loud 440 Hz tone, 44.1 kHz mono 16-bit PCM WAV. */
+    private fun testWav(): ByteArray {
+        val rate = 44100
+        val n = rate * 3 / 10
+        val b = java.nio.ByteBuffer.allocate(44 + n * 2).order(java.nio.ByteOrder.LITTLE_ENDIAN)
+        b.put("RIFF".toByteArray()).putInt(36 + n * 2).put("WAVE".toByteArray())
+        b.put("fmt ".toByteArray()).putInt(16).putShort(1).putShort(1).putInt(rate).putInt(rate * 2).putShort(2).putShort(16)
+        b.put("data".toByteArray()).putInt(n * 2)
+        for (i in 0 until n) b.putShort((kotlin.math.sin(2 * Math.PI * 440 * i / rate) * 26000).toInt().toShort())
+        return b.array()
     }
 }

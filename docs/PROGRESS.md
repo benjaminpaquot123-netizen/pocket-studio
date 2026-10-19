@@ -1,6 +1,6 @@
 # Avancement
 
-**Phase 0 terminée et fusionnée le 2026-10-18.** Phase 1 (MVP jouable) terminée et relue, en attente du feu vert.
+**Phase 0 fusionnée le 2026-10-18, phase 1 fusionnée le 2026-10-19 (feu vert de Benjamin).** Phase en cours : 2 (sampler et notes).
 
 ## Fait
 - Démarrage : SPEC, CLAUDE.md, ROADMAP, DECISIONS, ARCHITECTURE, THIRD_PARTY, README.
@@ -34,6 +34,7 @@
 - Fait : journal interne `AppLog` (200 lignes : démarrage, son ouvert/fermé, lecture, latence, export, sauvegarde) joint aux rapports à la place de logcat, chiffré par MagicOS.
 - Recette phase 0 : issues #2 et #3 (doublon), 8/8 ✅, fermées.
 
+- Jalon 2.1 : sons perso sur les pads. Moteur : `Sample` (immuable, compté par références, rééchantillonné en 48 kHz par libsamplerate hors fil audio) et `Sampler` (16 pads, déclenchement à l'échantillon près, fondu de 2 ms au redéclenchement, rendu dans la tranche Batterie) ; le fil audio ne libère jamais : les sons lâchés reviennent par une file au fil principal. Appli : décodage par les codecs Android (MP3, WAV, FLAC, M4A, OGG…, 60 s max), micro 48 kHz brut (30 s max, silence de début coupé), stockage en WAV float dans `samples/` du projet, carte « Son du pad » avec forme d'onde zoomable (pincer), retour au son du kit annulable. Tests Linux (rééchantillonnage, départ pile sur le pas, références sous ASan), tests JVM, test émulateur (import WAV 44,1 kHz → pad qui sonne).
+
 ## Prochaine étape exacte
-1. Phase 1 terminée et relue (docs/REVIEW.md, graves corrigés). PR #4 prête : attendre la recette et le feu vert de Benjamin (fusion).
-2. Après fusion : phase 2 (2.1 import audio, enregistrement micro, forme d'onde), sur une nouvelle branche et une nouvelle PR. Penser au mode paysage (synthé d'abord).
+1. Jalon 2.2 : découpe (attaques avec aubio, grille, manuelle), tranches vers pads, ADSR, pitch, reverse, boucle, groupes d'étouffement. Penser à stocker les longs morceaux en 16 bits ou en flux pour dépasser 60 s.

@@ -1,0 +1,125 @@
+package com.pocketstudio.app.audio
+
+import android.content.Context
+import android.media.AudioFormat
+import android.media.MediaCodec
+import android.media.MediaExtractor
+import android.media.MediaFormat
+import android.net.Uri
+import java.io.IOException
+import java.nio.ByteOrder
+
+/**
+ * Decodes MP3, WAV, FLAC, M4A/AAC, OGG… with Android's own codecs into float PCM
+ * (more than two channels are folded to stereo). Blocking: call off the main thread.
+ */
+object AudioDecoder {
+    /** Pads hold one-shots and short loops: longer files are cut (memory: ~23 MB per stereo minute). */
+    const val MAX_SECONDS = 60
+
+    class TooLongException(val seconds: Double) : IOException("audio longer than $MAX_SECONDS s")
+
+    fun decode(context: Context, uri: Uri): Pcm {
+        val extractor = MediaExtractor()
+        try {
+            extractor.setDataSource(context, uri, null)
+            val track = (0 until extractor.trackCount).firstOrNull {
+                extractor.getTrackFormat(it).getString(MediaFormat.KEY_MIME)?.startsWith("audio/") == true
+            } ?: throw IOException("pas de piste audio")
+            extractor.selectTrack(track)
+            val format = extractor.getTrackFormat(track)
+            val codec = MediaCodec.createDecoderByType(format.getString(MediaFormat.KEY_MIME)!!)
+            try {
+                codec.configure(format, null, null, 0)
+                codec.start()
+                return drain(extractor, codec, format)
+            } finally {
+                runCatching { codec.stop() }
+                codec.release()
+            }
+        } finally {
+            extractor.release()
+        }
+    }
+
+    private fun drain(extractor: MediaExtractor, codec: MediaCodec, input: MediaFormat): Pcm {
+        var rate = input.getInteger(MediaFormat.KEY_SAMPLE_RATE)
+        var srcChannels = input.getInteger(MediaFormat.KEY_CHANNEL_COUNT)
+        var encoding = AudioFormat.ENCODING_PCM_16BIT
+        val out = FloatBuilder()
+        val info = MediaCodec.BufferInfo()
+        var inputDone = false
+        while (true) {
+            if (!inputDone) {
+                val i = codec.dequeueInputBuffer(10_000)
+                if (i >= 0) {
+                    val buf = codec.getInputBuffer(i)!!
+                    val n = extractor.readSampleData(buf, 0)
+                    if (n < 0) {
+                        codec.queueInputBuffer(i, 0, 0, 0, MediaCodec.BUFFER_FLAG_END_OF_STREAM)
+                        inputDone = true
+                    } else {
+                        codec.queueInputBuffer(i, 0, n, extractor.sampleTime, 0)
+                        extractor.advance()
+                    }
+                }
+            }
+            val o = codec.dequeueOutputBuffer(info, 10_000)
+            when {
+                o == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED -> {
+                    val f = codec.outputFormat
+                    rate = f.getInteger(MediaFormat.KEY_SAMPLE_RATE)
+                    srcChannels = f.getInteger(MediaFormat.KEY_CHANNEL_COUNT)
+                    if (f.containsKey(MediaFormat.KEY_PCM_ENCODING)) encoding = f.getInteger(MediaFormat.KEY_PCM_ENCODING)
+                }
+                o >= 0 -> {
+                    val buf = codec.getOutputBuffer(o)!!.order(ByteOrder.LITTLE_ENDIAN)
+                    buf.position(info.offset)
+                    buf.limit(info.offset + info.size)
+                    out.appendFolded(buf, encoding, srcChannels)
+                    codec.releaseOutputBuffer(o, false)
+                    val seconds = out.size.toDouble() / minOf(srcChannels, 2) / rate
+                    if (seconds > MAX_SECONDS) throw TooLongException(seconds)
+                    if (info.flags and MediaCodec.BUFFER_FLAG_END_OF_STREAM != 0) break
+                }
+            }
+        }
+        val channels = minOf(srcChannels, 2)
+        if (out.size < channels) throw IOException("fichier vide")
+        return Pcm(out.toArray(), channels, rate)
+    }
+
+    /** Growable float array; folds more than two channels into stereo (odd ones left, even ones right). */
+    private class FloatBuilder {
+        var data = FloatArray(1 shl 16)
+        var size = 0
+
+        private fun add(v: Float) {
+            if (size == data.size) data = data.copyOf(data.size * 2)
+            data[size++] = v
+        }
+
+        fun appendFolded(buf: java.nio.ByteBuffer, encoding: Int, channels: Int) {
+            val frame = FloatArray(channels)
+            while (true) {
+                for (c in 0 until channels) {
+                    frame[c] = when (encoding) {
+                        AudioFormat.ENCODING_PCM_FLOAT -> if (buf.remaining() >= 4) buf.float else return
+                        else -> if (buf.remaining() >= 2) buf.short / 32768f else return
+                    }
+                }
+                when {
+                    channels <= 2 -> frame.forEach(::add)
+                    else -> {
+                        var l = 0f; var r = 0f
+                        for (c in 0 until channels) if (c % 2 == 0) l += frame[c] else r += frame[c]
+                        val k = 2f / channels
+                        add(l * k); add(r * k)
+                    }
+                }
+            }
+        }
+
+        fun toArray() = data.copyOf(size)
+    }
+}

@@ -17,6 +17,8 @@
 #include "DrumKit.h"
 #include "Mixer.h"
 #include "OfflineRenderer.h"
+#include "Sample.h"
+#include "Sampler.h"
 #include "WavWriter.h"
 #include "Engine.h"
 #include "RoundTripMeter.h"
@@ -936,6 +938,126 @@ void testOfflineExportRendersTheBeat() {
     std::filesystem::remove(path);
 }
 
+void testSampleResamplesCleanly() {
+    // 1 kHz sine at 44.1 kHz, 1 s, stereo -> 48 kHz: same duration and pitch, no NaN.
+    const int inFrames = 44100;
+    std::vector<float> in(static_cast<size_t>(inFrames) * 2);
+    for (int i = 0; i < inFrames; ++i) {
+        const float v = 0.5f * std::sin(2.0f * float(M_PI) * 1000.0f * i / 44100.0f);
+        in[size_t(i) * 2] = v;
+        in[size_t(i) * 2 + 1] = -v;
+    }
+    ps::Sample* s = ps::Sample::create(in.data(), inFrames, 2, 44100, kRate);
+    CHECK(s != nullptr);
+    if (!s) return;
+    CHECK(s->channels() == 2);
+    CHECK(std::abs(s->frames() - kRate) <= 4);
+    int crossings = 0;
+    float peak = 0.0f;
+    for (int64_t i = 1000; i < s->frames() - 1000; ++i) {
+        const float a = s->data()[(i - 1) * 2], b = s->data()[i * 2];
+        if (a < 0.0f && b >= 0.0f) ++crossings;
+        peak = std::max(peak, std::fabs(b));
+        CHECK(std::isfinite(b));
+    }
+    const double hz = crossings / ((s->frames() - 2000.0) / kRate);
+    CHECK(std::abs(hz - 1000.0) < 3.0);
+    CHECK(peak > 0.48f && peak < 0.52f);
+    CHECK(s->release());
+    delete s;
+    CHECK(ps::Sample::create(in.data(), 0, 2, 44100, kRate) == nullptr);
+    CHECK(ps::Sample::create(in.data(), 10, 3, 44100, kRate) == nullptr);
+}
+
+void testPadSampleReplacesTheDrum() {
+    // A pad with a sample plays that sample, starting exactly on the step.
+    std::vector<float> click(480, 0.0f);
+    click[0] = 0.9f;
+    click[100] = -0.4f;
+    ps::Sample* s = ps::Sample::create(click.data(), 480, 1, kRate, kRate);
+    ps::Engine engine(kRate);
+    s->retain();  // the command's reference
+    engine.post({ps::CommandType::InstallSample, 0.0f, ps::DrumKit::Kick, 0, s});
+    engine.post({ps::CommandType::SetTempo, 120.0f});
+    engine.post({ps::CommandType::SetDrumHit, 1.0f, ps::DrumKit::Kick, 4});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    const auto out = render(engine, 6000 * 6, 200);
+    CHECK(engine.padHasSample(ps::DrumKit::Kick));
+    int first = -1;
+    for (int i = 0; i < 6000 * 6 && first < 0; ++i) {
+        if (out[size_t(i) * kChannels] != 0.0f) first = i;
+    }
+    CHECK(first == 24000);
+    // The sample's shape, not a kick: a click, silence, a smaller negative click, then nothing.
+    const float a = out[size_t(24000) * kChannels], b = out[size_t(24100) * kChannels];
+    CHECK(a > 0.3f && b < 0.0f && std::fabs(b / a - (-0.4f / 0.9f)) < 0.02f);
+    float tail = 0.0f;
+    for (int i = 24600; i < 6000 * 6; ++i) tail = std::max(tail, std::fabs(out[size_t(i) * kChannels]));
+    CHECK(tail < 1e-6f);
+    CHECK(s->release() == false);  // the engine still holds it
+}
+
+void testSampleReferencesAreNeverLeakedOrFreedEarly() {
+    std::vector<float> one(48, 0.25f);
+    // Owner lets go first: the engine keeps it alive, then hands it back for freeing.
+    ps::Sample* s = ps::Sample::create(one.data(), 48, 1, kRate, kRate);
+    {
+        ps::Engine engine(kRate);
+        s->retain();
+        engine.post({ps::CommandType::InstallSample, 0.0f, 3, 0, s});
+        render(engine, 256, 256);
+        CHECK(s->refCount() == 2);
+        CHECK(!s->release());  // owner done, engine still plays it
+        engine.post({ps::CommandType::TriggerPad, 1.0f, 3});
+        const auto out = render(engine, 256, 256);
+        CHECK(std::fabs(out[0] - 0.25f) < 1e-6f);
+        engine.post({ps::CommandType::InstallSample, 0.0f, 3, 0, nullptr});  // back to the drum
+        render(engine, 256, 256);
+        CHECK(!engine.padHasSample(3));
+        engine.collectGarbage();  // frees s (ASan would flag a leak or a double free)
+    }
+    // Commands never applied release their reference when the engine goes away.
+    ps::Sample* t = ps::Sample::create(one.data(), 48, 1, kRate, kRate);
+    {
+        ps::Engine engine(kRate);
+        t->retain();
+        engine.post({ps::CommandType::InstallSample, 0.0f, 1, 0, t});
+    }
+    CHECK(t->refCount() == 1);
+    CHECK(t->release());
+    delete t;
+    // Out-of-range pad: the reference is released, not kept.
+    ps::Sample* u = ps::Sample::create(one.data(), 48, 1, kRate, kRate);
+    {
+        ps::Engine engine(kRate);
+        u->retain();
+        engine.post({ps::CommandType::InstallSample, 0.0f, 99, 0, u});
+        render(engine, 64, 64);
+    }
+    CHECK(u->refCount() == 1);
+    CHECK(u->release());
+    delete u;
+}
+
+void testRetriggerFadesInsteadOfClicking() {
+    std::vector<float> dc(48000, 0.5f);
+    ps::Sample* s = ps::Sample::create(dc.data(), 48000, 1, kRate, kRate);
+    ps::Sampler sampler;
+    sampler.install(0, s);
+    std::vector<float> out(2000, 0.0f);
+    sampler.trigger(0, 1.0f, 0);
+    sampler.trigger(0, 1.0f, 0);
+    sampler.render(out.data(), 1000);
+    sampler.trigger(0, 1.0f, 500);
+    std::fill(out.begin(), out.end(), 0.0f);
+    sampler.render(out.data(), 1000);
+    // Old hit fading (0.5 -> 0) plus new hit (0.5): never above 1, never a gap.
+    float lo = 1.0f, hi = 0.0f;
+    for (int i = 0; i < 1000; ++i) { lo = std::min(lo, out[size_t(i)]); hi = std::max(hi, out[size_t(i)]); }
+    CHECK(lo >= 0.49f && hi <= 1.0001f);
+    CHECK(out[600] > 0.99f * 0.5f);
+}
+
 void testLimiterHoldsTheCeiling() {
     ps::Mixer mixer;
     mixer.prepare(kRate);
@@ -1003,6 +1125,10 @@ int main(int argc, char** argv) {
         {"limiter_ceiling", testLimiterHoldsTheCeiling},
         {"wav_writer", testWavWriterRoundTrip},
         {"offline_export", testOfflineExportRendersTheBeat},
+        {"sample_resample", testSampleResamplesCleanly},
+        {"pad_sample", testPadSampleReplacesTheDrum},
+        {"sample_refs", testSampleReferencesAreNeverLeakedOrFreedEarly},
+        {"sample_retrigger", testRetriggerFadesInsteadOfClicking},
     };
     for (const auto& t : tests) {
         const int before = g_failures;

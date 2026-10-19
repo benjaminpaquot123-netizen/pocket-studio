@@ -72,6 +72,7 @@ import com.pocketstudio.app.mixer.MixerScreen
 import com.pocketstudio.app.latency.LatencyViewModel
 import com.pocketstudio.app.recette.RecetteScreen
 import com.pocketstudio.app.recette.RecetteViewModel
+import com.pocketstudio.app.rhythm.PadSoundUi
 import com.pocketstudio.app.rhythm.RhythmActions
 import com.pocketstudio.app.rhythm.RhythmScreen
 import com.pocketstudio.app.rhythm.RhythmViewModel
@@ -123,6 +124,7 @@ fun AppRoot() {
         rhythmVm.flush()
         rhythmVm.visible = false
         rhythmVm.synthAllOff()
+        rhythmVm.stopRecording()  // never keep the microphone open in the background
         // While the transport plays, PlaybackService keeps the music going in the background.
         val keep = rhythmVm.keepsRunningInBackground
         AppLog.add(if (keep) "Arrière-plan : la lecture continue" else "Arrière-plan : son fermé")
@@ -150,6 +152,12 @@ fun AppRoot() {
 
     val micPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
         if (granted) latencyVm.measure()
+    }
+    val recordPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        if (granted) rhythmVm.startRecording()
+    }
+    val pickAudio = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri != null) rhythmVm.importSample(uri)
     }
 
     val landscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
@@ -215,6 +223,8 @@ fun AppRoot() {
                         val live by rhythmVm.live.collectAsStateWithLifecycle()
                         val canUndo by rhythmVm.session.canUndo.collectAsStateWithLifecycle()
                         val canRedo by rhythmVm.session.canRedo.collectAsStateWithLifecycle()
+                        val sampleInfo by rhythmVm.sampleInfo.collectAsStateWithLifecycle()
+                        val sampleTask by rhythmVm.sampleTask.collectAsStateWithLifecycle()
                         LaunchedEffect(Unit) {
                             lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollLive() }
                         }
@@ -237,7 +247,16 @@ fun AppRoot() {
                                 setSwing = rhythmVm::setSwing,
                                 undo = rhythmVm::undo,
                                 redo = rhythmVm::redo,
+                                importSample = { pickAudio.launch(arrayOf("audio/*")) },
+                                startRecording = {
+                                    if (hasMic(context)) rhythmVm.startRecording()
+                                    else recordPermission.launch(Manifest.permission.RECORD_AUDIO)
+                                },
+                                stopRecording = rhythmVm::stopRecording,
+                                removeSample = rhythmVm::removeSample,
+                                dismissSampleError = rhythmVm::dismissSampleError,
                             ),
+                            padSound = PadSoundUi(sampleInfo, sampleTask),
                         )
                     }
                     AppTab.Acide -> {

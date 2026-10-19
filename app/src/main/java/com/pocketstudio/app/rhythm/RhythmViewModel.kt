@@ -4,6 +4,10 @@ import com.pocketstudio.app.report.AppLog
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import android.net.Uri
+import android.provider.OpenableColumns
+import com.pocketstudio.app.audio.AudioDecoder
+import com.pocketstudio.app.audio.MicRecorder
 import com.pocketstudio.app.export.WavExporter
 import com.pocketstudio.app.playback.PlaybackService
 import com.pocketstudio.engine.ExportResult
@@ -14,6 +18,7 @@ import com.pocketstudio.model.AcidPattern
 import com.pocketstudio.model.AcidStep
 import com.pocketstudio.model.DrumPattern
 import com.pocketstudio.model.Hit
+import com.pocketstudio.model.PadSample
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.ProjectSession
 import com.pocketstudio.model.ProjectStore
@@ -28,6 +33,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.io.File
+
+sealed interface SampleTask {
+    data object Idle : SampleTask
+    data class Busy(val message: String) : SampleTask
+    data class Recording(val seconds: Float, val level: Float) : SampleTask
+    data class Failed(val message: String) : SampleTask
+}
 
 data class ExportUi(
     val bars: Int = 4,
@@ -134,7 +146,100 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         pushAcid(p.acid)
         pushSynth(p.synth)
         pushMixer(p)
+        padSamples.pushPads(p.drums.lanes.map { it.sample })
     }
+
+    // --- Pad samples (import, microphone) --------------------------------------------------
+
+    val padSamples = PadSamples(File(store.folder(PROJECT_ID), "samples"))
+    val sampleInfo: StateFlow<Map<String, SampleInfo>> = padSamples.info
+    private val _sampleTask = MutableStateFlow<SampleTask>(SampleTask.Idle)
+    val sampleTask: StateFlow<SampleTask> = _sampleTask.asStateFlow()
+    private var recorder: MicRecorder? = null
+
+    private fun loadPadSamples() {
+        val files = project.value.drums.lanes.mapNotNull { it.sample?.file }.toSet()
+        viewModelScope.launch {
+            val prepared = withContext(Dispatchers.IO) { padSamples.loadAll(files) }
+            prepared.forEach(padSamples::register)
+            padSamples.pushPads(project.value.drums.lanes.map { it.sample })
+        }
+    }
+
+    /** Decodes an audio file from the phone and puts it on the selected pad. */
+    fun importSample(uri: Uri) = sampleJob("Lecture du fichier…") {
+        val app = getApplication<Application>()
+        val name = PadSamples.nameFrom(displayName(app, uri))
+        val pcm = try {
+            AudioDecoder.decode(app, uri)
+        } catch (e: AudioDecoder.TooLongException) {
+            throw UserMessage("Ce fichier dure plus d'une minute : choisis un son plus court (la découpe des morceaux arrive bientôt).")
+        } catch (e: Exception) {
+            throw UserMessage("Ce fichier n'a pas pu être lu (${e.message ?: "format inconnu"}).")
+        }
+        AppLog.add("Import « $name » : ${pcm.channels} canal(aux), ${pcm.sampleRate} Hz, ${"%.1f".format(pcm.seconds)} s")
+        padSamples.add(pcm, name)
+    }
+
+    /** Records the microphone until [stopRecording] (or 30 s) and puts it on the selected pad. */
+    fun startRecording() {
+        if (_sampleTask.value != SampleTask.Idle && _sampleTask.value !is SampleTask.Failed) return
+        val rec = MicRecorder().also { recorder = it }
+        _sampleTask.value = SampleTask.Recording(0f, 0f)
+        sampleJob(null) {
+            val pcm = rec.record { sec -> _sampleTask.value = SampleTask.Recording(sec, rec.level) }
+            recorder = null
+            if (pcm.frames < 480 || PadSamples.isSilent(pcm)) throw UserMessage("Rien n'a été entendu : rapproche-toi du micro et réessaie.")
+            AppLog.add("Enregistrement micro : ${"%.1f".format(pcm.seconds)} s")
+            padSamples.add(pcm, "Micro ${java.time.LocalTime.now().withNano(0)}")
+        }
+    }
+
+    fun stopRecording() {
+        recorder?.stop()
+    }
+
+    /** Back to the kit's own sound for the selected pad (undo brings the sample back). */
+    fun removeSample() {
+        val lane = _transport.value.selectedPad
+        session.edit { p -> p.copy(drums = p.drums.withSample(lane, null)) }
+        padSamples.pushPads(project.value.drums.lanes.map { it.sample })
+    }
+
+    fun dismissSampleError() {
+        if (_sampleTask.value is SampleTask.Failed) _sampleTask.value = SampleTask.Idle
+    }
+
+    private class UserMessage(message: String) : Exception(message)
+
+    private fun sampleJob(busy: String?, work: suspend () -> Pair<PadSample, PadSamples.Prepared>) {
+        val lane = _transport.value.selectedPad
+        if (busy != null) _sampleTask.value = SampleTask.Busy(busy)
+        viewModelScope.launch {
+            try {
+                val (sample, prepared) = withContext(Dispatchers.IO) { work() }
+                padSamples.register(prepared)
+                session.edit { p -> p.copy(drums = p.drums.withSample(lane, sample)) }
+                padSamples.pushPads(project.value.drums.lanes.map { it.sample })
+                _sampleTask.value = SampleTask.Idle
+                if (NativeEngine.isAvailable) NativeEngine.triggerPad(lane, 0.9f)
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                recorder = null
+                AppLog.add("Son du pad : échec (${e.message})")
+                _sampleTask.value = SampleTask.Failed(
+                    if (e is UserMessage) e.message!! else "Ça n'a pas marché : ${e.message ?: e.javaClass.simpleName}",
+                )
+            }
+        }
+    }
+
+    private fun displayName(app: Application, uri: Uri): String? = runCatching {
+        app.contentResolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)?.use { c ->
+            if (c.moveToFirst()) c.getString(0) else null
+        }
+    }.getOrNull()
 
     // --- Mixer -----------------------------------------------------------------------------
 
@@ -288,6 +393,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     val keepsRunningInBackground: Boolean get() = _transport.value.playing
 
     init {
+        loadPadSamples()
         viewModelScope.launch {
             session.lastSaveError.collect { e -> if (e != null) AppLog.add("Sauvegarde impossible : ${e.message}") }
         }
@@ -450,6 +556,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     override fun onCleared() {
         running?.cancel()
+        recorder?.stop()
+        padSamples.close()
         if (NativeEngine.isAvailable) NativeEngine.stopTransport()
         PlaybackService.stop(getApplication())
     }

@@ -282,3 +282,15 @@ class MixerModelTest {
         assertEquals(Channel(), fixed.channels[2])
     }
 }
+
+class PadSampleModelTest {
+    @Test
+    fun padSampleRoundTripsAndUnsafeNamesAreDropped() {
+        val drums = DrumPattern().withSample(2, PadSample("a1b2.wav", "Ma voix"))
+            .withSample(3, PadSample("../../etc/passwd", "piège"))
+        val back = ProjectJson.decode(ProjectJson.encode(Project(drums = drums)))
+        assertEquals(PadSample("a1b2.wav", "Ma voix"), back.drums.lanes[2].sample)
+        assertNull(back.drums.lanes[3].sample)
+        assertNull(back.drums.lanes[0].sample)
+    }
+}

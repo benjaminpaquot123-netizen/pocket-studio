@@ -110,6 +110,11 @@ class ScreenshotTest {
         var drums = DrumPattern()
         DrumKitInfo.starterHits.forEach { (lane, steps) -> steps.forEach { drums = drums.toggle(lane, it) } }
         drums = drums.toggle(0, 10, 0.5f).toggle(0, 14, 0.2f)
+            .withSample(0, com.pocketstudio.model.PadSample("k.wav", "Kick de ma voix"))
+        val wave = FloatArray(24000) { i -> (kotlin.math.sin(i * 0.02) * kotlin.math.exp(-i / 6000.0)).toFloat() }
+        val info = com.pocketstudio.app.rhythm.SampleInfo(
+            0.5, com.pocketstudio.app.rhythm.PadSamples.peaks(com.pocketstudio.app.audio.Pcm(wave, 1, 48000)),
+        )
         RhythmScreen(
             project = Project(tempoBpm = 124.0, swing = 0.2, drums = drums),
             transport = TransportUi(playing = true, metronome = true, selectedPad = 0),
@@ -117,6 +122,7 @@ class ScreenshotTest {
             canUndo = true,
             canRedo = false,
             actions = RhythmActions(),
+            padSound = com.pocketstudio.app.rhythm.PadSoundUi(mapOf("k.wav" to info)),
         )
     }
 

@@ -130,6 +130,19 @@ object NativeEngine {
         }
     }
 
+    /** Gives pad [pad] the sample (or back to its drum sound with null). Main thread, like every command. */
+    fun setPadSample(pad: Int, sample: NativeSample?) {
+        val target = captureTarget
+        if (target != 0L) exportInstallSample(target, pad, sample?.handle ?: 0L)
+        else nativeInstallSample(pad, sample?.handle ?: 0L)
+    }
+
+    external fun sampleCreate(data: FloatArray, channels: Int, sampleRate: Int): Long
+    external fun sampleRelease(handle: Long)
+    external fun sampleFrames(handle: Long): Long
+    private external fun nativeInstallSample(pad: Int, handle: Long): Boolean
+    private external fun exportInstallSample(exportHandle: Long, pad: Int, handle: Long)
+
     // Export natives stay public: `internal` would mangle their JNI names. Use OfflineExport.
     external fun exportCreate(): Long
     private external fun exportPost(handle: Long, type: Int, value: Float, a: Int, b: Int)

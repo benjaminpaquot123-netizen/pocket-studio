@@ -5,6 +5,7 @@
 
 #include "AudioHost.h"
 #include "OfflineRenderer.h"
+#include "Sample.h"
 
 namespace {
 
@@ -36,6 +37,51 @@ JNIEXPORT jboolean JNICALL Java_com_pocketstudio_engine_NativeEngine_nativePost(
 
 JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_currentStep(JNIEnv*, jobject) {
     return host().engine().currentStep();
+}
+
+// --- Samples: created and released off the audio thread, shared by reference. ---
+
+JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_sampleCreate(JNIEnv* env, jobject, jfloatArray data,
+                                                                             jint channels, jint sampleRate) {
+    const jsize length = env->GetArrayLength(data);
+    if (channels < 1 || length < channels) return 0;
+    jfloat* in = env->GetFloatArrayElements(data, nullptr);
+    if (!in) return 0;
+    ps::Sample* s = ps::Sample::create(in, length / channels, channels, sampleRate, 48000);
+    env->ReleaseFloatArrayElements(data, in, JNI_ABORT);
+    return reinterpret_cast<jlong>(s);
+}
+
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_sampleRelease(JNIEnv*, jobject, jlong handle) {
+    auto* s = reinterpret_cast<ps::Sample*>(handle);
+    if (s && s->release()) delete s;
+}
+
+JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_sampleFrames(JNIEnv*, jobject, jlong handle) {
+    return reinterpret_cast<ps::Sample*>(handle)->frames();
+}
+
+// The posted command owns one reference; it is given back if the queue is full.
+JNIEXPORT jboolean JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeInstallSample(JNIEnv*, jobject, jint pad,
+                                                                                       jlong handle) {
+    auto& engine = host().engine();
+    engine.collectGarbage();
+    auto* s = reinterpret_cast<ps::Sample*>(handle);
+    if (s) s->retain();
+    ps::Command command{ps::CommandType::InstallSample, 0.0f, pad, 0};
+    command.sample = s;
+    if (host().post(command)) return JNI_TRUE;
+    if (s && s->release()) delete s;
+    return JNI_FALSE;
+}
+
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportInstallSample(JNIEnv*, jobject, jlong exportHandle,
+                                                                                   jint pad, jlong handle) {
+    auto* s = reinterpret_cast<ps::Sample*>(handle);
+    if (s) s->retain();
+    ps::Command command{ps::CommandType::InstallSample, 0.0f, pad, 0};
+    command.sample = s;
+    reinterpret_cast<ps::OfflineRenderer*>(exportHandle)->post(command);
 }
 
 // --- Offline export: a private engine rendered on the caller's (worker) thread. ---

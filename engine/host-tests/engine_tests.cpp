@@ -18,6 +18,7 @@
 #include "AcidTrack.h"
 #include "Analysis.h"
 #include "DrumKit.h"
+#include "Effects.h"
 #include "Mixer.h"
 #include "OfflineRenderer.h"
 #include "OnsetDetector.h"
@@ -1425,6 +1426,16 @@ void testProcessNeverAllocates() {
         bundle->retain();  // ours, for the re-installs below (what the app does on every push)
         engine.post(stems);
         engine.post({ps::CommandType::SetStemParam, 1.0f, 2, ps::StemPlayer::Solo});
+        // Every insert type somewhere, both sends, master inserts: effects must not allocate either.
+        for (int ch = 0; ch <= ps::Mixer::kMaster; ++ch) {
+            for (int slot = 0; slot < ps::Mixer::kInserts; ++slot) {
+                engine.post({ps::CommandType::SetInsertType, 0.0f, ch * ps::Mixer::kInserts + slot, 1 + (ch + slot) % 5});
+            }
+            if (ch < ps::Mixer::kMaster) {
+                engine.post({ps::CommandType::SetSend, 0.5f, ch, 0});
+                engine.post({ps::CommandType::SetSend, 0.5f, ch, 1});
+            }
+        }
         engine.post({ps::CommandType::SetTransport, 1.0f, 0});
         std::vector<float> out(512 * 2);
         for (int i = 0; i < 50; ++i) engine.process(nullptr, 0, 0, out.data(), 512, 2);  // warm-up
@@ -1433,6 +1444,9 @@ void testProcessNeverAllocates() {
         for (int i = 0; i < 400; ++i) {
             if (i % 50 == 0) engine.post({ps::CommandType::TriggerPad, 1.0f, 3});
             if (i % 70 == 0) engine.post({ps::CommandType::SynthNoteOn, 0.9f, 60 + i % 12});
+            if (i % 40 == 0) engine.post({ps::CommandType::SetInsertParam, (i % 80) / 80.0f, 1, 0});
+            if (i % 60 == 0) engine.post({ps::CommandType::SetInsertType, 0.0f, 5, 1 + (i / 60) % 5});
+            if (i % 55 == 0) engine.post({ps::CommandType::SetBusParam, (i % 110) / 110.0f, 1, 0});
             if (i % 90 == 0) {  // same bundle again: the old reference goes through the retire queue
                 bundle->retain();
                 ps::Command again{ps::CommandType::InstallStems};
@@ -1635,6 +1649,167 @@ void testStemsPlayInStepWithTheTransport() {
     for (int st = 0; st < 3; ++st) std::filesystem::remove(paths[static_cast<size_t>(st)]);
 }
 
+// RMS of a stereo-identical sine through an insert, after it settles.
+float sineGainDb(ps::InsertSlot& fx, float freq, float amp = 0.25f) {
+    std::vector<float> l(9600), r(9600);
+    double sum = 0, ref = 0;
+    for (int pass = 0; pass < 2; ++pass) {
+        for (size_t i = 0; i < l.size(); ++i) l[i] = r[i] = amp * static_cast<float>(std::sin(2 * M_PI * freq * (pass * 9600 + i) / kRate));
+        fx.process(l.data(), r.data(), 9600);
+    }
+    for (size_t i = 4800; i < l.size(); ++i) {
+        sum += l[i] * l[i];
+        const double x = amp * std::sin(2 * M_PI * freq * (9600 + i) / kRate);
+        ref += x * x;
+    }
+    return static_cast<float>(10 * std::log10(sum / ref));
+}
+
+void testInsertEffects() {
+    ps::InsertSlot slot;
+    slot.prepare(kRate);
+    // Off: untouched.
+    CHECK(std::fabs(sineGainDb(slot, 1000)) < 0.01f);
+    // EQ: +12 dB low shelf boosts 50 Hz by ~12 dB, leaves 5 kHz alone; flat when centred.
+    slot.setType(ps::InsertSlot::Eq);
+    CHECK(std::fabs(sineGainDb(slot, 1000)) < 0.05f);
+    slot.setParam(0, 1.0f);
+    const float low = sineGainDb(slot, 50), high = sineGainDb(slot, 5000);
+    std::printf("  EQ low +12 dB: 50 Hz %+.1f dB, 5 kHz %+.1f dB\n", low, high);
+    CHECK(low > 10.5f && low < 12.5f);
+    CHECK(std::fabs(high) < 0.5f);
+    // Compressor: a loud sine is pulled down, a quiet one (below threshold) only gets make-up.
+    slot.setType(ps::InsertSlot::Comp);
+    slot.setParam(0, 0.5f);   // threshold -20 dB
+    slot.setParam(1, 0.54f);  // ratio ~5
+    const float loud = sineGainDb(slot, 200, 0.9f);
+    const float reduction = slot.compressor().gainReductionDb();
+    const float quiet = sineGainDb(slot, 200, 0.02f);
+    std::printf("  compressor: loud %+.1f dB, quiet %+.1f dB, reduction %.1f dB\n", loud, quiet, reduction);
+    CHECK(loud < quiet - 6.0f);  // the loud one gains much less than the quiet one
+    CHECK(reduction < -3.0f);
+    // Saturation: adds harmonics (energy at 3 kHz from a 1 kHz sine), stays finite and bounded.
+    slot.setType(ps::InsertSlot::Saturation);
+    slot.setParam(0, 0.9f);
+    slot.setParam(1, 1.0f);
+    std::vector<float> l(4800), r(4800);
+    for (size_t i = 0; i < l.size(); ++i) l[i] = r[i] = 0.8f * static_cast<float>(std::sin(2 * M_PI * 1000.0 * i / kRate));
+    slot.process(l.data(), r.data(), 4800);
+    double h3 = 0, h3s = 0, peak = 0;
+    for (size_t i = 0; i < l.size(); ++i) {
+        h3 += l[i] * std::cos(2 * M_PI * 3000.0 * i / kRate);
+        h3s += l[i] * std::sin(2 * M_PI * 3000.0 * i / kRate);
+        peak = std::max(peak, static_cast<double>(std::fabs(l[i])));
+        CHECK(std::isfinite(l[i]));
+    }
+    CHECK(std::sqrt(h3 * h3 + h3s * h3s) / 2400.0 > 0.01);
+    CHECK(peak < 2.0);
+    // Chorus and filter: finite, and the low-pass filter darkens a high tone.
+    slot.setType(ps::InsertSlot::Chorus);
+    CHECK(std::isfinite(sineGainDb(slot, 440)));
+    slot.setType(ps::InsertSlot::Filter);
+    slot.setParam(0, 0.3f);  // ~400 Hz low-pass
+    CHECK(sineGainDb(slot, 8000) < -20.0f);
+    slot.setType(99);  // ignored
+    CHECK(slot.type() == ps::InsertSlot::Filter);
+}
+
+void testSendEffects() {
+    // Delay: an impulse comes back after exactly one eighth note (2 sixteenths) at 120 BPM.
+    ps::TempoDelay delay;
+    delay.prepare(kRate);
+    delay.setParam(0, 0.2f);  // 1/8
+    delay.setParam(1, 0.5f);
+    delay.setParam(2, 0.0f);  // no ping-pong
+    delay.setStepFrames(6000.0);
+    delay.reset();
+    std::vector<float> inL(kRate, 0.0f), inR(kRate, 0.0f), outL(kRate, 0.0f), outR(kRate, 0.0f);
+    inL[100] = inR[100] = 1.0f;
+    delay.process(inL.data(), inR.data(), outL.data(), outR.data(), kRate);
+    const auto first = std::max_element(outL.begin(), outL.begin() + 20000) - outL.begin();
+    std::printf("  delay echo at frame %ld (expected %d)\n", static_cast<long>(first), 100 + 12000);
+    CHECK(std::labs(static_cast<long>(first) - 12100) <= 1);
+    CHECK(outL[24100] > 0.05f && outL[24100] < outL[12100]);  // second repeat, quieter
+    // Ping-pong: the first repeat is on the left only, the second on the right.
+    delay.setParam(2, 1.0f);
+    delay.reset();
+    std::fill(outL.begin(), outL.end(), 0.0f);
+    std::fill(outR.begin(), outR.end(), 0.0f);
+    delay.process(inL.data(), inR.data(), outL.data(), outR.data(), kRate);
+    CHECK(outL[12100] > 0.3f && std::fabs(outR[12100]) < 1e-3f);
+    CHECK(std::fabs(outL[24100]) < 1e-3f && outR[24100] > 0.05f);
+
+    // Reverb: a tail that lasts, decays and stays finite.
+    ps::Reverb reverb;
+    reverb.prepare(kRate);
+    std::fill(outL.begin(), outL.end(), 0.0f);
+    std::fill(outR.begin(), outR.end(), 0.0f);
+    reverb.process(inL.data(), inR.data(), outL.data(), outR.data(), kRate);
+    double early = 0, late = 0;
+    for (int i = 0; i < kRate; ++i) {
+        CHECK(std::isfinite(outL[static_cast<size_t>(i)]) && std::isfinite(outR[static_cast<size_t>(i)]));
+        (i < kRate / 4 ? early : late) += outL[static_cast<size_t>(i)] * outL[static_cast<size_t>(i)];
+    }
+    CHECK(early > 0 && late > 0 && late < early * 3);
+    bool differ = false;
+    for (int i = 0; i < kRate; ++i) differ |= std::fabs(outL[static_cast<size_t>(i)] - outR[static_cast<size_t>(i)]) > 1e-4f;
+    CHECK(differ);  // stereo
+}
+
+void testMixerInsertsAndSends() {
+    ps::Mixer mixer;
+    mixer.prepare(kRate);
+    mixer.setStepFrames(6000.0);  // 120 BPM
+    constexpr int frames = kRate;
+    std::vector<float> click(frames, 0.0f), zero(frames, 0.0f), out(static_cast<size_t>(frames) * 2);
+    click[100] = 0.5f;
+    const float* ch[ps::Mixer::kChannels] = {click.data(), zero.data(), zero.data(), zero.data()};
+    // Dry: the click alone, nothing after it.
+    mixer.process(ch, nullptr, out.data(), frames, 2);
+    CHECK(std::fabs(out[200] - 0.5f) < 1e-3f);
+    CHECK(std::fabs(out[(100 + 12000) * 2]) < 1e-6f);
+    // Delay send on the drums (1/8 at 120 BPM): an echo 12000 frames later, on the master.
+    mixer.setBusParam(1, 0, 0.2f);
+    mixer.setBusParam(1, 2, 0.0f);
+    mixer.setSend(0, 1, 1.0f);
+    mixer.process(ch, nullptr, out.data(), frames, 2);  // settle the send smoothing
+    mixer.process(ch, nullptr, out.data(), frames, 2);
+    float echo = 0.0f;
+    for (int i = 100 + 12000 - 2; i <= 100 + 12000 + 2; ++i) echo = std::max(echo, std::fabs(out[static_cast<size_t>(i) * 2]));
+    CHECK(echo > 0.1f);
+    mixer.setSend(0, 1, 0.0f);
+    // Reverb send: a tail after the click.
+    mixer.setSend(0, 0, 1.0f);
+    mixer.process(ch, nullptr, out.data(), frames, 2);
+    mixer.process(ch, nullptr, out.data(), frames, 2);
+    double tail = 0;
+    for (int i = 5000; i < 20000; ++i) tail += std::fabs(out[static_cast<size_t>(i) * 2]);
+    CHECK(tail > 0.1);
+    mixer.setSend(0, 0, 0.0f);
+    // Insert on channel 0 only: a low-pass filter darkens drums, not the synth.
+    std::vector<float> hiss(frames);
+    for (int i = 0; i < frames; ++i) hiss[static_cast<size_t>(i)] = 0.2f * static_cast<float>(std::sin(2 * M_PI * 8000.0 * i / kRate));
+    const float* drumsOnly[ps::Mixer::kChannels] = {hiss.data(), zero.data(), zero.data(), zero.data()};
+    const float* synthOnly[ps::Mixer::kChannels] = {zero.data(), zero.data(), hiss.data(), zero.data()};
+    mixer.setInsertType(0, 2, ps::InsertSlot::Filter);
+    mixer.setInsertParam(0, 2, 0, 0.3f);
+    for (int pass = 0; pass < 3; ++pass) mixer.process(drumsOnly, nullptr, out.data(), frames, 2);
+    float drumsPeak = 0.0f;
+    for (int i = frames / 2; i < frames; ++i) drumsPeak = std::max(drumsPeak, std::fabs(out[static_cast<size_t>(i) * 2]));
+    mixer.process(synthOnly, nullptr, out.data(), frames, 2);
+    float synthPeak = 0.0f;
+    for (int i = frames / 2; i < frames; ++i) synthPeak = std::max(synthPeak, std::fabs(out[static_cast<size_t>(i) * 2]));
+    CHECK(drumsPeak < 0.02f && synthPeak > 0.15f);
+    // Master insert: affects everything.
+    mixer.setInsertType(ps::Mixer::kMaster, 0, ps::InsertSlot::Filter);
+    mixer.setInsertParam(ps::Mixer::kMaster, 0, 0, 0.3f);
+    for (int pass = 0; pass < 3; ++pass) mixer.process(synthOnly, nullptr, out.data(), frames, 2);
+    synthPeak = 0.0f;
+    for (int i = frames / 2; i < frames; ++i) synthPeak = std::max(synthPeak, std::fabs(out[static_cast<size_t>(i) * 2]));
+    CHECK(synthPeak < 0.02f);
+    CHECK(mixer.insert(ps::Mixer::kMaster, 0).type() == ps::InsertSlot::Filter);
+}
+
 struct TestCase {
     const char* name;
     std::function<void()> fn;
@@ -1695,6 +1870,9 @@ int main(int argc, char** argv) {
         {"time_stretch", testTimeStretchKeepsPitchAndLength},
         {"piano_roll", testPianoRollNotesAreSampleAccurate},
         {"instrument", testInstrumentPlaysTheSoundFont},
+        {"insert_effects", testInsertEffects},
+        {"send_effects", testSendEffects},
+        {"mixer_inserts_sends", testMixerInsertsAndSends},
         {"tempo_and_key", testTempoAndKeyDetection},
         {"stems_follow_transport", testStemsPlayInStepWithTheTransport},
         {"no_alloc_in_process", testProcessNeverAllocates},

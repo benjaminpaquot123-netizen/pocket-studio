@@ -55,6 +55,10 @@ enum class CommandType : uint8_t {
     InstallStems,      // stems: owned reference (nullptr = no song)
     SetStemParam,      // a: stem, b: StemPlayer::Param, value
     SetStemStart,      // a: song frame where playback starts on step 0
+    SetInsertType,     // a: channel * Mixer::kInserts + slot (channel kMaster = master), b: InsertSlot::Type
+    SetInsertParam,    // a: as above, b: parameter 0..3, value 0..1
+    SetSend,           // a: channel, b: bus (0 reverb, 1 delay), value 0..1
+    SetBusParam,       // a: bus, b: parameter 0..3, value 0..1
 };
 
 struct Command {

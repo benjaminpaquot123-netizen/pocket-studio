@@ -158,6 +158,18 @@ void Engine::applyCommand(const Command& command) {
         case CommandType::SetStemParam:
             stems_.setParam(command.a, command.b, command.value);
             break;
+        case CommandType::SetInsertType:
+            mixer_.setInsertType(command.a / Mixer::kInserts, command.a % Mixer::kInserts, command.b);
+            break;
+        case CommandType::SetInsertParam:
+            mixer_.setInsertParam(command.a / Mixer::kInserts, command.a % Mixer::kInserts, command.b, command.value);
+            break;
+        case CommandType::SetSend:
+            mixer_.setSend(command.a, command.b, command.value);
+            break;
+        case CommandType::SetBusParam:
+            mixer_.setBusParam(command.a, command.b, command.value);
+            break;
         case CommandType::SetStemStart:
             stems_.setStartFrame(command.a);
             break;
@@ -236,6 +248,7 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
         if (phase_ >= kTwoPi) phase_ -= kTwoPi;
     }
 
+    mixer_.setStepFrames(sequencer_.samplesPerStep());
     const float* channels[Mixer::kChannels] = {drums, acid, synth, stemsL};
     const float* rights[Mixer::kChannels] = {nullptr, nullptr, nullptr, stemsR};
     mixer_.process(channels, rights, direct, output, numFrames, outputChannels);

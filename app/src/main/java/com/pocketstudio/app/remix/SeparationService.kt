@@ -151,6 +151,16 @@ class SeparationService : Service() {
             if (filesDir.usableSpace < needed) {
                 return SeparationState.Failed("Stockage plein : il faut ${needed / 1_000_000} Mo libres.")
             }
+            // The model needs about 2.6 GB while it runs (measured), plus the song and its stems.
+            val memory = android.app.ActivityManager.MemoryInfo()
+            getSystemService(android.app.ActivityManager::class.java).getMemoryInfo(memory)
+            val neededRam = 2_800_000_000L + (raw.seconds * Demucs.SAMPLE_RATE * 2 * 4 * 7).toLong()
+            AppLog.add("Séparation : mémoire libre ${memory.availMem / 1_000_000} Mo, besoin ~${neededRam / 1_000_000} Mo")
+            if (memory.availMem < neededRam) {
+                return SeparationState.Failed(
+                    "Pas assez de mémoire libre (${"%.1f".format(memory.availMem / 1e9)} Go, il en faut ${"%.1f".format(neededRam / 1e9)}). Ferme des applis ou prends un morceau plus court.",
+                )
+            }
             // A corrupt model could crash ONNX Runtime: check it each time (a second or two).
             if (!VerifiedDownload.verify(SeparationModel.SPEC, SeparationModel.file(this))) {
                 SeparationModel.file(this).delete()
@@ -158,6 +168,7 @@ class SeparationService : Service() {
             }
             val part = File(final.parentFile, "$key.part").apply { deleteRecursively() }
             SeparationJob.set(SeparationState.Separating(name, 0f))
+            AppLog.add("Séparation : modèle lancé (${raw.seconds.roundToInt()} s, ${raw.channels} canaux, ${raw.sampleRate} Hz)")
             val result = Demucs.separateFile(SeparationModel.file(this), raw.file, raw.channels, raw.sampleRate, part) { p ->
                 SeparationJob.set(SeparationState.Separating(name, p))
                 progress("Séparation de « $name »", p)

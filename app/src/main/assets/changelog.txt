@@ -1,4 +1,4 @@
-Remix : une chanson coupée en batterie, basse, voix et le reste, avec tempo et tonalité.
+Remix : la séparation ne plante plus au départ (elle prenait trop de mémoire) ; message clair si la mémoire manque.
 « Jouer avec le projet » : les pistes partent avec ta batterie, muet / solo / volume pour chacune.
 « → Pad » : un bout de basse ou de voix sur un pad, pour le découper ensuite.
 Acide : un mini-clavier pour choisir n'importe quelle note, noms Do Ré Mi ou C D E, jusqu'à 8 mesures.

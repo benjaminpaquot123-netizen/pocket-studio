@@ -77,6 +77,10 @@ SeparationResult runModel(const char* modelPath, Eigen::MatrixXf& audio, const c
         Ort::SessionOptions options;
         options.SetIntraOpNumThreads(std::max(1, threads));
         options.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_ALL);
+        // The CPU arena and memory patterns keep every intermediate tensor's peak: 5.1 GB for a
+        // 30 s song on Linux, enough for a phone to kill us. Without them: 2.6 GB, and faster.
+        options.DisableCpuMemArena();
+        options.DisableMemPattern();
         if (!loadModel(modelPath, model, options)) return {SeparationResult::ModelError, "modèle inattendu"};
         const auto out = demucsonnx::demucs_inference(model, audio, [&](float p, const std::string&) {
             if (!progress(std::clamp(p, 0.0f, 1.0f))) throw CancelledError();

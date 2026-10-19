@@ -24,6 +24,7 @@ import com.pocketstudio.model.AcidStep
 import com.pocketstudio.model.DrumPattern
 import com.pocketstudio.model.Hit
 import com.pocketstudio.model.Harmony
+import com.pocketstudio.model.Scale
 import com.pocketstudio.model.Note
 import com.pocketstudio.model.Performance
 import com.pocketstudio.model.Progression
@@ -898,6 +899,16 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun tapTempo() {
         val bpm = tapTempo.tap(System.currentTimeMillis()) ?: return
         session.edit("tempo") { it.copy(tempoBpm = Math.round(bpm).toDouble()) }
+        if (NativeEngine.isAvailable) NativeEngine.setTempo(project.value.tempoBpm)
+        if (project.value.drums.lanes.any { (it.sample?.fitBeats ?: 0) > 0 }) pushPads()
+    }
+
+    /** Remix: the project takes a separated song's tempo and key (one undo step). */
+    fun matchSong(bpm: Double, root: Int?, minor: Boolean) {
+        session.edit("tempo") { p ->
+            val harmony = if (root == null) p.harmony else Harmony(root, if (minor) Scale.Minor else Scale.Major)
+            p.copy(tempoBpm = bpm, harmony = harmony)
+        }
         if (NativeEngine.isAvailable) NativeEngine.setTempo(project.value.tempoBpm)
         if (project.value.drums.lanes.any { (it.sample?.fitBeats ?: 0) > 0 }) pushPads()
     }

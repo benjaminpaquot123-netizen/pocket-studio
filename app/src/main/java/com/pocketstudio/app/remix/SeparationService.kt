@@ -23,6 +23,7 @@ import com.pocketstudio.app.R
 import com.pocketstudio.app.audio.AudioDecoder
 import com.pocketstudio.app.download.VerifiedDownload
 import com.pocketstudio.app.report.AppLog
+import com.pocketstudio.engine.NativeEngine
 import com.pocketstudio.separation.Demucs
 import com.pocketstudio.separation.SeparationResult
 import kotlinx.coroutines.CoroutineScope
@@ -159,15 +160,27 @@ class SeparationService : Service() {
                     else -> SeparationState.Failed("Le modèle de séparation a échoué.")
                 }
             }
+            SeparationJob.set(SeparationState.Analysing(name))
+            progress("Tempo et tonalité de « $name »", null)
+            val info = analyse(part)
             final.deleteRecursively()
             if (!part.renameTo(final)) throw IOException("rename failed")
-            val set = StemStore.commit(final, name, raw.seconds)
+            val set = StemStore.commit(final, name, raw.seconds, info)
             StemStore.prune(this)
             AppLog.add("Séparation : « $name » (${raw.seconds.roundToInt()} s) terminée")
             return SeparationState.Done(set)
         } finally {
             work.deleteRecursively()
         }
+    }
+
+    // Tempo from the drums alone, key from bass + other: each is cleaner than the full mix.
+    private fun analyse(dir: File): SongInfo {
+        if (!NativeEngine.isAvailable) return SongInfo()
+        val tempo = NativeEngine.analyzeTempo(File(dir, "drums.wav").absolutePath)
+        val key = NativeEngine.analyzeKey(arrayOf(File(dir, "bass.wav").absolutePath, File(dir, "other.wav").absolutePath))
+        val root = key[0].toInt().takeIf { it in 0..11 }
+        return SongInfo(tempo[0].toDouble(), tempo[2].toDouble(), root, key[1] > 0.5f)
     }
 
     private fun progress(title: String, fraction: Float?) {

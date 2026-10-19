@@ -16,6 +16,7 @@
 #include <vector>
 
 #include "AcidTrack.h"
+#include "Analysis.h"
 #include "DrumKit.h"
 #include "Mixer.h"
 #include "OfflineRenderer.h"
@@ -1456,6 +1457,90 @@ void testLimiterHoldsTheCeiling() {
     CHECK(std::fabs(quiet.back() - 0.3f) < 1e-3f);
 }
 
+// Writes mono `x` as a WAV: 32-bit float, or 16-bit PCM when `pcm16`.
+void writeTestWav(const std::string& path, const std::vector<float>& x, int rate, bool pcm16) {
+    std::FILE* f = std::fopen(path.c_str(), "wb");
+    auto u32 = [&](uint32_t v) { std::fwrite(&v, 4, 1, f); };
+    auto u16 = [&](uint16_t v) { std::fwrite(&v, 2, 1, f); };
+    const uint32_t bytes = static_cast<uint32_t>(x.size() * (pcm16 ? 2 : 4));
+    std::fwrite("RIFF", 1, 4, f); u32(36 + bytes); std::fwrite("WAVEfmt ", 1, 8, f);
+    u32(16); u16(pcm16 ? 1 : 3); u16(1); u32(static_cast<uint32_t>(rate)); u32(static_cast<uint32_t>(rate * (pcm16 ? 2 : 4))); u16(pcm16 ? 2 : 4); u16(pcm16 ? 16 : 32);
+    std::fwrite("LIST", 1, 4, f); u32(4); std::fwrite("INFO", 1, 4, f);  // a chunk to skip
+    std::fwrite("data", 1, 4, f); u32(bytes);
+    for (float v : x) {
+        if (pcm16) { const auto s16 = static_cast<int16_t>(std::lround(std::clamp(v, -1.0f, 1.0f) * 32767)); std::fwrite(&s16, 2, 1, f); }
+        else std::fwrite(&v, 4, 1, f);
+    }
+    std::fclose(f);
+}
+
+void testTempoAndKeyDetection() {
+    constexpr int rate = 44100;
+    // 30 s of a four-on-the-floor beat at 124 BPM with off-beat hats.
+    std::vector<float> beat(static_cast<size_t>(rate * 30), 0.0f);
+    std::mt19937 rng(7);
+    std::uniform_real_distribution<float> u(-1, 1);
+    const double period = 60.0 / 124.0;
+    for (double t = 0.25; t < 29.5; t += period) {
+        const auto at = static_cast<size_t>(t * rate);
+        for (int i = 0; i < rate / 5; ++i) {
+            const float e = std::exp(-i / (0.03f * rate));
+            beat[at + static_cast<size_t>(i)] += 0.9f * e * static_cast<float>(std::sin(2 * M_PI * 55 * i / rate));
+        }
+        const auto hat = at + static_cast<size_t>(period / 2 * rate);
+        for (int i = 0; i < rate / 40; ++i) beat[hat + static_cast<size_t>(i)] += 0.3f * u(rng) * std::exp(-i / (0.005f * rate));
+    }
+    const auto direct = ps::detectTempo(beat.data(), static_cast<int64_t>(beat.size()), rate);
+    std::printf("  tempo %.1f BPM (confidence %.2f, first beat %.2f s)\n", direct.bpm, direct.confidence, direct.firstBeat);
+    CHECK(std::fabs(direct.bpm - 124.0f) < 1.5f);
+    CHECK(direct.confidence > 0.5f);
+    CHECK(std::fabs(direct.firstBeat - 0.25f) < 0.03f);  // the grid lines up with the kicks
+    const auto dir = std::filesystem::temp_directory_path();
+    const auto pcmPath = (dir / "ps_beat16.wav").string();
+    writeTestWav(pcmPath, beat, rate, true);
+    const auto fromFile = ps::detectTempo(pcmPath);
+    CHECK(std::fabs(fromFile.bpm - 124.0f) < 1.5f);
+    CHECK(ps::detectTempo((dir / "missing.wav").string()).bpm == 0.0f);
+    std::vector<float> silence(static_cast<size_t>(rate * 5), 0.0f);
+    CHECK(ps::detectTempo(silence.data(), static_cast<int64_t>(silence.size()), rate).bpm == 0.0f);
+
+    // Chords with harmonics, 2 s each, three times round.
+    auto progression = [&](const std::vector<std::vector<int>>& chords) {
+        std::vector<float> x;
+        for (int rep = 0; rep < 3; ++rep) {
+            for (const auto& chord : chords) {
+                for (int i = 0; i < rate * 2; ++i) {
+                    float v = 0;
+                    for (int note : chord) {
+                        const double f = 440.0 * std::pow(2.0, (note - 69) / 12.0);
+                        for (int h = 1; h <= 4; ++h) v += static_cast<float>(std::sin(2 * M_PI * f * h * i / rate) / (h * 6.0));
+                    }
+                    x.push_back(v);
+                }
+            }
+        }
+        return x;
+    };
+    // A minor: Am Dm E Am (bass note an octave down).
+    const auto aMinor = progression({{45, 57, 60, 64}, {50, 62, 65, 69}, {52, 64, 68, 71}, {45, 57, 60, 64}});
+    const auto k1 = ps::detectKey(aMinor.data(), static_cast<int64_t>(aMinor.size()), rate);
+    std::printf("  key A minor -> tonic %d minor %d (confidence %.3f)\n", k1.tonic, k1.minor, k1.confidence);
+    CHECK(k1.tonic == 9 && k1.minor);
+    // C major: C F G C, read back from two float WAVs summed (like bass + other stems).
+    const auto cMajor = progression({{48, 60, 64, 67}, {53, 65, 69, 72}, {55, 67, 71, 74}, {48, 60, 64, 67}});
+    const auto half = cMajor.size() / 2;
+    const auto p1 = (dir / "ps_key1.wav").string(), p2 = (dir / "ps_key2.wav").string();
+    writeTestWav(p1, std::vector<float>(cMajor.begin(), cMajor.begin() + static_cast<std::ptrdiff_t>(half)), rate, false);
+    writeTestWav(p2, std::vector<float>(cMajor.begin() + static_cast<std::ptrdiff_t>(half), cMajor.end()), rate, false);
+    const auto k2 = ps::detectKey(std::vector<std::string>{p1, p2});
+    std::printf("  key C major -> tonic %d minor %d (confidence %.3f)\n", k2.tonic, k2.minor, k2.confidence);
+    CHECK(k2.tonic == 0 && !k2.minor);
+    CHECK(ps::detectKey(silence.data(), static_cast<int64_t>(silence.size()), rate).tonic == -1);
+    std::filesystem::remove(pcmPath);
+    std::filesystem::remove(p1);
+    std::filesystem::remove(p2);
+}
+
 struct TestCase {
     const char* name;
     std::function<void()> fn;
@@ -1516,6 +1601,7 @@ int main(int argc, char** argv) {
         {"time_stretch", testTimeStretchKeepsPitchAndLength},
         {"piano_roll", testPianoRollNotesAreSampleAccurate},
         {"instrument", testInstrumentPlaysTheSoundFont},
+        {"tempo_and_key", testTempoAndKeyDetection},
         {"no_alloc_in_process", testProcessNeverAllocates},
     };
     for (const auto& t : tests) {

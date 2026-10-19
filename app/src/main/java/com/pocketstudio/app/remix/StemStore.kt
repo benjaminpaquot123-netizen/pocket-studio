@@ -5,8 +5,17 @@ import com.pocketstudio.separation.Demucs
 import org.json.JSONObject
 import java.io.File
 
+/** What the analysis found: [bpm] 0 when unknown, [root] 0 = Do … 11 = Si or null. */
+data class SongInfo(val bpm: Double = 0.0, val firstBeat: Double = 0.0, val root: Int? = null, val minor: Boolean = false) {
+    val keyLabel: String? get() = root?.let { "${NOTE_NAMES[it]} ${if (minor) "mineur" else "majeur"}" }
+
+    companion object {
+        val NOTE_NAMES = listOf("Do", "Do#", "Ré", "Mib", "Mi", "Fa", "Fa#", "Sol", "Lab", "La", "Sib", "Si")
+    }
+}
+
 /** One separated song: four 32-bit float stereo WAVs at 44.1 kHz in [dir]. */
-data class StemSet(val dir: File, val name: String, val seconds: Double, val createdAt: Long) {
+data class StemSet(val dir: File, val name: String, val seconds: Double, val createdAt: Long, val info: SongInfo = SongInfo()) {
     val id: String get() = dir.name
     fun stem(name: String) = File(dir, "$name.wav")
 }
@@ -34,15 +43,25 @@ object StemStore {
         if (!dir.isDirectory || !meta.isFile || Demucs.STEMS.any { !File(dir, "$it.wav").isFile }) return null
         return runCatching {
             val json = JSONObject(meta.readText())
-            StemSet(dir, json.getString("name"), json.getDouble("seconds"), json.getLong("createdAt"))
+            val info = SongInfo(
+                json.optDouble("bpm", 0.0),
+                json.optDouble("firstBeat", 0.0),
+                json.optInt("root", -1).takeIf { it in 0..11 },
+                json.optBoolean("minor", false),
+            )
+            StemSet(dir, json.getString("name"), json.getDouble("seconds"), json.getLong("createdAt"), info)
         }.getOrNull()
     }
 
     /** Marks [dir] complete: the meta file is written last, so a half-written folder never lists. */
-    fun commit(dir: File, name: String, seconds: Double): StemSet {
-        val set = StemSet(dir, name, seconds, System.currentTimeMillis())
+    fun commit(dir: File, name: String, seconds: Double, info: SongInfo): StemSet {
+        val set = StemSet(dir, name, seconds, System.currentTimeMillis(), info)
         val tmp = File(dir, "$META.tmp")
-        tmp.writeText(JSONObject().put("name", name).put("seconds", seconds).put("createdAt", set.createdAt).toString())
+        tmp.writeText(
+            JSONObject().put("name", name).put("seconds", seconds).put("createdAt", set.createdAt)
+                .put("bpm", info.bpm).put("firstBeat", info.firstBeat).put("root", info.root ?: -1).put("minor", info.minor)
+                .toString(),
+        )
         tmp.renameTo(File(dir, META))
         return set
     }

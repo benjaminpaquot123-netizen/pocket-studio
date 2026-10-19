@@ -13,6 +13,11 @@
       "hint": "Touche Écouter sur chaque piste : la voix doit être presque seule, la batterie sans basse, etc."
     },
     {
+      "id": "remix_tempo_key",
+      "title": "Tempo et tonalité justes",
+      "hint": "Sous le nom du morceau séparé : compare le BPM et la tonalité avec ce que tu connais du morceau, puis touche « Caler le projet » et lance le Rythme."
+    },
+    {
       "id": "remix_cancel",
       "title": "Annuler une séparation",
       "hint": "Lance une séparation et touche Annuler (dans l'appli ou la notification) : tout s'arrête proprement."

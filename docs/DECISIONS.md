@@ -69,3 +69,5 @@
 | 2026-10-19 | Service au premier plan de type « mediaProcessing » (Android 15+), « dataSync » sinon ; verrou de réveil partiel 4 h | Type prévu par Android pour les traitements longs de médias | Aucun |
 | 2026-10-19 | Cache des stems par empreinte du son décodé + version du modèle, 3 derniers morceaux gardés | Ne jamais refaire une séparation ; un stem float pèse ~21 Mo/min | Garder plus de morceaux ou stocker en 16 bits |
 | 2026-10-19 | Écoute des stems par MediaPlayer en attendant le mode Remix (3.4) dans le moteur | Permet de juger la séparation tout de suite | Remplacé par la lecture moteur en 3.4 |
+| 2026-10-19 | Tonalité : profils de Krumhansl-Kessler sur un chromagramme (FFT d'aubio) au lieu de libKeyFinder | libKeyFinder exige FFTW, lourd à compiler pour Android ; même famille d'algorithme, testée sur Linux | Intégrer libKeyFinder + FFTW si la détection déçoit |
+| 2026-10-19 | Tempo : battements d'aubio numérotés contre son tempo grossier, puis régression linéaire ; premier temps choisi par l'énergie des basses | aubio seul donne ±2 BPM et peut se caler sur le contretemps | Aucun |

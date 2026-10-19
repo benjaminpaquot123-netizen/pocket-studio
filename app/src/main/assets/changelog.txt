@@ -1,4 +1,4 @@
-Nouvel onglet Remix : une chanson coupée en batterie, basse, voix et le reste, à écouter piste par piste.
+Nouvel onglet Remix : une chanson coupée en batterie, basse, voix et le reste, avec son tempo et sa tonalité.
 Ligne acide (303) jusqu'à 8 mesures : longueur, pages, « Copier → 2 ».
 Deux nouvelles banques gratuites : FluidR3 GM et MuseScore General, avec toutes les variantes.
 Kits de batterie : un geste et leurs 16 sons arrivent sur les pads du Rythme.

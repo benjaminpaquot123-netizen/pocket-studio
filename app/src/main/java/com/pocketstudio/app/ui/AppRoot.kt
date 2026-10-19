@@ -405,6 +405,11 @@ fun AppRoot() {
                                 play = remixVm::play,
                                 stop = remixVm::stop,
                                 delete = remixVm::delete,
+                                matchProject = { set ->
+                                    rhythmVm.matchSong(set.info.bpm.takeIf { it > 0 } ?: rhythmVm.project.value.tempoBpm, set.info.root, set.info.minor)
+                                    val what = listOfNotNull(set.info.bpm.takeIf { it > 0 }?.let { "%.0f BPM".format(it) }, set.info.keyLabel)
+                                    android.widget.Toast.makeText(context, "Projet calé : ${what.joinToString(", ")}", android.widget.Toast.LENGTH_SHORT).show()
+                                },
                             ),
                         )
                     }

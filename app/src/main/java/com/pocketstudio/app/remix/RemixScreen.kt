@@ -47,6 +47,8 @@ class RemixActions(
     val play: (StemSet, String) -> Unit = { _, _ -> },
     val stop: () -> Unit = {},
     val delete: (StemSet) -> Unit = {},
+    /** The project takes the song's tempo and key. */
+    val matchProject: (StemSet) -> Unit = {},
 )
 
 /** Remix: split a song into drums, bass, other and vocals, then listen to each part. */
@@ -67,6 +69,7 @@ fun RemixScreen(ui: RemixUi, actions: RemixActions) {
                 is SeparationState.DownloadingModel -> Progress("Téléchargement du modèle… ${(s.progress * 100).roundToInt()} %", s.progress, actions.cancel)
                 is SeparationState.Decoding -> Progress("Lecture de « ${s.name} »…", null, actions.cancel)
                 is SeparationState.Separating -> Progress("Séparation de « ${s.name} »… ${(s.progress * 100).roundToInt()} %", s.progress, actions.cancel)
+                is SeparationState.Analysing -> Progress("Tempo et tonalité de « ${s.name} »…", null, actions.cancel)
                 else -> {
                     if (s is SeparationState.Failed) {
                         Text(s.message, color = Neon.Amber, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.testTag("remix_error"))
@@ -112,9 +115,19 @@ private fun StemCard(set: StemSet, playing: Pair<String, String>?, actions: Remi
             Column(Modifier.weight(1f)) {
                 SectionLabel(set.name)
                 val total = set.seconds.roundToInt()
-                Text("%d:%02d".format(total / 60, total % 60), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                val details = listOfNotNull(
+                    "%d:%02d".format(total / 60, total % 60),
+                    set.info.bpm.takeIf { it > 0 }?.let { "%.0f BPM".format(it) },
+                    set.info.keyLabel,
+                ).joinToString(" · ")
+                Text(details, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.testTag("song_info_${set.id}"))
             }
             IconButton(onClick = { actions.delete(set) }) { Icon(Icons.Filled.Delete, contentDescription = "Supprimer") }
+        }
+        if (set.info.bpm > 0 || set.info.root != null) {
+            OutlinedButton(onClick = { actions.matchProject(set) }, modifier = Modifier.fillMaxWidth().testTag("match_${set.id}")) {
+                Text("Caler le projet sur ce morceau")
+            }
         }
         Demucs.STEMS.forEach { stem ->
             val on = playing == set.id to stem

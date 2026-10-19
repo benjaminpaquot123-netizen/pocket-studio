@@ -165,6 +165,12 @@ object NativeEngine {
     external fun soundFontLoad(path: String): Long
     external fun soundFontClose(handle: Long)
     external fun soundFontPresets(handle: Long): Array<String>
+    /** Worker thread (seconds for a song). [bpm, confidence, firstBeatSeconds]; bpm 0 = not found. */
+    external fun analyzeTempo(wavPath: String): FloatArray
+
+    /** Worker thread. [tonic 0=C..11=B or -1, minor 0/1, confidence], chroma summed over every file. */
+    external fun analyzeKey(wavPaths: Array<String>): FloatArray
+
     external fun soundFontRenderNote(handle: Long, preset: Int, note: Int, velocity: Float, holdFrames: Int, frames: Int): FloatArray
     private external fun nativeSetInstrument(font: Long, preset: Int): Boolean
     private external fun exportSetInstrument(exportHandle: Long, font: Long, preset: Int)

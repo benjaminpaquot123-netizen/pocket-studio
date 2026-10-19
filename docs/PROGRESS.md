@@ -53,6 +53,8 @@
 
 - Jalons 3.1 et 3.2 (appli) : onglet Remix. Téléchargement du modèle (174 Mo, SHA-256), chanson décodée en fichier, séparation dans un service au premier plan (progression dans la notification, Annuler, écran éteint possible), stems gardés pour les 3 derniers morceaux, écoute de chaque stem. Tests Linux de séparation dans la CI (job « Separation tests »).
 
+- Jalon 3.3 : tempo (aubio sur la piste batterie, affiné par régression, premier temps sur la grosse caisse) et tonalité (chromagramme basse + autres, profils de Krumhansl) calculés après la séparation, affichés dans Remix ; « Caler le projet sur ce morceau » règle tempo et gamme en une étape annulable. Test Linux : 124,1 BPM pour 124, premier temps à 0,25 s, La mineur et Do majeur reconnus.
+
 ## Prochaine étape exacte
-1. Phase 3 (PR #7) : 3.3 tempo (aubio) et tonalité, puis 3.4 mode Remix (stems lus par le moteur en flux, calés au tempo, mute/solo, stem vers le sampler). Ensuite revue de fin de phase et fusion.
+1. Phase 3 (PR #7) : 3.4 mode Remix (stems lus par le moteur en flux à 48 kHz, calés sur le tempo du projet, mute/solo, stem vers le sampler). Ensuite revue de fin de phase et fusion.
 2. Reste noté : lever la limite de 60 s par son (utile aussi pour les stems) ; import de packs .zip.

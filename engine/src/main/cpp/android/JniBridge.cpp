@@ -7,6 +7,7 @@
 #include <vector>
 #include <mutex>
 
+#include "Analysis.h"
 #include "AudioHost.h"
 #include "OfflineRenderer.h"
 #include "OnsetDetector.h"
@@ -89,6 +90,36 @@ JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_sampleOn
     for (auto f : onsets) fractions.push_back(static_cast<jfloat>(static_cast<double>(f) / static_cast<double>(s->frames())));
     jfloatArray result = env->NewFloatArray(static_cast<jsize>(fractions.size()));
     if (result) env->SetFloatArrayRegion(result, 0, static_cast<jsize>(fractions.size()), fractions.data());
+    return result;
+}
+
+// Tempo of a WAV file: [bpm, confidence, firstBeat]. Worker thread.
+JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_analyzeTempo(JNIEnv* env, jobject, jstring path) {
+    const char* p = env->GetStringUTFChars(path, nullptr);
+    const auto r = ps::detectTempo(std::string(p));
+    env->ReleaseStringUTFChars(path, p);
+    const jfloat values[3] = {r.bpm, r.confidence, r.firstBeat};
+    jfloatArray result = env->NewFloatArray(3);
+    if (result) env->SetFloatArrayRegion(result, 0, 3, values);
+    return result;
+}
+
+// Key over several WAV files: [tonic, minor, confidence]. Worker thread.
+JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_analyzeKey(JNIEnv* env, jobject, jobjectArray paths) {
+    std::vector<std::string> files;
+    const jsize n = env->GetArrayLength(paths);
+    for (jsize i = 0; i < n; ++i) {
+        auto s = static_cast<jstring>(env->GetObjectArrayElement(paths, i));
+        if (!s) continue;
+        const char* p = env->GetStringUTFChars(s, nullptr);
+        files.emplace_back(p);
+        env->ReleaseStringUTFChars(s, p);
+        env->DeleteLocalRef(s);
+    }
+    const auto r = ps::detectKey(files);
+    const jfloat values[3] = {static_cast<jfloat>(r.tonic), r.minor ? 1.0f : 0.0f, r.confidence};
+    jfloatArray result = env->NewFloatArray(3);
+    if (result) env->SetFloatArrayRegion(result, 0, 3, values);
     return result;
 }
 

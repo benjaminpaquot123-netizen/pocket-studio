@@ -10,10 +10,11 @@ sealed interface SeparationState {
     data class DownloadingModel(val progress: Float) : SeparationState
     data class Decoding(val name: String) : SeparationState
     data class Separating(val name: String, val progress: Float) : SeparationState
+    data class Analysing(val name: String) : SeparationState
     data class Done(val set: StemSet) : SeparationState
     data class Failed(val message: String) : SeparationState
 
-    val busy get() = this is DownloadingModel || this is Decoding || this is Separating
+    val busy get() = this is DownloadingModel || this is Decoding || this is Separating || this is Analysing
 }
 
 /** Process-wide state shared by [SeparationService] (writer) and the UI (reader). */

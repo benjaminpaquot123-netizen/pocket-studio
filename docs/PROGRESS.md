@@ -57,6 +57,9 @@
 
 - Jalon 3.4 : « Jouer avec le projet » charge les 4 stems dans le moteur (16 bits, 48 kHz), cale tempo et gamme, et les fait partir avec le Rythme au pas 0 (mesure de départ réglable) ; volume / muet / solo par stem, voie « Remix » au mixeur (et dans l'export) ; « → Pad » copie 1, 2 ou 4 mesures d'un stem sur le pad choisi. Tests Linux : départ à l'échantillon près, mute/solo, fondu à l'arrêt, chargement 44,1 → 48 kHz, aucune allocation dans le fil audio.
 
+- Phase 3 terminée et fusionnée (PR #7, 2026-10-19) : revue faite (REVIEW.md), plantage Android 16 du service corrigé (rapport n° 8), mini-clavier de l'acide.
+
 ## Prochaine étape exacte
-1. Revue de fin de phase 3 par un sous-agent neuf (séparation, service, stems dans le moteur), corriger, CI verte, fusionner la PR #7, puis phase 4 (effets).
-2. Reste noté : lever la limite de 60 s par son ; import de packs .zip ; étirement des stems si le tempo du projet change.
+1. Phase 4, jalon 4.1 : effets (EQ, compresseur, saturation, delay, réverbe) dans le cœur du moteur, sans allocation, testés sur Linux ; 4 inserts par voie + 2 envois ; écran d'effets au mixeur. Branche repartie de main, nouvelle PR « Phase 4 : production ».
+2. Attendre le retour de Benjamin sur la 0.0.43 (téléchargement du modèle, séparation réelle, Da Funk à l'acide).
+3. Reste noté : lever la limite de 60 s par son ; import de packs .zip ; étirement des stems si le tempo change.

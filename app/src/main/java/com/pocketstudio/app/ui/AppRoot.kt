@@ -28,6 +28,7 @@ import androidx.compose.material.icons.filled.Checklist
 import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.Equalizer
 import androidx.compose.material.icons.filled.GridView
+import androidx.compose.material.icons.filled.Layers
 import androidx.compose.material.icons.filled.Piano
 import androidx.compose.material.icons.filled.Tune
 import android.content.res.Configuration
@@ -83,6 +84,10 @@ import com.pocketstudio.app.rhythm.RhythmViewModel
 import com.pocketstudio.app.studio.StudioScreen
 import com.pocketstudio.app.synth.SynthActions
 import com.pocketstudio.app.synth.SynthScreen
+import com.pocketstudio.app.remix.RemixActions
+import com.pocketstudio.app.remix.RemixScreen
+import com.pocketstudio.app.remix.RemixUi
+import com.pocketstudio.app.remix.RemixViewModel
 import com.pocketstudio.app.studio.StudioViewModel
 import com.pocketstudio.engine.NativeEngine
 import com.pocketstudio.ui.Neon
@@ -93,6 +98,7 @@ enum class AppTab(val label: String, val icon: ImageVector) {
     Acide("Acide", Icons.Filled.GraphicEq),
     Synthe("Synthé", Icons.Filled.Piano),
     Mixeur("Mixeur", Icons.Filled.Equalizer),
+    Remix("Remix", Icons.Filled.Layers),
     Outils("Outils", Icons.Filled.Tune),
 }
 
@@ -106,6 +112,7 @@ fun AppRoot() {
     val latencyVm: LatencyViewModel = viewModel()
     val recetteVm: RecetteViewModel = viewModel()
     val rhythmVm: RhythmViewModel = viewModel()
+    val remixVm: RemixViewModel = viewModel()
     var tab by rememberSaveable { mutableStateOf(AppTab.Rythme) }
     var toolPage by rememberSaveable { mutableStateOf(ToolPage.Recette) }
 
@@ -162,6 +169,9 @@ fun AppRoot() {
     }
     val pickAudio = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) rhythmVm.importSample(uri)
+    }
+    val pickSong = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri != null) remixVm.separate(uri)
     }
     val pickFolder = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
         if (uri != null) rhythmVm.importFolder(uri)
@@ -378,6 +388,24 @@ fun AppRoot() {
                                 share = { export.file?.let { WavExporter.share(context, it) } },
                             ),
                             export = export,
+                        )
+                    }
+                    AppTab.Remix -> {
+                        val remixState by remixVm.state.collectAsStateWithLifecycle()
+                        val sets by remixVm.sets.collectAsStateWithLifecycle()
+                        val modelInstalled by remixVm.modelInstalled.collectAsStateWithLifecycle()
+                        val playing by remixVm.playing.collectAsStateWithLifecycle()
+                        RemixScreen(
+                            RemixUi(modelInstalled, remixState, sets, playing),
+                            RemixActions(
+                                downloadModel = remixVm::downloadModel,
+                                pickSong = { pickSong.launch(arrayOf("audio/*")) },
+                                cancel = remixVm::cancel,
+                                dismiss = remixVm::dismiss,
+                                play = remixVm::play,
+                                stop = remixVm::stop,
+                                delete = remixVm::delete,
+                            ),
                         )
                     }
                     AppTab.Outils -> Column {

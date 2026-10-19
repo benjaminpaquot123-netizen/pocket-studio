@@ -88,6 +88,7 @@ roborazzi {
 
 dependencies {
     implementation(project(":engine"))
+    implementation(project(":separation"))
     implementation(project(":ui-components"))
     implementation(project(":project-model"))
     implementation(libs.androidx.core.ktx)

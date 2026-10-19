@@ -3,6 +3,21 @@
   "milestone": "Phase 2 : tes sons sur les pads",
   "items": [
     {
+      "id": "remix_separate",
+      "title": "Séparer une chanson en 4 pistes",
+      "hint": "Onglet Remix › Télécharger le modèle (Wi-Fi), puis Choisir une chanson (3-4 min). Éteins l'écran : la notification montre la progression. Note le temps que ça prend."
+    },
+    {
+      "id": "remix_listen",
+      "title": "Écouter batterie, basse, voix et le reste",
+      "hint": "Touche Écouter sur chaque piste : la voix doit être presque seule, la batterie sans basse, etc."
+    },
+    {
+      "id": "remix_cancel",
+      "title": "Annuler une séparation",
+      "hint": "Lance une séparation et touche Annuler (dans l'appli ou la notification) : tout s'arrête proprement."
+    },
+    {
       "id": "acid_8_bars",
       "title": "Ligne acide sur 2 mesures ou plus",
       "hint": "Acide › Longueur 2 mesures, remplis la page 1, touche « Copier → 2 », change la page 2, lance : les 32 pas s'enchaînent."

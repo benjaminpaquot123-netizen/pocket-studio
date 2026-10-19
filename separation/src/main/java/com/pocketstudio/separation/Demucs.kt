@@ -32,5 +32,12 @@ object Demucs {
         return SeparationResult.entries[nativeSeparate(model.absolutePath, stereo44k, outDir.absolutePath, progress)]
     }
 
+    /** [raw]: interleaved 32-bit float, [channels] 1 or 2, any [sampleRate] (resampled to 44.1 kHz). */
+    fun separateFile(model: File, raw: File, channels: Int, sampleRate: Int, outDir: File, progress: Progress): SeparationResult {
+        outDir.mkdirs()
+        return SeparationResult.entries[nativeSeparateFile(model.absolutePath, raw.absolutePath, channels, sampleRate, outDir.absolutePath, progress)]
+    }
+
+    private external fun nativeSeparateFile(model: String, raw: String, channels: Int, sampleRate: Int, outDir: String, listener: Progress): Int
     private external fun nativeSeparate(model: String, audio: FloatArray, outDir: String, listener: Progress): Int
 }

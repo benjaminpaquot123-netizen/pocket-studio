@@ -274,4 +274,21 @@ class ScreenshotTest {
             )
         }
     }
+
+    @Test
+    fun remix() = shoot("remix") {
+        val set = com.pocketstudio.app.remix.StemSet(File("/tmp/stems/abc"), "Ma chanson", 214.0, 0L)
+        com.pocketstudio.app.remix.RemixScreen(
+            com.pocketstudio.app.remix.RemixUi(true, com.pocketstudio.app.remix.SeparationState.Separating("Autre chanson", 0.37f), listOf(set), "abc" to "bass"),
+            com.pocketstudio.app.remix.RemixActions(),
+        )
+    }
+
+    @Test
+    fun remixFirstTime() = shoot("remix_first") {
+        com.pocketstudio.app.remix.RemixScreen(
+            com.pocketstudio.app.remix.RemixUi(false, com.pocketstudio.app.remix.SeparationState.Idle, emptyList()),
+            com.pocketstudio.app.remix.RemixActions(),
+        )
+    }
 }

@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "demucs.hpp"
+#include "samplerate.h"
 
 namespace ps {
 
@@ -101,6 +102,56 @@ SeparationResult separate(const char* modelPath, const float* interleaved, int64
     } catch (const std::exception& e) {
         return {SeparationResult::ModelError, e.what()};
     }
+}
+
+bool loadRaw(const char* path, int channels, int sampleRate, std::vector<float>& stereo44k) {
+    if (!path || channels < 1 || channels > 2 || sampleRate < 8000 || sampleRate > 384000) return false;
+    std::FILE* f = std::fopen(path, "rb");
+    if (!f) return false;
+    std::fseek(f, 0, SEEK_END);
+    const long bytes = std::ftell(f);
+    std::fseek(f, 0, SEEK_SET);
+    const int64_t frames = bytes / static_cast<long>(sizeof(float) * channels);
+    std::vector<float> stereo;
+    try {
+        stereo.resize(static_cast<size_t>(frames) * 2);
+        std::vector<float> raw(static_cast<size_t>(frames) * channels);
+        const size_t got = raw.empty() ? 0 : std::fread(raw.data(), sizeof(float), raw.size(), f);
+        std::fclose(f);
+        f = nullptr;
+        if (got != raw.size()) return false;
+        for (int64_t i = 0; i < frames; ++i) {
+            for (int c = 0; c < 2; ++c) {
+                const float v = raw[static_cast<size_t>(i * channels + (channels == 2 ? c : 0))];
+                stereo[static_cast<size_t>(i * 2 + c)] = std::isfinite(v) ? std::clamp(v, -4.0f, 4.0f) : 0.0f;
+            }
+        }
+        if (sampleRate == kModelSampleRate) {
+            stereo44k = std::move(stereo);
+            return true;
+        }
+        const double ratio = static_cast<double>(kModelSampleRate) / sampleRate;
+        stereo44k.assign(static_cast<size_t>(std::ceil(frames * ratio)) * 2 + 2, 0.0f);
+        SRC_DATA data{};
+        data.data_in = stereo.data();
+        data.input_frames = static_cast<long>(frames);
+        data.data_out = stereo44k.data();
+        data.output_frames = static_cast<long>(stereo44k.size() / 2);
+        data.src_ratio = ratio;
+        if (src_simple(&data, SRC_SINC_MEDIUM_QUALITY, 2) != 0) return false;
+        stereo44k.resize(static_cast<size_t>(data.output_frames_gen) * 2);
+        return true;
+    } catch (const std::bad_alloc&) {
+        if (f) std::fclose(f);
+        return false;
+    }
+}
+
+SeparationResult separateFile(const char* modelPath, const char* rawPath, int channels, int sampleRate,
+                              const char* outDir, const std::function<bool(float)>& progress, int threads) {
+    std::vector<float> audio;
+    if (!loadRaw(rawPath, channels, sampleRate, audio)) return {SeparationResult::BadInput, "lecture du son impossible"};
+    return separate(modelPath, audio.data(), static_cast<int64_t>(audio.size() / 2), outDir, progress, threads);
 }
 
 }  // namespace ps

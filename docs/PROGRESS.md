@@ -51,6 +51,8 @@
 
 - Demande de Benjamin (2026-10-19) : ligne acide jusqu'à 8 mesures (128 pas, pages de 16, « Copier → page », « Suivre ») ; deux nouvelles banques à télécharger (FluidR3 GM 148 Mo, MuseScore General 216 Mo, MIT) au choix avec GeneralUser ; toutes les variantes par famille ; kits de batterie SF2 rendus sur les 16 pads (une édition annulable).
 
+- Jalons 3.1 et 3.2 (appli) : onglet Remix. Téléchargement du modèle (174 Mo, SHA-256), chanson décodée en fichier, séparation dans un service au premier plan (progression dans la notification, Annuler, écran éteint possible), stems gardés pour les 3 derniers morceaux, écoute de chaque stem. Tests Linux de séparation dans la CI (job « Separation tests »).
+
 ## Prochaine étape exacte
-1. Phase 3 (PR #7) : brancher `:separation` dans l'appli (téléchargement du modèle 174 Mo avec SHA-256), puis 3.2 service de séparation au premier plan (progression, annuler), 3.3 tempo (aubio) et tonalité, 3.4 mode Remix. Ajouter `scripts/separation-tests.sh` à la CI.
+1. Phase 3 (PR #7) : 3.3 tempo (aubio) et tonalité, puis 3.4 mode Remix (stems lus par le moteur en flux, calés au tempo, mute/solo, stem vers le sampler). Ensuite revue de fin de phase et fusion.
 2. Reste noté : lever la limite de 60 s par son (utile aussi pour les stems) ; import de packs .zip.

@@ -6,7 +6,12 @@ import android.media.MediaCodec
 import android.media.MediaExtractor
 import android.media.MediaFormat
 import android.net.Uri
+import java.io.BufferedOutputStream
+import java.io.Closeable
+import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
+import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
 /**
@@ -17,9 +22,42 @@ object AudioDecoder {
     /** Pads hold one-shots and short loops: longer files are cut (memory: ~23 MB per stereo minute). */
     const val MAX_SECONDS = 60
 
-    class TooLongException(val seconds: Double) : IOException("audio longer than $MAX_SECONDS s")
+    class TooLongException(val seconds: Double) : IOException("audio too long ($seconds s)")
+    class CancelledException : IOException("annulé")
 
     fun decode(context: Context, uri: Uri): Pcm {
+        val out = FloatBuilder()
+        val (channels, rate) = decodeInto(context, uri, out, MAX_SECONDS.toDouble()) { false }
+        if (out.size < channels) throw IOException("fichier vide")
+        return Pcm(out.toArray(), channels, rate)
+    }
+
+    /** Where a long decode went: raw interleaved little-endian floats. */
+    data class RawAudio(val file: File, val channels: Int, val sampleRate: Int, val frames: Long) {
+        val seconds get() = frames.toDouble() / sampleRate
+    }
+
+    /**
+     * Whole songs: decodes straight into [target] (raw interleaved floats, 1 or 2 channels at the
+     * file's rate) so minutes of audio never sit on the Java heap.
+     */
+    fun decodeToFile(context: Context, uri: Uri, target: File, maxSeconds: Double, isCancelled: () -> Boolean): RawAudio {
+        target.parentFile?.mkdirs()
+        val sink = FileSink(target)
+        val (channels, rate) = try {
+            sink.use { decodeInto(context, uri, it, maxSeconds, isCancelled) }
+        } catch (e: Throwable) {
+            target.delete()
+            throw e
+        }
+        if (sink.size < channels) {
+            target.delete()
+            throw IOException("fichier vide")
+        }
+        return RawAudio(target, channels, rate, sink.size / channels)
+    }
+
+    private fun decodeInto(context: Context, uri: Uri, out: FoldingSink, maxSeconds: Double, isCancelled: () -> Boolean): Pair<Int, Int> {
         val extractor = MediaExtractor()
         try {
             extractor.setDataSource(context, uri, null)
@@ -32,7 +70,7 @@ object AudioDecoder {
             try {
                 codec.configure(format, null, null, 0)
                 codec.start()
-                return drain(extractor, codec, format)
+                return drain(extractor, codec, format, out, maxSeconds, isCancelled)
             } finally {
                 runCatching { codec.stop() }
                 codec.release()
@@ -42,16 +80,19 @@ object AudioDecoder {
         }
     }
 
-    private fun drain(extractor: MediaExtractor, codec: MediaCodec, input: MediaFormat): Pcm {
+    private fun drain(
+        extractor: MediaExtractor, codec: MediaCodec, input: MediaFormat,
+        out: FoldingSink, maxSeconds: Double, isCancelled: () -> Boolean,
+    ): Pair<Int, Int> {
         var rate = input.getInteger(MediaFormat.KEY_SAMPLE_RATE)
         var srcChannels = input.getInteger(MediaFormat.KEY_CHANNEL_COUNT)
         // Raw WAVs can pass straight through at 8, 24 or 32 bits: never assume 16.
         var encoding = if (input.containsKey(MediaFormat.KEY_PCM_ENCODING)) input.getInteger(MediaFormat.KEY_PCM_ENCODING)
         else AudioFormat.ENCODING_PCM_16BIT
-        val out = FloatBuilder()
         val info = MediaCodec.BufferInfo()
         var inputDone = false
         while (true) {
+            if (isCancelled()) throw CancelledException()
             if (!inputDone) {
                 val i = codec.dequeueInputBuffer(10_000)
                 if (i >= 0) {
@@ -81,25 +122,21 @@ object AudioDecoder {
                     out.appendFolded(buf, encoding, srcChannels)
                     codec.releaseOutputBuffer(o, false)
                     val seconds = out.size.toDouble() / minOf(srcChannels, 2) / rate
-                    if (seconds > MAX_SECONDS) throw TooLongException(seconds)
+                    if (seconds > maxSeconds) throw TooLongException(seconds)
                     if (info.flags and MediaCodec.BUFFER_FLAG_END_OF_STREAM != 0) break
                 }
             }
         }
-        val channels = minOf(srcChannels, 2)
-        if (out.size < channels) throw IOException("fichier vide")
-        return Pcm(out.toArray(), channels, rate)
+        return minOf(srcChannels, 2) to rate
     }
 
-    /** Growable float array; folds more than two channels into stereo (odd ones left, even ones right). */
-    private class FloatBuilder {
-        var data = FloatArray(1 shl 16)
-        var size = 0
+    /** Receives decoded samples; folds more than two channels into stereo (odd ones left, even ones right). */
+    private abstract class FoldingSink {
+        /** Samples received (all channels). */
+        var size = 0L
+            protected set
 
-        private fun add(v: Float) {
-            if (size == data.size) data = data.copyOf(data.size * 2)
-            data[size++] = v
-        }
+        protected abstract fun add(v: Float)
 
         fun appendFolded(buf: java.nio.ByteBuffer, encoding: Int, channels: Int) {
             val frame = FloatArray(channels)
@@ -128,6 +165,31 @@ object AudioDecoder {
             }
         }
 
-        fun toArray() = data.copyOf(size)
+    }
+
+    private class FloatBuilder : FoldingSink() {
+        var data = FloatArray(1 shl 16)
+
+        override fun add(v: Float) {
+            if (size == data.size.toLong()) data = data.copyOf(data.size * 2)
+            data[size.toInt()] = v
+            size++
+        }
+
+        fun toArray() = data.copyOf(size.toInt())
+    }
+
+    private class FileSink(file: File) : FoldingSink(), Closeable {
+        private val out = BufferedOutputStream(FileOutputStream(file), 1 shl 16)
+        private val bytes = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN)
+
+        override fun add(v: Float) {
+            bytes.clear()
+            bytes.putFloat(v)
+            out.write(bytes.array(), 0, 4)
+            size++
+        }
+
+        override fun close() = out.close()
     }
 }

@@ -49,6 +49,20 @@ jobs:
           name: engine-renders
           path: build/host-tests/renders/
 
+  separation:
+    name: Separation tests (Linux)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: true
+      - uses: actions/cache@v6
+        with:
+          path: build/separation-cache
+          key: separation-ort-1.31.0-htdemucs-v4-onnx-1
+      - name: Run the real model on a synthetic mix
+        run: ./scripts/separation-tests.sh
+
   build:
     name: Build, unit tests, screenshots
     runs-on: ubuntu-latest
@@ -130,7 +144,7 @@ jobs:
   publish:
     name: Publish APK
     runs-on: ubuntu-latest
-    needs: [build, smoke]
+    needs: [build, smoke, separation]
     # Forks and bots get no secrets: they build and test, but never publish.
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     env:

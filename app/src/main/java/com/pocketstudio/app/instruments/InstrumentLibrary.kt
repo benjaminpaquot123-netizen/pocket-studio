@@ -1,11 +1,9 @@
 package com.pocketstudio.app.instruments
 
 import android.content.Context
+import com.pocketstudio.app.download.VerifiedDownload
+import com.pocketstudio.app.download.VerifiedFile
 import java.io.File
-import java.io.IOException
-import java.net.HttpURLConnection
-import java.net.URL
-import java.security.MessageDigest
 
 /** A downloadable SoundFont bank, hosted on our own GitHub Release and pinned by SHA-256. */
 data class Bank(
@@ -19,6 +17,7 @@ data class Bank(
 ) {
     val url get() = "https://github.com/benjaminpaquot123-netizen/pocket-studio/releases/download/$tag/$fileName"
     val sizeLabel get() = "${sizeBytes / 1_000_000} Mo"
+    val spec get() = VerifiedFile(url, fileName, sha256, sizeBytes)
 }
 
 /**
@@ -51,60 +50,11 @@ object InstrumentLibrary {
     fun isInstalled(context: Context, bank: Bank) = file(context, bank).length() == bank.sizeBytes
 
     /** Blocking (background). [onProgress] 0..1. Throws on network error or a wrong file. */
-    fun download(context: Context, bank: Bank, onProgress: (Float) -> Unit, isCancelled: () -> Boolean = { false }): File {
-        val target = file(context, bank)
-        target.parentFile!!.mkdirs()
-        val part = File(target.parentFile, target.name + ".part")
-        val connection = (URL(bank.url).openConnection() as HttpURLConnection).apply {
-            connectTimeout = 15_000
-            readTimeout = 30_000
-            instanceFollowRedirects = true
-        }
-        try {
-            if (connection.responseCode != 200) throw IOException("HTTP ${connection.responseCode}")
-            val digest = MessageDigest.getInstance("SHA-256")
-            var done = 0L
-            connection.inputStream.use { input ->
-                part.outputStream().use { out ->
-                    val buffer = ByteArray(64 * 1024)
-                    while (true) {
-                        if (isCancelled()) throw IOException("annulé")
-                        val n = input.read(buffer)
-                        if (n < 0) break
-                        out.write(buffer, 0, n)
-                        digest.update(buffer, 0, n)
-                        done += n
-                        onProgress((done.toFloat() / bank.sizeBytes).coerceAtMost(1f))
-                    }
-                    out.fd.sync()
-                }
-            }
-            if (hex(digest.digest()) != bank.sha256) throw IOException("fichier abîmé (empreinte différente)")
-            if (!part.renameTo(target)) throw IOException("rename failed")
-            return target
-        } finally {
-            connection.disconnect()
-            part.delete()
-        }
-    }
+    fun download(context: Context, bank: Bank, onProgress: (Float) -> Unit, isCancelled: () -> Boolean = { false }): File =
+        VerifiedDownload.fetch(bank.spec, file(context, bank), onProgress, isCancelled)
 
     /** Re-checks an installed file before parsing it. */
-    fun verify(context: Context, bank: Bank): Boolean {
-        val f = file(context, bank)
-        if (f.length() != bank.sizeBytes) return false
-        val digest = MessageDigest.getInstance("SHA-256")
-        f.inputStream().use { input ->
-            val buffer = ByteArray(256 * 1024)
-            while (true) {
-                val n = input.read(buffer)
-                if (n < 0) break
-                digest.update(buffer, 0, n)
-            }
-        }
-        return hex(digest.digest()) == bank.sha256
-    }
-
-    private fun hex(bytes: ByteArray) = bytes.joinToString("") { "%02x".format(it) }
+    fun verify(context: Context, bank: Bank): Boolean = VerifiedDownload.verify(bank.spec, file(context, bank))
 
     /** The 16 General MIDI families (8 programs each), in French. */
     val FAMILIES = listOf(

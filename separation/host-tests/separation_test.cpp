@@ -63,6 +63,37 @@ int main(int argc, char** argv) {
     check(c.code == ps::SeparationResult::Cancelled, "cancel");
     check(!std::filesystem::exists(dir / "drums.wav"), "nothing written after cancel");
     check(ps::separate(argv[1], mix.data(), 100, dir.c_str(), [](float) { return true; }, 1).code == ps::SeparationResult::BadInput, "too short");
+    // Raw float file in (what the app's decoder writes): mono 48 kHz -> stereo 44.1 kHz, same pitch.
+    {
+        const auto raw = dir / "in.raw";
+        std::vector<float> mono(48000);
+        for (int i = 0; i < 48000; ++i) mono[size_t(i)] = 0.5f * std::sin(2 * M_PI * 1000.0 * i / 48000.0);
+        std::FILE* f = std::fopen(raw.c_str(), "wb");
+        std::fwrite(mono.data(), sizeof(float), mono.size(), f);
+        std::fclose(f);
+        std::vector<float> out;
+        check(ps::loadRaw(raw.c_str(), 1, 48000, out), "loadRaw mono 48k");
+        const size_t frames = out.size() / 2;
+        check(frames >= 44099 && frames <= 44101, "resampled length");
+        int crossings = 0;
+        bool same = true;
+        for (size_t i = 1; i < frames; ++i) {
+            if ((out[i * 2 - 2] < 0) != (out[i * 2] < 0)) ++crossings;
+            if (out[i * 2] != out[i * 2 + 1]) same = false;
+        }
+        check(same, "mono copied to both channels");
+        check(crossings >= 1990 && crossings <= 2010, "1 kHz stays 1 kHz after resampling");
+        f = std::fopen(raw.c_str(), "wb");
+        std::fwrite(mix.data(), sizeof(float), mix.size(), f);
+        std::fclose(f);
+        check(ps::loadRaw(raw.c_str(), 2, sr, out) && out == mix, "stereo 44.1k passes through untouched");
+        check(!ps::loadRaw((dir / "missing.raw").c_str(), 2, sr, out), "missing raw file");
+        check(!ps::loadRaw(raw.c_str(), 3, sr, out), "bad channel count");
+        auto fc = ps::separateFile(argv[1], raw.c_str(), 2, sr, dir.c_str(), [](float) { return false; }, 2);
+        check(fc.code == ps::SeparationResult::Cancelled, "separateFile runs the model (cancelled at once)");
+        check(ps::separateFile(argv[1], (dir / "missing.raw").c_str(), 2, sr, dir.c_str(), [](float) { return true; }, 1).code
+              == ps::SeparationResult::BadInput, "separateFile missing input");
+    }
     check(ps::separate("/nonexistent.onnx", mix.data(), n, dir.c_str(), [](float) { return true; }, 1).code == ps::SeparationResult::ModelError, "missing model");
     std::printf(failures ? "SEPARATION FAILURES (%d)\n" : "SEPARATION OK\n", failures);
     return failures ? 1 : 0;

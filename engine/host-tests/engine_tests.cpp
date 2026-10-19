@@ -3,16 +3,25 @@
 
 #include <cmath>
 #include <cstdio>
+#include <chrono>
 #include <cstring>
 #include <filesystem>
 #include <fstream>
 #include <functional>
 #include <random>
 #include <string>
+#include <tuple>
 #include <vector>
 
+#include "AcidTrack.h"
+#include "DrumKit.h"
+#include "Mixer.h"
+#include "OfflineRenderer.h"
+#include "WavWriter.h"
 #include "Engine.h"
 #include "RoundTripMeter.h"
+#include "Sequencer.h"
+#include "Synth.h"
 #include "SpscFloatRing.h"
 #include "SpscQueue.h"
 
@@ -147,38 +156,41 @@ void testBlockSizeIndependence() {
 // Largest sample-to-sample step of a full-scale sine at [hz]: anything bigger is a click.
 float naturalStep(float hz) { return static_cast<float>(2.0 * 3.14159265358979 * hz / kRate); }
 
+// Below the master soft clipper's threshold, so the tone itself is measured.
+constexpr float kRampGain = 0.75f;
+
 void testStartRampsUp() {
     ps::Engine engine(kRate);
     engine.post({ps::CommandType::SetFrequency, 1000.0f});
-    engine.post({ps::CommandType::SetGain, 1.0f});
+    engine.post({ps::CommandType::SetGain, kRampGain});
     engine.post({ps::CommandType::SetPlaying, 1.0f});
     const auto out = render(engine, kRate / 10, 256);
     // 1 ms after start the 10 ms ramp is still below 20 %; a hard start would already be at full scale.
     float firstMs = 0.0f;
     for (int i = 0; i < kRate / 1000; ++i) firstMs = std::max(firstMs, std::fabs(out[static_cast<size_t>(i) * kChannels]));
-    CHECK(firstMs < 0.2f);
+    CHECK(firstMs < 0.2f * kRampGain);
     float lastMs = 0.0f;
     for (int i = kRate / 10 - kRate / 1000; i < kRate / 10; ++i) {
         lastMs = std::max(lastMs, std::fabs(out[static_cast<size_t>(i) * kChannels]));
     }
-    CHECK(lastMs > 0.99f);
+    CHECK(lastMs > 0.99f * kRampGain);
     float maxStep = 0.0f;
     for (int i = 1; i < kRate / 10; ++i) {
         maxStep = std::max(maxStep, std::fabs(out[static_cast<size_t>(i) * kChannels] -
                                               out[static_cast<size_t>(i - 1) * kChannels]));
     }
-    CHECK(maxStep <= naturalStep(1000.0f) * 1.01f);
+    CHECK(maxStep <= naturalStep(1000.0f) * kRampGain * 1.01f);
 }
 
 void testStopFadesOut() {
     ps::Engine engine(kRate);
     engine.post({ps::CommandType::SetFrequency, 1000.0f});
-    engine.post({ps::CommandType::SetGain, 1.0f});
+    engine.post({ps::CommandType::SetGain, kRampGain});
     engine.post({ps::CommandType::SetPlaying, 1.0f});
     // Advance until the waveform sits near a peak, where a hard cut would click loudly.
     auto before = render(engine, 12000, 256);
-    for (int i = 0; i < 48 && std::fabs(before[before.size() - kChannels]) < 0.95f; ++i) before = render(engine, 1, 1);
-    CHECK(std::fabs(before[before.size() - kChannels]) >= 0.95f);
+    for (int i = 0; i < 48 && std::fabs(before[before.size() - kChannels]) < 0.95f * kRampGain; ++i) before = render(engine, 1, 1);
+    CHECK(std::fabs(before[before.size() - kChannels]) >= 0.95f * kRampGain);
     engine.post({ps::CommandType::SetPlaying, 0.0f});
     const auto out = render(engine, kRate / 4, 256);
     float previous = before[before.size() - kChannels];
@@ -187,11 +199,11 @@ void testStopFadesOut() {
         maxStep = std::max(maxStep, std::fabs(out[i * kChannels] - previous));
         previous = out[i * kChannels];
     }
-    CHECK(maxStep <= naturalStep(1000.0f) * 1.01f);
+    CHECK(maxStep <= naturalStep(1000.0f) * kRampGain * 1.01f);
     // Still sounding 1 ms after the stop (fading, not cut)...
     float firstMs = 0.0f;
     for (int i = 0; i < kRate / 1000; ++i) firstMs = std::max(firstMs, std::fabs(out[static_cast<size_t>(i) * kChannels]));
-    CHECK(firstMs > 0.7f);
+    CHECK(firstMs > 0.7f * kRampGain);
     // ...and silent at the end.
     float tail = 0.0f;
     for (size_t i = out.size() - 200; i < out.size(); ++i) tail = std::max(tail, std::fabs(out[i]));
@@ -342,6 +354,606 @@ void testLatencyTestThroughEngine() {
     CHECK(peak > 0.45f);
 }
 
+
+// Absolute frame of every step event over `frames` frames, rendered in blocks of `block`.
+std::vector<std::pair<int64_t, int>> collectSteps(ps::Sequencer& seq, int frames, int block,
+                                                  const std::function<void(int64_t, ps::Sequencer&)>& midway = {}) {
+    std::vector<std::pair<int64_t, int>> events;
+    for (int64_t pos = 0; pos < frames; pos += block) {
+        const int n = static_cast<int>(std::min<int64_t>(block, frames - pos));
+        if (midway) midway(pos, seq);
+        seq.advance(n, [&](int offset, int step) { events.push_back({pos + offset, step}); });
+    }
+    return events;
+}
+
+void testSequencerTiming() {
+    for (int block : {256, 97, 1024}) {
+        ps::Sequencer seq;
+        seq.prepare(kRate);
+        seq.setTempo(120.0);  // 16th = 6000 samples at 48 kHz
+        seq.start(0);
+        const auto events = collectSteps(seq, kFourBarsFrames, block);
+        CHECK(events.size() == 64);
+        bool exact = true;
+        for (size_t i = 0; i < events.size(); ++i) {
+            exact &= events[i].first == static_cast<int64_t>(i) * 6000 && events[i].second == static_cast<int>(i);
+        }
+        CHECK(exact);
+    }
+}
+
+void testSequencerSwing() {
+    ps::Sequencer seq;
+    seq.prepare(kRate);
+    seq.setTempo(120.0);
+    seq.setSwing(0.5);
+    seq.start(0);
+    const auto events = collectSteps(seq, 6000 * 16, 128);
+    CHECK(events.size() == 16);
+    bool ok = true;
+    for (size_t i = 0; i < events.size(); ++i) {
+        const int64_t expected = static_cast<int64_t>(i) * 6000 + ((i % 2) ? 3000 : 0);
+        ok &= events[i].first == expected;
+    }
+    CHECK(ok);
+}
+
+void testSequencerTempoChangeKeepsGroove() {
+    ps::Sequencer seq;
+    seq.prepare(kRate);
+    seq.setTempo(120.0);
+    seq.start(0);
+    // Halve the tempo once the 8th step has played (frame 48000 > step 7 at 42000).
+    const auto events = collectSteps(seq, 200000, 100, [](int64_t pos, ps::Sequencer& s) {
+        if (pos == 45000) s.setTempo(60.0);
+    });
+    CHECK(events.size() > 12);
+    // Steps 0..7 every 6000; step 8 was already scheduled on the old grid (48000), then 12000 apart.
+    CHECK(events[7].first == 42000);
+    CHECK(events[8].first == 48000);
+    CHECK(events[9].first == 60000);
+    CHECK(events[10].first == 72000);
+}
+
+void testCountInAndPatternTriggers() {
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SetTempo, 120.0f});
+    for (int step : {0, 4, 8, 12}) engine.post({ps::CommandType::SetDrumHit, 1.0f, 0, step});
+    engine.post({ps::CommandType::SetDrumHit, 0.8f, 2, 6});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 1});  // one bar of count-in
+    // One bar of count-in (16 x 6000) then exactly two pattern bars.
+    render(engine, 6000 * 16 * 3, 256);
+    CHECK(engine.metronomeClicks() == 4);  // count-in only: metronome is off
+    CHECK(engine.laneTriggerCount(0) == 8);
+    CHECK(engine.laneTriggerCount(2) == 2);
+    CHECK(engine.laneTriggerCount(1) == 0);
+    CHECK(engine.currentStep() == 15);
+
+    // Removing a hit and stopping.
+    engine.post({ps::CommandType::SetDrumHit, 0.0f, 0, 4});
+    render(engine, 6000 * 16, 256);
+    CHECK(engine.laneTriggerCount(0) == 11);
+    engine.post({ps::CommandType::SetTransport, 0.0f});
+    render(engine, 6000 * 16, 256);
+    CHECK(engine.laneTriggerCount(0) == 11);
+    CHECK(engine.currentStep() == -1);
+}
+
+void testMetronomeIsSampleAccurate() {
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SetTempo, 120.0f});
+    engine.post({ps::CommandType::SetMetronome, 1.0f});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    const auto out = render(engine, kRate, 333);
+    // Quarter notes at 120 BPM = every 24000 samples; a click starts exactly there.
+    auto firstSoundAfter = [&](int from) {
+        for (int i = from; i < kRate; ++i) {
+            if (std::fabs(out[static_cast<size_t>(i) * kChannels]) > 1e-6f) return i;
+        }
+        return -1;
+    };
+    // sin(0) = 0 at the onset, so the first non-zero sample is the one right after.
+    CHECK(firstSoundAfter(0) == 1);
+    CHECK(firstSoundAfter(20000) == 24001);
+    float peak = 0.0f;
+    for (float v : out) peak = std::max(peak, std::fabs(v));
+    CHECK(peak > 0.3f && peak <= 0.5f);
+}
+
+
+std::vector<float> renderKit(ps::DrumKit& kit, int frames, int block,
+                             const std::vector<std::tuple<int, int, float>>& hits) {  // frame, voice, velocity
+    std::vector<float> out(static_cast<size_t>(frames), 0.0f);
+    for (int pos = 0; pos < frames; pos += block) {
+        const int n = std::min(block, frames - pos);
+        for (const auto& [frame, voice, velocity] : hits) {
+            if (frame >= pos && frame < pos + n) kit.trigger(voice, velocity, frame - pos);
+        }
+        kit.render(out.data() + pos, n);
+    }
+    return out;
+}
+
+double energy(const std::vector<float>& v, int from, int to) {
+    double e = 0.0;
+    for (int i = from; i < to; ++i) e += static_cast<double>(v[static_cast<size_t>(i)]) * v[static_cast<size_t>(i)];
+    return e;
+}
+
+void testEveryDrumVoiceSoundsAndDecays() {
+    for (int voice = 0; voice < ps::DrumKit::kVoices; ++voice) {
+        ps::DrumKit kit;
+        kit.prepare(kRate);
+        const auto out = renderKit(kit, kRate * 3, 256, {{1000, voice, 1.0f}});
+        bool silentBefore = true;
+        for (int i = 0; i < 1000; ++i) silentBefore &= out[static_cast<size_t>(i)] == 0.0f;
+        float peak = 0.0f;
+        bool finite = true;
+        for (float v : out) {
+            finite &= std::isfinite(v);
+            peak = std::max(peak, std::fabs(v));
+        }
+        float tail = 0.0f;
+        for (int i = kRate * 3 - 4800; i < kRate * 3; ++i) tail = std::max(tail, std::fabs(out[static_cast<size_t>(i)]));
+        const bool ok = silentBefore && finite && peak > 0.05f && peak < 1.5f && tail < 0.01f;
+        if (!ok) std::fprintf(stderr, "  voice %d: silentBefore=%d finite=%d peak=%.3f tail=%.4f\n", voice, silentBefore, finite, peak, tail);
+        CHECK(ok);
+    }
+}
+
+void testVelocityChangesLoudness() {
+    for (int voice : {ps::DrumKit::Kick, ps::DrumKit::Snare, ps::DrumKit::Clap, ps::DrumKit::ClosedHat}) {
+        ps::DrumKit soft, loud;
+        soft.prepare(kRate);
+        loud.prepare(kRate);
+        const auto a = renderKit(soft, kRate / 2, 256, {{0, voice, 0.2f}});
+        const auto b = renderKit(loud, kRate / 2, 256, {{0, voice, 1.0f}});
+        CHECK(energy(b, 0, kRate / 2) > 1.5 * energy(a, 0, kRate / 2));
+    }
+}
+
+void testClosedHatChokesOpenHat() {
+    ps::DrumKit alone, choked;
+    alone.prepare(kRate);
+    choked.prepare(kRate);
+    const auto a = renderKit(alone, kRate, 256, {{0, ps::DrumKit::OpenHat, 1.0f}});
+    const auto b = renderKit(choked, kRate, 256, {{0, ps::DrumKit::OpenHat, 1.0f}, {4800, ps::DrumKit::ClosedHat, 1.0f}});
+    // 150 ms after the closed hat, the open hat must be gone (the closed one is short).
+    CHECK(energy(b, 12000, 24000) < 0.2 * energy(a, 12000, 24000));
+    // Before the choke both are the same sound.
+    CHECK(energy(a, 0, 4800) > 0.0);
+}
+
+void testPatternDrivesDrums() {
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SetTempo, 120.0f});
+    engine.post({ps::CommandType::SetDrumHit, 1.0f, ps::DrumKit::Kick, 4});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    const auto out = render(engine, 6000 * 8, 200);
+    // Nothing until step 4 (frame 24000), then the kick.
+    int first = -1;
+    for (int i = 0; i < 6000 * 8 && first < 0; ++i) {
+        if (out[static_cast<size_t>(i) * kChannels] != 0.0f) first = i;
+    }
+    CHECK(first >= 24000 && first <= 24001);
+    float peak = 0.0f;
+    for (float v : out) peak = std::max(peak, std::fabs(v));
+    CHECK(peak > 0.1f && peak < 1.5f);
+}
+
+void testFullKitCpuBudget() {
+    // Worst case: all 16 voices on every step of 4 bars at 160 BPM.
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SetTempo, 160.0f});
+    for (int lane = 0; lane < 16; ++lane) {
+        for (int step = 0; step < 16; ++step) engine.post({ps::CommandType::SetDrumHit, 0.8f, lane, step});
+    }
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    const int frames = kRate * 6;
+    const auto start = std::chrono::steady_clock::now();
+    const auto out = render(engine, frames, 256);
+    const double seconds = std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count();
+    const double load = seconds / (static_cast<double>(frames) / kRate);
+    std::printf("  full kit: %.1f %% of real time on this machine\n", load * 100.0);
+#if defined(__SANITIZE_ADDRESS__)
+    (void)load;  // sanitizer builds are several times slower: timing is meaningless there
+#else
+    CHECK(load < 0.10);  // leaves a large margin for a phone and for synths/effects
+#endif
+    bool finite = true;
+    float peak = 0.0f;
+    for (float v : out) {
+        finite &= std::isfinite(v);
+        peak = std::max(peak, std::fabs(v));
+    }
+    CHECK(finite);
+    CHECK(peak <= 1.0f);  // the master soft clipper never lets the output clip
+}
+
+void testKicksArePunchy() {
+    for (int voice : {ps::DrumKit::Kick, ps::DrumKit::Kick2}) {
+        ps::DrumKit kit;
+        kit.prepare(kRate);
+        const auto out = renderKit(kit, kRate / 2, 256, {{0, voice, 1.0f}});
+        const double rms = std::sqrt(energy(out, 0, kRate * 3 / 10) / (kRate * 3 / 10));
+        float peak = 0.0f;
+        for (float v : out) peak = std::max(peak, std::fabs(v));
+        if (rms < 0.25 || peak < 0.8f) std::fprintf(stderr, "  kick %d: rms=%.3f peak=%.3f\n", voice, rms, peak);
+        CHECK(rms >= 0.25);
+        CHECK(peak >= 0.8f);
+    }
+}
+
+void testTomsHaveBody() {
+    for (int voice : {ps::DrumKit::LowTom, ps::DrumKit::MidTom, ps::DrumKit::HighTom, ps::DrumKit::Conga}) {
+        ps::DrumKit kit;
+        kit.prepare(kRate);
+        const auto out = renderKit(kit, kRate / 2, 256, {{0, voice, 1.0f}});
+        const double rms = std::sqrt(energy(out, 0, kRate / 10) / (kRate / 10));
+        std::printf("  voice %d: rms(100 ms) %.3f\n", voice, rms);
+        CHECK(rms >= 0.12);
+    }
+    for (int voice : {ps::DrumKit::Kick, ps::DrumKit::Kick2}) {
+        ps::DrumKit kit;
+        kit.prepare(kRate);
+        const auto out = renderKit(kit, kRate / 2, 256, {{0, voice, 1.0f}});
+        std::printf("  kick %d: rms(300 ms) %.3f\n", voice, std::sqrt(energy(out, 0, kRate * 3 / 10) / (kRate * 3 / 10)));
+    }
+}
+
+
+// Renders the acid track alone, driven by a 120 BPM clock (6000 frames per 16th).
+std::vector<float> renderAcid(ps::AcidTrack& acid, int steps, int block = 256) {
+    ps::Sequencer seq;
+    seq.prepare(kRate);
+    seq.setTempo(120.0);
+    seq.start(0);
+    const int frames = steps * 6000;
+    std::vector<float> out(static_cast<size_t>(frames), 0.0f);
+    for (int pos = 0; pos < frames; pos += block) {
+        const int n = std::min(block, frames - pos);
+        seq.advance(n, [&](int offset, int step) { acid.onStep(offset, step, seq.samplesPerStep()); });
+        acid.render(out.data() + pos, n);
+    }
+    return out;
+}
+
+ps::AcidStep note(int n, bool accent = false, bool slide = false) {
+    ps::AcidStep s;
+    s.note = n;
+    s.accent = accent;
+    s.slide = slide;
+    s.gate = true;
+    return s;
+}
+
+void testAcidStepPacking() {
+    for (int n = 0; n <= 12; ++n) {
+        for (int o = -1; o <= 2; ++o) {
+            ps::AcidStep s{n, o, (n & 1) != 0, (n & 2) != 0, true};
+            const auto u = ps::AcidStep::unpack(s.pack());
+            CHECK(u.note == n && u.octave == o && u.accent == s.accent && u.slide == s.slide && u.gate);
+        }
+    }
+    CHECK(!ps::AcidStep::unpack(0).gate);
+}
+
+void testAcidNotesStartOnTheStep() {
+    ps::AcidTrack acid;
+    acid.prepare(kRate);
+    acid.setLength(16);
+    acid.setStep(4, note(0));
+    const auto out = renderAcid(acid, 8, 333);
+    int first = -1;
+    for (int i = 0; i < static_cast<int>(out.size()) && first < 0; ++i) {
+        if (std::fabs(out[static_cast<size_t>(i)]) > 1e-6f) first = i;
+    }
+    CHECK(first >= 24000 && first < 24000 + 48);  // within 1 ms of step 4
+    CHECK(acid.notesPlayed() == 1);
+    bool finite = true;
+    float peak = 0.0f;
+    for (float v : out) {
+        finite &= std::isfinite(v);
+        peak = std::max(peak, std::fabs(v));
+    }
+    CHECK(finite);
+    CHECK(peak > 0.1f && peak < 1.0f);
+}
+
+void testAcidAccentIsLouder() {
+    // Measured on the voice itself (no saturation), as energy over the note.
+    auto rmsOf = [](bool accent) {
+        ps::AcidTrack acid;
+        acid.prepare(kRate);
+        acid.setParam(ps::AcidTrack::Drive, 0.0f);
+        acid.setStep(0, note(0, accent));
+        const auto out = renderAcid(acid, 1);
+        double e = 0.0;
+        for (float v : out) e += static_cast<double>(v) * v;
+        return std::sqrt(e / static_cast<double>(out.size()));
+    };
+    const double plain = rmsOf(false);
+    const double accented = rmsOf(true);
+    std::printf("  acid rms: plain %.3f, accent %.3f\n", plain, accented);
+    CHECK(accented > plain * 1.15);
+}
+
+void testAcidSlideHoldsTheNote() {
+    // Without slide the note is released after half a step: just before step 1 it is fading.
+    // With slide the gate stays open and the pitch glides: the level stays up.
+    auto levelBeforeStep1 = [](bool slide) {
+        ps::AcidTrack acid;
+        acid.prepare(kRate);
+        acid.setParam(ps::AcidTrack::Decay, 1.0f);
+        acid.setStep(0, note(0, false, slide));
+        acid.setStep(1, note(12));
+        const auto out = renderAcid(acid, 2);
+        double e = 0.0;
+        for (int i = 5000; i < 6000; ++i) e += out[static_cast<size_t>(i)] * out[static_cast<size_t>(i)];
+        return std::sqrt(e / 1000.0);
+    };
+    const double plain = levelBeforeStep1(false);
+    const double slid = levelBeforeStep1(true);
+    std::printf("  acid level before step 2: no slide %.4f, slide %.4f\n", plain, slid);
+    CHECK(slid > 2.0 * plain);
+
+    // A slid pair counts two notes but only the first one retriggers the envelope.
+    ps::AcidTrack acid;
+    acid.prepare(kRate);
+    acid.setStep(0, note(0, false, true));
+    acid.setStep(1, note(7));
+    renderAcid(acid, 2);
+    CHECK(acid.notesPlayed() == 2);
+}
+
+void testAcidStopsCleanly() {
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SetTempo, 120.0f});
+    for (int i = 0; i < 16; ++i) engine.post({ps::CommandType::SetAcidStep, 0.0f, i, note(i % 3 * 5, i % 4 == 0, i % 5 == 0).pack()});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    render(engine, 6000 * 16, 256);
+    CHECK(engine.acidNotesPlayed() == 16);
+    engine.post({ps::CommandType::SetTransport, 0.0f});
+    const auto after = render(engine, kRate, 256);
+    float tail = 0.0f;
+    for (size_t i = after.size() - 4800; i < after.size(); ++i) tail = std::max(tail, std::fabs(after[i]));
+    CHECK(tail < 1e-3f);  // silent half a second after stop
+}
+
+void testAcidCpuBudget() {
+    ps::AcidTrack acid;
+    acid.prepare(kRate);
+    for (int i = 0; i < 16; ++i) acid.setStep(i, note(i % 12, i % 3 == 0, i % 4 == 0));
+    const auto start = std::chrono::steady_clock::now();
+    renderAcid(acid, 64);
+    const double seconds = std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count();
+    const double load = seconds / (64 * 6000.0 / kRate);
+    std::printf("  acid voice: %.1f %% of real time on this machine\n", load * 100.0);
+#if !defined(__SANITIZE_ADDRESS__)
+    CHECK(load < 0.05);
+#endif
+}
+
+
+std::vector<float> renderSynth(ps::Synth& synth, int frames, int block = 256) {
+    std::vector<float> out(static_cast<size_t>(frames), 0.0f);
+    for (int pos = 0; pos < frames; pos += block) synth.render(out.data() + pos, std::min(block, frames - pos));
+    return out;
+}
+
+void openFilter(ps::Synth& s) {
+    s.setParam(ps::Synth::Cutoff, 1.0f);
+    s.setParam(ps::Synth::Resonance, 0.0f);
+    s.setParam(ps::Synth::FilterEnvAmount, 0.0f);
+    s.setParam(ps::Synth::SubLevel, 0.0f);
+}
+
+void testSynthPitchIsRight() {
+    ps::Synth synth;
+    synth.prepare(kRate);
+    openFilter(synth);
+    synth.setParam(ps::Synth::Osc1Wave, 1.0f);  // triangle: clean zero crossings
+    synth.setParam(ps::Synth::Osc2Wave, 1.0f);
+    synth.setParam(ps::Synth::Osc2Detune, 0.0f);
+    synth.noteOn(69, 1.0f);  // A4
+    const auto out = renderSynth(synth, kRate);
+    int crossings = 0;
+    for (int i = kRate / 2 + 1; i < kRate; ++i) {
+        if (out[static_cast<size_t>(i - 1)] < 0.0f && out[static_cast<size_t>(i)] >= 0.0f) ++crossings;
+    }
+    std::printf("  synth A4: %d Hz\n", crossings * 2);
+    CHECK(std::abs(crossings * 2 - 440) <= 4);
+}
+
+void testSynthNoteStartsOnTimeAndReleases() {
+    ps::Synth synth;
+    synth.prepare(kRate);
+    synth.setParam(ps::Synth::AmpRelease, 0.2f);
+    synth.noteOn(60, 0.8f, 100);
+    synth.noteOff(60, 12000);
+    const auto out = renderSynth(synth, kRate, 333);
+    bool silentBefore = true;
+    for (int i = 0; i < 100; ++i) silentBefore &= out[static_cast<size_t>(i)] == 0.0f;
+    CHECK(silentBefore);
+    float during = 0.0f;
+    for (int i = 2000; i < 12000; ++i) during = std::max(during, std::fabs(out[static_cast<size_t>(i)]));
+    std::printf("  synth single note peak %.3f\n", during);
+    CHECK(during > 0.15f);
+    float tail = 0.0f;
+    for (int i = kRate - 4800; i < kRate; ++i) tail = std::max(tail, std::fabs(out[static_cast<size_t>(i)]));
+    CHECK(tail < 1e-3f);
+    CHECK(synth.activeVoices() == 0);
+}
+
+void testSynthVoiceStealingAndCpu() {
+    ps::Synth synth;
+    synth.prepare(kRate);
+    synth.setParam(ps::Synth::Resonance, 0.9f);
+    synth.setParam(ps::Synth::NoiseLevel, 0.3f);
+    synth.setParam(ps::Synth::Lfo1ToPitch, 0.5f);
+    synth.setParam(ps::Synth::Lfo2ToCutoff, 0.5f);
+    for (int n = 0; n < 10; ++n) synth.noteOn(48 + n * 3, 1.0f);
+    const auto start = std::chrono::steady_clock::now();
+    const auto out = renderSynth(synth, kRate * 2);
+    const double load = std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count() / 2.0;
+    std::printf("  synth 8 voices: %.1f %% of real time on this machine\n", load * 100.0);
+    CHECK(synth.activeVoices() == ps::Synth::kVoices);
+    bool finite = true;
+    float peak = 0.0f;
+    for (float v : out) {
+        finite &= std::isfinite(v);
+        peak = std::max(peak, std::fabs(v));
+    }
+    CHECK(finite);
+    CHECK(peak < 4.0f);  // a loud 8-note cluster; the engine's master soft clip tames it
+#if !defined(__SANITIZE_ADDRESS__)
+    CHECK(load < 0.15);
+#endif
+}
+
+void testSynthThroughEngine() {
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SynthNoteOn, 0.9f, 64});
+    render(engine, kRate / 4, 256);
+    CHECK(engine.synthActiveVoices() == 1);
+    engine.post({ps::CommandType::SynthAllOff, 0.0f});
+    const auto out = render(engine, kRate * 3, 256);
+    CHECK(engine.synthActiveVoices() == 0);
+    float tail = 0.0f;
+    for (size_t i = out.size() - 4800; i < out.size(); ++i) tail = std::max(tail, std::fabs(out[i]));
+    CHECK(tail < 1e-3f);
+}
+
+
+// Feeds constant-level mono sources through the mixer and returns interleaved stereo.
+std::vector<float> mixConstant(ps::Mixer& mixer, float drums, float acid, float synth, int frames = 9600) {
+    std::vector<float> a(static_cast<size_t>(frames), drums), b(static_cast<size_t>(frames), acid),
+        c(static_cast<size_t>(frames), synth), out(static_cast<size_t>(frames) * 2);
+    const float* ch[ps::Mixer::kChannels] = {a.data(), b.data(), c.data()};
+    mixer.process(ch, nullptr, out.data(), frames, 2);
+    return out;
+}
+
+void testMixerPanMuteSolo() {
+    ps::Mixer mixer;
+    mixer.prepare(kRate);
+    auto last = [](const std::vector<float>& v, int side) { return v[v.size() - 2 + static_cast<size_t>(side)]; };
+
+    auto centre = mixConstant(mixer, 0.2f, 0.0f, 0.0f);
+    CHECK(std::fabs(last(centre, 0) - 0.2f) < 1e-3f && std::fabs(last(centre, 1) - 0.2f) < 1e-3f);  // unity at centre
+
+    mixer.setPan(0, -1.0f);
+    auto left = mixConstant(mixer, 0.2f, 0.0f, 0.0f);
+    CHECK(last(left, 1) < 1e-3f && last(left, 0) > 0.25f);
+    mixer.setPan(0, 0.0f);
+
+    mixer.setMute(1, true);
+    auto muted = mixConstant(mixer, 0.0f, 0.3f, 0.0f);
+    CHECK(std::fabs(last(muted, 0)) < 1e-4f);
+    mixer.setMute(1, false);
+
+    mixer.setSolo(2, true);
+    auto solo = mixConstant(mixer, 0.2f, 0.2f, 0.1f);
+    CHECK(std::fabs(last(solo, 0) - 0.1f) < 1e-3f);  // only the synth
+    mixer.setSolo(2, false);
+
+    mixer.setVolume(0, 0.4f);  // half the unity fader -> -12 dB with the quadratic law
+    auto quiet = mixConstant(mixer, 0.4f, 0.0f, 0.0f);
+    CHECK(std::fabs(last(quiet, 0) - 0.1f) < 1e-3f);
+}
+
+std::vector<uint8_t> readFile(const std::string& path) {
+    std::ifstream in(path, std::ios::binary);
+    return std::vector<uint8_t>((std::istreambuf_iterator<char>(in)), std::istreambuf_iterator<char>());
+}
+
+uint32_t le32(const uint8_t* p) { return p[0] | (p[1] << 8) | (p[2] << 16) | (uint32_t(p[3]) << 24); }
+
+int32_t sample24(const std::vector<uint8_t>& f, size_t index) {
+    const uint8_t* p = f.data() + 44 + index * 3;
+    int32_t v = p[0] | (p[1] << 8) | (p[2] << 16);
+    return (v & 0x800000) ? v - 0x1000000 : v;
+}
+
+void testWavWriterRoundTrip() {
+    const std::string path = (std::filesystem::temp_directory_path() / "ps_wav_test.wav").string();
+    ps::WavWriter wav;
+    CHECK(wav.open(path.c_str(), kRate, 2));
+    std::vector<float> data(10000 * 2);
+    for (size_t i = 0; i < data.size(); ++i) data[i] = (i % 2 == 0) ? 0.5f : -1.5f;  // right clips
+    CHECK(wav.write(data.data(), 10000));
+    CHECK(wav.close());
+    const auto f = readFile(path);
+    CHECK(f.size() == 44 + 10000 * 2 * 3);
+    CHECK(std::memcmp(f.data(), "RIFF", 4) == 0 && std::memcmp(f.data() + 8, "WAVE", 4) == 0);
+    CHECK(le32(f.data() + 4) == f.size() - 8);
+    CHECK(le32(f.data() + 40) == 10000 * 2 * 3);
+    CHECK(f[34] == 24 && f[22] == 2 && le32(f.data() + 24) == kRate);
+    CHECK(std::abs(sample24(f, 100) - 4194304) <= 2);  // 0.5 within dither
+    CHECK(sample24(f, 101) == -8388608);                 // clamped, no wrap-around
+    std::filesystem::remove(path);
+}
+
+void testOfflineExportRendersTheBeat() {
+    const std::string path = (std::filesystem::temp_directory_path() / "ps_export_test.wav").string();
+    ps::OfflineRenderer r(kRate);
+    r.post({ps::CommandType::SetTempo, 120.0f});
+    for (int step = 0; step < 16; step += 4) r.post({ps::CommandType::SetDrumHit, 1.0f, 0, step});
+    // Far more commands than the queue holds must still all arrive.
+    for (int i = 0; i < 10000; ++i) r.post({ps::CommandType::SetDrumHit, 0.0f, 5, 3});
+    const int64_t bar = kRate * 2;  // one bar at 120 BPM
+    CHECK(r.renderToWav(path.c_str(), bar, kRate / 2) == ps::OfflineRenderer::Result::Ok);
+    CHECK(r.progress() == 1.0f);
+    const auto f = readFile(path);
+    CHECK(f.size() == 44 + size_t(bar + kRate / 2) * 2 * 3);
+    // A kick on every beat: energy right after each beat, from the very first sample.
+    int32_t firstPeak = 0, peak = 0;
+    for (size_t i = 0; i < size_t(kRate / 50) * 2; ++i) firstPeak = std::max(firstPeak, std::abs(sample24(f, i)));
+    for (size_t i = 0; i < (f.size() - 44) / 3; ++i) peak = std::max(peak, std::abs(sample24(f, i)));
+    CHECK(firstPeak > 8388607 / 10);
+    CHECK(peak <= int32_t(8388607 * 0.9f));  // limiter ceiling holds
+    // Same beat without the hit on beat 2: identical up to beat 2 (sample-accurate), different after.
+    const std::string path2 = path + ".b.wav";
+    ps::OfflineRenderer r2(kRate);
+    r2.post({ps::CommandType::SetTempo, 120.0f});
+    for (int step = 0; step < 16; step += 4) r2.post({ps::CommandType::SetDrumHit, step == 4 ? 0.0f : 1.0f, 0, step});
+    CHECK(r2.renderToWav(path2.c_str(), bar, kRate / 2) == ps::OfflineRenderer::Result::Ok);
+    const auto g = readFile(path2);
+    CHECK(g.size() == f.size());
+    const size_t beat2 = size_t(kRate / 2) * 2;
+    int32_t diffBefore = 0, diffAfter = 0;
+    for (size_t i = 0; i < beat2; ++i) diffBefore = std::max(diffBefore, std::abs(sample24(f, i) - sample24(g, i)));
+    for (size_t i = beat2; i < beat2 + 2000; ++i) diffAfter = std::max(diffAfter, std::abs(sample24(f, i) - sample24(g, i)));
+    CHECK(diffBefore <= 4);  // dither only (same seed, so in practice 0)
+    CHECK(diffAfter > 8388607 / 10);
+    std::filesystem::remove(path2);
+
+    ps::OfflineRenderer cancelled(kRate);
+    cancelled.cancel();
+    CHECK(cancelled.renderToWav(path.c_str(), bar, 0) == ps::OfflineRenderer::Result::Cancelled);
+    CHECK(ps::OfflineRenderer(kRate).renderToWav("/nonexistent-dir/x.wav", bar, 0) == ps::OfflineRenderer::Result::IoError);
+    std::filesystem::remove(path);
+}
+
+void testLimiterHoldsTheCeiling() {
+    ps::Mixer mixer;
+    mixer.prepare(kRate);
+    auto loud = mixConstant(mixer, 0.9f, 0.9f, 0.9f);  // 2.7 summed
+    float peak = 0.0f;
+    for (float v : loud) peak = std::max(peak, std::fabs(v));
+    CHECK(peak <= ps::Mixer::kCeiling + 1e-6f);
+    CHECK(mixer.limiterGain() < 0.5f);
+    CHECK(mixer.takeMasterPeak() > 0.8f);
+    CHECK(mixer.takeChannelPeak(0) > 0.8f);
+    CHECK(mixer.takeChannelPeak(0) == 0.0f);  // reading resets the meter
+
+    // Quiet material passes untouched once the limiter has recovered.
+    mixConstant(mixer, 0.0f, 0.0f, 0.0f, kRate);
+    auto quiet = mixConstant(mixer, 0.3f, 0.0f, 0.0f);
+    CHECK(std::fabs(quiet.back() - 0.3f) < 1e-3f);
+}
+
 struct TestCase {
     const char* name;
     std::function<void()> fn;
@@ -365,6 +977,32 @@ int main(int argc, char** argv) {
         {"reference_render", testReferenceRender},
         {"round_trip_meter", testRoundTripMeter},
         {"latency_test_through_engine", testLatencyTestThroughEngine},
+        {"sequencer_timing", testSequencerTiming},
+        {"sequencer_swing", testSequencerSwing},
+        {"sequencer_tempo_change", testSequencerTempoChangeKeepsGroove},
+        {"count_in_and_pattern_triggers", testCountInAndPatternTriggers},
+        {"metronome_sample_accurate", testMetronomeIsSampleAccurate},
+        {"every_drum_voice", testEveryDrumVoiceSoundsAndDecays},
+        {"drum_velocity", testVelocityChangesLoudness},
+        {"hat_choke", testClosedHatChokesOpenHat},
+        {"pattern_drives_drums", testPatternDrivesDrums},
+        {"full_kit_cpu", testFullKitCpuBudget},
+        {"kicks_are_punchy", testKicksArePunchy},
+        {"toms_have_body", testTomsHaveBody},
+        {"acid_step_packing", testAcidStepPacking},
+        {"acid_notes_on_step", testAcidNotesStartOnTheStep},
+        {"acid_accent", testAcidAccentIsLouder},
+        {"acid_slide", testAcidSlideHoldsTheNote},
+        {"acid_stops_cleanly", testAcidStopsCleanly},
+        {"acid_cpu", testAcidCpuBudget},
+        {"synth_pitch", testSynthPitchIsRight},
+        {"synth_on_time_and_release", testSynthNoteStartsOnTimeAndReleases},
+        {"synth_voices_and_cpu", testSynthVoiceStealingAndCpu},
+        {"synth_through_engine", testSynthThroughEngine},
+        {"mixer_pan_mute_solo", testMixerPanMuteSolo},
+        {"limiter_ceiling", testLimiterHoldsTheCeiling},
+        {"wav_writer", testWavWriterRoundTrip},
+        {"offline_export", testOfflineExportRendersTheBeat},
     };
     for (const auto& t : tests) {
         const int before = g_failures;

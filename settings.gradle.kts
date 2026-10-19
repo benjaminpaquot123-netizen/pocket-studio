@@ -16,4 +16,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "pocket-studio"
 
-include(":app", ":engine", ":ui-components")
+include(":app", ":engine", ":ui-components", ":project-model")

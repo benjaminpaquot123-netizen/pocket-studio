@@ -1,0 +1,6 @@
+[submodule "engine/third_party/DaisySP"]
+	path = engine/third_party/DaisySP
+	url = https://github.com/electro-smith/DaisySP
+[submodule "engine/third_party/Open303"]
+	path = engine/third_party/Open303
+	url = https://github.com/RobinSchmidt/Open303

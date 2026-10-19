@@ -33,7 +33,7 @@ fun NeonCard(
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(containerColor = Neon.Surface),
         border = BorderStroke(1.dp, accent),
     ) {
@@ -68,14 +68,18 @@ fun StatRow(label: String, value: String, valueColor: Color = Neon.TextPrimary) 
 /** Horizontal level meter, green to amber to red. [level] is linear 0..1. */
 @Composable
 fun LevelMeter(level: Float, modifier: Modifier = Modifier) {
+    val track = Neon.SurfaceHigh
+    val low = Neon.Acid
+    val mid = Neon.Amber
+    val high = Neon.Red
     Canvas(modifier = modifier.fillMaxWidth().height(10.dp)) {
         val radius = CornerRadius(size.height / 2, size.height / 2)
-        drawRoundRect(color = Neon.SurfaceHigh, cornerRadius = radius)
+        drawRoundRect(color = track, cornerRadius = radius)
         val width = size.width * level.coerceIn(0f, 1f)
         if (width > 0f) {
             drawRoundRect(
                 brush = Brush.horizontalGradient(
-                    0f to Neon.Acid, 0.7f to Neon.Amber, 1f to Neon.Red,
+                    0f to low, 0.7f to mid, 1f to high,
                     startX = 0f, endX = size.width,
                 ),
                 topLeft = Offset.Zero,

@@ -1,5 +1,6 @@
 package com.pocketstudio.app.latency
 
+import com.pocketstudio.app.report.AppLog
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pocketstudio.app.Metrics
@@ -56,10 +57,12 @@ class LatencyViewModel : ViewModel() {
             val diagnostic = diagnostic(outcomes)
             Metrics.updateLatencyDiagnostic(diagnostic)
             if (values.isEmpty()) {
+                AppLog.add("Latence : échec ($diagnostic)")
                 _state.value = LatencyUiState.Failed(explain(outcomes.last()), diagnostic)
             } else {
                 val median = values.sorted()[values.size / 2]
                 Metrics.updateRoundTrip(median)
+                AppLog.add("Latence : ${"%.1f".format(median)} ms ($values)")
                 _state.value = LatencyUiState.Measured(median, values, diagnostic)
             }
         }

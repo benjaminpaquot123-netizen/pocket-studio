@@ -1,0 +1,51 @@
+package com.pocketstudio.model
+
+import kotlinx.serialization.Serializable
+
+/**
+ * Subtractive synth settings, 0..1 each, in the engine's Synth::Param order.
+ * Stored as a list so new parameters can be appended without breaking old projects.
+ */
+@Serializable
+data class SynthPatch(val values: List<Float> = DEFAULTS) {
+    fun get(index: Int): Float = values.getOrElse(index) { DEFAULTS[index] }
+
+    fun with(index: Int, value: Float): SynthPatch =
+        copy(values = sanitized().values.toMutableList().also { it[index] = value.coerceIn(0f, 1f) })
+
+    fun sanitized(): SynthPatch =
+        SynthPatch(List(PARAM_COUNT) { i -> values.getOrElse(i) { DEFAULTS[i] }.coerceIn(0f, 1f) })
+
+    companion object {
+        const val OSC1_WAVE = 0; const val OSC2_WAVE = 1; const val OSC2_DETUNE = 2; const val OSC2_OCTAVE = 3
+        const val OSC_MIX = 4; const val SUB = 5; const val NOISE = 6; const val FILTER_TYPE = 7
+        const val CUTOFF = 8; const val RESONANCE = 9; const val FILTER_ENV = 10
+        const val F_ATTACK = 11; const val F_DECAY = 12; const val F_SUSTAIN = 13; const val F_RELEASE = 14
+        const val A_ATTACK = 15; const val A_DECAY = 16; const val A_SUSTAIN = 17; const val A_RELEASE = 18
+        const val LFO1_RATE = 19; const val VIBRATO = 20; const val LFO2_RATE = 21; const val SWEEP = 22; const val LEVEL = 23
+        const val PARAM_COUNT = 24
+
+        /** Same values as Synth::prepare() in the engine. */
+        val DEFAULTS: List<Float> = listOf(
+            0f, 0f, 0.3f, 0.5f, 0.5f, 0.2f, 0f,
+            0f, 0.55f, 0.3f, 0.4f,
+            0f, 0.3f, 0.3f, 0.3f,
+            0.05f, 0.3f, 0.8f, 0.35f,
+            0.5f, 0f, 0.3f, 0f, 0.6f,
+        )
+
+        /** Ready-made sounds: name -> patch. Waves: 0 = saw, 0.5 = square, 1 = triangle. */
+        val PRESETS: List<Pair<String, SynthPatch>> = listOf(
+            "Basse" to SynthPatch(DEFAULTS).with(OSC2_OCTAVE, 0.1f).with(SUB, 0.6f).with(CUTOFF, 0.38f)
+                .with(RESONANCE, 0.35f).with(FILTER_ENV, 0.5f).with(F_DECAY, 0.25f).with(F_SUSTAIN, 0.1f)
+                .with(A_ATTACK, 0f).with(A_RELEASE, 0.2f),
+            "Lead" to SynthPatch(DEFAULTS).with(OSC2_WAVE, 0.5f).with(OSC2_DETUNE, 0.5f).with(CUTOFF, 0.7f)
+                .with(RESONANCE, 0.45f).with(VIBRATO, 0.15f).with(LFO1_RATE, 0.55f).with(A_RELEASE, 0.3f),
+            "Nappe" to SynthPatch(DEFAULTS).with(OSC2_DETUNE, 0.8f).with(CUTOFF, 0.5f).with(FILTER_ENV, 0.2f)
+                .with(A_ATTACK, 0.65f).with(A_SUSTAIN, 0.9f).with(A_RELEASE, 0.75f).with(SWEEP, 0.3f).with(LFO2_RATE, 0.2f),
+            "Pluck" to SynthPatch(DEFAULTS).with(OSC1_WAVE, 0.5f).with(CUTOFF, 0.35f).with(RESONANCE, 0.5f)
+                .with(FILTER_ENV, 0.7f).with(F_DECAY, 0.2f).with(F_SUSTAIN, 0f).with(A_DECAY, 0.35f)
+                .with(A_SUSTAIN, 0f).with(A_RELEASE, 0.25f),
+        )
+    }
+}

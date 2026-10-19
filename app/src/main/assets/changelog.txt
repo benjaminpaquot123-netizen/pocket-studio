@@ -1,5 +1,4 @@
-Premier son ! Le moteur audio tient la note : une sinusoïde, mais une sinusoïde fière.
-Mesure de latence réparée : le micro est lu en continu, et si ça coince, l'appli dit pourquoi.
-Écran Recette : tu coches, l'appli rédige le rapport, tu appuies sur Envoyer.
-Mises à jour proposées au lancement, et rapport de crash si l'appli tombe.
-« C'est pas faux » : tout le reste arrive en phase 1.
+Nouveau : le Mixeur ! Volume, panoramique, muet et solo pour la batterie, la basse et le synthé.
+Coups doux bien visibles : la case se vide selon la force. VU-mètres et limiteur : « C'est pas faux. »
+La musique continue écran éteint (Outils › Arrière-plan pour bien régler le Honor).
+Export WAV (Mixeur) : ton morceau dans Musique, prêt à partager. La Recette est dans Outils.

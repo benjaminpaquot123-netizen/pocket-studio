@@ -25,21 +25,20 @@ Feu vert de Benjamin (D4 = A) : fusion de la pull request en fin de phase.
 - Critères : un rapport envoyé depuis le téléphone arrive en issue avec version, appareil, latence, décrochages et journal.
 
 ## Phase 1 : MVP jouable
-- [ ] 1.1 Modèle de projet (module project-model, JSON, écritures atomiques, sauvegarde auto, annuler/rétablir)
-- [ ] 1.2 Transport : tempo 40-300 BPM, tap tempo, swing, métronome, décompte ; séquenceur à l'échantillon près
-- [ ] 1.3 Boîte à rythmes 16 pas, 16 pads, kit 808/909 synthétisé (DaisySP), vélocité
-- [ ] 1.4 Synthé soustractif (2 osc, sub, bruit, ladder + SVF, 2 env, 2 LFO), clavier simple
-- [ ] 1.5 Mixeur simple (volume, pan, mute, solo, VU-mètres, limiteur master)
-- [ ] 1.6 Export WAV 24 bits/48 kHz + partage ; lecture en Foreground Service + exclusion batterie guidée
-- Critères : un beat de 4 mesures composé, sauvegardé, rouvert et exporté ; 0 craquement à 256 échantillons.
-
-## Jalon Acide (priorité de Benjamin, entre la phase 1 et la phase 2)
-- [ ] A.1 Intégrer Open303 (Robin Schmidt, MIT) dans `dsp/`, voix monophonique dans le graphe audio ; tests Linux (pas de NaN, slide continu, accent plus fort)
-- [ ] A.2 Séquenceur acide par pas (16 pas, jusqu'à 64) : note, accent, slide, octave haut/bas, silence ; à l'échantillon près dans le thread audio
-- [ ] A.3 Réglages : cutoff, résonance, env mod, decay, accent, accord, onde scie/carré ; saturation juste derrière la voix
-- [ ] A.4 Générateur de patterns acides façon The Endless Acid Banger (gamme, densité, accents, slides), avec verrous
-- [ ] A.5 Écran « Acide » : grille de pas lisible au doigt, potards, bouton « Génère-moi un pattern »
+- [x] 1.1 Modèle de projet (module project-model, JSON, écritures atomiques, sauvegarde auto, annuler/rétablir) : branché dans l'appli avec 1.2/1.3
+- [x] 1.2 Transport : tempo 40-300 BPM, tap tempo, swing, métronome, décompte ; séquenceur à l'échantillon près (moteur + tests ; écran avec 1.3)
+- [x] 1.3 Boîte à rythmes 16 pas, 16 pads, kit 808/909 synthétisé (DaisySP), vélocité
+### Jalon Acide (priorité de Benjamin : fait juste après 1.3, avant 1.4)
+- [x] A.1 Intégrer Open303 (Robin Schmidt, MIT) dans `dsp/`, voix monophonique dans le graphe audio ; tests Linux (pas de NaN, slide continu, accent plus fort)
+- [x] A.2 Séquenceur acide par pas (16 pas, jusqu'à 64) : note, accent, slide, octave haut/bas, silence ; à l'échantillon près dans le thread audio
+- [x] A.3 Réglages : cutoff, résonance, env mod, decay, accent, accord, onde scie/carré ; saturation juste derrière la voix
+- [x] A.4 Générateur de patterns acides façon The Endless Acid Banger (gamme, densité, accents, slides), avec verrous
+- [x] A.5 Écran « Acide » : grille de pas lisible au doigt, potards, bouton « Génère-moi un pattern »
 - Critères : un pattern généré tourne en boucle avec la boîte à rythmes, sans craquement à 256 échantillons ; slide et accent audibles ; aucun nom de marque Roland dans l'interface.
+- [x] 1.4 Synthé soustractif (2 osc, sub, bruit, ladder + SVF, 2 env, 2 LFO), clavier simple
+- [x] 1.5 Mixeur simple (volume, pan, mute, solo, VU-mètres, limiteur master)
+- [x] 1.6 Export WAV 24 bits/48 kHz + partage ; lecture en Foreground Service + exclusion batterie guidée
+- Critères : un beat de 4 mesures composé, sauvegardé, rouvert et exporté ; 0 craquement à 256 échantillons.
 
 ## Phase 2 : sampler et notes
 - [ ] 2.1 Import MP3/WAV/FLAC/M4A, enregistrement micro, forme d'onde zoomable
@@ -47,6 +46,7 @@ Feu vert de Benjamin (D4 = A) : fusion de la pull request en fin de phase.
 - [ ] 2.3 Time-stretch (Signalsmith Stretch), rééchantillonnage du master
 - [ ] 2.4 Piano roll : vélocité, quantification avec intensité, notes fantômes
 - [ ] 2.5 Verrouillage de gamme, accords en un geste, progressions, arpégiateur, strum
+- [ ] 2.6 Bibliothèque d'instruments : banque General MIDI GeneralUser GS (128 instruments + kits) jouée par TinySoundFont (MIT), téléchargée au premier usage depuis notre propre Release (empreinte vérifiée) ; navigateur de sons par famille ; import de packs de samples (zip/dossier) et packs libres CC0
 
 ## Phase 3 : remix
 - [ ] 3.1 StemSeparator + DemucsOnDevice (ONNX Runtime), téléchargement des modèles avec empreinte

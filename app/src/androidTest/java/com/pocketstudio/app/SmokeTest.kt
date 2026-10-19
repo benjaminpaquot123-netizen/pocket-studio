@@ -4,12 +4,17 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.pocketstudio.engine.NativeEngine
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
 import com.pocketstudio.app.latency.LatencyUiState
+import com.pocketstudio.app.rhythm.RhythmViewModel
+import com.pocketstudio.model.ProjectStore
+import java.io.File
 import com.pocketstudio.app.latency.LatencyViewModel
 import com.pocketstudio.engine.LatencyStart
 import com.pocketstudio.engine.LatencyState
@@ -31,22 +36,41 @@ class SmokeTest {
     @Test
     fun appStartsPlaysAndNavigates() {
         assertTrue("native engine must load", NativeEngine.isAvailable)
-        compose.onNodeWithText("Pocket Studio").assertIsDisplayed()
-
-        // The engine really runs: stream started and audio callbacks flowing.
         compose.waitUntil(10_000) { NativeEngine.streamInfo().let { it.running && it.callbacks > 0 } }
 
-        // Pressing play makes the engine output signal, not just the button change.
-        compose.onNodeWithTag("play").performClick()
-        compose.onNodeWithText("Arrêter").assertIsDisplayed()
+        // Rhythm screen: the starter groove plays and makes sound.
+        compose.onNodeWithTag("rhythm").assertIsDisplayed()
+        compose.onNodeWithTag("transport_play").performClick()
+        compose.waitUntil(5_000) { NativeEngine.currentStep() >= 0 }
         var heard = false
         compose.waitUntil(5_000) {
             heard = heard || Metrics.streamInfo.value.peak > 0.1f
             heard
         }
-        assertTrue("engine must produce sound after Play", heard)
-        compose.onNodeWithTag("play").performClick()
-        assertTrue("no NaN in the output", !NativeEngine.streamInfo().nonFinite)
+        assertTrue("drums must sound", heard)
+        compose.onNodeWithTag("transport_play").performClick()
+        compose.waitUntil(2_000) { NativeEngine.currentStep() == -1 }
+
+        // A live pad fires its lane.
+        val before = IntArray(NativeEngine.LANES).also { NativeEngine.laneTriggers(it) }
+        compose.onNodeWithTag("pad_4").performClick()
+        compose.waitUntil(2_000) {
+            IntArray(NativeEngine.LANES).also { NativeEngine.laneTriggers(it) }[4] > before[4]
+        }
+
+        // An edit survives the app going to the background (autosave flush on stop).
+        compose.onNodeWithTag("step_3").performClick()  // pad 4 (clap) is selected now
+        compose.activityRule.scenario.moveToState(androidx.lifecycle.Lifecycle.State.CREATED)
+        val store = ProjectStore(File(InstrumentationRegistry.getInstrumentation().targetContext.filesDir, "projects"))
+        var saved = false
+        for (i in 0 until 50) {
+            saved = store.load(RhythmViewModel.PROJECT_ID)?.drums?.lanes?.get(4)?.hits?.containsKey(3) == true
+            if (saved) break
+            Thread.sleep(100)
+        }
+        assertTrue("edit must be saved when the app goes to the background", saved)
+        compose.activityRule.scenario.moveToState(androidx.lifecycle.Lifecycle.State.RESUMED)
+        compose.waitUntil(10_000) { NativeEngine.streamInfo().let { it.running && it.callbacks > 0 } }
 
         // The microphone path delivers samples to the latency meter (the emulator mic is silent,
         // so only the plumbing is checked here, not the measured value).
@@ -67,11 +91,36 @@ class SmokeTest {
         }
         assertTrue("meter must run: $diagnostic", !diagnostic.contains("NoInput") && !diagnostic.contains("Interrupted"))
 
-        compose.onNodeWithTag("tab_Latence").performClick()
+        // Tools: test tone, then latency page; then the checklist.
+        compose.onNodeWithTag("tab_Outils").performClick()
+        compose.onNodeWithTag("tool_Son").performClick()
+        compose.onNodeWithTag("play").performClick()
+        compose.onNodeWithText("Arrêter").assertIsDisplayed()
+        compose.onNodeWithTag("play").performClick()
+        compose.onNodeWithTag("tool_Latence").performClick()
         compose.onNodeWithTag("latency").assertIsDisplayed()
 
-        compose.onNodeWithTag("tab_Recette").performClick()
+        compose.onNodeWithTag("tool_Recette").performClick()
         compose.onNodeWithTag("recette").assertIsDisplayed()
-        compose.onNodeWithText("Phase 0 : fondations").assertIsDisplayed()
+
+        compose.onNodeWithTag("tab_Mixeur").performClick()
+        compose.onNodeWithTag("mixer").assertIsDisplayed()
+        compose.onNodeWithTag("mute_0").performClick()
+        compose.onNodeWithTag("mute_0").performClick()
+
+        // Export: 4 bars rendered offline into a real 24-bit WAV with sound in it.
+        compose.onNodeWithTag("export").performScrollTo().performClick()
+        compose.waitUntil(60_000) { compose.onAllNodesWithTag("share").fetchSemanticsNodes().isNotEmpty() }
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val wav = File(context.cacheDir, "exports").listFiles()!!.maxBy { it.lastModified() }
+        val bytes = wav.readBytes()
+        assertEquals("RIFF", String(bytes, 0, 4))
+        assertEquals(24, bytes[34].toInt())
+        val loudest = (44 until bytes.size - 2 step 3).maxOf { i ->
+            val v = (bytes[i].toInt() and 0xFF) or ((bytes[i + 1].toInt() and 0xFF) shl 8) or (bytes[i + 2].toInt() shl 16)
+            kotlin.math.abs(v)
+        }
+        assertTrue("export has sound: $loudest", loudest > 800_000)
+        assertTrue("no NaN in the output", !NativeEngine.streamInfo().nonFinite)
     }
 }

@@ -1,14 +1,106 @@
 {
-  "id": "phase0",
-  "milestone": "Phase 0 : fondations",
+  "id": "phase1-rythme-acide-synthe",
+  "milestone": "Phase 1 : rythmes, basse acide et synthé",
   "items": [
-    { "id": "install", "title": "L'appli s'installe et s'ouvre sans planter", "hint": "Installe l'APK d'aperçu puis ouvre Pocket Studio." },
-    { "id": "sine", "title": "La sinusoïde est audible et propre", "hint": "Onglet Studio : appuie sur Jouer. Le son doit être continu, sans craquement." },
-    { "id": "controls", "title": "Hauteur et volume réagissent en douceur", "hint": "Bouge les deux curseurs pendant la lecture : pas de clic ni de saut." },
-    { "id": "xruns", "title": "Zéro décrochage après une minute", "hint": "Laisse jouer une minute, puis regarde « Décrochages » dans Studio." },
-    { "id": "headphones", "title": "Le son survit au branchement d'un casque", "hint": "Branche puis débranche un casque filaire ou USB-C pendant la lecture." },
-    { "id": "latency", "title": "La mesure de latence donne un résultat", "hint": "Onglet Latence, sans casque, volume à fond : lance la mesure (autorise le micro)." },
-    { "id": "update", "title": "Le lien de mise à jour fonctionne", "hint": "Au lancement, si une version plus récente existe, l'appli te la propose." },
-    { "id": "problem", "title": "« Signaler un problème » ouvre GitHub pré-rempli", "hint": "Bouton en bas de cet écran : vérifie que la page GitHub s'ouvre, inutile d'envoyer." }
+    {
+      "id": "play",
+      "title": "Jouer lance un rythme tout de suite",
+      "hint": "Onglet Rythme : appuie sur Jouer. Un premier groove (kick, caisse, charley) doit tourner."
+    },
+    {
+      "id": "pads",
+      "title": "Les 16 pads sonnent et s'allument",
+      "hint": "Tape chaque pad : chacun a son son, et s'allume quand il joue."
+    },
+    {
+      "id": "steps",
+      "title": "La grille de pas réagit au doigt",
+      "hint": "Choisis un pad, touche des cases : le coup s'ajoute ou s'enlève pendant la lecture, sans décalage."
+    },
+    {
+      "id": "velocity",
+      "title": "L'appui long rend un coup plus doux",
+      "hint": "Appui long sur une case allumée : elle se vide à moitié et le coup sonne moins fort. Encore un appui long : très doux, puis de nouveau fort."
+    },
+    {
+      "id": "tempo",
+      "title": "Tempo, Tap et swing changent le groove sans à-coup",
+      "hint": "Joue avec −/+, tape 4 fois sur Tap, bouge le swing pendant la lecture."
+    },
+    {
+      "id": "metronome",
+      "title": "Métronome et décompte",
+      "hint": "Active Métronome puis Décompte et relance : 4 clics avant le rythme."
+    },
+    {
+      "id": "undo",
+      "title": "Annuler et rétablir",
+      "hint": "Fais quelques changements puis utilise les flèches en haut à droite."
+    },
+    {
+      "id": "save",
+      "title": "Le rythme est retrouvé après fermeture",
+      "hint": "Modifie le rythme, ferme complètement l'appli, rouvre : tout est là."
+    },
+    {
+      "id": "sound",
+      "title": "Aucun craquement, même tout le kit en même temps",
+      "hint": "Remplis plusieurs pads sur beaucoup de pas et écoute une minute."
+    },
+    {
+      "id": "acid_play",
+      "title": "La basse acide joue avec le rythme",
+      "hint": "Onglet Acide : Jouer. La basse doit tourner, calée sur la batterie."
+    },
+    {
+      "id": "acid_generate",
+      "title": "« Génère-moi un pattern » donne une nouvelle ligne à chaque fois",
+      "hint": "Appuie plusieurs fois, en lecture : chaque ligne doit sonner acide et rester dans le temps."
+    },
+    {
+      "id": "acid_edit",
+      "title": "Modifier un pas : note, accent, slide, octave",
+      "hint": "Touche un pas, change la note avec −/+, active Accent puis Slide : on doit l'entendre."
+    },
+    {
+      "id": "acid_lock",
+      "title": "Le verrou garde un pas quand on régénère",
+      "hint": "Verrouille un pas, régénère : ce pas ne bouge pas."
+    },
+    {
+      "id": "acid_sound",
+      "title": "Les curseurs de son répondent (surtout Coupure et Résonance)",
+      "hint": "Bouge Coupure, Résonance, Enveloppe et Saturation pendant la lecture : le son « miaule »."
+    },
+    {
+      "id": "synth_keys",
+      "title": "Le clavier du synthé joue, même à plusieurs doigts",
+      "hint": "Onglet Synthé : joue un accord de 3 notes, change d'octave avec −/+."
+    },
+    {
+      "id": "synth_presets",
+      "title": "Les sons Basse, Lead, Nappe et Pluck sont bien différents",
+      "hint": "Essaie chaque son prêt à jouer, puis bouge Coupure et Résonance."
+    },
+    {
+      "id": "mixer_mute_solo",
+      "title": "Muet et Solo coupent bien la bonne piste",
+      "hint": "Lance le rythme et la basse, puis dans Mixeur essaie Muet et Solo sur chaque piste."
+    },
+    {
+      "id": "mixer_vu",
+      "title": "Les VU-mètres bougent et le son ne sature pas",
+      "hint": "Monte tous les volumes au maximum : le son doit rester propre."
+    },
+    {
+      "id": "export_wav",
+      "title": "L'export WAV s'écoute bien et se partage",
+      "hint": "Mixeur › Exporter 4 mesures, puis Partager (par exemple vers WhatsApp) et écoute le fichier."
+    },
+    {
+      "id": "background_play",
+      "title": "La musique continue écran éteint, et Arrêter dans la notification la coupe",
+      "hint": "Fais d'abord les réglages d'Outils › Arrière-plan. Lance le rythme, éteins l'écran 2 minutes, puis rallume et touche Arrêter dans la notification."
+    }
   ]
 }

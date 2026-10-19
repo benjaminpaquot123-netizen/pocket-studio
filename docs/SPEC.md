@@ -4,7 +4,7 @@ Seul endroit à relire avant de lancer. Change une lettre si tu n'es pas d'accor
 - D2 Nom de l'appli : « Pocket Studio »
 - D3 Priorité : A = bases musicales d'abord, remix en phase 3 (recommandé) | B = séparation de pistes et remix juste après la phase 0. Choix : A
 - D4 Mon feu vert : A = à la fin de chaque phase (recommandé) | B = à la fin de chaque jalon. Choix : A
-- D5 (ajoutée le 2026-10-18) Priorité acid : un jalon « Acide » (basse acide sur Open303 + séquenceur + générateur de patterns) passe juste après la phase 1, avant la phase 2.
+- D5 (ajoutée le 2026-10-18, avancée le même jour) Priorité acid : le jalon « Acide » (basse acide sur Open303 + séquenceur + générateur de patterns) passe pendant la phase 1, juste après la boîte à rythmes (1.3), avant le synthé soustractif (1.4).
 
 # Mission
 Tu es un développeur Android senior spécialisé en audio temps réel et en DSP, et tu pilotes ce projet de bout en bout. Construis l'application nommée en D2 : une appli Android native de création de musique électronique, facile à prendre en main mais complète et soignée, au niveau de Koala Sampler, Ableton Note, Novation Groovebox ou FL Studio Mobile.
@@ -72,6 +72,8 @@ Pistes à évaluer en priorité :
 14. Prise en main : projets de démo, modèles par genre (house, techno, drum & bass, trap, lo-fi, synthwave) qui préparent kit, tempo et gamme, astuces contextuelles.
 15. Outils de recette, dès la phase 0 : écran « Recette » listant les vérifications du jalon en cours (rédigées par toi), que je coche ✅ ou ❌ avec un commentaire facultatif ; bouton « Signaler un problème » ; rapport de crash proposé au lancement suivant. Chacun ouvre une issue GitHub pré-remplie (version, appareil, résultats, latence mesurée, nombre de décrochages audio, fin du journal) : je n'ai qu'à appuyer sur Envoyer. Si D1 = A, l'appli vérifie aussi les mises à jour au lancement et s'installe par-dessus en un geste.
 
+16. (Ajout de Benjamin, 2026-10-18) Bibliothèque de sons : tous les instruments classiques via une banque General MIDI libre (piano, cordes, cuivres, guitares, basses, orgues, batteries…), téléchargée au premier usage ; navigateur de sons ; import de packs de samples libres trouvés sur internet ou dans le téléphone.
+
 # Architecture technique
 - Kotlin + Jetpack Compose (Material 3), une seule activité, MVVM avec flux de données unidirectionnel, coroutines. Vues personnalisées sur Canvas pour formes d'onde, piano roll et grille de pas.
 - Moteur audio en C++20 (NDK, CMake) relié par JNI. Dans le callback audio : aucune allocation, aucun verrou, aucun log. Files lock-free SPSC pour les commandes et les mesures. Séquenceur à l'échantillon près dans le thread audio, jamais via des timers Kotlin.
@@ -98,7 +100,7 @@ Je ne dois jamais être le premier à découvrir qu'un APK ne s'installe pas, pl
 Travaille par phases, découpées en jalons dans ROADMAP.md. Chaque jalon livre un APK d'aperçu, la liste de recette à jour dans l'appli et son changelog. Mon feu vert (selon D4) se résume à fusionner une pull request : organise tes branches comme tu veux, pourvu que ça tienne en un seul bouton pour moi. Si D3 = B, la phase 3 passe juste après la phase 0.
 - Phase 0 : squelette, CI et Releases, moteur Oboe qui joue une sinusoïde, écran de mesure de latence, outils de recette.
 - Phase 1 (MVP jouable) : transport, boîte à rythmes 16 pas avec kit synthétisé, un synthé soustractif, mixeur simple, sauvegarde, export WAV.
-- Jalon Acide (juste après la phase 1, avant la phase 2) : basse acide basée sur Open303 (Robin Schmidt, licence MIT) ; séquenceur façon boîte acide des années 80, par pas : note, accent, slide, octave haut/bas ; réglages cutoff, résonance, env mod, decay, accent, accord, onde scie/carré ; une saturation juste derrière ; générateur de patterns acides façon The Endless Acid Banger. Aucun nom de marque Roland dans l'appli (ni « Roland », ni « TB-303 », ni « 303 » dans l'interface).
+- Jalon Acide (pendant la phase 1, juste après la boîte à rythmes) : basse acide basée sur Open303 (Robin Schmidt, licence MIT) ; séquenceur façon boîte acide des années 80, par pas : note, accent, slide, octave haut/bas ; réglages cutoff, résonance, env mod, decay, accent, accord, onde scie/carré ; une saturation juste derrière ; générateur de patterns acides façon The Endless Acid Banger. Aucun nom de marque Roland dans l'appli (ni « Roland », ni « TB-303 », ni « 303 » dans l'interface).
 - Phase 2 : sampler, découpe, import audio, piano roll, verrouillage de gamme, accords.
 - Phase 3 : séparation Demucs sur l'appareil, détection tempo/tonalité, mode Remix.
 - Phase 4 : effets complets, sidechain, automation, vues Session et Morceau, effets de performance.

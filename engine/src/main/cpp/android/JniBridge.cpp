@@ -4,6 +4,7 @@
 #include <mutex>
 
 #include "AudioHost.h"
+#include "OfflineRenderer.h"
 
 namespace {
 
@@ -28,9 +29,61 @@ JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_stop(JNIEnv*, j
     host().stop();
 }
 
-JNIEXPORT jboolean JNICALL Java_com_pocketstudio_engine_NativeEngine_post(JNIEnv*, jobject, jint type,
-                                                                          jfloat value) {
-    return host().post({static_cast<ps::CommandType>(type), value}) ? JNI_TRUE : JNI_FALSE;
+JNIEXPORT jboolean JNICALL Java_com_pocketstudio_engine_NativeEngine_nativePost(JNIEnv*, jobject, jint type,
+                                                                          jfloat value, jint a, jint b) {
+    return host().post({static_cast<ps::CommandType>(type), value, a, b}) ? JNI_TRUE : JNI_FALSE;
+}
+
+JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_currentStep(JNIEnv*, jobject) {
+    return host().engine().currentStep();
+}
+
+// --- Offline export: a private engine rendered on the caller's (worker) thread. ---
+
+static ps::OfflineRenderer* renderer(jlong handle) { return reinterpret_cast<ps::OfflineRenderer*>(handle); }
+
+JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_exportCreate(JNIEnv*, jobject) {
+    return reinterpret_cast<jlong>(new ps::OfflineRenderer(48000));
+}
+
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportPost(JNIEnv*, jobject, jlong handle, jint type,
+                                                                          jfloat value, jint a, jint b) {
+    renderer(handle)->post({static_cast<ps::CommandType>(type), value, a, b});
+}
+
+JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_exportRender(JNIEnv* env, jobject, jlong handle,
+                                                                            jstring path, jlong frames, jlong tail) {
+    const char* p = env->GetStringUTFChars(path, nullptr);
+    if (!p) return static_cast<jint>(ps::OfflineRenderer::Result::IoError);
+    const auto result = renderer(handle)->renderToWav(p, frames, tail);
+    env->ReleaseStringUTFChars(path, p);
+    return static_cast<jint>(result);
+}
+
+JNIEXPORT jfloat JNICALL Java_com_pocketstudio_engine_NativeEngine_exportProgress(JNIEnv*, jobject, jlong handle) {
+    return renderer(handle)->progress();
+}
+
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportCancel(JNIEnv*, jobject, jlong handle) {
+    renderer(handle)->cancel();
+}
+
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportDestroy(JNIEnv*, jobject, jlong handle) {
+    delete renderer(handle);
+}
+
+// Fills `out` (5 floats): channel peaks (drums, acid, synth), master peak, limiter gain.
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_mixerMeters(JNIEnv* env, jobject, jfloatArray out) {
+    auto& m = host().engine().mixer();
+    const jfloat values[] = {m.takeChannelPeak(0), m.takeChannelPeak(1), m.takeChannelPeak(2), m.takeMasterPeak(), m.limiterGain()};
+    env->SetFloatArrayRegion(out, 0, 5, values);
+}
+
+// Fills `out` (16 ints) with how many times each drum lane has fired, for pad lights.
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_laneTriggers(JNIEnv* env, jobject, jintArray out) {
+    jint values[ps::Engine::kLanes];
+    for (int i = 0; i < ps::Engine::kLanes; ++i) values[i] = static_cast<jint>(host().engine().laneTriggerCount(i));
+    env->SetIntArrayRegion(out, 0, ps::Engine::kLanes, values);
 }
 
 // Layout must match NativeEngine.StreamInfo.fromArray.

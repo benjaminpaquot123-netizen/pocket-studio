@@ -40,3 +40,30 @@ Relecteur : sous-agent neuf, n'ayant pas écrit le code. Bilan : 4 graves, 9 moy
 - La rotation de l'écran coupe brièvement le son : disparaîtra avec le service de lecture (phase 1).
 - Captures d'écran enregistrées mais jamais comparées : comparaison à activer quand l'interface sera stabilisée.
 - Pas encore de tests pour la logique de reconnexion d'`AudioHost` (dépend d'Android) ni pour `LatencyViewModel`.
+
+## Phase 1 (2026-10-18)
+Relecteur : sous-agent neuf, n'ayant pas écrit le code (89 fichiers). Bilan : 2 graves, 12 mineurs. Callback audio jugé sain de bout en bout (séquenceur, batterie, Open303, synthé, mixeur : aucune allocation, verrou, log ni JNI) ; poignée native de l'export sans risque d'usage après libération.
+
+Pendant la phase, le test émulateur a aussi attrapé un plantage du bouton Exporter (fonctions JNI `internal` renommées par Kotlin) : corrigé, et `scripts/check-jni.sh` vérifie désormais en CI que chaque fonction native a son code C++.
+
+### Corrigé
+| # | Gravité | Problème | Correction |
+| --- | --- | --- | --- |
+| 1 | Grave | Note du synthé coincée si le geste est annulé (octave changée doigt posé, changement d'onglet, sortie de l'appli) | `noteOff` dans un `finally` ; tout le synthé relâché en quittant l'onglet ou l'appli |
+| 2 | Grave | Projet illisible remplacé en silence par le projet de départ, puis écrasé à la première sauvegarde | Le dossier est mis de côté (`projet-1-illisible-…`) et un message prévient Benjamin ; test Robolectric |
+| 4 | Mineur | Renommage et copie de secours non synchronisés sur disque | fsync de la copie et du dossier |
+| 5 | Mineur | Mixeur non réparé au chargement (fichier abîmé → plantage) | `Mixer.sanitized()` : 16 tranches, volume et pan bornés ; test |
+| 7 | Mineur | Lecture/arrêt très rapides : risque de plantage du service de premier plan | `startForeground` dès `onCreate` |
+| 8 | Mineur | Générateur aléatoire partagé entre le fil audio et l'export | État par fil (`_Thread_local`) |
+| 10 | Mineur | Échec de préparation du fichier d'export : export bloqué jusqu'au redémarrage | Fichier préparé avant de créer le moteur hors-ligne, message d'erreur |
+| 11 | Mineur | Un nouvel export effaçait un fichier encore en cours de partage | Seuls les exports de plus d'une heure sont effacés |
+| 3 | Mineur | Erreur de sauvegarde jamais affichée ; une annulation comptée comme erreur | Bandeau orange en haut tant que la sauvegarde échoue ; annulation relancée, pas notée (2026-10-19) |
+
+### Reste à faire (noté, non bloquant)
+| # | Problème | Piste |
+| --- | --- | --- |
+| 6 | Retour de `nativePost` ignoré : ~1 200 commandes à chaque synchro, le moteur peut diverger si la file déborde flux coupé | Commande groupée « charger le motif » ou resynchro signalée |
+| 9 | Annuler illimité : la mémoire grandit sur de très longues sessions | Gardé illimité (exigé par la SPEC) : les états immuables partagent leurs parties inchangées, quelques Ko par étape ; à mesurer quand les samples arriveront (phase 2) |
+| 12 | Tête de lecture acide = pas batterie modulo longueur acide | Lire le pas acide depuis le moteur quand les longueurs deviendront réglables |
+| 13 | `transportRunning()`, `synthActiveVoices()`, `acidNotesPlayed()` non atomiques | Réservés aux tests ; les rendre atomiques avant tout usage UI |
+| 14 | Tests : la sauvegarde en arrière-plan passerait sans `flush()` ; rien ne vérifie l'absence d'allocation dans le callback ; pas de test du service | Délai d'autosave allongé en test ; crochet `malloc` dans les tests Linux ; test émulateur du service |

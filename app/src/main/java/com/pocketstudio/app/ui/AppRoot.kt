@@ -19,12 +19,18 @@ import androidx.compose.material.icons.filled.Equalizer
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.Piano
 import androidx.compose.material.icons.filled.Tune
+import android.content.res.Configuration
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.NavigationRail
+import androidx.compose.material3.NavigationRailItem
+import androidx.compose.material3.NavigationRailItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -134,171 +140,195 @@ fun AppRoot() {
         if (granted) latencyVm.measure()
     }
 
+    val landscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
     Scaffold(
         containerColor = Neon.Background,
         bottomBar = {
-            NavigationBar(containerColor = Neon.Surface) {
-                AppTab.entries.forEach { t ->
-                    NavigationBarItem(
-                        selected = tab == t,
-                        onClick = { tab = t },
-                        icon = { Icon(t.icon, contentDescription = null) },
-                        label = { Text(t.label) },
-                        modifier = Modifier.testTag("tab_${t.name}"),
-                        colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = Neon.Cyan,
-                            selectedTextColor = Neon.Cyan,
-                            indicatorColor = Neon.SurfaceHigh,
-                        ),
-                    )
+            if (!landscape) {
+                NavigationBar(containerColor = Neon.Surface) {
+                    AppTab.entries.forEach { t ->
+                        NavigationBarItem(
+                            selected = tab == t,
+                            onClick = { tab = t },
+                            icon = { Icon(t.icon, contentDescription = null) },
+                            label = { Text(t.label) },
+                            modifier = Modifier.testTag("tab_${t.name}"),
+                            colors = NavigationBarItemDefaults.colors(
+                                selectedIconColor = Neon.Cyan,
+                                selectedTextColor = Neon.Cyan,
+                                indicatorColor = Neon.SurfaceHigh,
+                            ),
+                        )
+                    }
                 }
             }
         },
     ) { padding ->
-        Box(Modifier.padding(padding)) {
-            when (tab) {
-                AppTab.Rythme -> {
-                    val project by rhythmVm.project.collectAsStateWithLifecycle()
-                    val transport by rhythmVm.transport.collectAsStateWithLifecycle()
-                    val live by rhythmVm.live.collectAsStateWithLifecycle()
-                    val canUndo by rhythmVm.session.canUndo.collectAsStateWithLifecycle()
-                    val canRedo by rhythmVm.session.canRedo.collectAsStateWithLifecycle()
-                    LaunchedEffect(Unit) {
-                        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollLive() }
+        Row(Modifier.padding(padding)) {
+            // Landscape: tabs on the side so the screen keeps its height (wider synth keyboard).
+            if (landscape) {
+                NavigationRail(containerColor = Neon.Surface) {
+                    AppTab.entries.forEach { t ->
+                        NavigationRailItem(
+                            selected = tab == t,
+                            onClick = { tab = t },
+                            icon = { Icon(t.icon, contentDescription = null) },
+                            label = { Text(t.label) },
+                            modifier = Modifier.testTag("tab_${t.name}"),
+                            colors = NavigationRailItemDefaults.colors(
+                                selectedIconColor = Neon.Cyan,
+                                selectedTextColor = Neon.Cyan,
+                                indicatorColor = Neon.SurfaceHigh,
+                            ),
+                        )
                     }
-                    RhythmScreen(
-                        project = project,
-                        transport = transport,
-                        live = live,
-                        canUndo = canUndo,
-                        canRedo = canRedo,
-                        actions = RhythmActions(
-                            togglePlay = rhythmVm::togglePlay,
-                            toggleMetronome = rhythmVm::toggleMetronome,
-                            toggleCountIn = rhythmVm::toggleCountIn,
-                            hitPad = rhythmVm::hitPad,
-                            toggleStep = rhythmVm::toggleStep,
-                            cycleVelocity = rhythmVm::cycleVelocity,
-                            clearPad = rhythmVm::clearPad,
-                            nudgeTempo = rhythmVm::nudgeTempo,
-                            tapTempo = rhythmVm::tapTempo,
-                            setSwing = rhythmVm::setSwing,
-                            undo = rhythmVm::undo,
-                            redo = rhythmVm::redo,
-                        ),
-                    )
                 }
-                AppTab.Acide -> {
-                    val project by rhythmVm.project.collectAsStateWithLifecycle()
-                    val transport by rhythmVm.transport.collectAsStateWithLifecycle()
-                    val live by rhythmVm.live.collectAsStateWithLifecycle()
-                    val selected by rhythmVm.selectedAcidStep.collectAsStateWithLifecycle()
-                    LaunchedEffect(Unit) {
-                        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollLive() }
-                    }
-                    AcidScreen(
-                        acid = project.acid,
-                        playing = transport.playing,
-                        currentStep = live.currentStep,
-                        selected = selected,
-                        actions = AcidActions(
-                            togglePlay = rhythmVm::togglePlay,
-                            generate = rhythmVm::generateAcid,
-                            selectStep = rhythmVm::selectAcidStep,
-                            editStep = rhythmVm::editAcidStep,
-                            toggleLock = rhythmVm::toggleAcidLock,
-                            setSound = rhythmVm::setAcidSound,
-                            shiftRoot = rhythmVm::shiftAcidRoot,
-                            setDensity = rhythmVm::setAcidDensity,
-                        ),
-                    )
-                }
-                AppTab.Synthe -> {
-                    DisposableEffect(Unit) { onDispose { rhythmVm.synthAllOff() } }
-                    val project by rhythmVm.project.collectAsStateWithLifecycle()
-                    val octave by rhythmVm.keyboardOctave.collectAsStateWithLifecycle()
-                    SynthScreen(
-                        patch = project.synth,
-                        octave = octave,
-                        actions = SynthActions(
-                            noteOn = rhythmVm::synthNoteOn,
-                            noteOff = rhythmVm::synthNoteOff,
-                            shiftOctave = rhythmVm::shiftKeyboardOctave,
-                            setParam = rhythmVm::setSynthParam,
-                            applyPreset = rhythmVm::applySynthPreset,
-                        ),
-                    )
-                }
-                AppTab.Mixeur -> {
-                    val project by rhythmVm.project.collectAsStateWithLifecycle()
-                    val meters by rhythmVm.meters.collectAsStateWithLifecycle()
-                    val export by rhythmVm.export.collectAsStateWithLifecycle()
-                    LaunchedEffect(Unit) {
-                        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollMeters() }
-                    }
-                    MixerScreen(
-                        channels = project.mixer.channels,
-                        meters = meters,
-                        actions = MixerActions(
-                            setVolume = rhythmVm::setChannelVolume,
-                            setPan = rhythmVm::setChannelPan,
-                            toggleMute = rhythmVm::toggleMute,
-                            toggleSolo = rhythmVm::toggleSolo,
-                            setExportBars = rhythmVm::setExportBars,
-                            export = rhythmVm::exportWav,
-                            cancelExport = rhythmVm::cancelExport,
-                            share = { export.file?.let { WavExporter.share(context, it) } },
-                        ),
-                        export = export,
-                    )
-                }
-                AppTab.Outils -> Column {
-                    TabRow(selectedTabIndex = toolPage.ordinal, containerColor = Neon.Surface, contentColor = Neon.Cyan) {
-                        ToolPage.entries.forEach { page ->
-                            Tab(
-                                selected = toolPage == page,
-                                onClick = { toolPage = page },
-                                text = { Text(page.label) },
-                                modifier = Modifier.testTag("tool_${page.name}"),
-                            )
+            }
+            Box(Modifier.weight(1f)) {
+                when (tab) {
+                    AppTab.Rythme -> {
+                        val project by rhythmVm.project.collectAsStateWithLifecycle()
+                        val transport by rhythmVm.transport.collectAsStateWithLifecycle()
+                        val live by rhythmVm.live.collectAsStateWithLifecycle()
+                        val canUndo by rhythmVm.session.canUndo.collectAsStateWithLifecycle()
+                        val canRedo by rhythmVm.session.canRedo.collectAsStateWithLifecycle()
+                        LaunchedEffect(Unit) {
+                            lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollLive() }
                         }
+                        RhythmScreen(
+                            project = project,
+                            transport = transport,
+                            live = live,
+                            canUndo = canUndo,
+                            canRedo = canRedo,
+                            actions = RhythmActions(
+                                togglePlay = rhythmVm::togglePlay,
+                                toggleMetronome = rhythmVm::toggleMetronome,
+                                toggleCountIn = rhythmVm::toggleCountIn,
+                                hitPad = rhythmVm::hitPad,
+                                toggleStep = rhythmVm::toggleStep,
+                                cycleVelocity = rhythmVm::cycleVelocity,
+                                clearPad = rhythmVm::clearPad,
+                                nudgeTempo = rhythmVm::nudgeTempo,
+                                tapTempo = rhythmVm::tapTempo,
+                                setSwing = rhythmVm::setSwing,
+                                undo = rhythmVm::undo,
+                                redo = rhythmVm::redo,
+                            ),
+                        )
                     }
-                    when (toolPage) {
-                        ToolPage.Recette -> {
-                            val state by recetteVm.state.collectAsStateWithLifecycle()
-                            RecetteScreen(
-                                state = state,
-                                stream = stream,
-                                roundTripMs = roundTrip,
-                                onUpdate = recetteVm::update,
-                                onSendReport = { recetteVm.buildReport { openUri(context, it) } },
-                                onReportProblem = { text -> recetteVm.buildProblem(text) { openUri(context, it) } },
-                            )
+                    AppTab.Acide -> {
+                        val project by rhythmVm.project.collectAsStateWithLifecycle()
+                        val transport by rhythmVm.transport.collectAsStateWithLifecycle()
+                        val live by rhythmVm.live.collectAsStateWithLifecycle()
+                        val selected by rhythmVm.selectedAcidStep.collectAsStateWithLifecycle()
+                        LaunchedEffect(Unit) {
+                            lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollLive() }
                         }
-                        ToolPage.Fond -> BackgroundPage()
-                        ToolPage.Latence -> {
-                            val state by latencyVm.state.collectAsStateWithLifecycle()
-                            LatencyScreen(
-                                state = state,
-                                stream = stream,
-                                lastRoundTripMs = roundTrip,
-                                engineAvailable = engineAvailable,
-                                onMeasure = {
-                                    if (hasMic(context)) latencyVm.measure()
-                                    else micPermission.launch(Manifest.permission.RECORD_AUDIO)
-                                },
-                            )
+                        AcidScreen(
+                            acid = project.acid,
+                            playing = transport.playing,
+                            currentStep = live.currentStep,
+                            selected = selected,
+                            actions = AcidActions(
+                                togglePlay = rhythmVm::togglePlay,
+                                generate = rhythmVm::generateAcid,
+                                selectStep = rhythmVm::selectAcidStep,
+                                editStep = rhythmVm::editAcidStep,
+                                toggleLock = rhythmVm::toggleAcidLock,
+                                setSound = rhythmVm::setAcidSound,
+                                shiftRoot = rhythmVm::shiftAcidRoot,
+                                setDensity = rhythmVm::setAcidDensity,
+                            ),
+                        )
+                    }
+                    AppTab.Synthe -> {
+                        DisposableEffect(Unit) { onDispose { rhythmVm.synthAllOff() } }
+                        val project by rhythmVm.project.collectAsStateWithLifecycle()
+                        val octave by rhythmVm.keyboardOctave.collectAsStateWithLifecycle()
+                        SynthScreen(
+                            patch = project.synth,
+                            octave = octave,
+                            actions = SynthActions(
+                                noteOn = rhythmVm::synthNoteOn,
+                                noteOff = rhythmVm::synthNoteOff,
+                                shiftOctave = rhythmVm::shiftKeyboardOctave,
+                                setParam = rhythmVm::setSynthParam,
+                                applyPreset = rhythmVm::applySynthPreset,
+                            ),
+                        )
+                    }
+                    AppTab.Mixeur -> {
+                        val project by rhythmVm.project.collectAsStateWithLifecycle()
+                        val meters by rhythmVm.meters.collectAsStateWithLifecycle()
+                        val export by rhythmVm.export.collectAsStateWithLifecycle()
+                        LaunchedEffect(Unit) {
+                            lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollMeters() }
                         }
-                        ToolPage.Son -> {
-                            val state by studioVm.state.collectAsStateWithLifecycle()
-                            StudioScreen(
-                                state = state,
-                                stream = stream,
-                                engineAvailable = engineAvailable,
-                                onTogglePlay = studioVm::togglePlaying,
-                                onFrequency = studioVm::setFrequency,
-                                onVolume = studioVm::setVolume,
-                            )
+                        MixerScreen(
+                            channels = project.mixer.channels,
+                            meters = meters,
+                            actions = MixerActions(
+                                setVolume = rhythmVm::setChannelVolume,
+                                setPan = rhythmVm::setChannelPan,
+                                toggleMute = rhythmVm::toggleMute,
+                                toggleSolo = rhythmVm::toggleSolo,
+                                setExportBars = rhythmVm::setExportBars,
+                                export = rhythmVm::exportWav,
+                                cancelExport = rhythmVm::cancelExport,
+                                share = { export.file?.let { WavExporter.share(context, it) } },
+                            ),
+                            export = export,
+                        )
+                    }
+                    AppTab.Outils -> Column {
+                        TabRow(selectedTabIndex = toolPage.ordinal, containerColor = Neon.Surface, contentColor = Neon.Cyan) {
+                            ToolPage.entries.forEach { page ->
+                                Tab(
+                                    selected = toolPage == page,
+                                    onClick = { toolPage = page },
+                                    text = { Text(page.label) },
+                                    modifier = Modifier.testTag("tool_${page.name}"),
+                                )
+                            }
+                        }
+                        when (toolPage) {
+                            ToolPage.Recette -> {
+                                val state by recetteVm.state.collectAsStateWithLifecycle()
+                                RecetteScreen(
+                                    state = state,
+                                    stream = stream,
+                                    roundTripMs = roundTrip,
+                                    onUpdate = recetteVm::update,
+                                    onSendReport = { recetteVm.buildReport { openUri(context, it) } },
+                                    onReportProblem = { text -> recetteVm.buildProblem(text) { openUri(context, it) } },
+                                )
+                            }
+                            ToolPage.Fond -> BackgroundPage()
+                            ToolPage.Latence -> {
+                                val state by latencyVm.state.collectAsStateWithLifecycle()
+                                LatencyScreen(
+                                    state = state,
+                                    stream = stream,
+                                    lastRoundTripMs = roundTrip,
+                                    engineAvailable = engineAvailable,
+                                    onMeasure = {
+                                        if (hasMic(context)) latencyVm.measure()
+                                        else micPermission.launch(Manifest.permission.RECORD_AUDIO)
+                                    },
+                                )
+                            }
+                            ToolPage.Son -> {
+                                val state by studioVm.state.collectAsStateWithLifecycle()
+                                StudioScreen(
+                                    state = state,
+                                    stream = stream,
+                                    engineAvailable = engineAvailable,
+                                    onTogglePlay = studioVm::togglePlaying,
+                                    onFrequency = studioVm::setFrequency,
+                                    onVolume = studioVm::setVolume,
+                                )
+                            }
                         }
                     }
                 }

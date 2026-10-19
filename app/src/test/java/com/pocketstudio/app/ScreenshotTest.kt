@@ -176,4 +176,14 @@ class ScreenshotTest {
             {}, {}, {},
         )
     }
+
+    @Test
+    @Config(qualifiers = "w860dp-h380dp-land-xxhdpi")
+    fun synthLandscape() = shoot("synth_landscape") {
+        com.pocketstudio.app.synth.SynthScreen(
+            patch = com.pocketstudio.model.SynthPatch.PRESETS[2].second,
+            octave = 3,
+            actions = com.pocketstudio.app.synth.SynthActions(),
+        )
+    }
 }

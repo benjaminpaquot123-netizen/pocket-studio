@@ -44,6 +44,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.pocketstudio.model.SynthPatch
 import com.pocketstudio.ui.MonoStyle
@@ -81,61 +82,106 @@ private val FILTERS = listOf(0f to "Ladder", 0.3f to "Passe-bas", 0.6f to "Passe
 @Composable
 fun SynthScreen(patch: SynthPatch, octave: Int, actions: SynthActions, modifier: Modifier = Modifier) {
     var advanced by rememberSaveable { mutableStateOf(false) }
-    Column(
-        modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp).testTag("synth"),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
-    ) {
-        NeonCard {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                SectionLabel("Clavier")
-                Box(Modifier.weight(1f))
-                IconButton(onClick = { actions.shiftOctave(-1) }) { Icon(Icons.Filled.Remove, contentDescription = "Octave plus bas") }
-                Text("Octave $octave", style = MonoStyle, color = Neon.Cyan)
-                IconButton(onClick = { actions.shiftOctave(1) }) { Icon(Icons.Filled.Add, contentDescription = "Octave plus haut") }
-            }
-            Keyboard(firstNote = 12 * (octave + 1), octaves = 2, onNoteOn = actions.noteOn, onNoteOff = actions.noteOff)
-        }
-
-        NeonCard {
-            SectionLabel("Sons prêts à jouer")
-            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                SynthPatch.PRESETS.forEach { (name, preset) ->
-                    FilterChip(
-                        selected = patch.sanitized() == preset.sanitized(),
-                        onClick = { actions.applyPreset(preset) },
-                        label = { Text(name) },
-                        colors = chipColors(),
-                        modifier = Modifier.testTag("preset_$name"),
-                    )
+    BoxWithConstraints(modifier.fillMaxSize().testTag("synth")) {
+        val keyboardHeight = (maxHeight * 0.45f).coerceIn(110.dp, 220.dp)
+        if (maxWidth > maxHeight) {
+            // Landscape: one compact line (presets, octave), the settings scroll, and a wide
+            // three-octave keyboard stays under the thumbs.
+            Column(Modifier.fillMaxSize().padding(8.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    PresetChips(patch, actions)
+                    Box(Modifier.weight(1f))
+                    OctaveControl(octave, actions)
                 }
-            }
-        }
-
-        NeonCard {
-            SectionLabel("Son")
-            Text("Forme d'onde", style = MaterialTheme.typography.bodyMedium)
-            ChoiceRow(WAVES, patch.get(SynthPatch.OSC1_WAVE)) { v ->
-                actions.setParam(SynthPatch.OSC1_WAVE, v)
-                actions.setParam(SynthPatch.OSC2_WAVE, v)
-            }
-            EASY.forEach { (index, label) -> ParamSlider(label, patch.get(index)) { actions.setParam(index, it) } }
-            TextButton(onClick = { advanced = !advanced }) {
-                Icon(if (advanced) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore, contentDescription = null)
-                Text(if (advanced) "Masquer les réglages avancés" else "Réglages avancés")
-            }
-            AnimatedVisibility(visible = advanced) {
-                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    Text("Oscillateur 2", style = MaterialTheme.typography.bodyMedium)
-                    ChoiceRow(WAVES, patch.get(SynthPatch.OSC2_WAVE)) { actions.setParam(SynthPatch.OSC2_WAVE, it) }
-                    ChoiceRow(listOf(0f to "Octave −1", 0.5f to "Même octave", 1f to "Octave +1"), patch.get(SynthPatch.OSC2_OCTAVE)) {
-                        actions.setParam(SynthPatch.OSC2_OCTAVE, it)
-                    }
-                    Text("Type de filtre", style = MaterialTheme.typography.bodyMedium)
-                    ChoiceRow(FILTERS, patch.get(SynthPatch.FILTER_TYPE)) { actions.setParam(SynthPatch.FILTER_TYPE, it) }
-                    ADVANCED.forEach { (index, label) -> ParamSlider(label, patch.get(index)) { actions.setParam(index, it) } }
+                Column(Modifier.weight(1f).verticalScroll(rememberScrollState())) {
+                    SoundCard(patch, actions, advanced) { advanced = it }
                 }
+                Keyboard(
+                    firstNote = 12 * (octave + 1), octaves = 3,
+                    onNoteOn = actions.noteOn, onNoteOff = actions.noteOff, height = keyboardHeight,
+                )
+            }
+        } else {
+            Column(
+                Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
+                KeyboardCard(octave, octaves = 2, height = 150.dp, actions = actions)
+                PresetsCard(patch, actions)
+                SoundCard(patch, actions, advanced) { advanced = it }
             }
         }
+    }
+}
+
+@Composable
+private fun KeyboardCard(octave: Int, octaves: Int, height: Dp, actions: SynthActions) {
+    NeonCard {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            SectionLabel("Clavier")
+            Box(Modifier.weight(1f))
+            OctaveControl(octave, actions)
+        }
+        Keyboard(firstNote = 12 * (octave + 1), octaves = octaves, onNoteOn = actions.noteOn, onNoteOff = actions.noteOff, height = height)
+    }
+}
+
+@Composable
+private fun PresetsCard(patch: SynthPatch, actions: SynthActions) {
+    NeonCard {
+        SectionLabel("Sons prêts à jouer")
+        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) { PresetChips(patch, actions) }
+    }
+}
+
+@Composable
+private fun SoundCard(patch: SynthPatch, actions: SynthActions, advanced: Boolean, setAdvanced: (Boolean) -> Unit) {
+    NeonCard {
+        SectionLabel("Son")
+        Text("Forme d'onde", style = MaterialTheme.typography.bodyMedium)
+        ChoiceRow(WAVES, patch.get(SynthPatch.OSC1_WAVE)) { v ->
+            actions.setParam(SynthPatch.OSC1_WAVE, v)
+            actions.setParam(SynthPatch.OSC2_WAVE, v)
+        }
+        EASY.forEach { (index, label) -> ParamSlider(label, patch.get(index)) { actions.setParam(index, it) } }
+        TextButton(onClick = { setAdvanced(!advanced) }) {
+            Icon(if (advanced) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore, contentDescription = null)
+            Text(if (advanced) "Masquer les réglages avancés" else "Réglages avancés")
+        }
+        AnimatedVisibility(visible = advanced) {
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Text("Oscillateur 2", style = MaterialTheme.typography.bodyMedium)
+                ChoiceRow(WAVES, patch.get(SynthPatch.OSC2_WAVE)) { actions.setParam(SynthPatch.OSC2_WAVE, it) }
+                ChoiceRow(listOf(0f to "Octave −1", 0.5f to "Même octave", 1f to "Octave +1"), patch.get(SynthPatch.OSC2_OCTAVE)) {
+                    actions.setParam(SynthPatch.OSC2_OCTAVE, it)
+                }
+                Text("Type de filtre", style = MaterialTheme.typography.bodyMedium)
+                ChoiceRow(FILTERS, patch.get(SynthPatch.FILTER_TYPE)) { actions.setParam(SynthPatch.FILTER_TYPE, it) }
+                ADVANCED.forEach { (index, label) -> ParamSlider(label, patch.get(index)) { actions.setParam(index, it) } }
+            }
+        }
+    }
+}
+
+@Composable
+private fun OctaveControl(octave: Int, actions: SynthActions) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        IconButton(onClick = { actions.shiftOctave(-1) }) { Icon(Icons.Filled.Remove, contentDescription = "Octave plus bas") }
+        Text("Octave $octave", style = MonoStyle, color = Neon.Cyan)
+        IconButton(onClick = { actions.shiftOctave(1) }) { Icon(Icons.Filled.Add, contentDescription = "Octave plus haut") }
+    }
+}
+
+@Composable
+private fun PresetChips(patch: SynthPatch, actions: SynthActions) {
+    SynthPatch.PRESETS.forEach { (name, preset) ->
+        FilterChip(
+            selected = patch.sanitized() == preset.sanitized(),
+            onClick = { actions.applyPreset(preset) },
+            label = { Text(name) },
+            colors = chipColors(),
+            modifier = Modifier.testTag("preset_$name"),
+        )
     }
 }
 
@@ -170,9 +216,9 @@ private val WHITE_OFFSETS = listOf(0, 2, 4, 5, 7, 9, 11)
 
 /** Multi-touch piano keyboard: every key handles its own finger. */
 @Composable
-fun Keyboard(firstNote: Int, octaves: Int, onNoteOn: (Int) -> Unit, onNoteOff: (Int) -> Unit) {
+fun Keyboard(firstNote: Int, octaves: Int, onNoteOn: (Int) -> Unit, onNoteOff: (Int) -> Unit, height: Dp = 150.dp) {
     val whiteCount = 7 * octaves
-    BoxWithConstraints(Modifier.fillMaxWidth().height(150.dp).testTag("keyboard")) {
+    BoxWithConstraints(Modifier.fillMaxWidth().height(height).testTag("keyboard")) {
         val whiteWidth = maxWidth / whiteCount
         Row(Modifier.fillMaxSize()) {
             for (w in 0 until whiteCount) {
@@ -186,7 +232,7 @@ fun Keyboard(firstNote: Int, octaves: Int, onNoteOn: (Int) -> Unit, onNoteOff: (
             Key(
                 note,
                 isBlack = true,
-                Modifier.offset(x = whiteWidth * (w + 1) - whiteWidth * 0.32f).width(whiteWidth * 0.64f).height(92.dp),
+                Modifier.offset(x = whiteWidth * (w + 1) - whiteWidth * 0.32f).width(whiteWidth * 0.64f).height(height * 0.61f),
                 onNoteOn,
                 onNoteOff,
             )

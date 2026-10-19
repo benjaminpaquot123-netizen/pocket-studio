@@ -29,7 +29,7 @@
 - Recette #5 (rythme) : l'appui long « plus doux » n'était pas perceptible. La case se remplit désormais selon la force (fort / moyen / doux = 1 / 0,5 / 0,2, soit −6 et −14 dB).
 
 ## À retenir pour la suite
-- Demande de Benjamin : mode paysage (en particulier pour le synthé : clavier plus large). À prévoir dans la mise en page des écrans.
+- Mode paysage : fait pour la navigation (onglets sur le côté) et le synthé (clavier 3 octaves). Les autres écrans tournent mais gardent la mise en page portrait : à adapter au fil des phases.
 - Afficher une « latence de jeu » (sortie + tactile) à côté de l'aller-retour ; essayer un buffer d'un seul burst.
 - MagicOS chiffre logcat (bloc HKS…HKE) : remplacer `LogTail` par un journal circulaire interne à l'appli.
 - Recette phase 0 : issues #2 et #3 (doublon), 8/8 ✅, fermées.

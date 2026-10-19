@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -199,11 +200,7 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, actions: Rhy
                     val velocity = hits[step]?.velocity
                     val isBeat = step % 4 == 0
                     val playing = step == currentStep
-                    val fill = when {
-                        velocity != null -> color.copy(alpha = 0.35f + 0.65f * velocity)
-                        isBeat -> Neon.SurfaceHigh
-                        else -> Neon.Surface
-                    }
+                    val fill = if (isBeat) Neon.SurfaceHigh else Neon.Surface
                     Box(
                         modifier = Modifier
                             .weight(1f)
@@ -221,6 +218,10 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, actions: Rhy
                             .testTag("step_$step"),
                         contentAlignment = Alignment.BottomCenter,
                     ) {
+                        // The hit fills the cell up to its strength: full, two thirds or one third.
+                        if (velocity != null) {
+                            Box(Modifier.fillMaxWidth().fillMaxHeight(velocity.coerceIn(0.2f, 1f)).background(color))
+                        }
                         if (isBeat) {
                             Text(
                                 "${step / 4 + 1}",
@@ -234,7 +235,7 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, actions: Rhy
             }
         }
         Text(
-            "Touche une case pour ajouter un coup, appui long pour le rendre plus doux.",
+            "Touche une case pour ajouter un coup. Appui long sur un coup : fort → moyen → doux (la case se vide à moitié).",
             style = MaterialTheme.typography.bodySmall,
             color = Neon.TextSecondary,
         )

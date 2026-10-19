@@ -320,10 +320,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val lane = _transport.value.selectedPad
         session.edit { p ->
             val current = p.drums.lanes[lane].hits[step]?.velocity
+            // Strong 1.0, medium 0.5 (−6 dB), soft 0.2 (−14 dB): clearly audible steps.
             val next = when {
                 current == null -> 1f
-                current > 0.8f -> 0.6f
-                current > 0.45f -> 0.3f
+                current > 0.75f -> 0.5f
+                current > 0.35f -> 0.2f
                 else -> 1f
             }
             val lanes = p.drums.lanes.toMutableList()

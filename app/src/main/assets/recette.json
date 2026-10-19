@@ -20,7 +20,7 @@
     {
       "id": "velocity",
       "title": "L'appui long rend un coup plus doux",
-      "hint": "Appui long sur une case allumée : elle pâlit et le coup sonne moins fort."
+      "hint": "Appui long sur une case allumée : elle se vide à moitié et le coup sonne moins fort. Encore un appui long : très doux, puis de nouveau fort."
     },
     {
       "id": "tempo",

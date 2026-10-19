@@ -109,7 +109,7 @@ class ScreenshotTest {
     fun rhythm() = shoot("rhythm") {
         var drums = DrumPattern()
         DrumKitInfo.starterHits.forEach { (lane, steps) -> steps.forEach { drums = drums.toggle(lane, it) } }
-        drums = drums.toggle(0, 10, 0.6f)
+        drums = drums.toggle(0, 10, 0.5f).toggle(0, 14, 0.2f)
         RhythmScreen(
             project = Project(tempoBpm = 124.0, swing = 0.2, drums = drums),
             transport = TransportUi(playing = true, metronome = true, selectedPad = 0),

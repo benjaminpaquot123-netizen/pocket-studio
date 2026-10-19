@@ -26,6 +26,8 @@
 - Jalon 1.6 (export) : `WavWriter` (24 bits, dither triangulaire) + `OfflineRenderer` (moteur privé, plus rapide que le temps réel, arrêt pile à la fin + 2 s de queue) ; le projet lui est décrit par le même code de synchro que le moteur en direct (`NativeEngine.captureInto`). Carte « Exporter en WAV » dans le Mixeur (1 à 16 mesures, progression, annuler), copie dans Musique › Pocket Studio, bouton Partager. Tests Linux : en-tête, écrêtage sans retournement, rendu identique à l'échantillon près, annulation, erreur disque.
 - Jalon 1.6 (fond) : `PlaybackService` (service de premier plan « lecture multimédia ») démarré avec le transport, notification avec bouton Arrêter ; le moteur reste allumé en arrière-plan seulement pendant la lecture. Page Outils › Arrière-plan : notification, batterie sans restriction, réglage Honor « Lancement d'applications » guidé.
 
+- Recette #5 (rythme) : l'appui long « plus doux » n'était pas perceptible. La case se remplit désormais selon la force (fort / moyen / doux = 1 / 0,5 / 0,2, soit −6 et −14 dB).
+
 ## À retenir pour la suite
 - Demande de Benjamin : mode paysage (en particulier pour le synthé : clavier plus large). À prévoir dans la mise en page des écrans.
 - Afficher une « latence de jeu » (sortie + tactile) à côté de l'aller-retour ; essayer un buffer d'un seul burst.

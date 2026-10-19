@@ -6,7 +6,7 @@ plugins {
 
 // CI passes the workflow run number so every build installs over the previous one.
 val ciVersionCode = System.getenv("VERSION_CODE")?.toIntOrNull() ?: 1
-val phase = 1
+val phase = 2
 val releaseChannel = System.getenv("RELEASE_CHANNEL") ?: "dev"
 val signingPassword: String? = System.getenv("SIGNING_PASSWORD")?.takeIf { it.isNotBlank() }
 val signingStore = rootProject.file("signing/release.p12")

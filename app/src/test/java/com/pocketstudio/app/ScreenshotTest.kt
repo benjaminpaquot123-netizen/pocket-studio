@@ -110,6 +110,11 @@ class ScreenshotTest {
         var drums = DrumPattern()
         DrumKitInfo.starterHits.forEach { (lane, steps) -> steps.forEach { drums = drums.toggle(lane, it) } }
         drums = drums.toggle(0, 10, 0.5f).toggle(0, 14, 0.2f)
+            .withSample(0, com.pocketstudio.model.PadSample("k.wav", "Kick de ma voix", start = 0.05f, end = 0.8f, pitch = -3f, loop = true))
+        val wave = FloatArray(24000) { i -> (kotlin.math.sin(i * 0.02) * kotlin.math.exp(-i / 6000.0)).toFloat() }
+        val info = com.pocketstudio.app.rhythm.SampleInfo(
+            0.5, com.pocketstudio.app.rhythm.PadSamples.peaks(com.pocketstudio.app.audio.Pcm(wave, 1, 48000)),
+        )
         RhythmScreen(
             project = Project(tempoBpm = 124.0, swing = 0.2, drums = drums),
             transport = TransportUi(playing = true, metronome = true, selectedPad = 0),
@@ -117,6 +122,7 @@ class ScreenshotTest {
             canUndo = true,
             canRedo = false,
             actions = RhythmActions(),
+            padSound = com.pocketstudio.app.rhythm.PadSoundUi(mapOf("k.wav" to info)),
         )
     }
 
@@ -185,5 +191,87 @@ class ScreenshotTest {
             octave = 3,
             actions = com.pocketstudio.app.synth.SynthActions(),
         )
+    }
+
+    @Test
+    fun padSound() = shoot("pad_sound") {
+        val wave = FloatArray(24000) { i -> (kotlin.math.sin(i * 0.02) * kotlin.math.exp(-i / 6000.0)).toFloat() }
+        val info = com.pocketstudio.app.rhythm.SampleInfo(
+            0.5, com.pocketstudio.app.rhythm.PadSamples.peaks(com.pocketstudio.app.audio.Pcm(wave, 1, 48000)),
+        )
+        val drums = DrumPattern().withSample(
+            2, com.pocketstudio.model.PadSample("k.wav", "Clap de cuisine", start = 0.05f, end = 0.7f, pitch = 5f, reverse = true, choke = 1),
+        )
+        androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
+            com.pocketstudio.app.rhythm.PadSoundCard(
+                Project(drums = drums), 2, com.pocketstudio.app.rhythm.PadSoundUi(mapOf("k.wav" to info)), RhythmActions(),
+            )
+        }
+    }
+
+    @Test
+    fun slicer() = shoot("slicer") {
+        val rnd = java.util.Random(3)
+        val wave = FloatArray(96000) { i -> ((rnd.nextFloat() - 0.5f) * 1.6f * kotlin.math.exp(-(i % 24000) / 3000.0)).toFloat() }
+        val info = com.pocketstudio.app.rhythm.SampleInfo(
+            2.0, com.pocketstudio.app.rhythm.PadSamples.peaks(com.pocketstudio.app.audio.Pcm(wave, 1, 48000)),
+        )
+        val drums = DrumPattern().withSample(0, com.pocketstudio.model.PadSample("b.wav", "Breakbeat"))
+        androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
+            com.pocketstudio.app.rhythm.PadSoundCard(
+                Project(drums = drums), 0,
+                com.pocketstudio.app.rhythm.PadSoundUi(
+                    mapOf("b.wav" to info),
+                    slicer = com.pocketstudio.app.rhythm.SlicerUi("b.wav", markers = listOf(0f, 0.25f, 0.5f, 0.75f)),
+                ),
+                RhythmActions(),
+            )
+        }
+    }
+
+    @Test
+    fun pianoRoll() = shoot("piano_roll") {
+        val chords = listOf(60, 64, 67, 57, 60, 64, 65, 69, 72, 67, 71, 74)
+        val notes = chords.mapIndexed { i, p ->
+            com.pocketstudio.model.Note(start = (i / 3) * 4 * 24 * 1, length = 3 * 24, pitch = p, velocity = if (i % 3 == 0) 1f else 0.5f)
+        } + com.pocketstudio.model.Note(start = 13 * 24 + 7, length = 30, pitch = 76, velocity = 0.2f)
+        val acid = com.pocketstudio.model.AcidGenerator(kotlin.random.Random(3)).generate(com.pocketstudio.model.AcidPattern(root = 48))
+        com.pocketstudio.app.synth.SynthScreen(
+            patch = com.pocketstudio.model.SynthPatch.PRESETS[2].second,
+            octave = 4,
+            actions = com.pocketstudio.app.synth.SynthActions(),
+            notes = com.pocketstudio.app.synth.NotesUi(
+                com.pocketstudio.model.NoteClip(16, notes),
+                com.pocketstudio.model.NoteClip.ghostsOf(acid, 16),
+                playStep = 6,
+                actions = com.pocketstudio.app.synth.PianoRollActions(),
+                harmony = com.pocketstudio.model.Harmony(0, com.pocketstudio.model.Scale.Major),
+            ),
+            startWithNotes = true,
+        )
+    }
+
+    @Test
+    fun instruments() = shoot("instruments") {
+        val names = listOf("Grand Piano", "Bright Piano", "Electric Grand", "Honky-Tonk", "Tine Electric Piano", "FM Electric Piano", "Harpsichord", "Clavinet")
+        val presets = names.mapIndexed { i, n -> com.pocketstudio.engine.Preset(i, 0, i, n) }
+        com.pocketstudio.app.synth.SynthScreen(
+            patch = com.pocketstudio.model.SynthPatch(),
+            octave = 4,
+            actions = com.pocketstudio.app.synth.SynthActions(),
+            instrument = com.pocketstudio.app.instruments.InstrumentUi(
+                com.pocketstudio.app.rhythm.LibraryState.Ready(presets),
+                com.pocketstudio.model.InstrumentChoice(0, 4, "Tine Electric Piano"),
+            ),
+        )
+    }
+
+    @Test
+    fun instrumentsDownload() = shoot("instruments_download") {
+        androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
+            com.pocketstudio.app.instruments.InstrumentPanel(
+                com.pocketstudio.app.instruments.InstrumentUi(com.pocketstudio.app.rhythm.LibraryState.Downloading(0.42f), null),
+            )
+        }
     }
 }

@@ -1,6 +1,6 @@
 # Avancement
 
-**Phase 0 terminée et fusionnée le 2026-10-18.** Phase 1 (MVP jouable) terminée et relue, en attente du feu vert.
+**Phase 0 fusionnée le 2026-10-18, phase 1 fusionnée le 2026-10-19 (feu vert de Benjamin).** Phase en cours : 2 (sampler et notes).
 
 ## Fait
 - Démarrage : SPEC, CLAUDE.md, ROADMAP, DECISIONS, ARCHITECTURE, THIRD_PARTY, README.
@@ -34,6 +34,20 @@
 - Fait : journal interne `AppLog` (200 lignes : démarrage, son ouvert/fermé, lecture, latence, export, sauvegarde) joint aux rapports à la place de logcat, chiffré par MagicOS.
 - Recette phase 0 : issues #2 et #3 (doublon), 8/8 ✅, fermées.
 
+- Jalon 2.1 : sons perso sur les pads. Moteur : `Sample` (immuable, compté par références, rééchantillonné en 48 kHz par libsamplerate hors fil audio) et `Sampler` (16 pads, déclenchement à l'échantillon près, fondu de 2 ms au redéclenchement, rendu dans la tranche Batterie) ; le fil audio ne libère jamais : les sons lâchés reviennent par une file au fil principal. Appli : décodage par les codecs Android (MP3, WAV, FLAC, M4A, OGG…, 60 s max), micro 48 kHz brut (30 s max, silence de début coupé), stockage en WAV float dans `samples/` du projet, carte « Son du pad » avec forme d'onde zoomable (pincer), retour au son du kit annulable. Tests Linux (rééchantillonnage, départ pile sur le pas, références sous ASan), tests JVM, test émulateur (import WAV 44,1 kHz → pad qui sonne).
+- Jalon 2.2 (partie 1) : réglages par pad dans le moteur (début/fin, hauteur ±24 demi-tons en interpolation Hermite, à l'envers, en boucle jusqu'au coup suivant ou à l'arrêt, enveloppe ADSR, volume, 4 groupes d'étouffement coupés à l'échantillon près) ; dans le projet (`PadSample`, réparé au chargement) ; contrôles sur la carte « Son du pad ».
+
+- Jalon 2.2 (partie 2) : découpe. aubio 0.4.9 (GPL-3, chemin « onset » seul, fonction HFC) trouve les attaques hors fil audio ; grille 2/4/8/16 ; coupe manuelle en touchant la forme d'onde ; « Sur les pads » répartit les tranches à partir du pad choisi (même fichier, début/fin différents, une seule étape d'annulation).
+
+- Jalon 2.3 : « Calé au tempo » (0/1/2/4/8/16/32 temps, suggestion ★) : une copie de la zone du pad, étirée par Signalsmith Stretch (MIT) et transposée sans changer sa durée, calculée hors fil audio, recalculée quand le tempo change (le son d'origine joue en attendant). Rééchantillonnage : « Enregistrer le morceau » rend 1, 2 ou 4 mesures du morceau (moteur hors-ligne) sur le pad choisi. Tests Linux : hauteur gardée à 1 000 Hz sur une durée ×1,5, +12 demi-tons = 1 998 Hz à durée égale ; rendu en mémoire identique au fichier.
+
+- Jalon 2.4 : piano roll du synthé (onglet Synthé › Notes). Moteur : `NoteTrack` (512 notes, 24 ticks par double-croche, départs et fins à l'échantillon près, boucle de 1 à 8 mesures indépendante de la batterie, notes relâchées à l'arrêt) ; file d'événements du synthé triée. Écran : toucher pour ajouter/enlever, glisser pour déplacer, glisser le bout pour allonger, appui long pour la force, quantifier 50 %/100 %, basse acide en notes fantômes, tête de lecture. Test Linux : note à 1,5 pas qui part pile au bon échantillon et se répète à chaque boucle.
+
+- Jalon 2.5 : `Harmony` (tonique + gamme : majeure, mineure, dorienne, pentas, blues) dans le projet ; piano roll : notes aimantées à la gamme, lignes hors gamme assombries, mode « Accords » (un toucher = l'accord de la gamme) ; clavier : touches hors gamme grisées, « Accords » à un doigt ; 5 progressions (I–V–vi–IV…) qui remplissent 4 mesures ; arpégiateur (↑ ↓ ↑↓ hasard, 1/8 1/16 1/32) et strum, calculés côté Kotlin avant l'envoi au moteur (`Performance.expand`). Tests JVM : accords par degré (Do, Rém, Si°, Sol7, Lam), progression, arpèges, strum.
+
+- Jalon 2.6 : la piste Synthé peut jouer un des 128 instruments General MIDI (GeneralUser GS via TinySoundFont, voix préallouées, instance par moteur, copie retirée et fermée hors fil audio). La banque (32 Mo) est publiée par la CI sur une Release dédiée et téléchargée une fois par l'appli, empreinte SHA-256 vérifiée avant toute lecture (TinySoundFont n'est pas sûr sur un fichier abîmé). Navigateur par famille dans Synthé › Source du son. Import d'un dossier de sons (pack) sur les pads suivants. Test Linux avec une mini-banque SF2 générée : La 440 Hz puis 880 Hz, remplacement et fermeture sans fuite (ASan).
+
 ## Prochaine étape exacte
-1. Phase 1 terminée et relue (docs/REVIEW.md, graves corrigés). PR #4 prête : attendre la recette et le feu vert de Benjamin (fusion).
-2. Après fusion : phase 2 (2.1 import audio, enregistrement micro, forme d'onde), sur une nouvelle branche et une nouvelle PR. Penser au mode paysage (synthé d'abord).
+1. Revue de fin de phase 2 faite (2 graves corrigés, REVIEW.md). Dès que la CI est verte : fusionner la PR #6 (autorisation permanente de Benjamin), puis démarrer la phase 3 (remix) sur la même branche repartie de main.
+2. Reste noté : lever la limite de 60 s par son ; kits de batterie GM (banque 128) sur les pads ; import de packs .zip.
+2. Reste du 2.3 : lever la limite de 60 s par son (stockage 16 bits ou lecture en flux), utile pour découper des morceaux entiers.

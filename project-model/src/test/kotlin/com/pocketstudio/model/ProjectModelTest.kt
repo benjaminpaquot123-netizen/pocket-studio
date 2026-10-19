@@ -282,3 +282,147 @@ class MixerModelTest {
         assertEquals(Channel(), fixed.channels[2])
     }
 }
+
+class PadSampleModelTest {
+    @Test
+    fun padSampleRoundTripsAndUnsafeNamesAreDropped() {
+        val drums = DrumPattern().withSample(2, PadSample("a1b2.wav", "Ma voix"))
+            .withSample(3, PadSample("../../etc/passwd", "piège"))
+        val back = ProjectJson.decode(ProjectJson.encode(Project(drums = drums)))
+        assertEquals(PadSample("a1b2.wav", "Ma voix"), back.drums.lanes[2].sample)
+        assertNull(back.drums.lanes[3].sample)
+        assertNull(back.drums.lanes[0].sample)
+    }
+}
+
+class PadSampleParamsTest {
+    @Test
+    fun paramsAreRepairedOnLoad() {
+        val bad = PadSample("a.wav", "x", start = 0.9f, end = 0.2f, pitch = 99f, sustain = Float.NaN, choke = 9, gain = -1f)
+        val ok = Project(drums = DrumPattern().withSample(0, bad)).sanitized().drums.lanes[0].sample!!
+        assertTrue(ok.start < ok.end)
+        assertEquals(24f, ok.pitch)
+        assertEquals(1f, ok.sustain)
+        assertEquals(4, ok.choke)
+        assertEquals(0f, ok.gain)
+        assertEquals(11, ok.engineParams().size)
+    }
+
+    @Test
+    fun olderFilesWithoutParamsGetDefaults() {
+        val json = """{"drums":{"lanes":[{"hits":{},"sample":{"file":"a.wav","name":"x"}}]}}"""
+        val s = ProjectJson.decode(json).drums.lanes[0].sample!!
+        assertEquals(PadSample("a.wav", "x"), s)
+    }
+}
+
+class FitToTempoTest {
+    @Test
+    fun suggestionIsTheClosestBeatCount() {
+        assertEquals(4, PadSample.suggestBeats(seconds = 2.1, bpm = 120.0))   // 4.2 beats
+        assertEquals(8, PadSample.suggestBeats(seconds = 3.6, bpm = 120.0))   // 7.2 beats
+        assertEquals(1, PadSample.suggestBeats(seconds = 0.1, bpm = 90.0))
+    }
+
+    @Test
+    fun fittedLengthFollowsTheTempoAndBadValuesAreDropped() {
+        val s = PadSample("a.wav", "x", fitBeats = 4)
+        assertEquals(96_000L, s.fittedFrames(120.0))
+        assertEquals(0, PadSample("a.wav", "x", fitBeats = 3).sanitized().fitBeats)
+        val neutral = s.copy(start = 0.2f, end = 0.6f, pitch = 7f).engineParams(stretched = true)
+        assertEquals(0f, neutral[0]); assertEquals(1f, neutral[1]); assertEquals(0f, neutral[2])
+    }
+}
+
+class NoteClipTest {
+    @Test
+    fun quantizeMovesTowardTheGridByTheStrength() {
+        val clip = NoteClip(notes = listOf(Note(start = 30, length = 24, pitch = 60)))  // grid 24: target 24
+        assertEquals(24, clip.quantized(24, 1f).notes[0].start)
+        assertEquals(27, clip.quantized(24, 0.5f).notes[0].start)
+        assertEquals(30, clip.quantized(24, 0f).notes[0].start)
+        assertEquals(24, clip.quantized(24, 1f).notes[0].length)  // lengths kept
+    }
+
+    @Test
+    fun badNotesAreDroppedOrRepaired() {
+        val clip = NoteClip(
+            steps = 20,
+            notes = listOf(
+                Note(start = -5, length = 10, pitch = 60),       // before the clip: dropped
+                Note(start = 10, length = 99999, pitch = 300),   // repaired
+                Note(start = 500, length = 10, pitch = 60, velocity = Float.NaN),  // dropped
+            ),
+        ).sanitized()
+        assertEquals(16, clip.steps)
+        assertEquals(1, clip.notes.size)
+        assertEquals(NoteClip.MAX_TICKS, clip.notes[0].length)
+        assertEquals(127, clip.notes[0].pitch)
+    }
+
+    @Test
+    fun tapFindsTheNoteAndGhostsFollowTheAcidLine() {
+        val n = Note(start = 48, length = 24, pitch = 64)
+        val clip = NoteClip().add(n)
+        assertEquals(n, clip.noteAt(60, 64))
+        assertNull(clip.noteAt(72, 64))
+        val acid = AcidPattern(length = 2, root = 36).let { a ->
+            a.withStep(0, AcidStep(note = 3, octave = 1, gate = true)).withStep(1, AcidStep())
+        }
+        val ghosts = NoteClip.ghostsOf(acid, 4)
+        assertEquals(listOf(0, 48), ghosts.map { it.start })
+        assertEquals(36 + 3 + 12, ghosts[0].pitch)
+    }
+
+    @Test
+    fun notesSurviveSaveAndLoad() {
+        val p = Project(synthNotes = NoteClip(steps = 32, notes = listOf(Note(12, 36, 62, 0.5f))))
+        assertEquals(p.synthNotes, ProjectJson.decode(ProjectJson.encode(p)).synthNotes)
+    }
+}
+
+class HarmonyTest {
+    private val cMajor = Harmony(0, Scale.Major)
+    private val aMinor = Harmony(9, Scale.Minor)
+
+    @Test
+    fun snapGoesToTheNearestScaleNote() {
+        assertEquals(60, cMajor.snap(61))  // C# -> C (tie goes down)
+        assertEquals(65, cMajor.snap(66))  // F# -> F
+        assertEquals(61, Harmony(0, Scale.Off).snap(61))
+        assertTrue(aMinor.inScale(57) && !aMinor.inScale(58))
+    }
+
+    @Test
+    fun chordsFollowTheScale() {
+        assertEquals(listOf(60, 64, 67), cMajor.chord(60))       // C major
+        assertEquals(listOf(62, 65, 69), cMajor.chord(62))       // D minor
+        assertEquals(listOf(71, 74, 77), cMajor.chord(71))       // B diminished
+        assertEquals(listOf(67, 71, 74, 77), cMajor.chord(67, 4))  // G7
+        assertEquals(listOf(57, 60, 64), aMinor.chord(57))       // A minor
+        assertEquals(listOf(60, 64, 67), Harmony().chord(60))    // no scale: major triad
+    }
+
+    @Test
+    fun progressionFillsFourBars() {
+        val clip = NoteClip().withProgression(Progression.Pop, cMajor)
+        assertEquals(64, clip.steps)
+        assertEquals(12, clip.notes.size)
+        // I, V, vi, IV in C from C3.
+        assertEquals(listOf(48, 55, 57, 53), clip.notes.groupBy { it.start }.toSortedMap().values.map { c -> c.minOf { it.pitch } })
+    }
+
+    @Test
+    fun arpeggioAndStrumExpandChords() {
+        val chord = NoteClip(notes = cMajor.chord(60).map { Note(0, 96, it) })
+        val up = Performance(ArpMode.Up, arpRate = 24).expand(chord)
+        assertEquals(listOf(60, 64, 67, 60), up.map { it.pitch })
+        assertEquals(listOf(0, 24, 48, 72), up.map { it.start })
+        val updown = Performance(ArpMode.UpDown, arpRate = 12).expand(chord)
+        assertEquals(listOf(60, 64, 67, 64, 60, 64, 67, 64), updown.map { it.pitch })
+        val strum = Performance(strum = 6).expand(chord)
+        assertEquals(listOf(0, 6, 12), strum.map { it.start })
+        assertEquals(listOf(96, 90, 84), strum.map { it.length })  // all end together
+        assertEquals(chord.notes, Performance().expand(chord))
+    }
+}

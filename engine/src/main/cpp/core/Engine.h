@@ -8,7 +8,10 @@
 #include "DrumKit.h"
 #include "Metronome.h"
 #include "Mixer.h"
+#include "NoteTrack.h"
 #include "RoundTripMeter.h"
+#include "Sampler.h"
+#include "SoundFontPlayer.h"
 #include "Sequencer.h"
 #include "Synth.h"
 #include "Smoother.h"
@@ -42,6 +45,12 @@ enum class CommandType : uint8_t {
     SetChannelPan,     // a: channel, value: -1..1
     SetChannelMute,    // a: channel, value: 1 = muted
     SetChannelSolo,    // a: channel, value: 1 = solo
+    InstallSample,     // a: pad, sample: owned reference (nullptr = back to the drum sound)
+    SetPadParam,       // a: pad, b: Sampler::Param, value in that parameter's unit
+    SetSynthNote,      // a: index, b: NoteTrack::pack(start, length, pitch), value: velocity
+    SetSynthNoteCount, // a: number of notes in use
+    SetSynthSteps,     // a: piano-roll pattern length in steps (1..128)
+    SetInstrument,     // font: owned instance (nullptr = back to the synth), a: preset index
 };
 
 struct Command {
@@ -49,6 +58,10 @@ struct Command {
     float value = 0.0f;
     int32_t a = 0;
     int32_t b = 0;
+    // InstallSample only: a reference the engine takes over (released if the command is dropped).
+    Sample* sample = nullptr;
+    // SetInstrument only: an instance the engine takes over (closed if the command is dropped).
+    tsf* font = nullptr;
 };
 
 // Platform-independent audio core. The platform layer (Oboe on Android,
@@ -59,6 +72,9 @@ public:
     static constexpr float kMaxFrequency = 20000.0f;
 
     explicit Engine(int sampleRate = 48000);
+    ~Engine();
+    Engine(const Engine&) = delete;
+    Engine& operator=(const Engine&) = delete;
 
     // Not real-time safe: call while no stream is running. Keeps frequency, volume and play state.
     void prepare(int sampleRate);
@@ -80,17 +96,29 @@ public:
 
     RoundTripMeter& latencyMeter() { return meter_; }
 
+    // Not the audio thread (one caller at a time): frees samples the audio thread let go of.
+    void collectGarbage() {
+        sampler_.collectGarbage();
+        instrument_.collectGarbage();
+    }
+    bool instrumentActive() const { return instrument_.active(); }  // tests
+    bool padHasSample(int pad) const { return sampler_.has(pad); }  // tests
+    const Sampler::PadParams& padParams(int pad) const { return sampler_.params(pad); }  // tests
+
     static constexpr int kLanes = 16;
     static constexpr int kMaxSteps = 64;
 
     // Transport state for the UI: current pattern step (-1 when stopped or counting in).
     int currentStep() const { return currentStep_.load(std::memory_order_relaxed); }
+    // Steps since play (no wrap), -1 when stopped: the piano roll has its own loop length.
+    int absoluteStep() const { return absoluteStep_.load(std::memory_order_relaxed); }
     bool transportRunning() const { return sequencer_.running(); }
     // Increments every time a lane is triggered (pad lights, tests).
     uint32_t laneTriggerCount(int lane) const { return laneTriggers_[lane].load(std::memory_order_relaxed); }
     // Number of metronome clicks triggered since startup (tests).
     Mixer& mixer() { return mixer_; }
     int synthActiveVoices() const { return synth_.activeVoices(); }
+    int notesPending() const { return notes_.pendingCount(); }  // tests
     uint32_t acidNotesPlayed() const { return acid_.notesPlayed(); }
     uint64_t metronomeClicks() const { return metronomeClicks_.load(std::memory_order_relaxed); }
 
@@ -114,6 +142,17 @@ private:
     DrumKit drums_;
     AcidTrack acid_;
     Synth synth_;
+    NoteTrack notes_;
+    SoundFontPlayer instrument_;
+    // The synth track's sound: the instrument when one is loaded, else the subtractive synth.
+    struct NoteRouter {
+        Synth& synth;
+        SoundFontPlayer& instrument;
+        void noteOn(int n, float v, int at) { instrument.active() ? instrument.noteOn(n, v, at) : synth.noteOn(n, v, at); }
+        void noteOff(int n, int at) { instrument.active() ? instrument.noteOff(n, at) : synth.noteOff(n, at); }
+    };
+    NoteRouter router_{synth_, instrument_};
+    Sampler sampler_;
     Mixer mixer_;
     std::array<float, kMaxBlock> drumsBuf_{};
     std::array<float, kMaxBlock> acidBuf_{};
@@ -123,6 +162,7 @@ private:
     float pattern_[kLanes][kMaxSteps] = {};
     std::array<float, kMaxBlock> mix_{};
     std::atomic<int> currentStep_{-1};
+    std::atomic<int> absoluteStep_{-1};
     std::array<std::atomic<uint32_t>, kLanes> laneTriggers_{};
     std::atomic<uint64_t> metronomeClicks_{0};
 

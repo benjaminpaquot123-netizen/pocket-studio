@@ -21,6 +21,10 @@ data class Project(
     val mixer: Mixer = Mixer(),
     val acid: AcidPattern = AcidPattern(),
     val synth: SynthPatch = SynthPatch(),
+    val synthNotes: NoteClip = NoteClip(),
+    val harmony: Harmony = Harmony(),
+    /** The synth track's sound: null = the subtractive synth, else a General MIDI instrument. */
+    val instrument: InstrumentChoice? = null,
 ) {
     /** Returns a copy with every value inside its allowed range. */
     fun sanitized(): Project = copy(
@@ -29,6 +33,9 @@ data class Project(
         drums = drums.sanitized(),
         acid = acid.sanitized(),
         synth = synth.sanitized(),
+        synthNotes = synthNotes.sanitized(),
+        harmony = harmony.sanitized(),
+        instrument = instrument?.takeIf { it.bank in 0..128 && it.program in 0..127 },
         mixer = mixer.sanitized(),
     )
 
@@ -48,8 +55,16 @@ data class DrumPattern(
     fun sanitized(): DrumPattern {
         val s = steps.coerceIn(MIN_STEPS, MAX_STEPS)
         val fixedLanes = (lanes + List((PAD_COUNT - lanes.size).coerceAtLeast(0)) { DrumLane() }).take(PAD_COUNT)
-        return copy(steps = s, lanes = fixedLanes.map { lane -> lane.copy(hits = lane.hits.filterKeys { it in 0 until s }) })
+        return copy(
+            steps = s,
+            lanes = fixedLanes.map { lane ->
+                lane.copy(hits = lane.hits.filterKeys { it in 0 until s }, sample = lane.sample?.takeIf { it.isSafe }?.sanitized())
+            },
+        )
     }
+
+    fun withSample(lane: Int, sample: PadSample?): DrumPattern =
+        copy(lanes = lanes.toMutableList().also { it[lane] = it[lane].copy(sample = sample) })
 
     fun toggle(lane: Int, step: Int, velocity: Float = 1f): DrumPattern {
         val current = lanes[lane]
@@ -68,7 +83,79 @@ data class DrumPattern(
 data class DrumLane(
     /** step index -> hit. A map keeps sparse patterns small on disk. */
     val hits: Map<Int, Hit> = emptyMap(),
+    /** A sound of the user's that replaces the synthesized drum (null = the kit sound). */
+    val sample: PadSample? = null,
 )
+
+/**
+ * A pad's own sound. [file] lives in the project folder under `samples/`; [name] is what the
+ * user sees. The rest shapes playback (units match the engine's Sampler::Param).
+ */
+@Serializable
+data class PadSample(
+    val file: String,
+    val name: String,
+    val start: Float = 0f,
+    val end: Float = 1f,
+    val pitch: Float = 0f,
+    val reverse: Boolean = false,
+    val loop: Boolean = false,
+    val attack: Float = 0f,
+    val decay: Float = 0f,
+    val sustain: Float = 1f,
+    val release: Float = 0.003f,
+    val choke: Int = 0,
+    val gain: Float = 1f,
+    /** 0 = plays at its own speed; otherwise lasts this many beats at the project tempo (pitch kept). */
+    val fitBeats: Int = 0,
+) {
+    /** Only a plain file name may come from disk: never a path. */
+    val isSafe: Boolean get() = file.isNotEmpty() && file.length <= 80 && file.matches(Regex("[A-Za-z0-9._-]+")) && !file.startsWith(".")
+
+    fun sanitized(): PadSample {
+        val s = start.finite(0f).coerceIn(0f, 0.999f)
+        val e = end.finite(1f).coerceIn(0.001f, 1f)
+        return copy(
+            name = name.take(40),
+            start = minOf(s, e - 0.001f).coerceAtLeast(0f),
+            end = maxOf(e, s + 0.001f).coerceAtMost(1f),
+            pitch = pitch.finite(0f).coerceIn(-24f, 24f),
+            attack = attack.finite(0f).coerceIn(0f, 2f),
+            decay = decay.finite(0f).coerceIn(0f, 2f),
+            sustain = sustain.finite(1f).coerceIn(0f, 1f),
+            release = release.finite(0.003f).coerceIn(0f, 2f),
+            choke = choke.coerceIn(0, CHOKE_GROUPS),
+            gain = gain.finite(1f).coerceIn(0f, 2f),
+            fitBeats = fitBeats.takeIf { it in FIT_BEATS } ?: 0,
+        )
+    }
+
+    /**
+     * Values in engine order (Sampler::Param). [stretched]: the engine plays a copy already cut
+     * to the region, fitted to the tempo and transposed, so region and pitch are neutral.
+     */
+    fun engineParams(stretched: Boolean = false): FloatArray = floatArrayOf(
+        if (stretched) 0f else start, if (stretched) 1f else end, if (stretched) 0f else pitch,
+        if (reverse) 1f else 0f, if (loop) 1f else 0f,
+        attack, decay, sustain, release, choke.toFloat(), gain,
+    )
+
+    /** Frames at 48 kHz this pad lasts when fitted to [bpm]. */
+    fun fittedFrames(bpm: Double): Long = Math.round(fitBeats * 60.0 / bpm * 48_000)
+
+    companion object {
+        const val CHOKE_GROUPS = 4
+        val FIT_BEATS = listOf(0, 1, 2, 4, 8, 16, 32)
+
+        /** The number of beats (from [FIT_BEATS]) closest to [seconds] at [bpm]. */
+        fun suggestBeats(seconds: Double, bpm: Double): Int {
+            val beats = seconds * bpm / 60.0
+            return FIT_BEATS.drop(1).minBy { kotlin.math.abs(kotlin.math.ln(it / beats)) }
+        }
+    }
+}
+
+private fun Float.finite(default: Float) = if (isFinite()) this else default
 
 @Serializable
 data class Hit(val velocity: Float = 1f)

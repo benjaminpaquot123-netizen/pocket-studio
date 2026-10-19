@@ -7,11 +7,14 @@ Au début de chaque session : lire ce fichier, `docs/PROGRESS.md` et les issues 
 
 ## Rôles
 - Benjamin ne code pas, ne lit pas le code et ne recopie jamais d'erreur. Il tranche, teste sur son téléphone, valide.
-- Le solliciter seulement pour : un choix de goût ou irréversible, le feu vert de fin de phase (D4 = A), une action impossible pour l'agent (compte, licence, secret GitHub : une seule demande groupée, pas à pas).
+- Autorisation permanente de Benjamin (2026-10-19) : travailler sur tout le projet sans attendre son accord. En fin de phase, après la revue critique et une CI verte, l'agent fusionne lui-même la PR (elle remplace le feu vert D4 = A) et enchaîne sur la phase suivante.
+- Le prévenir seulement quand il doit faire quelque chose (tester, un compte, une licence, un secret GitHub : une seule demande groupée, pas à pas), et continuer quand même tout ce qui peut avancer sans lui.
 - Questions : numérotées, 2 à 4 options, la recommandée en premier, conséquence en une ligne, réponse du type « 1A, 2B ». Un lot par jalon au maximum.
 - Tout le reste : décider, noter une ligne dans `docs/DECISIONS.md` (choix, raison, retour arrière), avancer.
+- Toujours parler français avec Benjamin (conversation, messages, rappels).
 - Messages pour lui : français, courts, sans jargon, écoutables en audio. Humour Kaamelott bienvenu dans les changelogs.
 - Interface en français. Code, commentaires et commits en anglais.
+- Rappels et tâches planifiées (nom et message) : toujours en français.
 - Design : moderne mais pas trop, facile à prendre en main, façon FL Studio Mobile en plus clair. Règles dans `docs/DESIGN.md`. Benjamin a délégué les choix de design : décider sans lui demander, montrer les captures dans la PR.
 
 ## Règle d'or

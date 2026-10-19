@@ -1,4 +1,5 @@
-Nouveau : le Mixeur ! Volume, panoramique, muet et solo pour la batterie, la basse et le synthé.
-Coups doux bien visibles : la case se vide selon la force. VU-mètres et limiteur : « C'est pas faux. »
-La musique continue écran éteint (Outils › Arrière-plan pour bien régler le Honor).
-Export WAV (Mixeur) : ton morceau dans Musique, prêt à partager. La Recette est dans Outils.
+Phase 2 : tes sons sur les pads, et un piano roll pour le synthé (Synthé › Notes) !
+Gammes, accords en un geste, progressions toutes faites, arpèges et strum (Synthé › Notes).
+128 instruments (piano, cordes, guitares…) à télécharger une fois : Synthé › Source du son.
+Règle chaque son : début, fin, hauteur, à l'envers, en boucle, enveloppe, groupes d'étouffement.
+Découpe un son en tranches (attaques, grille ou à la main) et mets-les sur les pads. « C'est pas faux ! »

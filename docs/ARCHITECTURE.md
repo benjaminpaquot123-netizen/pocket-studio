@@ -33,7 +33,7 @@ Le séquenceur vit dans `core/` et avance à l'échantillon près dans le callba
 
 ## Graphe audio (phase 1)
 ```
-Sequencer ──(pas, à l'échantillon près)──► DrumKit ─► tampon Batterie ─┐
+Sequencer ──(pas, à l'échantillon près)──► DrumKit ou Sampler (son perso du pad) ─► tampon Batterie ─┐
                                       └──► AcidTrack (Open303) ─► tampon Acide ──┤
 Clavier (file d'événements) ─────────────► Synth 8 voix ─► tampon Synthé ─┤
                                                                        ▼
@@ -43,3 +43,6 @@ Metronome + son de test ─► tampon direct ──► Mixer (volume, pan, muet,
 
 ## Livraison
 `.github/workflows/ci.yml` : tests moteur (avec ASan/UBSan) → tests Kotlin + captures → APK signé → pré-release `preview` (PR) ou Release `v0.<phase>.<run>` (main). Test de fumée sur émulateur x86_64 en parallèle.
+
+## Sons perso (phase 2)
+`Sample` (core) : données float 48 kHz immuables, comptées par références. Créé hors fil audio (JNI `sampleCreate`, rééchantillonnage libsamplerate), installé sur un pad par une commande qui porte une référence. Le fil audio ne libère jamais : un son dont le compte tombe à zéro part dans une file SPSC que le fil principal vide (`Engine::collectGarbage`). Le moteur d'export reçoit les mêmes sons par `NativeEngine.captureInto`.

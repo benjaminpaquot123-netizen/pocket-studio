@@ -17,6 +17,15 @@ Engine::Engine(int sampleRate) {
     prepare(sampleRate);
 }
 
+Engine::~Engine() {
+    // Commands never applied may still own sample references.
+    Command command;
+    while (commands_.pop(command)) {
+        if (command.sample && command.sample->release()) delete command.sample;
+        SoundFontPlayer::close(command.font);
+    }
+}
+
 void Engine::prepare(int sampleRate) {
     // Apply pending UI commands so a reopened stream keeps the user's settings,
     // but never replay a stale latency test request.
@@ -37,6 +46,7 @@ void Engine::prepare(int sampleRate) {
     acid_.prepare(sampleRate);
     synth_.prepare(sampleRate);
     mixer_.prepare(sampleRate);
+    sampler_.prepare(sampleRate);
 }
 
 void Engine::applyCommand(const Command& command) {
@@ -62,7 +72,13 @@ void Engine::applyCommand(const Command& command) {
             } else {
                 sequencer_.stop();
                 acid_.stop();
+                sampler_.releaseLoops();
+                notes_.stop(router_);
+                // Belt and braces: a note-off dropped by a full queue must not leave a note hanging.
+                synth_.allNotesOff();
+                instrument_.allNotesOff();
                 currentStep_.store(-1, std::memory_order_relaxed);
+                absoluteStep_.store(-1, std::memory_order_relaxed);
             }
             break;
         case CommandType::SetTempo:
@@ -92,10 +108,10 @@ void Engine::applyCommand(const Command& command) {
             }
             break;
         case CommandType::SynthNoteOn:
-            synth_.noteOn(command.a, command.value);
+            router_.noteOn(command.a, command.value, 0);
             break;
         case CommandType::SynthNoteOff:
-            synth_.noteOff(command.a);
+            router_.noteOff(command.a, 0);
             break;
         case CommandType::SynthParam:
             if (command.a >= 0 && command.a < Synth::ParamCount) {
@@ -104,6 +120,7 @@ void Engine::applyCommand(const Command& command) {
             break;
         case CommandType::SynthAllOff:
             synth_.allNotesOff();
+            instrument_.allNotesOff();
             break;
         case CommandType::SetChannelVolume:
             mixer_.setVolume(command.a, command.value);
@@ -117,9 +134,29 @@ void Engine::applyCommand(const Command& command) {
         case CommandType::SetChannelSolo:
             mixer_.setSolo(command.a, command.value > 0.5f);
             break;
+        case CommandType::InstallSample:
+            sampler_.install(command.a, command.sample);  // takes the command's reference
+            break;
+        case CommandType::SetPadParam:
+            sampler_.setParam(command.a, command.b, command.value);
+            break;
+        case CommandType::SetSynthNote:
+            notes_.setNote(command.a, command.b, command.value);
+            break;
+        case CommandType::SetSynthNoteCount:
+            notes_.setCount(command.a);
+            break;
+        case CommandType::SetSynthSteps:
+            notes_.setSteps(command.a);
+            break;
+        case CommandType::SetInstrument:
+            synth_.allNotesOff();
+            instrument_.install(command.font, command.a);  // takes the instance
+            break;
         case CommandType::TriggerPad:
             if (command.a >= 0 && command.a < kLanes) {
-                drums_.trigger(command.a, command.value, 0);
+                if (sampler_.has(command.a)) sampler_.trigger(command.a, command.value, 0);
+                else drums_.trigger(command.a, command.value, 0);
                 laneTriggers_[static_cast<size_t>(command.a)].fetch_add(1, std::memory_order_relaxed);
             }
             break;
@@ -141,12 +178,15 @@ void Engine::onStep(int offset, int step) {
     }
     if (step < 0) return;
     acid_.onStep(offset, step, sequencer_.samplesPerStep());
+    notes_.onStep(offset, step, sequencer_.samplesPerStep());
     const int patternStep = step % patternSteps_;
     currentStep_.store(patternStep, std::memory_order_relaxed);
+    absoluteStep_.store(step, std::memory_order_relaxed);
     for (int lane = 0; lane < kLanes; ++lane) {
         if (pattern_[lane][patternStep] > 0.0f) {
             laneTriggers_[static_cast<size_t>(lane)].fetch_add(1, std::memory_order_relaxed);
-            drums_.trigger(lane, pattern_[lane][patternStep], offset);
+            if (sampler_.has(lane)) sampler_.trigger(lane, pattern_[lane][patternStep], offset);
+            else drums_.trigger(lane, pattern_[lane][patternStep], offset);
         }
     }
 }
@@ -162,10 +202,13 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
     std::fill(synth, synth + numFrames, 0.0f);
 
     sequencer_.advance(numFrames, [this](int offset, int step) { onStep(offset, step); });
+    notes_.advance(numFrames, router_);
     metronome_.render(direct, numFrames);
     drums_.render(drums, numFrames);
+    sampler_.render(drums, numFrames);
     acid_.render(acid, numFrames);
     synth_.render(synth, numFrames);
+    instrument_.render(synth, numFrames);
 
     gain_.setTarget(playing_.load(std::memory_order_relaxed) ? volume_ : 0.0f);
     const double invRate = 1.0 / sampleRate_;

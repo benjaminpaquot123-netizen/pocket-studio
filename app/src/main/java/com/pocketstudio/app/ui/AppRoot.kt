@@ -1,5 +1,9 @@
 package com.pocketstudio.app.ui
 
+import com.pocketstudio.app.instruments.InstrumentUi
+import com.pocketstudio.app.synth.NotesUi
+import com.pocketstudio.app.synth.PianoRollActions
+import com.pocketstudio.model.NoteClip
 import com.pocketstudio.app.report.AppLog
 import android.Manifest
 import android.content.ActivityNotFoundException
@@ -72,6 +76,7 @@ import com.pocketstudio.app.mixer.MixerScreen
 import com.pocketstudio.app.latency.LatencyViewModel
 import com.pocketstudio.app.recette.RecetteScreen
 import com.pocketstudio.app.recette.RecetteViewModel
+import com.pocketstudio.app.rhythm.PadSoundUi
 import com.pocketstudio.app.rhythm.RhythmActions
 import com.pocketstudio.app.rhythm.RhythmScreen
 import com.pocketstudio.app.rhythm.RhythmViewModel
@@ -123,6 +128,7 @@ fun AppRoot() {
         rhythmVm.flush()
         rhythmVm.visible = false
         rhythmVm.synthAllOff()
+        rhythmVm.stopRecording()  // never keep the microphone open in the background
         // While the transport plays, PlaybackService keeps the music going in the background.
         val keep = rhythmVm.keepsRunningInBackground
         AppLog.add(if (keep) "Arrière-plan : la lecture continue" else "Arrière-plan : son fermé")
@@ -150,6 +156,15 @@ fun AppRoot() {
 
     val micPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
         if (granted) latencyVm.measure()
+    }
+    val recordPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        if (granted) rhythmVm.startRecording()
+    }
+    val pickAudio = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri != null) rhythmVm.importSample(uri)
+    }
+    val pickFolder = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
+        if (uri != null) rhythmVm.importFolder(uri)
     }
 
     val landscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
@@ -215,6 +230,9 @@ fun AppRoot() {
                         val live by rhythmVm.live.collectAsStateWithLifecycle()
                         val canUndo by rhythmVm.session.canUndo.collectAsStateWithLifecycle()
                         val canRedo by rhythmVm.session.canRedo.collectAsStateWithLifecycle()
+                        val sampleInfo by rhythmVm.sampleInfo.collectAsStateWithLifecycle()
+                        val sampleTask by rhythmVm.sampleTask.collectAsStateWithLifecycle()
+                        val slicer by rhythmVm.slicer.collectAsStateWithLifecycle()
                         LaunchedEffect(Unit) {
                             lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollLive() }
                         }
@@ -237,7 +255,26 @@ fun AppRoot() {
                                 setSwing = rhythmVm::setSwing,
                                 undo = rhythmVm::undo,
                                 redo = rhythmVm::redo,
+                                importSample = { pickAudio.launch(arrayOf("audio/*")) },
+                                startRecording = {
+                                    if (hasMic(context)) rhythmVm.startRecording()
+                                    else recordPermission.launch(Manifest.permission.RECORD_AUDIO)
+                                },
+                                stopRecording = rhythmVm::stopRecording,
+                                removeSample = rhythmVm::removeSample,
+                                dismissSampleError = rhythmVm::dismissSampleError,
+                                editSample = rhythmVm::editPadSample,
+                                openSlicer = rhythmVm::openSlicer,
+                                closeSlicer = rhythmVm::closeSlicer,
+                                setSliceMode = rhythmVm::setSliceMode,
+                                setSliceSensitivity = rhythmVm::setSliceSensitivity,
+                                setSliceGrid = rhythmVm::setSliceGrid,
+                                toggleSliceMarker = rhythmVm::toggleSliceMarker,
+                                applySlices = rhythmVm::applySlices,
+                                resampleSong = rhythmVm::resampleSong,
+                                importFolder = { pickFolder.launch(null) },
                             ),
+                            padSound = PadSoundUi(sampleInfo, sampleTask, slicer),
                         )
                     }
                     AppTab.Acide -> {
@@ -269,6 +306,11 @@ fun AppRoot() {
                         DisposableEffect(Unit) { onDispose { rhythmVm.synthAllOff() } }
                         val project by rhythmVm.project.collectAsStateWithLifecycle()
                         val octave by rhythmVm.keyboardOctave.collectAsStateWithLifecycle()
+                        val live by rhythmVm.live.collectAsStateWithLifecycle()
+                        val library by rhythmVm.library.collectAsStateWithLifecycle()
+                        LaunchedEffect(Unit) {
+                            lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollLive() }
+                        }
                         SynthScreen(
                             patch = project.synth,
                             octave = octave,
@@ -278,6 +320,34 @@ fun AppRoot() {
                                 shiftOctave = rhythmVm::shiftKeyboardOctave,
                                 setParam = rhythmVm::setSynthParam,
                                 applyPreset = rhythmVm::applySynthPreset,
+                                chordOn = rhythmVm::synthChordOn,
+                                chordOff = rhythmVm::synthChordOff,
+                            ),
+                            notes = NotesUi(
+                                clip = project.synthNotes,
+                                ghosts = NoteClip.ghostsOf(project.acid, project.synthNotes.steps),
+                                playStep = live.absoluteStep,
+                                actions = PianoRollActions(
+                                    add = rhythmVm::addNote,
+                                    remove = rhythmVm::removeNote,
+                                    change = rhythmVm::changeNote,
+                                    quantize = rhythmVm::quantizeNotes,
+                                    setSteps = rhythmVm::setNoteClipSteps,
+                                    clear = rhythmVm::clearNotes,
+                                    addChord = rhythmVm::addChord,
+                                    setHarmony = rhythmVm::setHarmony,
+                                    applyProgression = rhythmVm::applyProgression,
+                                    setPerformance = rhythmVm::setPerformance,
+                                ),
+                                harmony = project.harmony,
+                            ),
+                            instrument = InstrumentUi(
+                                library = library,
+                                current = project.instrument,
+                                open = rhythmVm::openLibrary,
+                                download = rhythmVm::downloadLibrary,
+                                cancel = rhythmVm::cancelLibraryDownload,
+                                select = rhythmVm::selectInstrument,
                             ),
                         )
                     }

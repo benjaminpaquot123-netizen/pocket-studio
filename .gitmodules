@@ -4,3 +4,18 @@
 [submodule "engine/third_party/Open303"]
 	path = engine/third_party/Open303
 	url = https://github.com/RobinSchmidt/Open303
+[submodule "engine/third_party/libsamplerate"]
+	path = engine/third_party/libsamplerate
+	url = https://github.com/libsndfile/libsamplerate
+[submodule "engine/third_party/aubio"]
+	path = engine/third_party/aubio
+	url = https://github.com/aubio/aubio
+[submodule "engine/third_party/signalsmith-stretch"]
+	path = engine/third_party/signalsmith-stretch
+	url = https://github.com/Signalsmith-Audio/signalsmith-stretch
+[submodule "engine/third_party/signalsmith-linear"]
+	path = engine/third_party/signalsmith-linear
+	url = https://github.com/Signalsmith-Audio/linear
+[submodule "engine/third_party/TinySoundFont"]
+	path = engine/third_party/TinySoundFont
+	url = https://github.com/schellingb/TinySoundFont

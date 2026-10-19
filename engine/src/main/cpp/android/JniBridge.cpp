@@ -1,10 +1,17 @@
 #include <jni.h>
 
+#include <algorithm>
+#include <cstdio>
 #include <memory>
+#include <vector>
 #include <mutex>
 
 #include "AudioHost.h"
 #include "OfflineRenderer.h"
+#include "OnsetDetector.h"
+#include "Sample.h"
+#include "SoundFontPlayer.h"
+#include "TimeStretch.h"
 
 namespace {
 
@@ -38,6 +45,141 @@ JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_currentStep(JNI
     return host().engine().currentStep();
 }
 
+JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_absoluteStep(JNIEnv*, jobject) {
+    return host().engine().absoluteStep();
+}
+
+// --- Samples: created and released off the audio thread, shared by reference. ---
+
+JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_sampleCreate(JNIEnv* env, jobject, jfloatArray data,
+                                                                             jint channels, jint sampleRate) {
+    const jsize length = env->GetArrayLength(data);
+    if (channels < 1 || length < channels) return 0;
+    jfloat* in = env->GetFloatArrayElements(data, nullptr);
+    if (!in) return 0;
+    ps::Sample* s = ps::Sample::create(in, length / channels, channels, sampleRate, 48000);
+    env->ReleaseFloatArrayElements(data, in, JNI_ABORT);
+    return reinterpret_cast<jlong>(s);
+}
+
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_sampleRelease(JNIEnv*, jobject, jlong handle) {
+    auto* s = reinterpret_cast<ps::Sample*>(handle);
+    if (s && s->release()) delete s;
+}
+
+JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_sampleFrames(JNIEnv*, jobject, jlong handle) {
+    return reinterpret_cast<ps::Sample*>(handle)->frames();
+}
+
+// Attack positions (fractions 0..1 of the sound), first is always 0. Worker thread.
+JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_sampleOnsets(JNIEnv* env, jobject, jlong handle,
+                                                                                   jfloat sensitivity, jint maxSlices) {
+    auto* s = reinterpret_cast<ps::Sample*>(handle);
+    std::vector<float> mono(static_cast<size_t>(s->frames()));
+    const int ch = s->channels();
+    for (int64_t i = 0; i < s->frames(); ++i) {
+        mono[static_cast<size_t>(i)] = ch == 2 ? 0.5f * (s->data()[i * 2] + s->data()[i * 2 + 1]) : s->data()[i];
+    }
+    ps::OnsetOptions options;
+    options.sensitivity = sensitivity;
+    options.maxSlices = maxSlices;
+    const auto onsets = ps::detectOnsets(mono.data(), s->frames(), 48000, options);
+    std::vector<jfloat> fractions;
+    for (auto f : onsets) fractions.push_back(static_cast<jfloat>(static_cast<double>(f) / static_cast<double>(s->frames())));
+    jfloatArray result = env->NewFloatArray(static_cast<jsize>(fractions.size()));
+    if (result) env->SetFloatArrayRegion(result, 0, static_cast<jsize>(fractions.size()), fractions.data());
+    return result;
+}
+
+// A new sample: the region [start, end) of `handle` stretched to `outFrames`, transposed. Worker thread.
+JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_sampleStretched(JNIEnv*, jobject, jlong handle, jfloat start,
+                                                                                jfloat end, jlong outFrames, jfloat semitones) {
+    auto* s = reinterpret_cast<ps::Sample*>(handle);
+    const int64_t from = std::clamp<int64_t>(static_cast<int64_t>(start * s->frames()), 0, s->frames());
+    const int64_t to = std::clamp<int64_t>(static_cast<int64_t>(end * s->frames()), from, s->frames());
+    if (to - from < 2 || outFrames < 2 || outFrames > 48000LL * 120) return 0;
+    const auto out = ps::timeStretch(s->data() + from * s->channels(), to - from, s->channels(), outFrames, semitones, 48000);
+    if (out.empty()) return 0;
+    return reinterpret_cast<jlong>(ps::Sample::create(out.data(), outFrames, s->channels(), 48000, 48000));
+}
+
+// The posted command owns one reference; it is given back if the queue is full.
+JNIEXPORT jboolean JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeInstallSample(JNIEnv*, jobject, jint pad,
+                                                                                       jlong handle) {
+    auto& engine = host().engine();
+    engine.collectGarbage();
+    auto* s = reinterpret_cast<ps::Sample*>(handle);
+    if (s) s->retain();
+    ps::Command command{ps::CommandType::InstallSample, 0.0f, pad, 0};
+    command.sample = s;
+    if (host().post(command)) return JNI_TRUE;
+    if (s && s->release()) delete s;
+    return JNI_FALSE;
+}
+
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportInstallSample(JNIEnv*, jobject, jlong exportHandle,
+                                                                                   jint pad, jlong handle) {
+    auto* s = reinterpret_cast<ps::Sample*>(handle);
+    if (s) s->retain();
+    ps::Command command{ps::CommandType::InstallSample, 0.0f, pad, 0};
+    command.sample = s;
+    reinterpret_cast<ps::OfflineRenderer*>(exportHandle)->post(command);
+}
+
+// --- General MIDI instruments (SoundFont). Load on a worker thread, the rest on the main thread. ---
+
+JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_soundFontLoad(JNIEnv* env, jobject, jstring path) {
+    const char* p = env->GetStringUTFChars(path, nullptr);
+    if (!p) return 0;
+    tsf* f = ps::SoundFontPlayer::loadFile(p);
+    env->ReleaseStringUTFChars(path, p);
+    return reinterpret_cast<jlong>(f);
+}
+
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_soundFontClose(JNIEnv*, jobject, jlong handle) {
+    ps::SoundFontPlayer::close(reinterpret_cast<tsf*>(handle));
+}
+
+// "bank|program|name" for each preset index.
+JNIEXPORT jobjectArray JNICALL Java_com_pocketstudio_engine_NativeEngine_soundFontPresets(JNIEnv* env, jobject, jlong handle) {
+    auto* f = reinterpret_cast<tsf*>(handle);
+    const int n = ps::SoundFontPlayer::presetCount(f);
+    jobjectArray out = env->NewObjectArray(n, env->FindClass("java/lang/String"), nullptr);
+    for (int i = 0; out && i < n; ++i) {
+        int bank = 0, program = 0;
+        const char* name = "";
+        ps::SoundFontPlayer::presetInfo(f, i, &bank, &program, &name);
+        char line[64];
+        std::snprintf(line, sizeof line, "%d|%d|%.40s", bank, program, name);
+        jstring s = env->NewStringUTF(line);
+        env->SetObjectArrayElement(out, i, s);
+        env->DeleteLocalRef(s);
+    }
+    return out;
+}
+
+static ps::OfflineRenderer* renderer(jlong handle);
+
+static ps::Command instrumentCommand(jlong font, jint preset) {
+    ps::Command c{ps::CommandType::SetInstrument, 0.0f, preset, 0};
+    c.font = font ? ps::SoundFontPlayer::makeInstance(reinterpret_cast<tsf*>(font), 48000) : nullptr;
+    return c;
+}
+
+JNIEXPORT jboolean JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeSetInstrument(JNIEnv*, jobject, jlong font, jint preset) {
+    host().engine().collectGarbage();
+    ps::Command c = instrumentCommand(font, preset);
+    if (font && !c.font) return JNI_FALSE;
+    if (host().post(c)) return JNI_TRUE;
+    ps::SoundFontPlayer::close(c.font);
+    return JNI_FALSE;
+}
+
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportSetInstrument(JNIEnv*, jobject, jlong exportHandle, jlong font,
+                                                                                   jint preset) {
+    renderer(exportHandle)->post(instrumentCommand(font, preset));
+}
+
 // --- Offline export: a private engine rendered on the caller's (worker) thread. ---
 
 static ps::OfflineRenderer* renderer(jlong handle) { return reinterpret_cast<ps::OfflineRenderer*>(handle); }
@@ -58,6 +200,15 @@ JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_exportRender(JN
     const auto result = renderer(handle)->renderToWav(p, frames, tail);
     env->ReleaseStringUTFChars(path, p);
     return static_cast<jint>(result);
+}
+
+// The whole song into memory (interleaved stereo, 48 kHz), for resampling onto a pad.
+JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_exportRenderFloat(JNIEnv* env, jobject, jlong handle,
+                                                                                        jlong frames, jlong tail) {
+    const auto out = renderer(handle)->renderToBuffer(frames, tail);
+    jfloatArray result = env->NewFloatArray(static_cast<jsize>(out.size()));
+    if (result && !out.empty()) env->SetFloatArrayRegion(result, 0, static_cast<jsize>(out.size()), out.data());
+    return result;
 }
 
 JNIEXPORT jfloat JNICALL Java_com_pocketstudio_engine_NativeEngine_exportProgress(JNIEnv*, jobject, jlong handle) {

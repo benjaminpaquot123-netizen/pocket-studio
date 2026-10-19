@@ -3,7 +3,9 @@
 
 #include <cmath>
 #include <cstdio>
+#include <atomic>
 #include <chrono>
+#include <cstdlib>
 #include <cstring>
 #include <filesystem>
 #include <fstream>
@@ -17,6 +19,11 @@
 #include "DrumKit.h"
 #include "Mixer.h"
 #include "OfflineRenderer.h"
+#include "OnsetDetector.h"
+#include "TimeStretch.h"
+#include "SoundFontPlayer.h"
+#include "Sample.h"
+#include "Sampler.h"
 #include "WavWriter.h"
 #include "Engine.h"
 #include "RoundTripMeter.h"
@@ -24,6 +31,24 @@
 #include "Synth.h"
 #include "SpscFloatRing.h"
 #include "SpscQueue.h"
+
+// Counts C++ heap allocations while g_countAllocations is set (real-time rule test). Not under
+// AddressSanitizer, which owns operator new.
+#if !defined(__SANITIZE_ADDRESS__)
+#include <new>
+// Our operator new is malloc-based, so free() in operator delete matches it.
+#pragma GCC diagnostic ignored "-Wmismatched-new-delete"
+static std::atomic<bool> g_countAllocations{false};
+static std::atomic<int> g_allocations{0};
+void* operator new(std::size_t n) {
+    if (g_countAllocations.load(std::memory_order_relaxed)) g_allocations.fetch_add(1, std::memory_order_relaxed);
+    if (void* p = std::malloc(n ? n : 1)) return p;
+    throw std::bad_alloc();
+}
+void operator delete(void* p) noexcept { std::free(p); }
+void operator delete(void* p, std::size_t) noexcept { std::free(p); }
+#define PS_COUNT_ALLOCATIONS 1
+#endif
 
 namespace {
 
@@ -929,11 +954,481 @@ void testOfflineExportRendersTheBeat() {
     CHECK(diffAfter > 8388607 / 10);
     std::filesystem::remove(path2);
 
+    // Into memory (resampling the song onto a pad): same length, same sound as the file.
+    ps::OfflineRenderer r3(kRate);
+    r3.post({ps::CommandType::SetTempo, 120.0f});
+    for (int step = 0; step < 16; step += 4) r3.post({ps::CommandType::SetDrumHit, 1.0f, 0, step});
+    const auto mem = r3.renderToBuffer(bar, kRate / 2);
+    CHECK(mem.size() == size_t(bar + kRate / 2) * 2);
+    if (mem.size() > 2000) CHECK(std::abs(int32_t(std::lrint(mem[1000] * 8388607.0f)) - sample24(f, 1000)) <= 2);
+
     ps::OfflineRenderer cancelled(kRate);
     cancelled.cancel();
     CHECK(cancelled.renderToWav(path.c_str(), bar, 0) == ps::OfflineRenderer::Result::Cancelled);
     CHECK(ps::OfflineRenderer(kRate).renderToWav("/nonexistent-dir/x.wav", bar, 0) == ps::OfflineRenderer::Result::IoError);
     std::filesystem::remove(path);
+}
+
+void testSampleResamplesCleanly() {
+    // 1 kHz sine at 44.1 kHz, 1 s, stereo -> 48 kHz: same duration and pitch, no NaN.
+    const int inFrames = 44100;
+    std::vector<float> in(static_cast<size_t>(inFrames) * 2);
+    for (int i = 0; i < inFrames; ++i) {
+        const float v = 0.5f * std::sin(2.0f * float(M_PI) * 1000.0f * i / 44100.0f);
+        in[size_t(i) * 2] = v;
+        in[size_t(i) * 2 + 1] = -v;
+    }
+    ps::Sample* s = ps::Sample::create(in.data(), inFrames, 2, 44100, kRate);
+    CHECK(s != nullptr);
+    if (!s) return;
+    CHECK(s->channels() == 2);
+    CHECK(std::abs(s->frames() - kRate) <= 4);
+    int crossings = 0;
+    float peak = 0.0f;
+    for (int64_t i = 1000; i < s->frames() - 1000; ++i) {
+        const float a = s->data()[(i - 1) * 2], b = s->data()[i * 2];
+        if (a < 0.0f && b >= 0.0f) ++crossings;
+        peak = std::max(peak, std::fabs(b));
+        CHECK(std::isfinite(b));
+    }
+    const double hz = crossings / ((s->frames() - 2000.0) / kRate);
+    CHECK(std::abs(hz - 1000.0) < 3.0);
+    CHECK(peak > 0.48f && peak < 0.52f);
+    CHECK(s->release());
+    delete s;
+    CHECK(ps::Sample::create(in.data(), 0, 2, 44100, kRate) == nullptr);
+    CHECK(ps::Sample::create(in.data(), 10, 3, 44100, kRate) == nullptr);
+}
+
+void testPadSampleReplacesTheDrum() {
+    // A pad with a sample plays that sample, starting exactly on the step.
+    std::vector<float> click(480, 0.0f);
+    click[0] = 0.9f;
+    click[100] = -0.4f;
+    ps::Sample* s = ps::Sample::create(click.data(), 480, 1, kRate, kRate);
+    ps::Engine engine(kRate);
+    s->retain();  // the command's reference
+    engine.post({ps::CommandType::InstallSample, 0.0f, ps::DrumKit::Kick, 0, s});
+    engine.post({ps::CommandType::SetTempo, 120.0f});
+    engine.post({ps::CommandType::SetDrumHit, 1.0f, ps::DrumKit::Kick, 4});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    const auto out = render(engine, 6000 * 6, 200);
+    CHECK(engine.padHasSample(ps::DrumKit::Kick));
+    int first = -1;
+    for (int i = 0; i < 6000 * 6 && first < 0; ++i) {
+        if (out[size_t(i) * kChannels] != 0.0f) first = i;
+    }
+    CHECK(first == 24000);
+    // The sample's shape, not a kick: a click, silence, a smaller negative click, then nothing.
+    const float a = out[size_t(24000) * kChannels], b = out[size_t(24100) * kChannels];
+    CHECK(a > 0.3f && b < 0.0f && std::fabs(b / a - (-0.4f / 0.9f)) < 0.02f);
+    float tail = 0.0f;
+    for (int i = 24600; i < 6000 * 6; ++i) tail = std::max(tail, std::fabs(out[size_t(i) * kChannels]));
+    CHECK(tail < 1e-6f);
+    CHECK(s->release() == false);  // the engine still holds it
+}
+
+void testSampleReferencesAreNeverLeakedOrFreedEarly() {
+    std::vector<float> one(48, 0.25f);
+    // Owner lets go first: the engine keeps it alive, then hands it back for freeing.
+    ps::Sample* s = ps::Sample::create(one.data(), 48, 1, kRate, kRate);
+    {
+        ps::Engine engine(kRate);
+        s->retain();
+        engine.post({ps::CommandType::InstallSample, 0.0f, 3, 0, s});
+        render(engine, 256, 256);
+        CHECK(s->refCount() == 2);
+        CHECK(!s->release());  // owner done, engine still plays it
+        engine.post({ps::CommandType::TriggerPad, 1.0f, 3});
+        const auto out = render(engine, 256, 256);
+        CHECK(std::fabs(out[0] - 0.25f) < 1e-6f);
+        engine.post({ps::CommandType::InstallSample, 0.0f, 3, 0, nullptr});  // back to the drum
+        render(engine, 256, 256);
+        CHECK(!engine.padHasSample(3));
+        engine.collectGarbage();  // frees s (ASan would flag a leak or a double free)
+    }
+    // Re-sending the same sound (undo, back to the app) must not cut what is playing.
+    {
+        std::vector<float> longDc(48000, 0.5f);
+        ps::Sample* d = ps::Sample::create(longDc.data(), 48000, 1, kRate, kRate);
+        ps::Engine engine(kRate);
+        d->retain();
+        engine.post({ps::CommandType::InstallSample, 0.0f, 2, 0, d});
+        engine.post({ps::CommandType::TriggerPad, 1.0f, 2});
+        render(engine, 256, 256);
+        d->retain();
+        engine.post({ps::CommandType::InstallSample, 0.0f, 2, 0, d});
+        const auto still = render(engine, 256, 256);
+        CHECK(std::fabs(still[0] - 0.5f) < 1e-4f && std::fabs(still[255 * kChannels] - 0.5f) < 1e-4f);
+        CHECK(d->refCount() == 2);  // the duplicate reference was dropped
+        CHECK(!d->release());
+    }
+    // Commands never applied release their reference when the engine goes away.
+    ps::Sample* t = ps::Sample::create(one.data(), 48, 1, kRate, kRate);
+    {
+        ps::Engine engine(kRate);
+        t->retain();
+        engine.post({ps::CommandType::InstallSample, 0.0f, 1, 0, t});
+    }
+    CHECK(t->refCount() == 1);
+    CHECK(t->release());
+    delete t;
+    // Out-of-range pad: the reference is released, not kept.
+    ps::Sample* u = ps::Sample::create(one.data(), 48, 1, kRate, kRate);
+    {
+        ps::Engine engine(kRate);
+        u->retain();
+        engine.post({ps::CommandType::InstallSample, 0.0f, 99, 0, u});
+        render(engine, 64, 64);
+    }
+    CHECK(u->refCount() == 1);
+    CHECK(u->release());
+    delete u;
+}
+
+void testRetriggerFadesInsteadOfClicking() {
+    std::vector<float> dc(48000, 0.5f);
+    ps::Sample* s = ps::Sample::create(dc.data(), 48000, 1, kRate, kRate);
+    ps::Sampler sampler;
+    sampler.install(0, s);
+    std::vector<float> out(2000, 0.0f);
+    sampler.trigger(0, 1.0f, 0);
+    sampler.trigger(0, 1.0f, 0);
+    sampler.render(out.data(), 1000);
+    sampler.trigger(0, 1.0f, 500);
+    std::fill(out.begin(), out.end(), 0.0f);
+    sampler.render(out.data(), 1000);
+    // Old hit fading (0.5 -> 0) plus new hit (0.5): never above 1, never a gap.
+    float lo = 1.0f, hi = 0.0f;
+    for (int i = 0; i < 1000; ++i) { lo = std::min(lo, out[size_t(i)]); hi = std::max(hi, out[size_t(i)]); }
+    CHECK(lo >= 0.49f && hi <= 1.0001f);
+    CHECK(out[600] > 0.99f * 0.5f);
+}
+
+// Renders one hit of `pad` straight from a Sampler (mono), for parameter tests.
+std::vector<float> hitSampler(ps::Sampler& sampler, int pad, int frames, int block = 128) {
+    std::vector<float> out(static_cast<size_t>(frames), 0.0f);
+    sampler.trigger(pad, 1.0f, 0);
+    for (int done = 0; done < frames; done += block) sampler.render(out.data() + done, std::min(block, frames - done));
+    return out;
+}
+
+int zeroCrossingsUp(const std::vector<float>& x, int from, int to) {
+    int n = 0;
+    for (int i = from + 1; i < to; ++i) if (x[size_t(i) - 1] < 0.0f && x[size_t(i)] >= 0.0f) ++n;
+    return n;
+}
+
+void testPadPitchRegionAndReverse() {
+    // 1 s ramp 0 -> 1 (to see direction and region), and a 1 s 500 Hz sine (to see pitch).
+    std::vector<float> ramp(48000), sine(48000);
+    for (int i = 0; i < 48000; ++i) {
+        ramp[size_t(i)] = i / 48000.0f;
+        sine[size_t(i)] = 0.5f * std::sin(2.0f * float(M_PI) * 500.0f * i / 48000.0f);
+    }
+    ps::Sampler sampler;
+    sampler.install(0, ps::Sample::create(sine.data(), 48000, 1, kRate, kRate));
+    sampler.install(1, ps::Sample::create(ramp.data(), 48000, 1, kRate, kRate));
+
+    // +12 semitones: twice the pitch, half the length.
+    sampler.setParam(0, ps::Sampler::Pitch, 12.0f);
+    auto up = hitSampler(sampler, 0, 48000);
+    CHECK(std::abs(zeroCrossingsUp(up, 0, 20000) - 1000 * 20000 / 48000) <= 2);
+    float after = 0.0f;
+    for (int i = 24100; i < 48000; ++i) after = std::max(after, std::fabs(up[size_t(i)]));
+    CHECK(after == 0.0f);
+
+    // Region 25 %..75 %, backwards: starts near 0.75 and falls to 0.25, lasts half a second.
+    sampler.setParam(1, ps::Sampler::Start, 0.25f);
+    sampler.setParam(1, ps::Sampler::End, 0.75f);
+    sampler.setParam(1, ps::Sampler::Reverse, 1.0f);
+    sampler.setParam(1, ps::Sampler::Release, 0.0f);
+    auto rev = hitSampler(sampler, 1, 30000);
+    CHECK(std::fabs(rev[0] - 0.75f) < 0.001f);
+    CHECK(std::fabs(rev[23990] - (0.75f - 23990 / 48000.0f)) < 0.001f);
+    CHECK(rev[24010] == 0.0f);
+}
+
+void testPadLoopEnvelopeAndChoke() {
+    std::vector<float> dc(4800, 0.5f);  // 100 ms of DC
+    ps::Sampler sampler;
+    sampler.install(0, ps::Sample::create(dc.data(), 4800, 1, kRate, kRate));
+    sampler.install(1, ps::Sample::create(dc.data(), 4800, 1, kRate, kRate));
+
+    // Loop: keeps sounding well past the sound's length, until released.
+    sampler.setParam(0, ps::Sampler::Loop, 1.0f);
+    auto looped = hitSampler(sampler, 0, 24000);
+    CHECK(std::fabs(looped[20000] - 0.5f) < 1e-4f);
+    sampler.releaseLoops();
+    std::vector<float> tail(1000, 0.0f);
+    sampler.render(tail.data(), 1000);
+    CHECK(tail[0] > 0.4f && tail[200] == 0.0f);  // 2 ms fade, then silence
+
+    // Attack 10 ms: half way up after 5 ms; release 20 ms: fading at the end.
+    sampler.setParam(1, ps::Sampler::Attack, 0.010f);
+    sampler.setParam(1, ps::Sampler::Release, 0.020f);
+    auto shaped = hitSampler(sampler, 1, 4800);
+    CHECK(std::fabs(shaped[240] - 0.25f) < 0.01f);
+    CHECK(std::fabs(shaped[2400] - 0.5f) < 1e-4f);
+    CHECK(std::fabs(shaped[4800 - 480] - 0.25f) < 0.01f);
+
+    // Choke group: hitting pad 1 silences pad 0 within 2 ms.
+    sampler.setParam(0, ps::Sampler::Choke, 1.0f);
+    sampler.setParam(1, ps::Sampler::Choke, 1.0f);
+    sampler.setParam(1, ps::Sampler::Gain, 0.0f);  // pad 1 itself silent: only pad 0 is heard
+    std::vector<float> out(2000, 0.0f);
+    sampler.trigger(0, 1.0f, 0);
+    sampler.render(out.data(), 1000);
+    CHECK(std::fabs(out[999] - 0.5f) < 1e-4f);
+    sampler.trigger(1, 1.0f, 0);
+    sampler.render(out.data() + 1000, 1000);
+    CHECK(out[1000 + 200] == 0.0f);
+}
+
+void testPadParamCommandsReachTheSampler() {
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SetPadParam, 7.0f, 2, ps::Sampler::Pitch});
+    engine.post({ps::CommandType::SetPadParam, 99.0f, 2, ps::Sampler::Pitch});  // clamped
+    engine.post({ps::CommandType::SetPadParam, 1.0f, 99, ps::Sampler::Pitch});  // bad pad: ignored
+    engine.post({ps::CommandType::SetPadParam, 1.0f, 2, 999});                  // bad param: ignored
+    engine.post({ps::CommandType::SetPadParam, NAN, 2, ps::Sampler::Gain});     // NaN: ignored
+    render(engine, 64, 64);
+    CHECK(engine.padParams(2).pitch == 24.0f);
+    CHECK(engine.padParams(2).gain == 1.0f);
+}
+
+void testOnsetsFindTheHits() {
+    // Four decaying noise bursts (like drum hits) at known places, with soft noise between.
+    const int frames = kRate * 2;
+    std::vector<float> x(size_t(frames), 0.0f);
+    std::mt19937 rng(7);
+    std::uniform_real_distribution<float> noise(-1.0f, 1.0f);
+    const int64_t hits[] = {0, 21000, 50000, 71000};
+    const float levels[] = {0.9f, 0.6f, 0.8f, 0.5f};
+    for (int i = 0; i < frames; ++i) x[size_t(i)] = 0.002f * noise(rng);
+    for (int h = 0; h < 4; ++h) {
+        for (int i = 0; i < 6000; ++i) x[size_t(hits[h] + i)] += levels[h] * noise(rng) * std::exp(-i / 900.0f);
+    }
+    auto onsets = ps::detectOnsets(x.data(), frames, kRate);
+    std::printf("  onsets:");
+    for (auto o : onsets) std::printf(" %lld", static_cast<long long>(o));
+    std::printf("\n");
+    CHECK(onsets.size() == 4);
+    for (size_t h = 0; h < 4 && h < onsets.size(); ++h) CHECK(std::llabs(onsets[h] - hits[h]) < kRate / 100);
+
+    // A cap keeps the strongest hits; silence gives just the start.
+    ps::OnsetOptions two;
+    two.maxSlices = 2;
+    auto capped = ps::detectOnsets(x.data(), frames, kRate, two);
+    CHECK(capped.size() == 2 && capped[0] == 0 && std::llabs(capped[1] - hits[2]) < kRate / 100);
+    std::vector<float> silence(size_t(frames), 0.0f);
+    CHECK(ps::detectOnsets(silence.data(), frames, kRate).size() == 1);
+}
+
+void testTimeStretchKeepsPitchAndLength() {
+    const int n = kRate;  // 1 s of 1 kHz, stereo
+    std::vector<float> in(size_t(n) * 2);
+    for (int i = 0; i < n; ++i) in[size_t(i) * 2] = in[size_t(i) * 2 + 1] = 0.5f * std::sin(2.0f * float(M_PI) * 1000.0f * i / kRate);
+    auto rms = [](const std::vector<float>& x, int from, int to) {
+        double e = 0.0;
+        for (int i = from; i < to; ++i) e += double(x[size_t(i) * 2]) * x[size_t(i) * 2];
+        return std::sqrt(e / (to - from));
+    };
+    auto hz = [](const std::vector<float>& x, int from, int to) {
+        int up = 0;
+        for (int i = from + 1; i < to; ++i) if (x[size_t(i - 1) * 2] < 0.0f && x[size_t(i) * 2] >= 0.0f) ++up;
+        return up / ((to - from) / double(kRate));
+    };
+
+    // 1.5x longer, same pitch, similar level.
+    auto longer = ps::timeStretch(in.data(), n, 2, n * 3 / 2, 0.0f, kRate);
+    CHECK(longer.size() == size_t(n * 3 / 2) * 2);
+    if (longer.size() == size_t(n * 3 / 2) * 2) {
+        std::printf("  stretched: %.1f Hz, rms %.3f\n", hz(longer, 12000, 60000), rms(longer, 12000, 60000));
+        CHECK(std::fabs(hz(longer, 12000, 60000) - 1000.0) < 10.0);
+        CHECK(std::fabs(rms(longer, 12000, 60000) - 0.3536) < 0.06);
+    }
+    // +12 semitones, same length: twice the pitch.
+    auto up = ps::timeStretch(in.data(), n, 2, n, 12.0f, kRate);
+    CHECK(up.size() == size_t(n) * 2);
+    if (up.size() == size_t(n) * 2) {
+        std::printf("  transposed: %.1f Hz\n", hz(up, 12000, 36000));
+        CHECK(std::fabs(hz(up, 12000, 36000) - 2000.0) < 20.0);
+    }
+    for (float v : longer) CHECK(std::isfinite(v));
+    // Bad input gives nothing rather than garbage.
+    CHECK(ps::timeStretch(in.data(), n, 3, n, 0.0f, kRate).empty());
+    CHECK(ps::timeStretch(nullptr, n, 2, n, 0.0f, kRate).empty());
+}
+
+void testPianoRollNotesAreSampleAccurate() {
+    // 120 BPM: a step is 6000 frames, a tick 250. A note at tick 36 (1.5 steps), 48 ticks long.
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SetTempo, 120.0f});
+    engine.post({ps::CommandType::SetSynthSteps, 0.0f, 16});
+    engine.post({ps::CommandType::SetSynthNote, 0.9f, 0, ps::NoteTrack::pack(36, 48, 57)});
+    engine.post({ps::CommandType::SetSynthNoteCount, 0.0f, 1});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    const auto out = render(engine, 6000 * 16 + 20000, 256);
+    auto firstSound = [&](int from) {
+        for (int i = from; i < int(out.size() / kChannels); ++i) if (out[size_t(i) * kChannels] != 0.0f) return i;
+        return -1;
+    };
+    const int first = firstSound(0);
+    CHECK(first >= 9000 && first <= 9002);
+    // Released at 9000 + 12000: by the next loop's note (96000 + 9000) it has died away, then sounds again.
+    float quiet = 0.0f;
+    for (int i = 96000 + 8000; i < 96000 + 9000; ++i) quiet = std::max(quiet, std::fabs(out[size_t(i) * kChannels]));
+    float again = 0.0f;
+    for (int i = 96000 + 9000; i < 96000 + 12000; ++i) again = std::max(again, std::fabs(out[size_t(i) * kChannels]));
+    CHECK(again > 10.0f * quiet && again > 0.01f);
+    // Stop: nothing left queued; a deleted note (count 0) is not played.
+    engine.post({ps::CommandType::SetTransport, 0.0f, 0});
+    render(engine, 256, 256);
+    CHECK(engine.notesPending() == 0);
+    engine.post({ps::CommandType::SetSynthNoteCount, 0.0f, 0});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    render(engine, 6000 * 3, 256);
+    CHECK(engine.notesPending() == 0);
+}
+
+// A minimal SoundFont 2 file: one looping 440 Hz sine sample (root key 69), one instrument, one preset.
+std::vector<uint8_t> tinySoundFont() {
+    std::vector<uint8_t> out;
+    auto u8 = [](std::vector<uint8_t>& b, int v) { b.push_back(uint8_t(v)); };
+    auto u16 = [&](std::vector<uint8_t>& b, int v) { u8(b, v & 0xFF); u8(b, (v >> 8) & 0xFF); };
+    auto u32 = [&](std::vector<uint8_t>& b, uint32_t v) { u16(b, int(v & 0xFFFF)); u16(b, int(v >> 16)); };
+    auto tag = [](std::vector<uint8_t>& b, const char* t) { b.insert(b.end(), t, t + 4); };
+    auto name20 = [](std::vector<uint8_t>& b, const char* n) { char z[20] = {}; std::strncpy(z, n, 19); b.insert(b.end(), z, z + 20); };
+    auto chunk = [&](std::vector<uint8_t>& b, const char* id, const std::vector<uint8_t>& data) {
+        tag(b, id); u32(b, uint32_t(data.size())); b.insert(b.end(), data.begin(), data.end());
+        if (data.size() & 1) b.push_back(0);
+    };
+    auto list = [&](const char* type, const std::vector<uint8_t>& body) {
+        std::vector<uint8_t> l; tag(l, type); l.insert(l.end(), body.begin(), body.end()); return l;
+    };
+    const int rate = 44100, n = rate;  // 1 s; exactly 440 cycles, so the loop is seamless
+    std::vector<uint8_t> info, ifil, isng, inam;
+    u16(ifil, 2); u16(ifil, 1);
+    const char* engineName = "EMU8000"; isng.assign(engineName, engineName + 8);
+    const char* bankName = "Test"; inam.assign(bankName, bankName + 5);
+    chunk(info, "ifil", ifil); chunk(info, "isng", isng); chunk(info, "INAM", inam);
+    std::vector<uint8_t> smpl;
+    for (int i = 0; i < n + 46; ++i) u16(smpl, i < n ? int(std::lrint(16000.0 * std::sin(2.0 * M_PI * 440.0 * i / rate))) : 0);
+    std::vector<uint8_t> sdta; chunk(sdta, "smpl", smpl);
+    std::vector<uint8_t> phdr, pbag, pmod(10, 0), pgen, inst, ibag, imod(10, 0), igen, shdr;
+    name20(phdr, "Sine"); u16(phdr, 0); u16(phdr, 0); u16(phdr, 0); u32(phdr, 0); u32(phdr, 0); u32(phdr, 0);
+    name20(phdr, "EOP"); u16(phdr, 0); u16(phdr, 0); u16(phdr, 1); u32(phdr, 0); u32(phdr, 0); u32(phdr, 0);
+    u16(pbag, 0); u16(pbag, 0); u16(pbag, 1); u16(pbag, 0);
+    u16(pgen, 41); u16(pgen, 0);  // instrument 0
+    u16(pgen, 0); u16(pgen, 0);
+    name20(inst, "Sine"); u16(inst, 0);
+    name20(inst, "EOI"); u16(inst, 1);
+    u16(ibag, 0); u16(ibag, 0); u16(ibag, 2); u16(ibag, 0);
+    u16(igen, 54); u16(igen, 1);  // sampleModes: loop
+    u16(igen, 53); u16(igen, 0);  // sampleID 0
+    u16(igen, 0); u16(igen, 0);
+    name20(shdr, "Sine"); u32(shdr, 0); u32(shdr, n); u32(shdr, 0); u32(shdr, n); u32(shdr, rate); u8(shdr, 69); u8(shdr, 0); u16(shdr, 0); u16(shdr, 1);
+    name20(shdr, "EOS"); for (int i = 0; i < 26; ++i) u8(shdr, 0);
+    std::vector<uint8_t> pdta;
+    chunk(pdta, "phdr", phdr); chunk(pdta, "pbag", pbag); chunk(pdta, "pmod", pmod); chunk(pdta, "pgen", pgen);
+    chunk(pdta, "inst", inst); chunk(pdta, "ibag", ibag); chunk(pdta, "imod", imod); chunk(pdta, "igen", igen);
+    chunk(pdta, "shdr", shdr);
+    std::vector<uint8_t> body; tag(body, "sfbk");
+    chunk(body, "LIST", list("INFO", info)); chunk(body, "LIST", list("sdta", sdta)); chunk(body, "LIST", list("pdta", pdta));
+    chunk(out, "RIFF", body);
+    return out;
+}
+
+void testInstrumentPlaysTheSoundFont() {
+    const std::string path = (std::filesystem::temp_directory_path() / "ps_tiny.sf2").string();
+    { auto bytes = tinySoundFont(); std::ofstream(path, std::ios::binary).write(reinterpret_cast<const char*>(bytes.data()), std::streamsize(bytes.size())); }
+    tsf* master = ps::SoundFontPlayer::loadFile(path.c_str());
+    CHECK(master != nullptr);
+    if (!master) return;
+    auto pitchOf = [](const std::vector<float>& x, int from, int to) {
+        int up = 0;
+        for (int i = from + 1; i < to; ++i) if (x[size_t(i - 1) * kChannels] < 0.0f && x[size_t(i) * kChannels] >= 0.0f) ++up;
+        return up / ((to - from) / double(kRate));
+    };
+    {
+        ps::Engine engine(kRate);
+        ps::Command install{ps::CommandType::SetInstrument, 0.0f, 0};
+        install.font = ps::SoundFontPlayer::makeInstance(master, kRate);
+        engine.post(install);
+        engine.post({ps::CommandType::SynthNoteOn, 1.0f, 69});
+        auto a4 = render(engine, kRate / 2, 256);
+        CHECK(engine.instrumentActive());
+        std::printf("  instrument A4: %.1f Hz\n", pitchOf(a4, 4800, 24000));
+        CHECK(std::fabs(pitchOf(a4, 4800, 24000) - 440.0) < 5.0);
+        engine.post({ps::CommandType::SynthNoteOff, 0.0f, 69});
+        engine.post({ps::CommandType::SynthNoteOn, 1.0f, 81});
+        auto a5 = render(engine, kRate / 2, 256);
+        CHECK(std::fabs(pitchOf(a5, 12000, 24000) - 880.0) < 10.0);
+        // A replacement instance retires the first; back to the synth with nullptr.
+        ps::Command again{ps::CommandType::SetInstrument, 0.0f, 0};
+        again.font = ps::SoundFontPlayer::makeInstance(master, kRate);
+        engine.post(again);
+        render(engine, 64, 64);
+        engine.collectGarbage();
+        engine.post({ps::CommandType::SetInstrument, 0.0f, 0});
+        render(engine, 64, 64);
+        CHECK(!engine.instrumentActive());
+        // A pending install is closed if the engine goes away first (ASan checks for leaks).
+        ps::Command pending{ps::CommandType::SetInstrument, 0.0f, 0};
+        pending.font = ps::SoundFontPlayer::makeInstance(master, kRate);
+        engine.post(pending);
+    }
+    ps::SoundFontPlayer::close(master);
+    CHECK(ps::SoundFontPlayer::loadFile("/nonexistent/x.sf2") == nullptr);
+    std::filesystem::remove(path);
+}
+
+void testProcessNeverAllocates() {
+#ifdef PS_COUNT_ALLOCATIONS
+    // Everything at once: drums, a sampled pad (pitched, looping), piano-roll notes on an instrument,
+    // the acid line, mixer and limiter. After warm-up, process() must not allocate at all.
+    const std::string path = (std::filesystem::temp_directory_path() / "ps_alloc.sf2").string();
+    { auto bytes = tinySoundFont(); std::ofstream(path, std::ios::binary).write(reinterpret_cast<const char*>(bytes.data()), std::streamsize(bytes.size())); }
+    tsf* master = ps::SoundFontPlayer::loadFile(path.c_str());
+    std::vector<float> wave(4800);
+    for (size_t i = 0; i < wave.size(); ++i) wave[i] = 0.3f * std::sin(0.05f * float(i));
+    ps::Sample* sample = ps::Sample::create(wave.data(), 4800, 1, kRate, kRate);
+    {
+        ps::Engine engine(kRate);
+        engine.post({ps::CommandType::SetTempo, 140.0f});
+        for (int step = 0; step < 16; ++step) engine.post({ps::CommandType::SetDrumHit, 0.9f, step % 16, step});
+        sample->retain();
+        ps::Command pad{ps::CommandType::InstallSample, 0.0f, 3, 0};
+        pad.sample = sample;
+        engine.post(pad);
+        engine.post({ps::CommandType::SetPadParam, 7.0f, 3, ps::Sampler::Pitch});
+        engine.post({ps::CommandType::SetPadParam, 1.0f, 3, ps::Sampler::Loop});
+        for (int n = 0; n < 32; ++n) engine.post({ps::CommandType::SetSynthNote, 0.8f, n, ps::NoteTrack::pack(n * 12, 30, 48 + n % 24)});
+        engine.post({ps::CommandType::SetSynthNoteCount, 0.0f, 32});
+        ps::Command inst{ps::CommandType::SetInstrument, 0.0f, 0};
+        inst.font = ps::SoundFontPlayer::makeInstance(master, kRate);
+        engine.post(inst);
+        for (int st = 0; st < 16; ++st) engine.post({ps::CommandType::SetAcidStep, 0.0f, st, ps::AcidStep{st % 12, 0, st % 3 == 0, st % 5 == 0, true}.pack()});
+        engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+        std::vector<float> out(512 * 2);
+        for (int i = 0; i < 50; ++i) engine.process(nullptr, 0, 0, out.data(), 512, 2);  // warm-up
+        g_allocations = 0;
+        g_countAllocations = true;
+        for (int i = 0; i < 400; ++i) {
+            if (i % 50 == 0) engine.post({ps::CommandType::TriggerPad, 1.0f, 3});
+            if (i % 70 == 0) engine.post({ps::CommandType::SynthNoteOn, 0.9f, 60 + i % 12});
+            engine.process(nullptr, 0, 0, out.data(), 512, 2);
+        }
+        g_countAllocations = false;
+        std::printf("  allocations during %d blocks: %d\n", 400, g_allocations.load());
+        CHECK(g_allocations.load() == 0);
+    }
+    CHECK(sample->release());
+    delete sample;
+    ps::SoundFontPlayer::close(master);
+    std::filesystem::remove(path);
+#endif
 }
 
 void testLimiterHoldsTheCeiling() {
@@ -1003,6 +1498,18 @@ int main(int argc, char** argv) {
         {"limiter_ceiling", testLimiterHoldsTheCeiling},
         {"wav_writer", testWavWriterRoundTrip},
         {"offline_export", testOfflineExportRendersTheBeat},
+        {"sample_resample", testSampleResamplesCleanly},
+        {"pad_sample", testPadSampleReplacesTheDrum},
+        {"sample_refs", testSampleReferencesAreNeverLeakedOrFreedEarly},
+        {"sample_retrigger", testRetriggerFadesInsteadOfClicking},
+        {"pad_pitch_region_reverse", testPadPitchRegionAndReverse},
+        {"pad_loop_envelope_choke", testPadLoopEnvelopeAndChoke},
+        {"pad_param_commands", testPadParamCommandsReachTheSampler},
+        {"onsets", testOnsetsFindTheHits},
+        {"time_stretch", testTimeStretchKeepsPitchAndLength},
+        {"piano_roll", testPianoRollNotesAreSampleAccurate},
+        {"instrument", testInstrumentPlaysTheSoundFont},
+        {"no_alloc_in_process", testProcessNeverAllocates},
     };
     for (const auto& t : tests) {
         const int before = g_failures;

@@ -28,6 +28,11 @@ object NativeEngine {
     private const val CMD_CHANNEL_PAN = 21
     private const val CMD_CHANNEL_MUTE = 22
     private const val CMD_CHANNEL_SOLO = 23
+    // 24: InstallSample (native only)
+    private const val CMD_PAD_PARAM = 25
+    private const val CMD_SYNTH_NOTE = 26
+    private const val CMD_SYNTH_NOTE_COUNT = 27
+    private const val CMD_SYNTH_STEPS = 28
 
     /** Mixer channels: 0 drums, 1 acid bass, 2 synth. */
     const val MIXER_CHANNELS = 3
@@ -78,6 +83,14 @@ object NativeEngine {
 
     /** Current pattern step, or -1 when stopped or counting in. */
     external fun currentStep(): Int
+    /** Steps since play without wrapping (-1 stopped): the piano roll loops on its own length. */
+    external fun absoluteStep(): Int
+
+    /** Piano-roll note [index] (ticks: 24 per sixteenth). Packing matches NoteTrack::pack. */
+    fun setSynthNote(index: Int, start: Int, length: Int, pitch: Int, velocity: Float) =
+        post(CMD_SYNTH_NOTE, velocity, index, (start and 0xFFF) or ((length and 0xFFF) shl 12) or ((pitch and 0x7F) shl 24))
+    fun setSynthNoteCount(count: Int) = post(CMD_SYNTH_NOTE_COUNT, 0f, count)
+    fun setSynthSteps(steps: Int) = post(CMD_SYNTH_STEPS, 0f, steps)
     /** Writes into [out] (size [LANES]) how many times each lane has fired. */
     external fun laneTriggers(out: IntArray)
 
@@ -130,11 +143,45 @@ object NativeEngine {
         }
     }
 
+    /** Gives pad [pad] the sample (or back to its drum sound with null). Main thread, like every command. */
+    fun setPadSample(pad: Int, sample: NativeSample?) {
+        val target = captureTarget
+        if (target != 0L) exportInstallSample(target, pad, sample?.handle ?: 0L)
+        else nativeInstallSample(pad, sample?.handle ?: 0L)
+    }
+
+    /** [values] in Sampler::Param order (see PadSample.engineParams). */
+    fun setPadParams(pad: Int, values: FloatArray) {
+        values.forEachIndexed { param, v -> post(CMD_PAD_PARAM, v, pad, param) }
+    }
+
+    /** The synth track plays [font]'s preset [presetIndex] (null: back to the synth). Main thread. */
+    fun setInstrument(font: SoundFont?, presetIndex: Int) {
+        val target = captureTarget
+        if (target != 0L) exportSetInstrument(target, font?.handle ?: 0L, presetIndex)
+        else nativeSetInstrument(font?.handle ?: 0L, presetIndex)
+    }
+
+    external fun soundFontLoad(path: String): Long
+    external fun soundFontClose(handle: Long)
+    external fun soundFontPresets(handle: Long): Array<String>
+    private external fun nativeSetInstrument(font: Long, preset: Int): Boolean
+    private external fun exportSetInstrument(exportHandle: Long, font: Long, preset: Int)
+
+    external fun sampleCreate(data: FloatArray, channels: Int, sampleRate: Int): Long
+    external fun sampleRelease(handle: Long)
+    external fun sampleFrames(handle: Long): Long
+    external fun sampleOnsets(handle: Long, sensitivity: Float, maxSlices: Int): FloatArray
+    external fun sampleStretched(handle: Long, start: Float, end: Float, outFrames: Long, semitones: Float): Long
+    private external fun nativeInstallSample(pad: Int, handle: Long): Boolean
+    private external fun exportInstallSample(exportHandle: Long, pad: Int, handle: Long)
+
     // Export natives stay public: `internal` would mangle their JNI names. Use OfflineExport.
     external fun exportCreate(): Long
     private external fun exportPost(handle: Long, type: Int, value: Float, a: Int, b: Int)
     external fun exportRender(handle: Long, path: String, frames: Long, tail: Long): Int
     external fun exportProgress(handle: Long): Float
+    external fun exportRenderFloat(handle: Long, frames: Long, tail: Long): FloatArray
     external fun exportCancel(handle: Long)
     external fun exportDestroy(handle: Long)
     private external fun nativePost(type: Int, value: Float, a: Int, b: Int): Boolean

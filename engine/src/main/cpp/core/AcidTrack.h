@@ -25,7 +25,7 @@ struct AcidStep {
 // sequencer, followed by a saturation stage. Real-time safe after prepare().
 class AcidTrack {
 public:
-    static constexpr int kMaxSteps = 64;
+    static constexpr int kMaxSteps = 128;  // 8 bars of sixteenths
 
     enum Param : int { Cutoff = 0, Resonance, EnvMod, Decay, Accent, Tuning, Waveform, Drive, Level, ParamCount };
 

@@ -47,7 +47,16 @@
 
 - Jalon 2.6 : la piste Synthé peut jouer un des 128 instruments General MIDI (GeneralUser GS via TinySoundFont, voix préallouées, instance par moteur, copie retirée et fermée hors fil audio). La banque (32 Mo) est publiée par la CI sur une Release dédiée et téléchargée une fois par l'appli, empreinte SHA-256 vérifiée avant toute lecture (TinySoundFont n'est pas sûr sur un fichier abîmé). Navigateur par famille dans Synthé › Source du son. Import d'un dossier de sons (pack) sur les pads suivants. Test Linux avec une mini-banque SF2 générée : La 440 Hz puis 880 Hz, remplacement et fermeture sans fuite (ASan).
 
+- Phase 3, jalon 3.1 (moteur) : séparation HT-Demucs v4 en ONNX (module `:separation`, ONNX Runtime 1.31.0), modèle construit de façon reproductible et hébergé sur la Release `modele-htdemucs-v4-onnx-1`. Test Linux : batterie 16,4 dB, basse 17,0 dB, autres 22,7 dB SDR.
+
+- Demande de Benjamin (2026-10-19) : ligne acide jusqu'à 8 mesures (128 pas, pages de 16, « Copier → page », « Suivre ») ; deux nouvelles banques à télécharger (FluidR3 GM 148 Mo, MuseScore General 216 Mo, MIT) au choix avec GeneralUser ; toutes les variantes par famille ; kits de batterie SF2 rendus sur les 16 pads (une édition annulable).
+
+- Jalons 3.1 et 3.2 (appli) : onglet Remix. Téléchargement du modèle (174 Mo, SHA-256), chanson décodée en fichier, séparation dans un service au premier plan (progression dans la notification, Annuler, écran éteint possible), stems gardés pour les 3 derniers morceaux, écoute de chaque stem. Tests Linux de séparation dans la CI (job « Separation tests »).
+
+- Jalon 3.3 : tempo (aubio sur la piste batterie, affiné par régression, premier temps sur la grosse caisse) et tonalité (chromagramme basse + autres, profils de Krumhansl) calculés après la séparation, affichés dans Remix ; « Caler le projet sur ce morceau » règle tempo et gamme en une étape annulable. Test Linux : 124,1 BPM pour 124, premier temps à 0,25 s, La mineur et Do majeur reconnus.
+
+- Jalon 3.4 : « Jouer avec le projet » charge les 4 stems dans le moteur (16 bits, 48 kHz), cale tempo et gamme, et les fait partir avec le Rythme au pas 0 (mesure de départ réglable) ; volume / muet / solo par stem, voie « Remix » au mixeur (et dans l'export) ; « → Pad » copie 1, 2 ou 4 mesures d'un stem sur le pad choisi. Tests Linux : départ à l'échantillon près, mute/solo, fondu à l'arrêt, chargement 44,1 → 48 kHz, aucune allocation dans le fil audio.
+
 ## Prochaine étape exacte
-1. Revue de fin de phase 2 faite (2 graves corrigés, REVIEW.md). Dès que la CI est verte : fusionner la PR #6 (autorisation permanente de Benjamin), puis démarrer la phase 3 (remix) sur la même branche repartie de main.
-2. Reste noté : lever la limite de 60 s par son ; kits de batterie GM (banque 128) sur les pads ; import de packs .zip.
-2. Reste du 2.3 : lever la limite de 60 s par son (stockage 16 bits ou lecture en flux), utile pour découper des morceaux entiers.
+1. Revue de fin de phase 3 par un sous-agent neuf (séparation, service, stems dans le moteur), corriger, CI verte, fusionner la PR #7, puis phase 4 (effets).
+2. Reste noté : lever la limite de 60 s par son ; import de packs .zip ; étirement des stems si le tempo du projet change.

@@ -31,6 +31,10 @@ public:
     // Preset list of a loaded font (bank 128 = drum kits in General MIDI).
     static int presetCount(tsf* f);
     static void presetInfo(tsf* f, int index, int* bank, int* program, const char** name);
+    // Same thread as makeInstance: renders one note of `preset` (held `holdFrames`) into `out`
+    // (mono, `frames` long, at `sampleRate`); used to put a drum kit's sounds on the pads.
+    static bool renderNote(tsf* master, int preset, int note, float velocity, int holdFrames, float* out, int frames,
+                           int sampleRate);
 
     // Audio thread: takes ownership of `instance` (nullptr = back to the synth) playing `preset`.
     void install(tsf* instance, int preset);

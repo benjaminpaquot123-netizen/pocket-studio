@@ -49,10 +49,10 @@ Feu vert de Benjamin (D4 = A) : fusion de la pull request en fin de phase.
 - [x] 2.6 Bibliothèque d'instruments : banque General MIDI GeneralUser GS (128 instruments + kits) jouée par TinySoundFont (MIT), téléchargée au premier usage depuis notre propre Release (empreinte vérifiée) ; navigateur de sons par famille ; import de packs de samples (zip/dossier) et packs libres CC0
 
 ## Phase 3 : remix
-- [ ] 3.1 StemSeparator + DemucsOnDevice (ONNX Runtime), téléchargement des modèles avec empreinte
-- [ ] 3.2 Foreground Service de séparation (progression, annulation, WakeLock, cache)
-- [ ] 3.3 Détection tempo (aubio) et tonalité (libKeyFinder)
-- [ ] 3.4 Mode Remix : stems calés dans un nouveau projet, mute/solo, stem vers sampler
+- [x] 3.1 StemSeparator + DemucsOnDevice (ONNX Runtime), téléchargement des modèles avec empreinte
+- [x] 3.2 Foreground Service de séparation (progression, annulation, WakeLock, cache)
+- [x] 3.3 Détection tempo (aubio) et tonalité (libKeyFinder)
+- [x] 3.4 Mode Remix : stems calés dans un nouveau projet, mute/solo, stem vers sampler
 
 ## Phase 4 : production
 - [ ] 4.1 Effets complets (EQ, compresseur, saturation, delay, réverbes…), 4 inserts + 2 envois

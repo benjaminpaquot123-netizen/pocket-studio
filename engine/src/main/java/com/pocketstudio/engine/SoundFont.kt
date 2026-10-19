@@ -17,6 +17,12 @@ class SoundFont private constructor(internal val handle: Long) : AutoCloseable {
 
     fun indexOf(bank: Int, program: Int): Int = presets.firstOrNull { it.bank == bank && it.program == program }?.index ?: -1
 
+    /** Main thread. One note of [preset] as mono 48 kHz audio (trailing silence trimmed). */
+    fun renderNote(preset: Preset, note: Int, velocity: Float = 0.9f, holdSeconds: Float = 0.3f, maxSeconds: Float = 2.5f): FloatArray {
+        check(!closed)
+        return NativeEngine.soundFontRenderNote(handle, preset.index, note, velocity, (holdSeconds * 48_000).toInt(), (maxSeconds * 48_000).toInt())
+    }
+
     private var closed = false
 
     override fun close() {

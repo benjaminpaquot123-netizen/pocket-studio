@@ -118,4 +118,4 @@ data class Performance(
 
 /** A General MIDI preset from the instrument library, found by bank and program. */
 @Serializable
-data class InstrumentChoice(val bank: Int, val program: Int, val name: String)
+data class InstrumentChoice(val bank: Int, val program: Int, val name: String, val bankId: String = "generaluser")

@@ -17,6 +17,10 @@ import com.pocketstudio.model.InstrumentChoice
 import com.pocketstudio.app.playback.PlaybackService
 import com.pocketstudio.engine.ExportResult
 import com.pocketstudio.engine.NativeEngine
+import com.pocketstudio.engine.NativeStems
+import com.pocketstudio.app.remix.StemSet
+import com.pocketstudio.app.remix.StemStore
+import com.pocketstudio.model.Remix
 import com.pocketstudio.engine.OfflineExport
 import com.pocketstudio.model.AcidGenerator
 import com.pocketstudio.model.AcidPattern
@@ -24,6 +28,7 @@ import com.pocketstudio.model.AcidStep
 import com.pocketstudio.model.DrumPattern
 import com.pocketstudio.model.Hit
 import com.pocketstudio.model.Harmony
+import com.pocketstudio.model.Scale
 import com.pocketstudio.model.Note
 import com.pocketstudio.model.Performance
 import com.pocketstudio.model.Progression
@@ -168,62 +173,207 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         pushPads(p)
         pushNotes(p.synthNotes)
         pushInstrument(p)
+        pushRemix(p)
     }
 
-    // --- Instrument library (General MIDI) -------------------------------------------------
+    // --- Remix: a separated song played along with the project ---------------------------------
+
+    private var stems: NativeStems? = null
+    private var stemsId: String? = null
+    private var stemsJob: kotlinx.coroutines.Job? = null
+    private val _remixLoading = MutableStateFlow(false)
+    val remixLoading: StateFlow<Boolean> = _remixLoading.asStateFlow()
+
+    private fun pushRemix(p: Project = project.value) {
+        if (!NativeEngine.isAvailable) return
+        val loaded = stems?.takeIf { stemsId == p.remix.setId }
+        NativeEngine.setStems(loaded)
+        NativeEngine.setStemStart(p.remix.startFrame(OfflineExport.SAMPLE_RATE))
+        p.remix.stems.forEachIndexed { i, m ->
+            NativeEngine.setStemParam(i, 0, m.volume)
+            NativeEngine.setStemParam(i, 1, if (m.mute) 1f else 0f)
+            NativeEngine.setStemParam(i, 2, if (m.solo) 1f else 0f)
+        }
+        val wanted = p.remix.setId
+        if (loaded == null && stems != null) {
+            // Another song (or none): the engine let go of the old one, free it now, not after the next load.
+            stems?.close()
+            stems = null
+            stemsId = null
+        }
+        if (loaded == null && wanted != null && stemsJob?.isActive != true) loadStems(wanted)
+    }
+
+    /** Reads the stems into the engine's memory (seconds, worker thread), then plays them along. */
+    private fun loadStems(id: String) {
+        val app = getApplication<Application>()
+        _remixLoading.value = true
+        stemsJob = viewModelScope.launch {
+            // Not cancellable: a finished load must reach the code below, which closes it if unwanted.
+            val loaded = withContext(kotlinx.coroutines.NonCancellable + Dispatchers.IO) {
+                StemStore.pin(app, id)  // also covers projects reopened from disk
+                StemStore.read(StemStore.dirFor(app, id))?.let { set ->
+                    NativeStems.load(set.stem("drums").path, set.stem("bass").path, set.stem("other").path, set.stem("vocals").path)
+                }
+            }
+            _remixLoading.value = false
+            stemsJob = null  // so pushRemix below may start the next load
+            if (!isActive) {
+                loaded?.close()
+                return@launch
+            }
+            val wanted = project.value.remix
+            if (loaded == null) {
+                if (wanted.setId == id) {
+                    AppLog.add("Remix : pistes de « ${wanted.name} » introuvables ou illisibles")
+                    _notice.value = "Les pistes de « ${wanted.name} » ne sont plus sur le téléphone (ou la mémoire manque). Sépare à nouveau le morceau."
+                }
+                return@launch
+            }
+            if (wanted.setId != id) {
+                loaded.close()
+                if (wanted.setId != null) pushRemix()
+                return@launch
+            }
+            val old = stems
+            stems = loaded
+            stemsId = id
+            pushRemix()
+            old?.close()  // the engine keeps its own reference until it lets go
+            AppLog.add("Remix : « ${wanted.name} » chargé (${loaded.frames / OfflineExport.SAMPLE_RATE} s)")
+        }
+    }
+
+    /** The project plays a separated song along, at the song's tempo and in its key. One undo step. */
+    fun useSong(set: StemSet) {
+        val info = set.info
+        session.edit("remix") { p ->
+            p.copy(
+                tempoBpm = if (info.bpm > 0) info.bpm else p.tempoBpm,
+                harmony = info.root?.let { Harmony(it, if (info.minor) Scale.Minor else Scale.Major) } ?: p.harmony,
+                remix = Remix(set.id, set.name, info.bpm, info.firstBeat),
+            )
+        }
+        StemStore.pin(getApplication(), set.id)
+        if (!NativeEngine.isAvailable) return
+        NativeEngine.setTempo(project.value.tempoBpm)
+        if (project.value.drums.lanes.any { (it.sample?.fitBeats ?: 0) > 0 }) pushPads()
+        pushRemix()
+    }
+
+    fun clearRemix() {
+        session.edit("remix") { p -> p.copy(remix = Remix()) }
+        StemStore.pin(getApplication(), null)
+        pushRemix()
+        stems?.close()
+        stems = null
+        stemsId = null
+    }
+
+    fun setStemVolume(stem: Int, v: Float) = editRemix("stem-$stem-vol") { it.withStem(stem) { s -> s.copy(volume = v) } }
+    fun toggleStemMute(stem: Int) = editRemix(null) { it.withStem(stem) { s -> s.copy(mute = !s.mute) } }
+    fun toggleStemSolo(stem: Int) = editRemix(null) { it.withStem(stem) { s -> s.copy(solo = !s.solo) } }
+    fun setRemixStartBar(bar: Int) = editRemix("remix-start") { it.copy(startBar = bar.coerceIn(0, Remix.MAX_START_BAR)) }
+
+    private fun editRemix(key: String?, transform: (Remix) -> Remix) {
+        session.edit(key) { p -> p.copy(remix = transform(p.remix)) }
+        pushRemix()
+    }
+
+    /** [bars] bars of one stem, from the remix start, onto the selected pad. */
+    fun stemToPad(stem: Int, bars: Int) {
+        val source = stems ?: return
+        if (_sampleTask.value is SampleTask.Busy || _sampleTask.value is SampleTask.Recording) return
+        val r = project.value.remix
+        val count = r.barFrames(OfflineExport.SAMPLE_RATE) * bars
+        if (count <= 0) return
+        if (count > AudioDecoder.MAX_SECONDS * OfflineExport.SAMPLE_RATE) {
+            _sampleTask.value = SampleTask.Failed("Trop long pour un pad : choisis moins de mesures.")
+            return
+        }
+        val label = STEM_LABELS.getOrElse(stem) { "Piste" }
+        sampleJob("$label vers le pad…") {
+            val audio = source.extract(stem, r.startFrame(OfflineExport.SAMPLE_RATE), count)
+            if (audio.isEmpty()) throw UserMessage("Ce passage est après la fin du morceau.")
+            padSamples.add(Pcm(audio, 2, OfflineExport.SAMPLE_RATE), "$label ${r.name}".take(40))
+        }
+    }
+
+    // --- Instrument library (General MIDI banks) -------------------------------------------
 
     private val _library = MutableStateFlow<LibraryState>(LibraryState.Missing)
     val library: StateFlow<LibraryState> = _library.asStateFlow()
+    /** The bank shown in the browser (and loaded once opened). */
+    private val _bankId = MutableStateFlow(project.value.instrument?.bankId ?: InstrumentLibrary.BANKS[0].id)
+    val bankId: StateFlow<String> = _bankId.asStateFlow()
     private var soundFont: SoundFont? = null
+    private var loadedBankId: String? = null
     @Volatile private var downloadCancelled = false
 
     private fun pushInstrument(p: Project = project.value) {
         if (!NativeEngine.isAvailable) return
-        val font = soundFont
+        val font = soundFont?.takeIf { loadedBankId == p.instrument?.bankId }
         val index = p.instrument?.let { font?.indexOf(it.bank, it.program) } ?: -1
         if (font != null && index >= 0) NativeEngine.setInstrument(font, index) else NativeEngine.setInstrument(null, 0)
     }
 
-    /** Opens the bank if it is on the phone (checked first), else says it must be downloaded. */
+    /** Shows another bank in the browser, opening it if it is on the phone. */
+    fun selectBank(id: String) {
+        if (_library.value is LibraryState.Downloading) return
+        _bankId.value = id
+        openLibrary()
+    }
+
+    /** Opens the shown bank if it is on the phone (checked first), else says it must be downloaded. */
     fun openLibrary() {
-        if (soundFont != null || _library.value is LibraryState.Downloading || _library.value == LibraryState.Loading) return
+        val bank = InstrumentLibrary.bank(_bankId.value)
+        if (_library.value is LibraryState.Downloading || _library.value == LibraryState.Loading) return
+        if (soundFont != null && loadedBankId == bank.id) {
+            _library.value = LibraryState.Ready(soundFont!!.presets)
+            return
+        }
         val app = getApplication<Application>()
-        if (!InstrumentLibrary.isInstalled(app)) {
+        if (!InstrumentLibrary.isInstalled(app, bank)) {
             _library.value = LibraryState.Missing
             return
         }
         _library.value = LibraryState.Loading
         viewModelScope.launch {
             val font = withContext(Dispatchers.IO) {
-                if (InstrumentLibrary.verify(app)) SoundFont.load(InstrumentLibrary.file(app))
-                else null.also { InstrumentLibrary.file(app).delete() }
+                if (InstrumentLibrary.verify(app, bank)) SoundFont.load(InstrumentLibrary.file(app, bank))
+                else null.also { InstrumentLibrary.file(app, bank).delete() }
             }
             if (font == null) {
                 _library.value = LibraryState.Failed("La bibliothèque était abîmée : télécharge-la à nouveau.")
                 return@launch
             }
+            // One bank in memory at a time: the engine keeps its own copy of the old one until replaced.
+            val old = soundFont
             soundFont = font
-            _library.value = LibraryState.Ready(font.presets)
-            AppLog.add("Bibliothèque d'instruments : ${font.presets.size} sons")
+            loadedBankId = bank.id
             pushInstrument()
+            old?.close()
+            if (_bankId.value == bank.id) _library.value = LibraryState.Ready(font.presets)
+            AppLog.add("Bibliothèque ${bank.name} : ${font.presets.size} sons")
         }
     }
 
     fun downloadLibrary() {
         if (_library.value is LibraryState.Downloading) return
         val app = getApplication<Application>()
+        val bank = InstrumentLibrary.bank(_bankId.value)
         downloadCancelled = false
         _library.value = LibraryState.Downloading(0f)
         viewModelScope.launch {
             try {
                 withContext(Dispatchers.IO) {
-                    InstrumentLibrary.download(app, { p -> _library.value = LibraryState.Downloading(p) }) { downloadCancelled }
+                    InstrumentLibrary.download(app, bank, { p -> _library.value = LibraryState.Downloading(p) }) { downloadCancelled }
                 }
-                AppLog.add("Bibliothèque téléchargée")
+                AppLog.add("Bibliothèque ${bank.name} téléchargée")
                 _library.value = LibraryState.Missing
                 openLibrary()
             } catch (e: Exception) {
-                AppLog.add("Téléchargement de la bibliothèque : ${e.message}")
+                AppLog.add("Téléchargement de ${bank.name} : ${e.message}")
                 _library.value = if (downloadCancelled) LibraryState.Missing
                 else LibraryState.Failed("Le téléchargement a échoué (${e.message}). Vérifie la connexion et réessaie.")
             }
@@ -242,6 +392,40 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             viewModelScope.launch {
                 kotlinx.coroutines.delay(30)  // let the new instrument arrive first
                 previewNote(60)
+            }
+        }
+    }
+
+    /**
+     * Puts a General MIDI drum kit on the 16 pads: each pad gets the kit's sound for its role
+     * (kick, snare, hats…), hats in one choke group. One undo step.
+     */
+    fun loadKit(kit: Preset) {
+        val font = soundFont ?: return
+        if (_sampleTask.value is SampleTask.Busy) return
+        _sampleTask.value = SampleTask.Busy("Kit ${kit.name}…")
+        viewModelScope.launch {
+            try {
+                val pads = ArrayList<Pair<Int, PadSample>>()
+                InstrumentLibrary.KIT_NOTES.forEachIndexed { pad, note ->
+                    // Rendering shares the font's reference count: main thread, one note at a time.
+                    val audio = font.renderNote(kit, note)
+                    kotlinx.coroutines.yield()
+                    if (audio.size < 480) return@forEachIndexed
+                    val (sample, prepared) = withContext(Dispatchers.IO) {
+                        padSamples.add(Pcm(audio, 1, OfflineExport.SAMPLE_RATE), "${kit.name.take(18)} ${InstrumentLibrary.KIT_PAD_NAMES[pad]}")
+                    }
+                    padSamples.register(prepared)
+                    pads += pad to sample.copy(choke = if (note == 42 || note == 46) 1 else 0)
+                }
+                session.edit { p -> p.copy(drums = Slicer.apply(p.drums, pads)) }
+                pushPads()
+                AppLog.add("Kit ${kit.name} : ${pads.size} sons sur les pads")
+                _sampleTask.value = SampleTask.Idle
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                _sampleTask.value = SampleTask.Failed("Le kit n'a pas pu être chargé (${e.message}).")
             }
         }
     }
@@ -605,19 +789,20 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     // --- Mixer -----------------------------------------------------------------------------
 
-    private val _meters = MutableStateFlow(FloatArray(5))
+    private val _meters = MutableStateFlow(FloatArray(NativeEngine.MIXER_CHANNELS + 2))
     val meters: StateFlow<FloatArray> = _meters.asStateFlow()
 
     /** Polls meter peaks about 20 times a second while the mixer is visible. */
     suspend fun pollMeters() {
         if (!NativeEngine.isAvailable) return
-        val decayed = FloatArray(5)
+        val n = NativeEngine.MIXER_CHANNELS
+        val decayed = FloatArray(n + 2)
         while (true) {
-            val fresh = FloatArray(5)
+            val fresh = FloatArray(n + 2)
             NativeEngine.mixerMeters(fresh)
             // Peak hold with a gentle fall so the bars are readable.
-            for (i in 0 until 4) decayed[i] = maxOf(fresh[i], decayed[i] * 0.85f)
-            decayed[4] = fresh[4]
+            for (i in 0..n) decayed[i] = maxOf(fresh[i], decayed[i] * 0.85f)
+            decayed[n + 1] = fresh[n + 1]
             _meters.value = decayed.copyOf()
             kotlinx.coroutines.delay(50)
         }
@@ -696,6 +881,19 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /** New random line (locked steps kept). */
+    /** Pattern length in bars (1 bar = 16 steps): the end of a longer line is kept when shortening. */
+    fun setAcidBars(bars: Int) {
+        session.edit { p -> p.copy(acid = p.acid.copy(length = bars * AcidPattern.STEPS_PER_PAGE).sanitized()) }
+        if (_selectedAcidStep.value >= project.value.acid.length) _selectedAcidStep.value = 0
+        pushAcid(project.value.acid)
+    }
+
+    /** Copies bar [from] onto bar [to] (0-based), the usual way to build a longer line. */
+    fun copyAcidPage(from: Int, to: Int) {
+        session.edit { p -> p.copy(acid = p.acid.copyPage(from, to)) }
+        pushAcid(project.value.acid)
+    }
+
     fun generateAcid() {
         session.edit { it.copy(acid = acidGenerator.generate(it.acid)) }
         pushAcid(project.value.acid)
@@ -926,6 +1124,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         running?.cancel()
         recorder?.stop()
         padSamples.close()
+        stems?.close()
         if (NativeEngine.isAvailable) NativeEngine.stopTransport()
         PlaybackService.stop(getApplication())
     }
@@ -935,5 +1134,6 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         private val AUDIO_EXTENSIONS = setOf("wav", "mp3", "flac", "m4a", "aac", "ogg", "opus", "aif", "aiff")
         /** Two seconds after the last bar so releases and the acid tail ring out. */
         const val TAIL_FRAMES = 2L * OfflineExport.SAMPLE_RATE
+        private val STEM_LABELS = listOf("Batterie", "Basse", "Autres", "Voix")
     }
 }

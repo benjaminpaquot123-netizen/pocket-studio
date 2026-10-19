@@ -16,6 +16,7 @@
 #include <vector>
 
 #include "AcidTrack.h"
+#include "Analysis.h"
 #include "DrumKit.h"
 #include "Mixer.h"
 #include "OfflineRenderer.h"
@@ -31,6 +32,7 @@
 #include "Synth.h"
 #include "SpscFloatRing.h"
 #include "SpscQueue.h"
+#include "StemPlayer.h"
 
 // Counts C++ heap allocations while g_countAllocations is set (real-time rule test). Not under
 // AddressSanitizer, which owns operator new.
@@ -854,8 +856,8 @@ void testSynthThroughEngine() {
 // Feeds constant-level mono sources through the mixer and returns interleaved stereo.
 std::vector<float> mixConstant(ps::Mixer& mixer, float drums, float acid, float synth, int frames = 9600) {
     std::vector<float> a(static_cast<size_t>(frames), drums), b(static_cast<size_t>(frames), acid),
-        c(static_cast<size_t>(frames), synth), out(static_cast<size_t>(frames) * 2);
-    const float* ch[ps::Mixer::kChannels] = {a.data(), b.data(), c.data()};
+        c(static_cast<size_t>(frames), synth), d(static_cast<size_t>(frames), 0.0f), out(static_cast<size_t>(frames) * 2);
+    const float* ch[ps::Mixer::kChannels] = {a.data(), b.data(), c.data(), d.data()};
     mixer.process(ch, nullptr, out.data(), frames, 2);
     return out;
 }
@@ -1379,6 +1381,13 @@ void testInstrumentPlaysTheSoundFont() {
         pending.font = ps::SoundFontPlayer::makeInstance(master, kRate);
         engine.post(pending);
     }
+    // Rendering one note offline (drum kit onto the pads): sound while held, then the release.
+    std::vector<float> note(static_cast<size_t>(kRate), 0.0f);
+    CHECK(ps::SoundFontPlayer::renderNote(master, 0, 69, 1.0f, kRate / 2, note.data(), kRate, kRate));
+    float held = 0.0f;
+    for (int i = 1000; i < kRate / 2; ++i) held = std::max(held, std::fabs(note[size_t(i)]));
+    CHECK(held > 0.05f);
+    CHECK(!ps::SoundFontPlayer::renderNote(master, 99, 69, 1.0f, 10, note.data(), 100, kRate));  // no such preset
     ps::SoundFontPlayer::close(master);
     CHECK(ps::SoundFontPlayer::loadFile("/nonexistent/x.sf2") == nullptr);
     std::filesystem::remove(path);
@@ -1410,6 +1419,12 @@ void testProcessNeverAllocates() {
         inst.font = ps::SoundFontPlayer::makeInstance(master, kRate);
         engine.post(inst);
         for (int st = 0; st < 16; ++st) engine.post({ps::CommandType::SetAcidStep, 0.0f, st, ps::AcidStep{st % 12, 0, st % 3 == 0, st % 5 == 0, true}.pack()});
+        ps::Command stems{ps::CommandType::InstallStems};
+        auto* bundle = ps::StemBundle::fromFloat(std::vector<std::vector<float>>(4, std::vector<float>(kRate * 20, 0.1f)));
+        stems.stems = bundle;
+        bundle->retain();  // ours, for the re-installs below (what the app does on every push)
+        engine.post(stems);
+        engine.post({ps::CommandType::SetStemParam, 1.0f, 2, ps::StemPlayer::Solo});
         engine.post({ps::CommandType::SetTransport, 1.0f, 0});
         std::vector<float> out(512 * 2);
         for (int i = 0; i < 50; ++i) engine.process(nullptr, 0, 0, out.data(), 512, 2);  // warm-up
@@ -1418,11 +1433,20 @@ void testProcessNeverAllocates() {
         for (int i = 0; i < 400; ++i) {
             if (i % 50 == 0) engine.post({ps::CommandType::TriggerPad, 1.0f, 3});
             if (i % 70 == 0) engine.post({ps::CommandType::SynthNoteOn, 0.9f, 60 + i % 12});
+            if (i % 90 == 0) {  // same bundle again: the old reference goes through the retire queue
+                bundle->retain();
+                ps::Command again{ps::CommandType::InstallStems};
+                again.stems = bundle;
+                engine.post(again);
+            }
             engine.process(nullptr, 0, 0, out.data(), 512, 2);
         }
         g_countAllocations = false;
         std::printf("  allocations during %d blocks: %d\n", 400, g_allocations.load());
         CHECK(g_allocations.load() == 0);
+        engine.collectGarbage();
+        CHECK(bundle->refCount() == 2);  // ours + the engine's, none leaked by the re-installs
+        CHECK(!bundle->release());
     }
     CHECK(sample->release());
     delete sample;
@@ -1447,6 +1471,168 @@ void testLimiterHoldsTheCeiling() {
     mixConstant(mixer, 0.0f, 0.0f, 0.0f, kRate);
     auto quiet = mixConstant(mixer, 0.3f, 0.0f, 0.0f);
     CHECK(std::fabs(quiet.back() - 0.3f) < 1e-3f);
+}
+
+// Writes mono `x` as a WAV: 32-bit float, or 16-bit PCM when `pcm16`.
+void writeTestWav(const std::string& path, const std::vector<float>& x, int rate, bool pcm16) {
+    std::FILE* f = std::fopen(path.c_str(), "wb");
+    auto u32 = [&](uint32_t v) { std::fwrite(&v, 4, 1, f); };
+    auto u16 = [&](uint16_t v) { std::fwrite(&v, 2, 1, f); };
+    const uint32_t bytes = static_cast<uint32_t>(x.size() * (pcm16 ? 2 : 4));
+    std::fwrite("RIFF", 1, 4, f); u32(36 + bytes); std::fwrite("WAVEfmt ", 1, 8, f);
+    u32(16); u16(pcm16 ? 1 : 3); u16(1); u32(static_cast<uint32_t>(rate)); u32(static_cast<uint32_t>(rate * (pcm16 ? 2 : 4))); u16(pcm16 ? 2 : 4); u16(pcm16 ? 16 : 32);
+    std::fwrite("LIST", 1, 4, f); u32(4); std::fwrite("INFO", 1, 4, f);  // a chunk to skip
+    std::fwrite("data", 1, 4, f); u32(bytes);
+    for (float v : x) {
+        if (pcm16) { const auto s16 = static_cast<int16_t>(std::lround(std::clamp(v, -1.0f, 1.0f) * 32767)); std::fwrite(&s16, 2, 1, f); }
+        else std::fwrite(&v, 4, 1, f);
+    }
+    std::fclose(f);
+}
+
+void testTempoAndKeyDetection() {
+    constexpr int rate = 44100;
+    // 30 s of a four-on-the-floor beat at 124 BPM with off-beat hats.
+    std::vector<float> beat(static_cast<size_t>(rate * 30), 0.0f);
+    std::mt19937 rng(7);
+    std::uniform_real_distribution<float> u(-1, 1);
+    const double period = 60.0 / 124.0;
+    for (double t = 0.25; t < 29.5; t += period) {
+        const auto at = static_cast<size_t>(t * rate);
+        for (int i = 0; i < rate / 5; ++i) {
+            const float e = std::exp(-i / (0.03f * rate));
+            beat[at + static_cast<size_t>(i)] += 0.9f * e * static_cast<float>(std::sin(2 * M_PI * 55 * i / rate));
+        }
+        const auto hat = at + static_cast<size_t>(period / 2 * rate);
+        for (int i = 0; i < rate / 40; ++i) beat[hat + static_cast<size_t>(i)] += 0.3f * u(rng) * std::exp(-i / (0.005f * rate));
+    }
+    const auto direct = ps::detectTempo(beat.data(), static_cast<int64_t>(beat.size()), rate);
+    std::printf("  tempo %.1f BPM (confidence %.2f, first beat %.2f s)\n", direct.bpm, direct.confidence, direct.firstBeat);
+    CHECK(std::fabs(direct.bpm - 124.0f) < 1.5f);
+    CHECK(direct.confidence > 0.5f);
+    CHECK(std::fabs(direct.firstBeat - 0.25f) < 0.03f);  // the grid lines up with the kicks
+    const auto dir = std::filesystem::temp_directory_path();
+    const auto pcmPath = (dir / "ps_beat16.wav").string();
+    writeTestWav(pcmPath, beat, rate, true);
+    const auto fromFile = ps::detectTempo(pcmPath);
+    CHECK(std::fabs(fromFile.bpm - 124.0f) < 1.5f);
+    CHECK(ps::detectTempo((dir / "missing.wav").string()).bpm == 0.0f);
+    std::vector<float> silence(static_cast<size_t>(rate * 5), 0.0f);
+    CHECK(ps::detectTempo(silence.data(), static_cast<int64_t>(silence.size()), rate).bpm == 0.0f);
+
+    // Chords with harmonics, 2 s each, three times round.
+    auto progression = [&](const std::vector<std::vector<int>>& chords) {
+        std::vector<float> x;
+        for (int rep = 0; rep < 3; ++rep) {
+            for (const auto& chord : chords) {
+                for (int i = 0; i < rate * 2; ++i) {
+                    float v = 0;
+                    for (int note : chord) {
+                        const double f = 440.0 * std::pow(2.0, (note - 69) / 12.0);
+                        for (int h = 1; h <= 4; ++h) v += static_cast<float>(std::sin(2 * M_PI * f * h * i / rate) / (h * 6.0));
+                    }
+                    x.push_back(v);
+                }
+            }
+        }
+        return x;
+    };
+    // A minor: Am Dm E Am (bass note an octave down).
+    const auto aMinor = progression({{45, 57, 60, 64}, {50, 62, 65, 69}, {52, 64, 68, 71}, {45, 57, 60, 64}});
+    const auto k1 = ps::detectKey(aMinor.data(), static_cast<int64_t>(aMinor.size()), rate);
+    std::printf("  key A minor -> tonic %d minor %d (confidence %.3f)\n", k1.tonic, k1.minor, k1.confidence);
+    CHECK(k1.tonic == 9 && k1.minor);
+    // C major: C F G C, read back from two float WAVs summed (like bass + other stems).
+    const auto cMajor = progression({{48, 60, 64, 67}, {53, 65, 69, 72}, {55, 67, 71, 74}, {48, 60, 64, 67}});
+    const auto half = cMajor.size() / 2;
+    const auto p1 = (dir / "ps_key1.wav").string(), p2 = (dir / "ps_key2.wav").string();
+    writeTestWav(p1, std::vector<float>(cMajor.begin(), cMajor.begin() + static_cast<std::ptrdiff_t>(half)), rate, false);
+    writeTestWav(p2, std::vector<float>(cMajor.begin() + static_cast<std::ptrdiff_t>(half), cMajor.end()), rate, false);
+    const auto k2 = ps::detectKey(std::vector<std::string>{p1, p2});
+    std::printf("  key C major -> tonic %d minor %d (confidence %.3f)\n", k2.tonic, k2.minor, k2.confidence);
+    CHECK(k2.tonic == 0 && !k2.minor);
+    CHECK(ps::detectKey(silence.data(), static_cast<int64_t>(silence.size()), rate).tonic == -1);
+    std::filesystem::remove(pcmPath);
+    std::filesystem::remove(p1);
+    std::filesystem::remove(p2);
+}
+
+void testStemsPlayInStepWithTheTransport() {
+    // Four constant stems (left, right differ) plus a ramp on stem 0 to read the song position.
+    constexpr int songFrames = kRate * 4;
+    const float levels[4] = {0.05f, 0.1f, 0.15f, 0.2f};
+    std::vector<std::vector<float>> stems(4);
+    for (int st = 0; st < 4; ++st) {
+        stems[st].resize(static_cast<size_t>(songFrames) * 2);
+        for (int i = 0; i < songFrames; ++i) {
+            stems[st][static_cast<size_t>(i) * 2] = levels[st];
+            stems[st][static_cast<size_t>(i) * 2 + 1] = st == 0 ? 0.25f * static_cast<float>(i) / songFrames : 0.0f;
+        }
+    }
+    auto* bundle = ps::StemBundle::fromFloat(stems);
+    CHECK(bundle && bundle->frames() == songFrames);
+    {
+        ps::Engine engine(kRate);
+        ps::Command install{ps::CommandType::InstallStems};
+        install.stems = bundle;  // the engine owns this reference
+        engine.post(install);
+        engine.post({ps::CommandType::SetStemStart, 0.0f, kRate});  // play from 1 s into the song
+        engine.post({ps::CommandType::SetTransport, 1.0f, 1});     // one bar of count-in at 120 BPM = 2 s
+        const auto out = render(engine, kRate * 3, 256);
+        CHECK(engine.stemsLoaded());
+        const int start = kRate * 2;
+        CHECK(std::fabs(out[static_cast<size_t>(start - 1) * 2]) < 1e-4f);  // silent through the count-in (metronome off-beat aside)
+        const float left = out[static_cast<size_t>(start + 4800) * 2];
+        CHECK(std::fabs(left - 0.5f) < 2e-3f);  // all four stems at unity on the remix channel
+        // Right side = the ramp: the song position at step 0 is exactly the start frame.
+        const float right = out[static_cast<size_t>(start) * 2 + 1];
+        CHECK(std::fabs(right - 0.25f * kRate / songFrames) < 1e-3f);
+        CHECK(engine.stemPosition() > kRate);
+        // Mute the loudest stem, then solo the quietest.
+        engine.post({ps::CommandType::SetStemParam, 1.0f, 3, ps::StemPlayer::Mute});
+        auto muted = render(engine, 4800, 256);
+        CHECK(std::fabs(muted[muted.size() - 2] - 0.3f) < 2e-3f);
+        engine.post({ps::CommandType::SetStemParam, 1.0f, 0, ps::StemPlayer::Solo});
+        auto solo = render(engine, 4800, 256);
+        CHECK(std::fabs(solo[solo.size() - 2] - 0.05f) < 2e-3f);
+        // Stop: a 5 ms fade, then silence and no position.
+        engine.post({ps::CommandType::SetTransport, 0.0f});
+        auto stopped = render(engine, 4800, 256);
+        CHECK(std::fabs(stopped[stopped.size() - 2]) < 1e-6f);
+        CHECK(engine.stemPosition() == -1);
+        // Unload: the bundle goes back to the main thread to be freed.
+        engine.post({ps::CommandType::InstallStems});
+        render(engine, 256, 256);
+        engine.collectGarbage();
+        CHECK(!engine.stemsLoaded());
+    }
+
+    // From WAV files at 44.1 kHz: resampled to 48 kHz, pitch kept, regions extractable.
+    const auto dir = std::filesystem::temp_directory_path();
+    std::vector<std::string> paths;
+    std::vector<float> tone(44100);
+    for (int i = 0; i < 44100; ++i) tone[static_cast<size_t>(i)] = 0.5f * static_cast<float>(std::sin(2 * M_PI * 1000.0 * i / 44100.0));
+    for (int st = 0; st < 4; ++st) {
+        paths.push_back((dir / ("ps_stem" + std::to_string(st) + ".wav")).string());
+        writeTestWav(paths.back(), tone, 44100, st == 1);  // one in 16-bit PCM
+    }
+    auto* loaded = ps::StemBundle::load(paths, kRate);
+    CHECK(loaded != nullptr);
+    if (loaded) {
+        CHECK(std::llabs(loaded->frames() - kRate) <= 2);
+        const auto region = loaded->extract(2, 0, kRate / 2);
+        CHECK(region.size() == static_cast<size_t>(kRate));  // half a second, stereo
+        int crossings = 0;
+        for (size_t i = 2; i < region.size(); i += 2) if ((region[i - 2] < 0) != (region[i] < 0)) ++crossings;
+        CHECK(crossings >= 995 && crossings <= 1005);  // 1 kHz for 0.5 s
+        CHECK(region[1000] == region[1001]);  // mono file on both sides
+        CHECK(loaded->extract(9, 0, 10).empty() && loaded->extract(0, loaded->frames(), 10).empty());
+        CHECK(loaded->release());
+        delete loaded;
+    }
+    paths[3] = (dir / "ps_missing.wav").string();
+    CHECK(ps::StemBundle::load(paths, kRate) == nullptr);
+    for (int st = 0; st < 3; ++st) std::filesystem::remove(paths[static_cast<size_t>(st)]);
 }
 
 struct TestCase {
@@ -1509,6 +1695,8 @@ int main(int argc, char** argv) {
         {"time_stretch", testTimeStretchKeepsPitchAndLength},
         {"piano_roll", testPianoRollNotesAreSampleAccurate},
         {"instrument", testInstrumentPlaysTheSoundFont},
+        {"tempo_and_key", testTempoAndKeyDetection},
+        {"stems_follow_transport", testStemsPlayInStepWithTheTransport},
         {"no_alloc_in_process", testProcessNeverAllocates},
     };
     for (const auto& t : tests) {

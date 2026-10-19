@@ -72,10 +72,21 @@ data class AcidPattern(
         )
     }
 
+    /** Copies the 16 steps of bar [from] onto bar [to] (both 0-based), locks included. */
+    fun copyPage(from: Int, to: Int): AcidPattern {
+        val n = STEPS_PER_PAGE
+        val steps = steps.toMutableList()
+        for (i in 0 until n) if (to * n + i < MAX_STEPS && from * n + i < MAX_STEPS) steps[to * n + i] = steps[from * n + i]
+        val movedLocks = locked.filter { it / n == from }.map { it - from * n + to * n }
+        return copy(steps = steps, locked = locked.filter { it / n != to }.toSet() + movedLocks).sanitized()
+    }
+
     fun withStep(index: Int, step: AcidStep) = copy(steps = steps.toMutableList().also { it[index] = step.sanitized() })
 
     companion object {
-        const val MAX_STEPS = 64
+        const val MAX_STEPS = 128  // 8 bars
+        const val STEPS_PER_PAGE = 16
+        val LENGTHS_IN_BARS = listOf(1, 2, 3, 4, 8)
     }
 }
 

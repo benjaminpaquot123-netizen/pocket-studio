@@ -18,7 +18,7 @@ target_include_directories(ps_core SYSTEM PUBLIC ${DAISYSP_INCLUDES} ${LIBSAMPLE
 set_source_files_properties(${CMAKE_CURRENT_LIST_DIR}/../src/main/cpp/core/AcidTrack.cpp ${CMAKE_CURRENT_LIST_DIR}/core/AcidTrack.cpp ${OPEN303_SOURCES} PROPERTIES INCLUDE_DIRECTORIES "${OPEN303_INCLUDES}")
 set_source_files_properties(${CMAKE_CURRENT_LIST_DIR}/../src/main/cpp/core/AcidTrack.cpp ${CMAKE_CURRENT_LIST_DIR}/core/AcidTrack.cpp PROPERTIES COMPILE_OPTIONS "-fno-strict-aliasing")
 # aubio headers (types.h, fvec.h…) are visible to the onset wrapper only.
-set_source_files_properties(${CORE_DIR}/OnsetDetector.cpp PROPERTIES INCLUDE_DIRECTORIES "${AUBIO_INCLUDES}")
+set_source_files_properties(${CORE_DIR}/OnsetDetector.cpp ${CORE_DIR}/Analysis.cpp PROPERTIES INCLUDE_DIRECTORIES "${AUBIO_INCLUDES}")
 set_source_files_properties(${CORE_DIR}/TimeStretch.cpp PROPERTIES INCLUDE_DIRECTORIES "${SIGNALSMITH_INCLUDES}")
 # TinySoundFont (MIT, single header) is compiled in SoundFontPlayer.cpp only.
 set_source_files_properties(${CORE_DIR}/SoundFontPlayer.cpp PROPERTIES INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/../third_party/TinySoundFont" COMPILE_OPTIONS "-Wno-unused-parameter;-Wno-unused-function;-Wno-sign-compare;-Wno-unused-variable")

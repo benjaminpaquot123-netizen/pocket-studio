@@ -92,3 +92,19 @@ Relecteur : sous-agent neuf (74 fichiers). Bilan : 2 graves, 10 mineurs. Fil aud
 | m7 | Rééchantillonnage « best » lent à l'import et refait à chaque lancement | Mettre en cache la version 48 kHz |
 | — | Le test émulateur du rééchantillonnage vérifie le nom, pas le son | Vérifier un pic non nul en rejouant le pad |
 | — | Limite de 60 s par son | Stockage 16 bits ou lecture en flux (phase 3, utile au remix) |
+
+## Revue de fin de phase 3 (remix) — 2026-10-19
+
+Relecture par un sous-agent neuf sur tout le diff de la phase (séparation, service, analyse, stems dans le moteur, banques, acide 128 pas). Callback audio : aucune allocation, aucun verrou (confirmé, et testé avec réinstallations pendant la mesure).
+
+Corrigé :
+- GRAVE : plantage au téléchargement du modèle sur Android 16 (rapport n° 8). `ServiceCompat` d'androidx efface le type « mediaProcessing » → appel direct à `startForeground`.
+- GRAVE : toute erreur autre qu'E/S dans le service (codec, accès au fichier retiré) faisait planter l'appli → attrapée, message clair.
+- GRAVE : le ménage du cache pouvait effacer les pistes utilisées par le projet → morceau du projet épinglé, date d'usage rafraîchie quand on réutilise un morceau déjà séparé, échec de renommage signalé.
+- Changer de morceau pendant un chargement ne chargeait jamais le nouveau ; ancien morceau libéré tout de suite (pic mémoire) ; plus de fuite si l'écran se ferme pendant un chargement.
+- Mémoire de la séparation : lecture du son par morceaux et copies libérées avant le modèle (2 copies du morceau de moins).
+- `onTimeout` arrête le service tout de suite ; exceptions C++ bloquées aux frontières JNI ; permission de lecture du fichier rendue après usage.
+
+Reste noté (mineur) :
+- Les stems d'un long morceau restent en mémoire (0,77 Mo/s) ; lecture en flux si des téléphones manquent de mémoire.
+- Pas d'étirement des stems si le tempo du projet change (avertissement affiché).

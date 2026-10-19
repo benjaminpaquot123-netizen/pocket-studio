@@ -129,7 +129,7 @@ class ScreenshotTest {
     @Test
     fun acid() = shoot("acid") {
         val pattern = com.pocketstudio.model.AcidGenerator(kotlin.random.Random(3))
-            .generate(com.pocketstudio.model.AcidPattern(locked = setOf(2)))
+            .generate(com.pocketstudio.model.AcidPattern(length = 32, locked = setOf(2)))
         com.pocketstudio.app.acid.AcidScreen(
             acid = pattern,
             playing = true,
@@ -155,7 +155,7 @@ class ScreenshotTest {
         channels[2] = channels[2].copy(mute = true, volume = 0.5f)
         com.pocketstudio.app.mixer.MixerScreen(
             channels = channels,
-            meters = floatArrayOf(0.62f, 0.81f, 0f, 0.88f, 0.8f),
+            meters = floatArrayOf(0.62f, 0.81f, 0f, 0.4f, 0.88f, 0.8f),
             actions = com.pocketstudio.app.mixer.MixerActions(),
             export = com.pocketstudio.app.rhythm.ExportUi(bars = 4, file = java.io.File("Mon-premier-rythme-20261018-221500.wav"), savedInMusic = true),
         )
@@ -273,5 +273,54 @@ class ScreenshotTest {
                 com.pocketstudio.app.instruments.InstrumentUi(com.pocketstudio.app.rhythm.LibraryState.Downloading(0.42f), null),
             )
         }
+    }
+
+    @Test
+    fun remix() = shoot("remix") {
+        val set = com.pocketstudio.app.remix.StemSet(
+            File("/tmp/stems/abc"), "Ma chanson", 214.0, 0L, com.pocketstudio.app.remix.SongInfo(124.0, 0.25, 9, true),
+        )
+        com.pocketstudio.app.remix.RemixScreen(
+            com.pocketstudio.app.remix.RemixUi(true, com.pocketstudio.app.remix.SeparationState.Separating("Autre chanson", 0.37f), listOf(set), "abc" to "bass"),
+            com.pocketstudio.app.remix.RemixActions(),
+        )
+    }
+
+    @Test
+    fun remixFirstTime() = shoot("remix_first") {
+        com.pocketstudio.app.remix.RemixScreen(
+            com.pocketstudio.app.remix.RemixUi(false, com.pocketstudio.app.remix.SeparationState.Idle, emptyList()),
+            com.pocketstudio.app.remix.RemixActions(),
+        )
+    }
+
+    @Test
+    fun remixInProject() = shoot("remix_project") {
+        val set = com.pocketstudio.app.remix.StemSet(
+            File("/tmp/stems/abc"), "Ma chanson", 214.0, 0L, com.pocketstudio.app.remix.SongInfo(124.0, 0.25, 9, true),
+        )
+        val remix = com.pocketstudio.model.Remix("abc", "Ma chanson", 124.0, 0.25, startBar = 8)
+            .withStem(2) { it.copy(mute = true) }.withStem(3) { it.copy(solo = true, volume = 0.6f) }
+        com.pocketstudio.app.remix.RemixScreen(
+            com.pocketstudio.app.remix.RemixUi(
+                true, com.pocketstudio.app.remix.SeparationState.Idle, listOf(set),
+                remix = remix, transportPlaying = true, projectBpm = 124.0,
+            ),
+            com.pocketstudio.app.remix.RemixActions(),
+        )
+    }
+
+    @Test
+    @Config(qualifiers = "w400dp-h1500dp-xxhdpi")
+    fun acidEditor() = shoot("acid_editor") {
+        val pattern = com.pocketstudio.model.AcidGenerator(kotlin.random.Random(3))
+            .generate(com.pocketstudio.model.AcidPattern(length = 32, locked = setOf(2)))
+        com.pocketstudio.app.acid.AcidScreen(
+            acid = pattern,
+            playing = false,
+            currentStep = -1,
+            selected = 2,
+            actions = com.pocketstudio.app.acid.AcidActions(),
+        )
     }
 }

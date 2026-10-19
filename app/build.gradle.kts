@@ -6,7 +6,7 @@ plugins {
 
 // CI passes the workflow run number so every build installs over the previous one.
 val ciVersionCode = System.getenv("VERSION_CODE")?.toIntOrNull() ?: 1
-val phase = 2
+val phase = 3
 val releaseChannel = System.getenv("RELEASE_CHANNEL") ?: "dev"
 val signingPassword: String? = System.getenv("SIGNING_PASSWORD")?.takeIf { it.isNotBlank() }
 val signingStore = rootProject.file("signing/release.p12")
@@ -88,6 +88,7 @@ roborazzi {
 
 dependencies {
     implementation(project(":engine"))
+    implementation(project(":separation"))
     implementation(project(":ui-components"))
     implementation(project(":project-model"))
     implementation(libs.androidx.core.ktx)

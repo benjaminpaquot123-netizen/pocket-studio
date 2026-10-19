@@ -1,5 +1,5 @@
-Phase 2 : tes sons sur les pads, et un piano roll pour le synthé (Synthé › Notes) !
-Gammes, accords en un geste, progressions toutes faites, arpèges et strum (Synthé › Notes).
-128 instruments (piano, cordes, guitares…) à télécharger une fois : Synthé › Source du son.
-Règle chaque son : début, fin, hauteur, à l'envers, en boucle, enveloppe, groupes d'étouffement.
-Découpe un son en tranches (attaques, grille ou à la main) et mets-les sur les pads. « C'est pas faux ! »
+Remix : une chanson coupée en batterie, basse, voix et le reste, avec tempo et tonalité.
+« Jouer avec le projet » : les pistes partent avec ta batterie, muet / solo / volume pour chacune.
+« → Pad » : un bout de basse ou de voix sur un pad, pour le découper ensuite.
+Acide : un mini-clavier pour choisir n'importe quelle note, noms Do Ré Mi ou C D E, jusqu'à 8 mesures.
+« Le chant, c'est une chose, la voix c'en est une autre. » Maintenant elles sont séparées.

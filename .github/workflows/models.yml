@@ -1,0 +1,44 @@
+name: Models
+
+# Builds the on-device separation model once and hosts it on a dedicated release, like the
+# instrument bank. The build is pinned and reproducible: the app checks the same SHA-256.
+on:
+  push:
+    paths:
+      - scripts/models/**
+      - .github/workflows/models.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  demucs:
+    name: HT-Demucs ONNX
+    runs-on: ubuntu-latest
+    env:
+      TAG: modele-htdemucs-v4-onnx-1
+    steps:
+      - uses: actions/checkout@v7
+      - name: Already hosted?
+        id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then echo "hosted=true" >> "$GITHUB_OUTPUT"; else echo "hosted=false" >> "$GITHUB_OUTPUT"; fi
+      - uses: actions/setup-python@v6
+        if: steps.check.outputs.hosted == 'false'
+        with:
+          python-version: '3.13'
+      - name: Build the model (pinned, checked)
+        if: steps.check.outputs.hosted == 'false'
+        run: ./scripts/models/build-demucs.sh dist
+      - name: Publish
+        if: steps.check.outputs.hosted == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$TAG" dist/htdemucs.onnx dist/LICENSE-demucs.txt dist/LICENSE-demucs.onnx.txt \
+            --latest=false --target main \
+            --title "Modèle de séparation : HT-Demucs v4 (ONNX)" \
+            --notes "HT-Demucs v4 de Meta (MIT), exporté en ONNX avec demucs.onnx de S. Sevagh (MIT). Reconstruit à l'identique par scripts/models/build-demucs.sh."

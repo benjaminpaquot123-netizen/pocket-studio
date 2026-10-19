@@ -1,11 +1,13 @@
 #include <jni.h>
 
 #include <algorithm>
+#include <cmath>
 #include <cstdio>
 #include <memory>
 #include <vector>
 #include <mutex>
 
+#include "Analysis.h"
 #include "AudioHost.h"
 #include "OfflineRenderer.h"
 #include "OnsetDetector.h"
@@ -91,6 +93,45 @@ JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_sampleOn
     return result;
 }
 
+// Tempo of a WAV file: [bpm, confidence, firstBeat]. Worker thread.
+JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_analyzeTempo(JNIEnv* env, jobject, jstring path) {
+    const char* p = env->GetStringUTFChars(path, nullptr);
+    if (!p) return nullptr;
+    ps::TempoResult r;
+    try {
+        r = ps::detectTempo(std::string(p));
+    } catch (...) {  // out of memory: no tempo rather than a crash
+    }
+    env->ReleaseStringUTFChars(path, p);
+    const jfloat values[3] = {r.bpm, r.confidence, r.firstBeat};
+    jfloatArray result = env->NewFloatArray(3);
+    if (result) env->SetFloatArrayRegion(result, 0, 3, values);
+    return result;
+}
+
+// Key over several WAV files: [tonic, minor, confidence]. Worker thread.
+JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_analyzeKey(JNIEnv* env, jobject, jobjectArray paths) {
+    std::vector<std::string> files;
+    const jsize n = env->GetArrayLength(paths);
+    for (jsize i = 0; i < n; ++i) {
+        auto s = static_cast<jstring>(env->GetObjectArrayElement(paths, i));
+        if (!s) continue;
+        const char* p = env->GetStringUTFChars(s, nullptr);
+        if (p) files.emplace_back(p);
+        if (p) env->ReleaseStringUTFChars(s, p);
+        env->DeleteLocalRef(s);
+    }
+    ps::KeyResult r;
+    try {
+        r = ps::detectKey(files);
+    } catch (...) {
+    }
+    const jfloat values[3] = {static_cast<jfloat>(r.tonic), r.minor ? 1.0f : 0.0f, r.confidence};
+    jfloatArray result = env->NewFloatArray(3);
+    if (result) env->SetFloatArrayRegion(result, 0, 3, values);
+    return result;
+}
+
 // A new sample: the region [start, end) of `handle` stretched to `outFrames`, transposed. Worker thread.
 JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_sampleStretched(JNIEnv*, jobject, jlong handle, jfloat start,
                                                                                 jfloat end, jlong outFrames, jfloat semitones) {
@@ -126,6 +167,74 @@ JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportInstallSa
     reinterpret_cast<ps::OfflineRenderer*>(exportHandle)->post(command);
 }
 
+// --- Remix stems. Load on a worker thread (seconds); install on the main thread. ---
+
+JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_stemsLoad(JNIEnv* env, jobject, jobjectArray paths) {
+    std::vector<std::string> files;
+    const jsize n = env->GetArrayLength(paths);
+    for (jsize i = 0; i < n; ++i) {
+        auto s = static_cast<jstring>(env->GetObjectArrayElement(paths, i));
+        if (!s) return 0;
+        const char* p = env->GetStringUTFChars(s, nullptr);
+        if (!p) return 0;
+        files.emplace_back(p);
+        env->ReleaseStringUTFChars(s, p);
+        env->DeleteLocalRef(s);
+    }
+    try {
+        return reinterpret_cast<jlong>(ps::StemBundle::load(files, 48000));
+    } catch (...) {
+        return 0;
+    }
+}
+
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_stemsRelease(JNIEnv*, jobject, jlong handle) {
+    auto* b = reinterpret_cast<ps::StemBundle*>(handle);
+    if (b && b->release()) delete b;
+}
+
+JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_stemsFrames(JNIEnv*, jobject, jlong handle) {
+    return static_cast<jlong>(reinterpret_cast<ps::StemBundle*>(handle)->frames());
+}
+
+JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_stemsExtract(JNIEnv* env, jobject, jlong handle, jint stem,
+                                                                                  jlong start, jlong count) {
+    // Pads hold at most a minute: cap the copy so a bad request cannot exhaust the Java heap.
+    std::vector<float> region;
+    try {
+        region = reinterpret_cast<ps::StemBundle*>(handle)->extract(stem, start, std::min<jlong>(count, 48000LL * 60));
+    } catch (...) {
+        region.clear();
+    }
+    jfloatArray result = env->NewFloatArray(static_cast<jsize>(region.size()));
+    if (result) env->SetFloatArrayRegion(result, 0, static_cast<jsize>(region.size()), region.data());
+    return result;
+}
+
+JNIEXPORT jboolean JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeInstallStems(JNIEnv*, jobject, jlong handle) {
+    auto& engine = host().engine();
+    engine.collectGarbage();
+    auto* b = reinterpret_cast<ps::StemBundle*>(handle);
+    if (b) b->retain();
+    ps::Command command{ps::CommandType::InstallStems};
+    command.stems = b;
+    if (host().post(command)) return JNI_TRUE;
+    if (b && b->release()) delete b;
+    return JNI_FALSE;
+}
+
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportInstallStems(JNIEnv*, jobject, jlong exportHandle, jlong handle) {
+    auto* b = reinterpret_cast<ps::StemBundle*>(handle);
+    if (b) b->retain();
+    ps::Command command{ps::CommandType::InstallStems};
+    command.stems = b;
+    reinterpret_cast<ps::OfflineRenderer*>(exportHandle)->post(command);
+}
+
+JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_stemPosition(JNIEnv*, jobject) {
+    return static_cast<jlong>(host().engine().stemPosition());
+}
+
 // --- General MIDI instruments (SoundFont). Load on a worker thread, the rest on the main thread. ---
 
 JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_soundFontLoad(JNIEnv* env, jobject, jstring path) {
@@ -156,6 +265,24 @@ JNIEXPORT jobjectArray JNICALL Java_com_pocketstudio_engine_NativeEngine_soundFo
         env->DeleteLocalRef(s);
     }
     return out;
+}
+
+// Main thread (shares the font's reference count). Mono at 48 kHz, trailing silence trimmed.
+JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_soundFontRenderNote(JNIEnv* env, jobject, jlong handle,
+                                                                                          jint preset, jint note,
+                                                                                          jfloat velocity, jint holdFrames,
+                                                                                          jint frames) {
+    if (!handle || frames <= 0 || frames > 48000 * 10) return env->NewFloatArray(0);
+    std::vector<float> out(static_cast<size_t>(frames));
+    if (!ps::SoundFontPlayer::renderNote(reinterpret_cast<tsf*>(handle), preset, note, velocity, holdFrames, out.data(), frames,
+                                         48000)) {
+        return env->NewFloatArray(0);
+    }
+    size_t end = out.size();
+    while (end > 480 && std::fabs(out[end - 1]) < 1e-4f) --end;
+    jfloatArray result = env->NewFloatArray(static_cast<jsize>(end));
+    if (result) env->SetFloatArrayRegion(result, 0, static_cast<jsize>(end), out.data());
+    return result;
 }
 
 static ps::OfflineRenderer* renderer(jlong handle);
@@ -226,8 +353,9 @@ JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportDestroy(J
 // Fills `out` (5 floats): channel peaks (drums, acid, synth), master peak, limiter gain.
 JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_mixerMeters(JNIEnv* env, jobject, jfloatArray out) {
     auto& m = host().engine().mixer();
-    const jfloat values[] = {m.takeChannelPeak(0), m.takeChannelPeak(1), m.takeChannelPeak(2), m.takeMasterPeak(), m.limiterGain()};
-    env->SetFloatArrayRegion(out, 0, 5, values);
+    const jfloat values[] = {m.takeChannelPeak(0), m.takeChannelPeak(1), m.takeChannelPeak(2), m.takeChannelPeak(3),
+                             m.takeMasterPeak(), m.limiterGain()};
+    env->SetFloatArrayRegion(out, 0, 6, values);
 }
 
 // Fills `out` (16 ints) with how many times each drum lane has fired, for pad lights.

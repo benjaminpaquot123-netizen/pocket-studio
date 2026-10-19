@@ -34,6 +34,8 @@ import com.pocketstudio.ui.NeonCard
 import com.pocketstudio.ui.SectionLabel
 import kotlin.math.roundToInt
 
+private const val KITS = 16
+
 class InstrumentUi(
     val library: LibraryState,
     val current: InstrumentChoice?,
@@ -41,6 +43,9 @@ class InstrumentUi(
     val download: () -> Unit = {},
     val cancel: () -> Unit = {},
     val select: (InstrumentChoice?) -> Unit = {},
+    val bankId: String = InstrumentLibrary.BANKS[0].id,
+    val selectBank: (String) -> Unit = {},
+    val loadKit: (Preset) -> Unit = {},
 )
 
 /** Where the synth track's sound comes from: our synth, or one of 128 General MIDI instruments. */
@@ -65,13 +70,28 @@ fun InstrumentPanel(ui: InstrumentUi) {
         }
         if (showLibrary == 1 || ui.current != null) {
             LaunchedEffect(Unit) { ui.open() }
+            val bank = InstrumentLibrary.bank(ui.bankId)
+            Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                InstrumentLibrary.BANKS.forEach { b ->
+                    FilterChip(
+                        selected = b.id == ui.bankId,
+                        onClick = { ui.selectBank(b.id) },
+                        label = { Text(b.name) },
+                        colors = chipColors,
+                        modifier = Modifier.testTag("bank_${b.id}"),
+                    )
+                }
+            }
+            Text(bank.description, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
             when (val lib = ui.library) {
                 LibraryState.Missing -> {
                     Text(
-                        "128 instruments (piano, cordes, guitares, cuivres…) : la bibliothèque GeneralUser GS pèse 32 Mo, à télécharger une seule fois (Wi-Fi conseillé).",
+                        "À télécharger une seule fois (${bank.sizeLabel}, Wi-Fi conseillé). Licence libre.",
                         style = MaterialTheme.typography.bodyMedium,
                     )
-                    Button(onClick = ui.download, modifier = Modifier.fillMaxWidth().testTag("download_library")) { Text("Télécharger (32 Mo)") }
+                    Button(onClick = ui.download, modifier = Modifier.fillMaxWidth().testTag("download_library")) {
+                        Text("Télécharger ${bank.name} (${bank.sizeLabel})")
+                    }
                 }
                 is LibraryState.Downloading -> {
                     Text("Téléchargement… ${(lib.progress * 100).roundToInt()} %")
@@ -86,30 +106,49 @@ fun InstrumentPanel(ui: InstrumentUi) {
                     Text(lib.message, color = Neon.Red)
                     Button(onClick = ui.download, modifier = Modifier.fillMaxWidth()) { Text("Réessayer") }
                 }
-                is LibraryState.Ready -> Browser(lib.presets, ui.current, ui.select)
+                is LibraryState.Ready -> Browser(lib.presets, ui.current, ui.bankId, ui.select, ui.loadKit)
             }
         }
     }
 }
 
 @Composable
-private fun Browser(presets: List<Preset>, current: InstrumentChoice?, select: (InstrumentChoice?) -> Unit) {
+private fun Browser(
+    presets: List<Preset>,
+    current: InstrumentChoice?,
+    bankId: String,
+    select: (InstrumentChoice?) -> Unit,
+    loadKit: (Preset) -> Unit,
+) {
     val chipColors = FilterChipDefaults.filterChipColors(selectedContainerColor = Neon.Cyan.copy(alpha = 0.25f), selectedLabelColor = Neon.Cyan)
-    var family by rememberSaveable { mutableIntStateOf(current?.takeIf { it.bank == 0 }?.program?.div(8) ?: 0) }
+    var family by rememberSaveable { mutableIntStateOf(current?.takeIf { it.bank < 128 }?.program?.div(8) ?: 0) }
     Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
         InstrumentLibrary.FAMILIES.forEachIndexed { i, name ->
             FilterChip(selected = family == i, onClick = { family = i }, label = { Text(name) }, colors = chipColors)
         }
+        FilterChip(selected = family == KITS, onClick = { family = KITS }, label = { Text("Kits de batterie") }, colors = chipColors,
+            modifier = Modifier.testTag("family_kits"))
     }
-    val inFamily = presets.filter { it.bank == 0 && it.program / 8 == family }.sortedBy { it.program }
+    if (family == KITS) {
+        Text("Touche un kit : ses sons vont sur les 16 pads du Rythme (Annuler possible).",
+            style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            presets.filter { it.bank == 128 }.sortedBy { it.program }.forEach { kit ->
+                OutlinedButton(onClick = { loadKit(kit) }, modifier = Modifier.testTag("kit_${kit.program}")) { Text(kit.name) }
+            }
+        }
+        return
+    }
+    // Every variation of the family (bank 0 first, then the bank's extras).
+    val inFamily = presets.filter { it.bank < 128 && it.program / 8 == family }.sortedWith(compareBy({ it.program }, { it.bank }))
     FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {
         inFamily.forEach { p ->
             FilterChip(
-                selected = current?.bank == p.bank && current.program == p.program,
-                onClick = { select(InstrumentChoice(p.bank, p.program, p.name)) },
+                selected = current?.bankId == bankId && current.bank == p.bank && current.program == p.program,
+                onClick = { select(InstrumentChoice(p.bank, p.program, p.name, bankId)) },
                 label = { Text(p.name) },
                 colors = chipColors,
-                modifier = Modifier.testTag("preset_${p.program}"),
+                modifier = Modifier.testTag("preset_${p.bank}_${p.program}"),
             )
         }
     }

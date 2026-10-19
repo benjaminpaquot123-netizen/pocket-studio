@@ -33,9 +33,12 @@ object NativeEngine {
     private const val CMD_SYNTH_NOTE = 26
     private const val CMD_SYNTH_NOTE_COUNT = 27
     private const val CMD_SYNTH_STEPS = 28
+    // 29: SetInstrument, 30: InstallStems (native only)
+    private const val CMD_STEM_PARAM = 31
+    private const val CMD_STEM_START = 32
 
-    /** Mixer channels: 0 drums, 1 acid bass, 2 synth. */
-    const val MIXER_CHANNELS = 3
+    /** Mixer channels: 0 drums, 1 acid bass, 2 synth, 3 remix stems. */
+    const val MIXER_CHANNELS = 4
 
     const val LANES = 16
 
@@ -75,7 +78,7 @@ object NativeEngine {
     fun setChannelPan(ch: Int, pan: Float) = post(CMD_CHANNEL_PAN, pan, ch)
     fun setChannelMute(ch: Int, on: Boolean) = post(CMD_CHANNEL_MUTE, if (on) 1f else 0f, ch)
     fun setChannelSolo(ch: Int, on: Boolean) = post(CMD_CHANNEL_SOLO, if (on) 1f else 0f, ch)
-    /** Writes into [out] (size 5): peaks of drums, acid, synth, master, then limiter gain. */
+    /** Writes into [out] (size MIXER_CHANNELS + 2): channel peaks, master peak, then limiter gain. */
     external fun mixerMeters(out: FloatArray)
 
     /** Plays a pad right now (live). */
@@ -150,6 +153,22 @@ object NativeEngine {
         else nativeInstallSample(pad, sample?.handle ?: 0L)
     }
 
+    /** The remix track plays [stems] from step 0 (null: no song). Main thread, like every command. */
+    fun setStems(stems: NativeStems?) {
+        val target = captureTarget
+        if (target != 0L) exportInstallStems(target, stems?.handle ?: 0L)
+        else nativeInstallStems(stems?.handle ?: 0L)
+    }
+
+    /** [param]: 0 gain (0..1, 0.8 = unity), 1 mute, 2 solo. */
+    fun setStemParam(stem: Int, param: Int, value: Float) = post(CMD_STEM_PARAM, value, stem, param)
+
+    /** Song frame (48 kHz) heard on step 0. */
+    fun setStemStart(frame: Long) = post(CMD_STEM_START, 0f, frame.coerceIn(0L, Int.MAX_VALUE.toLong()).toInt())
+
+    /** Song position in frames while the stems play, else -1. */
+    external fun stemPosition(): Long
+
     /** [values] in Sampler::Param order (see PadSample.engineParams). */
     fun setPadParams(pad: Int, values: FloatArray) {
         values.forEachIndexed { param, v -> post(CMD_PAD_PARAM, v, pad, param) }
@@ -181,6 +200,12 @@ object NativeEngine {
     external fun sampleOnsets(handle: Long, sensitivity: Float, maxSlices: Int): FloatArray
     external fun sampleStretched(handle: Long, start: Float, end: Float, outFrames: Long, semitones: Float): Long
     private external fun nativeInstallSample(pad: Int, handle: Long): Boolean
+    external fun stemsLoad(paths: Array<String>): Long
+    external fun stemsRelease(handle: Long)
+    external fun stemsFrames(handle: Long): Long
+    external fun stemsExtract(handle: Long, stem: Int, start: Long, count: Long): FloatArray
+    private external fun nativeInstallStems(handle: Long): Boolean
+    private external fun exportInstallStems(exportHandle: Long, handle: Long)
     private external fun exportInstallSample(exportHandle: Long, pad: Int, handle: Long)
 
     // Export natives stay public: `internal` would mangle their JNI names. Use OfflineExport.

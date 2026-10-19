@@ -17,6 +17,10 @@ import com.pocketstudio.model.InstrumentChoice
 import com.pocketstudio.app.playback.PlaybackService
 import com.pocketstudio.engine.ExportResult
 import com.pocketstudio.engine.NativeEngine
+import com.pocketstudio.engine.NativeStems
+import com.pocketstudio.app.remix.StemSet
+import com.pocketstudio.app.remix.StemStore
+import com.pocketstudio.model.Remix
 import com.pocketstudio.engine.OfflineExport
 import com.pocketstudio.model.AcidGenerator
 import com.pocketstudio.model.AcidPattern
@@ -169,6 +173,115 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         pushPads(p)
         pushNotes(p.synthNotes)
         pushInstrument(p)
+        pushRemix(p)
+    }
+
+    // --- Remix: a separated song played along with the project ---------------------------------
+
+    private var stems: NativeStems? = null
+    private var stemsId: String? = null
+    private var stemsJob: kotlinx.coroutines.Job? = null
+    private val _remixLoading = MutableStateFlow(false)
+    val remixLoading: StateFlow<Boolean> = _remixLoading.asStateFlow()
+
+    private fun pushRemix(p: Project = project.value) {
+        if (!NativeEngine.isAvailable) return
+        val loaded = stems?.takeIf { stemsId == p.remix.setId }
+        NativeEngine.setStems(loaded)
+        NativeEngine.setStemStart(p.remix.startFrame(OfflineExport.SAMPLE_RATE))
+        p.remix.stems.forEachIndexed { i, m ->
+            NativeEngine.setStemParam(i, 0, m.volume)
+            NativeEngine.setStemParam(i, 1, if (m.mute) 1f else 0f)
+            NativeEngine.setStemParam(i, 2, if (m.solo) 1f else 0f)
+        }
+        val wanted = p.remix.setId
+        if (loaded == null && wanted != null && stemsJob?.isActive != true) loadStems(wanted)
+    }
+
+    /** Reads the stems into the engine's memory (seconds, worker thread), then plays them along. */
+    private fun loadStems(id: String) {
+        val app = getApplication<Application>()
+        _remixLoading.value = true
+        stemsJob = viewModelScope.launch {
+            val loaded = withContext(Dispatchers.IO) {
+                StemStore.read(StemStore.dirFor(app, id))?.let { set ->
+                    NativeStems.load(set.stem("drums").path, set.stem("bass").path, set.stem("other").path, set.stem("vocals").path)
+                }
+            }
+            _remixLoading.value = false
+            val wanted = project.value.remix
+            if (loaded == null) {
+                if (wanted.setId == id) {
+                    AppLog.add("Remix : pistes de « ${wanted.name} » introuvables ou illisibles")
+                    _notice.value = "Les pistes de « ${wanted.name} » ne sont plus sur le téléphone (ou la mémoire manque). Sépare à nouveau le morceau."
+                }
+                return@launch
+            }
+            if (wanted.setId != id) {
+                loaded.close()
+                if (wanted.setId != null) pushRemix()
+                return@launch
+            }
+            val old = stems
+            stems = loaded
+            stemsId = id
+            pushRemix()
+            old?.close()  // the engine keeps its own reference until it lets go
+            AppLog.add("Remix : « ${wanted.name} » chargé (${loaded.frames / OfflineExport.SAMPLE_RATE} s)")
+        }
+    }
+
+    /** The project plays a separated song along, at the song's tempo and in its key. One undo step. */
+    fun useSong(set: StemSet) {
+        val info = set.info
+        session.edit("remix") { p ->
+            p.copy(
+                tempoBpm = if (info.bpm > 0) info.bpm else p.tempoBpm,
+                harmony = info.root?.let { Harmony(it, if (info.minor) Scale.Minor else Scale.Major) } ?: p.harmony,
+                remix = Remix(set.id, set.name, info.bpm, info.firstBeat),
+            )
+        }
+        if (!NativeEngine.isAvailable) return
+        NativeEngine.setTempo(project.value.tempoBpm)
+        if (project.value.drums.lanes.any { (it.sample?.fitBeats ?: 0) > 0 }) pushPads()
+        pushRemix()
+    }
+
+    fun clearRemix() {
+        session.edit("remix") { p -> p.copy(remix = Remix()) }
+        pushRemix()
+        stems?.close()
+        stems = null
+        stemsId = null
+    }
+
+    fun setStemVolume(stem: Int, v: Float) = editRemix("stem-$stem-vol") { it.withStem(stem) { s -> s.copy(volume = v) } }
+    fun toggleStemMute(stem: Int) = editRemix(null) { it.withStem(stem) { s -> s.copy(mute = !s.mute) } }
+    fun toggleStemSolo(stem: Int) = editRemix(null) { it.withStem(stem) { s -> s.copy(solo = !s.solo) } }
+    fun setRemixStartBar(bar: Int) = editRemix("remix-start") { it.copy(startBar = bar.coerceIn(0, Remix.MAX_START_BAR)) }
+
+    private fun editRemix(key: String?, transform: (Remix) -> Remix) {
+        session.edit(key) { p -> p.copy(remix = transform(p.remix)) }
+        pushRemix()
+    }
+
+    /** [bars] bars of one stem, from the remix start, onto the selected pad. */
+    fun stemToPad(stem: Int, bars: Int) {
+        val source = stems ?: return
+        if (_sampleTask.value is SampleTask.Busy || _sampleTask.value is SampleTask.Recording) return
+        val r = project.value.remix
+        val count = r.barFrames(OfflineExport.SAMPLE_RATE) * bars
+        if (count <= 0) return
+        if (count > AudioDecoder.MAX_SECONDS * OfflineExport.SAMPLE_RATE) {
+            _sampleTask.value = SampleTask.Failed("Trop long pour un pad : choisis moins de mesures.")
+            return
+        }
+        val label = STEM_LABELS.getOrElse(stem) { "Piste" }
+        sampleJob("$label vers le pad…") {
+            val audio = source.extract(stem, r.startFrame(OfflineExport.SAMPLE_RATE), count)
+            if (audio.isEmpty()) throw UserMessage("Ce passage est après la fin du morceau.")
+            padSamples.add(Pcm(audio, 2, OfflineExport.SAMPLE_RATE), "$label ${r.name}".take(40))
+        }
     }
 
     // --- Instrument library (General MIDI banks) -------------------------------------------
@@ -661,19 +774,20 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     // --- Mixer -----------------------------------------------------------------------------
 
-    private val _meters = MutableStateFlow(FloatArray(5))
+    private val _meters = MutableStateFlow(FloatArray(NativeEngine.MIXER_CHANNELS + 2))
     val meters: StateFlow<FloatArray> = _meters.asStateFlow()
 
     /** Polls meter peaks about 20 times a second while the mixer is visible. */
     suspend fun pollMeters() {
         if (!NativeEngine.isAvailable) return
-        val decayed = FloatArray(5)
+        val n = NativeEngine.MIXER_CHANNELS
+        val decayed = FloatArray(n + 2)
         while (true) {
-            val fresh = FloatArray(5)
+            val fresh = FloatArray(n + 2)
             NativeEngine.mixerMeters(fresh)
             // Peak hold with a gentle fall so the bars are readable.
-            for (i in 0 until 4) decayed[i] = maxOf(fresh[i], decayed[i] * 0.85f)
-            decayed[4] = fresh[4]
+            for (i in 0..n) decayed[i] = maxOf(fresh[i], decayed[i] * 0.85f)
+            decayed[n + 1] = fresh[n + 1]
             _meters.value = decayed.copyOf()
             kotlinx.coroutines.delay(50)
         }
@@ -903,16 +1017,6 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (project.value.drums.lanes.any { (it.sample?.fitBeats ?: 0) > 0 }) pushPads()
     }
 
-    /** Remix: the project takes a separated song's tempo and key (one undo step). */
-    fun matchSong(bpm: Double, root: Int?, minor: Boolean) {
-        session.edit("tempo") { p ->
-            val harmony = if (root == null) p.harmony else Harmony(root, if (minor) Scale.Minor else Scale.Major)
-            p.copy(tempoBpm = bpm, harmony = harmony)
-        }
-        if (NativeEngine.isAvailable) NativeEngine.setTempo(project.value.tempoBpm)
-        if (project.value.drums.lanes.any { (it.sample?.fitBeats ?: 0) > 0 }) pushPads()
-    }
-
     fun setSwing(swing: Double) {
         session.edit("swing") { it.copy(swing = swing) }
         if (NativeEngine.isAvailable) NativeEngine.setSwing(project.value.swing)
@@ -1005,6 +1109,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         running?.cancel()
         recorder?.stop()
         padSamples.close()
+        stems?.close()
         if (NativeEngine.isAvailable) NativeEngine.stopTransport()
         PlaybackService.stop(getApplication())
     }
@@ -1014,5 +1119,6 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         private val AUDIO_EXTENSIONS = setOf("wav", "mp3", "flac", "m4a", "aac", "ogg", "opus", "aif", "aiff")
         /** Two seconds after the last bar so releases and the acid tail ring out. */
         const val TAIL_FRAMES = 2L * OfflineExport.SAMPLE_RATE
+        private val STEM_LABELS = listOf("Batterie", "Basse", "Autres", "Voix")
     }
 }

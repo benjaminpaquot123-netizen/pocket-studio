@@ -1,5 +1,5 @@
-Nouvel onglet Remix : une chanson coupée en batterie, basse, voix et le reste, avec son tempo et sa tonalité.
-Ligne acide (303) jusqu'à 8 mesures : longueur, pages, « Copier → 2 ».
-Deux nouvelles banques gratuites : FluidR3 GM et MuseScore General, avec toutes les variantes.
-Kits de batterie : un geste et leurs 16 sons arrivent sur les pads du Rythme.
-« C'est pas faux ! » : la voix toute seule, ça fait drôle.
+Remix : une chanson coupée en batterie, basse, voix et le reste, avec tempo et tonalité.
+« Jouer avec le projet » : les pistes partent avec ta batterie, muet / solo / volume pour chacune.
+« → Pad » : un bout de basse ou de voix sur un pad, pour le découper ensuite.
+Acide jusqu'à 8 mesures, deux nouvelles banques d'instruments et des kits de batterie sur les pads.
+« Le chant, c'est une chose, la voix c'en est une autre. » Maintenant elles sont séparées.

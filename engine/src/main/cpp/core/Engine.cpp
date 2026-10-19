@@ -23,6 +23,7 @@ Engine::~Engine() {
     while (commands_.pop(command)) {
         if (command.sample && command.sample->release()) delete command.sample;
         SoundFontPlayer::close(command.font);
+        if (command.stems && command.stems->release()) delete command.stems;
     }
 }
 
@@ -46,6 +47,7 @@ void Engine::prepare(int sampleRate) {
     acid_.prepare(sampleRate);
     synth_.prepare(sampleRate);
     mixer_.prepare(sampleRate);
+    stems_.prepare(sampleRate);
     sampler_.prepare(sampleRate);
 }
 
@@ -71,6 +73,7 @@ void Engine::applyCommand(const Command& command) {
                 sequencer_.start(std::clamp(command.a, 0, 4));
             } else {
                 sequencer_.stop();
+                stems_.stop();
                 acid_.stop();
                 sampler_.releaseLoops();
                 notes_.stop(router_);
@@ -149,6 +152,15 @@ void Engine::applyCommand(const Command& command) {
         case CommandType::SetSynthSteps:
             notes_.setSteps(command.a);
             break;
+        case CommandType::InstallStems:
+            stems_.install(command.stems);  // takes the reference
+            break;
+        case CommandType::SetStemParam:
+            stems_.setParam(command.a, command.b, command.value);
+            break;
+        case CommandType::SetStemStart:
+            stems_.setStartFrame(command.a);
+            break;
         case CommandType::SetInstrument:
             synth_.allNotesOff();
             instrument_.install(command.font, command.a);  // takes the instance
@@ -177,6 +189,7 @@ void Engine::onStep(int offset, int step) {
         metronomeClicks_.fetch_add(1, std::memory_order_relaxed);
     }
     if (step < 0) return;
+    if (step == 0) stems_.start(offset);
     acid_.onStep(offset, step, sequencer_.samplesPerStep());
     notes_.onStep(offset, step, sequencer_.samplesPerStep());
     const int patternStep = step % patternSteps_;
@@ -200,6 +213,10 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
     std::fill(drums, drums + numFrames, 0.0f);
     std::fill(acid, acid + numFrames, 0.0f);
     std::fill(synth, synth + numFrames, 0.0f);
+    float* stemsL = stemsL_.data();
+    float* stemsR = stemsR_.data();
+    std::fill(stemsL, stemsL + numFrames, 0.0f);
+    std::fill(stemsR, stemsR + numFrames, 0.0f);
 
     sequencer_.advance(numFrames, [this](int offset, int step) { onStep(offset, step); });
     notes_.advance(numFrames, router_);
@@ -209,6 +226,7 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
     acid_.render(acid, numFrames);
     synth_.render(synth, numFrames);
     instrument_.render(synth, numFrames);
+    stems_.render(stemsL, stemsR, numFrames);
 
     gain_.setTarget(playing_.load(std::memory_order_relaxed) ? volume_ : 0.0f);
     const double invRate = 1.0 / sampleRate_;
@@ -218,8 +236,9 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
         if (phase_ >= kTwoPi) phase_ -= kTwoPi;
     }
 
-    const float* channels[Mixer::kChannels] = {drums, acid, synth};
-    mixer_.process(channels, direct, output, numFrames, outputChannels);
+    const float* channels[Mixer::kChannels] = {drums, acid, synth, stemsL};
+    const float* rights[Mixer::kChannels] = {nullptr, nullptr, nullptr, stemsR};
+    mixer_.process(channels, rights, direct, output, numFrames, outputChannels);
 }
 
 void Engine::process(const float* input, int numInputFrames, int inputChannels,

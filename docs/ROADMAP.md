@@ -52,7 +52,7 @@ Feu vert de Benjamin (D4 = A) : fusion de la pull request en fin de phase.
 - [x] 3.1 StemSeparator + DemucsOnDevice (ONNX Runtime), téléchargement des modèles avec empreinte
 - [x] 3.2 Foreground Service de séparation (progression, annulation, WakeLock, cache)
 - [x] 3.3 Détection tempo (aubio) et tonalité (libKeyFinder)
-- [ ] 3.4 Mode Remix : stems calés dans un nouveau projet, mute/solo, stem vers sampler
+- [x] 3.4 Mode Remix : stems calés dans un nouveau projet, mute/solo, stem vers sampler
 
 ## Phase 4 : production
 - [ ] 4.1 Effets complets (EQ, compresseur, saturation, delay, réverbes…), 4 inserts + 2 envois

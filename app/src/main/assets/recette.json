@@ -1,6 +1,6 @@
 {
-  "id": "phase2-sons-perso",
-  "milestone": "Phase 2 : tes sons sur les pads",
+  "id": "phase3-remix",
+  "milestone": "Phase 3 : remix",
   "items": [
     {
       "id": "remix_separate",
@@ -16,6 +16,16 @@
       "id": "remix_tempo_key",
       "title": "Tempo et tonalité justes",
       "hint": "Sous le nom du morceau séparé : compare le BPM et la tonalité avec ce que tu connais du morceau, puis touche « Caler le projet » et lance le Rythme."
+    },
+    {
+      "id": "remix_play",
+      "title": "Jouer une chanson séparée avec le projet",
+      "hint": "Remix › Jouer avec le projet, puis Jouer : les pistes partent avec ta batterie. Coupe la voix (M), mets la batterie seule (S), change la mesure de départ."
+    },
+    {
+      "id": "remix_pad",
+      "title": "Mettre un bout de piste sur un pad",
+      "hint": "Choisis un pad dans Rythme, reviens dans Remix, « 2 mes. » puis « → Pad » sur la Basse : le pad joue ces deux mesures."
     },
     {
       "id": "remix_cancel",

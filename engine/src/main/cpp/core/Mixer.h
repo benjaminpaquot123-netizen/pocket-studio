@@ -9,10 +9,10 @@
 namespace ps {
 
 // Channel strips (volume, pan, mute, solo, meter) summed to a stereo master with a peak
-// limiter. Mono sources in, interleaved stereo out. Real-time safe.
+// limiter. Mono (or stereo) sources in, interleaved stereo out. Real-time safe.
 class Mixer {
 public:
-    static constexpr int kChannels = 3;  // 0 = drums, 1 = acid bass, 2 = synth
+    static constexpr int kChannels = 4;  // 0 = drums, 1 = acid bass, 2 = synth, 3 = remix stems (stereo)
     static constexpr float kCeiling = 0.89f;  // -1 dBFS
 
     void prepare(int sampleRate);
@@ -23,7 +23,12 @@ public:
 
     // Mixes the channel buffers (mono, numFrames each) plus an already-stereo-free
     // `direct` mono signal (metronome, test tone) into interleaved `out`.
-    void process(const float* const* channels, const float* direct, float* out, int numFrames, int outChannels);
+    void process(const float* const* channels, const float* direct, float* out, int numFrames, int outChannels) {
+        process(channels, nullptr, direct, out, numFrames, outChannels);
+    }
+    // `rights[ch]` non-null makes channel `ch` stereo (channels[ch] = left); pan then balances.
+    void process(const float* const* channels, const float* const* rights, const float* direct, float* out, int numFrames,
+                 int outChannels);
 
     // Peak since last read, per channel and for the master (UI meters).
     float takeChannelPeak(int ch) { return peaks_[static_cast<size_t>(ch)].exchange(0.0f, std::memory_order_acq_rel); }

@@ -25,6 +25,9 @@ struct KeyResult {
 // Returns false when the file is not a readable WAV. `sink(block, frames)`.
 bool readWavMono(const std::string& path, int& sampleRate,
                  const std::function<void(const float*, int)>& sink);
+// Same as interleaved stereo (mono copied to both sides; more channels folded odd/even).
+bool readWavStereo(const std::string& path, int& sampleRate,
+                   const std::function<void(const float*, int)>& sink);
 
 // Beat tracking with aubio (GPL-3.0); the tempo is the median beat interval, folded into 70..180.
 TempoResult detectTempo(const std::string& wavPath);

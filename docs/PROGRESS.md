@@ -55,6 +55,8 @@
 
 - Jalon 3.3 : tempo (aubio sur la piste batterie, affiné par régression, premier temps sur la grosse caisse) et tonalité (chromagramme basse + autres, profils de Krumhansl) calculés après la séparation, affichés dans Remix ; « Caler le projet sur ce morceau » règle tempo et gamme en une étape annulable. Test Linux : 124,1 BPM pour 124, premier temps à 0,25 s, La mineur et Do majeur reconnus.
 
+- Jalon 3.4 : « Jouer avec le projet » charge les 4 stems dans le moteur (16 bits, 48 kHz), cale tempo et gamme, et les fait partir avec le Rythme au pas 0 (mesure de départ réglable) ; volume / muet / solo par stem, voie « Remix » au mixeur (et dans l'export) ; « → Pad » copie 1, 2 ou 4 mesures d'un stem sur le pad choisi. Tests Linux : départ à l'échantillon près, mute/solo, fondu à l'arrêt, chargement 44,1 → 48 kHz, aucune allocation dans le fil audio.
+
 ## Prochaine étape exacte
-1. Phase 3 (PR #7) : 3.4 mode Remix (stems lus par le moteur en flux à 48 kHz, calés sur le tempo du projet, mute/solo, stem vers le sampler). Ensuite revue de fin de phase et fusion.
-2. Reste noté : lever la limite de 60 s par son (utile aussi pour les stems) ; import de packs .zip.
+1. Revue de fin de phase 3 par un sous-agent neuf (séparation, service, stems dans le moteur), corriger, CI verte, fusionner la PR #7, puis phase 4 (effets).
+2. Reste noté : lever la limite de 60 s par son ; import de packs .zip ; étirement des stems si le tempo du projet change.

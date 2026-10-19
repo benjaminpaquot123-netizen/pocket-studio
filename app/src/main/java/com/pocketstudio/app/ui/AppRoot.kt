@@ -81,6 +81,7 @@ import com.pocketstudio.app.rhythm.PadSoundUi
 import com.pocketstudio.app.rhythm.RhythmActions
 import com.pocketstudio.app.rhythm.RhythmScreen
 import com.pocketstudio.app.rhythm.RhythmViewModel
+import com.pocketstudio.app.rhythm.SampleTask
 import com.pocketstudio.app.studio.StudioScreen
 import com.pocketstudio.app.synth.SynthActions
 import com.pocketstudio.app.synth.SynthScreen
@@ -395,8 +396,23 @@ fun AppRoot() {
                         val sets by remixVm.sets.collectAsStateWithLifecycle()
                         val modelInstalled by remixVm.modelInstalled.collectAsStateWithLifecycle()
                         val playing by remixVm.playing.collectAsStateWithLifecycle()
+                        val remixLoading by rhythmVm.remixLoading.collectAsStateWithLifecycle()
+                        val project by rhythmVm.project.collectAsStateWithLifecycle()
+                        val transport by rhythmVm.transport.collectAsStateWithLifecycle()
+                        val sampleTask by rhythmVm.sampleTask.collectAsStateWithLifecycle()
                         RemixScreen(
-                            RemixUi(modelInstalled, remixState, sets, playing),
+                            RemixUi(
+                                modelInstalled, remixState, sets, playing,
+                                remix = project.remix,
+                                remixLoading = remixLoading,
+                                transportPlaying = transport.playing,
+                                projectBpm = project.tempoBpm,
+                                padTask = when (val t = sampleTask) {
+                                    is SampleTask.Busy -> t.message
+                                    is SampleTask.Failed -> t.message
+                                    else -> null
+                                },
+                            ),
                             RemixActions(
                                 downloadModel = remixVm::downloadModel,
                                 pickSong = { pickSong.launch(arrayOf("audio/*")) },
@@ -405,11 +421,20 @@ fun AppRoot() {
                                 play = remixVm::play,
                                 stop = remixVm::stop,
                                 delete = remixVm::delete,
-                                matchProject = { set ->
-                                    rhythmVm.matchSong(set.info.bpm.takeIf { it > 0 } ?: rhythmVm.project.value.tempoBpm, set.info.root, set.info.minor)
+                                useSong = { set ->
+                                    rhythmVm.useSong(set)
                                     val what = listOfNotNull(set.info.bpm.takeIf { it > 0 }?.let { "%.0f BPM".format(it) }, set.info.keyLabel)
-                                    android.widget.Toast.makeText(context, "Projet calé : ${what.joinToString(", ")}", android.widget.Toast.LENGTH_SHORT).show()
+                                    if (what.isNotEmpty()) {
+                                        android.widget.Toast.makeText(context, "Projet calé : ${what.joinToString(", ")}", android.widget.Toast.LENGTH_SHORT).show()
+                                    }
                                 },
+                                clearRemix = rhythmVm::clearRemix,
+                                togglePlay = rhythmVm::togglePlay,
+                                setStartBar = rhythmVm::setRemixStartBar,
+                                setStemVolume = rhythmVm::setStemVolume,
+                                toggleStemMute = rhythmVm::toggleStemMute,
+                                toggleStemSolo = rhythmVm::toggleStemSolo,
+                                stemToPad = rhythmVm::stemToPad,
                             ),
                         )
                     }

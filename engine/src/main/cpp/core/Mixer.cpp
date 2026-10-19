@@ -61,7 +61,8 @@ void Mixer::storeMax(std::atomic<float>& a, float v) {
     }
 }
 
-void Mixer::process(const float* const* channels, const float* direct, float* out, int numFrames, int outChannels) {
+void Mixer::process(const float* const* channels, const float* const* rights, const float* direct, float* out, int numFrames,
+                    int outChannels) {
     std::array<float, kChannels> blockPeaks{};
     float masterPeak = 0.0f;
     float minGain = 1.0f;
@@ -71,11 +72,13 @@ void Mixer::process(const float* const* channels, const float* direct, float* ou
         for (int ch = 0; ch < kChannels; ++ch) {
             auto& s = strips_[static_cast<size_t>(ch)];
             const float x = channels[ch][i];
+            const float xr = rights && rights[ch] ? rights[ch][i] : x;
             const float gl = s.gainL.next();
             const float gr = s.gainR.next();
             l += x * gl;
-            r += x * gr;
-            blockPeaks[static_cast<size_t>(ch)] = std::max(blockPeaks[static_cast<size_t>(ch)], std::fabs(x) * std::max(gl, gr));
+            r += xr * gr;
+            blockPeaks[static_cast<size_t>(ch)] =
+                std::max(blockPeaks[static_cast<size_t>(ch)], std::max(std::fabs(x) * gl, std::fabs(xr) * gr));
         }
         // Peak limiter: instant attack, smooth release, ceiling at -1 dBFS.
         const float peak = std::max(std::fabs(l), std::fabs(r));

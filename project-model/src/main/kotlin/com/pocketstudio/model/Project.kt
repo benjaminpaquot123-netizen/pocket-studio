@@ -25,6 +25,8 @@ data class Project(
     val harmony: Harmony = Harmony(),
     /** The synth track's sound: null = the subtractive synth, else a General MIDI instrument. */
     val instrument: InstrumentChoice? = null,
+    /** A separated song played along (Remix tab). */
+    val remix: Remix = Remix(),
 ) {
     /** Returns a copy with every value inside its allowed range. */
     fun sanitized(): Project = copy(
@@ -37,6 +39,7 @@ data class Project(
         harmony = harmony.sanitized(),
         instrument = instrument?.takeIf { it.bank in 0..128 && it.program in 0..127 },
         mixer = mixer.sanitized(),
+        remix = remix.sanitized(),
     )
 
     companion object {

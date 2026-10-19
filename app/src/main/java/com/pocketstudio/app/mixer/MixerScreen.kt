@@ -34,7 +34,7 @@ import com.pocketstudio.ui.SectionLabel
 import kotlin.math.log10
 import kotlin.math.roundToInt
 
-val CHANNEL_NAMES = listOf("Batterie", "Basse acide", "Synthé")
+val CHANNEL_NAMES = listOf("Batterie", "Basse acide", "Synthé", "Remix")
 
 data class MixerActions(
     val setVolume: (Int, Float) -> Unit = { _, _ -> },
@@ -74,8 +74,8 @@ fun MixerScreen(
         }
         NeonCard(accent = Neon.Cyan) {
             SectionLabel("Sortie générale")
-            LevelMeter(meters.getOrElse(3) { 0f } / 0.89f)
-            val gain = meters.getOrElse(4) { 1f }
+            LevelMeter(meters.getOrElse(CHANNEL_NAMES.size) { 0f } / 0.89f)
+            val gain = meters.getOrElse(CHANNEL_NAMES.size + 1) { 1f }
             Text(
                 if (gain < 0.98f) "Le limiteur protège la sortie (−${String.format(java.util.Locale.FRANCE, "%.1f", -20 * log10(gain))} dB)"
                 else "Pas de saturation : tout va bien.",

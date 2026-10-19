@@ -212,7 +212,9 @@ KeyResult keyFromChroma(const std::array<double, 12>& chroma) {
 
 }  // namespace
 
-bool readWavMono(const std::string& path, int& sampleRate, const std::function<void(const float*, int)>& sink) {
+namespace {
+
+bool readWav(const std::string& path, int& sampleRate, bool stereo, const std::function<void(const float*, int)>& sink) {
     std::FILE* f = std::fopen(path.c_str(), "rb");
     if (!f) return false;
     unsigned char h[12];
@@ -242,13 +244,13 @@ bool readWavMono(const std::string& path, int& sampleRate, const std::function<v
             const int bytesPerFrame = channels * bits / 8;
             constexpr int kFrames = 4096;
             std::vector<unsigned char> raw(static_cast<size_t>(kFrames * bytesPerFrame));
-            std::vector<float> mono(kFrames);
+            std::vector<float> mono(kFrames * 2);
+            std::vector<float> frame(static_cast<size_t>(channels));
             uint32_t left = size / static_cast<uint32_t>(bytesPerFrame);
             while (left > 0) {
                 const int want = static_cast<int>(std::min<uint32_t>(left, kFrames));
                 const size_t got = std::fread(raw.data(), static_cast<size_t>(bytesPerFrame), static_cast<size_t>(want), f);
                 for (size_t i = 0; i < got; ++i) {
-                    float sum = 0;
                     for (int ch = 0; ch < channels; ++ch) {
                         const unsigned char* p = raw.data() + i * static_cast<size_t>(bytesPerFrame) + static_cast<size_t>(ch * bits / 8);
                         float v;
@@ -256,9 +258,21 @@ bool readWavMono(const std::string& path, int& sampleRate, const std::function<v
                         else if (bits == 16) v = static_cast<int16_t>(le16(p)) / 32768.0f;
                         else if (bits == 24) v = static_cast<float>(static_cast<int32_t>((p[0] << 8) | (p[1] << 16) | (uint32_t(p[2]) << 24)) >> 8) / 8388608.0f;
                         else v = static_cast<float>(static_cast<int32_t>(le32(p))) / 2147483648.0f;
-                        sum += std::isfinite(v) ? v : 0.0f;
+                        frame[static_cast<size_t>(ch)] = std::isfinite(v) ? v : 0.0f;
                     }
-                    mono[i] = sum / static_cast<float>(channels);
+                    if (!stereo) {
+                        float sum = 0;
+                        for (float v : frame) sum += v;
+                        mono[i] = sum / static_cast<float>(channels);
+                    } else if (channels == 1) {
+                        mono[i * 2] = mono[i * 2 + 1] = frame[0];
+                    } else {
+                        float l = 0, r = 0;
+                        for (int ch = 0; ch < channels; ++ch) (ch % 2 == 0 ? l : r) += frame[static_cast<size_t>(ch)];
+                        const float k = 2.0f / static_cast<float>(channels);
+                        mono[i * 2] = l * k;
+                        mono[i * 2 + 1] = r * k;
+                    }
                 }
                 if (got > 0) sink(mono.data(), static_cast<int>(got));
                 if (got < static_cast<size_t>(want)) break;  // truncated file: keep what was read
@@ -270,6 +284,16 @@ bool readWavMono(const std::string& path, int& sampleRate, const std::function<v
             std::fseek(f, static_cast<long>(size + (size & 1)), SEEK_CUR);
         }
     }
+}
+
+}  // namespace
+
+bool readWavMono(const std::string& path, int& sampleRate, const std::function<void(const float*, int)>& sink) {
+    return readWav(path, sampleRate, false, sink);
+}
+
+bool readWavStereo(const std::string& path, int& sampleRate, const std::function<void(const float*, int)>& sink) {
+    return readWav(path, sampleRate, true, sink);
 }
 
 TempoResult detectTempo(const float* mono, int64_t frames, int sampleRate) {

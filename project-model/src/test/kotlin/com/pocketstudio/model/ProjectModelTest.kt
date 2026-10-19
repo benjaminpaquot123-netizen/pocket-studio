@@ -440,4 +440,21 @@ class AcidPagesTest {
         assertEquals(AcidPattern.MAX_STEPS, old.steps.size)
         assertEquals(32, old.length)
     }
+
+    @Test
+    fun remixPlacesTheSongGridAndSurvivesBadValues() {
+        val remix = Remix(setId = "abc", name = "Chanson", songBpm = 120.0, firstBeat = 0.25, startBar = 2)
+            .withStem(3) { it.copy(mute = true) }
+        assertEquals(96_000L, remix.barFrames(48_000))
+        assertEquals(12_000L + 2 * 96_000L, remix.startFrame(48_000))
+        val project = Project(remix = remix)
+        assertEquals(project, ProjectJson.decode(ProjectJson.encode(project)))
+        val bad = Remix(songBpm = Double.NaN, firstBeat = -3.0, startBar = -1, stems = listOf(StemMix(volume = 7f))).sanitized()
+        assertEquals(0.0, bad.songBpm, 0.0)
+        assertEquals(0L, bad.barFrames(48_000))
+        assertEquals(0, bad.startBar)
+        assertEquals(Remix.STEMS, bad.stems.size)
+        assertEquals(1f, bad.stems[0].volume, 0f)
+        assertEquals(null, ProjectJson.decode("""{"name":"Vieux"}""").remix.setId)
+    }
 }

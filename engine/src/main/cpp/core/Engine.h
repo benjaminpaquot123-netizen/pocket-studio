@@ -15,6 +15,7 @@
 #include "Sequencer.h"
 #include "Synth.h"
 #include "Smoother.h"
+#include "StemPlayer.h"
 #include "SpscQueue.h"
 
 namespace ps {
@@ -51,6 +52,9 @@ enum class CommandType : uint8_t {
     SetSynthNoteCount, // a: number of notes in use
     SetSynthSteps,     // a: piano-roll pattern length in steps (1..128)
     SetInstrument,     // font: owned instance (nullptr = back to the synth), a: preset index
+    InstallStems,      // stems: owned reference (nullptr = no song)
+    SetStemParam,      // a: stem, b: StemPlayer::Param, value
+    SetStemStart,      // a: song frame where playback starts on step 0
 };
 
 struct Command {
@@ -62,6 +66,7 @@ struct Command {
     Sample* sample = nullptr;
     // SetInstrument only: an instance the engine takes over (closed if the command is dropped).
     tsf* font = nullptr;
+    StemBundle* stems = nullptr;
 };
 
 // Platform-independent audio core. The platform layer (Oboe on Android,
@@ -100,7 +105,10 @@ public:
     void collectGarbage() {
         sampler_.collectGarbage();
         instrument_.collectGarbage();
+        stems_.collectGarbage();
     }
+    bool stemsLoaded() const { return stems_.loaded(); }  // tests
+    int64_t stemPosition() const { return stems_.position(); }
     bool instrumentActive() const { return instrument_.active(); }  // tests
     bool padHasSample(int pad) const { return sampler_.has(pad); }  // tests
     const Sampler::PadParams& padParams(int pad) const { return sampler_.params(pad); }  // tests
@@ -153,7 +161,10 @@ private:
     };
     NoteRouter router_{synth_, instrument_};
     Sampler sampler_;
+    StemPlayer stems_;
     Mixer mixer_;
+    std::array<float, kMaxBlock> stemsL_{};
+    std::array<float, kMaxBlock> stemsR_{};
     std::array<float, kMaxBlock> drumsBuf_{};
     std::array<float, kMaxBlock> acidBuf_{};
     std::array<float, kMaxBlock> synthBuf_{};

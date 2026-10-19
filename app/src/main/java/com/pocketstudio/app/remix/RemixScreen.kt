@@ -9,10 +9,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.Button
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -21,10 +26,15 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import com.pocketstudio.model.Remix
 import com.pocketstudio.separation.Demucs
 import com.pocketstudio.ui.NeonCard
 import com.pocketstudio.ui.Neon
@@ -37,6 +47,13 @@ class RemixUi(
     val sets: List<StemSet>,
     /** (set id, stem) being heard. */
     val playing: Pair<String, String>? = null,
+    /** The song played along with the project (setId null = none). */
+    val remix: Remix = Remix(),
+    val remixLoading: Boolean = false,
+    val transportPlaying: Boolean = false,
+    val projectBpm: Double = 120.0,
+    /** What the last « → Pad » is doing or why it failed. */
+    val padTask: String? = null,
 )
 
 class RemixActions(
@@ -47,8 +64,15 @@ class RemixActions(
     val play: (StemSet, String) -> Unit = { _, _ -> },
     val stop: () -> Unit = {},
     val delete: (StemSet) -> Unit = {},
-    /** The project takes the song's tempo and key. */
-    val matchProject: (StemSet) -> Unit = {},
+    /** The project plays the song along, at its tempo and in its key. */
+    val useSong: (StemSet) -> Unit = {},
+    val clearRemix: () -> Unit = {},
+    val togglePlay: () -> Unit = {},
+    val setStartBar: (Int) -> Unit = {},
+    val setStemVolume: (Int, Float) -> Unit = { _, _ -> },
+    val toggleStemMute: (Int) -> Unit = {},
+    val toggleStemSolo: (Int) -> Unit = {},
+    val stemToPad: (Int, Int) -> Unit = { _, _ -> },
 )
 
 /** Remix: split a song into drums, bass, other and vocals, then listen to each part. */
@@ -58,6 +82,7 @@ fun RemixScreen(ui: RemixUi, actions: RemixActions) {
         Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
+        if (ui.remix.setId != null) InProject(ui, actions)
         NeonCard(modifier = Modifier.testTag("remix_start")) {
             SectionLabel("Séparer une chanson")
             Text(
@@ -93,7 +118,7 @@ fun RemixScreen(ui: RemixUi, actions: RemixActions) {
                 }
             }
         }
-        ui.sets.forEach { set -> StemCard(set, ui.playing, actions) }
+        ui.sets.forEach { set -> StemCard(set, ui.playing, ui.remix.setId == set.id, actions) }
     }
 }
 
@@ -109,7 +134,73 @@ private fun Progress(text: String, fraction: Float?, cancel: () -> Unit) {
 }
 
 @Composable
-private fun StemCard(set: StemSet, playing: Pair<String, String>?, actions: RemixActions) {
+private fun InProject(ui: RemixUi, actions: RemixActions) {
+    val r = ui.remix
+    var padBars by rememberSaveable { mutableIntStateOf(1) }
+    NeonCard(modifier = Modifier.testTag("remix_project")) {
+        SectionLabel("Dans le projet : ${r.name}", color = Neon.Magenta)
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Button(onClick = actions.togglePlay, modifier = Modifier.testTag("remix_play")) {
+                Icon(if (ui.transportPlaying) Icons.Filled.Stop else Icons.Filled.PlayArrow, contentDescription = null)
+                Text(if (ui.transportPlaying) " Arrêter" else " Jouer")
+            }
+            Text("Mesure ${r.startBar + 1}", Modifier.weight(1f), maxLines = 1)
+            IconButton(onClick = { actions.setStartBar(r.startBar - 1) }, enabled = r.startBar > 0) {
+                Icon(Icons.Filled.Remove, contentDescription = "Mesure précédente")
+            }
+            IconButton(onClick = { actions.setStartBar(r.startBar + 1) }, modifier = Modifier.testTag("remix_bar_next")) {
+                Icon(Icons.Filled.Add, contentDescription = "Mesure suivante")
+            }
+        }
+        if (ui.remixLoading) {
+            Text("Chargement des pistes…", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+            LinearProgressIndicator(Modifier.fillMaxWidth(), color = Neon.Magenta)
+        }
+        if (r.songBpm > 0 && kotlin.math.abs(ui.projectBpm - r.songBpm) > 0.05) {
+            Text(
+                "Le projet est à %.1f BPM, le morceau à %.1f : les pistes gardent leur vitesse et se décalent.".format(ui.projectBpm, r.songBpm),
+                style = MaterialTheme.typography.bodySmall, color = Neon.Amber,
+            )
+        }
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            Text("Vers le pad :", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+            listOf(1, 2, 4).forEach { b ->
+                FilterChip(
+                    selected = padBars == b, onClick = { padBars = b },
+                    label = { Text("$b mes.") },
+                    colors = FilterChipDefaults.filterChipColors(selectedContainerColor = Neon.Cyan.copy(alpha = 0.25f), selectedLabelColor = Neon.Cyan),
+                )
+            }
+        }
+        ui.padTask?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = Neon.Amber) }
+        Demucs.STEMS.forEachIndexed { i, stem ->
+            val m = r.stems[i]
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                Text(StemStore.LABELS[stem] ?: stem, Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge)
+                FilterChip(
+                    selected = m.mute, onClick = { actions.toggleStemMute(i) }, label = { Text("M") },
+                    colors = FilterChipDefaults.filterChipColors(selectedContainerColor = Neon.Amber.copy(alpha = 0.3f), selectedLabelColor = Neon.Amber),
+                    modifier = Modifier.testTag("stem_mute_$i"),
+                )
+                FilterChip(
+                    selected = m.solo, onClick = { actions.toggleStemSolo(i) }, label = { Text("S") },
+                    colors = FilterChipDefaults.filterChipColors(selectedContainerColor = Neon.Acid.copy(alpha = 0.3f), selectedLabelColor = Neon.Acid),
+                    modifier = Modifier.testTag("stem_solo_$i"),
+                )
+                TextButton(onClick = { actions.stemToPad(i, padBars) }, modifier = Modifier.testTag("stem_pad_$i")) { Text("→ Pad") }
+            }
+            Slider(value = m.volume, onValueChange = { actions.setStemVolume(i, it) }, modifier = Modifier.testTag("stem_volume_$i"))
+        }
+        Text(
+            "Les pistes démarrent avec le Rythme, calées sur son premier temps, à partir de la mesure choisie. « → Pad » copie les mesures choisies sur le pad sélectionné.",
+            style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
+        )
+        TextButton(onClick = actions.clearRemix, modifier = Modifier.testTag("remix_clear")) { Text("Retirer du projet") }
+    }
+}
+
+@Composable
+private fun StemCard(set: StemSet, playing: Pair<String, String>?, inProject: Boolean, actions: RemixActions) {
     NeonCard(modifier = Modifier.testTag("stems_${set.id}")) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
@@ -124,9 +215,9 @@ private fun StemCard(set: StemSet, playing: Pair<String, String>?, actions: Remi
             }
             IconButton(onClick = { actions.delete(set) }) { Icon(Icons.Filled.Delete, contentDescription = "Supprimer") }
         }
-        if (set.info.bpm > 0 || set.info.root != null) {
-            OutlinedButton(onClick = { actions.matchProject(set) }, modifier = Modifier.fillMaxWidth().testTag("match_${set.id}")) {
-                Text("Caler le projet sur ce morceau")
+        if (!inProject) {
+            Button(onClick = { actions.useSong(set) }, modifier = Modifier.fillMaxWidth().testTag("use_${set.id}")) {
+                Text("Jouer avec le projet")
             }
         }
         Demucs.STEMS.forEach { stem ->

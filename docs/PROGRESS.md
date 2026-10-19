@@ -45,7 +45,9 @@
 
 - Jalon 2.5 : `Harmony` (tonique + gamme : majeure, mineure, dorienne, pentas, blues) dans le projet ; piano roll : notes aimantées à la gamme, lignes hors gamme assombries, mode « Accords » (un toucher = l'accord de la gamme) ; clavier : touches hors gamme grisées, « Accords » à un doigt ; 5 progressions (I–V–vi–IV…) qui remplissent 4 mesures ; arpégiateur (↑ ↓ ↑↓ hasard, 1/8 1/16 1/32) et strum, calculés côté Kotlin avant l'envoi au moteur (`Performance.expand`). Tests JVM : accords par degré (Do, Rém, Si°, Sol7, Lam), progression, arpèges, strum.
 
+- Jalon 2.6 : la piste Synthé peut jouer un des 128 instruments General MIDI (GeneralUser GS via TinySoundFont, voix préallouées, instance par moteur, copie retirée et fermée hors fil audio). La banque (32 Mo) est publiée par la CI sur une Release dédiée et téléchargée une fois par l'appli, empreinte SHA-256 vérifiée avant toute lecture (TinySoundFont n'est pas sûr sur un fichier abîmé). Navigateur par famille dans Synthé › Source du son. Import d'un dossier de sons (pack) sur les pads suivants. Test Linux avec une mini-banque SF2 générée : La 440 Hz puis 880 Hz, remplacement et fermeture sans fuite (ASan).
+
 ## Prochaine étape exacte
-1. Jalon 2.6 : bibliothèque d'instruments (GeneralUser GS + TinySoundFont), navigateur de sons, import de packs. Demande groupée à Benjamin si une licence ou un hébergement pose question.
-2. Puis revue de fin de phase 2 (sous-agent neuf), REVIEW.md, résumé, PR #6 prête.
+1. Revue de fin de phase 2 (sous-agent neuf), corriger le grave, REVIEW.md, résumé en 3 lignes, PR #6 prête, feu vert.
+2. Reste noté : lever la limite de 60 s par son ; kits de batterie GM (banque 128) sur les pads ; import de packs .zip.
 2. Reste du 2.3 : lever la limite de 60 s par son (stockage 16 bits ou lecture en flux), utile pour découper des morceaux entiers.

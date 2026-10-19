@@ -1,5 +1,6 @@
 package com.pocketstudio.app.ui
 
+import com.pocketstudio.app.instruments.InstrumentUi
 import com.pocketstudio.app.synth.NotesUi
 import com.pocketstudio.app.synth.PianoRollActions
 import com.pocketstudio.model.NoteClip
@@ -162,6 +163,9 @@ fun AppRoot() {
     val pickAudio = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) rhythmVm.importSample(uri)
     }
+    val pickFolder = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
+        if (uri != null) rhythmVm.importFolder(uri)
+    }
 
     val landscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
     Scaffold(
@@ -268,6 +272,7 @@ fun AppRoot() {
                                 toggleSliceMarker = rhythmVm::toggleSliceMarker,
                                 applySlices = rhythmVm::applySlices,
                                 resampleSong = rhythmVm::resampleSong,
+                                importFolder = { pickFolder.launch(null) },
                             ),
                             padSound = PadSoundUi(sampleInfo, sampleTask, slicer),
                         )
@@ -302,6 +307,7 @@ fun AppRoot() {
                         val project by rhythmVm.project.collectAsStateWithLifecycle()
                         val octave by rhythmVm.keyboardOctave.collectAsStateWithLifecycle()
                         val live by rhythmVm.live.collectAsStateWithLifecycle()
+                        val library by rhythmVm.library.collectAsStateWithLifecycle()
                         LaunchedEffect(Unit) {
                             lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollLive() }
                         }
@@ -334,6 +340,14 @@ fun AppRoot() {
                                     setPerformance = rhythmVm::setPerformance,
                                 ),
                                 harmony = project.harmony,
+                            ),
+                            instrument = InstrumentUi(
+                                library = library,
+                                current = project.instrument,
+                                open = rhythmVm::openLibrary,
+                                download = rhythmVm::downloadLibrary,
+                                cancel = rhythmVm::cancelLibraryDownload,
+                                select = rhythmVm::selectInstrument,
                             ),
                         )
                     }

@@ -250,4 +250,28 @@ class ScreenshotTest {
             startWithNotes = true,
         )
     }
+
+    @Test
+    fun instruments() = shoot("instruments") {
+        val names = listOf("Grand Piano", "Bright Piano", "Electric Grand", "Honky-Tonk", "Tine Electric Piano", "FM Electric Piano", "Harpsichord", "Clavinet")
+        val presets = names.mapIndexed { i, n -> com.pocketstudio.engine.Preset(i, 0, i, n) }
+        com.pocketstudio.app.synth.SynthScreen(
+            patch = com.pocketstudio.model.SynthPatch(),
+            octave = 4,
+            actions = com.pocketstudio.app.synth.SynthActions(),
+            instrument = com.pocketstudio.app.instruments.InstrumentUi(
+                com.pocketstudio.app.rhythm.LibraryState.Ready(presets),
+                com.pocketstudio.model.InstrumentChoice(0, 4, "Tine Electric Piano"),
+            ),
+        )
+    }
+
+    @Test
+    fun instrumentsDownload() = shoot("instruments_download") {
+        androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
+            com.pocketstudio.app.instruments.InstrumentPanel(
+                com.pocketstudio.app.instruments.InstrumentUi(com.pocketstudio.app.rhythm.LibraryState.Downloading(0.42f), null),
+            )
+        }
+    }
 }

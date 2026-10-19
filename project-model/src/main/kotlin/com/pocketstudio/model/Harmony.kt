@@ -115,3 +115,7 @@ data class Performance(
         return out.filter { it.start < clip.ticks }.sortedBy { it.start }.take(NoteClip.MAX_NOTES)
     }
 }
+
+/** A General MIDI preset from the instrument library, found by bank and program. */
+@Serializable
+data class InstrumentChoice(val bank: Int, val program: Int, val name: String)

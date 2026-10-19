@@ -1,6 +1,7 @@
 #include <jni.h>
 
 #include <algorithm>
+#include <cstdio>
 #include <memory>
 #include <vector>
 #include <mutex>
@@ -9,6 +10,7 @@
 #include "OfflineRenderer.h"
 #include "OnsetDetector.h"
 #include "Sample.h"
+#include "SoundFontPlayer.h"
 #include "TimeStretch.h"
 
 namespace {
@@ -122,6 +124,60 @@ JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportInstallSa
     ps::Command command{ps::CommandType::InstallSample, 0.0f, pad, 0};
     command.sample = s;
     reinterpret_cast<ps::OfflineRenderer*>(exportHandle)->post(command);
+}
+
+// --- General MIDI instruments (SoundFont). Load on a worker thread, the rest on the main thread. ---
+
+JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_soundFontLoad(JNIEnv* env, jobject, jstring path) {
+    const char* p = env->GetStringUTFChars(path, nullptr);
+    if (!p) return 0;
+    tsf* f = ps::SoundFontPlayer::loadFile(p);
+    env->ReleaseStringUTFChars(path, p);
+    return reinterpret_cast<jlong>(f);
+}
+
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_soundFontClose(JNIEnv*, jobject, jlong handle) {
+    ps::SoundFontPlayer::close(reinterpret_cast<tsf*>(handle));
+}
+
+// "bank|program|name" for each preset index.
+JNIEXPORT jobjectArray JNICALL Java_com_pocketstudio_engine_NativeEngine_soundFontPresets(JNIEnv* env, jobject, jlong handle) {
+    auto* f = reinterpret_cast<tsf*>(handle);
+    const int n = ps::SoundFontPlayer::presetCount(f);
+    jobjectArray out = env->NewObjectArray(n, env->FindClass("java/lang/String"), nullptr);
+    for (int i = 0; out && i < n; ++i) {
+        int bank = 0, program = 0;
+        const char* name = "";
+        ps::SoundFontPlayer::presetInfo(f, i, &bank, &program, &name);
+        char line[64];
+        std::snprintf(line, sizeof line, "%d|%d|%.40s", bank, program, name);
+        jstring s = env->NewStringUTF(line);
+        env->SetObjectArrayElement(out, i, s);
+        env->DeleteLocalRef(s);
+    }
+    return out;
+}
+
+static ps::OfflineRenderer* renderer(jlong handle);
+
+static ps::Command instrumentCommand(jlong font, jint preset) {
+    ps::Command c{ps::CommandType::SetInstrument, 0.0f, preset, 0};
+    c.font = font ? ps::SoundFontPlayer::makeInstance(reinterpret_cast<tsf*>(font), 48000) : nullptr;
+    return c;
+}
+
+JNIEXPORT jboolean JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeSetInstrument(JNIEnv*, jobject, jlong font, jint preset) {
+    host().engine().collectGarbage();
+    ps::Command c = instrumentCommand(font, preset);
+    if (font && !c.font) return JNI_FALSE;
+    if (host().post(c)) return JNI_TRUE;
+    ps::SoundFontPlayer::close(c.font);
+    return JNI_FALSE;
+}
+
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportSetInstrument(JNIEnv*, jobject, jlong exportHandle, jlong font,
+                                                                                   jint preset) {
+    renderer(exportHandle)->post(instrumentCommand(font, preset));
 }
 
 // --- Offline export: a private engine rendered on the caller's (worker) thread. ---

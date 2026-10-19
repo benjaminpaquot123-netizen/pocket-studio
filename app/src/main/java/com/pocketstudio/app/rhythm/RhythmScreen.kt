@@ -93,6 +93,7 @@ data class RhythmActions(
     val toggleSliceMarker: (Float) -> Unit = {},
     val applySlices: () -> Unit = {},
     val resampleSong: (bars: Int) -> Unit = {},
+    val importFolder: () -> Unit = {},
 )
 
 /** The selected pad's own sound, if any, and what the sampler is busy with. */
@@ -355,6 +356,9 @@ internal fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: 
                     OutlinedButton(onClick = { actions.dismissSampleError(); actions.startRecording() }, modifier = Modifier.weight(1f).testTag("record_sample")) {
                         Icon(Icons.Filled.Mic, contentDescription = null); Text(" Micro")
                     }
+                }
+                TextButton(onClick = { actions.dismissSampleError(); actions.importFolder() }, modifier = Modifier.testTag("import_folder")) {
+                    Text("Importer un dossier de sons (pack) sur les pads suivants")
                 }
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     Text("Enregistrer le morceau :", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)

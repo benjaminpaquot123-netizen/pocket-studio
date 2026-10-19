@@ -155,6 +155,19 @@ object NativeEngine {
         values.forEachIndexed { param, v -> post(CMD_PAD_PARAM, v, pad, param) }
     }
 
+    /** The synth track plays [font]'s preset [presetIndex] (null: back to the synth). Main thread. */
+    fun setInstrument(font: SoundFont?, presetIndex: Int) {
+        val target = captureTarget
+        if (target != 0L) exportSetInstrument(target, font?.handle ?: 0L, presetIndex)
+        else nativeSetInstrument(font?.handle ?: 0L, presetIndex)
+    }
+
+    external fun soundFontLoad(path: String): Long
+    external fun soundFontClose(handle: Long)
+    external fun soundFontPresets(handle: Long): Array<String>
+    private external fun nativeSetInstrument(font: Long, preset: Int): Boolean
+    private external fun exportSetInstrument(exportHandle: Long, font: Long, preset: Int)
+
     external fun sampleCreate(data: FloatArray, channels: Int, sampleRate: Int): Long
     external fun sampleRelease(handle: Long)
     external fun sampleFrames(handle: Long): Long

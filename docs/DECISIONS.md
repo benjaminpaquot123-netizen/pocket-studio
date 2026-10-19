@@ -58,3 +58,6 @@
 | 2026-10-19 | « Notes fantômes » = la ligne de basse acide affichée en transparence | Seule autre piste mélodique pour l'instant ; aide à placer les accords | Ajouter les autres pistes quand elles existeront |
 | 2026-10-19 | Arpège et strum calculés en Kotlin (notes « jouées » envoyées au moteur), pas dans le fil audio | Simple, testable, aucun coût audio ; suffisant pour un piano roll | Arpégiateur temps réel au clavier plus tard |
 | 2026-10-19 | Accords « de la gamme » (empilement de tierces de la gamme choisie) ; sans gamme : accord majeur | Toujours juste dans la tonalité, en un geste | Choix du type d'accord plus tard |
+| 2026-10-19 | Instruments GM = autre source de la piste Synthé (même piano roll, même clavier, même tranche du mixeur) | Un seul endroit pour jouer des notes ; pas de nouvelle piste à apprendre | Piste séparée si on veut superposer synthé et instrument |
+| 2026-10-19 | Banque lue seulement après vérification SHA-256 (téléchargement et à chaque ouverture) | Le lecteur SF2 déborde sur un fichier malformé (vu dans un test) | Aucun |
+| 2026-10-19 | Packs = dossier choisi par l'utilisateur (sons triés par nom → pads suivants) ; pas de .zip pour l'instant | Le sélecteur Android donne accès aux dossiers sans permission ; le zip demande une décompression à sécuriser | Ajouter le zip plus tard |

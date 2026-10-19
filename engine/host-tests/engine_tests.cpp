@@ -19,6 +19,7 @@
 #include "OfflineRenderer.h"
 #include "OnsetDetector.h"
 #include "TimeStretch.h"
+#include "SoundFontPlayer.h"
 #include "Sample.h"
 #include "Sampler.h"
 #include "WavWriter.h"
@@ -1255,6 +1256,98 @@ void testPianoRollNotesAreSampleAccurate() {
     CHECK(engine.notesPending() == 0);
 }
 
+// A minimal SoundFont 2 file: one looping 440 Hz sine sample (root key 69), one instrument, one preset.
+std::vector<uint8_t> tinySoundFont() {
+    std::vector<uint8_t> out;
+    auto u8 = [](std::vector<uint8_t>& b, int v) { b.push_back(uint8_t(v)); };
+    auto u16 = [&](std::vector<uint8_t>& b, int v) { u8(b, v & 0xFF); u8(b, (v >> 8) & 0xFF); };
+    auto u32 = [&](std::vector<uint8_t>& b, uint32_t v) { u16(b, int(v & 0xFFFF)); u16(b, int(v >> 16)); };
+    auto tag = [](std::vector<uint8_t>& b, const char* t) { b.insert(b.end(), t, t + 4); };
+    auto name20 = [](std::vector<uint8_t>& b, const char* n) { char z[20] = {}; std::strncpy(z, n, 19); b.insert(b.end(), z, z + 20); };
+    auto chunk = [&](std::vector<uint8_t>& b, const char* id, const std::vector<uint8_t>& data) {
+        tag(b, id); u32(b, uint32_t(data.size())); b.insert(b.end(), data.begin(), data.end());
+        if (data.size() & 1) b.push_back(0);
+    };
+    auto list = [&](const char* type, const std::vector<uint8_t>& body) {
+        std::vector<uint8_t> l; tag(l, type); l.insert(l.end(), body.begin(), body.end()); return l;
+    };
+    const int rate = 44100, n = rate;  // 1 s; exactly 440 cycles, so the loop is seamless
+    std::vector<uint8_t> info, ifil, isng, inam;
+    u16(ifil, 2); u16(ifil, 1);
+    const char* engineName = "EMU8000"; isng.assign(engineName, engineName + 8);
+    const char* bankName = "Test"; inam.assign(bankName, bankName + 5);
+    chunk(info, "ifil", ifil); chunk(info, "isng", isng); chunk(info, "INAM", inam);
+    std::vector<uint8_t> smpl;
+    for (int i = 0; i < n + 46; ++i) u16(smpl, i < n ? int(std::lrint(16000.0 * std::sin(2.0 * M_PI * 440.0 * i / rate))) : 0);
+    std::vector<uint8_t> sdta; chunk(sdta, "smpl", smpl);
+    std::vector<uint8_t> phdr, pbag, pmod(10, 0), pgen, inst, ibag, imod(10, 0), igen, shdr;
+    name20(phdr, "Sine"); u16(phdr, 0); u16(phdr, 0); u16(phdr, 0); u32(phdr, 0); u32(phdr, 0); u32(phdr, 0);
+    name20(phdr, "EOP"); u16(phdr, 0); u16(phdr, 0); u16(phdr, 1); u32(phdr, 0); u32(phdr, 0); u32(phdr, 0);
+    u16(pbag, 0); u16(pbag, 0); u16(pbag, 1); u16(pbag, 0);
+    u16(pgen, 41); u16(pgen, 0);  // instrument 0
+    u16(pgen, 0); u16(pgen, 0);
+    name20(inst, "Sine"); u16(inst, 0);
+    name20(inst, "EOI"); u16(inst, 1);
+    u16(ibag, 0); u16(ibag, 0); u16(ibag, 2); u16(ibag, 0);
+    u16(igen, 54); u16(igen, 1);  // sampleModes: loop
+    u16(igen, 53); u16(igen, 0);  // sampleID 0
+    u16(igen, 0); u16(igen, 0);
+    name20(shdr, "Sine"); u32(shdr, 0); u32(shdr, n); u32(shdr, 0); u32(shdr, n); u32(shdr, rate); u8(shdr, 69); u8(shdr, 0); u16(shdr, 0); u16(shdr, 1);
+    name20(shdr, "EOS"); for (int i = 0; i < 26; ++i) u8(shdr, 0);
+    std::vector<uint8_t> pdta;
+    chunk(pdta, "phdr", phdr); chunk(pdta, "pbag", pbag); chunk(pdta, "pmod", pmod); chunk(pdta, "pgen", pgen);
+    chunk(pdta, "inst", inst); chunk(pdta, "ibag", ibag); chunk(pdta, "imod", imod); chunk(pdta, "igen", igen);
+    chunk(pdta, "shdr", shdr);
+    std::vector<uint8_t> body; tag(body, "sfbk");
+    chunk(body, "LIST", list("INFO", info)); chunk(body, "LIST", list("sdta", sdta)); chunk(body, "LIST", list("pdta", pdta));
+    chunk(out, "RIFF", body);
+    return out;
+}
+
+void testInstrumentPlaysTheSoundFont() {
+    const std::string path = (std::filesystem::temp_directory_path() / "ps_tiny.sf2").string();
+    { auto bytes = tinySoundFont(); std::ofstream(path, std::ios::binary).write(reinterpret_cast<const char*>(bytes.data()), std::streamsize(bytes.size())); }
+    tsf* master = ps::SoundFontPlayer::loadFile(path.c_str());
+    CHECK(master != nullptr);
+    if (!master) return;
+    auto pitchOf = [](const std::vector<float>& x, int from, int to) {
+        int up = 0;
+        for (int i = from + 1; i < to; ++i) if (x[size_t(i - 1) * kChannels] < 0.0f && x[size_t(i) * kChannels] >= 0.0f) ++up;
+        return up / ((to - from) / double(kRate));
+    };
+    {
+        ps::Engine engine(kRate);
+        ps::Command install{ps::CommandType::SetInstrument, 0.0f, 0};
+        install.font = ps::SoundFontPlayer::makeInstance(master, kRate);
+        engine.post(install);
+        engine.post({ps::CommandType::SynthNoteOn, 1.0f, 69});
+        auto a4 = render(engine, kRate / 2, 256);
+        CHECK(engine.instrumentActive());
+        std::printf("  instrument A4: %.1f Hz\n", pitchOf(a4, 4800, 24000));
+        CHECK(std::fabs(pitchOf(a4, 4800, 24000) - 440.0) < 5.0);
+        engine.post({ps::CommandType::SynthNoteOff, 0.0f, 69});
+        engine.post({ps::CommandType::SynthNoteOn, 1.0f, 81});
+        auto a5 = render(engine, kRate / 2, 256);
+        CHECK(std::fabs(pitchOf(a5, 12000, 24000) - 880.0) < 10.0);
+        // A replacement instance retires the first; back to the synth with nullptr.
+        ps::Command again{ps::CommandType::SetInstrument, 0.0f, 0};
+        again.font = ps::SoundFontPlayer::makeInstance(master, kRate);
+        engine.post(again);
+        render(engine, 64, 64);
+        engine.collectGarbage();
+        engine.post({ps::CommandType::SetInstrument, 0.0f, 0});
+        render(engine, 64, 64);
+        CHECK(!engine.instrumentActive());
+        // A pending install is closed if the engine goes away first (ASan checks for leaks).
+        ps::Command pending{ps::CommandType::SetInstrument, 0.0f, 0};
+        pending.font = ps::SoundFontPlayer::makeInstance(master, kRate);
+        engine.post(pending);
+    }
+    ps::SoundFontPlayer::close(master);
+    CHECK(ps::SoundFontPlayer::loadFile("/nonexistent/x.sf2") == nullptr);
+    std::filesystem::remove(path);
+}
+
 void testLimiterHoldsTheCeiling() {
     ps::Mixer mixer;
     mixer.prepare(kRate);
@@ -1332,6 +1425,7 @@ int main(int argc, char** argv) {
         {"onsets", testOnsetsFindTheHits},
         {"time_stretch", testTimeStretchKeepsPitchAndLength},
         {"piano_roll", testPianoRollNotesAreSampleAccurate},
+        {"instrument", testInstrumentPlaysTheSoundFont},
     };
     for (const auto& t : tests) {
         const int before = g_failures;

@@ -86,6 +86,16 @@
       "id": "harmony",
       "title": "Gamme, accords, progression, arpège",
       "hint": "Synthé › Notes › Harmonie : choisis « Majeure », essaie une progression, puis « Arpège ↑ » et « Strum Moyen ». Active « Accords » et touche la grille. Au clavier, « Accords » joue un accord par touche."
+    },
+    {
+      "id": "instruments",
+      "title": "Télécharger la bibliothèque et jouer un piano, des cordes…",
+      "hint": "Synthé › Source du son › Instruments › Télécharger (32 Mo, en Wi-Fi). Puis choisis une famille et un instrument : le clavier et le piano roll le jouent."
+    },
+    {
+      "id": "pack",
+      "title": "Importer un dossier de sons sur les pads",
+      "hint": "Rythme › choisis un pad › « Importer un dossier de sons » : les sons du dossier arrivent sur ce pad et les suivants."
     }
   ]
 }

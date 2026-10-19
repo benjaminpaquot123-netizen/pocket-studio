@@ -38,27 +38,4 @@ void NoteTrack::onStep(int offset, int step, double samplesPerStep) {
     }
 }
 
-void NoteTrack::advance(int numFrames, Synth& synth) {
-    int kept = 0;
-    for (int i = 0; i < pendingCount_; ++i) {
-        Pending p = pending_[static_cast<size_t>(i)];
-        if (p.at < numFrames) {
-            if (p.velocity > 0.0f) synth.noteOn(p.pitch, p.velocity, static_cast<int>(p.at));
-            else synth.noteOff(p.pitch, static_cast<int>(p.at));
-        } else {
-            p.at -= numFrames;
-            pending_[static_cast<size_t>(kept++)] = p;
-        }
-    }
-    pendingCount_ = kept;
-}
-
-void NoteTrack::stop(Synth& synth) {
-    for (int i = 0; i < pendingCount_; ++i) {
-        const Pending& p = pending_[static_cast<size_t>(i)];
-        if (p.velocity == 0.0f) synth.noteOff(p.pitch, 0);  // a note that is sounding now
-    }
-    pendingCount_ = 0;
-}
-
 }  // namespace ps

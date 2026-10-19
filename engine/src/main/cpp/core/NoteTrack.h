@@ -3,7 +3,6 @@
 #include <array>
 #include <cstdint>
 
-#include "Synth.h"
 
 namespace ps {
 
@@ -33,10 +32,32 @@ public:
 
     // Called for every sequencer step (absolute index): queues the notes starting in it.
     void onStep(int offset, int step, double samplesPerStep);
-    // Sends this block's note-ons and note-offs to the synth (call before synth.render).
-    void advance(int numFrames, Synth& synth);
+    // Sends this block's note-ons and note-offs to `sink` (noteOn/noteOff with a frame offset),
+    // before it renders.
+    template <typename Sink>
+    void advance(int numFrames, Sink& sink) {
+        int kept = 0;
+        for (int i = 0; i < pendingCount_; ++i) {
+            Pending p = pending_[static_cast<size_t>(i)];
+            if (p.at < numFrames) {
+                if (p.velocity > 0.0f) sink.noteOn(p.pitch, p.velocity, static_cast<int>(p.at));
+                else sink.noteOff(p.pitch, static_cast<int>(p.at));
+            } else {
+                p.at -= numFrames;
+                pending_[static_cast<size_t>(kept++)] = p;
+            }
+        }
+        pendingCount_ = kept;
+    }
     // Transport stop: releases every sounding note.
-    void stop(Synth& synth);
+    template <typename Sink>
+    void stop(Sink& sink) {
+        for (int i = 0; i < pendingCount_; ++i) {
+            const Pending& p = pending_[static_cast<size_t>(i)];
+            if (p.velocity == 0.0f) sink.noteOff(p.pitch, 0);  // a note that is sounding now
+        }
+        pendingCount_ = 0;
+    }
 
     int pendingCount() const { return pendingCount_; }  // tests
 

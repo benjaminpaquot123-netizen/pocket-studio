@@ -22,6 +22,8 @@ set_source_files_properties(${CMAKE_CURRENT_LIST_DIR}/../src/main/cpp/core/AcidT
 # aubio headers (types.h, fvec.h…) are visible to the onset wrapper only.
 set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/core/OnsetDetector.cpp PROPERTIES INCLUDE_DIRECTORIES "${AUBIO_INCLUDES}")
 set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/core/TimeStretch.cpp PROPERTIES INCLUDE_DIRECTORIES "${SIGNALSMITH_INCLUDES}")
+# TinySoundFont (MIT, single header) is compiled in SoundFontPlayer.cpp only.
+set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/core/SoundFontPlayer.cpp PROPERTIES INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/../../../third_party/TinySoundFont" COMPILE_OPTIONS "-Wno-unused-parameter;-Wno-unused-function;-Wno-sign-compare;-Wno-unused-variable")
 target_compile_options(pocketstudio_engine PRIVATE ${DAISYSP_FORCE_INCLUDE})
 set_source_files_properties(${DAISYSP_SOURCES} PROPERTIES COMPILE_OPTIONS "-w")
 # Open303 type-puns floats through pointers: never let the optimiser assume strict aliasing there.

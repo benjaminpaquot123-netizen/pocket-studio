@@ -11,6 +11,7 @@
 #include "NoteTrack.h"
 #include "RoundTripMeter.h"
 #include "Sampler.h"
+#include "SoundFontPlayer.h"
 #include "Sequencer.h"
 #include "Synth.h"
 #include "Smoother.h"
@@ -49,6 +50,7 @@ enum class CommandType : uint8_t {
     SetSynthNote,      // a: index, b: NoteTrack::pack(start, length, pitch), value: velocity
     SetSynthNoteCount, // a: number of notes in use
     SetSynthSteps,     // a: piano-roll pattern length in steps (1..128)
+    SetInstrument,     // font: owned instance (nullptr = back to the synth), a: preset index
 };
 
 struct Command {
@@ -58,6 +60,8 @@ struct Command {
     int32_t b = 0;
     // InstallSample only: a reference the engine takes over (released if the command is dropped).
     Sample* sample = nullptr;
+    // SetInstrument only: an instance the engine takes over (closed if the command is dropped).
+    tsf* font = nullptr;
 };
 
 // Platform-independent audio core. The platform layer (Oboe on Android,
@@ -93,7 +97,11 @@ public:
     RoundTripMeter& latencyMeter() { return meter_; }
 
     // Not the audio thread (one caller at a time): frees samples the audio thread let go of.
-    void collectGarbage() { sampler_.collectGarbage(); }
+    void collectGarbage() {
+        sampler_.collectGarbage();
+        instrument_.collectGarbage();
+    }
+    bool instrumentActive() const { return instrument_.active(); }  // tests
     bool padHasSample(int pad) const { return sampler_.has(pad); }  // tests
     const Sampler::PadParams& padParams(int pad) const { return sampler_.params(pad); }  // tests
 
@@ -135,6 +143,15 @@ private:
     AcidTrack acid_;
     Synth synth_;
     NoteTrack notes_;
+    SoundFontPlayer instrument_;
+    // The synth track's sound: the instrument when one is loaded, else the subtractive synth.
+    struct NoteRouter {
+        Synth& synth;
+        SoundFontPlayer& instrument;
+        void noteOn(int n, float v, int at) { instrument.active() ? instrument.noteOn(n, v, at) : synth.noteOn(n, v, at); }
+        void noteOff(int n, int at) { instrument.active() ? instrument.noteOff(n, at) : synth.noteOff(n, at); }
+    };
+    NoteRouter router_{synth_, instrument_};
     Sampler sampler_;
     Mixer mixer_;
     std::array<float, kMaxBlock> drumsBuf_{};

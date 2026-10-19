@@ -1,5 +1,7 @@
 package com.pocketstudio.app.synth
 
+import com.pocketstudio.app.instruments.InstrumentPanel
+import com.pocketstudio.app.instruments.InstrumentUi
 import com.pocketstudio.model.Scale
 import com.pocketstudio.model.Harmony
 import com.pocketstudio.model.NoteClip
@@ -102,6 +104,7 @@ fun SynthScreen(
     modifier: Modifier = Modifier,
     notes: NotesUi? = null,
     startWithNotes: Boolean = false,
+    instrument: InstrumentUi? = null,
 ) {
     var advanced by rememberSaveable { mutableStateOf(false) }
     var showNotes by rememberSaveable { mutableStateOf(startWithNotes) }
@@ -131,8 +134,11 @@ fun SynthScreen(
                     SectionLabel("Harmonie")
                     HarmonyPanel(notes.harmony, notes.clip.performance, notes.actions)
                 }
-                PresetsCard(patch, actions)
-                SoundCard(patch, actions, advanced) { advanced = it }
+                instrument?.let { InstrumentPanel(it) }
+                if (instrument?.current == null) {
+                    PresetsCard(patch, actions)
+                    SoundCard(patch, actions, advanced) { advanced = it }
+                }
             }
         } else if (landscape) {
             // Landscape: one compact line (presets, octave), the settings scroll, and a wide
@@ -146,7 +152,8 @@ fun SynthScreen(
                     OctaveControl(octave, actions)
                 }
                 Column(Modifier.weight(1f).verticalScroll(rememberScrollState())) {
-                    SoundCard(patch, actions, advanced) { advanced = it }
+                    instrument?.let { InstrumentPanel(it) }
+                    if (instrument?.current == null) SoundCard(patch, actions, advanced) { advanced = it }
                 }
                 Keyboard(
                     firstNote = 12 * (octave + 1), octaves = 3,
@@ -161,8 +168,11 @@ fun SynthScreen(
                 if (notes != null) ModeSwitch(showNotes) { showNotes = it }
                 KeyboardCard(octave, octaves = 2, height = 150.dp, actions = actions, harmony = harmony, chordKeys = chordKeys,
                     onChordKeys = { chordKeys = it }, keyOn = keyOn, keyOff = keyOff)
-                PresetsCard(patch, actions)
-                SoundCard(patch, actions, advanced) { advanced = it }
+                instrument?.let { InstrumentPanel(it) }
+                if (instrument?.current == null) {
+                    PresetsCard(patch, actions)
+                    SoundCard(patch, actions, advanced) { advanced = it }
+                }
             }
         }
     }

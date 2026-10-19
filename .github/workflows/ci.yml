@@ -160,6 +160,24 @@ jobs:
           "$APKSIGNER" verify --print-certs dist/pocket-studio.apk | tee dist/certs.txt
           grep -q "SHA-256 digest: ${EXPECTED_CERT_SHA256}" dist/certs.txt || {
             echo "::error::APK is not signed with the stable release key."; exit 1; }
+      - name: Host the instrument library (once)
+        # GeneralUser GS 2.0.3 (free licence): its author asks apps to serve their own copy.
+        # The app downloads it from this release and checks the same SHA-256 before using it.
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SF2_TAG: sons-generaluser-gs-2.0.3
+          SF2_URL: https://raw.githubusercontent.com/mrbumpy409/GeneralUser-GS/684543d5e5efaef08d02be50dcda8d552478fa60/GeneralUser-GS.sf2
+          SF2_SHA256: 9575028c7a1f589f5770fccc8cff2734566af40cd26ed836944e9a5152688cfe
+        run: |
+          if gh release view "$SF2_TAG" >/dev/null 2>&1; then echo "already hosted"; exit 0; fi
+          mkdir -p sounds
+          curl -fsSL --retry 3 -o sounds/GeneralUser-GS.sf2 "$SF2_URL"
+          echo "$SF2_SHA256  sounds/GeneralUser-GS.sf2" | sha256sum -c -
+          curl -fsSL --retry 3 -o sounds/LICENSE.txt https://raw.githubusercontent.com/mrbumpy409/GeneralUser-GS/684543d5e5efaef08d02be50dcda8d552478fa60/documentation/LICENSE.txt
+          gh release create "$SF2_TAG" sounds/GeneralUser-GS.sf2 sounds/LICENSE.txt \
+            --latest=false --title "Bibliothèque d'instruments : GeneralUser GS 2.0.3" \
+            --notes "Banque General MIDI de S. Christian Collins (licence libre, voir LICENSE.txt), copie servie à l'appli comme l'auteur le demande." \
+            --target main
       - name: Publish preview (pull request)
         if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
         env:

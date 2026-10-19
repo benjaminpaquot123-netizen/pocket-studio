@@ -16,3 +16,6 @@
 [submodule "engine/third_party/signalsmith-linear"]
 	path = engine/third_party/signalsmith-linear
 	url = https://github.com/Signalsmith-Audio/linear
+[submodule "engine/third_party/TinySoundFont"]
+	path = engine/third_party/TinySoundFont
+	url = https://github.com/schellingb/TinySoundFont

@@ -22,6 +22,7 @@ Engine::~Engine() {
     Command command;
     while (commands_.pop(command)) {
         if (command.sample && command.sample->release()) delete command.sample;
+        SoundFontPlayer::close(command.font);
     }
 }
 
@@ -72,7 +73,7 @@ void Engine::applyCommand(const Command& command) {
                 sequencer_.stop();
                 acid_.stop();
                 sampler_.releaseLoops();
-                notes_.stop(synth_);
+                notes_.stop(router_);
                 currentStep_.store(-1, std::memory_order_relaxed);
                 absoluteStep_.store(-1, std::memory_order_relaxed);
             }
@@ -104,10 +105,10 @@ void Engine::applyCommand(const Command& command) {
             }
             break;
         case CommandType::SynthNoteOn:
-            synth_.noteOn(command.a, command.value);
+            router_.noteOn(command.a, command.value, 0);
             break;
         case CommandType::SynthNoteOff:
-            synth_.noteOff(command.a);
+            router_.noteOff(command.a, 0);
             break;
         case CommandType::SynthParam:
             if (command.a >= 0 && command.a < Synth::ParamCount) {
@@ -116,6 +117,7 @@ void Engine::applyCommand(const Command& command) {
             break;
         case CommandType::SynthAllOff:
             synth_.allNotesOff();
+            instrument_.allNotesOff();
             break;
         case CommandType::SetChannelVolume:
             mixer_.setVolume(command.a, command.value);
@@ -143,6 +145,10 @@ void Engine::applyCommand(const Command& command) {
             break;
         case CommandType::SetSynthSteps:
             notes_.setSteps(command.a);
+            break;
+        case CommandType::SetInstrument:
+            synth_.allNotesOff();
+            instrument_.install(command.font, command.a);  // takes the instance
             break;
         case CommandType::TriggerPad:
             if (command.a >= 0 && command.a < kLanes) {
@@ -193,12 +199,13 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
     std::fill(synth, synth + numFrames, 0.0f);
 
     sequencer_.advance(numFrames, [this](int offset, int step) { onStep(offset, step); });
-    notes_.advance(numFrames, synth_);
+    notes_.advance(numFrames, router_);
     metronome_.render(direct, numFrames);
     drums_.render(drums, numFrames);
     sampler_.render(drums, numFrames);
     acid_.render(acid, numFrames);
     synth_.render(synth, numFrames);
+    instrument_.render(synth, numFrames);
 
     gain_.setTarget(playing_.load(std::memory_order_relaxed) ? volume_ : 0.0f);
     const double invRate = 1.0 / sampleRate_;

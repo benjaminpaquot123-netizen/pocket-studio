@@ -1,5 +1,5 @@
 Phase 2 : tes sons sur les pads, et un piano roll pour le synthé (Synthé › Notes) !
 Gammes, accords en un geste, progressions toutes faites, arpèges et strum (Synthé › Notes).
-Cale une boucle au tempo sans changer sa note, et enregistre ton morceau sur un pad.
+128 instruments (piano, cordes, guitares…) à télécharger une fois : Synthé › Source du son.
 Règle chaque son : début, fin, hauteur, à l'envers, en boucle, enveloppe, groupes d'étouffement.
 Découpe un son en tranches (attaques, grille ou à la main) et mets-les sur les pads. « C'est pas faux ! »

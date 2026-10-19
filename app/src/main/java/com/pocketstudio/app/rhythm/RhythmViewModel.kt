@@ -10,6 +10,10 @@ import com.pocketstudio.app.audio.AudioDecoder
 import com.pocketstudio.app.audio.MicRecorder
 import com.pocketstudio.app.audio.Pcm
 import com.pocketstudio.app.export.WavExporter
+import com.pocketstudio.app.instruments.InstrumentLibrary
+import com.pocketstudio.engine.Preset
+import com.pocketstudio.engine.SoundFont
+import com.pocketstudio.model.InstrumentChoice
 import com.pocketstudio.app.playback.PlaybackService
 import com.pocketstudio.engine.ExportResult
 import com.pocketstudio.engine.NativeEngine
@@ -39,6 +43,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.io.File
+
+sealed interface LibraryState {
+    data object Missing : LibraryState
+    data class Downloading(val progress: Float) : LibraryState
+    data object Loading : LibraryState
+    data class Ready(val presets: List<Preset>) : LibraryState
+    data class Failed(val message: String) : LibraryState
+}
 
 sealed interface SampleTask {
     data object Idle : SampleTask
@@ -154,6 +166,83 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         pushMixer(p)
         pushPads(p)
         pushNotes(p.synthNotes)
+        pushInstrument(p)
+    }
+
+    // --- Instrument library (General MIDI) -------------------------------------------------
+
+    private val _library = MutableStateFlow<LibraryState>(LibraryState.Missing)
+    val library: StateFlow<LibraryState> = _library.asStateFlow()
+    private var soundFont: SoundFont? = null
+    @Volatile private var downloadCancelled = false
+
+    private fun pushInstrument(p: Project = project.value) {
+        if (!NativeEngine.isAvailable) return
+        val font = soundFont
+        val index = p.instrument?.let { font?.indexOf(it.bank, it.program) } ?: -1
+        if (font != null && index >= 0) NativeEngine.setInstrument(font, index) else NativeEngine.setInstrument(null, 0)
+    }
+
+    /** Opens the bank if it is on the phone (checked first), else says it must be downloaded. */
+    fun openLibrary() {
+        if (soundFont != null || _library.value is LibraryState.Downloading || _library.value == LibraryState.Loading) return
+        val app = getApplication<Application>()
+        if (!InstrumentLibrary.isInstalled(app)) {
+            _library.value = LibraryState.Missing
+            return
+        }
+        _library.value = LibraryState.Loading
+        viewModelScope.launch {
+            val font = withContext(Dispatchers.IO) {
+                if (InstrumentLibrary.verify(app)) SoundFont.load(InstrumentLibrary.file(app))
+                else null.also { InstrumentLibrary.file(app).delete() }
+            }
+            if (font == null) {
+                _library.value = LibraryState.Failed("La bibliothèque était abîmée : télécharge-la à nouveau.")
+                return@launch
+            }
+            soundFont = font
+            _library.value = LibraryState.Ready(font.presets)
+            AppLog.add("Bibliothèque d'instruments : ${font.presets.size} sons")
+            pushInstrument()
+        }
+    }
+
+    fun downloadLibrary() {
+        if (_library.value is LibraryState.Downloading) return
+        val app = getApplication<Application>()
+        downloadCancelled = false
+        _library.value = LibraryState.Downloading(0f)
+        viewModelScope.launch {
+            try {
+                withContext(Dispatchers.IO) {
+                    InstrumentLibrary.download(app, { p -> _library.value = LibraryState.Downloading(p) }) { downloadCancelled }
+                }
+                AppLog.add("Bibliothèque téléchargée")
+                _library.value = LibraryState.Missing
+                openLibrary()
+            } catch (e: Exception) {
+                AppLog.add("Téléchargement de la bibliothèque : ${e.message}")
+                _library.value = if (downloadCancelled) LibraryState.Missing
+                else LibraryState.Failed("Le téléchargement a échoué (${e.message}). Vérifie la connexion et réessaie.")
+            }
+        }
+    }
+
+    fun cancelLibraryDownload() {
+        downloadCancelled = true
+    }
+
+    /** null: back to the subtractive synth. */
+    fun selectInstrument(choice: InstrumentChoice?) {
+        session.edit { p -> p.copy(instrument = choice) }
+        pushInstrument()
+        if (choice != null && NativeEngine.isAvailable && !_transport.value.playing) {
+            viewModelScope.launch {
+                kotlinx.coroutines.delay(30)  // let the new instrument arrive first
+                previewNote(60)
+            }
+        }
     }
 
     // --- Piano roll ------------------------------------------------------------------------
@@ -295,12 +384,73 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             val data = try {
                 job.renderToArray(frames, 0)
             } finally {
-                job.close()
+                // Native instruments share reference counts: free them on the main thread only.
+                withContext(Dispatchers.Main) { job.close() }
             }
             if (data.isEmpty()) throw UserMessage("Le rendu a été interrompu.")
             AppLog.add("Rééchantillonnage : $bars mesures à ${p.tempoBpm.toInt()} BPM")
             padSamples.add(Pcm(data, 2, OfflineExport.SAMPLE_RATE), "Morceau $bars mesure${if (bars > 1) "s" else ""}")
         }
+    }
+
+    /**
+     * A sample pack: the audio files of a folder (by name) go onto the pads from the selected
+     * one on, one undo step. Files that cannot be read are skipped.
+     */
+    fun importFolder(tree: Uri) {
+        if (_sampleTask.value is SampleTask.Busy || _sampleTask.value is SampleTask.Recording) return
+        val first = _transport.value.selectedPad
+        val app = getApplication<Application>()
+        _sampleTask.value = SampleTask.Busy("Lecture du dossier…")
+        viewModelScope.launch {
+            try {
+                val files = withContext(Dispatchers.IO) { audioFilesIn(app, tree) }.take(DrumPattern.PAD_COUNT - first)
+                if (files.isEmpty()) throw UserMessage("Aucun son dans ce dossier (MP3, WAV, FLAC, M4A, OGG).")
+                val added = ArrayList<Pair<Int, PadSample>>()
+                files.forEachIndexed { i, (uri, name) ->
+                    _sampleTask.value = SampleTask.Busy("Import ${i + 1}/${files.size} : $name")
+                    val result = withContext(Dispatchers.IO) {
+                        runCatching { padSamples.add(AudioDecoder.decode(app, uri), PadSamples.nameFrom(name)) }.getOrNull()
+                    }
+                    if (result != null) {
+                        padSamples.register(result.second)
+                        added += (first + i) to result.first
+                    }
+                }
+                session.edit { p -> p.copy(drums = Slicer.apply(p.drums, added)) }
+                pushPads()
+                AppLog.add("Pack : ${added.size}/${files.size} sons sur les pads ${first + 1}…")
+                _sampleTask.value = if (added.size == files.size) SampleTask.Idle
+                else SampleTask.Failed("${files.size - added.size} fichier(s) illisible(s) ignoré(s).")
+            } catch (e: UserMessage) {
+                _sampleTask.value = SampleTask.Failed(e.message!!)
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                _sampleTask.value = SampleTask.Failed("Le dossier n'a pas pu être lu (${e.message}).")
+            }
+        }
+    }
+
+    private fun audioFilesIn(app: Application, tree: Uri): List<Pair<Uri, String>> {
+        val children = android.provider.DocumentsContract.buildChildDocumentsUriUsingTree(
+            tree, android.provider.DocumentsContract.getTreeDocumentId(tree),
+        )
+        val cols = arrayOf(
+            android.provider.DocumentsContract.Document.COLUMN_DOCUMENT_ID,
+            android.provider.DocumentsContract.Document.COLUMN_DISPLAY_NAME,
+            android.provider.DocumentsContract.Document.COLUMN_MIME_TYPE,
+        )
+        val out = ArrayList<Pair<Uri, String>>()
+        app.contentResolver.query(children, cols, null, null, null)?.use { c ->
+            while (c.moveToNext()) {
+                val name = c.getString(1) ?: continue
+                val mime = c.getString(2) ?: ""
+                val audio = mime.startsWith("audio/") || name.substringAfterLast('.').lowercase() in AUDIO_EXTENSIONS
+                if (audio) out += android.provider.DocumentsContract.buildDocumentUriUsingTree(tree, c.getString(0)) to name
+            }
+        }
+        return out.sortedBy { it.second.lowercase() }
     }
 
     /** Records the microphone until [stopRecording] (or 30 s) and puts it on the selected pad. */
@@ -594,6 +744,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     init {
         loadPadSamples()
+        if (project.value.instrument != null) openLibrary()
         viewModelScope.launch {
             session.lastSaveError.collect { e -> if (e != null) AppLog.add("Sauvegarde impossible : ${e.message}") }
         }
@@ -758,6 +909,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     override fun onCleared() {
+        downloadCancelled = true
+        soundFont?.close()
         running?.cancel()
         recorder?.stop()
         padSamples.close()
@@ -767,6 +920,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     companion object {
         const val PROJECT_ID = "projet-1"
+        private val AUDIO_EXTENSIONS = setOf("wav", "mp3", "flac", "m4a", "aac", "ogg", "opus", "aif", "aiff")
         /** Two seconds after the last bar so releases and the acid tail ring out. */
         const val TAIL_FRAMES = 2L * OfflineExport.SAMPLE_RATE
     }

@@ -77,3 +77,35 @@ class SamplerLogicTest {
         assertEquals("Son importé", PadSamples.nameFrom(".mp3"))
     }
 }
+
+class SlicerTest {
+    @Test
+    fun gridCutsEvenly() {
+        org.junit.Assert.assertEquals(listOf(0f, 0.25f, 0.5f, 0.75f), com.pocketstudio.app.rhythm.Slicer.grid(4))
+    }
+
+    @Test
+    fun tapAddsOrRemovesACutButNeverTheStart() {
+        val s = com.pocketstudio.app.rhythm.Slicer
+        val added = s.toggle(listOf(0f, 0.5f), 0.3f)
+        org.junit.Assert.assertEquals(listOf(0f, 0.3f, 0.5f), added)
+        org.junit.Assert.assertEquals(listOf(0f, 0.3f), s.toggle(added, 0.505f))
+        org.junit.Assert.assertEquals(listOf(0f, 0.3f), s.toggle(listOf(0f, 0.3f), 0.005f))
+    }
+
+    @Test
+    fun slicesFillThePadsFromTheSelectedOne() {
+        val src = com.pocketstudio.model.PadSample("a.wav", "Breakbeat", pitch = 5f, gain = 0.8f)
+        val pads = com.pocketstudio.app.rhythm.Slicer.toPads(src, listOf(0f, 0.25f, 0.5f, 0.75f), firstPad = 13)
+        org.junit.Assert.assertEquals(listOf(13, 14, 15), pads.map { it.first })  // 4th slice has no pad
+        val first = pads[0].second
+        org.junit.Assert.assertEquals("Breakbeat 1", first.name)
+        org.junit.Assert.assertEquals(0f, first.start)
+        org.junit.Assert.assertEquals(0.25f, first.end)
+        org.junit.Assert.assertEquals(0f, first.pitch)  // fresh settings, same level
+        org.junit.Assert.assertEquals(0.8f, first.gain)
+        val drums = com.pocketstudio.app.rhythm.Slicer.apply(com.pocketstudio.model.DrumPattern(), pads)
+        org.junit.Assert.assertEquals("Breakbeat 3", drums.lanes[15].sample!!.name)
+        org.junit.Assert.assertEquals(0.75f, drums.lanes[15].sample!!.end)  // 3rd slice ends at the 4th cut
+    }
+}

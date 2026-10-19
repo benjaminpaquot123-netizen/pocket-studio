@@ -9,12 +9,15 @@ file(GLOB CORE_SOURCES CONFIGURE_DEPENDS ${CORE_DIR}/*.cpp ${CORE_DIR}/*.c)
 include(${CMAKE_CURRENT_SOURCE_DIR}/../third_party/daisysp.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/../third_party/open303.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/../third_party/libsamplerate.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/../third_party/aubio.cmake)
 
-add_library(ps_core STATIC ${CORE_SOURCES} ${DAISYSP_SOURCES} ${OPEN303_SOURCES} ${LIBSAMPLERATE_SOURCES})
+add_library(ps_core STATIC ${CORE_SOURCES} ${DAISYSP_SOURCES} ${OPEN303_SOURCES} ${LIBSAMPLERATE_SOURCES} ${AUBIO_SOURCES})
 target_include_directories(ps_core PUBLIC ${CORE_DIR})
 target_include_directories(ps_core SYSTEM PUBLIC ${DAISYSP_INCLUDES} ${LIBSAMPLERATE_INCLUDES})
 set_source_files_properties(${CMAKE_CURRENT_LIST_DIR}/../src/main/cpp/core/AcidTrack.cpp ${CMAKE_CURRENT_LIST_DIR}/core/AcidTrack.cpp ${OPEN303_SOURCES} PROPERTIES INCLUDE_DIRECTORIES "${OPEN303_INCLUDES}")
 set_source_files_properties(${CMAKE_CURRENT_LIST_DIR}/../src/main/cpp/core/AcidTrack.cpp ${CMAKE_CURRENT_LIST_DIR}/core/AcidTrack.cpp PROPERTIES COMPILE_OPTIONS "-fno-strict-aliasing")
+# aubio headers (types.h, fvec.h…) are visible to the onset wrapper only.
+set_source_files_properties(${CORE_DIR}/OnsetDetector.cpp PROPERTIES INCLUDE_DIRECTORIES "${AUBIO_INCLUDES}")
 target_compile_options(ps_core PUBLIC ${DAISYSP_FORCE_INCLUDE})
 # Third-party code is not held to our warning level.
 set_source_files_properties(${DAISYSP_SOURCES} PROPERTIES COMPILE_OPTIONS "-w")

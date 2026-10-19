@@ -225,6 +225,7 @@ fun AppRoot() {
                         val canRedo by rhythmVm.session.canRedo.collectAsStateWithLifecycle()
                         val sampleInfo by rhythmVm.sampleInfo.collectAsStateWithLifecycle()
                         val sampleTask by rhythmVm.sampleTask.collectAsStateWithLifecycle()
+                        val slicer by rhythmVm.slicer.collectAsStateWithLifecycle()
                         LaunchedEffect(Unit) {
                             lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollLive() }
                         }
@@ -256,8 +257,15 @@ fun AppRoot() {
                                 removeSample = rhythmVm::removeSample,
                                 dismissSampleError = rhythmVm::dismissSampleError,
                                 editSample = rhythmVm::editPadSample,
+                                openSlicer = rhythmVm::openSlicer,
+                                closeSlicer = rhythmVm::closeSlicer,
+                                setSliceMode = rhythmVm::setSliceMode,
+                                setSliceSensitivity = rhythmVm::setSliceSensitivity,
+                                setSliceGrid = rhythmVm::setSliceGrid,
+                                toggleSliceMarker = rhythmVm::toggleSliceMarker,
+                                applySlices = rhythmVm::applySlices,
                             ),
-                            padSound = PadSoundUi(sampleInfo, sampleTask),
+                            padSound = PadSoundUi(sampleInfo, sampleTask, slicer),
                         )
                     }
                     AppTab.Acide -> {

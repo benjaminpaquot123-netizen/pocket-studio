@@ -147,6 +147,7 @@ object NativeEngine {
     external fun sampleCreate(data: FloatArray, channels: Int, sampleRate: Int): Long
     external fun sampleRelease(handle: Long)
     external fun sampleFrames(handle: Long): Long
+    external fun sampleOnsets(handle: Long, sensitivity: Float, maxSlices: Int): FloatArray
     private external fun nativeInstallSample(pad: Int, handle: Long): Boolean
     private external fun exportInstallSample(exportHandle: Long, pad: Int, handle: Long)
 

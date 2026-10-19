@@ -17,6 +17,7 @@
 #include "DrumKit.h"
 #include "Mixer.h"
 #include "OfflineRenderer.h"
+#include "OnsetDetector.h"
 #include "Sample.h"
 #include "Sampler.h"
 #include "WavWriter.h"
@@ -1150,6 +1151,34 @@ void testPadParamCommandsReachTheSampler() {
     CHECK(engine.padParams(2).gain == 1.0f);
 }
 
+void testOnsetsFindTheHits() {
+    // Four decaying noise bursts (like drum hits) at known places, with soft noise between.
+    const int frames = kRate * 2;
+    std::vector<float> x(size_t(frames), 0.0f);
+    std::mt19937 rng(7);
+    std::uniform_real_distribution<float> noise(-1.0f, 1.0f);
+    const int64_t hits[] = {0, 21000, 50000, 71000};
+    const float levels[] = {0.9f, 0.6f, 0.8f, 0.5f};
+    for (int i = 0; i < frames; ++i) x[size_t(i)] = 0.002f * noise(rng);
+    for (int h = 0; h < 4; ++h) {
+        for (int i = 0; i < 6000; ++i) x[size_t(hits[h] + i)] += levels[h] * noise(rng) * std::exp(-i / 900.0f);
+    }
+    auto onsets = ps::detectOnsets(x.data(), frames, kRate);
+    std::printf("  onsets:");
+    for (auto o : onsets) std::printf(" %lld", static_cast<long long>(o));
+    std::printf("\n");
+    CHECK(onsets.size() == 4);
+    for (size_t h = 0; h < 4 && h < onsets.size(); ++h) CHECK(std::llabs(onsets[h] - hits[h]) < kRate / 100);
+
+    // A cap keeps the strongest hits; silence gives just the start.
+    ps::OnsetOptions two;
+    two.maxSlices = 2;
+    auto capped = ps::detectOnsets(x.data(), frames, kRate, two);
+    CHECK(capped.size() == 2 && capped[0] == 0 && std::llabs(capped[1] - hits[2]) < kRate / 100);
+    std::vector<float> silence(size_t(frames), 0.0f);
+    CHECK(ps::detectOnsets(silence.data(), frames, kRate).size() == 1);
+}
+
 void testLimiterHoldsTheCeiling() {
     ps::Mixer mixer;
     mixer.prepare(kRate);
@@ -1224,6 +1253,7 @@ int main(int argc, char** argv) {
         {"pad_pitch_region_reverse", testPadPitchRegionAndReverse},
         {"pad_loop_envelope_choke", testPadLoopEnvelopeAndChoke},
         {"pad_param_commands", testPadParamCommandsReachTheSampler},
+        {"onsets", testOnsetsFindTheHits},
     };
     for (const auto& t : tests) {
         const int before = g_failures;

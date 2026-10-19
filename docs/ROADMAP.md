@@ -42,7 +42,7 @@ Feu vert de Benjamin (D4 = A) : fusion de la pull request en fin de phase.
 
 ## Phase 2 : sampler et notes
 - [x] 2.1 Import MP3/WAV/FLAC/M4A, enregistrement micro, forme d'onde zoomable
-- [ ] 2.2 Découpe (attaques avec aubio, grille, manuelle), tranches vers pads, ADSR, pitch, reverse, boucle, groupes d'étouffement
+- [x] 2.2 Découpe (attaques avec aubio, grille, manuelle), tranches vers pads, ADSR, pitch, reverse, boucle, groupes d'étouffement
 - [ ] 2.3 Time-stretch (Signalsmith Stretch), rééchantillonnage du master
 - [ ] 2.4 Piano roll : vélocité, quantification avec intensité, notes fantômes
 - [ ] 2.5 Verrouillage de gamme, accords en un geste, progressions, arpégiateur, strum

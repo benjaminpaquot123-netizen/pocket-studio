@@ -1,6 +1,7 @@
 package com.pocketstudio.app.rhythm
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -33,7 +34,15 @@ data class WaveWindow(val start: Float = 0f, val width: Float = 1f) {
 
 /** Min/max outline of a sound ([peaks] from [PadSamples.peaks]); pinch to zoom, drag to move. */
 @Composable
-fun Waveform(peaks: FloatArray, color: Color, modifier: Modifier = Modifier, region: Pair<Float, Float> = 0f to 1f) {
+fun Waveform(
+    peaks: FloatArray,
+    color: Color,
+    modifier: Modifier = Modifier,
+    region: Pair<Float, Float> = 0f to 1f,
+    markers: List<Float> = emptyList(),
+    markerColor: Color = Color.White,
+    onTap: ((Float) -> Unit)? = null,
+) {
     var start by remember(peaks) { mutableFloatStateOf(0f) }
     var width by remember(peaks) { mutableFloatStateOf(1f) }
     Canvas(
@@ -41,6 +50,9 @@ fun Waveform(peaks: FloatArray, color: Color, modifier: Modifier = Modifier, reg
             .fillMaxWidth()
             .height(96.dp)
             .testTag("waveform")
+            .pointerInput(peaks, onTap) {
+                if (onTap != null) detectTapGestures { p -> onTap(start + width * p.x / size.width) }
+            }
             .pointerInput(peaks) {
                 detectTransformGestures { centroid, pan, zoom, _ ->
                     val w = WaveWindow(start, width).transform(zoom, centroid.x / size.width, pan.x / size.width)
@@ -70,6 +82,10 @@ fun Waveform(peaks: FloatArray, color: Color, modifier: Modifier = Modifier, reg
                 Offset(x.toFloat(), mid - lo.coerceIn(-1f, 1f) * mid + 1f),
                 strokeWidth = 1f,
             )
+        }
+        markers.forEach { m ->
+            val x = (m - start) / width * size.width
+            if (x in 0f..size.width) drawLine(markerColor, Offset(x, 0f), Offset(x, size.height), strokeWidth = 3f)
         }
     }
 }

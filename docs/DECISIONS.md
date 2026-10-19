@@ -50,3 +50,5 @@
 | 2026-10-19 | Stockage des sons en WAV float 32 bits à leur fréquence d'origine ; 60 s max à l'import, 30 s au micro | Sans perte ; la mémoire reste raisonnable (~23 Mo par minute stéréo) | Lever la limite en 2.2 (16 bits ou lecture en flux) |
 | 2026-10-19 | Sample joué en mono (somme G+D) dans la tranche Batterie | Les tranches du mixeur sont mono + pan ; suffisant pour des one-shots | Tranche stéréo pour les boucles en 2.3 |
 | 2026-10-19 | « En boucle » d'un pad : répète la zone jusqu'au coup suivant du pad, d'un pad du même groupe, ou l'arrêt | Le séquenceur ne connaît pas de durée de note ; comportement prévisible | Mode « tant que le doigt reste » quand le piano roll arrivera |
+| 2026-10-19 | Découpe = tranches d'un même fichier sur plusieurs pads (début/fin), pas de copie | Pas de fichiers en double ; une tranche se règle comme n'importe quel pad | Aucun |
+| 2026-10-19 | aubio : fonction de détection HFC, sensibilité 0..1 → seuil 0,9..0,05, écart mini 50 ms, 16 tranches max en gardant les plus fortes | Bon sur les percussions (cas principal) ; réglable à l'oreille | Fonction « complex » pour les sons tenus |

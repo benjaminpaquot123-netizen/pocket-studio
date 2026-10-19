@@ -10,6 +10,17 @@ class NativeSample private constructor(internal val handle: Long) : AutoCloseabl
     /** Length in frames at 48 kHz. */
     val frames: Long = NativeEngine.sampleFrames(handle)
 
+    /**
+     * Where the attacks are, as fractions 0..1 of the sound (the first is 0). Blocking: worker
+     * thread. [sensitivity] 0 keeps only big hits, 1 every small attack.
+     */
+    @Synchronized  // close() waits: the native data is never freed mid-analysis
+    fun onsets(sensitivity: Float, maxSlices: Int = 16): FloatArray {
+        check(!closed)
+        return NativeEngine.sampleOnsets(handle, sensitivity, maxSlices)
+    }
+
+    @Synchronized
     override fun close() {
         if (closed) return
         closed = true

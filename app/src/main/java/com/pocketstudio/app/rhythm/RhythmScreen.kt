@@ -1,5 +1,6 @@
 package com.pocketstudio.app.rhythm
 
+import androidx.compose.material.icons.filled.ContentCut
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -83,12 +84,20 @@ data class RhythmActions(
     val removeSample: () -> Unit = {},
     val dismissSampleError: () -> Unit = {},
     val editSample: (key: String?, transform: (PadSample) -> PadSample) -> Unit = { _, _ -> },
+    val openSlicer: () -> Unit = {},
+    val closeSlicer: () -> Unit = {},
+    val setSliceMode: (SliceMode) -> Unit = {},
+    val setSliceSensitivity: (Float) -> Unit = {},
+    val setSliceGrid: (Int) -> Unit = {},
+    val toggleSliceMarker: (Float) -> Unit = {},
+    val applySlices: () -> Unit = {},
 )
 
 /** The selected pad's own sound, if any, and what the sampler is busy with. */
 data class PadSoundUi(
     val info: Map<String, SampleInfo> = emptyMap(),
     val task: SampleTask = SampleTask.Idle,
+    val slicer: SlicerUi? = null,
 )
 
 @Composable
@@ -302,6 +311,11 @@ internal fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: 
             )
         }
         val info = sample?.let { ui.info[it.file] }
+        val slicer = ui.slicer?.takeIf { sample != null && it.file == sample.file }
+        if (sample != null && info != null && slicer != null) {
+            SlicerPanel(slicer, info, lane, color, actions)
+            return@NeonCard
+        }
         if (sample != null && info != null) {
             Waveform(info.peaks, color, region = sample.start to sample.end)
             Text(
@@ -310,6 +324,9 @@ internal fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: 
                 color = Neon.TextSecondary,
             )
             PadSampleControls(sample, info.seconds, actions.editSample)
+            OutlinedButton(onClick = actions.openSlicer, modifier = Modifier.fillMaxWidth().testTag("open_slicer")) {
+                Icon(Icons.Filled.ContentCut, contentDescription = null); Text(" Découper en tranches")
+            }
         }
         when (val task = ui.task) {
             is SampleTask.Busy -> Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -412,4 +429,44 @@ private fun LabeledSlider(
         Text(value, style = MonoStyle, color = Neon.Cyan)
     }
     Slider(value = v.coerceIn(range), onValueChange = onChange, valueRange = range, steps = steps)
+}
+
+@Composable
+private fun SlicerPanel(s: SlicerUi, info: SampleInfo, lane: Int, color: Color, actions: RhythmActions) {
+    val chipColors = FilterChipDefaults.filterChipColors(selectedContainerColor = Neon.Cyan.copy(alpha = 0.25f), selectedLabelColor = Neon.Cyan)
+    Text("Découpe", style = MaterialTheme.typography.titleMedium)
+    Waveform(info.peaks, color, markers = s.markers, markerColor = Neon.TextPrimary, onTap = actions.toggleSliceMarker,
+        modifier = Modifier.testTag("slicer_wave"))
+    Text("Touche la forme d'onde pour ajouter ou retirer une coupe. Pince pour zoomer.",
+        style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+    Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        SliceMode.entries.forEach { m ->
+            FilterChip(selected = s.mode == m, onClick = { actions.setSliceMode(m) }, label = { Text(m.label) }, colors = chipColors)
+        }
+    }
+    when (s.mode) {
+        SliceMode.Attacks -> LabeledSlider(
+            "Sensibilité",
+            if (s.busy) "…" else "${(s.sensitivity * 100).roundToInt()} %",
+            s.sensitivity, 0f..1f,
+        ) { actions.setSliceSensitivity(it) }
+        SliceMode.Grid -> Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            Slicer.GRIDS.forEach { n ->
+                FilterChip(selected = s.grid == n, onClick = { actions.setSliceGrid(n) }, label = { Text("$n") }, colors = chipColors)
+            }
+        }
+    }
+    val count = minOf(s.markers.size, DrumKitInfo.names.size - lane)
+    Text(
+        if (count <= 1) "Une seule tranche : ajoute des coupes." else "$count tranches → pads ${lane + 1} à ${lane + count} (Annuler possible)",
+        style = MaterialTheme.typography.bodyMedium,
+    )
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        OutlinedButton(onClick = actions.closeSlicer, modifier = Modifier.weight(1f)) { Text("Fermer") }
+        Button(
+            onClick = actions.applySlices,
+            enabled = count > 1 && !s.busy,
+            modifier = Modifier.weight(1f).testTag("apply_slices"),
+        ) { Text("Sur les pads") }
+    }
 }

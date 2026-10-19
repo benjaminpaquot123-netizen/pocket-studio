@@ -7,3 +7,6 @@
 [submodule "engine/third_party/libsamplerate"]
 	path = engine/third_party/libsamplerate
 	url = https://github.com/libsndfile/libsamplerate
+[submodule "engine/third_party/aubio"]
+	path = engine/third_party/aubio
+	url = https://github.com/aubio/aubio

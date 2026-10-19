@@ -208,4 +208,24 @@ class ScreenshotTest {
             )
         }
     }
+
+    @Test
+    fun slicer() = shoot("slicer") {
+        val rnd = java.util.Random(3)
+        val wave = FloatArray(96000) { i -> ((rnd.nextFloat() - 0.5f) * 1.6f * kotlin.math.exp(-(i % 24000) / 3000.0)).toFloat() }
+        val info = com.pocketstudio.app.rhythm.SampleInfo(
+            2.0, com.pocketstudio.app.rhythm.PadSamples.peaks(com.pocketstudio.app.audio.Pcm(wave, 1, 48000)),
+        )
+        val drums = DrumPattern().withSample(0, com.pocketstudio.model.PadSample("b.wav", "Breakbeat"))
+        androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
+            com.pocketstudio.app.rhythm.PadSoundCard(
+                Project(drums = drums), 0,
+                com.pocketstudio.app.rhythm.PadSoundUi(
+                    mapOf("b.wav" to info),
+                    slicer = com.pocketstudio.app.rhythm.SlicerUi("b.wav", markers = listOf(0f, 0.25f, 0.5f, 0.75f)),
+                ),
+                RhythmActions(),
+            )
+        }
+    }
 }

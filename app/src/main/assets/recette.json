@@ -38,6 +38,11 @@
       "hint": "Mets deux pads avec un son long dans le groupe 1 (Enveloppe, volume, groupe…) : taper l'un coupe l'autre."
     },
     {
+      "id": "slice",
+      "title": "Découper un rythme en tranches sur les pads",
+      "hint": "Importe une boucle de batterie, « Découper en tranches », règle la Sensibilité ou passe en Grille, touche la forme d'onde pour ajouter/retirer une coupe, puis « Sur les pads ». Les pads suivants jouent chacun un morceau."
+    },
+    {
       "id": "sequencer",
       "title": "Le son perso joue dans le rythme, au bon moment",
       "hint": "Mets des coups sur la grille du pad et lance la lecture : pas de décalage, pas de craquement."

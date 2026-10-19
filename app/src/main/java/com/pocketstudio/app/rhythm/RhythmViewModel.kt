@@ -215,6 +215,73 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (NativeEngine.isAvailable) NativeEngine.setPadParams(lane, updated.engineParams())
     }
 
+    // --- Slicing ---------------------------------------------------------------------------
+
+    private val _slicer = MutableStateFlow<SlicerUi?>(null)
+    val slicer: StateFlow<SlicerUi?> = _slicer.asStateFlow()
+    private var sliceJob: kotlinx.coroutines.Job? = null
+
+    fun openSlicer() {
+        val sample = project.value.drums.lanes[_transport.value.selectedPad].sample ?: return
+        _slicer.value = SlicerUi(sample.file)
+        detectSlices()
+    }
+
+    fun closeSlicer() {
+        sliceJob?.cancel()
+        _slicer.value = null
+    }
+
+    fun setSliceMode(mode: SliceMode) {
+        val s = _slicer.value ?: return
+        _slicer.value = s.copy(mode = mode)
+        if (mode == SliceMode.Attacks) detectSlices() else _slicer.value = s.copy(mode = mode, markers = Slicer.grid(s.grid))
+    }
+
+    fun setSliceSensitivity(v: Float) {
+        val s = _slicer.value ?: return
+        _slicer.value = s.copy(sensitivity = v)
+        detectSlices()
+    }
+
+    fun setSliceGrid(n: Int) {
+        val s = _slicer.value ?: return
+        _slicer.value = s.copy(grid = n, markers = Slicer.grid(n))
+    }
+
+    fun toggleSliceMarker(at: Float) {
+        val s = _slicer.value ?: return
+        _slicer.value = s.copy(markers = Slicer.toggle(s.markers, at))
+    }
+
+    /** Puts one slice per pad, from the selected pad on (one undo step). */
+    fun applySlices() {
+        val s = _slicer.value ?: return
+        val lane = _transport.value.selectedPad
+        val source = project.value.drums.lanes[lane].sample?.takeIf { it.file == s.file } ?: return closeSlicer()
+        val slices = Slicer.toPads(source, s.markers, lane)
+        session.edit { p -> p.copy(drums = Slicer.apply(p.drums, slices)) }
+        AppLog.add("Découpe : ${slices.size} tranches sur les pads ${lane + 1} à ${lane + slices.size}")
+        padSamples.pushPads(project.value.drums.lanes.map { it.sample })
+        closeSlicer()
+    }
+
+    private fun detectSlices() {
+        val s = _slicer.value ?: return
+        val native = padSamples.native(s.file) ?: return
+        sliceJob?.cancel()
+        _slicer.value = s.copy(busy = true)
+        val maxSlices = DrumPattern.PAD_COUNT - _transport.value.selectedPad
+        sliceJob = viewModelScope.launch {
+            kotlinx.coroutines.delay(150)  // a slider drag computes once, at the end
+            val onsets = withContext(Dispatchers.Default) { native.onsets(s.sensitivity, maxSlices) }
+            val now = _slicer.value
+            if (now != null && now.file == s.file && now.mode == SliceMode.Attacks) {
+                _slicer.value = now.copy(markers = onsets.toList(), busy = false)
+            }
+        }
+    }
+
     fun dismissSampleError() {
         if (_sampleTask.value is SampleTask.Failed) _sampleTask.value = SampleTask.Idle
     }
@@ -428,6 +495,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** Tapping a pad plays it and makes it the pad shown in the step grid. */
     fun hitPad(lane: Int) {
+        if (lane != _transport.value.selectedPad) closeSlicer()
         _transport.value = _transport.value.copy(selectedPad = lane)
         if (NativeEngine.isAvailable) NativeEngine.triggerPad(lane, 0.9f)
     }

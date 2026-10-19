@@ -1,10 +1,12 @@
 #include <jni.h>
 
 #include <memory>
+#include <vector>
 #include <mutex>
 
 #include "AudioHost.h"
 #include "OfflineRenderer.h"
+#include "OnsetDetector.h"
 #include "Sample.h"
 
 namespace {
@@ -59,6 +61,26 @@ JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_sampleRelease(J
 
 JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_sampleFrames(JNIEnv*, jobject, jlong handle) {
     return reinterpret_cast<ps::Sample*>(handle)->frames();
+}
+
+// Attack positions (fractions 0..1 of the sound), first is always 0. Worker thread.
+JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_sampleOnsets(JNIEnv* env, jobject, jlong handle,
+                                                                                   jfloat sensitivity, jint maxSlices) {
+    auto* s = reinterpret_cast<ps::Sample*>(handle);
+    std::vector<float> mono(static_cast<size_t>(s->frames()));
+    const int ch = s->channels();
+    for (int64_t i = 0; i < s->frames(); ++i) {
+        mono[static_cast<size_t>(i)] = ch == 2 ? 0.5f * (s->data()[i * 2] + s->data()[i * 2 + 1]) : s->data()[i];
+    }
+    ps::OnsetOptions options;
+    options.sensitivity = sensitivity;
+    options.maxSlices = maxSlices;
+    const auto onsets = ps::detectOnsets(mono.data(), s->frames(), 48000, options);
+    std::vector<jfloat> fractions;
+    for (auto f : onsets) fractions.push_back(static_cast<jfloat>(static_cast<double>(f) / static_cast<double>(s->frames())));
+    jfloatArray result = env->NewFloatArray(static_cast<jsize>(fractions.size()));
+    if (result) env->SetFloatArrayRegion(result, 0, static_cast<jsize>(fractions.size()), fractions.data());
+    return result;
 }
 
 // The posted command owns one reference; it is given back if the queue is full.

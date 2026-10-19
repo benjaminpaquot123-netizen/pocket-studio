@@ -426,3 +426,18 @@ class HarmonyTest {
         assertEquals(chord.notes, Performance().expand(chord))
     }
 }
+
+class AcidPagesTest {
+    @Test
+    fun longerLinesAndPageCopy() {
+        var a = AcidPattern(length = 32).withStep(3, AcidStep(note = 5, gate = true, accent = true))
+        a = a.copy(locked = setOf(3)).copyPage(0, 1)
+        assertEquals(a.steps[3], a.steps[19])
+        assertTrue(19 in a.locked && 3 in a.locked)
+        assertEquals(128, AcidPattern(length = 500).sanitized().length)
+        // Older projects stored 64 steps: they load with room for 8 bars.
+        val old = ProjectJson.decode("""{"acid":{"length":32,"steps":[]}}""").acid
+        assertEquals(AcidPattern.MAX_STEPS, old.steps.size)
+        assertEquals(32, old.length)
+    }
+}

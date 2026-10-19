@@ -696,6 +696,19 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /** New random line (locked steps kept). */
+    /** Pattern length in bars (1 bar = 16 steps): the end of a longer line is kept when shortening. */
+    fun setAcidBars(bars: Int) {
+        session.edit { p -> p.copy(acid = p.acid.copy(length = bars * AcidPattern.STEPS_PER_PAGE).sanitized()) }
+        if (_selectedAcidStep.value >= project.value.acid.length) _selectedAcidStep.value = 0
+        pushAcid(project.value.acid)
+    }
+
+    /** Copies bar [from] onto bar [to] (0-based), the usual way to build a longer line. */
+    fun copyAcidPage(from: Int, to: Int) {
+        session.edit { p -> p.copy(acid = p.acid.copyPage(from, to)) }
+        pushAcid(project.value.acid)
+    }
+
     fun generateAcid() {
         session.edit { it.copy(acid = acidGenerator.generate(it.acid)) }
         pushAcid(project.value.acid)

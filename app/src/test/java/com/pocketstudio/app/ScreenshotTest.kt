@@ -129,7 +129,7 @@ class ScreenshotTest {
     @Test
     fun acid() = shoot("acid") {
         val pattern = com.pocketstudio.model.AcidGenerator(kotlin.random.Random(3))
-            .generate(com.pocketstudio.model.AcidPattern(locked = setOf(2)))
+            .generate(com.pocketstudio.model.AcidPattern(length = 32, locked = setOf(2)))
         com.pocketstudio.app.acid.AcidScreen(
             acid = pattern,
             playing = true,

@@ -288,7 +288,7 @@ fun AppRoot() {
                         AcidScreen(
                             acid = project.acid,
                             playing = transport.playing,
-                            currentStep = live.currentStep,
+                            currentStep = live.absoluteStep,
                             selected = selected,
                             actions = AcidActions(
                                 togglePlay = rhythmVm::togglePlay,
@@ -299,6 +299,8 @@ fun AppRoot() {
                                 setSound = rhythmVm::setAcidSound,
                                 shiftRoot = rhythmVm::shiftAcidRoot,
                                 setDensity = rhythmVm::setAcidDensity,
+                                setBars = rhythmVm::setAcidBars,
+                                copyPage = rhythmVm::copyAcidPage,
                             ),
                         )
                     }

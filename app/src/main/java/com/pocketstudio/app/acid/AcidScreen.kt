@@ -1,5 +1,12 @@
 package com.pocketstudio.app.acid
 
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.material3.TextButton
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -63,6 +70,8 @@ data class AcidActions(
     val setSound: (Int, Float) -> Unit = { _, _ -> },
     val shiftRoot: (Int) -> Unit = {},
     val setDensity: (Float) -> Unit = {},
+    val setBars: (Int) -> Unit = {},
+    val copyPage: (from: Int, to: Int) -> Unit = { _, _ -> },
 )
 
 @Composable
@@ -104,21 +113,58 @@ fun AcidScreen(
             Slider(value = acid.density, onValueChange = actions.setDensity)
         }
 
-        StepGrid(acid, currentStep, selected, actions.selectStep)
+        StepGrid(acid, playing, currentStep, selected, actions)
         StepEditor(acid, selected, actions)
         SoundCard(acid, actions)
     }
 }
 
 @Composable
-private fun StepGrid(acid: AcidPattern, currentStep: Int, selected: Int, onSelect: (Int) -> Unit) {
+private fun StepGrid(acid: AcidPattern, playing: Boolean, currentStep: Int, selected: Int, actions: AcidActions) {
     val playStep = if (currentStep >= 0) currentStep % acid.length else -1
+    val pages = (acid.length + AcidPattern.STEPS_PER_PAGE - 1) / AcidPattern.STEPS_PER_PAGE
+    var page by rememberSaveable { mutableIntStateOf(0) }
+    var follow by rememberSaveable { mutableStateOf(true) }
+    if (page >= pages) page = 0
+    // While playing, the grid shows the bar being heard (unless the user picked one).
+    val shown = if (playing && follow && playStep >= 0) playStep / AcidPattern.STEPS_PER_PAGE else page
+    val chipColors = FilterChipDefaults.filterChipColors(selectedContainerColor = Neon.Cyan.copy(alpha = 0.25f), selectedLabelColor = Neon.Cyan)
     NeonCard {
         SectionLabel("Ligne de basse · base ${noteNameFr(acid.root)}")
+        Row(Modifier.horizontalScroll(rememberScrollState()), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            Text("Longueur", style = MaterialTheme.typography.bodySmall)
+            AcidPattern.LENGTHS_IN_BARS.forEach { bars ->
+                FilterChip(
+                    selected = acid.length == bars * AcidPattern.STEPS_PER_PAGE,
+                    onClick = { actions.setBars(bars) },
+                    label = { Text(if (bars == 1) "1 mesure" else "$bars") },
+                    colors = chipColors,
+                    modifier = Modifier.testTag("acid_bars_$bars"),
+                )
+            }
+        }
+        if (pages > 1) {
+            Row(Modifier.horizontalScroll(rememberScrollState()), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                Text("Mesure", style = MaterialTheme.typography.bodySmall)
+                for (p in 0 until pages) {
+                    FilterChip(
+                        selected = shown == p,
+                        onClick = { page = p; follow = false },
+                        label = { Text("${p + 1}") },
+                        colors = chipColors,
+                        modifier = Modifier.testTag("acid_page_$p"),
+                    )
+                }
+                FilterChip(selected = follow, onClick = { follow = !follow }, label = { Text("Suivre") }, colors = chipColors)
+                TextButton(onClick = { actions.copyPage(shown, (shown + 1) % pages) }, modifier = Modifier.testTag("acid_copy_page")) {
+                    Text("Copier → ${(shown + 1) % pages + 1}")
+                }
+            }
+        }
         for (row in 0 until 2) {
             Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 for (col in 0 until 8) {
-                    val i = row * 8 + col
+                    val i = shown * AcidPattern.STEPS_PER_PAGE + row * 8 + col
                     val s = acid.steps[i]
                     val isSelected = i == selected
                     val fill = when {
@@ -141,7 +187,7 @@ private fun StepGrid(acid: AcidPattern, currentStep: Int, selected: Int, onSelec
                                 },
                                 shape = RoundedCornerShape(6.dp),
                             )
-                            .clickable { onSelect(i) }
+                            .clickable { actions.selectStep(i) }
                             .testTag("acid_step_$i"),
                         contentAlignment = Alignment.Center,
                     ) {

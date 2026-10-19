@@ -59,18 +59,46 @@ class PadSamples(private val dir: File) {
         _info.value = _info.value + (p.file to p.info)
     }
 
-    /** Main thread: gives every pad its sample (or its drum sound). */
-    fun pushPads(samples: List<PadSample?>) {
+    // Tempo-fitted copies, by stretchKey. Only the ones in use are kept.
+    private val stretched = HashMap<String, NativeSample>()
+
+    private fun stretchKey(s: PadSample, bpm: Double) = "${s.file}|${s.start}|${s.end}|${s.fittedFrames(bpm)}|${s.pitch}"
+
+    /** What [computeStretch] still has to make for the current pads (main thread). */
+    fun missingStretches(samples: List<PadSample?>, bpm: Double): List<PadSample> =
+        samples.filterNotNull().filter { it.fitBeats > 0 && loaded[it.file] != null && stretchKey(it, bpm) !in stretched }
+            .distinctBy { stretchKey(it, bpm) }
+
+    /** Blocking (worker thread): the fitted copy of [s], or null if the region is too short. */
+    fun computeStretch(s: PadSample, bpm: Double): Pair<String, NativeSample?> {
+        val source = loaded[s.file]
+        return stretchKey(s, bpm) to source?.stretched(s.start, s.end, s.fittedFrames(bpm), s.pitch)
+    }
+
+    /** Main thread. */
+    fun registerStretch(key: String, sample: NativeSample?) {
+        if (sample == null) return
+        stretched.put(key, sample)?.close()
+    }
+
+    /** Main thread: gives every pad its sample (or its drum sound); fitted pads get their copy once ready. */
+    fun pushPads(samples: List<PadSample?>, bpm: Double) {
         if (!NativeEngine.isAvailable) return
         samples.forEachIndexed { pad, s ->
-            if (s != null) NativeEngine.setPadParams(pad, s.engineParams())
-            NativeEngine.setPadSample(pad, s?.let { loaded[it.file] })
+            val fitted = s?.takeIf { it.fitBeats > 0 }?.let { stretched[stretchKey(it, bpm)] }
+            if (s != null) NativeEngine.setPadParams(pad, s.engineParams(stretched = fitted != null))
+            NativeEngine.setPadSample(pad, fitted ?: s?.let { loaded[it.file] })
         }
+        // The engine holds its own references: copies no pad uses any more can go.
+        val inUse = samples.filterNotNull().filter { it.fitBeats > 0 }.map { stretchKey(it, bpm) }.toSet()
+        stretched.keys.filter { it !in inUse }.forEach { stretched.remove(it)?.close() }
     }
 
     fun close() {
         loaded.values.forEach { it.close() }
         loaded.clear()
+        stretched.values.forEach { it.close() }
+        stretched.clear()
     }
 
     companion object {

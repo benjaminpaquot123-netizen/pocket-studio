@@ -1,5 +1,5 @@
 Phase 2, premier pas : mets TES sons sur les pads !
 Importer un fichier du téléphone (MP3, WAV, FLAC, M4A…) ou enregistrer au micro.
-La forme d'onde s'affiche ; pince pour zoomer.
+Cale une boucle au tempo sans changer sa note, et enregistre ton morceau sur un pad.
 Règle chaque son : début, fin, hauteur, à l'envers, en boucle, enveloppe, groupes d'étouffement.
 Découpe un son en tranches (attaques, grille ou à la main) et mets-les sur les pads. « C'est pas faux ! »

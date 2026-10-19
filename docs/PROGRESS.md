@@ -39,5 +39,8 @@
 
 - Jalon 2.2 (partie 2) : découpe. aubio 0.4.9 (GPL-3, chemin « onset » seul, fonction HFC) trouve les attaques hors fil audio ; grille 2/4/8/16 ; coupe manuelle en touchant la forme d'onde ; « Sur les pads » répartit les tranches à partir du pad choisi (même fichier, début/fin différents, une seule étape d'annulation).
 
+- Jalon 2.3 : « Calé au tempo » (0/1/2/4/8/16/32 temps, suggestion ★) : une copie de la zone du pad, étirée par Signalsmith Stretch (MIT) et transposée sans changer sa durée, calculée hors fil audio, recalculée quand le tempo change (le son d'origine joue en attendant). Rééchantillonnage : « Enregistrer le morceau » rend 1, 2 ou 4 mesures du morceau (moteur hors-ligne) sur le pad choisi. Tests Linux : hauteur gardée à 1 000 Hz sur une durée ×1,5, +12 demi-tons = 1 998 Hz à durée égale ; rendu en mémoire identique au fichier.
+
 ## Prochaine étape exacte
-1. Jalon 2.3 : time-stretch (Signalsmith Stretch, MIT) pour caler une boucle au tempo sans changer sa hauteur, et rééchantillonnage du master (enregistrer la sortie vers un pad). Lever la limite de 60 s (stockage 16 bits ou lecture en flux).
+1. Jalon 2.4 : piano roll (notes avec durée et vélocité, quantification avec intensité, notes fantômes), d'abord pour le synthé.
+2. Reste du 2.3 : lever la limite de 60 s par son (stockage 16 bits ou lecture en flux), utile pour découper des morceaux entiers.

@@ -315,3 +315,21 @@ class PadSampleParamsTest {
         assertEquals(PadSample("a.wav", "x"), s)
     }
 }
+
+class FitToTempoTest {
+    @Test
+    fun suggestionIsTheClosestBeatCount() {
+        assertEquals(4, PadSample.suggestBeats(seconds = 2.1, bpm = 120.0))   // 4.2 beats
+        assertEquals(8, PadSample.suggestBeats(seconds = 3.6, bpm = 120.0))   // 7.2 beats
+        assertEquals(1, PadSample.suggestBeats(seconds = 0.1, bpm = 90.0))
+    }
+
+    @Test
+    fun fittedLengthFollowsTheTempoAndBadValuesAreDropped() {
+        val s = PadSample("a.wav", "x", fitBeats = 4)
+        assertEquals(96_000L, s.fittedFrames(120.0))
+        assertEquals(0, PadSample("a.wav", "x", fitBeats = 3).sanitized().fitBeats)
+        val neutral = s.copy(start = 0.2f, end = 0.6f, pitch = 7f).engineParams(stretched = true)
+        assertEquals(0f, neutral[0]); assertEquals(1f, neutral[1]); assertEquals(0f, neutral[2])
+    }
+}

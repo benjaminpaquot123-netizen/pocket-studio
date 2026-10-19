@@ -1,5 +1,6 @@
 #include <jni.h>
 
+#include <algorithm>
 #include <memory>
 #include <vector>
 #include <mutex>
@@ -8,6 +9,7 @@
 #include "OfflineRenderer.h"
 #include "OnsetDetector.h"
 #include "Sample.h"
+#include "TimeStretch.h"
 
 namespace {
 
@@ -83,6 +85,18 @@ JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_sampleOn
     return result;
 }
 
+// A new sample: the region [start, end) of `handle` stretched to `outFrames`, transposed. Worker thread.
+JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_sampleStretched(JNIEnv*, jobject, jlong handle, jfloat start,
+                                                                                jfloat end, jlong outFrames, jfloat semitones) {
+    auto* s = reinterpret_cast<ps::Sample*>(handle);
+    const int64_t from = std::clamp<int64_t>(static_cast<int64_t>(start * s->frames()), 0, s->frames());
+    const int64_t to = std::clamp<int64_t>(static_cast<int64_t>(end * s->frames()), from, s->frames());
+    if (to - from < 2 || outFrames < 2 || outFrames > 48000LL * 120) return 0;
+    const auto out = ps::timeStretch(s->data() + from * s->channels(), to - from, s->channels(), outFrames, semitones, 48000);
+    if (out.empty()) return 0;
+    return reinterpret_cast<jlong>(ps::Sample::create(out.data(), outFrames, s->channels(), 48000, 48000));
+}
+
 // The posted command owns one reference; it is given back if the queue is full.
 JNIEXPORT jboolean JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeInstallSample(JNIEnv*, jobject, jint pad,
                                                                                        jlong handle) {
@@ -126,6 +140,15 @@ JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_exportRender(JN
     const auto result = renderer(handle)->renderToWav(p, frames, tail);
     env->ReleaseStringUTFChars(path, p);
     return static_cast<jint>(result);
+}
+
+// The whole song into memory (interleaved stereo, 48 kHz), for resampling onto a pad.
+JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_exportRenderFloat(JNIEnv* env, jobject, jlong handle,
+                                                                                        jlong frames, jlong tail) {
+    const auto out = renderer(handle)->renderToBuffer(frames, tail);
+    jfloatArray result = env->NewFloatArray(static_cast<jsize>(out.size()));
+    if (result && !out.empty()) env->SetFloatArrayRegion(result, 0, static_cast<jsize>(out.size()), out.data());
+    return result;
 }
 
 JNIEXPORT jfloat JNICALL Java_com_pocketstudio_engine_NativeEngine_exportProgress(JNIEnv*, jobject, jlong handle) {

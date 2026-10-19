@@ -11,6 +11,7 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/../../../third_party/daisysp.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/../../../third_party/open303.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/../../../third_party/libsamplerate.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/../../../third_party/aubio.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/../../../third_party/signalsmith.cmake)
 file(GLOB ANDROID_SOURCES CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/android/*.cpp)
 
 add_library(pocketstudio_engine SHARED ${CORE_SOURCES} ${ANDROID_SOURCES} ${DAISYSP_SOURCES} ${OPEN303_SOURCES} ${LIBSAMPLERATE_SOURCES} ${AUBIO_SOURCES})
@@ -20,6 +21,7 @@ set_source_files_properties(${CMAKE_CURRENT_LIST_DIR}/../src/main/cpp/core/AcidT
 set_source_files_properties(${CMAKE_CURRENT_LIST_DIR}/../src/main/cpp/core/AcidTrack.cpp ${CMAKE_CURRENT_LIST_DIR}/core/AcidTrack.cpp PROPERTIES COMPILE_OPTIONS "-fno-strict-aliasing")
 # aubio headers (types.h, fvec.h…) are visible to the onset wrapper only.
 set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/core/OnsetDetector.cpp PROPERTIES INCLUDE_DIRECTORIES "${AUBIO_INCLUDES}")
+set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/core/TimeStretch.cpp PROPERTIES INCLUDE_DIRECTORIES "${SIGNALSMITH_INCLUDES}")
 target_compile_options(pocketstudio_engine PRIVATE ${DAISYSP_FORCE_INCLUDE})
 set_source_files_properties(${DAISYSP_SOURCES} PROPERTIES COMPILE_OPTIONS "-w")
 # Open303 type-puns floats through pointers: never let the optimiser assume strict aliasing there.

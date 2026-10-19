@@ -17,6 +17,9 @@ class OfflineExport : AutoCloseable {
     fun render(file: File, frames: Long, tailFrames: Long): ExportResult =
         ExportResult.entries[NativeEngine.exportRender(handle, file.absolutePath, frames, tailFrames)]
 
+    /** Interleaved stereo at 48 kHz; empty if cancelled. Worker thread. */
+    fun renderToArray(frames: Long, tailFrames: Long): FloatArray = NativeEngine.exportRenderFloat(handle, frames, tailFrames)
+
     val progress: Float get() = if (closed) 1f else NativeEngine.exportProgress(handle)
 
     fun cancel() {

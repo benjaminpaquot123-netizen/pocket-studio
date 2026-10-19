@@ -141,6 +141,16 @@ class SmokeTest {
         }
         assertTrue("imported sound plays on the pad (peak $padPeak)", padPeak > 0.2f)
 
+        // Fit the imported hit to 1 beat (time-stretch), then resample one bar of the song onto pad 10.
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            rhythm.editPadSample(null) { it.copy(fitBeats = 1) }
+            rhythm.hitPad(10)
+            rhythm.resampleSong(1)
+        }
+        compose.waitUntil(30_000) { rhythm.project.value.drums.lanes[10].sample != null }
+        assertEquals("Morceau 1 mesure", rhythm.project.value.drums.lanes[10].sample!!.name)
+        assertEquals(1, rhythm.project.value.drums.lanes[9].sample!!.fitBeats)
+
         assertTrue("no NaN in the output", !NativeEngine.streamInfo().nonFinite)
     }
 

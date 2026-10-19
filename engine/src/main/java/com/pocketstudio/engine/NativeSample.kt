@@ -20,6 +20,17 @@ class NativeSample private constructor(internal val handle: Long) : AutoCloseabl
         return NativeEngine.sampleOnsets(handle, sensitivity, maxSlices)
     }
 
+    /**
+     * A new sound: the region [start]..[end] (fractions) lasting [outFrames] at 48 kHz, its pitch
+     * moved by [semitones] without changing the length. Blocking: worker thread. Null if too short.
+     */
+    @Synchronized
+    fun stretched(start: Float, end: Float, outFrames: Long, semitones: Float): NativeSample? {
+        check(!closed)
+        val h = NativeEngine.sampleStretched(handle, start, end, outFrames, semitones)
+        return if (h == 0L) null else NativeSample(h)
+    }
+
     @Synchronized
     override fun close() {
         if (closed) return

@@ -2,6 +2,8 @@
 
 #include <atomic>
 #include <cstdint>
+#include <functional>
+#include <vector>
 #include <memory>
 
 #include "Engine.h"
@@ -23,6 +25,8 @@ public:
     // Plays the transport for `frames`, then renders `tailFrames` stopped so
     // releases ring out. Output is 24-bit stereo.
     Result renderToWav(const char* path, int64_t frames, int64_t tailFrames);
+    // Same, into memory (interleaved stereo). Empty when cancelled.
+    std::vector<float> renderToBuffer(int64_t frames, int64_t tailFrames);
 
     float progress() const { return progress_.load(std::memory_order_relaxed); }
     void cancel() { cancelled_.store(true, std::memory_order_relaxed); }
@@ -30,6 +34,8 @@ public:
 private:
     static constexpr int kBlock = 512;
     void renderSilent(int frames);
+    // Plays the song through `sink` block by block; the sink returns false to stop with an I/O error.
+    Result render(int64_t frames, int64_t tailFrames, const std::function<bool(const float*, int)>& sink);
 
     int sampleRate_;
     std::unique_ptr<Engine> engine_;

@@ -1,5 +1,6 @@
 package com.pocketstudio.app.rhythm
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.material.icons.filled.ContentCut
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
@@ -91,6 +92,7 @@ data class RhythmActions(
     val setSliceGrid: (Int) -> Unit = {},
     val toggleSliceMarker: (Float) -> Unit = {},
     val applySlices: () -> Unit = {},
+    val resampleSong: (bars: Int) -> Unit = {},
 )
 
 /** The selected pad's own sound, if any, and what the sampler is busy with. */
@@ -323,7 +325,7 @@ internal fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: 
                 style = MaterialTheme.typography.bodySmall,
                 color = Neon.TextSecondary,
             )
-            PadSampleControls(sample, info.seconds, actions.editSample)
+            PadSampleControls(sample, info.seconds, project.tempoBpm, actions.editSample)
             OutlinedButton(onClick = actions.openSlicer, modifier = Modifier.fillMaxWidth().testTag("open_slicer")) {
                 Icon(Icons.Filled.ContentCut, contentDescription = null); Text(" Découper en tranches")
             }
@@ -354,6 +356,15 @@ internal fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: 
                         Icon(Icons.Filled.Mic, contentDescription = null); Text(" Micro")
                     }
                 }
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Text("Enregistrer le morceau :", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                    listOf(1, 2, 4).forEach { bars ->
+                        TextButton(
+                            onClick = { actions.dismissSampleError(); actions.resampleSong(bars) },
+                            modifier = Modifier.testTag("resample_$bars"),
+                        ) { Text(if (bars == 1) "1 mesure" else "$bars mes.") }
+                    }
+                }
                 if (sample != null) {
                     TextButton(onClick = actions.removeSample, modifier = Modifier.testTag("remove_sample")) {
                         Text("Revenir au son ${DrumKitInfo.names[lane]}")
@@ -371,7 +382,7 @@ internal fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: 
 }
 
 @Composable
-private fun PadSampleControls(s: PadSample, seconds: Double, edit: (String?, (PadSample) -> PadSample) -> Unit) {
+private fun PadSampleControls(s: PadSample, seconds: Double, bpm: Double, edit: (String?, (PadSample) -> PadSample) -> Unit) {
     var advanced by rememberSaveable { mutableStateOf(false) }
     val chipColors = FilterChipDefaults.filterChipColors(selectedContainerColor = Neon.Cyan.copy(alpha = 0.25f), selectedLabelColor = Neon.Cyan)
     LabeledSlider("Début", String.format(java.util.Locale.FRANCE, "%.2f s", s.start * seconds), s.start, 0f..1f) { v ->
@@ -383,6 +394,24 @@ private fun PadSampleControls(s: PadSample, seconds: Double, edit: (String?, (Pa
     val semis = s.pitch.roundToInt()
     LabeledSlider("Hauteur", if (semis == 0) "normale" else "${if (semis > 0) "+" else ""}$semis demi-tons", s.pitch, -24f..24f) { v ->
         edit("pitch") { it.copy(pitch = v.roundToInt().toFloat()) }
+    }
+    val regionSeconds = seconds * (s.end - s.start)
+    Text(
+        if (s.fitBeats == 0) "Calé au tempo : non (le son garde sa vitesse)"
+        else "Calé au tempo : ${s.fitBeats} temps à ${bpm.roundToInt()} BPM, sans changer la hauteur",
+        style = MaterialTheme.typography.bodyMedium,
+    )
+    Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        val suggestion = PadSample.suggestBeats(regionSeconds, bpm)
+        PadSample.FIT_BEATS.forEach { beats ->
+            FilterChip(
+                selected = s.fitBeats == beats,
+                onClick = { edit(null) { it.copy(fitBeats = beats) } },
+                label = { Text(if (beats == 0) "Non" else if (beats == suggestion) "$beats ★" else "$beats") },
+                colors = chipColors,
+                modifier = Modifier.testTag("fit_$beats"),
+            )
+        }
     }
     Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
         FilterChip(selected = s.reverse, onClick = { edit(null) { it.copy(reverse = !it.reverse) } }, label = { Text("À l'envers") }, colors = chipColors)

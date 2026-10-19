@@ -43,6 +43,16 @@
       "hint": "Importe une boucle de batterie, « Découper en tranches », règle la Sensibilité ou passe en Grille, touche la forme d'onde pour ajouter/retirer une coupe, puis « Sur les pads ». Les pads suivants jouent chacun un morceau."
     },
     {
+      "id": "fit_tempo",
+      "title": "Une boucle calée au tempo suit le tempo sans changer de note",
+      "hint": "Importe une boucle, choisis le nombre de temps marqué ★, puis change le tempo avec − et + : la boucle accélère ou ralentit mais garde sa hauteur."
+    },
+    {
+      "id": "resample",
+      "title": "Enregistrer le morceau sur un pad",
+      "hint": "Choisis un pad libre, « Enregistrer le morceau : 1 mesure ». Le pad rejoue ce que tu entendais."
+    },
+    {
       "id": "sequencer",
       "title": "Le son perso joue dans le rythme, au bon moment",
       "hint": "Mets des coups sur la grille du pad et lance la lecture : pas de décalage, pas de craquement."

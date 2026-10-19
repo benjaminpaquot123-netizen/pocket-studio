@@ -10,3 +10,9 @@
 [submodule "engine/third_party/aubio"]
 	path = engine/third_party/aubio
 	url = https://github.com/aubio/aubio
+[submodule "engine/third_party/signalsmith-stretch"]
+	path = engine/third_party/signalsmith-stretch
+	url = https://github.com/Signalsmith-Audio/signalsmith-stretch
+[submodule "engine/third_party/signalsmith-linear"]
+	path = engine/third_party/signalsmith-linear
+	url = https://github.com/Signalsmith-Audio/linear

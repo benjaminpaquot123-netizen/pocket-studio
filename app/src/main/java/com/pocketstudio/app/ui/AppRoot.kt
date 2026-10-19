@@ -264,6 +264,7 @@ fun AppRoot() {
                                 setSliceGrid = rhythmVm::setSliceGrid,
                                 toggleSliceMarker = rhythmVm::toggleSliceMarker,
                                 applySlices = rhythmVm::applySlices,
+                                resampleSong = rhythmVm::resampleSong,
                             ),
                             padSound = PadSoundUi(sampleInfo, sampleTask, slicer),
                         )

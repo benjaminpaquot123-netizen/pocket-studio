@@ -8,6 +8,7 @@ import android.net.Uri
 import android.provider.OpenableColumns
 import com.pocketstudio.app.audio.AudioDecoder
 import com.pocketstudio.app.audio.MicRecorder
+import com.pocketstudio.app.audio.Pcm
 import com.pocketstudio.app.export.WavExporter
 import com.pocketstudio.app.playback.PlaybackService
 import com.pocketstudio.engine.ExportResult
@@ -146,10 +147,31 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         pushAcid(p.acid)
         pushSynth(p.synth)
         pushMixer(p)
-        padSamples.pushPads(p.drums.lanes.map { it.sample })
+        pushPads(p)
     }
 
     // --- Pad samples (import, microphone) --------------------------------------------------
+
+    private var stretchJob: kotlinx.coroutines.Job? = null
+
+    /** Gives every pad its sound; tempo-fitted pads get their stretched copy as soon as it is ready. */
+    private fun pushPads(p: Project = project.value) {
+        val pads = p.drums.lanes.map { it.sample }
+        padSamples.pushPads(pads, p.tempoBpm)
+        val missing = padSamples.missingStretches(pads, p.tempoBpm)
+        if (missing.isEmpty()) return
+        stretchJob?.cancel()
+        stretchJob = viewModelScope.launch {
+            kotlinx.coroutines.delay(250)  // tempo and slider drags settle first
+            val bpm = p.tempoBpm
+            for (s in missing) {
+                val (key, copy) = withContext(Dispatchers.Default) { padSamples.computeStretch(s, bpm) }
+                if (copy == null) AppLog.add("Calage au tempo impossible pour « ${s.name} » (son trop court)")
+                padSamples.registerStretch(key, copy)
+            }
+            if (project.value.tempoBpm == bpm) padSamples.pushPads(project.value.drums.lanes.map { it.sample }, bpm)
+        }
+    }
 
     val padSamples = PadSamples(File(store.folder(PROJECT_ID), "samples"))
     val sampleInfo: StateFlow<Map<String, SampleInfo>> = padSamples.info
@@ -162,7 +184,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             val prepared = withContext(Dispatchers.IO) { padSamples.loadAll(files) }
             prepared.forEach(padSamples::register)
-            padSamples.pushPads(project.value.drums.lanes.map { it.sample })
+            pushPads()
         }
     }
 
@@ -179,6 +201,35 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
         AppLog.add("Import « $name » : ${pcm.channels} canal(aux), ${pcm.sampleRate} Hz, ${"%.1f".format(pcm.seconds)} s")
         padSamples.add(pcm, name)
+    }
+
+    /**
+     * Resampling: renders [bars] bars of the whole song (as heard, metronome off) and puts the
+     * result on the selected pad, like recording the master output.
+     */
+    fun resampleSong(bars: Int) {
+        if (!NativeEngine.isAvailable || _sampleTask.value is SampleTask.Busy || _sampleTask.value is SampleTask.Recording) return
+        val p = project.value
+        val frames = OfflineExport.framesFor(bars, p.tempoBpm)
+        if (frames > AudioDecoder.MAX_SECONDS * OfflineExport.SAMPLE_RATE) {
+            _sampleTask.value = SampleTask.Failed("Trop long à ce tempo : choisis moins de mesures.")
+            return
+        }
+        val job = OfflineExport()
+        NativeEngine.captureInto(job) {
+            syncEngine()
+            NativeEngine.setMetronome(false)
+        }
+        sampleJob("Enregistrement du morceau…") {
+            val data = try {
+                job.renderToArray(frames, 0)
+            } finally {
+                job.close()
+            }
+            if (data.isEmpty()) throw UserMessage("Le rendu a été interrompu.")
+            AppLog.add("Rééchantillonnage : $bars mesures à ${p.tempoBpm.toInt()} BPM")
+            padSamples.add(Pcm(data, 2, OfflineExport.SAMPLE_RATE), "Morceau $bars mesure${if (bars > 1) "s" else ""}")
+        }
     }
 
     /** Records the microphone until [stopRecording] (or 30 s) and puts it on the selected pad. */
@@ -203,7 +254,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun removeSample() {
         val lane = _transport.value.selectedPad
         session.edit { p -> p.copy(drums = p.drums.withSample(lane, null)) }
-        padSamples.pushPads(project.value.drums.lanes.map { it.sample })
+        pushPads()
     }
 
     /** Changes the selected pad's sound settings; the same [key] in a quick burst is one undo step. */
@@ -212,7 +263,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val current = project.value.drums.lanes[lane].sample ?: return
         session.edit(key?.let { "pad-$lane-$it" }) { p -> p.copy(drums = p.drums.withSample(lane, transform(current))) }
         val updated = project.value.drums.lanes[lane].sample ?: return
-        if (NativeEngine.isAvailable) NativeEngine.setPadParams(lane, updated.engineParams())
+        if (updated.fitBeats > 0 || current.fitBeats > 0) pushPads()
+        else if (NativeEngine.isAvailable) NativeEngine.setPadParams(lane, updated.engineParams())
     }
 
     // --- Slicing ---------------------------------------------------------------------------
@@ -262,7 +314,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val slices = Slicer.toPads(source, s.markers, lane)
         session.edit { p -> p.copy(drums = Slicer.apply(p.drums, slices)) }
         AppLog.add("Découpe : ${slices.size} tranches sur les pads ${lane + 1} à ${lane + slices.size}")
-        padSamples.pushPads(project.value.drums.lanes.map { it.sample })
+        pushPads()
         closeSlicer()
     }
 
@@ -296,7 +348,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 val (sample, prepared) = withContext(Dispatchers.IO) { work() }
                 padSamples.register(prepared)
                 session.edit { p -> p.copy(drums = p.drums.withSample(lane, sample)) }
-                padSamples.pushPads(project.value.drums.lanes.map { it.sample })
+                pushPads()
                 _sampleTask.value = SampleTask.Idle
                 if (NativeEngine.isAvailable) NativeEngine.triggerPad(lane, 0.9f)
             } catch (e: kotlinx.coroutines.CancellationException) {
@@ -538,12 +590,14 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun nudgeTempo(delta: Int) {
         session.edit("tempo") { it.copy(tempoBpm = Math.round(it.tempoBpm).toDouble() + delta) }
         if (NativeEngine.isAvailable) NativeEngine.setTempo(project.value.tempoBpm)
+        if (project.value.drums.lanes.any { (it.sample?.fitBeats ?: 0) > 0 }) pushPads()
     }
 
     fun tapTempo() {
         val bpm = tapTempo.tap(System.currentTimeMillis()) ?: return
         session.edit("tempo") { it.copy(tempoBpm = Math.round(bpm).toDouble()) }
         if (NativeEngine.isAvailable) NativeEngine.setTempo(project.value.tempoBpm)
+        if (project.value.drums.lanes.any { (it.sample?.fitBeats ?: 0) > 0 }) pushPads()
     }
 
     fun setSwing(swing: Double) {

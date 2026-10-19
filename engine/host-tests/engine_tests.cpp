@@ -18,6 +18,7 @@
 #include "Mixer.h"
 #include "OfflineRenderer.h"
 #include "OnsetDetector.h"
+#include "TimeStretch.h"
 #include "Sample.h"
 #include "Sampler.h"
 #include "WavWriter.h"
@@ -932,6 +933,14 @@ void testOfflineExportRendersTheBeat() {
     CHECK(diffAfter > 8388607 / 10);
     std::filesystem::remove(path2);
 
+    // Into memory (resampling the song onto a pad): same length, same sound as the file.
+    ps::OfflineRenderer r3(kRate);
+    r3.post({ps::CommandType::SetTempo, 120.0f});
+    for (int step = 0; step < 16; step += 4) r3.post({ps::CommandType::SetDrumHit, 1.0f, 0, step});
+    const auto mem = r3.renderToBuffer(bar, kRate / 2);
+    CHECK(mem.size() == size_t(bar + kRate / 2) * 2);
+    if (mem.size() > 2000) CHECK(std::abs(int32_t(std::lrint(mem[1000] * 8388607.0f)) - sample24(f, 1000)) <= 2);
+
     ps::OfflineRenderer cancelled(kRate);
     cancelled.cancel();
     CHECK(cancelled.renderToWav(path.c_str(), bar, 0) == ps::OfflineRenderer::Result::Cancelled);
@@ -1179,6 +1188,42 @@ void testOnsetsFindTheHits() {
     CHECK(ps::detectOnsets(silence.data(), frames, kRate).size() == 1);
 }
 
+void testTimeStretchKeepsPitchAndLength() {
+    const int n = kRate;  // 1 s of 1 kHz, stereo
+    std::vector<float> in(size_t(n) * 2);
+    for (int i = 0; i < n; ++i) in[size_t(i) * 2] = in[size_t(i) * 2 + 1] = 0.5f * std::sin(2.0f * float(M_PI) * 1000.0f * i / kRate);
+    auto rms = [](const std::vector<float>& x, int from, int to) {
+        double e = 0.0;
+        for (int i = from; i < to; ++i) e += double(x[size_t(i) * 2]) * x[size_t(i) * 2];
+        return std::sqrt(e / (to - from));
+    };
+    auto hz = [](const std::vector<float>& x, int from, int to) {
+        int up = 0;
+        for (int i = from + 1; i < to; ++i) if (x[size_t(i - 1) * 2] < 0.0f && x[size_t(i) * 2] >= 0.0f) ++up;
+        return up / ((to - from) / double(kRate));
+    };
+
+    // 1.5x longer, same pitch, similar level.
+    auto longer = ps::timeStretch(in.data(), n, 2, n * 3 / 2, 0.0f, kRate);
+    CHECK(longer.size() == size_t(n * 3 / 2) * 2);
+    if (longer.size() == size_t(n * 3 / 2) * 2) {
+        std::printf("  stretched: %.1f Hz, rms %.3f\n", hz(longer, 12000, 60000), rms(longer, 12000, 60000));
+        CHECK(std::fabs(hz(longer, 12000, 60000) - 1000.0) < 10.0);
+        CHECK(std::fabs(rms(longer, 12000, 60000) - 0.3536) < 0.06);
+    }
+    // +12 semitones, same length: twice the pitch.
+    auto up = ps::timeStretch(in.data(), n, 2, n, 12.0f, kRate);
+    CHECK(up.size() == size_t(n) * 2);
+    if (up.size() == size_t(n) * 2) {
+        std::printf("  transposed: %.1f Hz\n", hz(up, 12000, 36000));
+        CHECK(std::fabs(hz(up, 12000, 36000) - 2000.0) < 20.0);
+    }
+    for (float v : longer) CHECK(std::isfinite(v));
+    // Bad input gives nothing rather than garbage.
+    CHECK(ps::timeStretch(in.data(), n, 3, n, 0.0f, kRate).empty());
+    CHECK(ps::timeStretch(nullptr, n, 2, n, 0.0f, kRate).empty());
+}
+
 void testLimiterHoldsTheCeiling() {
     ps::Mixer mixer;
     mixer.prepare(kRate);
@@ -1254,6 +1299,7 @@ int main(int argc, char** argv) {
         {"pad_loop_envelope_choke", testPadLoopEnvelopeAndChoke},
         {"pad_param_commands", testPadParamCommandsReachTheSampler},
         {"onsets", testOnsetsFindTheHits},
+        {"time_stretch", testTimeStretchKeepsPitchAndLength},
     };
     for (const auto& t : tests) {
         const int before = g_failures;

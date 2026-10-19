@@ -148,6 +148,7 @@ object NativeEngine {
     external fun sampleRelease(handle: Long)
     external fun sampleFrames(handle: Long): Long
     external fun sampleOnsets(handle: Long, sensitivity: Float, maxSlices: Int): FloatArray
+    external fun sampleStretched(handle: Long, start: Float, end: Float, outFrames: Long, semitones: Float): Long
     private external fun nativeInstallSample(pad: Int, handle: Long): Boolean
     private external fun exportInstallSample(exportHandle: Long, pad: Int, handle: Long)
 
@@ -156,6 +157,7 @@ object NativeEngine {
     private external fun exportPost(handle: Long, type: Int, value: Float, a: Int, b: Int)
     external fun exportRender(handle: Long, path: String, frames: Long, tail: Long): Int
     external fun exportProgress(handle: Long): Float
+    external fun exportRenderFloat(handle: Long, frames: Long, tail: Long): FloatArray
     external fun exportCancel(handle: Long)
     external fun exportDestroy(handle: Long)
     private external fun nativePost(type: Int, value: Float, a: Int, b: Int): Boolean

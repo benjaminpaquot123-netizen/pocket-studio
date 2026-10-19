@@ -52,7 +52,9 @@ class SeparationService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         // Always honour the foreground promise first, even for a request we then ignore.
-        ServiceCompat.startForeground(this, NOTIFICATION_ID, notification("Préparation…", null), foregroundType())
+        // Platform call on purpose: androidx ServiceCompat (core 1.19) masks out types newer than
+        // its table, turning mediaProcessing into "none", which Android 14+ refuses with a crash.
+        startForeground(NOTIFICATION_ID, notification("Préparation…", null), foregroundType())
         when (intent?.action) {
             ACTION_CANCEL -> {
                 cancelled.set(true)
@@ -81,6 +83,14 @@ class SeparationService : Service() {
                         SeparationState.Failed("Échec : ${e.message ?: "erreur de lecture ou de réseau"}.")
                     } catch (_: OutOfMemoryError) {
                         SeparationState.Failed("Mémoire insuffisante : essaie un morceau plus court.")
+                    } catch (e: Exception) {
+                        // Codec errors, revoked file access…: report, never crash the app mid-job.
+                        AppLog.add("Séparation : ${e.javaClass.simpleName} ${e.message}")
+                        SeparationState.Failed("Ce fichier n'a pas pu être lu (${e.javaClass.simpleName}).")
+                    } finally {
+                        if (uri != null) {
+                            runCatching { contentResolver.releasePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION) }
+                        }
                     }
                     SeparationJob.set(end)
                     notifyEnd(end)
@@ -95,6 +105,8 @@ class SeparationService : Service() {
     // Android 15+ caps media processing at 6 h a day: stop cleanly instead of being killed.
     override fun onTimeout(startId: Int, fgsType: Int) {
         cancelled.set(true)
+        SeparationJob.set(SeparationState.Failed("Android a arrêté la séparation (temps maximum par jour atteint)."))
+        finish()
     }
 
     override fun onDestroy() {
@@ -133,7 +145,7 @@ class SeparationService : Service() {
             val key = (VerifiedDownload.sha256(raw.file) + "|${raw.channels}|${raw.sampleRate}|${SeparationModel.VERSION}")
                 .let { VerifiedDownload.sha256Of(it) }.take(24)
             val final = StemStore.dirFor(this, key)
-            StemStore.read(final)?.let { return SeparationState.Done(it) }
+            StemStore.read(final)?.let { return SeparationState.Done(StemStore.touch(it)) }
             // Four stereo float stems at 44.1 kHz, plus margin.
             val needed = (raw.seconds * Demucs.SAMPLE_RATE * 2 * 4 * 4 * 1.1).toLong()
             if (filesDir.usableSpace < needed) {

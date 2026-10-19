@@ -62,15 +62,27 @@ object StemStore {
                 .put("bpm", info.bpm).put("firstBeat", info.firstBeat).put("root", info.root ?: -1).put("minor", info.minor)
                 .toString(),
         )
-        tmp.renameTo(File(dir, META))
+        if (!tmp.renameTo(File(dir, META))) throw java.io.IOException("rename failed")
         return set
     }
 
-    /** Removes broken folders and everything beyond the [KEEP] most recent sets. */
+    /** Marks [set] as just used, so pruning keeps it. */
+    fun touch(set: StemSet): StemSet = runCatching { commit(set.dir, set.name, set.seconds, set.info) }.getOrDefault(set)
+
+    /** The set the project plays along (never pruned). */
+    fun pin(context: Context, id: String?) {
+        val f = pinFile(context)
+        if (id == null) f.delete() else runCatching { f.writeText(id) }
+    }
+
+    private fun pinFile(context: Context) = File(context.filesDir, "stems-pinned.txt")
+
+    /** Removes broken folders and everything beyond the [KEEP] most recent sets, except the pinned one. */
     fun prune(context: Context) {
         val all = root(context).listFiles().orEmpty()
         val good = all.mapNotNull(::read).sortedByDescending { it.createdAt }
-        val keep = good.take(KEEP).map { it.dir }.toSet()
+        val pinned = runCatching { pinFile(context).readText().trim() }.getOrNull()
+        val keep = (good.take(KEEP).map { it.dir } + good.filter { it.id == pinned }.map { it.dir }).toSet()
         all.filter { it !in keep }.forEach { it.deleteRecursively() }
     }
 

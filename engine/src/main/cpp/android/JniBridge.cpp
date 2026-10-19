@@ -96,7 +96,12 @@ JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_sampleOn
 // Tempo of a WAV file: [bpm, confidence, firstBeat]. Worker thread.
 JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_analyzeTempo(JNIEnv* env, jobject, jstring path) {
     const char* p = env->GetStringUTFChars(path, nullptr);
-    const auto r = ps::detectTempo(std::string(p));
+    if (!p) return nullptr;
+    ps::TempoResult r;
+    try {
+        r = ps::detectTempo(std::string(p));
+    } catch (...) {  // out of memory: no tempo rather than a crash
+    }
     env->ReleaseStringUTFChars(path, p);
     const jfloat values[3] = {r.bpm, r.confidence, r.firstBeat};
     jfloatArray result = env->NewFloatArray(3);
@@ -112,11 +117,15 @@ JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_analyzeK
         auto s = static_cast<jstring>(env->GetObjectArrayElement(paths, i));
         if (!s) continue;
         const char* p = env->GetStringUTFChars(s, nullptr);
-        files.emplace_back(p);
-        env->ReleaseStringUTFChars(s, p);
+        if (p) files.emplace_back(p);
+        if (p) env->ReleaseStringUTFChars(s, p);
         env->DeleteLocalRef(s);
     }
-    const auto r = ps::detectKey(files);
+    ps::KeyResult r;
+    try {
+        r = ps::detectKey(files);
+    } catch (...) {
+    }
     const jfloat values[3] = {static_cast<jfloat>(r.tonic), r.minor ? 1.0f : 0.0f, r.confidence};
     jfloatArray result = env->NewFloatArray(3);
     if (result) env->SetFloatArrayRegion(result, 0, 3, values);
@@ -167,11 +176,16 @@ JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_stemsLoad(JNIE
         auto s = static_cast<jstring>(env->GetObjectArrayElement(paths, i));
         if (!s) return 0;
         const char* p = env->GetStringUTFChars(s, nullptr);
+        if (!p) return 0;
         files.emplace_back(p);
         env->ReleaseStringUTFChars(s, p);
         env->DeleteLocalRef(s);
     }
-    return reinterpret_cast<jlong>(ps::StemBundle::load(files, 48000));
+    try {
+        return reinterpret_cast<jlong>(ps::StemBundle::load(files, 48000));
+    } catch (...) {
+        return 0;
+    }
 }
 
 JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_stemsRelease(JNIEnv*, jobject, jlong handle) {
@@ -186,7 +200,12 @@ JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_stemsFrames(JN
 JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_stemsExtract(JNIEnv* env, jobject, jlong handle, jint stem,
                                                                                   jlong start, jlong count) {
     // Pads hold at most a minute: cap the copy so a bad request cannot exhaust the Java heap.
-    const auto region = reinterpret_cast<ps::StemBundle*>(handle)->extract(stem, start, std::min<jlong>(count, 48000LL * 60));
+    std::vector<float> region;
+    try {
+        region = reinterpret_cast<ps::StemBundle*>(handle)->extract(stem, start, std::min<jlong>(count, 48000LL * 60));
+    } catch (...) {
+        region.clear();
+    }
     jfloatArray result = env->NewFloatArray(static_cast<jsize>(region.size()));
     if (result) env->SetFloatArrayRegion(result, 0, static_cast<jsize>(region.size()), region.data());
     return result;

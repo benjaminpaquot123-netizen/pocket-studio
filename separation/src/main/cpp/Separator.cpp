@@ -66,26 +66,22 @@ bool loadModel(const char* path, demucsonnx::demucs_model& model, Ort::SessionOp
 
 }  // namespace
 
-SeparationResult separate(const char* modelPath, const float* interleaved, int64_t frames, const char* outDir,
+namespace {
+
+// Runs the model on `audio` (2 x frames), which it frees as soon as the model has its own copy.
+SeparationResult runModel(const char* modelPath, Eigen::MatrixXf& audio, const char* outDir,
                           const std::function<bool(float)>& progress, int threads) {
-    if (!modelPath || !interleaved || !outDir || frames < kModelSampleRate) {
-        return {SeparationResult::BadInput, "son trop court ou absent"};
-    }
+    const int64_t frames = audio.cols();
     try {
         demucsonnx::demucs_model model;
         Ort::SessionOptions options;
         options.SetIntraOpNumThreads(std::max(1, threads));
         options.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_ALL);
         if (!loadModel(modelPath, model, options)) return {SeparationResult::ModelError, "modèle inattendu"};
-
-        Eigen::MatrixXf audio(2, frames);
-        for (int64_t i = 0; i < frames; ++i) {
-            audio(0, i) = interleaved[i * 2];
-            audio(1, i) = interleaved[i * 2 + 1];
-        }
         const auto out = demucsonnx::demucs_inference(model, audio, [&](float p, const std::string&) {
             if (!progress(std::clamp(p, 0.0f, 1.0f))) throw CancelledError();
         });
+        audio.resize(0, 0);
         for (int s = 0; s < 4; ++s) {
             if (!writeStem(std::string(outDir) + "/" + kStemNames[s] + ".wav", out, s, frames)) {
                 return {SeparationResult::IoError, "écriture impossible (stockage plein ?)"};
@@ -104,6 +100,25 @@ SeparationResult separate(const char* modelPath, const float* interleaved, int64
     }
 }
 
+}  // namespace
+
+SeparationResult separate(const char* modelPath, const float* interleaved, int64_t frames, const char* outDir,
+                          const std::function<bool(float)>& progress, int threads) {
+    if (!modelPath || !interleaved || !outDir || frames < kModelSampleRate) {
+        return {SeparationResult::BadInput, "son trop court ou absent"};
+    }
+    try {
+        Eigen::MatrixXf audio(2, frames);
+        for (int64_t i = 0; i < frames; ++i) {
+            audio(0, i) = interleaved[i * 2];
+            audio(1, i) = interleaved[i * 2 + 1];
+        }
+        return runModel(modelPath, audio, outDir, progress, threads);
+    } catch (const std::bad_alloc&) {
+        return {SeparationResult::IoError, "mémoire insuffisante"};
+    }
+}
+
 bool loadRaw(const char* path, int channels, int sampleRate, std::vector<float>& stereo44k) {
     if (!path || channels < 1 || channels > 2 || sampleRate < 8000 || sampleRate > 384000) return false;
     std::FILE* f = std::fopen(path, "rb");
@@ -115,16 +130,25 @@ bool loadRaw(const char* path, int channels, int sampleRate, std::vector<float>&
     std::vector<float> stereo;
     try {
         stereo.resize(static_cast<size_t>(frames) * 2);
-        std::vector<float> raw(static_cast<size_t>(frames) * channels);
-        const size_t got = raw.empty() ? 0 : std::fread(raw.data(), sizeof(float), raw.size(), f);
-        std::fclose(f);
-        f = nullptr;
-        if (got != raw.size()) return false;
-        for (int64_t i = 0; i < frames; ++i) {
-            for (int c = 0; c < 2; ++c) {
-                const float v = raw[static_cast<size_t>(i * channels + (channels == 2 ? c : 0))];
-                stereo[static_cast<size_t>(i * 2 + c)] = std::isfinite(v) ? std::clamp(v, -4.0f, 4.0f) : 0.0f;
+        {
+            // Read in chunks straight into the stereo buffer: no second full copy of the song.
+            std::vector<float> chunk(static_cast<size_t>(65536) * channels);
+            int64_t done = 0;
+            while (done < frames) {
+                const int64_t want = std::min<int64_t>(65536, frames - done);
+                const size_t got = std::fread(chunk.data(), sizeof(float) * channels, static_cast<size_t>(want), f);
+                if (got != static_cast<size_t>(want)) break;
+                for (int64_t i = 0; i < want; ++i) {
+                    for (int c = 0; c < 2; ++c) {
+                        const float v = chunk[static_cast<size_t>(i * channels + (channels == 2 ? c : 0))];
+                        stereo[static_cast<size_t>((done + i) * 2 + c)] = std::isfinite(v) ? std::clamp(v, -4.0f, 4.0f) : 0.0f;
+                    }
+                }
+                done += want;
             }
+            std::fclose(f);
+            f = nullptr;
+            if (done != frames) return false;
         }
         if (sampleRate == kModelSampleRate) {
             stereo44k = std::move(stereo);
@@ -138,7 +162,9 @@ bool loadRaw(const char* path, int channels, int sampleRate, std::vector<float>&
         data.data_out = stereo44k.data();
         data.output_frames = static_cast<long>(stereo44k.size() / 2);
         data.src_ratio = ratio;
-        if (src_simple(&data, SRC_SINC_MEDIUM_QUALITY, 2) != 0) return false;
+        const int err = src_simple(&data, SRC_SINC_MEDIUM_QUALITY, 2);
+        std::vector<float>().swap(stereo);
+        if (err != 0) return false;
         stereo44k.resize(static_cast<size_t>(data.output_frames_gen) * 2);
         return true;
     } catch (const std::bad_alloc&) {
@@ -149,9 +175,24 @@ bool loadRaw(const char* path, int channels, int sampleRate, std::vector<float>&
 
 SeparationResult separateFile(const char* modelPath, const char* rawPath, int channels, int sampleRate,
                               const char* outDir, const std::function<bool(float)>& progress, int threads) {
-    std::vector<float> audio;
-    if (!loadRaw(rawPath, channels, sampleRate, audio)) return {SeparationResult::BadInput, "lecture du son impossible"};
-    return separate(modelPath, audio.data(), static_cast<int64_t>(audio.size() / 2), outDir, progress, threads);
+    if (!modelPath || !outDir) return {SeparationResult::BadInput, "son absent"};
+    try {
+        Eigen::MatrixXf matrix;
+        {
+            std::vector<float> audio;
+            if (!loadRaw(rawPath, channels, sampleRate, audio)) return {SeparationResult::BadInput, "lecture du son impossible"};
+            const auto frames = static_cast<int64_t>(audio.size() / 2);
+            if (frames < kModelSampleRate) return {SeparationResult::BadInput, "son trop court"};
+            matrix.resize(2, frames);
+            for (int64_t i = 0; i < frames; ++i) {
+                matrix(0, i) = audio[static_cast<size_t>(i * 2)];
+                matrix(1, i) = audio[static_cast<size_t>(i * 2 + 1)];
+            }
+        }  // the interleaved copy is gone before the model loads
+        return runModel(modelPath, matrix, outDir, progress, threads);
+    } catch (const std::bad_alloc&) {
+        return {SeparationResult::IoError, "mémoire insuffisante"};
+    }
 }
 
 }  // namespace ps

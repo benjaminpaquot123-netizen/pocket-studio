@@ -195,6 +195,12 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             NativeEngine.setStemParam(i, 2, if (m.solo) 1f else 0f)
         }
         val wanted = p.remix.setId
+        if (loaded == null && stems != null) {
+            // Another song (or none): the engine let go of the old one, free it now, not after the next load.
+            stems?.close()
+            stems = null
+            stemsId = null
+        }
         if (loaded == null && wanted != null && stemsJob?.isActive != true) loadStems(wanted)
     }
 
@@ -203,12 +209,19 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val app = getApplication<Application>()
         _remixLoading.value = true
         stemsJob = viewModelScope.launch {
-            val loaded = withContext(Dispatchers.IO) {
+            // Not cancellable: a finished load must reach the code below, which closes it if unwanted.
+            val loaded = withContext(kotlinx.coroutines.NonCancellable + Dispatchers.IO) {
+                StemStore.pin(app, id)  // also covers projects reopened from disk
                 StemStore.read(StemStore.dirFor(app, id))?.let { set ->
                     NativeStems.load(set.stem("drums").path, set.stem("bass").path, set.stem("other").path, set.stem("vocals").path)
                 }
             }
             _remixLoading.value = false
+            stemsJob = null  // so pushRemix below may start the next load
+            if (!isActive) {
+                loaded?.close()
+                return@launch
+            }
             val wanted = project.value.remix
             if (loaded == null) {
                 if (wanted.setId == id) {
@@ -241,6 +254,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 remix = Remix(set.id, set.name, info.bpm, info.firstBeat),
             )
         }
+        StemStore.pin(getApplication(), set.id)
         if (!NativeEngine.isAvailable) return
         NativeEngine.setTempo(project.value.tempoBpm)
         if (project.value.drums.lanes.any { (it.sample?.fitBeats ?: 0) > 0 }) pushPads()
@@ -249,6 +263,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     fun clearRemix() {
         session.edit("remix") { p -> p.copy(remix = Remix()) }
+        StemStore.pin(getApplication(), null)
         pushRemix()
         stems?.close()
         stems = null

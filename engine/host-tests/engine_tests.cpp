@@ -1420,7 +1420,9 @@ void testProcessNeverAllocates() {
         engine.post(inst);
         for (int st = 0; st < 16; ++st) engine.post({ps::CommandType::SetAcidStep, 0.0f, st, ps::AcidStep{st % 12, 0, st % 3 == 0, st % 5 == 0, true}.pack()});
         ps::Command stems{ps::CommandType::InstallStems};
-        stems.stems = ps::StemBundle::fromFloat(std::vector<std::vector<float>>(4, std::vector<float>(kRate * 20, 0.1f)));
+        auto* bundle = ps::StemBundle::fromFloat(std::vector<std::vector<float>>(4, std::vector<float>(kRate * 20, 0.1f)));
+        stems.stems = bundle;
+        bundle->retain();  // ours, for the re-installs below (what the app does on every push)
         engine.post(stems);
         engine.post({ps::CommandType::SetStemParam, 1.0f, 2, ps::StemPlayer::Solo});
         engine.post({ps::CommandType::SetTransport, 1.0f, 0});
@@ -1431,11 +1433,20 @@ void testProcessNeverAllocates() {
         for (int i = 0; i < 400; ++i) {
             if (i % 50 == 0) engine.post({ps::CommandType::TriggerPad, 1.0f, 3});
             if (i % 70 == 0) engine.post({ps::CommandType::SynthNoteOn, 0.9f, 60 + i % 12});
+            if (i % 90 == 0) {  // same bundle again: the old reference goes through the retire queue
+                bundle->retain();
+                ps::Command again{ps::CommandType::InstallStems};
+                again.stems = bundle;
+                engine.post(again);
+            }
             engine.process(nullptr, 0, 0, out.data(), 512, 2);
         }
         g_countAllocations = false;
         std::printf("  allocations during %d blocks: %d\n", 400, g_allocations.load());
         CHECK(g_allocations.load() == 0);
+        engine.collectGarbage();
+        CHECK(bundle->refCount() == 2);  // ours + the engine's, none leaked by the re-installs
+        CHECK(!bundle->release());
     }
     CHECK(sample->release());
     delete sample;

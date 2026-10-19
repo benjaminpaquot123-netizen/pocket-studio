@@ -309,4 +309,18 @@ class ScreenshotTest {
             com.pocketstudio.app.remix.RemixActions(),
         )
     }
+
+    @Test
+    @Config(qualifiers = "w400dp-h1500dp-xxhdpi")
+    fun acidEditor() = shoot("acid_editor") {
+        val pattern = com.pocketstudio.model.AcidGenerator(kotlin.random.Random(3))
+            .generate(com.pocketstudio.model.AcidPattern(length = 32, locked = setOf(2)))
+        com.pocketstudio.app.acid.AcidScreen(
+            acid = pattern,
+            playing = false,
+            currentStep = -1,
+            selected = 2,
+            actions = com.pocketstudio.app.acid.AcidActions(),
+        )
+    }
 }

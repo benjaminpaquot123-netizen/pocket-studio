@@ -1,6 +1,14 @@
 package com.pocketstudio.app.acid
 
+import android.content.Context
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.width
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -55,9 +63,22 @@ import com.pocketstudio.ui.SectionLabel
 import kotlin.math.roundToInt
 
 private val NOTE_NAMES = listOf("Do", "Do#", "Ré", "Ré#", "Mi", "Fa", "Fa#", "Sol", "Sol#", "La", "La#", "Si")
+private val NOTE_NAMES_EN = listOf("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B")
 
 /** "La" for a MIDI note, French names, no octave. */
 fun noteNameFr(midi: Int): String = NOTE_NAMES[Math.floorMod(midi, 12)]
+
+/** French (Do Ré Mi) or English (C D E) name, as most tabs found online use. */
+fun noteName(midi: Int, english: Boolean): String =
+    (if (english) NOTE_NAMES_EN else NOTE_NAMES)[Math.floorMod(midi, 12)]
+
+/** The note naming the user picked, remembered on the phone. */
+private object Notation {
+    private const val KEY = "notation_english"
+    fun isEnglish(context: Context) = context.getSharedPreferences("ui", Context.MODE_PRIVATE).getBoolean(KEY, false)
+    fun setEnglish(context: Context, on: Boolean) =
+        context.getSharedPreferences("ui", Context.MODE_PRIVATE).edit().putBoolean(KEY, on).apply()
+}
 
 private val SOUND_LABELS = listOf("Coupure", "Résonance", "Enveloppe", "Déclin", "Accent", "Accord", "Onde (scie → carré)", "Saturation", "Volume")
 
@@ -113,14 +134,25 @@ fun AcidScreen(
             Slider(value = acid.density, onValueChange = actions.setDensity)
         }
 
-        StepGrid(acid, playing, currentStep, selected, actions)
-        StepEditor(acid, selected, actions)
+        val context = LocalContext.current
+        var english by remember { mutableStateOf(Notation.isEnglish(context)) }
+        val setEnglish: (Boolean) -> Unit = { english = it; Notation.setEnglish(context, it) }
+        StepGrid(acid, playing, currentStep, selected, actions, english, setEnglish)
+        StepEditor(acid, selected, actions, english)
         SoundCard(acid, actions)
     }
 }
 
 @Composable
-private fun StepGrid(acid: AcidPattern, playing: Boolean, currentStep: Int, selected: Int, actions: AcidActions) {
+private fun StepGrid(
+    acid: AcidPattern,
+    playing: Boolean,
+    currentStep: Int,
+    selected: Int,
+    actions: AcidActions,
+    english: Boolean,
+    setEnglish: (Boolean) -> Unit,
+) {
     val playStep = if (currentStep >= 0) currentStep % acid.length else -1
     val pages = (acid.length + AcidPattern.STEPS_PER_PAGE - 1) / AcidPattern.STEPS_PER_PAGE
     var page by rememberSaveable { mutableIntStateOf(0) }
@@ -130,7 +162,15 @@ private fun StepGrid(acid: AcidPattern, playing: Boolean, currentStep: Int, sele
     val shown = if (playing && follow && playStep >= 0) playStep / AcidPattern.STEPS_PER_PAGE else page
     val chipColors = FilterChipDefaults.filterChipColors(selectedContainerColor = Neon.Cyan.copy(alpha = 0.25f), selectedLabelColor = Neon.Cyan)
     NeonCard {
-        SectionLabel("Ligne de basse · base ${noteNameFr(acid.root)}")
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            SectionLabel("Ligne de basse · base ${noteName(acid.root, english)}", Modifier.weight(1f))
+            FilterChip(
+                selected = english, onClick = { setEnglish(!english) },
+                label = { Text(if (english) "C D E" else "Do Ré Mi") },
+                colors = chipColors,
+                modifier = Modifier.testTag("acid_notation"),
+            )
+        }
         Row(Modifier.horizontalScroll(rememberScrollState()), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             Text("Longueur", style = MaterialTheme.typography.bodySmall)
             AcidPattern.LENGTHS_IN_BARS.forEach { bars ->
@@ -193,7 +233,7 @@ private fun StepGrid(acid: AcidPattern, playing: Boolean, currentStep: Int, sele
                     ) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(
-                                if (s.gate) noteNameFr(acid.root + s.note) else "–",
+                                if (s.gate) noteName(acid.root + s.note, english) else "–",
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = if (s.gate && s.accent) Neon.Background else Neon.TextPrimary,
@@ -213,7 +253,7 @@ private fun StepGrid(acid: AcidPattern, playing: Boolean, currentStep: Int, sele
             }
         }
         Text(
-            "Touche un pas pour le modifier. Couleur pleine = accent, ⌒ = slide, ↑ = octave, – = silence, 🔒 = gardé par le générateur.",
+            "Touche un pas pour le modifier. Couleur pleine = accent, ⌒ = slide, ↑ = octave au-dessus (Up), ↓ = en dessous (Down), – = silence, 🔒 = gardé par le générateur.",
             style = MaterialTheme.typography.bodySmall,
             color = Neon.TextSecondary,
         )
@@ -221,7 +261,7 @@ private fun StepGrid(acid: AcidPattern, playing: Boolean, currentStep: Int, sele
 }
 
 @Composable
-private fun StepEditor(acid: AcidPattern, index: Int, actions: AcidActions) {
+private fun StepEditor(acid: AcidPattern, index: Int, actions: AcidActions, english: Boolean) {
     val s = acid.steps[index]
     val chipColors = FilterChipDefaults.filterChipColors(
         selectedContainerColor = Neon.Cyan.copy(alpha = 0.25f),
@@ -239,27 +279,24 @@ private fun StepEditor(acid: AcidPattern, index: Int, actions: AcidActions) {
                 colors = chipColors,
             )
         }
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            IconButton(onClick = { actions.editStep { it.copy(note = (it.note - 1).coerceAtLeast(0), gate = true) } }) {
-                Icon(Icons.Filled.Remove, contentDescription = "Note plus grave")
-            }
-            Text(
-                if (s.gate) noteNameFr(acid.root + s.note) else "Silence",
-                style = MonoStyle.copy(fontSize = 22.sp, fontWeight = FontWeight.Bold),
-                color = if (s.gate) Neon.Cyan else Neon.TextSecondary,
-                modifier = Modifier.weight(1f),
-            )
-            IconButton(onClick = { actions.editStep { it.copy(note = (it.note + 1).coerceAtMost(12), gate = true) } }) {
-                Icon(Icons.Filled.Add, contentDescription = "Note plus aiguë")
-            }
-        }
+        Text(
+            if (s.gate) noteName(acid.root + s.note, english) + octaveMark(s.octave) else "Silence",
+            style = MonoStyle.copy(fontSize = 22.sp, fontWeight = FontWeight.Bold),
+            color = if (s.gate) Neon.Cyan else Neon.TextSecondary,
+        )
+        // Any of the 12 notes in one tap; the octave (Up / Down) is set below.
+        NoteKeys(
+            selected = if (s.gate) Math.floorMod(acid.root + s.note, 12) else -1,
+            english = english,
+            onPick = { pc -> actions.editStep { it.copy(note = Math.floorMod(pc - acid.root, 12), gate = true) } },
+        )
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             FilterChip(selected = s.gate, onClick = { actions.editStep { it.copy(gate = !it.gate) } }, label = { Text("Note") }, colors = chipColors)
             FilterChip(selected = s.accent, onClick = { actions.editStep { it.copy(accent = !it.accent, gate = true) } }, label = { Text("Accent") }, colors = chipColors)
             FilterChip(selected = s.slide, onClick = { actions.editStep { it.copy(slide = !it.slide, gate = true) } }, label = { Text("Slide") }, colors = chipColors)
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text("Octave", Modifier.weight(1f))
+            Text("Octave (Down ↓ / Up ↑)", Modifier.weight(1f))
             IconButton(onClick = { actions.editStep { it.copy(octave = (it.octave - 1).coerceAtLeast(-1), gate = true) } }) {
                 Icon(Icons.Filled.Remove, contentDescription = "Octave plus bas")
             }
@@ -271,7 +308,7 @@ private fun StepEditor(acid: AcidPattern, index: Int, actions: AcidActions) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text("Note de base", Modifier.weight(1f))
             IconButton(onClick = { actions.shiftRoot(-1) }) { Icon(Icons.Filled.Remove, contentDescription = "Base plus grave") }
-            Text(noteNameFr(acid.root), style = MonoStyle, color = Neon.Cyan)
+            Text(noteName(acid.root, english), style = MonoStyle, color = Neon.Cyan)
             IconButton(onClick = { actions.shiftRoot(1) }) { Icon(Icons.Filled.Add, contentDescription = "Base plus aiguë") }
         }
     }
@@ -292,6 +329,51 @@ private fun SoundCard(acid: AcidPattern, actions: AcidActions) {
                 onValueChange = { actions.setSound(i, it) },
                 modifier = Modifier.testTag("acid_sound_$i"),
             )
+        }
+    }
+}
+
+private fun octaveMark(octave: Int) = when {
+    octave > 0 -> " " + "↑".repeat(octave)
+    octave < 0 -> " ↓"
+    else -> ""
+}
+
+/** A one-octave mini keyboard: white keys below, sharps above, the chosen note lit. */
+@Composable
+private fun NoteKeys(selected: Int, english: Boolean, onPick: (Int) -> Unit) {
+    val whites = listOf(0, 2, 4, 5, 7, 9, 11)
+    val blacks = listOf(1 to 0, 3 to 1, 6 to 3, 8 to 4, 10 to 5)  // pitch class to the white key it follows
+    BoxWithConstraints(Modifier.fillMaxWidth().height(96.dp).testTag("acid_note_keys")) {
+        val keyWidth = maxWidth / 7
+        whites.forEachIndexed { i, pc ->
+            Box(
+                Modifier
+                    .offset(x = keyWidth * i)
+                    .width(keyWidth)
+                    .fillMaxHeight()
+                    .padding(1.dp)
+                    .background(if (pc == selected) Neon.Magenta else Color(0xFFF2F3F5), RoundedCornerShape(bottomStart = 6.dp, bottomEnd = 6.dp))
+                    .clickable { onPick(pc) }
+                    .testTag("acid_key_$pc"),
+                contentAlignment = Alignment.BottomCenter,
+            ) {
+                Text(noteName(pc, english), fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color(0xFF23262B), modifier = Modifier.padding(bottom = 4.dp))
+            }
+        }
+        blacks.forEach { (pc, after) ->
+            Box(
+                Modifier
+                    .offset(x = keyWidth * (after + 1) - keyWidth * 0.3f)
+                    .width(keyWidth * 0.6f)
+                    .height(56.dp)
+                    .background(if (pc == selected) Neon.Magenta else Color(0xFF23262B), RoundedCornerShape(bottomStart = 4.dp, bottomEnd = 4.dp))
+                    .clickable { onPick(pc) }
+                    .testTag("acid_key_$pc"),
+                contentAlignment = Alignment.BottomCenter,
+            ) {
+                Text(noteName(pc, english), fontSize = 10.sp, color = Color.White, modifier = Modifier.padding(bottom = 3.dp))
+            }
         }
     }
 }

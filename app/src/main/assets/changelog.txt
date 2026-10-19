@@ -1,5 +1,5 @@
 Remix : une chanson coupée en batterie, basse, voix et le reste, avec tempo et tonalité.
 « Jouer avec le projet » : les pistes partent avec ta batterie, muet / solo / volume pour chacune.
 « → Pad » : un bout de basse ou de voix sur un pad, pour le découper ensuite.
-Acide jusqu'à 8 mesures, deux nouvelles banques d'instruments et des kits de batterie sur les pads.
+Acide : un mini-clavier pour choisir n'importe quelle note, noms Do Ré Mi ou C D E, jusqu'à 8 mesures.
 « Le chant, c'est une chose, la voix c'en est une autre. » Maintenant elles sont séparées.

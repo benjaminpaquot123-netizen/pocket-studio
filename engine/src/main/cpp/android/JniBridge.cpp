@@ -1,6 +1,7 @@
 #include <jni.h>
 
 #include <algorithm>
+#include <cmath>
 #include <cstdio>
 #include <memory>
 #include <vector>
@@ -156,6 +157,24 @@ JNIEXPORT jobjectArray JNICALL Java_com_pocketstudio_engine_NativeEngine_soundFo
         env->DeleteLocalRef(s);
     }
     return out;
+}
+
+// Main thread (shares the font's reference count). Mono at 48 kHz, trailing silence trimmed.
+JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_soundFontRenderNote(JNIEnv* env, jobject, jlong handle,
+                                                                                          jint preset, jint note,
+                                                                                          jfloat velocity, jint holdFrames,
+                                                                                          jint frames) {
+    if (!handle || frames <= 0 || frames > 48000 * 10) return env->NewFloatArray(0);
+    std::vector<float> out(static_cast<size_t>(frames));
+    if (!ps::SoundFontPlayer::renderNote(reinterpret_cast<tsf*>(handle), preset, note, velocity, holdFrames, out.data(), frames,
+                                         48000)) {
+        return env->NewFloatArray(0);
+    }
+    size_t end = out.size();
+    while (end > 480 && std::fabs(out[end - 1]) < 1e-4f) --end;
+    jfloatArray result = env->NewFloatArray(static_cast<jsize>(end));
+    if (result) env->SetFloatArrayRegion(result, 0, static_cast<jsize>(end), out.data());
+    return result;
 }
 
 static ps::OfflineRenderer* renderer(jlong handle);

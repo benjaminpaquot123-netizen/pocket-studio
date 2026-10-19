@@ -47,7 +47,10 @@
 
 - Jalon 2.6 : la piste Synthé peut jouer un des 128 instruments General MIDI (GeneralUser GS via TinySoundFont, voix préallouées, instance par moteur, copie retirée et fermée hors fil audio). La banque (32 Mo) est publiée par la CI sur une Release dédiée et téléchargée une fois par l'appli, empreinte SHA-256 vérifiée avant toute lecture (TinySoundFont n'est pas sûr sur un fichier abîmé). Navigateur par famille dans Synthé › Source du son. Import d'un dossier de sons (pack) sur les pads suivants. Test Linux avec une mini-banque SF2 générée : La 440 Hz puis 880 Hz, remplacement et fermeture sans fuite (ASan).
 
+- Phase 3, jalon 3.1 (moteur) : séparation HT-Demucs v4 en ONNX (module `:separation`, ONNX Runtime 1.31.0), modèle construit de façon reproductible et hébergé sur la Release `modele-htdemucs-v4-onnx-1`. Test Linux : batterie 16,4 dB, basse 17,0 dB, autres 22,7 dB SDR.
+
+- Demande de Benjamin (2026-10-19) : ligne acide jusqu'à 8 mesures (128 pas, pages de 16, « Copier → page », « Suivre ») ; deux nouvelles banques à télécharger (FluidR3 GM 148 Mo, MuseScore General 216 Mo, MIT) au choix avec GeneralUser ; toutes les variantes par famille ; kits de batterie SF2 rendus sur les 16 pads (une édition annulable).
+
 ## Prochaine étape exacte
-1. Revue de fin de phase 2 faite (2 graves corrigés, REVIEW.md). Dès que la CI est verte : fusionner la PR #6 (autorisation permanente de Benjamin), puis démarrer la phase 3 (remix) sur la même branche repartie de main.
-2. Reste noté : lever la limite de 60 s par son ; kits de batterie GM (banque 128) sur les pads ; import de packs .zip.
-2. Reste du 2.3 : lever la limite de 60 s par son (stockage 16 bits ou lecture en flux), utile pour découper des morceaux entiers.
+1. Phase 3 (PR #7) : brancher `:separation` dans l'appli (téléchargement du modèle 174 Mo avec SHA-256), puis 3.2 service de séparation au premier plan (progression, annuler), 3.3 tempo (aubio) et tonalité, 3.4 mode Remix. Ajouter `scripts/separation-tests.sh` à la CI.
+2. Reste noté : lever la limite de 60 s par son (utile aussi pour les stems) ; import de packs .zip.

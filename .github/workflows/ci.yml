@@ -160,24 +160,40 @@ jobs:
           "$APKSIGNER" verify --print-certs dist/pocket-studio.apk | tee dist/certs.txt
           grep -q "SHA-256 digest: ${EXPECTED_CERT_SHA256}" dist/certs.txt || {
             echo "::error::APK is not signed with the stable release key."; exit 1; }
-      - name: Host the instrument library (once)
-        # GeneralUser GS 2.0.3 (free licence): its author asks apps to serve their own copy.
-        # The app downloads it from this release and checks the same SHA-256 before using it.
+      - name: Host the instrument banks (once each)
+        # Free-licence General MIDI banks; their authors ask apps to serve their own copies.
+        # The app downloads them from these releases and checks the same SHA-256 before use.
         env:
           GH_TOKEN: ${{ github.token }}
-          SF2_TAG: sons-generaluser-gs-2.0.3
-          SF2_URL: https://raw.githubusercontent.com/mrbumpy409/GeneralUser-GS/684543d5e5efaef08d02be50dcda8d552478fa60/GeneralUser-GS.sf2
-          SF2_SHA256: 9575028c7a1f589f5770fccc8cff2734566af40cd26ed836944e9a5152688cfe
         run: |
-          if gh release view "$SF2_TAG" >/dev/null 2>&1; then echo "already hosted"; exit 0; fi
-          mkdir -p sounds
-          curl -fsSL --retry 3 -o sounds/GeneralUser-GS.sf2 "$SF2_URL"
-          echo "$SF2_SHA256  sounds/GeneralUser-GS.sf2" | sha256sum -c -
-          curl -fsSL --retry 3 -o sounds/LICENSE.txt https://raw.githubusercontent.com/mrbumpy409/GeneralUser-GS/684543d5e5efaef08d02be50dcda8d552478fa60/documentation/LICENSE.txt
-          gh release create "$SF2_TAG" sounds/GeneralUser-GS.sf2 sounds/LICENSE.txt \
-            --latest=false --title "Bibliothèque d'instruments : GeneralUser GS 2.0.3" \
-            --notes "Banque General MIDI de S. Christian Collins (licence libre, voir LICENSE.txt), copie servie à l'appli comme l'auteur le demande." \
-            --target main
+          host() {  # tag, file name, url, sha256, licence url, title
+            if gh release view "$1" >/dev/null 2>&1; then echo "$1 already hosted"; return 0; fi
+            mkdir -p sounds && rm -f "sounds/$2"
+            case "$3" in
+              *.deb) curl -fsSL --retry 3 -o sounds/pkg.deb "$3"
+                     (cd sounds && ar x pkg.deb && tar xf data.tar.* && find . -name "$2" -exec mv {} "$2" \;) ;;
+              *) curl -fsSL --retry 3 -o "sounds/$2" "$3" ;;
+            esac
+            echo "$4  sounds/$2" | sha256sum -c -
+            curl -fsSL --retry 3 -o sounds/LICENSE.txt "$5"
+            gh release create "$1" "sounds/$2" sounds/LICENSE.txt --latest=false --target main \
+              --title "$6" --notes "Banque General MIDI sous licence libre (voir LICENSE.txt), copie servie à l'appli."
+          }
+          host sons-generaluser-gs-2.0.3 GeneralUser-GS.sf2 \
+            https://raw.githubusercontent.com/mrbumpy409/GeneralUser-GS/684543d5e5efaef08d02be50dcda8d552478fa60/GeneralUser-GS.sf2 \
+            9575028c7a1f589f5770fccc8cff2734566af40cd26ed836944e9a5152688cfe \
+            https://raw.githubusercontent.com/mrbumpy409/GeneralUser-GS/684543d5e5efaef08d02be50dcda8d552478fa60/documentation/LICENSE.txt \
+            "Bibliothèque d'instruments : GeneralUser GS 2.0.3"
+          host sons-fluidr3-gm-3.1 FluidR3_GM.sf2 \
+            http://deb.debian.org/debian/pool/main/f/fluid-soundfont/fluid-soundfont-gm_3.1-6_all.deb \
+            74594e8f4250680adf590507a306655a299935343583256f3b722c48a1bc1cb0 \
+            https://people.debian.org/~tg/sf/FluidR3Mono_GM/copyright \
+            "Bibliothèque d'instruments : FluidR3 GM (MIT)"
+          host sons-musescore-general-0.2 MuseScore_General.sf2 \
+            https://ftp.osuosl.org/pub/musescore/soundfont/MuseScore_General/MuseScore_General.sf2 \
+            ee51d2c4b1525e70f19a45909c4fd7a2e26d91d115fa89dbf5a6bc413d8b9bf3 \
+            https://ftp.osuosl.org/pub/musescore/soundfont/MuseScore_General/MuseScore_General_License.md \
+            "Bibliothèque d'instruments : MuseScore General 0.2 (MIT)"
       - name: Publish preview (pull request)
         if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
         env:

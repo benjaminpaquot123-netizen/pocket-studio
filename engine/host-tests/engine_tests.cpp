@@ -1379,6 +1379,13 @@ void testInstrumentPlaysTheSoundFont() {
         pending.font = ps::SoundFontPlayer::makeInstance(master, kRate);
         engine.post(pending);
     }
+    // Rendering one note offline (drum kit onto the pads): sound while held, then the release.
+    std::vector<float> note(static_cast<size_t>(kRate), 0.0f);
+    CHECK(ps::SoundFontPlayer::renderNote(master, 0, 69, 1.0f, kRate / 2, note.data(), kRate, kRate));
+    float held = 0.0f;
+    for (int i = 1000; i < kRate / 2; ++i) held = std::max(held, std::fabs(note[size_t(i)]));
+    CHECK(held > 0.05f);
+    CHECK(!ps::SoundFontPlayer::renderNote(master, 99, 69, 1.0f, 10, note.data(), 100, kRate));  // no such preset
     ps::SoundFontPlayer::close(master);
     CHECK(ps::SoundFontPlayer::loadFile("/nonexistent/x.sf2") == nullptr);
     std::filesystem::remove(path);

@@ -310,6 +310,7 @@ fun AppRoot() {
                         val octave by rhythmVm.keyboardOctave.collectAsStateWithLifecycle()
                         val live by rhythmVm.live.collectAsStateWithLifecycle()
                         val library by rhythmVm.library.collectAsStateWithLifecycle()
+                        val bankId by rhythmVm.bankId.collectAsStateWithLifecycle()
                         LaunchedEffect(Unit) {
                             lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollLive() }
                         }
@@ -350,6 +351,9 @@ fun AppRoot() {
                                 download = rhythmVm::downloadLibrary,
                                 cancel = rhythmVm::cancelLibraryDownload,
                                 select = rhythmVm::selectInstrument,
+                                bankId = bankId,
+                                selectBank = rhythmVm::selectBank,
+                                loadKit = rhythmVm::loadKit,
                             ),
                         )
                     }

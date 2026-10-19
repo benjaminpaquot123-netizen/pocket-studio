@@ -165,6 +165,7 @@ object NativeEngine {
     external fun soundFontLoad(path: String): Long
     external fun soundFontClose(handle: Long)
     external fun soundFontPresets(handle: Long): Array<String>
+    external fun soundFontRenderNote(handle: Long, preset: Int, note: Int, velocity: Float, holdFrames: Int, frames: Int): FloatArray
     private external fun nativeSetInstrument(font: Long, preset: Int): Boolean
     private external fun exportSetInstrument(exportHandle: Long, font: Long, preset: Int)
 

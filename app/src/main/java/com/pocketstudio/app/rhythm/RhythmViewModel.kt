@@ -170,60 +170,81 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         pushInstrument(p)
     }
 
-    // --- Instrument library (General MIDI) -------------------------------------------------
+    // --- Instrument library (General MIDI banks) -------------------------------------------
 
     private val _library = MutableStateFlow<LibraryState>(LibraryState.Missing)
     val library: StateFlow<LibraryState> = _library.asStateFlow()
+    /** The bank shown in the browser (and loaded once opened). */
+    private val _bankId = MutableStateFlow(project.value.instrument?.bankId ?: InstrumentLibrary.BANKS[0].id)
+    val bankId: StateFlow<String> = _bankId.asStateFlow()
     private var soundFont: SoundFont? = null
+    private var loadedBankId: String? = null
     @Volatile private var downloadCancelled = false
 
     private fun pushInstrument(p: Project = project.value) {
         if (!NativeEngine.isAvailable) return
-        val font = soundFont
+        val font = soundFont?.takeIf { loadedBankId == p.instrument?.bankId }
         val index = p.instrument?.let { font?.indexOf(it.bank, it.program) } ?: -1
         if (font != null && index >= 0) NativeEngine.setInstrument(font, index) else NativeEngine.setInstrument(null, 0)
     }
 
-    /** Opens the bank if it is on the phone (checked first), else says it must be downloaded. */
+    /** Shows another bank in the browser, opening it if it is on the phone. */
+    fun selectBank(id: String) {
+        if (_library.value is LibraryState.Downloading) return
+        _bankId.value = id
+        openLibrary()
+    }
+
+    /** Opens the shown bank if it is on the phone (checked first), else says it must be downloaded. */
     fun openLibrary() {
-        if (soundFont != null || _library.value is LibraryState.Downloading || _library.value == LibraryState.Loading) return
+        val bank = InstrumentLibrary.bank(_bankId.value)
+        if (_library.value is LibraryState.Downloading || _library.value == LibraryState.Loading) return
+        if (soundFont != null && loadedBankId == bank.id) {
+            _library.value = LibraryState.Ready(soundFont!!.presets)
+            return
+        }
         val app = getApplication<Application>()
-        if (!InstrumentLibrary.isInstalled(app)) {
+        if (!InstrumentLibrary.isInstalled(app, bank)) {
             _library.value = LibraryState.Missing
             return
         }
         _library.value = LibraryState.Loading
         viewModelScope.launch {
             val font = withContext(Dispatchers.IO) {
-                if (InstrumentLibrary.verify(app)) SoundFont.load(InstrumentLibrary.file(app))
-                else null.also { InstrumentLibrary.file(app).delete() }
+                if (InstrumentLibrary.verify(app, bank)) SoundFont.load(InstrumentLibrary.file(app, bank))
+                else null.also { InstrumentLibrary.file(app, bank).delete() }
             }
             if (font == null) {
                 _library.value = LibraryState.Failed("La bibliothèque était abîmée : télécharge-la à nouveau.")
                 return@launch
             }
+            // One bank in memory at a time: the engine keeps its own copy of the old one until replaced.
+            val old = soundFont
             soundFont = font
-            _library.value = LibraryState.Ready(font.presets)
-            AppLog.add("Bibliothèque d'instruments : ${font.presets.size} sons")
+            loadedBankId = bank.id
             pushInstrument()
+            old?.close()
+            if (_bankId.value == bank.id) _library.value = LibraryState.Ready(font.presets)
+            AppLog.add("Bibliothèque ${bank.name} : ${font.presets.size} sons")
         }
     }
 
     fun downloadLibrary() {
         if (_library.value is LibraryState.Downloading) return
         val app = getApplication<Application>()
+        val bank = InstrumentLibrary.bank(_bankId.value)
         downloadCancelled = false
         _library.value = LibraryState.Downloading(0f)
         viewModelScope.launch {
             try {
                 withContext(Dispatchers.IO) {
-                    InstrumentLibrary.download(app, { p -> _library.value = LibraryState.Downloading(p) }) { downloadCancelled }
+                    InstrumentLibrary.download(app, bank, { p -> _library.value = LibraryState.Downloading(p) }) { downloadCancelled }
                 }
-                AppLog.add("Bibliothèque téléchargée")
+                AppLog.add("Bibliothèque ${bank.name} téléchargée")
                 _library.value = LibraryState.Missing
                 openLibrary()
             } catch (e: Exception) {
-                AppLog.add("Téléchargement de la bibliothèque : ${e.message}")
+                AppLog.add("Téléchargement de ${bank.name} : ${e.message}")
                 _library.value = if (downloadCancelled) LibraryState.Missing
                 else LibraryState.Failed("Le téléchargement a échoué (${e.message}). Vérifie la connexion et réessaie.")
             }
@@ -242,6 +263,40 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             viewModelScope.launch {
                 kotlinx.coroutines.delay(30)  // let the new instrument arrive first
                 previewNote(60)
+            }
+        }
+    }
+
+    /**
+     * Puts a General MIDI drum kit on the 16 pads: each pad gets the kit's sound for its role
+     * (kick, snare, hats…), hats in one choke group. One undo step.
+     */
+    fun loadKit(kit: Preset) {
+        val font = soundFont ?: return
+        if (_sampleTask.value is SampleTask.Busy) return
+        _sampleTask.value = SampleTask.Busy("Kit ${kit.name}…")
+        viewModelScope.launch {
+            try {
+                val pads = ArrayList<Pair<Int, PadSample>>()
+                InstrumentLibrary.KIT_NOTES.forEachIndexed { pad, note ->
+                    // Rendering shares the font's reference count: main thread, one note at a time.
+                    val audio = font.renderNote(kit, note)
+                    kotlinx.coroutines.yield()
+                    if (audio.size < 480) return@forEachIndexed
+                    val (sample, prepared) = withContext(Dispatchers.IO) {
+                        padSamples.add(Pcm(audio, 1, OfflineExport.SAMPLE_RATE), "${kit.name.take(18)} ${InstrumentLibrary.KIT_PAD_NAMES[pad]}")
+                    }
+                    padSamples.register(prepared)
+                    pads += pad to sample.copy(choke = if (note == 42 || note == 46) 1 else 0)
+                }
+                session.edit { p -> p.copy(drums = Slicer.apply(p.drums, pads)) }
+                pushPads()
+                AppLog.add("Kit ${kit.name} : ${pads.size} sons sur les pads")
+                _sampleTask.value = SampleTask.Idle
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                _sampleTask.value = SampleTask.Failed("Le kit n'a pas pu être chargé (${e.message}).")
             }
         }
     }

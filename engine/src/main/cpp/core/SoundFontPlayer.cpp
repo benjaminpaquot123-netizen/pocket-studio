@@ -32,6 +32,23 @@ void SoundFontPlayer::close(tsf* f) {
     if (f) tsf_close(f);
 }
 
+bool SoundFontPlayer::renderNote(tsf* master, int preset, int note, float velocity, int holdFrames, float* out,
+                                 int frames, int sampleRate) {
+    tsf* f = makeInstance(master, sampleRate);
+    if (!f || preset < 0 || preset >= tsf_get_presetcount(f)) {
+        close(f);
+        return false;
+    }
+    std::fill(out, out + frames, 0.0f);
+    tsf_note_on(f, preset, note, std::clamp(velocity, 0.01f, 1.0f));
+    const int hold = std::clamp(holdFrames, 0, frames);
+    tsf_render_float(f, out, hold, 0);
+    tsf_note_off(f, preset, note);
+    tsf_render_float(f, out + hold, frames - hold, 0);
+    close(f);
+    return true;
+}
+
 int SoundFontPlayer::presetCount(tsf* f) { return f ? tsf_get_presetcount(f) : 0; }
 
 void SoundFontPlayer::presetInfo(tsf* f, int index, int* bank, int* program, const char** name) {

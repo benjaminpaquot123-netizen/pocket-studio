@@ -3,6 +3,21 @@
   "milestone": "Phase 2 : tes sons sur les pads",
   "items": [
     {
+      "id": "acid_8_bars",
+      "title": "Ligne acide sur 2 mesures ou plus",
+      "hint": "Acide › Longueur 2 mesures, remplis la page 1, touche « Copier → 2 », change la page 2, lance : les 32 pas s'enchaînent."
+    },
+    {
+      "id": "bank_fluidr3",
+      "title": "Télécharger une autre banque d'instruments",
+      "hint": "Synthé › Source du son › Instruments › FluidR3 GM ou MuseScore General › Télécharger (Wi-Fi). Choisis une basse ou un synthé et joue au clavier."
+    },
+    {
+      "id": "drum_kit_pads",
+      "title": "Mettre un kit de batterie sur les pads",
+      "hint": "Même écran › Kits de batterie › touche un kit. Va au Rythme : grosse caisse, caisse claire, charleston sont sur les pads ; Annuler revient en arrière."
+    },
+    {
       "id": "import_file",
       "title": "Importer un son du téléphone sur un pad",
       "hint": "Rythme › choisis un pad › Son du pad › Importer, puis prends un MP3 ou un WAV court. Le pad doit le jouer tout de suite."

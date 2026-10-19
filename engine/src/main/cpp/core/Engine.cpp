@@ -74,6 +74,9 @@ void Engine::applyCommand(const Command& command) {
                 acid_.stop();
                 sampler_.releaseLoops();
                 notes_.stop(router_);
+                // Belt and braces: a note-off dropped by a full queue must not leave a note hanging.
+                synth_.allNotesOff();
+                instrument_.allNotesOff();
                 currentStep_.store(-1, std::memory_order_relaxed);
                 absoluteStep_.store(-1, std::memory_order_relaxed);
             }

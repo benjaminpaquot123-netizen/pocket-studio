@@ -39,6 +39,7 @@ import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -325,9 +326,14 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             kotlinx.coroutines.delay(250)  // tempo and slider drags settle first
             val bpm = p.tempoBpm
             for (s in missing) {
-                val (key, copy) = withContext(Dispatchers.Default) { padSamples.computeStretch(s, bpm) }
+                val source = padSamples.sourceOf(s) ?: continue
+                val key = padSamples.keyOf(s, bpm)
+                // NonCancellable: a copy made while the tempo moved again is kept (and freed later
+                // by pushPads), never lost on the way.
+                val copy = withContext(kotlinx.coroutines.NonCancellable + Dispatchers.Default) { padSamples.computeStretch(source, s, bpm) }
                 if (copy == null) AppLog.add("Calage au tempo impossible pour « ${s.name} » (son trop court)")
                 padSamples.registerStretch(key, copy)
+                if (!isActive) break
             }
             if (project.value.tempoBpm == bpm) padSamples.pushPads(project.value.drums.lanes.map { it.sample }, bpm)
         }
@@ -341,8 +347,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     private fun loadPadSamples() {
         val files = project.value.drums.lanes.mapNotNull { it.sample?.file }.toSet()
+        // After a failed load the folder may still hold the user's sounds: never clean it then.
+        val cleanUp = _notice.value == null
         viewModelScope.launch {
-            val prepared = withContext(Dispatchers.IO) { padSamples.loadAll(files) }
+            val prepared = withContext(Dispatchers.IO) { padSamples.loadAll(files, cleanUp) }
             prepared.forEach(padSamples::register)
             pushPads()
         }
@@ -385,7 +393,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 job.renderToArray(frames, 0)
             } finally {
                 // Native instruments share reference counts: free them on the main thread only.
-                withContext(Dispatchers.Main) { job.close() }
+                withContext(kotlinx.coroutines.NonCancellable + Dispatchers.Main) { job.close() }
             }
             if (data.isEmpty()) throw UserMessage("Le rendu a été interrompu.")
             AppLog.add("Rééchantillonnage : $bars mesures à ${p.tempoBpm.toInt()} BPM")
@@ -574,6 +582,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 if (NativeEngine.isAvailable) NativeEngine.triggerPad(lane, 0.9f)
             } catch (e: kotlinx.coroutines.CancellationException) {
                 throw e
+            } catch (e: OutOfMemoryError) {
+                recorder = null
+                AppLog.add("Son du pad : mémoire insuffisante")
+                _sampleTask.value = SampleTask.Failed("Pas assez de mémoire pour ce son : essaie plus court.")
             } catch (e: Exception) {
                 recorder = null
                 AppLog.add("Son du pad : échec (${e.message})")

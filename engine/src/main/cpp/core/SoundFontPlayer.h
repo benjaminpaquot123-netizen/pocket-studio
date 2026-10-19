@@ -21,6 +21,8 @@ public:
     SoundFontPlayer(const SoundFontPlayer&) = delete;
     SoundFontPlayer& operator=(const SoundFontPlayer&) = delete;
 
+    // makeInstance, close and collectGarbage share TinySoundFont's non-atomic reference count:
+    // call them from one thread only (the app's main thread).
     // Not the audio thread: a playable copy of `master` (shares its sample data), or nullptr.
     static tsf* makeInstance(tsf* master, int sampleRate);
     // Not the audio thread: loads a .sf2 file; nullptr if unreadable.

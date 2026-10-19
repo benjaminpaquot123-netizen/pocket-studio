@@ -37,8 +37,8 @@ class PadSamples(private val dir: File) {
     }
 
     /** Blocking (background): reads the files the project uses; others are leftovers and removed. */
-    fun loadAll(files: Set<String>): List<Prepared> {
-        dir.listFiles()?.filter { it.name !in files }?.forEach { it.delete() }
+    fun loadAll(files: Set<String>, cleanUp: Boolean = true): List<Prepared> {
+        if (cleanUp) dir.listFiles()?.filter { it.name !in files }?.forEach { it.delete() }
         return files.mapNotNull { file ->
             runCatching { prepare(file, FloatWav.read(File(dir, file))) }
                 .onFailure { AppLog.add("Son illisible $file : ${it.message}") }
@@ -69,11 +69,14 @@ class PadSamples(private val dir: File) {
         samples.filterNotNull().filter { it.fitBeats > 0 && loaded[it.file] != null && stretchKey(it, bpm) !in stretched }
             .distinctBy { stretchKey(it, bpm) }
 
-    /** Blocking (worker thread): the fitted copy of [s], or null if the region is too short. */
-    fun computeStretch(s: PadSample, bpm: Double): Pair<String, NativeSample?> {
-        val source = loaded[s.file]
-        return stretchKey(s, bpm) to source?.stretched(s.start, s.end, s.fittedFrames(bpm), s.pitch)
-    }
+    /** Main thread: the source a stretch job will read (looked up here, never from the worker). */
+    fun sourceOf(s: PadSample): NativeSample? = loaded[s.file]
+
+    fun keyOf(s: PadSample, bpm: Double) = stretchKey(s, bpm)
+
+    /** Blocking (worker thread): the fitted copy of [s] made from [source], or null if too short. */
+    fun computeStretch(source: NativeSample, s: PadSample, bpm: Double): NativeSample? =
+        source.stretched(s.start, s.end, s.fittedFrames(bpm), s.pitch)
 
     /** Main thread. */
     fun registerStretch(key: String, sample: NativeSample?) {
@@ -81,16 +84,22 @@ class PadSamples(private val dir: File) {
         stretched.put(key, sample)?.close()
     }
 
+    // Last fitted copy each pad got: it keeps playing while a new tempo's copy is computed.
+    private val lastFitted = HashMap<Int, Pair<String, NativeSample>>()
+
     /** Main thread: gives every pad its sample (or its drum sound); fitted pads get their copy once ready. */
     fun pushPads(samples: List<PadSample?>, bpm: Double) {
         if (!NativeEngine.isAvailable) return
         samples.forEachIndexed { pad, s ->
-            val fitted = s?.takeIf { it.fitBeats > 0 }?.let { stretched[stretchKey(it, bpm)] }
+            val fresh = s?.takeIf { it.fitBeats > 0 }?.let { stretchKey(it, bpm) }?.let { k -> stretched[k]?.let { k to it } }
+            if (fresh != null) lastFitted[pad] = fresh
+            if (s == null || s.fitBeats == 0) lastFitted.remove(pad)
+            val fitted = fresh?.second ?: s?.takeIf { it.fitBeats > 0 }?.let { lastFitted[pad]?.second }
             if (s != null) NativeEngine.setPadParams(pad, s.engineParams(stretched = fitted != null))
             NativeEngine.setPadSample(pad, fitted ?: s?.let { loaded[it.file] })
         }
         // The engine holds its own references: copies no pad uses any more can go.
-        val inUse = samples.filterNotNull().filter { it.fitBeats > 0 }.map { stretchKey(it, bpm) }.toSet()
+        val inUse = lastFitted.values.map { it.first }.toSet()
         stretched.keys.filter { it !in inUse }.forEach { stretched.remove(it)?.close() }
     }
 

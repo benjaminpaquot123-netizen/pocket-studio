@@ -45,7 +45,9 @@ object AudioDecoder {
     private fun drain(extractor: MediaExtractor, codec: MediaCodec, input: MediaFormat): Pcm {
         var rate = input.getInteger(MediaFormat.KEY_SAMPLE_RATE)
         var srcChannels = input.getInteger(MediaFormat.KEY_CHANNEL_COUNT)
-        var encoding = AudioFormat.ENCODING_PCM_16BIT
+        // Raw WAVs can pass straight through at 8, 24 or 32 bits: never assume 16.
+        var encoding = if (input.containsKey(MediaFormat.KEY_PCM_ENCODING)) input.getInteger(MediaFormat.KEY_PCM_ENCODING)
+        else AudioFormat.ENCODING_PCM_16BIT
         val out = FloatBuilder()
         val info = MediaCodec.BufferInfo()
         var inputDone = false
@@ -105,6 +107,12 @@ object AudioDecoder {
                 for (c in 0 until channels) {
                     frame[c] = when (encoding) {
                         AudioFormat.ENCODING_PCM_FLOAT -> if (buf.remaining() >= 4) buf.float else return
+                        AudioFormat.ENCODING_PCM_8BIT -> if (buf.remaining() >= 1) ((buf.get().toInt() and 0xFF) - 128) / 128f else return
+                        AudioFormat.ENCODING_PCM_24BIT_PACKED -> if (buf.remaining() >= 3) {
+                            val v = (buf.get().toInt() and 0xFF) or ((buf.get().toInt() and 0xFF) shl 8) or (buf.get().toInt() shl 16)
+                            v / 8388608f
+                        } else return
+                        AudioFormat.ENCODING_PCM_32BIT -> if (buf.remaining() >= 4) buf.int / 2147483648f else return
                         else -> if (buf.remaining() >= 2) buf.short / 32768f else return
                     }
                 }

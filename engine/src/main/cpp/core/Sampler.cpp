@@ -29,6 +29,11 @@ void Sampler::install(int slot, Sample* sample) {
         retire(sample);
         return;
     }
+    // Same sound again (undo, back to the app, resync): keep playing, drop the extra reference.
+    if (sample == slots_[slot]) {
+        retire(sample);
+        return;
+    }
     // Voices may still point at the old sample: silence them before it can be freed.
     voices_[slot] = Voice{};
     tails_[slot] = Voice{};

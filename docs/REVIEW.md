@@ -67,3 +67,28 @@ Pendant la phase, le test émulateur a aussi attrapé un plantage du bouton Expo
 | 12 | Tête de lecture acide = pas batterie modulo longueur acide | Lire le pas acide depuis le moteur quand les longueurs deviendront réglables |
 | 13 | `transportRunning()`, `synthActiveVoices()`, `acidNotesPlayed()` non atomiques | Réservés aux tests ; les rendre atomiques avant tout usage UI |
 | 14 | Tests : la sauvegarde en arrière-plan passerait sans `flush()` ; rien ne vérifie l'absence d'allocation dans le callback ; pas de test du service | Délai d'autosave allongé en test ; crochet `malloc` dans les tests Linux ; test émulateur du service |
+
+## Phase 2 (2026-10-19)
+Relecteur : sous-agent neuf (74 fichiers). Bilan : 2 graves, 10 mineurs. Fil audio jugé sain (Sampler, NoteTrack, synthé, TinySoundFont avec voix préallouées : ni allocation ni verrou) ; files de retrait à un seul écrivain et un seul lecteur en pratique.
+
+### Corrigé
+| # | Gravité | Problème | Correction |
+| --- | --- | --- | --- |
+| 1 | Grave | Renvoyer les pads (annuler, retour dans l'appli, tempo) coupait net tous les sons en cours, boucles comprises | `Sampler::install` ignore un son identique (référence en trop rendue) ; test Linux |
+| 2 | Grave | Copies calées au tempo perdues (mémoire native) si le tempo bougeait pendant le calcul | Calcul + enregistrement en `NonCancellable` ; la dernière copie reste jusqu'à la suivante |
+| m1 | Mineur | Un pad calé rejouait l'original le temps du recalcul | La copie précédente continue de jouer |
+| m2 | Mineur | Moteur hors-ligne du rééchantillonnage non libéré si annulé | Fermeture en `NonCancellable` sur le fil principal |
+| m3 | Mineur | Calcul d'étirement lisant une table du fil principal | Source cherchée sur le fil principal et passée au calcul |
+| m4 | Mineur | WAV 8, 24 ou 32 bits entiers lus comme du 16 bits (bruit) | Encodage lu dès le format d'entrée, 8/24/32 bits gérés |
+| m5 | Mineur | Projet illisible non déplacé : sons du dossier effacés au nettoyage | Pas de nettoyage quand le chargement a échoué |
+| m6 | Mineur | Note coincée si un note-off était perdu (file pleine) | Arrêt du transport = tout relâcher (synthé et instrument) |
+| m8 | Mineur | Mémoire insuffisante au rendu = plantage | `OutOfMemoryError` attrapée, message clair |
+| m9 | Mineur | Règle « un seul fil » de TinySoundFont implicite | Écrite dans `SoundFontPlayer.h` |
+| m10 | Mineur | Rien ne prouvait l'absence d'allocation dans `process()` | Test Linux qui compte les allocations (0 sur 400 blocs, tout actif) ; vérifié qu'il échoue si on en ajoute une |
+
+### Reste à faire (noté, non bloquant)
+| # | Problème | Piste |
+| --- | --- | --- |
+| m7 | Rééchantillonnage « best » lent à l'import et refait à chaque lancement | Mettre en cache la version 48 kHz |
+| — | Le test émulateur du rééchantillonnage vérifie le nom, pas le son | Vérifier un pic non nul en rejouant le pad |
+| — | Limite de 60 s par son | Stockage 16 bits ou lecture en flux (phase 3, utile au remix) |

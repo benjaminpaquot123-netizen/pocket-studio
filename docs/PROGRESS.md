@@ -48,6 +48,6 @@
 - Jalon 2.6 : la piste Synthé peut jouer un des 128 instruments General MIDI (GeneralUser GS via TinySoundFont, voix préallouées, instance par moteur, copie retirée et fermée hors fil audio). La banque (32 Mo) est publiée par la CI sur une Release dédiée et téléchargée une fois par l'appli, empreinte SHA-256 vérifiée avant toute lecture (TinySoundFont n'est pas sûr sur un fichier abîmé). Navigateur par famille dans Synthé › Source du son. Import d'un dossier de sons (pack) sur les pads suivants. Test Linux avec une mini-banque SF2 générée : La 440 Hz puis 880 Hz, remplacement et fermeture sans fuite (ASan).
 
 ## Prochaine étape exacte
-1. Revue de fin de phase 2 (sous-agent neuf), corriger le grave, REVIEW.md, résumé en 3 lignes, PR #6 prête, feu vert.
+1. Revue de fin de phase 2 faite (2 graves corrigés, REVIEW.md). Dès que la CI est verte : fusionner la PR #6 (autorisation permanente de Benjamin), puis démarrer la phase 3 (remix) sur la même branche repartie de main.
 2. Reste noté : lever la limite de 60 s par son ; kits de batterie GM (banque 128) sur les pads ; import de packs .zip.
 2. Reste du 2.3 : lever la limite de 60 s par son (stockage 16 bits ou lecture en flux), utile pour découper des morceaux entiers.

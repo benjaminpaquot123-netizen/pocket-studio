@@ -3,7 +3,9 @@
 
 #include <cmath>
 #include <cstdio>
+#include <atomic>
 #include <chrono>
+#include <cstdlib>
 #include <cstring>
 #include <filesystem>
 #include <fstream>
@@ -29,6 +31,24 @@
 #include "Synth.h"
 #include "SpscFloatRing.h"
 #include "SpscQueue.h"
+
+// Counts C++ heap allocations while g_countAllocations is set (real-time rule test). Not under
+// AddressSanitizer, which owns operator new.
+#if !defined(__SANITIZE_ADDRESS__)
+#include <new>
+// Our operator new is malloc-based, so free() in operator delete matches it.
+#pragma GCC diagnostic ignored "-Wmismatched-new-delete"
+static std::atomic<bool> g_countAllocations{false};
+static std::atomic<int> g_allocations{0};
+void* operator new(std::size_t n) {
+    if (g_countAllocations.load(std::memory_order_relaxed)) g_allocations.fetch_add(1, std::memory_order_relaxed);
+    if (void* p = std::malloc(n ? n : 1)) return p;
+    throw std::bad_alloc();
+}
+void operator delete(void* p) noexcept { std::free(p); }
+void operator delete(void* p, std::size_t) noexcept { std::free(p); }
+#define PS_COUNT_ALLOCATIONS 1
+#endif
 
 namespace {
 
@@ -1027,6 +1047,22 @@ void testSampleReferencesAreNeverLeakedOrFreedEarly() {
         CHECK(!engine.padHasSample(3));
         engine.collectGarbage();  // frees s (ASan would flag a leak or a double free)
     }
+    // Re-sending the same sound (undo, back to the app) must not cut what is playing.
+    {
+        std::vector<float> longDc(48000, 0.5f);
+        ps::Sample* d = ps::Sample::create(longDc.data(), 48000, 1, kRate, kRate);
+        ps::Engine engine(kRate);
+        d->retain();
+        engine.post({ps::CommandType::InstallSample, 0.0f, 2, 0, d});
+        engine.post({ps::CommandType::TriggerPad, 1.0f, 2});
+        render(engine, 256, 256);
+        d->retain();
+        engine.post({ps::CommandType::InstallSample, 0.0f, 2, 0, d});
+        const auto still = render(engine, 256, 256);
+        CHECK(std::fabs(still[0] - 0.5f) < 1e-4f && std::fabs(still[255 * kChannels] - 0.5f) < 1e-4f);
+        CHECK(d->refCount() == 2);  // the duplicate reference was dropped
+        CHECK(!d->release());
+    }
     // Commands never applied release their reference when the engine goes away.
     ps::Sample* t = ps::Sample::create(one.data(), 48, 1, kRate, kRate);
     {
@@ -1348,6 +1384,53 @@ void testInstrumentPlaysTheSoundFont() {
     std::filesystem::remove(path);
 }
 
+void testProcessNeverAllocates() {
+#ifdef PS_COUNT_ALLOCATIONS
+    // Everything at once: drums, a sampled pad (pitched, looping), piano-roll notes on an instrument,
+    // the acid line, mixer and limiter. After warm-up, process() must not allocate at all.
+    const std::string path = (std::filesystem::temp_directory_path() / "ps_alloc.sf2").string();
+    { auto bytes = tinySoundFont(); std::ofstream(path, std::ios::binary).write(reinterpret_cast<const char*>(bytes.data()), std::streamsize(bytes.size())); }
+    tsf* master = ps::SoundFontPlayer::loadFile(path.c_str());
+    std::vector<float> wave(4800);
+    for (size_t i = 0; i < wave.size(); ++i) wave[i] = 0.3f * std::sin(0.05f * float(i));
+    ps::Sample* sample = ps::Sample::create(wave.data(), 4800, 1, kRate, kRate);
+    {
+        ps::Engine engine(kRate);
+        engine.post({ps::CommandType::SetTempo, 140.0f});
+        for (int step = 0; step < 16; ++step) engine.post({ps::CommandType::SetDrumHit, 0.9f, step % 16, step});
+        sample->retain();
+        ps::Command pad{ps::CommandType::InstallSample, 0.0f, 3, 0};
+        pad.sample = sample;
+        engine.post(pad);
+        engine.post({ps::CommandType::SetPadParam, 7.0f, 3, ps::Sampler::Pitch});
+        engine.post({ps::CommandType::SetPadParam, 1.0f, 3, ps::Sampler::Loop});
+        for (int n = 0; n < 32; ++n) engine.post({ps::CommandType::SetSynthNote, 0.8f, n, ps::NoteTrack::pack(n * 12, 30, 48 + n % 24)});
+        engine.post({ps::CommandType::SetSynthNoteCount, 0.0f, 32});
+        ps::Command inst{ps::CommandType::SetInstrument, 0.0f, 0};
+        inst.font = ps::SoundFontPlayer::makeInstance(master, kRate);
+        engine.post(inst);
+        for (int st = 0; st < 16; ++st) engine.post({ps::CommandType::SetAcidStep, 0.0f, st, ps::AcidStep{st % 12, 0, st % 3 == 0, st % 5 == 0, true}.pack()});
+        engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+        std::vector<float> out(512 * 2);
+        for (int i = 0; i < 50; ++i) engine.process(nullptr, 0, 0, out.data(), 512, 2);  // warm-up
+        g_allocations = 0;
+        g_countAllocations = true;
+        for (int i = 0; i < 400; ++i) {
+            if (i % 50 == 0) engine.post({ps::CommandType::TriggerPad, 1.0f, 3});
+            if (i % 70 == 0) engine.post({ps::CommandType::SynthNoteOn, 0.9f, 60 + i % 12});
+            engine.process(nullptr, 0, 0, out.data(), 512, 2);
+        }
+        g_countAllocations = false;
+        std::printf("  allocations during %d blocks: %d\n", 400, g_allocations.load());
+        CHECK(g_allocations.load() == 0);
+    }
+    CHECK(sample->release());
+    delete sample;
+    ps::SoundFontPlayer::close(master);
+    std::filesystem::remove(path);
+#endif
+}
+
 void testLimiterHoldsTheCeiling() {
     ps::Mixer mixer;
     mixer.prepare(kRate);
@@ -1426,6 +1509,7 @@ int main(int argc, char** argv) {
         {"time_stretch", testTimeStretchKeepsPitchAndLength},
         {"piano_roll", testPianoRollNotesAreSampleAccurate},
         {"instrument", testInstrumentPlaysTheSoundFont},
+        {"no_alloc_in_process", testProcessNeverAllocates},
     };
     for (const auto& t : tests) {
         const int before = g_failures;

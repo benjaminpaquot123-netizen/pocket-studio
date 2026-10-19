@@ -1,5 +1,6 @@
 package com.pocketstudio.app.ui
 
+import com.pocketstudio.app.report.AppLog
 import android.Manifest
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -107,10 +108,12 @@ fun AppRoot() {
     val stream by Metrics.streamInfo.collectAsStateWithLifecycle()
     val roundTrip by Metrics.roundTripMs.collectAsStateWithLifecycle()
 
-    // The audio stream lives while the app is visible (background playback arrives in phase 1).
+    // The audio stream lives while the app is visible, and in the background while it plays.
     LifecycleEventEffect(Lifecycle.Event.ON_START) {
         rhythmVm.visible = true
-        if (engineAvailable && NativeEngine.start()) {
+        val started = engineAvailable && NativeEngine.start()
+        AppLog.add(if (started) "Premier plan : son ouvert" else "Premier plan : son NON ouvert (moteur ${if (engineAvailable) "présent" else "absent"})")
+        if (started) {
             studioVm.pushAll()
             rhythmVm.syncEngine()
         }
@@ -121,7 +124,9 @@ fun AppRoot() {
         rhythmVm.visible = false
         rhythmVm.synthAllOff()
         // While the transport plays, PlaybackService keeps the music going in the background.
-        if (engineAvailable && !rhythmVm.keepsRunningInBackground) NativeEngine.stop()
+        val keep = rhythmVm.keepsRunningInBackground
+        AppLog.add(if (keep) "Arrière-plan : la lecture continue" else "Arrière-plan : son fermé")
+        if (engineAvailable && !keep) NativeEngine.stop()
     }
     val saveError by rhythmVm.session.lastSaveError.collectAsStateWithLifecycle()
     val notice by rhythmVm.notice.collectAsStateWithLifecycle()

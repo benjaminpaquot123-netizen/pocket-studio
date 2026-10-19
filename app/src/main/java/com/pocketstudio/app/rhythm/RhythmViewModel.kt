@@ -1,5 +1,6 @@
 package com.pocketstudio.app.rhythm
 
+import com.pocketstudio.app.report.AppLog
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -101,6 +102,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             val loaded = runBlocking(Dispatchers.IO) { store.load(PROJECT_ID) }
             if (loaded != null) return loaded
         } catch (e: Exception) {
+            AppLog.add("Projet illisible : ${e.message} / ${e.cause?.message}")
             // Never let the first autosave overwrite files we could not read: move them aside.
             val aside = File(store.folder(PROJECT_ID).parentFile, "$PROJECT_ID-illisible-${System.currentTimeMillis()}")
             val moved = store.folder(PROJECT_ID).renameTo(aside)
@@ -275,6 +277,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (!NativeEngine.isAvailable) return
         if (playing) NativeEngine.play(if (t.countIn) 1 else 0) else NativeEngine.stopTransport()
         val app = getApplication<Application>()
+        AppLog.add(if (playing) "Lecture (${project.value.tempoBpm.toInt()} BPM)" else "Stop")
         if (playing) PlaybackService.start(app) else PlaybackService.stop(app)
     }
 
@@ -286,7 +289,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     init {
         viewModelScope.launch {
+            session.lastSaveError.collect { e -> if (e != null) AppLog.add("Sauvegarde impossible : ${e.message}") }
+        }
+        viewModelScope.launch {
             PlaybackService.stops.collect {
+                AppLog.add("Stop depuis la notification")
                 if (_transport.value.playing) togglePlay()
                 if (!visible && NativeEngine.isAvailable) NativeEngine.stop()
             }
@@ -427,6 +434,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     ExportResult.Cancelled -> ExportUi(bars = bars)
                     ExportResult.IoError -> ExportUi(bars = bars, error = "L'écriture du fichier a échoué (stockage plein ?).")
                 }
+                AppLog.add("Export $bars mesures : ${result.first}, copie Musique = ${result.second}")
                 if (result.first != ExportResult.Ok) file.delete()
             } finally {
                 poll.cancel()

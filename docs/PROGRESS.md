@@ -31,7 +31,7 @@
 ## À retenir pour la suite
 - Mode paysage : fait pour la navigation (onglets sur le côté) et le synthé (clavier 3 octaves). Les autres écrans tournent mais gardent la mise en page portrait : à adapter au fil des phases.
 - Afficher une « latence de jeu » (sortie + tactile) à côté de l'aller-retour ; essayer un buffer d'un seul burst.
-- MagicOS chiffre logcat (bloc HKS…HKE) : remplacer `LogTail` par un journal circulaire interne à l'appli.
+- Fait : journal interne `AppLog` (200 lignes : démarrage, son ouvert/fermé, lecture, latence, export, sauvegarde) joint aux rapports à la place de logcat, chiffré par MagicOS.
 - Recette phase 0 : issues #2 et #3 (doublon), 8/8 ✅, fermées.
 
 ## Prochaine étape exacte

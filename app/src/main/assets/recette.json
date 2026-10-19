@@ -81,6 +81,11 @@
       "id": "quantize",
       "title": "Quantifier et notes fantômes",
       "hint": "Décale une note à la main, puis « Quantifier 50 % » (elle se rapproche de la grille) et « 100 % » (pile dessus). La basse acide apparaît en transparence."
+    },
+    {
+      "id": "harmony",
+      "title": "Gamme, accords, progression, arpège",
+      "hint": "Synthé › Notes › Harmonie : choisis « Majeure », essaie une progression, puis « Arpège ↑ » et « Strum Moyen ». Active « Accords » et touche la grille. Au clavier, « Accords » joue un accord par touche."
     }
   ]
 }

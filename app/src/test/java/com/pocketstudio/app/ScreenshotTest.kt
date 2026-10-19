@@ -245,6 +245,7 @@ class ScreenshotTest {
                 com.pocketstudio.model.NoteClip.ghostsOf(acid, 16),
                 playStep = 6,
                 actions = com.pocketstudio.app.synth.PianoRollActions(),
+                harmony = com.pocketstudio.model.Harmony(0, com.pocketstudio.model.Scale.Major),
             ),
             startWithNotes = true,
         )

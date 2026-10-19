@@ -1,5 +1,7 @@
 package com.pocketstudio.app.synth
 
+import com.pocketstudio.model.Scale
+import com.pocketstudio.model.Harmony
 import com.pocketstudio.model.NoteClip
 import com.pocketstudio.model.Note
 import androidx.compose.animation.AnimatedVisibility
@@ -61,6 +63,8 @@ data class SynthActions(
     val shiftOctave: (Int) -> Unit = {},
     val setParam: (Int, Float) -> Unit = { _, _ -> },
     val applyPreset: (SynthPatch) -> Unit = {},
+    val chordOn: (Int) -> Unit = {},
+    val chordOff: (Int) -> Unit = {},
 )
 
 private val EASY = listOf(
@@ -82,7 +86,13 @@ private val WAVES = listOf(0f to "Scie", 0.5f to "Carré", 1f to "Triangle")
 private val FILTERS = listOf(0f to "Ladder", 0.3f to "Passe-bas", 0.6f to "Passe-haut", 0.9f to "Passe-bande")
 
 /** The piano roll's data, when the screen shows it (null: keyboard only, e.g. in tests). */
-class NotesUi(val clip: NoteClip, val ghosts: List<Note>, val playStep: Int, val actions: PianoRollActions)
+class NotesUi(
+    val clip: NoteClip,
+    val ghosts: List<Note>,
+    val playStep: Int,
+    val actions: PianoRollActions,
+    val harmony: Harmony = Harmony(),
+)
 
 @Composable
 fun SynthScreen(
@@ -95,6 +105,11 @@ fun SynthScreen(
 ) {
     var advanced by rememberSaveable { mutableStateOf(false) }
     var showNotes by rememberSaveable { mutableStateOf(startWithNotes) }
+    var chordKeys by rememberSaveable { mutableStateOf(false) }
+    val harmony = notes?.harmony ?: Harmony()
+    // One finger, one chord of the scale (keyboard "Accords" switch).
+    val keyOn: (Int) -> Unit = if (chordKeys) actions.chordOn else actions.noteOn
+    val keyOff: (Int) -> Unit = if (chordKeys) actions.chordOff else actions.noteOff
     BoxWithConstraints(modifier.fillMaxSize().testTag("synth")) {
         val keyboardHeight = (maxHeight * 0.45f).coerceIn(110.dp, 220.dp)
         val landscape = maxWidth > maxHeight
@@ -109,7 +124,12 @@ fun SynthScreen(
                     PianoRoll(
                         notes.clip, notes.ghosts, notes.playStep, notes.actions,
                         gridHeight = rollHeight,
+                        harmony = notes.harmony,
                     )
+                }
+                NeonCard {
+                    SectionLabel("Harmonie")
+                    HarmonyPanel(notes.harmony, notes.clip.performance, notes.actions)
                 }
                 PresetsCard(patch, actions)
                 SoundCard(patch, actions, advanced) { advanced = it }
@@ -122,6 +142,7 @@ fun SynthScreen(
                     if (notes != null) ModeSwitch(showNotes) { showNotes = it }
                     PresetChips(patch, actions)
                     Box(Modifier.weight(1f))
+                    ChordChip(chordKeys) { chordKeys = it }
                     OctaveControl(octave, actions)
                 }
                 Column(Modifier.weight(1f).verticalScroll(rememberScrollState())) {
@@ -129,7 +150,7 @@ fun SynthScreen(
                 }
                 Keyboard(
                     firstNote = 12 * (octave + 1), octaves = 3,
-                    onNoteOn = actions.noteOn, onNoteOff = actions.noteOff, height = keyboardHeight,
+                    onNoteOn = keyOn, onNoteOff = keyOff, height = keyboardHeight, harmony = harmony,
                 )
             }
         } else {
@@ -138,7 +159,8 @@ fun SynthScreen(
                 verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 if (notes != null) ModeSwitch(showNotes) { showNotes = it }
-                KeyboardCard(octave, octaves = 2, height = 150.dp, actions = actions)
+                KeyboardCard(octave, octaves = 2, height = 150.dp, actions = actions, harmony = harmony, chordKeys = chordKeys,
+                    onChordKeys = { chordKeys = it }, keyOn = keyOn, keyOff = keyOff)
                 PresetsCard(patch, actions)
                 SoundCard(patch, actions, advanced) { advanced = it }
             }
@@ -147,15 +169,32 @@ fun SynthScreen(
 }
 
 @Composable
-private fun KeyboardCard(octave: Int, octaves: Int, height: Dp, actions: SynthActions) {
+private fun KeyboardCard(
+    octave: Int,
+    octaves: Int,
+    height: Dp,
+    actions: SynthActions,
+    harmony: Harmony,
+    chordKeys: Boolean,
+    onChordKeys: (Boolean) -> Unit,
+    keyOn: (Int) -> Unit,
+    keyOff: (Int) -> Unit,
+) {
     NeonCard {
         Row(verticalAlignment = Alignment.CenterVertically) {
             SectionLabel("Clavier")
             Box(Modifier.weight(1f))
+            ChordChip(chordKeys, onChordKeys)
             OctaveControl(octave, actions)
         }
-        Keyboard(firstNote = 12 * (octave + 1), octaves = octaves, onNoteOn = actions.noteOn, onNoteOff = actions.noteOff, height = height)
+        Keyboard(firstNote = 12 * (octave + 1), octaves = octaves, onNoteOn = keyOn, onNoteOff = keyOff, height = height, harmony = harmony)
     }
+}
+
+@Composable
+private fun ChordChip(on: Boolean, onChange: (Boolean) -> Unit) {
+    FilterChip(selected = on, onClick = { onChange(!on) }, label = { Text("Accords") }, colors = chipColors(),
+        modifier = Modifier.testTag("chord_keys"))
 }
 
 @Composable
@@ -258,14 +297,21 @@ private val WHITE_OFFSETS = listOf(0, 2, 4, 5, 7, 9, 11)
 
 /** Multi-touch piano keyboard: every key handles its own finger. */
 @Composable
-fun Keyboard(firstNote: Int, octaves: Int, onNoteOn: (Int) -> Unit, onNoteOff: (Int) -> Unit, height: Dp = 150.dp) {
+fun Keyboard(
+    firstNote: Int,
+    octaves: Int,
+    onNoteOn: (Int) -> Unit,
+    onNoteOff: (Int) -> Unit,
+    height: Dp = 150.dp,
+    harmony: Harmony = Harmony(),
+) {
     val whiteCount = 7 * octaves
     BoxWithConstraints(Modifier.fillMaxWidth().height(height).testTag("keyboard")) {
         val whiteWidth = maxWidth / whiteCount
         Row(Modifier.fillMaxSize()) {
             for (w in 0 until whiteCount) {
                 val note = firstNote + 12 * (w / 7) + WHITE_OFFSETS[w % 7]
-                Key(note, isBlack = false, Modifier.width(whiteWidth).fillMaxHeight(), onNoteOn, onNoteOff)
+                Key(note, isBlack = false, Modifier.width(whiteWidth).fillMaxHeight(), onNoteOn, onNoteOff, harmony)
             }
         }
         for (w in 0 until whiteCount) {
@@ -277,17 +323,29 @@ fun Keyboard(firstNote: Int, octaves: Int, onNoteOn: (Int) -> Unit, onNoteOff: (
                 Modifier.offset(x = whiteWidth * (w + 1) - whiteWidth * 0.32f).width(whiteWidth * 0.64f).height(height * 0.61f),
                 onNoteOn,
                 onNoteOff,
+                harmony,
             )
         }
     }
 }
 
 @Composable
-private fun Key(note: Int, isBlack: Boolean, modifier: Modifier, onNoteOn: (Int) -> Unit, onNoteOff: (Int) -> Unit) {
+private fun Key(
+    note: Int,
+    isBlack: Boolean,
+    modifier: Modifier,
+    onNoteOn: (Int) -> Unit,
+    onNoteOff: (Int) -> Unit,
+    harmony: Harmony = Harmony(),
+) {
     var down by remember { mutableStateOf(false) }
+    val outside = harmony.scale != Scale.Off && !harmony.inScale(note)
     val color = when {
         down -> Neon.Cyan
+        isBlack && outside -> Color(0xFF15171A)
         isBlack -> Color(0xFF26292E)
+        outside -> Color(0xFF9EA2AA)  // out of the scale: greyed, still playable
+        Math.floorMod(note - harmony.root, 12) == 0 && harmony.scale != Scale.Off -> Color(0xFFDCEFF5)
         else -> Color(0xFFF2F3F5)
     }
     Box(

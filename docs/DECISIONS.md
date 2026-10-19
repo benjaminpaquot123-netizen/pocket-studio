@@ -56,3 +56,5 @@
 | 2026-10-19 | Rééchantillonnage = rendu hors-ligne du morceau (même moteur que l'export), pas la capture de la sortie audio | Exact à l'échantillon, sans bruit ni latence ; pas d'enregistrement en direct à faire au bon moment | Capture en direct plus tard si demandée |
 | 2026-10-19 | Notes du piano roll en ticks (24 par double-croche) ; la boucle du synthé a sa propre longueur (1 à 8 mesures) | Quantification avec intensité possible ; une mélodie de 4 mesures sur un rythme d'1 mesure | Aucun |
 | 2026-10-19 | « Notes fantômes » = la ligne de basse acide affichée en transparence | Seule autre piste mélodique pour l'instant ; aide à placer les accords | Ajouter les autres pistes quand elles existeront |
+| 2026-10-19 | Arpège et strum calculés en Kotlin (notes « jouées » envoyées au moteur), pas dans le fil audio | Simple, testable, aucun coût audio ; suffisant pour un piano roll | Arpégiateur temps réel au clavier plus tard |
+| 2026-10-19 | Accords « de la gamme » (empilement de tierces de la gamme choisie) ; sans gamme : accord majeur | Toujours juste dans la tonalité, en un geste | Choix du type d'accord plus tard |

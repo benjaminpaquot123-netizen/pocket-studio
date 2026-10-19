@@ -1,5 +1,10 @@
 package com.pocketstudio.app.synth
 
+import com.pocketstudio.model.ArpMode
+import com.pocketstudio.model.Harmony
+import com.pocketstudio.model.Performance
+import com.pocketstudio.model.Progression
+import com.pocketstudio.model.Scale
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
@@ -54,6 +59,10 @@ data class PianoRollActions(
     val quantize: (gridTicks: Int, strength: Float) -> Unit = { _, _ -> },
     val setSteps: (Int) -> Unit = {},
     val clear: () -> Unit = {},
+    val addChord: (start: Int, length: Int, pitch: Int) -> Unit = { _, _, _ -> },
+    val setHarmony: (Harmony) -> Unit = {},
+    val applyProgression: (Progression) -> Unit = {},
+    val setPerformance: (Performance) -> Unit = {},
 )
 
 private const val LOW = 24   // C1
@@ -84,8 +93,10 @@ fun PianoRoll(
     actions: PianoRollActions,
     modifier: Modifier = Modifier,
     gridHeight: androidx.compose.ui.unit.Dp = 380.dp,
+    harmony: Harmony = Harmony(),
 ) {
     var newSteps by rememberSaveable { mutableIntStateOf(2) }
+    var chordMode by rememberSaveable { mutableStateOf(false) }
     var showGhosts by rememberSaveable { mutableStateOf(true) }
     val chipColors = FilterChipDefaults.filterChipColors(selectedContainerColor = Neon.Cyan.copy(alpha = 0.25f), selectedLabelColor = Neon.Cyan)
     Column(modifier, verticalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -104,9 +115,11 @@ fun PianoRoll(
             TextButton(onClick = { actions.quantize(TICK, 0.5f) }, modifier = Modifier.testTag("quantize_50")) { Text("Quantifier 50 %") }
             TextButton(onClick = { actions.quantize(TICK, 1f) }) { Text("100 %") }
             FilterChip(selected = showGhosts, onClick = { showGhosts = !showGhosts }, label = { Text("Basse en fantôme") }, colors = chipColors)
+            FilterChip(selected = chordMode, onClick = { chordMode = !chordMode }, label = { Text("Accords") }, colors = chipColors,
+                modifier = Modifier.testTag("chord_mode"))
             TextButton(onClick = actions.clear, enabled = clip.notes.isNotEmpty()) { Text("Effacer") }
         }
-        Grid(clip, if (showGhosts) ghosts else emptyList(), playStep, newSteps * TICK, actions, gridHeight)
+        Grid(clip, if (showGhosts) ghosts else emptyList(), playStep, newSteps * TICK, actions, gridHeight, harmony, chordMode)
         Text(
             "Touche une case : ajoute une note. Touche une note : l'enlève. Glisse : déplace. Glisse le bout : allonge. Appui long : plus doux.",
             style = MaterialTheme.typography.bodySmall,
@@ -116,7 +129,16 @@ fun PianoRoll(
 }
 
 @Composable
-private fun Grid(clip: NoteClip, ghosts: List<Note>, playStep: Int, newLength: Int, actions: PianoRollActions, height: androidx.compose.ui.unit.Dp) {
+private fun Grid(
+    clip: NoteClip,
+    ghosts: List<Note>,
+    playStep: Int,
+    newLength: Int,
+    actions: PianoRollActions,
+    height: androidx.compose.ui.unit.Dp,
+    harmony: Harmony,
+    chordMode: Boolean,
+) {
     val vScroll = rememberScrollState()
     val hScroll = rememberScrollState()
     val density = LocalDensity.current
@@ -131,7 +153,7 @@ private fun Grid(clip: NoteClip, ghosts: List<Note>, playStep: Int, newLength: I
     val colors = GridColors(
         bg = Neon.Surface, black = Neon.Background, line = Neon.Outline.copy(alpha = 0.35f),
         beat = Neon.Outline, bar = Neon.TextSecondary, note = Neon.Cyan, ghost = Neon.Magenta.copy(alpha = 0.28f),
-        play = Neon.TextPrimary,
+        play = Neon.TextPrimary, outside = Color.Black.copy(alpha = 0.35f), rootRow = Neon.Cyan.copy(alpha = 0.10f),
     )
     Row(Modifier.fillMaxWidth().height(height)) {
         Column(Modifier.width(36.dp).verticalScroll(vScroll)) {
@@ -146,7 +168,7 @@ private fun Grid(clip: NoteClip, ghosts: List<Note>, playStep: Int, newLength: I
                 Modifier
                     .size(STEP * clip.steps, ROW * rows)
                     .testTag("piano_roll")
-                    .pointerInput(clip, newLength) {
+                    .pointerInput(clip, newLength, harmony, chordMode) {
                         fun pitchAt(y: Float) = (HIGH - (y / rowPx).toInt()).coerceIn(LOW, HIGH)
                         fun tickAt(x: Float) = (x / stepPx * TICK).toInt().coerceIn(0, clip.ticks - 1)
                         awaitEachGesture {
@@ -156,7 +178,8 @@ private fun Grid(clip: NoteClip, ghosts: List<Note>, playStep: Int, newLength: I
                                 val up = waitForUpOrCancellation() ?: return@awaitEachGesture  // a scroll took it
                                 if ((up.position - down.position).getDistance() < slop) {
                                     val start = tickAt(down.position.x) / TICK * TICK
-                                    actions.add(Note(start, newLength, pitchAt(down.position.y)))
+                                    val pitch = harmony.snap(pitchAt(down.position.y))
+                                    if (chordMode) actions.addChord(start, newLength, pitch) else actions.add(Note(start, newLength, pitch))
                                 }
                                 return@awaitEachGesture
                             }
@@ -180,7 +203,7 @@ private fun Grid(clip: NoteClip, ghosts: List<Note>, playStep: Int, newLength: I
                                         val start = ((note.start + dx / stepPx * TICK) / TICK).roundToInt() * TICK
                                         note.copy(
                                             start = start.coerceIn(0, clip.ticks - TICK),
-                                            pitch = (note.pitch - (dy / rowPx).roundToInt()).coerceIn(LOW, HIGH),
+                                            pitch = harmony.snap((note.pitch - (dy / rowPx).roundToInt()).coerceIn(LOW, HIGH)),
                                         )
                                     }
                                     drag = note to result
@@ -202,6 +225,11 @@ private fun Grid(clip: NoteClip, ghosts: List<Note>, playStep: Int, newLength: I
                 for (p in LOW..HIGH) {
                     val y = (HIGH - p) * rowPx
                     drawRect(if (p % 12 in BLACK) colors.black else colors.bg, Offset(0f, y), Size(w, rowPx))
+                    // Locked scale: notes outside it are darkened, the root row is tinted.
+                    if (harmony.scale != Scale.Off) {
+                        if (!harmony.inScale(p)) drawRect(colors.outside, Offset(0f, y), Size(w, rowPx))
+                        else if (Math.floorMod(p - harmony.root, 12) == 0) drawRect(colors.rootRow, Offset(0f, y), Size(w, rowPx))
+                    }
                     if (p % 12 == 0) drawLine(colors.beat, Offset(0f, y + rowPx), Offset(w, y + rowPx), 1f)
                 }
                 for (s in 0..clip.steps) {
@@ -237,5 +265,66 @@ private fun Grid(clip: NoteClip, ghosts: List<Note>, playStep: Int, newLength: I
 
 private class GridColors(
     val bg: Color, val black: Color, val line: Color, val beat: Color, val bar: Color,
-    val note: Color, val ghost: Color, val play: Color,
+    val note: Color, val ghost: Color, val play: Color, val outside: Color, val rootRow: Color,
 )
+
+private val ROOTS = listOf("Do", "Do#", "Ré", "Ré#", "Mi", "Fa", "Fa#", "Sol", "Sol#", "La", "La#", "Si")
+private val ARP_RATES = listOf(48 to "1/8", 24 to "1/16", 12 to "1/32")
+private val STRUMS = listOf(0 to "Non", 3 to "Léger", 8 to "Moyen", 16 to "Lent")
+
+@Composable
+private fun ChipRow(label: String, content: @Composable () -> Unit) {
+    Row(Modifier.horizontalScroll(rememberScrollState()), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        Text(label, style = MaterialTheme.typography.bodySmall, modifier = Modifier.width(78.dp))
+        content()
+    }
+}
+
+/** Key, scale, progressions and how chords are played (arpeggio, strum). */
+@Composable
+fun HarmonyPanel(harmony: Harmony, performance: Performance, actions: PianoRollActions) {
+    val chipColors = FilterChipDefaults.filterChipColors(selectedContainerColor = Neon.Cyan.copy(alpha = 0.25f), selectedLabelColor = Neon.Cyan)
+    ChipRow("Gamme") {
+        Scale.entries.forEach { sc ->
+            FilterChip(selected = harmony.scale == sc, onClick = { actions.setHarmony(harmony.copy(scale = sc)) },
+                label = { Text(sc.label) }, colors = chipColors, modifier = Modifier.testTag("scale_${sc.name}"))
+        }
+    }
+    if (harmony.scale != Scale.Off) {
+        ChipRow("Tonique") {
+            ROOTS.forEachIndexed { i, name ->
+                FilterChip(selected = harmony.root == i, onClick = { actions.setHarmony(harmony.copy(root = i)) }, label = { Text(name) }, colors = chipColors)
+            }
+        }
+    }
+    ChipRow("Progression") {
+        Progression.entries.forEach { pr ->
+            TextButton(onClick = { actions.applyProgression(pr) }) { Text(pr.label) }
+        }
+    }
+    ChipRow("Arpège") {
+        ArpMode.entries.forEach { m ->
+            FilterChip(selected = performance.arp == m, onClick = { actions.setPerformance(performance.copy(arp = m)) },
+                label = { Text(m.label) }, colors = chipColors, modifier = Modifier.testTag("arp_${m.name}"))
+        }
+    }
+    if (performance.arp != ArpMode.Off) {
+        ChipRow("Vitesse") {
+            ARP_RATES.forEach { (ticks, label) ->
+                FilterChip(selected = performance.arpRate == ticks, onClick = { actions.setPerformance(performance.copy(arpRate = ticks)) },
+                    label = { Text(label) }, colors = chipColors)
+            }
+        }
+    }
+    ChipRow("Strum") {
+        STRUMS.forEach { (ticks, label) ->
+            FilterChip(selected = performance.strum == ticks, onClick = { actions.setPerformance(performance.copy(strum = ticks)) },
+                label = { Text(label) }, colors = chipColors)
+        }
+    }
+    Text(
+        "La progression remplace les notes (Annuler possible). Arpège et strum jouent les accords posés ensemble.",
+        style = MaterialTheme.typography.bodySmall,
+        color = Neon.TextSecondary,
+    )
+}

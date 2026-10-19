@@ -380,3 +380,49 @@ class NoteClipTest {
         assertEquals(p.synthNotes, ProjectJson.decode(ProjectJson.encode(p)).synthNotes)
     }
 }
+
+class HarmonyTest {
+    private val cMajor = Harmony(0, Scale.Major)
+    private val aMinor = Harmony(9, Scale.Minor)
+
+    @Test
+    fun snapGoesToTheNearestScaleNote() {
+        assertEquals(60, cMajor.snap(61))  // C# -> C (tie goes down)
+        assertEquals(65, cMajor.snap(66))  // F# -> F
+        assertEquals(61, Harmony(0, Scale.Off).snap(61))
+        assertTrue(aMinor.inScale(57) && !aMinor.inScale(58))
+    }
+
+    @Test
+    fun chordsFollowTheScale() {
+        assertEquals(listOf(60, 64, 67), cMajor.chord(60))       // C major
+        assertEquals(listOf(62, 65, 69), cMajor.chord(62))       // D minor
+        assertEquals(listOf(71, 74, 77), cMajor.chord(71))       // B diminished
+        assertEquals(listOf(67, 71, 74, 77), cMajor.chord(67, 4))  // G7
+        assertEquals(listOf(57, 60, 64), aMinor.chord(57))       // A minor
+        assertEquals(listOf(60, 64, 67), Harmony().chord(60))    // no scale: major triad
+    }
+
+    @Test
+    fun progressionFillsFourBars() {
+        val clip = NoteClip().withProgression(Progression.Pop, cMajor)
+        assertEquals(64, clip.steps)
+        assertEquals(12, clip.notes.size)
+        // I, V, vi, IV in C from C3.
+        assertEquals(listOf(48, 55, 57, 53), clip.notes.groupBy { it.start }.toSortedMap().values.map { c -> c.minOf { it.pitch } })
+    }
+
+    @Test
+    fun arpeggioAndStrumExpandChords() {
+        val chord = NoteClip(notes = cMajor.chord(60).map { Note(0, 96, it) })
+        val up = Performance(ArpMode.Up, arpRate = 24).expand(chord)
+        assertEquals(listOf(60, 64, 67, 60), up.map { it.pitch })
+        assertEquals(listOf(0, 24, 48, 72), up.map { it.start })
+        val updown = Performance(ArpMode.UpDown, arpRate = 12).expand(chord)
+        assertEquals(listOf(60, 64, 67, 64, 60, 64, 67, 64), updown.map { it.pitch })
+        val strum = Performance(strum = 6).expand(chord)
+        assertEquals(listOf(0, 6, 12), strum.map { it.start })
+        assertEquals(listOf(96, 90, 84), strum.map { it.length })  // all end together
+        assertEquals(chord.notes, Performance().expand(chord))
+    }
+}

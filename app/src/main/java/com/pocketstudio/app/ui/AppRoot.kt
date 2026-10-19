@@ -314,6 +314,8 @@ fun AppRoot() {
                                 shiftOctave = rhythmVm::shiftKeyboardOctave,
                                 setParam = rhythmVm::setSynthParam,
                                 applyPreset = rhythmVm::applySynthPreset,
+                                chordOn = rhythmVm::synthChordOn,
+                                chordOff = rhythmVm::synthChordOff,
                             ),
                             notes = NotesUi(
                                 clip = project.synthNotes,
@@ -326,7 +328,12 @@ fun AppRoot() {
                                     quantize = rhythmVm::quantizeNotes,
                                     setSteps = rhythmVm::setNoteClipSteps,
                                     clear = rhythmVm::clearNotes,
+                                    addChord = rhythmVm::addChord,
+                                    setHarmony = rhythmVm::setHarmony,
+                                    applyProgression = rhythmVm::applyProgression,
+                                    setPerformance = rhythmVm::setPerformance,
                                 ),
+                                harmony = project.harmony,
                             ),
                         )
                     }

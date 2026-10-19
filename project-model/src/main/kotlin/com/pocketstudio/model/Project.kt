@@ -22,6 +22,7 @@ data class Project(
     val acid: AcidPattern = AcidPattern(),
     val synth: SynthPatch = SynthPatch(),
     val synthNotes: NoteClip = NoteClip(),
+    val harmony: Harmony = Harmony(),
 ) {
     /** Returns a copy with every value inside its allowed range. */
     fun sanitized(): Project = copy(
@@ -31,6 +32,7 @@ data class Project(
         acid = acid.sanitized(),
         synth = synth.sanitized(),
         synthNotes = synthNotes.sanitized(),
+        harmony = harmony.sanitized(),
         mixer = mixer.sanitized(),
     )
 

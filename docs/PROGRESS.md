@@ -43,6 +43,9 @@
 
 - Jalon 2.4 : piano roll du synthé (onglet Synthé › Notes). Moteur : `NoteTrack` (512 notes, 24 ticks par double-croche, départs et fins à l'échantillon près, boucle de 1 à 8 mesures indépendante de la batterie, notes relâchées à l'arrêt) ; file d'événements du synthé triée. Écran : toucher pour ajouter/enlever, glisser pour déplacer, glisser le bout pour allonger, appui long pour la force, quantifier 50 %/100 %, basse acide en notes fantômes, tête de lecture. Test Linux : note à 1,5 pas qui part pile au bon échantillon et se répète à chaque boucle.
 
+- Jalon 2.5 : `Harmony` (tonique + gamme : majeure, mineure, dorienne, pentas, blues) dans le projet ; piano roll : notes aimantées à la gamme, lignes hors gamme assombries, mode « Accords » (un toucher = l'accord de la gamme) ; clavier : touches hors gamme grisées, « Accords » à un doigt ; 5 progressions (I–V–vi–IV…) qui remplissent 4 mesures ; arpégiateur (↑ ↓ ↑↓ hasard, 1/8 1/16 1/32) et strum, calculés côté Kotlin avant l'envoi au moteur (`Performance.expand`). Tests JVM : accords par degré (Do, Rém, Si°, Sol7, Lam), progression, arpèges, strum.
+
 ## Prochaine étape exacte
-1. Jalon 2.5 : verrouillage de gamme (piano roll + clavier), accords en un geste, progressions, arpégiateur, strum.
+1. Jalon 2.6 : bibliothèque d'instruments (GeneralUser GS + TinySoundFont), navigateur de sons, import de packs. Demande groupée à Benjamin si une licence ou un hébergement pose question.
+2. Puis revue de fin de phase 2 (sous-agent neuf), REVIEW.md, résumé, PR #6 prête.
 2. Reste du 2.3 : lever la limite de 60 s par son (stockage 16 bits ou lecture en flux), utile pour découper des morceaux entiers.

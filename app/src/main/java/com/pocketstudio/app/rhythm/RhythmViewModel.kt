@@ -19,7 +19,10 @@ import com.pocketstudio.model.AcidPattern
 import com.pocketstudio.model.AcidStep
 import com.pocketstudio.model.DrumPattern
 import com.pocketstudio.model.Hit
+import com.pocketstudio.model.Harmony
 import com.pocketstudio.model.Note
+import com.pocketstudio.model.Performance
+import com.pocketstudio.model.Progression
 import com.pocketstudio.model.NoteClip
 import com.pocketstudio.model.PadSample
 import com.pocketstudio.model.Project
@@ -155,12 +158,39 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     // --- Piano roll ------------------------------------------------------------------------
 
+    /** The engine plays the clip as performed: arpeggios and strums expanded here. */
     private fun pushNotes(clip: NoteClip) {
         if (!NativeEngine.isAvailable) return
+        val played = clip.performance.expand(clip)
         NativeEngine.setSynthSteps(clip.steps)
-        clip.notes.forEachIndexed { i, n -> NativeEngine.setSynthNote(i, n.start, n.length, n.pitch, n.velocity) }
-        NativeEngine.setSynthNoteCount(clip.notes.size)
+        played.forEachIndexed { i, n -> NativeEngine.setSynthNote(i, n.start, n.length, n.pitch, n.velocity) }
+        NativeEngine.setSynthNoteCount(played.size)
     }
+
+    // --- Harmony (scale lock, chords, progressions, arpeggio, strum) -------------------------
+
+    fun setHarmony(harmony: Harmony) {
+        session.edit { p -> p.copy(harmony = harmony) }
+    }
+
+    /** A whole chord of the current scale on [pitch], in one tap. */
+    fun addChord(start: Int, length: Int, pitch: Int) {
+        val chord = project.value.harmony.chord(pitch)
+        editNotes { clip -> chord.fold(clip) { c, p -> c.add(Note(start, length, p)) } }
+        if (NativeEngine.isAvailable && !_transport.value.playing) chord.forEach(::previewNote)
+    }
+
+    fun applyProgression(progression: Progression) {
+        val h = project.value.harmony
+        editNotes { it.withProgression(progression, h) }
+        AppLog.add("Progression ${progression.label}")
+    }
+
+    fun setPerformance(performance: Performance) = editNotes("perf") { it.copy(performance = performance).sanitized() }
+
+    /** Keyboard in chord mode: the chord of the scale on the key. */
+    fun synthChordOn(pitch: Int) = project.value.harmony.chord(pitch).forEach { synthNoteOn(it) }
+    fun synthChordOff(pitch: Int) = project.value.harmony.chord(pitch).forEach { synthNoteOff(it) }
 
     private fun editNotes(key: String? = null, transform: (NoteClip) -> NoteClip) {
         session.edit(key) { p -> p.copy(synthNotes = transform(p.synthNotes)) }

@@ -11,7 +11,11 @@ data class Note(val start: Int, val length: Int, val pitch: Int, val velocity: F
 
 /** The synth's notes: a loop of [steps] sixteenths (1 to 8 bars). */
 @Serializable
-data class NoteClip(val steps: Int = 16, val notes: List<Note> = emptyList()) {
+data class NoteClip(
+    val steps: Int = 16,
+    val notes: List<Note> = emptyList(),
+    val performance: Performance = Performance(),
+) {
     val ticks: Int get() = steps * TICKS_PER_STEP
 
     fun sanitized(): NoteClip {
@@ -29,7 +33,7 @@ data class NoteClip(val steps: Int = 16, val notes: List<Note> = emptyList()) {
             .sortedWith(compareBy({ it.start }, { it.pitch }))
             .take(MAX_NOTES)
             .toList()
-        return copy(steps = s, notes = clean)
+        return copy(steps = s, notes = clean, performance = performance.sanitized())
     }
 
     fun add(note: Note) = copy(notes = notes + note).sanitized()
@@ -53,6 +57,15 @@ data class NoteClip(val steps: Int = 16, val notes: List<Note> = emptyList()) {
                 n.copy(start = (n.start + (target - n.start) * k).roundToInt().coerceIn(0, ticks - 1))
             },
         ).sanitized()
+    }
+
+    /** Replaces the whole clip with [progression] in [harmony]: one chord per bar, 4 bars. */
+    fun withProgression(progression: Progression, harmony: Harmony, octaveRoot: Int = 48): NoteClip {
+        val bar = 16 * TICKS_PER_STEP
+        val chords = progression.degrees.flatMapIndexed { i, degree ->
+            harmony.chord(harmony.degreeRoot(degree, octaveRoot)).map { Note(i * bar, bar, it, 0.8f) }
+        }
+        return copy(steps = 64, notes = chords).sanitized()
     }
 
     companion object {

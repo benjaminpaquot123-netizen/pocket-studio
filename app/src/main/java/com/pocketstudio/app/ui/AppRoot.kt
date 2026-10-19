@@ -11,6 +11,12 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.background
+import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Checklist
@@ -117,6 +123,7 @@ fun AppRoot() {
         // While the transport plays, PlaybackService keeps the music going in the background.
         if (engineAvailable && !rhythmVm.keepsRunningInBackground) NativeEngine.stop()
     }
+    val saveError by rhythmVm.session.lastSaveError.collectAsStateWithLifecycle()
     val notice by rhythmVm.notice.collectAsStateWithLifecycle()
     notice?.let { text ->
         AlertDialog(
@@ -143,6 +150,17 @@ fun AppRoot() {
     val landscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
     Scaffold(
         containerColor = Neon.Background,
+        topBar = {
+            if (saveError != null) {
+                Text(
+                    "Sauvegarde impossible (mémoire pleine ?). Tes dernières modifications ne sont pas encore enregistrées.",
+                    color = Color.Black,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.fillMaxWidth().background(Neon.Amber).statusBarsPadding().padding(8.dp)
+                        .testTag("save_error"),
+                )
+            }
+        },
         bottomBar = {
             if (!landscape) {
                 NavigationBar(containerColor = Neon.Surface) {

@@ -1,5 +1,6 @@
 package com.pocketstudio.model
 
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -83,6 +84,9 @@ class ProjectSession(
         try {
             withContext(io) { store.save(id, snapshot) }
             _lastSaveError.value = null
+        } catch (e: CancellationException) {
+            dirty = true  // superseded by a newer save (flush): not an error
+            throw e
         } catch (e: Exception) {
             dirty = true
             _lastSaveError.value = e

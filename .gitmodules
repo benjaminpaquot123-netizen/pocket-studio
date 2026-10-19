@@ -19,3 +19,9 @@
 [submodule "engine/third_party/TinySoundFont"]
 	path = engine/third_party/TinySoundFont
 	url = https://github.com/schellingb/TinySoundFont
+[submodule "separation/third_party/demucs.onnx"]
+	path = separation/third_party/demucs.onnx
+	url = https://github.com/sevagh/demucs.onnx
+[submodule "separation/third_party/eigen"]
+	path = separation/third_party/eigen
+	url = https://gitlab.com/libeigen/eigen.git

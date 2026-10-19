@@ -244,11 +244,12 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /** The file's name as the phone shows it; for plain file links, the last part of the path. */
     private fun displayName(app: Application, uri: Uri): String? = runCatching {
         app.contentResolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)?.use { c ->
             if (c.moveToFirst()) c.getString(0) else null
         }
-    }.getOrNull()
+    }.getOrNull() ?: uri.lastPathSegment
 
     // --- Mixer -----------------------------------------------------------------------------
 

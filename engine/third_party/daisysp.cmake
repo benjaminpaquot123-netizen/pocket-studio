@@ -10,6 +10,8 @@ set(DAISYSP_SOURCES
     ${DAISYSP_ROOT}/Filters/ladder.cpp
     ${DAISYSP_ROOT}/Control/adsr.cpp
     ${DAISYSP_ROOT}/Synthesis/oscillator.cpp
+    ${DAISYSP_ROOT}/Effects/chorus.cpp
+    ${DAISYSP_ROOT}/Effects/overdrive.cpp
 )
 set(DAISYSP_INCLUDES ${DAISYSP_ROOT} ${DAISYSP_ROOT}/Utility)
 # DaisySP calls rand(), which takes a lock on Android: every engine source force-includes

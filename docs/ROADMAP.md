@@ -91,7 +91,7 @@ Feu vert de Benjamin (D4 = A) : fusion de la pull request en fin de phase.
 - [x] 10.2 Assistant « Nouveau morceau, pas à pas » : style, ambiance, une étape par ligne (rôle expliqué, son de la bibliothèque), basse / nappe / lead, rythme et accords de départ
 - [x] 10.3 Mélodie sans fausse note : verrouillage de gamme (clavier, MIDI), pads d'accords, progressions en accords / ligne de basse / arpège
 - [x] 10.4 Effets créatifs : 21 ambiances toutes prêtes, 4 macros par piste, pad XY, bouton Effets sur chaque piste
-- [ ] 10.5 Packs de sons par style et sous-style (téléchargement à la demande, suppression) : à fabriquer (phase 11)
+- [x] 10.5 Packs de sons par style et sous-style (téléchargement à la demande, suppression) : fabriqués en phase 11
 
 ## Phase 11 : bibliothèques de sons
 - [x] 11.1 Packs par style et sous-style fabriqués et hébergés (kicks, caisses, claps, charleys, percus, 808, basses)

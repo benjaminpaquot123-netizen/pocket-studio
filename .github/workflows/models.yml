@@ -42,3 +42,33 @@ jobs:
             --latest=false --target main \
             --title "Modèle de séparation : HT-Demucs v4 (ONNX)" \
             --notes "HT-Demucs v4 de Meta (MIT), exporté en ONNX avec demucs.onnx de S. Sevagh (MIT). Reconstruit à l'identique par scripts/models/build-demucs.sh."
+
+  stable-audio:
+    name: Stable Audio Open Small (ONNX, int8)
+    runs-on: ubuntu-latest
+    env:
+      TAG: modele-stable-audio-open-small-1
+    steps:
+      - uses: actions/checkout@v7
+      - name: Already hosted?
+        id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then echo "hosted=true" >> "$GITHUB_OUTPUT"; else echo "hosted=false" >> "$GITHUB_OUTPUT"; fi
+      - uses: actions/setup-python@v6
+        if: steps.check.outputs.hosted == 'false'
+        with:
+          python-version: '3.13'
+      - name: Build the model (pinned, checked)
+        if: steps.check.outputs.hosted == 'false'
+        run: ./scripts/models/build-stable-audio.sh dist
+      - name: Publish
+        if: steps.check.outputs.hosted == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$TAG" dist/cond_q8.onnx dist/dit_l8.onnx dist/dec.onnx dist/tokenizer.json dist/LICENSE dist/NOTICE \
+            --latest=false --target main \
+            --title "Modèle de génération : Stable Audio Open Small (ONNX, int8)" \
+            --notes "Powered by Stability AI. Stable Audio Open Small, Stability AI Community License (LICENSE, NOTICE). Export ONNX d'atauser001, allégé en int8 par scripts/models/build-stable-audio.sh (reconstruit à l'identique)."

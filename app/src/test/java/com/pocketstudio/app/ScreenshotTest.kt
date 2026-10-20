@@ -255,6 +255,14 @@ class ScreenshotTest {
     }
 
     @Test
+    fun allPads() = shoot("all_pads") {
+        val p = com.pocketstudio.model.Demos.ALL[1].third()
+        androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
+            com.pocketstudio.app.rhythm.AllPadsGrid(p, 0, 6, RhythmActions())
+        }
+    }
+
+    @Test
     fun pianoRollSelection() = shoot("piano_roll_select") {
         val notes = listOf(60, 64, 67, 72).mapIndexed { i, p -> com.pocketstudio.model.Note(i * 48, 40, p, 0.3f + 0.2f * i) } +
             listOf(55, 59, 62).map { com.pocketstudio.model.Note(240, 96, it, 0.8f) }

@@ -77,7 +77,10 @@ data class DrumPattern(
         return copy(
             steps = s,
             lanes = fixedLanes.map { lane ->
-                lane.copy(hits = lane.hits.filterKeys { it in 0 until s }, sample = lane.sample?.takeIf { it.isSafe }?.sanitized())
+                lane.copy(
+                    hits = lane.hits.filterKeys { it in 0 until s }.mapValues { (_, h) -> h.copy(repeats = h.repeats.coerceIn(1, MAX_REPEATS)) },
+                    sample = lane.sample?.takeIf { it.isSafe }?.sanitized(),
+                )
             },
         )
     }
@@ -99,6 +102,23 @@ data class DrumPattern(
         )
     }
 
+    private fun withHits(lane: Int, hits: Map<Int, Hit>): DrumPattern =
+        copy(lanes = lanes.toMutableList().also { it[lane] = it[lane].copy(hits = hits) })
+
+    /** A hit every [every] steps over the whole loop (replacing the lane's hits). */
+    fun fill(lane: Int, every: Int, velocity: Float = 1f): DrumPattern =
+        withHits(lane, (0 until steps step every.coerceAtLeast(1)).associateWith { Hit(velocity) })
+
+    /** The lane's hits moved by [by] steps, wrapping around the loop. */
+    fun rotate(lane: Int, by: Int): DrumPattern =
+        withHits(lane, lanes[lane].hits.mapKeys { (step, _) -> Math.floorMod(step + by, steps) })
+
+    /** Next roll for a hit: 1 → 2 → 3 → 4 → 1. No hit: nothing changes. */
+    fun cycleRepeats(lane: Int, step: Int): DrumPattern {
+        val hit = lanes[lane].hits[step] ?: return this
+        return withHits(lane, lanes[lane].hits + (step to hit.copy(repeats = hit.repeats % MAX_REPEATS + 1)))
+    }
+
     fun withSample(lane: Int, sample: PadSample?): DrumPattern =
         copy(lanes = lanes.toMutableList().also { it[lane] = it[lane].copy(sample = sample) })
 
@@ -110,6 +130,7 @@ data class DrumPattern(
 
     companion object {
         const val PAD_COUNT = 16
+        const val MAX_REPEATS = 4
         const val MIN_STEPS = 16
         const val MAX_STEPS = 64
     }
@@ -194,7 +215,11 @@ data class PadSample(
 private fun Float.finite(default: Float) = if (isFinite()) this else default
 
 @Serializable
-data class Hit(val velocity: Float = 1f)
+data class Hit(
+    val velocity: Float = 1f,
+    /** Hits in the step: 1 = plain, 2 to 4 = a roll (the step is split evenly). */
+    val repeats: Int = 1,
+)
 
 @Serializable
 data class Mixer(

@@ -2213,6 +2213,25 @@ void testSongExportSwapsScenesOnTime() {
     CHECK(peakIn(a, bar + bar / 2, bar + bar / 2 + 2000) < 0.25f * peakIn(b, bar + bar / 2, bar + bar / 2 + 2000));  // no kick on beat 3
 }
 
+void testDrumRollsSplitTheStep() {
+    ps::Engine engine(kRate);  // 120 BPM: a sixteenth is 6000 frames
+    engine.post({ps::CommandType::SetDrumHit, 1.0f, 0, 0});
+    engine.post({ps::CommandType::SetDrumRepeat, 4.0f, 0, 0});
+    engine.post({ps::CommandType::SetDrumHit, 1.0f, 2, 4});  // a plain hit: one trigger
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    render(engine, 1400, 256);
+    CHECK(engine.laneTriggerCount(0) == 1);   // second hit at 1500 frames
+    render(engine, 200, 256);
+    CHECK(engine.laneTriggerCount(0) == 2);
+    render(engine, 6000 * 4 - 1600 + 100, 256);
+    CHECK(engine.laneTriggerCount(0) == 4);   // four in the step, none after
+    CHECK(engine.laneTriggerCount(2) == 1);
+    // Back to a plain hit; stopping drops rolls still to come.
+    engine.post({ps::CommandType::SetDrumRepeat, 1.0f, 0, 0});
+    render(engine, 6000 * 12, 512);
+    CHECK(engine.laneTriggerCount(0) == 5);
+}
+
 void testPlayPositionForLiveRecording() {
     ps::Engine engine(kRate);  // 120 BPM: a sixteenth is 6000 frames
     CHECK(engine.playPosition() < 0.0);
@@ -2358,6 +2377,7 @@ int main(int argc, char** argv) {
         {"stems_stretch", testStemsStretchToTheProjectTempo},
         {"play_position", testPlayPositionForLiveRecording},
         {"song_export", testSongExportSwapsScenesOnTime},
+        {"drum_rolls", testDrumRollsSplitTheStep},
         {"no_alloc_in_process", testProcessNeverAllocates},
     };
     for (const auto& t : tests) {

@@ -80,6 +80,7 @@ void Engine::applyCommand(const Command& command) {
                 swapAt_ = -1;
                 staging_ = false;  // a lost "staging off" must never trap later edits
                 sequencer_.stop();
+                rollCount_ = 0;
                 stems_.stop();
                 acid_.stop();
                 sampler_.releaseLoops();
@@ -265,6 +266,11 @@ void Engine::applyCommand(const Command& command) {
                 laneTriggers_[static_cast<size_t>(command.a)].fetch_add(1, std::memory_order_relaxed);
             }
             break;
+        case CommandType::SetDrumRepeat:
+            if (command.a >= 0 && command.a < kLanes && command.b >= 0 && command.b < kMaxSteps) {
+                (staging_ ? staged_.repeats : repeats_)[command.a][command.b] = static_cast<uint8_t>(std::clamp(static_cast<int>(command.value), 1, 4));
+            }
+            break;
         case CommandType::SetDrumHit:
             if (command.a >= 0 && command.a < kLanes && command.b >= 0 && command.b < kMaxSteps) {
                 (staging_ ? staged_.drums : pattern_)[command.a][command.b] = std::clamp(command.value, 0.0f, 1.0f);
@@ -304,16 +310,42 @@ void Engine::onStep(int offset, int step) {
     lastLocal_ = local;
     stepOffset_ = offset;
     for (int lane = 0; lane < kLanes; ++lane) {
-        if (pattern_[lane][patternStep] > 0.0f) {
-            laneTriggers_[static_cast<size_t>(lane)].fetch_add(1, std::memory_order_relaxed);
-            if (sampler_.has(lane)) sampler_.trigger(lane, pattern_[lane][patternStep], offset);
-            else drums_.trigger(lane, pattern_[lane][patternStep], offset);
+        const float v = pattern_[lane][patternStep];
+        if (v > 0.0f) {
+            hitLane(lane, v, offset);
+            // A roll: the other hits share the step evenly, each a little softer.
+            const int n = repeats_[lane][patternStep];
+            const double every = sequencer_.samplesPerStep() / std::max(1, n);
+            for (int k = 1; k < n && rollCount_ < static_cast<int>(rolls_.size()); ++k) {
+                rolls_[static_cast<size_t>(rollCount_++)] = {lane, v * std::pow(0.85f, static_cast<float>(k)), offset + static_cast<int64_t>(k * every)};
+            }
         }
     }
 }
 
+void Engine::hitLane(int lane, float velocity, int offset) {
+    laneTriggers_[static_cast<size_t>(lane)].fetch_add(1, std::memory_order_relaxed);
+    if (sampler_.has(lane)) sampler_.trigger(lane, velocity, offset);
+    else drums_.trigger(lane, velocity, offset);
+}
+
+void Engine::playRolls(int numFrames) {
+    int kept = 0;
+    for (int i = 0; i < rollCount_; ++i) {
+        PendingHit h = rolls_[static_cast<size_t>(i)];
+        if (h.at < numFrames) {
+            hitLane(h.lane, h.velocity, static_cast<int>(h.at));
+        } else {
+            h.at -= numFrames;
+            rolls_[static_cast<size_t>(kept++)] = h;
+        }
+    }
+    rollCount_ = kept;
+}
+
 void Engine::swapScene(int step) {
     std::copy(&staged_.drums[0][0], &staged_.drums[0][0] + kLanes * kMaxSteps, &pattern_[0][0]);
+    std::copy(&staged_.repeats[0][0], &staged_.repeats[0][0] + kLanes * kMaxSteps, &repeats_[0][0]);
     patternSteps_ = staged_.drumSteps;
     for (int i = 0; i < AcidTrack::kMaxSteps; ++i) acid_.setStep(i, staged_.acid[static_cast<size_t>(i)]);
     acid_.setLength(staged_.acidLength);
@@ -360,6 +392,7 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
 
     stepOffset_ = -1;
     sequencer_.advance(numFrames, [this](int offset, int step) { onStep(offset, step); });
+    playRolls(numFrames);
     if (lastLocal_ >= 0 && sequencer_.running()) {
         sinceStep_ = stepOffset_ >= 0 ? static_cast<double>(numFrames - stepOffset_) : sinceStep_ + numFrames;
         playPosition_.store(lastLocal_ + sinceStep_ / sequencer_.samplesPerStep(), std::memory_order_relaxed);

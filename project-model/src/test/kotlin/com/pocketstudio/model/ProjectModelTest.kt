@@ -704,3 +704,20 @@ class DemosTest {
     }
 }
 
+class DrumToolsTest {
+    @Test
+    fun fillRotateAndRolls() {
+        val d = DrumPattern(steps = 32).fill(5, 4, 0.5f)
+        assertEquals((0 until 32 step 4).toSet(), d.lanes[5].hits.keys)
+        assertEquals(setOf(2, 6, 10, 14, 18, 22, 26, 30), d.rotate(5, 2).lanes[5].hits.keys)
+        assertEquals(setOf(3, 7, 11, 15, 19, 23, 27, 31), d.rotate(5, -1).lanes[5].hits.keys)  // wraps around
+        var r = d
+        repeat(3) { r = r.cycleRepeats(5, 4) }
+        assertEquals(4, r.lanes[5].hits[4]!!.repeats)
+        assertEquals(1, r.cycleRepeats(5, 4).lanes[5].hits[4]!!.repeats)
+        assertEquals(r, r.cycleRepeats(5, 3))  // no hit there
+        val messy = DrumPattern(lanes = List(16) { DrumLane(hits = mapOf(0 to Hit(1f, 9))) }).sanitized()
+        assertEquals(4, messy.lanes[0].hits[0]!!.repeats)
+    }
+}
+

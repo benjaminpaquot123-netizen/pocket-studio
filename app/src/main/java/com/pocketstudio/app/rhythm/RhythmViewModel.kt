@@ -324,7 +324,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     private fun pushDrumPattern(drums: DrumPattern) {
         NativeEngine.setPatternSteps(drums.steps)
         drums.lanes.forEachIndexed { lane, l ->
-            for (step in 0 until DrumPattern.MAX_STEPS) NativeEngine.setDrumHit(lane, step, l.hits[step]?.velocity ?: 0f)
+            for (step in 0 until DrumPattern.MAX_STEPS) pushHit(lane, step, l.hits[step])
         }
     }
 
@@ -1913,10 +1913,40 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (clean.isNotEmpty()) session.edit { it.copy(name = clean) }
     }
 
+    /** A hit and its roll (rolls only travel with hits: an empty step needs nothing more). */
+    private fun pushHit(lane: Int, step: Int, hit: Hit?) {
+        NativeEngine.setDrumHit(lane, step, hit?.velocity ?: 0f)
+        if (hit != null) NativeEngine.setDrumRepeat(lane, step, hit.repeats)
+    }
+
+    fun fillPad(every: Int) {
+        val lane = _transport.value.selectedPad
+        session.edit { it.copy(drums = it.drums.fill(lane, every)) }
+        pushLane(lane)
+    }
+
+    fun rotatePad(by: Int) {
+        val lane = _transport.value.selectedPad
+        session.edit("rotate-$lane") { it.copy(drums = it.drums.rotate(lane, by)) }
+        pushLane(lane)
+    }
+
+    fun cycleRoll(step: Int) {
+        val lane = _transport.value.selectedPad
+        session.edit { it.copy(drums = it.drums.cycleRepeats(lane, step)) }
+        pushLane(lane)
+    }
+
+    /** All-pads grid: toggles [lane] at [step] without changing the selected pad. */
+    fun toggleHit(lane: Int, step: Int) {
+        session.edit { it.copy(drums = it.drums.toggle(lane, step)) }
+        pushLane(lane)
+    }
+
     private fun pushLane(lane: Int) {
         if (!NativeEngine.isAvailable) return
         val hits = project.value.drums.lanes[lane].hits
-        for (step in 0 until DrumPattern.MAX_STEPS) NativeEngine.setDrumHit(lane, step, hits[step]?.velocity ?: 0f)
+        for (step in 0 until DrumPattern.MAX_STEPS) pushHit(lane, step, hits[step])
     }
 
     // --- Export ----------------------------------------------------------------------------

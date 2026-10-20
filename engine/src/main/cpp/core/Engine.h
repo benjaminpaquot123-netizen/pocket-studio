@@ -76,6 +76,7 @@ enum class CommandType : uint8_t {
     PlayPreview,          // value 1: the preview stems (InstallStems with a = 1) play from the start; 0: stop
     SetPreviewParam,      // a: stem, b: StemPlayer::Param, value
     SetMetronomeLevel,    // value 0..1 (0.5 = default)
+    SetDrumRepeat,        // a: lane, b: step, value: hits in that step (1 = plain, 2..4 = a roll)
 };
 
 // Step automation of mixer settings, played on the audio thread at each sequencer step.
@@ -231,6 +232,7 @@ private:
     // The waiting scene (filled while staging_), copied over the playing patterns at the swap.
     struct StagedScene {
         float drums[kLanes][kMaxSteps] = {};
+        uint8_t repeats[kLanes][kMaxSteps] = {};
         int drumSteps = 16;
         std::array<AcidStep, AcidTrack::kMaxSteps> acid{};
         int acidLength = 16;
@@ -254,6 +256,17 @@ private:
     bool metronomeOn_ = false;
     int patternSteps_ = 16;
     float pattern_[kLanes][kMaxSteps] = {};
+    uint8_t repeats_[kLanes][kMaxSteps] = {};  // 0 or 1 = one hit
+    // Extra hits of rolls still to come: frames from the start of the next block.
+    struct PendingHit {
+        int lane;
+        float velocity;
+        int64_t at;
+    };
+    std::array<PendingHit, 64> rolls_{};
+    int rollCount_ = 0;
+    void hitLane(int lane, float velocity, int offset);
+    void playRolls(int numFrames);
     std::array<float, kMaxBlock> mix_{};
     std::atomic<int> currentStep_{-1};
     std::atomic<int> absoluteStep_{-1};

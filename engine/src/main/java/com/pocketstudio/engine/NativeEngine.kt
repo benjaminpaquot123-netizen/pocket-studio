@@ -53,6 +53,7 @@ object NativeEngine {
     private const val CMD_PLAY_PREVIEW = 47
     private const val CMD_PREVIEW_PARAM = 48
     private const val CMD_METRONOME_LEVEL = 49
+    private const val CMD_DRUM_REPEAT = 50
 
     /** Live pads (ClipLauncher::kSlots). */
     const val LIVE_PADS = 16
@@ -84,6 +85,8 @@ object NativeEngine {
     fun setPatternSteps(steps: Int) = post(CMD_SET_PATTERN_STEPS, 0f, steps)
     /** velocity 0 removes the hit. */
     fun setDrumHit(lane: Int, step: Int, velocity: Float) = post(CMD_SET_DRUM_HIT, velocity, lane, step)
+    /** Hits in the step: 1 = plain, 2..4 = a roll. */
+    fun setDrumRepeat(lane: Int, step: Int, repeats: Int) = post(CMD_DRUM_REPEAT, repeats.toFloat(), lane, step)
     /** [packed] = AcidStep.pack() from project-model (same layout as the engine). */
     fun setAcidStep(index: Int, packed: Int) = post(CMD_SET_ACID_STEP, 0f, index, packed)
     fun setAcidLength(steps: Int) = post(CMD_SET_ACID_LENGTH, 0f, steps)

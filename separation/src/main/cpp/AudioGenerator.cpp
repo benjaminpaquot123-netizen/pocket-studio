@@ -31,6 +31,9 @@ Ort::Session open(const std::string& path, int threads) {
     Ort::SessionOptions options;
     options.SetIntraOpNumThreads(std::max(1, threads));
     options.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_ALL);
+    // Arena and memory patterns keep peak buffers alive between stages: off, like the separator.
+    options.DisableCpuMemArena();
+    options.DisableMemPattern();
     return Ort::Session(env(), path.c_str(), options);
 }
 

@@ -17,6 +17,8 @@
 | [demucs.onnx](https://github.com/sevagh/demucs.onnx) | commit 81fa192 | MIT | Export ONNX et inférence C++ (découpe en segments, STFT) |
 | [Eigen](https://gitlab.com/libeigen/eigen) | commit 7fd305e | MPL-2.0 | Calcul matriciel de demucs.onnx |
 | [Basic Pitch](https://github.com/spotify/basic-pitch) (Spotify) | v0.4.0 (modèle `icassp_2022/nmp.onnx` du commit fa5997a, sha256 2c3c1d14…) | Apache-2.0 | Audio vers notes (Synthé › Notes) : modèle de 230 Ko dans l'APK, vérifié par SHA-256 ; inférence et création des notes réécrites en C++ (`separation/src/main/cpp/PitchTranscriber.cpp`) |
+| [Stable Audio Open Small](https://huggingface.co/stabilityai/stable-audio-open-small) (Stability AI) | export ONNX [atauser001/stable-audio-open-small-onnx](https://huggingface.co/atauser001/stable-audio-open-small-onnx) révision 8f9544d | Stability AI Community License (LICENSE et NOTICE fournis avec le modèle) | Génération texte → son (Audio › Générer), « Powered by Stability AI » ; allégé en int8 par `scripts/models/build-stable-audio.sh`, publié sur la Release `modele-stable-audio-open-small-1`, vérifié par SHA-256 |
+| [T5 tokenizer](https://huggingface.co/google-t5/t5-base) (Google) | t5-base `tokenizer.json` | Apache-2.0 | Découpage du texte pour Stable Audio, réécrit en Kotlin (`T5Tokenizer`) |
 | [Plaits](https://github.com/pichenettes/eurorack) + [stmlib](https://github.com/pichenettes/stmlib) (Mutable Instruments) | eurorack f4cfa76, stmlib d18def8 | MIT | 24 modèles de synthèse (dont FM 6 op. façon DX7) pour la piste Synthé ; sous-ensemble copié tel quel dans `engine/third_party/mutable` (voir son README) |
 | [Open303](https://github.com/RobinSchmidt/Open303) | commit 313bf0d (2024-03-29) | MIT | Basse acide (jalon Acide) ; sous-module `engine/third_party/Open303`, une correction de débordement appliquée sur une copie à la compilation (`open303.cmake`) |
 | [The Endless Acid Banger](https://github.com/vitling/acid-banger) (David Whiting) | 2021 | CC BY 4.0 | Méthode et jeux de notes du générateur de patterns acides, réécrits en Kotlin (`AcidGenerator`) ; attribution obligatoire |
@@ -27,4 +29,4 @@
 | [Robolectric](https://github.com/robolectric/robolectric) | 4.17 | MIT | Tests sur JVM (tests uniquement) |
 | [Roborazzi](https://github.com/takahirom/roborazzi) | 1.76.0 | Apache-2.0 | Captures d'écran automatiques (tests uniquement) |
 
-Prévu dans les phases suivantes (à vérifier au moment de l'intégration) : Airwindows (MIT), Mutable Instruments (MIT/GPL), MSFA/Dexed (Apache-2.0/GPL), Signalsmith Stretch (MIT), aubio (GPL-3.0), libKeyFinder (GPL-3.0), ONNX Runtime (MIT), HT-Demucs (MIT), Ableton Link (GPL-2.0), LiteRT (Apache-2.0).
+Prévu dans les phases suivantes (à vérifier au moment de l'intégration) : Airwindows (MIT), Mutable Instruments (MIT/GPL), MSFA/Dexed (Apache-2.0/GPL), Signalsmith Stretch (MIT), aubio (GPL-3.0), libKeyFinder (GPL-3.0), ONNX Runtime (MIT), HT-Demucs (MIT), Ableton Link (GPL-2.0).

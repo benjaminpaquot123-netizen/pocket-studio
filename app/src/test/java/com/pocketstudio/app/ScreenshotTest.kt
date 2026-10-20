@@ -368,6 +368,27 @@ class ScreenshotTest {
     }
 
     @Test
+    fun generateFirstTime() = shoot("generate_first") {
+        com.pocketstudio.app.generate.GenerateScreen(
+            com.pocketstudio.app.generate.GenerateUi(false, com.pocketstudio.app.generate.ModelDownload.Running(0.31f),
+                com.pocketstudio.app.generate.GenerateState.Idle, "", 4f),
+            com.pocketstudio.app.generate.GenerateActions(),
+        )
+    }
+
+    @Test
+    fun generateResult() = shoot("generate_result") {
+        com.pocketstudio.app.generate.GenerateScreen(
+            com.pocketstudio.app.generate.GenerateUi(
+                true, com.pocketstudio.app.generate.ModelDownload.Idle, com.pocketstudio.app.generate.GenerateState.Running(0.46f),
+                "124 BPM house drum loop with hi-hats", 8f,
+                result = "124 BPM house drum loop with hi-h", resultSeconds = 8.0, playing = true, projectBpm = 124, selectedPad = 2,
+            ),
+            com.pocketstudio.app.generate.GenerateActions(),
+        )
+    }
+
+    @Test
     fun remixFirstTime() = shoot("remix_first") {
         com.pocketstudio.app.remix.RemixScreen(
             com.pocketstudio.app.remix.RemixUi(false, com.pocketstudio.app.remix.SeparationState.Idle, emptyList()),

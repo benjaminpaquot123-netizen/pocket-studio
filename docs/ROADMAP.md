@@ -83,5 +83,5 @@ Feu vert de Benjamin (D4 = A) : fusion de la pull request en fin de phase.
 - [x] 8.3 Clavier expressif (vélocité selon l'appui, pitch bend, molette, sustain, arpège en direct), MIDI learn, horloge MIDI sortante (Ableton Link reporté, voir DECISIONS.md)
 
 ## Phase 9 : génération
-- [ ] 9.1 Stable Audio Open Small (LiteRT)
+- [x] 9.1 Stable Audio Open Small (ONNX Runtime, voir DECISIONS.md)
 - [x] 9.2 Modèles par genre

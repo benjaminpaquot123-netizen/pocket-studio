@@ -26,3 +26,8 @@ if [ ! -f "$MODEL" ]; then
 fi
 echo "$MODEL_SHA256  $MODEL" | sha256sum -c -
 "$ROOT/build/separation-tests/separation_test" "$MODEL"
+
+# Stable Audio Open Small (858 MB): only when a directory with its files is given.
+if [ -n "${STABLE_AUDIO_DIR:-}" ]; then
+    "$ROOT/build/separation-tests/generate_test" "$STABLE_AUDIO_DIR"
+fi

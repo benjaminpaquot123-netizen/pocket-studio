@@ -527,6 +527,42 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         putClip(id, pcm, name)
     }
 
+    // --- Generated sounds (text to sound): placed like an imported file -------------------------
+
+    /** On the selected drum pad (it plays once placed). */
+    fun placeOnPad(pcm: Pcm, name: String) {
+        if (_sampleTask.value is SampleTask.Busy || _sampleTask.value is SampleTask.Recording) return
+        sampleJob("Pose du son sur le pad ${_transport.value.selectedPad + 1}…") { padSamples.add(pcm, name) }
+    }
+
+    /** On the first free live pad, its length in beats fitted to the tempo. */
+    fun placeOnLive(pcm: Pcm, name: String) {
+        if (_sampleTask.value is SampleTask.Busy || _sampleTask.value is SampleTask.Recording) return
+        val pad = project.value.live.clips.indexOfFirst { it == null }
+        if (pad < 0) {
+            _sampleTask.value = SampleTask.Failed("Les 16 pads live sont pris : vides-en un dans l'onglet Morceau.")
+            return
+        }
+        if (project.value.live.size <= pad) setLiveSize(LivePads.SIZES.first { it > pad })
+        sampleJob("Pose du son sur le pad live ${pad + 1}…", live = pad) { padSamples.add(pcm, name) }
+    }
+
+    /** On the first audio track without a clip; one is added when all are taken. */
+    fun placeOnAudioTrack(pcm: Pcm, name: String) {
+        val p = project.value
+        val id = p.audioTracks.firstOrNull { it.clip == null }?.id ?: run {
+            val next = p.addAudioTrack() ?: run {
+                _notice.value = "Les quatre pistes audio sont prises : vide-en une ou pose le son sur un pad."
+                return
+            }
+            session.edit { next }
+            pushMixer()
+            next.audioTracks.first { t -> p.audioTracks.none { it.id == t.id } }.id
+        }
+        AppLog.add("Son généré « $name » sur la piste audio ${id + 1}")
+        audioJob("Pose du son…") { putClip(id, pcm, name) }
+    }
+
     /** Busy line and errors like the pad sounds (same "sampleTask" card). */
     private fun audioJob(busy: String, work: suspend () -> Unit) {
         if (_sampleTask.value is SampleTask.Busy) return

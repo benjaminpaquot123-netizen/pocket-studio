@@ -302,10 +302,24 @@ JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportInstallAu
     reinterpret_cast<ps::OfflineRenderer*>(exportHandle)->post(command);
 }
 
+// Takes the engine had not let go of yet (stream stopped or restarting): freed once it has.
+static std::mutex zombieLock;
+static std::vector<ps::RecordBuffer*> zombies;
+
+static void freeReleasedTakes() {
+    std::lock_guard<std::mutex> guard(zombieLock);
+    zombies.erase(std::remove_if(zombies.begin(), zombies.end(), [](ps::RecordBuffer* b) {
+        if (b->state.load(std::memory_order_acquire) != 2) return false;
+        delete b;
+        return true;
+    }), zombies.end());
+}
+
 // Opens the microphone and arms a recording of up to `seconds`; 0 when the microphone is unavailable.
 // `onStart`: the recording begins exactly when the transport reaches its first step.
 JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_recordStart(JNIEnv*, jobject, jboolean onStart, jint seconds) {
     if (seconds <= 0 || seconds > 600) return 0;
+    freeReleasedTakes();
     if (!host().startRecordingInput()) return 0;
     auto* buffer = new ps::RecordBuffer(static_cast<int64_t>(seconds) * 48000);
     ps::Command command{ps::CommandType::RecordArm, 0.0f, onStart ? 1 : 0, 0};
@@ -337,11 +351,18 @@ JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_recordFi
         std::this_thread::sleep_for(std::chrono::milliseconds(2));
     }
     host().stopRecordingInput();
-    if (b->state.load(std::memory_order_acquire) != 2) return nullptr;
+    if (b->state.load(std::memory_order_acquire) != 2) {
+        // The engine may still apply the queued commands when the stream comes back: keep the
+        // buffer until it says it let go.
+        std::lock_guard<std::mutex> guard(zombieLock);
+        zombies.push_back(b);
+        return nullptr;
+    }
     const auto frames = static_cast<jsize>(std::min<int64_t>(b->written.load(std::memory_order_acquire), static_cast<int64_t>(b->data.size())));
     jfloatArray out = env->NewFloatArray(frames);
     if (out && frames > 0) env->SetFloatArrayRegion(out, 0, frames, b->data.data());
     delete b;
+    freeReleasedTakes();
     return out;
 }
 

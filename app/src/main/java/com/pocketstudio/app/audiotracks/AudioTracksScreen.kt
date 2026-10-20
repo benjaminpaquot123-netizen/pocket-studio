@@ -71,6 +71,8 @@ class AudioTracksUi(
     val task: String? = null,
     /** The round trip was measured (Outils › Latence): takes are placed exactly. */
     val latencyMeasured: Boolean = false,
+    /** Sixteenths in a bar (time signature). */
+    val stepsPerBar: Int = 16,
 )
 
 class AudioTracksActions(
@@ -184,7 +186,7 @@ private fun TrackCard(t: AudioTrack, ui: AudioTracksUi, actions: AudioTracksActi
             OutlinedButton(onClick = { actions.import(t.id) }, enabled = !busy, modifier = Modifier.weight(1f)) { Text("Fichier son") }
         }
         val clip = t.clip ?: return@NeonCard
-        ClipEditor(t.id, clip, ui.info[clip.file], color, actions)
+        ClipEditor(t.id, clip, ui.info[clip.file], color, actions, ui.stepsPerBar)
     }
     if (renaming) {
         var name by remember(t.id) { mutableStateOf(t.name) }
@@ -218,7 +220,7 @@ private fun TrackCard(t: AudioTrack, ui: AudioTracksUi, actions: AudioTracksActi
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ClipEditor(id: Int, clip: AudioClip, info: SampleInfo?, color: androidx.compose.ui.graphics.Color, actions: AudioTracksActions) {
+private fun ClipEditor(id: Int, clip: AudioClip, info: SampleInfo?, color: androidx.compose.ui.graphics.Color, actions: AudioTracksActions, per: Int) {
     val chip = FilterChipDefaults.filterChipColors(selectedContainerColor = Neon.Cyan.copy(alpha = 0.25f), selectedLabelColor = Neon.Cyan)
     var range by remember(clip.file) { mutableStateOf(0f..1f) }
     Text("${clip.name} · ${String.format(java.util.Locale.FRANCE, "%.1f", clip.seconds)} s", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
@@ -235,13 +237,13 @@ private fun ClipEditor(id: Int, clip: AudioClip, info: SampleInfo?, color: andro
     Text("Commence à la mesure", style = MaterialTheme.typography.bodyMedium)
     Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.horizontalScroll(rememberScrollState())) {
         (1..8).forEach { bar ->
-            FilterChip(selected = clip.start == (bar - 1) * 16, onClick = { actions.setStart(id, (bar - 1) * 16) }, label = { Text("$bar") }, colors = chip)
+            FilterChip(selected = clip.start == (bar - 1) * per, onClick = { actions.setStart(id, bar) }, label = { Text("$bar") }, colors = chip)
         }
     }
     Text("Revient toutes les", style = MaterialTheme.typography.bodyMedium)
     Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.horizontalScroll(rememberScrollState())) {
         LOOP_BARS.forEach { bars ->
-            FilterChip(selected = clip.loopSteps == bars * 16, onClick = { actions.setLoopBars(id, bars) },
+            FilterChip(selected = clip.loopSteps == bars * per, onClick = { actions.setLoopBars(id, bars) },
                 label = { Text(if (bars == 1) "1 mesure" else "$bars mesures") }, colors = chip)
         }
     }

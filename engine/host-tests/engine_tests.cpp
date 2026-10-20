@@ -1346,7 +1346,11 @@ void testAudioTracks() {
     // A fade-in softens the start of each pass.
     engine.post({ps::CommandType::SetAudioClipParam, 4800.0f, 1, ps::AudioTracks::FadeIn});
     render(engine, 6000 * 16, 256);
-    mixer.takeChannelPeak(ps::audioChannel(1));
+    // A whole cycle with the fade-in: the loud first 100 frames of each pass are faded down.
+    out = render(engine, 6000 * 16, 50);
+    float mark = 0.0f;
+    for (int i = 0; i < 6000 * 16; ++i) mark = std::max(mark, std::fabs(out[size_t(i) * kChannels]));
+    CHECK(mark > 0.05f && mark < 0.2f);  // the 0.8 mark sits inside the fade-in: at most 100/4800 of it, plus the 0.1 body
     // Stop: fades out, nothing left.
     engine.post({ps::CommandType::SetTransport, 0.0f, 0});
     render(engine, 2048, 256);
@@ -1417,7 +1421,7 @@ void testThreeFourAndPartMutes() {
     engine.post({ps::CommandType::ArmSceneSwap, 0.0f, 0});
     render(engine, 6000 * 11 + 100, 100);  // step 11
     CHECK(engine.sceneSwaps() == 0);
-    CHECK(engine.audioClipPlaying(0) || engine.mixer().takeChannelPeak(ps::audioChannel(0)) > 0.1f);
+    CHECK(engine.mixer().takeChannelPeak(ps::audioChannel(0)) > 0.1f);  // passes at steps 0, 4 and 8 sounded
     render(engine, 6000, 100);  // through step 12
     CHECK(engine.sceneSwaps() == 1);
     render(engine, 6000 * 4, 100);  // the next pass would start at step 16: the track is off
@@ -1428,6 +1432,17 @@ void testThreeFourAndPartMutes() {
     engine.post({ps::CommandType::InstallAudioClip, 0.0f, 0});
     render(engine, 512, 256);
     engine.collectGarbage();
+    // A one-bar 3/4 drum loop (12 steps) loops on its bar: the kick on step 0 fires every 72000 frames.
+    ps::Engine waltz(kRate);
+    waltz.post({ps::CommandType::SetBeatsPerBar, 0.0f, 3});
+    waltz.post({ps::CommandType::SetPatternSteps, 0.0f, 12});
+    waltz.post({ps::CommandType::SetDrumHit, 1.0f, 0, 0});
+    waltz.post({ps::CommandType::SetTransport, 1.0f, 0});
+    render(waltz, 72000 * 3 - 1000, 100);
+    CHECK(waltz.laneTriggerCount(0) == 3);
+    render(waltz, 2000, 100);
+    CHECK(waltz.laneTriggerCount(0) == 4);
+    CHECK(waltz.currentStep() == 0);
 }
 
 void testPianoRollNotesAreSampleAccurate() {

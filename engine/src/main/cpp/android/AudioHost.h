@@ -105,6 +105,9 @@ private:
     std::atomic<bool> drainInput_{false};
     // The audio thread reads the microphone ring only while this is set (never input_ itself).
     std::atomic<bool> inputLive_{false};
+    // The microphone is open for recording (not a latency test): reopened after a reroute.
+    bool recordingInput_ = false;
+    bool reopenRecordingInputLocked();
     std::atomic<bool> testInterrupted_{false};
     bool wantRunning_ = false;
     int bufferBursts_ = 2;

@@ -37,7 +37,7 @@ data class AudioClip(
     val seconds: Double = 0.0,
     /** First step, in sixteenths from the scene start. */
     val start: Int = 0,
-    /** It comes back every this many sixteenths (whole bars). */
+    /** It comes back every this many sixteenths (whole bars of the time signature). */
     val loopSteps: Int = 16,
     val gain: Float = 1f,
     /** Fade in and out, in seconds. */
@@ -48,7 +48,7 @@ data class AudioClip(
         name = name.take(40),
         seconds = seconds.takeIf { it.isFinite() }?.coerceIn(0.0, 600.0) ?: 0.0,
         start = start.coerceIn(0, MAX_START),
-        loopSteps = ((loopSteps.coerceIn(16, MAX_LOOP) + 15) / 16) * 16,
+        loopSteps = ((loopSteps.coerceIn(8, MAX_LOOP) + 3) / 4) * 4,
         gain = gain.takeIf { it.isFinite() }?.coerceIn(0f, 2f) ?: 1f,
         fadeIn = fadeIn.takeIf { it.isFinite() }?.coerceIn(0f, 10f) ?: 0f,
         fadeOut = fadeOut.takeIf { it.isFinite() }?.coerceIn(0f, 10f) ?: 0f,
@@ -59,9 +59,9 @@ data class AudioClip(
         /** 64 bars. */
         const val MAX_LOOP = 1024
 
-        /** The whole bars a clip of [seconds] lasts at [bpm] (at least one). */
-        fun barsFor(seconds: Double, bpm: Double): Int {
-            val bars = seconds * bpm / 240.0
+        /** The whole bars of [beatsPerBar] beats a clip of [seconds] lasts at [bpm] (at least one). */
+        fun barsFor(seconds: Double, bpm: Double, beatsPerBar: Int = 4): Int {
+            val bars = seconds * bpm / 60.0 / beatsPerBar
             if (!bars.isFinite() || bars <= 1.0) return 1
             return kotlin.math.ceil(bars - 0.02).toInt().coerceIn(1, MAX_LOOP / 16)
         }

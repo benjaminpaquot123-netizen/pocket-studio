@@ -65,6 +65,7 @@ import com.pocketstudio.model.InstrumentTrack
 import com.pocketstudio.model.partView
 import com.pocketstudio.model.sceneSteps
 import com.pocketstudio.model.togglePartTrack
+import com.pocketstudio.model.withBeatsPerBar
 import com.pocketstudio.model.AudioTrack
 import com.pocketstudio.model.AudioClip
 import com.pocketstudio.model.addAudioTrack
@@ -237,6 +238,14 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         pushRemix(p)
         pushAutomation(p)
         pushLive(p)
+        // Playing the song: the part on now keeps its muted tracks.
+        if (p === project.value) playingPart()?.let { pushPart(p, it.scene, it) }
+    }
+
+    /** The song part playing now, or null outside song playback. */
+    private fun playingPart(): SongPart? {
+        val i = _sessionUi.value.songIndex
+        return if (i >= 0 && _transport.value.playing) project.value.song.getOrNull(i) else null
     }
 
     // --- Live pads: sounds switched on and off by a tap, in time ---------------------------------
@@ -326,7 +335,6 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     fun selectTrack(id: Int) {
         if (id == track) return
-        synthAllOff()  // keys held on the old track must not hang
         heldNotes.clear()
         _selectedTrack.value = id
         NativeEngine.liveTrack = id
@@ -414,8 +422,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** Every audio track's clip and settings to the engine; free slots play nothing. */
     private fun pushAudio(p: Project = project.value) {
         if (!NativeEngine.isAvailable) return
+        val part = playingPart()
         for (id in 0 until AudioTrack.MAX) {
-            NativeEngine.setAudioOn(id, true)
+            NativeEngine.setAudioOn(id, part?.plays(SongPart.audio(id)) ?: true)
             val clip = p.audioTracks.firstOrNull { it.id == id }?.clip
             val native = clip?.let { padSamples.native(it.file) }
             if (clip != null && native != null) {
@@ -461,8 +470,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     private fun editClip(id: Int, key: String? = null, transform: (AudioClip) -> AudioClip) =
         editAudio(id, key) { t -> t.copy(clip = t.clip?.let(transform)) }
 
-    fun setAudioStart(id: Int, step: Int) = editClip(id) { it.copy(start = step) }
-    fun setAudioLoopBars(id: Int, bars: Int) = editClip(id) { it.copy(loopSteps = bars * 16) }
+    /** The clip starts on bar [bar] (1 = the first). */
+    fun setAudioStart(id: Int, bar: Int) = editClip(id) { it.copy(start = (bar - 1) * project.value.stepsPerBar) }
+    fun setAudioLoopBars(id: Int, bars: Int) = editClip(id) { it.copy(loopSteps = bars * project.value.stepsPerBar) }
     fun setAudioGain(id: Int, gain: Float) = editClip(id, "audio-gain-$id") { it.copy(gain = gain) }
     fun setAudioFadeIn(id: Int, seconds: Float) = editClip(id, "audio-in-$id") { it.copy(fadeIn = seconds) }
     fun setAudioFadeOut(id: Int, seconds: Float) = editClip(id, "audio-out-$id") { it.copy(fadeOut = seconds) }
@@ -472,9 +482,24 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     private suspend fun putClip(id: Int, pcm: Pcm, name: String, keep: AudioClip? = null) {
         val (sample, prepared) = withContext(Dispatchers.IO) { padSamples.add(pcm, name) }
         padSamples.register(prepared)
-        val bars = AudioClip.barsFor(pcm.seconds, project.value.tempoBpm)
-        val clip = (keep ?: AudioClip(sample.file, sample.name, loopSteps = bars * 16)).copy(file = sample.file, name = sample.name, seconds = pcm.seconds)
+        val bars = AudioClip.barsFor(pcm.seconds, project.value.tempoBpm, project.value.beatsPerBar)
+        val clip = (keep ?: AudioClip(sample.file, sample.name, loopSteps = bars * project.value.stepsPerBar)).copy(file = sample.file, name = sample.name, seconds = pcm.seconds)
         editAudio(id) { it.copy(clip = clip) }
+        // Long clips weigh tens of MB each: older takes and edits leave memory (Annuler reloads them).
+        padSamples.prune(project.value.sampleFiles)
+    }
+
+    /** After Annuler / Rétablir: sounds freed by [PadSamples.prune] come back from their files. */
+    private fun reloadMissingSamples() {
+        val missing = padSamples.missing(project.value.sampleFiles)
+        if (missing.isEmpty()) return
+        viewModelScope.launch {
+            val prepared = runCatching { withContext(Dispatchers.IO) { padSamples.reload(missing) } }.getOrElse { emptyList() }
+            prepared.forEach(padSamples::register)
+            pushPads()
+            pushLive()
+            pushAudio()
+        }
     }
 
     /** An audio file from the phone onto audio track [id]. */
@@ -517,27 +542,35 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (!NativeEngine.isAvailable || _audioRecording.value != null) return
         if (_recording.value) stopRecordingTake()
         if (_transport.value.playing) togglePlay()
-        val handle = NativeEngine.recordStart(onStart = true, seconds = MAX_AUDIO_SECONDS)
-        if (handle == 0L) {
-            _notice.value = "Le micro n'a pas pu être ouvert. Vérifie l'autorisation du micro et qu'aucune autre appli ne l'utilise."
-            return
-        }
-        recordHandle = handle
         _audioRecording.value = AudioRecordingUi(id, waiting = true)
-        _transport.value = _transport.value.copy(playing = true)
-        NativeEngine.play(com.pocketstudio.app.settings.SettingsStore.state.value.recordCountIn.coerceAtLeast(1))
-        PlaybackService.start(getApplication())
-        AppLog.add("Prise audio sur la piste ${id + 1}")
-        recordPoll = viewModelScope.launch {
-            while (true) {
-                val st = NativeEngine.recordStatus(handle)
-                val ui = _audioRecording.value ?: break
-                _audioRecording.value = ui.copy(waiting = st[0] < 0.5f, seconds = st[1] / OfflineExport.SAMPLE_RATE.toFloat(), level = st[2])
-                if (st[0] > 1.5f) {  // full: the take ends by itself
-                    stopAudioRecording()
-                    break
+        viewModelScope.launch {
+            // Opening the microphone can take up to a second: never on the main thread.
+            val handle = withContext(Dispatchers.IO) { NativeEngine.recordStart(onStart = true, seconds = MAX_AUDIO_SECONDS) }
+            if (_audioRecording.value?.track != id) {  // cancelled meanwhile
+                if (handle != 0L) finishInBackground(handle)
+                return@launch
+            }
+            if (handle == 0L) {
+                _audioRecording.value = null
+                _notice.value = "Le micro n'a pas pu être ouvert. Vérifie l'autorisation du micro et qu'aucune autre appli ne l'utilise."
+                return@launch
+            }
+            recordHandle = handle
+            _transport.value = _transport.value.copy(playing = true)
+            NativeEngine.play(com.pocketstudio.app.settings.SettingsStore.state.value.recordCountIn.coerceAtLeast(1))
+            PlaybackService.start(getApplication())
+            AppLog.add("Prise audio sur la piste ${id + 1}")
+            recordPoll = launch {
+                while (true) {
+                    val st = NativeEngine.recordStatus(handle)
+                    val ui = _audioRecording.value ?: break
+                    _audioRecording.value = ui.copy(waiting = st[0] < 0.5f, seconds = st[1] / OfflineExport.SAMPLE_RATE.toFloat(), level = st[2])
+                    if (st[0] > 1.5f) {  // full: the take ends by itself
+                        stopAudioRecording()
+                        break
+                    }
+                    kotlinx.coroutines.delay(50)
                 }
-                kotlinx.coroutines.delay(50)
             }
         }
     }
@@ -551,21 +584,22 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         _audioRecording.value = null
         if (_transport.value.playing) togglePlay()
         if (handle == 0L) return
-        val audio = NativeEngine.recordFinish(handle)
-        if (audio == null || audio.size < OfflineExport.SAMPLE_RATE / 10) {
-            if (ui.waiting) return  // stopped during the count-in: nothing was recorded
-            _notice.value = "La prise est trop courte ou le micro n'a rien donné."
-            return
-        }
         // What the microphone hears lags what was played by the round trip (speaker → micro).
         val latencyMs = Metrics.roundTripMs.value ?: (Metrics.streamInfo.value.outputLatencyMs.takeIf { it > 0 }?.times(2) ?: 0.0)
-        val skip = (latencyMs / 1000.0 * OfflineExport.SAMPLE_RATE).toInt().coerceIn(0, audio.size / 2)
-        val pcm = Pcm(audio.copyOfRange(skip, audio.size), 1, OfflineExport.SAMPLE_RATE)
-        if (PadSamples.isSilent(pcm)) {
-            _notice.value = "Le micro n'a rien entendu : rapproche-toi et réessaie."
-            return
-        }
         audioJob("Enregistrement de la prise…") {
+            val pcm = withContext(Dispatchers.IO) {
+                val audio = NativeEngine.recordFinish(handle) ?: throw UserMessage("La prise n'a pas pu être récupérée : réessaie.")
+                if (audio.size < OfflineExport.SAMPLE_RATE / 10) null
+                else {
+                    val skip = (latencyMs / 1000.0 * OfflineExport.SAMPLE_RATE).toInt().coerceIn(0, audio.size / 2)
+                    Pcm(audio.copyOfRange(skip, audio.size), 1, OfflineExport.SAMPLE_RATE)
+                }
+            }
+            if (pcm == null) {
+                if (!ui.waiting) throw UserMessage("La prise est trop courte ou le micro n'a rien donné.")
+                return@audioJob  // stopped during the count-in: nothing was recorded
+            }
+            if (PadSamples.isSilent(pcm)) throw UserMessage("Le micro n'a rien entendu : rapproche-toi et réessaie.")
             putClip(ui.track, pcm, "Prise ${java.text.SimpleDateFormat("HH:mm", java.util.Locale.FRANCE).format(java.util.Date())}")
             AppLog.add("Prise audio : ${"%.1f".format(pcm.seconds)} s, latence compensée ${latencyMs.toInt()} ms")
         }
@@ -578,7 +612,12 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         recordPoll?.cancel()
         _audioRecording.value = null
         if (_transport.value.playing) togglePlay()
-        if (handle != 0L) NativeEngine.recordFinish(handle)
+        if (handle != 0L) finishInBackground(handle)
+    }
+
+    /** Frees a take and closes the microphone off the main thread (also when the project closes). */
+    private fun finishInBackground(handle: Long) {
+        Thread({ NativeEngine.recordFinish(handle) }, "record-finish").start()
     }
 
     /** Clip edits: a new sound file each time, so Annuler brings the previous one back. */
@@ -668,12 +707,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** Time signature [beats]/4: the drum loop keeps its number of bars (up to 64 steps). */
     fun setBeatsPerBar(beats: Int) {
-        session.edit { p ->
-            val bars = (p.drums.steps / p.stepsPerBar).coerceAtLeast(1)
-            val q = p.copy(beatsPerBar = beats).sanitized()
-            val per = q.stepsPerBar
-            q.copy(drums = q.drums.withSteps((bars * per).coerceAtMost(DrumPattern.MAX_STEPS / per * per)))
-        }
+        session.edit { it.withBeatsPerBar(beats) }
         syncEngine()
     }
 
@@ -1168,6 +1202,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** Closes banks nobody plays or browses any more (the engine keeps its own instances). */
     private fun releaseUnusedFonts() {
+        // An export may be copying a font on its worker (TinySoundFont's count is not atomic).
+        if (running != null || exportJob != null) return
         val used = project.value.instrumentTracks.mapNotNull { it.instrument?.bankId }.toSet() + _bankId.value
         fonts.keys.filter { it !in used }.forEach { fonts.remove(it)?.close() }
     }
@@ -1834,8 +1870,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     private fun pushMixer(p: Project = project.value) {
         if (!NativeEngine.isAvailable) return
+        // Only the strips in use: the engine's command queue has room for whole projects.
+        val used = setOf(0, 1, 3) + p.instrumentTracks.map { InstrumentTrack.mixerChannel(it.id) } + p.audioTracks.map { AudioTrack.mixerChannel(it.id) }
         p.mixer.channels.take(NativeEngine.MIXER_CHANNELS).forEachIndexed { i, c ->
-            if (i == MASTER) return@forEachIndexed  // the master's index: its settings are below
+            if (i == MASTER || i !in used) return@forEachIndexed  // the master's index: its settings are below
             NativeEngine.setChannelVolume(i, c.volume)
             NativeEngine.setChannelPan(i, c.pan)
             NativeEngine.setChannelMute(i, c.mute)
@@ -1916,13 +1954,18 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         _keyboardOctave.value = (_keyboardOctave.value + delta).coerceIn(1, 7)
     }
 
+    /** Keys down on the keyboard and the track each one plays (released there, whatever is selected since). */
+    private val keysDown = HashMap<Int, Int>()
+
     fun synthNoteOn(note: Int) {
+        keysDown[note] = track
         if (NativeEngine.isAvailable) NativeEngine.synthNoteOn(note, 0.85f, track)
         recordNoteOn(note, 0.85f)
     }
 
     fun synthNoteOff(note: Int) {
-        if (NativeEngine.isAvailable) NativeEngine.synthNoteOff(note, track)
+        val on = keysDown.remove(note) ?: track
+        if (NativeEngine.isAvailable) NativeEngine.synthNoteOff(note, on)
         recordNoteOff(note)
     }
 
@@ -2327,6 +2370,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         session.undo()
         syncEngine()
         loadTrackFonts()
+        reloadMissingSamples()
     }
 
     fun redo() {
@@ -2334,6 +2378,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         session.redo()
         syncEngine()
         loadTrackFonts()
+        reloadMissingSamples()
     }
 
     /** Writes pending changes now (the app is going to the background). */
@@ -2592,6 +2637,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     override fun onCleared() {
+        // A take in progress: the microphone closes and its buffer is freed.
+        recordHandle.takeIf { it != 0L }?.let { finishInBackground(it) }
+        recordHandle = 0L
         downloadCancelled = true
         fonts.values.forEach { it.close() }
         fonts.clear()

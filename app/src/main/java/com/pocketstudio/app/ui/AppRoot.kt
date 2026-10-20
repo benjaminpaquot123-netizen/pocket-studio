@@ -759,6 +759,7 @@ fun AppRoot() {
                                         else -> null
                                     },
                                     latencyMeasured = roundTripMs != null,
+                                    stepsPerBar = project.stepsPerBar,
                                 ),
                                 AudioTracksActions(
                                     add = rhythmVm::addAudioTrack,

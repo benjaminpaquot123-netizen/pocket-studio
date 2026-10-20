@@ -52,6 +52,17 @@ class TimelineTest {
     }
 
     @Test
+    fun aNewTimeSignatureConvertsEveryScene() {
+        var p = Project(drums = DrumPattern().withSteps(32)).copySceneTo(1)
+        p = p.switchScene(1).copy(drums = DrumPattern().withSteps(16)).sanitized()
+        val waltz = p.withBeatsPerBar(3)
+        assertEquals(3, waltz.beatsPerBar)
+        assertEquals(listOf(24, 12), waltz.allScenes.map { it.drums.steps })  // 2 bars, then 1 bar of 3/4
+        // 7/4: 28 steps a bar, 64 at most → two bars become 56.
+        assertEquals(56, p.switchScene(0).withBeatsPerBar(7).drums.steps)
+    }
+
+    @Test
     fun midiExportLeavesOutMutedTracksAndKeepsTheMeter() {
         val p = project().copy(beatsPerBar = 3).togglePartTrack(0, SongPart.DRUMS).sanitized()
         val content = MidiFile.read(MidiFile.export(p, song = true))

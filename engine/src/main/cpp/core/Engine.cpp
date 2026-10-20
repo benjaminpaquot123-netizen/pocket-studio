@@ -114,8 +114,8 @@ void Engine::applyCommand(const Command& command) {
             metronome_.setLevel(command.value);
             break;
         case CommandType::SetPatternSteps:
-            if (staging_) staged_.drumSteps = std::clamp(command.a, 16, kMaxSteps);
-            else patternSteps_ = std::clamp(command.a, 16, kMaxSteps);
+            if (staging_) staged_.drumSteps = std::clamp(command.a, 8, kMaxSteps);
+            else patternSteps_ = std::clamp(command.a, 8, kMaxSteps);
             break;
         case CommandType::SetAcidStep:
             if (staging_) {

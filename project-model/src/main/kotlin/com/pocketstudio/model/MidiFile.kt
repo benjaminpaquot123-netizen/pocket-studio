@@ -36,7 +36,7 @@ object MidiFile {
         var at = 0
         var partsDone = 0
         for (index in parts) {
-            val scene = scenes.getOrNull(index) ?: continue
+            val scene = scenes.getOrNull(index) ?: run { partsDone++; null } ?: continue
             val sceneSteps = scene.stepsFor(project.stepsPerBar)
             val sceneTicks = sceneSteps * NoteClip.TICKS_PER_STEP
             // A song part leaves out its muted tracks (the timeline).

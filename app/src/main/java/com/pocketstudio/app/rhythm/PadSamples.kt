@@ -46,6 +46,21 @@ class PadSamples(private val dir: File) {
         }
     }
 
+    /**
+     * Main thread: frees the sounds the project no longer uses (an older take, a replaced clip).
+     * The engine keeps its own reference to what still plays; Annuler reloads with [missing].
+     */
+    fun prune(keep: Set<String>) {
+        loaded.keys.filter { it !in keep }.forEach { loaded.remove(it)?.close() }
+        _info.value = _info.value.filterKeys { it in keep }
+    }
+
+    /** Files of [files] not in memory (after [prune] and an undo). */
+    fun missing(files: Set<String>): Set<String> = files.filterTo(HashSet()) { it !in loaded }
+
+    /** Blocking (background): reads [files] again (never deletes anything). */
+    fun reload(files: Set<String>): List<Prepared> = loadAll(files, cleanUp = false)
+
     /** Blocking (background): the sound of [file] as stored. */
     fun read(file: String): Pcm = FloatWav.read(File(dir, file))
 

@@ -300,7 +300,10 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, playing: Boo
                             .background(fill)
                             .border(if (playing) 2.dp else 1.dp, if (playing) Neon.TextPrimary else Neon.Outline, RoundedCornerShape(6.dp))
                             .combinedClickable(
-                                onClick = { if (rollTool) actions.cycleRoll(step) else actions.toggleStep(step) },
+                                onClick = {
+                                    // A loop shorter than the page (an older length): its end is not editable.
+                                    if (step < project.drums.steps) { if (rollTool) actions.cycleRoll(step) else actions.toggleStep(step) }
+                                },
                                 onLongClick = {
                                     haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                                     actions.cycleVelocity(step)

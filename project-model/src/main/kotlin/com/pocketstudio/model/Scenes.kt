@@ -134,3 +134,21 @@ fun Project.partView(part: SongPart): Project {
 fun Project.togglePartTrack(index: Int, key: String): Project = copy(
     song = song.mapIndexed { i, p -> if (i != index) p else p.copy(muted = if (key in p.muted) p.muted - key else p.muted + key) },
 )
+
+/**
+ * Time signature [beats]/4 for the whole project: every scene's drum loop keeps its number of
+ * bars (64 steps at most), so its grid stays whole bars.
+ */
+fun Project.withBeatsPerBar(beats: Int): Project {
+    val from = stepsPerBar
+    val to = beats.coerceIn(Project.MIN_BEATS, Project.MAX_BEATS) * 4
+    fun convert(d: DrumPattern): DrumPattern {
+        val bars = (d.steps / from).coerceAtLeast(1)
+        return d.withSteps((bars * to).coerceAtMost(DrumPattern.MAX_STEPS / to * to))
+    }
+    return copy(
+        beatsPerBar = to / 4,
+        drums = convert(drums),
+        scenes = scenes.map { it.copy(drums = convert(it.drums)) },
+    ).sanitized()
+}

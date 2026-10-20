@@ -2525,7 +2525,9 @@ void testPlaitsVoices() {
         for (float v : buf) { pk = std::max(pk, std::fabs(v)); finite &= std::isfinite(v); }
         if (!finite || pk < 1e-3f || pk > 3.0f || load > 0.12) std::printf("  model %d: peak %.3f load %.0f %% finite %d\n", model, pk, load * 100, finite);
         CHECK(finite && pk > 1e-3f && pk < 3.0f);
+#if !defined(__SANITIZE_ADDRESS__)
         CHECK(load < 0.12);  // heavy models are capped in voices: any model stays cheap here
+#endif
         plaits.allNotesOff();
         std::vector<float> flush(kRate, 0.0f);
         plaits.render(flush.data(), kRate);

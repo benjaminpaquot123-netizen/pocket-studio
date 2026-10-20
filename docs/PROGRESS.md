@@ -66,7 +66,9 @@
   - 4.4 effets live sur la sortie : pad XY (filtre DJ + résonance, revient au neutre), répéteur 1/4–1/32 calé au tempo, hacheur sur les doubles-croches, stop bande ; dans l'onglet Morceau ; test Linux ;
   - 4.3 scènes A–H (batterie + acide + piano roll), lancement à la mesure suivante, morceau (scènes × répétitions, en boucle) ; bascule au pas près dans le moteur (tampon d'attente), test Linux.
 
+- Phase 4 terminée et fusionnée (PR #13, 2026-10-20) : revue faite et corrigée (REVIEW.md).
+
 ## Prochaine étape exacte
-1. Revue de fin de phase 4 faite et corrigée (REVIEW.md). Dès que la CI est verte : fusionner la PR #13, puis phase 5 (Plaits, FM 4 opérateurs, presets, MIDI) sur la même branche repartie de main.
-2. Attendre les retours de Benjamin sur la 0.3.47 (formes d'onde, kits au clavier, grésillement).
+1. Phase 5.1 : moteurs de synthèse Plaits (Mutable Instruments, MIT) et FM 4 opérateurs, choisis dans Synthé › Source du son ; testés sur Linux, sans allocation. Nouvelle PR « Phase 5 : synthèse avancée et connectivité ».
+2. Attendre les retours de Benjamin (phase 4 : effets, scènes, morceau, effets live).
 3. Reste noté : lever la limite de 60 s par son ; import de packs .zip ; étirement des stems si le tempo change.

@@ -1,0 +1,355 @@
+package com.pocketstudio.app.library
+
+import android.app.Application
+import android.net.Uri
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
+import com.pocketstudio.app.audio.AudioDecoder
+import com.pocketstudio.app.audio.Pcm
+import com.pocketstudio.app.audio.PcmPlayer
+import com.pocketstudio.app.download.VerifiedDownload
+import com.pocketstudio.app.report.AppLog
+import com.pocketstudio.app.rhythm.DrumKitInfo
+import com.pocketstudio.engine.NativeEngine
+import com.pocketstudio.engine.OfflineExport
+import com.pocketstudio.model.PackIndex
+import com.pocketstudio.model.PackManifest
+import com.pocketstudio.model.PackSound
+import com.pocketstudio.model.PadSample
+import com.pocketstudio.model.Project
+import com.pocketstudio.model.SoundPacks
+import com.pocketstudio.model.StarterWizard
+import com.pocketstudio.model.StarterWizard.Role
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.util.UUID
+import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.math.abs
+
+/** A sound of the library: a voice of the built-in kit, or a file of a downloaded pack. */
+sealed interface SoundRef {
+    data class Kit(val voice: Int) : SoundRef
+    data class Pack(val packId: String, val sound: PackSound) : SoundRef
+}
+
+data class SoundOption(val ref: SoundRef, val name: String)
+
+/** "Kicks · House" (a pack's sounds of one kind), or the built-in kit's voices for that line. */
+data class SoundCategory(val id: String, val title: String, val options: List<SoundOption>)
+
+sealed interface IndexState {
+    data object Loading : IndexState
+    data object Unavailable : IndexState
+    data class Ready(val index: PackIndex) : IndexState
+    data class Failed(val message: String) : IndexState
+}
+
+data class PacksUi(
+    val index: IndexState = IndexState.Loading,
+    val installed: List<PackManifest> = emptyList(),
+    /** Pack id → download progress 0..1. */
+    val downloading: Map<String, Float> = emptyMap(),
+    val message: String? = null,
+)
+
+/** One line of the beat in the assistant: used or not, the category shown, the chosen sound. */
+data class WizardRow(val enabled: Boolean, val category: String, val sound: SoundOption?)
+
+data class WizardUi(
+    val open: Boolean = false,
+    /** 0: the style; 1..lines: one line each; lines + 1: the summary. */
+    val step: Int = 0,
+    val styleId: String? = null,
+    val rows: Map<Role, WizardRow> = emptyMap(),
+    val creating: Boolean = false,
+    val error: String? = null,
+) {
+    val style: StarterWizard.Style? get() = styleId?.let(StarterWizard::style)
+    val lastStep: Int get() = (style?.lines?.size ?: 0) + 1
+}
+
+const val KIT_CATEGORY = "kit"
+private const val PACK_PREFIX = "pack:"
+
+/**
+ * The line's sound categories, the style's own pack first (when downloaded), then the built-in
+ * kit, then the other packs that have that kind of sound.
+ */
+fun soundCategories(role: Role, styleId: String?, installed: List<PackManifest>): List<SoundCategory> {
+    val label = SoundPacks.KIND_LABELS[role.id] ?: role.title
+    val kit = SoundCategory(KIT_CATEGORY, "Sons intégrés", role.builtIn.map { SoundOption(SoundRef.Kit(it), DrumKitInfo.names[it]) })
+    val packs = installed.mapNotNull { m ->
+        val sounds = m.ofKind(role.id)
+        if (sounds.isEmpty()) null
+        else SoundCategory(PACK_PREFIX + m.id, "$label · ${m.name}", sounds.map { SoundOption(SoundRef.Pack(m.id, it), "${it.name} · ${m.name}") })
+    }
+    val own = packs.filter { it.id == PACK_PREFIX + styleId }
+    return own + kit + (packs - own.toSet())
+}
+
+/**
+ * The sound library (built-in kit and downloaded packs, with previews) and the beginner's
+ * assistant that builds a new song from it.
+ */
+class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
+    private val _packs = MutableStateFlow(PacksUi())
+    val packs: StateFlow<PacksUi> = _packs.asStateFlow()
+
+    private val _wizard = MutableStateFlow(WizardUi())
+    val wizard: StateFlow<WizardUi> = _wizard.asStateFlow()
+
+    private val _playing = MutableStateFlow<SoundRef?>(null)
+    /** The sound being previewed, if any. */
+    val playing: StateFlow<SoundRef?> = _playing.asStateFlow()
+
+    private val player = PcmPlayer { _playing.value = null }
+    private val kitCache = HashMap<Int, Pcm>()
+    private val cancelled = HashMap<String, AtomicBoolean>()
+
+    // --- Packs ---------------------------------------------------------------------------------
+
+    fun refreshPacks() {
+        viewModelScope.launch {
+            val app = getApplication<Application>()
+            val installed = withContext(Dispatchers.IO) { PackStore.installed(app) }
+            _packs.update { it.copy(installed = installed) }
+            if (_packs.value.index is IndexState.Ready) return@launch
+            _packs.update { it.copy(index = IndexState.Loading) }
+            val index = withContext(Dispatchers.IO) {
+                runCatching { PackStore.fetchIndex(app) }.fold(
+                    { it?.let { i -> IndexState.Ready(i) } ?: IndexState.Unavailable },
+                    { IndexState.Failed("La liste des packs n'a pas pu être chargée (réseau ?).") },
+                )
+            }
+            _packs.update { it.copy(index = index) }
+        }
+    }
+
+    fun downloadPack(id: String) {
+        val entry = (_packs.value.index as? IndexState.Ready)?.index?.packs?.firstOrNull { it.id == id } ?: return
+        if (id in _packs.value.downloading) return
+        val stop = AtomicBoolean(false).also { cancelled[id] = it }
+        _packs.update { it.copy(downloading = it.downloading + (id to 0f), message = null) }
+        viewModelScope.launch {
+            val app = getApplication<Application>()
+            val error = withContext(Dispatchers.IO + NonCancellable) {
+                runCatching {
+                    PackStore.install(app, entry, { p -> _packs.update { it.copy(downloading = it.downloading + (id to p)) } }, stop::get)
+                }.exceptionOrNull()
+            }
+            cancelled.remove(id)
+            val installed = withContext(Dispatchers.IO) { PackStore.installed(app) }
+            _packs.update {
+                it.copy(
+                    installed = installed,
+                    downloading = it.downloading - id,
+                    message = when (error) {
+                        null -> null
+                        is VerifiedDownload.CancelledException -> null
+                        else -> "Le pack « ${entry.name} » n'a pas pu être téléchargé : ${error.message ?: "erreur"}.".also { m -> AppLog.add(m) }
+                    },
+                )
+            }
+            if (error == null) {
+                AppLog.add("Pack « ${entry.name} » installé")
+                refreshWizardDefaults()
+            }
+        }
+    }
+
+    fun cancelDownload(id: String) {
+        cancelled[id]?.set(true)
+    }
+
+    /** Frees the space; projects keep their own copies of the sounds they use. */
+    fun deletePack(id: String) {
+        stopPreview()
+        viewModelScope.launch {
+            val app = getApplication<Application>()
+            val installed = withContext(Dispatchers.IO) {
+                PackStore.delete(app, id)
+                PackStore.installed(app)
+            }
+            _packs.update { it.copy(installed = installed) }
+            // Lines of the assistant that pointed at the deleted pack go back to a sound that exists.
+            _wizard.update { w ->
+                w.copy(rows = w.rows.mapValues { (role, row) ->
+                    if (row.category == PACK_PREFIX + id) defaultRow(role, w.styleId, installed).copy(enabled = row.enabled) else row
+                })
+            }
+        }
+    }
+
+    fun dismissMessage() = _packs.update { it.copy(message = null) }
+
+    // --- Previews ------------------------------------------------------------------------------
+
+    fun preview(ref: SoundRef) {
+        if (_playing.value == ref) {
+            stopPreview()
+            return
+        }
+        viewModelScope.launch {
+            val pcm = load(ref) ?: return@launch
+            if (player.play(pcm)) _playing.value = ref
+        }
+    }
+
+    fun stopPreview() = player.stop()
+
+    /** The sound as audio: the kit voice rendered once by the engine, or the pack file decoded. */
+    private suspend fun load(ref: SoundRef): Pcm? = when (ref) {
+        is SoundRef.Kit -> kitVoice(ref.voice)
+        is SoundRef.Pack -> withContext(Dispatchers.IO) {
+            val file = PackStore.file(getApplication(), ref.packId, ref.sound)
+            runCatching { AudioDecoder.decode(getApplication(), Uri.fromFile(file)) }
+                .onFailure { AppLog.add("Son de pack illisible ${ref.sound.file} : ${it.message}") }
+                .getOrNull()
+        }
+    }
+
+    private suspend fun kitVoice(voice: Int): Pcm? {
+        kitCache[voice]?.let { return it }
+        if (!NativeEngine.isAvailable) return null
+        val job = OfflineExport()
+        NativeEngine.captureInto(job) {
+            NativeEngine.setTempo(120.0)
+            NativeEngine.setPatternSteps(16)
+            NativeEngine.setDrumHit(voice, 0, 1f)
+        }
+        val data = try {
+            withContext(Dispatchers.Default) { job.renderToArray(KIT_FRAMES, 0) }
+        } finally {
+            withContext(NonCancellable + Dispatchers.Main) { job.close() }
+        }
+        if (data.isEmpty()) return null
+        return Pcm(trimSilence(data), 2, OfflineExport.SAMPLE_RATE).also { kitCache[voice] = it }
+    }
+
+    // --- The assistant -------------------------------------------------------------------------
+
+    fun openWizard() {
+        _wizard.value = WizardUi(open = true)
+        refreshPacks()
+    }
+
+    fun closeWizard() {
+        stopPreview()
+        _wizard.value = WizardUi()
+    }
+
+    fun chooseStyle(id: String) {
+        val style = StarterWizard.style(id) ?: return
+        val installed = _packs.value.installed
+        _wizard.update { w ->
+            w.copy(styleId = id, step = 1, rows = style.lines.associate { it.role to defaultRow(it.role, id, installed) }, error = null)
+        }
+    }
+
+    fun next() = _wizard.update { it.copy(step = (it.step + 1).coerceAtMost(it.lastStep)) }
+
+    fun back() {
+        stopPreview()
+        _wizard.update { it.copy(step = (it.step - 1).coerceAtLeast(0), error = null) }
+    }
+
+    fun setRowEnabled(role: Role, enabled: Boolean) = editRow(role) { it.copy(enabled = enabled) }
+
+    fun setCategory(role: Role, categoryId: String) {
+        val category = soundCategories(role, _wizard.value.styleId, _packs.value.installed).firstOrNull { it.id == categoryId } ?: return
+        editRow(role) { it.copy(category = categoryId, sound = category.options.firstOrNull()) }
+    }
+
+    /** Picks the sound for the line and lets it be heard. */
+    fun choose(role: Role, option: SoundOption) {
+        editRow(role) { it.copy(sound = option, enabled = true) }
+        if (_playing.value != option.ref) preview(option.ref)
+    }
+
+    private fun editRow(role: Role, transform: (WizardRow) -> WizardRow) =
+        _wizard.update { w -> w.rows[role]?.let { w.copy(rows = w.rows + (role to transform(it))) } ?: w }
+
+    /** After a download: lines still on the built-in kit move to the style's own new pack. */
+    private fun refreshWizardDefaults() {
+        val installed = _packs.value.installed
+        _wizard.update { w ->
+            w.copy(rows = w.rows.mapValues { (role, row) ->
+                val better = defaultRow(role, w.styleId, installed)
+                if (row.category == KIT_CATEGORY && better.category != KIT_CATEGORY) better.copy(enabled = row.enabled) else row
+            })
+        }
+    }
+
+    private fun defaultRow(role: Role, styleId: String?, installed: List<PackManifest>): WizardRow {
+        val first = soundCategories(role, styleId, installed).first()
+        // The built-in kit: the voice already on that pad when it can play the line.
+        val option = if (first.id == KIT_CATEGORY) first.options.firstOrNull { (it.ref as SoundRef.Kit).voice == role.lane } ?: first.options.first()
+        else first.options.first()
+        return WizardRow(enabled = true, category = first.id, sound = option)
+    }
+
+    /**
+     * Builds the new song: [then] gets the project and the sounds to store in its folder
+     * (file name → audio), on the main thread.
+     */
+    fun create(then: (Project, Map<String, Pcm>) -> Unit) {
+        val w = _wizard.value
+        val style = w.style ?: return
+        if (w.creating) return
+        stopPreview()
+        _wizard.update { it.copy(creating = true, error = null) }
+        viewModelScope.launch {
+            try {
+                val sounds = HashMap<Role, PadSample?>()
+                val files = HashMap<String, Pcm>()
+                for (line in style.lines) {
+                    val row = w.rows[line.role] ?: continue
+                    val option = row.sound ?: continue
+                    if (!row.enabled) continue
+                    val ref = option.ref
+                    // The kit voice the pad already has needs no file.
+                    if (ref is SoundRef.Kit && ref.voice == line.role.lane) {
+                        sounds[line.role] = null
+                        continue
+                    }
+                    val pcm = load(ref) ?: throw IllegalStateException("son illisible : ${option.name}")
+                    val file = "${UUID.randomUUID().toString().take(12)}.wav"
+                    files[file] = pcm
+                    sounds[line.role] = PadSample(file, option.name.substringBefore(" · ").take(40))
+                }
+                if (sounds.isEmpty()) {
+                    _wizard.update { it.copy(creating = false, error = "Garde au moins une ligne pour commencer.") }
+                    return@launch
+                }
+                AppLog.add("Assistant : morceau ${style.name}, ${sounds.size} lignes")
+                then(StarterWizard.build(style, sounds), files)
+                _wizard.value = WizardUi()
+            } catch (e: Exception) {
+                _wizard.update { it.copy(creating = false, error = "Le morceau n'a pas pu être préparé (${e.message}).") }
+            }
+        }
+    }
+
+    override fun onCleared() {
+        player.stop()
+        cancelled.values.forEach { it.set(true) }
+    }
+
+    companion object {
+        private const val KIT_FRAMES = OfflineExport.SAMPLE_RATE * 3L / 2
+
+        /** Drops the silent end of a render (keeps 20 ms after the last audible frame). */
+        fun trimSilence(stereo: FloatArray): FloatArray {
+            var last = stereo.size / 2 - 1
+            while (last > 0 && abs(stereo[last * 2]) < 1e-4f && abs(stereo[last * 2 + 1]) < 1e-4f) last--
+            val keep = ((last + 1 + OfflineExport.SAMPLE_RATE / 50) * 2).coerceAtMost(stereo.size).coerceAtLeast(2)
+            return stereo.copyOf(keep)
+        }
+    }
+}

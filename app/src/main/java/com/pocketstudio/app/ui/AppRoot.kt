@@ -178,6 +178,7 @@ fun AppRoot() {
     val rhythmVm: RhythmViewModel = viewModel()
     val remixVm: RemixViewModel = viewModel()
     val generateVm: com.pocketstudio.app.generate.GenerateViewModel = viewModel()
+    val libraryVm: com.pocketstudio.app.library.SoundLibraryViewModel = viewModel()
     var tab by rememberSaveable { mutableStateOf(AppTab.Rythme) }
     var showProjects by rememberSaveable { mutableStateOf(false) }
     val projectsVm: ProjectsViewModel = viewModel()
@@ -198,6 +199,36 @@ fun AppRoot() {
             }
         }
     }
+    val wizardUi by libraryVm.wizard.collectAsStateWithLifecycle()
+    if (wizardUi.open) {
+        val packsUi by libraryVm.packs.collectAsStateWithLifecycle()
+        val previewing by libraryVm.playing.collectAsStateWithLifecycle()
+        androidx.compose.ui.window.Dialog(
+            onDismissRequest = libraryVm::closeWizard,
+            properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false),
+        ) {
+            androidx.activity.compose.BackHandler { if (wizardUi.step > 0) libraryVm.back() else libraryVm.closeWizard() }
+            androidx.compose.material3.Surface(color = Neon.Background, modifier = Modifier.fillMaxSize()) {
+                com.pocketstudio.app.library.WizardScreen(
+                    wizardUi, packsUi, previewing,
+                    com.pocketstudio.app.library.WizardActions(
+                        close = libraryVm::closeWizard,
+                        chooseStyle = libraryVm::chooseStyle,
+                        next = libraryVm::next,
+                        back = libraryVm::back,
+                        setEnabled = libraryVm::setRowEnabled,
+                        setCategory = libraryVm::setCategory,
+                        choose = libraryVm::choose,
+                        preview = libraryVm::preview,
+                        download = libraryVm::downloadPack,
+                        cancelDownload = libraryVm::cancelDownload,
+                        deletePack = libraryVm::deletePack,
+                        create = { libraryVm.create { project, sounds -> projectsVm.create(project, sounds) { id -> openProject(id) } } },
+                    ),
+                )
+            }
+        }
+    }
     if (showProjects) {
         val projectsUi by projectsVm.state.collectAsStateWithLifecycle()
         LaunchedEffect(Unit) { projectsVm.refresh() }
@@ -213,6 +244,7 @@ fun AppRoot() {
                         back = { showProjects = false },
                         open = { openProject(it.id) },
                         create = { i -> projectsVm.create(PROJECT_STARTERS[i].second()) { id -> openProject(id) } },
+                        wizard = libraryVm::openWizard,
                         rename = { p, name -> if (p.id == rhythmVm.projectId) { rhythmVm.renameProject(name); projectsVm.refresh() } else projectsVm.rename(p.id, name) },
                         duplicate = { p -> openScope.launch { if (p.id == rhythmVm.projectId) rhythmVm.flushNow(); projectsVm.duplicate(p) } },
                         exportZip = { p ->

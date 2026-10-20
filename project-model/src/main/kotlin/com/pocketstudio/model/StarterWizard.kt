@@ -1,0 +1,257 @@
+package com.pocketstudio.model
+
+/**
+ * The beginner's assistant for a new song: a style, then one step per drum line (what it does,
+ * which sound), then a project with those sounds on the pads and a basic groove to start from.
+ * It never writes the music: the grooves are plain textbook patterns the user then changes.
+ */
+object StarterWizard {
+    /** A line of the beat: which pad it lands on, what it is for, which kit voices can play it. */
+    enum class Role(val id: String, val lane: Int, val title: String, val explanation: String, val builtIn: List<Int>) {
+        Kick(
+            "kick", 0, "Kick (grosse caisse)",
+            "La fondation du morceau : le battement de cœur grave que tout le monde suit en tapant du pied.",
+            listOf(0, 1),
+        ),
+        Snare(
+            "snare", 2, "Caisse claire",
+            "Elle marque le contre-temps (les temps 2 et 4) : elle répond au kick et donne l'élan.",
+            listOf(2, 3, 10),
+        ),
+        Clap(
+            "clap", 4, "Clap",
+            "Un battement de mains : il renforce ou remplace la caisse claire, très courant en house et en trap.",
+            listOf(4),
+        ),
+        Hat(
+            "hat", 5, "Charley fermé (hi-hat)",
+            "Le « tic-tic » régulier et léger : il donne la vitesse et le groove.",
+            listOf(5, 13),
+        ),
+        OpenHat(
+            "open_hat", 6, "Charley ouvert",
+            "Un « tsss » plus long : placé entre les temps, il fait respirer le rythme.",
+            listOf(6, 12),
+        ),
+        Perc(
+            "perc", 10, "Percussion",
+            "Des petits coups (rim, cloche, conga, shaker) glissés entre les autres : ils donnent du caractère.",
+            listOf(10, 11, 14, 13, 7, 8, 9, 15),
+        ),
+        Bass808(
+            "808", 1, "Basse 808",
+            "Une basse très grave et ronde qui suit le kick : c'est elle qui fait vibrer les enceintes.",
+            listOf(0, 1),
+        ),
+    }
+
+    /**
+     * [pattern]: one character per step (16 = one bar of 4/4): 'X' strong, 'x' medium, 'o' soft,
+     * '.' nothing. [tip]: why the line sits where it does in this style.
+     */
+    data class Line(val role: Role, val pattern: String, val tip: String)
+
+    data class Style(
+        val id: String,
+        val name: String,
+        val family: String,
+        val bpm: Double,
+        val description: String,
+        val lines: List<Line>,
+        val swing: Double = 0.0,
+    )
+
+    val FAMILIES = listOf("Hip-hop", "House", "Techno", "Bass music", "Autres")
+
+    val STYLES: List<Style> = listOf(
+        Style(
+            "boom_bap", "Boom bap", "Hip-hop", 90.0, "Le hip-hop new-yorkais des années 90 : lourd, posé, qui balance.",
+            listOf(
+                Line(Role.Kick, "X......x..X.....", "Un kick sur le 1 et quelques coups décalés : le « boom »."),
+                Line(Role.Snare, "....X.......X...", "La caisse claire sur 2 et 4 : le « bap »."),
+                Line(Role.Hat, "x.o.x.o.x.o.x.o.", "Des croches régulières, une sur deux plus douce."),
+                Line(Role.Perc, "..........o....o", "Un petit rim de temps en temps."),
+            ),
+            swing = 0.25,
+        ),
+        Style(
+            "trap", "Trap", "Hip-hop", 140.0, "Le rap d'Atlanta : rythme à demi-temps, charleys en rafales, 808 énorme.",
+            listOf(
+                Line(Role.Kick, "X......X..X.....", "Peu de kicks, bien placés : la 808 fait le reste."),
+                Line(Role.Bass808, "X......X..X.....", "La 808 joue avec le kick pour un grave qui dure."),
+                Line(Role.Clap, "........X.......", "Un seul clap au milieu de la mesure : c'est le demi-temps."),
+                Line(Role.Hat, "xoxoxoxoxoxoxoxo", "Des doubles croches serrées (tu pourras ajouter des roulements)."),
+                Line(Role.OpenHat, "...............x", "Une ouverture à la fin pour relancer."),
+            ),
+        ),
+        Style(
+            "drill", "Drill", "Hip-hop", 142.0, "La drill UK : caisses claires décalées, ambiance sombre, glisses de 808.",
+            listOf(
+                Line(Role.Kick, "X.....x...X.....", "Kicks espacés, souvent décalés."),
+                Line(Role.Bass808, "X.....x...X.....", "La 808 suit le kick (en drill, elle glisse d'une note à l'autre)."),
+                Line(Role.Snare, "........X.....x.", "La caisse claire sur le 3 et une deuxième en avance : la signature drill."),
+                Line(Role.Hat, "x.xox.x.x.xox.x.", "Des charleys en triolets et petites rafales."),
+            ),
+        ),
+        Style(
+            "lofi", "Lo-fi hip-hop", "Hip-hop", 84.0, "Le hip-hop pour étudier : doux, chaloupé, un peu poussiéreux.",
+            listOf(
+                Line(Role.Kick, "X.....x...X.....", "Un kick souple, pas trop fort."),
+                Line(Role.Snare, "....X.......X...", "La caisse claire sur 2 et 4, comme en boom bap."),
+                Line(Role.Hat, "x.oxx.o.x.oxx.o.", "Des charleys irréguliers et doux pour le côté chaloupé."),
+                Line(Role.Perc, "..o.......o.....", "Un shaker ou un rim très discret."),
+            ),
+            swing = 0.35,
+        ),
+        Style(
+            "house", "House", "House", 124.0, "La house de Chicago : un kick sur chaque temps, ça fait danser.",
+            listOf(
+                Line(Role.Kick, "X...X...X...X...", "Un kick sur chaque temps : le « four on the floor »."),
+                Line(Role.Clap, "....X.......X...", "Le clap sur 2 et 4, avec le kick."),
+                Line(Role.Hat, "o.o.o.o.o.o.o.o.", "Des croches légères en fond."),
+                Line(Role.OpenHat, "..X...X...X...X.", "Le charley ouvert entre les temps : le « tss » qui fait sautiller."),
+                Line(Role.Perc, "......x.......x.", "Une petite percussion pour relancer."),
+            ),
+        ),
+        Style(
+            "deep_house", "Deep house", "House", 122.0, "La house douce et profonde : chaude, ronde, un peu jazzy.",
+            listOf(
+                Line(Role.Kick, "X...X...X...X...", "Le même kick sur chaque temps, plus rond."),
+                Line(Role.Clap, "....x.......x...", "Un clap plus discret."),
+                Line(Role.Hat, "..x...x...x...x.", "Le charley entre les temps."),
+                Line(Role.Perc, "oo.ooo.ooo.ooo.o", "Un shaker continu tout doux qui fait avancer."),
+            ),
+            swing = 0.15,
+        ),
+        Style(
+            "tech_house", "Tech house", "House", 126.0, "Entre house et techno : groove serré, percussions qui claquent.",
+            listOf(
+                Line(Role.Kick, "X...X...X...X...", "Kick sur chaque temps, bien sec."),
+                Line(Role.Clap, "....X.......X...", "Clap sur 2 et 4."),
+                Line(Role.OpenHat, "..X...X...X...X.", "Charley ouvert entre les temps."),
+                Line(Role.Hat, "oxoxoxoxoxoxoxox", "Doubles croches en fond pour l'énergie."),
+                Line(Role.Perc, "...x..x....x..x.", "Des percussions qui rebondissent."),
+            ),
+        ),
+        Style(
+            "uk_garage", "UK Garage", "House", 132.0, "Le 2-step anglais : rythme cassé et sautillant, gros swing.",
+            listOf(
+                Line(Role.Kick, "X.........X.....", "Pas un kick par temps : deux coups décalés, c'est le « 2-step »."),
+                Line(Role.Snare, "....X.......X...", "Caisse claire sur 2 et 4."),
+                Line(Role.Clap, "....x.......x..x", "Un clap qui double la caisse et une petite touche à la fin."),
+                Line(Role.Hat, "x.xxx.x.x.xxx.x.", "Des charleys bien swingués : c'est tout le groove du garage."),
+                Line(Role.Perc, "......o.......o.", "Un rim pour sautiller."),
+            ),
+            swing = 0.4,
+        ),
+        Style(
+            "techno", "Techno", "Techno", 130.0, "La techno de Detroit et Berlin : répétitive, hypnotique, puissante.",
+            listOf(
+                Line(Role.Kick, "X...X...X...X...", "Un kick sur chaque temps, lourd et constant."),
+                Line(Role.Clap, "....x.......x...", "Un clap discret sur 2 et 4."),
+                Line(Role.Hat, "oooooooooooooooo", "Des doubles croches régulières en fond."),
+                Line(Role.OpenHat, "..X...X...X...X.", "Le charley ouvert entre les temps pour la propulsion."),
+                Line(Role.Perc, "...x.......x....", "Une percussion métallique qui revient."),
+            ),
+        ),
+        Style(
+            "minimal", "Minimal", "Techno", 128.0, "La techno épurée : peu de sons, chaque petit détail compte.",
+            listOf(
+                Line(Role.Kick, "X...X...X...X...", "Le kick sur chaque temps, simple."),
+                Line(Role.Hat, "..x...x...x...x.", "Un charley entre les temps."),
+                Line(Role.Perc, "x..x..x...x..x..", "Des petits clics et rims qui dessinent le groove."),
+                Line(Role.Clap, "............o...", "Un clap très rare."),
+            ),
+            swing = 0.1,
+        ),
+        Style(
+            "dnb", "Drum & bass", "Bass music", 174.0, "Le rythme cassé très rapide de Londres, basse énorme.",
+            listOf(
+                Line(Role.Kick, "X.........X.....", "Kick sur le 1 et juste après le 3 : le « two-step » de la drum & bass."),
+                Line(Role.Snare, "....X.......X...", "Caisse claire sur 2 et 4 : à ce tempo, c'est très rapide."),
+                Line(Role.Hat, "x.x.x.x.x.x.x.x.", "Des croches pour la vitesse."),
+                Line(Role.OpenHat, "..............x.", "Une ouverture en fin de mesure."),
+                Line(Role.Perc, "...o...o...o...o", "Un shaker qui remplit les trous."),
+            ),
+        ),
+        Style(
+            "jungle", "Jungle", "Bass music", 165.0, "L'ancêtre de la drum & bass : breaks découpés, esprit reggae.",
+            listOf(
+                Line(Role.Kick, "X.........X.X...", "Des kicks qui sautent comme un break de funk."),
+                Line(Role.Snare, "....X..o.o..X..o", "Caisse claire sur 2 et 4 plus des petites notes fantômes."),
+                Line(Role.Hat, "x.x.x.x.x.x.x.x.", "Des croches régulières."),
+                Line(Role.Perc, "..o.....o.....o.", "Quelques percussions."),
+            ),
+        ),
+        Style(
+            "dubstep", "Dubstep", "Bass music", 140.0, "La bass music anglaise : demi-temps, gros sub et basses qui grondent.",
+            listOf(
+                Line(Role.Kick, "X.........x.....", "Un kick sur le 1, un autre avant le dernier temps."),
+                Line(Role.Snare, "........X.......", "Une seule grosse caisse claire au milieu : c'est le demi-temps."),
+                Line(Role.Hat, "x.x.x.x.x.x.x.x.", "Des croches régulières."),
+                Line(Role.Bass808, "X...............", "Un sub qui tient toute la mesure."),
+                Line(Role.Perc, "......o.......o.", "Une petite percussion de relance."),
+            ),
+        ),
+        Style(
+            "reggaeton", "Reggaeton", "Autres", 95.0, "Le rythme « dembow » de Porto Rico : impossible de ne pas bouger.",
+            listOf(
+                Line(Role.Kick, "X...X...X...X...", "Un kick sur chaque temps."),
+                Line(Role.Snare, "...X..X....X..X.", "La caisse claire décalée : c'est le dembow."),
+                Line(Role.Hat, "x.x.x.x.x.x.x.x.", "Des croches régulières."),
+                Line(Role.Perc, "..o...o...o...o.", "Une percussion légère."),
+            ),
+        ),
+        Style(
+            "afrobeats", "Afrobeats", "Autres", 105.0, "La pop d'Afrique de l'Ouest : percussions qui roulent, groove solaire.",
+            listOf(
+                Line(Role.Kick, "X..x..x...X..x..", "Un kick qui danse autour des temps."),
+                Line(Role.Snare, "....x.......x...", "Caisse claire ou rim sur 2 et 4, léger."),
+                Line(Role.Hat, "oooooooooooooooo", "Un shaker continu."),
+                Line(Role.Perc, "..x..x.x..x..x.x", "Des congas qui répondent au kick."),
+            ),
+            swing = 0.2,
+        ),
+        Style(
+            "pop", "Pop", "Autres", 110.0, "Un rythme pop simple et efficace, pour chanter dessus.",
+            listOf(
+                Line(Role.Kick, "X.......X.X.....", "Un kick sur le 1 et le 3, plus une petite relance."),
+                Line(Role.Snare, "....X.......X...", "Caisse claire sur 2 et 4."),
+                Line(Role.Clap, "....x.......x...", "Un clap qui double la caisse claire."),
+                Line(Role.Hat, "x.x.x.x.x.x.x.x.", "Des croches régulières."),
+            ),
+        ),
+    )
+
+    fun style(id: String): Style? = STYLES.firstOrNull { it.id == id }
+
+    /** A pattern string as hits (steps without a hit are left out). */
+    fun hits(pattern: String): Map<Int, Hit> = pattern.mapIndexedNotNull { i, c ->
+        when (c) {
+            'X' -> i to Hit(1f)
+            'x' -> i to Hit(0.6f)
+            'o' -> i to Hit(0.35f)
+            else -> null
+        }
+    }.toMap()
+
+    /**
+     * The new project: the style's tempo and swing, each chosen line's sound on its pad
+     * ([sounds]: role → the pad's own sound, or null for the kit voice already on that pad) and
+     * its groove in the grid. Lines left out of [sounds] stay empty.
+     */
+    fun build(style: Style, sounds: Map<Role, PadSample?>): Project {
+        val steps = style.lines.maxOf { it.pattern.length }.coerceIn(DrumPattern.MIN_STEPS, DrumPattern.MAX_STEPS)
+        val lanes = MutableList(DrumPattern.PAD_COUNT) { DrumLane() }
+        for (line in style.lines) {
+            if (line.role !in sounds) continue
+            lanes[line.role.lane] = DrumLane(hits = hits(line.pattern).filterKeys { it < steps }, sample = sounds[line.role])
+        }
+        return Project(
+            name = style.name,
+            tempoBpm = style.bpm,
+            swing = style.swing,
+            drums = DrumPattern(steps = steps, lanes = lanes),
+        ).sanitized()
+    }
+}

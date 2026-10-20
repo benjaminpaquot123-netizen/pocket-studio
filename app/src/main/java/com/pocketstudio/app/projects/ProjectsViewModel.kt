@@ -50,6 +50,16 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
         withContext(Dispatchers.Main) { then(id) }
     }
 
+    /** A new project with its own sounds ([sounds]: file name in its samples folder → audio). */
+    fun create(project: Project, sounds: Map<String, com.pocketstudio.app.audio.Pcm>, then: (String) -> Unit) = io("Nouveau morceau") {
+        val id = catalog.create(project) { dir ->
+            dir.mkdirs()
+            sounds.forEach { (name, pcm) -> com.pocketstudio.app.audio.FloatWav.write(java.io.File(dir, name), pcm) }
+        }
+        refreshNow()
+        withContext(Dispatchers.Main) { then(id) }
+    }
+
     fun duplicate(info: ProjectInfo) = io("Copie du projet") {
         catalog.duplicate(info.id, "${info.name} (copie)".take(ProjectCatalog.MAX_NAME))
         refreshNow()

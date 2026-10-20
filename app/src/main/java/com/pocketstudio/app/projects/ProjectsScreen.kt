@@ -56,6 +56,8 @@ class ProjectsActions(
     val open: (ProjectInfo) -> Unit = {},
     /** Index in the starters list. */
     val create: (Int) -> Unit = {},
+    /** The beginner's step-by-step assistant. */
+    val wizard: () -> Unit = {},
     val rename: (ProjectInfo, String) -> Unit = { _, _ -> },
     val duplicate: (ProjectInfo) -> Unit = {},
     /** Share the project and its sounds as a .zip. */
@@ -129,6 +131,16 @@ fun ProjectsScreen(ui: ProjectsUi, currentId: String, starters: List<ProjectStar
             title = { Text("Nouveau projet") },
             text = {
                 Column(Modifier.verticalScroll(androidx.compose.foundation.rememberScrollState()), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Card(
+                        colors = CardDefaults.cardColors(containerColor = Neon.Cyan.copy(alpha = 0.18f)),
+                        modifier = Modifier.fillMaxWidth().clickable { choosingStart = false; actions.wizard() }.testTag("starter_wizard"),
+                    ) {
+                        Column(Modifier.padding(12.dp)) {
+                            Text("Assistant pas à pas", style = MaterialTheme.typography.titleMedium, color = Neon.Cyan)
+                            Text("Idéal pour débuter : choisis un style, je t'explique chaque son et je prépare la grille.",
+                                style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                        }
+                    }
                     starters.forEachIndexed { i, s ->
                         Card(
                             colors = CardDefaults.cardColors(containerColor = Neon.SurfaceHigh),

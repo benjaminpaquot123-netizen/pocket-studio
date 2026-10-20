@@ -2,9 +2,6 @@ package com.pocketstudio.app.generate
 
 import android.app.ActivityManager
 import android.app.Application
-import android.media.AudioAttributes
-import android.media.AudioFormat
-import android.media.AudioTrack
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.pocketstudio.app.audio.AudioEdits
@@ -78,7 +75,6 @@ class GenerateViewModel(app: Application) : AndroidViewModel(app) {
 
     /** The Générer page is on screen: only then does a finished sound play by itself. */
     var visible = false
-    private var player: AudioTrack? = null
 
     init {
         viewModelScope.launch {
@@ -193,43 +189,19 @@ class GenerateViewModel(app: Application) : AndroidViewModel(app) {
         GenerationModel.file(app, GenerationModel.SPECS.first { it.fileName == "tokenizer.json" }).readText(),
     ).also { tokenizer = it }
 
+    private val player = com.pocketstudio.app.audio.PcmPlayer { _playing.value = false }
+
     /** Plays the result on its own, outside the project (Android's player, not the engine). */
     fun play() {
         val r = _result.value ?: return
-        stopPreview()
-        val track = runCatching {
-            AudioTrack.Builder()
-                .setAudioAttributes(AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_MEDIA).setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build())
-                .setAudioFormat(
-                    AudioFormat.Builder().setEncoding(AudioFormat.ENCODING_PCM_FLOAT).setSampleRate(r.pcm.sampleRate)
-                        .setChannelMask(AudioFormat.CHANNEL_OUT_STEREO).build(),
-                )
-                .setTransferMode(AudioTrack.MODE_STATIC)
-                .setBufferSizeInBytes(r.pcm.data.size * 4)
-                .build()
-        }.getOrNull()
-        if (track == null || track.write(r.pcm.data, 0, r.pcm.data.size, AudioTrack.WRITE_BLOCKING) != r.pcm.data.size) {
-            track?.release()
+        if (!player.play(r.pcm)) {
             _state.value = GenerateState.Failed("L'écoute n'a pas pu démarrer : pose le son et écoute-le dans le projet.")
             return
         }
-        track.setNotificationMarkerPosition(r.pcm.frames)
-        track.setPlaybackPositionUpdateListener(object : AudioTrack.OnPlaybackPositionUpdateListener {
-            override fun onMarkerReached(t: AudioTrack) {
-                if (player === t) stopPreview()
-            }
-            override fun onPeriodicNotification(t: AudioTrack) = Unit
-        })
-        player = track
-        track.play()
         _playing.value = true
     }
 
-    fun stopPreview() {
-        player?.let { runCatching { it.stop() }; it.release() }
-        player = null
-        _playing.value = false
-    }
+    fun stopPreview() = player.stop()
 
     override fun onCleared() {
         cancelled.set(true)

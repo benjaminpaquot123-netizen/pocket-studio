@@ -89,7 +89,8 @@
 - Phase 7 (PR #17, branche ccr-80af1a1b-mn0wec) :
   - 7.1 fait : jusqu'à 8 pistes d'instruments (barre de pistes dans Synthé, couleurs, renommer, dupliquer, supprimer), une voie de mixeur chacune, MIDI et enregistrement sur la piste choisie, export pistes et MIDI par piste.
 
+  - 7.2 fait : onglet Audio (pistes audio + Remix), 4 pistes audio, prise au micro calée sur le premier temps (latence aller-retour compensée), import, garder une sélection, normaliser, inverser, fondus, mesure de départ, longueur de boucle. Un clip par piste pour tout le projet (pas par scène) : la ligne de temps (7.3) placera les clips.
+
 ## Prochaine étape exacte
-1. 7.2 pistes audio : enregistrer voix/instrument au micro (latence compensée), clips avec fondus, normaliser, inverser, couper.
-2. 7.3 ligne de temps à côté des scènes ; mesures autres que 4/4.
+1. 7.3 ligne de temps à côté des scènes ; mesures autres que 4/4.
 3. Mixeur compact (tranches repliables) maintenant qu'il y a jusqu'à 12 tranches.

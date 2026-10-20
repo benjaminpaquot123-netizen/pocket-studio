@@ -16,6 +16,7 @@
 | [HT-Demucs v4](https://github.com/facebookresearch/demucs) | v4 (poids htdemucs, sha 8726e21a…) | MIT | Modèle de séparation des pistes ; exporté en ONNX par `scripts/models/build-demucs.sh`, publié sur la Release `modele-htdemucs-v4-onnx-1` |
 | [demucs.onnx](https://github.com/sevagh/demucs.onnx) | commit 81fa192 | MIT | Export ONNX et inférence C++ (découpe en segments, STFT) |
 | [Eigen](https://gitlab.com/libeigen/eigen) | commit 7fd305e | MPL-2.0 | Calcul matriciel de demucs.onnx |
+| [Basic Pitch](https://github.com/spotify/basic-pitch) (Spotify) | v0.4.0 (modèle `icassp_2022/nmp.onnx` du commit fa5997a, sha256 2c3c1d14…) | Apache-2.0 | Audio vers notes (Synthé › Notes) : modèle de 230 Ko dans l'APK, vérifié par SHA-256 ; inférence et création des notes réécrites en C++ (`separation/src/main/cpp/PitchTranscriber.cpp`) |
 | [Plaits](https://github.com/pichenettes/eurorack) + [stmlib](https://github.com/pichenettes/stmlib) (Mutable Instruments) | eurorack f4cfa76, stmlib d18def8 | MIT | 24 modèles de synthèse (dont FM 6 op. façon DX7) pour la piste Synthé ; sous-ensemble copié tel quel dans `engine/third_party/mutable` (voir son README) |
 | [Open303](https://github.com/RobinSchmidt/Open303) | commit 313bf0d (2024-03-29) | MIT | Basse acide (jalon Acide) ; sous-module `engine/third_party/Open303`, une correction de débordement appliquée sur une copie à la compilation (`open303.cmake`) |
 | [The Endless Acid Banger](https://github.com/vitling/acid-banger) (David Whiting) | 2021 | CC BY 4.0 | Méthode et jeux de notes du générateur de patterns acides, réécrits en Kotlin (`AcidGenerator`) ; attribution obligatoire |
@@ -26,4 +27,4 @@
 | [Robolectric](https://github.com/robolectric/robolectric) | 4.17 | MIT | Tests sur JVM (tests uniquement) |
 | [Roborazzi](https://github.com/takahirom/roborazzi) | 1.76.0 | Apache-2.0 | Captures d'écran automatiques (tests uniquement) |
 
-Prévu dans les phases suivantes (à vérifier au moment de l'intégration) : Airwindows (MIT), Mutable Instruments (MIT/GPL), MSFA/Dexed (Apache-2.0/GPL), Signalsmith Stretch (MIT), aubio (GPL-3.0), libKeyFinder (GPL-3.0), ONNX Runtime (MIT), HT-Demucs (MIT), Basic Pitch (Apache-2.0), Ableton Link (GPL-2.0), LiteRT (Apache-2.0).
+Prévu dans les phases suivantes (à vérifier au moment de l'intégration) : Airwindows (MIT), Mutable Instruments (MIT/GPL), MSFA/Dexed (Apache-2.0/GPL), Signalsmith Stretch (MIT), aubio (GPL-3.0), libKeyFinder (GPL-3.0), ONNX Runtime (MIT), HT-Demucs (MIT), Ableton Link (GPL-2.0), LiteRT (Apache-2.0).

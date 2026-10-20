@@ -294,7 +294,7 @@ void Engine::onStep(int offset, int step) {
     }
     if (step < 0) return;
     if (step == 0) stems_.start(offset);
-    if (onBeat) clips_.syncBeat(offset);
+    if (onBeat) clips_.syncBeat(offset, step / Sequencer::kStepsPerBeat);
     // A waiting scene takes over on its step (or the next bar), before anything of this step plays.
     if (swapAt_ >= 0) {
         const int local = step - sceneStart_;

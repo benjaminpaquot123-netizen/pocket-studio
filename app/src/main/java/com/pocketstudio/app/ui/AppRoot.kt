@@ -273,6 +273,9 @@ fun AppRoot() {
         AlertDialog(
             onDismissRequest = rhythmVm::dismissNotice,
             confirmButton = { TextButton(onClick = rhythmVm::dismissNotice) { Text("Compris") } },
+            dismissButton = if (rhythmVm.canUndoFavoriteDelete) {
+                { TextButton(onClick = rhythmVm::undoFavoriteDelete, modifier = Modifier.testTag("favorite_undo")) { Text("Annuler") } }
+            } else null,
             text = { Text(text) },
         )
     }

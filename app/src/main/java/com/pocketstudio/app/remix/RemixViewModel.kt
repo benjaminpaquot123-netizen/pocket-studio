@@ -12,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -93,15 +94,16 @@ class RemixViewModel(app: Application) : AndroidViewModel(app) {
         if (!NativeEngine.isAvailable) return
         _preview.value = StemPreview(set.id, on, loading = true)
         previewJob = viewModelScope.launch {
-            val loaded = withContext(Dispatchers.IO) {
+            // Not cancellable: a bundle loaded while the user moved on is closed below, not leaked.
+            val loaded = withContext(Dispatchers.IO + kotlinx.coroutines.NonCancellable) {
                 runCatching {
                     NativeStems.load(set.stem("drums").path, set.stem("bass").path, set.stem("other").path, set.stem("vocals").path)
                 }.getOrNull()
             }
             val p = _preview.value
-            if (loaded == null || p == null || p.setId != set.id) {
+            if (loaded == null || p == null || p.setId != set.id || !isActive) {
                 loaded?.close()
-                if (loaded == null) {
+                if (loaded == null && isActive) {
                     AppLog.add("Remix : écoute impossible de « ${set.name} »")
                     _preview.value = null
                 }

@@ -71,6 +71,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -137,7 +138,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** A one-off message for the user (e.g. an unreadable project was set aside). Declared before `session`. */
     private val _notice = MutableStateFlow<String?>(null)
     val notice: StateFlow<String?> = _notice.asStateFlow()
-    fun dismissNotice() { _notice.value = null }
+    fun dismissNotice() {
+        _notice.value = null
+        favoritesBeforeDelete = null
+    }
 
     /** The open project (the last one used). Another project = a new ViewModel (see ProjectsViewModel). */
     val projectId: String = com.pocketstudio.app.projects.CurrentProject.get(app)
@@ -973,7 +977,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val file = File(app.filesDir, "basic-pitch.onnx")
         fun ok() = file.exists() && sha256(file) == BasicPitch.MODEL_SHA256
         if (!ok()) {
-            app.assets.open("basic-pitch/nmp.onnx").use { input -> file.outputStream().use { input.copyTo(it) } }
+            // Copied beside it, then renamed: a copy cut short never passes for the model.
+            val tmp = File(file.path + ".tmp")
+            app.assets.open(BasicPitch.MODEL_ASSET).use { input -> tmp.outputStream().use { input.copyTo(it) } }
+            if (!tmp.renameTo(file)) tmp.delete()
             check(ok()) { "modèle de notes abîmé" }
         }
         return file
@@ -1003,7 +1010,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** Sing, whistle or play near the phone; [stopNoteRecording] ends it (30 s at most). */
     fun recordNotes() {
-        if (_transcription.value is SampleTask.Busy || _transcription.value is SampleTask.Recording) return
+        if (transcribing?.isActive == true) return
         val rec = MicRecorder().also { noteRecorder = it }
         _transcription.value = SampleTask.Recording(0f, 0f)
         transcribeJob(null) {
@@ -1022,9 +1029,12 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (_transcription.value is SampleTask.Failed) _transcription.value = SampleTask.Idle
     }
 
+    private var transcribing: kotlinx.coroutines.Job? = null
+
     private fun transcribeJob(busy: String?, read: suspend () -> Pcm) {
+        if (transcribing?.isActive == true && busy != null) return  // one at a time
         if (busy != null) _transcription.value = SampleTask.Busy(busy)
-        viewModelScope.launch {
+        transcribing = viewModelScope.launch {
             try {
                 val heard = withContext(Dispatchers.Default) {
                     val pcm = read()
@@ -1654,31 +1664,63 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** The user's own sounds, shared by every project. */
     val favorites: StateFlow<Favorites> = _favorites.asStateFlow()
 
+    private val favoritesWriter = kotlinx.coroutines.sync.Mutex()
+    /** The favourites before the last delete, for "Annuler". */
+    private var favoritesBeforeDelete: Favorites? = null
+
     private fun editFavorites(transform: (Favorites) -> Favorites) {
         val next = transform(_favorites.value).sanitized()
         _favorites.value = next
-        val text = ProjectJson.encodeFavorites(next)
         viewModelScope.launch(Dispatchers.IO) {
-            runCatching {
-                val tmp = File(favoritesFile.path + ".tmp")
-                tmp.writeText(text)
-                if (!tmp.renameTo(favoritesFile)) error("renommage impossible")
-            }.onFailure { AppLog.add("Favoris non enregistrés : ${it.message}") }
+            // One write at a time, always of the latest list: an older one can never land last.
+            favoritesWriter.withLock {
+                runCatching {
+                    val latest = _favorites.value
+                    val tmp = File(favoritesFile.path + ".tmp")
+                    java.io.FileOutputStream(tmp).use { out ->
+                        out.write(ProjectJson.encodeFavorites(latest).toByteArray(Charsets.UTF_8))
+                        out.fd.sync()
+                    }
+                    if (!tmp.renameTo(favoritesFile)) error("renommage impossible")
+                }.onFailure { AppLog.add("Favoris non enregistrés : ${it.message}") }
+            }
         }
     }
 
-    fun saveSynthFavorite() = editFavorites { f ->
-        f.copy(synth = f.synth + NamedSound(Favorites.nextName(f.synth.map { it.name }), SoundCategories.FAVORITES, project.value.synth.sanitized()))
+    private fun <T> addFavorite(list: List<T>, add: () -> Favorites) {
+        if (list.size >= Favorites.MAX) {
+            _notice.value = "Tu as déjà ${Favorites.MAX} favoris de ce son : supprime-en un pour en garder un nouveau."
+            return
+        }
+        editFavorites { add() }
     }
-    fun savePlaitsFavorite() = editFavorites { f ->
-        f.copy(plaits = f.plaits + NamedSound(Favorites.nextName(f.plaits.map { it.name }), SoundCategories.FAVORITES, project.value.plaits))
+
+    fun saveSynthFavorite() = _favorites.value.let { f ->
+        addFavorite(f.synth) { f.copy(synth = f.synth + NamedSound(Favorites.nextName(f.synth.map { it.name }), SoundCategories.FAVORITES, project.value.synth.sanitized())) }
     }
-    fun saveAcidFavorite() = editFavorites { f ->
-        f.copy(acid = f.acid + NamedSound(Favorites.nextName(f.acid.map { it.name }), SoundCategories.FAVORITES, project.value.acid.sound))
+    fun savePlaitsFavorite() = _favorites.value.let { f ->
+        addFavorite(f.plaits) { f.copy(plaits = f.plaits + NamedSound(Favorites.nextName(f.plaits.map { it.name }), SoundCategories.FAVORITES, project.value.plaits)) }
     }
-    fun deleteSynthFavorite(i: Int) = editFavorites { f -> f.copy(synth = f.synth.filterIndexed { k, _ -> k != i }) }
-    fun deletePlaitsFavorite(i: Int) = editFavorites { f -> f.copy(plaits = f.plaits.filterIndexed { k, _ -> k != i }) }
-    fun deleteAcidFavorite(i: Int) = editFavorites { f -> f.copy(acid = f.acid.filterIndexed { k, _ -> k != i }) }
+    fun saveAcidFavorite() = _favorites.value.let { f ->
+        addFavorite(f.acid) { f.copy(acid = f.acid + NamedSound(Favorites.nextName(f.acid.map { it.name }), SoundCategories.FAVORITES, project.value.acid.sound)) }
+    }
+
+    private fun deleteFavorite(name: String, transform: (Favorites) -> Favorites) {
+        favoritesBeforeDelete = _favorites.value
+        editFavorites(transform)
+        _notice.value = "Favori « $name » supprimé."
+    }
+    fun deleteSynthFavorite(i: Int) = _favorites.value.synth.getOrNull(i)?.let { deleteFavorite(it.name) { f -> f.copy(synth = f.synth.filterIndexed { k, _ -> k != i }) } }
+    fun deletePlaitsFavorite(i: Int) = _favorites.value.plaits.getOrNull(i)?.let { deleteFavorite(it.name) { f -> f.copy(plaits = f.plaits.filterIndexed { k, _ -> k != i }) } }
+    fun deleteAcidFavorite(i: Int) = _favorites.value.acid.getOrNull(i)?.let { deleteFavorite(it.name) { f -> f.copy(acid = f.acid.filterIndexed { k, _ -> k != i }) } }
+    /** Brings back the favourites as they were before the last delete. */
+    fun undoFavoriteDelete() {
+        val before = favoritesBeforeDelete ?: return
+        favoritesBeforeDelete = null
+        editFavorites { before }
+        _notice.value = null
+    }
+    val canUndoFavoriteDelete get() = favoritesBeforeDelete != null
 
     fun randomSynth() = applySynthPreset(SoundLibrary.randomSynth())
 

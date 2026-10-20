@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -75,6 +76,8 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
     private val bluetooth = HashMap<String, BluetoothDevice>()
     private var device: MidiDevice? = null
     private var port: MidiOutputPort? = null
+    /** Counts connect and disconnect calls: a device that opens late for an old one is closed. */
+    private var connection = 0
     private val held = HashSet<Int>()  // notes down on the synth, released on disconnect
     private val tempo = ClockTempo()
     private var lastTempoSent = 0.0
@@ -125,7 +128,7 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
         val sources = list.map { MidiSource(idOf(it), nameOf(it), kindOf(it)) } +
             bluetooth.filterKeys { k -> list.none { kindOf(it) == "Bluetooth" && nameOf(it) == bluetooth[k]?.safeName() } }
                 .map { (k, d) -> MidiSource(k, d.safeName(), "Bluetooth") }
-        _state.value = _state.value.copy(sources = sources)
+        _state.update { it.copy(sources = sources) }
         if (autoConnect && _state.value.connected == null) list.firstOrNull { it.type != MidiDeviceInfo.TYPE_VIRTUAL }?.let { connect(idOf(it)) }
     }
 
@@ -135,10 +138,13 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
     fun connect(id: String) {
         val m = manager ?: return
         disconnect()
+        val attempt = ++connection
         val opened = { d: MidiDevice? ->
-            if (d == null) {
+            if (attempt != connection) {
+                d?.close()  // another device was chosen meanwhile
+            } else if (d == null) {
                 AppLog.add("MIDI : ouverture impossible")
-                _state.value = _state.value.copy(last = "Connexion impossible")
+                _state.update { it.copy(last = "Connexion impossible") }
             } else {
                 attach(id, d)
             }
@@ -155,7 +161,7 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
         val out = d.openOutputPort(0)
         if (out == null) {
             d.close()
-            _state.value = _state.value.copy(last = "Cet appareil n'envoie rien")
+            _state.update { it.copy(last = "Cet appareil n'envoie rien") }
             return
         }
         device = d
@@ -167,11 +173,12 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
         })
         val name = _state.value.sources.firstOrNull { it.id == id }?.name ?: d.info.properties.getString(MidiDeviceInfo.PROPERTY_NAME)
         AppLog.add("MIDI connecté : $name")
-        _state.value = _state.value.copy(connected = id, last = null, clockBpm = null)
+        _state.update { it.copy(connected = id, last = null, clockBpm = null) }
         refresh(autoConnect = false)
     }
 
     fun disconnect() {
+        ++connection
         runCatching { port?.close() }
         runCatching { device?.close() }
         port = null
@@ -180,11 +187,11 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
             if (NativeEngine.isAvailable) held.forEach { NativeEngine.liveNoteOff(it) }
             held.clear()
         }
-        _state.value = _state.value.copy(connected = null, clockBpm = null)
+        _state.update { it.copy(connected = null, clockBpm = null) }
     }
 
     fun setFollowClock(on: Boolean) {
-        _state.value = _state.value.copy(followClock = on)
+        _state.update { it.copy(followClock = on) }
     }
 
     // --- Bluetooth LE MIDI: devices must be found by a scan before they can be opened ----------
@@ -203,7 +210,7 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
     fun scanBluetooth() {
         val scanner = getApplication<Application>().getSystemService(BluetoothManager::class.java)?.adapter?.bluetoothLeScanner
         if (scanner == null) {
-            _state.value = _state.value.copy(last = "Bluetooth éteint")
+            _state.update { it.copy(last = "Bluetooth éteint") }
             return
         }
         runCatching {
@@ -213,11 +220,11 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
             AppLog.add("MIDI : recherche Bluetooth impossible (${it.message})")
             return
         }
-        _state.value = _state.value.copy(scanning = true)
+        _state.update { it.copy(scanning = true) }
         viewModelScope.launch {
             kotlinx.coroutines.delay(10_000)
             runCatching { scanner.stopScan(scanCallback) }
-            _state.value = _state.value.copy(scanning = false)
+            _state.update { it.copy(scanning = false) }
         }
     }
 
@@ -230,8 +237,10 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
             if (channel == DRUM_CHANNEL) {
                 if (note in FIRST_PAD_NOTE until FIRST_PAD_NOTE + NativeEngine.LANES) NativeEngine.liveTriggerPad(note - FIRST_PAD_NOTE, v)
             } else {
-                synchronized(held) { held += note }
-                NativeEngine.liveNoteOn(note, v)
+                synchronized(held) {
+                    held += note
+                    NativeEngine.liveNoteOn(note, v)
+                }
             }
             _commands.tryEmit(MidiCommand.Note(channel, note, v, true))
             show("Note ${noteLabel(note)}" + if (channel == DRUM_CHANNEL) " (pads)" else "")
@@ -239,8 +248,10 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
 
         override fun noteOff(channel: Int, note: Int) {
             if (!NativeEngine.isAvailable || channel == DRUM_CHANNEL) return
-            synchronized(held) { held -= note }
-            NativeEngine.liveNoteOff(note)
+            synchronized(held) {
+                held -= note
+                NativeEngine.liveNoteOff(note)
+            }
             _commands.tryEmit(MidiCommand.Note(channel, note, 0f, false))
         }
 
@@ -262,7 +273,7 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
             if (kotlin.math.abs(rounded - lastTempoSent) >= 0.25) {
                 lastTempoSent = rounded
                 _commands.tryEmit(MidiCommand.Tempo(rounded))
-                _state.value = _state.value.copy(clockBpm = rounded, last = "Horloge ${"%.1f".format(rounded)} BPM")
+                _state.update { it.copy(clockBpm = rounded, last = "Horloge ${"%.1f".format(rounded)} BPM") }
             }
         }
 
@@ -281,7 +292,7 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     private fun show(text: String) {
-        _state.value = _state.value.copy(last = text)
+        _state.update { it.copy(last = text) }
     }
 
     override fun onCleared() {

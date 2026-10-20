@@ -86,5 +86,5 @@
   - 6.4 batterie complète (1 à 4 mesures, roulements, remplir, décaler, vue de tous les pads).
 
 ## Prochaine étape exacte
-1. Relectures de fin de phase 5 et 6 (en cours, sous-agents), corrections, CI verte, fusion de la PR #16.
+1. Relectures de fin de phase 5 et 6 faites et corrigées (voir REVIEW.md) ; attendre la CI verte puis fusionner la PR #16.
 2. Puis phase 7 : pistes d'instruments à volonté (7.1), pistes audio (7.2), ligne de temps (7.3).

@@ -2050,6 +2050,16 @@ void testPlaitsVoices() {
     for (int i = kRate / 2; i < kRate; ++i) tail = std::max(tail, std::fabs(out[static_cast<size_t>(i)]));
     CHECK(tail < 1e-3f);
     CHECK(plaits.activeVoices() == 0);
+    // A very short note (on and off 4 samples apart, inside one 12-sample block) is still heard.
+    plaits.noteOn(69, 1.0f, 2);
+    plaits.noteOff(69, 6);
+    std::fill(out.begin(), out.end(), 0.0f);
+    plaits.render(out.data(), 4800);
+    float blip = 0.0f;
+    for (int i = 0; i < 4800; ++i) blip = std::max(blip, std::fabs(out[static_cast<size_t>(i)]));
+    CHECK(blip > 1e-3f);
+    plaits.render(out.data(), kRate);
+    CHECK(plaits.activeVoices() == 0);
     // Every model makes sound, stays finite and bounded; six voices at once within a CPU budget.
     for (int model = 0; model < ps::PlaitsSynth::kModels; ++model) {
         plaits.setParam(ps::PlaitsSynth::Model, model / float(ps::PlaitsSynth::kModels - 1));
@@ -2175,6 +2185,31 @@ void testLivePadsLoopOnTheBeat() {
     for (size_t i = 2000; i < out.size(); ++i) peak = std::max(peak, std::fabs(out[i]));
     CHECK(peak < 1e-6f);
     for (int pad = 0; pad < 3; ++pad) installClip(engine, pad, nullptr);
+    render(engine, 256, 256);
+    engine.collectGarbage();
+}
+
+void testLivePadsFollowTheBar() {
+    ps::Engine engine(kRate);  // 120 BPM: a beat is 24000 frames
+    // A 4-beat loop that starts with a loud mark, launched while the transport is stopped.
+    std::vector<float> d(96000, 0.1f);
+    std::fill(d.begin(), d.begin() + 200, 0.8f);
+    installClip(engine, 0, ps::Sample::create(d.data(), 96000, 1, kRate, kRate));
+    engine.post({ps::CommandType::SetClipParam, 4.0f, 0, ps::ClipLauncher::Beats});
+    engine.post({ps::CommandType::ToggleClip, 0.0f, 0});
+    render(engine, 24000 * 6 + 12000, 256);  // the idle clock is mid-bar (beat 6.5)
+    // Play: the clock jumps to the song's beat 0 and the loop starts over with the bar.
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    auto out = render(engine, 1024, 256);
+    CHECK(std::fabs(engine.clipBeat() - 1024.0 / 24000.0) < 1e-6);
+    CHECK(out[static_cast<size_t>(100) * 2] > 0.75f);
+    // The next pass starts exactly on the next bar of the song.
+    out = render(engine, 96000 - 1024 + 100, 256);
+    CHECK(out[static_cast<size_t>(96000 - 1024 + 50) * 2] > 0.75f);
+    CHECK(engine.clipState(0) == ps::ClipLauncher::Playing);
+    engine.post({ps::CommandType::ToggleClip, 0.0f, -1});
+    render(engine, 4096, 256);
+    installClip(engine, 0, nullptr);
     render(engine, 256, 256);
     engine.collectGarbage();
 }
@@ -2380,6 +2415,7 @@ int main(int argc, char** argv) {
         {"tempo_and_key", testTempoAndKeyDetection},
         {"stems_follow_transport", testStemsPlayInStepWithTheTransport},
         {"live_pads", testLivePadsLoopOnTheBeat},
+        {"live_pads_bar", testLivePadsFollowTheBar},
         {"stem_preview", testStemPreviewPlaysWithoutTheTransport},
         {"stems_stretch", testStemsStretchToTheProjectTempo},
         {"play_position", testPlayPositionForLiveRecording},

@@ -41,8 +41,12 @@ public:
     void setBeatFrames(double frames) {
         if (frames > 1.0) beatFrames_ = frames;
     }
-    // The sequencer has a beat `offset` frames into the next render(): the clock snaps to it.
-    void syncBeat(int offset) { syncAt_ = offset; }
+    // The sequencer has its beat number `beat` (counted from the transport start) `offset` frames
+    // into the next render(): the clock snaps to it, bars and long loops in phase with the song.
+    void syncBeat(int offset, int beat) {
+        syncAt_ = offset;
+        syncBeat_ = beat;
+    }
     // Adds the slots' sound into the stereo pair.
     void render(float* left, float* right, int numFrames);
 
@@ -69,6 +73,7 @@ private:
     };
     void retire(Sample* s);
     void restart(Slot& s);
+    void align();
     void play(Voice& v, float gain, float& l, float& r);
     double gridOf(const Slot& s) const { return s.beats < 4 ? s.beats : 4.0; }
 
@@ -78,6 +83,7 @@ private:
     double beatFrames_ = 24000.0;
     double beat_ = 0.0;
     int syncAt_ = -1;
+    int syncBeat_ = 0;
     int fadeFrames_ = 240;
 };
 

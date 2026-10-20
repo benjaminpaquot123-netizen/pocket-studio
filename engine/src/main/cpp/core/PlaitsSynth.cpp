@@ -43,16 +43,19 @@ struct PlaitsSynth::Impl {
         bool retrigger = false;  // a held voice taken by a new note: one block of low trigger first
         float velocity = 0.0f;
         float level = 0.0f;  // our gate envelope, fed to Plaits' low-pass gate
+        bool fastRelease = false;  // beyond a new model's voice limit: fade out within a few ms
         uint32_t age = 0;
+        uint32_t onBlock = 0;  // block in which the current note started
     };
     std::array<Voice, kVoices> voices;
     plaits::Patch patch{};
     std::array<float, ParamCount> params{0.0f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.3f, 0.8f};
-    std::array<Event, 64> events{};
+    std::array<Event, 256> events{};
     int eventCount = 0;
     float out[kBlock] = {};
     int outPos = kBlock;  // samples of `out` already used
     uint32_t clock = 0;
+    uint32_t block = 0;  // counts rendered blocks
     float attackStep = 0.0f, releaseCoef = 0.0f;
 
     void updatePatch() {
@@ -71,7 +74,9 @@ struct PlaitsSynth::Impl {
         attackStep = static_cast<float>(kBlock) / (0.003f * 48000.0f);  // 3 ms
     }
 
-    void apply(const Event& e) {
+    // False when a note-off must wait for the next block: its note started in this one and
+    // would otherwise never be heard (a very short MIDI note).
+    bool apply(const Event& e) {
         if (e.velocity > 0.0f) {
             const int limit = voiceLimit(patch.engine);
             Voice* v = nullptr;
@@ -90,10 +95,14 @@ struct PlaitsSynth::Impl {
             v->note = e.note;
             v->gate = true;
             v->velocity = std::clamp(e.velocity, 0.0f, 1.0f);
+            v->fastRelease = false;
             v->age = ++clock;
+            v->onBlock = block;
         } else {
+            for (auto& c : voices) if (c.note == e.note && c.gate && c.onBlock == block) return false;
             for (auto& c : voices) if (c.note == e.note && c.gate) c.gate = false;
         }
+        return true;
     }
 
     // One 12-sample block of every sounding voice into `out`.
@@ -108,7 +117,7 @@ struct PlaitsSynth::Impl {
                 continue;
             }
             if (v.gate) v.level = std::min(1.0f, v.level + attackStep);
-            else v.level *= releaseCoef;
+            else v.level *= v.fastRelease ? 0.6f : releaseCoef;
             plaits::Modulations m{};
             m.trigger_patched = true;
             m.level_patched = true;
@@ -144,7 +153,11 @@ void PlaitsSynth::setParam(Param p, float value) {
     impl_->updatePatch();
     if (p == Model) {
         // A heavier model has fewer voices: release the ones beyond its limit.
-        for (int k = voiceLimit(impl_->patch.engine); k < kVoices; ++k) impl_->voices[static_cast<size_t>(k)].gate = false;
+        for (int k = voiceLimit(impl_->patch.engine); k < kVoices; ++k) {
+            auto& v = impl_->voices[static_cast<size_t>(k)];
+            v.gate = false;
+            v.fastRelease = true;
+        }
     }
 }
 
@@ -179,8 +192,12 @@ void PlaitsSynth::render(float* mono, int numFrames) {
     for (int i = 0; i < numFrames; ++i) {
         if (im.outPos >= kBlock) {
             // Events due before the end of this block start with it (at most 11 samples early).
-            while (next < im.eventCount && im.events[static_cast<size_t>(next)].at < i + kBlock) im.apply(im.events[static_cast<size_t>(next++)]);
+            while (next < im.eventCount && im.events[static_cast<size_t>(next)].at < i + kBlock) {
+                if (!im.apply(im.events[static_cast<size_t>(next)])) break;  // the rest waits a block
+                ++next;
+            }
             im.renderBlock();
+            ++im.block;
             im.outPos = 0;
         }
         mono[i] += im.out[im.outPos++];

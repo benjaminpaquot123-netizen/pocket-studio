@@ -18,6 +18,7 @@ import android.os.Handler
 import android.os.Looper
 import android.os.ParcelUuid
 import androidx.lifecycle.AndroidViewModel
+import com.pocketstudio.app.Metrics
 import androidx.lifecycle.viewModelScope
 import com.pocketstudio.app.report.AppLog
 import com.pocketstudio.engine.NativeEngine
@@ -44,6 +45,8 @@ data class MidiUi(
     val followClock: Boolean = true,
     val clockBpm: Double? = null,
     val scanning: Boolean = false,
+    /** Send our tempo, start and stop to the connected device. */
+    val sendClock: Boolean = false,
 )
 
 /** What a MIDI device asks of the project (the tempo and the transport are the project's). */
@@ -53,6 +56,8 @@ sealed interface MidiCommand {
     data class Tempo(val bpm: Double) : MidiCommand
     /** A note received (it already sounds): for live recording. Channel 10 (9) = pads. */
     data class Note(val channel: Int, val pitch: Int, val velocity: Float, val on: Boolean) : MidiCommand
+    /** A knob or fader moved (MIDI learn, mapped controls). */
+    data class Control(val channel: Int, val controller: Int, val value: Int) : MidiCommand
 }
 
 /**
@@ -76,6 +81,8 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
     private val bluetooth = HashMap<String, BluetoothDevice>()
     private var device: MidiDevice? = null
     private var port: MidiOutputPort? = null
+    /** Where we send (clock out); null when the device takes nothing. */
+    @Volatile private var sendPort: android.media.midi.MidiInputPort? = null
     /** Counts connect and disconnect calls: a device that opens late for an old one is closed. */
     private var connection = 0
     private val held = HashSet<Int>()  // notes down on the synth, released on disconnect
@@ -166,6 +173,7 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
         }
         device = d
         port = out
+        sendPort = runCatching { d.openInputPort(0) }.getOrNull()
         tempo.reset()
         val parser = MidiParser(listener)
         out.connect(object : MidiReceiver() {
@@ -179,6 +187,9 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
 
     fun disconnect() {
         ++connection
+        clockJob?.cancel()
+        runCatching { sendPort?.close() }
+        sendPort = null
         runCatching { port?.close() }
         runCatching { device?.close() }
         port = null
@@ -191,7 +202,8 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun setFollowClock(on: Boolean) {
-        _state.update { it.copy(followClock = on) }
+        _state.update { it.copy(followClock = on, sendClock = if (on) false else it.sendClock) }
+        if (on) stopClock()
     }
 
     // --- Bluetooth LE MIDI: devices must be found by a scan before they can be opened ----------
@@ -230,6 +242,66 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
 
     // --- Incoming events (MIDI thread) -----------------------------------------------------------
 
+    // --- Clock out: 24 ticks a beat, sent ahead with timestamps (Android delivers them on time) ---
+
+    @Volatile private var clockBpm = 120.0
+    private var clockJob: kotlinx.coroutines.Job? = null
+
+    private var playing = false
+
+    fun setSendClock(on: Boolean) {
+        // Following and sending at once with the same device would loop the clock back.
+        _state.update { it.copy(sendClock = on, followClock = if (on) false else it.followClock) }
+        if (!on) stopClock() else transport(playing, clockBpm)
+    }
+
+    /** The transport started or stopped, or the tempo changed (from the main thread). */
+    fun transport(playing: Boolean, bpm: Double) {
+        this.playing = playing
+        clockBpm = bpm
+        if (!_state.value.sendClock || sendPort == null) return
+        if (playing && clockJob?.isActive != true) startClock() else if (!playing) stopClock()
+    }
+
+    private fun send(byte: Int, at: Long) {
+        runCatching { sendPort?.send(byteArrayOf(byte.toByte()), 0, 1, at) }
+    }
+
+    private fun startClock() {
+        clockJob = viewModelScope.launch(kotlinx.coroutines.Dispatchers.Default) {
+            // Wait for the first step (after any count-in): the other machine starts with it.
+            while (NativeEngine.isAvailable && NativeEngine.absoluteStep() < 0) kotlinx.coroutines.delay(2)
+            val latencyNs = (Metrics.streamInfo.value.outputLatencyMs.takeIf { it > 0 } ?: 0.0) * 1_000_000
+            val position = NativeEngine.playPosition().coerceAtLeast(0.0)  // sixteenths already played
+            val stepNs = 15e9 / clockBpm
+            var next = System.nanoTime() + latencyNs.toLong() - (position * stepNs).toLong()
+            val tickNs = (60e9 / (clockBpm * 24)).toLong()
+            if (position < 1.0) {
+                send(0xFA, next)  // from the top: Start on the first step
+            } else {
+                // Switched on while playing: no burst of past ticks, carry on from now.
+                val now = System.nanoTime()
+                while (next < now) next += tickNs
+                send(0xFB, next)
+            }
+            while (true) {
+                val horizon = System.nanoTime() + 60_000_000
+                while (next < horizon) {
+                    send(0xF8, next)
+                    next += (60e9 / (clockBpm * 24)).toLong()
+                }
+                kotlinx.coroutines.delay(20)
+            }
+        }
+    }
+
+    private fun stopClock() {
+        if (clockJob == null) return
+        clockJob?.cancel()
+        clockJob = null
+        send(0xFC, System.nanoTime())
+    }
+
     private val listener = object : MidiListener {
         override fun noteOn(channel: Int, note: Int, velocity: Int) {
             if (!NativeEngine.isAvailable) return
@@ -255,8 +327,19 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
             _commands.tryEmit(MidiCommand.Note(channel, note, 0f, false))
         }
 
+        override fun pitchBend(channel: Int, value: Int) {
+            if (NativeEngine.isAvailable && channel != DRUM_CHANNEL) NativeEngine.liveExpression(NativeEngine.EXPR_BEND, value / 8192f * BEND_RANGE)
+        }
+
         override fun controlChange(channel: Int, controller: Int, value: Int) {
             show("Bouton $controller : $value")
+            if (NativeEngine.isAvailable && channel != DRUM_CHANNEL) {
+                when (controller) {
+                    CC_MOD_WHEEL -> NativeEngine.liveExpression(NativeEngine.EXPR_MOD, value / 127f)
+                    CC_SUSTAIN -> NativeEngine.liveExpression(NativeEngine.EXPR_SUSTAIN, if (value >= 64) 1f else 0f)
+                }
+            }
+            _commands.tryEmit(MidiCommand.Control(channel, controller, value))
             if (controller == CC_ALL_NOTES_OFF || controller == CC_ALL_SOUND_OFF) {
                 synchronized(held) {
                     if (NativeEngine.isAvailable) held.forEach { NativeEngine.liveNoteOff(it) }
@@ -305,6 +388,10 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
         const val FIRST_PAD_NOTE = 36  // General MIDI kick: pad 1
         const val CC_ALL_SOUND_OFF = 120
         const val CC_ALL_NOTES_OFF = 123
+        const val CC_MOD_WHEEL = 1
+        const val CC_SUSTAIN = 64
+        /** Pitch bend wheel range in semitones. */
+        const val BEND_RANGE = 2f
         private val NAMES = listOf("Do", "Do#", "Ré", "Ré#", "Mi", "Fa", "Fa#", "Sol", "Sol#", "La", "La#", "Si")
         fun noteLabel(note: Int) = "${NAMES[note % 12]} ${note / 12 - 1}"
     }

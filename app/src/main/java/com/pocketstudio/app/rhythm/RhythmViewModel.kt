@@ -62,9 +62,11 @@ import com.pocketstudio.model.LivePads
 import com.pocketstudio.model.sampleFiles
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.InstrumentTrack
+import com.pocketstudio.model.MidiMapping
 import com.pocketstudio.model.partView
 import com.pocketstudio.model.sceneSteps
 import com.pocketstudio.model.togglePartTrack
+import com.pocketstudio.model.songBars
 import com.pocketstudio.model.withBeatsPerBar
 import com.pocketstudio.model.AudioTrack
 import com.pocketstudio.model.AudioClip
@@ -88,6 +90,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.asCoroutineDispatcher
+import kotlin.math.roundToInt
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -103,6 +107,12 @@ sealed interface LibraryState {
 
 /** A microphone take on an audio track: [waiting] during the count-in. */
 data class AudioRecordingUi(val track: Int, val waiting: Boolean = true, val seconds: Float = 0f, val level: Float = 0f)
+
+/** The keyboard's arpeggiator: [steps] sixteenths per note (0.5 = 1/32 … 4 = 1/4). */
+data class ArpUi(val on: Boolean = false, val steps: Float = 1f, val mode: Int = 0, val octaves: Int = 1, val gate: Float = 0.5f)
+
+/** Live playing settings of the keyboard. */
+data class PlayUi(val bend: Float = 0f, val mod: Float = 0f, val sustain: Boolean = false, val arp: ArpUi = ArpUi())
 
 sealed interface SampleTask {
     data object Idle : SampleTask
@@ -133,7 +143,7 @@ data class ExportUi(
 }
 
 /** What the audio engine is doing right now, polled for the playhead and pad lights. */
-data class LiveUi(val currentStep: Int = -1, val litPads: Set<Int> = emptySet(), val absoluteStep: Int = -1)
+data class LiveUi(val currentStep: Int = -1, val litPads: Set<Int> = emptySet(), val absoluteStep: Int = -1, val songStep: Int = -1)
 
 /** Peaks (0..1) of each stem for the waveform view, and the song length in frames at 48 kHz. */
 class StemOverview(val peaks: List<FloatArray>, val frames: Long)
@@ -198,7 +208,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 lastTriggers[i] = triggers[i]
             }
             val lit = (0 until NativeEngine.LANES).filter { litUntil[it] > now }.toSet()
-            _live.value = LiveUi(NativeEngine.currentStep(), lit, NativeEngine.absoluteStep())
+            _live.value = LiveUi(NativeEngine.currentStep(), lit, NativeEngine.absoluteStep(), NativeEngine.songStep())
             kotlinx.coroutines.delay(33)
         }
     }
@@ -336,8 +346,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun selectTrack(id: Int) {
         if (id == track) return
         heldNotes.clear()
+        val from = track
         _selectedTrack.value = id
         NativeEngine.liveTrack = id
+        movePlay(from, id)
     }
 
     private fun editTrack(key: String? = null, id: Int = track, transform: (InstrumentTrack) -> InstrumentTrack) {
@@ -635,6 +647,97 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** Keeps [from]..[to] (fractions of the clip). */
     fun trimAudio(id: Int, from: Float, to: Float) = editClipAudio(id, "Découpe") { AudioEdits.trim(it, from, to) }
 
+    // --- Live playing: velocity, pitch bend, mod wheel, sustain, arpeggiator --------------------
+
+    private val _play = MutableStateFlow(PlayUi())
+    /** The keyboard's live settings (not saved in the project). */
+    val play: StateFlow<PlayUi> = _play.asStateFlow()
+
+    private fun expression(kind: Int, value: Float, id: Int = track) {
+        if (NativeEngine.isAvailable) NativeEngine.liveExpression(kind, value, id)
+    }
+
+    /** -1..1, springs back to 0 (±2 semitones). */
+    fun setBend(amount: Float) {
+        _play.value = _play.value.copy(bend = amount)
+        expression(NativeEngine.EXPR_BEND, amount * com.pocketstudio.app.midi.MidiViewModel.BEND_RANGE)
+    }
+
+    fun setMod(amount: Float) {
+        _play.value = _play.value.copy(mod = amount)
+        expression(NativeEngine.EXPR_MOD, amount)
+    }
+
+    fun setSustain(on: Boolean) {
+        _play.value = _play.value.copy(sustain = on)
+        expression(NativeEngine.EXPR_SUSTAIN, if (on) 1f else 0f)
+    }
+
+    fun setArp(arp: ArpUi) {
+        _play.value = _play.value.copy(arp = arp)
+        pushArp(track)
+    }
+
+    private fun pushArp(id: Int) {
+        val a = _play.value.arp
+        expression(NativeEngine.EXPR_ARP_RATE, a.steps, id)
+        expression(NativeEngine.EXPR_ARP_MODE, a.mode.toFloat(), id)
+        expression(NativeEngine.EXPR_ARP_OCTAVES, a.octaves.toFloat(), id)
+        expression(NativeEngine.EXPR_ARP_GATE, a.gate, id)
+        expression(NativeEngine.EXPR_ARP_ON, if (a.on) 1f else 0f, id)
+    }
+
+    /** The live settings leave the old track and follow the newly selected one. */
+    private fun movePlay(from: Int, to: Int) {
+        expression(NativeEngine.EXPR_BEND, 0f, from)
+        expression(NativeEngine.EXPR_MOD, 0f, from)
+        expression(NativeEngine.EXPR_SUSTAIN, 0f, from)
+        expression(NativeEngine.EXPR_ARP_ON, 0f, from)
+        _play.value = _play.value.copy(bend = 0f, mod = 0f, sustain = false)
+        pushArp(to)
+    }
+
+    // --- MIDI learn: a controller's knobs move settings ------------------------------------------
+
+    private val _learning = MutableStateFlow<AutoTarget?>(null)
+    /** The setting waiting for a knob to be turned (null: not learning). */
+    val learning: StateFlow<AutoTarget?> = _learning.asStateFlow()
+
+    fun learn(target: AutoTarget?) {
+        _learning.value = target
+    }
+
+    fun removeMapping(controller: Int) = session.edit { p -> p.copy(midiMap = p.midiMap.filterNot { it.controller == controller }) }
+
+    /** A knob moved on the MIDI controller: learnt now, or applied to its setting. */
+    fun midiControl(channel: Int, controller: Int, value: Int) {
+        if (controller == com.pocketstudio.app.midi.MidiViewModel.CC_MOD_WHEEL || controller == com.pocketstudio.app.midi.MidiViewModel.CC_SUSTAIN) {
+            if (_learning.value == null) return  // played by the engine already
+        }
+        _learning.value?.let { target ->
+            _learning.value = null
+            session.edit { p ->
+                p.copy(midiMap = (p.midiMap.filterNot { it.controller == controller || it.target == target } + MidiMapping(controller, target)).take(MidiMapping.MAX))
+            }
+            AppLog.add("MIDI learn : bouton $controller")
+            return
+        }
+        val mapping = project.value.midiMap.firstOrNull { it.controller == controller } ?: return
+        val v = value / 127f
+        val t = mapping.target
+        when (t.kind) {
+            AutoTarget.VOLUME -> setChannelVolume(t.ch, v)
+            AutoTarget.PAN -> setChannelPan(t.ch, v * 2f - 1f)
+            AutoTarget.SEND -> setSend(t.ch, t.slot, v)
+            AutoTarget.INSERT_PARAM -> setInsertParam(t.ch, t.slot, t.param, v)
+            AutoTarget.BUS_PARAM -> setBusParam(t.slot, t.param, v)
+            MidiMapping.SYNTH -> setSynthParam(t.param, v)
+            MidiMapping.PLAITS -> setPlaitsParam(t.param, v)
+            MidiMapping.PERFORMANCE -> if (NativeEngine.isAvailable) NativeEngine.setPerformance(t.param, v)
+            MidiMapping.TEMPO -> setTempo((60.0 + 140.0 * v).roundToInt().toDouble())
+        }
+    }
+
     // --- Plaits (Mutable Instruments) voice for the instrument tracks -------------------------
 
     private fun pushPlaits(p: Project = project.value, id: Int = track) {
@@ -783,11 +886,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * Sends scene [index] to the engine's waiting slot and arms the swap after [afterSteps] (0 = next
      * bar). A song [part] plays without its muted tracks.
      */
-    private fun stageScene(index: Int, afterSteps: Int, part: SongPart? = null) {
+    private fun stageScene(index: Int, afterSteps: Int, part: SongPart? = null, restartsSong: Boolean = false) {
         NativeEngine.setStaging(true)
         pushPart(project.value, index, part)
         NativeEngine.setStaging(false)
-        NativeEngine.armSceneSwap(afterSteps)
+        NativeEngine.armSceneSwap(afterSteps, restartsSong)
         watchSwaps()
     }
 
@@ -798,6 +901,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         pushAcid(view.acid)
         view.instrumentTracks.forEach { pushNotes(it.notes, it.id) }
         for (id in 0 until AudioTrack.MAX) NativeEngine.setAudioOn(id, part?.plays(SongPart.audio(id)) ?: true)
+        // Per-scene automation clips: the scene's own steps (all of them, empty ones included).
+        p.automation.forEachIndexed { i, lane ->
+            if (lane.mode == AutomationLane.PER_SCENE) lane.valuesFor(index).forEachIndexed { step, v -> NativeEngine.setAutomationPoint(i, step, v) }
+        }
     }
 
     /** Prepares the song part after the one now playing ([next] wraps around: the song loops). */
@@ -808,7 +915,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val upcoming = song[next % song.size]
         val steps = project.value.sceneSteps(playing.scene)
         _sessionUi.value = _sessionUi.value.copy(pending = upcoming.scene)
-        stageScene(upcoming.scene, steps * playing.repeats, upcoming)
+        stageScene(upcoming.scene, steps * playing.repeats, upcoming, restartsSong = next % song.size == 0)
     }
 
     /** Follows the engine's scene swaps (also with the screen off, while the transport runs). */
@@ -857,8 +964,40 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         for (i in 0 until AutomationLane.MAX_LANES) {
             val lane = p.automation.getOrNull(i)
             NativeEngine.setAutomationTarget(i, lane?.target?.pack() ?: -1)
-            lane?.values?.forEachIndexed { step, v -> if (v != null) NativeEngine.setAutomationPoint(i, step, v) }
+            if (lane == null) continue
+            pushSongCurve(p, i, lane)
+            lane.valuesFor(p.scene).forEachIndexed { step, v -> if (v != null) NativeEngine.setAutomationPoint(i, step, v) }
         }
+    }
+
+    /** A song lane's curve over the bars the screen shows (the song, at least 8 bars). */
+    private fun pushSongCurve(p: Project, i: Int, lane: AutomationLane) {
+        val curve = if (lane.mode == AutomationLane.SONG) lane.songCurve(maxOf(SONG_LANE_MIN_BARS, p.songBars)) else emptyList()
+        NativeEngine.setAutomationMode(i, lane.mode, curve.size)
+        curve.forEachIndexed { bar, v -> NativeEngine.setAutomationSong(i, bar, v) }
+    }
+
+    /** Clip kind of lane [index]: loop, per scene or the whole song. */
+    fun setAutomationMode(index: Int, mode: Int) {
+        if (index !in project.value.automation.indices) return
+        session.edit { p ->
+            p.copy(automation = p.automation.mapIndexed { i, l ->
+                if (i != index || l.mode == mode) l
+                // Going per scene: every scene starts from the loop's steps.
+                else if (mode == AutomationLane.PER_SCENE) l.copy(mode = mode, sceneValues = p.allScenes.indices.associateWith { l.values })
+                else l.copy(mode = mode)
+            })
+        }
+        pushAutomation()
+        pushMixer()
+    }
+
+    /** The song curve: [value] on bar [bar] (null erases). */
+    fun setAutomationSongPoint(index: Int, bar: Int, value: Float?) {
+        if (index !in project.value.automation.indices) return
+        session.edit("auto-song-$index") { p -> p.copy(automation = p.automation.mapIndexed { i, l -> if (i == index) l.withSongPoint(bar, value) else l }) }
+        // Only this lane (a finger drag sends many points).
+        if (NativeEngine.isAvailable) pushSongCurve(project.value, index, project.value.automation[index])
     }
 
     fun addAutomation(target: AutoTarget) {
@@ -882,8 +1021,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** Drawing: [value] 0..1 on [step] (null erases). Consecutive strokes merge into one undo step. */
     fun setAutomationPoint(index: Int, step: Int, value: Float?) {
         if (index !in project.value.automation.indices) return
-        session.edit("auto-$index") { p -> p.copy(automation = p.automation.mapIndexed { i, l -> if (i == index) l.withPoint(step, value) else l }) }
-        if (NativeEngine.isAvailable) NativeEngine.setAutomationPoint(index, step, value?.coerceIn(0f, 1f))
+        session.edit("auto-$index") { p -> p.copy(automation = p.automation.mapIndexed { i, l -> if (i == index) l.withPoint(step, value, p.scene) else l }) }
+        if (NativeEngine.isAvailable && project.value.automation[index].mode != AutomationLane.SONG) {
+            NativeEngine.setAutomationPoint(index, step, value?.coerceIn(0f, 1f))
+        }
     }
 
     private fun recordAutomation(target: AutoTarget, value: Float) {
@@ -896,7 +1037,14 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             addAutomation(target)
             index = project.value.automation.indexOfFirst { it.target == target }
         }
-        setAutomationPoint(index, step, value)
+        // A song curve records on the bar the song is at.
+        if (project.value.automation[index].mode == AutomationLane.SONG) {
+            // The bar the engine's song curve is reading now (it restarts when the song loops).
+            val songStep = NativeEngine.songStep()
+            if (songStep >= 0) setAutomationSongPoint(index, songStep / project.value.stepsPerBar, value)
+        } else {
+            setAutomationPoint(index, step, value)
+        }
     }
 
     /** After a stop, settings left where the automation put them go back to the project's values. */
@@ -1847,6 +1995,63 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    private val _spectrum = MutableStateFlow<FloatArray?>(null)
+    /** Master output spectrum (dB per band) while the analyser is open. */
+    val spectrum: StateFlow<FloatArray?> = _spectrum.asStateFlow()
+
+    /** Spectrum of the output about 15 times a second while the analyser is shown. */
+    suspend fun pollSpectrum() {
+        if (!NativeEngine.isAvailable) return
+        val buf = FloatArray(NativeEngine.SCOPE_FRAMES)
+        var smooth: FloatArray? = null
+        try {
+            while (true) {
+                NativeEngine.readScope(false, buf)
+                val fresh = withContext(Dispatchers.Default) { com.pocketstudio.app.analysis.Spectrum.bands(buf, OfflineExport.SAMPLE_RATE) }
+                // Bars fall gently, rise at once.
+                smooth = smooth?.let { old -> FloatArray(fresh.size) { maxOf(fresh[it], old[it] - 3f) } } ?: fresh
+                _spectrum.value = smooth
+                kotlinx.coroutines.delay(66)
+            }
+        } finally {
+            _spectrum.value = null
+        }
+    }
+
+    private val micThread = java.util.concurrent.Executors.newSingleThreadExecutor().asCoroutineDispatcher()
+    private val _tuner = MutableStateFlow<com.pocketstudio.app.analysis.TunerReading?>(null)
+    val tuner: StateFlow<com.pocketstudio.app.analysis.TunerReading?> = _tuner.asStateFlow()
+    private val _tunerMic = MutableStateFlow<Boolean?>(null)
+    /** null while opening, false when the microphone is unavailable. */
+    val tunerMic: StateFlow<Boolean?> = _tunerMic.asStateFlow()
+
+    /** Listens to the microphone while the tuner is shown (needs the permission). */
+    suspend fun runTuner() {
+        if (!NativeEngine.isAvailable || _audioRecording.value != null) {
+            _tunerMic.value = false
+            return
+        }
+        _tunerMic.value = null
+        var open = false
+        val buf = FloatArray(NativeEngine.SCOPE_FRAMES)
+        try {
+            // Opened and closed on one thread, in order: leaving and coming back never closes the new one.
+            open = withContext(micThread + kotlinx.coroutines.NonCancellable) { NativeEngine.micOpen() }
+            _tunerMic.value = open
+            if (!open) return
+            while (true) {
+                NativeEngine.readScope(true, buf)
+                val reading = withContext(Dispatchers.Default) { com.pocketstudio.app.analysis.PitchDetector.detect(buf, OfflineExport.SAMPLE_RATE) }
+                // Hold the last note a moment when the sound fades, so the needle does not vanish at once.
+                if (reading != null) _tuner.value = reading
+                kotlinx.coroutines.delay(80)
+            }
+        } finally {
+            _tuner.value = null
+            if (open && _audioRecording.value == null) withContext(micThread + kotlinx.coroutines.NonCancellable) { NativeEngine.micClose() }
+        }
+    }
+
     fun setChannelVolume(ch: Int, v: Float) {
         editChannel(ch, "vol") { it.copy(volume = v) }
         recordAutomation(AutoTarget(AutoTarget.VOLUME, ch), v)
@@ -1957,10 +2162,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** Keys down on the keyboard and the track each one plays (released there, whatever is selected since). */
     private val keysDown = HashMap<Int, Int>()
 
-    fun synthNoteOn(note: Int) {
+    fun synthNoteOn(note: Int, velocity: Float = 0.85f) {
         keysDown[note] = track
-        if (NativeEngine.isAvailable) NativeEngine.synthNoteOn(note, 0.85f, track)
-        recordNoteOn(note, 0.85f)
+        if (NativeEngine.isAvailable) NativeEngine.synthNoteOn(note, velocity, track)
+        recordNoteOn(note, velocity)
     }
 
     fun synthNoteOff(note: Int) {
@@ -2643,6 +2848,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         downloadCancelled = true
         fonts.values.forEach { it.close() }
         fonts.clear()
+        micThread.close()
         running?.cancel()
         recorder?.stop()
         padSamples.close()
@@ -2664,6 +2870,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
         const val MAX_MIDI_BYTES = 4 * 1024 * 1024
         /** Stems export: one render per mixer channel. */
+        /** A song automation lane spans at least this many bars (the song can be shorter or empty). */
+        const val SONG_LANE_MIN_BARS = 8
         /** Longest microphone take (34 MB of memory). */
         const val MAX_AUDIO_SECONDS = 180
         private val STEM_EXPORTS = listOf("batterie" to 0, "acide" to 1, "synthe" to 2, "remix" to 3)

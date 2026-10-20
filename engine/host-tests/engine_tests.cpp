@@ -1604,6 +1604,17 @@ void testProcessNeverAllocates() {
             for (int n = 0; n < 16; ++n) engine.post({ps::CommandType::SetSynthNote, 0.8f, n | (t << 16), ps::NoteTrack::pack(n * 24, 20, 60 + n % 12)});
             engine.post({ps::CommandType::SetSynthNoteCount, 0.0f, 16 | (t << 16)});
         }
+        // Live playing on track 2: arpeggio with sustain, bend and modulation.
+        engine.post({ps::CommandType::SetExpression, 1.0f, ps::InstrumentTrack::ArpOn | (2 << 16)});
+        engine.post({ps::CommandType::SetExpression, 0.5f, ps::InstrumentTrack::ArpRate | (2 << 16)});
+        engine.post({ps::CommandType::SetExpression, 1.0f, ps::InstrumentTrack::Sustain | (2 << 16)});
+        engine.post({ps::CommandType::SetExpression, 1.5f, ps::InstrumentTrack::Bend | (2 << 16)});
+        engine.post({ps::CommandType::SetExpression, 0.7f, ps::InstrumentTrack::Mod | (2 << 16)});
+        for (int n : {60, 64, 67}) engine.post({ps::CommandType::SynthNoteOn, 0.8f, n | (2 << 16)});
+        // A song automation curve.
+        engine.post({ps::CommandType::SetAutomationTarget, 0.0f, 3, ps::Automation::pack(ps::Automation::Volume, 5, 0, 0)});
+        engine.post({ps::CommandType::SetAutomationMode, 16.0f, 3, ps::Automation::Song});
+        for (int b = 0; b < 16; ++b) engine.post({ps::CommandType::SetAutomationSong, b / 16.0f, 3, b});
         // An audio track looping a clip, and the microphone being recorded.
         sample->retain();
         ps::Command audio{ps::CommandType::InstallAudioClip, 0.0f, 2};
@@ -1641,7 +1652,7 @@ void testProcessNeverAllocates() {
         // Every insert type somewhere, both sends, master inserts: effects must not allocate either.
         for (int ch = 0; ch <= ps::Mixer::kMaster; ++ch) {
             for (int slot = 0; slot < ps::Mixer::kInserts; ++slot) {
-                engine.post({ps::CommandType::SetInsertType, 0.0f, ch * ps::Mixer::kInserts + slot, 1 + (ch + slot) % 6});
+                engine.post({ps::CommandType::SetInsertType, 0.0f, ch * ps::Mixer::kInserts + slot, 1 + (ch + slot) % 13});
             }
             if (ch < ps::Mixer::kMaster) {
                 engine.post({ps::CommandType::SetSend, 0.5f, ch, 0});
@@ -1657,7 +1668,7 @@ void testProcessNeverAllocates() {
             if (i % 50 == 0) engine.post({ps::CommandType::TriggerPad, 1.0f, 3});
             if (i % 70 == 0) engine.post({ps::CommandType::SynthNoteOn, 0.9f, 60 + i % 12});
             if (i % 40 == 0) engine.post({ps::CommandType::SetInsertParam, (i % 80) / 80.0f, 1, 0});
-            if (i % 60 == 0) engine.post({ps::CommandType::SetInsertType, 0.0f, 5, 1 + (i / 60) % 6});
+            if (i % 60 == 0) engine.post({ps::CommandType::SetInsertType, 0.0f, 5, 1 + (i / 60) % 13});
             if (i % 55 == 0) engine.post({ps::CommandType::SetBusParam, (i % 110) / 110.0f, 1, 0});
             if (i % 30 == 0) engine.post({ps::CommandType::SetPerformance, (i % 60) ? 1.0f : 0.0f, (i / 30) % 6});
             if (i % 25 == 0) engine.post({ps::CommandType::ToggleClip, 0.0f, (i / 25) % 4});
@@ -1893,6 +1904,119 @@ float sineGainDb(ps::InsertSlot& fx, float freq, float amp = 0.25f) {
     return static_cast<float>(10 * std::log10(sum / ref));
 }
 
+void testNewEffects() {
+    // Every new effect: finite, bounded, and audibly doing its job on a stereo sine.
+    auto sine = [](std::vector<float>& l, std::vector<float>& r, float amp, float hz, float phaseR) {
+        for (size_t i = 0; i < l.size(); ++i) {
+            l[i] = amp * float(std::sin(2.0 * 3.14159265 * hz * double(i) / kRate));
+            r[i] = amp * float(std::sin(2.0 * 3.14159265 * hz * double(i) / kRate + phaseR));
+        }
+    };
+    auto run = [](ps::InsertSlot& fx, std::vector<float>& l, std::vector<float>& r) {
+        for (size_t at = 0; at < l.size(); at += 256) fx.process(l.data() + at, r.data() + at, int(std::min<size_t>(256, l.size() - at)));
+        bool ok = true;
+        for (size_t i = 0; i < l.size(); ++i) ok &= std::isfinite(l[i]) && std::isfinite(r[i]) && std::fabs(l[i]) < 2.0f && std::fabs(r[i]) < 2.0f;
+        return ok;
+    };
+    auto rms = [](const std::vector<float>& x, size_t from, size_t to) {
+        double s = 0;
+        for (size_t i = from; i < to; ++i) s += double(x[i]) * x[i];
+        return std::sqrt(s / double(to - from));
+    };
+    const size_t n = kRate;
+    std::vector<float> l(n), r(n), dryL(n);
+    for (int type = ps::InsertSlot::FlangerFx; type < ps::InsertSlot::kTypes; ++type) {
+        ps::InsertSlot fx;
+        fx.prepare(kRate);
+        fx.setType(type);
+        sine(l, r, 0.3f, 440.0f, 0.0f);
+        dryL = l;
+        CHECK(run(fx, l, r));
+        double diff = 0;
+        for (size_t i = n / 2; i < n; ++i) diff += std::fabs(double(l[i]) - dryL[i]) + std::fabs(double(r[i]) - dryL[i]);
+        if (type != ps::InsertSlot::WidenerFx && type != ps::InsertSlot::GateFx && type != ps::InsertSlot::ParamEqFx) CHECK(diff / double(n) > 1e-3);  // it changes the sound
+    }
+    // Gate: a quiet signal (-50 dB) is shut, a loud one passes.
+    ps::InsertSlot gate;
+    gate.prepare(kRate);
+    gate.setType(ps::InsertSlot::GateFx);
+    gate.setParam(0, 0.5f);  // -40 dB threshold
+    sine(l, r, 0.003f, 440.0f, 0.0f);
+    run(gate, l, r);
+    CHECK(rms(l, n / 2, n) < 0.003 * 0.71 * 0.05);
+    sine(l, r, 0.3f, 440.0f, 0.0f);
+    run(gate, l, r);
+    CHECK(rms(l, n / 2, n) > 0.3 * 0.71 * 0.95);
+    // Widener: width 0 makes it mono, 1 makes the sides wider.
+    ps::InsertSlot wide;
+    wide.prepare(kRate);
+    wide.setType(ps::InsertSlot::WidenerFx);
+    wide.setParam(0, 0.0f);
+    sine(l, r, 0.3f, 440.0f, 1.0f);
+    run(wide, l, r);
+    double side = 0;
+    for (size_t i = 0; i < n; ++i) side += std::fabs(double(l[i]) - r[i]);
+    CHECK(side < 1e-6);
+    // Bitcrusher at 2 bits: only a few levels remain.
+    ps::InsertSlot crush;
+    crush.prepare(kRate);
+    crush.setType(ps::InsertSlot::Crusher);
+    crush.setParam(0, 1.0f);
+    crush.setParam(3, std::sqrt(0.5f));  // volume x1
+    sine(l, r, 0.9f, 440.0f, 0.0f);
+    run(crush, l, r);
+    std::vector<float> levels;
+    for (float v : l) if (std::none_of(levels.begin(), levels.end(), [&](float x) { return std::fabs(x - v) < 1e-4f; })) levels.push_back(v);
+    CHECK(levels.size() <= 5);
+    // Tremolo at full depth: the level swings between nearly silent and full.
+    ps::InsertSlot trem;
+    trem.prepare(kRate);
+    trem.setType(ps::InsertSlot::TremoloFx);
+    trem.setParam(1, 1.0f);
+    sine(l, r, 0.3f, 440.0f, 0.0f);
+    run(trem, l, r);
+    double lo = 1, hi = 0;
+    for (size_t at = 0; at + 480 <= n; at += 480) { const double v = rms(l, at, at + 480); lo = std::min(lo, v); hi = std::max(hi, v); }
+    CHECK(lo < 0.03 && hi > 0.18);
+}
+
+void testParametricEq() {
+    // +12 dB bell at 1 kHz: 1 kHz up ~12 dB, 100 Hz untouched; low cut at 500 Hz: 50 Hz way down.
+    ps::InsertSlot eq;
+    eq.prepare(kRate);
+    eq.setType(ps::InsertSlot::ParamEqFx);
+    eq.setParam(0, std::log(1000.0f / 20.0f) / std::log(1000.0f));  // 1 kHz on the 20 Hz..20 kHz log scale
+    eq.setParam(1, 0.5f + 12.0f / 36.0f);
+    const float atBell = sineGainDb(eq, 1000.0f), below = sineGainDb(eq, 100.0f);
+    std::printf("  param EQ: 1 kHz %+.1f dB, 100 Hz %+.1f dB\n", atBell, below);
+    CHECK(std::fabs(atBell - 12.0f) < 0.5f);
+    CHECK(std::fabs(below) < 0.5f);
+    eq.setParam(3, 1.0f);
+    CHECK(sineGainDb(eq, 50.0f) < -15.0f);
+}
+
+void testScopes() {
+    // The analyser sees the last output frames in order; the tuner the last microphone frames.
+    ps::Engine engine(kRate);
+    std::vector<float> out(512 * 2), in(512);
+    for (int k = 0; k < 10; ++k) {
+        for (int i = 0; i < 512; ++i) in[size_t(i)] = float(k * 512 + i);
+        engine.process(in.data(), 512, 1, out.data(), 512, 2);
+    }
+    std::vector<float> mic(ps::Engine::kScopeFrames);
+    engine.readScope(true, mic.data());
+    CHECK(mic.back() == 5119.0f && mic.front() == 5120.0f - ps::Engine::kScopeFrames);
+    engine.post({ps::CommandType::SetFrequency, 440.0f});
+    engine.post({ps::CommandType::SetGain, 0.5f});
+    engine.post({ps::CommandType::SetPlaying, 1.0f});
+    render(engine, kRate / 2, 256);
+    std::vector<float> scope(ps::Engine::kScopeFrames);
+    engine.readScope(false, scope.data());
+    float peak = 0.0f;
+    for (float v : scope) peak = std::max(peak, std::fabs(v));
+    CHECK(peak > 0.2f);
+}
+
 void testInsertEffects() {
     ps::InsertSlot slot;
     slot.prepare(kRate);
@@ -2096,6 +2220,121 @@ void testAutomationMovesTheFader() {
     double s = 0;
     for (int i = 6000 * 5; i < 6000 * 5 + 2400; ++i) s += double(after[static_cast<size_t>(i) * 2]) * after[static_cast<size_t>(i) * 2];
     CHECK(std::sqrt(s / 2400) > loud * 0.5);  // the pad's level wanders a little with its timbre
+}
+
+void testAutomationClips() {
+    // A song-long lane on the synth fader: silent on bar 1, rising to full on bar 2, then held.
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SynthNoteOn, 0.8f, 57});
+    engine.post({ps::CommandType::SetAutomationTarget, 0.0f, 0, ps::Automation::pack(ps::Automation::Volume, 2, 0, 0)});
+    engine.post({ps::CommandType::SetAutomationMode, 2.0f, 0, ps::Automation::Song});
+    engine.post({ps::CommandType::SetAutomationSong, 0.0f, 0, 0});
+    engine.post({ps::CommandType::SetAutomationSong, 0.8f, 0, 1});
+    render(engine, kRate / 2, 256);
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    auto out = render(engine, kRate * 6, 256);  // 3 bars
+    auto rms = [&](const std::vector<float>& o, int from) {
+        double sum = 0;
+        for (int i = from; i < from + 2400; ++i) sum += double(o[size_t(i) * 2]) * o[size_t(i) * 2];
+        return std::sqrt(sum / 2400);
+    };
+    const double start = rms(out, 6000 * 1), middle = rms(out, 6000 * 9), later = rms(out, 6000 * 40);
+    std::printf("  song automation: %.4f, %.4f, %.4f\n", start, middle, later);
+    CHECK(start < later * 0.05 && middle > later * 0.15 && middle < later * 0.9);
+    // The song loops: a swap back to its first part restarts the curve.
+    {
+        ps::Engine loop(kRate);
+        loop.post({ps::CommandType::SetTransport, 1.0f, 0});
+        render(loop, 6000 * 20, 256);
+        CHECK(loop.songStep() >= 19);
+        loop.post({ps::CommandType::ArmSceneSwap, 0.0f, 0, 1});  // next bar: the song starts over
+        render(loop, 6000 * 13, 256);                             // past step 32
+        CHECK(loop.songStep() >= 0 && loop.songStep() < 6);
+    }
+    // A per-scene lane: the waiting scene brings its own values at the swap.
+    ps::Engine scenes(kRate);
+    scenes.post({ps::CommandType::SynthNoteOn, 0.8f, 57});
+    scenes.post({ps::CommandType::SetAutomationTarget, 0.0f, 0, ps::Automation::pack(ps::Automation::Volume, 2, 0, 0)});
+    scenes.post({ps::CommandType::SetAutomationMode, 0.0f, 0, ps::Automation::PerScene});
+    scenes.post({ps::CommandType::SetAutomationPoint, 0.0f, 0, 0});  // scene A: silent
+    scenes.post({ps::CommandType::SetTransport, 1.0f, 0});
+    scenes.post({ps::CommandType::SetStaging, 1.0f});
+    scenes.post({ps::CommandType::SetAutomationPoint, 0.8f, 0, 0});  // scene B: full
+    scenes.post({ps::CommandType::SetStaging, 0.0f});
+    scenes.post({ps::CommandType::ArmSceneSwap, 0.0f, 0});
+    out = render(scenes, kRate * 2 + 12000, 256);  // bar 1 and two steps of bar 2
+    const double a = rms(out, 6000 * 6), b = rms(out, 6000 * 16 + 4000);
+    CHECK(scenes.sceneSwaps() == 1);
+    CHECK(a < b * 0.05 && b > 0.01);
+}
+
+double pitchHz(const std::vector<float>& x, int from, int len);
+
+void testExpressionAndArpeggio() {
+    // Pitch bend: +12 semitones doubles the pitch; the mod wheel is accepted (vibrato).
+    {
+        ps::Engine engine(kRate);
+        engine.post({ps::CommandType::SynthParam, 0.0f, ps::Synth::Lfo1ToPitch});
+        engine.post({ps::CommandType::SynthParam, 0.0f, ps::Synth::SubLevel});  // one clear pitch to measure
+        engine.post({ps::CommandType::SynthParam, 0.0f, ps::Synth::OscMix});
+        engine.post({ps::CommandType::SynthNoteOn, 0.9f, 57});
+        auto out = render(engine, kRate / 2, 256);
+        std::vector<float> mono(out.size() / 2);
+        for (size_t i = 0; i < mono.size(); ++i) mono[i] = out[i * 2];
+        const double before = pitchHz(mono, kRate / 4, 4800);
+        engine.post({ps::CommandType::SetExpression, 12.0f, ps::InstrumentTrack::Bend});
+        out = render(engine, kRate / 2, 256);
+        for (size_t i = 0; i < mono.size(); ++i) mono[i] = out[i * 2];
+        const double after = pitchHz(mono, kRate / 4, 4800);
+        std::printf("  bend: %.1f Hz -> %.1f Hz\n", before, after);
+        CHECK(std::fabs(before - 220.0) < 2.0 && std::fabs(after - 440.0) < 4.0);
+    }
+    // Sustain pedal: a released key keeps sounding until the pedal comes up.
+    {
+        ps::Engine engine(kRate);
+        engine.post({ps::CommandType::SetExpression, 1.0f, ps::InstrumentTrack::Sustain});
+        engine.post({ps::CommandType::SynthNoteOn, 0.9f, 60});
+        render(engine, 4800, 256);
+        engine.post({ps::CommandType::SynthNoteOff, 0.0f, 60});
+        render(engine, kRate, 256);
+        CHECK(engine.synthActiveVoices() == 1);
+        engine.post({ps::CommandType::SetExpression, 0.0f, ps::InstrumentTrack::Sustain});
+        render(engine, kRate * 3, 256);
+        CHECK(engine.synthActiveVoices() == 0);
+    }
+    // Arpeggiator, 1/16 at 120 BPM (6000 frames), up: A3, E4, A4, then A3 again.
+    {
+        ps::Engine engine(kRate);
+        engine.post({ps::CommandType::SynthParam, 0.0f, ps::Synth::Lfo1ToPitch});
+        engine.post({ps::CommandType::SynthParam, 0.0f, ps::Synth::SubLevel});
+        engine.post({ps::CommandType::SynthParam, 0.0f, ps::Synth::OscMix});
+        engine.post({ps::CommandType::SynthParam, 0.0f, ps::Synth::AmpRelease});  // no tail under the next note
+        engine.post({ps::CommandType::SetExpression, 1.0f, ps::InstrumentTrack::ArpOn});
+        engine.post({ps::CommandType::SetExpression, 0.9f, ps::InstrumentTrack::ArpGate});
+        for (int n : {64, 57, 69}) engine.post({ps::CommandType::SynthNoteOn, 0.9f, n});
+        auto out = render(engine, 6000 * 4, 100);
+        std::vector<float> mono(out.size() / 2);
+        for (size_t i = 0; i < mono.size(); ++i) mono[i] = out[i * 2];
+        const double expected[4] = {220.0, 329.63, 440.0, 220.0};
+        for (int k = 0; k < 4; ++k) {
+            const double f = pitchHz(mono, k * 6000 + 500, 3000);
+            if (std::fabs(f - expected[k]) > expected[k] * 0.02) std::printf("  arp note %d: %.1f Hz\n", k, f);
+            CHECK(std::fabs(f - expected[k]) < expected[k] * 0.02);
+        }
+        // A key held since before the arpeggiator came on is released normally (no stuck note).
+        engine.post({ps::CommandType::SetExpression, 0.0f, ps::InstrumentTrack::ArpOn});
+        render(engine, 256, 256);
+        engine.post({ps::CommandType::SynthNoteOn, 0.9f, 72});
+        engine.post({ps::CommandType::SetExpression, 1.0f, ps::InstrumentTrack::ArpOn});
+        render(engine, 4800, 256);
+        engine.post({ps::CommandType::SynthNoteOff, 0.0f, 72});
+        render(engine, kRate, 256);
+        CHECK(engine.synthActiveVoices() == 0);
+        // Keys up: the arpeggio stops.
+        for (int n : {64, 57, 69}) engine.post({ps::CommandType::SynthNoteOff, 0.0f, n});
+        render(engine, kRate * 2, 256);
+        CHECK(engine.synthActiveVoices() == 0);
+    }
 }
 
 void testScenesSwapOnTheBar() {
@@ -2613,6 +2852,11 @@ int main(int argc, char** argv) {
         {"stems_follow_transport", testStemsPlayInStepWithTheTransport},
         {"live_pads", testLivePadsLoopOnTheBeat},
         {"instrument_tracks", testInstrumentTracks},
+        {"new_effects", testNewEffects},
+        {"param_eq", testParametricEq},
+        {"scopes", testScopes},
+        {"automation_clips", testAutomationClips},
+        {"expression_arp", testExpressionAndArpeggio},
         {"audio_tracks", testAudioTracks},
         {"recording", testRecordingStartsOnTheFirstStep},
         {"three_four", testThreeFourAndPartMutes},

@@ -56,6 +56,7 @@ struct PlaitsSynth::Impl {
     int outPos = kBlock;  // samples of `out` already used
     uint32_t clock = 0;
     uint32_t block = 0;  // counts rendered blocks
+    float bend = 0.0f, mod = 0.0f;  // live pitch bend (semitones) and mod wheel
     float attackStep = 0.0f, releaseCoef = 0.0f;
 
     void updatePatch() {
@@ -125,7 +126,8 @@ struct PlaitsSynth::Impl {
             v.retrigger = false;
             m.level = v.level * (0.4f + 0.6f * v.velocity);
             plaits::Patch p = patch;
-            p.note = static_cast<float>(v.note) + kTuning;
+            p.note = static_cast<float>(v.note) + kTuning + bend;
+            p.timbre = std::min(1.0f, p.timbre + 0.5f * mod);
             v.dsp.Render(p, m, frames, kBlock);
             for (int i = 0; i < kBlock; ++i) out[i] += frames[i].out * gain;
         }
@@ -160,6 +162,9 @@ void PlaitsSynth::setParam(Param p, float value) {
         }
     }
 }
+
+void PlaitsSynth::setBend(float semitones) { impl_->bend = semitones; }
+void PlaitsSynth::setMod(float amount) { impl_->mod = amount; }
 
 void PlaitsSynth::noteOn(int note, float velocity, int offset) {
     auto& im = *impl_;

@@ -53,6 +53,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.pocketstudio.model.SynthPatch
+import com.pocketstudio.app.rhythm.PlayUi
 import com.pocketstudio.app.sounds.SoundBrowser
 import com.pocketstudio.app.sounds.SoundBrowserUi
 import com.pocketstudio.ui.MonoStyle
@@ -62,7 +63,7 @@ import com.pocketstudio.ui.SectionLabel
 import kotlin.math.roundToInt
 
 data class SynthActions(
-    val noteOn: (Int) -> Unit = {},
+    val noteOn: (Int, Float) -> Unit = { _, _ -> },
     val noteOff: (Int) -> Unit = {},
     val shiftOctave: (Int) -> Unit = {},
     val setParam: (Int, Float) -> Unit = { _, _ -> },
@@ -76,6 +77,9 @@ private val EASY = listOf(
     SynthPatch.A_ATTACK to "Attaque", SynthPatch.A_RELEASE to "Relâchement", SynthPatch.OSC2_DETUNE to "Épaisseur (désaccord)",
     SynthPatch.SUB to "Sous-basse", SynthPatch.LEVEL to "Volume",
 )
+
+/** Every synth parameter a knob can move, with its name (MIDI learn). */
+internal val SYNTH_LABELS: List<Pair<Int, String>> get() = EASY + ADVANCED
 
 private val ADVANCED = listOf(
     SynthPatch.OSC_MIX to "Mélange oscillateurs", SynthPatch.NOISE to "Bruit",
@@ -110,13 +114,15 @@ fun SynthScreen(
     browser: SoundBrowserUi? = null,
     transcribe: TranscribeUi? = null,
     tracks: TracksUi? = null,
+    play: PlayUi? = null,
+    playActions: PlayActions = PlayActions(),
 ) {
     var advanced by rememberSaveable { mutableStateOf(false) }
     var showNotes by rememberSaveable { mutableStateOf(startWithNotes) }
     var chordKeys by rememberSaveable { mutableStateOf(false) }
     val harmony = notes?.harmony ?: Harmony()
     // One finger, one chord of the scale (keyboard "Accords" switch).
-    val keyOn: (Int) -> Unit = if (chordKeys) actions.chordOn else actions.noteOn
+    val keyOn: (Int, Float) -> Unit = if (chordKeys) { n, _ -> actions.chordOn(n) } else actions.noteOn
     val keyOff: (Int) -> Unit = if (chordKeys) actions.chordOff else actions.noteOff
     BoxWithConstraints(modifier.fillMaxSize().testTag("synth")) {
         val keyboardHeight = (maxHeight * 0.45f).coerceIn(110.dp, 220.dp)
@@ -160,6 +166,7 @@ fun SynthScreen(
                     OctaveControl(octave, actions)
                 }
                 Column(Modifier.weight(1f).verticalScroll(rememberScrollState())) {
+                    play?.let { PlayPanel(it, playActions) }
                     instrument?.let { InstrumentPanel(it) }
                     if (instrument?.current == null && instrument?.synthEngine != 1) SoundCard(patch, actions, advanced) { advanced = it }
                 }
@@ -176,7 +183,7 @@ fun SynthScreen(
                 tracks?.let { TrackBar(it) }
                 if (notes != null) ModeSwitch(showNotes) { showNotes = it }
                 KeyboardCard(octave, octaves = 2, height = 150.dp, actions = actions, harmony = harmony, chordKeys = chordKeys,
-                    onChordKeys = { chordKeys = it }, keyOn = keyOn, keyOff = keyOff)
+                    onChordKeys = { chordKeys = it }, keyOn = keyOn, keyOff = keyOff, play = play, playActions = playActions)
                 instrument?.let { InstrumentPanel(it) }
                 if (instrument?.current == null) {
                     PresetsCard(patch, actions, browser)
@@ -196,8 +203,10 @@ private fun KeyboardCard(
     harmony: Harmony,
     chordKeys: Boolean,
     onChordKeys: (Boolean) -> Unit,
-    keyOn: (Int) -> Unit,
+    keyOn: (Int, Float) -> Unit,
     keyOff: (Int) -> Unit,
+    play: PlayUi? = null,
+    playActions: PlayActions = PlayActions(),
 ) {
     NeonCard {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -207,6 +216,7 @@ private fun KeyboardCard(
             OctaveControl(octave, actions)
         }
         Keyboard(firstNote = 12 * (octave + 1), octaves = octaves, onNoteOn = keyOn, onNoteOff = keyOff, height = height, harmony = harmony)
+        play?.let { PlayPanel(it, playActions) }
     }
 }
 
@@ -320,7 +330,8 @@ private val WHITE_OFFSETS = listOf(0, 2, 4, 5, 7, 9, 11)
 fun Keyboard(
     firstNote: Int,
     octaves: Int,
-    onNoteOn: (Int) -> Unit,
+    /** Note and velocity: softer near the top of the key, louder at its tip. */
+    onNoteOn: (Int, Float) -> Unit,
     onNoteOff: (Int) -> Unit,
     height: Dp = 150.dp,
     harmony: Harmony = Harmony(),
@@ -354,7 +365,7 @@ private fun Key(
     note: Int,
     isBlack: Boolean,
     modifier: Modifier,
-    onNoteOn: (Int) -> Unit,
+    onNoteOn: (Int, Float) -> Unit,
     onNoteOff: (Int) -> Unit,
     harmony: Harmony = Harmony(),
 ) {
@@ -375,9 +386,9 @@ private fun Key(
             .background(color)
             .border(1.dp, Neon.Outline, RoundedCornerShape(bottomStart = 6.dp, bottomEnd = 6.dp))
             .pointerInput(note) {
-                detectTapGestures(onPress = {
+                detectTapGestures(onPress = { at ->
                     down = true
-                    onNoteOn(note)
+                    onNoteOn(note, (0.35f + 0.65f * at.y / size.height).coerceIn(0.2f, 1f))
                     try {
                         tryAwaitRelease()
                     } finally {

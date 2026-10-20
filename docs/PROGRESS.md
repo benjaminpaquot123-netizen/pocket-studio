@@ -93,7 +93,14 @@
 
   - 7.3 fait : ligne de temps dans Morceau (une colonne par partie, une ligne par piste, un appui coupe ou remet une piste dans une partie, appliqué au jeu, à l'export et au MIDI) ; mesures 2/4 à 7/4 (décompte, temps fort du métronome, changements de scène, grille de batterie, pads live).
 
+- Phase 8 (branche ccr-80af1a1b-mn0wec) :
+  - 8.1 fait : flanger, phaser, noise gate, trémolo/auto-pan, élargisseur stéréo, bitcrusher, EQ paramétrique avec sa courbe ; analyseur de spectre (Mixeur › Sortie générale) ; accordeur (Audio › Accordeur).
+
+  - 8.2 fait : chaque courbe d'automation est un clip « Boucle », « Par scène » (chaque scène ses pas, changés au passage de scène) ou « Morceau » (un point par mesure, glissé d'un point à l'autre, enregistrable en direct).
+
+  - 8.3 fait : vélocité selon l'endroit touché sur la touche, pitch bend (revient au centre), modulation, sustain, arpège en direct (1/32 à 1/4, 4 sens, 1 à 4 octaves, longueur) calé dans le moteur ; clavier MIDI : pitch bend, molette, pédale de sustain ; MIDI learn (Outils › MIDI) ; horloge MIDI sortante.
+  - Ableton Link reporté (bibliothèque réseau lourde).
+
 ## Prochaine étape exacte
-1. Revue de fin de phase 7 (sous-agent neuf), corrections, CI verte, fusion de la PR #17.
-2. Phase 8 : effets, clips d'automation, clavier expressif, MIDI learn, horloge MIDI sortante, Link.
-3. Mixeur compact (tranches repliables), il peut avoir 16 tranches.
+1. Revue de fin de phase 8 faite et corrigée ; CI verte puis fusion de la PR #18.
+2. Phase 9 (voir ROADMAP.md).

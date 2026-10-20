@@ -78,6 +78,8 @@ void Engine::applyCommand(const Command& command) {
             if (command.value > 0.5f) {
                 sequencer_.start(std::clamp(command.a, 0, 4));
                 sceneStart_ = 0;
+                songStart_ = 0;
+                songRestart_ = false;
                 lastLocal_ = -1;
                 playPosition_.store(-1.0, std::memory_order_relaxed);
             } else {
@@ -97,6 +99,7 @@ void Engine::applyCommand(const Command& command) {
                 }
                 currentStep_.store(-1, std::memory_order_relaxed);
                 absoluteStep_.store(-1, std::memory_order_relaxed);
+                songStep_.store(-1, std::memory_order_relaxed);
                 playPosition_.store(-1.0, std::memory_order_relaxed);
                 lastLocal_ = -1;
             }
@@ -206,6 +209,7 @@ void Engine::applyCommand(const Command& command) {
             break;
         case CommandType::ArmSceneSwap:
             swapAt_ = command.a < 0 ? -1 : command.a;
+            songRestart_ = command.b == 1;  // the waiting scene starts the song over (it loops)
             staging_ = false;  // arming ends a staging burst even if its "off" was dropped
             break;
         case CommandType::SetAcidRoot:
@@ -217,10 +221,13 @@ void Engine::applyCommand(const Command& command) {
             }
             break;
         case CommandType::SynthNoteOn:
-            tracks_[static_cast<size_t>(trackOf(command.a))].noteOn(trackArg(command.a) & 0x7F, command.value, 0);
+            tracks_[static_cast<size_t>(trackOf(command.a))].liveOn(trackArg(command.a) & 0x7F, command.value);
             break;
         case CommandType::SynthNoteOff:
-            tracks_[static_cast<size_t>(trackOf(command.a))].noteOff(trackArg(command.a) & 0x7F, 0);
+            tracks_[static_cast<size_t>(trackOf(command.a))].liveOff(trackArg(command.a) & 0x7F);
+            break;
+        case CommandType::SetExpression:
+            if (std::isfinite(command.value)) tracks_[static_cast<size_t>(trackOf(command.a))].setExpression(trackArg(command.a), command.value);
             break;
         case CommandType::SynthParam:
             if (trackArg(command.a) < Synth::ParamCount) {
@@ -294,12 +301,36 @@ void Engine::applyCommand(const Command& command) {
             if (command.a >= 0 && command.a < Automation::kLanes) {
                 auto& lane = automation_.lanes[command.a];
                 lane.target = command.b;
+                lane.mode = Automation::Loop;
                 lane.values.fill(-1.0f);
+                lane.hasStaged = false;
+                lane.songBars = 0;
             }
             break;
         case CommandType::SetAutomationPoint:
             if (command.a >= 0 && command.a < Automation::kLanes && command.b >= 0 && command.b < Automation::kSteps) {
-                automation_.lanes[command.a].values[static_cast<size_t>(command.b)] = command.value < 0.0f ? -1.0f : std::min(command.value, 1.0f);
+                auto& lane = automation_.lanes[command.a];
+                const float v = command.value < 0.0f ? -1.0f : std::min(command.value, 1.0f);
+                if (staging_) {
+                    // A per-scene lane: the waiting scene's values, taken over at the swap.
+                    if (!lane.hasStaged) lane.staged.fill(-1.0f);
+                    lane.hasStaged = true;
+                    lane.staged[static_cast<size_t>(command.b)] = v;
+                } else {
+                    lane.values[static_cast<size_t>(command.b)] = v;
+                }
+            }
+            break;
+        case CommandType::SetAutomationMode:
+            if (command.a >= 0 && command.a < Automation::kLanes) {
+                auto& lane = automation_.lanes[command.a];
+                lane.mode = std::clamp(command.b, 0, 2);
+                lane.songBars = std::clamp(static_cast<int>(command.value), 0, Automation::kSongBars);
+            }
+            break;
+        case CommandType::SetAutomationSong:
+            if (command.a >= 0 && command.a < Automation::kLanes && command.b >= 0 && command.b < Automation::kSongBars) {
+                automation_.lanes[command.a].song[static_cast<size_t>(command.b)] = std::clamp(command.value, 0.0f, 1.0f);
             }
             break;
         case CommandType::SetStemStart:
@@ -368,9 +399,11 @@ void Engine::onStep(int offset, int step) {
     audio_.onStep(offset, local);
     for (auto& t : tracks_) {
         if (t.on) t.notes.onStep(offset, local, sequencer_.samplesPerStep());
+        t.arpSync(offset, step, sequencer_.samplesPerStep());
     }
     const int patternStep = local % patternSteps_;
-    applyAutomation(patternStep);
+    songStep_.store(step - songStart_, std::memory_order_relaxed);
+    applyAutomation(patternStep, step - songStart_);
     // Sidechain pumps follow the kick lane (pad 1) or every quarter note.
     mixer_.sidechainEvent(offset, pattern_[0][patternStep] > 0.0f, onBeat);
     currentStep_.store(patternStep, std::memory_order_relaxed);
@@ -419,15 +452,34 @@ void Engine::swapScene(int step) {
     acid_.setLength(staged_.acidLength);
     for (auto& t : tracks_) t.swapIn();
     for (int k = 0; k < AudioTracks::kTracks; ++k) audio_.setOn(k, staged_.audioOn[static_cast<size_t>(k)]);
+    for (auto& lane : automation_.lanes) {
+        if (!lane.hasStaged) continue;
+        lane.values = lane.staged;
+        lane.hasStaged = false;
+    }
     sceneStart_ = step;
+    if (songRestart_) songStart_ = step;
+    songRestart_ = false;
     swapAt_ = -1;
     sceneSwaps_.fetch_add(1, std::memory_order_relaxed);
 }
 
-void Engine::applyAutomation(int patternStep) {
+void Engine::applyAutomation(int patternStep, int songStep) {
     if (patternStep < 0 || patternStep >= Automation::kSteps) return;
+    const int bar = sequencer_.stepsPerBar();
     for (const auto& lane : automation_.lanes) {
-        const float v = lane.values[static_cast<size_t>(patternStep)];
+        float v = -1.0f;
+        if (lane.mode == Automation::Song) {
+            // From the transport start: bar by bar, sliding from one bar's value to the next.
+            if (lane.songBars <= 0 || songStep < 0) continue;
+            const int b = std::min(songStep / bar, lane.songBars - 1);
+            const float a = lane.song[static_cast<size_t>(b)];
+            const float c = lane.song[static_cast<size_t>(std::min(b + 1, lane.songBars - 1))];
+            const float t = songStep / bar >= lane.songBars - 1 ? 0.0f : static_cast<float>(songStep % bar) / static_cast<float>(bar);
+            v = a + t * (c - a);
+        } else {
+            v = lane.values[static_cast<size_t>(patternStep)];
+        }
         if (lane.target < 0 || v < 0.0f) continue;
         const int kind = lane.target >> 16, ch = (lane.target >> 12) & 0xF, slot = (lane.target >> 8) & 0xF, param = lane.target & 0xFF;
         switch (kind) {
@@ -461,7 +513,9 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
         playPosition_.store(lastLocal_ + sinceStep_ / sequencer_.samplesPerStep(), std::memory_order_relaxed);
     }
     for (auto& t : tracks_) {
-        if (t.on) t.notes.advance(numFrames, t);
+        if (!t.on) continue;
+        t.notes.advance(numFrames, t);
+        t.arpAdvance(numFrames, sequencer_.samplesPerStep());
     }
     metronome_.render(direct, numFrames);
     drums_.render(drums, numFrames);
@@ -528,8 +582,18 @@ void Engine::process(const float* input, int numInputFrames, int inputChannels,
             done += n;
         }
         recordInput(input, numInputFrames, inputChannels);
+        // Microphone (tuner): whatever arrived this callback.
+        if (input && inputChannels > 0) {
+            for (int i = 0; i < numInputFrames; ++i) scopeWrite(micScope_, micScopeAt_, input[i * inputChannels]);
+        }
     }
 
+    // Output (analyser): mono, after the finite check below has cleaned it, one frame behind is fine.
+    for (int i = 0; i < numFrames; ++i) {
+        float m = 0.0f;
+        for (int c = 0; c < outputChannels; ++c) m += output[i * outputChannels + c];
+        scopeWrite(outScope_, outScopeAt_, std::isfinite(m) ? m / static_cast<float>(outputChannels) : 0.0f);
+    }
     float blockPeak = 0.0f;
     bool finite = true;
     const int total = numFrames * outputChannels;

@@ -20,20 +20,68 @@ data class AutoTarget(val kind: Int, val ch: Int = 0, val slot: Int = 0, val par
     }
 }
 
-/** One automated setting: a value 0..1 (or nothing) on each step of the drum pattern's loop. */
+/**
+ * One automated setting, as a clip. [LOOP]: a value 0..1 (or nothing) on each step of the drum
+ * loop, the same in every scene. [PER_SCENE]: each scene has its own steps ([sceneValues]).
+ * [SONG]: one curve over the whole song, a point per bar ([songValues]), sliding between points.
+ */
 @Serializable
-data class AutomationLane(val target: AutoTarget, val values: List<Float?> = List(STEPS) { null }) {
+data class AutomationLane(
+    val target: AutoTarget,
+    val values: List<Float?> = List(STEPS) { null },
+    val mode: Int = LOOP,
+    val sceneValues: Map<Int, List<Float?>> = emptyMap(),
+    val songValues: List<Float?> = emptyList(),
+) {
     fun sanitized(): AutomationLane = copy(
-        values = (values + List((STEPS - values.size).coerceAtLeast(0)) { null }).take(STEPS)
-            .map { v -> v?.takeIf { it.isFinite() }?.coerceIn(0f, 1f) },
+        values = clean(values, STEPS),
+        mode = mode.coerceIn(LOOP, SONG),
+        sceneValues = sceneValues.filterKeys { it in 0 until Scene.MAX }.mapValues { clean(it.value, STEPS) },
+        songValues = clean(songValues, songValues.size.coerceAtMost(MAX_SONG_BARS)),
     )
 
-    fun withPoint(step: Int, value: Float?): AutomationLane =
-        if (step !in 0 until STEPS) this else copy(values = values.mapIndexed { i, v -> if (i == step) value?.coerceIn(0f, 1f) else v })
+    /** The steps playing in scene [scene]. */
+    fun valuesFor(scene: Int): List<Float?> = if (mode == PER_SCENE) sceneValues[scene] ?: List(STEPS) { null } else values
+
+    fun withPoint(step: Int, value: Float?, scene: Int = 0): AutomationLane {
+        if (step !in 0 until STEPS) return this
+        val updated = valuesFor(scene).mapIndexed { i, v -> if (i == step) value?.coerceIn(0f, 1f) else v }
+        return if (mode == PER_SCENE) copy(sceneValues = sceneValues + (scene to updated)) else copy(values = updated)
+    }
+
+    /** The song curve's point on bar [bar] (null erases). */
+    fun withSongPoint(bar: Int, value: Float?): AutomationLane {
+        if (bar !in 0 until MAX_SONG_BARS) return this
+        val list = (songValues + List((bar + 1 - songValues.size).coerceAtLeast(0)) { null }).toMutableList()
+        list[bar] = value?.coerceIn(0f, 1f)
+        return copy(songValues = list.dropLastWhile { it == null })
+    }
+
+    /**
+     * The song curve as the engine plays it: a value for each of [bars] bars, straight lines
+     * between the points drawn, held before the first and after the last. Empty when none.
+     */
+    fun songCurve(bars: Int): List<Float> {
+        val points = songValues.withIndex().filter { it.value != null }.map { it.index to it.value!! }
+        if (points.isEmpty()) return emptyList()
+        return List(bars.coerceIn(1, MAX_SONG_BARS)) { b ->
+            val after = points.firstOrNull { it.first >= b } ?: return@List points.last().second
+            val before = points.lastOrNull { it.first <= b } ?: return@List after.second
+            if (after.first == before.first) before.second
+            else before.second + (after.second - before.second) * (b - before.first) / (after.first - before.first)
+        }
+    }
 
     companion object {
         const val STEPS = 64
         const val MAX_LANES = 8
+        const val LOOP = 0
+        const val PER_SCENE = 1
+        const val SONG = 2
+        const val MAX_SONG_BARS = 256
+
+        private fun clean(list: List<Float?>, size: Int) = (list + List((size - list.size).coerceAtLeast(0)) { null }).take(size)
+            .map { v -> v?.takeIf { it.isFinite() }?.coerceIn(0f, 1f) }
 
         fun sanitize(lanes: List<AutomationLane>): List<AutomationLane> =
             lanes.filter { it.target.kind in 0..4 }.distinctBy { it.target }.take(MAX_LANES).map { it.sanitized() }

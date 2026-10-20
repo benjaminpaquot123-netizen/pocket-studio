@@ -49,6 +49,13 @@ data class AutomationUi(
     val steps: Int = 16,
     val currentStep: Int = -1,
     val recording: Boolean = false,
+    /** The scene shown (per-scene clips edit its steps). */
+    val scene: Int = 0,
+    /** Bars of the song (song clips), at least a few to draw on. */
+    val songBars: Int = 0,
+    /** The song's bar playing now, -1 when not playing the song. */
+    val songBar: Int = -1,
+    val stepsPerBar: Int = 16,
 )
 
 data class AutomationActions(
@@ -57,7 +64,11 @@ data class AutomationActions(
     val clear: (Int) -> Unit = {},
     val setPoint: (lane: Int, step: Int, value: Float?) -> Unit = { _, _, _ -> },
     val toggleRecord: () -> Unit = {},
+    val setMode: (lane: Int, mode: Int) -> Unit = { _, _ -> },
+    val setSongPoint: (lane: Int, bar: Int, value: Float?) -> Unit = { _, _, _ -> },
 )
+
+private val MODES = listOf(AutomationLane.LOOP to "Boucle", AutomationLane.PER_SCENE to "Par scène", AutomationLane.SONG to "Morceau")
 
 private fun List<StripInfo>.nameOf(ch: Int) = firstOrNull { it.ch == ch }?.name ?: "Sortie"
 
@@ -116,7 +127,32 @@ fun AutomationCard(ui: AutomationUi, channels: List<Channel>, master: List<Inser
                 TextButton(onClick = { actions.clear(i) }) { Text("Vider") }
                 IconButton(onClick = { actions.remove(i) }) { Icon(Icons.Filled.Delete, contentDescription = "Supprimer") }
             }
-            LaneEditor(lane, ui.steps, ui.currentStep) { step, v -> actions.setPoint(i, step, v) }
+            Row(horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(6.dp)) {
+                MODES.forEach { (mode, label) ->
+                    FilterChip(
+                        selected = lane.mode == mode, onClick = { actions.setMode(i, mode) }, label = { Text(label) },
+                        modifier = Modifier.testTag("auto_mode_${i}_$mode"),
+                    )
+                }
+            }
+            when (lane.mode) {
+                AutomationLane.SONG -> {
+                    val bars = maxOf(ui.songBars, 8)
+                    Text(
+                        if (ui.songBars == 0) "Morceau vide : la courbe suit les mesures depuis le début de la lecture."
+                        else "Une valeur par mesure sur tout le morceau ($bars mesures) ; elle glisse d'un point à l'autre.",
+                        style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
+                    )
+                    SongLaneEditor(lane, bars, ui.songBar) { bar, v -> actions.setSongPoint(i, bar, v) }
+                }
+                else -> {
+                    if (lane.mode == AutomationLane.PER_SCENE) {
+                        Text("Pas de la scène ${com.pocketstudio.model.Scene.NAMES.getOrElse(ui.scene) { "?" }} (chaque scène a les siens).",
+                            style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                    }
+                    LaneEditor(lane.copy(values = lane.valuesFor(ui.scene)), ui.steps, ui.currentStep) { step, v -> actions.setPoint(i, step, v) }
+                }
+            }
         }
         if (ui.lanes.size < AutomationLane.MAX_LANES) {
             var open by remember { mutableStateOf(false) }
@@ -177,6 +213,52 @@ private fun LaneEditor(lane: AutomationLane, steps: Int, currentStep: Int, setPo
                 drawRect(if (v != null) color else ghost, Offset(x + w * 0.15f, size.height - h), Size(w * 0.7f, h.coerceAtLeast(2f)))
             }
             if (s == currentStep) drawRect(head.copy(alpha = 0.25f), Offset(x, 0f), Size(w, size.height))
+        }
+    }
+}
+
+/** A song clip: a point per bar (drawn by finger), the line the engine follows between them. */
+@Composable
+private fun SongLaneEditor(lane: AutomationLane, bars: Int, playingBar: Int, setPoint: (Int, Float?) -> Unit) {
+    val onPoint by rememberUpdatedState(setPoint)
+    val color = Neon.Amber
+    val grid = Neon.Outline
+    val head = Neon.TextPrimary
+    fun at(x: Float, y: Float, w: Float, h: Float): Pair<Int, Float> =
+        (x / w * bars).toInt().coerceIn(0, bars - 1) to (1f - y / h).coerceIn(0f, 1f)
+    Canvas(
+        Modifier
+            .fillMaxWidth()
+            .height(72.dp)
+            .testTag("song_lane_${lane.target.pack()}")
+            .pointerInput(bars) {
+                detectTapGestures(
+                    onTap = { o -> val (b, v) = at(o.x, o.y, size.width.toFloat(), size.height.toFloat()); onPoint(b, v) },
+                    onDoubleTap = { o -> val (b, _) = at(o.x, o.y, size.width.toFloat(), size.height.toFloat()); onPoint(b, null) },
+                )
+            }
+            .pointerInput(bars) {
+                detectDragGestures { change, _ ->
+                    val (b, v) = at(change.position.x, change.position.y, size.width.toFloat(), size.height.toFloat())
+                    onPoint(b, v)
+                }
+            },
+    ) {
+        val w = size.width / bars
+        for (b in 0 until bars) if (b % 4 == 0) drawLine(grid, Offset(b * w, 0f), Offset(b * w, size.height), strokeWidth = if (b % 16 == 0) 2f else 1f)
+        if (playingBar in 0 until bars) drawRect(head.copy(alpha = 0.2f), Offset(playingBar * w, 0f), Size(w, size.height))
+        val curve = lane.songCurve(bars)
+        if (curve.isNotEmpty()) {
+            val path = androidx.compose.ui.graphics.Path()
+            curve.forEachIndexed { b, v ->
+                val x = b * w + w / 2
+                val y = size.height - v * size.height
+                if (b == 0) path.moveTo(x, y) else path.lineTo(x, y)
+            }
+            drawPath(path, color.copy(alpha = 0.6f), style = androidx.compose.ui.graphics.drawscope.Stroke(width = 3f))
+        }
+        lane.songValues.forEachIndexed { b, v ->
+            if (v != null && b < bars) drawCircle(color, radius = minOf(w / 2, 10f), center = Offset(b * w + w / 2, size.height - v * size.height))
         }
     }
 }

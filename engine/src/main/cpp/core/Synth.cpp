@@ -157,7 +157,9 @@ void Synth::render(float* mono, int numFrames) {
     const int filterType = static_cast<int>(param(FilterType) * 3.999f);
     const float cutoffHz = 20.0f * std::pow(900.0f, param(Cutoff));
     const float envOctaves = param(FilterEnvAmount) * 5.0f;
-    const float vibratoSemis = param(Lfo1ToPitch) * 2.0f;
+    // The mod wheel adds up to half a semitone of vibrato (at least a 5 Hz wobble).
+    const float vibratoSemis = param(Lfo1ToPitch) * 2.0f + mod_ * 0.5f;
+    const float bendRatio = std::pow(2.0f, bend_ / 12.0f);
     const float sweepOctaves = param(Lfo2ToCutoff) * 3.0f;
     const float level = param(Level) * 1.4f;  // one note around -10 dBFS; chords rely on the master soft clip
     const float nyquistGuard = 0.45f * static_cast<float>(sampleRate_);
@@ -178,7 +180,7 @@ void Synth::render(float* mono, int numFrames) {
             const float amp = v.ampEnv.Process(v.gate);
             const float fenv = v.filterEnv.Process(v.gate);
             if (controlTick) {
-                const float hz = v.baseHz * std::pow(2.0f, vibratoSemis * lfo1 / 12.0f);
+                const float hz = v.baseHz * bendRatio * std::pow(2.0f, vibratoSemis * lfo1 / 12.0f);
                 v.osc1.SetFreq(hz);
                 v.osc2.SetFreq(hz * detuneRatio * octaveRatio);
                 v.sub.SetFreq(hz * 0.5f);

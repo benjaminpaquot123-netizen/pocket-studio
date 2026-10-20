@@ -48,6 +48,45 @@ void Biquad::peak(float rate, float freq, float q, float gainDb) {
     set(1 + alpha * a, -2 * cs, 1 - alpha * a, 1 + alpha / a, -2 * cs, 1 - alpha / a);
 }
 
+void Biquad::highPass(float rate, float freq) {
+    const double w = 2 * kPi * freq / rate, cs = std::cos(w), alpha = std::sin(w) / (2 * 0.7071);
+    set((1 + cs) / 2, -(1 + cs), (1 + cs) / 2, 1 + alpha, -2 * cs, 1 - alpha);
+}
+
+void ParamEq::setParam(int p, float v) {
+    if (p < 0 || p >= 4 || !std::isfinite(v)) return;
+    p_[static_cast<size_t>(p)] = std::clamp(v, 0.0f, 1.0f);
+    update();
+}
+
+void ParamEq::reset() {
+    bellL_.reset();
+    bellR_.reset();
+    cutL_.reset();
+    cutR_.reset();
+}
+
+void ParamEq::update() {
+    const float f = std::min(expMap(p_[0], 20.0f, 20000.0f), rate_ * 0.45f);
+    const float db = (p_[1] - 0.5f) * 36.0f, q = expMap(p_[2], 0.3f, 10.0f);
+    bellL_.peak(rate_, f, q, db);
+    bellR_.peak(rate_, f, q, db);
+    if (p_[3] < 0.01f) {
+        cutL_.bypass();
+        cutR_.bypass();
+    } else {
+        cutL_.highPass(rate_, expMap(p_[3], 20.0f, 500.0f));
+        cutR_.highPass(rate_, expMap(p_[3], 20.0f, 500.0f));
+    }
+}
+
+void ParamEq::process(float* l, float* r, int n) {
+    for (int i = 0; i < n; ++i) {
+        l[i] = bellL_.process(cutL_.process(l[i]));
+        r[i] = bellR_.process(cutR_.process(r[i]));
+    }
+}
+
 // --- EQ --------------------------------------------------------------------------------------
 
 void Eq3::prepare(float rate) {
@@ -394,6 +433,189 @@ void PerformanceFx::process(float* l, float* r, int n) {
     stepOffset_ = -1;
 }
 
+// --- Light effects ---------------------------------------------------------------------------
+
+namespace {
+void setClamped(std::array<float, 4>& p, int i, float v) {
+    if (i >= 0 && i < 4 && std::isfinite(v)) p[static_cast<size_t>(i)] = std::clamp(v, 0.0f, 1.0f);
+}
+constexpr double kTwoPiD = 2.0 * kPi;
+}  // namespace
+
+void Flanger::prepare(float rate) {
+    rate_ = rate;
+    const auto size = static_cast<size_t>(rate * 0.012f) + 4;  // 12 ms
+    bufL_.assign(size, 0.0f);
+    bufR_.assign(size, 0.0f);
+    pos_ = 0;
+}
+
+void Flanger::setParam(int p, float v) { setClamped(p_, p, v); }
+
+void Flanger::reset() {
+    std::fill(bufL_.begin(), bufL_.end(), 0.0f);
+    std::fill(bufR_.begin(), bufR_.end(), 0.0f);
+}
+
+float Flanger::read(const std::vector<float>& b, float delay) const {
+    const auto size = static_cast<int>(b.size());
+    float at = static_cast<float>(pos_) - delay;
+    while (at < 0.0f) at += static_cast<float>(size);
+    const int i0 = static_cast<int>(at);
+    const float f = at - static_cast<float>(i0);
+    const float a = b[static_cast<size_t>(i0 % size)], c = b[static_cast<size_t>((i0 + 1) % size)];
+    return a + f * (c - a);
+}
+
+void Flanger::process(float* l, float* r, int n) {
+    if (bufL_.empty()) return;
+    const double inc = expMap(p_[0], 0.05f, 5.0f) / rate_;
+    const float minD = rate_ * 0.001f, span = rate_ * 0.009f * p_[1];
+    const float fb = 0.9f * p_[2], mix = p_[3];
+    const auto size = static_cast<int>(bufL_.size());
+    for (int i = 0; i < n; ++i) {
+        const float lfoL = 0.5f + 0.5f * static_cast<float>(std::sin(kTwoPiD * phase_));
+        const float lfoR = 0.5f + 0.5f * static_cast<float>(std::cos(kTwoPiD * phase_));
+        const float dl = read(bufL_, minD + span * lfoL), dr = read(bufR_, minD + span * lfoR);
+        bufL_[static_cast<size_t>(pos_)] = l[i] + fb * dl;
+        bufR_[static_cast<size_t>(pos_)] = r[i] + fb * dr;
+        pos_ = (pos_ + 1) % size;
+        l[i] += mix * (0.5f * (l[i] + dl) - l[i]);
+        r[i] += mix * (0.5f * (r[i] + dr) - r[i]);
+        phase_ += inc;
+        if (phase_ >= 1.0) phase_ -= 1.0;
+    }
+}
+
+void Phaser::setParam(int p, float v) { setClamped(p_, p, v); }
+
+void Phaser::reset() {
+    zl_.fill(0.0f);
+    zr_.fill(0.0f);
+    fbL_ = fbR_ = 0.0f;
+}
+
+void Phaser::process(float* l, float* r, int n) {
+    const double inc = expMap(p_[0], 0.05f, 5.0f) / rate_;
+    const float depth = p_[1], fb = 0.85f * p_[2], mix = p_[3];
+    for (int i = 0; i < n; ++i) {
+        // The notches sweep 200 Hz .. 200 Hz x 2^(depth x 5), the right side a quarter turn later.
+        const float lfoL = 0.5f + 0.5f * static_cast<float>(std::sin(kTwoPiD * phase_));
+        const float lfoR = 0.5f + 0.5f * static_cast<float>(std::cos(kTwoPiD * phase_));
+        auto coef = [&](float lfo) {
+            const float f = 200.0f * std::exp2(depth * 5.0f * lfo);
+            const float t = std::tan(static_cast<float>(kPi) * std::min(f, rate_ * 0.45f) / rate_);
+            return (t - 1.0f) / (t + 1.0f);
+        };
+        const float al = coef(lfoL), ar = coef(lfoR);
+        float xl = l[i] + fb * fbL_, xr = r[i] + fb * fbR_;
+        for (int k = 0; k < kStages; ++k) {
+            const float yl = al * xl + zl_[static_cast<size_t>(k)];
+            zl_[static_cast<size_t>(k)] = xl - al * yl;
+            xl = yl;
+            const float yr = ar * xr + zr_[static_cast<size_t>(k)];
+            zr_[static_cast<size_t>(k)] = xr - ar * yr;
+            xr = yr;
+        }
+        fbL_ = xl;
+        fbR_ = xr;
+        l[i] += mix * (0.5f * (l[i] + xl) - l[i]);
+        r[i] += mix * (0.5f * (r[i] + xr) - r[i]);
+        phase_ += inc;
+        if (phase_ >= 1.0) phase_ -= 1.0;
+    }
+}
+
+void Gate::prepare(float rate) {
+    rate_ = rate;
+    holdFrames_ = static_cast<int>(rate * 0.05f);
+    update();
+}
+
+void Gate::setParam(int p, float v) {
+    setClamped(p_, p, v);
+    update();
+}
+
+void Gate::update() {
+    threshold_ = dbToGain(-80.0f + 80.0f * p_[0]);
+    // Time constants as labelled: a one-pole at 1 / (2π τ).
+    const float twoPi = 2.0f * static_cast<float>(kPi);
+    attack_ = onePoleCoef(rate_, 1000.0f / (twoPi * expMap(p_[1], 0.1f, 50.0f)));
+    release_ = onePoleCoef(rate_, 1000.0f / (twoPi * expMap(p_[2], 10.0f, 1000.0f)));
+    floor_ = 1.0f - p_[3];
+}
+
+void Gate::process(float* l, float* r, int n) {
+    for (int i = 0; i < n; ++i) {
+        const float x = std::max(std::fabs(l[i]), std::fabs(r[i]));
+        env_ = x > env_ ? x : env_ + (x - env_) * 0.002f;  // peak follower, ~10 ms fall
+        if (env_ >= threshold_) hold_ = holdFrames_;
+        else if (hold_ > 0) --hold_;
+        const float target = hold_ > 0 ? 1.0f : floor_;
+        gain_ += (target - gain_) * (target > gain_ ? attack_ : release_);
+        l[i] *= gain_;
+        r[i] *= gain_;
+    }
+}
+
+void Tremolo::setParam(int p, float v) { setClamped(p_, p, v); }
+
+void Tremolo::process(float* l, float* r, int n) {
+    const double inc = expMap(p_[0], 0.1f, 20.0f) / rate_;
+    const float depth = p_[1], shape = p_[2], pan = p_[3];
+    for (int i = 0; i < n; ++i) {
+        const float s = static_cast<float>(std::sin(kTwoPiD * phase_));
+        // From a sine to a soft square: the shape steepens the wave.
+        const float wave = std::tanh(s * (1.0f + 9.0f * shape)) / std::tanh(1.0f + 9.0f * shape);
+        const float g = 1.0f - depth * (0.5f - 0.5f * wave);
+        const float gOpp = 1.0f - depth * (0.5f + 0.5f * wave);
+        // pan 0: both sides move together; 1: they move in turn (auto-pan).
+        l[i] *= g;
+        r[i] *= g + pan * (gOpp - g);
+        phase_ += inc;
+        if (phase_ >= 1.0) phase_ -= 1.0;
+    }
+}
+
+void Widener::setParam(int p, float v) { setClamped(p_, p, v); }
+
+void Widener::process(float* l, float* r, int n) {
+    const float width = 2.0f * p_[0];
+    const bool monoBass = p_[1] > 0.01f;
+    const float coef = monoBass ? onePoleCoef(rate_, expMap(p_[1], 40.0f, 300.0f)) : 0.0f;
+    for (int i = 0; i < n; ++i) {
+        const float m = 0.5f * (l[i] + r[i]);
+        float s = 0.5f * (l[i] - r[i]);
+        if (monoBass) {
+            lowS_ += (s - lowS_) * coef;
+            s -= lowS_;  // the side's lows go: bass stays in the middle
+        }
+        s *= width;
+        l[i] = m + s;
+        r[i] = m - s;
+    }
+}
+
+void Bitcrusher::setParam(int p, float v) { setClamped(p_, p, v); }
+
+void Bitcrusher::process(float* l, float* r, int n) {
+    const float bits = 16.0f - 14.0f * p_[0];
+    const float steps = std::exp2(bits - 1.0f);
+    const int every = 1 + static_cast<int>(std::lround(31.0f * p_[1] * p_[1]));
+    const float mix = p_[2], volume = 2.0f * p_[3] * p_[3];
+    for (int i = 0; i < n; ++i) {
+        if (count_ <= 0) {
+            holdL_ = std::round(l[i] * steps) / steps;
+            holdR_ = std::round(r[i] * steps) / steps;
+            count_ = every;
+        }
+        --count_;
+        l[i] = (l[i] + mix * (holdL_ - l[i])) * volume;
+        r[i] = (r[i] + mix * (holdR_ - r[i])) * volume;
+    }
+}
+
 // --- Insert slot -----------------------------------------------------------------------------
 
 void InsertSlot::prepare(float rate) {
@@ -403,6 +625,13 @@ void InsertSlot::prepare(float rate) {
     chorus_.prepare(rate);
     filter_.prepare(rate);
     pump_.prepare(rate);
+    flanger_.prepare(rate);
+    phaser_.prepare(rate);
+    gate_.prepare(rate);
+    tremolo_.prepare(rate);
+    widener_.prepare(rate);
+    crusher_.prepare(rate);
+    paramEq_.prepare(rate);
 }
 
 void InsertSlot::setType(int type) {
@@ -415,6 +644,13 @@ void InsertSlot::setType(int type) {
         case Chorus: chorus_.reset(); break;
         case Filter: filter_.reset(); break;
         case Pump: pump_.reset(); break;
+        case FlangerFx: flanger_.reset(); break;
+        case PhaserFx: phaser_.reset(); break;
+        case GateFx: gate_.reset(); break;
+        case TremoloFx: tremolo_.reset(); break;
+        case WidenerFx: widener_.reset(); break;
+        case Crusher: crusher_.reset(); break;
+        case ParamEqFx: paramEq_.reset(); break;
         default: break;
     }
 }
@@ -427,6 +663,13 @@ void InsertSlot::setParam(int p, float v) {
         case Chorus: chorus_.setParam(p, v); break;
         case Filter: filter_.setParam(p, v); break;
         case Pump: pump_.setParam(p, v); break;
+        case FlangerFx: flanger_.setParam(p, v); break;
+        case PhaserFx: phaser_.setParam(p, v); break;
+        case GateFx: gate_.setParam(p, v); break;
+        case TremoloFx: tremolo_.setParam(p, v); break;
+        case WidenerFx: widener_.setParam(p, v); break;
+        case Crusher: crusher_.setParam(p, v); break;
+        case ParamEqFx: paramEq_.setParam(p, v); break;
         default: break;
     }
 }
@@ -439,6 +682,13 @@ void InsertSlot::process(float* l, float* r, int n) {
         case Chorus: chorus_.process(l, r, n); break;
         case Filter: filter_.process(l, r, n); break;
         case Pump: pump_.process(l, r, n); break;
+        case FlangerFx: flanger_.process(l, r, n); break;
+        case PhaserFx: phaser_.process(l, r, n); break;
+        case GateFx: gate_.process(l, r, n); break;
+        case TremoloFx: tremolo_.process(l, r, n); break;
+        case WidenerFx: widener_.process(l, r, n); break;
+        case Crusher: crusher_.process(l, r, n); break;
+        case ParamEqFx: paramEq_.process(l, r, n); break;
         default: break;
     }
 }

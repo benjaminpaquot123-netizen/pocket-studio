@@ -433,14 +433,42 @@ class ScreenshotTest {
     }
 
     @Test
+    fun parametricEq() = shoot("param_eq") {
+        val inserts = listOf(
+            com.pocketstudio.model.Insert(com.pocketstudio.model.EffectType.PARAM_EQ.ordinal, listOf(0.62f, 0.75f, 0.45f, 0.3f)),
+            com.pocketstudio.model.Insert.of(com.pocketstudio.model.EffectType.PHASER),
+            com.pocketstudio.model.Insert.of(com.pocketstudio.model.EffectType.BITCRUSHER), com.pocketstudio.model.Insert(),
+        )
+        androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
+            com.pocketstudio.ui.NeonCard {
+                com.pocketstudio.ui.SectionLabel("Voix · effets")
+                com.pocketstudio.app.mixer.InsertRack(12, inserts, com.pocketstudio.app.mixer.MixerActions())
+            }
+        }
+    }
+
+    @Test
+    fun analyserAndTuner() = shoot("tuner") {
+        androidx.compose.foundation.layout.Column {
+            com.pocketstudio.ui.NeonCard(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
+                com.pocketstudio.ui.SectionLabel("Analyseur de spectre")
+                com.pocketstudio.app.analysis.SpectrumView(FloatArray(40) { i -> -8f - i * 1.2f - if (i % 7 == 3) 0f else 6f })
+            }
+            com.pocketstudio.app.analysis.TunerView(com.pocketstudio.app.analysis.TunerReading(111.2, 45, -9.0), micOk = true)
+        }
+    }
+
+    @Test
     fun automation() = shoot("automation") {
         val lane = com.pocketstudio.model.AutomationLane(com.pocketstudio.model.AutoTarget(com.pocketstudio.model.AutoTarget.VOLUME, 2))
             .let { l -> (0 until 16).fold(l) { acc, s -> if (s % 2 == 0) acc.withPoint(s, 0.2f + 0.05f * s) else acc } }
         val send = com.pocketstudio.model.AutomationLane(com.pocketstudio.model.AutoTarget(com.pocketstudio.model.AutoTarget.SEND, 0, 0))
             .withPoint(0, 0f).withPoint(12, 0.9f)
+        val filter = com.pocketstudio.model.AutomationLane(com.pocketstudio.model.AutoTarget(com.pocketstudio.model.AutoTarget.BUS_PARAM, 0, 0, 0),
+            mode = com.pocketstudio.model.AutomationLane.SONG).withSongPoint(0, 0.1f).withSongPoint(8, 0.9f).withSongPoint(16, 0.5f).withSongPoint(23, 0.95f)
         androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
             com.pocketstudio.app.mixer.AutomationCard(
-                com.pocketstudio.app.mixer.AutomationUi(listOf(lane, send), 16, 5, recording = true),
+                com.pocketstudio.app.mixer.AutomationUi(listOf(lane, send, filter), 16, 5, recording = true, songBars = 24, songBar = 10),
                 List(16) { com.pocketstudio.model.Channel() }, List(4) { com.pocketstudio.model.Insert() },
                 com.pocketstudio.app.mixer.AutomationActions(),
             )
@@ -521,9 +549,24 @@ class ScreenshotTest {
                     com.pocketstudio.app.midi.MidiSource("midi-1", "Arturia MiniLab 3", "USB"),
                     com.pocketstudio.app.midi.MidiSource("ble-2", "Clavier Bluetooth", "Bluetooth"),
                 ),
-                connected = "midi-1", last = "Note Do 4", clockBpm = 124.0,
+                connected = "midi-1", last = "Note Do 4", clockBpm = 124.0, sendClock = true,
             ),
             com.pocketstudio.app.midi.MidiActions(),
+            com.pocketstudio.app.midi.LearnUi(
+                mappings = listOf(74 to "Synthé : Coupure (piste choisie)", 71 to "Volume · Batterie"),
+                waiting = "Effet live : filtre",
+            ),
+        )
+    }
+
+    @Test
+    fun playPanel() = shoot("play_panel") {
+        com.pocketstudio.app.synth.SynthScreen(
+            patch = com.pocketstudio.model.SynthPatch.PRESETS[1].second,
+            octave = 4,
+            actions = com.pocketstudio.app.synth.SynthActions(),
+            play = com.pocketstudio.app.rhythm.PlayUi(bend = 0.4f, mod = 0.3f, sustain = true,
+                arp = com.pocketstudio.app.rhythm.ArpUi(on = true, steps = 2f, mode = 2, octaves = 2)),
         )
     }
 

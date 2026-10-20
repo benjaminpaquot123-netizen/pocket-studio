@@ -60,6 +60,19 @@ object NativeEngine {
     // 54: RecordArm, 55: RecordStop (native only)
     private const val CMD_AUDIO_ON = 56
     private const val CMD_BEATS_PER_BAR = 57
+    private const val CMD_AUTOMATION_MODE = 58
+    private const val CMD_AUTOMATION_SONG = 59
+    private const val CMD_EXPRESSION = 60
+
+    // Kinds of [setExpression] (InstrumentTrack::Expression).
+    const val EXPR_BEND = 0
+    const val EXPR_MOD = 1
+    const val EXPR_SUSTAIN = 2
+    const val EXPR_ARP_ON = 3
+    const val EXPR_ARP_RATE = 4
+    const val EXPR_ARP_MODE = 5
+    const val EXPR_ARP_OCTAVES = 6
+    const val EXPR_ARP_GATE = 7
 
     /** Live pads (ClipLauncher::kSlots). */
     const val LIVE_PADS = 16
@@ -145,7 +158,10 @@ object NativeEngine {
     /** While on, pattern commands (drums, acid, piano roll) fill the waiting scene. */
     fun setStaging(on: Boolean) = post(CMD_STAGING, if (on) 1f else 0f)
     /** The waiting scene takes over after [steps] steps of the playing one (0 = next bar, -1 = cancel). */
-    fun armSceneSwap(steps: Int) = post(CMD_ARM_SCENE_SWAP, 0f, steps)
+    /** [restartsSong]: the waiting scene is the song's first part again (song automation restarts). */
+    fun armSceneSwap(steps: Int, restartsSong: Boolean = false) = post(CMD_ARM_SCENE_SWAP, 0f, steps, if (restartsSong) 1 else 0)
+    /** Steps since the song (re)started, as song automation reads them; -1 when stopped. */
+    external fun songStep(): Int
     /** Live effects on the master: [param] 0 filter (0.5 = off), 1 resonance, 2 repeat on, 3 repeat division, 4 tape stop, 5 chop. */
     fun setPerformance(param: Int, value: Float) = post(CMD_PERFORMANCE, value, param)
     /** The synth track's own voice: 0 subtractive, 1 Plaits. */
@@ -167,6 +183,8 @@ object NativeEngine {
     fun liveNoteOn(note: Int, velocity: Float, track: Int = liveTrack) = nativePost(CMD_SYNTH_NOTE_ON, velocity, onTrack(track, note), 0)
     fun liveNoteOff(note: Int, track: Int = liveTrack) = nativePost(CMD_SYNTH_NOTE_OFF, 0f, onTrack(track, note), 0)
     fun liveTriggerPad(lane: Int, velocity: Float) = nativePost(CMD_TRIGGER_PAD, velocity, lane, 0)
+    /** Pitch bend (semitones), mod wheel (0..1), sustain (0/1) or arpeggiator setting of a track. */
+    fun liveExpression(kind: Int, value: Float, track: Int = liveTrack) = nativePost(CMD_EXPRESSION, value, onTrack(track, kind), 0)
 
     /** Current pattern step, or -1 when stopped or counting in. */
     external fun currentStep(): Int
@@ -283,8 +301,20 @@ object NativeEngine {
     /** Live pad [pad] plays [sample] (null: empty). Main thread, like every command. */
     fun setClip(pad: Int, sample: NativeSample?) = nativeInstallClip(pad, sample?.handle ?: 0L)
 
+    /** Frames [readScope] fills (Engine::kScopeFrames). */
+    const val SCOPE_FRAMES = 4096
+    /** The last [SCOPE_FRAMES] of the output (mono) or of the microphone, oldest first. */
+    external fun readScope(microphone: Boolean, out: FloatArray)
+    /** Microphone on for the tuner (needs the permission); false when unavailable. Blocking (up to 1 s). */
+    external fun micOpen(): Boolean
+    external fun micClose()
+
     /** A song part switches audio track [track] on or off (follows [setStaging]). */
     fun setAudioOn(track: Int, on: Boolean) = post(CMD_AUDIO_ON, if (on) 1f else 0f, track)
+
+    /** Automation lane [lane]: 0 loop, 1 per scene, 2 song ([songBars] values sent with [setAutomationSong]). */
+    fun setAutomationMode(lane: Int, mode: Int, songBars: Int) = post(CMD_AUTOMATION_MODE, songBars.toFloat(), lane, mode)
+    fun setAutomationSong(lane: Int, bar: Int, value: Float) = post(CMD_AUTOMATION_SONG, value, lane, bar)
 
     /** Time signature [beats]/4 (2..7): count-in, bar lines, metronome accent, live pads grid. */
     fun setBeatsPerBar(beats: Int) = post(CMD_BEATS_PER_BAR, 0f, beats)

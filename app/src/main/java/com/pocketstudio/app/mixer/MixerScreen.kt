@@ -103,6 +103,10 @@ fun MixerScreen(
     automationActions: AutomationActions = AutomationActions(),
     hasSong: Boolean = false,
     strips: List<StripInfo> = BASIC_STRIPS,
+    /** The output spectrum while the analyser is open (null: closed or not yet measured). */
+    spectrum: FloatArray? = null,
+    analyserOpen: Boolean = false,
+    setAnalyser: (Boolean) -> Unit = {},
 ) {
     Column(
         modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp).testTag("mixer"),
@@ -126,6 +130,9 @@ fun MixerScreen(
             var open by rememberSaveable { mutableStateOf(false) }
             EffectsToggle(effectsSummary(master), open) { open = !open }
             if (open) InsertRack(MASTER_CHANNEL, master, actions)
+            FilterChip(selected = analyserOpen, onClick = { setAnalyser(!analyserOpen) }, label = { Text("Analyseur de spectre") },
+                modifier = Modifier.testTag("analyser"))
+            if (analyserOpen) com.pocketstudio.app.analysis.SpectrumView(spectrum)
         }
         BusesCard(buses, actions)
         AutomationCard(automation, channels, master, automationActions, strips)

@@ -1,41 +1,41 @@
 {
-  "id": "phase7-pistes",
-  "milestone": "Phase 7 : pistes et ligne de temps",
+  "id": "phase8-effets-controle",
+  "milestone": "Phase 8 : effets et contrôle",
   "items": [
     {
-      "id": "instrument_tracks",
-      "title": "Ajouter des pistes d'instruments",
-      "hint": "Synthé : touche « + Piste », choisis un son (Plaits ou un instrument), écris des notes. Reviens à la première piste : chacune garde ses notes. Appui long sur une piste › Couleur, Renommer."
+      "id": "new_effects",
+      "title": "Essayer les nouveaux effets",
+      "hint": "Mixeur › une piste › Effets › choisis Phaser, puis Bitcrusher, puis EQ paramétrique : la courbe bouge avec les curseurs."
     },
     {
-      "id": "tracks_mixer",
-      "title": "Chaque piste a sa tranche au mixeur",
-      "hint": "Mixeur : une tranche par piste, avec sa couleur. Baisse le volume d'une piste, coupe-en une autre (Muet)."
+      "id": "analyser",
+      "title": "Voir le spectre",
+      "hint": "Mixeur › Sortie générale › Analyseur de spectre, puis lance la lecture : les barres dansent."
     },
     {
-      "id": "audio_record",
-      "title": "Enregistrer ma voix sur une piste audio",
-      "hint": "Audio › Pistes audio › + Piste audio › Enregistrer. Après le décompte, chante sur la musique, puis « Arrêter et garder ». Réécoute : la prise doit tomber pile sur le temps."
+      "id": "tuner",
+      "title": "S'accorder",
+      "hint": "Audio › Accordeur : chante ou joue une note, l'aiguille doit passer au vert quand c'est juste."
     },
     {
-      "id": "audio_edit",
-      "title": "Retoucher une prise",
-      "hint": "Sur la piste audio : déplace les deux poignées puis « Garder la sélection », essaie Normaliser, Inverser, un fondu à la fin. Annuler revient en arrière."
+      "id": "automation_song",
+      "title": "Une automation sur tout le morceau",
+      "hint": "Mixeur › Automatiser un réglage › choisis le volume d'une piste › Morceau : dessine une montée. Joue le morceau : le volume suit la courbe, puis repart du début."
     },
     {
-      "id": "timeline",
-      "title": "Construire le morceau avec la ligne de temps",
-      "hint": "Morceau : ajoute A puis B. Dans la ligne de temps, touche le bloc Batterie de la première partie pour la couper. Joue le morceau : l'intro est sans batterie."
+      "id": "keyboard_expressive",
+      "title": "Jouer avec expression",
+      "hint": "Synthé › Clavier : appuie en haut puis en bas d'une touche (plus doux, plus fort). Bouge Bend, Modul., essaie Sustain."
     },
     {
-      "id": "meter",
-      "title": "Faire une valse en 3/4",
-      "hint": "Morceau › Mesure › 3/4. Rythme : la grille a 12 cases par mesure. Lance le métronome : un temps fort tous les 3 temps."
+      "id": "arpeggio",
+      "title": "Faire un arpège",
+      "hint": "Synthé › Arpège, garde trois touches enfoncées : elles jouent à tour de rôle. Change 1/8, Aller-retour, 2 oct."
     },
     {
-      "id": "export_tracks",
-      "title": "Exporter toutes les pistes",
-      "hint": "Mixeur › Exporter › Pistes séparées : un fichier par piste (instruments et audio)."
+      "id": "midi_learn",
+      "title": "Associer un bouton MIDI (si tu as un clavier MIDI)",
+      "hint": "Outils › MIDI › Associer un bouton › Synthé : Coupure, puis tourne un bouton de ton clavier : le son change."
     }
   ]
 }

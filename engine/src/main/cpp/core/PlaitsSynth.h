@@ -22,6 +22,9 @@ public:
 
     void prepare(int sampleRate);
     void setParam(Param p, float value);  // 0..1 (Model: index / (kModels - 1))
+    // Live expression: pitch bend in semitones, mod wheel 0..1 (opens the timbre).
+    void setBend(float semitones);
+    void setMod(float amount);
     void noteOn(int note, float velocity, int offset);
     void noteOff(int note, int offset);
     void allNotesOff();

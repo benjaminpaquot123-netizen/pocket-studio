@@ -6,6 +6,8 @@ import com.pocketstudio.app.audiotracks.AudioTracksActions
 import com.pocketstudio.app.audiotracks.AudioTracksScreen
 import com.pocketstudio.app.audiotracks.AudioTracksUi
 import com.pocketstudio.model.viewOfTrack
+import com.pocketstudio.model.songBars
+import com.pocketstudio.model.sceneSteps
 import androidx.compose.runtime.remember
 import com.pocketstudio.app.synth.TracksUi
 import com.pocketstudio.app.synth.NotesUi
@@ -105,6 +107,8 @@ import com.pocketstudio.app.AppInfo
 import com.pocketstudio.app.settings.SettingsActions
 import com.pocketstudio.app.settings.SettingsScreen
 import com.pocketstudio.app.settings.SettingsStore
+import androidx.compose.material3.Button
+import androidx.compose.foundation.layout.Arrangement
 import com.pocketstudio.app.projects.CurrentProject
 import com.pocketstudio.app.projects.ProjectStarter
 import com.pocketstudio.app.projects.ProjectsActions
@@ -314,8 +318,14 @@ fun AppRoot() {
                 MidiCommand.Stop -> if (rhythmVm.transport.value.playing) rhythmVm.togglePlay()
                 is MidiCommand.Tempo -> rhythmVm.setTempo(c.bpm)
                 is MidiCommand.Note -> rhythmVm.midiNote(c.channel, c.pitch, c.velocity, c.on)
+                is MidiCommand.Control -> rhythmVm.midiControl(c.channel, c.controller, c.value)
             }
         }
+    }
+    // Clock out: the connected MIDI device follows our transport and tempo.
+    LaunchedEffect(Unit) {
+        kotlinx.coroutines.flow.combine(rhythmVm.transport, rhythmVm.project) { t, p -> t.playing to p.tempoBpm }
+            .collect { (playing, bpm) -> midiVm.transport(playing, bpm) }
     }
     val pickMidiFile = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) rhythmVm.importMidi(uri)
@@ -331,6 +341,7 @@ fun AppRoot() {
     }
     var liveImportPad by rememberSaveable { mutableIntStateOf(0) }
     var audioPage by rememberSaveable { mutableIntStateOf(0) }
+    var analyserOn by rememberSaveable { mutableStateOf(false) }
     var audioRecordTrack by rememberSaveable { mutableIntStateOf(0) }
     var audioImportTrack by rememberSaveable { mutableIntStateOf(0) }
     val audioMicPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
@@ -528,6 +539,7 @@ fun AppRoot() {
                         // The selected instrument track's sound and notes, where the synth screen looks.
                         val project = remember(fullProject, selectedTrack) { fullProject.viewOfTrack(selectedTrack) }
                         val shownTrack = if (fullProject.tracks.any { it.id == selectedTrack }) selectedTrack else 0
+                        val playUi by rhythmVm.play.collectAsStateWithLifecycle()
                         val octave by rhythmVm.keyboardOctave.collectAsStateWithLifecycle()
                         val live by rhythmVm.live.collectAsStateWithLifecycle()
                         val library by rhythmVm.library.collectAsStateWithLifecycle()
@@ -595,6 +607,13 @@ fun AppRoot() {
                                 stop = rhythmVm::stopNoteRecording,
                                 pickMidi = { rhythmVm.dismissTranscription(); pickMidiFile.launch(arrayOf("audio/midi", "audio/x-midi", "application/x-midi", "application/octet-stream")) },
                             ),
+                            play = playUi,
+                            playActions = com.pocketstudio.app.synth.PlayActions(
+                                setBend = rhythmVm::setBend,
+                                setMod = rhythmVm::setMod,
+                                setSustain = rhythmVm::setSustain,
+                                setArp = rhythmVm::setArp,
+                            ),
                             tracks = TracksUi(
                                 tracks = fullProject.instrumentTracks,
                                 selected = shownTrack,
@@ -632,6 +651,11 @@ fun AppRoot() {
                     }
                     AppTab.Mixeur -> {
                         val project by rhythmVm.project.collectAsStateWithLifecycle()
+                        val sessionUi by rhythmVm.sessionUi.collectAsStateWithLifecycle()
+                        val spectrum by rhythmVm.spectrum.collectAsStateWithLifecycle()
+                        LaunchedEffect(analyserOn) {
+                            if (analyserOn) lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollSpectrum() }
+                        }
                         val meters by rhythmVm.meters.collectAsStateWithLifecycle()
                         val export by rhythmVm.export.collectAsStateWithLifecycle()
                         LaunchedEffect(Unit) {
@@ -666,13 +690,24 @@ fun AppRoot() {
                             master = project.mixer.master,
                             buses = project.mixer.buses,
                             strips = mixerStrips(project),
-                            automation = AutomationUi(project.automation, project.drums.steps, if (transport.playing) live.currentStep else -1, automationRecord),
+                            spectrum = spectrum,
+                            analyserOpen = analyserOn,
+                            setAnalyser = { analyserOn = it },
+                            automation = AutomationUi(
+                                project.automation, project.drums.steps, if (transport.playing) live.currentStep else -1, automationRecord,
+                                scene = project.scene,
+                                songBars = project.songBars,
+                                songBar = if (transport.playing && live.songStep >= 0) live.songStep / project.stepsPerBar else -1,
+                                stepsPerBar = project.stepsPerBar,
+                            ),
                             automationActions = AutomationActions(
                                 add = rhythmVm::addAutomation,
                                 remove = rhythmVm::removeAutomation,
                                 clear = rhythmVm::clearAutomation,
                                 setPoint = rhythmVm::setAutomationPoint,
                                 toggleRecord = rhythmVm::toggleAutomationRecord,
+                                setMode = rhythmVm::setAutomationMode,
+                                setSongPoint = rhythmVm::setAutomationSongPoint,
                             ),
                             export = export,
                             hasSong = project.song.isNotEmpty(),
@@ -740,11 +775,30 @@ fun AppRoot() {
                     }
                     AppTab.Audio -> Column {
                         TabRow(selectedTabIndex = audioPage, containerColor = Neon.Surface, contentColor = Neon.Cyan) {
-                            listOf("Pistes audio", "Remix").forEachIndexed { i, label ->
+                            listOf("Pistes audio", "Remix", "Accordeur").forEachIndexed { i, label ->
                                 Tab(selected = audioPage == i, onClick = { audioPage = i }, text = { Text(label) }, modifier = Modifier.testTag("audio_page_$i"))
                             }
                         }
-                        if (audioPage == 0) {
+                        if (audioPage == 2) {
+                            val reading by rhythmVm.tuner.collectAsStateWithLifecycle()
+                            val micOk by rhythmVm.tunerMic.collectAsStateWithLifecycle()
+                            val settings by SettingsStore.state.collectAsStateWithLifecycle()
+                            var granted by remember {
+                                mutableStateOf(ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED)
+                            }
+                            val ask = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted = it }
+                            if (granted) {
+                                LaunchedEffect(Unit) {
+                                    lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.runTuner() }
+                                }
+                                com.pocketstudio.app.analysis.TunerView(reading, micOk, settings.englishNotes)
+                            } else {
+                                Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                                    Text("L'accordeur écoute le micro : autorise-le pour t'accorder.")
+                                    Button(onClick = { ask.launch(Manifest.permission.RECORD_AUDIO) }) { Text("Autoriser le micro") }
+                                }
+                            }
+                        } else if (audioPage == 0) {
                             val project by rhythmVm.project.collectAsStateWithLifecycle()
                             val recording by rhythmVm.audioRecording.collectAsStateWithLifecycle()
                             val info by rhythmVm.sampleInfo.collectAsStateWithLifecycle()
@@ -886,6 +940,9 @@ fun AppRoot() {
                             )
                             ToolPage.Midi -> {
                                 val midi by midiVm.state.collectAsStateWithLifecycle()
+                                val project by rhythmVm.project.collectAsStateWithLifecycle()
+                                val learning by rhythmVm.learning.collectAsStateWithLifecycle()
+                                val strips = mixerStrips(project)
                                 MidiScreen(
                                     midi,
                                     MidiActions(
@@ -893,6 +950,14 @@ fun AppRoot() {
                                         disconnect = midiVm::disconnect,
                                         scanBluetooth = { bluetoothPermission.launch(arrayOf(Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT)) },
                                         setFollowClock = midiVm::setFollowClock,
+                                        setSendClock = midiVm::setSendClock,
+                                    ),
+                                    com.pocketstudio.app.midi.LearnUi(
+                                        mappings = project.midiMap.map { it.controller to controlLabel(it.target, project, strips) },
+                                        targets = learnTargets(project, strips).map { controlLabel(it, project, strips) to it },
+                                        waiting = learning?.let { controlLabel(it, project, strips) },
+                                        learn = { rhythmVm.learn(it as? com.pocketstudio.model.AutoTarget) },
+                                        remove = rhythmVm::removeMapping,
                                     ),
                                 )
                             }
@@ -1011,4 +1076,26 @@ fun timelineRows(p: Project): List<com.pocketstudio.app.session.TimelineRow> =
         com.pocketstudio.app.session.TimelineRow(com.pocketstudio.model.SongPart.inst(t.id), t.name, com.pocketstudio.ui.trackColor(t.color))
     } + p.audioTracks.map { t ->
         com.pocketstudio.app.session.TimelineRow(com.pocketstudio.model.SongPart.audio(t.id), t.name, com.pocketstudio.ui.trackColor(t.color))
+    }
+
+/** Settings a MIDI knob can move: the instrument's sound, live effects, tempo, then the mixer. */
+fun learnTargets(p: Project, strips: List<com.pocketstudio.app.mixer.StripInfo>): List<com.pocketstudio.model.AutoTarget> {
+    val t = com.pocketstudio.model.MidiMapping
+    return com.pocketstudio.app.synth.SYNTH_LABELS.map { (index, _) -> com.pocketstudio.model.AutoTarget(t.SYNTH, param = index) } +
+        (1..com.pocketstudio.model.PlaitsPatch.PARAMS.size).map { com.pocketstudio.model.AutoTarget(t.PLAITS, param = it) } +
+        listOf(0, 1).map { com.pocketstudio.model.AutoTarget(t.PERFORMANCE, param = it) } +
+        com.pocketstudio.model.AutoTarget(t.TEMPO) +
+        com.pocketstudio.app.mixer.automationTargets(p.mixer.channels, p.mixer.master, strips)
+}
+
+/** What a MIDI knob moves, in words. */
+fun controlLabel(target: com.pocketstudio.model.AutoTarget, p: Project, strips: List<com.pocketstudio.app.mixer.StripInfo>): String =
+    when (target.kind) {
+        com.pocketstudio.model.MidiMapping.SYNTH ->
+            "Synthé : " + (com.pocketstudio.app.synth.SYNTH_LABELS.firstOrNull { it.first == target.param }?.second ?: "réglage") + " (piste choisie)"
+        com.pocketstudio.model.MidiMapping.PLAITS ->
+            "Plaits : " + com.pocketstudio.model.PlaitsPatch.PARAMS.getOrElse(target.param - 1) { "réglage" } + " (piste choisie)"
+        com.pocketstudio.model.MidiMapping.PERFORMANCE -> if (target.param == 0) "Effet live : filtre" else "Effet live : résonance"
+        com.pocketstudio.model.MidiMapping.TEMPO -> "Tempo (60 à 200 BPM)"
+        else -> com.pocketstudio.app.mixer.automationLabel(target, p.mixer.channels, p.mixer.master, strips)
     }

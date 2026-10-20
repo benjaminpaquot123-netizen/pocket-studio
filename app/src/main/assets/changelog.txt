@@ -1,5 +1,5 @@
-Phase 7 : « C'est pas faux ! » Tu peux maintenant faire un vrai morceau.
-- Jusqu'à 8 pistes d'instruments (onglet Synthé, barre de pistes en couleur).
-- Pistes audio (onglet Audio) : chante ou joue par-dessus ta musique, la prise tombe pile sur le temps.
-- Ligne de temps dans Morceau : coupe ou remets chaque piste partie par partie.
-- Mesures 3/4 (valse), 5/4, 6/4, 7/4… et le mixeur suit toutes les pistes.
+Phase 8 : « Faut pas respirer la compote, ça fait tousser ! » Mais les effets, si.
+- 7 nouveaux effets au mixeur : flanger, phaser, noise gate, trémolo, élargisseur, bitcrusher, EQ paramétrique avec sa courbe.
+- Analyseur de spectre (Mixeur) et accordeur (Audio › Accordeur).
+- Automation en clips : en boucle, par scène, ou sur tout le morceau.
+- Clavier expressif : force selon la touche, bend, modulation, sustain, arpège ; MIDI learn et horloge MIDI sortante.

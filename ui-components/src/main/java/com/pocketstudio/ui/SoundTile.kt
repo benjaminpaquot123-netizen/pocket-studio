@@ -78,26 +78,29 @@ fun SoundTile(
             .scale(scale)
             .shadow(glow, shape, clip = false, ambientColor = accent, spotColor = accent)
             .clip(shape)
+            // Opaque under the colour wash, or the glow behind would show through.
+            .background(Neon.Surface)
             .background(Brush.horizontalGradient(listOf(accent.copy(alpha = wash), Neon.SurfaceHigh.copy(alpha = 0.6f))))
             .border(borderWidth, border, shape)
             .clickable(interactionSource = interaction, indication = ripple(color = accent), role = Role.Button, onClick = onClick)
             .semantics { this.selected = selected }
             .heightIn(min = 58.dp)
-            .padding(horizontal = 10.dp, vertical = 8.dp),
+            .padding(horizontal = 8.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Box(
-            Modifier.size(36.dp).clip(RoundedCornerShape(10.dp))
+            Modifier.size(32.dp).clip(RoundedCornerShape(9.dp))
                 .background(Brush.linearGradient(listOf(accent.copy(alpha = 0.55f), accent.copy(alpha = 0.22f)))),
             contentAlignment = Alignment.Center,
         ) {
-            Icon(icon, contentDescription = null, tint = Color.White, modifier = Modifier.size(20.dp))
+            Icon(icon, contentDescription = null, tint = Color.White, modifier = Modifier.size(18.dp))
         }
         Column(Modifier.weight(1f)) {
             Text(
-                title, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold,
-                color = Neon.TextPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis,
+                // Two lines rather than a cut name ("Distorsion de phase").
+                title, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold, lineHeight = 17.sp,
+                color = Neon.TextPrimary, maxLines = 2, overflow = TextOverflow.Ellipsis,
             )
             if (subtitle != null) {
                 Text(

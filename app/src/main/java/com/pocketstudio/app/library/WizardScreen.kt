@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,8 +22,6 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.Button
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -35,7 +32,18 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
+import com.pocketstudio.ui.TileGrid
+import com.pocketstudio.ui.SoundTile
+import com.pocketstudio.ui.FamilyChip
+import com.pocketstudio.app.sounds.SoundLooks
+import androidx.compose.material.icons.filled.GraphicEq
+import androidx.compose.material.icons.filled.Inventory2
+import androidx.compose.material.icons.filled.Apps
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.testTag
@@ -45,7 +53,9 @@ import com.pocketstudio.app.rhythm.DrumKitInfo
 import com.pocketstudio.model.PackEntry
 import com.pocketstudio.model.StarterWizard
 import com.pocketstudio.model.StarterWizard.Role
+import com.pocketstudio.ui.LocalFolding
 import com.pocketstudio.ui.Neon
+import com.pocketstudio.ui.pillColors
 import com.pocketstudio.ui.NeonCard
 import com.pocketstudio.ui.SectionLabel
 import kotlin.math.roundToInt
@@ -73,7 +83,38 @@ class WizardActions(
  * it does, which sound from the library), then a summary that creates the song.
  */
 @Composable
-fun WizardScreen(ui: WizardUi, packs: PacksUi, playing: SoundRef?, actions: WizardActions) {
+fun WizardScreen(ui: WizardUi, packs: PacksUi, playing: SoundRef?, actions: WizardActions, preparing: SoundRef? = null) {
+    // One step at a time: nothing to fold here.
+    CompositionLocalProvider(LocalFolding provides false, LocalListening provides Listening(playing, preparing)) {
+        WizardBody(ui, packs, playing, actions)
+    }
+}
+
+/** What is heard now, and what is being prepared to be heard. */
+private class Listening(val playing: SoundRef?, val preparing: SoundRef?)
+
+private val LocalListening = staticCompositionLocalOf { Listening(null, null) }
+
+/** ▶ to hear [ref], ■ while it plays, a small wheel while it is prepared; with [label], a button. */
+@Composable
+private fun ListenButton(ref: SoundRef, onClick: () -> Unit, modifier: Modifier = Modifier, label: String? = null) {
+    val listening = LocalListening.current
+    val icon: @Composable () -> Unit = {
+        when (ref) {
+            listening.preparing -> CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp, color = Neon.Cyan)
+            listening.playing -> Icon(Icons.Filled.Stop, contentDescription = "Arrêter l'écoute", tint = Neon.Cyan)
+            else -> Icon(Icons.Filled.PlayArrow, contentDescription = "Écouter", tint = Neon.Cyan)
+        }
+    }
+    if (label == null) IconButton(onClick = onClick, modifier = modifier) { icon() }
+    else OutlinedButton(onClick = onClick, modifier = modifier) {
+        icon()
+        Text("  $label")
+    }
+}
+
+@Composable
+private fun WizardBody(ui: WizardUi, packs: PacksUi, playing: SoundRef?, actions: WizardActions) {
     val style = ui.style
     Column(Modifier.fillMaxSize().background(Neon.Background).testTag("wizard")) {
         Row(Modifier.fillMaxWidth().padding(start = 16.dp, end = 4.dp, top = 8.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -184,32 +225,38 @@ private fun LineStep(style: StarterWizard.Style, line: StarterWizard.Line, row: 
         return
     }
     val categories = soundCategories(role, style.id, packs.installed)
+    val look = SoundLooks.of(role.id)
     NeonCard {
-        SectionLabel("Choisis le son")
-        val chipColors = FilterChipDefaults.filterChipColors(selectedContainerColor = Neon.Cyan.copy(alpha = 0.25f), selectedLabelColor = Neon.Cyan)
-        FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            SectionLabel("Choisis le son", Modifier.weight(1f))
+            row.sound?.let { sound ->
+                val demo = SoundRef.LineDemo(role, sound)
+                ListenButton(demo, { actions.preview(demo) }, Modifier.testTag("wizard_line_listen"), label = "Avec le rythme")
+            }
+        }
+        // The sources on one line that scrolls: the sounds stay right under them.
+        Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             categories.forEach { c ->
-                FilterChip(selected = c.id == row.category, onClick = { actions.setCategory(role, c.id) }, label = { Text(c.title) },
-                    colors = chipColors, modifier = Modifier.testTag("wizard_category_${c.id}"))
+                FamilyChip(
+                    c.title.substringAfter(" · ", c.title), if (c.id == KIT_CATEGORY) Icons.Filled.Apps else Icons.Filled.Inventory2, look.color,
+                    selected = c.id == row.category, onClick = { actions.setCategory(role, c.id) },
+                    modifier = Modifier.testTag("wizard_category_${c.id}"),
+                )
             }
         }
         val options = categories.firstOrNull { it.id == row.category }?.options.orEmpty()
-        options.forEachIndexed { i, option ->
-            val selected = option == row.sound
-            Row(
-                Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp))
-                    .background(if (selected) Neon.Cyan.copy(alpha = 0.12f) else Neon.Surface)
-                    .clickable { actions.choose(role, option) }.testTag("wizard_sound_$i"),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                IconButton(onClick = { actions.preview(option.ref) }) {
-                    Icon(if (playing == option.ref) Icons.Filled.Stop else Icons.Filled.PlayArrow, contentDescription = "Écouter")
-                }
-                Text(option.name.substringBefore(" · "), modifier = Modifier.weight(1f))
-                RadioButton(selected = selected, onClick = { actions.choose(role, option) })
-            }
+        val listening = LocalListening.current
+        TileGrid(options.size) { i, m ->
+            val option = options[i]
+            SoundTile(
+                title = option.name.substringBefore(" · "), icon = if (listening.playing == option.ref) Icons.Filled.GraphicEq else look.icon,
+                accent = look.color, selected = option == row.sound, onClick = { actions.choose(role, option) },
+                subtitle = if (listening.playing == option.ref) "En écoute…" else null,
+                modifier = m.testTag("wizard_sound_$i"),
+            )
         }
-        Text("Touche un son pour l'écouter et le choisir.", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+        Text("Touche un son pour l'écouter et le choisir ; « Avec le rythme » le fait entendre avec les lignes déjà choisies.",
+            style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
     }
     PackOffer(style, packs, actions)
 }
@@ -315,10 +362,13 @@ private fun MoodStep(style: StarterWizard.Style, mood: StarterWizard.Mood?, acti
             "clavier sur cette gamme : impossible de jouer une fausse note, pas besoin de solfège.",
         style = MaterialTheme.typography.bodyMedium,
     )
+    Text("Touche une ambiance pour l'entendre : ses quatre accords, joués sur le rythme du style.",
+        style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
     StarterWizard.Mood.entries.forEach { m ->
         val selected = m == mood
-        NeonCard(modifier = Modifier.clickable { actions.setMood(m) }.testTag("wizard_mood_${m.id}")) {
+        NeonCard(accent = if (selected) Neon.Cyan else Neon.Outline, modifier = Modifier.clickable { actions.setMood(m) }.testTag("wizard_mood_${m.id}")) {
             Row(verticalAlignment = Alignment.CenterVertically) {
+                ListenButton(SoundRef.MoodDemo(m), { actions.preview(SoundRef.MoodDemo(m)) }, Modifier.testTag("wizard_mood_listen_${m.id}"))
                 Column(Modifier.weight(1f)) {
                     Text(m.label, style = MaterialTheme.typography.titleMedium, color = if (selected) Neon.Cyan else Neon.TextPrimary)
                     Text(m.description, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
@@ -366,29 +416,30 @@ private fun PartStep(style: StarterWizard.Style, ui: WizardUi, packs: PacksUi, p
         }
     }
     if (row == null || !row.enabled) return
+    val look = SoundLooks.of(part.categories.first())
     NeonCard {
         SectionLabel("Choisis le son")
-        StarterWizard.soundsFor(part, style, packs.installed).forEachIndexed { i, sound ->
-            val selected = sound == row.sound
+        val sounds = StarterWizard.soundsFor(part, style, packs.installed)
+        val listening = LocalListening.current
+        TileGrid(sounds.size) { i, m ->
+            val sound = sounds[i]
             val ref = SoundRef.Melodic(part, sound)
-            Row(
-                Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp))
-                    .background(if (selected) Neon.Magenta.copy(alpha = 0.12f) else Neon.Surface)
-                    .clickable { actions.choosePartSound(part, sound) }.testTag("wizard_part_sound_$i"),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                IconButton(onClick = { actions.preview(ref) }) {
-                    Icon(if (playing == ref) Icons.Filled.Stop else Icons.Filled.PlayArrow, contentDescription = "Écouter")
-                }
-                Text(sound.name, modifier = Modifier.weight(1f))
-                if (i == 0 && sound.name == style.melody.sound(part)) {
-                    Text("conseillé ", style = MaterialTheme.typography.labelSmall, color = Neon.Acid)
-                }
-                RadioButton(selected = selected, onClick = { actions.choosePartSound(part, sound) })
-            }
+            SoundTile(
+                title = sound.name, icon = if (listening.playing == ref) Icons.Filled.GraphicEq else look.icon, accent = look.color,
+                selected = sound == row.sound, onClick = { actions.choosePartSound(part, sound) },
+                subtitle = when {
+                    listening.preparing == ref -> "Préparation…"
+                    listening.playing == ref -> "En écoute…"
+                    i == 0 && sound.name == style.melody.sound(part) -> "Conseillé"
+                    sound.sampled != null -> "Échantillon d'un pack"
+                    sound.plaits != null -> SoundLooks.describe(sound.plaits!!)
+                    else -> SoundLooks.describe(sound.synth)
+                },
+                modifier = m.testTag("wizard_part_sound_$i"),
+            )
         }
         Text(
-            "Touche un son pour entendre la première mesure de cette piste." +
+            "Touche un son pour l'entendre avec la batterie et les pistes déjà choisies." +
                 " Les sons des packs téléchargés sont en bas de la liste.",
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
         )

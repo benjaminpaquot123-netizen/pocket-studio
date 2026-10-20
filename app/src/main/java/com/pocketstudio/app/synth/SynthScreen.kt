@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -35,11 +36,10 @@ import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Slider
+import com.pocketstudio.ui.ProSlider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -51,6 +51,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.lerp
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
@@ -66,6 +69,7 @@ import com.pocketstudio.app.sounds.SoundBrowser
 import com.pocketstudio.app.sounds.SoundBrowserUi
 import com.pocketstudio.ui.MonoStyle
 import com.pocketstudio.ui.Neon
+import com.pocketstudio.ui.pillColors
 import com.pocketstudio.ui.NeonCard
 import com.pocketstudio.ui.SectionLabel
 import kotlin.math.roundToInt
@@ -263,11 +267,13 @@ private fun KeyboardCard(
 ) {
     NeonCard(modifier = modifier) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            SectionLabel(if (chordPads) "Pads d'accords" else "Clavier", help = if (chordPads) Glossary.CHORD else null)
+            SectionLabel(if (chordPads) "Pads d'accords" else "Clavier", help = if (chordPads) Glossary.CHORD else null, foldKey = "Clavier")
             Box(Modifier.weight(1f))
+            OctaveControl(octave, actions)
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             if (!chordPads) ChordChip(chordKeys, onChordKeys)
             ChordPadsChip(chordPads, onChordPads)
-            OctaveControl(octave, actions)
         }
         if (chordPads) ChordPads(harmony, 12 * (octave + 1), actions.noteOn, actions.noteOff, height = height)
         else Keyboard(firstNote = 12 * (octave + 1), octaves = octaves, onNoteOn = keyOn, onNoteOff = keyOff, height = height, harmony = harmony)
@@ -343,10 +349,18 @@ private fun ModeSwitch(showNotes: Boolean, onChange: (Boolean) -> Unit) {
 
 @Composable
 internal fun OctaveControl(octave: Int, actions: SynthActions) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        IconButton(onClick = { actions.shiftOctave(-1) }) { Icon(Icons.Filled.Remove, contentDescription = "Octave plus bas") }
-        Text("Octave $octave", style = MonoStyle, color = Neon.Cyan)
-        IconButton(onClick = { actions.shiftOctave(1) }) { Icon(Icons.Filled.Add, contentDescription = "Octave plus haut") }
+    // − Octave 4 + in one dark capsule, like a hardware selector.
+    Row(
+        Modifier.clip(RoundedCornerShape(50)).background(Color.Black.copy(alpha = 0.25f)),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        IconButton(onClick = { actions.shiftOctave(-1) }, modifier = Modifier.size(40.dp)) {
+            Icon(Icons.Filled.Remove, contentDescription = "Octave plus bas", modifier = Modifier.size(18.dp))
+        }
+        Text("Octave $octave", style = MonoStyle, color = Neon.Cyan, maxLines = 1, softWrap = false)
+        IconButton(onClick = { actions.shiftOctave(1) }, modifier = Modifier.size(40.dp)) {
+            Icon(Icons.Filled.Add, contentDescription = "Octave plus haut", modifier = Modifier.size(18.dp))
+        }
     }
 }
 
@@ -364,10 +378,7 @@ private fun PresetChips(patch: SynthPatch, actions: SynthActions) {
 }
 
 @Composable
-private fun chipColors() = FilterChipDefaults.filterChipColors(
-    selectedContainerColor = Neon.Cyan.copy(alpha = 0.25f),
-    selectedLabelColor = Neon.Cyan,
-)
+private fun chipColors() = pillColors()
 
 /** Picks the option whose stored value is closest to [current]. */
 @Composable
@@ -388,7 +399,7 @@ private fun ParamSlider(label: String, value: Float, help: Help? = null, shown: 
         Box(Modifier.weight(1f))
         Text(shown ?: "${(value * 100).roundToInt()}", style = MonoStyle, color = Neon.Cyan)
     }
-    Slider(value = value, onValueChange = onChange)
+    ProSlider(value = value, onValueChange = onChange)
 }
 
 private val BLACK_KEY_AFTER_WHITE = setOf(0, 1, 3, 4, 5)  // C# D# F# G# A# sit after C D F G A
@@ -451,17 +462,27 @@ private fun Key(
         down -> Neon.Cyan
         locked -> if (isBlack) Color(0xFF0E0F11) else Color(0xFF5A5E66)
         isBlack && outside -> Color(0xFF15171A)
-        isBlack -> Color(0xFF26292E)
+        isBlack -> Color(0xFF1C1F24)
         outside -> Color(0xFF9EA2AA)  // out of the scale: greyed, still playable
         Math.floorMod(note - harmony.root, 12) == 0 && harmony.scale != Scale.Off -> Color(0xFFDCEFF5)
-        else -> Color(0xFFF2F3F5)
+        else -> Color(0xFFF7F7F3)
+    }
+    // Keys in relief: lit from above, a darker lip at the bottom; the pressed one glows.
+    val shape = RoundedCornerShape(bottomStart = if (isBlack) 5.dp else 7.dp, bottomEnd = if (isBlack) 5.dp else 7.dp)
+    val face = if (down) {
+        Brush.verticalGradient(listOf(lerp(color, Color.White, 0.35f), color))
+    } else if (isBlack) {
+        Brush.verticalGradient(0f to lerp(color, Color.White, 0.12f), 0.85f to color, 1f to lerp(color, Color.White, 0.18f))
+    } else {
+        Brush.verticalGradient(0f to lerp(color, Color.Black, 0.06f), 0.9f to color, 1f to lerp(color, Color.Black, 0.18f))
     }
     Box(
         modifier
-            .padding(horizontal = 1.dp)
-            .clip(RoundedCornerShape(bottomStart = 6.dp, bottomEnd = 6.dp))
-            .background(color)
-            .border(1.dp, Neon.Outline, RoundedCornerShape(bottomStart = 6.dp, bottomEnd = 6.dp))
+            .padding(horizontal = if (isBlack) 0.dp else 1.dp)
+            .then(if (down) Modifier.shadow(12.dp, shape, ambientColor = Neon.Cyan, spotColor = Neon.Cyan) else if (isBlack) Modifier.shadow(4.dp, shape) else Modifier)
+            .clip(shape)
+            .background(face)
+            .border(1.dp, if (isBlack) Color.Black.copy(alpha = 0.6f) else Color.Black.copy(alpha = 0.22f), shape)
             .pointerInput(note, locked) {
                 if (locked) return@pointerInput
                 detectTapGestures(onPress = { at ->

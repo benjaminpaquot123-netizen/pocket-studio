@@ -32,7 +32,7 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Slider
+import com.pocketstudio.ui.ProSlider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -212,7 +212,7 @@ private fun PadEditor(pad: Int, clip: LiveClip?, drumSounds: List<Pair<Int, Stri
                 }
             }
             Text("Volume", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
-            Slider(value = clip.gain / 2f, onValueChange = { actions.setGain(pad, it * 2f) })
+            ProSlider(value = clip.gain / 2f, onValueChange = { actions.setGain(pad, it * 2f) })
         }
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             if (clip != null) {

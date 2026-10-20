@@ -9,9 +9,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Slider
+import com.pocketstudio.ui.ProSlider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,6 +26,7 @@ import com.pocketstudio.model.EffectType
 import com.pocketstudio.model.Insert
 import com.pocketstudio.ui.MonoStyle
 import com.pocketstudio.ui.Neon
+import com.pocketstudio.ui.pillColors
 import com.pocketstudio.ui.NeonCard
 import com.pocketstudio.ui.SectionLabel
 
@@ -54,7 +54,7 @@ fun effectsSummary(inserts: List<Insert>, sends: List<Float> = emptyList()): Str
 @Composable
 fun InsertRack(ch: Int, inserts: List<Insert>, actions: MixerActions) {
     var slot by rememberSaveable(ch) { mutableIntStateOf(0) }
-    val chipColors = FilterChipDefaults.filterChipColors(selectedContainerColor = Neon.Cyan.copy(alpha = 0.25f), selectedLabelColor = Neon.Cyan)
+    val chipColors = pillColors()
     Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
         inserts.forEachIndexed { i, ins ->
             FilterChip(
@@ -72,7 +72,7 @@ fun InsertRack(ch: Int, inserts: List<Insert>, actions: MixerActions) {
                 selected = current.effect == type,
                 onClick = { if (current.effect != type) actions.setInsertType(ch, slot, type) },
                 label = { Text(type.label) },
-                colors = FilterChipDefaults.filterChipColors(selectedContainerColor = Neon.Magenta.copy(alpha = 0.25f), selectedLabelColor = Neon.Magenta),
+                colors = pillColors(Neon.Magenta),
                 modifier = Modifier.testTag("fx_${ch}_${slot}_${type.name}"),
             )
         }
@@ -118,5 +118,5 @@ private fun LabeledSlider(label: String, value: String, v: Float, tag: String, o
         Text(label, Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
         Text(value, style = MonoStyle, color = Neon.Cyan)
     }
-    Slider(value = v, onValueChange = onChange, modifier = Modifier.testTag(tag))
+    ProSlider(value = v, onValueChange = onChange, modifier = Modifier.testTag(tag))
 }

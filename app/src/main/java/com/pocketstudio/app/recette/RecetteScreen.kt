@@ -12,7 +12,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -29,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import com.pocketstudio.app.report.IssueReport
 import com.pocketstudio.engine.StreamInfo
 import com.pocketstudio.ui.Neon
+import com.pocketstudio.ui.pillColors
 import com.pocketstudio.ui.NeonCard
 import com.pocketstudio.ui.SectionLabel
 import com.pocketstudio.ui.StatRow
@@ -158,10 +158,7 @@ private fun StatusChip(label: String, selected: Boolean, color: androidx.compose
         selected = selected,
         onClick = onClick,
         label = { Text(label) },
-        colors = FilterChipDefaults.filterChipColors(
-            selectedContainerColor = color.copy(alpha = 0.2f),
-            selectedLabelColor = color,
-        ),
+        colors = pillColors(color),
     )
 }
 

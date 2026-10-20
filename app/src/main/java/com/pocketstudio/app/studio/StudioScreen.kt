@@ -20,7 +20,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Slider
+import com.pocketstudio.ui.ProSlider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -102,13 +102,13 @@ fun StudioScreen(
                     color = Neon.Cyan,
                 )
             }
-            Slider(value = hzToSlider(state.frequencyHz), onValueChange = { onFrequency(sliderToHz(it)) })
+            ProSlider(value = hzToSlider(state.frequencyHz), onValueChange = { onFrequency(sliderToHz(it)) })
 
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 Text("Volume", Modifier.weight(1f))
                 Text("${(state.volume * 100).roundToInt()} %", style = MonoStyle, color = Neon.Cyan)
             }
-            Slider(value = state.volume, onValueChange = onVolume)
+            ProSlider(value = state.volume, onValueChange = onVolume)
         }
 
         NeonCard {

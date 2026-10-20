@@ -1,7 +1,9 @@
 package com.pocketstudio.ui
 
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
@@ -11,8 +13,10 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 /** One set of UI colours (see docs/DESIGN.md). */
@@ -36,22 +40,22 @@ object Palettes {
     /** Calm dark blue-grey. */
     val Dark = Palette(
         isDark = true,
-        background = Color(0xFF101318), surface = Color(0xFF181C23), surfaceHigh = Color(0xFF222731),
-        outline = Color(0xFF2E3440), accent = Color(0xFF5BD6E3), playing = Color(0xFFE879B9),
+        background = Color(0xFF0E1116), surface = Color(0xFF181C24), surfaceHigh = Color(0xFF232833),
+        outline = Color(0xFF2C3341), accent = Color(0xFF5BD6E3), playing = Color(0xFFF07AC0),
         good = Color(0xFF9ED36A), warning = Color(0xFFF2B84B), bad = Color(0xFFEF6F7E),
-        textPrimary = Color(0xFFECEFF4), textSecondary = Color(0xFF9AA3B2), onAccent = Color(0xFF0B0D10),
+        textPrimary = Color(0xFFEEF1F6), textSecondary = Color(0xFF9CA6B6), onAccent = Color(0xFF0B0D10),
     )
 
     /**
-     * Default look (Benjamin's choice): inspired by FL Studio Mobile, but lighter.
-     * Neutral mid-grey panels, orange accent, green for "playing".
+     * Default look (Benjamin's choice): inspired by FL Studio Mobile, but lighter. Graphite panels
+     * that stand out from a deeper background, a vivid orange accent, green for "playing".
      */
     val Studio = Palette(
         isDark = true,
-        background = Color(0xFF3A3E44), surface = Color(0xFF474C53), surfaceHigh = Color(0xFF555B63),
-        outline = Color(0xFF626973), accent = Color(0xFFFFA347), playing = Color(0xFF7FD46B),
-        good = Color(0xFF9BE07F), warning = Color(0xFFFFD166), bad = Color(0xFFFF7B7B),
-        textPrimary = Color(0xFFF5F6F7), textSecondary = Color(0xFFC3C8CF), onAccent = Color(0xFF1E2023),
+        background = Color(0xFF2B2F35), surface = Color(0xFF41464E), surfaceHigh = Color(0xFF50565F),
+        outline = Color(0xFF5A616B), accent = Color(0xFFFF9F43), playing = Color(0xFF6EE07A),
+        good = Color(0xFF8FE07A), warning = Color(0xFFFFD166), bad = Color(0xFFFF6B6B),
+        textPrimary = Color(0xFFF6F7F9), textSecondary = Color(0xFFBBC1CA), onAccent = Color(0xFF1C1E22),
     )
 }
 
@@ -82,6 +86,8 @@ object Neon {
 private fun colorScheme(p: Palette) = (if (p.isDark) darkColorScheme() else lightColorScheme()).copy(
     primary = p.accent,
     onPrimary = p.onAccent,
+    primaryContainer = p.accent.copy(alpha = 0.22f),
+    onPrimaryContainer = p.textPrimary,
     secondary = p.playing,
     onSecondary = p.onAccent,
     tertiary = p.good,
@@ -90,29 +96,66 @@ private fun colorScheme(p: Palette) = (if (p.isDark) darkColorScheme() else ligh
     surface = p.surface,
     onSurface = p.textPrimary,
     surfaceVariant = p.surfaceHigh,
-    secondaryContainer = p.surfaceHigh,
-    onSecondaryContainer = p.textPrimary,
+    secondaryContainer = p.accent,
+    onSecondaryContainer = p.onAccent,
     onSurfaceVariant = p.textSecondary,
+    surfaceContainerLowest = p.background,
+    surfaceContainerLow = p.surface,
     surfaceContainer = p.surface,
     surfaceContainerHigh = p.surfaceHigh,
+    surfaceContainerHighest = p.surfaceHigh,
     outline = p.outline,
+    outlineVariant = p.outline,
     error = p.bad,
 )
 
+/** Inter (SIL OFL 1.1): legible at small sizes, figures of one width for tempos and decibels. */
+val Inter = FontFamily(
+    Font(R.font.inter_regular, FontWeight.Normal),
+    Font(R.font.inter_medium, FontWeight.Medium),
+    Font(R.font.inter_semibold, FontWeight.SemiBold),
+    Font(R.font.inter_bold, FontWeight.Bold),
+    Font(R.font.inter_extrabold, FontWeight.ExtraBold),
+)
+
 private val typography = Typography().run {
+    fun TextStyle.inter(weight: FontWeight, spacing: Float? = null) =
+        copy(fontFamily = Inter, fontWeight = weight, letterSpacing = spacing?.sp ?: letterSpacing)
     copy(
-        headlineMedium = headlineMedium.copy(fontWeight = FontWeight.Bold, letterSpacing = 0.5.sp),
-        titleLarge = titleLarge.copy(fontWeight = FontWeight.SemiBold),
-        labelSmall = labelSmall.copy(letterSpacing = 1.2.sp),
+        displayLarge = displayLarge.inter(FontWeight.ExtraBold, -1f),
+        displayMedium = displayMedium.inter(FontWeight.ExtraBold, -0.8f),
+        displaySmall = displaySmall.inter(FontWeight.Bold, -0.5f),
+        headlineLarge = headlineLarge.inter(FontWeight.ExtraBold, -0.5f),
+        headlineMedium = headlineMedium.inter(FontWeight.ExtraBold, -0.4f),
+        headlineSmall = headlineSmall.inter(FontWeight.Bold, -0.3f),
+        titleLarge = titleLarge.inter(FontWeight.Bold, -0.2f),
+        titleMedium = titleMedium.inter(FontWeight.SemiBold, 0f),
+        titleSmall = titleSmall.inter(FontWeight.SemiBold, 0f),
+        bodyLarge = bodyLarge.inter(FontWeight.Normal, 0f),
+        bodyMedium = bodyMedium.inter(FontWeight.Normal, 0f),
+        bodySmall = bodySmall.inter(FontWeight.Normal, 0.1f),
+        labelLarge = labelLarge.inter(FontWeight.SemiBold, 0.1f),
+        labelMedium = labelMedium.inter(FontWeight.SemiBold, 0.3f),
+        labelSmall = labelSmall.inter(FontWeight.Bold, 1.3f),
     )
 }
 
-val MonoStyle = TextStyle(fontFamily = FontFamily.Monospace, fontSize = 13.sp)
+/** Chips are pills; cards and sheets have soft corners. */
+private val shapes = Shapes(
+    extraSmall = RoundedCornerShape(6.dp),
+    small = RoundedCornerShape(percent = 50),
+    medium = RoundedCornerShape(14.dp),
+    large = RoundedCornerShape(18.dp),
+    extraLarge = RoundedCornerShape(24.dp),
+)
+
+/** Numbers that change (tempo, decibels, times): tabular figures, so they do not jiggle. */
+val MonoStyle = TextStyle(fontFamily = Inter, fontWeight = FontWeight.SemiBold, fontSize = 13.sp, fontFeatureSettings = "tnum")
 
 @Composable
 fun PocketStudioTheme(palette: Palette = Palettes.Studio, content: @Composable () -> Unit) {
     CompositionLocalProvider(LocalPalette provides palette) {
-        MaterialTheme(colorScheme = colorScheme(palette), typography = typography) {
+        MaterialTheme(colorScheme = colorScheme(palette), typography = typography, shapes = shapes) {
             CompositionLocalProvider(LocalContentColor provides palette.textPrimary, content = content)
         }
     }

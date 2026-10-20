@@ -106,7 +106,7 @@ fun LibraryScreen(ui: LibraryUi, actions: LibraryActions) {
                     }
                 }
                 NeonCard {
-                    SectionLabel(shown.title)
+                    SectionLabel(shown.title, foldKey = "Sons de la bibliothèque")
                     TileGrid(shown.options.size, minTileWidth = 260.dp) { i, m ->
                         val option = shown.options[i]
                         val playing = ui.playing == option.ref

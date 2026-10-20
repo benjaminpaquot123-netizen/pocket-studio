@@ -21,7 +21,7 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Slider
+import com.pocketstudio.ui.ProSlider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -167,7 +167,7 @@ private fun PromptCard(ui: GenerateUi, actions: GenerateActions) {
             }
         }
         Text("Durée : ${ui.seconds.roundToInt()} s", style = MaterialTheme.typography.bodyMedium)
-        Slider(
+        ProSlider(
             value = ui.seconds, onValueChange = { actions.setSeconds(it.roundToInt().toFloat()) },
             valueRange = 1f..StableAudio.MAX_SECONDS, steps = StableAudio.MAX_SECONDS.toInt() - 2, enabled = !busy,
             modifier = Modifier.testTag("generate_seconds"),
@@ -199,7 +199,7 @@ private fun PromptCard(ui: GenerateUi, actions: GenerateActions) {
 @Composable
 private fun ResultCard(ui: GenerateUi, actions: GenerateActions) {
     NeonCard(modifier = Modifier.testTag("generate_result")) {
-        SectionLabel("Résultat : ${ui.result}", color = Neon.Magenta)
+        SectionLabel("Résultat : ${ui.result}", color = Neon.Magenta, foldKey = "Résultat")
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Button(onClick = if (ui.playing) actions.stop else actions.play, modifier = Modifier.testTag("generate_play")) {
                 Icon(if (ui.playing) Icons.Filled.Stop else Icons.Filled.PlayArrow, contentDescription = null)

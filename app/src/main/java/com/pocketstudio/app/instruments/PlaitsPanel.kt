@@ -3,7 +3,7 @@ package com.pocketstudio.app.instruments
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Slider
+import com.pocketstudio.ui.ProSlider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -45,6 +45,6 @@ internal fun PlaitsPanel(ui: InstrumentUi) {
             Text(label, Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
             Text("${(values[param] * 100).roundToInt()}", style = MonoStyle, color = Neon.Cyan)
         }
-        Slider(value = values[param], onValueChange = { ui.setPlaitsParam(param, it) }, modifier = Modifier.testTag("plaits_param_$param"))
+        ProSlider(value = values[param], onValueChange = { ui.setPlaitsParam(param, it) }, modifier = Modifier.testTag("plaits_param_$param"))
     }
 }

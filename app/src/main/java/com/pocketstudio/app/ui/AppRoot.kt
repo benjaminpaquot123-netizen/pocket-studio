@@ -73,6 +73,9 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.lerp
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
@@ -302,6 +305,7 @@ fun AppRoot() {
     if (wizardUi.open) {
         val packsUi by libraryVm.packs.collectAsStateWithLifecycle()
         val previewing by libraryVm.playing.collectAsStateWithLifecycle()
+        val preparing by libraryVm.preparing.collectAsStateWithLifecycle()
         androidx.compose.ui.window.Dialog(
             onDismissRequest = libraryVm::closeWizard,
             properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false),
@@ -327,6 +331,7 @@ fun AppRoot() {
                         deletePack = libraryVm::deletePack,
                         create = { libraryVm.create { project, sounds -> projectsVm.create(project, sounds) { id -> libraryVm.closeWizard(); openProject(id) } } },
                     ),
+                    preparing = preparing,
                 )
             }
         }
@@ -533,7 +538,10 @@ fun AppRoot() {
         },
         bottomBar = {
             if (!landscape) {
-                NavigationBar(containerColor = Neon.Surface) {
+                NavigationBar(
+                    containerColor = lerp(Neon.Background, Color.Black, 0.12f),
+                    modifier = Modifier.drawBehind { drawLine(Color.White.copy(alpha = 0.07f), Offset.Zero, Offset(size.width, 0f), 1f) },
+                ) {
                     AppTab.entries.forEach { t ->
                         NavigationBarItem(
                             selected = tab == t,
@@ -542,9 +550,11 @@ fun AppRoot() {
                             label = { Text(t.label, maxLines = 1, softWrap = false) },
                             modifier = Modifier.testTag("tab_${t.name}"),
                             colors = NavigationBarItemDefaults.colors(
-                                selectedIconColor = Neon.Cyan,
+                                selectedIconColor = Neon.OnAccent,
                                 selectedTextColor = Neon.Cyan,
-                                indicatorColor = Neon.SurfaceHigh,
+                                indicatorColor = Neon.Cyan,
+                                unselectedIconColor = Neon.TextSecondary,
+                                unselectedTextColor = Neon.TextSecondary,
                             ),
                         )
                     }
@@ -555,7 +565,7 @@ fun AppRoot() {
         Row(Modifier.padding(padding)) {
             // Landscape: tabs on the side so the screen keeps its height (wider synth keyboard).
             if (landscape) {
-                NavigationRail(containerColor = Neon.Surface) {
+                NavigationRail(containerColor = lerp(Neon.Background, Color.Black, 0.12f)) {
                     AppTab.entries.forEach { t ->
                         NavigationRailItem(
                             selected = tab == t,
@@ -564,9 +574,11 @@ fun AppRoot() {
                             label = { Text(t.label) },
                             modifier = Modifier.testTag("tab_${t.name}"),
                             colors = NavigationRailItemDefaults.colors(
-                                selectedIconColor = Neon.Cyan,
+                                selectedIconColor = Neon.OnAccent,
                                 selectedTextColor = Neon.Cyan,
-                                indicatorColor = Neon.SurfaceHigh,
+                                indicatorColor = Neon.Cyan,
+                                unselectedIconColor = Neon.TextSecondary,
+                                unselectedTextColor = Neon.TextSecondary,
                             ),
                         )
                     }

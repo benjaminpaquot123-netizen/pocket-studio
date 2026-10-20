@@ -287,6 +287,9 @@ fun AppRoot() {
             val name = mixerStrips(fxProject).firstOrNull { it.ch == fxChannel }?.name ?: "Piste"
             androidx.compose.material3.AlertDialog(
                 onDismissRequest = { fxChannel = -1 },
+                // The whole width of the phone: everything seen at once, nothing to scroll for.
+                properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp),
                 title = { Text("Effets · $name") },
                 text = {
                     Column(Modifier.verticalScroll(androidx.compose.foundation.rememberScrollState())) {

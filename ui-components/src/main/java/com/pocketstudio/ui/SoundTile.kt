@@ -27,6 +27,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -135,6 +138,18 @@ fun FamilyChip(label: String, icon: ImageVector, accent: Color, selected: Boolea
     ) {
         Icon(icon, contentDescription = null, tint = if (selected) accent else Neon.TextSecondary, modifier = Modifier.size(16.dp))
         Text(label, style = MaterialTheme.typography.labelLarge, color = text, maxLines = 1)
+    }
+}
+
+/** Chips on one line that scrolls sideways; the chosen one ([selected]) is brought into view. */
+@Composable
+fun ChipRow(count: Int, selected: Int, modifier: Modifier = Modifier, item: @Composable (index: Int) -> Unit) {
+    val state = rememberLazyListState()
+    LaunchedEffect(selected) {
+        if (selected in 0 until count) state.animateScrollToItem((selected - 1).coerceAtLeast(0))
+    }
+    LazyRow(modifier.fillMaxWidth(), state = state, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        items(count) { item(it) }
     }
 }
 

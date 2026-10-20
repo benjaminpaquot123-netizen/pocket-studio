@@ -23,3 +23,11 @@ target_compile_options(pitch_test PRIVATE -O2 -Wall -Wextra)
 target_link_directories(pitch_test PRIVATE ${ORT_DIR}/lib)
 target_link_libraries(pitch_test PRIVATE onnxruntime)
 set_target_properties(pitch_test PROPERTIES BUILD_RPATH ${ORT_DIR}/lib)
+
+# Stable Audio Open Small generation: needs the models (scripts/separation-tests.sh fetches them on request).
+add_executable(generate_test generate_test.cpp ${SRC}/AudioGenerator.cpp)
+target_include_directories(generate_test PRIVATE ${SRC} ${ORT_DIR}/include)
+target_compile_options(generate_test PRIVATE -O2 -Wall -Wextra)
+target_link_directories(generate_test PRIVATE ${ORT_DIR}/lib)
+target_link_libraries(generate_test PRIVATE onnxruntime)
+set_target_properties(generate_test PROPERTIES BUILD_RPATH ${ORT_DIR}/lib)

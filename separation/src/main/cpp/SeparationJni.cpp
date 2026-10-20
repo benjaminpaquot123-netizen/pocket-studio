@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "PitchTranscriber.h"
+#include "AudioGenerator.h"
 #include "Separator.h"
 
 extern "C" {
@@ -125,6 +126,49 @@ JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_separation_BasicPitch_native
     }
     env->SetFloatArrayRegion(result, 0, count, flat.data());
     return result;
+}
+
+
+// Stable Audio Open Small: interleaved stereo at 44.1 kHz, or null (failed or cancelled; the
+// Kotlin side knows which). `listener` gets onProgress(float): Boolean (false = cancel).
+// Worker thread only: this takes seconds to a minute.
+JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_separation_StableAudio_nativeGenerate(JNIEnv* env, jobject, jstring dir,
+                                                                                        jintArray tokens, jfloat seconds,
+                                                                                        jlong seed, jobject listener) {
+    jclass cls = env->GetObjectClass(listener);
+    jmethodID onProgress = env->GetMethodID(cls, "onProgress", "(F)Z");
+    if (!onProgress) {
+        env->ExceptionClear();
+        return nullptr;
+    }
+    ps::GenerateRequest request;
+    const char* path = env->GetStringUTFChars(dir, nullptr);
+    request.dir = path;
+    env->ReleaseStringUTFChars(dir, path);
+    const jsize n = env->GetArrayLength(tokens);
+    std::vector<jint> ids(static_cast<size_t>(n));
+    env->GetIntArrayRegion(tokens, 0, n, ids.data());
+    request.tokens.assign(ids.begin(), ids.end());
+    request.seconds = seconds;
+    request.seed = static_cast<uint64_t>(seed);
+    request.threads = std::max(2, static_cast<int>(std::thread::hardware_concurrency()) / 2);
+    std::vector<float> out;
+    const auto result = ps::generateAudio(request, out, [&](float p) {
+        const jboolean keep = env->CallBooleanMethod(listener, onProgress, p);
+        if (env->ExceptionCheck()) {
+            env->ExceptionClear();
+            return false;
+        }
+        return keep == JNI_TRUE;
+    });
+    if (result != ps::GenerateResult::Ok || out.empty()) return nullptr;
+    jfloatArray array = env->NewFloatArray(static_cast<jsize>(out.size()));
+    if (!array) {
+        env->ExceptionClear();
+        return nullptr;
+    }
+    env->SetFloatArrayRegion(array, 0, static_cast<jsize>(out.size()), out.data());
+    return array;
 }
 
 }  // extern "C"

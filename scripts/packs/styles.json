@@ -357,6 +357,22 @@
       ]
     },
     {
+      "id": "acid_techno",
+      "name": "Acid techno",
+      "family": "Techno",
+      "bpm": 140,
+      "words": "acid techno, squelchy Roland TB-303 and distorted TR-909, hard rave warehouse",
+      "kinds": [
+        "kick",
+        "clap",
+        "hat",
+        "open_hat",
+        "perc",
+        "bass",
+        "stab"
+      ]
+    },
+    {
       "id": "detroit",
       "name": "Techno de Detroit",
       "family": "Techno",
@@ -773,6 +789,21 @@
         "bass",
         "lead"
       ]
+    },
+    {
+      "id": "tb303",
+      "name": "Roland TB-303",
+      "family": "Machines",
+      "bpm": 130,
+      "words": "Roland TB-303 acid bass line synth, resonant squelchy filter",
+      "kinds": [
+        "bass",
+        "lead"
+      ],
+      "counts": {
+        "bass": 16,
+        "lead": 10
+      }
     },
     {
       "id": "modern_808",

@@ -2,7 +2,6 @@ package com.pocketstudio.app.library
 
 import com.pocketstudio.app.help.Glossary
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,14 +12,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Apps
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Stop
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material.icons.filled.GraphicEq
+import androidx.compose.material.icons.filled.Inventory2
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -35,13 +33,16 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.pocketstudio.model.SoundPacks
+import com.pocketstudio.app.sounds.SoundLooks
+import com.pocketstudio.ui.FamilyChip
 import com.pocketstudio.ui.Neon
 import com.pocketstudio.ui.NeonCard
 import com.pocketstudio.ui.SectionLabel
+import com.pocketstudio.ui.SoundTile
+import com.pocketstudio.ui.TileGrid
 
 class LibraryUi(
     val packs: PacksUi,
@@ -72,7 +73,6 @@ class LibraryActions(
 fun LibraryScreen(ui: LibraryUi, actions: LibraryActions) {
     var kind by rememberSaveable { mutableStateOf(ui.startKind) }
     var category by rememberSaveable(kind) { mutableStateOf<String?>(null) }
-    val chipColors = FilterChipDefaults.filterChipColors(selectedContainerColor = Neon.Cyan.copy(alpha = 0.25f), selectedLabelColor = Neon.Cyan)
     Column(Modifier.fillMaxSize().background(Neon.Background).testTag("library")) {
         Row(Modifier.fillMaxWidth().padding(start = 16.dp, end = 4.dp, top = 8.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
@@ -86,8 +86,8 @@ fun LibraryScreen(ui: LibraryUi, actions: LibraryActions) {
             ui.packs.message?.let { Text(it, color = Neon.Amber, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.testTag("library_message")) }
             Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 SoundPacks.KIND_LABELS.filterKeys { it != "loop" }.forEach { (k, label) ->
-                    FilterChip(selected = kind == k, onClick = { kind = k }, label = { Text(label) }, colors = chipColors,
-                        modifier = Modifier.testTag("library_kind_$k"))
+                    val look = SoundLooks.of(k)
+                    FamilyChip(label, look.icon, look.color, selected = kind == k, onClick = { kind = k }, modifier = Modifier.testTag("library_kind_$k"))
                 }
             }
             val categories = libraryCategories(kind, ui.packs.installed)
@@ -96,26 +96,29 @@ fun LibraryScreen(ui: LibraryUi, actions: LibraryActions) {
                     style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary)
             } else {
                 val shown = categories.firstOrNull { it.id == category } ?: categories.first()
-                FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                val look = SoundLooks.of(kind)
+                FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     categories.forEach { c ->
-                        FilterChip(selected = c.id == shown.id, onClick = { category = c.id }, label = { Text(c.title.substringAfter(" · ", c.title)) },
-                            modifier = Modifier.testTag("library_source_${c.id}"))
+                        FamilyChip(
+                            c.title.substringAfter(" · ", c.title), if (c.id == KIT_CATEGORY) Icons.Filled.Apps else Icons.Filled.Inventory2, look.color,
+                            selected = c.id == shown.id, onClick = { category = c.id }, modifier = Modifier.testTag("library_source_${c.id}"),
+                        )
                     }
                 }
                 NeonCard {
                     SectionLabel(shown.title)
-                    shown.options.forEachIndexed { i, option ->
-                        Row(
-                            Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp)).background(Neon.Surface)
-                                .clickable { actions.preview(option.ref) }.testTag("library_sound_$i"),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            IconButton(onClick = { actions.preview(option.ref) }) {
-                                Icon(if (ui.playing == option.ref) Icons.Filled.Stop else Icons.Filled.PlayArrow, contentDescription = "Écouter")
-                            }
-                            Text(option.name.substringBefore(" · "), modifier = Modifier.weight(1f))
-                            TextButton(onClick = { actions.use(option) }, modifier = Modifier.testTag("library_use_$i")) { Text("Poser") }
-                        }
+                    TileGrid(shown.options.size, minTileWidth = 260.dp) { i, m ->
+                        val option = shown.options[i]
+                        val playing = ui.playing == option.ref
+                        SoundTile(
+                            title = option.name.substringBefore(" · "), icon = if (playing) Icons.Filled.GraphicEq else look.icon,
+                            accent = look.color, selected = playing, onClick = { actions.preview(option.ref) },
+                            subtitle = if (playing) "En écoute… touche pour arrêter" else "Touche pour écouter",
+                            trailing = {
+                                FilledTonalButton(onClick = { actions.use(option) }, modifier = Modifier.testTag("library_use_$i")) { Text("Poser") }
+                            },
+                            modifier = m.testTag("library_sound_$i"),
+                        )
                     }
                     Text("Touche un son pour l'écouter, « Poser » pour le mettre sur ${ui.target}.",
                         style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)

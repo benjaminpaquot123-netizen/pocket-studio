@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -42,6 +43,7 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,6 +54,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.boundsInWindow
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -129,10 +134,22 @@ fun SynthScreen(
     // One finger, one chord of the scale (keyboard "Accords" switch).
     val keyOn: (Int, Float) -> Unit = if (chordKeys) { n, _ -> actions.chordOn(n) } else actions.noteOn
     val keyOff: (Int) -> Unit = if (chordKeys) actions.chordOff else actions.noteOff
+    // The keyboard that follows: shown while sounds are being chosen and the real keyboard is out of reach.
+    var keyboardInView by remember(showNotes) { mutableStateOf(true) }
+    var soundsInView by remember(showNotes) { mutableStateOf(false) }
+    var floatFolded by rememberSaveable { mutableStateOf(false) }
+    val minSoundsPx = with(LocalDensity.current) { 64.dp.toPx() }
+    val trackKeyboard = Modifier.onGloballyPositioned { keyboardInView = it.boundsInWindow().height >= it.size.height * 0.5f }
+    val trackSounds = Modifier.onGloballyPositioned { soundsInView = it.boundsInWindow().height >= minOf(minSoundsPx, it.size.height * 0.5f) && it.size.height > 0 }
     BoxWithConstraints(modifier.fillMaxSize().testTag("synth")) {
         val keyboardHeight = (maxHeight * 0.45f).coerceIn(110.dp, 220.dp)
         val landscape = maxWidth > maxHeight
         val rollHeight = if (landscape) (maxHeight - 140.dp).coerceAtLeast(160.dp) else 380.dp
+        val hasSounds = instrument != null || browser != null
+        val follows = hasSounds && ((notes != null && showNotes) || !landscape)
+        val floatKeys = if (landscape) 96.dp else 120.dp
+        // Room under the last settings so the floating keyboard never hides them.
+        val floatRoom = if (follows) floatKeys + 72.dp else 0.dp
         if (notes != null && showNotes) {
             Column(
                 Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(if (landscape) 8.dp else 12.dp),
@@ -152,11 +169,14 @@ fun SynthScreen(
                     SectionLabel("Harmonie", help = Glossary.SCALE)
                     HarmonyPanel(notes.harmony, notes.clip.performance, notes.actions, notes.clip.notes)
                 }
-                instrument?.let { InstrumentPanel(it) }
-                if (instrument?.current == null) {
-                    PresetsCard(patch, actions, browser)
-                    if (instrument?.synthEngine != 1) SoundCard(patch, actions, advanced) { advanced = it }
+                SoundArea(trackSounds) {
+                    instrument?.let { InstrumentPanel(it) }
+                    if (instrument?.current == null) {
+                        PresetsCard(patch, actions, browser)
+                        if (instrument?.synthEngine != 1) SoundCard(patch, actions, advanced) { advanced = it }
+                    }
                 }
+                Spacer(Modifier.height(floatRoom))
             }
         } else if (landscape) {
             // Landscape: one compact line (presets, octave), the settings scroll, and a wide
@@ -194,15 +214,34 @@ fun SynthScreen(
                 if (notes != null) ModeSwitch(showNotes) { showNotes = it }
                 KeyboardCard(octave, octaves = 2, height = 150.dp, actions = actions, harmony = harmony, chordKeys = chordKeys,
                     onChordKeys = { chordKeys = it }, keyOn = keyOn, keyOff = keyOff, play = play, playActions = playActions,
-                    chordPads = chordPads, onChordPads = { chordPads = it })
-                instrument?.let { InstrumentPanel(it) }
-                if (instrument?.current == null) {
-                    PresetsCard(patch, actions, browser)
-                    if (instrument?.synthEngine != 1) SoundCard(patch, actions, advanced) { advanced = it }
+                    chordPads = chordPads, onChordPads = { chordPads = it }, modifier = trackKeyboard)
+                SoundArea(trackSounds) {
+                    instrument?.let { InstrumentPanel(it) }
+                    if (instrument?.current == null) {
+                        PresetsCard(patch, actions, browser)
+                        if (instrument?.synthEngine != 1) SoundCard(patch, actions, advanced) { advanced = it }
+                    }
                 }
+                Spacer(Modifier.height(floatRoom))
             }
         }
+        if (follows) {
+            val wanted = soundsInView && (showNotes && notes != null || !keyboardInView)
+            // Folding holds until the real keyboard is back: the next time it is out of reach, the floating one returns.
+            LaunchedEffect(wanted) { if (!wanted) floatFolded = false }
+            FloatingKeyboard(
+                visible = wanted, folded = floatFolded, onFold = { floatFolded = it },
+                octave = octave, octaves = if (landscape) 3 else 2, keysHeight = floatKeys, actions = actions, harmony = harmony,
+                chordPads = chordPads, keyOn = keyOn, keyOff = keyOff, modifier = Modifier.align(Alignment.BottomCenter),
+            )
+        }
     }
+}
+
+/** The instrument, its ready-made sounds and its settings, in one block whose visibility is followed. */
+@Composable
+private fun SoundArea(track: Modifier, content: @Composable () -> Unit) {
+    Column(track, verticalArrangement = Arrangement.spacedBy(10.dp)) { content() }
 }
 
 @Composable
@@ -220,8 +259,9 @@ private fun KeyboardCard(
     playActions: PlayActions = PlayActions(),
     chordPads: Boolean = false,
     onChordPads: (Boolean) -> Unit = {},
+    modifier: Modifier = Modifier,
 ) {
-    NeonCard {
+    NeonCard(modifier = modifier) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             SectionLabel(if (chordPads) "Pads d'accords" else "Clavier", help = if (chordPads) Glossary.CHORD else null)
             Box(Modifier.weight(1f))
@@ -302,7 +342,7 @@ private fun ModeSwitch(showNotes: Boolean, onChange: (Boolean) -> Unit) {
 }
 
 @Composable
-private fun OctaveControl(octave: Int, actions: SynthActions) {
+internal fun OctaveControl(octave: Int, actions: SynthActions) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         IconButton(onClick = { actions.shiftOctave(-1) }) { Icon(Icons.Filled.Remove, contentDescription = "Octave plus bas") }
         Text("Octave $octave", style = MonoStyle, color = Neon.Cyan)
@@ -364,14 +404,17 @@ fun Keyboard(
     onNoteOff: (Int) -> Unit,
     height: Dp = 150.dp,
     harmony: Harmony = Harmony(),
+    /** Test tags: several keyboards can be on screen (the floating one). */
+    tag: String = "keyboard",
+    keyTag: String = "key",
 ) {
     val whiteCount = 7 * octaves
-    BoxWithConstraints(Modifier.fillMaxWidth().height(height).testTag("keyboard")) {
+    BoxWithConstraints(Modifier.fillMaxWidth().height(height).testTag(tag)) {
         val whiteWidth = maxWidth / whiteCount
         Row(Modifier.fillMaxSize()) {
             for (w in 0 until whiteCount) {
                 val note = firstNote + 12 * (w / 7) + WHITE_OFFSETS[w % 7]
-                Key(note, isBlack = false, Modifier.width(whiteWidth).fillMaxHeight(), onNoteOn, onNoteOff, harmony)
+                Key(note, isBlack = false, Modifier.width(whiteWidth).fillMaxHeight(), onNoteOn, onNoteOff, harmony, keyTag)
             }
         }
         for (w in 0 until whiteCount) {
@@ -384,6 +427,7 @@ fun Keyboard(
                 onNoteOn,
                 onNoteOff,
                 harmony,
+                keyTag,
             )
         }
     }
@@ -397,6 +441,7 @@ private fun Key(
     onNoteOn: (Int, Float) -> Unit,
     onNoteOff: (Int) -> Unit,
     harmony: Harmony = Harmony(),
+    keyTag: String = "key",
 ) {
     var down by remember { mutableStateOf(false) }
     val outside = harmony.scale != Scale.Off && !harmony.inScale(note)
@@ -431,6 +476,6 @@ private fun Key(
                     }
                 })
             }
-            .testTag("key_$note"),
+            .testTag("${keyTag}_$note"),
     )
 }

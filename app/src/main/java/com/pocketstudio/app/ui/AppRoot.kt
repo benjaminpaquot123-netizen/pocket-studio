@@ -124,6 +124,10 @@ import com.pocketstudio.app.midi.MidiCommand
 import com.pocketstudio.app.midi.MidiScreen
 import com.pocketstudio.app.midi.MidiViewModel
 import com.pocketstudio.app.sounds.SoundBrowserUi
+import com.pocketstudio.app.sounds.SoundLooks
+import com.pocketstudio.model.AcidSound
+import com.pocketstudio.model.PlaitsPatch
+import com.pocketstudio.model.SynthPatch
 import com.pocketstudio.model.SoundCategories
 import com.pocketstudio.model.SoundLibrary
 import com.pocketstudio.app.session.LivePadsActions
@@ -672,6 +676,7 @@ fun AppRoot() {
                                 random = rhythmVm::randomAcid,
                                 save = rhythmVm::saveAcidFavorite,
                                 tag = "acid_sounds",
+                                describe = { (it.sound as? AcidSound)?.let(SoundLooks::describe) },
                             ),
                         )
                     }
@@ -785,6 +790,7 @@ fun AppRoot() {
                                     random = rhythmVm::randomPlaits,
                                     save = rhythmVm::savePlaitsFavorite,
                                     tag = "plaits_sounds",
+                                    describe = { (it.sound as? PlaitsPatch)?.let(SoundLooks::describe) },
                                 )
                             } else {
                                 SoundBrowserUi(
@@ -796,6 +802,7 @@ fun AppRoot() {
                                     random = rhythmVm::randomSynth,
                                     save = rhythmVm::saveSynthFavorite,
                                     tag = "synth_sounds",
+                                    describe = { (it.sound as? SynthPatch)?.let(SoundLooks::describe) },
                                 )
                             },
                         )

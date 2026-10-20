@@ -1,10 +1,13 @@
 package com.pocketstudio.app.sounds
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
@@ -13,8 +16,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Casino
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -31,7 +32,10 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.pocketstudio.model.NamedSound
 import com.pocketstudio.model.SoundCategories
+import com.pocketstudio.ui.FamilyChip
 import com.pocketstudio.ui.Neon
+import com.pocketstudio.ui.SoundTile
+import com.pocketstudio.ui.TileGrid
 
 /** What a sound browser shows: built-in sounds by family, the user's favourites, and the current sound. */
 class SoundBrowserUi(
@@ -47,52 +51,54 @@ class SoundBrowserUi(
     val save: () -> Unit = {},
     /** Prefix of the test tags (several browsers live in the app). */
     val tag: String = "sounds",
+    /** A few words under a sound's name. */
+    val describe: (NamedSound<*>) -> String? = { null },
 )
 
-/** Families of ready-made sounds, favourites, "Au hasard" and "Garder ce son". */
-@OptIn(ExperimentalLayoutApi::class)
+/** Families of ready-made sounds as coloured tabs, their sounds as tiles, "Au hasard" and "Garder ce son". */
 @Composable
 fun SoundBrowser(ui: SoundBrowserUi) {
-    val chipColors = FilterChipDefaults.filterChipColors(selectedContainerColor = Neon.Cyan.copy(alpha = 0.25f), selectedLabelColor = Neon.Cyan)
     val families = (if (ui.favorites.isNotEmpty()) listOf(SoundCategories.FAVORITES) else emptyList()) + ui.categories
     val start = ui.sounds.firstOrNull { it.name == ui.current }?.category
         ?: if (ui.favorites.any { it.name == ui.current }) SoundCategories.FAVORITES else ui.categories.first()
     var family by rememberSaveable(ui.tag) { mutableStateOf(start) }
     if (family !in families) family = ui.categories.first()
-    Column(verticalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.testTag(ui.tag)) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.testTag(ui.tag)) {
         Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             families.forEach { f ->
-                FilterChip(
-                    selected = family == f, onClick = { family = f },
-                    label = { Text(if (f == SoundCategories.FAVORITES) "★ $f" else f) },
-                    colors = chipColors,
+                val look = SoundLooks.of(f)
+                FamilyChip(
+                    label = f, icon = look.icon, accent = look.color, selected = family == f, onClick = { family = f },
                     modifier = Modifier.testTag("${ui.tag}_family_$f"),
                 )
             }
         }
-        FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            if (family == SoundCategories.FAVORITES) {
-                ui.favorites.forEachIndexed { i, s ->
-                    FilterChip(
-                        selected = s.name == ui.current, onClick = { ui.pickFavorite(i) },
-                        label = { Text(s.name) }, colors = chipColors,
-                        trailingIcon = {
-                            IconButton(onClick = { ui.deleteFavorite(i) }, modifier = Modifier.size(20.dp)) {
-                                Icon(Icons.Filled.Close, contentDescription = "Retirer ${s.name}", modifier = Modifier.size(16.dp))
+        AnimatedContent(family, transitionSpec = { fadeIn(tween(180)) togetherWith fadeOut(tween(120)) }, label = "family") { shown ->
+            val look = SoundLooks.of(shown)
+            if (shown == SoundCategories.FAVORITES) {
+                TileGrid(ui.favorites.size) { i, m ->
+                    val s = ui.favorites[i]
+                    val own = SoundLooks.of(s.category)
+                    SoundTile(
+                        title = s.name, icon = own.icon, accent = own.color, selected = s.name == ui.current,
+                        onClick = { ui.pickFavorite(i) }, subtitle = ui.describe(s),
+                        trailing = {
+                            IconButton(onClick = { ui.deleteFavorite(i) }, modifier = Modifier.size(32.dp)) {
+                                Icon(Icons.Filled.Close, contentDescription = "Retirer ${s.name}", tint = Neon.TextSecondary, modifier = Modifier.size(18.dp))
                             }
                         },
-                        modifier = Modifier.testTag("${ui.tag}_fav_$i"),
+                        modifier = m.testTag("${ui.tag}_fav_$i"),
                     )
                 }
             } else {
-                ui.sounds.forEachIndexed { i, s ->
-                    if (s.category == family) {
-                        FilterChip(
-                            selected = s.name == ui.current, onClick = { ui.pick(i) },
-                            label = { Text(s.name) }, colors = chipColors,
-                            modifier = Modifier.testTag("${ui.tag}_$i"),
-                        )
-                    }
+                val shownSounds = ui.sounds.withIndex().filter { it.value.category == shown }
+                TileGrid(shownSounds.size) { k, m ->
+                    val (i, s) = shownSounds[k]
+                    SoundTile(
+                        title = s.name, icon = look.icon, accent = look.color, selected = s.name == ui.current,
+                        onClick = { ui.pick(i) }, subtitle = ui.describe(s),
+                        modifier = m.testTag("${ui.tag}_$i"),
+                    )
                 }
             }
         }

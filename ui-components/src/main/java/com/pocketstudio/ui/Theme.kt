@@ -76,6 +76,7 @@ object Neon {
     val Red: Color @Composable @ReadOnlyComposable get() = LocalPalette.current.bad
     val TextPrimary: Color @Composable @ReadOnlyComposable get() = LocalPalette.current.textPrimary
     val TextSecondary: Color @Composable @ReadOnlyComposable get() = LocalPalette.current.textSecondary
+    val OnAccent: Color @Composable @ReadOnlyComposable get() = LocalPalette.current.onAccent
 }
 
 private fun colorScheme(p: Palette) = (if (p.isDark) darkColorScheme() else lightColorScheme()).copy(

@@ -1617,6 +1617,17 @@ void testProcessNeverAllocates() {
             for (int n = 0; n < 16; ++n) engine.post({ps::CommandType::SetSynthNote, 0.8f, n | (t << 16), ps::NoteTrack::pack(n * 24, 20, 60 + n % 12)});
             engine.post({ps::CommandType::SetSynthNoteCount, 0.0f, 16 | (t << 16)});
         }
+        // Track 3: the sample played across the keys, gliding, with its own notes.
+        engine.post({ps::CommandType::SetTrackOn, 1.0f, 3});
+        engine.post({ps::CommandType::SetSynthEngine, 0.0f, 2 | (3 << 16)});
+        sample->retain();
+        ps::Command keys{ps::CommandType::InstallTrackSample, 0.0f, 3 << 16};
+        keys.sample = sample;
+        engine.post(keys);
+        engine.post({ps::CommandType::SetTrackSampleParam, 0.08f, ps::SampleInstrument::Glide | (3 << 16)});
+        engine.post({ps::CommandType::SetTrackSampleParam, 1.0f, ps::SampleInstrument::Loop | (3 << 16)});
+        for (int n = 0; n < 16; ++n) engine.post({ps::CommandType::SetSynthNote, 0.8f, n | (3 << 16), ps::NoteTrack::pack(n * 24, 30, 36 + n % 7)});
+        engine.post({ps::CommandType::SetSynthNoteCount, 0.0f, 16 | (3 << 16)});
         // Live playing on track 2: arpeggio with sustain, bend and modulation.
         engine.post({ps::CommandType::SetExpression, 1.0f, ps::InstrumentTrack::ArpOn | (2 << 16)});
         engine.post({ps::CommandType::SetExpression, 0.5f, ps::InstrumentTrack::ArpRate | (2 << 16)});
@@ -2728,6 +2739,147 @@ void testDrumRollsSplitTheStep() {
     CHECK(engine.laneTriggerCount(0) == 7);
 }
 
+// Rising zero crossings per second of a mono signal (a clean tone).
+static double toneHz(const std::vector<float>& x, size_t from, size_t to) {
+    int crossings = 0;
+    for (size_t i = from + 1; i < to; ++i) {
+        if (x[i - 1] < 0.0f && x[i] >= 0.0f) ++crossings;
+    }
+    return crossings * double(kRate) / double(to - from);
+}
+
+void testSampledInstrument() {
+    // A one-second 440 Hz sine recorded at A4 (root 69).
+    std::vector<float> wave(kRate);
+    for (size_t i = 0; i < wave.size(); ++i) wave[i] = 0.5f * std::sin(2.0 * M_PI * 440.0 * double(i) / kRate);
+    auto make = [&] { return ps::Sample::create(wave.data(), kRate, 1, kRate, kRate); };
+    auto render = [](ps::SampleInstrument& inst, int frames) {
+        std::vector<float> out(static_cast<size_t>(frames), 0.0f);
+        for (int at = 0; at < frames; at += 256) inst.render(out.data() + at, std::min(256, frames - at));
+        return out;
+    };
+    {
+        // An octave up plays twice as fast, an octave down half as fast; notes start on their frame.
+        ps::SampleInstrument inst;
+        inst.prepare(kRate);
+        inst.install(make());
+        inst.setParam(ps::SampleInstrument::Root, 69.0f);
+        inst.noteOn(81, 1.0f, 100);
+        auto out = render(inst, 12000);
+        CHECK(out[99] == 0.0f);
+        CHECK(std::abs(toneHz(out, 1000, 12000) - 880.0) < 6.0);
+        inst.allNotesOff();
+        render(inst, 4800);
+        CHECK(inst.activeVoices() == 0);
+        inst.noteOn(57, 1.0f, 0);
+        out = render(inst, 24000);
+        CHECK(std::abs(toneHz(out, 1000, 24000) - 220.0) < 4.0);
+        // Pitch bend: +12 semitones on the held A3 gives A4.
+        inst.setBend(12.0f);
+        out = render(inst, 12000);
+        CHECK(std::abs(toneHz(out, 1000, 12000) - 440.0) < 5.0);
+        inst.setBend(0.0f);
+    }
+    {
+        // Release: the note dies away after its key is let go, without a click.
+        ps::SampleInstrument inst;
+        inst.prepare(kRate);
+        inst.install(make());
+        inst.setParam(ps::SampleInstrument::Root, 69.0f);
+        inst.setParam(ps::SampleInstrument::Release, 0.1f);
+        inst.setParam(ps::SampleInstrument::Loop, 1.0f);
+        inst.noteOn(69, 1.0f, 0);
+        render(inst, 2400);
+        inst.noteOff(69, 0);
+        auto out = render(inst, 9600);
+        float firstPeak = 0.0f, lastPeak = 0.0f, jump = 0.0f;
+        for (size_t i = 0; i < 480; ++i) firstPeak = std::max(firstPeak, std::abs(out[i]));
+        for (size_t i = 4320; i < 4800; ++i) lastPeak = std::max(lastPeak, std::abs(out[i]));
+        for (size_t i = 1; i < out.size(); ++i) jump = std::max(jump, std::abs(out[i] - out[i - 1]));
+        CHECK(firstPeak > 0.3f);
+        CHECK(lastPeak < 0.05f);
+        CHECK(jump < 0.06f);  // a 440 Hz sine at 0.5 moves at most 0.029 per frame
+        CHECK(inst.activeVoices() == 0);
+        // A looping sound keeps going while held, well past the end of the sample.
+        inst.noteOn(69, 1.0f, 0);
+        out = render(inst, kRate * 3);
+        float tail = 0.0f;
+        for (size_t i = kRate * 2; i < out.size(); ++i) tail = std::max(tail, std::abs(out[i]));
+        CHECK(tail > 0.3f);
+    }
+    {
+        // A one-shot ends with the sample, fading over its last frames.
+        ps::SampleInstrument inst;
+        inst.prepare(kRate);
+        inst.install(make());
+        inst.setParam(ps::SampleInstrument::Root, 69.0f);
+        inst.noteOn(69, 1.0f, 0);
+        auto out = render(inst, kRate + 4800);
+        float after = 0.0f;
+        for (size_t i = kRate; i < out.size(); ++i) after = std::max(after, std::abs(out[i]));
+        CHECK(after == 0.0f);
+        CHECK(std::abs(out[kRate - 2]) < 0.02f);
+        CHECK(inst.activeVoices() == 0);
+    }
+    {
+        // Glide: one voice slides from A4 to A5 while both keys are held, and back when A5 is let go.
+        ps::SampleInstrument inst;
+        inst.prepare(kRate);
+        inst.install(make());
+        inst.setParam(ps::SampleInstrument::Root, 69.0f);
+        inst.setParam(ps::SampleInstrument::Glide, 0.05f);
+        inst.setParam(ps::SampleInstrument::Loop, 1.0f);
+        inst.noteOn(69, 1.0f, 0);
+        render(inst, 4800);
+        inst.noteOn(81, 1.0f, 0);
+        auto out = render(inst, 9600);
+        CHECK(inst.activeVoices() == 1);
+        const double mid = toneHz(out, 0, 2400);
+        CHECK(mid > 470.0 && mid < 860.0);  // on its way up
+        CHECK(std::abs(toneHz(out, 4800, 9600) - 880.0) < 8.0);
+        inst.noteOff(81, 0);
+        out = render(inst, 9600);
+        CHECK(std::abs(toneHz(out, 4800, 9600) - 440.0) < 6.0);
+        inst.noteOff(69, 0);
+        render(inst, 9600);
+        CHECK(inst.activeVoices() == 0);
+    }
+    {
+        // Polyphony: ten keys at once keep at most eight voices once the cut ones have faded.
+        ps::SampleInstrument inst;
+        inst.prepare(kRate);
+        inst.install(make());
+        inst.setParam(ps::SampleInstrument::Loop, 1.0f);
+        for (int n = 0; n < 10; ++n) inst.noteOn(60 + n, 0.8f, n * 10);
+        auto out = render(inst, 2400);
+        CHECK(inst.activeVoices() == ps::SampleInstrument::kPolyphony);
+        bool finite = true;
+        for (float v : out) finite = finite && std::isfinite(v);
+        CHECK(finite);
+        // Replacing the sound stops the voices before the old one can be freed.
+        inst.install(make());
+        CHECK(inst.activeVoices() == 0);
+        inst.collectGarbage();
+    }
+    {
+        // Through the engine: track 1 with the sampled source plays its piano-roll note.
+        ps::Engine engine(kRate);
+        engine.post({ps::CommandType::SetTrackOn, 1.0f, 1});
+        engine.post({ps::CommandType::SetSynthEngine, 0.0f, 2 | (1 << 16)});
+        ps::Command install{ps::CommandType::InstallTrackSample, 0.0f, 1 << 16};
+        install.sample = make();
+        engine.post(install);
+        engine.post({ps::CommandType::SetTrackSampleParam, 69.0f, ps::SampleInstrument::Root | (1 << 16)});
+        engine.post({ps::CommandType::SynthNoteOn, 1.0f, 81 | (1 << 16)});
+        std::vector<float> out(2 * 9600);
+        for (int at = 0; at < 9600; at += 480) engine.process(nullptr, 0, 0, out.data() + 2 * at, 480, 2);
+        std::vector<float> left(9600);
+        for (size_t i = 0; i < left.size(); ++i) left[i] = out[2 * i];
+        CHECK(engine.sampledActiveVoices(1) == 1);
+        CHECK(std::abs(toneHz(left, 2400, 9600) - 880.0) < 8.0);
+    }
+}
+
 void testDrumPanAndStepPitch() {
     auto energy = [](const std::vector<float>& out, int c) {
         double e = 0.0;
@@ -3026,6 +3178,7 @@ int main(int argc, char** argv) {
         {"drum_rolls", testDrumRollsSplitTheStep},
         {"drum_pan_pitch", testDrumPanAndStepPitch},
         {"track_macros", testTrackMacros},
+        {"sampled_instrument", testSampledInstrument},
         {"no_alloc_in_process", testProcessNeverAllocates},
     };
     for (const auto& t : tests) {

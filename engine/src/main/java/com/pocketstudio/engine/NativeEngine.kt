@@ -66,6 +66,8 @@ object NativeEngine {
     private const val CMD_PAD_PAN = 61
     private const val CMD_DRUM_STEP_DETAIL = 62
     private const val CMD_MACRO = 63
+    // 64: InstallTrackSample (native only)
+    private const val CMD_TRACK_SAMPLE_PARAM = 65
 
     // Kinds of [setExpression] (InstrumentTrack::Expression).
     const val EXPR_BEND = 0
@@ -177,7 +179,7 @@ object NativeEngine {
     external fun songStep(): Int
     /** Live effects on the master: [param] 0 filter (0.5 = off), 1 resonance, 2 repeat on, 3 repeat division, 4 tape stop, 5 chop. */
     fun setPerformance(param: Int, value: Float) = post(CMD_PERFORMANCE, value, param)
-    /** The synth track's own voice: 0 subtractive, 1 Plaits. */
+    /** The synth track's own voice: 0 subtractive, 1 Plaits, 2 a sample played across the keys ([setTrackSample]). */
     fun setSynthEngine(engine: Int, track: Int = 0) = post(CMD_SYNTH_ENGINE, 0f, onTrack(track, engine))
     /** [param] in PlaitsSynth::Param order (0 model, 1 harmonics … 7 level), [value] 0..1. */
     fun setPlaitsParam(param: Int, value: Float, track: Int = 0) = post(CMD_PLAITS_PARAM, value, onTrack(track, param))
@@ -358,6 +360,18 @@ object NativeEngine {
     /** Stops, frees the recording and returns it (mono, 48 kHz); null if the engine did not let go. */
     external fun recordFinish(handle: Long): FloatArray?
     private external fun nativeInstallAudioClip(track: Int, handle: Long): Boolean
+
+    /** Instrument track [track]'s sampled voice plays [sample] across the keys (null: none). */
+    fun setTrackSample(track: Int, sample: NativeSample?) {
+        val target = captureTarget
+        if (target != 0L) exportInstallTrackSample(target, track, sample?.handle ?: 0L)
+        else nativeInstallTrackSample(track, sample?.handle ?: 0L)
+    }
+
+    /** [param] in SampleInstrument::Param order (0 root note … 9 gain), in that parameter's unit. */
+    fun setTrackSampleParam(param: Int, value: Float, track: Int = 0) = post(CMD_TRACK_SAMPLE_PARAM, value, onTrack(track, param))
+    private external fun nativeInstallTrackSample(track: Int, handle: Long): Boolean
+    private external fun exportInstallTrackSample(exportHandle: Long, track: Int, handle: Long)
     private external fun exportInstallAudioClip(exportHandle: Long, track: Int, handle: Long)
     /** [beats]: loop length; [oneShot]: plays once per tap; [gain]: 0..2. */
     fun setClipParams(pad: Int, beats: Int, oneShot: Boolean, gain: Float) {

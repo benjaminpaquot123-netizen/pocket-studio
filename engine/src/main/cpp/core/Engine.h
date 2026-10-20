@@ -95,10 +95,13 @@ enum class CommandType : uint8_t {
     SetDrumStepDetail,    // a: pad, b: step | (pitch + 64) << 16 (semitones, sampled sounds), value: pan -1..1 added to the pad's;
                           // after the step's SetDrumHit, which resets both
     SetMacro,             // a: mixer channel, b: TrackMacros::Macro (colour, dirt, motion, space), value 0..1
+    InstallTrackSample,   // a: track << 16, sample: owned reference (nullptr = none): the sampled source's sound
+    SetTrackSampleParam,  // a: SampleInstrument::Param | track << 16, value in that parameter's unit
 };
 
 // Instrument tracks: the synth commands (SynthNoteOn/Off, SynthParam, SetSynthNote, SetSynthNoteCount,
-// SetSynthSteps, SetInstrument, SetSynthEngine, SetPlaitsParam) name their track in bits 16..23 of
+// SetSynthSteps, SetInstrument, SetSynthEngine (0 synth, 1 Plaits, 2 sampled), SetPlaitsParam,
+// InstallTrackSample, SetTrackSampleParam) name their track in bits 16..23 of
 // `a` (0 = the first track, as before tracks existed); the low 16 bits keep their old meaning.
 constexpr int kTracks = 8;
 inline int trackOf(int32_t a) { return std::clamp((a >> 16) & 0xFF, 0, kTracks - 1); }
@@ -137,7 +140,8 @@ struct Command {
     float value = 0.0f;
     int32_t a = 0;
     int32_t b = 0;
-    // InstallSample only: a reference the engine takes over (released if the command is dropped).
+    // InstallSample, InstallClip, InstallAudioClip, InstallTrackSample: a reference the engine takes
+    // over (released if the command is dropped).
     Sample* sample = nullptr;
     // SetInstrument only: an instance the engine takes over (closed if the command is dropped).
     tsf* font = nullptr;
@@ -181,7 +185,10 @@ public:
     // Not the audio thread (one caller at a time): frees samples the audio thread let go of.
     void collectGarbage() {
         sampler_.collectGarbage();
-        for (auto& t : tracks_) t.instrument.collectGarbage();
+        for (auto& t : tracks_) {
+            t.instrument.collectGarbage();
+            t.sampled.collectGarbage();
+        }
         stems_.collectGarbage();
         preview_.collectGarbage();
         clips_.collectGarbage();
@@ -227,6 +234,7 @@ public:
     // Number of metronome clicks triggered since startup (tests).
     Mixer& mixer() { return mixer_; }
     int synthActiveVoices(int track = 0) const { return tracks_[static_cast<size_t>(track)].synth.activeVoices(); }
+    int sampledActiveVoices(int track) const { return tracks_[static_cast<size_t>(track)].sampled.activeVoices(); }  // tests
     int notesPending(int track = 0) const { return tracks_[static_cast<size_t>(track)].notes.pendingCount(); }  // tests
     uint32_t acidNotesPlayed() const { return acid_.notesPlayed(); }
     uint64_t metronomeClicks() const { return metronomeClicks_.load(std::memory_order_relaxed); }

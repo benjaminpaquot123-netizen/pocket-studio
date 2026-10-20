@@ -48,6 +48,8 @@ data class Project(
     val audioTracks: List<AudioTrack> = emptyList(),
     /** Time signature [beatsPerBar]/4 (2 to 7). */
     val beatsPerBar: Int = 4,
+    /** MIDI learn: controller knobs mapped to settings. */
+    val midiMap: List<MidiMapping> = emptyList(),
 ) {
     /** Sixteenths in a bar. */
     val stepsPerBar: Int get() = beatsPerBar * 4
@@ -72,6 +74,7 @@ data class Project(
         synthTrackColor = synthTrackColor.coerceIn(0, InstrumentTrack.COLORS - 1),
         tracks = tracks.filter { it.id in 1 until InstrumentTrack.MAX }.distinctBy { it.id }.sortedBy { it.id }.map { it.sanitized() },
         beatsPerBar = beatsPerBar.coerceIn(MIN_BEATS, MAX_BEATS),
+        midiMap = MidiMapping.sanitize(midiMap),
         audioTracks = audioTracks.filter { it.id in 0 until AudioTrack.MAX }.distinctBy { it.id }.sortedBy { it.id }.map { it.sanitized() },
     ).syncScenes()
 

@@ -549,9 +549,24 @@ class ScreenshotTest {
                     com.pocketstudio.app.midi.MidiSource("midi-1", "Arturia MiniLab 3", "USB"),
                     com.pocketstudio.app.midi.MidiSource("ble-2", "Clavier Bluetooth", "Bluetooth"),
                 ),
-                connected = "midi-1", last = "Note Do 4", clockBpm = 124.0,
+                connected = "midi-1", last = "Note Do 4", clockBpm = 124.0, sendClock = true,
             ),
             com.pocketstudio.app.midi.MidiActions(),
+            com.pocketstudio.app.midi.LearnUi(
+                mappings = listOf(74 to "Synthé : Coupure (piste choisie)", 71 to "Volume · Batterie"),
+                waiting = "Effet live : filtre",
+            ),
+        )
+    }
+
+    @Test
+    fun playPanel() = shoot("play_panel") {
+        com.pocketstudio.app.synth.SynthScreen(
+            patch = com.pocketstudio.model.SynthPatch.PRESETS[1].second,
+            octave = 4,
+            actions = com.pocketstudio.app.synth.SynthActions(),
+            play = com.pocketstudio.app.rhythm.PlayUi(bend = 0.4f, mod = 0.3f, sustain = true,
+                arp = com.pocketstudio.app.rhythm.ArpUi(on = true, steps = 2f, mode = 2, octaves = 2)),
         )
     }
 

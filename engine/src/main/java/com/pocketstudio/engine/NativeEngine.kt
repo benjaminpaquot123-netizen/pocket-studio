@@ -62,6 +62,17 @@ object NativeEngine {
     private const val CMD_BEATS_PER_BAR = 57
     private const val CMD_AUTOMATION_MODE = 58
     private const val CMD_AUTOMATION_SONG = 59
+    private const val CMD_EXPRESSION = 60
+
+    // Kinds of [setExpression] (InstrumentTrack::Expression).
+    const val EXPR_BEND = 0
+    const val EXPR_MOD = 1
+    const val EXPR_SUSTAIN = 2
+    const val EXPR_ARP_ON = 3
+    const val EXPR_ARP_RATE = 4
+    const val EXPR_ARP_MODE = 5
+    const val EXPR_ARP_OCTAVES = 6
+    const val EXPR_ARP_GATE = 7
 
     /** Live pads (ClipLauncher::kSlots). */
     const val LIVE_PADS = 16
@@ -169,6 +180,8 @@ object NativeEngine {
     fun liveNoteOn(note: Int, velocity: Float, track: Int = liveTrack) = nativePost(CMD_SYNTH_NOTE_ON, velocity, onTrack(track, note), 0)
     fun liveNoteOff(note: Int, track: Int = liveTrack) = nativePost(CMD_SYNTH_NOTE_OFF, 0f, onTrack(track, note), 0)
     fun liveTriggerPad(lane: Int, velocity: Float) = nativePost(CMD_TRIGGER_PAD, velocity, lane, 0)
+    /** Pitch bend (semitones), mod wheel (0..1), sustain (0/1) or arpeggiator setting of a track. */
+    fun liveExpression(kind: Int, value: Float, track: Int = liveTrack) = nativePost(CMD_EXPRESSION, value, onTrack(track, kind), 0)
 
     /** Current pattern step, or -1 when stopped or counting in. */
     external fun currentStep(): Int

@@ -217,10 +217,13 @@ void Engine::applyCommand(const Command& command) {
             }
             break;
         case CommandType::SynthNoteOn:
-            tracks_[static_cast<size_t>(trackOf(command.a))].noteOn(trackArg(command.a) & 0x7F, command.value, 0);
+            tracks_[static_cast<size_t>(trackOf(command.a))].liveOn(trackArg(command.a) & 0x7F, command.value);
             break;
         case CommandType::SynthNoteOff:
-            tracks_[static_cast<size_t>(trackOf(command.a))].noteOff(trackArg(command.a) & 0x7F, 0);
+            tracks_[static_cast<size_t>(trackOf(command.a))].liveOff(trackArg(command.a) & 0x7F);
+            break;
+        case CommandType::SetExpression:
+            if (std::isfinite(command.value)) tracks_[static_cast<size_t>(trackOf(command.a))].setExpression(trackArg(command.a), command.value);
             break;
         case CommandType::SynthParam:
             if (trackArg(command.a) < Synth::ParamCount) {
@@ -392,6 +395,7 @@ void Engine::onStep(int offset, int step) {
     audio_.onStep(offset, local);
     for (auto& t : tracks_) {
         if (t.on) t.notes.onStep(offset, local, sequencer_.samplesPerStep());
+        t.arpSync(offset, step);
     }
     const int patternStep = local % patternSteps_;
     applyAutomation(patternStep, step);
@@ -502,7 +506,9 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
         playPosition_.store(lastLocal_ + sinceStep_ / sequencer_.samplesPerStep(), std::memory_order_relaxed);
     }
     for (auto& t : tracks_) {
-        if (t.on) t.notes.advance(numFrames, t);
+        if (!t.on) continue;
+        t.notes.advance(numFrames, t);
+        t.arpAdvance(numFrames, sequencer_.samplesPerStep());
     }
     metronome_.render(direct, numFrames);
     drums_.render(drums, numFrames);

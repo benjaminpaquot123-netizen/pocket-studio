@@ -62,6 +62,7 @@ import com.pocketstudio.model.LivePads
 import com.pocketstudio.model.sampleFiles
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.InstrumentTrack
+import com.pocketstudio.model.MidiMapping
 import com.pocketstudio.model.partView
 import com.pocketstudio.model.sceneSteps
 import com.pocketstudio.model.togglePartTrack
@@ -89,6 +90,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -104,6 +106,12 @@ sealed interface LibraryState {
 
 /** A microphone take on an audio track: [waiting] during the count-in. */
 data class AudioRecordingUi(val track: Int, val waiting: Boolean = true, val seconds: Float = 0f, val level: Float = 0f)
+
+/** The keyboard's arpeggiator: [steps] sixteenths per note (0.5 = 1/32 … 4 = 1/4). */
+data class ArpUi(val on: Boolean = false, val steps: Float = 1f, val mode: Int = 0, val octaves: Int = 1, val gate: Float = 0.5f)
+
+/** Live playing settings of the keyboard. */
+data class PlayUi(val bend: Float = 0f, val mod: Float = 0f, val sustain: Boolean = false, val arp: ArpUi = ArpUi())
 
 sealed interface SampleTask {
     data object Idle : SampleTask
@@ -337,8 +345,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun selectTrack(id: Int) {
         if (id == track) return
         heldNotes.clear()
+        val from = track
         _selectedTrack.value = id
         NativeEngine.liveTrack = id
+        movePlay(from, id)
     }
 
     private fun editTrack(key: String? = null, id: Int = track, transform: (InstrumentTrack) -> InstrumentTrack) {
@@ -635,6 +645,97 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun reverseAudio(id: Int) = editClipAudio(id, "Inversion") { AudioEdits.reverse(it) }
     /** Keeps [from]..[to] (fractions of the clip). */
     fun trimAudio(id: Int, from: Float, to: Float) = editClipAudio(id, "Découpe") { AudioEdits.trim(it, from, to) }
+
+    // --- Live playing: velocity, pitch bend, mod wheel, sustain, arpeggiator --------------------
+
+    private val _play = MutableStateFlow(PlayUi())
+    /** The keyboard's live settings (not saved in the project). */
+    val play: StateFlow<PlayUi> = _play.asStateFlow()
+
+    private fun expression(kind: Int, value: Float, id: Int = track) {
+        if (NativeEngine.isAvailable) NativeEngine.liveExpression(kind, value, id)
+    }
+
+    /** -1..1, springs back to 0 (±2 semitones). */
+    fun setBend(amount: Float) {
+        _play.value = _play.value.copy(bend = amount)
+        expression(NativeEngine.EXPR_BEND, amount * com.pocketstudio.app.midi.MidiViewModel.BEND_RANGE)
+    }
+
+    fun setMod(amount: Float) {
+        _play.value = _play.value.copy(mod = amount)
+        expression(NativeEngine.EXPR_MOD, amount)
+    }
+
+    fun setSustain(on: Boolean) {
+        _play.value = _play.value.copy(sustain = on)
+        expression(NativeEngine.EXPR_SUSTAIN, if (on) 1f else 0f)
+    }
+
+    fun setArp(arp: ArpUi) {
+        _play.value = _play.value.copy(arp = arp)
+        pushArp(track)
+    }
+
+    private fun pushArp(id: Int) {
+        val a = _play.value.arp
+        expression(NativeEngine.EXPR_ARP_RATE, a.steps, id)
+        expression(NativeEngine.EXPR_ARP_MODE, a.mode.toFloat(), id)
+        expression(NativeEngine.EXPR_ARP_OCTAVES, a.octaves.toFloat(), id)
+        expression(NativeEngine.EXPR_ARP_GATE, a.gate, id)
+        expression(NativeEngine.EXPR_ARP_ON, if (a.on) 1f else 0f, id)
+    }
+
+    /** The live settings leave the old track and follow the newly selected one. */
+    private fun movePlay(from: Int, to: Int) {
+        expression(NativeEngine.EXPR_BEND, 0f, from)
+        expression(NativeEngine.EXPR_MOD, 0f, from)
+        expression(NativeEngine.EXPR_SUSTAIN, 0f, from)
+        expression(NativeEngine.EXPR_ARP_ON, 0f, from)
+        _play.value = _play.value.copy(bend = 0f, mod = 0f, sustain = false)
+        pushArp(to)
+    }
+
+    // --- MIDI learn: a controller's knobs move settings ------------------------------------------
+
+    private val _learning = MutableStateFlow<AutoTarget?>(null)
+    /** The setting waiting for a knob to be turned (null: not learning). */
+    val learning: StateFlow<AutoTarget?> = _learning.asStateFlow()
+
+    fun learn(target: AutoTarget?) {
+        _learning.value = target
+    }
+
+    fun removeMapping(controller: Int) = session.edit { p -> p.copy(midiMap = p.midiMap.filterNot { it.controller == controller }) }
+
+    /** A knob moved on the MIDI controller: learnt now, or applied to its setting. */
+    fun midiControl(channel: Int, controller: Int, value: Int) {
+        if (controller == com.pocketstudio.app.midi.MidiViewModel.CC_MOD_WHEEL || controller == com.pocketstudio.app.midi.MidiViewModel.CC_SUSTAIN) {
+            if (_learning.value == null) return  // played by the engine already
+        }
+        _learning.value?.let { target ->
+            _learning.value = null
+            session.edit { p ->
+                p.copy(midiMap = (p.midiMap.filterNot { it.controller == controller || it.target == target } + MidiMapping(controller, target)).take(MidiMapping.MAX))
+            }
+            AppLog.add("MIDI learn : bouton $controller")
+            return
+        }
+        val mapping = project.value.midiMap.firstOrNull { it.controller == controller } ?: return
+        val v = value / 127f
+        val t = mapping.target
+        when (t.kind) {
+            AutoTarget.VOLUME -> setChannelVolume(t.ch, v)
+            AutoTarget.PAN -> setChannelPan(t.ch, v * 2f - 1f)
+            AutoTarget.SEND -> setSend(t.ch, t.slot, v)
+            AutoTarget.INSERT_PARAM -> setInsertParam(t.ch, t.slot, t.param, v)
+            AutoTarget.BUS_PARAM -> setBusParam(t.slot, t.param, v)
+            MidiMapping.SYNTH -> setSynthParam(t.param, v)
+            MidiMapping.PLAITS -> setPlaitsParam(t.param, v)
+            MidiMapping.PERFORMANCE -> if (NativeEngine.isAvailable) NativeEngine.setPerformance(t.param, v)
+            MidiMapping.TEMPO -> setTempo((60.0 + 140.0 * v).roundToInt().toDouble())
+        }
+    }
 
     // --- Plaits (Mutable Instruments) voice for the instrument tracks -------------------------
 
@@ -2053,10 +2154,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** Keys down on the keyboard and the track each one plays (released there, whatever is selected since). */
     private val keysDown = HashMap<Int, Int>()
 
-    fun synthNoteOn(note: Int) {
+    fun synthNoteOn(note: Int, velocity: Float = 0.85f) {
         keysDown[note] = track
-        if (NativeEngine.isAvailable) NativeEngine.synthNoteOn(note, 0.85f, track)
-        recordNoteOn(note, 0.85f)
+        if (NativeEngine.isAvailable) NativeEngine.synthNoteOn(note, velocity, track)
+        recordNoteOn(note, velocity)
     }
 
     fun synthNoteOff(note: Int) {

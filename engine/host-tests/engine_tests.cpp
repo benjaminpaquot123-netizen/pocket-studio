@@ -2247,6 +2247,66 @@ void testAutomationClips() {
     CHECK(a < b * 0.05 && b > 0.01);
 }
 
+double pitchHz(const std::vector<float>& x, int from, int len);
+
+void testExpressionAndArpeggio() {
+    // Pitch bend: +12 semitones doubles the pitch; the mod wheel is accepted (vibrato).
+    {
+        ps::Engine engine(kRate);
+        engine.post({ps::CommandType::SynthParam, 0.0f, ps::Synth::Lfo1ToPitch});
+        engine.post({ps::CommandType::SynthParam, 0.0f, ps::Synth::SubLevel});  // one clear pitch to measure
+        engine.post({ps::CommandType::SynthParam, 0.0f, ps::Synth::OscMix});
+        engine.post({ps::CommandType::SynthNoteOn, 0.9f, 57});
+        auto out = render(engine, kRate / 2, 256);
+        std::vector<float> mono(out.size() / 2);
+        for (size_t i = 0; i < mono.size(); ++i) mono[i] = out[i * 2];
+        const double before = pitchHz(mono, kRate / 4, 4800);
+        engine.post({ps::CommandType::SetExpression, 12.0f, ps::InstrumentTrack::Bend});
+        out = render(engine, kRate / 2, 256);
+        for (size_t i = 0; i < mono.size(); ++i) mono[i] = out[i * 2];
+        const double after = pitchHz(mono, kRate / 4, 4800);
+        std::printf("  bend: %.1f Hz -> %.1f Hz\n", before, after);
+        CHECK(std::fabs(before - 220.0) < 2.0 && std::fabs(after - 440.0) < 4.0);
+    }
+    // Sustain pedal: a released key keeps sounding until the pedal comes up.
+    {
+        ps::Engine engine(kRate);
+        engine.post({ps::CommandType::SetExpression, 1.0f, ps::InstrumentTrack::Sustain});
+        engine.post({ps::CommandType::SynthNoteOn, 0.9f, 60});
+        render(engine, 4800, 256);
+        engine.post({ps::CommandType::SynthNoteOff, 0.0f, 60});
+        render(engine, kRate, 256);
+        CHECK(engine.synthActiveVoices() == 1);
+        engine.post({ps::CommandType::SetExpression, 0.0f, ps::InstrumentTrack::Sustain});
+        render(engine, kRate * 3, 256);
+        CHECK(engine.synthActiveVoices() == 0);
+    }
+    // Arpeggiator, 1/16 at 120 BPM (6000 frames), up: A3, E4, A4, then A3 again.
+    {
+        ps::Engine engine(kRate);
+        engine.post({ps::CommandType::SynthParam, 0.0f, ps::Synth::Lfo1ToPitch});
+        engine.post({ps::CommandType::SynthParam, 0.0f, ps::Synth::SubLevel});
+        engine.post({ps::CommandType::SynthParam, 0.0f, ps::Synth::OscMix});
+        engine.post({ps::CommandType::SynthParam, 0.0f, ps::Synth::AmpRelease});  // no tail under the next note
+        engine.post({ps::CommandType::SetExpression, 1.0f, ps::InstrumentTrack::ArpOn});
+        engine.post({ps::CommandType::SetExpression, 0.9f, ps::InstrumentTrack::ArpGate});
+        for (int n : {64, 57, 69}) engine.post({ps::CommandType::SynthNoteOn, 0.9f, n});
+        auto out = render(engine, 6000 * 4, 100);
+        std::vector<float> mono(out.size() / 2);
+        for (size_t i = 0; i < mono.size(); ++i) mono[i] = out[i * 2];
+        const double expected[4] = {220.0, 329.63, 440.0, 220.0};
+        for (int k = 0; k < 4; ++k) {
+            const double f = pitchHz(mono, k * 6000 + 500, 3000);
+            if (std::fabs(f - expected[k]) > expected[k] * 0.02) std::printf("  arp note %d: %.1f Hz\n", k, f);
+            CHECK(std::fabs(f - expected[k]) < expected[k] * 0.02);
+        }
+        // Keys up: the arpeggio stops.
+        for (int n : {64, 57, 69}) engine.post({ps::CommandType::SynthNoteOff, 0.0f, n});
+        render(engine, kRate * 2, 256);
+        CHECK(engine.synthActiveVoices() == 0);
+    }
+}
+
 void testScenesSwapOnTheBar() {
     ps::Engine engine(kRate);
     // Scene A plays: pad 1 on step 0. Scene B waits: pad 3 on steps 0 and 8, a 32-step loop.
@@ -2766,6 +2826,7 @@ int main(int argc, char** argv) {
         {"param_eq", testParametricEq},
         {"scopes", testScopes},
         {"automation_clips", testAutomationClips},
+        {"expression_arp", testExpressionAndArpeggio},
         {"audio_tracks", testAudioTracks},
         {"recording", testRecordingStartsOnTheFirstStep},
         {"three_four", testThreeFourAndPartMutes},

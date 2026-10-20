@@ -89,6 +89,7 @@ enum class CommandType : uint8_t {
     SetBeatsPerBar,       // a: 2..7 (time signature a/4): metronome accent, bar lines, live pads grid
     SetAutomationMode,    // a: lane, b: 0 loop / 1 per scene / 2 song (value: bars of song values)
     SetAutomationSong,    // a: lane, b: bar (0..255), value 0..1: the song-long curve, one value per bar
+    SetExpression,        // a: InstrumentTrack::Expression | track << 16, value (bend in semitones, mod 0..1, sustain 0/1, arpeggiator settings)
 };
 
 // Instrument tracks: the synth commands (SynthNoteOn/Off, SynthParam, SetSynthNote, SetSynthNoteCount,

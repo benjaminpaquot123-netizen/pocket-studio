@@ -33,6 +33,9 @@ public:
     void noteOn(int midiNote, float velocity, int frameOffset = 0);
     void noteOff(int midiNote, int frameOffset = 0);
     void allNotesOff();
+    // Live expression: pitch bend in semitones, mod wheel 0..1 (more vibrato).
+    void setBend(float semitones) { bend_ = semitones; }
+    void setMod(float amount) { mod_ = amount; }
     void render(float* mono, int numFrames);
 
     int activeVoices() const;
@@ -70,6 +73,7 @@ private:
     int eventCount_ = 0;
     daisysp::Oscillator lfo1_, lfo2_;
     uint32_t clock_ = 0;
+    float bend_ = 0.0f, mod_ = 0.0f;
     uint32_t noiseState_ = 1234567u;
 };
 

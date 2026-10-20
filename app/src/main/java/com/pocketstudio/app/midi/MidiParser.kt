@@ -5,6 +5,8 @@ interface MidiListener {
     fun noteOn(channel: Int, note: Int, velocity: Int) {}
     fun noteOff(channel: Int, note: Int) {}
     fun controlChange(channel: Int, controller: Int, value: Int) {}
+    /** -8192..8191 (0 = centre). */
+    fun pitchBend(channel: Int, value: Int) {}
     fun clock() {}
     fun start() {}
     fun continuePlayback() {}
@@ -59,6 +61,7 @@ class MidiParser(private val listener: MidiListener) {
             0x90 -> if (data[1] == 0) listener.noteOff(channel, data[0]) else listener.noteOn(channel, data[0], data[1])
             0x80 -> listener.noteOff(channel, data[0])
             0xB0 -> listener.controlChange(channel, data[0], data[1])
+            0xE0 -> listener.pitchBend(channel, (data[0] or (data[1] shl 7)) - 8192)
         }
     }
 }

@@ -16,6 +16,7 @@ class MidiParserTest {
         override fun clock() { events += "clock" }
         override fun start() { events += "start" }
         override fun stop() { events += "stop" }
+        override fun pitchBend(channel: Int, value: Int) { events += "bend $channel $value" }
     })
 
     private fun feed(vararg b: Int) = parser.feed(ByteArray(b.size) { b[it].toByte() })
@@ -25,6 +26,12 @@ class MidiParserTest {
         feed(0x90, 60, 100, 64, 90, 60, 0)  // running status; velocity 0 = off
         feed(0x89, 36, 64)                  // channel 10 note-off
         assertEquals(listOf("on 0 60 100", "on 0 64 90", "off 0 60", "off 9 36"), events)
+    }
+
+    @Test
+    fun pitchBendIsCentredOnZero() {
+        feed(0xE0, 0x00, 0x40, 0x7F, 0x7F, 0x00, 0x00)  // centre, then running status: top, bottom
+        assertEquals(listOf("bend 0 0", "bend 0 8191", "bend 0 -8192"), events)
     }
 
     @Test

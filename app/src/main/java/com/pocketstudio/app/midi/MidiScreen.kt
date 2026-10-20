@@ -25,6 +25,13 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.pocketstudio.ui.MonoStyle
 import com.pocketstudio.ui.Neon
+import androidx.compose.foundation.layout.Box
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import com.pocketstudio.ui.NeonCard
 import com.pocketstudio.ui.SectionLabel
 
@@ -33,11 +40,23 @@ class MidiActions(
     val disconnect: () -> Unit = {},
     val scanBluetooth: () -> Unit = {},
     val setFollowClock: (Boolean) -> Unit = {},
+    val setSendClock: (Boolean) -> Unit = {},
+)
+
+/** MIDI learn: knobs already mapped, settings that can be, the one waiting for a knob. */
+class LearnUi(
+    /** Controller number and what it moves. */
+    val mappings: List<Pair<Int, String>> = emptyList(),
+    /** Every setting a knob can move: its label and an opaque key for [learn]. */
+    val targets: List<Pair<String, Any>> = emptyList(),
+    val waiting: String? = null,
+    val learn: (Any?) -> Unit = {},
+    val remove: (Int) -> Unit = {},
 )
 
 /** MIDI keyboards and controllers: connect, see what arrives, follow another machine's clock. */
 @Composable
-fun MidiScreen(ui: MidiUi, actions: MidiActions) {
+fun MidiScreen(ui: MidiUi, actions: MidiActions, learn: LearnUi = LearnUi()) {
     Column(
         Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp).testTag("midi"),
         verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -84,6 +103,47 @@ fun MidiScreen(ui: MidiUi, actions: MidiActions) {
                 Switch(checked = ui.followClock, onCheckedChange = actions.setFollowClock, modifier = Modifier.testTag("midi_follow"))
             }
             ui.clockBpm?.let { Text("Tempo reçu : ${"%.1f".format(it)} BPM", style = MonoStyle, color = Neon.Cyan) }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Column(Modifier.weight(1f)) {
+                    Text("Envoyer l'horloge MIDI", style = MaterialTheme.typography.bodyLarge)
+                    Text("L'appareil branché suit ton tempo, ton départ et ton arrêt.",
+                        style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                }
+                Switch(checked = ui.sendClock, onCheckedChange = actions.setSendClock, modifier = Modifier.testTag("midi_send_clock"))
+            }
+        }
+        LearnCard(learn)
+    }
+}
+
+@Composable
+private fun LearnCard(learn: LearnUi) {
+    NeonCard(modifier = Modifier.testTag("midi_learn")) {
+        SectionLabel("Boutons du contrôleur (MIDI learn)")
+        Text(
+            "Associe un bouton ou un fader de ton contrôleur à un réglage : choisis le réglage, puis tourne le bouton.",
+            style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
+        )
+        learn.mappings.forEach { (cc, label) ->
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("Bouton $cc", style = MonoStyle, color = Neon.Cyan, modifier = Modifier.padding(end = 8.dp))
+                Text(label, Modifier.weight(1f), maxLines = 2)
+                TextButton(onClick = { learn.remove(cc) }) { Text("Retirer") }
+            }
+        }
+        if (learn.waiting != null) {
+            Text("Tourne maintenant le bouton pour « ${learn.waiting} »…", color = Neon.Amber, modifier = Modifier.testTag("midi_learning"))
+            TextButton(onClick = { learn.learn(null) }) { Text("Annuler") }
+        } else {
+            var open by remember { mutableStateOf(false) }
+            Box {
+                OutlinedButton(onClick = { open = true }, modifier = Modifier.fillMaxWidth().testTag("midi_learn_add")) { Text("Associer un bouton") }
+                DropdownMenu(expanded = open, onDismissRequest = { open = false }) {
+                    learn.targets.forEach { (label, key) ->
+                        DropdownMenuItem(text = { Text(label) }, onClick = { open = false; learn.learn(key) })
+                    }
+                }
+            }
         }
     }
 }

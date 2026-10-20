@@ -98,5 +98,9 @@
 
   - 8.2 fait : chaque courbe d'automation est un clip « Boucle », « Par scène » (chaque scène ses pas, changés au passage de scène) ou « Morceau » (un point par mesure, glissé d'un point à l'autre, enregistrable en direct).
 
+  - 8.3 fait : vélocité selon l'endroit touché sur la touche, pitch bend (revient au centre), modulation, sustain, arpège en direct (1/32 à 1/4, 4 sens, 1 à 4 octaves, longueur) calé dans le moteur ; clavier MIDI : pitch bend, molette, pédale de sustain ; MIDI learn (Outils › MIDI) ; horloge MIDI sortante.
+  - Ableton Link reporté (bibliothèque réseau lourde).
+
 ## Prochaine étape exacte
-1. 8.3 clavier expressif (vélocité, pitch bend, molette, sustain, arpège en direct), MIDI learn, horloge MIDI sortante, Ableton Link.
+1. Revue de fin de phase 8 (sous-agent neuf), corrections, CI verte, fusion de la PR #18.
+2. Phase 9 (voir ROADMAP.md).

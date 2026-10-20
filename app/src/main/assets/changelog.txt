@@ -1,5 +1,5 @@
-Phase 16 : « On va pas y passer la nuit ! »
-- Casque débranché ou appel : la musique s'arrête au lieu de partir à fond.
-- Prise au micro calée même en Bluetooth, et jamais perdue (Annuler, autre projet).
-- Plus de solo fantôme, de note bloquée ni de coup de batterie perdu.
-- Exports justes en 3/4, sans les solos du mixage, avec une fin en fondu.
+Phase 17 : « Sire, on en a gros ! »
+- Pocket Studio s'affiche comme un vrai lecteur : centre de contrôle, écran verrouillé, bouton Stop.
+- Pendant un enregistrement : une pastille « REC » avec le chrono en haut de l'écran (Android 16).
+- Le bouton du casque arrête la musique.
+- Une prise au micro continue même écran éteint.

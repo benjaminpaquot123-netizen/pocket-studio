@@ -17,6 +17,7 @@ import com.pocketstudio.engine.Preset
 import com.pocketstudio.engine.SoundFont
 import com.pocketstudio.model.InstrumentChoice
 import com.pocketstudio.app.playback.PlaybackService
+import com.pocketstudio.app.playback.PlaybackStatus
 import com.pocketstudio.engine.ExportResult
 import com.pocketstudio.engine.NativeEngine
 import com.pocketstudio.engine.NativeSample
@@ -100,6 +101,8 @@ import com.pocketstudio.app.audio.finishOrRelease
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.asCoroutineDispatcher
@@ -2821,6 +2824,19 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
         viewModelScope.launch {
             session.lastSaveError.collect { e -> if (e != null) AppLog.add("Sauvegarde impossible : ${e.message}") }
+        }
+        // What the phone shows while playing (media player) or recording (live activity "REC").
+        viewModelScope.launch {
+            var since = 0L
+            kotlinx.coroutines.flow.combine(
+                project.map { it.name to it.tempoBpm }.distinctUntilChanged(),
+                _recording,
+                _audioRecording.map { it != null }.distinctUntilChanged(),
+            ) { song, live, take -> Triple(song, live, take) }.collect { (song, live, take) ->
+                val recording = live || take
+                if (!recording) since = 0L else if (since == 0L) since = System.currentTimeMillis()
+                PlaybackService.update(PlaybackStatus(song.first, song.second, recording, since, microphone = take))
+            }
         }
         viewModelScope.launch {
             PlaybackService.stops.collect { why ->

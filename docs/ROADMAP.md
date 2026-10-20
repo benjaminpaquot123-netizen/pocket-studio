@@ -132,3 +132,8 @@ Feu vert de Benjamin (D4 = A) : fusion de la pull request en fin de phase.
 - [x] 16.4 Comme un vrai lecteur : arrêt quand le casque est débranché ou qu'un appel arrive
 - [x] 16.5 Calage : prise micro compensée selon la sortie (Bluetooth), note jouée juste avant le « 1 »
 - [x] 16.6 Exports : toutes les mesures (3/4…), stems sans les solos du mixage, sans les coupures de la partie qui joue, après le chargement des sons, fin en fondu
+
+## Phase 17 : comme un vrai lecteur, et la pastille REC (demande de Benjamin : « le mode Dynamic Island de Honor »)
+- [x] 17.1 Session multimédia : le projet et son tempo dans le centre de contrôle et sur l'écran verrouillé, Stop, bouton du casque
+- [x] 17.2 Activité en direct d'Android 16 pendant un enregistrement : « REC » et le chrono en haut de l'écran (la Capsule magique de Honor n'a pas d'accès public : MagicOS décide de l'y mettre ou non)
+- [x] 17.3 Prise au micro écran éteint : le service de lecture tient aussi le micro pendant une prise

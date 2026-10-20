@@ -384,7 +384,7 @@ Restant (à reprendre) :
   - modifier une piste coupée dans la partie en cours la rend audible jusqu'à la partie suivante.
 - Mesures autres que 4/4 : le piano roll et la ligne acide ont des longueurs en multiples de 16 pas.
 - Arrière-plan :
-  - une prise micro avec l'écran éteint enregistre du silence (pas de service « micro ») ;
+  - une prise micro avec l'écran éteint enregistrait du silence : réglé en phase 17 (service « micro » pendant une prise) ;
   - un long export en arrière-plan n'a pas de service de premier plan.
 - Remix : un seul morceau est épinglé pour toute l'appli, et l'étirement peut figer l'interface quand on le retire.
 - Mineurs :

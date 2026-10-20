@@ -2,6 +2,9 @@ package com.pocketstudio.app.ui
 
 import com.pocketstudio.app.instruments.InstrumentUi
 import com.pocketstudio.model.instrumentTracks
+import com.pocketstudio.app.audiotracks.AudioTracksActions
+import com.pocketstudio.app.audiotracks.AudioTracksScreen
+import com.pocketstudio.app.audiotracks.AudioTracksUi
 import com.pocketstudio.model.viewOfTrack
 import androidx.compose.runtime.remember
 import com.pocketstudio.app.synth.TracksUi
@@ -35,7 +38,7 @@ import androidx.compose.material.icons.filled.Checklist
 import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.Equalizer
 import androidx.compose.material.icons.filled.GridView
-import androidx.compose.material.icons.filled.Layers
+import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.QueueMusic
 import androidx.compose.material.icons.filled.Piano
 import androidx.compose.material.icons.filled.Tune
@@ -136,7 +139,7 @@ enum class AppTab(val label: String, val icon: ImageVector) {
     Acide("Acide", Icons.Filled.GraphicEq),
     Synthe("Synthé", Icons.Filled.Piano),
     Mixeur("Mixeur", Icons.Filled.Equalizer),
-    Remix("Remix", Icons.Filled.Layers),
+    Audio("Audio", Icons.Filled.Mic),
     Morceau("Morceau", Icons.Filled.QueueMusic),
     Outils("Outils", Icons.Filled.Tune),
 }
@@ -327,6 +330,15 @@ fun AppRoot() {
         if (uri != null) rhythmVm.importSample(uri)
     }
     var liveImportPad by rememberSaveable { mutableIntStateOf(0) }
+    var audioPage by rememberSaveable { mutableIntStateOf(0) }
+    var audioRecordTrack by rememberSaveable { mutableIntStateOf(0) }
+    var audioImportTrack by rememberSaveable { mutableIntStateOf(0) }
+    val audioMicPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        if (granted) rhythmVm.recordAudio(audioRecordTrack)
+    }
+    val pickTrackAudio = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri != null) rhythmVm.importAudio(audioImportTrack, uri)
+    }
     val pickLiveAudio = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) rhythmVm.importLive(liveImportPad, uri)
     }
@@ -722,7 +734,56 @@ fun AppRoot() {
                             ),
                         )
                     }
-                    AppTab.Remix -> {
+                    AppTab.Audio -> Column {
+                        TabRow(selectedTabIndex = audioPage, containerColor = Neon.Surface, contentColor = Neon.Cyan) {
+                            listOf("Pistes audio", "Remix").forEachIndexed { i, label ->
+                                Tab(selected = audioPage == i, onClick = { audioPage = i }, text = { Text(label) }, modifier = Modifier.testTag("audio_page_$i"))
+                            }
+                        }
+                        if (audioPage == 0) {
+                            val project by rhythmVm.project.collectAsStateWithLifecycle()
+                            val recording by rhythmVm.audioRecording.collectAsStateWithLifecycle()
+                            val info by rhythmVm.sampleInfo.collectAsStateWithLifecycle()
+                            val task by rhythmVm.sampleTask.collectAsStateWithLifecycle()
+                            val roundTripMs by Metrics.roundTripMs.collectAsStateWithLifecycle()
+                            AudioTracksScreen(
+                                AudioTracksUi(
+                                    project.audioTracks, recording, info,
+                                    task = when (val t = task) {
+                                        is SampleTask.Busy -> t.message
+                                        is SampleTask.Failed -> t.message
+                                        else -> null
+                                    },
+                                    latencyMeasured = roundTripMs != null,
+                                ),
+                                AudioTracksActions(
+                                    add = rhythmVm::addAudioTrack,
+                                    remove = rhythmVm::removeAudioTrack,
+                                    rename = rhythmVm::renameAudioTrack,
+                                    setColor = rhythmVm::setAudioTrackColor,
+                                    record = { id ->
+                                        if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
+                                            rhythmVm.recordAudio(id)
+                                        } else {
+                                            audioRecordTrack = id
+                                            audioMicPermission.launch(Manifest.permission.RECORD_AUDIO)
+                                        }
+                                    },
+                                    stop = rhythmVm::stopAudioRecording,
+                                    cancel = rhythmVm::cancelAudioRecording,
+                                    import = { id -> audioImportTrack = id; pickTrackAudio.launch(arrayOf("audio/*")) },
+                                    setStart = rhythmVm::setAudioStart,
+                                    setLoopBars = rhythmVm::setAudioLoopBars,
+                                    setGain = rhythmVm::setAudioGain,
+                                    setFadeIn = rhythmVm::setAudioFadeIn,
+                                    setFadeOut = rhythmVm::setAudioFadeOut,
+                                    normalize = rhythmVm::normalizeAudio,
+                                    reverse = rhythmVm::reverseAudio,
+                                    trim = rhythmVm::trimAudio,
+                                    clear = rhythmVm::clearAudioClip,
+                                ),
+                            )
+                        } else {
                         val remixState by remixVm.state.collectAsStateWithLifecycle()
                         val sets by remixVm.sets.collectAsStateWithLifecycle()
                         val modelInstalled by remixVm.modelInstalled.collectAsStateWithLifecycle()
@@ -784,6 +845,7 @@ fun AppRoot() {
                                 setStartAt = rhythmVm::setRemixStartAt,
                             ),
                         )
+                        }
                     }
                     AppTab.Outils -> Column {
                         TabRow(selectedTabIndex = toolPage.ordinal, containerColor = Neon.Surface, contentColor = Neon.Cyan) {
@@ -929,5 +991,8 @@ fun mixerStrips(p: com.pocketstudio.model.Project): List<com.pocketstudio.app.mi
     listOf(com.pocketstudio.app.mixer.StripInfo(0, "Batterie"), com.pocketstudio.app.mixer.StripInfo(1, "Basse acide")) +
         p.instrumentTracks.map { t ->
             com.pocketstudio.app.mixer.StripInfo(com.pocketstudio.model.InstrumentTrack.mixerChannel(t.id), t.name, com.pocketstudio.ui.trackColor(t.color))
+        } +
+        p.audioTracks.map { t ->
+            com.pocketstudio.app.mixer.StripInfo(com.pocketstudio.model.AudioTrack.mixerChannel(t.id), t.name, com.pocketstudio.ui.trackColor(t.color))
         } +
         com.pocketstudio.app.mixer.StripInfo(3, "Remix")

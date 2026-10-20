@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import android.net.Uri
 import android.provider.OpenableColumns
 import com.pocketstudio.app.audio.AudioDecoder
+import com.pocketstudio.app.audio.AudioEdits
 import com.pocketstudio.app.Metrics
 import com.pocketstudio.app.audio.MicRecorder
 import com.pocketstudio.app.audio.Pcm
@@ -61,6 +62,11 @@ import com.pocketstudio.model.LivePads
 import com.pocketstudio.model.sampleFiles
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.InstrumentTrack
+import com.pocketstudio.model.AudioTrack
+import com.pocketstudio.model.AudioClip
+import com.pocketstudio.model.addAudioTrack
+import com.pocketstudio.model.removeAudioTrack
+import com.pocketstudio.model.withAudioTrack
 import com.pocketstudio.model.instrumentTracks
 import com.pocketstudio.model.track
 import com.pocketstudio.model.withTrack
@@ -90,6 +96,9 @@ sealed interface LibraryState {
     data class Ready(val presets: List<Preset>) : LibraryState
     data class Failed(val message: String) : LibraryState
 }
+
+/** A microphone take on an audio track: [waiting] during the count-in. */
+data class AudioRecordingUi(val track: Int, val waiting: Boolean = true, val seconds: Float = 0f, val level: Float = 0f)
 
 sealed interface SampleTask {
     data object Idle : SampleTask
@@ -220,6 +229,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         pushMixer(p)
         pushPads(p)
         pushTracks(p)
+        pushAudio(p)
         pushRemix(p)
         pushAutomation(p)
         pushLive(p)
@@ -388,6 +398,198 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
         pushInstrument(p)
     }
+
+    // --- Audio tracks: recorded or imported clips -----------------------------------------------
+
+    private val _audioRecording = MutableStateFlow<AudioRecordingUi?>(null)
+    /** The microphone take in progress (null when none). */
+    val audioRecording: StateFlow<AudioRecordingUi?> = _audioRecording.asStateFlow()
+    private var recordHandle = 0L
+    private var recordPoll: kotlinx.coroutines.Job? = null
+
+    /** Every audio track's clip and settings to the engine; free slots play nothing. */
+    private fun pushAudio(p: Project = project.value) {
+        if (!NativeEngine.isAvailable) return
+        for (id in 0 until AudioTrack.MAX) {
+            val clip = p.audioTracks.firstOrNull { it.id == id }?.clip
+            val native = clip?.let { padSamples.native(it.file) }
+            if (clip != null && native != null) {
+                NativeEngine.setAudioClipParams(
+                    id, clip.start, clip.loopSteps, clip.gain,
+                    (clip.fadeIn * OfflineExport.SAMPLE_RATE).toInt(), (clip.fadeOut * OfflineExport.SAMPLE_RATE).toInt(),
+                )
+            }
+            NativeEngine.setAudioClip(id, native)
+        }
+    }
+
+    fun addAudioTrack() {
+        val next = project.value.addAudioTrack() ?: run {
+            _notice.value = "Quatre pistes audio au maximum : supprime-en une pour en ajouter une autre."
+            return
+        }
+        session.edit { next }
+        pushMixer()
+    }
+
+    fun removeAudioTrack(id: Int) {
+        if (_audioRecording.value?.track == id) cancelAudioRecording()
+        session.edit { it.removeAudioTrack(id) }
+        pushAudio()
+        pushMixer()
+        pushAutomation()
+    }
+
+    fun renameAudioTrack(id: Int, name: String) {
+        if (name.isBlank()) return
+        editAudio(id) { it.copy(name = name.trim()) }
+    }
+
+    fun setAudioTrackColor(id: Int, color: Int) = editAudio(id) { it.copy(color = color) }
+
+    private fun editAudio(id: Int, key: String? = null, transform: (AudioTrack) -> AudioTrack) {
+        val t = project.value.audioTracks.firstOrNull { it.id == id } ?: return
+        session.edit(key) { it.withAudioTrack(transform(t)) }
+        pushAudio()
+    }
+
+    private fun editClip(id: Int, key: String? = null, transform: (AudioClip) -> AudioClip) =
+        editAudio(id, key) { t -> t.copy(clip = t.clip?.let(transform)) }
+
+    fun setAudioStart(id: Int, step: Int) = editClip(id) { it.copy(start = step) }
+    fun setAudioLoopBars(id: Int, bars: Int) = editClip(id) { it.copy(loopSteps = bars * 16) }
+    fun setAudioGain(id: Int, gain: Float) = editClip(id, "audio-gain-$id") { it.copy(gain = gain) }
+    fun setAudioFadeIn(id: Int, seconds: Float) = editClip(id, "audio-in-$id") { it.copy(fadeIn = seconds) }
+    fun setAudioFadeOut(id: Int, seconds: Float) = editClip(id, "audio-out-$id") { it.copy(fadeOut = seconds) }
+    fun clearAudioClip(id: Int) = editAudio(id) { it.copy(clip = null) }
+
+    /** A clip made of [pcm] on audio track [id] (one undo step), its loop the bars it lasts. */
+    private suspend fun putClip(id: Int, pcm: Pcm, name: String, keep: AudioClip? = null) {
+        val (sample, prepared) = withContext(Dispatchers.IO) { padSamples.add(pcm, name) }
+        padSamples.register(prepared)
+        val bars = AudioClip.barsFor(pcm.seconds, project.value.tempoBpm)
+        val clip = (keep ?: AudioClip(sample.file, sample.name, loopSteps = bars * 16)).copy(file = sample.file, name = sample.name, seconds = pcm.seconds)
+        editAudio(id) { it.copy(clip = clip) }
+    }
+
+    /** An audio file from the phone onto audio track [id]. */
+    fun importAudio(id: Int, uri: Uri) = audioJob("Lecture du fichier…") {
+        val app = getApplication<Application>()
+        val name = PadSamples.nameFrom(displayName(app, uri))
+        val pcm = try {
+            withContext(Dispatchers.IO) { AudioDecoder.decode(app, uri) }  // 2 minutes at most (cut)
+        } catch (e: Exception) {
+            throw UserMessage("Ce fichier n'a pas pu être lu (${e.message ?: "format inconnu"}).")
+        }
+        AppLog.add("Piste audio ${id + 1} : « $name », ${"%.1f".format(pcm.seconds)} s")
+        putClip(id, pcm, name)
+    }
+
+    /** Busy line and errors like the pad sounds (same "sampleTask" card). */
+    private fun audioJob(busy: String, work: suspend () -> Unit) {
+        if (_sampleTask.value is SampleTask.Busy) return
+        _sampleTask.value = SampleTask.Busy(busy)
+        viewModelScope.launch {
+            try {
+                work()
+                _sampleTask.value = SampleTask.Idle
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (e: OutOfMemoryError) {
+                _sampleTask.value = SampleTask.Failed("Pas assez de mémoire pour ce son : essaie plus court.")
+            } catch (e: Exception) {
+                AppLog.add("Piste audio : échec (${e.message})")
+                _sampleTask.value = SampleTask.Failed(if (e is UserMessage) e.message!! else "Ça n'a pas marché : ${e.message ?: e.javaClass.simpleName}")
+            }
+        }
+    }
+
+    /**
+     * Records the microphone onto audio track [id]: the song starts (after the count-in) and the
+     * take begins exactly on its first step. [stopAudioRecording] ends it.
+     */
+    fun recordAudio(id: Int) {
+        if (!NativeEngine.isAvailable || _audioRecording.value != null) return
+        if (_recording.value) stopRecordingTake()
+        if (_transport.value.playing) togglePlay()
+        val handle = NativeEngine.recordStart(onStart = true, seconds = MAX_AUDIO_SECONDS)
+        if (handle == 0L) {
+            _notice.value = "Le micro n'a pas pu être ouvert. Vérifie l'autorisation du micro et qu'aucune autre appli ne l'utilise."
+            return
+        }
+        recordHandle = handle
+        _audioRecording.value = AudioRecordingUi(id, waiting = true)
+        _transport.value = _transport.value.copy(playing = true)
+        NativeEngine.play(com.pocketstudio.app.settings.SettingsStore.state.value.recordCountIn.coerceAtLeast(1))
+        PlaybackService.start(getApplication())
+        AppLog.add("Prise audio sur la piste ${id + 1}")
+        recordPoll = viewModelScope.launch {
+            while (true) {
+                val st = NativeEngine.recordStatus(handle)
+                val ui = _audioRecording.value ?: break
+                _audioRecording.value = ui.copy(waiting = st[0] < 0.5f, seconds = st[1] / OfflineExport.SAMPLE_RATE.toFloat(), level = st[2])
+                if (st[0] > 1.5f) {  // full: the take ends by itself
+                    stopAudioRecording()
+                    break
+                }
+                kotlinx.coroutines.delay(50)
+            }
+        }
+    }
+
+    /** Ends the take: the song stops and the recording becomes the track's clip (Annuler possible). */
+    fun stopAudioRecording() {
+        val ui = _audioRecording.value ?: return
+        val handle = recordHandle
+        recordHandle = 0L
+        recordPoll?.cancel()
+        _audioRecording.value = null
+        if (_transport.value.playing) togglePlay()
+        if (handle == 0L) return
+        val audio = NativeEngine.recordFinish(handle)
+        if (audio == null || audio.size < OfflineExport.SAMPLE_RATE / 10) {
+            if (ui.waiting) return  // stopped during the count-in: nothing was recorded
+            _notice.value = "La prise est trop courte ou le micro n'a rien donné."
+            return
+        }
+        // What the microphone hears lags what was played by the round trip (speaker → micro).
+        val latencyMs = Metrics.roundTripMs.value ?: (Metrics.streamInfo.value.outputLatencyMs.takeIf { it > 0 }?.times(2) ?: 0.0)
+        val skip = (latencyMs / 1000.0 * OfflineExport.SAMPLE_RATE).toInt().coerceIn(0, audio.size / 2)
+        val pcm = Pcm(audio.copyOfRange(skip, audio.size), 1, OfflineExport.SAMPLE_RATE)
+        if (PadSamples.isSilent(pcm)) {
+            _notice.value = "Le micro n'a rien entendu : rapproche-toi et réessaie."
+            return
+        }
+        audioJob("Enregistrement de la prise…") {
+            putClip(ui.track, pcm, "Prise ${java.text.SimpleDateFormat("HH:mm", java.util.Locale.FRANCE).format(java.util.Date())}")
+            AppLog.add("Prise audio : ${"%.1f".format(pcm.seconds)} s, latence compensée ${latencyMs.toInt()} ms")
+        }
+    }
+
+    /** Leaves the take without keeping it. */
+    fun cancelAudioRecording() {
+        val handle = recordHandle
+        recordHandle = 0L
+        recordPoll?.cancel()
+        _audioRecording.value = null
+        if (_transport.value.playing) togglePlay()
+        if (handle != 0L) NativeEngine.recordFinish(handle)
+    }
+
+    /** Clip edits: a new sound file each time, so Annuler brings the previous one back. */
+    private fun editClipAudio(id: Int, label: String, transform: (Pcm) -> Pcm) {
+        val clip = project.value.audioTracks.firstOrNull { it.id == id }?.clip ?: return
+        audioJob("$label…") {
+            val pcm = withContext(Dispatchers.Default) { transform(padSamples.read(clip.file)) }
+            putClip(id, pcm, clip.name, keep = clip)
+        }
+    }
+
+    /** Loudest point at -1 dBFS. */
+    fun normalizeAudio(id: Int) = editClipAudio(id, "Normalisation") { AudioEdits.normalize(it) }
+    fun reverseAudio(id: Int) = editClipAudio(id, "Inversion") { AudioEdits.reverse(it) }
+    /** Keeps [from]..[to] (fractions of the clip). */
+    fun trimAudio(id: Int, from: Float, to: Float) = editClipAudio(id, "Découpe") { AudioEdits.trim(it, from, to) }
 
     // --- Plaits (Mutable Instruments) voice for the instrument tracks -------------------------
 
@@ -1265,6 +1467,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             prepared.forEach(padSamples::register)
             pushPads()
             pushLive()
+            pushAudio()
         }
     }
 
@@ -2223,7 +2426,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val renders: List<Pair<String, Int?>> = when (settings.what) {
             ExportWhat.Stems -> STEM_EXPORTS.filter { (_, ch) -> ch != 3 || p.remix.setId != null || p.live.used > 0 } +
                 // One file per added instrument track, named after it.
-                p.tracks.map { t -> "piste${t.id + 1}-" + t.name.lowercase().replace(Regex("[^a-z0-9]+"), "-").trim('-').take(16) to InstrumentTrack.mixerChannel(t.id) }
+                p.tracks.map { t -> "piste${t.id + 1}-" + t.name.lowercase().replace(Regex("[^a-z0-9]+"), "-").trim('-').take(16) to InstrumentTrack.mixerChannel(t.id) } +
+                p.audioTracks.filter { it.clip != null }.map { t ->
+                    "audio${t.id + 1}-" + t.name.lowercase().replace(Regex("[^a-z0-9]+"), "-").trim('-').take(16) to AudioTrack.mixerChannel(t.id)
+                }
             ExportWhat.Song -> listOf("morceau" to null)
             ExportWhat.Loop -> listOf("boucle" to null)
         }
@@ -2375,6 +2581,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
         const val MAX_MIDI_BYTES = 4 * 1024 * 1024
         /** Stems export: one render per mixer channel. */
+        /** Longest microphone take (34 MB of memory). */
+        const val MAX_AUDIO_SECONDS = 180
         private val STEM_EXPORTS = listOf("batterie" to 0, "acide" to 1, "synthe" to 2, "remix" to 3)
         private val AUDIO_EXTENSIONS = setOf("wav", "mp3", "flac", "m4a", "aac", "ogg", "opus", "aif", "aiff")
         /** Two seconds after the last bar so releases and the acid tail ring out. */

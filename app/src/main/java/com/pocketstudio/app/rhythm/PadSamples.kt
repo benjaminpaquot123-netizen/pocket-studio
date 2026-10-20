@@ -46,6 +46,9 @@ class PadSamples(private val dir: File) {
         }
     }
 
+    /** Blocking (background): the sound of [file] as stored. */
+    fun read(file: String): Pcm = FloatWav.read(File(dir, file))
+
     class Prepared(val file: String, val native: NativeSample, val info: SampleInfo)
 
     private fun prepare(file: String, pcm: Pcm): Prepared {

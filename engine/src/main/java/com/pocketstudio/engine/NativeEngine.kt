@@ -55,6 +55,8 @@ object NativeEngine {
     private const val CMD_METRONOME_LEVEL = 49
     private const val CMD_DRUM_REPEAT = 50
     private const val CMD_TRACK_ON = 51
+    // 52: InstallAudioClip (native only)
+    private const val CMD_AUDIO_CLIP_PARAM = 53
 
     /** Live pads (ClipLauncher::kSlots). */
     const val LIVE_PADS = 16
@@ -64,13 +66,18 @@ object NativeEngine {
 
     /**
      * Mixer channels: 0 drums, 1 acid bass, 2 synth (instrument track 0), 3 remix stems, 5..11
-     * instrument tracks 1..7. Index 4 is the master (inserts, automation, meters).
+     * instrument tracks 1..7, 12..15 audio tracks 0..3. Index 4 is the master (inserts, automation, meters).
      */
-    const val MIXER_CHANNELS = 12
+    const val MIXER_CHANNELS = 16
     const val MASTER = 4
 
     /** Instrument tracks (the synth track is track 0). */
     const val TRACKS = 8
+
+    /** Audio tracks (AudioTracks::kTracks). */
+    const val AUDIO_TRACKS = 4
+
+    fun audioChannel(track: Int) = 12 + track
 
     /** The mixer channel of instrument track [track]. */
     fun trackChannel(track: Int) = if (track == 0) 2 else 4 + track
@@ -272,6 +279,34 @@ object NativeEngine {
 
     /** Live pad [pad] plays [sample] (null: empty). Main thread, like every command. */
     fun setClip(pad: Int, sample: NativeSample?) = nativeInstallClip(pad, sample?.handle ?: 0L)
+
+    /** Audio track [track] plays [sample] (null: nothing). */
+    fun setAudioClip(track: Int, sample: NativeSample?) {
+        val target = captureTarget
+        if (target != 0L) exportInstallAudioClip(target, track, sample?.handle ?: 0L)
+        else nativeInstallAudioClip(track, sample?.handle ?: 0L)
+    }
+
+    /** Where and how the clip plays: from step [start], again every [loopSteps], fades in frames at 48 kHz. */
+    fun setAudioClipParams(track: Int, start: Int, loopSteps: Int, gain: Float, fadeInFrames: Int, fadeOutFrames: Int) {
+        post(CMD_AUDIO_CLIP_PARAM, start.toFloat(), track, 0)
+        post(CMD_AUDIO_CLIP_PARAM, loopSteps.toFloat(), track, 1)
+        post(CMD_AUDIO_CLIP_PARAM, gain, track, 2)
+        post(CMD_AUDIO_CLIP_PARAM, fadeInFrames.toFloat(), track, 3)
+        post(CMD_AUDIO_CLIP_PARAM, fadeOutFrames.toFloat(), track, 4)
+    }
+
+    /**
+     * Opens the microphone and arms a recording of at most [seconds] (0 = microphone unavailable).
+     * [onStart]: it begins exactly on the transport's first step (after the count-in).
+     */
+    external fun recordStart(onStart: Boolean, seconds: Int): Long
+    /** [state 0 waiting, 1 recording, 2 finished; frames recorded; input peak]. */
+    external fun recordStatus(handle: Long): FloatArray
+    /** Stops, frees the recording and returns it (mono, 48 kHz); null if the engine did not let go. */
+    external fun recordFinish(handle: Long): FloatArray?
+    private external fun nativeInstallAudioClip(track: Int, handle: Long): Boolean
+    private external fun exportInstallAudioClip(exportHandle: Long, track: Int, handle: Long)
     /** [beats]: loop length; [oneShot]: plays once per tap; [gain]: 0..2. */
     fun setClipParams(pad: Int, beats: Int, oneShot: Boolean, gain: Float) {
         post(CMD_CLIP_PARAM, beats.toFloat(), pad, 0)

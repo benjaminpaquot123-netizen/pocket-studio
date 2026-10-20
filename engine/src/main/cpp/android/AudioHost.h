@@ -75,6 +75,11 @@ public:
     // of microphone data, the next test uses the next configuration.
     void finishLatencyTest(bool succeededInput);
 
+    // Microphone for recording audio tracks, alongside the running output. False when the
+    // microphone cannot be opened or stays silent (no permission, busy).
+    bool startRecordingInput();
+    void stopRecordingInput();
+
     oboe::DataCallbackResult onAudioReady(oboe::AudioStream* stream, void* audioData,
                                           int32_t numFrames) override;
     void onErrorAfterClose(oboe::AudioStream* stream, oboe::Result error) override;
@@ -98,6 +103,8 @@ private:
     int config_ = 0;
     std::string inputDescription_ = "aucun";
     std::atomic<bool> drainInput_{false};
+    // The audio thread reads the microphone ring only while this is set (never input_ itself).
+    std::atomic<bool> inputLive_{false};
     std::atomic<bool> testInterrupted_{false};
     bool wantRunning_ = false;
     int bufferBursts_ = 2;

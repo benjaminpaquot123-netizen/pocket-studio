@@ -1323,6 +1323,76 @@ void testInstrumentTracks() {
     CHECK(engine.notesPending(t) == 0);
 }
 
+void testAudioTracks() {
+    // 120 BPM: a step is 6000 frames. A clip (a loud mark, then quiet) on audio track 1 from step 4,
+    // coming back every 16 steps.
+    ps::Engine engine(kRate);
+    auto& mixer = engine.mixer();
+    std::vector<float> d(12000, 0.1f);
+    std::fill(d.begin(), d.begin() + 100, 0.8f);
+    ps::Command c{ps::CommandType::InstallAudioClip, 0.0f, 1};
+    c.sample = ps::Sample::create(d.data(), 12000, 1, kRate, kRate);
+    engine.post(c);
+    engine.post({ps::CommandType::SetAudioClipParam, 4.0f, 1, ps::AudioTracks::Start});
+    engine.post({ps::CommandType::SetAudioClipParam, 16.0f, 1, ps::AudioTracks::LoopSteps});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    auto out = render(engine, 6000 * 4 - 10, 256);
+    CHECK(mixer.takeChannelPeak(ps::audioChannel(1)) == 0.0f);
+    out = render(engine, 200, 50);
+    CHECK(std::fabs(out[size_t(10 + 50) * kChannels]) > 0.7f);  // sample-accurate start on step 4
+    CHECK(mixer.takeChannelPeak(ps::audioChannel(1)) > 0.7f);
+    out = render(engine, 6000 * 16, 256);  // past its end, then once more on the next pass
+    CHECK(engine.audioClipPlaying(1));
+    // A fade-in softens the start of each pass.
+    engine.post({ps::CommandType::SetAudioClipParam, 4800.0f, 1, ps::AudioTracks::FadeIn});
+    render(engine, 6000 * 16, 256);
+    mixer.takeChannelPeak(ps::audioChannel(1));
+    // Stop: fades out, nothing left.
+    engine.post({ps::CommandType::SetTransport, 0.0f, 0});
+    render(engine, 2048, 256);
+    CHECK(!engine.audioClipPlaying(1));
+    ps::Command off{ps::CommandType::InstallAudioClip, 0.0f, 1};
+    engine.post(off);
+    render(engine, 256, 256);
+    engine.collectGarbage();
+}
+
+void testRecordingStartsOnTheFirstStep() {
+    // The microphone sends a ramp (frame index); recording armed for the transport start keeps
+    // exactly what came in from the first step, in order, and stops with the transport.
+    ps::Engine engine(kRate);
+    ps::RecordBuffer buffer(kRate);
+    ps::Command arm{ps::CommandType::RecordArm, 0.0f, 1};
+    arm.record = &buffer;
+    engine.post(arm);
+    std::vector<float> out(256 * 2), in(256);
+    int64_t micFrame = 0;
+    auto block = [&](int n) {
+        for (int i = 0; i < n; ++i) in[size_t(i)] = float(micFrame++);
+        engine.process(in.data(), n, 1, out.data(), n, 2);
+    };
+    block(256);
+    block(256);
+    CHECK(buffer.state.load() == 0 && buffer.written.load() == 0);  // waiting for the transport
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    block(256);  // the transport starts at the top of this block
+    CHECK(buffer.state.load() == 1);
+    for (int k = 0; k < 10; ++k) block(256);
+    CHECK(buffer.written.load() == 11 * 256);
+    CHECK(buffer.data[0] == 512.0f && buffer.data[2815] == 512.0f + 2815.0f);
+    engine.post({ps::CommandType::SetTransport, 0.0f, 0});
+    block(256);
+    CHECK(buffer.state.load() == 2);
+    CHECK(buffer.written.load() == 11 * 256);
+    // Armed to start now, it stops by itself when the buffer is full.
+    ps::RecordBuffer small(1000);
+    ps::Command now{ps::CommandType::RecordArm, 0.0f, 0};
+    now.record = &small;
+    engine.post(now);
+    for (int k = 0; k < 6; ++k) block(256);
+    CHECK(small.state.load() == 2 && small.written.load() == 1000);
+}
+
 void testPianoRollNotesAreSampleAccurate() {
     // 120 BPM: a step is 6000 frames, a tick 250. A note at tick 36 (1.5 steps), 48 ticks long.
     ps::Engine engine(kRate);
@@ -1482,6 +1552,16 @@ void testProcessNeverAllocates() {
             for (int n = 0; n < 16; ++n) engine.post({ps::CommandType::SetSynthNote, 0.8f, n | (t << 16), ps::NoteTrack::pack(n * 24, 20, 60 + n % 12)});
             engine.post({ps::CommandType::SetSynthNoteCount, 0.0f, 16 | (t << 16)});
         }
+        // An audio track looping a clip, and the microphone being recorded.
+        sample->retain();
+        ps::Command audio{ps::CommandType::InstallAudioClip, 0.0f, 2};
+        audio.sample = sample;
+        engine.post(audio);
+        engine.post({ps::CommandType::SetAudioClipParam, 4.0f, 2, ps::AudioTracks::LoopSteps});
+        static ps::RecordBuffer recording(kRate * 4);
+        ps::Command arm{ps::CommandType::RecordArm, 0.0f, 1};
+        arm.record = &recording;
+        engine.post(arm);
         ps::Command inst{ps::CommandType::SetInstrument, 0.0f, 0};
         inst.font = ps::SoundFontPlayer::makeInstance(master, kRate);
         engine.post(inst);
@@ -2481,6 +2561,8 @@ int main(int argc, char** argv) {
         {"stems_follow_transport", testStemsPlayInStepWithTheTransport},
         {"live_pads", testLivePadsLoopOnTheBeat},
         {"instrument_tracks", testInstrumentTracks},
+        {"audio_tracks", testAudioTracks},
+        {"recording", testRecordingStartsOnTheFirstStep},
         {"live_pads_bar", testLivePadsFollowTheBar},
         {"stem_preview", testStemPreviewPlaysWithoutTheTransport},
         {"stems_stretch", testStemsStretchToTheProjectTempo},

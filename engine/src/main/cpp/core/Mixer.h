@@ -15,9 +15,9 @@ namespace ps {
 class Mixer {
 public:
     // 0 = drums, 1 = acid bass, 2 = synth (instrument track 1), 3 = remix stems (stereo),
-    // 5..11 = instrument tracks 2..8. Index 4 is the master (insert commands, saved automation):
-    // its strip is never fed.
-    static constexpr int kChannels = 12;
+    // 5..11 = instrument tracks 2..8, 12..15 = audio tracks (stereo). Index 4 is the master (insert
+    // commands, saved automation): its strip is never fed.
+    static constexpr int kChannels = 16;
     static constexpr int kInserts = 4;   // per channel, and on the master
     static constexpr int kMaster = 4;    // insert "channel" index of the master
     static constexpr int kBuses = 2;

@@ -6,6 +6,7 @@
 #include <cstdint>
 
 #include "AcidTrack.h"
+#include "AudioTracks.h"
 #include "ClipLauncher.h"
 #include "DrumKit.h"
 #include "InstrumentTrack.h"
@@ -80,6 +81,10 @@ enum class CommandType : uint8_t {
     SetMetronomeLevel,    // value 0..1 (0.5 = default)
     SetDrumRepeat,        // a: lane, b: step, value: hits in that step (1 = plain, 2..4 = a roll)
     SetTrackOn,           // a: instrument track 1..kTracks-1, value 1 = in use (0 = silent, not rendered)
+    InstallAudioClip,     // a: audio track, sample: owned reference (nullptr = empty track)
+    SetAudioClipParam,    // a: audio track, b: AudioTracks::Param, value
+    RecordArm,            // record: buffer the app keeps; a = 1: starts when the transport reaches its first step, 0: now
+    RecordStop,           // the armed or running recording ends (the buffer's state becomes 2)
 };
 
 // Instrument tracks: the synth commands (SynthNoteOn/Off, SynthParam, SetSynthNote, SetSynthNoteCount,
@@ -91,6 +96,8 @@ inline int32_t trackArg(int32_t a) { return a & 0xFFFF; }
 // The mixer channel of each instrument track: track 0 on channel 2, the others after the master's
 // index (Mixer::kMaster = 4).
 inline int trackChannel(int track) { return track == 0 ? 2 : 4 + track; }
+// Audio tracks come after the instrument tracks.
+inline int audioChannel(int track) { return 12 + track; }
 
 // Step automation of mixer settings, played on the audio thread at each sequencer step.
 struct Automation {
@@ -118,6 +125,8 @@ struct Command {
     // SetInstrument only: an instance the engine takes over (closed if the command is dropped).
     tsf* font = nullptr;
     StemBundle* stems = nullptr;
+    // RecordArm only: the app keeps ownership; the engine writes into it until its state is 2.
+    RecordBuffer* record = nullptr;
 };
 
 // Platform-independent audio core. The platform layer (Oboe on Android,
@@ -159,7 +168,9 @@ public:
         stems_.collectGarbage();
         preview_.collectGarbage();
         clips_.collectGarbage();
+        audio_.collectGarbage();
     }
+    bool audioClipPlaying(int track) const { return audio_.playing(track); }  // tests
     bool stemsLoaded() const { return stems_.loaded(); }  // tests
     int64_t stemPosition() const { return stems_.position(); }
     // Song position of the preview player in frames, -1 when stopped.
@@ -218,6 +229,14 @@ private:
     // The remix screen's own listening of a song's stems, free of the transport.
     StemPlayer preview_;
     ClipLauncher clips_;
+    AudioTracks audio_;
+    std::array<std::array<float, kMaxBlock>, AudioTracks::kTracks> audioL_{}, audioR_{};
+    // Microphone recording (audio tracks).
+    RecordBuffer* record_ = nullptr;
+    bool recordOnStart_ = false;  // waiting for the transport's first step
+    int recordSkip_ = -1;         // input frames to skip in this callback (recording just started), -1 = none
+    void finishRecording();
+    void recordInput(const float* input, int numInputFrames, int inputChannels);
     Automation automation_;
     void applyAutomation(int patternStep);
 

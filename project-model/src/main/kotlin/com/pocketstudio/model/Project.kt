@@ -44,6 +44,8 @@ data class Project(
     val synthTrackColor: Int = 0,
     /** Instrument tracks added after the first one (see [InstrumentTrack]). */
     val tracks: List<InstrumentTrack> = emptyList(),
+    /** Audio tracks: recorded or imported clips (see [AudioTrack]). */
+    val audioTracks: List<AudioTrack> = emptyList(),
 ) {
     /** Returns a copy with every value inside its allowed range. */
     fun sanitized(): Project = copy(
@@ -64,6 +66,7 @@ data class Project(
         synthTrackName = synthTrackName.take(InstrumentTrack.MAX_NAME).ifBlank { "Synthé" },
         synthTrackColor = synthTrackColor.coerceIn(0, InstrumentTrack.COLORS - 1),
         tracks = tracks.filter { it.id in 1 until InstrumentTrack.MAX }.distinctBy { it.id }.sortedBy { it.id }.map { it.sanitized() },
+        audioTracks = audioTracks.filter { it.id in 0 until AudioTrack.MAX }.distinctBy { it.id }.sortedBy { it.id }.map { it.sanitized() },
     ).syncScenes()
 
     companion object {

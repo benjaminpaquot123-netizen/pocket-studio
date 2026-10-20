@@ -24,7 +24,9 @@ Engine::~Engine() {
         if (command.sample && command.sample->release()) delete command.sample;
         SoundFontPlayer::close(command.font);
         if (command.stems && command.stems->release()) delete command.stems;
+        if (command.record) command.record->state.store(2, std::memory_order_release);
     }
+    finishRecording();
 }
 
 void Engine::prepare(int sampleRate) {
@@ -51,6 +53,7 @@ void Engine::prepare(int sampleRate) {
     stems_.prepare(sampleRate);
     preview_.prepare(sampleRate);
     clips_.prepare(sampleRate);
+    audio_.prepare(sampleRate);
     sampler_.prepare(sampleRate);
 }
 
@@ -84,6 +87,8 @@ void Engine::applyCommand(const Command& command) {
                 rollCount_ = 0;
                 stems_.stop();
                 acid_.stop();
+                audio_.stop();
+                if (record_ && !recordOnStart_) finishRecording();
                 sampler_.releaseLoops();
                 for (auto& t : tracks_) {
                     t.notes.stop(t);
@@ -125,6 +130,25 @@ void Engine::applyCommand(const Command& command) {
             break;
         case CommandType::SetSynthEngine:
             tracks_[static_cast<size_t>(trackOf(command.a))].setUsePlaits(trackArg(command.a) == 1);
+            break;
+        case CommandType::InstallAudioClip:
+            audio_.install(command.a, command.sample);  // takes the reference
+            break;
+        case CommandType::SetAudioClipParam:
+            audio_.setParam(command.a, command.b, command.value);
+            break;
+        case CommandType::RecordArm:
+            finishRecording();
+            record_ = command.record;
+            if (record_) {
+                recordOnStart_ = command.a == 1;
+                record_->written.store(0, std::memory_order_relaxed);
+                record_->state.store(recordOnStart_ ? 0 : 1, std::memory_order_release);
+                recordSkip_ = recordOnStart_ ? -1 : 0;
+            }
+            break;
+        case CommandType::RecordStop:
+            finishRecording();
             break;
         case CommandType::SetTrackOn:
             if (command.a > 0 && command.a < kTracks) {
@@ -311,7 +335,14 @@ void Engine::onStep(int offset, int step) {
         metronomeClicks_.fetch_add(1, std::memory_order_relaxed);
     }
     if (step < 0) return;
-    if (step == 0) stems_.start(offset);
+    if (step == 0) {
+        stems_.start(offset);
+        if (record_ && recordOnStart_) {
+            recordOnStart_ = false;
+            recordSkip_ = offset;
+            record_->state.store(1, std::memory_order_release);
+        }
+    }
     if (onBeat) clips_.syncBeat(offset, step / Sequencer::kStepsPerBeat);
     // A waiting scene takes over on its step (or the next bar), before anything of this step plays.
     if (swapAt_ >= 0) {
@@ -323,6 +354,7 @@ void Engine::onStep(int offset, int step) {
     // Patterns count from the start of their scene; the remix stems follow the transport.
     const int local = step - sceneStart_;
     acid_.onStep(offset, local, sequencer_.samplesPerStep());
+    audio_.onStep(offset, local);
     for (auto& t : tracks_) {
         if (t.on) t.notes.onStep(offset, local, sequencer_.samplesPerStep());
     }
@@ -447,6 +479,21 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
 
     mixer_.setStepFrames(sequencer_.samplesPerStep());
     const float* rights[Mixer::kChannels] = {nullptr, nullptr, nullptr, stemsR};
+    {
+        float* lefts[AudioTracks::kTracks];
+        float* rs[AudioTracks::kTracks];
+        for (int k = 0; k < AudioTracks::kTracks; ++k) {
+            lefts[k] = audioL_[static_cast<size_t>(k)].data();
+            rs[k] = audioR_[static_cast<size_t>(k)].data();
+            std::fill(lefts[k], lefts[k] + numFrames, 0.0f);
+            std::fill(rs[k], rs[k] + numFrames, 0.0f);
+            if (audio_.has(k)) {
+                channels[audioChannel(k)] = lefts[k];
+                rights[audioChannel(k)] = rs[k];
+            }
+        }
+        audio_.render(lefts, rs, numFrames);
+    }
     mixer_.process(channels, rights, direct, output, numFrames, outputChannels);
 }
 
@@ -463,9 +510,12 @@ void Engine::process(const float* input, int numInputFrames, int inputChannels,
         // Fixed-size scratch buffers: render long callbacks in chunks.
         for (int done = 0; done < numFrames;) {
             const int n = std::min(kMaxBlock, numFrames - done);
+            const bool waiting = record_ && recordOnStart_;
             renderBlock(output + done * outputChannels, n, outputChannels);
+            if (waiting && !recordOnStart_) recordSkip_ += done;  // started in this chunk
             done += n;
         }
+        recordInput(input, numInputFrames, inputChannels);
     }
 
     float blockPeak = 0.0f;
@@ -488,6 +538,33 @@ void Engine::process(const float* input, int numInputFrames, int inputChannels,
     }
     callbacks_.fetch_add(1, std::memory_order_relaxed);
     frames_.fetch_add(static_cast<uint64_t>(numFrames), std::memory_order_relaxed);
+}
+
+void Engine::finishRecording() {
+    if (record_) record_->state.store(2, std::memory_order_release);
+    record_ = nullptr;
+    recordOnStart_ = false;
+    recordSkip_ = -1;
+}
+
+void Engine::recordInput(const float* input, int numInputFrames, int inputChannels) {
+    if (!record_ || recordOnStart_) return;
+    // The microphone frames of this callback, from where the recording started (first channel).
+    const int from = recordSkip_ > 0 ? std::min(recordSkip_, numInputFrames) : 0;
+    recordSkip_ = 0;
+    const int64_t capacity = static_cast<int64_t>(record_->data.size());
+    int64_t at = record_->written.load(std::memory_order_relaxed);
+    float peak = 0.0f;
+    if (input && inputChannels > 0) {
+        for (int i = from; i < numInputFrames && at < capacity; ++i) {
+            const float v = input[i * inputChannels];
+            record_->data[static_cast<size_t>(at++)] = v;
+            peak = std::max(peak, std::fabs(v));
+        }
+    }
+    record_->peak.store(peak, std::memory_order_relaxed);
+    record_->written.store(at, std::memory_order_release);
+    if (at >= capacity) finishRecording();
 }
 
 }  // namespace ps

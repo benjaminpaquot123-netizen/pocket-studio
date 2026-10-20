@@ -1,6 +1,10 @@
 #include <jni.h>
 
 #include <algorithm>
+#include <chrono>
+#include <thread>
+
+#include <algorithm>
 #include <cmath>
 #include <cstdio>
 #include <memory>
@@ -274,6 +278,71 @@ JNIEXPORT jboolean JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeInsta
 
 JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_previewPosition(JNIEnv*, jobject) {
     return static_cast<jlong>(host().engine().previewPosition());
+}
+
+// --- Audio tracks: clips and microphone recording ---
+
+JNIEXPORT jboolean JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeInstallAudioClip(JNIEnv*, jobject, jint track, jlong handle) {
+    host().engine().collectGarbage();
+    auto* s = reinterpret_cast<ps::Sample*>(handle);
+    if (s) s->retain();
+    ps::Command command{ps::CommandType::InstallAudioClip, 0.0f, track, 0};
+    command.sample = s;
+    if (host().post(command)) return JNI_TRUE;
+    if (s && s->release()) delete s;
+    return JNI_FALSE;
+}
+
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportInstallAudioClip(JNIEnv*, jobject, jlong exportHandle, jint track,
+                                                                                    jlong handle) {
+    auto* s = reinterpret_cast<ps::Sample*>(handle);
+    if (s) s->retain();
+    ps::Command command{ps::CommandType::InstallAudioClip, 0.0f, track, 0};
+    command.sample = s;
+    reinterpret_cast<ps::OfflineRenderer*>(exportHandle)->post(command);
+}
+
+// Opens the microphone and arms a recording of up to `seconds`; 0 when the microphone is unavailable.
+// `onStart`: the recording begins exactly when the transport reaches its first step.
+JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_recordStart(JNIEnv*, jobject, jboolean onStart, jint seconds) {
+    if (seconds <= 0 || seconds > 600) return 0;
+    if (!host().startRecordingInput()) return 0;
+    auto* buffer = new ps::RecordBuffer(static_cast<int64_t>(seconds) * 48000);
+    ps::Command command{ps::CommandType::RecordArm, 0.0f, onStart ? 1 : 0, 0};
+    command.record = buffer;
+    if (!host().post(command)) {
+        delete buffer;
+        host().stopRecordingInput();
+        return 0;
+    }
+    return reinterpret_cast<jlong>(buffer);
+}
+
+// [state (0 waiting, 1 recording, 2 finished), frames written, input peak].
+JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_recordStatus(JNIEnv* env, jobject, jlong handle) {
+    auto* b = reinterpret_cast<ps::RecordBuffer*>(handle);
+    const jfloat values[3] = {static_cast<jfloat>(b->state.load(std::memory_order_acquire)),
+                              static_cast<jfloat>(b->written.load(std::memory_order_acquire)), b->peak.load(std::memory_order_relaxed)};
+    jfloatArray out = env->NewFloatArray(3);
+    if (out) env->SetFloatArrayRegion(out, 0, 3, values);
+    return out;
+}
+
+// Ends the recording and returns what was recorded (mono, 48 kHz), freeing the buffer; null when
+// the engine could not let go of it in time (the buffer is then kept, never freed under it).
+JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_recordFinish(JNIEnv* env, jobject, jlong handle) {
+    auto* b = reinterpret_cast<ps::RecordBuffer*>(handle);
+    host().post({ps::CommandType::RecordStop, 0.0f});
+    for (int waited = 0; waited < 1000 && b->state.load(std::memory_order_acquire) != 2; waited += 2) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(2));
+    }
+    host().stopRecordingInput();
+    if (b->state.load(std::memory_order_acquire) != 2) return nullptr;
+    const auto frames = static_cast<jsize>(std::min<int64_t>(b->written.load(std::memory_order_acquire), static_cast<int64_t>(b->data.size())));
+    jfloatArray out = env->NewFloatArray(frames);
+    if (out && frames > 0) env->SetFloatArrayRegion(out, 0, frames, b->data.data());
+    delete b;
+    return out;
 }
 
 // --- Live pads ---

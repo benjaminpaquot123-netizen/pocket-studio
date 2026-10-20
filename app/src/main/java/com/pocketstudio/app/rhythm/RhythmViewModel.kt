@@ -245,6 +245,12 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         return starterProject()
     }
 
+    /** The audio stream (re)started: everything is sent again, instruments included. */
+    fun engineStarted() {
+        liveInstruments.clear()
+        syncEngine()
+    }
+
     /** Sends the whole project to the engine, e.g. after the audio stream (re)started. */
     fun syncEngine(p: Project = project.value) {
         if (!NativeEngine.isAvailable) return
@@ -532,6 +538,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /** An audio file from the phone onto audio track [id]. */
+    /** The longest an audio track loops: 64 bars of the time signature (at most [AudioClip.MAX_LOOP] steps). */
+    private fun maxLoopSteps(): Int =
+        minOf(com.pocketstudio.model.AudioClip.MAX_LOOP, com.pocketstudio.model.AudioClip.MAX_LOOP / 16 * project.value.stepsPerBar)
+
     fun importAudio(id: Int, uri: Uri) {
         audioJob("Lecture du fichier…") {
             val app = getApplication<Application>()
@@ -542,7 +552,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 throw UserMessage("Ce fichier n'a pas pu être lu (${e.message ?: "format inconnu"}).")
             }
             AppLog.add("Piste audio ${id + 1} : « $name », ${"%.1f".format(pcm.seconds)} s")
-            val loopSeconds = com.pocketstudio.model.AudioClip.MAX_LOOP * 15.0 / project.value.tempoBpm
+            val loopSeconds = maxLoopSteps() * 15.0 / project.value.tempoBpm
             when {
                 pcm.seconds >= AudioDecoder.MAX_SECONDS - 0.5 ->
                     _notice.value = "Ce fichier dure plus de ${AudioDecoder.MAX_SECONDS / 60} minutes : seul le début est gardé."
@@ -602,8 +612,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         audioJob("Pose du son…") { putClip(id, pcm, name) }
     }
 
-    /** Busy line and errors like the pad sounds (same "sampleTask" card). */
-    /** [always]: runs even while another sound is being prepared (a take must never be dropped). */
+    /**
+     * Busy line and errors like the pad sounds (same "sampleTask" card). [always]: runs even while
+     * another sound is being prepared (a take must never be dropped).
+     */
     private fun audioJob(busy: String, always: Boolean = false, work: suspend () -> Unit): kotlinx.coroutines.Job? {
         if (!always && _sampleTask.value is SampleTask.Busy) return null
         _sampleTask.value = SampleTask.Busy(busy)
@@ -634,8 +646,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             // Opening the microphone can take up to a second: never on the main thread.
             // No longer than a track can loop at this tempo (64 bars): the rest would never play.
-            val seconds = minOf(MAX_AUDIO_SECONDS, (com.pocketstudio.model.AudioClip.MAX_LOOP * 15.0 / project.value.tempoBpm).toInt())
-            val handle = withContext(Dispatchers.IO) { NativeEngine.recordStart(onStart = true, seconds = seconds) }
+            val seconds = minOf(MAX_AUDIO_SECONDS, (maxLoopSteps() * 15.0 / project.value.tempoBpm).toInt())
+            // A microphone opened while the project closes is closed again, not left armed.
+            val handle = finishOrRelease(Dispatchers.IO, { h: Long -> if (h != 0L) finishInBackground(h) }) {
+                NativeEngine.recordStart(onStart = true, seconds = seconds)
+            } ?: 0L
             if (_audioRecording.value?.track != id) {  // cancelled meanwhile
                 if (handle != 0L) finishInBackground(handle)
                 return@launch
@@ -646,6 +661,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 return@launch
             }
             recordHandle = handle
+            // The output the take is heard on now (a headset unplugged later must not change it).
+            takeLatencyMs = Metrics.recordLatencyMs()
             _transport.value = _transport.value.copy(playing = true)
             NativeEngine.play(com.pocketstudio.app.settings.SettingsStore.state.value.recordCountIn.coerceAtLeast(1))
             PlaybackService.start(getApplication())
@@ -675,7 +692,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (_transport.value.playing) togglePlay()
         if (handle == 0L) return
         // What the microphone hears lags what was played by the round trip (speaker → micro).
-        val latencyMs = Metrics.recordLatencyMs()
+        val latencyMs = takeLatencyMs
+        _takeSaving.value = true
         takeJob = audioJob("Enregistrement de la prise…", always = true) {
             val pcm = withContext(Dispatchers.IO) {
                 val audio = NativeEngine.recordFinish(handle) ?: throw UserMessage("La prise n'a pas pu être récupérée : réessaie.")
@@ -693,9 +711,15 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             putClip(ui.track, pcm, "Prise ${java.text.SimpleDateFormat("HH:mm", java.util.Locale.FRANCE).format(java.util.Date())}")
             AppLog.add("Prise audio : ${"%.1f".format(pcm.seconds)} s, latence compensée ${latencyMs.toInt()} ms")
         }
+        // Annuler waits until the take is on its track (or has failed).
+        takeJob?.invokeOnCompletion { _takeSaving.value = false } ?: run { _takeSaving.value = false }
     }
 
     private var takeJob: kotlinx.coroutines.Job? = null
+    private var takeLatencyMs = 0.0
+    private val _takeSaving = MutableStateFlow(false)
+    /** A stopped take is still being written to its track (Annuler waits for it). */
+    val takeSaving: StateFlow<Boolean> = _takeSaving.asStateFlow()
 
     /** Before another project opens: a take in progress is stopped and kept on its track. */
     suspend fun keepTake() {
@@ -1520,10 +1544,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     private val soundFont: SoundFont? get() = fonts[_bankId.value]
     @Volatile private var downloadCancelled = false
 
-    /** Every track's General MIDI instrument (a track whose bank is not open yet plays its synth). */
     /** What each track's General MIDI instrument is in the live engine (bank, preset index). */
     private val liveInstruments = HashMap<Int, Pair<SoundFont?, Int>>()
 
+    /** Every track's General MIDI instrument (a track whose bank is not open yet plays its synth). */
     private fun pushInstrument(p: Project = project.value) {
         if (!NativeEngine.isAvailable) return
         // The live engine only gets the tracks that change: a new instance cuts the notes held on
@@ -1536,9 +1560,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             if (live) {
                 val had = liveInstruments[t.id]
                 if (had != null && had.first === wanted.first && had.second == wanted.second) return@forEach
-                liveInstruments[t.id] = wanted
             }
-            NativeEngine.setInstrument(wanted.first, wanted.second, t.id)
+            // Remembered only once the engine took it: a lost command is sent again next time.
+            if (NativeEngine.setInstrument(wanted.first, wanted.second, t.id) && live) liveInstruments[t.id] = wanted
         }
     }
 
@@ -2488,7 +2512,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** True while armed: notes go into the piano roll, pad hits into the drum steps. */
     val recording: StateFlow<Boolean> = _recording.asStateFlow()
     private var recordBefore: Project? = null
-    private val heldNotes = HashMap<Int, Pair<Int, Float>>()  // pitch -> (start tick, velocity)
+    private val heldNotes = HashMap<Int, Triple<Int, Float, Int>>()  // pitch -> (start tick, velocity, track)
 
     /** Starts (with a bar of count-in when stopped) or ends a take; the whole take is one undo step. */
     fun toggleRecord() {
@@ -2530,12 +2554,13 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** A note played live (keyboard or MIDI) while recording: remembered until released. */
     fun recordNoteOn(pitch: Int, velocity: Float) {
         val tick = recordTick(currentTrack.notes.ticks) ?: return
-        heldNotes[pitch] = tick to velocity
+        heldNotes[pitch] = Triple(tick, velocity, track)
     }
 
     fun recordNoteOff(pitch: Int) {
-        val (start, velocity) = heldNotes.remove(pitch) ?: return
-        val id = track
+        // Written on the track it started on, even if another one was selected meanwhile.
+        val (start, velocity, id) = heldNotes.remove(pitch) ?: return
+        if (project.value.instrumentTracks.none { it.id == id }) return
         val clip = project.value.track(id).notes
         val end = recordTick(clip.ticks) ?: start + NoteClip.TICKS_PER_STEP
         val step = NoteClip.TICKS_PER_STEP
@@ -2920,7 +2945,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     fun undo() {
         // A take ends first: a live one then undoes in one step; a mic take keeps its track.
-        if (_recording.value || _audioRecording.value != null) return
+        if (_recording.value || _audioRecording.value != null || _takeSaving.value) return
         session.undo()
         syncEngine()
         loadTrackFonts()
@@ -2928,7 +2953,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun redo() {
-        if (_recording.value || _audioRecording.value != null) return
+        if (_recording.value || _audioRecording.value != null || _takeSaving.value) return
         session.redo()
         syncEngine()
         loadTrackFonts()
@@ -3083,7 +3108,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             // file would have the kit and the synth in their place.
             samplesLoad?.join()
             var waited = 0
-            while ((loadingBanks.isNotEmpty() || stemsJob?.isActive == true) && waited++ < 300) kotlinx.coroutines.delay(50)
+            while ((loadingBanks.isNotEmpty() || stemsJob?.isActive == true || remixStretchJob?.isActive == true || stretchJob?.isActive == true) &&
+                waited++ < 300
+            ) kotlinx.coroutines.delay(50)
             try {
                 renders.forEachIndexed { index, (label, solo) ->
                     val job = OfflineExport()

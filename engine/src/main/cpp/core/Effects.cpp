@@ -335,6 +335,13 @@ void TrackMacros::process(float* l, float* r, int n) {
 
 // --- Filter ----------------------------------------------------------------------------------
 
+// The filters run without DaisySP's internal drive (it diverged into NaN on a hot signal). That
+// drive also tamed the resonant peak: without it a high resonance is up to about 10 dB louder,
+// so the output is lowered by as much (10 dB at full resonance, 3.6 dB at 0.6).
+float resonanceCompensation(float res) {
+    return std::pow(10.0f, -10.0f * res * res / 20.0f);
+}
+
 void SweepFilter::prepare(float rate) {
     rate_ = rate;
     left_.Init(rate);
@@ -358,6 +365,7 @@ void SweepFilter::update() {
     right_.SetFreq(f);
     left_.SetRes(0.95f * p_[1]);
     right_.SetRes(0.95f * p_[1]);
+    gain_ = resonanceCompensation(0.95f * p_[1]);
     type_ = std::min(2, static_cast<int>(p_[2] * 3.0f));
     mix_ = p_[3];
 }
@@ -366,8 +374,8 @@ void SweepFilter::process(float* l, float* r, int n) {
     for (int i = 0; i < n; ++i) {
         left_.Process(l[i]);
         right_.Process(r[i]);
-        const float a = type_ == 0 ? left_.Low() : type_ == 1 ? left_.Band() : left_.High();
-        const float b = type_ == 0 ? right_.Low() : type_ == 1 ? right_.Band() : right_.High();
+        const float a = gain_ * (type_ == 0 ? left_.Low() : type_ == 1 ? left_.Band() : left_.High());
+        const float b = gain_ * (type_ == 0 ? right_.Low() : type_ == 1 ? right_.Band() : right_.High());
         l[i] += mix_ * (a - l[i]);
         r[i] += mix_ * (b - r[i]);
     }
@@ -425,6 +433,7 @@ void PerformanceFx::prepare(float rate) {
     svfL_.SetDrive(0.0f);  // see SweepFilter::prepare
     svfR_.SetDrive(0.0f);
     fade_ = 1.0f / (0.01f * rate);
+    applyFilter();  // Init left the filter with no damping: its settings back at once
 }
 
 void PerformanceFx::recover() {
@@ -432,6 +441,7 @@ void PerformanceFx::recover() {
     svfR_.Init(rate_);
     svfL_.SetDrive(0.0f);
     svfR_.SetDrive(0.0f);
+    applyFilter();  // the finger may still be on the pad: its cutoff and resonance, not an undamped filter
     std::fill(ringL_.begin(), ringL_.end(), 0.0f);
     std::fill(ringR_.begin(), ringR_.end(), 0.0f);
 }
@@ -450,14 +460,18 @@ void PerformanceFx::setParam(int p, float v) {
         case Chop: chopOn_ = v > 0.5f; break;
         default: return;
     }
-    if (filterOn_) {
-        // Below the middle: low-pass from 18 kHz down to 150 Hz; above: high-pass from 30 Hz up to 6 kHz.
-        const float f = filter_ < 0.5f ? expMap(filter_ * 2.0f, 150.0f, 18000.0f) : expMap((filter_ - 0.5f) * 2.0f, 30.0f, 6000.0f);
-        svfL_.SetFreq(std::min(f, rate_ * 0.45f));
-        svfR_.SetFreq(std::min(f, rate_ * 0.45f));
-        svfL_.SetRes(0.9f * resonance_);
-        svfR_.SetRes(0.9f * resonance_);
-    }
+    if (filterOn_) applyFilter();
+}
+
+void PerformanceFx::applyFilter() {
+    // Below the middle: low-pass from 18 kHz down to 150 Hz; above: high-pass from 30 Hz up to 6 kHz.
+    const float f = filter_ < 0.5f ? expMap(filter_ * 2.0f, 150.0f, 18000.0f) : expMap((filter_ - 0.5f) * 2.0f, 30.0f, 6000.0f);
+    const float res = 0.9f * resonance_;
+    svfL_.SetFreq(std::min(f, rate_ * 0.45f));
+    svfR_.SetFreq(std::min(f, rate_ * 0.45f));
+    svfL_.SetRes(res);
+    svfR_.SetRes(res);
+    filterGain_ = resonanceCompensation(res);
 }
 
 float PerformanceFx::readRing(const std::vector<float>& buf, double pos) const {
@@ -528,8 +542,8 @@ void PerformanceFx::process(float* l, float* r, int n) {
             svfL_.Process(l[i]);
             svfR_.Process(r[i]);
             const bool low = filter_ < 0.5f;
-            l[i] = low ? svfL_.Low() : svfL_.High();
-            r[i] = low ? svfR_.Low() : svfR_.High();
+            l[i] = filterGain_ * (low ? svfL_.Low() : svfL_.High());
+            r[i] = filterGain_ * (low ? svfR_.Low() : svfR_.High());
         }
 
         // Chopper: on for the first half of every sixteenth, 2 ms ramps.

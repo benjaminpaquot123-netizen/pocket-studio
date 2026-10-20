@@ -103,6 +103,9 @@ private:
 };
 
 // DaisySP state-variable filter. Params: cutoff (40 Hz..18 kHz), resonance, type (low/band/high), mix.
+/** Output gain making up for a filter's resonant peak (no internal drive), see Effects.cpp. */
+float resonanceCompensation(float res);
+
 class SweepFilter {
 public:
     void prepare(float rate);
@@ -117,6 +120,7 @@ private:
     daisysp::Svf left_, right_;
     int type_ = 0;
     float mix_ = 1.0f;
+    float gain_ = 1.0f;  // resonance compensation (see resonanceCompensation)
 };
 
 // Sidechain "pump": the signal ducks on every kick (or every beat) and swells back.
@@ -158,6 +162,8 @@ public:
     // After a NaN reached the master: the filter and the recorded seconds start again from silence
     // (no allocation; clearing the 4 s of memory is a one-off).
     void recover();
+    // Cutoff and resonance from filter_ and resonance_ (no allocation).
+    void applyFilter();
 
 private:
     float readRing(const std::vector<float>& buf, double pos) const;
@@ -169,6 +175,7 @@ private:
     float filter_ = 0.5f, resonance_ = 0.3f;
     bool filterOn_ = false;
     daisysp::Svf svfL_, svfR_;
+    float filterGain_ = 1.0f;  // resonance compensation
     // Repeat.
     bool repeatOn_ = false, repeating_ = false;
     float division_ = 0.5f;

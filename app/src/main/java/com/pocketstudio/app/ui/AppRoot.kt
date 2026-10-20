@@ -420,7 +420,7 @@ fun AppRoot() {
         AppLog.add(if (started) "Premier plan : son ouvert" else "Premier plan : son NON ouvert (moteur ${if (engineAvailable) "présent" else "absent"})")
         if (started) {
             studioVm.pushAll()
-            rhythmVm.syncEngine()
+            rhythmVm.engineStarted()
             NativeEngine.setMetronomeLevel(SettingsStore.state.value.metronomeLevel)
             NativeEngine.setBufferBursts(SettingsStore.state.value.bufferBursts)
         }
@@ -538,8 +538,9 @@ fun AppRoot() {
             val topRedo by rhythmVm.session.canRedo.collectAsStateWithLifecycle()
             val topRecording by rhythmVm.recording.collectAsStateWithLifecycle()
             val topTake by rhythmVm.audioRecording.collectAsStateWithLifecycle()
-            // No undo during a take: it could remove the track the take goes to.
-            val undoable = !topRecording && topTake == null
+            val topSaving by rhythmVm.takeSaving.collectAsStateWithLifecycle()
+            // No undo during a take (or while it is written): it could remove the track it goes to.
+            val undoable = !topRecording && topTake == null && !topSaving
             TopBar(
                 TopBarUi(topProject.name, topProject.tempoBpm, topTransport.playing, topUndo && undoable, topRedo && undoable, topRecording),
                 TopBarActions(

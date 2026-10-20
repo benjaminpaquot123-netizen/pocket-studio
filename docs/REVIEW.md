@@ -399,3 +399,22 @@ Restant (à reprendre) :
   - la rotation arrête l'enregistrement micro d'un pad ;
   - « Partager » échoue pour un export de plus d'une heure ;
   - chaque mouvement de fader renvoie tout le mixeur.
+
+### Relecture de fin de phase 16 (sous-agent neuf)
+
+Vérifié par le relecteur : rien de neuf dans le fil audio n'alloue ni ne verrouille ; tranches de 256 images cohérentes partout ; position du décompte juste ; instruments envoyés seulement s'ils changent sans cas faux ; partage de l'historique sans effet sur la sauvegarde ; les 5 nouveaux tests du moteur échouent bien sans leur correction.
+
+Corrigé :
+- Filtre DJ remis à zéro (garde-fou NaN, réouverture du flux) : ses réglages sont réappliqués aussitôt (il pouvait devenir un résonateur qui siffle tant que le doigt ne bougeait pas).
+- Filtres sans saturation interne : plus forts à haute résonance (jusqu'à +10 dB) ; le niveau est compensé selon la résonance (10 dB à fond, 3,6 dB à 0,6). À écouter sur le téléphone.
+- Annuler reste grisé tant qu'une prise arrêtée n'est pas écrite sur sa piste.
+- L'export attend aussi le calage au tempo (Remix et pads calés).
+- Instruments : retenus comme envoyés seulement si le moteur les a pris, et tout est renvoyé quand le son redémarre.
+- Micro ouvert pendant un changement de projet : refermé. Latence de la prise relevée à son début (un casque débranché pendant la prise ne la fausse plus).
+- Plafond « 64 mesures » d'une piste audio juste dans toutes les mesures (3/4…).
+- Une note tenue pendant un changement de piste s'enregistre sur la piste où elle a commencé.
+
+Restant (mineur) :
+- Swing fort avec un roulement sur un contretemps : deux coups d'un même pad peuvent tomber dans la même tranche de 256 images (un flam peu audible) ; frappes MIDI en direct groupées dans un même rappel Bluetooth.
+- Garde-fou NaN : avec une source de NaN permanente, il remet tout à zéro à chaque tranche (sans danger depuis la correction des filtres) ; pas encore de test qui injecte un NaN.
+- Le focus audio met en pause les autres applis de musique au lancement de la lecture (voir DECISIONS) ; les pads live joués sans transport ne sont pas couverts.

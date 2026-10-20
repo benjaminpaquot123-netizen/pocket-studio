@@ -5,6 +5,9 @@ import com.pocketstudio.app.synth.NotesUi
 import com.pocketstudio.app.synth.PianoRollActions
 import com.pocketstudio.model.NoteClip
 import com.pocketstudio.app.report.AppLog
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
+import androidx.compose.foundation.layout.fillMaxSize
 import android.Manifest
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -90,6 +93,12 @@ import com.pocketstudio.app.synth.SynthScreen
 import com.pocketstudio.app.remix.RemixActions
 import com.pocketstudio.app.session.SessionActions
 import com.pocketstudio.app.session.SessionScreen
+import com.pocketstudio.app.projects.CurrentProject
+import com.pocketstudio.app.projects.ProjectStarter
+import com.pocketstudio.app.projects.ProjectsActions
+import com.pocketstudio.app.projects.ProjectsScreen
+import com.pocketstudio.app.projects.ProjectsViewModel
+import com.pocketstudio.model.Project
 import com.pocketstudio.app.synth.TranscribeUi
 import com.pocketstudio.app.midi.MidiActions
 import com.pocketstudio.app.midi.MidiCommand
@@ -125,6 +134,18 @@ enum class AppTab(val label: String, val icon: ImageVector) {
 
 private enum class ToolPage(val label: String) { Recette("Recette"), Midi("MIDI"), Fond("Fond"), Latence("Latence"), Son("Son") }
 
+/** Ways to start a new project (Mes projets › Nouveau projet). */
+private val PROJECT_STARTERS: List<Pair<ProjectStarter, () -> Project>> = listOf(
+    ProjectStarter("Projet vide", "Tout est vierge : à toi de jouer.", "empty") to { Project(name = "") },
+    ProjectStarter("Rythme de départ", "Un rythme et une ligne d'acide prêts à tourner.", "starter") to { RhythmViewModel.starterProject("") },
+)
+
+private tailrec fun android.content.Context.findActivity(): androidx.activity.ComponentActivity? = when (this) {
+    is androidx.activity.ComponentActivity -> this
+    is android.content.ContextWrapper -> baseContext.findActivity()
+    else -> null
+}
+
 @Composable
 fun AppRoot() {
     val context = LocalContext.current
@@ -136,6 +157,47 @@ fun AppRoot() {
     val rhythmVm: RhythmViewModel = viewModel()
     val remixVm: RemixViewModel = viewModel()
     var tab by rememberSaveable { mutableStateOf(AppTab.Rythme) }
+    var showProjects by rememberSaveable { mutableStateOf(false) }
+    val projectsVm: ProjectsViewModel = viewModel()
+    val openScope = rememberCoroutineScope()
+    // Another project: save this one, remember the choice, then rebuild every screen on it.
+    val openProject: (String) -> Unit = { id ->
+        openScope.launch {
+            rhythmVm.flushNow()
+            CurrentProject.set(context, id)
+            AppLog.add("Ouverture d'un autre projet")
+            context.findActivity()?.let { activity ->
+                activity.viewModelStore.clear()
+                activity.recreate()
+            }
+        }
+    }
+    if (showProjects) {
+        val projectsUi by projectsVm.state.collectAsStateWithLifecycle()
+        LaunchedEffect(Unit) { projectsVm.refresh() }
+        androidx.activity.compose.BackHandler { showProjects = false }
+        androidx.compose.ui.window.Dialog(
+            onDismissRequest = { showProjects = false },
+            properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false),
+        ) {
+            androidx.compose.material3.Surface(color = Neon.Background, modifier = Modifier.fillMaxSize()) {
+                ProjectsScreen(
+                    projectsUi, rhythmVm.projectId, PROJECT_STARTERS.map { it.first },
+                    ProjectsActions(
+                        back = { showProjects = false },
+                        open = { openProject(it.id) },
+                        create = { i -> projectsVm.create(PROJECT_STARTERS[i].second()) { id -> openProject(id) } },
+                        rename = { p, name -> if (p.id == rhythmVm.projectId) { rhythmVm.renameProject(name); projectsVm.refresh() } else projectsVm.rename(p.id, name) },
+                        duplicate = { p -> openScope.launch { if (p.id == rhythmVm.projectId) rhythmVm.flushNow(); projectsVm.duplicate(p) } },
+                        delete = projectsVm::delete,
+                        undoDelete = projectsVm::undoDelete,
+                        dismissDeleted = projectsVm::dismissDeleted,
+                        dismissMessage = projectsVm::dismissMessage,
+                    ),
+                )
+            }
+        }
+    }
     var toolPage by rememberSaveable { mutableStateOf(ToolPage.Recette) }
 
     val engineAvailable = NativeEngine.isAvailable
@@ -229,12 +291,20 @@ fun AppRoot() {
     Scaffold(
         containerColor = Neon.Background,
         topBar = {
+            val topProject by rhythmVm.project.collectAsStateWithLifecycle()
+            val topTransport by rhythmVm.transport.collectAsStateWithLifecycle()
+            val topUndo by rhythmVm.session.canUndo.collectAsStateWithLifecycle()
+            val topRedo by rhythmVm.session.canRedo.collectAsStateWithLifecycle()
+            TopBar(
+                TopBarUi(topProject.name, topProject.tempoBpm, topTransport.playing, topUndo, topRedo),
+                TopBarActions(projects = { showProjects = true }, undo = rhythmVm::undo, redo = rhythmVm::redo, togglePlay = rhythmVm::togglePlay),
+            )
             if (saveError != null) {
                 Text(
                     "Sauvegarde impossible (mémoire pleine ?). Tes dernières modifications ne sont pas encore enregistrées.",
                     color = Color.Black,
                     style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.fillMaxWidth().background(Neon.Amber).statusBarsPadding().padding(8.dp)
+                    modifier = Modifier.fillMaxWidth().background(Neon.Amber).padding(8.dp)
                         .testTag("save_error"),
                 )
             }

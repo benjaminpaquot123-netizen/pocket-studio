@@ -125,8 +125,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     val notice: StateFlow<String?> = _notice.asStateFlow()
     fun dismissNotice() { _notice.value = null }
 
+    /** The open project (the last one used). Another project = a new ViewModel (see ProjectsViewModel). */
+    val projectId: String = com.pocketstudio.app.projects.CurrentProject.get(app)
+
     val session: ProjectSession = ProjectSession(
-        id = PROJECT_ID,
+        id = projectId,
         initial = loadOrCreate(),
         store = store,
         scope = viewModelScope,
@@ -164,23 +167,20 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     private fun loadOrCreate(): Project {
         try {
-            val loaded = runBlocking(Dispatchers.IO) { store.load(PROJECT_ID) }
+            val loaded = runBlocking(Dispatchers.IO) { store.load(projectId) }
             if (loaded != null) return loaded
         } catch (e: Exception) {
             AppLog.add("Projet illisible : ${e.message} / ${e.cause?.message}")
             // Never let the first autosave overwrite files we could not read: move them aside.
-            val aside = File(store.folder(PROJECT_ID).parentFile, "$PROJECT_ID-illisible-${System.currentTimeMillis()}")
-            val moved = store.folder(PROJECT_ID).renameTo(aside)
+            val aside = File(store.folder(projectId).parentFile, "$projectId-illisible-${System.currentTimeMillis()}")
+            val moved = store.folder(projectId).renameTo(aside)
             _notice.value = if (moved) {
                 "Le projet n'a pas pu être relu. Il est mis de côté (${aside.name}) et un nouveau projet commence."
             } else {
                 "Le projet n'a pas pu être relu ; un nouveau projet commence."
             }
         }
-        var drums = DrumPattern()
-        DrumKitInfo.starterHits.forEach { (lane, steps) -> steps.forEach { drums = drums.toggle(lane, it) } }
-        val acid = AcidGenerator().generate(AcidPattern(), AcidGenerator.NOTE_SETS[5])
-        return Project(name = "Mon premier rythme", drums = drums, acid = acid)
+        return starterProject()
     }
 
     /** Sends the whole project to the engine, e.g. after the audio stream (re)started. */
@@ -1085,7 +1085,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    val padSamples = PadSamples(File(store.folder(PROJECT_ID), "samples"))
+    val padSamples = PadSamples(File(store.folder(projectId), "samples"))
     val sampleInfo: StateFlow<Map<String, SampleInfo>> = padSamples.info
     private val _sampleTask = MutableStateFlow<SampleTask>(SampleTask.Idle)
     val sampleTask: StateFlow<SampleTask> = _sampleTask.asStateFlow()
@@ -1796,6 +1796,15 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch { withContext(NonCancellable) { session.flush() } }
     }
 
+    /** Writes pending changes and waits for the write (before another project is opened). */
+    suspend fun flushNow() = withContext(NonCancellable) { session.flush() }
+
+    /** Renames the open project (one undo step). */
+    fun renameProject(name: String) {
+        val clean = name.trim().take(com.pocketstudio.model.ProjectCatalog.MAX_NAME)
+        if (clean.isNotEmpty()) session.edit { it.copy(name = clean) }
+    }
+
     private fun pushLane(lane: Int) {
         if (!NativeEngine.isAvailable) return
         val hits = project.value.drums.lanes[lane].hits
@@ -1876,6 +1885,14 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     companion object {
         const val PROJECT_ID = "projet-1"
+
+        /** The first project of a new install, and the "Rythme de départ" choice: a beat and an acid line. */
+        fun starterProject(name: String = "Mon premier rythme"): Project {
+            var drums = DrumPattern()
+            DrumKitInfo.starterHits.forEach { (lane, steps) -> steps.forEach { drums = drums.toggle(lane, it) } }
+            val acid = AcidGenerator().generate(AcidPattern(), AcidGenerator.NOTE_SETS[5])
+            return Project(name = name, drums = drums, acid = acid)
+        }
         private val AUDIO_EXTENSIONS = setOf("wav", "mp3", "flac", "m4a", "aac", "ogg", "opus", "aif", "aiff")
         /** Two seconds after the last bar so releases and the acid tail ring out. */
         const val TAIL_FRAMES = 2L * OfflineExport.SAMPLE_RATE

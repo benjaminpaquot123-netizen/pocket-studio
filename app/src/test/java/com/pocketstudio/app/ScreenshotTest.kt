@@ -390,6 +390,35 @@ class ScreenshotTest {
     }
 
     @Test
+    fun projects() = shoot("projects") {
+        val now = 1_800_000_000_000L
+        val p = { id: String, name: String, ago: Long, bpm: Double, bars: Int, scenes: Int, remix: Boolean ->
+            com.pocketstudio.model.ProjectInfo(id, name, now - ago, bpm, bars, scenes, remix)
+        }
+        androidx.compose.foundation.layout.Column {
+            com.pocketstudio.app.ui.TopBar(
+                com.pocketstudio.app.ui.TopBarUi("Da Funk (remix)", 111.0, playing = true, canUndo = true, canRedo = false),
+                com.pocketstudio.app.ui.TopBarActions(),
+            )
+            com.pocketstudio.app.projects.ProjectsScreen(
+                com.pocketstudio.app.projects.ProjectsUi(
+                    listOf(
+                        p("a", "Da Funk (remix)", 120_000, 111.0, 8, 3, true),
+                        p("b", "Acide du dimanche", 3 * 3_600_000, 128.0, 4, 1, false),
+                        p("c", "Mon premier rythme", 30 * 3_600_000, 120.0, 1, 1, false),
+                        p("d", "Until I Found You", 9 * 86_400_000L, 120.0, 2, 2, true),
+                    ),
+                    loading = false, deleted = "x@1" to "Essai",
+                ),
+                currentId = "a",
+                starters = listOf(com.pocketstudio.app.projects.ProjectStarter("Projet vide", "Tout est vierge.", "empty")),
+                actions = com.pocketstudio.app.projects.ProjectsActions(),
+                now = now,
+            )
+        }
+    }
+
+    @Test
     fun midi() = shoot("midi") {
         com.pocketstudio.app.midi.MidiScreen(
             com.pocketstudio.app.midi.MidiUi(

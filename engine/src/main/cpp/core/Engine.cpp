@@ -83,6 +83,7 @@ void Engine::applyCommand(const Command& command) {
                 // Belt and braces: a note-off dropped by a full queue must not leave a note hanging.
                 synth_.allNotesOff();
                 instrument_.allNotesOff();
+            plaits_.allNotesOff();
                 currentStep_.store(-1, std::memory_order_relaxed);
                 absoluteStep_.store(-1, std::memory_order_relaxed);
             }
@@ -110,6 +111,16 @@ void Engine::applyCommand(const Command& command) {
         case CommandType::SetAcidLength:
             if (staging_) staged_.acidLength = std::clamp(command.a, 1, AcidTrack::kMaxSteps);
             else acid_.setLength(command.a);
+            break;
+        case CommandType::SetSynthEngine:
+            if ((command.a == 1) != router_.usePlaits) {
+                synth_.allNotesOff();
+                plaits_.allNotesOff();
+                router_.usePlaits = command.a == 1;
+            }
+            break;
+        case CommandType::SetPlaitsParam:
+            if (command.a >= 0 && command.a < PlaitsSynth::ParamCount) plaits_.setParam(static_cast<PlaitsSynth::Param>(command.a), command.value);
             break;
         case CommandType::SetPerformance:
             mixer_.setPerformance(command.a, command.value);
@@ -143,6 +154,7 @@ void Engine::applyCommand(const Command& command) {
         case CommandType::SynthAllOff:
             synth_.allNotesOff();
             instrument_.allNotesOff();
+            plaits_.allNotesOff();
             break;
         case CommandType::SetChannelVolume:
             mixer_.setVolume(command.a, command.value);
@@ -320,6 +332,7 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
     acid_.render(acid, numFrames);
     synth_.render(synth, numFrames);
     instrument_.render(synth, numFrames);
+    plaits_.render(synth, numFrames);
     stems_.render(stemsL, stemsR, numFrames);
 
     gain_.setTarget(playing_.load(std::memory_order_relaxed) ? volume_ : 0.0f);

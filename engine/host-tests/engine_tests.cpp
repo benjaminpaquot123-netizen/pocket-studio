@@ -20,6 +20,7 @@
 #include "DrumKit.h"
 #include "Effects.h"
 #include "Mixer.h"
+#include "PlaitsSynth.h"
 #include "OfflineRenderer.h"
 #include "OnsetDetector.h"
 #include "TimeStretch.h"
@@ -1992,6 +1993,101 @@ void testPerformanceEffects() {
     for (int i = 0; i < n; ++i) CHECK(std::isfinite(l[static_cast<size_t>(i)]));
 }
 
+// Fundamental frequency by autocorrelation (lag with the strongest correlation within 60..1000 Hz).
+double pitchHz(const std::vector<float>& x, int from, int len) {
+    int best = 0;
+    double bestC = -1e30;
+    for (int lag = kRate / 1000; lag <= kRate / 60; ++lag) {
+        double c = 0;
+        for (int i = from; i < from + len; ++i) c += double(x[static_cast<size_t>(i)]) * x[static_cast<size_t>(i + lag)];
+        if (c > bestC) { bestC = c; best = lag; }
+    }
+    // Parabolic refinement around the peak.
+    auto corr = [&](int lag) { double c = 0; for (int i = from; i < from + len; ++i) c += double(x[static_cast<size_t>(i)]) * x[static_cast<size_t>(i + lag)]; return c; };
+    const double a = corr(best - 1), b = bestC, c = corr(best + 1);
+    const double shift = 0.5 * (a - c) / (a - 2 * b + c);
+    return kRate / (best + shift);
+}
+
+void testPlaitsVoices() {
+    ps::PlaitsSynth plaits;
+    plaits.prepare(kRate);
+    // Model 0 (virtual analog), soft timbre: A4 must be 440 Hz (the 47872 Hz tuning compensated).
+    plaits.setParam(ps::PlaitsSynth::Model, 0.0f);
+    plaits.setParam(ps::PlaitsSynth::Harmonics, 0.5f);  // (0 would add detuned sub-octaves)
+    plaits.setParam(ps::PlaitsSynth::Timbre, 0.5f);
+    plaits.setParam(ps::PlaitsSynth::Morph, 0.5f);
+    plaits.noteOn(69, 1.0f, 0);
+    std::vector<float> out(kRate, 0.0f);
+    plaits.render(out.data(), kRate);
+    const double f = pitchHz(out, kRate / 2, 4800);
+    std::printf("  plaits A4: %.2f Hz\n", f);
+    CHECK(std::fabs(f - 440.0) < 1.0);
+    float peak = 0.0f;
+    for (float v : out) { peak = std::max(peak, std::fabs(v)); CHECK(std::isfinite(v)); }
+    CHECK(peak > 0.05f && peak < 1.0f);
+    // Release: silent soon after the note-off.
+    plaits.noteOff(69, 0);
+    std::fill(out.begin(), out.end(), 0.0f);
+    plaits.render(out.data(), kRate);
+    float tail = 0.0f;
+    for (int i = kRate / 2; i < kRate; ++i) tail = std::max(tail, std::fabs(out[static_cast<size_t>(i)]));
+    CHECK(tail < 1e-3f);
+    CHECK(plaits.activeVoices() == 0);
+    // Every model makes sound, stays finite and bounded; six voices at once within a CPU budget.
+    for (int model = 0; model < ps::PlaitsSynth::kModels; ++model) {
+        plaits.setParam(ps::PlaitsSynth::Model, model / float(ps::PlaitsSynth::kModels - 1));
+        for (int v = 0; v < ps::PlaitsSynth::kVoices; ++v) plaits.noteOn(48 + v * 3, 0.9f, v * 7);
+        std::vector<float> buf(kRate / 4, 0.0f);
+        const auto start = std::chrono::steady_clock::now();
+        plaits.render(buf.data(), kRate / 4);
+        const double load = std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count() / 0.25;
+        float pk = 0.0f;
+        bool finite = true;
+        for (float v : buf) { pk = std::max(pk, std::fabs(v)); finite &= std::isfinite(v); }
+        if (!finite || pk < 1e-3f || pk > 3.0f || load > 0.12) std::printf("  model %d: peak %.3f load %.0f %% finite %d\n", model, pk, load * 100, finite);
+        CHECK(finite && pk > 1e-3f && pk < 3.0f);
+        CHECK(load < 0.12);  // heavy models are capped in voices: any model stays cheap here
+        plaits.allNotesOff();
+        std::vector<float> flush(kRate, 0.0f);
+        plaits.render(flush.data(), kRate);
+    }
+}
+
+void testPlaitsThroughEngine() {
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SetSynthEngine, 0.0f, 1});
+    engine.post({ps::CommandType::SetPlaitsParam, 2.0f / 23.0f, ps::PlaitsSynth::Model});  // six-op FM
+    for (int n = 0; n < 8; ++n) engine.post({ps::CommandType::SetSynthNote, 0.8f, n, ps::NoteTrack::pack(n * 48, 40, 48 + (n % 4) * 5)});
+    engine.post({ps::CommandType::SetSynthNoteCount, 0.0f, 8});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    std::vector<float> out(512 * 2);
+    for (int i = 0; i < 40; ++i) engine.process(nullptr, 0, 0, out.data(), 512, 2);  // warm-up
+#ifdef PS_COUNT_ALLOCATIONS
+    g_allocations = 0;
+    g_countAllocations = true;
+#endif
+    float peak = 0.0f;
+    for (int i = 0; i < 300; ++i) {
+        if (i % 60 == 0) engine.post({ps::CommandType::SetPlaitsParam, (i % 120) / 120.0f, ps::PlaitsSynth::Timbre});
+        engine.process(nullptr, 0, 0, out.data(), 512, 2);
+        for (float v : out) peak = std::max(peak, std::fabs(v));
+    }
+#ifdef PS_COUNT_ALLOCATIONS
+    g_countAllocations = false;
+    CHECK(g_allocations.load() == 0);
+#endif
+    CHECK(peak > 0.02f);
+    // Back to the subtractive synth while notes sound: Plaits goes quiet, nothing hangs.
+    engine.post({ps::CommandType::SetTransport, 0.0f});
+    engine.post({ps::CommandType::SetSynthEngine, 0.0f, 0});
+    render(engine, kRate, 256);
+    const auto quiet = render(engine, kRate / 2, 256);
+    float rest = 0.0f;
+    for (float v : quiet) rest = std::max(rest, std::fabs(v));
+    CHECK(rest < 1e-3f);
+}
+
 struct TestCase {
     const char* name;
     std::function<void()> fn;
@@ -2059,6 +2155,8 @@ int main(int argc, char** argv) {
         {"automation", testAutomationMovesTheFader},
         {"scenes", testScenesSwapOnTheBar},
         {"performance_fx", testPerformanceEffects},
+        {"plaits", testPlaitsVoices},
+        {"plaits_engine", testPlaitsThroughEngine},
         {"tempo_and_key", testTempoAndKeyDetection},
         {"stems_follow_transport", testStemsPlayInStepWithTheTransport},
         {"no_alloc_in_process", testProcessNeverAllocates},

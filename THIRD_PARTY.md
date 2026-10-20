@@ -16,6 +16,7 @@
 | [HT-Demucs v4](https://github.com/facebookresearch/demucs) | v4 (poids htdemucs, sha 8726e21a…) | MIT | Modèle de séparation des pistes ; exporté en ONNX par `scripts/models/build-demucs.sh`, publié sur la Release `modele-htdemucs-v4-onnx-1` |
 | [demucs.onnx](https://github.com/sevagh/demucs.onnx) | commit 81fa192 | MIT | Export ONNX et inférence C++ (découpe en segments, STFT) |
 | [Eigen](https://gitlab.com/libeigen/eigen) | commit 7fd305e | MPL-2.0 | Calcul matriciel de demucs.onnx |
+| [Plaits](https://github.com/pichenettes/eurorack) + [stmlib](https://github.com/pichenettes/stmlib) (Mutable Instruments) | eurorack f4cfa76, stmlib d18def8 | MIT | 24 modèles de synthèse (dont FM 6 op. façon DX7) pour la piste Synthé ; sous-ensemble copié tel quel dans `engine/third_party/mutable` (voir son README) |
 | [Open303](https://github.com/RobinSchmidt/Open303) | commit 313bf0d (2024-03-29) | MIT | Basse acide (jalon Acide) ; sous-module `engine/third_party/Open303`, une correction de débordement appliquée sur une copie à la compilation (`open303.cmake`) |
 | [The Endless Acid Banger](https://github.com/vitling/acid-banger) (David Whiting) | 2021 | CC BY 4.0 | Méthode et jeux de notes du générateur de patterns acides, réécrits en Kotlin (`AcidGenerator`) ; attribution obligatoire |
 | [Jetpack Compose](https://developer.android.com/jetpack/compose) (BOM) | 2026.09.00 | Apache-2.0 | Interface |

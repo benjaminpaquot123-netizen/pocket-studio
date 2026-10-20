@@ -9,6 +9,7 @@
 #include "Metronome.h"
 #include "Mixer.h"
 #include "NoteTrack.h"
+#include "PlaitsSynth.h"
 #include "RoundTripMeter.h"
 #include "Sampler.h"
 #include "SoundFontPlayer.h"
@@ -66,6 +67,8 @@ enum class CommandType : uint8_t {
     ArmSceneSwap,         // a > 0: the waiting scene replaces the playing one after `a` steps of the
                           // current scene; a = 0: at the next bar; a < 0: cancel
     SetPerformance,       // a: PerformanceFx::Param, value 0..1 (live XY pad and hold buttons)
+    SetSynthEngine,       // a: 0 = subtractive synth, 1 = Plaits (a General MIDI instrument still wins)
+    SetPlaitsParam,       // a: PlaitsSynth::Param, value 0..1
 };
 
 // Step automation of mixer settings, played on the audio thread at each sequencer step.
@@ -182,13 +185,25 @@ private:
     NoteTrack notes_;
     SoundFontPlayer instrument_;
     // The synth track's sound: the instrument when one is loaded, else the subtractive synth.
+    PlaitsSynth plaits_;
     struct NoteRouter {
         Synth& synth;
         SoundFontPlayer& instrument;
-        void noteOn(int n, float v, int at) { instrument.active() ? instrument.noteOn(n, v, at) : synth.noteOn(n, v, at); }
-        void noteOff(int n, int at) { instrument.active() ? instrument.noteOff(n, at) : synth.noteOff(n, at); }
+        PlaitsSynth& plaits;
+        bool usePlaits = false;
+        void noteOn(int n, float v, int at) {
+            if (instrument.active()) instrument.noteOn(n, v, at);
+            else if (usePlaits) plaits.noteOn(n, v, at);
+            else synth.noteOn(n, v, at);
+        }
+        void noteOff(int n, int at) {
+            // Note-offs go everywhere: a source switched while a key was held must not hang.
+            instrument.noteOff(n, at);
+            plaits.noteOff(n, at);
+            synth.noteOff(n, at);
+        }
     };
-    NoteRouter router_{synth_, instrument_};
+    NoteRouter router_{synth_, instrument_, plaits_};
     Sampler sampler_;
     StemPlayer stems_;
     Automation automation_;

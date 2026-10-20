@@ -45,6 +45,8 @@ object NativeEngine {
     private const val CMD_STAGING = 39
     private const val CMD_ARM_SCENE_SWAP = 40
     private const val CMD_PERFORMANCE = 41
+    private const val CMD_SYNTH_ENGINE = 42
+    private const val CMD_PLAITS_PARAM = 43
 
     /** Insert slots per channel (and on the master, whose channel index is [MIXER_CHANNELS]). */
     const val INSERTS = 4
@@ -106,6 +108,10 @@ object NativeEngine {
     fun armSceneSwap(steps: Int) = post(CMD_ARM_SCENE_SWAP, 0f, steps)
     /** Live effects on the master: [param] 0 filter (0.5 = off), 1 resonance, 2 repeat on, 3 repeat division, 4 tape stop, 5 chop. */
     fun setPerformance(param: Int, value: Float) = post(CMD_PERFORMANCE, value, param)
+    /** The synth track's own voice: 0 subtractive, 1 Plaits. */
+    fun setSynthEngine(engine: Int) = post(CMD_SYNTH_ENGINE, 0f, engine)
+    /** [param] in PlaitsSynth::Param order (0 model, 1 harmonics … 7 level), [value] 0..1. */
+    fun setPlaitsParam(param: Int, value: Float) = post(CMD_PLAITS_PARAM, value, param)
     /** How many times a waiting scene took over since the engine started. */
     external fun sceneSwaps(): Int
     /** Writes into [out] (size MIXER_CHANNELS + 2): channel peaks, master peak, then limiter gain. */

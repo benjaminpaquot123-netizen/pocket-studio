@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import com.pocketstudio.app.rhythm.LibraryState
 import com.pocketstudio.engine.Preset
 import com.pocketstudio.model.InstrumentChoice
+import com.pocketstudio.model.PlaitsPatch
 import com.pocketstudio.ui.Neon
 import com.pocketstudio.ui.NeonCard
 import com.pocketstudio.ui.SectionLabel
@@ -46,6 +47,12 @@ class InstrumentUi(
     val bankId: String = InstrumentLibrary.BANKS[0].id,
     val selectBank: (String) -> Unit = {},
     val loadKit: (Preset) -> Unit = {},
+    /** The synth track's own voice when no instrument is chosen: 0 subtractive, 1 Plaits. */
+    val synthEngine: Int = 0,
+    val plaits: PlaitsPatch = PlaitsPatch(),
+    val selectEngine: (Int) -> Unit = {},
+    val setPlaitsModel: (Int) -> Unit = {},
+    val setPlaitsParam: (Int, Float) -> Unit = { _, _ -> },
 )
 
 /** Where the synth track's sound comes from: our synth, or one of 128 General MIDI instruments. */
@@ -57,9 +64,15 @@ fun InstrumentPanel(ui: InstrumentUi) {
         SectionLabel("Source du son")
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             FilterChip(
-                selected = ui.current == null && showLibrary == 0,
-                onClick = { showLibrary = 0; ui.select(null) },
+                selected = ui.current == null && showLibrary == 0 && ui.synthEngine == 0,
+                onClick = { showLibrary = 0; ui.selectEngine(0) },
                 label = { Text("Synthé") }, colors = chipColors,
+            )
+            FilterChip(
+                selected = ui.current == null && showLibrary == 0 && ui.synthEngine == 1,
+                onClick = { showLibrary = 0; ui.selectEngine(1) },
+                label = { Text("Plaits") }, colors = chipColors,
+                modifier = Modifier.testTag("source_plaits"),
             )
             FilterChip(
                 selected = ui.current != null || showLibrary == 1,
@@ -68,6 +81,7 @@ fun InstrumentPanel(ui: InstrumentUi) {
                 modifier = Modifier.testTag("source_instruments"),
             )
         }
+        if (showLibrary == 0 && ui.current == null && ui.synthEngine == 1) PlaitsPanel(ui)
         if (showLibrary == 1 || ui.current != null) {
             LaunchedEffect(Unit) { ui.open() }
             val bank = InstrumentLibrary.bank(ui.bankId)

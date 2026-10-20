@@ -185,8 +185,40 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         pushPads(p)
         pushNotes(p.synthNotes)
         pushInstrument(p)
+        pushPlaits(p)
         pushRemix(p)
         pushAutomation(p)
+    }
+
+    // --- Plaits (Mutable Instruments) voice for the synth track -------------------------------
+
+    private fun pushPlaits(p: Project = project.value) {
+        if (!NativeEngine.isAvailable) return
+        p.plaits.engineValues().forEachIndexed { i, v -> NativeEngine.setPlaitsParam(i, v) }
+        NativeEngine.setSynthEngine(p.synthEngine)
+    }
+
+    /** 0 = subtractive synth, 1 = Plaits; leaves any General MIDI instrument. */
+    fun selectSynthEngine(engine: Int) {
+        session.edit { p -> p.copy(synthEngine = engine, instrument = null) }
+        pushInstrument()
+        pushPlaits()
+    }
+
+    fun setPlaitsModel(model: Int) {
+        session.edit { p -> p.copy(plaits = p.plaits.copy(model = model)) }
+        pushPlaits()
+        if (NativeEngine.isAvailable && !_transport.value.playing) {
+            viewModelScope.launch {
+                kotlinx.coroutines.delay(30)
+                previewNote(60)  // hear the new model right away
+            }
+        }
+    }
+
+    fun setPlaitsParam(param: Int, value: Float) {
+        session.edit("plaits-$param") { p -> p.copy(plaits = p.plaits.with(param, value)) }
+        if (NativeEngine.isAvailable) NativeEngine.setPlaitsParam(param, value.coerceIn(0f, 1f))
     }
 
     private fun pushDrumPattern(drums: DrumPattern) {

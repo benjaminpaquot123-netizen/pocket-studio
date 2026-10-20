@@ -11,8 +11,9 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/../third_party/open303.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/../third_party/libsamplerate.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/../third_party/aubio.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/../third_party/signalsmith.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/../third_party/plaits.cmake)
 
-add_library(ps_core STATIC ${CORE_SOURCES} ${DAISYSP_SOURCES} ${OPEN303_SOURCES} ${LIBSAMPLERATE_SOURCES} ${AUBIO_SOURCES})
+add_library(ps_core STATIC ${CORE_SOURCES} ${DAISYSP_SOURCES} ${OPEN303_SOURCES} ${LIBSAMPLERATE_SOURCES} ${AUBIO_SOURCES} ${PLAITS_SOURCES})
 target_include_directories(ps_core PUBLIC ${CORE_DIR})
 target_include_directories(ps_core SYSTEM PUBLIC ${DAISYSP_INCLUDES} ${LIBSAMPLERATE_INCLUDES})
 set_source_files_properties(${CMAKE_CURRENT_LIST_DIR}/../src/main/cpp/core/AcidTrack.cpp ${CMAKE_CURRENT_LIST_DIR}/core/AcidTrack.cpp ${OPEN303_SOURCES} PROPERTIES INCLUDE_DIRECTORIES "${OPEN303_INCLUDES}")
@@ -39,3 +40,5 @@ target_compile_definitions(engine_tests PRIVATE
 
 enable_testing()
 add_test(NAME engine_tests COMMAND engine_tests)
+
+set_source_files_properties(${CORE_DIR}/PlaitsSynth.cpp PROPERTIES COMPILE_OPTIONS "${PLAITS_SYSTEM_INCLUDE_FLAGS}" COMPILE_DEFINITIONS "${PLAITS_DEFINITIONS}")

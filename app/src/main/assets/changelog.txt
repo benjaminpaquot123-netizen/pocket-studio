@@ -1,5 +1,5 @@
+Synthé : nouvelle source « Plaits », 24 modèles du célèbre module (analogique, FM façon DX7, cordes, percussions…).
 Remix : formes d'onde des 4 pistes avec la tête de lecture ; touche-les pour choisir où démarrer.
 Remix : plus de grésillement dû à l'écrêtage (les pistes gardent de la marge).
 Kits de batterie : ils se jouent au clavier, et un bouton les met sur les 16 pads.
 Mixeur : effets par voie, réverbe, écho, « Pompe » sur la grosse caisse, et automation dessinée ou enregistrée.
-Onglet Morceau : 8 scènes qui s'enchaînent à la mesure, un morceau complet, et des effets live (pad XY, répéteur, stop bande).

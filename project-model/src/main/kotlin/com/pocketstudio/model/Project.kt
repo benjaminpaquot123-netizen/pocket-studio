@@ -34,6 +34,9 @@ data class Project(
     val scene: Int = 0,
     /** The song: scenes in order with repeat counts. */
     val song: List<SongPart> = emptyList(),
+    /** The synth track's own sound: 0 = subtractive synth, 1 = Plaits (an [instrument] still wins). */
+    val synthEngine: Int = 0,
+    val plaits: PlaitsPatch = PlaitsPatch(),
 ) {
     /** Returns a copy with every value inside its allowed range. */
     fun sanitized(): Project = copy(
@@ -48,6 +51,8 @@ data class Project(
         mixer = mixer.sanitized(),
         remix = remix.sanitized(),
         automation = AutomationLane.sanitize(automation),
+        synthEngine = synthEngine.coerceIn(0, 1),
+        plaits = plaits.sanitized(),
     ).syncScenes()
 
     companion object {

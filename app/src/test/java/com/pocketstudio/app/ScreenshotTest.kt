@@ -381,4 +381,17 @@ class ScreenshotTest {
             com.pocketstudio.app.session.SessionActions(),
         )
     }
+
+    @Test
+    @Config(qualifiers = "w400dp-h1500dp-xxhdpi")
+    fun plaits() = shoot("plaits") {
+        androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
+            com.pocketstudio.app.instruments.InstrumentPanel(
+                com.pocketstudio.app.instruments.InstrumentUi(
+                    com.pocketstudio.app.rhythm.LibraryState.Missing, null,
+                    synthEngine = 1, plaits = com.pocketstudio.model.PlaitsPatch(model = 2, timbre = 0.7f),
+                ),
+            )
+        }
+    }
 }

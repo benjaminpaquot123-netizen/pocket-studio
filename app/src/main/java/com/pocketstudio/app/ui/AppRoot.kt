@@ -374,6 +374,11 @@ fun AppRoot() {
                                 bankId = bankId,
                                 selectBank = rhythmVm::selectBank,
                                 loadKit = rhythmVm::loadKit,
+                                synthEngine = project.synthEngine,
+                                plaits = project.plaits,
+                                selectEngine = rhythmVm::selectSynthEngine,
+                                setPlaitsModel = rhythmVm::setPlaitsModel,
+                                setPlaitsParam = rhythmVm::setPlaitsParam,
                             ),
                         )
                     }

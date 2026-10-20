@@ -78,3 +78,6 @@
 | 2026-10-19 | ONNX Runtime sans arène CPU ni motifs mémoire pour la séparation | Mesuré sur Linux : 5,1 Go → 2,6 Go pour 30 s (et plus rapide) ; le téléphone tuait l'appli à 0 % | Réactiver si un futur modèle est plus léger |
 | 2026-10-19 | Plantage natif : le rapport joint les chaînes lisibles du tombstone et le journal de la session plantée (écrit sur disque) | Les rapports natifs ne disaient que « crash » | Aucun |
 | 2026-10-19 | Règles R8 du module séparation + contrôle dexdump dans check-jni.sh | R8 renommait Demucs.Progress.onProgress, appelé par nom depuis le C++ : abandon JNI au premier progrès (rapports n° 14, 15) | Aucun |
+| 2026-10-20 | Stems écrits sous -0,5 dBFS (les 4 baissés ensemble si besoin) et gardés en mémoire avec 6 dB de marge | Une piste séparée peut dépasser 0 dBFS : les lecteurs l'écrêtaient (grésillement entendu par Benjamin) | Aucun |
+| 2026-10-20 | Kits SF2 jouables au clavier (instrument banque 128) ; « Mettre sur les pads » devient un bouton explicite avec confirmation | Toucher un kit ne faisait rien d'audible depuis l'écran Synthé | Revenir au transfert direct |
+| 2026-10-20 | Formes d'onde des stems avec tête de lecture ; toucher = départ à cette mesure | Benjamin ne savait pas où il en était (voix qui entre après 10 s) | Aucun |

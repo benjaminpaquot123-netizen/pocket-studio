@@ -121,7 +121,9 @@ private fun Browser(
     loadKit: (Preset) -> Unit,
 ) {
     val chipColors = FilterChipDefaults.filterChipColors(selectedContainerColor = Neon.Cyan.copy(alpha = 0.25f), selectedLabelColor = Neon.Cyan)
-    var family by rememberSaveable { mutableIntStateOf(current?.takeIf { it.bank < 128 }?.program?.div(8) ?: 0) }
+    var family by rememberSaveable {
+        mutableIntStateOf(if (current?.bank == 128) KITS else current?.program?.div(8) ?: 0)
+    }
     Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
         InstrumentLibrary.FAMILIES.forEachIndexed { i, name ->
             FilterChip(selected = family == i, onClick = { family = i }, label = { Text(name) }, colors = chipColors)
@@ -130,11 +132,24 @@ private fun Browser(
             modifier = Modifier.testTag("family_kits"))
     }
     if (family == KITS) {
-        Text("Touche un kit : ses sons vont sur les 16 pads du Rythme (Annuler possible).",
+        Text("Touche un kit : il se joue au clavier et dans le piano roll (Do = grosse caisse, Ré = caisse claire, Fa# = charleston).",
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+        val kits = presets.filter { it.bank == 128 }.sortedBy { it.program }
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            presets.filter { it.bank == 128 }.sortedBy { it.program }.forEach { kit ->
-                OutlinedButton(onClick = { loadKit(kit) }, modifier = Modifier.testTag("kit_${kit.program}")) { Text(kit.name) }
+            kits.forEach { kit ->
+                FilterChip(
+                    selected = current?.bankId == bankId && current.bank == 128 && current.program == kit.program,
+                    onClick = { select(InstrumentChoice(128, kit.program, kit.name, bankId)) },
+                    label = { Text(kit.name) },
+                    colors = chipColors,
+                    modifier = Modifier.testTag("kit_${kit.program}"),
+                )
+            }
+        }
+        val chosen = kits.firstOrNull { current?.bankId == bankId && current.bank == 128 && current.program == it.program }
+        if (chosen != null) {
+            Button(onClick = { loadKit(chosen) }, modifier = Modifier.fillMaxWidth().testTag("kit_to_pads")) {
+                Text("Mettre « ${chosen.name} » sur les 16 pads du Rythme")
             }
         }
         return

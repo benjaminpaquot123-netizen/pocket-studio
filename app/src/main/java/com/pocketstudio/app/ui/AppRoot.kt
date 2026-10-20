@@ -403,6 +403,11 @@ fun AppRoot() {
                         val modelInstalled by remixVm.modelInstalled.collectAsStateWithLifecycle()
                         val playing by remixVm.playing.collectAsStateWithLifecycle()
                         val remixLoading by rhythmVm.remixLoading.collectAsStateWithLifecycle()
+                        val overview by rhythmVm.stemOverview.collectAsStateWithLifecycle()
+                        val stemPosition by rhythmVm.stemPosition.collectAsStateWithLifecycle()
+                        LaunchedEffect(Unit) {
+                            lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollStemPosition() }
+                        }
                         val project by rhythmVm.project.collectAsStateWithLifecycle()
                         val transport by rhythmVm.transport.collectAsStateWithLifecycle()
                         val sampleTask by rhythmVm.sampleTask.collectAsStateWithLifecycle()
@@ -418,6 +423,8 @@ fun AppRoot() {
                                     is SampleTask.Failed -> t.message
                                     else -> null
                                 },
+                                overview = overview,
+                                position = stemPosition,
                             ),
                             RemixActions(
                                 downloadModel = remixVm::downloadModel,
@@ -441,6 +448,7 @@ fun AppRoot() {
                                 toggleStemMute = rhythmVm::toggleStemMute,
                                 toggleStemSolo = rhythmVm::toggleStemSolo,
                                 stemToPad = rhythmVm::stemToPad,
+                                setStartAt = rhythmVm::setRemixStartAt,
                             ),
                         )
                     }

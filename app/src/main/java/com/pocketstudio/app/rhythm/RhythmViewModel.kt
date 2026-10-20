@@ -79,6 +79,9 @@ data class ExportUi(
 /** What the audio engine is doing right now, polled for the playhead and pad lights. */
 data class LiveUi(val currentStep: Int = -1, val litPads: Set<Int> = emptySet(), val absoluteStep: Int = -1)
 
+/** Peaks (0..1) of each stem for the waveform view, and the song length in frames at 48 kHz. */
+class StemOverview(val peaks: List<FloatArray>, val frames: Long)
+
 data class TransportUi(
     val playing: Boolean = false,
     val metronome: Boolean = false,
@@ -186,6 +189,33 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     private val _remixLoading = MutableStateFlow(false)
     val remixLoading: StateFlow<Boolean> = _remixLoading.asStateFlow()
 
+    /** Waveform overview of the loaded stems (null until loaded). */
+    private val _stemOverview = MutableStateFlow<StemOverview?>(null)
+    val stemOverview: StateFlow<StemOverview?> = _stemOverview.asStateFlow()
+
+    /** Song position (frames at 48 kHz) while the stems play, else -1. */
+    private val _stemPosition = MutableStateFlow(-1L)
+    val stemPosition: StateFlow<Long> = _stemPosition.asStateFlow()
+
+    /** Polls the playhead about 30 times a second while the Remix screen is visible. */
+    suspend fun pollStemPosition() {
+        if (!NativeEngine.isAvailable) return
+        while (true) {
+            _stemPosition.value = NativeEngine.stemPosition()
+            kotlinx.coroutines.delay(33)
+        }
+    }
+
+    /** Touching the waveform at [fraction] (0..1) of the song starts the remix at that bar. */
+    fun setRemixStartAt(fraction: Float) {
+        val r = project.value.remix
+        val overview = _stemOverview.value ?: return
+        val bar = r.barFrames(OfflineExport.SAMPLE_RATE)
+        if (bar <= 0) return
+        val frame = (fraction.coerceIn(0f, 1f) * overview.frames).toLong() - Math.round(r.firstBeat * OfflineExport.SAMPLE_RATE)
+        setRemixStartBar((frame / bar).toInt().coerceAtLeast(0))
+    }
+
     private fun pushRemix(p: Project = project.value) {
         if (!NativeEngine.isAvailable) return
         val loaded = stems?.takeIf { stemsId == p.remix.setId }
@@ -202,6 +232,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             stems?.close()
             stems = null
             stemsId = null
+            _stemOverview.value = null
         }
         if (loaded == null && wanted != null && stemsJob?.isActive != true) loadStems(wanted)
     }
@@ -242,6 +273,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             stemsId = id
             pushRemix()
             old?.close()  // the engine keeps its own reference until it lets go
+            _stemOverview.value = withContext(Dispatchers.Default) {
+                runCatching { StemOverview(List(4) { loaded.peaks(it, OVERVIEW_BUCKETS) }, loaded.frames) }.getOrNull()
+            }
             AppLog.add("Remix : « ${wanted.name} » chargé (${loaded.frames / OfflineExport.SAMPLE_RATE} s)")
         }
     }
@@ -270,6 +304,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         stems?.close()
         stems = null
         stemsId = null
+        _stemOverview.value = null
     }
 
     fun setStemVolume(stem: Int, v: Float) = editRemix("stem-$stem-vol") { it.withStem(stem) { s -> s.copy(volume = v) } }
@@ -403,8 +438,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * (kick, snare, hats…), hats in one choke group. One undo step.
      */
     fun loadKit(kit: Preset) {
-        val font = soundFont ?: return
-        if (_sampleTask.value is SampleTask.Busy) return
+        val font = soundFont
+        if (font == null || _sampleTask.value is SampleTask.Busy) {
+            android.widget.Toast.makeText(getApplication(), "Patiente un instant, un son est en cours de préparation.", android.widget.Toast.LENGTH_SHORT).show()
+            return
+        }
         _sampleTask.value = SampleTask.Busy("Kit ${kit.name}…")
         viewModelScope.launch {
             try {
@@ -414,6 +452,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     val audio = font.renderNote(kit, note)
                     kotlinx.coroutines.yield()
                     if (audio.size < 480) return@forEachIndexed
+                    // Some kit samples peak above full scale: bring them to -1 dBFS.
+                    val peak = audio.maxOf { kotlin.math.abs(it) }
+                    if (peak > 0.89f) for (i in audio.indices) audio[i] *= 0.89f / peak
                     val (sample, prepared) = withContext(Dispatchers.IO) {
                         padSamples.add(Pcm(audio, 1, OfflineExport.SAMPLE_RATE), "${kit.name.take(18)} ${InstrumentLibrary.KIT_PAD_NAMES[pad]}")
                     }
@@ -424,10 +465,15 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 pushPads()
                 AppLog.add("Kit ${kit.name} : ${pads.size} sons sur les pads")
                 _sampleTask.value = SampleTask.Idle
+                if (NativeEngine.isAvailable) NativeEngine.triggerPad(0, 0.9f)
+                android.widget.Toast.makeText(
+                    getApplication(), "Kit « ${kit.name} » sur les pads : va dans Rythme (Annuler possible).", android.widget.Toast.LENGTH_LONG,
+                ).show()
             } catch (e: kotlinx.coroutines.CancellationException) {
                 throw e
             } catch (e: Exception) {
                 _sampleTask.value = SampleTask.Failed("Le kit n'a pas pu être chargé (${e.message}).")
+                android.widget.Toast.makeText(getApplication(), "Le kit n'a pas pu être chargé.", android.widget.Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -1198,6 +1244,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         /** Two seconds after the last bar so releases and the acid tail ring out. */
         const val TAIL_FRAMES = 2L * OfflineExport.SAMPLE_RATE
         private val STEM_LABELS = listOf("Batterie", "Basse", "Autres", "Voix")
+        private const val OVERVIEW_BUCKETS = 400
         /** Insert "channel" index of the master. */
         const val MASTER = NativeEngine.MIXER_CHANNELS
     }

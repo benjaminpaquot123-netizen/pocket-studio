@@ -1624,8 +1624,8 @@ void testStemsPlayInStepWithTheTransport() {
     // From WAV files at 44.1 kHz: resampled to 48 kHz, pitch kept, regions extractable.
     const auto dir = std::filesystem::temp_directory_path();
     std::vector<std::string> paths;
-    std::vector<float> tone(44100);
-    for (int i = 0; i < 44100; ++i) tone[static_cast<size_t>(i)] = 0.5f * static_cast<float>(std::sin(2 * M_PI * 1000.0 * i / 44100.0));
+    std::vector<float> tone(44100 * 3);  // several read and resampler chunks
+    for (size_t i = 0; i < tone.size(); ++i) tone[i] = 0.5f * static_cast<float>(std::sin(2 * M_PI * 1000.0 * i / 44100.0));
     for (int st = 0; st < 4; ++st) {
         paths.push_back((dir / ("ps_stem" + std::to_string(st) + ".wav")).string());
         writeTestWav(paths.back(), tone, 44100, st == 1);  // one in 16-bit PCM
@@ -1633,7 +1633,16 @@ void testStemsPlayInStepWithTheTransport() {
     auto* loaded = ps::StemBundle::load(paths, kRate);
     CHECK(loaded != nullptr);
     if (loaded) {
-        CHECK(std::llabs(loaded->frames() - kRate) <= 2);
+        CHECK(std::llabs(loaded->frames() - kRate * 3) <= 2);
+        // No click anywhere (chunk joins included): a 1 kHz sine at 0.5 never moves more than
+        // 2*pi*1000/48000*0.5 = 0.065 between two samples.
+        for (int st = 0; st < 4; ++st) {
+            const auto whole = loaded->extract(st, 0, loaded->frames());
+            float maxStep = 0.0f;
+            for (size_t i = 2 + 200; i + 400 < whole.size(); i += 2) maxStep = std::max(maxStep, std::fabs(whole[i] - whole[i - 2]));
+            if (st == 0) std::printf("  stem resample: largest step %.4f (smooth < 0.07)\n", maxStep);
+            CHECK(maxStep < 0.07f);
+        }
         const auto region = loaded->extract(2, 0, kRate / 2);
         CHECK(region.size() == static_cast<size_t>(kRate));  // half a second, stereo
         int crossings = 0;
@@ -1641,6 +1650,10 @@ void testStemsPlayInStepWithTheTransport() {
         CHECK(crossings >= 995 && crossings <= 1005);  // 1 kHz for 0.5 s
         CHECK(region[1000] == region[1001]);  // mono file on both sides
         CHECK(loaded->extract(9, 0, 10).empty() && loaded->extract(0, loaded->frames(), 10).empty());
+        const auto overview = loaded->peaks(0, 300);
+        CHECK(overview.size() == 300);
+        CHECK(std::all_of(overview.begin(), overview.end(), [](float v) { return v > 0.45f && v < 0.55f; }));  // the 0.5 sine
+        CHECK(loaded->peaks(7, 10).empty());
         CHECK(loaded->release());
         delete loaded;
     }

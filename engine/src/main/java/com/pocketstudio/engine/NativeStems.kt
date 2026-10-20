@@ -18,6 +18,13 @@ class NativeStems private constructor(internal val handle: Long) : AutoCloseable
         return NativeEngine.stemsExtract(handle, stem, start, count)
     }
 
+    /** Waveform overview of one stem: the peak (0..1) of each of [buckets] slices. Worker thread. */
+    @Synchronized
+    fun peaks(stem: Int, buckets: Int): FloatArray {
+        check(!closed)
+        return NativeEngine.stemsPeaks(handle, stem, buckets)
+    }
+
     @Synchronized
     override fun close() {
         if (closed) return

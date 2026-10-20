@@ -19,7 +19,7 @@ void put16(std::FILE* f, uint16_t v) { std::fputc(v & 0xFF, f); std::fputc(v >> 
 void put32(std::FILE* f, uint32_t v) { put16(f, v & 0xFFFF); put16(f, v >> 16); }
 
 // 32-bit float stereo WAV, written to a temporary name then renamed.
-bool writeStem(const std::string& path, const Eigen::Tensor3dXf& out, int source, int64_t frames) {
+bool writeStem(const std::string& path, const Eigen::Tensor3dXf& out, int source, int64_t frames, float gain) {
     const std::string tmp = path + ".tmp";
     std::FILE* f = std::fopen(tmp.c_str(), "wb");
     if (!f) return false;
@@ -31,7 +31,7 @@ bool writeStem(const std::string& path, const Eigen::Tensor3dXf& out, int source
     chunk.reserve(8192);
     for (int64_t i = 0; i < frames; ++i) {
         for (int c = 0; c < 2; ++c) {
-            const float v = out(source, c, i);
+            const float v = out(source, c, i) * gain;
             chunk.push_back(std::isfinite(v) ? v : 0.0f);
         }
         if (chunk.size() >= 8192 || i == frames - 1) {
@@ -86,8 +86,20 @@ SeparationResult runModel(const char* modelPath, Eigen::MatrixXf& audio, const c
             if (!progress(std::clamp(p, 0.0f, 1.0f))) throw CancelledError();
         });
         audio.resize(0, 0);
+        // A stem can peak above full scale even when the song does not: players then clip it
+        // (heard as crackle). Scale all four together, keeping their balance and their sum.
+        float peak = 0.0f;
         for (int s = 0; s < 4; ++s) {
-            if (!writeStem(std::string(outDir) + "/" + kStemNames[s] + ".wav", out, s, frames)) {
+            for (int c = 0; c < 2; ++c) {
+                for (int64_t i = 0; i < frames; ++i) {
+                    const float v = std::fabs(out(s, c, i));
+                    if (std::isfinite(v)) peak = std::max(peak, v);
+                }
+            }
+        }
+        const float gain = peak > kStemCeiling ? kStemCeiling / peak : 1.0f;
+        for (int s = 0; s < 4; ++s) {
+            if (!writeStem(std::string(outDir) + "/" + kStemNames[s] + ".wav", out, s, frames, gain)) {
                 return {SeparationResult::IoError, "écriture impossible (stockage plein ?)"};
             }
         }

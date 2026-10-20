@@ -12,9 +12,12 @@ namespace ps {
 
 namespace {
 
+// Stored at half level: stems that peak up to +6 dBFS still fit without clipping.
+constexpr float kHeadroom = 2.0f;
+
 int16_t toPcm(float v) {
     if (!std::isfinite(v)) return 0;
-    return static_cast<int16_t>(std::lround(std::clamp(v, -1.0f, 1.0f) * 32767.0f));
+    return static_cast<int16_t>(std::lround(std::clamp(v / kHeadroom, -1.0f, 1.0f) * 32767.0f));
 }
 
 // One WAV, resampled to `targetRate` stereo int16. Mono files are copied to both sides.
@@ -110,7 +113,21 @@ std::vector<float> StemBundle::extract(int stem, int64_t start, int64_t count) c
     count = std::min(count, frames_ - start);
     out.resize(static_cast<size_t>(count) * 2);
     const int16_t* d = this->stem(stem) + start * 2;
-    for (size_t i = 0; i < out.size(); ++i) out[i] = d[i] / 32768.0f;
+    for (size_t i = 0; i < out.size(); ++i) out[i] = d[i] * (kHeadroom / 32768.0f);
+    return out;
+}
+
+std::vector<float> StemBundle::peaks(int stem, int buckets) const {
+    std::vector<float> out;
+    if (stem < 0 || stem >= kStems || buckets <= 0 || frames_ <= 0) return out;
+    out.assign(static_cast<size_t>(buckets), 0.0f);
+    const int16_t* d = this->stem(stem);
+    for (int64_t i = 0; i < frames_; ++i) {
+        const auto b = static_cast<size_t>(i * buckets / frames_);
+        const int a = std::max(std::abs(static_cast<int>(d[i * 2])), std::abs(static_cast<int>(d[i * 2 + 1])));
+        out[b] = std::max(out[b], a * (kHeadroom / 32768.0f));
+    }
+    for (float& v : out) v = std::min(v, 1.0f);
     return out;
 }
 
@@ -194,7 +211,7 @@ void StemPlayer::render(float* left, float* right, int numFrames) {
     const int64_t total = bundle_->frames();
     const int16_t* stems[StemBundle::kStems];
     for (int s = 0; s < StemBundle::kStems; ++s) stems[s] = bundle_->stem(s);
-    constexpr float kScale = 1.0f / 32768.0f;
+    constexpr float kScale = kHeadroom / 32768.0f;
     for (int i = from; i < numFrames; ++i) {
         if (pos_ >= total) {
             playing_ = false;

@@ -305,6 +305,11 @@ class ScreenshotTest {
             com.pocketstudio.app.remix.RemixUi(
                 true, com.pocketstudio.app.remix.SeparationState.Idle, listOf(set),
                 remix = remix, transportPlaying = true, projectBpm = 124.0,
+                overview = com.pocketstudio.app.rhythm.StemOverview(
+                    List(4) { st -> FloatArray(400) { i -> (if (st == 3 && i < 45) 0.02f else 0.3f + 0.5f * kotlin.math.abs(kotlin.math.sin(i * (0.11f + st * 0.05f)))) } },
+                    48_000L * 214,
+                ),
+                position = 48_000L * 80,
             ),
             com.pocketstudio.app.remix.RemixActions(),
         )

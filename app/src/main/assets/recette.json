@@ -3,6 +3,21 @@
   "milestone": "Phase 3 : remix",
   "items": [
     {
+      "id": "remix_waveform",
+      "title": "Voir où on en est dans le morceau",
+      "hint": "Remix › Jouer avec le projet › Jouer : la barre blanche avance sur les 4 formes d'onde. Touche la voix juste avant qu'elle commence : le départ (trait vert) s'y place."
+    },
+    {
+      "id": "kit_keyboard",
+      "title": "Jouer un kit de batterie au clavier",
+      "hint": "Synthé › Instruments › Kits de batterie › touche un kit puis le clavier (Do grave = grosse caisse). Le bouton du dessous met le kit sur les pads."
+    },
+    {
+      "id": "effects",
+      "title": "Ajouter de la réverbe et un écho",
+      "hint": "Mixeur › Batterie › Effets : monte « Envoi réverbe ». Mets un Compresseur dans l'emplacement 1."
+    },
+    {
       "id": "remix_separate",
       "title": "Séparer une chanson en 4 pistes",
       "hint": "Onglet Remix › Télécharger le modèle (Wi-Fi), puis Choisir une chanson (3-4 min). Éteins l'écran : la notification montre la progression. Note le temps que ça prend."

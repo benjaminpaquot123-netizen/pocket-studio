@@ -28,6 +28,8 @@ public:
     const int16_t* stem(int i) const { return data_[static_cast<size_t>(i)].data(); }
     // A region of one stem as interleaved stereo float (for a pad). Not real-time safe.
     std::vector<float> extract(int stem, int64_t start, int64_t count) const;
+    // Loudest sample of each of `buckets` equal slices of one stem, 0..1 (waveform overview).
+    std::vector<float> peaks(int stem, int buckets) const;
 
     void retain() { refs_.fetch_add(1, std::memory_order_relaxed); }
     bool release() { return refs_.fetch_sub(1, std::memory_order_acq_rel) == 1; }

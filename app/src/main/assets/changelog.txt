@@ -1,5 +1,5 @@
-Remix : la séparation ne plante plus au démarrage (un nom de fonction effacé par l'optimiseur).
-Mixeur : 4 effets par voie et sur la sortie (égaliseur, compresseur, saturation, chorus, filtre), réverbe et écho.
-« → Pad » : un bout de basse ou de voix sur un pad, pour le découper ensuite.
-Acide : un mini-clavier pour choisir n'importe quelle note, noms Do Ré Mi ou C D E, jusqu'à 8 mesures.
-« Le chant, c'est une chose, la voix c'en est une autre. » Maintenant elles sont séparées.
+Remix : formes d'onde des 4 pistes avec la tête de lecture ; touche-les pour choisir où démarrer.
+Remix : plus de grésillement dû à l'écrêtage (les pistes gardent de la marge).
+Kits de batterie : ils se jouent au clavier, et un bouton les met sur les 16 pads.
+Mixeur : 4 effets par voie et sur la sortie, réverbe et écho calé au tempo.
+« C'est pas faux ! » : on voit enfin où chante le chanteur.

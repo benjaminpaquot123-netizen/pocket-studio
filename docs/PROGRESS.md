@@ -79,6 +79,12 @@
   - 5.4 audio vers notes (Basic Pitch, Spotify) : chanter ou jouer une mélodie, elle arrive dans le piano roll ; test Linux (La4, Do5, accord Mi-Sol retrouvés) ;
   - restes traités : sons des pads jusqu'à 2 min (coupés au-delà), packs .zip sur les pads, Remix qui suit le tempo du projet (copie étirée en arrière-plan).
 
+- Phase 6 « complétude » (même PR #16, voir COMPARAISON.md) :
+  - 6.1 plusieurs projets (Mes projets, corbeille, .zip), enregistrement en direct (●), export morceau / pistes / M4A, fichiers MIDI ;
+  - 6.2 Réglages (thème dont daltonien, taille, notes, vibrations, écran allumé, métronome, décompte, mode du son), guide des premiers pas, 3 démos ;
+  - 6.3 piano roll complet (sélection, outils, couloir de force, zoom, grilles, deviner la gamme) ;
+  - 6.4 batterie complète (1 à 4 mesures, roulements, remplir, décaler, vue de tous les pads).
+
 ## Prochaine étape exacte
-1. Revue de fin de phase 5 (en cours), corrections, CI verte, fusion de la PR #16. Puis phase 6 (voir ROADMAP).
-2. Reste noté : horloge MIDI sortante et Ableton Link (reportés).
+1. Relectures de fin de phase 5 et 6 (en cours, sous-agents), corrections, CI verte, fusion de la PR #16.
+2. Puis phase 7 : pistes d'instruments à volonté (7.1), pistes audio (7.2), ligne de temps (7.3).

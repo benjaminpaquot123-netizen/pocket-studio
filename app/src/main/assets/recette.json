@@ -1,7 +1,42 @@
 {
-  "id": "phase5-synthese",
-  "milestone": "Phase 5 : synthèse avancée et jeu en direct",
+  "id": "phase6-completude",
+  "milestone": "Phase 6 : à la hauteur de FL Studio Mobile",
   "items": [
+    {
+      "id": "projects",
+      "title": "Créer, ouvrir et envoyer des projets",
+      "hint": "Touche le nom du projet en haut › Nouveau projet › une démo. Reviens à l'ancien projet, puis ⋮ › Envoyer (.zip). Supprime un projet puis Annuler."
+    },
+    {
+      "id": "live_record",
+      "title": "Enregistrer ce que je joue",
+      "hint": "Touche ● en haut : après une mesure de décompte, joue au clavier du Synthé ou sur les pads ; retouche ● pour arrêter. Annuler retire toute la prise."
+    },
+    {
+      "id": "export_song",
+      "title": "Exporter le morceau entier",
+      "hint": "Morceau : ajoute 2 scènes au morceau. Mixeur › Exporter › Le morceau › M4A › Exporter, puis Partager."
+    },
+    {
+      "id": "midi_files",
+      "title": "Exporter et importer un fichier MIDI",
+      "hint": "Mixeur › Exporter les notes en fichier MIDI. Puis Synthé › Notes › Importer des notes › Un fichier MIDI."
+    },
+    {
+      "id": "piano_select",
+      "title": "Sélectionner et copier des notes",
+      "hint": "Synthé › Notes › Sélectionner : touche des notes (ou appui long puis glisse pour un cadre), Copier, Coller, ▲ ½ ton, et le couloir Force en bas."
+    },
+    {
+      "id": "drum_tools",
+      "title": "Roulements et vue de tous les pads",
+      "hint": "Rythme › Longueur 2 › Roulements : touche un coup (×2, ×3, ×4). Puis « Tous les pads »."
+    },
+    {
+      "id": "settings",
+      "title": "Changer les réglages",
+      "hint": "Outils › Réglages : essaie le thème Nuit, la taille 115 %, et le mode du son « Sûr » si ça craque."
+    },
     {
       "id": "live_pads",
       "title": "Lancer et couper des sons sur les pads live",

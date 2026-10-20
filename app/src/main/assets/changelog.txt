@@ -1,5 +1,5 @@
-Pads live (onglet Morceau) : un toucher lance le son en rythme, un autre le coupe. « Mais c'est pas faux ! »
-Remix : écoute les 4 pistes ensemble, coupe-les sans arrêt, et le morceau peut suivre le tempo du projet.
-Synthé › Notes : chante une mélodie, elle arrive dans le piano roll. Sons rangés par familles, « Au hasard », favoris.
-Outils › MIDI : joue avec un clavier USB ou Bluetooth. Packs de sons en .zip, sons jusqu'à 2 minutes.
-Acide : potards compacts ; Morceau : 24 scènes ; Synthé : source « Plaits » et ses 24 modèles.
+Projets : « Mes projets » en haut (nouveau, démos, renommer, dupliquer, corbeille, envoi en .zip). Chef, on a un projet ! Non, plusieurs !
+Enregistrement en direct (●), export du morceau entier, piste par piste, en M4A, et fichiers MIDI (export et import).
+Piano roll complet : sélection, copier-coller, transposer, couloir de force, zoom, triolets, deviner la gamme.
+Batterie : 1 à 4 mesures, roulements, remplir, décaler, vue de tous les pads. Pads live, Remix à 4 pistes ensemble.
+Outils › Réglages : thème (dont daltonien), taille, notes, vibrations, son ; guide des premiers pas ; clavier MIDI.

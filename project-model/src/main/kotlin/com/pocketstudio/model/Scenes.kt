@@ -23,8 +23,11 @@ data class Scene(
         acid.steps.take(acid.length).none { it.gate } && synthNotes.notes.isEmpty()
 
     companion object {
-        const val MAX = 8
-        val NAMES = listOf("A", "B", "C", "D", "E", "F", "G", "H")
+        const val MAX = 24
+        val NAMES = List(MAX) { ('A' + it).toString() }
+
+        /** How many scene slots the session grid can show. */
+        val GRID_SIZES = listOf(8, 16, 24)
     }
 }
 

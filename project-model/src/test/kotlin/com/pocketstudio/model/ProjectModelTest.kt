@@ -528,5 +528,11 @@ class AcidPagesTest {
         val song = c.copy(song = listOf(SongPart(0, 0), SongPart(7, 2), SongPart(1, 99))).sanitized().song
         assertEquals(listOf(SongPart(0, 1), SongPart(1, SongPart.MAX_REPEATS)), song)
         assertEquals(c.sanitized(), ProjectJson.decode(ProjectJson.encode(c.sanitized())))
+        // Up to 24 scenes, A to X; beyond that a switch is ignored.
+        val x = c.switchScene(23)
+        assertEquals(24, x.scenes.size)
+        assertEquals("X", x.scenes[23].name)
+        assertEquals(x, x.switchScene(24))
+        assertEquals(x.sanitized(), ProjectJson.decode(ProjectJson.encode(x.sanitized())))
     }
 }

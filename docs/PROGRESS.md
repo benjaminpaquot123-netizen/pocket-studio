@@ -68,7 +68,11 @@
 
 - Phase 4 terminée et fusionnée (PR #13, 2026-10-20) : revue faite et corrigée (REVIEW.md).
 
+- Phase 5 (en cours, branche ccr-80af1a1b-mn0wec) :
+  - 5.1 Plaits comme 2e voix du Synthé (24 modèles, test Linux, zéro allocation) ; la FM 6 op. de Plaits tient lieu de FM 4 op. ;
+  - 24 scènes (A à X) au lieu de 8, grille « Afficher 8 · 16 · 24 » (demande de Benjamin).
+
 ## Prochaine étape exacte
-1. Phase 5.1 : moteurs de synthèse Plaits (Mutable Instruments, MIT) et FM 4 opérateurs, choisis dans Synthé › Source du son ; testés sur Linux, sans allocation. Nouvelle PR « Phase 5 : synthèse avancée et connectivité ».
-2. Attendre les retours de Benjamin (phase 4 : effets, scènes, morceau, effets live).
+1. Phase 5.2 : préréglages classés (basse, nappe, lead…), favoris, bouton « Au hasard » pour le Synthé, Plaits et l'acide.
+2. Puis 5.3 MIDI USB/BLE + horloge + Ableton Link ; 5.4 Basic Pitch (audio → notes) ; revue de fin de phase ; fusion.
 3. Reste noté : lever la limite de 60 s par son ; import de packs .zip ; étirement des stems si le tempo change.

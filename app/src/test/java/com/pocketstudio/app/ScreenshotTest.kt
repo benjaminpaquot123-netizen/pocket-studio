@@ -373,7 +373,7 @@ class ScreenshotTest {
         val b = com.pocketstudio.model.Scene("B", drums.copy(steps = 32))
         com.pocketstudio.app.session.SessionScreen(
             com.pocketstudio.app.session.SessionScreenUi(
-                scenes = listOf(a, b, com.pocketstudio.model.Scene("C")) + List(5) { null },
+                scenes = listOf(a, b, com.pocketstudio.model.Scene("C")) + List(6) { null } + com.pocketstudio.model.Scene("J", drums) + List(14) { null },
                 current = 0, pending = 1,
                 song = listOf(com.pocketstudio.model.SongPart(0, 4), com.pocketstudio.model.SongPart(1, 2), com.pocketstudio.model.SongPart(0, 2)),
                 songIndex = 0, playing = true, tempoBpm = 124.0,

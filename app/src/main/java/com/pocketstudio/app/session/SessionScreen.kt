@@ -21,6 +21,7 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.Button
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -28,6 +29,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -42,7 +47,7 @@ import com.pocketstudio.ui.NeonCard
 import com.pocketstudio.ui.SectionLabel
 
 class SessionScreenUi(
-    /** Every scene slot A..H: null when it does not exist yet. */
+    /** Every scene slot A..X: null when it does not exist yet. */
     val scenes: List<Scene?>,
     val current: Int,
     val pending: Int?,
@@ -84,7 +89,23 @@ fun SessionScreen(ui: SessionScreenUi, actions: SessionActions) {
                 else "Une scène = la batterie, l'acide et le piano roll. Touche-en une pour l'afficher et la modifier.",
                 style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
             )
-            listOf(0, 4).forEach { start ->
+            // 8 slots by default; 16 or 24 on demand, and never fewer than the scenes in use.
+            val used = ui.scenes.indexOfLast { it != null } + 1
+            var chosen by rememberSaveable { mutableIntStateOf(Scene.GRID_SIZES.first()) }
+            val shown = Scene.GRID_SIZES.firstOrNull { it >= maxOf(chosen, used, ui.current + 1) } ?: Scene.MAX
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                Text("Afficher :", style = MaterialTheme.typography.bodyMedium)
+                Scene.GRID_SIZES.forEach { size ->
+                    FilterChip(
+                        selected = size == shown,
+                        onClick = { chosen = size },
+                        enabled = size >= used,
+                        label = { Text("$size") },
+                        modifier = Modifier.testTag("scene_grid_$size"),
+                    )
+                }
+            }
+            (0 until shown step 4).forEach { start ->
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     for (i in start until start + 4) SceneButton(i, ui, actions, Modifier.weight(1f))
                 }

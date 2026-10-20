@@ -102,4 +102,10 @@ Feu vert de Benjamin (D4 = A) : fusion de la pull request en fin de phase.
 - [x] 12.1 Son échantillonné : n'importe quel son (808, basse, stab d'un pack, son importé) joué sur tout le clavier, note d'origine détectée, glisse façon 808, boucle, enveloppe
 - [x] 12.2 Petits « ? » à côté des termes (explication en une ou deux phrases) et Lexique dans Outils › Aide
 - [x] 12.3 Pads live : « + » ouvre la bibliothèque de sons, la génération par phrase, puis le téléphone ; export « La scène » au lieu de « La boucle »
-- [ ] 12.4 Assistant : 808 des packs installés proposées pour la basse (trap, drill, phonk…)
+- [x] 12.4 Assistant : 808 et basses des packs installés proposées pour la basse, stabs pour le lead
+
+## Phase 13 : instruments classiques et sons actuels (demande de Benjamin)
+- [ ] 13.1 Packs « machines » : les boîtes à rythmes et synthés qui ont fait l'histoire, au-delà de la 808 (909, 707, 606, CR-78, LinnDrum, SP-1200, MPC, Juno, Jupiter, DX7, Minimoog…), un pack par machine, jouables sur les pads et au clavier
+- [ ] 13.2 Packs « sons actuels » : 808 modernes (saturées, longues, à glisser), Reese, hoover, supersaw, plucks, wavetable, voix découpées, montées et impacts (FX), log drum, cloche phonk…
+- [ ] 13.3 Synthé : unisson (jusqu'à 7 voix désaccordées et écartées) pour les supersaws de la future bass et de la trance et les Reese de la drum & bass ; préréglages « actuels »
+- [ ] 13.4 Générer : phrases d'exemple pour les genres récents (hyperpop, future bass, afro house, amapiano, jersey club, drill, phonk, UK garage…)

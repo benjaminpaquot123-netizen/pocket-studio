@@ -41,6 +41,21 @@
       "id": "midi",
       "title": "Jouer avec un clavier MIDI",
       "hint": "Branche un clavier USB (adaptateur OTG) ou Outils › MIDI › Chercher un clavier Bluetooth. Les touches jouent le Synthé ; « Note … » s'affiche à chaque touche."
+    },
+    {
+      "id": "audio_to_notes",
+      "title": "Chanter une mélodie dans le piano roll",
+      "hint": "Synthé › Notes › De l'audio aux notes › Au micro : chante ou siffle quelques notes, puis Terminé. Elles apparaissent dans le piano roll (Annuler les retire)."
+    },
+    {
+      "id": "zip_pack",
+      "title": "Importer un pack de sons en .zip",
+      "hint": "Rythme › pad sélectionné › Pack sur les pads suivants › .zip : les sons du pack vont sur les pads suivants."
+    },
+    {
+      "id": "follow_tempo",
+      "title": "Caler un morceau séparé au tempo du projet",
+      "hint": "Remix › Jouer avec le projet, change le tempo (Rythme), puis Remix › interrupteur « suit le tempo » : après quelques secondes, le morceau joue au nouveau tempo sans changer de hauteur."
     }
   ]
 }

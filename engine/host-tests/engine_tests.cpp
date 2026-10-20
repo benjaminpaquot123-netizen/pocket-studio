@@ -2179,6 +2179,34 @@ void testLivePadsLoopOnTheBeat() {
     engine.collectGarbage();
 }
 
+void testStemsStretchToTheProjectTempo() {
+    // A 1 kHz tone on every stem: 120 BPM song played at 100 BPM lasts 1.2 times as long, same pitch.
+    std::vector<float> tone(static_cast<size_t>(kRate) * 2 * 2);
+    for (size_t i = 0; i < tone.size() / 2; ++i) tone[i * 2] = tone[i * 2 + 1] = 0.4f * static_cast<float>(std::sin(2 * M_PI * 1000.0 * i / kRate));
+    auto* bundle = ps::StemBundle::fromFloat(std::vector<std::vector<float>>(4, tone));
+    auto* slow = bundle->stretched(1.2, kRate);
+    CHECK(slow != nullptr);
+    if (slow) {
+        CHECK(slow->frames() == std::llround(bundle->frames() * 1.2));
+        const auto x = slow->extract(2, kRate / 2, kRate / 2);  // half a second from the middle
+        int crossings = 0;
+        float peak = 0.0f;
+        for (size_t i = 2; i < x.size(); i += 2) {
+            if ((x[i - 2] < 0.0f) != (x[i] < 0.0f)) ++crossings;
+            peak = std::max(peak, std::fabs(x[i]));
+        }
+        std::printf("  stretched stems: %.0f Hz, peak %.2f\n", crossings / 2.0 / 0.5, peak);
+        CHECK(std::abs(crossings / 2.0 / 0.5 - 1000.0) < 15.0);
+        CHECK(peak > 0.3f && peak < 0.5f);
+        CHECK(slow->refCount() == 1);
+        CHECK(slow->release());
+        delete slow;
+    }
+    CHECK(bundle->stretched(10.0, kRate) == nullptr);
+    CHECK(bundle->release());
+    delete bundle;
+}
+
 void testStemPreviewPlaysWithoutTheTransport() {
     const float levels[4] = {0.05f, 0.1f, 0.15f, 0.2f};
     std::vector<std::vector<float>> stems(4);
@@ -2278,6 +2306,7 @@ int main(int argc, char** argv) {
         {"stems_follow_transport", testStemsPlayInStepWithTheTransport},
         {"live_pads", testLivePadsLoopOnTheBeat},
         {"stem_preview", testStemPreviewPlaysWithoutTheTransport},
+        {"stems_stretch", testStemsStretchToTheProjectTempo},
         {"no_alloc_in_process", testProcessNeverAllocates},
     };
     for (const auto& t : tests) {

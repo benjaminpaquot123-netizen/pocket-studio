@@ -1,5 +1,5 @@
-Pads live (onglet Morceau) : 4 à 16 pads, un toucher lance le son en rythme, un autre le coupe. « Mais c'est pas faux ! »
-Remix : écoute les 4 pistes ensemble, allume ou coupe chacune sans arrêt ; « → Live » les met sur les pads.
-Sons rangés par familles pour le Synthé, Plaits et l'Acide, avec « Au hasard » et tes favoris.
-Acide : potards compacts ; Morceau : 24 scènes ; Outils › MIDI : joue avec un clavier USB ou Bluetooth.
-Synthé : nouvelle source « Plaits », 24 modèles du célèbre module (analogique, FM façon DX7, cordes, percussions…).
+Pads live (onglet Morceau) : un toucher lance le son en rythme, un autre le coupe. « Mais c'est pas faux ! »
+Remix : écoute les 4 pistes ensemble, coupe-les sans arrêt, et le morceau peut suivre le tempo du projet.
+Synthé › Notes : chante une mélodie, elle arrive dans le piano roll. Sons rangés par familles, « Au hasard », favoris.
+Outils › MIDI : joue avec un clavier USB ou Bluetooth. Packs de sons en .zip, sons jusqu'à 2 minutes.
+Acide : potards compacts ; Morceau : 24 scènes ; Synthé : source « Plaits » et ses 24 modèles.

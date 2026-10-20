@@ -25,6 +25,14 @@ class NativeStems private constructor(internal val handle: Long) : AutoCloseable
         return NativeEngine.stemsPeaks(handle, stem, buckets)
     }
 
+    /** A copy lasting [ratio] times as long, pitch kept. Blocking (seconds): worker thread. Null if it failed. */
+    @Synchronized
+    fun stretched(ratio: Double): NativeStems? {
+        check(!closed)
+        val h = NativeEngine.stemsStretched(handle, ratio)
+        return if (h == 0L) null else NativeStems(h)
+    }
+
     @Synchronized
     override fun close() {
         if (closed) return

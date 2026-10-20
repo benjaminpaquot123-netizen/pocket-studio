@@ -47,7 +47,6 @@ import androidx.compose.material3.NavigationRailItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
-import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -91,6 +90,7 @@ import com.pocketstudio.app.synth.SynthScreen
 import com.pocketstudio.app.remix.RemixActions
 import com.pocketstudio.app.session.SessionActions
 import com.pocketstudio.app.session.SessionScreen
+import com.pocketstudio.app.synth.TranscribeUi
 import com.pocketstudio.app.midi.MidiActions
 import com.pocketstudio.app.midi.MidiCommand
 import com.pocketstudio.app.midi.MidiScreen
@@ -123,7 +123,7 @@ enum class AppTab(val label: String, val icon: ImageVector) {
     Outils("Outils", Icons.Filled.Tune),
 }
 
-private enum class ToolPage(val label: String) { Recette("Recette"), Midi("MIDI"), Fond("Arrière-plan"), Latence("Latence"), Son("Son test") }
+private enum class ToolPage(val label: String) { Recette("Recette"), Midi("MIDI"), Fond("Fond"), Latence("Latence"), Son("Son") }
 
 @Composable
 fun AppRoot() {
@@ -202,6 +202,12 @@ fun AppRoot() {
             }
         }
     }
+    val pickNotesAudio = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri != null) rhythmVm.transcribeFile(uri)
+    }
+    val notesMicPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        if (granted) rhythmVm.recordNotes()
+    }
     val pickAudio = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) rhythmVm.importSample(uri)
     }
@@ -211,6 +217,9 @@ fun AppRoot() {
     }
     val pickSong = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) remixVm.separate(uri)
+    }
+    val pickZip = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri != null) rhythmVm.importZip(uri)
     }
     val pickFolder = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
         if (uri != null) rhythmVm.importFolder(uri)
@@ -322,6 +331,7 @@ fun AppRoot() {
                                 applySlices = rhythmVm::applySlices,
                                 resampleSong = rhythmVm::resampleSong,
                                 importFolder = { pickFolder.launch(null) },
+                                importZip = { pickZip.launch(arrayOf("application/zip", "application/x-zip-compressed", "application/octet-stream")) },
                             ),
                             padSound = PadSoundUi(sampleInfo, sampleTask, slicer),
                         )
@@ -378,6 +388,7 @@ fun AppRoot() {
                             lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollLive() }
                         }
                         val favorites by rhythmVm.favorites.collectAsStateWithLifecycle()
+                        val transcription by rhythmVm.transcription.collectAsStateWithLifecycle()
                         SynthScreen(
                             patch = project.synth,
                             octave = octave,
@@ -423,6 +434,16 @@ fun AppRoot() {
                                 selectEngine = rhythmVm::selectSynthEngine,
                                 setPlaitsModel = rhythmVm::setPlaitsModel,
                                 setPlaitsParam = rhythmVm::setPlaitsParam,
+                            ),
+                            transcribe = TranscribeUi(
+                                task = transcription,
+                                pickFile = { rhythmVm.dismissTranscription(); pickNotesAudio.launch(arrayOf("audio/*")) },
+                                record = {
+                                    rhythmVm.dismissTranscription()
+                                    if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) rhythmVm.recordNotes()
+                                    else notesMicPermission.launch(Manifest.permission.RECORD_AUDIO)
+                                },
+                                stop = rhythmVm::stopNoteRecording,
                             ),
                             browser = if (project.synthEngine == 1) {
                                 SoundBrowserUi(
@@ -554,6 +575,7 @@ fun AppRoot() {
                         val modelInstalled by remixVm.modelInstalled.collectAsStateWithLifecycle()
                         val preview by remixVm.preview.collectAsStateWithLifecycle()
                         val remixLoading by rhythmVm.remixLoading.collectAsStateWithLifecycle()
+                        val remixStretching by rhythmVm.remixStretching.collectAsStateWithLifecycle()
                         val overview by rhythmVm.stemOverview.collectAsStateWithLifecycle()
                         val stemPosition by rhythmVm.stemPosition.collectAsStateWithLifecycle()
                         LaunchedEffect(Unit) {
@@ -570,6 +592,7 @@ fun AppRoot() {
                                 modelInstalled, remixState, sets, preview,
                                 remix = project.remix,
                                 remixLoading = remixLoading,
+                                stretching = remixStretching,
                                 transportPlaying = transport.playing,
                                 projectBpm = project.tempoBpm,
                                 padTask = when (val t = sampleTask) {
@@ -589,6 +612,7 @@ fun AppRoot() {
                                 toggleStem = remixVm::toggleStem,
                                 pause = remixVm::pause,
                                 stemToLive = rhythmVm::stemToLive,
+                                setFollowTempo = rhythmVm::setRemixFollowTempo,
                                 delete = remixVm::delete,
                                 useSong = { set ->
                                     rhythmVm.useSong(set)
@@ -609,7 +633,7 @@ fun AppRoot() {
                         )
                     }
                     AppTab.Outils -> Column {
-                        ScrollableTabRow(selectedTabIndex = toolPage.ordinal, containerColor = Neon.Surface, contentColor = Neon.Cyan, edgePadding = 0.dp) {
+                        TabRow(selectedTabIndex = toolPage.ordinal, containerColor = Neon.Surface, contentColor = Neon.Cyan) {
                             ToolPage.entries.forEach { page ->
                                 Tab(
                                     selected = toolPage == page,

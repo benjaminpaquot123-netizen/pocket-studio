@@ -224,6 +224,14 @@ JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_stemsPea
     return result;
 }
 
+JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_stemsStretched(JNIEnv*, jobject, jlong handle, jdouble ratio) {
+    try {
+        return reinterpret_cast<jlong>(reinterpret_cast<ps::StemBundle*>(handle)->stretched(ratio, 48000));
+    } catch (const std::bad_alloc&) {
+        return 0;
+    }
+}
+
 JNIEXPORT jboolean JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeInstallStems(JNIEnv*, jobject, jlong handle) {
     auto& engine = host().engine();
     engine.collectGarbage();

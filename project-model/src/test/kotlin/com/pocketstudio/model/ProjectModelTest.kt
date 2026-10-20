@@ -638,3 +638,16 @@ class TranscriptionTest {
     }
 }
 
+class RemixTempoTest {
+    @Test
+    fun stretchOnlyWhenFollowingAnotherTempo() {
+        val r = Remix("x", "Song", songBpm = 120.0)
+        assertEquals(1.0, r.stretchFor(100.0), 0.0)                       // not following
+        assertEquals(1.2, r.copy(followTempo = true).stretchFor(100.0), 1e-9)
+        assertEquals(1.0, r.copy(followTempo = true).stretchFor(120.02), 0.0)  // same tempo
+        assertEquals(1.0, r.copy(followTempo = true, songBpm = 0.0).stretchFor(100.0), 0.0)
+        val old = ProjectJson.decode(ProjectJson.encode(Project(remix = r)).replace("\"followTempo\": false,", ""))
+        assertEquals(false, old.remix.followTempo)
+    }
+}
+

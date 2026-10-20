@@ -276,6 +276,7 @@ object NativeEngine {
     external fun stemsFrames(handle: Long): Long
     external fun stemsExtract(handle: Long, stem: Int, start: Long, count: Long): FloatArray
     external fun stemsPeaks(handle: Long, stem: Int, buckets: Int): FloatArray
+    external fun stemsStretched(handle: Long, ratio: Double): Long
     private external fun nativeInstallStems(handle: Long): Boolean
     private external fun nativeInstallPreviewStems(handle: Long): Boolean
     private external fun nativeInstallClip(pad: Int, handle: Long): Boolean

@@ -26,6 +26,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -60,6 +61,8 @@ class RemixUi(
     /** The song played along with the project (setId null = none). */
     val remix: Remix = Remix(),
     val remixLoading: Boolean = false,
+    /** The song is being fitted to the project's tempo. */
+    val stretching: Boolean = false,
     val transportPlaying: Boolean = false,
     val projectBpm: Double = 120.0,
     /** What the last « → Pad » is doing or why it failed. */
@@ -91,6 +94,8 @@ class RemixActions(
     val stemToPad: (Int, Int) -> Unit = { _, _ -> },
     /** [bars] bars of a stem onto the first free live pad (Morceau tab). */
     val stemToLive: (Int, Int) -> Unit = { _, _ -> },
+    /** The song follows the project's tempo (stretched, pitch kept). */
+    val setFollowTempo: (Boolean) -> Unit = {},
     /** Touching a waveform: start the remix at that bar (fraction 0..1 of the song). */
     val setStartAt: (Float) -> Unit = {},
 )
@@ -184,10 +189,19 @@ private fun InProject(ui: RemixUi, actions: RemixActions) {
             LinearProgressIndicator(Modifier.fillMaxWidth(), color = Neon.Magenta)
         }
         if (r.songBpm > 0 && kotlin.math.abs(ui.projectBpm - r.songBpm) > 0.05) {
-            Text(
-                "Le projet est à %.1f BPM, le morceau à %.1f : les pistes gardent leur vitesse et se décalent.".format(ui.projectBpm, r.songBpm),
-                style = MaterialTheme.typography.bodySmall, color = Neon.Amber,
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    if (r.followTempo) "Le morceau (%.1f BPM) suit le tempo du projet (%.1f BPM), sans changer de hauteur.".format(r.songBpm, ui.projectBpm)
+                    else "Le projet est à %.1f BPM, le morceau à %.1f : les pistes gardent leur vitesse et se décalent.".format(ui.projectBpm, r.songBpm),
+                    style = MaterialTheme.typography.bodySmall, color = if (r.followTempo) Neon.TextSecondary else Neon.Amber,
+                    modifier = Modifier.weight(1f),
+                )
+                Switch(checked = r.followTempo, onCheckedChange = actions.setFollowTempo, modifier = Modifier.testTag("remix_follow_tempo"))
+            }
+            if (ui.stretching) {
+                Text("Calage du morceau au tempo…", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                LinearProgressIndicator(Modifier.fillMaxWidth(), color = Neon.Magenta)
+            }
         }
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             Text("Vers le pad :", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)

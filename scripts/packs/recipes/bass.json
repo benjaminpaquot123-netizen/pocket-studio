@@ -1,0 +1,884 @@
+[
+ {
+  "id": "dnb",
+  "references": [
+   "Roni Size & Reprazent – Brown Paper Bag (1997)",
+   "Shimon & Andy C – Body Rock (2001)",
+   "Pendulum – Tarantula (2005)",
+   "Sub Focus – Rock It (2009)"
+  ],
+  "description_fr": "Une batterie très rapide qui sautille en deux temps, posée sur une basse énorme qui gronde : la musique des clubs londoniens.",
+  "bpm": 174,
+  "swing": 0.05,
+  "root": "F",
+  "drums": [
+   {
+    "role": "kick",
+    "pattern": "X.........X.....X.........X.....",
+    "source": "dnb",
+    "tip_fr": "Le « two-step » : un coup sur le 1, le second décalé juste après le 3, c'est ce qui fait rouler le rythme."
+   },
+   {
+    "role": "snare",
+    "pattern": "....X.......X.......X..o....X.o.",
+    "source": "dnb",
+    "tip_fr": "Caisse claire bien sèche sur les temps 2 et 4, avec deux petites notes fantômes à la fin pour relancer."
+   },
+   {
+    "role": "hat",
+    "pattern": "o.x.o.x.o.x.o...o.x.o.x.o.x.o...",
+    "source": "dnb",
+    "tip_fr": "Charleston en croches, plus fort à contretemps, pour donner la vitesse sans charger."
+   },
+   {
+    "role": "open_hat",
+    "pattern": "..............x...............x.",
+    "source": "dnb",
+    "tip_fr": "Un charleston ouvert juste avant chaque mesure pour aspirer vers le coup de grosse caisse suivant."
+   },
+   {
+    "role": "perc",
+    "pattern": "..o...o...o...o...o...o...o..oo.",
+    "source": "dnb",
+    "tip_fr": "Petites percussions discrètes qui imitent un break découpé derrière la batterie."
+   }
+  ],
+  "progressions": {
+   "dark": {
+    "scale": "minor",
+    "degrees": [
+     0,
+     0,
+     5,
+     6
+    ]
+   },
+   "happy": {
+    "scale": "major",
+    "degrees": [
+     5,
+     3,
+     0,
+     4
+    ]
+   },
+   "future": {
+    "scale": "minor",
+    "degrees": [
+     0,
+     0,
+     5,
+     5
+    ]
+   },
+   "dreamy": {
+    "scale": "dorian",
+    "degrees": [
+     0,
+     3,
+     0,
+     3
+    ]
+   }
+  },
+  "chords": {
+   "type": "pad",
+   "rhythm": "X---------------",
+   "voicing": "seventh",
+   "octave": 4,
+   "sound": "Nappe"
+  },
+  "bass": {
+   "pattern": "R-------..R---o.",
+   "octave": 1,
+   "sound": "Basse reese",
+   "glide": false
+  },
+  "lead": {
+   "type": "riff",
+   "pattern": "R..R..5..R..O.5.",
+   "arp_rate": 0,
+   "octave": 5,
+   "sound": "Supersaw"
+  },
+  "acid": {
+   "use": false,
+   "pattern": "",
+   "accents": "",
+   "slides": ""
+  },
+  "defaults": {
+   "bass": true,
+   "chords": true,
+   "lead": false
+  },
+  "notes": "Classic 174 BPM two-step: kick on step 1 and step 11 (the 'and' of beat 3), snares on beats 2 and 4, ghost snares only in bar 2. The reese bass (two detuned saws, from Kevin Saunderson's 'Reese', popularised in DnB by Renegade 'Terrorist' 1994) is held long and follows the kick; keep it in F1 (~44 Hz) and duck it under kick and snare. The pad lives in intro/breakdown; the drop is drums + reese only, so a beginner can mute chords there."
+ },
+ {
+  "id": "liquid_dnb",
+  "references": [
+   "LTJ Bukem – Horizons (1995)",
+   "High Contrast – If We Ever (2007)",
+   "London Elektricity – Just One Second (2008)"
+  ],
+  "description_fr": "La drum & bass en version douce : le même rythme rapide, mais avec des accords jazzy au piano électrique et une ambiance chaleureuse.",
+  "bpm": 174,
+  "swing": 0.1,
+  "root": "A",
+  "drums": [
+   {
+    "role": "kick",
+    "pattern": "X.........X.....X.x.......X.....",
+    "source": "liquid_dnb",
+    "tip_fr": "Le two-step classique, avec un petit coup en plus au début de la deuxième mesure pour faire rouler."
+   },
+   {
+    "role": "snare",
+    "pattern": "....X..o....X.......X..o....X.o.",
+    "source": "liquid_dnb",
+    "tip_fr": "Caisse claire sur 2 et 4, entourée de petites notes fantômes qui donnent le côté souple et funky."
+   },
+   {
+    "role": "hat",
+    "pattern": "xoxoxoxoxoxoxoxoxoxoxoxoxoxoxoxo",
+    "source": "liquid_dnb",
+    "tip_fr": "Charleston en doubles croches, fort puis doux, qui ondule comme un break de soul accéléré."
+   },
+   {
+    "role": "open_hat",
+    "pattern": "..............x...............x.",
+    "source": "liquid_dnb",
+    "tip_fr": "Un charleston ouvert en fin de mesure pour respirer avant le temps suivant."
+   }
+  ],
+  "progressions": {
+   "dark": {
+    "scale": "minor",
+    "degrees": [
+     0,
+     5,
+     2,
+     6
+    ]
+   },
+   "happy": {
+    "scale": "major",
+    "degrees": [
+     3,
+     4,
+     2,
+     5
+    ]
+   },
+   "future": {
+    "scale": "dorian",
+    "degrees": [
+     0,
+     0,
+     3,
+     3
+    ]
+   },
+   "dreamy": {
+    "scale": "minor",
+    "degrees": [
+     0,
+     2,
+     5,
+     4
+    ]
+   }
+  },
+  "chords": {
+   "type": "keys",
+   "rhythm": "X-----X-----X---",
+   "voicing": "ninth",
+   "octave": 4,
+   "sound": "Piano électrique"
+  },
+  "bass": {
+   "pattern": "R-------..R---5-",
+   "octave": 1,
+   "sound": "Basse ronde",
+   "glide": false
+  },
+  "lead": {
+   "type": "arp",
+   "pattern": "",
+   "arp_rate": 48,
+   "octave": 5,
+   "sound": "Pluck"
+  },
+  "acid": {
+   "use": false,
+   "pattern": "",
+   "accents": "",
+   "slides": ""
+  },
+  "defaults": {
+   "bass": true,
+   "chords": true,
+   "lead": false
+  },
+  "notes": "Liquid funk (term coined by Fabio, Creative Source, 1999): DnB tempo and two-step, but softer, rolling drums (often sampled 60s-70s funk/soul breaks layered over one-shots) and lush jazz harmony. Use seventh/ninth chords on Rhodes or warm pads, e.g. Am9 - Cmaj7 - Fmaj7 - Em7 (the 'dreamy' set); Am9 over a C bass becomes Cmaj7, a classic liquid trick. Bass is a smooth round sub, not an aggressive reese. Soul vocal samples with delay and a bell/pluck arp at 1/8 complete the sound."
+ },
+ {
+  "id": "neurofunk",
+  "references": [
+   "Ed Rush & Optical – Funktion (1997)",
+   "Noisia – Machine Gun (2010)",
+   "Mefjus – Emulation (2014)"
+  ],
+  "description_fr": "La drum & bass sombre et futuriste : une batterie sèche et précise, et une basse qui grogne et change de couleur sans arrêt.",
+  "bpm": 174,
+  "swing": 0.0,
+  "root": "F#",
+  "drums": [
+   {
+    "role": "kick",
+    "pattern": "X.........X.....X......X..x.....",
+    "source": "neurofunk",
+    "tip_fr": "Two-step serré ; dans la deuxième mesure le second coup arrive plus tôt, juste avant le 3, pour surprendre."
+   },
+   {
+    "role": "snare",
+    "pattern": "....X.......X.......X.......X..o",
+    "source": "neurofunk",
+    "tip_fr": "Une caisse claire tranchante sur 2 et 4, sans fioritures : c'est elle qui tient tout le morceau."
+   },
+   {
+    "role": "hat",
+    "pattern": "o.x.o.x.o.x.o.x.o.x.o.x.o.x.o.x.",
+    "source": "neurofunk",
+    "tip_fr": "Charleston discret à contretemps : il donne la vitesse sans gêner la basse."
+   },
+   {
+    "role": "perc",
+    "pattern": "...o.....o.........o.....o...o..",
+    "source": "neurofunk",
+    "tip_fr": "Quelques petits bruits métalliques décalés pour le côté machine."
+   }
+  ],
+  "progressions": {
+   "dark": {
+    "scale": "phrygian",
+    "degrees": [
+     0,
+     0,
+     1,
+     0
+    ]
+   },
+   "happy": {
+    "scale": "dorian",
+    "degrees": [
+     0,
+     3,
+     0,
+     3
+    ]
+   },
+   "future": {
+    "scale": "minor",
+    "degrees": [
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   "dreamy": {
+    "scale": "minor",
+    "degrees": [
+     0,
+     0,
+     5,
+     5
+    ]
+   }
+  },
+  "chords": {
+   "type": "pad",
+   "rhythm": "X---------------",
+   "voicing": "sus2",
+   "octave": 4,
+   "sound": "Essaim"
+  },
+  "bass": {
+   "pattern": "R-.R--.R-.R-.o-.",
+   "octave": 1,
+   "sound": "Reese moderne",
+   "glide": false
+  },
+  "lead": {
+   "type": "riff",
+   "pattern": "....O-.....O-.5-",
+   "arp_rate": 0,
+   "octave": 3,
+   "sound": "Voix robot"
+  },
+  "acid": {
+   "use": false,
+   "pattern": "",
+   "accents": "",
+   "slides": ""
+  },
+  "defaults": {
+   "bass": true,
+   "chords": true,
+   "lead": false
+  },
+  "notes": "Neurofunk grew out of techstep (Ed Rush & Optical, 1997-98; name coined by Simon Reynolds): cleaner, tighter, very regular two-step drums with razor-sharp snares, no swing. The bass is the lead instrument: a reese/FM growl whose timbre keeps moving over a steady sub, chopped in 16th-note syncopations that lock with the kick. Harmony is near-static (one minor or phrygian root, b2 for menace) and melodies are scarce; the 'lead' here is a talking mid-bass layer (Voix robot, octave 3) answering the reese call-and-response style. The pad is just a cold background for intros. If the neurofunk pack's bass is installed, it can replace the reese as the mid layer."
+ },
+ {
+  "id": "jungle",
+  "references": [
+   "Origin Unknown – Valley of the Shadows (1993)",
+   "Renegade – Terrorist (1994)",
+   "M-Beat feat. General Levy – Incredible (1994)",
+   "Shy FX & UK Apachi – Original Nuttah (1994)"
+  ],
+  "description_fr": "L'ancêtre de la drum & bass, au milieu des années 90 : une batterie découpée et très rapide, sur une basse profonde venue du reggae.",
+  "bpm": 165,
+  "swing": 0.1,
+  "root": "G",
+  "drums": [
+   {
+    "role": "kick",
+    "pattern": "X.X.......Xx....X.X.......X.....",
+    "source": "jungle",
+    "tip_fr": "Les grosses caisses du célèbre break « Amen » : deux coups rapprochés au début, deux autres après le 3."
+   },
+   {
+    "role": "snare",
+    "pattern": "....X..o.x..X..o....X..o.x....X.",
+    "source": "jungle",
+    "tip_fr": "La caisse claire de l'Amen avec ses petits coups en cascade ; dans la 2e mesure le dernier coup arrive en retard, c'est la signature."
+   },
+   {
+    "role": "hat",
+    "pattern": "x.x.x.x.x.x.x.x.x.x.x.x.x...x.x.",
+    "source": "jungle",
+    "tip_fr": "La cymbale ride en croches régulières, comme le batteur du disque d'origine."
+   },
+   {
+    "role": "open_hat",
+    "pattern": "..........................x.....",
+    "source": "jungle",
+    "tip_fr": "Un charleston ouvert à la fin du break pour relancer la boucle."
+   }
+  ],
+  "progressions": {
+   "dark": {
+    "scale": "minor",
+    "degrees": [
+     0,
+     0,
+     5,
+     6
+    ]
+   },
+   "happy": {
+    "scale": "major",
+    "degrees": [
+     0,
+     3,
+     4,
+     3
+    ]
+   },
+   "future": {
+    "scale": "phrygian",
+    "degrees": [
+     0,
+     0,
+     1,
+     1
+    ]
+   },
+   "dreamy": {
+    "scale": "major",
+    "degrees": [
+     3,
+     2,
+     1,
+     0
+    ]
+   }
+  },
+  "chords": {
+   "type": "pad",
+   "rhythm": "X---------------",
+   "voicing": "seventh",
+   "octave": 4,
+   "sound": "Nappe chaude"
+  },
+  "bass": {
+   "pattern": "R-------..R-5---",
+   "octave": 1,
+   "sound": "Basse sub",
+   "glide": false
+  },
+  "lead": {
+   "type": "none",
+   "pattern": "",
+   "arp_rate": 0,
+   "octave": 5,
+   "sound": "Orgue"
+  },
+  "acid": {
+   "use": false,
+   "pattern": "",
+   "accents": "",
+   "slides": ""
+  },
+  "defaults": {
+   "bass": true,
+   "chords": true,
+   "lead": false
+  },
+  "notes": "Jungle 1993-95 = chopped Amen break (The Winstons, 'Amen, Brother', 1969) at 160-170 BPM over a slow, deep sub bass in the dub/reggae/dancehall tradition (the bass feels half-time against the drums). Drum grid follows the Amen: bar 1 kicks on 1, 1&, 3&, 3a; snares on 2, 2a, 3e, 4, 4a; bar 2 drops a kick and delays the beat-4 snare to 4&, with an open hat on 3&. Keep it loose (light swing), the break's feel comes from its microtiming. Add ragga vocal shouts, sirens and rewinds (fx/vocal_chops packs) rather than a synth lead; atmospheric pads suit the 'Valley of the Shadows' side, a reese ('Terrorist') suits the darker side."
+ },
+ {
+  "id": "dubstep",
+  "references": [
+   "Skream – Midnight Request Line (2005)",
+   "Digital Mystikz – Anti War Dub (2006)",
+   "Benga & Coki – Night (2007)",
+   "Rusko – Cockney Thug (2007)"
+  ],
+  "description_fr": "Une musique sombre et lourde venue de Londres, qui semble jouée au ralenti, avec une basse profonde qui fait « wob wob ».",
+  "bpm": 140,
+  "swing": 0.15,
+  "root": "E",
+  "drums": [
+   {
+    "role": "kick",
+    "pattern": "X.........x.....",
+    "source": "dubstep",
+    "tip_fr": "Une grosse caisse sur le 1, un petit rappel après la caisse claire : peu de coups, chacun pèse lourd."
+   },
+   {
+    "role": "snare",
+    "pattern": "........X.......",
+    "source": "dubstep",
+    "tip_fr": "Une seule caisse claire au milieu de la mesure (le 3) : c'est ce qui donne l'impression de demi-vitesse."
+   },
+   {
+    "role": "hat",
+    "pattern": "x.x.x.x.x.x.x.xo",
+    "source": "dubstep",
+    "tip_fr": "Le charleston reste à vitesse normale pendant que le reste traîne, avec un petit swing."
+   },
+   {
+    "role": "perc",
+    "pattern": "...o..o....o..o.",
+    "source": "dubstep",
+    "tip_fr": "Tambourin et petites percussions décalées pour le côté chaloupé."
+   }
+  ],
+  "progressions": {
+   "dark": {
+    "scale": "phrygian",
+    "degrees": [
+     0,
+     0,
+     0,
+     1
+    ]
+   },
+   "happy": {
+    "scale": "dorian",
+    "degrees": [
+     0,
+     0,
+     3,
+     3
+    ]
+   },
+   "future": {
+    "scale": "minor",
+    "degrees": [
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   "dreamy": {
+    "scale": "minor",
+    "degrees": [
+     5,
+     5,
+     0,
+     0
+    ]
+   }
+  },
+  "chords": {
+   "type": "pad",
+   "rhythm": "X---------------",
+   "voicing": "triad",
+   "octave": 4,
+   "sound": "Nappe"
+  },
+  "bass": {
+   "pattern": "R--R--R-R--R--R-",
+   "octave": 1,
+   "sound": "Basse reese",
+   "glide": false
+  },
+  "lead": {
+   "type": "none",
+   "pattern": "",
+   "arp_rate": 0,
+   "octave": 5,
+   "sound": "Lead"
+  },
+  "acid": {
+   "use": false,
+   "pattern": "",
+   "accents": "",
+   "slides": ""
+  },
+  "defaults": {
+   "bass": true,
+   "chords": true,
+   "lead": false
+  },
+  "notes": "UK dubstep (Croydon/Brixton, FWD>> and DMZ nights): ~140 BPM felt half-time, kick on 1 and snare/clap on beat 3, hats and percussion in normal time with moderate shuffle; a kick triplet between beats 1 and 3 is a common variation. Minor or phrygian keys, very sparse arrangement, lots of space. The bass is the point: a clean sine sub below ~100 Hz plus a mid 'wobble' made by an LFO on the filter cutoff synced at 1/4, 1/8 or 1/16. The bass pattern retriggers in a 3-3-2 grouping to fake the wob; if the synth can sync a filter LFO, hold one long note per chord instead. Stay in E1-F1 for the sub. Dub delay on the snare and pad is idiomatic."
+ },
+ {
+  "id": "riddim",
+  "references": [
+   "Coki – Spongebob (2007)",
+   "Bommer & Crowell – Yasuo (2014)",
+   "Infekt – Orgalorg (2016)",
+   "Marshmello & Svdden Death – Sell Out (2019)"
+  ],
+  "description_fr": "Le dubstep réduit à l'essentiel : un rythme lent et lourd, une basse métallique qui répète la même petite formule, avec beaucoup de silence entre les coups.",
+  "bpm": 140,
+  "swing": 0.1,
+  "root": "Eb",
+  "drums": [
+   {
+    "role": "kick",
+    "pattern": "X.......o.......",
+    "source": "riddim",
+    "tip_fr": "Grosse caisse sur le 1, et une plus douce cachée sous la caisse claire pour l'impact."
+   },
+   {
+    "role": "snare",
+    "pattern": "........X.......",
+    "source": "riddim",
+    "tip_fr": "Un seul gros coup de caisse claire au milieu de la mesure, comme en dubstep."
+   },
+   {
+    "role": "hat",
+    "pattern": "o...x...o...x...",
+    "source": "riddim",
+    "tip_fr": "Charleston à contretemps, très simple, pour laisser toute la place à la basse."
+   },
+   {
+    "role": "perc",
+    "pattern": "...o..o..o..o..o",
+    "source": "riddim",
+    "tip_fr": "Petites percussions en groupes de trois qui donnent le balancement en triolets typique du riddim."
+   }
+  ],
+  "progressions": {
+   "dark": {
+    "scale": "minor",
+    "degrees": [
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   "happy": {
+    "scale": "major",
+    "degrees": [
+     5,
+     3,
+     0,
+     4
+    ]
+   },
+   "future": {
+    "scale": "phrygian",
+    "degrees": [
+     0,
+     0,
+     1,
+     0
+    ]
+   },
+   "dreamy": {
+    "scale": "minor",
+    "degrees": [
+     0,
+     5,
+     3,
+     6
+    ]
+   }
+  },
+  "chords": {
+   "type": "pad",
+   "rhythm": "X---------------",
+   "voicing": "triad",
+   "octave": 4,
+   "sound": "Nappe"
+  },
+  "bass": {
+   "pattern": "R-.R-.R-....O-..",
+   "octave": 1,
+   "sound": "Basse FM",
+   "glide": false
+  },
+  "lead": {
+   "type": "none",
+   "pattern": "",
+   "arp_rate": 0,
+   "octave": 5,
+   "sound": "Lead"
+  },
+  "acid": {
+   "use": false,
+   "pattern": "",
+   "accents": "",
+   "slides": ""
+  },
+  "defaults": {
+   "bass": true,
+   "chords": false,
+   "lead": false
+  },
+  "notes": "Riddim (UK early 2010s, named after the Jamaican word for 'rhythm'; Jakes and Subfiltronik define it, Coki's 'Spongebob' is the forerunner): 140-150 BPM half-time, kick on 1 with a quieter kick layered under the beat-3 snare/clap for the 'whack', offbeat hats, triplet percussion. The drop is drums + one repetitive, metallic, gritty bass motif (often a resampled growl pitched in chops, square-LFO, flanger/chorus) on a single root, with deliberate gaps around the snare: three triplet-like hits, silence on the snare, one octave answer. Melodies and vocals are rare, so chords default off (use the pad only for intros; the 'happy'/'dreamy' sets are for melodic riddim / colour bass). The riddim pack's bass, if installed, can replace Basse FM."
+ },
+ {
+  "id": "synthwave",
+  "references": [
+   "Kavinsky – Nightcall (2010)",
+   "College & Electric Youth – A Real Hero (2010)",
+   "FM-84 – Running in the Night (2016)",
+   "The Midnight – Shadows (2017)"
+  ],
+  "description_fr": "Le son des films et des jeux vidéo des années 80 : une caisse claire énorme qui résonne, une basse qui pulse sans arrêt et des arpèges de synthé.",
+  "bpm": 105,
+  "swing": 0.0,
+  "root": "A",
+  "drums": [
+   {
+    "role": "kick",
+    "pattern": "X...X...X...X...",
+    "source": "synthwave",
+    "tip_fr": "Grosse caisse sur chaque temps, comme une boîte à rythmes des années 80 qui avance tout droit."
+   },
+   {
+    "role": "snare",
+    "pattern": "....X.......X...",
+    "source": "linndrum",
+    "tip_fr": "La caisse claire LinnDrum sur 2 et 4, avec une grosse réverbération coupée net : le son 80s par excellence."
+   },
+   {
+    "role": "clap",
+    "pattern": "....x.......x...",
+    "source": "synthwave",
+    "tip_fr": "Un clap collé à la caisse claire pour la rendre encore plus large."
+   },
+   {
+    "role": "hat",
+    "pattern": "o.x.o.x.o.x.o.x.",
+    "source": "linndrum",
+    "tip_fr": "Charleston en croches, plus fort à contretemps ; pas de doubles croches pour laisser respirer la réverbération."
+   }
+  ],
+  "progressions": {
+   "dark": {
+    "scale": "minor",
+    "degrees": [
+     0,
+     5,
+     2,
+     6
+    ]
+   },
+   "happy": {
+    "scale": "major",
+    "degrees": [
+     0,
+     0,
+     4,
+     3
+    ]
+   },
+   "future": {
+    "scale": "minor",
+    "degrees": [
+     0,
+     6,
+     5,
+     6
+    ]
+   },
+   "dreamy": {
+    "scale": "major",
+    "degrees": [
+     3,
+     4,
+     2,
+     5
+    ]
+   }
+  },
+  "chords": {
+   "type": "pad",
+   "rhythm": "X---------------",
+   "voicing": "triad",
+   "octave": 4,
+   "sound": "Nappe chaude"
+  },
+  "bass": {
+   "pattern": "R.R.R.R.R.R.R.R.",
+   "octave": 2,
+   "sound": "Basse analogique",
+   "glide": false
+  },
+  "lead": {
+   "type": "arp",
+   "pattern": "",
+   "arp_rate": 24,
+   "octave": 5,
+   "sound": "Arpège"
+  },
+  "acid": {
+   "use": false,
+   "pattern": "",
+   "accents": "",
+   "slides": ""
+  },
+  "defaults": {
+   "bass": true,
+   "chords": true,
+   "lead": true
+  },
+  "notes": "Synthwave/outrun: 80-118 BPM (most around 100-110), straight grid, 80s drum-machine kit (LinnDrum-style) with a big gated-reverb snare on 2 and 4; keep hats simple so the gated tail reads. Harmony is a few looping minor chords (Am - F - C - G is the archetype) so the arpeggio and lead carry the song. Bass pulses on steady 8ths following each chord root (16ths for faster outrun), lightly sidechained to the kick like the pads. The 16th-note arpeggio of the chord on a plucky analog sound is the signature, so it defaults on; a brassy or saw lead with glide plays the hook later."
+ },
+ {
+  "id": "pop",
+  "references": [
+   "Ed Sheeran – Shape of You (2017)",
+   "The Weeknd – Blinding Lights (2019)",
+   "Dua Lipa – Don't Start Now (2019)",
+   "Taylor Swift – Anti-Hero (2022)"
+  ],
+  "description_fr": "La pop des radios d'aujourd'hui : un rythme simple qui donne envie de bouger, quatre accords qui tournent en boucle et une mélodie qu'on retient.",
+  "bpm": 116,
+  "swing": 0.0,
+  "root": "C",
+  "drums": [
+   {
+    "role": "kick",
+    "pattern": "X.....x.X.......",
+    "source": "pop",
+    "tip_fr": "Grosse caisse sur le 1 et le 3, avec un petit coup juste avant le 3 pour faire rebondir."
+   },
+   {
+    "role": "clap",
+    "pattern": "....X.......X...",
+    "source": "pop",
+    "tip_fr": "Le clap sur 2 et 4 : c'est là qu'on tape dans les mains."
+   },
+   {
+    "role": "hat",
+    "pattern": "x.o.x.o.x.o.x.o.",
+    "source": "pop",
+    "tip_fr": "Charleston en croches, simple et régulier, pour tenir le tempo."
+   },
+   {
+    "role": "open_hat",
+    "pattern": "...............x",
+    "source": "pop",
+    "tip_fr": "Un charleston ouvert tout à la fin pour lancer la mesure suivante."
+   },
+   {
+    "role": "perc",
+    "pattern": "...o.......o....",
+    "source": "pop",
+    "tip_fr": "Un claquement de doigts discret entre les temps pour l'élan."
+   }
+  ],
+  "progressions": {
+   "dark": {
+    "scale": "minor",
+    "degrees": [
+     0,
+     3,
+     5,
+     6
+    ]
+   },
+   "happy": {
+    "scale": "major",
+    "degrees": [
+     0,
+     4,
+     5,
+     3
+    ]
+   },
+   "future": {
+    "scale": "dorian",
+    "degrees": [
+     0,
+     4,
+     6,
+     3
+    ]
+   },
+   "dreamy": {
+    "scale": "major",
+    "degrees": [
+     3,
+     0,
+     4,
+     5
+    ]
+   }
+  },
+  "chords": {
+   "type": "keys",
+   "rhythm": "X..X..X...X..X..",
+   "voicing": "triad",
+   "octave": 4,
+   "sound": "gm:Acoustic Grand Piano"
+  },
+  "bass": {
+   "pattern": "R-----r-R-----5-",
+   "octave": 2,
+   "sound": "Basse ronde",
+   "glide": false
+  },
+  "lead": {
+   "type": "riff",
+   "pattern": "5-3-R-3-5---O-5-",
+   "arp_rate": 0,
+   "octave": 5,
+   "sound": "Pluck"
+  },
+  "acid": {
+   "use": false,
+   "pattern": "",
+   "accents": "",
+   "slides": ""
+  },
+  "defaults": {
+   "bass": true,
+   "chords": true,
+   "lead": false
+  },
+  "notes": "Modern radio pop: ~100-124 BPM (UK hits averaged ~104 BPM in 2017, ~122 in 2020), straight grid, clap/snare on 2 and 4, kick on 1 and 3 with a pickup, bass locked to the kick on chord roots. Harmony is the four-chord loop and its rotations: I-V-vi-IV ('happy'; Lewis Capaldi, Maroon 5), IV-I-V-vi ('dreamy'; Anti-Hero), minor i-iv-VI-VII ('dark'; Shape of You), dorian i-v-VII-IV ('future'; Blinding Lights). Chords on piano (or a pluck) in a syncopated 3-3-4-3-3 rhythm leave room for the vocal; the lead riff is a simple, singable hook built on chord tones, off by default because the voice is the real lead."
+ }
+]

@@ -44,6 +44,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.pocketstudio.app.settings.KeyLayout
 import com.pocketstudio.model.Harmony
 import com.pocketstudio.ui.Neon
 
@@ -66,6 +67,8 @@ internal fun FloatingKeyboard(
     keyOn: (Int, Float) -> Unit,
     keyOff: (Int) -> Unit,
     modifier: Modifier = Modifier,
+    keyLayout: KeyLayout = KeyLayout.TwoOctaves,
+    english: Boolean = false,
 ) {
     val shape = RoundedCornerShape(22.dp)
     Box(modifier.fillMaxWidth(), contentAlignment = Alignment.BottomEnd) {
@@ -110,10 +113,7 @@ internal fun FloatingKeyboard(
                     }
                 }
                 if (chordPads) ChordPads(harmony, 12 * (octave + 1), actions.noteOn, actions.noteOff, height = keysHeight)
-                else Keyboard(
-                    firstNote = 12 * (octave + 1), octaves = octaves, onNoteOn = keyOn, onNoteOff = keyOff,
-                    height = keysHeight, harmony = harmony, tag = "float_keyboard_keys", keyTag = "float_key",
-                )
+                else PlayKeys(keyLayout, octave, octaves, harmony, english, keyOn, keyOff, keysHeight, tag = "float_keyboard_keys", keyTag = "float_key")
             }
         }
         AnimatedVisibility(

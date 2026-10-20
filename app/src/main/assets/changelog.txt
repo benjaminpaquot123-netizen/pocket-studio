@@ -1,5 +1,5 @@
-Phase 14 : « C'est pas faux ! »
-- Nouveau look : panneaux en relief, pads qui s'allument, curseurs et vumètres façon studio.
-- Chaque bloc se replie en touchant son titre (petite flèche discrète) et le reste.
-- Sons en vignettes colorées, et un clavier qui suit quand tu descends choisir un son.
-- Assistant : écoute chaque ambiance, chaque ligne avec le rythme, chaque son en situation.
+Phase 15 : « Le gras, c'est la vie ! »
+- Assistant : chaque style suit ses vrais morceaux, avec les meilleurs sons de son pack et de sa machine (909, 303…).
+- Nouveaux packs Acid techno et TB-303.
+- Claviers au choix : 2 octaves, 1 octave avec le nom des notes, ou seulement les notes de la gamme.
+- Des effets sur un seul pad, et le sample d'un pad joué sur tout le clavier.

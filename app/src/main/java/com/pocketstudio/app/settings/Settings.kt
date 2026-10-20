@@ -8,6 +8,12 @@ import kotlinx.coroutines.flow.asStateFlow
 /** Look of the app (see Palettes in ui-components). */
 enum class AppTheme(val label: String) { Studio("Studio (gris et orange)"), Night("Nuit (plus sombre)"), Colorblind("Couleurs pour daltoniens") }
 
+/**
+ * The synth keyboard: two octaves of piano, one wider octave with every note named, or only the
+ * notes of the song's key as wide bars (GarageBand's "Scale", Push's "In key"): no wrong note.
+ */
+enum class KeyLayout(val label: String) { TwoOctaves("2 octaves"), OneOctave("1 octave"), Scale("Gamme") }
+
 /** User preferences, the same for every project. */
 data class AppSettings(
     val theme: AppTheme = AppTheme.Studio,
@@ -27,6 +33,7 @@ data class AppSettings(
     val bufferBursts: Int = 2,
     /** The first-steps guide was seen (it opens at the first launch). */
     val guideSeen: Boolean = false,
+    val keyLayout: KeyLayout = KeyLayout.TwoOctaves,
 ) {
     companion object {
         val UI_SCALES = listOf(0.85f, 1f, 1.15f, 1.3f)
@@ -57,6 +64,7 @@ object SettingsStore {
             recordCountIn = p.getInt("recordCountIn", d.recordCountIn).coerceIn(0, 2),
             bufferBursts = p.getInt("bufferBursts", d.bufferBursts).takeIf { b -> AppSettings.BUFFERS.any { it.first == b } } ?: d.bufferBursts,
             guideSeen = p.getBoolean("guideSeen", d.guideSeen),
+            keyLayout = runCatching { KeyLayout.valueOf(p.getString("keyLayout", d.keyLayout.name)!!) }.getOrDefault(d.keyLayout),
         )
         loaded = true
         return _state.value
@@ -75,6 +83,7 @@ object SettingsStore {
             .putInt("recordCountIn", s.recordCountIn)
             .putInt("bufferBursts", s.bufferBursts)
             .putBoolean("guideSeen", s.guideSeen)
+            .putString("keyLayout", s.keyLayout.name)
             .apply()
     }
 

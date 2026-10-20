@@ -16,9 +16,16 @@ class StarterWizardTest {
             // One line per pad, every pattern a whole bar of known marks with at least one hit.
             assertEquals(s.name, s.lines.size, s.lines.map { it.role.lane }.toSet().size)
             for (l in s.lines) {
-                assertEquals("${s.name} ${l.role}", 16, l.pattern.length)
+                assertTrue("${s.name} ${l.role}", l.pattern.length == 16 || l.pattern.length == 32)
                 assertTrue("${s.name} ${l.role}", l.pattern.all { it in "Xxo." } && StarterWizard.hits(l.pattern).isNotEmpty())
                 assertTrue(l.tip.isNotBlank())
+            }
+            // Its sounds exist (a typo would silently fall back to another one).
+            val names = SoundLibrary.SYNTH.map { it.name } + SoundLibrary.PLAITS.map { it.name }
+            for (part in StarterWizard.Part.entries) assertTrue("${s.name} $part", s.melody.sound(part) in names)
+            for ((_, progression) in s.melody.progressions) assertEquals(s.name, 4, progression.second.size)
+            for (line in listOf(s.melody.bassPattern, s.melody.leadPattern, s.melody.chordRhythm).filter { it.isNotEmpty() }) {
+                assertTrue("${s.name} $line", line.length == 16 || line.length == 32)
             }
         }
         // Every built-in voice exists in the kit.
@@ -30,7 +37,8 @@ class StarterWizardTest {
         val house = StarterWizard.style("house")!!
         val clap = PadSample("abc123.wav", "Clap house 2")
         val p = StarterWizard.build(house, mapOf(StarterWizard.Role.Kick to null, StarterWizard.Role.Clap to clap))
-        assertEquals(124.0, p.tempoBpm, 0.0)
+        assertEquals(house.bpm, p.tempoBpm, 0.0)
+        assertEquals(house.swing, p.swing, 0.0)
         assertEquals("House", p.name)
         assertEquals(setOf(0, 4, 8, 12), p.drums.lanes[0].hits.keys)
         assertNull(p.drums.lanes[0].sample)  // the kit's own kick
@@ -43,19 +51,46 @@ class StarterWizardTest {
     }
 
     @Test
+    fun anAcidStyleStartsWithItsThreeOThreeLine() {
+        val style = StarterWizard.style("acid_techno")!!
+        val recipe = style.melody.acid!!
+        val p = StarterWizard.build(style, mapOf(StarterWizard.Role.Kick to null), StarterWizard.Mood.Dark)
+        assertEquals(16, p.acid.length)
+        assertEquals(36 + style.melody.root, p.acid.root)
+        recipe.pattern.forEachIndexed { i, c -> assertEquals("step $i", c != '.' && c != '-', p.acid.steps[i].gate) }
+        recipe.accents.forEachIndexed { i, c -> assertEquals("accent $i", c == 'x', p.acid.steps[i].accent) }
+        // Its notes are the key's: 'R' the root, 'O' the octave above.
+        assertEquals(listOf(0, 0), listOf(p.acid.steps[0].note, p.acid.steps[0].octave))
+        assertEquals(listOf(0, 1), listOf(p.acid.steps[2].note, p.acid.steps[2].octave))
+        // Without a mood (the beat only), the acid track is left as it was.
+        assertEquals(Project().acid, StarterWizard.build(style, mapOf(StarterWizard.Role.Kick to null)).acid)
+    }
+
+    @Test
+    fun aOneBarLineRepeatsUnderATwoBarOne() {
+        // UK garage: the kick spans two bars, the snare one.
+        val garage = StarterWizard.style("uk_garage")!!
+        assertEquals(32, StarterWizard.drumSteps(garage))
+        val p = StarterWizard.build(garage, mapOf(StarterWizard.Role.Kick to null, StarterWizard.Role.Snare to null))
+        assertEquals(32, p.drums.steps)
+        assertEquals(setOf(4, 12, 20, 28), p.drums.lanes[StarterWizard.Role.Snare.lane].hits.keys)
+        assertEquals(StarterWizard.hits(garage.lines.first { it.role == StarterWizard.Role.Kick }.pattern).keys, p.drums.lanes[0].hits.keys)
+    }
+
+    @Test
     fun melodicPartsAreInTheKeyAndLocked() {
         for (style in StarterWizard.STYLES) {
             // The proposed sounds exist in the library, and the bass rhythm is a bar.
             StarterWizard.Part.entries.forEach { part ->
                 assertEquals("${style.name} $part", style.melody.sound(part), StarterWizard.soundsFor(part, style).first().name)
             }
-            assertEquals(16, style.melody.bassPattern.length)
-            assertTrue(StarterWizard.hits(style.melody.bassPattern).isNotEmpty())
+            assertTrue(style.melody.bassPattern.length in listOf(16, 32))
+            assertTrue(StepLine.parse(style.melody.bassPattern).any { StepLine.stepOf(it.token) != null })
             for (mood in StarterWizard.Mood.entries) {
                 val parts = StarterWizard.Part.entries.associateWith { StarterWizard.soundsFor(it, style).first() }
                 val p = StarterWizard.build(style, mapOf(StarterWizard.Role.Kick to null), mood, parts)
                 assertTrue(p.harmony.lock)
-                assertEquals(mood.scale, p.harmony.scale)
+                assertEquals(StarterWizard.progressionOf(style, mood).first, p.harmony.scale)
                 assertEquals(3, p.instrumentTracks.size)
                 assertEquals(listOf("Basse", "Nappe", "Lead"), p.instrumentTracks.map { it.name })
                 for (t in p.instrumentTracks) {
@@ -65,11 +100,12 @@ class StarterWizardTest {
                 }
                 // The bass plays each chord's root, bar after bar.
                 val bass = p.instrumentTracks[0].notes.notes
-                mood.degrees.forEachIndexed { bar, d ->
+                StarterWizard.progressionOf(style, mood).second.forEachIndexed { bar, d ->
                     val inBar = bass.filter { it.start / (16 * NoteClip.TICKS_PER_STEP) == bar }
-                    assertTrue(inBar.isNotEmpty() && inBar.all { it.pitch == p.harmony.degreeRoot(d, 36) })
+                    val root = Math.floorMod(p.harmony.degreeRoot(d, 36), 12)
+                    assertTrue("${style.name} $mood bar $bar", inBar.any { Math.floorMod(it.pitch, 12) == root })
                 }
-                assertEquals(ArpMode.UpDown, p.instrumentTracks[2].notes.performance.arp)
+                if (style.melody.leadPattern.isBlank()) assertEquals(ArpMode.UpDown, p.instrumentTracks[2].notes.performance.arp)
                 // Plaits sounds land on a Plaits track.
                 StarterWizard.Part.entries.forEachIndexed { i, part ->
                     assertEquals(if (parts.getValue(part).plaits != null) 1 else 0, p.instrumentTracks[i].engine)

@@ -17,8 +17,13 @@ class Mixer {
 public:
     // 0 = drums, 1 = acid bass, 2 = synth (instrument track 1), 3 = remix stems (stereo),
     // 5..11 = instrument tracks 2..8, 12..15 = audio tracks (stereo). Index 4 is the master (insert
-    // commands, saved automation): its strip is never fed.
-    static constexpr int kChannels = 16;
+    // commands, saved automation): its strip is never fed. 16..31 = the 16 drum pads' own strips
+    // (their effects on one pad): they feed the drums' strip, not the master, and follow its mute
+    // and solo.
+    static constexpr int kChannels = 32;
+    static constexpr int kFirstPad = 16;
+    static constexpr int kPads = 16;
+    static constexpr int kDrums = 0;
     static constexpr int kInserts = 4;   // per channel, and on the master
     static constexpr int kMaster = 4;    // insert "channel" index of the master
     static constexpr int kBuses = 2;
@@ -94,6 +99,8 @@ private:
     TempoDelay delay_;
     PerformanceFx perf_;
     std::array<float, kChunk> chL_{}, chR_{}, mL_{}, mR_{};
+    // The pads' strips, summed before the drums' strip processes them.
+    std::array<float, kChunk> padsL_{}, padsR_{};
     std::array<std::array<float, kChunk>, kBuses> busL_{}, busR_{};
     std::array<std::atomic<float>, kChannels> peaks_{};
     std::atomic<float> masterPeak_{0.0f};

@@ -12,6 +12,10 @@ enum class Scale(val label: String, val intervals: List<Int>) {
     MinorPentatonic("Penta mineure", listOf(0, 3, 5, 7, 10)),
     MajorPentatonic("Penta majeure", listOf(0, 2, 4, 7, 9)),
     Blues("Blues", listOf(0, 3, 5, 6, 7, 10)),
+    /** Minor with a flat second: dark and tense (techno, drill, metal). */
+    Phrygian("Phrygienne", listOf(0, 1, 3, 5, 7, 8, 10)),
+    /** Minor with a raised seventh: oriental, dramatic (drill, trance). */
+    HarmonicMinor("Mineure harmonique", listOf(0, 2, 3, 5, 7, 8, 11)),
 }
 
 /**

@@ -66,6 +66,8 @@ class InstrumentUi(
     val sampled: SampledPatch = SampledPatch(),
     /** Opens the sound library to pick the track's sampled sound. */
     val chooseSample: () -> Unit = {},
+    /** Picks a sound file of the phone for it. */
+    val importSample: () -> Unit = {},
     /** [key]: slider drags with the same key merge into one undo step (null = a step of its own). */
     val editSampled: (String?, (SampledPatch) -> SampledPatch) -> Unit = { _, _ -> },
     val sampledMessage: String? = null,

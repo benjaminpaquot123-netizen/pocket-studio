@@ -292,13 +292,22 @@ data class Mixer(
     )
 
     companion object {
-        const val CHANNELS = 16
+        /** 0..15 the tracks (4 is the master's index), 16..31 the drum pads' own strips. */
+        const val CHANNELS = 32
+        const val FIRST_PAD = 16
         const val INSERTS = 4
+
+        /** The strip of drum pad [lane] (its own effects, before the drums' strip). */
+        fun padChannel(lane: Int) = FIRST_PAD + lane
 
         fun sanitizeInserts(inserts: List<Insert>): List<Insert> =
             (inserts + List((INSERTS - inserts.size).coerceAtLeast(0)) { Insert() }).take(INSERTS).map { it.sanitized() }
     }
 }
+
+/** Something on the strip changes the sound (a pad's strip is only used then). */
+fun Channel.hasOwnFx(): Boolean =
+    inserts.any { it.type != 0 } || macros != Macros.DEFAULTS || sends.any { it > 0f } || volume != 0.8f || pan != 0f
 
 @Serializable
 data class Channel(

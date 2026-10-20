@@ -64,7 +64,7 @@ const val MASTER_CHANNEL = 4
 val BASIC_STRIPS = listOf(StripInfo(0, "Batterie"), StripInfo(1, "Basse acide"), StripInfo(2, "Synthé"), StripInfo(3, "Remix"))
 
 /** Index of the limiter gain in the meters (after one peak per mixer channel). */
-const val LIMITER_METER = 16
+const val LIMITER_METER = com.pocketstudio.engine.NativeEngine.MIXER_CHANNELS
 
 data class MixerActions(
     val setVolume: (Int, Float) -> Unit = { _, _ -> },

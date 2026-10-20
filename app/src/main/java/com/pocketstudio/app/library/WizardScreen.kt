@@ -142,7 +142,7 @@ private fun WizardBody(ui: WizardUi, packs: PacksUi, playing: SoundRef?, actions
         ) {
             when (val current = ui.current) {
                 StarterWizard.Step.Style -> StyleStep(ui.styleId, packs, actions)
-                StarterWizard.Step.Mood -> MoodStep(style!!, ui.mood, actions)
+                StarterWizard.Step.Mood -> MoodStep(style!!, ui.mood, packs, actions)
                 is StarterWizard.Step.Drum -> LineStep(style!!, current.line, ui.rows[current.line.role], packs, playing, actions)
                 is StarterWizard.Step.Melodic -> PartStep(style!!, ui, packs, current.part, playing, actions)
                 StarterWizard.Step.Summary -> SummaryStep(ui, style!!)
@@ -185,6 +185,10 @@ private fun StyleStep(chosen: String?, packs: PacksUi, actions: WizardActions) {
                     Text("${s.bpm.roundToInt()} BPM", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
                 }
                 Text(s.description, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                if (s.references.isNotEmpty()) {
+                    Text("Pour l'idée : " + s.references.take(3).joinToString(" · "), style = MaterialTheme.typography.labelMedium,
+                        color = Neon.TextSecondary.copy(alpha = 0.85f), fontStyle = FontStyle.Italic)
+                }
                 if (installed) Text("Pack de sons téléchargé", style = MaterialTheme.typography.labelSmall, color = Neon.Acid)
             }
         }
@@ -265,6 +269,37 @@ private fun LineStep(style: StarterWizard.Style, line: StarterWizard.Line, row: 
     PackOffer(style, packs, actions)
 }
 
+/**
+ * The packs that make the style sound right (its machines, its own sounds) not yet on the phone:
+ * one button gets them all, and the assistant then takes its sounds from them.
+ */
+@Composable
+private fun StylePacks(style: StarterWizard.Style, packs: PacksUi, actions: WizardActions) {
+    val index = (packs.index as? IndexState.Ready)?.index ?: return
+    val missing = style.packs.mapNotNull { id -> index.packs.firstOrNull { it.id == id } }
+        .filter { e -> packs.installed.none { it.id == e.id } }
+    if (missing.isEmpty()) return
+    val downloading = missing.mapNotNull { packs.downloading[it.id] }
+    NeonCard(accent = Neon.Cyan, modifier = Modifier.testTag("wizard_style_packs")) {
+        SectionLabel("Les vrais sons du style")
+        Text(
+            "Pour que ça sonne vraiment ${style.name} : " + missing.joinToString(", ") { it.name } +
+                " (" + mb(missing.sumOf { it.sizeBytes }) + "). L'assistant prendra ses sons dedans.",
+            style = MaterialTheme.typography.bodyMedium,
+        )
+        if (downloading.isNotEmpty()) {
+            LinearProgressIndicator(progress = { downloading.average().toFloat() }, modifier = Modifier.fillMaxWidth(), color = Neon.Cyan)
+        } else {
+            Button(onClick = { missing.forEach { actions.download(it.id) } }, modifier = Modifier.fillMaxWidth().testTag("wizard_style_packs_download")) {
+                Text("Télécharger les sons du style")
+            }
+        }
+    }
+}
+
+private fun mb(bytes: Long) =
+    if (bytes < 1_000_000) "${(bytes / 1000).coerceAtLeast(1)} ko" else String.format(java.util.Locale.FRANCE, "%.1f Mo", bytes / 1e6)
+
 /** The style's own pack: to download (with its size), downloading, or there (and deletable). */
 @Composable
 private fun PackOffer(style: StarterWizard.Style, packs: PacksUi, actions: WizardActions) {
@@ -334,7 +369,8 @@ private fun SummaryStep(ui: WizardUi, style: StarterWizard.Style) {
         if (mood == null) {
             Text("Mélodie : aucune pour l'instant (la batterie seule).", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         } else {
-            Text("Ambiance : ${mood.label} · accords ${mood.chordsLabel}, gamme ${keyName(style.melody.root)} ${mood.scale.label.lowercase()} verrouillée.",
+            Text("Ambiance : ${mood.label} · accords ${StarterWizard.chordsLabel(style, mood)}, gamme ${keyName(style.melody.root)} " +
+                "${StarterWizard.progressionOf(style, mood).first.label.lowercase()} verrouillée.",
                 style = MaterialTheme.typography.bodyMedium)
             StarterWizard.Part.entries.forEach { part ->
                 val row = ui.parts[part]
@@ -360,12 +396,13 @@ private fun keyName(root: Int) = KEY_NAMES[Math.floorMod(root, 12)]
 
 /** The feeling of the song: it picks the scale and the chords, so nothing can sound wrong. */
 @Composable
-private fun MoodStep(style: StarterWizard.Style, mood: StarterWizard.Mood?, actions: WizardActions) {
+private fun MoodStep(style: StarterWizard.Style, mood: StarterWizard.Mood?, packs: PacksUi, actions: WizardActions) {
     Text(
         "Quelle ambiance pour la mélodie ? Je choisis la gamme et les accords qui vont avec, et je verrouille le " +
             "clavier sur cette gamme : impossible de jouer une fausse note, pas besoin de solfège.",
         style = MaterialTheme.typography.bodyMedium,
     )
+    StylePacks(style, packs, actions)
     Text("Touche une ambiance pour l'entendre : ses quatre accords, joués sur le rythme du style.",
         style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
     StarterWizard.Mood.entries.forEach { m ->
@@ -376,7 +413,7 @@ private fun MoodStep(style: StarterWizard.Style, mood: StarterWizard.Mood?, acti
                 Column(Modifier.weight(1f)) {
                     Text(m.label, style = MaterialTheme.typography.titleMedium, color = if (selected) Neon.Cyan else Neon.TextPrimary)
                     Text(m.description, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
-                    Text("Gamme ${keyName(style.melody.root)} ${m.scale.label.lowercase()} · accords ${m.chordsLabel}",
+                    Text("Gamme ${keyName(style.melody.root)} ${StarterWizard.progressionOf(style, m).first.label.lowercase()} · accords ${StarterWizard.chordsLabel(style, m)}",
                         style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary)
                 }
                 RadioButton(selected = selected, onClick = { actions.setMood(m) })

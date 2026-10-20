@@ -1,0 +1,467 @@
+[
+ {
+  "id": "techno",
+  "references": [
+   "Ben Klock – Subzero (2009)",
+   "Adam Beyer & Bart Skils – Your Mind (2018)",
+   "Amelie Lens – Hypnotized (2019)"
+  ],
+  "description_fr": "La techno des grands clubs berlinois : un gros kick sur chaque temps, une basse sourde qui roule entre les coups et quelques sons froids qui tournent en boucle pour faire danser des heures.",
+  "bpm": 132,
+  "swing": 0.0,
+  "root": "F",
+  "drums": [
+   {
+    "role": "kick",
+    "pattern": "X...X...X...X...",
+    "source": "techno",
+    "tip_fr": "Le kick tape chaque temps sans jamais s'arrêter : c'est le moteur du morceau."
+   },
+   {
+    "role": "open_hat",
+    "pattern": "..X...X...X...X.",
+    "source": "tr909",
+    "tip_fr": "La charleston ouverte de la 909 entre chaque kick donne l'élan qui pousse à danser."
+   },
+   {
+    "role": "clap",
+    "pattern": "....X.......X...",
+    "source": "techno",
+    "tip_fr": "Le clap sur les temps 2 et 4 marque le balancement, sec et un peu réverbéré."
+   },
+   {
+    "role": "hat",
+    "pattern": "ox.oox.oox.oox.o",
+    "source": "techno",
+    "tip_fr": "Les petites charlestons fermées remplissent les doubles croches pour que le rythme roule."
+   },
+   {
+    "role": "perc",
+    "pattern": "...x..o...x..o..",
+    "source": "techno",
+    "tip_fr": "Une percussion décalée revient en boucle et rend le groove hypnotique."
+   }
+  ],
+  "progressions": {
+   "dark": {
+    "scale": "phrygian",
+    "degrees": [
+     0,
+     0,
+     0,
+     1
+    ]
+   },
+   "happy": {
+    "scale": "dorian",
+    "degrees": [
+     0,
+     0,
+     3,
+     3
+    ]
+   },
+   "future": {
+    "scale": "minor",
+    "degrees": [
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   "dreamy": {
+    "scale": "minor",
+    "degrees": [
+     0,
+     0,
+     5,
+     5
+    ]
+   }
+  },
+  "chords": {
+   "type": "stab",
+   "rhythm": "...X......X.....",
+   "voicing": "seventh",
+   "octave": 3,
+   "sound": "Pluck"
+  },
+  "bass": {
+   "pattern": ".rRr.rRr.rRr.rRr",
+   "octave": 2,
+   "sound": "Basse analogique",
+   "glide": false
+  },
+  "lead": {
+   "type": "riff",
+   "pattern": "R..O..R..O..R.O.",
+   "arp_rate": 24,
+   "octave": 4,
+   "sound": "Lead filtré"
+  },
+  "acid": {
+   "use": false,
+   "pattern": "",
+   "accents": "",
+   "slides": ""
+  },
+  "defaults": {
+   "bass": true,
+   "chords": true,
+   "lead": false
+  },
+  "notes": "Harmony is almost static: one dark chord, at most a half-step move (phrygian i-bII). The rolling bass sits only on the three 16ths between kicks (imitates the Berghain 'rumble' tail, never on the kick). The chord is a short dub stab (minor 7th) best with a long 3/16 delay; keep it sparse. Berghain sets run 128-135 BPM, peak-time (Drumcode/KNTXT) 130-138. Optional lead = 3-3-3-3-2-2 one-note hypnotic synth loop."
+ },
+ {
+  "id": "retro_techno",
+  "references": [
+   "Second Phase – Mentasm (1991)",
+   "Human Resource – Dominator (1991)",
+   "T99 – Anasthasia (1991)",
+   "2 Unlimited – Get Ready for This (1991)"
+  ],
+  "description_fr": "La techno rave belge et hollandaise du début des années 90 : boîte à rythmes 909 et un seul gros riff d'accords frappés (chœurs, orchestre) ou de synthé « aspirateur » (hoover) qui tourne en boucle et porte tout le morceau.",
+  "bpm": 130,
+  "swing": 0.0,
+  "root": "D",
+  "drums": [
+   {
+    "role": "kick",
+    "pattern": "X...X...X...X...",
+    "source": "tr909",
+    "tip_fr": "Le kick 909 sur chaque temps, bien sec et puissant, comme dans les raves de 1991."
+   },
+   {
+    "role": "clap",
+    "pattern": "....X.......X...",
+    "source": "tr909",
+    "tip_fr": "Le clap 909 sur les temps 2 et 4 claque comme dans une grande salle."
+   },
+   {
+    "role": "open_hat",
+    "pattern": "..X...X...X...X.",
+    "source": "tr909",
+    "tip_fr": "La charleston ouverte entre les kicks fait le « tchi » qui pousse à sauter."
+   },
+   {
+    "role": "hat",
+    "pattern": "xo.oxo.oxo.oxo.o",
+    "source": "tr909",
+    "tip_fr": "Les charlestons fermées remplissent les trous pour que ça file vite."
+   },
+   {
+    "role": "snare",
+    "pattern": "............................oxXX",
+    "source": "tr909",
+    "tip_fr": "Un petit roulement de caisse claire toutes les deux mesures relance l'énergie."
+   },
+   {
+    "role": "perc",
+    "pattern": "...o...x...o..x.",
+    "source": "retro_techno",
+    "tip_fr": "Une percussion rave discrète ajoute du mouvement sans gêner le riff."
+   }
+  ],
+  "progressions": {
+   "dark": {
+    "scale": "minor",
+    "degrees": [
+     0,
+     0,
+     5,
+     6
+    ]
+   },
+   "happy": {
+    "scale": "major",
+    "degrees": [
+     0,
+     0,
+     3,
+     4
+    ]
+   },
+   "future": {
+    "scale": "phrygian",
+    "degrees": [
+     0,
+     0,
+     1,
+     1
+    ]
+   },
+   "dreamy": {
+    "scale": "minor",
+    "degrees": [
+     0,
+     5,
+     2,
+     6
+    ]
+   }
+  },
+  "chords": {
+   "type": "stab",
+   "rhythm": "X-----X-----X---",
+   "voicing": "single",
+   "octave": 3,
+   "sound": "Hoover"
+  },
+  "bass": {
+   "pattern": "..R...R...R...O.",
+   "octave": 2,
+   "sound": "Basse analogique",
+   "glide": false
+  },
+  "lead": {
+   "type": "riff",
+   "pattern": "R..R..O.R..R..3.",
+   "arp_rate": 24,
+   "octave": 4,
+   "sound": "pack:retro_techno:stab"
+  },
+  "acid": {
+   "use": false,
+   "pattern": "",
+   "accents": "",
+   "slides": ""
+  },
+  "defaults": {
+   "bass": true,
+   "chords": false,
+   "lead": true
+  },
+  "notes": "The hook is ONE riff, never pop chords or a pad: tracks of 1990-92 used only 2-3 elements built around one motif. In 1991 a stab was a one-shot sample of a chord (choir, orchestra hit) or a hoover, repitched and played across the keyboard as a tune, so the chord moves in PARALLEL. That is why the default hook is the 'lead' riff played with the retro_techno stab sample, one note per hit (the sample already holds the chord: never stack a triad on it), in the 3-3-2 rave rhythm with a jump to the octave and a parallel chord on the minor third (very hardcore). Optional alternative (chords part, off by default): a Mentasm/Dominator style Hoover (Alpha Juno 'What the' patch) holding long notes, ideally with a downward pitch bend at the end of each note; switch the stab riff off when using it. Drums are plain TR-909 (kick, clap 2 and 4, open hat on every offbeat, snare roll every 2 bars). Tempo 125-135 (Mentasm ~127, Anasthasia ~128). Minor key, chord root changes every 1-2 bars at most."
+ },
+ {
+  "id": "acid_techno",
+  "references": [
+   "Hardfloor – Acperience 1 (1992)",
+   "Plastikman – Krakpot (1993)",
+   "Emmanuel Top – Acid Phase (1995)",
+   "Josh Wink – Higher State of Consciousness (1995)"
+  ],
+  "description_fr": "La techno acide : une ligne de basse qui couine et se tord (la célèbre TB-303 de Roland) tourne en boucle sur un rythme de boîte à rythmes 909 rapide et sec.",
+  "bpm": 135,
+  "swing": 0.0,
+  "root": "A",
+  "drums": [
+   {
+    "role": "kick",
+    "pattern": "X...X...X...X...",
+    "source": "acid_techno",
+    "tip_fr": "Un kick 909 un peu saturé sur chaque temps, qui cogne sans s'arrêter."
+   },
+   {
+    "role": "clap",
+    "pattern": "....X.......X...",
+    "source": "acid_techno",
+    "tip_fr": "Le clap sur les temps 2 et 4 laisse toute la place à la ligne acide."
+   },
+   {
+    "role": "open_hat",
+    "pattern": "..X...X...X...X.",
+    "source": "tr909",
+    "tip_fr": "La charleston ouverte 909 entre les kicks donne le galop typique."
+   },
+   {
+    "role": "hat",
+    "pattern": "xo.oxo.oxo.oxo.o",
+    "source": "tr909",
+    "tip_fr": "Des charlestons fermées en doubles croches font avancer le tout très vite."
+   },
+   {
+    "role": "perc",
+    "pattern": "...x......x..o..",
+    "source": "acid_techno",
+    "tip_fr": "Une percussion décalée répond à la 303 sans la couvrir."
+   }
+  ],
+  "progressions": {
+   "dark": {
+    "scale": "phrygian",
+    "degrees": [
+     0,
+     0,
+     0,
+     1
+    ]
+   },
+   "happy": {
+    "scale": "dorian",
+    "degrees": [
+     0,
+     0,
+     3,
+     3
+    ]
+   },
+   "future": {
+    "scale": "minor",
+    "degrees": [
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   "dreamy": {
+    "scale": "minor",
+    "degrees": [
+     0,
+     0,
+     5,
+     5
+    ]
+   }
+  },
+  "chords": {
+   "type": "stab",
+   "rhythm": "X.....X.........",
+   "voicing": "single",
+   "octave": 4,
+   "sound": "pack:acid_techno:stab"
+  },
+  "bass": {
+   "pattern": "..R...R...R...R.",
+   "octave": 1,
+   "sound": "Basse sub",
+   "glide": false
+  },
+  "lead": {
+   "type": "riff",
+   "pattern": "O..O..O..O..O.5.",
+   "arp_rate": 24,
+   "octave": 4,
+   "sound": "Lead acide"
+  },
+  "acid": {
+   "use": true,
+   "pattern": "RRO.RO.3R.OR7.O5",
+   "accents": "..x....x..x...x.",
+   "slides": ".x.........x..x."
+  },
+  "defaults": {
+   "bass": false,
+   "chords": false,
+   "lead": false
+  },
+  "notes": "The TB-303 line IS the track and the bass: keep the separate bass off (or a very quiet sub under it) and no pad. 303 recipe: mostly root notes, octave jumps, a b3 and b7, rests for staccato contrast; slides only into octave jumps (R slides up to O, O slides down to 5), accents sparse (4 per bar) on offbeat 16ths just before kicks. Start with high resonance and low cutoff, open the filter slowly over 8-16 bars and push distortion; the bar-4 half-step move (phrygian) is classic. Drums: (distorted) 909 kick, 909 open hat on offbeats, 16th closed hats, clap 2 and 4. Tempo: Plastikman/Hardfloor ~130, London (Liberator, Stay Up Forever) and modern acid techno 135-145. Optional layer: a second, higher 303-like riff (lead) in a 3-step loop against the 4/4."
+ },
+ {
+  "id": "detroit",
+  "references": [
+   "Model 500 – No UFO's (1985)",
+   "Rhythim Is Rhythim – Strings of Life (1987)",
+   "Jeff Mills – The Bells (1996)",
+   "DJ Rolando – Knights of the Jaguar (1999)"
+  ],
+  "description_fr": "La techno née à Detroit : une batterie de boîte à rythmes 909 qui roule, des accords de cordes un peu mélancoliques et des petites mélodies de synthé, entre machine froide et âme soul.",
+  "bpm": 130,
+  "swing": 0.1,
+  "root": "A",
+  "drums": [
+   {
+    "role": "kick",
+    "pattern": "X...X...X...X...",
+    "source": "detroit",
+    "tip_fr": "Le kick 909 sur chaque temps, régulier comme une chaîne d'usine automobile."
+   },
+   {
+    "role": "snare",
+    "pattern": "....X.......X...",
+    "source": "tr909",
+    "tip_fr": "La caisse claire 909 sur les temps 2 et 4, comme dans Strings of Life."
+   },
+   {
+    "role": "hat",
+    "pattern": "xoxoxoxoxoxoxoxo",
+    "source": "tr909",
+    "tip_fr": "Des charlestons en doubles croches qui roulent sans arrêt, à la Jeff Mills."
+   },
+   {
+    "role": "open_hat",
+    "pattern": "..X...X...X...X.",
+    "source": "detroit",
+    "tip_fr": "La charleston ouverte entre les kicks donne l'élan."
+   },
+   {
+    "role": "perc",
+    "pattern": "..x..x.o..x..x.o",
+    "source": "detroit",
+    "tip_fr": "Le rimshot ne tombe jamais avec le kick : il lui répond et donne le côté funky."
+   }
+  ],
+  "progressions": {
+   "dark": {
+    "scale": "minor",
+    "degrees": [
+     0,
+     6,
+     5,
+     6
+    ]
+   },
+   "happy": {
+    "scale": "dorian",
+    "degrees": [
+     0,
+     3,
+     0,
+     3
+    ]
+   },
+   "future": {
+    "scale": "minor",
+    "degrees": [
+     0,
+     0,
+     3,
+     3
+    ]
+   },
+   "dreamy": {
+    "scale": "dorian",
+    "degrees": [
+     0,
+     1,
+     0,
+     1
+    ]
+   }
+  },
+  "chords": {
+   "type": "stab",
+   "rhythm": "X-.X-.X-..X-.X-.",
+   "voicing": "seventh",
+   "octave": 3,
+   "sound": "Machine à cordes"
+  },
+  "bass": {
+   "pattern": "R..O..R.r..O..R.",
+   "octave": 2,
+   "sound": "Basse ronde",
+   "glide": false
+  },
+  "lead": {
+   "type": "arp",
+   "pattern": "",
+   "arp_rate": 24,
+   "octave": 5,
+   "sound": "Cloche"
+  },
+  "acid": {
+   "use": false,
+   "pattern": "",
+   "accents": "",
+   "slides": ""
+  },
+  "defaults": {
+   "bass": true,
+   "chords": true,
+   "lead": false
+  },
+  "notes": "Detroit harmony = minor 7th chords moved in parallel (Juno/DW-8000 chord memory, or a sampled chord played with one finger), often string sounds; dorian i7-IV7 or i7-ii7 vamps. Chords hit in a syncopated 3-3-4-3-3 pattern with short holds so the strings swell (Strings of Life); the detroit pack stab played one note per hit is a good alternative sound. Drums: 909 through 12-bit grit, light MPC swing (55-58%), rimshot never on the kick, 16th hats rolling. Strings of Life has no bassline at all, so the bass can stay simple. Jeff Mills variant: 135-140 BPM, straight, rolling hats and toms, one hypnotic bell/synth loop (The Bells) instead of chords. Optional lead: 1/16 bell arpeggio over the chord."
+ }
+]

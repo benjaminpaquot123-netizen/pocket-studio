@@ -1322,6 +1322,113 @@ void testPadParamCommandsReachTheSampler() {
     CHECK(engine.padParams(2).gain == 1.0f);
 }
 
+void testPadStrips() {
+    // Two fixed sounds (the synthesized snare draws noise: never the same twice): a low tone on pad
+    // 0, a high one on pad 2, hit live after half a second for the faders to settle.
+    std::vector<float> low(4800), high(4800);
+    for (int i = 0; i < 4800; ++i) {
+        const float fade = 1.0f - i / 4800.0f;
+        low[size_t(i)] = 0.5f * fade * std::sin(2.0f * float(M_PI) * 110.0f * i / kRate);
+        high[size_t(i)] = 0.5f * fade * std::sin(2.0f * float(M_PI) * 1760.0f * i / kRate);
+    }
+    auto engineWithSounds = [&]() {
+        auto e = std::make_unique<ps::Engine>(kRate);
+        e->post({ps::CommandType::InstallSample, 0.0f, 0, 0, ps::Sample::create(low.data(), 4800, 1, kRate, kRate)});
+        e->post({ps::CommandType::InstallSample, 0.0f, 2, 0, ps::Sample::create(high.data(), 4800, 1, kRate, kRate)});
+        return e;
+    };
+    auto hit = [](ps::Engine& e, bool kick, bool snare) {
+        render(e, 24000, 256);
+        if (kick) e.post({ps::CommandType::TriggerPad, 1.0f, 0});
+        if (snare) e.post({ps::CommandType::TriggerPad, 1.0f, 2});
+        return render(e, 9600, 256);
+    };
+    auto distance = [](const std::vector<float>& a, const std::vector<float>& b) {
+        double d = 0.0;
+        for (size_t i = 0; i < a.size(); ++i) d = std::max(d, static_cast<double>(std::fabs(a[i] - b[i])));
+        return d;
+    };
+    auto energy = [](const std::vector<float>& v) {
+        double e = 0.0;
+        for (float x : v) e += static_cast<double>(x) * x;
+        return e;
+    };
+    auto plain = engineWithSounds();
+    auto alone = engineWithSounds();
+    const auto both = hit(*plain, true, true);
+    const auto snare = hit(*alone, false, true);
+    CHECK(energy(both) > 1.5 * energy(snare));
+
+    // A pad through its own strip, nothing on it: the same sound.
+    auto routed = engineWithSounds();
+    routed->post({ps::CommandType::SetPadStrip, 1.0f, 0});
+    CHECK(distance(hit(*routed, true, true), both) < 1e-4);
+
+    // The kick's strip down: the snare alone is left, untouched.
+    auto quiet = engineWithSounds();
+    quiet->post({ps::CommandType::SetPadStrip, 1.0f, 0});
+    quiet->post({ps::CommandType::SetChannelVolume, 0.0f, ps::Mixer::kFirstPad + 0});
+    CHECK(distance(hit(*quiet, true, true), snare) < 1e-4);
+
+    // A pad not routed ignores its strip's settings.
+    auto unrouted = engineWithSounds();
+    unrouted->post({ps::CommandType::SetChannelVolume, 0.0f, ps::Mixer::kFirstPad + 2});
+    CHECK(distance(hit(*unrouted, false, true), snare) < 1e-4);
+
+    // The drums muted: their pads with them, strips included.
+    auto muted = engineWithSounds();
+    muted->post({ps::CommandType::SetPadStrip, 1.0f, 0});
+    muted->post({ps::CommandType::SetChannelMute, 1.0f, ps::Mixer::kDrums});
+    CHECK(energy(hit(*muted, true, true)) < 1e-9);
+
+    // The drums' fader and saturation apply exactly once to a routed pad: the same as unrouted.
+    auto drumsSettings = [](ps::Engine& e) {
+        e.post({ps::CommandType::SetChannelVolume, 0.5f, ps::Mixer::kDrums});
+        e.post({ps::CommandType::SetInsertType, 0.0f, ps::Mixer::kDrums * ps::Mixer::kInserts, ps::InsertSlot::Saturation});
+        e.post({ps::CommandType::SetInsertParam, 0.8f, ps::Mixer::kDrums * ps::Mixer::kInserts, 0});
+    };
+    auto shapedPlain = engineWithSounds();
+    drumsSettings(*shapedPlain);
+    auto shapedRouted = engineWithSounds();
+    drumsSettings(*shapedRouted);
+    shapedRouted->post({ps::CommandType::SetPadStrip, 1.0f, 0});
+    const auto shaped = hit(*shapedPlain, true, true);
+    CHECK(distance(hit(*shapedRouted, true, true), shaped) < 1e-4);
+    CHECK(distance(shaped, both) > 1e-2);  // the settings do change the sound
+
+    // An effect on the kick's strip changes the kick, not the snare.
+    auto crushed = engineWithSounds();
+    crushed->post({ps::CommandType::SetPadStrip, 1.0f, 0});
+    crushed->post({ps::CommandType::SetInsertType, 0.0f, (ps::Mixer::kFirstPad + 0) * ps::Mixer::kInserts, ps::InsertSlot::Crusher});
+    CHECK(distance(hit(*crushed, true, true), both) > 1e-2);
+    auto crushedSnare = engineWithSounds();
+    crushedSnare->post({ps::CommandType::SetPadStrip, 1.0f, 0});
+    crushedSnare->post({ps::CommandType::SetInsertType, 0.0f, (ps::Mixer::kFirstPad + 0) * ps::Mixer::kInserts, ps::InsertSlot::Crusher});
+    CHECK(distance(hit(*crushedSnare, false, true), snare) < 1e-4);
+
+    // A pad's reverb follows the drums' fader: drums down, nothing left, reverb included.
+    auto wet = engineWithSounds();
+    wet->post({ps::CommandType::SetPadStrip, 1.0f, 0});
+    wet->post({ps::CommandType::SetSend, 1.0f, ps::Mixer::kFirstPad + 0, 0});
+    wet->post({ps::CommandType::SetChannelVolume, 0.4f, ps::Mixer::kDrums});
+    auto dry = engineWithSounds();
+    dry->post({ps::CommandType::SetPadStrip, 1.0f, 0});
+    dry->post({ps::CommandType::SetChannelVolume, 0.4f, ps::Mixer::kDrums});
+    const double reverb = energy(hit(*wet, true, false)) - energy(hit(*dry, true, false));
+    CHECK(reverb > 1e-6);
+    auto wetDown = engineWithSounds();
+    wetDown->post({ps::CommandType::SetPadStrip, 1.0f, 0});
+    wetDown->post({ps::CommandType::SetSend, 1.0f, ps::Mixer::kFirstPad + 0, 0});
+    wetDown->post({ps::CommandType::SetChannelVolume, 0.0f, ps::Mixer::kDrums});
+    CHECK(energy(hit(*wetDown, true, false)) < 1e-9);
+
+    // Another strip soloed: the pads (routed or not) are cut with the drums.
+    auto solo = engineWithSounds();
+    solo->post({ps::CommandType::SetPadStrip, 1.0f, 0});
+    solo->post({ps::CommandType::SetChannelSolo, 1.0f, 1});
+    CHECK(energy(hit(*solo, true, true)) < 1e-9);
+}
+
 void testOnsetsFindTheHits() {
     // Four decaying noise bursts (like drum hits) at known places, with soft noise between.
     const int frames = kRate * 2;
@@ -1791,6 +1898,13 @@ void testProcessNeverAllocates() {
                 engine.post({ps::CommandType::SetSend, 0.5f, ch, 1});
             }
         }
+        // Two pads through their own strips, with an effect and a send of their own.
+        for (int lane : {0, 3}) {
+            const int ch = ps::Mixer::kFirstPad + lane;
+            engine.post({ps::CommandType::SetPadStrip, 1.0f, lane});
+            engine.post({ps::CommandType::SetInsertType, 0.0f, ch * ps::Mixer::kInserts, 1 + lane % 13});
+            engine.post({ps::CommandType::SetSend, 0.5f, ch, 0});
+        }
         engine.post({ps::CommandType::SetTransport, 1.0f, 0});
         std::vector<float> out(512 * 2);
         for (int i = 0; i < 50; ++i) engine.process(nullptr, 0, 0, out.data(), 512, 2);  // warm-up
@@ -1798,6 +1912,7 @@ void testProcessNeverAllocates() {
         g_countAllocations = true;
         for (int i = 0; i < 400; ++i) {
             if (i % 50 == 0) engine.post({ps::CommandType::TriggerPad, 1.0f, 3});
+            if (i % 35 == 0) engine.post({ps::CommandType::SetPadStrip, (i / 35) % 2 ? 0.0f : 1.0f, 3});  // routed, then not
             if (i % 70 == 0) engine.post({ps::CommandType::SynthNoteOn, 0.9f, 60 + i % 12});
             if (i % 40 == 0) engine.post({ps::CommandType::SetInsertParam, (i % 80) / 80.0f, 1, 0});
             if (i % 60 == 0) engine.post({ps::CommandType::SetInsertType, 0.0f, 5, 1 + (i / 60) % 13});
@@ -3265,6 +3380,7 @@ int main(int argc, char** argv) {
     }
     const TestCase tests[] = {
         {"spsc_queue", testSpscQueue},
+        {"pad_strips", testPadStrips},
         {"spsc_float_ring", testSpscFloatRing},
         {"silent_when_stopped", testSilentWhenStopped},
         {"sine_four_bars", testSineFourBars},

@@ -221,13 +221,20 @@ float DrumKit::renderVoice(int voice, bool trig, float v) {
 }
 
 void DrumKit::render(float* mono, int numFrames) {
-    renderTo(numFrames, [mono](int i, float x, float, float) { mono[i] += x; });
+    renderTo(numFrames, [mono](int, int i, float x, float, float) { mono[i] += x; });
 }
 
 void DrumKit::render(float* left, float* right, int numFrames) {
-    renderTo(numFrames, [left, right](int i, float x, float gl, float gr) {
+    renderTo(numFrames, [left, right](int, int i, float x, float gl, float gr) {
         left[i] += x * gl;
         right[i] += x * gr;
+    });
+}
+
+void DrumKit::render(float* const* lefts, float* const* rights, int numFrames) {
+    renderTo(numFrames, [lefts, rights](int voice, int i, float x, float gl, float gr) {
+        lefts[voice][i] += x * gl;
+        rights[voice][i] += x * gr;
     });
 }
 
@@ -258,7 +265,7 @@ void DrumKit::renderTo(int numFrames, Sink&& sink) {
             const float sample = renderVoice(voice, i == pending, velocity);
             if (remaining <= 0) continue;
             const float fade = remaining < fadeLength ? static_cast<float>(remaining) / fadeLength : 1.0f;
-            sink(i, gain * fade * sample, gl, gr);
+            sink(voice, i, gain * fade * sample, gl, gr);
             --remaining;
         }
         gainL_[idx] = gl;

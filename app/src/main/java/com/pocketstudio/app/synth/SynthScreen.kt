@@ -51,6 +51,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.pocketstudio.app.settings.SettingsStore
+import com.pocketstudio.app.settings.KeyLayout
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.draw.shadow
@@ -134,6 +138,12 @@ fun SynthScreen(
     var showNotes by rememberSaveable { mutableStateOf(startWithNotes) }
     var chordKeys by rememberSaveable { mutableStateOf(false) }
     var chordPads by rememberSaveable { mutableStateOf(false) }
+    // The keyboard layout and the note names are the user's, for every project.
+    val context = LocalContext.current
+    val settings by SettingsStore.state.collectAsState()
+    val keyLayout = settings.keyLayout
+    val setKeyLayout: (KeyLayout) -> Unit = { l -> SettingsStore.update(context) { it.copy(keyLayout = l) } }
+    val english = settings.englishNotes
     val harmony = notes?.harmony ?: Harmony()
     // One finger, one chord of the scale (keyboard "Accords" switch).
     val keyOn: (Int, Float) -> Unit = if (chordKeys) { n, _ -> actions.chordOn(n) } else actions.noteOn
@@ -203,10 +213,7 @@ fun SynthScreen(
                 if (chordPads) {
                     ChordPads(harmony, 12 * (octave + 1), actions.noteOn, actions.noteOff, height = keyboardHeight)
                 } else {
-                    Keyboard(
-                        firstNote = 12 * (octave + 1), octaves = 3,
-                        onNoteOn = keyOn, onNoteOff = keyOff, height = keyboardHeight, harmony = harmony,
-                    )
+                    PlayKeys(keyLayout, octave, 3, harmony, english, keyOn, keyOff, keyboardHeight)
                 }
             }
         } else {
@@ -218,7 +225,8 @@ fun SynthScreen(
                 if (notes != null) ModeSwitch(showNotes) { showNotes = it }
                 KeyboardCard(octave, octaves = 2, height = 150.dp, actions = actions, harmony = harmony, chordKeys = chordKeys,
                     onChordKeys = { chordKeys = it }, keyOn = keyOn, keyOff = keyOff, play = play, playActions = playActions,
-                    chordPads = chordPads, onChordPads = { chordPads = it }, modifier = trackKeyboard)
+                    chordPads = chordPads, onChordPads = { chordPads = it }, modifier = trackKeyboard,
+                    keyLayout = keyLayout, onKeyLayout = setKeyLayout, english = english)
                 SoundArea(trackSounds) {
                     instrument?.let { InstrumentPanel(it) }
                     if (instrument?.current == null) {
@@ -237,6 +245,7 @@ fun SynthScreen(
                 visible = wanted, folded = floatFolded, onFold = { floatFolded = it },
                 octave = octave, octaves = if (landscape) 3 else 2, keysHeight = floatKeys, actions = actions, harmony = harmony,
                 chordPads = chordPads, keyOn = keyOn, keyOff = keyOff, modifier = Modifier.align(Alignment.BottomCenter),
+                keyLayout = keyLayout, english = english,
             )
         }
     }
@@ -264,6 +273,9 @@ private fun KeyboardCard(
     chordPads: Boolean = false,
     onChordPads: (Boolean) -> Unit = {},
     modifier: Modifier = Modifier,
+    keyLayout: KeyLayout = KeyLayout.TwoOctaves,
+    onKeyLayout: (KeyLayout) -> Unit = {},
+    english: Boolean = false,
 ) {
     NeonCard(modifier = modifier) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -275,8 +287,17 @@ private fun KeyboardCard(
             if (!chordPads) ChordChip(chordKeys, onChordKeys)
             ChordPadsChip(chordPads, onChordPads)
         }
+        if (!chordPads) {
+            // Fewer, wider keys for the fingers and to learn: one octave named, or only the notes of the key.
+            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                KeyLayout.entries.forEach { l ->
+                    FilterChip(selected = keyLayout == l, onClick = { onKeyLayout(l) }, label = { Text(l.label) }, colors = chipColors(),
+                        modifier = Modifier.testTag("key_layout_${l.name}"))
+                }
+            }
+        }
         if (chordPads) ChordPads(harmony, 12 * (octave + 1), actions.noteOn, actions.noteOff, height = height)
-        else Keyboard(firstNote = 12 * (octave + 1), octaves = octaves, onNoteOn = keyOn, onNoteOff = keyOff, height = height, harmony = harmony)
+        else PlayKeys(keyLayout, octave, octaves, harmony, english, keyOn, keyOff, height)
         play?.let { PlayPanel(it, playActions) }
     }
 }
@@ -418,18 +439,22 @@ fun Keyboard(
     /** Test tags: several keyboards can be on screen (the floating one). */
     tag: String = "keyboard",
     keyTag: String = "key",
+    /** One more white key: the octave ends on its Do, as a scale is sung (Do to Do). */
+    topC: Boolean = false,
+    /** The name written at the bottom of a white key, if any. */
+    label: (Int) -> String? = { null },
 ) {
-    val whiteCount = 7 * octaves
+    val whiteCount = 7 * octaves + if (topC) 1 else 0
     BoxWithConstraints(Modifier.fillMaxWidth().height(height).testTag(tag)) {
         val whiteWidth = maxWidth / whiteCount
         Row(Modifier.fillMaxSize()) {
             for (w in 0 until whiteCount) {
                 val note = firstNote + 12 * (w / 7) + WHITE_OFFSETS[w % 7]
-                Key(note, isBlack = false, Modifier.width(whiteWidth).fillMaxHeight(), onNoteOn, onNoteOff, harmony, keyTag)
+                Key(note, isBlack = false, Modifier.width(whiteWidth).fillMaxHeight(), onNoteOn, onNoteOff, harmony, keyTag, label(note))
             }
         }
         for (w in 0 until whiteCount) {
-            if (w % 7 !in BLACK_KEY_AFTER_WHITE) continue
+            if (w % 7 !in BLACK_KEY_AFTER_WHITE || w == whiteCount - 1) continue
             val note = firstNote + 12 * (w / 7) + WHITE_OFFSETS[w % 7] + 1
             Key(
                 note,
@@ -453,6 +478,7 @@ private fun Key(
     onNoteOff: (Int) -> Unit,
     harmony: Harmony = Harmony(),
     keyTag: String = "key",
+    label: String? = null,
 ) {
     var down by remember { mutableStateOf(false) }
     val outside = harmony.scale != Scale.Off && !harmony.inScale(note)
@@ -464,7 +490,8 @@ private fun Key(
         isBlack && outside -> Color(0xFF15171A)
         isBlack -> Color(0xFF1C1F24)
         outside -> Color(0xFF9EA2AA)  // out of the scale: greyed, still playable
-        Math.floorMod(note - harmony.root, 12) == 0 && harmony.scale != Scale.Off -> Color(0xFFDCEFF5)
+        // The root in pale accent, as on the scale keys.
+        Math.floorMod(note - harmony.root, 12) == 0 && harmony.scale != Scale.Off -> lerp(Neon.Cyan, Color.White, 0.55f)
         else -> Color(0xFFF7F7F3)
     }
     // Keys in relief: lit from above, a darker lip at the bottom; the pressed one glows.
@@ -498,5 +525,13 @@ private fun Key(
                 })
             }
             .testTag("${keyTag}_$note"),
-    )
+        contentAlignment = Alignment.BottomCenter,
+    ) {
+        if (label != null) {
+            Text(
+                label, style = MaterialTheme.typography.labelMedium, maxLines = 1, softWrap = false,
+                color = if (down) Neon.OnAccent else Color(0xFF5B6068), modifier = Modifier.padding(bottom = 6.dp),
+            )
+        }
+    }
 }

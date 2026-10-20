@@ -89,16 +89,16 @@ struct InstrumentTrack {
         }
     }
     void liveOff(int n) {
-        if (!arp.on) {
-            noteOff(n, 0);
-            return;
+        if (arp.on) {
+            for (int i = 0; i < arp.count; ++i) {
+                if (arp.held[static_cast<size_t>(i)] != n) continue;
+                for (int k = i; k + 1 < arp.count; ++k) arp.held[static_cast<size_t>(k)] = arp.held[static_cast<size_t>(k + 1)];
+                --arp.count;
+                return;
+            }
         }
-        for (int i = 0; i < arp.count; ++i) {
-            if (arp.held[static_cast<size_t>(i)] != n) continue;
-            for (int k = i; k + 1 < arp.count; ++k) arp.held[static_cast<size_t>(k)] = arp.held[static_cast<size_t>(k + 1)];
-            --arp.count;
-            break;
-        }
+        // Not an arpeggiated key (or held since before the arpeggiator came on): it sounds, release it.
+        noteOff(n, 0);
     }
     void setExpression(int kind, float value) {
         switch (kind) {
@@ -130,10 +130,12 @@ struct InstrumentTrack {
         }
     }
     // A sequencer step (transport running): the arpeggio lines up with the grid.
-    void arpSync(int offset, int step) {
+    void arpSync(int offset, int step, double stepFrames) {
         if (!arp.on || arp.count == 0) return;
         const int half = static_cast<int>(arp.steps * 2.0f + 0.5f);  // rate in 32nds
         if (half > 1 && (step * 2) % half != 0) return;
+        // Just fired (on the edge of the previous block): already in time, no second note.
+        if (arp.next - offset > 0.5 * stepFrames * arp.steps) return;
         arp.next = offset;
     }
     // Plays the arpeggio for this block (before rendering), `stepFrames` = a sixteenth.

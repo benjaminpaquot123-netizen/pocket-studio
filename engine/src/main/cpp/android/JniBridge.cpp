@@ -366,6 +366,11 @@ JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_recordFi
     return out;
 }
 
+// Steps since the song (re)started (song automation), -1 when stopped.
+JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_songStep(JNIEnv*, jobject) {
+    return static_cast<jint>(host().engine().songStep());
+}
+
 // --- Analyser and tuner ---
 
 // The last Engine::kScopeFrames of the output (mono) or of the microphone into `out`.

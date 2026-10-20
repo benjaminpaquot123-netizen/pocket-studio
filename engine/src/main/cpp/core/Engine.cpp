@@ -78,6 +78,8 @@ void Engine::applyCommand(const Command& command) {
             if (command.value > 0.5f) {
                 sequencer_.start(std::clamp(command.a, 0, 4));
                 sceneStart_ = 0;
+                songStart_ = 0;
+                songRestart_ = false;
                 lastLocal_ = -1;
                 playPosition_.store(-1.0, std::memory_order_relaxed);
             } else {
@@ -97,6 +99,7 @@ void Engine::applyCommand(const Command& command) {
                 }
                 currentStep_.store(-1, std::memory_order_relaxed);
                 absoluteStep_.store(-1, std::memory_order_relaxed);
+                songStep_.store(-1, std::memory_order_relaxed);
                 playPosition_.store(-1.0, std::memory_order_relaxed);
                 lastLocal_ = -1;
             }
@@ -206,6 +209,7 @@ void Engine::applyCommand(const Command& command) {
             break;
         case CommandType::ArmSceneSwap:
             swapAt_ = command.a < 0 ? -1 : command.a;
+            songRestart_ = command.b == 1;  // the waiting scene starts the song over (it loops)
             staging_ = false;  // arming ends a staging burst even if its "off" was dropped
             break;
         case CommandType::SetAcidRoot:
@@ -395,10 +399,11 @@ void Engine::onStep(int offset, int step) {
     audio_.onStep(offset, local);
     for (auto& t : tracks_) {
         if (t.on) t.notes.onStep(offset, local, sequencer_.samplesPerStep());
-        t.arpSync(offset, step);
+        t.arpSync(offset, step, sequencer_.samplesPerStep());
     }
     const int patternStep = local % patternSteps_;
-    applyAutomation(patternStep, step);
+    songStep_.store(step - songStart_, std::memory_order_relaxed);
+    applyAutomation(patternStep, step - songStart_);
     // Sidechain pumps follow the kick lane (pad 1) or every quarter note.
     mixer_.sidechainEvent(offset, pattern_[0][patternStep] > 0.0f, onBeat);
     currentStep_.store(patternStep, std::memory_order_relaxed);
@@ -453,6 +458,8 @@ void Engine::swapScene(int step) {
         lane.hasStaged = false;
     }
     sceneStart_ = step;
+    if (songRestart_) songStart_ = step;
+    songRestart_ = false;
     swapAt_ = -1;
     sceneSwaps_.fetch_add(1, std::memory_order_relaxed);
 }

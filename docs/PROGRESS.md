@@ -102,5 +102,5 @@
   - Ableton Link reporté (bibliothèque réseau lourde).
 
 ## Prochaine étape exacte
-1. Revue de fin de phase 8 (sous-agent neuf), corrections, CI verte, fusion de la PR #18.
+1. Revue de fin de phase 8 faite et corrigée ; CI verte puis fusion de la PR #18.
 2. Phase 9 (voir ROADMAP.md).

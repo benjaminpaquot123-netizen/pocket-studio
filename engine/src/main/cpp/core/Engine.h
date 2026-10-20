@@ -69,7 +69,8 @@ enum class CommandType : uint8_t {
     SetStaging,           // value 1: the next pattern commands (drums, acid, piano roll) fill the
                           // waiting scene instead of the playing one; 0: back to the playing one
     ArmSceneSwap,         // a > 0: the waiting scene replaces the playing one after `a` steps of the
-                          // current scene; a = 0: at the next bar; a < 0: cancel
+                          // current scene; a = 0: at the next bar; a < 0: cancel. b = 1: it starts
+                          // the song over (song automation counts from there)
     SetPerformance,       // a: PerformanceFx::Param, value 0..1 (live XY pad and hold buttons)
     SetSynthEngine,       // a: 0 = subtractive synth, 1 = Plaits (a General MIDI instrument still wins)
     SetPlaitsParam,       // a: PlaitsSynth::Param, value 0..1
@@ -214,6 +215,8 @@ public:
     double playPosition() const { return playPosition_.load(std::memory_order_relaxed); }
     // How many times a waiting scene took over (the UI follows the playing scene with it).
     uint32_t sceneSwaps() const { return sceneSwaps_.load(std::memory_order_relaxed); }
+    // Steps since the song (re)started, as song automation reads it; -1 before the first step.
+    int songStep() const { return songStep_.load(std::memory_order_relaxed); }
     bool transportRunning() const { return sequencer_.running(); }
     // Increments every time a lane is triggered (pad lights, tests).
     uint32_t laneTriggerCount(int lane) const { return laneTriggers_[lane].load(std::memory_order_relaxed); }
@@ -281,6 +284,9 @@ private:
     bool staging_ = false;
     int swapAt_ = -1;      // local step of the swap; 0 = next bar; -1 = none
     int sceneStart_ = 0;   // absolute step where the playing scene began
+    int songStart_ = 0;    // absolute step where the song (last) began
+    bool songRestart_ = false;
+    std::atomic<int> songStep_{-1};
     std::atomic<uint32_t> sceneSwaps_{0};
     void swapScene(int step);
     Mixer mixer_;

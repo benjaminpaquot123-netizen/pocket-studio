@@ -158,7 +158,10 @@ object NativeEngine {
     /** While on, pattern commands (drums, acid, piano roll) fill the waiting scene. */
     fun setStaging(on: Boolean) = post(CMD_STAGING, if (on) 1f else 0f)
     /** The waiting scene takes over after [steps] steps of the playing one (0 = next bar, -1 = cancel). */
-    fun armSceneSwap(steps: Int) = post(CMD_ARM_SCENE_SWAP, 0f, steps)
+    /** [restartsSong]: the waiting scene is the song's first part again (song automation restarts). */
+    fun armSceneSwap(steps: Int, restartsSong: Boolean = false) = post(CMD_ARM_SCENE_SWAP, 0f, steps, if (restartsSong) 1 else 0)
+    /** Steps since the song (re)started, as song automation reads them; -1 when stopped. */
+    external fun songStep(): Int
     /** Live effects on the master: [param] 0 filter (0.5 = off), 1 resonance, 2 repeat on, 3 repeat division, 4 tape stop, 5 chop. */
     fun setPerformance(param: Int, value: Float) = post(CMD_PERFORMANCE, value, param)
     /** The synth track's own voice: 0 subtractive, 1 Plaits. */

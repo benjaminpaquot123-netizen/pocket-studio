@@ -90,6 +90,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.asCoroutineDispatcher
 import kotlin.math.roundToInt
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.runBlocking
@@ -142,7 +143,7 @@ data class ExportUi(
 }
 
 /** What the audio engine is doing right now, polled for the playhead and pad lights. */
-data class LiveUi(val currentStep: Int = -1, val litPads: Set<Int> = emptySet(), val absoluteStep: Int = -1)
+data class LiveUi(val currentStep: Int = -1, val litPads: Set<Int> = emptySet(), val absoluteStep: Int = -1, val songStep: Int = -1)
 
 /** Peaks (0..1) of each stem for the waveform view, and the song length in frames at 48 kHz. */
 class StemOverview(val peaks: List<FloatArray>, val frames: Long)
@@ -207,7 +208,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 lastTriggers[i] = triggers[i]
             }
             val lit = (0 until NativeEngine.LANES).filter { litUntil[it] > now }.toSet()
-            _live.value = LiveUi(NativeEngine.currentStep(), lit, NativeEngine.absoluteStep())
+            _live.value = LiveUi(NativeEngine.currentStep(), lit, NativeEngine.absoluteStep(), NativeEngine.songStep())
             kotlinx.coroutines.delay(33)
         }
     }
@@ -885,11 +886,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * Sends scene [index] to the engine's waiting slot and arms the swap after [afterSteps] (0 = next
      * bar). A song [part] plays without its muted tracks.
      */
-    private fun stageScene(index: Int, afterSteps: Int, part: SongPart? = null) {
+    private fun stageScene(index: Int, afterSteps: Int, part: SongPart? = null, restartsSong: Boolean = false) {
         NativeEngine.setStaging(true)
         pushPart(project.value, index, part)
         NativeEngine.setStaging(false)
-        NativeEngine.armSceneSwap(afterSteps)
+        NativeEngine.armSceneSwap(afterSteps, restartsSong)
         watchSwaps()
     }
 
@@ -914,7 +915,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val upcoming = song[next % song.size]
         val steps = project.value.sceneSteps(playing.scene)
         _sessionUi.value = _sessionUi.value.copy(pending = upcoming.scene)
-        stageScene(upcoming.scene, steps * playing.repeats, upcoming)
+        stageScene(upcoming.scene, steps * playing.repeats, upcoming, restartsSong = next % song.size == 0)
     }
 
     /** Follows the engine's scene swaps (also with the screen off, while the transport runs). */
@@ -964,11 +965,16 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             val lane = p.automation.getOrNull(i)
             NativeEngine.setAutomationTarget(i, lane?.target?.pack() ?: -1)
             if (lane == null) continue
-            val curve = if (lane.mode == AutomationLane.SONG) lane.songCurve(maxOf(1, p.songBars)) else emptyList()
-            NativeEngine.setAutomationMode(i, lane.mode, curve.size)
-            curve.forEachIndexed { bar, v -> NativeEngine.setAutomationSong(i, bar, v) }
+            pushSongCurve(p, i, lane)
             lane.valuesFor(p.scene).forEachIndexed { step, v -> if (v != null) NativeEngine.setAutomationPoint(i, step, v) }
         }
+    }
+
+    /** A song lane's curve over the bars the screen shows (the song, at least 8 bars). */
+    private fun pushSongCurve(p: Project, i: Int, lane: AutomationLane) {
+        val curve = if (lane.mode == AutomationLane.SONG) lane.songCurve(maxOf(SONG_LANE_MIN_BARS, p.songBars)) else emptyList()
+        NativeEngine.setAutomationMode(i, lane.mode, curve.size)
+        curve.forEachIndexed { bar, v -> NativeEngine.setAutomationSong(i, bar, v) }
     }
 
     /** Clip kind of lane [index]: loop, per scene or the whole song. */
@@ -990,7 +996,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun setAutomationSongPoint(index: Int, bar: Int, value: Float?) {
         if (index !in project.value.automation.indices) return
         session.edit("auto-song-$index") { p -> p.copy(automation = p.automation.mapIndexed { i, l -> if (i == index) l.withSongPoint(bar, value) else l }) }
-        pushAutomation()
+        // Only this lane (a finger drag sends many points).
+        if (NativeEngine.isAvailable) pushSongCurve(project.value, index, project.value.automation[index])
     }
 
     fun addAutomation(target: AutoTarget) {
@@ -1032,11 +1039,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
         // A song curve records on the bar the song is at.
         if (project.value.automation[index].mode == AutomationLane.SONG) {
-            val p = project.value
-            // The engine counts from the playing scene's start: add the song parts already played.
-            val partsBefore = _sessionUi.value.songIndex.takeIf { it > 0 }?.let { i -> p.song.take(i).sumOf { p.sceneSteps(it.scene) * it.repeats } } ?: 0
-            val bar = (partsBefore + NativeEngine.absoluteStep()) / p.stepsPerBar
-            if (bar >= 0) setAutomationSongPoint(index, bar, value)
+            // The bar the engine's song curve is reading now (it restarts when the song loops).
+            val songStep = NativeEngine.songStep()
+            if (songStep >= 0) setAutomationSongPoint(index, songStep / project.value.stepsPerBar, value)
         } else {
             setAutomationPoint(index, step, value)
         }
@@ -2013,6 +2018,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    private val micThread = java.util.concurrent.Executors.newSingleThreadExecutor().asCoroutineDispatcher()
     private val _tuner = MutableStateFlow<com.pocketstudio.app.analysis.TunerReading?>(null)
     val tuner: StateFlow<com.pocketstudio.app.analysis.TunerReading?> = _tuner.asStateFlow()
     private val _tunerMic = MutableStateFlow<Boolean?>(null)
@@ -2026,11 +2032,13 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             return
         }
         _tunerMic.value = null
-        val open = withContext(Dispatchers.IO) { NativeEngine.micOpen() }
-        _tunerMic.value = open
-        if (!open) return
+        var open = false
         val buf = FloatArray(NativeEngine.SCOPE_FRAMES)
         try {
+            // Opened and closed on one thread, in order: leaving and coming back never closes the new one.
+            open = withContext(micThread + kotlinx.coroutines.NonCancellable) { NativeEngine.micOpen() }
+            _tunerMic.value = open
+            if (!open) return
             while (true) {
                 NativeEngine.readScope(true, buf)
                 val reading = withContext(Dispatchers.Default) { com.pocketstudio.app.analysis.PitchDetector.detect(buf, OfflineExport.SAMPLE_RATE) }
@@ -2040,7 +2048,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             }
         } finally {
             _tuner.value = null
-            if (_audioRecording.value == null) Thread({ NativeEngine.micClose() }, "mic-close").start()
+            if (open && _audioRecording.value == null) withContext(micThread + kotlinx.coroutines.NonCancellable) { NativeEngine.micClose() }
         }
     }
 
@@ -2840,6 +2848,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         downloadCancelled = true
         fonts.values.forEach { it.close() }
         fonts.clear()
+        micThread.close()
         running?.cancel()
         recorder?.stop()
         padSamples.close()
@@ -2861,6 +2870,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
         const val MAX_MIDI_BYTES = 4 * 1024 * 1024
         /** Stems export: one render per mixer channel. */
+        /** A song automation lane spans at least this many bars (the song can be shorter or empty). */
+        const val SONG_LANE_MIN_BARS = 8
         /** Longest microphone take (34 MB of memory). */
         const val MAX_AUDIO_SECONDS = 180
         private val STEM_EXPORTS = listOf("batterie" to 0, "acide" to 1, "synthe" to 2, "remix" to 3)

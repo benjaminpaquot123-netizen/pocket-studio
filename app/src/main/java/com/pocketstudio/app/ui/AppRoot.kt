@@ -697,9 +697,7 @@ fun AppRoot() {
                                 project.automation, project.drums.steps, if (transport.playing) live.currentStep else -1, automationRecord,
                                 scene = project.scene,
                                 songBars = project.songBars,
-                                songBar = if (transport.playing && sessionUi.songIndex >= 0) {
-                                    (project.song.take(sessionUi.songIndex).sumOf { project.sceneSteps(it.scene) * it.repeats } + live.absoluteStep.coerceAtLeast(0)) / project.stepsPerBar
-                                } else -1,
+                                songBar = if (transport.playing && live.songStep >= 0) live.songStep / project.stepsPerBar else -1,
                                 stepsPerBar = project.stepsPerBar,
                             ),
                             automationActions = AutomationActions(

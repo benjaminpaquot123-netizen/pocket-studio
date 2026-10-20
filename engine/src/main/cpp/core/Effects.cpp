@@ -539,8 +539,10 @@ void Gate::setParam(int p, float v) {
 
 void Gate::update() {
     threshold_ = dbToGain(-80.0f + 80.0f * p_[0]);
-    attack_ = onePoleCoef(rate_, 1000.0f / expMap(p_[1], 0.1f, 50.0f));
-    release_ = onePoleCoef(rate_, 1000.0f / expMap(p_[2], 10.0f, 1000.0f));
+    // Time constants as labelled: a one-pole at 1 / (2π τ).
+    const float twoPi = 2.0f * static_cast<float>(kPi);
+    attack_ = onePoleCoef(rate_, 1000.0f / (twoPi * expMap(p_[1], 0.1f, 50.0f)));
+    release_ = onePoleCoef(rate_, 1000.0f / (twoPi * expMap(p_[2], 10.0f, 1000.0f)));
     floor_ = 1.0f - p_[3];
 }
 

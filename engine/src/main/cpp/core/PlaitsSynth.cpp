@@ -55,8 +55,8 @@ struct PlaitsSynth::Impl {
     float out[kBlock] = {};
     int outPos = kBlock;  // samples of `out` already used
     uint32_t clock = 0;
-    uint32_t block = 0;
-    float bend = 0.0f, mod = 0.0f;  // counts rendered blocks
+    uint32_t block = 0;  // counts rendered blocks
+    float bend = 0.0f, mod = 0.0f;  // live pitch bend (semitones) and mod wheel
     float attackStep = 0.0f, releaseCoef = 0.0f;
 
     void updatePatch() {

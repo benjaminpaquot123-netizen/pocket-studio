@@ -177,3 +177,18 @@ Restant (mineur) :
 - Pendant la lecture du morceau, modifier les notes d'une piste coupée dans la partie en cours la fait entendre jusqu'à la partie suivante.
 - La file de commandes du moteur (4096) n'est pas surveillée : un très gros projet (8 pistes pleines de 512 notes) pourrait perdre des commandes à la resynchronisation.
 - Aucun test pour la disposition des vumètres côté JNI ni pour le solo avec des voies inutilisées.
+
+## Revue de fin de phase 8 (2026-10-20, sous-agent neuf, `8031713..1ed60da`)
+Verdict : effets, anneaux d'analyse et arpège sans allocation ni verrou dans le fil audio (0 allocation mesurée) ; effets bornés (lecture du flanger, phaser près de Nyquist) ; anciens projets et numéros d'effets compatibles.
+
+Corrigé :
+- GRAVE : note bloquée quand l'arpège s'allume avec une touche tenue → la touche se relâche normalement ; test ajouté.
+- GRAVE : automation « Morceau » décalée quand le morceau reboucle → le moteur compte les pas depuis le début du morceau (remis à zéro au retour de la première partie) ; lecture, curseur et enregistrement utilisent ce même compteur ; test ajouté.
+- GRAVE : micro de l'accordeur resté ouvert si on quitte pendant l'ouverture → ouverture et fermeture sur un seul fil, dans l'ordre, jamais annulées à moitié.
+- GRAVE : courbe « Morceau » sans morceau → le moteur reçoit les 8 mesures affichées ; longueur du morceau comptée en pas (scènes en 3/4).
+- Horloge MIDI : plus de rafale de tops passés quand on l'active en cours de lecture (Continue) ; suivre et envoyer l'horloge s'excluent.
+- Arpège : plus de double note au bord d'un bloc ; noise gate : temps d'attaque et de relâche conformes à l'affichage ; MIDI learn : cibles abîmées d'un fichier écartées ; dessin d'une courbe de morceau : seule la courbe touchée est renvoyée ; commandes du jeu en direct et courbe de morceau dans le test « aucune allocation ».
+
+Restant (mineur) :
+- Arrêter le transport oublie les touches tenues de l'arpège (il faut les reposer).
+- Pas de pitch bend pour les instruments General MIDI.

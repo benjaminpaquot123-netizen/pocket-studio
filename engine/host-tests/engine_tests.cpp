@@ -1604,6 +1604,17 @@ void testProcessNeverAllocates() {
             for (int n = 0; n < 16; ++n) engine.post({ps::CommandType::SetSynthNote, 0.8f, n | (t << 16), ps::NoteTrack::pack(n * 24, 20, 60 + n % 12)});
             engine.post({ps::CommandType::SetSynthNoteCount, 0.0f, 16 | (t << 16)});
         }
+        // Live playing on track 2: arpeggio with sustain, bend and modulation.
+        engine.post({ps::CommandType::SetExpression, 1.0f, ps::InstrumentTrack::ArpOn | (2 << 16)});
+        engine.post({ps::CommandType::SetExpression, 0.5f, ps::InstrumentTrack::ArpRate | (2 << 16)});
+        engine.post({ps::CommandType::SetExpression, 1.0f, ps::InstrumentTrack::Sustain | (2 << 16)});
+        engine.post({ps::CommandType::SetExpression, 1.5f, ps::InstrumentTrack::Bend | (2 << 16)});
+        engine.post({ps::CommandType::SetExpression, 0.7f, ps::InstrumentTrack::Mod | (2 << 16)});
+        for (int n : {60, 64, 67}) engine.post({ps::CommandType::SynthNoteOn, 0.8f, n | (2 << 16)});
+        // A song automation curve.
+        engine.post({ps::CommandType::SetAutomationTarget, 0.0f, 3, ps::Automation::pack(ps::Automation::Volume, 5, 0, 0)});
+        engine.post({ps::CommandType::SetAutomationMode, 16.0f, 3, ps::Automation::Song});
+        for (int b = 0; b < 16; ++b) engine.post({ps::CommandType::SetAutomationSong, b / 16.0f, 3, b});
         // An audio track looping a clip, and the microphone being recorded.
         sample->retain();
         ps::Command audio{ps::CommandType::InstallAudioClip, 0.0f, 2};
@@ -2230,6 +2241,16 @@ void testAutomationClips() {
     const double start = rms(out, 6000 * 1), middle = rms(out, 6000 * 9), later = rms(out, 6000 * 40);
     std::printf("  song automation: %.4f, %.4f, %.4f\n", start, middle, later);
     CHECK(start < later * 0.05 && middle > later * 0.15 && middle < later * 0.9);
+    // The song loops: a swap back to its first part restarts the curve.
+    {
+        ps::Engine loop(kRate);
+        loop.post({ps::CommandType::SetTransport, 1.0f, 0});
+        render(loop, 6000 * 20, 256);
+        CHECK(loop.songStep() >= 19);
+        loop.post({ps::CommandType::ArmSceneSwap, 0.0f, 0, 1});  // next bar: the song starts over
+        render(loop, 6000 * 13, 256);                             // past step 32
+        CHECK(loop.songStep() >= 0 && loop.songStep() < 6);
+    }
     // A per-scene lane: the waiting scene brings its own values at the swap.
     ps::Engine scenes(kRate);
     scenes.post({ps::CommandType::SynthNoteOn, 0.8f, 57});
@@ -2300,6 +2321,15 @@ void testExpressionAndArpeggio() {
             if (std::fabs(f - expected[k]) > expected[k] * 0.02) std::printf("  arp note %d: %.1f Hz\n", k, f);
             CHECK(std::fabs(f - expected[k]) < expected[k] * 0.02);
         }
+        // A key held since before the arpeggiator came on is released normally (no stuck note).
+        engine.post({ps::CommandType::SetExpression, 0.0f, ps::InstrumentTrack::ArpOn});
+        render(engine, 256, 256);
+        engine.post({ps::CommandType::SynthNoteOn, 0.9f, 72});
+        engine.post({ps::CommandType::SetExpression, 1.0f, ps::InstrumentTrack::ArpOn});
+        render(engine, 4800, 256);
+        engine.post({ps::CommandType::SynthNoteOff, 0.0f, 72});
+        render(engine, kRate, 256);
+        CHECK(engine.synthActiveVoices() == 0);
         // Keys up: the arpeggio stops.
         for (int n : {64, 57, 69}) engine.post({ps::CommandType::SynthNoteOff, 0.0f, n});
         render(engine, kRate * 2, 256);

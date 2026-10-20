@@ -154,4 +154,4 @@ fun Project.withBeatsPerBar(beats: Int): Project {
 }
 
 /** Bars the whole song lasts (each part's scene times its repeats). */
-val Project.songBars: Int get() = song.sumOf { sceneSteps(it.scene) / stepsPerBar * it.repeats }
+val Project.songBars: Int get() = (song.sumOf { sceneSteps(it.scene) * it.repeats } + stepsPerBar - 1) / stepsPerBar

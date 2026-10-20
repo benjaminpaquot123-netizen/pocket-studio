@@ -202,7 +202,8 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun setFollowClock(on: Boolean) {
-        _state.update { it.copy(followClock = on) }
+        _state.update { it.copy(followClock = on, sendClock = if (on) false else it.sendClock) }
+        if (on) stopClock()
     }
 
     // --- Bluetooth LE MIDI: devices must be found by a scan before they can be opened ----------
@@ -249,7 +250,8 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
     private var playing = false
 
     fun setSendClock(on: Boolean) {
-        _state.update { it.copy(sendClock = on) }
+        // Following and sending at once with the same device would loop the clock back.
+        _state.update { it.copy(sendClock = on, followClock = if (on) false else it.followClock) }
         if (!on) stopClock() else transport(playing, clockBpm)
     }
 
@@ -273,7 +275,15 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
             val position = NativeEngine.playPosition().coerceAtLeast(0.0)  // sixteenths already played
             val stepNs = 15e9 / clockBpm
             var next = System.nanoTime() + latencyNs.toLong() - (position * stepNs).toLong()
-            send(0xFA, next)
+            val tickNs = (60e9 / (clockBpm * 24)).toLong()
+            if (position < 1.0) {
+                send(0xFA, next)  // from the top: Start on the first step
+            } else {
+                // Switched on while playing: no burst of past ticks, carry on from now.
+                val now = System.nanoTime()
+                while (next < now) next += tickNs
+                send(0xFB, next)
+            }
             while (true) {
                 val horizon = System.nanoTime() + 60_000_000
                 while (next < horizon) {

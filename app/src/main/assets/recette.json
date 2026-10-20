@@ -8,6 +8,11 @@
       "hint": "Mixeur : sur chaque piste, touche « Effets » à côté du volume. La boîte s'ouvre d'un coup : effets rapides, puis les 4 emplacements."
     },
     {
+      "id": "wizard_focus",
+      "title": "Entendre ce que tu essaies",
+      "hint": "Nouveau morceau pas à pas, étape Basse (ou Nappe, Lead) : touche plusieurs sons. Le son essayé passe devant, la batterie et le reste reculent."
+    },
+    {
       "id": "robot",
       "title": "Robot",
       "hint": "Sur la piste Lead ou une voix : emplacement 1 › Effets fous › Robot. Lance la lecture et bouge « Voix » : du robot grave au robot aigu."

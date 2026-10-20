@@ -2308,6 +2308,44 @@ void testCrazyEffects() {
         loudWah.process(l.data(), r.data(), int(n));
         CHECK(loudWah.cutoff() > 4.0f * quietWah.cutoff());
     }
+    // Old record: crackles on silence with crackle up, true silence without; wow 0 adds no delay.
+    {
+        ps::Vinyl vinyl;
+        vinyl.prepare(kRate);
+        vinyl.setParam(0, 0.0f);
+        vinyl.setParam(1, 1.0f);
+        vinyl.setParam(2, 0.0f);  // no hiss: only the crackles
+        std::fill(l.begin(), l.end(), 0.0f);
+        std::fill(r.begin(), r.end(), 0.0f);
+        vinyl.process(l.data(), r.data(), int(n));
+        float peak = 0;
+        for (float x : l) peak = std::max(peak, std::fabs(x));
+        CHECK(peak > 0.01f);
+        ps::Vinyl quiet;
+        quiet.prepare(kRate);
+        quiet.setParam(0, 0.0f);
+        quiet.setParam(1, 0.0f);
+        quiet.setParam(2, 0.0f);
+        std::fill(l.begin(), l.end(), 0.0f);
+        std::fill(r.begin(), r.end(), 0.0f);
+        quiet.process(l.data(), r.data(), int(n));
+        peak = 0;
+        for (float x : l) peak = std::max(peak, std::fabs(x));
+        CHECK(peak == 0.0f);
+        // An impulse comes out at once (no delay without wow), dulled by nothing at age 0.
+        ps::Vinyl direct;
+        direct.prepare(kRate);
+        direct.setParam(0, 0.0f);
+        direct.setParam(1, 0.0f);
+        direct.setParam(2, 0.0f);
+        std::fill(l.begin(), l.end(), 0.0f);
+        std::fill(r.begin(), r.end(), 0.0f);
+        l[0] = r[0] = 1.0f;
+        direct.process(l.data(), r.data(), 64);
+        int at = 0;
+        for (int i = 1; i < 64; ++i) if (std::fabs(l[i]) > std::fabs(l[at])) at = i;
+        CHECK(at < 4);
+    }
     // Old record and walkie-talkie: clean numbers; the radio drops the bass (a 60 Hz hum).
     for (int type : {ps::InsertSlot::VinylFx, ps::InsertSlot::RadioFx}) {
         ps::InsertSlot fx;
@@ -2328,6 +2366,28 @@ void testCrazyEffects() {
         CHECK(run(fx));
         CHECK(rms(n / 2, n) < 0.3 * 0.71 * 0.1);  // more than 20 dB down
     }
+    // Hachoir: the tempo comes from the sequencer's step length (no beat needed to measure it)
+    // and a beat landing mid-block restarts the pattern there.
+    {
+        ps::Chopper chop;
+        chop.prepare(kRate);
+        chop.setParam(1, 1.0f);
+        chop.setParam(2, 0.0f);
+        chop.setStepFrames(7500.0);
+        std::vector<float> a(256, 0.5f), b(256, 0.5f);
+        chop.beat(100);  // the beat lands 100 frames into this block
+        chop.process(a.data(), b.data(), 256);
+        CHECK(std::fabs(a[255] - 0.5f) < 0.01f);  // the 1st sixteenth plays
+        // Half a sixteenth later than a full one (7500 + 3750 frames after the beat): cut.
+        int64_t done = 256 - 100;
+        while (done < 7500 + 3750) {
+            std::fill(a.begin(), a.end(), 0.5f);
+            std::fill(b.begin(), b.end(), 0.5f);
+            chop.process(a.data(), b.data(), 256);
+            done += 256;
+        }
+        CHECK(std::fabs(a[255]) < 0.01f);
+    }
     // Hachoir: in time with the beats it is given. Pattern "x.x." at depth 1, a beat every 24000
     // frames: the 1st sixteenth plays, the 2nd is cut.
     {
@@ -2337,8 +2397,9 @@ void testCrazyEffects() {
         fx.setParam(0, 0.0f);
         fx.setParam(1, 1.0f);
         fx.setParam(2, 0.0f);  // 1 ms smoothing
+        fx.setStepFrames(7500.0);  // 96 BPM, as the sequencer tells every block
         std::vector<float> one(1000, 0.5f), two(1000, 0.5f);
-        const int beat = 30000;  // 96 BPM: not the 120 it starts with
+        const int beat = 30000;
         for (int at = 0; at < 4 * beat; at += 1000) {
             if (at % beat == 0) fx.sidechain(0, false, true);
             std::fill(one.begin(), one.end(), 0.5f);

@@ -31,7 +31,8 @@ class PcmPlayer(private val onStop: () -> Unit = {}) {
         }
         // Pack sounds are normalised near full scale and this track adds up with the song (already
         // limited at -1 dB) in the phone's mixer: 6 dB down keeps a preview over the music clean.
-        t.setVolume(PREVIEW_GAIN)
+        // Alone (the song stopped), it plays at full level.
+        if (com.pocketstudio.app.playback.PlaybackService.running) t.setVolume(PREVIEW_GAIN)
         t.setNotificationMarkerPosition(pcm.frames)
         t.setPlaybackPositionUpdateListener(object : AudioTrack.OnPlaybackPositionUpdateListener {
             override fun onMarkerReached(at: AudioTrack) {

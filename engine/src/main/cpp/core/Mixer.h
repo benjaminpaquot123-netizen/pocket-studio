@@ -42,6 +42,10 @@ public:
     void setStepFrames(double framesPerSixteenth) {
         delay_.setStepFrames(framesPerSixteenth);
         perf_.setStepFrames(framesPerSixteenth);
+        // The rhythmic effects know the beat's length at once (not only after two beats).
+        for (auto& strip : inserts_) {
+            for (auto& slot : strip) slot.setStepFrames(framesPerSixteenth);
+        }
     }
     void setPerformance(int param, float v) { perf_.setParam(param, v); }
     // A sequencer step lands `offset` frames into the next process() call (sidechain pumps).

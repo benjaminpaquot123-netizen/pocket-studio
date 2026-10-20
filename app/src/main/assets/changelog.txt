@@ -2,3 +2,4 @@ Phase 19 : « Faut pas respirer la compote, ça fait tousser ! »
 - Mixeur : un bouton « Effets » bien visible sur chaque piste, la boîte à outils en un geste.
 - Cinq effets fous : Robot, Wah-wah, Vieux vinyle, Talkie-walkie et Hachoir (calé sur le tempo).
 - Ils marchent aussi sur chaque pad et sur la sortie générale.
+- Assistant : le son que tu essaies passe devant la musique, le reste recule ; tu entends enfin ce que tu choisis.

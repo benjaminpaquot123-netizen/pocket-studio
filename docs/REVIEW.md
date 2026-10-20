@@ -451,3 +451,18 @@ Restant (mineur) :
 - Un groupe « Les plus connus » replié le reste la fois suivante (mémorisé, comme les cartes).
 - Après la relecture, à la demande de Benjamin : trois scènes au lieu de deux (tests réécrits : partage par style, copies des scènes vides, aller-retour JSON et changement de scène) ; pastilles qui passent à la ligne ou s'estompent au bord.
 - Bug audio de la vidéo de Benjamin (22 h 54) : 808 posée sur des accords lue 16 fois trop vite (note d'origine La 0 sous des notes autour du Do 4) → « tic » d'un dixième de seconde par mesure puis silence. Corrigé partout où un son devient un instrument (bibliothèque, fichier, pad au clavier, assistant et ses écoutes), avec un test du cas exact, et calage automatique des projets existants à l'ouverture (testé sur le projet « Drum & bass » de Benjamin) ; écoute qui saturait par-dessus la musique : −6 dB.
+
+## Phase 19 (effets fous, bouton Effets dans le mixeur, écoutes de l'assistant), relecture de fin de phase
+
+Relecture neuve : rien de grave (aucune allocation, verrou ni NaN dans les nouveaux effets ; ordre des types identique au moteur ; 1,5 Mo de mémoire en plus pour les 128 emplacements).
+
+Corrigé :
+- Hachoir : la longueur du temps vient du séquenceur à chaque bloc (avant : mesurée entre deux temps, fausse juste après l'avoir choisi ou après un arrêt) ; un temps ne fait que relancer le motif.
+- Vieux vinyle : pas de retard quand le pleurage est à zéro (un retard fixe faisait un effet de peigne et décalait la piste) ; craquements indépendants de la fréquence d'échantillonnage.
+- Talkie-walkie : le niveau ne monte plus avec le grain. Wah-wah : coefficients calculés tous les 8 échantillons comme prévu.
+- Bouton Effets : allumé seulement quand les effets sont montrés.
+- Tests : craquements sur du silence (et silence sans eux), vinyle sans retard, Hachoir calé par le tempo avec un temps au milieu d'un bloc.
+
+Restant (mineur) :
+- Hachoir sur une grille droite : avec du swing, les doubles-croches paires ne suivent pas le swing.
+- Un événement de temps peut rester en attente si la voie ne joue pas dans ce bloc (sans effet audible : le suivant le remplace).

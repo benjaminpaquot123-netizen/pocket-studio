@@ -1,6 +1,8 @@
 #pragma once
 
+#include <algorithm>
 #include <array>
+#include <cmath>
 #include <cstdint>
 #include <vector>
 
@@ -370,6 +372,7 @@ private:
     std::array<float, 4> p_{0.6f, 0.3f, 0.6f, 1.0f};
     float env_ = 0.0f, cutoff_ = 0.0f;
     float s1L_ = 0.0f, s2L_ = 0.0f, s1R_ = 0.0f, s2R_ = 0.0f;  // TPT state-variable filter
+    float g_ = 0.0f, a1_ = 1.0f, a2_ = 0.0f;                    // its coefficients (every 8 frames)
 };
 
 // Old record ("Vieux vinyle"): wow and flutter (a slowly moving short delay), crackles, hiss and
@@ -417,8 +420,12 @@ public:
     void prepare(float rate) { rate_ = rate; reset(); }
     void setParam(int p, float v);
     void reset() { gain_ = 1.0f; sinceBeat_ = 0; pending_ = -1; }
-    // A beat lands `offset` frames into the next process() call.
+    // A beat lands `offset` frames into the next process() call: the pattern starts again there.
     void beat(int offset) { pending_ = offset; }
+    // The song's tempo, from the sequencer every block: a beat is four sixteenths.
+    void setStepFrames(double framesPerSixteenth) {
+        if (framesPerSixteenth > 0.0) beatFrames_ = std::max<int64_t>(1, std::llround(4.0 * framesPerSixteenth));
+    }
     void process(float* l, float* r, int n);
     float gain() const { return gain_; }  // tests
 
@@ -448,6 +455,7 @@ public:
     const Compressor& compressor() const { return comp_; }  // tests
     const Ducker& ducker() const { return pump_; }          // tests
     // Sidechain events (only the Pump type listens). `beat`: the step is a quarter note.
+    void setStepFrames(double framesPerSixteenth) { chopper_.setStepFrames(framesPerSixteenth); }
     void sidechain(int offset, bool kick, bool beat) {
         if (type_ == Pump && (pump_.everyBeat() ? beat : kick)) pump_.trigger(offset);
         if (type_ == ChopperFx && beat) chopper_.beat(offset);

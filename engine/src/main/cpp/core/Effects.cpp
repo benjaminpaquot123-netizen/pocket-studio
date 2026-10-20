@@ -774,9 +774,13 @@ void AutoWah::process(float* l, float* r, int n) {
         const float x = std::max(std::fabs(l[i]), std::fabs(r[i]));
         env_ += (x - env_) * (x > env_ ? attack : release);
         // The cutoff only moves every 8 frames: tan() is the costly part.
-        if ((i & 7) == 0) cutoff_ = std::min(low * std::exp2(3.5f * std::min(1.0f, env_ * gain)), 0.45f * rate_);
-        const float g = std::tan(static_cast<float>(kPi) * cutoff_ / rate_);
-        const float a1 = 1.0f / (1.0f + g * (g + k)), a2 = g * a1;
+        if ((i & 7) == 0) {
+            cutoff_ = std::min(low * std::exp2(3.5f * std::min(1.0f, env_ * gain)), 0.45f * rate_);
+            g_ = std::tan(static_cast<float>(kPi) * cutoff_ / rate_);
+            a1_ = 1.0f / (1.0f + g_ * (g_ + k));
+            a2_ = g_ * a1_;
+        }
+        const float g = g_, a1 = a1_, a2 = a2_;
         auto band = [&](float in, float& s1, float& s2) {
             const float v3 = in - s2;
             const float v1 = a1 * s1 + a2 * v3;
@@ -819,18 +823,20 @@ void Vinyl::process(float* l, float* r, int n) {
     const size_t size = bufL_.size();
     const float wow = p_[0], crackle = p_[1], age = p_[2], mix = p_[3];
     const float tone = onePoleCoef(rate_, expMap(1.0f - age, 2500.0f, 18000.0f));
-    const float clicks = crackle * crackle * 0.0012f;  // chance of a crackle per frame
+    const float clicks = crackle * crackle * 0.0012f * 48000.0f / rate_;  // chance per frame, same count per second at any rate
+    const float clickDecay = std::exp(-1.0f / (0.0007f * rate_));          // a click dies in about a millisecond
     for (int i = 0; i < n; ++i) {
         bufL_[write_] = l[i];
         bufR_[write_] = r[i];
-        // A warped record: a slow pitch wobble (0.55 Hz) and a faster flutter (6 Hz).
-        const double delay = (0.010 + wow * (0.006 * std::sin(kTwoPiD * wow_) + 0.0006 * std::sin(kTwoPiD * flutter_))) * rate_;
+        // A warped record: a slow pitch wobble (0.55 Hz) and a faster flutter (6 Hz). No wow, no
+        // delay at all (a fixed one would comb the dry sound and put the track late).
+        const double delay = wow * (0.0067 + 0.006 * std::sin(kTwoPiD * wow_) + 0.0006 * std::sin(kTwoPiD * flutter_)) * rate_;
         wow_ += 0.55 / rate_;
         flutter_ += 6.0 / rate_;
         if (wow_ >= 1.0) wow_ -= 1.0;
         if (flutter_ >= 1.0) flutter_ -= 1.0;
         const double readPos = static_cast<double>(write_) + static_cast<double>(size) - delay;
-        const auto i0 = static_cast<size_t>(readPos) % size;
+        const auto i0 = static_cast<size_t>(readPos) % size;  // delay < size: readPos stays positive
         const auto i1 = (i0 + 1) % size;
         const float t = static_cast<float>(readPos - std::floor(readPos));
         float wl = bufL_[i0] + t * (bufL_[i1] - bufL_[i0]);
@@ -845,7 +851,7 @@ void Vinyl::process(float* l, float* r, int n) {
         wr = lp2R_ + narrow * (mid - lp2R_);
         // Crackles: rare short clicks that die in a millisecond; a soft hiss under them.
         if (0.5f + 0.5f * noise() < clicks) click_ = 0.25f * crackle * noise();
-        click_ *= 0.97f;
+        click_ *= clickDecay;
         const float hiss = 0.004f * age * noise();
         wl += click_ + hiss;
         wr += click_ + hiss;
@@ -860,7 +866,8 @@ void Radio::process(float* l, float* r, int n) {
     const float narrow = p_[0], drive = p_[1], hiss = p_[2], mix = p_[3];
     const float lo = 250.0f + 650.0f * narrow, hi = 4000.0f - 2200.0f * narrow;
     const float hpCoef = 1.0f - onePoleCoef(rate_, lo), lpCoef = onePoleCoef(rate_, hi);
-    const float push = 1.0f + 15.0f * drive, norm = 1.0f / std::tanh(push);
+    // More grain, not more level: the output comes down as the drive goes up.
+    const float push = 1.0f + 15.0f * drive, norm = 1.0f / std::tanh(push) / (1.0f + 4.0f * drive);
     for (int i = 0; i < n; ++i) {
         const float x = 0.5f * (l[i] + r[i]);  // a radio is mono
         // High-pass (one pole, twice) then low-pass (twice): the telephone band.
@@ -895,9 +902,7 @@ void Chopper::process(float* l, float* r, int n) {
     const int split = p_[3] >= 0.5f ? 8 : 4;  // 32nds or sixteenths in a beat
     for (int i = 0; i < n; ++i) {
         if (i == pending_) {
-            // The song's beat: measure it (a plausible one: 30..300 BPM) and start the beat again.
-            if (sinceBeat_ >= static_cast<int64_t>(rate_ * 0.2f) && sinceBeat_ <= static_cast<int64_t>(rate_ * 2.0f)) beatFrames_ = sinceBeat_;
-            sinceBeat_ = 0;
+            sinceBeat_ = 0;  // the song's beat: the pattern starts again here
         }
         const int step = static_cast<int>((sinceBeat_ % beatFrames_) * split / beatFrames_);
         const bool on = pattern[step % 4] == 'x';

@@ -186,10 +186,12 @@ private fun Strip(info: StripInfo, c: Channel, meter: Float, actions: MixerActio
                 // The effects in one touch, right on the strip (they used to hide two levels down).
                 val active = c.inserts.count { it.effect != com.pocketstudio.model.EffectType.NONE }
                 FilterChip(
-                    selected = expanded,
+                    selected = expanded && open,
                     onClick = {
-                        expanded = !expanded
-                        open = expanded
+                        // Lit while the effects show; a touch shows them (or folds the strip back).
+                        val show = !(expanded && open)
+                        expanded = show
+                        open = show
                     },
                     leadingIcon = { Icon(Icons.Filled.AutoAwesome, contentDescription = null, modifier = Modifier.size(16.dp)) },
                     label = { Text(if (active > 0) "Effets · $active" else "Effets", maxLines = 1, softWrap = false) },

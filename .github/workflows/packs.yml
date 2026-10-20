@@ -33,14 +33,43 @@ jobs:
       - id: styles
         run: echo "ids=$(python3 -c 'import json;print(json.dumps([s["id"] for s in json.load(open("scripts/packs/styles.json"))["styles"]]))')" >> "$GITHUB_OUTPUT"
 
-  build:
+  # One download of the model (858 MB), shared through the cache: thirty jobs fetching it at once
+  # from the release get HTTP 500s.
+  model:
     needs: plan
+    if: needs.plan.outputs.hosted == 'false'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/cache@v6
+        id: cache
+        with:
+          path: model
+          key: stable-audio-open-small-1
+      - name: Download
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p model && cd model
+          for f in cond_q8.onnx dit_l8.onnx dec.onnx tokenizer.json; do
+            curl -fsSL --retry 6 --retry-all-errors --retry-delay 10 -o "$f" "$MODEL/$f"
+          done
+      - name: Check
+        run: |
+          cd model
+          sha256sum -c - <<'SUMS'
+          31952d152e570649ef9e49882ea8a41d25a2746f2f6184c607e871b3ae636c82  cond_q8.onnx
+          ee73eb76a354a3bb0676bd185956bb78d169f8535a0e23188212f0cc002bcf08  dit_l8.onnx
+          96029859b4d563f3aff266e97e715190e8d53278c6e27ab94095535a0da4c911  dec.onnx
+          d2acde0d8d71dd30a711834b07781b9c89feaac33fd332f60507699282740066  tokenizer.json
+          SUMS
+
+  build:
+    needs: [plan, model]
     if: needs.plan.outputs.hosted == 'false'
     runs-on: ubuntu-latest
     timeout-minutes: 120
     strategy:
       fail-fast: false
-      max-parallel: 15
+      max-parallel: 10
       matrix:
         style: ${{ fromJSON(needs.plan.outputs.styles) }}
     steps:
@@ -48,16 +77,14 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.13'
-      - uses: actions/cache@v6
+      - uses: actions/cache/restore@v6
         with:
           path: model
           key: stable-audio-open-small-1
+          fail-on-cache-miss: true
       - name: Model (checked)
         run: |
-          mkdir -p model && cd model
-          for f in cond_q8.onnx dit_l8.onnx dec.onnx tokenizer.json; do
-            [ -f "$f" ] || curl -fsSL --retry 3 -o "$f" "$MODEL/$f"
-          done
+          cd model
           sha256sum -c - <<'SUMS'
           31952d152e570649ef9e49882ea8a41d25a2746f2f6184c607e871b3ae636c82  cond_q8.onnx
           ee73eb76a354a3bb0676bd185956bb78d169f8535a0e23188212f0cc002bcf08  dit_l8.onnx
@@ -72,9 +99,10 @@ jobs:
           name: pack-${{ matrix.style }}
           path: out/${{ matrix.style }}
 
+  # Published even if a few styles failed (they are simply not offered), never after a cancel.
   publish:
     needs: [plan, build]
-    if: always() && needs.plan.outputs.hosted == 'false'
+    if: ${{ !cancelled() && needs.plan.outputs.hosted == 'false' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -86,6 +114,7 @@ jobs:
         run: |
           for d in packs/pack-*; do mv "$d" "packs/${d#packs/pack-}"; done
           python3 scripts/packs/build_index.py packs dist
+          python3 -c "import json, sys; sys.exit(0 if json.load(open('dist/index.json'))['packs'] else 'no pack built')"
       - name: Licence of the model the sounds come from
         run: |
           curl -fsSL -o dist/LICENSE-stable-audio "$MODEL/LICENSE"

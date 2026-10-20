@@ -45,12 +45,28 @@ fun ChordPads(
     height: Dp = 150.dp,
 ) {
     val pads = harmony.chordPads(octaveRoot)
+    // Pads share notes (I and iii share two): a note sounds while any pad holding it is down.
+    val held = remember { HashMap<Int, Int>() }
+    val on: (Int, Float) -> Unit = { n, v ->
+        val count = held[n] ?: 0
+        held[n] = count + 1
+        if (count == 0) onNoteOn(n, v)
+    }
+    val off: (Int) -> Unit = { n ->
+        val count = held[n] ?: 0
+        if (count <= 1) {
+            held.remove(n)
+            if (count == 1) onNoteOff(n)
+        } else {
+            held[n] = count - 1
+        }
+    }
     Column(Modifier.fillMaxWidth().testTag("chord_pads"), verticalArrangement = Arrangement.spacedBy(6.dp)) {
         val key = if (harmony.scale.intervals.size == 7) harmony else harmony.copy(scale = Scale.Major)
         Text("Accords de ${NOTE_NAMES[harmony.root]} ${key.scale.label.lowercase()}", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         for (row in 0 until 2) {
             Row(Modifier.fillMaxWidth().height((height - 24.dp) / 2), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                pads.drop(row * 4).take(4).forEach { pad -> ChordPadKey(pad, Modifier.weight(1f).fillMaxHeight(), onNoteOn, onNoteOff) }
+                pads.drop(row * 4).take(4).forEach { pad -> ChordPadKey(pad, Modifier.weight(1f).fillMaxHeight(), on, off) }
             }
         }
     }

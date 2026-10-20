@@ -99,7 +99,10 @@ fun Channel.withFx(preset: FxPreset): Channel = copy(
 ).sanitized()
 
 /** The preset this track's effects match exactly, if any (to highlight it). */
-fun Channel.matchingFx(): FxPreset? = (FxPresets.ALL + FxPresets.NONE).firstOrNull { p ->
-    val made = copy().withFx(p)
-    made.inserts == sanitized().inserts && made.sends == sanitized().sends && made.macros == sanitized().macros
+fun Channel.matchingFx(): FxPreset? {
+    val clean = sanitized()
+    return (FxPresets.ALL + FxPresets.NONE).firstOrNull { p ->
+        val made = clean.withFx(p)
+        made.inserts == clean.inserts && made.sends == clean.sends && made.macros == clean.macros
+    }
 }

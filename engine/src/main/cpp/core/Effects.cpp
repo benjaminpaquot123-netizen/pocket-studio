@@ -211,6 +211,7 @@ void Saturator::process(float* l, float* r, int n) {
 // --- Chorus ----------------------------------------------------------------------------------
 
 void StereoChorus::prepare(float rate) {
+    rate_ = rate;
     chorus_.Init(rate);
     update();
 }
@@ -243,9 +244,16 @@ void TrackMacros::prepare(float rate) {
     rate_ = rate;
     left_.Init(rate);
     right_.Init(rate);
+    // DaisySP's built-in cubic drive makes the filter blow up near its top cutoff on loud input.
+    left_.SetDrive(0.0f);
+    right_.SetDrive(0.0f);
     drive_.prepare(rate);
     chorus_.prepare(rate);
+    inPower_ = outPower_ = 0.0f;
+    makeup_ = 1.0f;
+    dirtOn_ = false;
     update();
+    filterMixNow_ = filterMix_;
 }
 
 void TrackMacros::set(int macro, float v) {
@@ -281,17 +289,31 @@ void TrackMacros::update() {
 }
 
 void TrackMacros::process(float* l, float* r, int n) {
-    if (filterMix_ > 0.0f) {
+    if (filterMix_ > 0.0f || filterMixNow_ > 0.0f) {
+        const float step = 1.0f / (0.01f * rate_);  // 10 ms to fade the filter in or out
         for (int i = 0; i < n; ++i) {
+            filterMixNow_ += std::clamp(filterMix_ - filterMixNow_, -step, step);
             left_.Process(l[i]);
             right_.Process(r[i]);
             const float a = highPass_ ? left_.High() : left_.Low();
             const float b = highPass_ ? right_.High() : right_.Low();
-            l[i] += filterMix_ * (a - l[i]);
-            r[i] += filterMix_ * (b - r[i]);
+            l[i] += filterMixNow_ * (a - l[i]);
+            r[i] += filterMixNow_ * (b - r[i]);
         }
     }
-    if (v_[Dirt] > 0.005f) {
+    // Dirt: runs on until its loudness makeup is back at 1, so turning it off never jumps.
+    const bool dirt = v_[Dirt] > 0.005f;
+    if (!dirt && !dirtOn_) {
+        // fully off
+    } else if (!dirt && std::fabs(makeup_ - 1.0f) < 0.01f) {
+        dirtOn_ = false;
+        makeup_ = 1.0f;
+    } else {
+        if (!dirtOn_) {
+            dirtOn_ = true;
+            inPower_ = outPower_ = 0.0f;
+            makeup_ = 1.0f;
+        }
         // Loudness follows the input (50 ms power averages): drive changes the colour, not the level.
         float in = 0.0f;
         for (int i = 0; i < n; ++i) in += l[i] * l[i] + r[i] * r[i];
@@ -691,6 +713,22 @@ void Bitcrusher::process(float* l, float* r, int n) {
 }
 
 // --- Insert slot -----------------------------------------------------------------------------
+
+void InsertSlot::reset() {
+    eq_.reset();
+    comp_.reset();
+    sat_.reset();
+    chorus_.reset();
+    filter_.reset();
+    pump_.reset();
+    flanger_.reset();
+    phaser_.reset();
+    gate_.reset();
+    tremolo_.reset();
+    widener_.reset();
+    crusher_.reset();
+    paramEq_.reset();
+}
 
 void InsertSlot::prepare(float rate) {
     eq_.prepare(rate);

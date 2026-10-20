@@ -36,17 +36,18 @@
 #include "SpscQueue.h"
 #include "StemPlayer.h"
 
-// Counts C++ heap allocations while g_countAllocations is set (real-time rule test). Not under
-// AddressSanitizer, which owns operator new.
-#if !defined(__SANITIZE_ADDRESS__)
-#include <new>
-
 // The sampler renders stereo; centred mono sounds are the same on both sides: their mean.
 static void renderMono(ps::Sampler& sampler, float* out, int n) {
     std::vector<float> l(static_cast<size_t>(n)), r(static_cast<size_t>(n));
     sampler.render(l.data(), r.data(), n);
     for (int i = 0; i < n; ++i) out[i] += 0.5f * (l[static_cast<size_t>(i)] + r[static_cast<size_t>(i)]);
 }
+
+// Counts C++ heap allocations while g_countAllocations is set (real-time rule test). Not under
+// AddressSanitizer, which owns operator new.
+#if !defined(__SANITIZE_ADDRESS__)
+#include <new>
+
 // Our operator new is malloc-based, so free() in operator delete matches it.
 #pragma GCC diagnostic ignored "-Wmismatched-new-delete"
 static std::atomic<bool> g_countAllocations{false};
@@ -2770,6 +2771,21 @@ void testDrumPanAndStepPitch() {
             if ((out[(i - 1) * kChannels] < 0.0f) != (out[i * kChannels] < 0.0f)) ++crossings;
         }
         std::printf("  step pitch +12: %d crossings in 2000 frames (1 kHz = ~83)\n", crossings);
+        // Stereo sounds stay stereo: a sound on the left only is heard on the left only.
+        std::vector<float> leftOnly(static_cast<size_t>(kRate / 10) * 2, 0.0f);
+        for (size_t i = 0; i < leftOnly.size() / 2; ++i) leftOnly[i * 2] = 0.5f * static_cast<float>(std::sin(2 * M_PI * 300.0 * i / kRate));
+        ps::Sample* st = ps::Sample::create(leftOnly.data(), static_cast<int64_t>(leftOnly.size() / 2), 2, kRate, kRate);
+        st->retain();
+        engine.post({ps::CommandType::InstallSample, 0.0f, 5, 0, st});
+        engine.post({ps::CommandType::TriggerPad, 1.0f, 5});
+        const auto stereo = render(engine, 2400, 256);
+        double el = 0.0, er = 0.0;
+        for (size_t i = 0; i < 2400; ++i) {
+            el += double(stereo[i * kChannels]) * stereo[i * kChannels];
+            er += double(stereo[i * kChannels + 1]) * stereo[i * kChannels + 1];
+        }
+        CHECK(el > 1.0 && er < el * 0.01 + 1e-3);  // the 500 Hz tone of pad 4 still rings on both sides
+        st->release();
         CHECK(crossings > 75 && crossings < 90);
         s->release();
     }
@@ -2824,6 +2840,29 @@ void testTrackMacros() {
     CHECK(rms(wetTail) > 10 * rms(dryTail) + 1e-4);
     for (const auto* v : {&dark, &thin, &dirty, &moving, &wetTail}) {
         for (float x : *v) CHECK(std::isfinite(x));
+    }
+    // Very loud noise with the colour just below the middle (cutoff near the top, where an
+    // overdriven state-variable filter blows up): it stays finite and bounded.
+    for (float colour : {0.47f, 0.485f, 0.495f, 0.02f, 0.98f}) {
+        ps::TrackMacros m;
+        m.prepare(kRate);
+        m.set(ps::TrackMacros::Color, colour);
+        m.set(ps::TrackMacros::Dirt, 1.0f);
+        m.set(ps::TrackMacros::Motion, 1.0f);
+        std::mt19937 rng(7);
+        std::uniform_real_distribution<float> noise(-3.0f, 3.0f);
+        float worst = 0.0f;
+        bool finite = true;
+        std::vector<float> l(256), r(256);
+        for (int block = 0; block < kRate / 256; ++block) {
+            for (int i = 0; i < 256; ++i) l[i] = r[i] = noise(rng);
+            m.process(l.data(), r.data(), 256);
+            for (int i = 0; i < 256; ++i) {
+                finite &= std::isfinite(l[i]) && std::isfinite(r[i]);
+                worst = std::max(worst, std::max(std::fabs(l[i]), std::fabs(r[i])));
+            }
+        }
+        CHECK(finite && worst < 50.0f);
     }
 }
 

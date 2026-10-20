@@ -3,6 +3,7 @@
 #include <array>
 #include <atomic>
 #include <cmath>
+#include <memory>
 
 #include "Effects.h"
 #include "Smoother.h"
@@ -80,9 +81,15 @@ private:
     static void storeMax(std::atomic<float>& a, float v);
 
     std::array<Strip, kChannels> strips_{};
-    std::array<std::array<InsertSlot, kInserts>, kChannels> inserts_{};
+    // Large (each chorus holds its delay lines, about 20 kB): on the heap, allocated once with the
+    // mixer, so an engine never weighs megabytes on a thread's stack.
+    using InsertBank = std::array<std::array<InsertSlot, kInserts>, kChannels>;
+    using MacroBank = std::array<TrackMacros, kChannels>;
+    std::unique_ptr<InsertBank> insertBank_ = std::make_unique<InsertBank>();
+    std::unique_ptr<MacroBank> macroBank_ = std::make_unique<MacroBank>();
+    InsertBank& inserts_ = *insertBank_;
     std::array<int, kChannels> activeInserts_{};  // count of non-empty slots
-    std::array<TrackMacros, kChannels> macros_{};
+    MacroBank& macros_ = *macroBank_;
     Reverb reverb_;
     TempoDelay delay_;
     PerformanceFx perf_;

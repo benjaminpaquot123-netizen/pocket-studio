@@ -253,7 +253,7 @@ fun AppRoot() {
                         download = libraryVm::downloadPack,
                         cancelDownload = libraryVm::cancelDownload,
                         deletePack = libraryVm::deletePack,
-                        create = { libraryVm.create { project, sounds -> projectsVm.create(project, sounds) { id -> openProject(id) } } },
+                        create = { libraryVm.create { project, sounds -> projectsVm.create(project, sounds) { id -> libraryVm.closeWizard(); openProject(id) } } },
                     ),
                 )
             }

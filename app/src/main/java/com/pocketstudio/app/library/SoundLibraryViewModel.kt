@@ -229,12 +229,12 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         kitCache[voice]?.let { return it }
         if (!NativeEngine.isAvailable) return null
         val job = OfflineExport()
-        NativeEngine.captureInto(job) {
-            NativeEngine.setTempo(120.0)
-            NativeEngine.setPatternSteps(16)
-            NativeEngine.setDrumHit(voice, 0, 1f)
-        }
         val data = try {
+            NativeEngine.captureInto(job) {
+                NativeEngine.setTempo(120.0)
+                NativeEngine.setPatternSteps(16)
+                NativeEngine.setDrumHit(voice, 0, 1f)
+            }
             withContext(Dispatchers.Default) { job.renderToArray(KIT_FRAMES, 0) }
         } finally {
             withContext(NonCancellable + Dispatchers.Main) { job.close() }
@@ -253,17 +253,17 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         val clip = StarterWizard.startingNotes(ref.part, style, mood, harmony)
         val bar = clip.performance.expand(clip).filter { it.start < 16 * com.pocketstudio.model.NoteClip.TICKS_PER_STEP }
         val job = OfflineExport()
-        NativeEngine.captureInto(job) {
-            NativeEngine.setTempo(style.bpm)
-            NativeEngine.setPatternSteps(16)
-            ref.sound.synth.sanitized().values.forEachIndexed { i, v -> NativeEngine.setSynthParam(i, v, 0) }
-            ref.sound.plaits?.let { p -> p.sanitized().engineValues().forEachIndexed { i, v -> NativeEngine.setPlaitsParam(i, v, 0) } }
-            NativeEngine.setSynthEngine(if (ref.sound.plaits != null) 1 else 0, 0)
-            NativeEngine.setSynthSteps(16, 0)
-            bar.forEachIndexed { i, n -> NativeEngine.setSynthNote(i, n.start, n.length, n.pitch, n.velocity, 0) }
-            NativeEngine.setSynthNoteCount(bar.size, 0)
-        }
         val data = try {
+            NativeEngine.captureInto(job) {
+                NativeEngine.setTempo(style.bpm)
+                NativeEngine.setPatternSteps(16)
+                ref.sound.synth.sanitized().values.forEachIndexed { i, v -> NativeEngine.setSynthParam(i, v, 0) }
+                ref.sound.plaits?.let { p -> p.sanitized().engineValues().forEachIndexed { i, v -> NativeEngine.setPlaitsParam(i, v, 0) } }
+                NativeEngine.setSynthEngine(if (ref.sound.plaits != null) 1 else 0, 0)
+                NativeEngine.setSynthSteps(16, 0)
+                bar.forEachIndexed { i, n -> NativeEngine.setSynthNote(i, n.start, n.length, n.pitch, n.velocity, 0) }
+                NativeEngine.setSynthNoteCount(bar.size, 0)
+            }
             withContext(Dispatchers.Default) { job.renderToArray(OfflineExport.framesFor(1, style.bpm), OfflineExport.SAMPLE_RATE.toLong()) }
         } finally {
             withContext(NonCancellable + Dispatchers.Main) { job.close() }
@@ -386,8 +386,9 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                 }
                 val parts = if (w.mood == null) emptyMap() else w.parts.filterValues { it.enabled }.mapValues { it.value.sound }
                 AppLog.add("Assistant : morceau ${style.name}, ${sounds.size} lignes, ${parts.size} pistes mélodiques")
+                // The choices stay until the project is written (the caller closes the assistant then).
                 then(StarterWizard.build(style, sounds, w.mood, parts), files)
-                _wizard.value = WizardUi()
+                _wizard.update { it.copy(creating = false) }
             } catch (e: Exception) {
                 _wizard.update { it.copy(creating = false, error = "Le morceau n'a pas pu être préparé (${e.message}).") }
             }

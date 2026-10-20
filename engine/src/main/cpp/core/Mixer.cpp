@@ -150,6 +150,17 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
             for (auto& slot : inserts_[static_cast<size_t>(ch)]) slot.process(chL_.data(), chR_.data(), n);
         }
         macros_[static_cast<size_t>(ch)].process(chL_.data(), chR_.data(), n);
+        // An effect that blew up (extreme settings on a very loud sound): this strip goes quiet
+        // for one block and its effects start again from silence, instead of a NaN reaching the
+        // buses and the master, where it would stay for good.
+        bool finite = true;
+        for (int i = 0; i < n; ++i) finite &= std::isfinite(chL_[static_cast<size_t>(i)]) && std::isfinite(chR_[static_cast<size_t>(i)]);
+        if (!finite) {
+            std::fill(chL_.begin(), chL_.begin() + n, 0.0f);
+            std::fill(chR_.begin(), chR_.begin() + n, 0.0f);
+            for (auto& slot : inserts_[static_cast<size_t>(ch)]) slot.reset();
+            macros_[static_cast<size_t>(ch)].reset();
+        }
         float peak = 0.0f;
         for (int i = 0; i < n; ++i) {
             const float l = chL_[static_cast<size_t>(i)] * s.gainL.next();

@@ -176,7 +176,7 @@ private fun Strip(info: StripInfo, c: Channel, meter: Float, actions: MixerActio
                 }
             }
             if (!expanded) {
-                val fx = quickFxSummary(c)
+                val fx = androidx.compose.runtime.remember(c) { quickFxSummary(c) }
                 if (c.pan != 0f || fx != "Aucun") {
                     Text("Effets : $fx", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
                 }
@@ -203,7 +203,8 @@ private fun Strip(info: StripInfo, c: Channel, meter: Float, actions: MixerActio
         }
         Slider(value = c.pan, onValueChange = { v -> actions.setPan(index, if (kotlin.math.abs(v) < 0.04f) 0f else v) }, valueRange = -1f..1f)
         var open by rememberSaveable(index) { mutableStateOf(false) }
-        EffectsToggle(quickFxSummary(c), open, Modifier.testTag("effects_$index")) { open = !open }
+        val summary = androidx.compose.runtime.remember(c) { quickFxSummary(c) }
+        EffectsToggle(summary, open, Modifier.testTag("effects_$index")) { open = !open }
         if (open) {
             QuickFxPanel(index, c, actions.quick)
             DetailedFx(index, c, actions)

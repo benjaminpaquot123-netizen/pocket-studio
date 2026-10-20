@@ -65,8 +65,6 @@ class InstrumentUi(
     val setPlaitsModel: (Int) -> Unit = {},
     val setPlaitsParam: (Int, Float) -> Unit = { _, _ -> },
     val sampled: SampledPatch = SampledPatch(),
-    /** The notes the track plays (to tell a sampled sound read far from its own pitch). */
-    val notes: List<com.pocketstudio.model.Note> = emptyList(),
     /** Opens the sound library to pick the track's sampled sound. */
     val chooseSample: () -> Unit = {},
     /** Picks a sound file of the phone for it. */

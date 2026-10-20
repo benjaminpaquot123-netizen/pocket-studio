@@ -71,21 +71,6 @@ internal fun SampledPanel(ui: InstrumentUi) {
             Icon(Icons.Filled.Add, contentDescription = "Un demi-ton plus haut")
         }
     }
-    // Read octaves away from its own pitch, a sound lasts a fraction of itself (a 808 under chords
-    // becomes a click): say so, and put it back in the octave of the notes in one touch.
-    val fitted = SampledPatch.fitRoot(s.root, ui.notes)
-    val octaves = Math.round((fitted - s.root) / 12f)
-    if (ui.notes.isNotEmpty() && octaves != 0) {
-        Text(
-            if (octaves > 0) "Les notes de la piste jouent ce son $octaves octave${if (octaves > 1) "s" else ""} plus haut : il est lu ${1 shl minOf(octaves, 4)} fois plus vite et ne dure presque rien."
-            else "Les notes de la piste jouent ce son ${-octaves} octave${if (octaves < -1) "s" else ""} plus bas : il est lu au ralenti.",
-            style = MaterialTheme.typography.bodySmall, color = Neon.Amber,
-        )
-        OutlinedButton(
-            onClick = { ui.editSampled(null) { it.copy(root = fitted, glide = if (SampledPatch.isMonophonic(ui.notes)) it.glide else 0f) } },
-            modifier = Modifier.testTag("root_fit"),
-        ) { Text("Le caler sur les notes (${RootNote.name(fitted)})") }
-    }
     Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
         FilterChip(
             selected = s.glide > 0f,

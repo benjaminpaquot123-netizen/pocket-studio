@@ -143,5 +143,5 @@ Feu vert de Benjamin (D4 = A) : fusion de la pull request en fin de phase.
 - [x] 18.2 Repli partout où il a un sens : cartes de l'assistant, groupes de styles, familles de sons Plaits
 - [x] 18.3 Le morceau de l'assistant coupé en trois scènes : A le rythme (batterie), B la basse (basse, 808, acide), C la mélodie (nappe, lead, cochés par défaut) ; sans mélodie, A kick, caisse claire et clap, B charleys, C percussions et 808 ; morceau A, B, C ×2
 - [x] 18.4 Le tuto le dit : chaque étape montre la scène de sa ligne, le résumé montre les trois scènes, un guide de 4 pages s'ouvre après la création
-- [x] 18.6 Son posé sur une piste mélodique joué dans l'octave de ses notes (plus de 808 lue 16 fois trop vite), écoutes sans saturation
+- [x] 18.6 Son posé sur une piste mélodique joué dans l'octave de ses notes, automatiquement partout (pose, ancien projet, notes déplacées : plus de 808 lue 16 fois trop vite), écoutes sans saturation
 - [x] 18.5 Pastilles propres : les rangées de choix passent à la ligne au lieu d'écraser la dernière, les rangées qui défilent s'estompent au bord

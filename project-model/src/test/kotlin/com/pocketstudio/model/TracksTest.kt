@@ -134,4 +134,26 @@ class TracksTest {
         assertTrue("root ${track.sampled.root} vs $middle", kotlin.math.abs(track.sampled.root - middle) <= 6f)
         assertEquals(0f, track.sampled.glide)
     }
+
+    @Test
+    fun anOldProjectWithASoundFarFromItsNotesIsFittedOnOpening() {
+        // Benjamin's "Drum & bass": a kick found at 30.3 on chords from 62 to 82.
+        val chords = NoteClip(steps = 64, notes = listOf(62, 65, 69, 74, 77, 81, 82).map { Note(0, 64, it) })
+        var p = Project().addTrack("Nappe")!!
+        val id = p.tracks.last().id
+        p = p.withTrack(p.track(id).copy(engine = 2, notes = chords, sampled = SampledPatch(file = "k.wav", name = "Kick", root = 30.30625f)))
+        val opened = ProjectJson.decode(ProjectJson.encode(p))
+        val root = opened.track(id).sampled.root
+        assertEquals(30.30625f + 48f, root, 0.001f)  // four octaves up: same note, its own speed
+        // Fitted once: saving and opening again changes nothing.
+        assertEquals(opened, opened.sanitized())
+        // A root a few semitones from the notes (set by ear) stays as it is.
+        val near = p.withTrack(p.track(id).copy(sampled = p.track(id).sampled.copy(root = 70f))).sanitized()
+        assertEquals(70f, near.track(id).sampled.root)
+        // The first track too, and a synth track is left alone.
+        val first = Project().withTrack(Project().track(0).copy(engine = 2, notes = chords, sampled = SampledPatch(file = "k.wav", root = 21f))).sanitized()
+        assertTrue(kotlin.math.abs(first.track(0).sampled.root - 74f) <= 6f)
+        val synth = Project().withTrack(Project().track(0).copy(engine = 0, notes = chords, sampled = SampledPatch(file = "k.wav", root = 21f))).sanitized()
+        assertEquals(21f, synth.track(0).sampled.root)
+    }
 }

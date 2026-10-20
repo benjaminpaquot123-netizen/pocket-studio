@@ -5,7 +5,7 @@
     {
       "id": "sample_on_chords",
       "title": "Une 808 sur la nappe",
-      "hint": "Synthé › piste Nappe › Instrument › Sample › Bibliothèque : pose « 808 3 ». Lance la lecture : chaque accord joue la 808 en entier, plus de « tic » suivi de silence. Dans ton ancien projet, touche « Le caler sur les notes » sous la note d'origine."
+      "hint": "Ouvre ton projet « Drum & bass » : la Nappe (Kick) et le Lead sonnent en entier, calés tout seuls. Puis Synthé › piste Nappe › Sample › Bibliothèque : pose « 808 3 » et lance la lecture : chaque accord joue la 808 en entier, plus de « tic » suivi de silence."
     },
     {
       "id": "preview_clean",

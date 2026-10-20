@@ -871,10 +871,12 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      */
     fun padToKeyboard(): Boolean {
         val s = project.value.drums.lanes[_transport.value.selectedPad].sample ?: return false
+        // Another sound is still being prepared for the keyboard: this touch waits for it.
+        if (_trackSoundBusy.value == BUSY_TRACK_SOUND) return false
         viewModelScope.launch {
             val pcm = runCatching { withContext(Dispatchers.IO) { padSamples.read(s.file) } }.getOrNull()
             if (pcm == null || pcm.frames == 0) {
-                _trackSoundBusy.value = "Ce son n'a pas pu être lu."
+                if (_trackSoundBusy.value != BUSY_TRACK_SOUND) _trackSoundBusy.value = "Ce son n'a pas pu être lu."
                 return@launch
             }
             val ch = pcm.channels
@@ -897,7 +899,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             val name = PadSamples.nameFrom(displayName(app, uri))
             val pcm = runCatching { withContext(Dispatchers.IO) { AudioDecoder.decode(app, uri) } }.getOrNull()
             if (pcm == null || PadSamples.isSilent(pcm)) {
-                _trackSoundBusy.value = "Ce fichier n'a pas pu être lu."
+                if (_trackSoundBusy.value != BUSY_TRACK_SOUND) _trackSoundBusy.value = "Ce fichier n'a pas pu être lu."
                 return@launch
             }
             AppLog.add("Son au clavier importé « $name » : ${"%.1f".format(pcm.seconds)} s")
@@ -1179,7 +1181,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun addAutomation(target: AutoTarget) {
-        if (project.value.automation.size >= AutomationLane.MAX_LANES || project.value.automation.any { it.target == target }) return
+        if (!target.isValid || project.value.automation.size >= AutomationLane.MAX_LANES || project.value.automation.any { it.target == target }) return
         session.edit { p -> p.copy(automation = p.automation + AutomationLane(target)) }
         pushAutomation()
     }
@@ -1206,7 +1208,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     private fun recordAutomation(target: AutoTarget, value: Float) {
-        if (!_automationRecord.value || !_transport.value.playing || !NativeEngine.isAvailable) return
+        if (!_automationRecord.value || !_transport.value.playing || !NativeEngine.isAvailable || !target.isValid) return
         val step = NativeEngine.currentStep()
         if (step !in 0 until AutomationLane.STEPS) return
         var index = project.value.automation.indexOfFirst { it.target == target }

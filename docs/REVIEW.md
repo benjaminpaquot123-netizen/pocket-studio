@@ -296,3 +296,30 @@ Restant (mineur) :
 - Cibles tactiles sous 48 dp : familles de sons (36), octave −/+ (40), lecture du haut (42), pastille « Clavier ».
 - Pas de « Tout déplier » dans les réglages.
 - Performances : halo des pads recomposé à chaque image pendant un coup ; grilles de vignettes non paresseuses (gros packs) ; préférences de pli lues au démarrage sur le fil principal ; sons de batterie des packs redécodés à chaque écoute.
+
+## Phase 15 (recettes de style, sons classés, claviers, sample au clavier, effets par pad), relecture de fin de phase
+
+Vérifié par le relecteur :
+- Fil audio : rien n'est alloué ni verrouillé dans le rendu, les 32 tranches sont tenues partout (vumètres, commandes, solo et muet), et une note qui produit un NaN est coupée avant d'atteindre la batterie.
+- Batterie : son volume, ses effets, son muet et son solo s'appliquent une seule fois aux pads.
+- Anciens projets : ils sont complétés à 32 tranches. L'export, le rééchantillonnage et l'annulation suivent les effets des pads.
+- Recettes : `StyleRecipes.kt` est identique à ce qu'on régénère depuis les recettes, l'index `sons-packs-4` est conforme et les notes restent dans la gamme pour les 35 styles et les 4 ambiances.
+
+Corrigé :
+- Grave : enregistrer l'automation d'un effet ou d'un envoi d'un pad déplaçait un autre réglage (la voie 16 à 31 débordait sur le type de cible), par exemple l'effet du master. L'automation des voies de pad est refusée à l'enregistrement, et les pistes d'automation fautives sont écartées au chargement. Test.
+- La réverbe et l'écho d'un pad suivent maintenant le fader de la batterie (avant, baisser la batterie laissait la réverbe d'un pad à plein). Test qui échoue sans la correction.
+- Tests du moteur plus exigeants :
+  - batterie à mi-volume avec saturation, identique que le pad passe par sa voie ou non ;
+  - un effet sur la voie d'un pad ne touche pas les autres pads ;
+  - le solo d'une autre voie coupe les pads ;
+  - aucune allocation avec des pads routés, des effets et des envois, ni quand on bascule leur voie pendant la lecture.
+- « Jouer ce sample au clavier » attend qu'un son en préparation soit prêt (plus de double traitement, plus de message qui efface l'état « occupé »).
+- Le convertisseur de recettes refuse une source inconnue, une ligne acide de plus d'une mesure, des accents ou glissés mal formés.
+- Texte de l'ambiance Joyeux : « des accords lumineux » (plusieurs styles la jouent en dorien, avec un premier accord mineur).
+- Garde à la compilation : autant de voies de pad que de pads, de voix de kit et de samples.
+- Tests du modèle : ligne 303 de l'assistant (notes, accents, rien sans ambiance) ; voie propre d'un pad seulement s'il a un réglage ; anciens projets complétés à 32 voies.
+
+Restant (mineur) :
+- Les effets insérés sur la batterie ne traitent pas la réverbe et l'écho envoyés par un pad (comme un envoi pré-groupe sur une console).
+- Une note tenue d'une mesure à l'autre dans une ligne de deux mesures est coupée à la barre (aucune recette n'en a aujourd'hui).
+- Pas encore de test Kotlin du découpage et de l'inversion de « Jouer ce sample au clavier ».

@@ -558,6 +558,8 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
     const float* channels[Mixer::kChannels] = {drums, acid, nullptr, stemsL};
     const float* rights[Mixer::kChannels] = {drumsR, nullptr, nullptr, stemsR};
     // Pads with effects of their own play into their strip; the others into the drums' one.
+    static_assert(kLanes == Mixer::kPads && kLanes == DrumKit::kVoices && kLanes == Sampler::kSlots,
+                  "one strip and one render target per pad");
     float* padLeft[kLanes];
     float* padRight[kLanes];
     for (int lane = 0; lane < kLanes; ++lane) {

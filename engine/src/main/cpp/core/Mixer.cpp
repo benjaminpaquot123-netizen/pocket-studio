@@ -86,6 +86,8 @@ void Mixer::updateTargets() {
     for (size_t ch = 0; ch < kFirstPad; ++ch) anySolo |= strips_[ch].solo;
     const auto& drums = strips_[kDrums];
     const bool drumsAudible = !drums.mute && (!anySolo || drums.solo);
+    // A pad's dry sound goes through the drums' fader; its sends must follow that fader too.
+    const float drumsFader = (drums.volume / 0.8f) * (drums.volume / 0.8f);
     for (size_t ch = 0; ch < strips_.size(); ++ch) {
         auto& s = strips_[ch];
         // A pad's strip goes through the drums' one: heard when the drums are (its reverb too).
@@ -103,7 +105,7 @@ void Mixer::updateTargets() {
         const float extra[kBuses] = {0.75f * space, 0.5f * std::max(0.0f, space - 0.5f)};
         for (size_t b = 0; b < s.send.size(); ++b) {
             const float level = std::min(1.0f, s.send[b] + extra[b]);
-            s.sendGain[b].setTarget(level * level);
+            s.sendGain[b].setTarget(level * level * (pad ? drumsFader : 1.0f));
         }
     }
 }

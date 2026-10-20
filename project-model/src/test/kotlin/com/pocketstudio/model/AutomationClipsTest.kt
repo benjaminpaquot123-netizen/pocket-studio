@@ -1,12 +1,23 @@
 package com.pocketstudio.model
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class AutomationClipsTest {
     private val volume = AutoTarget(AutoTarget.VOLUME, 2)
+
+    @Test
+    fun aPadsOwnStripIsNeverAutomated() {
+        // The engine reads 4 bits of channel: pad 5's send (strip 20) would land on the master's first effect.
+        val padSend = AutoTarget(AutoTarget.SEND, Mixer.padChannel(4), 0)
+        assertFalse(padSend.isValid)
+        assertTrue(AutoTarget(AutoTarget.INSERT_PARAM, 15, 3, 2).isValid)
+        val lanes = AutomationLane.sanitize(listOf(AutomationLane(padSend), AutomationLane(volume)))
+        assertEquals(listOf(volume), lanes.map { it.target })
+    }
 
     @Test
     fun perSceneLanesKeepEachScenesSteps() {

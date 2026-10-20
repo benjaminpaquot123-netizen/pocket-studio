@@ -117,7 +117,7 @@ object StarterWizard {
             Scale.Minor, listOf(0, 5, 2, 6), "i – VI – III – VII",
         ),
         Happy(
-            "happy", "Joyeux / énergique", "Des accords majeurs lumineux qui donnent la pêche.",
+            "happy", "Joyeux / énergique", "Des accords lumineux qui donnent la pêche.",
             Scale.Major, listOf(0, 4, 5, 3), "I – V – vi – IV",
         ),
         Future(

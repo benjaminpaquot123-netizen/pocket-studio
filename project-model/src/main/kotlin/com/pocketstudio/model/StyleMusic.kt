@@ -104,8 +104,9 @@ fun NoteClip.withLine(degrees: List<Int>, harmony: Harmony, pattern: String, oct
 }
 
 /**
- * An acid line for the 303 track: [pattern] tokens as in [withLine] (on the first chord of the
- * progression, as a 303 riff does), [accents] and [slides] one 'x' per step that has one.
+ * An acid line for the 303 track: [pattern] tokens as in [withLine] on the key's root chord (a 303
+ * riff stays on it while the chords move; every recipe's progression starts there), [accents] and
+ * [slides] one 'x' per step that has one.
  */
 fun acidLine(harmony: Harmony, pattern: String, accents: String, slides: String, base: AcidPattern = AcidPattern()): AcidPattern {
     val bar = pattern.padEnd(16, '.').take(16)

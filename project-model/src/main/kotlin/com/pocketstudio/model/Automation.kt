@@ -11,7 +11,11 @@ import kotlinx.serialization.Serializable
 data class AutoTarget(val kind: Int, val ch: Int = 0, val slot: Int = 0, val param: Int = 0) {
     fun pack(): Int = (kind shl 16) or (ch shl 12) or (slot shl 8) or param
 
+    /** The engine reads 4 bits of channel: the pads' own strips (16..31) cannot be automated. */
+    val isValid: Boolean get() = kind in VOLUME..BUS_PARAM && ch in 0..MAX_CH
+
     companion object {
+        const val MAX_CH = 15
         const val VOLUME = 0
         const val PAN = 1
         const val SEND = 2
@@ -84,6 +88,6 @@ data class AutomationLane(
             .map { v -> v?.takeIf { it.isFinite() }?.coerceIn(0f, 1f) }
 
         fun sanitize(lanes: List<AutomationLane>): List<AutomationLane> =
-            lanes.filter { it.target.kind in 0..4 }.distinctBy { it.target }.take(MAX_LANES).map { it.sanitized() }
+            lanes.filter { it.target.isValid }.distinctBy { it.target }.take(MAX_LANES).map { it.sanitized() }
     }
 }

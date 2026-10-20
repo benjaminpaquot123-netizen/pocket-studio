@@ -1380,6 +1380,53 @@ void testPadStrips() {
     muted->post({ps::CommandType::SetPadStrip, 1.0f, 0});
     muted->post({ps::CommandType::SetChannelMute, 1.0f, ps::Mixer::kDrums});
     CHECK(energy(hit(*muted, true, true)) < 1e-9);
+
+    // The drums' fader and saturation apply exactly once to a routed pad: the same as unrouted.
+    auto drumsSettings = [](ps::Engine& e) {
+        e.post({ps::CommandType::SetChannelVolume, 0.5f, ps::Mixer::kDrums});
+        e.post({ps::CommandType::SetInsertType, 0.0f, ps::Mixer::kDrums * ps::Mixer::kInserts, ps::InsertSlot::Saturation});
+        e.post({ps::CommandType::SetInsertParam, 0.8f, ps::Mixer::kDrums * ps::Mixer::kInserts, 0});
+    };
+    auto shapedPlain = engineWithSounds();
+    drumsSettings(*shapedPlain);
+    auto shapedRouted = engineWithSounds();
+    drumsSettings(*shapedRouted);
+    shapedRouted->post({ps::CommandType::SetPadStrip, 1.0f, 0});
+    const auto shaped = hit(*shapedPlain, true, true);
+    CHECK(distance(hit(*shapedRouted, true, true), shaped) < 1e-4);
+    CHECK(distance(shaped, both) > 1e-2);  // the settings do change the sound
+
+    // An effect on the kick's strip changes the kick, not the snare.
+    auto crushed = engineWithSounds();
+    crushed->post({ps::CommandType::SetPadStrip, 1.0f, 0});
+    crushed->post({ps::CommandType::SetInsertType, 0.0f, (ps::Mixer::kFirstPad + 0) * ps::Mixer::kInserts, ps::InsertSlot::Crusher});
+    CHECK(distance(hit(*crushed, true, true), both) > 1e-2);
+    auto crushedSnare = engineWithSounds();
+    crushedSnare->post({ps::CommandType::SetPadStrip, 1.0f, 0});
+    crushedSnare->post({ps::CommandType::SetInsertType, 0.0f, (ps::Mixer::kFirstPad + 0) * ps::Mixer::kInserts, ps::InsertSlot::Crusher});
+    CHECK(distance(hit(*crushedSnare, false, true), snare) < 1e-4);
+
+    // A pad's reverb follows the drums' fader: drums down, nothing left, reverb included.
+    auto wet = engineWithSounds();
+    wet->post({ps::CommandType::SetPadStrip, 1.0f, 0});
+    wet->post({ps::CommandType::SetSend, 1.0f, ps::Mixer::kFirstPad + 0, 0});
+    wet->post({ps::CommandType::SetChannelVolume, 0.4f, ps::Mixer::kDrums});
+    auto dry = engineWithSounds();
+    dry->post({ps::CommandType::SetPadStrip, 1.0f, 0});
+    dry->post({ps::CommandType::SetChannelVolume, 0.4f, ps::Mixer::kDrums});
+    const double reverb = energy(hit(*wet, true, false)) - energy(hit(*dry, true, false));
+    CHECK(reverb > 1e-6);
+    auto wetDown = engineWithSounds();
+    wetDown->post({ps::CommandType::SetPadStrip, 1.0f, 0});
+    wetDown->post({ps::CommandType::SetSend, 1.0f, ps::Mixer::kFirstPad + 0, 0});
+    wetDown->post({ps::CommandType::SetChannelVolume, 0.0f, ps::Mixer::kDrums});
+    CHECK(energy(hit(*wetDown, true, false)) < 1e-9);
+
+    // Another strip soloed: the pads (routed or not) are cut with the drums.
+    auto solo = engineWithSounds();
+    solo->post({ps::CommandType::SetPadStrip, 1.0f, 0});
+    solo->post({ps::CommandType::SetChannelSolo, 1.0f, 1});
+    CHECK(energy(hit(*solo, true, true)) < 1e-9);
 }
 
 void testOnsetsFindTheHits() {
@@ -1851,6 +1898,13 @@ void testProcessNeverAllocates() {
                 engine.post({ps::CommandType::SetSend, 0.5f, ch, 1});
             }
         }
+        // Two pads through their own strips, with an effect and a send of their own.
+        for (int lane : {0, 3}) {
+            const int ch = ps::Mixer::kFirstPad + lane;
+            engine.post({ps::CommandType::SetPadStrip, 1.0f, lane});
+            engine.post({ps::CommandType::SetInsertType, 0.0f, ch * ps::Mixer::kInserts, 1 + lane % 13});
+            engine.post({ps::CommandType::SetSend, 0.5f, ch, 0});
+        }
         engine.post({ps::CommandType::SetTransport, 1.0f, 0});
         std::vector<float> out(512 * 2);
         for (int i = 0; i < 50; ++i) engine.process(nullptr, 0, 0, out.data(), 512, 2);  // warm-up
@@ -1858,6 +1912,7 @@ void testProcessNeverAllocates() {
         g_countAllocations = true;
         for (int i = 0; i < 400; ++i) {
             if (i % 50 == 0) engine.post({ps::CommandType::TriggerPad, 1.0f, 3});
+            if (i % 35 == 0) engine.post({ps::CommandType::SetPadStrip, (i / 35) % 2 ? 0.0f : 1.0f, 3});  // routed, then not
             if (i % 70 == 0) engine.post({ps::CommandType::SynthNoteOn, 0.9f, 60 + i % 12});
             if (i % 40 == 0) engine.post({ps::CommandType::SetInsertParam, (i % 80) / 80.0f, 1, 0});
             if (i % 60 == 0) engine.post({ps::CommandType::SetInsertType, 0.0f, 5, 1 + (i / 60) % 13});

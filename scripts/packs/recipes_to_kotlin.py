@@ -102,7 +102,8 @@ def style(r):
         pat = line(d["pattern"], DRUM_CHARS, gid, d["role"])
         lines.append(f'                Line(Role.{role}, {kstr(pat)}, {kstr(d["tip_fr"])}),')
         src = d.get("source", gid)
-        if src in PACKS and src != gid:
+        check(src in PACKS, f"{gid} {d['role']}: unknown source {src}")
+        if src != gid:
             kit[role] = src
     check(lines and r["drums"][0]["role"] in ("kick", "808"), f"{gid}: the kick first")
     progs = []
@@ -147,7 +148,12 @@ def style(r):
         f"                parts = setOf({', '.join('Part.' + p for p in parts)}),",
     ]
     if acid.get("use"):
-        pat = line(acid["pattern"], LINE_CHARS, gid, "acid")
+        # The acid track plays one bar: a second one would be dropped without a word.
+        pat = acid["pattern"]
+        check(len(pat) == 16 and set(pat) <= LINE_CHARS, f"{gid} acid: one bar of {sorted(LINE_CHARS)} expected, got {pat}")
+        for what in ("accents", "slides"):
+            marks = acid.get(what, "")
+            check(marks == "" or (len(marks) == 16 and set(marks) <= set("x.")), f"{gid} acid {what}: 16 of 'x' or '.', got {marks}")
         out.append(f"                acid = AcidRecipe({kstr(pat)}, {kstr(acid.get('accents', ''))}, {kstr(acid.get('slides', ''))}),")
     out += [
         "            ),",

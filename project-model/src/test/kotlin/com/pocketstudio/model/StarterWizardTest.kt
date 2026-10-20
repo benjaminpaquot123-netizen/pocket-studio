@@ -51,6 +51,22 @@ class StarterWizardTest {
     }
 
     @Test
+    fun anAcidStyleStartsWithItsThreeOThreeLine() {
+        val style = StarterWizard.style("acid_techno")!!
+        val recipe = style.melody.acid!!
+        val p = StarterWizard.build(style, mapOf(StarterWizard.Role.Kick to null), StarterWizard.Mood.Dark)
+        assertEquals(16, p.acid.length)
+        assertEquals(36 + style.melody.root, p.acid.root)
+        recipe.pattern.forEachIndexed { i, c -> assertEquals("step $i", c != '.' && c != '-', p.acid.steps[i].gate) }
+        recipe.accents.forEachIndexed { i, c -> assertEquals("accent $i", c == 'x', p.acid.steps[i].accent) }
+        // Its notes are the key's: 'R' the root, 'O' the octave above.
+        assertEquals(listOf(0, 0), listOf(p.acid.steps[0].note, p.acid.steps[0].octave))
+        assertEquals(listOf(0, 1), listOf(p.acid.steps[2].note, p.acid.steps[2].octave))
+        // Without a mood (the beat only), the acid track is left as it was.
+        assertEquals(Project().acid, StarterWizard.build(style, mapOf(StarterWizard.Role.Kick to null)).acid)
+    }
+
+    @Test
     fun aOneBarLineRepeatsUnderATwoBarOne() {
         // UK garage: the kick spans two bars, the snare one.
         val garage = StarterWizard.style("uk_garage")!!

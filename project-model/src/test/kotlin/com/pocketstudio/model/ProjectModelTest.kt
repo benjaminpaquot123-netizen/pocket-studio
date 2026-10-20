@@ -719,5 +719,20 @@ class DrumToolsTest {
         val messy = DrumPattern(lanes = List(16) { DrumLane(hits = mapOf(0 to Hit(1f, 9))) }).sanitized()
         assertEquals(4, messy.lanes[0].hits[0]!!.repeats)
     }
-}
 
+    @Test
+    fun aPadGetsItsOwnStripOnlyWithSomethingOnIt() {
+        // Untouched, a pad plays straight into the drums' strip (no extra work for the engine).
+        assertFalse(Channel().hasOwnFx())
+        assertTrue(Channel(inserts = listOf(Insert.of(EffectType.BITCRUSHER))).hasOwnFx())
+        assertTrue(Channel(sends = listOf(0.3f, 0f)).hasOwnFx())
+        assertTrue(Channel(volume = 0.5f).hasOwnFx())
+        assertTrue(Channel(pan = -0.4f).hasOwnFx())
+        assertEquals(Mixer.FIRST_PAD + 3, Mixer.padChannel(3))
+        // An old project with 16 strips gets the pads' ones, untouched.
+        val old = Project(mixer = Mixer(channels = List(16) { Channel(volume = 0.6f) })).sanitized()
+        assertEquals(Mixer.CHANNELS, old.mixer.channels.size)
+        assertEquals(0.6f, old.mixer.channels[0].volume, 0f)
+        assertFalse(old.mixer.channels[Mixer.FIRST_PAD].hasOwnFx())
+    }
+}

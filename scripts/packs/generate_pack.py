@@ -1,12 +1,12 @@
 """Generates one sound pack with Stable Audio Open Small (fp32 ONNX), keeps the good takes.
 
-usage: generate_pack.py MODEL_DIR STYLES_JSON STYLE_ID OUT_DIR [--per N]
+usage: generate_pack.py MODEL_DIR styles.json STYLE_ID OUT_DIR [--scale F]
 
-For each kind of sound of the style (kick, snare, ...), several seeds are generated from the
-style's prompt; each take is trimmed, faded, normalized and checked (not silent, not clipped
-noise, energy where that kind of sound has it). The first `per` good takes are written as
-16-bit FLAC, named <kind>_<n>.flac, plus pack.json (names and kinds, read by the app).
-Deterministic: the same inputs give the same files.
+For each kind of sound of the style (kick, snare, ...), seeds 1, 2, ... are generated from the
+kind's prompt with the style's words; each take is trimmed, faded, normalized and checked (not
+silent, energy where that kind of sound has it, a real hit for drums). The first good takes
+(the kind's count, times --scale) are written as 16-bit FLAC <kind>_<n>.flac, plus pack.json
+(names and kinds, read by the app).
 """
 import json
 import sys
@@ -90,26 +90,38 @@ def clean(audio, one_shot):
 def accept(kind, audio):
     mono = audio.mean(axis=1)
     rms = np.sqrt((mono ** 2).mean())
-    crest = np.abs(mono).max() / (rms + 1e-12)
     rule = KIND_RULES.get(kind, {})
     if rms < 0.01:
         return False
     if 'low' in rule and band_share(mono, 20, 200) < rule['low']:
         return False
+    if 'max_low' in rule and band_share(mono, 20, 200) > rule['max_low']:  # a snare is not a kick
+        return False
     if 'high' in rule and band_share(mono, 4000, 20000) < rule['high']:
         return False
     if 'max_seconds' in rule and len(mono) / RATE > rule['max_seconds']:
         return False
-    if rule.get('transient') and crest < 3.0:  # a hit has a peak well above its average
+    if rule.get('transient') and not is_hit(mono):
         return False
     return True
+
+
+def is_hit(mono):
+    """A drum hit: loudest near the start, then dying away (not a pad, a loop or noise)."""
+    env = np.abs(mono)
+    if np.argmax(env) > int(0.04 * RATE):
+        return False
+    q = max(1, len(mono) // 4)
+    first = np.sqrt((mono[:q] ** 2).mean())
+    last = np.sqrt((mono[-q:] ** 2).mean())
+    return last < 0.5 * first
 
 
 KIND_RULES = {
     'kick': {'low': 0.45, 'max_seconds': 1.6, 'transient': True},
     '808': {'low': 0.5},
-    'snare': {'max_seconds': 1.2, 'transient': True},
-    'clap': {'max_seconds': 1.2, 'transient': True},
+    'snare': {'max_seconds': 1.2, 'transient': True, 'max_low': 0.6},
+    'clap': {'max_seconds': 1.2, 'transient': True, 'max_low': 0.5},
     'hat': {'high': 0.35, 'max_seconds': 0.8, 'transient': True},
     'open_hat': {'high': 0.3, 'max_seconds': 1.6},
     'perc': {'max_seconds': 1.2, 'transient': True},
@@ -121,22 +133,22 @@ KIND_RULES = {
 
 def main():
     model_dir, styles_path, style_id, out_dir = sys.argv[1:5]
-    per = int(sys.argv[sys.argv.index('--per') + 1]) if '--per' in sys.argv else 8
-    styles = json.loads(Path(styles_path).read_text())
-    style = next(s for s in styles['styles'] if s['id'] == style_id)
+    scale = float(sys.argv[sys.argv.index('--scale') + 1]) if '--scale' in sys.argv else 1.0
+    catalog = json.loads(Path(styles_path).read_text())
+    style = next(s for s in catalog['styles'] if s['id'] == style_id)
     model = Model(model_dir)
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
     sounds = []
-    for kind in style['kinds']:
-        k = kind['kind']
-        one_shot = k not in ('loop', 'bass', 'fx')
-        kept, seed, tries = 0, 0, 0
-        while kept < kind.get('count', per) and tries < kind.get('count', per) * 4:
+    for k in style['kinds']:
+        kind = catalog['kinds'][k]
+        count = max(1, round(kind['count'] * scale))
+        one_shot = k not in ('loop', 'fx')
+        prompt = kind['prompt'].replace('{words}', style['words'])
+        kept, seed = 0, 0
+        while kept < count and seed < count * 5:
             seed += 1
-            tries += 1
-            prompt = kind['prompt'].replace('{bpm}', str(style['bpm']))
-            take = clean(model.generate(prompt, kind['seconds'], seed + 1000 * len(sounds)), one_shot)
+            take = clean(model.generate(prompt, kind['seconds'], seed), one_shot)
             if take is None or not accept(k, take):
                 continue
             kept += 1
@@ -144,6 +156,8 @@ def main():
             sf.write(out / name, take.astype(np.float32), RATE, subtype='PCM_16')
             sounds.append({'file': name, 'kind': k, 'name': f"{kind['label']} {kept}"})
             print(f'{style_id}: {name} ({len(take) / RATE:.2f} s, seed {seed})', flush=True)
+        if kept < count:
+            print(f'{style_id}: only {kept}/{count} {k}', flush=True)
     (out / 'pack.json').write_text(json.dumps({
         'id': style_id, 'name': style['name'], 'family': style['family'], 'bpm': style['bpm'], 'sounds': sounds,
     }, ensure_ascii=False, indent=1))

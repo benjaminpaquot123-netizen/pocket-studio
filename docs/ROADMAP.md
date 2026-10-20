@@ -109,3 +109,10 @@ Feu vert de Benjamin (D4 = A) : fusion de la pull request en fin de phase.
 - [x] 13.2 Packs « sons actuels » : 808 modernes (saturées, longues, à glisser), Reese, hoover, supersaw, plucks, wavetable, voix découpées, montées et impacts (FX), log drum, cloche phonk…
 - [x] 13.3 Synthé : unisson (jusqu'à 7 voix désaccordées et écartées) pour les supersaws de la future bass et de la trance et les Reese de la drum & bass ; préréglages « actuels »
 - [x] 13.4 Générer : phrases d'exemple pour les genres récents (hyperpop, future bass, afro house, amapiano, jersey club, drill, phonk, UK garage…)
+
+## Phase 14 : un look pro et l'écoute partout (demandes de Benjamin)
+- [x] 14.1 Nouveau look sur tout le programme : police Inter, panneaux en relief, puces en pilule, curseurs fins au pouce lumineux, vumètres à LED, pads et touches en relief qui s'allument, barre du haut et onglets redessinés
+- [x] 14.2 Chaque bloc d'un écran se replie en touchant son titre (petite flèche discrète), et le reste d'une fois sur l'autre
+- [x] 14.3 Sons en vignettes (icône et couleur de famille, une ligne d'explication) : sons prêts à jouer, 24 modèles Plaits, instruments, bibliothèque
+- [x] 14.4 Clavier qui suit : un clavier compact glisse du bas quand le vrai est hors de portée pendant le choix d'un son (modes Clavier et Notes), se range d'un geste
+- [x] 14.5 Assistant : écouter chaque ambiance (ses accords sur le rythme), chaque ligne de batterie avec les lignes déjà choisies, chaque partie avec la batterie ; sources sur une ligne, sons en vignettes juste dessous

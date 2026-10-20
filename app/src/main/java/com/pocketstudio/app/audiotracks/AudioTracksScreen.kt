@@ -29,14 +29,13 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RangeSlider
-import androidx.compose.material3.Slider
+import com.pocketstudio.ui.ProSlider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -58,6 +57,7 @@ import com.pocketstudio.model.AudioTrack
 import com.pocketstudio.ui.LevelMeter
 import com.pocketstudio.ui.MonoStyle
 import com.pocketstudio.ui.Neon
+import com.pocketstudio.ui.pillColors
 import com.pocketstudio.ui.NeonCard
 import com.pocketstudio.ui.SectionLabel
 import com.pocketstudio.ui.TrackColors
@@ -225,7 +225,7 @@ private fun TrackCard(t: AudioTrack, ui: AudioTracksUi, actions: AudioTracksActi
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ClipEditor(id: Int, clip: AudioClip, info: SampleInfo?, color: androidx.compose.ui.graphics.Color, actions: AudioTracksActions, per: Int) {
-    val chip = FilterChipDefaults.filterChipColors(selectedContainerColor = Neon.Cyan.copy(alpha = 0.25f), selectedLabelColor = Neon.Cyan)
+    val chip = pillColors()
     var range by remember(clip.file) { mutableStateOf(0f..1f) }
     Text("${clip.name} · ${String.format(java.util.Locale.FRANCE, "%.1f", clip.seconds)} s", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
     info?.let { Waveform(it.peaks, color, region = range.start to range.endInclusive) }
@@ -262,5 +262,5 @@ private fun LabeledSlider(label: String, value: String, position: Float, onChang
         Text(label, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
         Text(value, style = MonoStyle, color = Neon.Cyan)
     }
-    Slider(value = position.coerceIn(0f, 1f), onValueChange = onChange)
+    ProSlider(value = position.coerceIn(0f, 1f), onValueChange = onChange)
 }

@@ -80,8 +80,9 @@ object Glossary {
         "Monte ou descend le son, en demi-tons, comme d'une touche à l'autre sur un clavier. +12 = une octave plus haut.",
     )
     val SAMPLE = Help(
-        "Échantillon",
-        "Un son enregistré qu'on rejoue : un kick, une voix, un bout de morceau. On dit aussi « sample ».",
+        "Sample du pad",
+        "Le son que joue le pad quand on le touche. Un « sample » (échantillon en français), c'est un son enregistré qu'on rejoue : " +
+            "un kick, une voix, un bout de morceau. Prends-le dans la bibliothèque, importe-le ou enregistre-le au micro ; sans sample, le pad joue le son de la boîte à rythmes.",
     )
     val ROLL = Help(
         "Roulement",
@@ -150,9 +151,9 @@ object Glossary {
         "Une ligne du morceau avec son propre instrument et ses notes : la basse, la nappe, le lead… Chacune a sa voie au mixeur.",
     )
     val SOURCE = Help(
-        "Source du son",
-        "D'où vient le son de la piste. Synthé : un synthé classique qui fabrique le son. Plaits : un synthé aux 24 modèles. " +
-            "Échantillon : un son enregistré joué sur tout le clavier (808, basses, stabs des packs). Instruments : 128 instruments classiques (piano, cordes…).",
+        "Instrument",
+        "Ce qui joue les notes de la piste. Synthé : un synthé classique qui fabrique le son. Plaits : un synthé aux 24 modèles. " +
+            "Sample : un son enregistré joué sur tout le clavier (808, basses, stabs des packs). Instruments : 128 instruments classiques (piano, cordes…).",
     )
     val SYNTH = Help(
         "Synthé",
@@ -167,7 +168,7 @@ object Glossary {
         "Une banque de 128 instruments classiques (piano, guitare, cordes, cuivres…), téléchargée une fois.",
     )
     val SAMPLED = Help(
-        "Son échantillonné",
+        "Sample au clavier",
         "Un son enregistré joué sur tout le clavier : plus la touche est haute, plus il monte. Idéal pour les 808, basses et stabs des packs.",
     )
     val ROOT_NOTE = Help(
@@ -265,6 +266,23 @@ object Glossary {
         "Effets live",
         "Des effets à jouer en direct sur tout le morceau : filtre, répétition, arrêt de bande, hachage.",
     )
+    val MASTER = Help(
+        "Sortie générale",
+        "Tout le morceau mélangé, tel qu'il sort du téléphone. Son limiteur l'empêche de saturer quand tout joue fort.",
+    )
+    val REVERB_DELAY = Help(
+        "Réverbe et écho",
+        "Deux effets partagés par toutes les pistes : la réverbe donne l'impression d'une salle, l'écho répète le son. " +
+            "Chaque piste y envoie plus ou moins de son (son « envoi »).",
+    )
+    val HARMONY = Help(
+        "Gamme et accords",
+        "La tonalité du morceau (par exemple La mineur) et les accords qui vont avec. Le clavier montre les notes qui sonnent juste ; verrouillé, il ne joue plus qu'elles.",
+    )
+    val ACID_STEP = Help(
+        "Pas de la basse",
+        "Une case de la ligne de basse : une note ou un silence. Accent : elle tape plus fort et plus brillante. Slide : elle se lie à la suivante en glissant.",
+    )
     val LIMITER = Help(
         "Limiteur",
         "Empêche la sortie générale de saturer quand tout joue fort.",
@@ -319,6 +337,6 @@ object Glossary {
         TRACK, SOURCE, PIANO_ROLL, SCALE, SCALE_LOCK, CHORD, PROGRESSION, ARPEGGIO, QUANTIZE, SYNTH, PLAITS, GENERAL_MIDI,
         UNISON, SAMPLED, ROOT_NOTE, GLIDE, ACID, FILTER, ACCENT_SLIDE, MIDI, MIDI_LEARN, BEND, SUSTAIN,
         MIXER, MUTE_SOLO, INSERT, SEND, REVERB, DELAY, COMPRESSOR, EQ, MACROS, XY_PAD, FX_PRESET, AUTOMATION, PERFORMANCE,
-        LIMITER, SPECTRUM, FORMATS, LUFS, STEMS, EXPORT_MIDI, REMIX, AUDIO_TRACK, GENERATE, TUNER, LATENCY,
+        MASTER, REVERB_DELAY, HARMONY, ACID_STEP, LIMITER, SPECTRUM, FORMATS, LUFS, STEMS, EXPORT_MIDI, REMIX, AUDIO_TRACK, GENERATE, TUNER, LATENCY,
     )
 }

@@ -20,8 +20,12 @@ import com.pocketstudio.model.Project
 import com.pocketstudio.model.SoundPacks
 import com.pocketstudio.model.StarterWizard
 import com.pocketstudio.model.StarterWizard.Role
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.awaitCancellation
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -36,8 +40,12 @@ import kotlin.math.abs
 sealed interface SoundRef {
     data class Kit(val voice: Int) : SoundRef
     data class Pack(val packId: String, val sound: PackSound) : SoundRef
-    /** A melodic part of the assistant played with [sound]: its first bar, at the style's tempo. */
+    /** A melodic part of the assistant played with [sound], over the beat and the parts before it. */
     data class Melodic(val part: StarterWizard.Part, val sound: StarterWizard.PartSound) : SoundRef
+    /** A mood of the assistant: its four chords (bass and pad) over the style's beat. */
+    data class MoodDemo(val mood: StarterWizard.Mood) : SoundRef
+    /** The beat chosen so far, up to [role] played with [sound]: the line heard in its groove. */
+    data class LineDemo(val role: Role, val sound: SoundOption) : SoundRef
 }
 
 data class SoundOption(val ref: SoundRef, val name: String)
@@ -130,6 +138,11 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
     /** The sound being previewed, if any. */
     val playing: StateFlow<SoundRef?> = _playing.asStateFlow()
 
+    private val _preparing = MutableStateFlow<SoundRef?>(null)
+    /** The excerpt being rendered before it plays (a second or so), if any. */
+    val preparing: StateFlow<SoundRef?> = _preparing.asStateFlow()
+    private var previewJob: Job? = null
+
     private val player = PcmPlayer { _playing.value = null }
     private val kitCache = HashMap<Int, Pcm>()
     private val cancelled = HashMap<String, AtomicBoolean>()
@@ -220,17 +233,43 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
     // --- Previews ------------------------------------------------------------------------------
 
     fun preview(ref: SoundRef) {
-        if (_playing.value == ref) {
+        if (_playing.value == ref || _preparing.value == ref) {
+            previewJob?.cancel()
+            _preparing.value = null
             stopPreview()
             return
         }
-        viewModelScope.launch {
-            val pcm = load(ref) ?: return@launch
+        // The last touch wins: an excerpt still rendering for another sound is dropped.
+        previewJob?.cancel()
+        previewJob = viewModelScope.launch {
+            _preparing.value = ref
+            val pcm = try {
+                load(ref)
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                AppLog.add("Écoute impossible : ${e.javaClass.simpleName}")
+                null
+            } catch (e: OutOfMemoryError) {
+                AppLog.add("Écoute impossible : mémoire pleine")
+                null
+            } finally {
+                if (_preparing.value == ref) _preparing.value = null
+            }
+            if (pcm == null) {
+                AppLog.add("Écoute impossible : $ref")
+                return@launch
+            }
             if (player.play(pcm)) _playing.value = ref
+            else AppLog.add("Le téléphone a refusé de jouer l'extrait (${pcm.frames} images)")
         }
     }
 
-    fun stopPreview() = player.stop()
+    fun stopPreview() {
+        previewJob?.cancel()
+        _preparing.value = null
+        player.stop()
+    }
 
     /** The sound as audio for a pad or a track ([then] on the main thread; nothing if unreadable). */
     fun use(ref: SoundRef, then: (Pcm) -> Unit) {
@@ -249,7 +288,9 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
     /** The sound as audio: the kit voice rendered once by the engine, or the pack file decoded. */
     private suspend fun load(ref: SoundRef): Pcm? = when (ref) {
         is SoundRef.Kit -> kitVoice(ref.voice)
-        is SoundRef.Melodic -> melodicBar(ref)
+        is SoundRef.Melodic -> partInContext(ref)
+        is SoundRef.MoodDemo -> moodDemo(ref.mood)
+        is SoundRef.LineDemo -> lineDemo(ref)
         is SoundRef.Pack -> withContext(Dispatchers.IO) {
             val file = PackStore.file(getApplication(), ref.packId, ref.sound)
             runCatching { AudioDecoder.decode(getApplication(), Uri.fromFile(file)) }
@@ -291,49 +332,105 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         return pcm to root
     }
 
-    /** The part's first bar with that sound, in the chosen mood, at the style's tempo. */
-    private suspend fun melodicBar(ref: SoundRef.Melodic): Pcm? {
+    /** The part with that sound over the beat and the parts before it, two bars in the chosen mood. */
+    private suspend fun partInContext(ref: SoundRef.Melodic): Pcm? {
         val w = _wizard.value
         val style = w.style ?: return null
+        val before = StarterWizard.Part.entries.takeWhile { it != ref.part }
+            .mapNotNull { p -> w.parts[p]?.takeIf { it.enabled }?.let { p to it.sound } }
+        return groove(style, chosenBeat(w, style), before + (ref.part to ref.sound), w.mood ?: style.melody.mood, bars = 2)
+    }
+
+    /** The mood's four chords on the bass and the pad, over the beat as chosen so far. */
+    private suspend fun moodDemo(mood: StarterWizard.Mood): Pcm? {
+        val w = _wizard.value
+        val style = w.style ?: return null
+        val parts = listOf(StarterWizard.Part.Bass, StarterWizard.Part.Pad).map { p ->
+            p to (w.parts[p]?.sound ?: StarterWizard.soundsFor(p, style).first())
+        }
+        return groove(style, chosenBeat(w, style), parts, mood, bars = 4)
+    }
+
+    /** The beat up to the line, that line played with the sound being tried. */
+    private suspend fun lineDemo(ref: SoundRef.LineDemo): Pcm? {
+        val w = _wizard.value
+        val style = w.style ?: return null
+        val upTo = style.lines.indexOfFirst { it.role == ref.role }
+        if (upTo < 0) return null
+        val beat = style.lines.take(upTo).mapNotNull { line -> enabledSound(w, line) } + (style.lines[upTo] to ref.sound.ref)
+        return groove(style, beat, emptyList(), w.mood ?: style.melody.mood, bars = 2)
+    }
+
+    private fun enabledSound(w: WizardUi, line: StarterWizard.Line): Pair<StarterWizard.Line, SoundRef>? =
+        w.rows[line.role]?.takeIf { it.enabled }?.sound?.let { line to it.ref }
+
+    private fun chosenBeat(w: WizardUi, style: StarterWizard.Style) = style.lines.mapNotNull { enabledSound(w, it) }
+
+    /**
+     * An excerpt of the song being built, rendered offline: the [beat] lines with their sounds
+     * (pads), the [parts] on synth tracks 0, 1, 2 with their first notes in [mood], [bars] bars
+     * at the style's tempo and swing. Null when a sound cannot be read or the engine is missing.
+     */
+    private suspend fun groove(
+        style: StarterWizard.Style,
+        beat: List<Pair<StarterWizard.Line, SoundRef>>,
+        parts: List<Pair<StarterWizard.Part, StarterWizard.PartSound>>,
+        mood: StarterWizard.Mood,
+        bars: Int,
+    ): Pcm? {
         if (!NativeEngine.isAvailable) return null
-        // A pack sound plays across the keys from its own note.
-        val packSound = if (ref.sound.sampled != null) packPartSound(ref.sound) ?: return null else null
-        val mood = w.mood ?: style.melody.mood
+        // Audio first: the kit voice already on its pad needs nothing, the others are decoded or rendered.
+        val padAudio = beat.map { (line, ref) -> if (ref is SoundRef.Kit && ref.voice == line.role.lane) null else (load(ref) ?: return null) }
+        val partAudio = parts.map { (_, sound) -> if (sound.sampled != null) (packPartSound(sound) ?: return null) else null }
         val harmony = com.pocketstudio.model.Harmony(style.melody.root, mood.scale)
-        val clip = StarterWizard.startingNotes(ref.part, style, mood, harmony)
-        val bar = clip.performance.expand(clip).filter { it.start < 16 * com.pocketstudio.model.NoteClip.TICKS_PER_STEP }
-        var native: com.pocketstudio.engine.NativeSample? = null
+        val steps = style.lines.maxOf { it.pattern.length }.coerceIn(com.pocketstudio.model.DrumPattern.MIN_STEPS, com.pocketstudio.model.DrumPattern.MAX_STEPS)
+        val ticks = bars * 16 * com.pocketstudio.model.NoteClip.TICKS_PER_STEP
+        val natives = ArrayList<com.pocketstudio.engine.NativeSample?>()
         val job = OfflineExport()
         val data = try {
-            if (packSound != null) {
-                // Resampled to 48 kHz off the main thread (a few hundred milliseconds on a phone),
-                // and always kept so that the finally below frees it.
-                val (pcm, _) = packSound
-                native = withContext(Dispatchers.Default + NonCancellable) {
-                    com.pocketstudio.engine.NativeSample.create(pcm.data, pcm.channels, pcm.sampleRate)
-                } ?: return null
+            // Resampled to 48 kHz off the main thread, and always kept so that the finally below frees them.
+            withContext(Dispatchers.Default + NonCancellable) {
+                padAudio.forEach { pcm -> natives += pcm?.let { com.pocketstudio.engine.NativeSample.create(it.data, it.channels, it.sampleRate) } }
+                partAudio.forEach { a -> natives += a?.let { (pcm, _) -> com.pocketstudio.engine.NativeSample.create(pcm.data, pcm.channels, pcm.sampleRate) } }
             }
-            val sample = native
             NativeEngine.captureInto(job) {
                 NativeEngine.setTempo(style.bpm)
-                NativeEngine.setPatternSteps(16)
-                ref.sound.synth.sanitized().values.forEachIndexed { i, v -> NativeEngine.setSynthParam(i, v, 0) }
-                ref.sound.plaits?.let { p -> p.sanitized().engineValues().forEachIndexed { i, v -> NativeEngine.setPlaitsParam(i, v, 0) } }
-                if (sample != null && packSound != null) {
-                    val patch = ref.sound.sampled!!.copy(root = packSound.second ?: 60f)
-                    patch.engineValues().forEachIndexed { i, v -> NativeEngine.setTrackSampleParam(i, v, 0) }
-                    NativeEngine.setTrackSample(0, sample)  // the export engine keeps its own reference
+                NativeEngine.setSwing(style.swing)
+                NativeEngine.setPatternSteps(steps)
+                beat.forEachIndexed { i, (line, _) ->
+                    val lane = line.role.lane
+                    natives[i]?.let { NativeEngine.setPadSample(lane, it) }
+                    StarterWizard.hits(line.pattern).forEach { (step, hit) -> if (step < steps) NativeEngine.setDrumHit(lane, step, hit.velocity) }
                 }
-                NativeEngine.setSynthEngine(if (sample != null) 2 else if (ref.sound.plaits != null) 1 else 0, 0)
-                NativeEngine.setSynthSteps(16, 0)
-                bar.forEachIndexed { i, n -> NativeEngine.setSynthNote(i, n.start, n.length, n.pitch, n.velocity, 0) }
-                NativeEngine.setSynthNoteCount(bar.size, 0)
+                parts.forEachIndexed { track, (part, sound) ->
+                    NativeEngine.setTrackOn(track, true)  // a fresh engine only plays track 0
+                    sound.synth.sanitized().values.forEachIndexed { i, v -> NativeEngine.setSynthParam(i, v, track) }
+                    sound.plaits?.let { p -> p.sanitized().engineValues().forEachIndexed { i, v -> NativeEngine.setPlaitsParam(i, v, track) } }
+                    val sample = natives[beat.size + track]
+                    if (sample != null) {
+                        val patch = sound.sampled!!.copy(root = partAudio[track]?.second ?: 60f)
+                        patch.engineValues().forEachIndexed { i, v -> NativeEngine.setTrackSampleParam(i, v, track) }
+                        NativeEngine.setTrackSample(track, sample)  // the export engine keeps its own reference
+                    }
+                    NativeEngine.setSynthEngine(if (sample != null) 2 else if (sound.plaits != null) 1 else 0, track)
+                    val clip = StarterWizard.startingNotes(part, style, mood, harmony)
+                    val notes = clip.performance.expand(clip).filter { it.start < ticks }
+                    NativeEngine.setSynthSteps(16 * bars, track)
+                    notes.forEachIndexed { i, n -> NativeEngine.setSynthNote(i, n.start, n.length, n.pitch, n.velocity, track) }
+                    NativeEngine.setSynthNoteCount(notes.size, track)
+                }
             }
-            withContext(Dispatchers.Default) { job.renderToArray(OfflineExport.framesFor(1, style.bpm), OfflineExport.SAMPLE_RATE.toLong()) }
+            coroutineScope {
+                // A preview dropped for another one stops rendering at once.
+                var rendered = false
+                val stopper = launch { try { awaitCancellation() } finally { if (!rendered) job.cancel() } }
+                withContext(Dispatchers.Default) { job.renderToArray(OfflineExport.framesFor(bars, style.bpm), OfflineExport.SAMPLE_RATE / 2L) }
+                    .also { rendered = true; stopper.cancel() }
+            }
         } finally {
             withContext(NonCancellable + Dispatchers.Main) {
                 job.close()
-                native?.close()
+                natives.forEach { it?.close() }
             }
         }
         return if (data.isEmpty()) null else Pcm(trimSilence(data), 2, OfflineExport.SAMPLE_RATE)
@@ -365,7 +462,11 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /** null: the beat only, no melodic tracks. */
-    fun setMood(mood: StarterWizard.Mood?) = _wizard.update { it.copy(mood = mood) }
+    fun setMood(mood: StarterWizard.Mood?) {
+        _wizard.update { it.copy(mood = mood) }
+        val ref = mood?.let { SoundRef.MoodDemo(it) }
+        if (ref == null) stopPreview() else if (_playing.value != ref && _preparing.value != ref) preview(ref)
+    }
 
     fun setPartEnabled(part: StarterWizard.Part, enabled: Boolean) =
         _wizard.update { w -> w.parts[part]?.let { w.copy(parts = w.parts + (part to it.copy(enabled = enabled))) } ?: w }
@@ -374,10 +475,14 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
     fun choosePartSound(part: StarterWizard.Part, sound: StarterWizard.PartSound) {
         _wizard.update { w -> w.parts[part]?.let { w.copy(parts = w.parts + (part to it.copy(sound = sound, enabled = true))) } ?: w }
         val ref = SoundRef.Melodic(part, sound)
-        if (_playing.value != ref) preview(ref)
+        // A second touch while it prepares waits for it; while it plays, it stops it.
+        if (_preparing.value != ref) preview(ref)
     }
 
-    fun next() = _wizard.update { it.copy(step = (it.step + 1).coerceAtMost(it.lastStep)) }
+    fun next() {
+        stopPreview()
+        _wizard.update { it.copy(step = (it.step + 1).coerceAtMost(it.lastStep)) }
+    }
 
     fun back() {
         stopPreview()
@@ -394,7 +499,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
     /** Picks the sound for the line and lets it be heard. */
     fun choose(role: Role, option: SoundOption) {
         editRow(role) { it.copy(sound = option, enabled = true) }
-        if (_playing.value != option.ref) preview(option.ref)
+        if (_preparing.value != option.ref) preview(option.ref)
     }
 
     private fun editRow(role: Role, transform: (WizardRow) -> WizardRow) =

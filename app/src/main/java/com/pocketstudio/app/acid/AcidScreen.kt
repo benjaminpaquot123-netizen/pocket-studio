@@ -42,11 +42,10 @@ import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Slider
+import com.pocketstudio.ui.ProSlider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -65,6 +64,7 @@ import com.pocketstudio.ui.KnobColors
 import com.pocketstudio.model.AcidStep
 import com.pocketstudio.ui.MonoStyle
 import com.pocketstudio.ui.Neon
+import com.pocketstudio.ui.pillColors
 import com.pocketstudio.ui.NeonCard
 import com.pocketstudio.ui.SectionLabel
 import kotlin.math.roundToInt
@@ -138,7 +138,7 @@ fun AcidScreen(
                 Text("Densité", Modifier.weight(1f))
                 Text("${(acid.density * 100).roundToInt()} %", style = MonoStyle, color = Neon.Cyan)
             }
-            Slider(value = acid.density, onValueChange = actions.setDensity)
+            ProSlider(value = acid.density, onValueChange = actions.setDensity)
         }
 
         val context = LocalContext.current
@@ -168,10 +168,10 @@ private fun StepGrid(
     if (page >= pages) page = 0
     // While playing, the grid shows the bar being heard (unless the user picked one).
     val shown = if (playing && follow && playStep >= 0) playStep / AcidPattern.STEPS_PER_PAGE else page
-    val chipColors = FilterChipDefaults.filterChipColors(selectedContainerColor = Neon.Cyan.copy(alpha = 0.25f), selectedLabelColor = Neon.Cyan)
+    val chipColors = pillColors()
     NeonCard {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            SectionLabel("Ligne de basse · base ${noteName(acid.root, english)}", Modifier.weight(1f), help = Glossary.ACID)
+            SectionLabel("Ligne de basse · base ${noteName(acid.root, english)}", Modifier.weight(1f), help = Glossary.ACID, foldKey = "Ligne de basse")
             FilterChip(
                 selected = english, onClick = { setEnglish(!english) },
                 label = { Text(if (english) "C D E" else "Do Ré Mi") },
@@ -271,13 +271,10 @@ private fun StepGrid(
 @Composable
 private fun StepEditor(acid: AcidPattern, index: Int, actions: AcidActions, english: Boolean) {
     val s = acid.steps[index]
-    val chipColors = FilterChipDefaults.filterChipColors(
-        selectedContainerColor = Neon.Cyan.copy(alpha = 0.25f),
-        selectedLabelColor = Neon.Cyan,
-    )
+    val chipColors = pillColors()
     NeonCard(accent = Neon.Magenta) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            SectionLabel("Pas ${index + 1}", color = Neon.Magenta, help = Glossary.ACCENT_SLIDE)
+            SectionLabel("Pas ${index + 1}", color = Neon.Magenta, help = Glossary.ACID_STEP, foldKey = "Pas de la basse acide")
             Box(Modifier.weight(1f))
             FilterChip(
                 selected = index in acid.locked,
@@ -329,7 +326,7 @@ private fun SoundCard(acid: AcidPattern, actions: AcidActions, browser: SoundBro
     var sliders by remember { mutableStateOf(SoundView.sliders(context)) }
     NeonCard {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            SectionLabel("Son", Modifier.weight(1f), help = Glossary.FILTER)
+            SectionLabel("Son", Modifier.weight(1f), help = Glossary.FILTER, foldKey = "Son acide")
             listOf(false to "Panneau", true to "Curseurs").forEach { (mode, label) ->
                 FilterChip(
                     selected = sliders == mode,
@@ -349,7 +346,7 @@ private fun SoundCard(acid: AcidPattern, actions: AcidActions, browser: SoundBro
                 Text(label, Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
                 Text("${(values[i] * 100).roundToInt()}", style = MonoStyle, color = Neon.Cyan)
             }
-            Slider(
+            ProSlider(
                 value = values[i],
                 onValueChange = { actions.setSound(i, it) },
                 modifier = Modifier.testTag("acid_sound_$i"),

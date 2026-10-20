@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -46,6 +45,7 @@ import com.pocketstudio.model.matchingFx
 import com.pocketstudio.ui.Knob
 import com.pocketstudio.ui.KnobColors
 import com.pocketstudio.ui.Neon
+import com.pocketstudio.ui.pillColors
 import kotlin.math.roundToInt
 
 class QuickFxActions(
@@ -61,7 +61,7 @@ class QuickFxActions(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun QuickFxPanel(ch: Int, channel: Channel, actions: QuickFxActions) {
-    val chipColors = FilterChipDefaults.filterChipColors(selectedContainerColor = Neon.Magenta.copy(alpha = 0.25f), selectedLabelColor = Neon.Magenta)
+    val chipColors = pillColors(Neon.Magenta)
     val current = channel.matchingFx()
     var category by rememberSaveable(ch) { mutableStateOf(current?.category?.takeIf { it.isNotEmpty() } ?: FxPresets.CATEGORIES.first()) }
     Column(Modifier.fillMaxWidth().testTag("quick_fx_$ch"), verticalArrangement = Arrangement.spacedBy(8.dp)) {

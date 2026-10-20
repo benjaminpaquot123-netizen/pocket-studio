@@ -1,41 +1,46 @@
 {
-  "id": "phase13-machines",
-  "milestone": "Phase 13 : instruments classiques et sons actuels",
+  "id": "phase14-look",
+  "milestone": "Phase 14 : un look pro et l'écoute partout",
   "items": [
     {
-      "id": "machines",
-      "title": "Les boîtes à rythmes légendaires",
-      "hint": "Rythme › touche un pad › Bibliothèque de sons, en bas : télécharge « Roland TR-909 ». Pose son kick et son clap sur deux pads : ça sonne comme la vraie ?"
+      "id": "look",
+      "title": "Le nouveau look",
+      "hint": "Parcours Rythme, Synthé, Morceau et Mixeur : panneaux en relief, pads qui s'allument quand ils jouent, curseurs lumineux, vumètres à LED. Ça claque ?"
     },
     {
-      "id": "synth_packs",
-      "title": "Un synthé des années 80 au clavier",
-      "hint": "Télécharge « Roland Juno-106 ». Synthé › Source du son › Échantillon › Choisir un son › Nappes : prends une nappe du Juno et joue des accords."
+      "id": "fold",
+      "title": "Replier un bloc",
+      "hint": "Morceau : touche le titre « SCÈNES » : le bloc se replie. Ferme l'appli et rouvre-la : il est resté replié. Touche le titre pour le rouvrir."
     },
     {
-      "id": "modern_808",
-      "title": "Une 808 moderne qui glisse",
-      "hint": "Télécharge « 808 modernes ». En Échantillon, choisis une 808 saturée, allume « Glisse (808) » et enchaîne deux notes en gardant la première appuyée."
+      "id": "tiles",
+      "title": "Les sons en vignettes",
+      "hint": "Synthé › Sons prêts à jouer : chaque son a son icône et la couleur de sa famille. Instrument › Plaits : les 24 modèles en vignettes, avec une ligne qui dit à quoi ils servent."
     },
     {
-      "id": "fx_live",
-      "title": "Une montée sur un pad live",
-      "hint": "Télécharge « Montées et impacts ». Morceau › Pads live › Régler les pads › un pad vide › Bibliothèque de sons › Effets : pose une montée et lance-la."
+      "id": "follow_keyboard",
+      "title": "Le clavier qui suit",
+      "hint": "Synthé : descends jusqu'aux sons prêts à jouer : un clavier glisse du bas. Essaie plusieurs sons sans remonter. La flèche le range ; il revient la prochaine fois que tu descends."
     },
     {
-      "id": "unison",
-      "title": "L'unisson",
-      "hint": "Synthé › Sons prêts à jouer › Leads › Supersaw. Puis dans Son, bouge « Unisson » de 1 à 7 voix : le son s'élargit."
+      "id": "follow_keyboard_notes",
+      "title": "Le clavier qui suit, en mode Notes",
+      "hint": "Synthé › Notes : descends sous le piano roll jusqu'aux sons : le clavier apparaît aussi."
     },
     {
-      "id": "generate_new",
-      "title": "Générer des sons d'aujourd'hui",
-      "hint": "Audio › Générer : essaie « Log drum amapiano » puis « Accords future bass ». Pose le résultat sur un pad live."
+      "id": "wizard_mood",
+      "title": "Entendre les ambiances",
+      "hint": "Mes projets › Nouveau projet › un style › Ambiance : touche chaque ambiance : tu entends ses quatre accords sur le rythme du style."
     },
     {
-      "id": "assistant_packs",
-      "title": "L'assistant et les machines",
-      "hint": "Avec le Juno téléchargé, l'assistant (Mes projets › Nouveau projet) propose ses nappes pour les accords et ses leads pour la mélodie, en bas de chaque liste."
+      "id": "wizard_line",
+      "title": "Une ligne de batterie avec le rythme",
+      "hint": "Dans l'assistant, à l'étape de la caisse claire : « Avec le rythme » fait entendre le kick déjà choisi et la caisse claire ensemble. Les sources tiennent sur une ligne, les sons sont juste dessous."
+    },
+    {
+      "id": "wizard_part",
+      "title": "La basse en situation",
+      "hint": "À l'étape Basse, touche un son : la basse joue avec la batterie choisie. Pour la nappe : avec la batterie et la basse."
     }
   ]
 }

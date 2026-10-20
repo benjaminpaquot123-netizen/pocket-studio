@@ -14,10 +14,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Slider
+import com.pocketstudio.ui.ProSlider
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -27,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.pocketstudio.ui.Neon
+import com.pocketstudio.ui.pillColors
 import com.pocketstudio.ui.NeonCard
 import com.pocketstudio.ui.SectionLabel
 import kotlin.math.roundToInt
@@ -40,7 +40,7 @@ class SettingsActions(
 /** Réglages: look, notes, feel, sound; the same for every project. */
 @Composable
 fun SettingsScreen(s: AppSettings, version: String, actions: SettingsActions) {
-    val chip = FilterChipDefaults.filterChipColors(selectedContainerColor = Neon.Cyan.copy(alpha = 0.25f), selectedLabelColor = Neon.Cyan)
+    val chip = pillColors()
     Column(
         Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp).testTag("settings"),
         verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -75,7 +75,7 @@ fun SettingsScreen(s: AppSettings, version: String, actions: SettingsActions) {
         NeonCard {
             SectionLabel("Son")
             Text("Volume du métronome : ${(s.metronomeLevel * 100).roundToInt()} %", style = MaterialTheme.typography.bodyMedium)
-            Slider(value = s.metronomeLevel, onValueChange = { v -> actions.update { it.copy(metronomeLevel = v) } }, modifier = Modifier.testTag("metronome_level"))
+            ProSlider(value = s.metronomeLevel, onValueChange = { v -> actions.update { it.copy(metronomeLevel = v) } }, modifier = Modifier.testTag("metronome_level"))
             Text("Décompte avant d'enregistrer", style = MaterialTheme.typography.bodyMedium)
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 listOf(0 to "Aucun", 1 to "1 mesure", 2 to "2 mesures").forEach { (bars, label) ->

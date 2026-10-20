@@ -1,5 +1,5 @@
-Phase 13 : « On en a gros ! »
-- 17 nouveaux packs : TR-808, 909, 707, 606, CR-78, LinnDrum, SP-1200, MPC60, Juno, Jupiter, DX7, Minimoog…
-- … et des sons actuels : 808 saturées, hyperpop, future bass, voix découpées, montées et impacts.
-- Synthé : l'unisson pour les supersaws et les basses Reese, 6 nouveaux sons prêts à jouer.
-- Générer : 14 idées pour les genres d'aujourd'hui (drill, amapiano, jersey club…).
+Phase 14 : « C'est pas faux ! »
+- Nouveau look : panneaux en relief, pads qui s'allument, curseurs et vumètres façon studio.
+- Chaque bloc se replie en touchant son titre (petite flèche discrète) et le reste.
+- Sons en vignettes colorées, et un clavier qui suit quand tu descends choisir un son.
+- Assistant : écoute chaque ambiance, chaque ligne avec le rythme, chaque son en situation.

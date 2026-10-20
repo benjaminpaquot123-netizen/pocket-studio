@@ -32,13 +32,16 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Slider
+import com.pocketstudio.ui.ProSlider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.lerp
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
@@ -142,20 +145,23 @@ fun LivePadsCard(ui: LivePadsUi, actions: LivePadsActions) {
 
 @Composable
 private fun LivePad(i: Int, clip: LiveClip?, state: Int, selected: Boolean, waitAlpha: Float, modifier: Modifier, onClick: () -> Unit) {
-    val shape = RoundedCornerShape(10.dp)
+    val shape = RoundedCornerShape(12.dp)
+    // Empty: hollow. Loaded: in relief. Playing: lit green with a glow.
     val fill = when {
-        clip == null -> Color.Transparent
-        state == 2 -> Neon.Acid
-        else -> Neon.SurfaceHigh
+        clip == null -> Brush.verticalGradient(listOf(Color.Black.copy(alpha = 0.22f), Color.Black.copy(alpha = 0.3f)))
+        state == 2 -> Brush.verticalGradient(listOf(lerp(Neon.Acid, Color.White, 0.2f), Neon.Acid))
+        else -> Brush.verticalGradient(listOf(lerp(Neon.SurfaceHigh, Color.White, 0.06f), Neon.SurfaceHigh))
     }
     val border = when {
         selected -> BorderStroke(3.dp, Neon.Cyan)
         state == 1 -> BorderStroke(3.dp, Neon.Acid.copy(alpha = waitAlpha))
-        clip == null -> BorderStroke(1.dp, Neon.Outline)
-        else -> BorderStroke(1.dp, Neon.TextSecondary)
+        clip == null -> BorderStroke(1.dp, Color.White.copy(alpha = 0.06f))
+        else -> BorderStroke(1.dp, Color.White.copy(alpha = 0.16f))
     }
     Box(
-        modifier.aspectRatio(1f).clip(shape).background(fill).border(border, shape).clickable(onClick = onClick).testTag("live_pad_$i"),
+        modifier.aspectRatio(1f)
+            .then(if (state == 2) Modifier.shadow(14.dp, shape, ambientColor = Neon.Acid, spotColor = Neon.Acid) else Modifier)
+            .clip(shape).background(fill).border(border, shape).clickable(onClick = onClick).testTag("live_pad_$i"),
         contentAlignment = Alignment.Center,
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(4.dp)) {
@@ -212,7 +218,7 @@ private fun PadEditor(pad: Int, clip: LiveClip?, drumSounds: List<Pair<Int, Stri
                 }
             }
             Text("Volume", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
-            Slider(value = clip.gain / 2f, onValueChange = { actions.setGain(pad, it * 2f) })
+            ProSlider(value = clip.gain / 2f, onValueChange = { actions.setGain(pad, it * 2f) })
         }
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             if (clip != null) {

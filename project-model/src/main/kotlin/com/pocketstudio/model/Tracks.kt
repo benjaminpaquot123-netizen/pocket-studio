@@ -37,7 +37,7 @@ data class InstrumentTrack(
     /** What the track's sound is, in a few words. */
     val soundLabel: String get() = instrument?.name ?: when (engine) {
         1 -> "Plaits"
-        2 -> sampled.name.ifBlank { "Son échantillonné" }
+        2 -> sampled.name.ifBlank { "Sample" }
         else -> "Synthé"
     }
 

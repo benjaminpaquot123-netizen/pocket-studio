@@ -10,11 +10,10 @@ import androidx.compose.material.icons.filled.LibraryMusic
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.Button
 import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Slider
+import com.pocketstudio.ui.ProSlider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,6 +26,7 @@ import com.pocketstudio.model.SampledPatch
 import com.pocketstudio.ui.HelpDot
 import com.pocketstudio.ui.MonoStyle
 import com.pocketstudio.ui.Neon
+import com.pocketstudio.ui.pillColors
 import com.pocketstudio.ui.WithHelp
 import java.util.Locale
 import kotlin.math.roundToInt
@@ -35,7 +35,7 @@ import kotlin.math.roundToInt
 @Composable
 internal fun SampledPanel(ui: InstrumentUi) {
     val s = ui.sampled
-    val chipColors = FilterChipDefaults.filterChipColors(selectedContainerColor = Neon.Cyan.copy(alpha = 0.25f), selectedLabelColor = Neon.Cyan)
+    val chipColors = pillColors()
     WithHelp(Glossary.SAMPLED) {
         Text(
             if (s.file == null) "Choisis un son de la bibliothèque : une 808, une basse, un stab… Il se jouera sur tout le clavier."
@@ -89,7 +89,7 @@ internal fun SampledPanel(ui: InstrumentUi) {
         Text("Volume", Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
         Text("${(s.gain * 100).roundToInt()} %", style = MonoStyle, color = Neon.Cyan)
     }
-    Slider(value = s.gain / 2f, onValueChange = { v -> ui.editSampled("gain") { it.copy(gain = v * 2f) } }, modifier = Modifier.testTag("sampled_gain"))
+    ProSlider(value = s.gain / 2f, onValueChange = { v -> ui.editSampled("gain") { it.copy(gain = v * 2f) } }, modifier = Modifier.testTag("sampled_gain"))
 }
 
 @Composable
@@ -98,5 +98,5 @@ private fun Seconds(label: String, value: Float, range: ClosedFloatingPointRange
         Text(label, Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
         Text(String.format(Locale.FRANCE, "%.2f s", value), style = MonoStyle, color = Neon.Cyan)
     }
-    Slider(value = value.coerceIn(range), onValueChange = onChange, valueRange = range, modifier = Modifier.testTag(tag))
+    ProSlider(value = value.coerceIn(range), onValueChange = onChange, valueRange = range, modifier = Modifier.testTag(tag))
 }

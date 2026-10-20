@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.foundation.background
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -73,6 +74,9 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.lerp
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
@@ -124,6 +128,10 @@ import com.pocketstudio.app.midi.MidiCommand
 import com.pocketstudio.app.midi.MidiScreen
 import com.pocketstudio.app.midi.MidiViewModel
 import com.pocketstudio.app.sounds.SoundBrowserUi
+import com.pocketstudio.app.sounds.SoundLooks
+import com.pocketstudio.model.AcidSound
+import com.pocketstudio.model.PlaitsPatch
+import com.pocketstudio.model.SynthPatch
 import com.pocketstudio.model.SoundCategories
 import com.pocketstudio.model.SoundLibrary
 import com.pocketstudio.app.session.LivePadsActions
@@ -242,9 +250,11 @@ fun AppRoot() {
                         },
                         startKind = if (forTrack) "808" else if (live >= 0) "stab" else padKind(lane),
                         sizes = sizes,
+                        songPlaying = libTransport.playing,
                     ),
                     com.pocketstudio.app.library.LibraryActions(
                         close = close,
+                        togglePlay = rhythmVm::togglePlay,
                         preview = libraryVm::preview,
                         use = { option ->
                             val token = libraryToken
@@ -254,7 +264,7 @@ fun AppRoot() {
                                 val placed = when {
                                     forTrack -> rhythmVm.useAsTrackSound(pcm, name, (option.ref as? com.pocketstudio.app.library.SoundRef.Pack)?.sound?.kind)
                                     live >= 0 -> rhythmVm.placeOnLivePad(live, pcm, name)
-                                    else -> rhythmVm.placeOnPad(pcm, name)
+                                    else -> rhythmVm.placeOnPad(pcm, name, oneShot = true)
                                 }
                                 if (placed) close()
                                 else libraryVm.notice("Un son est encore en train d'être posé ou enregistré : réessaie dans un instant.")
@@ -277,6 +287,9 @@ fun AppRoot() {
             val name = mixerStrips(fxProject).firstOrNull { it.ch == fxChannel }?.name ?: "Piste"
             androidx.compose.material3.AlertDialog(
                 onDismissRequest = { fxChannel = -1 },
+                // The whole width of the phone: everything seen at once, nothing to scroll for.
+                properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp),
                 title = { Text("Effets · $name") },
                 text = {
                     Column(Modifier.verticalScroll(androidx.compose.foundation.rememberScrollState())) {
@@ -298,6 +311,7 @@ fun AppRoot() {
     if (wizardUi.open) {
         val packsUi by libraryVm.packs.collectAsStateWithLifecycle()
         val previewing by libraryVm.playing.collectAsStateWithLifecycle()
+        val preparing by libraryVm.preparing.collectAsStateWithLifecycle()
         androidx.compose.ui.window.Dialog(
             onDismissRequest = libraryVm::closeWizard,
             properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false),
@@ -323,6 +337,7 @@ fun AppRoot() {
                         deletePack = libraryVm::deletePack,
                         create = { libraryVm.create { project, sounds -> projectsVm.create(project, sounds) { id -> libraryVm.closeWizard(); openProject(id) } } },
                     ),
+                    preparing = preparing,
                 )
             }
         }
@@ -342,7 +357,10 @@ fun AppRoot() {
                         back = { showProjects = false },
                         open = { openProject(it.id) },
                         create = { i -> projectsVm.create(PROJECT_STARTERS[i].second()) { id -> openProject(id) } },
-                        wizard = libraryVm::openWizard,
+                        wizard = {
+                            rhythmVm.stop()
+                            libraryVm.openWizard()
+                        },
                         rename = { p, name -> if (p.id == rhythmVm.projectId) { rhythmVm.renameProject(name); projectsVm.refresh() } else projectsVm.rename(p.id, name) },
                         duplicate = { p -> openScope.launch { if (p.id == rhythmVm.projectId) rhythmVm.flushNow(); projectsVm.duplicate(p) } },
                         exportZip = { p ->
@@ -529,7 +547,10 @@ fun AppRoot() {
         },
         bottomBar = {
             if (!landscape) {
-                NavigationBar(containerColor = Neon.Surface) {
+                NavigationBar(
+                    containerColor = lerp(Neon.Background, Color.Black, 0.12f),
+                    modifier = Modifier.drawBehind { drawLine(Color.White.copy(alpha = 0.07f), Offset.Zero, Offset(size.width, 0f), 1f) },
+                ) {
                     AppTab.entries.forEach { t ->
                         NavigationBarItem(
                             selected = tab == t,
@@ -538,9 +559,11 @@ fun AppRoot() {
                             label = { Text(t.label, maxLines = 1, softWrap = false) },
                             modifier = Modifier.testTag("tab_${t.name}"),
                             colors = NavigationBarItemDefaults.colors(
-                                selectedIconColor = Neon.Cyan,
+                                selectedIconColor = Neon.OnAccent,
                                 selectedTextColor = Neon.Cyan,
-                                indicatorColor = Neon.SurfaceHigh,
+                                indicatorColor = Neon.Cyan,
+                                unselectedIconColor = Neon.TextSecondary,
+                                unselectedTextColor = Neon.TextSecondary,
                             ),
                         )
                     }
@@ -548,10 +571,12 @@ fun AppRoot() {
             }
         },
     ) { padding ->
-        Row(Modifier.padding(padding)) {
+        // The background darkens a little towards the bottom: the panels seem to float above it.
+        val bg = Neon.Background
+        Row(Modifier.padding(padding).background(Brush.verticalGradient(listOf(lerp(bg, Color.White, 0.03f), bg, lerp(bg, Color.Black, 0.18f))))) {
             // Landscape: tabs on the side so the screen keeps its height (wider synth keyboard).
             if (landscape) {
-                NavigationRail(containerColor = Neon.Surface) {
+                NavigationRail(containerColor = lerp(Neon.Background, Color.Black, 0.12f)) {
                     AppTab.entries.forEach { t ->
                         NavigationRailItem(
                             selected = tab == t,
@@ -560,9 +585,11 @@ fun AppRoot() {
                             label = { Text(t.label) },
                             modifier = Modifier.testTag("tab_${t.name}"),
                             colors = NavigationRailItemDefaults.colors(
-                                selectedIconColor = Neon.Cyan,
+                                selectedIconColor = Neon.OnAccent,
                                 selectedTextColor = Neon.Cyan,
-                                indicatorColor = Neon.SurfaceHigh,
+                                indicatorColor = Neon.Cyan,
+                                unselectedIconColor = Neon.TextSecondary,
+                                unselectedTextColor = Neon.TextSecondary,
                             ),
                         )
                     }
@@ -672,6 +699,7 @@ fun AppRoot() {
                                 random = rhythmVm::randomAcid,
                                 save = rhythmVm::saveAcidFavorite,
                                 tag = "acid_sounds",
+                                describe = { (it.sound as? AcidSound)?.let(SoundLooks::describe) },
                             ),
                         )
                     }
@@ -785,6 +813,7 @@ fun AppRoot() {
                                     random = rhythmVm::randomPlaits,
                                     save = rhythmVm::savePlaitsFavorite,
                                     tag = "plaits_sounds",
+                                    describe = { (it.sound as? PlaitsPatch)?.let(SoundLooks::describe) },
                                 )
                             } else {
                                 SoundBrowserUi(
@@ -796,6 +825,7 @@ fun AppRoot() {
                                     random = rhythmVm::randomSynth,
                                     save = rhythmVm::saveSynthFavorite,
                                     tag = "synth_sounds",
+                                    describe = { (it.sound as? SynthPatch)?.let(SoundLooks::describe) },
                                 )
                             },
                         )

@@ -37,6 +37,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -141,7 +143,7 @@ fun SessionScreen(ui: SessionScreenUi, actions: SessionActions, live: LivePadsUi
         LivePad(actions.performance)
 
         NeonCard {
-            SectionLabel("Mesure", help = Glossary.TIME_SIGNATURE)
+            SectionLabel("Temps par mesure", help = Glossary.TIME_SIGNATURE)
             Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 (2..7).forEach { b ->
                     androidx.compose.material3.FilterChip(
@@ -209,21 +211,28 @@ private fun SceneButton(i: Int, ui: SessionScreenUi, actions: SessionActions, mo
     val current = i == ui.current
     val pending = i == ui.pending
     val empty = scene == null || scene.isEmpty
+    // The scene that plays glows in its colour; filled scenes stand out, empty ones are hollow.
+    val lit = if (ui.playing) Neon.Magenta else Neon.Cyan
     val colors = when {
-        current -> ButtonDefaults.buttonColors(containerColor = if (ui.playing) Neon.Magenta else Neon.Cyan)
-        else -> ButtonDefaults.outlinedButtonColors(contentColor = if (empty) Neon.TextSecondary else Neon.TextPrimary)
+        current -> ButtonDefaults.buttonColors(containerColor = lit)
+        empty -> ButtonDefaults.buttonColors(containerColor = Color.Black.copy(alpha = 0.22f), contentColor = Neon.TextSecondary)
+        else -> ButtonDefaults.buttonColors(containerColor = Neon.SurfaceHigh, contentColor = Neon.TextPrimary)
     }
+    val shape = RoundedCornerShape(12.dp)
     Button(
         onClick = { actions.select(i) },
         colors = colors,
-        shape = RoundedCornerShape(10.dp),
+        shape = shape,
         border = when {
             pending -> BorderStroke(3.dp, Neon.Amber)
-            !current -> BorderStroke(1.dp, if (empty) Neon.Outline else Neon.TextSecondary)
-            else -> null
+            current -> BorderStroke(1.dp, Color.White.copy(alpha = 0.35f))
+            empty -> BorderStroke(1.dp, Color.White.copy(alpha = 0.06f))
+            else -> BorderStroke(1.dp, Color.White.copy(alpha = 0.14f))
         },
         contentPadding = androidx.compose.foundation.layout.PaddingValues(2.dp),
-        modifier = modifier.aspectRatio(1.2f).testTag("scene_$i"),
+        modifier = modifier.aspectRatio(1.2f)
+            .then(if (current) Modifier.shadow(if (ui.playing) 16.dp else 8.dp, shape, ambientColor = lit, spotColor = lit) else Modifier)
+            .testTag("scene_$i"),
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(Scene.NAMES[i], fontSize = 22.sp, fontWeight = FontWeight.Bold)

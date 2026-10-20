@@ -19,9 +19,9 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  TAG: sons-packs-3
+  TAG: sons-packs-4
   # Packs already built there are reused as they are; only new styles are generated.
-  PREVIOUS: sons-packs-2
+  PREVIOUS: sons-packs-3
   MODEL: https://github.com/benjaminpaquot123-netizen/pocket-studio/releases/download/modele-stable-audio-open-small-1
 
 jobs:

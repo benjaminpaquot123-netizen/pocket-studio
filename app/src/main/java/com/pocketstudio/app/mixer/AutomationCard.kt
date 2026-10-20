@@ -15,7 +15,6 @@ import androidx.compose.material.icons.filled.FiberManualRecord
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -42,6 +41,7 @@ import com.pocketstudio.model.Channel
 import com.pocketstudio.model.EffectType
 import com.pocketstudio.model.Insert
 import com.pocketstudio.ui.Neon
+import com.pocketstudio.ui.pillColors
 import com.pocketstudio.ui.NeonCard
 import com.pocketstudio.ui.SectionLabel
 
@@ -113,7 +113,7 @@ fun AutomationCard(ui: AutomationUi, channels: List<Channel>, master: List<Inser
                 selected = ui.recording, onClick = actions.toggleRecord,
                 label = { Text("Enregistrer") },
                 leadingIcon = { Icon(Icons.Filled.FiberManualRecord, contentDescription = null, tint = if (ui.recording) Neon.Red else Neon.TextSecondary) },
-                colors = FilterChipDefaults.filterChipColors(selectedContainerColor = Neon.Red.copy(alpha = 0.2f), selectedLabelColor = Neon.Red),
+                colors = pillColors(Neon.Red),
                 modifier = Modifier.testTag("automation_record"),
             )
         }

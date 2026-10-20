@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Slider
+import com.pocketstudio.ui.ProSlider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -39,7 +39,7 @@ fun PlayPanel(play: PlayUi, actions: PlayActions) {
     Column(Modifier.fillMaxWidth().testTag("play_panel")) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             Text("Bend", style = MaterialTheme.typography.labelLarge, modifier = Modifier.width(52.dp))
-            Slider(
+            ProSlider(
                 value = play.bend, onValueChange = actions.setBend, valueRange = -1f..1f,
                 onValueChangeFinished = { actions.setBend(0f) },  // a pitch wheel springs back
                 modifier = Modifier.weight(1f).testTag("bend"),
@@ -47,7 +47,7 @@ fun PlayPanel(play: PlayUi, actions: PlayActions) {
         }
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             Text("Modul.", style = MaterialTheme.typography.labelLarge, modifier = Modifier.width(52.dp))
-            Slider(value = play.mod, onValueChange = actions.setMod, modifier = Modifier.weight(1f).testTag("mod"))
+            ProSlider(value = play.mod, onValueChange = actions.setMod, modifier = Modifier.weight(1f).testTag("mod"))
         }
         Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             FilterChip(selected = play.sustain, onClick = { actions.setSustain(!play.sustain) }, label = { Text("Sustain") },
@@ -74,7 +74,7 @@ fun PlayPanel(play: PlayUi, actions: PlayActions) {
                 Text("Longueur des notes", style = MaterialTheme.typography.labelLarge, modifier = Modifier.weight(1f))
                 Text("${(play.arp.gate * 100).toInt()} %", color = Neon.Cyan)
             }
-            Slider(value = play.arp.gate, onValueChange = { actions.setArp(play.arp.copy(gate = it.coerceIn(0.05f, 1f))) })
+            ProSlider(value = play.arp.gate, onValueChange = { actions.setArp(play.arp.copy(gate = it.coerceIn(0.05f, 1f))) })
             Text("Garde des touches enfoncées : l'arpège les joue à tour de rôle, en rythme.",
                 style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         }

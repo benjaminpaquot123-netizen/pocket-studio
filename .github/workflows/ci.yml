@@ -128,6 +128,23 @@ jobs:
           sudo udevadm trigger --name-match=kvm
       - name: Build test APKs
         run: ./gradlew -PemulatorAbi :app:assembleDebug :app:assembleDebugAndroidTest
+      - name: Cache the emulator and its system image
+        uses: actions/cache@v6
+        with:
+          path: |
+            ${{ env.ANDROID_HOME }}/emulator
+            ${{ env.ANDROID_HOME }}/system-images/android-35/google_apis/x86_64
+          key: emulator-35-google_apis-x86_64-v1
+      # Google's server sometimes sends a broken archive; sdkmanager only warns, so check the files.
+      - name: Download the emulator and its system image
+        run: |
+          for attempt in 1 2 3 4; do
+            sdkmanager --install emulator 'system-images;android-35;google_apis;x86_64' --channel=0 > /dev/null || true
+            if [ -x "$ANDROID_HOME/emulator/emulator" ] && [ -f "$ANDROID_HOME/system-images/android-35/google_apis/x86_64/system.img" ]; then exit 0; fi
+            echo "Download incomplete (attempt $attempt), retrying"
+            sleep $((attempt * 20))
+          done
+          exit 1
       - name: Run smoke test on emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:

@@ -17,9 +17,8 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Slider
+import com.pocketstudio.ui.ProSlider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -49,6 +48,7 @@ import androidx.compose.runtime.setValue
 import com.pocketstudio.ui.LevelMeter
 import com.pocketstudio.ui.MonoStyle
 import com.pocketstudio.ui.Neon
+import com.pocketstudio.ui.pillColors
 import com.pocketstudio.ui.NeonCard
 import com.pocketstudio.ui.SectionLabel
 import kotlin.math.log10
@@ -123,7 +123,7 @@ fun MixerScreen(
             Strip(st, channels.getOrElse(st.ch) { Channel() }, meters.getOrElse(st.ch) { 0f }, actions, compact)
         }
         NeonCard(accent = Neon.Cyan) {
-            SectionLabel("Sortie générale", help = Glossary.LIMITER)
+            SectionLabel("Sortie générale", help = Glossary.MASTER)
             LevelMeter(meters.getOrElse(MASTER_CHANNEL) { 0f } / 0.89f)
             val gain = meters.getOrElse(LIMITER_METER) { 1f }
             Text(
@@ -150,20 +150,22 @@ private fun Strip(info: StripInfo, c: Channel, meter: Float, actions: MixerActio
     val name = info.name
     val index = info.ch
     var expanded by rememberSaveable(index) { mutableStateOf(false) }
-    val chipColors = FilterChipDefaults.filterChipColors(
-        selectedContainerColor = Neon.Cyan.copy(alpha = 0.25f),
-        selectedLabelColor = Neon.Cyan,
-    )
+    val chipColors = pillColors()
     NeonCard {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            info.color?.let { androidx.compose.foundation.layout.Box(Modifier.size(12.dp).background(it, androidx.compose.foundation.shape.CircleShape)) }
+            // The strip's colour as a lit bar, like a channel of a mixing desk.
+            val tint = info.color ?: Neon.Cyan
+            androidx.compose.foundation.layout.Box(
+                Modifier.size(width = 4.dp, height = 22.dp)
+                    .background(tint, androidx.compose.foundation.shape.RoundedCornerShape(2.dp)),
+            )
             Text(name, style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f), maxLines = 1,
                 overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
             FilterChip(
                 selected = c.mute,
                 onClick = { actions.toggleMute(index) },
                 label = { Text("Muet") },
-                colors = FilterChipDefaults.filterChipColors(selectedContainerColor = Neon.Red.copy(alpha = 0.25f), selectedLabelColor = Neon.Red),
+                colors = pillColors(Neon.Red),
                 modifier = Modifier.testTag("mute_$index"),
             )
             FilterChip(selected = c.solo, onClick = { actions.toggleSolo(index) }, label = { Text("Solo") }, colors = chipColors,
@@ -173,7 +175,7 @@ private fun Strip(info: StripInfo, c: Channel, meter: Float, actions: MixerActio
         LevelMeter(meter / 0.89f)
         if (compact) {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Slider(value = c.volume, onValueChange = { actions.setVolume(index, it) }, modifier = Modifier.weight(1f).testTag("volume_$index"))
+                ProSlider(value = c.volume, onValueChange = { actions.setVolume(index, it) }, modifier = Modifier.weight(1f).testTag("volume_$index"))
                 Text(faderDb(c.volume), style = MonoStyle, color = Neon.Cyan, modifier = Modifier.padding(start = 6.dp))
                 androidx.compose.material3.IconButton(onClick = { expanded = !expanded }, modifier = Modifier.testTag("strip_more_$index")) {
                     Icon(if (expanded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
@@ -192,7 +194,7 @@ private fun Strip(info: StripInfo, c: Channel, meter: Float, actions: MixerActio
                 Text("Volume", Modifier.weight(1f))
                 Text(faderDb(c.volume), style = MonoStyle, color = Neon.Cyan)
             }
-            Slider(value = c.volume, onValueChange = { actions.setVolume(index, it) }, modifier = Modifier.testTag("volume_$index"))
+            ProSlider(value = c.volume, onValueChange = { actions.setVolume(index, it) }, modifier = Modifier.testTag("volume_$index"))
         }
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Text("Panoramique")
@@ -208,7 +210,7 @@ private fun Strip(info: StripInfo, c: Channel, meter: Float, actions: MixerActio
                 style = MonoStyle, color = Neon.Cyan,
             )
         }
-        Slider(value = c.pan, onValueChange = { v -> actions.setPan(index, if (kotlin.math.abs(v) < 0.04f) 0f else v) }, valueRange = -1f..1f)
+        ProSlider(value = c.pan, onValueChange = { v -> actions.setPan(index, if (kotlin.math.abs(v) < 0.04f) 0f else v) }, valueRange = -1f..1f)
         var open by rememberSaveable(index) { mutableStateOf(false) }
         val summary = androidx.compose.runtime.remember(c) { quickFxSummary(c) }
         EffectsToggle(summary, open, Modifier.testTag("effects_$index")) { open = !open }
@@ -229,7 +231,7 @@ private fun EffectsToggle(summary: String, open: Boolean, modifier: Modifier = M
 
 @Composable
 internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolean = true) {
-    val chipColors = FilterChipDefaults.filterChipColors(selectedContainerColor = Neon.Acid.copy(alpha = 0.25f), selectedLabelColor = Neon.Acid)
+    val chipColors = pillColors(Neon.Acid)
     NeonCard(accent = Neon.Acid) {
         SectionLabel("Exporter", color = Neon.Acid)
         WithHelp(Glossary.STEMS) { Text("Quoi", style = MaterialTheme.typography.bodyMedium) }

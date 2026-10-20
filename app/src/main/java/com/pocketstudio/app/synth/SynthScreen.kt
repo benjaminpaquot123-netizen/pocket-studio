@@ -18,12 +18,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -34,14 +36,14 @@ import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Slider
+import com.pocketstudio.ui.ProSlider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,9 +51,15 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.lerp
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.boundsInWindow
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -61,6 +69,7 @@ import com.pocketstudio.app.sounds.SoundBrowser
 import com.pocketstudio.app.sounds.SoundBrowserUi
 import com.pocketstudio.ui.MonoStyle
 import com.pocketstudio.ui.Neon
+import com.pocketstudio.ui.pillColors
 import com.pocketstudio.ui.NeonCard
 import com.pocketstudio.ui.SectionLabel
 import kotlin.math.roundToInt
@@ -129,10 +138,22 @@ fun SynthScreen(
     // One finger, one chord of the scale (keyboard "Accords" switch).
     val keyOn: (Int, Float) -> Unit = if (chordKeys) { n, _ -> actions.chordOn(n) } else actions.noteOn
     val keyOff: (Int) -> Unit = if (chordKeys) actions.chordOff else actions.noteOff
+    // The keyboard that follows: shown while sounds are being chosen and the real keyboard is out of reach.
+    var keyboardInView by remember(showNotes) { mutableStateOf(true) }
+    var soundsInView by remember(showNotes) { mutableStateOf(false) }
+    var floatFolded by rememberSaveable { mutableStateOf(false) }
+    val minSoundsPx = with(LocalDensity.current) { 64.dp.toPx() }
+    val trackKeyboard = Modifier.onGloballyPositioned { keyboardInView = it.boundsInWindow().height >= it.size.height * 0.5f }
+    val trackSounds = Modifier.onGloballyPositioned { soundsInView = it.boundsInWindow().height >= minOf(minSoundsPx, it.size.height * 0.5f) && it.size.height > 0 }
     BoxWithConstraints(modifier.fillMaxSize().testTag("synth")) {
         val keyboardHeight = (maxHeight * 0.45f).coerceIn(110.dp, 220.dp)
         val landscape = maxWidth > maxHeight
         val rollHeight = if (landscape) (maxHeight - 140.dp).coerceAtLeast(160.dp) else 380.dp
+        val hasSounds = instrument != null || browser != null
+        val follows = hasSounds && ((notes != null && showNotes) || !landscape)
+        val floatKeys = if (landscape) 96.dp else 120.dp
+        // Room under the last settings so the floating keyboard never hides them.
+        val floatRoom = if (follows) floatKeys + 72.dp else 0.dp
         if (notes != null && showNotes) {
             Column(
                 Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(if (landscape) 8.dp else 12.dp),
@@ -149,14 +170,17 @@ fun SynthScreen(
                 }
                 transcribe?.let { TranscribeCard(it) }
                 NeonCard {
-                    SectionLabel("Harmonie", help = Glossary.SCALE)
+                    SectionLabel("Gamme et accords", help = Glossary.HARMONY)
                     HarmonyPanel(notes.harmony, notes.clip.performance, notes.actions, notes.clip.notes)
                 }
-                instrument?.let { InstrumentPanel(it) }
-                if (instrument?.current == null) {
-                    PresetsCard(patch, actions, browser)
-                    if (instrument?.synthEngine != 1) SoundCard(patch, actions, advanced) { advanced = it }
+                SoundArea(trackSounds) {
+                    instrument?.let { InstrumentPanel(it) }
+                    if (instrument?.current == null) {
+                        PresetsCard(patch, actions, browser)
+                        if (instrument?.synthEngine != 1) SoundCard(patch, actions, advanced) { advanced = it }
+                    }
                 }
+                Spacer(Modifier.height(floatRoom))
             }
         } else if (landscape) {
             // Landscape: one compact line (presets, octave), the settings scroll, and a wide
@@ -194,15 +218,34 @@ fun SynthScreen(
                 if (notes != null) ModeSwitch(showNotes) { showNotes = it }
                 KeyboardCard(octave, octaves = 2, height = 150.dp, actions = actions, harmony = harmony, chordKeys = chordKeys,
                     onChordKeys = { chordKeys = it }, keyOn = keyOn, keyOff = keyOff, play = play, playActions = playActions,
-                    chordPads = chordPads, onChordPads = { chordPads = it })
-                instrument?.let { InstrumentPanel(it) }
-                if (instrument?.current == null) {
-                    PresetsCard(patch, actions, browser)
-                    if (instrument?.synthEngine != 1) SoundCard(patch, actions, advanced) { advanced = it }
+                    chordPads = chordPads, onChordPads = { chordPads = it }, modifier = trackKeyboard)
+                SoundArea(trackSounds) {
+                    instrument?.let { InstrumentPanel(it) }
+                    if (instrument?.current == null) {
+                        PresetsCard(patch, actions, browser)
+                        if (instrument?.synthEngine != 1) SoundCard(patch, actions, advanced) { advanced = it }
+                    }
                 }
+                Spacer(Modifier.height(floatRoom))
             }
         }
+        if (follows) {
+            val wanted = soundsInView && (showNotes && notes != null || !keyboardInView)
+            // Folding holds until the real keyboard is back: the next time it is out of reach, the floating one returns.
+            LaunchedEffect(wanted) { if (!wanted) floatFolded = false }
+            FloatingKeyboard(
+                visible = wanted, folded = floatFolded, onFold = { floatFolded = it },
+                octave = octave, octaves = if (landscape) 3 else 2, keysHeight = floatKeys, actions = actions, harmony = harmony,
+                chordPads = chordPads, keyOn = keyOn, keyOff = keyOff, modifier = Modifier.align(Alignment.BottomCenter),
+            )
+        }
     }
+}
+
+/** The instrument, its ready-made sounds and its settings, in one block whose visibility is followed. */
+@Composable
+private fun SoundArea(track: Modifier, content: @Composable () -> Unit) {
+    Column(track, verticalArrangement = Arrangement.spacedBy(10.dp)) { content() }
 }
 
 @Composable
@@ -220,14 +263,17 @@ private fun KeyboardCard(
     playActions: PlayActions = PlayActions(),
     chordPads: Boolean = false,
     onChordPads: (Boolean) -> Unit = {},
+    modifier: Modifier = Modifier,
 ) {
-    NeonCard {
+    NeonCard(modifier = modifier) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            SectionLabel(if (chordPads) "Pads d'accords" else "Clavier", help = if (chordPads) Glossary.CHORD else null)
+            SectionLabel(if (chordPads) "Pads d'accords" else "Clavier", help = if (chordPads) Glossary.CHORD else null, foldKey = "Clavier")
             Box(Modifier.weight(1f))
+            OctaveControl(octave, actions)
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             if (!chordPads) ChordChip(chordKeys, onChordKeys)
             ChordPadsChip(chordPads, onChordPads)
-            OctaveControl(octave, actions)
         }
         if (chordPads) ChordPads(harmony, 12 * (octave + 1), actions.noteOn, actions.noteOff, height = height)
         else Keyboard(firstNote = 12 * (octave + 1), octaves = octaves, onNoteOn = keyOn, onNoteOff = keyOff, height = height, harmony = harmony)
@@ -259,7 +305,7 @@ private fun PresetsCard(patch: SynthPatch, actions: SynthActions, browser: Sound
 @Composable
 private fun SoundCard(patch: SynthPatch, actions: SynthActions, advanced: Boolean, setAdvanced: (Boolean) -> Unit) {
     NeonCard {
-        SectionLabel("Son")
+        SectionLabel("Réglages du son")
         Text("Forme d'onde", style = MaterialTheme.typography.bodyMedium)
         ChoiceRow(WAVES, patch.get(SynthPatch.OSC1_WAVE)) { v ->
             actions.setParam(SynthPatch.OSC1_WAVE, v)
@@ -302,11 +348,19 @@ private fun ModeSwitch(showNotes: Boolean, onChange: (Boolean) -> Unit) {
 }
 
 @Composable
-private fun OctaveControl(octave: Int, actions: SynthActions) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        IconButton(onClick = { actions.shiftOctave(-1) }) { Icon(Icons.Filled.Remove, contentDescription = "Octave plus bas") }
-        Text("Octave $octave", style = MonoStyle, color = Neon.Cyan)
-        IconButton(onClick = { actions.shiftOctave(1) }) { Icon(Icons.Filled.Add, contentDescription = "Octave plus haut") }
+internal fun OctaveControl(octave: Int, actions: SynthActions) {
+    // − Octave 4 + in one dark capsule, like a hardware selector.
+    Row(
+        Modifier.clip(RoundedCornerShape(50)).background(Color.Black.copy(alpha = 0.25f)),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        IconButton(onClick = { actions.shiftOctave(-1) }, modifier = Modifier.size(40.dp)) {
+            Icon(Icons.Filled.Remove, contentDescription = "Octave plus bas", modifier = Modifier.size(18.dp))
+        }
+        Text("Octave $octave", style = MonoStyle, color = Neon.Cyan, maxLines = 1, softWrap = false)
+        IconButton(onClick = { actions.shiftOctave(1) }, modifier = Modifier.size(40.dp)) {
+            Icon(Icons.Filled.Add, contentDescription = "Octave plus haut", modifier = Modifier.size(18.dp))
+        }
     }
 }
 
@@ -324,10 +378,7 @@ private fun PresetChips(patch: SynthPatch, actions: SynthActions) {
 }
 
 @Composable
-private fun chipColors() = FilterChipDefaults.filterChipColors(
-    selectedContainerColor = Neon.Cyan.copy(alpha = 0.25f),
-    selectedLabelColor = Neon.Cyan,
-)
+private fun chipColors() = pillColors()
 
 /** Picks the option whose stored value is closest to [current]. */
 @Composable
@@ -348,7 +399,7 @@ private fun ParamSlider(label: String, value: Float, help: Help? = null, shown: 
         Box(Modifier.weight(1f))
         Text(shown ?: "${(value * 100).roundToInt()}", style = MonoStyle, color = Neon.Cyan)
     }
-    Slider(value = value, onValueChange = onChange)
+    ProSlider(value = value, onValueChange = onChange)
 }
 
 private val BLACK_KEY_AFTER_WHITE = setOf(0, 1, 3, 4, 5)  // C# D# F# G# A# sit after C D F G A
@@ -364,14 +415,17 @@ fun Keyboard(
     onNoteOff: (Int) -> Unit,
     height: Dp = 150.dp,
     harmony: Harmony = Harmony(),
+    /** Test tags: several keyboards can be on screen (the floating one). */
+    tag: String = "keyboard",
+    keyTag: String = "key",
 ) {
     val whiteCount = 7 * octaves
-    BoxWithConstraints(Modifier.fillMaxWidth().height(height).testTag("keyboard")) {
+    BoxWithConstraints(Modifier.fillMaxWidth().height(height).testTag(tag)) {
         val whiteWidth = maxWidth / whiteCount
         Row(Modifier.fillMaxSize()) {
             for (w in 0 until whiteCount) {
                 val note = firstNote + 12 * (w / 7) + WHITE_OFFSETS[w % 7]
-                Key(note, isBlack = false, Modifier.width(whiteWidth).fillMaxHeight(), onNoteOn, onNoteOff, harmony)
+                Key(note, isBlack = false, Modifier.width(whiteWidth).fillMaxHeight(), onNoteOn, onNoteOff, harmony, keyTag)
             }
         }
         for (w in 0 until whiteCount) {
@@ -384,6 +438,7 @@ fun Keyboard(
                 onNoteOn,
                 onNoteOff,
                 harmony,
+                keyTag,
             )
         }
     }
@@ -397,6 +452,7 @@ private fun Key(
     onNoteOn: (Int, Float) -> Unit,
     onNoteOff: (Int) -> Unit,
     harmony: Harmony = Harmony(),
+    keyTag: String = "key",
 ) {
     var down by remember { mutableStateOf(false) }
     val outside = harmony.scale != Scale.Off && !harmony.inScale(note)
@@ -406,17 +462,27 @@ private fun Key(
         down -> Neon.Cyan
         locked -> if (isBlack) Color(0xFF0E0F11) else Color(0xFF5A5E66)
         isBlack && outside -> Color(0xFF15171A)
-        isBlack -> Color(0xFF26292E)
+        isBlack -> Color(0xFF1C1F24)
         outside -> Color(0xFF9EA2AA)  // out of the scale: greyed, still playable
         Math.floorMod(note - harmony.root, 12) == 0 && harmony.scale != Scale.Off -> Color(0xFFDCEFF5)
-        else -> Color(0xFFF2F3F5)
+        else -> Color(0xFFF7F7F3)
+    }
+    // Keys in relief: lit from above, a darker lip at the bottom; the pressed one glows.
+    val shape = RoundedCornerShape(bottomStart = if (isBlack) 5.dp else 7.dp, bottomEnd = if (isBlack) 5.dp else 7.dp)
+    val face = if (down) {
+        Brush.verticalGradient(listOf(lerp(color, Color.White, 0.35f), color))
+    } else if (isBlack) {
+        Brush.verticalGradient(0f to lerp(color, Color.White, 0.12f), 0.85f to color, 1f to lerp(color, Color.White, 0.18f))
+    } else {
+        Brush.verticalGradient(0f to lerp(color, Color.Black, 0.06f), 0.9f to color, 1f to lerp(color, Color.Black, 0.18f))
     }
     Box(
         modifier
-            .padding(horizontal = 1.dp)
-            .clip(RoundedCornerShape(bottomStart = 6.dp, bottomEnd = 6.dp))
-            .background(color)
-            .border(1.dp, Neon.Outline, RoundedCornerShape(bottomStart = 6.dp, bottomEnd = 6.dp))
+            .padding(horizontal = if (isBlack) 0.dp else 1.dp)
+            .then(if (down) Modifier.shadow(12.dp, shape, ambientColor = Neon.Cyan, spotColor = Neon.Cyan) else if (isBlack) Modifier.shadow(4.dp, shape) else Modifier)
+            .clip(shape)
+            .background(face)
+            .border(1.dp, if (isBlack) Color.Black.copy(alpha = 0.6f) else Color.Black.copy(alpha = 0.22f), shape)
             .pointerInput(note, locked) {
                 if (locked) return@pointerInput
                 detectTapGestures(onPress = { at ->
@@ -431,6 +497,6 @@ private fun Key(
                     }
                 })
             }
-            .testTag("key_$note"),
+            .testTag("${keyTag}_$note"),
     )
 }

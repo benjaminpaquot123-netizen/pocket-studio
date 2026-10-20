@@ -544,9 +544,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** On the selected drum pad (it plays once placed). */
     /** False when another sound is still being placed or recorded (nothing done). */
-    fun placeOnPad(pcm: Pcm, name: String): Boolean {
+    fun placeOnPad(pcm: Pcm, name: String, oneShot: Boolean = false): Boolean {
         if (_sampleTask.value is SampleTask.Busy || _sampleTask.value is SampleTask.Recording) return false
-        sampleJob("Pose du son sur le pad ${_transport.value.selectedPad + 1}…") { padSamples.add(pcm, name) }
+        // A library one-shot loses its silent tail; a loop or a phrase keeps its length.
+        sampleJob("Pose du son sur le pad ${_transport.value.selectedPad + 1}…") { padSamples.add(if (oneShot) pcm.withoutTail() else pcm, name) }
         return true
     }
 
@@ -1985,7 +1986,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             recorder = null
             if (pcm.frames < 480 || PadSamples.isSilent(pcm)) throw UserMessage("Rien n'a été entendu : rapproche-toi du micro et réessaie.")
             AppLog.add("Enregistrement micro : ${"%.1f".format(pcm.seconds)} s")
-            padSamples.add(pcm, "Micro ${java.time.LocalTime.now().withNano(0)}")
+            padSamples.add(pcm.withoutTail(), "Micro ${java.time.LocalTime.now().withNano(0)}")
         }
     }
 
@@ -2649,6 +2650,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val app = getApplication<Application>()
         AppLog.add(if (playing) "Lecture (${project.value.tempoBpm.toInt()} BPM)" else "Stop")
         if (playing) PlaybackService.start(app) else PlaybackService.stop(app)
+    }
+
+    /** Stops the transport if it plays (opening the assistant: its previews must not play over the song). */
+    fun stop() {
+        if (_transport.value.playing) togglePlay()
     }
 
     /** True while the activity is on screen; set by the UI. */

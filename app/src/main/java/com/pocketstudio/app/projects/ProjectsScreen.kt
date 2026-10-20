@@ -128,6 +128,8 @@ fun ProjectsScreen(ui: ProjectsUi, currentId: String, starters: List<ProjectStar
     if (choosingStart) {
         AlertDialog(
             onDismissRequest = { choosingStart = false },
+            properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp),
             title = { Text("Nouveau projet") },
             text = {
                 Column(Modifier.verticalScroll(androidx.compose.foundation.rememberScrollState()), verticalArrangement = Arrangement.spacedBy(8.dp)) {

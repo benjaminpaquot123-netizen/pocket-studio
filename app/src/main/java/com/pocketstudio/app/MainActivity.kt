@@ -13,9 +13,11 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.Density
 import com.pocketstudio.app.settings.AppTheme
+import com.pocketstudio.app.settings.FoldPrefs
 import com.pocketstudio.app.settings.SettingsStore
 import com.pocketstudio.app.ui.AppRoot
 import com.pocketstudio.ui.ColorblindPalette
+import com.pocketstudio.ui.LocalFoldStore
 import com.pocketstudio.ui.Palettes
 import com.pocketstudio.ui.PocketStudioTheme
 
@@ -26,6 +28,7 @@ class MainActivity : ComponentActivity() {
         // Ask the system to keep CPU clocks stable instead of bursting and throttling.
         runCatching { window.setSustainedPerformanceMode(true) }
         SettingsStore.load(this)
+        val folds = FoldPrefs(this)
         setContent {
             val settings by SettingsStore.state.collectAsState()
             val palette = when (settings.theme) {
@@ -39,6 +42,7 @@ class MainActivity : ComponentActivity() {
             CompositionLocalProvider(
                 LocalDensity provides Density(density.density * settings.uiScale, density.fontScale),
                 LocalHapticFeedback provides haptics,
+                LocalFoldStore provides folds,
             ) {
                 PocketStudioTheme(palette) {
                     AppRoot()

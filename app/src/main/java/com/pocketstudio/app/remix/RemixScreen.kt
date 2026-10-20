@@ -20,8 +20,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.unit.sp
 import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
-import androidx.compose.material3.Slider
+import com.pocketstudio.ui.ProSlider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -50,6 +49,7 @@ import com.pocketstudio.ui.MonoStyle
 import com.pocketstudio.separation.Demucs
 import com.pocketstudio.ui.NeonCard
 import com.pocketstudio.ui.Neon
+import com.pocketstudio.ui.pillColors
 import com.pocketstudio.ui.SectionLabel
 import kotlin.math.roundToInt
 
@@ -164,7 +164,7 @@ private fun InProject(ui: RemixUi, actions: RemixActions) {
     val r = ui.remix
     var padBars by rememberSaveable { mutableIntStateOf(1) }
     NeonCard(modifier = Modifier.testTag("remix_project")) {
-        SectionLabel("Dans le projet : ${r.name}", color = Neon.Magenta)
+        SectionLabel("Dans le projet : ${r.name}", color = Neon.Magenta, foldKey = "Dans le projet")
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Button(onClick = actions.togglePlay, modifier = Modifier.testTag("remix_play")) {
                 Icon(if (ui.transportPlaying) Icons.Filled.Stop else Icons.Filled.PlayArrow, contentDescription = null)
@@ -210,7 +210,7 @@ private fun InProject(ui: RemixUi, actions: RemixActions) {
                 FilterChip(
                     selected = padBars == b, onClick = { padBars = b },
                     label = { Text("$b mes.") },
-                    colors = FilterChipDefaults.filterChipColors(selectedContainerColor = Neon.Cyan.copy(alpha = 0.25f), selectedLabelColor = Neon.Cyan),
+                    colors = pillColors(),
                 )
             }
         }
@@ -221,12 +221,12 @@ private fun InProject(ui: RemixUi, actions: RemixActions) {
                 Text(StemStore.LABELS[stem] ?: stem, Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge)
                 FilterChip(
                     selected = m.mute, onClick = { actions.toggleStemMute(i) }, label = { Text("M") },
-                    colors = FilterChipDefaults.filterChipColors(selectedContainerColor = Neon.Amber.copy(alpha = 0.3f), selectedLabelColor = Neon.Amber),
+                    colors = pillColors(Neon.Amber),
                     modifier = Modifier.testTag("stem_mute_$i"),
                 )
                 FilterChip(
                     selected = m.solo, onClick = { actions.toggleStemSolo(i) }, label = { Text("S") },
-                    colors = FilterChipDefaults.filterChipColors(selectedContainerColor = Neon.Acid.copy(alpha = 0.3f), selectedLabelColor = Neon.Acid),
+                    colors = pillColors(Neon.Acid),
                     modifier = Modifier.testTag("stem_solo_$i"),
                 )
                 TextButton(onClick = { actions.stemToPad(i, padBars) }, modifier = Modifier.testTag("stem_pad_$i")) { Text("→ Pad") }
@@ -242,7 +242,7 @@ private fun InProject(ui: RemixUi, actions: RemixActions) {
                     modifier = Modifier.testTag("waveform_$i"),
                 )
             }
-            Slider(value = m.volume, onValueChange = { actions.setStemVolume(i, it) }, modifier = Modifier.testTag("stem_volume_$i"))
+            ProSlider(value = m.volume, onValueChange = { actions.setStemVolume(i, it) }, modifier = Modifier.testTag("stem_volume_$i"))
         }
         Text(
             "Les pistes démarrent avec le Rythme, à partir de la mesure choisie (trait vert). Touche une forme d'onde pour partir de là. « → Pad » copie les mesures choisies sur le pad sélectionné, « → Live » sur un pad live libre (onglet Morceau) pour lancer et couper chaque partie en rythme.",

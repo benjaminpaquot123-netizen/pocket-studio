@@ -25,7 +25,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -55,6 +54,7 @@ import com.pocketstudio.model.Note
 import com.pocketstudio.model.NoteEdits
 import com.pocketstudio.model.NoteClip
 import com.pocketstudio.ui.Neon
+import com.pocketstudio.ui.pillColors
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
@@ -122,7 +122,7 @@ fun PianoRoll(
     val live = selection.filter { it in clip.notes }.toSet()
     if (live != selection) selection = live
     val apply: (NoteEdits.Result, String?) -> Unit = { r, key -> actions.replaceClip(r.clip, key); selection = r.selection }
-    val chipColors = FilterChipDefaults.filterChipColors(selectedContainerColor = Neon.Cyan.copy(alpha = 0.25f), selectedLabelColor = Neon.Cyan)
+    val chipColors = pillColors()
     val hScroll = rememberScrollState()
     val stepWidth = ZOOMS[zoom]
     Column(modifier, verticalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -515,7 +515,7 @@ private fun ChipRow(label: String, help: Help? = null, content: @Composable () -
 /** Key, scale, progressions and how chords are played (arpeggio, strum). */
 @Composable
 fun HarmonyPanel(harmony: Harmony, performance: Performance, actions: PianoRollActions, notes: List<Note> = emptyList()) {
-    val chipColors = FilterChipDefaults.filterChipColors(selectedContainerColor = Neon.Cyan.copy(alpha = 0.25f), selectedLabelColor = Neon.Cyan)
+    val chipColors = pillColors()
     val guesses = NoteEdits.guessScales(notes)
     if (guesses.isNotEmpty()) {
         ChipRow("Deviner") {

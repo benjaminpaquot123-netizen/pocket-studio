@@ -36,6 +36,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material.icons.automirrored.filled.Redo
 import androidx.compose.material.icons.automirrored.filled.Undo
 import androidx.compose.material.icons.filled.Add
@@ -45,17 +46,31 @@ import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Slider
+import com.pocketstudio.ui.ProSlider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.material3.AlertDialog
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.graphics.lerp
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.draw.scale
+import androidx.compose.runtime.remember
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.snap
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.Spring
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -68,6 +83,7 @@ import androidx.compose.ui.unit.sp
 import com.pocketstudio.model.Project
 import com.pocketstudio.ui.MonoStyle
 import com.pocketstudio.ui.Neon
+import com.pocketstudio.ui.pillColors
 import com.pocketstudio.ui.NeonCard
 import com.pocketstudio.ui.SectionLabel
 import kotlin.math.roundToInt
@@ -154,14 +170,20 @@ fun RhythmScreen(
 private fun TransportBar(project: Project, transport: TransportUi, canUndo: Boolean, canRedo: Boolean, actions: RhythmActions) {
     NeonCard {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Button(
-                onClick = actions.togglePlay,
-                modifier = Modifier.height(56.dp).testTag("transport_play"),
-                colors = ButtonDefaults.buttonColors(containerColor = if (transport.playing) Neon.Magenta else Neon.Cyan),
-                shape = RoundedCornerShape(10.dp),
+            val playColor = if (transport.playing) Neon.Magenta else Neon.Cyan
+            val shape = RoundedCornerShape(18.dp)
+            Row(
+                Modifier.height(56.dp)
+                    .shadow(if (transport.playing) 16.dp else 8.dp, shape, ambientColor = playColor, spotColor = playColor)
+                    .clip(shape)
+                    .background(Brush.verticalGradient(listOf(lerp(playColor, Color.White, 0.18f), playColor, lerp(playColor, Color.Black, 0.12f))))
+                    .clickable(role = Role.Button, onClick = actions.togglePlay)
+                    .padding(horizontal = 22.dp)
+                    .testTag("transport_play"),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Icon(if (transport.playing) Icons.Filled.Stop else Icons.Filled.PlayArrow, contentDescription = null)
-                Text(if (transport.playing) " Stop" else " Jouer", style = MaterialTheme.typography.titleMedium)
+                Icon(if (transport.playing) Icons.Filled.Stop else Icons.Filled.PlayArrow, contentDescription = null, tint = Neon.OnAccent)
+                Text(if (transport.playing) " Stop" else " Jouer", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = Neon.OnAccent)
             }
             Box(Modifier.weight(1f))
             IconButton(onClick = actions.undo, enabled = canUndo) {
@@ -173,12 +195,16 @@ private fun TransportBar(project: Project, transport: TransportUi, canUndo: Bool
         }
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             IconButton(onClick = { actions.nudgeTempo(-1) }) { Icon(Icons.Filled.Remove, contentDescription = "Tempo moins") }
-            Text(
-                "${project.tempoBpm.roundToInt()} BPM",
-                style = MonoStyle.copy(fontSize = 22.sp, fontWeight = FontWeight.Bold),
-                color = Neon.Cyan,
-                modifier = Modifier.testTag("tempo"),
-            )
+            // The tempo on a small dark display, as on a drum machine.
+            Row(
+                Modifier.clip(RoundedCornerShape(10.dp)).background(Color.Black.copy(alpha = 0.35f))
+                    .border(1.dp, Color.White.copy(alpha = 0.06f), RoundedCornerShape(10.dp))
+                    .padding(horizontal = 12.dp, vertical = 4.dp).testTag("tempo"),
+                verticalAlignment = Alignment.Bottom,
+            ) {
+                Text("${project.tempoBpm.roundToInt()}", style = MonoStyle.copy(fontSize = 26.sp, fontWeight = FontWeight.ExtraBold), color = Neon.Cyan)
+                Text(" BPM", style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary, modifier = Modifier.padding(bottom = 4.dp))
+            }
             IconButton(onClick = { actions.nudgeTempo(1) }) { Icon(Icons.Filled.Add, contentDescription = "Tempo plus") }
             HelpDot(Glossary.TEMPO)
             Box(Modifier.weight(1f))
@@ -202,42 +228,69 @@ private fun PadGrid(project: Project, selected: Int, lit: Set<Int>, onHit: (Int)
                     val lane = row * 4 + col
                     val color = DrumKitInfo.colors[lane]
                     val hasHits = project.drums.lanes[lane].hits.isNotEmpty()
-                    val background = when {
-                        lane in lit -> color
-                        lane == selected -> color.copy(alpha = 0.45f)
-                        else -> color.copy(alpha = 0.18f)
-                    }
-                    Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            .aspectRatio(1.25f)
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(background)
-                            .border(if (lane == selected) 2.dp else 1.dp, if (lane == selected) color else Neon.Outline, RoundedCornerShape(10.dp))
-                            .combinedClickable(onClick = {
-                                haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                                onHit(lane)
-                            })
-                            .testTag("pad_$lane"),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Text(
-                            DrumKitInfo.names[lane],
-                            textAlign = TextAlign.Center,
-                            style = MaterialTheme.typography.labelLarge,
-                            color = if (lane in lit) Color(0xFF1E2023) else Neon.TextPrimary,
-                            modifier = Modifier.padding(4.dp),
-                        )
-                        if (hasHits) {
-                            Box(
-                                Modifier.align(Alignment.TopEnd).padding(6.dp).size(7.dp)
-                                    .clip(RoundedCornerShape(4.dp)).background(color),
-                            )
-                        }
-                    }
+                    DrumPad(
+                        name = DrumKitInfo.names[lane], color = color, selected = lane == selected, lit = lane in lit, hasHits = hasHits,
+                        onHit = {
+                            haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                            onHit(lane)
+                        },
+                        modifier = Modifier.weight(1f).testTag("pad_$lane"),
+                    )
                 }
             }
         }
+    }
+}
+
+/**
+ * One pad, as on a drum machine: its colour in relief, a glow when it sounds (fading out), a
+ * coloured edge when chosen, a small press.
+ */
+@Composable
+private fun DrumPad(name: String, color: Color, selected: Boolean, lit: Boolean, hasHits: Boolean, onHit: () -> Unit, modifier: Modifier) {
+    val shape = RoundedCornerShape(14.dp)
+    val interaction = remember { MutableInteractionSource() }
+    val pressed by interaction.collectIsPressedAsState()
+    // Lights at once, fades in a quarter second.
+    val glow by animateFloatAsState(if (lit || pressed) 1f else 0f, if (lit || pressed) snap<Float>() else tween<Float>(260), label = "pad-glow")
+    val press by animateFloatAsState(if (pressed) 0.95f else 1f, spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessHigh), label = "pad-press")
+    val surface = Neon.Surface
+    val rest = if (selected) 0.42f else 0.24f
+    val top = lerp(lerp(surface, color, rest + 0.1f), color, glow)
+    val bottom = lerp(lerp(Neon.Background, color, rest), lerp(color, Color.Black, 0.18f), glow)
+    Box(
+        modifier
+            .aspectRatio(1.2f)
+            .scale(press)
+            .shadow(if (glow > 0.05f) 18.dp * glow else if (selected) 8.dp else 3.dp, shape, ambientColor = color, spotColor = color)
+            .clip(shape)
+            .background(Brush.verticalGradient(listOf(top, bottom)))
+            .border(
+                if (selected) 2.dp else 1.dp,
+                if (selected) Brush.verticalGradient(listOf(lerp(color, Color.White, 0.3f), color))
+                else Brush.verticalGradient(listOf(Color.White.copy(alpha = 0.14f), color.copy(alpha = 0.25f))),
+                shape,
+            )
+            .clickable(interactionSource = interaction, indication = null, onClick = onHit),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            name,
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.labelLarge,
+            color = lerp(Neon.TextPrimary, Color(0xFF1E2023), glow),
+            modifier = Modifier.padding(4.dp),
+        )
+        // A small LED when the pad has hits in the loop.
+        if (hasHits) {
+            Box(
+                Modifier.align(Alignment.TopEnd).padding(7.dp).size(7.dp)
+                    .shadow(4.dp, CircleShape, ambientColor = color, spotColor = color)
+                    .clip(CircleShape).background(lerp(color, Color.White, 0.2f)),
+            )
+        }
+        // The pad's colour as a strip along its bottom edge.
+        Box(Modifier.align(Alignment.BottomCenter).padding(bottom = 6.dp).fillMaxWidth(0.4f).height(3.dp).clip(RoundedCornerShape(2.dp)).background(color.copy(alpha = 0.6f + 0.4f * glow)))
     }
 }
 
@@ -259,10 +312,10 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, playing: Boo
     var allPads by rememberSaveable { mutableStateOf(false) }
     // Playing and following: the page turns with the playhead.
     val bar = (if (playing && follow && currentStep >= 0) currentStep / per else chosenBar).coerceIn(0, bars - 1)
-    val chipColors = FilterChipDefaults.filterChipColors(selectedContainerColor = Neon.Cyan.copy(alpha = 0.25f), selectedLabelColor = Neon.Cyan)
+    val chipColors = pillColors()
     NeonCard {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            SectionLabel(if (allPads) "Pas : tous les pads" else "Pas : ${DrumKitInfo.names[lane]}", color = if (allPads) Neon.Cyan else color, help = Glossary.STEP)
+            SectionLabel(if (allPads) "Pas : tous les pads" else "Pas : ${DrumKitInfo.names[lane]}", color = if (allPads) Neon.Cyan else color, help = Glossary.STEP, foldKey = "Pas")
             Box(Modifier.weight(1f))
             FilterChip(selected = allPads, onClick = { allPads = !allPads }, label = { Text("Tous les pads") }, colors = chipColors,
                 modifier = Modifier.testTag("all_pads"))
@@ -313,21 +366,24 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, playing: Boo
                     val playing = step == currentStep
                     val hit = hits[step]
                     val isPicked = tool >= 2 && step == picked && hit != null
-                    val fill = if (isBeat) Neon.SurfaceHigh else Neon.Surface
+                    // Empty cells are hollowed into the panel; the beats a little lighter.
+                    val fill = Color.Black.copy(alpha = if (isBeat) 0.16f else 0.28f)
+                    val cell = RoundedCornerShape(7.dp)
                     Box(
                         modifier = Modifier
                             .weight(1f)
                             .aspectRatio(0.8f)
-                            .clip(RoundedCornerShape(6.dp))
+                            .then(if (playing && velocity != null) Modifier.shadow(10.dp, cell, ambientColor = color, spotColor = color) else Modifier)
+                            .clip(cell)
                             .background(fill)
                             .border(
                                 if (playing || isPicked) 2.dp else 1.dp,
                                 when {
                                     isPicked -> Neon.Cyan
                                     playing -> Neon.TextPrimary
-                                    else -> Neon.Outline
+                                    else -> Color.White.copy(alpha = 0.07f)
                                 },
-                                RoundedCornerShape(6.dp),
+                                cell,
                             )
                             .combinedClickable(
                                 onClick = {
@@ -350,7 +406,10 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, playing: Boo
                     ) {
                         // The hit fills the cell up to its strength: full, two thirds or one third.
                         if (velocity != null) {
-                            Box(Modifier.fillMaxWidth().fillMaxHeight(velocity.coerceIn(0.2f, 1f)).background(color))
+                            Box(
+                                Modifier.fillMaxWidth().fillMaxHeight(velocity.coerceIn(0.2f, 1f))
+                                    .background(Brush.verticalGradient(listOf(lerp(color, Color.White, if (playing) 0.45f else 0.2f), color))),
+                            )
                             val repeats = hits[step]?.repeats ?: 1
                             if (repeats > 1) {
                                 Text("×$repeats", style = MaterialTheme.typography.labelLarge, color = Color(0xFF1E2023),
@@ -407,10 +466,7 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, playing: Boo
 private fun GrooveCard(project: Project, transport: TransportUi, actions: RhythmActions) {
     NeonCard {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            val chipColors = FilterChipDefaults.filterChipColors(
-                selectedContainerColor = Neon.Cyan.copy(alpha = 0.25f),
-                selectedLabelColor = Neon.Cyan,
-            )
+            val chipColors = pillColors()
             FilterChip(selected = transport.metronome, onClick = actions.toggleMetronome, label = { Text("Métronome") }, colors = chipColors)
             FilterChip(selected = transport.countIn, onClick = actions.toggleCountIn, label = { Text("Décompte") }, colors = chipColors)
             HelpDot(Glossary.METRONOME, Modifier.align(Alignment.CenterVertically))
@@ -423,7 +479,7 @@ private fun GrooveCard(project: Project, transport: TransportUi, actions: Rhythm
             Box(Modifier.weight(1f))
             Text("${(project.swing / Project.MAX_SWING * 100).roundToInt()} %", style = MonoStyle, color = Neon.Cyan)
         }
-        Slider(
+        ProSlider(
             value = (project.swing / Project.MAX_SWING).toFloat(),
             onValueChange = { actions.setSwing(it * Project.MAX_SWING) },
         )
@@ -436,13 +492,18 @@ internal fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: 
     val sample = project.drums.lanes[lane].sample
     NeonCard(modifier = Modifier.testTag("pad_sound")) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            SectionLabel("Son du pad", color = color, help = Glossary.SAMPLE)
+            SectionLabel("Sample du pad", color = color, help = Glossary.SAMPLE)
             Box(Modifier.weight(1f))
             Text(
                 sample?.name ?: "${DrumKitInfo.names[lane]} (synthétisé)",
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodyMedium, maxLines = 1,
                 color = if (sample != null) Neon.TextPrimary else Neon.TextSecondary,
             )
+        }
+        // The drums' effect box (filter, saturation, reverb, echo…), right where the sound is chosen.
+        OutlinedButton(onClick = actions.openEffects, modifier = Modifier.fillMaxWidth().testTag("pad_effects")) {
+            Icon(Icons.Filled.Tune, contentDescription = null)
+            Text("  Effets de la batterie")
         }
         val pan = project.drums.lanes[lane].pan
         LabeledSlider("Pan du pad", panLabel(pan), pan, -1f..1f, steps = 19) { actions.setPadPan((it * 10).roundToInt() / 10f) }
@@ -498,14 +559,35 @@ internal fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: 
                     TextButton(onClick = { actions.dismissSampleError(); actions.importFolder() }, modifier = Modifier.testTag("import_folder")) { Text("Dossier") }
                     TextButton(onClick = { actions.dismissSampleError(); actions.importZip() }, modifier = Modifier.testTag("import_zip")) { Text(".zip") }
                 }
+                // Resampling replaces the pad's sound with the whole mix: asked first, never by surprise.
+                var capture by remember { mutableIntStateOf(0) }
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Text("Enregistrer le morceau :", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                    Text("Capturer tout le morceau :", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
                     listOf(1, 2, 4).forEach { bars ->
-                        TextButton(
-                            onClick = { actions.dismissSampleError(); actions.resampleSong(bars) },
-                            modifier = Modifier.testTag("resample_$bars"),
-                        ) { Text(if (bars == 1) "1 mesure" else "$bars mes.") }
+                        TextButton(onClick = { capture = bars }, modifier = Modifier.testTag("resample_$bars")) {
+                            Text(if (bars == 1) "1 mesure" else "$bars mes.")
+                        }
                     }
+                }
+                if (capture > 0) {
+                    val bars = capture
+                    AlertDialog(
+                        onDismissRequest = { capture = 0 },
+                        title = { Text("Capturer tout le morceau ?") },
+                        text = {
+                            Text(
+                                "Le son du pad « ${DrumKitInfo.names[lane]} » sera remplacé par l'enregistrement de tout ce qui joue sur " +
+                                    (if (bars == 1) "une mesure" else "$bars mesures") + " : la batterie, la basse acide, les synthés. " +
+                                    "Pratique pour en faire une boucle. Pour garder ton son, choisis « Non » ; la flèche Annuler en haut le remet aussi.",
+                            )
+                        },
+                        confirmButton = {
+                            TextButton(onClick = { capture = 0; actions.dismissSampleError(); actions.resampleSong(bars) }, modifier = Modifier.testTag("resample_confirm")) {
+                                Text("Capturer")
+                            }
+                        },
+                        dismissButton = { TextButton(onClick = { capture = 0 }) { Text("Non") } },
+                    )
                 }
                 if (sample != null) {
                     TextButton(onClick = actions.removeSample, modifier = Modifier.testTag("remove_sample")) {
@@ -526,7 +608,7 @@ internal fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: 
 @Composable
 private fun PadSampleControls(s: PadSample, seconds: Double, bpm: Double, edit: (String?, (PadSample) -> PadSample) -> Unit) {
     var advanced by rememberSaveable { mutableStateOf(false) }
-    val chipColors = FilterChipDefaults.filterChipColors(selectedContainerColor = Neon.Cyan.copy(alpha = 0.25f), selectedLabelColor = Neon.Cyan)
+    val chipColors = pillColors()
     LabeledSlider("Début", String.format(java.util.Locale.FRANCE, "%.2f s", s.start * seconds), s.start, 0f..1f) { v ->
         edit("start") { it.copy(start = minOf(v, it.end - 0.001f)) }
     }
@@ -619,12 +701,12 @@ private fun LabeledSlider(
         Text(label, Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
         Text(value, style = MonoStyle, color = Neon.Cyan)
     }
-    Slider(value = v.coerceIn(range), onValueChange = onChange, valueRange = range, steps = steps)
+    ProSlider(value = v.coerceIn(range), onValueChange = onChange, valueRange = range, steps = steps)
 }
 
 @Composable
 private fun SlicerPanel(s: SlicerUi, info: SampleInfo, lane: Int, color: Color, actions: RhythmActions) {
-    val chipColors = FilterChipDefaults.filterChipColors(selectedContainerColor = Neon.Cyan.copy(alpha = 0.25f), selectedLabelColor = Neon.Cyan)
+    val chipColors = pillColors()
     Text("Découpe", style = MaterialTheme.typography.titleMedium)
     Waveform(info.peaks, color, markers = s.markers, markerColor = Neon.TextPrimary, onTap = actions.toggleSliceMarker,
         modifier = Modifier.testTag("slicer_wave"))

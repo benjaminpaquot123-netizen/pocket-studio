@@ -59,7 +59,94 @@ object StarterWizard {
         val description: String,
         val lines: List<Line>,
         val swing: Double = 0.0,
+        val melody: Melody = Melody(),
     )
+
+    /**
+     * The style's melodic side: its usual key ([root] 0..11, 0 = Do), the mood proposed first,
+     * the bass rhythm (one character per step, like the drum lines) and the synth sounds of
+     * [SoundLibrary.SYNTH] proposed for each part.
+     */
+    data class Melody(
+        val root: Int = 9,
+        val mood: Mood = Mood.Dark,
+        val bassPattern: String = "X.......X.......",
+        val bass: String = "Basse ronde",
+        val pad: String = "Nappe",
+        val lead: String = "Pluck",
+    ) {
+        fun sound(part: Part) = when (part) {
+            Part.Bass -> bass
+            Part.Pad -> pad
+            Part.Lead -> lead
+        }
+    }
+
+    /** The feeling of the song: it sets the scale and the chords, so every note sounds right. */
+    enum class Mood(val id: String, val label: String, val description: String, val scale: Scale, val degrees: List<Int>, val chordsLabel: String) {
+        Dark(
+            "dark", "Mélancolique / sombre", "Des accords mineurs, un peu tristes ou mystérieux.",
+            Scale.Minor, listOf(0, 5, 2, 6), "i – VI – III – VII",
+        ),
+        Happy(
+            "happy", "Joyeux / énergique", "Des accords majeurs lumineux qui donnent la pêche.",
+            Scale.Major, listOf(0, 4, 5, 3), "I – V – vi – IV",
+        ),
+        Future(
+            "future", "Futuriste / électro", "Une couleur mineure froide et hypnotique, taillée pour l'électro.",
+            Scale.Dorian, listOf(0, 3, 0, 6), "i – IV – i – VII",
+        ),
+        Dreamy(
+            "dreamy", "Rêveur / planant", "Des accords doux qui flottent : on se laisse porter.",
+            Scale.Major, listOf(3, 0, 4, 5), "IV – I – V – vi",
+        ),
+    }
+
+    /** The melodic tracks the assistant can add next to the beat. */
+    enum class Part(val id: String, val title: String, val explanation: String, val categories: List<String>, val byDefault: Boolean) {
+        Bass(
+            "bass", "Basse",
+            "Elle joue la note principale de chaque accord, dans le grave : elle fait le lien entre la batterie et l'harmonie.",
+            listOf("Basses"), true,
+        ),
+        Pad(
+            "pad", "Nappe / accords",
+            "Des accords tenus qui remplissent l'espace et posent l'ambiance. Ils changent à chaque mesure.",
+            listOf("Nappes", "Claviers"), true,
+        ),
+        Lead(
+            "lead", "Lead / mélodie",
+            "Un synthé plus aigu qui joue les notes des accords une par une, en rythme (un arpège) : un premier bout de mélodie.",
+            listOf("Leads", "Pluck", "Claviers"), false,
+        ),
+    }
+
+    /** A melodic sound of the library: a subtractive synth preset, or a Plaits one ([plaits] set). */
+    data class PartSound(val name: String, val synth: SynthPatch = SynthPatch(), val plaits: PlaitsPatch? = null)
+
+    /** The sounds a part can take (its categories of the synth and Plaits libraries), the style's one first. */
+    fun soundsFor(part: Part, style: Style): List<PartSound> {
+        val synth = SoundLibrary.SYNTH.filter { it.category in part.categories }.map { PartSound(it.name, synth = it.sound) }
+        val plaitsNames = synth.map { it.name }.toSet()
+        val plaits = SoundLibrary.PLAITS.filter { it.category in part.categories }
+            .map { PartSound(if (it.name in plaitsNames) "${it.name} (Plaits)" else it.name, plaits = it.sound) }
+        val all = synth + plaits
+        val preferred = all.filter { it.name == style.melody.sound(part) }.take(1)
+        return preferred + (all - preferred.toSet())
+    }
+
+    /** The assistant's steps for a style: style, mood, each drum line, each melodic part, summary. */
+    sealed interface Step {
+        data object Style : Step
+        data object Mood : Step
+        data class Drum(val line: Line) : Step
+        data class Melodic(val part: Part) : Step
+        data object Summary : Step
+    }
+
+    fun steps(style: Style?): List<Step> =
+        if (style == null) listOf(Step.Style)
+        else listOf(Step.Style, Step.Mood) + style.lines.map { Step.Drum(it) } + Part.entries.map { Step.Melodic(it) } + Step.Summary
 
     val FAMILIES = listOf("Hip-hop", "House", "Techno", "Bass music", "Autres")
 
@@ -73,6 +160,7 @@ object StarterWizard {
                 Line(Role.Perc, "..........o....o", "Un petit rim de temps en temps."),
             ),
             swing = 0.25,
+            melody = Melody(root = 9, mood = Mood.Dark, bassPattern = "X......X..X.....", bass = "Basse ronde", pad = "Piano électrique", lead = "Pluck"),
         ),
         Style(
             "trap", "Trap", "Hip-hop", 140.0, "Le rap d'Atlanta : rythme à demi-temps, charleys en rafales, 808 énorme.",
@@ -83,6 +171,7 @@ object StarterWizard {
                 Line(Role.Hat, "xoxoxoxoxoxoxoxo", "Des doubles croches serrées (tu pourras ajouter des roulements)."),
                 Line(Role.OpenHat, "...............x", "Une ouverture à la fin pour relancer."),
             ),
+            melody = Melody(root = 0, mood = Mood.Dark, bassPattern = "X......X..X.....", bass = "Basse sub", pad = "Nappe chaude", lead = "Cloche"),
         ),
         Style(
             "drill", "Drill", "Hip-hop", 142.0, "La drill UK : caisses claires décalées, ambiance sombre, glisses de 808.",
@@ -92,6 +181,7 @@ object StarterWizard {
                 Line(Role.Snare, "........X.....x.", "La caisse claire sur le 3 et une deuxième en avance : la signature drill."),
                 Line(Role.Hat, "x.xox.x.x.xox.x.", "Des charleys en triolets et petites rafales."),
             ),
+            melody = Melody(root = 1, mood = Mood.Dark, bassPattern = "X.....x...X.....", bass = "Basse sub", pad = "Cordes", lead = "Piano FM"),
         ),
         Style(
             "lofi", "Lo-fi hip-hop", "Hip-hop", 84.0, "Le hip-hop pour étudier : doux, chaloupé, un peu poussiéreux.",
@@ -102,6 +192,7 @@ object StarterWizard {
                 Line(Role.Perc, "..o.......o.....", "Un shaker ou un rim très discret."),
             ),
             swing = 0.35,
+            melody = Melody(root = 3, mood = Mood.Dreamy, bassPattern = "X.....x...X.....", bass = "Basse ronde", pad = "Piano électrique", lead = "Marimba"),
         ),
         Style(
             "house", "House", "House", 124.0, "La house de Chicago : un kick sur chaque temps, ça fait danser.",
@@ -112,6 +203,7 @@ object StarterWizard {
                 Line(Role.OpenHat, "..X...X...X...X.", "Le charley ouvert entre les temps : le « tss » qui fait sautiller."),
                 Line(Role.Perc, "......x.......x.", "Une petite percussion pour relancer."),
             ),
+            melody = Melody(root = 9, mood = Mood.Happy, bassPattern = "..X...X...X...X.", bass = "Basse ronde", pad = "Nappe d'accords", lead = "Pluck"),
         ),
         Style(
             "deep_house", "Deep house", "House", 122.0, "La house douce et profonde : chaude, ronde, un peu jazzy.",
@@ -122,6 +214,7 @@ object StarterWizard {
                 Line(Role.Perc, "oo.ooo.ooo.ooo.o", "Un shaker continu tout doux qui fait avancer."),
             ),
             swing = 0.15,
+            melody = Melody(root = 5, mood = Mood.Dreamy, bassPattern = "..X..X....X..X..", bass = "Basse analogique", pad = "Nappe chaude", lead = "Piano électrique"),
         ),
         Style(
             "tech_house", "Tech house", "House", 126.0, "Entre house et techno : groove serré, percussions qui claquent.",
@@ -132,6 +225,7 @@ object StarterWizard {
                 Line(Role.Hat, "oxoxoxoxoxoxoxox", "Doubles croches en fond pour l'énergie."),
                 Line(Role.Perc, "...x..x....x..x.", "Des percussions qui rebondissent."),
             ),
+            melody = Melody(root = 7, mood = Mood.Future, bassPattern = "..X.X.X...X.X.X.", bass = "Basse FM", pad = "Nappe", lead = "Lead filtré"),
         ),
         Style(
             "uk_garage", "UK Garage", "House", 132.0, "Le 2-step anglais : rythme cassé et sautillant, gros swing.",
@@ -143,6 +237,7 @@ object StarterWizard {
                 Line(Role.Perc, "......o.......o.", "Un rim pour sautiller."),
             ),
             swing = 0.4,
+            melody = Melody(root = 2, mood = Mood.Happy, bassPattern = "X..X..X...X..X..", bass = "Basse FM", pad = "Nappe d'accords", lead = "Orgue"),
         ),
         Style(
             "techno", "Techno", "Techno", 130.0, "La techno de Detroit et Berlin : répétitive, hypnotique, puissante.",
@@ -153,6 +248,7 @@ object StarterWizard {
                 Line(Role.OpenHat, "..X...X...X...X.", "Le charley ouvert entre les temps pour la propulsion."),
                 Line(Role.Perc, "...x.......x....", "Une percussion métallique qui revient."),
             ),
+            melody = Melody(root = 2, mood = Mood.Future, bassPattern = "..X...X...X...X.", bass = "Basse analogique", pad = "Essaim", lead = "Lead acide"),
         ),
         Style(
             "minimal", "Minimal", "Techno", 128.0, "La techno épurée : peu de sons, chaque petit détail compte.",
@@ -163,6 +259,7 @@ object StarterWizard {
                 Line(Role.Clap, "............o...", "Un clap très rare."),
             ),
             swing = 0.1,
+            melody = Melody(root = 10, mood = Mood.Future, bassPattern = "X..X....X..X....", bass = "Basse pincée", pad = "Nappe", lead = "Arpège"),
         ),
         Style(
             "dnb", "Drum & bass", "Bass music", 174.0, "Le rythme cassé très rapide de Londres, basse énorme.",
@@ -173,6 +270,7 @@ object StarterWizard {
                 Line(Role.OpenHat, "..............x.", "Une ouverture en fin de mesure."),
                 Line(Role.Perc, "...o...o...o...o", "Un shaker qui remplit les trous."),
             ),
+            melody = Melody(root = 5, mood = Mood.Dark, bassPattern = "X.........X.....", bass = "Basse reese", pad = "Nappe chaude", lead = "Lead filtré"),
         ),
         Style(
             "jungle", "Jungle", "Bass music", 165.0, "L'ancêtre de la drum & bass : breaks découpés, esprit reggae.",
@@ -182,6 +280,7 @@ object StarterWizard {
                 Line(Role.Hat, "x.x.x.x.x.x.x.x.", "Des croches régulières."),
                 Line(Role.Perc, "..o.....o.....o.", "Quelques percussions."),
             ),
+            melody = Melody(root = 7, mood = Mood.Dark, bassPattern = "X.......X.X.....", bass = "Basse sub", pad = "Cordes", lead = "Piano FM"),
         ),
         Style(
             "dubstep", "Dubstep", "Bass music", 140.0, "La bass music anglaise : demi-temps, gros sub et basses qui grondent.",
@@ -192,6 +291,7 @@ object StarterWizard {
                 Line(Role.Bass808, "X...............", "Un sub qui tient toute la mesure."),
                 Line(Role.Perc, "......o.......o.", "Une petite percussion de relance."),
             ),
+            melody = Melody(root = 5, mood = Mood.Dark, bassPattern = "X...............", bass = "Basse reese", pad = "Nappe", lead = "Lead carré"),
         ),
         Style(
             "reggaeton", "Reggaeton", "Autres", 95.0, "Le rythme « dembow » de Porto Rico : impossible de ne pas bouger.",
@@ -201,6 +301,7 @@ object StarterWizard {
                 Line(Role.Hat, "x.x.x.x.x.x.x.x.", "Des croches régulières."),
                 Line(Role.Perc, "..o...o...o...o.", "Une percussion légère."),
             ),
+            melody = Melody(root = 9, mood = Mood.Happy, bassPattern = "X..X....X..X....", bass = "Basse sub", pad = "Piano électrique", lead = "Marimba"),
         ),
         Style(
             "afrobeats", "Afrobeats", "Autres", 105.0, "La pop d'Afrique de l'Ouest : percussions qui roulent, groove solaire.",
@@ -211,6 +312,7 @@ object StarterWizard {
                 Line(Role.Perc, "..x..x.x..x..x.x", "Des congas qui répondent au kick."),
             ),
             swing = 0.2,
+            melody = Melody(root = 7, mood = Mood.Happy, bassPattern = "X..X..X...X..X..", bass = "Basse ronde", pad = "Piano électrique", lead = "Marimba"),
         ),
         Style(
             "pop", "Pop", "Autres", 110.0, "Un rythme pop simple et efficace, pour chanter dessus.",
@@ -220,6 +322,7 @@ object StarterWizard {
                 Line(Role.Clap, "....x.......x...", "Un clap qui double la caisse claire."),
                 Line(Role.Hat, "x.x.x.x.x.x.x.x.", "Des croches régulières."),
             ),
+            melody = Melody(root = 0, mood = Mood.Happy, bassPattern = "X.X.X.X.X.X.X.X.", bass = "Basse ronde", pad = "Cordes", lead = "Pluck"),
         ),
     )
 
@@ -238,20 +341,59 @@ object StarterWizard {
     /**
      * The new project: the style's tempo and swing, each chosen line's sound on its pad
      * ([sounds]: role → the pad's own sound, or null for the kit voice already on that pad) and
-     * its groove in the grid. Lines left out of [sounds] stay empty.
+     * its groove in the grid. Lines left out of [sounds] stay empty. With [mood], the key is set
+     * and locked, and each part of [parts] becomes a track with its sound and first notes.
      */
-    fun build(style: Style, sounds: Map<Role, PadSample?>): Project {
+    fun build(style: Style, sounds: Map<Role, PadSample?>, mood: Mood? = null, parts: Map<Part, PartSound> = emptyMap()): Project {
         val steps = style.lines.maxOf { it.pattern.length }.coerceIn(DrumPattern.MIN_STEPS, DrumPattern.MAX_STEPS)
         val lanes = MutableList(DrumPattern.PAD_COUNT) { DrumLane() }
         for (line in style.lines) {
             if (line.role !in sounds) continue
             lanes[line.role.lane] = DrumLane(hits = hits(line.pattern).filterKeys { it < steps }, sample = sounds[line.role])
         }
-        return Project(
+        var project = Project(
             name = style.name,
             tempoBpm = style.bpm,
             swing = style.swing,
             drums = DrumPattern(steps = steps, lanes = lanes),
-        ).sanitized()
+        )
+        if (mood != null) {
+            val harmony = Harmony(style.melody.root, mood.scale, lock = true)
+            project = project.copy(harmony = harmony)
+            var first = true
+            for (part in Part.entries) {
+                val sound = parts[part] ?: continue
+                val notes = startingNotes(part, style, mood, harmony)
+                fun InstrumentTrack.withSound() = copy(
+                    name = part.trackName, notes = notes, synth = sound.synth,
+                    engine = if (sound.plaits != null) 1 else 0, plaits = sound.plaits ?: plaits,
+                )
+                if (first) {
+                    project = project.withTrack(project.track(0).withSound())
+                    first = false
+                } else {
+                    val added = project.addTrack(part.trackName) ?: continue
+                    project = added.withTrack(added.tracks.last().withSound())
+                }
+            }
+        }
+        return project.sanitized()
+    }
+
+    private val Part.trackName get() = when (this) {
+        Part.Bass -> "Basse"
+        Part.Pad -> "Nappe"
+        Part.Lead -> "Lead"
+    }
+
+    /**
+     * Four bars to start from, one chord of the mood per bar: the bass plays each chord's root on
+     * the style's bass rhythm, the pad holds the chords, the lead arpeggiates them an octave up.
+     */
+    fun startingNotes(part: Part, style: Style, mood: Mood, harmony: Harmony): NoteClip = when (part) {
+        Part.Pad -> NoteClip().withChords(mood.degrees, harmony, octaveRoot = 48, velocity = 0.7f)
+        Part.Lead -> NoteClip(performance = Performance(arp = ArpMode.UpDown, arpRate = NoteClip.TICKS_PER_STEP))
+            .withChords(mood.degrees, harmony, octaveRoot = 72, velocity = 0.65f)
+        Part.Bass -> NoteClip().withBassLine(mood.degrees, harmony, style.melody.bassPattern)
     }
 }

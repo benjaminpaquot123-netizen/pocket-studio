@@ -57,6 +57,9 @@ class WizardActions(
     val setEnabled: (Role, Boolean) -> Unit = { _, _ -> },
     val setCategory: (Role, String) -> Unit = { _, _ -> },
     val choose: (Role, SoundOption) -> Unit = { _, _ -> },
+    val setMood: (StarterWizard.Mood?) -> Unit = {},
+    val setPartEnabled: (StarterWizard.Part, Boolean) -> Unit = { _, _ -> },
+    val choosePartSound: (StarterWizard.Part, StarterWizard.PartSound) -> Unit = { _, _ -> },
     val preview: (SoundRef) -> Unit = {},
     val download: (String) -> Unit = {},
     val cancelDownload: (String) -> Unit = {},
@@ -90,13 +93,12 @@ fun WizardScreen(ui: WizardUi, packs: PacksUi, playing: SoundRef?, actions: Wiza
             Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(horizontal = 12.dp, vertical = 6.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            when {
-                style == null || ui.step == 0 -> StyleStep(ui.styleId, packs, actions)
-                ui.step >= ui.lastStep -> SummaryStep(ui, style)
-                else -> {
-                    val line = style.lines[ui.step - 1]
-                    LineStep(style, line, ui.rows[line.role], packs, playing, actions)
-                }
+            when (val current = ui.current) {
+                StarterWizard.Step.Style -> StyleStep(ui.styleId, packs, actions)
+                StarterWizard.Step.Mood -> MoodStep(style!!, ui.mood, actions)
+                is StarterWizard.Step.Drum -> LineStep(style!!, current.line, ui.rows[current.line.role], packs, playing, actions)
+                is StarterWizard.Step.Melodic -> PartStep(style!!, ui, current.part, playing, actions)
+                StarterWizard.Step.Summary -> SummaryStep(ui, style!!)
             }
             ui.error?.let { Text(it, color = Neon.Amber, modifier = Modifier.testTag("wizard_error")) }
         }
@@ -276,10 +278,114 @@ private fun SummaryStep(ui: WizardUi, style: StarterWizard.Style) {
             }
             if (used) PatternPreview(line.pattern, DrumKitInfo.colors[line.role.lane])
         }
+        val mood = ui.mood
+        if (mood == null) {
+            Text("Mélodie : aucune pour l'instant (la batterie seule).", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+        } else {
+            Text("Ambiance : ${mood.label} · accords ${mood.chordsLabel}, gamme ${keyName(style.melody.root)} ${mood.scale.label.lowercase()} verrouillée.",
+                style = MaterialTheme.typography.bodyMedium)
+            StarterWizard.Part.entries.forEach { part ->
+                val row = ui.parts[part]
+                val used = row?.enabled == true
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(part.title, modifier = Modifier.weight(1f))
+                    Text(if (used) row!!.sound.name else "pas utilisée", style = MaterialTheme.typography.bodySmall,
+                        color = if (used) Neon.TextPrimary else Neon.TextSecondary)
+                }
+            }
+        }
     }
     Text(
         "« Créer le morceau » ouvre un nouveau projet : chaque son est sur son pad et le rythme est dans la grille. " +
             "Appuie sur Lecture, puis change ce que tu veux : touche les cases, essaie d'autres sons, ajoute des pistes.",
         style = MaterialTheme.typography.bodyMedium,
     )
+}
+
+private val KEY_NAMES = listOf("Do", "Do♯", "Ré", "Mi♭", "Mi", "Fa", "Fa♯", "Sol", "La♭", "La", "Si♭", "Si")
+
+private fun keyName(root: Int) = KEY_NAMES[Math.floorMod(root, 12)]
+
+/** The feeling of the song: it picks the scale and the chords, so nothing can sound wrong. */
+@Composable
+private fun MoodStep(style: StarterWizard.Style, mood: StarterWizard.Mood?, actions: WizardActions) {
+    Text(
+        "Quelle ambiance pour la mélodie ? Je choisis la gamme et les accords qui vont avec, et je verrouille le " +
+            "clavier sur cette gamme : impossible de jouer une fausse note, pas besoin de solfège.",
+        style = MaterialTheme.typography.bodyMedium,
+    )
+    StarterWizard.Mood.entries.forEach { m ->
+        val selected = m == mood
+        NeonCard(modifier = Modifier.clickable { actions.setMood(m) }.testTag("wizard_mood_${m.id}")) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Column(Modifier.weight(1f)) {
+                    Text(m.label, style = MaterialTheme.typography.titleMedium, color = if (selected) Neon.Cyan else Neon.TextPrimary)
+                    Text(m.description, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                    Text("Gamme ${keyName(style.melody.root)} ${m.scale.label.lowercase()} · accords ${m.chordsLabel}",
+                        style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary)
+                }
+                RadioButton(selected = selected, onClick = { actions.setMood(m) })
+            }
+        }
+    }
+    NeonCard(modifier = Modifier.clickable { actions.setMood(null) }.testTag("wizard_mood_none")) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Column(Modifier.weight(1f)) {
+                Text("Pas de mélodie pour l'instant", style = MaterialTheme.typography.titleMedium, color = if (mood == null) Neon.Cyan else Neon.TextPrimary)
+                Text("Juste la batterie : tu ajouteras les notes plus tard.", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+            }
+            RadioButton(selected = mood == null, onClick = { actions.setMood(null) })
+        }
+    }
+    if (style.melody.mood == mood) Text("C'est l'ambiance la plus courante en ${style.name}.", style = MaterialTheme.typography.bodySmall, color = Neon.Acid)
+}
+
+/** One melodic part: what it does, use it or not, and its sound from the library (heard on its first bar). */
+@Composable
+private fun PartStep(style: StarterWizard.Style, ui: WizardUi, part: StarterWizard.Part, playing: SoundRef?, actions: WizardActions) {
+    val row = ui.parts[part]
+    if (ui.mood == null) {
+        NeonCard {
+            SectionLabel(part.title)
+            Text("Tu as choisi « pas de mélodie » : cette piste ne sera pas créée. Reviens à l'étape Ambiance pour l'ajouter.",
+                style = MaterialTheme.typography.bodyMedium)
+        }
+        return
+    }
+    NeonCard(modifier = Modifier.testTag("wizard_part_${part.id}")) {
+        SectionLabel(part.title, color = Neon.Magenta)
+        Text(part.explanation, style = MaterialTheme.typography.bodyLarge)
+        if (part == StarterWizard.Part.Lead) {
+            Text("C'est l'arpégiateur qui fait bouger les notes : tu pourras changer sa vitesse ou l'arrêter dans Synthé.",
+                style = MaterialTheme.typography.bodySmall, fontStyle = FontStyle.Italic, color = Neon.TextSecondary)
+        }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text("Créer cette piste", modifier = Modifier.weight(1f))
+            Switch(checked = row?.enabled ?: false, onCheckedChange = { actions.setPartEnabled(part, it) }, modifier = Modifier.testTag("wizard_part_enabled"))
+        }
+    }
+    if (row == null || !row.enabled) return
+    NeonCard {
+        SectionLabel("Choisis le son")
+        StarterWizard.soundsFor(part, style).forEachIndexed { i, sound ->
+            val selected = sound == row.sound
+            val ref = SoundRef.Melodic(part, sound)
+            Row(
+                Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp))
+                    .background(if (selected) Neon.Magenta.copy(alpha = 0.12f) else Neon.Surface)
+                    .clickable { actions.choosePartSound(part, sound) }.testTag("wizard_part_sound_$i"),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                IconButton(onClick = { actions.preview(ref) }) {
+                    Icon(if (playing == ref) Icons.Filled.Stop else Icons.Filled.PlayArrow, contentDescription = "Écouter")
+                }
+                Text(sound.name, modifier = Modifier.weight(1f))
+                if (i == 0 && sound.name == style.melody.sound(part)) {
+                    Text("conseillé ", style = MaterialTheme.typography.labelSmall, color = Neon.Acid)
+                }
+                RadioButton(selected = selected, onClick = { actions.choosePartSound(part, sound) })
+            }
+        }
+        Text("Touche un son pour entendre la première mesure de cette piste.", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+    }
 }

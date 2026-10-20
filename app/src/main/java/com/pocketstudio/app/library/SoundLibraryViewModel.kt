@@ -36,6 +36,8 @@ import kotlin.math.abs
 sealed interface SoundRef {
     data class Kit(val voice: Int) : SoundRef
     data class Pack(val packId: String, val sound: PackSound) : SoundRef
+    /** A melodic part of the assistant played with [sound]: its first bar, at the style's tempo. */
+    data class Melodic(val part: StarterWizard.Part, val sound: StarterWizard.PartSound) : SoundRef
 }
 
 data class SoundOption(val ref: SoundRef, val name: String)
@@ -61,17 +63,25 @@ data class PacksUi(
 /** One line of the beat in the assistant: used or not, the category shown, the chosen sound. */
 data class WizardRow(val enabled: Boolean, val category: String, val sound: SoundOption?)
 
+/** One melodic part in the assistant: used or not, and its sound. */
+data class PartRow(val enabled: Boolean, val sound: StarterWizard.PartSound)
+
 data class WizardUi(
     val open: Boolean = false,
-    /** 0: the style; 1..lines: one line each; lines + 1: the summary. */
+    /** Index in [steps]. */
     val step: Int = 0,
     val styleId: String? = null,
     val rows: Map<Role, WizardRow> = emptyMap(),
+    /** null: no melody, the beat only (the key stays free). */
+    val mood: StarterWizard.Mood? = null,
+    val parts: Map<StarterWizard.Part, PartRow> = emptyMap(),
     val creating: Boolean = false,
     val error: String? = null,
 ) {
     val style: StarterWizard.Style? get() = styleId?.let(StarterWizard::style)
-    val lastStep: Int get() = (style?.lines?.size ?: 0) + 1
+    val steps: List<StarterWizard.Step> get() = StarterWizard.steps(style)
+    val lastStep: Int get() = steps.size - 1
+    val current: StarterWizard.Step get() = steps[step.coerceIn(0, lastStep)]
 }
 
 const val KIT_CATEGORY = "kit"
@@ -206,6 +216,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
     /** The sound as audio: the kit voice rendered once by the engine, or the pack file decoded. */
     private suspend fun load(ref: SoundRef): Pcm? = when (ref) {
         is SoundRef.Kit -> kitVoice(ref.voice)
+        is SoundRef.Melodic -> melodicBar(ref)
         is SoundRef.Pack -> withContext(Dispatchers.IO) {
             val file = PackStore.file(getApplication(), ref.packId, ref.sound)
             runCatching { AudioDecoder.decode(getApplication(), Uri.fromFile(file)) }
@@ -232,6 +243,34 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         return Pcm(trimSilence(data), 2, OfflineExport.SAMPLE_RATE).also { kitCache[voice] = it }
     }
 
+    /** The part's first bar with that sound, in the chosen mood, at the style's tempo. */
+    private suspend fun melodicBar(ref: SoundRef.Melodic): Pcm? {
+        val w = _wizard.value
+        val style = w.style ?: return null
+        if (!NativeEngine.isAvailable) return null
+        val mood = w.mood ?: style.melody.mood
+        val harmony = com.pocketstudio.model.Harmony(style.melody.root, mood.scale)
+        val clip = StarterWizard.startingNotes(ref.part, style, mood, harmony)
+        val bar = clip.performance.expand(clip).filter { it.start < 16 * com.pocketstudio.model.NoteClip.TICKS_PER_STEP }
+        val job = OfflineExport()
+        NativeEngine.captureInto(job) {
+            NativeEngine.setTempo(style.bpm)
+            NativeEngine.setPatternSteps(16)
+            ref.sound.synth.sanitized().values.forEachIndexed { i, v -> NativeEngine.setSynthParam(i, v, 0) }
+            ref.sound.plaits?.let { p -> p.sanitized().engineValues().forEachIndexed { i, v -> NativeEngine.setPlaitsParam(i, v, 0) } }
+            NativeEngine.setSynthEngine(if (ref.sound.plaits != null) 1 else 0, 0)
+            NativeEngine.setSynthSteps(16, 0)
+            bar.forEachIndexed { i, n -> NativeEngine.setSynthNote(i, n.start, n.length, n.pitch, n.velocity, 0) }
+            NativeEngine.setSynthNoteCount(bar.size, 0)
+        }
+        val data = try {
+            withContext(Dispatchers.Default) { job.renderToArray(OfflineExport.framesFor(1, style.bpm), OfflineExport.SAMPLE_RATE.toLong()) }
+        } finally {
+            withContext(NonCancellable + Dispatchers.Main) { job.close() }
+        }
+        return if (data.isEmpty()) null else Pcm(trimSilence(data), 2, OfflineExport.SAMPLE_RATE)
+    }
+
     // --- The assistant -------------------------------------------------------------------------
 
     fun openWizard() {
@@ -248,8 +287,26 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         val style = StarterWizard.style(id) ?: return
         val installed = _packs.value.installed
         _wizard.update { w ->
-            w.copy(styleId = id, step = 1, rows = style.lines.associate { it.role to defaultRow(it.role, id, installed) }, error = null)
+            w.copy(
+                styleId = id, step = 1, rows = style.lines.associate { it.role to defaultRow(it.role, id, installed) },
+                mood = style.melody.mood,
+                parts = StarterWizard.Part.entries.associateWith { PartRow(it.byDefault, StarterWizard.soundsFor(it, style).first()) },
+                error = null,
+            )
         }
+    }
+
+    /** null: the beat only, no melodic tracks. */
+    fun setMood(mood: StarterWizard.Mood?) = _wizard.update { it.copy(mood = mood) }
+
+    fun setPartEnabled(part: StarterWizard.Part, enabled: Boolean) =
+        _wizard.update { w -> w.parts[part]?.let { w.copy(parts = w.parts + (part to it.copy(enabled = enabled))) } ?: w }
+
+    /** Picks the part's sound and lets its first bar be heard. */
+    fun choosePartSound(part: StarterWizard.Part, sound: StarterWizard.PartSound) {
+        _wizard.update { w -> w.parts[part]?.let { w.copy(parts = w.parts + (part to it.copy(sound = sound, enabled = true))) } ?: w }
+        val ref = SoundRef.Melodic(part, sound)
+        if (_playing.value != ref) preview(ref)
     }
 
     fun next() = _wizard.update { it.copy(step = (it.step + 1).coerceAtMost(it.lastStep)) }
@@ -323,12 +380,13 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                     files[file] = pcm
                     sounds[line.role] = PadSample(file, option.name.substringBefore(" · ").take(40))
                 }
-                if (sounds.isEmpty()) {
+                if (sounds.isEmpty() && (w.mood == null || w.parts.values.none { it.enabled })) {
                     _wizard.update { it.copy(creating = false, error = "Garde au moins une ligne pour commencer.") }
                     return@launch
                 }
-                AppLog.add("Assistant : morceau ${style.name}, ${sounds.size} lignes")
-                then(StarterWizard.build(style, sounds), files)
+                val parts = if (w.mood == null) emptyMap() else w.parts.filterValues { it.enabled }.mapValues { it.value.sound }
+                AppLog.add("Assistant : morceau ${style.name}, ${sounds.size} lignes, ${parts.size} pistes mélodiques")
+                then(StarterWizard.build(style, sounds, w.mood, parts), files)
                 _wizard.value = WizardUi()
             } catch (e: Exception) {
                 _wizard.update { it.copy(creating = false, error = "Le morceau n'a pas pu être préparé (${e.message}).") }

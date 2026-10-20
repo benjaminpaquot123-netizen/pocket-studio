@@ -45,6 +45,7 @@ import com.pocketstudio.model.Note
 import com.pocketstudio.model.Performance
 import com.pocketstudio.model.Progression
 import com.pocketstudio.model.NoteClip
+import com.pocketstudio.model.ArpMode
 import com.pocketstudio.model.PadSample
 import com.pocketstudio.app.export.AacEncoder
 import com.pocketstudio.model.HeardNote
@@ -1544,6 +1545,23 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val h = project.value.harmony
         editNotes { it.withProgression(progression, h) }
         AppLog.add("Progression ${progression.label}")
+    }
+
+    /** The progression's roots as a bass line (eighth notes, in the bass) on the selected track. */
+    fun applyBassLine(progression: Progression) {
+        val h = project.value.harmony
+        editNotes { it.withBassLine(progression.degrees, h) }
+        AppLog.add("Ligne de basse ${progression.label}")
+    }
+
+    /** The progression's chords an octave up, played one note at a time by the arpeggiator. */
+    fun applyArpeggio(progression: Progression) {
+        val h = project.value.harmony
+        editNotes {
+            it.copy(performance = it.performance.copy(arp = ArpMode.UpDown, arpRate = NoteClip.TICKS_PER_STEP))
+                .withChords(progression.degrees, h, octaveRoot = 72, velocity = 0.7f)
+        }
+        AppLog.add("Arpège ${progression.label}")
     }
 
     fun setPerformance(performance: Performance) = editNotes("perf") { it.copy(performance = performance).sanitized() }

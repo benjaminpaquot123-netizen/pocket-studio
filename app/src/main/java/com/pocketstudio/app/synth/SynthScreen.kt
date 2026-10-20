@@ -120,6 +120,7 @@ fun SynthScreen(
     var advanced by rememberSaveable { mutableStateOf(false) }
     var showNotes by rememberSaveable { mutableStateOf(startWithNotes) }
     var chordKeys by rememberSaveable { mutableStateOf(false) }
+    var chordPads by rememberSaveable { mutableStateOf(false) }
     val harmony = notes?.harmony ?: Harmony()
     // One finger, one chord of the scale (keyboard "Accords" switch).
     val keyOn: (Int, Float) -> Unit = if (chordKeys) { n, _ -> actions.chordOn(n) } else actions.noteOn
@@ -163,6 +164,7 @@ fun SynthScreen(
                     PresetChips(patch, actions)
                     Box(Modifier.weight(1f))
                     ChordChip(chordKeys) { chordKeys = it }
+                    ChordPadsChip(chordPads) { chordPads = it }
                     OctaveControl(octave, actions)
                 }
                 Column(Modifier.weight(1f).verticalScroll(rememberScrollState())) {
@@ -170,10 +172,14 @@ fun SynthScreen(
                     instrument?.let { InstrumentPanel(it) }
                     if (instrument?.current == null && instrument?.synthEngine != 1) SoundCard(patch, actions, advanced) { advanced = it }
                 }
-                Keyboard(
-                    firstNote = 12 * (octave + 1), octaves = 3,
-                    onNoteOn = keyOn, onNoteOff = keyOff, height = keyboardHeight, harmony = harmony,
-                )
+                if (chordPads) {
+                    ChordPads(harmony, 12 * (octave + 1), actions.noteOn, actions.noteOff, height = keyboardHeight)
+                } else {
+                    Keyboard(
+                        firstNote = 12 * (octave + 1), octaves = 3,
+                        onNoteOn = keyOn, onNoteOff = keyOff, height = keyboardHeight, harmony = harmony,
+                    )
+                }
             }
         } else {
             Column(
@@ -183,7 +189,8 @@ fun SynthScreen(
                 tracks?.let { TrackBar(it) }
                 if (notes != null) ModeSwitch(showNotes) { showNotes = it }
                 KeyboardCard(octave, octaves = 2, height = 150.dp, actions = actions, harmony = harmony, chordKeys = chordKeys,
-                    onChordKeys = { chordKeys = it }, keyOn = keyOn, keyOff = keyOff, play = play, playActions = playActions)
+                    onChordKeys = { chordKeys = it }, keyOn = keyOn, keyOff = keyOff, play = play, playActions = playActions,
+                    chordPads = chordPads, onChordPads = { chordPads = it })
                 instrument?.let { InstrumentPanel(it) }
                 if (instrument?.current == null) {
                     PresetsCard(patch, actions, browser)
@@ -207,17 +214,27 @@ private fun KeyboardCard(
     keyOff: (Int) -> Unit,
     play: PlayUi? = null,
     playActions: PlayActions = PlayActions(),
+    chordPads: Boolean = false,
+    onChordPads: (Boolean) -> Unit = {},
 ) {
     NeonCard {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            SectionLabel("Clavier")
+            SectionLabel(if (chordPads) "Pads d'accords" else "Clavier")
             Box(Modifier.weight(1f))
-            ChordChip(chordKeys, onChordKeys)
+            if (!chordPads) ChordChip(chordKeys, onChordKeys)
+            ChordPadsChip(chordPads, onChordPads)
             OctaveControl(octave, actions)
         }
-        Keyboard(firstNote = 12 * (octave + 1), octaves = octaves, onNoteOn = keyOn, onNoteOff = keyOff, height = height, harmony = harmony)
+        if (chordPads) ChordPads(harmony, 12 * (octave + 1), actions.noteOn, actions.noteOff, height = height)
+        else Keyboard(firstNote = 12 * (octave + 1), octaves = octaves, onNoteOn = keyOn, onNoteOff = keyOff, height = height, harmony = harmony)
         play?.let { PlayPanel(it, playActions) }
     }
+}
+
+@Composable
+private fun ChordPadsChip(on: Boolean, onChange: (Boolean) -> Unit) {
+    FilterChip(selected = on, onClick = { onChange(!on) }, label = { Text("Pads") }, colors = chipColors(),
+        modifier = Modifier.testTag("chord_pads_switch"))
 }
 
 @Composable
@@ -371,8 +388,11 @@ private fun Key(
 ) {
     var down by remember { mutableStateOf(false) }
     val outside = harmony.scale != Scale.Off && !harmony.inScale(note)
+    // Scale locked: the keys out of the scale are dark and silent (no wrong note possible).
+    val locked = outside && harmony.lock
     val color = when {
         down -> Neon.Cyan
+        locked -> if (isBlack) Color(0xFF0E0F11) else Color(0xFF5A5E66)
         isBlack && outside -> Color(0xFF15171A)
         isBlack -> Color(0xFF26292E)
         outside -> Color(0xFF9EA2AA)  // out of the scale: greyed, still playable
@@ -385,7 +405,8 @@ private fun Key(
             .clip(RoundedCornerShape(bottomStart = 6.dp, bottomEnd = 6.dp))
             .background(color)
             .border(1.dp, Neon.Outline, RoundedCornerShape(bottomStart = 6.dp, bottomEnd = 6.dp))
-            .pointerInput(note) {
+            .pointerInput(note, locked) {
+                if (locked) return@pointerInput
                 detectTapGestures(onPress = { at ->
                     down = true
                     onNoteOn(note, (0.35f + 0.65f * at.y / size.height).coerceIn(0.2f, 1f))

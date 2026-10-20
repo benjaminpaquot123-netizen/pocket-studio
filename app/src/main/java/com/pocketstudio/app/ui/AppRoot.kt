@@ -219,6 +219,9 @@ fun AppRoot() {
                         setEnabled = libraryVm::setRowEnabled,
                         setCategory = libraryVm::setCategory,
                         choose = libraryVm::choose,
+                        setMood = libraryVm::setMood,
+                        setPartEnabled = libraryVm::setPartEnabled,
+                        choosePartSound = libraryVm::choosePartSound,
                         preview = libraryVm::preview,
                         download = libraryVm::downloadPack,
                         cancelDownload = libraryVm::cancelDownload,
@@ -357,6 +360,10 @@ fun AppRoot() {
                 is MidiCommand.Control -> rhythmVm.midiControl(c.channel, c.controller, c.value)
             }
         }
+    }
+    // Scale lock reaches the MIDI keyboard too.
+    LaunchedEffect(Unit) {
+        rhythmVm.project.collect { midiVm.harmony = it.harmony }
     }
     // Clock out: the connected MIDI device follows our transport and tempo.
     LaunchedEffect(Unit) {
@@ -614,6 +621,8 @@ fun AppRoot() {
                                     addChord = rhythmVm::addChord,
                                     setHarmony = rhythmVm::setHarmony,
                                     applyProgression = rhythmVm::applyProgression,
+                                    applyBassLine = rhythmVm::applyBassLine,
+                                    applyArpeggio = rhythmVm::applyArpeggio,
                                     setPerformance = rhythmVm::setPerformance,
                                     replaceClip = rhythmVm::replaceNoteClip,
                                 ),

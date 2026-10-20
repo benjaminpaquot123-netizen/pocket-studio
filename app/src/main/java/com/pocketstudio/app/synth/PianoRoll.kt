@@ -34,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.material3.Switch
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
@@ -63,6 +64,8 @@ data class PianoRollActions(
     val addChord: (start: Int, length: Int, pitch: Int) -> Unit = { _, _, _ -> },
     val setHarmony: (Harmony) -> Unit = {},
     val applyProgression: (Progression) -> Unit = {},
+    val applyBassLine: (Progression) -> Unit = {},
+    val applyArpeggio: (Progression) -> Unit = {},
     val setPerformance: (Performance) -> Unit = {},
     /** A whole-clip edit (selection tools); [key] merges a quick burst into one undo step. */
     val replaceClip: (NoteClip, key: String?) -> Unit = { _, _ -> },
@@ -510,7 +513,7 @@ fun HarmonyPanel(harmony: Harmony, performance: Performance, actions: PianoRollA
     if (guesses.isNotEmpty()) {
         ChipRow("Deviner") {
             guesses.forEach { g ->
-                TextButton(onClick = { actions.setHarmony(g) }, modifier = Modifier.testTag("guess_${g.root}_${g.scale.name}")) {
+                TextButton(onClick = { actions.setHarmony(g.copy(lock = harmony.lock)) }, modifier = Modifier.testTag("guess_${g.root}_${g.scale.name}")) {
                     Text("${ROOTS[g.root]} ${g.scale.label.lowercase()}")
                 }
             }
@@ -528,12 +531,30 @@ fun HarmonyPanel(harmony: Harmony, performance: Performance, actions: PianoRollA
                 FilterChip(selected = harmony.root == i, onClick = { actions.setHarmony(harmony.copy(root = i)) }, label = { Text(name) }, colors = chipColors)
             }
         }
-    }
-    ChipRow("Progression") {
-        Progression.entries.forEach { pr ->
-            TextButton(onClick = { actions.applyProgression(pr) }) { Text(pr.label) }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Column(Modifier.weight(1f)) {
+                Text("Verrouiller la gamme", style = MaterialTheme.typography.bodyMedium)
+                Text("Le clavier, les pads d'accords et le MIDI ne jouent que les notes de la gamme : pas de fausse note.",
+                    style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+            }
+            Switch(checked = harmony.lock, onCheckedChange = { actions.setHarmony(harmony.copy(lock = it)) }, modifier = Modifier.testTag("scale_lock"))
         }
     }
+    // Pick a progression, then what to make of it: chords, a bass line or an arpeggio.
+    var chosen by rememberSaveable { mutableStateOf(Progression.Pop) }
+    ChipRow("Progression") {
+        Progression.entries.forEach { pr ->
+            FilterChip(selected = chosen == pr, onClick = { chosen = pr }, label = { Text(pr.label) }, colors = chipColors,
+                modifier = Modifier.testTag("progression_${pr.name}"))
+        }
+    }
+    ChipRow("Créer") {
+        TextButton(onClick = { actions.applyProgression(chosen) }, modifier = Modifier.testTag("make_chords")) { Text("Accords") }
+        TextButton(onClick = { actions.applyBassLine(chosen) }, modifier = Modifier.testTag("make_bass")) { Text("Ligne de basse") }
+        TextButton(onClick = { actions.applyArpeggio(chosen) }, modifier = Modifier.testTag("make_arp")) { Text("Arpège") }
+    }
+    Text("Remplace les notes de la piste choisie (Annuler les rend). Une piste par rôle : basse, accords, arpège.",
+        style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
     ChipRow("Arpège") {
         ArpMode.entries.forEach { m ->
             FilterChip(selected = performance.arp == m, onClick = { actions.setPerformance(performance.copy(arp = m)) },

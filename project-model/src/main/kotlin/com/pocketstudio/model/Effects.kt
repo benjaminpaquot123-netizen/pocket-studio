@@ -24,8 +24,11 @@ data class Insert(val type: Int = 0, val params: List<Float> = EffectType.NONE.d
 /** What a parameter means, for its label and the value shown next to the slider. */
 data class Param(val label: String, val format: (Float) -> String)
 
-/** The insert effects, in the engine's InsertSlot::Type order. Ranges mirror Effects.cpp. */
-enum class EffectType(val label: String, val params: List<Param>, val defaults: List<Float>) {
+/**
+ * The insert effects, in the engine's InsertSlot::Type order. Ranges mirror Effects.cpp.
+ * [blurb]: what it does, in a sentence; [crazy]: one of the fun ones (shown in their own group).
+ */
+enum class EffectType(val label: String, val params: List<Param>, val defaults: List<Float>, val blurb: String = "", val crazy: Boolean = false) {
     NONE("Aucun", emptyList(), listOf(0f, 0f, 0f, 0f)),
     EQ(
         "Égaliseur",
@@ -128,6 +131,51 @@ enum class EffectType(val label: String, val params: List<Param>, val defaults: 
             Param("Coupe-bas") { if (it < 0.01f) "Non" else hz(expMap(it, 20f, 500f)) },
         ),
         listOf(0.5f, 0.5f, 0.4f, 0f),
+    ),
+    ROBOT(
+        "Robot",
+        listOf(
+            Param("Voix") { hz(expMap(it, 30f, 2000f)) },
+            Param("Mélange", ::percent),
+            Param("Tremblement", ::percent),
+            Param("Vitesse") { String.format(java.util.Locale.FRANCE, "%.1f Hz", expMap(it, 0.1f, 8f)) },
+        ),
+        listOf(0.45f, 1f, 0f, 0.3f),
+        "Transforme n'importe quel son en voix de robot métallique (un modulateur en anneau).", crazy = true,
+    ),
+    WAH(
+        "Wah-wah",
+        listOf(
+            Param("Sensibilité", ::percent),
+            Param("Départ") { hz(expMap(it, 150f, 1200f)) },
+            Param("Résonance", ::percent),
+            Param("Mélange", ::percent),
+        ),
+        listOf(0.6f, 0.3f, 0.6f, 1f),
+        "Plus tu joues fort, plus le son s'ouvre : « ouaou » façon guitare funk.", crazy = true,
+    ),
+    VINYL(
+        "Vieux vinyle",
+        listOf(Param("Pleurage", ::percent), Param("Craquements", ::percent), Param("Âge", ::percent), Param("Mélange", ::percent)),
+        listOf(0.4f, 0.4f, 0.5f, 1f),
+        "Un disque usé : il ondule, il craque, il sonne étouffé. Parfait pour du lofi.", crazy = true,
+    ),
+    RADIO(
+        "Talkie-walkie",
+        listOf(Param("Étroitesse", ::percent), Param("Grain", ::percent), Param("Grésillement", ::percent), Param("Mélange", ::percent)),
+        listOf(0.5f, 0.4f, 0.3f, 1f),
+        "Comme sorti d'une radio ou d'un téléphone : étroit, granuleux, avec un peu de friture.", crazy = true,
+    ),
+    CHOPPER(
+        "Hachoir",
+        listOf(
+            Param("Motif") { listOf("x.x.", "xx.x", "x..x", "x.xx", ".x.x", "xxx.", "x...", "xx..")[(it * 8).toInt().coerceIn(0, 7)].replace('x', '■').replace('.', '□') },
+            Param("Profondeur", ::percent),
+            Param("Douceur") { ms(expMap(it, 1f, 30f)) },
+            Param("Vitesse") { if (it < 0.5f) "Doubles-croches" else "Triples-croches" },
+        ),
+        listOf(0f, 1f, 0.2f, 0f),
+        "Découpe le son en rythme, calé sur le tempo : le bégaiement des drops.", crazy = true,
     ),
     ;
 

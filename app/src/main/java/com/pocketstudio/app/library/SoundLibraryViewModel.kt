@@ -99,6 +99,10 @@ data class WizardUi(
     }
 }
 
+/** Fader of the sound being tried in an assistant excerpt (+3 dB) and of the song around it (−9 dB). */
+private const val FOCUS_VOLUME = 0.95f
+private const val BACKGROUND_VOLUME = 0.48f
+
 const val KIT_CATEGORY = "kit"
 private const val PACK_PREFIX = "pack:"
 
@@ -348,7 +352,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         val style = w.style ?: return null
         val before = StarterWizard.Part.entries.takeWhile { it != ref.part }
             .mapNotNull { p -> w.parts[p]?.takeIf { it.enabled }?.let { p to it.sound } }
-        return groove(style, chosenBeat(w, style), before + (ref.part to ref.sound), w.mood ?: style.melody.mood, bars = 2)
+        return groove(style, chosenBeat(w, style), before + (ref.part to ref.sound), w.mood ?: style.melody.mood, bars = 2, focusPart = before.size)
     }
 
     /** The mood's four chords on the style's parts (its 303 line, or bass and pad), over the beat as chosen so far. */
@@ -370,7 +374,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         val upTo = style.lines.indexOfFirst { it.role == ref.role }
         if (upTo < 0) return null
         val beat = style.lines.take(upTo).mapNotNull { line -> enabledSound(w, line) } + (style.lines[upTo] to ref.sound.ref)
-        return groove(style, beat, emptyList(), w.mood ?: style.melody.mood, bars = 2, acid = false)
+        return groove(style, beat, emptyList(), w.mood ?: style.melody.mood, bars = 2, acid = false, focusLane = style.lines[upTo].role.lane)
     }
 
     private fun enabledSound(w: WizardUi, line: StarterWizard.Line): Pair<StarterWizard.Line, SoundRef>? =
@@ -391,6 +395,9 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         bars: Int,
         /** The style's 303 line too (not while trying a drum line alone). */
         acid: Boolean = true,
+        /** The sound being tried, in front of the rest: part [focusPart] (index in [parts]) or the pad of [focusLane]. */
+        focusPart: Int? = null,
+        focusLane: Int? = null,
     ): Pcm? {
         if (!NativeEngine.isAvailable) return null
         // Audio first: the kit voice already on its pad needs nothing, the others are decoded or rendered.
@@ -442,6 +449,18 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                     NativeEngine.setSynthSteps(16 * bars, track)
                     notes.forEachIndexed { i, n -> NativeEngine.setSynthNote(i, n.start, n.length, n.pitch, n.velocity, track) }
                     NativeEngine.setSynthNoteCount(notes.size, track)
+                }
+                // The sound being tried stands out (+3 dB), the song around it steps back (−9 dB):
+                // it is the one to judge, the rest is only there to place it.
+                if (focusPart != null) {
+                    val focus = com.pocketstudio.model.InstrumentTrack.mixerChannel(focusPart)
+                    for (ch in 0 until com.pocketstudio.model.Mixer.FIRST_PAD) {
+                        if (ch != NativeEngine.MASTER) NativeEngine.setChannelVolume(ch, if (ch == focus) FOCUS_VOLUME else BACKGROUND_VOLUME)
+                    }
+                } else if (focusLane != null) {
+                    for (lane in 0 until com.pocketstudio.model.DrumPattern.PAD_COUNT) {
+                        NativeEngine.setChannelVolume(com.pocketstudio.model.Mixer.padChannel(lane), if (lane == focusLane) FOCUS_VOLUME else BACKGROUND_VOLUME)
+                    }
                 }
             }
             coroutineScope {

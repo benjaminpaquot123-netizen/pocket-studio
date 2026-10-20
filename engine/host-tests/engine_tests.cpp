@@ -2252,6 +2252,196 @@ float sineGainDb(ps::InsertSlot& fx, float freq, float amp = 0.25f) {
     return static_cast<float>(10 * std::log10(sum / ref));
 }
 
+void testCrazyEffects() {
+    const size_t n = kRate;
+    std::vector<float> l(n), r(n);
+    auto sine = [&](float amp, float hz) {
+        for (size_t i = 0; i < n; ++i) l[i] = r[i] = amp * float(std::sin(2.0 * M_PI * hz * double(i) / kRate));
+    };
+    auto run = [&](ps::InsertSlot& fx) {
+        bool ok = true;
+#if !defined(__SANITIZE_ADDRESS__)
+        g_allocations = 0;
+        g_countAllocations = true;
+#endif
+        for (size_t at = 0; at < n; at += 256) fx.process(l.data() + at, r.data() + at, int(std::min<size_t>(256, n - at)));
+#if !defined(__SANITIZE_ADDRESS__)
+        g_countAllocations = false;
+        CHECK(g_allocations.load() == 0);  // nothing allocated in the audio callback (not countable under ASan)
+#endif
+        for (size_t i = 0; i < n; ++i) ok &= std::isfinite(l[i]) && std::isfinite(r[i]) && std::fabs(l[i]) < 1.5f && std::fabs(r[i]) < 1.5f;
+        return ok;
+    };
+    auto rms = [&](size_t from, size_t to) {
+        double s = 0;
+        for (size_t i = from; i < to; ++i) s += double(l[i]) * l[i];
+        return std::sqrt(s / double(to - from));
+    };
+    // Robot: the original pitch is gone (a ring modulator keeps only sum and difference tones).
+    {
+        ps::InsertSlot fx;
+        fx.prepare(kRate);
+        fx.setType(ps::InsertSlot::RobotFx);
+        sine(0.3f, 440.0f);
+        std::vector<float> dry = l;
+        CHECK(run(fx));
+        double dot = 0, a = 0, b = 0;
+        for (size_t i = n / 2; i < n; ++i) { dot += double(l[i]) * dry[i]; a += double(l[i]) * l[i]; b += double(dry[i]) * dry[i]; }
+        CHECK(std::fabs(dot) / std::sqrt(a * b) < 0.1);
+        CHECK(rms(n / 2, n) > 0.05);  // and something plays
+    }
+    // Wah-wah: a loud note opens the filter far above a quiet one.
+    {
+        ps::InsertSlot fx;
+        fx.prepare(kRate);
+        fx.setType(ps::InsertSlot::WahFx);
+        sine(0.002f, 220.0f);
+        CHECK(run(fx));
+        ps::InsertSlot loud;
+        loud.prepare(kRate);
+        loud.setType(ps::InsertSlot::WahFx);
+        sine(0.5f, 220.0f);
+        CHECK(run(loud));
+        // Quiet: near the lowest frequency; loud: more than two octaves up (read through the slot's sound).
+        ps::AutoWah quietWah, loudWah;
+        quietWah.prepare(kRate);
+        loudWah.prepare(kRate);
+        sine(0.002f, 220.0f);
+        quietWah.process(l.data(), r.data(), int(n));
+        sine(0.5f, 220.0f);
+        loudWah.process(l.data(), r.data(), int(n));
+        CHECK(loudWah.cutoff() > 4.0f * quietWah.cutoff());
+    }
+    // Old record: crackles on silence with crackle up, true silence without; wow 0 adds no delay.
+    {
+        ps::Vinyl vinyl;
+        vinyl.prepare(kRate);
+        vinyl.setParam(0, 0.0f);
+        vinyl.setParam(1, 1.0f);
+        vinyl.setParam(2, 0.0f);  // no hiss: only the crackles
+        std::fill(l.begin(), l.end(), 0.0f);
+        std::fill(r.begin(), r.end(), 0.0f);
+        vinyl.process(l.data(), r.data(), int(n));
+        float peak = 0;
+        for (float x : l) peak = std::max(peak, std::fabs(x));
+        CHECK(peak > 0.01f);
+        ps::Vinyl quiet;
+        quiet.prepare(kRate);
+        quiet.setParam(0, 0.0f);
+        quiet.setParam(1, 0.0f);
+        quiet.setParam(2, 0.0f);
+        std::fill(l.begin(), l.end(), 0.0f);
+        std::fill(r.begin(), r.end(), 0.0f);
+        quiet.process(l.data(), r.data(), int(n));
+        peak = 0;
+        for (float x : l) peak = std::max(peak, std::fabs(x));
+        CHECK(peak == 0.0f);
+        // An impulse comes out at once (no delay without wow), dulled by nothing at age 0.
+        ps::Vinyl direct;
+        direct.prepare(kRate);
+        direct.setParam(0, 0.0f);
+        direct.setParam(1, 0.0f);
+        direct.setParam(2, 0.0f);
+        std::fill(l.begin(), l.end(), 0.0f);
+        std::fill(r.begin(), r.end(), 0.0f);
+        l[0] = r[0] = 1.0f;
+        direct.process(l.data(), r.data(), 64);
+        int at = 0;
+        for (int i = 1; i < 64; ++i) if (std::fabs(l[i]) > std::fabs(l[at])) at = i;
+        CHECK(at < 4);
+    }
+    // Old record: turning the wow knob while a tone plays makes no jump (the delay glides).
+    {
+        ps::Vinyl vinyl;
+        vinyl.prepare(kRate);
+        vinyl.setParam(1, 0.0f);
+        vinyl.setParam(2, 0.0f);
+        vinyl.setParam(0, 0.4f);
+        vinyl.reset();
+        std::vector<float> a(256), b(256);
+        double t = 0;
+        float prev = 0, worst = 0, normal = 0;
+        for (int block = 0; block < 200; ++block) {
+            if (block == 100) vinyl.setParam(0, 0.45f);  // one notch, mid-tone
+            for (int i = 0; i < 256; ++i, t += 1.0) a[size_t(i)] = b[size_t(i)] = 0.75f * float(std::sin(2.0 * M_PI * 700.0 * t / kRate));
+            vinyl.process(a.data(), b.data(), 256);
+            for (int i = 0; i < 256; ++i) {
+                const float step = std::fabs(a[size_t(i)] - prev);
+                prev = a[size_t(i)];
+                if (block > 10 && block < 100) normal = std::max(normal, step);
+                if (block >= 100) worst = std::max(worst, step);
+            }
+        }
+        CHECK(worst < 1.5f * normal);
+    }
+    // Old record and walkie-talkie: clean numbers; the radio drops the bass (a 60 Hz hum).
+    for (int type : {ps::InsertSlot::VinylFx, ps::InsertSlot::RadioFx}) {
+        ps::InsertSlot fx;
+        fx.prepare(kRate);
+        fx.setType(type);
+        fx.setParam(1, 1.0f);  // all the crackle / all the drive
+        sine(0.4f, 440.0f);
+        CHECK(run(fx));
+        CHECK(rms(n / 2, n) > 0.02);
+    }
+    {
+        ps::InsertSlot fx;
+        fx.prepare(kRate);
+        fx.setType(ps::InsertSlot::RadioFx);
+        fx.setParam(1, 0.0f);
+        fx.setParam(2, 0.0f);
+        sine(0.3f, 60.0f);
+        CHECK(run(fx));
+        CHECK(rms(n / 2, n) < 0.3 * 0.71 * 0.1);  // more than 20 dB down
+    }
+    // Hachoir: the tempo comes from the sequencer's step length (no beat needed to measure it)
+    // and a beat landing mid-block restarts the pattern there.
+    {
+        ps::Chopper chop;
+        chop.prepare(kRate);
+        chop.setParam(1, 1.0f);
+        chop.setParam(2, 0.0f);
+        chop.setStepFrames(7500.0);
+        std::vector<float> a(256, 0.5f), b(256, 0.5f);
+        chop.beat(100);  // the beat lands 100 frames into this block
+        chop.process(a.data(), b.data(), 256);
+        CHECK(std::fabs(a[255] - 0.5f) < 0.01f);  // the 1st sixteenth plays
+        // Half a sixteenth later than a full one (7500 + 3750 frames after the beat): cut.
+        int64_t done = 256 - 100;
+        while (done < 7500 + 3750) {
+            std::fill(a.begin(), a.end(), 0.5f);
+            std::fill(b.begin(), b.end(), 0.5f);
+            chop.process(a.data(), b.data(), 256);
+            done += 256;
+        }
+        CHECK(std::fabs(a[255]) < 0.01f);
+    }
+    // Hachoir: in time with the beats it is given. Pattern "x.x." at depth 1, a beat every 24000
+    // frames: the 1st sixteenth plays, the 2nd is cut.
+    {
+        ps::InsertSlot fx;
+        fx.prepare(kRate);
+        fx.setType(ps::InsertSlot::ChopperFx);
+        fx.setParam(0, 0.0f);
+        fx.setParam(1, 1.0f);
+        fx.setParam(2, 0.0f);  // 1 ms smoothing
+        fx.setStepFrames(7500.0);  // 96 BPM, as the sequencer tells every block
+        std::vector<float> one(1000, 0.5f), two(1000, 0.5f);
+        const int beat = 30000;
+        for (int at = 0; at < 4 * beat; at += 1000) {
+            if (at % beat == 0) fx.sidechain(0, false, true);
+            std::fill(one.begin(), one.end(), 0.5f);
+            std::fill(two.begin(), two.end(), 0.5f);
+            fx.process(one.data(), two.data(), 1000);
+            const int inBeat = at % beat;
+            if (at >= 2 * beat) {
+                if (inBeat >= 1000 && inBeat + 1000 < beat / 4) CHECK(std::fabs(one[999] - 0.5f) < 0.01f);  // 1st sixteenth: plays
+                if (inBeat >= beat / 4 + 1000 && inBeat + 1000 < beat / 2) CHECK(std::fabs(one[999]) < 0.01f);  // 2nd: cut
+            }
+        }
+    }
+}
+
 void testNewEffects() {
     // Every new effect: finite, bounded, and audibly doing its job on a stereo sine.
     auto sine = [](std::vector<float>& l, std::vector<float>& r, float amp, float hz, float phaseR) {
@@ -3545,6 +3735,7 @@ int main(int argc, char** argv) {
         {"live_pads", testLivePadsLoopOnTheBeat},
         {"instrument_tracks", testInstrumentTracks},
         {"new_effects", testNewEffects},
+        {"crazy_effects", testCrazyEffects},
         {"param_eq", testParametricEq},
         {"scopes", testScopes},
         {"automation_clips", testAutomationClips},

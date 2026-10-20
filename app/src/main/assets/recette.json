@@ -1,51 +1,46 @@
 {
-  "id": "phase18-deux-scenes",
-  "milestone": "Phase 18 : l'assistant en trois scènes",
+  "id": "phase19-effets-fous",
+  "milestone": "Phase 19 : les effets fous",
   "items": [
     {
-      "id": "sample_on_chords",
-      "title": "Une 808 sur la nappe",
-      "hint": "Ouvre ton projet « Drum & bass » : la Nappe (Kick) et le Lead sonnent en entier, calés tout seuls. Puis Synthé › piste Nappe › Sample › Bibliothèque : pose « 808 3 » et lance la lecture : chaque accord joue la 808 en entier, plus de « tic » suivi de silence."
+      "id": "fx_button",
+      "title": "Le bouton Effets",
+      "hint": "Mixeur : sur chaque piste, touche « Effets » à côté du volume. La boîte s'ouvre d'un coup : effets rapides, puis les 4 emplacements."
     },
     {
-      "id": "preview_clean",
-      "title": "Écouter sans saturer",
-      "hint": "Pendant la lecture, ouvre la bibliothèque et touche plusieurs 808 : l'écoute passe par-dessus la musique sans grésiller."
+      "id": "wizard_focus",
+      "title": "Entendre ce que tu essaies",
+      "hint": "Nouveau morceau pas à pas, étape Basse (ou Nappe, Lead) : touche plusieurs sons. Le son essayé passe devant, la batterie et le reste reculent."
     },
     {
-      "id": "styles_order",
-      "title": "Les styles connus d'abord",
-      "hint": "Mes projets › Nouveau projet › pas à pas : en haut « Les plus connus » (Techno, House, Trap…), en dessous « Les autres styles ». Touche un de ces titres : la liste se replie ; touche encore : elle revient."
+      "id": "robot",
+      "title": "Robot",
+      "hint": "Sur la piste Lead ou une voix : emplacement 1 › Effets fous › Robot. Lance la lecture et bouge « Voix » : du robot grave au robot aigu."
     },
     {
-      "id": "fold_wizard",
-      "title": "Les cartes de l'assistant se replient",
-      "hint": "Dans une étape, touche le titre d'une carte (par exemple « Choisis le son ») : elle se replie. Ferme et rouvre l'assistant : elle est toujours repliée, retouche pour l'ouvrir."
+      "id": "wah",
+      "title": "Wah-wah",
+      "hint": "Sur la basse ou un clavier : Wah-wah. Joue fort puis doucement au clavier : le son fait « ouaou » quand tu joues fort."
     },
     {
-      "id": "scene_badge",
-      "title": "Chaque étape dit sa scène",
-      "hint": "Choisis Techno, une ambiance, puis avance : sous chaque ligne de batterie, « Va dans la scène A · le rythme » ; sous la basse, « scène B · la basse » ; sous Nappe et Lead, « scène C · la mélodie ». Le résumé montre les trois scènes."
+      "id": "vinyl",
+      "title": "Vieux vinyle",
+      "hint": "Sur la nappe : Vieux vinyle. Monte « Craquements » et « Âge » : le son ondule, craque et s'étouffe, façon lofi."
     },
     {
-      "id": "song_guide",
-      "title": "Le guide après la création",
-      "hint": "Touche « Créer le morceau » : un guide de 4 pages s'ouvre (les trois scènes, écouter une scène, jouer le morceau, et ensuite). Lis-le jusqu'à « À moi de jouer ! »."
+      "id": "radio",
+      "title": "Talkie-walkie",
+      "hint": "Sur une voix ou un lead : Talkie-walkie. Le son devient étroit comme une radio ; « Grésillement » ajoute la friture."
     },
     {
-      "id": "three_scenes",
-      "title": "Les trois scènes et le morceau",
-      "hint": "Onglet Morceau : les scènes A, B et C sont remplies. Touche B puis C : la batterie laisse la place à la basse, puis à la mélodie. Puis « Jouer le morceau » : A, B, C deux fois chacune, et ça recommence."
+      "id": "chopper",
+      "title": "Hachoir",
+      "hint": "Sur la nappe pendant la lecture : Hachoir. Le son est découpé en rythme, pile sur le tempo. Change le « Motif » pour d'autres hachés."
     },
     {
-      "id": "beat_only",
-      "title": "Sans mélodie aussi",
-      "hint": "Refais un morceau pas à pas avec « Pas de mélodie pour l'instant » : A garde kick, caisse claire et clap, B les charleys, C les percussions et la 808."
-    },
-    {
-      "id": "chips",
-      "title": "Des pastilles propres",
-      "hint": "Synthé › Réglages avancés › Type de filtre : « Passe-bande » passe à la ligne, plus écrit à la verticale. En haut de Synthé, les pistes qui dépassent s'estompent au bord au lieu d'être coupées net."
+      "id": "pad_fx",
+      "title": "Sur un pad aussi",
+      "hint": "Rythme : touche un pad, puis ses effets : les effets fous y sont aussi (par exemple Robot sur un clap)."
     }
   ]
 }

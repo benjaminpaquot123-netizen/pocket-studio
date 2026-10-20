@@ -145,3 +145,8 @@ Feu vert de Benjamin (D4 = A) : fusion de la pull request en fin de phase.
 - [x] 18.4 Le tuto le dit : chaque étape montre la scène de sa ligne, le résumé montre les trois scènes, un guide de 4 pages s'ouvre après la création
 - [x] 18.6 Son posé sur une piste mélodique joué dans l'octave de ses notes, automatiquement partout (pose, ancien projet, notes déplacées : plus de 808 lue 16 fois trop vite), écoutes sans saturation
 - [x] 18.5 Pastilles propres : les rangées de choix passent à la ligne au lieu d'écraser la dernière, les rangées qui défilent s'estompent au bord
+
+## Phase 19 : les effets fous (demande de Benjamin : « accès à la boîte à outils dans le mixeur, et ajoutes-en encore, super fun et original, sans nouvelle interface »)
+- [x] 19.1 Un bouton « Effets » visible sur chaque tranche du mixeur (la boîte existante, avant cachée sous deux niveaux)
+- [x] 19.2 Cinq effets fous dans le moteur, sans allocation ni mémoire lourde : Robot (modulateur en anneau), Wah-wah (filtre qui suit le jeu), Vieux vinyle (pleurage, craquements, âge), Talkie-walkie (bande radio, grain, friture), Hachoir (découpe rythmique calée sur les temps)
+- [x] 19.3 Rangés à part (« Effets fous », violet) avec une phrase qui dit ce qu'ils font ; sur toutes les pistes, les pads et la sortie générale

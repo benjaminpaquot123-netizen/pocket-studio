@@ -41,6 +41,7 @@ import com.pocketstudio.model.Insert
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material3.Icon
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.getValue
@@ -154,6 +155,7 @@ private fun Strip(info: StripInfo, c: Channel, meter: Float, actions: MixerActio
     val name = info.name
     val index = info.ch
     var expanded by rememberSaveable(index) { mutableStateOf(false) }
+    var open by rememberSaveable(index) { mutableStateOf(false) }
     val chipColors = pillColors()
     NeonCard {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -181,10 +183,21 @@ private fun Strip(info: StripInfo, c: Channel, meter: Float, actions: MixerActio
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 ProSlider(value = c.volume, onValueChange = { actions.setVolume(index, it) }, modifier = Modifier.weight(1f).testTag("volume_$index"))
                 Text(faderDb(c.volume), style = MonoStyle, color = Neon.Cyan, modifier = Modifier.padding(start = 6.dp))
-                androidx.compose.material3.IconButton(onClick = { expanded = !expanded }, modifier = Modifier.testTag("strip_more_$index")) {
-                    Icon(if (expanded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
-                        contentDescription = if (expanded) "Moins de réglages" else "Panoramique et effets", tint = Neon.Cyan)
-                }
+                // The effects in one touch, right on the strip (they used to hide two levels down).
+                val active = c.inserts.count { it.effect != com.pocketstudio.model.EffectType.NONE }
+                FilterChip(
+                    selected = expanded && open,
+                    onClick = {
+                        // Lit while the effects show; a touch shows them (or folds the strip back).
+                        val show = !(expanded && open)
+                        expanded = show
+                        open = show
+                    },
+                    leadingIcon = { Icon(Icons.Filled.AutoAwesome, contentDescription = null, modifier = Modifier.size(16.dp)) },
+                    label = { Text(if (active > 0) "Effets · $active" else "Effets", maxLines = 1, softWrap = false) },
+                    colors = pillColors(Neon.Magenta),
+                    modifier = Modifier.padding(start = 6.dp).testTag("strip_more_$index"),
+                )
             }
             if (!expanded) {
                 val fx = androidx.compose.runtime.remember(c) { quickFxSummary(c) }
@@ -215,7 +228,6 @@ private fun Strip(info: StripInfo, c: Channel, meter: Float, actions: MixerActio
             )
         }
         ProSlider(value = c.pan, onValueChange = { v -> actions.setPan(index, if (kotlin.math.abs(v) < 0.04f) 0f else v) }, valueRange = -1f..1f)
-        var open by rememberSaveable(index) { mutableStateOf(false) }
         val summary = androidx.compose.runtime.remember(c) { quickFxSummary(c) }
         EffectsToggle(summary, open, Modifier.testTag("effects_$index")) { open = !open }
         if (open) {

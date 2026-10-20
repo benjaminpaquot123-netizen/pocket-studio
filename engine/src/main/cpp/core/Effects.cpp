@@ -741,6 +741,183 @@ void Bitcrusher::process(float* l, float* r, int n) {
     }
 }
 
+// --- The crazy effects -----------------------------------------------------------------------
+
+void RingMod::setParam(int p, float v) { setClamped(p_, p, v); }
+
+void RingMod::process(float* l, float* r, int n) {
+    const double base = expMap(p_[0], 30.0f, 2000.0f);
+    const float mix = p_[1], swing = p_[2];
+    const double lfoInc = expMap(p_[3], 0.1f, 8.0f) / rate_;
+    for (int i = 0; i < n; ++i) {
+        const double f = base * (1.0 + 0.5 * swing * std::sin(kTwoPiD * lfo_));
+        const float c = static_cast<float>(std::sin(kTwoPiD * phase_));
+        l[i] += mix * (l[i] * c - l[i]);
+        r[i] += mix * (r[i] * c - r[i]);
+        phase_ += f / rate_;
+        if (phase_ >= 1.0) phase_ -= 1.0;
+        lfo_ += lfoInc;
+        if (lfo_ >= 1.0) lfo_ -= 1.0;
+    }
+}
+
+void AutoWah::setParam(int p, float v) { setClamped(p_, p, v); }
+
+void AutoWah::process(float* l, float* r, int n) {
+    const float gain = expMap(p_[0], 1.0f, 40.0f);
+    const float low = expMap(p_[1], 150.0f, 1200.0f);
+    const float k = 2.0f - 1.9f * p_[2];  // damping: 2 (soft) .. 0.1 (sharp)
+    const float mix = p_[3];
+    const float attack = onePoleCoef(rate_, 1000.0f / (2.0f * static_cast<float>(kPi) * 2.0f));   // ~2 ms
+    const float release = onePoleCoef(rate_, 1000.0f / (2.0f * static_cast<float>(kPi) * 80.0f)); // ~80 ms
+    for (int i = 0; i < n; ++i) {
+        const float x = std::max(std::fabs(l[i]), std::fabs(r[i]));
+        env_ += (x - env_) * (x > env_ ? attack : release);
+        // The cutoff only moves every 8 frames: tan() is the costly part.
+        if ((i & 7) == 0) {
+            cutoff_ = std::min(low * std::exp2(3.5f * std::min(1.0f, env_ * gain)), 0.45f * rate_);
+            g_ = std::tan(static_cast<float>(kPi) * cutoff_ / rate_);
+            a1_ = 1.0f / (1.0f + g_ * (g_ + k));
+            a2_ = g_ * a1_;
+        }
+        const float g = g_, a1 = a1_, a2 = a2_;
+        auto band = [&](float in, float& s1, float& s2) {
+            const float v3 = in - s2;
+            const float v1 = a1 * s1 + a2 * v3;
+            const float v2 = s2 + a2 * s1 + g * a2 * v3;
+            s1 = 2.0f * v1 - s1;
+            s2 = 2.0f * v2 - s2;
+            return k * v1;  // band-pass, 0 dB at its peak
+        };
+        const float wl = band(l[i], s1L_, s2L_), wr = band(r[i], s1R_, s2R_);
+        l[i] += mix * (wl - l[i]);
+        r[i] += mix * (wr - r[i]);
+    }
+}
+
+void Vinyl::prepare(float rate) {
+    rate_ = rate;
+    const auto size = static_cast<size_t>(rate * 0.03f) + 4;  // 30 ms: room for the wow
+    bufL_.assign(size, 0.0f);
+    bufR_.assign(size, 0.0f);
+    reset();
+}
+
+void Vinyl::setParam(int p, float v) { setClamped(p_, p, v); }
+
+void Vinyl::reset() {
+    std::fill(bufL_.begin(), bufL_.end(), 0.0f);
+    std::fill(bufR_.begin(), bufR_.end(), 0.0f);
+    write_ = 0;
+    wow_ = flutter_ = 0.0;
+    wowNow_ = p_[0];
+    lp1L_ = lp2L_ = lp1R_ = lp2R_ = click_ = 0.0f;
+}
+
+float Vinyl::noise() {
+    seed_ = seed_ * 1664525u + 1013904223u;  // its own generator: no shared state, no lock
+    return static_cast<float>(seed_ >> 8) / 8388608.0f - 1.0f;
+}
+
+void Vinyl::process(float* l, float* r, int n) {
+    if (bufL_.empty()) return;
+    const size_t size = bufL_.size();
+    const float crackle = p_[1], age = p_[2], mix = p_[3];
+    const float wowGlide = onePoleCoef(rate_, 3.0f);  // ~50 ms
+    const float tone = onePoleCoef(rate_, expMap(1.0f - age, 2500.0f, 18000.0f));
+    const float clicks = crackle * crackle * 0.0012f * 48000.0f / rate_;  // chance per frame, same count per second at any rate
+    const float clickDecay = std::exp(-1.0f / (0.0007f * rate_));          // a click dies in about a millisecond
+    for (int i = 0; i < n; ++i) {
+        bufL_[write_] = l[i];
+        bufR_[write_] = r[i];
+        // A warped record: a slow pitch wobble (0.55 Hz) and a faster flutter (6 Hz). No wow, no
+        // delay at all (a fixed one would comb the dry sound and put the track late).
+        wowNow_ += (p_[0] - wowNow_) * wowGlide;
+        const double delay = wowNow_ * (0.0067 + 0.006 * std::sin(kTwoPiD * wow_) + 0.0006 * std::sin(kTwoPiD * flutter_)) * rate_;
+        wow_ += 0.55 / rate_;
+        flutter_ += 6.0 / rate_;
+        if (wow_ >= 1.0) wow_ -= 1.0;
+        if (flutter_ >= 1.0) flutter_ -= 1.0;
+        const double readPos = static_cast<double>(write_) + static_cast<double>(size) - delay;
+        const auto i0 = static_cast<size_t>(readPos) % size;  // delay < size: readPos stays positive
+        const auto i1 = (i0 + 1) % size;
+        const float t = static_cast<float>(readPos - std::floor(readPos));
+        float wl = bufL_[i0] + t * (bufL_[i1] - bufL_[i0]);
+        float wr = bufR_[i0] + t * (bufR_[i1] - bufR_[i0]);
+        write_ = (write_ + 1) % size;
+        // Dull and narrow with age, two gentle low-passes.
+        lp1L_ += (wl - lp1L_) * tone; lp2L_ += (lp1L_ - lp2L_) * tone;
+        lp1R_ += (wr - lp1R_) * tone; lp2R_ += (lp1R_ - lp2R_) * tone;
+        const float mid = 0.5f * (lp2L_ + lp2R_);
+        const float narrow = 0.6f * age;
+        wl = lp2L_ + narrow * (mid - lp2L_);
+        wr = lp2R_ + narrow * (mid - lp2R_);
+        // Crackles: rare short clicks that die in a millisecond; a soft hiss under them.
+        if (0.5f + 0.5f * noise() < clicks) click_ = 0.25f * crackle * noise();
+        click_ *= clickDecay;
+        const float hiss = 0.004f * age * noise();
+        wl += click_ + hiss;
+        wr += click_ + hiss;
+        l[i] += mix * (wl - l[i]);
+        r[i] += mix * (wr - r[i]);
+    }
+}
+
+void Radio::setParam(int p, float v) { setClamped(p_, p, v); }
+
+void Radio::process(float* l, float* r, int n) {
+    const float narrow = p_[0], drive = p_[1], hiss = p_[2], mix = p_[3];
+    const float lo = 250.0f + 650.0f * narrow, hi = 4000.0f - 2200.0f * narrow;
+    const float hpCoef = 1.0f - onePoleCoef(rate_, lo), lpCoef = onePoleCoef(rate_, hi);
+    // More grain, not more level: the output comes down as the drive goes up.
+    const float push = 1.0f + 15.0f * drive, norm = 1.0f / std::tanh(push) / (1.0f + 4.0f * drive);
+    for (int i = 0; i < n; ++i) {
+        const float x = 0.5f * (l[i] + r[i]);  // a radio is mono
+        // High-pass (one pole, twice) then low-pass (twice): the telephone band.
+        hp1_ = hpCoef * (hp1_ + x - prevIn_);
+        prevIn_ = x;
+        hp2_ = hpCoef * (hp2_ + hp1_ - prevHp_);
+        prevHp_ = hp1_;
+        lp1_ += (hp2_ - lp1_) * lpCoef;
+        lp2_ += (lp1_ - lp2_) * lpCoef;
+        float y = std::tanh(lp2_ * push) * norm * 0.7f;
+        // Static rides on the voice (none in the silences).
+        env_ += (std::fabs(x) - env_) * 0.001f;
+        seed_ = seed_ * 1664525u + 1013904223u;
+        const float noise = static_cast<float>(seed_ >> 8) / 8388608.0f - 1.0f;
+        y += hiss * 0.15f * noise * std::min(1.0f, env_ * 6.0f);
+        l[i] += mix * (y - l[i]);
+        r[i] += mix * (y - r[i]);
+    }
+}
+
+namespace {
+// One beat in four sixteenths: x plays, . is cut.
+constexpr const char* kChopPatterns[Chopper::kPatterns] = {"x.x.", "xx.x", "x..x", "x.xx", ".x.x", "xxx.", "x...", "xx.."};
+}  // namespace
+
+void Chopper::setParam(int p, float v) { setClamped(p_, p, v); }
+
+void Chopper::process(float* l, float* r, int n) {
+    const char* pattern = kChopPatterns[std::min(kPatterns - 1, static_cast<int>(p_[0] * kPatterns))];
+    const float depth = p_[1];
+    const float smooth = onePoleCoef(rate_, 1000.0f / (2.0f * static_cast<float>(kPi) * expMap(p_[2], 1.0f, 30.0f)));
+    const int split = p_[3] >= 0.5f ? 8 : 4;  // 32nds or sixteenths in a beat
+    for (int i = 0; i < n; ++i) {
+        if (i == pending_) {
+            sinceBeat_ = 0;  // the song's beat: the pattern starts again here
+        }
+        const int step = static_cast<int>((sinceBeat_ % beatFrames_) * split / beatFrames_);
+        const bool on = pattern[step % 4] == 'x';
+        const float target = on ? 1.0f : 1.0f - depth;
+        gain_ += (target - gain_) * smooth;
+        l[i] *= gain_;
+        r[i] *= gain_;
+        ++sinceBeat_;
+    }
+    pending_ = -1;
+}
+
 // --- Insert slot -----------------------------------------------------------------------------
 
 void InsertSlot::reset() {
@@ -757,6 +934,11 @@ void InsertSlot::reset() {
     widener_.reset();
     crusher_.reset();
     paramEq_.reset();
+    robot_.reset();
+    wah_.reset();
+    vinyl_.reset();
+    radio_.reset();
+    chopper_.reset();
 }
 
 void InsertSlot::prepare(float rate) {
@@ -773,6 +955,11 @@ void InsertSlot::prepare(float rate) {
     widener_.prepare(rate);
     crusher_.prepare(rate);
     paramEq_.prepare(rate);
+    robot_.prepare(rate);
+    wah_.prepare(rate);
+    vinyl_.prepare(rate);
+    radio_.prepare(rate);
+    chopper_.prepare(rate);
 }
 
 void InsertSlot::setType(int type) {
@@ -792,6 +979,11 @@ void InsertSlot::setType(int type) {
         case WidenerFx: widener_.reset(); break;
         case Crusher: crusher_.reset(); break;
         case ParamEqFx: paramEq_.reset(); break;
+        case RobotFx: robot_.reset(); break;
+        case WahFx: wah_.reset(); break;
+        case VinylFx: vinyl_.reset(); break;
+        case RadioFx: radio_.reset(); break;
+        case ChopperFx: chopper_.reset(); break;
         default: break;
     }
 }
@@ -811,6 +1003,11 @@ void InsertSlot::setParam(int p, float v) {
         case WidenerFx: widener_.setParam(p, v); break;
         case Crusher: crusher_.setParam(p, v); break;
         case ParamEqFx: paramEq_.setParam(p, v); break;
+        case RobotFx: robot_.setParam(p, v); break;
+        case WahFx: wah_.setParam(p, v); break;
+        case VinylFx: vinyl_.setParam(p, v); break;
+        case RadioFx: radio_.setParam(p, v); break;
+        case ChopperFx: chopper_.setParam(p, v); break;
         default: break;
     }
 }
@@ -830,6 +1027,11 @@ void InsertSlot::process(float* l, float* r, int n) {
         case WidenerFx: widener_.process(l, r, n); break;
         case Crusher: crusher_.process(l, r, n); break;
         case ParamEqFx: paramEq_.process(l, r, n); break;
+        case RobotFx: robot_.process(l, r, n); break;
+        case WahFx: wah_.process(l, r, n); break;
+        case VinylFx: vinyl_.process(l, r, n); break;
+        case RadioFx: radio_.process(l, r, n); break;
+        case ChopperFx: chopper_.process(l, r, n); break;
         default: break;
     }
 }

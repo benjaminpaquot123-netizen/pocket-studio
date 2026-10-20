@@ -156,10 +156,12 @@
 
 - Phase 17 (branche locale phase17-wip, à poser après la fusion de la 16) : session multimédia, activité en direct « REC » d'Android 16, prise au micro écran éteint. À essayer sur le Magic 8 Pro (pastille ou Capsule magique ?).
 
-- Phase 18 (branche ccr-80af1a1b-mn0wec) : assistant en trois scènes (A rythme, B basse, C mélodie, morceau A, B, C ×2, `StarterWizard.scenePlan`), repère de scène à chaque étape, guide après la création (`songGuide`), styles connus d'abord (`POPULAR`), `FoldSection` (groupes repliables) et repli rallumé dans l'assistant.
+- Phase 18 fusionnée (PR #29) : assistant en trois scènes (A rythme, B basse, C mélodie, morceau A, B, C ×2, `StarterWizard.scenePlan`), repère de scène à chaque étape, guide après la création (`songGuide`), styles connus d'abord (`POPULAR`), `FoldSection` (groupes repliables) et repli rallumé dans l'assistant.
+
+- Phase 19 (branche phase19-wip puis ccr-80af1a1b-mn0wec) : `RingMod`, `AutoWah`, `Vinyl`, `Radio`, `Chopper` dans Effects.h/.cpp (types 14 à 18), `EffectType` ROBOT..CHOPPER avec `blurb`/`crazy`, bouton « Effets » sur la tranche compacte du mixeur.
 
 ## Prochaine étape exacte
-1. Phases 16 (PR #27) et 17 (PR #28) fusionnées. Phase 18 : relecture faite et corrigée, PR ouverte ; CI verte puis fusion, lien à Benjamin.
+1. Phases 16 (#27), 17 (#28) et 18 (#29) fusionnées. Phase 19 (effets fous, bouton Effets dans le mixeur) : relecture neuve, PR, CI, fusion, lien à Benjamin.
 2. Ensuite, dans l'ordre :
    - le niveau général (marge, limiteur, vumètre avant le limiteur), à mesurer sur le téléphone ;
    - le tempo changé pendant la lecture (pads calés, Remix) ;

@@ -1,6 +1,8 @@
 #pragma once
 
+#include <algorithm>
 #include <array>
+#include <cmath>
 #include <cstdint>
 #include <vector>
 
@@ -337,11 +339,111 @@ private:
     StereoChorus chorus_;
 };
 
+// --- The "crazy" effects: fun first, each in a few lines and with no buffer of its own beyond a
+// few milliseconds (there are 128 insert slots). ---------------------------------------------
+
+// Ring modulator ("Robot"): the sound times a sine. Params: pitch (30..2000 Hz), mix, wobble
+// (how far the pitch swings), wobble speed (0.1..8 Hz).
+class RingMod {
+public:
+    void prepare(float rate) { rate_ = rate; }
+    void setParam(int p, float v);
+    void reset() { phase_ = 0.0; lfo_ = 0.0; }
+    void process(float* l, float* r, int n);
+
+private:
+    float rate_ = 48000;
+    std::array<float, 4> p_{0.45f, 1.0f, 0.0f, 0.3f};
+    double phase_ = 0.0, lfo_ = 0.0;
+};
+
+// Envelope filter ("Wah-wah"): the louder the note, the higher a resonant band-pass opens.
+// Params: sensitivity, lowest frequency (150..1200 Hz, opens 3.5 octaves up), resonance, mix.
+class AutoWah {
+public:
+    void prepare(float rate) { rate_ = rate; reset(); }
+    void setParam(int p, float v);
+    void reset() { env_ = 0.0f; s1L_ = s2L_ = s1R_ = s2R_ = 0.0f; }
+    void process(float* l, float* r, int n);
+    float cutoff() const { return cutoff_; }  // tests
+
+private:
+    float rate_ = 48000;
+    std::array<float, 4> p_{0.6f, 0.3f, 0.6f, 1.0f};
+    float env_ = 0.0f, cutoff_ = 0.0f;
+    float s1L_ = 0.0f, s2L_ = 0.0f, s1R_ = 0.0f, s2R_ = 0.0f;  // TPT state-variable filter
+    float g_ = 0.0f, a1_ = 1.0f, a2_ = 0.0f;                    // its coefficients (every 8 frames)
+};
+
+// Old record ("Vieux vinyle"): wow and flutter (a slowly moving short delay), crackles, hiss and
+// a dull, narrow tone. Params: wow, crackle, age (tone and hiss), mix.
+class Vinyl {
+public:
+    void prepare(float rate);
+    void setParam(int p, float v);
+    void reset();
+    void process(float* l, float* r, int n);
+
+private:
+    float noise();
+    float rate_ = 48000;
+    std::array<float, 4> p_{0.4f, 0.4f, 0.5f, 1.0f};
+    std::vector<float> bufL_, bufR_;
+    size_t write_ = 0;
+    double wow_ = 0.0, flutter_ = 0.0;
+    float wowNow_ = 0.0f;  // the wow knob, smoothed: turning it never jumps the read point
+    float lp1L_ = 0, lp2L_ = 0, lp1R_ = 0, lp2R_ = 0, click_ = 0.0f;
+    uint32_t seed_ = 0x9E3779B9u;
+};
+
+// Walkie-talkie ("Talkie-walkie"): a narrow mono band, crunchy, with static under the voice.
+// Params: narrowness, drive, static, mix.
+class Radio {
+public:
+    void prepare(float rate) { rate_ = rate; reset(); }
+    void setParam(int p, float v);
+    void reset() { hp1_ = hp2_ = lp1_ = lp2_ = prevIn_ = prevHp_ = env_ = 0.0f; }
+    void process(float* l, float* r, int n);
+
+private:
+    float rate_ = 48000;
+    std::array<float, 4> p_{0.5f, 0.4f, 0.3f, 1.0f};
+    float hp1_ = 0, hp2_ = 0, lp1_ = 0, lp2_ = 0, prevIn_ = 0, prevHp_ = 0, env_ = 0;
+    uint32_t seed_ = 0x2545F491u;
+};
+
+// Rhythmic gate ("Hachoir"): chops the sound in sixteenths (or 32nds) after a pattern of one
+// beat, in time with the song (each beat resyncs it). Params: pattern (8), depth, smoothness
+// (1..30 ms), speed (sixteenths .. 32nds).
+class Chopper {
+public:
+    static constexpr int kPatterns = 8;
+    void prepare(float rate) { rate_ = rate; reset(); }
+    void setParam(int p, float v);
+    void reset() { gain_ = 1.0f; sinceBeat_ = 0; pending_ = -1; }
+    // A beat lands `offset` frames into the next process() call: the pattern starts again there.
+    void beat(int offset) { pending_ = offset; }
+    // The song's tempo, from the sequencer every block: a beat is four sixteenths.
+    void setStepFrames(double framesPerSixteenth) {
+        if (framesPerSixteenth > 0.0) beatFrames_ = std::max<int64_t>(1, std::llround(4.0 * framesPerSixteenth));
+    }
+    void process(float* l, float* r, int n);
+    float gain() const { return gain_; }  // tests
+
+private:
+    float rate_ = 48000;
+    std::array<float, 4> p_{0.0f, 1.0f, 0.2f, 0.0f};
+    float gain_ = 1.0f;
+    int64_t sinceBeat_ = 0, beatFrames_ = 24000;  // 120 BPM until the song tells
+    int pending_ = -1;
+};
+
 class InsertSlot {
 public:
     enum Type {
         None = 0, Eq = 1, Comp = 2, Saturation = 3, Chorus = 4, Filter = 5, Pump = 6,
-        FlangerFx = 7, PhaserFx = 8, GateFx = 9, TremoloFx = 10, WidenerFx = 11, Crusher = 12, ParamEqFx = 13, kTypes = 14
+        FlangerFx = 7, PhaserFx = 8, GateFx = 9, TremoloFx = 10, WidenerFx = 11, Crusher = 12, ParamEqFx = 13,
+        RobotFx = 14, WahFx = 15, VinylFx = 16, RadioFx = 17, ChopperFx = 18, kTypes = 19
     };
     static constexpr int kParams = 4;
 
@@ -354,8 +456,10 @@ public:
     const Compressor& compressor() const { return comp_; }  // tests
     const Ducker& ducker() const { return pump_; }          // tests
     // Sidechain events (only the Pump type listens). `beat`: the step is a quarter note.
+    void setStepFrames(double framesPerSixteenth) { chopper_.setStepFrames(framesPerSixteenth); }
     void sidechain(int offset, bool kick, bool beat) {
         if (type_ == Pump && (pump_.everyBeat() ? beat : kick)) pump_.trigger(offset);
+        if (type_ == ChopperFx && beat) chopper_.beat(offset);
     }
 
 private:
@@ -373,6 +477,11 @@ private:
     Widener widener_;
     Bitcrusher crusher_;
     ParamEq paramEq_;
+    RingMod robot_;
+    AutoWah wah_;
+    Vinyl vinyl_;
+    Radio radio_;
+    Chopper chopper_;
 };
 
 // Freeverb (Jezar at Dreampoint, public domain): 8 parallel combs + 4 allpasses per side.

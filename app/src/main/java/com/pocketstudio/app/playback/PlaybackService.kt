@@ -85,6 +85,7 @@ class PlaybackService : Service() {
     // stopService arrives before onStartCommand, so Android never sees a broken promise.
     override fun onCreate() {
         super.onCreate()
+        running = true
         getSystemService(NotificationManager::class.java).createNotificationChannel(
             NotificationChannel(CHANNEL_ID, "Lecture", NotificationManager.IMPORTANCE_LOW).apply {
                 description = "Affichée pendant que la musique joue ou s'enregistre"
@@ -153,6 +154,7 @@ class PlaybackService : Service() {
     }
 
     override fun onDestroy() {
+        running = false
         scope.cancel()
         // An update posted just before the stop must not leave a player nobody owns.
         getSystemService(NotificationManager::class.java).cancel(NOTIFICATION_ID)
@@ -255,6 +257,11 @@ class PlaybackService : Service() {
         val stops: SharedFlow<String> = _stopRequests
 
         private val status = MutableStateFlow(PlaybackStatus())
+
+        /** True while the song plays (the service lives exactly that long): previews step back. */
+        @Volatile
+        var running = false
+            private set
 
         /** What the notification shows; the app keeps it up to date (it costs nothing while stopped). */
         fun update(next: PlaybackStatus) {

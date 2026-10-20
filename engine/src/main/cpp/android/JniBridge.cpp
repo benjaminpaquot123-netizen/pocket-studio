@@ -47,6 +47,10 @@ JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_currentStep(JNI
     return host().engine().currentStep();
 }
 
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_setBufferBursts(JNIEnv*, jobject, jint bursts) {
+    host().setBufferBursts(bursts);
+}
+
 JNIEXPORT jdouble JNICALL Java_com_pocketstudio_engine_NativeEngine_playPosition(JNIEnv*, jobject) {
     return host().engine().playPosition();
 }

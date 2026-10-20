@@ -422,6 +422,21 @@ class ScreenshotTest {
     }
 
     @Test
+    @Config(qualifiers = "w400dp-h1300dp-xxhdpi")
+    fun settings() = shoot("settings") {
+        com.pocketstudio.app.settings.SettingsScreen(
+            com.pocketstudio.app.settings.AppSettings(uiScale = 1.15f, bufferBursts = 4, guideSeen = true),
+            "0.5.70 (preview)",
+            com.pocketstudio.app.settings.SettingsActions(),
+        )
+    }
+
+    @Test
+    fun guide() = shoot("guide") {
+        com.pocketstudio.app.settings.GuideDialog(onClose = {})
+    }
+
+    @Test
     fun midi() = shoot("midi") {
         com.pocketstudio.app.midi.MidiScreen(
             com.pocketstudio.app.midi.MidiUi(

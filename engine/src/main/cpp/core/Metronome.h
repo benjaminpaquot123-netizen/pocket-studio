@@ -15,8 +15,11 @@ public:
     void trigger(bool downbeat, int frameOffset) {
         pendingOffset_ = frameOffset;
         pendingFrequency_ = downbeat ? 1600.0f : 1000.0f;
-        pendingGain_ = downbeat ? 0.5f : 0.35f;
+        pendingGain_ = (downbeat ? 0.5f : 0.35f) * level_ * 2.0f;
     }
+
+    // 0..1, 0.5 = the original click level.
+    void setLevel(float level) { level_ = level < 0.0f ? 0.0f : (level > 1.0f ? 1.0f : level); }
 
     // Adds the click into a mono buffer of `numFrames` frames.
     void render(float* mono, int numFrames) {
@@ -45,6 +48,7 @@ private:
     int pendingOffset_ = -1;
     float pendingFrequency_ = 1000.0f;
     float pendingGain_ = 0.0f;
+    float level_ = 0.5f;
 };
 
 }  // namespace ps

@@ -103,6 +103,9 @@ void Engine::applyCommand(const Command& command) {
         case CommandType::SetMetronome:
             metronomeOn_ = command.value > 0.5f;
             break;
+        case CommandType::SetMetronomeLevel:
+            metronome_.setLevel(command.value);
+            break;
         case CommandType::SetPatternSteps:
             if (staging_) staged_.drumSteps = std::clamp(command.a, 16, kMaxSteps);
             else patternSteps_ = std::clamp(command.a, 16, kMaxSteps);

@@ -75,6 +75,7 @@ enum class CommandType : uint8_t {
     ToggleClip,           // a: live pad (switches it on at the next grid line, or off); a < 0: all off
     PlayPreview,          // value 1: the preview stems (InstallStems with a = 1) play from the start; 0: stop
     SetPreviewParam,      // a: stem, b: StemPlayer::Param, value
+    SetMetronomeLevel,    // value 0..1 (0.5 = default)
 };
 
 // Step automation of mixer settings, played on the audio thread at each sequencer step.

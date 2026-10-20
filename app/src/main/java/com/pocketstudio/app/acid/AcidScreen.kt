@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -78,11 +79,10 @@ fun noteName(midi: Int, english: Boolean): String =
     (if (english) NOTE_NAMES_EN else NOTE_NAMES)[Math.floorMod(midi, 12)]
 
 /** The note naming the user picked, remembered on the phone. */
+/** Note names follow Réglages › Notation (also switchable from the acid grid). */
 private object Notation {
-    private const val KEY = "notation_english"
-    fun isEnglish(context: Context) = context.getSharedPreferences("ui", Context.MODE_PRIVATE).getBoolean(KEY, false)
-    fun setEnglish(context: Context, on: Boolean) =
-        context.getSharedPreferences("ui", Context.MODE_PRIVATE).edit().putBoolean(KEY, on).apply()
+    fun isEnglish(context: Context) = com.pocketstudio.app.settings.SettingsStore.load(context).englishNotes
+    fun setEnglish(context: Context, on: Boolean) = com.pocketstudio.app.settings.SettingsStore.update(context) { it.copy(englishNotes = on) }
 }
 
 private val SOUND_LABELS = listOf("Coupure", "Résonance", "Enveloppe", "Déclin", "Accent", "Accord", "Onde (scie → carré)", "Saturation", "Volume")
@@ -141,8 +141,9 @@ fun AcidScreen(
         }
 
         val context = LocalContext.current
-        var english by remember { mutableStateOf(Notation.isEnglish(context)) }
-        val setEnglish: (Boolean) -> Unit = { english = it; Notation.setEnglish(context, it) }
+        val settings by com.pocketstudio.app.settings.SettingsStore.state.collectAsState()
+        val english = settings.englishNotes
+        val setEnglish: (Boolean) -> Unit = { Notation.setEnglish(context, it) }
         StepGrid(acid, playing, currentStep, selected, actions, english, setEnglish)
         StepEditor(acid, selected, actions, english)
         SoundCard(acid, actions, browser)

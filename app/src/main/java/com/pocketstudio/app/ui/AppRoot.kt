@@ -93,6 +93,11 @@ import com.pocketstudio.app.synth.SynthScreen
 import com.pocketstudio.app.remix.RemixActions
 import com.pocketstudio.app.session.SessionActions
 import com.pocketstudio.app.session.SessionScreen
+import com.pocketstudio.app.settings.GuideDialog
+import com.pocketstudio.app.AppInfo
+import com.pocketstudio.app.settings.SettingsActions
+import com.pocketstudio.app.settings.SettingsScreen
+import com.pocketstudio.app.settings.SettingsStore
 import com.pocketstudio.app.projects.CurrentProject
 import com.pocketstudio.app.projects.ProjectStarter
 import com.pocketstudio.app.projects.ProjectsActions
@@ -132,7 +137,7 @@ enum class AppTab(val label: String, val icon: ImageVector) {
     Outils("Outils", Icons.Filled.Tune),
 }
 
-private enum class ToolPage(val label: String) { Recette("Recette"), Midi("MIDI"), Fond("Fond"), Latence("Latence"), Son("Son") }
+private enum class ToolPage(val label: String) { Reglages("Réglages"), Recette("Recette"), Midi("MIDI"), Fond("Fond"), Latence("Latence"), Son("Son") }
 
 /** Ways to start a new project (Mes projets › Nouveau projet). */
 private val PROJECT_STARTERS: List<Pair<ProjectStarter, () -> Project>> = listOf(
@@ -208,7 +213,29 @@ fun AppRoot() {
             }
         }
     }
-    var toolPage by rememberSaveable { mutableStateOf(ToolPage.Recette) }
+    var toolPage by rememberSaveable { mutableStateOf(ToolPage.Reglages) }
+    val settings by SettingsStore.state.collectAsStateWithLifecycle()
+    var showGuide by rememberSaveable { mutableStateOf(false) }
+    if (showGuide || !settings.guideSeen) {
+        GuideDialog(onClose = {
+            showGuide = false
+            SettingsStore.update(context) { it.copy(guideSeen = true) }
+        })
+    }
+    // Réglages › Écran toujours allumé: only while the music plays.
+    val screenTransport by rhythmVm.transport.collectAsStateWithLifecycle()
+    LaunchedEffect(screenTransport.playing, settings.keepScreenOn) {
+        val window = context.findActivity()?.window ?: return@LaunchedEffect
+        val flag = android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+        if (screenTransport.playing && settings.keepScreenOn) window.addFlags(flag) else window.clearFlags(flag)
+    }
+    // Engine-side settings follow the Réglages screen at once.
+    LaunchedEffect(settings.metronomeLevel, settings.bufferBursts) {
+        if (NativeEngine.isAvailable) {
+            NativeEngine.setMetronomeLevel(settings.metronomeLevel)
+            NativeEngine.setBufferBursts(settings.bufferBursts)
+        }
+    }
 
     val engineAvailable = NativeEngine.isAvailable
     val stream by Metrics.streamInfo.collectAsStateWithLifecycle()
@@ -222,6 +249,8 @@ fun AppRoot() {
         if (started) {
             studioVm.pushAll()
             rhythmVm.syncEngine()
+            NativeEngine.setMetronomeLevel(SettingsStore.state.value.metronomeLevel)
+            NativeEngine.setBufferBursts(SettingsStore.state.value.bufferBursts)
         }
     }
     LifecycleEventEffect(Lifecycle.Event.ON_STOP) {
@@ -749,6 +778,15 @@ fun AppRoot() {
                                     onReportProblem = { text -> recetteVm.buildProblem(text) { openUri(context, it) } },
                                 )
                             }
+                            ToolPage.Reglages -> SettingsScreen(
+                                settings,
+                                AppInfo.versionLabel,
+                                SettingsActions(
+                                    update = { t -> SettingsStore.update(context, t) },
+                                    reset = { SettingsStore.reset(context) },
+                                    openGuide = { showGuide = true },
+                                ),
+                            )
                             ToolPage.Midi -> {
                                 val midi by midiVm.state.collectAsStateWithLifecycle()
                                 MidiScreen(

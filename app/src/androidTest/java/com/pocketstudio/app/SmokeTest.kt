@@ -37,6 +37,9 @@ class SmokeTest {
     fun appStartsPlaysAndNavigates() {
         assertTrue("native engine must load", NativeEngine.isAvailable)
         compose.waitUntil(10_000) { NativeEngine.streamInfo().let { it.running && it.callbacks > 0 } }
+        // First launch: the first-steps guide opens; skip it.
+        compose.waitForIdle()
+        if (compose.onAllNodesWithTag("guide_skip").fetchSemanticsNodes().isNotEmpty()) compose.onNodeWithTag("guide_skip").performClick()
 
         // Rhythm screen: the starter groove plays and makes sound.
         compose.onNodeWithTag("rhythm").assertIsDisplayed()

@@ -1551,7 +1551,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         AppLog.add("Enregistrement en direct")
         if (!_transport.value.playing) {
             _transport.value = _transport.value.copy(playing = true)
-            if (NativeEngine.isAvailable) NativeEngine.play(1)
+            if (NativeEngine.isAvailable) NativeEngine.play(com.pocketstudio.app.settings.SettingsStore.state.value.recordCountIn)
             PlaybackService.start(getApplication())
         }
     }

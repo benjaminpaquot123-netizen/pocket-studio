@@ -59,6 +59,8 @@ public:
     bool post(const Command& command);
     StreamInfo info();
     Engine& engine() { return engine_; }
+    // Output buffer in bursts: 2 = lowest latency, more = safer on busy phones. Applies at once.
+    void setBufferBursts(int bursts);
 
     enum class LatencyStart : int { Ok = 0, MicUnavailable = 1, OutputFailed = 2, NotForeground = 3, MicSilent = 4 };
 
@@ -98,6 +100,7 @@ private:
     std::atomic<bool> drainInput_{false};
     std::atomic<bool> testInterrupted_{false};
     bool wantRunning_ = false;
+    int bufferBursts_ = 2;
     int xrunBase_ = 0;
     int lastXruns_ = 0;
     StreamInfo lastInfo_;

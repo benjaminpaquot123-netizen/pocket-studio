@@ -52,6 +52,7 @@ object NativeEngine {
     private const val CMD_TOGGLE_CLIP = 46
     private const val CMD_PLAY_PREVIEW = 47
     private const val CMD_PREVIEW_PARAM = 48
+    private const val CMD_METRONOME_LEVEL = 49
 
     /** Live pads (ClipLauncher::kSlots). */
     const val LIVE_PADS = 16
@@ -141,6 +142,12 @@ object NativeEngine {
 
     /** Position in the playing scene in sixteenths, with the fraction (live recording); -1 when stopped or counting in. */
     external fun playPosition(): Double
+
+    /** Click volume 0..1 (0.5 = default). */
+    fun setMetronomeLevel(level: Float) = post(CMD_METRONOME_LEVEL, level.coerceIn(0f, 1f))
+
+    /** Output buffer in bursts: 2 = fast (lowest latency), 4 = safe, 6 = very safe. Applies at once. */
+    external fun setBufferBursts(bursts: Int)
 
     /** Piano-roll note [index] (ticks: 24 per sixteenth). Packing matches NoteTrack::pack. */
     fun setSynthNote(index: Int, start: Int, length: Int, pitch: Int, velocity: Float) =

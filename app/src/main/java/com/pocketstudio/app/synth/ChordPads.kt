@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -49,7 +50,7 @@ fun ChordPads(
         Text("Accords de ${NOTE_NAMES[harmony.root]} ${key.scale.label.lowercase()}", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         for (row in 0 until 2) {
             Row(Modifier.fillMaxWidth().height((height - 24.dp) / 2), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                pads.drop(row * 4).take(4).forEach { pad -> ChordPadKey(pad, Modifier.weight(1f), onNoteOn, onNoteOff) }
+                pads.drop(row * 4).take(4).forEach { pad -> ChordPadKey(pad, Modifier.weight(1f).fillMaxHeight(), onNoteOn, onNoteOff) }
             }
         }
     }

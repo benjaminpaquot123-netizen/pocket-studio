@@ -94,6 +94,8 @@ private:
 
     std::mutex lock_;
     std::mutex postLock_;
+    // Callback count when a full queue last failed to drain (stream stopped); guarded by postLock_.
+    uint64_t stalledAt_ = UINT64_MAX;
     Engine engine_;
     std::shared_ptr<oboe::AudioStream> output_;
     std::shared_ptr<oboe::AudioStream> input_;

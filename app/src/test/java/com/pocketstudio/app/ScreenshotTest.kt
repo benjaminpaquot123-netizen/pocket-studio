@@ -255,6 +255,20 @@ class ScreenshotTest {
     }
 
     @Test
+    fun pianoRollSelection() = shoot("piano_roll_select") {
+        val notes = listOf(60, 64, 67, 72).mapIndexed { i, p -> com.pocketstudio.model.Note(i * 48, 40, p, 0.3f + 0.2f * i) } +
+            listOf(55, 59, 62).map { com.pocketstudio.model.Note(240, 96, it, 0.8f) }
+        androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
+            com.pocketstudio.app.synth.PianoRoll(
+                com.pocketstudio.model.NoteClip(16, notes), emptyList(), playStep = -1,
+                actions = com.pocketstudio.app.synth.PianoRollActions(),
+                gridHeight = androidx.compose.ui.unit.Dp(300f),
+                initialSelection = notes.drop(4).toSet(),
+            )
+        }
+    }
+
+    @Test
     fun instruments() = shoot("instruments") {
         val names = listOf("Grand Piano", "Bright Piano", "Electric Grand", "Honky-Tonk", "Tine Electric Piano", "FM Electric Piano", "Harpsichord", "Clavinet")
         val presets = names.mapIndexed { i, n -> com.pocketstudio.engine.Preset(i, 0, i, n) }

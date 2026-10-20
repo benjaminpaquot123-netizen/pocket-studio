@@ -536,6 +536,7 @@ fun AppRoot() {
                                     setHarmony = rhythmVm::setHarmony,
                                     applyProgression = rhythmVm::applyProgression,
                                     setPerformance = rhythmVm::setPerformance,
+                                    replaceClip = rhythmVm::replaceNoteClip,
                                 ),
                                 harmony = project.harmony,
                             ),

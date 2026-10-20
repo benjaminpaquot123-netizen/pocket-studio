@@ -1045,6 +1045,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         pushNotes(project.value.synthNotes)
     }
 
+    /** A whole-clip edit from the piano roll's selection tools. */
+    fun replaceNoteClip(clip: NoteClip, key: String?) = editNotes(key) { clip.sanitized() }
+
     fun addNote(note: Note) {
         editNotes { it.add(note) }
         if (NativeEngine.isAvailable && !_transport.value.playing) previewNote(note.pitch)

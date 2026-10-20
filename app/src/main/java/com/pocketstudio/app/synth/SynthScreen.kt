@@ -137,7 +137,7 @@ fun SynthScreen(
                 transcribe?.let { TranscribeCard(it) }
                 NeonCard {
                     SectionLabel("Harmonie")
-                    HarmonyPanel(notes.harmony, notes.clip.performance, notes.actions)
+                    HarmonyPanel(notes.harmony, notes.clip.performance, notes.actions, notes.clip.notes)
                 }
                 instrument?.let { InstrumentPanel(it) }
                 if (instrument?.current == null) {

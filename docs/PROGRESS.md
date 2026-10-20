@@ -94,6 +94,5 @@
   - 7.3 fait : ligne de temps dans Morceau (une colonne par partie, une ligne par piste, un appui coupe ou remet une piste dans une partie, appliqué au jeu, à l'export et au MIDI) ; mesures 2/4 à 7/4 (décompte, temps fort du métronome, changements de scène, grille de batterie, pads live).
 
 ## Prochaine étape exacte
-1. Revue de fin de phase 7 (sous-agent neuf), corrections, CI verte, fusion de la PR #17.
-2. Phase 8 : effets, clips d'automation, clavier expressif, MIDI learn, horloge MIDI sortante, Link.
+1. Phase 7 fusionnée (PR #17). Prochaine : phase 8 : effets, clips d'automation, clavier expressif, MIDI learn, horloge MIDI sortante, Link.
 3. Mixeur compact (tranches repliables), il peut avoir 16 tranches.

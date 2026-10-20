@@ -85,6 +85,11 @@
   - 6.3 piano roll complet (sélection, outils, couloir de force, zoom, grilles, deviner la gamme) ;
   - 6.4 batterie complète (1 à 4 mesures, roulements, remplir, décaler, vue de tous les pads).
 
+- Phases 5 et 6 fusionnées (PR #16, relectures faites).
+- Phase 7 (PR #17, branche ccr-80af1a1b-mn0wec) :
+  - 7.1 fait : jusqu'à 8 pistes d'instruments (barre de pistes dans Synthé, couleurs, renommer, dupliquer, supprimer), une voie de mixeur chacune, MIDI et enregistrement sur la piste choisie, export pistes et MIDI par piste.
+
 ## Prochaine étape exacte
-1. Relectures de fin de phase 5 et 6 faites et corrigées (voir REVIEW.md) ; attendre la CI verte puis fusionner la PR #16.
-2. Puis phase 7 : pistes d'instruments à volonté (7.1), pistes audio (7.2), ligne de temps (7.3).
+1. 7.2 pistes audio : enregistrer voix/instrument au micro (latence compensée), clips avec fondus, normaliser, inverser, couper.
+2. 7.3 ligne de temps à côté des scènes ; mesures autres que 4/4.
+3. Mixeur compact (tranches repliables) maintenant qu'il y a jusqu'à 12 tranches.

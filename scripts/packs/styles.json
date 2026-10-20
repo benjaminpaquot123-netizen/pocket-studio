@@ -4,55 +4,55 @@
       "label": "Kick",
       "prompt": "{words} kick drum one shot, dry, punchy",
       "seconds": 1.0,
-      "count": 8
+      "count": 16
     },
     "snare": {
       "label": "Caisse claire",
       "prompt": "{words} snare drum one shot, dry",
       "seconds": 1.0,
-      "count": 6
+      "count": 10
     },
     "clap": {
       "label": "Clap",
       "prompt": "{words} clap one shot",
       "seconds": 1.0,
-      "count": 5
+      "count": 8
     },
     "hat": {
       "label": "Charley",
       "prompt": "{words} closed hi-hat one shot, short",
       "seconds": 0.5,
-      "count": 6
+      "count": 10
     },
     "open_hat": {
       "label": "Charley ouvert",
       "prompt": "{words} open hi-hat one shot",
       "seconds": 1.0,
-      "count": 4
+      "count": 6
     },
     "perc": {
       "label": "Percu",
       "prompt": "{words} percussion one shot, rim, shaker or conga",
       "seconds": 1.0,
-      "count": 6
+      "count": 10
     },
     "808": {
       "label": "808",
       "prompt": "{words} 808 bass one shot, long sub, note C",
       "seconds": 2.0,
-      "count": 6
+      "count": 10
     },
     "bass": {
       "label": "Basse",
       "prompt": "{words} bass one shot, note C",
       "seconds": 1.5,
-      "count": 4
+      "count": 8
     },
     "stab": {
       "label": "Stab",
       "prompt": "{words} synth stab one shot, hoover or choir chord, note C",
       "seconds": 1.0,
-      "count": 8
+      "count": 10
     }
   },
   "styles": [

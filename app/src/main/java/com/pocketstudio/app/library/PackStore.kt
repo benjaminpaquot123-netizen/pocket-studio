@@ -18,7 +18,7 @@ import java.util.zip.ZipInputStream
  * Blocking calls: background threads only.
  */
 object PackStore {
-    const val RELEASE = "sons-packs-1"
+    const val RELEASE = "sons-packs-2"
     private const val BASE = "https://github.com/benjaminpaquot123-netizen/pocket-studio/releases/download/$RELEASE/"
 
     /** The list of packs, pinned once the Packs workflow has built them; null = none published yet. */

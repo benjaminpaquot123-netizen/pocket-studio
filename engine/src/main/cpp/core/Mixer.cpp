@@ -16,6 +16,7 @@ void Mixer::prepare(int sampleRate) {
     }
     reverb_.prepare(rate);
     delay_.prepare(rate);
+    perf_.prepare(rate);
     release_ = std::exp(-1.0f / (0.12f * rate));  // 120 ms release
     updateTargets();
     for (auto& s : strips_) {
@@ -106,6 +107,7 @@ void Mixer::process(const float* const* channels, const float* const* rights, co
             for (auto& strip : inserts_) {
                 for (auto& slot : strip) slot.sidechain(at - offset, eventKick_[static_cast<size_t>(e)], eventBeat_[static_cast<size_t>(e)]);
             }
+            perf_.onStep(at - offset);
         }
         processChunk(channels, rights, direct, out + static_cast<size_t>(offset) * outChannels, n, outChannels, offset);
     }
@@ -156,6 +158,8 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
     if (activeInserts_[kMaster] > 0) {
         for (auto& slot : inserts_[kMaster]) slot.process(mL_.data(), mR_.data(), n);
     }
+    // Always runs: the repeat and the tape stop need the last seconds already recorded.
+    perf_.process(mL_.data(), mR_.data(), n);
 
     float masterPeak = 0.0f;
     float minGain = 1.0f;

@@ -61,6 +61,8 @@ class SessionActions(
     val setRepeats: (Int, Int) -> Unit = { _, _ -> },
     val toggleSong: () -> Unit = {},
     val togglePlay: () -> Unit = {},
+    /** Live master effects (PerformanceFx parameter, value). */
+    val performance: (Int, Float) -> Unit = { _, _ -> },
 )
 
 /** Scenes (session) and song: build variations, then chain them. */
@@ -92,6 +94,8 @@ fun SessionScreen(ui: SessionScreenUi, actions: SessionActions) {
                 Text("  Dupliquer la scène ${Scene.NAMES[ui.current]} (pour une variante)")
             }
         }
+
+        LivePad(actions.performance)
 
         NeonCard(accent = Neon.Magenta) {
             SectionLabel("Morceau", color = Neon.Magenta)

@@ -29,10 +29,14 @@ public:
     void setInsertParam(int ch, int slot, int param, float v);
     void setSend(int ch, int bus, float level);               // 0..1, post-fader
     void setBusParam(int bus, int param, float v);
-    void setStepFrames(double framesPerSixteenth) { delay_.setStepFrames(framesPerSixteenth); }
+    void setStepFrames(double framesPerSixteenth) {
+        delay_.setStepFrames(framesPerSixteenth);
+        perf_.setStepFrames(framesPerSixteenth);
+    }
+    void setPerformance(int param, float v) { perf_.setParam(param, v); }
     // A sequencer step lands `offset` frames into the next process() call (sidechain pumps).
     void sidechainEvent(int offset, bool kick, bool beat) {
-        if (events_ < static_cast<int>(eventOffset_.size()) && (kick || beat)) {
+        if (events_ < static_cast<int>(eventOffset_.size())) {
             eventOffset_[static_cast<size_t>(events_)] = offset;
             eventKick_[static_cast<size_t>(events_)] = kick;
             eventBeat_[static_cast<size_t>(events_)] = beat;
@@ -75,6 +79,7 @@ private:
     std::array<int, kChannels + 1> activeInserts_{};  // count of non-empty slots
     Reverb reverb_;
     TempoDelay delay_;
+    PerformanceFx perf_;
     std::array<float, kChunk> chL_{}, chR_{}, mL_{}, mR_{};
     std::array<std::array<float, kChunk>, kBuses> busL_{}, busR_{};
     std::array<std::atomic<float>, kChannels> peaks_{};

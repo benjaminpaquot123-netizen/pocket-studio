@@ -1,6 +1,6 @@
 {
-  "id": "phase3-remix",
-  "milestone": "Phase 3 : remix",
+  "id": "phase4-production",
+  "milestone": "Phase 4 : production",
   "items": [
     {
       "id": "remix_waveform",
@@ -36,6 +36,11 @@
       "id": "song",
       "title": "Jouer un morceau complet",
       "hint": "Morceau › ajoute + A, + B, + A, règle les répétitions (×4, ×2…) et touche « Jouer le morceau » : les scènes s'enchaînent toutes seules, même écran éteint."
+    },
+    {
+      "id": "live_fx",
+      "title": "Jouer avec les effets live",
+      "hint": "Morceau › lance la lecture › glisse le doigt sur le pad XY (gauche = étouffé, droite = fin). Maintiens Répéter (1/16), puis Stop bande."
     },
     {
       "id": "remix_separate",

@@ -137,6 +137,49 @@ private:
     int pending_ = -1;
 };
 
+// Live performance effects on the master, played from the XY pad and hold buttons:
+// DJ filter (bipolar low/high-pass), beat repeat (loops the last 1/4..1/32 note, tempo-synced),
+// tape stop (slows to a halt) and a sixteenth-note chopper. Stereo, in place.
+class PerformanceFx {
+public:
+    enum Param { Filter = 0, Resonance = 1, Repeat = 2, RepeatDivision = 3, TapeStop = 4, Chop = 5, kParams = 6 };
+    static constexpr float kBufferSeconds = 4.0f;
+
+    void prepare(float rate);
+    void setParam(int p, float v);
+    void setStepFrames(double frames) { stepFrames_ = frames > 0 ? frames : stepFrames_; }
+    // A sequencer step starts `offset` frames into the next process() (keeps the chopper on the grid).
+    void onStep(int offset) { stepOffset_ = offset; }
+    void process(float* l, float* r, int n);
+    bool active() const { return filterOn_ || repeatOn_ || stopOn_ || stopping_ || chopOn_ || repeating_; }
+
+private:
+    float readRing(const std::vector<float>& buf, double pos) const;
+    float rate_ = 48000;
+    std::vector<float> ringL_, ringR_;
+    size_t write_ = 0;
+    double stepFrames_ = 6000.0;
+    // Filter: 0.5 = off, below = low-pass sweeping down, above = high-pass sweeping up.
+    float filter_ = 0.5f, resonance_ = 0.3f;
+    bool filterOn_ = false;
+    daisysp::Svf svfL_, svfR_;
+    // Repeat.
+    bool repeatOn_ = false, repeating_ = false;
+    float division_ = 0.5f;
+    double loopStart_ = 0, loopLen_ = 0, loopPos_ = 0;
+    float repeatMix_ = 0.0f;
+    // Tape stop.
+    bool stopOn_ = false, stopping_ = false;
+    double speed_ = 1.0, readPos_ = 0;
+    float stopMix_ = 0.0f;
+    // Chopper.
+    bool chopOn_ = false;
+    double chopPhase_ = 0;
+    float chopGain_ = 1.0f;
+    int stepOffset_ = -1;
+    float fade_ = 0.002f;  // per-sample crossfade speed (about 10 ms)
+};
+
 // One insert slot: any of the insert effects, chosen by type. All are kept prepared so a
 // type change on the audio thread is just a reset.
 class InsertSlot {

@@ -44,6 +44,7 @@ object NativeEngine {
     private const val CMD_AUTOMATION_POINT = 38
     private const val CMD_STAGING = 39
     private const val CMD_ARM_SCENE_SWAP = 40
+    private const val CMD_PERFORMANCE = 41
 
     /** Insert slots per channel (and on the master, whose channel index is [MIXER_CHANNELS]). */
     const val INSERTS = 4
@@ -103,6 +104,8 @@ object NativeEngine {
     fun setStaging(on: Boolean) = post(CMD_STAGING, if (on) 1f else 0f)
     /** The waiting scene takes over after [steps] steps of the playing one (0 = next bar, -1 = cancel). */
     fun armSceneSwap(steps: Int) = post(CMD_ARM_SCENE_SWAP, 0f, steps)
+    /** Live effects on the master: [param] 0 filter (0.5 = off), 1 resonance, 2 repeat on, 3 repeat division, 4 tape stop, 5 chop. */
+    fun setPerformance(param: Int, value: Float) = post(CMD_PERFORMANCE, value, param)
     /** How many times a waiting scene took over since the engine started. */
     external fun sceneSwaps(): Int
     /** Writes into [out] (size MIXER_CHANNELS + 2): channel peaks, master peak, then limiter gain. */

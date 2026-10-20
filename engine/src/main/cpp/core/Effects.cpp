@@ -274,6 +274,123 @@ void Ducker::process(float* l, float* r, int n) {
     if (pending_ >= n) pending_ -= n;
 }
 
+// --- Performance effects -----------------------------------------------------------------------
+
+void PerformanceFx::prepare(float rate) {
+    rate_ = rate;
+    ringL_.assign(static_cast<size_t>(kBufferSeconds * rate), 0.0f);
+    ringR_.assign(ringL_.size(), 0.0f);
+    write_ = 0;
+    svfL_.Init(rate);
+    svfR_.Init(rate);
+    fade_ = 1.0f / (0.01f * rate);
+}
+
+void PerformanceFx::setParam(int p, float v) {
+    v = std::clamp(v, 0.0f, 1.0f);
+    switch (p) {
+        case Filter:
+            filter_ = v;
+            filterOn_ = std::fabs(v - 0.5f) > 0.02f;
+            break;
+        case Resonance: resonance_ = v; break;
+        case Repeat: repeatOn_ = v > 0.5f; break;
+        case RepeatDivision: division_ = v; break;
+        case TapeStop: stopOn_ = v > 0.5f; break;
+        case Chop: chopOn_ = v > 0.5f; break;
+        default: return;
+    }
+    if (filterOn_) {
+        // Below the middle: low-pass from 18 kHz down to 150 Hz; above: high-pass from 30 Hz up to 6 kHz.
+        const float f = filter_ < 0.5f ? expMap(filter_ * 2.0f, 150.0f, 18000.0f) : expMap((filter_ - 0.5f) * 2.0f, 30.0f, 6000.0f);
+        svfL_.SetFreq(std::min(f, rate_ * 0.45f));
+        svfR_.SetFreq(std::min(f, rate_ * 0.45f));
+        svfL_.SetRes(0.9f * resonance_);
+        svfR_.SetRes(0.9f * resonance_);
+    }
+}
+
+float PerformanceFx::readRing(const std::vector<float>& buf, double pos) const {
+    const auto size = static_cast<double>(buf.size());
+    pos = std::fmod(pos, size);
+    if (pos < 0) pos += size;
+    const auto i0 = static_cast<size_t>(pos);
+    const float frac = static_cast<float>(pos - static_cast<double>(i0));
+    const float a = buf[i0], b = buf[(i0 + 1) % buf.size()];
+    return a + frac * (b - a);
+}
+
+void PerformanceFx::process(float* l, float* r, int n) {
+    if (ringL_.empty()) return;
+    const double size = static_cast<double>(ringL_.size());
+    for (int i = 0; i < n; ++i) {
+        // Everything heard goes into the ring first (the repeat and the tape stop read it back).
+        ringL_[write_] = l[i];
+        ringR_[write_] = r[i];
+        const double now = static_cast<double>(write_);
+        if (++write_ >= ringL_.size()) write_ = 0;
+
+        // Beat repeat: on press, loop the last division; release fades back to live.
+        if (repeatOn_ && !repeating_) {
+            static constexpr double kSteps[4] = {4.0, 2.0, 1.0, 0.5};  // 1/4, 1/8, 1/16, 1/32 note
+            loopLen_ = std::clamp(kSteps[std::min(3, static_cast<int>(division_ * 4.0f))] * stepFrames_, 64.0, size / 2);
+            loopStart_ = now - loopLen_;
+            loopPos_ = 0;
+            repeating_ = true;
+        }
+        repeatMix_ = std::clamp(repeatMix_ + (repeatOn_ ? fade_ : -fade_), 0.0f, 1.0f);
+        if (repeating_) {
+            // A short fade at the loop seam avoids a click each turn.
+            const double edge = std::min(240.0, loopLen_ / 4);
+            float seam = 1.0f;
+            if (loopPos_ < edge) seam = static_cast<float>(loopPos_ / edge);
+            else if (loopPos_ > loopLen_ - edge) seam = static_cast<float>((loopLen_ - loopPos_) / edge);
+            const float rl = readRing(ringL_, loopStart_ + loopPos_) * seam, rr = readRing(ringR_, loopStart_ + loopPos_) * seam;
+            l[i] += repeatMix_ * (rl - l[i]);
+            r[i] += repeatMix_ * (rr - r[i]);
+            loopPos_ += 1.0;
+            if (loopPos_ >= loopLen_) loopPos_ -= loopLen_;
+            if (!repeatOn_ && repeatMix_ <= 0.0f) repeating_ = false;
+        }
+
+        // Tape stop: the read head slows down behind the live signal, then stays silent.
+        if (stopOn_ && !stopping_) {
+            stopping_ = true;
+            speed_ = 1.0;
+            readPos_ = now;
+        }
+        stopMix_ = std::clamp(stopMix_ + (stopOn_ ? fade_ * 4 : -fade_), 0.0f, 1.0f);
+        if (stopping_) {
+            speed_ = std::max(0.0, speed_ - 1.0 / (0.7 * rate_));  // to a halt in 0.7 s
+            readPos_ += speed_;
+            const float level = static_cast<float>(speed_);
+            const float sl = readRing(ringL_, readPos_) * level, sr = readRing(ringR_, readPos_) * level;
+            l[i] += stopMix_ * (sl - l[i]);
+            r[i] += stopMix_ * (sr - r[i]);
+            if (!stopOn_ && stopMix_ <= 0.0f) stopping_ = false;
+        }
+
+        // DJ filter.
+        if (filterOn_) {
+            svfL_.Process(l[i]);
+            svfR_.Process(r[i]);
+            const bool low = filter_ < 0.5f;
+            l[i] = low ? svfL_.Low() : svfL_.High();
+            r[i] = low ? svfR_.Low() : svfR_.High();
+        }
+
+        // Chopper: on for the first half of every sixteenth, 2 ms ramps.
+        if (i == stepOffset_) chopPhase_ = 0;
+        const float target = !chopOn_ || chopPhase_ < 0.5 ? 1.0f : 0.0f;
+        chopGain_ += std::clamp(target - chopGain_, -fade_ * 5, fade_ * 5);
+        l[i] *= chopGain_;
+        r[i] *= chopGain_;
+        chopPhase_ += 1.0 / stepFrames_;
+        if (chopPhase_ >= 1.0) chopPhase_ -= 1.0;
+    }
+    stepOffset_ = -1;
+}
+
 // --- Insert slot -----------------------------------------------------------------------------
 
 void InsertSlot::prepare(float rate) {

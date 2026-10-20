@@ -443,6 +443,7 @@ fun AppRoot() {
                                 setRepeats = rhythmVm::setSongRepeats,
                                 toggleSong = rhythmVm::toggleSong,
                                 togglePlay = rhythmVm::togglePlay,
+                                performance = { param, v -> if (NativeEngine.isAvailable) NativeEngine.setPerformance(param, v) },
                             ),
                         )
                     }

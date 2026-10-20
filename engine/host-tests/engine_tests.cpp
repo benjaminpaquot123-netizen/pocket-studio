@@ -1447,6 +1447,7 @@ void testProcessNeverAllocates() {
             if (i % 40 == 0) engine.post({ps::CommandType::SetInsertParam, (i % 80) / 80.0f, 1, 0});
             if (i % 60 == 0) engine.post({ps::CommandType::SetInsertType, 0.0f, 5, 1 + (i / 60) % 6});
             if (i % 55 == 0) engine.post({ps::CommandType::SetBusParam, (i % 110) / 110.0f, 1, 0});
+            if (i % 30 == 0) engine.post({ps::CommandType::SetPerformance, (i % 60) ? 1.0f : 0.0f, (i / 30) % 6});
             if (i % 90 == 0) {  // same bundle again: the old reference goes through the retire queue
                 bundle->retain();
                 ps::Command again{ps::CommandType::InstallStems};
@@ -1922,6 +1923,56 @@ void testScenesSwapOnTheBar() {
     CHECK(engine.sceneSwaps() == 2);
 }
 
+void testPerformanceEffects() {
+    ps::PerformanceFx fx;
+    fx.prepare(kRate);
+    fx.setStepFrames(6000.0);  // 120 BPM
+    constexpr int n = kRate;
+    // A rising ramp: easy to see what is replayed.
+    std::vector<float> l(n), r(n);
+    auto feed = [&](int frames, int from) {
+        for (int i = 0; i < frames; ++i) l[static_cast<size_t>(i)] = r[static_cast<size_t>(i)] = 0.001f * static_cast<float>((from + i) % 1000);
+        fx.process(l.data(), r.data(), frames);
+    };
+    feed(n, 0);
+    CHECK(!fx.active());
+    CHECK(std::fabs(l[500] - 0.5f) < 1e-6f);  // untouched when nothing is held
+    // Repeat 1/16 (6000 frames): after the fade, the output repeats with a 6000-frame period.
+    fx.setParam(ps::PerformanceFx::RepeatDivision, 0.6f);
+    fx.setParam(ps::PerformanceFx::Repeat, 1.0f);
+    feed(n, 0);
+    float worst = 0.0f;
+    for (int i = 2000; i < 2000 + 3000; ++i) worst = std::max(worst, std::fabs(l[static_cast<size_t>(i)] - l[static_cast<size_t>(i + 6000)]));
+    std::printf("  repeat: loop mismatch %.5f\n", worst);
+    CHECK(worst < 1e-4f);
+    fx.setParam(ps::PerformanceFx::Repeat, 0.0f);
+    feed(n, 0);
+    CHECK(std::fabs(l[n - 100] - 0.001f * ((n - 100) % 1000)) < 1e-4f);  // back to live
+    // Tape stop: the level falls to silence within a second.
+    fx.setParam(ps::PerformanceFx::TapeStop, 1.0f);
+    for (int i = 0; i < n; ++i) l[static_cast<size_t>(i)] = r[static_cast<size_t>(i)] = 0.5f * static_cast<float>(std::sin(2 * M_PI * 440 * i / kRate));
+    fx.process(l.data(), r.data(), n);
+    float tail = 0.0f;
+    for (int i = n - 4800; i < n; ++i) tail = std::max(tail, std::fabs(l[static_cast<size_t>(i)]));
+    CHECK(tail < 1e-3f);
+    fx.setParam(ps::PerformanceFx::TapeStop, 0.0f);
+    // Chopper: silent in the second half of each sixteenth, open in the first.
+    fx.setParam(ps::PerformanceFx::Chop, 1.0f);
+    std::vector<float> ones(24000, 0.5f), ones2(24000, 0.5f);
+    fx.onStep(0);
+    fx.process(ones.data(), ones2.data(), 24000);
+    CHECK(ones[6000 + 1500] > 0.45f && ones[6000 + 4500] < 0.01f);
+    fx.setParam(ps::PerformanceFx::Chop, 0.0f);
+    // DJ filter: low-pass at the left kills a high tone; centred, no change.
+    fx.setParam(ps::PerformanceFx::Filter, 0.1f);
+    for (int i = 0; i < n; ++i) l[static_cast<size_t>(i)] = r[static_cast<size_t>(i)] = 0.5f * static_cast<float>(std::sin(2 * M_PI * 6000 * i / kRate));
+    fx.process(l.data(), r.data(), n);
+    float hi = 0.0f;
+    for (int i = n / 2; i < n; ++i) hi = std::max(hi, std::fabs(l[static_cast<size_t>(i)]));
+    CHECK(hi < 0.05f);
+    for (int i = 0; i < n; ++i) CHECK(std::isfinite(l[static_cast<size_t>(i)]));
+}
+
 struct TestCase {
     const char* name;
     std::function<void()> fn;
@@ -1988,6 +2039,7 @@ int main(int argc, char** argv) {
         {"sidechain_pump", testSidechainPumpFollowsTheKick},
         {"automation", testAutomationMovesTheFader},
         {"scenes", testScenesSwapOnTheBar},
+        {"performance_fx", testPerformanceEffects},
         {"tempo_and_key", testTempoAndKeyDetection},
         {"stems_follow_transport", testStemsPlayInStepWithTheTransport},
         {"no_alloc_in_process", testProcessNeverAllocates},

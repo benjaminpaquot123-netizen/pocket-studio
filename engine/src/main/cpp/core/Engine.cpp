@@ -110,6 +110,9 @@ void Engine::applyCommand(const Command& command) {
             if (staging_) staged_.acidLength = std::clamp(command.a, 1, AcidTrack::kMaxSteps);
             else acid_.setLength(command.a);
             break;
+        case CommandType::SetPerformance:
+            mixer_.setPerformance(command.a, command.value);
+            break;
         case CommandType::SetStaging:
             staging_ = command.value > 0.5f;
             break;

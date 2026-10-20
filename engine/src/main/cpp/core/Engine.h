@@ -65,6 +65,7 @@ enum class CommandType : uint8_t {
                           // waiting scene instead of the playing one; 0: back to the playing one
     ArmSceneSwap,         // a > 0: the waiting scene replaces the playing one after `a` steps of the
                           // current scene; a = 0: at the next bar; a < 0: cancel
+    SetPerformance,       // a: PerformanceFx::Param, value 0..1 (live XY pad and hold buttons)
 };
 
 // Step automation of mixer settings, played on the audio thread at each sequencer step.

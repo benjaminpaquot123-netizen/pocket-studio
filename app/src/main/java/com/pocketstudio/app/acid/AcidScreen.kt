@@ -54,7 +54,12 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.layout.size
+import androidx.compose.ui.graphics.Brush
 import com.pocketstudio.model.AcidPattern
+import com.pocketstudio.model.AcidSound
+import com.pocketstudio.ui.Knob
+import com.pocketstudio.ui.KnobColors
 import com.pocketstudio.model.AcidStep
 import com.pocketstudio.ui.MonoStyle
 import com.pocketstudio.ui.Neon
@@ -139,7 +144,7 @@ fun AcidScreen(
         val setEnglish: (Boolean) -> Unit = { english = it; Notation.setEnglish(context, it) }
         StepGrid(acid, playing, currentStep, selected, actions, english, setEnglish)
         StepEditor(acid, selected, actions, english)
-        SoundCard(acid, actions)
+        SoundCard(acid, playing, actions)
     }
 }
 
@@ -315,10 +320,26 @@ private fun StepEditor(acid: AcidPattern, index: Int, actions: AcidActions, engl
 }
 
 @Composable
-private fun SoundCard(acid: AcidPattern, actions: AcidActions) {
+private fun SoundCard(acid: AcidPattern, playing: Boolean, actions: AcidActions) {
     val values = acid.sound.values()
+    val context = LocalContext.current
+    var sliders by remember { mutableStateOf(SoundView.sliders(context)) }
     NeonCard {
-        SectionLabel("Son")
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            SectionLabel("Son", Modifier.weight(1f))
+            listOf(false to "Panneau", true to "Curseurs").forEach { (mode, label) ->
+                FilterChip(
+                    selected = sliders == mode,
+                    onClick = { sliders = mode; SoundView.setSliders(context, mode) },
+                    label = { Text(label) },
+                    modifier = Modifier.testTag(if (mode) "acid_view_sliders" else "acid_view_panel"),
+                )
+            }
+        }
+        if (!sliders) {
+            Panel303(values, playing, actions.setSound)
+            return@NeonCard
+        }
         SOUND_LABELS.forEachIndexed { i, label ->
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 Text(label, Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
@@ -331,6 +352,79 @@ private fun SoundCard(acid: AcidPattern, actions: AcidActions) {
             )
         }
     }
+}
+
+/** Remembers whether the 303's sound shows as the knob panel (default) or as sliders. */
+private object SoundView {
+    private const val KEY = "acid_sliders"
+    fun sliders(context: Context) = context.getSharedPreferences("ui", Context.MODE_PRIVATE).getBoolean(KEY, false)
+    fun setSliders(context: Context, on: Boolean) =
+        context.getSharedPreferences("ui", Context.MODE_PRIVATE).edit().putBoolean(KEY, on).apply()
+}
+
+// Knob layout of the panel, in rows (AcidSound value indices), as on the original's top row.
+private val PANEL_ROWS = listOf(listOf(5, 0, 1), listOf(2, 3, 4), listOf(6, 7, 8))
+private val PANEL_LABELS = listOf("COUPURE", "RÉSONANCE", "ENVELOPPE", "DÉCLIN", "ACCENT", "ACCORD", "ONDE", "SATURATION", "VOLUME")
+
+/** The 303's sound as a brushed-aluminium panel of black knobs, like the hardware. */
+@Composable
+internal fun Panel303(values: List<Float>, playing: Boolean, setSound: (Int, Float) -> Unit) {
+    val defaults = AcidSound().values()
+    val ink = Color(0xFF1E1E1E)
+    val knobColors = KnobColors(
+        cap = Color(0xFF222222), capEdge = Color(0xFF080808), pointer = Color.White,
+        track = Color(0x33000000), value = Neon.Cyan, label = ink,
+    )
+    Column(
+        Modifier.fillMaxWidth()
+            .clip(RoundedCornerShape(10.dp))
+            .background(Brush.verticalGradient(listOf(Color(0xFFDCDFE2), Color(0xFFB9BDC1))))
+            .border(1.dp, Color(0xFF8E9296), RoundedCornerShape(10.dp))
+            .padding(horizontal = 12.dp, vertical = 10.dp)
+            .testTag("acid_panel"),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text("OPEN 303", color = ink, fontWeight = FontWeight.Black, fontSize = 18.sp, letterSpacing = 2.sp)
+            Text("  Basse acide", color = ink.copy(alpha = 0.7f), fontSize = 13.sp, modifier = Modifier.weight(1f))
+            // The run lamp: lit while the pattern plays.
+            Box(
+                Modifier.size(12.dp).clip(RoundedCornerShape(6.dp))
+                    .background(if (playing) Color(0xFFFF3B2F) else Color(0xFF6E2A26))
+                    .border(1.dp, Color(0xFF3A1A18), RoundedCornerShape(6.dp)),
+            )
+        }
+        Box(Modifier.fillMaxWidth().height(2.dp).background(Neon.Cyan))
+        PANEL_ROWS.forEach { row ->
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+                row.forEach { i ->
+                    Knob(
+                        value = values[i],
+                        onValueChange = { setSound(i, it) },
+                        label = PANEL_LABELS[i],
+                        default = defaults[i],
+                        colors = knobColors,
+                        valueText = knobText(i, values[i]),
+                        modifier = Modifier.weight(1f).testTag("acid_knob_$i"),
+                    )
+                }
+            }
+        }
+        Text(
+            "Glisse vers le haut ou le bas pour tourner, touche deux fois pour revenir au réglage de départ.",
+            color = ink.copy(alpha = 0.7f), fontSize = 12.sp,
+        )
+    }
+}
+
+private fun knobText(index: Int, v: Float): String = when (index) {
+    5 -> "%+.1f".format((v - 0.5f) * 24f).replace('.', ',')  // tuning: ±12 semitones
+    6 -> when {
+        v < 0.15f -> "scie"
+        v > 0.85f -> "carré"
+        else -> "mélange"
+    }
+    else -> "${(v * 100).roundToInt()}"
 }
 
 private fun octaveMark(octave: Int) = when {

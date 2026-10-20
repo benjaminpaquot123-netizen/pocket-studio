@@ -367,6 +367,13 @@ class ScreenshotTest {
     }
 
     @Test
+    fun acidPanel() = shoot("acid_panel") {
+        androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
+            com.pocketstudio.app.acid.Panel303(com.pocketstudio.model.AcidSound(cutoff = 0.62f, waveform = 1f).values(), playing = true) { _, _ -> }
+        }
+    }
+
+    @Test
     fun session() = shoot("session") {
         val drums = com.pocketstudio.model.DrumPattern().toggle(0, 0).toggle(2, 4)
         val a = com.pocketstudio.model.Scene("A", drums)

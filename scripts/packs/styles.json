@@ -53,6 +53,48 @@
       "prompt": "{words} synth stab one shot, hoover or choir chord, note C",
       "seconds": 1.0,
       "count": 10
+    },
+    "tom": {
+      "label": "Tom",
+      "prompt": "{words} tom drum one shot",
+      "seconds": 1.0,
+      "count": 6
+    },
+    "pad": {
+      "label": "Nappe",
+      "prompt": "{words} synth pad chord, sustained, note C",
+      "seconds": 3.0,
+      "count": 6
+    },
+    "lead": {
+      "label": "Lead",
+      "prompt": "{words} synth lead one shot, single sustained note C",
+      "seconds": 1.5,
+      "count": 8
+    },
+    "pluck": {
+      "label": "Pluck",
+      "prompt": "{words} pluck synth one shot, short, note C",
+      "seconds": 1.0,
+      "count": 8
+    },
+    "keys": {
+      "label": "Clavier",
+      "prompt": "{words} keyboard one shot, chord, note C",
+      "seconds": 2.0,
+      "count": 8
+    },
+    "vocal": {
+      "label": "Voix",
+      "prompt": "{words} vocal chop one shot, short sung syllable",
+      "seconds": 1.0,
+      "count": 8
+    },
+    "fx": {
+      "label": "Effet",
+      "prompt": "{words} sound effect, riser, impact or sweep",
+      "seconds": 3.0,
+      "count": 8
     }
   },
   "styles": [
@@ -560,6 +602,247 @@
         "perc",
         "bass"
       ]
+    },
+    {
+      "id": "tr808",
+      "name": "Roland TR-808",
+      "family": "Machines",
+      "bpm": 100,
+      "words": "Roland TR-808 analog drum machine",
+      "kinds": [
+        "kick",
+        "snare",
+        "clap",
+        "hat",
+        "open_hat",
+        "tom",
+        "perc",
+        "808"
+      ]
+    },
+    {
+      "id": "tr909",
+      "name": "Roland TR-909",
+      "family": "Machines",
+      "bpm": 128,
+      "words": "Roland TR-909 drum machine",
+      "kinds": [
+        "kick",
+        "snare",
+        "clap",
+        "hat",
+        "open_hat",
+        "tom",
+        "perc"
+      ]
+    },
+    {
+      "id": "tr707",
+      "name": "Roland TR-707",
+      "family": "Machines",
+      "bpm": 120,
+      "words": "Roland TR-707 80s digital drum machine",
+      "kinds": [
+        "kick",
+        "snare",
+        "clap",
+        "hat",
+        "open_hat",
+        "tom",
+        "perc"
+      ]
+    },
+    {
+      "id": "tr606",
+      "name": "Roland TR-606",
+      "family": "Machines",
+      "bpm": 125,
+      "words": "Roland TR-606 thin analog drum machine",
+      "kinds": [
+        "kick",
+        "snare",
+        "hat",
+        "open_hat",
+        "tom"
+      ]
+    },
+    {
+      "id": "cr78",
+      "name": "Roland CR-78",
+      "family": "Machines",
+      "bpm": 110,
+      "words": "Roland CR-78 vintage rhythm machine",
+      "kinds": [
+        "kick",
+        "snare",
+        "hat",
+        "perc"
+      ]
+    },
+    {
+      "id": "linndrum",
+      "name": "LinnDrum",
+      "family": "Machines",
+      "bpm": 115,
+      "words": "LinnDrum 80s pop drum machine",
+      "kinds": [
+        "kick",
+        "snare",
+        "clap",
+        "hat",
+        "open_hat",
+        "tom",
+        "perc"
+      ]
+    },
+    {
+      "id": "sp1200",
+      "name": "E-mu SP-1200",
+      "family": "Machines",
+      "bpm": 92,
+      "words": "E-mu SP-1200 gritty 12-bit sampler drums, hip hop",
+      "kinds": [
+        "kick",
+        "snare",
+        "hat",
+        "open_hat",
+        "perc"
+      ]
+    },
+    {
+      "id": "mpc60",
+      "name": "Akai MPC60",
+      "family": "Machines",
+      "bpm": 90,
+      "words": "Akai MPC60 warm boom bap sampler drums",
+      "kinds": [
+        "kick",
+        "snare",
+        "hat",
+        "open_hat",
+        "perc"
+      ]
+    },
+    {
+      "id": "juno",
+      "name": "Roland Juno-106",
+      "family": "Machines",
+      "bpm": 120,
+      "words": "Roland Juno-106 analog synth with chorus",
+      "kinds": [
+        "pad",
+        "bass",
+        "lead",
+        "pluck",
+        "stab"
+      ]
+    },
+    {
+      "id": "jupiter",
+      "name": "Roland Jupiter-8",
+      "family": "Machines",
+      "bpm": 118,
+      "words": "Roland Jupiter-8 lush analog polysynth",
+      "kinds": [
+        "pad",
+        "lead",
+        "bass",
+        "stab"
+      ]
+    },
+    {
+      "id": "dx7",
+      "name": "Yamaha DX7",
+      "family": "Machines",
+      "bpm": 110,
+      "words": "Yamaha DX7 80s FM synth, electric piano and bells",
+      "kinds": [
+        "keys",
+        "bass",
+        "pluck",
+        "lead"
+      ]
+    },
+    {
+      "id": "minimoog",
+      "name": "Minimoog",
+      "family": "Machines",
+      "bpm": 120,
+      "words": "Minimoog fat analog monosynth",
+      "kinds": [
+        "bass",
+        "lead"
+      ]
+    },
+    {
+      "id": "modern_808",
+      "name": "808 modernes",
+      "family": "Sons actuels",
+      "bpm": 140,
+      "words": "modern trap 808, distorted and saturated",
+      "kinds": [
+        "808",
+        "kick"
+      ],
+      "counts": {
+        "808": 20
+      }
+    },
+    {
+      "id": "hyperpop",
+      "name": "Hyperpop",
+      "family": "Sons actuels",
+      "bpm": 160,
+      "words": "hyperpop glitchy bright",
+      "kinds": [
+        "kick",
+        "snare",
+        "hat",
+        "lead",
+        "pluck",
+        "vocal",
+        "fx"
+      ]
+    },
+    {
+      "id": "future_bass",
+      "name": "Future bass",
+      "family": "Sons actuels",
+      "bpm": 150,
+      "words": "future bass supersaw",
+      "kinds": [
+        "pad",
+        "lead",
+        "pluck",
+        "vocal",
+        "fx"
+      ]
+    },
+    {
+      "id": "vocal_chops",
+      "name": "Voix découpées",
+      "family": "Sons actuels",
+      "bpm": 120,
+      "words": "pop vocal chops, female voice",
+      "kinds": [
+        "vocal"
+      ],
+      "counts": {
+        "vocal": 20
+      }
+    },
+    {
+      "id": "fx",
+      "name": "Montées et impacts",
+      "family": "Sons actuels",
+      "bpm": 128,
+      "words": "EDM build-up",
+      "kinds": [
+        "fx"
+      ],
+      "counts": {
+        "fx": 20
+      }
     }
   ]
 }

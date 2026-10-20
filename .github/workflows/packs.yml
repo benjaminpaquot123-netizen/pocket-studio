@@ -19,7 +19,9 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  TAG: sons-packs-2
+  TAG: sons-packs-3
+  # Packs already built there are reused as they are; only new styles are generated.
+  PREVIOUS: sons-packs-2
   MODEL: https://github.com/benjaminpaquot123-netizen/pocket-studio/releases/download/modele-stable-audio-open-small-1
 
 jobs:
@@ -97,7 +99,17 @@ jobs:
           d2acde0d8d71dd30a711834b07781b9c89feaac33fd332f60507699282740066  tokenizer.json
           SUMS
       - run: pip install -q -r scripts/packs/requirements.txt
+      - name: Reuse a pack already published
+        id: reuse
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release download "$PREVIOUS" -p "${{ matrix.style }}.zip" -D prev 2>/dev/null; then
+            mkdir -p "out/${{ matrix.style }}" && unzip -q "prev/${{ matrix.style }}.zip" -d "out/${{ matrix.style }}"
+            echo "reused=true" >> "$GITHUB_OUTPUT"
+          fi
       - name: Generate
+        if: steps.reuse.outputs.reused != 'true'
         run: python scripts/packs/generate_pack.py model scripts/packs/styles.json ${{ matrix.style }} out/${{ matrix.style }}
       - uses: actions/upload-artifact@v7
         with:

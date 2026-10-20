@@ -1,5 +1,5 @@
-Phase 12 : « Faut tout vous expliquer, à vous ! »
-- Un petit « ? » à côté des mots techniques, et un lexique complet dans Outils › Réglages › Aide.
-- Les 808, basses et stabs des packs se jouent au clavier (Synthé › Échantillon), avec la glisse.
-- Pads live : le « + » ouvre la bibliothèque de sons ou la génération par phrase.
-- L'assistant propose les 808 et basses des packs pour la ligne de basse.
+Phase 13 : « On en a gros ! »
+- 17 nouveaux packs : TR-808, 909, 707, 606, CR-78, LinnDrum, SP-1200, MPC60, Juno, Jupiter, DX7, Minimoog…
+- … et des sons actuels : 808 saturées, hyperpop, future bass, voix découpées, montées et impacts.
+- Synthé : l'unisson pour les supersaws et les basses Reese, 6 nouveaux sons prêts à jouer.
+- Générer : 14 idées pour les genres d'aujourd'hui (drill, amapiano, jersey club…).

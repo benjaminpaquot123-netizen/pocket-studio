@@ -1,41 +1,41 @@
 {
-  "id": "phase12-comprendre",
-  "milestone": "Phase 12 : jouer les sons et comprendre les mots",
+  "id": "phase13-machines",
+  "milestone": "Phase 13 : instruments classiques et sons actuels",
   "items": [
     {
-      "id": "help_dots",
-      "title": "Les petits « ? »",
-      "hint": "Onglet Morceau : touche le « ? » à côté de SCÈNES, puis de PADS LIVE. Une bulle explique le mot. Essaie-en deux ou trois ailleurs : sont-ils clairs ?"
+      "id": "machines",
+      "title": "Les boîtes à rythmes légendaires",
+      "hint": "Rythme › touche un pad › Bibliothèque de sons, en bas : télécharge « Roland TR-909 ». Pose son kick et son clap sur deux pads : ça sonne comme la vraie ?"
     },
     {
-      "id": "lexicon",
-      "title": "Le lexique",
-      "hint": "Outils › Réglages › Aide › « Lexique » : tous les mots de l'appli expliqués d'un coup."
+      "id": "synth_packs",
+      "title": "Un synthé des années 80 au clavier",
+      "hint": "Télécharge « Roland Juno-106 ». Synthé › Source du son › Échantillon › Choisir un son › Nappes : prends une nappe du Juno et joue des accords."
     },
     {
-      "id": "sampled_808",
-      "title": "Une 808 au clavier",
-      "hint": "Télécharge le pack Trap (Rythme › un pad › Bibliothèque de sons). Puis Synthé › Source du son › Échantillon › Choisir un son : prends une 808. Joue au clavier : elle doit être juste sur toutes les touches."
+      "id": "modern_808",
+      "title": "Une 808 moderne qui glisse",
+      "hint": "Télécharge « 808 modernes ». En Échantillon, choisis une 808 saturée, allume « Glisse (808) » et enchaîne deux notes en gardant la première appuyée."
     },
     {
-      "id": "glide",
-      "title": "La glisse",
-      "hint": "Avec « Glisse (808) » allumé, tiens une touche et appuie sur une autre : la note glisse vers la nouvelle, comme dans le trap."
+      "id": "fx_live",
+      "title": "Une montée sur un pad live",
+      "hint": "Télécharge « Montées et impacts ». Morceau › Pads live › Régler les pads › un pad vide › Bibliothèque de sons › Effets : pose une montée et lance-la."
     },
     {
-      "id": "live_library",
-      "title": "Un pad live depuis la bibliothèque",
-      "hint": "Morceau › Pads live › Régler les pads › un pad vide : « Bibliothèque de sons », pose un stab, puis « Jouer » et lance-le."
+      "id": "unison",
+      "title": "L'unisson",
+      "hint": "Synthé › Sons prêts à jouer › Leads › Supersaw. Puis dans Son, bouge « Unisson » de 1 à 7 voix : le son s'élargit."
     },
     {
-      "id": "wizard_808",
-      "title": "L'assistant et les 808",
-      "hint": "Mes projets › Nouveau projet › Assistant › Trap (pack Trap téléchargé). À l'étape Basse, choisis une 808 du pack en bas de la liste, écoute-la, puis crée le morceau."
+      "id": "generate_new",
+      "title": "Générer des sons d'aujourd'hui",
+      "hint": "Audio › Générer : essaie « Log drum amapiano » puis « Accords future bass ». Pose le résultat sur un pad live."
     },
     {
-      "id": "export_scene",
-      "title": "Exporter la scène",
-      "hint": "Mixeur › Exporter : le premier choix s'appelle maintenant « La scène » (la scène en cours, sur la longueur choisie)."
+      "id": "assistant_packs",
+      "title": "L'assistant et les machines",
+      "hint": "Avec le Juno téléchargé, l'assistant (Mes projets › Nouveau projet) propose ses nappes pour les accords et ses leads pour la mélodie, en bas de chaque liste."
     }
   ]
 }

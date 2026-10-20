@@ -128,7 +128,12 @@
   - 17 nouveaux packs commandés (machines et sons actuels) sur `sons-packs-3`, utilisés en phase 13.
 - Phase 13 prête en local (branche phase13-wip, à poser après la fusion de la 12) : unisson du synthé et sons actuels, nouvelles familles de sons des packs, phrases de Générer pour les genres récents.
 
+- Phase 12 fusionnée (PR #23), revue faite (notes répétées coupées, glisse, plantage Bluetooth #22).
+- Phase 13 (branche ccr-80af1a1b-mn0wec) :
+  - 13.1 et 13.2 : 17 packs (machines TR-808 à Minimoog, sons actuels) sur `sons-packs-3`, index épinglé (51 packs) ; familles toms, nappes, leads, plucks, claviers, voix, effets ; l'assistant propose nappes, claviers, leads et plucks des packs ;
+  - 13.3 : unisson du synthé (1 à 7 voix) et 6 sons actuels (Supersaw, Lead trance, Hoover, Accords future bass, Pluck future, Reese moderne) ;
+  - 13.4 : 14 phrases de Générer pour les genres récents.
+
 ## Prochaine étape exacte
-1. Phase 12 : PR, relecture de fin de phase, CI verte, fusion.
-2. Phase 13 : poser phase13-wip sur main, épingler l'index de `sons-packs-3` (PackStore.RELEASE et INDEX), relecture, fusion.
-3. Ensuite : points mineurs restants de `docs/REVIEW.md`, Ableton Link (reporté).
+1. Phase 13 : PR, relecture de fin de phase, CI verte, fusion.
+2. Ensuite : points mineurs restants de `docs/REVIEW.md`, Ableton Link (reporté).

@@ -109,7 +109,7 @@ object Glossary {
     )
     val SOUND_PACK = Help(
         "Pack de sons",
-        "Une collection de sons pour un style (techno, UK garage, trap…). À télécharger seulement si tu veux, et à supprimer quand tu veux.",
+        "Une collection de sons pour un style (techno, UK garage, trap…), une machine célèbre (TR-808, Juno, DX7…) ou des sons actuels. À télécharger seulement si tu veux, et à supprimer quand tu veux.",
     )
     val KIT = Help(
         "Kit",

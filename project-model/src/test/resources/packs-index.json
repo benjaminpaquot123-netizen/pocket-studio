@@ -41,6 +41,14 @@
    "sounds": 60
   },
   {
+   "id": "cr78",
+   "name": "Roland CR-78",
+   "file": "cr78.zip",
+   "sha256": "f9b07536fdb8c0f570795cbaf374170cc69361cbe3355179651884fedcaf8166",
+   "sizeBytes": 481191,
+   "sounds": 46
+  },
+  {
    "id": "deep_house",
    "name": "Deep house",
    "file": "deep_house.zip",
@@ -89,6 +97,30 @@
    "sounds": 64
   },
   {
+   "id": "dx7",
+   "name": "Yamaha DX7",
+   "file": "dx7.zip",
+   "sha256": "2cb3ab3f81a16156361019c3e0e68bcc4aaf863b5fd951687433e9d1e9af0a7c",
+   "sizeBytes": 1370968,
+   "sounds": 24
+  },
+  {
+   "id": "future_bass",
+   "name": "Future bass",
+   "file": "future_bass.zip",
+   "sha256": "df3ca3b91a206b2bbbb3fa07c0c5aec4fcfcc38061ae2e8a7e2f89422e2cd8f1",
+   "sizeBytes": 4601955,
+   "sounds": 38
+  },
+  {
+   "id": "fx",
+   "name": "Montées et impacts",
+   "file": "fx.zip",
+   "sha256": "2cd7caf6ca2f72711ee9d10c2c069080ddbee1da9f93d494e7d64573bb83a336",
+   "sizeBytes": 3312205,
+   "sounds": 20
+  },
+  {
    "id": "gabber",
    "name": "Gabber",
    "file": "gabber.zip",
@@ -121,6 +153,14 @@
    "sounds": 68
   },
   {
+   "id": "hyperpop",
+   "name": "Hyperpop",
+   "file": "hyperpop.zip",
+   "sha256": "9608f27ec7de13d6086463840b650c06c228a3e00a5dbc3d3b38ccdac78f5714",
+   "sizeBytes": 2780271,
+   "sounds": 68
+  },
+  {
    "id": "industrial_techno",
    "name": "Techno industrielle",
    "file": "industrial_techno.zip",
@@ -142,6 +182,30 @@
    "file": "jungle.zip",
    "sha256": "adbbe4af3f56f754cfb482d23759683ac8c62af4fc173e7ac55bee235a598f37",
    "sizeBytes": 2990955,
+   "sounds": 60
+  },
+  {
+   "id": "juno",
+   "name": "Roland Juno-106",
+   "file": "juno.zip",
+   "sha256": "60900d2746bdab6c8485877d65a38cb27eaadae290f611ab65ab28489eb3c05c",
+   "sizeBytes": 2197443,
+   "sounds": 40
+  },
+  {
+   "id": "jupiter",
+   "name": "Roland Jupiter-8",
+   "file": "jupiter.zip",
+   "sha256": "ca992be34e189eb06783d4da90ca6abef63f82ffa2feada4392f8a1422a53cab",
+   "sizeBytes": 2533644,
+   "sounds": 32
+  },
+  {
+   "id": "linndrum",
+   "name": "LinnDrum",
+   "file": "linndrum.zip",
+   "sha256": "bd693caedf184b8e5329519fa6c181c4e5fbf7e5df73fd12acb547d0f39fc79a",
+   "sizeBytes": 1034877,
    "sounds": 60
   },
   {
@@ -167,6 +231,30 @@
    "sha256": "10eea3d6d30530427063ed60300130b750265ab642cc52150aba9274ae6aa588",
    "sizeBytes": 484072,
    "sounds": 44
+  },
+  {
+   "id": "minimoog",
+   "name": "Minimoog",
+   "file": "minimoog.zip",
+   "sha256": "75c25aa9067f4db67ec3fc72595e355a2d72cf83633f47bcabfc742892cfa5fd",
+   "sizeBytes": 1229971,
+   "sounds": 16
+  },
+  {
+   "id": "modern_808",
+   "name": "808 modernes",
+   "file": "modern_808.zip",
+   "sha256": "9794c3726e0596214afbc470742c93eb4fe80bb523e93b3da8abe36973ec8393",
+   "sizeBytes": 873536,
+   "sounds": 36
+  },
+  {
+   "id": "mpc60",
+   "name": "Akai MPC60",
+   "file": "mpc60.zip",
+   "sha256": "08ec7c9dcf220ee2212ce507c6da8d916649a17e482e2a7740ed4732d09cf598",
+   "sizeBytes": 945618,
+   "sounds": 52
   },
   {
    "id": "neurofunk",
@@ -217,6 +305,14 @@
    "sounds": 54
   },
   {
+   "id": "sp1200",
+   "name": "E-mu SP-1200",
+   "file": "sp1200.zip",
+   "sha256": "2abba4c853b66814fd2a441b677da43c41545160f177192189162de377d03010",
+   "sizeBytes": 915825,
+   "sounds": 52
+  },
+  {
    "id": "speed_garage",
    "name": "Speed garage",
    "file": "speed_garage.zip",
@@ -249,6 +345,38 @@
    "sounds": 58
   },
   {
+   "id": "tr606",
+   "name": "Roland TR-606",
+   "file": "tr606.zip",
+   "sha256": "435e235fe95ca15a96f21872f3e898a20c3812872e2dbd3bc90611e99fc8b90a",
+   "sizeBytes": 542463,
+   "sounds": 45
+  },
+  {
+   "id": "tr707",
+   "name": "Roland TR-707",
+   "file": "tr707.zip",
+   "sha256": "996dc006821846a4c52f90c81e5e14ae323133df084b04f8c0c2841d842bdc20",
+   "sizeBytes": 915118,
+   "sounds": 66
+  },
+  {
+   "id": "tr808",
+   "name": "Roland TR-808",
+   "file": "tr808.zip",
+   "sha256": "0c18b527697f3cded4c7626c0c980340985b78870a0ab131904a1198a4d8395f",
+   "sizeBytes": 1192272,
+   "sounds": 76
+  },
+  {
+   "id": "tr909",
+   "name": "Roland TR-909",
+   "file": "tr909.zip",
+   "sha256": "415d11574c47e0534a15ca80303fc8390dee286d4ef7eedc1aa7605e90059628",
+   "sizeBytes": 1028485,
+   "sounds": 66
+  },
+  {
    "id": "trance",
    "name": "Trance",
    "file": "trance.zip",
@@ -271,6 +399,14 @@
    "sha256": "68f0d6d0fc5a3083b28e02d0fccce97fc8b894aabfc7a4cec6b1084b96970fe1",
    "sizeBytes": 1419717,
    "sounds": 68
+  },
+  {
+   "id": "vocal_chops",
+   "name": "Voix découpées",
+   "file": "vocal_chops.zip",
+   "sha256": "893679036fdce3fe0747713f8cd23c7d2b46dfaac174851d920ce212160aa8a9",
+   "sizeBytes": 341639,
+   "sounds": 20
   }
  ]
 }

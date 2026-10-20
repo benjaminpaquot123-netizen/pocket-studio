@@ -537,13 +537,19 @@ void PerformanceFx::process(float* l, float* r, int n) {
             if (!stopOn_ && stopMix_ <= 0.0f) stopping_ = false;
         }
 
-        // DJ filter.
-        if (filterOn_) {
-            svfL_.Process(l[i]);
-            svfR_.Process(r[i]);
-            const bool low = filter_ < 0.5f;
-            l[i] = filterGain_ * (low ? svfL_.Low() : svfL_.High());
-            r[i] = filterGain_ * (low ? svfR_.Low() : svfR_.High());
+        // DJ filter: fades in when the pad is pressed, out when it is let go. A jump from the
+        // low-pass to the high-pass side fades out on one before fading in on the other.
+        const bool wantLow = filter_ < 0.5f;
+        const float filterTarget = filterOn_ && wantLow == filterLow_ ? 1.0f : 0.0f;
+        filterMix_ += std::clamp(filterTarget - filterMix_, -fade_, fade_);
+        if (filterMix_ <= 0.0f && filterOn_) filterLow_ = wantLow;
+        svfL_.Process(l[i]);
+        svfR_.Process(r[i]);
+        if (filterMix_ > 0.0f) {
+            const float fl = filterGain_ * (filterLow_ ? svfL_.Low() : svfL_.High());
+            const float fr = filterGain_ * (filterLow_ ? svfR_.Low() : svfR_.High());
+            l[i] += filterMix_ * (fl - l[i]);
+            r[i] += filterMix_ * (fr - r[i]);
         }
 
         // Chopper: on for the first half of every sixteenth, 2 ms ramps.

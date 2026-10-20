@@ -24,7 +24,7 @@ data class Scene(
         return (longest + stepsPerBar - 1) / stepsPerBar * stepsPerBar
     }
 
-    val isEmpty: Boolean get() = drums.lanes.all { lane -> lane.hits.all { it == null } } &&
+    val isEmpty: Boolean get() = drums.lanes.all { lane -> lane.hits.keys.none { it < drums.steps } } &&
         acid.steps.take(acid.length).none { it.gate } && synthNotes.notes.isEmpty() && trackNotes.values.all { it.notes.isEmpty() }
 
     companion object {
@@ -69,8 +69,14 @@ val Project.allScenes: List<Scene> get() = scenes.ifEmpty { listOf(currentSceneC
 internal fun Project.syncScenes(): Project {
     if (scenes.isEmpty()) return copy(scene = 0, song = song.filter { it.scene == 0 }.take(SongPart.MAX_PARTS)
         .map { it.copy(repeats = it.repeats.coerceIn(1, SongPart.MAX_REPEATS), muted = it.muted.filter { k -> k in partKeys }.toSet()) })
-    val list = scenes.take(Scene.MAX)
-    val index = scene.coerceIn(0, list.lastIndex)
+    val all = scenes.take(Scene.MAX)
+    val index = scene.coerceIn(0, all.lastIndex)
+    // Empty scenes at the end go when nothing uses them (a tap on a far slot leaves no trail of them).
+    val used = song.map { it.scene }.toSet() +
+        automation.flatMap { lane -> lane.sceneValues.filterValues { v -> v.any { it != null } }.keys }
+    var size = all.size
+    while (size - 1 > index && all[size - 1].isEmpty && size - 1 !in used) size--
+    val list = all.take(size)
     return copy(
         scene = index,
         scenes = list.mapIndexed { i, s ->
@@ -100,14 +106,43 @@ fun Project.switchScene(index: Int): Project {
     ).syncScenes()
 }
 
-/** Copies the current scene into [index] (to start a variation from it). */
+/** Copies the current scene into [index] (to start a variation from it), its per-scene automation too. */
 fun Project.copySceneTo(index: Int): Project {
     if (index !in 0 until Scene.MAX) return this
     val synced = syncScenes()
     val existing = synced.allScenes
     val list = (existing + List((index + 1 - existing.size).coerceAtLeast(0)) { Scene() }).toMutableList()
     list[index] = synced.currentSceneContent()
-    return synced.copy(scenes = list).syncScenes()
+    val automation = synced.automation.map { lane ->
+        val own = lane.sceneValues[synced.scene]
+        lane.copy(sceneValues = if (own != null) lane.sceneValues + (index to own) else lane.sceneValues - index)
+    }
+    return synced.copy(scenes = list, automation = automation).syncScenes()
+}
+
+/**
+ * Empties the scene shown (its drum hits, its acid line, the notes of every instrument track and
+ * its own automation values); sounds, lengths and the other scenes stay.
+ */
+fun Project.clearCurrentScene(): Project = copy(
+    drums = drums.copy(lanes = drums.lanes.map { it.copy(hits = emptyMap()) }),
+    acid = acid.copy(steps = acid.steps.map { it.copy(gate = false) }),
+    synthNotes = synthNotes.copy(notes = emptyList()),
+    tracks = tracks.map { it.copy(notes = it.notes.copy(notes = emptyList())) },
+    automation = automation.map { it.copy(sceneValues = it.sceneValues - scene) },
+).syncScenes()
+
+/** Another scene that holds exactly what scene [index] holds (it was copied and not changed yet), or null. */
+fun Project.copyOf(index: Int): Int? {
+    val all = allScenes
+    val s = all.getOrNull(index)?.takeUnless { it.isEmpty } ?: return null
+    return all.indices.firstOrNull { it != index && all[it].copy(name = "") == s.copy(name = "") }
+}
+
+/** The first empty scene slot other than the one shown (a new scene to fill), or null when all 24 are taken. */
+fun Project.firstEmptyScene(): Int? {
+    val all = allScenes
+    return all.indices.firstOrNull { it != scene && all[it].isEmpty } ?: all.size.takeIf { it < Scene.MAX }
 }
 
 /** A project shaped as if [index] were current, for sending a scene to the engine ahead of time. */
@@ -137,20 +172,64 @@ fun Project.togglePartTrack(index: Int, key: String): Project = copy(
 
 /**
  * Time signature [beats]/4 for the whole project: every scene's drum loop keeps its number of
- * bars (64 steps at most), so its grid stays whole bars.
+ * bars (64 steps at most), so its grid stays whole bars. Only the loop's length changes: hits
+ * past its new end stay (unheard), so trying 3/4 and going back to 4/4 gives the beat back. An
+ * audio clip keeps its bar and its number of bars.
  */
 fun Project.withBeatsPerBar(beats: Int): Project {
     val from = stepsPerBar
     val to = beats.coerceIn(Project.MIN_BEATS, Project.MAX_BEATS) * 4
     fun convert(d: DrumPattern): DrumPattern {
         val bars = (d.steps / from).coerceAtLeast(1)
-        return d.withSteps((bars * to).coerceAtMost(DrumPattern.MAX_STEPS / to * to))
+        val n = (bars * to).coerceIn(DrumPattern.MIN_STEPS, DrumPattern.MAX_STEPS / to * to)
+        // Hits kept past the end come back as they were; with none, a longer bar repeats the
+        // groove instead of leaving silent beats.
+        val restoring = d.lanes.any { lane -> lane.hits.keys.any { it >= d.steps } }
+        if (n <= d.steps || restoring) return d.copy(steps = n)
+        return d.copy(
+            steps = n,
+            lanes = d.lanes.map { lane ->
+                lane.copy(hits = lane.hits + (d.steps until n).mapNotNull { st -> lane.hits[st % d.steps]?.let { st to it } })
+            },
+        )
+    }
+    fun convert(c: AudioClip): AudioClip {
+        val bars = ((c.loopSteps + from - 1) / from).coerceAtLeast(1)
+        return c.copy(
+            start = (c.start / from * to + (c.start % from).coerceAtMost(to - 1)).coerceAtMost(AudioClip.MAX_START / to * to),
+            loopSteps = (bars * to).coerceAtMost(AudioClip.MAX_LOOP / to * to),
+        )
     }
     return copy(
         beatsPerBar = to / 4,
         drums = convert(drums),
         scenes = scenes.map { it.copy(drums = convert(it.drums)) },
+        audioTracks = audioTracks.map { t -> t.copy(clip = t.clip?.let(::convert)) },
     ).sanitized()
+}
+
+/**
+ * Song playback: the index that leads to the right next part once part [removed] is taken out
+ * while part [playing] plays (the song now has [sizeAfter] parts). A part before the playing one
+ * shifts it down; the playing part itself leaves the part before it (wrapping round), so the
+ * one that followed it still comes next.
+ */
+fun songIndexAfterRemoval(playing: Int, removed: Int, sizeAfter: Int): Int = when {
+    sizeAfter <= 0 -> -1
+    removed < playing -> playing - 1
+    removed == playing -> Math.floorMod(playing - 1, sizeAfter)
+    else -> playing.coerceAtMost(sizeAfter - 1)
+}
+
+/**
+ * Song playback after the song changed under it (undo, redo): part [index] if it still plays
+ * [scene], else the first part from it on (wrapping round) that does, else -1 (no part plays the
+ * scene heard now: the song stops following, the scene goes on as a loop).
+ */
+fun followSongIndex(song: List<SongPart>, index: Int, scene: Int): Int {
+    if (song.isEmpty()) return -1
+    val start = index.coerceIn(0, song.size - 1)
+    return (song.indices).map { (start + it) % song.size }.firstOrNull { song[it].scene == scene } ?: -1
 }
 
 /** Bars the whole song lasts (each part's scene times its repeats). */

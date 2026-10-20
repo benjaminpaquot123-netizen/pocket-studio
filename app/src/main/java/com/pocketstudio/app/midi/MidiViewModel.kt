@@ -230,6 +230,7 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
     /** Needs BLUETOOTH_SCAN and BLUETOOTH_CONNECT (asked by the screen first). Ten seconds. */
     @SuppressLint("MissingPermission")
     fun scanBluetooth() {
+        if (_state.value.scanning) return  // already looking: a second tap must not start a second scan
         val scanner = getApplication<Application>().getSystemService(BluetoothManager::class.java)?.adapter?.bluetoothLeScanner
         if (scanner == null) {
             _state.update { it.copy(last = "Bluetooth éteint") }

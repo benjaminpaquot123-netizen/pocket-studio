@@ -31,7 +31,11 @@ class History<T>(initial: T, private val coalesceWindowMs: Long = 600) {
         return true
     }
 
-    /** Changes the current value without an undo step (e.g. following the playing scene). */
+    /**
+     * Changes the current value without an undo step (e.g. following the playing scene). The redo
+     * steps stay: following the song only changes the scene shown, and a live take (the other
+     * quiet change) clears them when it is committed ([commitFrom]).
+     */
     fun replace(next: T) {
         current = next
         lastKey = null
@@ -39,10 +43,13 @@ class History<T>(initial: T, private val coalesceWindowMs: Long = 600) {
 
     /**
      * After quiet changes ([replace]) made since [before] (a live recording), makes the whole
-     * change one undo step back to [before].
+     * change one undo step back to [before]. [depth]: [undoDepth] when the take started; the
+     * steps recorded since (an edit made during the take) are folded into it, or undoing them
+     * later would bring back half of the take.
      */
-    fun commitFrom(before: T) {
+    fun commitFrom(before: T, depth: Int = undoStack.size) {
         if (current == before) return
+        while (undoStack.size > depth.coerceAtLeast(0)) undoStack.removeLast()
         undoStack.addLast(before)
         redoStack.clear()
         lastKey = null

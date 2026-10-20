@@ -1,5 +1,5 @@
-Phase 19 : « Faut pas respirer la compote, ça fait tousser ! »
-- Mixeur : un bouton « Effets » bien visible sur chaque piste, la boîte à outils en un geste.
-- Cinq effets fous : Robot, Wah-wah, Vieux vinyle, Talkie-walkie et Hachoir (calé sur le tempo).
-- Ils marchent aussi sur chaque pad et sur la sortie générale.
-- Assistant : le son que tu essaies passe devant la musique, le reste recule ; tu entends enfin ce que tu choisis.
+Phase 20 : « On en a gros ! » (de bugs en moins)
+- Grand audit : 4 parcours passés au peigne fin, une trentaine de bugs corrigés (son, plantages, fichiers, écrans).
+- Morceau : « Nouvelle scène vide », « Vider la scène », et l'appli te dit si la scène est neuve ou une copie.
+- Petits écrans, texte agrandi et paysage : plus rien de coupé ni d'inaccessible.
+- Ton travail est mieux protégé : remix jamais effacé, corbeille accessible, Annuler fiable pendant la lecture.

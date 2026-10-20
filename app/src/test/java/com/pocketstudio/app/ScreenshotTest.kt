@@ -432,7 +432,7 @@ class ScreenshotTest {
 
     @Test
     fun songGuide() = shoot("song_guide") {
-        com.pocketstudio.app.settings.GuideDialog(onClose = {}, pages = com.pocketstudio.app.library.songGuide("House", wizardUi(99).plan), tag = "song_guide")
+        com.pocketstudio.app.settings.GuideDialog(onClose = {}, pages = com.pocketstudio.app.library.songGuide("House", wizardUi(99).plan, inKey = true), tag = "song_guide")
     }
 
     @Test
@@ -655,6 +655,7 @@ class ScreenshotTest {
                         p("d", "Until I Found You", 9 * 86_400_000L, 120.0, 2, 2, true),
                     ),
                     loading = false, deleted = "x@1" to "Essai",
+                    trash = listOf(com.pocketstudio.model.TrashedProject("x@1", "Essai", now - 60_000)),
                 ),
                 currentId = "a",
                 starters = listOf(com.pocketstudio.app.projects.ProjectStarter("Projet vide", "Tout est vierge.", "empty")),

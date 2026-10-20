@@ -150,3 +150,11 @@ Feu vert de Benjamin (D4 = A) : fusion de la pull request en fin de phase.
 - [x] 19.1 Un bouton « Effets » visible sur chaque tranche du mixeur (la boîte existante, avant cachée sous deux niveaux)
 - [x] 19.2 Cinq effets fous dans le moteur, sans allocation ni mémoire lourde : Robot (modulateur en anneau), Wah-wah (filtre qui suit le jeu), Vieux vinyle (pleurage, craquements, âge), Talkie-walkie (bande radio, grain, friture), Hachoir (découpe rythmique calée sur les temps)
 - [x] 19.3 Rangés à part (« Effets fous », violet) avec une phrase qui dit ce qu'ils font ; sur toutes les pistes, les pads et la sortie générale
+
+## Phase 20 : l'audit d'utilisation complet (demande de Benjamin : « trouver tous les bugs, de toute sorte »)
+- [x] 20.1 Quatre parcours audités par des relecteurs neufs : créer et éditer un morceau ; jouer, enregistrer, le son ; mixer, exporter, projets et sons ; interface et robustesse
+- [x] 20.2 Interface : barre du haut sur petit écran, onglets en paysage, mots coupés, mise à jour annulable, autorisations refusées expliquées, rotation sans couper la prise, guides qui défilent
+- [x] 20.3 Morceau : plus de plantage de l'assistant, Annuler pendant la lecture, ordre du morceau, mesures 3/4 sans perte, prise en direct annulée d'un bloc, scènes en trop
+- [x] 20.4 Fichiers : pistes séparées jamais supprimées si un projet s'en sert, corbeille accessible, automation qui suit l'effet, export de la scène à sa vraie longueur
+- [x] 20.5 Son : filtre XY sans clic, accords qui se chevauchent, vol de voix, prise micro calée même si le son change de sortie
+- [x] 20.6 Scènes (demande de Benjamin) : « Nouvelle scène vide », « Vider la scène », et une phrase qui dit si la scène est neuve ou une copie

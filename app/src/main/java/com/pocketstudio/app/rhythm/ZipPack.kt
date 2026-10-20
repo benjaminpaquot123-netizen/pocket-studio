@@ -15,16 +15,19 @@ object ZipPack {
     class TooBigException : Exception("archive trop grosse")
 
     /**
-     * Blocking. Writes at most [maxFiles] audio files of [zip] into [dir] (created, emptied first)
-     * and returns them with their original names, sorted by name.
+     * Blocking. Writes into [dir] (created, emptied first) the first [maxFiles] audio files of [zip]
+     * in name order (not archive order: a pack lists the same way on every phone), and returns them
+     * with their original names, sorted by name.
      */
     fun extractAudio(zip: InputStream, dir: File, maxFiles: Int, extensions: Set<String>): List<Pair<File, String>> {
         dir.deleteRecursively()
         dir.mkdirs()
-        val out = ArrayList<Pair<File, String>>()
-        var total = 0L
+        val kept = ArrayList<Pair<File, String>>()
+        var keptBytes = 0L
+        var count = 0
+        val byName = compareBy<Pair<File, String>> { it.second.lowercase() }
         ZipInputStream(zip.buffered()).use { z ->
-            while (out.size < maxFiles) {
+            while (maxFiles > 0) {
                 val entry = z.nextEntry ?: break
                 if (entry.isDirectory) continue
                 // Only the last part of the path, never "../" or folders: no writing outside `dir`.
@@ -33,7 +36,9 @@ object ZipPack {
                 if (entry.name.contains("__MACOSX")) continue
                 val ext = name.substringAfterLast('.', "").lowercase()
                 if (ext !in extensions) continue
-                val target = File(dir, "%03d.%s".format(out.size, ext))
+                // Full and this one comes after every kept name: not needed.
+                if (kept.size >= maxFiles && name.lowercase() >= kept.maxWith(byName).second.lowercase()) continue
+                val target = File(dir, "%03d.%s".format(count++, ext))
                 var size = 0L
                 target.outputStream().use { o ->
                     val buf = ByteArray(64 * 1024)
@@ -41,8 +46,7 @@ object ZipPack {
                         val n = z.read(buf)
                         if (n < 0) break
                         size += n
-                        total += n
-                        if (size > MAX_ENTRY_BYTES || total > MAX_TOTAL_BYTES) {
+                        if (size > MAX_ENTRY_BYTES || keptBytes + size > MAX_TOTAL_BYTES) {
                             o.close()
                             dir.deleteRecursively()
                             throw TooBigException()
@@ -50,10 +54,16 @@ object ZipPack {
                         o.write(buf, 0, n)
                     }
                 }
-                out += target to name
+                kept += target to name
+                keptBytes += size
+                if (kept.size > maxFiles) {
+                    val last = kept.maxWith(byName)
+                    keptBytes -= last.first.length()
+                    last.first.delete()
+                    kept.remove(last)
+                }
             }
         }
-        val sorted = out.sortedBy { it.second.lowercase() }
-        return sorted
+        return kept.sortedWith(byName)
     }
 }

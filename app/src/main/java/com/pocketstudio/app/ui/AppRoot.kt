@@ -139,6 +139,7 @@ import com.pocketstudio.app.session.LivePadsUi
 import com.pocketstudio.app.session.SessionScreenUi
 import com.pocketstudio.model.Scene
 import com.pocketstudio.model.allScenes
+import com.pocketstudio.model.copyOf
 import com.pocketstudio.app.mixer.AutomationActions
 import com.pocketstudio.app.mixer.AutomationUi
 import com.pocketstudio.app.remix.RemixScreen
@@ -201,6 +202,11 @@ fun AppRoot() {
         openScope.launch {
             rhythmVm.keepTake()  // a microphone take in progress lands on its track first
             rhythmVm.flushNow()
+            // Not saved (a full phone): stay here rather than reopen this project without its latest edits.
+            if (rhythmVm.session.lastSaveError.value != null) {
+                Toast.makeText(context, "Le projet n'a pas pu être enregistré (téléphone plein ?) : libère de la place avant d'en ouvrir un autre.", Toast.LENGTH_LONG).show()
+                return@launch
+            }
             showProjects = false  // remembered across the rebuild: close it first
             CurrentProject.set(context, id)
             AppLog.add("Ouverture d'un autre projet")
@@ -381,7 +387,11 @@ fun AppRoot() {
                             rhythmVm.stop()
                             libraryVm.openWizard()
                         },
-                        rename = { p, name -> if (p.id == rhythmVm.projectId) { rhythmVm.renameProject(name); projectsVm.refresh() } else projectsVm.rename(p.id, name) },
+                        rename = { p, name ->
+                            // The open project: saved first, so the list reads its new name.
+                            if (p.id == rhythmVm.projectId) openScope.launch { rhythmVm.renameProject(name); rhythmVm.flushNow(); projectsVm.refresh() }
+                            else projectsVm.rename(p.id, name)
+                        },
                         duplicate = { p -> openScope.launch { if (p.id == rhythmVm.projectId) rhythmVm.flushNow(); projectsVm.duplicate(p) } },
                         exportZip = { p ->
                             openScope.launch {
@@ -392,6 +402,7 @@ fun AppRoot() {
                         importZip = { pickProjectZip.launch(arrayOf("application/zip", "application/x-zip-compressed", "application/octet-stream")) },
                         delete = projectsVm::delete,
                         undoDelete = projectsVm::undoDelete,
+                        restore = projectsVm::restore,
                         dismissDeleted = projectsVm::dismissDeleted,
                         dismissMessage = projectsVm::dismissMessage,
                     ),
@@ -402,7 +413,9 @@ fun AppRoot() {
     var toolPage by rememberSaveable { mutableStateOf(ToolPage.Reglages) }
     val settings by SettingsStore.state.collectAsStateWithLifecycle()
     var showGuide by rememberSaveable { mutableStateOf(false) }
-    if (showGuide || !settings.guideSeen) {
+    // After the crash report's question (never both dialogs on top of each other).
+    val pendingCrash by mainVm.crash.collectAsStateWithLifecycle()
+    if ((showGuide || !settings.guideSeen) && pendingCrash == null) {
         GuideDialog(onClose = {
             showGuide = false
             SettingsStore.update(context) { it.copy(guideSeen = true) }
@@ -440,8 +453,10 @@ fun AppRoot() {
         }
     }
     LifecycleEventEffect(Lifecycle.Event.ON_STOP) {
-        latencyVm.cancel()
         rhythmVm.flush()
+        // Turning the phone also stops the activity: the take, the held notes and the sound go on.
+        if (context.findActivity()?.isChangingConfigurations == true) return@LifecycleEventEffect
+        latencyVm.cancel()
         rhythmVm.visible = false
         rhythmVm.synthAllOff()
         rhythmVm.stopRecording()  // never keep the microphone open in the background
@@ -463,6 +478,7 @@ fun AppRoot() {
         )
     }
     val lifecycleOwner = LocalLifecycleOwner.current
+    val foldStore = com.pocketstudio.ui.LocalFoldStore.current
     LaunchedEffect(engineAvailable) {
         if (!engineAvailable) return@LaunchedEffect
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -473,11 +489,31 @@ fun AppRoot() {
         }
     }
 
+    // A permission refused (twice, Android stops asking): say why nothing happens and where to allow it.
+    var permissionHelp by rememberSaveable { mutableStateOf<String?>(null) }
+    permissionHelp?.let { text ->
+        AlertDialog(
+            onDismissRequest = { permissionHelp = null },
+            text = { Text(text) },
+            confirmButton = {
+                TextButton(onClick = {
+                    permissionHelp = null
+                    runCatching {
+                        context.startActivity(
+                            Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:${context.packageName}"))
+                                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
+                        )
+                    }
+                }, modifier = Modifier.testTag("permission_settings")) { Text("Ouvrir les réglages") }
+            },
+            dismissButton = { TextButton(onClick = { permissionHelp = null }) { Text("Plus tard") } },
+        )
+    }
     val micPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-        if (granted) latencyVm.measure()
+        if (granted) latencyVm.measure() else permissionHelp = MIC_REFUSED
     }
     val recordPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-        if (granted) rhythmVm.startRecording()
+        if (granted) rhythmVm.startRecording() else permissionHelp = MIC_REFUSED
     }
     // The "REC" live activity is a notification: without the permission (Android 13+), the phone
     // hides it. Asked once per launch, at the first recording, where it makes sense.
@@ -494,6 +530,7 @@ fun AppRoot() {
     }
     val bluetoothPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { granted ->
         if (granted.values.all { it }) midiVm.scanBluetooth()
+        else permissionHelp = "Le Bluetooth (appareils à proximité) est refusé : autorise-le dans les réglages du téléphone pour trouver un clavier MIDI."
     }
     // MIDI clock, start and stop drive the project's tempo and transport (main thread).
     LaunchedEffect(Unit) {
@@ -523,7 +560,7 @@ fun AppRoot() {
         if (uri != null) rhythmVm.transcribeFile(uri)
     }
     val notesMicPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-        if (granted) rhythmVm.recordNotes()
+        if (granted) rhythmVm.recordNotes() else permissionHelp = MIC_REFUSED
     }
     val pickAudio = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) rhythmVm.importSample(uri)
@@ -537,7 +574,7 @@ fun AppRoot() {
     var audioRecordTrack by rememberSaveable { mutableIntStateOf(0) }
     var audioImportTrack by rememberSaveable { mutableIntStateOf(0) }
     val audioMicPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-        if (granted) rhythmVm.recordAudio(audioRecordTrack)
+        if (granted) rhythmVm.recordAudio(audioRecordTrack) else permissionHelp = MIC_REFUSED
     }
     val pickTrackAudio = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) rhythmVm.importAudio(audioImportTrack, uri)
@@ -586,7 +623,9 @@ fun AppRoot() {
             }
         },
         bottomBar = {
-            if (!landscape) {
+            if (!landscape) androidx.compose.foundation.layout.BoxWithConstraints {
+                // Seven tabs: below ~58 dp each (small phone, big text) the labels shrink, so none is cut.
+                val tight = maxWidth / AppTab.entries.size < 58.dp
                 NavigationBar(
                     containerColor = lerp(Neon.Background, Color.Black, 0.12f),
                     modifier = Modifier.drawBehind { drawLine(Color.White.copy(alpha = 0.07f), Offset.Zero, Offset(size.width, 0f), 1f) },
@@ -595,8 +634,14 @@ fun AppRoot() {
                         NavigationBarItem(
                             selected = tab == t,
                             onClick = { tab = t },
-                            icon = { Icon(t.icon, contentDescription = null) },
-                            label = { Text(t.label, maxLines = 1, softWrap = false) },
+                            icon = { Icon(t.icon, contentDescription = if (tight) t.label else null) },
+                            label = {
+                                Text(
+                                    t.label, maxLines = 1, softWrap = false,
+                                    style = if (tight) MaterialTheme.typography.labelSmall.copy(fontSize = MaterialTheme.typography.labelSmall.fontSize * 0.85f)
+                                    else MaterialTheme.typography.labelMedium,
+                                )
+                            },
                             modifier = Modifier.testTag("tab_${t.name}"),
                             colors = NavigationBarItemDefaults.colors(
                                 selectedIconColor = Neon.OnAccent,
@@ -617,6 +662,8 @@ fun AppRoot() {
             // Landscape: tabs on the side so the screen keeps its height (wider synth keyboard).
             if (landscape) {
                 NavigationRail(containerColor = lerp(Neon.Background, Color.Black, 0.12f)) {
+                    // Seven tabs need more height than a phone lying down has: the rail scrolls.
+                    androidx.compose.foundation.layout.Column(Modifier.verticalScroll(androidx.compose.foundation.rememberScrollState())) {
                     AppTab.entries.forEach { t ->
                         NavigationRailItem(
                             selected = tab == t,
@@ -632,6 +679,7 @@ fun AppRoot() {
                                 unselectedTextColor = Neon.TextSecondary,
                             ),
                         )
+                    }
                     }
                 }
             }
@@ -957,14 +1005,18 @@ fun AppRoot() {
                                 pending = sessionUi.pending,
                                 song = project.song,
                                 songIndex = sessionUi.songIndex,
+                                shownSongIndex = sessionUi.shownSongIndex,
                                 playing = transport.playing,
                                 tempoBpm = project.tempoBpm,
                                 beatsPerBar = project.beatsPerBar,
+                                sceneInfo = sceneInfo(project),
                                 rows = timelineRows(project),
                             ),
                             SessionActions(
                                 select = rhythmVm::selectScene,
                                 duplicate = rhythmVm::duplicateScene,
+                                newScene = rhythmVm::newScene,
+                                clear = rhythmVm::clearScene,
                                 addPart = rhythmVm::addSongPart,
                                 removePart = rhythmVm::removeSongPart,
                                 setRepeats = rhythmVm::setSongRepeats,
@@ -1002,9 +1054,10 @@ fun AppRoot() {
                         )
                     }
                     AppTab.Audio -> Column {
-                        TabRow(selectedTabIndex = audioPage, containerColor = Neon.Surface, contentColor = Neon.Cyan) {
+                        // Scrollable: whole words on a small phone or with big text (never "Remi/x").
+                        androidx.compose.material3.ScrollableTabRow(selectedTabIndex = audioPage, containerColor = Neon.Surface, contentColor = Neon.Cyan, edgePadding = 8.dp) {
                             listOf("Pistes audio", "Remix", "Accordeur", "Générer").forEachIndexed { i, label ->
-                                Tab(selected = audioPage == i, onClick = { audioPage = i }, text = { Text(label) }, modifier = Modifier.testTag("audio_page_$i"))
+                                Tab(selected = audioPage == i, onClick = { audioPage = i }, text = { Text(label, maxLines = 1, softWrap = false) }, modifier = Modifier.testTag("audio_page_$i"))
                             }
                         }
                         if (audioPage == 3) {
@@ -1063,7 +1116,10 @@ fun AppRoot() {
                             var granted by remember {
                                 mutableStateOf(ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED)
                             }
-                            val ask = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted = it }
+                            val ask = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
+                                granted = it
+                                if (!it) permissionHelp = MIC_REFUSED
+                            }
                             if (granted) {
                                 LaunchedEffect(Unit) {
                                     lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.runTuner() }
@@ -1185,12 +1241,12 @@ fun AppRoot() {
                         }
                     }
                     AppTab.Outils -> Column {
-                        TabRow(selectedTabIndex = toolPage.ordinal, containerColor = Neon.Surface, contentColor = Neon.Cyan) {
+                        androidx.compose.material3.ScrollableTabRow(selectedTabIndex = toolPage.ordinal, containerColor = Neon.Surface, contentColor = Neon.Cyan, edgePadding = 8.dp) {
                             ToolPage.entries.forEach { page ->
                                 Tab(
                                     selected = toolPage == page,
                                     onClick = { toolPage = page },
-                                    text = { Text(page.label) },
+                                    text = { Text(page.label, maxLines = 1, softWrap = false) },
                                     modifier = Modifier.testTag("tool_${page.name}"),
                                 )
                             }
@@ -1212,7 +1268,11 @@ fun AppRoot() {
                                 AppInfo.versionLabel,
                                 SettingsActions(
                                     update = { t -> SettingsStore.update(context, t) },
-                                    reset = { SettingsStore.reset(context) },
+                                    // The default settings also open every folded card (a beginner may not find a fold again).
+                                    reset = {
+                                        SettingsStore.reset(context)
+                                        (foldStore as? com.pocketstudio.ui.MemoryFoldStore)?.unfoldAll()
+                                    },
                                     openGuide = { showGuide = true },
                                 ),
                             )
@@ -1301,16 +1361,17 @@ private fun LaunchPrompts(vm: MainViewModel) {
         is UpdateState.Available, is UpdateState.Failed -> {
             val info = if (u is UpdateState.Available) u.info else (u as UpdateState.Failed).info
             AlertDialog(
-                onDismissRequest = vm::dismissUpdate,
+                onDismissRequest = { vm.dismissUpdate(remember = false) },
                 title = { Text("Nouvelle version ${info.versionName}") },
                 text = {
-                    Column {
+                    // Long notes scroll: the buttons always stay on screen.
+                    Column(Modifier.verticalScroll(androidx.compose.foundation.rememberScrollState())) {
                         if (u is UpdateState.Failed) Text("Le téléchargement a échoué, on retente ?", color = Neon.Red)
                         Text(info.notes.ifBlank { "Une nouvelle version est prête." })
                     }
                 },
                 confirmButton = { TextButton(onClick = vm::installUpdate) { Text("Installer") } },
-                dismissButton = { TextButton(onClick = vm::dismissUpdate) { Text("Plus tard") } },
+                dismissButton = { TextButton(onClick = { vm.dismissUpdate() }) { Text("Plus tard") } },
             )
         }
         is UpdateState.Downloading -> AlertDialog(
@@ -1318,10 +1379,24 @@ private fun LaunchPrompts(vm: MainViewModel) {
             title = { Text("Téléchargement…") },
             text = { LinearProgressIndicator(progress = { u.progress }) },
             confirmButton = {},
+            dismissButton = { TextButton(onClick = vm::cancelUpdate, modifier = Modifier.testTag("update_cancel")) { Text("Annuler") } },
         )
         UpdateState.None -> Unit
     }
 }
+
+/** What the scene shown is, in a sentence: new and empty, a fresh copy of another, or nothing to say. */
+internal fun sceneInfo(p: Project): String {
+    val name = Scene.NAMES[p.scene]
+    val all = p.allScenes
+    val global = if (p.audioTracks.any { it.clip != null } || p.remix.setId != null) " Les pistes audio et le remix jouent dans toutes les scènes." else ""
+    return when {
+        all.getOrNull(p.scene)?.isEmpty != false -> "Scène $name : nouvelle et vide. Remplis-la dans Rythme, Acide ou Synthé.$global"
+        else -> p.copyOf(p.scene)?.let { "Scène $name : copie de la scène ${Scene.NAMES[it]}. Change-la pour en faire une variante, ou « Vider »." } ?: ""
+    }
+}
+
+private const val MIC_REFUSED = "Le micro est refusé : autorise-le dans les réglages du téléphone (Autorisations › Micro), puis réessaie."
 
 private fun hasMic(context: Context) =
     ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED

@@ -223,7 +223,7 @@ private fun TransportBar(project: Project, transport: TransportUi, canUndo: Bool
                 onClick = actions.tapTempo,
                 colors = ButtonDefaults.outlinedButtonColors(contentColor = Neon.TextPrimary),
                 modifier = Modifier.testTag("tap"),
-            ) { Text("Tap") }
+            ) { Text("Taper", maxLines = 1, softWrap = false) }
         }
     }
 }
@@ -238,7 +238,7 @@ private fun PadGrid(project: Project, selected: Int, lit: Set<Int>, onHit: (Int)
                 for (col in 0 until 4) {
                     val lane = row * 4 + col
                     val color = DrumKitInfo.colors[lane]
-                    val hasHits = project.drums.lanes[lane].hits.isNotEmpty()
+                    val hasHits = project.drums.lanes[lane].hits.keys.any { it < project.drums.steps }  // past the loop: unheard
                     val hasFx = project.mixer.channels.getOrNull(com.pocketstudio.model.Mixer.padChannel(lane))?.hasOwnFx() == true
                     DrumPad(
                         name = DrumKitInfo.names[lane], color = color, selected = lane == selected, lit = lane in lit, hasHits = hasHits, hasFx = hasFx,
@@ -336,9 +336,9 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, playing: Boo
         Row(verticalAlignment = Alignment.CenterVertically) {
             SectionLabel(if (allPads) "Pas : tous les pads" else "Pas : ${DrumKitInfo.names[lane]}", color = if (allPads) Neon.Cyan else color, help = Glossary.STEP, foldKey = "Pas")
             Box(Modifier.weight(1f))
-            FilterChip(selected = allPads, onClick = { allPads = !allPads }, label = { Text("Tous les pads") }, colors = chipColors,
+            FilterChip(selected = allPads, onClick = { allPads = !allPads }, label = { Text("Tous les pads", maxLines = 1, softWrap = false) }, colors = chipColors,
                 modifier = Modifier.testTag("all_pads"))
-            if (!allPads) TextButton(onClick = actions.clearPad, enabled = hits.isNotEmpty()) { Text("Effacer") }
+            if (!allPads) TextButton(onClick = actions.clearPad, enabled = hits.isNotEmpty()) { Text("Effacer", maxLines = 1, softWrap = false) }
         }
         FlowRow(itemVerticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             Text("Longueur", style = MaterialTheme.typography.bodyMedium)
@@ -783,7 +783,7 @@ internal fun AllPadsGrid(project: Project, bar: Int, currentStep: Int, actions: 
             val color = DrumKitInfo.colors[lane]
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text(DrumKitInfo.names[lane], style = MaterialTheme.typography.labelSmall, maxLines = 1,
-                    color = if (l.hits.isEmpty()) Neon.TextSecondary else Neon.TextPrimary, modifier = Modifier.width(72.dp),
+                    color = if (l.hits.keys.none { it < project.drums.steps }) Neon.TextSecondary else Neon.TextPrimary, modifier = Modifier.width(72.dp),
                     overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
                 for (col in 0 until project.stepsPerBar) {
                     val step = bar * project.stepsPerBar + col

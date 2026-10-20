@@ -59,9 +59,15 @@ class ProjectCatalog(private val root: File, private val trash: File) {
     fun duplicate(id: String, name: String): String {
         val source = store.load(id) ?: throw IOException("projet introuvable")
         val copy = newId()
-        val samples = File(store.folder(id), SAMPLES)
-        if (samples.isDirectory) samples.copyRecursively(File(store.folder(copy), SAMPLES), overwrite = true)
-        store.save(copy, source.copy(name = name.take(MAX_NAME)))
+        try {
+            val samples = File(store.folder(id), SAMPLES)
+            if (samples.isDirectory) samples.copyRecursively(File(store.folder(copy), SAMPLES), overwrite = true)
+            store.save(copy, source.copy(name = name.take(MAX_NAME)))
+        } catch (e: Exception) {
+            // A half-copied folder (storage full…) would show up as a broken project: remove it.
+            store.folder(copy).deleteRecursively()
+            throw if (e is IOException) e else IOException("copie impossible", e)
+        }
         return copy
     }
 
@@ -97,6 +103,40 @@ class ProjectCatalog(private val root: File, private val trash: File) {
         if (!from.renameTo(store.folder(id))) throw IOException("restauration impossible")
         return id
     }
+
+    /** The projects in the trash, most recently deleted first (each one can be [restore]d). */
+    fun trashed(): List<TrashedProject> {
+        val bin = ProjectStore(trash)
+        return bin.list().mapNotNull { entry ->
+            val at = entry.substringAfterLast('@').toLongOrNull() ?: return@mapNotNull null
+            val name = runCatching { bin.load(entry)?.name }.getOrNull() ?: "Projet illisible"
+            TrashedProject(entry, name, at)
+        }.sortedByDescending { it.deletedAt }
+    }
+
+    /**
+     * Separated songs (stem set ids) played along by a project, with the names of those projects.
+     * Trashed projects count too: they may come back. An unreadable project still protects the set
+     * its file names, so cleaning up never removes stems someone may need.
+     */
+    fun stemSetUsers(): Map<String, List<String>> {
+        val users = LinkedHashMap<String, MutableList<String>>()
+        fun scan(from: ProjectStore, trashed: Boolean) = from.list().forEach { id ->
+            val p = runCatching { from.load(id) }.getOrNull()
+            val sets = if (p != null) listOfNotNull(p.remix.setId) else rawSetIds(from.folder(id))
+            val name = (p?.name ?: "Projet illisible") + if (trashed) " (corbeille)" else ""
+            sets.forEach { users.getOrPut(it) { mutableListOf() } += name }
+        }
+        scan(store, trashed = false)
+        scan(ProjectStore(trash), trashed = true)
+        return users
+    }
+
+    private fun rawSetIds(dir: File): Set<String> =
+        listOf(ProjectStore.MAIN, ProjectStore.BACKUP).flatMap { f ->
+            val text = runCatching { File(dir, f).readText() }.getOrDefault("")
+            SET_ID.findAll(text).map { it.groupValues[1] }.toList()
+        }.toSet()
 
     /** Forgets trashed projects older than [maxAgeMs]. */
     fun purgeTrash(maxAgeMs: Long, now: Long = System.currentTimeMillis()) {
@@ -170,7 +210,8 @@ class ProjectCatalog(private val root: File, private val trash: File) {
         } catch (e: Throwable) {
             // Also an OutOfMemoryError: nothing half-imported stays behind, and the app does not crash.
             dir.deleteRecursively()
-            throw if (e is IOException) e else IOException(e.message ?: "fichier illisible")
+            // Our own messages are French; a library's (JSON parser, zip reader) is not shown as is.
+            throw if (e.javaClass == IOException::class.java) e else IOException("fichier illisible ou abîmé", e)
         }
     }
 
@@ -189,5 +230,9 @@ class ProjectCatalog(private val root: File, private val trash: File) {
         const val MAX_ZIP_ENTRY = 128L * 1024 * 1024
         const val MAX_PROJECT_JSON = 4L * 1024 * 1024
         const val MAX_ZIP_TOTAL = 1024L * 1024 * 1024
+        private val SET_ID = Regex("\"setId\"\\s*:\\s*\"([^\"]+)\"")
     }
 }
+
+/** A project in the trash: [entry] is what [ProjectCatalog.restore] takes. */
+data class TrashedProject(val entry: String, val name: String, val deletedAt: Long)

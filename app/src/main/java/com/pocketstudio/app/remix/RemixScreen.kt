@@ -19,6 +19,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -36,6 +37,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -142,7 +144,7 @@ fun RemixScreen(ui: RemixUi, actions: RemixActions) {
                         Text("Choisir une chanson")
                     }
                     Text(
-                        "${SeparationService.MAX_SECONDS / 60} minutes au maximum. Les ${StemStore.KEEP} derniers morceaux séparés sont gardés.",
+                        "${SeparationService.MAX_SECONDS / 60} minutes au maximum. Les ${StemStore.KEEP} derniers morceaux séparés sont gardés, et ceux qu'un projet utilise.",
                         style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
                     )
                 }
@@ -256,8 +258,37 @@ private fun InProject(ui: RemixUi, actions: RemixActions) {
     }
 }
 
+/** Asks before deleting a separated song; refuses while a project plays it along. */
+@Composable
+private fun DeleteStemsDialog(set: StemSet, inProject: Boolean, onDelete: () -> Unit, onDismiss: () -> Unit) {
+    val users = (listOfNotNull("le projet ouvert".takeIf { inProject }) + set.usedBy.map { "« $it »" }).distinct()
+    if (users.isNotEmpty()) {
+        AlertDialog(
+            onDismissRequest = onDismiss,
+            title = { Text("Morceau utilisé") },
+            text = {
+                Text("« ${set.name} » joue dans ${users.joinToString(", ")}. Retire-le d'abord de ce projet (« Retirer du projet ») pour pouvoir le supprimer.")
+            },
+            confirmButton = { TextButton(onClick = onDismiss, modifier = Modifier.testTag("delete_stems_ok")) { Text("OK") } },
+            modifier = Modifier.testTag("delete_stems_dialog"),
+        )
+    } else {
+        AlertDialog(
+            onDismissRequest = onDismiss,
+            title = { Text("Supprimer ce morceau ?") },
+            text = { Text("Les pistes séparées de « ${set.name} » seront effacées. Pour les retrouver, il faudra séparer la chanson à nouveau.") },
+            confirmButton = {
+                TextButton(onClick = { onDismiss(); onDelete() }, modifier = Modifier.testTag("delete_stems_confirm")) { Text("Supprimer", color = Neon.Red) }
+            },
+            dismissButton = { TextButton(onClick = onDismiss) { Text("Annuler") } },
+            modifier = Modifier.testTag("delete_stems_dialog"),
+        )
+    }
+}
+
 @Composable
 private fun StemCard(set: StemSet, preview: StemPreview?, inProject: Boolean, actions: RemixActions) {
+    var confirmDelete by rememberSaveable(set.id) { mutableStateOf(false) }
     NeonCard(modifier = Modifier.testTag("stems_${set.id}")) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
@@ -270,8 +301,11 @@ private fun StemCard(set: StemSet, preview: StemPreview?, inProject: Boolean, ac
                 ).joinToString(" · ")
                 Text(details, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.testTag("song_info_${set.id}"))
             }
-            IconButton(onClick = { actions.delete(set) }) { Icon(Icons.Filled.Delete, contentDescription = "Supprimer") }
+            IconButton(onClick = { confirmDelete = true }, modifier = Modifier.testTag("delete_${set.id}")) {
+                Icon(Icons.Filled.Delete, contentDescription = "Supprimer")
+            }
         }
+        if (confirmDelete) DeleteStemsDialog(set, inProject, onDelete = { actions.delete(set) }, onDismiss = { confirmDelete = false })
         if (!inProject) {
             Button(onClick = { actions.useSong(set) }, modifier = Modifier.fillMaxWidth().testTag("use_${set.id}")) {
                 Text("Jouer avec le projet")

@@ -50,7 +50,7 @@ object FloatWav {
             out.write(body.array())
             out.fd.sync()
         }
-        if (!tmp.renameTo(file)) throw IOException("rename failed: $file")
+        if (!tmp.renameTo(file)) throw IOException("enregistrement impossible : ${file.name}")
     }
 
     /** Reads files written by [write] (and other plain 32-bit float WAVs). */

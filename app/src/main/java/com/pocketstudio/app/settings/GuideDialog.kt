@@ -1,6 +1,7 @@
 package com.pocketstudio.app.settings
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -85,11 +86,17 @@ fun GuideDialog(onClose: () -> Unit, pages: List<GuidePage> = GUIDE_PAGES, tag: 
     var page by rememberSaveable(tag) { mutableIntStateOf(0) }
     val p = pages[page.coerceIn(0, pages.lastIndex)]
     val last = page >= pages.lastIndex
-    Dialog(onDismissRequest = onClose) {
+    // A tap beside it does not close it for good (Retour does); its text scrolls, its buttons stay.
+    Dialog(onDismissRequest = onClose, properties = androidx.compose.ui.window.DialogProperties(dismissOnClickOutside = false)) {
         Card(colors = CardDefaults.cardColors(containerColor = Neon.Surface), shape = RoundedCornerShape(14.dp), modifier = Modifier.testTag(tag)) {
             Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text(p.title, style = MaterialTheme.typography.titleLarge, color = Neon.Cyan)
-                p.lines.forEach { Text(it, style = MaterialTheme.typography.bodyLarge) }
+                Column(
+                    Modifier.weight(1f, fill = false).verticalScroll(androidx.compose.foundation.rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    p.lines.forEach { Text(it, style = MaterialTheme.typography.bodyLarge) }
+                }
                 Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.padding(top = 4.dp)) {
                     pages.indices.forEach { i ->
                         Box(Modifier.size(8.dp).clip(CircleShape).background(if (i == page) Neon.Cyan else Neon.Outline))

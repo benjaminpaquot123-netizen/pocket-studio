@@ -21,9 +21,10 @@ private val GuidePagesSaver = Saver<List<GuidePage>?, ArrayList<String>>(
 
 /**
  * The guide that opens once the assistant has made the song: its three scenes, how to hear each
- * one, how to play them in a row, and what to try next.
+ * one, how to play them in a row, and what to try next. [inKey]: a mood was chosen, so the
+ * song's key is locked and the keyboard plays no wrong note.
  */
-fun songGuide(styleName: String, plan: StarterWizard.ScenePlan): List<GuidePage> {
+fun songGuide(styleName: String, plan: StarterWizard.ScenePlan, inKey: Boolean): List<GuidePage> {
     fun scene(index: Int): String {
         val what = plan.contents(index).joinToString(", ") { it.substringBefore(" (").substringBefore(" / ") }
         return "Scène ${StarterWizard.ScenePlan.NAMES[index]} · ${plan.title(index)} : ${what.ifEmpty { "rien pour l'instant" }}."
@@ -53,8 +54,10 @@ fun songGuide(styleName: String, plan: StarterWizard.ScenePlan): List<GuidePage>
             "Et maintenant ?",
             listOf(
                 "Rythme : touche les cases pour ajouter ou enlever des coups.",
-                "Synthé : joue au clavier, il reste dans la gamme du morceau : aucune fausse note possible.",
-                "Morceau › « Dupliquer la scène » : une scène C pour une variante (un refrain, une fin), puis « + C » pour l'ajouter au morceau.",
+                if (inKey) "Synthé : joue au clavier, il reste dans la gamme du morceau : aucune fausse note possible."
+                else "Synthé : joue au clavier pour essayer des notes par-dessus le rythme.",
+                // The assistant fills A, B and C: the first copy lands in D.
+                "Morceau › « Dupliquer la scène » : une scène D pour une variante (un refrain, une fin), puis « + D » pour l'ajouter au morceau.",
             ),
         ),
     )

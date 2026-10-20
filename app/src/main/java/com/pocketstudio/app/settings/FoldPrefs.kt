@@ -12,6 +12,11 @@ class FoldPrefs(context: Context) : MemoryFoldStore(load(context)) {
         prefs.edit().apply { if (folded) putBoolean(key, true) else remove(key) }.apply()
     }
 
+    override fun unfoldAll() {
+        super.unfoldAll()
+        prefs.edit().clear().apply()
+    }
+
     private companion object {
         const val PREFS = "folds"
 

@@ -244,7 +244,7 @@ class SeparationService : Service() {
             progress("Tempo et tonalité de « $name »", null)
             val info = analyse(part)
             final.deleteRecursively()
-            if (!part.renameTo(final)) throw IOException("rename failed")
+            if (!part.renameTo(final)) throw IOException("enregistrement impossible")
             val set = StemStore.commit(final, name, raw.seconds, info)
             StemStore.prune(this)
             AppLog.add("Séparation : « $name » (${raw.seconds.roundToInt()} s) terminée")

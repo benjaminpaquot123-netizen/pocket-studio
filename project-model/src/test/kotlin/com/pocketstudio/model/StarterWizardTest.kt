@@ -126,6 +126,25 @@ class StarterWizardTest {
     }
 
     @Test
+    fun withoutAMelodyThePartStepsAreLeftOut() {
+        val house = StarterWizard.style("house")!!
+        val steps = StarterWizard.steps(house, melody = false)
+        assertEquals(2 + house.lines.size + 1, steps.size)
+        assertTrue(steps.none { it is StarterWizard.Step.Melodic })
+        // The mood step and the drum lines keep their place, whatever the mood.
+        assertEquals(StarterWizard.steps(house).take(2 + house.lines.size), steps.take(2 + house.lines.size))
+    }
+
+    @Test
+    fun aPlanWithNothingUsedHasNoCopies() {
+        // Every drum line off and no part: the assistant still draws its plan (it used to throw).
+        val plan = StarterWizard.scenePlan(emptySet(), emptySet(), acid = false)
+        assertEquals(emptyMap<Int, Int>(), plan.copies)
+        assertEquals(emptyList<String>(), plan.contents(1))
+        assertEquals("le groove", plan.title(1))
+    }
+
+    @Test
     fun packSoundsCanPlayTheBassAndTheLead() {
         val trap = StarterWizard.style("trap")!!
         val pack = PackManifest(

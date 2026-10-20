@@ -160,8 +160,10 @@
 
 - Phase 19 (branche phase19-wip puis ccr-80af1a1b-mn0wec) : `RingMod`, `AutoWah`, `Vinyl`, `Radio`, `Chopper` dans Effects.h/.cpp (types 14 à 18), `EffectType` ROBOT..CHOPPER avec `blurb`/`crazy`, bouton « Effets » sur la tranche compacte du mixeur.
 
+- Phase 20 (branche phase20-wip, fusion de phase20-a/b/c) : corrections de l'audit d'utilisation, voir `docs/REVIEW.md`.
+
 ## Prochaine étape exacte
-1. Phases 16 (#27), 17 (#28) et 18 (#29) fusionnées. Phase 19 (effets fous, bouton Effets dans le mixeur) : relecture neuve, PR, CI, fusion, lien à Benjamin.
+1. Phases 16 à 19 fusionnées (#27 à #30). Phase 20 (audit d'utilisation complet, quatre parcours, et les scènes neuves/vidées) : relecture neuve, PR, CI, fusion, résumé à Benjamin.
 2. Ensuite, dans l'ordre :
    - le niveau général (marge, limiteur, vumètre avant le limiteur), à mesurer sur le téléphone ;
    - le tempo changé pendant la lecture (pads calés, Remix) ;

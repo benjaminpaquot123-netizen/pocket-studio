@@ -277,7 +277,8 @@ private:
     bool recordOnStart_ = false;  // waiting for the transport's first step
     int recordSkip_ = -1;         // input frames to skip in this callback (recording just started), -1 = none
     void finishRecording();
-    void recordInput(const float* input, int numInputFrames, int inputChannels);
+    // No input (nullptr) while recording writes `numFrames` of silence: the take stays in time.
+    void recordInput(const float* input, int numInputFrames, int inputChannels, int numFrames);
     Automation automation_;
     void applyAutomation(int patternStep, int songStep);
     std::array<std::atomic<float>, kScopeFrames> outScope_{}, micScope_{};

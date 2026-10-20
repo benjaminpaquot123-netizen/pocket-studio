@@ -7,6 +7,7 @@ import com.pocketstudio.app.report.AppLog
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.ProjectCatalog
 import com.pocketstudio.model.ProjectInfo
+import com.pocketstudio.model.TrashedProject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,6 +22,8 @@ data class ProjectsUi(
     /** Trash entry of the project just deleted (for "Annuler"), with its name. */
     val deleted: Pair<String, String>? = null,
     val message: String? = null,
+    /** Deleted projects, kept [ProjectCatalog.TRASH_DAYS] days. */
+    val trash: List<TrashedProject> = emptyList(),
 )
 
 /**
@@ -29,7 +32,7 @@ data class ProjectsUi(
  * rebuilds the screens on it).
  */
 class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
-    private val catalog = ProjectCatalog(File(app.filesDir, "projects"), File(app.filesDir, "projects-trash"))
+    private val catalog = projectCatalog(app)
 
     private val _state = MutableStateFlow(ProjectsUi())
     val state: StateFlow<ProjectsUi> = _state.asStateFlow()
@@ -38,9 +41,7 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch(Dispatchers.IO) { catalog.purgeTrash(ProjectCatalog.TRASH_DAYS * 24 * 3600 * 1000) }
     }
 
-    fun refresh() = io("Liste des projets") {
-        _state.value = _state.value.copy(projects = catalog.list(), loading = false)
-    }
+    fun refresh() = io("Liste des projets") { refreshNow() }
 
     /** Creates [project] (a blank or a demo) named after the next free number unless it has a name; returns its id. */
     fun create(project: Project, then: (String) -> Unit) = io("Nouveau projet") {
@@ -81,9 +82,9 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
     /** The project and its sounds as a .zip in the export folder; [then] gets the file (to share it). */
     fun exportZip(info: ProjectInfo, then: (File) -> Unit) = io("Export du projet") {
         val app = getApplication<Application>()
-        val dir = File(app.cacheDir, "exports").apply { mkdirs() }
-        val safe = info.name.replace(Regex("[^\\p{L}\\p{N} _-]"), "").trim().replace(' ', '-').take(40).ifEmpty { "projet" }
-        val file = File(dir, "$safe.pocketstudio.zip")
+        // Dated like the audio exports (old ones cleaned): a share still reading an earlier export is never overwritten.
+        val file = com.pocketstudio.app.export.WavExporter.newFile(app, info.name.ifBlank { "projet" })
+            .let { File(it.parentFile, it.name.removeSuffix(".wav") + ".pocketstudio.zip") }
         file.outputStream().use { catalog.exportZip(info.id, it) }
         AppLog.add("Projet exporté : ${file.length() / 1024} Ko")
         withContext(Dispatchers.Main) { then(file) }
@@ -108,6 +109,14 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /** Brings a project back from the trash ("Corbeille" list). */
+    fun restore(item: TrashedProject) = io("Restauration") {
+        catalog.restore(item.entry)
+        AppLog.add("Projet restauré : « ${item.name} »")
+        if (_state.value.deleted?.first == item.entry) _state.value = _state.value.copy(deleted = null)
+        refreshNow()
+    }
+
     fun dismissDeleted() {
         _state.value = _state.value.copy(deleted = null)
     }
@@ -117,7 +126,7 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     private fun refreshNow() {
-        _state.value = _state.value.copy(projects = catalog.list(), loading = false)
+        _state.value = _state.value.copy(projects = catalog.list(), trash = catalog.trashed(), loading = false)
     }
 
     private fun io(what: String, failed: (String) -> Unit = {}, block: suspend () -> Unit) {

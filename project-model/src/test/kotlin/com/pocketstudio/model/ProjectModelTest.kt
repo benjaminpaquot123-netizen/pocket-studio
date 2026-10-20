@@ -41,12 +41,13 @@ class ProjectJsonTest {
 
     @Test
     fun outOfRangeValuesAreClamped() {
-        val decoded = ProjectJson.decode("""{"tempoBpm":999,"swing":-1,"drums":{"steps":7,"lanes":[{"hits":{"3":{},"40":{}}}]}}""")
+        val decoded = ProjectJson.decode("""{"tempoBpm":999,"swing":-1,"drums":{"steps":7,"lanes":[{"hits":{"3":{},"40":{},"70":{}}}]}}""")
         assertEquals(Project.MAX_TEMPO, decoded.tempoBpm, 0.0)
         assertEquals(0.0, decoded.swing, 0.0)
         assertEquals(DrumPattern.MIN_STEPS, decoded.drums.steps)
         assertEquals(DrumPattern.PAD_COUNT, decoded.drums.lanes.size)
-        assertEquals(setOf(3), decoded.drums.lanes[0].hits.keys)
+        // Past the loop's end a hit stays (unheard, see withBeatsPerBar); past the longest loop it goes.
+        assertEquals(setOf(3, 40), decoded.drums.lanes[0].hits.keys)
     }
 }
 
@@ -697,6 +698,25 @@ class RecordingHistoryTest {
         val h2 = History(5)
         h2.commitFrom(5)  // nothing recorded: no step
         assertFalse(h2.canUndo)
+    }
+
+    @Test
+    fun anEditDuringATakeFoldsIntoIt() {
+        val h = History(0)
+        h.push(1)
+        val before = h.current
+        val depth = h.undoDepth
+        h.replace(2)  // first notes of the take
+        h.push(20)  // a normal edit in the middle (a slider moved)
+        h.replace(21)  // the rest of the take
+        h.commitFrom(before, depth)
+        assertEquals(21, h.current)
+        // One undo goes back before the take, never to half of it.
+        assertEquals(1, h.undo())
+        assertEquals(0, h.undo())
+        assertEquals(null, h.undo())
+        assertEquals(1, h.redo())
+        assertEquals(21, h.redo())
     }
 }
 

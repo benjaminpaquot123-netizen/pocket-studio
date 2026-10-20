@@ -10,8 +10,9 @@ namespace ps {
 namespace {
 
 constexpr int kBlock = 12;  // plaits::kBlockSize
-// Plaits is tuned for the module's actual 47872 Hz clock: at an exact 48 kHz it would be 4.6 cents sharp.
-const float kTuning = -12.0f * std::log2(48000.0f / plaits::kCorrectedSampleRate);
+// Plaits is tuned for the module's actual 47872 Hz clock: at an exact 48 kHz it would be 4.6 cents
+// sharp, and at another stream rate further off. Semitones to add at [rate].
+float tuningFor(float rate) { return -12.0f * std::log2(rate / plaits::kCorrectedSampleRate); }
 
 // Heavy models get fewer voices (measured cost per voice, Linux desktop, -O3): chords 1.9 %,
 // particles 3 %, modal 6.2 %, bass drum 2.8 %; everything else under 1.1 %.
@@ -58,6 +59,8 @@ struct PlaitsSynth::Impl {
     uint32_t block = 0;  // counts rendered blocks
     float bend = 0.0f, mod = 0.0f;  // live pitch bend (semitones) and mod wheel
     float attackStep = 0.0f, releaseCoef = 0.0f;
+    float rate = 48000.0f;  // the stream's (prepare)
+    float tuning = tuningFor(48000.0f);
 
     void updatePatch() {
         patch.engine = static_cast<int>(std::lround(params[Model] * (kModels - 1)));
@@ -71,8 +74,8 @@ struct PlaitsSynth::Impl {
         patch.morph_modulation_amount = 0.0f;
         // Release 10 ms .. 2 s, per 12-sample block.
         const float releaseSeconds = 0.01f * std::pow(200.0f, params[Release]);
-        releaseCoef = std::exp(-static_cast<float>(kBlock) / (releaseSeconds * 48000.0f));
-        attackStep = static_cast<float>(kBlock) / (0.003f * 48000.0f);  // 3 ms
+        releaseCoef = std::exp(-static_cast<float>(kBlock) / (releaseSeconds * rate));
+        attackStep = static_cast<float>(kBlock) / (0.003f * rate);  // 3 ms
     }
 
     // False when a note-off must wait for the next block: its note started in this one and
@@ -88,7 +91,13 @@ struct PlaitsSynth::Impl {
                     if (!c.gate && c.level < 0.001f) { v = &c; break; }
                 }
             }
-            if (!v) {  // steal the oldest
+            if (!v) {  // all busy: the quietest voice already let go (a held chord outlives quick notes)
+                for (int k = 0; k < limit; ++k) {
+                    auto& c = voices[static_cast<size_t>(k)];
+                    if (!c.gate && (!v || c.level < v->level)) v = &c;
+                }
+            }
+            if (!v) {  // else the oldest held one
                 v = &voices[0];
                 for (int k = 0; k < limit; ++k) if (voices[static_cast<size_t>(k)].age < v->age) v = &voices[static_cast<size_t>(k)];
             }
@@ -126,7 +135,7 @@ struct PlaitsSynth::Impl {
             v.retrigger = false;
             m.level = v.level * (0.4f + 0.6f * v.velocity);
             plaits::Patch p = patch;
-            p.note = static_cast<float>(v.note) + kTuning + bend;
+            p.note = static_cast<float>(v.note) + tuning + bend;
             p.timbre = std::min(1.0f, p.timbre + 0.5f * mod);
             v.dsp.Render(p, m, frames, kBlock);
             for (int i = 0; i < kBlock; ++i) out[i] += frames[i].out * gain;
@@ -144,8 +153,12 @@ PlaitsSynth::PlaitsSynth() : impl_(std::make_unique<Impl>()) {
 
 PlaitsSynth::~PlaitsSynth() = default;
 
-void PlaitsSynth::prepare(int) {
-    // Plaits always runs at 48 kHz (the engine's rate).
+void PlaitsSynth::prepare(int sampleRate) {
+    // Plaits renders at whatever rate the stream runs: its tuning and our envelopes follow it.
+    if (sampleRate > 0) {
+        impl_->rate = static_cast<float>(sampleRate);
+        impl_->tuning = tuningFor(impl_->rate);
+    }
     impl_->updatePatch();
 }
 

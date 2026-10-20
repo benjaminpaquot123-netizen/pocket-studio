@@ -94,16 +94,16 @@ class SmokeTest {
         }
         assertTrue("meter must run: $diagnostic", !diagnostic.contains("NoInput") && !diagnostic.contains("Interrupted"))
 
-        // Tools: test tone, then latency page; then the checklist.
+        // Tools: test tone, then latency page; then the checklist (the tabs scroll: bring each into view).
         compose.onNodeWithTag("tab_Outils").performClick()
-        compose.onNodeWithTag("tool_Son").performClick()
+        compose.onNodeWithTag("tool_Son").performScrollTo().performClick()
         compose.onNodeWithTag("play").performClick()
         compose.onNodeWithText("Arrêter").assertIsDisplayed()
         compose.onNodeWithTag("play").performClick()
-        compose.onNodeWithTag("tool_Latence").performClick()
+        compose.onNodeWithTag("tool_Latence").performScrollTo().performClick()
         compose.onNodeWithTag("latency").assertIsDisplayed()
 
-        compose.onNodeWithTag("tool_Recette").performClick()
+        compose.onNodeWithTag("tool_Recette").performScrollTo().performClick()
         compose.onNodeWithTag("recette").assertIsDisplayed()
 
         compose.onNodeWithTag("tab_Mixeur").performClick()

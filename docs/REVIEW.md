@@ -466,3 +466,29 @@ Corrigé :
 Restant (mineur) :
 - Hachoir sur une grille droite : avec du swing, les doubles-croches paires ne suivent pas le swing.
 - Un événement de temps peut rester en attente si la voie ne joue pas dans ce bloc (sans effet audible : le suivant le remplace).
+
+## Phase 20 : audit d'utilisation complet (quatre parcours)
+
+Quatre auditeurs neufs, chacun sur un parcours réel (créer/éditer ; jouer/enregistrer/son ; mixer/exporter/projets ; interface/robustesse), avec des essais pour prouver les bugs. Trois correcteurs en parallèle (branches séparées), puis une relecture neuve des corrections.
+
+Graves corrigés :
+- Assistant : plantage quand toutes les lignes sont désactivées.
+- Barre du haut : le bouton « Mes projets » disparaissait sur petit écran ou texte agrandi ; onglets inaccessibles en paysage.
+- Mise à jour : téléchargement bloqué pour toujours sans réseau, sans moyen d'annuler.
+- Remix : séparer d'autres chansons effaçait les pistes d'un autre projet ; un appui supprimait des pistes encore utilisées.
+
+Moyens corrigés (avec tests) : Annuler pendant la lecture du morceau, partie supprimée en cours de lecture, 3/4 puis 4/4 qui réécrivait la batterie, prise en direct coupée en deux par une modification, guide de fin (scène D), duplication en deux étapes, scènes vides en trop, étapes de mélodie sans mélodie ; autorisations refusées silencieuses, rotation qui coupait la prise, projet ouvert sans sauvegarde, guides sans défilement, mise à jour qui revenait ; corbeille, copie ratée, automation sur un effet remplacé, export de scène à 4 mesures ; filtre XY qui claque, pleurage du vinyle qui grésille, accords qui se coupent, vol de voix, prise décalée après un changement de sortie.
+
+Restant (mineur) :
+- Pads live joués sans lecture : casque débranché, ils continuent (le service de lecture ne tourne pas).
+- Scènes vides entre A et une scène lointaine remplie : elles restent (pas encore de « Supprimer la scène »).
+- Pas de menu « Supprimer la scène » ; pas de confirmation sur la suppression d'un pack testée par un test.
+
+Relecture neuve des corrections : aucun grave. Corrigés : micro resté ouvert si une prise démarre pendant l'accordeur (compte des utilisateurs), temps muets en passant à 5/4 ou 7/4 (la boucle se répète), coups cachés comptés comme contenu (export, « Vider »), duplication annulée en pleine lecture qui basculait sur une scène vide, mise à jour « oubliée » par un simple retour.
+Restant (mineur, noté) :
+- Scène vide en fin de liste supprimée même si sa longueur a été changée (la longueur revient par défaut).
+- StemStore relit chaque projet en entier pour savoir qui utilise une séparation (lent avec beaucoup de projets) ; une épingle périmée bloque la suppression en silence.
+- Import de pack zip : pas de plafond sur le nombre de fichiers parcourus.
+- Rotation pendant une prise : les instruments GM sont reconstruits (notes tenues coupées sur ces pistes).
+- Filtre XY passe-bas → passe-haut : ~10 ms de fondu avec la mauvaise coupure.
+- `HeldKeysTest` teste une copie de la logique plutôt que le vrai ViewModel.

@@ -70,4 +70,89 @@ class TimelineTest {
         // Two repeats of a two-bar 3/4 scene (24 steps): the 16-step clip starts at 0 and 16 in each.
         assertEquals(4, content.notes.count { it.channel == 0 })
     }
+
+    @Test
+    fun tryingThreeFourThenBackKeepsTheBeat() {
+        var drums = DrumPattern()
+        for (s in 0 until 16 step 2) drums = drums.toggle(5, s)
+        drums = drums.toggle(0, 0).toggle(0, 12).toggle(2, 4).toggle(2, 12)
+        val p = Project(drums = drums).sanitized()
+        val waltz = p.withBeatsPerBar(3)
+        assertEquals(12, waltz.drums.steps)
+        // The fourth beat waits past the loop's end (unheard), and comes back with 4/4.
+        assertEquals(p.drums, waltz.withBeatsPerBar(4).drums)
+        assertEquals(p.drums, ProjectJson.decode(ProjectJson.encode(waltz)).withBeatsPerBar(4).drums)
+        // Two bars of 7/4 through 4/4 come back whole.
+        val seven = Project(beatsPerBar = 7, drums = DrumPattern(steps = 56).toggle(0, 0).toggle(0, 28).toggle(3, 55)).sanitized()
+        assertEquals(32, seven.withBeatsPerBar(4).drums.steps)
+        assertEquals(seven.drums, seven.withBeatsPerBar(4).withBeatsPerBar(7).drums)
+        // A rotation only moves what the loop plays.
+        val turned = waltz.drums.rotate(0, 1)
+        assertEquals(setOf(1, 12), turned.lanes[0].hits.keys)
+    }
+
+    @Test
+    fun aLongerBarRepeatsTheGrooveInsteadOfSilence() {
+        val drums = DrumPattern().toggle(0, 0).toggle(0, 4).toggle(0, 8).toggle(0, 12).toggle(2, 6)
+        val five = Project(drums = drums).sanitized().withBeatsPerBar(5)
+        assertEquals(20, five.drums.steps)
+        assertEquals(setOf(0, 4, 8, 12, 16), five.drums.lanes[0].hits.keys)
+        assertEquals(setOf(6), five.drums.lanes[2].hits.keys)
+    }
+
+    @Test
+    fun anAudioClipKeepsItsBarWithANewTimeSignature() {
+        var p = Project().addAudioTrack("Voix")!!
+        p = p.copy(audioTracks = p.audioTracks.map { it.copy(clip = AudioClip("voix.wav", "Voix", seconds = 4.0, start = 16, loopSteps = 32)) }).sanitized()
+        val clip = p.withBeatsPerBar(3).audioTracks[0].clip!!
+        assertEquals(12, clip.start)  // bar 2 of 3/4
+        assertEquals(24, clip.loopSteps)  // still two bars
+        assertEquals(p.audioTracks, p.withBeatsPerBar(3).withBeatsPerBar(4).audioTracks)
+    }
+
+    @Test
+    fun aTapOnAFarSlotLeavesNoTrailOfEmptyScenes() {
+        val p = Project(drums = DrumPattern().toggle(0, 0)).sanitized()
+        val far = p.switchScene(23)
+        assertEquals(24, far.allScenes.size)
+        assertEquals(1, far.switchScene(0).allScenes.size)
+        // A scene with something in it stays, and so does the empty one the song plays.
+        val filled = far.copy(drums = far.drums.toggle(1, 0)).switchScene(0)
+        assertEquals(24, filled.allScenes.size)
+        assertEquals(6, far.copy(song = listOf(SongPart(0), SongPart(5))).switchScene(0).allScenes.size)
+    }
+
+    @Test
+    fun aCopiedSceneTakesItsAutomationAlong() {
+        val lane = AutomationLane(AutoTarget(AutoTarget.VOLUME), mode = AutomationLane.PER_SCENE).withPoint(3, 0.5f, scene = 0)
+        val p = Project(drums = DrumPattern().toggle(0, 0), automation = listOf(lane)).sanitized()
+        val copy = p.copySceneTo(1)
+        assertEquals(2, copy.allScenes.size)
+        assertEquals(0.5f, copy.automation[0].valuesFor(1)[3])
+        // A scene without its own steps gives none to the copy.
+        val bare = copy.switchScene(1).copy(automation = listOf(lane)).copySceneTo(2)
+        assertEquals(null, bare.automation[0].sceneValues[2])
+    }
+
+    @Test
+    fun theSongGoesOnInOrderWhenAPartIsRemovedWhilePlaying() {
+        // A B C D, C playing (2).
+        assertEquals(1, songIndexAfterRemoval(playing = 2, removed = 0, sizeAfter = 3))  // B C D: C is now 1
+        assertEquals(2, songIndexAfterRemoval(playing = 2, removed = 3, sizeAfter = 3))  // A B C: C still 2
+        // C itself goes: B is "before" what comes next, so D still follows.
+        assertEquals(1, songIndexAfterRemoval(playing = 2, removed = 2, sizeAfter = 3))
+        // A goes while it plays: the song wraps round, B (now 0) comes next.
+        assertEquals(2, songIndexAfterRemoval(playing = 0, removed = 0, sizeAfter = 3))
+        assertEquals(-1, songIndexAfterRemoval(playing = 0, removed = 0, sizeAfter = 0))
+    }
+
+    @Test
+    fun afterAnUndoTheSongFollowsTheSceneHeard() {
+        val song = listOf(SongPart(0), SongPart(1), SongPart(2), SongPart(1))
+        assertEquals(3, followSongIndex(song, 3, 1))
+        assertEquals(1, followSongIndex(song, 0, 1))  // the first part from there that plays it
+        assertEquals(3, followSongIndex(song, 7, 1))  // past the end (a part was undone away)
+        assertEquals(-1, followSongIndex(song, 0, 5))
+        assertEquals(-1, followSongIndex(emptyList(), 0, 0))
+    }
 }

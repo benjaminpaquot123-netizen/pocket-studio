@@ -647,7 +647,7 @@ void Engine::process(const float* input, int numInputFrames, int inputChannels,
             if (waiting && !recordOnStart_) recordSkip_ += done;  // started in this chunk
             done += n;
         }
-        recordInput(input, numInputFrames, inputChannels);
+        recordInput(input, numInputFrames, inputChannels, numFrames);
         // Microphone (tuner): whatever arrived this callback.
         if (input && inputChannels > 0) {
             for (int i = 0; i < numInputFrames; ++i) scopeWrite(micScope_, micScopeAt_, input[i * inputChannels]);
@@ -689,21 +689,26 @@ void Engine::finishRecording() {
     recordSkip_ = -1;
 }
 
-void Engine::recordInput(const float* input, int numInputFrames, int inputChannels) {
+void Engine::recordInput(const float* input, int numInputFrames, int inputChannels, int numFrames) {
     if (!record_ || recordOnStart_) return;
-    // The microphone frames of this callback, from where the recording started (first channel).
-    const int from = recordSkip_ > 0 ? std::min(recordSkip_, numInputFrames) : 0;
-    recordSkip_ = 0;
     const int64_t capacity = static_cast<int64_t>(record_->data.size());
     int64_t at = record_->written.load(std::memory_order_relaxed);
     float peak = 0.0f;
     if (input && inputChannels > 0) {
+        // The microphone frames of this callback, from where the recording started (first channel).
+        const int from = recordSkip_ > 0 ? std::min(recordSkip_, numInputFrames) : 0;
         for (int i = from; i < numInputFrames && at < capacity; ++i) {
             const float v = input[i * inputChannels];
             record_->data[static_cast<size_t>(at++)] = v;
             peak = std::max(peak, std::fabs(v));
         }
+    } else {
+        // No microphone this callback (the audio rerouted mid-take and it is being reopened):
+        // silence for as long as the transport ran, so what is sung afterwards stays in time.
+        const int from = recordSkip_ > 0 ? std::min(recordSkip_, numFrames) : 0;
+        for (int i = from; i < numFrames && at < capacity; ++i) record_->data[static_cast<size_t>(at++)] = 0.0f;
     }
+    recordSkip_ = 0;
     record_->peak.store(peak, std::memory_order_relaxed);
     record_->written.store(at, std::memory_order_release);
     if (at >= capacity) finishRecording();

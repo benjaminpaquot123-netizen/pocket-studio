@@ -61,8 +61,9 @@ object Palettes {
 
 /** Studio greys with Okabe-Ito colours: "playing" is blue, never told from orange by red-green alone. */
 val ColorblindPalette = Palettes.Studio.copy(
-    accent = Color(0xFFE69F00), playing = Color(0xFF56B4E9), good = Color(0xFF56B4E9),
-    warning = Color(0xFFF0E442), bad = Color(0xFFD55E00),
+    // "Good" (a bluish green) apart from "playing" (blue); "bad" light enough to read on the dark panels.
+    accent = Color(0xFFE69F00), playing = Color(0xFF56B4E9), good = Color(0xFF3CC9A3),
+    warning = Color(0xFFF0E442), bad = Color(0xFFFF8A50),
 )
 
 val LocalPalette = staticCompositionLocalOf { Palettes.Studio }

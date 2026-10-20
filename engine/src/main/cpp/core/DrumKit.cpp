@@ -221,13 +221,13 @@ float DrumKit::renderVoice(int voice, bool trig, float v) {
 }
 
 void DrumKit::render(float* mono, int numFrames) {
-    renderTo(numFrames, [mono](size_t, int i, float x) { mono[i] += x; });
+    renderTo(numFrames, [mono](int i, float x, float, float) { mono[i] += x; });
 }
 
 void DrumKit::render(float* left, float* right, int numFrames) {
-    renderTo(numFrames, [this, left, right](size_t voice, int i, float x) {
-        left[i] += x * gainL_[voice];
-        right[i] += x * gainR_[voice];
+    renderTo(numFrames, [left, right](int i, float x, float gl, float gr) {
+        left[i] += x * gl;
+        right[i] += x * gr;
     });
 }
 
@@ -246,18 +246,23 @@ void DrumKit::renderTo(int numFrames, Sink&& sink) {
         // A closed hat cuts the open one at the exact sample, like on a real machine.
         const int chokeAt = voice == OpenHat ? closedHatHit : -1;
         int& remaining = activeFrames_[idx];
+        // Pan gains in locals: the output buffers could alias the members, which would keep the
+        // compiler from hoisting them out of the sample loop.
+        float gl = gainL_[idx], gr = gainR_[idx];
         for (int i = 0; i < numFrames; ++i) {
             if (i == pending) {
                 remaining = maxLength;
-                panGains(pendingPan_[idx], gainL_[idx], gainR_[idx]);
+                panGains(pendingPan_[idx], gl, gr);
             }
             if (i == chokeAt) openHatChoke_ = 0.999f;
             const float sample = renderVoice(voice, i == pending, velocity);
             if (remaining <= 0) continue;
             const float fade = remaining < fadeLength ? static_cast<float>(remaining) / fadeLength : 1.0f;
-            sink(idx, i, gain * fade * sample);
+            sink(i, gain * fade * sample, gl, gr);
             --remaining;
         }
+        gainL_[idx] = gl;
+        gainR_[idx] = gr;
         if (pending >= 0) pending_[idx] = -1;
     }
 }

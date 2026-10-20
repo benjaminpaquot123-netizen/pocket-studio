@@ -62,7 +62,7 @@ private:
     };
 
     float renderVoice(int voice, bool trig, float velocity);
-    // Calls sink(voice, frame, value) for every sample a voice adds.
+    // Calls sink(frame, value, gainLeft, gainRight) for every sample a voice adds.
     template <typename Sink> void renderTo(int numFrames, Sink&& sink);
     float noise();
 

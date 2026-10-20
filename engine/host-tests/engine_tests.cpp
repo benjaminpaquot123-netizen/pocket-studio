@@ -587,10 +587,15 @@ void testFullKitCpuBudget() {
     }
     engine.post({ps::CommandType::SetTransport, 1.0f, 0});
     const int frames = kRate * 6;
-    const auto start = std::chrono::steady_clock::now();
-    const auto out = render(engine, frames, 256);
-    const double seconds = std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count();
-    const double load = seconds / (static_cast<double>(frames) / kRate);
+    // Best of three passes: a busy machine (CI) only ever makes a pass slower, never faster.
+    std::vector<float> out;
+    double load = 1e9;
+    for (int pass = 0; pass < 3; ++pass) {
+        const auto start = std::chrono::steady_clock::now();
+        out = render(engine, frames, 256);
+        const double seconds = std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count();
+        load = std::min(load, seconds / (static_cast<double>(frames) / kRate));
+    }
     std::printf("  full kit: %.1f %% of real time on this machine\n", load * 100.0);
 #if defined(__SANITIZE_ADDRESS__)
     (void)load;  // sanitizer builds are several times slower: timing is meaningless there

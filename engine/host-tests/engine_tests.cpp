@@ -478,6 +478,22 @@ void testCountInAndPatternTriggers() {
     CHECK(engine.currentStep() == -1);
 }
 
+void testPositionDuringTheCountIn() {
+    // 120 BPM: a sixteenth = 6000 frames; one bar of count-in = 16 sixteenths before the first step.
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SetTempo, 120.0f});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 1});
+    render(engine, 6000 * 4, 250);
+    CHECK(engine.playPosition() > -12.1 && engine.playPosition() < -11.9);  // 12 sixteenths to go
+    render(engine, 6000 * 11 + 3000, 250);
+    CHECK(engine.playPosition() > -0.55 && engine.playPosition() < -0.45);  // half a sixteenth before the "1"
+    render(engine, 6000, 250);
+    CHECK(engine.playPosition() > 0.45 && engine.playPosition() < 0.55);
+    engine.post({ps::CommandType::SetTransport, 0.0f});
+    render(engine, 256, 256);
+    CHECK(engine.playPosition() == -1.0);
+}
+
 void testMetronomeIsSampleAccurate() {
     ps::Engine engine(kRate);
     engine.post({ps::CommandType::SetTempo, 120.0f});
@@ -3395,6 +3411,7 @@ int main(int argc, char** argv) {
         {"sequencer_swing", testSequencerSwing},
         {"sequencer_tempo_change", testSequencerTempoChangeKeepsGroove},
         {"count_in_and_pattern_triggers", testCountInAndPatternTriggers},
+        {"position_during_count_in", testPositionDuringTheCountIn},
         {"metronome_sample_accurate", testMetronomeIsSampleAccurate},
         {"every_drum_voice", testEveryDrumVoiceSoundsAndDecays},
         {"drum_velocity", testVelocityChangesLoudness},

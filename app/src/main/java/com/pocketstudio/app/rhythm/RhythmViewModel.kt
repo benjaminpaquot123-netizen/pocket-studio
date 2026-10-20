@@ -1511,12 +1511,24 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     @Volatile private var downloadCancelled = false
 
     /** Every track's General MIDI instrument (a track whose bank is not open yet plays its synth). */
+    /** What each track's General MIDI instrument is in the live engine (bank, preset index). */
+    private val liveInstruments = HashMap<Int, Pair<SoundFont?, Int>>()
+
     private fun pushInstrument(p: Project = project.value) {
         if (!NativeEngine.isAvailable) return
+        // The live engine only gets the tracks that change: a new instance cuts the notes held on
+        // that track (an undo while playing must not). An export engine gets them all.
+        val live = !NativeEngine.isCapturing
         p.instrumentTracks.forEach { t ->
             val font = t.instrument?.let { fonts[it.bankId] }
             val index = t.instrument?.let { font?.indexOf(it.bank, it.program) } ?: -1
-            if (font != null && index >= 0) NativeEngine.setInstrument(font, index, t.id) else NativeEngine.setInstrument(null, 0, t.id)
+            val wanted = if (font != null && index >= 0) font to index else null to 0
+            if (live) {
+                val had = liveInstruments[t.id]
+                if (had != null && had.first === wanted.first && had.second == wanted.second) return@forEach
+                liveInstruments[t.id] = wanted
+            }
+            NativeEngine.setInstrument(wanted.first, wanted.second, t.id)
         }
     }
 
@@ -2492,11 +2504,13 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** Where the playhead is in [loopTicks], or null when nothing is recorded (not armed, stopped, counting in). */
     private fun recordTick(loopTicks: Int): Int? {
-        if (!_recording.value || !NativeEngine.isAvailable) return null
+        if (!_recording.value || !NativeEngine.isAvailable || !_transport.value.playing) return null
         // What is heard lags what is rendered by the output latency (much more over Bluetooth).
         val latencyMs = Metrics.streamInfo.value.outputLatencyMs.takeIf { it > 0 } ?: 0.0
         val pos = NativeEngine.playPosition() - latencyMs / 1000.0 * project.value.tempoBpm / 15.0
-        if (NativeEngine.playPosition() < 0) return null
+        // Before the first step (end of the count-in, or the latency pulling a note played on the
+        // "1" just before it): up to a sixteenth early lands on the "1", earlier is not recorded.
+        if (pos < 0) return if (pos >= -EARLY_STEPS) 0 else null
         return Math.floorMod((pos * NoteClip.TICKS_PER_STEP).toLong(), loopTicks.toLong()).toInt()
     }
 
@@ -2759,13 +2773,23 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (project.value.instrument != null) openLibrary()
         loadTrackFonts()
         if (NativeEngine.isAvailable) NativeEngine.liveTrack = 0
+        // The engine outlives a project: the keyboard's sustain, wheel and arpeggio of the last
+        // one must not hold or arpeggiate this one's notes while its buttons show them off.
+        for (id in 0 until InstrumentTrack.MAX) {
+            expression(NativeEngine.EXPR_BEND, 0f, id)
+            expression(NativeEngine.EXPR_MOD, 0f, id)
+            expression(NativeEngine.EXPR_SUSTAIN, 0f, id)
+            expression(NativeEngine.EXPR_ARP_ON, 0f, id)
+        }
         viewModelScope.launch {
             session.lastSaveError.collect { e -> if (e != null) AppLog.add("Sauvegarde impossible : ${e.message}") }
         }
         viewModelScope.launch {
-            PlaybackService.stops.collect {
-                AppLog.add("Stop depuis la notification")
-                if (_transport.value.playing) togglePlay()
+            PlaybackService.stops.collect { why ->
+                AppLog.add("Arrêt : $why")
+                // A microphone take ends and is kept; otherwise the song stops.
+                if (_audioRecording.value != null) stopAudioRecording()
+                else if (_transport.value.playing) togglePlay()
                 if (!visible && NativeEngine.isAvailable) NativeEngine.stop()
             }
         }
@@ -3198,6 +3222,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     companion object {
         const val PROJECT_ID = "projet-1"
         const val BUSY_TRACK_SOUND = "Préparation du son…"
+        /** How early (sixteenths) a note played ahead of the first step still lands on it. */
+        private const val EARLY_STEPS = 1.0
 
         /** The first project of a new install, and the "Rythme de départ" choice: a beat and an acid line. */
         fun starterProject(name: String = "Mon premier rythme"): Project {

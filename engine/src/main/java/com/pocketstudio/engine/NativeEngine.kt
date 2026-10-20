@@ -208,7 +208,10 @@ object NativeEngine {
     /** Steps since play without wrapping (-1 stopped): the piano roll loops on its own length. */
     external fun absoluteStep(): Int
 
-    /** Position in the playing scene in sixteenths, with the fraction (live recording); -1 when stopped or counting in. */
+    /**
+     * Position in the playing scene in sixteenths, with the fraction (live recording). While the
+     * count-in clicks, negative: the sixteenths left before the first step. -1 when stopped.
+     */
     external fun playPosition(): Double
 
     /** Click volume 0..1 (0.5 = default). */
@@ -264,6 +267,9 @@ object NativeEngine {
      * Runs [block] (on the main thread, like every other command) with all commands sent
      * to [export]'s private engine, so the same sync code describes the project to both.
      */
+    /** True inside [captureInto]: commands go to an export engine, not the live one. */
+    val isCapturing: Boolean get() = captureTarget != 0L
+
     fun captureInto(export: OfflineExport, block: () -> Unit) {
         check(captureTarget == 0L)
         captureTarget = export.handle

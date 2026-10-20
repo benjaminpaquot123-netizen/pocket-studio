@@ -341,6 +341,7 @@ private:
     std::atomic<int> absoluteStep_{-1};
     std::atomic<double> playPosition_{-1.0};
     int lastLocal_ = -1;        // local step of the last step played
+    int countInStep_ = 0;       // the count-in's last click step (negative) while it plays, else 0
     int stepOffset_ = -1;       // its frame offset in the current block, -1 if it was in an earlier one
     double sinceStep_ = 0.0;    // frames played since that step
     std::array<std::atomic<uint32_t>, kLanes> laneTriggers_{};

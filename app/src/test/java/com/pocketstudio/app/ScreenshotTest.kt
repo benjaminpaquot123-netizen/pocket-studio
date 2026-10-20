@@ -367,6 +367,58 @@ class ScreenshotTest {
         )
     }
 
+    private fun wizardUi(step: Int, mood: com.pocketstudio.model.StarterWizard.Mood? = com.pocketstudio.model.StarterWizard.Mood.Happy): com.pocketstudio.app.library.WizardUi {
+        val style = com.pocketstudio.model.StarterWizard.style("house")!!
+        val rows = style.lines.associate { l ->
+            val cats = com.pocketstudio.app.library.soundCategories(l.role, style.id, emptyList())
+            l.role to com.pocketstudio.app.library.WizardRow(true, cats.first().id, cats.first().options.first())
+        }
+        val parts = com.pocketstudio.model.StarterWizard.Part.entries.associateWith {
+            com.pocketstudio.app.library.PartRow(it.byDefault, com.pocketstudio.model.StarterWizard.soundsFor(it, style).first())
+        }
+        return com.pocketstudio.app.library.WizardUi(true, step, style.id, rows, mood, parts)
+    }
+
+    @Test
+    fun wizardStyle() = shoot("wizard_style") {
+        com.pocketstudio.app.library.WizardScreen(com.pocketstudio.app.library.WizardUi(open = true),
+            com.pocketstudio.app.library.PacksUi(com.pocketstudio.app.library.IndexState.Unavailable), null, com.pocketstudio.app.library.WizardActions())
+    }
+
+    @Test
+    fun wizardMood() = shoot("wizard_mood") {
+        com.pocketstudio.app.library.WizardScreen(wizardUi(1), com.pocketstudio.app.library.PacksUi(com.pocketstudio.app.library.IndexState.Unavailable),
+            null, com.pocketstudio.app.library.WizardActions())
+    }
+
+    @Test
+    fun wizardKick() = shoot("wizard_kick") {
+        com.pocketstudio.app.library.WizardScreen(wizardUi(2), com.pocketstudio.app.library.PacksUi(com.pocketstudio.app.library.IndexState.Unavailable),
+            com.pocketstudio.app.library.SoundRef.Kit(0), com.pocketstudio.app.library.WizardActions())
+    }
+
+    @Test
+    fun wizardPad() = shoot("wizard_pad") {
+        val ui = wizardUi(2 + com.pocketstudio.model.StarterWizard.style("house")!!.lines.size + 1)
+        com.pocketstudio.app.library.WizardScreen(ui, com.pocketstudio.app.library.PacksUi(com.pocketstudio.app.library.IndexState.Unavailable),
+            null, com.pocketstudio.app.library.WizardActions())
+    }
+
+    @Test
+    fun wizardSummary() = shoot("wizard_summary") {
+        val ui = wizardUi(99)
+        com.pocketstudio.app.library.WizardScreen(ui.copy(step = ui.lastStep), com.pocketstudio.app.library.PacksUi(com.pocketstudio.app.library.IndexState.Unavailable),
+            null, com.pocketstudio.app.library.WizardActions())
+    }
+
+    @Test
+    fun chordPads() = shoot("chord_pads") {
+        androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
+            com.pocketstudio.app.synth.ChordPads(com.pocketstudio.model.Harmony(9, com.pocketstudio.model.Scale.Minor, lock = true), 48, { _, _ -> }, {})
+            com.pocketstudio.app.synth.Keyboard(48, 2, { _, _ -> }, {}, harmony = com.pocketstudio.model.Harmony(9, com.pocketstudio.model.Scale.Minor, lock = true))
+        }
+    }
+
     @Test
     fun generateFirstTime() = shoot("generate_first") {
         com.pocketstudio.app.generate.GenerateScreen(

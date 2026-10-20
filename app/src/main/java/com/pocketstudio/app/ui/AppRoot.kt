@@ -207,7 +207,10 @@ fun AppRoot() {
         val previewing by libraryVm.playing.collectAsStateWithLifecycle()
         val libTransport by rhythmVm.transport.collectAsStateWithLifecycle()
         val lane = libTransport.selectedPad
-        LaunchedEffect(Unit) { libraryVm.refreshPacks() }
+        LaunchedEffect(Unit) {
+            libraryVm.dismissMessage()
+            libraryVm.refreshPacks()
+        }
         val sizes by androidx.compose.runtime.produceState(emptyMap<String, Long>(), packsUi.installed) {
             value = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
                 packsUi.installed.associate { it.id to com.pocketstudio.app.library.PackStore.bytesOnDisk(context, it.id) }
@@ -231,8 +234,8 @@ fun AppRoot() {
                         preview = libraryVm::preview,
                         use = { option ->
                             libraryVm.use(option.ref) { pcm ->
-                                rhythmVm.placeOnPad(pcm, option.name.substringBefore(" · "))
-                                close()
+                                if (rhythmVm.placeOnPad(pcm, option.name.substringBefore(" · "))) close()
+                                else libraryVm.notice("Un son est encore en train d'être posé ou enregistré : réessaie dans un instant.")
                             }
                         },
                         download = libraryVm::downloadPack,

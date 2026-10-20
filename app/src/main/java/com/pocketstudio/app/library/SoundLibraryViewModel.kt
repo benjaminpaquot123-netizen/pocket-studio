@@ -139,7 +139,11 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
     fun refreshPacks() {
         viewModelScope.launch {
             val app = getApplication<Application>()
-            val installed = withContext(Dispatchers.IO) { PackStore.installed(app) }
+            val idle = _packs.value.downloading.isEmpty()
+            val installed = withContext(Dispatchers.IO) {
+                if (idle) PackStore.cleanLeftovers(app)
+                PackStore.installed(app)
+            }
             _packs.update { it.copy(installed = installed) }
             if (_packs.value.index is IndexState.Ready) return@launch
             _packs.update { it.copy(index = IndexState.Loading) }
@@ -210,6 +214,9 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
 
     fun dismissMessage() = _packs.update { it.copy(message = null) }
 
+    /** A line for the library's notice spot (shown at the top of the library). */
+    fun notice(text: String) = _packs.update { it.copy(message = text) }
+
     // --- Previews ------------------------------------------------------------------------------
 
     fun preview(ref: SoundRef) {
@@ -228,6 +235,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
     /** The sound as audio for a pad or a track ([then] on the main thread; nothing if unreadable). */
     fun use(ref: SoundRef, then: (Pcm) -> Unit) {
         stopPreview()
+        dismissMessage()
         viewModelScope.launch {
             val pcm = load(ref)
             if (pcm == null) {

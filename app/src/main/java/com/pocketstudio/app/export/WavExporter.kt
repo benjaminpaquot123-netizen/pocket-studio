@@ -60,6 +60,7 @@ object WavExporter {
         val uris = ArrayList(files.map { FileProvider.getUriForFile(context, context.packageName + ".files", it) })
         val mime = when {
             files.all { it.extension == "m4a" } -> "audio/mp4"
+            files.all { it.extension == "flac" } -> "audio/flac"
             files.all { it.extension == "wav" } -> "audio/wav"
             files.all { it.extension == "mid" } -> "audio/midi"
             files.all { it.extension == "zip" } -> "application/zip"

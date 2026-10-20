@@ -30,6 +30,16 @@ class LoudnessTest {
     }
 
     @Test
+    fun theHighPassAndTheRelativeGateMatchTheReference() {
+        // Reference values: ffmpeg's ebur128 filter on the same signals.
+        assertEquals(-15.0, measure(sine(0.5, 10.0, hz = 30.0))!!, 0.15)
+        val loud = sine(0.5, 10.0)
+        val quiet = FloatArray(loud.size) { loud[it] * 0.031623f }  // 30 dB quieter
+        // The quiet half falls under the relative gate (it would read -9 without it).
+        assertEquals(-6.1, measure(loud + quiet)!!, 0.15)
+    }
+
+    @Test
     fun silenceAndGatesAreHandled() {
         assertNull(measure(FloatArray(48000 * 2 * 2)))
         assertNull(measure(sine(0.5, 0.2)))  // shorter than one 400 ms block

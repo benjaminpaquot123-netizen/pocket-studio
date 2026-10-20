@@ -81,6 +81,8 @@ fun LibraryScreen(ui: LibraryUi, actions: LibraryActions) {
             IconButton(onClick = actions.close, modifier = Modifier.testTag("library_close")) { Icon(Icons.Filled.Close, contentDescription = "Fermer") }
         }
         Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            // Errors and notices at the top, where they are seen (the pack list can be far below).
+            ui.packs.message?.let { Text(it, color = Neon.Amber, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.testTag("library_message")) }
             Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 SoundPacks.KIND_LABELS.filterKeys { it != "fx" && it != "loop" }.forEach { (k, label) ->
                     FilterChip(selected = kind == k, onClick = { kind = k }, label = { Text(label) }, colors = chipColors,
@@ -162,7 +164,6 @@ private fun PackList(ui: LibraryUi, actions: LibraryActions) {
                 }
             }
         }
-        packs.message?.let { Text(it, color = Neon.Amber, style = MaterialTheme.typography.bodySmall) }
     }
 }
 

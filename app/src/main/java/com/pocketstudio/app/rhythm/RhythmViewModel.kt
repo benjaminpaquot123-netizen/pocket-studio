@@ -539,9 +539,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     // --- Generated sounds (text to sound): placed like an imported file -------------------------
 
     /** On the selected drum pad (it plays once placed). */
-    fun placeOnPad(pcm: Pcm, name: String) {
-        if (_sampleTask.value is SampleTask.Busy || _sampleTask.value is SampleTask.Recording) return
+    /** False when another sound is still being placed or recorded (nothing done). */
+    fun placeOnPad(pcm: Pcm, name: String): Boolean {
+        if (_sampleTask.value is SampleTask.Busy || _sampleTask.value is SampleTask.Recording) return false
         sampleJob("Pose du son sur le pad ${_transport.value.selectedPad + 1}…") { padSamples.add(pcm, name) }
+        return true
     }
 
     /** On the first free live pad, its length in beats fitted to the tempo. */
@@ -2877,18 +2879,25 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     }
                     // Measured on the full-quality mix, before any compression.
                     if (solo == null) loudness = withContext(Dispatchers.IO) { runCatching { Loudness.integrated(wav) }.getOrNull() }
+                    if (exportCancelled) {
+                        wav.delete()
+                        throw kotlinx.coroutines.CancellationException("annulé")
+                    }
                     val out = if (settings.format == ExportFormat.Wav) {
                         wav
                     } else {
                         val name = if (settings.format == ExportFormat.M4a) "Compression M4A" else "Conversion FLAC"
-                        _export.value = _export.value.copy(stage = name + if (renders.size > 1) " (${index + 1}/${renders.size})" else "")
+                        val part = if (renders.size > 1) " (${index + 1}/${renders.size})" else ""
+                        _export.value = _export.value.copy(stage = name + part)
                         val packed = File(wav.parentFile, wav.nameWithoutExtension + "." + settings.format.extension)
                         withContext(Dispatchers.IO) {
                             try {
                                 if (settings.format == ExportFormat.M4a) {
-                                    AacEncoder.encode(wav, packed) { exportCancelled }
+                                    AacEncoder.encode(wav, packed) { exportCancelled || !isActive }
                                 } else {
-                                    FlacEncoder.encode(wav, packed) { exportCancelled }
+                                    FlacEncoder.encode(wav, packed, { exportCancelled || !isActive }) { p ->
+                                        _export.value = _export.value.copy(stage = "$name ${(p * 100).roundToInt()} %$part")
+                                    }
                                 }
                             } finally {
                                 wav.delete()
@@ -2896,8 +2905,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                         }
                         packed
                     }
-                    musicOk = withContext(Dispatchers.IO) { WavExporter.copyToMusic(app, out, settings.format.mime) } && musicOk
+                    // Listed first: a cancel from here on deletes it with the others.
                     done += out
+                    if (exportCancelled) throw kotlinx.coroutines.CancellationException("annulé")
+                    musicOk = withContext(Dispatchers.IO) { WavExporter.copyToMusic(app, out, settings.format.mime) } && musicOk
                 }
                 _export.value = _export.value.copy(running = false, files = done, savedInMusic = musicOk, stage = null, loudness = loudness)
                 AppLog.add("Export ${settings.what} ${settings.format} : ${done.size} fichier(s), ${frames / OfflineExport.SAMPLE_RATE} s")
@@ -2929,7 +2940,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     mid
                 }
                 val music = withContext(Dispatchers.IO) { WavExporter.copyToMusic(app, file, "audio/midi") }
-                _export.value = _export.value.copy(files = listOf(file), savedInMusic = music, error = null)
+                _export.value = _export.value.copy(files = listOf(file), savedInMusic = music, error = null, loudness = null)
                 AppLog.add("Export MIDI : ${file.length()} octets")
             } catch (e: Exception) {
                 _export.value = _export.value.copy(error = "L'export MIDI a échoué : ${e.message}")
@@ -2976,6 +2987,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     override fun onCleared() {
+        exportCancelled = true  // a conversion in progress stops and leaves no file behind
         // A take in progress: the microphone closes and its buffer is freed.
         recordHandle.takeIf { it != 0L }?.let { finishInBackground(it) }
         recordHandle = 0L

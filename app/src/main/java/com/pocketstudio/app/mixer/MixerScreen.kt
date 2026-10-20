@@ -270,7 +270,7 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
         Text(
             when (export.format) {
                 ExportFormat.Wav -> "Qualité studio, lu par tous les logiciels. Le plus lourd."
-                ExportFormat.Flac -> "La même qualité que le WAV, deux fois plus léger."
+                ExportFormat.Flac -> "Exactement la même qualité que le WAV, bien plus léger (souvent deux fois)."
                 ExportFormat.M4a -> "Environ dix fois plus léger, pour partager."
             },
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,

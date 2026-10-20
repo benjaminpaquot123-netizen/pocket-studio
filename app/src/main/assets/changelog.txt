@@ -1,5 +1,5 @@
 Phase 11 : « Deux mille sons ? C'est pas faux ! »
 - Bibliothèque de sons (bouton sous chaque pad) : écoute et pose sur le pad en un geste.
 - 34 packs par style à télécharger (rétro techno, Detroit, UK garage, DnB…), supprimables d'un geste.
-- Export en FLAC : qualité studio, deux fois plus léger.
+- Export en FLAC : la qualité du WAV, bien plus léger.
 - Après l'export du morceau : son volume perçu, comparé au streaming.

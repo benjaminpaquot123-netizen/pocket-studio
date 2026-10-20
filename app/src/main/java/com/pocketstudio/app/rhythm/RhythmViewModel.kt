@@ -2059,6 +2059,57 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /** The project's notes as a MIDI file (the whole song when there is one), copied to Music. */
+    fun exportMidi() {
+        val app = getApplication<Application>()
+        val p = project.value
+        viewModelScope.launch {
+            try {
+                val file = withContext(Dispatchers.IO) {
+                    val wav = WavExporter.newFile(app, p.name + if (p.song.isNotEmpty()) "-morceau" else "")
+                    val mid = File(wav.parentFile, wav.nameWithoutExtension + ".mid")
+                    mid.writeBytes(com.pocketstudio.model.MidiFile.export(p))
+                    mid
+                }
+                val music = withContext(Dispatchers.IO) { WavExporter.copyToMusic(app, file, "audio/midi") }
+                _export.value = _export.value.copy(files = listOf(file), savedInMusic = music, error = null)
+                AppLog.add("Export MIDI : ${file.length()} octets")
+            } catch (e: Exception) {
+                _export.value = _export.value.copy(error = "L'export MIDI a échoué : ${e.message}")
+            }
+        }
+    }
+
+    /** A MIDI file's notes into the current scene (piano roll, drum pads, tempo): one undo step. */
+    fun importMidi(uri: Uri) {
+        val app = getApplication<Application>()
+        viewModelScope.launch {
+            try {
+                val content = withContext(Dispatchers.IO) {
+                    val bytes = app.contentResolver.openInputStream(uri)?.use { input ->
+                        val out = java.io.ByteArrayOutputStream()
+                        val buf = ByteArray(64 * 1024)
+                        while (true) {
+                            val n = input.read(buf)
+                            if (n < 0) break
+                            out.write(buf, 0, n)
+                            if (out.size() > MAX_MIDI_BYTES) throw UserMessage("Ce fichier MIDI est trop gros.")
+                        }
+                        out.toByteArray()
+                    } ?: throw UserMessage("Le fichier n'a pas pu être ouvert.")
+                    com.pocketstudio.model.MidiFile.read(bytes)
+                }
+                if (content.notes.isEmpty()) throw UserMessage("Aucune note dans ce fichier MIDI.")
+                session.edit { com.pocketstudio.model.MidiFile.importInto(it, content) }
+                syncEngine()
+                AppLog.add("Import MIDI : ${content.notes.size} notes")
+                _transcription.value = SampleTask.Idle
+            } catch (e: Exception) {
+                _transcription.value = SampleTask.Failed(if (e is UserMessage) e.message!! else "Ce fichier MIDI n'a pas pu être lu (${e.message}).")
+            }
+        }
+    }
+
     private var exportJob: kotlinx.coroutines.Job? = null
     @Volatile private var exportCancelled = false
 
@@ -2089,6 +2140,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             val acid = AcidGenerator().generate(AcidPattern(), AcidGenerator.NOTE_SETS[5])
             return Project(name = name, drums = drums, acid = acid)
         }
+        const val MAX_MIDI_BYTES = 4 * 1024 * 1024
         /** Stems export: one render per mixer channel. */
         private val STEM_EXPORTS = listOf("batterie" to 0, "acide" to 1, "synthe" to 2, "remix" to 3)
         private val AUDIO_EXTENSIONS = setOf("wav", "mp3", "flac", "m4a", "aac", "ogg", "opus", "aif", "aiff")

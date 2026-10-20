@@ -28,15 +28,16 @@ class TranscribeUi(
     val pickFile: () -> Unit = {},
     val record: () -> Unit = {},
     val stop: () -> Unit = {},
+    val pickMidi: () -> Unit = {},
 )
 
 /** Audio to notes: hum, sing or play a melody, it lands in the piano roll. */
 @Composable
 fun TranscribeCard(ui: TranscribeUi) {
     NeonCard(modifier = Modifier.testTag("transcribe")) {
-        SectionLabel("De l'audio aux notes")
+        SectionLabel("Importer des notes")
         Text(
-            "Chante, siffle ou joue une mélodie (ou choisis un enregistrement) : ses notes remplacent celles du piano roll. Annuler les ramène.",
+            "Chante, siffle ou joue une mélodie (ou choisis un enregistrement, ou un fichier MIDI) : ses notes remplacent celles du piano roll. Annuler les ramène.",
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
         )
         when (val t = ui.task) {
@@ -64,8 +65,12 @@ fun TranscribeCard(ui: TranscribeUi) {
                     }
                     OutlinedButton(onClick = ui.pickFile, modifier = Modifier.weight(1f).testTag("transcribe_file")) {
                         Icon(Icons.Filled.FileOpen, contentDescription = null)
-                        Text("  Un fichier")
+                        Text("  Un son")
                     }
+                }
+                OutlinedButton(onClick = ui.pickMidi, modifier = Modifier.fillMaxWidth().testTag("import_midi")) {
+                    Icon(Icons.Filled.FileOpen, contentDescription = null)
+                    Text("  Un fichier MIDI (.mid)")
                 }
             }
         }

@@ -58,7 +58,13 @@ object WavExporter {
     fun share(context: Context, files: List<File>, title: String = "Partager le morceau") {
         if (files.isEmpty()) return
         val uris = ArrayList(files.map { FileProvider.getUriForFile(context, context.packageName + ".files", it) })
-        val mime = if (files.all { it.extension == "m4a" }) "audio/mp4" else if (files.all { it.extension == "wav" }) "audio/wav" else "*/*"
+        val mime = when {
+            files.all { it.extension == "m4a" } -> "audio/mp4"
+            files.all { it.extension == "wav" } -> "audio/wav"
+            files.all { it.extension == "mid" } -> "audio/midi"
+            files.all { it.extension == "zip" } -> "application/zip"
+            else -> "*/*"
+        }
         val send = if (uris.size == 1) {
             Intent(Intent.ACTION_SEND).putExtra(Intent.EXTRA_STREAM, uris[0])
         } else {

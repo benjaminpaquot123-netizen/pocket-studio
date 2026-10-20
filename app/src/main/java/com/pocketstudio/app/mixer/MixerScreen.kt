@@ -59,6 +59,7 @@ data class MixerActions(
     val export: () -> Unit = {},
     val setExportWhat: (ExportWhat) -> Unit = {},
     val setExportFormat: (ExportFormat) -> Unit = {},
+    val exportMidi: () -> Unit = {},
     val cancelExport: () -> Unit = {},
     val share: () -> Unit = {},
     val setInsertType: (ch: Int, slot: Int, type: EffectType) -> Unit = { _, _, _ -> },
@@ -244,6 +245,11 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
                         },
                     )
                 }
+            }
+        }
+        if (!export.running) {
+            TextButton(onClick = actions.exportMidi, modifier = Modifier.fillMaxWidth().testTag("export_midi")) {
+                Text("Exporter les notes en fichier MIDI" + if (hasSong) " (tout le morceau)" else "")
             }
         }
         if (export.files.isNotEmpty()) {

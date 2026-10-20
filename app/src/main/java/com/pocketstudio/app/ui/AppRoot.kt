@@ -265,6 +265,9 @@ fun AppRoot() {
             }
         }
     }
+    val pickMidiFile = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri != null) rhythmVm.importMidi(uri)
+    }
     val pickNotesAudio = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) rhythmVm.transcribeFile(uri)
     }
@@ -520,6 +523,7 @@ fun AppRoot() {
                                     else notesMicPermission.launch(Manifest.permission.RECORD_AUDIO)
                                 },
                                 stop = rhythmVm::stopNoteRecording,
+                                pickMidi = { rhythmVm.dismissTranscription(); pickMidiFile.launch(arrayOf("audio/midi", "audio/x-midi", "application/x-midi", "application/octet-stream")) },
                             ),
                             browser = if (project.synthEngine == 1) {
                                 SoundBrowserUi(
@@ -573,6 +577,7 @@ fun AppRoot() {
                                 share = { WavExporter.share(context, export.files) },
                                 setExportWhat = rhythmVm::setExportWhat,
                                 setExportFormat = rhythmVm::setExportFormat,
+                                exportMidi = rhythmVm::exportMidi,
                                 setInsertType = rhythmVm::setInsertType,
                                 setInsertParam = rhythmVm::setInsertParam,
                                 setSend = rhythmVm::setSend,

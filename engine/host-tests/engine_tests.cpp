@@ -899,6 +899,51 @@ void testSynthUnison() {
     const double periodic = xy / std::sqrt(xx * yy);
     std::printf("  unison without spread repeats at A4: %.3f\n", periodic);
     CHECK(periodic > 0.9);
+    // The stack stays centred on the note with an odd number of copies (2 voices at full spread:
+    // one 25 cents up, one 25 cents down, not 0 and -50): A4 still averages 440 Hz.
+    for (float voices : {1.0f / 6.0f, 3.0f / 6.0f}) {
+        auto centred = make(voices, 1.0f);
+        centred->setParam(ps::Synth::Osc1Wave, 1.0f);  // triangles: clean zero crossings
+        centred->noteOn(69, 1.0f);
+        const auto c2 = renderSynth(*centred, kRate * 2);
+        // Power-weighted mean frequency around A4 (Goertzel scan, Hann window, last second).
+        double weighted = 0.0, total = 0.0;
+        for (double f = 400.0; f <= 480.0; f += 0.25) {
+            const double w = 2.0 * std::cos(2.0 * M_PI * f / kRate);
+            double s1 = 0.0, s2 = 0.0;
+            for (int i = 0; i < kRate; ++i) {
+                const double hann = 0.5 - 0.5 * std::cos(2.0 * M_PI * i / (kRate - 1));
+                const double s0 = c2[static_cast<size_t>(kRate + i)] * hann + w * s1 - s2;
+                s2 = s1;
+                s1 = s0;
+            }
+            const double power = s1 * s1 + s2 * s2 - w * s1 * s2;
+            weighted += f * power;
+            total += power;
+        }
+        const double centre = weighted / total;
+        std::printf("  unison %d copies at full spread: centred on %.1f Hz\n", static_cast<int>(voices * 6.0f + 0.5f), centre);
+        CHECK(std::abs(centre - 440.0) < 1.5);
+    }
+    // A note played again while it rings keeps its phases: the sound goes on as if it had not been
+    // touched (a reset of the six copies would change it at once).
+    {
+        auto again = make(1.0f, 0.5f);
+        auto alone = make(1.0f, 0.5f);
+        for (auto* s : {again.get(), alone.get()}) {
+            s->setParam(ps::Synth::AmpAttack, 0.0f);
+            s->setParam(ps::Synth::AmpSustain, 1.0f);
+            s->noteOn(57, 1.0f);
+            renderSynth(*s, kRate / 4, 256);
+        }
+        again->noteOn(57, 1.0f);
+        const auto a2 = renderSynth(*again, 512, 256);
+        const auto b2 = renderSynth(*alone, 512, 256);
+        float diff = 0.0f;
+        for (size_t i = 0; i < a2.size(); ++i) diff = std::max(diff, std::abs(a2[i] - b2[i]));
+        std::printf("  unison retrigger: %.4f from the untouched note\n", diff);
+        CHECK(diff < 0.02f);
+    }
     // Eight voices of seven saws stay affordable (best of three passes).
     double best = 1e9;
     for (int pass = 0; pass < 3; ++pass) {

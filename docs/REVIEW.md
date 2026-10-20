@@ -263,3 +263,16 @@ Corrigé :
 
 Restant (mineur) :
 - Après Annuler, une piste échantillonnée joue le synthé le temps que son fichier soit relu.
+
+## Phase 13 (machines, sons actuels, unisson), relecture de fin de phase
+
+Vérifié par le relecteur : fil audio de l'unisson sans allocation, 26 réglages envoyés partout (chargement, export, assistant, MIDI), anciens projets inchangés, index des packs et les 51 archives (empreintes, fichiers, familles). Rien de grave.
+
+Corrigé :
+- Unisson décentré (plus bas) avec 2, 4 ou 6 voix : la pile est recentrée sur la note. Test : centre à 440,0 Hz pour un La.
+- Une note rejouée pendant qu'elle sonne garde ses phases (plus de petit clic) ; test.
+- Nombre de voix changé pendant une note : volume en fondu, les copies suivent toujours la note.
+- Écart minimal de ±3 cents : à « Écart » 0 le volume ne varie plus d'une note à l'autre.
+- Assistant : les nappes des packs se relâchent en 0,4 s ; l'indication des packs aussi pour les nappes.
+- Bibliothèque : « Packs de sons » triés par nom, texte d'aide général quand une famille est vide.
+- Décision : « identique à l'échantillon près » corrigé en « le même aux arrondis près ».

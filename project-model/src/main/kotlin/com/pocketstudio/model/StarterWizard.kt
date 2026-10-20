@@ -161,7 +161,12 @@ object StarterWizard {
                     "${sound.name} · ${m.name}",
                     sampled = SampledPatch(
                         file = PACK_FILE + m.id + "/" + sound.file, name = "${sound.name} · ${m.name}".take(40),
-                        glide = if (slide) SampledPatch.SLIDE else 0f, release = if (part == Part.Lead) 0.15f else 0.08f,
+                        glide = if (slide) SampledPatch.SLIDE else 0f,
+                        release = when (part) {
+                            Part.Bass -> 0.08f
+                            Part.Pad -> 0.4f
+                            Part.Lead -> 0.15f
+                        },
                     ),
                 )
             }

@@ -31,6 +31,7 @@ import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /** What the phone shows while the app plays: the project, its tempo, and whether it records. */
@@ -39,7 +40,7 @@ data class PlaybackStatus(
     val bpm: Double = 0.0,
     /** Live recording or a microphone take (the notification becomes a live activity). */
     val recording: Boolean = false,
-    /** When the recording started (System.currentTimeMillis), for the chronometer. */
+    /** When the recording started (System.currentTimeMillis), for the chronometer; 0 while counting in. */
     val recordingSince: Long = 0L,
     /** A microphone take: the service also holds the microphone (it keeps hearing, screen off). */
     val microphone: Boolean = false,
@@ -84,52 +85,77 @@ class PlaybackService : Service() {
     // stopService arrives before onStartCommand, so Android never sees a broken promise.
     override fun onCreate() {
         super.onCreate()
+        getSystemService(NotificationManager::class.java).createNotificationChannel(
+            NotificationChannel(CHANNEL_ID, "Lecture", NotificationManager.IMPORTANCE_LOW).apply {
+                description = "Affichée pendant que la musique joue ou s'enregistre"
+                setShowBadge(false)
+            },
+        )
         session = MediaSession(this, "PocketStudio").apply {
-            setCallback(object : MediaSession.Callback() {
-                // The control centre's or the headset's button: the song stops, like the app's.
-                override fun onStop() {
-                    _stopRequests.tryEmit("lecteur du téléphone")
-                }
-
-                override fun onPause() {
-                    _stopRequests.tryEmit("lecteur du téléphone")
-                }
-            })
+            setCallback(player)
             setPlaybackState(
                 PlaybackState.Builder()
                     .setActions(PlaybackState.ACTION_STOP or PlaybackState.ACTION_PAUSE or PlaybackState.ACTION_PLAY_PAUSE)
+                    // The control centre builds its buttons from here (Android 13+): a real "Arrêter".
+                    .addCustomAction(PlaybackState.CustomAction.Builder(ACTION_STOP, "Arrêter", R.drawable.ic_stop).build())
                     .setState(PlaybackState.STATE_PLAYING, PlaybackState.PLAYBACK_POSITION_UNKNOWN, 1f)
                     .build(),
             )
             setSessionActivity(openApp())
             isActive = true
         }
-        foreground(status.value)
+        // What is shown now, and what the updates below start from (a change in between is not lost).
+        val first = status.value
+        if (!foreground(first)) return
         ContextCompat.registerReceiver(this, noisy, IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY), ContextCompat.RECEIVER_NOT_EXPORTED)
         getSystemService(AudioManager::class.java)?.requestAudioFocus(focus)
-        // The project, the tempo or a recording change: the notification follows.
+        // The project, the tempo or a recording change: the notification follows, at most
+        // four times a second (a tempo knob turned fast would flood it, and Android drops updates;
+        // a StateFlow hands a slow collector only the latest status).
         scope.launch {
-            var shown = status.value
+            var shown = first
             status.collect { s ->
                 if (s == shown) return@collect
                 // A take that starts needs the microphone type; anything else is a new notification.
                 if (s.microphone != shown.microphone) foreground(s)
                 else getSystemService(NotificationManager::class.java).notify(NOTIFICATION_ID, buildNotification(s))
                 shown = s
+                delay(250)
             }
         }
     }
 
-    private fun foreground(s: PlaybackStatus) {
+    /** The control centre's or the headset's buttons: the song stops, like the app's. */
+    internal val player = object : MediaSession.Callback() {
+        override fun onStop() = stopFromPlayer()
+
+        override fun onPause() = stopFromPlayer()
+
+        override fun onCustomAction(action: String, extras: android.os.Bundle?) {
+            if (action == ACTION_STOP) stopFromPlayer()
+        }
+    }
+
+    private fun stopFromPlayer() {
+        _stopRequests.tryEmit("lecteur du téléphone")
+        stopSelf()
+    }
+
+    /** Puts the service in the foreground for [s]; false (and the service stops) if Android refuses. */
+    private fun foreground(s: PlaybackStatus): Boolean {
         val micAllowed = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
         val type = ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK or
             if (s.microphone && micAllowed) ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE else 0
-        runCatching { ServiceCompat.startForeground(this, NOTIFICATION_ID, buildNotification(s), type) }
-            .onFailure { ServiceCompat.startForeground(this, NOTIFICATION_ID, buildNotification(s), ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK) }
+        val started = runCatching { ServiceCompat.startForeground(this, NOTIFICATION_ID, buildNotification(s), type) }
+            .recoverCatching { ServiceCompat.startForeground(this, NOTIFICATION_ID, buildNotification(s), ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK) }
+        if (started.isFailure) stopSelf()
+        return started.isSuccess
     }
 
     override fun onDestroy() {
         scope.cancel()
+        // An update posted just before the stop must not leave a player nobody owns.
+        getSystemService(NotificationManager::class.java).cancel(NOTIFICATION_ID)
         session?.run {
             isActive = false
             release()
@@ -167,13 +193,6 @@ class PlaybackService : Service() {
     )
 
     internal fun buildNotification(s: PlaybackStatus): Notification {
-        val manager = getSystemService(NotificationManager::class.java)
-        manager.createNotificationChannel(
-            NotificationChannel(CHANNEL_ID, "Lecture", NotificationManager.IMPORTANCE_LOW).apply {
-                description = "Affichée pendant que la musique joue ou s'enregistre"
-                setShowBadge(false)
-            },
-        )
         session?.setMetadata(
             MediaMetadata.Builder()
                 .putString(MediaMetadata.METADATA_KEY_TITLE, s.title)
@@ -217,9 +236,10 @@ class PlaybackService : Service() {
             .setSilent(true)
             .setCategory(NotificationCompat.CATEGORY_STOPWATCH)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            // No chronometer while the take counts in (it starts with the recording itself).
             .setWhen(s.recordingSince)
-            .setShowWhen(true)
-            .setUsesChronometer(true)
+            .setShowWhen(s.recordingSince > 0)
+            .setUsesChronometer(s.recordingSince > 0)
             .setShortCriticalText("REC")
             .setRequestPromotedOngoing(true)
             .addAction(R.drawable.ic_stop, "Arrêter", stopIntent())

@@ -2831,11 +2831,13 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             kotlinx.coroutines.flow.combine(
                 project.map { it.name to it.tempoBpm }.distinctUntilChanged(),
                 _recording,
-                _audioRecording.map { it != null }.distinctUntilChanged(),
+                // null: no take; false: the microphone opens or counts in; true: it records.
+                _audioRecording.map { it?.let { take -> !take.waiting } }.distinctUntilChanged(),
             ) { song, live, take -> Triple(song, live, take) }.collect { (song, live, take) ->
-                val recording = live || take
-                if (!recording) since = 0L else if (since == 0L) since = System.currentTimeMillis()
-                PlaybackService.update(PlaybackStatus(song.first, song.second, recording, since, microphone = take))
+                val recording = live || take != null
+                // The chronometer starts with what is really recorded, as the take's own time does.
+                if (!recording) since = 0L else if (since == 0L && (live || take == true)) since = System.currentTimeMillis()
+                PlaybackService.update(PlaybackStatus(song.first, song.second, recording, since, microphone = take != null))
             }
         }
         viewModelScope.launch {

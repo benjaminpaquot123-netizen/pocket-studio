@@ -5,7 +5,7 @@
     {
       "id": "player",
       "title": "Le lecteur dans le centre de contrôle",
-      "hint": "Lance la lecture, puis ouvre le centre de contrôle (glisse depuis le haut) : un lecteur Pocket Studio montre ton projet et son tempo. Son bouton Stop arrête la musique."
+      "hint": "Lance la lecture, puis ouvre le centre de contrôle (glisse depuis le haut) : un lecteur Pocket Studio montre ton projet et son tempo. Son bouton Arrêter (ou pause) arrête la musique."
     },
     {
       "id": "lock_screen",
@@ -15,7 +15,7 @@
     {
       "id": "capsule",
       "title": "La pastille REC (ou la Capsule magique)",
-      "hint": "Touche ● pour enregistrer, puis reviens à l'écran d'accueil : regarde en haut de l'écran. Une pastille « REC » avec le chrono, ou la Capsule magique ? Dis-moi ce que tu vois (une capture, c'est parfait)."
+      "hint": "Touche ● pour enregistrer (si Android demande d'autoriser les notifications, accepte), puis reviens à l'écran d'accueil : regarde en haut de l'écran. Une pastille « REC » avec le chrono, ou la Capsule magique ? Dis-moi ce que tu vois (une capture, c'est parfait)."
     },
     {
       "id": "headset_button",

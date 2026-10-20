@@ -1,41 +1,36 @@
 {
-  "id": "phase8-effets-controle",
-  "milestone": "Phase 8 : effets et contrôle",
+  "id": "phase9-generation",
+  "milestone": "Phase 9 : génération",
   "items": [
     {
-      "id": "new_effects",
-      "title": "Essayer les nouveaux effets",
-      "hint": "Mixeur › une piste › Effets › choisis Phaser, puis Bitcrusher, puis EQ paramétrique : la courbe bouge avec les curseurs."
+      "id": "genre_project",
+      "title": "Démarrer un projet par style",
+      "hint": "Mes projets › Nouveau › Style · House (ou Trap…) : le tempo et les pistes sont prêts, appuie sur Lecture."
     },
     {
-      "id": "analyser",
-      "title": "Voir le spectre",
-      "hint": "Mixeur › Sortie générale › Analyseur de spectre, puis lance la lecture : les barres dansent."
+      "id": "model_download",
+      "title": "Télécharger le modèle de génération",
+      "hint": "En Wi-Fi : Audio › Générer › Télécharger le modèle. Ça peut prendre quelques minutes ; tu peux quitter l'appli, la notification montre l'avancement."
     },
     {
-      "id": "tuner",
-      "title": "S'accorder",
-      "hint": "Audio › Accordeur : chante ou joue une note, l'aiguille doit passer au vert quand c'est juste."
+      "id": "generate_kick",
+      "title": "Générer un kick",
+      "hint": "Audio › Générer › touche « Kick », durée 1 s, Générer. Il se joue tout seul à la fin. Note le temps que ça a pris."
     },
     {
-      "id": "automation_song",
-      "title": "Une automation sur tout le morceau",
-      "hint": "Mixeur › Automatiser un réglage › choisis le volume d'une piste › Morceau : dessine une montée. Joue le morceau : le volume suit la courbe, puis repart du début."
+      "id": "generate_loop",
+      "title": "Générer une boucle et la poser",
+      "hint": "Touche « Boucle batterie », 8 s, Générer, puis « Piste audio » : elle apparaît dans Pistes audio et joue avec le morceau."
     },
     {
-      "id": "keyboard_expressive",
-      "title": "Jouer avec expression",
-      "hint": "Synthé › Clavier : appuie en haut puis en bas d'une touche (plus doux, plus fort). Bouge Bend, Modul., essaie Sustain."
+      "id": "generate_pad",
+      "title": "Un son généré sur un pad",
+      "hint": "Écris « metal hit », Générer, puis « Pad 1 » (ou le pad choisi) : le pad joue le nouveau son dans la boîte à rythmes."
     },
     {
-      "id": "arpeggio",
-      "title": "Faire un arpège",
-      "hint": "Synthé › Arpège, garde trois touches enfoncées : elles jouent à tour de rôle. Change 1/8, Aller-retour, 2 oct."
-    },
-    {
-      "id": "midi_learn",
-      "title": "Associer un bouton MIDI (si tu as un clavier MIDI)",
-      "hint": "Outils › MIDI › Associer un bouton › Synthé : Coupure, puis tourne un bouton de ton clavier : le son change."
+      "id": "generate_cancel",
+      "title": "Annuler une génération",
+      "hint": "Lance une génération de 11 s et appuie sur Annuler : ça s'arrête, l'appli reste fluide."
     }
   ]
 }

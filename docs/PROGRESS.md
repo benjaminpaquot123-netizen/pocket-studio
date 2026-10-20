@@ -101,6 +101,9 @@
   - 8.3 fait : vélocité selon l'endroit touché sur la touche, pitch bend (revient au centre), modulation, sustain, arpège en direct (1/32 à 1/4, 4 sens, 1 à 4 octaves, longueur) calé dans le moteur ; clavier MIDI : pitch bend, molette, pédale de sustain ; MIDI learn (Outils › MIDI) ; horloge MIDI sortante.
   - Ableton Link reporté (bibliothèque réseau lourde).
 
+- Phase 9 (branche ccr-80af1a1b-mn0wec) :
+  - 9.2 fait : 6 projets « Style » (house, techno, drum & bass, trap, lo-fi, synthwave) dans Nouveau projet.
+  - 9.1 fait : Stable Audio Open Small sur le téléphone (ONNX Runtime, int8 partiel, 858 Mo sur la Release `modele-stable-audio-open-small-1`), tokeniseur T5 en Kotlin, Audio › Générer (phrase, exemples, durée 1 à 11 s, écoute, pose sur pad / pad live / piste audio). Test Linux : `STABLE_AUDIO_DIR=… ./scripts/separation-tests.sh`.
+
 ## Prochaine étape exacte
-1. Revue de fin de phase 8 faite et corrigée ; CI verte puis fusion de la PR #18.
-2. Phase 9 (voir ROADMAP.md).
+1. Phase 9 : PR, relecture de fin de phase, CI verte, fusion. Ensuite : Ableton Link (reporté) et restes de REVIEW.md.

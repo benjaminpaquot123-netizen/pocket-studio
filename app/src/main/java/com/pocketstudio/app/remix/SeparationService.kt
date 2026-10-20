@@ -22,6 +22,9 @@ import com.pocketstudio.app.MainActivity
 import com.pocketstudio.app.R
 import com.pocketstudio.app.audio.AudioDecoder
 import com.pocketstudio.app.download.VerifiedDownload
+import com.pocketstudio.app.generate.GenerationJob
+import com.pocketstudio.app.generate.GenerationModel
+import com.pocketstudio.app.generate.ModelDownload
 import com.pocketstudio.app.report.AppLog
 import com.pocketstudio.engine.NativeEngine
 import com.pocketstudio.separation.Demucs
@@ -60,6 +63,31 @@ class SeparationService : Service() {
                 cancelled.set(true)
                 if (!running) finish()
             }
+            ACTION_DOWNLOAD_GENERATION -> if (!running) {
+                running = true
+                cancelled.set(false)
+                wakeLock = getSystemService(PowerManager::class.java)
+                    .newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "PocketStudio:separation")
+                    .apply { acquire(4 * 60 * 60 * 1000L) }
+                scope.launch {
+                    val end = try {
+                        downloadGeneration()
+                        ModelDownload.Idle
+                    } catch (_: VerifiedDownload.CancelledException) {
+                        ModelDownload.Idle
+                    } catch (e: IOException) {
+                        AppLog.add("Modèle de génération : ${e.message}")
+                        ModelDownload.Failed("Échec du téléchargement : ${e.message ?: "erreur de réseau"}. Relance pour reprendre.")
+                    } catch (e: Exception) {
+                        AppLog.add("Modèle de génération : ${e.javaClass.simpleName} ${e.message}")
+                        ModelDownload.Failed("Échec du téléchargement (${e.javaClass.simpleName}).")
+                    }
+                    GenerationJob.set(end)
+                    withContext(Dispatchers.Main) { finish() }
+                }
+            } else {
+                GenerationJob.set(ModelDownload.Failed("Une séparation est en cours : attends qu'elle finisse."))
+            }
             ACTION_DOWNLOAD_MODEL, ACTION_SEPARATE -> if (!running) {
                 running = true
                 cancelled.set(false)
@@ -96,6 +124,12 @@ class SeparationService : Service() {
                     notifyEnd(end)
                     withContext(Dispatchers.Main) { finish() }
                 }
+            } else {
+                // Another job (the generation model download) holds the service: say so, keep nothing.
+                intent.data?.let { runCatching { contentResolver.releasePersistableUriPermission(it, Intent.FLAG_GRANT_READ_URI_PERMISSION) } }
+                if (!SeparationJob.state.value.busy) {
+                    SeparationJob.set(SeparationState.Failed("Un téléchargement de modèle est en cours : réessaie quand il sera fini."))
+                }
             }
             else -> if (!running) finish()
         }
@@ -105,7 +139,11 @@ class SeparationService : Service() {
     // Android 15+ caps media processing at 6 h a day: stop cleanly instead of being killed.
     override fun onTimeout(startId: Int, fgsType: Int) {
         cancelled.set(true)
-        SeparationJob.set(SeparationState.Failed("Android a arrêté la séparation (temps maximum par jour atteint)."))
+        if (GenerationJob.download.value is ModelDownload.Running) {
+            GenerationJob.set(ModelDownload.Failed("Android a arrêté le téléchargement (temps maximum par jour atteint)."))
+        } else {
+            SeparationJob.set(SeparationState.Failed("Android a arrêté la séparation (temps maximum par jour atteint)."))
+        }
         finish()
     }
 
@@ -133,8 +171,27 @@ class SeparationService : Service() {
         }, cancelled::get)
     }
 
+    /** Files already there (checked by size) are kept: a cut download resumes file by file. */
+    private fun downloadGeneration() {
+        val specs = GenerationModel.SPECS
+        var done = 0L
+        GenerationJob.set(ModelDownload.Running(0f))
+        for (spec in specs) {
+            val target = GenerationModel.file(this, spec)
+            if (target.length() != spec.sizeBytes) {
+                VerifiedDownload.fetch(spec, target, { p ->
+                    val total = (done + p * spec.sizeBytes) / GenerationModel.TOTAL_BYTES
+                    GenerationJob.set(ModelDownload.Running(total))
+                    progress("Téléchargement du modèle de génération", total)
+                }, cancelled::get)
+            }
+            done += spec.sizeBytes
+        }
+    }
+
     private fun separate(uri: Uri, name: String): SeparationState {
         if (!Demucs.isAvailable) return SeparationState.Failed("La séparation n'est pas disponible sur ce téléphone.")
+        if (GenerationJob.generating.get()) return SeparationState.Failed("Une génération de son est en cours : relance quand elle sera finie.")
         SeparationJob.set(SeparationState.Decoding(name))
         progress("Lecture de « $name »", null)
         StemStore.prune(this)
@@ -275,6 +332,7 @@ class SeparationService : Service() {
         private const val DONE_NOTIFICATION_ID = 4
         private const val ACTION_SEPARATE = "com.pocketstudio.SEPARATE"
         private const val ACTION_DOWNLOAD_MODEL = "com.pocketstudio.DOWNLOAD_MODEL"
+        private const val ACTION_DOWNLOAD_GENERATION = "com.pocketstudio.DOWNLOAD_GENERATION_MODEL"
         private const val ACTION_CANCEL = "com.pocketstudio.CANCEL_SEPARATION"
         private const val EXTRA_NAME = "name"
 
@@ -287,8 +345,11 @@ class SeparationService : Service() {
         fun downloadModel(context: Context) =
             start(context, Intent(context, SeparationService::class.java).setAction(ACTION_DOWNLOAD_MODEL))
 
+        fun downloadGenerationModel(context: Context) =
+            start(context, Intent(context, SeparationService::class.java).setAction(ACTION_DOWNLOAD_GENERATION))
+
         fun cancel(context: Context) {
-            if (SeparationJob.state.value.busy) start(context, Intent(context, SeparationService::class.java).setAction(ACTION_CANCEL))
+            if (SeparationJob.state.value.busy || GenerationJob.download.value is ModelDownload.Running) start(context, Intent(context, SeparationService::class.java).setAction(ACTION_CANCEL))
         }
 
         private fun start(context: Context, intent: Intent) = ContextCompat.startForegroundService(context, intent)

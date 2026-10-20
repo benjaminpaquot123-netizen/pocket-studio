@@ -97,6 +97,70 @@ class ProjectCatalog(private val root: File, private val trash: File) {
         }
     }
 
+    /** The project and its sounds as a .zip (project.json + samples/…), for a backup or another phone. */
+    @Throws(IOException::class)
+    fun exportZip(id: String, out: java.io.OutputStream) {
+        val project = store.load(id) ?: throw IOException("projet introuvable")
+        java.util.zip.ZipOutputStream(out.buffered()).use { zip ->
+            zip.putNextEntry(java.util.zip.ZipEntry(ProjectStore.MAIN))
+            zip.write(ProjectJson.encode(project).toByteArray(Charsets.UTF_8))
+            zip.closeEntry()
+            val used = project.sampleFiles
+            File(store.folder(id), SAMPLES).listFiles()?.filter { it.name in used }?.sortedBy { it.name }?.forEach { f ->
+                zip.putNextEntry(java.util.zip.ZipEntry("$SAMPLES/${f.name}"))
+                f.inputStream().use { it.copyTo(zip) }
+                zip.closeEntry()
+            }
+        }
+    }
+
+    /**
+     * A project .zip made by [exportZip] becomes a new project (never replaces one); returns its
+     * id. Only project.json and plain sample files are read; size limits guard the phone.
+     */
+    @Throws(IOException::class)
+    fun importZip(input: java.io.InputStream): String {
+        val id = newId()
+        val dir = store.folder(id)
+        var project: Project? = null
+        var total = 0L
+        try {
+            java.util.zip.ZipInputStream(input.buffered()).use { zip ->
+                while (true) {
+                    val entry = zip.nextEntry ?: break
+                    if (entry.isDirectory) continue
+                    val name = entry.name.replace('\\', '/')
+                    val target = when {
+                        name == ProjectStore.MAIN -> null
+                        name.startsWith("$SAMPLES/") && PadSample(name.removePrefix("$SAMPLES/"), "").isSafe ->
+                            File(dir, name).also { it.parentFile.mkdirs() }
+                        else -> continue  // anything else in the archive is ignored
+                    }
+                    val bytes = java.io.ByteArrayOutputStream()
+                    val buf = ByteArray(64 * 1024)
+                    var size = 0L
+                    while (true) {
+                        val n = zip.read(buf)
+                        if (n < 0) break
+                        size += n
+                        total += n
+                        if (size > MAX_ZIP_ENTRY || total > MAX_ZIP_TOTAL) throw IOException("projet trop gros")
+                        if (target == null) bytes.write(buf, 0, n) else target.appendBytes(buf.copyOf(n))
+                    }
+                    if (target == null) project = ProjectJson.decode(bytes.toString(Charsets.UTF_8.name()))
+                }
+            }
+            val p = project ?: throw IOException("ce .zip n'est pas un projet Pocket Studio")
+            val missing = p.sampleFiles.filterNot { File(dir, "$SAMPLES/$it").exists() }
+            if (missing.isNotEmpty()) throw IOException("${missing.size} son(s) manquant(s) dans le .zip")
+            store.save(id, p)
+            return id
+        } catch (e: Exception) {
+            dir.deleteRecursively()
+            throw if (e is IOException) e else IOException(e.message ?: "fichier illisible")
+        }
+    }
+
     /** "Mon projet 3": the first free number among the existing names. */
     fun nextName(prefix: String = "Mon projet"): String {
         val names = list().map { it.name }.toSet()
@@ -109,5 +173,7 @@ class ProjectCatalog(private val root: File, private val trash: File) {
         const val SAMPLES = "samples"
         const val MAX_NAME = 40
         const val TRASH_DAYS = 30L
+        const val MAX_ZIP_ENTRY = 128L * 1024 * 1024
+        const val MAX_ZIP_TOTAL = 1024L * 1024 * 1024
     }
 }

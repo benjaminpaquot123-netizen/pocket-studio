@@ -49,6 +49,33 @@ class ProjectCatalogTest {
     }
 
     @Test
+    fun zipRoundTripKeepsTheProjectAndItsSounds() {
+        val p = Project(name = "Voyage", drums = DrumPattern().withSample(0, PadSample("kick.wav", "Kick")))
+        val a = catalog.create(p)
+        File(catalog.store.folder(a), "samples").apply { mkdirs() }.resolve("kick.wav").writeText("boum")
+        File(catalog.store.folder(a), "samples/old.wav").writeText("plus utilisé")
+        val bytes = java.io.ByteArrayOutputStream().also { catalog.exportZip(a, it) }.toByteArray()
+        val b = catalog.importZip(bytes.inputStream())
+        assertNotEquals(a, b)
+        assertEquals("Voyage", catalog.store.load(b)!!.name)
+        assertEquals("boum", File(catalog.store.folder(b), "samples/kick.wav").readText())
+        assertFalse(File(catalog.store.folder(b), "samples/old.wav").exists())  // unused sounds stay home
+        // Not a project, or a project missing its sound: refused, nothing left behind.
+        val before = catalog.list().size
+        assertTrue(runCatching { catalog.importZip("pas un zip".byteInputStream()) }.isFailure)
+        val noSound = java.io.ByteArrayOutputStream().also { out ->
+            java.util.zip.ZipOutputStream(out).use { z ->
+                z.putNextEntry(java.util.zip.ZipEntry("project.json")); z.write(ProjectJson.encode(p).toByteArray()); z.closeEntry()
+                z.putNextEntry(java.util.zip.ZipEntry("../../evil.wav")); z.write(1); z.closeEntry()
+            }
+        }.toByteArray()
+        assertTrue(runCatching { catalog.importZip(noSound.inputStream()) }.isFailure)
+        assertEquals(before, catalog.list().size)
+        assertFalse(File(dir, "evil.wav").exists())
+        dir.deleteRecursively()
+    }
+
+    @Test
     fun unreadableProjectsAreListedNotHidden() {
         val a = catalog.create(Project(name = "Ok"))
         File(catalog.store.folder("p-broken"), ProjectStore.MAIN).apply { parentFile.mkdirs() }.writeText("{ pas du json")

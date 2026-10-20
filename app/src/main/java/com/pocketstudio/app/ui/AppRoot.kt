@@ -159,6 +159,9 @@ fun AppRoot() {
     var tab by rememberSaveable { mutableStateOf(AppTab.Rythme) }
     var showProjects by rememberSaveable { mutableStateOf(false) }
     val projectsVm: ProjectsViewModel = viewModel()
+    val pickProjectZip = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri != null) projectsVm.importZip(uri)
+    }
     val openScope = rememberCoroutineScope()
     // Another project: save this one, remember the choice, then rebuild every screen on it.
     val openProject: (String) -> Unit = { id ->
@@ -189,6 +192,13 @@ fun AppRoot() {
                         create = { i -> projectsVm.create(PROJECT_STARTERS[i].second()) { id -> openProject(id) } },
                         rename = { p, name -> if (p.id == rhythmVm.projectId) { rhythmVm.renameProject(name); projectsVm.refresh() } else projectsVm.rename(p.id, name) },
                         duplicate = { p -> openScope.launch { if (p.id == rhythmVm.projectId) rhythmVm.flushNow(); projectsVm.duplicate(p) } },
+                        exportZip = { p ->
+                            openScope.launch {
+                                if (p.id == rhythmVm.projectId) rhythmVm.flushNow()
+                                projectsVm.exportZip(p) { file -> WavExporter.share(context, listOf(file), "Envoyer le projet") }
+                            }
+                        },
+                        importZip = { pickProjectZip.launch(arrayOf("application/zip", "application/x-zip-compressed", "application/octet-stream")) },
                         delete = projectsVm::delete,
                         undoDelete = projectsVm::undoDelete,
                         dismissDeleted = projectsVm::dismissDeleted,

@@ -68,6 +68,27 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
         refreshNow()
     }
 
+    /** The project and its sounds as a .zip in the export folder; [then] gets the file (to share it). */
+    fun exportZip(info: ProjectInfo, then: (File) -> Unit) = io("Export du projet") {
+        val app = getApplication<Application>()
+        val dir = File(app.cacheDir, "exports").apply { mkdirs() }
+        val safe = info.name.replace(Regex("[^\\p{L}\\p{N} _-]"), "").trim().replace(' ', '-').take(40).ifEmpty { "projet" }
+        val file = File(dir, "$safe.pocketstudio.zip")
+        file.outputStream().use { catalog.exportZip(info.id, it) }
+        AppLog.add("Projet exporté : ${file.length() / 1024} Ko")
+        withContext(Dispatchers.Main) { then(file) }
+    }
+
+    /** A project .zip (from this app) becomes a new project in the list. */
+    fun importZip(uri: android.net.Uri) = io("Import du projet") {
+        val app = getApplication<Application>()
+        val stream = app.contentResolver.openInputStream(uri) ?: throw java.io.IOException("fichier introuvable")
+        val id = stream.use { catalog.importZip(it) }
+        AppLog.add("Projet importé")
+        _state.value = _state.value.copy(message = "Projet importé : « ${catalog.info(id)?.name} ». Touche-le pour l'ouvrir.")
+        refreshNow()
+    }
+
     fun undoDelete() {
         val (entry, _) = _state.value.deleted ?: return
         io("Restauration") {

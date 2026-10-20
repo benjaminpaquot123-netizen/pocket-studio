@@ -57,6 +57,9 @@ class ProjectsActions(
     val create: (Int) -> Unit = {},
     val rename: (ProjectInfo, String) -> Unit = { _, _ -> },
     val duplicate: (ProjectInfo) -> Unit = {},
+    /** Share the project and its sounds as a .zip. */
+    val exportZip: (ProjectInfo) -> Unit = {},
+    val importZip: () -> Unit = {},
     val delete: (ProjectInfo) -> Unit = {},
     val undoDelete: () -> Unit = {},
     val dismissDeleted: () -> Unit = {},
@@ -79,6 +82,9 @@ fun ProjectsScreen(ui: ProjectsUi, currentId: String, starters: List<ProjectStar
             Icon(Icons.Filled.Add, contentDescription = null)
             Text("  Nouveau projet", style = MaterialTheme.typography.titleMedium)
         }
+        TextButton(onClick = actions.importZip, modifier = Modifier.fillMaxWidth().testTag("project_import")) {
+            Text("Importer un projet (.zip)")
+        }
         ui.deleted?.let { (_, name) ->
             Card(colors = CardDefaults.cardColors(containerColor = Neon.SurfaceHigh), modifier = Modifier.testTag("project_deleted")) {
                 Row(Modifier.padding(start = 12.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -89,7 +95,8 @@ fun ProjectsScreen(ui: ProjectsUi, currentId: String, starters: List<ProjectStar
             }
         }
         ui.message?.let {
-            Text(it, color = Neon.Amber, style = MaterialTheme.typography.bodySmall, modifier = Modifier.clickable(onClick = actions.dismissMessage))
+            Text(it, color = if (it.startsWith("Projet importé")) Neon.Acid else Neon.Amber, style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.clickable(onClick = actions.dismissMessage))
         }
         if (!ui.loading && ui.projects.isEmpty()) {
             Text("Aucun projet enregistré pour l'instant.", color = Neon.TextSecondary)
@@ -173,6 +180,7 @@ private fun ProjectCard(p: ProjectInfo, open: Boolean, now: Long, actions: Proje
                 DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
                     DropdownMenuItem(text = { Text("Renommer") }, onClick = { menu = false; onRename() })
                     DropdownMenuItem(text = { Text("Dupliquer") }, onClick = { menu = false; actions.duplicate(p) })
+                    DropdownMenuItem(text = { Text("Envoyer / sauvegarder (.zip)") }, onClick = { menu = false; actions.exportZip(p) })
                     DropdownMenuItem(
                         text = { Text(if (open) "Supprimer (ouvre d'abord un autre projet)" else "Supprimer") },
                         enabled = !open,

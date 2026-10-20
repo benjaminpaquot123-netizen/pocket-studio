@@ -29,7 +29,7 @@ data class Project(
     val remix: Remix = Remix(),
     /** Mixer settings that move with the loop, step by step. */
     val automation: List<AutomationLane> = emptyList(),
-    /** Session: up to 8 scenes; [scene] is the one shown and played (mirrored in drums/acid/notes). */
+    /** Session: up to 24 scenes; [scene] is the one shown and played (mirrored in drums/acid/notes). */
     val scenes: List<Scene> = emptyList(),
     val scene: Int = 0,
     /** The song: scenes in order with repeat counts. */
@@ -37,6 +37,8 @@ data class Project(
     /** The synth track's own sound: 0 = subtractive synth, 1 = Plaits (an [instrument] still wins). */
     val synthEngine: Int = 0,
     val plaits: PlaitsPatch = PlaitsPatch(),
+    /** Live pads: sounds switched on and off by a tap, in time. */
+    val live: LivePads = LivePads(),
 ) {
     /** Returns a copy with every value inside its allowed range. */
     fun sanitized(): Project = copy(
@@ -53,6 +55,7 @@ data class Project(
         automation = AutomationLane.sanitize(automation),
         synthEngine = synthEngine.coerceIn(0, 1),
         plaits = plaits.sanitized(),
+        live = live.sanitized(),
     ).syncScenes()
 
     companion object {

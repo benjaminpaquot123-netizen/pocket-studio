@@ -1427,6 +1427,20 @@ void testProcessNeverAllocates() {
         bundle->retain();  // ours, for the re-installs below (what the app does on every push)
         engine.post(stems);
         engine.post({ps::CommandType::SetStemParam, 1.0f, 2, ps::StemPlayer::Solo});
+        // The same song on the preview player, and live pads looping.
+        bundle->retain();
+        ps::Command preview{ps::CommandType::InstallStems, 0.0f, 1};
+        preview.stems = bundle;
+        engine.post(preview);
+        engine.post({ps::CommandType::PlayPreview, 1.0f});
+        for (int pad = 0; pad < 4; ++pad) {
+            sample->retain();
+            ps::Command clip{ps::CommandType::InstallClip, 0.0f, pad, 0};
+            clip.sample = sample;
+            engine.post(clip);
+            engine.post({ps::CommandType::SetClipParam, float(1 + pad), pad, ps::ClipLauncher::Beats});
+            engine.post({ps::CommandType::ToggleClip, 0.0f, pad});
+        }
         // Every insert type somewhere, both sends, master inserts: effects must not allocate either.
         for (int ch = 0; ch <= ps::Mixer::kMaster; ++ch) {
             for (int slot = 0; slot < ps::Mixer::kInserts; ++slot) {
@@ -1449,6 +1463,8 @@ void testProcessNeverAllocates() {
             if (i % 60 == 0) engine.post({ps::CommandType::SetInsertType, 0.0f, 5, 1 + (i / 60) % 6});
             if (i % 55 == 0) engine.post({ps::CommandType::SetBusParam, (i % 110) / 110.0f, 1, 0});
             if (i % 30 == 0) engine.post({ps::CommandType::SetPerformance, (i % 60) ? 1.0f : 0.0f, (i / 30) % 6});
+            if (i % 25 == 0) engine.post({ps::CommandType::ToggleClip, 0.0f, (i / 25) % 4});
+            if (i % 45 == 0) engine.post({ps::CommandType::SetPreviewParam, (i / 45) % 2 ? 1.0f : 0.0f, 1, ps::StemPlayer::Mute});
             if (i % 90 == 0) {  // same bundle again: the old reference goes through the retire queue
                 bundle->retain();
                 ps::Command again{ps::CommandType::InstallStems};
@@ -1461,7 +1477,7 @@ void testProcessNeverAllocates() {
         std::printf("  allocations during %d blocks: %d\n", 400, g_allocations.load());
         CHECK(g_allocations.load() == 0);
         engine.collectGarbage();
-        CHECK(bundle->refCount() == 2);  // ours + the engine's, none leaked by the re-installs
+        CHECK(bundle->refCount() == 3);  // ours + the two players', none leaked by the re-installs
         CHECK(!bundle->release());
     }
     CHECK(sample->release());
@@ -2095,6 +2111,107 @@ struct TestCase {
 
 }  // namespace
 
+ps::Sample* constantSample(int frames, int channels, float level) {
+    std::vector<float> d(static_cast<size_t>(frames) * channels, level);
+    return ps::Sample::create(d.data(), frames, channels, kRate, kRate);
+}
+
+void installClip(ps::Engine& engine, int pad, ps::Sample* s) {
+    ps::Command c{ps::CommandType::InstallClip, 0.0f, pad, 0};
+    c.sample = s;  // the engine owns this reference
+    engine.post(c);
+}
+
+void testLivePadsLoopOnTheBeat() {
+    ps::Engine engine(kRate);  // 120 BPM: a beat is 24000 frames
+    // Pad 0: a 100-frame click set to 1 beat = four on the floor.
+    installClip(engine, 0, constantSample(100, 1, 0.5f));
+    engine.post({ps::CommandType::SetClipParam, 1.0f, 0, ps::ClipLauncher::Beats});
+    // Transport stopped: the first pad starts at once.
+    engine.post({ps::CommandType::ToggleClip, 0.0f, 0});
+    auto out = render(engine, kRate * 2, 256);
+    CHECK(engine.clipState(0) == ps::ClipLauncher::Playing);
+    for (int b = 0; b < 4; ++b) {
+        const size_t at = static_cast<size_t>(b * 24000 + 50) * 2;
+        CHECK(std::fabs(out[at] - 0.5f) < 1e-3f && std::fabs(out[at + 1] - 0.5f) < 1e-3f);
+        CHECK(std::fabs(out[static_cast<size_t>(b * 24000 + 12000) * 2]) < 1e-6f);  // silent between hits
+    }
+    // Pad 1: a stereo loop of 2 beats, launched mid-beat: waits for the next 2-beat line.
+    installClip(engine, 1, constantSample(48000, 2, 0.1f));
+    engine.post({ps::CommandType::SetClipParam, 2.0f, 1, ps::ClipLauncher::Beats});
+    render(engine, 6000, 256);  // beat 4.25
+    engine.post({ps::CommandType::ToggleClip, 0.0f, 1});
+    render(engine, 256, 256);
+    CHECK(engine.clipState(1) == ps::ClipLauncher::Waiting);
+    out = render(engine, 48000 - 6256 - 1000, 256);  // just before beat 6
+    CHECK(engine.clipState(1) == ps::ClipLauncher::Waiting);
+    out = render(engine, 2000, 250);
+    CHECK(engine.clipState(1) == ps::ClipLauncher::Playing);
+    CHECK(std::fabs(out[static_cast<size_t>(1500) * 2 + 1] - 0.1f) < 1e-3f);  // right: the loop alone
+    // Off again: a short fade, then silence; the other pad keeps going.
+    engine.post({ps::CommandType::ToggleClip, 0.0f, 1});
+    out = render(engine, 2000, 256);
+    CHECK(engine.clipState(1) == ps::ClipLauncher::Off);
+    CHECK(std::fabs(out[static_cast<size_t>(1500) * 2 + 1]) < 1e-6f);
+    CHECK(engine.clipState(0) == ps::ClipLauncher::Playing);
+    // A one-shot plays once and goes back to off by itself.
+    installClip(engine, 2, constantSample(2000, 1, 0.3f));
+    engine.post({ps::CommandType::SetClipParam, 1.0f, 2, ps::ClipLauncher::OneShot});
+    engine.post({ps::CommandType::SetClipParam, 1.0f, 2, ps::ClipLauncher::Beats});
+    engine.post({ps::CommandType::ToggleClip, 0.0f, 2});
+    render(engine, 30000, 256);
+    CHECK(engine.clipState(2) == ps::ClipLauncher::Off);
+    // While the transport plays, the clock follows its beats.
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    render(engine, 24000 * 3 + 100, 256);
+    const double beat = engine.clipBeat();
+    CHECK(std::fabs(beat - std::round(beat) - 100.0 / 24000.0) < 1e-6);
+    // All off; an empty pad ignores taps; the samples go back to be freed.
+    engine.post({ps::CommandType::ToggleClip, 0.0f, -1});
+    engine.post({ps::CommandType::ToggleClip, 0.0f, 5});
+    out = render(engine, 24000 * 2, 256);
+    CHECK(engine.clipState(0) == ps::ClipLauncher::Off && engine.clipState(5) == ps::ClipLauncher::Off);
+    float peak = 0.0f;
+    for (size_t i = 2000; i < out.size(); ++i) peak = std::max(peak, std::fabs(out[i]));
+    CHECK(peak < 1e-6f);
+    for (int pad = 0; pad < 3; ++pad) installClip(engine, pad, nullptr);
+    render(engine, 256, 256);
+    engine.collectGarbage();
+}
+
+void testStemPreviewPlaysWithoutTheTransport() {
+    const float levels[4] = {0.05f, 0.1f, 0.15f, 0.2f};
+    std::vector<std::vector<float>> stems(4);
+    for (int st = 0; st < 4; ++st) stems[st].assign(static_cast<size_t>(kRate) * 2 * 2, levels[st]);
+    auto* bundle = ps::StemBundle::fromFloat(stems);
+    ps::Engine engine(kRate);
+    ps::Command install{ps::CommandType::InstallStems, 0.0f, 1};
+    install.stems = bundle;
+    engine.post(install);
+    engine.post({ps::CommandType::PlayPreview, 1.0f});
+    auto out = render(engine, 4800, 256);
+    CHECK(std::fabs(out[out.size() - 2] - 0.5f) < 2e-3f);  // all four together
+    CHECK(engine.previewPosition() > 0 && engine.stemPosition() == -1);
+    // Switch stems on and off while it plays: it never stops.
+    engine.post({ps::CommandType::SetPreviewParam, 1.0f, 3, ps::StemPlayer::Mute});
+    engine.post({ps::CommandType::SetPreviewParam, 1.0f, 1, ps::StemPlayer::Mute});
+    out = render(engine, 9600, 256);  // past the 20 ms smoothing
+    CHECK(std::fabs(out[out.size() - 2] - 0.2f) < 2e-3f);
+    engine.post({ps::CommandType::SetPreviewParam, 0.0f, 3, ps::StemPlayer::Mute});
+    out = render(engine, 9600, 256);
+    CHECK(std::fabs(out[out.size() - 2] - 0.4f) < 2e-3f);
+    // The transport stopping does not stop it; its own stop does.
+    engine.post({ps::CommandType::SetTransport, 0.0f});
+    render(engine, 4800, 256);
+    CHECK(engine.previewPosition() > 0);
+    engine.post({ps::CommandType::PlayPreview, 0.0f});
+    out = render(engine, 4800, 256);
+    CHECK(std::fabs(out[out.size() - 2]) < 1e-6f && engine.previewPosition() == -1);
+    engine.post({ps::CommandType::InstallStems, 0.0f, 1});
+    render(engine, 256, 256);
+    engine.collectGarbage();
+}
+
 int main(int argc, char** argv) {
     for (int i = 1; i < argc; ++i) {
         if (std::strcmp(argv[i], "--update-references") == 0) g_updateReferences = true;
@@ -2159,6 +2276,8 @@ int main(int argc, char** argv) {
         {"plaits_engine", testPlaitsThroughEngine},
         {"tempo_and_key", testTempoAndKeyDetection},
         {"stems_follow_transport", testStemsPlayInStepWithTheTransport},
+        {"live_pads", testLivePadsLoopOnTheBeat},
+        {"stem_preview", testStemPreviewPlaysWithoutTheTransport},
         {"no_alloc_in_process", testProcessNeverAllocates},
     };
     for (const auto& t : tests) {

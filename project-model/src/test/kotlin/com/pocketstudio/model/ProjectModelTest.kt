@@ -536,3 +536,35 @@ class AcidPagesTest {
         assertEquals(x.sanitized(), ProjectJson.decode(ProjectJson.encode(x.sanitized())))
     }
 }
+
+class LivePadsModelTest {
+    @Test
+    fun clipsAreSanitizedAndTheGridNeverHidesOne() {
+        val pads = LivePads(size = 4, clips = listOf(LiveClip("a.wav", "Kick", beats = 0, gain = Float.NaN)) + List(8) { null } +
+            LiveClip("../evil", "x") + List(3) { null } + LiveClip("b.wav", "Mélodie", beats = 999))
+        val s = pads.sanitized()
+        assertEquals(LivePads.MAX, s.clips.size)
+        assertEquals(1, s.clips[0]!!.beats)
+        assertEquals(1f, s.clips[0]!!.gain, 0f)
+        assertEquals(null, s.clips[9])  // a path is never a file name
+        assertEquals(LivePads.MAX_BEATS, s.clips[13]!!.beats)
+        assertEquals(16, s.size)  // pad 14 holds a sound: the grid shows it
+        assertEquals(8, LivePads(size = 5).sanitized().size)
+    }
+
+    @Test
+    fun loopLengthFollowsTheSound() {
+        assertEquals(1, LivePads.beatsFor(0.3, 120.0))   // a kick
+        assertEquals(8, LivePads.beatsFor(4.0, 120.0))   // 2 bars
+        assertEquals(4, LivePads.beatsFor(2.1, 120.0))   // a bar, a bit long
+        assertEquals(32, LivePads.beatsFor(60.0, 120.0)) // longest offered
+    }
+
+    @Test
+    fun liveFilesCountAsUsed() {
+        val p = Project(live = LivePads().with(2, LiveClip("c.wav", "Voix")))
+            .copy(drums = DrumPattern().withSample(0, PadSample("k.wav", "Kick")))
+        assertEquals(setOf("c.wav", "k.wav"), p.sanitized().sampleFiles)
+        assertEquals(p.sanitized(), ProjectJson.decode(ProjectJson.encode(p.sanitized())))
+    }
+}

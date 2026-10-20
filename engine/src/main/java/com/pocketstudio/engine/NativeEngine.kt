@@ -47,6 +47,14 @@ object NativeEngine {
     private const val CMD_PERFORMANCE = 41
     private const val CMD_SYNTH_ENGINE = 42
     private const val CMD_PLAITS_PARAM = 43
+    // 44: InstallClip (native only)
+    private const val CMD_CLIP_PARAM = 45
+    private const val CMD_TOGGLE_CLIP = 46
+    private const val CMD_PLAY_PREVIEW = 47
+    private const val CMD_PREVIEW_PARAM = 48
+
+    /** Live pads (ClipLauncher::kSlots). */
+    const val LIVE_PADS = 16
 
     /** Insert slots per channel (and on the master, whose channel index is [MIXER_CHANNELS]). */
     const val INSERTS = 4
@@ -205,6 +213,27 @@ object NativeEngine {
     /** Song position in frames while the stems play, else -1. */
     external fun stemPosition(): Long
 
+    /** The remix screen's own listening: [stems] play apart from the transport (null: none). Main thread. */
+    fun setPreviewStems(stems: NativeStems?) = nativeInstallPreviewStems(stems?.handle ?: 0L)
+    fun playPreview(on: Boolean) = post(CMD_PLAY_PREVIEW, if (on) 1f else 0f)
+    /** As [setStemParam], for the preview. */
+    fun setPreviewParam(stem: Int, param: Int, value: Float) = post(CMD_PREVIEW_PARAM, value, stem, param)
+    /** Preview position in frames while it plays, else -1. */
+    external fun previewPosition(): Long
+
+    /** Live pad [pad] plays [sample] (null: empty). Main thread, like every command. */
+    fun setClip(pad: Int, sample: NativeSample?) = nativeInstallClip(pad, sample?.handle ?: 0L)
+    /** [beats]: loop length; [oneShot]: plays once per tap; [gain]: 0..2. */
+    fun setClipParams(pad: Int, beats: Int, oneShot: Boolean, gain: Float) {
+        post(CMD_CLIP_PARAM, beats.toFloat(), pad, 0)
+        post(CMD_CLIP_PARAM, if (oneShot) 1f else 0f, pad, 1)
+        post(CMD_CLIP_PARAM, gain, pad, 2)
+    }
+    /** On at the next grid line, or off; [pad] < 0: every pad off. */
+    fun toggleClip(pad: Int) = post(CMD_TOGGLE_CLIP, 0f, pad)
+    /** Per pad: 0 off, 1 waiting for the grid, 2 playing ([LIVE_PADS] values). */
+    external fun clipStates(out: IntArray)
+
     /** [values] in Sampler::Param order (see PadSample.engineParams). */
     fun setPadParams(pad: Int, values: FloatArray) {
         values.forEachIndexed { param, v -> post(CMD_PAD_PARAM, v, pad, param) }
@@ -242,6 +271,8 @@ object NativeEngine {
     external fun stemsExtract(handle: Long, stem: Int, start: Long, count: Long): FloatArray
     external fun stemsPeaks(handle: Long, stem: Int, buckets: Int): FloatArray
     private external fun nativeInstallStems(handle: Long): Boolean
+    private external fun nativeInstallPreviewStems(handle: Long): Boolean
+    private external fun nativeInstallClip(pad: Int, handle: Long): Boolean
     private external fun exportInstallStems(exportHandle: Long, handle: Long)
     private external fun exportInstallSample(exportHandle: Long, pad: Int, handle: Long)
 

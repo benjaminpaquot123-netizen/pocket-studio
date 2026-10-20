@@ -244,6 +244,43 @@ JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportInstallSt
     reinterpret_cast<ps::OfflineRenderer*>(exportHandle)->post(command);
 }
 
+JNIEXPORT jboolean JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeInstallPreviewStems(JNIEnv*, jobject, jlong handle) {
+    auto& engine = host().engine();
+    engine.collectGarbage();
+    auto* b = reinterpret_cast<ps::StemBundle*>(handle);
+    if (b) b->retain();
+    ps::Command command{ps::CommandType::InstallStems, 0.0f, 1};
+    command.stems = b;
+    if (host().post(command)) return JNI_TRUE;
+    if (b && b->release()) delete b;
+    return JNI_FALSE;
+}
+
+JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_previewPosition(JNIEnv*, jobject) {
+    return static_cast<jlong>(host().engine().previewPosition());
+}
+
+// --- Live pads ---
+
+JNIEXPORT jboolean JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeInstallClip(JNIEnv*, jobject, jint pad, jlong handle) {
+    auto& engine = host().engine();
+    engine.collectGarbage();
+    auto* s = reinterpret_cast<ps::Sample*>(handle);
+    if (s) s->retain();
+    ps::Command command{ps::CommandType::InstallClip, 0.0f, pad, 0};
+    command.sample = s;
+    if (host().post(command)) return JNI_TRUE;
+    if (s && s->release()) delete s;
+    return JNI_FALSE;
+}
+
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_clipStates(JNIEnv* env, jobject, jintArray out) {
+    jint states[ps::ClipLauncher::kSlots];
+    for (int i = 0; i < ps::ClipLauncher::kSlots; ++i) states[i] = host().engine().clipState(i);
+    const jsize n = std::min<jsize>(env->GetArrayLength(out), ps::ClipLauncher::kSlots);
+    env->SetIntArrayRegion(out, 0, n, states);
+}
+
 JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_sceneSwaps(JNIEnv*, jobject) {
     return static_cast<jint>(host().engine().sceneSwaps());
 }

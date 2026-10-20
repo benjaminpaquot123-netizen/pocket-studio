@@ -5,6 +5,7 @@
 #include <cstdint>
 
 #include "AcidTrack.h"
+#include "ClipLauncher.h"
 #include "DrumKit.h"
 #include "Metronome.h"
 #include "Mixer.h"
@@ -53,7 +54,7 @@ enum class CommandType : uint8_t {
     SetSynthNoteCount, // a: number of notes in use
     SetSynthSteps,     // a: piano-roll pattern length in steps (1..128)
     SetInstrument,     // font: owned instance (nullptr = back to the synth), a: preset index
-    InstallStems,      // stems: owned reference (nullptr = no song)
+    InstallStems,      // stems: owned reference (nullptr = no song); a = 1: the preview player
     SetStemParam,      // a: stem, b: StemPlayer::Param, value
     SetStemStart,      // a: song frame where playback starts on step 0
     SetInsertType,     // a: channel * Mixer::kInserts + slot (channel kMaster = master), b: InsertSlot::Type
@@ -69,6 +70,11 @@ enum class CommandType : uint8_t {
     SetPerformance,       // a: PerformanceFx::Param, value 0..1 (live XY pad and hold buttons)
     SetSynthEngine,       // a: 0 = subtractive synth, 1 = Plaits (a General MIDI instrument still wins)
     SetPlaitsParam,       // a: PlaitsSynth::Param, value 0..1
+    InstallClip,          // a: live pad, sample: owned reference (nullptr = empty pad)
+    SetClipParam,         // a: live pad, b: ClipLauncher::Param, value
+    ToggleClip,           // a: live pad (switches it on at the next grid line, or off); a < 0: all off
+    PlayPreview,          // value 1: the preview stems (InstallStems with a = 1) play from the start; 0: stop
+    SetPreviewParam,      // a: stem, b: StemPlayer::Param, value
 };
 
 // Step automation of mixer settings, played on the audio thread at each sequencer step.
@@ -136,9 +142,15 @@ public:
         sampler_.collectGarbage();
         instrument_.collectGarbage();
         stems_.collectGarbage();
+        preview_.collectGarbage();
+        clips_.collectGarbage();
     }
     bool stemsLoaded() const { return stems_.loaded(); }  // tests
     int64_t stemPosition() const { return stems_.position(); }
+    // Song position of the preview player in frames, -1 when stopped.
+    int64_t previewPosition() const { return preview_.position(); }
+    ClipLauncher::State clipState(int pad) const { return clips_.state(pad); }
+    double clipBeat() const { return clips_.beat(); }  // tests
     bool instrumentActive() const { return instrument_.active(); }  // tests
     bool padHasSample(int pad) const { return sampler_.has(pad); }  // tests
     const Sampler::PadParams& padParams(int pad) const { return sampler_.params(pad); }  // tests
@@ -206,6 +218,9 @@ private:
     NoteRouter router_{synth_, instrument_, plaits_};
     Sampler sampler_;
     StemPlayer stems_;
+    // The remix screen's own listening of a song's stems, free of the transport.
+    StemPlayer preview_;
+    ClipLauncher clips_;
     Automation automation_;
     void applyAutomation(int patternStep);
 

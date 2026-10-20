@@ -48,6 +48,8 @@ void Engine::prepare(int sampleRate) {
     synth_.prepare(sampleRate);
     mixer_.prepare(sampleRate);
     stems_.prepare(sampleRate);
+    preview_.prepare(sampleRate);
+    clips_.prepare(sampleRate);
     sampler_.prepare(sampleRate);
 }
 
@@ -118,6 +120,27 @@ void Engine::applyCommand(const Command& command) {
                 plaits_.allNotesOff();
                 router_.usePlaits = command.a == 1;
             }
+            break;
+        case CommandType::InstallClip:
+            clips_.install(command.a, command.sample);  // takes the reference
+            break;
+        case CommandType::SetClipParam:
+            clips_.setParam(command.a, command.b, command.value);
+            break;
+        case CommandType::ToggleClip:
+            if (command.a < 0) clips_.stopAll();
+            else clips_.toggle(command.a, !sequencer_.running());
+            break;
+        case CommandType::PlayPreview:
+            if (command.value > 0.5f) {
+                preview_.setStartFrame(0);
+                preview_.start(0);
+            } else {
+                preview_.stop();
+            }
+            break;
+        case CommandType::SetPreviewParam:
+            preview_.setParam(command.a, command.b, command.value);
             break;
         case CommandType::SetPlaitsParam:
             if (command.a >= 0 && command.a < PlaitsSynth::ParamCount) plaits_.setParam(static_cast<PlaitsSynth::Param>(command.a), command.value);
@@ -191,7 +214,8 @@ void Engine::applyCommand(const Command& command) {
             else notes_.setSteps(command.a);
             break;
         case CommandType::InstallStems:
-            stems_.install(command.stems);  // takes the reference
+            if (command.a == 1) preview_.install(command.stems);  // takes the reference
+            else stems_.install(command.stems);
             break;
         case CommandType::SetStemParam:
             stems_.setParam(command.a, command.b, command.value);
@@ -252,6 +276,7 @@ void Engine::onStep(int offset, int step) {
     }
     if (step < 0) return;
     if (step == 0) stems_.start(offset);
+    if (onBeat) clips_.syncBeat(offset);
     // A waiting scene takes over on its step (or the next bar), before anything of this step plays.
     if (swapAt_ >= 0) {
         const int local = step - sceneStart_;
@@ -334,6 +359,9 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
     instrument_.render(synth, numFrames);
     plaits_.render(synth, numFrames);
     stems_.render(stemsL, stemsR, numFrames);
+    preview_.render(stemsL, stemsR, numFrames);
+    clips_.setBeatFrames(sequencer_.samplesPerStep() * Sequencer::kStepsPerBeat);
+    clips_.render(stemsL, stemsR, numFrames);
 
     gain_.setTarget(playing_.load(std::memory_order_relaxed) ? volume_ : 0.0f);
     const double invRate = 1.0 / sampleRate_;

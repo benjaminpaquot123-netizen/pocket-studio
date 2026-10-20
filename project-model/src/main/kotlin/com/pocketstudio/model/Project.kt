@@ -306,6 +306,8 @@ data class Channel(
     val inserts: List<Insert> = List(Mixer.INSERTS) { Insert() },
     /** Post-fader sends to the buses (0 = reverb, 1 = delay), 0..1. */
     val sends: List<Float> = List(Buses.COUNT) { 0f },
+    /** The quick controls ([Macros]: colour, dirt, motion, space), after the inserts. */
+    val macros: List<Float> = Macros.DEFAULTS,
 ) {
     fun sanitized(): Channel = copy(
         volume = volume.coerceIn(0f, 1f),
@@ -313,5 +315,6 @@ data class Channel(
         inserts = Mixer.sanitizeInserts(inserts),
         sends = (sends + List((Buses.COUNT - sends.size).coerceAtLeast(0)) { 0f }).take(Buses.COUNT)
             .map { v -> v.takeIf { it.isFinite() }?.coerceIn(0f, 1f) ?: 0f },
+        macros = Macros.sanitized(macros),
     )
 }

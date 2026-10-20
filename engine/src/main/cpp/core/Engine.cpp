@@ -291,6 +291,9 @@ void Engine::applyCommand(const Command& command) {
         case CommandType::SetInsertParam:
             mixer_.setInsertParam(command.a / Mixer::kInserts, command.a % Mixer::kInserts, command.b, command.value);
             break;
+        case CommandType::SetMacro:
+            mixer_.setMacro(command.a, command.b, command.value);
+            break;
         case CommandType::SetSend:
             mixer_.setSend(command.a, command.b, command.value);
             break;

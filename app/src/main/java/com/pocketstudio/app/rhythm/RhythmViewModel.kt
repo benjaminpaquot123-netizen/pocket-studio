@@ -23,6 +23,10 @@ import com.pocketstudio.engine.NativeStems
 import com.pocketstudio.app.remix.StemSet
 import com.pocketstudio.app.remix.StemStore
 import com.pocketstudio.model.Remix
+import com.pocketstudio.model.Mixer
+import com.pocketstudio.model.Macros
+import com.pocketstudio.model.FxPresets
+import com.pocketstudio.model.withFx
 import com.pocketstudio.model.Scene
 import com.pocketstudio.model.SongPart
 import com.pocketstudio.model.allScenes
@@ -2141,6 +2145,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             NativeEngine.setChannelSolo(i, c.solo)
             pushInserts(i, c.inserts)
             c.sends.forEachIndexed { bus, level -> NativeEngine.setSend(i, bus, level) }
+            c.macros.forEachIndexed { m, v -> NativeEngine.setMacro(i, m, v) }
         }
         pushInserts(MASTER, p.mixer.master)
         p.mixer.buses.forEachIndexed { bus, params -> params.forEachIndexed { k, v -> NativeEngine.setBusParam(bus, k, v) } }
@@ -2168,6 +2173,42 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
         if (NativeEngine.isAvailable) NativeEngine.setInsertParam(ch, slot, param, v)
         recordAutomation(AutoTarget(AutoTarget.INSERT_PARAM, ch, slot, param), v)
+    }
+
+    // --- Quick sound play: macros, pad XY, ready-made effects -------------------------------
+
+    /** One quick control of a track (a knob drag is one undo step). */
+    fun setMacro(ch: Int, macro: Int, value: Float) = setMacros(ch, mapOf(macro to value), "macro-$ch-$macro")
+
+    /** The pad XY: two macros at once (one drag, one undo step). */
+    fun setMacroPair(ch: Int, x: Int, xValue: Float, y: Int, yValue: Float) = setMacros(ch, mapOf(x to xValue, y to yValue), "macro-xy-$ch")
+
+    private fun setMacros(ch: Int, values: Map<Int, Float>, key: String) {
+        if (ch !in 0 until Mixer.CHANNELS || ch == MASTER) return
+        session.edit(key) { p ->
+            val channels = p.mixer.channels.toMutableList()
+            channels[ch] = channels[ch].let { c -> c.copy(macros = Macros.sanitized(c.macros.mapIndexed { m, old -> values[m] ?: old })) }
+            p.copy(mixer = p.mixer.copy(channels = channels))
+        }
+        if (NativeEngine.isAvailable) values.keys.forEach { m -> NativeEngine.setMacro(ch, m, project.value.mixer.channels[ch].macros[m]) }
+    }
+
+    /** A ready-made effect on a track, in one tap (one undo step). */
+    fun applyFx(ch: Int, presetId: String) {
+        val preset = FxPresets.byId(presetId) ?: return
+        if (ch !in 0 until Mixer.CHANNELS || ch == MASTER) return
+        session.edit { p ->
+            val channels = p.mixer.channels.toMutableList()
+            channels[ch] = channels[ch].withFx(preset)
+            p.copy(mixer = p.mixer.copy(channels = channels))
+        }
+        if (NativeEngine.isAvailable) {
+            val c = project.value.mixer.channels[ch]
+            pushInserts(ch, c.inserts)
+            c.sends.forEachIndexed { bus, level -> NativeEngine.setSend(ch, bus, level) }
+            c.macros.forEachIndexed { m, v -> NativeEngine.setMacro(ch, m, v) }
+        }
+        AppLog.add("Effet « ${preset.name} » sur la voie $ch")
     }
 
     fun setSend(ch: Int, bus: Int, level: Float) {

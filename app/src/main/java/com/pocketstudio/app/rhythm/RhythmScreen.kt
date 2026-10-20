@@ -85,6 +85,8 @@ data class RhythmActions(
     /** One hit's own pan (-1..1) and pitch (semitones) on the selected pad. */
     val setHitPan: (step: Int, pan: Float) -> Unit = { _, _ -> },
     val setHitPitch: (step: Int, pitch: Int) -> Unit = { _, _ -> },
+    /** Opens the drums' quick effects. */
+    val openEffects: () -> Unit = {},
     /** All-pads grid: (lane, step). */
     val toggleHit: (Int, Int) -> Unit = { _, _ -> },
     val cycleVelocity: (Int) -> Unit = {},
@@ -405,6 +407,8 @@ private fun GrooveCard(project: Project, transport: TransportUi, actions: Rhythm
             )
             FilterChip(selected = transport.metronome, onClick = actions.toggleMetronome, label = { Text("Métronome") }, colors = chipColors)
             FilterChip(selected = transport.countIn, onClick = actions.toggleCountIn, label = { Text("Décompte") }, colors = chipColors)
+            Box(Modifier.weight(1f))
+            OutlinedButton(onClick = actions.openEffects, modifier = Modifier.testTag("drum_effects")) { Text("Effets") }
         }
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Text("Swing", Modifier.weight(1f))

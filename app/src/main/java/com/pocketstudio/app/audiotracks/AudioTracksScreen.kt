@@ -76,6 +76,8 @@ class AudioTracksUi(
 )
 
 class AudioTracksActions(
+    /** Opens a track's quick effects. */
+    val effects: (Int) -> Unit = {},
     val add: () -> Unit = {},
     val remove: (Int) -> Unit = {},
     val rename: (Int, String) -> Unit = { _, _ -> },
@@ -185,6 +187,7 @@ private fun TrackCard(t: AudioTrack, ui: AudioTracksUi, actions: AudioTracksActi
             }
             OutlinedButton(onClick = { actions.import(t.id) }, enabled = !busy, modifier = Modifier.weight(1f)) { Text("Fichier son") }
         }
+        TextButton(onClick = { actions.effects(t.id) }, modifier = Modifier.testTag("audio_effects_${t.id}")) { Text("Effets de cette piste") }
         val clip = t.clip ?: return@NeonCard
         ClipEditor(t.id, clip, ui.info[clip.file], color, actions, ui.stepsPerBar)
     }

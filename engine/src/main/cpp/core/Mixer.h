@@ -31,6 +31,7 @@ public:
     void setInsertType(int ch, int slot, int type);           // ch 0..kMaster
     void setInsertParam(int ch, int slot, int param, float v);
     void setSend(int ch, int bus, float level);               // 0..1, post-fader
+    void setMacro(int ch, int macro, float v);                // TrackMacros: colour, dirt, motion, space
     void setBusParam(int bus, int param, float v);
     void setStepFrames(double framesPerSixteenth) {
         delay_.setStepFrames(framesPerSixteenth);
@@ -81,6 +82,7 @@ private:
     std::array<Strip, kChannels> strips_{};
     std::array<std::array<InsertSlot, kInserts>, kChannels> inserts_{};
     std::array<int, kChannels> activeInserts_{};  // count of non-empty slots
+    std::array<TrackMacros, kChannels> macros_{};
     Reverb reverb_;
     TempoDelay delay_;
     PerformanceFx perf_;

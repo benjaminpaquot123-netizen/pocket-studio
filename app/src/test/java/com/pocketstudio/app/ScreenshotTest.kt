@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onRoot
 import com.github.takahirom.roborazzi.captureRoboImage
+import com.pocketstudio.model.withFx
 import com.pocketstudio.app.latency.LatencyScreen
 import com.pocketstudio.app.latency.LatencyUiState
 import com.pocketstudio.app.recette.CheckResult
@@ -409,6 +410,14 @@ class ScreenshotTest {
         val ui = wizardUi(99)
         com.pocketstudio.app.library.WizardScreen(ui.copy(step = ui.lastStep), com.pocketstudio.app.library.PacksUi(com.pocketstudio.app.library.IndexState.Unavailable),
             null, com.pocketstudio.app.library.WizardActions())
+    }
+
+    @Test
+    fun quickFx() = shoot("quick_fx") {
+        androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
+            val c = com.pocketstudio.model.Channel().let { it.withFx(com.pocketstudio.model.FxPresets.byId("underwater")!!) }
+            com.pocketstudio.app.mixer.QuickFxPanel(2, c, com.pocketstudio.app.mixer.QuickFxActions())
+        }
     }
 
     @Test

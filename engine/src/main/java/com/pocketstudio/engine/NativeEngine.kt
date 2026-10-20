@@ -65,6 +65,7 @@ object NativeEngine {
     private const val CMD_EXPRESSION = 60
     private const val CMD_PAD_PAN = 61
     private const val CMD_DRUM_STEP_DETAIL = 62
+    private const val CMD_MACRO = 63
 
     // Kinds of [setExpression] (InstrumentTrack::Expression).
     const val EXPR_BEND = 0
@@ -160,6 +161,8 @@ object NativeEngine {
     fun setInsertParam(ch: Int, slot: Int, param: Int, value: Float) = post(CMD_INSERT_PARAM, value, ch * INSERTS + slot, param)
     /** Post-fader send of [ch] to [bus] (0 reverb, 1 delay), 0..1. */
     fun setSend(ch: Int, bus: Int, level: Float) = post(CMD_SEND, level, ch, bus)
+    /** A track's quick control (Macros: colour, dirt, motion, space), 0..1. */
+    fun setMacro(ch: Int, macro: Int, value: Float) = post(CMD_MACRO, value, ch, macro)
     fun setBusParam(bus: Int, param: Int, value: Float) = post(CMD_BUS_PARAM, value, bus, param)
     /** Lane 0..7 follows [packedTarget] (AutoTarget.pack(), -1 = off); clears its points. */
     fun setAutomationTarget(lane: Int, packedTarget: Int) = post(CMD_AUTOMATION_TARGET, 0f, lane, packedTarget)

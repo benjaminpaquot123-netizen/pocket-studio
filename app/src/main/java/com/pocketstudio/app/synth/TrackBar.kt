@@ -57,6 +57,8 @@ class TracksUi(
     val setColor: (Int, Int) -> Unit = { _, _ -> },
     val duplicate: (Int) -> Unit = {},
     val remove: (Int) -> Unit = {},
+    /** Opens the quick effects of a track (null: no button). */
+    val effects: ((Int) -> Unit)? = null,
 )
 
 /**
@@ -112,6 +114,9 @@ fun TrackBar(ui: TracksUi, modifier: Modifier = Modifier) {
                     }
                 }
             }
+        }
+        ui.effects?.let { open ->
+            OutlinedButton(onClick = { open(ui.selected) }, modifier = Modifier.height(44.dp).testTag("track_effects")) { Text("Effets") }
         }
         if (ui.tracks.size < InstrumentTrack.MAX) {
             OutlinedButton(onClick = ui.add, modifier = Modifier.height(44.dp).testTag("track_add")) {

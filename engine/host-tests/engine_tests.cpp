@@ -1677,6 +1677,9 @@ void testProcessNeverAllocates() {
             if (i % 40 == 0) engine.post({ps::CommandType::SetInsertParam, (i % 80) / 80.0f, 1, 0});
             if (i % 60 == 0) engine.post({ps::CommandType::SetInsertType, 0.0f, 5, 1 + (i / 60) % 13});
             if (i % 55 == 0) engine.post({ps::CommandType::SetBusParam, (i % 110) / 110.0f, 1, 0});
+            if (i % 45 == 0) {
+                for (int m = 0; m < ps::TrackMacros::kCount; ++m) engine.post({ps::CommandType::SetMacro, (i % 90) / 90.0f, (i / 45) % 4, m});
+            }
             if (i % 30 == 0) engine.post({ps::CommandType::SetPerformance, (i % 60) ? 1.0f : 0.0f, (i / 30) % 6});
             if (i % 25 == 0) engine.post({ps::CommandType::ToggleClip, 0.0f, (i / 25) % 4});
             if (i % 45 == 0) engine.post({ps::CommandType::SetPreviewParam, (i / 45) % 2 ? 1.0f : 0.0f, 1, ps::StemPlayer::Mute});
@@ -2767,6 +2770,58 @@ void testDrumPanAndStepPitch() {
     }
 }
 
+void testTrackMacros() {
+    // A bright synth chord through channel 2 (the first instrument track).
+    auto run = [](std::initializer_list<std::pair<int, float>> macros, int frames, bool stopEarly) {
+        ps::Engine engine(kRate);
+        for (auto [m, v] : macros) engine.post({ps::CommandType::SetMacro, v, 2, m});
+        engine.post({ps::CommandType::SynthNoteOn, 1.0f, 72});
+        engine.post({ps::CommandType::SynthNoteOn, 1.0f, 79});
+        auto out = render(engine, stopEarly ? kRate / 4 : frames, 256);
+        if (stopEarly) {
+            engine.post({ps::CommandType::SynthNoteOff, 0.0f, 72});
+            engine.post({ps::CommandType::SynthNoteOff, 0.0f, 79});
+            render(engine, kRate / 2, 256);  // the note's own release
+            out = render(engine, frames, 256);
+        }
+        return out;
+    };
+    auto rms = [](const std::vector<float>& v) {
+        double e = 0.0;
+        for (float x : v) e += double(x) * x;
+        return std::sqrt(e / std::max<size_t>(1, v.size()));
+    };
+    // High-frequency energy: first difference of the left channel.
+    auto bright = [](const std::vector<float>& v) {
+        double e = 0.0;
+        for (size_t i = kChannels; i < v.size(); i += kChannels) e += std::pow(double(v[i]) - v[i - kChannels], 2);
+        return e;
+    };
+    const auto plain = run({}, kRate / 2, false);
+    const auto rest = run({{ps::TrackMacros::Color, 0.5f}, {ps::TrackMacros::Dirt, 0.0f}}, kRate / 2, false);
+    CHECK(plain == rest);  // at rest the macros leave the sound untouched, sample for sample
+    const auto dark = run({{ps::TrackMacros::Color, 0.05f}}, kRate / 2, false);
+    const auto thin = run({{ps::TrackMacros::Color, 0.95f}}, kRate / 2, false);
+    std::printf("  colour: plain %.3g, dark %.3g, high-pass rms %.3f vs %.3f\n", bright(plain), bright(dark), rms(thin), rms(plain));
+    CHECK(bright(dark) < bright(plain) * 0.2);
+    CHECK(rms(thin) < rms(plain));
+    const auto dirty = run({{ps::TrackMacros::Dirt, 1.0f}}, kRate / 2, false);
+    const auto half = run({{ps::TrackMacros::Dirt, 0.5f}}, kRate / 2, false);
+    std::printf("  dirt: rms %.3f (half %.3f) vs %.3f\n", rms(dirty), rms(half), rms(plain));
+    CHECK(rms(half) > 0.5 * rms(plain) && rms(half) < 2.0 * rms(plain));
+    CHECK(dirty != plain && rms(dirty) > 0.2 * rms(plain) && rms(dirty) < 3.0 * rms(plain));
+    const auto moving = run({{ps::TrackMacros::Motion, 1.0f}}, kRate / 2, false);
+    CHECK(moving != plain);
+    // Space: a reverb tail after the note has died away.
+    const auto dryTail = run({}, kRate / 4, true);
+    const auto wetTail = run({{ps::TrackMacros::Space, 1.0f}}, kRate / 4, true);
+    std::printf("  space tail: dry %.5f, wet %.5f\n", rms(dryTail), rms(wetTail));
+    CHECK(rms(wetTail) > 10 * rms(dryTail) + 1e-4);
+    for (const auto* v : {&dark, &thin, &dirty, &moving, &wetTail}) {
+        for (float x : *v) CHECK(std::isfinite(x));
+    }
+}
+
 void testPlayPositionForLiveRecording() {
     ps::Engine engine(kRate);  // 120 BPM: a sixteenth is 6000 frames
     CHECK(engine.playPosition() < 0.0);
@@ -2924,6 +2979,7 @@ int main(int argc, char** argv) {
         {"song_export", testSongExportSwapsScenesOnTime},
         {"drum_rolls", testDrumRollsSplitTheStep},
         {"drum_pan_pitch", testDrumPanAndStepPitch},
+        {"track_macros", testTrackMacros},
         {"no_alloc_in_process", testProcessNeverAllocates},
     };
     for (const auto& t : tests) {

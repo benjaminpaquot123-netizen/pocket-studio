@@ -237,6 +237,80 @@ void StereoChorus::process(float* l, float* r, int n) {
     }
 }
 
+// --- Track macros ------------------------------------------------------------------------
+
+void TrackMacros::prepare(float rate) {
+    rate_ = rate;
+    left_.Init(rate);
+    right_.Init(rate);
+    drive_.prepare(rate);
+    chorus_.prepare(rate);
+    update();
+}
+
+void TrackMacros::set(int macro, float v) {
+    if (macro < 0 || macro >= kCount || !std::isfinite(v)) return;
+    v_[static_cast<size_t>(macro)] = std::clamp(v, 0.0f, 1.0f);
+    update();
+}
+
+void TrackMacros::update() {
+    // Colour: below the middle a low-pass closes down to 150 Hz, above it a high-pass opens up to
+    // 2.5 kHz; the first 5 % around the middle fade the filter in, so the rest point is clean.
+    const float c = v_[Color] - 0.5f;
+    highPass_ = c > 0.0f;
+    filterMix_ = std::min(1.0f, std::fabs(c) * 20.0f);
+    const float amount = std::fabs(c) * 2.0f;
+    const float f = highPass_ ? expMap(amount, 20.0f, 2500.0f) : expMap(1.0f - amount, 150.0f, 18000.0f);
+    left_.SetFreq(std::min(f, rate_ * 0.45f));
+    right_.SetFreq(std::min(f, rate_ * 0.45f));
+    left_.SetRes(0.25f);
+    right_.SetRes(0.25f);
+    // Dirt: more drive and a little darker; process() keeps the loudness of the clean sound.
+    const float d = v_[Dirt];
+    drive_.setParam(0, d);
+    drive_.setParam(1, 0.75f - 0.25f * d);
+    drive_.setParam(2, std::min(1.0f, d * 3.0f));
+    drive_.setParam(3, 0.7f);
+    // Motion: a chorus that gets deeper and a bit faster.
+    const float m = v_[Motion];
+    chorus_.setParam(0, 0.2f + 0.35f * m);
+    chorus_.setParam(1, m);
+    chorus_.setParam(2, 0.4f);
+    chorus_.setParam(3, std::min(0.6f, m * 1.2f));
+}
+
+void TrackMacros::process(float* l, float* r, int n) {
+    if (filterMix_ > 0.0f) {
+        for (int i = 0; i < n; ++i) {
+            left_.Process(l[i]);
+            right_.Process(r[i]);
+            const float a = highPass_ ? left_.High() : left_.Low();
+            const float b = highPass_ ? right_.High() : right_.Low();
+            l[i] += filterMix_ * (a - l[i]);
+            r[i] += filterMix_ * (b - r[i]);
+        }
+    }
+    if (v_[Dirt] > 0.005f) {
+        // Loudness follows the input (50 ms power averages): drive changes the colour, not the level.
+        float in = 0.0f;
+        for (int i = 0; i < n; ++i) in += l[i] * l[i] + r[i] * r[i];
+        drive_.process(l, r, n);
+        float out = 0.0f;
+        for (int i = 0; i < n; ++i) out += l[i] * l[i] + r[i] * r[i];
+        const float k = 1.0f - std::exp(-static_cast<float>(n) / (0.05f * rate_));
+        inPower_ += k * (in / static_cast<float>(n) - inPower_);
+        outPower_ += k * (out / static_cast<float>(n) - outPower_);
+        const float target = outPower_ > 1e-9f ? std::clamp(std::sqrt(inPower_ / outPower_), 0.1f, 2.0f) : 1.0f;
+        for (int i = 0; i < n; ++i) {
+            makeup_ += 0.002f * (target - makeup_);
+            l[i] *= makeup_;
+            r[i] *= makeup_;
+        }
+    }
+    if (v_[Motion] > 0.005f) chorus_.process(l, r, n);
+}
+
 // --- Filter ----------------------------------------------------------------------------------
 
 void SweepFilter::prepare(float rate) {

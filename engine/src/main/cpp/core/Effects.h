@@ -300,6 +300,29 @@ private:
     float holdL_ = 0.0f, holdR_ = 0.0f;
 };
 
+// The four "macros" of a track, for quick sound play (pad XY, big knobs): colour (0 = dark
+// low-pass .. 0.5 = untouched .. 1 = thin high-pass), dirt (drive), motion (chorus) and space
+// (added to the reverb and delay sends, applied by the mixer). Each stage is skipped at rest.
+class TrackMacros {
+public:
+    enum Macro : int { Color, Dirt, Motion, Space, kCount };
+    void prepare(float rate);
+    void set(int macro, float v);
+    float get(int macro) const { return v_[static_cast<size_t>(macro)]; }
+    void process(float* l, float* r, int n);
+
+private:
+    void update();
+    float rate_ = 48000;
+    std::array<float, kCount> v_{0.5f, 0.0f, 0.0f, 0.0f};
+    daisysp::Svf left_, right_;
+    bool highPass_ = false;
+    float filterMix_ = 0.0f;
+    Saturator drive_;
+    float inPower_ = 0.0f, outPower_ = 0.0f, makeup_ = 1.0f;
+    StereoChorus chorus_;
+};
+
 class InsertSlot {
 public:
     enum Type {

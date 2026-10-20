@@ -94,6 +94,7 @@ enum class CommandType : uint8_t {
     SetPadPan,            // a: pad, value -1..1 (synthesized and sampled sounds alike)
     SetDrumStepDetail,    // a: pad, b: step | (pitch + 64) << 16 (semitones, sampled sounds), value: pan -1..1 added to the pad's;
                           // after the step's SetDrumHit, which resets both
+    SetMacro,             // a: mixer channel, b: TrackMacros::Macro (colour, dirt, motion, space), value 0..1
 };
 
 // Instrument tracks: the synth commands (SynthNoteOn/Off, SynthParam, SetSynthNote, SetSynthNoteCount,

@@ -1,5 +1,6 @@
 package com.pocketstudio.app.ui
 
+import com.pocketstudio.model.track
 import kotlin.math.roundToInt
 import com.pocketstudio.app.instruments.InstrumentUi
 import com.pocketstudio.model.instrumentTracks
@@ -200,8 +201,11 @@ fun AppRoot() {
             }
         }
     }
-    // The sound library, for the selected drum pad.
+    // The sound library, for the selected drum pad or for a live pad (libraryLive >= 0).
     var showLibrary by rememberSaveable { mutableStateOf(false) }
+    var libraryLive by rememberSaveable { mutableIntStateOf(-1) }
+    // ... or for the selected instrument track's sampled sound.
+    var libraryTrack by rememberSaveable { mutableStateOf(false) }
     if (showLibrary) {
         val packsUi by libraryVm.packs.collectAsStateWithLifecycle()
         val previewing by libraryVm.playing.collectAsStateWithLifecycle()
@@ -216,7 +220,11 @@ fun AppRoot() {
                 packsUi.installed.associate { it.id to com.pocketstudio.app.library.PackStore.bytesOnDisk(context, it.id) }
             }
         }
-        val close = { libraryVm.stopPreview(); showLibrary = false }
+        val close = { libraryVm.stopPreview(); showLibrary = false; libraryLive = -1; libraryTrack = false }
+        val live = libraryLive
+        val forTrack = libraryTrack
+        val libProject by rhythmVm.project.collectAsStateWithLifecycle()
+        val libTrack by rhythmVm.selectedTrack.collectAsStateWithLifecycle()
         androidx.compose.ui.window.Dialog(
             onDismissRequest = close,
             properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false),
@@ -225,8 +233,12 @@ fun AppRoot() {
                 com.pocketstudio.app.library.LibraryScreen(
                     com.pocketstudio.app.library.LibraryUi(
                         packsUi, previewing,
-                        target = "le pad ${lane + 1} (${com.pocketstudio.app.rhythm.DrumKitInfo.names[lane]})",
-                        startKind = padKind(lane),
+                        target = when {
+                            forTrack -> "la piste « ${libProject.track(libTrack).name} »"
+                            live >= 0 -> "le pad live ${live + 1}"
+                            else -> "le pad ${lane + 1} (${com.pocketstudio.app.rhythm.DrumKitInfo.names[lane]})"
+                        },
+                        startKind = if (forTrack) "808" else if (live >= 0) "stab" else padKind(lane),
                         sizes = sizes,
                     ),
                     com.pocketstudio.app.library.LibraryActions(
@@ -234,7 +246,13 @@ fun AppRoot() {
                         preview = libraryVm::preview,
                         use = { option ->
                             libraryVm.use(option.ref) { pcm ->
-                                if (rhythmVm.placeOnPad(pcm, option.name.substringBefore(" · "))) close()
+                                val name = option.name.substringBefore(" · ")
+                                val placed = when {
+                                    forTrack -> rhythmVm.useAsTrackSound(pcm, name, (option.ref as? com.pocketstudio.app.library.SoundRef.Pack)?.sound?.kind)
+                                    live >= 0 -> rhythmVm.placeOnLivePad(live, pcm, name)
+                                    else -> rhythmVm.placeOnPad(pcm, name)
+                                }
+                                if (placed) close()
                                 else libraryVm.notice("Un son est encore en train d'être posé ou enregistré : réessaie dans un instant.")
                             }
                         },
@@ -664,6 +682,7 @@ fun AppRoot() {
                         val octave by rhythmVm.keyboardOctave.collectAsStateWithLifecycle()
                         val live by rhythmVm.live.collectAsStateWithLifecycle()
                         val library by rhythmVm.library.collectAsStateWithLifecycle()
+                        val trackSoundMessage by rhythmVm.trackSoundBusy.collectAsStateWithLifecycle()
                         val bankId by rhythmVm.bankId.collectAsStateWithLifecycle()
                         LaunchedEffect(Unit) {
                             lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollLive() }
@@ -718,6 +737,10 @@ fun AppRoot() {
                                 selectEngine = rhythmVm::selectSynthEngine,
                                 setPlaitsModel = rhythmVm::setPlaitsModel,
                                 setPlaitsParam = rhythmVm::setPlaitsParam,
+                                sampled = project.sampled,
+                                chooseSample = { rhythmVm.dismissTrackSoundMessage(); libraryTrack = true; showLibrary = true },
+                                editSampled = rhythmVm::editSampled,
+                                sampledMessage = trackSoundMessage,
                             ),
                             transcribe = TranscribeUi(
                                 task = transcription,
@@ -890,6 +913,8 @@ fun AppRoot() {
                                 setSize = rhythmVm::setLiveSize,
                                 edit = { liveEditing = it },
                                 import = { pad -> liveImportPad = pad; rhythmVm.dismissSampleError(); pickLiveAudio.launch(arrayOf("audio/*")) },
+                                library = { pad -> rhythmVm.dismissSampleError(); libraryLive = pad; showLibrary = true },
+                                generate = { liveEditing = null; tab = AppTab.Audio; audioPage = 3 },
                                 fromDrumPad = rhythmVm::liveFromDrumPad,
                                 setBeats = rhythmVm::setLiveBeats,
                                 setOneShot = rhythmVm::setLiveOneShot,

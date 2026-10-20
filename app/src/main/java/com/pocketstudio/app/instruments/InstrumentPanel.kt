@@ -1,5 +1,6 @@
 package com.pocketstudio.app.instruments
 
+import com.pocketstudio.app.help.Glossary
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -30,6 +31,7 @@ import com.pocketstudio.app.rhythm.LibraryState
 import com.pocketstudio.engine.Preset
 import com.pocketstudio.model.InstrumentChoice
 import com.pocketstudio.model.PlaitsPatch
+import com.pocketstudio.model.SampledPatch
 import com.pocketstudio.ui.Neon
 import com.pocketstudio.ui.NeonCard
 import com.pocketstudio.ui.SectionLabel
@@ -47,12 +49,18 @@ class InstrumentUi(
     val bankId: String = InstrumentLibrary.BANKS[0].id,
     val selectBank: (String) -> Unit = {},
     val loadKit: (Preset) -> Unit = {},
-    /** The synth track's own voice when no instrument is chosen: 0 subtractive, 1 Plaits. */
+    /** The synth track's own voice when no instrument is chosen: 0 subtractive, 1 Plaits, 2 a sampled sound. */
     val synthEngine: Int = 0,
     val plaits: PlaitsPatch = PlaitsPatch(),
     val selectEngine: (Int) -> Unit = {},
     val setPlaitsModel: (Int) -> Unit = {},
     val setPlaitsParam: (Int, Float) -> Unit = { _, _ -> },
+    val sampled: SampledPatch = SampledPatch(),
+    /** Opens the sound library to pick the track's sampled sound. */
+    val chooseSample: () -> Unit = {},
+    /** [key]: slider drags with the same key merge into one undo step (null = a step of its own). */
+    val editSampled: (String?, (SampledPatch) -> SampledPatch) -> Unit = { _, _ -> },
+    val sampledMessage: String? = null,
 )
 
 /** Where the synth track's sound comes from: our synth, or one of 128 General MIDI instruments. */
@@ -61,8 +69,8 @@ fun InstrumentPanel(ui: InstrumentUi) {
     val chipColors = FilterChipDefaults.filterChipColors(selectedContainerColor = Neon.Cyan.copy(alpha = 0.25f), selectedLabelColor = Neon.Cyan)
     var showLibrary by rememberSaveable { mutableIntStateOf(if (ui.current != null) 1 else 0) }
     NeonCard(modifier = Modifier.testTag("instrument_panel")) {
-        SectionLabel("Source du son")
-        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        SectionLabel("Source du son", help = Glossary.SOURCE)
+        Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             FilterChip(
                 selected = ui.current == null && showLibrary == 0 && ui.synthEngine == 0,
                 onClick = { showLibrary = 0; ui.selectEngine(0) },
@@ -75,6 +83,12 @@ fun InstrumentPanel(ui: InstrumentUi) {
                 modifier = Modifier.testTag("source_plaits"),
             )
             FilterChip(
+                selected = ui.current == null && showLibrary == 0 && ui.synthEngine == 2,
+                onClick = { showLibrary = 0; ui.selectEngine(2) },
+                label = { Text("Échantillon") }, colors = chipColors,
+                modifier = Modifier.testTag("source_sampled"),
+            )
+            FilterChip(
                 selected = ui.current != null || showLibrary == 1,
                 onClick = { showLibrary = 1; ui.open() },
                 label = { Text("Instruments") }, colors = chipColors,
@@ -82,6 +96,7 @@ fun InstrumentPanel(ui: InstrumentUi) {
             )
         }
         if (showLibrary == 0 && ui.current == null && ui.synthEngine == 1) PlaitsPanel(ui)
+        if (showLibrary == 0 && ui.current == null && ui.synthEngine == 2) SampledPanel(ui)
         if (showLibrary == 1 || ui.current != null) {
             LaunchedEffect(Unit) { ui.open() }
             val bank = InstrumentLibrary.bank(ui.bankId)

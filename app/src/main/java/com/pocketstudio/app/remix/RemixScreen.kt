@@ -1,5 +1,6 @@
 package com.pocketstudio.app.remix
 
+import com.pocketstudio.app.help.Glossary
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -109,7 +110,7 @@ fun RemixScreen(ui: RemixUi, actions: RemixActions) {
     ) {
         if (ui.remix.setId != null) InProject(ui, actions)
         NeonCard(modifier = Modifier.testTag("remix_start")) {
-            SectionLabel("Séparer une chanson")
+            SectionLabel("Séparer une chanson", help = Glossary.REMIX)
             Text(
                 "Choisis un morceau du téléphone : l'appli le découpe en batterie, basse, voix et le reste. " +
                     "Compte quelques minutes ; tu peux éteindre l'écran.",

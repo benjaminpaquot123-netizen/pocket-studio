@@ -1,5 +1,6 @@
 package com.pocketstudio.app.library
 
+import com.pocketstudio.app.help.Glossary
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -130,7 +131,7 @@ fun LibraryScreen(ui: LibraryUi, actions: LibraryActions) {
 private fun PackList(ui: LibraryUi, actions: LibraryActions) {
     val packs = ui.packs
     NeonCard(modifier = Modifier.testTag("library_packs")) {
-        SectionLabel("Packs par style")
+        SectionLabel("Packs par style", help = Glossary.SOUND_PACK)
         when (val index = packs.index) {
             IndexState.Loading -> Text("Chargement de la liste…", color = Neon.TextSecondary)
             IndexState.Unavailable -> Text("Les packs de sons arrivent bientôt.", color = Neon.TextSecondary)

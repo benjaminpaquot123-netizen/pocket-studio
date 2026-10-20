@@ -98,3 +98,8 @@ Feu vert de Benjamin (D4 = A) : fusion de la pull request en fin de phase.
 - [x] 11.2 Rayon de sons dans le pad (parcourir, écouter, poser), gestion des packs (taille, supprimer)
 - [ ] 11.3 Ableton Link (reporté)
 
+## Phase 12 : jouer les sons et comprendre les mots (demandes de recette)
+- [x] 12.1 Son échantillonné : n'importe quel son (808, basse, stab d'un pack, son importé) joué sur tout le clavier, note d'origine détectée, glisse façon 808, boucle, enveloppe
+- [x] 12.2 Petits « ? » à côté des termes (explication en une ou deux phrases) et Lexique dans Outils › Aide
+- [x] 12.3 Pads live : « + » ouvre la bibliothèque de sons, la génération par phrase, puis le téléphone ; export « La scène » au lieu de « La boucle »
+- [ ] 12.4 Assistant : 808 des packs installés proposées pour la basse (trap, drill, phonk…)

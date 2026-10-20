@@ -45,9 +45,14 @@ fun NeonCard(
     }
 }
 
+/** A card's title in small capitals; with [help], a faded "?" after it explains the term. */
 @Composable
-fun SectionLabel(text: String, modifier: Modifier = Modifier, color: Color = Neon.Cyan) {
-    Text(text.uppercase(), modifier = modifier, style = MaterialTheme.typography.labelSmall, color = color)
+fun SectionLabel(text: String, modifier: Modifier = Modifier, color: Color = Neon.Cyan, help: Help? = null) {
+    if (help == null) {
+        Text(text.uppercase(), modifier = modifier, style = MaterialTheme.typography.labelSmall, color = color)
+    } else {
+        WithHelp(help, modifier) { Text(text.uppercase(), style = MaterialTheme.typography.labelSmall, color = color) }
+    }
 }
 
 /** Label on the left, value on the right; used for technical readouts. */

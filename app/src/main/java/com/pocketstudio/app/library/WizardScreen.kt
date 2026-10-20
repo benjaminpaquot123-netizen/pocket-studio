@@ -1,5 +1,6 @@
 package com.pocketstudio.app.library
 
+import com.pocketstudio.app.help.Glossary
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -150,7 +151,7 @@ private fun StyleStep(chosen: String?, packs: PacksUi, actions: WizardActions) {
 private fun InstalledPacks(packs: PacksUi, actions: WizardActions) {
     if (packs.installed.isEmpty()) return
     NeonCard(modifier = Modifier.testTag("wizard_installed_packs")) {
-        SectionLabel("Packs téléchargés")
+        SectionLabel("Packs téléchargés", help = Glossary.SOUND_PACK)
         packs.installed.forEach { m ->
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text("${m.name} · ${m.sounds.size} sons", modifier = Modifier.weight(1f))

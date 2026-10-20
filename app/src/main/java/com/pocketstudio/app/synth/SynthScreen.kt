@@ -1,5 +1,6 @@
 package com.pocketstudio.app.synth
 
+import com.pocketstudio.app.help.Glossary
 import com.pocketstudio.app.instruments.InstrumentPanel
 import com.pocketstudio.app.instruments.InstrumentUi
 import com.pocketstudio.model.Scale
@@ -145,7 +146,7 @@ fun SynthScreen(
                 }
                 transcribe?.let { TranscribeCard(it) }
                 NeonCard {
-                    SectionLabel("Harmonie")
+                    SectionLabel("Harmonie", help = Glossary.SCALE)
                     HarmonyPanel(notes.harmony, notes.clip.performance, notes.actions, notes.clip.notes)
                 }
                 instrument?.let { InstrumentPanel(it) }
@@ -219,7 +220,7 @@ private fun KeyboardCard(
 ) {
     NeonCard {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            SectionLabel(if (chordPads) "Pads d'accords" else "Clavier")
+            SectionLabel(if (chordPads) "Pads d'accords" else "Clavier", help = if (chordPads) Glossary.CHORD else null)
             Box(Modifier.weight(1f))
             if (!chordPads) ChordChip(chordKeys, onChordKeys)
             ChordPadsChip(chordPads, onChordPads)

@@ -1,5 +1,6 @@
 package com.pocketstudio.app.midi
 
+import com.pocketstudio.app.help.Glossary
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -62,7 +63,7 @@ fun MidiScreen(ui: MidiUi, actions: MidiActions, learn: LearnUi = LearnUi()) {
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         NeonCard {
-            SectionLabel("Clavier MIDI")
+            SectionLabel("Clavier MIDI", help = Glossary.MIDI)
             if (!ui.available) {
                 Text("Ce téléphone ne gère pas le MIDI.", color = Neon.Amber)
                 return@NeonCard
@@ -119,7 +120,7 @@ fun MidiScreen(ui: MidiUi, actions: MidiActions, learn: LearnUi = LearnUi()) {
 @Composable
 private fun LearnCard(learn: LearnUi) {
     NeonCard(modifier = Modifier.testTag("midi_learn")) {
-        SectionLabel("Boutons du contrôleur (MIDI learn)")
+        SectionLabel("Boutons du contrôleur (MIDI learn)", help = Glossary.MIDI_LEARN)
         Text(
             "Associe un bouton ou un fader de ton contrôleur à un réglage : choisis le réglage, puis tourne le bouton.",
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,

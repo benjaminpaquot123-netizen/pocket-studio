@@ -1,5 +1,8 @@
 package com.pocketstudio.app.rhythm
 
+import com.pocketstudio.ui.WithHelp
+import com.pocketstudio.ui.HelpDot
+import com.pocketstudio.app.help.Glossary
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.material.icons.filled.ContentCut
 import androidx.compose.runtime.setValue
@@ -177,6 +180,7 @@ private fun TransportBar(project: Project, transport: TransportUi, canUndo: Bool
                 modifier = Modifier.testTag("tempo"),
             )
             IconButton(onClick = { actions.nudgeTempo(1) }) { Icon(Icons.Filled.Add, contentDescription = "Tempo plus") }
+            HelpDot(Glossary.TEMPO)
             Box(Modifier.weight(1f))
             OutlinedButton(
                 onClick = actions.tapTempo,
@@ -258,7 +262,7 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, playing: Boo
     val chipColors = FilterChipDefaults.filterChipColors(selectedContainerColor = Neon.Cyan.copy(alpha = 0.25f), selectedLabelColor = Neon.Cyan)
     NeonCard {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            SectionLabel(if (allPads) "Pas : tous les pads" else "Pas : ${DrumKitInfo.names[lane]}", color = if (allPads) Neon.Cyan else color)
+            SectionLabel(if (allPads) "Pas : tous les pads" else "Pas : ${DrumKitInfo.names[lane]}", color = if (allPads) Neon.Cyan else color, help = Glossary.STEP)
             Box(Modifier.weight(1f))
             FilterChip(selected = allPads, onClick = { allPads = !allPads }, label = { Text("Tous les pads") }, colors = chipColors,
                 modifier = Modifier.testTag("all_pads"))
@@ -409,11 +413,14 @@ private fun GrooveCard(project: Project, transport: TransportUi, actions: Rhythm
             )
             FilterChip(selected = transport.metronome, onClick = actions.toggleMetronome, label = { Text("Métronome") }, colors = chipColors)
             FilterChip(selected = transport.countIn, onClick = actions.toggleCountIn, label = { Text("Décompte") }, colors = chipColors)
+            HelpDot(Glossary.METRONOME, Modifier.align(Alignment.CenterVertically))
             Box(Modifier.weight(1f))
             OutlinedButton(onClick = actions.openEffects, modifier = Modifier.testTag("drum_effects")) { Text("Effets") }
         }
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Text("Swing", Modifier.weight(1f))
+            Text("Swing")
+            HelpDot(Glossary.SWING)
+            Box(Modifier.weight(1f))
             Text("${(project.swing / Project.MAX_SWING * 100).roundToInt()} %", style = MonoStyle, color = Neon.Cyan)
         }
         Slider(
@@ -429,7 +436,7 @@ internal fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: 
     val sample = project.drums.lanes[lane].sample
     NeonCard(modifier = Modifier.testTag("pad_sound")) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            SectionLabel("Son du pad", color = color)
+            SectionLabel("Son du pad", color = color, help = Glossary.SAMPLE)
             Box(Modifier.weight(1f))
             Text(
                 sample?.name ?: "${DrumKitInfo.names[lane]} (synthétisé)",
@@ -531,11 +538,14 @@ private fun PadSampleControls(s: PadSample, seconds: Double, bpm: Double, edit: 
         edit("pitch") { it.copy(pitch = v.roundToInt().toFloat()) }
     }
     val regionSeconds = seconds * (s.end - s.start)
-    Text(
-        if (s.fitBeats == 0) "Calé au tempo : non (le son garde sa vitesse)"
-        else "Calé au tempo : ${s.fitBeats} temps à ${bpm.roundToInt()} BPM, sans changer la hauteur",
-        style = MaterialTheme.typography.bodyMedium,
-    )
+    WithHelp(Glossary.FIT_TEMPO) {
+        Text(
+            if (s.fitBeats == 0) "Calé au tempo : non (le son garde sa vitesse)"
+            else "Calé au tempo : ${s.fitBeats} temps à ${bpm.roundToInt()} BPM, sans changer la hauteur",
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.weight(1f, fill = false),
+        )
+    }
     Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
         val suggestion = PadSample.suggestBeats(regionSeconds, bpm)
         PadSample.FIT_BEATS.forEach { beats ->
@@ -552,8 +562,11 @@ private fun PadSampleControls(s: PadSample, seconds: Double, bpm: Double, edit: 
         FilterChip(selected = s.reverse, onClick = { edit(null) { it.copy(reverse = !it.reverse) } }, label = { Text("À l'envers") }, colors = chipColors)
         FilterChip(selected = s.loop, onClick = { edit(null) { it.copy(loop = !it.loop) } }, label = { Text("En boucle") }, colors = chipColors)
     }
-    TextButton(onClick = { advanced = !advanced }) {
-        Text(if (advanced) "Masquer l'enveloppe et les groupes" else "Enveloppe, volume, groupe d'étouffement")
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        TextButton(onClick = { advanced = !advanced }, modifier = Modifier.weight(1f, fill = false)) {
+            Text(if (advanced) "Masquer l'enveloppe et les groupes" else "Enveloppe, volume, groupe d'étouffement")
+        }
+        HelpDot(Glossary.ENVELOPE)
     }
     if (advanced) {
         LabeledSlider("Volume", "${(s.gain * 100).roundToInt()} %", s.gain, 0f..2f) { v -> edit("gain") { it.copy(gain = v) } }

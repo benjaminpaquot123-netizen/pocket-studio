@@ -1,5 +1,10 @@
 package com.pocketstudio.app.settings
 
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import com.pocketstudio.app.help.Glossary
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -92,6 +97,20 @@ fun SettingsScreen(s: AppSettings, version: String, actions: SettingsActions) {
         NeonCard {
             SectionLabel("Aide")
             OutlinedButton(onClick = actions.openGuide, modifier = Modifier.fillMaxWidth().testTag("open_guide")) { Text("Revoir le guide des premiers pas") }
+            var lexicon by rememberSaveable { mutableStateOf(false) }
+            OutlinedButton(onClick = { lexicon = !lexicon }, modifier = Modifier.fillMaxWidth().testTag("open_lexicon")) {
+                Text(if (lexicon) "Fermer le lexique" else "Lexique : les mots de la musique expliqués")
+            }
+            if (lexicon) {
+                Text("Partout dans l'appli, le petit « ? » à côté d'un mot l'explique aussi.",
+                    style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                Glossary.ALL.forEach { h ->
+                    Column(Modifier.testTag("lexicon_${h.term}")) {
+                        Text(h.term, style = MaterialTheme.typography.titleSmall, color = Neon.Cyan)
+                        Text(h.text, style = MaterialTheme.typography.bodySmall)
+                    }
+                }
+            }
             TextButton(onClick = actions.reset, modifier = Modifier.fillMaxWidth().testTag("settings_reset")) { Text("Remettre les réglages par défaut") }
             Text("Pocket Studio $version", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         }

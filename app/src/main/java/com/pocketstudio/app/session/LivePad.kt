@@ -1,5 +1,6 @@
 package com.pocketstudio.app.session
 
+import com.pocketstudio.app.help.Glossary
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitEachGesture
@@ -55,7 +56,7 @@ fun LivePad(set: (param: Int, value: Float) -> Unit) {
     var touch by remember { mutableStateOf<Offset?>(null) }
     var division by rememberSaveable { mutableIntStateOf(2) }
     NeonCard(accent = Neon.Acid, modifier = Modifier.testTag("live")) {
-        SectionLabel("Effets live", color = Neon.Acid)
+        SectionLabel("Effets live", color = Neon.Acid, help = Glossary.PERFORMANCE)
         Text(
             "Glisse sur le pad : à gauche ça coupe les aigus, à droite les graves, en haut ça résonne. Lâche : tout revient.",
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,

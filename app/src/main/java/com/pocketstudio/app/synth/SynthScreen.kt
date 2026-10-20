@@ -1,5 +1,7 @@
 package com.pocketstudio.app.synth
 
+import com.pocketstudio.ui.HelpDot
+import com.pocketstudio.ui.Help
 import com.pocketstudio.app.help.Glossary
 import com.pocketstudio.app.instruments.InstrumentPanel
 import com.pocketstudio.app.instruments.InstrumentUi
@@ -76,7 +78,8 @@ data class SynthActions(
 private val EASY = listOf(
     SynthPatch.CUTOFF to "Coupure", SynthPatch.RESONANCE to "Résonance", SynthPatch.FILTER_ENV to "Enveloppe du filtre",
     SynthPatch.A_ATTACK to "Attaque", SynthPatch.A_RELEASE to "Relâchement", SynthPatch.OSC2_DETUNE to "Épaisseur (désaccord)",
-    SynthPatch.SUB to "Sous-basse", SynthPatch.LEVEL to "Volume",
+    SynthPatch.SUB to "Sous-basse", SynthPatch.UNISON to "Unisson (supersaw)", SynthPatch.UNISON_DETUNE to "Écart de l'unisson",
+    SynthPatch.LEVEL to "Volume",
 )
 
 /** Every synth parameter a knob can move, with its name (MIDI learn). */
@@ -262,7 +265,13 @@ private fun SoundCard(patch: SynthPatch, actions: SynthActions, advanced: Boolea
             actions.setParam(SynthPatch.OSC1_WAVE, v)
             actions.setParam(SynthPatch.OSC2_WAVE, v)
         }
-        EASY.forEach { (index, label) -> ParamSlider(label, patch.get(index)) { actions.setParam(index, it) } }
+        EASY.forEach { (index, label) ->
+            if (index == SynthPatch.UNISON) {
+                ParamSlider(label, patch.get(index), Glossary.UNISON, "${1 + (patch.get(index) * 6).roundToInt()} voix") { actions.setParam(index, it) }
+            } else {
+                ParamSlider(label, patch.get(index)) { actions.setParam(index, it) }
+            }
+        }
         TextButton(onClick = { setAdvanced(!advanced) }) {
             Icon(if (advanced) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore, contentDescription = null)
             Text(if (advanced) "Masquer les réglages avancés" else "Réglages avancés")
@@ -332,10 +341,12 @@ private fun ChoiceRow(options: List<Pair<Float, String>>, current: Float, onPick
 }
 
 @Composable
-private fun ParamSlider(label: String, value: Float, onChange: (Float) -> Unit) {
+private fun ParamSlider(label: String, value: Float, help: Help? = null, shown: String? = null, onChange: (Float) -> Unit) {
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        Text(label, Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
-        Text("${(value * 100).roundToInt()}", style = MonoStyle, color = Neon.Cyan)
+        Text(label, style = MaterialTheme.typography.bodyMedium)
+        if (help != null) HelpDot(help)
+        Box(Modifier.weight(1f))
+        Text(shown ?: "${(value * 100).roundToInt()}", style = MonoStyle, color = Neon.Cyan)
     }
     Slider(value = value, onValueChange = onChange)
 }

@@ -85,7 +85,7 @@ fun LibraryScreen(ui: LibraryUi, actions: LibraryActions) {
             // Errors and notices at the top, where they are seen (the pack list can be far below).
             ui.packs.message?.let { Text(it, color = Neon.Amber, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.testTag("library_message")) }
             Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                SoundPacks.KIND_LABELS.filterKeys { it != "fx" && it != "loop" }.forEach { (k, label) ->
+                SoundPacks.KIND_LABELS.filterKeys { it != "loop" }.forEach { (k, label) ->
                     FilterChip(selected = kind == k, onClick = { kind = k }, label = { Text(label) }, colors = chipColors,
                         modifier = Modifier.testTag("library_kind_$k"))
                 }

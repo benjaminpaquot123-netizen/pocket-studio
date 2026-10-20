@@ -134,11 +134,11 @@ object StarterWizard {
 
     const val PACK_FILE = "pack:"
 
-    /** Pack sounds that suit a part: 808s and basses for the bass, stabs for the lead. */
+    /** Pack sounds that suit a part: 808s and basses for the bass, pads and keys for the chords, leads for the melody. */
     private fun packKinds(part: Part) = when (part) {
         Part.Bass -> listOf("808", "bass")
-        Part.Pad -> emptyList()
-        Part.Lead -> listOf("stab")
+        Part.Pad -> listOf("pad", "keys")
+        Part.Lead -> listOf("lead", "pluck", "stab")
     }
 
     /**

@@ -234,6 +234,46 @@ void SweepFilter::process(float* l, float* r, int n) {
     }
 }
 
+// --- Sidechain pump --------------------------------------------------------------------------
+
+void Ducker::prepare(float rate) {
+    rate_ = rate;
+    attack_ = 1.0f - std::exp(-1.0f / (0.002f * rate));  // 2 ms down, no click
+    update();
+    reset();
+}
+
+void Ducker::setParam(int p, float v) {
+    if (p < 0 || p >= 4) return;
+    p_[static_cast<size_t>(p)] = std::clamp(v, 0.0f, 1.0f);
+    update();
+}
+
+void Ducker::update() {
+    depth_ = p_[0];
+    release_ = std::exp(-1.0f / (0.001f * expMap(p_[1], 50.0f, 600.0f) * rate_));
+}
+
+void Ducker::process(float* l, float* r, int n) {
+    for (int i = 0; i < n; ++i) {
+        if (i == pending_) {
+            target_ = 1.0f;
+            pending_ = -1;
+        }
+        // Fast duck towards the target, then a smooth release back up.
+        if (target_ > 0.0f) {
+            env_ += attack_ * (target_ - env_);
+            if (env_ > 0.99f) target_ = 0.0f;
+        } else {
+            env_ *= release_;
+        }
+        const float g = 1.0f - depth_ * env_;
+        l[i] *= g;
+        r[i] *= g;
+    }
+    if (pending_ >= n) pending_ -= n;
+}
+
 // --- Insert slot -----------------------------------------------------------------------------
 
 void InsertSlot::prepare(float rate) {
@@ -242,6 +282,7 @@ void InsertSlot::prepare(float rate) {
     sat_.prepare(rate);
     chorus_.prepare(rate);
     filter_.prepare(rate);
+    pump_.prepare(rate);
 }
 
 void InsertSlot::setType(int type) {
@@ -253,6 +294,7 @@ void InsertSlot::setType(int type) {
         case Saturation: sat_.reset(); break;
         case Chorus: chorus_.reset(); break;
         case Filter: filter_.reset(); break;
+        case Pump: pump_.reset(); break;
         default: break;
     }
 }
@@ -264,6 +306,7 @@ void InsertSlot::setParam(int p, float v) {
         case Saturation: sat_.setParam(p, v); break;
         case Chorus: chorus_.setParam(p, v); break;
         case Filter: filter_.setParam(p, v); break;
+        case Pump: pump_.setParam(p, v); break;
         default: break;
     }
 }
@@ -275,6 +318,7 @@ void InsertSlot::process(float* l, float* r, int n) {
         case Saturation: sat_.process(l, r, n); break;
         case Chorus: chorus_.process(l, r, n); break;
         case Filter: filter_.process(l, r, n); break;
+        case Pump: pump_.process(l, r, n); break;
         default: break;
     }
 }

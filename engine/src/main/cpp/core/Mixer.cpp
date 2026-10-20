@@ -99,8 +99,17 @@ void Mixer::process(const float* const* channels, const float* const* rights, co
                     int outChannels) {
     for (int offset = 0; offset < numFrames; offset += kChunk) {
         const int n = std::min(kChunk, numFrames - offset);
+        // Hand this chunk's sidechain events to the pumps (every insert slot, master included).
+        for (int e = 0; e < events_; ++e) {
+            const int at = eventOffset_[static_cast<size_t>(e)];
+            if (at < offset || at >= offset + n) continue;
+            for (auto& strip : inserts_) {
+                for (auto& slot : strip) slot.sidechain(at - offset, eventKick_[static_cast<size_t>(e)], eventBeat_[static_cast<size_t>(e)]);
+            }
+        }
         processChunk(channels, rights, direct, out + static_cast<size_t>(offset) * outChannels, n, outChannels, offset);
     }
+    events_ = 0;
 }
 
 void Mixer::processChunk(const float* const* channels, const float* const* rights, const float* direct, float* out, int n,

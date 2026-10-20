@@ -116,11 +116,32 @@ private:
     float mix_ = 1.0f;
 };
 
+// Sidechain "pump": the signal ducks on every kick (or every beat) and swells back.
+// Params: depth (0..1), release (50..600 ms), source (< 0.5 kick hits, else every beat).
+class Ducker {
+public:
+    void prepare(float rate);
+    void setParam(int p, float v);
+    void reset() { env_ = 0.0f; pending_ = -1; }
+    // A kick lands `offset` frames into the next process() call.
+    void trigger(int offset) { pending_ = offset; }
+    bool everyBeat() const { return p_[2] >= 0.5f; }
+    void process(float* l, float* r, int n);
+    float gain() const { return 1.0f - depth_ * env_; }  // tests
+
+private:
+    void update();
+    float rate_ = 48000;
+    std::array<float, 4> p_{0.7f, 0.4f, 0.0f, 0.0f};
+    float depth_ = 0.7f, release_ = 0.999f, attack_ = 0.1f, env_ = 0.0f, target_ = 0.0f;
+    int pending_ = -1;
+};
+
 // One insert slot: any of the insert effects, chosen by type. All are kept prepared so a
 // type change on the audio thread is just a reset.
 class InsertSlot {
 public:
-    enum Type { None = 0, Eq = 1, Comp = 2, Saturation = 3, Chorus = 4, Filter = 5, kTypes = 6 };
+    enum Type { None = 0, Eq = 1, Comp = 2, Saturation = 3, Chorus = 4, Filter = 5, Pump = 6, kTypes = 7 };
     static constexpr int kParams = 4;
 
     void prepare(float rate);
@@ -129,6 +150,11 @@ public:
     int type() const { return type_; }
     void process(float* l, float* r, int n);
     const Compressor& compressor() const { return comp_; }  // tests
+    const Ducker& ducker() const { return pump_; }          // tests
+    // Sidechain events (only the Pump type listens). `beat`: the step is a quarter note.
+    void sidechain(int offset, bool kick, bool beat) {
+        if (type_ == Pump && (pump_.everyBeat() ? beat : kick)) pump_.trigger(offset);
+    }
 
 private:
     int type_ = None;
@@ -137,6 +163,7 @@ private:
     Saturator sat_;
     StereoChorus chorus_;
     SweepFilter filter_;
+    Ducker pump_;
 };
 
 // Freeverb (Jezar at Dreampoint, public domain): 8 parallel combs + 4 allpasses per side.

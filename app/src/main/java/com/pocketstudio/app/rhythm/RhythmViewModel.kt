@@ -21,6 +21,8 @@ import com.pocketstudio.engine.NativeStems
 import com.pocketstudio.app.remix.StemSet
 import com.pocketstudio.app.remix.StemStore
 import com.pocketstudio.model.Remix
+import com.pocketstudio.model.AutoTarget
+import com.pocketstudio.model.AutomationLane
 import com.pocketstudio.model.EffectType
 import com.pocketstudio.model.Insert
 import com.pocketstudio.engine.OfflineExport
@@ -179,6 +181,69 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         pushNotes(p.synthNotes)
         pushInstrument(p)
         pushRemix(p)
+        pushAutomation(p)
+    }
+
+    // --- Automation (mixer settings that move with the loop) ----------------------------------
+
+    private val _automationRecord = MutableStateFlow(false)
+    /** While on and playing, moving an automated control writes it on the current step. */
+    val automationRecord: StateFlow<Boolean> = _automationRecord.asStateFlow()
+
+    fun toggleAutomationRecord() {
+        _automationRecord.value = !_automationRecord.value
+    }
+
+    private fun pushAutomation(p: Project = project.value) {
+        if (!NativeEngine.isAvailable) return
+        for (i in 0 until AutomationLane.MAX_LANES) {
+            val lane = p.automation.getOrNull(i)
+            NativeEngine.setAutomationTarget(i, lane?.target?.pack() ?: -1)
+            lane?.values?.forEachIndexed { step, v -> if (v != null) NativeEngine.setAutomationPoint(i, step, v) }
+        }
+    }
+
+    fun addAutomation(target: AutoTarget) {
+        if (project.value.automation.size >= AutomationLane.MAX_LANES || project.value.automation.any { it.target == target }) return
+        session.edit { p -> p.copy(automation = p.automation + AutomationLane(target)) }
+        pushAutomation()
+    }
+
+    fun removeAutomation(index: Int) {
+        session.edit { p -> p.copy(automation = p.automation.filterIndexed { i, _ -> i != index }) }
+        pushAutomation()
+        pushMixer(project.value)  // back to the static settings
+    }
+
+    fun clearAutomation(index: Int) {
+        session.edit { p -> p.copy(automation = p.automation.mapIndexed { i, l -> if (i == index) AutomationLane(l.target) else l }) }
+        pushAutomation()
+        pushMixer(project.value)
+    }
+
+    /** Drawing: [value] 0..1 on [step] (null erases). Consecutive strokes merge into one undo step. */
+    fun setAutomationPoint(index: Int, step: Int, value: Float?) {
+        if (index !in project.value.automation.indices) return
+        session.edit("auto-$index") { p -> p.copy(automation = p.automation.mapIndexed { i, l -> if (i == index) l.withPoint(step, value) else l }) }
+        if (NativeEngine.isAvailable) NativeEngine.setAutomationPoint(index, step, value?.coerceIn(0f, 1f))
+    }
+
+    private fun recordAutomation(target: AutoTarget, value: Float) {
+        if (!_automationRecord.value || !_transport.value.playing || !NativeEngine.isAvailable) return
+        val step = NativeEngine.currentStep()
+        if (step !in 0 until AutomationLane.STEPS) return
+        var index = project.value.automation.indexOfFirst { it.target == target }
+        if (index < 0) {
+            if (project.value.automation.size >= AutomationLane.MAX_LANES) return
+            addAutomation(target)
+            index = project.value.automation.indexOfFirst { it.target == target }
+        }
+        setAutomationPoint(index, step, value)
+    }
+
+    /** After a stop, settings left where the automation put them go back to the project's values. */
+    private fun restoreAfterAutomation() {
+        if (project.value.automation.isNotEmpty()) pushMixer(project.value)
     }
 
     // --- Remix: a separated song played along with the project ---------------------------------
@@ -856,8 +921,15 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    fun setChannelVolume(ch: Int, v: Float) = editChannel(ch, "vol") { it.copy(volume = v) }
-    fun setChannelPan(ch: Int, pan: Float) = editChannel(ch, "pan") { it.copy(pan = pan) }
+    fun setChannelVolume(ch: Int, v: Float) {
+        editChannel(ch, "vol") { it.copy(volume = v) }
+        recordAutomation(AutoTarget(AutoTarget.VOLUME, ch), v)
+    }
+
+    fun setChannelPan(ch: Int, pan: Float) {
+        editChannel(ch, "pan") { it.copy(pan = pan) }
+        recordAutomation(AutoTarget(AutoTarget.PAN, ch), (pan + 1f) / 2f)
+    }
     fun toggleMute(ch: Int) = editChannel(ch, null) { it.copy(mute = !it.mute) }
     fun toggleSolo(ch: Int) = editChannel(ch, null) { it.copy(solo = !it.solo) }
 
@@ -905,6 +977,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             list.mapIndexed { i, ins -> if (i == slot) ins.copy(params = ins.params.mapIndexed { k, old -> if (k == param) v else old }) else ins }
         }
         if (NativeEngine.isAvailable) NativeEngine.setInsertParam(ch, slot, param, v)
+        recordAutomation(AutoTarget(AutoTarget.INSERT_PARAM, ch, slot, param), v)
     }
 
     fun setSend(ch: Int, bus: Int, level: Float) {
@@ -915,6 +988,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             p.copy(mixer = p.mixer.copy(channels = channels))
         }
         if (NativeEngine.isAvailable) NativeEngine.setSend(ch, bus, v)
+        recordAutomation(AutoTarget(AutoTarget.SEND, ch, bus), v)
     }
 
     fun setBusParam(bus: Int, param: Int, value: Float) {
@@ -924,6 +998,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             p.copy(mixer = p.mixer.copy(buses = buses))
         }
         if (NativeEngine.isAvailable) NativeEngine.setBusParam(bus, param, v)
+        recordAutomation(AutoTarget(AutoTarget.BUS_PARAM, 0, bus, param), v)
     }
 
     private fun editInserts(ch: Int, key: String?, push: Boolean = true, transform: (List<Insert>) -> List<Insert>) {
@@ -1049,7 +1124,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val playing = !t.playing
         _transport.value = t.copy(playing = playing)
         if (!NativeEngine.isAvailable) return
-        if (playing) NativeEngine.play(if (t.countIn) 1 else 0) else NativeEngine.stopTransport()
+        if (playing) NativeEngine.play(if (t.countIn) 1 else 0) else {
+            NativeEngine.stopTransport()
+            restoreAfterAutomation()
+        }
         val app = getApplication<Application>()
         AppLog.add(if (playing) "Lecture (${project.value.tempoBpm.toInt()} BPM)" else "Stop")
         if (playing) PlaybackService.start(app) else PlaybackService.stop(app)

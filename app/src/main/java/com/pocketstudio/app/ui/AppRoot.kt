@@ -86,6 +86,8 @@ import com.pocketstudio.app.studio.StudioScreen
 import com.pocketstudio.app.synth.SynthActions
 import com.pocketstudio.app.synth.SynthScreen
 import com.pocketstudio.app.remix.RemixActions
+import com.pocketstudio.app.mixer.AutomationActions
+import com.pocketstudio.app.mixer.AutomationUi
 import com.pocketstudio.app.remix.RemixScreen
 import com.pocketstudio.app.remix.RemixUi
 import com.pocketstudio.app.remix.RemixViewModel
@@ -375,6 +377,12 @@ fun AppRoot() {
                         LaunchedEffect(Unit) {
                             lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollMeters() }
                         }
+                        val transport by rhythmVm.transport.collectAsStateWithLifecycle()
+                        val live by rhythmVm.live.collectAsStateWithLifecycle()
+                        val automationRecord by rhythmVm.automationRecord.collectAsStateWithLifecycle()
+                        LaunchedEffect(Unit) {
+                            lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollLive() }
+                        }
                         MixerScreen(
                             channels = project.mixer.channels,
                             meters = meters,
@@ -394,6 +402,14 @@ fun AppRoot() {
                             ),
                             master = project.mixer.master,
                             buses = project.mixer.buses,
+                            automation = AutomationUi(project.automation, project.drums.steps, if (transport.playing) live.currentStep else -1, automationRecord),
+                            automationActions = AutomationActions(
+                                add = rhythmVm::addAutomation,
+                                remove = rhythmVm::removeAutomation,
+                                clear = rhythmVm::clearAutomation,
+                                setPoint = rhythmVm::setAutomationPoint,
+                                toggleRecord = rhythmVm::toggleAutomationRecord,
+                            ),
                             export = export,
                         )
                     }

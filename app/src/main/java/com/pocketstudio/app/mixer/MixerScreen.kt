@@ -82,6 +82,8 @@ fun MixerScreen(
     export: ExportUi = ExportUi(),
     master: List<Insert> = List(4) { Insert() },
     buses: List<List<Float>> = Buses.DEFAULTS,
+    automation: AutomationUi = AutomationUi(),
+    automationActions: AutomationActions = AutomationActions(),
 ) {
     Column(
         modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp).testTag("mixer"),
@@ -105,6 +107,7 @@ fun MixerScreen(
             if (open) InsertRack(CHANNEL_NAMES.size, master, actions)
         }
         BusesCard(buses, actions)
+        AutomationCard(automation, channels, master, automationActions)
         ExportCard(export, actions)
     }
 }

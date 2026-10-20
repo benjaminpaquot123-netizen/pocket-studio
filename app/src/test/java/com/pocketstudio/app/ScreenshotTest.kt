@@ -350,4 +350,19 @@ class ScreenshotTest {
             com.pocketstudio.app.mixer.BusesCard(com.pocketstudio.model.Buses.DEFAULTS, actions)
         }
     }
+
+    @Test
+    fun automation() = shoot("automation") {
+        val lane = com.pocketstudio.model.AutomationLane(com.pocketstudio.model.AutoTarget(com.pocketstudio.model.AutoTarget.VOLUME, 2))
+            .let { l -> (0 until 16).fold(l) { acc, s -> if (s % 2 == 0) acc.withPoint(s, 0.2f + 0.05f * s) else acc } }
+        val send = com.pocketstudio.model.AutomationLane(com.pocketstudio.model.AutoTarget(com.pocketstudio.model.AutoTarget.SEND, 0, 0))
+            .withPoint(0, 0f).withPoint(12, 0.9f)
+        androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
+            com.pocketstudio.app.mixer.AutomationCard(
+                com.pocketstudio.app.mixer.AutomationUi(listOf(lane, send), 16, 5, recording = true),
+                List(16) { com.pocketstudio.model.Channel() }, List(4) { com.pocketstudio.model.Insert() },
+                com.pocketstudio.app.mixer.AutomationActions(),
+            )
+        }
+    }
 }

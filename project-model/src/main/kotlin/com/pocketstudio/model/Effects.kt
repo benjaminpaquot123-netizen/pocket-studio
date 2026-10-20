@@ -62,6 +62,15 @@ enum class EffectType(val label: String, val params: List<Param>, val defaults: 
         ),
         listOf(0.6f, 0.2f, 0f, 1f),
     ),
+    PUMP(
+        "Pompe",
+        listOf(
+            Param("Profondeur", ::percent),
+            Param("Relâche") { ms(expMap(it, 50f, 600f)) },
+            Param("Déclenche") { if (it < 0.5f) "Grosse caisse" else "Chaque temps" },
+        ),
+        listOf(0.7f, 0.4f, 0f, 0f),
+    ),
     ;
 
     companion object {

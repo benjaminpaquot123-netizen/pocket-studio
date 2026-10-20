@@ -18,6 +18,16 @@
       "hint": "Mixeur › Batterie › Effets : monte « Envoi réverbe ». Mets un Compresseur dans l'emplacement 1."
     },
     {
+      "id": "pump",
+      "title": "Faire pomper le synthé sur la grosse caisse",
+      "hint": "Mixeur › Synthé › Effets › emplacement 1 › Pompe. Lance le Rythme : le synthé se baisse à chaque grosse caisse."
+    },
+    {
+      "id": "automation",
+      "title": "Automatiser un réglage",
+      "hint": "Mixeur › Automation › Automatiser un réglage › Volume · Synthé, dessine une montée au doigt et lance le Rythme. Ou active Enregistrer et bouge le volume pendant la lecture."
+    },
+    {
       "id": "remix_separate",
       "title": "Séparer une chanson en 4 pistes",
       "hint": "Onglet Remix › Télécharger le modèle (Wi-Fi), puis Choisir une chanson (3-4 min). Éteins l'écran : la notification montre la progression. Note le temps que ça prend."

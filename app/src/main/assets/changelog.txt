@@ -1,5 +1,5 @@
 Remix : formes d'onde des 4 pistes avec la tête de lecture ; touche-les pour choisir où démarrer.
 Remix : plus de grésillement dû à l'écrêtage (les pistes gardent de la marge).
 Kits de batterie : ils se jouent au clavier, et un bouton les met sur les 16 pads.
-Mixeur : 4 effets par voie et sur la sortie, réverbe et écho calé au tempo.
+Mixeur : effets par voie, réverbe, écho, « Pompe » sur la grosse caisse, et automation dessinée ou enregistrée.
 « C'est pas faux ! » : on voit enfin où chante le chanteur.

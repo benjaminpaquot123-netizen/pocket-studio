@@ -33,6 +33,7 @@ import com.pocketstudio.ui.SectionLabel
 private val SHORT = mapOf(
     EffectType.NONE to "—", EffectType.EQ to "EQ", EffectType.COMPRESSOR to "Comp",
     EffectType.SATURATION to "Satu", EffectType.CHORUS to "Chorus", EffectType.FILTER to "Filtre",
+    EffectType.PUMP to "Pompe",
 )
 
 /** One-line summary of a channel's effects, e.g. "EQ · Comp · Réverbe". */

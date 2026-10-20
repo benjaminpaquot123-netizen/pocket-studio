@@ -30,6 +30,15 @@ public:
     void setSend(int ch, int bus, float level);               // 0..1, post-fader
     void setBusParam(int bus, int param, float v);
     void setStepFrames(double framesPerSixteenth) { delay_.setStepFrames(framesPerSixteenth); }
+    // A sequencer step lands `offset` frames into the next process() call (sidechain pumps).
+    void sidechainEvent(int offset, bool kick, bool beat) {
+        if (events_ < static_cast<int>(eventOffset_.size()) && (kick || beat)) {
+            eventOffset_[static_cast<size_t>(events_)] = offset;
+            eventKick_[static_cast<size_t>(events_)] = kick;
+            eventBeat_[static_cast<size_t>(events_)] = beat;
+            ++events_;
+        }
+    }
 
     void process(const float* const* channels, const float* direct, float* out, int numFrames, int outChannels) {
         process(channels, nullptr, direct, out, numFrames, outChannels);
@@ -71,6 +80,9 @@ private:
     std::array<std::atomic<float>, kChannels> peaks_{};
     std::atomic<float> masterPeak_{0.0f};
     std::atomic<float> limiterGainOut_{1.0f};
+    std::array<int, 32> eventOffset_{};
+    std::array<bool, 32> eventKick_{}, eventBeat_{};
+    int events_ = 0;
     float envelope_ = 0.0f;
     float release_ = 0.999f;
 };

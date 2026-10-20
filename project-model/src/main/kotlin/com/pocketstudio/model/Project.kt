@@ -27,6 +27,8 @@ data class Project(
     val instrument: InstrumentChoice? = null,
     /** A separated song played along (Remix tab). */
     val remix: Remix = Remix(),
+    /** Mixer settings that move with the loop, step by step. */
+    val automation: List<AutomationLane> = emptyList(),
 ) {
     /** Returns a copy with every value inside its allowed range. */
     fun sanitized(): Project = copy(
@@ -40,6 +42,7 @@ data class Project(
         instrument = instrument?.takeIf { it.bank in 0..128 && it.program in 0..127 },
         mixer = mixer.sanitized(),
         remix = remix.sanitized(),
+        automation = AutomationLane.sanitize(automation),
     )
 
     companion object {

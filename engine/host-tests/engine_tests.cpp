@@ -1429,7 +1429,7 @@ void testProcessNeverAllocates() {
         // Every insert type somewhere, both sends, master inserts: effects must not allocate either.
         for (int ch = 0; ch <= ps::Mixer::kMaster; ++ch) {
             for (int slot = 0; slot < ps::Mixer::kInserts; ++slot) {
-                engine.post({ps::CommandType::SetInsertType, 0.0f, ch * ps::Mixer::kInserts + slot, 1 + (ch + slot) % 5});
+                engine.post({ps::CommandType::SetInsertType, 0.0f, ch * ps::Mixer::kInserts + slot, 1 + (ch + slot) % 6});
             }
             if (ch < ps::Mixer::kMaster) {
                 engine.post({ps::CommandType::SetSend, 0.5f, ch, 0});
@@ -1445,7 +1445,7 @@ void testProcessNeverAllocates() {
             if (i % 50 == 0) engine.post({ps::CommandType::TriggerPad, 1.0f, 3});
             if (i % 70 == 0) engine.post({ps::CommandType::SynthNoteOn, 0.9f, 60 + i % 12});
             if (i % 40 == 0) engine.post({ps::CommandType::SetInsertParam, (i % 80) / 80.0f, 1, 0});
-            if (i % 60 == 0) engine.post({ps::CommandType::SetInsertType, 0.0f, 5, 1 + (i / 60) % 5});
+            if (i % 60 == 0) engine.post({ps::CommandType::SetInsertType, 0.0f, 5, 1 + (i / 60) % 6});
             if (i % 55 == 0) engine.post({ps::CommandType::SetBusParam, (i % 110) / 110.0f, 1, 0});
             if (i % 90 == 0) {  // same bundle again: the old reference goes through the retire queue
                 bundle->retain();
@@ -1823,6 +1823,66 @@ void testMixerInsertsAndSends() {
     CHECK(mixer.insert(ps::Mixer::kMaster, 0).type() == ps::InsertSlot::Filter);
 }
 
+void testSidechainPumpFollowsTheKick() {
+    // A steady synth pad, a pump on its channel, the kick on steps 0 and 8 of 16 at 120 BPM.
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SetDrumHit, 1.0f, 0, 0});
+    engine.post({ps::CommandType::SetDrumHit, 1.0f, 0, 8});
+    engine.post({ps::CommandType::SetChannelMute, 1.0f, 0});  // hear only the pumped channel
+    engine.post({ps::CommandType::SetInsertType, 0.0f, 2 * ps::Mixer::kInserts + 0, ps::InsertSlot::Pump});
+    engine.post({ps::CommandType::SetInsertParam, 1.0f, 2 * ps::Mixer::kInserts + 0, 0});  // full depth
+    engine.post({ps::CommandType::SynthNoteOn, 0.8f, 57});
+    render(engine, kRate / 2, 256);  // the pad settles
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    const auto out = render(engine, kRate * 2, 256);  // one bar: kicks at 0 and 1 s
+    auto rms = [&](int from, int len) {
+        double s = 0;
+        for (int i = from; i < from + len; ++i) s += double(out[static_cast<size_t>(i) * 2]) * out[static_cast<size_t>(i) * 2];
+        return std::sqrt(s / len);
+    };
+    const double before = rms(kRate * 1 - 4800, 2400);  // just before the second kick: recovered
+    const double ducked = rms(kRate * 1 + 240, 960);    // 5..25 ms after it
+    const double between = rms(kRate / 2, 2400);        // half a beat later, between kicks
+    std::printf("  pump: before kick %.4f, on kick %.4f, between %.4f\n", before, ducked, between);
+    CHECK(ducked < before * 0.2);
+    CHECK(between > ducked * 3);
+    // "Every beat": steps 4 and 12 pump too, even without a kick there.
+    engine.post({ps::CommandType::SetInsertParam, 1.0f, 2 * ps::Mixer::kInserts + 0, 2});
+    const auto beats = render(engine, kRate * 2, 256);
+    double onBeat2 = 0, offBeat = 0;
+    for (int i = kRate / 2 + 240; i < kRate / 2 + 1200; ++i) onBeat2 += std::fabs(beats[static_cast<size_t>(i) * 2]);
+    for (int i = kRate / 2 - 3600; i < kRate / 2 - 2640; ++i) offBeat += std::fabs(beats[static_cast<size_t>(i) * 2]);
+    CHECK(onBeat2 < offBeat * 0.3);
+}
+
+void testAutomationMovesTheFader() {
+    // Synth pad at full volume; automation pulls the synth fader to 0 on step 4 and back on step 8.
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SynthNoteOn, 0.8f, 57});
+    engine.post({ps::CommandType::SetAutomationTarget, 0.0f, 0, ps::Automation::pack(ps::Automation::Volume, 2, 0, 0)});
+    engine.post({ps::CommandType::SetAutomationPoint, 0.0f, 0, 4});
+    engine.post({ps::CommandType::SetAutomationPoint, 0.8f, 0, 8});
+    engine.post({ps::CommandType::SetAutomationPoint, -1.0f, 0, 63});  // removing an empty point is harmless
+    render(engine, kRate / 2, 256);
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    const auto out = render(engine, kRate * 2, 256);  // 16 steps of 6000 frames
+    auto rms = [&](int from) {
+        double s = 0;
+        for (int i = from; i < from + 2400; ++i) s += double(out[static_cast<size_t>(i) * 2]) * out[static_cast<size_t>(i) * 2];
+        return std::sqrt(s / 2400);
+    };
+    const double loud = rms(6000 * 2), silent = rms(6000 * 5), back = rms(6000 * 9);
+    std::printf("  automation: step 2 %.4f, step 5 %.4f, step 9 %.4f\n", loud, silent, back);
+    CHECK(loud > 0.02 && silent < loud * 0.01 && back > loud * 0.5);
+    // Turning the lane off stops it touching the fader.
+    engine.post({ps::CommandType::SetAutomationTarget, 0.0f, 0, -1});
+    engine.post({ps::CommandType::SetChannelVolume, 0.8f, 2});
+    const auto after = render(engine, kRate * 2, 256);
+    double s = 0;
+    for (int i = 6000 * 5; i < 6000 * 5 + 2400; ++i) s += double(after[static_cast<size_t>(i) * 2]) * after[static_cast<size_t>(i) * 2];
+    CHECK(std::sqrt(s / 2400) > loud * 0.5);  // the pad's level wanders a little with its timbre
+}
+
 struct TestCase {
     const char* name;
     std::function<void()> fn;
@@ -1886,6 +1946,8 @@ int main(int argc, char** argv) {
         {"insert_effects", testInsertEffects},
         {"send_effects", testSendEffects},
         {"mixer_inserts_sends", testMixerInsertsAndSends},
+        {"sidechain_pump", testSidechainPumpFollowsTheKick},
+        {"automation", testAutomationMovesTheFader},
         {"tempo_and_key", testTempoAndKeyDetection},
         {"stems_follow_transport", testStemsPlayInStepWithTheTransport},
         {"no_alloc_in_process", testProcessNeverAllocates},

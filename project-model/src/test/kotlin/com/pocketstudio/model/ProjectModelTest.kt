@@ -481,4 +481,24 @@ class AcidPagesTest {
         assertEquals(Buses.DEFAULTS, old.buses)
         assertEquals("+12.0 dB".replace('.', ','), EffectType.EQ.params[0].format(1f).replace('.', ','))
     }
+
+    @Test
+    fun automationLanesAreKeptTidy() {
+        val vol = AutoTarget(AutoTarget.VOLUME, ch = 2)
+        val lane = AutomationLane(vol).withPoint(4, 0f).withPoint(8, 0.8f).withPoint(99, 1f)
+        assertEquals(0f, lane.values[4])
+        assertEquals(null, lane.values[5])
+        assertEquals((0 shl 16) or (2 shl 12), vol.pack())
+        val p = Project(automation = listOf(lane))
+        assertEquals(p, ProjectJson.decode(ProjectJson.encode(p)))
+        val messy = Project(
+            automation = List(12) { AutomationLane(AutoTarget(AutoTarget.SEND, ch = it % 4, slot = it % 2), listOf(Float.NaN, 3f)) } +
+                AutomationLane(AutoTarget(kind = 9)),
+        ).sanitized().automation
+        assertEquals(AutomationLane.MAX_LANES, messy.size.coerceAtLeast(AutomationLane.MAX_LANES).coerceAtMost(8))
+        assertEquals(messy.size, messy.map { it.target }.toSet().size)  // no duplicate targets
+        assertEquals(null, messy[0].values[0])
+        assertEquals(1f, messy[0].values[1])
+        assertEquals(AutomationLane.STEPS, messy[0].values.size)
+    }
 }

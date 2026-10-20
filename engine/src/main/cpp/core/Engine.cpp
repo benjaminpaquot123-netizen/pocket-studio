@@ -170,6 +170,18 @@ void Engine::applyCommand(const Command& command) {
         case CommandType::SetBusParam:
             mixer_.setBusParam(command.a, command.b, command.value);
             break;
+        case CommandType::SetAutomationTarget:
+            if (command.a >= 0 && command.a < Automation::kLanes) {
+                auto& lane = automation_.lanes[command.a];
+                lane.target = command.b;
+                lane.values.fill(-1.0f);
+            }
+            break;
+        case CommandType::SetAutomationPoint:
+            if (command.a >= 0 && command.a < Automation::kLanes && command.b >= 0 && command.b < Automation::kSteps) {
+                automation_.lanes[command.a].values[static_cast<size_t>(command.b)] = command.value < 0.0f ? -1.0f : std::min(command.value, 1.0f);
+            }
+            break;
         case CommandType::SetStemStart:
             stems_.setStartFrame(command.a);
             break;
@@ -205,6 +217,9 @@ void Engine::onStep(int offset, int step) {
     acid_.onStep(offset, step, sequencer_.samplesPerStep());
     notes_.onStep(offset, step, sequencer_.samplesPerStep());
     const int patternStep = step % patternSteps_;
+    applyAutomation(patternStep);
+    // Sidechain pumps follow the kick lane (pad 1) or every quarter note.
+    mixer_.sidechainEvent(offset, pattern_[0][patternStep] > 0.0f, onBeat);
     currentStep_.store(patternStep, std::memory_order_relaxed);
     absoluteStep_.store(step, std::memory_order_relaxed);
     for (int lane = 0; lane < kLanes; ++lane) {
@@ -212,6 +227,23 @@ void Engine::onStep(int offset, int step) {
             laneTriggers_[static_cast<size_t>(lane)].fetch_add(1, std::memory_order_relaxed);
             if (sampler_.has(lane)) sampler_.trigger(lane, pattern_[lane][patternStep], offset);
             else drums_.trigger(lane, pattern_[lane][patternStep], offset);
+        }
+    }
+}
+
+void Engine::applyAutomation(int patternStep) {
+    if (patternStep < 0 || patternStep >= Automation::kSteps) return;
+    for (const auto& lane : automation_.lanes) {
+        const float v = lane.values[static_cast<size_t>(patternStep)];
+        if (lane.target < 0 || v < 0.0f) continue;
+        const int kind = lane.target >> 16, ch = (lane.target >> 12) & 0xF, slot = (lane.target >> 8) & 0xF, param = lane.target & 0xFF;
+        switch (kind) {
+            case Automation::Volume: mixer_.setVolume(ch, v); break;
+            case Automation::Pan: mixer_.setPan(ch, v * 2.0f - 1.0f); break;
+            case Automation::Send: mixer_.setSend(ch, slot, v); break;
+            case Automation::InsertParam: mixer_.setInsertParam(ch, slot, param, v); break;
+            case Automation::BusParam: mixer_.setBusParam(slot, param, v); break;
+            default: break;
         }
     }
 }

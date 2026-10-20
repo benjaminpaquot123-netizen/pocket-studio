@@ -59,6 +59,24 @@ enum class CommandType : uint8_t {
     SetInsertParam,    // a: as above, b: parameter 0..3, value 0..1
     SetSend,           // a: channel, b: bus (0 reverb, 1 delay), value 0..1
     SetBusParam,       // a: bus, b: parameter 0..3, value 0..1
+    SetAutomationTarget,  // a: lane, b: Automation::pack(kind, channel, slot, param), or -1 = lane off
+    SetAutomationPoint,   // a: lane, b: step, value 0..1 (negative = no point on that step)
+};
+
+// Step automation of mixer settings, played on the audio thread at each sequencer step.
+struct Automation {
+    enum Kind { Volume = 0, Pan = 1, Send = 2, InsertParam = 3, BusParam = 4 };
+    static constexpr int kLanes = 8;
+    static constexpr int kSteps = 64;
+    static int32_t pack(int kind, int ch, int slot, int param) { return (kind << 16) | (ch << 12) | (slot << 8) | param; }
+    struct Lane {
+        int32_t target = -1;
+        std::array<float, kSteps> values{};
+    };
+    Lane lanes[kLanes];
+    Automation() {
+        for (auto& l : lanes) l.values.fill(-1.0f);
+    }
 };
 
 struct Command {
@@ -166,6 +184,8 @@ private:
     NoteRouter router_{synth_, instrument_};
     Sampler sampler_;
     StemPlayer stems_;
+    Automation automation_;
+    void applyAutomation(int patternStep);
     Mixer mixer_;
     std::array<float, kMaxBlock> stemsL_{};
     std::array<float, kMaxBlock> stemsR_{};

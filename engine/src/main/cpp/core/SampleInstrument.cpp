@@ -46,7 +46,19 @@ void SampleInstrument::setParam(int param, float v) {
         case Decay: p.decay = std::clamp(v, 0.0f, 2.0f); break;
         case Sustain: p.sustain = std::clamp(v, 0.0f, 1.0f); break;
         case Release: p.release = std::clamp(v, 0.0f, 4.0f); break;
-        case Glide: p.glide = std::clamp(v, 0.0f, 1.0f); break;
+        case Glide: {
+            const float glide = std::clamp(v, 0.0f, 1.0f);
+            // Between one gliding voice and several: notes held across the switch are released
+            // (the other mode would not know which key lets go of which voice).
+            if ((glide > 0.0f) != (p.glide > 0.0f)) {
+                for (auto& voice : voices_) {
+                    if (voice.gate) release(voice);
+                }
+                heldCount_ = 0;
+            }
+            p.glide = glide;
+            break;
+        }
         case Loop: p.loop = v > 0.5f; break;
         case Gain: p.gain = std::clamp(v, 0.0f, 2.0f); break;
         default: break;
@@ -191,6 +203,10 @@ void SampleInstrument::apply(const Event& e) {
             break;
         }
         Voice* cur = current();
+        // Any other voice still held by this key (a mode switch, a burst of notes) lets go too.
+        for (auto& v : voices_) {
+            if (&v != cur && v.gate && v.note == e.note) release(v);
+        }
         if (!cur || cur->note != e.note) return;  // an older key let go: the sounding note stays
         if (heldCount_ > 0) slideTo(*cur, held_[static_cast<size_t>(heldCount_ - 1)]);
         else release(*cur);
@@ -238,7 +254,12 @@ float SampleInstrument::renderVoice(Voice& v, double lo, double hi) {
             v.glideStep = 0.0f;
         }
     }
-    const double rate = std::exp2(std::clamp(static_cast<double>(v.semis + bend_ - p.root), -48.0, 48.0) / 12.0);
+    const float pitch = v.semis + bend_ - p.root;
+    if (pitch != v.ratePitch) {
+        v.ratePitch = pitch;
+        v.rate = std::exp2(std::clamp(static_cast<double>(pitch), -48.0, 48.0) / 12.0);
+    }
+    const double rate = v.rate;
 
     if (v.pos >= hi) {
         if (!p.loop) {

@@ -155,11 +155,12 @@ bool AudioHost::post(const Command& command) {
     std::lock_guard<std::mutex> guard(postLock_);
     if (engine_.post(command)) return true;
     // Full: a big resync posts thousands of commands at once, and the audio thread empties the
-    // queue at every callback. Wait for it (20 ms at most) rather than drop a note. A stopped
-    // stream does not drain: after one wait without any callback, give up at once until it runs.
+    // queue at every callback. Wait for it (100 ms at most: Bluetooth callbacks can be 40 ms
+    // apart) rather than drop a note. A stopped stream does not drain: after one wait without any
+    // callback, give up at once until it runs.
     const uint64_t seen = engine_.callbackCount();
     if (seen == stalledAt_) return false;
-    for (int i = 0; i < 40; ++i) {
+    for (int i = 0; i < 200; ++i) {
         std::this_thread::sleep_for(std::chrono::microseconds(500));
         if (engine_.post(command)) return true;
     }

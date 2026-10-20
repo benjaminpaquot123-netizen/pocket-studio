@@ -206,6 +206,8 @@ fun AppRoot() {
     var libraryLive by rememberSaveable { mutableIntStateOf(-1) }
     // ... or for the selected instrument track's sampled sound.
     var libraryTrack by rememberSaveable { mutableStateOf(false) }
+    // Bumped at every close: a sound still loading when the library closed lands nowhere.
+    var libraryToken by remember { mutableIntStateOf(0) }
     if (showLibrary) {
         val packsUi by libraryVm.packs.collectAsStateWithLifecycle()
         val previewing by libraryVm.playing.collectAsStateWithLifecycle()
@@ -220,7 +222,7 @@ fun AppRoot() {
                 packsUi.installed.associate { it.id to com.pocketstudio.app.library.PackStore.bytesOnDisk(context, it.id) }
             }
         }
-        val close = { libraryVm.stopPreview(); showLibrary = false; libraryLive = -1; libraryTrack = false }
+        val close = { libraryVm.stopPreview(); showLibrary = false; libraryLive = -1; libraryTrack = false; libraryToken += 1 }
         val live = libraryLive
         val forTrack = libraryTrack
         val libProject by rhythmVm.project.collectAsStateWithLifecycle()
@@ -245,7 +247,9 @@ fun AppRoot() {
                         close = close,
                         preview = libraryVm::preview,
                         use = { option ->
+                            val token = libraryToken
                             libraryVm.use(option.ref) { pcm ->
+                                if (token != libraryToken) return@use
                                 val name = option.name.substringBefore(" · ")
                                 val placed = when {
                                     forTrack -> rhythmVm.useAsTrackSound(pcm, name, (option.ref as? com.pocketstudio.app.library.SoundRef.Pack)?.sound?.kind)

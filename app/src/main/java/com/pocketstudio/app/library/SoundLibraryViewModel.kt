@@ -298,24 +298,33 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         if (!NativeEngine.isAvailable) return null
         // A pack sound plays across the keys from its own note.
         val packSound = if (ref.sound.sampled != null) packPartSound(ref.sound) ?: return null else null
-        val native = packSound?.let { (pcm, _) -> com.pocketstudio.engine.NativeSample.create(pcm.data, pcm.channels, pcm.sampleRate) ?: return null }
         val mood = w.mood ?: style.melody.mood
         val harmony = com.pocketstudio.model.Harmony(style.melody.root, mood.scale)
         val clip = StarterWizard.startingNotes(ref.part, style, mood, harmony)
         val bar = clip.performance.expand(clip).filter { it.start < 16 * com.pocketstudio.model.NoteClip.TICKS_PER_STEP }
+        var native: com.pocketstudio.engine.NativeSample? = null
         val job = OfflineExport()
         val data = try {
+            if (packSound != null) {
+                // Resampled to 48 kHz off the main thread (a few hundred milliseconds on a phone),
+                // and always kept so that the finally below frees it.
+                val (pcm, _) = packSound
+                native = withContext(Dispatchers.Default + NonCancellable) {
+                    com.pocketstudio.engine.NativeSample.create(pcm.data, pcm.channels, pcm.sampleRate)
+                } ?: return null
+            }
+            val sample = native
             NativeEngine.captureInto(job) {
                 NativeEngine.setTempo(style.bpm)
                 NativeEngine.setPatternSteps(16)
                 ref.sound.synth.sanitized().values.forEachIndexed { i, v -> NativeEngine.setSynthParam(i, v, 0) }
                 ref.sound.plaits?.let { p -> p.sanitized().engineValues().forEachIndexed { i, v -> NativeEngine.setPlaitsParam(i, v, 0) } }
-                if (native != null) {
+                if (sample != null && packSound != null) {
                     val patch = ref.sound.sampled!!.copy(root = packSound.second ?: 60f)
                     patch.engineValues().forEachIndexed { i, v -> NativeEngine.setTrackSampleParam(i, v, 0) }
-                    NativeEngine.setTrackSample(0, native)  // the export engine keeps its own reference
+                    NativeEngine.setTrackSample(0, sample)  // the export engine keeps its own reference
                 }
-                NativeEngine.setSynthEngine(if (native != null) 2 else if (ref.sound.plaits != null) 1 else 0, 0)
+                NativeEngine.setSynthEngine(if (sample != null) 2 else if (ref.sound.plaits != null) 1 else 0, 0)
                 NativeEngine.setSynthSteps(16, 0)
                 bar.forEachIndexed { i, n -> NativeEngine.setSynthNote(i, n.start, n.length, n.pitch, n.velocity, 0) }
                 NativeEngine.setSynthNoteCount(bar.size, 0)

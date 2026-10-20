@@ -829,6 +829,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 }
                 val (sample, prepared) = withContext(Dispatchers.IO) { padSamples.add(pcm, name) }
                 padSamples.register(prepared)
+                // The track went away meanwhile (deleted, undone): never land on another one.
+                if (id != 0 && project.value.tracks.none { it.id == id }) {
+                    _trackSoundBusy.value = "La piste a été supprimée entre-temps : rien n'a changé."
+                    return@launch
+                }
                 val slide = kind == "808"
                 editTrack(id = id) {
                     it.copy(

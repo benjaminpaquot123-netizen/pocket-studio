@@ -75,6 +75,8 @@ private:
         float velocity = 0.0f;
         float env = 0.0f;
         float releaseStep = 0.0f;
+        float ratePitch = 1e9f;   // the pitch [rate] was computed for (recomputed only when it moves)
+        double rate = 1.0;
         int fade = 0;             // > 0: being cut, fades over the remaining frames
         uint32_t age = 0;
     };

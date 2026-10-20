@@ -2878,6 +2878,61 @@ void testSampledInstrument() {
         CHECK(engine.sampledActiveVoices(1) == 1);
         CHECK(std::abs(toneHz(left, 2400, 9600) - 880.0) < 8.0);
     }
+    {
+        // Switching the glide on or off with keys held releases them: no voice is left stuck.
+        for (float from : {0.0f, 0.05f}) {
+            ps::SampleInstrument inst;
+            inst.prepare(kRate);
+            inst.install(make());
+            inst.setParam(ps::SampleInstrument::Loop, 1.0f);
+            inst.setParam(ps::SampleInstrument::Glide, from);
+            for (int n : {60, 64, 67}) inst.noteOn(n, 1.0f, 0);
+            render(inst, 2400);
+            inst.setParam(ps::SampleInstrument::Glide, from > 0.0f ? 0.0f : 0.05f);
+            for (int n : {67, 60, 64}) inst.noteOff(n, 0);  // in another order than pressed
+            render(inst, kRate);
+            CHECK(inst.activeVoices() == 0);
+        }
+    }
+    {
+        // Back-to-back sequenced notes of one pitch at 140 BPM (5142.86 frames a step): each lasts
+        // its whole step, none cut short by the previous one's note-off (rounding), with or
+        // without glide.
+        for (float glide : {0.0f, 0.08f}) {
+            ps::Engine engine(kRate);
+            engine.post({ps::CommandType::SetTempo, 140.0f});
+            engine.post({ps::CommandType::SetTrackOn, 1.0f, 1});
+            engine.post({ps::CommandType::SetSynthEngine, 0.0f, 2 | (1 << 16)});
+            ps::Command install{ps::CommandType::InstallTrackSample, 0.0f, 1 << 16};
+            install.sample = make();
+            engine.post(install);
+            engine.post({ps::CommandType::SetTrackSampleParam, 69.0f, ps::SampleInstrument::Root | (1 << 16)});
+            engine.post({ps::CommandType::SetTrackSampleParam, 1.0f, ps::SampleInstrument::Loop | (1 << 16)});
+            engine.post({ps::CommandType::SetTrackSampleParam, 0.05f, ps::SampleInstrument::Release | (1 << 16)});
+            engine.post({ps::CommandType::SetTrackSampleParam, glide, ps::SampleInstrument::Glide | (1 << 16)});
+            for (int n = 0; n < 16; ++n) {
+                engine.post({ps::CommandType::SetSynthNote, 1.0f, n | (1 << 16), ps::NoteTrack::pack(n * ps::NoteTrack::kTicksPerStep, ps::NoteTrack::kTicksPerStep, 69)});
+            }
+            engine.post({ps::CommandType::SetSynthNoteCount, 0.0f, 16 | (1 << 16)});
+            engine.post({ps::CommandType::SetSynthSteps, 0.0f, 16 | (1 << 16)});
+            engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+            const double step = kRate * 60.0 / (140.0 * 4.0);
+            const int frames = static_cast<int>(step * 16);
+            std::vector<float> out(2 * static_cast<size_t>(frames));
+            for (int at = 0; at < frames; at += 256) engine.process(nullptr, 0, 0, out.data() + 2 * at, std::min(256, frames - at), 2);
+            int cut = 0;
+            for (int k = 0; k < 15; ++k) {
+                // The last quarter of each step still sounds.
+                double e = 0.0;
+                const int from = static_cast<int>(step * (k + 0.7));
+                const int to = static_cast<int>(step * (k + 0.95));
+                for (int i = from; i < to; ++i) e += double(out[2 * size_t(i)]) * out[2 * size_t(i)];
+                if (std::sqrt(e / (to - from)) < 0.05) ++cut;
+            }
+            std::printf("  glide %.2f: %d of 15 steps cut short\n", glide, cut);
+            CHECK(cut == 0);
+        }
+    }
 }
 
 void testDrumPanAndStepPitch() {

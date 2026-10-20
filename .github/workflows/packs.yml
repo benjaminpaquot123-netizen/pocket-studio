@@ -104,9 +104,13 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          if gh release download "$PREVIOUS" -p "${{ matrix.style }}.zip" -D prev 2>/dev/null; then
-            mkdir -p "out/${{ matrix.style }}" && unzip -q "prev/${{ matrix.style }}.zip" -d "out/${{ matrix.style }}"
+          # Any failure (not there, broken download) falls back to generating the pack.
+          if gh release download "$PREVIOUS" -p "${{ matrix.style }}.zip" -D prev &&
+             mkdir -p "out/${{ matrix.style }}" && unzip -q "prev/${{ matrix.style }}.zip" -d "out/${{ matrix.style }}" &&
+             test -f "out/${{ matrix.style }}/pack.json"; then
             echo "reused=true" >> "$GITHUB_OUTPUT"
+          else
+            rm -rf "out/${{ matrix.style }}" prev
           fi
       - name: Generate
         if: steps.reuse.outputs.reused != 'true'

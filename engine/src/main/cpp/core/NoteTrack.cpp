@@ -33,6 +33,12 @@ void NoteTrack::onStep(int offset, int step, double samplesPerStep) {
         if (n.velocity <= 0.0f || n.start < first || n.start >= first + kTicksPerStep) continue;
         const int64_t on = offset + std::llround((n.start - first) * perTick);
         const int64_t off = on + std::max<int64_t>(1, std::llround(n.length * perTick));
+        // The same pitch still held by an earlier note (rounding, swing, overlapping notes): that
+        // note ends where this one starts, so its late note-off cannot cut the new one.
+        for (int k = 0; k < pendingCount_; ++k) {
+            Pending& p = pending_[static_cast<size_t>(k)];
+            if (p.velocity == 0.0f && p.pitch == n.pitch && p.at > on) p.at = on;
+        }
         push(on, n.pitch, n.velocity);
         push(off, n.pitch, 0.0f);
     }

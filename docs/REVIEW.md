@@ -245,3 +245,21 @@ Corrigé :
 
 Restant (mineur) :
 - Le FLAC n'utilise que les prédicteurs fixes (pas de LPC) : un peu moins compact que l'encodeur officiel.
+
+## Phase 12 (son échantillonné, aides, pads live), relecture de fin de phase
+
+Vérifié par le relecteur : fil audio sans allocation ni verrou (test sans allocation avec une piste échantillonnée qui glisse), durée de vie des sons (installation, file de retrait, destructeurs, commandes perdues), sauvegarde et conservation des fichiers, détection de la note d'origine. Rien de grave.
+
+Corrigé :
+- Notes répétées de même hauteur coupées par la fin de la précédente (arrondi du séquenceur, swing) : la note qui tient encore finit là où la suivante commence. Visible sur les 808 au tempo trap (1 note sur 7 à 140 BPM), aussi pour le synthé. Test : 15 notes enchaînées à 140 BPM, avec et sans glisse (2 coupées avant la correction, 0 après).
+- Glisse activée ou coupée pendant que des touches sont tenues : les notes sont relâchées (plus de note bloquée) ; un relâchement libère aussi toute autre voix de la même touche. Test.
+- Son de la bibliothèque mis sur une piste supprimée entre-temps : abandonné avec un message, au lieu d'arriver sur la première piste.
+- Écoute d'un son de pack dans l'assistant : rééchantillonnage hors du fil principal, son natif toujours libéré.
+- File de commandes pleine : attente jusqu'à 100 ms (rappels Bluetooth espacés de 40 ms).
+- Bibliothèque refermée pendant le chargement d'un son : le son n'arrive plus nulle part (ni ne ferme la bibliothèque rouverte).
+- Workflow des packs : un pack réutilisé mal téléchargé est régénéré au lieu de manquer.
+- Hauteur des voix recalculée seulement quand elle change.
+- Plantage natif au changement de sortie audio (rapport #22, casque Bluetooth) : le flux que le système ferme est mis de côté avant la fermeture, plus aucun appel dedans.
+
+Restant (mineur) :
+- Après Annuler, une piste échantillonnée joue le synthé le temps que son fichier soit relu.

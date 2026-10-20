@@ -151,7 +151,15 @@
   - 15.5 sample d'un pad joué au clavier, fichier importé au clavier ;
   - 15.6 effets par pad (16 tranches de plus dans le mixeur).
 
+- Phase 14 fusionnée (PR #25, v0.14.124) ; phase 15 fusionnée (PR #26), relectures faites.
+- Phase 16 (branche ccr-80af1a1b-mn0wec), l'audit « en production » demandé par Benjamin : deux audits (moteur, usage), graves et moyens corrigés avec des tests, le reste noté dans `docs/REVIEW.md`.
+
 ## Prochaine étape exacte
-1. Phase 14 : CI verte sur la PR #25, fusion, lien à Benjamin.
-2. Phase 15 : relecture neuve, poser la branche sur `ccr-80af1a1b-mn0wec`, PR, CI, fusion.
-3. Audit complet « en production » demandé par Benjamin (lecture, enregistrement, scènes, pads et effets, synthés, acide, mixeur, exports, changements d'onglet en lecture, longues sessions, rotation, arrière-plan).
+1. Phase 16 : relecture neuve, PR, CI, fusion, lien à Benjamin.
+2. Ensuite, dans l'ordre :
+   - le niveau général (marge, limiteur, vumètre avant le limiteur), à mesurer sur le téléphone ;
+   - le tempo changé pendant la lecture (pads calés, Remix) ;
+   - le mode morceau (enregistrement au changement de partie) ;
+   - les mesures autres que 4/4 dans le piano roll et l'acide ;
+   - la prise micro écran éteint ;
+   - puis les autres points restants de `docs/REVIEW.md`.

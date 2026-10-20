@@ -323,3 +323,79 @@ Restant (mineur) :
 - Les effets insérés sur la batterie ne traitent pas la réverbe et l'écho envoyés par un pad (comme un envoi pré-groupe sur une console).
 - Une note tenue d'une mesure à l'autre dans une ligne de deux mesures est coupée à la barre (aucune recette n'en a aujourd'hui).
 - Pas encore de test Kotlin du découpage et de l'inversion de « Jouer ce sample au clavier ».
+
+## Phase 16 : audit « en production » (moteur audio et usage réel)
+
+Deux auditeurs neufs. Le premier a relu le moteur et lancé des essais compilés contre le cœur ; le second a suivi une vraie séance de production dans l'appli.
+
+Vérifié sain :
+- Fil audio :
+  - aucune allocation, aucun verrou, aucun appel Java ;
+  - les sons, les stems et les instruments sont rendus au fil principal par des files.
+- Sauvegarde : écriture atomique avec copie de secours, sauvegarde forcée en arrière-plan.
+- Séquenceur : à l'échantillon près quelle que soit la taille de bloc.
+- Redémarrage du flux : il ne perd rien.
+- Export : il suit le même chemin de commandes que le direct.
+
+Corrigé (graves) :
+- Solo fantôme : une piste mise en solo puis supprimée (ou un autre projet ouvert) rendait tout muet, sans moyen d'enlever le solo. La voie est remise à neutre, et le moteur reçoit « pas de solo » pour toute voie inutilisée. Test.
+- Fuites de mémoire native à l'annulation. Elles touchaient :
+  - l'écoute d'un morceau du Remix ;
+  - l'étirement au tempo ;
+  - le chargement des stems ;
+  - les pads calés ;
+  - les sons du projet.
+
+  Une aide « finir ou libérer » les rend toujours. Test.
+- Historique d'annulation : chaque étape gardait une copie complète du projet, jusqu'à 1,6 Mo par geste. Elle ne garde plus que ce qui change. Test.
+- Export « Piste par piste » : les stems ne gardent plus les solos et les muets du mixage.
+- Prise micro, qui pouvait être perdue :
+  - par Annuler (désormais désactivé pendant la prise) ;
+  - par l'ouverture d'un autre projet (la prise est maintenant arrêtée et gardée avant) ;
+  - par un arrêt pendant qu'un son se posait (l'arrêt n'est plus refusé, et le micro est bien libéré).
+- Prise micro avec un casque Bluetooth : la voix arrivait 150 à 200 ms en retard. Elle est maintenant compensée selon la sortie utilisée. Test.
+
+Corrigé (moyens et mineurs) :
+- Casque débranché ou appel : la lecture s'arrête (focus audio, « casque débranché »).
+- Annuler, Rétablir ou un retour dans l'appli pendant la lecture ne coupent plus les notes tenues : seuls les instruments qui changent sont renvoyés.
+- La pédale, la molette et l'arpège d'un projet ne restent plus actifs dans le suivant.
+- Enregistrement en direct : une note jouée juste avant le « 1 », ou tirée avant lui par la latence, tombe sur le « 1 » au lieu d'être perdue ou de partir en fin de boucle. Test du moteur (position pendant le décompte).
+- « Filtre » du son général et filtre DJ : sur un mix très fort, ils divergeaient en NaN et le son restait muet pour de bon. Les filtres n'ont plus de saturation interne, et un garde-fou NaN est ajouté sur le son général (signalé aux rapports). Test qui échoue sans la correction.
+- Coups de batterie perdus avec les gros blocs du Bluetooth (rouleaux, swing fort) : le moteur rend par tranches de 256 images. Test.
+- Pédale relâchée sur plus de 64 notes : des notes restaient bloquées. Les files ont maintenant 256 places. Test.
+- Clavier MIDI : une note est relâchée sur la piste où elle a commencé, même si on change de piste en la tenant.
+- Générateur aléatoire sans mémoire par fil : plus de réservation de mémoire ni de verrou au premier son d'un nouveau flux.
+- Exports :
+  - longueur juste en 3/4 et dans les autres mesures ;
+  - sans les coupures de la partie du morceau en cours de lecture ;
+  - lancés seulement une fois les sons, banques et stems du projet chargés ;
+  - fin de la queue en fondu (test).
+- « Pas d'instrument » sur une piste qui n'en a pas ne coupe plus ses notes.
+- Fichier audio de plus de 2 minutes, ou plus long que 64 mesures au tempo : un message le dit. Une prise s'arrête à 64 mesures.
+- Effets live (pad XY, Répéter, Hacher, Stop bande) toujours relâchés, même si l'écran change pendant l'appui.
+
+Restant (à reprendre) :
+- Niveau général : le limiteur travaille environ 8 dB sur le kit et l'acide d'origine, avec un léger pompage. Le vumètre est placé après le limiteur. Voir DECISIONS.
+- Changer le tempo pendant la lecture :
+  - un pad calé au tempo fait un clic et sa boucle se tait jusqu'au coup suivant ;
+  - le Remix qui suit le tempo saute de position.
+- Mode morceau :
+  - un coup joué au changement de partie peut aller dans l'ancienne scène ;
+  - modifier une piste coupée dans la partie en cours la rend audible jusqu'à la partie suivante.
+- Mesures autres que 4/4 : le piano roll et la ligne acide ont des longueurs en multiples de 16 pas.
+- Arrière-plan :
+  - une prise micro avec l'écran éteint enregistre du silence (pas de service « micro ») ;
+  - un long export en arrière-plan n'a pas de service de premier plan.
+- Remix : un seul morceau est épinglé pour toute l'appli, et l'étirement peut figer l'interface quand on le retire.
+- Mineurs :
+  - un clic à l'ajout ou au retrait d'un effet pendant la lecture ;
+  - un son remplacé pendant qu'il joue est coupé net ;
+  - les stems démarrent sans fondu ;
+  - le métronome passe avant les effets du son général ;
+  - TinySoundFont est limité à 48 voix ;
+  - la file de commandes refuse tout après 100 ms sans rappel audio ;
+  - un resynchronisation complète arrive dans un seul rappel (à mesurer sur le téléphone) ;
+  - l'export MIDI ne contient ni arpèges ni roulements ;
+  - la rotation arrête l'enregistrement micro d'un pad ;
+  - « Partager » échoue pour un export de plus d'une heure ;
+  - chaque mouvement de fader renvoie tout le mixeur.

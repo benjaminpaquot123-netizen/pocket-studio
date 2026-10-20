@@ -1,46 +1,46 @@
 {
-  "id": "phase15-styles",
-  "milestone": "Phase 15 : des styles qui sonnent vrai",
+  "id": "phase16-audit",
+  "milestone": "Phase 16 : l'audit « en production »",
   "items": [
     {
-      "id": "retro_techno",
-      "title": "La rétro techno sonne rave",
-      "hint": "Mes projets › Nouveau projet › Rétro techno : garde le premier choix à chaque étape. Le résultat doit rappeler les raves du début des années 90 (stabs, hoover, 909)."
+      "id": "headphones",
+      "title": "Casque débranché",
+      "hint": "Lance la lecture avec un casque, puis débranche-le (ou coupe le Bluetooth) : la musique s'arrête au lieu de passer à fond sur le haut-parleur."
     },
     {
-      "id": "style_packs",
-      "title": "Les sons du style",
-      "hint": "Dans l'assistant, à l'étape Ambiance : si un pack du style manque, « Télécharger les sons du style » les récupère. Ensuite, chaque étape propose d'abord le son du bon pack."
+      "id": "call",
+      "title": "Un appel pendant la lecture",
+      "hint": "Pendant la lecture, reçois un appel ou lance une autre appli de musique : Pocket Studio s'arrête."
     },
     {
-      "id": "references",
-      "title": "Les morceaux de référence",
-      "hint": "Dans l'assistant, chaque style affiche « Pour l'idée : » avec quelques morceaux connus du genre. Ça te parle ?"
+      "id": "bluetooth_take",
+      "title": "Prise au micro en Bluetooth",
+      "hint": "Avec un casque Bluetooth, enregistre une piste audio en tapant dans tes mains sur le temps : la prise tombe sur le temps, pas en retard."
     },
     {
-      "id": "acid_techno",
-      "title": "Acid techno",
-      "hint": "Nouveau projet › Acid techno : la ligne 303 tourne dès le départ sur un kick 909. Va dans Acide pour la modifier."
+      "id": "solo",
+      "title": "Solo puis suppression",
+      "hint": "Mets une piste en Solo dans le Mixeur, puis supprime-la : le reste du morceau s'entend toujours."
     },
     {
-      "id": "other_styles",
-      "title": "Deux autres styles au choix",
-      "hint": "Essaie deux styles que tu connais bien (house, trap, drum & bass…) avec les premiers choix : est-ce que ça ressemble au genre ?"
+      "id": "undo_playing",
+      "title": "Annuler pendant la lecture",
+      "hint": "Pendant qu'une nappe tenue joue, touche Annuler : les notes continuent sans coupure."
     },
     {
-      "id": "keyboards",
-      "title": "Les trois claviers",
-      "hint": "Synthé › Clavier : « 2 octaves », « 1 octave » (chaque touche porte son nom) et « Gamme » (seulement les notes de la tonalité, en grandes touches). Le choix reste d'une fois sur l'autre."
+      "id": "early_note",
+      "title": "La note juste avant le 1",
+      "hint": "Enregistre au clavier avec le décompte et joue la première note un poil en avance : elle tombe sur le 1."
     },
     {
-      "id": "sample_keys",
-      "title": "Un sample sur tout le clavier",
-      "hint": "Rythme › un pad avec un son › « Jouer ce sample au clavier ». Tu arrives dans Synthé : le son est plus grave à gauche, plus aigu à droite."
+      "id": "pedal",
+      "title": "La pédale relâchée",
+      "hint": "Synthé › Sustain allumé, joue beaucoup de notes différentes, puis éteins Sustain : tout s'arrête, rien ne reste coincé."
     },
     {
-      "id": "pad_fx",
-      "title": "Des effets sur un seul pad",
-      "hint": "Rythme › choisis le clap › « Effets du pad » › ajoute un écho : seul le clap résonne, son pad affiche FX. « Toute la batterie » met l'effet sur tous les pads."
+      "id": "export",
+      "title": "Exports justes",
+      "hint": "Projet en 3/4, exporte « La scène » sur 4 mesures : la boucle tourne juste. Laisse une piste en Solo et exporte « Piste par piste » : chaque fichier ne contient que sa piste."
     }
   ]
 }

@@ -56,7 +56,7 @@ val GUIDE_PAGES = listOf(
             "Acide : la ligne de basse façon 303, avec « Génère-moi un pattern ».",
             "Synthé : le clavier, les notes (piano roll) et les sons.",
             "Mixeur : volumes, effets, et l'export de ta musique.",
-            "Remix : sépare un morceau en batterie, basse, voix et le reste.",
+            "Audio : le micro, les sons importés et le Remix (sépare un morceau en batterie, basse, voix et le reste).",
             "Morceau : les scènes, les pads live et les effets en direct.",
             "Outils : les réglages, le clavier MIDI, la recette.",
         ),
@@ -79,19 +79,19 @@ val GUIDE_PAGES = listOf(
     ),
 )
 
-/** The first-steps guide: a few pages, "Passer" at any time. */
+/** A guide of a few [pages] (the first steps by default), "Passer" at any time, [done] on the last page. */
 @Composable
-fun GuideDialog(onClose: () -> Unit) {
-    var page by rememberSaveable { mutableIntStateOf(0) }
-    val p = GUIDE_PAGES[page]
-    val last = page == GUIDE_PAGES.lastIndex
+fun GuideDialog(onClose: () -> Unit, pages: List<GuidePage> = GUIDE_PAGES, tag: String = "guide", done: String = "C'est parti !") {
+    var page by rememberSaveable(tag) { mutableIntStateOf(0) }
+    val p = pages[page.coerceIn(0, pages.lastIndex)]
+    val last = page >= pages.lastIndex
     Dialog(onDismissRequest = onClose) {
-        Card(colors = CardDefaults.cardColors(containerColor = Neon.Surface), shape = RoundedCornerShape(14.dp), modifier = Modifier.testTag("guide")) {
+        Card(colors = CardDefaults.cardColors(containerColor = Neon.Surface), shape = RoundedCornerShape(14.dp), modifier = Modifier.testTag(tag)) {
             Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text(p.title, style = MaterialTheme.typography.titleLarge, color = Neon.Cyan)
                 p.lines.forEach { Text(it, style = MaterialTheme.typography.bodyLarge) }
                 Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.padding(top = 4.dp)) {
-                    GUIDE_PAGES.indices.forEach { i ->
+                    pages.indices.forEach { i ->
                         Box(Modifier.size(8.dp).clip(CircleShape).background(if (i == page) Neon.Cyan else Neon.Outline))
                     }
                 }
@@ -100,7 +100,7 @@ fun GuideDialog(onClose: () -> Unit) {
                     Box(Modifier.weight(1f))
                     if (page > 0) TextButton(onClick = { page-- }) { Text("Retour") }
                     Button(onClick = { if (last) onClose() else page++ }, modifier = Modifier.testTag("guide_next")) {
-                        Text(if (last) "C'est parti !" else "Suivant")
+                        Text(if (last) done else "Suivant")
                     }
                 }
             }

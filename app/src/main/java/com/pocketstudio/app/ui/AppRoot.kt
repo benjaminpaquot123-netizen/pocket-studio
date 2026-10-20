@@ -313,6 +313,11 @@ fun AppRoot() {
             )
         }
     }
+    // The assistant made a song: a short guide to its two scenes and what to do next.
+    var songGuide by remember { mutableStateOf<List<com.pocketstudio.app.settings.GuidePage>?>(null) }
+    songGuide?.let { pages ->
+        com.pocketstudio.app.settings.GuideDialog(onClose = { songGuide = null }, pages = pages, tag = "song_guide", done = "À moi de jouer !")
+    }
     val wizardUi by libraryVm.wizard.collectAsStateWithLifecycle()
     if (wizardUi.open) {
         val packsUi by libraryVm.packs.collectAsStateWithLifecycle()
@@ -341,7 +346,16 @@ fun AppRoot() {
                         download = libraryVm::downloadPack,
                         cancelDownload = libraryVm::cancelDownload,
                         deletePack = libraryVm::deletePack,
-                        create = { libraryVm.create { project, sounds -> projectsVm.create(project, sounds) { id -> libraryVm.closeWizard(); openProject(id) } } },
+                        create = {
+                            libraryVm.create { project, sounds ->
+                                projectsVm.create(project, sounds) { id ->
+                                    val made = libraryVm.wizard.value
+                                    songGuide = com.pocketstudio.app.library.songGuide(made.style?.name ?: project.name, made.plan)
+                                    libraryVm.closeWizard()
+                                    openProject(id)
+                                }
+                            }
+                        },
                     ),
                     preparing = preparing,
                 )

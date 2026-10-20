@@ -90,6 +90,13 @@ data class WizardUi(
     val steps: List<StarterWizard.Step> get() = StarterWizard.steps(style)
     val lastStep: Int get() = steps.size - 1
     val current: StarterWizard.Step get() = steps[step.coerceIn(0, lastStep)]
+
+    /** Which scene each chosen line and part will land in (what "Créer le morceau" builds). */
+    val plan: StarterWizard.ScenePlan get() {
+        val lines = style?.lines.orEmpty().map { it.role }.filter { r -> rows[r]?.let { it.enabled && it.sound != null } == true }.toSet()
+        val used = if (mood == null) emptySet() else parts.filterValues { it.enabled }.keys
+        return StarterWizard.scenePlan(lines, used, acid = mood != null && style?.melody?.acid != null)
+    }
 }
 
 const val KIT_CATEGORY = "kit"

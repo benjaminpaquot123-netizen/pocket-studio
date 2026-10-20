@@ -1,6 +1,7 @@
 package com.pocketstudio.model
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -54,7 +55,8 @@ class StarterWizardTest {
     fun anAcidStyleStartsWithItsThreeOThreeLine() {
         val style = StarterWizard.style("acid_techno")!!
         val recipe = style.melody.acid!!
-        val p = StarterWizard.build(style, mapOf(StarterWizard.Role.Kick to null), StarterWizard.Mood.Dark)
+        // Without chords nor lead, the acid line goes to scene B (the kick stays in A).
+        val p = StarterWizard.build(style, mapOf(StarterWizard.Role.Kick to null), StarterWizard.Mood.Dark).switchScene(1)
         assertEquals(16, p.acid.length)
         assertEquals(36 + style.melody.root, p.acid.root)
         recipe.pattern.forEachIndexed { i, c -> assertEquals("step $i", c != '.' && c != '-', p.acid.steps[i].gate) }
@@ -94,12 +96,13 @@ class StarterWizardTest {
                 assertEquals(3, p.instrumentTracks.size)
                 assertEquals(listOf("Basse", "Nappe", "Lead"), p.instrumentTracks.map { it.name })
                 for (t in p.instrumentTracks) {
-                    assertTrue("${style.name} $mood ${t.name}", t.notes.notes.isNotEmpty())
-                    assertTrue("${style.name} $mood ${t.name}", t.notes.notes.all { p.harmony.inScale(it.pitch) })
-                    assertEquals(64, t.notes.steps)
+                    val notes = p.notesOf(t.id)
+                    assertTrue("${style.name} $mood ${t.name}", notes.notes.isNotEmpty())
+                    assertTrue("${style.name} $mood ${t.name}", notes.notes.all { p.harmony.inScale(it.pitch) })
+                    assertEquals(64, notes.steps)
                 }
                 // The bass plays each chord's root, bar after bar.
-                val bass = p.instrumentTracks[0].notes.notes
+                val bass = p.notesOf(0).notes
                 StarterWizard.progressionOf(style, mood).second.forEachIndexed { bar, d ->
                     val inBar = bass.filter { it.start / (16 * NoteClip.TICKS_PER_STEP) == bar }
                     val root = Math.floorMod(p.harmony.degreeRoot(d, 36), 12)
@@ -147,6 +150,64 @@ class StarterWizardTest {
         assertEquals(24.3f, t.sampled.root)
         assertTrue("abc.wav" in p.sampleFiles)
     }
+
+    @Test
+    fun theSongIsCutInARhythmSceneAndAMelodyScene() {
+        val style = StarterWizard.style("techno")!!
+        val lines = style.lines.associate { it.role to null as PadSample? }
+        val parts = StarterWizard.Part.entries.associateWith { StarterWizard.soundsFor(it, style).first() }
+        val p = StarterWizard.build(style, lines, StarterWizard.Mood.Dark, parts)
+        assertEquals(listOf("A", "B"), p.allScenes.map { it.name })
+        assertEquals(0, p.scene)
+        assertEquals(listOf(SongPart(0, 2), SongPart(1, 2)), p.song)
+        val (a, b) = p.allScenes
+        // A: every drum line and the bass; B: the chords and the lead, no drum.
+        for (line in style.lines) assertEquals(line.role.title, StarterWizard.hits(line.pattern).keys.isNotEmpty(), a.drums.lanes[line.role.lane].hits.isNotEmpty())
+        assertTrue(b.drums.lanes.all { it.hits.isEmpty() })
+        val (bass, pad, lead) = p.instrumentTracks
+        assertTrue(a.synthNotes.notes.isNotEmpty() && b.synthNotes.notes.isEmpty())
+        assertEquals("Basse", bass.name)
+        assertTrue(a.trackNotes.getValue(pad.id).notes.isEmpty() && b.trackNotes.getValue(pad.id).notes.isNotEmpty())
+        assertTrue(a.trackNotes.getValue(lead.id).notes.isEmpty() && b.trackNotes.getValue(lead.id).notes.isNotEmpty())
+        // Nothing is lost: each line and part plays in exactly one scene.
+        assertFalse(a.isEmpty || b.isEmpty)
+        // The sounds are the same in both scenes (only the notes are shared out).
+        assertEquals(p.drums.lanes.map { it.sample }, p.switchScene(1).drums.lanes.map { it.sample })
+        assertEquals(p, p.sanitized())
+    }
+
+    @Test
+    fun aBeatAloneIsCutInItsBaseAndItsGroove() {
+        val style = StarterWizard.style("house")!!
+        val lines = style.lines.associate { it.role to null as PadSample? }
+        val p = StarterWizard.build(style, lines)
+        val (a, b) = p.allScenes
+        val ground = setOf(StarterWizard.Role.Kick, StarterWizard.Role.Snare, StarterWizard.Role.Clap)
+        for (line in style.lines) {
+            val inA = a.drums.lanes[line.role.lane].hits.isNotEmpty()
+            val inB = b.drums.lanes[line.role.lane].hits.isNotEmpty()
+            assertEquals(line.role.title, line.role in ground, inA)
+            assertEquals(line.role.title, line.role !in ground, inB)
+        }
+        val plan = StarterWizard.scenePlan(lines.keys, emptySet(), acid = false)
+        assertEquals(listOf("la base", "le groove"), listOf(plan.title(0), plan.title(1)))
+    }
+
+    @Test
+    fun tooLittleToShareOutGivesTwoEqualScenes() {
+        val style = StarterWizard.style("techno")!!
+        val p = StarterWizard.build(style, mapOf(StarterWizard.Role.Kick to null))
+        val (a, b) = p.allScenes
+        assertEquals(a.drums, b.drums)
+        assertTrue(a.drums.lanes[0].hits.isNotEmpty())
+        val plan = StarterWizard.scenePlan(setOf(StarterWizard.Role.Kick), emptySet(), acid = false)
+        assertTrue(plan.copy)
+        assertEquals(listOf("Kick (grosse caisse)"), plan.contents(1))
+        // The bass alone with chords goes with the drums; the chords go to B.
+        val melodic = StarterWizard.scenePlan(setOf(StarterWizard.Role.Kick), setOf(StarterWizard.Part.Bass, StarterWizard.Part.Pad), acid = true)
+        assertEquals(mapOf(StarterWizard.Part.Bass to 0, StarterWizard.Part.Pad to 1), melodic.parts)
+        assertEquals(listOf("le rythme", "la mélodie"), listOf(melodic.title(0), melodic.title(1)))
+    }
 }
 
 class ChordPadsTest {
@@ -164,4 +225,9 @@ class ChordPadsTest {
         assertTrue(free.all { pad -> pad.notes.all { Harmony(2, Scale.Major).inScale(it) } })
         assertTrue(Harmony(4, Scale.MinorPentatonic).chordPads(60).all { it.notes.size == 3 })
     }
+
 }
+
+/** Track [id]'s notes in the scene that plays them (each part lives in one scene). */
+private fun Project.notesOf(id: Int): NoteClip =
+    allScenes.map { if (id == 0) it.synthNotes else it.trackNotes[id] ?: NoteClip() }.firstOrNull { it.notes.isNotEmpty() } ?: track(id).notes

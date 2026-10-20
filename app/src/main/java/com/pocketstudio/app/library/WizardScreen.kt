@@ -50,6 +50,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
@@ -143,7 +144,7 @@ private fun WizardBody(ui: WizardUi, packs: PacksUi, playing: SoundRef?, actions
             when (val current = ui.current) {
                 StarterWizard.Step.Style -> StyleStep(ui.styleId, packs, actions)
                 StarterWizard.Step.Mood -> MoodStep(style!!, ui.mood, packs, actions)
-                is StarterWizard.Step.Drum -> LineStep(style!!, current.line, ui.rows[current.line.role], packs, playing, actions)
+                is StarterWizard.Step.Drum -> LineStep(style!!, current.line, ui.rows[current.line.role], ui.plan, packs, playing, actions)
                 is StarterWizard.Step.Melodic -> PartStep(style!!, ui, packs, current.part, playing, actions)
                 StarterWizard.Step.Summary -> SummaryStep(ui, style!!)
             }
@@ -169,7 +170,8 @@ private fun WizardBody(ui: WizardUi, packs: PacksUi, playing: SoundRef?, actions
 private fun StyleStep(chosen: String?, packs: PacksUi, actions: WizardActions) {
     Text(
         "Choisis un style. Ensuite, je te présente chaque ligne de la batterie (à quoi elle sert, quels sons " +
-            "lui vont) et je place un rythme de départ dans la grille. Tu pourras tout changer après.",
+            "lui vont) et je place un rythme de départ dans la grille. À la fin, ton morceau aura deux scènes " +
+            "(deux boucles) à enchaîner : A puis B. Tu pourras tout changer après.",
         style = MaterialTheme.typography.bodyMedium,
     )
     // The best known first, then the others (still the better known first).
@@ -185,7 +187,9 @@ private fun StyleStep(chosen: String?, packs: PacksUi, actions: WizardActions) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(s.name, style = MaterialTheme.typography.titleMedium, color = if (s.id == chosen) Neon.Cyan else Neon.TextPrimary,
                             modifier = Modifier.weight(1f))
-                        Text("${s.family} · ${s.bpm.roundToInt()} BPM", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                        // Its family when it says something ("Techno" under Techno, "Autres" do not).
+                        val family = s.family.takeIf { it != s.name && it != StarterWizard.FAMILIES.last() }
+                        Text(listOfNotNull(family, "${s.bpm.roundToInt()} BPM").joinToString(" · "), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
                     }
                     Text(s.description, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
                     if (s.references.isNotEmpty()) {
@@ -219,7 +223,10 @@ private fun InstalledPacks(packs: PacksUi, actions: WizardActions) {
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun LineStep(style: StarterWizard.Style, line: StarterWizard.Line, row: WizardRow?, packs: PacksUi, playing: SoundRef?, actions: WizardActions) {
+private fun LineStep(
+    style: StarterWizard.Style, line: StarterWizard.Line, row: WizardRow?, plan: StarterWizard.ScenePlan,
+    packs: PacksUi, playing: SoundRef?, actions: WizardActions,
+) {
     val role = line.role
     val color = DrumKitInfo.colors[role.lane]
     NeonCard(modifier = Modifier.testTag("wizard_line_${role.id}")) {
@@ -231,6 +238,7 @@ private fun LineStep(style: StarterWizard.Style, line: StarterWizard.Line, row: 
             Text("Utiliser cette ligne", modifier = Modifier.weight(1f))
             Switch(checked = row?.enabled ?: false, onCheckedChange = { actions.setEnabled(role, it) }, modifier = Modifier.testTag("wizard_enabled"))
         }
+        plan.lines[role]?.let { SceneBadge(plan, it) }
     }
     if (row == null || !row.enabled) {
         Text("Cette ligne restera vide : tu pourras l'ajouter plus tard en touchant les cases de la grille.",
@@ -355,6 +363,8 @@ private fun PatternPreview(pattern: String, color: androidx.compose.ui.graphics.
 
 @Composable
 private fun SummaryStep(ui: WizardUi, style: StarterWizard.Style) {
+    // The two scenes first: what the beginner will find in the song.
+    ScenesCard(ui.plan)
     NeonCard(modifier = Modifier.testTag("wizard_summary")) {
         SectionLabel("Ton morceau ${style.name}", foldKey = "Ton morceau")
         Text("Tempo ${style.bpm.roundToInt()} BPM${if (style.swing > 0) ", avec du swing" else ""}.", style = MaterialTheme.typography.bodyMedium)
@@ -389,9 +399,54 @@ private fun SummaryStep(ui: WizardUi, style: StarterWizard.Style) {
     }
     Text(
         "« Créer le morceau » ouvre un nouveau projet : chaque son est sur son pad et le rythme est dans la grille. " +
-            "Appuie sur Lecture, puis change ce que tu veux : touche les cases, essaie d'autres sons, ajoute des pistes.",
+            "Un petit guide te montre ensuite comment écouter chaque scène et jouer tout le morceau.",
         style = MaterialTheme.typography.bodyMedium,
     )
+}
+
+/** The two scenes the song will have, what each holds, and the song that chains them. */
+@Composable
+private fun ScenesCard(plan: StarterWizard.ScenePlan) {
+    NeonCard(accent = Neon.Magenta, modifier = Modifier.testTag("wizard_scenes")) {
+        SectionLabel("Deux scènes", color = Neon.Magenta, help = Glossary.SCENE)
+        Text("Une scène, c'est une boucle qui tourne en rond. Ton morceau en aura deux :", style = MaterialTheme.typography.bodyMedium)
+        listOf(0, 1).forEach { index ->
+            Row(verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                SceneLetter(index)
+                Column(Modifier.weight(1f)) {
+                    Text(plan.title(index).replaceFirstChar { it.uppercase() }, style = MaterialTheme.typography.titleSmall)
+                    val what = if (plan.copy && index == 1) "la même chose au départ : change-la pour faire une variante"
+                    else plan.contents(index).joinToString(", ") { it.substringBefore(" (").substringBefore(" / ") }
+                    Text(what, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                }
+            }
+        }
+        Text("Le morceau : A deux fois, puis B deux fois, et ça recommence.", style = MaterialTheme.typography.bodyMedium)
+    }
+}
+
+/** "Cette ligne va dans la scène A · le rythme". */
+@Composable
+private fun SceneBadge(plan: StarterWizard.ScenePlan, index: Int) {
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.testTag("wizard_scene_badge")) {
+        SceneLetter(index)
+        Text(
+            if (plan.copy) "Dans la scène A, et dans sa copie B" else "Va dans la scène ${if (index == 0) "A" else "B"} · ${plan.title(index)}",
+            style = MaterialTheme.typography.bodyMedium, color = sceneColor(index),
+        )
+    }
+}
+
+@Composable
+private fun sceneColor(index: Int) = if (index == 0) Neon.Cyan else Neon.Magenta
+
+/** The scene's letter in a small square of its colour, as on the Morceau tab. */
+@Composable
+private fun SceneLetter(index: Int) {
+    Box(Modifier.size(28.dp).clip(RoundedCornerShape(7.dp)).background(sceneColor(index).copy(alpha = 0.22f)).border(1.dp, sceneColor(index), RoundedCornerShape(7.dp)),
+        contentAlignment = Alignment.Center) {
+        Text(if (index == 0) "A" else "B", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = sceneColor(index))
+    }
 }
 
 private val KEY_NAMES = listOf("Do", "Do♯", "Ré", "Mi♭", "Mi", "Fa", "Fa♯", "Sol", "La♭", "La", "Si♭", "Si")
@@ -459,6 +514,7 @@ private fun PartStep(style: StarterWizard.Style, ui: WizardUi, packs: PacksUi, p
             Text("Créer cette piste", modifier = Modifier.weight(1f))
             Switch(checked = row?.enabled ?: false, onCheckedChange = { actions.setPartEnabled(part, it) }, modifier = Modifier.testTag("wizard_part_enabled"))
         }
+        ui.plan.parts[part]?.let { SceneBadge(ui.plan, it) }
     }
     if (row == null || !row.enabled) return
     val look = SoundLooks.of(part.categories.first())

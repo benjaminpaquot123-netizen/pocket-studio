@@ -1,31 +1,36 @@
 {
-  "id": "phase17-capsule",
-  "milestone": "Phase 17 : le lecteur officiel et la pastille REC",
+  "id": "phase18-deux-scenes",
+  "milestone": "Phase 18 : l'assistant en deux scènes",
   "items": [
     {
-      "id": "player",
-      "title": "Le lecteur dans le centre de contrôle",
-      "hint": "Lance la lecture, puis ouvre le centre de contrôle (glisse depuis le haut) : un lecteur Pocket Studio montre ton projet et son tempo. Son bouton Arrêter (ou pause) arrête la musique."
+      "id": "styles_order",
+      "title": "Les styles connus d'abord",
+      "hint": "Mes projets › Nouveau projet › pas à pas : en haut « Les plus connus » (Techno, House, Trap…), en dessous « Les autres styles ». Touche un de ces titres : la liste se replie ; touche encore : elle revient."
     },
     {
-      "id": "lock_screen",
-      "title": "Sur l'écran verrouillé",
-      "hint": "Pendant la lecture, verrouille le téléphone et rallume l'écran : le lecteur Pocket Studio est là, avec Stop."
+      "id": "fold_wizard",
+      "title": "Les cartes de l'assistant se replient",
+      "hint": "Dans une étape, touche le titre d'une carte (par exemple « Choisis le son ») : elle se replie. Ferme et rouvre l'assistant : elle est toujours repliée, retouche pour l'ouvrir."
     },
     {
-      "id": "capsule",
-      "title": "La pastille REC (ou la Capsule magique)",
-      "hint": "Touche ● pour enregistrer (si Android demande d'autoriser les notifications, accepte), puis reviens à l'écran d'accueil : regarde en haut de l'écran. Une pastille « REC » avec le chrono, ou la Capsule magique ? Dis-moi ce que tu vois (une capture, c'est parfait)."
+      "id": "scene_badge",
+      "title": "Chaque étape dit sa scène",
+      "hint": "Choisis Techno, une ambiance, puis avance : sous chaque ligne de batterie et la basse, « Va dans la scène A · le rythme » ; sous Nappe et Lead, « scène B · la mélodie ». Le résumé montre les deux scènes."
     },
     {
-      "id": "headset_button",
-      "title": "Le bouton du casque",
-      "hint": "Avec un casque (filaire ou Bluetooth), appuie sur son bouton pendant la lecture : la musique s'arrête."
+      "id": "song_guide",
+      "title": "Le guide après la création",
+      "hint": "Touche « Créer le morceau » : un guide de 4 pages s'ouvre (les deux scènes, écouter une scène, jouer le morceau, et ensuite). Lis-le jusqu'à « À moi de jouer ! »."
     },
     {
-      "id": "screen_off_take",
-      "title": "Prise au micro écran éteint",
-      "hint": "Lance une prise au micro sur une piste audio, éteins l'écran une dizaine de secondes en parlant, rallume et arrête : la prise contient ta voix jusqu'au bout."
+      "id": "two_scenes",
+      "title": "Les deux scènes et le morceau",
+      "hint": "Onglet Morceau : les scènes A et B sont remplies. Touche B : le rythme laisse la place à la mélodie. Puis « Jouer le morceau » : A deux fois, B deux fois, et ça recommence."
+    },
+    {
+      "id": "beat_only",
+      "title": "Sans mélodie aussi",
+      "hint": "Refais un morceau pas à pas avec « Pas de mélodie pour l'instant » : la scène A garde kick, caisse claire et clap, la scène B les charleys et les percussions."
     }
   ]
 }

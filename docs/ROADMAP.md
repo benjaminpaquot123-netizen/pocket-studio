@@ -137,3 +137,9 @@ Feu vert de Benjamin (D4 = A) : fusion de la pull request en fin de phase.
 - [x] 17.1 Session multimédia : le projet et son tempo dans le centre de contrôle et sur l'écran verrouillé, Stop, bouton du casque
 - [x] 17.2 Activité en direct d'Android 16 pendant un enregistrement : « REC » et le chrono en haut de l'écran (la Capsule magique de Honor n'a pas d'accès public : MagicOS décide de l'y mettre ou non)
 - [x] 17.3 Prise au micro écran éteint : le service de lecture tient aussi le micro pendant une prise
+
+## Phase 18 : l'assistant en deux scènes (demande de Benjamin)
+- [x] 18.1 Les styles les plus connus d'abord (techno, house, trap…), en deux groupes repliables
+- [x] 18.2 Repli partout où il a un sens : cartes de l'assistant, groupes de styles, familles de sons Plaits
+- [x] 18.3 Le morceau de l'assistant coupé en deux scènes : A le rythme (batterie, basse, acide), B la mélodie (nappe, lead) ; sans mélodie, A kick, caisse claire et clap, B charleys et percussions ; morceau A ×2 puis B ×2
+- [x] 18.4 Le tuto le dit : chaque étape montre la scène de sa ligne, le résumé montre les deux scènes, un guide de 4 pages s'ouvre après la création

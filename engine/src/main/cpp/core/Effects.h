@@ -391,6 +391,7 @@ private:
     std::vector<float> bufL_, bufR_;
     size_t write_ = 0;
     double wow_ = 0.0, flutter_ = 0.0;
+    float wowNow_ = 0.0f;  // the wow knob, smoothed: turning it never jumps the read point
     float lp1L_ = 0, lp2L_ = 0, lp1R_ = 0, lp2R_ = 0, click_ = 0.0f;
     uint32_t seed_ = 0x9E3779B9u;
 };

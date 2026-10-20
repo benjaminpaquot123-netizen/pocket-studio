@@ -2350,6 +2350,30 @@ void testCrazyEffects() {
         for (int i = 1; i < 64; ++i) if (std::fabs(l[i]) > std::fabs(l[at])) at = i;
         CHECK(at < 4);
     }
+    // Old record: turning the wow knob while a tone plays makes no jump (the delay glides).
+    {
+        ps::Vinyl vinyl;
+        vinyl.prepare(kRate);
+        vinyl.setParam(1, 0.0f);
+        vinyl.setParam(2, 0.0f);
+        vinyl.setParam(0, 0.4f);
+        vinyl.reset();
+        std::vector<float> a(256), b(256);
+        double t = 0;
+        float prev = 0, worst = 0, normal = 0;
+        for (int block = 0; block < 200; ++block) {
+            if (block == 100) vinyl.setParam(0, 0.45f);  // one notch, mid-tone
+            for (int i = 0; i < 256; ++i, t += 1.0) a[size_t(i)] = b[size_t(i)] = 0.75f * float(std::sin(2.0 * M_PI * 700.0 * t / kRate));
+            vinyl.process(a.data(), b.data(), 256);
+            for (int i = 0; i < 256; ++i) {
+                const float step = std::fabs(a[size_t(i)] - prev);
+                prev = a[size_t(i)];
+                if (block > 10 && block < 100) normal = std::max(normal, step);
+                if (block >= 100) worst = std::max(worst, step);
+            }
+        }
+        CHECK(worst < 1.5f * normal);
+    }
     // Old record and walkie-talkie: clean numbers; the radio drops the bass (a 60 Hz hum).
     for (int type : {ps::InsertSlot::VinylFx, ps::InsertSlot::RadioFx}) {
         ps::InsertSlot fx;

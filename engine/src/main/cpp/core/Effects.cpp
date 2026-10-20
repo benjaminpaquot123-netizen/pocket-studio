@@ -810,6 +810,7 @@ void Vinyl::reset() {
     std::fill(bufR_.begin(), bufR_.end(), 0.0f);
     write_ = 0;
     wow_ = flutter_ = 0.0;
+    wowNow_ = p_[0];
     lp1L_ = lp2L_ = lp1R_ = lp2R_ = click_ = 0.0f;
 }
 
@@ -821,7 +822,8 @@ float Vinyl::noise() {
 void Vinyl::process(float* l, float* r, int n) {
     if (bufL_.empty()) return;
     const size_t size = bufL_.size();
-    const float wow = p_[0], crackle = p_[1], age = p_[2], mix = p_[3];
+    const float crackle = p_[1], age = p_[2], mix = p_[3];
+    const float wowGlide = onePoleCoef(rate_, 3.0f);  // ~50 ms
     const float tone = onePoleCoef(rate_, expMap(1.0f - age, 2500.0f, 18000.0f));
     const float clicks = crackle * crackle * 0.0012f * 48000.0f / rate_;  // chance per frame, same count per second at any rate
     const float clickDecay = std::exp(-1.0f / (0.0007f * rate_));          // a click dies in about a millisecond
@@ -830,7 +832,8 @@ void Vinyl::process(float* l, float* r, int n) {
         bufR_[write_] = r[i];
         // A warped record: a slow pitch wobble (0.55 Hz) and a faster flutter (6 Hz). No wow, no
         // delay at all (a fixed one would comb the dry sound and put the track late).
-        const double delay = wow * (0.0067 + 0.006 * std::sin(kTwoPiD * wow_) + 0.0006 * std::sin(kTwoPiD * flutter_)) * rate_;
+        wowNow_ += (p_[0] - wowNow_) * wowGlide;
+        const double delay = wowNow_ * (0.0067 + 0.006 * std::sin(kTwoPiD * wow_) + 0.0006 * std::sin(kTwoPiD * flutter_)) * rate_;
         wow_ += 0.55 / rate_;
         flutter_ += 6.0 / rate_;
         if (wow_ >= 1.0) wow_ -= 1.0;

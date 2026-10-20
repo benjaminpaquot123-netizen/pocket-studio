@@ -1,9 +1,14 @@
 package com.pocketstudio.ui
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -64,6 +69,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 /**
@@ -198,40 +204,84 @@ fun SectionLabel(text: String, modifier: Modifier = Modifier, color: Color = Neo
         fold.key = key
         if (fold.headerBottom == 0f) fold.headerBottom = headerBottoms[key] ?: 0f
     }
-    val turn by animateFloatAsState(if (folded) -90f else 0f, label = "fold-chevron")
-    val chevron = Neon.TextSecondary.copy(alpha = 0.45f)
-    val label: @Composable () -> Unit = {
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Box(Modifier.width(3.dp).height(12.dp).clip(RoundedCornerShape(2.dp)).background(color))
-            Text(text.uppercase(), style = MaterialTheme.typography.labelSmall, color = lerp(color, Neon.TextPrimary, 0.25f))
-            if (isHeader) {
-                // A small open "v", turned to ">" when folded: there, not shouting.
-                Canvas(Modifier.size(12.dp).rotate(turn)) {
-                    val w = size.width
-                    val stroke = 1.6.dp.toPx()
-                    drawLine(chevron, Offset(w * 0.2f, w * 0.38f), Offset(w * 0.5f, w * 0.66f), stroke, StrokeCap.Round)
-                    drawLine(chevron, Offset(w * 0.5f, w * 0.66f), Offset(w * 0.8f, w * 0.38f), stroke, StrokeCap.Round)
-                }
-            }
-        }
-    }
+    val label: @Composable () -> Unit = { SectionTitle(text, color, folded.takeIf { isHeader }) }
     val headerModifier = if (isHeader) {
         modifier
             .onGloballyPositioned { c ->
                 fold!!.headerCoordinates = c
                 fold.measure()
             }
-            .clip(RoundedCornerShape(6.dp))
-            .clickable(role = Role.Button, onClickLabel = if (folded) "Déplier" else "Replier") {
-                fold!!.animate = true
-                store.setFolded(key, !folded)
-            }
-            .semantics { stateDescription = if (folded) "Replié" else "Déplié" }
-            .heightIn(min = 24.dp)
-            .testTag("fold_$key")
+            .foldToggle(key, folded) { fold!!.animate = true }
     } else modifier
     if (help == null) Box(headerModifier, contentAlignment = Alignment.CenterStart) { label() }
     else WithHelp(help, headerModifier) { label() }
+}
+
+/**
+ * The bar, the title in small capitals and, when it folds something ([folded] not null), the
+ * chevron. [subtle]: a dot and grey text instead, for a group inside a card ([TileSection]'s look).
+ */
+@Composable
+private fun SectionTitle(text: String, color: Color, folded: Boolean?, subtle: Boolean = false) {
+    val turn by animateFloatAsState(if (folded == true) -90f else 0f, label = "fold-chevron")
+    val chevron = Neon.TextSecondary.copy(alpha = 0.45f)
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        if (subtle) Box(Modifier.size(8.dp).clip(CircleShape).background(color))
+        else Box(Modifier.width(3.dp).height(12.dp).clip(RoundedCornerShape(2.dp)).background(color))
+        Text(text.uppercase(), style = MaterialTheme.typography.labelSmall, color = if (subtle) Neon.TextSecondary else lerp(color, Neon.TextPrimary, 0.25f))
+        if (folded != null) {
+            // A small open "v", turned to ">" when folded: there, not shouting.
+            Canvas(Modifier.size(12.dp).rotate(turn)) {
+                val w = size.width
+                val stroke = 1.6.dp.toPx()
+                drawLine(chevron, Offset(w * 0.2f, w * 0.38f), Offset(w * 0.5f, w * 0.66f), stroke, StrokeCap.Round)
+                drawLine(chevron, Offset(w * 0.5f, w * 0.66f), Offset(w * 0.8f, w * 0.38f), stroke, StrokeCap.Round)
+            }
+        }
+    }
+}
+
+/** A title that folds: a touch folds or opens what it heads, remembered under [key]. */
+@Composable
+private fun Modifier.foldToggle(key: String, folded: Boolean, beforeToggle: () -> Unit = {}): Modifier {
+    val store = LocalFoldStore.current
+    return clip(RoundedCornerShape(6.dp))
+        .clickable(role = Role.Button, onClickLabel = if (folded) "Déplier" else "Replier") {
+            beforeToggle()
+            store.setFolded(key, !folded)
+        }
+        .semantics { stateDescription = if (folded) "Replié" else "Déplié" }
+        .heightIn(min = 24.dp)
+        .testTag("fold_$key")
+}
+
+/**
+ * A title over a group (cards in a list, or tiles in a card when [subtle]) that folds the whole
+ * group, like a card's title folds the card: same chevron, remembered under [foldKey] (the title
+ * by default).
+ */
+@Composable
+fun FoldSection(
+    title: String,
+    modifier: Modifier = Modifier,
+    color: Color = Neon.Cyan,
+    foldKey: String? = null,
+    spacing: Dp = 12.dp,
+    subtle: Boolean = false,
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    val key = foldKey ?: title
+    val canFold = LocalFolding.current
+    val folded = canFold && LocalFoldStore.current.isFolded(key)
+    Column(modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(spacing)) {
+        // The whole width folds (an easy target), not just the words.
+        Box(Modifier.fillMaxWidth().then(if (canFold) Modifier.foldToggle(key, folded) else Modifier), contentAlignment = Alignment.CenterStart) {
+            SectionTitle(title, color, folded.takeIf { canFold }, subtle)
+        }
+        AnimatedVisibility(!folded, enter = expandVertically() + fadeIn(), exit = shrinkVertically() + fadeOut()) {
+            Column(verticalArrangement = Arrangement.spacedBy(spacing), content = content)
+        }
+    }
 }
 
 /** Label on the left, value on the right; used for technical readouts. */

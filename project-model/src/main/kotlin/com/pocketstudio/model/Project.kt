@@ -79,7 +79,7 @@ data class Project(
         beatsPerBar = beatsPerBar.coerceIn(MIN_BEATS, MAX_BEATS),
         midiMap = MidiMapping.sanitize(midiMap),
         audioTracks = audioTracks.filter { it.id in 0 until AudioTrack.MAX }.distinctBy { it.id }.sortedBy { it.id }.map { it.sanitized() },
-    ).syncScenes()
+    ).syncScenes().withFittedSampleRoots()
 
     companion object {
         const val FORMAT_VERSION = 1

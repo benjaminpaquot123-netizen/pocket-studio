@@ -1,5 +1,6 @@
 package com.pocketstudio.app.synth
 
+import com.pocketstudio.ui.fadingHorizontalScroll
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -72,7 +73,7 @@ fun TrackBar(ui: TracksUi, modifier: Modifier = Modifier) {
     var renaming by remember { mutableStateOf<InstrumentTrack?>(null) }
     var colouring by remember { mutableStateOf<InstrumentTrack?>(null) }
     Row(
-        modifier.horizontalScroll(rememberScrollState()).testTag("track_bar"),
+        modifier.fadingHorizontalScroll().testTag("track_bar"),
         horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {

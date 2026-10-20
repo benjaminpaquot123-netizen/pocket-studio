@@ -1,5 +1,9 @@
+@file:OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
+
 package com.pocketstudio.app.remix
 
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import com.pocketstudio.app.help.Glossary
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -204,7 +208,7 @@ private fun InProject(ui: RemixUi, actions: RemixActions) {
                 LinearProgressIndicator(Modifier.fillMaxWidth(), color = Neon.Magenta)
             }
         }
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        FlowRow(itemVerticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             Text("Vers le pad :", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
             listOf(1, 2, 4).forEach { b ->
                 FilterChip(

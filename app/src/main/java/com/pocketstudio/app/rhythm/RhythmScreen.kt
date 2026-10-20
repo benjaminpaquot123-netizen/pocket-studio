@@ -1,5 +1,10 @@
+@file:OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
+
 package com.pocketstudio.app.rhythm
 
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import com.pocketstudio.ui.fadingHorizontalScroll
 import com.pocketstudio.ui.WithHelp
 import com.pocketstudio.ui.HelpDot
 import com.pocketstudio.app.help.Glossary
@@ -335,7 +340,7 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, playing: Boo
                 modifier = Modifier.testTag("all_pads"))
             if (!allPads) TextButton(onClick = actions.clearPad, enabled = hits.isNotEmpty()) { Text("Effacer") }
         }
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        FlowRow(itemVerticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             Text("Longueur", style = MaterialTheme.typography.bodyMedium)
             (1..4).filter { it * per <= 64 }.forEach { b ->
                 FilterChip(selected = bars == b, onClick = { actions.setBars(b) }, label = { Text(if (b == 1) "1 mesure" else "$b") },
@@ -343,7 +348,7 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, playing: Boo
             }
         }
         if (bars > 1) {
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            FlowRow(itemVerticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Text("Mesure", style = MaterialTheme.typography.bodyMedium)
                 (0 until bars).forEach { b ->
                     FilterChip(selected = bar == b, onClick = { chosenBar = b; follow = false }, label = { Text("${b + 1}") },
@@ -356,7 +361,7 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, playing: Boo
             AllPadsGrid(project, bar, currentStep, actions)
             return@NeonCard
         }
-        Row(Modifier.horizontalScroll(rememberScrollState()), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+        Row(Modifier.fadingHorizontalScroll(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             FilterChip(selected = tool == 0, onClick = { tool = 0 }, label = { Text("Coups") }, colors = chipColors)
             FilterChip(selected = tool == 1, onClick = { tool = 1 }, label = { Text("Roulements") }, colors = chipColors,
                 modifier = Modifier.testTag("roll_tool"))
@@ -654,7 +659,7 @@ private fun PadSampleControls(s: PadSample, seconds: Double, bpm: Double, edit: 
             modifier = Modifier.weight(1f, fill = false),
         )
     }
-    Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+    Row(Modifier.fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
         val suggestion = PadSample.suggestBeats(regionSeconds, bpm)
         PadSample.FIT_BEATS.forEach { beats ->
             FilterChip(
@@ -684,7 +689,7 @@ private fun PadSampleControls(s: PadSample, seconds: Double, bpm: Double, edit: 
         LabeledSlider("Relâche", ms(s.release), s.release, 0f..2f) { v -> edit("release") { it.copy(release = v) } }
         Text("Groupe d'étouffement : un coup coupe les autres pads du même groupe (charleston ouvert/fermé).",
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
-        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             (0..PadSample.CHOKE_GROUPS).forEach { g ->
                 FilterChip(
                     selected = s.choke == g,
@@ -738,7 +743,7 @@ private fun SlicerPanel(s: SlicerUi, info: SampleInfo, lane: Int, color: Color, 
         modifier = Modifier.testTag("slicer_wave"))
     Text("Touche la forme d'onde pour ajouter ou retirer une coupe. Pince pour zoomer.",
         style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
-    Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+    FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
         SliceMode.entries.forEach { m ->
             FilterChip(selected = s.mode == m, onClick = { actions.setSliceMode(m) }, label = { Text(m.label) }, colors = chipColors)
         }
@@ -749,7 +754,7 @@ private fun SlicerPanel(s: SlicerUi, info: SampleInfo, lane: Int, color: Color, 
             if (s.busy) "…" else "${(s.sensitivity * 100).roundToInt()} %",
             s.sensitivity, 0f..1f,
         ) { actions.setSliceSensitivity(it) }
-        SliceMode.Grid -> Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        SliceMode.Grid -> FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             Slicer.GRIDS.forEach { n ->
                 FilterChip(selected = s.grid == n, onClick = { actions.setSliceGrid(n) }, label = { Text("$n") }, colors = chipColors)
             }

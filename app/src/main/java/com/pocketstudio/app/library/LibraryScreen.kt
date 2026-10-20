@@ -1,5 +1,6 @@
 package com.pocketstudio.app.library
 
+import com.pocketstudio.ui.fadingHorizontalScroll
 import com.pocketstudio.app.help.Glossary
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
@@ -95,7 +96,7 @@ fun LibraryScreen(ui: LibraryUi, actions: LibraryActions) {
         Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             // Errors and notices at the top, where they are seen (the pack list can be far below).
             ui.packs.message?.let { Text(it, color = Neon.Amber, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.testTag("library_message")) }
-            Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            Row(Modifier.fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 SoundPacks.KIND_LABELS.filterKeys { it != "loop" }.forEach { (k, label) ->
                     val look = SoundLooks.of(k)
                     FamilyChip(label, look.icon, look.color, selected = kind == k, onClick = { kind = k }, modifier = Modifier.testTag("library_kind_$k"))

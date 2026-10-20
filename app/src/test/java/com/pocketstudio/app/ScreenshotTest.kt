@@ -431,6 +431,11 @@ class ScreenshotTest {
     }
 
     @Test
+    fun songGuide() = shoot("song_guide") {
+        com.pocketstudio.app.settings.GuideDialog(onClose = {}, pages = com.pocketstudio.app.library.songGuide("House", wizardUi(99).plan), tag = "song_guide")
+    }
+
+    @Test
     fun library() = shoot("library") {
         val sounds = (1..5).map { com.pocketstudio.model.PackSound("kick_0$it.flac", "kick", "Kick $it") }
         val installed = listOf(com.pocketstudio.model.PackManifest("retro_techno", "Rétro techno", "Techno", 132.0, sounds))

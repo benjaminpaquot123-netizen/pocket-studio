@@ -1,5 +1,9 @@
+@file:OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
+
 package com.pocketstudio.app.mixer
 
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import com.pocketstudio.ui.WithHelp
 import com.pocketstudio.ui.HelpDot
 import com.pocketstudio.app.help.Glossary
@@ -235,7 +239,7 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
     NeonCard(accent = Neon.Acid) {
         SectionLabel("Exporter", color = Neon.Acid)
         WithHelp(Glossary.STEMS) { Text("Quoi", style = MaterialTheme.typography.bodyMedium) }
-        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             listOf(ExportWhat.Loop to "La scène", ExportWhat.Song to "Le morceau", ExportWhat.Stems to "Piste par piste").forEach { (what, label) ->
                 FilterChip(
                     selected = export.what == what, onClick = { actions.setExportWhat(what) }, enabled = !export.running,
@@ -254,7 +258,7 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
         )
         if (export.what == ExportWhat.Loop || (export.what == ExportWhat.Stems && !hasSong)) {
             Text("Longueur", style = MaterialTheme.typography.bodyMedium)
-            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 EXPORT_BARS.forEach { bars ->
                     FilterChip(
                         selected = export.bars == bars,
@@ -267,7 +271,7 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
             }
         }
         WithHelp(Glossary.FORMATS) { Text("Format", style = MaterialTheme.typography.bodyMedium) }
-        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             listOf(ExportFormat.Wav to "WAV", ExportFormat.Flac to "FLAC", ExportFormat.M4a to "M4A").forEach { (format, label) ->
                 FilterChip(
                     selected = export.format == format, onClick = { actions.setExportFormat(format) }, enabled = !export.running,

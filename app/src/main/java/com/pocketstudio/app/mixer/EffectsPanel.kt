@@ -1,5 +1,6 @@
 package com.pocketstudio.app.mixer
 
+import com.pocketstudio.ui.fadingHorizontalScroll
 import com.pocketstudio.app.help.Glossary
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -55,7 +56,7 @@ fun effectsSummary(inserts: List<Insert>, sends: List<Float> = emptyList()): Str
 fun InsertRack(ch: Int, inserts: List<Insert>, actions: MixerActions) {
     var slot by rememberSaveable(ch) { mutableIntStateOf(0) }
     val chipColors = pillColors()
-    Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+    Row(Modifier.fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
         inserts.forEachIndexed { i, ins ->
             FilterChip(
                 selected = slot == i, onClick = { slot = i },

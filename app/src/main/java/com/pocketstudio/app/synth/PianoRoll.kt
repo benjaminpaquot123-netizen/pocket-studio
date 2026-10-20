@@ -1,5 +1,6 @@
 package com.pocketstudio.app.synth
 
+import com.pocketstudio.ui.fadingHorizontalScroll
 import com.pocketstudio.ui.WithHelp
 import com.pocketstudio.ui.HelpDot
 import com.pocketstudio.ui.Help
@@ -126,7 +127,7 @@ fun PianoRoll(
     val hScroll = rememberScrollState()
     val stepWidth = ZOOMS[zoom]
     Column(modifier, verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        Row(Modifier.horizontalScroll(rememberScrollState()), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        Row(Modifier.fadingHorizontalScroll(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             FilterChip(selected = !selectMode, onClick = { selectMode = false; selection = emptySet() }, label = { Text("✏ Dessiner") }, colors = chipColors,
                 modifier = Modifier.testTag("mode_draw"))
             FilterChip(selected = selectMode, onClick = { selectMode = true }, label = { Text("⬚ Sélectionner") }, colors = chipColors,
@@ -135,7 +136,7 @@ fun PianoRoll(
             TextButton(onClick = { zoom = (zoom - 1).coerceAtLeast(0) }, enabled = zoom > 0, modifier = Modifier.testTag("zoom_out")) { Text("−") }
             TextButton(onClick = { zoom = (zoom + 1).coerceAtMost(ZOOMS.lastIndex) }, enabled = zoom < ZOOMS.lastIndex, modifier = Modifier.testTag("zoom_in")) { Text("+") }
         }
-        Row(Modifier.horizontalScroll(rememberScrollState()), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        Row(Modifier.fadingHorizontalScroll(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             Text("Boucle", style = MaterialTheme.typography.bodySmall)
             NoteClip.LENGTHS_IN_STEPS.forEach { steps ->
                 FilterChip(selected = clip.steps == steps, onClick = { actions.setSteps(steps) },
@@ -155,7 +156,7 @@ fun PianoRoll(
             SelectionBar(clip, selection, clipboard, playStep, grid, chipColors,
                 select = { selection = it }, copy = { clipboard = NoteEdits.copy(selection) }, apply = apply)
         } else {
-            Row(Modifier.horizontalScroll(rememberScrollState()), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+            Row(Modifier.fadingHorizontalScroll(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
                 TextButton(onClick = { actions.quantize(grid, 0.5f) }, modifier = Modifier.testTag("quantize_50")) { Text("Quantifier 50 %") }
                 TextButton(onClick = { actions.quantize(grid, 1f) }) { Text("100 %") }
                 FilterChip(selected = showGhosts, onClick = { showGhosts = !showGhosts }, label = { Text("Basse en fantôme") }, colors = chipColors)
@@ -193,7 +194,7 @@ private fun SelectionBar(
 ) {
     val any = selection.isNotEmpty()
     Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-        Row(Modifier.horizontalScroll(rememberScrollState()), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+        Row(Modifier.fadingHorizontalScroll(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
             Text(if (any) "${selection.size} note${if (selection.size > 1) "s" else ""}" else "Rien de choisi",
                 style = MaterialTheme.typography.bodySmall, color = Neon.Cyan, modifier = Modifier.testTag("selection_count"))
             TextButton(onClick = { select(clip.notes.toSet()) }, modifier = Modifier.testTag("select_all")) { Text("Tout") }
@@ -205,7 +206,7 @@ private fun SelectionBar(
             TextButton(onClick = { apply(NoteEdits.shift(clip, selection, -grid), "sel-move") }, enabled = any) { Text("◀") }
             TextButton(onClick = { apply(NoteEdits.shift(clip, selection, grid), "sel-move") }, enabled = any) { Text("▶") }
         }
-        Row(Modifier.horizontalScroll(rememberScrollState()), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+        Row(Modifier.fadingHorizontalScroll(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
             TextButton(onClick = { apply(NoteEdits.duplicate(clip, selection), null) }, enabled = any, modifier = Modifier.testTag("sel_duplicate")) { Text("Dupliquer") }
             TextButton(onClick = copy, enabled = any, modifier = Modifier.testTag("sel_copy")) { Text("Copier") }
             TextButton(
@@ -503,7 +504,7 @@ private val STRUMS = listOf(0 to "Non", 3 to "Léger", 8 to "Moyen", 16 to "Lent
 
 @Composable
 private fun ChipRow(label: String, help: Help? = null, content: @Composable () -> Unit) {
-    Row(Modifier.horizontalScroll(rememberScrollState()), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+    Row(Modifier.fadingHorizontalScroll(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
         Row(Modifier.width(78.dp), verticalAlignment = Alignment.CenterVertically) {
             Text(label, style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(1f, fill = false))
             if (help != null) HelpDot(help)

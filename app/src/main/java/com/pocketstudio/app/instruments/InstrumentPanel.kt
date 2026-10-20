@@ -1,5 +1,6 @@
 package com.pocketstudio.app.instruments
 
+import com.pocketstudio.ui.fadingHorizontalScroll
 import com.pocketstudio.app.help.Glossary
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -79,7 +80,7 @@ fun InstrumentPanel(ui: InstrumentUi) {
     var showLibrary by rememberSaveable { mutableIntStateOf(if (ui.current != null) 1 else 0) }
     NeonCard(modifier = Modifier.testTag("instrument_panel")) {
         SectionLabel("Instrument", help = Glossary.SOURCE)
-        Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        Row(Modifier.fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             FamilyChip(
                 "Synthé", Icons.Filled.Tune, Neon.Cyan, selected = ui.current == null && showLibrary == 0 && ui.synthEngine == 0,
                 onClick = { showLibrary = 0; ui.selectEngine(0) },
@@ -102,7 +103,7 @@ fun InstrumentPanel(ui: InstrumentUi) {
         if (showLibrary == 1 || ui.current != null) {
             LaunchedEffect(Unit) { ui.open() }
             val bank = InstrumentLibrary.bank(ui.bankId)
-            Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            Row(Modifier.fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 InstrumentLibrary.BANKS.forEach { b ->
                     FamilyChip(
                         b.name, Icons.Filled.LibraryMusic, Neon.Cyan, selected = b.id == ui.bankId,
@@ -151,7 +152,7 @@ private fun Browser(
     var family by rememberSaveable {
         mutableIntStateOf(if (current?.bank == 128) KITS else current?.program?.div(8) ?: 0)
     }
-    Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+    Row(Modifier.fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
         InstrumentLibrary.FAMILIES.forEachIndexed { i, name ->
             val look = SoundLooks.of(name)
             FamilyChip(name, look.icon, look.color, selected = family == i, onClick = { family = i })

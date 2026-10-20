@@ -1,5 +1,6 @@
 package com.pocketstudio.app.synth
 
+import com.pocketstudio.ui.fadingHorizontalScroll
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -49,7 +50,7 @@ fun PlayPanel(play: PlayUi, actions: PlayActions) {
             Text("Modul.", style = MaterialTheme.typography.labelLarge, modifier = Modifier.width(52.dp))
             ProSlider(value = play.mod, onValueChange = actions.setMod, modifier = Modifier.weight(1f).testTag("mod"))
         }
-        Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        Row(Modifier.fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             FilterChip(selected = play.sustain, onClick = { actions.setSustain(!play.sustain) }, label = { Text("Sustain") },
                 modifier = Modifier.testTag("sustain"))
             FilterChip(selected = play.arp.on, onClick = { actions.setArp(play.arp.copy(on = !play.arp.on)) }, label = { Text("Arpège") },
@@ -61,7 +62,7 @@ fun PlayPanel(play: PlayUi, actions: PlayActions) {
             }
         }
         if (play.arp.on) {
-            Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            Row(Modifier.fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 ARP_MODES.forEachIndexed { i, label ->
                     FilterChip(selected = play.arp.mode == i, onClick = { actions.setArp(play.arp.copy(mode = i)) }, label = { Text(label) })
                 }

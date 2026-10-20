@@ -29,6 +29,9 @@ class PcmPlayer(private val onStop: () -> Unit = {}) {
             t.release()
             return false
         }
+        // Pack sounds are normalised near full scale and this track adds up with the song (already
+        // limited at -1 dB) in the phone's mixer: 6 dB down keeps a preview over the music clean.
+        t.setVolume(PREVIEW_GAIN)
         t.setNotificationMarkerPosition(pcm.frames)
         t.setPlaybackPositionUpdateListener(object : AudioTrack.OnPlaybackPositionUpdateListener {
             override fun onMarkerReached(at: AudioTrack) {
@@ -47,5 +50,10 @@ class PcmPlayer(private val onStop: () -> Unit = {}) {
         runCatching { t.stop() }
         t.release()
         onStop()
+    }
+
+    companion object {
+        /** -6 dB (see [play]). */
+        const val PREVIEW_GAIN = 0.5f
     }
 }

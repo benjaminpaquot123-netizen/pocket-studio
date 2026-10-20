@@ -1,5 +1,10 @@
+@file:OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
+
 package com.pocketstudio.app.session
 
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import com.pocketstudio.ui.fadingHorizontalScroll
 import com.pocketstudio.ui.HelpDot
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.LibraryMusic
@@ -107,7 +112,7 @@ fun LivePadsCard(ui: LivePadsUi, actions: LivePadsActions) {
             else "Choisis le son du pad ${ui.editing + 1} et sa longueur, puis « Jouer ».",
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
         )
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        FlowRow(itemVerticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             Text("Pads :", style = MaterialTheme.typography.bodyMedium)
             LivePads.SIZES.forEach { size ->
                 FilterChip(
@@ -195,14 +200,14 @@ private fun PadEditor(pad: Int, clip: LiveClip?, drumSounds: List<Pair<Int, Stri
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         if (drumSounds.isNotEmpty()) {
             Text("Ou le son d'un pad de batterie :", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
-            Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            Row(Modifier.fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 drumSounds.forEach { (drum, name) ->
                     OutlinedButton(onClick = { actions.fromDrumPad(pad, drum) }) { Text("${drum + 1}. ${name.take(14)}", maxLines = 1) }
                 }
             }
         }
         if (clip != null) {
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            FlowRow(itemVerticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 listOf(false to "En boucle", true to "Une fois").forEach { (once, label) ->
                     FilterChip(selected = clip.oneShot == once, onClick = { actions.setOneShot(pad, once) }, label = { Text(label) })
                 }
@@ -210,7 +215,7 @@ private fun PadEditor(pad: Int, clip: LiveClip?, drumSounds: List<Pair<Int, Stri
             }
             if (!clip.oneShot) {
                 Text("Repart tous les :", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
-                Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                Row(Modifier.fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     LivePads.BEATS.forEach { b ->
                         FilterChip(selected = clip.beats == b, onClick = { actions.setBeats(pad, b) }, label = { Text(beatsLabel(b)) },
                             modifier = Modifier.testTag("live_beats_$b"))

@@ -1,5 +1,6 @@
 package com.pocketstudio.app.sounds
 
+import com.pocketstudio.ui.fadingHorizontalScroll
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -65,7 +66,7 @@ fun SoundBrowser(ui: SoundBrowserUi) {
     var family by rememberSaveable(ui.tag) { mutableStateOf(start) }
     if (family !in families) family = ui.categories.first()
     Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.testTag(ui.tag)) {
-        Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        Row(Modifier.fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             families.forEach { f ->
                 val look = SoundLooks.of(f)
                 FamilyChip(

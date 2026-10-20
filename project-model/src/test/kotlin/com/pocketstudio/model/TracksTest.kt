@@ -4,6 +4,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
+import org.junit.Assert.assertFalse
 import org.junit.Test
 
 class TracksTest {
@@ -102,5 +103,57 @@ class TracksTest {
         val p = ProjectJson.decode("""{"name":"Ancien"}""")
         assertEquals(1, p.instrumentTracks.size)
         assertEquals("Synthé", p.track(0).name)
+    }
+
+    @Test
+    fun aDeepSoundPlaysInTheOctaveOfTheChordsItIsPutOn() {
+        // The video's case: an 808 found at La 0 (MIDI 21) under chords around Do 4.
+        val chords = listOf(60, 64, 67, 70).map { Note(0, 64, it) } + listOf(62, 65, 69, 72).map { Note(64, 64, it) }
+        val root = SampledPatch.fitRoot(21f, chords)
+        // Same note name (La), a few semitones from the notes: read at about its own speed, not 16 times.
+        assertEquals(9, Math.floorMod(root.toInt(), 12))
+        assertTrue("root $root", kotlin.math.abs(root - 67f) <= 6f)
+        // Already close: unchanged; unknown: the notes' middle; nothing to play: around Do 4.
+        assertEquals(62f, SampledPatch.fitRoot(62f, chords))
+        assertEquals(67f, SampledPatch.fitRoot(null, chords))
+        assertEquals(57f, SampledPatch.fitRoot(21f, emptyList()))
+        // Chords never glide; a bass line can.
+        assertFalse(SampledPatch.isMonophonic(chords))
+        assertTrue(SampledPatch.isMonophonic(listOf(Note(0, 4, 36), Note(4, 4, 38), Note(8, 8, 41))))
+    }
+
+    @Test
+    fun theAssistantPutsAPackSoundInTheOctaveOfItsPart() {
+        val style = StarterWizard.style("dnb")!!
+        val pad = StarterWizard.soundsFor(StarterWizard.Part.Pad, style).first()
+        val sampled = pad.copy(sampled = SampledPatch(file = "x.wav", root = 21f, glide = SampledPatch.SLIDE))
+        val p = StarterWizard.build(style, emptyMap(), StarterWizard.Mood.Dark, mapOf(StarterWizard.Part.Pad to sampled))
+        val track = p.track(0)
+        val notes = p.allScenes.map { it.synthNotes }.first { it.notes.isNotEmpty() }.notes
+        val middle = notes.map { it.pitch }.sorted()[notes.size / 2]
+        assertTrue("root ${track.sampled.root} vs $middle", kotlin.math.abs(track.sampled.root - middle) <= 6f)
+        assertEquals(0f, track.sampled.glide)
+    }
+
+    @Test
+    fun anOldProjectWithASoundFarFromItsNotesIsFittedOnOpening() {
+        // Benjamin's "Drum & bass": a kick found at 30.3 on chords from 62 to 82.
+        val chords = NoteClip(steps = 64, notes = listOf(62, 65, 69, 74, 77, 81, 82).map { Note(0, 64, it) })
+        var p = Project().addTrack("Nappe")!!
+        val id = p.tracks.last().id
+        p = p.withTrack(p.track(id).copy(engine = 2, notes = chords, sampled = SampledPatch(file = "k.wav", name = "Kick", root = 30.30625f)))
+        val opened = ProjectJson.decode(ProjectJson.encode(p))
+        val root = opened.track(id).sampled.root
+        assertEquals(30.30625f + 48f, root, 0.001f)  // four octaves up: same note, its own speed
+        // Fitted once: saving and opening again changes nothing.
+        assertEquals(opened, opened.sanitized())
+        // A root a few semitones from the notes (set by ear) stays as it is.
+        val near = p.withTrack(p.track(id).copy(sampled = p.track(id).sampled.copy(root = 70f))).sanitized()
+        assertEquals(70f, near.track(id).sampled.root)
+        // The first track too, and a synth track is left alone.
+        val first = Project().withTrack(Project().track(0).copy(engine = 2, notes = chords, sampled = SampledPatch(file = "k.wav", root = 21f))).sanitized()
+        assertTrue(kotlin.math.abs(first.track(0).sampled.root - 74f) <= 6f)
+        val synth = Project().withTrack(Project().track(0).copy(engine = 0, notes = chords, sampled = SampledPatch(file = "k.wav", root = 21f))).sanitized()
+        assertEquals(21f, synth.track(0).sampled.root)
     }
 }

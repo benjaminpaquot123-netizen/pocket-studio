@@ -1,5 +1,9 @@
+@file:OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
+
 package com.pocketstudio.app.synth
 
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import com.pocketstudio.ui.HelpDot
 import com.pocketstudio.ui.Help
 import com.pocketstudio.app.help.Glossary
@@ -289,7 +293,7 @@ private fun KeyboardCard(
         }
         if (!chordPads) {
             // Fewer, wider keys for the fingers and to learn: one octave named, or only the notes of the key.
-            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 KeyLayout.entries.forEach { l ->
                     FilterChip(selected = keyLayout == l, onClick = { onKeyLayout(l) }, label = { Text(l.label) }, colors = chipColors(),
                         modifier = Modifier.testTag("key_layout_${l.name}"))
@@ -405,9 +409,9 @@ private fun chipColors() = pillColors()
 @Composable
 private fun ChoiceRow(options: List<Pair<Float, String>>, current: Float, onPick: (Float) -> Unit) {
     val selected = options.minBy { kotlin.math.abs(it.first - current) }
-    Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+    FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
         options.forEach { option ->
-            FilterChip(selected = option == selected, onClick = { onPick(option.first) }, label = { Text(option.second) }, colors = chipColors())
+            FilterChip(selected = option == selected, onClick = { onPick(option.first) }, label = { Text(option.second, maxLines = 1, softWrap = false) }, colors = chipColors())
         }
     }
 }

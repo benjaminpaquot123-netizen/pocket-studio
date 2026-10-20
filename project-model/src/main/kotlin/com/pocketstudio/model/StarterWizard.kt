@@ -230,8 +230,23 @@ object StarterWizard {
 
     val FAMILIES = listOf("Hip-hop", "House", "Techno", "Bass music", "Autres")
 
-    /** The styles, from the researched recipes (see StyleRecipes.kt and scripts/packs/recipes/). */
-    val STYLES: List<Style> get() = STYLE_RECIPES
+    /**
+     * The styles, most known first (a beginner finds techno, house or trap at once, riddim and
+     * jersey club further down), from the researched recipes (StyleRecipes.kt, scripts/packs/recipes/).
+     */
+    val STYLES: List<Style> by lazy { STYLE_RECIPES.sortedBy { s -> POPULAR.indexOf(s.id).let { if (it < 0) POPULAR.size else it } } }
+
+    /** How well known each style is, from the most (charts, festivals, streaming) to the least. */
+    val POPULAR = listOf(
+        "techno", "house", "trap", "pop", "dnb", "dubstep", "reggaeton", "afrobeats", "lofi", "disco",
+        "trance", "deep_house", "tech_house", "boom_bap", "drill", "synthwave", "acid_house", "hard_techno",
+        "phonk", "amapiano", "uk_garage", "minimal", "afro_house", "jungle", "retro_techno", "acid_techno",
+        "gabber", "liquid_dnb", "detroit", "grime", "industrial_techno", "neurofunk", "jersey_club",
+        "speed_garage", "riddim",
+    )
+
+    /** The first styles of [STYLES], shown apart as the best known. */
+    const val BEST_KNOWN = 10
 
     fun style(id: String): Style? = STYLES.firstOrNull { it.id == id }
 
@@ -268,6 +283,7 @@ object StarterWizard {
             if (line.role !in sounds) continue
             lanes[line.role.lane] = DrumLane(hits = hits(line, steps), sample = sounds[line.role])
         }
+        val partOfTrack = HashMap<Int, Part>()
         var project = Project(
             name = style.name,
             tempoBpm = style.bpm,
@@ -289,18 +305,114 @@ object StarterWizard {
                         sound.plaits != null -> 1
                         else -> 0
                     },
-                    plaits = sound.plaits ?: plaits, sampled = sound.sampled ?: sampled,
+                    plaits = sound.plaits ?: plaits,
+                    // A pack sound plays in the octave of the part's notes (and glides only on a single line).
+                    sampled = sound.sampled?.let { s ->
+                        s.copy(root = SampledPatch.fitRoot(s.root, notes.notes), glide = if (SampledPatch.isMonophonic(notes.notes)) s.glide else 0f)
+                    } ?: sampled,
                 )
                 if (first) {
                     project = project.withTrack(project.track(0).withSound())
+                    partOfTrack[0] = part
                     first = false
                 } else {
                     val added = project.addTrack(part.trackName) ?: continue
                     project = added.withTrack(added.tracks.last().withSound())
+                    partOfTrack[added.tracks.last().id] = part
                 }
             }
         }
-        return project.sanitized()
+        val plan = scenePlan(
+            lines = style.lines.map { it.role }.filter { it in sounds }.toSet(),
+            parts = partOfTrack.values.toSet(),
+            acid = mood != null && style.melody.acid != null,
+        )
+        return inScenes(project, plan, partOfTrack).sanitized()
+    }
+
+    /**
+     * Where the assistant puts each line and part: scene A (0), B (1) or C (2), so a beginner starts
+     * with three scenes to play one after the other. [acid]: the acid line's scene (null: no acid
+     * line). [copies]: a scene left empty by the sharing starts as a copy of another one, to vary.
+     */
+    data class ScenePlan(val lines: Map<Role, Int>, val parts: Map<Part, Int>, val acid: Int?, val copies: Map<Int, Int> = emptyMap()) {
+        /** Scene C holds the chords and the lead (A the drums, B the bass lines). */
+        val melodyInC: Boolean get() = parts.any { it.value == 2 }
+
+        /** The scene whose content scene [index] plays ([index] itself unless it is a copy). */
+        fun source(index: Int): Int = copies[index] ?: index
+
+        /** What scene [index] is, in a few words ("le rythme", "la basse", "la mélodie"…). */
+        fun title(index: Int): String {
+            if (index in copies) return "une copie de la scène ${NAMES[source(index)]}, à varier"
+            return if (melodyInC) listOf("le rythme", "la basse", "la mélodie")[index]
+            else listOf("la base", "le groove", "le relief")[index]
+        }
+
+        /** The names of what scene [index] plays, in the order of the assistant. */
+        fun contents(index: Int): List<String> {
+            val i = source(index)
+            return lines.filterValues { it == i }.keys.sortedBy { it.ordinal }.map { it.title } +
+                parts.filterValues { it == i }.keys.sortedBy { it.ordinal }.map { it.title } +
+                listOfNotNull(ACID_TITLE.takeIf { acid == i })
+        }
+
+        companion object {
+            const val COUNT = 3
+            val NAMES = listOf("A", "B", "C")
+            const val ACID_TITLE = "Ligne acide"
+        }
+    }
+
+    /**
+     * Shares the [lines] and [parts] used (and the acid line, when there is one) between scenes A,
+     * B and C. With chords or a lead: the drums in A, the bass lines (bass, 808, acid) in B, the
+     * chords and the lead in C. Without: kick, snare and clap in A, the hats in B, the percussion
+     * and the bass lines in C. A scene left empty starts as a copy of the scene before it.
+     */
+    fun scenePlan(lines: Set<Role>, parts: Set<Part>, acid: Boolean): ScenePlan {
+        val melody = Part.Pad in parts || Part.Lead in parts
+        val lineScenes = lines.associateWith { r ->
+            when {
+                r == Role.Bass808 -> if (melody) 1 else 2
+                melody -> 0
+                r == Role.Kick || r == Role.Snare || r == Role.Clap -> 0
+                r == Role.Hat || r == Role.OpenHat -> 1
+                else -> 2
+            }
+        }
+        val partScenes = parts.associateWith { if (it == Part.Bass) (if (melody) 1 else 2) else 2 }
+        val acidScene = (if (melody) 1 else 2).takeIf { acid }
+        val used = (lineScenes.values + partScenes.values + listOfNotNull(acidScene)).toSet()
+        // An empty scene copies the nearest filled one before it (or after it, for A).
+        val copies = (0 until ScenePlan.COUNT).filter { it !in used }.associateWith { empty ->
+            (empty - 1 downTo 0).firstOrNull { it in used } ?: (empty + 1 until ScenePlan.COUNT).first { it in used }
+        }
+        return ScenePlan(lineScenes, partScenes, acidScene, copies)
+    }
+
+    /** [full] cut in three scenes by [plan] (A current), and a song that plays each one twice. */
+    private fun inScenes(full: Project, plan: ScenePlan, partOfTrack: Map<Int, Part>): Project {
+        fun only(index: Int): Project {
+            val drums = full.drums.copy(lanes = full.drums.lanes.mapIndexed { lane, l ->
+                val role = Role.entries.firstOrNull { it.lane == lane }
+                if (role != null && plan.lines[role] == index) l else l.copy(hits = emptyMap())
+            })
+            val acid = if (plan.acid == index) full.acid else full.acid.copy(steps = full.acid.steps.map { it.copy(gate = false) })
+            var p = full.copy(drums = drums, acid = acid)
+            for ((id, part) in partOfTrack) {
+                if (plan.parts[part] == index) continue
+                val t = p.track(id)
+                p = p.withTrack(t.copy(notes = t.notes.copy(notes = emptyList())))
+            }
+            return p
+        }
+        val views = (0 until ScenePlan.COUNT).map { only(plan.source(it)) }
+        return views[0].copy(
+            scenes = views.mapIndexed { i, v -> v.currentSceneContent().copy(name = ScenePlan.NAMES[i]) },
+            scene = 0,
+            song = (0 until ScenePlan.COUNT).map { SongPart(it, 2) },
+        )
     }
 
     private val Part.trackName get() = when (this) {

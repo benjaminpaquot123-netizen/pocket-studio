@@ -90,6 +90,13 @@ data class WizardUi(
     val steps: List<StarterWizard.Step> get() = StarterWizard.steps(style)
     val lastStep: Int get() = steps.size - 1
     val current: StarterWizard.Step get() = steps[step.coerceIn(0, lastStep)]
+
+    /** Which scene each chosen line and part will land in (what "Créer le morceau" builds). */
+    val plan: StarterWizard.ScenePlan get() {
+        val lines = style?.lines.orEmpty().map { it.role }.filter { r -> rows[r]?.let { it.enabled && it.sound != null } == true }.toSet()
+        val used = if (mood == null) emptySet() else parts.filterValues { it.enabled }.keys
+        return StarterWizard.scenePlan(lines, used, acid = mood != null && style?.melody?.acid != null)
+    }
 }
 
 const val KIT_CATEGORY = "kit"
@@ -424,7 +431,8 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                     sound.plaits?.let { p -> p.sanitized().engineValues().forEachIndexed { i, v -> NativeEngine.setPlaitsParam(i, v, track) } }
                     val sample = natives[beat.size + track]
                     if (sample != null) {
-                        val patch = sound.sampled!!.copy(root = partAudio[track]?.second ?: 60f)
+                        val heard = StarterWizard.startingNotes(part, style, mood, harmony).notes
+                        val patch = sound.sampled!!.copy(root = com.pocketstudio.model.SampledPatch.fitRoot(partAudio[track]?.second, heard))
                         patch.engineValues().forEachIndexed { i, v -> NativeEngine.setTrackSampleParam(i, v, track) }
                         NativeEngine.setTrackSample(track, sample)  // the export engine keeps its own reference
                     }
@@ -459,6 +467,11 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         refreshPacks()
     }
 
+    /** Writing the new project failed: the choices are still there, to try again. */
+    fun createFailed(message: String) {
+        _wizard.update { it.copy(creating = false, error = message) }
+    }
+
     fun closeWizard() {
         stopPreview()
         _wizard.value = WizardUi()
@@ -471,7 +484,8 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
             w.copy(
                 styleId = id, step = 1, rows = style.lines.associate { it.role to defaultRow(it.role, id, installed) },
                 mood = style.melody.mood,
-                parts = StarterWizard.Part.entries.associateWith { PartRow(it in style.melody.parts, StarterWizard.soundsFor(it, style, installed).first()) },
+                // Every part on: the song's third scene is its melody (chords and lead); the user can untick them.
+                parts = StarterWizard.Part.entries.associateWith { PartRow(true, StarterWizard.soundsFor(it, style, installed).first()) },
                 error = null,
             )
         }
@@ -550,7 +564,11 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
      * Builds the new song: [then] gets the project and the sounds to store in its folder
      * (file name → audio), on the main thread.
      */
-    fun create(then: (Project, Map<String, Pcm>) -> Unit) {
+    /**
+     * Builds the song from the choices as they are now and hands it to [then] with its sounds and
+     * the guide that describes it; the assistant stays "creating" until it is closed or [createFailed].
+     */
+    fun create(then: (Project, Map<String, Pcm>, List<com.pocketstudio.app.settings.GuidePage>) -> Unit) {
         val w = _wizard.value
         val style = w.style ?: return
         if (w.creating) return
@@ -590,8 +608,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                 }
                 AppLog.add("Assistant : morceau ${style.name}, ${sounds.size} lignes, ${parts.size} pistes mélodiques")
                 // The choices stay until the project is written (the caller closes the assistant then).
-                then(StarterWizard.build(style, sounds, w.mood, parts), files)
-                _wizard.update { it.copy(creating = false) }
+                then(StarterWizard.build(style, sounds, w.mood, parts), files, songGuide(style.name, w.plan))
             } catch (e: Exception) {
                 _wizard.update { it.copy(creating = false, error = "Le morceau n'a pas pu être préparé (${e.message}).") }
             }

@@ -1,5 +1,6 @@
 package com.pocketstudio.app.mixer
 
+import com.pocketstudio.ui.fadingHorizontalScroll
 import com.pocketstudio.ui.WithHelp
 import com.pocketstudio.ui.HelpDot
 import com.pocketstudio.app.help.Glossary
@@ -66,7 +67,7 @@ fun QuickFxPanel(ch: Int, channel: Channel, actions: QuickFxActions) {
     var category by rememberSaveable(ch) { mutableStateOf(current?.category?.takeIf { it.isNotEmpty() } ?: FxPresets.CATEGORIES.first()) }
     Column(Modifier.fillMaxWidth().testTag("quick_fx_$ch"), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         WithHelp(Glossary.FX_PRESET) { Text("Ambiances toutes prêtes", style = MaterialTheme.typography.labelLarge, color = Neon.Magenta) }
-        Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        Row(Modifier.fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             FxPresets.CATEGORIES.forEach { c ->
                 FilterChip(selected = category == c, onClick = { category = c }, label = { Text(c) },
                     modifier = Modifier.testTag("fx_category_$c"))
@@ -95,7 +96,7 @@ private fun XyPad(ch: Int, macros: List<Float>, actions: QuickFxActions) {
     val y = macros[yMacro]
     val currentY by rememberUpdatedState(yMacro)
     val set by rememberUpdatedState(actions.setMacroPair)
-    Row(Modifier.horizontalScroll(rememberScrollState()), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+    Row(Modifier.fadingHorizontalScroll(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
         Text("Pad XY, haut-bas :", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, maxLines = 1)
         HelpDot(Glossary.XY_PAD)
         listOf(Macros.SPACE, Macros.DIRT, Macros.MOTION).forEach { m ->

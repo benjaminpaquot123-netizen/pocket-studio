@@ -434,3 +434,20 @@ Corrigé :
 Restant (mineur) :
 - Enregistrement en direct lancé à l'arrêt : le chrono compte aussi la mesure de décompte.
 - Ce que MagicOS fait de la notification promue (pastille, Capsule magique ou rien) : à voir sur le Magic 8 Pro.
+
+## Phase 18 (assistant en deux scènes, styles connus d'abord, repli partout), relecture de fin de phase
+
+Relecture neuve : les données sont saines (14 620 constructions essayées : chaque ligne et partie dans une seule scène, aucune scène vide, aller-retour JSON et changement de scène identiques).
+
+Corrigé :
+- Grave : le guide de fin ne s'affichait jamais (ouvrir le projet recrée l'activité et effaçait l'état) ; il est gardé par `rememberSaveable` (test qui échoue avec un simple `remember`).
+- Le guide décrit le morceau tel qu'il a été construit (plan pris au même instant que les choix) ; « Créer » reste bloqué jusqu'à la fermeture de l'assistant (plus de double projet), et un échec d'écriture rend la main avec un message.
+- La 808 reste avec le kick dans la scène A quand il n'y a pas de mélodie.
+- « Choisis le son » se replie ligne par ligne (avant : replié une fois, replié partout) ; le titre d'un groupe repliable se touche sur toute la largeur.
+- Test invariant : chaque choix joue dans la scène prévue, aller-retour JSON et changement de scène, pour tous les styles.
+
+Restant (mineur) :
+- Replier la carte d'une ligne cache aussi « Utiliser cette ligne » et le repère de scène (le titre reste visible pour rouvrir).
+- Un groupe « Les plus connus » replié le reste la fois suivante (mémorisé, comme les cartes).
+- Après la relecture, à la demande de Benjamin : trois scènes au lieu de deux (tests réécrits : partage par style, copies des scènes vides, aller-retour JSON et changement de scène) ; pastilles qui passent à la ligne ou s'estompent au bord.
+- Bug audio de la vidéo de Benjamin (22 h 54) : 808 posée sur des accords lue 16 fois trop vite (note d'origine La 0 sous des notes autour du Do 4) → « tic » d'un dixième de seconde par mesure puis silence. Corrigé partout où un son devient un instrument (bibliothèque, fichier, pad au clavier, assistant et ses écoutes), avec un test du cas exact, et calage automatique des projets existants à l'ouverture (testé sur le projet « Drum & bass » de Benjamin) ; écoute qui saturait par-dessus la musique : −6 dB.

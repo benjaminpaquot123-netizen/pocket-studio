@@ -163,5 +163,45 @@ data class SampledPatch(
     companion object {
         /** Glide for an 808 slide, in seconds. */
         const val SLIDE = 0.08f
+
+        /**
+         * The root for a sound found to sound at [detected], put in the octave of the notes it will
+         * play: the same note name (the song stays in key), but a 808 found at La 0 under chords
+         * around Do 4 would otherwise be read 16 times too fast and last a tenth of a second.
+         */
+        fun fitRoot(detected: Float?, notes: List<Note>): Float {
+            val pitches = notes.map { it.pitch }.sorted()
+            val centre = if (pitches.isEmpty()) 60 else pitches[pitches.size / 2]
+            val root = detected ?: return centre.toFloat()
+            val octaves = Math.round((centre - root) / 12f)
+            return (root + 12f * octaves).coerceIn(0f, 127f)
+        }
+
+        /** How far (semitones) a root may sit from the notes before it moves by octaves on its own. */
+        const val OCTAVE_SLACK = 12f
+
+        /** True when [notes] never overlap (a line that can glide, not chords). */
+        fun isMonophonic(notes: List<Note>): Boolean =
+            notes.sortedBy { it.start }.zipWithNext().none { (a, b) -> b.start < a.end }
     }
 }
+
+/**
+ * Every sampled track keeps its sound in the octave of the notes it plays, in every scene: an old
+ * project, notes recorded an octave up, a sound posed before this rule. Only a root more than an
+ * octave away moves (by whole octaves, so the song stays in key and a semitone set by ear stays).
+ */
+internal fun Project.withFittedSampleRoots(): Project {
+    var p = this
+    for (t in instrumentTracks) {
+        if (t.engine != 2 || t.sampled.file == null) continue
+        val notes = allScenes.flatMap { s -> if (t.id == 0) s.synthNotes.notes else s.trackNotes[t.id]?.notes.orEmpty() }
+            .ifEmpty { t.notes.notes }
+        if (notes.isEmpty()) continue
+        val pitches = notes.map { it.pitch }.sorted()
+        if (kotlin.math.abs(pitches[pitches.size / 2] - t.sampled.root) <= SampledPatch.OCTAVE_SLACK) continue
+        p = p.withTrack(t.copy(sampled = t.sampled.copy(root = SampledPatch.fitRoot(t.sampled.root, notes))))
+    }
+    return p
+}
+

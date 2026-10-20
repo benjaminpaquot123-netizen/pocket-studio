@@ -272,7 +272,7 @@ object Glossary {
     // --- Export and audio ---
     val FORMATS = Help(
         "WAV, FLAC, M4A",
-        "WAV : qualité studio, lu partout, mais lourd. FLAC : exactement la même qualité, deux fois plus léger. M4A : environ dix fois plus léger, pour partager.",
+        "WAV : qualité studio, lu partout, mais lourd. FLAC : exactement la même qualité, bien plus léger (souvent deux fois). M4A : environ dix fois plus léger, pour partager.",
     )
     val LUFS = Help(
         "Volume perçu (LUFS)",

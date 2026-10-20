@@ -1,41 +1,41 @@
 {
-  "id": "phase11-sons",
-  "milestone": "Phase 11 : bibliothèques de sons",
+  "id": "phase12-comprendre",
+  "milestone": "Phase 12 : jouer les sons et comprendre les mots",
   "items": [
     {
-      "id": "library_open",
-      "title": "Ouvrir la bibliothèque de sons",
-      "hint": "Rythme : touche un pad, puis « Bibliothèque de sons » sous le son du pad. Choisis une famille (Kick, Caisse claire…), touche un son pour l'écouter, « Poser » le met sur le pad."
+      "id": "help_dots",
+      "title": "Les petits « ? »",
+      "hint": "Onglet Morceau : touche le « ? » à côté de SCÈNES, puis de PADS LIVE. Une bulle explique le mot. Essaie-en deux ou trois ailleurs : sont-ils clairs ?"
     },
     {
-      "id": "pack_download",
-      "title": "Télécharger un pack",
-      "hint": "Dans la bibliothèque, liste des packs en bas : télécharge « Rétro techno » (environ 2 Mo). Ses kicks, stabs et basses apparaissent ensuite dans les familles en haut."
+      "id": "lexicon",
+      "title": "Le lexique",
+      "hint": "Outils › Réglages › Aide › « Lexique » : tous les mots de l'appli expliqués d'un coup."
     },
     {
-      "id": "pack_sounds",
-      "title": "Les sons d'un style",
-      "hint": "Télécharge aussi « UK Garage » ou « Drum & bass ». Pose un kick, une caisse claire et un charley sur trois pads et lance la lecture : le son tient-il la route ?"
+      "id": "sampled_808",
+      "title": "Une 808 au clavier",
+      "hint": "Télécharge le pack Trap (Rythme › un pad › Bibliothèque de sons). Puis Synthé › Source du son › Échantillon › Choisir un son : prends une 808. Joue au clavier : elle doit être juste sur toutes les touches."
     },
     {
-      "id": "pack_delete",
-      "title": "Supprimer un pack",
-      "hint": "Dans la liste des packs, « Supprimer » sur un pack téléchargé : il disparaît de la liste des sons et la place est libérée. Les pads où un de ses sons est posé continuent de sonner."
+      "id": "glide",
+      "title": "La glisse",
+      "hint": "Avec « Glisse (808) » allumé, tiens une touche et appuie sur une autre : la note glisse vers la nouvelle, comme dans le trap."
     },
     {
-      "id": "wizard_packs",
-      "title": "L'assistant avec les packs",
-      "hint": "Mes projets › Nouveau projet › Assistant : choisis un style dont tu as téléchargé le pack. À chaque ligne, les sons du pack sont proposés à côté des sons intégrés."
+      "id": "live_library",
+      "title": "Un pad live depuis la bibliothèque",
+      "hint": "Morceau › Pads live › Régler les pads › un pad vide : « Bibliothèque de sons », pose un stab, puis « Jouer » et lance-le."
     },
     {
-      "id": "export_flac",
-      "title": "Exporter en FLAC",
-      "hint": "Mixeur › Exporter : choisis « Le morceau » ou « La boucle » et le format FLAC. Le fichier arrive dans Musique › Pocket Studio et se lit dans ton lecteur de musique."
+      "id": "wizard_808",
+      "title": "L'assistant et les 808",
+      "hint": "Mes projets › Nouveau projet › Assistant › Trap (pack Trap téléchargé). À l'étape Basse, choisis une 808 du pack en bas de la liste, écoute-la, puis crée le morceau."
     },
     {
-      "id": "loudness",
-      "title": "Le volume perçu",
-      "hint": "Après un export de la boucle ou du morceau, une ligne « Volume perçu : … LUFS » s'affiche. Autour de −14, c'est comme la musique en streaming."
+      "id": "export_scene",
+      "title": "Exporter la scène",
+      "hint": "Mixeur › Exporter : le premier choix s'appelle maintenant « La scène » (la scène en cours, sur la longueur choisie)."
     }
   ]
 }

@@ -1,5 +1,5 @@
-Phase 11 : « Deux mille sons ? C'est pas faux ! »
-- Bibliothèque de sons (bouton sous chaque pad) : écoute et pose sur le pad en un geste.
-- 34 packs par style à télécharger (rétro techno, Detroit, UK garage, DnB…), supprimables d'un geste.
-- Export en FLAC : la qualité du WAV, bien plus léger.
-- Après l'export du morceau : son volume perçu, comparé au streaming.
+Phase 12 : « Faut tout vous expliquer, à vous ! »
+- Un petit « ? » à côté des mots techniques, et un lexique complet dans Outils › Réglages › Aide.
+- Les 808, basses et stabs des packs se jouent au clavier (Synthé › Échantillon), avec la glisse.
+- Pads live : le « + » ouvre la bibliothèque de sons ou la génération par phrase.
+- L'assistant propose les 808 et basses des packs pour la ligne de basse.

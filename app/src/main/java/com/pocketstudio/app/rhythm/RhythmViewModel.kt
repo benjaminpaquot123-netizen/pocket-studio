@@ -52,6 +52,8 @@ import com.pocketstudio.model.NoteClip
 import com.pocketstudio.model.ArpMode
 import com.pocketstudio.model.PadSample
 import com.pocketstudio.app.export.AacEncoder
+import com.pocketstudio.app.export.FlacEncoder
+import com.pocketstudio.app.export.Loudness
 import com.pocketstudio.model.HeardNote
 import com.pocketstudio.model.Transcription
 import com.pocketstudio.separation.BasicPitch
@@ -129,8 +131,8 @@ sealed interface SampleTask {
 /** What an export renders: the current loop, the whole song (scenes chained), or each track apart. */
 enum class ExportWhat { Loop, Song, Stems }
 
-/** WAV 24 bits (studio quality) or M4A/AAC (about ten times smaller, for sharing). */
-enum class ExportFormat(val extension: String, val mime: String) { Wav("wav", "audio/wav"), M4a("m4a", "audio/mp4") }
+/** WAV 24 bits (studio quality), FLAC (the same, about half the size) or M4A/AAC (about ten times smaller, for sharing). */
+enum class ExportFormat(val extension: String, val mime: String) { Wav("wav", "audio/wav"), M4a("m4a", "audio/mp4"), Flac("flac", "audio/flac") }
 
 data class ExportUi(
     val bars: Int = 4,
@@ -142,6 +144,8 @@ data class ExportUi(
     val stage: String? = null,
     val files: List<File> = emptyList(),
     val savedInMusic: Boolean = false,
+    /** Integrated loudness of the exported mix in LUFS (null for stems or silence). */
+    val loudness: Double? = null,
     val error: String? = null,
 ) {
     val file: File? get() = files.firstOrNull()
@@ -2840,10 +2844,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             ExportWhat.Song -> listOf("morceau" to null)
             ExportWhat.Loop -> listOf("boucle" to null)
         }
-        _export.value = settings.copy(running = true, progress = 0f, files = emptyList(), error = null, stage = null)
+        _export.value = settings.copy(running = true, progress = 0f, files = emptyList(), error = null, stage = null, loudness = null)
         exportJob = viewModelScope.launch {
             val done = ArrayList<File>()
             var musicOk = true
+            var loudness: Double? = null
             try {
                 renders.forEachIndexed { index, (label, solo) ->
                     val job = OfflineExport()
@@ -2870,24 +2875,31 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                         ExportResult.IoError -> { wav.delete(); throw UserMessage("L'écriture du fichier a échoué (stockage plein ?).") }
                         ExportResult.Ok -> Unit
                     }
-                    val out = if (settings.format == ExportFormat.M4a) {
-                        _export.value = _export.value.copy(stage = "Compression M4A" + if (renders.size > 1) " (${index + 1}/${renders.size})" else "")
-                        val m4a = File(wav.parentFile, wav.nameWithoutExtension + ".m4a")
+                    // Measured on the full-quality mix, before any compression.
+                    if (solo == null) loudness = withContext(Dispatchers.IO) { runCatching { Loudness.integrated(wav) }.getOrNull() }
+                    val out = if (settings.format == ExportFormat.Wav) {
+                        wav
+                    } else {
+                        val name = if (settings.format == ExportFormat.M4a) "Compression M4A" else "Conversion FLAC"
+                        _export.value = _export.value.copy(stage = name + if (renders.size > 1) " (${index + 1}/${renders.size})" else "")
+                        val packed = File(wav.parentFile, wav.nameWithoutExtension + "." + settings.format.extension)
                         withContext(Dispatchers.IO) {
                             try {
-                                AacEncoder.encode(wav, m4a) { exportCancelled }
+                                if (settings.format == ExportFormat.M4a) {
+                                    AacEncoder.encode(wav, packed) { exportCancelled }
+                                } else {
+                                    FlacEncoder.encode(wav, packed) { exportCancelled }
+                                }
                             } finally {
                                 wav.delete()
                             }
                         }
-                        m4a
-                    } else {
-                        wav
+                        packed
                     }
                     musicOk = withContext(Dispatchers.IO) { WavExporter.copyToMusic(app, out, settings.format.mime) } && musicOk
                     done += out
                 }
-                _export.value = _export.value.copy(running = false, files = done, savedInMusic = musicOk, stage = null)
+                _export.value = _export.value.copy(running = false, files = done, savedInMusic = musicOk, stage = null, loudness = loudness)
                 AppLog.add("Export ${settings.what} ${settings.format} : ${done.size} fichier(s), ${frames / OfflineExport.SAMPLE_RATE} s")
             } catch (e: kotlinx.coroutines.CancellationException) {
                 done.forEach { it.delete() }

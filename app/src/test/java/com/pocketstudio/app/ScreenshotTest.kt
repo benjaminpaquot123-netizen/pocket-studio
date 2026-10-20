@@ -213,7 +213,7 @@ class ScreenshotTest {
             channels = channels,
             meters = FloatArray(17).also { m -> listOf(0.62f, 0.81f, 0f, 0.4f, 0.88f).forEachIndexed { i, v -> m[i] = v }; m[16] = 0.8f },
             actions = com.pocketstudio.app.mixer.MixerActions(),
-            export = com.pocketstudio.app.rhythm.ExportUi(bars = 4, files = listOf(java.io.File("Mon-premier-rythme-20261018-221500.wav")), savedInMusic = true),
+            export = com.pocketstudio.app.rhythm.ExportUi(bars = 4, files = listOf(java.io.File("Mon-premier-rythme-20261018-221500.wav")), savedInMusic = true, loudness = -13.24),
         )
     }
 
@@ -226,8 +226,8 @@ class ScreenshotTest {
             )
             com.pocketstudio.app.mixer.ExportCard(
                 com.pocketstudio.app.rhythm.ExportUi(
-                    bars = 4, what = com.pocketstudio.app.rhythm.ExportWhat.Song, format = com.pocketstudio.app.rhythm.ExportFormat.M4a,
-                    files = listOf(java.io.File("Da-Funk-morceau-20261020-101500.m4a")), savedInMusic = true,
+                    bars = 4, what = com.pocketstudio.app.rhythm.ExportWhat.Song, format = com.pocketstudio.app.rhythm.ExportFormat.Flac,
+                    files = listOf(java.io.File("Da-Funk-morceau-20261020-101500.flac")), savedInMusic = true, loudness = -8.43,
                 ),
                 com.pocketstudio.app.mixer.MixerActions(),
             )

@@ -94,7 +94,7 @@ Feu vert de Benjamin (D4 = A) : fusion de la pull request en fin de phase.
 - [ ] 10.5 Packs de sons par style et sous-style (téléchargement à la demande, suppression) : à fabriquer (phase 11)
 
 ## Phase 11 : bibliothèques de sons
-- [ ] 11.1 Packs par style et sous-style fabriqués et hébergés (kicks, caisses, claps, charleys, percus, 808, basses)
-- [ ] 11.2 Rayon de sons dans le pad (parcourir, écouter, poser), gestion des packs (taille, supprimer)
+- [x] 11.1 Packs par style et sous-style fabriqués et hébergés (kicks, caisses, claps, charleys, percus, 808, basses)
+- [x] 11.2 Rayon de sons dans le pad (parcourir, écouter, poser), gestion des packs (taille, supprimer)
 - [ ] 11.3 Ableton Link (reporté)
 

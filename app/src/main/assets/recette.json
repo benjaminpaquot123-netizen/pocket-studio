@@ -1,46 +1,41 @@
 {
-  "id": "phase10-debutants",
-  "milestone": "Phase 10 : débutants et terrain de jeu",
+  "id": "phase11-sons",
+  "milestone": "Phase 11 : bibliothèques de sons",
   "items": [
     {
-      "id": "wizard",
-      "title": "Créer un morceau avec l'assistant",
-      "hint": "Mes projets › Nouveau projet › Assistant pas à pas : choisis UK Garage, une ambiance, écoute les sons à chaque étape, puis « Créer le morceau » et appuie sur Lecture."
+      "id": "library_open",
+      "title": "Ouvrir la bibliothèque de sons",
+      "hint": "Rythme : touche un pad, puis « Bibliothèque de sons » sous le son du pad. Choisis une famille (Kick, Caisse claire…), touche un son pour l'écouter, « Poser » le met sur le pad."
     },
     {
-      "id": "wizard_melody",
-      "title": "Les pistes mélodiques de l'assistant",
-      "hint": "Dans l'assistant, garde Basse et Nappe, active Lead. Dans le morceau créé, Synthé : trois pistes (Basse, Nappe, Lead) qui jouent ensemble sans fausse note."
+      "id": "pack_download",
+      "title": "Télécharger un pack",
+      "hint": "Dans la bibliothèque, liste des packs en bas : télécharge « Rétro techno » (environ 2 Mo). Ses kicks, stabs et basses apparaissent ensuite dans les familles en haut."
     },
     {
-      "id": "scale_lock",
-      "title": "Jouer sans fausse note",
-      "hint": "Synthé › Notes › Harmonie : choisis une gamme et active « Verrouiller la gamme ». Au clavier, les touches sombres ne jouent rien, toutes les autres sonnent juste."
+      "id": "pack_sounds",
+      "title": "Les sons d'un style",
+      "hint": "Télécharge aussi « UK Garage » ou « Drum & bass ». Pose un kick, une caisse claire et un charley sur trois pads et lance la lecture : le son tient-il la route ?"
     },
     {
-      "id": "chord_pads",
-      "title": "Les pads d'accords",
-      "hint": "Synthé › Clavier › Pads : chaque pad joue un accord complet. Active l'arpège en dessous et garde un pad appuyé : les notes défilent en rythme."
+      "id": "pack_delete",
+      "title": "Supprimer un pack",
+      "hint": "Dans la liste des packs, « Supprimer » sur un pack téléchargé : il disparaît de la liste des sons et la place est libérée. Les pads où un de ses sons est posé continuent de sonner."
     },
     {
-      "id": "progression",
-      "title": "Basse et arpège en un geste",
-      "hint": "Synthé › Notes › Harmonie › Progression : choisis-en une, puis « Ligne de basse » sur une piste et « Arpège » sur une autre."
+      "id": "wizard_packs",
+      "title": "L'assistant avec les packs",
+      "hint": "Mes projets › Nouveau projet › Assistant : choisis un style dont tu as téléchargé le pack. À chaque ligne, les sons du pack sont proposés à côté des sons intégrés."
     },
     {
-      "id": "fx_presets",
-      "title": "Les ambiances d'effets",
-      "hint": "Bouton Effets sur une piste : essaie « Sous l'eau », « Lo-Fi Tape », « Grande cathédrale », puis « Sans effet »."
+      "id": "export_flac",
+      "title": "Exporter en FLAC",
+      "hint": "Mixeur › Exporter : choisis « Le morceau » ou « La boucle » et le format FLAC. Le fichier arrive dans Musique › Pocket Studio et se lit dans ton lecteur de musique."
     },
     {
-      "id": "xy_pad",
-      "title": "Triturer le son au pad XY",
-      "hint": "Toujours dans Effets, pendant la lecture : glisse le doigt sur le pad XY. Deux touchers ramènent le son de départ."
-    },
-    {
-      "id": "drum_pan_pitch",
-      "title": "Pan et hauteur des coups",
-      "hint": "Rythme : « Pan du pad » sur un pad ; dans la grille, outil Pan puis touche un coup et glisse. Avec un son importé, outil Hauteur pareil."
+      "id": "loudness",
+      "title": "Le volume perçu",
+      "hint": "Après un export de la boucle ou du morceau, une ligne « Volume perçu : … LUFS » s'affiche. Autour de −14, c'est comme la musique en streaming."
     }
   ]
 }

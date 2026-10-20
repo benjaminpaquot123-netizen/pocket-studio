@@ -21,8 +21,10 @@ object PackStore {
     const val RELEASE = "sons-packs-2"
     private const val BASE = "https://github.com/benjaminpaquot123-netizen/pocket-studio/releases/download/$RELEASE/"
 
-    /** The list of packs, pinned once the Packs workflow has built them; null = none published yet. */
-    val INDEX: VerifiedFile? = null
+    /** The list of packs the Packs workflow published (34 styles); null would mean none published yet. */
+    val INDEX: VerifiedFile? = VerifiedFile(
+        BASE + "index.json", "packs-index.json", "63f5969b27b9904ea0c772e7301326bc3575dcc7b5eb596790296ea7b9cc55da", 6890,
+    )
 
     fun dir(context: Context) = File(context.filesDir, "packs")
 

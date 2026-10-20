@@ -1,0 +1,276 @@
+{
+ "packs": [
+  {
+   "id": "acid_house",
+   "name": "Acid house",
+   "file": "acid_house.zip",
+   "sha256": "720f9de8810207775e0654cf16f2e5e782005a468cc4998f9b3ff026f08e3eb9",
+   "sizeBytes": 984910,
+   "sounds": 58
+  },
+  {
+   "id": "afro_house",
+   "name": "Afro house",
+   "file": "afro_house.zip",
+   "sha256": "d3b269e37c7d36a54c406e0e9d8769ee5dadac9a9037b2e8541ba551e03e7ed9",
+   "sizeBytes": 833186,
+   "sounds": 50
+  },
+  {
+   "id": "afrobeats",
+   "name": "Afrobeats",
+   "file": "afrobeats.zip",
+   "sha256": "fa9f520ac5cc1fd67887b7a84ea43381e81d31ceb044b8446bc675b4b29b9073",
+   "sizeBytes": 1104087,
+   "sounds": 54
+  },
+  {
+   "id": "amapiano",
+   "name": "Amapiano",
+   "file": "amapiano.zip",
+   "sha256": "ddee33619f28fcb25430031a0215f50ade6b4534fade7a147a4ea841b76ecda0",
+   "sizeBytes": 791899,
+   "sounds": 52
+  },
+  {
+   "id": "boom_bap",
+   "name": "Boom bap",
+   "file": "boom_bap.zip",
+   "sha256": "008bf3692527c8f1f868bad2c26d5c58ad10a665aeb519126f9d598e775b82ba",
+   "sizeBytes": 1462905,
+   "sounds": 60
+  },
+  {
+   "id": "deep_house",
+   "name": "Deep house",
+   "file": "deep_house.zip",
+   "sha256": "75b29009e275d2162dc62d5e11111104090f104ac3ae20b67ed4c52d406818fe",
+   "sizeBytes": 977957,
+   "sounds": 58
+  },
+  {
+   "id": "detroit",
+   "name": "Techno de Detroit",
+   "file": "detroit.zip",
+   "sha256": "3f8db59a355efd6d850d96ad8fe40f891f536aff3fbc80ff18511a2f750a8d90",
+   "sizeBytes": 1178758,
+   "sounds": 68
+  },
+  {
+   "id": "disco",
+   "name": "Disco / funk",
+   "file": "disco.zip",
+   "sha256": "01ba055afee5614e318e4dec10e4c3f95b9da2990e6bc1870d114489dc452fa3",
+   "sizeBytes": 1356755,
+   "sounds": 68
+  },
+  {
+   "id": "dnb",
+   "name": "Drum & bass",
+   "file": "dnb.zip",
+   "sha256": "0c63f3733d6ad369bed252562ef1d05d44c7887d7d7ab63f28e7674b164ea024",
+   "sizeBytes": 1184122,
+   "sounds": 60
+  },
+  {
+   "id": "drill",
+   "name": "Drill",
+   "file": "drill.zip",
+   "sha256": "cf6139593013affcfee03639b0f39830002f513772453d54a5ee37e13ddfac46",
+   "sizeBytes": 1419962,
+   "sounds": 62
+  },
+  {
+   "id": "dubstep",
+   "name": "Dubstep",
+   "file": "dubstep.zip",
+   "sha256": "e2edc7f09fb66d8791a11831ae2d566b82c21dbb16f93c4fbd7d19f81a276eec",
+   "sizeBytes": 1622458,
+   "sounds": 64
+  },
+  {
+   "id": "gabber",
+   "name": "Gabber",
+   "file": "gabber.zip",
+   "sha256": "866c4be31301ff7e14f55f0170552ea9f61afd1f713c117b5a5a1dae1f5bcba1",
+   "sizeBytes": 1228909,
+   "sounds": 60
+  },
+  {
+   "id": "grime",
+   "name": "Grime",
+   "file": "grime.zip",
+   "sha256": "ac03dd3d7c854fd172a9abbf11f5e58dff640cc99850e4d65a26b21d67251009",
+   "sizeBytes": 1248013,
+   "sounds": 62
+  },
+  {
+   "id": "hard_techno",
+   "name": "Hard techno",
+   "file": "hard_techno.zip",
+   "sha256": "e40477e668793d59028ac26882410f59de7d4ef191a8aa075987b1a630928a69",
+   "sizeBytes": 978274,
+   "sounds": 50
+  },
+  {
+   "id": "house",
+   "name": "House",
+   "file": "house.zip",
+   "sha256": "42eba04cfeb122dcdcd2dd12425dbdc3c1ca240cb851e1504dced41068488796",
+   "sizeBytes": 1001177,
+   "sounds": 68
+  },
+  {
+   "id": "industrial_techno",
+   "name": "Techno industrielle",
+   "file": "industrial_techno.zip",
+   "sha256": "cb708d02b59c6f827ab37c8eeb5b5cb8e1ee74f736c8a541326f1fd6d24e5518",
+   "sizeBytes": 1409890,
+   "sounds": 52
+  },
+  {
+   "id": "jersey_club",
+   "name": "Jersey club",
+   "file": "jersey_club.zip",
+   "sha256": "ca0725dc68ec2d23f31c0a959a8eacf76651e90345bf10a27059808829ade5eb",
+   "sizeBytes": 760823,
+   "sounds": 54
+  },
+  {
+   "id": "jungle",
+   "name": "Jungle",
+   "file": "jungle.zip",
+   "sha256": "adbbe4af3f56f754cfb482d23759683ac8c62af4fc173e7ac55bee235a598f37",
+   "sizeBytes": 2990955,
+   "sounds": 60
+  },
+  {
+   "id": "liquid_dnb",
+   "name": "Liquid DnB",
+   "file": "liquid_dnb.zip",
+   "sha256": "dc80e2f81aef90326ac63a2a4a0b6de3d0d153cddd77f4cb72cb3cc5aa7751bb",
+   "sizeBytes": 891706,
+   "sounds": 52
+  },
+  {
+   "id": "lofi",
+   "name": "Lo-fi hip-hop",
+   "file": "lofi.zip",
+   "sha256": "05f1413d76b4c674107c3934e082d9f5b53c0f98a43925efceddefe0318b33be",
+   "sizeBytes": 1554489,
+   "sounds": 60
+  },
+  {
+   "id": "minimal",
+   "name": "Minimal",
+   "file": "minimal.zip",
+   "sha256": "10eea3d6d30530427063ed60300130b750265ab642cc52150aba9274ae6aa588",
+   "sizeBytes": 484072,
+   "sounds": 44
+  },
+  {
+   "id": "neurofunk",
+   "name": "Neurofunk",
+   "file": "neurofunk.zip",
+   "sha256": "c60f68071872a6da20159b0818fe02d5ce2a8ebd812873cbabf7cccfeef463d1",
+   "sizeBytes": 1363603,
+   "sounds": 54
+  },
+  {
+   "id": "phonk",
+   "name": "Phonk",
+   "file": "phonk.zip",
+   "sha256": "52c2b99c973b2ff9790e19bf2e88223ae4152e2f1a3d4380570670daf3aa1356",
+   "sizeBytes": 1386486,
+   "sounds": 64
+  },
+  {
+   "id": "pop",
+   "name": "Pop",
+   "file": "pop.zip",
+   "sha256": "ca4dce673ebeabb16b2e96aea4a6272e745cedafa0ba2b4b07e3b4294a7b353a",
+   "sizeBytes": 1529983,
+   "sounds": 68
+  },
+  {
+   "id": "reggaeton",
+   "name": "Reggaeton",
+   "file": "reggaeton.zip",
+   "sha256": "92e68cb209a9ad955e8b8068fffebbe2ddb68f8b202103234fe7b8cf0cbce6da",
+   "sizeBytes": 1117327,
+   "sounds": 56
+  },
+  {
+   "id": "retro_techno",
+   "name": "Rétro techno",
+   "file": "retro_techno.zip",
+   "sha256": "34435406962471568a4c061b25ed5fcc104e1b21b317f22ce67fa4402e9b3e82",
+   "sizeBytes": 2209774,
+   "sounds": 68
+  },
+  {
+   "id": "riddim",
+   "name": "Riddim",
+   "file": "riddim.zip",
+   "sha256": "c7035038be95c5ec74ce068217e0f78209027bad9e5a4367a7ef19d5c840a0b6",
+   "sizeBytes": 1523377,
+   "sounds": 54
+  },
+  {
+   "id": "speed_garage",
+   "name": "Speed garage",
+   "file": "speed_garage.zip",
+   "sha256": "59179d68a02cbd42ab5bc0fea9c03e8ca24cab9ecc6e7922699c651f033f776c",
+   "sizeBytes": 1415717,
+   "sounds": 60
+  },
+  {
+   "id": "synthwave",
+   "name": "Synthwave",
+   "file": "synthwave.zip",
+   "sha256": "b092974e76c52dd079a57ee4a22f92223607c4f67dab2bea2b60ce2ca6021ae7",
+   "sizeBytes": 2494067,
+   "sounds": 62
+  },
+  {
+   "id": "tech_house",
+   "name": "Tech house",
+   "file": "tech_house.zip",
+   "sha256": "a565b5f54bd2beabf0a4309957d597ee93f196b0c033e5a6466147b46c00d005",
+   "sizeBytes": 1178185,
+   "sounds": 58
+  },
+  {
+   "id": "techno",
+   "name": "Techno",
+   "file": "techno.zip",
+   "sha256": "844a575b3056e77f72b2de045cf6748c0b3f4c4e714aba768c79967a31e4cf12",
+   "sizeBytes": 1072890,
+   "sounds": 58
+  },
+  {
+   "id": "trance",
+   "name": "Trance",
+   "file": "trance.zip",
+   "sha256": "43656d79290663a7c9b76b0a823bda2d640a4128a025cb68b6963b782303b4fa",
+   "sizeBytes": 1250314,
+   "sounds": 58
+  },
+  {
+   "id": "trap",
+   "name": "Trap",
+   "file": "trap.zip",
+   "sha256": "3f7b651a4390decb7175cbe89099bacdd3b229e091c9e62ab0312c248e10da0d",
+   "sizeBytes": 1116050,
+   "sounds": 70
+  },
+  {
+   "id": "uk_garage",
+   "name": "UK Garage",
+   "file": "uk_garage.zip",
+   "sha256": "68f0d6d0fc5a3083b28e02d0fccce97fc8b894aabfc7a4cec6b1084b96970fe1",
+   "sizeBytes": 1419717,
+   "sounds": 68
+  }
+ ]
+}

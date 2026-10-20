@@ -1,6 +1,6 @@
 # Pocket Studio face à FL Studio Mobile (et aux autres)
 
-Comparaison faite le 2026-10-20 avec FL Studio Mobile 5.0.1 (manuel en ligne Image-Line, notes de version, fiche Play), Koala Sampler, Caustic 3, BandLab, n-Track, Zenbeats et Audio Evolution ; mise à jour après la phase 10.
+Comparaison faite le 2026-10-20 avec FL Studio Mobile 5.0.1 (manuel en ligne Image-Line, notes de version, fiche Play), Koala Sampler, Caustic 3, BandLab, n-Track, Zenbeats et Audio Evolution ; mise à jour pendant la phase 11.
 Légende : ✅ présent · 🟡 partiel · ❌ absent · ➖ volontairement non prévu. La dernière colonne dit où c'est fait ou prévu (voir `ROADMAP.md`).
 
 ## 1. Projets
@@ -68,7 +68,7 @@ Légende : ✅ présent · 🟡 partiel · ❌ absent · ➖ volontairement non 
 | 13 effets (EQ, compresseur, saturation, chorus, filtre, pompe, flanger, phaser, gate, trémolo, élargisseur, bitcrusher, EQ paramétrique) | ✅ | ✅ | 8.1 |
 | Ambiances d'effets prêtes, macros, pad XY par piste | 🟡 | ✅ 21 ambiances, 4 macros, pad XY | 10.4 |
 | Analyseur, accordeur | ✅ | ✅ | 8.1 |
-| Mesure de loudness (LUFS) | ✅ | ❌ | à faire |
+| Mesure de loudness (LUFS) | ✅ | ✅ après l'export du mix | 11 |
 | Automation en clips, par scène, sur le morceau | ✅ | ✅ | 8.2 |
 
 ## 8. Export
@@ -76,7 +76,7 @@ Légende : ✅ présent · 🟡 partiel · ❌ absent · ➖ volontairement non 
 | Fonction | FL Mobile | Pocket Studio | Où |
 | --- | --- | --- | --- |
 | WAV, morceau entier, pistes séparées, M4A, MIDI | ✅ | ✅ | 6.1 |
-| FLAC | ✅ | ❌ | à faire |
+| FLAC | ✅ | ✅ | 11 |
 | MP3 | ✅ | ➖ (M4A à la place) | — |
 
 ## 9. MIDI et liaison

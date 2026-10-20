@@ -30,6 +30,8 @@ public:
     void render(float* mono, int numFrames);
     // Adds all voices into a stereo pair, each voice at the pan of its last hit.
     void render(float* left, float* right, int numFrames);
+    // Each voice into its own pair (lefts[voice], rights[voice]; several voices may share one).
+    void render(float* const* lefts, float* const* rights, int numFrames);
 
 private:
     struct Envelope {
@@ -62,7 +64,7 @@ private:
     };
 
     float renderVoice(int voice, bool trig, float velocity);
-    // Calls sink(frame, value, gainLeft, gainRight) for every sample a voice adds.
+    // Calls sink(voice, frame, value, gainLeft, gainRight) for every sample a voice adds.
     template <typename Sink> void renderTo(int numFrames, Sink&& sink);
     float noise();
 

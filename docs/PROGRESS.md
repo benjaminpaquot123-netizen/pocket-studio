@@ -142,6 +142,16 @@
   - 14.4 clavier qui suit pendant le choix d'un son ;
   - 14.5 écoute dans l'assistant (ambiances, lignes avec le rythme, parties en situation).
 
+- Phase 14 : relecture faite (écoute muette de la nappe et du lead corrigée, blocs repliés sans clignotement, fin silencieuse coupée seulement pour les sons de la bibliothèque et le micro), CI rendue robuste aux téléchargements cassés de l'émulateur.
+- Phase 15 (branche locale phase15-wip, à poser sur `ccr-80af1a1b-mn0wec` après la fusion de la 14), demandes de Benjamin :
+  - 15.1 recettes des 35 styles (`scripts/packs/recipes/*.json` → `StyleRecipes.kt` par `recipes_to_kotlin.py`) : morceaux de référence, batterie (machine du style), progression par ambiance, rythme et disposition des accords, basse et riff en degrés, ligne 303 ;
+  - 15.2 sons des packs classés du meilleur au moins bon (`rank_sounds.py` → `PackPicks.kt`) ;
+  - 15.3 packs Acid techno et TB-303 (`sons-packs-4`, 53 packs), style Acid techno ;
+  - 15.4 trois claviers (2 octaves, 1 octave nommée, gamme) ;
+  - 15.5 sample d'un pad joué au clavier, fichier importé au clavier ;
+  - 15.6 effets par pad (16 tranches de plus dans le mixeur).
+
 ## Prochaine étape exacte
-1. Phase 14 : PR, relecture de fin de phase, CI verte, fusion.
-2. Ensuite : points mineurs restants de `docs/REVIEW.md`, Ableton Link (reporté).
+1. Phase 14 : CI verte sur la PR #25, fusion, lien à Benjamin.
+2. Phase 15 : relecture neuve, poser la branche sur `ccr-80af1a1b-mn0wec`, PR, CI, fusion.
+3. Audit complet « en production » demandé par Benjamin (lecture, enregistrement, scènes, pads et effets, synthés, acide, mixeur, exports, changements d'onglet en lecture, longues sessions, rotation, arrière-plan).

@@ -1,0 +1,552 @@
+[
+ {
+  "id": "industrial_techno",
+  "references": [
+   "Regis – Speak To Me (1994)",
+   "Perc – My Head Is Slowly Exploding (2011)",
+   "Blawan – Why They Hide Their Bodies Under My Garage? (2012)",
+   "Perc – Take Your Body Off (2014)"
+  ],
+  "description_fr": "Une techno sombre et métallique, avec une grosse caisse saturée qui gronde et des percussions qui sonnent comme une usine en marche.",
+  "bpm": 132,
+  "swing": 0.1,
+  "root": "A",
+  "drums": [
+   {
+    "role": "kick",
+    "pattern": "X...X...X...X...",
+    "source": "industrial_techno",
+    "tip_fr": "Un coup sur chaque temps, saturé et grondant : c'est le moteur de l'usine."
+   },
+   {
+    "role": "perc",
+    "pattern": "..x..x.o..x..x..",
+    "source": "industrial_techno",
+    "tip_fr": "Une percussion métallique décalée remplit les trous entre les grosses caisses."
+   },
+   {
+    "role": "hat",
+    "pattern": "..X...X...X...X.",
+    "source": "industrial_techno",
+    "tip_fr": "Le charleston entre les temps donne l'élan, comme un piston qui remonte."
+   },
+   {
+    "role": "snare",
+    "pattern": "....x.......x...",
+    "source": "tr909",
+    "tip_fr": "Une caisse claire de bruit blanc sur les temps 2 et 4, rugueuse plutôt que sèche."
+   }
+  ],
+  "progressions": {
+   "dark": {
+    "scale": "phrygian",
+    "degrees": [
+     0,
+     0,
+     0,
+     1
+    ]
+   },
+   "happy": {
+    "scale": "dorian",
+    "degrees": [
+     0,
+     0,
+     6,
+     6
+    ]
+   },
+   "future": {
+    "scale": "minor",
+    "degrees": [
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   "dreamy": {
+    "scale": "minor",
+    "degrees": [
+     0,
+     0,
+     5,
+     5
+    ]
+   }
+  },
+  "chords": {
+   "type": "pad",
+   "rhythm": "X---------------",
+   "voicing": "power",
+   "octave": 3,
+   "sound": "Essaim"
+  },
+  "bass": {
+   "pattern": "..rR..rR..rR..rR",
+   "octave": 1,
+   "sound": "Basse sub",
+   "glide": false
+  },
+  "lead": {
+   "type": "riff",
+   "pattern": "R..2..R...R..2..",
+   "arp_rate": 24,
+   "octave": 4,
+   "sound": "Cloche"
+  },
+  "acid": {
+   "use": false,
+   "pattern": "",
+   "accents": "",
+   "slides": ""
+  },
+  "defaults": {
+   "bass": true,
+   "chords": true,
+   "lead": false
+  },
+  "notes": "Harmony is almost absent: a dark power-chord drone, mostly one chord with a phrygian b2 move. The bass imitates the 'rumble' (distorted, reverb-smeared kick tail, low-passed and ducked by the kick), so it swells on the 3rd and 4th 16th after each kick; keep it subby and push distortion on the drums rather than adding melody. 909-style kick, bitcrushed 12-bit hats and toms (Attack Magazine 'Beat Dissected': 126-130 bpm, 50-60% swing; modern Perc Trax style sits nearer 130-135). The lead is a sparse metallic clang using the phrygian b2, off by default."
+ },
+ {
+  "id": "hard_techno",
+  "references": [
+   "KlangKuenstler & Sant – Toter Schmetterling (2024)",
+   "Alt8 & Sara Landry – Heaven (2024)",
+   "Marco Leckbert – Schranz Will Never Die (2024)"
+  ],
+  "description_fr": "Une techno très rapide et brutale, avec une grosse caisse écrasante, une basse qui roule entre chaque coup et des sirènes de rave.",
+  "bpm": 150,
+  "swing": 0.0,
+  "root": "F",
+  "drums": [
+   {
+    "role": "kick",
+    "pattern": "X...X...X...X...",
+    "source": "hard_techno",
+    "tip_fr": "Une grosse caisse saturée sur chaque temps : tout le morceau repose sur elle."
+   },
+   {
+    "role": "open_hat",
+    "pattern": "..X...X...X...X.",
+    "source": "hard_techno",
+    "tip_fr": "Le charleston ouvert entre les temps fait sauter la foule."
+   },
+   {
+    "role": "clap",
+    "pattern": "....X.......X...",
+    "source": "hard_techno",
+    "tip_fr": "Le clap sur 2 et 4 claque comme un coup de fouet."
+   },
+   {
+    "role": "hat",
+    "pattern": "oxoxoxoxoxoxoxox",
+    "source": "hard_techno",
+    "tip_fr": "Des petits coups en continu donnent la vitesse et l'urgence."
+   },
+   {
+    "role": "perc",
+    "pattern": "..x..x..x..x..x.",
+    "source": "hard_techno",
+    "tip_fr": "Une boucle de percussion tous les trois pas tourne en rond, à la façon du schranz."
+   }
+  ],
+  "progressions": {
+   "dark": {
+    "scale": "phrygian",
+    "degrees": [
+     0,
+     0,
+     1,
+     0
+    ]
+   },
+   "happy": {
+    "scale": "dorian",
+    "degrees": [
+     0,
+     0,
+     3,
+     3
+    ]
+   },
+   "future": {
+    "scale": "minor",
+    "degrees": [
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   "dreamy": {
+    "scale": "minor",
+    "degrees": [
+     5,
+     6,
+     0,
+     0
+    ]
+   }
+  },
+  "chords": {
+   "type": "stab",
+   "rhythm": "X..X..X...X..X..",
+   "voicing": "octave",
+   "octave": 3,
+   "sound": "Hoover"
+  },
+  "bass": {
+   "pattern": ".RRR.RRR.RRR.RRR",
+   "octave": 2,
+   "sound": "Basse analogique",
+   "glide": false
+  },
+  "lead": {
+   "type": "riff",
+   "pattern": "R..R..R.O..O..5.",
+   "arp_rate": 24,
+   "octave": 5,
+   "sound": "Supersaw"
+  },
+  "acid": {
+   "use": false,
+   "pattern": "",
+   "accents": "",
+   "slides": ""
+  },
+  "defaults": {
+   "bass": true,
+   "chords": true,
+   "lead": false
+  },
+  "notes": "Modern hard techno runs 145-160 bpm (150 is the common middle). Schranz roots: few melodic elements, heavily compressed and filtered 909 percussion loops (hence the 3-step perc loop against the 4/4). The signature low end is the 'rolling' bass: kick on the beat, three 16th bass notes filling the gap, side-chained to the kick. The harmonic part is a distorted rave/hoover stab in octaves (3-3-2 rhythm), not chords; harmony stays on one minor chord or a phrygian b2 move. Recent tracks borrow hard-trance supersaw leads for the 'dreamy' side; leave the lead off by default."
+ },
+ {
+  "id": "gabber",
+  "references": [
+   "Mescalinum United – We Have Arrived (1990)",
+   "Euromasters – Amsterdam Waar Lech Dat Dan? (1992)",
+   "Rotterdam Termination Source – Poing (1992)",
+   "Sperminator – No Women Allowed (1992)"
+  ],
+  "description_fr": "Le hardcore de Rotterdam : une grosse caisse ultra-saturée et très rapide qui sert aussi de basse, avec des sirènes stridentes par-dessus.",
+  "bpm": 175,
+  "swing": 0.0,
+  "root": "A",
+  "drums": [
+   {
+    "role": "kick",
+    "pattern": "X...X...X...X...",
+    "source": "gabber",
+    "tip_fr": "La grosse caisse saturée tape chaque temps comme un marteau-piqueur et joue aussi la note de basse."
+   },
+   {
+    "role": "open_hat",
+    "pattern": "..X...X...X...X.",
+    "source": "gabber",
+    "tip_fr": "Le charleston ouvert entre les coups donne le rebond typique du gabber."
+   },
+   {
+    "role": "clap",
+    "pattern": "....x.......x...",
+    "source": "gabber",
+    "tip_fr": "Un clap discret sur 2 et 4 pour marquer la mesure sans gêner la grosse caisse."
+   },
+   {
+    "role": "hat",
+    "pattern": "x.x.x.x.x.x.x.x.",
+    "source": "tr909",
+    "tip_fr": "Un charleston de boîte à rythmes 909 en croches garde la cadence."
+   }
+  ],
+  "progressions": {
+   "dark": {
+    "scale": "minor",
+    "degrees": [
+     0,
+     0,
+     5,
+     6
+    ]
+   },
+   "happy": {
+    "scale": "major",
+    "degrees": [
+     0,
+     4,
+     5,
+     3
+    ]
+   },
+   "future": {
+    "scale": "phrygian",
+    "degrees": [
+     0,
+     0,
+     0,
+     1
+    ]
+   },
+   "dreamy": {
+    "scale": "minor",
+    "degrees": [
+     5,
+     6,
+     0,
+     0
+    ]
+   }
+  },
+  "chords": {
+   "type": "stab",
+   "rhythm": "X-------........",
+   "voicing": "triad",
+   "octave": 4,
+   "sound": "pack:gabber:stab"
+  },
+  "bass": {
+   "pattern": "R...R...R...R...",
+   "octave": 1,
+   "sound": "Basse analogique",
+   "glide": false
+  },
+  "lead": {
+   "type": "riff",
+   "pattern": "R.O.R.5.R.3.R.2.",
+   "arp_rate": 24,
+   "octave": 5,
+   "sound": "Lead carré"
+  },
+  "acid": {
+   "use": false,
+   "pattern": "",
+   "accents": "",
+   "slides": ""
+  },
+  "defaults": {
+   "bass": false,
+   "chords": true,
+   "lead": false
+  },
+  "notes": "The overdriven TR-909 kick IS the bass: it is pitched/tuned to the key (filtered and distorted until it 'sings' the root), so the separate bass part stays off by default and, if used, only doubles the kick on the root. Early Rotterdam tracks ran 150-180 bpm and rose toward 190-200 by the mid-90s; 175 is a classic middle. Top layer: a swirling hoover (or choir) stab held on the 1 of each bar, plus staccato, piercing minor riffs in 8ths over a pedal root (the lead line). Horror-film and shouted vocal samples are part of the style. Happy degrees map to the happy-hardcore offshoot (Paul Elstak era)."
+ },
+ {
+  "id": "minimal",
+  "references": [
+   "Plastikman – Spastik (1993)",
+   "Robert Hood – Rhythm Of Vision (1994)",
+   "DBX – Losing Control (1994)",
+   "Ricardo Villalobos – Dexter (2003)"
+  ],
+  "description_fr": "Une techno épurée et hypnotique, faite de petits clics, d'une basse discrète et de boucles qui changent à peine.",
+  "bpm": 128,
+  "swing": 0.1,
+  "root": "G",
+  "drums": [
+   {
+    "role": "kick",
+    "pattern": "X...X...X...X...",
+    "source": "minimal",
+    "tip_fr": "Une grosse caisse sèche et courte sur chaque temps, sans gronder : la place reste aux détails."
+   },
+   {
+    "role": "hat",
+    "pattern": "..x...x...x...x.",
+    "source": "minimal",
+    "tip_fr": "Un petit tic entre les temps, comme une horloge, suffit à faire avancer."
+   },
+   {
+    "role": "perc",
+    "pattern": "...x..o....x.o..",
+    "source": "minimal",
+    "tip_fr": "Le rimshot décalé crée le groove : chaque petit clic compte, le silence aussi."
+   },
+   {
+    "role": "clap",
+    "pattern": "....o.......o...",
+    "source": "minimal",
+    "tip_fr": "Un clap très doux sur 2 et 4, presque caché derrière le reste."
+   }
+  ],
+  "progressions": {
+   "dark": {
+    "scale": "minor",
+    "degrees": [
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   "happy": {
+    "scale": "dorian",
+    "degrees": [
+     0,
+     0,
+     3,
+     3
+    ]
+   },
+   "future": {
+    "scale": "phrygian",
+    "degrees": [
+     0,
+     0,
+     0,
+     1
+    ]
+   },
+   "dreamy": {
+    "scale": "dorian",
+    "degrees": [
+     0,
+     0,
+     1,
+     1
+    ]
+   }
+  },
+  "chords": {
+   "type": "stab",
+   "rhythm": "...X......X.....",
+   "voicing": "seventh",
+   "octave": 4,
+   "sound": "Pluck"
+  },
+  "bass": {
+   "pattern": "..R...r...R..r..",
+   "octave": 2,
+   "sound": "Basse pincée",
+   "glide": false
+  },
+  "lead": {
+   "type": "riff",
+   "pattern": "R..R..R..R..R..R",
+   "arp_rate": 24,
+   "octave": 5,
+   "sound": "Cloche"
+  },
+  "acid": {
+   "use": false,
+   "pattern": "",
+   "accents": "",
+   "slides": ""
+  },
+  "defaults": {
+   "bass": true,
+   "chords": true,
+   "lead": false
+  },
+  "notes": "Build by subtraction (Robert Hood): one-bar motifs, kick + ticking hat can be enough, silence between notes matters as much as the notes. 125-130 bpm, Hawtin's 'perfect' 128. Focus on the mid-range rather than deep sub: short, dry, plucked bass notes. Harmony is static (one chord, at most a dorian i-IV or i-ii minor-seventh move); the chord part is a single short dub-style minor-7th stab with lots of space (add delay if available). The optional lead is a single-note bleep every 3 sixteenths (3-against-4 polyrhythm), the classic minimal hypnosis device. Light swing for the Villalobos/Perlon shuffle; Hood/Plastikman style is straighter."
+ },
+ {
+  "id": "trance",
+  "references": [
+   "Paul van Dyk – For An Angel (1994)",
+   "ATB – 9 PM (Till I Come) (1998)",
+   "Binary Finary – 1998 (1998)",
+   "System F – Out Of The Blue (1999)"
+  ],
+  "description_fr": "Une musique électronique euphorique, avec des accords lumineux hachés en rythme, une basse entre les coups et une mélodie qui donne des frissons.",
+  "bpm": 138,
+  "swing": 0.0,
+  "root": "A",
+  "drums": [
+   {
+    "role": "kick",
+    "pattern": "X...X...X...X...",
+    "source": "trance",
+    "tip_fr": "Une grosse caisse ronde et puissante sur chaque temps, qui laisse respirer la basse entre les coups."
+   },
+   {
+    "role": "open_hat",
+    "pattern": "..X...X...X...X.",
+    "source": "trance",
+    "tip_fr": "Le charleston ouvert entre les temps, signature de la trance : il fait décoller le morceau."
+   },
+   {
+    "role": "clap",
+    "pattern": "....X.......X...",
+    "source": "trance",
+    "tip_fr": "Le clap sur 2 et 4 donne la carrure, comme dans tous les hymnes de club."
+   },
+   {
+    "role": "hat",
+    "pattern": "ox.xox.xox.xox.x",
+    "source": "trance",
+    "tip_fr": "Des petits charlestons serrés autour du charleston ouvert ajoutent de l'énergie."
+   }
+  ],
+  "progressions": {
+   "dark": {
+    "scale": "minor",
+    "degrees": [
+     0,
+     5,
+     2,
+     6
+    ]
+   },
+   "happy": {
+    "scale": "major",
+    "degrees": [
+     5,
+     3,
+     0,
+     4
+    ]
+   },
+   "future": {
+    "scale": "minor",
+    "degrees": [
+     0,
+     0,
+     5,
+     6
+    ]
+   },
+   "dreamy": {
+    "scale": "major",
+    "degrees": [
+     3,
+     4,
+     5,
+     5
+    ]
+   }
+  },
+  "chords": {
+   "type": "pad",
+   "rhythm": "X-.X-.X.X-.X-.X.",
+   "voicing": "triad",
+   "octave": 4,
+   "sound": "Supersaw"
+  },
+  "bass": {
+   "pattern": "..R...R...R...R.",
+   "octave": 2,
+   "sound": "Basse analogique",
+   "glide": false
+  },
+  "lead": {
+   "type": "riff",
+   "pattern": "O..5..3.O..5..3.",
+   "arp_rate": 24,
+   "octave": 5,
+   "sound": "Lead trance"
+  },
+  "acid": {
+   "use": false,
+   "pattern": "",
+   "accents": "",
+   "slides": ""
+  },
+  "defaults": {
+   "bass": true,
+   "chords": true,
+   "lead": true
+  },
+  "notes": "Uplifting trance sits at 135-140 bpm (138 is the classic). The signature is the 'trance gate': a held supersaw chord chopped into a 3-3-2 sixteenth rhythm, with the lead riff on the same 3-3-2 accents; turn the lead on by default because the hook is the genre. Bass is a simple off-beat note between kicks (side-chained/ducked by the kick); a busier 2000s variant rolls three 16ths between kicks. Progressions: minor i-VI-III-VII (Am-F-C-G) and the euphoric major vi-IV-I-V; change chord every bar or every two bars. Long breakdowns with strings/choir pads, then the riff returns over the full beat."
+ }
+]

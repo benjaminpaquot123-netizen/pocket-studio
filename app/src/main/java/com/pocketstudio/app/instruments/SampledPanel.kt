@@ -18,6 +18,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.material.icons.filled.FolderOpen
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.pocketstudio.app.help.Glossary
@@ -38,15 +40,22 @@ internal fun SampledPanel(ui: InstrumentUi) {
     val chipColors = pillColors()
     WithHelp(Glossary.SAMPLED) {
         Text(
-            if (s.file == null) "Choisis un son de la bibliothèque : une 808, une basse, un stab… Il se jouera sur tout le clavier."
+            if (s.file == null) "N'importe quel son, même une seconde de ta voix : chaque touche le rejoue plus grave ou plus aigu. " +
+                "Prends-le dans la bibliothèque, dans un fichier, ou d'un pad avec « Jouer ce sample au clavier » dans Rythme."
             else "« ${s.name} » sur tout le clavier.",
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.weight(1f, fill = false),
         )
     }
-    Button(onClick = ui.chooseSample, modifier = Modifier.fillMaxWidth().testTag("sampled_choose")) {
-        Icon(Icons.Filled.LibraryMusic, contentDescription = null)
-        Text(if (s.file == null) "  Choisir un son" else "  Changer de son")
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Button(onClick = ui.chooseSample, modifier = Modifier.weight(1f).testTag("sampled_choose")) {
+            Icon(Icons.Filled.LibraryMusic, contentDescription = null)
+            Text("  Bibliothèque", maxLines = 1)
+        }
+        OutlinedButton(onClick = ui.importSample, modifier = Modifier.weight(1f).testTag("sampled_import")) {
+            Icon(Icons.Filled.FolderOpen, contentDescription = null)
+            Text("  Un fichier", maxLines = 1)
+        }
     }
     ui.sampledMessage?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = Neon.Amber) }
     if (s.file == null) return

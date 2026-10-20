@@ -116,3 +116,11 @@ Feu vert de Benjamin (D4 = A) : fusion de la pull request en fin de phase.
 - [x] 14.3 Sons en vignettes (icône et couleur de famille, une ligne d'explication) : sons prêts à jouer, 24 modèles Plaits, instruments, bibliothèque
 - [x] 14.4 Clavier qui suit : un clavier compact glisse du bas quand le vrai est hors de portée pendant le choix d'un son (modes Clavier et Notes), se range d'un geste
 - [x] 14.5 Assistant : écouter chaque ambiance (ses accords sur le rythme), chaque ligne de batterie avec les lignes déjà choisies, chaque partie avec la batterie ; sources sur une ligne, sons en vignettes juste dessous
+
+## Phase 15 : des styles qui sonnent vrai (demandes de Benjamin)
+- [x] 15.1 Recettes de style : pour chaque style, ses morceaux de référence, son tempo, sa batterie, ses accords (rythme et disposition), sa ligne de basse, son riff et, quand c'est sa signature, sa ligne 303
+- [x] 15.2 Les meilleurs sons d'abord : chaque son des packs mesuré (attaque, grave, justesse, saturation) et classé ; l'assistant prend la machine du style (909, 808…) et les sons de son pack, et propose de les télécharger
+- [x] 15.3 Packs Acid techno et TB-303, et le style Acid techno
+- [x] 15.4 Claviers au choix : 2 octaves, 1 octave avec le nom des notes, ou seulement les notes de la gamme (façon GarageBand)
+- [x] 15.5 Sample au clavier : le son d'un pad (ou un fichier) joué sur tout le clavier, plus grave à gauche, plus aigu à droite
+- [x] 15.6 Effets par pad : la même boîte d'effets agit sur le pad choisi ou sur toute la batterie

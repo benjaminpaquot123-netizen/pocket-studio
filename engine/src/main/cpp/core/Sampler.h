@@ -59,6 +59,8 @@ public:
     void trigger(int slot, float velocity, int frameOffset, float pan = 0.0f, float pitch = 0.0f);
     // Adds the pads' sound into `left` / `right` (stereo sounds stay stereo).
     void render(float* left, float* right, int numFrames);
+    // Each pad into its own pair (lefts[slot], rights[slot]; several pads may share one).
+    void render(float* const* lefts, float* const* rights, int numFrames);
     // Fades out looping pads (transport stop).
     void releaseLoops();
     void stopAll();

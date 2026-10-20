@@ -75,7 +75,8 @@ data class PackManifest(
         sounds = sounds.filter { safeName(it.file) && it.kind in SoundPacks.KIND_LABELS }.map { it.copy(name = it.name.take(40)) },
     )
 
-    fun ofKind(kind: String) = sounds.filter { it.kind == kind }
+    /** The pack's sounds of [kind], best first (see [PackPicks]). */
+    fun ofKind(kind: String) = PackPicks.sorted(id, kind, sounds.filter { it.kind == kind }) { it.file }
 
     companion object {
         /** A plain file name (never a path) from a downloaded file. */

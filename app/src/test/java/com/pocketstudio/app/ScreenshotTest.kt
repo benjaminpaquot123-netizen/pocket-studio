@@ -712,6 +712,17 @@ class ScreenshotTest {
     }
 
     @Test
+    fun keyLayouts() = shoot("key_layouts") {
+        // One octave with every note named, then only the notes of La mineur.
+        androidx.compose.foundation.layout.Column(Modifier.padding(12.dp), verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(16.dp)) {
+            val harmony = com.pocketstudio.model.Harmony(9, com.pocketstudio.model.Scale.Minor)
+            com.pocketstudio.app.synth.PlayKeys(com.pocketstudio.app.settings.KeyLayout.OneOctave, 4, 2, harmony, false, { _, _ -> }, {}, 170.dp)
+            com.pocketstudio.app.synth.PlayKeys(com.pocketstudio.app.settings.KeyLayout.Scale, 4, 2, harmony, false, { _, _ -> }, {}, 170.dp)
+            com.pocketstudio.app.synth.PlayKeys(com.pocketstudio.app.settings.KeyLayout.TwoOctaves, 4, 2, harmony, false, { _, _ -> }, {}, 150.dp)
+        }
+    }
+
+    @Test
     fun foldedCards() = shoot("folded_cards") {
         // "Scènes" folded: only its title stays, with the small chevron turned.
         androidx.compose.runtime.CompositionLocalProvider(

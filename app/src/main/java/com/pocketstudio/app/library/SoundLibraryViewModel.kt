@@ -68,11 +68,11 @@ data class PacksUi(
     val message: String? = null,
 )
 
-/** One line of the beat in the assistant: used or not, the category shown, the chosen sound. */
-data class WizardRow(val enabled: Boolean, val category: String, val sound: SoundOption?)
+/** One line of the beat in the assistant: used or not, the category shown, the chosen sound ([chosen]: by the user). */
+data class WizardRow(val enabled: Boolean, val category: String, val sound: SoundOption?, val chosen: Boolean = false)
 
-/** One melodic part in the assistant: used or not, and its sound. */
-data class PartRow(val enabled: Boolean, val sound: StarterWizard.PartSound)
+/** One melodic part in the assistant: used or not, and its sound ([chosen]: by the user). */
+data class PartRow(val enabled: Boolean, val sound: StarterWizard.PartSound, val chosen: Boolean = false)
 
 data class WizardUi(
     val open: Boolean = false,
@@ -96,8 +96,9 @@ const val KIT_CATEGORY = "kit"
 private const val PACK_PREFIX = "pack:"
 
 /**
- * The line's sound categories, the style's own pack first (when downloaded), then the built-in
- * kit, then the other packs that have that kind of sound.
+ * The line's sound categories: the pack the style takes this line from (a machine such as the
+ * TR-909 for rave techno) when downloaded, then the style's own pack, then the built-in kit, then
+ * the other packs that have that kind of sound.
  */
 fun soundCategories(role: Role, styleId: String?, installed: List<PackManifest>): List<SoundCategory> {
     val label = SoundPacks.KIND_LABELS[role.id] ?: role.title
@@ -107,8 +108,10 @@ fun soundCategories(role: Role, styleId: String?, installed: List<PackManifest>)
         if (sounds.isEmpty()) null
         else SoundCategory(PACK_PREFIX + m.id, "$label · ${m.name}", sounds.map { SoundOption(SoundRef.Pack(m.id, it), "${it.name} · ${m.name}") })
     }
-    val own = packs.filter { it.id == PACK_PREFIX + styleId }
-    return own + kit + (packs - own.toSet())
+    val machine = styleId?.let(StarterWizard::style)?.kit?.get(role)
+    val first = packs.filter { it.id == PACK_PREFIX + machine }
+    val own = packs.filter { it.id == PACK_PREFIX + styleId } - first.toSet()
+    return first + own + kit + (packs - own.toSet() - first.toSet())
 }
 
 /** Every category of a kind of sound for the library: the built-in kit's voices when the kit has that kind, then each pack. */
@@ -341,11 +344,13 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         return groove(style, chosenBeat(w, style), before + (ref.part to ref.sound), w.mood ?: style.melody.mood, bars = 2)
     }
 
-    /** The mood's four chords on the bass and the pad, over the beat as chosen so far. */
+    /** The mood's four chords on the style's parts (its 303 line, or bass and pad), over the beat as chosen so far. */
     private suspend fun moodDemo(mood: StarterWizard.Mood): Pcm? {
         val w = _wizard.value
         val style = w.style ?: return null
-        val parts = listOf(StarterWizard.Part.Bass, StarterWizard.Part.Pad).map { p ->
+        val own = StarterWizard.Part.entries.filter { it in style.melody.parts }
+        val shown = own.ifEmpty { if (style.melody.acid != null) emptyList() else listOf(StarterWizard.Part.Bass, StarterWizard.Part.Pad) }
+        val parts = shown.map { p ->
             p to (w.parts[p]?.sound ?: StarterWizard.soundsFor(p, style).first())
         }
         return groove(style, chosenBeat(w, style), parts, mood, bars = 4)
@@ -358,7 +363,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         val upTo = style.lines.indexOfFirst { it.role == ref.role }
         if (upTo < 0) return null
         val beat = style.lines.take(upTo).mapNotNull { line -> enabledSound(w, line) } + (style.lines[upTo] to ref.sound.ref)
-        return groove(style, beat, emptyList(), w.mood ?: style.melody.mood, bars = 2)
+        return groove(style, beat, emptyList(), w.mood ?: style.melody.mood, bars = 2, acid = false)
     }
 
     private fun enabledSound(w: WizardUi, line: StarterWizard.Line): Pair<StarterWizard.Line, SoundRef>? =
@@ -377,13 +382,15 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         parts: List<Pair<StarterWizard.Part, StarterWizard.PartSound>>,
         mood: StarterWizard.Mood,
         bars: Int,
+        /** The style's 303 line too (not while trying a drum line alone). */
+        acid: Boolean = true,
     ): Pcm? {
         if (!NativeEngine.isAvailable) return null
         // Audio first: the kit voice already on its pad needs nothing, the others are decoded or rendered.
         val padAudio = beat.map { (line, ref) -> if (ref is SoundRef.Kit && ref.voice == line.role.lane) null else (load(ref) ?: return null) }
         val partAudio = parts.map { (_, sound) -> if (sound.sampled != null) (packPartSound(sound) ?: return null) else null }
-        val harmony = com.pocketstudio.model.Harmony(style.melody.root, mood.scale)
-        val steps = style.lines.maxOf { it.pattern.length }.coerceIn(com.pocketstudio.model.DrumPattern.MIN_STEPS, com.pocketstudio.model.DrumPattern.MAX_STEPS)
+        val harmony = StarterWizard.harmonyOf(style, mood).copy(lock = false)
+        val steps = StarterWizard.drumSteps(style)
         val ticks = bars * 16 * com.pocketstudio.model.NoteClip.TICKS_PER_STEP
         val natives = ArrayList<com.pocketstudio.engine.NativeSample?>()
         val job = OfflineExport()
@@ -400,7 +407,16 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                 beat.forEachIndexed { i, (line, _) ->
                     val lane = line.role.lane
                     natives[i]?.let { NativeEngine.setPadSample(lane, it) }
-                    StarterWizard.hits(line.pattern).forEach { (step, hit) -> if (step < steps) NativeEngine.setDrumHit(lane, step, hit.velocity) }
+                    StarterWizard.hits(line, steps).forEach { (step, hit) -> NativeEngine.setDrumHit(lane, step, hit.velocity) }
+                }
+                // The style's 303 line under its chords (acid house, rave techno).
+                val recipe = style.melody.acid
+                if (recipe != null && acid) {
+                    val line = com.pocketstudio.model.acidLine(harmony, recipe.pattern, recipe.accents, recipe.slides)
+                    NativeEngine.setAcidLength(line.length)
+                    NativeEngine.setAcidRoot(line.root)
+                    line.steps.forEachIndexed { i, s -> NativeEngine.setAcidStep(i, s.pack()) }
+                    line.sound.values().forEachIndexed { i, v -> NativeEngine.setAcidParam(i, v) }
                 }
                 parts.forEachIndexed { track, (part, sound) ->
                     NativeEngine.setTrackOn(track, true)  // a fresh engine only plays track 0
@@ -455,7 +471,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
             w.copy(
                 styleId = id, step = 1, rows = style.lines.associate { it.role to defaultRow(it.role, id, installed) },
                 mood = style.melody.mood,
-                parts = StarterWizard.Part.entries.associateWith { PartRow(it.byDefault, StarterWizard.soundsFor(it, style).first()) },
+                parts = StarterWizard.Part.entries.associateWith { PartRow(it in style.melody.parts, StarterWizard.soundsFor(it, style, installed).first()) },
                 error = null,
             )
         }
@@ -473,7 +489,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
 
     /** Picks the part's sound and lets its first bar be heard. */
     fun choosePartSound(part: StarterWizard.Part, sound: StarterWizard.PartSound) {
-        _wizard.update { w -> w.parts[part]?.let { w.copy(parts = w.parts + (part to it.copy(sound = sound, enabled = true))) } ?: w }
+        _wizard.update { w -> w.parts[part]?.let { w.copy(parts = w.parts + (part to it.copy(sound = sound, enabled = true, chosen = true))) } ?: w }
         val ref = SoundRef.Melodic(part, sound)
         // A second touch while it prepares waits for it; while it plays, it stops it.
         if (_preparing.value != ref) preview(ref)
@@ -493,26 +509,32 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
 
     fun setCategory(role: Role, categoryId: String) {
         val category = soundCategories(role, _wizard.value.styleId, _packs.value.installed).firstOrNull { it.id == categoryId } ?: return
-        editRow(role) { it.copy(category = categoryId, sound = category.options.firstOrNull()) }
+        editRow(role) { it.copy(category = categoryId, sound = category.options.firstOrNull(), chosen = true) }
     }
 
     /** Picks the sound for the line and lets it be heard. */
     fun choose(role: Role, option: SoundOption) {
-        editRow(role) { it.copy(sound = option, enabled = true) }
+        editRow(role) { it.copy(sound = option, enabled = true, chosen = true) }
         if (_preparing.value != option.ref) preview(option.ref)
     }
 
     private fun editRow(role: Role, transform: (WizardRow) -> WizardRow) =
         _wizard.update { w -> w.rows[role]?.let { w.copy(rows = w.rows + (role to transform(it))) } ?: w }
 
-    /** After a download: lines still on the built-in kit move to the style's own new pack. */
+    /** After a download: lines and parts not picked by hand move to the style's sounds just downloaded. */
     private fun refreshWizardDefaults() {
         val installed = _packs.value.installed
         _wizard.update { w ->
-            w.copy(rows = w.rows.mapValues { (role, row) ->
-                val better = defaultRow(role, w.styleId, installed)
-                if (row.category == KIT_CATEGORY && better.category != KIT_CATEGORY) better.copy(enabled = row.enabled) else row
-            })
+            val style = w.style ?: return@update w
+            w.copy(
+                rows = w.rows.mapValues { (role, row) ->
+                    val better = defaultRow(role, w.styleId, installed)
+                    if (!row.chosen && better.category != row.category) better.copy(enabled = row.enabled) else row
+                },
+                parts = w.parts.mapValues { (part, row) ->
+                    if (row.chosen) row else row.copy(sound = StarterWizard.soundsFor(part, style, installed).first())
+                },
+            )
         }
     }
 

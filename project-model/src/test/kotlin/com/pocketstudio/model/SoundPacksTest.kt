@@ -9,12 +9,12 @@ class SoundPacksTest {
 
     @Test
     fun thePublishedIndexIsReadInFull() {
-        // A copy of index.json from the sons-packs-3 Release, the one PackStore pins.
+        // A copy of index.json from the sons-packs-4 Release, the one PackStore pins.
         val index = SoundPacks.parseIndex(resource("packs-index.json"))
-        assertEquals(51, index.packs.size)
+        assertEquals(53, index.packs.size)
         assertTrue(index.packs.all { it.isSafe && it.sounds > 0 })
         assertTrue(
-            listOf("retro_techno", "uk_garage", "detroit", "dnb", "dubstep", "tr808", "tr909", "juno", "dx7", "modern_808", "hyperpop", "fx")
+            listOf("retro_techno", "acid_techno", "tb303", "uk_garage", "detroit", "dnb", "dubstep", "tr808", "tr909", "juno", "dx7", "modern_808", "hyperpop", "fx")
                 .all { id -> index.packs.any { it.id == id } },
         )
     }

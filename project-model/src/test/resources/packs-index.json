@@ -9,6 +9,14 @@
    "sounds": 58
   },
   {
+   "id": "acid_techno",
+   "name": "Acid techno",
+   "file": "acid_techno.zip",
+   "sha256": "bec150eec969cbf456be7502ca3c3ded759425a85135302b2eff120443edb66e",
+   "sizeBytes": 1272173,
+   "sounds": 62
+  },
+  {
    "id": "afro_house",
    "name": "Afro house",
    "file": "afro_house.zip",
@@ -327,6 +335,14 @@
    "sha256": "b092974e76c52dd079a57ee4a22f92223607c4f67dab2bea2b60ce2ca6021ae7",
    "sizeBytes": 2494067,
    "sounds": 62
+  },
+  {
+   "id": "tb303",
+   "name": "Roland TB-303",
+   "file": "tb303.zip",
+   "sha256": "9febf28827df22a98489588368059f72c02e402f4541a1427ae49722a73f8010",
+   "sizeBytes": 1179882,
+   "sounds": 26
   },
   {
    "id": "tech_house",

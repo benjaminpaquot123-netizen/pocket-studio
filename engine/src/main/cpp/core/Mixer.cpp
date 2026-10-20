@@ -83,10 +83,14 @@ void Mixer::setBusParam(int bus, int param, float v) {
 
 void Mixer::updateTargets() {
     bool anySolo = false;
-    for (const auto& s : strips_) anySolo |= s.solo;
+    for (size_t ch = 0; ch < kFirstPad; ++ch) anySolo |= strips_[ch].solo;
+    const auto& drums = strips_[kDrums];
+    const bool drumsAudible = !drums.mute && (!anySolo || drums.solo);
     for (size_t ch = 0; ch < strips_.size(); ++ch) {
         auto& s = strips_[ch];
-        const bool audible = !s.mute && (!anySolo || s.solo);
+        // A pad's strip goes through the drums' one: heard when the drums are (its reverb too).
+        const bool pad = ch >= static_cast<size_t>(kFirstPad);
+        const bool audible = !s.mute && (pad ? drumsAudible : (!anySolo || s.solo));
         // Fader: 0.8 = unity gain, 1.0 = +2 dB, quadratic below for a natural feel.
         const float gain = audible ? (s.volume / 0.8f) * (s.volume / 0.8f) : 0.0f;
         // Equal-power pan; centre = -3 dB per side, compensated so centre stays at unity.
@@ -135,16 +139,28 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
     for (auto& b : busL_) std::fill(b.begin(), b.begin() + n, 0.0f);
     for (auto& b : busR_) std::fill(b.begin(), b.begin() + n, 0.0f);
 
+    std::fill(padsL_.begin(), padsL_.begin() + n, 0.0f);
+    std::fill(padsR_.begin(), padsR_.begin() + n, 0.0f);
+
     std::array<float, kChannels> blockPeaks{};
-    for (int ch = 0; ch < kChannels; ++ch) {
+    // The pads' strips first: the drums' strip then takes their sum along with the other pads.
+    for (int k = 0; k < kChannels; ++k) {
+        const int ch = (k + kFirstPad) % kChannels;
+        const bool pad = ch >= kFirstPad;
         auto& s = strips_[static_cast<size_t>(ch)];
-        if (ch == kMaster || !channels[ch]) continue;  // the master's slot, or an unused instrument track
+        if (ch == kMaster || !channels[ch]) continue;  // the master's slot, or an unused track or pad
         const float* inL = channels[ch] + offset;
         const float* inR = rights && rights[ch] ? rights[ch] + offset : inL;
         // A stray NaN must not get into the effects' state (it would stay there for good).
         for (int i = 0; i < n; ++i) {
             chL_[static_cast<size_t>(i)] = std::isfinite(inL[i]) ? inL[i] : 0.0f;
             chR_[static_cast<size_t>(i)] = std::isfinite(inR[i]) ? inR[i] : 0.0f;
+        }
+        if (ch == kDrums) {
+            for (int i = 0; i < n; ++i) {
+                chL_[static_cast<size_t>(i)] += padsL_[static_cast<size_t>(i)];
+                chR_[static_cast<size_t>(i)] += padsR_[static_cast<size_t>(i)];
+            }
         }
         if (activeInserts_[static_cast<size_t>(ch)] > 0) {
             for (auto& slot : inserts_[static_cast<size_t>(ch)]) slot.process(chL_.data(), chR_.data(), n);
@@ -162,11 +178,13 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
             macros_[static_cast<size_t>(ch)].reset();
         }
         float peak = 0.0f;
+        float* toL = pad ? padsL_.data() : mL_.data();
+        float* toR = pad ? padsR_.data() : mR_.data();
         for (int i = 0; i < n; ++i) {
             const float l = chL_[static_cast<size_t>(i)] * s.gainL.next();
             const float r = chR_[static_cast<size_t>(i)] * s.gainR.next();
-            mL_[static_cast<size_t>(i)] += l;
-            mR_[static_cast<size_t>(i)] += r;
+            toL[i] += l;
+            toR[i] += r;
             for (size_t b = 0; b < kBuses; ++b) {
                 const float g = s.sendGain[b].next();
                 busL_[b][static_cast<size_t>(i)] += l * g;

@@ -36,6 +36,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Piano
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material.icons.automirrored.filled.Redo
 import androidx.compose.material.icons.automirrored.filled.Undo
@@ -81,6 +82,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pocketstudio.model.Project
+import com.pocketstudio.model.hasOwnFx
 import com.pocketstudio.ui.MonoStyle
 import com.pocketstudio.ui.Neon
 import com.pocketstudio.ui.pillColors
@@ -106,6 +108,10 @@ data class RhythmActions(
     val setHitPitch: (step: Int, pitch: Int) -> Unit = { _, _ -> },
     /** Opens the drums' quick effects. */
     val openEffects: () -> Unit = {},
+    /** Opens the effects of the selected pad only. */
+    val openPadEffects: () -> Unit = {},
+    /** The pad's sample on the synth keyboard (opens Synthé). */
+    val toKeyboard: () -> Unit = {},
     /** Opens the sound library for the selected pad. */
     val openLibrary: () -> Unit = {},
     /** All-pads grid: (lane, step). */
@@ -228,8 +234,9 @@ private fun PadGrid(project: Project, selected: Int, lit: Set<Int>, onHit: (Int)
                     val lane = row * 4 + col
                     val color = DrumKitInfo.colors[lane]
                     val hasHits = project.drums.lanes[lane].hits.isNotEmpty()
+                    val hasFx = project.mixer.channels.getOrNull(com.pocketstudio.model.Mixer.padChannel(lane))?.hasOwnFx() == true
                     DrumPad(
-                        name = DrumKitInfo.names[lane], color = color, selected = lane == selected, lit = lane in lit, hasHits = hasHits,
+                        name = DrumKitInfo.names[lane], color = color, selected = lane == selected, lit = lane in lit, hasHits = hasHits, hasFx = hasFx,
                         onHit = {
                             haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                             onHit(lane)
@@ -247,7 +254,7 @@ private fun PadGrid(project: Project, selected: Int, lit: Set<Int>, onHit: (Int)
  * coloured edge when chosen, a small press.
  */
 @Composable
-private fun DrumPad(name: String, color: Color, selected: Boolean, lit: Boolean, hasHits: Boolean, onHit: () -> Unit, modifier: Modifier) {
+private fun DrumPad(name: String, color: Color, selected: Boolean, lit: Boolean, hasHits: Boolean, hasFx: Boolean, onHit: () -> Unit, modifier: Modifier) {
     val shape = RoundedCornerShape(14.dp)
     val interaction = remember { MutableInteractionSource() }
     val pressed by interaction.collectIsPressedAsState()
@@ -287,6 +294,13 @@ private fun DrumPad(name: String, color: Color, selected: Boolean, lit: Boolean,
                 Modifier.align(Alignment.TopEnd).padding(7.dp).size(7.dp)
                     .shadow(4.dp, CircleShape, ambientColor = color, spotColor = color)
                     .clip(CircleShape).background(lerp(color, Color.White, 0.2f)),
+            )
+        }
+        // Effects of its own: a small badge in the corner.
+        if (hasFx) {
+            Text(
+                "FX", style = MaterialTheme.typography.labelSmall, color = Neon.OnAccent,
+                modifier = Modifier.align(Alignment.TopStart).padding(6.dp).clip(RoundedCornerShape(4.dp)).background(Neon.Cyan).padding(horizontal = 4.dp),
             )
         }
         // The pad's colour as a strip along its bottom edge.
@@ -500,10 +514,15 @@ internal fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: 
                 color = if (sample != null) Neon.TextPrimary else Neon.TextSecondary,
             )
         }
-        // The drums' effect box (filter, saturation, reverb, echo…), right where the sound is chosen.
-        OutlinedButton(onClick = actions.openEffects, modifier = Modifier.fillMaxWidth().testTag("pad_effects")) {
-            Icon(Icons.Filled.Tune, contentDescription = null)
-            Text("  Effets de la batterie")
+        // The effect box on this pad alone, or on the whole drum kit.
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Button(onClick = actions.openPadEffects, modifier = Modifier.weight(1f).testTag("pad_effects")) {
+                Icon(Icons.Filled.Tune, contentDescription = null)
+                Text("  Effets du pad", maxLines = 1)
+            }
+            OutlinedButton(onClick = actions.openEffects, modifier = Modifier.weight(1f).testTag("drum_kit_effects")) {
+                Text("Toute la batterie", maxLines = 1)
+            }
         }
         val pan = project.drums.lanes[lane].pan
         LabeledSlider("Pan du pad", panLabel(pan), pan, -1f..1f, steps = 19) { actions.setPadPan((it * 10).roundToInt() / 10f) }
@@ -512,6 +531,13 @@ internal fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: 
         if (sample != null && info != null && slicer != null) {
             SlicerPanel(slicer, info, lane, color, actions)
             return@NeonCard
+        }
+        if (sample != null) {
+            // A sampler: the sound replayed higher or lower on each key of the keyboard.
+            Button(onClick = actions.toKeyboard, modifier = Modifier.fillMaxWidth().testTag("pad_to_keyboard")) {
+                Icon(Icons.Filled.Piano, contentDescription = null)
+                Text("  Jouer ce sample au clavier")
+            }
         }
         if (sample != null && info != null) {
             Waveform(info.peaks, color, region = sample.start to sample.end)

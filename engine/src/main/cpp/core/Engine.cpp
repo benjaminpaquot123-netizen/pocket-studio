@@ -140,6 +140,9 @@ void Engine::applyCommand(const Command& command) {
         case CommandType::SetTrackSampleParam:
             tracks_[static_cast<size_t>(trackOf(command.a))].sampled.setParam(trackArg(command.a), command.value);
             break;
+        case CommandType::SetPadStrip:
+            if (command.a >= 0 && command.a < kLanes) padStrip_[static_cast<size_t>(command.a)] = command.value > 0.5f;
+            break;
         case CommandType::InstallAudioClip:
             audio_.install(command.a, command.sample);  // takes the reference
             break;
@@ -552,10 +555,27 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
         t.arpAdvance(numFrames, sequencer_.samplesPerStep());
     }
     metronome_.render(direct, numFrames);
-    drums_.render(drums, drumsR, numFrames);
-    sampler_.render(drums, drumsR, numFrames);
-    acid_.render(acid, numFrames);
     const float* channels[Mixer::kChannels] = {drums, acid, nullptr, stemsL};
+    const float* rights[Mixer::kChannels] = {drumsR, nullptr, nullptr, stemsR};
+    // Pads with effects of their own play into their strip; the others into the drums' one.
+    float* padLeft[kLanes];
+    float* padRight[kLanes];
+    for (int lane = 0; lane < kLanes; ++lane) {
+        if (padStrip_[static_cast<size_t>(lane)]) {
+            padLeft[lane] = (*padL_)[static_cast<size_t>(lane)].data();
+            padRight[lane] = (*padR_)[static_cast<size_t>(lane)].data();
+            std::fill(padLeft[lane], padLeft[lane] + numFrames, 0.0f);
+            std::fill(padRight[lane], padRight[lane] + numFrames, 0.0f);
+            channels[Mixer::kFirstPad + lane] = padLeft[lane];
+            rights[Mixer::kFirstPad + lane] = padRight[lane];
+        } else {
+            padLeft[lane] = drums;
+            padRight[lane] = drumsR;
+        }
+    }
+    drums_.render(padLeft, padRight, numFrames);
+    sampler_.render(padLeft, padRight, numFrames);
+    acid_.render(acid, numFrames);
     for (int k = 0; k < kTracks; ++k) {
         auto& t = tracks_[static_cast<size_t>(k)];
         if (!t.on) continue;
@@ -578,7 +598,6 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
     }
 
     mixer_.setStepFrames(sequencer_.samplesPerStep());
-    const float* rights[Mixer::kChannels] = {drumsR, nullptr, nullptr, stemsR};
     {
         float* lefts[AudioTracks::kTracks];
         float* rs[AudioTracks::kTracks];

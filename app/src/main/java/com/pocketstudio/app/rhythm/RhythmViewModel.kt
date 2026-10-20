@@ -70,6 +70,7 @@ import com.pocketstudio.model.SampledPatch
 import com.pocketstudio.model.RootNote
 import com.pocketstudio.model.sampleFiles
 import com.pocketstudio.model.Project
+import com.pocketstudio.model.hasOwnFx
 import com.pocketstudio.model.InstrumentTrack
 import com.pocketstudio.model.MidiMapping
 import com.pocketstudio.model.partView
@@ -862,6 +863,46 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             }
         }
         return true
+    }
+
+    /**
+     * The selected pad's own sound, cut to its region (and reversed if it is), played across the
+     * keyboard of the selected track from its original note. False when the pad has no sample.
+     */
+    fun padToKeyboard(): Boolean {
+        val s = project.value.drums.lanes[_transport.value.selectedPad].sample ?: return false
+        viewModelScope.launch {
+            val pcm = runCatching { withContext(Dispatchers.IO) { padSamples.read(s.file) } }.getOrNull()
+            if (pcm == null || pcm.frames == 0) {
+                _trackSoundBusy.value = "Ce son n'a pas pu être lu."
+                return@launch
+            }
+            val ch = pcm.channels
+            val from = (s.start * pcm.frames).toInt().coerceIn(0, pcm.frames - 1)
+            val to = (s.end * pcm.frames).toInt().coerceIn(from + 1, pcm.frames)
+            var data = pcm.data.copyOfRange(from * ch, to * ch)
+            if (s.reverse) {
+                val frames = data.size / ch
+                data = FloatArray(data.size) { i -> data[(frames - 1 - i / ch) * ch + i % ch] }
+            }
+            useAsTrackSound(Pcm(data, ch, pcm.sampleRate), s.name)
+        }
+        return true
+    }
+
+    /** A sound file of the phone on the keyboard of the selected track. */
+    fun importTrackSound(uri: Uri) {
+        viewModelScope.launch {
+            val app = getApplication<Application>()
+            val name = PadSamples.nameFrom(displayName(app, uri))
+            val pcm = runCatching { withContext(Dispatchers.IO) { AudioDecoder.decode(app, uri) } }.getOrNull()
+            if (pcm == null || PadSamples.isSilent(pcm)) {
+                _trackSoundBusy.value = "Ce fichier n'a pas pu être lu."
+                return@launch
+            }
+            AppLog.add("Son au clavier importé « $name » : ${"%.1f".format(pcm.seconds)} s")
+            useAsTrackSound(pcm.withoutTail(), name)
+        }
     }
 
     /** A change to the selected track's sampled sound (slider drags merge into one undo step per [key]). */
@@ -2232,7 +2273,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     private fun pushMixer(p: Project = project.value) {
         if (!NativeEngine.isAvailable) return
         // Only the strips in use: the engine's command queue has room for whole projects.
-        val used = setOf(0, 1, 3) + p.instrumentTracks.map { InstrumentTrack.mixerChannel(it.id) } + p.audioTracks.map { AudioTrack.mixerChannel(it.id) }
+        val pads = (0 until DrumPattern.PAD_COUNT).filter { p.mixer.channels.getOrNull(Mixer.padChannel(it))?.hasOwnFx() == true }
+        val used = setOf(0, 1, 3) + p.instrumentTracks.map { InstrumentTrack.mixerChannel(it.id) } + p.audioTracks.map { AudioTrack.mixerChannel(it.id) } +
+            pads.map { Mixer.padChannel(it) }
         p.mixer.channels.take(NativeEngine.MIXER_CHANNELS).forEachIndexed { i, c ->
             if (i == MASTER || i !in used) return@forEachIndexed  // the master's index: its settings are below
             NativeEngine.setChannelVolume(i, c.volume)
@@ -2245,6 +2288,23 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
         pushInserts(MASTER, p.mixer.master)
         p.mixer.buses.forEachIndexed { bus, params -> params.forEachIndexed { k, v -> NativeEngine.setBusParam(bus, k, v) } }
+        // Pads with effects of their own go through their strip, the others straight into the drums.
+        (0 until DrumPattern.PAD_COUNT).forEach { NativeEngine.setPadStrip(it, it in pads) }
+    }
+
+    /** After a change to a pad's strip: it plays through it only while something there changes the sound. */
+    private fun routePad(ch: Int) {
+        if (ch < Mixer.FIRST_PAD || !NativeEngine.isAvailable) return
+        val c = project.value.mixer.channels.getOrNull(ch) ?: return
+        if (c.hasOwnFx()) {
+            // Its whole strip first (a strip left from another project must not linger).
+            NativeEngine.setChannelVolume(ch, c.volume)
+            NativeEngine.setChannelPan(ch, c.pan)
+            pushInserts(ch, c.inserts)
+            c.sends.forEachIndexed { bus, level -> NativeEngine.setSend(ch, bus, level) }
+            c.macros.forEachIndexed { m, v -> NativeEngine.setMacro(ch, m, v) }
+        }
+        NativeEngine.setPadStrip(ch - Mixer.FIRST_PAD, c.hasOwnFx())
     }
 
     private fun pushInserts(ch: Int, inserts: List<Insert>) {
@@ -2287,6 +2347,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             p.copy(mixer = p.mixer.copy(channels = channels))
         }
         if (NativeEngine.isAvailable) values.keys.forEach { m -> NativeEngine.setMacro(ch, m, project.value.mixer.channels[ch].macros[m]) }
+        routePad(ch)
     }
 
     /** A ready-made effect on a track, in one tap (one undo step). */
@@ -2305,6 +2366,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             c.macros.forEachIndexed { m, v -> NativeEngine.setMacro(ch, m, v) }
         }
         AppLog.add("Effet « ${preset.name} » sur la voie $ch")
+        routePad(ch)
     }
 
     fun setSend(ch: Int, bus: Int, level: Float) {
@@ -2315,6 +2377,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             p.copy(mixer = p.mixer.copy(channels = channels))
         }
         if (NativeEngine.isAvailable) NativeEngine.setSend(ch, bus, v)
+        routePad(ch)
         recordAutomation(AutoTarget(AutoTarget.SEND, ch, bus), v)
     }
 
@@ -2341,6 +2404,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (push && NativeEngine.isAvailable) {
             pushInserts(ch, if (ch == MASTER) project.value.mixer.master else project.value.mixer.channels[ch].inserts)
         }
+        if (ch != MASTER) routePad(ch)
     }
 
     // --- Subtractive synth -------------------------------------------------------------------

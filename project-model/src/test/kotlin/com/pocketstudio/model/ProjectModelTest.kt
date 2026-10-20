@@ -30,7 +30,7 @@ class ProjectJsonTest {
         assertEquals("Vieux", decoded.name)
         assertEquals(90.0, decoded.tempoBpm, 0.0)
         assertEquals(16, decoded.drums.lanes.size)
-        assertEquals(16, decoded.mixer.channels.size)
+        assertEquals(Mixer.CHANNELS, decoded.mixer.channels.size)  // the drum pads' strips included
     }
 
     @Test

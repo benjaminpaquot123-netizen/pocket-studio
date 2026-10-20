@@ -68,6 +68,7 @@ object NativeEngine {
     private const val CMD_MACRO = 63
     // 64: InstallTrackSample (native only)
     private const val CMD_TRACK_SAMPLE_PARAM = 65
+    private const val CMD_PAD_STRIP = 66
 
     // Kinds of [setExpression] (InstrumentTrack::Expression).
     const val EXPR_BEND = 0
@@ -89,7 +90,8 @@ object NativeEngine {
      * Mixer channels: 0 drums, 1 acid bass, 2 synth (instrument track 0), 3 remix stems, 5..11
      * instrument tracks 1..7, 12..15 audio tracks 0..3. Index 4 is the master (inserts, automation, meters).
      */
-    const val MIXER_CHANNELS = 16
+    /** 16 track strips (4 = the master's index) and the 16 drum pads' own strips. */
+    const val MIXER_CHANNELS = 32
     const val MASTER = 4
 
     /** Instrument tracks (the synth track is track 0). */
@@ -370,6 +372,9 @@ object NativeEngine {
 
     /** [param] in SampleInstrument::Param order (0 root note … 9 gain), in that parameter's unit. */
     fun setTrackSampleParam(param: Int, value: Float, track: Int = 0) = post(CMD_TRACK_SAMPLE_PARAM, value, onTrack(track, param))
+
+    /** Drum pad [pad] plays through its own mixer strip (its own effects) or straight into the drums'. */
+    fun setPadStrip(pad: Int, on: Boolean) = post(CMD_PAD_STRIP, if (on) 1f else 0f, pad)
     private external fun nativeInstallTrackSample(track: Int, handle: Long): Boolean
     private external fun exportInstallTrackSample(exportHandle: Long, track: Int, handle: Long)
     private external fun exportInstallAudioClip(exportHandle: Long, track: Int, handle: Long)

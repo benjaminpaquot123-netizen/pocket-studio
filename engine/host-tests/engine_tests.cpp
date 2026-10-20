@@ -1322,6 +1322,66 @@ void testPadParamCommandsReachTheSampler() {
     CHECK(engine.padParams(2).gain == 1.0f);
 }
 
+void testPadStrips() {
+    // Two fixed sounds (the synthesized snare draws noise: never the same twice): a low tone on pad
+    // 0, a high one on pad 2, hit live after half a second for the faders to settle.
+    std::vector<float> low(4800), high(4800);
+    for (int i = 0; i < 4800; ++i) {
+        const float fade = 1.0f - i / 4800.0f;
+        low[size_t(i)] = 0.5f * fade * std::sin(2.0f * float(M_PI) * 110.0f * i / kRate);
+        high[size_t(i)] = 0.5f * fade * std::sin(2.0f * float(M_PI) * 1760.0f * i / kRate);
+    }
+    auto engineWithSounds = [&]() {
+        auto e = std::make_unique<ps::Engine>(kRate);
+        e->post({ps::CommandType::InstallSample, 0.0f, 0, 0, ps::Sample::create(low.data(), 4800, 1, kRate, kRate)});
+        e->post({ps::CommandType::InstallSample, 0.0f, 2, 0, ps::Sample::create(high.data(), 4800, 1, kRate, kRate)});
+        return e;
+    };
+    auto hit = [](ps::Engine& e, bool kick, bool snare) {
+        render(e, 24000, 256);
+        if (kick) e.post({ps::CommandType::TriggerPad, 1.0f, 0});
+        if (snare) e.post({ps::CommandType::TriggerPad, 1.0f, 2});
+        return render(e, 9600, 256);
+    };
+    auto distance = [](const std::vector<float>& a, const std::vector<float>& b) {
+        double d = 0.0;
+        for (size_t i = 0; i < a.size(); ++i) d = std::max(d, static_cast<double>(std::fabs(a[i] - b[i])));
+        return d;
+    };
+    auto energy = [](const std::vector<float>& v) {
+        double e = 0.0;
+        for (float x : v) e += static_cast<double>(x) * x;
+        return e;
+    };
+    auto plain = engineWithSounds();
+    auto alone = engineWithSounds();
+    const auto both = hit(*plain, true, true);
+    const auto snare = hit(*alone, false, true);
+    CHECK(energy(both) > 1.5 * energy(snare));
+
+    // A pad through its own strip, nothing on it: the same sound.
+    auto routed = engineWithSounds();
+    routed->post({ps::CommandType::SetPadStrip, 1.0f, 0});
+    CHECK(distance(hit(*routed, true, true), both) < 1e-4);
+
+    // The kick's strip down: the snare alone is left, untouched.
+    auto quiet = engineWithSounds();
+    quiet->post({ps::CommandType::SetPadStrip, 1.0f, 0});
+    quiet->post({ps::CommandType::SetChannelVolume, 0.0f, ps::Mixer::kFirstPad + 0});
+    CHECK(distance(hit(*quiet, true, true), snare) < 1e-4);
+
+    // A pad not routed ignores its strip's settings.
+    auto unrouted = engineWithSounds();
+    unrouted->post({ps::CommandType::SetChannelVolume, 0.0f, ps::Mixer::kFirstPad + 2});
+    CHECK(distance(hit(*unrouted, false, true), snare) < 1e-4);
+
+    // The drums muted: their pads with them, strips included.
+    auto muted = engineWithSounds();
+    muted->post({ps::CommandType::SetPadStrip, 1.0f, 0});
+    muted->post({ps::CommandType::SetChannelMute, 1.0f, ps::Mixer::kDrums});
+    CHECK(energy(hit(*muted, true, true)) < 1e-9);
+}
+
 void testOnsetsFindTheHits() {
     // Four decaying noise bursts (like drum hits) at known places, with soft noise between.
     const int frames = kRate * 2;
@@ -3265,6 +3325,7 @@ int main(int argc, char** argv) {
     }
     const TestCase tests[] = {
         {"spsc_queue", testSpscQueue},
+        {"pad_strips", testPadStrips},
         {"spsc_float_ring", testSpscFloatRing},
         {"silent_when_stopped", testSilentWhenStopped},
         {"sine_four_bars", testSineFourBars},

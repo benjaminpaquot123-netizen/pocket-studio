@@ -181,6 +181,13 @@ void Sampler::renderVoice(Voice& v, float* left, float* right, int from, int to)
 }
 
 void Sampler::render(float* left, float* right, int numFrames) {
+    std::array<float*, kSlots> ls, rs;
+    ls.fill(left);
+    rs.fill(right);
+    render(ls.data(), rs.data(), numFrames);
+}
+
+void Sampler::render(float* const* lefts, float* const* rights, int numFrames) {
     // Choke groups: a hit cuts the other pads of its group at the hit's own frame.
     std::array<int, kSlots> cutAt;
     cutAt.fill(-1);
@@ -193,6 +200,8 @@ void Sampler::render(float* left, float* right, int numFrames) {
         }
     }
     for (int slot = 0; slot < kSlots; ++slot) {
+        float* left = lefts[slot];
+        float* right = rights[slot];
         int at = pendingOffset_[slot];
         if (at >= numFrames) {
             pendingOffset_[slot] = at - numFrames;

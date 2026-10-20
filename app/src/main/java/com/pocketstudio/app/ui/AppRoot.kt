@@ -284,7 +284,12 @@ fun AppRoot() {
         val fxProject by rhythmVm.project.collectAsStateWithLifecycle()
         val channel = fxProject.mixer.channels.getOrNull(fxChannel)
         if (channel != null) {
-            val name = mixerStrips(fxProject).firstOrNull { it.ch == fxChannel }?.name ?: "Piste"
+            val name = if (fxChannel >= com.pocketstudio.model.Mixer.FIRST_PAD) {
+                val lane = fxChannel - com.pocketstudio.model.Mixer.FIRST_PAD
+                "pad ${lane + 1} (${fxProject.drums.lanes.getOrNull(lane)?.sample?.name ?: com.pocketstudio.app.rhythm.DrumKitInfo.names[lane]})"
+            } else {
+                mixerStrips(fxProject).firstOrNull { it.ch == fxChannel }?.name ?: "Piste"
+            }
             androidx.compose.material3.AlertDialog(
                 onDismissRequest = { fxChannel = -1 },
                 // The whole width of the phone: everything seen at once, nothing to scroll for.
@@ -495,6 +500,9 @@ fun AppRoot() {
     val pickAudio = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) rhythmVm.importSample(uri)
     }
+    val pickKeyboardSound = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri != null) rhythmVm.importTrackSound(uri)
+    }
     var liveImportPad by rememberSaveable { mutableIntStateOf(0) }
     var audioPage by rememberSaveable { mutableIntStateOf(0) }
     var analyserOn by rememberSaveable { mutableStateOf(false) }
@@ -626,7 +634,9 @@ fun AppRoot() {
                                 rotate = rhythmVm::rotatePad,
                                 cycleRoll = rhythmVm::cycleRoll,
                                 openEffects = { fxChannel = 0 },
+                                openPadEffects = { fxChannel = com.pocketstudio.model.Mixer.padChannel(rhythmVm.transport.value.selectedPad) },
                                 openLibrary = { showLibrary = true },
+                                toKeyboard = { if (rhythmVm.padToKeyboard()) tab = AppTab.Synthe },
                                 setPadPan = rhythmVm::setPadPan,
                                 setHitPan = rhythmVm::setHitPan,
                                 setHitPitch = rhythmVm::setHitPitch,
@@ -771,6 +781,7 @@ fun AppRoot() {
                                 setPlaitsParam = rhythmVm::setPlaitsParam,
                                 sampled = project.sampled,
                                 chooseSample = { rhythmVm.dismissTrackSoundMessage(); libraryTrack = true; showLibrary = true },
+                                importSample = { rhythmVm.dismissTrackSoundMessage(); pickKeyboardSound.launch(arrayOf("audio/*")) },
                                 editSampled = rhythmVm::editSampled,
                                 sampledMessage = trackSoundMessage,
                             ),

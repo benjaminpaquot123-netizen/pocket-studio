@@ -18,12 +18,12 @@ import java.util.zip.ZipInputStream
  * Blocking calls: background threads only.
  */
 object PackStore {
-    const val RELEASE = "sons-packs-3"
+    const val RELEASE = "sons-packs-4"
     private const val BASE = "https://github.com/benjaminpaquot123-netizen/pocket-studio/releases/download/$RELEASE/"
 
-    /** The list of packs the Packs workflow published (51: styles, machines, current sounds); null would mean none published yet. */
+    /** The list of packs the Packs workflow published (53: styles, machines, current sounds); null would mean none published yet. */
     val INDEX: VerifiedFile? = VerifiedFile(
-        BASE + "index.json", "packs-index.json", "6a58044515b6a430ececdc6b5852ab0660d6137639db2073ca7256830f135766", 10332,
+        BASE + "index.json", "packs-index.json", "4038b2e60892451140870bf6147c4ec20f8d78b3739c4fdaecd3e0d490ef515f", 10744,
     )
 
     fun dir(context: Context) = File(context.filesDir, "packs")

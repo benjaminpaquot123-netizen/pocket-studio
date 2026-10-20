@@ -4,6 +4,7 @@
 #include <array>
 #include <atomic>
 #include <cstdint>
+#include <memory>
 
 #include "AcidTrack.h"
 #include "AudioTracks.h"
@@ -97,6 +98,7 @@ enum class CommandType : uint8_t {
     SetMacro,             // a: mixer channel, b: TrackMacros::Macro (colour, dirt, motion, space), value 0..1
     InstallTrackSample,   // a: track << 16, sample: owned reference (nullptr = none): the sampled source's sound
     SetTrackSampleParam,  // a: SampleInstrument::Param | track << 16, value in that parameter's unit
+    SetPadStrip,          // a: pad 0..15, value > 0.5: the pad plays through its own mixer strip (its effects)
 };
 
 // Instrument tracks: the synth commands (SynthNoteOn/Off, SynthParam, SetSynthNote, SetSynthNoteCount,
@@ -317,6 +319,11 @@ private:
     int8_t stepPan_[kLanes][kMaxSteps] = {};    // -100..100 = -1..1, added to the pad's pan
     int8_t stepPitch_[kLanes][kMaxSteps] = {};  // semitones (sampled sounds)
     std::array<float, kLanes> padPan_{};
+    // Pads with their own strip (Mixer::kFirstPad + pad) and their buffers (on the heap: 128 kB).
+    std::array<bool, kLanes> padStrip_{};
+    using PadBuffers = std::array<std::array<float, kMaxBlock>, kLanes>;
+    std::unique_ptr<PadBuffers> padL_ = std::make_unique<PadBuffers>();
+    std::unique_ptr<PadBuffers> padR_ = std::make_unique<PadBuffers>();
     // Extra hits of rolls still to come: frames from the start of the next block.
     struct PendingHit {
         int lane;

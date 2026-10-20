@@ -1,5 +1,9 @@
+@file:OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
+
 package com.pocketstudio.app.mixer
 
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import com.pocketstudio.app.help.Glossary
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -128,7 +132,7 @@ fun AutomationCard(ui: AutomationUi, channels: List<Channel>, master: List<Inser
                 TextButton(onClick = { actions.clear(i) }) { Text("Vider") }
                 IconButton(onClick = { actions.remove(i) }) { Icon(Icons.Filled.Delete, contentDescription = "Supprimer") }
             }
-            Row(horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(6.dp)) {
+            FlowRow(horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(6.dp), verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(6.dp)) {
                 MODES.forEach { (mode, label) ->
                     FilterChip(
                         selected = lane.mode == mode, onClick = { actions.setMode(i, mode) }, label = { Text(label) },

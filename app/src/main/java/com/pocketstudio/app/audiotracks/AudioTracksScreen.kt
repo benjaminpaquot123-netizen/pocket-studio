@@ -1,5 +1,6 @@
 package com.pocketstudio.app.audiotracks
 
+import com.pocketstudio.ui.fadingHorizontalScroll
 import com.pocketstudio.app.help.Glossary
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -231,7 +232,7 @@ private fun ClipEditor(id: Int, clip: AudioClip, info: SampleInfo?, color: andro
     info?.let { Waveform(it.peaks, color, region = range.start to range.endInclusive) }
     // Cut: keep the part between the two handles.
     RangeSlider(value = range, onValueChange = { range = it }, modifier = Modifier.testTag("audio_trim_$id"))
-    Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.horizontalScroll(rememberScrollState())) {
+    Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.fadingHorizontalScroll()) {
         OutlinedButton(onClick = { actions.trim(id, range.start, range.endInclusive) }, enabled = range.start > 0.001f || range.endInclusive < 0.999f) {
             Text("Garder la sélection")
         }
@@ -239,13 +240,13 @@ private fun ClipEditor(id: Int, clip: AudioClip, info: SampleInfo?, color: andro
         OutlinedButton(onClick = { actions.reverse(id) }) { Text("Inverser") }
     }
     Text("Commence à la mesure", style = MaterialTheme.typography.bodyMedium)
-    Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.horizontalScroll(rememberScrollState())) {
+    Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.fadingHorizontalScroll()) {
         (1..8).forEach { bar ->
             FilterChip(selected = clip.start == (bar - 1) * per, onClick = { actions.setStart(id, bar) }, label = { Text("$bar") }, colors = chip)
         }
     }
     Text("Revient toutes les", style = MaterialTheme.typography.bodyMedium)
-    Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.horizontalScroll(rememberScrollState())) {
+    Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.fadingHorizontalScroll()) {
         LOOP_BARS.forEach { bars ->
             FilterChip(selected = clip.loopSteps == bars * per, onClick = { actions.setLoopBars(id, bars) },
                 label = { Text(if (bars == 1) "1 mesure" else "$bars mesures") }, colors = chip)

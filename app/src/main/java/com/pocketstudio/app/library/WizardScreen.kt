@@ -170,8 +170,8 @@ private fun WizardBody(ui: WizardUi, packs: PacksUi, playing: SoundRef?, actions
 private fun StyleStep(chosen: String?, packs: PacksUi, actions: WizardActions) {
     Text(
         "Choisis un style. Ensuite, je te présente chaque ligne de la batterie (à quoi elle sert, quels sons " +
-            "lui vont) et je place un rythme de départ dans la grille. À la fin, ton morceau aura deux scènes " +
-            "(deux boucles) à enchaîner : A puis B. Tu pourras tout changer après.",
+            "lui vont) et je place un rythme de départ dans la grille. À la fin, ton morceau aura trois scènes " +
+            "(trois boucles) à enchaîner : A, B puis C. Tu pourras tout changer après.",
         style = MaterialTheme.typography.bodyMedium,
     )
     // The best known first, then the others (still the better known first).
@@ -405,24 +405,23 @@ private fun SummaryStep(ui: WizardUi, style: StarterWizard.Style) {
     )
 }
 
-/** The two scenes the song will have, what each holds, and the song that chains them. */
+/** The three scenes the song will have, what each holds, and the song that chains them. */
 @Composable
 private fun ScenesCard(plan: StarterWizard.ScenePlan) {
     NeonCard(accent = Neon.Magenta, modifier = Modifier.testTag("wizard_scenes")) {
-        SectionLabel("Deux scènes", color = Neon.Magenta, help = Glossary.SCENE)
-        Text("Une scène, c'est une boucle qui tourne en rond. Ton morceau en aura deux :", style = MaterialTheme.typography.bodyMedium)
-        listOf(0, 1).forEach { index ->
+        SectionLabel("Trois scènes", color = Neon.Magenta, help = Glossary.SCENE)
+        Text("Une scène, c'est une boucle qui tourne en rond. Ton morceau en aura trois :", style = MaterialTheme.typography.bodyMedium)
+        (0 until StarterWizard.ScenePlan.COUNT).forEach { index ->
             Row(verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 SceneLetter(index)
                 Column(Modifier.weight(1f)) {
                     Text(plan.title(index).replaceFirstChar { it.uppercase() }, style = MaterialTheme.typography.titleSmall)
-                    val what = if (plan.copy && index == 1) "la même chose au départ : change-la pour faire une variante"
-                    else plan.contents(index).joinToString(", ") { it.substringBefore(" (").substringBefore(" / ") }
+                    val what = plan.contents(index).joinToString(", ") { it.substringBefore(" (").substringBefore(" / ") }
                     Text(what, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
                 }
             }
         }
-        Text("Le morceau : A deux fois, puis B deux fois, et ça recommence.", style = MaterialTheme.typography.bodyMedium)
+        Text("Le morceau : A deux fois, puis B deux fois, puis C deux fois, et ça recommence.", style = MaterialTheme.typography.bodyMedium)
     }
 }
 
@@ -432,21 +431,25 @@ private fun SceneBadge(plan: StarterWizard.ScenePlan, index: Int) {
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.testTag("wizard_scene_badge")) {
         SceneLetter(index)
         Text(
-            if (plan.copy) "Dans la scène A, et dans sa copie B" else "Va dans la scène ${if (index == 0) "A" else "B"} · ${plan.title(index)}",
+            "Va dans la scène ${StarterWizard.ScenePlan.NAMES[index]} · ${plan.title(index)}",
             style = MaterialTheme.typography.bodyMedium, color = sceneColor(index),
         )
     }
 }
 
 @Composable
-private fun sceneColor(index: Int) = if (index == 0) Neon.Cyan else Neon.Magenta
+private fun sceneColor(index: Int) = when (index) {
+    0 -> Neon.Cyan
+    1 -> androidx.compose.ui.graphics.Color(0xFF5BB8F5)  // sky blue, apart from the accent and the "playing" green
+    else -> Neon.Magenta
+}
 
 /** The scene's letter in a small square of its colour, as on the Morceau tab. */
 @Composable
 private fun SceneLetter(index: Int) {
     Box(Modifier.size(28.dp).clip(RoundedCornerShape(7.dp)).background(sceneColor(index).copy(alpha = 0.22f)).border(1.dp, sceneColor(index), RoundedCornerShape(7.dp)),
         contentAlignment = Alignment.Center) {
-        Text(if (index == 0) "A" else "B", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = sceneColor(index))
+        Text(StarterWizard.ScenePlan.NAMES[index], style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = sceneColor(index))
     }
 }
 

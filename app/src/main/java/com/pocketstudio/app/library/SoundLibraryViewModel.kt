@@ -483,7 +483,8 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
             w.copy(
                 styleId = id, step = 1, rows = style.lines.associate { it.role to defaultRow(it.role, id, installed) },
                 mood = style.melody.mood,
-                parts = StarterWizard.Part.entries.associateWith { PartRow(it in style.melody.parts, StarterWizard.soundsFor(it, style, installed).first()) },
+                // Every part on: the song's third scene is its melody (chords and lead); the user can untick them.
+                parts = StarterWizard.Part.entries.associateWith { PartRow(true, StarterWizard.soundsFor(it, style, installed).first()) },
                 error = null,
             )
         }

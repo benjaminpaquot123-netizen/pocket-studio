@@ -449,3 +449,4 @@ Corrigé :
 Restant (mineur) :
 - Replier la carte d'une ligne cache aussi « Utiliser cette ligne » et le repère de scène (le titre reste visible pour rouvrir).
 - Un groupe « Les plus connus » replié le reste la fois suivante (mémorisé, comme les cartes).
+- Après la relecture, à la demande de Benjamin : trois scènes au lieu de deux (tests réécrits : partage par style, copies des scènes vides, aller-retour JSON et changement de scène) ; pastilles qui passent à la ligne ou s'estompent au bord.

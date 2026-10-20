@@ -1,5 +1,9 @@
+@file:OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
+
 package com.pocketstudio.app.session
 
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import com.pocketstudio.app.help.Glossary
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -124,7 +128,7 @@ fun LivePad(set: (param: Int, value: Float) -> Unit) {
             Text("Passe-bas", Modifier.align(Alignment.BottomStart).padding(8.dp), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary)
             Text("Passe-haut", Modifier.align(Alignment.BottomEnd).padding(8.dp), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary)
         }
-        Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp), itemVerticalAlignment = Alignment.CenterVertically) {
             Text("Répéter :", style = MaterialTheme.typography.bodyMedium)
             listOf("1/4", "1/8", "1/16", "1/32").forEachIndexed { i, label ->
                 FilterChip(

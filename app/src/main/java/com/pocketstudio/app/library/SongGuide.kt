@@ -20,40 +20,32 @@ private val GuidePagesSaver = Saver<List<GuidePage>?, ArrayList<String>>(
 )
 
 /**
- * The guide that opens once the assistant has made the song: its two scenes, how to hear each
+ * The guide that opens once the assistant has made the song: its three scenes, how to hear each
  * one, how to play them in a row, and what to try next.
  */
 fun songGuide(styleName: String, plan: StarterWizard.ScenePlan): List<GuidePage> {
     fun scene(index: Int): String {
-        val name = if (index == 0) "A" else "B"
         val what = plan.contents(index).joinToString(", ") { it.substringBefore(" (").substringBefore(" / ") }
-        return "Scène $name · ${plan.title(index)} : ${what.ifEmpty { "rien pour l'instant" }}."
+        return "Scène ${StarterWizard.ScenePlan.NAMES[index]} · ${plan.title(index)} : ${what.ifEmpty { "rien pour l'instant" }}."
     }
-    val scenes = if (plan.copy) {
-        listOf(
-            "Scène A · tout ton morceau : ${plan.contents(0).joinToString(", ") { it.substringBefore(" (").substringBefore(" / ") }}.",
-            "Scène B · sa copie : change-la (ajoute des coups, enlève une ligne) pour faire une variante.",
-        )
-    } else {
-        listOf(scene(0), scene(1))
-    }
+    val scenes = (0 until StarterWizard.ScenePlan.COUNT).map(::scene)
     return listOf(
         GuidePage(
             "Ton morceau $styleName est prêt",
-            listOf("Je l'ai rangé en deux scènes. Une scène, c'est une boucle qui tourne en rond, comme un couplet ou un refrain.") + scenes,
+            listOf("Je l'ai rangé en trois scènes. Une scène, c'est une boucle qui tourne en rond, comme un couplet ou un refrain.") + scenes,
         ),
         GuidePage(
             "Écouter une scène",
             listOf(
                 "▶ en haut joue la scène affichée, en boucle. Tu commences sur la scène A.",
-                "Onglet Morceau › Scènes : touche B pour l'afficher et l'écouter. Pendant la lecture, elle prend le relais à la mesure suivante.",
+                "Onglet Morceau › Scènes : touche B ou C pour l'afficher et l'écouter. Pendant la lecture, elle prend le relais à la mesure suivante.",
                 "Ce que tu vois dans Rythme, Acide et Synthé, c'est toujours la scène affichée.",
             ),
         ),
         GuidePage(
             "Jouer tout le morceau",
             listOf(
-                "Onglet Morceau › Morceau : la scène A joue 2 fois, puis la B 2 fois, et ça recommence.",
+                "Onglet Morceau › Morceau : la scène A joue 2 fois, puis la B 2 fois, puis la C 2 fois, et ça recommence.",
                 "Touche « Jouer le morceau » pour l'entendre. Les boutons + et − changent le nombre de fois.",
             ),
         ),

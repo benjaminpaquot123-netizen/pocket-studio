@@ -1,5 +1,9 @@
+@file:OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
+
 package com.pocketstudio.app.settings
 
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -53,7 +57,7 @@ fun SettingsScreen(s: AppSettings, version: String, actions: SettingsActions) {
                     colors = chip, modifier = Modifier.testTag("theme_${t.name}"))
             }
             Text("Taille de l'interface", style = MaterialTheme.typography.bodyMedium)
-            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 AppSettings.UI_SCALES.forEach { scale ->
                     FilterChip(selected = s.uiScale == scale, onClick = { actions.update { it.copy(uiScale = scale) } },
                         label = { Text("${(scale * 100).roundToInt()} %") }, colors = chip, modifier = Modifier.testTag("scale_${(scale * 100).roundToInt()}"))
@@ -77,13 +81,13 @@ fun SettingsScreen(s: AppSettings, version: String, actions: SettingsActions) {
             Text("Volume du métronome : ${(s.metronomeLevel * 100).roundToInt()} %", style = MaterialTheme.typography.bodyMedium)
             ProSlider(value = s.metronomeLevel, onValueChange = { v -> actions.update { it.copy(metronomeLevel = v) } }, modifier = Modifier.testTag("metronome_level"))
             Text("Décompte avant d'enregistrer", style = MaterialTheme.typography.bodyMedium)
-            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 listOf(0 to "Aucun", 1 to "1 mesure", 2 to "2 mesures").forEach { (bars, label) ->
                     FilterChip(selected = s.recordCountIn == bars, onClick = { actions.update { it.copy(recordCountIn = bars) } }, label = { Text(label) }, colors = chip)
                 }
             }
             Text("Mode du son", style = MaterialTheme.typography.bodyMedium)
-            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 AppSettings.BUFFERS.forEach { (bursts, label) ->
                     FilterChip(selected = s.bufferBursts == bursts, onClick = { actions.update { it.copy(bufferBursts = bursts) } }, label = { Text(label) },
                         colors = chip, modifier = Modifier.testTag("buffer_$bursts"))

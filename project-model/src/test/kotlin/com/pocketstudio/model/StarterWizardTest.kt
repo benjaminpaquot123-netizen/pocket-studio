@@ -55,8 +55,8 @@ class StarterWizardTest {
     fun anAcidStyleStartsWithItsThreeOThreeLine() {
         val style = StarterWizard.style("acid_techno")!!
         val recipe = style.melody.acid!!
-        // Without chords nor lead, the acid line goes to scene B (the kick stays in A).
-        val p = StarterWizard.build(style, mapOf(StarterWizard.Role.Kick to null), StarterWizard.Mood.Dark).switchScene(1)
+        // Without chords nor lead, the acid line goes to scene C (the kick stays in A).
+        val p = StarterWizard.build(style, mapOf(StarterWizard.Role.Kick to null), StarterWizard.Mood.Dark).switchScene(2)
         assertEquals(16, p.acid.length)
         assertEquals(36 + style.melody.root, p.acid.root)
         recipe.pattern.forEachIndexed { i, c -> assertEquals("step $i", c != '.' && c != '-', p.acid.steps[i].gate) }
@@ -152,45 +152,48 @@ class StarterWizardTest {
     }
 
     @Test
-    fun theSongIsCutInARhythmSceneAndAMelodyScene() {
+    fun theSongIsCutInARhythmABassAndAMelodyScene() {
         val style = StarterWizard.style("techno")!!
         val lines = style.lines.associate { it.role to null as PadSample? }
         val parts = StarterWizard.Part.entries.associateWith { StarterWizard.soundsFor(it, style).first() }
         val p = StarterWizard.build(style, lines, StarterWizard.Mood.Dark, parts)
-        assertEquals(listOf("A", "B"), p.allScenes.map { it.name })
+        assertEquals(listOf("A", "B", "C"), p.allScenes.map { it.name })
         assertEquals(0, p.scene)
-        assertEquals(listOf(SongPart(0, 2), SongPart(1, 2)), p.song)
-        val (a, b) = p.allScenes
-        // A: every drum line and the bass; B: the chords and the lead, no drum.
-        for (line in style.lines) assertEquals(line.role.title, StarterWizard.hits(line.pattern).keys.isNotEmpty(), a.drums.lanes[line.role.lane].hits.isNotEmpty())
-        assertTrue(b.drums.lanes.all { it.hits.isEmpty() })
+        assertEquals(listOf(SongPart(0, 2), SongPart(1, 2), SongPart(2, 2)), p.song)
+        val (a, b, c) = p.allScenes
+        // A: the drums; B: the bass (and the 808); C: the chords and the lead.
+        for (line in style.lines) {
+            val inB = line.role == StarterWizard.Role.Bass808
+            assertEquals(line.role.title, !inB && StarterWizard.hits(line.pattern).isNotEmpty(), a.drums.lanes[line.role.lane].hits.isNotEmpty())
+        }
+        assertTrue(c.drums.lanes.all { it.hits.isEmpty() })
         val (bass, pad, lead) = p.instrumentTracks
-        assertTrue(a.synthNotes.notes.isNotEmpty() && b.synthNotes.notes.isEmpty())
         assertEquals("Basse", bass.name)
-        assertTrue(a.trackNotes.getValue(pad.id).notes.isEmpty() && b.trackNotes.getValue(pad.id).notes.isNotEmpty())
-        assertTrue(a.trackNotes.getValue(lead.id).notes.isEmpty() && b.trackNotes.getValue(lead.id).notes.isNotEmpty())
-        // Nothing is lost: each line and part plays in exactly one scene.
-        assertFalse(a.isEmpty || b.isEmpty)
-        // The sounds are the same in both scenes (only the notes are shared out).
-        assertEquals(p.drums.lanes.map { it.sample }, p.switchScene(1).drums.lanes.map { it.sample })
+        assertTrue(a.synthNotes.notes.isEmpty() && b.synthNotes.notes.isNotEmpty() && c.synthNotes.notes.isEmpty())
+        assertTrue(c.trackNotes.getValue(pad.id).notes.isNotEmpty() && b.trackNotes.getValue(pad.id).notes.isEmpty())
+        assertTrue(c.trackNotes.getValue(lead.id).notes.isNotEmpty() && a.trackNotes.getValue(lead.id).notes.isEmpty())
+        assertFalse(a.isEmpty || b.isEmpty || c.isEmpty)
+        // The sounds are the same in every scene (only the notes are shared out).
+        assertEquals(p.drums.lanes.map { it.sample }, p.switchScene(2).drums.lanes.map { it.sample })
         assertEquals(p, p.sanitized())
     }
 
     @Test
-    fun aBeatAloneIsCutInItsBaseAndItsGroove() {
+    fun aBeatAloneIsCutInItsBaseItsGrooveAndItsRelief() {
         val style = StarterWizard.style("house")!!
         val lines = style.lines.associate { it.role to null as PadSample? }
         val p = StarterWizard.build(style, lines)
-        val (a, b) = p.allScenes
-        val ground = setOf(StarterWizard.Role.Kick, StarterWizard.Role.Snare, StarterWizard.Role.Clap, StarterWizard.Role.Bass808)
+        val scenes = p.allScenes
+        val sceneOf = mapOf(
+            StarterWizard.Role.Kick to 0, StarterWizard.Role.Snare to 0, StarterWizard.Role.Clap to 0,
+            StarterWizard.Role.Hat to 1, StarterWizard.Role.OpenHat to 1, StarterWizard.Role.Perc to 2, StarterWizard.Role.Bass808 to 2,
+        )
         for (line in style.lines) {
-            val inA = a.drums.lanes[line.role.lane].hits.isNotEmpty()
-            val inB = b.drums.lanes[line.role.lane].hits.isNotEmpty()
-            assertEquals(line.role.title, line.role in ground, inA)
-            assertEquals(line.role.title, line.role !in ground, inB)
+            val plays = scenes.map { it.drums.lanes[line.role.lane].hits.isNotEmpty() }
+            assertEquals(line.role.title, List(3) { it == sceneOf.getValue(line.role) }, plays)
         }
         val plan = StarterWizard.scenePlan(lines.keys, emptySet(), acid = false)
-        assertEquals(listOf("la base", "le groove"), listOf(plan.title(0), plan.title(1)))
+        assertEquals(listOf("la base", "le groove", "le relief"), List(3) { plan.title(it) })
     }
 
     @Test
@@ -200,39 +203,44 @@ class StarterWizardTest {
             val parts = if (mood == null) emptyMap() else StarterWizard.Part.entries.associateWith { StarterWizard.soundsFor(it, style).first() }
             val p = StarterWizard.build(style, lines, mood, parts)
             val plan = StarterWizard.scenePlan(lines.keys, parts.keys, acid = mood != null && style.melody.acid != null)
-            val (a, b) = p.allScenes
+            val scenes = p.allScenes
+            assertEquals(3, scenes.size)
             for (line in style.lines) {
                 if (StarterWizard.hits(line.pattern).isEmpty()) continue
-                val plays = listOf(a, b).map { it.drums.lanes[line.role.lane].hits.isNotEmpty() }
-                // In exactly the scene the plan says (in both when B is a copy).
-                val expected = if (plan.copy) listOf(true, true) else listOf(plan.lines[line.role] == 0, plan.lines[line.role] == 1)
-                assertEquals("${style.name} $mood ${line.role}", expected, plays)
+                // In the scene the plan says, and in the scenes that copy it.
+                val expected = List(3) { plan.source(it) == plan.lines[line.role] }
+                assertEquals("${style.name} $mood ${line.role}", expected, scenes.map { it.drums.lanes[line.role.lane].hits.isNotEmpty() })
             }
             // Without a mood no part is made (the first track stays empty).
             if (parts.isNotEmpty()) p.instrumentTracks.forEach { t ->
-                val plays = listOf(a, b).map { (if (t.id == 0) it.synthNotes else it.trackNotes.getValue(t.id)).notes.isNotEmpty() }
-                assertTrue("${style.name} $mood ${t.name}", if (plan.copy) plays.all { it } else plays.count { it } == 1)
+                val plays = scenes.map { (if (t.id == 0) it.synthNotes else it.trackNotes.getValue(t.id)).notes.isNotEmpty() }
+                assertTrue("${style.name} $mood ${t.name}", plays.count { it } >= 1)
             }
+            assertTrue("${style.name} $mood", scenes.none { it.isEmpty })
             assertEquals(p, ProjectJson.decode(ProjectJson.encode(p)))
-            assertEquals(p, p.switchScene(1).switchScene(0))
+            assertEquals(p, p.switchScene(2).switchScene(0))
         }
     }
 
     @Test
-    fun tooLittleToShareOutGivesTwoEqualScenes() {
+    fun anEmptySceneStartsAsACopy() {
         val style = StarterWizard.style("techno")!!
         val p = StarterWizard.build(style, mapOf(StarterWizard.Role.Kick to null))
-        val (a, b) = p.allScenes
+        val (a, b, c) = p.allScenes
         assertEquals(a.drums, b.drums)
+        assertEquals(a.drums, c.drums)
         assertTrue(a.drums.lanes[0].hits.isNotEmpty())
         val plan = StarterWizard.scenePlan(setOf(StarterWizard.Role.Kick), emptySet(), acid = false)
-        assertTrue(plan.copy)
-        assertEquals(listOf("Kick (grosse caisse)"), plan.contents(1))
-        // The bass alone with chords goes with the drums; the chords go to B.
+        assertEquals(mapOf(1 to 0, 2 to 0), plan.copies)
+        assertEquals(listOf("Kick (grosse caisse)"), plan.contents(2))
+        assertEquals("une copie de la scène A, à varier", plan.title(1))
+        // With chords, the bass goes to B and the chords to C.
         val melodic = StarterWizard.scenePlan(setOf(StarterWizard.Role.Kick), setOf(StarterWizard.Part.Bass, StarterWizard.Part.Pad), acid = true)
-        assertEquals(mapOf(StarterWizard.Part.Bass to 0, StarterWizard.Part.Pad to 1), melodic.parts)
-        assertEquals(listOf("le rythme", "la mélodie"), listOf(melodic.title(0), melodic.title(1)))
+        assertEquals(mapOf(StarterWizard.Part.Bass to 1, StarterWizard.Part.Pad to 2), melodic.parts)
+        assertEquals(1, melodic.acid)
+        assertEquals(listOf("le rythme", "la basse", "la mélodie"), List(3) { melodic.title(it) })
     }
+
 }
 
 class ChordPadsTest {

@@ -39,6 +39,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.selected
@@ -121,9 +122,11 @@ fun SoundTile(
 @Composable
 fun FamilyChip(label: String, icon: ImageVector, accent: Color, selected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
     val shape = RoundedCornerShape(50)
-    val fill by animateColorAsState(if (selected) accent.copy(alpha = 0.28f) else Neon.SurfaceHigh.copy(alpha = 0.5f), label = "family-fill")
-    val edge by animateColorAsState(if (selected) accent else Neon.Outline.copy(alpha = 0.4f), label = "family-edge")
-    val text by animateColorAsState(if (selected) Neon.TextPrimary else Neon.TextSecondary, label = "family-text")
+    // Each family keeps its colour (a tint at rest, so they tell apart at a glance); the chosen
+    // one is filled with it, dark ink on top, like every other chosen chip of the app.
+    val fill by animateColorAsState(if (selected) accent else lerp(Neon.SurfaceHigh, accent, 0.12f).copy(alpha = 0.7f), label = "family-fill")
+    val edge by animateColorAsState(if (selected) accent else accent.copy(alpha = 0.35f), label = "family-edge")
+    val text by animateColorAsState(if (selected) Neon.OnAccent else Neon.TextPrimary.copy(alpha = 0.85f), label = "family-text")
     Row(
         modifier
             .clip(shape)
@@ -136,8 +139,8 @@ fun FamilyChip(label: String, icon: ImageVector, accent: Color, selected: Boolea
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(6.dp),
     ) {
-        Icon(icon, contentDescription = null, tint = if (selected) accent else Neon.TextSecondary, modifier = Modifier.size(16.dp))
-        Text(label, style = MaterialTheme.typography.labelLarge, color = text, maxLines = 1)
+        Icon(icon, contentDescription = null, tint = if (selected) Neon.OnAccent else accent, modifier = Modifier.size(16.dp))
+        Text(label, style = MaterialTheme.typography.labelLarge, color = text, maxLines = 1, softWrap = false)
     }
 }
 
@@ -148,7 +151,7 @@ fun ChipRow(count: Int, selected: Int, modifier: Modifier = Modifier, item: @Com
     LaunchedEffect(selected) {
         if (selected in 0 until count) state.animateScrollToItem((selected - 1).coerceAtLeast(0))
     }
-    LazyRow(modifier.fillMaxWidth(), state = state, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+    LazyRow(modifier.fillMaxWidth().fadingEdges(state), state = state, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
         items(count) { item(it) }
     }
 }

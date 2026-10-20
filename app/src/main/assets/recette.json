@@ -1,6 +1,6 @@
 {
   "id": "phase18-deux-scenes",
-  "milestone": "Phase 18 : l'assistant en deux scènes",
+  "milestone": "Phase 18 : l'assistant en trois scènes",
   "items": [
     {
       "id": "styles_order",
@@ -15,22 +15,27 @@
     {
       "id": "scene_badge",
       "title": "Chaque étape dit sa scène",
-      "hint": "Choisis Techno, une ambiance, puis avance : sous chaque ligne de batterie et la basse, « Va dans la scène A · le rythme » ; sous Nappe et Lead, « scène B · la mélodie ». Le résumé montre les deux scènes."
+      "hint": "Choisis Techno, une ambiance, puis avance : sous chaque ligne de batterie, « Va dans la scène A · le rythme » ; sous la basse, « scène B · la basse » ; sous Nappe et Lead, « scène C · la mélodie ». Le résumé montre les trois scènes."
     },
     {
       "id": "song_guide",
       "title": "Le guide après la création",
-      "hint": "Touche « Créer le morceau » : un guide de 4 pages s'ouvre (les deux scènes, écouter une scène, jouer le morceau, et ensuite). Lis-le jusqu'à « À moi de jouer ! »."
+      "hint": "Touche « Créer le morceau » : un guide de 4 pages s'ouvre (les trois scènes, écouter une scène, jouer le morceau, et ensuite). Lis-le jusqu'à « À moi de jouer ! »."
     },
     {
-      "id": "two_scenes",
-      "title": "Les deux scènes et le morceau",
-      "hint": "Onglet Morceau : les scènes A et B sont remplies. Touche B : le rythme laisse la place à la mélodie. Puis « Jouer le morceau » : A deux fois, B deux fois, et ça recommence."
+      "id": "three_scenes",
+      "title": "Les trois scènes et le morceau",
+      "hint": "Onglet Morceau : les scènes A, B et C sont remplies. Touche B puis C : la batterie laisse la place à la basse, puis à la mélodie. Puis « Jouer le morceau » : A, B, C deux fois chacune, et ça recommence."
     },
     {
       "id": "beat_only",
       "title": "Sans mélodie aussi",
-      "hint": "Refais un morceau pas à pas avec « Pas de mélodie pour l'instant » : la scène A garde kick, caisse claire, clap et 808, la scène B les charleys et les percussions."
+      "hint": "Refais un morceau pas à pas avec « Pas de mélodie pour l'instant » : A garde kick, caisse claire et clap, B les charleys, C les percussions et la 808."
+    },
+    {
+      "id": "chips",
+      "title": "Des pastilles propres",
+      "hint": "Synthé › Réglages avancés › Type de filtre : « Passe-bande » passe à la ligne, plus écrit à la verticale. En haut de Synthé, les pistes qui dépassent s'estompent au bord au lieu d'être coupées net."
     }
   ]
 }

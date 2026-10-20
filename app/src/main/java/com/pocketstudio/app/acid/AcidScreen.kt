@@ -1,5 +1,10 @@
+@file:OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
+
 package com.pocketstudio.app.acid
 
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import com.pocketstudio.ui.fadingHorizontalScroll
 import com.pocketstudio.app.help.Glossary
 import android.content.Context
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -179,7 +184,7 @@ private fun StepGrid(
                 modifier = Modifier.testTag("acid_notation"),
             )
         }
-        Row(Modifier.horizontalScroll(rememberScrollState()), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        Row(Modifier.fadingHorizontalScroll(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             Text("Longueur", style = MaterialTheme.typography.bodySmall)
             AcidPattern.LENGTHS_IN_BARS.forEach { bars ->
                 FilterChip(
@@ -192,7 +197,7 @@ private fun StepGrid(
             }
         }
         if (pages > 1) {
-            Row(Modifier.horizontalScroll(rememberScrollState()), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            Row(Modifier.fadingHorizontalScroll(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 Text("Mesure", style = MaterialTheme.typography.bodySmall)
                 for (p in 0 until pages) {
                     FilterChip(
@@ -325,7 +330,7 @@ private fun SoundCard(acid: AcidPattern, actions: AcidActions, browser: SoundBro
     val context = LocalContext.current
     var sliders by remember { mutableStateOf(SoundView.sliders(context)) }
     NeonCard {
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        FlowRow(itemVerticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             SectionLabel("Son", Modifier.weight(1f), help = Glossary.FILTER, foldKey = "Son acide")
             listOf(false to "Panneau", true to "Curseurs").forEach { (mode, label) ->
                 FilterChip(

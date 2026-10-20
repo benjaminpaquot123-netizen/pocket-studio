@@ -20,8 +20,8 @@ class SongGuideTest {
     @Test
     fun theAssistantSaysWhereEachLineAndPartGoes() {
         val plan = ui(StarterWizard.Mood.Happy, setOf(StarterWizard.Part.Bass, StarterWizard.Part.Pad)).plan
-        house.lines.forEach { assertEquals(0, plan.lines[it.role]) }
-        assertEquals(mapOf(StarterWizard.Part.Bass to 0, StarterWizard.Part.Pad to 1), plan.parts)
+        house.lines.forEach { assertEquals(if (it.role == StarterWizard.Role.Bass808) 1 else 0, plan.lines[it.role]) }
+        assertEquals(mapOf(StarterWizard.Part.Bass to 1, StarterWizard.Part.Pad to 2), plan.parts)
         // A line switched off goes nowhere, and a part without a mood neither.
         val off = ui(null, setOf(StarterWizard.Part.Pad)).let { it.copy(rows = it.rows + (StarterWizard.Role.Kick to it.rows.getValue(StarterWizard.Role.Kick).copy(enabled = false))) }
         assertEquals(null, off.plan.lines[StarterWizard.Role.Kick])
@@ -34,8 +34,9 @@ class SongGuideTest {
         val pages = songGuide("House", plan)
         val first = pages.first()
         assertEquals("Ton morceau House est prêt", first.title)
-        assertTrue(first.lines.any { it.startsWith("Scène A · le rythme : Kick") && it.contains("Basse") })
-        assertTrue(first.lines.any { it == "Scène B · la mélodie : Nappe, Lead." })
+        assertTrue(first.lines.any { it.startsWith("Scène A · le rythme : Kick") && !it.contains("Basse") })
+        assertTrue(first.lines.any { it.startsWith("Scène B · la basse :") && it.contains("Basse") })
+        assertTrue(first.lines.any { it == "Scène C · la mélodie : Nappe, Lead." })
         val all = pages.flatMap { it.lines }.joinToString("\n")
         assertTrue(all.contains("Jouer le morceau"))
         assertTrue(all.contains("Morceau › Scènes"))

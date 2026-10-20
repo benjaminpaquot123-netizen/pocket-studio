@@ -1,5 +1,10 @@
+@file:OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
+
 package com.pocketstudio.app.session
 
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import com.pocketstudio.ui.fadingHorizontalScroll
 import com.pocketstudio.ui.WithHelp
 import com.pocketstudio.app.help.Glossary
 import androidx.compose.foundation.BorderStroke
@@ -117,7 +122,7 @@ fun SessionScreen(ui: SessionScreenUi, actions: SessionActions, live: LivePadsUi
             val used = ui.scenes.indexOfLast { it != null } + 1
             var chosen by rememberSaveable { mutableIntStateOf(Scene.GRID_SIZES.first()) }
             val shown = Scene.GRID_SIZES.firstOrNull { it >= maxOf(chosen, used, ui.current + 1) } ?: Scene.MAX
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            FlowRow(itemVerticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Text("Afficher :", style = MaterialTheme.typography.bodyMedium)
                 Scene.GRID_SIZES.forEach { size ->
                     FilterChip(
@@ -144,7 +149,7 @@ fun SessionScreen(ui: SessionScreenUi, actions: SessionActions, live: LivePadsUi
 
         NeonCard {
             SectionLabel("Temps par mesure", help = Glossary.TIME_SIGNATURE)
-            Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            Row(Modifier.fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 (2..7).forEach { b ->
                     androidx.compose.material3.FilterChip(
                         selected = ui.beatsPerBar == b, onClick = { actions.setBeatsPerBar(b) }, label = { Text("$b/4") },
@@ -181,7 +186,7 @@ fun SessionScreen(ui: SessionScreenUi, actions: SessionActions, live: LivePadsUi
                 }
             }
             Text("Ajouter :", style = MaterialTheme.typography.bodyMedium)
-            Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            Row(Modifier.fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 ui.scenes.forEachIndexed { i, s ->
                     if (s != null) OutlinedButton(onClick = { actions.addPart(i) }, modifier = Modifier.testTag("add_part_$i")) { Text("+ ${Scene.NAMES[i]}") }
                 }
@@ -269,7 +274,7 @@ private fun Timeline(ui: SessionScreenUi, actions: SessionActions) {
                     modifier = Modifier.width(76.dp).height(26.dp).padding(top = 5.dp))
             }
         }
-        Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(3.dp)) {
+        Row(Modifier.fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(3.dp)) {
             ui.song.forEachIndexed { i, part ->
                 val width = (barWidth * ui.barsOf(part)).coerceAtLeast(40.dp)
                 val active = i == ui.songIndex

@@ -85,14 +85,14 @@ fun LibraryScreen(ui: LibraryUi, actions: LibraryActions) {
             // Errors and notices at the top, where they are seen (the pack list can be far below).
             ui.packs.message?.let { Text(it, color = Neon.Amber, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.testTag("library_message")) }
             Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                SoundPacks.KIND_LABELS.filterKeys { it != "fx" && it != "loop" }.forEach { (k, label) ->
+                SoundPacks.KIND_LABELS.filterKeys { it != "loop" }.forEach { (k, label) ->
                     FilterChip(selected = kind == k, onClick = { kind = k }, label = { Text(label) }, colors = chipColors,
                         modifier = Modifier.testTag("library_kind_$k"))
                 }
             }
             val categories = libraryCategories(kind, ui.packs.installed)
             if (categories.isEmpty()) {
-                Text("Aucun son de ce type pour l'instant : télécharge un pack ci-dessous (les packs avec 808, basses ou stabs en ont).",
+                Text("Aucun son de ce type pour l'instant : télécharge un pack ci-dessous qui en contient.",
                     style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary)
             } else {
                 val shown = categories.firstOrNull { it.id == category } ?: categories.first()
@@ -131,7 +131,7 @@ fun LibraryScreen(ui: LibraryUi, actions: LibraryActions) {
 private fun PackList(ui: LibraryUi, actions: LibraryActions) {
     val packs = ui.packs
     NeonCard(modifier = Modifier.testTag("library_packs")) {
-        SectionLabel("Packs par style", help = Glossary.SOUND_PACK)
+        SectionLabel("Packs de sons", help = Glossary.SOUND_PACK)
         when (val index = packs.index) {
             IndexState.Loading -> Text("Chargement de la liste…", color = Neon.TextSecondary)
             IndexState.Unavailable -> Text("Les packs de sons arrivent bientôt.", color = Neon.TextSecondary)
@@ -139,7 +139,7 @@ private fun PackList(ui: LibraryUi, actions: LibraryActions) {
             is IndexState.Ready -> {
                 Text("À télécharger seulement si tu veux ; chaque pack se supprime d'un geste pour libérer la place.",
                     style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
-                index.index.packs.forEach { entry ->
+                index.index.packs.sortedBy { it.name.lowercase() }.forEach { entry ->
                     val installed = packs.installed.any { it.id == entry.id }
                     val progress = packs.downloading[entry.id]
                     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.testTag("library_pack_${entry.id}")) {

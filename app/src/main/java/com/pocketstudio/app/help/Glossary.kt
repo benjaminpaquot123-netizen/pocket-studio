@@ -109,7 +109,7 @@ object Glossary {
     )
     val SOUND_PACK = Help(
         "Pack de sons",
-        "Une collection de sons pour un style (techno, UK garage, trap…). À télécharger seulement si tu veux, et à supprimer quand tu veux.",
+        "Une collection de sons pour un style (techno, UK garage, trap…), une machine célèbre (TR-808, Juno, DX7…) ou des sons actuels. À télécharger seulement si tu veux, et à supprimer quand tu veux.",
     )
     val KIT = Help(
         "Kit",
@@ -173,6 +173,11 @@ object Glossary {
     val ROOT_NOTE = Help(
         "Note d'origine",
         "La note à laquelle le son a été enregistré. L'appli la trouve toute seule ; corrige-la si le son joue faux.",
+    )
+    val UNISON = Help(
+        "Unisson",
+        "Plusieurs copies du son, très légèrement désaccordées, jouées ensemble : le son devient large et brillant. " +
+            "C'est le « supersaw » de la trance et de la future bass, et la basse Reese de la drum & bass.",
     )
     val GLIDE = Help(
         "Glisse",
@@ -312,7 +317,7 @@ object Glossary {
         SCENE, SONG, TIMELINE, LIVE_PADS, LOOP, TEMPO, BAR, STEP, SWING, METRONOME, COUNT_IN, TIME_SIGNATURE,
         PAD, KIT, VELOCITY, PAN, PITCH, SAMPLE, ROLL, FIT_TEMPO, SLICE, ENVELOPE, CHOKE, SOUND_LIBRARY, SOUND_PACK,
         TRACK, SOURCE, PIANO_ROLL, SCALE, SCALE_LOCK, CHORD, PROGRESSION, ARPEGGIO, QUANTIZE, SYNTH, PLAITS, GENERAL_MIDI,
-        SAMPLED, ROOT_NOTE, GLIDE, ACID, FILTER, ACCENT_SLIDE, MIDI, MIDI_LEARN, BEND, SUSTAIN,
+        UNISON, SAMPLED, ROOT_NOTE, GLIDE, ACID, FILTER, ACCENT_SLIDE, MIDI, MIDI_LEARN, BEND, SUSTAIN,
         MIXER, MUTE_SOLO, INSERT, SEND, REVERB, DELAY, COMPRESSOR, EQ, MACROS, XY_PAD, FX_PRESET, AUTOMATION, PERFORMANCE,
         LIMITER, SPECTRUM, FORMATS, LUFS, STEMS, EXPORT_MIDI, REMIX, AUDIO_TRACK, GENERATE, TUNER, LATENCY,
     )

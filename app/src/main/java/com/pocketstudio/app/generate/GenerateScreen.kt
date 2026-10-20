@@ -80,6 +80,21 @@ fun generateExamples(bpm: Int): List<Pair<String, String>> = listOf(
     "Piano" to "lo-fi piano chords loop, $bpm BPM",
     "Pluie" to "rain falling on a window, ambience",
     "Effet whoosh" to "riser whoosh sound effect",
+    // Current genres and sounds.
+    "Boucle drum & bass" to "$bpm BPM drum and bass breakbeat loop, punchy",
+    "Boucle UK garage" to "$bpm BPM UK garage 2-step drum loop, shuffled hi-hats",
+    "Boucle drill" to "$bpm BPM UK drill drum loop, sliding 808, dark",
+    "Boucle afro house" to "$bpm BPM afro house percussion loop, congas and shakers",
+    "Log drum amapiano" to "amapiano log drum bass loop, $bpm BPM",
+    "Boucle jersey club" to "$bpm BPM jersey club drum loop, bouncy kicks",
+    "Cloche phonk" to "phonk cowbell melody loop, distorted, $bpm BPM",
+    "808 saturée" to "distorted 808 bass one shot, long sub, note C",
+    "Basse Reese" to "dark reese bass loop, drum and bass, $bpm BPM",
+    "Accords future bass" to "future bass supersaw chords, sidechained, $bpm BPM",
+    "Lead hyperpop" to "hyperpop glitchy bright synth lead, $bpm BPM",
+    "Voix découpée" to "chopped vocal sample, pitched, catchy",
+    "Montée" to "white noise riser build-up, tension",
+    "Impact" to "cinematic impact boom hit",
 )
 
 /** Text to sound: describe it, wait a few seconds, listen, put it on a pad or a track. */

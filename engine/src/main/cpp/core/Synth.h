@@ -23,6 +23,9 @@ public:
         FilterAttack, FilterDecay, FilterSustain, FilterRelease,
         AmpAttack, AmpDecay, AmpSustain, AmpRelease,
         Lfo1Rate, Lfo1ToPitch, Lfo2Rate, Lfo2ToCutoff, Level,
+        // Appended (the JNI contract and saved projects keep the order above).
+        Unison,        // 0 = oscillator 1 alone, up to 1 = six copies with it (seven voices: supersaw, Reese)
+        UnisonDetune,  // 0..1 = spread of the voices, ±3 .. ±50 cents, centred on the note
         ParamCount
     };
 
@@ -43,6 +46,7 @@ public:
 private:
     struct Voice {
         daisysp::Oscillator osc1, osc2, sub;
+        std::array<daisysp::Oscillator, 6> unison;  // detuned copies of oscillator 1
         daisysp::LadderFilter ladder;
         daisysp::Svf svf;
         daisysp::Adsr ampEnv, filterEnv;
@@ -74,6 +78,7 @@ private:
     daisysp::Oscillator lfo1_, lfo2_;
     uint32_t clock_ = 0;
     float bend_ = 0.0f, mod_ = 0.0f;
+    float unisonGain_ = 1.0f;  // follows the stack gain smoothly when the number of copies changes
     uint32_t noiseState_ = 1234567u;
 };
 

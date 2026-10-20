@@ -389,7 +389,7 @@ private fun PartStep(style: StarterWizard.Style, ui: WizardUi, packs: PacksUi, p
         }
         Text(
             "Touche un son pour entendre la première mesure de cette piste." +
-                if (part != StarterWizard.Part.Pad) " Les sons des packs téléchargés sont en bas de la liste." else "",
+                " Les sons des packs téléchargés sont en bas de la liste.",
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
         )
     }

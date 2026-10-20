@@ -31,7 +31,7 @@ Légende : ✅ présent · 🟡 partiel · ❌ absent · ➖ volontairement non 
 | Roulements, remplir, décaler, grille de tous les pads | ✅ | ✅ | 6.4 |
 | Pan et hauteur par pas, pan par pad | ✅ | ✅ (hauteur : sons importés) | 10.1 |
 | Envoi d'effet par pad | ✅ | 🟡 par la voie batterie | — |
-| Bibliothèque de sons par style | ✅ | ✅ sons intégrés + 34 packs à télécharger (supprimables) | 10.5, 11 |
+| Bibliothèque de sons par style | ✅ | ✅ sons intégrés + 51 packs à télécharger, supprimables (styles, machines TR-808 à DX7, sons actuels) | 10.5, 11, 13 |
 
 ## 4. Piano roll, clavier, harmonie
 
@@ -48,8 +48,8 @@ Légende : ✅ présent · 🟡 partiel · ❌ absent · ➖ volontairement non 
 
 | Fonction | FL Mobile | Pocket Studio | Où |
 | --- | --- | --- | --- |
-| Synthé soustractif, basse acide, synthé à modèles, banques General MIDI | ✅ | ✅ (Plaits 24 modèles, Open303, 3 banques) | fait |
-| Sampler multi-échantillons | ✅ | 🟡 découpe vers les pads | — |
+| Synthé soustractif, basse acide, synthé à modèles, banques General MIDI | ✅ | ✅ (Plaits 24 modèles, Open303, 3 banques, unisson supersaw) | fait, 13 |
+| Sampler multi-échantillons | ✅ | 🟡 un son sur tout le clavier (808 avec glisse), découpe vers les pads | 12 |
 | Génération de sons par le texte | ❌ | ✅ Stable Audio Open Small, sur le téléphone | 9.1 |
 
 ## 6. Audio

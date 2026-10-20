@@ -29,6 +29,7 @@ void Synth::prepare(int sampleRate) {
         v.osc2.Init(sr);
         v.sub.Init(sr);
         v.sub.SetWaveform(daisysp::Oscillator::WAVE_POLYBLEP_SQUARE);
+        for (auto& u : v.unison) u.Init(sr);
         v.ladder.Init(sr);
         v.ladder.SetPassbandGain(0.5f);  // keeps the level up when resonance rises
         v.ladder.SetInputDrive(1.5f);
@@ -50,6 +51,7 @@ void Synth::prepare(int sampleRate) {
             0.0f, 0.3f, 0.3f, 0.3f,
             0.05f, 0.3f, 0.8f, 0.35f,
             0.5f, 0.0f, 0.3f, 0.0f, 0.6f,
+            0.0f, 0.3f,
         };
         for (int i = 0; i < ParamCount; ++i) params_[static_cast<size_t>(i)] = defaults[i];
     }
@@ -69,6 +71,7 @@ void Synth::setParam(Param p, float value) {
 
 void Synth::updateVoiceSettings(Voice& v) {
     v.osc1.SetWaveform(waveFor(param(Osc1Wave)));
+    for (auto& u : v.unison) u.SetWaveform(waveFor(param(Osc1Wave)));
     v.osc2.SetWaveform(waveFor(param(Osc2Wave)));
     v.ampEnv.SetAttackTime(envTime(param(AmpAttack)));
     v.ampEnv.SetDecayTime(envTime(param(AmpDecay)));
@@ -132,11 +135,19 @@ void Synth::applyEvent(const Event& e) {
             if (v.age < target->age) target = &v;
         }
     }
+    // A voice still sounding (same key again, stolen) keeps its phases: a jump there would click.
+    const bool idle = !target->gate && !target->ampEnv.IsRunning();
     target->note = e.note;
     target->velocity = e.velocity;
     target->gate = true;
     target->age = ++clock_;
     target->baseHz = midiToHz(e.note);
+    if (idle && param(Unison) > 0.0f) {
+        // Unison voices start at spread phases, oscillator 1 included: wide from the first cycle,
+        // the same level for every note.
+        target->osc1.Reset(0.0f);
+        for (size_t k = 0; k < target->unison.size(); ++k) target->unison[k].Reset(0.137f * static_cast<float>(k + 1));
+    }
     target->ampEnv.Retrigger(false);
     target->filterEnv.Retrigger(false);
 }
@@ -163,6 +174,24 @@ void Synth::render(float* mono, int numFrames) {
     const float sweepOctaves = param(Lfo2ToCutoff) * 3.0f;
     const float level = param(Level) * 1.4f;  // one note around -10 dBFS; chords rely on the master soft clip
     const float nyquistGuard = 0.45f * static_cast<float>(sampleRate_);
+    // Unison: oscillator 1 and up to six copies spread evenly on both sides, the whole stack
+    // centred on the note (an odd number of copies would otherwise pull it flat). A few cents of
+    // spread at least: copies at exactly the same pitch only colour the sound.
+    const int copies = std::clamp(static_cast<int>(std::lround(param(Unison) * 6.0f)), 0, 6);
+    const float spreadCents = copies > 0 ? 3.0f + param(UnisonDetune) * 47.0f : 0.0f;
+    std::array<float, 6> cents{};
+    float mean = 0.0f;
+    for (int k = 0; k < copies; ++k) {
+        const float pos = static_cast<float>(k / 2 + 1) / static_cast<float>((copies + 1) / 2);
+        cents[static_cast<size_t>(k)] = (k % 2 == 0 ? -pos : pos) * spreadCents;
+        mean += cents[static_cast<size_t>(k)];
+    }
+    mean /= static_cast<float>(copies + 1);
+    const float osc1Ratio = copies > 0 ? std::pow(2.0f, -mean / 1200.0f) : 1.0f;
+    std::array<float, 6> ratios{};
+    for (size_t k = 0; k < ratios.size(); ++k) ratios[k] = std::pow(2.0f, (cents[k] - mean) / 1200.0f);
+    // About the same loudness whatever the number of copies (they add up like noise, not in phase).
+    const float stackGain = 1.0f / std::sqrt(1.0f + static_cast<float>(copies));
 
     int nextEvent = 0;
     // Events are kept sorted by offset (queue()).
@@ -174,6 +203,8 @@ void Synth::render(float* mono, int numFrames) {
         const float lfo2 = lfo2_.Process();
         const bool controlTick = (i % kControlRate) == 0;
         const float n = noiseLevel > 0.0f ? noise() : 0.0f;
+        // A change of the number of copies fades in over a few milliseconds instead of a step.
+        unisonGain_ += (stackGain - unisonGain_) * 0.005f;
         float out = 0.0f;
         for (auto& v : voices_) {
             if (!v.gate && !v.ampEnv.IsRunning()) continue;
@@ -181,15 +212,23 @@ void Synth::render(float* mono, int numFrames) {
             const float fenv = v.filterEnv.Process(v.gate);
             if (controlTick) {
                 const float hz = v.baseHz * bendRatio * std::pow(2.0f, vibratoSemis * lfo1 / 12.0f);
-                v.osc1.SetFreq(hz);
+                v.osc1.SetFreq(hz * osc1Ratio);
+                // All six follow the note, so a copy switched on mid-note starts at the right pitch.
+                for (size_t k = 0; k < v.unison.size(); ++k) v.unison[k].SetFreq(hz * ratios[k]);
                 v.osc2.SetFreq(hz * detuneRatio * octaveRatio);
                 v.sub.SetFreq(hz * 0.5f);
                 const float fc = std::min(nyquistGuard, cutoffHz * std::pow(2.0f, envOctaves * fenv + sweepOctaves * lfo2));
                 v.ladder.SetFreq(fc);
                 v.svf.SetFreq(fc);
             }
-            const float source = (1.0f - mix) * v.osc1.Process() + mix * v.osc2.Process() +
-                                 subLevel * v.sub.Process() + n;
+            float osc1 = v.osc1.Process();
+            if (copies > 0) {
+                for (int k = 0; k < copies; ++k) osc1 += v.unison[static_cast<size_t>(k)].Process();
+                osc1 *= unisonGain_;
+            } else if (unisonGain_ < 0.999f) {
+                osc1 *= unisonGain_;  // the last copies just went: back to full level smoothly
+            }
+            const float source = (1.0f - mix) * osc1 + mix * v.osc2.Process() + subLevel * v.sub.Process() + n;
             float filtered;
             if (filterType == 0) {
                 filtered = v.ladder.Process(source);

@@ -68,7 +68,7 @@ Feu vert de Benjamin (D4 = A) : fusion de la pull request en fin de phase.
 
 ## Phase 6 : complétude, à hauteur de FL Studio Mobile (voir `COMPARAISON.md`)
 - [~] 6.1 Projets et exports : plusieurs projets (fait), enregistrement en direct (fait), boucle de batterie 1-4 mesures (fait) ; export du morceau entier, des pistes séparées, M4A et FLAC, normalisation ; fichiers MIDI (export, import) ; projet complet en .zip (export, import)
-- [ ] 6.2 Réglages, aide, démos : écran Réglages (thème dont daltonien, taille de l'interface, notation, Do central, vibrations, métronome, mode audio) ; premier pas guidé et astuces ; projets de démonstration et modèles
+- [x] 6.2 Réglages, aide, démos : écran Réglages (thème dont daltonien, taille de l'interface, notation, Do central, vibrations, métronome, mode audio) ; premier pas guidé et astuces ; projets de démonstration et modèles
 - [ ] 6.3 Piano roll complet : sélection, copier/coller, dupliquer, transposer, couloir de vélocité, zoom, grille (triolets, 1/32), legato, humaniser, deviner la gamme
 - [ ] 6.4 Batterie complète : grille de tous les pads, pan/hauteur/roulement par pas, remplir tous les N pas, décaler, faire tourner ; pan et envois par pad
 

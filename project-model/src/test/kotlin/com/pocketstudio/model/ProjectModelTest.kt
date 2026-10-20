@@ -686,3 +686,21 @@ class RecordingHistoryTest {
     }
 }
 
+class DemosTest {
+    @Test
+    fun demosAreCompleteStableAndSaveable() {
+        Demos.ALL.forEach { (title, _, build) ->
+            val p = build()
+            assertEquals(title, p.name)
+            assertEquals(p, build())  // same every time
+            assertEquals(p, ProjectJson.decode(ProjectJson.encode(p)))
+            assertTrue(title, p.drums.lanes.any { it.hits.isNotEmpty() })
+        }
+        val house = Demos.ALL[0].third()
+        assertEquals(2, house.allScenes.size)
+        assertEquals(4, house.song.size)
+        assertTrue(house.acid.steps.any { it.gate })
+        assertTrue(Demos.ALL[1].third().synthNotes.notes.isNotEmpty())
+    }
+}
+

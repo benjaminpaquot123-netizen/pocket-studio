@@ -143,7 +143,9 @@ private enum class ToolPage(val label: String) { Reglages("Réglages"), Recette(
 private val PROJECT_STARTERS: List<Pair<ProjectStarter, () -> Project>> = listOf(
     ProjectStarter("Projet vide", "Tout est vierge : à toi de jouer.", "empty") to { Project(name = "") },
     ProjectStarter("Rythme de départ", "Un rythme et une ligne d'acide prêts à tourner.", "starter") to { RhythmViewModel.starterProject("") },
-)
+) + com.pocketstudio.model.Demos.ALL.mapIndexed { i, (title, description, build) ->
+    ProjectStarter(title, description, "demo_$i") to build
+}
 
 private tailrec fun android.content.Context.findActivity(): androidx.activity.ComponentActivity? = when (this) {
     is androidx.activity.ComponentActivity -> this

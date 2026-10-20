@@ -568,3 +568,45 @@ class LivePadsModelTest {
         assertEquals(p.sanitized(), ProjectJson.decode(ProjectJson.encode(p.sanitized())))
     }
 }
+
+class SoundLibraryTest {
+    @Test
+    fun builtInSoundsAreInRangeAndCategorised() {
+        SoundLibrary.SYNTH.forEach { assertEquals(it.name, it.sound.sanitized(), it.sound); assertTrue(it.category in SoundCategories.SYNTH) }
+        SoundLibrary.PLAITS.forEach { assertEquals(it.name, it.sound.sanitized(), it.sound); assertTrue(it.category in SoundCategories.PLAITS) }
+        SoundLibrary.ACID.forEach { assertEquals(it.name, it.sound.sanitized(), it.sound); assertTrue(it.category in SoundCategories.ACID) }
+        // Every family has something in it.
+        SoundCategories.SYNTH.forEach { c -> assertTrue(c, SoundLibrary.SYNTH.any { it.category == c }) }
+        SoundCategories.PLAITS.forEach { c -> assertTrue(c, SoundLibrary.PLAITS.any { it.category == c }) }
+    }
+
+    @Test
+    fun randomSoundsStayMusical() {
+        val rng = kotlin.random.Random(7)
+        repeat(200) {
+            val s = SoundLibrary.randomSynth(rng)
+            assertEquals(s.sanitized(), s)
+            assertTrue(s.get(SynthPatch.CUTOFF) in 0.25f..0.85f)
+            assertTrue(s.get(SynthPatch.RESONANCE) <= 0.75f)
+            val p = SoundLibrary.randomPlaits(rng)
+            assertTrue(p.model !in listOf(21, 22, 23))
+            val a = SoundLibrary.randomAcid(rng, AcidSound(tuning = 0.6f, level = 0.5f))
+            assertEquals(0.6f, a.tuning, 0f)  // tuning and level are kept
+            assertEquals(0.5f, a.level, 0f)
+        }
+    }
+
+    @Test
+    fun favoritesRoundTripAndAreCleaned() {
+        val f = Favorites(
+            synth = listOf(NamedSound("Mon son 1", "x", SynthPatch(List(SynthPatch.PARAM_COUNT) { 2f }))),
+            acid = List(60) { NamedSound("A$it", SoundCategories.FAVORITES, AcidSound()) },
+        )
+        val back = ProjectJson.decodeFavorites(ProjectJson.encodeFavorites(f))
+        assertEquals(SoundCategories.FAVORITES, back.synth[0].category)
+        assertEquals(1f, back.synth[0].sound.get(0), 0f)
+        assertEquals(Favorites.MAX, back.acid.size)
+        assertEquals("Mon son 2", Favorites.nextName(listOf("Mon son 1", "Mon son 3")))
+    }
+}
+

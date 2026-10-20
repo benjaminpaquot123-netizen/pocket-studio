@@ -90,6 +90,9 @@ import com.pocketstudio.app.synth.SynthScreen
 import com.pocketstudio.app.remix.RemixActions
 import com.pocketstudio.app.session.SessionActions
 import com.pocketstudio.app.session.SessionScreen
+import com.pocketstudio.app.sounds.SoundBrowserUi
+import com.pocketstudio.model.SoundCategories
+import com.pocketstudio.model.SoundLibrary
 import com.pocketstudio.app.session.LivePadsActions
 import com.pocketstudio.app.session.LivePadsUi
 import com.pocketstudio.app.session.SessionScreenUi
@@ -312,6 +315,7 @@ fun AppRoot() {
                         LaunchedEffect(Unit) {
                             lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollLive() }
                         }
+                        val favorites by rhythmVm.favorites.collectAsStateWithLifecycle()
                         AcidScreen(
                             acid = project.acid,
                             playing = transport.playing,
@@ -329,6 +333,19 @@ fun AppRoot() {
                                 setBars = rhythmVm::setAcidBars,
                                 copyPage = rhythmVm::copyAcidPage,
                             ),
+                            browser = SoundBrowserUi(
+                                SoundCategories.ACID, SoundLibrary.ACID, favorites.acid,
+                                current = (SoundLibrary.ACID + favorites.acid).firstOrNull {
+                                    it.sound.copy(tuning = project.acid.sound.tuning, level = project.acid.sound.level) == project.acid.sound
+                                }?.name,
+                                // Tuning and volume stay as they are: a sound changes the character only.
+                                pick = { rhythmVm.applyAcidSound(SoundLibrary.ACID[it].sound.copy(tuning = project.acid.sound.tuning, level = project.acid.sound.level)) },
+                                pickFavorite = { rhythmVm.applyAcidSound(favorites.acid[it].sound) },
+                                deleteFavorite = rhythmVm::deleteAcidFavorite,
+                                random = rhythmVm::randomAcid,
+                                save = rhythmVm::saveAcidFavorite,
+                                tag = "acid_sounds",
+                            ),
                         )
                     }
                     AppTab.Synthe -> {
@@ -341,6 +358,7 @@ fun AppRoot() {
                         LaunchedEffect(Unit) {
                             lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollLive() }
                         }
+                        val favorites by rhythmVm.favorites.collectAsStateWithLifecycle()
                         SynthScreen(
                             patch = project.synth,
                             octave = octave,
@@ -387,6 +405,29 @@ fun AppRoot() {
                                 setPlaitsModel = rhythmVm::setPlaitsModel,
                                 setPlaitsParam = rhythmVm::setPlaitsParam,
                             ),
+                            browser = if (project.synthEngine == 1) {
+                                SoundBrowserUi(
+                                    SoundCategories.PLAITS, SoundLibrary.PLAITS, favorites.plaits,
+                                    current = (SoundLibrary.PLAITS + favorites.plaits).firstOrNull { it.sound == project.plaits.copy(level = it.sound.level) }?.name,
+                                    pick = { rhythmVm.applyPlaits(SoundLibrary.PLAITS[it].sound.copy(level = project.plaits.level)) },
+                                    pickFavorite = { rhythmVm.applyPlaits(favorites.plaits[it].sound) },
+                                    deleteFavorite = rhythmVm::deletePlaitsFavorite,
+                                    random = rhythmVm::randomPlaits,
+                                    save = rhythmVm::savePlaitsFavorite,
+                                    tag = "plaits_sounds",
+                                )
+                            } else {
+                                SoundBrowserUi(
+                                    SoundCategories.SYNTH, SoundLibrary.SYNTH, favorites.synth,
+                                    current = (SoundLibrary.SYNTH + favorites.synth).firstOrNull { it.sound.sanitized() == project.synth.sanitized() }?.name,
+                                    pick = { rhythmVm.applySynthPreset(SoundLibrary.SYNTH[it].sound) },
+                                    pickFavorite = { rhythmVm.applySynthPreset(favorites.synth[it].sound) },
+                                    deleteFavorite = rhythmVm::deleteSynthFavorite,
+                                    random = rhythmVm::randomSynth,
+                                    save = rhythmVm::saveSynthFavorite,
+                                    tag = "synth_sounds",
+                                )
+                            },
                         )
                     }
                     AppTab.Mixeur -> {

@@ -53,6 +53,8 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.pocketstudio.model.SynthPatch
+import com.pocketstudio.app.sounds.SoundBrowser
+import com.pocketstudio.app.sounds.SoundBrowserUi
 import com.pocketstudio.ui.MonoStyle
 import com.pocketstudio.ui.Neon
 import com.pocketstudio.ui.NeonCard
@@ -105,6 +107,7 @@ fun SynthScreen(
     notes: NotesUi? = null,
     startWithNotes: Boolean = false,
     instrument: InstrumentUi? = null,
+    browser: SoundBrowserUi? = null,
 ) {
     var advanced by rememberSaveable { mutableStateOf(false) }
     var showNotes by rememberSaveable { mutableStateOf(startWithNotes) }
@@ -136,8 +139,8 @@ fun SynthScreen(
                 }
                 instrument?.let { InstrumentPanel(it) }
                 if (instrument?.current == null) {
-                    PresetsCard(patch, actions)
-                    SoundCard(patch, actions, advanced) { advanced = it }
+                    PresetsCard(patch, actions, browser)
+                    if (instrument?.synthEngine != 1) SoundCard(patch, actions, advanced) { advanced = it }
                 }
             }
         } else if (landscape) {
@@ -153,7 +156,7 @@ fun SynthScreen(
                 }
                 Column(Modifier.weight(1f).verticalScroll(rememberScrollState())) {
                     instrument?.let { InstrumentPanel(it) }
-                    if (instrument?.current == null) SoundCard(patch, actions, advanced) { advanced = it }
+                    if (instrument?.current == null && instrument?.synthEngine != 1) SoundCard(patch, actions, advanced) { advanced = it }
                 }
                 Keyboard(
                     firstNote = 12 * (octave + 1), octaves = 3,
@@ -170,8 +173,8 @@ fun SynthScreen(
                     onChordKeys = { chordKeys = it }, keyOn = keyOn, keyOff = keyOff)
                 instrument?.let { InstrumentPanel(it) }
                 if (instrument?.current == null) {
-                    PresetsCard(patch, actions)
-                    SoundCard(patch, actions, advanced) { advanced = it }
+                    PresetsCard(patch, actions, browser)
+                    if (instrument?.synthEngine != 1) SoundCard(patch, actions, advanced) { advanced = it }
                 }
             }
         }
@@ -208,10 +211,11 @@ private fun ChordChip(on: Boolean, onChange: (Boolean) -> Unit) {
 }
 
 @Composable
-private fun PresetsCard(patch: SynthPatch, actions: SynthActions) {
+private fun PresetsCard(patch: SynthPatch, actions: SynthActions, browser: SoundBrowserUi?) {
     NeonCard {
         SectionLabel("Sons prêts à jouer")
-        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) { PresetChips(patch, actions) }
+        if (browser != null) SoundBrowser(browser)
+        else Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) { PresetChips(patch, actions) }
     }
 }
 

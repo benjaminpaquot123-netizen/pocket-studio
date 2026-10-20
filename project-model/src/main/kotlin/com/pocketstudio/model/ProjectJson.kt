@@ -14,4 +14,8 @@ object ProjectJson {
     fun encode(project: Project): String = json.encodeToString(Project.serializer(), project)
 
     fun decode(text: String): Project = json.decodeFromString(Project.serializer(), text).sanitized()
+
+    fun encodeFavorites(f: Favorites): String = json.encodeToString(Favorites.serializer(), f)
+
+    fun decodeFavorites(text: String): Favorites = json.decodeFromString(Favorites.serializer(), text).sanitized()
 }

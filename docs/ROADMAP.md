@@ -61,8 +61,8 @@ Feu vert de Benjamin (D4 = A) : fusion de la pull request en fin de phase.
 - [x] 4.4 Effets de performance, pad XY
 
 ## Phase 5 : synthèse avancée et connectivité
-- [ ] 5.1 Plaits, FM 4 opérateurs
-- [ ] 5.2 Presets classés, favoris, randomisation intelligente
+- [x] 5.1 Plaits, FM 4 opérateurs (FM 6 op. de Plaits)
+- [x] 5.2 Presets classés, favoris, randomisation intelligente
 - [ ] 5.3 MIDI USB/BLE, horloge MIDI, Ableton Link
 - [ ] 5.4 Basic Pitch (audio vers MIDI)
 

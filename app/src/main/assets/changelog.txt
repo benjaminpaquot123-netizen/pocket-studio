@@ -1,5 +1,5 @@
 Pads live (onglet Morceau) : 4 à 16 pads, un toucher lance le son en rythme, un autre le coupe. « Mais c'est pas faux ! »
-Remix : écoute les 4 pistes ensemble et allume ou coupe chacune sans que la musique s'arrête ; « → Live » les met sur les pads.
-Acide : le son se règle avec des potards compacts (les curseurs restent disponibles).
-Morceau : jusqu'à 24 scènes (A à X) ; « Afficher 8 · 16 · 24 » agrandit la grille.
+Remix : écoute les 4 pistes ensemble, allume ou coupe chacune sans arrêt ; « → Live » les met sur les pads.
+Sons rangés par familles pour le Synthé, Plaits et l'Acide, avec « Au hasard » et tes favoris.
+Acide : potards compacts ; Morceau : jusqu'à 24 scènes (A à X).
 Synthé : nouvelle source « Plaits », 24 modèles du célèbre module (analogique, FM façon DX7, cordes, percussions…).

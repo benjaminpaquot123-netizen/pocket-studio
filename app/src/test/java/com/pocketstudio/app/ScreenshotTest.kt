@@ -368,6 +368,28 @@ class ScreenshotTest {
     }
 
     @Test
+    fun soundBrowser() = shoot("sound_browser") {
+        androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
+            com.pocketstudio.ui.NeonCard {
+                com.pocketstudio.app.sounds.SoundBrowser(
+                    com.pocketstudio.app.sounds.SoundBrowserUi(
+                        com.pocketstudio.model.SoundCategories.SYNTH, com.pocketstudio.model.SoundLibrary.SYNTH,
+                        listOf(com.pocketstudio.model.NamedSound("Mon son 1", "Favoris", com.pocketstudio.model.SynthPatch())),
+                        current = "Basse reese",
+                    ),
+                )
+            }
+            com.pocketstudio.ui.NeonCard {
+                com.pocketstudio.app.sounds.SoundBrowser(
+                    com.pocketstudio.app.sounds.SoundBrowserUi(
+                        com.pocketstudio.model.SoundCategories.ACID, com.pocketstudio.model.SoundLibrary.ACID, emptyList(), current = null, tag = "acid",
+                    ),
+                )
+            }
+        }
+    }
+
+    @Test
     fun acidPanel() = shoot("acid_panel") {
         androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
             com.pocketstudio.app.acid.Panel303(com.pocketstudio.model.AcidSound(cutoff = 0.62f, waveform = 1f).values()) { _, _ -> }

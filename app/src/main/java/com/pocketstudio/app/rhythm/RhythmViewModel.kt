@@ -44,6 +44,13 @@ import com.pocketstudio.model.Performance
 import com.pocketstudio.model.Progression
 import com.pocketstudio.model.NoteClip
 import com.pocketstudio.model.PadSample
+import com.pocketstudio.model.AcidSound
+import com.pocketstudio.model.Favorites
+import com.pocketstudio.model.NamedSound
+import com.pocketstudio.model.PlaitsPatch
+import com.pocketstudio.model.ProjectJson
+import com.pocketstudio.model.SoundCategories
+import com.pocketstudio.model.SoundLibrary
 import com.pocketstudio.model.LiveClip
 import com.pocketstudio.model.LivePads
 import com.pocketstudio.model.sampleFiles
@@ -1346,6 +1353,65 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         session.edit { p -> p.copy(synth = patch) }
         pushSynth(project.value.synth)
     }
+
+    // --- Sound library: built-in sounds, favourites, random ---------------------------------------
+
+    private val favoritesFile = File(app.filesDir, "favorites.json")
+    private val _favorites = MutableStateFlow(
+        runCatching { if (favoritesFile.exists()) ProjectJson.decodeFavorites(favoritesFile.readText()) else Favorites() }
+            .onFailure { AppLog.add("Favoris illisibles : ${it.message}") }.getOrDefault(Favorites()),
+    )
+    /** The user's own sounds, shared by every project. */
+    val favorites: StateFlow<Favorites> = _favorites.asStateFlow()
+
+    private fun editFavorites(transform: (Favorites) -> Favorites) {
+        val next = transform(_favorites.value).sanitized()
+        _favorites.value = next
+        val text = ProjectJson.encodeFavorites(next)
+        viewModelScope.launch(Dispatchers.IO) {
+            runCatching {
+                val tmp = File(favoritesFile.path + ".tmp")
+                tmp.writeText(text)
+                if (!tmp.renameTo(favoritesFile)) error("renommage impossible")
+            }.onFailure { AppLog.add("Favoris non enregistrés : ${it.message}") }
+        }
+    }
+
+    fun saveSynthFavorite() = editFavorites { f ->
+        f.copy(synth = f.synth + NamedSound(Favorites.nextName(f.synth.map { it.name }), SoundCategories.FAVORITES, project.value.synth.sanitized()))
+    }
+    fun savePlaitsFavorite() = editFavorites { f ->
+        f.copy(plaits = f.plaits + NamedSound(Favorites.nextName(f.plaits.map { it.name }), SoundCategories.FAVORITES, project.value.plaits))
+    }
+    fun saveAcidFavorite() = editFavorites { f ->
+        f.copy(acid = f.acid + NamedSound(Favorites.nextName(f.acid.map { it.name }), SoundCategories.FAVORITES, project.value.acid.sound))
+    }
+    fun deleteSynthFavorite(i: Int) = editFavorites { f -> f.copy(synth = f.synth.filterIndexed { k, _ -> k != i }) }
+    fun deletePlaitsFavorite(i: Int) = editFavorites { f -> f.copy(plaits = f.plaits.filterIndexed { k, _ -> k != i }) }
+    fun deleteAcidFavorite(i: Int) = editFavorites { f -> f.copy(acid = f.acid.filterIndexed { k, _ -> k != i }) }
+
+    fun randomSynth() = applySynthPreset(SoundLibrary.randomSynth())
+
+    fun applyPlaits(patch: PlaitsPatch) {
+        session.edit { p -> p.copy(plaits = patch.sanitized()) }
+        pushPlaits()
+        if (NativeEngine.isAvailable && !_transport.value.playing) {
+            viewModelScope.launch {
+                kotlinx.coroutines.delay(30)
+                previewNote(60)  // hear it right away
+            }
+        }
+    }
+
+    fun randomPlaits() = applyPlaits(SoundLibrary.randomPlaits().copy(level = project.value.plaits.level))
+
+    fun applyAcidSound(sound: AcidSound) {
+        session.edit { p -> p.copy(acid = p.acid.copy(sound = sound.sanitized())) }
+        if (NativeEngine.isAvailable) project.value.acid.sound.values().forEachIndexed { i, v -> NativeEngine.setAcidParam(i, v) }
+    }
+
+    /** New character, same tuning and volume. */
+    fun randomAcid() = applyAcidSound(SoundLibrary.randomAcid(keep = project.value.acid.sound))
 
     private fun pushSynth(patch: SynthPatch) {
         if (!NativeEngine.isAvailable) return

@@ -55,6 +55,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pocketstudio.model.AcidPattern
+import com.pocketstudio.app.sounds.SoundBrowser
+import com.pocketstudio.app.sounds.SoundBrowserUi
 import com.pocketstudio.model.AcidSound
 import com.pocketstudio.ui.Knob
 import com.pocketstudio.ui.KnobColors
@@ -106,6 +108,7 @@ fun AcidScreen(
     selected: Int,
     actions: AcidActions,
     modifier: Modifier = Modifier,
+    browser: SoundBrowserUi? = null,
 ) {
     Column(
         modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp).testTag("acid"),
@@ -142,7 +145,7 @@ fun AcidScreen(
         val setEnglish: (Boolean) -> Unit = { english = it; Notation.setEnglish(context, it) }
         StepGrid(acid, playing, currentStep, selected, actions, english, setEnglish)
         StepEditor(acid, selected, actions, english)
-        SoundCard(acid, actions)
+        SoundCard(acid, actions, browser)
     }
 }
 
@@ -318,7 +321,7 @@ private fun StepEditor(acid: AcidPattern, index: Int, actions: AcidActions, engl
 }
 
 @Composable
-private fun SoundCard(acid: AcidPattern, actions: AcidActions) {
+private fun SoundCard(acid: AcidPattern, actions: AcidActions, browser: SoundBrowserUi?) {
     val values = acid.sound.values()
     val context = LocalContext.current
     var sliders by remember { mutableStateOf(SoundView.sliders(context)) }
@@ -334,6 +337,7 @@ private fun SoundCard(acid: AcidPattern, actions: AcidActions) {
                 )
             }
         }
+        browser?.let { SoundBrowser(it) }
         if (!sliders) {
             Panel303(values, actions.setSound)
             return@NeonCard

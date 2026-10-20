@@ -18,6 +18,11 @@
       "hint": "Remix › Jouer avec le projet › « → Live » sur chaque piste (2 ou 4 mesures), puis Morceau › Pads live : lance et coupe chaque partie."
     },
     {
+      "id": "sound_library",
+      "title": "Choisir un son par famille, au hasard, en favori",
+      "hint": "Synthé (ou Acide › Son) : touche une famille puis un son. « Au hasard » en tire un nouveau ; « Garder ce son » le range dans ★ Favoris, retrouvé dans tous tes projets."
+    },
+    {
       "id": "panel_303",
       "title": "Régler l'acide avec les potards",
       "hint": "Acide › Son › Panneau : glisse vers le haut ou le bas sur un potard pour le tourner, touche deux fois pour revenir au départ."

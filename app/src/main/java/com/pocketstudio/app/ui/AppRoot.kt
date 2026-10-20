@@ -570,7 +570,9 @@ fun AppRoot() {
                                 setExportBars = rhythmVm::setExportBars,
                                 export = rhythmVm::exportWav,
                                 cancelExport = rhythmVm::cancelExport,
-                                share = { export.file?.let { WavExporter.share(context, it) } },
+                                share = { WavExporter.share(context, export.files) },
+                                setExportWhat = rhythmVm::setExportWhat,
+                                setExportFormat = rhythmVm::setExportFormat,
                                 setInsertType = rhythmVm::setInsertType,
                                 setInsertParam = rhythmVm::setInsertParam,
                                 setSend = rhythmVm::setSend,
@@ -587,6 +589,7 @@ fun AppRoot() {
                                 toggleRecord = rhythmVm::toggleAutomationRecord,
                             ),
                             export = export,
+                            hasSong = project.song.isNotEmpty(),
                         )
                     }
                     AppTab.Morceau -> {

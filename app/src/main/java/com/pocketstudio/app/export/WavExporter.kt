@@ -31,11 +31,11 @@ object WavExporter {
     }
 
     /** Copies [file] into the shared Music folder (no permission needed). Blocking: call off the main thread. */
-    fun copyToMusic(context: Context, file: File): Boolean = runCatching {
+    fun copyToMusic(context: Context, file: File, mime: String = "audio/wav"): Boolean = runCatching {
         val resolver = context.contentResolver
         val values = ContentValues().apply {
             put(MediaStore.Audio.Media.DISPLAY_NAME, file.name)
-            put(MediaStore.Audio.Media.MIME_TYPE, "audio/wav")
+            put(MediaStore.Audio.Media.MIME_TYPE, mime)
             put(MediaStore.Audio.Media.RELATIVE_PATH, MUSIC_FOLDER)
             put(MediaStore.Audio.Media.IS_PENDING, 1)
         }
@@ -52,13 +52,21 @@ object WavExporter {
         }
     }.getOrDefault(false)
 
-    fun share(context: Context, file: File) {
-        val uri = FileProvider.getUriForFile(context, context.packageName + ".files", file)
-        val send = Intent(Intent.ACTION_SEND).apply {
-            type = "audio/wav"
-            putExtra(Intent.EXTRA_STREAM, uri)
+    fun share(context: Context, file: File) = share(context, listOf(file))
+
+    /** One file or several (the tracks of a stems export) through Android's share menu. */
+    fun share(context: Context, files: List<File>, title: String = "Partager le morceau") {
+        if (files.isEmpty()) return
+        val uris = ArrayList(files.map { FileProvider.getUriForFile(context, context.packageName + ".files", it) })
+        val mime = if (files.all { it.extension == "m4a" }) "audio/mp4" else if (files.all { it.extension == "wav" }) "audio/wav" else "*/*"
+        val send = if (uris.size == 1) {
+            Intent(Intent.ACTION_SEND).putExtra(Intent.EXTRA_STREAM, uris[0])
+        } else {
+            Intent(Intent.ACTION_SEND_MULTIPLE).putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris)
+        }.apply {
+            type = mime
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
-        context.startActivity(Intent.createChooser(send, "Partager le morceau").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+        context.startActivity(Intent.createChooser(send, title).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
     }
 }

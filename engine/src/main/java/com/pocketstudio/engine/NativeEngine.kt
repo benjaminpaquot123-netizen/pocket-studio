@@ -199,6 +199,16 @@ object NativeEngine {
         }
     }
 
+    /**
+     * Inside [captureInto] only: the commands that follow take effect at [frame] of the rendered
+     * song (-1: at once). A song export stages each next scene while the previous one plays.
+     */
+    fun captureAt(frame: Long) {
+        val target = captureTarget
+        check(target != 0L) { "captureAt outside captureInto" }
+        exportScheduleFrom(target, frame)
+    }
+
     /** Gives pad [pad] the sample (or back to its drum sound with null). Main thread, like every command. */
     fun setPadSample(pad: Int, sample: NativeSample?) {
         val target = captureTarget
@@ -289,6 +299,7 @@ object NativeEngine {
     // Export natives stay public: `internal` would mangle their JNI names. Use OfflineExport.
     external fun exportCreate(): Long
     private external fun exportPost(handle: Long, type: Int, value: Float, a: Int, b: Int)
+    private external fun exportScheduleFrom(handle: Long, frame: Long)
     external fun exportRender(handle: Long, path: String, frames: Long, tail: Long): Int
     external fun exportProgress(handle: Long): Float
     external fun exportRenderFloat(handle: Long, frames: Long, tail: Long): FloatArray

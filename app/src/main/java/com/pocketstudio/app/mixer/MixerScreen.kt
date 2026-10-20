@@ -25,6 +25,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.pocketstudio.app.rhythm.ExportUi
+import com.pocketstudio.app.rhythm.ExportWhat
+import com.pocketstudio.app.rhythm.ExportFormat
 import com.pocketstudio.model.Buses
 import com.pocketstudio.model.Channel
 import com.pocketstudio.model.EffectType
@@ -55,6 +57,8 @@ data class MixerActions(
     val toggleSolo: (Int) -> Unit = {},
     val setExportBars: (Int) -> Unit = {},
     val export: () -> Unit = {},
+    val setExportWhat: (ExportWhat) -> Unit = {},
+    val setExportFormat: (ExportFormat) -> Unit = {},
     val cancelExport: () -> Unit = {},
     val share: () -> Unit = {},
     val setInsertType: (ch: Int, slot: Int, type: EffectType) -> Unit = { _, _, _ -> },
@@ -84,6 +88,7 @@ fun MixerScreen(
     buses: List<List<Float>> = Buses.DEFAULTS,
     automation: AutomationUi = AutomationUi(),
     automationActions: AutomationActions = AutomationActions(),
+    hasSong: Boolean = false,
 ) {
     Column(
         modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp).testTag("mixer"),
@@ -108,7 +113,7 @@ fun MixerScreen(
         }
         BusesCard(buses, actions)
         AutomationCard(automation, channels, master, automationActions)
-        ExportCard(export, actions)
+        ExportCard(export, actions, hasSong)
     }
 }
 
@@ -168,22 +173,54 @@ private fun EffectsToggle(summary: String, open: Boolean, modifier: Modifier = M
 }
 
 @Composable
-internal fun ExportCard(export: ExportUi, actions: MixerActions) {
+internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolean = true) {
+    val chipColors = FilterChipDefaults.filterChipColors(selectedContainerColor = Neon.Acid.copy(alpha = 0.25f), selectedLabelColor = Neon.Acid)
     NeonCard(accent = Neon.Acid) {
-        SectionLabel("Exporter en WAV", color = Neon.Acid)
-        Text("Longueur", style = MaterialTheme.typography.bodyMedium)
+        SectionLabel("Exporter", color = Neon.Acid)
+        Text("Quoi", style = MaterialTheme.typography.bodyMedium)
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            EXPORT_BARS.forEach { bars ->
+            listOf(ExportWhat.Loop to "La boucle", ExportWhat.Song to "Le morceau", ExportWhat.Stems to "Piste par piste").forEach { (what, label) ->
                 FilterChip(
-                    selected = export.bars == bars,
-                    onClick = { actions.setExportBars(bars) },
-                    enabled = !export.running,
-                    label = { Text(if (bars == 1) "1 mesure" else "$bars") },
+                    selected = export.what == what, onClick = { actions.setExportWhat(what) }, enabled = !export.running,
+                    label = { Text(label) }, colors = chipColors, modifier = Modifier.testTag("export_what_${what.name}"),
+                )
+            }
+        }
+        Text(
+            when (export.what) {
+                ExportWhat.Loop -> "La scène en cours, sur la longueur choisie."
+                ExportWhat.Song -> if (hasSong) "Toutes les parties de l'onglet Morceau, dans l'ordre." else "Le morceau est vide : ajoute des scènes dans l'onglet Morceau."
+                ExportWhat.Stems -> "Un fichier par piste (batterie, acide, synthé, remix) pour les reprendre ailleurs." +
+                    if (hasSong) " Sur tout le morceau." else ""
+            },
+            style = MaterialTheme.typography.bodySmall, color = if (export.what == ExportWhat.Song && !hasSong) Neon.Amber else Neon.TextSecondary,
+        )
+        if (export.what == ExportWhat.Loop || (export.what == ExportWhat.Stems && !hasSong)) {
+            Text("Longueur", style = MaterialTheme.typography.bodyMedium)
+            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                EXPORT_BARS.forEach { bars ->
+                    FilterChip(
+                        selected = export.bars == bars,
+                        onClick = { actions.setExportBars(bars) },
+                        enabled = !export.running,
+                        label = { Text(if (bars == 1) "1 mesure" else "$bars") },
+                        colors = chipColors,
+                    )
+                }
+            }
+        }
+        Text("Format", style = MaterialTheme.typography.bodyMedium)
+        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            listOf(ExportFormat.Wav to "WAV (qualité studio)", ExportFormat.M4a to "M4A (léger)").forEach { (format, label) ->
+                FilterChip(
+                    selected = export.format == format, onClick = { actions.setExportFormat(format) }, enabled = !export.running,
+                    label = { Text(label) }, colors = chipColors, modifier = Modifier.testTag("export_format_${format.name}"),
                 )
             }
         }
         when {
             export.running -> {
+                export.stage?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary) }
                 LinearProgressIndicator(
                     progress = { export.progress },
                     modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
@@ -195,19 +232,29 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions) {
             else -> {
                 Button(
                     onClick = actions.export,
+                    enabled = export.what != ExportWhat.Song || hasSong,
                     modifier = Modifier.fillMaxWidth().testTag("export"),
                     colors = ButtonDefaults.buttonColors(containerColor = Neon.Acid, contentColor = Color.Black),
-                ) { Text("Exporter ${export.bars} mesure${if (export.bars > 1) "s" else ""}") }
+                ) {
+                    Text(
+                        when (export.what) {
+                            ExportWhat.Loop -> "Exporter ${export.bars} mesure${if (export.bars > 1) "s" else ""}"
+                            ExportWhat.Song -> "Exporter le morceau"
+                            ExportWhat.Stems -> "Exporter les pistes"
+                        },
+                    )
+                }
             }
         }
-        export.file?.let { file ->
+        if (export.files.isNotEmpty()) {
             Text(
-                if (export.savedInMusic) "Enregistré dans Musique › Pocket Studio : ${file.name}"
-                else "Fichier prêt : ${file.name}",
+                (if (export.savedInMusic) "Enregistré dans Musique › Pocket Studio : " else "Prêt : ") + export.files.joinToString(", ") { it.name },
                 style = MaterialTheme.typography.bodySmall,
                 color = Neon.TextSecondary,
             )
-            OutlinedButton(onClick = actions.share, modifier = Modifier.fillMaxWidth().testTag("share")) { Text("Partager") }
+            OutlinedButton(onClick = actions.share, modifier = Modifier.fillMaxWidth().testTag("share")) {
+                Text(if (export.files.size > 1) "Partager les ${export.files.size} fichiers" else "Partager")
+            }
         }
         export.error?.let { Text(it, color = Neon.Red, style = MaterialTheme.typography.bodySmall) }
     }

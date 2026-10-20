@@ -157,7 +157,7 @@ class ScreenshotTest {
             channels = channels,
             meters = floatArrayOf(0.62f, 0.81f, 0f, 0.4f, 0.88f, 0.8f),
             actions = com.pocketstudio.app.mixer.MixerActions(),
-            export = com.pocketstudio.app.rhythm.ExportUi(bars = 4, file = java.io.File("Mon-premier-rythme-20261018-221500.wav"), savedInMusic = true),
+            export = com.pocketstudio.app.rhythm.ExportUi(bars = 4, files = listOf(java.io.File("Mon-premier-rythme-20261018-221500.wav")), savedInMusic = true),
         )
     }
 
@@ -165,11 +165,14 @@ class ScreenshotTest {
     fun mixerExporting() = shoot("mixer_export") {
         androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
             com.pocketstudio.app.mixer.ExportCard(
-                com.pocketstudio.app.rhythm.ExportUi(bars = 8, running = true, progress = 0.4f),
+                com.pocketstudio.app.rhythm.ExportUi(bars = 8, what = com.pocketstudio.app.rhythm.ExportWhat.Stems, running = true, progress = 0.4f, stage = "Acide (2/4)"),
                 com.pocketstudio.app.mixer.MixerActions(),
             )
             com.pocketstudio.app.mixer.ExportCard(
-                com.pocketstudio.app.rhythm.ExportUi(bars = 4, file = java.io.File("Mon-premier-rythme-20261018-221500.wav"), savedInMusic = true),
+                com.pocketstudio.app.rhythm.ExportUi(
+                    bars = 4, what = com.pocketstudio.app.rhythm.ExportWhat.Song, format = com.pocketstudio.app.rhythm.ExportFormat.M4a,
+                    files = listOf(java.io.File("Da-Funk-morceau-20261020-101500.m4a")), savedInMusic = true,
+                ),
                 com.pocketstudio.app.mixer.MixerActions(),
             )
         }

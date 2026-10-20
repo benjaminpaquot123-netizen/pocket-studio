@@ -2179,6 +2179,40 @@ void testLivePadsLoopOnTheBeat() {
     engine.collectGarbage();
 }
 
+void testSongExportSwapsScenesOnTime() {
+    // Scene A: a kick on every beat. Scene B: the same kick on beat 1 only. Song: A then B.
+    const int64_t bar = kRate * 2;
+    auto setup = [](ps::OfflineRenderer& r) {
+        r.post({ps::CommandType::SetTempo, 120.0f});
+        for (int step = 0; step < 16; step += 4) r.post({ps::CommandType::SetDrumHit, 1.0f, 0, step});
+    };
+    ps::OfflineRenderer song(kRate);
+    setup(song);
+    song.scheduleFrom(3000);  // half a step into A: stage B, swap after A's 16 steps
+    song.post({ps::CommandType::SetStaging, 1.0f});
+    for (int step = 0; step < 16; step += 4) song.post({ps::CommandType::SetDrumHit, step == 0 ? 1.0f : 0.0f, 0, step});
+    song.post({ps::CommandType::SetStaging, 0.0f});
+    song.post({ps::CommandType::ArmSceneSwap, 0.0f, 16});
+    song.scheduleFrom(-1);
+    const auto a = song.renderToBuffer(bar * 2, 0);
+    ps::OfflineRenderer loop(kRate);
+    setup(loop);
+    const auto b = loop.renderToBuffer(bar * 2, 0);
+    CHECK(a.size() == b.size() && a.size() == size_t(bar * 2) * 2);
+    auto peakIn = [](const std::vector<float>& x, int64_t from, int64_t to) {
+        float p = 0.0f;
+        for (int64_t i = from; i < to; ++i) p = std::max(p, std::fabs(x[size_t(i) * 2]));
+        return p;
+    };
+    float firstBarDiff = 0.0f;
+    for (int64_t i = 0; i < bar; ++i) firstBarDiff = std::max(firstBarDiff, std::fabs(a[size_t(i) * 2] - b[size_t(i) * 2]));
+    std::printf("  song export: bar 1 diff %.5f, bar 2 beat 1 %.3f, beat 3 %.3f (loop %.3f)\n", firstBarDiff,
+                peakIn(a, bar, bar + 2000), peakIn(a, bar + bar / 2, bar + bar / 2 + 2000), peakIn(b, bar + bar / 2, bar + bar / 2 + 2000));
+    CHECK(firstBarDiff < 1e-6f);                                         // staging does not touch what plays
+    CHECK(peakIn(a, bar, bar + 2000) > 0.1f);                            // B starts on the bar with its kick
+    CHECK(peakIn(a, bar + bar / 2, bar + bar / 2 + 2000) < 0.25f * peakIn(b, bar + bar / 2, bar + bar / 2 + 2000));  // no kick on beat 3
+}
+
 void testPlayPositionForLiveRecording() {
     ps::Engine engine(kRate);  // 120 BPM: a sixteenth is 6000 frames
     CHECK(engine.playPosition() < 0.0);
@@ -2323,6 +2357,7 @@ int main(int argc, char** argv) {
         {"stem_preview", testStemPreviewPlaysWithoutTheTransport},
         {"stems_stretch", testStemsStretchToTheProjectTempo},
         {"play_position", testPlayPositionForLiveRecording},
+        {"song_export", testSongExportSwapsScenesOnTime},
         {"no_alloc_in_process", testProcessNeverAllocates},
     };
     for (const auto& t : tests) {

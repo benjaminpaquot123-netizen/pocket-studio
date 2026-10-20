@@ -386,6 +386,11 @@ JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportPost(JNIE
     renderer(handle)->post({static_cast<ps::CommandType>(type), value, a, b});
 }
 
+// Later posts to this export take effect at `frame` of the song (-1: at once). Song exports.
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportScheduleFrom(JNIEnv*, jobject, jlong handle, jlong frame) {
+    renderer(handle)->scheduleFrom(frame);
+}
+
 JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_exportRender(JNIEnv* env, jobject, jlong handle,
                                                                             jstring path, jlong frames, jlong tail) {
     const char* p = env->GetStringUTFChars(path, nullptr);

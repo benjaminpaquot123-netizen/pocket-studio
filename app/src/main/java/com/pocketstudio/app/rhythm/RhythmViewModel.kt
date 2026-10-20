@@ -44,6 +44,7 @@ import com.pocketstudio.model.Performance
 import com.pocketstudio.model.Progression
 import com.pocketstudio.model.NoteClip
 import com.pocketstudio.model.PadSample
+import com.pocketstudio.app.export.AacEncoder
 import com.pocketstudio.model.HeardNote
 import com.pocketstudio.model.Transcription
 import com.pocketstudio.separation.BasicPitch
@@ -88,14 +89,26 @@ sealed interface SampleTask {
     data class Failed(val message: String) : SampleTask
 }
 
+/** What an export renders: the current loop, the whole song (scenes chained), or each track apart. */
+enum class ExportWhat { Loop, Song, Stems }
+
+/** WAV 24 bits (studio quality) or M4A/AAC (about ten times smaller, for sharing). */
+enum class ExportFormat(val extension: String, val mime: String) { Wav("wav", "audio/wav"), M4a("m4a", "audio/mp4") }
+
 data class ExportUi(
     val bars: Int = 4,
+    val what: ExportWhat = ExportWhat.Loop,
+    val format: ExportFormat = ExportFormat.Wav,
     val running: Boolean = false,
     val progress: Float = 0f,
-    val file: File? = null,
+    /** Step being done ("Batterie 1/4", "Compression M4A"…). */
+    val stage: String? = null,
+    val files: List<File> = emptyList(),
     val savedInMusic: Boolean = false,
     val error: String? = null,
-)
+) {
+    val file: File? get() = files.firstOrNull()
+}
 
 /** What the audio engine is doing right now, polled for the playhead and pad lights. */
 data class LiveUi(val currentStep: Int = -1, val litPads: Set<Int> = emptySet(), val absoluteStep: Int = -1)
@@ -184,10 +197,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /** Sends the whole project to the engine, e.g. after the audio stream (re)started. */
-    fun syncEngine() {
+    fun syncEngine(p: Project = project.value) {
         if (!NativeEngine.isAvailable) return
         NativeEngine.setStaging(false)  // whatever happened before, edits go to the playing scene
-        val p = project.value
         NativeEngine.setTempo(p.tempoBpm)
         NativeEngine.setSwing(p.swing)
         pushDrumPattern(p.drums)
@@ -1914,53 +1926,144 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         _export.value = _export.value.copy(bars = bars.coerceIn(1, 64))
     }
 
-    /** Renders the project offline (not the live engine) into a WAV, then copies it to Music. */
-    fun exportWav() {
-        if (!NativeEngine.isAvailable || running != null) return
-        val app = getApplication<Application>()
-        val p = project.value
-        val bars = _export.value.bars
-        val file = runCatching { WavExporter.newFile(app, p.name) }.getOrElse {
-            _export.value = ExportUi(bars = bars, error = "Impossible de préparer le fichier d'export.")
-            return
-        }
-        val job = OfflineExport()
+    fun setExportWhat(what: ExportWhat) {
+        _export.value = _export.value.copy(what = what)
+    }
+
+    fun setExportFormat(format: ExportFormat) {
+        _export.value = _export.value.copy(format = format)
+    }
+
+    /** Frames of the whole song (each part: its scene's length × its repeats). */
+    private fun songFrames(p: Project): Long {
+        val scenes = p.allScenes
+        val steps = p.song.sumOf { (scenes.getOrNull(it.scene)?.steps ?: 16).toLong() * it.repeats }
+        return Math.round(steps * 15.0 / p.tempoBpm * OfflineExport.SAMPLE_RATE)  // a sixteenth = 15/bpm s
+    }
+
+    /**
+     * Describes the project to an export engine. For the song, the first part's scene plays first
+     * and each next scene is staged half a step into the part before it, swapping on its last bar line.
+     */
+    private fun describe(job: OfflineExport, p: Project, song: Boolean, soloChannel: Int?) {
         NativeEngine.captureInto(job) {
-            syncEngine()
+            val first = if (song) p.sceneView(p.song[0].scene) else p
+            syncEngine(first)
             NativeEngine.setMetronome(false)
-        }
-        running = job
-        _export.value = ExportUi(bars = bars, running = true)
-        viewModelScope.launch {
-            // Progress is polled on the main thread, and the job is closed on it too, so
-            // the native renderer is never read after it is freed.
-            val poll = launch {
-                while (true) {
-                    _export.value = _export.value.copy(progress = job.progress)
-                    kotlinx.coroutines.delay(100)
+            if (soloChannel != null) NativeEngine.setChannelSolo(soloChannel, true)
+            if (song) {
+                val sixteenth = 15.0 / p.tempoBpm * OfflineExport.SAMPLE_RATE
+                var stepsSoFar = 0L
+                p.song.forEachIndexed { i, part ->
+                    val steps = (p.allScenes.getOrNull(part.scene)?.steps ?: 16) * part.repeats
+                    val next = p.song.getOrNull(i + 1)
+                    if (next != null) {
+                        NativeEngine.captureAt(Math.round((stepsSoFar + 0.5) * sixteenth))
+                        val view = p.sceneView(next.scene)
+                        NativeEngine.setStaging(true)
+                        pushDrumPattern(view.drums)
+                        pushAcid(view.acid)
+                        pushNotes(view.synthNotes)
+                        NativeEngine.setStaging(false)
+                        NativeEngine.armSceneSwap(steps)
+                    }
+                    stepsSoFar += steps
                 }
-            }
-            try {
-                val result = withContext(Dispatchers.IO) {
-                    val r = job.render(file, OfflineExport.framesFor(bars, p.tempoBpm), TAIL_FRAMES)
-                    r to (r == ExportResult.Ok && WavExporter.copyToMusic(app, file))
-                }
-                _export.value = when (result.first) {
-                    ExportResult.Ok -> ExportUi(bars = bars, file = file, savedInMusic = result.second)
-                    ExportResult.Cancelled -> ExportUi(bars = bars)
-                    ExportResult.IoError -> ExportUi(bars = bars, error = "L'écriture du fichier a échoué (stockage plein ?).")
-                }
-                AppLog.add("Export $bars mesures : ${result.first}, copie Musique = ${result.second}")
-                if (result.first != ExportResult.Ok) file.delete()
-            } finally {
-                poll.cancel()
-                job.close()
-                running = null
+                NativeEngine.captureAt(-1)
             }
         }
     }
 
+    /**
+     * Renders the project offline (never the live engine): the loop, the whole song or each track,
+     * into WAV (or M4A), then copies the files to Music › Pocket Studio.
+     */
+    fun exportWav() {
+        if (!NativeEngine.isAvailable || running != null) return
+        val app = getApplication<Application>()
+        val p = project.value
+        val settings = _export.value
+        val song = settings.what == ExportWhat.Song || (settings.what == ExportWhat.Stems && p.song.isNotEmpty())
+        if (settings.what == ExportWhat.Song && p.song.isEmpty()) {
+            _export.value = settings.copy(error = "Le morceau est vide : ajoute des scènes dans l'onglet Morceau.", files = emptyList())
+            return
+        }
+        val frames = if (song) songFrames(p) else OfflineExport.framesFor(settings.bars, p.tempoBpm)
+        // Each render: (label for the file and the screen, solo channel or null for the mix).
+        val renders: List<Pair<String, Int?>> = when (settings.what) {
+            ExportWhat.Stems -> STEM_EXPORTS.filter { (_, ch) -> ch != 3 || p.remix.setId != null || p.live.used > 0 }
+            ExportWhat.Song -> listOf("morceau" to null)
+            ExportWhat.Loop -> listOf("boucle" to null)
+        }
+        _export.value = settings.copy(running = true, progress = 0f, files = emptyList(), error = null, stage = null)
+        exportJob = viewModelScope.launch {
+            val done = ArrayList<File>()
+            var musicOk = true
+            try {
+                renders.forEachIndexed { index, (label, solo) ->
+                    val job = OfflineExport()
+                    describe(job, p, song, solo)
+                    running = job
+                    val wav = runCatching { WavExporter.newFile(app, "${p.name}-$label") }.getOrElse { throw UserMessage("Impossible de préparer le fichier d'export.") }
+                    _export.value = _export.value.copy(stage = if (renders.size > 1) "${label.replaceFirstChar { it.uppercase() }} (${index + 1}/${renders.size})" else null)
+                    val poll = launch {
+                        while (true) {
+                            _export.value = _export.value.copy(progress = (index + job.progress) / renders.size)
+                            kotlinx.coroutines.delay(100)
+                        }
+                    }
+                    val result = try {
+                        withContext(Dispatchers.IO) { job.render(wav, frames, TAIL_FRAMES) }
+                    } finally {
+                        poll.cancel()
+                        // Closed on the main thread, after the render returned.
+                        job.close()
+                        running = null
+                    }
+                    when (result) {
+                        ExportResult.Cancelled -> { wav.delete(); throw kotlinx.coroutines.CancellationException("annulé") }
+                        ExportResult.IoError -> { wav.delete(); throw UserMessage("L'écriture du fichier a échoué (stockage plein ?).") }
+                        ExportResult.Ok -> Unit
+                    }
+                    val out = if (settings.format == ExportFormat.M4a) {
+                        _export.value = _export.value.copy(stage = "Compression M4A" + if (renders.size > 1) " (${index + 1}/${renders.size})" else "")
+                        val m4a = File(wav.parentFile, wav.nameWithoutExtension + ".m4a")
+                        withContext(Dispatchers.IO) {
+                            try {
+                                AacEncoder.encode(wav, m4a) { exportCancelled }
+                            } finally {
+                                wav.delete()
+                            }
+                        }
+                        m4a
+                    } else {
+                        wav
+                    }
+                    musicOk = withContext(Dispatchers.IO) { WavExporter.copyToMusic(app, out, settings.format.mime) } && musicOk
+                    done += out
+                }
+                _export.value = _export.value.copy(running = false, files = done, savedInMusic = musicOk, stage = null)
+                AppLog.add("Export ${settings.what} ${settings.format} : ${done.size} fichier(s), ${frames / OfflineExport.SAMPLE_RATE} s")
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                done.forEach { it.delete() }
+                _export.value = _export.value.copy(running = false, files = emptyList(), stage = null)
+            } catch (e: Exception) {
+                done.forEach { it.delete() }
+                AppLog.add("Export : échec (${e.message})")
+                _export.value = _export.value.copy(running = false, files = emptyList(), stage = null,
+                    error = if (e is UserMessage) e.message else "L'export a échoué : ${e.message ?: e.javaClass.simpleName}")
+            } finally {
+                exportCancelled = false
+                exportJob = null
+            }
+        }
+    }
+
+    private var exportJob: kotlinx.coroutines.Job? = null
+    @Volatile private var exportCancelled = false
+
     fun cancelExport() {
+        exportCancelled = true
         running?.cancel()
     }
 
@@ -1986,6 +2089,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             val acid = AcidGenerator().generate(AcidPattern(), AcidGenerator.NOTE_SETS[5])
             return Project(name = name, drums = drums, acid = acid)
         }
+        /** Stems export: one render per mixer channel. */
+        private val STEM_EXPORTS = listOf("batterie" to 0, "acide" to 1, "synthe" to 2, "remix" to 3)
         private val AUDIO_EXTENSIONS = setOf("wav", "mp3", "flac", "m4a", "aac", "ogg", "opus", "aif", "aiff")
         /** Two seconds after the last bar so releases and the acid tail ring out. */
         const val TAIL_FRAMES = 2L * OfflineExport.SAMPLE_RATE

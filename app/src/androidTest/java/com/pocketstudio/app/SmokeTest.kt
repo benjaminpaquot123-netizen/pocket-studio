@@ -122,6 +122,17 @@ class SmokeTest {
         }
         assertTrue("export has sound: $loudest", loudest > 800_000)
 
+        // The same loop as M4A (Android's AAC encoder in an MP4 container).
+        compose.onNodeWithTag("export_format_M4a").performScrollTo().performClick()
+        compose.onNodeWithTag("export").performScrollTo().performClick()
+        compose.waitUntil(60_000) {
+            File(context.cacheDir, "exports").listFiles()!!.any { it.extension == "m4a" && it.length() > 10_000 } &&
+                compose.onAllNodesWithTag("share").fetchSemanticsNodes().isNotEmpty()
+        }
+        val m4a = File(context.cacheDir, "exports").listFiles()!!.filter { it.extension == "m4a" }.maxBy { it.lastModified() }
+        assertEquals("ftyp", String(m4a.readBytes(), 4, 4))
+        compose.onNodeWithTag("export_format_Wav").performScrollTo().performClick()
+
         // Import: a 44.1 kHz 16-bit WAV goes through Android's decoder and the resampler onto pad 9.
         val context2 = InstrumentationRegistry.getInstrumentation().targetContext
         val wavFile = File(context2.cacheDir, "test-hit.wav").apply { writeBytes(testWav()) }

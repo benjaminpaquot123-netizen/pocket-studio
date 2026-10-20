@@ -24,7 +24,9 @@ Engine::~Engine() {
         if (command.sample && command.sample->release()) delete command.sample;
         SoundFontPlayer::close(command.font);
         if (command.stems && command.stems->release()) delete command.stems;
+        if (command.record) command.record->state.store(2, std::memory_order_release);
     }
+    finishRecording();
 }
 
 void Engine::prepare(int sampleRate) {
@@ -45,11 +47,13 @@ void Engine::prepare(int sampleRate) {
     metronome_.prepare(sampleRate);
     drums_.prepare(sampleRate);
     acid_.prepare(sampleRate);
-    synth_.prepare(sampleRate);
+    for (auto& t : tracks_) t.prepare(sampleRate);
+    tracks_[0].on = true;
     mixer_.prepare(sampleRate);
     stems_.prepare(sampleRate);
     preview_.prepare(sampleRate);
     clips_.prepare(sampleRate);
+    audio_.prepare(sampleRate);
     sampler_.prepare(sampleRate);
 }
 
@@ -83,12 +87,14 @@ void Engine::applyCommand(const Command& command) {
                 rollCount_ = 0;
                 stems_.stop();
                 acid_.stop();
+                audio_.stop();
+                if (record_ && !recordOnStart_) finishRecording();
                 sampler_.releaseLoops();
-                notes_.stop(router_);
-                // Belt and braces: a note-off dropped by a full queue must not leave a note hanging.
-                synth_.allNotesOff();
-                instrument_.allNotesOff();
-            plaits_.allNotesOff();
+                for (auto& t : tracks_) {
+                    t.notes.stop(t);
+                    // Belt and braces: a note-off dropped by a full queue must not leave a note hanging.
+                    t.allNotesOff();
+                }
                 currentStep_.store(-1, std::memory_order_relaxed);
                 absoluteStep_.store(-1, std::memory_order_relaxed);
                 playPosition_.store(-1.0, std::memory_order_relaxed);
@@ -108,8 +114,8 @@ void Engine::applyCommand(const Command& command) {
             metronome_.setLevel(command.value);
             break;
         case CommandType::SetPatternSteps:
-            if (staging_) staged_.drumSteps = std::clamp(command.a, 16, kMaxSteps);
-            else patternSteps_ = std::clamp(command.a, 16, kMaxSteps);
+            if (staging_) staged_.drumSteps = std::clamp(command.a, 8, kMaxSteps);
+            else patternSteps_ = std::clamp(command.a, 8, kMaxSteps);
             break;
         case CommandType::SetAcidStep:
             if (staging_) {
@@ -123,10 +129,47 @@ void Engine::applyCommand(const Command& command) {
             else acid_.setLength(command.a);
             break;
         case CommandType::SetSynthEngine:
-            if ((command.a == 1) != router_.usePlaits) {
-                synth_.allNotesOff();
-                plaits_.allNotesOff();
-                router_.usePlaits = command.a == 1;
+            tracks_[static_cast<size_t>(trackOf(command.a))].setUsePlaits(trackArg(command.a) == 1);
+            break;
+        case CommandType::InstallAudioClip:
+            audio_.install(command.a, command.sample);  // takes the reference
+            break;
+        case CommandType::SetAudioClipParam:
+            audio_.setParam(command.a, command.b, command.value);
+            break;
+        case CommandType::RecordArm:
+            finishRecording();
+            record_ = command.record;
+            if (record_) {
+                recordOnStart_ = command.a == 1;
+                record_->written.store(0, std::memory_order_relaxed);
+                record_->state.store(recordOnStart_ ? 0 : 1, std::memory_order_release);
+                recordSkip_ = recordOnStart_ ? -1 : 0;
+            }
+            break;
+        case CommandType::RecordStop:
+            finishRecording();
+            break;
+        case CommandType::SetAudioOn:
+            if (command.a >= 0 && command.a < AudioTracks::kTracks) {
+                if (staging_) staged_.audioOn[static_cast<size_t>(command.a)] = command.value > 0.5f;
+                else audio_.setOn(command.a, command.value > 0.5f);
+            }
+            break;
+        case CommandType::SetBeatsPerBar:
+            sequencer_.setBeatsPerBar(command.a);
+            clips_.setBeatsPerBar(sequencer_.stepsPerBar() / Sequencer::kStepsPerBeat);
+            break;
+        case CommandType::SetTrackOn:
+            if (command.a > 0 && command.a < kTracks) {
+                auto& t = tracks_[static_cast<size_t>(command.a)];
+                t.on = command.value > 0.5f;
+                if (!t.on) {
+                    t.notes.stop(t);
+                    t.notes.setCount(0);
+                    t.staged.count = 0;
+                    t.allNotesOff();
+                }
             }
             break;
         case CommandType::InstallClip:
@@ -151,7 +194,9 @@ void Engine::applyCommand(const Command& command) {
             preview_.setParam(command.a, command.b, command.value);
             break;
         case CommandType::SetPlaitsParam:
-            if (command.a >= 0 && command.a < PlaitsSynth::ParamCount) plaits_.setParam(static_cast<PlaitsSynth::Param>(command.a), command.value);
+            if (trackArg(command.a) < PlaitsSynth::ParamCount) {
+                tracks_[static_cast<size_t>(trackOf(command.a))].plaits.setParam(static_cast<PlaitsSynth::Param>(trackArg(command.a)), command.value);
+            }
             break;
         case CommandType::SetPerformance:
             mixer_.setPerformance(command.a, command.value);
@@ -172,20 +217,18 @@ void Engine::applyCommand(const Command& command) {
             }
             break;
         case CommandType::SynthNoteOn:
-            router_.noteOn(command.a, command.value, 0);
+            tracks_[static_cast<size_t>(trackOf(command.a))].noteOn(trackArg(command.a) & 0x7F, command.value, 0);
             break;
         case CommandType::SynthNoteOff:
-            router_.noteOff(command.a, 0);
+            tracks_[static_cast<size_t>(trackOf(command.a))].noteOff(trackArg(command.a) & 0x7F, 0);
             break;
         case CommandType::SynthParam:
-            if (command.a >= 0 && command.a < Synth::ParamCount) {
-                synth_.setParam(static_cast<Synth::Param>(command.a), command.value);
+            if (trackArg(command.a) < Synth::ParamCount) {
+                tracks_[static_cast<size_t>(trackOf(command.a))].synth.setParam(static_cast<Synth::Param>(trackArg(command.a)), command.value);
             }
             break;
         case CommandType::SynthAllOff:
-            synth_.allNotesOff();
-            instrument_.allNotesOff();
-            plaits_.allNotesOff();
+            for (auto& t : tracks_) t.allNotesOff();
             break;
         case CommandType::SetChannelVolume:
             mixer_.setVolume(command.a, command.value);
@@ -205,22 +248,29 @@ void Engine::applyCommand(const Command& command) {
         case CommandType::SetPadParam:
             sampler_.setParam(command.a, command.b, command.value);
             break;
-        case CommandType::SetSynthNote:
+        case CommandType::SetSynthNote: {
+            auto& t = tracks_[static_cast<size_t>(trackOf(command.a))];
+            const int index = trackArg(command.a);
             if (!staging_) {
-                notes_.setNote(command.a, command.b, command.value);
-            } else if (command.a >= 0 && command.a < NoteTrack::kMaxNotes) {
-                staged_.notePacked[static_cast<size_t>(command.a)] = command.b;
-                staged_.noteVelocity[static_cast<size_t>(command.a)] = command.value;
+                t.notes.setNote(index, command.b, command.value);
+            } else if (index < NoteTrack::kMaxNotes) {
+                t.staged.packed[static_cast<size_t>(index)] = command.b;
+                t.staged.velocity[static_cast<size_t>(index)] = command.value;
             }
             break;
-        case CommandType::SetSynthNoteCount:
-            if (staging_) staged_.noteCount = std::clamp(command.a, 0, NoteTrack::kMaxNotes);
-            else notes_.setCount(command.a);
+        }
+        case CommandType::SetSynthNoteCount: {
+            auto& t = tracks_[static_cast<size_t>(trackOf(command.a))];
+            if (staging_) t.staged.count = std::clamp(trackArg(command.a), 0, NoteTrack::kMaxNotes);
+            else t.notes.setCount(trackArg(command.a));
             break;
-        case CommandType::SetSynthSteps:
-            if (staging_) staged_.noteSteps = command.a;
-            else notes_.setSteps(command.a);
+        }
+        case CommandType::SetSynthSteps: {
+            auto& t = tracks_[static_cast<size_t>(trackOf(command.a))];
+            if (staging_) t.staged.steps = trackArg(command.a);
+            else t.notes.setSteps(trackArg(command.a));
             break;
+        }
         case CommandType::InstallStems:
             if (command.a == 1) preview_.install(command.stems);  // takes the reference
             else stems_.install(command.stems);
@@ -255,10 +305,12 @@ void Engine::applyCommand(const Command& command) {
         case CommandType::SetStemStart:
             stems_.setStartFrame(command.a);
             break;
-        case CommandType::SetInstrument:
-            synth_.allNotesOff();
-            instrument_.install(command.font, command.a);  // takes the instance
+        case CommandType::SetInstrument: {
+            auto& t = tracks_[static_cast<size_t>(trackOf(command.a))];
+            t.synth.allNotesOff();
+            t.instrument.install(command.font, trackArg(command.a));  // takes the instance
             break;
+        }
         case CommandType::TriggerPad:
             if (command.a >= 0 && command.a < kLanes) {
                 if (sampler_.has(command.a)) sampler_.trigger(command.a, command.value, 0);
@@ -285,7 +337,8 @@ void Engine::applyCommand(const Command& command) {
 }
 
 void Engine::onStep(int offset, int step) {
-    const int beatStep = ((step % Sequencer::kStepsPerBar) + Sequencer::kStepsPerBar) % Sequencer::kStepsPerBar;
+    const int bar = sequencer_.stepsPerBar();
+    const int beatStep = ((step % bar) + bar) % bar;
     const bool onBeat = beatStep % Sequencer::kStepsPerBeat == 0;
     // Clicks during the count-in always; afterwards only with the metronome on.
     if (onBeat && (step < 0 || metronomeOn_)) {
@@ -293,19 +346,29 @@ void Engine::onStep(int offset, int step) {
         metronomeClicks_.fetch_add(1, std::memory_order_relaxed);
     }
     if (step < 0) return;
-    if (step == 0) stems_.start(offset);
+    if (step == 0) {
+        stems_.start(offset);
+        if (record_ && recordOnStart_) {
+            recordOnStart_ = false;
+            recordSkip_ = offset;
+            record_->state.store(1, std::memory_order_release);
+        }
+    }
     if (onBeat) clips_.syncBeat(offset, step / Sequencer::kStepsPerBeat);
     // A waiting scene takes over on its step (or the next bar), before anything of this step plays.
     if (swapAt_ >= 0) {
         const int local = step - sceneStart_;
         // Always on a bar line: a swap armed late waits for the next bar instead of cutting one.
-        const bool onBar = local > 0 && local % Sequencer::kStepsPerBar == 0;
+        const bool onBar = local > 0 && local % bar == 0;
         if (onBar && (swapAt_ == 0 || local >= swapAt_)) swapScene(step);
     }
     // Patterns count from the start of their scene; the remix stems follow the transport.
     const int local = step - sceneStart_;
     acid_.onStep(offset, local, sequencer_.samplesPerStep());
-    notes_.onStep(offset, local, sequencer_.samplesPerStep());
+    audio_.onStep(offset, local);
+    for (auto& t : tracks_) {
+        if (t.on) t.notes.onStep(offset, local, sequencer_.samplesPerStep());
+    }
     const int patternStep = local % patternSteps_;
     applyAutomation(patternStep);
     // Sidechain pumps follow the kick lane (pad 1) or every quarter note.
@@ -354,11 +417,8 @@ void Engine::swapScene(int step) {
     patternSteps_ = staged_.drumSteps;
     for (int i = 0; i < AcidTrack::kMaxSteps; ++i) acid_.setStep(i, staged_.acid[static_cast<size_t>(i)]);
     acid_.setLength(staged_.acidLength);
-    for (int i = 0; i < staged_.noteCount; ++i) {
-        notes_.setNote(i, staged_.notePacked[static_cast<size_t>(i)], staged_.noteVelocity[static_cast<size_t>(i)]);
-    }
-    notes_.setCount(staged_.noteCount);
-    notes_.setSteps(staged_.noteSteps);
+    for (auto& t : tracks_) t.swapIn();
+    for (int k = 0; k < AudioTracks::kTracks; ++k) audio_.setOn(k, staged_.audioOn[static_cast<size_t>(k)]);
     sceneStart_ = step;
     swapAt_ = -1;
     sceneSwaps_.fetch_add(1, std::memory_order_relaxed);
@@ -385,11 +445,9 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
     float* direct = mix_.data();  // metronome + test tone: straight to the master
     float* drums = drumsBuf_.data();
     float* acid = acidBuf_.data();
-    float* synth = synthBuf_.data();
     std::fill(direct, direct + numFrames, 0.0f);
     std::fill(drums, drums + numFrames, 0.0f);
     std::fill(acid, acid + numFrames, 0.0f);
-    std::fill(synth, synth + numFrames, 0.0f);
     float* stemsL = stemsL_.data();
     float* stemsR = stemsR_.data();
     std::fill(stemsL, stemsL + numFrames, 0.0f);
@@ -402,14 +460,22 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
         sinceStep_ = stepOffset_ >= 0 ? static_cast<double>(numFrames - stepOffset_) : sinceStep_ + numFrames;
         playPosition_.store(lastLocal_ + sinceStep_ / sequencer_.samplesPerStep(), std::memory_order_relaxed);
     }
-    notes_.advance(numFrames, router_);
+    for (auto& t : tracks_) {
+        if (t.on) t.notes.advance(numFrames, t);
+    }
     metronome_.render(direct, numFrames);
     drums_.render(drums, numFrames);
     sampler_.render(drums, numFrames);
     acid_.render(acid, numFrames);
-    synth_.render(synth, numFrames);
-    instrument_.render(synth, numFrames);
-    plaits_.render(synth, numFrames);
+    const float* channels[Mixer::kChannels] = {drums, acid, nullptr, stemsL};
+    for (int k = 0; k < kTracks; ++k) {
+        auto& t = tracks_[static_cast<size_t>(k)];
+        if (!t.on) continue;
+        float* buf = trackBuf_[static_cast<size_t>(k)].data();
+        std::fill(buf, buf + numFrames, 0.0f);
+        t.render(buf, numFrames);
+        channels[trackChannel(k)] = buf;
+    }
     stems_.render(stemsL, stemsR, numFrames);
     preview_.render(stemsL, stemsR, numFrames);
     clips_.setBeatFrames(sequencer_.samplesPerStep() * Sequencer::kStepsPerBeat);
@@ -424,8 +490,22 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
     }
 
     mixer_.setStepFrames(sequencer_.samplesPerStep());
-    const float* channels[Mixer::kChannels] = {drums, acid, synth, stemsL};
     const float* rights[Mixer::kChannels] = {nullptr, nullptr, nullptr, stemsR};
+    {
+        float* lefts[AudioTracks::kTracks];
+        float* rs[AudioTracks::kTracks];
+        for (int k = 0; k < AudioTracks::kTracks; ++k) {
+            lefts[k] = audioL_[static_cast<size_t>(k)].data();
+            rs[k] = audioR_[static_cast<size_t>(k)].data();
+            std::fill(lefts[k], lefts[k] + numFrames, 0.0f);
+            std::fill(rs[k], rs[k] + numFrames, 0.0f);
+            if (audio_.has(k)) {
+                channels[audioChannel(k)] = lefts[k];
+                rights[audioChannel(k)] = rs[k];
+            }
+        }
+        audio_.render(lefts, rs, numFrames);
+    }
     mixer_.process(channels, rights, direct, output, numFrames, outputChannels);
 }
 
@@ -442,9 +522,12 @@ void Engine::process(const float* input, int numInputFrames, int inputChannels,
         // Fixed-size scratch buffers: render long callbacks in chunks.
         for (int done = 0; done < numFrames;) {
             const int n = std::min(kMaxBlock, numFrames - done);
+            const bool waiting = record_ && recordOnStart_;
             renderBlock(output + done * outputChannels, n, outputChannels);
+            if (waiting && !recordOnStart_) recordSkip_ += done;  // started in this chunk
             done += n;
         }
+        recordInput(input, numInputFrames, inputChannels);
     }
 
     float blockPeak = 0.0f;
@@ -467,6 +550,33 @@ void Engine::process(const float* input, int numInputFrames, int inputChannels,
     }
     callbacks_.fetch_add(1, std::memory_order_relaxed);
     frames_.fetch_add(static_cast<uint64_t>(numFrames), std::memory_order_relaxed);
+}
+
+void Engine::finishRecording() {
+    if (record_) record_->state.store(2, std::memory_order_release);
+    record_ = nullptr;
+    recordOnStart_ = false;
+    recordSkip_ = -1;
+}
+
+void Engine::recordInput(const float* input, int numInputFrames, int inputChannels) {
+    if (!record_ || recordOnStart_) return;
+    // The microphone frames of this callback, from where the recording started (first channel).
+    const int from = recordSkip_ > 0 ? std::min(recordSkip_, numInputFrames) : 0;
+    recordSkip_ = 0;
+    const int64_t capacity = static_cast<int64_t>(record_->data.size());
+    int64_t at = record_->written.load(std::memory_order_relaxed);
+    float peak = 0.0f;
+    if (input && inputChannels > 0) {
+        for (int i = from; i < numInputFrames && at < capacity; ++i) {
+            const float v = input[i * inputChannels];
+            record_->data[static_cast<size_t>(at++)] = v;
+            peak = std::max(peak, std::fabs(v));
+        }
+    }
+    record_->peak.store(peak, std::memory_order_relaxed);
+    record_->written.store(at, std::memory_order_release);
+    if (at >= capacity) finishRecording();
 }
 
 }  // namespace ps

@@ -125,8 +125,9 @@ void ClipLauncher::play(Voice& v, float gain, float& l, float& r) {
 void ClipLauncher::align() {
     const double was = std::round(beat_);
     // The nearest clock value with the sequencer's place in a kMaxBeats cycle.
-    const double cycle = kMaxBeats;
-    const double want = static_cast<double>(((syncBeat_ % kMaxBeats) + kMaxBeats) % kMaxBeats);
+    const int cycleBeats = beatsPerBar_ == 4 ? kMaxBeats : beatsPerBar_ * 16;
+    const double cycle = cycleBeats;
+    const double want = static_cast<double>(((syncBeat_ % cycleBeats) + cycleBeats) % cycleBeats);
     double target = was - std::fmod(was, cycle) + want;
     if (target - was > cycle / 2) target -= cycle;
     else if (was - target > cycle / 2) target += cycle;

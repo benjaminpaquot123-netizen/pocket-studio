@@ -157,3 +157,23 @@ Corrigé :
 Restant (mineur) :
 - Arrêt de l'écoute Remix : petit clic possible (les pistes sont retirées tout de suite après la coupure).
 - Pads live : les sons remplacés partent dans une file de retour de 64 places ; si elle déborde (64 remplacements sans retour à l'écran), le son est gardé jusqu'à la fermeture (fuite bornée, pas de plantage).
+
+## Revue de fin de phase 7 (2026-10-20, sous-agent neuf, `4137502..5280cba`)
+Verdict : rien d'interdit dans le fil audio (0 allocation mesurée) ; le tampon d'enregistrement n'est jamais libéré sous le moteur ; numéros de pistes et de voies cohérents partout (moteur, JNI, Kotlin, modèle, anciens projets).
+
+Corrigé :
+- GRAVE : boucle de batterie forcée à 16 pas par le moteur (3/4 et 2/4 décalés) → 8 pas minimum, test d'une valse d'une mesure.
+- GRAVE : projet fermé pendant une prise → micro resté ouvert et 34 Mo perdus ; prise non récupérée (flux arrêté) → tampon gardé puis libéré dès que le moteur l'a lâché.
+- GRAVE : mémoire qui grossit à chaque prise ou retouche → les sons que le projet n'utilise plus sont libérés, Annuler les recharge ; copie de la prise hors du fil principal, mémoire insuffisante attrapée.
+- GRAVE : micro qui réoriente le son (certains téléphones) → la prise rouvre son micro après la remise en route de la sortie, sans fausser le test de latence.
+- Clips audio en mesures de la signature (départ, boucle, longueur) ; changement de mesure appliqué à toutes les scènes, cases au-delà de la boucle non éditables.
+- Morceau en lecture : une resynchronisation (Annuler, réglage d'un clip) garde les pistes coupées de la partie.
+- Changer de piste ne coupe plus les notes des autres pistes (chaque touche se relâche sur sa piste).
+- Ouverture et fermeture du micro hors du fil principal (plus de risque de blocage).
+- Banques General MIDI jamais fermées pendant un export ; MIDI : bonnes coupures de parties ; mixeur : seules les voies utilisées sont envoyées au moteur.
+- Tests renforcés (fondu d'entrée vérifié, contrôle « OU » retiré, conversion de mesure).
+
+Restant (mineur) :
+- Pendant la lecture du morceau, modifier les notes d'une piste coupée dans la partie en cours la fait entendre jusqu'à la partie suivante.
+- La file de commandes du moteur (4096) n'est pas surveillée : un très gros projet (8 pistes pleines de 512 notes) pourrait perdre des commandes à la resynchronisation.
+- Aucun test pour la disposition des vumètres côté JNI ni pour le solo avec des voies inutilisées.

@@ -39,7 +39,19 @@ data class Project(
     val plaits: PlaitsPatch = PlaitsPatch(),
     /** Live pads: sounds switched on and off by a tap, in time. */
     val live: LivePads = LivePads(),
+    /** The first instrument track's name and colour (its sound is [synth] / [plaits] / [instrument]). */
+    val synthTrackName: String = "Synthé",
+    val synthTrackColor: Int = 0,
+    /** Instrument tracks added after the first one (see [InstrumentTrack]). */
+    val tracks: List<InstrumentTrack> = emptyList(),
+    /** Audio tracks: recorded or imported clips (see [AudioTrack]). */
+    val audioTracks: List<AudioTrack> = emptyList(),
+    /** Time signature [beatsPerBar]/4 (2 to 7). */
+    val beatsPerBar: Int = 4,
 ) {
+    /** Sixteenths in a bar. */
+    val stepsPerBar: Int get() = beatsPerBar * 4
+
     /** Returns a copy with every value inside its allowed range. */
     fun sanitized(): Project = copy(
         tempoBpm = tempoBpm.coerceIn(MIN_TEMPO, MAX_TEMPO),
@@ -56,6 +68,11 @@ data class Project(
         synthEngine = synthEngine.coerceIn(0, 1),
         plaits = plaits.sanitized(),
         live = live.sanitized(),
+        synthTrackName = synthTrackName.take(InstrumentTrack.MAX_NAME).ifBlank { "Synthé" },
+        synthTrackColor = synthTrackColor.coerceIn(0, InstrumentTrack.COLORS - 1),
+        tracks = tracks.filter { it.id in 1 until InstrumentTrack.MAX }.distinctBy { it.id }.sortedBy { it.id }.map { it.sanitized() },
+        beatsPerBar = beatsPerBar.coerceIn(MIN_BEATS, MAX_BEATS),
+        audioTracks = audioTracks.filter { it.id in 0 until AudioTrack.MAX }.distinctBy { it.id }.sortedBy { it.id }.map { it.sanitized() },
     ).syncScenes()
 
     companion object {
@@ -63,6 +80,8 @@ data class Project(
         const val MIN_TEMPO = 40.0
         const val MAX_TEMPO = 300.0
         const val MAX_SWING = 0.75
+        const val MIN_BEATS = 2
+        const val MAX_BEATS = 7
     }
 }
 
@@ -72,7 +91,7 @@ data class DrumPattern(
     val lanes: List<DrumLane> = List(PAD_COUNT) { DrumLane() },
 ) {
     fun sanitized(): DrumPattern {
-        val s = steps.coerceIn(MIN_STEPS, MAX_STEPS)
+        val s = steps.coerceIn(MIN_STEPS, MAX_STEPS) / 4 * 4
         val fixedLanes = (lanes + List((PAD_COUNT - lanes.size).coerceAtLeast(0)) { DrumLane() }).take(PAD_COUNT)
         return copy(
             steps = s,
@@ -90,7 +109,7 @@ data class DrumPattern(
      * groove keeps going; a shorter one drops the hits past its end (undo brings them back).
      */
     fun withSteps(newSteps: Int): DrumPattern {
-        val n = (newSteps.coerceIn(MIN_STEPS, MAX_STEPS) / 16) * 16
+        val n = (newSteps.coerceIn(MIN_STEPS, MAX_STEPS) / 4) * 4
         if (n == steps) return this
         return copy(
             steps = n,
@@ -131,7 +150,7 @@ data class DrumPattern(
     companion object {
         const val PAD_COUNT = 16
         const val MAX_REPEATS = 4
-        const val MIN_STEPS = 16
+        const val MIN_STEPS = 8
         const val MAX_STEPS = 64
     }
 }

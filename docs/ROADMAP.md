@@ -73,9 +73,9 @@ Feu vert de Benjamin (D4 = A) : fusion de la pull request en fin de phase.
 - [x] 6.4 Batterie complète (pan et envois par pad : avec les pistes, 7.1) : grille de tous les pads, pan/hauteur/roulement par pas, remplir tous les N pas, décaler, faire tourner ; pan et envois par pad
 
 ## Phase 7 : pistes
-- [ ] 7.1 Pistes d'instruments ajoutées à volonté (synthé, Plaits, General MIDI, sampler multi-échantillons), nommées et colorées, chacune avec sa voie de mixeur
-- [ ] 7.2 Pistes audio : enregistrer voix et instruments (latence compensée), clips avec fondus, normalisation, inversion, découpe
-- [ ] 7.3 Ligne de temps (clips posés sur des pistes) à côté des scènes ; mesures autres que 4/4
+- [x] 7.1 Pistes d'instruments ajoutées à volonté (synthé, Plaits, General MIDI, sampler multi-échantillons), nommées et colorées, chacune avec sa voie de mixeur
+- [x] 7.2 Pistes audio : enregistrer voix et instruments (latence compensée), clips avec fondus, normalisation, inversion, découpe
+- [x] 7.3 Ligne de temps (clips posés sur des pistes) à côté des scènes ; mesures autres que 4/4
 
 ## Phase 8 : effets et contrôle
 - [ ] 8.1 Nouveaux effets (flanger, phaser, gate, trémolo, élargisseur, bitcrusher, EQ paramétrique visuel), analyseur, accordeur

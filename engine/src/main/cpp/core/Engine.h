@@ -1,12 +1,15 @@
 #pragma once
 
+#include <algorithm>
 #include <array>
 #include <atomic>
 #include <cstdint>
 
 #include "AcidTrack.h"
+#include "AudioTracks.h"
 #include "ClipLauncher.h"
 #include "DrumKit.h"
+#include "InstrumentTrack.h"
 #include "Metronome.h"
 #include "Mixer.h"
 #include "NoteTrack.h"
@@ -77,7 +80,26 @@ enum class CommandType : uint8_t {
     SetPreviewParam,      // a: stem, b: StemPlayer::Param, value
     SetMetronomeLevel,    // value 0..1 (0.5 = default)
     SetDrumRepeat,        // a: lane, b: step, value: hits in that step (1 = plain, 2..4 = a roll)
+    SetTrackOn,           // a: instrument track 1..kTracks-1, value 1 = in use (0 = silent, not rendered)
+    InstallAudioClip,     // a: audio track, sample: owned reference (nullptr = empty track)
+    SetAudioClipParam,    // a: audio track, b: AudioTracks::Param, value
+    RecordArm,            // record: buffer the app keeps; a = 1: starts when the transport reaches its first step, 0: now
+    RecordStop,           // the armed or running recording ends (the buffer's state becomes 2)
+    SetAudioOn,           // a: audio track, value 1 = plays (follows SetStaging: a song part's mutes)
+    SetBeatsPerBar,       // a: 2..7 (time signature a/4): metronome accent, bar lines, live pads grid
 };
+
+// Instrument tracks: the synth commands (SynthNoteOn/Off, SynthParam, SetSynthNote, SetSynthNoteCount,
+// SetSynthSteps, SetInstrument, SetSynthEngine, SetPlaitsParam) name their track in bits 16..23 of
+// `a` (0 = the first track, as before tracks existed); the low 16 bits keep their old meaning.
+constexpr int kTracks = 8;
+inline int trackOf(int32_t a) { return std::clamp((a >> 16) & 0xFF, 0, kTracks - 1); }
+inline int32_t trackArg(int32_t a) { return a & 0xFFFF; }
+// The mixer channel of each instrument track: track 0 on channel 2, the others after the master's
+// index (Mixer::kMaster = 4).
+inline int trackChannel(int track) { return track == 0 ? 2 : 4 + track; }
+// Audio tracks come after the instrument tracks.
+inline int audioChannel(int track) { return 12 + track; }
 
 // Step automation of mixer settings, played on the audio thread at each sequencer step.
 struct Automation {
@@ -105,6 +127,8 @@ struct Command {
     // SetInstrument only: an instance the engine takes over (closed if the command is dropped).
     tsf* font = nullptr;
     StemBundle* stems = nullptr;
+    // RecordArm only: the app keeps ownership; the engine writes into it until its state is 2.
+    RecordBuffer* record = nullptr;
 };
 
 // Platform-independent audio core. The platform layer (Oboe on Android,
@@ -142,18 +166,20 @@ public:
     // Not the audio thread (one caller at a time): frees samples the audio thread let go of.
     void collectGarbage() {
         sampler_.collectGarbage();
-        instrument_.collectGarbage();
+        for (auto& t : tracks_) t.instrument.collectGarbage();
         stems_.collectGarbage();
         preview_.collectGarbage();
         clips_.collectGarbage();
+        audio_.collectGarbage();
     }
+    bool audioClipPlaying(int track) const { return audio_.playing(track); }  // tests
     bool stemsLoaded() const { return stems_.loaded(); }  // tests
     int64_t stemPosition() const { return stems_.position(); }
     // Song position of the preview player in frames, -1 when stopped.
     int64_t previewPosition() const { return preview_.position(); }
     ClipLauncher::State clipState(int pad) const { return clips_.state(pad); }
     double clipBeat() const { return clips_.beat(); }  // tests
-    bool instrumentActive() const { return instrument_.active(); }  // tests
+    bool instrumentActive(int track = 0) const { return tracks_[static_cast<size_t>(track)].instrument.active(); }  // tests
     bool padHasSample(int pad) const { return sampler_.has(pad); }  // tests
     const Sampler::PadParams& padParams(int pad) const { return sampler_.params(pad); }  // tests
 
@@ -174,8 +200,8 @@ public:
     uint32_t laneTriggerCount(int lane) const { return laneTriggers_[lane].load(std::memory_order_relaxed); }
     // Number of metronome clicks triggered since startup (tests).
     Mixer& mixer() { return mixer_; }
-    int synthActiveVoices() const { return synth_.activeVoices(); }
-    int notesPending() const { return notes_.pendingCount(); }  // tests
+    int synthActiveVoices(int track = 0) const { return tracks_[static_cast<size_t>(track)].synth.activeVoices(); }
+    int notesPending(int track = 0) const { return tracks_[static_cast<size_t>(track)].notes.pendingCount(); }  // tests
     uint32_t acidNotesPlayed() const { return acid_.notesPlayed(); }
     uint64_t metronomeClicks() const { return metronomeClicks_.load(std::memory_order_relaxed); }
 
@@ -198,34 +224,21 @@ private:
     Metronome metronome_;
     DrumKit drums_;
     AcidTrack acid_;
-    Synth synth_;
-    NoteTrack notes_;
-    SoundFontPlayer instrument_;
-    // The synth track's sound: the instrument when one is loaded, else the subtractive synth.
-    PlaitsSynth plaits_;
-    struct NoteRouter {
-        Synth& synth;
-        SoundFontPlayer& instrument;
-        PlaitsSynth& plaits;
-        bool usePlaits = false;
-        void noteOn(int n, float v, int at) {
-            if (instrument.active()) instrument.noteOn(n, v, at);
-            else if (usePlaits) plaits.noteOn(n, v, at);
-            else synth.noteOn(n, v, at);
-        }
-        void noteOff(int n, int at) {
-            // Note-offs go everywhere: a source switched while a key was held must not hang.
-            instrument.noteOff(n, at);
-            plaits.noteOff(n, at);
-            synth.noteOff(n, at);
-        }
-    };
-    NoteRouter router_{synth_, instrument_, plaits_};
+    // Instrument tracks (piano roll + sound); each has its own mixer channel (trackChannel).
+    std::array<InstrumentTrack, kTracks> tracks_{};
     Sampler sampler_;
     StemPlayer stems_;
     // The remix screen's own listening of a song's stems, free of the transport.
     StemPlayer preview_;
     ClipLauncher clips_;
+    AudioTracks audio_;
+    std::array<std::array<float, kMaxBlock>, AudioTracks::kTracks> audioL_{}, audioR_{};
+    // Microphone recording (audio tracks).
+    RecordBuffer* record_ = nullptr;
+    bool recordOnStart_ = false;  // waiting for the transport's first step
+    int recordSkip_ = -1;         // input frames to skip in this callback (recording just started), -1 = none
+    void finishRecording();
+    void recordInput(const float* input, int numInputFrames, int inputChannels);
     Automation automation_;
     void applyAutomation(int patternStep);
 
@@ -234,12 +247,9 @@ private:
         float drums[kLanes][kMaxSteps] = {};
         uint8_t repeats[kLanes][kMaxSteps] = {};
         int drumSteps = 16;
+        std::array<bool, AudioTracks::kTracks> audioOn{true, true, true, true};
         std::array<AcidStep, AcidTrack::kMaxSteps> acid{};
         int acidLength = 16;
-        std::array<int32_t, NoteTrack::kMaxNotes> notePacked{};
-        std::array<float, NoteTrack::kMaxNotes> noteVelocity{};
-        int noteCount = 0;
-        int noteSteps = 16;
     };
     StagedScene staged_;
     bool staging_ = false;
@@ -252,7 +262,7 @@ private:
     std::array<float, kMaxBlock> stemsR_{};
     std::array<float, kMaxBlock> drumsBuf_{};
     std::array<float, kMaxBlock> acidBuf_{};
-    std::array<float, kMaxBlock> synthBuf_{};
+    std::array<std::array<float, kMaxBlock>, kTracks> trackBuf_{};
     bool metronomeOn_ = false;
     int patternSteps_ = 16;
     float pattern_[kLanes][kMaxSteps] = {};

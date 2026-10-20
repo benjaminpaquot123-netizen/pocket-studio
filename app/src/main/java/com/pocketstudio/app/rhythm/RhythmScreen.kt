@@ -234,13 +234,15 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, playing: Boo
     val haptics = LocalHapticFeedback.current
     val hits = project.drums.lanes[lane].hits
     val color = DrumKitInfo.colors[lane]
-    val bars = project.drums.steps / 16
+    // One page per bar of the time signature (12 steps in 3/4, 16 in 4/4…).
+    val per = project.stepsPerBar
+    val bars = (project.drums.steps / per).coerceAtLeast(1)
     var chosenBar by rememberSaveable { mutableIntStateOf(0) }
     var follow by rememberSaveable { mutableStateOf(true) }
     var rollTool by rememberSaveable { mutableStateOf(false) }
     var allPads by rememberSaveable { mutableStateOf(false) }
     // Playing and following: the page turns with the playhead.
-    val bar = (if (playing && follow && currentStep >= 0) currentStep / 16 else chosenBar).coerceIn(0, bars - 1)
+    val bar = (if (playing && follow && currentStep >= 0) currentStep / per else chosenBar).coerceIn(0, bars - 1)
     val chipColors = FilterChipDefaults.filterChipColors(selectedContainerColor = Neon.Cyan.copy(alpha = 0.25f), selectedLabelColor = Neon.Cyan)
     NeonCard {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -252,7 +254,7 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, playing: Boo
         }
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             Text("Longueur", style = MaterialTheme.typography.bodyMedium)
-            (1..4).forEach { b ->
+            (1..4).filter { it * per <= 64 }.forEach { b ->
                 FilterChip(selected = bars == b, onClick = { actions.setBars(b) }, label = { Text(if (b == 1) "1 mesure" else "$b") },
                     colors = chipColors, modifier = Modifier.testTag("drum_bars_$b"))
             }
@@ -284,8 +286,8 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, playing: Boo
         }
         for (row in 0 until 2) {
             Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                for (col in 0 until 8) {
-                    val step = bar * 16 + row * 8 + col
+                for (col in 0 until per / 2) {
+                    val step = bar * per + row * (per / 2) + col
                     val velocity = hits[step]?.velocity
                     val isBeat = step % 4 == 0
                     val playing = step == currentStep
@@ -298,7 +300,10 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, playing: Boo
                             .background(fill)
                             .border(if (playing) 2.dp else 1.dp, if (playing) Neon.TextPrimary else Neon.Outline, RoundedCornerShape(6.dp))
                             .combinedClickable(
-                                onClick = { if (rollTool) actions.cycleRoll(step) else actions.toggleStep(step) },
+                                onClick = {
+                                    // A loop shorter than the page (an older length): its end is not editable.
+                                    if (step < project.drums.steps) { if (rollTool) actions.cycleRoll(step) else actions.toggleStep(step) }
+                                },
                                 onLongClick = {
                                     haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                                     actions.cycleVelocity(step)
@@ -318,7 +323,7 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, playing: Boo
                         }
                         if (isBeat) {
                             Text(
-                                "${(step % 16) / 4 + 1}",
+                                "${(step % per) / 4 + 1}",
                                 style = MaterialTheme.typography.labelSmall,
                                 color = Neon.TextSecondary,
                                 modifier = Modifier.padding(bottom = 2.dp),
@@ -576,8 +581,8 @@ internal fun AllPadsGrid(project: Project, bar: Int, currentStep: Int, actions: 
                 Text(DrumKitInfo.names[lane], style = MaterialTheme.typography.labelSmall, maxLines = 1,
                     color = if (l.hits.isEmpty()) Neon.TextSecondary else Neon.TextPrimary, modifier = Modifier.width(72.dp),
                     overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
-                for (col in 0 until 16) {
-                    val step = bar * 16 + col
+                for (col in 0 until project.stepsPerBar) {
+                    val step = bar * project.stepsPerBar + col
                     val hit = l.hits[step]
                     Box(
                         Modifier.weight(1f).height(22.dp).clip(RoundedCornerShape(3.dp))

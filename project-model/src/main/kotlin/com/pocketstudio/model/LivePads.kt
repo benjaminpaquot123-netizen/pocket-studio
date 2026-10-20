@@ -60,7 +60,8 @@ data class LivePads(
     }
 }
 
-/** Every sample file the project uses (drum pads of every scene and live pads). */
+/** Every sample file the project uses (drum pads of every scene, live pads and audio clips). */
 val Project.sampleFiles: Set<String> get() =
     (allScenes.flatMap { s -> s.drums.lanes.mapNotNull { it.sample?.file } } +
-        drums.lanes.mapNotNull { it.sample?.file } + live.clips.mapNotNull { it?.file }).toSet()
+        drums.lanes.mapNotNull { it.sample?.file } + live.clips.mapNotNull { it?.file } +
+        audioTracks.mapNotNull { it.clip?.file }).toSet()

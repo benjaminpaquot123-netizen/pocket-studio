@@ -59,25 +59,28 @@ data class AutomationActions(
     val toggleRecord: () -> Unit = {},
 )
 
-private fun channelName(ch: Int) = CHANNEL_NAMES.getOrElse(ch) { "Sortie" }
+private fun List<StripInfo>.nameOf(ch: Int) = firstOrNull { it.ch == ch }?.name ?: "Sortie"
 
 /** What a target is called on screen. */
-fun automationLabel(t: AutoTarget, channels: List<Channel>, master: List<Insert>): String = when (t.kind) {
+fun automationLabel(t: AutoTarget, channels: List<Channel>, master: List<Insert>, strips: List<StripInfo> = BASIC_STRIPS): String {
+    fun channelName(ch: Int) = strips.nameOf(ch)
+    return when (t.kind) {
     AutoTarget.VOLUME -> "Volume · ${channelName(t.ch)}"
     AutoTarget.PAN -> "Panoramique · ${channelName(t.ch)}"
     AutoTarget.SEND -> "Envoi ${Buses.NAMES.getOrElse(t.slot) { "?" }.lowercase()} · ${channelName(t.ch)}"
     AutoTarget.INSERT_PARAM -> {
-        val inserts = if (t.ch == CHANNEL_NAMES.size) master else channels.getOrNull(t.ch)?.inserts.orEmpty()
+        val inserts = if (t.ch == MASTER_CHANNEL) master else channels.getOrNull(t.ch)?.inserts.orEmpty()
         val effect = inserts.getOrNull(t.slot)?.effect ?: EffectType.NONE
         "${effect.label} ${effect.params.getOrNull(t.param)?.label.orEmpty()} · ${channelName(t.ch)}"
     }
     AutoTarget.BUS_PARAM -> "${Buses.NAMES.getOrElse(t.slot) { "?" }} ${Buses.PARAMS.getOrNull(t.slot)?.getOrNull(t.param)?.label.orEmpty()}"
     else -> "?"
+    }
 }
 
 /** Every setting that can be automated with the current effects. */
-fun automationTargets(channels: List<Channel>, master: List<Insert>): List<AutoTarget> = buildList {
-    CHANNEL_NAMES.indices.forEach { ch ->
+fun automationTargets(channels: List<Channel>, master: List<Insert>, strips: List<StripInfo> = BASIC_STRIPS): List<AutoTarget> = buildList {
+    strips.map { it.ch }.forEach { ch ->
         add(AutoTarget(AutoTarget.VOLUME, ch))
         add(AutoTarget(AutoTarget.PAN, ch))
         repeat(Buses.COUNT) { add(AutoTarget(AutoTarget.SEND, ch, it)) }
@@ -85,12 +88,12 @@ fun automationTargets(channels: List<Channel>, master: List<Insert>): List<AutoT
             ins.effect.params.indices.forEach { add(AutoTarget(AutoTarget.INSERT_PARAM, ch, slot, it)) }
         }
     }
-    master.forEachIndexed { slot, ins -> ins.effect.params.indices.forEach { add(AutoTarget(AutoTarget.INSERT_PARAM, CHANNEL_NAMES.size, slot, it)) } }
+    master.forEachIndexed { slot, ins -> ins.effect.params.indices.forEach { add(AutoTarget(AutoTarget.INSERT_PARAM, MASTER_CHANNEL, slot, it)) } }
     repeat(Buses.COUNT) { bus -> Buses.PARAMS[bus].indices.forEach { add(AutoTarget(AutoTarget.BUS_PARAM, 0, bus, it)) } }
 }
 
 @Composable
-fun AutomationCard(ui: AutomationUi, channels: List<Channel>, master: List<Insert>, actions: AutomationActions) {
+fun AutomationCard(ui: AutomationUi, channels: List<Channel>, master: List<Insert>, actions: AutomationActions, strips: List<StripInfo> = BASIC_STRIPS) {
     NeonCard(accent = Neon.Amber, modifier = Modifier.testTag("automation")) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             SectionLabel("Automation", Modifier.weight(1f), color = Neon.Amber)
@@ -109,7 +112,7 @@ fun AutomationCard(ui: AutomationUi, channels: List<Channel>, master: List<Inser
         )
         ui.lanes.forEachIndexed { i, lane ->
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(automationLabel(lane.target, channels, master), Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
+                Text(automationLabel(lane.target, channels, master, strips), Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
                 TextButton(onClick = { actions.clear(i) }) { Text("Vider") }
                 IconButton(onClick = { actions.remove(i) }) { Icon(Icons.Filled.Delete, contentDescription = "Supprimer") }
             }
@@ -124,8 +127,8 @@ fun AutomationCard(ui: AutomationUi, channels: List<Channel>, master: List<Inser
                 }
                 DropdownMenu(expanded = open, onDismissRequest = { open = false }) {
                     val used = ui.lanes.map { it.target }.toSet()
-                    automationTargets(channels, master).filter { it !in used }.forEach { t ->
-                        DropdownMenuItem(text = { Text(automationLabel(t, channels, master)) }, onClick = { open = false; actions.add(t) })
+                    automationTargets(channels, master, strips).filter { it !in used }.forEach { t ->
+                        DropdownMenuItem(text = { Text(automationLabel(t, channels, master, strips)) }, onClick = { open = false; actions.add(t) })
                     }
                 }
             }

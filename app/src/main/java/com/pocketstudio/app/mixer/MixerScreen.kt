@@ -37,6 +37,8 @@ import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material3.Icon
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.getValue
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.background
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -48,7 +50,17 @@ import com.pocketstudio.ui.SectionLabel
 import kotlin.math.log10
 import kotlin.math.roundToInt
 
-val CHANNEL_NAMES = listOf("Batterie", "Basse acide", "Synthé", "Remix")
+/** A strip on screen: its mixer channel, its name and, for an instrument track, its colour. */
+data class StripInfo(val ch: Int, val name: String, val color: androidx.compose.ui.graphics.Color? = null)
+
+/** The mixer channel index of the master (inserts, automation, meters). */
+const val MASTER_CHANNEL = 4
+
+/** Drums, acid, the first instrument track, the remix: a project with no added track. */
+val BASIC_STRIPS = listOf(StripInfo(0, "Batterie"), StripInfo(1, "Basse acide"), StripInfo(2, "Synthé"), StripInfo(3, "Remix"))
+
+/** Index of the limiter gain in the meters (after one peak per mixer channel). */
+const val LIMITER_METER = 16
 
 data class MixerActions(
     val setVolume: (Int, Float) -> Unit = { _, _ -> },
@@ -90,18 +102,21 @@ fun MixerScreen(
     automation: AutomationUi = AutomationUi(),
     automationActions: AutomationActions = AutomationActions(),
     hasSong: Boolean = false,
+    strips: List<StripInfo> = BASIC_STRIPS,
 ) {
     Column(
         modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp).testTag("mixer"),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        CHANNEL_NAMES.forEachIndexed { i, name ->
-            Strip(name, channels[i], meters.getOrElse(i) { 0f }, i, actions)
+        // Many tracks: each strip shows its volume on one line; ▾ opens pan and effects.
+        val compact = strips.size > BASIC_STRIPS.size
+        strips.forEach { st ->
+            Strip(st, channels.getOrElse(st.ch) { Channel() }, meters.getOrElse(st.ch) { 0f }, actions, compact)
         }
         NeonCard(accent = Neon.Cyan) {
             SectionLabel("Sortie générale")
-            LevelMeter(meters.getOrElse(CHANNEL_NAMES.size) { 0f } / 0.89f)
-            val gain = meters.getOrElse(CHANNEL_NAMES.size + 1) { 1f }
+            LevelMeter(meters.getOrElse(MASTER_CHANNEL) { 0f } / 0.89f)
+            val gain = meters.getOrElse(LIMITER_METER) { 1f }
             Text(
                 if (gain < 0.98f) "Le limiteur protège la sortie (−${String.format(java.util.Locale.FRANCE, "%.1f", -20 * log10(gain))} dB)"
                 else "Pas de saturation : tout va bien.",
@@ -110,23 +125,28 @@ fun MixerScreen(
             )
             var open by rememberSaveable { mutableStateOf(false) }
             EffectsToggle(effectsSummary(master), open) { open = !open }
-            if (open) InsertRack(CHANNEL_NAMES.size, master, actions)
+            if (open) InsertRack(MASTER_CHANNEL, master, actions)
         }
         BusesCard(buses, actions)
-        AutomationCard(automation, channels, master, automationActions)
+        AutomationCard(automation, channels, master, automationActions, strips)
         ExportCard(export, actions, hasSong)
     }
 }
 
 @Composable
-private fun Strip(name: String, c: Channel, meter: Float, index: Int, actions: MixerActions) {
+private fun Strip(info: StripInfo, c: Channel, meter: Float, actions: MixerActions, compact: Boolean = false) {
+    val name = info.name
+    val index = info.ch
+    var expanded by rememberSaveable(index) { mutableStateOf(false) }
     val chipColors = FilterChipDefaults.filterChipColors(
         selectedContainerColor = Neon.Cyan.copy(alpha = 0.25f),
         selectedLabelColor = Neon.Cyan,
     )
     NeonCard {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            Text(name, style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
+            info.color?.let { androidx.compose.foundation.layout.Box(Modifier.size(12.dp).background(it, androidx.compose.foundation.shape.CircleShape)) }
+            Text(name, style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f), maxLines = 1,
+                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
             FilterChip(
                 selected = c.mute,
                 onClick = { actions.toggleMute(index) },
@@ -138,11 +158,28 @@ private fun Strip(name: String, c: Channel, meter: Float, index: Int, actions: M
                 modifier = Modifier.testTag("solo_$index"))
         }
         LevelMeter(meter / 0.89f)
-        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Text("Volume", Modifier.weight(1f))
-            Text(faderDb(c.volume), style = MonoStyle, color = Neon.Cyan)
+        if (compact) {
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                Slider(value = c.volume, onValueChange = { actions.setVolume(index, it) }, modifier = Modifier.weight(1f).testTag("volume_$index"))
+                Text(faderDb(c.volume), style = MonoStyle, color = Neon.Cyan, modifier = Modifier.padding(start = 6.dp))
+                androidx.compose.material3.IconButton(onClick = { expanded = !expanded }, modifier = Modifier.testTag("strip_more_$index")) {
+                    Icon(if (expanded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
+                        contentDescription = if (expanded) "Moins de réglages" else "Panoramique et effets", tint = Neon.Cyan)
+                }
+            }
+            if (!expanded) {
+                if (c.pan != 0f || c.inserts.any { it.type != 0 } || c.sends.any { it > 0f }) {
+                    Text(effectsSummary(c.inserts, c.sends), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                }
+                return@NeonCard
+            }
+        } else {
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                Text("Volume", Modifier.weight(1f))
+                Text(faderDb(c.volume), style = MonoStyle, color = Neon.Cyan)
+            }
+            Slider(value = c.volume, onValueChange = { actions.setVolume(index, it) }, modifier = Modifier.testTag("volume_$index"))
         }
-        Slider(value = c.volume, onValueChange = { actions.setVolume(index, it) }, modifier = Modifier.testTag("volume_$index"))
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Text("Panoramique", Modifier.weight(1f))
             val pan = (c.pan * 100).roundToInt()

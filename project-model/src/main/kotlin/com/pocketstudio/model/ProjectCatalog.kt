@@ -34,7 +34,7 @@ class ProjectCatalog(private val root: File, private val trash: File) {
         val p = runCatching { store.load(id) }.getOrNull()
             ?: return ProjectInfo(id, "Projet illisible", modified, 0.0, 0, 0, false)
         val scene = p.currentSceneContent()
-        return ProjectInfo(id, p.name, modified, p.tempoBpm, scene.steps / 16, p.allScenes.size, p.remix.setId != null)
+        return ProjectInfo(id, p.name, modified, p.tempoBpm, scene.stepsFor(p.stepsPerBar) / p.stepsPerBar, p.allScenes.size, p.remix.setId != null)
     }
 
     /** Saves [project] as a new project and returns its id. */

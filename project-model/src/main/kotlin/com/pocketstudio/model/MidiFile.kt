@@ -22,7 +22,8 @@ object MidiFile {
 
     /**
      * The project as MIDI: the whole song (scenes chained) when it has one and [song] is set, else
-     * the current scene once. Tracks: Synthé (channel 1), Basse acide (2), Batterie (10).
+     * the current scene once. Tracks: the first instrument track (channel 1), Basse acide (2), the
+     * added instrument tracks (3 to 9), Batterie (10).
      */
     fun export(project: Project, song: Boolean = project.song.isNotEmpty()): ByteArray {
         val scenes = project.allScenes
@@ -31,28 +32,40 @@ object MidiFile {
         val synth = ArrayList<MidiNote>()
         val acid = ArrayList<MidiNote>()
         val drums = ArrayList<MidiNote>()
+        val added = project.tracks.associate { it.id to ArrayList<MidiNote>() }
         var at = 0
+        var partsDone = 0
         for (index in parts) {
-            val scene = scenes.getOrNull(index) ?: continue
-            val sceneTicks = scene.steps * NoteClip.TICKS_PER_STEP
-            synth += loopNotes(scene.synthNotes, sceneTicks, at)
-            acid += acidNotes(scene.acid, project.acid.root, scene.steps, at)
-            drums += drumNotes(scene.drums, scene.steps, at)
+            val scene = scenes.getOrNull(index) ?: run { partsDone++; null } ?: continue
+            val sceneSteps = scene.stepsFor(project.stepsPerBar)
+            val sceneTicks = sceneSteps * NoteClip.TICKS_PER_STEP
+            // A song part leaves out its muted tracks (the timeline).
+            val part = if (song && project.song.isNotEmpty()) project.song[partIndexOf(project, partsDone)] else null
+            fun plays(key: String) = part?.plays(key) ?: true
+            if (plays(SongPart.inst(0))) synth += loopNotes(scene.synthNotes, sceneTicks, at)
+            if (plays(SongPart.ACID)) acid += acidNotes(scene.acid, project.acid.root, sceneSteps, at)
+            if (plays(SongPart.DRUMS)) drums += drumNotes(scene.drums, sceneSteps, at)
+            project.tracks.forEach { t ->
+                if (plays(SongPart.inst(t.id))) scene.trackNotes[t.id]?.let { added.getValue(t.id) += loopNotes(it, sceneTicks, at) }
+            }
+            partsDone++
             at += sceneTicks
         }
         val tempo = (60_000_000.0 / project.tempoBpm).roundToInt()
         val conductor = Track().apply {
             name(project.name)
             meta(0, 0x51, byteArrayOf((tempo shr 16).toByte(), (tempo shr 8).toByte(), tempo.toByte()))
-            meta(0, 0x58, byteArrayOf(4, 2, 24, 8))  // 4/4
+            meta(0, 0x58, byteArrayOf(project.beatsPerBar.toByte(), 2, 24, 8))  // n/4
         }
         val program = project.instrument?.takeIf { it.bank < 128 }?.program ?: 81  // GM "Lead 2 (sawtooth)"
         val tracks = listOf(
             conductor,
-            noteTrack("Synthé", 0, program, synth),
+            noteTrack(project.synthTrackName, 0, program, synth),
             noteTrack("Basse acide", 1, 38, acid),  // GM "Synth Bass 1"
-            noteTrack("Batterie", DRUM_CHANNEL, null, drums),
-        )
+        ) + project.tracks.map { t ->
+            // Channels 3..9 (index 2..8): never the drums' channel 10.
+            noteTrack(t.name, 1 + t.id, t.instrument?.takeIf { it.bank < 128 }?.program ?: 81, added.getValue(t.id))
+        } + noteTrack("Batterie", DRUM_CHANNEL, null, drums)
         val out = ByteArrayOutputStream()
         out.write("MThd".toByteArray())
         out.int32(6)
@@ -66,6 +79,16 @@ object MidiFile {
             out.write(body)
         }
         return out.toByteArray()
+    }
+
+    /** Which song part the [n]th scene played belongs to (parts are expanded by their repeats). */
+    private fun partIndexOf(project: Project, n: Int): Int {
+        var left = n
+        project.song.forEachIndexed { i, p ->
+            if (left < p.repeats) return i
+            left -= p.repeats
+        }
+        return project.song.lastIndex
     }
 
     /** The clip's notes over [sceneTicks], the clip repeating like it does when the scene plays. */
@@ -242,11 +265,21 @@ object MidiFile {
         var p = project
         if (melodic.isNotEmpty()) {
             val first = melodic.minOf { it.start } / (16 * step) * (16 * step)  // keep the bar position
-            val lastEnd = melodic.maxOf { it.start + it.length } - first
-            val steps = NoteClip.LENGTHS_IN_STEPS.firstOrNull { it * step >= lastEnd } ?: NoteClip.MAX_STEPS
-            val notes = melodic.map { Note(it.start - first, it.length, it.pitch, it.velocity / 127f) }
-                .filter { it.start < steps * step }
-            p = p.copy(synthNotes = p.synthNotes.copy(steps = steps, notes = notes).sanitized())
+            // One channel per instrument track: the first channel on the first track, the others on
+            // new tracks (as long as there is room), all starting on the same bar.
+            melodic.groupBy { it.channel }.toSortedMap().entries.forEachIndexed { i, (channel, group) ->
+                val lastEnd = group.maxOf { it.start + it.length } - first
+                val steps = NoteClip.LENGTHS_IN_STEPS.firstOrNull { it * step >= lastEnd } ?: NoteClip.MAX_STEPS
+                val notes = group.map { Note(it.start - first, it.length, it.pitch, it.velocity / 127f) }
+                    .filter { it.start < steps * step }
+                if (i == 0) {
+                    p = p.copy(synthNotes = p.synthNotes.copy(steps = steps, notes = notes).sanitized())
+                } else {
+                    val next = p.addTrack("Canal ${channel + 1}") ?: return@forEachIndexed
+                    val t = next.tracks.first { n -> p.tracks.none { it.id == n.id } }
+                    p = next.withTrack(t.copy(notes = NoteClip(steps = steps, notes = notes).sanitized()))
+                }
+            }
         }
         if (drumHits.isNotEmpty()) {
             val first = drumHits.minOf { it.start } / (16 * step) * (16 * step)

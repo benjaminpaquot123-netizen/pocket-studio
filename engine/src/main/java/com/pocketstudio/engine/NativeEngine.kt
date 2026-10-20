@@ -54,15 +54,39 @@ object NativeEngine {
     private const val CMD_PREVIEW_PARAM = 48
     private const val CMD_METRONOME_LEVEL = 49
     private const val CMD_DRUM_REPEAT = 50
+    private const val CMD_TRACK_ON = 51
+    // 52: InstallAudioClip (native only)
+    private const val CMD_AUDIO_CLIP_PARAM = 53
+    // 54: RecordArm, 55: RecordStop (native only)
+    private const val CMD_AUDIO_ON = 56
+    private const val CMD_BEATS_PER_BAR = 57
 
     /** Live pads (ClipLauncher::kSlots). */
     const val LIVE_PADS = 16
 
-    /** Insert slots per channel (and on the master, whose channel index is [MIXER_CHANNELS]). */
+    /** Insert slots per channel (and on the master, whose channel index is [MASTER]). */
     const val INSERTS = 4
 
-    /** Mixer channels: 0 drums, 1 acid bass, 2 synth, 3 remix stems. */
-    const val MIXER_CHANNELS = 4
+    /**
+     * Mixer channels: 0 drums, 1 acid bass, 2 synth (instrument track 0), 3 remix stems, 5..11
+     * instrument tracks 1..7, 12..15 audio tracks 0..3. Index 4 is the master (inserts, automation, meters).
+     */
+    const val MIXER_CHANNELS = 16
+    const val MASTER = 4
+
+    /** Instrument tracks (the synth track is track 0). */
+    const val TRACKS = 8
+
+    /** Audio tracks (AudioTracks::kTracks). */
+    const val AUDIO_TRACKS = 4
+
+    fun audioChannel(track: Int) = 12 + track
+
+    /** The mixer channel of instrument track [track]. */
+    fun trackChannel(track: Int) = if (track == 0) 2 else 4 + track
+
+    // Synth commands name their track in bits 16..23 of `a` (see Engine.h).
+    private fun onTrack(track: Int, a: Int) = (a and 0xFFFF) or (track.coerceIn(0, TRACKS - 1) shl 16)
 
     const val LANES = 16
 
@@ -96,10 +120,12 @@ object NativeEngine {
     /** [param] in AcidTrack::Param order, [value] 0..1. */
     fun setAcidParam(param: Int, value: Float) = post(CMD_SET_ACID_PARAM, value, param)
 
-    fun synthNoteOn(note: Int, velocity: Float) = post(CMD_SYNTH_NOTE_ON, velocity, note)
-    fun synthNoteOff(note: Int) = post(CMD_SYNTH_NOTE_OFF, 0f, note)
+    fun synthNoteOn(note: Int, velocity: Float, track: Int = 0) = post(CMD_SYNTH_NOTE_ON, velocity, onTrack(track, note))
+    fun synthNoteOff(note: Int, track: Int = 0) = post(CMD_SYNTH_NOTE_OFF, 0f, onTrack(track, note))
     /** [param] in Synth::Param order, [value] 0..1. */
-    fun setSynthParam(param: Int, value: Float) = post(CMD_SYNTH_PARAM, value, param)
+    fun setSynthParam(param: Int, value: Float, track: Int = 0) = post(CMD_SYNTH_PARAM, value, onTrack(track, param))
+    /** Instrument track [track] (1..7) in use or not: a track not in use is silent and costs nothing. */
+    fun setTrackOn(track: Int, on: Boolean) = post(CMD_TRACK_ON, if (on) 1f else 0f, track)
     fun synthAllOff() = post(CMD_SYNTH_ALL_OFF, 0f)
 
     fun setChannelVolume(ch: Int, v: Float) = post(CMD_CHANNEL_VOLUME, v, ch)
@@ -123,12 +149,12 @@ object NativeEngine {
     /** Live effects on the master: [param] 0 filter (0.5 = off), 1 resonance, 2 repeat on, 3 repeat division, 4 tape stop, 5 chop. */
     fun setPerformance(param: Int, value: Float) = post(CMD_PERFORMANCE, value, param)
     /** The synth track's own voice: 0 subtractive, 1 Plaits. */
-    fun setSynthEngine(engine: Int) = post(CMD_SYNTH_ENGINE, 0f, engine)
+    fun setSynthEngine(engine: Int, track: Int = 0) = post(CMD_SYNTH_ENGINE, 0f, onTrack(track, engine))
     /** [param] in PlaitsSynth::Param order (0 model, 1 harmonics … 7 level), [value] 0..1. */
-    fun setPlaitsParam(param: Int, value: Float) = post(CMD_PLAITS_PARAM, value, param)
+    fun setPlaitsParam(param: Int, value: Float, track: Int = 0) = post(CMD_PLAITS_PARAM, value, onTrack(track, param))
     /** How many times a waiting scene took over since the engine started. */
     external fun sceneSwaps(): Int
-    /** Writes into [out] (size MIXER_CHANNELS + 2): channel peaks, master peak, then limiter gain. */
+    /** Writes into [out] (size MIXER_CHANNELS + 1): channel peaks (the master's at [MASTER]), then the limiter gain. */
     external fun mixerMeters(out: FloatArray)
 
     /** Plays a pad right now (live). */
@@ -136,8 +162,10 @@ object NativeEngine {
 
     // Live input (MIDI thread): always the live engine, never an export being captured.
     // The native side serialises producers, so any thread may call these.
-    fun liveNoteOn(note: Int, velocity: Float) = nativePost(CMD_SYNTH_NOTE_ON, velocity, note, 0)
-    fun liveNoteOff(note: Int) = nativePost(CMD_SYNTH_NOTE_OFF, 0f, note, 0)
+    /** The instrument track a MIDI keyboard plays (the one shown in the synth screen). */
+    @Volatile var liveTrack = 0
+    fun liveNoteOn(note: Int, velocity: Float, track: Int = liveTrack) = nativePost(CMD_SYNTH_NOTE_ON, velocity, onTrack(track, note), 0)
+    fun liveNoteOff(note: Int, track: Int = liveTrack) = nativePost(CMD_SYNTH_NOTE_OFF, 0f, onTrack(track, note), 0)
     fun liveTriggerPad(lane: Int, velocity: Float) = nativePost(CMD_TRIGGER_PAD, velocity, lane, 0)
 
     /** Current pattern step, or -1 when stopped or counting in. */
@@ -155,10 +183,10 @@ object NativeEngine {
     external fun setBufferBursts(bursts: Int)
 
     /** Piano-roll note [index] (ticks: 24 per sixteenth). Packing matches NoteTrack::pack. */
-    fun setSynthNote(index: Int, start: Int, length: Int, pitch: Int, velocity: Float) =
-        post(CMD_SYNTH_NOTE, velocity, index, (start and 0xFFF) or ((length and 0xFFF) shl 12) or ((pitch and 0x7F) shl 24))
-    fun setSynthNoteCount(count: Int) = post(CMD_SYNTH_NOTE_COUNT, 0f, count)
-    fun setSynthSteps(steps: Int) = post(CMD_SYNTH_STEPS, 0f, steps)
+    fun setSynthNote(index: Int, start: Int, length: Int, pitch: Int, velocity: Float, track: Int = 0) =
+        post(CMD_SYNTH_NOTE, velocity, onTrack(track, index), (start and 0xFFF) or ((length and 0xFFF) shl 12) or ((pitch and 0x7F) shl 24))
+    fun setSynthNoteCount(count: Int, track: Int = 0) = post(CMD_SYNTH_NOTE_COUNT, 0f, onTrack(track, count))
+    fun setSynthSteps(steps: Int, track: Int = 0) = post(CMD_SYNTH_STEPS, 0f, onTrack(track, steps))
     /** Writes into [out] (size [LANES]) how many times each lane has fired. */
     external fun laneTriggers(out: IntArray)
 
@@ -254,6 +282,40 @@ object NativeEngine {
 
     /** Live pad [pad] plays [sample] (null: empty). Main thread, like every command. */
     fun setClip(pad: Int, sample: NativeSample?) = nativeInstallClip(pad, sample?.handle ?: 0L)
+
+    /** A song part switches audio track [track] on or off (follows [setStaging]). */
+    fun setAudioOn(track: Int, on: Boolean) = post(CMD_AUDIO_ON, if (on) 1f else 0f, track)
+
+    /** Time signature [beats]/4 (2..7): count-in, bar lines, metronome accent, live pads grid. */
+    fun setBeatsPerBar(beats: Int) = post(CMD_BEATS_PER_BAR, 0f, beats)
+
+    /** Audio track [track] plays [sample] (null: nothing). */
+    fun setAudioClip(track: Int, sample: NativeSample?) {
+        val target = captureTarget
+        if (target != 0L) exportInstallAudioClip(target, track, sample?.handle ?: 0L)
+        else nativeInstallAudioClip(track, sample?.handle ?: 0L)
+    }
+
+    /** Where and how the clip plays: from step [start], again every [loopSteps], fades in frames at 48 kHz. */
+    fun setAudioClipParams(track: Int, start: Int, loopSteps: Int, gain: Float, fadeInFrames: Int, fadeOutFrames: Int) {
+        post(CMD_AUDIO_CLIP_PARAM, start.toFloat(), track, 0)
+        post(CMD_AUDIO_CLIP_PARAM, loopSteps.toFloat(), track, 1)
+        post(CMD_AUDIO_CLIP_PARAM, gain, track, 2)
+        post(CMD_AUDIO_CLIP_PARAM, fadeInFrames.toFloat(), track, 3)
+        post(CMD_AUDIO_CLIP_PARAM, fadeOutFrames.toFloat(), track, 4)
+    }
+
+    /**
+     * Opens the microphone and arms a recording of at most [seconds] (0 = microphone unavailable).
+     * [onStart]: it begins exactly on the transport's first step (after the count-in).
+     */
+    external fun recordStart(onStart: Boolean, seconds: Int): Long
+    /** [state 0 waiting, 1 recording, 2 finished; frames recorded; input peak]. */
+    external fun recordStatus(handle: Long): FloatArray
+    /** Stops, frees the recording and returns it (mono, 48 kHz); null if the engine did not let go. */
+    external fun recordFinish(handle: Long): FloatArray?
+    private external fun nativeInstallAudioClip(track: Int, handle: Long): Boolean
+    private external fun exportInstallAudioClip(exportHandle: Long, track: Int, handle: Long)
     /** [beats]: loop length; [oneShot]: plays once per tap; [gain]: 0..2. */
     fun setClipParams(pad: Int, beats: Int, oneShot: Boolean, gain: Float) {
         post(CMD_CLIP_PARAM, beats.toFloat(), pad, 0)
@@ -270,11 +332,12 @@ object NativeEngine {
         values.forEachIndexed { param, v -> post(CMD_PAD_PARAM, v, pad, param) }
     }
 
-    /** The synth track plays [font]'s preset [presetIndex] (null: back to the synth). Main thread. */
-    fun setInstrument(font: SoundFont?, presetIndex: Int) {
+    /** Instrument track [track] plays [font]'s preset [presetIndex] (null: back to its synth). Main thread. */
+    fun setInstrument(font: SoundFont?, presetIndex: Int, track: Int = 0) {
         val target = captureTarget
-        if (target != 0L) exportSetInstrument(target, font?.handle ?: 0L, presetIndex)
-        else nativeSetInstrument(font?.handle ?: 0L, presetIndex)
+        val a = onTrack(track, presetIndex)
+        if (target != 0L) exportSetInstrument(target, font?.handle ?: 0L, a)
+        else nativeSetInstrument(font?.handle ?: 0L, a)
     }
 
     external fun soundFontLoad(path: String): Long

@@ -39,6 +39,12 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.Box
+import androidx.compose.ui.draw.clip
 import com.pocketstudio.model.Scene
 import com.pocketstudio.model.SongPart
 import com.pocketstudio.ui.MonoStyle
@@ -56,7 +62,17 @@ class SessionScreenUi(
     val songIndex: Int,
     val playing: Boolean,
     val tempoBpm: Double,
-)
+    /** Time signature n/4. */
+    val beatsPerBar: Int = 4,
+    /** The timeline's rows: every track a song part can switch off. */
+    val rows: List<TimelineRow> = emptyList(),
+) {
+    val stepsPerBar get() = beatsPerBar * 4
+    fun barsOf(part: SongPart) = (scenes.getOrNull(part.scene)?.stepsFor(stepsPerBar) ?: stepsPerBar) / stepsPerBar * part.repeats
+}
+
+/** A timeline row: a track key (SongPart.DRUMS…), its name and colour. */
+class TimelineRow(val key: String, val name: String, val color: androidx.compose.ui.graphics.Color)
 
 class SessionActions(
     val select: (Int) -> Unit = {},
@@ -68,6 +84,9 @@ class SessionActions(
     val togglePlay: () -> Unit = {},
     /** Live master effects (PerformanceFx parameter, value). */
     val performance: (Int, Float) -> Unit = { _, _ -> },
+    /** The timeline: a track on or off in a song part. */
+    val togglePartTrack: (Int, String) -> Unit = { _, _ -> },
+    val setBeatsPerBar: (Int) -> Unit = {},
 )
 
 /** Scenes (session) and song: build variations, then chain them. */
@@ -119,6 +138,22 @@ fun SessionScreen(ui: SessionScreenUi, actions: SessionActions, live: LivePadsUi
 
         LivePad(actions.performance)
 
+        NeonCard {
+            SectionLabel("Mesure")
+            Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                (2..7).forEach { b ->
+                    androidx.compose.material3.FilterChip(
+                        selected = ui.beatsPerBar == b, onClick = { actions.setBeatsPerBar(b) }, label = { Text("$b/4") },
+                        modifier = Modifier.testTag("meter_$b"),
+                    )
+                }
+            }
+            Text(
+                "4/4 pour la plupart des morceaux, 3/4 pour une valse, 6/4 ou 7/4 pour des rythmes plus rares.",
+                style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
+            )
+        }
+
         NeonCard(accent = Neon.Magenta) {
             SectionLabel("Morceau", color = Neon.Magenta)
             Text(
@@ -134,7 +169,7 @@ fun SessionScreen(ui: SessionScreenUi, actions: SessionActions, live: LivePadsUi
                         color = if (active) Neon.Magenta else Neon.TextPrimary,
                         modifier = Modifier.padding(end = 12.dp),
                     )
-                    val bars = (ui.scenes.getOrNull(part.scene)?.steps ?: 16) / 16 * part.repeats
+                    val bars = ui.barsOf(part)
                     Text("× ${part.repeats}  ·  $bars mes.", style = MonoStyle, color = if (active) Neon.Magenta else Neon.TextSecondary, modifier = Modifier.weight(1f))
                     IconButton(onClick = { actions.setRepeats(i, part.repeats - 1) }, enabled = part.repeats > 1) { Icon(Icons.Filled.Remove, contentDescription = "Moins") }
                     IconButton(onClick = { actions.setRepeats(i, part.repeats + 1) }) { Icon(Icons.Filled.Add, contentDescription = "Plus") }
@@ -147,11 +182,12 @@ fun SessionScreen(ui: SessionScreenUi, actions: SessionActions, live: LivePadsUi
                     if (s != null) OutlinedButton(onClick = { actions.addPart(i) }, modifier = Modifier.testTag("add_part_$i")) { Text("+ ${Scene.NAMES[i]}") }
                 }
             }
-            val totalBars = ui.song.sumOf { (ui.scenes.getOrNull(it.scene)?.steps ?: 16) / 16 * it.repeats }
+            val totalBars = ui.song.sumOf { ui.barsOf(it) }
             if (totalBars > 0) {
-                val seconds = (totalBars * 4 * 60 / ui.tempoBpm).toInt()
+                val seconds = (totalBars * ui.beatsPerBar * 60 / ui.tempoBpm).toInt()
                 Text("$totalBars mesures · ${seconds / 60}:%02d".format(seconds % 60), style = MonoStyle, color = Neon.TextSecondary)
             }
+            if (ui.song.isNotEmpty() && ui.rows.isNotEmpty()) Timeline(ui, actions)
             Button(
                 onClick = actions.toggleSong,
                 enabled = ui.song.isNotEmpty() || ui.playing,
@@ -194,11 +230,57 @@ private fun SceneButton(i: Int, ui: SessionScreenUi, actions: SessionActions, mo
                     pending -> "ensuite"
                     scene == null -> "vide"
                     empty -> "vide"
-                    else -> "${scene.steps / 16} mes."
+                    else -> "${scene.stepsFor(ui.stepsPerBar) / ui.stepsPerBar} mes."
                 },
                 fontSize = 11.sp,
                 maxLines = 1,
             )
+        }
+    }
+}
+
+/**
+ * The song as a timeline: one column per part (as wide as its bars), one row per track. A lit
+ * block plays; tap it to silence that track in that part (tap again to bring it back).
+ */
+@Composable
+private fun Timeline(ui: SessionScreenUi, actions: SessionActions) {
+    val barWidth = 14.dp
+    Text("Ligne de temps : touche un bloc pour couper ou remettre une piste dans une partie.",
+        style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+    Row(Modifier.testTag("timeline")) {
+        Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
+            Box(Modifier.height(22.dp))
+            ui.rows.forEach { r ->
+                Text(r.name, style = MaterialTheme.typography.labelSmall, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                    modifier = Modifier.width(76.dp).height(26.dp).padding(top = 5.dp))
+            }
+        }
+        Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(3.dp)) {
+            ui.song.forEachIndexed { i, part ->
+                val width = (barWidth * ui.barsOf(part)).coerceAtLeast(40.dp)
+                val active = i == ui.songIndex
+                Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                    Box(
+                        Modifier.width(width).height(22.dp).clip(RoundedCornerShape(4.dp))
+                            .background(if (active) Neon.Magenta.copy(alpha = 0.35f) else Neon.SurfaceHigh),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text("${Scene.NAMES[part.scene]}${if (part.repeats > 1) " ×${part.repeats}" else ""}",
+                            style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold)
+                    }
+                    ui.rows.forEach { r ->
+                        val on = part.plays(r.key)
+                        Box(
+                            Modifier.width(width).height(26.dp).clip(RoundedCornerShape(4.dp))
+                                .background(if (on) r.color.copy(alpha = if (active) 0.95f else 0.7f) else Neon.Surface)
+                                .border(1.dp, if (on) r.color else Neon.Outline, RoundedCornerShape(4.dp))
+                                .clickable { actions.togglePartTrack(i, r.key) }
+                                .testTag("timeline_${i}_${r.key}"),
+                        )
+                    }
+                }
+            }
         }
     }
 }

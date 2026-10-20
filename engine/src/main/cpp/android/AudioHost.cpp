@@ -103,6 +103,7 @@ bool AudioHost::openInputLocked() {
 }
 
 void AudioHost::closeLocked() {
+    inputLive_.store(false, std::memory_order_release);
     if (output_) {
         auto xruns = output_->getXRunCount();
         if (xruns) xrunBase_ += xruns.value();
@@ -209,6 +210,7 @@ AudioHost::LatencyStart AudioHost::startLatencyTest() {
 
     // 4. Start: the next output callback drops stale input and starts the meter together.
     drainInput_.store(true, std::memory_order_release);
+    inputLive_.store(true, std::memory_order_release);
     {
         std::lock_guard<std::mutex> postGuard(postLock_);
         engine_.post({CommandType::StartLatencyTest, 0.0f});
@@ -250,7 +252,7 @@ oboe::DataCallbackResult AudioHost::onAudioReady(oboe::AudioStream* stream, void
     auto* out = static_cast<float*>(audioData);
     const float* in = nullptr;
     int inFrames = 0;
-    if (input_.get() != nullptr) {
+    if (inputLive_.load(std::memory_order_acquire)) {
         // Drop samples captured before the measurement so both directions start aligned.
         if (drainInput_.exchange(false, std::memory_order_acq_rel)) inputRing_.discard();
         // Take everything the microphone thread has delivered so far. The meter records it
@@ -268,7 +270,7 @@ void AudioHost::onErrorAfterClose(oboe::AudioStream* stream, oboe::Result error)
     LOGW("stream closed: %s", oboe::convertToText(error));
     std::lock_guard<std::mutex> guard(lock_);
     if (stream != output_.get() && stream != input_.get()) return;
-    if (input_) {
+    if (input_ && !recordingInput_) {
         // A latency test was running: report it instead of failing silently.
         testInterrupted_.store(true, std::memory_order_release);
     }
@@ -285,9 +287,69 @@ void AudioHost::onErrorAfterClose(oboe::AudioStream* stream, oboe::Result error)
         if (attempt > 0) std::this_thread::sleep_for(std::chrono::milliseconds(200));
         if (!openOutputLocked()) continue;
         engine_.prepare(output_->getSampleRate());
-        if (output_->requestStart() == oboe::Result::OK) return;
+        if (output_->requestStart() == oboe::Result::OK) {
+            // Opening the microphone rerouted the audio (some phones): a take keeps its microphone.
+            if (recordingInput_) reopenRecordingInputLocked();
+            return;
+        }
         closeLocked();
     }
+}
+
+bool AudioHost::reopenRecordingInputLocked() {
+    inputCallback_.reset();
+    if (!openInputLocked() || input_->requestStart() != oboe::Result::OK) {
+        if (input_) {
+            input_->close();
+            input_.reset();
+        }
+        return false;
+    }
+    // No waiting here (error-callback thread): the ring fills as soon as the microphone delivers.
+    drainInput_.store(true, std::memory_order_release);
+    inputLive_.store(true, std::memory_order_release);
+    return true;
+}
+
+bool AudioHost::startRecordingInput() {
+    std::lock_guard<std::mutex> guard(lock_);
+    if (!wantRunning_ || !output_) return false;
+    if (input_) return true;  // already listening
+    recordingInput_ = true;
+    inputCallback_.reset();
+    if (!openInputLocked() || input_->requestStart() != oboe::Result::OK) {
+        if (input_) {
+            input_->close();
+            input_.reset();
+        }
+        recordingInput_ = false;
+        return false;
+    }
+    for (int waited = 0; waited < kMicWaitMs && inputCallback_.frames() < kSampleRate / 20; waited += 10) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+    // A reroute may have reopened everything meanwhile (error callback, after this lock is free):
+    // only a silent microphone that is still ours counts as a failure.
+    if (input_ && inputCallback_.frames() < kSampleRate / 20) {
+        input_->stop();
+        input_->close();
+        input_.reset();
+        recordingInput_ = false;
+        return false;
+    }
+    drainInput_.store(true, std::memory_order_release);
+    inputLive_.store(true, std::memory_order_release);
+    return true;
+}
+
+void AudioHost::stopRecordingInput() {
+    std::lock_guard<std::mutex> guard(lock_);
+    recordingInput_ = false;
+    inputLive_.store(false, std::memory_order_release);
+    if (!input_) return;
+    input_->stop();
+    input_->close();
+    input_.reset();
 }
 
 std::string AudioHost::inputDescription() {

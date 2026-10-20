@@ -116,3 +116,11 @@ fun PocketStudioTheme(palette: Palette = Palettes.Studio, content: @Composable (
         }
     }
 }
+
+/** Instrument track colours (InstrumentTrack.color indexes them): distinct on light and dark. */
+val TrackColors = listOf(
+    Color(0xFF4FC3F7), Color(0xFFFF8A65), Color(0xFF81C784), Color(0xFFBA68C8),
+    Color(0xFFFFD54F), Color(0xFF4DB6AC), Color(0xFFF06292), Color(0xFF9575CD),
+)
+
+fun trackColor(index: Int): Color = TrackColors[Math.floorMod(index, TrackColors.size)]

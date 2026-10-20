@@ -32,6 +32,11 @@ import com.pocketstudio.ui.Palettes
 import com.pocketstudio.ui.PocketStudioTheme
 import org.junit.Rule
 import org.junit.Test
+import com.pocketstudio.model.addTrack
+import com.pocketstudio.model.addAudioTrack
+import com.pocketstudio.model.instrumentTracks
+import com.pocketstudio.model.track
+import com.pocketstudio.model.withTrack
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
@@ -148,6 +153,56 @@ class ScreenshotTest {
         )
     }
 
+    private fun withTracks(): com.pocketstudio.model.Project {
+        var p = com.pocketstudio.model.Project()
+        p = p.addTrack("Basse")!!.addTrack("Cordes")!!.addTrack("Lead")!!
+        p = p.withTrack(p.track(1).copy(engine = 1))
+        p = p.withTrack(p.track(2).copy(instrument = com.pocketstudio.model.InstrumentChoice(0, 48, "Strings")))
+        return p.addAudioTrack("Voix")!!
+    }
+
+    @Test
+    fun tracks() = shoot("tracks") {
+        val p = withTracks()
+        com.pocketstudio.app.synth.SynthScreen(
+            patch = p.synth,
+            octave = 4,
+            actions = com.pocketstudio.app.synth.SynthActions(),
+            tracks = com.pocketstudio.app.synth.TracksUi(p.instrumentTracks, selected = 2),
+        )
+    }
+
+    @Test
+    fun audioTracks() = shoot("audio_tracks") {
+        val peaks = FloatArray(com.pocketstudio.app.rhythm.PadSamples.PEAK_BUCKETS * 2) { i ->
+            val x = i / 2 / 2048f
+            val v = (kotlin.math.sin(x * 60f) * 0.5f + 0.3f * kotlin.math.sin(x * 7f)) * (1f - x * 0.6f)
+            if (i % 2 == 0) -kotlin.math.abs(v) else kotlin.math.abs(v)
+        }
+        val tracks = listOf(
+            com.pocketstudio.model.AudioTrack(0, "Voix", 1, com.pocketstudio.model.AudioClip("v.wav", "Prise 21:14", 7.6, loopSteps = 64, fadeOut = 0.2f)),
+            com.pocketstudio.model.AudioTrack(1, "Guitare", 3),
+        )
+        com.pocketstudio.app.audiotracks.AudioTracksScreen(
+            com.pocketstudio.app.audiotracks.AudioTracksUi(
+                tracks, recording = com.pocketstudio.app.rhythm.AudioRecordingUi(1, waiting = false, seconds = 3.4f, level = 0.6f),
+                info = mapOf("v.wav" to com.pocketstudio.app.rhythm.SampleInfo(7.6, peaks)),
+            ),
+            com.pocketstudio.app.audiotracks.AudioTracksActions(),
+        )
+    }
+
+    @Test
+    fun mixerTracks() = shoot("mixer_tracks") {
+        val p = withTracks()
+        com.pocketstudio.app.mixer.MixerScreen(
+            channels = p.mixer.channels,
+            meters = FloatArray(17) { if (it in listOf(0, 2, 5, 6, 4, 12)) 0.5f + it * 0.02f else 0f }.also { it[16] = 1f },
+            actions = com.pocketstudio.app.mixer.MixerActions(),
+            strips = com.pocketstudio.app.ui.mixerStrips(p),
+        )
+    }
+
     @Test
     fun mixer() = shoot("mixer") {
         val channels = com.pocketstudio.model.Project().mixer.channels.toMutableList()
@@ -155,7 +210,7 @@ class ScreenshotTest {
         channels[2] = channels[2].copy(mute = true, volume = 0.5f)
         com.pocketstudio.app.mixer.MixerScreen(
             channels = channels,
-            meters = floatArrayOf(0.62f, 0.81f, 0f, 0.4f, 0.88f, 0.8f),
+            meters = FloatArray(17).also { m -> listOf(0.62f, 0.81f, 0f, 0.4f, 0.88f).forEachIndexed { i, v -> m[i] = v }; m[16] = 0.8f },
             actions = com.pocketstudio.app.mixer.MixerActions(),
             export = com.pocketstudio.app.rhythm.ExportUi(bars = 4, files = listOf(java.io.File("Mon-premier-rythme-20261018-221500.wav")), savedInMusic = true),
         )
@@ -490,6 +545,30 @@ class ScreenshotTest {
                 current = 0, pending = 1,
                 song = listOf(com.pocketstudio.model.SongPart(0, 4), com.pocketstudio.model.SongPart(1, 2), com.pocketstudio.model.SongPart(0, 2)),
                 songIndex = 0, playing = true, tempoBpm = 124.0,
+            ),
+            com.pocketstudio.app.session.SessionActions(),
+        )
+    }
+
+    @Test
+    @Config(qualifiers = "w400dp-h2200dp-xxhdpi")
+    fun timeline() = shoot("timeline") {
+        val drums = com.pocketstudio.model.DrumPattern().toggle(0, 0).toggle(2, 4)
+        val a = com.pocketstudio.model.Scene("A", drums)
+        val b = com.pocketstudio.model.Scene("B", drums.copy(steps = 32))
+        val p = withTracks()
+        com.pocketstudio.app.session.SessionScreen(
+            com.pocketstudio.app.session.SessionScreenUi(
+                scenes = listOf(a, b) + List(22) { null },
+                current = 1, pending = null,
+                song = listOf(
+                    com.pocketstudio.model.SongPart(0, 2, muted = setOf("acid", "inst:1", "inst:2", "inst:3", "audio:0")),
+                    com.pocketstudio.model.SongPart(1, 2, muted = setOf("audio:0")),
+                    com.pocketstudio.model.SongPart(0, 4),
+                    com.pocketstudio.model.SongPart(1, 1, muted = setOf("drums", "acid")),
+                ),
+                songIndex = 1, playing = true, tempoBpm = 124.0, beatsPerBar = 4,
+                rows = com.pocketstudio.app.ui.timelineRows(p),
             ),
             com.pocketstudio.app.session.SessionActions(),
         )

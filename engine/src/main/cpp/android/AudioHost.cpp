@@ -64,8 +64,8 @@ bool AudioHost::openOutputLocked(oboe::SharingMode sharing) {
         output_.reset();
         return false;
     }
-    // Two bursts is the usual sweet spot between latency and glitch safety.
-    output_->setBufferSizeInFrames(output_->getFramesPerBurst() * 2);
+    // Two bursts is the usual sweet spot between latency and glitch safety (user setting).
+    output_->setBufferSizeInFrames(output_->getFramesPerBurst() * bufferBursts_);
     output_->setPerformanceHintEnabled(true);
     LOGI("output: rate=%d burst=%d api=%s sharing=%s", output_->getSampleRate(),
          output_->getFramesPerBurst(), output_->getAudioApi() == oboe::AudioApi::AAudio ? "AAudio" : "OpenSL",
@@ -142,6 +142,12 @@ void AudioHost::stop() {
     std::lock_guard<std::mutex> guard(lock_);
     wantRunning_ = false;
     closeLocked();
+}
+
+void AudioHost::setBufferBursts(int bursts) {
+    std::lock_guard<std::mutex> guard(lock_);
+    bufferBursts_ = bursts < 1 ? 1 : (bursts > 8 ? 8 : bursts);
+    if (output_) output_->setBufferSizeInFrames(output_->getFramesPerBurst() * bufferBursts_);
 }
 
 bool AudioHost::post(const Command& command) {

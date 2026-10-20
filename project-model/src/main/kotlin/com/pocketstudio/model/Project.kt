@@ -29,11 +29,16 @@ data class Project(
     val remix: Remix = Remix(),
     /** Mixer settings that move with the loop, step by step. */
     val automation: List<AutomationLane> = emptyList(),
-    /** Session: up to 8 scenes; [scene] is the one shown and played (mirrored in drums/acid/notes). */
+    /** Session: up to 24 scenes; [scene] is the one shown and played (mirrored in drums/acid/notes). */
     val scenes: List<Scene> = emptyList(),
     val scene: Int = 0,
     /** The song: scenes in order with repeat counts. */
     val song: List<SongPart> = emptyList(),
+    /** The synth track's own sound: 0 = subtractive synth, 1 = Plaits (an [instrument] still wins). */
+    val synthEngine: Int = 0,
+    val plaits: PlaitsPatch = PlaitsPatch(),
+    /** Live pads: sounds switched on and off by a tap, in time. */
+    val live: LivePads = LivePads(),
 ) {
     /** Returns a copy with every value inside its allowed range. */
     fun sanitized(): Project = copy(
@@ -48,6 +53,9 @@ data class Project(
         mixer = mixer.sanitized(),
         remix = remix.sanitized(),
         automation = AutomationLane.sanitize(automation),
+        synthEngine = synthEngine.coerceIn(0, 1),
+        plaits = plaits.sanitized(),
+        live = live.sanitized(),
     ).syncScenes()
 
     companion object {
@@ -69,9 +77,46 @@ data class DrumPattern(
         return copy(
             steps = s,
             lanes = fixedLanes.map { lane ->
-                lane.copy(hits = lane.hits.filterKeys { it in 0 until s }, sample = lane.sample?.takeIf { it.isSafe }?.sanitized())
+                lane.copy(
+                    hits = lane.hits.filterKeys { it in 0 until s }.mapValues { (_, h) -> h.copy(repeats = h.repeats.coerceIn(1, MAX_REPEATS)) },
+                    sample = lane.sample?.takeIf { it.isSafe }?.sanitized(),
+                )
             },
         )
+    }
+
+    /**
+     * The loop at [newSteps] (whole bars, 16 to 64): a longer loop repeats the current bars so the
+     * groove keeps going; a shorter one drops the hits past its end (undo brings them back).
+     */
+    fun withSteps(newSteps: Int): DrumPattern {
+        val n = (newSteps.coerceIn(MIN_STEPS, MAX_STEPS) / 16) * 16
+        if (n == steps) return this
+        return copy(
+            steps = n,
+            lanes = lanes.map { lane ->
+                val hits = if (n > steps) (0 until n).mapNotNull { st -> lane.hits[st % steps]?.let { st to it } }.toMap()
+                else lane.hits.filterKeys { it < n }
+                lane.copy(hits = hits)
+            },
+        )
+    }
+
+    private fun withHits(lane: Int, hits: Map<Int, Hit>): DrumPattern =
+        copy(lanes = lanes.toMutableList().also { it[lane] = it[lane].copy(hits = hits) })
+
+    /** A hit every [every] steps over the whole loop (replacing the lane's hits). */
+    fun fill(lane: Int, every: Int, velocity: Float = 1f): DrumPattern =
+        withHits(lane, (0 until steps step every.coerceAtLeast(1)).associateWith { Hit(velocity) })
+
+    /** The lane's hits moved by [by] steps, wrapping around the loop. */
+    fun rotate(lane: Int, by: Int): DrumPattern =
+        withHits(lane, lanes[lane].hits.mapKeys { (step, _) -> Math.floorMod(step + by, steps) })
+
+    /** Next roll for a hit: 1 → 2 → 3 → 4 → 1. No hit: nothing changes. */
+    fun cycleRepeats(lane: Int, step: Int): DrumPattern {
+        val hit = lanes[lane].hits[step] ?: return this
+        return withHits(lane, lanes[lane].hits + (step to hit.copy(repeats = hit.repeats % MAX_REPEATS + 1)))
     }
 
     fun withSample(lane: Int, sample: PadSample?): DrumPattern =
@@ -85,6 +130,7 @@ data class DrumPattern(
 
     companion object {
         const val PAD_COUNT = 16
+        const val MAX_REPEATS = 4
         const val MIN_STEPS = 16
         const val MAX_STEPS = 64
     }
@@ -169,7 +215,11 @@ data class PadSample(
 private fun Float.finite(default: Float) = if (isFinite()) this else default
 
 @Serializable
-data class Hit(val velocity: Float = 1f)
+data class Hit(
+    val velocity: Float = 1f,
+    /** Hits in the step: 1 = plain, 2 to 4 = a roll (the step is split evenly). */
+    val repeats: Int = 1,
+)
 
 @Serializable
 data class Mixer(

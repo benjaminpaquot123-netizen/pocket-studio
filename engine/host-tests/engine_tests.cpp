@@ -20,6 +20,7 @@
 #include "DrumKit.h"
 #include "Effects.h"
 #include "Mixer.h"
+#include "PlaitsSynth.h"
 #include "OfflineRenderer.h"
 #include "OnsetDetector.h"
 #include "TimeStretch.h"
@@ -1426,6 +1427,20 @@ void testProcessNeverAllocates() {
         bundle->retain();  // ours, for the re-installs below (what the app does on every push)
         engine.post(stems);
         engine.post({ps::CommandType::SetStemParam, 1.0f, 2, ps::StemPlayer::Solo});
+        // The same song on the preview player, and live pads looping.
+        bundle->retain();
+        ps::Command preview{ps::CommandType::InstallStems, 0.0f, 1};
+        preview.stems = bundle;
+        engine.post(preview);
+        engine.post({ps::CommandType::PlayPreview, 1.0f});
+        for (int pad = 0; pad < 4; ++pad) {
+            sample->retain();
+            ps::Command clip{ps::CommandType::InstallClip, 0.0f, pad, 0};
+            clip.sample = sample;
+            engine.post(clip);
+            engine.post({ps::CommandType::SetClipParam, float(1 + pad), pad, ps::ClipLauncher::Beats});
+            engine.post({ps::CommandType::ToggleClip, 0.0f, pad});
+        }
         // Every insert type somewhere, both sends, master inserts: effects must not allocate either.
         for (int ch = 0; ch <= ps::Mixer::kMaster; ++ch) {
             for (int slot = 0; slot < ps::Mixer::kInserts; ++slot) {
@@ -1448,6 +1463,8 @@ void testProcessNeverAllocates() {
             if (i % 60 == 0) engine.post({ps::CommandType::SetInsertType, 0.0f, 5, 1 + (i / 60) % 6});
             if (i % 55 == 0) engine.post({ps::CommandType::SetBusParam, (i % 110) / 110.0f, 1, 0});
             if (i % 30 == 0) engine.post({ps::CommandType::SetPerformance, (i % 60) ? 1.0f : 0.0f, (i / 30) % 6});
+            if (i % 25 == 0) engine.post({ps::CommandType::ToggleClip, 0.0f, (i / 25) % 4});
+            if (i % 45 == 0) engine.post({ps::CommandType::SetPreviewParam, (i / 45) % 2 ? 1.0f : 0.0f, 1, ps::StemPlayer::Mute});
             if (i % 90 == 0) {  // same bundle again: the old reference goes through the retire queue
                 bundle->retain();
                 ps::Command again{ps::CommandType::InstallStems};
@@ -1460,7 +1477,7 @@ void testProcessNeverAllocates() {
         std::printf("  allocations during %d blocks: %d\n", 400, g_allocations.load());
         CHECK(g_allocations.load() == 0);
         engine.collectGarbage();
-        CHECK(bundle->refCount() == 2);  // ours + the engine's, none leaked by the re-installs
+        CHECK(bundle->refCount() == 3);  // ours + the two players', none leaked by the re-installs
         CHECK(!bundle->release());
     }
     CHECK(sample->release());
@@ -1992,12 +2009,346 @@ void testPerformanceEffects() {
     for (int i = 0; i < n; ++i) CHECK(std::isfinite(l[static_cast<size_t>(i)]));
 }
 
+// Fundamental frequency by autocorrelation (lag with the strongest correlation within 60..1000 Hz).
+double pitchHz(const std::vector<float>& x, int from, int len) {
+    int best = 0;
+    double bestC = -1e30;
+    for (int lag = kRate / 1000; lag <= kRate / 60; ++lag) {
+        double c = 0;
+        for (int i = from; i < from + len; ++i) c += double(x[static_cast<size_t>(i)]) * x[static_cast<size_t>(i + lag)];
+        if (c > bestC) { bestC = c; best = lag; }
+    }
+    // Parabolic refinement around the peak.
+    auto corr = [&](int lag) { double c = 0; for (int i = from; i < from + len; ++i) c += double(x[static_cast<size_t>(i)]) * x[static_cast<size_t>(i + lag)]; return c; };
+    const double a = corr(best - 1), b = bestC, c = corr(best + 1);
+    const double shift = 0.5 * (a - c) / (a - 2 * b + c);
+    return kRate / (best + shift);
+}
+
+void testPlaitsVoices() {
+    ps::PlaitsSynth plaits;
+    plaits.prepare(kRate);
+    // Model 0 (virtual analog), soft timbre: A4 must be 440 Hz (the 47872 Hz tuning compensated).
+    plaits.setParam(ps::PlaitsSynth::Model, 0.0f);
+    plaits.setParam(ps::PlaitsSynth::Harmonics, 0.5f);  // (0 would add detuned sub-octaves)
+    plaits.setParam(ps::PlaitsSynth::Timbre, 0.5f);
+    plaits.setParam(ps::PlaitsSynth::Morph, 0.5f);
+    plaits.noteOn(69, 1.0f, 0);
+    std::vector<float> out(kRate, 0.0f);
+    plaits.render(out.data(), kRate);
+    const double f = pitchHz(out, kRate / 2, 4800);
+    std::printf("  plaits A4: %.2f Hz\n", f);
+    CHECK(std::fabs(f - 440.0) < 1.0);
+    float peak = 0.0f;
+    for (float v : out) { peak = std::max(peak, std::fabs(v)); CHECK(std::isfinite(v)); }
+    CHECK(peak > 0.05f && peak < 1.0f);
+    // Release: silent soon after the note-off.
+    plaits.noteOff(69, 0);
+    std::fill(out.begin(), out.end(), 0.0f);
+    plaits.render(out.data(), kRate);
+    float tail = 0.0f;
+    for (int i = kRate / 2; i < kRate; ++i) tail = std::max(tail, std::fabs(out[static_cast<size_t>(i)]));
+    CHECK(tail < 1e-3f);
+    CHECK(plaits.activeVoices() == 0);
+    // A very short note (on and off 4 samples apart, inside one 12-sample block) is still heard.
+    plaits.noteOn(69, 1.0f, 2);
+    plaits.noteOff(69, 6);
+    std::fill(out.begin(), out.end(), 0.0f);
+    plaits.render(out.data(), 4800);
+    float blip = 0.0f;
+    for (int i = 0; i < 4800; ++i) blip = std::max(blip, std::fabs(out[static_cast<size_t>(i)]));
+    CHECK(blip > 1e-3f);
+    plaits.render(out.data(), kRate);
+    CHECK(plaits.activeVoices() == 0);
+    // Every model makes sound, stays finite and bounded; six voices at once within a CPU budget.
+    for (int model = 0; model < ps::PlaitsSynth::kModels; ++model) {
+        plaits.setParam(ps::PlaitsSynth::Model, model / float(ps::PlaitsSynth::kModels - 1));
+        for (int v = 0; v < ps::PlaitsSynth::kVoices; ++v) plaits.noteOn(48 + v * 3, 0.9f, v * 7);
+        std::vector<float> buf(kRate / 4, 0.0f);
+        const auto start = std::chrono::steady_clock::now();
+        plaits.render(buf.data(), kRate / 4);
+        const double load = std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count() / 0.25;
+        float pk = 0.0f;
+        bool finite = true;
+        for (float v : buf) { pk = std::max(pk, std::fabs(v)); finite &= std::isfinite(v); }
+        if (!finite || pk < 1e-3f || pk > 3.0f || load > 0.12) std::printf("  model %d: peak %.3f load %.0f %% finite %d\n", model, pk, load * 100, finite);
+        CHECK(finite && pk > 1e-3f && pk < 3.0f);
+        CHECK(load < 0.12);  // heavy models are capped in voices: any model stays cheap here
+        plaits.allNotesOff();
+        std::vector<float> flush(kRate, 0.0f);
+        plaits.render(flush.data(), kRate);
+    }
+}
+
+void testPlaitsThroughEngine() {
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SetSynthEngine, 0.0f, 1});
+    engine.post({ps::CommandType::SetPlaitsParam, 2.0f / 23.0f, ps::PlaitsSynth::Model});  // six-op FM
+    for (int n = 0; n < 8; ++n) engine.post({ps::CommandType::SetSynthNote, 0.8f, n, ps::NoteTrack::pack(n * 48, 40, 48 + (n % 4) * 5)});
+    engine.post({ps::CommandType::SetSynthNoteCount, 0.0f, 8});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    std::vector<float> out(512 * 2);
+    for (int i = 0; i < 40; ++i) engine.process(nullptr, 0, 0, out.data(), 512, 2);  // warm-up
+#ifdef PS_COUNT_ALLOCATIONS
+    g_allocations = 0;
+    g_countAllocations = true;
+#endif
+    float peak = 0.0f;
+    for (int i = 0; i < 300; ++i) {
+        if (i % 60 == 0) engine.post({ps::CommandType::SetPlaitsParam, (i % 120) / 120.0f, ps::PlaitsSynth::Timbre});
+        engine.process(nullptr, 0, 0, out.data(), 512, 2);
+        for (float v : out) peak = std::max(peak, std::fabs(v));
+    }
+#ifdef PS_COUNT_ALLOCATIONS
+    g_countAllocations = false;
+    CHECK(g_allocations.load() == 0);
+#endif
+    CHECK(peak > 0.02f);
+    // Back to the subtractive synth while notes sound: Plaits goes quiet, nothing hangs.
+    engine.post({ps::CommandType::SetTransport, 0.0f});
+    engine.post({ps::CommandType::SetSynthEngine, 0.0f, 0});
+    render(engine, kRate, 256);
+    const auto quiet = render(engine, kRate / 2, 256);
+    float rest = 0.0f;
+    for (float v : quiet) rest = std::max(rest, std::fabs(v));
+    CHECK(rest < 1e-3f);
+}
+
 struct TestCase {
     const char* name;
     std::function<void()> fn;
 };
 
 }  // namespace
+
+ps::Sample* constantSample(int frames, int channels, float level) {
+    std::vector<float> d(static_cast<size_t>(frames) * channels, level);
+    return ps::Sample::create(d.data(), frames, channels, kRate, kRate);
+}
+
+void installClip(ps::Engine& engine, int pad, ps::Sample* s) {
+    ps::Command c{ps::CommandType::InstallClip, 0.0f, pad, 0};
+    c.sample = s;  // the engine owns this reference
+    engine.post(c);
+}
+
+void testLivePadsLoopOnTheBeat() {
+    ps::Engine engine(kRate);  // 120 BPM: a beat is 24000 frames
+    // Pad 0: a 100-frame click set to 1 beat = four on the floor.
+    installClip(engine, 0, constantSample(100, 1, 0.5f));
+    engine.post({ps::CommandType::SetClipParam, 1.0f, 0, ps::ClipLauncher::Beats});
+    // Transport stopped: the first pad starts at once.
+    engine.post({ps::CommandType::ToggleClip, 0.0f, 0});
+    auto out = render(engine, kRate * 2, 256);
+    CHECK(engine.clipState(0) == ps::ClipLauncher::Playing);
+    for (int b = 0; b < 4; ++b) {
+        const size_t at = static_cast<size_t>(b * 24000 + 50) * 2;
+        CHECK(std::fabs(out[at] - 0.5f) < 1e-3f && std::fabs(out[at + 1] - 0.5f) < 1e-3f);
+        CHECK(std::fabs(out[static_cast<size_t>(b * 24000 + 12000) * 2]) < 1e-6f);  // silent between hits
+    }
+    // Pad 1: a stereo loop of 2 beats, launched mid-beat: waits for the next 2-beat line.
+    installClip(engine, 1, constantSample(48000, 2, 0.1f));
+    engine.post({ps::CommandType::SetClipParam, 2.0f, 1, ps::ClipLauncher::Beats});
+    render(engine, 6000, 256);  // beat 4.25
+    engine.post({ps::CommandType::ToggleClip, 0.0f, 1});
+    render(engine, 256, 256);
+    CHECK(engine.clipState(1) == ps::ClipLauncher::Waiting);
+    out = render(engine, 48000 - 6256 - 1000, 256);  // just before beat 6
+    CHECK(engine.clipState(1) == ps::ClipLauncher::Waiting);
+    out = render(engine, 2000, 250);
+    CHECK(engine.clipState(1) == ps::ClipLauncher::Playing);
+    CHECK(std::fabs(out[static_cast<size_t>(1500) * 2 + 1] - 0.1f) < 1e-3f);  // right: the loop alone
+    // Off again: a short fade, then silence; the other pad keeps going.
+    engine.post({ps::CommandType::ToggleClip, 0.0f, 1});
+    out = render(engine, 2000, 256);
+    CHECK(engine.clipState(1) == ps::ClipLauncher::Off);
+    CHECK(std::fabs(out[static_cast<size_t>(1500) * 2 + 1]) < 1e-6f);
+    CHECK(engine.clipState(0) == ps::ClipLauncher::Playing);
+    // A one-shot plays once and goes back to off by itself.
+    installClip(engine, 2, constantSample(2000, 1, 0.3f));
+    engine.post({ps::CommandType::SetClipParam, 1.0f, 2, ps::ClipLauncher::OneShot});
+    engine.post({ps::CommandType::SetClipParam, 1.0f, 2, ps::ClipLauncher::Beats});
+    engine.post({ps::CommandType::ToggleClip, 0.0f, 2});
+    render(engine, 30000, 256);
+    CHECK(engine.clipState(2) == ps::ClipLauncher::Off);
+    // While the transport plays, the clock follows its beats.
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    render(engine, 24000 * 3 + 100, 256);
+    const double beat = engine.clipBeat();
+    CHECK(std::fabs(beat - std::round(beat) - 100.0 / 24000.0) < 1e-6);
+    // All off; an empty pad ignores taps; the samples go back to be freed.
+    engine.post({ps::CommandType::ToggleClip, 0.0f, -1});
+    engine.post({ps::CommandType::ToggleClip, 0.0f, 5});
+    out = render(engine, 24000 * 2, 256);
+    CHECK(engine.clipState(0) == ps::ClipLauncher::Off && engine.clipState(5) == ps::ClipLauncher::Off);
+    float peak = 0.0f;
+    for (size_t i = 2000; i < out.size(); ++i) peak = std::max(peak, std::fabs(out[i]));
+    CHECK(peak < 1e-6f);
+    for (int pad = 0; pad < 3; ++pad) installClip(engine, pad, nullptr);
+    render(engine, 256, 256);
+    engine.collectGarbage();
+}
+
+void testLivePadsFollowTheBar() {
+    ps::Engine engine(kRate);  // 120 BPM: a beat is 24000 frames
+    // A 4-beat loop that starts with a loud mark, launched while the transport is stopped.
+    std::vector<float> d(96000, 0.1f);
+    std::fill(d.begin(), d.begin() + 200, 0.8f);
+    installClip(engine, 0, ps::Sample::create(d.data(), 96000, 1, kRate, kRate));
+    engine.post({ps::CommandType::SetClipParam, 4.0f, 0, ps::ClipLauncher::Beats});
+    engine.post({ps::CommandType::ToggleClip, 0.0f, 0});
+    render(engine, 24000 * 6 + 12000, 256);  // the idle clock is mid-bar (beat 6.5)
+    // Play: the clock jumps to the song's beat 0 and the loop starts over with the bar.
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    auto out = render(engine, 1024, 256);
+    CHECK(std::fabs(engine.clipBeat() - 1024.0 / 24000.0) < 1e-6);
+    CHECK(out[static_cast<size_t>(100) * 2] > 0.75f);
+    // The next pass starts exactly on the next bar of the song.
+    out = render(engine, 96000 - 1024 + 100, 256);
+    CHECK(out[static_cast<size_t>(96000 - 1024 + 50) * 2] > 0.75f);
+    CHECK(engine.clipState(0) == ps::ClipLauncher::Playing);
+    engine.post({ps::CommandType::ToggleClip, 0.0f, -1});
+    render(engine, 4096, 256);
+    installClip(engine, 0, nullptr);
+    render(engine, 256, 256);
+    engine.collectGarbage();
+}
+
+void testSongExportSwapsScenesOnTime() {
+    // Scene A: a kick on every beat. Scene B: the same kick on beat 1 only. Song: A then B.
+    const int64_t bar = kRate * 2;
+    auto setup = [](ps::OfflineRenderer& r) {
+        r.post({ps::CommandType::SetTempo, 120.0f});
+        for (int step = 0; step < 16; step += 4) r.post({ps::CommandType::SetDrumHit, 1.0f, 0, step});
+    };
+    ps::OfflineRenderer song(kRate);
+    setup(song);
+    song.scheduleFrom(3000);  // half a step into A: stage B, swap after A's 16 steps
+    song.post({ps::CommandType::SetStaging, 1.0f});
+    for (int step = 0; step < 16; step += 4) song.post({ps::CommandType::SetDrumHit, step == 0 ? 1.0f : 0.0f, 0, step});
+    song.post({ps::CommandType::SetStaging, 0.0f});
+    song.post({ps::CommandType::ArmSceneSwap, 0.0f, 16});
+    song.scheduleFrom(-1);
+    const auto a = song.renderToBuffer(bar * 2, 0);
+    ps::OfflineRenderer loop(kRate);
+    setup(loop);
+    const auto b = loop.renderToBuffer(bar * 2, 0);
+    CHECK(a.size() == b.size() && a.size() == size_t(bar * 2) * 2);
+    auto peakIn = [](const std::vector<float>& x, int64_t from, int64_t to) {
+        float p = 0.0f;
+        for (int64_t i = from; i < to; ++i) p = std::max(p, std::fabs(x[size_t(i) * 2]));
+        return p;
+    };
+    float firstBarDiff = 0.0f;
+    for (int64_t i = 0; i < bar; ++i) firstBarDiff = std::max(firstBarDiff, std::fabs(a[size_t(i) * 2] - b[size_t(i) * 2]));
+    std::printf("  song export: bar 1 diff %.5f, bar 2 beat 1 %.3f, beat 3 %.3f (loop %.3f)\n", firstBarDiff,
+                peakIn(a, bar, bar + 2000), peakIn(a, bar + bar / 2, bar + bar / 2 + 2000), peakIn(b, bar + bar / 2, bar + bar / 2 + 2000));
+    CHECK(firstBarDiff < 1e-6f);                                         // staging does not touch what plays
+    CHECK(peakIn(a, bar, bar + 2000) > 0.1f);                            // B starts on the bar with its kick
+    CHECK(peakIn(a, bar + bar / 2, bar + bar / 2 + 2000) < 0.25f * peakIn(b, bar + bar / 2, bar + bar / 2 + 2000));  // no kick on beat 3
+}
+
+void testDrumRollsSplitTheStep() {
+    ps::Engine engine(kRate);  // 120 BPM: a sixteenth is 6000 frames
+    engine.post({ps::CommandType::SetDrumHit, 1.0f, 0, 0 | (4 << 16)});  // a roll of 4, carried with the hit
+    engine.post({ps::CommandType::SetDrumHit, 1.0f, 2, 4});  // a plain hit: one trigger
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    render(engine, 1400, 256);
+    CHECK(engine.laneTriggerCount(0) == 1);   // second hit at 1500 frames
+    render(engine, 200, 256);
+    CHECK(engine.laneTriggerCount(0) == 2);
+    render(engine, 6000 * 4 - 1600 + 100, 256);
+    CHECK(engine.laneTriggerCount(0) == 4);   // four in the step, none after
+    CHECK(engine.laneTriggerCount(2) == 1);
+    // Back to a plain hit (same command, no roll bits).
+    engine.post({ps::CommandType::SetDrumHit, 1.0f, 0, 0});
+    render(engine, 6000 * 12, 512);
+    CHECK(engine.laneTriggerCount(0) == 5);
+    // Stopping in the middle of a roll drops the hits still to come.
+    engine.post({ps::CommandType::SetDrumRepeat, 4.0f, 0, 0});
+    engine.post({ps::CommandType::SetTransport, 0.0f});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    render(engine, 2000, 256);                 // first hit, then the second at 1500
+    engine.post({ps::CommandType::SetTransport, 0.0f});
+    render(engine, 6000 * 2, 256);
+    CHECK(engine.laneTriggerCount(0) == 7);
+}
+
+void testPlayPositionForLiveRecording() {
+    ps::Engine engine(kRate);  // 120 BPM: a sixteenth is 6000 frames
+    CHECK(engine.playPosition() < 0.0);
+    engine.post({ps::CommandType::SetTransport, 1.0f, 1});  // one bar of count-in
+    render(engine, 6000 * 8, 256);
+    CHECK(engine.playPosition() < 0.0);                     // still counting in
+    render(engine, 6000 * 8 + 6000 * 5 + 3000, 256);        // end of count-in, then 5.5 steps
+    const double pos = engine.playPosition();
+    std::printf("  play position: %.3f steps (expected 5.5)\n", pos);
+    CHECK(std::fabs(pos - 5.5) < 256.0 / 6000.0 + 1e-6);    // within one block
+    engine.post({ps::CommandType::SetTransport, 0.0f});
+    render(engine, 256, 256);
+    CHECK(engine.playPosition() < 0.0);
+}
+
+void testStemsStretchToTheProjectTempo() {
+    // A 1 kHz tone on every stem: 120 BPM song played at 100 BPM lasts 1.2 times as long, same pitch.
+    std::vector<float> tone(static_cast<size_t>(kRate) * 2 * 2);
+    for (size_t i = 0; i < tone.size() / 2; ++i) tone[i * 2] = tone[i * 2 + 1] = 0.4f * static_cast<float>(std::sin(2 * M_PI * 1000.0 * i / kRate));
+    auto* bundle = ps::StemBundle::fromFloat(std::vector<std::vector<float>>(4, tone));
+    auto* slow = bundle->stretched(1.2, kRate);
+    CHECK(slow != nullptr);
+    if (slow) {
+        CHECK(slow->frames() == std::llround(bundle->frames() * 1.2));
+        const auto x = slow->extract(2, kRate / 2, kRate / 2);  // half a second from the middle
+        int crossings = 0;
+        float peak = 0.0f;
+        for (size_t i = 2; i < x.size(); i += 2) {
+            if ((x[i - 2] < 0.0f) != (x[i] < 0.0f)) ++crossings;
+            peak = std::max(peak, std::fabs(x[i]));
+        }
+        std::printf("  stretched stems: %.0f Hz, peak %.2f\n", crossings / 2.0 / 0.5, peak);
+        CHECK(std::abs(crossings / 2.0 / 0.5 - 1000.0) < 15.0);
+        CHECK(peak > 0.3f && peak < 0.5f);
+        CHECK(slow->refCount() == 1);
+        CHECK(slow->release());
+        delete slow;
+    }
+    CHECK(bundle->stretched(10.0, kRate) == nullptr);
+    CHECK(bundle->release());
+    delete bundle;
+}
+
+void testStemPreviewPlaysWithoutTheTransport() {
+    const float levels[4] = {0.05f, 0.1f, 0.15f, 0.2f};
+    std::vector<std::vector<float>> stems(4);
+    for (int st = 0; st < 4; ++st) stems[st].assign(static_cast<size_t>(kRate) * 2 * 2, levels[st]);
+    auto* bundle = ps::StemBundle::fromFloat(stems);
+    ps::Engine engine(kRate);
+    ps::Command install{ps::CommandType::InstallStems, 0.0f, 1};
+    install.stems = bundle;
+    engine.post(install);
+    engine.post({ps::CommandType::PlayPreview, 1.0f});
+    auto out = render(engine, 4800, 256);
+    CHECK(std::fabs(out[out.size() - 2] - 0.5f) < 2e-3f);  // all four together
+    CHECK(engine.previewPosition() > 0 && engine.stemPosition() == -1);
+    // Switch stems on and off while it plays: it never stops.
+    engine.post({ps::CommandType::SetPreviewParam, 1.0f, 3, ps::StemPlayer::Mute});
+    engine.post({ps::CommandType::SetPreviewParam, 1.0f, 1, ps::StemPlayer::Mute});
+    out = render(engine, 9600, 256);  // past the 20 ms smoothing
+    CHECK(std::fabs(out[out.size() - 2] - 0.2f) < 2e-3f);
+    engine.post({ps::CommandType::SetPreviewParam, 0.0f, 3, ps::StemPlayer::Mute});
+    out = render(engine, 9600, 256);
+    CHECK(std::fabs(out[out.size() - 2] - 0.4f) < 2e-3f);
+    // The transport stopping does not stop it; its own stop does.
+    engine.post({ps::CommandType::SetTransport, 0.0f});
+    render(engine, 4800, 256);
+    CHECK(engine.previewPosition() > 0);
+    engine.post({ps::CommandType::PlayPreview, 0.0f});
+    out = render(engine, 4800, 256);
+    CHECK(std::fabs(out[out.size() - 2]) < 1e-6f && engine.previewPosition() == -1);
+    engine.post({ps::CommandType::InstallStems, 0.0f, 1});
+    render(engine, 256, 256);
+    engine.collectGarbage();
+}
 
 int main(int argc, char** argv) {
     for (int i = 1; i < argc; ++i) {
@@ -2059,8 +2410,17 @@ int main(int argc, char** argv) {
         {"automation", testAutomationMovesTheFader},
         {"scenes", testScenesSwapOnTheBar},
         {"performance_fx", testPerformanceEffects},
+        {"plaits", testPlaitsVoices},
+        {"plaits_engine", testPlaitsThroughEngine},
         {"tempo_and_key", testTempoAndKeyDetection},
         {"stems_follow_transport", testStemsPlayInStepWithTheTransport},
+        {"live_pads", testLivePadsLoopOnTheBeat},
+        {"live_pads_bar", testLivePadsFollowTheBar},
+        {"stem_preview", testStemPreviewPlaysWithoutTheTransport},
+        {"stems_stretch", testStemsStretchToTheProjectTempo},
+        {"play_position", testPlayPositionForLiveRecording},
+        {"song_export", testSongExportSwapsScenesOnTime},
+        {"drum_rolls", testDrumRollsSplitTheStep},
         {"no_alloc_in_process", testProcessNeverAllocates},
     };
     for (const auto& t : tests) {

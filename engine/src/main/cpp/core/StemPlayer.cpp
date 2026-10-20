@@ -6,6 +6,7 @@
 #include <memory>
 
 #include "Analysis.h"
+#include "TimeStretch.h"
 #include "samplerate.h"
 
 namespace ps {
@@ -115,6 +116,23 @@ std::vector<float> StemBundle::extract(int stem, int64_t start, int64_t count) c
     const int16_t* d = this->stem(stem) + start * 2;
     for (size_t i = 0; i < out.size(); ++i) out[i] = d[i] * (kHeadroom / 32768.0f);
     return out;
+}
+
+StemBundle* StemBundle::stretched(double ratio, int sampleRate) const {
+    if (!(ratio > 0.25 && ratio < 4.0) || frames_ <= 0) return nullptr;
+    const auto outFrames = static_cast<int64_t>(std::llround(static_cast<double>(frames_) * ratio));
+    std::unique_ptr<StemBundle> b(new StemBundle());  // freed if an allocation below throws
+    b->frames_ = outFrames;
+    for (int i = 0; i < kStems; ++i) {
+        // One stem at a time: only its float copy and its stretched copy are alive together.
+        const std::vector<float> in = extract(i, 0, frames_);
+        const std::vector<float> out = timeStretch(in.data(), frames_, 2, outFrames, 0.0f, sampleRate);
+        if (out.size() != static_cast<size_t>(outFrames) * 2) return nullptr;
+        auto& dst = b->data_[static_cast<size_t>(i)];
+        dst.resize(out.size());
+        std::transform(out.begin(), out.end(), dst.begin(), toPcm);
+    }
+    return b.release();
 }
 
 std::vector<float> StemBundle::peaks(int stem, int buckets) const {

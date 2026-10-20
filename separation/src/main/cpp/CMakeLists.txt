@@ -19,7 +19,7 @@ set(EIGEN ${CMAKE_CURRENT_SOURCE_DIR}/../../../third_party/eigen)
 include(${CMAKE_CURRENT_SOURCE_DIR}/../../../../engine/third_party/libsamplerate.cmake)
 
 add_library(pocketstudio_separation SHARED
-    SeparationJni.cpp Separator.cpp ${LIBSAMPLERATE_SOURCES}
+    SeparationJni.cpp Separator.cpp PitchTranscriber.cpp ${LIBSAMPLERATE_SOURCES}
     ${DEMUCS}/dsp.cpp ${DEMUCS}/model_apply.cpp ${DEMUCS}/model_inference.cpp)
 target_include_directories(pocketstudio_separation PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${DEMUCS} ${ORT_INCLUDE} ${LIBSAMPLERATE_INCLUDES})
 target_include_directories(pocketstudio_separation SYSTEM PRIVATE ${EIGEN})

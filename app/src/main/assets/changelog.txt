@@ -1,5 +1,5 @@
-Remix : formes d'onde des 4 pistes avec la tête de lecture ; touche-les pour choisir où démarrer.
-Remix : plus de grésillement dû à l'écrêtage (les pistes gardent de la marge).
-Kits de batterie : ils se jouent au clavier, et un bouton les met sur les 16 pads.
-Mixeur : effets par voie, réverbe, écho, « Pompe » sur la grosse caisse, et automation dessinée ou enregistrée.
-Onglet Morceau : 8 scènes qui s'enchaînent à la mesure, un morceau complet, et des effets live (pad XY, répéteur, stop bande).
+Projets : « Mes projets » en haut (nouveau, démos, renommer, dupliquer, corbeille, envoi en .zip). Chef, on a un projet ! Non, plusieurs !
+Enregistrement en direct (●), export du morceau entier, piste par piste, en M4A, et fichiers MIDI (export et import).
+Piano roll complet : sélection, copier-coller, transposer, couloir de force, zoom, triolets, deviner la gamme.
+Batterie : 1 à 4 mesures, roulements, remplir, décaler, vue de tous les pads. Pads live, Remix à 4 pistes ensemble.
+Outils › Réglages : thème (dont daltonien), taille, notes, vibrations, son ; guide des premiers pas ; clavier MIDI.

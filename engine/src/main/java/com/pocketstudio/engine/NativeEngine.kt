@@ -45,6 +45,18 @@ object NativeEngine {
     private const val CMD_STAGING = 39
     private const val CMD_ARM_SCENE_SWAP = 40
     private const val CMD_PERFORMANCE = 41
+    private const val CMD_SYNTH_ENGINE = 42
+    private const val CMD_PLAITS_PARAM = 43
+    // 44: InstallClip (native only)
+    private const val CMD_CLIP_PARAM = 45
+    private const val CMD_TOGGLE_CLIP = 46
+    private const val CMD_PLAY_PREVIEW = 47
+    private const val CMD_PREVIEW_PARAM = 48
+    private const val CMD_METRONOME_LEVEL = 49
+    private const val CMD_DRUM_REPEAT = 50
+
+    /** Live pads (ClipLauncher::kSlots). */
+    const val LIVE_PADS = 16
 
     /** Insert slots per channel (and on the master, whose channel index is [MIXER_CHANNELS]). */
     const val INSERTS = 4
@@ -72,7 +84,11 @@ object NativeEngine {
     fun setMetronome(on: Boolean) = post(CMD_SET_METRONOME, if (on) 1f else 0f)
     fun setPatternSteps(steps: Int) = post(CMD_SET_PATTERN_STEPS, 0f, steps)
     /** velocity 0 removes the hit. */
-    fun setDrumHit(lane: Int, step: Int, velocity: Float) = post(CMD_SET_DRUM_HIT, velocity, lane, step)
+    /** [repeats]: hits in the step (1 = plain, 2..4 = a roll), carried in one command with the hit. */
+    fun setDrumHit(lane: Int, step: Int, velocity: Float, repeats: Int = 1) =
+        post(CMD_SET_DRUM_HIT, velocity, lane, step or (repeats.coerceIn(1, 4) shl 16))
+    /** Hits in the step: 1 = plain, 2..4 = a roll. */
+    fun setDrumRepeat(lane: Int, step: Int, repeats: Int) = post(CMD_DRUM_REPEAT, repeats.toFloat(), lane, step)
     /** [packed] = AcidStep.pack() from project-model (same layout as the engine). */
     fun setAcidStep(index: Int, packed: Int) = post(CMD_SET_ACID_STEP, 0f, index, packed)
     fun setAcidLength(steps: Int) = post(CMD_SET_ACID_LENGTH, 0f, steps)
@@ -106,6 +122,10 @@ object NativeEngine {
     fun armSceneSwap(steps: Int) = post(CMD_ARM_SCENE_SWAP, 0f, steps)
     /** Live effects on the master: [param] 0 filter (0.5 = off), 1 resonance, 2 repeat on, 3 repeat division, 4 tape stop, 5 chop. */
     fun setPerformance(param: Int, value: Float) = post(CMD_PERFORMANCE, value, param)
+    /** The synth track's own voice: 0 subtractive, 1 Plaits. */
+    fun setSynthEngine(engine: Int) = post(CMD_SYNTH_ENGINE, 0f, engine)
+    /** [param] in PlaitsSynth::Param order (0 model, 1 harmonics … 7 level), [value] 0..1. */
+    fun setPlaitsParam(param: Int, value: Float) = post(CMD_PLAITS_PARAM, value, param)
     /** How many times a waiting scene took over since the engine started. */
     external fun sceneSwaps(): Int
     /** Writes into [out] (size MIXER_CHANNELS + 2): channel peaks, master peak, then limiter gain. */
@@ -114,10 +134,25 @@ object NativeEngine {
     /** Plays a pad right now (live). */
     fun triggerPad(lane: Int, velocity: Float) = post(CMD_TRIGGER_PAD, velocity, lane)
 
+    // Live input (MIDI thread): always the live engine, never an export being captured.
+    // The native side serialises producers, so any thread may call these.
+    fun liveNoteOn(note: Int, velocity: Float) = nativePost(CMD_SYNTH_NOTE_ON, velocity, note, 0)
+    fun liveNoteOff(note: Int) = nativePost(CMD_SYNTH_NOTE_OFF, 0f, note, 0)
+    fun liveTriggerPad(lane: Int, velocity: Float) = nativePost(CMD_TRIGGER_PAD, velocity, lane, 0)
+
     /** Current pattern step, or -1 when stopped or counting in. */
     external fun currentStep(): Int
     /** Steps since play without wrapping (-1 stopped): the piano roll loops on its own length. */
     external fun absoluteStep(): Int
+
+    /** Position in the playing scene in sixteenths, with the fraction (live recording); -1 when stopped or counting in. */
+    external fun playPosition(): Double
+
+    /** Click volume 0..1 (0.5 = default). */
+    fun setMetronomeLevel(level: Float) = post(CMD_METRONOME_LEVEL, level.coerceIn(0f, 1f))
+
+    /** Output buffer in bursts: 2 = fast (lowest latency), 4 = safe, 6 = very safe. Applies at once. */
+    external fun setBufferBursts(bursts: Int)
 
     /** Piano-roll note [index] (ticks: 24 per sixteenth). Packing matches NoteTrack::pack. */
     fun setSynthNote(index: Int, start: Int, length: Int, pitch: Int, velocity: Float) =
@@ -176,6 +211,16 @@ object NativeEngine {
         }
     }
 
+    /**
+     * Inside [captureInto] only: the commands that follow take effect at [frame] of the rendered
+     * song (-1: at once). A song export stages each next scene while the previous one plays.
+     */
+    fun captureAt(frame: Long) {
+        val target = captureTarget
+        check(target != 0L) { "captureAt outside captureInto" }
+        exportScheduleFrom(target, frame)
+    }
+
     /** Gives pad [pad] the sample (or back to its drum sound with null). Main thread, like every command. */
     fun setPadSample(pad: Int, sample: NativeSample?) {
         val target = captureTarget
@@ -198,6 +243,27 @@ object NativeEngine {
 
     /** Song position in frames while the stems play, else -1. */
     external fun stemPosition(): Long
+
+    /** The remix screen's own listening: [stems] play apart from the transport (null: none). Main thread. */
+    fun setPreviewStems(stems: NativeStems?) = nativeInstallPreviewStems(stems?.handle ?: 0L)
+    fun playPreview(on: Boolean) = post(CMD_PLAY_PREVIEW, if (on) 1f else 0f)
+    /** As [setStemParam], for the preview. */
+    fun setPreviewParam(stem: Int, param: Int, value: Float) = post(CMD_PREVIEW_PARAM, value, stem, param)
+    /** Preview position in frames while it plays, else -1. */
+    external fun previewPosition(): Long
+
+    /** Live pad [pad] plays [sample] (null: empty). Main thread, like every command. */
+    fun setClip(pad: Int, sample: NativeSample?) = nativeInstallClip(pad, sample?.handle ?: 0L)
+    /** [beats]: loop length; [oneShot]: plays once per tap; [gain]: 0..2. */
+    fun setClipParams(pad: Int, beats: Int, oneShot: Boolean, gain: Float) {
+        post(CMD_CLIP_PARAM, beats.toFloat(), pad, 0)
+        post(CMD_CLIP_PARAM, if (oneShot) 1f else 0f, pad, 1)
+        post(CMD_CLIP_PARAM, gain, pad, 2)
+    }
+    /** On at the next grid line, or off; [pad] < 0: every pad off. */
+    fun toggleClip(pad: Int) = post(CMD_TOGGLE_CLIP, 0f, pad)
+    /** Per pad: 0 off, 1 waiting for the grid, 2 playing ([LIVE_PADS] values). */
+    external fun clipStates(out: IntArray)
 
     /** [values] in Sampler::Param order (see PadSample.engineParams). */
     fun setPadParams(pad: Int, values: FloatArray) {
@@ -235,13 +301,17 @@ object NativeEngine {
     external fun stemsFrames(handle: Long): Long
     external fun stemsExtract(handle: Long, stem: Int, start: Long, count: Long): FloatArray
     external fun stemsPeaks(handle: Long, stem: Int, buckets: Int): FloatArray
+    external fun stemsStretched(handle: Long, ratio: Double): Long
     private external fun nativeInstallStems(handle: Long): Boolean
+    private external fun nativeInstallPreviewStems(handle: Long): Boolean
+    private external fun nativeInstallClip(pad: Int, handle: Long): Boolean
     private external fun exportInstallStems(exportHandle: Long, handle: Long)
     private external fun exportInstallSample(exportHandle: Long, pad: Int, handle: Long)
 
     // Export natives stay public: `internal` would mangle their JNI names. Use OfflineExport.
     external fun exportCreate(): Long
     private external fun exportPost(handle: Long, type: Int, value: Float, a: Int, b: Int)
+    private external fun exportScheduleFrom(handle: Long, frame: Long)
     external fun exportRender(handle: Long, path: String, frames: Long, tail: Long): Int
     external fun exportProgress(handle: Long): Float
     external fun exportRenderFloat(handle: Long, frames: Long, tail: Long): FloatArray

@@ -5,3 +5,7 @@
 -keepclassmembers class * implements com.pocketstudio.separation.Demucs$Progress {
     boolean onProgress(float);
 }
+# BasicPitch.nativeTranscribe is looked up by class and method name.
+-keepclasseswithmembernames class com.pocketstudio.separation.BasicPitch {
+    native <methods>;
+}

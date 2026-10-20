@@ -528,5 +528,196 @@ class AcidPagesTest {
         val song = c.copy(song = listOf(SongPart(0, 0), SongPart(7, 2), SongPart(1, 99))).sanitized().song
         assertEquals(listOf(SongPart(0, 1), SongPart(1, SongPart.MAX_REPEATS)), song)
         assertEquals(c.sanitized(), ProjectJson.decode(ProjectJson.encode(c.sanitized())))
+        // Up to 24 scenes, A to X; beyond that a switch is ignored.
+        val x = c.switchScene(23)
+        assertEquals(24, x.scenes.size)
+        assertEquals("X", x.scenes[23].name)
+        assertEquals(x, x.switchScene(24))
+        assertEquals(x.sanitized(), ProjectJson.decode(ProjectJson.encode(x.sanitized())))
     }
 }
+
+class LivePadsModelTest {
+    @Test
+    fun clipsAreSanitizedAndTheGridNeverHidesOne() {
+        val pads = LivePads(size = 4, clips = listOf(LiveClip("a.wav", "Kick", beats = 0, gain = Float.NaN)) + List(8) { null } +
+            LiveClip("../evil", "x") + List(3) { null } + LiveClip("b.wav", "Mélodie", beats = 999))
+        val s = pads.sanitized()
+        assertEquals(LivePads.MAX, s.clips.size)
+        assertEquals(1, s.clips[0]!!.beats)
+        assertEquals(1f, s.clips[0]!!.gain, 0f)
+        assertEquals(null, s.clips[9])  // a path is never a file name
+        assertEquals(LivePads.MAX_BEATS, s.clips[13]!!.beats)
+        assertEquals(16, s.size)  // pad 14 holds a sound: the grid shows it
+        assertEquals(8, LivePads(size = 5).sanitized().size)
+    }
+
+    @Test
+    fun loopLengthFollowsTheSound() {
+        assertEquals(1, LivePads.beatsFor(0.3, 120.0))   // a kick
+        assertEquals(8, LivePads.beatsFor(4.0, 120.0))   // 2 bars
+        assertEquals(4, LivePads.beatsFor(2.1, 120.0))   // a bar, a bit long
+        assertEquals(32, LivePads.beatsFor(60.0, 120.0)) // longest offered
+    }
+
+    @Test
+    fun liveFilesCountAsUsed() {
+        val p = Project(live = LivePads().with(2, LiveClip("c.wav", "Voix")))
+            .copy(drums = DrumPattern().withSample(0, PadSample("k.wav", "Kick")))
+        assertEquals(setOf("c.wav", "k.wav"), p.sanitized().sampleFiles)
+        assertEquals(p.sanitized(), ProjectJson.decode(ProjectJson.encode(p.sanitized())))
+    }
+}
+
+class SoundLibraryTest {
+    @Test
+    fun builtInSoundsAreInRangeAndCategorised() {
+        SoundLibrary.SYNTH.forEach { assertEquals(it.name, it.sound.sanitized(), it.sound); assertTrue(it.category in SoundCategories.SYNTH) }
+        SoundLibrary.PLAITS.forEach { assertEquals(it.name, it.sound.sanitized(), it.sound); assertTrue(it.category in SoundCategories.PLAITS) }
+        SoundLibrary.ACID.forEach { assertEquals(it.name, it.sound.sanitized(), it.sound); assertTrue(it.category in SoundCategories.ACID) }
+        // Every family has something in it.
+        SoundCategories.SYNTH.forEach { c -> assertTrue(c, SoundLibrary.SYNTH.any { it.category == c }) }
+        SoundCategories.PLAITS.forEach { c -> assertTrue(c, SoundLibrary.PLAITS.any { it.category == c }) }
+    }
+
+    @Test
+    fun randomSoundsStayMusical() {
+        val rng = kotlin.random.Random(7)
+        repeat(200) {
+            val s = SoundLibrary.randomSynth(rng)
+            assertEquals(s.sanitized(), s)
+            assertTrue(s.get(SynthPatch.CUTOFF) in 0.25f..0.85f)
+            assertTrue(s.get(SynthPatch.RESONANCE) <= 0.75f)
+            val p = SoundLibrary.randomPlaits(rng)
+            assertTrue(p.model !in listOf(21, 22, 23))
+            val a = SoundLibrary.randomAcid(rng, AcidSound(tuning = 0.6f, level = 0.5f))
+            assertEquals(0.6f, a.tuning, 0f)  // tuning and level are kept
+            assertEquals(0.5f, a.level, 0f)
+        }
+    }
+
+    @Test
+    fun favoritesRoundTripAndAreCleaned() {
+        val f = Favorites(
+            synth = listOf(NamedSound("Mon son 1", "x", SynthPatch(List(SynthPatch.PARAM_COUNT) { 2f }))),
+            acid = List(60) { NamedSound("A$it", SoundCategories.FAVORITES, AcidSound()) },
+        )
+        val back = ProjectJson.decodeFavorites(ProjectJson.encodeFavorites(f))
+        assertEquals(SoundCategories.FAVORITES, back.synth[0].category)
+        assertEquals(1f, back.synth[0].sound.get(0), 0f)
+        assertEquals(Favorites.MAX, back.acid.size)
+        assertEquals("Mon son 2", Favorites.nextName(listOf("Mon son 1", "Mon son 3")))
+    }
+}
+
+class TranscriptionTest {
+    @Test
+    fun heardNotesLandOnTheGrid() {
+        // 120 BPM: a sixteenth is 0.125 s. Played a little late and loose.
+        val heard = listOf(
+            HeardNote(1.00, 1.24, 69, 0.8f),   // silence before is dropped: tick 0
+            HeardNote(1.27, 1.49, 72, 0.5f),   // 0.27 s later: step 2
+            HeardNote(1.51, 1.53, 64, 0.2f),   // very short: half a step
+        )
+        val clip = Transcription.toClip(heard, 120.0)
+        assertEquals(16, clip.steps)
+        assertEquals(listOf(0, 48, 96), clip.notes.map { it.start })
+        assertEquals(listOf(48, 48, 12), clip.notes.map { it.length })
+        assertEquals(listOf(69, 72, 64), clip.notes.map { it.pitch })
+        assertTrue(clip.notes[0].velocity > clip.notes[2].velocity)
+    }
+
+    @Test
+    fun longRecordingsGrowTheClipUpTo8Bars() {
+        val heard = (0 until 40).map { HeardNote(it * 0.5, it * 0.5 + 0.4, 60 + it % 12, 0.7f) }  // 20 s at 120 BPM = 10 bars
+        val clip = Transcription.toClip(heard, 120.0)
+        assertEquals(NoteClip.MAX_STEPS, clip.steps)
+        assertTrue(clip.notes.all { it.end <= clip.ticks })
+        assertEquals(32, clip.notes.size)  // 8 bars of half-second notes
+        assertEquals(NoteClip(), Transcription.toClip(emptyList(), 120.0))
+    }
+}
+
+class RemixTempoTest {
+    @Test
+    fun stretchOnlyWhenFollowingAnotherTempo() {
+        val r = Remix("x", "Song", songBpm = 120.0)
+        assertEquals(1.0, r.stretchFor(100.0), 0.0)                       // not following
+        assertEquals(1.2, r.copy(followTempo = true).stretchFor(100.0), 1e-9)
+        assertEquals(1.0, r.copy(followTempo = true).stretchFor(120.02), 0.0)  // same tempo
+        assertEquals(1.0, r.copy(followTempo = true, songBpm = 0.0).stretchFor(100.0), 0.0)
+        val old = ProjectJson.decode(ProjectJson.encode(Project(remix = r)).replace("\"followTempo\": false,", ""))
+        assertEquals(false, old.remix.followTempo)
+    }
+}
+
+class DrumLengthTest {
+    @Test
+    fun longerLoopsRepeatTheGrooveShorterOnesCut() {
+        val one = DrumPattern().toggle(0, 0).toggle(2, 4, 0.5f)
+        val three = one.withSteps(48)
+        assertEquals(48, three.steps)
+        assertEquals(setOf(0, 16, 32), three.lanes[0].hits.keys)
+        assertEquals(0.5f, three.lanes[2].hits[36]!!.velocity, 0f)
+        val back = three.toggle(0, 32).withSteps(32)
+        assertEquals(setOf(0, 16), back.lanes[0].hits.keys)
+        assertEquals(64, one.withSteps(100).steps)
+        assertEquals(one, one.withSteps(16))
+    }
+}
+
+class RecordingHistoryTest {
+    @Test
+    fun aWholeTakeIsOneUndoStep() {
+        val h = History(0)
+        h.push(1)
+        val before = h.current
+        h.replace(2); h.replace(3); h.replace(4)  // notes recorded live
+        h.commitFrom(before)
+        assertEquals(4, h.current)
+        assertEquals(1, h.undo())
+        assertEquals(0, h.undo())
+        assertEquals(null, h.undo())
+        assertEquals(1, h.redo())
+        assertEquals(4, h.redo())
+        val h2 = History(5)
+        h2.commitFrom(5)  // nothing recorded: no step
+        assertFalse(h2.canUndo)
+    }
+}
+
+class DemosTest {
+    @Test
+    fun demosAreCompleteStableAndSaveable() {
+        Demos.ALL.forEach { (title, _, build) ->
+            val p = build()
+            assertEquals(title, p.name)
+            assertEquals(p, build())  // same every time
+            assertEquals(p, ProjectJson.decode(ProjectJson.encode(p)))
+            assertTrue(title, p.drums.lanes.any { it.hits.isNotEmpty() })
+        }
+        val house = Demos.ALL[0].third()
+        assertEquals(2, house.allScenes.size)
+        assertEquals(4, house.song.size)
+        assertTrue(house.acid.steps.any { it.gate })
+        assertTrue(Demos.ALL[1].third().synthNotes.notes.isNotEmpty())
+    }
+}
+
+class DrumToolsTest {
+    @Test
+    fun fillRotateAndRolls() {
+        val d = DrumPattern(steps = 32).fill(5, 4, 0.5f)
+        assertEquals((0 until 32 step 4).toSet(), d.lanes[5].hits.keys)
+        assertEquals(setOf(2, 6, 10, 14, 18, 22, 26, 30), d.rotate(5, 2).lanes[5].hits.keys)
+        assertEquals(setOf(3, 7, 11, 15, 19, 23, 27, 31), d.rotate(5, -1).lanes[5].hits.keys)  // wraps around
+        var r = d
+        repeat(3) { r = r.cycleRepeats(5, 4) }
+        assertEquals(4, r.lanes[5].hits[4]!!.repeats)
+        assertEquals(1, r.cycleRepeats(5, 4).lanes[5].hits[4]!!.repeats)
+        assertEquals(r, r.cycleRepeats(5, 3))  // no hit there
+        val messy = DrumPattern(lanes = List(16) { DrumLane(hits = mapOf(0 to Hit(1f, 9))) }).sanitized()
+        assertEquals(4, messy.lanes[0].hits[0]!!.repeats)
+    }
+}
+

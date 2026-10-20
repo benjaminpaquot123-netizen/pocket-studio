@@ -15,18 +15,21 @@ if [ -n "$missing" ]; then
 fi
 echo "JNI symbols OK ($(echo "$kotlin" | wc -l) natives)"
 
-# Same for the separation module.
-CLASS="$(find "$ROOT/separation/build" -path '*release*' -name Demucs.class | head -1)"
-[ -n "$CLASS" ] || { echo "Demucs.class not found: build the separation module first" >&2; exit 1; }
-kotlin="$(javap -p "$CLASS" | grep ' native ' | grep -o '[A-Za-z0-9_$]*(' | tr -d '(' | sort)"
-native="$(grep -o 'Java_com_pocketstudio_separation_Demucs_[A-Za-z0-9_]*' "$ROOT/separation/src/main/cpp/SeparationJni.cpp" \
-    | sed 's/^Java_com_pocketstudio_separation_Demucs_//' | sort -u)"
-missing="$(comm -23 <(echo "$kotlin") <(echo "$native"))"
-if [ -n "$missing" ]; then
-    echo "FAIL: separation natives without a C++ implementation: $missing" >&2
-    exit 1
-fi
-echo "Separation JNI symbols OK ($(echo "$kotlin" | wc -l) natives)"
+# Same for the separation module (Demucs and BasicPitch share SeparationJni.cpp).
+for NAME in Demucs BasicPitch; do
+    CLASS="$(find "$ROOT/separation/build" -path '*release*' -name "$NAME.class" | head -1)"
+    [ -n "$CLASS" ] || { echo "$NAME.class not found: build the separation module first" >&2; exit 1; }
+    kotlin="$(javap -p "$CLASS" | grep ' native ' | grep -o '[A-Za-z0-9_$]*(' | tr -d '(' | sort)"
+    [ -n "$kotlin" ] || { echo "FAIL: no native method found in $NAME" >&2; exit 1; }
+    native="$(grep -o "Java_com_pocketstudio_separation_${NAME}_[A-Za-z0-9_]*" "$ROOT/separation/src/main/cpp/SeparationJni.cpp" \
+        | sed "s/^Java_com_pocketstudio_separation_${NAME}_//" | sort -u)"
+    missing="$(comm -23 <(echo "$kotlin") <(echo "$native"))"
+    if [ -n "$missing" ]; then
+        echo "FAIL: separation natives without a C++ implementation ($NAME): $missing" >&2
+        exit 1
+    fi
+    echo "Separation JNI symbols OK ($NAME: $(echo "$kotlin" | wc -l) natives)"
+done
 
 # Native code calls Demucs.Progress.onProgress by name: in the shrunk release APK, every class
 # implementing Progress must still have a method called onProgress (R8 renamed it once and the

@@ -61,12 +61,27 @@ Feu vert de Benjamin (D4 = A) : fusion de la pull request en fin de phase.
 - [x] 4.4 Effets de performance, pad XY
 
 ## Phase 5 : synthèse avancée et connectivité
-- [ ] 5.1 Plaits, FM 4 opérateurs
-- [ ] 5.2 Presets classés, favoris, randomisation intelligente
-- [ ] 5.3 MIDI USB/BLE, horloge MIDI, Ableton Link
-- [ ] 5.4 Basic Pitch (audio vers MIDI)
+- [x] 5.1 Plaits, FM 4 opérateurs (FM 6 op. de Plaits)
+- [x] 5.2 Presets classés, favoris, randomisation intelligente
+- [~] 5.3 MIDI USB/BLE, horloge MIDI, Ableton Link
+- [x] 5.4 Basic Pitch (audio vers MIDI)
 
-## Phase 6 : génération et finitions
-- [ ] 6.1 Stable Audio Open Small (LiteRT)
-- [ ] 6.2 Modèles par genre, projets de démo, tutoriel, astuces
-- [ ] 6.3 Exports MP3/FLAC/stems/MIDI/zip, finitions
+## Phase 6 : complétude, à hauteur de FL Studio Mobile (voir `COMPARAISON.md`)
+- [x] 6.1 Projets et exports : plusieurs projets (fait), enregistrement en direct (fait), boucle de batterie 1-4 mesures (fait) ; export du morceau entier, des pistes séparées, M4A et FLAC, normalisation ; fichiers MIDI (export, import) ; projet complet en .zip (export, import)
+- [x] 6.2 Réglages, aide, démos : écran Réglages (thème dont daltonien, taille de l'interface, notation, Do central, vibrations, métronome, mode audio) ; premier pas guidé et astuces ; projets de démonstration et modèles
+- [x] 6.3 Piano roll complet : sélection, copier/coller, dupliquer, transposer, couloir de vélocité, zoom, grille (triolets, 1/32), legato, humaniser, deviner la gamme
+- [x] 6.4 Batterie complète (pan et envois par pad : avec les pistes, 7.1) : grille de tous les pads, pan/hauteur/roulement par pas, remplir tous les N pas, décaler, faire tourner ; pan et envois par pad
+
+## Phase 7 : pistes
+- [ ] 7.1 Pistes d'instruments ajoutées à volonté (synthé, Plaits, General MIDI, sampler multi-échantillons), nommées et colorées, chacune avec sa voie de mixeur
+- [ ] 7.2 Pistes audio : enregistrer voix et instruments (latence compensée), clips avec fondus, normalisation, inversion, découpe
+- [ ] 7.3 Ligne de temps (clips posés sur des pistes) à côté des scènes ; mesures autres que 4/4
+
+## Phase 8 : effets et contrôle
+- [ ] 8.1 Nouveaux effets (flanger, phaser, gate, trémolo, élargisseur, bitcrusher, EQ paramétrique visuel), analyseur, accordeur
+- [ ] 8.2 Automation en clips, par scène et sur toute la longueur
+- [ ] 8.3 Clavier expressif (vélocité selon l'appui, pitch bend, molette, sustain, arpège en direct), MIDI learn, horloge MIDI sortante, Ableton Link
+
+## Phase 9 : génération
+- [ ] 9.1 Stable Audio Open Small (LiteRT)
+- [ ] 9.2 Modèles par genre

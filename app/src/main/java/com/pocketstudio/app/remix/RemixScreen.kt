@@ -15,6 +15,9 @@ import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.unit.sp
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Slider
@@ -23,6 +26,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -52,11 +56,13 @@ class RemixUi(
     val modelInstalled: Boolean,
     val state: SeparationState,
     val sets: List<StemSet>,
-    /** (set id, stem) being heard. */
-    val playing: Pair<String, String>? = null,
+    /** The song whose stems are being listened to together, if any. */
+    val preview: StemPreview? = null,
     /** The song played along with the project (setId null = none). */
     val remix: Remix = Remix(),
     val remixLoading: Boolean = false,
+    /** The song is being fitted to the project's tempo. */
+    val stretching: Boolean = false,
     val transportPlaying: Boolean = false,
     val projectBpm: Double = 120.0,
     /** What the last « → Pad » is doing or why it failed. */
@@ -71,8 +77,11 @@ class RemixActions(
     val pickSong: () -> Unit = {},
     val cancel: () -> Unit = {},
     val dismiss: () -> Unit = {},
-    val play: (StemSet, String) -> Unit = { _, _ -> },
-    val stop: () -> Unit = {},
+    /** Listening: all four stems of a song together, apart from the project. */
+    val playAll: (StemSet) -> Unit = {},
+    /** Listening: one stem on or off, the others keep playing. */
+    val toggleStem: (StemSet, Int) -> Unit = { _, _ -> },
+    val pause: () -> Unit = {},
     val delete: (StemSet) -> Unit = {},
     /** The project plays the song along, at its tempo and in its key. */
     val useSong: (StemSet) -> Unit = {},
@@ -83,6 +92,10 @@ class RemixActions(
     val toggleStemMute: (Int) -> Unit = {},
     val toggleStemSolo: (Int) -> Unit = {},
     val stemToPad: (Int, Int) -> Unit = { _, _ -> },
+    /** [bars] bars of a stem onto the first free live pad (Morceau tab). */
+    val stemToLive: (Int, Int) -> Unit = { _, _ -> },
+    /** The song follows the project's tempo (stretched, pitch kept). */
+    val setFollowTempo: (Boolean) -> Unit = {},
     /** Touching a waveform: start the remix at that bar (fraction 0..1 of the song). */
     val setStartAt: (Float) -> Unit = {},
 )
@@ -130,7 +143,7 @@ fun RemixScreen(ui: RemixUi, actions: RemixActions) {
                 }
             }
         }
-        ui.sets.forEach { set -> StemCard(set, ui.playing, ui.remix.setId == set.id, actions) }
+        ui.sets.forEach { set -> StemCard(set, ui.preview?.takeIf { it.setId == set.id }, ui.remix.setId == set.id, actions) }
     }
 }
 
@@ -176,10 +189,19 @@ private fun InProject(ui: RemixUi, actions: RemixActions) {
             LinearProgressIndicator(Modifier.fillMaxWidth(), color = Neon.Magenta)
         }
         if (r.songBpm > 0 && kotlin.math.abs(ui.projectBpm - r.songBpm) > 0.05) {
-            Text(
-                "Le projet est à %.1f BPM, le morceau à %.1f : les pistes gardent leur vitesse et se décalent.".format(ui.projectBpm, r.songBpm),
-                style = MaterialTheme.typography.bodySmall, color = Neon.Amber,
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    if (r.followTempo) "Le morceau (%.1f BPM) suit le tempo du projet (%.1f BPM), sans changer de hauteur.".format(r.songBpm, ui.projectBpm)
+                    else "Le projet est à %.1f BPM, le morceau à %.1f : les pistes gardent leur vitesse et se décalent.".format(ui.projectBpm, r.songBpm),
+                    style = MaterialTheme.typography.bodySmall, color = if (r.followTempo) Neon.TextSecondary else Neon.Amber,
+                    modifier = Modifier.weight(1f),
+                )
+                Switch(checked = r.followTempo, onCheckedChange = actions.setFollowTempo, modifier = Modifier.testTag("remix_follow_tempo"))
+            }
+            if (ui.stretching) {
+                Text("Calage du morceau au tempo…", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                LinearProgressIndicator(Modifier.fillMaxWidth(), color = Neon.Magenta)
+            }
         }
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             Text("Vers le pad :", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
@@ -207,6 +229,7 @@ private fun InProject(ui: RemixUi, actions: RemixActions) {
                     modifier = Modifier.testTag("stem_solo_$i"),
                 )
                 TextButton(onClick = { actions.stemToPad(i, padBars) }, modifier = Modifier.testTag("stem_pad_$i")) { Text("→ Pad") }
+                TextButton(onClick = { actions.stemToLive(i, padBars) }, modifier = Modifier.testTag("stem_live_$i")) { Text("→ Live") }
             }
             ui.overview?.let { ov ->
                 Waveform(
@@ -221,7 +244,7 @@ private fun InProject(ui: RemixUi, actions: RemixActions) {
             Slider(value = m.volume, onValueChange = { actions.setStemVolume(i, it) }, modifier = Modifier.testTag("stem_volume_$i"))
         }
         Text(
-            "Les pistes démarrent avec le Rythme, à partir de la mesure choisie (trait vert). Touche une forme d'onde pour partir de là. « → Pad » copie les mesures choisies sur le pad sélectionné.",
+            "Les pistes démarrent avec le Rythme, à partir de la mesure choisie (trait vert). Touche une forme d'onde pour partir de là. « → Pad » copie les mesures choisies sur le pad sélectionné, « → Live » sur un pad live libre (onglet Morceau) pour lancer et couper chaque partie en rythme.",
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
         )
         TextButton(onClick = actions.clearRemix, modifier = Modifier.testTag("remix_clear")) { Text("Retirer du projet") }
@@ -229,7 +252,7 @@ private fun InProject(ui: RemixUi, actions: RemixActions) {
 }
 
 @Composable
-private fun StemCard(set: StemSet, playing: Pair<String, String>?, inProject: Boolean, actions: RemixActions) {
+private fun StemCard(set: StemSet, preview: StemPreview?, inProject: Boolean, actions: RemixActions) {
     NeonCard(modifier = Modifier.testTag("stems_${set.id}")) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
@@ -249,16 +272,46 @@ private fun StemCard(set: StemSet, playing: Pair<String, String>?, inProject: Bo
                 Text("Jouer avec le projet")
             }
         }
-        Demucs.STEMS.forEach { stem ->
-            val on = playing == set.id to stem
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(StemStore.LABELS[stem] ?: stem, Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge)
-                TextButton(
-                    onClick = { if (on) actions.stop() else actions.play(set, stem) },
-                    modifier = Modifier.testTag("stem_${set.id}_$stem"),
+        val playing = preview?.playing == true
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            OutlinedButton(
+                onClick = { if (playing) actions.pause() else actions.playAll(set) },
+                enabled = preview?.loading != true,
+                modifier = Modifier.testTag("listen_${set.id}"),
+            ) {
+                Icon(if (playing) Icons.Filled.Stop else Icons.Filled.PlayArrow, contentDescription = null, tint = if (playing) Neon.Acid else Neon.Cyan)
+                Text(if (playing) " Arrêter" else " Écouter", color = if (playing) Neon.Acid else Neon.Cyan)
+            }
+            val clockText = when {
+                preview?.loading == true -> "Chargement…"
+                playing && preview.frames > 0 -> "${clock(preview.position.coerceAtLeast(0))} / ${clock(preview.frames)}"
+                else -> "Allume ou coupe chaque partie, même en pleine lecture."
+            }
+            Text(clockText, style = if (playing) MonoStyle else MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.weight(1f))
+        }
+        if (playing && preview.frames > 0) {
+            LinearProgressIndicator(
+                progress = { (preview.position.coerceAtLeast(0).toFloat() / preview.frames).coerceIn(0f, 1f) },
+                modifier = Modifier.fillMaxWidth(), color = Neon.Acid,
+            )
+        }
+        // One big switch per part: lit = heard. Switching never stops the others.
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            Demucs.STEMS.forEachIndexed { i, stem ->
+                val on = preview != null && preview.on.getOrElse(i) { false }
+                val lit = on && playing
+                Button(
+                    onClick = { actions.toggleStem(set, i) },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (lit) Neon.Acid else if (on) Neon.SurfaceHigh else Neon.Surface,
+                        contentColor = if (lit) androidx.compose.ui.graphics.Color(0xFF14210F) else if (on) Neon.TextPrimary else Neon.TextSecondary,
+                    ),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, if (on) Neon.Acid else Neon.Outline),
+                    shape = RoundedCornerShape(10.dp),
+                    contentPadding = androidx.compose.foundation.layout.PaddingValues(2.dp),
+                    modifier = Modifier.weight(1f).height(56.dp).testTag("stem_${set.id}_$stem"),
                 ) {
-                    Icon(if (on) Icons.Filled.Stop else Icons.Filled.PlayArrow, contentDescription = null, tint = if (on) Neon.Magenta else Neon.Cyan)
-                    Text(if (on) " Arrêter" else " Écouter", color = if (on) Neon.Magenta else Neon.Cyan)
+                    Text(StemStore.LABELS[stem] ?: stem, fontSize = 13.sp, maxLines = 1, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
                 }
             }
         }

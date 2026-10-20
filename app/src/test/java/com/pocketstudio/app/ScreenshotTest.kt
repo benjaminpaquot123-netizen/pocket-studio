@@ -157,7 +157,7 @@ class ScreenshotTest {
             channels = channels,
             meters = floatArrayOf(0.62f, 0.81f, 0f, 0.4f, 0.88f, 0.8f),
             actions = com.pocketstudio.app.mixer.MixerActions(),
-            export = com.pocketstudio.app.rhythm.ExportUi(bars = 4, file = java.io.File("Mon-premier-rythme-20261018-221500.wav"), savedInMusic = true),
+            export = com.pocketstudio.app.rhythm.ExportUi(bars = 4, files = listOf(java.io.File("Mon-premier-rythme-20261018-221500.wav")), savedInMusic = true),
         )
     }
 
@@ -165,11 +165,14 @@ class ScreenshotTest {
     fun mixerExporting() = shoot("mixer_export") {
         androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
             com.pocketstudio.app.mixer.ExportCard(
-                com.pocketstudio.app.rhythm.ExportUi(bars = 8, running = true, progress = 0.4f),
+                com.pocketstudio.app.rhythm.ExportUi(bars = 8, what = com.pocketstudio.app.rhythm.ExportWhat.Stems, running = true, progress = 0.4f, stage = "Acide (2/4)"),
                 com.pocketstudio.app.mixer.MixerActions(),
             )
             com.pocketstudio.app.mixer.ExportCard(
-                com.pocketstudio.app.rhythm.ExportUi(bars = 4, file = java.io.File("Mon-premier-rythme-20261018-221500.wav"), savedInMusic = true),
+                com.pocketstudio.app.rhythm.ExportUi(
+                    bars = 4, what = com.pocketstudio.app.rhythm.ExportWhat.Song, format = com.pocketstudio.app.rhythm.ExportFormat.M4a,
+                    files = listOf(java.io.File("Da-Funk-morceau-20261020-101500.m4a")), savedInMusic = true,
+                ),
                 com.pocketstudio.app.mixer.MixerActions(),
             )
         }
@@ -252,6 +255,28 @@ class ScreenshotTest {
     }
 
     @Test
+    fun allPads() = shoot("all_pads") {
+        val p = com.pocketstudio.model.Demos.ALL[1].third()
+        androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
+            com.pocketstudio.app.rhythm.AllPadsGrid(p, 0, 6, RhythmActions())
+        }
+    }
+
+    @Test
+    fun pianoRollSelection() = shoot("piano_roll_select") {
+        val notes = listOf(60, 64, 67, 72).mapIndexed { i, p -> com.pocketstudio.model.Note(i * 48, 40, p, 0.3f + 0.2f * i) } +
+            listOf(55, 59, 62).map { com.pocketstudio.model.Note(240, 96, it, 0.8f) }
+        androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
+            com.pocketstudio.app.synth.PianoRoll(
+                com.pocketstudio.model.NoteClip(16, notes), emptyList(), playStep = -1,
+                actions = com.pocketstudio.app.synth.PianoRollActions(),
+                gridHeight = androidx.compose.ui.unit.Dp(300f),
+                initialSelection = notes.drop(4).toSet(),
+            )
+        }
+    }
+
+    @Test
     fun instruments() = shoot("instruments") {
         val names = listOf("Grand Piano", "Bright Piano", "Electric Grand", "Honky-Tonk", "Tine Electric Piano", "FM Electric Piano", "Harpsichord", "Clavinet")
         val presets = names.mapIndexed { i, n -> com.pocketstudio.engine.Preset(i, 0, i, n) }
@@ -281,7 +306,8 @@ class ScreenshotTest {
             File("/tmp/stems/abc"), "Ma chanson", 214.0, 0L, com.pocketstudio.app.remix.SongInfo(124.0, 0.25, 9, true),
         )
         com.pocketstudio.app.remix.RemixScreen(
-            com.pocketstudio.app.remix.RemixUi(true, com.pocketstudio.app.remix.SeparationState.Separating("Autre chanson", 0.37f), listOf(set), "abc" to "bass"),
+            com.pocketstudio.app.remix.RemixUi(true, com.pocketstudio.app.remix.SeparationState.Separating("Autre chanson", 0.37f), listOf(set),
+                com.pocketstudio.app.remix.StemPreview(set.id, listOf(true, true, false, true), playing = true, position = 48000L * 75, frames = 48000L * 200)),
             com.pocketstudio.app.remix.RemixActions(),
         )
     }
@@ -367,18 +393,136 @@ class ScreenshotTest {
     }
 
     @Test
+    fun soundBrowser() = shoot("sound_browser") {
+        androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
+            com.pocketstudio.ui.NeonCard {
+                com.pocketstudio.app.sounds.SoundBrowser(
+                    com.pocketstudio.app.sounds.SoundBrowserUi(
+                        com.pocketstudio.model.SoundCategories.SYNTH, com.pocketstudio.model.SoundLibrary.SYNTH,
+                        listOf(com.pocketstudio.model.NamedSound("Mon son 1", "Favoris", com.pocketstudio.model.SynthPatch())),
+                        current = "Basse reese",
+                    ),
+                )
+            }
+            com.pocketstudio.ui.NeonCard {
+                com.pocketstudio.app.sounds.SoundBrowser(
+                    com.pocketstudio.app.sounds.SoundBrowserUi(
+                        com.pocketstudio.model.SoundCategories.ACID, com.pocketstudio.model.SoundLibrary.ACID, emptyList(), current = null, tag = "acid",
+                    ),
+                )
+            }
+        }
+    }
+
+    @Test
+    fun projects() = shoot("projects") {
+        val now = 1_800_000_000_000L
+        val p = { id: String, name: String, ago: Long, bpm: Double, bars: Int, scenes: Int, remix: Boolean ->
+            com.pocketstudio.model.ProjectInfo(id, name, now - ago, bpm, bars, scenes, remix)
+        }
+        androidx.compose.foundation.layout.Column {
+            com.pocketstudio.app.ui.TopBar(
+                com.pocketstudio.app.ui.TopBarUi("Da Funk (remix)", 111.0, playing = true, canUndo = true, canRedo = false),
+                com.pocketstudio.app.ui.TopBarActions(),
+            )
+            com.pocketstudio.app.projects.ProjectsScreen(
+                com.pocketstudio.app.projects.ProjectsUi(
+                    listOf(
+                        p("a", "Da Funk (remix)", 120_000, 111.0, 8, 3, true),
+                        p("b", "Acide du dimanche", 3 * 3_600_000, 128.0, 4, 1, false),
+                        p("c", "Mon premier rythme", 30 * 3_600_000, 120.0, 1, 1, false),
+                        p("d", "Until I Found You", 9 * 86_400_000L, 120.0, 2, 2, true),
+                    ),
+                    loading = false, deleted = "x@1" to "Essai",
+                ),
+                currentId = "a",
+                starters = listOf(com.pocketstudio.app.projects.ProjectStarter("Projet vide", "Tout est vierge.", "empty")),
+                actions = com.pocketstudio.app.projects.ProjectsActions(),
+                now = now,
+            )
+        }
+    }
+
+    @Test
+    @Config(qualifiers = "w400dp-h1300dp-xxhdpi")
+    fun settings() = shoot("settings") {
+        com.pocketstudio.app.settings.SettingsScreen(
+            com.pocketstudio.app.settings.AppSettings(uiScale = 1.15f, bufferBursts = 4, guideSeen = true),
+            "0.5.70 (preview)",
+            com.pocketstudio.app.settings.SettingsActions(),
+        )
+    }
+
+    @Test
+    fun guide() = shoot("guide") {
+        com.pocketstudio.app.settings.GuideDialog(onClose = {})
+    }
+
+    @Test
+    fun midi() = shoot("midi") {
+        com.pocketstudio.app.midi.MidiScreen(
+            com.pocketstudio.app.midi.MidiUi(
+                sources = listOf(
+                    com.pocketstudio.app.midi.MidiSource("midi-1", "Arturia MiniLab 3", "USB"),
+                    com.pocketstudio.app.midi.MidiSource("ble-2", "Clavier Bluetooth", "Bluetooth"),
+                ),
+                connected = "midi-1", last = "Note Do 4", clockBpm = 124.0,
+            ),
+            com.pocketstudio.app.midi.MidiActions(),
+        )
+    }
+
+    @Test
+    fun acidPanel() = shoot("acid_panel") {
+        androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
+            com.pocketstudio.app.acid.Panel303(com.pocketstudio.model.AcidSound(cutoff = 0.62f, waveform = 1f).values()) { _, _ -> }
+        }
+    }
+
+    @Test
     fun session() = shoot("session") {
         val drums = com.pocketstudio.model.DrumPattern().toggle(0, 0).toggle(2, 4)
         val a = com.pocketstudio.model.Scene("A", drums)
         val b = com.pocketstudio.model.Scene("B", drums.copy(steps = 32))
         com.pocketstudio.app.session.SessionScreen(
             com.pocketstudio.app.session.SessionScreenUi(
-                scenes = listOf(a, b, com.pocketstudio.model.Scene("C")) + List(5) { null },
+                scenes = listOf(a, b, com.pocketstudio.model.Scene("C")) + List(6) { null } + com.pocketstudio.model.Scene("J", drums) + List(14) { null },
                 current = 0, pending = 1,
                 song = listOf(com.pocketstudio.model.SongPart(0, 4), com.pocketstudio.model.SongPart(1, 2), com.pocketstudio.model.SongPart(0, 2)),
                 songIndex = 0, playing = true, tempoBpm = 124.0,
             ),
             com.pocketstudio.app.session.SessionActions(),
         )
+    }
+
+    @Test
+    @Config(qualifiers = "w400dp-h1500dp-xxhdpi")
+    fun livePads() = shoot("live_pads") {
+        val clip = { n: String, b: Int -> com.pocketstudio.model.LiveClip("x.wav", n, b) }
+        val pads = com.pocketstudio.model.LivePads(8).with(0, clip("Kick 909", 1)).with(1, clip("Charley", 2))
+            .with(2, clip("Basse Da Funk", 8)).with(3, clip("Voix refrain", 16)).with(5, clip("Clap", 4).copy(oneShot = true))
+        androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
+            com.pocketstudio.app.session.LivePadsCard(
+                com.pocketstudio.app.session.LivePadsUi(pads, listOf(2, 2, 1, 0, 0, 0, 0, 0), editing = null),
+                com.pocketstudio.app.session.LivePadsActions(),
+            )
+            com.pocketstudio.app.session.LivePadsCard(
+                com.pocketstudio.app.session.LivePadsUi(pads, List(8) { 0 }, editing = 2, drumSounds = listOf(0 to "Kick importé", 3 to "Snare")),
+                com.pocketstudio.app.session.LivePadsActions(),
+            )
+        }
+    }
+
+    @Test
+    @Config(qualifiers = "w400dp-h1500dp-xxhdpi")
+    fun plaits() = shoot("plaits") {
+        androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
+            com.pocketstudio.app.instruments.InstrumentPanel(
+                com.pocketstudio.app.instruments.InstrumentUi(
+                    com.pocketstudio.app.rhythm.LibraryState.Missing, null,
+                    synthEngine = 1, plaits = com.pocketstudio.model.PlaitsPatch(model = 2, timbre = 0.7f),
+                ),
+            )
+        }
     }
 }

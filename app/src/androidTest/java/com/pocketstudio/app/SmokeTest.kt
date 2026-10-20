@@ -37,6 +37,9 @@ class SmokeTest {
     fun appStartsPlaysAndNavigates() {
         assertTrue("native engine must load", NativeEngine.isAvailable)
         compose.waitUntil(10_000) { NativeEngine.streamInfo().let { it.running && it.callbacks > 0 } }
+        // First launch: the first-steps guide opens; skip it.
+        compose.waitForIdle()
+        if (compose.onAllNodesWithTag("guide_skip").fetchSemanticsNodes().isNotEmpty()) compose.onNodeWithTag("guide_skip").performClick()
 
         // Rhythm screen: the starter groove plays and makes sound.
         compose.onNodeWithTag("rhythm").assertIsDisplayed()
@@ -59,7 +62,7 @@ class SmokeTest {
         }
 
         // An edit survives the app going to the background (autosave flush on stop).
-        compose.onNodeWithTag("step_3").performClick()  // pad 4 (clap) is selected now
+        compose.onNodeWithTag("step_3").performScrollTo().performClick()  // pad 4 (clap) is selected now
         compose.activityRule.scenario.moveToState(androidx.lifecycle.Lifecycle.State.CREATED)
         val store = ProjectStore(File(InstrumentationRegistry.getInstrumentation().targetContext.filesDir, "projects"))
         var saved = false
@@ -121,6 +124,17 @@ class SmokeTest {
             kotlin.math.abs(v)
         }
         assertTrue("export has sound: $loudest", loudest > 800_000)
+
+        // The same loop as M4A (Android's AAC encoder in an MP4 container).
+        compose.onNodeWithTag("export_format_M4a").performScrollTo().performClick()
+        compose.onNodeWithTag("export").performScrollTo().performClick()
+        compose.waitUntil(60_000) {
+            File(context.cacheDir, "exports").listFiles()!!.any { it.extension == "m4a" && it.length() > 10_000 } &&
+                compose.onAllNodesWithTag("share").fetchSemanticsNodes().isNotEmpty()
+        }
+        val m4a = File(context.cacheDir, "exports").listFiles()!!.filter { it.extension == "m4a" }.maxBy { it.lastModified() }
+        assertEquals("ftyp", String(m4a.readBytes(), 4, 4))
+        compose.onNodeWithTag("export_format_Wav").performScrollTo().performClick()
 
         // Import: a 44.1 kHz 16-bit WAV goes through Android's decoder and the resampler onto pad 9.
         val context2 = InstrumentationRegistry.getInstrumentation().targetContext

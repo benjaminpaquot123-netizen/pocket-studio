@@ -15,3 +15,11 @@ target_compile_options(separation_test PRIVATE -O2 -w)
 target_link_directories(separation_test PRIVATE ${ORT_DIR}/lib)
 target_link_libraries(separation_test PRIVATE onnxruntime)
 set_target_properties(separation_test PROPERTIES BUILD_RPATH ${ORT_DIR}/lib)
+
+# Basic Pitch transcription: needs only ORT and the model asset shipped in the app.
+add_executable(pitch_test pitch_test.cpp ${SRC}/PitchTranscriber.cpp ${LIBSAMPLERATE_SOURCES})
+target_include_directories(pitch_test PRIVATE ${SRC} ${ORT_DIR}/include ${LIBSAMPLERATE_INCLUDES})
+target_compile_options(pitch_test PRIVATE -O2 -Wall -Wextra)
+target_link_directories(pitch_test PRIVATE ${ORT_DIR}/lib)
+target_link_libraries(pitch_test PRIVATE onnxruntime)
+set_target_properties(pitch_test PROPERTIES BUILD_RPATH ${ORT_DIR}/lib)

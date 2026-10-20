@@ -55,6 +55,12 @@ object Palettes {
     )
 }
 
+/** Studio greys with Okabe-Ito colours: "playing" is blue, never told from orange by red-green alone. */
+val ColorblindPalette = Palettes.Studio.copy(
+    accent = Color(0xFFE69F00), playing = Color(0xFF56B4E9), good = Color(0xFF56B4E9),
+    warning = Color(0xFFF0E442), bad = Color(0xFFD55E00),
+)
+
 val LocalPalette = staticCompositionLocalOf { Palettes.Studio }
 
 /** Theme colours by role. Names kept from phase 0; values follow the active [Palette]. */

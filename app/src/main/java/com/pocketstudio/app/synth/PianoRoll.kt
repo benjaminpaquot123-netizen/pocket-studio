@@ -47,6 +47,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.pocketstudio.app.acid.noteNameFr
 import com.pocketstudio.model.Note
+import com.pocketstudio.model.NoteEdits
 import com.pocketstudio.model.NoteClip
 import com.pocketstudio.ui.Neon
 import kotlin.math.abs
@@ -63,15 +64,20 @@ data class PianoRollActions(
     val setHarmony: (Harmony) -> Unit = {},
     val applyProgression: (Progression) -> Unit = {},
     val setPerformance: (Performance) -> Unit = {},
+    /** A whole-clip edit (selection tools); [key] merges a quick burst into one undo step. */
+    val replaceClip: (NoteClip, key: String?) -> Unit = { _, _ -> },
 )
 
 private const val LOW = 24   // C1
 private const val HIGH = 96  // C7
 private val ROW = 20.dp
-private val STEP = 30.dp
 private val TICK = NoteClip.TICKS_PER_STEP
 private val NEW_LENGTHS = listOf(1 to "1/16", 2 to "1/8", 4 to "1/4", 8 to "1/2")
 private val BLACK = setOf(1, 3, 6, 8, 10)
+/** Width of a sixteenth for each zoom level. */
+private val ZOOMS = listOf(18.dp, 30.dp, 46.dp)
+/** Grid for placing and moving notes, in ticks: 1/8, 1/16, 1/16 triplet, 1/32. */
+private val GRIDS = listOf(48 to "1/8", 24 to "1/16", 16 to "1/16 t", 12 to "1/32")
 
 /** Velocity steps a long press cycles through (same as the drum grid). */
 fun nextVelocity(v: Float) = when {
@@ -81,9 +87,10 @@ fun nextVelocity(v: Float) = when {
 }
 
 /**
- * Piano roll for the synth: tap an empty cell to add a note, tap a note to delete it, drag it
- * to move, drag its right end to lengthen, long press to cycle its strength. Ghost notes show
- * the acid bass line, faint, behind.
+ * Piano roll for the synth. Draw mode: tap an empty cell to add a note, tap a note to delete it,
+ * drag it to move, drag its right end to lengthen, long press to cycle its strength. Select
+ * mode: tap notes or draw a box, then move, copy, transpose… the selection. The velocity lane
+ * under the grid sets strengths with a finger. Ghost notes show the acid bass line.
  */
 @Composable
 fun PianoRoll(
@@ -94,12 +101,33 @@ fun PianoRoll(
     modifier: Modifier = Modifier,
     gridHeight: androidx.compose.ui.unit.Dp = 380.dp,
     harmony: Harmony = Harmony(),
+    initialSelection: Set<Note> = emptySet(),
 ) {
     var newSteps by rememberSaveable { mutableIntStateOf(2) }
     var chordMode by rememberSaveable { mutableStateOf(false) }
     var showGhosts by rememberSaveable { mutableStateOf(true) }
+    var selectMode by rememberSaveable { mutableStateOf(initialSelection.isNotEmpty()) }
+    var zoom by rememberSaveable { mutableIntStateOf(1) }
+    var grid by rememberSaveable { mutableIntStateOf(TICK) }
+    var selection by remember { mutableStateOf(initialSelection) }
+    var clipboard by remember { mutableStateOf<List<Note>>(emptyList()) }
+    // Notes edited elsewhere (undo, another tool) leave the selection.
+    val live = selection.filter { it in clip.notes }.toSet()
+    if (live != selection) selection = live
+    val apply: (NoteEdits.Result, String?) -> Unit = { r, key -> actions.replaceClip(r.clip, key); selection = r.selection }
     val chipColors = FilterChipDefaults.filterChipColors(selectedContainerColor = Neon.Cyan.copy(alpha = 0.25f), selectedLabelColor = Neon.Cyan)
+    val hScroll = rememberScrollState()
+    val stepWidth = ZOOMS[zoom]
     Column(modifier, verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Row(Modifier.horizontalScroll(rememberScrollState()), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            FilterChip(selected = !selectMode, onClick = { selectMode = false; selection = emptySet() }, label = { Text("✏ Dessiner") }, colors = chipColors,
+                modifier = Modifier.testTag("mode_draw"))
+            FilterChip(selected = selectMode, onClick = { selectMode = true }, label = { Text("⬚ Sélectionner") }, colors = chipColors,
+                modifier = Modifier.testTag("mode_select"))
+            Text("  Zoom", style = MaterialTheme.typography.bodySmall)
+            TextButton(onClick = { zoom = (zoom - 1).coerceAtLeast(0) }, enabled = zoom > 0, modifier = Modifier.testTag("zoom_out")) { Text("−") }
+            TextButton(onClick = { zoom = (zoom + 1).coerceAtMost(ZOOMS.lastIndex) }, enabled = zoom < ZOOMS.lastIndex, modifier = Modifier.testTag("zoom_in")) { Text("+") }
+        }
         Row(Modifier.horizontalScroll(rememberScrollState()), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             Text("Boucle", style = MaterialTheme.typography.bodySmall)
             NoteClip.LENGTHS_IN_STEPS.forEach { steps ->
@@ -110,21 +138,136 @@ fun PianoRoll(
             NEW_LENGTHS.forEach { (steps, label) ->
                 FilterChip(selected = newSteps == steps, onClick = { newSteps = steps }, label = { Text(label) }, colors = chipColors)
             }
+            Text("  Grille", style = MaterialTheme.typography.bodySmall)
+            GRIDS.forEach { (ticks, label) ->
+                FilterChip(selected = grid == ticks, onClick = { grid = ticks }, label = { Text(label) }, colors = chipColors,
+                    modifier = Modifier.testTag("grid_$ticks"))
+            }
         }
-        Row(Modifier.horizontalScroll(rememberScrollState()), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-            TextButton(onClick = { actions.quantize(TICK, 0.5f) }, modifier = Modifier.testTag("quantize_50")) { Text("Quantifier 50 %") }
-            TextButton(onClick = { actions.quantize(TICK, 1f) }) { Text("100 %") }
-            FilterChip(selected = showGhosts, onClick = { showGhosts = !showGhosts }, label = { Text("Basse en fantôme") }, colors = chipColors)
-            FilterChip(selected = chordMode, onClick = { chordMode = !chordMode }, label = { Text("Accords") }, colors = chipColors,
-                modifier = Modifier.testTag("chord_mode"))
-            TextButton(onClick = actions.clear, enabled = clip.notes.isNotEmpty()) { Text("Effacer") }
+        if (selectMode) {
+            SelectionBar(clip, selection, clipboard, playStep, grid, chipColors,
+                select = { selection = it }, copy = { clipboard = NoteEdits.copy(selection) }, apply = apply)
+        } else {
+            Row(Modifier.horizontalScroll(rememberScrollState()), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+                TextButton(onClick = { actions.quantize(grid, 0.5f) }, modifier = Modifier.testTag("quantize_50")) { Text("Quantifier 50 %") }
+                TextButton(onClick = { actions.quantize(grid, 1f) }) { Text("100 %") }
+                FilterChip(selected = showGhosts, onClick = { showGhosts = !showGhosts }, label = { Text("Basse en fantôme") }, colors = chipColors)
+                FilterChip(selected = chordMode, onClick = { chordMode = !chordMode }, label = { Text("Accords") }, colors = chipColors,
+                    modifier = Modifier.testTag("chord_mode"))
+                TextButton(onClick = actions.clear, enabled = clip.notes.isNotEmpty()) { Text("Effacer") }
+            }
         }
-        Grid(clip, if (showGhosts) ghosts else emptyList(), playStep, newSteps * TICK, actions, gridHeight, harmony, chordMode)
+        Grid(
+            clip, if (showGhosts) ghosts else emptyList(), playStep, newSteps * TICK, actions, gridHeight, harmony, chordMode,
+            hScroll, stepWidth, grid, selectMode, selection, select = { selection = it }, apply = apply,
+        )
+        VelocityLane(clip, selection, hScroll, stepWidth, apply)
         Text(
-            "Touche une case : ajoute une note. Touche une note : l'enlève. Glisse : déplace. Glisse le bout : allonge. Appui long : plus doux.",
+            if (selectMode) "Touche des notes ou trace un cadre pour les choisir ; glisse une note choisie pour tout déplacer. Couloir du bas : la force de chaque note."
+            else "Touche une case : ajoute une note. Touche une note : l'enlève. Glisse : déplace. Glisse le bout : allonge. Couloir du bas : glisse pour régler la force.",
             style = MaterialTheme.typography.bodySmall,
             color = Neon.TextSecondary,
         )
+    }
+}
+
+/** Tools for the selected notes (FL Studio Mobile's selection menu, as buttons). */
+@Composable
+private fun SelectionBar(
+    clip: NoteClip,
+    selection: Set<Note>,
+    clipboard: List<Note>,
+    playStep: Int,
+    grid: Int,
+    chipColors: androidx.compose.material3.SelectableChipColors,
+    select: (Set<Note>) -> Unit,
+    copy: () -> Unit,
+    apply: (NoteEdits.Result, String?) -> Unit,
+) {
+    val any = selection.isNotEmpty()
+    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+        Row(Modifier.horizontalScroll(rememberScrollState()), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+            Text(if (any) "${selection.size} note${if (selection.size > 1) "s" else ""}" else "Rien de choisi",
+                style = MaterialTheme.typography.bodySmall, color = Neon.Cyan, modifier = Modifier.testTag("selection_count"))
+            TextButton(onClick = { select(clip.notes.toSet()) }, modifier = Modifier.testTag("select_all")) { Text("Tout") }
+            TextButton(onClick = { select(emptySet()) }, enabled = any) { Text("Aucune") }
+            TextButton(onClick = { apply(NoteEdits.transpose(clip, selection, 1), "sel-pitch") }, enabled = any, modifier = Modifier.testTag("sel_up")) { Text("▲ ½ ton") }
+            TextButton(onClick = { apply(NoteEdits.transpose(clip, selection, -1), "sel-pitch") }, enabled = any) { Text("▼ ½ ton") }
+            TextButton(onClick = { apply(NoteEdits.transpose(clip, selection, 12), "sel-pitch") }, enabled = any) { Text("▲ octave") }
+            TextButton(onClick = { apply(NoteEdits.transpose(clip, selection, -12), "sel-pitch") }, enabled = any) { Text("▼ octave") }
+            TextButton(onClick = { apply(NoteEdits.shift(clip, selection, -grid), "sel-move") }, enabled = any) { Text("◀") }
+            TextButton(onClick = { apply(NoteEdits.shift(clip, selection, grid), "sel-move") }, enabled = any) { Text("▶") }
+        }
+        Row(Modifier.horizontalScroll(rememberScrollState()), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+            TextButton(onClick = { apply(NoteEdits.duplicate(clip, selection), null) }, enabled = any, modifier = Modifier.testTag("sel_duplicate")) { Text("Dupliquer") }
+            TextButton(onClick = copy, enabled = any, modifier = Modifier.testTag("sel_copy")) { Text("Copier") }
+            TextButton(
+                onClick = {
+                    // At the playhead while it plays, else just after the last note.
+                    val at = if (playStep >= 0) (playStep % clip.steps) * TICK / grid * grid
+                    else ((clip.notes.maxOfOrNull { it.end } ?: 0) + grid - 1) / grid * grid
+                    apply(NoteEdits.paste(clip, clipboard, at.coerceIn(0, clip.ticks - 1)), null)
+                },
+                enabled = clipboard.isNotEmpty(), modifier = Modifier.testTag("sel_paste"),
+            ) { Text("Coller") }
+            TextButton(onClick = { apply(NoteEdits.quantize(clip, selection, grid), null) }, enabled = any) { Text("Quantifier") }
+            TextButton(onClick = { apply(NoteEdits.legato(clip, selection), null) }, enabled = any) { Text("Legato") }
+            TextButton(onClick = { apply(NoteEdits.humanize(clip, selection), null) }, enabled = any) { Text("Humaniser") }
+            TextButton(onClick = { apply(NoteEdits.delete(clip, selection), null) }, enabled = any, modifier = Modifier.testTag("sel_delete")) {
+                Text("Supprimer", color = if (any) Neon.Red else Neon.TextSecondary)
+            }
+        }
+    }
+}
+
+/** One bar per note, as tall as it is strong: drag a finger along it to set the strengths. */
+@Composable
+private fun VelocityLane(
+    clip: NoteClip,
+    selection: Set<Note>,
+    hScroll: androidx.compose.foundation.ScrollState,
+    stepWidth: androidx.compose.ui.unit.Dp,
+    apply: (NoteEdits.Result, String?) -> Unit,
+) {
+    val density = LocalDensity.current
+    val stepPx = with(density) { stepWidth.toPx() }
+    val barColor = Neon.Cyan
+    val selColor = Neon.Acid
+    val lineColor = Neon.Outline
+    // Latest values for the gesture without restarting it on every edit.
+    val current by androidx.compose.runtime.rememberUpdatedState(clip to selection)
+    Row(Modifier.fillMaxWidth().height(56.dp)) {
+        Box(Modifier.width(36.dp), contentAlignment = Alignment.Center) { Text("Force", style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary) }
+        Box(Modifier.weight(1f).horizontalScroll(hScroll)) {
+            Canvas(
+                Modifier.size(stepWidth * clip.steps, 56.dp).testTag("velocity_lane").pointerInput(stepPx) {
+                    awaitEachGesture {
+                        var change = awaitFirstDown()
+                        while (true) {
+                            val (c, sel) = current
+                            val tick = (change.position.x / stepPx * TICK).toInt()
+                            val v = (1f - change.position.y / size.height).coerceIn(0.05f, 1f)
+                            // Notes starting in the touched sixteenth (only the selected ones when there is a selection).
+                            val targets = c.notes.filter { tick / TICK == it.start / TICK && (sel.isEmpty() || it in sel) }.toSet()
+                            if (targets.isNotEmpty()) {
+                                val r = NoteEdits.setVelocity(c, targets, v)
+                                apply(NoteEdits.Result(r.clip, if (sel.isEmpty()) sel else (sel - targets) + r.selection), "vel-lane")
+                            }
+                            change.consume()
+                            val event = awaitPointerEvent()
+                            change = event.changes.firstOrNull { it.pressed } ?: break
+                        }
+                    }
+                },
+            ) {
+                drawLine(lineColor, Offset(0f, size.height - 1f), Offset(size.width, size.height - 1f), 1f)
+                clip.notes.forEach { n ->
+                    val x = n.start / TICK.toFloat() * stepPx
+                    val h = n.velocity * (size.height - 4f)
+                    drawRect(if (n in selection) selColor else barColor, Offset(x + 1f, size.height - h), Size((stepPx * 0.4f).coerceAtLeast(3f), h))
+                }
+            }
+        }
     }
 }
 
@@ -138,23 +281,33 @@ private fun Grid(
     height: androidx.compose.ui.unit.Dp,
     harmony: Harmony,
     chordMode: Boolean,
+    hScroll: androidx.compose.foundation.ScrollState,
+    stepWidth: androidx.compose.ui.unit.Dp,
+    grid: Int,
+    selectMode: Boolean,
+    selection: Set<Note>,
+    select: (Set<Note>) -> Unit,
+    apply: (NoteEdits.Result, String?) -> Unit,
 ) {
     val vScroll = rememberScrollState()
-    val hScroll = rememberScrollState()
     val density = LocalDensity.current
     val rowPx = with(density) { ROW.toPx() }
-    val stepPx = with(density) { STEP.toPx() }
+    val stepPx = with(density) { stepWidth.toPx() }
     val slop = LocalViewConfiguration.current.touchSlop
     val rows = HIGH - LOW + 1
     // Start around C4-C5.
     LaunchedEffect(Unit) { vScroll.scrollTo(((HIGH - 76) * rowPx).roundToInt()) }
     var drag by remember { mutableStateOf<Pair<Note, Note>?>(null) }
+    var box by remember { mutableStateOf<Pair<Offset, Offset>?>(null) }
+    var groupMove by remember { mutableStateOf<Pair<Int, Int>?>(null) }  // (ticks, semitones) while dragging a selection
+    val snap: (Int) -> Int = { t -> (t.toFloat() / grid).roundToInt() * grid }
 
     val colors = GridColors(
         bg = Neon.Surface, black = Neon.Background, line = Neon.Outline.copy(alpha = 0.35f),
         beat = Neon.Outline, bar = Neon.TextSecondary, note = Neon.Cyan, ghost = Neon.Magenta.copy(alpha = 0.28f),
         play = Neon.TextPrimary, outside = Color.Black.copy(alpha = 0.35f), rootRow = Neon.Cyan.copy(alpha = 0.10f),
     )
+    val selColor = Neon.Acid
     Row(Modifier.fillMaxWidth().height(height)) {
         Column(Modifier.width(36.dp).verticalScroll(vScroll)) {
             for (p in HIGH downTo LOW) {
@@ -166,18 +319,71 @@ private fun Grid(
         Box(Modifier.weight(1f).verticalScroll(vScroll).horizontalScroll(hScroll)) {
             Canvas(
                 Modifier
-                    .size(STEP * clip.steps, ROW * rows)
+                    .size(stepWidth * clip.steps, ROW * rows)
                     .testTag("piano_roll")
-                    .pointerInput(clip, newLength, harmony, chordMode) {
+                    .pointerInput(clip, newLength, harmony, chordMode, selectMode, selection, grid, stepPx) {
                         fun pitchAt(y: Float) = (HIGH - (y / rowPx).toInt()).coerceIn(LOW, HIGH)
                         fun tickAt(x: Float) = (x / stepPx * TICK).toInt().coerceIn(0, clip.ticks - 1)
                         awaitEachGesture {
                             val down = awaitFirstDown(requireUnconsumed = false)
                             val found = clip.noteAt(tickAt(down.position.x), pitchAt(down.position.y))
+                            if (selectMode) {
+                                if (found == null) {
+                                    // A box: the first move decides between a box and a scroll (long press first = box).
+                                    var moved = false
+                                    while (true) {
+                                        val event = awaitPointerEvent()
+                                        val change = event.changes.firstOrNull { it.id == down.id } ?: break
+                                        if (!change.pressed) break
+                                        if (!moved && (change.position - down.position).getDistance() > slop) {
+                                            if (change.uptimeMillis - down.uptimeMillis < 300) return@awaitEachGesture  // a quick swipe scrolls
+                                            moved = true
+                                        }
+                                        if (moved) {
+                                            box = down.position to change.position
+                                            change.consume()
+                                        }
+                                    }
+                                    val b = box
+                                    box = null
+                                    if (b == null) {
+                                        if (!moved) select(emptySet())  // a tap on nothing clears
+                                        return@awaitEachGesture
+                                    }
+                                    val (a, c) = b
+                                    select(NoteEdits.inBox(clip, tickAt(minOf(a.x, c.x)), tickAt(maxOf(a.x, c.x)) + 1, pitchAt(maxOf(a.y, c.y)), pitchAt(minOf(a.y, c.y))))
+                                    return@awaitEachGesture
+                                }
+                                down.consume()
+                                var moved = false
+                                var delta = 0 to 0
+                                while (true) {
+                                    val event = awaitPointerEvent()
+                                    val change = event.changes.firstOrNull { it.id == down.id } ?: break
+                                    if (!change.pressed) break
+                                    val dx = change.position.x - down.position.x
+                                    val dy = change.position.y - down.position.y
+                                    if (!moved && (abs(dx) > slop || abs(dy) > slop)) moved = true
+                                    if (moved) {
+                                        delta = snap((dx / stepPx * TICK).roundToInt()) to -(dy / rowPx).roundToInt()
+                                        groupMove = delta
+                                    }
+                                    change.consume()
+                                }
+                                groupMove = null
+                                if (!moved) {
+                                    select(if (found in selection) selection - found else selection + found)
+                                } else {
+                                    val moving = if (found in selection) selection else setOf(found)
+                                    val shifted = NoteEdits.shift(clip, moving, delta.first)
+                                    apply(NoteEdits.transpose(shifted.clip, shifted.selection, delta.second), null)
+                                }
+                                return@awaitEachGesture
+                            }
                             if (found == null) {
                                 val up = waitForUpOrCancellation() ?: return@awaitEachGesture  // a scroll took it
                                 if ((up.position - down.position).getDistance() < slop) {
-                                    val start = tickAt(down.position.x) / TICK * TICK
+                                    val start = tickAt(down.position.x) / grid * grid
                                     val pitch = harmony.snap(pitchAt(down.position.y))
                                     if (chordMode) actions.addChord(start, newLength, pitch) else actions.add(Note(start, newLength, pitch))
                                 }
@@ -200,9 +406,9 @@ private fun Grid(
                                         val len = ((note.length + dx / stepPx * TICK) / 6f).roundToInt() * 6
                                         note.copy(length = len.coerceIn(6, NoteClip.MAX_TICKS))
                                     } else {
-                                        val start = ((note.start + dx / stepPx * TICK) / TICK).roundToInt() * TICK
+                                        val start = snap((note.start + dx / stepPx * TICK).roundToInt())
                                         note.copy(
-                                            start = start.coerceIn(0, clip.ticks - TICK),
+                                            start = start.coerceIn(0, clip.ticks - grid),
                                             pitch = harmony.snap((note.pitch - (dy / rowPx).roundToInt()).coerceIn(LOW, HIGH)),
                                         )
                                     }
@@ -232,14 +438,17 @@ private fun Grid(
                     }
                     if (p % 12 == 0) drawLine(colors.beat, Offset(0f, y + rowPx), Offset(w, y + rowPx), 1f)
                 }
-                for (s in 0..clip.steps) {
-                    val x = s * stepPx
+                // Grid lines: every grid step, stronger on beats and bars.
+                var t = 0
+                while (t <= clip.ticks) {
+                    val x = t / TICK.toFloat() * stepPx
                     val c = when {
-                        s % 16 == 0 -> colors.bar
-                        s % 4 == 0 -> colors.beat
+                        t % (16 * TICK) == 0 -> colors.bar
+                        t % (4 * TICK) == 0 -> colors.beat
                         else -> colors.line
                     }
-                    drawLine(c, Offset(x, 0f), Offset(x, size.height), if (s % 4 == 0) 2f else 1f)
+                    drawLine(c, Offset(x, 0f), Offset(x, size.height), if (t % (4 * TICK) == 0) 2f else 1f)
+                    t += grid
                 }
                 fun noteRect(n: Note) = Offset(n.start / TICK.toFloat() * stepPx, (HIGH - n.pitch) * rowPx + 1f) to
                     Size((n.length / TICK.toFloat() * stepPx).coerceAtLeast(4f), rowPx - 2f)
@@ -248,11 +457,24 @@ private fun Grid(
                     drawRoundRect(colors.ghost, o, sz, CornerRadius(4f))
                 }
                 val dragging = drag
+                val group = groupMove
                 clip.notes.forEach { n ->
-                    val shown = if (dragging != null && dragging.first == n) dragging.second else n
+                    val selected = n in selection
+                    val shown = when {
+                        dragging != null && dragging.first == n -> dragging.second
+                        group != null && selected -> n.copy(start = (n.start + group.first).coerceIn(0, clip.ticks - 1), pitch = n.pitch + group.second)
+                        else -> n
+                    }
                     val (o, sz) = noteRect(shown)
-                    drawRoundRect(colors.note.copy(alpha = 0.35f + 0.65f * shown.velocity), o, sz, CornerRadius(4f))
-                    drawRoundRect(colors.note, o, sz, CornerRadius(4f), style = Stroke(1.5f))
+                    val c = if (selected) selColor else colors.note
+                    drawRoundRect(c.copy(alpha = 0.35f + 0.65f * shown.velocity), o, sz, CornerRadius(4f))
+                    drawRoundRect(c, o, sz, CornerRadius(4f), style = Stroke(if (selected) 3f else 1.5f))
+                }
+                box?.let { (a, c) ->
+                    val tl = Offset(minOf(a.x, c.x), minOf(a.y, c.y))
+                    val sz = Size(abs(a.x - c.x), abs(a.y - c.y))
+                    drawRect(selColor.copy(alpha = 0.15f), tl, sz)
+                    drawRect(selColor, tl, sz, style = Stroke(2f))
                 }
                 if (playStep >= 0) {
                     val x = (playStep % clip.steps) * stepPx
@@ -282,8 +504,18 @@ private fun ChipRow(label: String, content: @Composable () -> Unit) {
 
 /** Key, scale, progressions and how chords are played (arpeggio, strum). */
 @Composable
-fun HarmonyPanel(harmony: Harmony, performance: Performance, actions: PianoRollActions) {
+fun HarmonyPanel(harmony: Harmony, performance: Performance, actions: PianoRollActions, notes: List<Note> = emptyList()) {
     val chipColors = FilterChipDefaults.filterChipColors(selectedContainerColor = Neon.Cyan.copy(alpha = 0.25f), selectedLabelColor = Neon.Cyan)
+    val guesses = NoteEdits.guessScales(notes)
+    if (guesses.isNotEmpty()) {
+        ChipRow("Deviner") {
+            guesses.forEach { g ->
+                TextButton(onClick = { actions.setHarmony(g) }, modifier = Modifier.testTag("guess_${g.root}_${g.scale.name}")) {
+                    Text("${ROOTS[g.root]} ${g.scale.label.lowercase()}")
+                }
+            }
+        }
+    }
     ChipRow("Gamme") {
         Scale.entries.forEach { sc ->
             FilterChip(selected = harmony.scale == sc, onClick = { actions.setHarmony(harmony.copy(scale = sc)) },

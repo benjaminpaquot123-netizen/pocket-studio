@@ -19,17 +19,19 @@ import java.nio.ByteOrder
  * (more than two channels are folded to stereo). Blocking: call off the main thread.
  */
 object AudioDecoder {
-    /** Pads hold one-shots and short loops: longer files are cut (memory: ~23 MB per stereo minute). */
-    const val MAX_SECONDS = 60
+    /** Pads hold one-shots and loops: longer files are cut there (memory: ~23 MB per stereo minute). */
+    const val MAX_SECONDS = 120
 
     class TooLongException(val seconds: Double) : IOException("audio too long ($seconds s)")
     class CancelledException : IOException("annulé")
 
+    /** The file's first [MAX_SECONDS] seconds at most (a longer file is cut, never refused). */
     fun decode(context: Context, uri: Uri): Pcm {
         val out = FloatBuilder()
-        val (channels, rate) = decodeInto(context, uri, out, MAX_SECONDS.toDouble()) { false }
+        val (channels, rate) = decodeInto(context, uri, out, MAX_SECONDS.toDouble(), cut = true) { false }
         if (out.size < channels) throw IOException("fichier vide")
-        return Pcm(out.toArray(), channels, rate)
+        val keep = minOf(out.size, MAX_SECONDS.toLong() * rate * channels).toInt() / channels * channels
+        return Pcm(out.toArray(keep), channels, rate)
     }
 
     /** Where a long decode went: raw interleaved little-endian floats. */
@@ -45,7 +47,7 @@ object AudioDecoder {
         target.parentFile?.mkdirs()
         val sink = FileSink(target)
         val (channels, rate) = try {
-            sink.use { decodeInto(context, uri, it, maxSeconds, isCancelled) }
+            sink.use { decodeInto(context, uri, it, maxSeconds, isCancelled = isCancelled) }
         } catch (e: Throwable) {
             target.delete()
             throw e
@@ -57,7 +59,9 @@ object AudioDecoder {
         return RawAudio(target, channels, rate, sink.size / channels)
     }
 
-    private fun decodeInto(context: Context, uri: Uri, out: FoldingSink, maxSeconds: Double, isCancelled: () -> Boolean): Pair<Int, Int> {
+    private fun decodeInto(
+        context: Context, uri: Uri, out: FoldingSink, maxSeconds: Double, cut: Boolean = false, isCancelled: () -> Boolean,
+    ): Pair<Int, Int> {
         val extractor = MediaExtractor()
         try {
             extractor.setDataSource(context, uri, null)
@@ -70,7 +74,7 @@ object AudioDecoder {
             try {
                 codec.configure(format, null, null, 0)
                 codec.start()
-                return drain(extractor, codec, format, out, maxSeconds, isCancelled)
+                return drain(extractor, codec, format, out, maxSeconds, cut, isCancelled)
             } finally {
                 runCatching { codec.stop() }
                 codec.release()
@@ -82,7 +86,7 @@ object AudioDecoder {
 
     private fun drain(
         extractor: MediaExtractor, codec: MediaCodec, input: MediaFormat,
-        out: FoldingSink, maxSeconds: Double, isCancelled: () -> Boolean,
+        out: FoldingSink, maxSeconds: Double, cut: Boolean, isCancelled: () -> Boolean,
     ): Pair<Int, Int> {
         var rate = input.getInteger(MediaFormat.KEY_SAMPLE_RATE)
         var srcChannels = input.getInteger(MediaFormat.KEY_CHANNEL_COUNT)
@@ -122,7 +126,10 @@ object AudioDecoder {
                     out.appendFolded(buf, encoding, srcChannels)
                     codec.releaseOutputBuffer(o, false)
                     val seconds = out.size.toDouble() / minOf(srcChannels, 2) / rate
-                    if (seconds > maxSeconds) throw TooLongException(seconds)
+                    if (seconds > maxSeconds) {
+                        if (cut) break
+                        throw TooLongException(seconds)
+                    }
                     if (info.flags and MediaCodec.BUFFER_FLAG_END_OF_STREAM != 0) break
                 }
             }
@@ -176,7 +183,7 @@ object AudioDecoder {
             size++
         }
 
-        fun toArray() = data.copyOf(size.toInt())
+        fun toArray(limit: Int = size.toInt()) = data.copyOf(minOf(limit, size.toInt()))
     }
 
     private class FileSink(file: File) : FoldingSink(), Closeable {

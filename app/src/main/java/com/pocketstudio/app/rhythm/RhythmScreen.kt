@@ -5,6 +5,9 @@ import androidx.compose.material.icons.filled.ContentCut
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.clickable
 import androidx.compose.runtime.saveable.rememberSaveable
 import com.pocketstudio.model.PadSample
 import com.pocketstudio.ui.LevelMeter
@@ -72,6 +75,13 @@ data class RhythmActions(
     val toggleCountIn: () -> Unit = {},
     val hitPad: (Int) -> Unit = {},
     val toggleStep: (Int) -> Unit = {},
+    /** Drum loop length in bars (1 to 4). */
+    val setBars: (Int) -> Unit = {},
+    val fill: (every: Int) -> Unit = {},
+    val rotate: (by: Int) -> Unit = {},
+    val cycleRoll: (step: Int) -> Unit = {},
+    /** All-pads grid: (lane, step). */
+    val toggleHit: (Int, Int) -> Unit = { _, _ -> },
     val cycleVelocity: (Int) -> Unit = {},
     val clearPad: () -> Unit = {},
     val nudgeTempo: (Int) -> Unit = {},
@@ -94,6 +104,8 @@ data class RhythmActions(
     val applySlices: () -> Unit = {},
     val resampleSong: (bars: Int) -> Unit = {},
     val importFolder: () -> Unit = {},
+    /** A sample pack as a .zip file. */
+    val importZip: () -> Unit = {},
 )
 
 /** The selected pad's own sound, if any, and what the sampler is busy with. */
@@ -120,7 +132,7 @@ fun RhythmScreen(
     ) {
         TransportBar(project, transport, canUndo, canRedo, actions)
         PadGrid(project, transport.selectedPad, live.litPads, actions.hitPad)
-        StepGrid(project, transport.selectedPad, live.currentStep, actions)
+        StepGrid(project, transport.selectedPad, live.currentStep, transport.playing, actions)
         PadSoundCard(project, transport.selectedPad, padSound, actions)
         GrooveCard(project, transport, actions)
     }
@@ -218,20 +230,62 @@ private fun PadGrid(project: Project, selected: Int, lit: Set<Int>, onHit: (Int)
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun StepGrid(project: Project, lane: Int, currentStep: Int, actions: RhythmActions) {
+private fun StepGrid(project: Project, lane: Int, currentStep: Int, playing: Boolean, actions: RhythmActions) {
     val haptics = LocalHapticFeedback.current
     val hits = project.drums.lanes[lane].hits
     val color = DrumKitInfo.colors[lane]
+    val bars = project.drums.steps / 16
+    var chosenBar by rememberSaveable { mutableIntStateOf(0) }
+    var follow by rememberSaveable { mutableStateOf(true) }
+    var rollTool by rememberSaveable { mutableStateOf(false) }
+    var allPads by rememberSaveable { mutableStateOf(false) }
+    // Playing and following: the page turns with the playhead.
+    val bar = (if (playing && follow && currentStep >= 0) currentStep / 16 else chosenBar).coerceIn(0, bars - 1)
+    val chipColors = FilterChipDefaults.filterChipColors(selectedContainerColor = Neon.Cyan.copy(alpha = 0.25f), selectedLabelColor = Neon.Cyan)
     NeonCard {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            SectionLabel("Pas : ${DrumKitInfo.names[lane]}", color = color)
+            SectionLabel(if (allPads) "Pas : tous les pads" else "Pas : ${DrumKitInfo.names[lane]}", color = if (allPads) Neon.Cyan else color)
             Box(Modifier.weight(1f))
-            TextButton(onClick = actions.clearPad, enabled = hits.isNotEmpty()) { Text("Effacer") }
+            FilterChip(selected = allPads, onClick = { allPads = !allPads }, label = { Text("Tous les pads") }, colors = chipColors,
+                modifier = Modifier.testTag("all_pads"))
+            if (!allPads) TextButton(onClick = actions.clearPad, enabled = hits.isNotEmpty()) { Text("Effacer") }
+        }
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            Text("Longueur", style = MaterialTheme.typography.bodyMedium)
+            (1..4).forEach { b ->
+                FilterChip(selected = bars == b, onClick = { actions.setBars(b) }, label = { Text(if (b == 1) "1 mesure" else "$b") },
+                    colors = chipColors, modifier = Modifier.testTag("drum_bars_$b"))
+            }
+        }
+        if (bars > 1) {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                Text("Mesure", style = MaterialTheme.typography.bodyMedium)
+                (0 until bars).forEach { b ->
+                    FilterChip(selected = bar == b, onClick = { chosenBar = b; follow = false }, label = { Text("${b + 1}") },
+                        colors = chipColors, modifier = Modifier.testTag("drum_page_$b"))
+                }
+                FilterChip(selected = follow, onClick = { follow = !follow; chosenBar = bar }, label = { Text("Suivre") }, colors = chipColors)
+            }
+        }
+        if (allPads) {
+            AllPadsGrid(project, bar, currentStep, actions)
+            return@NeonCard
+        }
+        Row(Modifier.horizontalScroll(rememberScrollState()), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            FilterChip(selected = !rollTool, onClick = { rollTool = false }, label = { Text("Coups") }, colors = chipColors)
+            FilterChip(selected = rollTool, onClick = { rollTool = true }, label = { Text("Roulements") }, colors = chipColors,
+                modifier = Modifier.testTag("roll_tool"))
+            Text("  Remplir", style = MaterialTheme.typography.bodySmall)
+            listOf(1 to "tout", 2 to "1/2", 4 to "1/4").forEach { (every, label) ->
+                TextButton(onClick = { actions.fill(every) }, modifier = Modifier.testTag("fill_$every")) { Text(label) }
+            }
+            TextButton(onClick = { actions.rotate(-1) }, enabled = hits.isNotEmpty(), modifier = Modifier.testTag("rotate_left")) { Text("◀") }
+            TextButton(onClick = { actions.rotate(1) }, enabled = hits.isNotEmpty(), modifier = Modifier.testTag("rotate_right")) { Text("▶") }
         }
         for (row in 0 until 2) {
             Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 for (col in 0 until 8) {
-                    val step = row * 8 + col
+                    val step = bar * 16 + row * 8 + col
                     val velocity = hits[step]?.velocity
                     val isBeat = step % 4 == 0
                     val playing = step == currentStep
@@ -244,7 +298,7 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, actions: Rhy
                             .background(fill)
                             .border(if (playing) 2.dp else 1.dp, if (playing) Neon.TextPrimary else Neon.Outline, RoundedCornerShape(6.dp))
                             .combinedClickable(
-                                onClick = { actions.toggleStep(step) },
+                                onClick = { if (rollTool) actions.cycleRoll(step) else actions.toggleStep(step) },
                                 onLongClick = {
                                     haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                                     actions.cycleVelocity(step)
@@ -256,10 +310,15 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, actions: Rhy
                         // The hit fills the cell up to its strength: full, two thirds or one third.
                         if (velocity != null) {
                             Box(Modifier.fillMaxWidth().fillMaxHeight(velocity.coerceIn(0.2f, 1f)).background(color))
+                            val repeats = hits[step]?.repeats ?: 1
+                            if (repeats > 1) {
+                                Text("×$repeats", style = MaterialTheme.typography.labelLarge, color = Color(0xFF1E2023),
+                                    modifier = Modifier.align(Alignment.Center))
+                            }
                         }
                         if (isBeat) {
                             Text(
-                                "${step / 4 + 1}",
+                                "${(step % 16) / 4 + 1}",
                                 style = MaterialTheme.typography.labelSmall,
                                 color = Neon.TextSecondary,
                                 modifier = Modifier.padding(bottom = 2.dp),
@@ -270,7 +329,8 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, actions: Rhy
             }
         }
         Text(
-            "Touche une case pour ajouter un coup. Appui long sur un coup : fort → moyen → doux (la case se vide à moitié).",
+            if (rollTool) "Roulements : touche un coup pour le doubler, tripler, quadrupler (×2, ×3, ×4), puis revenir à un seul."
+            else "Touche une case pour ajouter un coup. Appui long sur un coup : fort → moyen → doux (la case se vide à moitié).",
             style = MaterialTheme.typography.bodySmall,
             color = Neon.TextSecondary,
         )
@@ -357,8 +417,10 @@ internal fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: 
                         Icon(Icons.Filled.Mic, contentDescription = null); Text(" Micro")
                     }
                 }
-                TextButton(onClick = { actions.dismissSampleError(); actions.importFolder() }, modifier = Modifier.testTag("import_folder")) {
-                    Text("Importer un dossier de sons (pack) sur les pads suivants")
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text("Pack sur les pads suivants :", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.weight(1f))
+                    TextButton(onClick = { actions.dismissSampleError(); actions.importFolder() }, modifier = Modifier.testTag("import_folder")) { Text("Dossier") }
+                    TextButton(onClick = { actions.dismissSampleError(); actions.importZip() }, modifier = Modifier.testTag("import_zip")) { Text(".zip") }
                 }
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     Text("Enregistrer le morceau :", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
@@ -501,5 +563,31 @@ private fun SlicerPanel(s: SlicerUi, info: SampleInfo, lane: Int, color: Color, 
             enabled = count > 1 && !s.busy,
             modifier = Modifier.weight(1f).testTag("apply_slices"),
         ) { Text("Sur les pads") }
+    }
+}
+
+/** Every pad's steps for one bar: rows of pads, tap a cell to add or remove a hit. */
+@Composable
+internal fun AllPadsGrid(project: Project, bar: Int, currentStep: Int, actions: RhythmActions) {
+    Column(verticalArrangement = Arrangement.spacedBy(2.dp), modifier = Modifier.testTag("all_pads_grid")) {
+        project.drums.lanes.forEachIndexed { lane, l ->
+            val color = DrumKitInfo.colors[lane]
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+                Text(DrumKitInfo.names[lane], style = MaterialTheme.typography.labelSmall, maxLines = 1,
+                    color = if (l.hits.isEmpty()) Neon.TextSecondary else Neon.TextPrimary, modifier = Modifier.width(72.dp),
+                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+                for (col in 0 until 16) {
+                    val step = bar * 16 + col
+                    val hit = l.hits[step]
+                    Box(
+                        Modifier.weight(1f).height(22.dp).clip(RoundedCornerShape(3.dp))
+                            .background(if (hit != null) color.copy(alpha = 0.35f + 0.65f * hit.velocity) else if (col % 4 == 0) Neon.SurfaceHigh else Neon.Surface)
+                            .border(if (step == currentStep) 2.dp else 0.5.dp, if (step == currentStep) Neon.TextPrimary else Neon.Outline, RoundedCornerShape(3.dp))
+                            .clickable { actions.toggleHit(lane, step) }
+                            .testTag("cell_${lane}_$step"),
+                    )
+                }
+            }
+        }
     }
 }

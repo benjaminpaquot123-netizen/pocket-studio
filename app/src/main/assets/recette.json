@@ -1,186 +1,96 @@
 {
-  "id": "phase4-production",
-  "milestone": "Phase 4 : production",
+  "id": "phase6-completude",
+  "milestone": "Phase 6 : à la hauteur de FL Studio Mobile",
   "items": [
     {
-      "id": "remix_waveform",
-      "title": "Voir où on en est dans le morceau",
-      "hint": "Remix › Jouer avec le projet › Jouer : la barre blanche avance sur les 4 formes d'onde. Touche la voix juste avant qu'elle commence : le départ (trait vert) s'y place."
+      "id": "projects",
+      "title": "Créer, ouvrir et envoyer des projets",
+      "hint": "Touche le nom du projet en haut › Nouveau projet › une démo. Reviens à l'ancien projet, puis ⋮ › Envoyer (.zip). Supprime un projet puis Annuler."
     },
     {
-      "id": "kit_keyboard",
-      "title": "Jouer un kit de batterie au clavier",
-      "hint": "Synthé › Instruments › Kits de batterie › touche un kit puis le clavier (Do grave = grosse caisse). Le bouton du dessous met le kit sur les pads."
+      "id": "live_record",
+      "title": "Enregistrer ce que je joue",
+      "hint": "Touche ● en haut : après une mesure de décompte, joue au clavier du Synthé ou sur les pads ; retouche ● pour arrêter. Annuler retire toute la prise."
     },
     {
-      "id": "effects",
-      "title": "Ajouter de la réverbe et un écho",
-      "hint": "Mixeur › Batterie › Effets : monte « Envoi réverbe ». Mets un Compresseur dans l'emplacement 1."
+      "id": "export_song",
+      "title": "Exporter le morceau entier",
+      "hint": "Morceau : ajoute 2 scènes au morceau. Mixeur › Exporter › Le morceau › M4A › Exporter, puis Partager."
     },
     {
-      "id": "pump",
-      "title": "Faire pomper le synthé sur la grosse caisse",
-      "hint": "Mixeur › Synthé › Effets › emplacement 1 › Pompe. Lance le Rythme : le synthé se baisse à chaque grosse caisse."
+      "id": "midi_files",
+      "title": "Exporter et importer un fichier MIDI",
+      "hint": "Mixeur › Exporter les notes en fichier MIDI. Puis Synthé › Notes › Importer des notes › Un fichier MIDI."
     },
     {
-      "id": "automation",
-      "title": "Automatiser un réglage",
-      "hint": "Mixeur › Automation › Automatiser un réglage › Volume · Synthé, dessine une montée au doigt et lance le Rythme. Ou active Enregistrer et bouge le volume pendant la lecture."
+      "id": "piano_select",
+      "title": "Sélectionner et copier des notes",
+      "hint": "Synthé › Notes › Sélectionner : touche des notes (ou appui long puis glisse pour un cadre), Copier, Coller, ▲ ½ ton, et le couloir Force en bas."
     },
     {
-      "id": "scenes",
-      "title": "Faire une variante et l'enchaîner",
-      "hint": "Morceau › Dupliquer la scène A : tu es sur B. Va dans Rythme, change la batterie. Reviens dans Morceau, lance la lecture, touche A puis B : ça change à la mesure suivante."
+      "id": "drum_tools",
+      "title": "Roulements et vue de tous les pads",
+      "hint": "Rythme › Longueur 2 › Roulements : touche un coup (×2, ×3, ×4). Puis « Tous les pads »."
     },
     {
-      "id": "song",
-      "title": "Jouer un morceau complet",
-      "hint": "Morceau › ajoute + A, + B, + A, règle les répétitions (×4, ×2…) et touche « Jouer le morceau » : les scènes s'enchaînent toutes seules, même écran éteint."
+      "id": "settings",
+      "title": "Changer les réglages",
+      "hint": "Outils › Réglages : essaie le thème Nuit, la taille 115 %, et le mode du son « Sûr » si ça craque."
     },
     {
-      "id": "live_fx",
-      "title": "Jouer avec les effets live",
-      "hint": "Morceau › lance la lecture › glisse le doigt sur le pad XY (gauche = étouffé, droite = fin). Maintiens Répéter (1/16), puis Stop bande."
+      "id": "live_pads",
+      "title": "Lancer et couper des sons sur les pads live",
+      "hint": "Morceau › Pads live › touche un pad « + » › Importer un son (une grosse caisse, puis une mélodie sur un autre pad) › Jouer. Touche les pads : ils s'allument en rythme, retouche pour couper."
     },
     {
-      "id": "remix_separate",
-      "title": "Séparer une chanson en 4 pistes",
-      "hint": "Onglet Remix › Télécharger le modèle (Wi-Fi), puis Choisir une chanson (3-4 min). Éteins l'écran : la notification montre la progression. Note le temps que ça prend."
+      "id": "stems_together",
+      "title": "Écouter les 4 pistes séparées ensemble",
+      "hint": "Remix › Écouter sur un morceau séparé, puis touche Batterie, Basse, Autres, Voix pour les couper ou les rallumer : la musique ne s'arrête pas."
     },
     {
-      "id": "remix_listen",
-      "title": "Écouter batterie, basse, voix et le reste",
-      "hint": "Touche Écouter sur chaque piste : la voix doit être presque seule, la batterie sans basse, etc."
+      "id": "stems_to_live",
+      "title": "Rejouer un morceau sur les pads live",
+      "hint": "Remix › Jouer avec le projet › « → Live » sur chaque piste (2 ou 4 mesures), puis Morceau › Pads live : lance et coupe chaque partie."
     },
     {
-      "id": "remix_tempo_key",
-      "title": "Tempo et tonalité justes",
-      "hint": "Sous le nom du morceau séparé : compare le BPM et la tonalité avec ce que tu connais du morceau, puis touche « Caler le projet » et lance le Rythme."
+      "id": "sound_library",
+      "title": "Choisir un son par famille, au hasard, en favori",
+      "hint": "Synthé (ou Acide › Son) : touche une famille puis un son. « Au hasard » en tire un nouveau ; « Garder ce son » le range dans ★ Favoris, retrouvé dans tous tes projets."
     },
     {
-      "id": "remix_play",
-      "title": "Jouer une chanson séparée avec le projet",
-      "hint": "Remix › Jouer avec le projet, puis Jouer : les pistes partent avec ta batterie. Coupe la voix (M), mets la batterie seule (S), change la mesure de départ."
+      "id": "panel_303",
+      "title": "Régler l'acide avec les potards",
+      "hint": "Acide › Son › Panneau : glisse vers le haut ou le bas sur un potard pour le tourner, touche deux fois pour revenir au départ."
     },
     {
-      "id": "remix_pad",
-      "title": "Mettre un bout de piste sur un pad",
-      "hint": "Choisis un pad dans Rythme, reviens dans Remix, « 2 mes. » puis « → Pad » sur la Basse : le pad joue ces deux mesures."
+      "id": "plaits",
+      "title": "Essayer les sons Plaits",
+      "hint": "Synthé › Source du son › Plaits › touche un modèle : une note se joue tout de suite."
     },
     {
-      "id": "remix_cancel",
-      "title": "Annuler une séparation",
-      "hint": "Lance une séparation et touche Annuler (dans l'appli ou la notification) : tout s'arrête proprement."
+      "id": "scenes_24",
+      "title": "Utiliser plus de 8 scènes",
+      "hint": "Morceau › Afficher 16 ou 24 › touche une scène vide après H."
     },
     {
-      "id": "acid_8_bars",
-      "title": "Ligne acide sur 2 mesures ou plus",
-      "hint": "Acide › Longueur 2 mesures, remplis la page 1, touche « Copier → 2 », change la page 2, lance : les 32 pas s'enchaînent."
+      "id": "midi",
+      "title": "Jouer avec un clavier MIDI",
+      "hint": "Branche un clavier USB (adaptateur OTG) ou Outils › MIDI › Chercher un clavier Bluetooth. Les touches jouent le Synthé ; « Note … » s'affiche à chaque touche."
     },
     {
-      "id": "bank_fluidr3",
-      "title": "Télécharger une autre banque d'instruments",
-      "hint": "Synthé › Source du son › Instruments › FluidR3 GM ou MuseScore General › Télécharger (Wi-Fi). Choisis une basse ou un synthé et joue au clavier."
+      "id": "audio_to_notes",
+      "title": "Chanter une mélodie dans le piano roll",
+      "hint": "Synthé › Notes › De l'audio aux notes › Au micro : chante ou siffle quelques notes, puis Terminé. Elles apparaissent dans le piano roll (Annuler les retire)."
     },
     {
-      "id": "drum_kit_pads",
-      "title": "Mettre un kit de batterie sur les pads",
-      "hint": "Même écran › Kits de batterie › touche un kit. Va au Rythme : grosse caisse, caisse claire, charleston sont sur les pads ; Annuler revient en arrière."
+      "id": "zip_pack",
+      "title": "Importer un pack de sons en .zip",
+      "hint": "Rythme › pad sélectionné › Pack sur les pads suivants › .zip : les sons du pack vont sur les pads suivants."
     },
     {
-      "id": "import_file",
-      "title": "Importer un son du téléphone sur un pad",
-      "hint": "Rythme › choisis un pad › Son du pad › Importer, puis prends un MP3 ou un WAV court. Le pad doit le jouer tout de suite."
-    },
-    {
-      "id": "import_formats",
-      "title": "Les formats MP3, WAV, FLAC et M4A passent",
-      "hint": "Essaie au moins deux formats différents (par exemple un MP3 et un M4A de dictaphone)."
-    },
-    {
-      "id": "too_long",
-      "title": "Un fichier trop long donne un message clair",
-      "hint": "Importe une chanson entière : un message doit dire qu'il faut un son de moins d'une minute."
-    },
-    {
-      "id": "mic",
-      "title": "Enregistrer au micro et rejouer",
-      "hint": "Son du pad › Micro, fais un bruit (clap, voix), touche Arrêter. Le pad doit le rejouer sans blanc au début."
-    },
-    {
-      "id": "waveform",
-      "title": "La forme d'onde s'affiche et se zoome",
-      "hint": "Pince avec deux doigts sur la forme d'onde, puis fais-la glisser."
-    },
-    {
-      "id": "pad_params",
-      "title": "Début, fin, hauteur, à l'envers et boucle changent bien le son",
-      "hint": "Sur un pad avec ton son : bouge Début et Fin (la forme d'onde se grise hors zone), Hauteur, puis essaie « À l'envers » et « En boucle » (la boucle s'arrête à Stop)."
-    },
-    {
-      "id": "choke",
-      "title": "Un groupe d'étouffement coupe l'autre pad",
-      "hint": "Mets deux pads avec un son long dans le groupe 1 (Enveloppe, volume, groupe…) : taper l'un coupe l'autre."
-    },
-    {
-      "id": "slice",
-      "title": "Découper un rythme en tranches sur les pads",
-      "hint": "Importe une boucle de batterie, « Découper en tranches », règle la Sensibilité ou passe en Grille, touche la forme d'onde pour ajouter/retirer une coupe, puis « Sur les pads ». Les pads suivants jouent chacun un morceau."
-    },
-    {
-      "id": "fit_tempo",
-      "title": "Une boucle calée au tempo suit le tempo sans changer de note",
-      "hint": "Importe une boucle, choisis le nombre de temps marqué ★, puis change le tempo avec − et + : la boucle accélère ou ralentit mais garde sa hauteur."
-    },
-    {
-      "id": "resample",
-      "title": "Enregistrer le morceau sur un pad",
-      "hint": "Choisis un pad libre, « Enregistrer le morceau : 1 mesure ». Le pad rejoue ce que tu entendais."
-    },
-    {
-      "id": "sequencer",
-      "title": "Le son perso joue dans le rythme, au bon moment",
-      "hint": "Mets des coups sur la grille du pad et lance la lecture : pas de décalage, pas de craquement."
-    },
-    {
-      "id": "revert",
-      "title": "Revenir au son du kit, puis Annuler le ramène",
-      "hint": "Touche « Revenir au son … », puis la flèche Annuler en haut."
-    },
-    {
-      "id": "persist",
-      "title": "Le son est retrouvé après fermeture de l'appli",
-      "hint": "Ferme complètement l'appli (balaye-la), rouvre : le pad doit toujours jouer ton son."
-    },
-    {
-      "id": "export_sample",
-      "title": "L'export WAV contient ton son",
-      "hint": "Mixeur › Exporter, écoute le fichier."
-    },
-    {
-      "id": "piano_roll",
-      "title": "Composer au piano roll du synthé",
-      "hint": "Synthé › Notes : touche des cases pour poser des notes, glisse-les, allonge-les par le bout, puis lance Jouer dans Rythme. Les notes doivent tomber pile en rythme."
-    },
-    {
-      "id": "quantize",
-      "title": "Quantifier et notes fantômes",
-      "hint": "Décale une note à la main, puis « Quantifier 50 % » (elle se rapproche de la grille) et « 100 % » (pile dessus). La basse acide apparaît en transparence."
-    },
-    {
-      "id": "harmony",
-      "title": "Gamme, accords, progression, arpège",
-      "hint": "Synthé › Notes › Harmonie : choisis « Majeure », essaie une progression, puis « Arpège ↑ » et « Strum Moyen ». Active « Accords » et touche la grille. Au clavier, « Accords » joue un accord par touche."
-    },
-    {
-      "id": "instruments",
-      "title": "Télécharger la bibliothèque et jouer un piano, des cordes…",
-      "hint": "Synthé › Source du son › Instruments › Télécharger (32 Mo, en Wi-Fi). Puis choisis une famille et un instrument : le clavier et le piano roll le jouent."
-    },
-    {
-      "id": "pack",
-      "title": "Importer un dossier de sons sur les pads",
-      "hint": "Rythme › choisis un pad › « Importer un dossier de sons » : les sons du dossier arrivent sur ce pad et les suivants."
+      "id": "follow_tempo",
+      "title": "Caler un morceau séparé au tempo du projet",
+      "hint": "Remix › Jouer avec le projet, change le tempo (Rythme), puis Remix › interrupteur « suit le tempo » : après quelques secondes, le morceau joue au nouveau tempo sans changer de hauteur."
     }
   ]
 }

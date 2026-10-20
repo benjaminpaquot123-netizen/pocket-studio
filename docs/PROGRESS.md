@@ -66,7 +66,25 @@
   - 4.4 effets live sur la sortie : pad XY (filtre DJ + résonance, revient au neutre), répéteur 1/4–1/32 calé au tempo, hacheur sur les doubles-croches, stop bande ; dans l'onglet Morceau ; test Linux ;
   - 4.3 scènes A–H (batterie + acide + piano roll), lancement à la mesure suivante, morceau (scènes × répétitions, en boucle) ; bascule au pas près dans le moteur (tampon d'attente), test Linux.
 
+- Phase 4 terminée et fusionnée (PR #13, 2026-10-20) : revue faite et corrigée (REVIEW.md).
+
+- Phase 5 (en cours, branche ccr-80af1a1b-mn0wec) :
+  - 5.1 Plaits comme 2e voix du Synthé (24 modèles, test Linux, zéro allocation) ; la FM 6 op. de Plaits tient lieu de FM 4 op. ;
+  - 24 scènes (A à X) au lieu de 8, grille « Afficher 8 · 16 · 24 » (demande de Benjamin) ;
+  - pads live (lanceur de boucles 4 à 16 pads, onglet Morceau) : ClipLauncher dans le moteur, testé sur Linux ; import, son d'un pad de batterie, « → Live » depuis le Remix ;
+  - Remix : écoute des 4 pistes ensemble par le moteur, chaque piste allumée ou coupée sans arrêt ;
+  - Acide : potards compacts (composant Knob dans ui-components), curseurs en option ;
+  - 5.2 sons classés par familles (Synthé 16, Plaits 17, Acide 7), « Au hasard » bridé pour rester musical, favoris communs à tous les projets (favorites.json) ;
+  - 5.3 MIDI : claviers USB (connexion automatique) et Bluetooth LE (recherche), notes vers le Synthé, canal 10 vers les pads, horloge/départ/arrêt suivis (Outils › MIDI). Ableton Link et horloge sortante reportés (DECISIONS) ;
+  - 5.4 audio vers notes (Basic Pitch, Spotify) : chanter ou jouer une mélodie, elle arrive dans le piano roll ; test Linux (La4, Do5, accord Mi-Sol retrouvés) ;
+  - restes traités : sons des pads jusqu'à 2 min (coupés au-delà), packs .zip sur les pads, Remix qui suit le tempo du projet (copie étirée en arrière-plan).
+
+- Phase 6 « complétude » (même PR #16, voir COMPARAISON.md) :
+  - 6.1 plusieurs projets (Mes projets, corbeille, .zip), enregistrement en direct (●), export morceau / pistes / M4A, fichiers MIDI ;
+  - 6.2 Réglages (thème dont daltonien, taille, notes, vibrations, écran allumé, métronome, décompte, mode du son), guide des premiers pas, 3 démos ;
+  - 6.3 piano roll complet (sélection, outils, couloir de force, zoom, grilles, deviner la gamme) ;
+  - 6.4 batterie complète (1 à 4 mesures, roulements, remplir, décaler, vue de tous les pads).
+
 ## Prochaine étape exacte
-1. Revue de fin de phase 4 faite et corrigée (REVIEW.md). Dès que la CI est verte : fusionner la PR #13, puis phase 5 (Plaits, FM 4 opérateurs, presets, MIDI) sur la même branche repartie de main.
-2. Attendre les retours de Benjamin sur la 0.3.47 (formes d'onde, kits au clavier, grésillement).
-3. Reste noté : lever la limite de 60 s par son ; import de packs .zip ; étirement des stems si le tempo change.
+1. Relectures de fin de phase 5 et 6 faites et corrigées (voir REVIEW.md) ; attendre la CI verte puis fusionner la PR #16.
+2. Puis phase 7 : pistes d'instruments à volonté (7.1), pistes audio (7.2), ligne de temps (7.3).

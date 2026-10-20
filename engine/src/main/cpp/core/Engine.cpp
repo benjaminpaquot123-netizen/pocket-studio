@@ -48,6 +48,8 @@ void Engine::prepare(int sampleRate) {
     synth_.prepare(sampleRate);
     mixer_.prepare(sampleRate);
     stems_.prepare(sampleRate);
+    preview_.prepare(sampleRate);
+    clips_.prepare(sampleRate);
     sampler_.prepare(sampleRate);
 }
 
@@ -72,10 +74,13 @@ void Engine::applyCommand(const Command& command) {
             if (command.value > 0.5f) {
                 sequencer_.start(std::clamp(command.a, 0, 4));
                 sceneStart_ = 0;
+                lastLocal_ = -1;
+                playPosition_.store(-1.0, std::memory_order_relaxed);
             } else {
                 swapAt_ = -1;
                 staging_ = false;  // a lost "staging off" must never trap later edits
                 sequencer_.stop();
+                rollCount_ = 0;
                 stems_.stop();
                 acid_.stop();
                 sampler_.releaseLoops();
@@ -83,8 +88,11 @@ void Engine::applyCommand(const Command& command) {
                 // Belt and braces: a note-off dropped by a full queue must not leave a note hanging.
                 synth_.allNotesOff();
                 instrument_.allNotesOff();
+            plaits_.allNotesOff();
                 currentStep_.store(-1, std::memory_order_relaxed);
                 absoluteStep_.store(-1, std::memory_order_relaxed);
+                playPosition_.store(-1.0, std::memory_order_relaxed);
+                lastLocal_ = -1;
             }
             break;
         case CommandType::SetTempo:
@@ -95,6 +103,9 @@ void Engine::applyCommand(const Command& command) {
             break;
         case CommandType::SetMetronome:
             metronomeOn_ = command.value > 0.5f;
+            break;
+        case CommandType::SetMetronomeLevel:
+            metronome_.setLevel(command.value);
             break;
         case CommandType::SetPatternSteps:
             if (staging_) staged_.drumSteps = std::clamp(command.a, 16, kMaxSteps);
@@ -110,6 +121,37 @@ void Engine::applyCommand(const Command& command) {
         case CommandType::SetAcidLength:
             if (staging_) staged_.acidLength = std::clamp(command.a, 1, AcidTrack::kMaxSteps);
             else acid_.setLength(command.a);
+            break;
+        case CommandType::SetSynthEngine:
+            if ((command.a == 1) != router_.usePlaits) {
+                synth_.allNotesOff();
+                plaits_.allNotesOff();
+                router_.usePlaits = command.a == 1;
+            }
+            break;
+        case CommandType::InstallClip:
+            clips_.install(command.a, command.sample);  // takes the reference
+            break;
+        case CommandType::SetClipParam:
+            clips_.setParam(command.a, command.b, command.value);
+            break;
+        case CommandType::ToggleClip:
+            if (command.a < 0) clips_.stopAll();
+            else clips_.toggle(command.a, !sequencer_.running());
+            break;
+        case CommandType::PlayPreview:
+            if (command.value > 0.5f) {
+                preview_.setStartFrame(0);
+                preview_.start(0);
+            } else {
+                preview_.stop();
+            }
+            break;
+        case CommandType::SetPreviewParam:
+            preview_.setParam(command.a, command.b, command.value);
+            break;
+        case CommandType::SetPlaitsParam:
+            if (command.a >= 0 && command.a < PlaitsSynth::ParamCount) plaits_.setParam(static_cast<PlaitsSynth::Param>(command.a), command.value);
             break;
         case CommandType::SetPerformance:
             mixer_.setPerformance(command.a, command.value);
@@ -143,6 +185,7 @@ void Engine::applyCommand(const Command& command) {
         case CommandType::SynthAllOff:
             synth_.allNotesOff();
             instrument_.allNotesOff();
+            plaits_.allNotesOff();
             break;
         case CommandType::SetChannelVolume:
             mixer_.setVolume(command.a, command.value);
@@ -179,7 +222,8 @@ void Engine::applyCommand(const Command& command) {
             else notes_.setSteps(command.a);
             break;
         case CommandType::InstallStems:
-            stems_.install(command.stems);  // takes the reference
+            if (command.a == 1) preview_.install(command.stems);  // takes the reference
+            else stems_.install(command.stems);
             break;
         case CommandType::SetStemParam:
             stems_.setParam(command.a, command.b, command.value);
@@ -222,11 +266,21 @@ void Engine::applyCommand(const Command& command) {
                 laneTriggers_[static_cast<size_t>(command.a)].fetch_add(1, std::memory_order_relaxed);
             }
             break;
-        case CommandType::SetDrumHit:
+        case CommandType::SetDrumRepeat:
             if (command.a >= 0 && command.a < kLanes && command.b >= 0 && command.b < kMaxSteps) {
-                (staging_ ? staged_.drums : pattern_)[command.a][command.b] = std::clamp(command.value, 0.0f, 1.0f);
+                (staging_ ? staged_.repeats : repeats_)[command.a][command.b] = static_cast<uint8_t>(std::clamp(static_cast<int>(command.value), 1, 4));
             }
             break;
+        case CommandType::SetDrumHit: {
+            // b: step in the low 16 bits, hits in the step (0 or 1 = plain, up to 4 = a roll) above.
+            const int step = command.b & 0xFFFF;
+            const int repeats = std::clamp((command.b >> 16) & 0xFF, 1, 4);
+            if (command.a >= 0 && command.a < kLanes && step < kMaxSteps) {
+                (staging_ ? staged_.drums : pattern_)[command.a][step] = std::clamp(command.value, 0.0f, 1.0f);
+                (staging_ ? staged_.repeats : repeats_)[command.a][step] = static_cast<uint8_t>(repeats);
+            }
+            break;
+        }
     }
 }
 
@@ -240,6 +294,7 @@ void Engine::onStep(int offset, int step) {
     }
     if (step < 0) return;
     if (step == 0) stems_.start(offset);
+    if (onBeat) clips_.syncBeat(offset, step / Sequencer::kStepsPerBeat);
     // A waiting scene takes over on its step (or the next bar), before anything of this step plays.
     if (swapAt_ >= 0) {
         const int local = step - sceneStart_;
@@ -257,17 +312,45 @@ void Engine::onStep(int offset, int step) {
     mixer_.sidechainEvent(offset, pattern_[0][patternStep] > 0.0f, onBeat);
     currentStep_.store(patternStep, std::memory_order_relaxed);
     absoluteStep_.store(local, std::memory_order_relaxed);
+    lastLocal_ = local;
+    stepOffset_ = offset;
     for (int lane = 0; lane < kLanes; ++lane) {
-        if (pattern_[lane][patternStep] > 0.0f) {
-            laneTriggers_[static_cast<size_t>(lane)].fetch_add(1, std::memory_order_relaxed);
-            if (sampler_.has(lane)) sampler_.trigger(lane, pattern_[lane][patternStep], offset);
-            else drums_.trigger(lane, pattern_[lane][patternStep], offset);
+        const float v = pattern_[lane][patternStep];
+        if (v > 0.0f) {
+            hitLane(lane, v, offset);
+            // A roll: the other hits share the step evenly, each a little softer.
+            const int n = repeats_[lane][patternStep];
+            const double every = sequencer_.samplesPerStep() / std::max(1, n);
+            for (int k = 1; k < n && rollCount_ < static_cast<int>(rolls_.size()); ++k) {
+                rolls_[static_cast<size_t>(rollCount_++)] = {lane, v * std::pow(0.85f, static_cast<float>(k)), offset + static_cast<int64_t>(k * every)};
+            }
         }
     }
 }
 
+void Engine::hitLane(int lane, float velocity, int offset) {
+    laneTriggers_[static_cast<size_t>(lane)].fetch_add(1, std::memory_order_relaxed);
+    if (sampler_.has(lane)) sampler_.trigger(lane, velocity, offset);
+    else drums_.trigger(lane, velocity, offset);
+}
+
+void Engine::playRolls(int numFrames) {
+    int kept = 0;
+    for (int i = 0; i < rollCount_; ++i) {
+        PendingHit h = rolls_[static_cast<size_t>(i)];
+        if (h.at < numFrames) {
+            hitLane(h.lane, h.velocity, static_cast<int>(h.at));
+        } else {
+            h.at -= numFrames;
+            rolls_[static_cast<size_t>(kept++)] = h;
+        }
+    }
+    rollCount_ = kept;
+}
+
 void Engine::swapScene(int step) {
     std::copy(&staged_.drums[0][0], &staged_.drums[0][0] + kLanes * kMaxSteps, &pattern_[0][0]);
+    std::copy(&staged_.repeats[0][0], &staged_.repeats[0][0] + kLanes * kMaxSteps, &repeats_[0][0]);
     patternSteps_ = staged_.drumSteps;
     for (int i = 0; i < AcidTrack::kMaxSteps; ++i) acid_.setStep(i, staged_.acid[static_cast<size_t>(i)]);
     acid_.setLength(staged_.acidLength);
@@ -312,7 +395,13 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
     std::fill(stemsL, stemsL + numFrames, 0.0f);
     std::fill(stemsR, stemsR + numFrames, 0.0f);
 
+    stepOffset_ = -1;
     sequencer_.advance(numFrames, [this](int offset, int step) { onStep(offset, step); });
+    playRolls(numFrames);
+    if (lastLocal_ >= 0 && sequencer_.running()) {
+        sinceStep_ = stepOffset_ >= 0 ? static_cast<double>(numFrames - stepOffset_) : sinceStep_ + numFrames;
+        playPosition_.store(lastLocal_ + sinceStep_ / sequencer_.samplesPerStep(), std::memory_order_relaxed);
+    }
     notes_.advance(numFrames, router_);
     metronome_.render(direct, numFrames);
     drums_.render(drums, numFrames);
@@ -320,7 +409,11 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
     acid_.render(acid, numFrames);
     synth_.render(synth, numFrames);
     instrument_.render(synth, numFrames);
+    plaits_.render(synth, numFrames);
     stems_.render(stemsL, stemsR, numFrames);
+    preview_.render(stemsL, stemsR, numFrames);
+    clips_.setBeatFrames(sequencer_.samplesPerStep() * Sequencer::kStepsPerBeat);
+    clips_.render(stemsL, stemsR, numFrames);
 
     gain_.setTarget(playing_.load(std::memory_order_relaxed) ? volume_ : 0.0f);
     const double invRate = 1.0 / sampleRate_;

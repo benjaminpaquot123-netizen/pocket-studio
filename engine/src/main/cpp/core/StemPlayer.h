@@ -28,6 +28,10 @@ public:
     const int16_t* stem(int i) const { return data_[static_cast<size_t>(i)].data(); }
     // A region of one stem as interleaved stereo float (for a pad). Not real-time safe.
     std::vector<float> extract(int stem, int64_t start, int64_t count) const;
+    // A copy lasting `ratio` times as long, pitch kept (the song at another tempo: ratio =
+    // songBpm / projectBpm). Not real-time safe: seconds of work, about 2 x 23 MB per minute
+    // of song while one stem is stretched. nullptr if the song is too short. Starts with one reference.
+    StemBundle* stretched(double ratio, int sampleRate) const;
     // Loudest sample of each of `buckets` equal slices of one stem, 0..1 (waveform overview).
     std::vector<float> peaks(int stem, int buckets) const;
 

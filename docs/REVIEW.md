@@ -125,3 +125,35 @@ Corrigé :
 
 Reste noté (mineur) :
 - Écriture du journal sur le fil principal (petites écritures, quelques par minute).
+
+## Revue de fin de phase 6 (2026-10-20, sous-agent neuf, `c2fc7cd..5d2d1b0`)
+Verdict : moteur et sauvegarde sains (rien d'interdit dans le fil audio, aucune perte de projet trouvée à l'ouverture, au renommage, à la suppression ; le nettoyage des sons couvre toutes les scènes et les pads live).
+
+Corrigé :
+- GRAVE : import d'un .zip avec un project.json énorme → plantage mémoire. project.json plafonné à 4 Mo, dossier nettoyé même sur OutOfMemoryError ; doublons refusés ; projet assaini avant la vérification des sons (tests ajoutés).
+- Noms des pistes exportées coupés avec un nom de projet long (fichiers écrasés) ; drapeau d'annulation resté levé ; annulation M4A affichée comme un échec ; M4A incomplet annoncé comme réussi.
+- « Mes projets » qui se rouvrait après l'ouverture d'un projet ; Annuler/Rétablir désactivés pendant un enregistrement ; latence de sortie compensée à l'enregistrement (Bluetooth).
+- Remix qui suit le tempo : échec mémorisé (plus de nouvel essai à chaque réglage), écart de tempo limité de la moitié au double avec un message clair.
+- Roulements transmis avec le coup (une seule commande au lieu de deux : la file du moteur ne déborde pas) ; test « stop pendant un roulement » ajouté.
+- Réglage du tampon audio séparé du volume du métronome ; fichiers MIDI à longueur de piste incohérente refusés.
+
+Restant (mineur) :
+- Couloir de force du piano roll : remplace toute la boucle ; pendant un enregistrement, une note tout juste ajoutée peut être écrasée par un geste simultané. Le geste en cours de la grille redémarre quand une note arrive.
+- Import d'un son de 2 minutes : pic de mémoire Java ~110 Mo (attrapé : message « pas assez de mémoire » au lieu d'un plantage).
+- Export MIDI : deux notes de même hauteur qui se chevauchent, la première coupe la seconde.
+
+## Revue de fin de phase 5 (2026-10-20, sous-agent neuf, relecture ciblée)
+Verdict : fil audio propre (aucune allocation mesurée, files et atomiques respectés) ; trois défauts graves trouvés et corrigés.
+
+Corrigé :
+- GRAVE : pads live calés sur la mauvaise mesure quand la lecture démarre (horloge à vide décalée) → l'horloge des pads se cale sur le temps du séquenceur (cycle de 64 temps), les boucles repartent avec la mesure ; test `live_pads_bar`.
+- GRAVE : Plaits, une note très courte (appui et relâche dans le même bloc de 12 échantillons) restait muette → le relâchement attend le bloc suivant ; test ajouté.
+- GRAVE : Remix, changer de morceau pendant le chargement de l'écoute laissait les pistes en mémoire → chargement non annulable puis libéré s'il n'est plus voulu.
+- Favoris : écritures l'une après l'autre (toujours la dernière liste), synchronisées sur le disque ; 49e favori refusé avec un message au lieu d'être perdu ; suppression avec « Annuler ».
+- MIDI : état mis à jour sans course entre fils ; un appareil qui s'ouvre en retard pour une ancienne connexion est refermé ; notes tenues suivies sous le même verrou que leur envoi.
+- Plaits : voix au-delà de la limite d'un nouveau modèle éteintes en quelques ms ; file d'événements portée à 256.
+- Audio vers notes : une seule transcription à la fois ; copie du modèle par fichier temporaire puis renommage.
+
+Restant (mineur) :
+- Arrêt de l'écoute Remix : petit clic possible (les pistes sont retirées tout de suite après la coupure).
+- Pads live : les sons remplacés partent dans une file de retour de 64 places ; si elle déborde (64 remplacements sans retour à l'écran), le son est gardé jusqu'à la fermeture (fuite bornée, pas de plantage).

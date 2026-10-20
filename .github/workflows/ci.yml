@@ -134,7 +134,8 @@ jobs:
           target: google_apis
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -no-boot-anim -camera-back none
-          script: ./gradlew -PemulatorAbi :app:connectedDebugAndroidTest
+          # On failure, print the failing assertion and the app's errors right in the log.
+          script: ./gradlew -PemulatorAbi :app:connectedDebugAndroidTest || { find app/build/outputs/androidTest-results -name '*.xml' -exec grep -A25 '<failure' {} \; ; adb logcat -d -t 300 '*:E' | tail -150 ; exit 1; }
       - uses: actions/upload-artifact@v7
         if: failure()
         with:

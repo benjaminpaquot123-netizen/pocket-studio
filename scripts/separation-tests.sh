@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Runs the real separation model on Linux (needs ~200 MB of downloads, cached under build/).
-# Skipped (exit 0) when the model release does not exist yet.
+# Runs the real separation and transcription models on Linux (needs ~200 MB of downloads, cached
+# under build/). Basic Pitch always runs (its model is in the app assets); the Demucs part is
+# skipped (exit 0) when its model release does not exist yet.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 CACHE="$ROOT/build/separation-cache"
@@ -11,6 +12,10 @@ mkdir -p "$CACHE"
 if [ ! -d "$CACHE/onnxruntime-linux-x64-$ORT_VERSION" ]; then
     curl -fsSL "https://github.com/microsoft/onnxruntime/releases/download/v$ORT_VERSION/onnxruntime-linux-x64-$ORT_VERSION.tgz" | tar xz -C "$CACHE"
 fi
+cmake -S "$ROOT/separation/host-tests" -B "$ROOT/build/separation-tests" -DCMAKE_BUILD_TYPE=Release -DORT_DIR="$CACHE/onnxruntime-linux-x64-$ORT_VERSION" >/dev/null
+cmake --build "$ROOT/build/separation-tests" -j >/dev/null
+"$ROOT/build/separation-tests/pitch_test" "$ROOT/app/src/main/assets/basic-pitch/nmp.onnx"
+
 MODEL="${SEPARATION_MODEL:-$CACHE/htdemucs.onnx}"
 if [ ! -f "$MODEL" ]; then
     if ! curl -fsSL -o "$MODEL.part" "$MODEL_URL"; then
@@ -20,6 +25,4 @@ if [ ! -f "$MODEL" ]; then
     mv "$MODEL.part" "$MODEL"
 fi
 echo "$MODEL_SHA256  $MODEL" | sha256sum -c -
-cmake -S "$ROOT/separation/host-tests" -B "$ROOT/build/separation-tests" -DCMAKE_BUILD_TYPE=Release -DORT_DIR="$CACHE/onnxruntime-linux-x64-$ORT_VERSION" >/dev/null
-cmake --build "$ROOT/build/separation-tests" -j >/dev/null
 "$ROOT/build/separation-tests/separation_test" "$MODEL"

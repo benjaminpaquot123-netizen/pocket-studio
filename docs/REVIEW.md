@@ -192,3 +192,21 @@ Corrigé :
 Restant (mineur) :
 - Arrêter le transport oublie les touches tenues de l'arpège (il faut les reposer).
 - Pas de pitch bend pour les instruments General MIDI.
+
+## Phase 9 (génération), relecture de fin de phase
+
+Corrigé :
+- Une séparation demandée pendant le téléchargement du modèle de génération était ignorée sans message (et gardait l'accès au fichier) : message clair, accès rendu.
+- Génération et séparation en même temps (risque de manquer de mémoire) : chacune refuse quand l'autre tourne.
+- Délai Android dépassé pendant le téléchargement : l'erreur s'affiche sur le bon écran.
+- Tokeniseur : une suite de caractères inconnus donne un seul `<unk>` comme la référence (vérifié sur emoji et japonais) ; `max` borné.
+- Le son généré ne se joue plus tout seul si on a quitté la page ; écoute impossible signalée ; « Supprimer le modèle » grisé pendant une génération.
+- « Piste audio » ne crée plus de piste vide quand une autre pose est en cours.
+- Progression : un palier à 85 % après le chargement du décodeur.
+- Script du modèle : empreintes de LICENSE et NOTICE vérifiées.
+
+Restant (mineur) :
+- Les tests du vrai modèle (`generate_test`, comparaison du tokeniseur) ne tournent qu'en local (`STABLE_AUDIO_DIR`, `T5_TOKENIZER`), pas en CI (858 Mo).
+- « Annuler » de la notification arrête le travail en cours du service, quel qu'il soit.
+- Écoute du son généré sans focus audio ; « Piste audio » qui ajoute une piste fait deux pas d'annulation.
+- Pas de test unitaire de la machine d'états de GenerateViewModel.

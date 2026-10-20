@@ -98,7 +98,8 @@ fun GenerateScreen(ui: GenerateUi, actions: GenerateActions) {
             modifier = Modifier.testTag("generate_credit"),
         )
         if (ui.installed) {
-            TextButton(onClick = actions.removeModel, modifier = Modifier.testTag("generate_remove")) {
+            val busy = ui.state is GenerateState.Running || ui.state is GenerateState.Checking
+            TextButton(onClick = actions.removeModel, enabled = !busy, modifier = Modifier.testTag("generate_remove")) {
                 Text("Supprimer le modèle (libère ${GenerationModel.SIZE_LABEL})", color = Neon.TextSecondary)
             }
         }

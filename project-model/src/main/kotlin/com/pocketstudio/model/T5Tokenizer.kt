@@ -34,7 +34,7 @@ class T5Tokenizer(pieces: List<Pair<String, Float>>, private val unkId: Int = 2)
         val out = ArrayList<Int>()
         val normal = Normalizer.normalize(text, Normalizer.Form.NFKC)
         normal.split(Regex("\\s+")).filter { it.isNotEmpty() }.forEach { word -> out += encodeWord("▁$word") }
-        val body = out.take(max - 1)
+        val body = out.take(max.coerceAtLeast(1) - 1)
         return (body + EOS).toIntArray()
     }
 
@@ -71,7 +71,9 @@ class T5Tokenizer(pieces: List<Pair<String, Float>>, private val unkId: Int = 2)
             result += piece[at]
             at = from[at]
         }
-        return result.reversed()
+        // Like the reference tokenizer, a run of unknown characters is one <unk>.
+        val ordered = result.reversed()
+        return ordered.filterIndexed { k, id -> id != unkId || k == 0 || ordered[k - 1] != unkId }
     }
 
     companion object {

@@ -794,7 +794,13 @@ fun AppRoot() {
                             val project by rhythmVm.project.collectAsStateWithLifecycle()
                             val transport by rhythmVm.transport.collectAsStateWithLifecycle()
                             val task by rhythmVm.sampleTask.collectAsStateWithLifecycle()
-                            DisposableEffect(Unit) { onDispose { generateVm.stopPreview() } }
+                            DisposableEffect(Unit) {
+                                generateVm.visible = true
+                                onDispose {
+                                    generateVm.visible = false
+                                    generateVm.stopPreview()
+                                }
+                            }
                             com.pocketstudio.app.generate.GenerateScreen(
                                 com.pocketstudio.app.generate.GenerateUi(
                                     installed, download, genState, prompt, seconds,

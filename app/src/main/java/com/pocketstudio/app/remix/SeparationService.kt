@@ -124,6 +124,12 @@ class SeparationService : Service() {
                     notifyEnd(end)
                     withContext(Dispatchers.Main) { finish() }
                 }
+            } else {
+                // Another job (the generation model download) holds the service: say so, keep nothing.
+                intent.data?.let { runCatching { contentResolver.releasePersistableUriPermission(it, Intent.FLAG_GRANT_READ_URI_PERMISSION) } }
+                if (!SeparationJob.state.value.busy) {
+                    SeparationJob.set(SeparationState.Failed("Un téléchargement de modèle est en cours : réessaie quand il sera fini."))
+                }
             }
             else -> if (!running) finish()
         }
@@ -133,7 +139,11 @@ class SeparationService : Service() {
     // Android 15+ caps media processing at 6 h a day: stop cleanly instead of being killed.
     override fun onTimeout(startId: Int, fgsType: Int) {
         cancelled.set(true)
-        SeparationJob.set(SeparationState.Failed("Android a arrêté la séparation (temps maximum par jour atteint)."))
+        if (GenerationJob.download.value is ModelDownload.Running) {
+            GenerationJob.set(ModelDownload.Failed("Android a arrêté le téléchargement (temps maximum par jour atteint)."))
+        } else {
+            SeparationJob.set(SeparationState.Failed("Android a arrêté la séparation (temps maximum par jour atteint)."))
+        }
         finish()
     }
 
@@ -181,6 +191,7 @@ class SeparationService : Service() {
 
     private fun separate(uri: Uri, name: String): SeparationState {
         if (!Demucs.isAvailable) return SeparationState.Failed("La séparation n'est pas disponible sur ce téléphone.")
+        if (GenerationJob.generating.get()) return SeparationState.Failed("Une génération de son est en cours : relance quand elle sera finie.")
         SeparationJob.set(SeparationState.Decoding(name))
         progress("Lecture de « $name »", null)
         StemStore.prune(this)

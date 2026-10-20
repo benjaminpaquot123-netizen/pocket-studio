@@ -49,4 +49,7 @@ object GenerationJob {
     internal fun set(state: ModelDownload) {
         _download.value = state
     }
+
+    /** A generation runs: with a separation at the same time, memory would run out. */
+    val generating = java.util.concurrent.atomic.AtomicBoolean(false)
 }

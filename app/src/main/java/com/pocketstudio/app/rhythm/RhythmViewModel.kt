@@ -549,6 +549,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** On the first audio track without a clip; one is added when all are taken. */
     fun placeOnAudioTrack(pcm: Pcm, name: String) {
+        if (_sampleTask.value is SampleTask.Busy || _sampleTask.value is SampleTask.Recording || _audioRecording.value != null) return
         val p = project.value
         val id = p.audioTracks.firstOrNull { it.clip == null }?.id ?: run {
             val next = p.addAudioTrack() ?: run {

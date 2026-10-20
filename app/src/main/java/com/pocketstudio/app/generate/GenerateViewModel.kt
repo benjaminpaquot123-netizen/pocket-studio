@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.pocketstudio.app.audio.AudioEdits
 import com.pocketstudio.app.audio.Pcm
 import com.pocketstudio.app.download.VerifiedDownload
+import com.pocketstudio.app.remix.SeparationJob
 import com.pocketstudio.app.remix.SeparationService
 import com.pocketstudio.app.report.AppLog
 import com.pocketstudio.model.T5Tokenizer
@@ -73,7 +74,10 @@ class GenerateViewModel(app: Application) : AndroidViewModel(app) {
     fun generate() = generate(_prompt.value, _seconds.value)
 
     private val cancelled = AtomicBoolean(false)
-    private var tokenizer: T5Tokenizer? = null
+    @Volatile private var tokenizer: T5Tokenizer? = null
+
+    /** The Générer page is on screen: only then does a finished sound play by itself. */
+    var visible = false
     private var player: AudioTrack? = null
 
     init {
@@ -94,6 +98,7 @@ class GenerateViewModel(app: Application) : AndroidViewModel(app) {
     fun cancelDownload() = SeparationService.cancel(getApplication())
 
     fun removeModel() {
+        if (GenerationJob.generating.get()) return
         stopPreview()
         viewModelScope.launch {
             withContext(Dispatchers.IO) { GenerationModel.remove(getApplication()) }
@@ -115,6 +120,11 @@ class GenerateViewModel(app: Application) : AndroidViewModel(app) {
             _state.value = GenerateState.Failed("La génération n'est pas disponible sur ce téléphone.")
             return
         }
+        if (SeparationJob.state.value.busy || GenerationJob.download.value is ModelDownload.Running) {
+            _state.value = GenerateState.Failed("Une séparation ou un téléchargement est en cours : attends qu'il finisse.")
+            return
+        }
+        if (!GenerationJob.generating.compareAndSet(false, true)) return
         stopPreview()
         cancelled.set(false)
         val seed = Random.nextLong(1, Long.MAX_VALUE)
@@ -123,7 +133,7 @@ class GenerateViewModel(app: Application) : AndroidViewModel(app) {
             val app = getApplication<Application>()
             // The native work cannot be interrupted halfway: it always finishes (or sees the cancel flag).
             val outcome = withContext(Dispatchers.Default + NonCancellable) {
-                runCatching {
+                try { runCatching {
                     if (!verify(app)) return@runCatching "Modèle abîmé, supprimé : retélécharge-le."
                     val memory = ActivityManager.MemoryInfo()
                     app.getSystemService(ActivityManager::class.java).getMemoryInfo(memory)
@@ -144,10 +154,13 @@ class GenerateViewModel(app: Application) : AndroidViewModel(app) {
                 }.getOrElse { e ->
                     AppLog.add("Génération : ${e.javaClass.simpleName} ${e.message}")
                     if (e is OutOfMemoryError) "Pas assez de mémoire : essaie un son plus court." else "Ça n'a pas marché (${e.javaClass.simpleName})."
+                } } finally {
+                    // Here, not after: a cleared screen never resumes past this block.
+                    GenerationJob.generating.set(false)
                 }
             }
             _state.value = outcome?.let { GenerateState.Failed(it) } ?: GenerateState.Idle
-            if (outcome == null && _result.value != null && !cancelled.get()) play()
+            if (outcome == null && _result.value != null && !cancelled.get() && visible) play()
         }
     }
 
@@ -194,8 +207,12 @@ class GenerateViewModel(app: Application) : AndroidViewModel(app) {
                 .setTransferMode(AudioTrack.MODE_STATIC)
                 .setBufferSizeInBytes(r.pcm.data.size * 4)
                 .build()
-        }.getOrNull() ?: return
-        track.write(r.pcm.data, 0, r.pcm.data.size, AudioTrack.WRITE_BLOCKING)
+        }.getOrNull()
+        if (track == null || track.write(r.pcm.data, 0, r.pcm.data.size, AudioTrack.WRITE_BLOCKING) != r.pcm.data.size) {
+            track?.release()
+            _state.value = GenerateState.Failed("L'écoute n'a pas pu démarrer : pose le son et écoute-le dans le projet.")
+            return
+        }
         track.setNotificationMarkerPosition(r.pcm.frames)
         track.setPlaybackPositionUpdateListener(object : AudioTrack.OnPlaybackPositionUpdateListener {
             override fun onMarkerReached(t: AudioTrack) {

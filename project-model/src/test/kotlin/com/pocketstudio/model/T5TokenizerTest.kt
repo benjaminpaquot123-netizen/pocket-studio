@@ -32,6 +32,9 @@ class T5TokenizerTest {
             "808 bass  glide, trap, C minor" to intArrayOf(505, 4018, 7981, 26537, 6, 9684, 6, 205, 4012, 1),
             "ambient pad with shimmering textures" to intArrayOf(21128, 8950, 28, 27536, 53, 17951, 1),
             "café crème déjà-vu ñ 😀 x²" to intArrayOf(11949, 20435, 4315, 18, 208, 76, 3, 2, 3, 2, 3, 226, 357, 1),
+            "😀😀 drum" to intArrayOf(3, 2, 5253, 1),
+            "日本語 loop" to intArrayOf(3, 2, 6494, 1),
+            "a😀b😀😀c" to intArrayOf(3, 9, 2, 115, 2, 75, 1),
         )
         expected.forEach { (text, ids) -> assertArrayEquals(text, ids, t.encode(text)) }
     }

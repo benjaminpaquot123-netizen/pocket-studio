@@ -131,6 +131,7 @@ GenerateResult generateAudio(const GenerateRequest& request, std::vector<float>&
         }
         {
             Ort::Session dec = open(request.dir + "/dec.onnx", request.threads);
+            step(0.85f);  // loading the decoder takes a while too
             const int64_t zShape[3] = {1, kLatentChannels, frames};
             Ort::Value input = Ort::Value::CreateTensor<float>(memory, z.data(), z.size(), zShape, 3);
             const char* in[1] = {"z"};

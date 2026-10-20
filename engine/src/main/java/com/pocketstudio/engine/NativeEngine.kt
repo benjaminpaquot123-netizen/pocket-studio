@@ -60,6 +60,8 @@ object NativeEngine {
     // 54: RecordArm, 55: RecordStop (native only)
     private const val CMD_AUDIO_ON = 56
     private const val CMD_BEATS_PER_BAR = 57
+    private const val CMD_AUTOMATION_MODE = 58
+    private const val CMD_AUTOMATION_SONG = 59
 
     /** Live pads (ClipLauncher::kSlots). */
     const val LIVE_PADS = 16
@@ -293,6 +295,10 @@ object NativeEngine {
 
     /** A song part switches audio track [track] on or off (follows [setStaging]). */
     fun setAudioOn(track: Int, on: Boolean) = post(CMD_AUDIO_ON, if (on) 1f else 0f, track)
+
+    /** Automation lane [lane]: 0 loop, 1 per scene, 2 song ([songBars] values sent with [setAutomationSong]). */
+    fun setAutomationMode(lane: Int, mode: Int, songBars: Int) = post(CMD_AUTOMATION_MODE, songBars.toFloat(), lane, mode)
+    fun setAutomationSong(lane: Int, bar: Int, value: Float) = post(CMD_AUTOMATION_SONG, value, lane, bar)
 
     /** Time signature [beats]/4 (2..7): count-in, bar lines, metronome accent, live pads grid. */
     fun setBeatsPerBar(beats: Int) = post(CMD_BEATS_PER_BAR, 0f, beats)

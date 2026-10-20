@@ -96,6 +96,7 @@
 - Phase 8 (branche ccr-80af1a1b-mn0wec) :
   - 8.1 fait : flanger, phaser, noise gate, trémolo/auto-pan, élargisseur stéréo, bitcrusher, EQ paramétrique avec sa courbe ; analyseur de spectre (Mixeur › Sortie générale) ; accordeur (Audio › Accordeur).
 
+  - 8.2 fait : chaque courbe d'automation est un clip « Boucle », « Par scène » (chaque scène ses pas, changés au passage de scène) ou « Morceau » (un point par mesure, glissé d'un point à l'autre, enregistrable en direct).
+
 ## Prochaine étape exacte
-1. 8.2 automation en clips : par scène et sur toute la longueur du morceau.
-2. 8.3 clavier expressif (vélocité, pitch bend, molette, sustain, arpège en direct), MIDI learn, horloge MIDI sortante, Ableton Link.
+1. 8.3 clavier expressif (vélocité, pitch bend, molette, sustain, arpège en direct), MIDI learn, horloge MIDI sortante, Ableton Link.

@@ -2211,6 +2211,42 @@ void testAutomationMovesTheFader() {
     CHECK(std::sqrt(s / 2400) > loud * 0.5);  // the pad's level wanders a little with its timbre
 }
 
+void testAutomationClips() {
+    // A song-long lane on the synth fader: silent on bar 1, rising to full on bar 2, then held.
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SynthNoteOn, 0.8f, 57});
+    engine.post({ps::CommandType::SetAutomationTarget, 0.0f, 0, ps::Automation::pack(ps::Automation::Volume, 2, 0, 0)});
+    engine.post({ps::CommandType::SetAutomationMode, 2.0f, 0, ps::Automation::Song});
+    engine.post({ps::CommandType::SetAutomationSong, 0.0f, 0, 0});
+    engine.post({ps::CommandType::SetAutomationSong, 0.8f, 0, 1});
+    render(engine, kRate / 2, 256);
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    auto out = render(engine, kRate * 6, 256);  // 3 bars
+    auto rms = [&](const std::vector<float>& o, int from) {
+        double sum = 0;
+        for (int i = from; i < from + 2400; ++i) sum += double(o[size_t(i) * 2]) * o[size_t(i) * 2];
+        return std::sqrt(sum / 2400);
+    };
+    const double start = rms(out, 6000 * 1), middle = rms(out, 6000 * 9), later = rms(out, 6000 * 40);
+    std::printf("  song automation: %.4f, %.4f, %.4f\n", start, middle, later);
+    CHECK(start < later * 0.05 && middle > later * 0.15 && middle < later * 0.9);
+    // A per-scene lane: the waiting scene brings its own values at the swap.
+    ps::Engine scenes(kRate);
+    scenes.post({ps::CommandType::SynthNoteOn, 0.8f, 57});
+    scenes.post({ps::CommandType::SetAutomationTarget, 0.0f, 0, ps::Automation::pack(ps::Automation::Volume, 2, 0, 0)});
+    scenes.post({ps::CommandType::SetAutomationMode, 0.0f, 0, ps::Automation::PerScene});
+    scenes.post({ps::CommandType::SetAutomationPoint, 0.0f, 0, 0});  // scene A: silent
+    scenes.post({ps::CommandType::SetTransport, 1.0f, 0});
+    scenes.post({ps::CommandType::SetStaging, 1.0f});
+    scenes.post({ps::CommandType::SetAutomationPoint, 0.8f, 0, 0});  // scene B: full
+    scenes.post({ps::CommandType::SetStaging, 0.0f});
+    scenes.post({ps::CommandType::ArmSceneSwap, 0.0f, 0});
+    out = render(scenes, kRate * 2 + 12000, 256);  // bar 1 and two steps of bar 2
+    const double a = rms(out, 6000 * 6), b = rms(out, 6000 * 16 + 4000);
+    CHECK(scenes.sceneSwaps() == 1);
+    CHECK(a < b * 0.05 && b > 0.01);
+}
+
 void testScenesSwapOnTheBar() {
     ps::Engine engine(kRate);
     // Scene A plays: pad 1 on step 0. Scene B waits: pad 3 on steps 0 and 8, a 32-step loop.
@@ -2729,6 +2765,7 @@ int main(int argc, char** argv) {
         {"new_effects", testNewEffects},
         {"param_eq", testParametricEq},
         {"scopes", testScopes},
+        {"automation_clips", testAutomationClips},
         {"audio_tracks", testAudioTracks},
         {"recording", testRecordingStartsOnTheFirstStep},
         {"three_four", testThreeFourAndPartMutes},

@@ -152,3 +152,6 @@ fun Project.withBeatsPerBar(beats: Int): Project {
         scenes = scenes.map { it.copy(drums = convert(it.drums)) },
     ).sanitized()
 }
+
+/** Bars the whole song lasts (each part's scene times its repeats). */
+val Project.songBars: Int get() = song.sumOf { sceneSteps(it.scene) / stepsPerBar * it.repeats }

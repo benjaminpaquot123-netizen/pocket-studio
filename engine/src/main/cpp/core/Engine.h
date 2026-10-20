@@ -87,6 +87,8 @@ enum class CommandType : uint8_t {
     RecordStop,           // the armed or running recording ends (the buffer's state becomes 2)
     SetAudioOn,           // a: audio track, value 1 = plays (follows SetStaging: a song part's mutes)
     SetBeatsPerBar,       // a: 2..7 (time signature a/4): metronome accent, bar lines, live pads grid
+    SetAutomationMode,    // a: lane, b: 0 loop / 1 per scene / 2 song (value: bars of song values)
+    SetAutomationSong,    // a: lane, b: bar (0..255), value 0..1: the song-long curve, one value per bar
 };
 
 // Instrument tracks: the synth commands (SynthNoteOn/Off, SynthParam, SetSynthNote, SetSynthNoteCount,
@@ -106,10 +108,17 @@ struct Automation {
     enum Kind { Volume = 0, Pan = 1, Send = 2, InsertParam = 3, BusParam = 4 };
     static constexpr int kLanes = 8;
     static constexpr int kSteps = 64;
+    static constexpr int kSongBars = 256;
+    enum Mode { Loop = 0, PerScene = 1, Song = 2 };
     static int32_t pack(int kind, int ch, int slot, int param) { return (kind << 16) | (ch << 12) | (slot << 8) | param; }
     struct Lane {
         int32_t target = -1;
+        int mode = Loop;
         std::array<float, kSteps> values{};
+        std::array<float, kSteps> staged{};  // per-scene lanes: the waiting scene's values
+        bool hasStaged = false;
+        std::array<float, kSongBars> song{};  // song lanes: a value per bar, linear in between
+        int songBars = 0;
     };
     Lane lanes[kLanes];
     Automation() {
@@ -249,7 +258,7 @@ private:
     void finishRecording();
     void recordInput(const float* input, int numInputFrames, int inputChannels);
     Automation automation_;
-    void applyAutomation(int patternStep);
+    void applyAutomation(int patternStep, int songStep);
     std::array<std::atomic<float>, kScopeFrames> outScope_{}, micScope_{};
     std::atomic<uint32_t> outScopeAt_{0}, micScopeAt_{0};
     static void scopeWrite(std::array<std::atomic<float>, kScopeFrames>& ring, std::atomic<uint32_t>& at, float v) {

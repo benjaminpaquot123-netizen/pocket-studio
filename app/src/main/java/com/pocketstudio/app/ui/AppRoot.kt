@@ -6,6 +6,8 @@ import com.pocketstudio.app.audiotracks.AudioTracksActions
 import com.pocketstudio.app.audiotracks.AudioTracksScreen
 import com.pocketstudio.app.audiotracks.AudioTracksUi
 import com.pocketstudio.model.viewOfTrack
+import com.pocketstudio.model.songBars
+import com.pocketstudio.model.sceneSteps
 import androidx.compose.runtime.remember
 import com.pocketstudio.app.synth.TracksUi
 import com.pocketstudio.app.synth.NotesUi
@@ -635,6 +637,7 @@ fun AppRoot() {
                     }
                     AppTab.Mixeur -> {
                         val project by rhythmVm.project.collectAsStateWithLifecycle()
+                        val sessionUi by rhythmVm.sessionUi.collectAsStateWithLifecycle()
                         val spectrum by rhythmVm.spectrum.collectAsStateWithLifecycle()
                         LaunchedEffect(analyserOn) {
                             if (analyserOn) lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollSpectrum() }
@@ -676,13 +679,23 @@ fun AppRoot() {
                             spectrum = spectrum,
                             analyserOpen = analyserOn,
                             setAnalyser = { analyserOn = it },
-                            automation = AutomationUi(project.automation, project.drums.steps, if (transport.playing) live.currentStep else -1, automationRecord),
+                            automation = AutomationUi(
+                                project.automation, project.drums.steps, if (transport.playing) live.currentStep else -1, automationRecord,
+                                scene = project.scene,
+                                songBars = project.songBars,
+                                songBar = if (transport.playing && sessionUi.songIndex >= 0) {
+                                    (project.song.take(sessionUi.songIndex).sumOf { project.sceneSteps(it.scene) * it.repeats } + live.absoluteStep.coerceAtLeast(0)) / project.stepsPerBar
+                                } else -1,
+                                stepsPerBar = project.stepsPerBar,
+                            ),
                             automationActions = AutomationActions(
                                 add = rhythmVm::addAutomation,
                                 remove = rhythmVm::removeAutomation,
                                 clear = rhythmVm::clearAutomation,
                                 setPoint = rhythmVm::setAutomationPoint,
                                 toggleRecord = rhythmVm::toggleAutomationRecord,
+                                setMode = rhythmVm::setAutomationMode,
+                                setSongPoint = rhythmVm::setAutomationSongPoint,
                             ),
                             export = export,
                             hasSong = project.song.isNotEmpty(),

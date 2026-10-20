@@ -65,6 +65,7 @@ import com.pocketstudio.model.InstrumentTrack
 import com.pocketstudio.model.partView
 import com.pocketstudio.model.sceneSteps
 import com.pocketstudio.model.togglePartTrack
+import com.pocketstudio.model.songBars
 import com.pocketstudio.model.withBeatsPerBar
 import com.pocketstudio.model.AudioTrack
 import com.pocketstudio.model.AudioClip
@@ -798,6 +799,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         pushAcid(view.acid)
         view.instrumentTracks.forEach { pushNotes(it.notes, it.id) }
         for (id in 0 until AudioTrack.MAX) NativeEngine.setAudioOn(id, part?.plays(SongPart.audio(id)) ?: true)
+        // Per-scene automation clips: the scene's own steps (all of them, empty ones included).
+        p.automation.forEachIndexed { i, lane ->
+            if (lane.mode == AutomationLane.PER_SCENE) lane.valuesFor(index).forEachIndexed { step, v -> NativeEngine.setAutomationPoint(i, step, v) }
+        }
     }
 
     /** Prepares the song part after the one now playing ([next] wraps around: the song loops). */
@@ -857,8 +862,34 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         for (i in 0 until AutomationLane.MAX_LANES) {
             val lane = p.automation.getOrNull(i)
             NativeEngine.setAutomationTarget(i, lane?.target?.pack() ?: -1)
-            lane?.values?.forEachIndexed { step, v -> if (v != null) NativeEngine.setAutomationPoint(i, step, v) }
+            if (lane == null) continue
+            val curve = if (lane.mode == AutomationLane.SONG) lane.songCurve(maxOf(1, p.songBars)) else emptyList()
+            NativeEngine.setAutomationMode(i, lane.mode, curve.size)
+            curve.forEachIndexed { bar, v -> NativeEngine.setAutomationSong(i, bar, v) }
+            lane.valuesFor(p.scene).forEachIndexed { step, v -> if (v != null) NativeEngine.setAutomationPoint(i, step, v) }
         }
+    }
+
+    /** Clip kind of lane [index]: loop, per scene or the whole song. */
+    fun setAutomationMode(index: Int, mode: Int) {
+        if (index !in project.value.automation.indices) return
+        session.edit { p ->
+            p.copy(automation = p.automation.mapIndexed { i, l ->
+                if (i != index || l.mode == mode) l
+                // Going per scene: every scene starts from the loop's steps.
+                else if (mode == AutomationLane.PER_SCENE) l.copy(mode = mode, sceneValues = p.allScenes.indices.associateWith { l.values })
+                else l.copy(mode = mode)
+            })
+        }
+        pushAutomation()
+        pushMixer()
+    }
+
+    /** The song curve: [value] on bar [bar] (null erases). */
+    fun setAutomationSongPoint(index: Int, bar: Int, value: Float?) {
+        if (index !in project.value.automation.indices) return
+        session.edit("auto-song-$index") { p -> p.copy(automation = p.automation.mapIndexed { i, l -> if (i == index) l.withSongPoint(bar, value) else l }) }
+        pushAutomation()
     }
 
     fun addAutomation(target: AutoTarget) {
@@ -882,8 +913,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** Drawing: [value] 0..1 on [step] (null erases). Consecutive strokes merge into one undo step. */
     fun setAutomationPoint(index: Int, step: Int, value: Float?) {
         if (index !in project.value.automation.indices) return
-        session.edit("auto-$index") { p -> p.copy(automation = p.automation.mapIndexed { i, l -> if (i == index) l.withPoint(step, value) else l }) }
-        if (NativeEngine.isAvailable) NativeEngine.setAutomationPoint(index, step, value?.coerceIn(0f, 1f))
+        session.edit("auto-$index") { p -> p.copy(automation = p.automation.mapIndexed { i, l -> if (i == index) l.withPoint(step, value, p.scene) else l }) }
+        if (NativeEngine.isAvailable && project.value.automation[index].mode != AutomationLane.SONG) {
+            NativeEngine.setAutomationPoint(index, step, value?.coerceIn(0f, 1f))
+        }
     }
 
     private fun recordAutomation(target: AutoTarget, value: Float) {
@@ -896,7 +929,16 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             addAutomation(target)
             index = project.value.automation.indexOfFirst { it.target == target }
         }
-        setAutomationPoint(index, step, value)
+        // A song curve records on the bar the song is at.
+        if (project.value.automation[index].mode == AutomationLane.SONG) {
+            val p = project.value
+            // The engine counts from the playing scene's start: add the song parts already played.
+            val partsBefore = _sessionUi.value.songIndex.takeIf { it > 0 }?.let { i -> p.song.take(i).sumOf { p.sceneSteps(it.scene) * it.repeats } } ?: 0
+            val bar = (partsBefore + NativeEngine.absoluteStep()) / p.stepsPerBar
+            if (bar >= 0) setAutomationSongPoint(index, bar, value)
+        } else {
+            setAutomationPoint(index, step, value)
+        }
     }
 
     /** After a stop, settings left where the automation put them go back to the project's values. */

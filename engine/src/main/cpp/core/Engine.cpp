@@ -294,12 +294,36 @@ void Engine::applyCommand(const Command& command) {
             if (command.a >= 0 && command.a < Automation::kLanes) {
                 auto& lane = automation_.lanes[command.a];
                 lane.target = command.b;
+                lane.mode = Automation::Loop;
                 lane.values.fill(-1.0f);
+                lane.hasStaged = false;
+                lane.songBars = 0;
             }
             break;
         case CommandType::SetAutomationPoint:
             if (command.a >= 0 && command.a < Automation::kLanes && command.b >= 0 && command.b < Automation::kSteps) {
-                automation_.lanes[command.a].values[static_cast<size_t>(command.b)] = command.value < 0.0f ? -1.0f : std::min(command.value, 1.0f);
+                auto& lane = automation_.lanes[command.a];
+                const float v = command.value < 0.0f ? -1.0f : std::min(command.value, 1.0f);
+                if (staging_) {
+                    // A per-scene lane: the waiting scene's values, taken over at the swap.
+                    if (!lane.hasStaged) lane.staged.fill(-1.0f);
+                    lane.hasStaged = true;
+                    lane.staged[static_cast<size_t>(command.b)] = v;
+                } else {
+                    lane.values[static_cast<size_t>(command.b)] = v;
+                }
+            }
+            break;
+        case CommandType::SetAutomationMode:
+            if (command.a >= 0 && command.a < Automation::kLanes) {
+                auto& lane = automation_.lanes[command.a];
+                lane.mode = std::clamp(command.b, 0, 2);
+                lane.songBars = std::clamp(static_cast<int>(command.value), 0, Automation::kSongBars);
+            }
+            break;
+        case CommandType::SetAutomationSong:
+            if (command.a >= 0 && command.a < Automation::kLanes && command.b >= 0 && command.b < Automation::kSongBars) {
+                automation_.lanes[command.a].song[static_cast<size_t>(command.b)] = std::clamp(command.value, 0.0f, 1.0f);
             }
             break;
         case CommandType::SetStemStart:
@@ -370,7 +394,7 @@ void Engine::onStep(int offset, int step) {
         if (t.on) t.notes.onStep(offset, local, sequencer_.samplesPerStep());
     }
     const int patternStep = local % patternSteps_;
-    applyAutomation(patternStep);
+    applyAutomation(patternStep, step);
     // Sidechain pumps follow the kick lane (pad 1) or every quarter note.
     mixer_.sidechainEvent(offset, pattern_[0][patternStep] > 0.0f, onBeat);
     currentStep_.store(patternStep, std::memory_order_relaxed);
@@ -419,15 +443,32 @@ void Engine::swapScene(int step) {
     acid_.setLength(staged_.acidLength);
     for (auto& t : tracks_) t.swapIn();
     for (int k = 0; k < AudioTracks::kTracks; ++k) audio_.setOn(k, staged_.audioOn[static_cast<size_t>(k)]);
+    for (auto& lane : automation_.lanes) {
+        if (!lane.hasStaged) continue;
+        lane.values = lane.staged;
+        lane.hasStaged = false;
+    }
     sceneStart_ = step;
     swapAt_ = -1;
     sceneSwaps_.fetch_add(1, std::memory_order_relaxed);
 }
 
-void Engine::applyAutomation(int patternStep) {
+void Engine::applyAutomation(int patternStep, int songStep) {
     if (patternStep < 0 || patternStep >= Automation::kSteps) return;
+    const int bar = sequencer_.stepsPerBar();
     for (const auto& lane : automation_.lanes) {
-        const float v = lane.values[static_cast<size_t>(patternStep)];
+        float v = -1.0f;
+        if (lane.mode == Automation::Song) {
+            // From the transport start: bar by bar, sliding from one bar's value to the next.
+            if (lane.songBars <= 0 || songStep < 0) continue;
+            const int b = std::min(songStep / bar, lane.songBars - 1);
+            const float a = lane.song[static_cast<size_t>(b)];
+            const float c = lane.song[static_cast<size_t>(std::min(b + 1, lane.songBars - 1))];
+            const float t = songStep / bar >= lane.songBars - 1 ? 0.0f : static_cast<float>(songStep % bar) / static_cast<float>(bar);
+            v = a + t * (c - a);
+        } else {
+            v = lane.values[static_cast<size_t>(patternStep)];
+        }
         if (lane.target < 0 || v < 0.0f) continue;
         const int kind = lane.target >> 16, ch = (lane.target >> 12) & 0xF, slot = (lane.target >> 8) & 0xF, param = lane.target & 0xFF;
         switch (kind) {

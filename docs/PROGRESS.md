@@ -91,6 +91,9 @@
 
   - 7.2 fait : onglet Audio (pistes audio + Remix), 4 pistes audio, prise au micro calée sur le premier temps (latence aller-retour compensée), import, garder une sélection, normaliser, inverser, fondus, mesure de départ, longueur de boucle. Un clip par piste pour tout le projet (pas par scène) : la ligne de temps (7.3) placera les clips.
 
+  - 7.3 fait : ligne de temps dans Morceau (une colonne par partie, une ligne par piste, un appui coupe ou remet une piste dans une partie, appliqué au jeu, à l'export et au MIDI) ; mesures 2/4 à 7/4 (décompte, temps fort du métronome, changements de scène, grille de batterie, pads live).
+
 ## Prochaine étape exacte
-1. 7.3 ligne de temps à côté des scènes ; mesures autres que 4/4.
-3. Mixeur compact (tranches repliables) maintenant qu'il y a jusqu'à 12 tranches.
+1. Revue de fin de phase 7 (sous-agent neuf), corrections, CI verte, fusion de la PR #17.
+2. Phase 8 : effets, clips d'automation, clavier expressif, MIDI learn, horloge MIDI sortante, Link.
+3. Mixeur compact (tranches repliables), il peut avoir 16 tranches.

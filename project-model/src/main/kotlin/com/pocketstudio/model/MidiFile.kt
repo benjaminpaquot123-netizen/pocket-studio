@@ -34,20 +34,28 @@ object MidiFile {
         val drums = ArrayList<MidiNote>()
         val added = project.tracks.associate { it.id to ArrayList<MidiNote>() }
         var at = 0
+        var partsDone = 0
         for (index in parts) {
             val scene = scenes.getOrNull(index) ?: continue
-            val sceneTicks = scene.steps * NoteClip.TICKS_PER_STEP
-            synth += loopNotes(scene.synthNotes, sceneTicks, at)
-            acid += acidNotes(scene.acid, project.acid.root, scene.steps, at)
-            drums += drumNotes(scene.drums, scene.steps, at)
-            project.tracks.forEach { t -> scene.trackNotes[t.id]?.let { added.getValue(t.id) += loopNotes(it, sceneTicks, at) } }
+            val sceneSteps = scene.stepsFor(project.stepsPerBar)
+            val sceneTicks = sceneSteps * NoteClip.TICKS_PER_STEP
+            // A song part leaves out its muted tracks (the timeline).
+            val part = if (song && project.song.isNotEmpty()) project.song[partIndexOf(project, partsDone)] else null
+            fun plays(key: String) = part?.plays(key) ?: true
+            if (plays(SongPart.inst(0))) synth += loopNotes(scene.synthNotes, sceneTicks, at)
+            if (plays(SongPart.ACID)) acid += acidNotes(scene.acid, project.acid.root, sceneSteps, at)
+            if (plays(SongPart.DRUMS)) drums += drumNotes(scene.drums, sceneSteps, at)
+            project.tracks.forEach { t ->
+                if (plays(SongPart.inst(t.id))) scene.trackNotes[t.id]?.let { added.getValue(t.id) += loopNotes(it, sceneTicks, at) }
+            }
+            partsDone++
             at += sceneTicks
         }
         val tempo = (60_000_000.0 / project.tempoBpm).roundToInt()
         val conductor = Track().apply {
             name(project.name)
             meta(0, 0x51, byteArrayOf((tempo shr 16).toByte(), (tempo shr 8).toByte(), tempo.toByte()))
-            meta(0, 0x58, byteArrayOf(4, 2, 24, 8))  // 4/4
+            meta(0, 0x58, byteArrayOf(project.beatsPerBar.toByte(), 2, 24, 8))  // n/4
         }
         val program = project.instrument?.takeIf { it.bank < 128 }?.program ?: 81  // GM "Lead 2 (sawtooth)"
         val tracks = listOf(
@@ -71,6 +79,16 @@ object MidiFile {
             out.write(body)
         }
         return out.toByteArray()
+    }
+
+    /** Which song part the [n]th scene played belongs to (parts are expanded by their repeats). */
+    private fun partIndexOf(project: Project, n: Int): Int {
+        var left = n
+        project.song.forEachIndexed { i, p ->
+            if (left < p.repeats) return i
+            left -= p.repeats
+        }
+        return project.song.lastIndex
     }
 
     /** The clip's notes over [sceneTicks], the clip repeating like it does when the scene plays. */

@@ -15,18 +15,21 @@ namespace ps {
 class Sequencer {
 public:
     static constexpr int kStepsPerBeat = 4;
-    static constexpr int kStepsPerBar = 16;
+    static constexpr int kStepsPerBar = 16;  // in 4/4; see stepsPerBar()
 
     void prepare(int sampleRate) { sampleRate_ = sampleRate; }
 
     void setTempo(double bpm) { bpm_ = std::clamp(bpm, 40.0, 300.0); }
     void setSwing(double swing) { swing_ = std::clamp(swing, 0.0, 0.75); }
     double tempo() const { return bpm_; }
+    // Time signature n/4: a bar is 4n sixteenths (count-in, bar lines, metronome accent).
+    void setBeatsPerBar(int beats) { stepsPerBar_ = std::clamp(beats, 2, 7) * kStepsPerBeat; }
+    int stepsPerBar() const { return stepsPerBar_; }
 
     // Starts so that the first pattern step (step 0) sounds after `countInBars` bars of clicks.
     void start(int countInBars) {
         running_ = true;
-        nextStep_ = -countInBars * kStepsPerBar;
+        nextStep_ = -countInBars * stepsPerBar_;
         frame_ = 0;
         gridFrame_ = 0.0;
     }
@@ -57,6 +60,7 @@ private:
     static bool isOdd(int step) { return (step & 1) != 0; }
 
     int sampleRate_ = 48000;
+    int stepsPerBar_ = kStepsPerBar;
     double bpm_ = 120.0;
     double swing_ = 0.0;
     bool running_ = false;

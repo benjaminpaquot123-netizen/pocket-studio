@@ -1393,6 +1393,43 @@ void testRecordingStartsOnTheFirstStep() {
     CHECK(small.state.load() == 2 && small.written.load() == 1000);
 }
 
+void testThreeFourAndPartMutes() {
+    // 3/4 at 120 BPM: a bar is 12 sixteenths (72000 frames). A bar of count-in, then step 0.
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SetBeatsPerBar, 0.0f, 3});
+    engine.post({ps::CommandType::SetMetronome, 1.0f});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 1});
+    render(engine, 72000 - 100, 100);
+    CHECK(engine.currentStep() == -1);
+    CHECK(engine.metronomeClicks() == 3);  // three clicks of count-in
+    render(engine, 200, 100);
+    CHECK(engine.currentStep() == 0);
+    // A waiting scene takes over on the 3/4 bar line (local step 12), and with it the part's
+    // audio track mute.
+    std::vector<float> d(4000, 0.5f);
+    ps::Command c{ps::CommandType::InstallAudioClip, 0.0f, 0};
+    c.sample = ps::Sample::create(d.data(), 4000, 1, kRate, kRate);
+    engine.post(c);
+    engine.post({ps::CommandType::SetAudioClipParam, 4.0f, 0, ps::AudioTracks::LoopSteps});
+    engine.post({ps::CommandType::SetStaging, 1.0f});
+    engine.post({ps::CommandType::SetAudioOn, 0.0f, 0});
+    engine.post({ps::CommandType::SetStaging, 0.0f});
+    engine.post({ps::CommandType::ArmSceneSwap, 0.0f, 0});
+    render(engine, 6000 * 11 + 100, 100);  // step 11
+    CHECK(engine.sceneSwaps() == 0);
+    CHECK(engine.audioClipPlaying(0) || engine.mixer().takeChannelPeak(ps::audioChannel(0)) > 0.1f);
+    render(engine, 6000, 100);  // through step 12
+    CHECK(engine.sceneSwaps() == 1);
+    render(engine, 6000 * 4, 100);  // the next pass would start at step 16: the track is off
+    engine.mixer().takeChannelPeak(ps::audioChannel(0));
+    render(engine, 6000 * 4, 100);
+    CHECK(engine.mixer().takeChannelPeak(ps::audioChannel(0)) == 0.0f);
+    engine.post({ps::CommandType::SetTransport, 0.0f, 0});
+    engine.post({ps::CommandType::InstallAudioClip, 0.0f, 0});
+    render(engine, 512, 256);
+    engine.collectGarbage();
+}
+
 void testPianoRollNotesAreSampleAccurate() {
     // 120 BPM: a step is 6000 frames, a tick 250. A note at tick 36 (1.5 steps), 48 ticks long.
     ps::Engine engine(kRate);
@@ -2563,6 +2600,7 @@ int main(int argc, char** argv) {
         {"instrument_tracks", testInstrumentTracks},
         {"audio_tracks", testAudioTracks},
         {"recording", testRecordingStartsOnTheFirstStep},
+        {"three_four", testThreeFourAndPartMutes},
         {"live_pads_bar", testLivePadsFollowTheBar},
         {"stem_preview", testStemPreviewPlaysWithoutTheTransport},
         {"stems_stretch", testStemsStretchToTheProjectTempo},

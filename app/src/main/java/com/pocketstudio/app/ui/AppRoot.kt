@@ -698,6 +698,8 @@ fun AppRoot() {
                                 songIndex = sessionUi.songIndex,
                                 playing = transport.playing,
                                 tempoBpm = project.tempoBpm,
+                                beatsPerBar = project.beatsPerBar,
+                                rows = timelineRows(project),
                             ),
                             SessionActions(
                                 select = rhythmVm::selectScene,
@@ -708,6 +710,8 @@ fun AppRoot() {
                                 toggleSong = rhythmVm::toggleSong,
                                 togglePlay = rhythmVm::togglePlay,
                                 performance = { param, v -> if (NativeEngine.isAvailable) NativeEngine.setPerformance(param, v) },
+                                togglePartTrack = rhythmVm::togglePartTrack,
+                                setBeatsPerBar = rhythmVm::setBeatsPerBar,
                             ),
                             live = LivePadsUi(
                                 pads = project.live,
@@ -996,3 +1000,14 @@ fun mixerStrips(p: com.pocketstudio.model.Project): List<com.pocketstudio.app.mi
             com.pocketstudio.app.mixer.StripInfo(com.pocketstudio.model.AudioTrack.mixerChannel(t.id), t.name, com.pocketstudio.ui.trackColor(t.color))
         } +
         com.pocketstudio.app.mixer.StripInfo(3, "Remix")
+
+/** The timeline rows: drums, acid, then each instrument and audio track in its colour. */
+fun timelineRows(p: Project): List<com.pocketstudio.app.session.TimelineRow> =
+    listOf(
+        com.pocketstudio.app.session.TimelineRow(com.pocketstudio.model.SongPart.DRUMS, "Batterie", androidx.compose.ui.graphics.Color(0xFFFF8A65)),
+        com.pocketstudio.app.session.TimelineRow(com.pocketstudio.model.SongPart.ACID, "Basse acide", androidx.compose.ui.graphics.Color(0xFF81C784)),
+    ) + p.instrumentTracks.map { t ->
+        com.pocketstudio.app.session.TimelineRow(com.pocketstudio.model.SongPart.inst(t.id), t.name, com.pocketstudio.ui.trackColor(t.color))
+    } + p.audioTracks.map { t ->
+        com.pocketstudio.app.session.TimelineRow(com.pocketstudio.model.SongPart.audio(t.id), t.name, com.pocketstudio.ui.trackColor(t.color))
+    }

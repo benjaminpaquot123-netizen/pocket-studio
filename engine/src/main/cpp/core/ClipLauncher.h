@@ -37,6 +37,8 @@ public:
     // time (transport stopped), so the first pad to start restarts the clock and plays at once.
     void toggle(int slot, bool idleClock);
     void stopAll();
+    // Time signature n/4: launches wait for at most a bar; long loops stay in phase over 16 bars.
+    void setBeatsPerBar(int beats) { beatsPerBar_ = std::clamp(beats, 2, 7); }
     // Frames per beat at the current tempo (each block).
     void setBeatFrames(double frames) {
         if (frames > 1.0) beatFrames_ = frames;
@@ -75,7 +77,7 @@ private:
     void restart(Slot& s);
     void align();
     void play(Voice& v, float gain, float& l, float& r);
-    double gridOf(const Slot& s) const { return s.beats < 4 ? s.beats : 4.0; }
+    double gridOf(const Slot& s) const { return s.beats < beatsPerBar_ ? s.beats : beatsPerBar_; }
 
     std::array<Slot, kSlots> slots_{};
     std::array<std::atomic<uint8_t>, kSlots> states_{};
@@ -84,6 +86,7 @@ private:
     double beat_ = 0.0;
     int syncAt_ = -1;
     int syncBeat_ = 0;
+    int beatsPerBar_ = 4;
     int fadeFrames_ = 240;
 };
 

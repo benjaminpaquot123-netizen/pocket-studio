@@ -85,6 +85,8 @@ enum class CommandType : uint8_t {
     SetAudioClipParam,    // a: audio track, b: AudioTracks::Param, value
     RecordArm,            // record: buffer the app keeps; a = 1: starts when the transport reaches its first step, 0: now
     RecordStop,           // the armed or running recording ends (the buffer's state becomes 2)
+    SetAudioOn,           // a: audio track, value 1 = plays (follows SetStaging: a song part's mutes)
+    SetBeatsPerBar,       // a: 2..7 (time signature a/4): metronome accent, bar lines, live pads grid
 };
 
 // Instrument tracks: the synth commands (SynthNoteOn/Off, SynthParam, SetSynthNote, SetSynthNoteCount,
@@ -245,6 +247,7 @@ private:
         float drums[kLanes][kMaxSteps] = {};
         uint8_t repeats[kLanes][kMaxSteps] = {};
         int drumSteps = 16;
+        std::array<bool, AudioTracks::kTracks> audioOn{true, true, true, true};
         std::array<AcidStep, AcidTrack::kMaxSteps> acid{};
         int acidLength = 16;
     };

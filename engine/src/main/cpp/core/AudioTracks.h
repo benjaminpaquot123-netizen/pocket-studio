@@ -28,6 +28,8 @@ public:
     // Takes over the caller's reference (nullptr empties the track).
     void install(int track, Sample* sample);
     void setParam(int track, int param, float value);
+    // A track switched off (by the song part playing) does not start again; a sounding pass fades.
+    void setOn(int track, bool on);
     // A sequencer step of the playing scene (`local` counts from the scene start).
     void onStep(int offset, int local);
     // Transport stop: every clip fades out.
@@ -53,6 +55,7 @@ private:
         int loopSteps = 16;
         float gain = 1.0f;
         int fadeIn = 0, fadeOut = 0;
+        bool on = true;
         Voice voice, tail;
     };
     void retire(Sample* s);

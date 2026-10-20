@@ -62,6 +62,9 @@ import com.pocketstudio.model.LivePads
 import com.pocketstudio.model.sampleFiles
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.InstrumentTrack
+import com.pocketstudio.model.partView
+import com.pocketstudio.model.sceneSteps
+import com.pocketstudio.model.togglePartTrack
 import com.pocketstudio.model.AudioTrack
 import com.pocketstudio.model.AudioClip
 import com.pocketstudio.model.addAudioTrack
@@ -223,6 +226,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         NativeEngine.setStaging(false)  // whatever happened before, edits go to the playing scene
         NativeEngine.setTempo(p.tempoBpm)
         NativeEngine.setSwing(p.swing)
+        NativeEngine.setBeatsPerBar(p.beatsPerBar)
         pushDrumPattern(p.drums)
         NativeEngine.setMetronome(_transport.value.metronome)
         pushAcid(p.acid)
@@ -411,6 +415,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     private fun pushAudio(p: Project = project.value) {
         if (!NativeEngine.isAvailable) return
         for (id in 0 until AudioTrack.MAX) {
+            NativeEngine.setAudioOn(id, true)
             val clip = p.audioTracks.firstOrNull { it.id == id }?.clip
             val native = clip?.let { padSamples.native(it.file) }
             if (clip != null && native != null) {
@@ -661,6 +666,28 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         selectScene(target)
     }
 
+    /** Time signature [beats]/4: the drum loop keeps its number of bars (up to 64 steps). */
+    fun setBeatsPerBar(beats: Int) {
+        session.edit { p ->
+            val bars = (p.drums.steps / p.stepsPerBar).coerceAtLeast(1)
+            val q = p.copy(beatsPerBar = beats).sanitized()
+            val per = q.stepsPerBar
+            q.copy(drums = q.drums.withSteps((bars * per).coerceAtMost(DrumPattern.MAX_STEPS / per * per)))
+        }
+        syncEngine()
+    }
+
+    /** The timeline: track [key] plays or stays silent in song part [index]. */
+    fun togglePartTrack(index: Int, key: String) {
+        session.edit { it.togglePartTrack(index, key).sanitized() }
+        // Playing the song: the part on now changes at once, the next one is sent again.
+        val ui = _sessionUi.value
+        val song = project.value.song
+        if (!NativeEngine.isAvailable || !_transport.value.playing || ui.songIndex < 0 || song.isEmpty()) return
+        if (ui.songIndex == index) pushPart(project.value, song[index].scene, song[index])
+        stageSongPart(ui.songIndex + 1)
+    }
+
     fun addSongPart(scene: Int) {
         if (project.value.song.size >= SongPart.MAX_PARTS) return
         session.edit { p -> p.copy(song = p.song + SongPart(scene, 1)) }
@@ -682,6 +709,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (song.isEmpty() || !NativeEngine.isAvailable) return
         session.edit { it.switchScene(song[0].scene) }
         syncEngine()
+        pushPart(project.value, song[0].scene, song[0])  // the first part without its muted tracks
         _sessionUi.value = SessionUi(songIndex = 0)
         togglePlay()
         // The whole project just went to the engine: let the queue drain before the next scene.
@@ -717,16 +745,25 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    /** Sends scene [index] to the engine's waiting slot and arms the swap after [afterSteps] (0 = next bar). */
-    private fun stageScene(index: Int, afterSteps: Int) {
-        val view = project.value.sceneView(index)
+    /**
+     * Sends scene [index] to the engine's waiting slot and arms the swap after [afterSteps] (0 = next
+     * bar). A song [part] plays without its muted tracks.
+     */
+    private fun stageScene(index: Int, afterSteps: Int, part: SongPart? = null) {
         NativeEngine.setStaging(true)
-        pushDrumPattern(view.drums)
-        pushAcid(view.acid)
-        view.instrumentTracks.forEach { pushNotes(it.notes, it.id) }
+        pushPart(project.value, index, part)
         NativeEngine.setStaging(false)
         NativeEngine.armSceneSwap(afterSteps)
         watchSwaps()
+    }
+
+    /** The patterns of scene [index] as [part] plays them (to the playing or the waiting slot). */
+    private fun pushPart(p: Project, index: Int, part: SongPart?) {
+        val view = if (part != null) p.partView(part) else p.sceneView(index)
+        pushDrumPattern(view.drums)
+        pushAcid(view.acid)
+        view.instrumentTracks.forEach { pushNotes(it.notes, it.id) }
+        for (id in 0 until AudioTrack.MAX) NativeEngine.setAudioOn(id, part?.plays(SongPart.audio(id)) ?: true)
     }
 
     /** Prepares the song part after the one now playing ([next] wraps around: the song loops). */
@@ -735,9 +772,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (song.isEmpty()) return
         val playing = song[(next - 1 + song.size) % song.size]
         val upcoming = song[next % song.size]
-        val steps = project.value.allScenes.getOrNull(playing.scene)?.steps ?: 16
+        val steps = project.value.sceneSteps(playing.scene)
         _sessionUi.value = _sessionUi.value.copy(pending = upcoming.scene)
-        stageScene(upcoming.scene, steps * playing.repeats)
+        stageScene(upcoming.scene, steps * playing.repeats, upcoming)
     }
 
     /** Follows the engine's scene swaps (also with the screen off, while the transport runs). */
@@ -2218,7 +2255,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** Drum loop length in bars (1 to 4). */
     fun setDrumBars(bars: Int) {
-        session.edit { it.copy(drums = it.drums.withSteps(bars * 16)) }
+        session.edit { it.copy(drums = it.drums.withSteps(bars * it.stepsPerBar)) }
         if (NativeEngine.isAvailable) pushDrumPattern(project.value.drums)
     }
 
@@ -2369,7 +2406,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** Frames of the whole song (each part: its scene's length × its repeats). */
     private fun songFrames(p: Project): Long {
         val scenes = p.allScenes
-        val steps = p.song.sumOf { (scenes.getOrNull(it.scene)?.steps ?: 16).toLong() * it.repeats }
+        val steps = p.song.sumOf { (scenes.getOrNull(it.scene)?.stepsFor(p.stepsPerBar) ?: p.stepsPerBar).toLong() * it.repeats }
         return Math.round(steps * 15.0 / p.tempoBpm * OfflineExport.SAMPLE_RATE)  // a sixteenth = 15/bpm s
     }
 
@@ -2381,21 +2418,19 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         NativeEngine.captureInto(job) {
             val first = if (song) p.sceneView(p.song[0].scene) else p
             syncEngine(first)
+            if (song) pushPart(p, p.song[0].scene, p.song[0])
             NativeEngine.setMetronome(false)
             if (soloChannel != null) NativeEngine.setChannelSolo(soloChannel, true)
             if (song) {
                 val sixteenth = 15.0 / p.tempoBpm * OfflineExport.SAMPLE_RATE
                 var stepsSoFar = 0L
                 p.song.forEachIndexed { i, part ->
-                    val steps = (p.allScenes.getOrNull(part.scene)?.steps ?: 16) * part.repeats
+                    val steps = p.sceneSteps(part.scene) * part.repeats
                     val next = p.song.getOrNull(i + 1)
                     if (next != null) {
                         NativeEngine.captureAt(Math.round((stepsSoFar + 0.5) * sixteenth))
-                        val view = p.sceneView(next.scene)
                         NativeEngine.setStaging(true)
-                        pushDrumPattern(view.drums)
-                        pushAcid(view.acid)
-                        view.instrumentTracks.forEach { pushNotes(it.notes, it.id) }
+                        pushPart(p, next.scene, next)
                         NativeEngine.setStaging(false)
                         NativeEngine.armSceneSwap(steps)
                     }

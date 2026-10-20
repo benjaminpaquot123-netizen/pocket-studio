@@ -53,9 +53,16 @@ void AudioTracks::setParam(int track, int param, float value) {
     }
 }
 
+void AudioTracks::setOn(int track, bool on) {
+    if (track < 0 || track >= kTracks) return;
+    Track& t = tracks_[static_cast<size_t>(track)];
+    t.on = on;
+    if (!on && t.voice.sample && t.voice.fade == 0) t.voice.fade = declick_;
+}
+
 void AudioTracks::onStep(int offset, int local) {
     for (auto& t : tracks_) {
-        if (!t.sample || local < t.start || (local - t.start) % t.loopSteps != 0) continue;
+        if (!t.sample || !t.on || local < t.start || (local - t.start) % t.loopSteps != 0) continue;
         // The previous pass, if still sounding, fades out under the new one.
         if (t.voice.sample) {
             t.tail = t.voice;

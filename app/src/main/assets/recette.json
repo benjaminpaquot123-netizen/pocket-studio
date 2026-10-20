@@ -1,96 +1,41 @@
 {
-  "id": "phase6-completude",
-  "milestone": "Phase 6 : à la hauteur de FL Studio Mobile",
+  "id": "phase7-pistes",
+  "milestone": "Phase 7 : pistes et ligne de temps",
   "items": [
     {
-      "id": "projects",
-      "title": "Créer, ouvrir et envoyer des projets",
-      "hint": "Touche le nom du projet en haut › Nouveau projet › une démo. Reviens à l'ancien projet, puis ⋮ › Envoyer (.zip). Supprime un projet puis Annuler."
+      "id": "instrument_tracks",
+      "title": "Ajouter des pistes d'instruments",
+      "hint": "Synthé : touche « + Piste », choisis un son (Plaits ou un instrument), écris des notes. Reviens à la première piste : chacune garde ses notes. Appui long sur une piste › Couleur, Renommer."
     },
     {
-      "id": "live_record",
-      "title": "Enregistrer ce que je joue",
-      "hint": "Touche ● en haut : après une mesure de décompte, joue au clavier du Synthé ou sur les pads ; retouche ● pour arrêter. Annuler retire toute la prise."
+      "id": "tracks_mixer",
+      "title": "Chaque piste a sa tranche au mixeur",
+      "hint": "Mixeur : une tranche par piste, avec sa couleur. Baisse le volume d'une piste, coupe-en une autre (Muet)."
     },
     {
-      "id": "export_song",
-      "title": "Exporter le morceau entier",
-      "hint": "Morceau : ajoute 2 scènes au morceau. Mixeur › Exporter › Le morceau › M4A › Exporter, puis Partager."
+      "id": "audio_record",
+      "title": "Enregistrer ma voix sur une piste audio",
+      "hint": "Audio › Pistes audio › + Piste audio › Enregistrer. Après le décompte, chante sur la musique, puis « Arrêter et garder ». Réécoute : la prise doit tomber pile sur le temps."
     },
     {
-      "id": "midi_files",
-      "title": "Exporter et importer un fichier MIDI",
-      "hint": "Mixeur › Exporter les notes en fichier MIDI. Puis Synthé › Notes › Importer des notes › Un fichier MIDI."
+      "id": "audio_edit",
+      "title": "Retoucher une prise",
+      "hint": "Sur la piste audio : déplace les deux poignées puis « Garder la sélection », essaie Normaliser, Inverser, un fondu à la fin. Annuler revient en arrière."
     },
     {
-      "id": "piano_select",
-      "title": "Sélectionner et copier des notes",
-      "hint": "Synthé › Notes › Sélectionner : touche des notes (ou appui long puis glisse pour un cadre), Copier, Coller, ▲ ½ ton, et le couloir Force en bas."
+      "id": "timeline",
+      "title": "Construire le morceau avec la ligne de temps",
+      "hint": "Morceau : ajoute A puis B. Dans la ligne de temps, touche le bloc Batterie de la première partie pour la couper. Joue le morceau : l'intro est sans batterie."
     },
     {
-      "id": "drum_tools",
-      "title": "Roulements et vue de tous les pads",
-      "hint": "Rythme › Longueur 2 › Roulements : touche un coup (×2, ×3, ×4). Puis « Tous les pads »."
+      "id": "meter",
+      "title": "Faire une valse en 3/4",
+      "hint": "Morceau › Mesure › 3/4. Rythme : la grille a 12 cases par mesure. Lance le métronome : un temps fort tous les 3 temps."
     },
     {
-      "id": "settings",
-      "title": "Changer les réglages",
-      "hint": "Outils › Réglages : essaie le thème Nuit, la taille 115 %, et le mode du son « Sûr » si ça craque."
-    },
-    {
-      "id": "live_pads",
-      "title": "Lancer et couper des sons sur les pads live",
-      "hint": "Morceau › Pads live › touche un pad « + » › Importer un son (une grosse caisse, puis une mélodie sur un autre pad) › Jouer. Touche les pads : ils s'allument en rythme, retouche pour couper."
-    },
-    {
-      "id": "stems_together",
-      "title": "Écouter les 4 pistes séparées ensemble",
-      "hint": "Remix › Écouter sur un morceau séparé, puis touche Batterie, Basse, Autres, Voix pour les couper ou les rallumer : la musique ne s'arrête pas."
-    },
-    {
-      "id": "stems_to_live",
-      "title": "Rejouer un morceau sur les pads live",
-      "hint": "Remix › Jouer avec le projet › « → Live » sur chaque piste (2 ou 4 mesures), puis Morceau › Pads live : lance et coupe chaque partie."
-    },
-    {
-      "id": "sound_library",
-      "title": "Choisir un son par famille, au hasard, en favori",
-      "hint": "Synthé (ou Acide › Son) : touche une famille puis un son. « Au hasard » en tire un nouveau ; « Garder ce son » le range dans ★ Favoris, retrouvé dans tous tes projets."
-    },
-    {
-      "id": "panel_303",
-      "title": "Régler l'acide avec les potards",
-      "hint": "Acide › Son › Panneau : glisse vers le haut ou le bas sur un potard pour le tourner, touche deux fois pour revenir au départ."
-    },
-    {
-      "id": "plaits",
-      "title": "Essayer les sons Plaits",
-      "hint": "Synthé › Source du son › Plaits › touche un modèle : une note se joue tout de suite."
-    },
-    {
-      "id": "scenes_24",
-      "title": "Utiliser plus de 8 scènes",
-      "hint": "Morceau › Afficher 16 ou 24 › touche une scène vide après H."
-    },
-    {
-      "id": "midi",
-      "title": "Jouer avec un clavier MIDI",
-      "hint": "Branche un clavier USB (adaptateur OTG) ou Outils › MIDI › Chercher un clavier Bluetooth. Les touches jouent le Synthé ; « Note … » s'affiche à chaque touche."
-    },
-    {
-      "id": "audio_to_notes",
-      "title": "Chanter une mélodie dans le piano roll",
-      "hint": "Synthé › Notes › De l'audio aux notes › Au micro : chante ou siffle quelques notes, puis Terminé. Elles apparaissent dans le piano roll (Annuler les retire)."
-    },
-    {
-      "id": "zip_pack",
-      "title": "Importer un pack de sons en .zip",
-      "hint": "Rythme › pad sélectionné › Pack sur les pads suivants › .zip : les sons du pack vont sur les pads suivants."
-    },
-    {
-      "id": "follow_tempo",
-      "title": "Caler un morceau séparé au tempo du projet",
-      "hint": "Remix › Jouer avec le projet, change le tempo (Rythme), puis Remix › interrupteur « suit le tempo » : après quelques secondes, le morceau joue au nouveau tempo sans changer de hauteur."
+      "id": "export_tracks",
+      "title": "Exporter toutes les pistes",
+      "hint": "Mixeur › Exporter › Pistes séparées : un fichier par piste (instruments et audio)."
     }
   ]
 }

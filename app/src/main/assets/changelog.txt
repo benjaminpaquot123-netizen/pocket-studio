@@ -1,5 +1,5 @@
-Projets : « Mes projets » en haut (nouveau, démos, renommer, dupliquer, corbeille, envoi en .zip). Chef, on a un projet ! Non, plusieurs !
-Enregistrement en direct (●), export du morceau entier, piste par piste, en M4A, et fichiers MIDI (export et import).
-Piano roll complet : sélection, copier-coller, transposer, couloir de force, zoom, triolets, deviner la gamme.
-Batterie : 1 à 4 mesures, roulements, remplir, décaler, vue de tous les pads. Pads live, Remix à 4 pistes ensemble.
-Outils › Réglages : thème (dont daltonien), taille, notes, vibrations, son ; guide des premiers pas ; clavier MIDI.
+Phase 7 : « C'est pas faux ! » Tu peux maintenant faire un vrai morceau.
+- Jusqu'à 8 pistes d'instruments (onglet Synthé, barre de pistes en couleur).
+- Pistes audio (onglet Audio) : chante ou joue par-dessus ta musique, la prise tombe pile sur le temps.
+- Ligne de temps dans Morceau : coupe ou remets chaque piste partie par partie.
+- Mesures 3/4 (valse), 5/4, 6/4, 7/4… et le mixeur suit toutes les pistes.

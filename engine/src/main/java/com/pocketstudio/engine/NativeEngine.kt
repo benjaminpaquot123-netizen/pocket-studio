@@ -57,6 +57,9 @@ object NativeEngine {
     private const val CMD_TRACK_ON = 51
     // 52: InstallAudioClip (native only)
     private const val CMD_AUDIO_CLIP_PARAM = 53
+    // 54: RecordArm, 55: RecordStop (native only)
+    private const val CMD_AUDIO_ON = 56
+    private const val CMD_BEATS_PER_BAR = 57
 
     /** Live pads (ClipLauncher::kSlots). */
     const val LIVE_PADS = 16
@@ -279,6 +282,12 @@ object NativeEngine {
 
     /** Live pad [pad] plays [sample] (null: empty). Main thread, like every command. */
     fun setClip(pad: Int, sample: NativeSample?) = nativeInstallClip(pad, sample?.handle ?: 0L)
+
+    /** A song part switches audio track [track] on or off (follows [setStaging]). */
+    fun setAudioOn(track: Int, on: Boolean) = post(CMD_AUDIO_ON, if (on) 1f else 0f, track)
+
+    /** Time signature [beats]/4 (2..7): count-in, bar lines, metronome accent, live pads grid. */
+    fun setBeatsPerBar(beats: Int) = post(CMD_BEATS_PER_BAR, 0f, beats)
 
     /** Audio track [track] plays [sample] (null: nothing). */
     fun setAudioClip(track: Int, sample: NativeSample?) {

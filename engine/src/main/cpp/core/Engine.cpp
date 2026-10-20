@@ -150,6 +150,16 @@ void Engine::applyCommand(const Command& command) {
         case CommandType::RecordStop:
             finishRecording();
             break;
+        case CommandType::SetAudioOn:
+            if (command.a >= 0 && command.a < AudioTracks::kTracks) {
+                if (staging_) staged_.audioOn[static_cast<size_t>(command.a)] = command.value > 0.5f;
+                else audio_.setOn(command.a, command.value > 0.5f);
+            }
+            break;
+        case CommandType::SetBeatsPerBar:
+            sequencer_.setBeatsPerBar(command.a);
+            clips_.setBeatsPerBar(sequencer_.stepsPerBar() / Sequencer::kStepsPerBeat);
+            break;
         case CommandType::SetTrackOn:
             if (command.a > 0 && command.a < kTracks) {
                 auto& t = tracks_[static_cast<size_t>(command.a)];
@@ -327,7 +337,8 @@ void Engine::applyCommand(const Command& command) {
 }
 
 void Engine::onStep(int offset, int step) {
-    const int beatStep = ((step % Sequencer::kStepsPerBar) + Sequencer::kStepsPerBar) % Sequencer::kStepsPerBar;
+    const int bar = sequencer_.stepsPerBar();
+    const int beatStep = ((step % bar) + bar) % bar;
     const bool onBeat = beatStep % Sequencer::kStepsPerBeat == 0;
     // Clicks during the count-in always; afterwards only with the metronome on.
     if (onBeat && (step < 0 || metronomeOn_)) {
@@ -348,7 +359,7 @@ void Engine::onStep(int offset, int step) {
     if (swapAt_ >= 0) {
         const int local = step - sceneStart_;
         // Always on a bar line: a swap armed late waits for the next bar instead of cutting one.
-        const bool onBar = local > 0 && local % Sequencer::kStepsPerBar == 0;
+        const bool onBar = local > 0 && local % bar == 0;
         if (onBar && (swapAt_ == 0 || local >= swapAt_)) swapScene(step);
     }
     // Patterns count from the start of their scene; the remix stems follow the transport.
@@ -407,6 +418,7 @@ void Engine::swapScene(int step) {
     for (int i = 0; i < AcidTrack::kMaxSteps; ++i) acid_.setStep(i, staged_.acid[static_cast<size_t>(i)]);
     acid_.setLength(staged_.acidLength);
     for (auto& t : tracks_) t.swapIn();
+    for (int k = 0; k < AudioTracks::kTracks; ++k) audio_.setOn(k, staged_.audioOn[static_cast<size_t>(k)]);
     sceneStart_ = step;
     swapAt_ = -1;
     sceneSwaps_.fetch_add(1, std::memory_order_relaxed);

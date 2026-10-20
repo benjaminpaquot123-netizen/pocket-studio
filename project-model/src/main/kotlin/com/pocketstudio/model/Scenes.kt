@@ -15,10 +15,13 @@ data class Scene(
     /** The notes of the added instrument tracks in this scene, by track id. */
     val trackNotes: Map<Int, NoteClip> = emptyMap(),
 ) {
-    /** Steps the scene lasts before it loops: its longest part, rounded up to whole bars. */
-    val steps: Int get() {
+    /** Steps the scene lasts before it loops in 4/4: its longest part, rounded up to whole bars. */
+    val steps: Int get() = stepsFor(16)
+
+    /** The same with bars of [stepsPerBar] sixteenths (time signature). */
+    fun stepsFor(stepsPerBar: Int): Int {
         val longest = maxOf(drums.steps, acid.length, synthNotes.steps, trackNotes.values.maxOfOrNull { it.steps } ?: 0)
-        return (longest + 15) / 16 * 16
+        return (longest + stepsPerBar - 1) / stepsPerBar * stepsPerBar
     }
 
     val isEmpty: Boolean get() = drums.lanes.all { lane -> lane.hits.all { it == null } } &&
@@ -33,10 +36,20 @@ data class Scene(
     }
 }
 
-/** One line of the song: play [scene] [repeats] times. */
+/**
+ * One line of the song: play [scene] [repeats] times. [muted]: tracks silent in this part (the
+ * timeline): "drums", "acid", "inst:<id>" (instrument track), "audio:<id>" (audio track).
+ */
 @Serializable
-data class SongPart(val scene: Int = 0, val repeats: Int = 1) {
+data class SongPart(val scene: Int = 0, val repeats: Int = 1, val muted: Set<String> = emptySet()) {
+    fun plays(key: String) = key !in muted
+
     companion object {
+        const val DRUMS = "drums"
+        const val ACID = "acid"
+        fun inst(id: Int) = "inst:$id"
+        fun audio(id: Int) = "audio:$id"
+
         const val MAX_REPEATS = 16
         const val MAX_PARTS = 32
     }
@@ -55,7 +68,7 @@ val Project.allScenes: List<Scene> get() = scenes.ifEmpty { listOf(currentSceneC
  */
 internal fun Project.syncScenes(): Project {
     if (scenes.isEmpty()) return copy(scene = 0, song = song.filter { it.scene == 0 }.take(SongPart.MAX_PARTS)
-        .map { it.copy(repeats = it.repeats.coerceIn(1, SongPart.MAX_REPEATS)) })
+        .map { it.copy(repeats = it.repeats.coerceIn(1, SongPart.MAX_REPEATS), muted = it.muted.filter { k -> k in partKeys }.toSet()) })
     val list = scenes.take(Scene.MAX)
     val index = scene.coerceIn(0, list.lastIndex)
     return copy(
@@ -65,7 +78,7 @@ internal fun Project.syncScenes(): Project {
             else s.copy(name = Scene.NAMES[i], trackNotes = s.trackNotes.filterKeys { id -> tracks.any { it.id == id } }.mapValues { it.value.sanitized() })
         },
         song = song.filter { it.scene in list.indices }.take(SongPart.MAX_PARTS)
-            .map { it.copy(repeats = it.repeats.coerceIn(1, SongPart.MAX_REPEATS)) },
+            .map { it.copy(repeats = it.repeats.coerceIn(1, SongPart.MAX_REPEATS), muted = it.muted.filter { k -> k in partKeys }.toSet()) },
     )
 }
 
@@ -99,3 +112,25 @@ fun Project.copySceneTo(index: Int): Project {
 
 /** A project shaped as if [index] were current, for sending a scene to the engine ahead of time. */
 fun Project.sceneView(index: Int): Project = if (index == scene) this else switchScene(index)
+
+/** Steps scene [index] lasts in this project's time signature. */
+fun Project.sceneSteps(index: Int): Int = allScenes.getOrNull(index)?.stepsFor(stepsPerBar) ?: stepsPerBar
+
+/** Every track key a song part can mute, in timeline order. */
+val Project.partKeys: List<String> get() =
+    listOf(SongPart.DRUMS, SongPart.ACID) + instrumentTracks.map { SongPart.inst(it.id) } + audioTracks.map { SongPart.audio(it.id) }
+
+/** Song part [part] as played: its scene with the muted tracks emptied (audio tracks: see [SongPart.plays]). */
+fun Project.partView(part: SongPart): Project {
+    var v = sceneView(part.scene)
+    if (part.muted.isEmpty()) return v
+    if (!part.plays(SongPart.DRUMS)) v = v.copy(drums = v.drums.copy(lanes = v.drums.lanes.map { it.copy(hits = emptyMap()) }))
+    if (!part.plays(SongPart.ACID)) v = v.copy(acid = v.acid.copy(steps = v.acid.steps.map { it.copy(gate = false) }))
+    v.instrumentTracks.filterNot { part.plays(SongPart.inst(it.id)) }.forEach { t -> v = v.withTrack(t.copy(notes = t.notes.copy(notes = emptyList()))) }
+    return v
+}
+
+/** Switches [key] on or off in song part [index]. */
+fun Project.togglePartTrack(index: Int, key: String): Project = copy(
+    song = song.mapIndexed { i, p -> if (i != index) p else p.copy(muted = if (key in p.muted) p.muted - key else p.muted + key) },
+)

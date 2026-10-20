@@ -551,6 +551,30 @@ class ScreenshotTest {
     }
 
     @Test
+    @Config(qualifiers = "w400dp-h2200dp-xxhdpi")
+    fun timeline() = shoot("timeline") {
+        val drums = com.pocketstudio.model.DrumPattern().toggle(0, 0).toggle(2, 4)
+        val a = com.pocketstudio.model.Scene("A", drums)
+        val b = com.pocketstudio.model.Scene("B", drums.copy(steps = 32))
+        val p = withTracks()
+        com.pocketstudio.app.session.SessionScreen(
+            com.pocketstudio.app.session.SessionScreenUi(
+                scenes = listOf(a, b) + List(22) { null },
+                current = 1, pending = null,
+                song = listOf(
+                    com.pocketstudio.model.SongPart(0, 2, muted = setOf("acid", "inst:1", "inst:2", "inst:3", "audio:0")),
+                    com.pocketstudio.model.SongPart(1, 2, muted = setOf("audio:0")),
+                    com.pocketstudio.model.SongPart(0, 4),
+                    com.pocketstudio.model.SongPart(1, 1, muted = setOf("drums", "acid")),
+                ),
+                songIndex = 1, playing = true, tempoBpm = 124.0, beatsPerBar = 4,
+                rows = com.pocketstudio.app.ui.timelineRows(p),
+            ),
+            com.pocketstudio.app.session.SessionActions(),
+        )
+    }
+
+    @Test
     @Config(qualifiers = "w400dp-h1500dp-xxhdpi")
     fun livePads() = shoot("live_pads") {
         val clip = { n: String, b: Int -> com.pocketstudio.model.LiveClip("x.wav", n, b) }

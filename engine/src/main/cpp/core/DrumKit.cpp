@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <cmath>
 
+#include "Pan.h"
+
 namespace ps {
 
 namespace {
@@ -146,10 +148,11 @@ void DrumKit::prepare(int sampleRate) {
     chokeDecay_ = decayFor(0.004f, sampleRate);
 }
 
-void DrumKit::trigger(int voice, float velocity, int frameOffset) {
+void DrumKit::trigger(int voice, float velocity, int frameOffset, float pan) {
     if (voice < 0 || voice >= kVoices) return;
     pending_[static_cast<size_t>(voice)] = std::max(0, frameOffset);
     velocity_[static_cast<size_t>(voice)] = std::clamp(velocity, 0.0f, 1.0f);
+    pendingPan_[static_cast<size_t>(voice)] = std::isfinite(pan) ? pan : 0.0f;
 }
 
 float DrumKit::noise() {
@@ -218,6 +221,18 @@ float DrumKit::renderVoice(int voice, bool trig, float v) {
 }
 
 void DrumKit::render(float* mono, int numFrames) {
+    renderTo(numFrames, [mono](size_t, int i, float x) { mono[i] += x; });
+}
+
+void DrumKit::render(float* left, float* right, int numFrames) {
+    renderTo(numFrames, [this, left, right](size_t voice, int i, float x) {
+        left[i] += x * gainL_[voice];
+        right[i] += x * gainR_[voice];
+    });
+}
+
+template <typename Sink>
+void DrumKit::renderTo(int numFrames, Sink&& sink) {
     const int fadeLength = static_cast<int>(kFadeSeconds * sampleRate_);
     const int closedHatHit = pending_[ClosedHat] < numFrames ? pending_[ClosedHat] : -1;
     for (int voice = 0; voice < kVoices; ++voice) {
@@ -232,12 +247,15 @@ void DrumKit::render(float* mono, int numFrames) {
         const int chokeAt = voice == OpenHat ? closedHatHit : -1;
         int& remaining = activeFrames_[idx];
         for (int i = 0; i < numFrames; ++i) {
-            if (i == pending) remaining = maxLength;
+            if (i == pending) {
+                remaining = maxLength;
+                panGains(pendingPan_[idx], gainL_[idx], gainR_[idx]);
+            }
             if (i == chokeAt) openHatChoke_ = 0.999f;
             const float sample = renderVoice(voice, i == pending, velocity);
             if (remaining <= 0) continue;
             const float fade = remaining < fadeLength ? static_cast<float>(remaining) / fadeLength : 1.0f;
-            mono[i] += gain * fade * sample;
+            sink(idx, i, gain * fade * sample);
             --remaining;
         }
         if (pending >= 0) pending_[idx] = -1;

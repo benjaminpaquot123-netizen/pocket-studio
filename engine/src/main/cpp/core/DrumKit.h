@@ -24,10 +24,12 @@ public:
     };
 
     void prepare(int sampleRate);
-    // Schedules a hit `frameOffset` frames into the next render() call.
-    void trigger(int voice, float velocity, int frameOffset);
-    // Adds all voices into a mono buffer.
+    // Schedules a hit `frameOffset` frames into the next render() call, panned -1..1.
+    void trigger(int voice, float velocity, int frameOffset, float pan = 0.0f);
+    // Adds all voices into a mono buffer (pans ignored).
     void render(float* mono, int numFrames);
+    // Adds all voices into a stereo pair, each voice at the pan of its last hit.
+    void render(float* left, float* right, int numFrames);
 
 private:
     struct Envelope {
@@ -60,12 +62,21 @@ private:
     };
 
     float renderVoice(int voice, bool trig, float velocity);
+    // Calls sink(voice, frame, value) for every sample a voice adds.
+    template <typename Sink> void renderTo(int numFrames, Sink&& sink);
     float noise();
 
     int sampleRate_ = 48000;
     uint32_t noiseState_ = 22222u;
     std::array<int, kVoices> pending_{};
     std::array<float, kVoices> velocity_{};
+    std::array<float, kVoices> pendingPan_{};
+    std::array<float, kVoices> gainL_ = filled(1.0f), gainR_ = filled(1.0f);
+    static constexpr std::array<float, kVoices> filled(float v) {
+        std::array<float, kVoices> a{};
+        for (auto& x : a) x = v;
+        return a;
+    }
     std::array<int, kVoices> activeFrames_{};
     float openHatChoke_ = 1.0f;
     float chokeDecay_ = 0.99f;

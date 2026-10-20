@@ -40,6 +40,13 @@
 // AddressSanitizer, which owns operator new.
 #if !defined(__SANITIZE_ADDRESS__)
 #include <new>
+
+// The sampler renders stereo; centred mono sounds are the same on both sides: their mean.
+static void renderMono(ps::Sampler& sampler, float* out, int n) {
+    std::vector<float> l(static_cast<size_t>(n)), r(static_cast<size_t>(n));
+    sampler.render(l.data(), r.data(), n);
+    for (int i = 0; i < n; ++i) out[i] += 0.5f * (l[static_cast<size_t>(i)] + r[static_cast<size_t>(i)]);
+}
 // Our operator new is malloc-based, so free() in operator delete matches it.
 #pragma GCC diagnostic ignored "-Wmismatched-new-delete"
 static std::atomic<bool> g_countAllocations{false};
@@ -1098,10 +1105,10 @@ void testRetriggerFadesInsteadOfClicking() {
     std::vector<float> out(2000, 0.0f);
     sampler.trigger(0, 1.0f, 0);
     sampler.trigger(0, 1.0f, 0);
-    sampler.render(out.data(), 1000);
+    renderMono(sampler, out.data(), 1000);
     sampler.trigger(0, 1.0f, 500);
     std::fill(out.begin(), out.end(), 0.0f);
-    sampler.render(out.data(), 1000);
+    renderMono(sampler, out.data(), 1000);
     // Old hit fading (0.5 -> 0) plus new hit (0.5): never above 1, never a gap.
     float lo = 1.0f, hi = 0.0f;
     for (int i = 0; i < 1000; ++i) { lo = std::min(lo, out[size_t(i)]); hi = std::max(hi, out[size_t(i)]); }
@@ -1113,7 +1120,7 @@ void testRetriggerFadesInsteadOfClicking() {
 std::vector<float> hitSampler(ps::Sampler& sampler, int pad, int frames, int block = 128) {
     std::vector<float> out(static_cast<size_t>(frames), 0.0f);
     sampler.trigger(pad, 1.0f, 0);
-    for (int done = 0; done < frames; done += block) sampler.render(out.data() + done, std::min(block, frames - done));
+    for (int done = 0; done < frames; done += block) renderMono(sampler, out.data() + done, std::min(block, frames - done));
     return out;
 }
 
@@ -1165,7 +1172,7 @@ void testPadLoopEnvelopeAndChoke() {
     CHECK(std::fabs(looped[20000] - 0.5f) < 1e-4f);
     sampler.releaseLoops();
     std::vector<float> tail(1000, 0.0f);
-    sampler.render(tail.data(), 1000);
+    renderMono(sampler, tail.data(), 1000);
     CHECK(tail[0] > 0.4f && tail[200] == 0.0f);  // 2 ms fade, then silence
 
     // Attack 10 ms: half way up after 5 ms; release 20 ms: fading at the end.
@@ -1182,10 +1189,10 @@ void testPadLoopEnvelopeAndChoke() {
     sampler.setParam(1, ps::Sampler::Gain, 0.0f);  // pad 1 itself silent: only pad 0 is heard
     std::vector<float> out(2000, 0.0f);
     sampler.trigger(0, 1.0f, 0);
-    sampler.render(out.data(), 1000);
+    renderMono(sampler, out.data(), 1000);
     CHECK(std::fabs(out[999] - 0.5f) < 1e-4f);
     sampler.trigger(1, 1.0f, 0);
-    sampler.render(out.data() + 1000, 1000);
+    renderMono(sampler, out.data() + 1000, 1000);
     CHECK(out[1000 + 200] == 0.0f);
 }
 
@@ -2710,6 +2717,56 @@ void testDrumRollsSplitTheStep() {
     CHECK(engine.laneTriggerCount(0) == 7);
 }
 
+void testDrumPanAndStepPitch() {
+    auto energy = [](const std::vector<float>& out, int c) {
+        double e = 0.0;
+        for (size_t i = static_cast<size_t>(c); i < out.size(); i += kChannels) e += double(out[i]) * out[i];
+        return e;
+    };
+    {
+        // The kick panned hard left: nothing on the right; a step pan back to the centre evens it out.
+        ps::Engine engine(kRate);
+        engine.post({ps::CommandType::SetPadPan, -1.0f, ps::DrumKit::Kick});
+        engine.post({ps::CommandType::SetDrumHit, 1.0f, ps::DrumKit::Kick, 0});
+        engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+        const auto left = render(engine, 6000, 256);
+        CHECK(energy(left, 0) > 1.0 && energy(left, 1) < energy(left, 0) * 1e-6);
+        engine.post({ps::CommandType::SetTransport, 0.0f});
+        render(engine, 6000 * 4, 256);
+        engine.post({ps::CommandType::SetDrumStepDetail, 1.0f, ps::DrumKit::Kick, 0 | (64 << 16)});
+        engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+        const auto centre = render(engine, 6000, 256);
+        CHECK(std::fabs(energy(centre, 0) / energy(centre, 1) - 1.0) < 0.01);
+        // A new SetDrumHit puts the step back to plain (the pad's own pan again).
+        engine.post({ps::CommandType::SetDrumHit, 1.0f, ps::DrumKit::Kick, 0});
+        engine.post({ps::CommandType::SetTransport, 0.0f});
+        render(engine, 6000 * 4, 256);
+        engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+        const auto again = render(engine, 6000, 256);
+        CHECK(energy(again, 1) < energy(again, 0) * 1e-6);
+    }
+    {
+        // A 500 Hz tone on pad 4, the step one octave up: 1 kHz.
+        std::vector<float> tone(static_cast<size_t>(kRate / 10));
+        for (size_t i = 0; i < tone.size(); ++i) tone[i] = 0.5f * static_cast<float>(std::sin(2 * M_PI * 500.0 * i / kRate));
+        ps::Sample* s = ps::Sample::create(tone.data(), static_cast<int64_t>(tone.size()), 1, kRate, kRate);
+        ps::Engine engine(kRate);
+        s->retain();
+        engine.post({ps::CommandType::InstallSample, 0.0f, 3, 0, s});
+        engine.post({ps::CommandType::SetDrumHit, 1.0f, 3, 0});
+        engine.post({ps::CommandType::SetDrumStepDetail, 0.0f, 3, 0 | ((64 + 12) << 16)});
+        engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+        const auto out = render(engine, 2400, 256);
+        int crossings = 0;
+        for (size_t i = 200; i < 2200; ++i) {
+            if ((out[(i - 1) * kChannels] < 0.0f) != (out[i * kChannels] < 0.0f)) ++crossings;
+        }
+        std::printf("  step pitch +12: %d crossings in 2000 frames (1 kHz = ~83)\n", crossings);
+        CHECK(crossings > 75 && crossings < 90);
+        s->release();
+    }
+}
+
 void testPlayPositionForLiveRecording() {
     ps::Engine engine(kRate);  // 120 BPM: a sixteenth is 6000 frames
     CHECK(engine.playPosition() < 0.0);
@@ -2866,6 +2923,7 @@ int main(int argc, char** argv) {
         {"play_position", testPlayPositionForLiveRecording},
         {"song_export", testSongExportSwapsScenesOnTime},
         {"drum_rolls", testDrumRollsSplitTheStep},
+        {"drum_pan_pitch", testDrumPanAndStepPitch},
         {"no_alloc_in_process", testProcessNeverAllocates},
     };
     for (const auto& t : tests) {

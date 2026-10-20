@@ -93,7 +93,7 @@ fun Project.switchScene(index: Int): Project {
         scenes = list,
         scene = index,
         // Pad sounds and the 303's sound and root are shared by all scenes: only the notes change.
-        drums = target.drums.copy(lanes = target.drums.lanes.mapIndexed { i, l -> l.copy(sample = drums.lanes.getOrNull(i)?.sample) }),
+        drums = target.drums.copy(lanes = target.drums.lanes.mapIndexed { i, l -> l.copy(sample = drums.lanes.getOrNull(i)?.sample, pan = drums.lanes.getOrNull(i)?.pan ?: 0f) }),
         acid = acid.copy(length = target.acid.length, steps = target.acid.steps, locked = target.acid.locked),
         synthNotes = target.synthNotes,
         tracks = tracks.map { t -> t.copy(notes = target.trackNotes[t.id] ?: NoteClip(steps = t.notes.steps)) },

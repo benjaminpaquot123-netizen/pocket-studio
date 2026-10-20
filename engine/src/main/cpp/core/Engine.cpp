@@ -342,10 +342,25 @@ void Engine::applyCommand(const Command& command) {
             t.instrument.install(command.font, trackArg(command.a));  // takes the instance
             break;
         }
+        case CommandType::SetPadPan:
+            if (command.a >= 0 && command.a < kLanes && std::isfinite(command.value)) {
+                padPan_[static_cast<size_t>(command.a)] = std::clamp(command.value, -1.0f, 1.0f);
+            }
+            break;
+        case CommandType::SetDrumStepDetail: {
+            const int step = command.b & 0xFFFF;
+            if (command.a >= 0 && command.a < kLanes && step < kMaxSteps && std::isfinite(command.value)) {
+                const int pitch = std::clamp(((command.b >> 16) & 0xFF) - 64, -24, 24);
+                (staging_ ? staged_.pan : stepPan_)[command.a][step] = static_cast<int8_t>(std::lround(std::clamp(command.value, -1.0f, 1.0f) * 100.0f));
+                (staging_ ? staged_.pitch : stepPitch_)[command.a][step] = static_cast<int8_t>(pitch);
+            }
+            break;
+        }
         case CommandType::TriggerPad:
             if (command.a >= 0 && command.a < kLanes) {
-                if (sampler_.has(command.a)) sampler_.trigger(command.a, command.value, 0);
-                else drums_.trigger(command.a, command.value, 0);
+                const float pan = padPan_[static_cast<size_t>(command.a)];
+                if (sampler_.has(command.a)) sampler_.trigger(command.a, command.value, 0, pan);
+                else drums_.trigger(command.a, command.value, 0, pan);
                 laneTriggers_[static_cast<size_t>(command.a)].fetch_add(1, std::memory_order_relaxed);
             }
             break;
@@ -361,6 +376,9 @@ void Engine::applyCommand(const Command& command) {
             if (command.a >= 0 && command.a < kLanes && step < kMaxSteps) {
                 (staging_ ? staged_.drums : pattern_)[command.a][step] = std::clamp(command.value, 0.0f, 1.0f);
                 (staging_ ? staged_.repeats : repeats_)[command.a][step] = static_cast<uint8_t>(repeats);
+                // Pan and pitch go back to plain: a SetDrumStepDetail follows when the hit has any.
+                (staging_ ? staged_.pan : stepPan_)[command.a][step] = 0;
+                (staging_ ? staged_.pitch : stepPitch_)[command.a][step] = 0;
             }
             break;
         }
@@ -413,21 +431,24 @@ void Engine::onStep(int offset, int step) {
     for (int lane = 0; lane < kLanes; ++lane) {
         const float v = pattern_[lane][patternStep];
         if (v > 0.0f) {
-            hitLane(lane, v, offset);
+            const float pan = stepPan_[lane][patternStep] * 0.01f;
+            const float pitch = stepPitch_[lane][patternStep];
+            hitLane(lane, v, offset, pan, pitch);
             // A roll: the other hits share the step evenly, each a little softer.
             const int n = repeats_[lane][patternStep];
             const double every = sequencer_.samplesPerStep() / std::max(1, n);
             for (int k = 1; k < n && rollCount_ < static_cast<int>(rolls_.size()); ++k) {
-                rolls_[static_cast<size_t>(rollCount_++)] = {lane, v * std::pow(0.85f, static_cast<float>(k)), offset + static_cast<int64_t>(k * every)};
+                rolls_[static_cast<size_t>(rollCount_++)] = {lane, v * std::pow(0.85f, static_cast<float>(k)), offset + static_cast<int64_t>(k * every), pan, pitch};
             }
         }
     }
 }
 
-void Engine::hitLane(int lane, float velocity, int offset) {
+void Engine::hitLane(int lane, float velocity, int offset, float pan, float pitch) {
     laneTriggers_[static_cast<size_t>(lane)].fetch_add(1, std::memory_order_relaxed);
-    if (sampler_.has(lane)) sampler_.trigger(lane, velocity, offset);
-    else drums_.trigger(lane, velocity, offset);
+    pan += padPan_[static_cast<size_t>(lane)];
+    if (sampler_.has(lane)) sampler_.trigger(lane, velocity, offset, pan, pitch);
+    else drums_.trigger(lane, velocity, offset, pan);
 }
 
 void Engine::playRolls(int numFrames) {
@@ -435,7 +456,7 @@ void Engine::playRolls(int numFrames) {
     for (int i = 0; i < rollCount_; ++i) {
         PendingHit h = rolls_[static_cast<size_t>(i)];
         if (h.at < numFrames) {
-            hitLane(h.lane, h.velocity, static_cast<int>(h.at));
+            hitLane(h.lane, h.velocity, static_cast<int>(h.at), h.pan, h.pitch);
         } else {
             h.at -= numFrames;
             rolls_[static_cast<size_t>(kept++)] = h;
@@ -447,6 +468,8 @@ void Engine::playRolls(int numFrames) {
 void Engine::swapScene(int step) {
     std::copy(&staged_.drums[0][0], &staged_.drums[0][0] + kLanes * kMaxSteps, &pattern_[0][0]);
     std::copy(&staged_.repeats[0][0], &staged_.repeats[0][0] + kLanes * kMaxSteps, &repeats_[0][0]);
+    std::copy(&staged_.pan[0][0], &staged_.pan[0][0] + kLanes * kMaxSteps, &stepPan_[0][0]);
+    std::copy(&staged_.pitch[0][0], &staged_.pitch[0][0] + kLanes * kMaxSteps, &stepPitch_[0][0]);
     patternSteps_ = staged_.drumSteps;
     for (int i = 0; i < AcidTrack::kMaxSteps; ++i) acid_.setStep(i, staged_.acid[static_cast<size_t>(i)]);
     acid_.setLength(staged_.acidLength);
@@ -496,6 +519,8 @@ void Engine::applyAutomation(int patternStep, int songStep) {
 void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
     float* direct = mix_.data();  // metronome + test tone: straight to the master
     float* drums = drumsBuf_.data();
+    float* drumsR = drumsRBuf_.data();
+    std::fill(drumsR, drumsR + numFrames, 0.0f);
     float* acid = acidBuf_.data();
     std::fill(direct, direct + numFrames, 0.0f);
     std::fill(drums, drums + numFrames, 0.0f);
@@ -518,8 +543,8 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
         t.arpAdvance(numFrames, sequencer_.samplesPerStep());
     }
     metronome_.render(direct, numFrames);
-    drums_.render(drums, numFrames);
-    sampler_.render(drums, numFrames);
+    drums_.render(drums, drumsR, numFrames);
+    sampler_.render(drums, drumsR, numFrames);
     acid_.render(acid, numFrames);
     const float* channels[Mixer::kChannels] = {drums, acid, nullptr, stemsL};
     for (int k = 0; k < kTracks; ++k) {
@@ -544,7 +569,7 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
     }
 
     mixer_.setStepFrames(sequencer_.samplesPerStep());
-    const float* rights[Mixer::kChannels] = {nullptr, nullptr, nullptr, stemsR};
+    const float* rights[Mixer::kChannels] = {drumsR, nullptr, nullptr, stemsR};
     {
         float* lefts[AudioTracks::kTracks];
         float* rs[AudioTracks::kTracks];

@@ -16,7 +16,7 @@ fi
 echo "JNI symbols OK ($(echo "$kotlin" | wc -l) natives)"
 
 # Same for the separation module (Demucs and BasicPitch share SeparationJni.cpp).
-for NAME in Demucs BasicPitch; do
+for NAME in Demucs BasicPitch StableAudio; do
     CLASS="$(find "$ROOT/separation/build" -path '*release*' -name "$NAME.class" | head -1)"
     [ -n "$CLASS" ] || { echo "$NAME.class not found: build the separation module first" >&2; exit 1; }
     kotlin="$(javap -p "$CLASS" | grep ' native ' | grep -o '[A-Za-z0-9_$]*(' | tr -d '(' | sort)"

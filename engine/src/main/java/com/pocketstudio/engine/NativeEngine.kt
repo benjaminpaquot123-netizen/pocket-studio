@@ -63,6 +63,8 @@ object NativeEngine {
     private const val CMD_AUTOMATION_MODE = 58
     private const val CMD_AUTOMATION_SONG = 59
     private const val CMD_EXPRESSION = 60
+    private const val CMD_PAD_PAN = 61
+    private const val CMD_DRUM_STEP_DETAIL = 62
 
     // Kinds of [setExpression] (InstrumentTrack::Expression).
     const val EXPR_BEND = 0
@@ -124,6 +126,14 @@ object NativeEngine {
     /** [repeats]: hits in the step (1 = plain, 2..4 = a roll), carried in one command with the hit. */
     fun setDrumHit(lane: Int, step: Int, velocity: Float, repeats: Int = 1) =
         post(CMD_SET_DRUM_HIT, velocity, lane, step or (repeats.coerceIn(1, 4) shl 16))
+    /** A pad's place in the stereo field, -1 (left) .. 1 (right). */
+    fun setPadPan(lane: Int, pan: Float) = post(CMD_PAD_PAN, pan, lane)
+    /**
+     * After [setDrumHit] (which resets them): this hit's pan, added to the pad's, and [pitch]
+     * semitones (-24..24, sampled sounds only).
+     */
+    fun setDrumStepDetail(lane: Int, step: Int, pan: Float, pitch: Int) =
+        post(CMD_DRUM_STEP_DETAIL, pan, lane, step or ((pitch.coerceIn(-24, 24) + 64) shl 16))
     /** Hits in the step: 1 = plain, 2..4 = a roll. */
     fun setDrumRepeat(lane: Int, step: Int, repeats: Int) = post(CMD_DRUM_REPEAT, repeats.toFloat(), lane, step)
     /** [packed] = AcidStep.pack() from project-model (same layout as the engine). */

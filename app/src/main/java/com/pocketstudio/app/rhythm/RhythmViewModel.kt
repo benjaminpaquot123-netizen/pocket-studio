@@ -1688,6 +1688,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** Gives every pad its sound; tempo-fitted pads get their stretched copy as soon as it is ready. */
     private fun pushPads(p: Project = project.value) {
+        if (NativeEngine.isAvailable) p.drums.lanes.forEachIndexed { i, l -> NativeEngine.setPadPan(i, l.pan) }
         val pads = p.drums.lanes.map { it.sample }
         padSamples.pushPads(pads, p.tempoBpm)
         val missing = padSamples.missingStretches(pads, p.tempoBpm)
@@ -2563,10 +2564,33 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 else -> 1f
             }
             val lanes = p.drums.lanes.toMutableList()
-            lanes[lane] = lanes[lane].copy(hits = lanes[lane].hits + (step to Hit(next)))
+            // Keeps the hit's roll, pan and pitch.
+            val hit = lanes[lane].hits[step]?.copy(velocity = next) ?: Hit(next)
+            lanes[lane] = lanes[lane].copy(hits = lanes[lane].hits + (step to hit))
             p.copy(drums = p.drums.copy(lanes = lanes))
         }
         pushLane(lane)
+    }
+
+    /** The selected pad's place in the stereo field, -1..1 (a drag is one undo step). */
+    fun setPadPan(pan: Float) {
+        val lane = _transport.value.selectedPad
+        session.edit("pad-pan-$lane") { it.copy(drums = it.drums.withPadPan(lane, pan)) }
+        if (NativeEngine.isAvailable) NativeEngine.setPadPan(lane, project.value.drums.lanes[lane].pan)
+    }
+
+    /** One hit's own pan (-1..1) on the selected pad. */
+    fun setHitPan(step: Int, pan: Float) = editHitDetail(step, "hit-pan") { it.copy(pan = pan) }
+
+    /** One hit's pitch in semitones on the selected pad (its own sound only). */
+    fun setHitPitch(step: Int, pitch: Int) = editHitDetail(step, "hit-pitch") { it.copy(pitch = pitch) }
+
+    private fun editHitDetail(step: Int, key: String, transform: (Hit) -> Hit) {
+        val lane = _transport.value.selectedPad
+        val hit = project.value.drums.lanes[lane].hits[step] ?: return
+        val next = transform(hit)
+        session.edit("$key-$lane-$step") { it.copy(drums = it.drums.withHitDetail(lane, step, next.pan, next.pitch)) }
+        if (NativeEngine.isAvailable) pushHit(lane, step, project.value.drums.lanes[lane].hits[step])
     }
 
     fun clearPad() {
@@ -2640,6 +2664,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** A hit and its roll (rolls only travel with hits: an empty step needs nothing more). */
     private fun pushHit(lane: Int, step: Int, hit: Hit?) {
         NativeEngine.setDrumHit(lane, step, hit?.velocity ?: 0f, hit?.repeats ?: 1)
+        // Only hits with their own pan or pitch need more (the hit command resets both).
+        if (hit != null && !hit.isPlain) NativeEngine.setDrumStepDetail(lane, step, hit.pan, hit.pitch)
     }
 
     fun fillPad(every: Int) {

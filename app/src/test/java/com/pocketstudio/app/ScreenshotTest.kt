@@ -556,6 +556,21 @@ class ScreenshotTest {
     }
 
     @Test
+    fun crazyEffects() = shoot("crazy_effects") {
+        val inserts = listOf(
+            com.pocketstudio.model.Insert.of(com.pocketstudio.model.EffectType.CHOPPER).copy(params = listOf(0.3f, 1f, 0.2f, 0f)),
+            com.pocketstudio.model.Insert.of(com.pocketstudio.model.EffectType.VINYL),
+            com.pocketstudio.model.Insert(), com.pocketstudio.model.Insert(),
+        )
+        androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
+            com.pocketstudio.ui.NeonCard {
+                com.pocketstudio.ui.SectionLabel("Nappe · effets")
+                com.pocketstudio.app.mixer.InsertRack(4, inserts, com.pocketstudio.app.mixer.MixerActions())
+            }
+        }
+    }
+
+    @Test
     fun parametricEq() = shoot("param_eq") {
         val inserts = listOf(
             com.pocketstudio.model.Insert(com.pocketstudio.model.EffectType.PARAM_EQ.ordinal, listOf(0.62f, 0.75f, 0.45f, 0.3f)),

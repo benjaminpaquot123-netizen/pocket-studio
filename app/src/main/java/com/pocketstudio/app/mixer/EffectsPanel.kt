@@ -38,7 +38,12 @@ private val SHORT = mapOf(
     EffectType.PUMP to "Pompe", EffectType.FLANGER to "Flanger", EffectType.PHASER to "Phaser",
     EffectType.GATE to "Gate", EffectType.TREMOLO to "Trémolo", EffectType.WIDENER to "Large",
     EffectType.BITCRUSHER to "Crush", EffectType.PARAM_EQ to "EQ+",
+    EffectType.ROBOT to "Robot", EffectType.WAH to "Wah", EffectType.VINYL to "Vinyle",
+    EffectType.RADIO to "Radio", EffectType.CHOPPER to "Hachoir",
 )
+
+/** The crazy effects' colour: a fun violet, apart from every theme's accent. */
+private val CRAZY = androidx.compose.ui.graphics.Color(0xFFB388FF)
 
 /** One-line summary of a channel's effects, e.g. "EQ · Comp · Réverbe". */
 fun effectsSummary(inserts: List<Insert>, sends: List<Float> = emptyList()): String {
@@ -67,16 +72,23 @@ fun InsertRack(ch: Int, inserts: List<Insert>, actions: MixerActions) {
         }
     }
     val current = inserts.getOrNull(slot) ?: return
-    FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-        EffectType.entries.forEach { type ->
-            FilterChip(
-                selected = current.effect == type,
-                onClick = { if (current.effect != type) actions.setInsertType(ch, slot, type) },
-                label = { Text(type.label) },
-                colors = pillColors(Neon.Magenta),
-                modifier = Modifier.testTag("fx_${ch}_${slot}_${type.name}"),
-            )
+    // The classics, then the crazy ones in their own colour: the fun is easy to find.
+    listOf(false to Neon.Magenta, true to CRAZY).forEach { (crazy, colour) ->
+        if (crazy) Text("Effets fous", style = MaterialTheme.typography.labelLarge, color = colour)
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            EffectType.entries.filter { it.crazy == crazy }.forEach { type ->
+                FilterChip(
+                    selected = current.effect == type,
+                    onClick = { if (current.effect != type) actions.setInsertType(ch, slot, type) },
+                    label = { Text(type.label, maxLines = 1, softWrap = false) },
+                    colors = pillColors(colour),
+                    modifier = Modifier.testTag("fx_${ch}_${slot}_${type.name}"),
+                )
+            }
         }
+    }
+    if (current.effect.blurb.isNotEmpty()) {
+        Text(current.effect.blurb, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
     }
     if (current.effect == EffectType.EQ || current.effect == EffectType.PARAM_EQ) EqCurve(current)
     current.effect.params.forEachIndexed { k, param ->

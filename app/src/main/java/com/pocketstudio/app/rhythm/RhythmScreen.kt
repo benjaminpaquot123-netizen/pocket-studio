@@ -56,6 +56,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.material3.AlertDialog
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.Brush
@@ -558,14 +559,35 @@ internal fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: 
                     TextButton(onClick = { actions.dismissSampleError(); actions.importFolder() }, modifier = Modifier.testTag("import_folder")) { Text("Dossier") }
                     TextButton(onClick = { actions.dismissSampleError(); actions.importZip() }, modifier = Modifier.testTag("import_zip")) { Text(".zip") }
                 }
+                // Resampling replaces the pad's sound with the whole mix: asked first, never by surprise.
+                var capture by remember { mutableIntStateOf(0) }
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Text("Enregistrer le morceau :", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                    Text("Capturer tout le morceau :", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
                     listOf(1, 2, 4).forEach { bars ->
-                        TextButton(
-                            onClick = { actions.dismissSampleError(); actions.resampleSong(bars) },
-                            modifier = Modifier.testTag("resample_$bars"),
-                        ) { Text(if (bars == 1) "1 mesure" else "$bars mes.") }
+                        TextButton(onClick = { capture = bars }, modifier = Modifier.testTag("resample_$bars")) {
+                            Text(if (bars == 1) "1 mesure" else "$bars mes.")
+                        }
                     }
+                }
+                if (capture > 0) {
+                    val bars = capture
+                    AlertDialog(
+                        onDismissRequest = { capture = 0 },
+                        title = { Text("Capturer tout le morceau ?") },
+                        text = {
+                            Text(
+                                "Le son du pad « ${DrumKitInfo.names[lane]} » sera remplacé par l'enregistrement de tout ce qui joue sur " +
+                                    (if (bars == 1) "une mesure" else "$bars mesures") + " : la batterie, la basse acide, les synthés. " +
+                                    "Pratique pour en faire une boucle. Pour garder ton son, choisis « Non » ; la flèche Annuler en haut le remet aussi.",
+                            )
+                        },
+                        confirmButton = {
+                            TextButton(onClick = { capture = 0; actions.dismissSampleError(); actions.resampleSong(bars) }, modifier = Modifier.testTag("resample_confirm")) {
+                                Text("Capturer")
+                            }
+                        },
+                        dismissButton = { TextButton(onClick = { capture = 0 }) { Text("Non") } },
+                    )
                 }
                 if (sample != null) {
                     TextButton(onClick = actions.removeSample, modifier = Modifier.testTag("remove_sample")) {

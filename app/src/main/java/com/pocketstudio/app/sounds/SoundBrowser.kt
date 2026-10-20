@@ -8,6 +8,7 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
@@ -103,13 +104,14 @@ fun SoundBrowser(ui: SoundBrowserUi) {
             }
         }
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-            OutlinedButton(onClick = ui.random, modifier = Modifier.weight(1f).testTag("${ui.tag}_random")) {
+            val tight = PaddingValues(horizontal = 10.dp, vertical = 8.dp)
+            OutlinedButton(onClick = ui.random, contentPadding = tight, modifier = Modifier.weight(1f).testTag("${ui.tag}_random")) {
                 Icon(Icons.Filled.Casino, contentDescription = null)
-                Text("  Au hasard")
+                Text("  Au hasard", maxLines = 1)
             }
-            OutlinedButton(onClick = ui.save, modifier = Modifier.weight(1f).testTag("${ui.tag}_save")) {
+            OutlinedButton(onClick = ui.save, contentPadding = tight, modifier = Modifier.weight(1f).testTag("${ui.tag}_save")) {
                 Icon(Icons.Filled.Star, contentDescription = null)
-                Text("  Garder ce son")
+                Text("  Garder ce son", maxLines = 1)
             }
         }
         if (ui.favorites.isEmpty()) {

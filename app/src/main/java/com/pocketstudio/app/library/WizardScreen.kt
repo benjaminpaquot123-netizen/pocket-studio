@@ -373,7 +373,7 @@ private fun MoodStep(style: StarterWizard.Style, mood: StarterWizard.Mood?, acti
                     Text(m.label, style = MaterialTheme.typography.titleMedium, color = if (selected) Neon.Cyan else Neon.TextPrimary)
                     Text(m.description, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
                     Text("Gamme ${keyName(style.melody.root)} ${m.scale.label.lowercase()} · accords ${m.chordsLabel}",
-                        style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary)
+                        style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary)
                 }
                 RadioButton(selected = selected, onClick = { actions.setMood(m) })
             }

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onRoot
 import com.github.takahirom.roborazzi.captureRoboImage
@@ -708,6 +709,46 @@ class ScreenshotTest {
             ),
             com.pocketstudio.app.session.SessionActions(),
         )
+    }
+
+    @Test
+    fun foldedCards() = shoot("folded_cards") {
+        // "Scènes" folded: only its title stays, with the small chevron turned.
+        androidx.compose.runtime.CompositionLocalProvider(
+            com.pocketstudio.ui.LocalFoldStore provides com.pocketstudio.ui.MemoryFoldStore(mapOf("Scènes" to true)),
+        ) {
+            val drums = com.pocketstudio.model.DrumPattern().toggle(0, 0).toggle(2, 4)
+            com.pocketstudio.app.session.SessionScreen(
+                com.pocketstudio.app.session.SessionScreenUi(
+                    scenes = listOf(com.pocketstudio.model.Scene("A", drums)) + List(15) { null },
+                    current = 0, pending = null, song = emptyList(), songIndex = -1, playing = false, tempoBpm = 124.0,
+                ),
+                com.pocketstudio.app.session.SessionActions(),
+            )
+        }
+    }
+
+    @Test
+    fun floatingKeyboard() = shoot("floating_keyboard") {
+        Box(Modifier.fillMaxSize()) {
+            androidx.compose.foundation.layout.Column(Modifier.padding(12.dp)) {
+                com.pocketstudio.ui.NeonCard {
+                    com.pocketstudio.ui.SectionLabel("Sons prêts à jouer")
+                    com.pocketstudio.app.sounds.SoundBrowser(
+                        com.pocketstudio.app.sounds.SoundBrowserUi(
+                            com.pocketstudio.model.SoundCategories.SYNTH, com.pocketstudio.model.SoundLibrary.SYNTH, emptyList(),
+                            current = com.pocketstudio.model.SoundLibrary.SYNTH[1].name,
+                            describe = { (it.sound as? com.pocketstudio.model.SynthPatch)?.let(com.pocketstudio.app.sounds.SoundLooks::describe) },
+                        ),
+                    )
+                }
+            }
+            com.pocketstudio.app.synth.FloatingKeyboard(
+                visible = true, folded = false, onFold = {}, octave = 4, octaves = 2, keysHeight = 120.dp,
+                actions = com.pocketstudio.app.synth.SynthActions(), harmony = com.pocketstudio.model.Harmony(), chordPads = false,
+                keyOn = { _, _ -> }, keyOff = {}, modifier = Modifier.align(androidx.compose.ui.Alignment.BottomCenter),
+            )
+        }
     }
 
     @Test

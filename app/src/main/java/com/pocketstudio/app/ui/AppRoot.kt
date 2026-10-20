@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.foundation.background
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -562,7 +563,9 @@ fun AppRoot() {
             }
         },
     ) { padding ->
-        Row(Modifier.padding(padding)) {
+        // The background darkens a little towards the bottom: the panels seem to float above it.
+        val bg = Neon.Background
+        Row(Modifier.padding(padding).background(Brush.verticalGradient(listOf(lerp(bg, Color.White, 0.03f), bg, lerp(bg, Color.Black, 0.18f))))) {
             // Landscape: tabs on the side so the screen keeps its height (wider synth keyboard).
             if (landscape) {
                 NavigationRail(containerColor = lerp(Neon.Background, Color.Black, 0.12f)) {

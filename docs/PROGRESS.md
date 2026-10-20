@@ -134,6 +134,14 @@
   - 13.3 : unisson du synthé (1 à 7 voix) et 6 sons actuels (Supersaw, Lead trance, Hoover, Accords future bass, Pluck future, Reese moderne) ;
   - 13.4 : 14 phrases de Générer pour les genres récents.
 
+- Phase 13 fusionnée (PR #24), revue faite (unisson centré, pas de clic au redéclenchement).
+- Phase 14 (branche ccr-80af1a1b-mn0wec), demandes de Benjamin :
+  - 14.1 nouveau look sur tout le programme (Inter, relief, halos, curseurs et vumètres) ;
+  - 14.2 blocs repliables par leur titre, mémorisés ;
+  - 14.3 sons en vignettes partout ;
+  - 14.4 clavier qui suit pendant le choix d'un son ;
+  - 14.5 écoute dans l'assistant (ambiances, lignes avec le rythme, parties en situation).
+
 ## Prochaine étape exacte
-1. Phase 13 : PR, relecture de fin de phase, CI verte, fusion.
+1. Phase 14 : PR, relecture de fin de phase, CI verte, fusion.
 2. Ensuite : points mineurs restants de `docs/REVIEW.md`, Ableton Link (reporté).

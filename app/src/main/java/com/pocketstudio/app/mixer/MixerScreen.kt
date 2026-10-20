@@ -108,8 +108,10 @@ fun MixerScreen(
         modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp).testTag("mixer"),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
+        // Many tracks: each strip shows its volume on one line; ▾ opens pan and effects.
+        val compact = strips.size > BASIC_STRIPS.size
         strips.forEach { st ->
-            Strip(st, channels.getOrElse(st.ch) { Channel() }, meters.getOrElse(st.ch) { 0f }, actions)
+            Strip(st, channels.getOrElse(st.ch) { Channel() }, meters.getOrElse(st.ch) { 0f }, actions, compact)
         }
         NeonCard(accent = Neon.Cyan) {
             SectionLabel("Sortie générale")
@@ -132,9 +134,10 @@ fun MixerScreen(
 }
 
 @Composable
-private fun Strip(info: StripInfo, c: Channel, meter: Float, actions: MixerActions) {
+private fun Strip(info: StripInfo, c: Channel, meter: Float, actions: MixerActions, compact: Boolean = false) {
     val name = info.name
     val index = info.ch
+    var expanded by rememberSaveable(index) { mutableStateOf(false) }
     val chipColors = FilterChipDefaults.filterChipColors(
         selectedContainerColor = Neon.Cyan.copy(alpha = 0.25f),
         selectedLabelColor = Neon.Cyan,
@@ -155,11 +158,28 @@ private fun Strip(info: StripInfo, c: Channel, meter: Float, actions: MixerActio
                 modifier = Modifier.testTag("solo_$index"))
         }
         LevelMeter(meter / 0.89f)
-        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Text("Volume", Modifier.weight(1f))
-            Text(faderDb(c.volume), style = MonoStyle, color = Neon.Cyan)
+        if (compact) {
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                Slider(value = c.volume, onValueChange = { actions.setVolume(index, it) }, modifier = Modifier.weight(1f).testTag("volume_$index"))
+                Text(faderDb(c.volume), style = MonoStyle, color = Neon.Cyan, modifier = Modifier.padding(start = 6.dp))
+                androidx.compose.material3.IconButton(onClick = { expanded = !expanded }, modifier = Modifier.testTag("strip_more_$index")) {
+                    Icon(if (expanded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
+                        contentDescription = if (expanded) "Moins de réglages" else "Panoramique et effets", tint = Neon.Cyan)
+                }
+            }
+            if (!expanded) {
+                if (c.pan != 0f || c.inserts.any { it.type != 0 } || c.sends.any { it > 0f }) {
+                    Text(effectsSummary(c.inserts, c.sends), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                }
+                return@NeonCard
+            }
+        } else {
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                Text("Volume", Modifier.weight(1f))
+                Text(faderDb(c.volume), style = MonoStyle, color = Neon.Cyan)
+            }
+            Slider(value = c.volume, onValueChange = { actions.setVolume(index, it) }, modifier = Modifier.testTag("volume_$index"))
         }
-        Slider(value = c.volume, onValueChange = { actions.setVolume(index, it) }, modifier = Modifier.testTag("volume_$index"))
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Text("Panoramique", Modifier.weight(1f))
             val pan = (c.pan * 100).roundToInt()

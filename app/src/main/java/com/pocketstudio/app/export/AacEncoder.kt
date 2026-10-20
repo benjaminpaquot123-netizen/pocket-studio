@@ -36,7 +36,7 @@ object AacEncoder {
             var framesIn = 0L
             var inputDone = false
             while (true) {
-                if (isCancelled()) throw IOException("annulé")
+                if (isCancelled()) throw kotlinx.coroutines.CancellationException("annulé")
                 if (!inputDone) {
                     val i = codec.dequeueInputBuffer(10_000)
                     if (i >= 0) {
@@ -80,8 +80,13 @@ object AacEncoder {
             pcm.close()
             runCatching { codec.stop() }
             codec.release()
-            runCatching { if (muxing) muxer.stop() }
+            // A failed stop leaves an unreadable file: that is an error, not a success.
+            val stopped = runCatching { if (muxing) muxer.stop() }
             muxer.release()
+            if (stopped.isFailure && out.exists()) {
+                out.delete()
+                throw IOException("fichier M4A incomplet")
+            }
         }
     }
 }

@@ -84,7 +84,9 @@ object NativeEngine {
     fun setMetronome(on: Boolean) = post(CMD_SET_METRONOME, if (on) 1f else 0f)
     fun setPatternSteps(steps: Int) = post(CMD_SET_PATTERN_STEPS, 0f, steps)
     /** velocity 0 removes the hit. */
-    fun setDrumHit(lane: Int, step: Int, velocity: Float) = post(CMD_SET_DRUM_HIT, velocity, lane, step)
+    /** [repeats]: hits in the step (1 = plain, 2..4 = a roll), carried in one command with the hit. */
+    fun setDrumHit(lane: Int, step: Int, velocity: Float, repeats: Int = 1) =
+        post(CMD_SET_DRUM_HIT, velocity, lane, step or (repeats.coerceIn(1, 4) shl 16))
     /** Hits in the step: 1 = plain, 2..4 = a roll. */
     fun setDrumRepeat(lane: Int, step: Int, repeats: Int) = post(CMD_DRUM_REPEAT, repeats.toFloat(), lane, step)
     /** [packed] = AcidStep.pack() from project-model (same layout as the engine). */

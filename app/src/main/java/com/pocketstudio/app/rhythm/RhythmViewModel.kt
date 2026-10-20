@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import android.net.Uri
 import android.provider.OpenableColumns
 import com.pocketstudio.app.audio.AudioDecoder
+import com.pocketstudio.app.Metrics
 import com.pocketstudio.app.audio.MicRecorder
 import com.pocketstudio.app.audio.Pcm
 import com.pocketstudio.app.export.WavExporter
@@ -554,8 +555,16 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /** Fits the song to the tempo in the background; tempo drags settle first. */
+    private val stretchFailed = HashSet<Pair<String, Double>>()
+
     private fun stretchStems(source: NativeStems, id: String, ratio: Double) {
         if (remixStretchJob?.isActive == true && stretchPending == id to ratio) return  // already on it
+        if (id to ratio in stretchFailed) return  // tried already: no new attempt on every mixer move
+        if (ratio !in 0.5..2.0) {
+            stretchFailed += id to ratio
+            _notice.value = "Le tempo du projet est trop loin de celui du morceau pour le caler (de la moitié au double)."
+            return
+        }
         remixStretchJob?.cancel()
         stretchPending = id to ratio
         _remixStretching.value = true
@@ -572,6 +581,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             }
             _remixStretching.value = false
             if (copy == null) {
+                stretchFailed += id to ratio
                 AppLog.add("Remix : calage au tempo impossible (mémoire ?)")
                 _notice.value = "Le morceau n'a pas pu être calé au tempo (mémoire insuffisante) : il garde son tempo."
                 return@launch
@@ -1570,8 +1580,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** Where the playhead is in [loopTicks], or null when nothing is recorded (not armed, stopped, counting in). */
     private fun recordTick(loopTicks: Int): Int? {
         if (!_recording.value || !NativeEngine.isAvailable) return null
-        val pos = NativeEngine.playPosition()
-        if (pos < 0) return null
+        // What is heard lags what is rendered by the output latency (much more over Bluetooth).
+        val latencyMs = Metrics.streamInfo.value.outputLatencyMs.takeIf { it > 0 } ?: 0.0
+        val pos = NativeEngine.playPosition() - latencyMs / 1000.0 * project.value.tempoBpm / 15.0
+        if (NativeEngine.playPosition() < 0) return null
         return Math.floorMod((pos * NoteClip.TICKS_PER_STEP).toLong(), loopTicks.toLong()).toInt()
     }
 
@@ -1890,11 +1902,13 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun undo() {
+        if (_recording.value) return  // a take ends first: it then undoes in one step
         session.undo()
         syncEngine()
     }
 
     fun redo() {
+        if (_recording.value) return
         session.redo()
         syncEngine()
     }
@@ -1915,8 +1929,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** A hit and its roll (rolls only travel with hits: an empty step needs nothing more). */
     private fun pushHit(lane: Int, step: Int, hit: Hit?) {
-        NativeEngine.setDrumHit(lane, step, hit?.velocity ?: 0f)
-        if (hit != null) NativeEngine.setDrumRepeat(lane, step, hit.repeats)
+        NativeEngine.setDrumHit(lane, step, hit?.velocity ?: 0f, hit?.repeats ?: 1)
     }
 
     fun fillPad(every: Int) {
@@ -2012,7 +2025,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * into WAV (or M4A), then copies the files to Music › Pocket Studio.
      */
     fun exportWav() {
-        if (!NativeEngine.isAvailable || running != null) return
+        if (!NativeEngine.isAvailable || running != null || exportJob != null) return
+        exportCancelled = false
         val app = getApplication<Application>()
         val p = project.value
         val settings = _export.value
@@ -2037,7 +2051,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     val job = OfflineExport()
                     describe(job, p, song, solo)
                     running = job
-                    val wav = runCatching { WavExporter.newFile(app, "${p.name}-$label") }.getOrElse { throw UserMessage("Impossible de préparer le fichier d'export.") }
+                    val wav = runCatching { WavExporter.newFile(app, "${p.name.take(28)}-$label") }.getOrElse { throw UserMessage("Impossible de préparer le fichier d'export.") }
                     _export.value = _export.value.copy(stage = if (renders.size > 1) "${label.replaceFirstChar { it.uppercase() }} (${index + 1}/${renders.size})" else null)
                     val poll = launch {
                         while (true) {

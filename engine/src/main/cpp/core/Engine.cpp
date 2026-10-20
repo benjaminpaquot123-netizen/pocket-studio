@@ -271,11 +271,16 @@ void Engine::applyCommand(const Command& command) {
                 (staging_ ? staged_.repeats : repeats_)[command.a][command.b] = static_cast<uint8_t>(std::clamp(static_cast<int>(command.value), 1, 4));
             }
             break;
-        case CommandType::SetDrumHit:
-            if (command.a >= 0 && command.a < kLanes && command.b >= 0 && command.b < kMaxSteps) {
-                (staging_ ? staged_.drums : pattern_)[command.a][command.b] = std::clamp(command.value, 0.0f, 1.0f);
+        case CommandType::SetDrumHit: {
+            // b: step in the low 16 bits, hits in the step (0 or 1 = plain, up to 4 = a roll) above.
+            const int step = command.b & 0xFFFF;
+            const int repeats = std::clamp((command.b >> 16) & 0xFF, 1, 4);
+            if (command.a >= 0 && command.a < kLanes && step < kMaxSteps) {
+                (staging_ ? staged_.drums : pattern_)[command.a][step] = std::clamp(command.value, 0.0f, 1.0f);
+                (staging_ ? staged_.repeats : repeats_)[command.a][step] = static_cast<uint8_t>(repeats);
             }
             break;
+        }
     }
 }
 

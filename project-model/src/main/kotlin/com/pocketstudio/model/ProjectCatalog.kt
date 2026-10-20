@@ -124,12 +124,14 @@ class ProjectCatalog(private val root: File, private val trash: File) {
         val dir = store.folder(id)
         var project: Project? = null
         var total = 0L
+        val seen = HashSet<String>()
         try {
             java.util.zip.ZipInputStream(input.buffered()).use { zip ->
                 while (true) {
                     val entry = zip.nextEntry ?: break
                     if (entry.isDirectory) continue
                     val name = entry.name.replace('\\', '/')
+                    if (!seen.add(name)) throw IOException("fichier en double dans le .zip")
                     val target = when {
                         name == ProjectStore.MAIN -> null
                         name.startsWith("$SAMPLES/") && PadSample(name.removePrefix("$SAMPLES/"), "").isSafe ->
@@ -144,18 +146,20 @@ class ProjectCatalog(private val root: File, private val trash: File) {
                         if (n < 0) break
                         size += n
                         total += n
-                        if (size > MAX_ZIP_ENTRY || total > MAX_ZIP_TOTAL) throw IOException("projet trop gros")
+                        if (size > (if (target == null) MAX_PROJECT_JSON else MAX_ZIP_ENTRY) || total > MAX_ZIP_TOTAL) throw IOException("projet trop gros")
                         if (target == null) bytes.write(buf, 0, n) else target.appendBytes(buf.copyOf(n))
                     }
                     if (target == null) project = ProjectJson.decode(bytes.toString(Charsets.UTF_8.name()))
                 }
             }
-            val p = project ?: throw IOException("ce .zip n'est pas un projet Pocket Studio")
+            // Cleaned first: only plain file names count (a path like ../x is dropped here).
+            val p = (project ?: throw IOException("ce .zip n'est pas un projet Pocket Studio")).sanitized()
             val missing = p.sampleFiles.filterNot { File(dir, "$SAMPLES/$it").exists() }
             if (missing.isNotEmpty()) throw IOException("${missing.size} son(s) manquant(s) dans le .zip")
             store.save(id, p)
             return id
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
+            // Also an OutOfMemoryError: nothing half-imported stays behind, and the app does not crash.
             dir.deleteRecursively()
             throw if (e is IOException) e else IOException(e.message ?: "fichier illisible")
         }
@@ -174,6 +178,7 @@ class ProjectCatalog(private val root: File, private val trash: File) {
         const val MAX_NAME = 40
         const val TRASH_DAYS = 30L
         const val MAX_ZIP_ENTRY = 128L * 1024 * 1024
+        const val MAX_PROJECT_JSON = 4L * 1024 * 1024
         const val MAX_ZIP_TOTAL = 1024L * 1024 * 1024
     }
 }

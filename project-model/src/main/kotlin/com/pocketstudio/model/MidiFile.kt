@@ -186,6 +186,7 @@ object MidiFile {
             if (r.remaining < 8) return@repeat
             val id = r.text(4)
             val length = r.int32()
+            if (length < 0 || length > r.remaining) throw IOException("fichier MIDI tronqué")
             if (id != "MTrk") { r.skip(length); return@repeat }
             val end = r.pos + length
             var tick = 0L
@@ -227,7 +228,7 @@ object MidiFile {
         return Content(notes.sortedWith(compareBy({ it.start }, { it.pitch })), tempo)
     }
 
-    private fun scale(tick: Long, division: Int) = (tick * PPQ / division).toInt()
+    private fun scale(tick: Long, division: Int) = (tick * PPQ / division).coerceAtMost(Int.MAX_VALUE / 2L).toInt()
 
     /**
      * Puts imported notes into the project's current scene: channel 10 onto the drum pads (up to

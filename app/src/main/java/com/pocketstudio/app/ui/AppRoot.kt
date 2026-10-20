@@ -174,6 +174,7 @@ fun AppRoot() {
     val openProject: (String) -> Unit = { id ->
         openScope.launch {
             rhythmVm.flushNow()
+            showProjects = false  // remembered across the rebuild: close it first
             CurrentProject.set(context, id)
             AppLog.add("Ouverture d'un autre projet")
             context.findActivity()?.let { activity ->
@@ -232,11 +233,11 @@ fun AppRoot() {
         if (screenTransport.playing && settings.keepScreenOn) window.addFlags(flag) else window.clearFlags(flag)
     }
     // Engine-side settings follow the Réglages screen at once.
-    LaunchedEffect(settings.metronomeLevel, settings.bufferBursts) {
-        if (NativeEngine.isAvailable) {
-            NativeEngine.setMetronomeLevel(settings.metronomeLevel)
-            NativeEngine.setBufferBursts(settings.bufferBursts)
-        }
+    LaunchedEffect(settings.metronomeLevel) {
+        if (NativeEngine.isAvailable) NativeEngine.setMetronomeLevel(settings.metronomeLevel)
+    }
+    LaunchedEffect(settings.bufferBursts) {
+        if (NativeEngine.isAvailable) NativeEngine.setBufferBursts(settings.bufferBursts)
     }
 
     val engineAvailable = NativeEngine.isAvailable
@@ -342,7 +343,7 @@ fun AppRoot() {
             val topRedo by rhythmVm.session.canRedo.collectAsStateWithLifecycle()
             val topRecording by rhythmVm.recording.collectAsStateWithLifecycle()
             TopBar(
-                TopBarUi(topProject.name, topProject.tempoBpm, topTransport.playing, topUndo, topRedo, topRecording),
+                TopBarUi(topProject.name, topProject.tempoBpm, topTransport.playing, topUndo && !topRecording, topRedo && !topRecording, topRecording),
                 TopBarActions(
                     projects = { showProjects = true }, undo = rhythmVm::undo, redo = rhythmVm::redo,
                     togglePlay = rhythmVm::togglePlay, toggleRecord = rhythmVm::toggleRecord,

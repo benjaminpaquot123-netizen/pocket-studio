@@ -72,6 +72,22 @@ class ProjectCatalogTest {
         assertTrue(runCatching { catalog.importZip(noSound.inputStream()) }.isFailure)
         assertEquals(before, catalog.list().size)
         assertFalse(File(dir, "evil.wav").exists())
+        // Twice the same sound, or a giant project.json: refused.
+        val twice = java.io.ByteArrayOutputStream().also { out ->
+            java.util.zip.ZipOutputStream(out).use { z ->
+                z.putNextEntry(java.util.zip.ZipEntry("project.json")); z.write(ProjectJson.encode(p).toByteArray()); z.closeEntry()
+                // Java refuses two identical names: the second spelling becomes the same path once read.
+                listOf("samples/kick.wav", "samples\\kick.wav").forEach { z.putNextEntry(java.util.zip.ZipEntry(it)); z.write(1); z.closeEntry() }
+            }
+        }.toByteArray()
+        assertTrue(runCatching { catalog.importZip(twice.inputStream()) }.isFailure)
+        val giant = java.io.ByteArrayOutputStream().also { out ->
+            java.util.zip.ZipOutputStream(out).use { z ->
+                z.putNextEntry(java.util.zip.ZipEntry("project.json")); z.write(ByteArray(5 * 1024 * 1024) { ' '.code.toByte() }); z.closeEntry()
+            }
+        }.toByteArray()
+        assertTrue(runCatching { catalog.importZip(giant.inputStream()) }.isFailure)
+        assertEquals(before, catalog.list().size)
         dir.deleteRecursively()
     }
 

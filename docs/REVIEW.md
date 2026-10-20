@@ -125,3 +125,19 @@ Corrigé :
 
 Reste noté (mineur) :
 - Écriture du journal sur le fil principal (petites écritures, quelques par minute).
+
+## Revue de fin de phase 6 (2026-10-20, sous-agent neuf, `c2fc7cd..5d2d1b0`)
+Verdict : moteur et sauvegarde sains (rien d'interdit dans le fil audio, aucune perte de projet trouvée à l'ouverture, au renommage, à la suppression ; le nettoyage des sons couvre toutes les scènes et les pads live).
+
+Corrigé :
+- GRAVE : import d'un .zip avec un project.json énorme → plantage mémoire. project.json plafonné à 4 Mo, dossier nettoyé même sur OutOfMemoryError ; doublons refusés ; projet assaini avant la vérification des sons (tests ajoutés).
+- Noms des pistes exportées coupés avec un nom de projet long (fichiers écrasés) ; drapeau d'annulation resté levé ; annulation M4A affichée comme un échec ; M4A incomplet annoncé comme réussi.
+- « Mes projets » qui se rouvrait après l'ouverture d'un projet ; Annuler/Rétablir désactivés pendant un enregistrement ; latence de sortie compensée à l'enregistrement (Bluetooth).
+- Remix qui suit le tempo : échec mémorisé (plus de nouvel essai à chaque réglage), écart de tempo limité de la moitié au double avec un message clair.
+- Roulements transmis avec le coup (une seule commande au lieu de deux : la file du moteur ne déborde pas) ; test « stop pendant un roulement » ajouté.
+- Réglage du tampon audio séparé du volume du métronome ; fichiers MIDI à longueur de piste incohérente refusés.
+
+Restant (mineur) :
+- Couloir de force du piano roll : remplace toute la boucle ; pendant un enregistrement, une note tout juste ajoutée peut être écrasée par un geste simultané. Le geste en cours de la grille redémarre quand une note arrive.
+- Import d'un son de 2 minutes : pic de mémoire Java ~110 Mo (attrapé : message « pas assez de mémoire » au lieu d'un plantage).
+- Export MIDI : deux notes de même hauteur qui se chevauchent, la première coupe la seconde.

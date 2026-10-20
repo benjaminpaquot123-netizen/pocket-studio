@@ -34,7 +34,7 @@ enum class CommandType : uint8_t {
     SetSwing,         // value: 0..0.75 of a 16th
     SetMetronome,     // value: 1 = on
     SetPatternSteps,  // a: 16..64
-    SetDrumHit,       // a: lane, b: step, value: velocity (0 = remove)
+    SetDrumHit,       // a: lane, b: step | hits in the step << 16 (0/1 plain, 2..4 roll), value: velocity (0 = remove)
     TriggerPad,       // a: lane, value: velocity (live play, sounds immediately)
     SetAcidStep,      // a: step index, b: AcidStep::pack()
     SetAcidLength,    // a: 1..64

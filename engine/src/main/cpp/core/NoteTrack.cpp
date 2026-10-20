@@ -39,6 +39,9 @@ void NoteTrack::onStep(int offset, int step, double samplesPerStep) {
             Pending& p = pending_[static_cast<size_t>(k)];
             if (p.velocity == 0.0f && p.pitch == n.pitch && p.at > on) p.at = on;
         }
+        // Full (hundreds of long notes at once): this note is dropped whole, never a note-on
+        // without its note-off (it would hang).
+        if (pendingCount_ + 2 > static_cast<int>(pending_.size())) continue;
         push(on, n.pitch, n.velocity);
         push(off, n.pitch, 0.0f);
     }

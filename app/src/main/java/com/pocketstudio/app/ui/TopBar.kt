@@ -25,6 +25,8 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.animation.core.RepeatMode
@@ -69,7 +71,11 @@ class TopBarActions(
 
 /** Always on top: the open project (tap for "Mes projets"), undo/redo, tempo and play, on every screen. */
 @Composable
-fun TopBar(ui: TopBarUi, actions: TopBarActions) {
+fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.layout.BoxWithConstraints(Modifier.fillMaxWidth()) {
+    // Narrow (a small phone, a big text size): the tempo window, then redo, give their room to
+    // the project name; the projects button and play never go.
+    val showTempo = maxWidth >= 400.dp
+    val showRedo = maxWidth >= 340.dp
     Row(
         Modifier.fillMaxWidth()
             .background(Brush.verticalGradient(listOf(lerp(Neon.Surface, Color.Black, 0.12f), lerp(Neon.Background, Color.Black, 0.1f))))
@@ -78,7 +84,7 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Row(
-            Modifier.weight(1f).clip(RoundedCornerShape(12.dp)).clickable(onClick = actions.projects).padding(vertical = 6.dp, horizontal = 4.dp)
+            Modifier.weight(1f).widthIn(min = 48.dp).clip(RoundedCornerShape(12.dp)).clickable(onClick = actions.projects).padding(vertical = 6.dp, horizontal = 4.dp)
                 .testTag("top_projects"),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -95,8 +101,10 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) {
         IconButton(onClick = actions.undo, enabled = ui.canUndo, modifier = Modifier.testTag("top_undo")) {
             Icon(Icons.AutoMirrored.Filled.Undo, contentDescription = "Annuler")
         }
-        IconButton(onClick = actions.redo, enabled = ui.canRedo, modifier = Modifier.testTag("top_redo")) {
-            Icon(Icons.AutoMirrored.Filled.Redo, contentDescription = "Rétablir")
+        if (showRedo) {
+            IconButton(onClick = actions.redo, enabled = ui.canRedo, modifier = Modifier.testTag("top_redo")) {
+                Icon(Icons.AutoMirrored.Filled.Redo, contentDescription = "Rétablir")
+            }
         }
         // Record: a red dot, pulsing and glowing while armed.
         val blink = rememberInfiniteTransition(label = "rec")
@@ -117,7 +125,7 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) {
             }
         }
         // The tempo in a small dark window, like a hardware display.
-        Row(
+        if (showTempo) Row(
             Modifier.padding(horizontal = 4.dp).clip(RoundedCornerShape(8.dp)).background(Color.Black.copy(alpha = 0.35f))
                 .border(1.dp, Color.White.copy(alpha = 0.06f), RoundedCornerShape(8.dp)).padding(horizontal = 8.dp, vertical = 4.dp),
             verticalAlignment = Alignment.Bottom,
@@ -127,7 +135,7 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) {
         }
         val playColor = if (ui.playing) Neon.Acid else Neon.Cyan
         Box(
-            Modifier.padding(start = 4.dp, end = 2.dp).size(42.dp)
+            Modifier.padding(start = 4.dp, end = 2.dp).requiredSize(42.dp)
                 .shadow(if (ui.playing) 14.dp else 6.dp, CircleShape, ambientColor = playColor, spotColor = playColor)
                 .clip(CircleShape)
                 .background(Brush.verticalGradient(listOf(lerp(playColor, Color.White, 0.2f), playColor)))

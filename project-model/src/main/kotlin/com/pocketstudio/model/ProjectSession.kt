@@ -59,9 +59,15 @@ class ProjectSession(
         publish()
     }
 
-    /** Turns the quiet edits made since [before] into one undo step (end of a live recording). */
-    fun commitQuietEdits(before: Project) {
-        history.commitFrom(before.sanitized())
+    /** How many undo steps there are (to note when a live recording starts). */
+    val undoDepth: Int get() = history.undoDepth
+
+    /**
+     * Turns the quiet edits made since [before] into one undo step (end of a live recording);
+     * [depth]: [undoDepth] when it started, so edits made during it fold into the same step.
+     */
+    fun commitQuietEdits(before: Project, depth: Int = history.undoDepth) {
+        history.commitFrom(before.sanitized(), depth)
         publish()
     }
 

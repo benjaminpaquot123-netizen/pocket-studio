@@ -185,11 +185,18 @@ void SampleInstrument::apply(const Event& e) {
                 else ++sounding;
             }
             if (sounding >= kPolyphony) {
-                Voice* oldest = nullptr;
+                // Too many: cut the quietest voice already let go, else the oldest held one (a held
+                // chord outlives quick notes fading out).
+                Voice* victim = nullptr;
                 for (auto& v : voices_) {
-                    if (v.stage != Off && v.fade == 0 && (!oldest || v.age < oldest->age)) oldest = &v;
+                    if (v.stage != Off && v.fade == 0 && !v.gate && (!victim || v.env < victim->env)) victim = &v;
                 }
-                if (oldest) oldest->fade = kFadeFrames;
+                if (!victim) {
+                    for (auto& v : voices_) {
+                        if (v.stage != Off && v.fade == 0 && (!victim || v.age < victim->age)) victim = &v;
+                    }
+                }
+                if (victim) victim->fade = kFadeFrames;
             }
         }
         start(*freeSlot(), e.note, e.velocity);

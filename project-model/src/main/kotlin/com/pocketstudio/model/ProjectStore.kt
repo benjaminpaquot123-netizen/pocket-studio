@@ -57,7 +57,7 @@ class ProjectStore(private val root: File) {
                 lastError = e
             }
         }
-        throw IOException("Project $id is unreadable", lastError)
+        throw IOException("projet illisible ($id)", lastError)
     }
 
     // Makes the rename itself durable (power cut right after a save). Best effort: not every platform allows it.

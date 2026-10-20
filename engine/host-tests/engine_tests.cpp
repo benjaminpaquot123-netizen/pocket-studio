@@ -1721,6 +1721,19 @@ void testRecordingStartsOnTheFirstStep() {
     engine.post(now);
     for (int k = 0; k < 6; ++k) block(256);
     CHECK(small.state.load() == 2 && small.written.load() == 1000);
+    // The microphone drops out mid-take (audio rerouted, being reopened): those callbacks record
+    // silence, so what is sung afterwards stays in time with the transport.
+    ps::RecordBuffer take(kRate);
+    ps::Command go{ps::CommandType::RecordArm, 0.0f, 0};
+    go.record = &take;
+    engine.post(go);
+    block(256);
+    block(256);
+    for (int k = 0; k < 3; ++k) engine.process(nullptr, 0, 0, out.data(), 256, 2);
+    const float next = float(micFrame);
+    block(256);
+    CHECK(take.written.load() == 6 * 256);
+    CHECK(take.data[600] == 0.0f && take.data[5 * 256] == next);
 }
 
 void testThreeFourAndPartMutes() {
@@ -2807,6 +2820,7 @@ void testAutomationClips() {
 }
 
 double pitchHz(const std::vector<float>& x, int from, int len);
+double toneAmplitude(const std::vector<float>& x, int from, int len, double hz);
 
 void testExpressionAndArpeggio() {
     // Pitch bend: +12 semitones doubles the pitch; the mod wheel is accepted (vibrato).
@@ -2983,6 +2997,170 @@ void testPerformanceEffects() {
     for (int i = 0; i < n; ++i) CHECK(std::isfinite(l[static_cast<size_t>(i)]));
 }
 
+void testPerformanceFilterFadesInAndOut() {
+    // A low tone through the live pad's filter, pressed on the high-pass side (the tone nearly
+    // vanishes), slid across to the low-pass side and let go, as the engine applies UI commands
+    // (between blocks): no step much bigger than the tone's own, then the dry sound untouched.
+    ps::PerformanceFx fx;
+    fx.prepare(kRate);
+    constexpr float amp = 0.5f, hz = 220.0f;
+    std::vector<float> l(256), r(256);
+    int64_t frame = 0;
+    float prev = 0.0f, worst = 0.0f, dryError = 0.0f;
+    auto run = [&](int blocks) {
+        for (int b = 0; b < blocks; ++b) {
+            for (int i = 0; i < 256; ++i) l[size_t(i)] = r[size_t(i)] = amp * float(std::sin(2 * M_PI * hz * double(frame + i) / kRate));
+            const std::vector<float> dry = l;
+            fx.process(l.data(), r.data(), 256);
+            dryError = 0.0f;
+            for (int i = 0; i < 256; ++i) {
+                worst = std::max(worst, std::fabs(l[size_t(i)] - prev));
+                prev = l[size_t(i)];
+                dryError = std::max(dryError, std::fabs(l[size_t(i)] - dry[size_t(i)]));
+            }
+            frame += 256;
+        }
+    };
+    run(20);
+    fx.setParam(ps::PerformanceFx::Resonance, 0.5f);
+    fx.setParam(ps::PerformanceFx::Filter, 0.9f);  // high-pass around 2 kHz
+    run(40);
+    float filtered = 0.0f;
+    for (float v : l) filtered = std::max(filtered, std::fabs(v));
+    CHECK(filtered < 0.25f * amp);  // it really filters
+    fx.setParam(ps::PerformanceFx::Filter, 0.1f);  // straight across to the low-pass side
+    run(40);
+    fx.setParam(ps::PerformanceFx::Filter, 0.5f);  // let go
+    fx.setParam(ps::PerformanceFx::Resonance, 0.3f);
+    run(40);
+    const float natural = amp * naturalStep(hz);
+    std::printf("  live filter: largest step %.4f (the tone's own %.4f)\n", worst, natural);
+    CHECK(worst < 3.0f * natural);
+    CHECK(dryError < 1e-6f);
+    CHECK(!fx.active());
+}
+
+// Amplitude of the [hz] component of x[from, from + len) (one DFT bin).
+double toneAmplitude(const std::vector<float>& x, int from, int len, double hz) {
+    double re = 0.0, im = 0.0;
+    for (int i = 0; i < len; ++i) {
+        const double w = 2 * M_PI * hz * i / kRate;
+        re += x[size_t(from + i)] * std::cos(w);
+        im += x[size_t(from + i)] * std::sin(w);
+    }
+    return 2.0 * std::sqrt(re * re + im * im) / len;
+}
+
+// A four-note chord held, then five quick notes while it rings (or not): the instrument's output.
+template <typename Instrument>
+std::vector<float> chordAndQuickNotes(Instrument& inst, bool quick) {
+    std::vector<float> out(size_t(kRate) * 3 / 2, 0.0f);
+    int at = 0;
+    auto renderFor = [&](int frames) {
+        for (int done = 0; done < frames;) {
+            const int n = std::min(256, frames - done);
+            inst.render(out.data() + at, n);
+            at += n;
+            done += n;
+        }
+    };
+    for (int note : {45, 48, 52, 55}) inst.noteOn(note, 0.8f, 0);
+    renderFor(kRate / 4);
+    for (int k = 0; k < 5; ++k) {
+        if (quick) inst.noteOn(84 + 2 * k, 0.8f, 0);
+        renderFor(kRate / 40);
+        if (quick) inst.noteOff(84 + 2 * k, 0);
+        renderFor(kRate / 40);
+    }
+    renderFor(int(out.size()) - at);
+    return out;
+}
+
+// Each held chord note keeps its level although quick notes, released but still ringing (long
+// release), had to take voices.
+template <typename Instrument, typename Setup>
+void checkChordSurvivesQuickNotes(const char* name, Setup setup) {
+    Instrument alone, busy;
+    setup(alone);
+    setup(busy);
+    const auto a = chordAndQuickNotes(alone, false);
+    const auto b = chordAndQuickNotes(busy, true);
+    double worst = 1e9;
+    for (int note : {45, 48, 52, 55}) {
+        const double hz = 440.0 * std::pow(2.0, (note - 69) / 12.0);
+        const double ref = toneAmplitude(a, kRate, kRate / 2, hz);
+        worst = std::min(worst, toneAmplitude(b, kRate, kRate / 2, hz) / std::max(ref, 1e-9));
+    }
+    std::printf("  %s: weakest chord note at %.0f %% of its level\n", name, worst * 100);
+    CHECK(worst > 0.8);
+}
+
+void testVoiceStealingSparesHeldNotes() {
+    checkChordSurvivesQuickNotes<ps::Synth>("synth", [](ps::Synth& s) {
+        s.prepare(kRate);
+        openFilter(s);
+        s.setParam(ps::Synth::AmpSustain, 1.0f);
+        s.setParam(ps::Synth::AmpRelease, 1.0f);  // 5 s
+    });
+    checkChordSurvivesQuickNotes<ps::PlaitsSynth>("plaits", [](ps::PlaitsSynth& p) {
+        p.prepare(kRate);
+        p.setParam(ps::PlaitsSynth::Model, 0.0f);
+        p.setParam(ps::PlaitsSynth::Release, 1.0f);  // 2 s
+    });
+    std::vector<float> wave(static_cast<size_t>(kRate));
+    for (size_t i = 0; i < wave.size(); ++i) wave[i] = 0.5f * float(std::sin(2.0 * M_PI * 440.0 * double(i) / kRate));
+    checkChordSurvivesQuickNotes<ps::SampleInstrument>("sampled", [&](ps::SampleInstrument& s) {
+        s.prepare(kRate);
+        s.install(ps::Sample::create(wave.data(), kRate, 1, kRate, kRate));
+        s.setParam(ps::SampleInstrument::Root, 69.0f);
+        s.setParam(ps::SampleInstrument::Loop, 1.0f);
+        s.setParam(ps::SampleInstrument::Release, 4.0f);
+    });
+}
+
+void testNoteTrackKeepsNoteOffs() {
+    // One long note, then 300 long notes on the next step: more than the queue holds. Whatever is
+    // dropped, every note that started also ends.
+    struct Sink {
+        int on = 0, off = 0;
+        void noteOn(int, float, int) { ++on; }
+        void noteOff(int, int) { ++off; }
+    } sink;
+    ps::NoteTrack track;
+    track.setNote(0, ps::NoteTrack::pack(0, 2000, 30), 0.8f);
+    for (int i = 1; i <= 300; ++i) track.setNote(i, ps::NoteTrack::pack(24 + i % 24, 2000, i % 128), 0.8f);
+    track.setCount(301);
+    track.onStep(0, 0, 6000.0);
+    track.advance(6000, sink);
+    track.onStep(0, 1, 6000.0);
+    for (int k = 0; k < 200; ++k) track.advance(6000, sink);
+    std::printf("  overflowing note queue: %d on, %d off\n", sink.on, sink.off);
+    CHECK(sink.on > 100);
+    CHECK(sink.on == sink.off);
+    CHECK(track.pendingCount() == 0);
+}
+
+void testTempoIgnoresNonFiniteValues() {
+    ps::Sequencer seq;
+    seq.prepare(kRate);
+    seq.setTempo(120.0);
+    seq.setTempo(std::nan(""));
+    seq.setSwing(0.2);
+    seq.setSwing(std::nan(""));
+    CHECK(seq.tempo() == 120.0);
+    // Through the engine: the transport keeps stepping at the last good tempo.
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SetTempo, 150.0f});
+    engine.post({ps::CommandType::SetTempo, std::nanf("")});
+    engine.post({ps::CommandType::SetSwing, std::nanf("")});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    const auto out = render(engine, kRate - 100, 256);
+    bool finite = true;
+    for (float v : out) finite &= std::isfinite(v);
+    CHECK(finite);
+    CHECK(engine.currentStep() == 9);  // 10 sixteenths a second at 150 BPM
+}
+
 // Fundamental frequency by autocorrelation (lag with the strongest correlation within 60..1000 Hz).
 double pitchHz(const std::vector<float>& x, int from, int len) {
     int best = 0;
@@ -3013,6 +3191,24 @@ void testPlaitsVoices() {
     const double f = pitchHz(out, kRate / 2, 4800);
     std::printf("  plaits A4: %.2f Hz\n", f);
     CHECK(std::fabs(f - 440.0) < 1.0);
+    {
+        // At a 44.1 kHz stream too (the tuning follows the rate given to prepare()).
+        ps::PlaitsSynth slow;
+        slow.prepare(44100);
+        slow.setParam(ps::PlaitsSynth::Model, 0.0f);
+        slow.setParam(ps::PlaitsSynth::Harmonics, 0.5f);
+        slow.noteOn(69, 1.0f, 0);
+        std::vector<float> o(44100, 0.0f);
+        slow.render(o.data(), 44100);
+        // The strongest frequency near A4, read as 48 kHz samples (then scaled back).
+        double f44 = 0.0, best = -1.0;
+        for (double hz = 460.0; hz < 500.0; hz += 0.05) {
+            const double a = toneAmplitude(o, 22050, 22050, hz);
+            if (a > best) { best = a; f44 = hz * 44100.0 / kRate; }
+        }
+        std::printf("  plaits A4 at 44.1 kHz: %.2f Hz\n", f44);
+        CHECK(std::fabs(f44 - 440.0) < 1.0);
+    }
     float peak = 0.0f;
     for (float v : out) { peak = std::max(peak, std::fabs(v)); CHECK(std::isfinite(v)); }
     CHECK(peak > 0.05f && peak < 1.0f);
@@ -3728,6 +3924,10 @@ int main(int argc, char** argv) {
         {"automation", testAutomationMovesTheFader},
         {"scenes", testScenesSwapOnTheBar},
         {"performance_fx", testPerformanceEffects},
+        {"performance_filter_fades", testPerformanceFilterFadesInAndOut},
+        {"voice_stealing_spares_held", testVoiceStealingSparesHeldNotes},
+        {"note_track_keeps_note_offs", testNoteTrackKeepsNoteOffs},
+        {"tempo_ignores_non_finite", testTempoIgnoresNonFiniteValues},
         {"plaits", testPlaitsVoices},
         {"plaits_engine", testPlaitsThroughEngine},
         {"tempo_and_key", testTempoAndKeyDetection},

@@ -19,8 +19,9 @@ public:
 
     void prepare(int sampleRate) { sampleRate_ = sampleRate; }
 
-    void setTempo(double bpm) { bpm_ = std::clamp(bpm, 40.0, 300.0); }
-    void setSwing(double swing) { swing_ = std::clamp(swing, 0.0, 0.75); }
+    // A NaN would slip through the clamp and make the step loop spin: ignored.
+    void setTempo(double bpm) { if (std::isfinite(bpm)) bpm_ = std::clamp(bpm, 40.0, 300.0); }
+    void setSwing(double swing) { if (std::isfinite(swing)) swing_ = std::clamp(swing, 0.0, 0.75); }
     double tempo() const { return bpm_; }
     // Time signature n/4: a bar is 4n sixteenths (count-in, bar lines, metronome accent).
     void setBeatsPerBar(int beats) { stepsPerBar_ = std::clamp(beats, 2, 7) * kStepsPerBeat; }

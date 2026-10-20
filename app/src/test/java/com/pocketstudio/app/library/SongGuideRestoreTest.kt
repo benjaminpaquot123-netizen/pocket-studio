@@ -29,7 +29,7 @@ class SongGuideRestoreTest {
                 // Set once, as "Créer le morceau" does just before the activity is recreated.
                 if (!set) {
                     set = true
-                    guide = songGuide("Techno", plan)
+                    guide = songGuide("Techno", plan, inKey = true)
                 }
                 guide?.let { GuideDialog(onClose = { guide = null }, pages = it, tag = "song_guide") }
             }

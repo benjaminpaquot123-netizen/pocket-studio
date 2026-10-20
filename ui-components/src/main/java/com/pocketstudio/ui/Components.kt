@@ -88,6 +88,11 @@ open class MemoryFoldStore(initial: Map<String, Boolean> = emptyMap()) : FoldSto
     override fun setFolded(key: String, folded: Boolean) {
         this.folded[key] = folded
     }
+
+    /** Every card open again (the settings' reset). */
+    open fun unfoldAll() {
+        folded.clear()
+    }
 }
 
 val LocalFoldStore = staticCompositionLocalOf<FoldStore> { MemoryFoldStore() }

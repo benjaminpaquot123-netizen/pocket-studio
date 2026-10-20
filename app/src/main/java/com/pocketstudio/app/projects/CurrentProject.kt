@@ -2,6 +2,12 @@ package com.pocketstudio.app.projects
 
 import android.content.Context
 import com.pocketstudio.app.rhythm.RhythmViewModel
+import com.pocketstudio.model.ProjectCatalog
+import java.io.File
+
+/** Every project on the phone, and the trash. Blocking file work: call it off the main thread. */
+fun projectCatalog(context: Context) =
+    ProjectCatalog(File(context.filesDir, "projects"), File(context.filesDir, "projects-trash"))
 
 /** Which project the app opens: the last one used (the first project's id on a new install). */
 object CurrentProject {

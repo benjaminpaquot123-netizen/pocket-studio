@@ -104,6 +104,7 @@ bool AudioHost::openInputLocked() {
 
 void AudioHost::closeLocked() {
     inputLive_.store(false, std::memory_order_release);
+    inputWarming_.store(false, std::memory_order_release);
     if (output_) {
         auto xruns = output_->getXRunCount();
         if (xruns) xrunBase_ += xruns.value();
@@ -142,6 +143,9 @@ bool AudioHost::start() {
 void AudioHost::stop() {
     std::lock_guard<std::mutex> guard(lock_);
     wantRunning_ = false;
+    // Everything closes: nobody listens any more, and a later start must not reopen the microphone.
+    micUsers_ = 0;
+    recordingInput_ = false;
     closeLocked();
 }
 
@@ -271,6 +275,11 @@ oboe::DataCallbackResult AudioHost::onAudioReady(oboe::AudioStream* stream, void
         // back to back, so uneven chunks don't distort the timing.
         inFrames = static_cast<int>(inputRing_.read(inputBuffer_.data(), kMaxInputFrames));
         in = inputBuffer_.data();
+        // Just reopened mid-take and nothing captured yet: no input at all, not an empty one.
+        if (inputWarming_.load(std::memory_order_acquire)) {
+            if (inFrames > 0) inputWarming_.store(false, std::memory_order_release);
+            else in = nullptr;
+        }
     }
     engine_.process(in, inFrames, 1, out, numFrames, stream->getChannelCount());
     return oboe::DataCallbackResult::Continue;
@@ -340,14 +349,18 @@ bool AudioHost::reopenRecordingInputLocked() {
     }
     // No waiting here (error-callback thread): the ring fills as soon as the microphone delivers.
     drainInput_.store(true, std::memory_order_release);
+    inputWarming_.store(true, std::memory_order_release);
     inputLive_.store(true, std::memory_order_release);
     return true;
 }
 
-bool AudioHost::startRecordingInput() {
+bool AudioHost::startRecordingInput(MicUser user) {
     std::lock_guard<std::mutex> guard(lock_);
     if (!wantRunning_ || !output_) return false;
-    if (input_) return true;  // already listening
+    if (input_) {  // already listening
+        micUsers_ |= user;
+        return true;
+    }
     recordingInput_ = true;
     inputCallback_.reset();
     if (!openInputLocked() || input_->requestStart() != oboe::Result::OK) {
@@ -370,13 +383,17 @@ bool AudioHost::startRecordingInput() {
         recordingInput_ = false;
         return false;
     }
+    micUsers_ |= user;
+    inputWarming_.store(false, std::memory_order_release);
     drainInput_.store(true, std::memory_order_release);
     inputLive_.store(true, std::memory_order_release);
     return true;
 }
 
-void AudioHost::stopRecordingInput() {
+void AudioHost::stopRecordingInput(MicUser user) {
     std::lock_guard<std::mutex> guard(lock_);
+    micUsers_ &= ~user;
+    if (micUsers_ != 0) return;  // someone else still listens
     recordingInput_ = false;
     inputLive_.store(false, std::memory_order_release);
     if (!input_) return;

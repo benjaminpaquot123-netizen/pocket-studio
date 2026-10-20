@@ -150,10 +150,12 @@ class RemixViewModel(app: Application) : AndroidViewModel(app) {
         _preview.value = p.copy(playing = false, position = -1)
     }
 
+    /** Deletes the song's stems, never those a project plays along (the screen asks first). */
     fun delete(set: StemSet) {
         if (_preview.value?.setId == set.id) stop()
         viewModelScope.launch {
-            withContext(Dispatchers.IO) { StemStore.delete(set) }
+            val deleted = withContext(Dispatchers.IO) { StemStore.delete(getApplication(), set) }
+            if (!deleted) AppLog.add("Remix : « ${set.name} » gardé, un projet l'utilise")
             refresh()
         }
     }

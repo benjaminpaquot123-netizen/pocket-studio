@@ -103,7 +103,8 @@ data class DrumPattern(
             steps = s,
             lanes = fixedLanes.map { lane ->
                 lane.copy(
-                    hits = lane.hits.filterKeys { it in 0 until s }.mapValues { (_, h) -> h.sanitized() },
+                    // Hits past the loop's end stay, unheard: a time signature tried and undone gives them back.
+                    hits = lane.hits.filterKeys { it in 0 until MAX_STEPS }.mapValues { (_, h) -> h.sanitized() },
                     sample = lane.sample?.takeIf { it.isSafe }?.sanitized(),
                     pan = lane.pan.finite(0f).coerceIn(-1f, 1f),
                 )
@@ -135,9 +136,9 @@ data class DrumPattern(
     fun fill(lane: Int, every: Int, velocity: Float = 1f): DrumPattern =
         withHits(lane, (0 until steps step every.coerceAtLeast(1)).associateWith { Hit(velocity) })
 
-    /** The lane's hits moved by [by] steps, wrapping around the loop. */
+    /** The lane's hits moved by [by] steps, wrapping around the loop (those past its end stay put). */
     fun rotate(lane: Int, by: Int): DrumPattern =
-        withHits(lane, lanes[lane].hits.mapKeys { (step, _) -> Math.floorMod(step + by, steps) })
+        withHits(lane, lanes[lane].hits.mapKeys { (step, _) -> if (step < steps) Math.floorMod(step + by, steps) else step })
 
     /** Next roll for a hit: 1 → 2 → 3 → 4 → 1. No hit: nothing changes. */
     fun cycleRepeats(lane: Int, step: Int): DrumPattern {
@@ -296,6 +297,8 @@ data class Mixer(
         const val CHANNELS = 32
         const val FIRST_PAD = 16
         const val INSERTS = 4
+        /** The master's index where a channel number is expected (automation, engine). */
+        const val MASTER = 4
 
         /** The strip of drum pad [lane] (its own effects, before the drums' strip). */
         fun padChannel(lane: Int) = FIRST_PAD + lane

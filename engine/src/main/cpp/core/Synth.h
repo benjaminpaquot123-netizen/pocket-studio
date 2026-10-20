@@ -55,6 +55,7 @@ private:
         bool gate = false;
         uint32_t age = 0;
         float baseHz = 440.0f;
+        float level = 0.0f;  // last amplitude envelope value (voice stealing takes the quietest released one)
     };
 
     struct Event {

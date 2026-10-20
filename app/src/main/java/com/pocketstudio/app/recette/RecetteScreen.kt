@@ -46,7 +46,7 @@ fun RecetteScreen(
     onReportProblem: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var showProblemDialog by remember { mutableStateOf(false) }
+    var showProblemDialog by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(false) }
 
     LazyColumn(
         modifier = modifier.fillMaxSize().testTag("recette"),
@@ -164,7 +164,8 @@ private fun StatusChip(label: String, selected: Boolean, color: androidx.compose
 
 @Composable
 private fun ProblemDialog(onDismiss: () -> Unit, onSend: (String) -> Unit) {
-    var text by remember { mutableStateOf("") }
+    // Kept when the phone turns: the words already typed are not lost.
+    var text by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf("") }
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Signaler un problème") },

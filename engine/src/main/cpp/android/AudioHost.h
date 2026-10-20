@@ -75,10 +75,13 @@ public:
     // of microphone data, the next test uses the next configuration.
     void finishLatencyTest(bool succeededInput);
 
+    // Who listens to the microphone: it closes only when the last of them lets go (a take ending
+    // must not cut the tuner's microphone, nor the other way round).
+    enum MicUser : int { MicRecording = 1, MicTuner = 2 };
     // Microphone for recording audio tracks, alongside the running output. False when the
     // microphone cannot be opened or stays silent (no permission, busy).
-    bool startRecordingInput();
-    void stopRecordingInput();
+    bool startRecordingInput(MicUser user);
+    void stopRecordingInput(MicUser user);
 
     oboe::DataCallbackResult onAudioReady(oboe::AudioStream* stream, void* audioData,
                                           int32_t numFrames) override;
@@ -115,6 +118,10 @@ private:
     std::atomic<bool> inputLive_{false};
     // The microphone is open for recording (not a latency test): reopened after a reroute.
     bool recordingInput_ = false;
+    int micUsers_ = 0;  // MicUser bits; guarded by lock_
+    // Reopened after a reroute: no input reaches the engine until the microphone delivers again
+    // (it then records silence, so a take stays in time).
+    std::atomic<bool> inputWarming_{false};
     bool reopenRecordingInputLocked();
     std::atomic<bool> testInterrupted_{false};
     bool wantRunning_ = false;

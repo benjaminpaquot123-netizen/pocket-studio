@@ -1,5 +1,6 @@
 package com.pocketstudio.app.library
 
+import com.pocketstudio.app.report.forUser
 import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
@@ -87,7 +88,8 @@ data class WizardUi(
     val error: String? = null,
 ) {
     val style: StarterWizard.Style? get() = styleId?.let(StarterWizard::style)
-    val steps: List<StarterWizard.Step> get() = StarterWizard.steps(style)
+    /** Without a melody ([mood] null) the melodic parts' steps are left out; the mood is chosen before them, so [step] stays put. */
+    val steps: List<StarterWizard.Step> get() = StarterWizard.steps(style, melody = mood != null)
     val lastStep: Int get() = steps.size - 1
     val current: StarterWizard.Step get() = steps[step.coerceIn(0, lastStep)]
 
@@ -205,7 +207,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                     message = when (error) {
                         null -> null
                         is VerifiedDownload.CancelledException -> null
-                        else -> "Le pack « ${entry.name} » n'a pas pu être téléchargé : ${error.message ?: "erreur"}.".also { m -> AppLog.add(m) }
+                        else -> "Le pack « ${entry.name} » n'a pas pu être téléchargé : ${error.forUser()}.".also { m -> AppLog.add(m) }
                     },
                 )
             }
@@ -627,7 +629,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                 }
                 AppLog.add("Assistant : morceau ${style.name}, ${sounds.size} lignes, ${parts.size} pistes mélodiques")
                 // The choices stay until the project is written (the caller closes the assistant then).
-                then(StarterWizard.build(style, sounds, w.mood, parts), files, songGuide(style.name, w.plan))
+                then(StarterWizard.build(style, sounds, w.mood, parts), files, songGuide(style.name, w.plan, inKey = w.mood != null))
             } catch (e: Exception) {
                 _wizard.update { it.copy(creating = false, error = "Le morceau n'a pas pu être préparé (${e.message}).") }
             }

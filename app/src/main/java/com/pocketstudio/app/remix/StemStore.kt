@@ -1,6 +1,7 @@
 package com.pocketstudio.app.remix
 
 import android.content.Context
+import com.pocketstudio.app.projects.projectCatalog
 import com.pocketstudio.separation.Demucs
 import org.json.JSONObject
 import java.io.File
@@ -14,8 +15,18 @@ data class SongInfo(val bpm: Double = 0.0, val firstBeat: Double = 0.0, val root
     }
 }
 
-/** One separated song: four 32-bit float stereo WAVs at 44.1 kHz in [dir]. */
-data class StemSet(val dir: File, val name: String, val seconds: Double, val createdAt: Long, val info: SongInfo = SongInfo()) {
+/**
+ * One separated song: four 32-bit float stereo WAVs at 44.1 kHz in [dir]. [usedBy]: names of the
+ * saved projects that play it along (filled by [StemStore.list]).
+ */
+data class StemSet(
+    val dir: File,
+    val name: String,
+    val seconds: Double,
+    val createdAt: Long,
+    val info: SongInfo = SongInfo(),
+    val usedBy: List<String> = emptyList(),
+) {
     val id: String get() = dir.name
     fun stem(name: String) = File(dir, "$name.wav")
 }
@@ -23,7 +34,7 @@ data class StemSet(val dir: File, val name: String, val seconds: Double, val cre
 /**
  * Finished separations live in files/stems/<key>, where the key is the SHA-256 of the decoded
  * audio plus the model version: the same song is never separated twice. A float stem weighs about
- * 21 MB per minute, so only the last [KEEP] songs are kept.
+ * 21 MB per minute, so only the last [KEEP] songs are kept, plus every song a project plays along.
  */
 object StemStore {
     const val KEEP = 3
@@ -35,8 +46,12 @@ object StemStore {
 
     fun dirFor(context: Context, key: String) = File(root(context), key)
 
-    fun list(context: Context): List<StemSet> =
-        root(context).listFiles().orEmpty().mapNotNull(::read).sortedByDescending { it.createdAt }
+    /** Blocking (reads every project to know which sets are in use): call it off the main thread. */
+    fun list(context: Context): List<StemSet> {
+        val users = runCatching { projectCatalog(context).stemSetUsers() }.getOrDefault(emptyMap())
+        return root(context).listFiles().orEmpty().mapNotNull(::read).sortedByDescending { it.createdAt }
+            .map { it.copy(usedBy = users[it.id].orEmpty()) }
+    }
 
     fun read(dir: File): StemSet? {
         val meta = File(dir, META)
@@ -62,7 +77,7 @@ object StemStore {
                 .put("bpm", info.bpm).put("firstBeat", info.firstBeat).put("root", info.root ?: -1).put("minor", info.minor)
                 .toString(),
         )
-        if (!tmp.renameTo(File(dir, META))) throw java.io.IOException("rename failed")
+        if (!tmp.renameTo(File(dir, META))) throw java.io.IOException("enregistrement impossible")
         return set
     }
 
@@ -77,17 +92,36 @@ object StemStore {
 
     private fun pinFile(context: Context) = File(context.filesDir, "stems-pinned.txt")
 
-    /** Removes broken folders and everything beyond the [KEEP] most recent sets, except the pinned one. */
+    /**
+     * Ids of the sets a project needs: those saved projects (trashed ones included) play along, and
+     * the pinned one (the open project, maybe not saved yet). Null when the projects cannot be read.
+     */
+    fun inUse(context: Context): Set<String>? {
+        val users = runCatching { projectCatalog(context).stemSetUsers() }.getOrNull() ?: return null
+        return users.keys + listOfNotNull(pinned(context))
+    }
+
+    private fun pinned(context: Context) = runCatching { pinFile(context).readText().trim() }.getOrNull()?.ifEmpty { null }
+
+    /** Removes broken folders and everything beyond the [KEEP] most recent sets, except the sets in use. */
     fun prune(context: Context) {
-        val all = root(context).listFiles().orEmpty()
+        // Projects unreadable as a whole (storage error): delete nothing rather than a song in use.
+        prune(root(context), inUse(context) ?: return)
+    }
+
+    internal fun prune(root: File, inUse: Set<String>) {
+        val all = root.listFiles().orEmpty()
         val good = all.mapNotNull(::read).sortedByDescending { it.createdAt }
-        val pinned = runCatching { pinFile(context).readText().trim() }.getOrNull()
-        val keep = (good.take(KEEP).map { it.dir } + good.filter { it.id == pinned }.map { it.dir }).toSet()
+        val keep = (good.take(KEEP) + good.filter { it.id in inUse }).map { it.dir }.toSet()
         all.filter { it !in keep }.forEach { it.deleteRecursively() }
     }
 
-    fun delete(set: StemSet) {
+    /** Deletes [set] unless a project uses it; returns false (nothing deleted) when one does. */
+    fun delete(context: Context, set: StemSet): Boolean {
+        val used = inUse(context) ?: return false
+        if (set.id in used) return false
         set.dir.deleteRecursively()
+        return true
     }
 
     private const val META = "stems.json"

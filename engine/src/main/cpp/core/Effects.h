@@ -160,7 +160,7 @@ public:
     // A sequencer step starts `offset` frames into the next process() (keeps the chopper on the grid).
     void onStep(int offset) { stepOffset_ = offset; }
     void process(float* l, float* r, int n);
-    bool active() const { return filterOn_ || repeatOn_ || stopOn_ || stopping_ || chopOn_ || repeating_; }
+    bool active() const { return filterOn_ || filterMix_ > 0.0f || repeatOn_ || stopOn_ || stopping_ || chopOn_ || repeating_; }
     // After a NaN reached the master: the filter and the recorded seconds start again from silence
     // (no allocation; clearing the 4 s of memory is a one-off).
     void recover();
@@ -176,6 +176,10 @@ private:
     // Filter: 0.5 = off, below = low-pass sweeping down, above = high-pass sweeping up.
     float filter_ = 0.5f, resonance_ = 0.3f;
     bool filterOn_ = false;
+    // The filter always runs (its memory follows the music); what is heard crossfades between the
+    // dry and the filtered sound in about 10 ms, so pressing and letting go never click.
+    float filterMix_ = 0.0f;
+    bool filterLow_ = true;  // the side being heard (it changes only while faded out)
     daisysp::Svf svfL_, svfR_;
     float filterGain_ = 1.0f;  // resonance compensation
     // Repeat.

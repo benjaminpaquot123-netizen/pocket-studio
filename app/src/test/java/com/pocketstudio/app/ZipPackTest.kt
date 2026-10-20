@@ -42,4 +42,15 @@ class ZipPackTest {
         assertEquals(2, ZipPack.extractAudio(data.inputStream(), dir, 2, exts).size)
         root.deleteRecursively()
     }
+
+    @Test
+    fun aLimitKeepsTheFirstNamesNotTheFirstInTheArchive() {
+        val dir = Files.createTempDirectory("zp").toFile()
+        val data = zip("d.wav" to byteArrayOf(4), "b.wav" to byteArrayOf(2), "c.wav" to byteArrayOf(3), "a.wav" to byteArrayOf(1))
+        val files = ZipPack.extractAudio(data.inputStream(), dir, 2, exts)
+        assertEquals(listOf("a.wav", "b.wav"), files.map { it.second })
+        assertEquals(listOf(1, 2), files.map { it.first.readBytes().single().toInt() })
+        assertEquals(2, dir.listFiles()!!.size)  // the others were not left behind
+        dir.deleteRecursively()
+    }
 }

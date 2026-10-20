@@ -91,3 +91,20 @@ data class AutomationLane(
             lanes.filter { it.target.isValid }.distinctBy { it.target }.take(MAX_LANES).map { it.sanitized() }
     }
 }
+
+/** The insert in [slot] of strip [ch] ([Mixer.MASTER] = the master's), if any. */
+fun Mixer.insertAt(ch: Int, slot: Int): Insert? =
+    (if (ch == Mixer.MASTER) master else channels.getOrNull(ch)?.inserts)?.getOrNull(slot)
+
+/**
+ * An insert parameter lane only means something for the effect it was drawn on: lanes whose slot
+ * holds another effect type than in [before] are dropped (else they would drive the new effect's
+ * knobs with the old curve).
+ */
+fun Project.withoutStaleInsertLanes(before: Project): Project {
+    val kept = automation.filter { l ->
+        val t = l.target
+        t.kind != AutoTarget.INSERT_PARAM || mixer.insertAt(t.ch, t.slot)?.type == before.mixer.insertAt(t.ch, t.slot)?.type
+    }
+    return if (kept.size == automation.size) this else copy(automation = kept)
+}

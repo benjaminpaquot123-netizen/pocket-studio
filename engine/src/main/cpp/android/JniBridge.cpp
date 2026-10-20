@@ -342,13 +342,13 @@ static void freeReleasedTakes() {
 JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_recordStart(JNIEnv*, jobject, jboolean onStart, jint seconds) {
     if (seconds <= 0 || seconds > 600) return 0;
     freeReleasedTakes();
-    if (!host().startRecordingInput()) return 0;
+    if (!host().startRecordingInput(ps::AudioHost::MicRecording)) return 0;
     auto* buffer = new ps::RecordBuffer(static_cast<int64_t>(seconds) * 48000);
     ps::Command command{ps::CommandType::RecordArm, 0.0f, onStart ? 1 : 0, 0};
     command.record = buffer;
     if (!host().post(command)) {
         delete buffer;
-        host().stopRecordingInput();
+        host().stopRecordingInput(ps::AudioHost::MicRecording);
         return 0;
     }
     return reinterpret_cast<jlong>(buffer);
@@ -372,7 +372,7 @@ JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_recordFi
     for (int waited = 0; waited < 1000 && b->state.load(std::memory_order_acquire) != 2; waited += 2) {
         std::this_thread::sleep_for(std::chrono::milliseconds(2));
     }
-    host().stopRecordingInput();
+    host().stopRecordingInput(ps::AudioHost::MicRecording);
     if (b->state.load(std::memory_order_acquire) != 2) {
         // The engine may still apply the queued commands when the stream comes back: keep the
         // buffer until it says it let go.
@@ -405,11 +405,11 @@ JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_readScope(JNIEn
 
 // Microphone on for the tuner (false: unavailable); off again with micClose.
 JNIEXPORT jboolean JNICALL Java_com_pocketstudio_engine_NativeEngine_micOpen(JNIEnv*, jobject) {
-    return host().startRecordingInput() ? JNI_TRUE : JNI_FALSE;
+    return host().startRecordingInput(ps::AudioHost::MicTuner) ? JNI_TRUE : JNI_FALSE;
 }
 
 JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_micClose(JNIEnv*, jobject) {
-    host().stopRecordingInput();
+    host().stopRecordingInput(ps::AudioHost::MicTuner);
 }
 
 // --- Live pads ---

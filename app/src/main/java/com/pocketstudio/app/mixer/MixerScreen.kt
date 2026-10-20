@@ -261,9 +261,9 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
         }
         Text(
             when (export.what) {
-                ExportWhat.Loop -> "La scène en cours, sur la longueur choisie."
+                ExportWhat.Loop -> "La scène en cours (elle fait ${export.sceneBars} mesure${if (export.sceneBars > 1) "s" else ""}), sur la longueur choisie."
                 ExportWhat.Song -> if (hasSong) "Toutes les parties de l'onglet Morceau, dans l'ordre." else "Le morceau est vide : ajoute des scènes dans l'onglet Morceau."
-                ExportWhat.Stems -> "Un fichier par piste (batterie, acide, synthé, remix) pour les reprendre ailleurs." +
+                ExportWhat.Stems -> "Un fichier par piste (batterie, acide, synthé, remix) pour les reprendre ailleurs. Les pistes vides ou coupées sont sautées." +
                     if (hasSong) " Sur tout le morceau." else ""
             },
             style = MaterialTheme.typography.bodySmall, color = if (export.what == ExportWhat.Song && !hasSong) Neon.Amber else Neon.TextSecondary,
@@ -271,7 +271,7 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
         if (export.what == ExportWhat.Loop || (export.what == ExportWhat.Stems && !hasSong)) {
             Text("Longueur", style = MaterialTheme.typography.bodyMedium)
             FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                EXPORT_BARS.forEach { bars ->
+                (EXPORT_BARS + export.sceneBars).distinct().sorted().forEach { bars ->
                     FilterChip(
                         selected = export.bars == bars,
                         onClick = { actions.setExportBars(bars) },

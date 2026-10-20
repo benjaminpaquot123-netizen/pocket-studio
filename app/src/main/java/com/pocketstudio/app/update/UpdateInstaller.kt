@@ -7,7 +7,9 @@ import android.content.pm.PackageInstaller
 import android.net.Uri
 import android.provider.Settings
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withContext
+import kotlin.coroutines.coroutineContext
 import java.io.File
 import java.net.HttpURLConnection
 import java.net.URL
@@ -35,17 +37,23 @@ object UpdateInstaller {
         }
     }
 
-    private fun download(context: Context, url: String, onProgress: (Float) -> Unit): File {
+    /** A connection that gives up instead of waiting forever on a network that went away. */
+    private fun open(url: String) = (URL(url).openConnection() as HttpURLConnection).apply {
+        connectTimeout = 15_000
+        readTimeout = 30_000
+    }
+
+    private suspend fun download(context: Context, url: String, onProgress: (Float) -> Unit): File {
         val dir = File(context.cacheDir, "updates").apply { mkdirs() }
         val target = File(dir, "update.apk")
-        var connection = URL(url).openConnection() as HttpURLConnection
+        var connection = open(url)
         try {
             // GitHub answers with redirects to its CDN.
             var redirects = 0
             while (connection.responseCode in 300..399 && redirects++ < 5) {
                 val next = connection.getHeaderField("Location")
                 connection.disconnect()
-                connection = URL(next).openConnection() as HttpURLConnection
+                connection = open(next)
             }
             if (connection.responseCode != HttpURLConnection.HTTP_OK) error("HTTP ${connection.responseCode}")
             val total = connection.contentLengthLong
@@ -54,6 +62,7 @@ object UpdateInstaller {
                     val buffer = ByteArray(64 * 1024)
                     var done = 0L
                     while (true) {
+                        coroutineContext.ensureActive()  // "Annuler" stops it between two reads
                         val n = input.read(buffer)
                         if (n < 0) break
                         output.write(buffer, 0, n)

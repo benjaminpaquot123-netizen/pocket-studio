@@ -215,7 +215,10 @@ object StarterWizard {
         return preferred + (all - preferred.toSet()) + (packs - preferred.toSet())
     }
 
-    /** The assistant's steps for a style: style, mood, each drum line, each melodic part, summary. */
+    /**
+     * The assistant's steps for a style: style, mood, each drum line, each melodic part (not
+     * without a melody, [melody] false: "Pas de mélodie"), summary.
+     */
     sealed interface Step {
         data object Style : Step
         data object Mood : Step
@@ -224,9 +227,10 @@ object StarterWizard {
         data object Summary : Step
     }
 
-    fun steps(style: Style?): List<Step> =
+    fun steps(style: Style?, melody: Boolean = true): List<Step> =
         if (style == null) listOf(Step.Style)
-        else listOf(Step.Style, Step.Mood) + style.lines.map { Step.Drum(it) } + Part.entries.map { Step.Melodic(it) } + Step.Summary
+        else listOf(Step.Style, Step.Mood) + style.lines.map { Step.Drum(it) } +
+            (if (melody) Part.entries.map { Step.Melodic(it) } else emptyList()) + Step.Summary
 
     val FAMILIES = listOf("Hip-hop", "House", "Techno", "Bass music", "Autres")
 
@@ -368,7 +372,8 @@ object StarterWizard {
      * Shares the [lines] and [parts] used (and the acid line, when there is one) between scenes A,
      * B and C. With chords or a lead: the drums in A, the bass lines (bass, 808, acid) in B, the
      * chords and the lead in C. Without: kick, snare and clap in A, the hats in B, the percussion
-     * and the bass lines in C. A scene left empty starts as a copy of the scene before it.
+     * and the bass lines in C. A scene left empty starts as a copy of the scene before it (none
+     * when nothing is used at all).
      */
     fun scenePlan(lines: Set<Role>, parts: Set<Part>, acid: Boolean): ScenePlan {
         val melody = Part.Pad in parts || Part.Lead in parts
@@ -386,8 +391,8 @@ object StarterWizard {
         val used = (lineScenes.values + partScenes.values + listOfNotNull(acidScene)).toSet()
         // An empty scene copies the nearest filled one before it (or after it, for A).
         val copies = (0 until ScenePlan.COUNT).filter { it !in used }.associateWith { empty ->
-            (empty - 1 downTo 0).firstOrNull { it in used } ?: (empty + 1 until ScenePlan.COUNT).first { it in used }
-        }
+            (empty - 1 downTo 0).firstOrNull { it in used } ?: (empty + 1 until ScenePlan.COUNT).firstOrNull { it in used }
+        }.filterValues { it != null }.mapValues { it.value!! }
         return ScenePlan(lineScenes, partScenes, acidScene, copies)
     }
 

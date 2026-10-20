@@ -41,7 +41,9 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.pocketstudio.model.ProjectCatalog
 import com.pocketstudio.model.ProjectInfo
+import com.pocketstudio.model.TrashedProject
 import com.pocketstudio.ui.Neon
 import com.pocketstudio.ui.SectionLabel
 import java.text.SimpleDateFormat
@@ -65,6 +67,8 @@ class ProjectsActions(
     val importZip: () -> Unit = {},
     val delete: (ProjectInfo) -> Unit = {},
     val undoDelete: () -> Unit = {},
+    /** Brings a project back from the "Corbeille" list. */
+    val restore: (TrashedProject) -> Unit = {},
     val dismissDeleted: () -> Unit = {},
     val dismissMessage: () -> Unit = {},
 )
@@ -74,6 +78,7 @@ class ProjectsActions(
 fun ProjectsScreen(ui: ProjectsUi, currentId: String, starters: List<ProjectStarter>, actions: ProjectsActions, now: Long = System.currentTimeMillis()) {
     var renaming by remember { mutableStateOf<ProjectInfo?>(null) }
     var choosingStart by remember { mutableStateOf(false) }
+    var showTrash by remember { mutableStateOf(false) }
     Column(Modifier.fillMaxSize().padding(12.dp).testTag("projects"), verticalArrangement = Arrangement.spacedBy(10.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = actions.back, modifier = Modifier.testTag("projects_back")) {
@@ -107,6 +112,19 @@ fun ProjectsScreen(ui: ProjectsUi, currentId: String, starters: List<ProjectStar
         LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.weight(1f)) {
             items(ui.projects, key = { it.id }) { p ->
                 ProjectCard(p, p.id == currentId, now, actions, onRename = { renaming = p })
+            }
+            if (ui.trash.isNotEmpty()) {
+                item(key = "trash") {
+                    TextButton(onClick = { showTrash = !showTrash }, modifier = Modifier.fillMaxWidth().testTag("project_trash")) {
+                        Text(
+                            "${if (showTrash) "▾" else "▸"} Corbeille (${ui.trash.size}) · gardés ${ProjectCatalog.TRASH_DAYS} jours",
+                            color = Neon.TextSecondary, modifier = Modifier.weight(1f),
+                        )
+                    }
+                }
+                if (showTrash) {
+                    items(ui.trash, key = { "trash_${it.entry}" }) { t -> TrashedCard(t, now, actions) }
+                }
             }
         }
     }
@@ -204,6 +222,25 @@ private fun ProjectCard(p: ProjectInfo, open: Boolean, now: Long, actions: Proje
                     )
                 }
             }
+        }
+    }
+}
+
+/** A deleted project: its name, when it was deleted, and a way back. */
+@Composable
+private fun TrashedCard(t: TrashedProject, now: Long, actions: ProjectsActions) {
+    Card(
+        shape = RoundedCornerShape(10.dp),
+        colors = CardDefaults.cardColors(containerColor = Neon.Surface),
+        border = BorderStroke(1.dp, Neon.Outline),
+        modifier = Modifier.fillMaxWidth().testTag("trashed_${t.entry}"),
+    ) {
+        Row(Modifier.padding(start = 14.dp, top = 4.dp, bottom = 4.dp), verticalAlignment = Alignment.CenterVertically) {
+            Column(Modifier.weight(1f)) {
+                Text(t.name, style = MaterialTheme.typography.titleMedium, color = Neon.TextSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text("supprimé ${whenText(t.deletedAt, now)}", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+            }
+            TextButton(onClick = { actions.restore(t) }, modifier = Modifier.testTag("restore_${t.entry}")) { Text("Restaurer") }
         }
     }
 }

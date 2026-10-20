@@ -116,7 +116,8 @@ void Synth::applyEvent(const Event& e) {
         }
         return;
     }
-    // Same note already sounding: retrigger it. Otherwise a free voice, else the oldest.
+    // Same note already sounding: retrigger it. Otherwise a free voice, else the quietest one
+    // already let go, else the oldest held one (a held chord outlives quick notes fading out).
     Voice* target = nullptr;
     for (auto& v : voices_) {
         if (v.note == e.note) target = &v;
@@ -127,6 +128,11 @@ void Synth::applyEvent(const Event& e) {
                 target = &v;
                 break;
             }
+        }
+    }
+    if (target == nullptr) {
+        for (auto& v : voices_) {
+            if (!v.gate && (target == nullptr || v.level < target->level)) target = &v;
         }
     }
     if (target == nullptr) {
@@ -209,6 +215,7 @@ void Synth::render(float* mono, int numFrames) {
         for (auto& v : voices_) {
             if (!v.gate && !v.ampEnv.IsRunning()) continue;
             const float amp = v.ampEnv.Process(v.gate);
+            v.level = amp;
             const float fenv = v.filterEnv.Process(v.gate);
             if (controlTick) {
                 const float hz = v.baseHz * bendRatio * std::pow(2.0f, vibratoSemis * lfo1 / 12.0f);

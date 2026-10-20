@@ -19,6 +19,7 @@ import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.Inventory2
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -145,6 +146,7 @@ fun LibraryScreen(ui: LibraryUi, actions: LibraryActions) {
 @Composable
 private fun PackList(ui: LibraryUi, actions: LibraryActions) {
     val packs = ui.packs
+    var deleting by rememberSaveable { mutableStateOf<String?>(null) }
     NeonCard(modifier = Modifier.testTag("library_packs")) {
         SectionLabel("Packs de sons", help = Glossary.SOUND_PACK)
         when (val index = packs.index) {
@@ -169,7 +171,7 @@ private fun PackList(ui: LibraryUi, actions: LibraryActions) {
                         }
                         when {
                             progress != null -> TextButton(onClick = { actions.cancelDownload(entry.id) }) { Text("Annuler") }
-                            installed -> TextButton(onClick = { actions.deletePack(entry.id) }, modifier = Modifier.testTag("library_delete_${entry.id}")) {
+                            installed -> TextButton(onClick = { deleting = entry.id }, modifier = Modifier.testTag("library_delete_${entry.id}")) {
                                 Text("Supprimer", color = Neon.Red)
                             }
                             else -> OutlinedButton(onClick = { actions.download(entry.id) }, modifier = Modifier.testTag("library_download_${entry.id}")) {
@@ -180,6 +182,20 @@ private fun PackList(ui: LibraryUi, actions: LibraryActions) {
                 }
             }
         }
+    }
+    deleting?.let { id ->
+        val name = (packs.index as? IndexState.Ready)?.index?.packs?.firstOrNull { it.id == id }?.name ?: id
+        AlertDialog(
+            onDismissRequest = { deleting = null },
+            title = { Text("Supprimer le pack ?") },
+            text = { Text("Les sons de « $name » quittent le téléphone. Tes projets gardent ceux qu'ils utilisent ; pour les autres, il faudra retélécharger le pack.") },
+            confirmButton = {
+                TextButton(onClick = { deleting = null; actions.deletePack(id) }, modifier = Modifier.testTag("library_delete_confirm")) {
+                    Text("Supprimer", color = Neon.Red)
+                }
+            },
+            dismissButton = { TextButton(onClick = { deleting = null }) { Text("Annuler") } },
+        )
     }
 }
 

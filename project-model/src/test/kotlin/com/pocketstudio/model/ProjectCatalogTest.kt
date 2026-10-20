@@ -100,4 +100,59 @@ class ProjectCatalogTest {
         assertEquals(a, catalog.list().first { it.name == "Ok" }.id)
         dir.deleteRecursively()
     }
+
+    @Test
+    fun aFailedDuplicateLeavesNoHalfCopy() {
+        val a = catalog.create(Project(name = "Source"))
+        val samples = File(catalog.store.folder(a), "samples").apply { mkdirs() }
+        samples.resolve("a.wav").writeText("son")
+        // A sound that cannot be read stops the copy halfway.
+        Files.createSymbolicLink(samples.resolve("b.wav").toPath(), File(dir, "nowhere.wav").toPath())
+        assertTrue(runCatching { catalog.duplicate(a, "Copie") }.isFailure)
+        assertEquals(listOf(a), File(dir, "projects").list()!!.toList())
+        dir.deleteRecursively()
+    }
+
+    @Test
+    fun theTrashListsDeletedProjectsToRestore() {
+        val a = catalog.create(Project(name = "Premier"))
+        val b = catalog.create(Project(name = "Second"))
+        catalog.delete(a)
+        Thread.sleep(5)
+        catalog.delete(b)
+        val bin = catalog.trashed()
+        assertEquals(listOf("Second", "Premier"), bin.map { it.name })  // most recently deleted first
+        catalog.restore(bin.last().entry)
+        assertEquals(listOf("Premier"), catalog.list().map { it.name })
+        assertEquals(listOf("Second"), catalog.trashed().map { it.name })
+        dir.deleteRecursively()
+    }
+
+    @Test
+    fun stemSetsUsedByAnyProjectAreFound() {
+        catalog.create(Project(name = "A", remix = Remix(setId = "s1", name = "Chanson")))
+        catalog.create(Project(name = "B", remix = Remix(setId = "s1", name = "Chanson")))
+        catalog.create(Project(name = "Sans remix"))
+        catalog.delete(catalog.create(Project(name = "Jeté", remix = Remix(setId = "s2"))))
+        // Unreadable, but its file still names its song: that song is protected too.
+        File(catalog.store.folder("p-broken"), ProjectStore.MAIN).apply { parentFile.mkdirs() }
+            .writeText("{ \"remix\": { \"setId\": \"s3\", pas du json")
+        val users = catalog.stemSetUsers()
+        assertEquals(setOf("s1", "s2", "s3"), users.keys)
+        assertEquals(setOf("A", "B"), users.getValue("s1").toSet())
+        assertEquals(listOf("Jeté (corbeille)"), users.getValue("s2"))
+        dir.deleteRecursively()
+    }
+
+    @Test
+    fun aBrokenZipGivesAFrenchMessage() {
+        val bad = java.io.ByteArrayOutputStream().also { out ->
+            java.util.zip.ZipOutputStream(out).use { z ->
+                z.putNextEntry(java.util.zip.ZipEntry("project.json")); z.write("{ pas du json".toByteArray()); z.closeEntry()
+            }
+        }.toByteArray()
+        val e = runCatching { catalog.importZip(bad.inputStream()) }.exceptionOrNull()
+        assertEquals("fichier illisible ou abîmé", e?.message)
+        dir.deleteRecursively()
+    }
 }

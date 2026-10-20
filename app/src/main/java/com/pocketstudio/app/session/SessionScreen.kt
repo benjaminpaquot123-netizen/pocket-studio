@@ -23,6 +23,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ContentCopy
+import androidx.compose.material.icons.filled.DeleteSweep
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Remove
@@ -73,8 +74,12 @@ class SessionScreenUi(
     val tempoBpm: Double,
     /** Time signature n/4. */
     val beatsPerBar: Int = 4,
+    /** What the scene shown is (new and empty, a copy of another…), said under the grid. */
+    val sceneInfo: String = "",
     /** The timeline's rows: every track a song part can switch off. */
     val rows: List<TimelineRow> = emptyList(),
+    /** The part lit up as playing (-1 while a part taken out of the song finishes). */
+    val shownSongIndex: Int = songIndex,
 ) {
     val stepsPerBar get() = beatsPerBar * 4
     fun barsOf(part: SongPart) = (scenes.getOrNull(part.scene)?.stepsFor(stepsPerBar) ?: stepsPerBar) / stepsPerBar * part.repeats
@@ -86,6 +91,10 @@ class TimelineRow(val key: String, val name: String, val color: androidx.compose
 class SessionActions(
     val select: (Int) -> Unit = {},
     val duplicate: () -> Unit = {},
+    /** A new empty scene in the first free slot. */
+    val newScene: () -> Unit = {},
+    /** Empties the scene shown. */
+    val clear: () -> Unit = {},
     val addPart: (Int) -> Unit = {},
     val removePart: (Int) -> Unit = {},
     val setRepeats: (Int, Int) -> Unit = { _, _ -> },
@@ -139,9 +148,24 @@ fun SessionScreen(ui: SessionScreenUi, actions: SessionActions, live: LivePadsUi
                     for (i in start until start + 4) SceneButton(i, ui, actions, Modifier.weight(1f))
                 }
             }
-            OutlinedButton(onClick = actions.duplicate, modifier = Modifier.fillMaxWidth().testTag("scene_duplicate")) {
-                Icon(Icons.Filled.ContentCopy, contentDescription = null)
-                Text("  Dupliquer la scène ${Scene.NAMES[ui.current]} (pour une variante)")
+            // What the scene shown is: a new one starts empty, a copy says whose copy it is.
+            if (ui.sceneInfo.isNotEmpty()) {
+                Text(ui.sceneInfo, style = MaterialTheme.typography.bodyMedium, color = Neon.Cyan, modifier = Modifier.testTag("scene_info"))
+            }
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedButton(onClick = actions.newScene, modifier = Modifier.testTag("scene_new")) {
+                    Icon(Icons.Filled.Add, contentDescription = null)
+                    Text("  Nouvelle scène vide", maxLines = 1, softWrap = false)
+                }
+                OutlinedButton(onClick = actions.duplicate, modifier = Modifier.testTag("scene_duplicate")) {
+                    Icon(Icons.Filled.ContentCopy, contentDescription = null)
+                    Text("  Dupliquer la scène ${Scene.NAMES[ui.current]}", maxLines = 1, softWrap = false)
+                }
+                val empty = ui.scenes.getOrNull(ui.current)?.isEmpty != false
+                OutlinedButton(onClick = actions.clear, enabled = !empty, modifier = Modifier.testTag("scene_clear")) {
+                    Icon(Icons.Filled.DeleteSweep, contentDescription = null)
+                    Text("  Vider la scène ${Scene.NAMES[ui.current]}", maxLines = 1, softWrap = false)
+                }
             }
         }
 
@@ -170,7 +194,7 @@ fun SessionScreen(ui: SessionScreenUi, actions: SessionActions, live: LivePadsUi
                 style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
             )
             ui.song.forEachIndexed { i, part ->
-                val active = i == ui.songIndex
+                val active = i == ui.shownSongIndex
                 Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.testTag("part_$i")) {
                     Text(
                         Scene.NAMES[part.scene],
@@ -277,7 +301,7 @@ private fun Timeline(ui: SessionScreenUi, actions: SessionActions) {
         Row(Modifier.fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(3.dp)) {
             ui.song.forEachIndexed { i, part ->
                 val width = (barWidth * ui.barsOf(part)).coerceAtLeast(40.dp)
-                val active = i == ui.songIndex
+                val active = i == ui.shownSongIndex
                 Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
                     Box(
                         Modifier.width(width).height(22.dp).clip(RoundedCornerShape(4.dp))

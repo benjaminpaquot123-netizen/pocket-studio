@@ -56,4 +56,25 @@ class AutomationClipsTest {
         val p = Project(scenes = listOf(Scene("A"), Scene("B", drums = DrumPattern().withSteps(32))), song = listOf(SongPart(0, 2), SongPart(1, 1))).sanitized()
         assertEquals(4, p.songBars)
     }
+
+    @Test
+    fun anInsertLaneGoesWhenItsSlotChangesEffect() {
+        val filterCut = AutoTarget(AutoTarget.INSERT_PARAM, 2, 1, 0)
+        val masterEq = AutoTarget(AutoTarget.INSERT_PARAM, Mixer.MASTER, 0, 1)
+        val withFilter = Project(automation = listOf(AutomationLane(filterCut), AutomationLane(masterEq), AutomationLane(volume)))
+            .let { p ->
+                val ch = p.mixer.channels.toMutableList()
+                ch[2] = ch[2].copy(inserts = ch[2].inserts.mapIndexed { i, ins -> if (i == 1) Insert.of(EffectType.FILTER) else ins })
+                p.copy(mixer = p.mixer.copy(channels = ch, master = listOf(Insert.of(EffectType.EQ)) + p.mixer.master.drop(1)))
+            }
+        // Only a parameter moved: every lane stays.
+        val tweaked = withFilter.copy(mixer = withFilter.mixer.copy(master = listOf(Insert(EffectType.EQ.ordinal, listOf(0.9f, 0.5f, 0.5f, 0f))) + withFilter.mixer.master.drop(1)))
+        assertEquals(withFilter.automation, tweaked.withoutStaleInsertLanes(withFilter).automation)
+        // The filter becomes a chorus: its lane goes, the master's and the volume stay.
+        val chorus = withFilter.mixer.channels.toMutableList().also { ch ->
+            ch[2] = ch[2].copy(inserts = ch[2].inserts.mapIndexed { i, ins -> if (i == 1) Insert.of(EffectType.CHORUS) else ins })
+        }
+        val changed = withFilter.copy(mixer = withFilter.mixer.copy(channels = chorus)).withoutStaleInsertLanes(withFilter)
+        assertEquals(listOf(masterEq, volume), changed.automation.map { it.target })
+    }
 }

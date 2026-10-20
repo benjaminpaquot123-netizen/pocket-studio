@@ -384,7 +384,7 @@ Restant (à reprendre) :
   - modifier une piste coupée dans la partie en cours la rend audible jusqu'à la partie suivante.
 - Mesures autres que 4/4 : le piano roll et la ligne acide ont des longueurs en multiples de 16 pas.
 - Arrière-plan :
-  - une prise micro avec l'écran éteint enregistre du silence (pas de service « micro ») ;
+  - une prise micro avec l'écran éteint enregistrait du silence : réglé en phase 17 (service « micro » pendant une prise) ;
   - un long export en arrière-plan n'a pas de service de premier plan.
 - Remix : un seul morceau est épinglé pour toute l'appli, et l'étirement peut figer l'interface quand on le retire.
 - Mineurs :
@@ -418,3 +418,19 @@ Restant (mineur) :
 - Swing fort avec un roulement sur un contretemps : deux coups d'un même pad peuvent tomber dans la même tranche de 256 images (un flam peu audible) ; frappes MIDI en direct groupées dans un même rappel Bluetooth.
 - Garde-fou NaN : avec une source de NaN permanente, il remet tout à zéro à chaque tranche (sans danger depuis la correction des filtres) ; pas encore de test qui injecte un NaN.
 - Le focus audio met en pause les autres applis de musique au lancement de la lecture (voir DECISIONS) ; les pads live joués sans transport ne sont pas couverts.
+
+## Phase 17 (lecteur multimédia, activité en direct « REC », prise micro écran éteint), relecture de fin de phase
+
+Relecture neuve : rien de grave (aucun chemin de plantage trouvé, fil audio non touché).
+
+Corrigé :
+- Notification de lecteur orpheline : une mise à jour postée juste avant Arrêter pouvait reposer un lecteur que plus aucun service ne tenait ; le service l'efface en s'arrêtant (test qui rejoue la course).
+- Pastille « REC » invisible sans l'autorisation des notifications (Android 13+) : demandée au premier enregistrement.
+- Centre de contrôle : vrai bouton « Arrêter » (action de la session) en plus de pause ; Arrêter, pause et le bouton du casque arrêtent aussi le service.
+- Service : repli sans plantage si Android refuse le premier plan ; premier état jamais perdu ; au plus 4 mises à jour par seconde, canal créé une fois.
+- Chrono de la prise : démarre avec l'enregistrement, pas pendant le décompte.
+- Tests : Arrêter (notification, lecteur), type « micro » pendant une prise, chrono pendant le décompte, notification effacée à l'arrêt.
+
+Restant (mineur) :
+- Enregistrement en direct lancé à l'arrêt : le chrono compte aussi la mesure de décompte.
+- Ce que MagicOS fait de la notification promue (pastille, Capsule magique ou rien) : à voir sur le Magic 8 Pro.

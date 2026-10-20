@@ -154,8 +154,10 @@
 - Phase 14 fusionnée (PR #25, v0.14.124) ; phase 15 fusionnée (PR #26), relectures faites.
 - Phase 16 (branche ccr-80af1a1b-mn0wec), l'audit « en production » demandé par Benjamin : deux audits (moteur, usage), graves et moyens corrigés avec des tests, le reste noté dans `docs/REVIEW.md`.
 
+- Phase 17 (branche locale phase17-wip, à poser après la fusion de la 16) : session multimédia, activité en direct « REC » d'Android 16, prise au micro écran éteint. À essayer sur le Magic 8 Pro (pastille ou Capsule magique ?).
+
 ## Prochaine étape exacte
-1. Phase 16 : relecture neuve, PR, CI, fusion, lien à Benjamin.
+1. Phase 16 : relecture neuve, PR, CI, fusion, lien à Benjamin. Puis phase 17 (relecture, PR, CI, fusion).
 2. Ensuite, dans l'ordre :
    - le niveau général (marge, limiteur, vumètre avant le limiteur), à mesurer sur le téléphone ;
    - le tempo changé pendant la lecture (pads calés, Remix) ;

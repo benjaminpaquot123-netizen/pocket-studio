@@ -1,46 +1,31 @@
 {
-  "id": "phase16-audit",
-  "milestone": "Phase 16 : l'audit « en production »",
+  "id": "phase17-capsule",
+  "milestone": "Phase 17 : le lecteur officiel et la pastille REC",
   "items": [
     {
-      "id": "headphones",
-      "title": "Casque débranché",
-      "hint": "Lance la lecture avec un casque, puis débranche-le (ou coupe le Bluetooth) : la musique s'arrête au lieu de passer à fond sur le haut-parleur."
+      "id": "player",
+      "title": "Le lecteur dans le centre de contrôle",
+      "hint": "Lance la lecture, puis ouvre le centre de contrôle (glisse depuis le haut) : un lecteur Pocket Studio montre ton projet et son tempo. Son bouton Arrêter (ou pause) arrête la musique."
     },
     {
-      "id": "call",
-      "title": "Un appel pendant la lecture",
-      "hint": "Pendant la lecture, reçois un appel ou lance une autre appli de musique : Pocket Studio s'arrête."
+      "id": "lock_screen",
+      "title": "Sur l'écran verrouillé",
+      "hint": "Pendant la lecture, verrouille le téléphone et rallume l'écran : le lecteur Pocket Studio est là, avec Stop."
     },
     {
-      "id": "bluetooth_take",
-      "title": "Prise au micro en Bluetooth",
-      "hint": "Avec un casque Bluetooth, enregistre une piste audio en tapant dans tes mains sur le temps : la prise tombe sur le temps, pas en retard."
+      "id": "capsule",
+      "title": "La pastille REC (ou la Capsule magique)",
+      "hint": "Touche ● pour enregistrer (si Android demande d'autoriser les notifications, accepte), puis reviens à l'écran d'accueil : regarde en haut de l'écran. Une pastille « REC » avec le chrono, ou la Capsule magique ? Dis-moi ce que tu vois (une capture, c'est parfait)."
     },
     {
-      "id": "solo",
-      "title": "Solo puis suppression",
-      "hint": "Mets une piste en Solo dans le Mixeur, puis supprime-la : le reste du morceau s'entend toujours."
+      "id": "headset_button",
+      "title": "Le bouton du casque",
+      "hint": "Avec un casque (filaire ou Bluetooth), appuie sur son bouton pendant la lecture : la musique s'arrête."
     },
     {
-      "id": "undo_playing",
-      "title": "Annuler pendant la lecture",
-      "hint": "Pendant qu'une nappe tenue joue, touche Annuler : les notes continuent sans coupure."
-    },
-    {
-      "id": "early_note",
-      "title": "La note juste avant le 1",
-      "hint": "Enregistre au clavier avec le décompte et joue la première note un poil en avance : elle tombe sur le 1."
-    },
-    {
-      "id": "pedal",
-      "title": "La pédale relâchée",
-      "hint": "Synthé › Sustain allumé, joue beaucoup de notes différentes, puis éteins Sustain : tout s'arrête, rien ne reste coincé."
-    },
-    {
-      "id": "export",
-      "title": "Exports justes",
-      "hint": "Projet en 3/4, exporte « La scène » sur 4 mesures : la boucle tourne juste. Laisse une piste en Solo et exporte « Piste par piste » : chaque fichier ne contient que sa piste."
+      "id": "screen_off_take",
+      "title": "Prise au micro écran éteint",
+      "hint": "Lance une prise au micro sur une piste audio, éteins l'écran une dizaine de secondes en parlant, rallume et arrête : la prise contient ta voix jusqu'au bout."
     }
   ]
 }

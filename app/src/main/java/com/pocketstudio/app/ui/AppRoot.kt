@@ -465,6 +465,19 @@ fun AppRoot() {
     val recordPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
         if (granted) rhythmVm.startRecording()
     }
+    // The "REC" live activity is a notification: without the permission (Android 13+), the phone
+    // hides it. Asked once per launch, at the first recording, where it makes sense.
+    val notificationPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { }
+    var notificationsAsked by rememberSaveable { mutableStateOf(false) }
+    val anyRecording by rhythmVm.recording.collectAsStateWithLifecycle()
+    val anyTake by rhythmVm.audioRecording.collectAsStateWithLifecycle()
+    LaunchedEffect(anyRecording || anyTake != null) {
+        if (!(anyRecording || anyTake != null) || notificationsAsked || android.os.Build.VERSION.SDK_INT < 33) return@LaunchedEffect
+        notificationsAsked = true
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
+    }
     val bluetoothPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { granted ->
         if (granted.values.all { it }) midiVm.scanBluetooth()
     }

@@ -1,0 +1,348 @@
+{
+ "id": "retro_techno",
+ "name": "Rétro techno",
+ "family": "Techno",
+ "bpm": 132,
+ "sounds": [
+  {
+   "file": "kick_01.flac",
+   "kind": "kick",
+   "name": "Kick 1"
+  },
+  {
+   "file": "kick_02.flac",
+   "kind": "kick",
+   "name": "Kick 2"
+  },
+  {
+   "file": "kick_03.flac",
+   "kind": "kick",
+   "name": "Kick 3"
+  },
+  {
+   "file": "kick_04.flac",
+   "kind": "kick",
+   "name": "Kick 4"
+  },
+  {
+   "file": "kick_05.flac",
+   "kind": "kick",
+   "name": "Kick 5"
+  },
+  {
+   "file": "kick_06.flac",
+   "kind": "kick",
+   "name": "Kick 6"
+  },
+  {
+   "file": "kick_07.flac",
+   "kind": "kick",
+   "name": "Kick 7"
+  },
+  {
+   "file": "kick_08.flac",
+   "kind": "kick",
+   "name": "Kick 8"
+  },
+  {
+   "file": "kick_09.flac",
+   "kind": "kick",
+   "name": "Kick 9"
+  },
+  {
+   "file": "kick_10.flac",
+   "kind": "kick",
+   "name": "Kick 10"
+  },
+  {
+   "file": "kick_11.flac",
+   "kind": "kick",
+   "name": "Kick 11"
+  },
+  {
+   "file": "kick_12.flac",
+   "kind": "kick",
+   "name": "Kick 12"
+  },
+  {
+   "file": "kick_13.flac",
+   "kind": "kick",
+   "name": "Kick 13"
+  },
+  {
+   "file": "kick_14.flac",
+   "kind": "kick",
+   "name": "Kick 14"
+  },
+  {
+   "file": "kick_15.flac",
+   "kind": "kick",
+   "name": "Kick 15"
+  },
+  {
+   "file": "kick_16.flac",
+   "kind": "kick",
+   "name": "Kick 16"
+  },
+  {
+   "file": "clap_01.flac",
+   "kind": "clap",
+   "name": "Clap 1"
+  },
+  {
+   "file": "clap_02.flac",
+   "kind": "clap",
+   "name": "Clap 2"
+  },
+  {
+   "file": "clap_03.flac",
+   "kind": "clap",
+   "name": "Clap 3"
+  },
+  {
+   "file": "clap_04.flac",
+   "kind": "clap",
+   "name": "Clap 4"
+  },
+  {
+   "file": "clap_05.flac",
+   "kind": "clap",
+   "name": "Clap 5"
+  },
+  {
+   "file": "clap_06.flac",
+   "kind": "clap",
+   "name": "Clap 6"
+  },
+  {
+   "file": "clap_07.flac",
+   "kind": "clap",
+   "name": "Clap 7"
+  },
+  {
+   "file": "clap_08.flac",
+   "kind": "clap",
+   "name": "Clap 8"
+  },
+  {
+   "file": "hat_01.flac",
+   "kind": "hat",
+   "name": "Charley 1"
+  },
+  {
+   "file": "hat_02.flac",
+   "kind": "hat",
+   "name": "Charley 2"
+  },
+  {
+   "file": "hat_03.flac",
+   "kind": "hat",
+   "name": "Charley 3"
+  },
+  {
+   "file": "hat_04.flac",
+   "kind": "hat",
+   "name": "Charley 4"
+  },
+  {
+   "file": "hat_05.flac",
+   "kind": "hat",
+   "name": "Charley 5"
+  },
+  {
+   "file": "hat_06.flac",
+   "kind": "hat",
+   "name": "Charley 6"
+  },
+  {
+   "file": "hat_07.flac",
+   "kind": "hat",
+   "name": "Charley 7"
+  },
+  {
+   "file": "hat_08.flac",
+   "kind": "hat",
+   "name": "Charley 8"
+  },
+  {
+   "file": "hat_09.flac",
+   "kind": "hat",
+   "name": "Charley 9"
+  },
+  {
+   "file": "hat_10.flac",
+   "kind": "hat",
+   "name": "Charley 10"
+  },
+  {
+   "file": "open_hat_01.flac",
+   "kind": "open_hat",
+   "name": "Charley ouvert 1"
+  },
+  {
+   "file": "open_hat_02.flac",
+   "kind": "open_hat",
+   "name": "Charley ouvert 2"
+  },
+  {
+   "file": "open_hat_03.flac",
+   "kind": "open_hat",
+   "name": "Charley ouvert 3"
+  },
+  {
+   "file": "open_hat_04.flac",
+   "kind": "open_hat",
+   "name": "Charley ouvert 4"
+  },
+  {
+   "file": "open_hat_05.flac",
+   "kind": "open_hat",
+   "name": "Charley ouvert 5"
+  },
+  {
+   "file": "open_hat_06.flac",
+   "kind": "open_hat",
+   "name": "Charley ouvert 6"
+  },
+  {
+   "file": "perc_01.flac",
+   "kind": "perc",
+   "name": "Percu 1"
+  },
+  {
+   "file": "perc_02.flac",
+   "kind": "perc",
+   "name": "Percu 2"
+  },
+  {
+   "file": "perc_03.flac",
+   "kind": "perc",
+   "name": "Percu 3"
+  },
+  {
+   "file": "perc_04.flac",
+   "kind": "perc",
+   "name": "Percu 4"
+  },
+  {
+   "file": "perc_05.flac",
+   "kind": "perc",
+   "name": "Percu 5"
+  },
+  {
+   "file": "perc_06.flac",
+   "kind": "perc",
+   "name": "Percu 6"
+  },
+  {
+   "file": "perc_07.flac",
+   "kind": "perc",
+   "name": "Percu 7"
+  },
+  {
+   "file": "perc_08.flac",
+   "kind": "perc",
+   "name": "Percu 8"
+  },
+  {
+   "file": "perc_09.flac",
+   "kind": "perc",
+   "name": "Percu 9"
+  },
+  {
+   "file": "perc_10.flac",
+   "kind": "perc",
+   "name": "Percu 10"
+  },
+  {
+   "file": "bass_01.flac",
+   "kind": "bass",
+   "name": "Basse 1"
+  },
+  {
+   "file": "bass_02.flac",
+   "kind": "bass",
+   "name": "Basse 2"
+  },
+  {
+   "file": "bass_03.flac",
+   "kind": "bass",
+   "name": "Basse 3"
+  },
+  {
+   "file": "bass_04.flac",
+   "kind": "bass",
+   "name": "Basse 4"
+  },
+  {
+   "file": "bass_05.flac",
+   "kind": "bass",
+   "name": "Basse 5"
+  },
+  {
+   "file": "bass_06.flac",
+   "kind": "bass",
+   "name": "Basse 6"
+  },
+  {
+   "file": "bass_07.flac",
+   "kind": "bass",
+   "name": "Basse 7"
+  },
+  {
+   "file": "bass_08.flac",
+   "kind": "bass",
+   "name": "Basse 8"
+  },
+  {
+   "file": "stab_01.flac",
+   "kind": "stab",
+   "name": "Stab 1"
+  },
+  {
+   "file": "stab_02.flac",
+   "kind": "stab",
+   "name": "Stab 2"
+  },
+  {
+   "file": "stab_03.flac",
+   "kind": "stab",
+   "name": "Stab 3"
+  },
+  {
+   "file": "stab_04.flac",
+   "kind": "stab",
+   "name": "Stab 4"
+  },
+  {
+   "file": "stab_05.flac",
+   "kind": "stab",
+   "name": "Stab 5"
+  },
+  {
+   "file": "stab_06.flac",
+   "kind": "stab",
+   "name": "Stab 6"
+  },
+  {
+   "file": "stab_07.flac",
+   "kind": "stab",
+   "name": "Stab 7"
+  },
+  {
+   "file": "stab_08.flac",
+   "kind": "stab",
+   "name": "Stab 8"
+  },
+  {
+   "file": "stab_09.flac",
+   "kind": "stab",
+   "name": "Stab 9"
+  },
+  {
+   "file": "stab_10.flac",
+   "kind": "stab",
+   "name": "Stab 10"
+  }
+ ]
+}

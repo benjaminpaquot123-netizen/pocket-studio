@@ -213,7 +213,7 @@ class ScreenshotTest {
             channels = channels,
             meters = FloatArray(17).also { m -> listOf(0.62f, 0.81f, 0f, 0.4f, 0.88f).forEachIndexed { i, v -> m[i] = v }; m[16] = 0.8f },
             actions = com.pocketstudio.app.mixer.MixerActions(),
-            export = com.pocketstudio.app.rhythm.ExportUi(bars = 4, files = listOf(java.io.File("Mon-premier-rythme-20261018-221500.wav")), savedInMusic = true),
+            export = com.pocketstudio.app.rhythm.ExportUi(bars = 4, files = listOf(java.io.File("Mon-premier-rythme-20261018-221500.wav")), savedInMusic = true, loudness = -13.24),
         )
     }
 
@@ -226,8 +226,8 @@ class ScreenshotTest {
             )
             com.pocketstudio.app.mixer.ExportCard(
                 com.pocketstudio.app.rhythm.ExportUi(
-                    bars = 4, what = com.pocketstudio.app.rhythm.ExportWhat.Song, format = com.pocketstudio.app.rhythm.ExportFormat.M4a,
-                    files = listOf(java.io.File("Da-Funk-morceau-20261020-101500.m4a")), savedInMusic = true,
+                    bars = 4, what = com.pocketstudio.app.rhythm.ExportWhat.Song, format = com.pocketstudio.app.rhythm.ExportFormat.Flac,
+                    files = listOf(java.io.File("Da-Funk-morceau-20261020-101500.flac")), savedInMusic = true, loudness = -8.43,
                 ),
                 com.pocketstudio.app.mixer.MixerActions(),
             )
@@ -410,6 +410,24 @@ class ScreenshotTest {
         val ui = wizardUi(99)
         com.pocketstudio.app.library.WizardScreen(ui.copy(step = ui.lastStep), com.pocketstudio.app.library.PacksUi(com.pocketstudio.app.library.IndexState.Unavailable),
             null, com.pocketstudio.app.library.WizardActions())
+    }
+
+    @Test
+    fun library() = shoot("library") {
+        val sounds = (1..5).map { com.pocketstudio.model.PackSound("kick_0$it.flac", "kick", "Kick $it") }
+        val installed = listOf(com.pocketstudio.model.PackManifest("retro_techno", "Rétro techno", "Techno", 132.0, sounds))
+        val index = com.pocketstudio.model.PackIndex(listOf(
+            com.pocketstudio.model.PackEntry("retro_techno", "Rétro techno", "retro_techno.zip", "a".repeat(64), 1_400_000, 78),
+            com.pocketstudio.model.PackEntry("detroit", "Techno de Detroit", "detroit.zip", "b".repeat(64), 1_300_000, 74),
+            com.pocketstudio.model.PackEntry("uk_garage", "UK Garage", "uk_garage.zip", "c".repeat(64), 1_500_000, 80),
+        ))
+        com.pocketstudio.app.library.LibraryScreen(
+            com.pocketstudio.app.library.LibraryUi(
+                com.pocketstudio.app.library.PacksUi(com.pocketstudio.app.library.IndexState.Ready(index), installed, mapOf("uk_garage" to 0.4f)),
+                target = "le pad 1 (Kick)", sizes = mapOf("retro_techno" to 1_380_000L),
+            ),
+            com.pocketstudio.app.library.LibraryActions(),
+        )
     }
 
     @Test

@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.pocketstudio.app.rhythm.ExportUi
 import com.pocketstudio.app.rhythm.ExportWhat
 import com.pocketstudio.app.rhythm.ExportFormat
+import com.pocketstudio.app.export.Loudness
 import com.pocketstudio.model.Buses
 import com.pocketstudio.model.Channel
 import com.pocketstudio.model.EffectType
@@ -259,13 +260,21 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
         }
         Text("Format", style = MaterialTheme.typography.bodyMedium)
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            listOf(ExportFormat.Wav to "WAV (qualité studio)", ExportFormat.M4a to "M4A (léger)").forEach { (format, label) ->
+            listOf(ExportFormat.Wav to "WAV", ExportFormat.Flac to "FLAC", ExportFormat.M4a to "M4A").forEach { (format, label) ->
                 FilterChip(
                     selected = export.format == format, onClick = { actions.setExportFormat(format) }, enabled = !export.running,
                     label = { Text(label) }, colors = chipColors, modifier = Modifier.testTag("export_format_${format.name}"),
                 )
             }
         }
+        Text(
+            when (export.format) {
+                ExportFormat.Wav -> "Qualité studio, lu par tous les logiciels. Le plus lourd."
+                ExportFormat.Flac -> "Exactement la même qualité que le WAV, bien plus léger (souvent deux fois)."
+                ExportFormat.M4a -> "Environ dix fois plus léger, pour partager."
+            },
+            style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
+        )
         when {
             export.running -> {
                 export.stage?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary) }
@@ -305,6 +314,13 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
                 style = MaterialTheme.typography.bodySmall,
                 color = Neon.TextSecondary,
             )
+            export.loudness?.let { lufs ->
+                Text(
+                    "Volume perçu : " + String.format(java.util.Locale.FRANCE, "%.1f", lufs).replace('-', '−') + " LUFS, " + Loudness.describe(lufs),
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.testTag("export_loudness"),
+                )
+            }
             OutlinedButton(onClick = actions.share, modifier = Modifier.fillMaxWidth().testTag("share")) {
                 Text(if (export.files.size > 1) "Partager les ${export.files.size} fichiers" else "Partager")
             }

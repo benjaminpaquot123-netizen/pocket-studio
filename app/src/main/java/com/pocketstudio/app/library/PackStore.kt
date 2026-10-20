@@ -21,8 +21,10 @@ object PackStore {
     const val RELEASE = "sons-packs-2"
     private const val BASE = "https://github.com/benjaminpaquot123-netizen/pocket-studio/releases/download/$RELEASE/"
 
-    /** The list of packs, pinned once the Packs workflow has built them; null = none published yet. */
-    val INDEX: VerifiedFile? = null
+    /** The list of packs the Packs workflow published (34 styles); null would mean none published yet. */
+    val INDEX: VerifiedFile? = VerifiedFile(
+        BASE + "index.json", "packs-index.json", "63f5969b27b9904ea0c772e7301326bc3575dcc7b5eb596790296ea7b9cc55da", 6890,
+    )
 
     fun dir(context: Context) = File(context.filesDir, "packs")
 
@@ -35,6 +37,16 @@ object PackStore {
 
     fun bytesOnDisk(context: Context, packId: String): Long =
         File(dir(context), packId).listFiles()?.sumOf { it.length() } ?: 0L
+
+    /** Half-installed packs left by a killed app (never while a download runs). */
+    fun cleanLeftovers(context: Context) {
+        dir(context).listFiles()?.filter { it.isDirectory && (it.name.endsWith(".part") || it.name.endsWith(".old")) }?.forEach { f ->
+            // An old copy whose new pack never arrived is put back.
+            val id = f.name.substringBeforeLast('.')
+            if (f.name.endsWith(".old") && PackManifest.safeName(id) && !File(dir(context), id).exists()) f.renameTo(File(dir(context), id))
+            else f.deleteRecursively()
+        }
+    }
 
     fun delete(context: Context, packId: String) {
         if (PackManifest.safeName(packId)) File(dir(context), packId).deleteRecursively()
@@ -64,9 +76,15 @@ object PackStore {
                 val kept = manifest.copy(sounds = manifest.sounds.filter { File(part, it.file).isFile })
                 if (kept.sounds.isEmpty()) throw IOException("pack vide")
                 part.listFiles()?.filter { f -> f.name != MANIFEST && kept.sounds.none { it.file == f.name } }?.forEach { it.delete() }
+                // The pack already there stays until the new one is in place.
                 val final = File(root, entry.id)
-                final.deleteRecursively()
-                if (!part.renameTo(final)) throw IOException("rename failed")
+                val old = File(root, "${entry.id}.old").apply { deleteRecursively() }
+                if (final.exists() && !final.renameTo(old)) throw IOException("rename failed")
+                if (!part.renameTo(final)) {
+                    old.renameTo(final)
+                    throw IOException("rename failed")
+                }
+                old.deleteRecursively()
             } finally {
                 part.deleteRecursively()
             }

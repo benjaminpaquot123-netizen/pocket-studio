@@ -87,6 +87,8 @@ data class RhythmActions(
     val setHitPitch: (step: Int, pitch: Int) -> Unit = { _, _ -> },
     /** Opens the drums' quick effects. */
     val openEffects: () -> Unit = {},
+    /** Opens the sound library for the selected pad. */
+    val openLibrary: () -> Unit = {},
     /** All-pads grid: (lane, step). */
     val toggleHit: (Int, Int) -> Unit = { _, _ -> },
     val cycleVelocity: (Int) -> Unit = {},
@@ -472,6 +474,9 @@ internal fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: 
             else -> {
                 if (task is SampleTask.Failed) {
                     Text(task.message, color = Neon.Red, style = MaterialTheme.typography.bodySmall)
+                }
+                Button(onClick = { actions.dismissSampleError(); actions.openLibrary() }, modifier = Modifier.fillMaxWidth().testTag("open_library")) {
+                    Text("Bibliothèque de sons")
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedButton(onClick = { actions.dismissSampleError(); actions.importSample() }, modifier = Modifier.weight(1f).testTag("import_sample")) {

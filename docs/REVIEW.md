@@ -228,3 +228,20 @@ Restant (mineur) :
 - La file de commandes (4096) n'est pas surveillée : un très gros projet resynchronisé pourrait perdre des détails de coups (joués au centre).
 - Écoute des sons (AudioTrack statique) : une écoute très longue (> 1 min) peut être refusée ; deux appuis très rapides peuvent rejouer l'ancien son.
 - Hauteur par coup réglable de −12 à +12 à l'écran (le format accepte ±24).
+
+## Phase 11 (bibliothèques de sons, FLAC, volume perçu), relecture de fin de phase
+
+Vérifié par le relecteur : FLAC sans perte sur 16 fichiers (1 à 4097 images, mono, stéréo, 16 et 24 bits, flottant, 5 minutes), CRC validés par ffmpeg ; volume perçu à 0,05 LU de ffmpeg ebur128 sur 6 signaux ; chaîne des packs épinglée de bout en bout par empreinte. Rien de grave.
+
+Corrigé :
+- Le test FLAC décode vraiment le fichier (décodeur de test : CONSTANT, FIXED, Rice partitionné, stéréo, CRC-8 et CRC-16) et compare chaque échantillon, en 16, 24, 32 bits, flottant, mono, longueurs 1 à 13 522.
+- FLAC plus léger : codage de Rice partitionné (ordre 0 à 8) et stéréo gauche/côté, droite/côté ou milieu/côté au choix par bloc ; en-têtes dans le sous-ensemble « streamable » (fréquence et taille dans chaque bloc) ; tampons réutilisés ; progression en pourcentage pendant la conversion. Texte : « bien plus léger (souvent deux fois) ».
+- Annuler pendant la mesure du volume d'un export WAV arrête bien l'export ; une conversion en cours s'arrête si l'écran est détruit, sans fichier oublié.
+- Plus de vieux « Volume perçu » sous un export MIDI ; partage d'un FLAC en audio/flac.
+- « Poser » quand un son est encore en cours : la bibliothèque reste ouverte avec un message en haut (les messages de la bibliothèque sont maintenant en haut).
+- Tests du volume perçu : un 30 Hz (filtre passe-haut) et une moitié 30 dB plus douce (porte relative), valeurs de ffmpeg.
+- Test qui lie l'index des packs épinglé à la copie lue par les tests du modèle.
+- Packs : un dossier à moitié installé (appli tuée) est nettoyé à l'ouverture de la bibliothèque ; l'ancien pack n'est effacé qu'une fois le nouveau en place.
+
+Restant (mineur) :
+- Le FLAC n'utilise que les prédicteurs fixes (pas de LPC) : un peu moins compact que l'encodeur officiel.

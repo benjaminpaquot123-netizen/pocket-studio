@@ -92,10 +92,33 @@ object AacEncoder {
 }
 
 /** Reads the PCM samples of a WAV file (16/24/32-bit integer or 32-bit float), as 16-bit. */
-class WavPcm private constructor(private val file: RandomAccessFile, val channels: Int, val sampleRate: Int, private val bits: Int, private val float: Boolean, dataBytes: Long) : AutoCloseable {
+class WavPcm private constructor(private val file: RandomAccessFile, val channels: Int, val sampleRate: Int, val bits: Int, private val float: Boolean, dataBytes: Long) : AutoCloseable {
     private var remaining = dataBytes
     private val bytesPerSample = bits / 8
     private val chunk = ByteArray(16 * 1024 * 4)
+
+    /** Frames left to read. */
+    val framesLeft: Long get() = remaining / (bytesPerSample * channels)
+
+    /** Up to [maxFrames] frames into [out] as interleaved floats (-1..1); returns the frames read (0 at the end). */
+    fun readFloat(out: FloatArray, maxFrames: Int): Int {
+        val frameBytes = bytesPerSample * channels
+        val frames = minOf(maxFrames.toLong(), remaining / frameBytes, (chunk.size / frameBytes).toLong(), (out.size / channels).toLong()).toInt()
+        if (frames <= 0) return 0
+        val n = frames * frameBytes
+        file.readFully(chunk, 0, n)
+        remaining -= n
+        val src = ByteBuffer.wrap(chunk, 0, n).order(ByteOrder.LITTLE_ENDIAN)
+        for (i in 0 until frames * channels) out[i] = sample(src)
+        return frames
+    }
+
+    private fun sample(src: ByteBuffer): Float = when {
+        float -> src.float
+        bits == 16 -> src.short / 32768f
+        bits == 24 -> ((src.get().toInt() and 0xFF) or ((src.get().toInt() and 0xFF) shl 8) or (src.get().toInt() shl 16)) / 8388608f
+        else -> src.int / 2147483648f
+    }
 
     /** Writes up to [maxFrames] frames into [out] as 16-bit little-endian; returns the frames written (0 at the end). */
     fun read16(out: ByteBuffer, maxFrames: Int): Int {
@@ -107,13 +130,7 @@ class WavPcm private constructor(private val file: RandomAccessFile, val channel
         remaining -= n
         val src = ByteBuffer.wrap(chunk, 0, n).order(ByteOrder.LITTLE_ENDIAN)
         repeat(frames * channels) {
-            val v: Float = when {
-                float -> src.float
-                bits == 16 -> src.short / 32768f
-                bits == 24 -> ((src.get().toInt() and 0xFF) or ((src.get().toInt() and 0xFF) shl 8) or (src.get().toInt() shl 16)) / 8388608f
-                else -> src.int / 2147483648f
-            }
-            out.putShort((v.coerceIn(-1f, 1f) * 32767f).toInt().toShort())
+            out.putShort((sample(src).coerceIn(-1f, 1f) * 32767f).toInt().toShort())
         }
         return frames
     }

@@ -111,8 +111,13 @@
   - 10.2 assistant pas à pas (Mes projets › Nouveau › Assistant) : 16 styles, ambiance, rôle de chaque ligne, sons intégrés (rendus par le moteur pour l'écoute) ou packs, basse / nappe / lead avec écoute de la première mesure ;
   - 10.3 verrouillage de gamme, pads d'accords (Synthé › Pads), progressions en accords / basse / arpège ;
   - 10.4 effets créatifs : ambiances, macros Couleur / Saleté / Mouvement / Espace dans le moteur, pad XY, bouton Effets sur chaque piste.
-  - Packs de sons : format, index épinglé, téléchargement et suppression prêts ; aucun pack publié (PackStore.INDEX = null).
+  - Packs de sons : format, index épinglé, téléchargement et suppression prêts.
+- Phase 10 fusionnée (PR #20), revue faite.
+- Phase 11 (branche ccr-80af1a1b-mn0wec) :
+  - 11.1 fait : 34 packs (environ 2 000 sons, 44 à 70 par style, 0,5 à 3 Mo chacun) fabriqués par le workflow Packs (Stable Audio Open Small, filtres de qualité) et publiés sur la Release `sons-packs-2` ; index épinglé dans `PackStore.INDEX`.
+  - 11.2 fait : Bibliothèque de sons (bouton dans Rythme) : familles de sons, sources (intégrés, packs), écoute, « Poser » sur le pad ; liste des packs avec taille, Télécharger, Supprimer.
+  - En plus : export FLAC (encodeur maison, sans perte, vérifié par libsndfile et ffmpeg) et volume perçu en LUFS (BS.1770-4) affiché après l'export du mix.
 
 ## Prochaine étape exacte
-1. Phase 10 : PR, relecture de fin de phase, CI verte, fusion.
-2. Phase 11 : fabriquer les packs (scripts/packs/generate_pack.py, prototype lent en fp32 : passer en int8 et en matrice CI par style), épingler l'index, rayon de sons dans le pad.
+1. Phase 11 : changelog, recette, PR, relecture de fin de phase, CI verte, fusion.
+2. Ensuite : points mineurs restants de `docs/REVIEW.md`, Ableton Link (reporté).

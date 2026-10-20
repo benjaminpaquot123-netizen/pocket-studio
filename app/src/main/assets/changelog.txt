@@ -1,5 +1,5 @@
-Phase 10 : « Le gras, c'est la vie ! » Et les sons qui grattent aussi.
-- Assistant pas à pas (Nouveau projet) : style, ambiance, chaque son expliqué, rythme et accords de départ.
-- Plus de fausse note : gamme verrouillée, pads d'accords, basse et arpège en un geste.
-- Effets : ambiances toutes prêtes (Sous l'eau, Lo-Fi Tape…), 4 macros et un pad XY sur chaque piste.
-- Batterie : pan par pad, pan et hauteur coup par coup.
+Phase 11 : « Deux mille sons ? C'est pas faux ! »
+- Bibliothèque de sons (bouton sous chaque pad) : écoute et pose sur le pad en un geste.
+- 34 packs par style à télécharger (rétro techno, Detroit, UK garage, DnB…), supprimables d'un geste.
+- Export en FLAC : la qualité du WAV, bien plus léger.
+- Après l'export du morceau : son volume perçu, comparé au streaming.

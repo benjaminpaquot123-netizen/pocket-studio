@@ -103,6 +103,18 @@ fun soundCategories(role: Role, styleId: String?, installed: List<PackManifest>)
     return own + kit + (packs - own.toSet())
 }
 
+/** Every category of a kind of sound for the library: the built-in kit's voices when the kit has that kind, then each pack. */
+fun libraryCategories(kind: String, installed: List<PackManifest>): List<SoundCategory> {
+    val role = Role.entries.firstOrNull { it.id == kind }
+    if (role != null) return soundCategories(role, null, installed)
+    val label = SoundPacks.KIND_LABELS[kind] ?: kind
+    return installed.mapNotNull { m ->
+        val sounds = m.ofKind(kind)
+        if (sounds.isEmpty()) null
+        else SoundCategory(PACK_PREFIX + m.id, "$label · ${m.name}", sounds.map { SoundOption(SoundRef.Pack(m.id, it), "${it.name} · ${m.name}") })
+    }
+}
+
 /**
  * The sound library (built-in kit and downloaded packs, with previews) and the beginner's
  * assistant that builds a new song from it.
@@ -212,6 +224,19 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun stopPreview() = player.stop()
+
+    /** The sound as audio for a pad or a track ([then] on the main thread; nothing if unreadable). */
+    fun use(ref: SoundRef, then: (Pcm) -> Unit) {
+        stopPreview()
+        viewModelScope.launch {
+            val pcm = load(ref)
+            if (pcm == null) {
+                _packs.update { it.copy(message = "Ce son n'a pas pu être lu.") }
+                return@launch
+            }
+            then(pcm)
+        }
+    }
 
     /** The sound as audio: the kit voice rendered once by the engine, or the pack file decoded. */
     private suspend fun load(ref: SoundRef): Pcm? = when (ref) {

@@ -413,6 +413,24 @@ class ScreenshotTest {
     }
 
     @Test
+    fun library() = shoot("library") {
+        val sounds = (1..5).map { com.pocketstudio.model.PackSound("kick_0$it.flac", "kick", "Kick $it") }
+        val installed = listOf(com.pocketstudio.model.PackManifest("retro_techno", "Rétro techno", "Techno", 132.0, sounds))
+        val index = com.pocketstudio.model.PackIndex(listOf(
+            com.pocketstudio.model.PackEntry("retro_techno", "Rétro techno", "retro_techno.zip", "a".repeat(64), 1_400_000, 78),
+            com.pocketstudio.model.PackEntry("detroit", "Techno de Detroit", "detroit.zip", "b".repeat(64), 1_300_000, 74),
+            com.pocketstudio.model.PackEntry("uk_garage", "UK Garage", "uk_garage.zip", "c".repeat(64), 1_500_000, 80),
+        ))
+        com.pocketstudio.app.library.LibraryScreen(
+            com.pocketstudio.app.library.LibraryUi(
+                com.pocketstudio.app.library.PacksUi(com.pocketstudio.app.library.IndexState.Ready(index), installed, mapOf("uk_garage" to 0.4f)),
+                target = "le pad 1 (Kick)", sizes = mapOf("retro_techno" to 1_380_000L),
+            ),
+            com.pocketstudio.app.library.LibraryActions(),
+        )
+    }
+
+    @Test
     fun quickFx() = shoot("quick_fx") {
         androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
             val c = com.pocketstudio.model.Channel().let { it.withFx(com.pocketstudio.model.FxPresets.byId("underwater")!!) }

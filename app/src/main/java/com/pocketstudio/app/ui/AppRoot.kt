@@ -200,6 +200,49 @@ fun AppRoot() {
             }
         }
     }
+    // The sound library, for the selected drum pad.
+    var showLibrary by rememberSaveable { mutableStateOf(false) }
+    if (showLibrary) {
+        val packsUi by libraryVm.packs.collectAsStateWithLifecycle()
+        val previewing by libraryVm.playing.collectAsStateWithLifecycle()
+        val libTransport by rhythmVm.transport.collectAsStateWithLifecycle()
+        val lane = libTransport.selectedPad
+        LaunchedEffect(Unit) { libraryVm.refreshPacks() }
+        val sizes by androidx.compose.runtime.produceState(emptyMap<String, Long>(), packsUi.installed) {
+            value = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+                packsUi.installed.associate { it.id to com.pocketstudio.app.library.PackStore.bytesOnDisk(context, it.id) }
+            }
+        }
+        val close = { libraryVm.stopPreview(); showLibrary = false }
+        androidx.compose.ui.window.Dialog(
+            onDismissRequest = close,
+            properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false),
+        ) {
+            androidx.compose.material3.Surface(color = Neon.Background, modifier = Modifier.fillMaxSize()) {
+                com.pocketstudio.app.library.LibraryScreen(
+                    com.pocketstudio.app.library.LibraryUi(
+                        packsUi, previewing,
+                        target = "le pad ${lane + 1} (${com.pocketstudio.app.rhythm.DrumKitInfo.names[lane]})",
+                        startKind = padKind(lane),
+                        sizes = sizes,
+                    ),
+                    com.pocketstudio.app.library.LibraryActions(
+                        close = close,
+                        preview = libraryVm::preview,
+                        use = { option ->
+                            libraryVm.use(option.ref) { pcm ->
+                                rhythmVm.placeOnPad(pcm, option.name.substringBefore(" · "))
+                                close()
+                            }
+                        },
+                        download = libraryVm::downloadPack,
+                        cancelDownload = libraryVm::cancelDownload,
+                        deletePack = libraryVm::deletePack,
+                    ),
+                )
+            }
+        }
+    }
     // Quick effects of one mixer channel, opened from the synth, drums or audio tracks (-1: closed).
     var fxChannel by rememberSaveable { mutableStateOf(-1) }
     if (fxChannel >= 0) {
@@ -531,6 +574,7 @@ fun AppRoot() {
                                 rotate = rhythmVm::rotatePad,
                                 cycleRoll = rhythmVm::cycleRoll,
                                 openEffects = { fxChannel = 0 },
+                                openLibrary = { showLibrary = true },
                                 setPadPan = rhythmVm::setPadPan,
                                 setHitPan = rhythmVm::setHitPan,
                                 setHitPitch = rhythmVm::setHitPitch,
@@ -1227,3 +1271,13 @@ fun controlLabel(target: com.pocketstudio.model.AutoTarget, p: Project, strips: 
         com.pocketstudio.model.MidiMapping.TEMPO -> "Tempo (60 à 200 BPM)"
         else -> com.pocketstudio.app.mixer.automationLabel(target, p.mixer.channels, p.mixer.master, strips)
     }
+
+/** The kind of sound a drum pad usually holds, to open the library on it. */
+private fun padKind(lane: Int) = when (lane) {
+    0, 1 -> "kick"
+    2, 3, 10 -> "snare"
+    4 -> "clap"
+    5, 13 -> "hat"
+    6, 12 -> "open_hat"
+    else -> "perc"
+}

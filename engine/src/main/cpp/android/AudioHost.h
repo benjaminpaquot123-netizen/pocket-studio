@@ -82,6 +82,7 @@ public:
 
     oboe::DataCallbackResult onAudioReady(oboe::AudioStream* stream, void* audioData,
                                           int32_t numFrames) override;
+    void onErrorBeforeClose(oboe::AudioStream* stream, oboe::Result error) override;
     void onErrorAfterClose(oboe::AudioStream* stream, oboe::Result error) override;
 
 private:
@@ -99,6 +100,11 @@ private:
     Engine engine_;
     std::shared_ptr<oboe::AudioStream> output_;
     std::shared_ptr<oboe::AudioStream> input_;
+    // A stream Oboe is closing after a disconnect (headphones, Bluetooth): taken out of output_ /
+    // input_ before the close so no other thread calls into it (calls into a closed AAudio stream
+    // crash), kept alive until onErrorAfterClose.
+    std::shared_ptr<oboe::AudioStream> closingOutput_;
+    std::shared_ptr<oboe::AudioStream> closingInput_;
     std::vector<float> inputBuffer_;
     SpscFloatRing inputRing_;
     InputCallback inputCallback_;

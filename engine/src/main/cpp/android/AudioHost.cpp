@@ -275,21 +275,42 @@ oboe::DataCallbackResult AudioHost::onAudioReady(oboe::AudioStream* stream, void
     return oboe::DataCallbackResult::Continue;
 }
 
+void AudioHost::onErrorBeforeClose(oboe::AudioStream* stream, oboe::Result error) {
+    // Oboe is about to close this stream (disconnect): from now on nothing may call into it, so it
+    // leaves output_ / input_ (every user checks those under lock_) until onErrorAfterClose.
+    LOGW("stream closing: %s", oboe::convertToText(error));
+    std::lock_guard<std::mutex> guard(lock_);
+    if (output_ && stream == output_.get()) {
+        xrunBase_ = lastXruns_;
+        closingOutput_ = std::move(output_);
+    } else if (input_ && stream == input_.get()) {
+        inputLive_.store(false, std::memory_order_release);
+        closingInput_ = std::move(input_);
+    }
+}
+
 void AudioHost::onErrorAfterClose(oboe::AudioStream* stream, oboe::Result error) {
     // Called on an Oboe-owned thread, e.g. when headphones are plugged in or unplugged,
     // or when starting the microphone reroutes audio.
     LOGW("stream closed: %s", oboe::convertToText(error));
     std::lock_guard<std::mutex> guard(lock_);
-    if (stream != output_.get() && stream != input_.get()) return;
-    if (input_ && !recordingInput_) {
+    const bool wasOutput = (closingOutput_ && stream == closingOutput_.get()) || (output_ && stream == output_.get());
+    const bool wasInput = (closingInput_ && stream == closingInput_.get()) || (input_ && stream == input_.get());
+    if (!wasOutput && !wasInput) return;
+    if ((input_ || closingInput_) && !recordingInput_) {
         // A latency test was running: report it instead of failing silently.
         testInterrupted_.store(true, std::memory_order_release);
     }
-    if (stream == output_.get()) {
-        xrunBase_ = lastXruns_;
-        output_.reset();
+    // Already closed by Oboe: dropped without another call into it.
+    if (wasOutput) {
+        if (output_ && stream == output_.get()) {
+            xrunBase_ = lastXruns_;
+            output_.reset();
+        }
+        closingOutput_.reset();
     } else {
-        input_.reset();
+        if (input_ && stream == input_.get()) input_.reset();
+        closingInput_.reset();
     }
     closeLocked();
     engine_.latencyMeter().cancel();

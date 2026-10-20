@@ -14,9 +14,12 @@ namespace ps {
 // interleaved stereo out. prepare() may allocate (stream closed); everything else is real-time safe.
 class Mixer {
 public:
-    static constexpr int kChannels = 4;  // 0 = drums, 1 = acid bass, 2 = synth, 3 = remix stems (stereo)
+    // 0 = drums, 1 = acid bass, 2 = synth (instrument track 1), 3 = remix stems (stereo),
+    // 5..11 = instrument tracks 2..8. Index 4 is the master (insert commands, saved automation):
+    // its strip is never fed.
+    static constexpr int kChannels = 12;
     static constexpr int kInserts = 4;   // per channel, and on the master
-    static constexpr int kMaster = kChannels;  // insert "channel" index of the master
+    static constexpr int kMaster = 4;    // insert "channel" index of the master
     static constexpr int kBuses = 2;
     static constexpr float kCeiling = 0.89f;  // -1 dBFS
 
@@ -48,6 +51,7 @@ public:
         process(channels, nullptr, direct, out, numFrames, outChannels);
     }
     // `rights[ch]` non-null makes channel `ch` stereo (channels[ch] = left); pan then balances.
+    // A null `channels[ch]` skips the channel.
     void process(const float* const* channels, const float* const* rights, const float* direct, float* out, int numFrames,
                  int outChannels);
 
@@ -75,8 +79,8 @@ private:
     static void storeMax(std::atomic<float>& a, float v);
 
     std::array<Strip, kChannels> strips_{};
-    std::array<std::array<InsertSlot, kInserts>, kChannels + 1> inserts_{};
-    std::array<int, kChannels + 1> activeInserts_{};  // count of non-empty slots
+    std::array<std::array<InsertSlot, kInserts>, kChannels> inserts_{};
+    std::array<int, kChannels> activeInserts_{};  // count of non-empty slots
     Reverb reverb_;
     TempoDelay delay_;
     PerformanceFx perf_;

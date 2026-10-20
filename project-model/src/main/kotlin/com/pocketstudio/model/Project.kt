@@ -39,6 +39,11 @@ data class Project(
     val plaits: PlaitsPatch = PlaitsPatch(),
     /** Live pads: sounds switched on and off by a tap, in time. */
     val live: LivePads = LivePads(),
+    /** The first instrument track's name and colour (its sound is [synth] / [plaits] / [instrument]). */
+    val synthTrackName: String = "Synthé",
+    val synthTrackColor: Int = 0,
+    /** Instrument tracks added after the first one (see [InstrumentTrack]). */
+    val tracks: List<InstrumentTrack> = emptyList(),
 ) {
     /** Returns a copy with every value inside its allowed range. */
     fun sanitized(): Project = copy(
@@ -56,6 +61,9 @@ data class Project(
         synthEngine = synthEngine.coerceIn(0, 1),
         plaits = plaits.sanitized(),
         live = live.sanitized(),
+        synthTrackName = synthTrackName.take(InstrumentTrack.MAX_NAME).ifBlank { "Synthé" },
+        synthTrackColor = synthTrackColor.coerceIn(0, InstrumentTrack.COLORS - 1),
+        tracks = tracks.filter { it.id in 1 until InstrumentTrack.MAX }.distinctBy { it.id }.sortedBy { it.id }.map { it.sanitized() },
     ).syncScenes()
 
     companion object {

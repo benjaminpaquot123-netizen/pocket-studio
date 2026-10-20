@@ -60,6 +60,13 @@ import com.pocketstudio.model.LiveClip
 import com.pocketstudio.model.LivePads
 import com.pocketstudio.model.sampleFiles
 import com.pocketstudio.model.Project
+import com.pocketstudio.model.InstrumentTrack
+import com.pocketstudio.model.instrumentTracks
+import com.pocketstudio.model.track
+import com.pocketstudio.model.withTrack
+import com.pocketstudio.model.addTrack
+import com.pocketstudio.model.duplicateTrack
+import com.pocketstudio.model.removeTrack
 import com.pocketstudio.model.ProjectSession
 import com.pocketstudio.model.ProjectStore
 import com.pocketstudio.model.SynthPatch
@@ -210,12 +217,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         pushDrumPattern(p.drums)
         NativeEngine.setMetronome(_transport.value.metronome)
         pushAcid(p.acid)
-        pushSynth(p.synth)
         pushMixer(p)
         pushPads(p)
-        pushNotes(p.synthNotes)
-        pushInstrument(p)
-        pushPlaits(p)
+        pushTracks(p)
         pushRemix(p)
         pushAutomation(p)
         pushLive(p)
@@ -295,23 +299,115 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         pushLive()
     }
 
-    // --- Plaits (Mutable Instruments) voice for the synth track -------------------------------
+    // --- Instrument tracks: piano roll + sound, added at will -----------------------------------
 
-    private fun pushPlaits(p: Project = project.value) {
+    private val _selectedTrack = MutableStateFlow(0)
+    /** The instrument track shown by the synth screen, the keyboard and recording (0 = the first). */
+    val selectedTrack: StateFlow<Int> = _selectedTrack.asStateFlow()
+
+    /** The selected track, or the first one when it no longer exists (deleted, undone). */
+    private val track: Int get() = _selectedTrack.value.takeIf { id -> id == 0 || project.value.tracks.any { it.id == id } } ?: 0
+
+    private val currentTrack: InstrumentTrack get() = project.value.track(track)
+
+    fun selectTrack(id: Int) {
+        if (id == track) return
+        synthAllOff()  // keys held on the old track must not hang
+        heldNotes.clear()
+        _selectedTrack.value = id
+        NativeEngine.liveTrack = id
+    }
+
+    private fun editTrack(key: String? = null, id: Int = track, transform: (InstrumentTrack) -> InstrumentTrack) {
+        session.edit(key) { p -> p.withTrack(transform(p.track(id)).sanitized()) }
+    }
+
+    /** A new instrument track (with its own mixer channel), selected at once. */
+    fun addTrack() {
+        val p = project.value
+        val next = p.addTrack() ?: run {
+            _notice.value = "Huit pistes d'instruments au maximum : supprime-en une pour en ajouter une autre."
+            return
+        }
+        val id = next.tracks.first { t -> p.tracks.none { it.id == t.id } }.id
+        session.edit { next }
+        pushTracks()
+        pushMixer()
+        selectTrack(id)
+        AppLog.add("Piste ajoutée : ${project.value.track(id).name}")
+    }
+
+    fun duplicateTrack(id: Int) {
+        val p = project.value
+        val next = p.duplicateTrack(id) ?: run {
+            _notice.value = "Huit pistes d'instruments au maximum : supprime-en une pour en dupliquer une autre."
+            return
+        }
+        session.edit { next }
+        pushTracks()
+        pushMixer()
+        selectTrack(next.tracks.first { t -> p.tracks.none { it.id == t.id } }.id)
+    }
+
+    /** Deletes an added track (Annuler brings it back); the first track stays. */
+    fun removeTrack(id: Int) {
+        if (id == 0) return
+        val name = project.value.track(id).name
+        if (track == id) selectTrack(0)
+        session.edit { it.removeTrack(id) }
+        pushTracks()
+        pushMixer()
+        pushAutomation()
+        releaseUnusedFonts()
+        AppLog.add("Piste supprimée : $name")
+    }
+
+    fun renameTrack(id: Int, name: String) {
+        if (name.isBlank()) return
+        editTrack(id = id) { it.copy(name = name.trim()) }
+    }
+
+    fun setTrackColor(id: Int, color: Int) = editTrack(id = id) { it.copy(color = color) }
+
+    /** Sends every instrument track to the engine; tracks that do not exist are switched off. */
+    private fun pushTracks(p: Project = project.value) {
+        // A selected track that went away (undo, another project) hands over to the first one.
+        if (p.tracks.none { it.id == _selectedTrack.value }) {
+            _selectedTrack.value = 0
+            if (NativeEngine.isAvailable) NativeEngine.liveTrack = 0
+        }
         if (!NativeEngine.isAvailable) return
-        p.plaits.engineValues().forEachIndexed { i, v -> NativeEngine.setPlaitsParam(i, v) }
-        NativeEngine.setSynthEngine(p.synthEngine)
+        for (id in 1 until InstrumentTrack.MAX) {
+            if (p.tracks.none { it.id == id }) NativeEngine.setTrackOn(id, false)
+        }
+        p.instrumentTracks.forEach { t ->
+            if (t.id > 0) NativeEngine.setTrackOn(t.id, true)
+            pushSynth(t.synth, t.id)
+            pushPlaits(p, t.id)
+            pushNotes(t.notes, t.id)
+        }
+        pushInstrument(p)
+    }
+
+    // --- Plaits (Mutable Instruments) voice for the instrument tracks -------------------------
+
+    private fun pushPlaits(p: Project = project.value, id: Int = track) {
+        if (!NativeEngine.isAvailable) return
+        val t = p.track(id)
+        t.plaits.engineValues().forEachIndexed { i, v -> NativeEngine.setPlaitsParam(i, v, t.id) }
+        NativeEngine.setSynthEngine(t.engine, t.id)
     }
 
     /** 0 = subtractive synth, 1 = Plaits; leaves any General MIDI instrument. */
     fun selectSynthEngine(engine: Int) {
-        session.edit { p -> p.copy(synthEngine = engine, instrument = null) }
+        editTrack { it.copy(engine = engine, instrument = null) }
         pushInstrument()
         pushPlaits()
+        releaseUnusedFonts()
     }
 
     fun setPlaitsModel(model: Int) {
-        session.edit { p -> p.copy(plaits = p.plaits.copy(model = model)) }
+        editTrack { it.copy(plaits = it.plaits.copy(model = model)) }
         pushPlaits()
         if (NativeEngine.isAvailable && !_transport.value.playing) {
             viewModelScope.launch {
@@ -322,8 +418,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun setPlaitsParam(param: Int, value: Float) {
-        session.edit("plaits-$param") { p -> p.copy(plaits = p.plaits.with(param, value)) }
-        if (NativeEngine.isAvailable) NativeEngine.setPlaitsParam(param, value.coerceIn(0f, 1f))
+        editTrack("plaits-$param-$track") { it.copy(plaits = it.plaits.with(param, value)) }
+        if (NativeEngine.isAvailable) NativeEngine.setPlaitsParam(param, value.coerceIn(0f, 1f), track)
     }
 
     private fun pushDrumPattern(drums: DrumPattern) {
@@ -425,7 +521,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         NativeEngine.setStaging(true)
         pushDrumPattern(view.drums)
         pushAcid(view.acid)
-        pushNotes(view.synthNotes)
+        view.instrumentTracks.forEach { pushNotes(it.notes, it.id) }
         NativeEngine.setStaging(false)
         NativeEngine.armSceneSwap(afterSteps)
         watchSwaps()
@@ -793,15 +889,48 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** The bank shown in the browser (and loaded once opened). */
     private val _bankId = MutableStateFlow(project.value.instrument?.bankId ?: InstrumentLibrary.BANKS[0].id)
     val bankId: StateFlow<String> = _bankId.asStateFlow()
-    private var soundFont: SoundFont? = null
-    private var loadedBankId: String? = null
+    /** Banks in memory: the one shown in the browser and those the tracks play. */
+    private val fonts = HashMap<String, SoundFont>()
+    private val loadingBanks = HashSet<String>()
+    /** The bank shown in the browser, once open. */
+    private val soundFont: SoundFont? get() = fonts[_bankId.value]
     @Volatile private var downloadCancelled = false
 
+    /** Every track's General MIDI instrument (a track whose bank is not open yet plays its synth). */
     private fun pushInstrument(p: Project = project.value) {
         if (!NativeEngine.isAvailable) return
-        val font = soundFont?.takeIf { loadedBankId == p.instrument?.bankId }
-        val index = p.instrument?.let { font?.indexOf(it.bank, it.program) } ?: -1
-        if (font != null && index >= 0) NativeEngine.setInstrument(font, index) else NativeEngine.setInstrument(null, 0)
+        p.instrumentTracks.forEach { t ->
+            val font = t.instrument?.let { fonts[it.bankId] }
+            val index = t.instrument?.let { font?.indexOf(it.bank, it.program) } ?: -1
+            if (font != null && index >= 0) NativeEngine.setInstrument(font, index, t.id) else NativeEngine.setInstrument(null, 0, t.id)
+        }
+    }
+
+    /** Opens the banks the tracks play that are on the phone but not in memory yet. */
+    private fun loadTrackFonts() {
+        val app = getApplication<Application>()
+        val wanted = project.value.instrumentTracks.mapNotNull { it.instrument?.bankId }.toSet()
+        wanted.filter { it !in fonts && it !in loadingBanks }.forEach { id ->
+            val bank = InstrumentLibrary.bank(id)
+            if (!InstrumentLibrary.isInstalled(app, bank)) return@forEach
+            loadingBanks += id
+            viewModelScope.launch {
+                val font = withContext(Dispatchers.IO) {
+                    if (InstrumentLibrary.verify(app, bank)) SoundFont.load(InstrumentLibrary.file(app, bank)) else null
+                }
+                loadingBanks -= id
+                if (font == null) return@launch
+                if (fonts.containsKey(id)) font.close() else fonts[id] = font
+                pushInstrument()
+                if (_bankId.value == id) _library.value = LibraryState.Ready(fonts[id]!!.presets)
+            }
+        }
+    }
+
+    /** Closes banks nobody plays or browses any more (the engine keeps its own instances). */
+    private fun releaseUnusedFonts() {
+        val used = project.value.instrumentTracks.mapNotNull { it.instrument?.bankId }.toSet() + _bankId.value
+        fonts.keys.filter { it !in used }.forEach { fonts.remove(it)?.close() }
     }
 
     /** Shows another bank in the browser, opening it if it is on the phone. */
@@ -815,8 +944,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun openLibrary() {
         val bank = InstrumentLibrary.bank(_bankId.value)
         if (_library.value is LibraryState.Downloading || _library.value == LibraryState.Loading) return
-        if (soundFont != null && loadedBankId == bank.id) {
-            _library.value = LibraryState.Ready(soundFont!!.presets)
+        fonts[bank.id]?.let {
+            _library.value = LibraryState.Ready(it.presets)
+            releaseUnusedFonts()
             return
         }
         val app = getApplication<Application>()
@@ -834,13 +964,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 _library.value = LibraryState.Failed("La bibliothèque était abîmée : télécharge-la à nouveau.")
                 return@launch
             }
-            // One bank in memory at a time: the engine keeps its own copy of the old one until replaced.
-            val old = soundFont
-            soundFont = font
-            loadedBankId = bank.id
+            if (fonts.containsKey(bank.id)) font.close() else fonts[bank.id] = font
             pushInstrument()
-            old?.close()
-            if (_bankId.value == bank.id) _library.value = LibraryState.Ready(font.presets)
+            releaseUnusedFonts()
+            if (_bankId.value == bank.id) _library.value = LibraryState.Ready(fonts[bank.id]!!.presets)
             AppLog.add("Bibliothèque ${bank.name} : ${font.presets.size} sons")
         }
     }
@@ -873,8 +1000,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** null: back to the subtractive synth. */
     fun selectInstrument(choice: InstrumentChoice?) {
-        session.edit { p -> p.copy(instrument = choice) }
+        editTrack { it.copy(instrument = choice) }
         pushInstrument()
+        releaseUnusedFonts()
         if (choice != null && NativeEngine.isAvailable && !_transport.value.playing) {
             viewModelScope.launch {
                 kotlinx.coroutines.delay(30)  // let the new instrument arrive first
@@ -931,12 +1059,12 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     // --- Piano roll ------------------------------------------------------------------------
 
     /** The engine plays the clip as performed: arpeggios and strums expanded here. */
-    private fun pushNotes(clip: NoteClip) {
+    private fun pushNotes(clip: NoteClip, id: Int = track) {
         if (!NativeEngine.isAvailable) return
         val played = clip.performance.expand(clip)
-        NativeEngine.setSynthSteps(clip.steps)
-        played.forEachIndexed { i, n -> NativeEngine.setSynthNote(i, n.start, n.length, n.pitch, n.velocity) }
-        NativeEngine.setSynthNoteCount(played.size)
+        NativeEngine.setSynthSteps(clip.steps, id)
+        played.forEachIndexed { i, n -> NativeEngine.setSynthNote(i, n.start, n.length, n.pitch, n.velocity, id) }
+        NativeEngine.setSynthNoteCount(played.size, id)
     }
 
     // --- Harmony (scale lock, chords, progressions, arpeggio, strum) -------------------------
@@ -1061,8 +1189,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     private fun editNotes(key: String? = null, transform: (NoteClip) -> NoteClip) {
-        session.edit(key) { p -> p.copy(synthNotes = transform(p.synthNotes)) }
-        pushNotes(project.value.synthNotes)
+        val id = track
+        editTrack(key, id) { it.copy(notes = transform(it.notes)) }
+        pushNotes(project.value.track(id).notes, id)
     }
 
     /** A whole-clip edit from the piano roll's selection tools. */
@@ -1085,10 +1214,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** A short note so the user hears what they placed. */
     private fun previewNote(pitch: Int) {
-        NativeEngine.synthNoteOn(pitch, 0.8f)
+        val id = track
+        NativeEngine.synthNoteOn(pitch, 0.8f, id)
         viewModelScope.launch {
             kotlinx.coroutines.delay(250)
-            NativeEngine.synthNoteOff(pitch)
+            NativeEngine.synthNoteOff(pitch, id)
         }
     }
 
@@ -1421,20 +1551,21 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     // --- Mixer -----------------------------------------------------------------------------
 
-    private val _meters = MutableStateFlow(FloatArray(NativeEngine.MIXER_CHANNELS + 2))
+    private val _meters = MutableStateFlow(FloatArray(NativeEngine.MIXER_CHANNELS + 1))
+    /** Peak per mixer channel (the master's at [MASTER]), then the limiter gain. */
     val meters: StateFlow<FloatArray> = _meters.asStateFlow()
 
     /** Polls meter peaks about 20 times a second while the mixer is visible. */
     suspend fun pollMeters() {
         if (!NativeEngine.isAvailable) return
         val n = NativeEngine.MIXER_CHANNELS
-        val decayed = FloatArray(n + 2)
+        val decayed = FloatArray(n + 1)
         while (true) {
-            val fresh = FloatArray(n + 2)
+            val fresh = FloatArray(n + 1)
             NativeEngine.mixerMeters(fresh)
             // Peak hold with a gentle fall so the bars are readable.
-            for (i in 0..n) decayed[i] = maxOf(fresh[i], decayed[i] * 0.85f)
-            decayed[n + 1] = fresh[n + 1]
+            for (i in 0 until n) decayed[i] = maxOf(fresh[i], decayed[i] * 0.85f)
+            decayed[n] = fresh[n]
             _meters.value = decayed.copyOf()
             kotlinx.coroutines.delay(50)
         }
@@ -1461,9 +1592,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         pushMixer(project.value)
     }
 
-    private fun pushMixer(p: Project) {
+    private fun pushMixer(p: Project = project.value) {
         if (!NativeEngine.isAvailable) return
         p.mixer.channels.take(NativeEngine.MIXER_CHANNELS).forEachIndexed { i, c ->
+            if (i == MASTER) return@forEachIndexed  // the master's index: its settings are below
             NativeEngine.setChannelVolume(i, c.volume)
             NativeEngine.setChannelPan(i, c.pan)
             NativeEngine.setChannelMute(i, c.mute)
@@ -1471,7 +1603,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             pushInserts(i, c.inserts)
             c.sends.forEachIndexed { bus, level -> NativeEngine.setSend(i, bus, level) }
         }
-        pushInserts(NativeEngine.MIXER_CHANNELS, p.mixer.master)
+        pushInserts(MASTER, p.mixer.master)
         p.mixer.buses.forEachIndexed { bus, params -> params.forEachIndexed { k, v -> NativeEngine.setBusParam(bus, k, v) } }
     }
 
@@ -1545,12 +1677,12 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun synthNoteOn(note: Int) {
-        if (NativeEngine.isAvailable) NativeEngine.synthNoteOn(note, 0.85f)
+        if (NativeEngine.isAvailable) NativeEngine.synthNoteOn(note, 0.85f, track)
         recordNoteOn(note, 0.85f)
     }
 
     fun synthNoteOff(note: Int) {
-        if (NativeEngine.isAvailable) NativeEngine.synthNoteOff(note)
+        if (NativeEngine.isAvailable) NativeEngine.synthNoteOff(note, track)
         recordNoteOff(note)
     }
 
@@ -1599,21 +1731,25 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** A note played live (keyboard or MIDI) while recording: remembered until released. */
     fun recordNoteOn(pitch: Int, velocity: Float) {
-        val tick = recordTick(project.value.synthNotes.ticks) ?: return
+        val tick = recordTick(currentTrack.notes.ticks) ?: return
         heldNotes[pitch] = tick to velocity
     }
 
     fun recordNoteOff(pitch: Int) {
         val (start, velocity) = heldNotes.remove(pitch) ?: return
-        val clip = project.value.synthNotes
+        val id = track
+        val clip = project.value.track(id).notes
         val end = recordTick(clip.ticks) ?: start + NoteClip.TICKS_PER_STEP
         val step = NoteClip.TICKS_PER_STEP
         // Starts land on the sixteenth grid; the length is kept (at least half a sixteenth).
         val snapped = Math.floorMod(Math.round(start.toDouble() / step).toInt() * step, clip.ticks)
         val length = maxOf(step / 2, Math.floorMod(end - start, clip.ticks))
         val note = Note(snapped, minOf(length, NoteClip.MAX_TICKS), pitch, velocity)
-        session.editQuietly { p -> p.copy(synthNotes = p.synthNotes.copy(notes = p.synthNotes.notes.filterNot { it.start == snapped && it.pitch == pitch } + note).sanitized()) }
-        pushNotes(project.value.synthNotes)
+        session.editQuietly { p ->
+            val t = p.track(id)
+            p.withTrack(t.copy(notes = t.notes.copy(notes = t.notes.notes.filterNot { it.start == snapped && it.pitch == pitch } + note).sanitized()))
+        }
+        pushNotes(project.value.track(id).notes, id)
     }
 
     /** A pad hit while recording becomes a step of the drum loop (nearest sixteenth). */
@@ -1645,13 +1781,14 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun setSynthParam(index: Int, value: Float) {
-        session.edit("synth-$index") { p -> p.copy(synth = p.synth.with(index, value)) }
-        if (NativeEngine.isAvailable) NativeEngine.setSynthParam(index, project.value.synth.get(index))
+        val id = track
+        editTrack("synth-$index-$id", id) { it.copy(synth = it.synth.with(index, value)) }
+        if (NativeEngine.isAvailable) NativeEngine.setSynthParam(index, project.value.track(id).synth.get(index), id)
     }
 
     fun applySynthPreset(patch: SynthPatch) {
-        session.edit { p -> p.copy(synth = patch) }
-        pushSynth(project.value.synth)
+        editTrack { it.copy(synth = patch) }
+        pushSynth(currentTrack.synth)
     }
 
     // --- Sound library: built-in sounds, favourites, random ---------------------------------------
@@ -1696,10 +1833,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun saveSynthFavorite() = _favorites.value.let { f ->
-        addFavorite(f.synth) { f.copy(synth = f.synth + NamedSound(Favorites.nextName(f.synth.map { it.name }), SoundCategories.FAVORITES, project.value.synth.sanitized())) }
+        addFavorite(f.synth) { f.copy(synth = f.synth + NamedSound(Favorites.nextName(f.synth.map { it.name }), SoundCategories.FAVORITES, currentTrack.synth.sanitized())) }
     }
     fun savePlaitsFavorite() = _favorites.value.let { f ->
-        addFavorite(f.plaits) { f.copy(plaits = f.plaits + NamedSound(Favorites.nextName(f.plaits.map { it.name }), SoundCategories.FAVORITES, project.value.plaits)) }
+        addFavorite(f.plaits) { f.copy(plaits = f.plaits + NamedSound(Favorites.nextName(f.plaits.map { it.name }), SoundCategories.FAVORITES, currentTrack.plaits)) }
     }
     fun saveAcidFavorite() = _favorites.value.let { f ->
         addFavorite(f.acid) { f.copy(acid = f.acid + NamedSound(Favorites.nextName(f.acid.map { it.name }), SoundCategories.FAVORITES, project.value.acid.sound)) }
@@ -1725,7 +1862,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun randomSynth() = applySynthPreset(SoundLibrary.randomSynth())
 
     fun applyPlaits(patch: PlaitsPatch) {
-        session.edit { p -> p.copy(plaits = patch.sanitized()) }
+        editTrack { it.copy(plaits = patch.sanitized()) }
         pushPlaits()
         if (NativeEngine.isAvailable && !_transport.value.playing) {
             viewModelScope.launch {
@@ -1735,7 +1872,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    fun randomPlaits() = applyPlaits(SoundLibrary.randomPlaits().copy(level = project.value.plaits.level))
+    fun randomPlaits() = applyPlaits(SoundLibrary.randomPlaits().copy(level = currentTrack.plaits.level))
 
     fun applyAcidSound(sound: AcidSound) {
         session.edit { p -> p.copy(acid = p.acid.copy(sound = sound.sanitized())) }
@@ -1745,9 +1882,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** New character, same tuning and volume. */
     fun randomAcid() = applyAcidSound(SoundLibrary.randomAcid(keep = project.value.acid.sound))
 
-    private fun pushSynth(patch: SynthPatch) {
+    private fun pushSynth(patch: SynthPatch, id: Int = track) {
         if (!NativeEngine.isAvailable) return
-        patch.sanitized().values.forEachIndexed { i, v -> NativeEngine.setSynthParam(i, v) }
+        patch.sanitized().values.forEachIndexed { i, v -> NativeEngine.setSynthParam(i, v, id) }
     }
 
     // --- Acid bass -------------------------------------------------------------------------
@@ -1844,6 +1981,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch { project.collect { restageIfEditingUpcoming() } }
         loadPadSamples()
         if (project.value.instrument != null) openLibrary()
+        loadTrackFonts()
+        if (NativeEngine.isAvailable) NativeEngine.liveTrack = 0
         viewModelScope.launch {
             session.lastSaveError.collect { e -> if (e != null) AppLog.add("Sauvegarde impossible : ${e.message}") }
         }
@@ -1947,12 +2086,14 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (_recording.value) return  // a take ends first: it then undoes in one step
         session.undo()
         syncEngine()
+        loadTrackFonts()
     }
 
     fun redo() {
         if (_recording.value) return
         session.redo()
         syncEngine()
+        loadTrackFonts()
     }
 
     /** Writes pending changes now (the app is going to the background). */
@@ -2051,7 +2192,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                         NativeEngine.setStaging(true)
                         pushDrumPattern(view.drums)
                         pushAcid(view.acid)
-                        pushNotes(view.synthNotes)
+                        view.instrumentTracks.forEach { pushNotes(it.notes, it.id) }
                         NativeEngine.setStaging(false)
                         NativeEngine.armSceneSwap(steps)
                     }
@@ -2080,7 +2221,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val frames = if (song) songFrames(p) else OfflineExport.framesFor(settings.bars, p.tempoBpm)
         // Each render: (label for the file and the screen, solo channel or null for the mix).
         val renders: List<Pair<String, Int?>> = when (settings.what) {
-            ExportWhat.Stems -> STEM_EXPORTS.filter { (_, ch) -> ch != 3 || p.remix.setId != null || p.live.used > 0 }
+            ExportWhat.Stems -> STEM_EXPORTS.filter { (_, ch) -> ch != 3 || p.remix.setId != null || p.live.used > 0 } +
+                // One file per added instrument track, named after it.
+                p.tracks.map { t -> "piste${t.id + 1}-" + t.name.lowercase().replace(Regex("[^a-z0-9]+"), "-").trim('-').take(16) to InstrumentTrack.mixerChannel(t.id) }
             ExportWhat.Song -> listOf("morceau" to null)
             ExportWhat.Loop -> listOf("boucle" to null)
         }
@@ -2209,7 +2352,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     override fun onCleared() {
         downloadCancelled = true
-        soundFont?.close()
+        fonts.values.forEach { it.close() }
+        fonts.clear()
         running?.cancel()
         recorder?.stop()
         padSamples.close()
@@ -2238,6 +2382,6 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         private val STEM_LABELS = listOf("Batterie", "Basse", "Autres", "Voix")
         private const val OVERVIEW_BUCKETS = 400
         /** Insert "channel" index of the master. */
-        const val MASTER = NativeEngine.MIXER_CHANNELS
+        const val MASTER = NativeEngine.MASTER
     }
 }

@@ -32,6 +32,10 @@ import com.pocketstudio.ui.Palettes
 import com.pocketstudio.ui.PocketStudioTheme
 import org.junit.Rule
 import org.junit.Test
+import com.pocketstudio.model.addTrack
+import com.pocketstudio.model.instrumentTracks
+import com.pocketstudio.model.track
+import com.pocketstudio.model.withTrack
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
@@ -148,6 +152,36 @@ class ScreenshotTest {
         )
     }
 
+    private fun withTracks(): com.pocketstudio.model.Project {
+        var p = com.pocketstudio.model.Project()
+        p = p.addTrack("Basse")!!.addTrack("Cordes")!!.addTrack("Lead")!!
+        p = p.withTrack(p.track(1).copy(engine = 1))
+        p = p.withTrack(p.track(2).copy(instrument = com.pocketstudio.model.InstrumentChoice(0, 48, "Strings")))
+        return p
+    }
+
+    @Test
+    fun tracks() = shoot("tracks") {
+        val p = withTracks()
+        com.pocketstudio.app.synth.SynthScreen(
+            patch = p.synth,
+            octave = 4,
+            actions = com.pocketstudio.app.synth.SynthActions(),
+            tracks = com.pocketstudio.app.synth.TracksUi(p.instrumentTracks, selected = 2),
+        )
+    }
+
+    @Test
+    fun mixerTracks() = shoot("mixer_tracks") {
+        val p = withTracks()
+        com.pocketstudio.app.mixer.MixerScreen(
+            channels = p.mixer.channels,
+            meters = FloatArray(13) { if (it in listOf(0, 2, 5, 6, 4)) 0.5f + it * 0.04f else 0f }.also { it[12] = 1f },
+            actions = com.pocketstudio.app.mixer.MixerActions(),
+            strips = com.pocketstudio.app.ui.mixerStrips(p),
+        )
+    }
+
     @Test
     fun mixer() = shoot("mixer") {
         val channels = com.pocketstudio.model.Project().mixer.channels.toMutableList()
@@ -155,7 +189,7 @@ class ScreenshotTest {
         channels[2] = channels[2].copy(mute = true, volume = 0.5f)
         com.pocketstudio.app.mixer.MixerScreen(
             channels = channels,
-            meters = floatArrayOf(0.62f, 0.81f, 0f, 0.4f, 0.88f, 0.8f),
+            meters = floatArrayOf(0.62f, 0.81f, 0f, 0.4f, 0.88f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0.8f),
             actions = com.pocketstudio.app.mixer.MixerActions(),
             export = com.pocketstudio.app.rhythm.ExportUi(bars = 4, files = listOf(java.io.File("Mon-premier-rythme-20261018-221500.wav")), savedInMusic = true),
         )

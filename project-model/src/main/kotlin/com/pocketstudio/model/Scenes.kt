@@ -12,15 +12,17 @@ data class Scene(
     val drums: DrumPattern = DrumPattern(),
     val acid: AcidPattern = AcidPattern(),
     val synthNotes: NoteClip = NoteClip(),
+    /** The notes of the added instrument tracks in this scene, by track id. */
+    val trackNotes: Map<Int, NoteClip> = emptyMap(),
 ) {
     /** Steps the scene lasts before it loops: its longest part, rounded up to whole bars. */
     val steps: Int get() {
-        val longest = maxOf(drums.steps, acid.length, synthNotes.steps)
+        val longest = maxOf(drums.steps, acid.length, synthNotes.steps, trackNotes.values.maxOfOrNull { it.steps } ?: 0)
         return (longest + 15) / 16 * 16
     }
 
     val isEmpty: Boolean get() = drums.lanes.all { lane -> lane.hits.all { it == null } } &&
-        acid.steps.take(acid.length).none { it.gate } && synthNotes.notes.isEmpty()
+        acid.steps.take(acid.length).none { it.gate } && synthNotes.notes.isEmpty() && trackNotes.values.all { it.notes.isEmpty() }
 
     companion object {
         const val MAX = 24
@@ -42,7 +44,7 @@ data class SongPart(val scene: Int = 0, val repeats: Int = 1) {
 
 /** The scene being edited and played is mirrored in the project's own drums / acid / notes. */
 fun Project.currentSceneContent(): Scene =
-    Scene(Scene.NAMES.getOrElse(scene) { "?" }, drums, acid, synthNotes)
+    Scene(Scene.NAMES.getOrElse(scene) { "?" }, drums, acid, synthNotes, tracks.associate { it.id to it.notes })
 
 /** All scenes, the current one included (a project that never used scenes has just one). */
 val Project.allScenes: List<Scene> get() = scenes.ifEmpty { listOf(currentSceneContent()) }
@@ -58,7 +60,10 @@ internal fun Project.syncScenes(): Project {
     val index = scene.coerceIn(0, list.lastIndex)
     return copy(
         scene = index,
-        scenes = list.mapIndexed { i, s -> if (i == index) currentSceneContent().copy(name = Scene.NAMES[i]) else s.copy(name = Scene.NAMES[i]) },
+        scenes = list.mapIndexed { i, s ->
+            if (i == index) currentSceneContent().copy(name = Scene.NAMES[i])
+            else s.copy(name = Scene.NAMES[i], trackNotes = s.trackNotes.filterKeys { id -> tracks.any { it.id == id } }.mapValues { it.value.sanitized() })
+        },
         song = song.filter { it.scene in list.indices }.take(SongPart.MAX_PARTS)
             .map { it.copy(repeats = it.repeats.coerceIn(1, SongPart.MAX_REPEATS)) },
     )
@@ -78,6 +83,7 @@ fun Project.switchScene(index: Int): Project {
         drums = target.drums.copy(lanes = target.drums.lanes.mapIndexed { i, l -> l.copy(sample = drums.lanes.getOrNull(i)?.sample) }),
         acid = acid.copy(length = target.acid.length, steps = target.acid.steps, locked = target.acid.locked),
         synthNotes = target.synthNotes,
+        tracks = tracks.map { t -> t.copy(notes = target.trackNotes[t.id] ?: NoteClip(steps = t.notes.steps)) },
     ).syncScenes()
 }
 

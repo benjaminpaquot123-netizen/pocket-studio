@@ -27,31 +27,31 @@ void Mixer::prepare(int sampleRate) {
 }
 
 void Mixer::setVolume(int ch, float v) {
-    if (ch < 0 || ch >= kChannels) return;
+    if (ch < 0 || ch >= kChannels || ch == kMaster) return;
     strips_[static_cast<size_t>(ch)].volume = std::clamp(v, 0.0f, 1.0f);
     updateTargets();
 }
 
 void Mixer::setPan(int ch, float pan) {
-    if (ch < 0 || ch >= kChannels) return;
+    if (ch < 0 || ch >= kChannels || ch == kMaster) return;
     strips_[static_cast<size_t>(ch)].pan = std::clamp(pan, -1.0f, 1.0f);
     updateTargets();
 }
 
 void Mixer::setMute(int ch, bool on) {
-    if (ch < 0 || ch >= kChannels) return;
+    if (ch < 0 || ch >= kChannels || ch == kMaster) return;
     strips_[static_cast<size_t>(ch)].mute = on;
     updateTargets();
 }
 
 void Mixer::setSolo(int ch, bool on) {
-    if (ch < 0 || ch >= kChannels) return;
+    if (ch < 0 || ch >= kChannels || ch == kMaster) return;
     strips_[static_cast<size_t>(ch)].solo = on;
     updateTargets();
 }
 
 void Mixer::setInsertType(int ch, int slot, int type) {
-    if (ch < 0 || ch > kMaster || slot < 0 || slot >= kInserts) return;
+    if (ch < 0 || ch >= kChannels || slot < 0 || slot >= kInserts) return;
     auto& strip = inserts_[static_cast<size_t>(ch)];
     strip[static_cast<size_t>(slot)].setType(type);
     activeInserts_[static_cast<size_t>(ch)] =
@@ -59,12 +59,12 @@ void Mixer::setInsertType(int ch, int slot, int type) {
 }
 
 void Mixer::setInsertParam(int ch, int slot, int param, float v) {
-    if (ch < 0 || ch > kMaster || slot < 0 || slot >= kInserts) return;
+    if (ch < 0 || ch >= kChannels || slot < 0 || slot >= kInserts) return;
     inserts_[static_cast<size_t>(ch)][static_cast<size_t>(slot)].setParam(param, v);
 }
 
 void Mixer::setSend(int ch, int bus, float level) {
-    if (ch < 0 || ch >= kChannels || bus < 0 || bus >= kBuses) return;
+    if (ch < 0 || ch >= kChannels || ch == kMaster || bus < 0 || bus >= kBuses) return;
     strips_[static_cast<size_t>(ch)].send[static_cast<size_t>(bus)] = std::clamp(level, 0.0f, 1.0f);
     updateTargets();
 }
@@ -124,6 +124,7 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
     std::array<float, kChannels> blockPeaks{};
     for (int ch = 0; ch < kChannels; ++ch) {
         auto& s = strips_[static_cast<size_t>(ch)];
+        if (ch == kMaster || !channels[ch]) continue;  // the master's slot, or an unused instrument track
         const float* inL = channels[ch] + offset;
         const float* inR = rights && rights[ch] ? rights[ch] + offset : inL;
         // A stray NaN must not get into the effects' state (it would stay there for good).

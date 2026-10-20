@@ -1265,6 +1265,64 @@ void testTimeStretchKeepsPitchAndLength() {
     CHECK(ps::timeStretch(nullptr, n, 2, n, 0.0f, kRate).empty());
 }
 
+void testInstrumentTracks() {
+    // 120 BPM: a step is 6000 frames. Track 2 plays an A4 at step 1; track 1 (channel 2) has no notes.
+    ps::Engine engine(kRate);
+    auto& mixer = engine.mixer();
+    const int t = 2;
+    engine.post({ps::CommandType::SetTempo, 120.0f});
+    engine.post({ps::CommandType::SetTrackOn, 1.0f, t});
+    engine.post({ps::CommandType::SetSynthSteps, 0.0f, 16 | (t << 16)});
+    engine.post({ps::CommandType::SetSynthNote, 0.9f, 0 | (t << 16), ps::NoteTrack::pack(24, 96, 69)});
+    engine.post({ps::CommandType::SetSynthNoteCount, 0.0f, 1 | (t << 16)});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    auto out = render(engine, 5900, 256);
+    CHECK(mixer.takeChannelPeak(ps::trackChannel(t)) == 0.0f);
+    out = render(engine, 6000, 100);
+    const float own = mixer.takeChannelPeak(ps::trackChannel(t));
+    CHECK(own > 0.01f);
+    CHECK(mixer.takeChannelPeak(ps::trackChannel(0)) == 0.0f);
+    CHECK(engine.synthActiveVoices(t) == 1 && engine.synthActiveVoices(0) == 0);
+    // Its own mixer channel: muting it silences the track and only it.
+    engine.post({ps::CommandType::SetChannelMute, 1.0f, ps::trackChannel(t)});
+    render(engine, 8000, 256);  // the fader glides down
+    float loud = 0.0f;
+    out = render(engine, 2000, 256);
+    for (float v : out) loud = std::max(loud, std::fabs(v));
+    CHECK(loud < 1e-4f);
+    CHECK(engine.synthActiveVoices(t) == 1);  // still playing, just not heard
+    engine.post({ps::CommandType::SetChannelMute, 0.0f, ps::trackChannel(t)});
+    // Live notes go to the named track; a track switched off is silent and keeps nothing queued.
+    engine.post({ps::CommandType::SynthNoteOn, 0.8f, 64 | (3 << 16)});
+    render(engine, 512, 256);
+    CHECK(engine.synthActiveVoices(3) == 0);  // track 3 is off: not rendered
+    engine.post({ps::CommandType::SetTrackOn, 1.0f, 3});
+    engine.post({ps::CommandType::SynthNoteOn, 0.8f, 64 | (3 << 16)});
+    render(engine, 512, 256);
+    CHECK(engine.synthActiveVoices(3) >= 1);
+    engine.post({ps::CommandType::SetTrackOn, 0.0f, t});
+    engine.post({ps::CommandType::SetTrackOn, 0.0f, 3});
+    render(engine, kRate, 256);
+    CHECK(engine.notesPending(t) == 0);
+    mixer.takeChannelPeak(ps::trackChannel(t));
+    render(engine, 6000 * 16, 256);
+    CHECK(mixer.takeChannelPeak(ps::trackChannel(t)) == 0.0f);
+    // Scenes: the waiting scene's notes of each track take over at the swap.
+    engine.post({ps::CommandType::SetTrackOn, 1.0f, t});
+    engine.post({ps::CommandType::SetStaging, 1.0f});
+    engine.post({ps::CommandType::SetSynthNote, 0.9f, 0 | (t << 16), ps::NoteTrack::pack(0, 48, 60)});
+    engine.post({ps::CommandType::SetSynthNoteCount, 0.0f, 1 | (t << 16)});
+    engine.post({ps::CommandType::SetSynthSteps, 0.0f, 16 | (t << 16)});
+    engine.post({ps::CommandType::SetStaging, 0.0f});
+    engine.post({ps::CommandType::ArmSceneSwap, 0.0f, 0});
+    render(engine, 6000 * 16 + 3000, 256);  // through the next bar line
+    CHECK(engine.sceneSwaps() == 1);
+    CHECK(mixer.takeChannelPeak(ps::trackChannel(t)) > 0.01f);
+    engine.post({ps::CommandType::SetTransport, 0.0f, 0});
+    render(engine, 256, 256);
+    CHECK(engine.notesPending(t) == 0);
+}
+
 void testPianoRollNotesAreSampleAccurate() {
     // 120 BPM: a step is 6000 frames, a tick 250. A note at tick 36 (1.5 steps), 48 ticks long.
     ps::Engine engine(kRate);
@@ -1417,6 +1475,13 @@ void testProcessNeverAllocates() {
         engine.post({ps::CommandType::SetPadParam, 1.0f, 3, ps::Sampler::Loop});
         for (int n = 0; n < 32; ++n) engine.post({ps::CommandType::SetSynthNote, 0.8f, n, ps::NoteTrack::pack(n * 12, 30, 48 + n % 24)});
         engine.post({ps::CommandType::SetSynthNoteCount, 0.0f, 32});
+        // Two more instrument tracks: Plaits and the subtractive synth, each with its own notes.
+        for (int t = 1; t <= 2; ++t) {
+            engine.post({ps::CommandType::SetTrackOn, 1.0f, t});
+            engine.post({ps::CommandType::SetSynthEngine, 0.0f, (t == 1 ? 1 : 0) | (t << 16)});
+            for (int n = 0; n < 16; ++n) engine.post({ps::CommandType::SetSynthNote, 0.8f, n | (t << 16), ps::NoteTrack::pack(n * 24, 20, 60 + n % 12)});
+            engine.post({ps::CommandType::SetSynthNoteCount, 0.0f, 16 | (t << 16)});
+        }
         ps::Command inst{ps::CommandType::SetInstrument, 0.0f, 0};
         inst.font = ps::SoundFontPlayer::makeInstance(master, kRate);
         engine.post(inst);
@@ -2415,6 +2480,7 @@ int main(int argc, char** argv) {
         {"tempo_and_key", testTempoAndKeyDetection},
         {"stems_follow_transport", testStemsPlayInStepWithTheTransport},
         {"live_pads", testLivePadsLoopOnTheBeat},
+        {"instrument_tracks", testInstrumentTracks},
         {"live_pads_bar", testLivePadsFollowTheBar},
         {"stem_preview", testStemPreviewPlaysWithoutTheTransport},
         {"stems_stretch", testStemsStretchToTheProjectTempo},

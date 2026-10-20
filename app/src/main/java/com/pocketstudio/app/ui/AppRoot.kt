@@ -1,6 +1,10 @@
 package com.pocketstudio.app.ui
 
 import com.pocketstudio.app.instruments.InstrumentUi
+import com.pocketstudio.model.instrumentTracks
+import com.pocketstudio.model.viewOfTrack
+import androidx.compose.runtime.remember
+import com.pocketstudio.app.synth.TracksUi
 import com.pocketstudio.app.synth.NotesUi
 import com.pocketstudio.app.synth.PianoRollActions
 import com.pocketstudio.model.NoteClip
@@ -507,7 +511,11 @@ fun AppRoot() {
                     }
                     AppTab.Synthe -> {
                         DisposableEffect(Unit) { onDispose { rhythmVm.synthAllOff() } }
-                        val project by rhythmVm.project.collectAsStateWithLifecycle()
+                        val fullProject by rhythmVm.project.collectAsStateWithLifecycle()
+                        val selectedTrack by rhythmVm.selectedTrack.collectAsStateWithLifecycle()
+                        // The selected instrument track's sound and notes, where the synth screen looks.
+                        val project = remember(fullProject, selectedTrack) { fullProject.viewOfTrack(selectedTrack) }
+                        val shownTrack = if (fullProject.tracks.any { it.id == selectedTrack }) selectedTrack else 0
                         val octave by rhythmVm.keyboardOctave.collectAsStateWithLifecycle()
                         val live by rhythmVm.live.collectAsStateWithLifecycle()
                         val library by rhythmVm.library.collectAsStateWithLifecycle()
@@ -575,6 +583,16 @@ fun AppRoot() {
                                 stop = rhythmVm::stopNoteRecording,
                                 pickMidi = { rhythmVm.dismissTranscription(); pickMidiFile.launch(arrayOf("audio/midi", "audio/x-midi", "application/x-midi", "application/octet-stream")) },
                             ),
+                            tracks = TracksUi(
+                                tracks = fullProject.instrumentTracks,
+                                selected = shownTrack,
+                                select = rhythmVm::selectTrack,
+                                add = rhythmVm::addTrack,
+                                rename = rhythmVm::renameTrack,
+                                setColor = rhythmVm::setTrackColor,
+                                duplicate = rhythmVm::duplicateTrack,
+                                remove = rhythmVm::removeTrack,
+                            ),
                             browser = if (project.synthEngine == 1) {
                                 SoundBrowserUi(
                                     SoundCategories.PLAITS, SoundLibrary.PLAITS, favorites.plaits,
@@ -635,6 +653,7 @@ fun AppRoot() {
                             ),
                             master = project.mixer.master,
                             buses = project.mixer.buses,
+                            strips = mixerStrips(project),
                             automation = AutomationUi(project.automation, project.drums.steps, if (transport.playing) live.currentStep else -1, automationRecord),
                             automationActions = AutomationActions(
                                 add = rhythmVm::addAutomation,
@@ -904,3 +923,11 @@ private fun openUri(context: Context, uri: Uri) {
         Toast.makeText(context, "Aucun navigateur pour ouvrir GitHub", Toast.LENGTH_LONG).show()
     }
 }
+
+/** Drums, acid, every instrument track in its colour, then the remix. */
+fun mixerStrips(p: com.pocketstudio.model.Project): List<com.pocketstudio.app.mixer.StripInfo> =
+    listOf(com.pocketstudio.app.mixer.StripInfo(0, "Batterie"), com.pocketstudio.app.mixer.StripInfo(1, "Basse acide")) +
+        p.instrumentTracks.map { t ->
+            com.pocketstudio.app.mixer.StripInfo(com.pocketstudio.model.InstrumentTrack.mixerChannel(t.id), t.name, com.pocketstudio.ui.trackColor(t.color))
+        } +
+        com.pocketstudio.app.mixer.StripInfo(3, "Remix")

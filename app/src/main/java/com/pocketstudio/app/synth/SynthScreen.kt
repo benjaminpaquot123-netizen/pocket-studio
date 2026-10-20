@@ -109,6 +109,7 @@ fun SynthScreen(
     instrument: InstrumentUi? = null,
     browser: SoundBrowserUi? = null,
     transcribe: TranscribeUi? = null,
+    tracks: TracksUi? = null,
 ) {
     var advanced by rememberSaveable { mutableStateOf(false) }
     var showNotes by rememberSaveable { mutableStateOf(startWithNotes) }
@@ -126,6 +127,7 @@ fun SynthScreen(
                 Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(if (landscape) 8.dp else 12.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
+                tracks?.let { TrackBar(it) }
                 ModeSwitch(showNotes) { showNotes = it }
                 NeonCard {
                     PianoRoll(
@@ -149,6 +151,7 @@ fun SynthScreen(
             // Landscape: one compact line (presets, octave), the settings scroll, and a wide
             // three-octave keyboard stays under the thumbs.
             Column(Modifier.fillMaxSize().padding(8.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                tracks?.let { TrackBar(it) }
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     if (notes != null) ModeSwitch(showNotes) { showNotes = it }
                     PresetChips(patch, actions)
@@ -170,6 +173,7 @@ fun SynthScreen(
                 Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
+                tracks?.let { TrackBar(it) }
                 if (notes != null) ModeSwitch(showNotes) { showNotes = it }
                 KeyboardCard(octave, octaves = 2, height = 150.dp, actions = actions, harmony = harmony, chordKeys = chordKeys,
                     onChordKeys = { chordKeys = it }, keyOn = keyOn, keyOff = keyOff)

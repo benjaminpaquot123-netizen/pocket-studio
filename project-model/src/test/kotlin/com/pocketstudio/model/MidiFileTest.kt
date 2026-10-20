@@ -37,6 +37,21 @@ class MidiFileTest {
     }
 
     @Test
+    fun addedTracksGetTheirOwnChannelAndComeBackAsTracks() {
+        var p = project().addTrack("Cordes")!!
+        val id = p.tracks.single().id
+        p = p.withTrack(p.track(id).copy(notes = NoteClip(notes = listOf(Note(24, 24, 72))))).sanitized()
+        val content = MidiFile.read(MidiFile.export(p, song = false))
+        assertEquals(listOf(72 to 24), content.notes.filter { it.channel == 1 + id }.map { it.pitch to it.start })
+        // Channels 1 and 3 (acid left out): the first track, then a new track named after its channel.
+        val back = MidiFile.importInto(Project(), content.copy(notes = content.notes.filter { it.channel != 1 }))
+        assertEquals(listOf(60, 67), back.synthNotes.notes.map { it.pitch })
+        assertEquals(1, back.tracks.size)
+        assertEquals("Canal ${2 + id}", back.tracks.single().name)
+        assertEquals(listOf(72), back.tracks.single().notes.notes.map { it.pitch })
+    }
+
+    @Test
     fun theSongIsChainedScenes() {
         val a = project()
         // Scene B: an empty copy; song A ×2 then B.

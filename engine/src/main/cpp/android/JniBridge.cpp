@@ -428,9 +428,11 @@ JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportDestroy(J
 // Fills `out` (5 floats): channel peaks (drums, acid, synth), master peak, limiter gain.
 JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_mixerMeters(JNIEnv* env, jobject, jfloatArray out) {
     auto& m = host().engine().mixer();
-    const jfloat values[] = {m.takeChannelPeak(0), m.takeChannelPeak(1), m.takeChannelPeak(2), m.takeChannelPeak(3),
-                             m.takeMasterPeak(), m.limiterGain()};
-    env->SetFloatArrayRegion(out, 0, 6, values);
+    // Channel peaks (index kMaster: the master), then the limiter gain.
+    jfloat values[ps::Mixer::kChannels + 1];
+    for (int ch = 0; ch < ps::Mixer::kChannels; ++ch) values[ch] = ch == ps::Mixer::kMaster ? m.takeMasterPeak() : m.takeChannelPeak(ch);
+    values[ps::Mixer::kChannels] = m.limiterGain();
+    if (env->GetArrayLength(out) >= ps::Mixer::kChannels + 1) env->SetFloatArrayRegion(out, 0, ps::Mixer::kChannels + 1, values);
 }
 
 // Fills `out` (16 ints) with how many times each drum lane has fired, for pad lights.

@@ -126,6 +126,7 @@ KIND_RULES = {
     'open_hat': {'high': 0.3, 'max_seconds': 1.6},
     'perc': {'max_seconds': 1.2, 'transient': True},
     'bass': {'low': 0.3},
+    'stab': {'max_seconds': 1.6},
     'fx': {},
     'loop': {},
 }

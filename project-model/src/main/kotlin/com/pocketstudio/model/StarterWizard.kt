@@ -251,6 +251,52 @@ object StarterWizard {
             melody = Melody(root = 2, mood = Mood.Future, bassPattern = "..X...X...X...X.", bass = "Basse analogique", pad = "Essaim", lead = "Lead acide"),
         ),
         Style(
+            "retro_techno", "Rétro techno", "Techno", 132.0,
+            "La techno belge et hollandaise des années 90 (Boccaccio, Montigny, R&S, Rotterdam) : kick 909 qui pompe, stabs et « hoovers ».",
+            listOf(
+                Line(Role.Kick, "X...X...X...X...", "Le kick 909 qui pompe sur chaque temps, comme dans les grandes boîtes belges."),
+                Line(Role.Clap, "....X.......X...", "Le clap sec sur 2 et 4."),
+                Line(Role.Hat, "xoxoxoxoxoxoxoxo", "Des doubles croches qui roulent sans s'arrêter."),
+                Line(Role.OpenHat, "..X...X...X...X.", "Le charley ouvert entre les temps : le « tss » qui fait sauter la salle."),
+                Line(Role.Perc, "...x..x....x..x.", "Un rimshot ou une cloche qui revient, très années 90."),
+            ),
+            melody = Melody(root = 9, mood = Mood.Dark, bassPattern = "..X...X...X...X.", bass = "Basse analogique", pad = "Machine à cordes", lead = "Lead carré"),
+        ),
+        Style(
+            "detroit", "Techno de Detroit", "Techno", 135.0,
+            "La techno de Jeff Mills et Underground Resistance : boîte à rythmes 909, percussions qui se croisent, cordes futuristes.",
+            listOf(
+                Line(Role.Kick, "X...X...X...X...", "Un kick sec sur chaque temps, la colonne vertébrale."),
+                Line(Role.Clap, "....x.......x...", "Un clap discret sur 2 et 4."),
+                Line(Role.Hat, "x.xxx.xxx.xxx.xx", "Des charleys serrés qui tournent en boucle, façon 909."),
+                Line(Role.OpenHat, "..X...X...X...X.", "Le charley ouvert entre les temps."),
+                Line(Role.Perc, "x..x..x..x..x..x", "Une percussion tous les trois pas : elle se décale du kick et fait tourner la tête."),
+            ),
+            melody = Melody(root = 0, mood = Mood.Future, bassPattern = "X..X..X...X..X..", bass = "Basse analogique", pad = "Cordes", lead = "Lead filtré"),
+        ),
+        Style(
+            "industrial_techno", "Techno industrielle", "Techno", 140.0,
+            "Sombre, métallique et saturée : la techno des entrepôts de Brooklyn, Birmingham et Berlin.",
+            listOf(
+                Line(Role.Kick, "X...X...X...X...", "Un kick lourd et sale sur chaque temps."),
+                Line(Role.Clap, "....X.......X...", "Un clap ou un bruit métallique sur 2 et 4."),
+                Line(Role.Hat, "oxoxoxoxoxoxoxox", "Des charleys qui martèlent les doubles croches."),
+                Line(Role.Perc, "..x...x.x...x..x", "Des chocs métalliques, comme des machines d'usine."),
+            ),
+            melody = Melody(root = 1, mood = Mood.Dark, bassPattern = "..X...X...X...X.", bass = "Basse reese", pad = "Essaim", lead = "Voix robot"),
+        ),
+        Style(
+            "gabber", "Gabber", "Techno", 170.0,
+            "Le hardcore de Rotterdam (Thunderdome, Energiehal) : un kick distordu énorme et très rapide.",
+            listOf(
+                Line(Role.Kick, "X...X...X...X...", "Le kick distordu sur chaque temps : c'est lui toute la musique."),
+                Line(Role.Clap, "....x.......x...", "Un clap pour marquer 2 et 4."),
+                Line(Role.OpenHat, "..X...X...X...X.", "Le charley ouvert entre les kicks."),
+                Line(Role.Hat, "x.x.x.x.x.x.x.x.", "Des croches pour la vitesse."),
+            ),
+            melody = Melody(root = 9, mood = Mood.Dark, bassPattern = "X...X...X...X...", bass = "Basse sub", pad = "Nappe", lead = "Lead carré"),
+        ),
+        Style(
             "minimal", "Minimal", "Techno", 128.0, "La techno épurée : peu de sons, chaque petit détail compte.",
             listOf(
                 Line(Role.Kick, "X...X...X...X...", "Le kick sur chaque temps, simple."),

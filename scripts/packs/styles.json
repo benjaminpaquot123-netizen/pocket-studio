@@ -1,44 +1,565 @@
 {
   "kinds": {
-    "kick": {"label": "Kick", "prompt": "{words} kick drum one shot, dry, punchy", "seconds": 1.0, "count": 8},
-    "snare": {"label": "Caisse claire", "prompt": "{words} snare drum one shot, dry", "seconds": 1.0, "count": 6},
-    "clap": {"label": "Clap", "prompt": "{words} clap one shot", "seconds": 1.0, "count": 5},
-    "hat": {"label": "Charley", "prompt": "{words} closed hi-hat one shot, short", "seconds": 0.5, "count": 6},
-    "open_hat": {"label": "Charley ouvert", "prompt": "{words} open hi-hat one shot", "seconds": 1.0, "count": 4},
-    "perc": {"label": "Percu", "prompt": "{words} percussion one shot, rim, shaker or conga", "seconds": 1.0, "count": 6},
-    "808": {"label": "808", "prompt": "{words} 808 bass one shot, long sub, note C", "seconds": 2.0, "count": 6},
-    "bass": {"label": "Basse", "prompt": "{words} bass one shot, note C", "seconds": 1.5, "count": 4}
+    "kick": {
+      "label": "Kick",
+      "prompt": "{words} kick drum one shot, dry, punchy",
+      "seconds": 1.0,
+      "count": 8
+    },
+    "snare": {
+      "label": "Caisse claire",
+      "prompt": "{words} snare drum one shot, dry",
+      "seconds": 1.0,
+      "count": 6
+    },
+    "clap": {
+      "label": "Clap",
+      "prompt": "{words} clap one shot",
+      "seconds": 1.0,
+      "count": 5
+    },
+    "hat": {
+      "label": "Charley",
+      "prompt": "{words} closed hi-hat one shot, short",
+      "seconds": 0.5,
+      "count": 6
+    },
+    "open_hat": {
+      "label": "Charley ouvert",
+      "prompt": "{words} open hi-hat one shot",
+      "seconds": 1.0,
+      "count": 4
+    },
+    "perc": {
+      "label": "Percu",
+      "prompt": "{words} percussion one shot, rim, shaker or conga",
+      "seconds": 1.0,
+      "count": 6
+    },
+    "808": {
+      "label": "808",
+      "prompt": "{words} 808 bass one shot, long sub, note C",
+      "seconds": 2.0,
+      "count": 6
+    },
+    "bass": {
+      "label": "Basse",
+      "prompt": "{words} bass one shot, note C",
+      "seconds": 1.5,
+      "count": 4
+    },
+    "stab": {
+      "label": "Stab",
+      "prompt": "{words} synth stab one shot, hoover or choir chord, note C",
+      "seconds": 1.0,
+      "count": 8
+    }
   },
   "styles": [
-    {"id": "boom_bap", "name": "Boom bap", "family": "Hip-hop", "bpm": 90, "words": "90s boom bap hip hop dusty vinyl", "kinds": ["kick", "snare", "hat", "open_hat", "perc", "bass"]},
-    {"id": "trap", "name": "Trap", "family": "Hip-hop", "bpm": 140, "words": "trap", "kinds": ["kick", "snare", "clap", "hat", "open_hat", "perc", "808"]},
-    {"id": "drill", "name": "Drill", "family": "Hip-hop", "bpm": 142, "words": "UK drill dark", "kinds": ["kick", "snare", "hat", "open_hat", "perc", "808"]},
-    {"id": "lofi", "name": "Lo-fi hip-hop", "family": "Hip-hop", "bpm": 84, "words": "lo-fi hip hop soft warm", "kinds": ["kick", "snare", "hat", "open_hat", "perc", "bass"]},
-    {"id": "phonk", "name": "Phonk", "family": "Hip-hop", "bpm": 130, "words": "phonk memphis distorted", "kinds": ["kick", "snare", "clap", "hat", "perc", "808"]},
-    {"id": "grime", "name": "Grime", "family": "Hip-hop", "bpm": 140, "words": "grime London gritty", "kinds": ["kick", "snare", "clap", "hat", "perc", "bass"]},
-    {"id": "house", "name": "House", "family": "House", "bpm": 124, "words": "classic Chicago house", "kinds": ["kick", "clap", "snare", "hat", "open_hat", "perc", "bass"]},
-    {"id": "deep_house", "name": "Deep house", "family": "House", "bpm": 122, "words": "deep house warm", "kinds": ["kick", "clap", "hat", "open_hat", "perc", "bass"]},
-    {"id": "tech_house", "name": "Tech house", "family": "House", "bpm": 126, "words": "tech house tight", "kinds": ["kick", "clap", "hat", "open_hat", "perc", "bass"]},
-    {"id": "uk_garage", "name": "UK Garage", "family": "House", "bpm": 132, "words": "UK garage 2-step", "kinds": ["kick", "snare", "clap", "hat", "open_hat", "perc", "bass"]},
-    {"id": "speed_garage", "name": "Speed garage", "family": "House", "bpm": 135, "words": "speed garage", "kinds": ["kick", "snare", "hat", "open_hat", "perc", "bass"]},
-    {"id": "acid_house", "name": "Acid house", "family": "House", "bpm": 125, "words": "acid house 909 drum machine", "kinds": ["kick", "clap", "hat", "open_hat", "perc", "bass"]},
-    {"id": "afro_house", "name": "Afro house", "family": "House", "bpm": 122, "words": "afro house organic", "kinds": ["kick", "clap", "hat", "open_hat", "perc"]},
-    {"id": "disco", "name": "Disco / funk", "family": "House", "bpm": 118, "words": "70s disco funk live", "kinds": ["kick", "snare", "clap", "hat", "open_hat", "perc", "bass"]},
-    {"id": "techno", "name": "Techno", "family": "Techno", "bpm": 130, "words": "techno Berlin", "kinds": ["kick", "clap", "hat", "open_hat", "perc", "bass"]},
-    {"id": "hard_techno", "name": "Hard techno", "family": "Techno", "bpm": 150, "words": "hard techno industrial distorted", "kinds": ["kick", "clap", "hat", "open_hat", "perc"]},
-    {"id": "minimal", "name": "Minimal", "family": "Techno", "bpm": 128, "words": "minimal techno clicky", "kinds": ["kick", "clap", "hat", "perc"]},
-    {"id": "trance", "name": "Trance", "family": "Techno", "bpm": 138, "words": "trance uplifting", "kinds": ["kick", "clap", "hat", "open_hat", "perc", "bass"]},
-    {"id": "dnb", "name": "Drum & bass", "family": "Bass music", "bpm": 174, "words": "drum and bass", "kinds": ["kick", "snare", "hat", "open_hat", "perc", "bass"]},
-    {"id": "liquid_dnb", "name": "Liquid DnB", "family": "Bass music", "bpm": 174, "words": "liquid drum and bass smooth", "kinds": ["kick", "snare", "hat", "open_hat", "perc"]},
-    {"id": "neurofunk", "name": "Neurofunk", "family": "Bass music", "bpm": 174, "words": "neurofunk heavy", "kinds": ["kick", "snare", "hat", "perc", "bass"]},
-    {"id": "jungle", "name": "Jungle", "family": "Bass music", "bpm": 165, "words": "jungle amen break", "kinds": ["kick", "snare", "hat", "open_hat", "perc", "bass"]},
-    {"id": "dubstep", "name": "Dubstep", "family": "Bass music", "bpm": 140, "words": "dubstep", "kinds": ["kick", "snare", "hat", "perc", "bass", "808"]},
-    {"id": "riddim", "name": "Riddim", "family": "Bass music", "bpm": 140, "words": "riddim dubstep metallic", "kinds": ["kick", "snare", "hat", "perc", "bass"]},
-    {"id": "reggaeton", "name": "Reggaeton", "family": "Autres", "bpm": 95, "words": "reggaeton dembow", "kinds": ["kick", "snare", "hat", "perc", "808"]},
-    {"id": "afrobeats", "name": "Afrobeats", "family": "Autres", "bpm": 105, "words": "afrobeats", "kinds": ["kick", "snare", "hat", "perc", "bass"]},
-    {"id": "amapiano", "name": "Amapiano", "family": "Autres", "bpm": 112, "words": "amapiano log drum", "kinds": ["kick", "clap", "hat", "perc", "bass"]},
-    {"id": "jersey_club", "name": "Jersey club", "family": "Autres", "bpm": 140, "words": "jersey club bouncy", "kinds": ["kick", "snare", "clap", "hat", "perc"]},
-    {"id": "synthwave", "name": "Synthwave", "family": "Autres", "bpm": 100, "words": "80s synthwave gated reverb", "kinds": ["kick", "snare", "clap", "hat", "perc", "bass"]},
-    {"id": "pop", "name": "Pop", "family": "Autres", "bpm": 110, "words": "modern pop", "kinds": ["kick", "snare", "clap", "hat", "open_hat", "perc", "bass"]}
+    {
+      "id": "boom_bap",
+      "name": "Boom bap",
+      "family": "Hip-hop",
+      "bpm": 90,
+      "words": "90s boom bap hip hop dusty vinyl",
+      "kinds": [
+        "kick",
+        "snare",
+        "hat",
+        "open_hat",
+        "perc",
+        "bass"
+      ]
+    },
+    {
+      "id": "trap",
+      "name": "Trap",
+      "family": "Hip-hop",
+      "bpm": 140,
+      "words": "trap",
+      "kinds": [
+        "kick",
+        "snare",
+        "clap",
+        "hat",
+        "open_hat",
+        "perc",
+        "808"
+      ]
+    },
+    {
+      "id": "drill",
+      "name": "Drill",
+      "family": "Hip-hop",
+      "bpm": 142,
+      "words": "UK drill dark",
+      "kinds": [
+        "kick",
+        "snare",
+        "hat",
+        "open_hat",
+        "perc",
+        "808"
+      ]
+    },
+    {
+      "id": "lofi",
+      "name": "Lo-fi hip-hop",
+      "family": "Hip-hop",
+      "bpm": 84,
+      "words": "lo-fi hip hop soft warm",
+      "kinds": [
+        "kick",
+        "snare",
+        "hat",
+        "open_hat",
+        "perc",
+        "bass"
+      ]
+    },
+    {
+      "id": "phonk",
+      "name": "Phonk",
+      "family": "Hip-hop",
+      "bpm": 130,
+      "words": "phonk memphis distorted",
+      "kinds": [
+        "kick",
+        "snare",
+        "clap",
+        "hat",
+        "perc",
+        "808"
+      ]
+    },
+    {
+      "id": "grime",
+      "name": "Grime",
+      "family": "Hip-hop",
+      "bpm": 140,
+      "words": "grime London gritty",
+      "kinds": [
+        "kick",
+        "snare",
+        "clap",
+        "hat",
+        "perc",
+        "bass"
+      ]
+    },
+    {
+      "id": "house",
+      "name": "House",
+      "family": "House",
+      "bpm": 124,
+      "words": "classic Chicago house",
+      "kinds": [
+        "kick",
+        "clap",
+        "snare",
+        "hat",
+        "open_hat",
+        "perc",
+        "bass"
+      ]
+    },
+    {
+      "id": "deep_house",
+      "name": "Deep house",
+      "family": "House",
+      "bpm": 122,
+      "words": "deep house warm",
+      "kinds": [
+        "kick",
+        "clap",
+        "hat",
+        "open_hat",
+        "perc",
+        "bass"
+      ]
+    },
+    {
+      "id": "tech_house",
+      "name": "Tech house",
+      "family": "House",
+      "bpm": 126,
+      "words": "tech house tight",
+      "kinds": [
+        "kick",
+        "clap",
+        "hat",
+        "open_hat",
+        "perc",
+        "bass"
+      ]
+    },
+    {
+      "id": "uk_garage",
+      "name": "UK Garage",
+      "family": "House",
+      "bpm": 132,
+      "words": "UK garage 2-step",
+      "kinds": [
+        "kick",
+        "snare",
+        "clap",
+        "hat",
+        "open_hat",
+        "perc",
+        "bass"
+      ]
+    },
+    {
+      "id": "speed_garage",
+      "name": "Speed garage",
+      "family": "House",
+      "bpm": 135,
+      "words": "speed garage",
+      "kinds": [
+        "kick",
+        "snare",
+        "hat",
+        "open_hat",
+        "perc",
+        "bass"
+      ]
+    },
+    {
+      "id": "acid_house",
+      "name": "Acid house",
+      "family": "House",
+      "bpm": 125,
+      "words": "acid house 909 drum machine",
+      "kinds": [
+        "kick",
+        "clap",
+        "hat",
+        "open_hat",
+        "perc",
+        "bass"
+      ]
+    },
+    {
+      "id": "afro_house",
+      "name": "Afro house",
+      "family": "House",
+      "bpm": 122,
+      "words": "afro house organic",
+      "kinds": [
+        "kick",
+        "clap",
+        "hat",
+        "open_hat",
+        "perc"
+      ]
+    },
+    {
+      "id": "disco",
+      "name": "Disco / funk",
+      "family": "House",
+      "bpm": 118,
+      "words": "70s disco funk live",
+      "kinds": [
+        "kick",
+        "snare",
+        "clap",
+        "hat",
+        "open_hat",
+        "perc",
+        "bass"
+      ]
+    },
+    {
+      "id": "retro_techno",
+      "name": "Rétro techno",
+      "family": "Techno",
+      "bpm": 132,
+      "words": "early 90s Belgian and Dutch rave techno, R&S and Rotterdam style, 909 drum machine",
+      "kinds": [
+        "kick",
+        "clap",
+        "hat",
+        "open_hat",
+        "perc",
+        "bass",
+        "stab"
+      ]
+    },
+    {
+      "id": "techno",
+      "name": "Techno",
+      "family": "Techno",
+      "bpm": 130,
+      "words": "techno Berlin",
+      "kinds": [
+        "kick",
+        "clap",
+        "hat",
+        "open_hat",
+        "perc",
+        "bass"
+      ]
+    },
+    {
+      "id": "hard_techno",
+      "name": "Hard techno",
+      "family": "Techno",
+      "bpm": 150,
+      "words": "hard techno industrial distorted",
+      "kinds": [
+        "kick",
+        "clap",
+        "hat",
+        "open_hat",
+        "perc"
+      ]
+    },
+    {
+      "id": "detroit",
+      "name": "Techno de Detroit",
+      "family": "Techno",
+      "bpm": 135,
+      "words": "Detroit techno, Jeff Mills style, Roland 909",
+      "kinds": [
+        "kick",
+        "clap",
+        "hat",
+        "open_hat",
+        "perc",
+        "bass",
+        "stab"
+      ]
+    },
+    {
+      "id": "industrial_techno",
+      "name": "Techno industrielle",
+      "family": "Techno",
+      "bpm": 140,
+      "words": "industrial techno, dark metallic distorted warehouse",
+      "kinds": [
+        "kick",
+        "clap",
+        "hat",
+        "perc",
+        "bass"
+      ]
+    },
+    {
+      "id": "gabber",
+      "name": "Gabber",
+      "family": "Techno",
+      "bpm": 170,
+      "words": "Rotterdam gabber hardcore, distorted",
+      "kinds": [
+        "kick",
+        "clap",
+        "hat",
+        "open_hat",
+        "perc",
+        "stab"
+      ]
+    },
+    {
+      "id": "minimal",
+      "name": "Minimal",
+      "family": "Techno",
+      "bpm": 128,
+      "words": "minimal techno clicky",
+      "kinds": [
+        "kick",
+        "clap",
+        "hat",
+        "perc"
+      ]
+    },
+    {
+      "id": "trance",
+      "name": "Trance",
+      "family": "Techno",
+      "bpm": 138,
+      "words": "trance uplifting",
+      "kinds": [
+        "kick",
+        "clap",
+        "hat",
+        "open_hat",
+        "perc",
+        "bass"
+      ]
+    },
+    {
+      "id": "dnb",
+      "name": "Drum & bass",
+      "family": "Bass music",
+      "bpm": 174,
+      "words": "drum and bass",
+      "kinds": [
+        "kick",
+        "snare",
+        "hat",
+        "open_hat",
+        "perc",
+        "bass"
+      ]
+    },
+    {
+      "id": "liquid_dnb",
+      "name": "Liquid DnB",
+      "family": "Bass music",
+      "bpm": 174,
+      "words": "liquid drum and bass smooth",
+      "kinds": [
+        "kick",
+        "snare",
+        "hat",
+        "open_hat",
+        "perc"
+      ]
+    },
+    {
+      "id": "neurofunk",
+      "name": "Neurofunk",
+      "family": "Bass music",
+      "bpm": 174,
+      "words": "neurofunk heavy",
+      "kinds": [
+        "kick",
+        "snare",
+        "hat",
+        "perc",
+        "bass"
+      ]
+    },
+    {
+      "id": "jungle",
+      "name": "Jungle",
+      "family": "Bass music",
+      "bpm": 165,
+      "words": "jungle amen break",
+      "kinds": [
+        "kick",
+        "snare",
+        "hat",
+        "open_hat",
+        "perc",
+        "bass"
+      ]
+    },
+    {
+      "id": "dubstep",
+      "name": "Dubstep",
+      "family": "Bass music",
+      "bpm": 140,
+      "words": "dubstep",
+      "kinds": [
+        "kick",
+        "snare",
+        "hat",
+        "perc",
+        "bass",
+        "808"
+      ]
+    },
+    {
+      "id": "riddim",
+      "name": "Riddim",
+      "family": "Bass music",
+      "bpm": 140,
+      "words": "riddim dubstep metallic",
+      "kinds": [
+        "kick",
+        "snare",
+        "hat",
+        "perc",
+        "bass"
+      ]
+    },
+    {
+      "id": "reggaeton",
+      "name": "Reggaeton",
+      "family": "Autres",
+      "bpm": 95,
+      "words": "reggaeton dembow",
+      "kinds": [
+        "kick",
+        "snare",
+        "hat",
+        "perc",
+        "808"
+      ]
+    },
+    {
+      "id": "afrobeats",
+      "name": "Afrobeats",
+      "family": "Autres",
+      "bpm": 105,
+      "words": "afrobeats",
+      "kinds": [
+        "kick",
+        "snare",
+        "hat",
+        "perc",
+        "bass"
+      ]
+    },
+    {
+      "id": "amapiano",
+      "name": "Amapiano",
+      "family": "Autres",
+      "bpm": 112,
+      "words": "amapiano log drum",
+      "kinds": [
+        "kick",
+        "clap",
+        "hat",
+        "perc",
+        "bass"
+      ]
+    },
+    {
+      "id": "jersey_club",
+      "name": "Jersey club",
+      "family": "Autres",
+      "bpm": 140,
+      "words": "jersey club bouncy",
+      "kinds": [
+        "kick",
+        "snare",
+        "clap",
+        "hat",
+        "perc"
+      ]
+    },
+    {
+      "id": "synthwave",
+      "name": "Synthwave",
+      "family": "Autres",
+      "bpm": 100,
+      "words": "80s synthwave gated reverb",
+      "kinds": [
+        "kick",
+        "snare",
+        "clap",
+        "hat",
+        "perc",
+        "bass"
+      ]
+    },
+    {
+      "id": "pop",
+      "name": "Pop",
+      "family": "Autres",
+      "bpm": 110,
+      "words": "modern pop",
+      "kinds": [
+        "kick",
+        "snare",
+        "clap",
+        "hat",
+        "open_hat",
+        "perc",
+        "bass"
+      ]
+    }
   ]
 }

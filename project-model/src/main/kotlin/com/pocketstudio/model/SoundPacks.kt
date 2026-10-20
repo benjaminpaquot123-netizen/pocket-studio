@@ -19,6 +19,7 @@ object SoundPacks {
         "perc" to "Percussions",
         "808" to "Basses 808",
         "bass" to "Basses",
+        "stab" to "Stabs et hoovers",
         "fx" to "Effets",
         "loop" to "Boucles",
     )

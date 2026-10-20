@@ -74,8 +74,9 @@
   - pads live (lanceur de boucles 4 à 16 pads, onglet Morceau) : ClipLauncher dans le moteur, testé sur Linux ; import, son d'un pad de batterie, « → Live » depuis le Remix ;
   - Remix : écoute des 4 pistes ensemble par le moteur, chaque piste allumée ou coupée sans arrêt ;
   - Acide : potards compacts (composant Knob dans ui-components), curseurs en option ;
-  - 5.2 sons classés par familles (Synthé 16, Plaits 17, Acide 7), « Au hasard » bridé pour rester musical, favoris communs à tous les projets (favorites.json).
+  - 5.2 sons classés par familles (Synthé 16, Plaits 17, Acide 7), « Au hasard » bridé pour rester musical, favoris communs à tous les projets (favorites.json) ;
+  - 5.3 MIDI : claviers USB (connexion automatique) et Bluetooth LE (recherche), notes vers le Synthé, canal 10 vers les pads, horloge/départ/arrêt suivis (Outils › MIDI). Ableton Link et horloge sortante reportés (DECISIONS).
 
 ## Prochaine étape exacte
-1. Phase 5.3 : MIDI USB/BLE + horloge + Ableton Link. Puis 5.4 Basic Pitch (audio → notes) ; revue de fin de phase ; fusion.
-3. Reste noté : lever la limite de 60 s par son ; import de packs .zip ; étirement des stems si le tempo change.
+1. Phase 5.4 : Basic Pitch (audio → notes du piano roll). Puis revue de fin de phase ; fusion.
+2. Reste noté : lever la limite de 60 s par son ; import de packs .zip ; étirement des stems si le tempo change.

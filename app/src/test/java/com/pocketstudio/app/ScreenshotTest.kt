@@ -390,6 +390,20 @@ class ScreenshotTest {
     }
 
     @Test
+    fun midi() = shoot("midi") {
+        com.pocketstudio.app.midi.MidiScreen(
+            com.pocketstudio.app.midi.MidiUi(
+                sources = listOf(
+                    com.pocketstudio.app.midi.MidiSource("midi-1", "Arturia MiniLab 3", "USB"),
+                    com.pocketstudio.app.midi.MidiSource("ble-2", "Clavier Bluetooth", "Bluetooth"),
+                ),
+                connected = "midi-1", last = "Note Do 4", clockBpm = 124.0,
+            ),
+            com.pocketstudio.app.midi.MidiActions(),
+        )
+    }
+
+    @Test
     fun acidPanel() = shoot("acid_panel") {
         androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
             com.pocketstudio.app.acid.Panel303(com.pocketstudio.model.AcidSound(cutoff = 0.62f, waveform = 1f).values()) { _, _ -> }

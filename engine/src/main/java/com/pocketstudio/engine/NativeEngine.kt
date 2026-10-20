@@ -128,6 +128,12 @@ object NativeEngine {
     /** Plays a pad right now (live). */
     fun triggerPad(lane: Int, velocity: Float) = post(CMD_TRIGGER_PAD, velocity, lane)
 
+    // Live input (MIDI thread): always the live engine, never an export being captured.
+    // The native side serialises producers, so any thread may call these.
+    fun liveNoteOn(note: Int, velocity: Float) = nativePost(CMD_SYNTH_NOTE_ON, velocity, note, 0)
+    fun liveNoteOff(note: Int) = nativePost(CMD_SYNTH_NOTE_OFF, 0f, note, 0)
+    fun liveTriggerPad(lane: Int, velocity: Float) = nativePost(CMD_TRIGGER_PAD, velocity, lane, 0)
+
     /** Current pattern step, or -1 when stopped or counting in. */
     external fun currentStep(): Int
     /** Steps since play without wrapping (-1 stopped): the piano roll loops on its own length. */

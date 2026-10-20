@@ -1581,6 +1581,13 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (project.value.drums.lanes.any { (it.sample?.fitBeats ?: 0) > 0 }) pushPads()
     }
 
+    /** An exact tempo from outside (MIDI clock): one undo step while it keeps moving. */
+    fun setTempo(bpm: Double) {
+        session.edit("tempo") { it.copy(tempoBpm = bpm) }
+        if (NativeEngine.isAvailable) NativeEngine.setTempo(project.value.tempoBpm)
+        if (project.value.drums.lanes.any { (it.sample?.fitBeats ?: 0) > 0 }) pushPads()
+    }
+
     fun tapTempo() {
         val bpm = tapTempo.tap(System.currentTimeMillis()) ?: return
         session.edit("tempo") { it.copy(tempoBpm = Math.round(bpm).toDouble()) }

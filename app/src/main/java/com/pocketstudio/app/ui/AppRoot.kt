@@ -47,6 +47,7 @@ import androidx.compose.material3.NavigationRailItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
+import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -90,6 +91,10 @@ import com.pocketstudio.app.synth.SynthScreen
 import com.pocketstudio.app.remix.RemixActions
 import com.pocketstudio.app.session.SessionActions
 import com.pocketstudio.app.session.SessionScreen
+import com.pocketstudio.app.midi.MidiActions
+import com.pocketstudio.app.midi.MidiCommand
+import com.pocketstudio.app.midi.MidiScreen
+import com.pocketstudio.app.midi.MidiViewModel
 import com.pocketstudio.app.sounds.SoundBrowserUi
 import com.pocketstudio.model.SoundCategories
 import com.pocketstudio.model.SoundLibrary
@@ -118,7 +123,7 @@ enum class AppTab(val label: String, val icon: ImageVector) {
     Outils("Outils", Icons.Filled.Tune),
 }
 
-private enum class ToolPage(val label: String) { Recette("Recette"), Fond("Arrière-plan"), Latence("Latence"), Son("Son test") }
+private enum class ToolPage(val label: String) { Recette("Recette"), Midi("MIDI"), Fond("Arrière-plan"), Latence("Latence"), Son("Son test") }
 
 @Composable
 fun AppRoot() {
@@ -127,6 +132,7 @@ fun AppRoot() {
     val studioVm: StudioViewModel = viewModel()
     val latencyVm: LatencyViewModel = viewModel()
     val recetteVm: RecetteViewModel = viewModel()
+    val midiVm: MidiViewModel = viewModel()
     val rhythmVm: RhythmViewModel = viewModel()
     val remixVm: RemixViewModel = viewModel()
     var tab by rememberSaveable { mutableStateOf(AppTab.Rythme) }
@@ -182,6 +188,19 @@ fun AppRoot() {
     }
     val recordPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
         if (granted) rhythmVm.startRecording()
+    }
+    val bluetoothPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { granted ->
+        if (granted.values.all { it }) midiVm.scanBluetooth()
+    }
+    // MIDI clock, start and stop drive the project's tempo and transport (main thread).
+    LaunchedEffect(Unit) {
+        midiVm.commands.collect { c ->
+            when (c) {
+                MidiCommand.Start -> if (!rhythmVm.transport.value.playing) rhythmVm.togglePlay()
+                MidiCommand.Stop -> if (rhythmVm.transport.value.playing) rhythmVm.togglePlay()
+                is MidiCommand.Tempo -> rhythmVm.setTempo(c.bpm)
+            }
+        }
     }
     val pickAudio = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) rhythmVm.importSample(uri)
@@ -590,7 +609,7 @@ fun AppRoot() {
                         )
                     }
                     AppTab.Outils -> Column {
-                        TabRow(selectedTabIndex = toolPage.ordinal, containerColor = Neon.Surface, contentColor = Neon.Cyan) {
+                        ScrollableTabRow(selectedTabIndex = toolPage.ordinal, containerColor = Neon.Surface, contentColor = Neon.Cyan, edgePadding = 0.dp) {
                             ToolPage.entries.forEach { page ->
                                 Tab(
                                     selected = toolPage == page,
@@ -610,6 +629,18 @@ fun AppRoot() {
                                     onUpdate = recetteVm::update,
                                     onSendReport = { recetteVm.buildReport { openUri(context, it) } },
                                     onReportProblem = { text -> recetteVm.buildProblem(text) { openUri(context, it) } },
+                                )
+                            }
+                            ToolPage.Midi -> {
+                                val midi by midiVm.state.collectAsStateWithLifecycle()
+                                MidiScreen(
+                                    midi,
+                                    MidiActions(
+                                        connect = midiVm::connect,
+                                        disconnect = midiVm::disconnect,
+                                        scanBluetooth = { bluetoothPermission.launch(arrayOf(Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT)) },
+                                        setFollowClock = midiVm::setFollowClock,
+                                    ),
                                 )
                             }
                             ToolPage.Fond -> BackgroundPage()

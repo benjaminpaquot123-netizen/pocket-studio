@@ -36,6 +36,11 @@
       "id": "scenes_24",
       "title": "Utiliser plus de 8 scènes",
       "hint": "Morceau › Afficher 16 ou 24 › touche une scène vide après H."
+    },
+    {
+      "id": "midi",
+      "title": "Jouer avec un clavier MIDI",
+      "hint": "Branche un clavier USB (adaptateur OTG) ou Outils › MIDI › Chercher un clavier Bluetooth. Les touches jouent le Synthé ; « Note … » s'affiche à chaque touche."
     }
   ]
 }

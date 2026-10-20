@@ -2179,6 +2179,21 @@ void testLivePadsLoopOnTheBeat() {
     engine.collectGarbage();
 }
 
+void testPlayPositionForLiveRecording() {
+    ps::Engine engine(kRate);  // 120 BPM: a sixteenth is 6000 frames
+    CHECK(engine.playPosition() < 0.0);
+    engine.post({ps::CommandType::SetTransport, 1.0f, 1});  // one bar of count-in
+    render(engine, 6000 * 8, 256);
+    CHECK(engine.playPosition() < 0.0);                     // still counting in
+    render(engine, 6000 * 8 + 6000 * 5 + 3000, 256);        // end of count-in, then 5.5 steps
+    const double pos = engine.playPosition();
+    std::printf("  play position: %.3f steps (expected 5.5)\n", pos);
+    CHECK(std::fabs(pos - 5.5) < 256.0 / 6000.0 + 1e-6);    // within one block
+    engine.post({ps::CommandType::SetTransport, 0.0f});
+    render(engine, 256, 256);
+    CHECK(engine.playPosition() < 0.0);
+}
+
 void testStemsStretchToTheProjectTempo() {
     // A 1 kHz tone on every stem: 120 BPM song played at 100 BPM lasts 1.2 times as long, same pitch.
     std::vector<float> tone(static_cast<size_t>(kRate) * 2 * 2);
@@ -2307,6 +2322,7 @@ int main(int argc, char** argv) {
         {"live_pads", testLivePadsLoopOnTheBeat},
         {"stem_preview", testStemPreviewPlaysWithoutTheTransport},
         {"stems_stretch", testStemsStretchToTheProjectTempo},
+        {"play_position", testPlayPositionForLiveRecording},
         {"no_alloc_in_process", testProcessNeverAllocates},
     };
     for (const auto& t : tests) {

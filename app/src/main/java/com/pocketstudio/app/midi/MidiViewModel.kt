@@ -50,6 +50,8 @@ sealed interface MidiCommand {
     data object Start : MidiCommand
     data object Stop : MidiCommand
     data class Tempo(val bpm: Double) : MidiCommand
+    /** A note received (it already sounds): for live recording. Channel 10 (9) = pads. */
+    data class Note(val channel: Int, val pitch: Int, val velocity: Float, val on: Boolean) : MidiCommand
 }
 
 /**
@@ -66,7 +68,7 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
     private val _state = MutableStateFlow(MidiUi(available = manager != null))
     val state: StateFlow<MidiUi> = _state.asStateFlow()
 
-    private val _commands = MutableSharedFlow<MidiCommand>(extraBufferCapacity = 16)
+    private val _commands = MutableSharedFlow<MidiCommand>(extraBufferCapacity = 256)
     val commands: SharedFlow<MidiCommand> = _commands.asSharedFlow()
 
     private val infos = HashMap<String, MidiDeviceInfo>()
@@ -231,6 +233,7 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
                 synchronized(held) { held += note }
                 NativeEngine.liveNoteOn(note, v)
             }
+            _commands.tryEmit(MidiCommand.Note(channel, note, v, true))
             show("Note ${noteLabel(note)}" + if (channel == DRUM_CHANNEL) " (pads)" else "")
         }
 
@@ -238,6 +241,7 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
             if (!NativeEngine.isAvailable || channel == DRUM_CHANNEL) return
             synchronized(held) { held -= note }
             NativeEngine.liveNoteOff(note)
+            _commands.tryEmit(MidiCommand.Note(channel, note, 0f, false))
         }
 
         override fun controlChange(channel: Int, controller: Int, value: Int) {

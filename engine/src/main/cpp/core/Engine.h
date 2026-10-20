@@ -162,6 +162,9 @@ public:
     int currentStep() const { return currentStep_.load(std::memory_order_relaxed); }
     // Steps since play (no wrap), -1 when stopped: the piano roll has its own loop length.
     int absoluteStep() const { return absoluteStep_.load(std::memory_order_relaxed); }
+    // Where the playing scene is, in sixteenths with the fraction (live recording), -1 when stopped
+    // or counting in. Updated once per block.
+    double playPosition() const { return playPosition_.load(std::memory_order_relaxed); }
     // How many times a waiting scene took over (the UI follows the playing scene with it).
     uint32_t sceneSwaps() const { return sceneSwaps_.load(std::memory_order_relaxed); }
     bool transportRunning() const { return sequencer_.running(); }
@@ -253,6 +256,10 @@ private:
     std::array<float, kMaxBlock> mix_{};
     std::atomic<int> currentStep_{-1};
     std::atomic<int> absoluteStep_{-1};
+    std::atomic<double> playPosition_{-1.0};
+    int lastLocal_ = -1;        // local step of the last step played
+    int stepOffset_ = -1;       // its frame offset in the current block, -1 if it was in an earlier one
+    double sinceStep_ = 0.0;    // frames played since that step
     std::array<std::atomic<uint32_t>, kLanes> laneTriggers_{};
     std::atomic<uint64_t> metronomeClicks_{0};
 

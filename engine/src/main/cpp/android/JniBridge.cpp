@@ -47,6 +47,10 @@ JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_currentStep(JNI
     return host().engine().currentStep();
 }
 
+JNIEXPORT jdouble JNICALL Java_com_pocketstudio_engine_NativeEngine_playPosition(JNIEnv*, jobject) {
+    return host().engine().playPosition();
+}
+
 JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_absoluteStep(JNIEnv*, jobject) {
     return host().engine().absoluteStep();
 }

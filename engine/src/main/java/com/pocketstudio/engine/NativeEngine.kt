@@ -139,6 +139,9 @@ object NativeEngine {
     /** Steps since play without wrapping (-1 stopped): the piano roll loops on its own length. */
     external fun absoluteStep(): Int
 
+    /** Position in the playing scene in sixteenths, with the fraction (live recording); -1 when stopped or counting in. */
+    external fun playPosition(): Double
+
     /** Piano-roll note [index] (ticks: 24 per sixteenth). Packing matches NoteTrack::pack. */
     fun setSynthNote(index: Int, start: Int, length: Int, pitch: Int, velocity: Float) =
         post(CMD_SYNTH_NOTE, velocity, index, (start and 0xFFF) or ((length and 0xFFF) shl 12) or ((pitch and 0x7F) shl 24))

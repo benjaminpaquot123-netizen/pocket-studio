@@ -59,6 +59,12 @@ class ProjectSession(
         publish()
     }
 
+    /** Turns the quiet edits made since [before] into one undo step (end of a live recording). */
+    fun commitQuietEdits(before: Project) {
+        history.commitFrom(before.sanitized())
+        publish()
+    }
+
     fun undo() {
         if (history.undo() != null) publish()
     }

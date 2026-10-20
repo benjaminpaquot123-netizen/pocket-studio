@@ -666,3 +666,23 @@ class DrumLengthTest {
     }
 }
 
+class RecordingHistoryTest {
+    @Test
+    fun aWholeTakeIsOneUndoStep() {
+        val h = History(0)
+        h.push(1)
+        val before = h.current
+        h.replace(2); h.replace(3); h.replace(4)  // notes recorded live
+        h.commitFrom(before)
+        assertEquals(4, h.current)
+        assertEquals(1, h.undo())
+        assertEquals(0, h.undo())
+        assertEquals(null, h.undo())
+        assertEquals(1, h.redo())
+        assertEquals(4, h.redo())
+        val h2 = History(5)
+        h2.commitFrom(5)  // nothing recorded: no step
+        assertFalse(h2.canUndo)
+    }
+}
+

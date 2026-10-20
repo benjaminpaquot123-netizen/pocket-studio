@@ -37,6 +37,17 @@ class History<T>(initial: T, private val coalesceWindowMs: Long = 600) {
         lastKey = null
     }
 
+    /**
+     * After quiet changes ([replace]) made since [before] (a live recording), makes the whole
+     * change one undo step back to [before].
+     */
+    fun commitFrom(before: T) {
+        if (current == before) return
+        undoStack.addLast(before)
+        redoStack.clear()
+        lastKey = null
+    }
+
     fun undo(): T? {
         val previous = undoStack.removeLastOrNull() ?: return null
         redoStack.addLast(current)

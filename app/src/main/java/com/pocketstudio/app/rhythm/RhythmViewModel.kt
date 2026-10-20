@@ -1511,10 +1511,95 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     fun synthNoteOn(note: Int) {
         if (NativeEngine.isAvailable) NativeEngine.synthNoteOn(note, 0.85f)
+        recordNoteOn(note, 0.85f)
     }
 
     fun synthNoteOff(note: Int) {
         if (NativeEngine.isAvailable) NativeEngine.synthNoteOff(note)
+        recordNoteOff(note)
+    }
+
+    // --- Live recording: what is played (keyboard, MIDI, pads) is written into the loop --------
+
+    private val _recording = MutableStateFlow(false)
+    /** True while armed: notes go into the piano roll, pad hits into the drum steps. */
+    val recording: StateFlow<Boolean> = _recording.asStateFlow()
+    private var recordBefore: Project? = null
+    private val heldNotes = HashMap<Int, Pair<Int, Float>>()  // pitch -> (start tick, velocity)
+
+    /** Starts (with a bar of count-in when stopped) or ends a take; the whole take is one undo step. */
+    fun toggleRecord() {
+        if (_recording.value) {
+            stopRecordingTake()
+            return
+        }
+        recordBefore = project.value
+        heldNotes.clear()
+        _recording.value = true
+        AppLog.add("Enregistrement en direct")
+        if (!_transport.value.playing) {
+            _transport.value = _transport.value.copy(playing = true)
+            if (NativeEngine.isAvailable) NativeEngine.play(1)
+            PlaybackService.start(getApplication())
+        }
+    }
+
+    private fun stopRecordingTake() {
+        // Keys still down when the take ends keep the length they have so far.
+        heldNotes.keys.toList().forEach { recordNoteOff(it) }
+        _recording.value = false
+        recordBefore?.let { session.commitQuietEdits(it) }
+        recordBefore = null
+    }
+
+    /** Where the playhead is in [loopTicks], or null when nothing is recorded (not armed, stopped, counting in). */
+    private fun recordTick(loopTicks: Int): Int? {
+        if (!_recording.value || !NativeEngine.isAvailable) return null
+        val pos = NativeEngine.playPosition()
+        if (pos < 0) return null
+        return Math.floorMod((pos * NoteClip.TICKS_PER_STEP).toLong(), loopTicks.toLong()).toInt()
+    }
+
+    /** A note played live (keyboard or MIDI) while recording: remembered until released. */
+    fun recordNoteOn(pitch: Int, velocity: Float) {
+        val tick = recordTick(project.value.synthNotes.ticks) ?: return
+        heldNotes[pitch] = tick to velocity
+    }
+
+    fun recordNoteOff(pitch: Int) {
+        val (start, velocity) = heldNotes.remove(pitch) ?: return
+        val clip = project.value.synthNotes
+        val end = recordTick(clip.ticks) ?: start + NoteClip.TICKS_PER_STEP
+        val step = NoteClip.TICKS_PER_STEP
+        // Starts land on the sixteenth grid; the length is kept (at least half a sixteenth).
+        val snapped = Math.floorMod(Math.round(start.toDouble() / step).toInt() * step, clip.ticks)
+        val length = maxOf(step / 2, Math.floorMod(end - start, clip.ticks))
+        val note = Note(snapped, minOf(length, NoteClip.MAX_TICKS), pitch, velocity)
+        session.editQuietly { p -> p.copy(synthNotes = p.synthNotes.copy(notes = p.synthNotes.notes.filterNot { it.start == snapped && it.pitch == pitch } + note).sanitized()) }
+        pushNotes(project.value.synthNotes)
+    }
+
+    /** A pad hit while recording becomes a step of the drum loop (nearest sixteenth). */
+    private fun recordPad(lane: Int, velocity: Float) {
+        val steps = project.value.drums.steps
+        val tick = recordTick(steps * NoteClip.TICKS_PER_STEP) ?: return
+        val step = Math.floorMod(Math.round(tick.toDouble() / NoteClip.TICKS_PER_STEP).toInt(), steps)
+        session.editQuietly { p ->
+            val l = p.drums.lanes[lane]
+            p.copy(drums = p.drums.copy(lanes = p.drums.lanes.toMutableList().also { it[lane] = l.copy(hits = l.hits + (step to Hit(velocity))) }))
+        }
+        pushLane(lane)
+    }
+
+    /** MIDI notes arrive here too (they already sound): recorded when armed. */
+    fun midiNote(channel: Int, pitch: Int, velocity: Float, on: Boolean) {
+        if (channel == 9) {
+            if (on && pitch in 36 until 36 + DrumPattern.PAD_COUNT) recordPad(pitch - 36, velocity)
+        } else if (on) {
+            recordNoteOn(pitch, velocity)
+        } else {
+            recordNoteOff(pitch)
+        }
     }
 
     /** Safety net: releases every synth voice (leaving the synth tab or the app). */
@@ -1667,6 +1752,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val playing = !t.playing
         _transport.value = t.copy(playing = playing)
         if (!NativeEngine.isAvailable) return
+        if (!playing && _recording.value) stopRecordingTake()
         if (playing) NativeEngine.play(if (t.countIn) 1 else 0) else {
             NativeEngine.stopTransport()
             catchUpMissedSwap()
@@ -1716,6 +1802,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (lane != _transport.value.selectedPad) closeSlicer()
         _transport.value = _transport.value.copy(selectedPad = lane)
         if (NativeEngine.isAvailable) NativeEngine.triggerPad(lane, 0.9f)
+        recordPad(lane, 0.9f)
     }
 
     /** Drum loop length in bars (1 to 4). */

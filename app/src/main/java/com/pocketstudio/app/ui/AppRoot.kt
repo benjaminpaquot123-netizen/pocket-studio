@@ -261,6 +261,7 @@ fun AppRoot() {
                 MidiCommand.Start -> if (!rhythmVm.transport.value.playing) rhythmVm.togglePlay()
                 MidiCommand.Stop -> if (rhythmVm.transport.value.playing) rhythmVm.togglePlay()
                 is MidiCommand.Tempo -> rhythmVm.setTempo(c.bpm)
+                is MidiCommand.Note -> rhythmVm.midiNote(c.channel, c.pitch, c.velocity, c.on)
             }
         }
     }
@@ -295,9 +296,13 @@ fun AppRoot() {
             val topTransport by rhythmVm.transport.collectAsStateWithLifecycle()
             val topUndo by rhythmVm.session.canUndo.collectAsStateWithLifecycle()
             val topRedo by rhythmVm.session.canRedo.collectAsStateWithLifecycle()
+            val topRecording by rhythmVm.recording.collectAsStateWithLifecycle()
             TopBar(
-                TopBarUi(topProject.name, topProject.tempoBpm, topTransport.playing, topUndo, topRedo),
-                TopBarActions(projects = { showProjects = true }, undo = rhythmVm::undo, redo = rhythmVm::redo, togglePlay = rhythmVm::togglePlay),
+                TopBarUi(topProject.name, topProject.tempoBpm, topTransport.playing, topUndo, topRedo, topRecording),
+                TopBarActions(
+                    projects = { showProjects = true }, undo = rhythmVm::undo, redo = rhythmVm::redo,
+                    togglePlay = rhythmVm::togglePlay, toggleRecord = rhythmVm::toggleRecord,
+                ),
             )
             if (saveError != null) {
                 Text(

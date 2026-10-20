@@ -74,6 +74,8 @@ void Engine::applyCommand(const Command& command) {
             if (command.value > 0.5f) {
                 sequencer_.start(std::clamp(command.a, 0, 4));
                 sceneStart_ = 0;
+                lastLocal_ = -1;
+                playPosition_.store(-1.0, std::memory_order_relaxed);
             } else {
                 swapAt_ = -1;
                 staging_ = false;  // a lost "staging off" must never trap later edits
@@ -88,6 +90,8 @@ void Engine::applyCommand(const Command& command) {
             plaits_.allNotesOff();
                 currentStep_.store(-1, std::memory_order_relaxed);
                 absoluteStep_.store(-1, std::memory_order_relaxed);
+                playPosition_.store(-1.0, std::memory_order_relaxed);
+                lastLocal_ = -1;
             }
             break;
         case CommandType::SetTempo:
@@ -294,6 +298,8 @@ void Engine::onStep(int offset, int step) {
     mixer_.sidechainEvent(offset, pattern_[0][patternStep] > 0.0f, onBeat);
     currentStep_.store(patternStep, std::memory_order_relaxed);
     absoluteStep_.store(local, std::memory_order_relaxed);
+    lastLocal_ = local;
+    stepOffset_ = offset;
     for (int lane = 0; lane < kLanes; ++lane) {
         if (pattern_[lane][patternStep] > 0.0f) {
             laneTriggers_[static_cast<size_t>(lane)].fetch_add(1, std::memory_order_relaxed);
@@ -349,7 +355,12 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
     std::fill(stemsL, stemsL + numFrames, 0.0f);
     std::fill(stemsR, stemsR + numFrames, 0.0f);
 
+    stepOffset_ = -1;
     sequencer_.advance(numFrames, [this](int offset, int step) { onStep(offset, step); });
+    if (lastLocal_ >= 0 && sequencer_.running()) {
+        sinceStep_ = stepOffset_ >= 0 ? static_cast<double>(numFrames - stepOffset_) : sinceStep_ + numFrames;
+        playPosition_.store(lastLocal_ + sinceStep_ / sequencer_.samplesPerStep(), std::memory_order_relaxed);
+    }
     notes_.advance(numFrames, router_);
     metronome_.render(direct, numFrames);
     drums_.render(drums, numFrames);

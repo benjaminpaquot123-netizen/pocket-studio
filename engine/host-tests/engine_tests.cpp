@@ -2260,11 +2260,15 @@ void testCrazyEffects() {
     };
     auto run = [&](ps::InsertSlot& fx) {
         bool ok = true;
+#if !defined(__SANITIZE_ADDRESS__)
         g_allocations = 0;
         g_countAllocations = true;
+#endif
         for (size_t at = 0; at < n; at += 256) fx.process(l.data() + at, r.data() + at, int(std::min<size_t>(256, n - at)));
+#if !defined(__SANITIZE_ADDRESS__)
         g_countAllocations = false;
-        CHECK(g_allocations.load() == 0);  // nothing allocated in the audio callback
+        CHECK(g_allocations.load() == 0);  // nothing allocated in the audio callback (not countable under ASan)
+#endif
         for (size_t i = 0; i < n; ++i) ok &= std::isfinite(l[i]) && std::isfinite(r[i]) && std::fabs(l[i]) < 1.5f && std::fabs(r[i]) < 1.5f;
         return ok;
     };

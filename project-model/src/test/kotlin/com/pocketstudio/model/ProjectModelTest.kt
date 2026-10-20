@@ -610,3 +610,31 @@ class SoundLibraryTest {
     }
 }
 
+class TranscriptionTest {
+    @Test
+    fun heardNotesLandOnTheGrid() {
+        // 120 BPM: a sixteenth is 0.125 s. Played a little late and loose.
+        val heard = listOf(
+            HeardNote(1.00, 1.24, 69, 0.8f),   // silence before is dropped: tick 0
+            HeardNote(1.27, 1.49, 72, 0.5f),   // 0.27 s later: step 2
+            HeardNote(1.51, 1.53, 64, 0.2f),   // very short: half a step
+        )
+        val clip = Transcription.toClip(heard, 120.0)
+        assertEquals(16, clip.steps)
+        assertEquals(listOf(0, 48, 96), clip.notes.map { it.start })
+        assertEquals(listOf(48, 48, 12), clip.notes.map { it.length })
+        assertEquals(listOf(69, 72, 64), clip.notes.map { it.pitch })
+        assertTrue(clip.notes[0].velocity > clip.notes[2].velocity)
+    }
+
+    @Test
+    fun longRecordingsGrowTheClipUpTo8Bars() {
+        val heard = (0 until 40).map { HeardNote(it * 0.5, it * 0.5 + 0.4, 60 + it % 12, 0.7f) }  // 20 s at 120 BPM = 10 bars
+        val clip = Transcription.toClip(heard, 120.0)
+        assertEquals(NoteClip.MAX_STEPS, clip.steps)
+        assertTrue(clip.notes.all { it.end <= clip.ticks })
+        assertEquals(32, clip.notes.size)  // 8 bars of half-second notes
+        assertEquals(NoteClip(), Transcription.toClip(emptyList(), 120.0))
+    }
+}
+

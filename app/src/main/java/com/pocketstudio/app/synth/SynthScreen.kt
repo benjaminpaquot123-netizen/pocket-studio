@@ -108,6 +108,7 @@ fun SynthScreen(
     startWithNotes: Boolean = false,
     instrument: InstrumentUi? = null,
     browser: SoundBrowserUi? = null,
+    transcribe: TranscribeUi? = null,
 ) {
     var advanced by rememberSaveable { mutableStateOf(false) }
     var showNotes by rememberSaveable { mutableStateOf(startWithNotes) }
@@ -133,6 +134,7 @@ fun SynthScreen(
                         harmony = notes.harmony,
                     )
                 }
+                transcribe?.let { TranscribeCard(it) }
                 NeonCard {
                     SectionLabel("Harmonie")
                     HarmonyPanel(notes.harmony, notes.clip.performance, notes.actions)

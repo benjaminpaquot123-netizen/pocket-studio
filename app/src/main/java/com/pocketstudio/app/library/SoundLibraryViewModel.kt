@@ -276,11 +276,29 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         return Pcm(trimSilence(data), 2, OfflineExport.SAMPLE_RATE).also { kitCache[voice] = it }
     }
 
+    /** A pack sound for a melodic part: decoded, with the note it was recorded at (null: not readable). */
+    private suspend fun packPartSound(sound: StarterWizard.PartSound): Pair<Pcm, Float?>? {
+        val (packId, file) = sound.packFile ?: return null
+        val pcm = withContext(Dispatchers.IO) {
+            val f = PackStore.file(getApplication(), packId, com.pocketstudio.model.PackSound(file, "", ""))
+            runCatching { AudioDecoder.decode(getApplication(), Uri.fromFile(f)) }.getOrNull()
+        } ?: return null
+        val root = withContext(Dispatchers.Default) {
+            val ch = pcm.channels
+            val mono = FloatArray(pcm.data.size / ch) { i -> (0 until ch).sumOf { c -> pcm.data[i * ch + c].toDouble() }.toFloat() / ch }
+            com.pocketstudio.model.RootNote.detect(mono, pcm.sampleRate)
+        }
+        return pcm to root
+    }
+
     /** The part's first bar with that sound, in the chosen mood, at the style's tempo. */
     private suspend fun melodicBar(ref: SoundRef.Melodic): Pcm? {
         val w = _wizard.value
         val style = w.style ?: return null
         if (!NativeEngine.isAvailable) return null
+        // A pack sound plays across the keys from its own note.
+        val packSound = if (ref.sound.sampled != null) packPartSound(ref.sound) ?: return null else null
+        val native = packSound?.let { (pcm, _) -> com.pocketstudio.engine.NativeSample.create(pcm.data, pcm.channels, pcm.sampleRate) ?: return null }
         val mood = w.mood ?: style.melody.mood
         val harmony = com.pocketstudio.model.Harmony(style.melody.root, mood.scale)
         val clip = StarterWizard.startingNotes(ref.part, style, mood, harmony)
@@ -292,14 +310,22 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                 NativeEngine.setPatternSteps(16)
                 ref.sound.synth.sanitized().values.forEachIndexed { i, v -> NativeEngine.setSynthParam(i, v, 0) }
                 ref.sound.plaits?.let { p -> p.sanitized().engineValues().forEachIndexed { i, v -> NativeEngine.setPlaitsParam(i, v, 0) } }
-                NativeEngine.setSynthEngine(if (ref.sound.plaits != null) 1 else 0, 0)
+                if (native != null) {
+                    val patch = ref.sound.sampled!!.copy(root = packSound.second ?: 60f)
+                    patch.engineValues().forEachIndexed { i, v -> NativeEngine.setTrackSampleParam(i, v, 0) }
+                    NativeEngine.setTrackSample(0, native)  // the export engine keeps its own reference
+                }
+                NativeEngine.setSynthEngine(if (native != null) 2 else if (ref.sound.plaits != null) 1 else 0, 0)
                 NativeEngine.setSynthSteps(16, 0)
                 bar.forEachIndexed { i, n -> NativeEngine.setSynthNote(i, n.start, n.length, n.pitch, n.velocity, 0) }
                 NativeEngine.setSynthNoteCount(bar.size, 0)
             }
             withContext(Dispatchers.Default) { job.renderToArray(OfflineExport.framesFor(1, style.bpm), OfflineExport.SAMPLE_RATE.toLong()) }
         } finally {
-            withContext(NonCancellable + Dispatchers.Main) { job.close() }
+            withContext(NonCancellable + Dispatchers.Main) {
+                job.close()
+                native?.close()
+            }
         }
         return if (data.isEmpty()) null else Pcm(trimSilence(data), 2, OfflineExport.SAMPLE_RATE)
     }
@@ -417,7 +443,15 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                     _wizard.update { it.copy(creating = false, error = "Garde au moins une ligne pour commencer.") }
                     return@launch
                 }
-                val parts = if (w.mood == null) emptyMap() else w.parts.filterValues { it.enabled }.mapValues { it.value.sound }
+                val chosen = if (w.mood == null) emptyMap() else w.parts.filterValues { it.enabled }.mapValues { it.value.sound }
+                // Pack sounds played across the keys: copied into the project, set on their own note.
+                val parts = chosen.mapValues { (_, sound) ->
+                    if (sound.packFile == null) return@mapValues sound
+                    val (pcm, root) = packPartSound(sound) ?: throw IllegalStateException("son illisible : ${sound.name}")
+                    val file = "${UUID.randomUUID().toString().take(12)}.wav"
+                    files[file] = pcm
+                    sound.copy(sampled = sound.sampled!!.copy(file = file, root = root ?: 60f))
+                }
                 AppLog.add("Assistant : morceau ${style.name}, ${sounds.size} lignes, ${parts.size} pistes mélodiques")
                 // The choices stay until the project is written (the caller closes the assistant then).
                 then(StarterWizard.build(style, sounds, w.mood, parts), files)

@@ -28,6 +28,16 @@
       "hint": "Mixeur › Automation › Automatiser un réglage › Volume · Synthé, dessine une montée au doigt et lance le Rythme. Ou active Enregistrer et bouge le volume pendant la lecture."
     },
     {
+      "id": "scenes",
+      "title": "Faire une variante et l'enchaîner",
+      "hint": "Morceau › Dupliquer la scène A : tu es sur B. Va dans Rythme, change la batterie. Reviens dans Morceau, lance la lecture, touche A puis B : ça change à la mesure suivante."
+    },
+    {
+      "id": "song",
+      "title": "Jouer un morceau complet",
+      "hint": "Morceau › ajoute + A, + B, + A, règle les répétitions (×4, ×2…) et touche « Jouer le morceau » : les scènes s'enchaînent toutes seules, même écran éteint."
+    },
+    {
       "id": "remix_separate",
       "title": "Séparer une chanson en 4 pistes",
       "hint": "Onglet Remix › Télécharger le modèle (Wi-Fi), puis Choisir une chanson (3-4 min). Éteins l'écran : la notification montre la progression. Note le temps que ça prend."

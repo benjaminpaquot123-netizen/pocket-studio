@@ -62,9 +62,10 @@
 - Phase 4 (PR #13, en cours) :
   - correctifs Remix (mémoire ONNX Runtime 5 → 2,6 Go ; règles R8 du rappel de progression ; contrôle dexdump en CI) ; formes d'onde des stems avec tête de lecture et départ au toucher ; stems sans écrêtage ; kits SF2 jouables au clavier ;
   - 4.1 effets : 4 inserts par voie et sur la sortie (égaliseur, compresseur, saturation, chorus, filtre, pompe), envois réverbe (Freeverb) et écho calé au tempo, écran au Mixeur ;
-  - 4.2 sidechain (« Pompe » sur la grosse caisse ou chaque temps) et automation par pas (dessinée ou enregistrée), jouées par le moteur. Tests Linux pour chaque effet, la pompe, l'automation et zéro allocation.
+  - 4.2 sidechain (« Pompe » sur la grosse caisse ou chaque temps) et automation par pas (dessinée ou enregistrée), jouées par le moteur. Tests Linux pour chaque effet, la pompe, l'automation et zéro allocation ;
+  - 4.3 scènes A–H (batterie + acide + piano roll), lancement à la mesure suivante, morceau (scènes × répétitions, en boucle) ; bascule au pas près dans le moteur (tampon d'attente), test Linux.
 
 ## Prochaine étape exacte
-1. Phase 4.3 : vue Session (clips × scènes) et vue Morceau (enchaîner des motifs). Puis 4.4 effets de performance et pad XY. Puis revue de fin de phase 4 et fusion de la PR #13.
+1. Phase 4.4 : effets de performance (stutter/répétition, filtre balayé, coupure de bande) et pad XY. Puis revue de fin de phase 4 et fusion de la PR #13.
 2. Attendre les retours de Benjamin sur la 0.3.47 (formes d'onde, kits au clavier, grésillement).
 3. Reste noté : lever la limite de 60 s par son ; import de packs .zip ; étirement des stems si le tempo change.

@@ -61,6 +61,10 @@ enum class CommandType : uint8_t {
     SetBusParam,       // a: bus, b: parameter 0..3, value 0..1
     SetAutomationTarget,  // a: lane, b: Automation::pack(kind, channel, slot, param), or -1 = lane off
     SetAutomationPoint,   // a: lane, b: step, value 0..1 (negative = no point on that step)
+    SetStaging,           // value 1: the next pattern commands (drums, acid, piano roll) fill the
+                          // waiting scene instead of the playing one; 0: back to the playing one
+    ArmSceneSwap,         // a > 0: the waiting scene replaces the playing one after `a` steps of the
+                          // current scene; a = 0: at the next bar; a < 0: cancel
 };
 
 // Step automation of mixer settings, played on the audio thread at each sequencer step.
@@ -142,6 +146,8 @@ public:
     int currentStep() const { return currentStep_.load(std::memory_order_relaxed); }
     // Steps since play (no wrap), -1 when stopped: the piano roll has its own loop length.
     int absoluteStep() const { return absoluteStep_.load(std::memory_order_relaxed); }
+    // How many times a waiting scene took over (the UI follows the playing scene with it).
+    uint32_t sceneSwaps() const { return sceneSwaps_.load(std::memory_order_relaxed); }
     bool transportRunning() const { return sequencer_.running(); }
     // Increments every time a lane is triggered (pad lights, tests).
     uint32_t laneTriggerCount(int lane) const { return laneTriggers_[lane].load(std::memory_order_relaxed); }
@@ -186,6 +192,24 @@ private:
     StemPlayer stems_;
     Automation automation_;
     void applyAutomation(int patternStep);
+
+    // The waiting scene (filled while staging_), copied over the playing patterns at the swap.
+    struct StagedScene {
+        float drums[kLanes][kMaxSteps] = {};
+        int drumSteps = 16;
+        std::array<AcidStep, AcidTrack::kMaxSteps> acid{};
+        int acidLength = 16;
+        std::array<int32_t, NoteTrack::kMaxNotes> notePacked{};
+        std::array<float, NoteTrack::kMaxNotes> noteVelocity{};
+        int noteCount = 0;
+        int noteSteps = 16;
+    };
+    StagedScene staged_;
+    bool staging_ = false;
+    int swapAt_ = -1;      // local step of the swap; 0 = next bar; -1 = none
+    int sceneStart_ = 0;   // absolute step where the playing scene began
+    std::atomic<uint32_t> sceneSwaps_{0};
+    void swapScene(int step);
     Mixer mixer_;
     std::array<float, kMaxBlock> stemsL_{};
     std::array<float, kMaxBlock> stemsR_{};

@@ -29,6 +29,11 @@ data class Project(
     val remix: Remix = Remix(),
     /** Mixer settings that move with the loop, step by step. */
     val automation: List<AutomationLane> = emptyList(),
+    /** Session: up to 8 scenes; [scene] is the one shown and played (mirrored in drums/acid/notes). */
+    val scenes: List<Scene> = emptyList(),
+    val scene: Int = 0,
+    /** The song: scenes in order with repeat counts. */
+    val song: List<SongPart> = emptyList(),
 ) {
     /** Returns a copy with every value inside its allowed range. */
     fun sanitized(): Project = copy(
@@ -43,7 +48,7 @@ data class Project(
         mixer = mixer.sanitized(),
         remix = remix.sanitized(),
         automation = AutomationLane.sanitize(automation),
-    )
+    ).syncScenes()
 
     companion object {
         const val FORMAT_VERSION = 1

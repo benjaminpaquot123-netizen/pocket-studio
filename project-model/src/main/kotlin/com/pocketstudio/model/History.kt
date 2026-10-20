@@ -31,6 +31,12 @@ class History<T>(initial: T, private val coalesceWindowMs: Long = 600) {
         return true
     }
 
+    /** Changes the current value without an undo step (e.g. following the playing scene). */
+    fun replace(next: T) {
+        current = next
+        lastKey = null
+    }
+
     fun undo(): T? {
         val previous = undoStack.removeLastOrNull() ?: return null
         redoStack.addLast(current)

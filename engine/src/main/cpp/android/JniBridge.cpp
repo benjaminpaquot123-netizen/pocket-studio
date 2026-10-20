@@ -244,6 +244,10 @@ JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportInstallSt
     reinterpret_cast<ps::OfflineRenderer*>(exportHandle)->post(command);
 }
 
+JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_sceneSwaps(JNIEnv*, jobject) {
+    return static_cast<jint>(host().engine().sceneSwaps());
+}
+
 JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_stemPosition(JNIEnv*, jobject) {
     return static_cast<jlong>(host().engine().stemPosition());
 }

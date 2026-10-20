@@ -29,6 +29,7 @@ import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.Equalizer
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.Layers
+import androidx.compose.material.icons.filled.QueueMusic
 import androidx.compose.material.icons.filled.Piano
 import androidx.compose.material.icons.filled.Tune
 import android.content.res.Configuration
@@ -86,6 +87,11 @@ import com.pocketstudio.app.studio.StudioScreen
 import com.pocketstudio.app.synth.SynthActions
 import com.pocketstudio.app.synth.SynthScreen
 import com.pocketstudio.app.remix.RemixActions
+import com.pocketstudio.app.session.SessionActions
+import com.pocketstudio.app.session.SessionScreen
+import com.pocketstudio.app.session.SessionScreenUi
+import com.pocketstudio.model.Scene
+import com.pocketstudio.model.allScenes
 import com.pocketstudio.app.mixer.AutomationActions
 import com.pocketstudio.app.mixer.AutomationUi
 import com.pocketstudio.app.remix.RemixScreen
@@ -102,6 +108,7 @@ enum class AppTab(val label: String, val icon: ImageVector) {
     Synthe("Synthé", Icons.Filled.Piano),
     Mixeur("Mixeur", Icons.Filled.Equalizer),
     Remix("Remix", Icons.Filled.Layers),
+    Morceau("Morceau", Icons.Filled.QueueMusic),
     Outils("Outils", Icons.Filled.Tune),
 }
 
@@ -202,7 +209,7 @@ fun AppRoot() {
                             selected = tab == t,
                             onClick = { tab = t },
                             icon = { Icon(t.icon, contentDescription = null) },
-                            label = { Text(t.label) },
+                            label = { Text(t.label, maxLines = 1, softWrap = false) },
                             modifier = Modifier.testTag("tab_${t.name}"),
                             colors = NavigationBarItemDefaults.colors(
                                 selectedIconColor = Neon.Cyan,
@@ -411,6 +418,32 @@ fun AppRoot() {
                                 toggleRecord = rhythmVm::toggleAutomationRecord,
                             ),
                             export = export,
+                        )
+                    }
+                    AppTab.Morceau -> {
+                        val project by rhythmVm.project.collectAsStateWithLifecycle()
+                        val transport by rhythmVm.transport.collectAsStateWithLifecycle()
+                        val sessionUi by rhythmVm.sessionUi.collectAsStateWithLifecycle()
+                        val all = project.allScenes
+                        SessionScreen(
+                            SessionScreenUi(
+                                scenes = List(Scene.MAX) { all.getOrNull(it) },
+                                current = project.scene,
+                                pending = sessionUi.pending,
+                                song = project.song,
+                                songIndex = sessionUi.songIndex,
+                                playing = transport.playing,
+                                tempoBpm = project.tempoBpm,
+                            ),
+                            SessionActions(
+                                select = rhythmVm::selectScene,
+                                duplicate = rhythmVm::duplicateScene,
+                                addPart = rhythmVm::addSongPart,
+                                removePart = rhythmVm::removeSongPart,
+                                setRepeats = rhythmVm::setSongRepeats,
+                                toggleSong = rhythmVm::toggleSong,
+                                togglePlay = rhythmVm::togglePlay,
+                            ),
                         )
                     }
                     AppTab.Remix -> {

@@ -42,6 +42,8 @@ object NativeEngine {
     private const val CMD_BUS_PARAM = 36
     private const val CMD_AUTOMATION_TARGET = 37
     private const val CMD_AUTOMATION_POINT = 38
+    private const val CMD_STAGING = 39
+    private const val CMD_ARM_SCENE_SWAP = 40
 
     /** Insert slots per channel (and on the master, whose channel index is [MIXER_CHANNELS]). */
     const val INSERTS = 4
@@ -97,6 +99,12 @@ object NativeEngine {
     fun setAutomationTarget(lane: Int, packedTarget: Int) = post(CMD_AUTOMATION_TARGET, 0f, lane, packedTarget)
     /** [value] 0..1 on [step], or null for no point. */
     fun setAutomationPoint(lane: Int, step: Int, value: Float?) = post(CMD_AUTOMATION_POINT, value ?: -1f, lane, step)
+    /** While on, pattern commands (drums, acid, piano roll) fill the waiting scene. */
+    fun setStaging(on: Boolean) = post(CMD_STAGING, if (on) 1f else 0f)
+    /** The waiting scene takes over after [steps] steps of the playing one (0 = next bar, -1 = cancel). */
+    fun armSceneSwap(steps: Int) = post(CMD_ARM_SCENE_SWAP, 0f, steps)
+    /** How many times a waiting scene took over since the engine started. */
+    external fun sceneSwaps(): Int
     /** Writes into [out] (size MIXER_CHANNELS + 2): channel peaks, master peak, then limiter gain. */
     external fun mixerMeters(out: FloatArray)
 

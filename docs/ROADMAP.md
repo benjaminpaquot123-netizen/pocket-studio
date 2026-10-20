@@ -57,7 +57,7 @@ Feu vert de Benjamin (D4 = A) : fusion de la pull request en fin de phase.
 ## Phase 4 : production
 - [x] 4.1 Effets complets (EQ, compresseur, saturation, delay, réverbes…), 4 inserts + 2 envois
 - [x] 4.2 Sidechain, automation dessinée/enregistrée
-- [ ] 4.3 Vue Session (clips × scènes) et vue Morceau
+- [x] 4.3 Vue Session (clips × scènes) et vue Morceau
 - [ ] 4.4 Effets de performance, pad XY
 
 ## Phase 5 : synthèse avancée et connectivité

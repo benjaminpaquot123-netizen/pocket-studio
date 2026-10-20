@@ -365,4 +365,20 @@ class ScreenshotTest {
             )
         }
     }
+
+    @Test
+    fun session() = shoot("session") {
+        val drums = com.pocketstudio.model.DrumPattern().toggle(0, 0).toggle(2, 4)
+        val a = com.pocketstudio.model.Scene("A", drums)
+        val b = com.pocketstudio.model.Scene("B", drums.copy(steps = 32))
+        com.pocketstudio.app.session.SessionScreen(
+            com.pocketstudio.app.session.SessionScreenUi(
+                scenes = listOf(a, b, com.pocketstudio.model.Scene("C")) + List(5) { null },
+                current = 0, pending = 1,
+                song = listOf(com.pocketstudio.model.SongPart(0, 4), com.pocketstudio.model.SongPart(1, 2), com.pocketstudio.model.SongPart(0, 2)),
+                songIndex = 0, playing = true, tempoBpm = 124.0,
+            ),
+            com.pocketstudio.app.session.SessionActions(),
+        )
+    }
 }

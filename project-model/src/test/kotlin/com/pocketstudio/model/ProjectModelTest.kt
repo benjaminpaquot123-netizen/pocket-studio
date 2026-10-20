@@ -501,4 +501,32 @@ class AcidPagesTest {
         assertEquals(1f, messy[0].values[1])
         assertEquals(AutomationLane.STEPS, messy[0].values.size)
     }
+
+    @Test
+    fun scenesKeepTheirOwnPatterns() {
+        val a = Project(drums = DrumPattern().toggle(0, 0)).sanitized()
+        assertEquals(0, a.scenes.size)  // one scene: nothing extra stored
+        assertEquals(1, a.allScenes.size)
+        // Copy A to B, switch to B and change it: A keeps its kick only.
+        val b = a.copySceneTo(1).switchScene(1).let { it.copy(drums = it.drums.toggle(2, 4)) }.sanitized()
+        assertEquals(1, b.scene)
+        assertEquals(2, b.scenes.size)
+        assertEquals(null, b.scenes[0].drums.lanes[2].hits[4])
+        assertTrue(b.scenes[1].drums.lanes[2].hits[4] != null)
+        val backToA = b.switchScene(0)
+        assertEquals(null, backToA.drums.lanes[2].hits[4])
+        assertTrue(backToA.drums.lanes[0].hits[0] != null)
+        // The 303's sound is shared; switching to a new empty scene keeps it and clears the notes.
+        val loud = backToA.copy(acid = backToA.acid.copy(sound = backToA.acid.sound.copy(cutoff = 0.9f)))
+        val c = loud.switchScene(2)
+        assertEquals(0.9f, c.acid.sound.cutoff, 0f)
+        assertTrue(c.currentSceneContent().isEmpty)
+        assertEquals(3, c.scenes.size)
+        // Steps: the longest part, in whole bars.
+        assertEquals(32, Scene(drums = DrumPattern(steps = 16), acid = AcidPattern(length = 20)).steps)
+        // Song parts pointing at missing scenes are dropped; repeats are clamped.
+        val song = c.copy(song = listOf(SongPart(0, 0), SongPart(7, 2), SongPart(1, 99))).sanitized().song
+        assertEquals(listOf(SongPart(0, 1), SongPart(1, SongPart.MAX_REPEATS)), song)
+        assertEquals(c.sanitized(), ProjectJson.decode(ProjectJson.encode(c.sanitized())))
+    }
 }

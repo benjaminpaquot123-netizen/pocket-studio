@@ -1883,6 +1883,45 @@ void testAutomationMovesTheFader() {
     CHECK(std::sqrt(s / 2400) > loud * 0.5);  // the pad's level wanders a little with its timbre
 }
 
+void testScenesSwapOnTheBar() {
+    ps::Engine engine(kRate);
+    // Scene A plays: pad 1 on step 0. Scene B waits: pad 3 on steps 0 and 8, a 32-step loop.
+    engine.post({ps::CommandType::SetDrumHit, 1.0f, 0, 0});
+    engine.post({ps::CommandType::SetStaging, 1.0f});
+    for (int lane = 0; lane < ps::Engine::kLanes; ++lane)
+        for (int st = 0; st < ps::Engine::kMaxSteps; ++st) engine.post({ps::CommandType::SetDrumHit, 0.0f, lane, st});
+    engine.post({ps::CommandType::SetDrumHit, 1.0f, 2, 0});
+    engine.post({ps::CommandType::SetDrumHit, 1.0f, 2, 8});
+    engine.post({ps::CommandType::SetPatternSteps, 0.0f, 32});
+    engine.post({ps::CommandType::SetStaging, 0.0f});
+    engine.post({ps::CommandType::ArmSceneSwap, 0.0f, 32});  // after two bars of scene A
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    render(engine, kRate * 4 - 1000, 256);  // just under 2 bars at 120 BPM
+    CHECK(engine.laneTriggerCount(0) == 2 && engine.laneTriggerCount(2) == 0 && engine.sceneSwaps() == 0);
+    render(engine, kRate * 4, 256);  // bars 3-4: scene B, counted from its own start
+    std::printf("  scenes: pad1 %u, pad3 %u, swaps %u\n", engine.laneTriggerCount(0), engine.laneTriggerCount(2), engine.sceneSwaps());
+    CHECK(engine.laneTriggerCount(0) == 2);  // scene A's kick is gone
+    CHECK(engine.laneTriggerCount(2) == 2);  // scene B: steps 0 and 8 of its 32-step loop
+    CHECK(engine.sceneSwaps() == 1);
+    CHECK(engine.absoluteStep() >= 0 && engine.absoluteStep() < 32);  // steps count from the scene's start
+    // Swap "at the next bar" while a bar is under way.
+    engine.post({ps::CommandType::SetStaging, 1.0f});
+    engine.post({ps::CommandType::SetDrumHit, 0.0f, 2, 0});
+    engine.post({ps::CommandType::SetDrumHit, 0.0f, 2, 8});
+    engine.post({ps::CommandType::SetDrumHit, 1.0f, 5, 0});
+    engine.post({ps::CommandType::SetPatternSteps, 0.0f, 16});
+    engine.post({ps::CommandType::SetStaging, 0.0f});
+    render(engine, kRate / 2, 256);  // a quarter into a bar
+    engine.post({ps::CommandType::ArmSceneSwap, 0.0f, 0});
+    render(engine, kRate * 2, 256);
+    CHECK(engine.sceneSwaps() == 2 && engine.laneTriggerCount(5) == 1);
+    // Cancel: an armed swap that never happens.
+    engine.post({ps::CommandType::ArmSceneSwap, 0.0f, 0});
+    engine.post({ps::CommandType::ArmSceneSwap, 0.0f, -1});
+    render(engine, kRate * 3, 256);
+    CHECK(engine.sceneSwaps() == 2);
+}
+
 struct TestCase {
     const char* name;
     std::function<void()> fn;
@@ -1948,6 +1987,7 @@ int main(int argc, char** argv) {
         {"mixer_inserts_sends", testMixerInsertsAndSends},
         {"sidechain_pump", testSidechainPumpFollowsTheKick},
         {"automation", testAutomationMovesTheFader},
+        {"scenes", testScenesSwapOnTheBar},
         {"tempo_and_key", testTempoAndKeyDetection},
         {"stems_follow_transport", testStemsPlayInStepWithTheTransport},
         {"no_alloc_in_process", testProcessNeverAllocates},

@@ -69,6 +69,9 @@ public:
     float limiterGain() const { return limiterGainOut_.load(std::memory_order_relaxed); }
     const InsertSlot& insert(int ch, int slot) const { return inserts_[static_cast<size_t>(ch)][static_cast<size_t>(slot)]; }
 
+    /** True once after a NaN was caught and silenced (for the reports). */
+    bool takeBlewUp() { return blewUp_.exchange(false, std::memory_order_relaxed); }
+
 private:
     static constexpr int kChunk = 256;
     struct Strip {
@@ -97,6 +100,7 @@ private:
     MacroBank& macros_ = *macroBank_;
     Reverb reverb_;
     TempoDelay delay_;
+    std::atomic<bool> blewUp_{false};  // a NaN was caught (a strip or the master) since the last look
     PerformanceFx perf_;
     std::array<float, kChunk> chL_{}, chR_{}, mL_{}, mR_{};
     // The pads' strips, summed before the drums' strip processes them.

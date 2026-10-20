@@ -101,7 +101,7 @@ private:
     Params params_;
     float bend_ = 0.0f;
     std::array<Voice, kSlots> voices_{};
-    std::array<Event, 64> events_{};
+    std::array<Event, 256> events_{};  // room to release all 128 notes at once (sustain pedal let go)
     int eventCount_ = 0;
     // Glide mode: the keys held, most recent last (letting go of the top one slides back).
     std::array<int, 16> held_{};

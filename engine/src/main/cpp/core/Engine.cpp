@@ -352,6 +352,8 @@ void Engine::applyCommand(const Command& command) {
             break;
         case CommandType::SetInstrument: {
             auto& t = tracks_[static_cast<size_t>(trackOf(command.a))];
+            // "No instrument" on a track that has none changes nothing: its synth notes keep sounding.
+            if (command.font == nullptr && !t.instrument.active()) break;
             t.synth.allNotesOff();
             t.instrument.install(command.font, trackArg(command.a));  // takes the instance
             break;
@@ -670,7 +672,7 @@ void Engine::process(const float* input, int numInputFrames, int inputChannels,
         }
         blockPeak = std::max(blockPeak, std::fabs(v));
     }
-    if (!finite) nonFinite_.store(true, std::memory_order_relaxed);
+    if (!finite || mixer_.takeBlewUp()) nonFinite_.store(true, std::memory_order_relaxed);
 
     float previous = peak_.load(std::memory_order_relaxed);
     while (blockPeak > previous &&

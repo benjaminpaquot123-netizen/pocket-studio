@@ -242,7 +242,10 @@ public:
     uint64_t metronomeClicks() const { return metronomeClicks_.load(std::memory_order_relaxed); }
 
 private:
-    static constexpr int kMaxBlock = 1024;
+    // Rendered in slices of at most this: a voice takes one new hit per slice, and two hits of a
+    // pad are always more than 256 frames apart (a 4-hit roll at 300 BPM: 600). Bluetooth hands
+    // over 960 to 1920 frames at once.
+    static constexpr int kMaxBlock = 256;
 
     void applyCommand(const Command& command);
     void renderBlock(float* output, int numFrames, int outputChannels);

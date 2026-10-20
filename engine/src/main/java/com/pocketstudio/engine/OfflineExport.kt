@@ -36,7 +36,7 @@ class OfflineExport : AutoCloseable {
     companion object {
         const val SAMPLE_RATE = 48000
 
-        /** Frames for [bars] bars of 4/4 at [bpm] (swing keeps the bar length). */
-        fun framesFor(bars: Int, bpm: Double): Long = Math.round(bars * 4 * 60.0 / bpm * SAMPLE_RATE)
+        /** Frames for [bars] bars of [beatsPerBar] beats at [bpm] (swing keeps the bar length). */
+        fun framesFor(bars: Int, bpm: Double, beatsPerBar: Int = 4): Long = Math.round(bars * beatsPerBar * 60.0 / bpm * SAMPLE_RATE)
     }
 }

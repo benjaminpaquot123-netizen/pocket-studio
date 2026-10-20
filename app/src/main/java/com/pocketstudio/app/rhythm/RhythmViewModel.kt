@@ -262,8 +262,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         pushRemix(p)
         pushAutomation(p)
         pushLive(p)
-        // Playing the song: the part on now keeps its muted tracks.
-        if (p === project.value) playingPart()?.let { pushPart(p, it.scene, it) }
+        // Playing the song: the part on now keeps its muted tracks (live only: an export renders
+        // the scene or the song as written, whatever plays at that moment).
+        if (p === project.value && !NativeEngine.isCapturing) playingPart()?.let { pushPart(p, it.scene, it) }
     }
 
     /** The song part playing now, or null outside song playback. */
@@ -449,7 +450,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** Every audio track's clip and settings to the engine; free slots play nothing. */
     private fun pushAudio(p: Project = project.value) {
         if (!NativeEngine.isAvailable) return
-        val part = playingPart()
+        val part = if (NativeEngine.isCapturing) null else playingPart()
         for (id in 0 until AudioTrack.MAX) {
             NativeEngine.setAudioOn(id, part?.plays(SongPart.audio(id)) ?: true)
             val clip = p.audioTracks.firstOrNull { it.id == id }?.clip
@@ -541,6 +542,13 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 throw UserMessage("Ce fichier n'a pas pu être lu (${e.message ?: "format inconnu"}).")
             }
             AppLog.add("Piste audio ${id + 1} : « $name », ${"%.1f".format(pcm.seconds)} s")
+            val loopSeconds = com.pocketstudio.model.AudioClip.MAX_LOOP * 15.0 / project.value.tempoBpm
+            when {
+                pcm.seconds >= AudioDecoder.MAX_SECONDS - 0.5 ->
+                    _notice.value = "Ce fichier dure plus de ${AudioDecoder.MAX_SECONDS / 60} minutes : seul le début est gardé."
+                pcm.seconds > loopSeconds ->
+                    _notice.value = "À ce tempo, une piste audio boucle au bout de 64 mesures : la fin de « $name » ne sera pas jouée."
+            }
             putClip(id, pcm, name)
         }
     }
@@ -625,7 +633,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         _audioRecording.value = AudioRecordingUi(id, waiting = true)
         viewModelScope.launch {
             // Opening the microphone can take up to a second: never on the main thread.
-            val handle = withContext(Dispatchers.IO) { NativeEngine.recordStart(onStart = true, seconds = MAX_AUDIO_SECONDS) }
+            // No longer than a track can loop at this tempo (64 bars): the rest would never play.
+            val seconds = minOf(MAX_AUDIO_SECONDS, (com.pocketstudio.model.AudioClip.MAX_LOOP * 15.0 / project.value.tempoBpm).toInt())
+            val handle = withContext(Dispatchers.IO) { NativeEngine.recordStart(onStart = true, seconds = seconds) }
             if (_audioRecording.value?.track != id) {  // cancelled meanwhile
                 if (handle != 0L) finishInBackground(handle)
                 return@launch
@@ -665,7 +675,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (_transport.value.playing) togglePlay()
         if (handle == 0L) return
         // What the microphone hears lags what was played by the round trip (speaker → micro).
-        val latencyMs = Metrics.roundTripMs.value ?: (Metrics.streamInfo.value.outputLatencyMs.takeIf { it > 0 }?.times(2) ?: 0.0)
+        val latencyMs = Metrics.recordLatencyMs()
         takeJob = audioJob("Enregistrement de la prise…", always = true) {
             val pcm = withContext(Dispatchers.IO) {
                 val audio = NativeEngine.recordFinish(handle) ?: throw UserMessage("La prise n'a pas pu être récupérée : réessaie.")
@@ -1901,11 +1911,14 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     val sampleTask: StateFlow<SampleTask> = _sampleTask.asStateFlow()
     private var recorder: MicRecorder? = null
 
+    /** The project's sounds being read after it opened (an export waits for it). */
+    private var samplesLoad: kotlinx.coroutines.Job? = null
+
     private fun loadPadSamples() {
         val files = project.value.sampleFiles
         // After a failed load the folder may still hold the user's sounds: never clean it then.
         val cleanUp = _notice.value == null
-        viewModelScope.launch {
+        samplesLoad = viewModelScope.launch {
             // Sounds read while the project closes are freed, not lost on the way.
             val prepared = finishOrRelease(Dispatchers.IO, { list: List<PadSamples.Prepared> -> list.forEach { it.native.close() } }) {
                 padSamples.loadAll(files, cleanUp)
@@ -1940,7 +1953,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun resampleSong(bars: Int) {
         if (!NativeEngine.isAvailable || _sampleTask.value is SampleTask.Busy || _sampleTask.value is SampleTask.Recording) return
         val p = project.value
-        val frames = OfflineExport.framesFor(bars, p.tempoBpm)
+        val frames = OfflineExport.framesFor(bars, p.tempoBpm, p.beatsPerBar)
         if (frames > AudioDecoder.MAX_SECONDS * OfflineExport.SAMPLE_RATE) {
             _sampleTask.value = SampleTask.Failed("Trop long à ce tempo : choisis moins de mesures.")
             return
@@ -3049,7 +3062,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             _export.value = settings.copy(error = "Le morceau est vide : ajoute des scènes dans l'onglet Morceau.", files = emptyList())
             return
         }
-        val frames = if (song) songFrames(p) else OfflineExport.framesFor(settings.bars, p.tempoBpm)
+        val frames = if (song) songFrames(p) else OfflineExport.framesFor(settings.bars, p.tempoBpm, p.beatsPerBar)
         // Each render: (label for the file and the screen, solo channel or null for the mix).
         val renders: List<Pair<String, Int?>> = when (settings.what) {
             ExportWhat.Stems -> STEM_EXPORTS.filter { (_, ch) -> ch != 3 || p.remix.setId != null || p.live.used > 0 } +
@@ -3066,6 +3079,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             val done = ArrayList<File>()
             var musicOk = true
             var loudness: Double? = null
+            // Just after the project opened, its sounds, banks and song may still be loading: the
+            // file would have the kit and the synth in their place.
+            samplesLoad?.join()
+            var waited = 0
+            while ((loadingBanks.isNotEmpty() || stemsJob?.isActive == true) && waited++ < 300) kotlinx.coroutines.delay(50)
             try {
                 renders.forEachIndexed { index, (label, solo) ->
                     val job = OfflineExport()

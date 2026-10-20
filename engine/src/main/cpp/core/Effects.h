@@ -155,6 +155,9 @@ public:
     void onStep(int offset) { stepOffset_ = offset; }
     void process(float* l, float* r, int n);
     bool active() const { return filterOn_ || repeatOn_ || stopOn_ || stopping_ || chopOn_ || repeating_; }
+    // After a NaN reached the master: the filter and the recorded seconds start again from silence
+    // (no allocation; clearing the 4 s of memory is a one-off).
+    void recover();
 
 private:
     float readRing(const std::vector<float>& buf, double pos) const;

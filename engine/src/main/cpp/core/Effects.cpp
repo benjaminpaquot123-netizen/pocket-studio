@@ -339,6 +339,10 @@ void SweepFilter::prepare(float rate) {
     rate_ = rate;
     left_.Init(rate);
     right_.Init(rate);
+    // No input drive: DaisySP's default saturates inside the filter and, on a hot master with a
+    // high cutoff, diverges into NaN.
+    left_.SetDrive(0.0f);
+    right_.SetDrive(0.0f);
     update();
 }
 
@@ -418,7 +422,18 @@ void PerformanceFx::prepare(float rate) {
     write_ = 0;
     svfL_.Init(rate);
     svfR_.Init(rate);
+    svfL_.SetDrive(0.0f);  // see SweepFilter::prepare
+    svfR_.SetDrive(0.0f);
     fade_ = 1.0f / (0.01f * rate);
+}
+
+void PerformanceFx::recover() {
+    svfL_.Init(rate_);
+    svfR_.Init(rate_);
+    svfL_.SetDrive(0.0f);
+    svfR_.SetDrive(0.0f);
+    std::fill(ringL_.begin(), ringL_.end(), 0.0f);
+    std::fill(ringR_.begin(), ringR_.end(), 0.0f);
 }
 
 void PerformanceFx::setParam(int p, float v) {

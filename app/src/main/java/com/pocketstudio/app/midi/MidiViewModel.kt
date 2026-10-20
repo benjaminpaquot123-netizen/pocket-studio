@@ -88,6 +88,9 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
     private val held = HashSet<Int>()  // notes down on the synth, released on disconnect
     private val playedAs = IntArray(128) { -1 }  // key → the note it plays (scale lock), under held's lock
     private val keysOn = IntArray(128)  // keys down per played note: two keys can snap to one note
+    // The track each sounding note started on: its release goes there even if another track was
+    // selected meanwhile (else the note would hang on the old one). Under held's lock.
+    private val trackOf = IntArray(128)
 
     /** The project's key: when locked, keys out of the scale play the nearest note of it. */
     @Volatile var harmony: com.pocketstudio.model.Harmony = com.pocketstudio.model.Harmony()
@@ -200,7 +203,7 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
         port = null
         device = null
         synchronized(held) {
-            if (NativeEngine.isAvailable) held.forEach { NativeEngine.liveNoteOff(it) }
+            if (NativeEngine.isAvailable) held.forEach { NativeEngine.liveNoteOff(it, trackOf[it]) }
             held.clear()
             playedAs.fill(-1)
             keysOn.fill(0)
@@ -322,8 +325,8 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
                 synchronized(held) {
                     if (note in playedAs.indices) playedAs[note] = played
                     held += played
-                    keysOn[played]++
-                    NativeEngine.liveNoteOn(played, v)
+                    if (keysOn[played]++ == 0) trackOf[played] = NativeEngine.liveTrack
+                    NativeEngine.liveNoteOn(played, v, trackOf[played])
                 }
                 _commands.tryEmit(MidiCommand.Note(channel, played, v, true))
             }
@@ -339,7 +342,7 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
                 // Another key still holds the same note: it keeps sounding.
                 if (keysOn.getOrElse(p) { 0 } == 0) {
                     held -= p
-                    NativeEngine.liveNoteOff(p)
+                    NativeEngine.liveNoteOff(p, trackOf.getOrElse(p) { NativeEngine.liveTrack })
                 }
                 p
             }
@@ -361,7 +364,7 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
             _commands.tryEmit(MidiCommand.Control(channel, controller, value))
             if (controller == CC_ALL_NOTES_OFF || controller == CC_ALL_SOUND_OFF) {
                 synchronized(held) {
-                    if (NativeEngine.isAvailable) held.forEach { NativeEngine.liveNoteOff(it) }
+                    if (NativeEngine.isAvailable) held.forEach { NativeEngine.liveNoteOff(it, trackOf[it]) }
                     held.clear()
                     playedAs.fill(-1)
                     keysOn.fill(0)

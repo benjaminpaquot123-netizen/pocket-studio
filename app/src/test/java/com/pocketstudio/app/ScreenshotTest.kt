@@ -370,7 +370,7 @@ class ScreenshotTest {
     @Test
     fun acidPanel() = shoot("acid_panel") {
         androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
-            com.pocketstudio.app.acid.Panel303(com.pocketstudio.model.AcidSound(cutoff = 0.62f, waveform = 1f).values(), playing = true) { _, _ -> }
+            com.pocketstudio.app.acid.Panel303(com.pocketstudio.model.AcidSound(cutoff = 0.62f, waveform = 1f).values()) { _, _ -> }
         }
     }
 

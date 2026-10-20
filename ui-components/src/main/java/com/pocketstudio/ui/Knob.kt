@@ -14,7 +14,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -62,7 +61,7 @@ fun Knob(
     val current by rememberUpdatedState(value)
     val change by rememberUpdatedState(onValueChange)
     val haptics = LocalHapticFeedback.current
-    Column(modifier, horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(2.dp)) {
+    Column(modifier, horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(0.dp)) {
         Canvas(
             Modifier.size(size)
                 .semantics {
@@ -96,26 +95,15 @@ fun Knob(
             if (value > 0.005f) {
                 drawArc(colors.value, 135f, 270f * value, false, arcTopLeft, arc, style = Stroke(stroke, cap = StrokeCap.Round))
             }
-            // The cap: a ribbed rim and a slightly lit top, like a moulded knob.
-            val capR = r * 0.72f
-            drawCircle(Color.Black.copy(alpha = 0.25f), capR, c + Offset(0f, r * 0.06f))
+            // The cap: a flat disc with a thin rim.
+            val capR = r * 0.68f
             drawCircle(colors.capEdge, capR, c)
-            drawCircle(
-                Brush.radialGradient(listOf(colors.cap.copy(alpha = 1f).compositeOver(Color.White, 0.18f), colors.cap), c - Offset(capR * 0.3f, capR * 0.3f), capR * 1.2f),
-                capR * 0.84f, c,
-            )
+            drawCircle(colors.cap, capR * 0.88f, c)
             val angle = Math.toRadians(135.0 + 270.0 * value)
             val dir = Offset(cos(angle).toFloat(), sin(angle).toFloat())
             drawLine(colors.pointer, c + dir * (capR * 0.25f), c + dir * (capR * 0.8f), strokeWidth = r * 0.1f, cap = StrokeCap.Round)
         }
-        Text(label, color = colors.label, fontSize = 11.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, maxLines = 1)
-        if (valueText != null) Text(valueText, color = colors.label.copy(alpha = 0.7f), fontSize = 11.sp, textAlign = TextAlign.Center, maxLines = 1)
+        Text(label, color = colors.label, fontSize = 11.sp, fontWeight = FontWeight.Medium, textAlign = TextAlign.Center, maxLines = 1)
+        if (valueText != null) Text(valueText, color = colors.value, fontSize = 11.sp, textAlign = TextAlign.Center, maxLines = 1)
     }
 }
-
-private fun Color.compositeOver(other: Color, amount: Float) = Color(
-    red = red + (other.red - red) * amount,
-    green = green + (other.green - green) * amount,
-    blue = blue + (other.blue - blue) * amount,
-    alpha = alpha,
-)

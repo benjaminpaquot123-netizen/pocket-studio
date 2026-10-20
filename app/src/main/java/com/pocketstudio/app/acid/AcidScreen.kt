@@ -54,8 +54,6 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.foundation.layout.size
-import androidx.compose.ui.graphics.Brush
 import com.pocketstudio.model.AcidPattern
 import com.pocketstudio.model.AcidSound
 import com.pocketstudio.ui.Knob
@@ -144,7 +142,7 @@ fun AcidScreen(
         val setEnglish: (Boolean) -> Unit = { english = it; Notation.setEnglish(context, it) }
         StepGrid(acid, playing, currentStep, selected, actions, english, setEnglish)
         StepEditor(acid, selected, actions, english)
-        SoundCard(acid, playing, actions)
+        SoundCard(acid, actions)
     }
 }
 
@@ -320,7 +318,7 @@ private fun StepEditor(acid: AcidPattern, index: Int, actions: AcidActions, engl
 }
 
 @Composable
-private fun SoundCard(acid: AcidPattern, playing: Boolean, actions: AcidActions) {
+private fun SoundCard(acid: AcidPattern, actions: AcidActions) {
     val values = acid.sound.values()
     val context = LocalContext.current
     var sliders by remember { mutableStateOf(SoundView.sliders(context)) }
@@ -337,7 +335,7 @@ private fun SoundCard(acid: AcidPattern, playing: Boolean, actions: AcidActions)
             }
         }
         if (!sliders) {
-            Panel303(values, playing, actions.setSound)
+            Panel303(values, actions.setSound)
             return@NeonCard
         }
         SOUND_LABELS.forEachIndexed { i, label ->
@@ -362,58 +360,38 @@ private object SoundView {
         context.getSharedPreferences("ui", Context.MODE_PRIVATE).edit().putBoolean(KEY, on).apply()
 }
 
-// Knob layout of the panel, in rows (AcidSound value indices), as on the original's top row.
-private val PANEL_ROWS = listOf(listOf(5, 0, 1), listOf(2, 3, 4), listOf(6, 7, 8))
-private val PANEL_LABELS = listOf("COUPURE", "RÉSONANCE", "ENVELOPPE", "DÉCLIN", "ACCENT", "ACCORD", "ONDE", "SATURATION", "VOLUME")
+// Knob layout of the panel, in rows (AcidSound value indices): the filter first, then the rest.
+private val PANEL_ROWS = listOf(listOf(0, 1, 2, 3, 4), listOf(5, 6, 7, 8))
+private val PANEL_LABELS = listOf("Coupure", "Réso.", "Env.", "Déclin", "Accent", "Accord", "Onde", "Satur.", "Volume")
 
-/** The 303's sound as a brushed-aluminium panel of black knobs, like the hardware. */
+/** The 303's sound as two compact rows of knobs. */
 @Composable
-internal fun Panel303(values: List<Float>, playing: Boolean, setSound: (Int, Float) -> Unit) {
+internal fun Panel303(values: List<Float>, setSound: (Int, Float) -> Unit) {
     val defaults = AcidSound().values()
-    val ink = Color(0xFF1E1E1E)
     val knobColors = KnobColors(
-        cap = Color(0xFF222222), capEdge = Color(0xFF080808), pointer = Color.White,
-        track = Color(0x33000000), value = Neon.Cyan, label = ink,
+        cap = Neon.SurfaceHigh, capEdge = Neon.Outline, pointer = Neon.TextPrimary,
+        track = Neon.Outline, value = Neon.Cyan, label = Neon.TextSecondary,
     )
-    Column(
-        Modifier.fillMaxWidth()
-            .clip(RoundedCornerShape(10.dp))
-            .background(Brush.verticalGradient(listOf(Color(0xFFDCDFE2), Color(0xFFB9BDC1))))
-            .border(1.dp, Color(0xFF8E9296), RoundedCornerShape(10.dp))
-            .padding(horizontal = 12.dp, vertical = 10.dp)
-            .testTag("acid_panel"),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text("OPEN 303", color = ink, fontWeight = FontWeight.Black, fontSize = 18.sp, letterSpacing = 2.sp)
-            Text("  Basse acide", color = ink.copy(alpha = 0.7f), fontSize = 13.sp, modifier = Modifier.weight(1f))
-            // The run lamp: lit while the pattern plays.
-            Box(
-                Modifier.size(12.dp).clip(RoundedCornerShape(6.dp))
-                    .background(if (playing) Color(0xFFFF3B2F) else Color(0xFF6E2A26))
-                    .border(1.dp, Color(0xFF3A1A18), RoundedCornerShape(6.dp)),
-            )
-        }
-        Box(Modifier.fillMaxWidth().height(2.dp).background(Neon.Cyan))
+    Column(Modifier.fillMaxWidth().testTag("acid_panel"), verticalArrangement = Arrangement.spacedBy(6.dp)) {
         PANEL_ROWS.forEach { row ->
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+            Row(Modifier.fillMaxWidth()) {
                 row.forEach { i ->
                     Knob(
                         value = values[i],
                         onValueChange = { setSound(i, it) },
                         label = PANEL_LABELS[i],
                         default = defaults[i],
+                        size = 44.dp,
                         colors = knobColors,
                         valueText = knobText(i, values[i]),
                         modifier = Modifier.weight(1f).testTag("acid_knob_$i"),
                     )
                 }
+                // Same knob width on both rows.
+                repeat(PANEL_ROWS[0].size - row.size) { Box(Modifier.weight(1f)) }
             }
         }
-        Text(
-            "Glisse vers le haut ou le bas pour tourner, touche deux fois pour revenir au réglage de départ.",
-            color = ink.copy(alpha = 0.7f), fontSize = 12.sp,
-        )
+        Text("Glisse vers le haut ou le bas pour tourner ; deux touchers : réglage de départ.", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
     }
 }
 

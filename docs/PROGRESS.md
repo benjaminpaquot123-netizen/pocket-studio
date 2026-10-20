@@ -73,7 +73,7 @@
   - 24 scènes (A à X) au lieu de 8, grille « Afficher 8 · 16 · 24 » (demande de Benjamin) ;
   - pads live (lanceur de boucles 4 à 16 pads, onglet Morceau) : ClipLauncher dans le moteur, testé sur Linux ; import, son d'un pad de batterie, « → Live » depuis le Remix ;
   - Remix : écoute des 4 pistes ensemble par le moteur, chaque piste allumée ou coupée sans arrêt ;
-  - Acide : panneau façon TB-303 à boutons rotatifs (composant Knob dans ui-components).
+  - Acide : potards compacts (composant Knob dans ui-components), curseurs en option.
 
 ## Prochaine étape exacte
 1. Phase 5.2 : préréglages classés (basse, nappe, lead…), favoris, bouton « Au hasard » pour le Synthé, Plaits et l'acide.

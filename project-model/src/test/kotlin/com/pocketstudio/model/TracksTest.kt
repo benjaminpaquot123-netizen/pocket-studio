@@ -4,6 +4,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
+import org.junit.Assert.assertFalse
 import org.junit.Test
 
 class TracksTest {
@@ -102,5 +103,35 @@ class TracksTest {
         val p = ProjectJson.decode("""{"name":"Ancien"}""")
         assertEquals(1, p.instrumentTracks.size)
         assertEquals("Synthé", p.track(0).name)
+    }
+
+    @Test
+    fun aDeepSoundPlaysInTheOctaveOfTheChordsItIsPutOn() {
+        // The video's case: an 808 found at La 0 (MIDI 21) under chords around Do 4.
+        val chords = listOf(60, 64, 67, 70).map { Note(0, 64, it) } + listOf(62, 65, 69, 72).map { Note(64, 64, it) }
+        val root = SampledPatch.fitRoot(21f, chords)
+        // Same note name (La), a few semitones from the notes: read at about its own speed, not 16 times.
+        assertEquals(9, Math.floorMod(root.toInt(), 12))
+        assertTrue("root $root", kotlin.math.abs(root - 67f) <= 6f)
+        // Already close: unchanged; unknown: the notes' middle; nothing to play: around Do 4.
+        assertEquals(62f, SampledPatch.fitRoot(62f, chords))
+        assertEquals(67f, SampledPatch.fitRoot(null, chords))
+        assertEquals(57f, SampledPatch.fitRoot(21f, emptyList()))
+        // Chords never glide; a bass line can.
+        assertFalse(SampledPatch.isMonophonic(chords))
+        assertTrue(SampledPatch.isMonophonic(listOf(Note(0, 4, 36), Note(4, 4, 38), Note(8, 8, 41))))
+    }
+
+    @Test
+    fun theAssistantPutsAPackSoundInTheOctaveOfItsPart() {
+        val style = StarterWizard.style("dnb")!!
+        val pad = StarterWizard.soundsFor(StarterWizard.Part.Pad, style).first()
+        val sampled = pad.copy(sampled = SampledPatch(file = "x.wav", root = 21f, glide = SampledPatch.SLIDE))
+        val p = StarterWizard.build(style, emptyMap(), StarterWizard.Mood.Dark, mapOf(StarterWizard.Part.Pad to sampled))
+        val track = p.track(0)
+        val notes = p.allScenes.map { it.synthNotes }.first { it.notes.isNotEmpty() }.notes
+        val middle = notes.map { it.pitch }.sorted()[notes.size / 2]
+        assertTrue("root ${track.sampled.root} vs $middle", kotlin.math.abs(track.sampled.root - middle) <= 6f)
+        assertEquals(0f, track.sampled.glide)
     }
 }

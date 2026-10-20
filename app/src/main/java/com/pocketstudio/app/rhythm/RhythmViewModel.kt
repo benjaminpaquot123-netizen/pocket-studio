@@ -886,12 +886,14 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     _trackSoundBusy.value = "La piste a été supprimée entre-temps : rien n'a changé."
                     return@launch
                 }
-                val slide = kind == "808"
+                // A 808 glides, unless the track plays chords (one gliding voice would drop them).
+                val notes = project.value.track(id).notes.notes
+                val slide = kind == "808" && SampledPatch.isMonophonic(notes)
                 editTrack(id = id) {
                     it.copy(
                         engine = 2, instrument = null,
                         sampled = SampledPatch(
-                            file = sample.file, name = name, root = root ?: 60f,
+                            file = sample.file, name = name, root = SampledPatch.fitRoot(root, notes),
                             glide = if (slide) SampledPatch.SLIDE else 0f,
                             release = if (slide || kind == "bass") 0.08f else 0.2f,
                         ),

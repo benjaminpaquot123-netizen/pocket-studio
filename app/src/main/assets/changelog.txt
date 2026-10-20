@@ -1,5 +1,5 @@
 Phase 18 : « C'est pas faux ! »
-- L'assistant pas à pas range ton morceau en trois scènes : A le rythme, B la basse, C la mélodie.
-- Chaque étape dit dans quelle scène va la ligne ; un petit guide t'explique la suite.
-- Les styles les plus connus d'abord (techno, house, trap…), et les listes se replient.
-- Fini les pastilles écrasées ou coupées net : elles passent à la ligne ou s'estompent au bord.
+- L'assistant pas à pas range ton morceau en trois scènes : A le rythme, B la basse, C la mélodie, avec un guide.
+- Styles connus d'abord, listes repliables, pastilles qui ne sont plus écrasées ni coupées net.
+- Corrigé : une 808 ou un kick posé sur une nappe ne fait plus « tic » puis silence (lu 16 fois trop vite).
+- Écouter un son de la bibliothèque pendant la lecture ne sature plus.

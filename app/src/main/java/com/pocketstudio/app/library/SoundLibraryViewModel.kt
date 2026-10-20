@@ -431,7 +431,8 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                     sound.plaits?.let { p -> p.sanitized().engineValues().forEachIndexed { i, v -> NativeEngine.setPlaitsParam(i, v, track) } }
                     val sample = natives[beat.size + track]
                     if (sample != null) {
-                        val patch = sound.sampled!!.copy(root = partAudio[track]?.second ?: 60f)
+                        val heard = StarterWizard.startingNotes(part, style, mood, harmony).notes
+                        val patch = sound.sampled!!.copy(root = com.pocketstudio.model.SampledPatch.fitRoot(partAudio[track]?.second, heard))
                         patch.engineValues().forEachIndexed { i, v -> NativeEngine.setTrackSampleParam(i, v, track) }
                         NativeEngine.setTrackSample(track, sample)  // the export engine keeps its own reference
                     }

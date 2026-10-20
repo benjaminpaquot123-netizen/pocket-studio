@@ -450,3 +450,4 @@ Restant (mineur) :
 - Replier la carte d'une ligne cache aussi « Utiliser cette ligne » et le repère de scène (le titre reste visible pour rouvrir).
 - Un groupe « Les plus connus » replié le reste la fois suivante (mémorisé, comme les cartes).
 - Après la relecture, à la demande de Benjamin : trois scènes au lieu de deux (tests réécrits : partage par style, copies des scènes vides, aller-retour JSON et changement de scène) ; pastilles qui passent à la ligne ou s'estompent au bord.
+- Bug audio de la vidéo de Benjamin (22 h 54) : 808 posée sur des accords lue 16 fois trop vite (note d'origine La 0 sous des notes autour du Do 4) → « tic » d'un dixième de seconde par mesure puis silence. Corrigé partout où un son devient un instrument (bibliothèque, fichier, pad au clavier, assistant et ses écoutes), avec un test du cas exact ; écoute qui saturait par-dessus la musique : −6 dB.

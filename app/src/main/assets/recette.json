@@ -3,6 +3,16 @@
   "milestone": "Phase 18 : l'assistant en trois scènes",
   "items": [
     {
+      "id": "sample_on_chords",
+      "title": "Une 808 sur la nappe",
+      "hint": "Synthé › piste Nappe › Instrument › Sample › Bibliothèque : pose « 808 3 ». Lance la lecture : chaque accord joue la 808 en entier, plus de « tic » suivi de silence. Dans ton ancien projet, touche « Le caler sur les notes » sous la note d'origine."
+    },
+    {
+      "id": "preview_clean",
+      "title": "Écouter sans saturer",
+      "hint": "Pendant la lecture, ouvre la bibliothèque et touche plusieurs 808 : l'écoute passe par-dessus la musique sans grésiller."
+    },
+    {
       "id": "styles_order",
       "title": "Les styles connus d'abord",
       "hint": "Mes projets › Nouveau projet › pas à pas : en haut « Les plus connus » (Techno, House, Trap…), en dessous « Les autres styles ». Touche un de ces titres : la liste se replie ; touche encore : elle revient."

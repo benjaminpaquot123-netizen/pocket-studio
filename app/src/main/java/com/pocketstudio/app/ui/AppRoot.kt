@@ -813,6 +813,7 @@ fun AppRoot() {
                                 setPlaitsModel = rhythmVm::setPlaitsModel,
                                 setPlaitsParam = rhythmVm::setPlaitsParam,
                                 sampled = project.sampled,
+                                notes = project.synthNotes.notes,
                                 chooseSample = { rhythmVm.dismissTrackSoundMessage(); libraryTrack = true; showLibrary = true },
                                 importSample = { rhythmVm.dismissTrackSoundMessage(); pickKeyboardSound.launch(arrayOf("audio/*")) },
                                 editSampled = rhythmVm::editSampled,

@@ -305,7 +305,11 @@ object StarterWizard {
                         sound.plaits != null -> 1
                         else -> 0
                     },
-                    plaits = sound.plaits ?: plaits, sampled = sound.sampled ?: sampled,
+                    plaits = sound.plaits ?: plaits,
+                    // A pack sound plays in the octave of the part's notes (and glides only on a single line).
+                    sampled = sound.sampled?.let { s ->
+                        s.copy(root = SampledPatch.fitRoot(s.root, notes.notes), glide = if (SampledPatch.isMonophonic(notes.notes)) s.glide else 0f)
+                    } ?: sampled,
                 )
                 if (first) {
                     project = project.withTrack(project.track(0).withSound())

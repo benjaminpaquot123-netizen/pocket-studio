@@ -163,5 +163,22 @@ data class SampledPatch(
     companion object {
         /** Glide for an 808 slide, in seconds. */
         const val SLIDE = 0.08f
+
+        /**
+         * The root for a sound found to sound at [detected], put in the octave of the notes it will
+         * play: the same note name (the song stays in key), but a 808 found at La 0 under chords
+         * around Do 4 would otherwise be read 16 times too fast and last a tenth of a second.
+         */
+        fun fitRoot(detected: Float?, notes: List<Note>): Float {
+            val pitches = notes.map { it.pitch }.sorted()
+            val centre = if (pitches.isEmpty()) 60 else pitches[pitches.size / 2]
+            val root = detected ?: return centre.toFloat()
+            val octaves = Math.round((centre - root) / 12f)
+            return (root + 12f * octaves).coerceIn(0f, 127f)
+        }
+
+        /** True when [notes] never overlap (a line that can glide, not chords). */
+        fun isMonophonic(notes: List<Note>): Boolean =
+            notes.sortedBy { it.start }.zipWithNext().none { (a, b) -> b.start < a.end }
     }
 }

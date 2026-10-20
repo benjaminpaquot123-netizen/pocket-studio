@@ -14,26 +14,32 @@ data class InstrumentTrack(
     val name: String,
     /** Index in the track colour palette. */
     val color: Int = 0,
-    /** 0 = subtractive synth, 1 = Plaits (an [instrument] still wins). */
+    /** 0 = subtractive synth, 1 = Plaits, 2 = [sampled] (an [instrument] still wins). */
     val engine: Int = 0,
     val synth: SynthPatch = SynthPatch(),
     val plaits: PlaitsPatch = PlaitsPatch(),
     val instrument: InstrumentChoice? = null,
     /** The current scene's notes (each scene keeps its own, see [Scene.trackNotes]). */
     val notes: NoteClip = NoteClip(),
+    val sampled: SampledPatch = SampledPatch(),
 ) {
     fun sanitized(): InstrumentTrack = copy(
         name = name.take(MAX_NAME).ifBlank { "Piste ${id + 1}" },
         color = color.coerceIn(0, COLORS - 1),
-        engine = engine.coerceIn(0, 1),
+        engine = engine.coerceIn(0, 2),
         synth = synth.sanitized(),
         plaits = plaits.sanitized(),
         instrument = instrument?.takeIf { it.bank in 0..128 && it.program in 0..127 },
         notes = notes.sanitized(),
+        sampled = sampled.sanitized(),
     )
 
     /** What the track's sound is, in a few words. */
-    val soundLabel: String get() = instrument?.name ?: if (engine == 1) "Plaits" else "Synthé"
+    val soundLabel: String get() = instrument?.name ?: when (engine) {
+        1 -> "Plaits"
+        2 -> sampled.name.ifBlank { "Son échantillonné" }
+        else -> "Synthé"
+    }
 
     companion object {
         /** Instrument tracks in a project, the first one included (the engine's kTracks). */
@@ -51,14 +57,14 @@ val Project.instrumentTracks: List<InstrumentTrack> get() = listOf(track(0)) + t
 
 /** Track [id]; the first track when there is no such track. */
 fun Project.track(id: Int): InstrumentTrack =
-    if (id == 0) InstrumentTrack(0, synthTrackName, synthTrackColor, synthEngine, synth, plaits, instrument, synthNotes)
+    if (id == 0) InstrumentTrack(0, synthTrackName, synthTrackColor, synthEngine, synth, plaits, instrument, synthNotes, sampled)
     else tracks.firstOrNull { it.id == id } ?: track(0)
 
 /** Puts [t] back where it belongs (the project's own fields for the first track). */
 fun Project.withTrack(t: InstrumentTrack): Project =
     if (t.id == 0) copy(
         synthTrackName = t.name, synthTrackColor = t.color, synthEngine = t.engine, synth = t.synth,
-        plaits = t.plaits, instrument = t.instrument, synthNotes = t.notes,
+        plaits = t.plaits, instrument = t.instrument, synthNotes = t.notes, sampled = t.sampled,
     )
     else copy(tracks = tracks.map { if (it.id == t.id) t else it })
 
@@ -69,7 +75,7 @@ fun Project.withTrack(t: InstrumentTrack): Project =
 fun Project.viewOfTrack(id: Int): Project {
     if (id == 0) return this
     val t = tracks.firstOrNull { it.id == id } ?: return this
-    return copy(synthEngine = t.engine, synth = t.synth, plaits = t.plaits, instrument = t.instrument, synthNotes = t.notes)
+    return copy(synthEngine = t.engine, synth = t.synth, plaits = t.plaits, instrument = t.instrument, synthNotes = t.notes, sampled = t.sampled)
 }
 
 /** A new track (or null when all eight exist), with a free id, a fresh mixer channel and the next colour. */
@@ -107,4 +113,52 @@ fun Project.duplicateTrack(id: Int): Project? {
         mixer = added.mixer.copy(channels = added.mixer.channels.mapIndexed { i, c -> if (i == to) added.mixer.channels[from] else c }),
         scenes = added.scenes.map { s -> s.copy(trackNotes = s.trackNotes + (newId to (s.trackNotes[id] ?: if (id == 0) s.synthNotes else NoteClip()))) },
     )
+}
+
+/**
+ * A sound played across the keys (track engine 2): a file in the project's samples folder, the
+ * note it was recorded at and how it plays. A pack's 808 with [glide] makes trap slides.
+ */
+@Serializable
+data class SampledPatch(
+    /** File in the project's samples folder; null = none chosen yet (the track plays its synth). */
+    val file: String? = null,
+    val name: String = "",
+    /** MIDI note the recording sounds at (found by pitch detection when it is chosen). */
+    val root: Float = 60f,
+    val start: Float = 0f,
+    val end: Float = 1f,
+    val attack: Float = 0f,
+    val decay: Float = 0f,
+    val sustain: Float = 1f,
+    val release: Float = 0.05f,
+    /** Seconds to slide between held notes; 0 = several notes at once (chords). */
+    val glide: Float = 0f,
+    /** The sound repeats while the key is held (pads, drones); else it plays once. */
+    val loop: Boolean = false,
+    val gain: Float = 1f,
+) {
+    fun sanitized(): SampledPatch = copy(
+        file = file?.takeIf { PadSample(it, "").isSafe },
+        name = name.take(40),
+        root = root.finiteOr(60f).coerceIn(0f, 127f),
+        start = start.finiteOr(0f).coerceIn(0f, 0.999f),
+        end = end.finiteOr(1f).coerceIn(0.001f, 1f),
+        attack = attack.finiteOr(0f).coerceIn(0f, 2f),
+        decay = decay.finiteOr(0f).coerceIn(0f, 2f),
+        sustain = sustain.finiteOr(1f).coerceIn(0f, 1f),
+        release = release.finiteOr(0.05f).coerceIn(0f, 4f),
+        glide = glide.finiteOr(0f).coerceIn(0f, 1f),
+        gain = gain.finiteOr(1f).coerceIn(0f, 2f),
+    )
+
+    private fun Float.finiteOr(default: Float) = if (isFinite()) this else default
+
+    /** What the engine gets, in SampleInstrument::Param order (root, start, end, attack, decay, sustain, release, glide, loop, gain). */
+    fun engineValues(): List<Float> = listOf(root, start, end, attack, decay, sustain, release, glide, if (loop) 1f else 0f, gain)
+
+    companion object {
+        /** Glide for an 808 slide, in seconds. */
+        const val SLIDE = 0.08f
+    }
 }

@@ -1,5 +1,6 @@
 package com.pocketstudio.app.latency
 
+import com.pocketstudio.app.help.Glossary
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -44,7 +45,7 @@ fun LatencyScreen(
         Text("Le temps entre ton doigt et tes oreilles. Objectif : moins de 20 ms.", color = Neon.TextSecondary)
 
         NeonCard(accent = Neon.Cyan) {
-            SectionLabel("Aller-retour mesuré")
+            SectionLabel("Aller-retour mesuré", help = Glossary.LATENCY)
             // A failed run shows no number: the previous success is mentioned below instead.
             val shown = when (state) {
                 is LatencyUiState.Measured -> state.roundTripMs

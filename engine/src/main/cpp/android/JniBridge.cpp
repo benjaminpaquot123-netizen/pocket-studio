@@ -302,6 +302,28 @@ JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportInstallAu
     reinterpret_cast<ps::OfflineRenderer*>(exportHandle)->post(command);
 }
 
+// --- Instrument tracks: the sample played across the keys ---
+
+JNIEXPORT jboolean JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeInstallTrackSample(JNIEnv*, jobject, jint track, jlong handle) {
+    host().engine().collectGarbage();
+    auto* s = reinterpret_cast<ps::Sample*>(handle);
+    if (s) s->retain();
+    ps::Command command{ps::CommandType::InstallTrackSample, 0.0f, std::clamp<jint>(track, 0, ps::kTracks - 1) << 16, 0};
+    command.sample = s;
+    if (host().post(command)) return JNI_TRUE;
+    if (s && s->release()) delete s;
+    return JNI_FALSE;
+}
+
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportInstallTrackSample(JNIEnv*, jobject, jlong exportHandle, jint track,
+                                                                                      jlong handle) {
+    auto* s = reinterpret_cast<ps::Sample*>(handle);
+    if (s) s->retain();
+    ps::Command command{ps::CommandType::InstallTrackSample, 0.0f, std::clamp<jint>(track, 0, ps::kTracks - 1) << 16, 0};
+    command.sample = s;
+    reinterpret_cast<ps::OfflineRenderer*>(exportHandle)->post(command);
+}
+
 // Takes the engine had not let go of yet (stream stopped or restarting): freed once it has.
 static std::mutex zombieLock;
 static std::vector<ps::RecordBuffer*> zombies;

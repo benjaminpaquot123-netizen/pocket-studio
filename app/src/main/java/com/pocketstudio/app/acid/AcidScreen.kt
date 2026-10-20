@@ -1,5 +1,6 @@
 package com.pocketstudio.app.acid
 
+import com.pocketstudio.app.help.Glossary
 import android.content.Context
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -170,7 +171,7 @@ private fun StepGrid(
     val chipColors = FilterChipDefaults.filterChipColors(selectedContainerColor = Neon.Cyan.copy(alpha = 0.25f), selectedLabelColor = Neon.Cyan)
     NeonCard {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            SectionLabel("Ligne de basse · base ${noteName(acid.root, english)}", Modifier.weight(1f))
+            SectionLabel("Ligne de basse · base ${noteName(acid.root, english)}", Modifier.weight(1f), help = Glossary.ACID)
             FilterChip(
                 selected = english, onClick = { setEnglish(!english) },
                 label = { Text(if (english) "C D E" else "Do Ré Mi") },
@@ -276,7 +277,7 @@ private fun StepEditor(acid: AcidPattern, index: Int, actions: AcidActions, engl
     )
     NeonCard(accent = Neon.Magenta) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            SectionLabel("Pas ${index + 1}", color = Neon.Magenta)
+            SectionLabel("Pas ${index + 1}", color = Neon.Magenta, help = Glossary.ACCENT_SLIDE)
             Box(Modifier.weight(1f))
             FilterChip(
                 selected = index in acid.locked,
@@ -328,7 +329,7 @@ private fun SoundCard(acid: AcidPattern, actions: AcidActions, browser: SoundBro
     var sliders by remember { mutableStateOf(SoundView.sliders(context)) }
     NeonCard {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            SectionLabel("Son", Modifier.weight(1f))
+            SectionLabel("Son", Modifier.weight(1f), help = Glossary.FILTER)
             listOf(false to "Panneau", true to "Curseurs").forEach { (mode, label) ->
                 FilterChip(
                     selected = sliders == mode,

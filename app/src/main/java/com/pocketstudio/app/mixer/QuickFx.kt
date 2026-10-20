@@ -1,5 +1,8 @@
 package com.pocketstudio.app.mixer
 
+import com.pocketstudio.ui.WithHelp
+import com.pocketstudio.ui.HelpDot
+import com.pocketstudio.app.help.Glossary
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -62,7 +65,7 @@ fun QuickFxPanel(ch: Int, channel: Channel, actions: QuickFxActions) {
     val current = channel.matchingFx()
     var category by rememberSaveable(ch) { mutableStateOf(current?.category?.takeIf { it.isNotEmpty() } ?: FxPresets.CATEGORIES.first()) }
     Column(Modifier.fillMaxWidth().testTag("quick_fx_$ch"), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text("Ambiances toutes prêtes", style = MaterialTheme.typography.labelLarge, color = Neon.Magenta)
+        WithHelp(Glossary.FX_PRESET) { Text("Ambiances toutes prêtes", style = MaterialTheme.typography.labelLarge, color = Neon.Magenta) }
         Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             FxPresets.CATEGORIES.forEach { c ->
                 FilterChip(selected = category == c, onClick = { category = c }, label = { Text(c) },
@@ -94,6 +97,7 @@ private fun XyPad(ch: Int, macros: List<Float>, actions: QuickFxActions) {
     val set by rememberUpdatedState(actions.setMacroPair)
     Row(Modifier.horizontalScroll(rememberScrollState()), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
         Text("Pad XY, haut-bas :", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, maxLines = 1)
+        HelpDot(Glossary.XY_PAD)
         listOf(Macros.SPACE, Macros.DIRT, Macros.MOTION).forEach { m ->
             FilterChip(selected = yMacro == m, onClick = { yMacro = m }, label = { Text(Macros.NAMES[m]) },
                 modifier = Modifier.testTag("xy_axis_$m"))

@@ -118,6 +118,17 @@
   - 11.2 fait : Bibliothèque de sons (bouton dans Rythme) : familles de sons, sources (intégrés, packs), écoute, « Poser » sur le pad ; liste des packs avec taille, Télécharger, Supprimer.
   - En plus : export FLAC (encodeur maison, sans perte, vérifié par libsndfile et ffmpeg) et volume perçu en LUFS (BS.1770-4) affiché après l'export du mix.
 
+- Phase 11 fusionnée (PR #21), revue faite (FLAC décodé dans son test, plus compact).
+- Phase 12 (branche ccr-80af1a1b-mn0wec), demandes de Benjamin :
+  - 12.1 source « Échantillon » des pistes : un son (808, basse, stab d'un pack, son importé) joué sur tout le clavier, note d'origine détectée (YIN), glisse façon 808, boucle, enveloppe ;
+  - 12.2 petits « ? » à côté des termes et Lexique (Outils › Réglages › Aide) ;
+  - 12.3 pads live : « + » vers la bibliothèque, Générer, puis le téléphone ; export « La scène » ;
+  - 12.4 l'assistant propose les 808 et basses des packs pour la basse ;
+  - file de commandes du moteur : attend au lieu de perdre des notes sur un gros projet ;
+  - 17 nouveaux packs commandés (machines et sons actuels) sur `sons-packs-3`, utilisés en phase 13.
+- Phase 13 prête en local (branche phase13-wip, à poser après la fusion de la 12) : unisson du synthé et sons actuels, nouvelles familles de sons des packs, phrases de Générer pour les genres récents.
+
 ## Prochaine étape exacte
-1. Phase 11 : changelog, recette, PR, relecture de fin de phase, CI verte, fusion.
-2. Ensuite : points mineurs restants de `docs/REVIEW.md`, Ableton Link (reporté).
+1. Phase 12 : PR, relecture de fin de phase, CI verte, fusion.
+2. Phase 13 : poser phase13-wip sur main, épingler l'index de `sons-packs-3` (PackStore.RELEASE et INDEX), relecture, fusion.
+3. Ensuite : points mineurs restants de `docs/REVIEW.md`, Ableton Link (reporté).

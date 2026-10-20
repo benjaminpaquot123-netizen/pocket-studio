@@ -1,5 +1,6 @@
 package com.pocketstudio.app.mixer
 
+import com.pocketstudio.app.help.Glossary
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -107,7 +108,7 @@ fun automationTargets(channels: List<Channel>, master: List<Insert>, strips: Lis
 fun AutomationCard(ui: AutomationUi, channels: List<Channel>, master: List<Insert>, actions: AutomationActions, strips: List<StripInfo> = BASIC_STRIPS) {
     NeonCard(accent = Neon.Amber, modifier = Modifier.testTag("automation")) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            SectionLabel("Automation", Modifier.weight(1f), color = Neon.Amber)
+            SectionLabel("Automation", Modifier.weight(1f), color = Neon.Amber, help = Glossary.AUTOMATION)
             FilterChip(
                 selected = ui.recording, onClick = actions.toggleRecord,
                 label = { Text("Enregistrer") },

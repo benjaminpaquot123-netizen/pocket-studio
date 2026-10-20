@@ -1,5 +1,6 @@
 package com.pocketstudio.app.library
 
+import com.pocketstudio.app.help.Glossary
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -97,7 +98,7 @@ fun WizardScreen(ui: WizardUi, packs: PacksUi, playing: SoundRef?, actions: Wiza
                 StarterWizard.Step.Style -> StyleStep(ui.styleId, packs, actions)
                 StarterWizard.Step.Mood -> MoodStep(style!!, ui.mood, actions)
                 is StarterWizard.Step.Drum -> LineStep(style!!, current.line, ui.rows[current.line.role], packs, playing, actions)
-                is StarterWizard.Step.Melodic -> PartStep(style!!, ui, current.part, playing, actions)
+                is StarterWizard.Step.Melodic -> PartStep(style!!, ui, packs, current.part, playing, actions)
                 StarterWizard.Step.Summary -> SummaryStep(ui, style!!)
             }
             ui.error?.let { Text(it, color = Neon.Amber, modifier = Modifier.testTag("wizard_error")) }
@@ -150,7 +151,7 @@ private fun StyleStep(chosen: String?, packs: PacksUi, actions: WizardActions) {
 private fun InstalledPacks(packs: PacksUi, actions: WizardActions) {
     if (packs.installed.isEmpty()) return
     NeonCard(modifier = Modifier.testTag("wizard_installed_packs")) {
-        SectionLabel("Packs téléchargés")
+        SectionLabel("Packs téléchargés", help = Glossary.SOUND_PACK)
         packs.installed.forEach { m ->
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text("${m.name} · ${m.sounds.size} sons", modifier = Modifier.weight(1f))
@@ -342,7 +343,7 @@ private fun MoodStep(style: StarterWizard.Style, mood: StarterWizard.Mood?, acti
 
 /** One melodic part: what it does, use it or not, and its sound from the library (heard on its first bar). */
 @Composable
-private fun PartStep(style: StarterWizard.Style, ui: WizardUi, part: StarterWizard.Part, playing: SoundRef?, actions: WizardActions) {
+private fun PartStep(style: StarterWizard.Style, ui: WizardUi, packs: PacksUi, part: StarterWizard.Part, playing: SoundRef?, actions: WizardActions) {
     val row = ui.parts[part]
     if (ui.mood == null) {
         NeonCard {
@@ -367,7 +368,7 @@ private fun PartStep(style: StarterWizard.Style, ui: WizardUi, part: StarterWiza
     if (row == null || !row.enabled) return
     NeonCard {
         SectionLabel("Choisis le son")
-        StarterWizard.soundsFor(part, style).forEachIndexed { i, sound ->
+        StarterWizard.soundsFor(part, style, packs.installed).forEachIndexed { i, sound ->
             val selected = sound == row.sound
             val ref = SoundRef.Melodic(part, sound)
             Row(
@@ -386,6 +387,10 @@ private fun PartStep(style: StarterWizard.Style, ui: WizardUi, part: StarterWiza
                 RadioButton(selected = selected, onClick = { actions.choosePartSound(part, sound) })
             }
         }
-        Text("Touche un son pour entendre la première mesure de cette piste.", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+        Text(
+            "Touche un son pour entendre la première mesure de cette piste." +
+                if (part != StarterWizard.Part.Pad) " Les sons des packs téléchargés sont en bas de la liste." else "",
+            style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
+        )
     }
 }

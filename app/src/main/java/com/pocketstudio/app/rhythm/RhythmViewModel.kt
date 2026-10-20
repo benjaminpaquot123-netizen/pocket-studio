@@ -66,6 +66,8 @@ import com.pocketstudio.model.SoundCategories
 import com.pocketstudio.model.SoundLibrary
 import com.pocketstudio.model.LiveClip
 import com.pocketstudio.model.LivePads
+import com.pocketstudio.model.SampledPatch
+import com.pocketstudio.model.RootNote
 import com.pocketstudio.model.sampleFiles
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.InstrumentTrack
@@ -426,6 +428,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         p.instrumentTracks.forEach { t ->
             if (t.id > 0) NativeEngine.setTrackOn(t.id, true)
             pushSynth(t.synth, t.id)
+            pushSampled(p, t.id)
             pushPlaits(p, t.id)
             pushNotes(t.notes, t.id)
         }
@@ -520,6 +523,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             pushPads()
             pushLive()
             pushAudio()
+            project.value.instrumentTracks.forEach { pushSampled(id = it.id) }
         }
     }
 
@@ -556,6 +560,15 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
         if (project.value.live.size <= pad) setLiveSize(LivePads.SIZES.first { it > pad })
         sampleJob("Pose du son sur le pad live ${pad + 1}…", live = pad) { padSamples.add(pcm, name) }
+    }
+
+    /** On live pad [pad] (from the sound library), its length in beats fitted to the tempo; false when busy. */
+    fun placeOnLivePad(pad: Int, pcm: Pcm, name: String): Boolean {
+        if (_sampleTask.value is SampleTask.Busy || _sampleTask.value is SampleTask.Recording) return false
+        if (pad !in 0 until LivePads.MAX) return true
+        AppLog.add("Pad live ${pad + 1} : « $name » de la bibliothèque")
+        sampleJob("Pose du son sur le pad live ${pad + 1}…", live = pad) { padSamples.add(pcm, name) }
+        return true
     }
 
     /** On the first audio track without a clip; one is added when all are taken. */
@@ -786,6 +799,80 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    // --- A sound played across the keys (track source 2) ----------------------------------------
+
+    private fun pushSampled(p: Project = project.value, id: Int = track) {
+        if (!NativeEngine.isAvailable) return
+        val t = p.track(id)
+        t.sampled.engineValues().forEachIndexed { i, v -> NativeEngine.setTrackSampleParam(i, v, t.id) }
+        NativeEngine.setTrackSample(t.id, t.sampled.file?.let { padSamples.native(it) })
+    }
+
+    private val _trackSoundBusy = MutableStateFlow<String?>(null)
+    /** "Préparation du son…" while a library sound becomes the track's instrument, or an error. */
+    val trackSoundBusy: StateFlow<String?> = _trackSoundBusy.asStateFlow()
+
+    /**
+     * [pcm] becomes the selected track's instrument, played across the keys from the note it was
+     * recorded at (detected). An 808 glides between held notes from the start. One undo step.
+     */
+    fun useAsTrackSound(pcm: Pcm, name: String, kind: String? = null): Boolean {
+        if (_trackSoundBusy.value == BUSY_TRACK_SOUND) return false
+        val id = track
+        _trackSoundBusy.value = BUSY_TRACK_SOUND
+        viewModelScope.launch {
+            try {
+                val root = withContext(Dispatchers.Default) {
+                    val ch = pcm.channels
+                    val mono = FloatArray(pcm.data.size / ch) { i -> (0 until ch).sumOf { c -> pcm.data[i * ch + c].toDouble() }.toFloat() / ch }
+                    RootNote.detect(mono, pcm.sampleRate)
+                }
+                val (sample, prepared) = withContext(Dispatchers.IO) { padSamples.add(pcm, name) }
+                padSamples.register(prepared)
+                // The track went away meanwhile (deleted, undone): never land on another one.
+                if (id != 0 && project.value.tracks.none { it.id == id }) {
+                    _trackSoundBusy.value = "La piste a été supprimée entre-temps : rien n'a changé."
+                    return@launch
+                }
+                val slide = kind == "808"
+                editTrack(id = id) {
+                    it.copy(
+                        engine = 2, instrument = null,
+                        sampled = SampledPatch(
+                            file = sample.file, name = name, root = root ?: 60f,
+                            glide = if (slide) SampledPatch.SLIDE else 0f,
+                            release = if (slide || kind == "bass") 0.08f else 0.2f,
+                        ),
+                    )
+                }
+                AppLog.add("Piste ${id + 1} : « $name » au clavier, note d'origine ${root?.let { "%.2f".format(it) } ?: "inconnue (Do 3)"}")
+                pushInstrument()
+                pushSampled(id = id)
+                pushPlaits(id = id)
+                releaseUnusedFonts()
+                padSamples.prune(project.value.sampleFiles)
+                _trackSoundBusy.value = if (root == null) "Note d'origine introuvable : règle-la à l'oreille avec − et +." else null
+                if (NativeEngine.isAvailable && !_transport.value.playing) previewNote(root?.let { Math.round(it) }?.coerceIn(24, 96) ?: 60)
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (e: Throwable) {
+                AppLog.add("Son au clavier : échec (${e.message})")
+                _trackSoundBusy.value = "Ce son n'a pas pu être préparé."
+            }
+        }
+        return true
+    }
+
+    /** A change to the selected track's sampled sound (slider drags merge into one undo step per [key]). */
+    fun editSampled(key: String?, transform: (SampledPatch) -> SampledPatch) {
+        editTrack(key?.let { "sampled-$it-$track" }) { it.copy(sampled = transform(it.sampled)) }
+        pushSampled()
+    }
+
+    fun dismissTrackSoundMessage() {
+        if (_trackSoundBusy.value != BUSY_TRACK_SOUND) _trackSoundBusy.value = null
+    }
+
     // --- Plaits (Mutable Instruments) voice for the instrument tracks -------------------------
 
     private fun pushPlaits(p: Project = project.value, id: Int = track) {
@@ -795,10 +882,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         NativeEngine.setSynthEngine(t.engine, t.id)
     }
 
-    /** 0 = subtractive synth, 1 = Plaits; leaves any General MIDI instrument. */
+    /** 0 = subtractive synth, 1 = Plaits, 2 = the sampled sound; leaves any General MIDI instrument. */
     fun selectSynthEngine(engine: Int) {
         editTrack { it.copy(engine = engine, instrument = null) }
         pushInstrument()
+        pushSampled()
         pushPlaits()
         releaseUnusedFonts()
     }
@@ -1755,6 +1843,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             pushPads()
             pushLive()
             pushAudio()
+            project.value.instrumentTracks.forEach { pushSampled(id = it.id) }
         }
     }
 
@@ -3006,6 +3095,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     companion object {
         const val PROJECT_ID = "projet-1"
+        const val BUSY_TRACK_SOUND = "Préparation du son…"
 
         /** The first project of a new install, and the "Rythme de départ" choice: a beat and an acid line. */
         fun starterProject(name: String = "Mon premier rythme"): Project {

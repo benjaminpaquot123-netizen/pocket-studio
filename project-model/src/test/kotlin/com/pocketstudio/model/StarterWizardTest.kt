@@ -85,6 +85,32 @@ class StarterWizardTest {
         val house = StarterWizard.style("house")!!
         assertEquals(2 + house.lines.size + 3 + 1, StarterWizard.steps(house).size)
     }
+
+    @Test
+    fun packSoundsCanPlayTheBassAndTheLead() {
+        val trap = StarterWizard.style("trap")!!
+        val pack = PackManifest(
+            "trap", "Trap", sounds = listOf(
+                PackSound("808_01.flac", "808", "808 1"), PackSound("bass_01.flac", "bass", "Basse 1"),
+                PackSound("kick_01.flac", "kick", "Kick 1"), PackSound("stab_01.flac", "stab", "Stab 1"),
+            ),
+        )
+        val bass = StarterWizard.soundsFor(StarterWizard.Part.Bass, trap, listOf(pack))
+        val first808 = bass.first { it.sampled != null }
+        assertEquals("trap" to "808_01.flac", first808.packFile)
+        assertTrue(first808.sampled!!.glide > 0f)  // 808s slide
+        assertTrue(bass.none { it.packFile?.second == "kick_01.flac" })
+        assertEquals(listOf("stab_01.flac"), StarterWizard.soundsFor(StarterWizard.Part.Lead, trap, listOf(pack)).mapNotNull { it.packFile?.second })
+        assertTrue(StarterWizard.soundsFor(StarterWizard.Part.Pad, trap, listOf(pack)).none { it.sampled != null })
+        // Once copied into the project, the bass track plays the sound across the keys.
+        val placed = first808.copy(sampled = first808.sampled!!.copy(file = "abc.wav", root = 24.3f))
+        val p = StarterWizard.build(trap, emptyMap(), StarterWizard.Mood.Dark, mapOf(StarterWizard.Part.Bass to placed))
+        val t = p.track(0)
+        assertEquals(2, t.engine)
+        assertEquals("abc.wav", t.sampled.file)
+        assertEquals(24.3f, t.sampled.root)
+        assertTrue("abc.wav" in p.sampleFiles)
+    }
 }
 
 class ChordPadsTest {

@@ -348,6 +348,23 @@ class ScreenshotTest {
     }
 
     @Test
+    fun sampledInstrument() = shoot("sampled_instrument") {
+        androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
+            com.pocketstudio.app.instruments.InstrumentPanel(
+                com.pocketstudio.app.instruments.InstrumentUi(
+                    com.pocketstudio.app.rhythm.LibraryState.Missing, null, synthEngine = 2,
+                    sampled = com.pocketstudio.model.SampledPatch(file = "x.wav", name = "808 3 · Trap", root = 24.2f, glide = 0.08f, release = 0.08f),
+                ),
+            )
+        }
+    }
+
+    @Test
+    fun helpDialog() = shoot("help_dialog") {
+        com.pocketstudio.ui.HelpDialog(com.pocketstudio.app.help.Glossary.SCENE) {}
+    }
+
+    @Test
     fun instrumentsDownload() = shoot("instruments_download") {
         androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
             com.pocketstudio.app.instruments.InstrumentPanel(

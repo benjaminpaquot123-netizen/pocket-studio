@@ -1,5 +1,8 @@
 package com.pocketstudio.app.mixer
 
+import com.pocketstudio.ui.WithHelp
+import com.pocketstudio.ui.HelpDot
+import com.pocketstudio.app.help.Glossary
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -120,7 +123,7 @@ fun MixerScreen(
             Strip(st, channels.getOrElse(st.ch) { Channel() }, meters.getOrElse(st.ch) { 0f }, actions, compact)
         }
         NeonCard(accent = Neon.Cyan) {
-            SectionLabel("Sortie générale")
+            SectionLabel("Sortie générale", help = Glossary.LIMITER)
             LevelMeter(meters.getOrElse(MASTER_CHANNEL) { 0f } / 0.89f)
             val gain = meters.getOrElse(LIMITER_METER) { 1f }
             Text(
@@ -165,6 +168,7 @@ private fun Strip(info: StripInfo, c: Channel, meter: Float, actions: MixerActio
             )
             FilterChip(selected = c.solo, onClick = { actions.toggleSolo(index) }, label = { Text("Solo") }, colors = chipColors,
                 modifier = Modifier.testTag("solo_$index"))
+            if (index == 0) HelpDot(Glossary.MUTE_SOLO)
         }
         LevelMeter(meter / 0.89f)
         if (compact) {
@@ -191,7 +195,9 @@ private fun Strip(info: StripInfo, c: Channel, meter: Float, actions: MixerActio
             Slider(value = c.volume, onValueChange = { actions.setVolume(index, it) }, modifier = Modifier.testTag("volume_$index"))
         }
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Text("Panoramique", Modifier.weight(1f))
+            Text("Panoramique")
+            HelpDot(Glossary.PAN)
+            androidx.compose.foundation.layout.Spacer(Modifier.weight(1f))
             val pan = (c.pan * 100).roundToInt()
             Text(
                 when {
@@ -226,9 +232,9 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
     val chipColors = FilterChipDefaults.filterChipColors(selectedContainerColor = Neon.Acid.copy(alpha = 0.25f), selectedLabelColor = Neon.Acid)
     NeonCard(accent = Neon.Acid) {
         SectionLabel("Exporter", color = Neon.Acid)
-        Text("Quoi", style = MaterialTheme.typography.bodyMedium)
+        WithHelp(Glossary.STEMS) { Text("Quoi", style = MaterialTheme.typography.bodyMedium) }
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            listOf(ExportWhat.Loop to "La boucle", ExportWhat.Song to "Le morceau", ExportWhat.Stems to "Piste par piste").forEach { (what, label) ->
+            listOf(ExportWhat.Loop to "La scène", ExportWhat.Song to "Le morceau", ExportWhat.Stems to "Piste par piste").forEach { (what, label) ->
                 FilterChip(
                     selected = export.what == what, onClick = { actions.setExportWhat(what) }, enabled = !export.running,
                     label = { Text(label) }, colors = chipColors, modifier = Modifier.testTag("export_what_${what.name}"),
@@ -258,7 +264,7 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
                 }
             }
         }
-        Text("Format", style = MaterialTheme.typography.bodyMedium)
+        WithHelp(Glossary.FORMATS) { Text("Format", style = MaterialTheme.typography.bodyMedium) }
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             listOf(ExportFormat.Wav to "WAV", ExportFormat.Flac to "FLAC", ExportFormat.M4a to "M4A").forEach { (format, label) ->
                 FilterChip(
@@ -315,11 +321,13 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
                 color = Neon.TextSecondary,
             )
             export.loudness?.let { lufs ->
-                Text(
-                    "Volume perçu : " + String.format(java.util.Locale.FRANCE, "%.1f", lufs).replace('-', '−') + " LUFS, " + Loudness.describe(lufs),
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.testTag("export_loudness"),
-                )
+                WithHelp(Glossary.LUFS) {
+                    Text(
+                        "Volume perçu : " + String.format(java.util.Locale.FRANCE, "%.1f", lufs).replace('-', '−') + " LUFS, " + Loudness.describe(lufs),
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.weight(1f, fill = false).testTag("export_loudness"),
+                    )
+                }
             }
             OutlinedButton(onClick = actions.share, modifier = Modifier.fillMaxWidth().testTag("share")) {
                 Text(if (export.files.size > 1) "Partager les ${export.files.size} fichiers" else "Partager")

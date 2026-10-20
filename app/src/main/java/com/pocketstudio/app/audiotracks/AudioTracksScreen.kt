@@ -1,5 +1,6 @@
 package com.pocketstudio.app.audiotracks
 
+import com.pocketstudio.app.help.Glossary
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -110,7 +111,7 @@ fun AudioTracksScreen(ui: AudioTracksUi, actions: AudioTracksActions, modifier: 
         ui.task?.let { Text(it, color = Neon.Amber, style = MaterialTheme.typography.bodySmall) }
         if (ui.tracks.isEmpty()) {
             NeonCard {
-                SectionLabel("Pistes audio")
+                SectionLabel("Pistes audio", help = Glossary.AUDIO_TRACK)
                 Text(
                     "Enregistre ta voix, une guitare, des claquements de mains… par-dessus ta musique, ou ajoute un fichier son. " +
                         "Chaque prise se cale sur la mesure et tourne en boucle avec le morceau.",

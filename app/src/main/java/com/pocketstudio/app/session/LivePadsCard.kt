@@ -1,5 +1,10 @@
 package com.pocketstudio.app.session
 
+import com.pocketstudio.ui.HelpDot
+import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.LibraryMusic
+import androidx.compose.material3.Button
+import com.pocketstudio.app.help.Glossary
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -65,6 +70,10 @@ class LivePadsActions(
     /** Pad to set up, or null to go back to playing. */
     val edit: (Int?) -> Unit = {},
     val import: (Int) -> Unit = {},
+    /** The sound library, to put one of its sounds on this pad. */
+    val library: (Int) -> Unit = {},
+    /** Audio › Générer: a loop made from a sentence. */
+    val generate: () -> Unit = {},
     val fromDrumPad: (Int, Int) -> Unit = { _, _ -> },
     val setBeats: (Int, Int) -> Unit = { _, _ -> },
     val setOneShot: (Int, Boolean) -> Unit = { _, _ -> },
@@ -84,7 +93,7 @@ private fun beatsLabel(beats: Int) = when {
 fun LivePadsCard(ui: LivePadsUi, actions: LivePadsActions) {
     NeonCard(accent = Neon.Cyan, modifier = Modifier.testTag("live_pads")) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            SectionLabel("Pads live", Modifier.weight(1f))
+            SectionLabel("Pads live", Modifier.weight(1f), help = Glossary.LIVE_PADS)
             TextButton(onClick = actions.stopAll, modifier = Modifier.testTag("live_stop_all")) {
                 Icon(Icons.Filled.Stop, contentDescription = null)
                 Text(" Tout couper")
@@ -162,10 +171,22 @@ private fun LivePad(i: Int, clip: LiveClip?, state: Int, selected: Boolean, wait
 private fun PadEditor(pad: Int, clip: LiveClip?, drumSounds: List<Pair<Int, String>>, actions: LivePadsActions) {
     Column(verticalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.testTag("live_editor")) {
         Text("Pad ${pad + 1} : ${clip?.name ?: "vide"}", style = MaterialTheme.typography.titleSmall)
-        OutlinedButton(onClick = { actions.import(pad) }, modifier = Modifier.fillMaxWidth().testTag("live_import")) {
-            Icon(Icons.Filled.FileOpen, contentDescription = null)
-            Text("  Importer un son du téléphone")
+        Button(onClick = { actions.library(pad) }, modifier = Modifier.fillMaxWidth().testTag("live_library")) {
+            Icon(Icons.Filled.LibraryMusic, contentDescription = null)
+            Text("  Bibliothèque de sons")
         }
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            OutlinedButton(onClick = actions.generate, modifier = Modifier.weight(1f).testTag("live_generate")) {
+                Icon(Icons.Filled.AutoAwesome, contentDescription = null)
+                Text(" Générer")
+            }
+            OutlinedButton(onClick = { actions.import(pad) }, modifier = Modifier.weight(1f).testTag("live_import")) {
+                Icon(Icons.Filled.FileOpen, contentDescription = null)
+                Text(" Du téléphone")
+            }
+        }
+        Text("« Générer » fabrique une boucle à partir d'une phrase (Audio › Générer), puis la pose sur un pad live libre.",
+            style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         if (drumSounds.isNotEmpty()) {
             Text("Ou le son d'un pad de batterie :", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
             Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -179,6 +200,7 @@ private fun PadEditor(pad: Int, clip: LiveClip?, drumSounds: List<Pair<Int, Stri
                 listOf(false to "En boucle", true to "Une fois").forEach { (once, label) ->
                     FilterChip(selected = clip.oneShot == once, onClick = { actions.setOneShot(pad, once) }, label = { Text(label) })
                 }
+                HelpDot(Glossary.LOOP)
             }
             if (!clip.oneShot) {
                 Text("Repart tous les :", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)

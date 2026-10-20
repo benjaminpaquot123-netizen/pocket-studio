@@ -121,18 +121,52 @@ object StarterWizard {
         ),
     }
 
-    /** A melodic sound of the library: a subtractive synth preset, or a Plaits one ([plaits] set). */
-    data class PartSound(val name: String, val synth: SynthPatch = SynthPatch(), val plaits: PlaitsPatch? = null)
+    /**
+     * A melodic sound of the library: a subtractive synth preset, a Plaits one ([plaits] set), or a
+     * pack sound played across the keys ([sampled] set; its file is "pack:<pack>/<file>" until the
+     * project is written, then the copy in the project's folder).
+     */
+    data class PartSound(val name: String, val synth: SynthPatch = SynthPatch(), val plaits: PlaitsPatch? = null, val sampled: SampledPatch? = null) {
+        /** The pack and file of a pack sound, or null. */
+        val packFile: Pair<String, String>? get() = sampled?.file?.takeIf { it.startsWith(PACK_FILE) }
+            ?.removePrefix(PACK_FILE)?.split('/')?.takeIf { it.size == 2 }?.let { it[0] to it[1] }
+    }
 
-    /** The sounds a part can take (its categories of the synth and Plaits libraries), the style's one first. */
-    fun soundsFor(part: Part, style: Style): List<PartSound> {
+    const val PACK_FILE = "pack:"
+
+    /** Pack sounds that suit a part: 808s and basses for the bass, stabs for the lead. */
+    private fun packKinds(part: Part) = when (part) {
+        Part.Bass -> listOf("808", "bass")
+        Part.Pad -> emptyList()
+        Part.Lead -> listOf("stab")
+    }
+
+    /**
+     * The sounds a part can take (its categories of the synth and Plaits libraries), the style's
+     * one first, then the [installed] packs' sounds of the right kinds (the style's own pack first,
+     * a few of each other pack).
+     */
+    fun soundsFor(part: Part, style: Style, installed: List<PackManifest> = emptyList()): List<PartSound> {
         val synth = SoundLibrary.SYNTH.filter { it.category in part.categories }.map { PartSound(it.name, synth = it.sound) }
         val plaitsNames = synth.map { it.name }.toSet()
         val plaits = SoundLibrary.PLAITS.filter { it.category in part.categories }
             .map { PartSound(if (it.name in plaitsNames) "${it.name} (Plaits)" else it.name, plaits = it.sound) }
         val all = synth + plaits
         val preferred = all.filter { it.name == style.melody.sound(part) }.take(1)
-        return preferred + (all - preferred.toSet())
+        val kinds = packKinds(part)
+        val packs = installed.sortedBy { if (it.id == style.id) 0 else 1 }.flatMap { m ->
+            m.sounds.filter { it.kind in kinds }.take(if (m.id == style.id) Int.MAX_VALUE else 4).map { sound ->
+                val slide = sound.kind == "808"
+                PartSound(
+                    "${sound.name} · ${m.name}",
+                    sampled = SampledPatch(
+                        file = PACK_FILE + m.id + "/" + sound.file, name = "${sound.name} · ${m.name}".take(40),
+                        glide = if (slide) SampledPatch.SLIDE else 0f, release = if (part == Part.Lead) 0.15f else 0.08f,
+                    ),
+                )
+            }
+        }
+        return preferred + (all - preferred.toSet()) + packs
     }
 
     /** The assistant's steps for a style: style, mood, each drum line, each melodic part, summary. */
@@ -412,7 +446,12 @@ object StarterWizard {
                 val notes = startingNotes(part, style, mood, harmony)
                 fun InstrumentTrack.withSound() = copy(
                     name = part.trackName, notes = notes, synth = sound.synth,
-                    engine = if (sound.plaits != null) 1 else 0, plaits = sound.plaits ?: plaits,
+                    engine = when {
+                        sound.sampled != null -> 2
+                        sound.plaits != null -> 1
+                        else -> 0
+                    },
+                    plaits = sound.plaits ?: plaits, sampled = sound.sampled ?: sampled,
                 )
                 if (first) {
                     project = project.withTrack(project.track(0).withSound())

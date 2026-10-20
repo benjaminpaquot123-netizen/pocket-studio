@@ -1,5 +1,9 @@
 package com.pocketstudio.app.synth
 
+import com.pocketstudio.ui.WithHelp
+import com.pocketstudio.ui.HelpDot
+import com.pocketstudio.ui.Help
+import com.pocketstudio.app.help.Glossary
 import com.pocketstudio.model.ArpMode
 import com.pocketstudio.model.Harmony
 import com.pocketstudio.model.Performance
@@ -498,9 +502,12 @@ private val ARP_RATES = listOf(48 to "1/8", 24 to "1/16", 12 to "1/32")
 private val STRUMS = listOf(0 to "Non", 3 to "Léger", 8 to "Moyen", 16 to "Lent")
 
 @Composable
-private fun ChipRow(label: String, content: @Composable () -> Unit) {
+private fun ChipRow(label: String, help: Help? = null, content: @Composable () -> Unit) {
     Row(Modifier.horizontalScroll(rememberScrollState()), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-        Text(label, style = MaterialTheme.typography.bodySmall, modifier = Modifier.width(78.dp))
+        Row(Modifier.width(78.dp), verticalAlignment = Alignment.CenterVertically) {
+            Text(label, style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(1f, fill = false))
+            if (help != null) HelpDot(help)
+        }
         content()
     }
 }
@@ -533,7 +540,7 @@ fun HarmonyPanel(harmony: Harmony, performance: Performance, actions: PianoRollA
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
-                Text("Verrouiller la gamme", style = MaterialTheme.typography.bodyMedium)
+                WithHelp(Glossary.SCALE_LOCK) { Text("Verrouiller la gamme", style = MaterialTheme.typography.bodyMedium) }
                 Text("Le clavier, les pads d'accords et le MIDI ne jouent que les notes de la gamme : pas de fausse note.",
                     style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
             }
@@ -542,7 +549,7 @@ fun HarmonyPanel(harmony: Harmony, performance: Performance, actions: PianoRollA
     }
     // Pick a progression, then what to make of it: chords, a bass line or an arpeggio.
     var chosen by rememberSaveable { mutableStateOf(Progression.Pop) }
-    ChipRow("Progression") {
+    ChipRow("Progression", Glossary.PROGRESSION) {
         Progression.entries.forEach { pr ->
             FilterChip(selected = chosen == pr, onClick = { chosen = pr }, label = { Text(pr.label) }, colors = chipColors,
                 modifier = Modifier.testTag("progression_${pr.name}"))
@@ -555,7 +562,7 @@ fun HarmonyPanel(harmony: Harmony, performance: Performance, actions: PianoRollA
     }
     Text("Remplace les notes de la piste choisie (Annuler les rend). Une piste par rôle : basse, accords, arpège.",
         style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
-    ChipRow("Arpège") {
+    ChipRow("Arpège", Glossary.ARPEGGIO) {
         ArpMode.entries.forEach { m ->
             FilterChip(selected = performance.arp == m, onClick = { actions.setPerformance(performance.copy(arp = m)) },
                 label = { Text(m.label) }, colors = chipColors, modifier = Modifier.testTag("arp_${m.name}"))

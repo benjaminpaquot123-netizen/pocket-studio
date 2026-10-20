@@ -1,5 +1,7 @@
 package com.pocketstudio.app.session
 
+import com.pocketstudio.ui.WithHelp
+import com.pocketstudio.app.help.Glossary
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -99,7 +101,7 @@ fun SessionScreen(ui: SessionScreenUi, actions: SessionActions, live: LivePadsUi
         if (live != null) LivePadsCard(live, liveActions)
         NeonCard {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                SectionLabel("Scènes", Modifier.weight(1f))
+                SectionLabel("Scènes", Modifier.weight(1f), help = Glossary.SCENE)
                 IconButton(onClick = actions.togglePlay, modifier = Modifier.testTag("session_play")) {
                     Icon(if (ui.playing) Icons.Filled.Stop else Icons.Filled.PlayArrow, contentDescription = if (ui.playing) "Arrêter" else "Jouer", tint = Neon.Cyan)
                 }
@@ -139,7 +141,7 @@ fun SessionScreen(ui: SessionScreenUi, actions: SessionActions, live: LivePadsUi
         LivePad(actions.performance)
 
         NeonCard {
-            SectionLabel("Mesure")
+            SectionLabel("Mesure", help = Glossary.TIME_SIGNATURE)
             Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 (2..7).forEach { b ->
                     androidx.compose.material3.FilterChip(
@@ -155,7 +157,7 @@ fun SessionScreen(ui: SessionScreenUi, actions: SessionActions, live: LivePadsUi
         }
 
         NeonCard(accent = Neon.Magenta) {
-            SectionLabel("Morceau", color = Neon.Magenta)
+            SectionLabel("Morceau", color = Neon.Magenta, help = Glossary.SONG)
             Text(
                 "Enchaîne tes scènes : chacune joue le nombre de fois choisi, puis la suivante (le morceau boucle).",
                 style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
@@ -246,8 +248,10 @@ private fun SceneButton(i: Int, ui: SessionScreenUi, actions: SessionActions, mo
 @Composable
 private fun Timeline(ui: SessionScreenUi, actions: SessionActions) {
     val barWidth = 14.dp
-    Text("Ligne de temps : touche un bloc pour couper ou remettre une piste dans une partie.",
-        style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+    WithHelp(Glossary.TIMELINE) {
+        Text("Ligne de temps : touche un bloc pour couper ou remettre une piste dans une partie.",
+            style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.weight(1f, fill = false))
+    }
     Row(Modifier.testTag("timeline")) {
         Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
             Box(Modifier.height(22.dp))

@@ -127,6 +127,12 @@ KIND_RULES = {
     'perc': {'max_seconds': 1.2, 'transient': True},
     'bass': {'low': 0.3},
     'stab': {'max_seconds': 1.6},
+    'tom': {'max_seconds': 1.4, 'transient': True},
+    'pad': {},
+    'lead': {},
+    'pluck': {'max_seconds': 1.4},
+    'keys': {},
+    'vocal': {'max_seconds': 1.4},
     'fx': {},
     'loop': {},
 }
@@ -143,7 +149,7 @@ def main():
     sounds = []
     for k in style['kinds']:
         kind = catalog['kinds'][k]
-        count = max(1, round(kind['count'] * scale))
+        count = max(1, round(style.get('counts', {}).get(k, kind['count']) * scale))
         one_shot = k not in ('loop', 'fx')
         prompt = kind['prompt'].replace('{words}', style['words'])
         kept, seed = 0, 0

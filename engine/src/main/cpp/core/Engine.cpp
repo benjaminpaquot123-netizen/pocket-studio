@@ -132,7 +132,13 @@ void Engine::applyCommand(const Command& command) {
             else acid_.setLength(command.a);
             break;
         case CommandType::SetSynthEngine:
-            tracks_[static_cast<size_t>(trackOf(command.a))].setUsePlaits(trackArg(command.a) == 1);
+            tracks_[static_cast<size_t>(trackOf(command.a))].setSource(trackArg(command.a));
+            break;
+        case CommandType::InstallTrackSample:
+            tracks_[static_cast<size_t>(trackOf(command.a))].sampled.install(command.sample);  // takes the reference
+            break;
+        case CommandType::SetTrackSampleParam:
+            tracks_[static_cast<size_t>(trackOf(command.a))].sampled.setParam(trackArg(command.a), command.value);
             break;
         case CommandType::InstallAudioClip:
             audio_.install(command.a, command.sample);  // takes the reference

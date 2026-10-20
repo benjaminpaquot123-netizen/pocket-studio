@@ -1,5 +1,6 @@
 package com.pocketstudio.app.analysis
 
+import com.pocketstudio.app.help.Glossary
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -57,7 +58,7 @@ fun TunerView(reading: TunerReading?, micOk: Boolean?, englishNotes: Boolean = f
     Column(Modifier.fillMaxSize().padding(16.dp).testTag("tuner"), verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally) {
         NeonCard(modifier = Modifier.fillMaxWidth()) {
-            SectionLabel("Accordeur")
+            SectionLabel("Accordeur", help = Glossary.TUNER)
             when {
                 micOk == null -> Text("Ouverture du micro…", color = Neon.TextSecondary)
                 !micOk -> Text("Le micro n'a pas pu être ouvert (autorisation, ou une prise est en cours).", color = Neon.Amber)

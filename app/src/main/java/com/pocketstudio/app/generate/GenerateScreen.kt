@@ -1,5 +1,6 @@
 package com.pocketstudio.app.generate
 
+import com.pocketstudio.app.help.Glossary
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -109,7 +110,7 @@ fun GenerateScreen(ui: GenerateUi, actions: GenerateActions) {
 @Composable
 private fun ModelCard(ui: GenerateUi, actions: GenerateActions) {
     NeonCard(modifier = Modifier.testTag("generate_model")) {
-        SectionLabel("Créer un son avec une phrase")
+        SectionLabel("Créer un son avec une phrase", help = Glossary.GENERATE)
         Text(
             "Écris ce que tu veux entendre (« drum loop », « warm pad »…) et l'appli le fabrique. " +
                 "Il faut d'abord le modèle : ${GenerationModel.SIZE_LABEL}, une seule fois. Wi-Fi conseillé.",

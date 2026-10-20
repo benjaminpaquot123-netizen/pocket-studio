@@ -6,19 +6,23 @@
 
 #include "NoteTrack.h"
 #include "PlaitsSynth.h"
+#include "SampleInstrument.h"
 #include "SoundFontPlayer.h"
 #include "Synth.h"
 
 namespace ps {
 
 // One instrument track: its piano-roll pattern and its sound (a General MIDI instrument when one
-// is loaded, else Plaits or the subtractive synth). Everything is preallocated: real-time safe.
+// is loaded, else Plaits, a sample played across the keys or the subtractive synth). Everything is
+// preallocated: real-time safe.
 struct InstrumentTrack {
+    enum Source { SynthSource = 0, PlaitsSource = 1, SampledSource = 2 };
     Synth synth;
     SoundFontPlayer instrument;
     PlaitsSynth plaits;
+    SampleInstrument sampled;
     NoteTrack notes;
-    bool usePlaits = false;
+    int source = SynthSource;
     // Switched off tracks are neither rendered nor mixed (track 0 is always on).
     bool on = false;
 
@@ -30,13 +34,19 @@ struct InstrumentTrack {
         int steps = 16;
     } staged;
 
-    void prepare(int sampleRate) { synth.prepare(sampleRate); plaits.prepare(sampleRate); }
+    void prepare(int sampleRate) {
+        synth.prepare(sampleRate);
+        plaits.prepare(sampleRate);
+        sampled.prepare(sampleRate);
+    }
 
-    // Sequenced or live, the note sounds (a General MIDI instrument wins, then Plaits, then the synth).
+    // Sequenced or live, the note sounds (a General MIDI instrument wins, then the chosen source;
+    // a sampled source without its sound yet falls back to the synth).
     void noteOn(int n, float v, int at) {
         if (n >= 0 && n < 128) sustained[static_cast<size_t>(n)] = false;
         if (instrument.active()) instrument.noteOn(n, v, at);
-        else if (usePlaits) plaits.noteOn(n, v, at);
+        else if (source == PlaitsSource) plaits.noteOn(n, v, at);
+        else if (source == SampledSource && sampled.active()) sampled.noteOn(n, v, at);
         else synth.noteOn(n, v, at);
     }
     // Held by the sustain pedal until it is released.
@@ -51,15 +61,18 @@ struct InstrumentTrack {
         synth.allNotesOff();
         instrument.allNotesOff();
         plaits.allNotesOff();
+        sampled.allNotesOff();
         sustained.fill(false);
         arp.count = 0;
         arp.sounding = -1;
     }
-    void setUsePlaits(bool p) {
-        if (p == usePlaits) return;
+    void setSource(int s) {
+        s = std::clamp(s, 0, 2);
+        if (s == source) return;
         synth.allNotesOff();
         plaits.allNotesOff();
-        usePlaits = p;
+        sampled.allNotesOff();
+        source = s;
     }
 
     // --- Live playing: expression, sustain pedal and arpeggiator --------------------------------
@@ -102,7 +115,7 @@ struct InstrumentTrack {
     }
     void setExpression(int kind, float value) {
         switch (kind) {
-            case Bend: synth.setBend(value); plaits.setBend(value); break;
+            case Bend: synth.setBend(value); plaits.setBend(value); sampled.setBend(value); break;
             case Mod: synth.setMod(value); plaits.setMod(value); break;
             case Sustain:
                 sustain = value > 0.5f;
@@ -193,6 +206,7 @@ struct InstrumentTrack {
         synth.render(out, numFrames);
         instrument.render(out, numFrames);
         plaits.render(out, numFrames);
+        sampled.render(out, numFrames);
     }
 
 private:
@@ -200,6 +214,7 @@ private:
         // Note-offs go everywhere: a source switched while a key was held must not hang.
         instrument.noteOff(n, at);
         plaits.noteOff(n, at);
+        sampled.noteOff(n, at);
         synth.noteOff(n, at);
     }
     int arpNote() {

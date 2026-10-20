@@ -34,9 +34,11 @@ data class Project(
     val scene: Int = 0,
     /** The song: scenes in order with repeat counts. */
     val song: List<SongPart> = emptyList(),
-    /** The synth track's own sound: 0 = subtractive synth, 1 = Plaits (an [instrument] still wins). */
+    /** The synth track's own sound: 0 = subtractive synth, 1 = Plaits, 2 = [sampled] (an [instrument] still wins). */
     val synthEngine: Int = 0,
     val plaits: PlaitsPatch = PlaitsPatch(),
+    /** The first instrument track's sample played across the keys (see [SampledPatch]). */
+    val sampled: SampledPatch = SampledPatch(),
     /** Live pads: sounds switched on and off by a tap, in time. */
     val live: LivePads = LivePads(),
     /** The first instrument track's name and colour (its sound is [synth] / [plaits] / [instrument]). */
@@ -67,8 +69,9 @@ data class Project(
         mixer = mixer.sanitized(),
         remix = remix.sanitized(),
         automation = AutomationLane.sanitize(automation),
-        synthEngine = synthEngine.coerceIn(0, 1),
+        synthEngine = synthEngine.coerceIn(0, 2),
         plaits = plaits.sanitized(),
+        sampled = sampled.sanitized(),
         live = live.sanitized(),
         synthTrackName = synthTrackName.take(InstrumentTrack.MAX_NAME).ifBlank { "Synthé" },
         synthTrackColor = synthTrackColor.coerceIn(0, InstrumentTrack.COLORS - 1),

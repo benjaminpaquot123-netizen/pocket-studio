@@ -94,10 +94,13 @@ fun Project.addTrack(name: String? = null, engine: Int = 0): Project? {
 /** Removes added track [id] from the project and from every scene (the first track stays). */
 fun Project.removeTrack(id: Int): Project {
     if (id == 0) return this
+    val ch = InstrumentTrack.mixerChannel(id)
     return copy(
         tracks = tracks.filterNot { it.id == id },
         scenes = scenes.map { it.copy(trackNotes = it.trackNotes - id) },
-        automation = automation.filterNot { it.target.kind != AutoTarget.BUS_PARAM && it.target.ch == InstrumentTrack.mixerChannel(id) },
+        automation = automation.filterNot { it.target.kind != AutoTarget.BUS_PARAM && it.target.ch == ch },
+        // Its strip back to neutral: a solo left on it would silence every other one.
+        mixer = mixer.copy(channels = mixer.channels.mapIndexed { i, c -> if (i == ch) Channel() else c }),
     )
 }
 

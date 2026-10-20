@@ -199,6 +199,7 @@ fun AppRoot() {
     // Another project: save this one, remember the choice, then rebuild every screen on it.
     val openProject: (String) -> Unit = { id ->
         openScope.launch {
+            rhythmVm.keepTake()  // a microphone take in progress lands on its track first
             rhythmVm.flushNow()
             showProjects = false  // remembered across the rebuild: close it first
             CurrentProject.set(context, id)
@@ -536,8 +537,11 @@ fun AppRoot() {
             val topUndo by rhythmVm.session.canUndo.collectAsStateWithLifecycle()
             val topRedo by rhythmVm.session.canRedo.collectAsStateWithLifecycle()
             val topRecording by rhythmVm.recording.collectAsStateWithLifecycle()
+            val topTake by rhythmVm.audioRecording.collectAsStateWithLifecycle()
+            // No undo during a take: it could remove the track the take goes to.
+            val undoable = !topRecording && topTake == null
             TopBar(
-                TopBarUi(topProject.name, topProject.tempoBpm, topTransport.playing, topUndo && !topRecording, topRedo && !topRecording, topRecording),
+                TopBarUi(topProject.name, topProject.tempoBpm, topTransport.playing, topUndo && undoable, topRedo && undoable, topRecording),
                 TopBarActions(
                     projects = { showProjects = true }, undo = rhythmVm::undo, redo = rhythmVm::redo,
                     togglePlay = rhythmVm::togglePlay, toggleRecord = rhythmVm::toggleRecord,
@@ -611,6 +615,7 @@ fun AppRoot() {
                         val live by rhythmVm.live.collectAsStateWithLifecycle()
                         val canUndo by rhythmVm.session.canUndo.collectAsStateWithLifecycle()
                         val canRedo by rhythmVm.session.canRedo.collectAsStateWithLifecycle()
+                        val take by rhythmVm.audioRecording.collectAsStateWithLifecycle()
                         val sampleInfo by rhythmVm.sampleInfo.collectAsStateWithLifecycle()
                         val sampleTask by rhythmVm.sampleTask.collectAsStateWithLifecycle()
                         val slicer by rhythmVm.slicer.collectAsStateWithLifecycle()
@@ -621,8 +626,8 @@ fun AppRoot() {
                             project = project,
                             transport = transport,
                             live = live,
-                            canUndo = canUndo,
-                            canRedo = canRedo,
+                            canUndo = canUndo && take == null,
+                            canRedo = canRedo && take == null,
                             actions = RhythmActions(
                                 togglePlay = rhythmVm::togglePlay,
                                 toggleMetronome = rhythmVm::toggleMetronome,

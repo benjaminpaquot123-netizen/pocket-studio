@@ -47,13 +47,13 @@ class ProjectSession(
 
     /** Applies [transform] to the project. Same [coalesceKey] in a quick burst = one undo step. */
     fun edit(coalesceKey: String? = null, transform: (Project) -> Project) {
-        val next = transform(history.current).sanitized()
+        val next = clean(transform(history.current))
         if (history.push(next, coalesceKey, clock())) publish()
     }
 
     /** Like [edit] but not undoable: for changes the app makes on its own, like following the song. */
     fun editQuietly(transform: (Project) -> Project) {
-        val next = transform(history.current).sanitized()
+        val next = clean(transform(history.current))
         if (next == history.current) return
         history.replace(next)
         publish()
@@ -63,6 +63,15 @@ class ProjectSession(
     fun commitQuietEdits(before: Project) {
         history.commitFrom(before.sanitized())
         publish()
+    }
+
+    /**
+     * [p] sanitized; when that changes nothing, [p] itself, which shares all it did not change with
+     * the previous step (sanitized() rebuilds everything: each undo step would hold a whole copy).
+     */
+    private fun clean(p: Project): Project {
+        val s = p.sanitized()
+        return if (s == p) p else s
     }
 
     fun undo() {

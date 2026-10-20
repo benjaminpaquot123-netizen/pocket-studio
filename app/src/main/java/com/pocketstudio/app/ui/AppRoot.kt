@@ -264,7 +264,7 @@ fun AppRoot() {
                                 val placed = when {
                                     forTrack -> rhythmVm.useAsTrackSound(pcm, name, (option.ref as? com.pocketstudio.app.library.SoundRef.Pack)?.sound?.kind)
                                     live >= 0 -> rhythmVm.placeOnLivePad(live, pcm, name)
-                                    else -> rhythmVm.placeOnPad(pcm, name)
+                                    else -> rhythmVm.placeOnPad(pcm, name, oneShot = true)
                                 }
                                 if (placed) close()
                                 else libraryVm.notice("Un son est encore en train d'être posé ou enregistré : réessaie dans un instant.")

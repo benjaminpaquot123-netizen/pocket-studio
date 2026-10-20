@@ -20,9 +20,12 @@ import com.pocketstudio.model.Project
 import com.pocketstudio.model.SoundPacks
 import com.pocketstudio.model.StarterWizard
 import com.pocketstudio.model.StarterWizard.Role
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.awaitCancellation
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -242,6 +245,14 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
             _preparing.value = ref
             val pcm = try {
                 load(ref)
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                AppLog.add("Écoute impossible : ${e.javaClass.simpleName}")
+                null
+            } catch (e: OutOfMemoryError) {
+                AppLog.add("Écoute impossible : mémoire pleine")
+                null
             } finally {
                 if (_preparing.value == ref) _preparing.value = null
             }
@@ -392,6 +403,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                     StarterWizard.hits(line.pattern).forEach { (step, hit) -> if (step < steps) NativeEngine.setDrumHit(lane, step, hit.velocity) }
                 }
                 parts.forEachIndexed { track, (part, sound) ->
+                    NativeEngine.setTrackOn(track, true)  // a fresh engine only plays track 0
                     sound.synth.sanitized().values.forEachIndexed { i, v -> NativeEngine.setSynthParam(i, v, track) }
                     sound.plaits?.let { p -> p.sanitized().engineValues().forEachIndexed { i, v -> NativeEngine.setPlaitsParam(i, v, track) } }
                     val sample = natives[beat.size + track]
@@ -408,7 +420,13 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                     NativeEngine.setSynthNoteCount(notes.size, track)
                 }
             }
-            withContext(Dispatchers.Default) { job.renderToArray(OfflineExport.framesFor(bars, style.bpm), OfflineExport.SAMPLE_RATE / 2L) }
+            coroutineScope {
+                // A preview dropped for another one stops rendering at once.
+                var rendered = false
+                val stopper = launch { try { awaitCancellation() } finally { if (!rendered) job.cancel() } }
+                withContext(Dispatchers.Default) { job.renderToArray(OfflineExport.framesFor(bars, style.bpm), OfflineExport.SAMPLE_RATE / 2L) }
+                    .also { rendered = true; stopper.cancel() }
+            }
         } finally {
             withContext(NonCancellable + Dispatchers.Main) {
                 job.close()
@@ -457,7 +475,8 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
     fun choosePartSound(part: StarterWizard.Part, sound: StarterWizard.PartSound) {
         _wizard.update { w -> w.parts[part]?.let { w.copy(parts = w.parts + (part to it.copy(sound = sound, enabled = true))) } ?: w }
         val ref = SoundRef.Melodic(part, sound)
-        if (_playing.value != ref) preview(ref)
+        // A second touch while it prepares waits for it; while it plays, it stops it.
+        if (_preparing.value != ref) preview(ref)
     }
 
     fun next() {
@@ -480,7 +499,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
     /** Picks the sound for the line and lets it be heard. */
     fun choose(role: Role, option: SoundOption) {
         editRow(role) { it.copy(sound = option, enabled = true) }
-        if (_playing.value != option.ref) preview(option.ref)
+        if (_preparing.value != option.ref) preview(option.ref)
     }
 
     private fun editRow(role: Role, transform: (WizardRow) -> WizardRow) =

@@ -544,9 +544,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** On the selected drum pad (it plays once placed). */
     /** False when another sound is still being placed or recorded (nothing done). */
-    fun placeOnPad(pcm: Pcm, name: String): Boolean {
+    fun placeOnPad(pcm: Pcm, name: String, oneShot: Boolean = false): Boolean {
         if (_sampleTask.value is SampleTask.Busy || _sampleTask.value is SampleTask.Recording) return false
-        sampleJob("Pose du son sur le pad ${_transport.value.selectedPad + 1}…") { padSamples.add(pcm.withoutTail(), name) }
+        // A library one-shot loses its silent tail; a loop or a phrase keeps its length.
+        sampleJob("Pose du son sur le pad ${_transport.value.selectedPad + 1}…") { padSamples.add(if (oneShot) pcm.withoutTail() else pcm, name) }
         return true
     }
 
@@ -1859,7 +1860,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             throw UserMessage("Ce fichier n'a pas pu être lu (${e.message ?: "format inconnu"}).")
         }
         AppLog.add("Import « $name » : ${pcm.channels} canal(aux), ${pcm.sampleRate} Hz, ${"%.1f".format(pcm.seconds)} s")
-        padSamples.add(pcm.withoutTail(), name)
+        padSamples.add(pcm, name)
     }
 
     /**

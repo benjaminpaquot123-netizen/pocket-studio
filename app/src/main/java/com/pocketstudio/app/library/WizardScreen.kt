@@ -46,6 +46,8 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontStyle
@@ -102,7 +104,9 @@ private fun ListenButton(ref: SoundRef, onClick: () -> Unit, modifier: Modifier 
     val listening = LocalListening.current
     val icon: @Composable () -> Unit = {
         when (ref) {
-            listening.preparing -> CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp, color = Neon.Cyan)
+            listening.preparing -> CircularProgressIndicator(
+                Modifier.size(18.dp).semantics { contentDescription = "Préparation de l'écoute" }, strokeWidth = 2.dp, color = Neon.Cyan,
+            )
             listening.playing -> Icon(Icons.Filled.Stop, contentDescription = "Arrêter l'écoute", tint = Neon.Cyan)
             else -> Icon(Icons.Filled.PlayArrow, contentDescription = "Écouter", tint = Neon.Cyan)
         }

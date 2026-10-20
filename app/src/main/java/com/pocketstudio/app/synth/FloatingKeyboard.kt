@@ -83,22 +83,22 @@ internal fun FloatingKeyboard(
                     .clip(shape)
                     .background(Brush.verticalGradient(listOf(Neon.SurfaceHigh, Neon.Surface)))
                     .border(1.dp, Neon.Outline, shape)
-                    .pointerInput(Unit) {
-                        // A firm drag down on the header folds it, like a bottom sheet.
-                        var dragged = 0f
-                        detectVerticalDragGestures(
-                            onDragStart = { dragged = 0f },
-                            onVerticalDrag = { _, dy -> dragged += dy },
-                            onDragEnd = { if (dragged > 48.dp.toPx()) onFold(true) },
-                        )
-                    }
                     .testTag("float_keyboard")
                     .padding(start = 10.dp, end = 10.dp, bottom = 10.dp),
             ) {
-                Box(Modifier.fillMaxWidth().padding(top = 6.dp), contentAlignment = Alignment.Center) {
+                // A firm drag down on the header (not on the keys) folds it, like a bottom sheet.
+                val dragToFold = Modifier.pointerInput(Unit) {
+                    var dragged = 0f
+                    detectVerticalDragGestures(
+                        onDragStart = { dragged = 0f },
+                        onVerticalDrag = { _, dy -> dragged += dy },
+                        onDragEnd = { if (dragged > 48.dp.toPx()) onFold(true) },
+                    )
+                }
+                Box(Modifier.fillMaxWidth().then(dragToFold).padding(top = 6.dp), contentAlignment = Alignment.Center) {
                     Box(Modifier.width(40.dp).height(4.dp).clip(RoundedCornerShape(2.dp)).background(Neon.TextSecondary.copy(alpha = 0.5f)))
                 }
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(dragToFold, verticalAlignment = Alignment.CenterVertically) {
                     Icon(Icons.Filled.Piano, contentDescription = null, tint = Neon.Cyan, modifier = Modifier.size(18.dp))
                     Text(
                         if (chordPads) "  Pads d'accords" else "  Clavier",

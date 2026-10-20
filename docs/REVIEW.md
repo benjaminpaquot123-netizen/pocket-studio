@@ -276,3 +276,23 @@ Corrigé :
 - Assistant : les nappes des packs se relâchent en 0,4 s ; l'indication des packs aussi pour les nappes.
 - Bibliothèque : « Packs de sons » triés par nom, texte d'aide général quand une famille est vide.
 - Décision : « identique à l'échantillon près » corrigé en « le même aux arrondis près ».
+
+## Phase 14 (nouveau look, blocs repliables, écoute dans l'assistant), relecture de fin de phase
+
+Vérifié par le relecteur : sons natifs de l'écoute libérés sur tous les chemins (annulation comprise), commandes moteur sur le fil principal, rien dans le fil audio, pas de note bloquée quand le clavier qui suit disparaît, pas de boucle de recomposition, aucun tag utilisé par les tests supprimé.
+
+Corrigé :
+- Grave : à l'écoute dans l'assistant, la nappe et le lead étaient muets (pistes 1 et 2 éteintes dans le moteur d'export). Allumées.
+- La fin silencieuse n'est plus coupée que pour les sons de la bibliothèque et le micro : une boucle importée ou générée garde sa longueur (sinon elle rebouclait trop tôt). Test de la coupe (silence, une image, stéréo, sons longs).
+- Bloc replié : plus d'ouverture puis fermeture animée à chaque affichage (animation seulement après un toucher, hauteur du titre mémorisée et mesurée par la carte ou le titre, le dernier placé). Test : toucher le titre replie la carte, la retoucher la rouvre.
+- Assistant : toucher une deuxième fois un son en préparation n'annule plus l'écoute ; le retoucher pendant qu'il joue l'arrête. Une écoute abandonnée arrête son rendu ; une erreur d'écoute n'arrête plus l'appli.
+- Clavier qui suit : glisser sur une touche ne le range plus (seulement l'en-tête).
+- « Son » de l'acide et « Son » des réglages ne se replient plus ensemble. Roue de préparation nommée pour TalkBack.
+- CI : le test sur émulateur retélécharge l'émulateur et son image tant qu'elles sont incomplètes (serveur de Google qui envoie des archives cassées), et les garde en cache.
+
+Restant (mineur) :
+- Le clavier qui suit se base sur toute la carte Clavier (avec l'arpège ouvert, les touches peuvent être hors écran sans qu'il apparaisse).
+- Clavier qui suit en mode Pads : tags de test en double avec les pads de la carte (aucun test ne s'en sert).
+- Cibles tactiles sous 48 dp : familles de sons (36), octave −/+ (40), lecture du haut (42), pastille « Clavier ».
+- Pas de « Tout déplier » dans les réglages.
+- Performances : halo des pads recomposé à chaque image pendant un coup ; grilles de vignettes non paresseuses (gros packs) ; préférences de pli lues au démarrage sur le fil principal ; sons de batterie des packs redécodés à chaque écoute.

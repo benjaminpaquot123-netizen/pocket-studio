@@ -95,9 +95,24 @@ internal class CardFold {
     var header: Any? = null
     var key by mutableStateOf<String?>(null)
     var card: LayoutCoordinates? = null
+    var headerCoordinates: LayoutCoordinates? = null
     /** Bottom of the header in the card, in pixels (0: not measured yet). */
     var headerBottom by mutableFloatStateOf(0f)
+    /** Size changes animate once the user has folded or opened the card, not when it first shows. */
+    var animate by mutableStateOf(false)
+
+    /** Called when the card or its header is placed: whichever comes last can measure. */
+    fun measure() {
+        val card = card ?: return
+        val header = headerCoordinates ?: return
+        if (!card.isAttached || !header.isAttached) return
+        headerBottom = card.localPositionOf(header, Offset(0f, header.size.height.toFloat())).y
+        key?.let { headerBottoms[it] = headerBottom }
+    }
 }
+
+/** Last measured header bottoms, by fold key: a folded card shows folded from its first frame. */
+private val headerBottoms = HashMap<String, Float>()
 
 internal val LocalCardFold = compositionLocalOf<CardFold?> { null }
 
@@ -135,9 +150,12 @@ fun NeonCard(
             .clip(shape)
             .background(Brush.verticalGradient(listOf(lerp(surface, Color.White, 0.05f), surface, lerp(surface, Color.Black, 0.07f))))
             .border(if (highlighted) 1.5.dp else 1.dp, edge, shape)
-            .animateContentSize(spring(dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessMediumLow))
+            .then(if (fold.animate) Modifier.animateContentSize(spring(dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessMediumLow)) else Modifier)
             .then(if (folded) Modifier.height(headerHeight).clipToBounds() else Modifier)
-            .onGloballyPositioned { fold.card = it },
+            .onGloballyPositioned {
+                fold.card = it
+                fold.measure()
+            },
     ) {
         CompositionLocalProvider(LocalCardFold provides fold) {
             Column(
@@ -162,12 +180,24 @@ fun SectionLabel(text: String, modifier: Modifier = Modifier, color: Color = Neo
     val isHeader = fold != null && (fold.header == null || fold.header === me)
     if (isHeader) {
         fold!!.header = me
-        DisposableEffect(fold) { onDispose { if (fold.header === me) fold.header = null } }
+        DisposableEffect(fold) {
+            onDispose {
+                if (fold.header === me) {
+                    fold.header = null
+                    fold.key = null
+                    fold.headerCoordinates = null
+                    fold.headerBottom = 0f
+                }
+            }
+        }
     }
     val key = foldKey ?: text
     val store = LocalFoldStore.current
     val folded = isHeader && store.isFolded(key)
-    if (isHeader && fold!!.key != key) fold.key = key
+    if (isHeader && fold!!.key != key) {
+        fold.key = key
+        if (fold.headerBottom == 0f) fold.headerBottom = headerBottoms[key] ?: 0f
+    }
     val turn by animateFloatAsState(if (folded) -90f else 0f, label = "fold-chevron")
     val chevron = Neon.TextSecondary.copy(alpha = 0.45f)
     val label: @Composable () -> Unit = {
@@ -188,13 +218,14 @@ fun SectionLabel(text: String, modifier: Modifier = Modifier, color: Color = Neo
     val headerModifier = if (isHeader) {
         modifier
             .onGloballyPositioned { c ->
-                val card = fold!!.card
-                if (card != null && card.isAttached && c.isAttached) {
-                    fold.headerBottom = card.localPositionOf(c, Offset(0f, c.size.height.toFloat())).y
-                }
+                fold!!.headerCoordinates = c
+                fold.measure()
             }
             .clip(RoundedCornerShape(6.dp))
-            .clickable(role = Role.Button, onClickLabel = if (folded) "Déplier" else "Replier") { store.setFolded(key, !folded) }
+            .clickable(role = Role.Button, onClickLabel = if (folded) "Déplier" else "Replier") {
+                fold!!.animate = true
+                store.setFolded(key, !folded)
+            }
             .semantics { stateDescription = if (folded) "Replié" else "Déplié" }
             .heightIn(min = 24.dp)
             .testTag("fold_$key")

@@ -326,7 +326,7 @@ private fun SoundCard(acid: AcidPattern, actions: AcidActions, browser: SoundBro
     var sliders by remember { mutableStateOf(SoundView.sliders(context)) }
     NeonCard {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            SectionLabel("Son", Modifier.weight(1f), help = Glossary.FILTER)
+            SectionLabel("Son", Modifier.weight(1f), help = Glossary.FILTER, foldKey = "Son acide")
             listOf(false to "Panneau", true to "Curseurs").forEach { (mode, label) ->
                 FilterChip(
                     selected = sliders == mode,

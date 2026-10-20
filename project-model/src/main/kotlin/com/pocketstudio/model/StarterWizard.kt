@@ -355,13 +355,13 @@ object StarterWizard {
         }
     }
 
-    /** The lines that hold a beat on their own: scene A when scene B is not the melody. */
-    private val GROUND = setOf(Role.Kick, Role.Snare, Role.Clap)
+    /** The lines that hold a beat on their own (the 808 follows the kick): scene A when B is not the melody. */
+    private val GROUND = setOf(Role.Kick, Role.Snare, Role.Clap, Role.Bass808)
 
     /**
      * Shares the [lines] and [parts] used (and the acid line, when there is one) between scenes A
      * and B: the drums and the bass in A, the chords and the lead in B; with no chords nor lead,
-     * kick, snare and clap (and the bass) in A, the hats and percussion (and the acid) in B.
+     * kick, snare, clap and 808 (and the bass) in A, the hats and percussion (and the acid) in B.
      */
     fun scenePlan(lines: Set<Role>, parts: Set<Part>, acid: Boolean): ScenePlan {
         val melody = Part.Pad in parts || Part.Lead in parts

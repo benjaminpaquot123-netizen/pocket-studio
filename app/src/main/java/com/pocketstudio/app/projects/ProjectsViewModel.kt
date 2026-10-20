@@ -51,7 +51,7 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /** A new project with its own sounds ([sounds]: file name in its samples folder → audio). */
-    fun create(project: Project, sounds: Map<String, com.pocketstudio.app.audio.Pcm>, then: (String) -> Unit) = io("Nouveau morceau") {
+    fun create(project: Project, sounds: Map<String, com.pocketstudio.app.audio.Pcm>, failed: (String) -> Unit = {}, then: (String) -> Unit) = io("Nouveau morceau", failed) {
         val id = catalog.create(project) { dir ->
             dir.mkdirs()
             sounds.forEach { (name, pcm) -> com.pocketstudio.app.audio.FloatWav.write(java.io.File(dir, name), pcm) }
@@ -120,13 +120,15 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
         _state.value = _state.value.copy(projects = catalog.list(), loading = false)
     }
 
-    private fun io(what: String, block: suspend () -> Unit) {
+    private fun io(what: String, failed: (String) -> Unit = {}, block: suspend () -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 block()
             } catch (e: Exception) {
                 AppLog.add("$what impossible : ${e.message}")
-                _state.value = _state.value.copy(message = "$what impossible (${e.message ?: "erreur"}).", loading = false)
+                val message = "$what impossible (${e.message ?: "erreur"})."
+                _state.value = _state.value.copy(message = message, loading = false)
+                withContext(Dispatchers.Main) { failed(message) }
             }
         }
     }

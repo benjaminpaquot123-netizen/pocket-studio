@@ -466,6 +466,11 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         refreshPacks()
     }
 
+    /** Writing the new project failed: the choices are still there, to try again. */
+    fun createFailed(message: String) {
+        _wizard.update { it.copy(creating = false, error = message) }
+    }
+
     fun closeWizard() {
         stopPreview()
         _wizard.value = WizardUi()
@@ -557,7 +562,11 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
      * Builds the new song: [then] gets the project and the sounds to store in its folder
      * (file name → audio), on the main thread.
      */
-    fun create(then: (Project, Map<String, Pcm>) -> Unit) {
+    /**
+     * Builds the song from the choices as they are now and hands it to [then] with its sounds and
+     * the guide that describes it; the assistant stays "creating" until it is closed or [createFailed].
+     */
+    fun create(then: (Project, Map<String, Pcm>, List<com.pocketstudio.app.settings.GuidePage>) -> Unit) {
         val w = _wizard.value
         val style = w.style ?: return
         if (w.creating) return
@@ -597,8 +606,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                 }
                 AppLog.add("Assistant : morceau ${style.name}, ${sounds.size} lignes, ${parts.size} pistes mélodiques")
                 // The choices stay until the project is written (the caller closes the assistant then).
-                then(StarterWizard.build(style, sounds, w.mood, parts), files)
-                _wizard.update { it.copy(creating = false) }
+                then(StarterWizard.build(style, sounds, w.mood, parts), files, songGuide(style.name, w.plan))
             } catch (e: Exception) {
                 _wizard.update { it.copy(creating = false, error = "Le morceau n'a pas pu être préparé (${e.message}).") }
             }

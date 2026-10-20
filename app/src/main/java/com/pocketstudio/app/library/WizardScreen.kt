@@ -249,7 +249,8 @@ private fun LineStep(
     val look = SoundLooks.of(role.id)
     NeonCard {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            SectionLabel("Choisis le son", Modifier.weight(1f))
+            // Folded or not for this line only (the same title in every step).
+            SectionLabel("Choisis le son", Modifier.weight(1f), foldKey = "Choisis le son : ${role.id}")
             row.sound?.let { sound ->
                 val demo = SoundRef.LineDemo(role, sound)
                 ListenButton(demo, { actions.preview(demo) }, Modifier.testTag("wizard_line_listen"), label = "Avec le rythme")
@@ -519,7 +520,7 @@ private fun PartStep(style: StarterWizard.Style, ui: WizardUi, packs: PacksUi, p
     if (row == null || !row.enabled) return
     val look = SoundLooks.of(part.categories.first())
     NeonCard {
-        SectionLabel("Choisis le son")
+        SectionLabel("Choisis le son", foldKey = "Choisis le son : ${part.id}")
         val sounds = StarterWizard.soundsFor(part, style, packs.installed)
         val listening = LocalListening.current
         TileGrid(sounds.size) { i, m ->

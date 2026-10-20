@@ -434,3 +434,18 @@ Corrigé :
 Restant (mineur) :
 - Enregistrement en direct lancé à l'arrêt : le chrono compte aussi la mesure de décompte.
 - Ce que MagicOS fait de la notification promue (pastille, Capsule magique ou rien) : à voir sur le Magic 8 Pro.
+
+## Phase 18 (assistant en deux scènes, styles connus d'abord, repli partout), relecture de fin de phase
+
+Relecture neuve : les données sont saines (14 620 constructions essayées : chaque ligne et partie dans une seule scène, aucune scène vide, aller-retour JSON et changement de scène identiques).
+
+Corrigé :
+- Grave : le guide de fin ne s'affichait jamais (ouvrir le projet recrée l'activité et effaçait l'état) ; il est gardé par `rememberSaveable` (test qui échoue avec un simple `remember`).
+- Le guide décrit le morceau tel qu'il a été construit (plan pris au même instant que les choix) ; « Créer » reste bloqué jusqu'à la fermeture de l'assistant (plus de double projet), et un échec d'écriture rend la main avec un message.
+- La 808 reste avec le kick dans la scène A quand il n'y a pas de mélodie.
+- « Choisis le son » se replie ligne par ligne (avant : replié une fois, replié partout) ; le titre d'un groupe repliable se touche sur toute la largeur.
+- Test invariant : chaque choix joue dans la scène prévue, aller-retour JSON et changement de scène, pour tous les styles.
+
+Restant (mineur) :
+- Replier la carte d'une ligne cache aussi « Utiliser cette ligne » et le repère de scène (le titre reste visible pour rouvrir).
+- Un groupe « Les plus connus » replié le reste la fois suivante (mémorisé, comme les cartes).

@@ -274,7 +274,8 @@ fun FoldSection(
     val canFold = LocalFolding.current
     val folded = canFold && LocalFoldStore.current.isFolded(key)
     Column(modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(spacing)) {
-        Box(if (canFold) Modifier.foldToggle(key, folded) else Modifier, contentAlignment = Alignment.CenterStart) {
+        // The whole width folds (an easy target), not just the words.
+        Box(Modifier.fillMaxWidth().then(if (canFold) Modifier.foldToggle(key, folded) else Modifier), contentAlignment = Alignment.CenterStart) {
             SectionTitle(title, color, folded.takeIf { canFold }, subtle)
         }
         AnimatedVisibility(!folded, enter = expandVertically() + fadeIn(), exit = shrinkVertically() + fadeOut()) {

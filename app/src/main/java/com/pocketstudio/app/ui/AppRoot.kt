@@ -314,7 +314,8 @@ fun AppRoot() {
         }
     }
     // The assistant made a song: a short guide to its two scenes and what to do next.
-    var songGuide by remember { mutableStateOf<List<com.pocketstudio.app.settings.GuidePage>?>(null) }
+    // Kept through the rebuild that opening the new project does (the activity is recreated).
+    var songGuide by com.pocketstudio.app.library.rememberSongGuide()
     songGuide?.let { pages ->
         com.pocketstudio.app.settings.GuideDialog(onClose = { songGuide = null }, pages = pages, tag = "song_guide", done = "À moi de jouer !")
     }
@@ -347,10 +348,9 @@ fun AppRoot() {
                         cancelDownload = libraryVm::cancelDownload,
                         deletePack = libraryVm::deletePack,
                         create = {
-                            libraryVm.create { project, sounds ->
-                                projectsVm.create(project, sounds) { id ->
-                                    val made = libraryVm.wizard.value
-                                    songGuide = com.pocketstudio.app.library.songGuide(made.style?.name ?: project.name, made.plan)
+                            libraryVm.create { project, sounds, guide ->
+                                projectsVm.create(project, sounds, failed = libraryVm::createFailed) { id ->
+                                    songGuide = guide
                                     libraryVm.closeWizard()
                                     openProject(id)
                                 }

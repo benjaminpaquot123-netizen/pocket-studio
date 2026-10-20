@@ -1,7 +1,23 @@
 package com.pocketstudio.app.library
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.rememberSaveable
 import com.pocketstudio.app.settings.GuidePage
 import com.pocketstudio.model.StarterWizard
+
+/** The guide waiting to be read, kept through the activity's rebuild (opening a project recreates it). */
+@Composable
+fun rememberSongGuide(): MutableState<List<GuidePage>?> =
+    rememberSaveable(key = "song_guide", stateSaver = GuidePagesSaver) { mutableStateOf(null) }
+
+/** Pages as title, lines, title, lines… (a line never holds a line break). */
+private val GuidePagesSaver = Saver<List<GuidePage>?, ArrayList<String>>(
+    save = { pages -> ArrayList(pages.orEmpty().flatMap { listOf(it.title, it.lines.joinToString("\n")) }) },
+    restore = { saved -> saved.chunked(2).filter { it.size == 2 }.map { (title, lines) -> GuidePage(title, lines.split("\n")) }.ifEmpty { null } },
+)
 
 /**
  * The guide that opens once the assistant has made the song: its two scenes, how to hear each

@@ -182,7 +182,7 @@ class StarterWizardTest {
         val lines = style.lines.associate { it.role to null as PadSample? }
         val p = StarterWizard.build(style, lines)
         val (a, b) = p.allScenes
-        val ground = setOf(StarterWizard.Role.Kick, StarterWizard.Role.Snare, StarterWizard.Role.Clap)
+        val ground = setOf(StarterWizard.Role.Kick, StarterWizard.Role.Snare, StarterWizard.Role.Clap, StarterWizard.Role.Bass808)
         for (line in style.lines) {
             val inA = a.drums.lanes[line.role.lane].hits.isNotEmpty()
             val inB = b.drums.lanes[line.role.lane].hits.isNotEmpty()
@@ -191,6 +191,31 @@ class StarterWizardTest {
         }
         val plan = StarterWizard.scenePlan(lines.keys, emptySet(), acid = false)
         assertEquals(listOf("la base", "le groove"), listOf(plan.title(0), plan.title(1)))
+    }
+
+    @Test
+    fun everyChoicePlaysInOneSceneAndSurvivesSavingAndSwitching() {
+        for (style in StarterWizard.STYLES) for (mood in listOf(null) + StarterWizard.Mood.entries.take(2)) {
+            val lines = style.lines.associate { it.role to null as PadSample? }
+            val parts = if (mood == null) emptyMap() else StarterWizard.Part.entries.associateWith { StarterWizard.soundsFor(it, style).first() }
+            val p = StarterWizard.build(style, lines, mood, parts)
+            val plan = StarterWizard.scenePlan(lines.keys, parts.keys, acid = mood != null && style.melody.acid != null)
+            val (a, b) = p.allScenes
+            for (line in style.lines) {
+                if (StarterWizard.hits(line.pattern).isEmpty()) continue
+                val plays = listOf(a, b).map { it.drums.lanes[line.role.lane].hits.isNotEmpty() }
+                // In exactly the scene the plan says (in both when B is a copy).
+                val expected = if (plan.copy) listOf(true, true) else listOf(plan.lines[line.role] == 0, plan.lines[line.role] == 1)
+                assertEquals("${style.name} $mood ${line.role}", expected, plays)
+            }
+            // Without a mood no part is made (the first track stays empty).
+            if (parts.isNotEmpty()) p.instrumentTracks.forEach { t ->
+                val plays = listOf(a, b).map { (if (t.id == 0) it.synthNotes else it.trackNotes.getValue(t.id)).notes.isNotEmpty() }
+                assertTrue("${style.name} $mood ${t.name}", if (plan.copy) plays.all { it } else plays.count { it } == 1)
+            }
+            assertEquals(p, ProjectJson.decode(ProjectJson.encode(p)))
+            assertEquals(p, p.switchScene(1).switchScene(0))
+        }
     }
 
     @Test

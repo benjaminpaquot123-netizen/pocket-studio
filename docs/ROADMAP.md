@@ -84,4 +84,4 @@ Feu vert de Benjamin (D4 = A) : fusion de la pull request en fin de phase.
 
 ## Phase 9 : génération
 - [ ] 9.1 Stable Audio Open Small (LiteRT)
-- [ ] 9.2 Modèles par genre
+- [x] 9.2 Modèles par genre

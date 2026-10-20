@@ -2,6 +2,7 @@ package com.pocketstudio.app.projects
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -127,7 +128,7 @@ fun ProjectsScreen(ui: ProjectsUi, currentId: String, starters: List<ProjectStar
             onDismissRequest = { choosingStart = false },
             title = { Text("Nouveau projet") },
             text = {
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Column(Modifier.verticalScroll(androidx.compose.foundation.rememberScrollState()), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     starters.forEachIndexed { i, s ->
                         Card(
                             colors = CardDefaults.cardColors(containerColor = Neon.SurfaceHigh),

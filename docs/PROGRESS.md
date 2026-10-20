@@ -163,7 +163,7 @@
 - Phase 20 (branche phase20-wip, fusion de phase20-a/b/c) : corrections de l'audit d'utilisation, voir `docs/REVIEW.md`.
 
 ## Prochaine étape exacte
-1. Phases 16 à 19 fusionnées (#27 à #30). Phase 20 (audit d'utilisation complet, quatre parcours, et les scènes neuves/vidées) : relecture neuve, PR, CI, fusion, résumé à Benjamin.
+1. Phases 16 à 20 fusionnées (#27 à #31). Phase 20 = audit d'utilisation complet (quatre parcours) + scènes neuves/vidées. Attendre le retour de recette de Benjamin (issues GitHub) avant tout le reste.
 2. Ensuite, dans l'ordre :
    - le niveau général (marge, limiteur, vumètre avant le limiteur), à mesurer sur le téléphone ;
    - le tempo changé pendant la lecture (pads calés, Remix) ;

@@ -173,6 +173,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** Sends the whole project to the engine, e.g. after the audio stream (re)started. */
     fun syncEngine() {
         if (!NativeEngine.isAvailable) return
+        NativeEngine.setStaging(false)  // whatever happened before, edits go to the playing scene
         val p = project.value
         NativeEngine.setTempo(p.tempoBpm)
         NativeEngine.setSwing(p.swing)
@@ -248,7 +249,37 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         syncEngine()
         _sessionUi.value = SessionUi(songIndex = 0)
         togglePlay()
-        stageSongPart(1)
+        // The whole project just went to the engine: let the queue drain before the next scene.
+        viewModelScope.launch {
+            kotlinx.coroutines.delay(150)
+            if (_transport.value.playing && _sessionUi.value.songIndex == 0) stageSongPart(1)
+        }
+    }
+
+    /**
+     * In song mode the next part is sent ahead; if it is the scene being edited (a part
+     * repeated, or A then A), edits must reach that waiting copy too, or the swap would undo them.
+     */
+    private var restageJob: kotlinx.coroutines.Job? = null
+
+    private fun restageIfEditingUpcoming() {
+        val ui = _sessionUi.value
+        if (ui.songIndex < 0 || ui.pending != project.value.scene || !_transport.value.playing) return
+        restageJob?.cancel()
+        restageJob = viewModelScope.launch {
+            kotlinx.coroutines.delay(150)  // one resend after a burst of edits
+            val ui2 = _sessionUi.value
+            if (ui2.songIndex >= 0 && ui2.pending == project.value.scene && _transport.value.playing) stageSongPart(ui2.songIndex + 1)
+        }
+    }
+
+    /** The engine swapped scenes but the 40 ms watch had not seen it yet: follow it now. */
+    private fun catchUpMissedSwap() {
+        if (!NativeEngine.isAvailable) return
+        if (_sessionUi.value.pending != null && NativeEngine.sceneSwaps() != swapsSeen) {
+            swapsSeen = NativeEngine.sceneSwaps()
+            _sessionUi.value.pending?.let { now -> session.editQuietly { it.switchScene(now) } }
+        }
     }
 
     /** Sends scene [index] to the engine's waiting slot and arms the swap after [afterSteps] (0 = next bar). */
@@ -1247,8 +1278,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (!NativeEngine.isAvailable) return
         if (playing) NativeEngine.play(if (t.countIn) 1 else 0) else {
             NativeEngine.stopTransport()
-            restoreAfterAutomation()
+            catchUpMissedSwap()
             _sessionUi.value = SessionUi()
+            // Engine and screens agree again on the scene, whatever the swaps did.
+            syncEngine()
         }
         val app = getApplication<Application>()
         AppLog.add(if (playing) "Lecture (${project.value.tempoBpm.toInt()} BPM)" else "Stop")
@@ -1262,6 +1295,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     val keepsRunningInBackground: Boolean get() = _transport.value.playing
 
     init {
+        viewModelScope.launch { project.collect { restageIfEditingUpcoming() } }
         loadPadSamples()
         if (project.value.instrument != null) openLibrary()
         viewModelScope.launch {

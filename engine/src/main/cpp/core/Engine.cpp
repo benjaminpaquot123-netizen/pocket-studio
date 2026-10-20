@@ -74,6 +74,7 @@ void Engine::applyCommand(const Command& command) {
                 sceneStart_ = 0;
             } else {
                 swapAt_ = -1;
+                staging_ = false;  // a lost "staging off" must never trap later edits
                 sequencer_.stop();
                 stems_.stop();
                 acid_.stop();
@@ -118,6 +119,7 @@ void Engine::applyCommand(const Command& command) {
             break;
         case CommandType::ArmSceneSwap:
             swapAt_ = command.a < 0 ? -1 : command.a;
+            staging_ = false;  // arming ends a staging burst even if its "off" was dropped
             break;
         case CommandType::SetAcidRoot:
             acid_.setRoot(command.a);
@@ -241,7 +243,9 @@ void Engine::onStep(int offset, int step) {
     // A waiting scene takes over on its step (or the next bar), before anything of this step plays.
     if (swapAt_ >= 0) {
         const int local = step - sceneStart_;
-        if ((swapAt_ > 0 && local >= swapAt_) || (swapAt_ == 0 && local > 0 && local % Sequencer::kStepsPerBar == 0)) swapScene(step);
+        // Always on a bar line: a swap armed late waits for the next bar instead of cutting one.
+        const bool onBar = local > 0 && local % Sequencer::kStepsPerBar == 0;
+        if (onBar && (swapAt_ == 0 || local >= swapAt_)) swapScene(step);
     }
     // Patterns count from the start of their scene; the remix stems follow the transport.
     const int local = step - sceneStart_;

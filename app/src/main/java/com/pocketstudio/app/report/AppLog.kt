@@ -31,7 +31,10 @@ object AppLog {
 
     /** Last lines of the previous session (empty if none). */
     fun previous(dir: File, maxLines: Int = 40): String =
-        runCatching { File(dir, "applog-previous.txt").readLines().takeLast(maxLines).joinToString("\n") }.getOrDefault("")
+        runCatching {
+            // Crash reports go to a public issue: song and file names (between « ») stay on the phone.
+            File(dir, "applog-previous.txt").readLines().takeLast(maxLines).joinToString("\n").replace(Regex("«[^»]*»"), "«…»")
+        }.getOrDefault("")
 
     fun add(message: String) {
         val line = "${LocalTime.now().format(time)} ${LogTail.redact(message)}"
@@ -39,7 +42,13 @@ object AppLog {
             if (lines.size == CAPACITY) lines.removeFirst()
             lines.addLast(line)
             // Small appends, a few per minute at most; never from the audio thread.
-            file?.let { f -> runCatching { if (f.length() < 256_000) f.appendText(line + "\n") } }
+            file?.let { f ->
+                runCatching {
+                    // Keep the newest lines: halve the file when it grows past 256 KB.
+                    if (f.length() > 256_000) f.writeText(f.readText().takeLast(128_000).substringAfter('\n'))
+                    f.appendText(line + "\n")
+                }
+            }
         }
     }
 

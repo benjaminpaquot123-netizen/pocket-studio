@@ -1921,6 +1921,25 @@ void testScenesSwapOnTheBar() {
     engine.post({ps::CommandType::ArmSceneSwap, 0.0f, -1});
     render(engine, kRate * 3, 256);
     CHECK(engine.sceneSwaps() == 2);
+    // A staging burst whose "off" got lost: stopping the transport ends it, so later edits are heard.
+    engine.post({ps::CommandType::SetStaging, 1.0f});
+    engine.post({ps::CommandType::SetTransport, 0.0f});
+    engine.post({ps::CommandType::SetDrumHit, 1.0f, 7, 0});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    const auto before7 = engine.laneTriggerCount(7);
+    render(engine, kRate, 256);
+    CHECK(engine.laneTriggerCount(7) == before7 + 1);
+    // Staged acid and piano-roll notes arrive with the swap.
+    engine.post({ps::CommandType::SetStaging, 1.0f});
+    engine.post({ps::CommandType::SetAcidStep, 0.0f, 0, ps::AcidStep{0, 0, false, false, true}.pack()});
+    engine.post({ps::CommandType::SetAcidLength, 0.0f, 16});
+    engine.post({ps::CommandType::SetSynthNote, 0.9f, 0, ps::NoteTrack::pack(0, 12, 60)});
+    engine.post({ps::CommandType::SetSynthNoteCount, 0.0f, 1});
+    engine.post({ps::CommandType::ArmSceneSwap, 0.0f, 0});  // ends staging by itself
+    const auto acidBefore = engine.acidNotesPlayed();
+    render(engine, kRate * 3, 256);
+    CHECK(engine.sceneSwaps() == 3);
+    CHECK(engine.acidNotesPlayed() > acidBefore);
 }
 
 void testPerformanceEffects() {

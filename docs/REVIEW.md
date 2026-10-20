@@ -108,3 +108,20 @@ Corrigé :
 Reste noté (mineur) :
 - Les stems d'un long morceau restent en mémoire (0,77 Mo/s) ; lecture en flux si des téléphones manquent de mémoire.
 - Pas d'étirement des stems si le tempo du projet change (avertissement affiché).
+
+## Revue de fin de phase 4 (production) — 2026-10-20
+
+Relecture par un sous-agent neuf sur tout le diff de la phase (effets, pompe, automation, scènes et morceau, effets live, correctifs Remix). Fil audio : aucune allocation, aucun verrou, indices bornés, protection des nombres dénormaux en place (confirmé ; test sans allocation avec tous les effets, l'automation et les effets live).
+
+Corrigé :
+- Arrêt juste après une bascule de scène : l'écran pouvait montrer la scène A pendant que le moteur gardait B → bascule rattrapée et projet renvoyé au moteur à l'arrêt.
+- Mode « scène en attente » qui pouvait rester bloqué si la file de commandes débordait → le moteur le coupe à l'armement et à l'arrêt ; syncEngine le coupe aussi ; test Linux.
+- Mode morceau : les modifications de la scène suivante (même scène répétée) étaient défaites à la bascule → la scène en attente est renvoyée après les modifications.
+- Répéteur tenu plus de 3–4 s : le tampon écrasait la boucle → le tampon est figé pendant la répétition.
+- Un NaN entrant dans les effets rendait la sortie muette pour toujours → entrées nettoyées avant les effets.
+- Bascule armée en retard : attend la mesure suivante au lieu de couper une mesure.
+- Test d'automation qui ne pouvait pas échouer, réparé ; tests ajoutés : acide et notes en attente, fin du mode attente à l'arrêt.
+- Journal : rotation (on garde les lignes récentes) ; noms de morceaux et de fichiers masqués dans les rapports de plantage publics.
+
+Reste noté (mineur) :
+- Écriture du journal sur le fil principal (petites écritures, quelques par minute).

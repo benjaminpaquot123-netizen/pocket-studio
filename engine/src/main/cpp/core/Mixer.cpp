@@ -126,8 +126,11 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
         auto& s = strips_[static_cast<size_t>(ch)];
         const float* inL = channels[ch] + offset;
         const float* inR = rights && rights[ch] ? rights[ch] + offset : inL;
-        std::copy(inL, inL + n, chL_.begin());
-        std::copy(inR, inR + n, chR_.begin());
+        // A stray NaN must not get into the effects' state (it would stay there for good).
+        for (int i = 0; i < n; ++i) {
+            chL_[static_cast<size_t>(i)] = std::isfinite(inL[i]) ? inL[i] : 0.0f;
+            chR_[static_cast<size_t>(i)] = std::isfinite(inR[i]) ? inR[i] : 0.0f;
+        }
         if (activeInserts_[static_cast<size_t>(ch)] > 0) {
             for (auto& slot : inserts_[static_cast<size_t>(ch)]) slot.process(chL_.data(), chR_.data(), n);
         }

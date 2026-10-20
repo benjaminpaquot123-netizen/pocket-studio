@@ -324,11 +324,14 @@ void PerformanceFx::process(float* l, float* r, int n) {
     if (ringL_.empty()) return;
     const double size = static_cast<double>(ringL_.size());
     for (int i = 0; i < n; ++i) {
-        // Everything heard goes into the ring first (the repeat and the tape stop read it back).
-        ringL_[write_] = l[i];
-        ringR_[write_] = r[i];
+        // Everything heard goes into the ring first (the repeat and the tape stop read it back),
+        // except while a repeat holds: the loop must not be overwritten after a few seconds.
         const double now = static_cast<double>(write_);
-        if (++write_ >= ringL_.size()) write_ = 0;
+        if (!repeating_) {
+            ringL_[write_] = l[i];
+            ringR_[write_] = r[i];
+            if (++write_ >= ringL_.size()) write_ = 0;
+        }
 
         // Beat repeat: on press, loop the last division; release fades back to live.
         if (repeatOn_ && !repeating_) {

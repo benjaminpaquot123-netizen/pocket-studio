@@ -492,10 +492,10 @@ class AcidPagesTest {
         val p = Project(automation = listOf(lane))
         assertEquals(p, ProjectJson.decode(ProjectJson.encode(p)))
         val messy = Project(
-            automation = List(12) { AutomationLane(AutoTarget(AutoTarget.SEND, ch = it % 4, slot = it % 2), listOf(Float.NaN, 3f)) } +
+            automation = List(12) { AutomationLane(AutoTarget(AutoTarget.SEND, ch = it % 4, slot = it / 4), listOf(Float.NaN, 3f)) } +
                 AutomationLane(AutoTarget(kind = 9)),
         ).sanitized().automation
-        assertEquals(AutomationLane.MAX_LANES, messy.size.coerceAtLeast(AutomationLane.MAX_LANES).coerceAtMost(8))
+        assertEquals(AutomationLane.MAX_LANES, messy.size)  // 12 distinct targets, capped at 8
         assertEquals(messy.size, messy.map { it.target }.toSet().size)  // no duplicate targets
         assertEquals(null, messy[0].values[0])
         assertEquals(1f, messy[0].values[1])

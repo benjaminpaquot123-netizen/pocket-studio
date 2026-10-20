@@ -92,8 +92,8 @@ private fun XyPad(ch: Int, macros: List<Float>, actions: QuickFxActions) {
     val y = macros[yMacro]
     val currentY by rememberUpdatedState(yMacro)
     val set by rememberUpdatedState(actions.setMacroPair)
-    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-        Text("Pad XY · haut-bas :", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+    Row(Modifier.horizontalScroll(rememberScrollState()), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        Text("Pad XY, haut-bas :", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, maxLines = 1)
         listOf(Macros.SPACE, Macros.DIRT, Macros.MOTION).forEach { m ->
             FilterChip(selected = yMacro == m, onClick = { yMacro = m }, label = { Text(Macros.NAMES[m]) },
                 modifier = Modifier.testTag("xy_axis_$m"))

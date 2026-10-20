@@ -62,7 +62,7 @@ class SmokeTest {
         }
 
         // An edit survives the app going to the background (autosave flush on stop).
-        compose.onNodeWithTag("step_3").performClick()  // pad 4 (clap) is selected now
+        compose.onNodeWithTag("step_3").performScrollTo().performClick()  // pad 4 (clap) is selected now
         compose.activityRule.scenario.moveToState(androidx.lifecycle.Lifecycle.State.CREATED)
         val store = ProjectStore(File(InstrumentationRegistry.getInstrumentation().targetContext.filesDir, "projects"))
         var saved = false

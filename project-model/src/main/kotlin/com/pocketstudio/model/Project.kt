@@ -82,6 +82,23 @@ data class DrumPattern(
         )
     }
 
+    /**
+     * The loop at [newSteps] (whole bars, 16 to 64): a longer loop repeats the current bars so the
+     * groove keeps going; a shorter one drops the hits past its end (undo brings them back).
+     */
+    fun withSteps(newSteps: Int): DrumPattern {
+        val n = (newSteps.coerceIn(MIN_STEPS, MAX_STEPS) / 16) * 16
+        if (n == steps) return this
+        return copy(
+            steps = n,
+            lanes = lanes.map { lane ->
+                val hits = if (n > steps) (0 until n).mapNotNull { st -> lane.hits[st % steps]?.let { st to it } }.toMap()
+                else lane.hits.filterKeys { it < n }
+                lane.copy(hits = hits)
+            },
+        )
+    }
+
     fun withSample(lane: Int, sample: PadSample?): DrumPattern =
         copy(lanes = lanes.toMutableList().also { it[lane] = it[lane].copy(sample = sample) })
 

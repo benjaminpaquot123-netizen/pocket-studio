@@ -5,6 +5,7 @@ import androidx.compose.material.icons.filled.ContentCut
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import com.pocketstudio.model.PadSample
 import com.pocketstudio.ui.LevelMeter
@@ -72,6 +73,8 @@ data class RhythmActions(
     val toggleCountIn: () -> Unit = {},
     val hitPad: (Int) -> Unit = {},
     val toggleStep: (Int) -> Unit = {},
+    /** Drum loop length in bars (1 to 4). */
+    val setBars: (Int) -> Unit = {},
     val cycleVelocity: (Int) -> Unit = {},
     val clearPad: () -> Unit = {},
     val nudgeTempo: (Int) -> Unit = {},
@@ -122,7 +125,7 @@ fun RhythmScreen(
     ) {
         TransportBar(project, transport, canUndo, canRedo, actions)
         PadGrid(project, transport.selectedPad, live.litPads, actions.hitPad)
-        StepGrid(project, transport.selectedPad, live.currentStep, actions)
+        StepGrid(project, transport.selectedPad, live.currentStep, transport.playing, actions)
         PadSoundCard(project, transport.selectedPad, padSound, actions)
         GrooveCard(project, transport, actions)
     }
@@ -220,20 +223,43 @@ private fun PadGrid(project: Project, selected: Int, lit: Set<Int>, onHit: (Int)
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun StepGrid(project: Project, lane: Int, currentStep: Int, actions: RhythmActions) {
+private fun StepGrid(project: Project, lane: Int, currentStep: Int, playing: Boolean, actions: RhythmActions) {
     val haptics = LocalHapticFeedback.current
     val hits = project.drums.lanes[lane].hits
     val color = DrumKitInfo.colors[lane]
+    val bars = project.drums.steps / 16
+    var chosenBar by rememberSaveable { mutableIntStateOf(0) }
+    var follow by rememberSaveable { mutableStateOf(true) }
+    // Playing and following: the page turns with the playhead.
+    val bar = (if (playing && follow && currentStep >= 0) currentStep / 16 else chosenBar).coerceIn(0, bars - 1)
+    val chipColors = FilterChipDefaults.filterChipColors(selectedContainerColor = Neon.Cyan.copy(alpha = 0.25f), selectedLabelColor = Neon.Cyan)
     NeonCard {
         Row(verticalAlignment = Alignment.CenterVertically) {
             SectionLabel("Pas : ${DrumKitInfo.names[lane]}", color = color)
             Box(Modifier.weight(1f))
             TextButton(onClick = actions.clearPad, enabled = hits.isNotEmpty()) { Text("Effacer") }
         }
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            Text("Longueur", style = MaterialTheme.typography.bodyMedium)
+            (1..4).forEach { b ->
+                FilterChip(selected = bars == b, onClick = { actions.setBars(b) }, label = { Text(if (b == 1) "1 mesure" else "$b") },
+                    colors = chipColors, modifier = Modifier.testTag("drum_bars_$b"))
+            }
+        }
+        if (bars > 1) {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                Text("Mesure", style = MaterialTheme.typography.bodyMedium)
+                (0 until bars).forEach { b ->
+                    FilterChip(selected = bar == b, onClick = { chosenBar = b; follow = false }, label = { Text("${b + 1}") },
+                        colors = chipColors, modifier = Modifier.testTag("drum_page_$b"))
+                }
+                FilterChip(selected = follow, onClick = { follow = !follow; chosenBar = bar }, label = { Text("Suivre") }, colors = chipColors)
+            }
+        }
         for (row in 0 until 2) {
             Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 for (col in 0 until 8) {
-                    val step = row * 8 + col
+                    val step = bar * 16 + row * 8 + col
                     val velocity = hits[step]?.velocity
                     val isBeat = step % 4 == 0
                     val playing = step == currentStep
@@ -261,7 +287,7 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, actions: Rhy
                         }
                         if (isBeat) {
                             Text(
-                                "${step / 4 + 1}",
+                                "${(step % 16) / 4 + 1}",
                                 style = MaterialTheme.typography.labelSmall,
                                 color = Neon.TextSecondary,
                                 modifier = Modifier.padding(bottom = 2.dp),

@@ -1718,6 +1718,12 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (NativeEngine.isAvailable) NativeEngine.triggerPad(lane, 0.9f)
     }
 
+    /** Drum loop length in bars (1 to 4). */
+    fun setDrumBars(bars: Int) {
+        session.edit { it.copy(drums = it.drums.withSteps(bars * 16)) }
+        if (NativeEngine.isAvailable) pushDrumPattern(project.value.drums)
+    }
+
     fun toggleStep(step: Int) {
         val lane = _transport.value.selectedPad
         session.edit { it.copy(drums = it.drums.toggle(lane, step)) }

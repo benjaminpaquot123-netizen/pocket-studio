@@ -651,3 +651,18 @@ class RemixTempoTest {
     }
 }
 
+class DrumLengthTest {
+    @Test
+    fun longerLoopsRepeatTheGrooveShorterOnesCut() {
+        val one = DrumPattern().toggle(0, 0).toggle(2, 4, 0.5f)
+        val three = one.withSteps(48)
+        assertEquals(48, three.steps)
+        assertEquals(setOf(0, 16, 32), three.lanes[0].hits.keys)
+        assertEquals(0.5f, three.lanes[2].hits[36]!!.velocity, 0f)
+        val back = three.toggle(0, 32).withSteps(32)
+        assertEquals(setOf(0, 16), back.lanes[0].hits.keys)
+        assertEquals(64, one.withSteps(100).steps)
+        assertEquals(one, one.withSteps(16))
+    }
+}
+

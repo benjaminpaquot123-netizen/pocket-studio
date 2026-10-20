@@ -376,6 +376,7 @@ fun AppRoot() {
                                 toggleCountIn = rhythmVm::toggleCountIn,
                                 hitPad = rhythmVm::hitPad,
                                 toggleStep = rhythmVm::toggleStep,
+                                setBars = rhythmVm::setDrumBars,
                                 cycleVelocity = rhythmVm::cycleVelocity,
                                 clearPad = rhythmVm::clearPad,
                                 nudgeTempo = rhythmVm::nudgeTempo,

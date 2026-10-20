@@ -80,6 +80,13 @@ data class RhythmActions(
     val fill: (every: Int) -> Unit = {},
     val rotate: (by: Int) -> Unit = {},
     val cycleRoll: (step: Int) -> Unit = {},
+    /** The selected pad's pan, -1..1. */
+    val setPadPan: (Float) -> Unit = {},
+    /** One hit's own pan (-1..1) and pitch (semitones) on the selected pad. */
+    val setHitPan: (step: Int, pan: Float) -> Unit = { _, _ -> },
+    val setHitPitch: (step: Int, pitch: Int) -> Unit = { _, _ -> },
+    /** Opens the drums' quick effects. */
+    val openEffects: () -> Unit = {},
     /** All-pads grid: (lane, step). */
     val toggleHit: (Int, Int) -> Unit = { _, _ -> },
     val cycleVelocity: (Int) -> Unit = {},
@@ -239,7 +246,10 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, playing: Boo
     val bars = (project.drums.steps / per).coerceAtLeast(1)
     var chosenBar by rememberSaveable { mutableIntStateOf(0) }
     var follow by rememberSaveable { mutableStateOf(true) }
-    var rollTool by rememberSaveable { mutableStateOf(false) }
+    // 0 hits, 1 rolls, 2 pan, 3 pitch.
+    var tool by rememberSaveable { mutableIntStateOf(0) }
+    var picked by rememberSaveable { mutableIntStateOf(-1) }
+    val ownSound = project.drums.lanes[lane].sample != null
     var allPads by rememberSaveable { mutableStateOf(false) }
     // Playing and following: the page turns with the playhead.
     val bar = (if (playing && follow && currentStep >= 0) currentStep / per else chosenBar).coerceIn(0, bars - 1)
@@ -274,9 +284,13 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, playing: Boo
             return@NeonCard
         }
         Row(Modifier.horizontalScroll(rememberScrollState()), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-            FilterChip(selected = !rollTool, onClick = { rollTool = false }, label = { Text("Coups") }, colors = chipColors)
-            FilterChip(selected = rollTool, onClick = { rollTool = true }, label = { Text("Roulements") }, colors = chipColors,
+            FilterChip(selected = tool == 0, onClick = { tool = 0 }, label = { Text("Coups") }, colors = chipColors)
+            FilterChip(selected = tool == 1, onClick = { tool = 1 }, label = { Text("Roulements") }, colors = chipColors,
                 modifier = Modifier.testTag("roll_tool"))
+            FilterChip(selected = tool == 2, onClick = { tool = 2 }, label = { Text("Pan") }, colors = chipColors,
+                modifier = Modifier.testTag("pan_tool"))
+            FilterChip(selected = tool == 3, onClick = { tool = 3 }, label = { Text("Hauteur") }, colors = chipColors,
+                modifier = Modifier.testTag("pitch_tool"))
             Text("  Remplir", style = MaterialTheme.typography.bodySmall)
             listOf(1 to "tout", 2 to "1/2", 4 to "1/4").forEach { (every, label) ->
                 TextButton(onClick = { actions.fill(every) }, modifier = Modifier.testTag("fill_$every")) { Text(label) }
@@ -291,6 +305,8 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, playing: Boo
                     val velocity = hits[step]?.velocity
                     val isBeat = step % 4 == 0
                     val playing = step == currentStep
+                    val hit = hits[step]
+                    val isPicked = tool >= 2 && step == picked && hit != null
                     val fill = if (isBeat) Neon.SurfaceHigh else Neon.Surface
                     Box(
                         modifier = Modifier
@@ -298,11 +314,25 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, playing: Boo
                             .aspectRatio(0.8f)
                             .clip(RoundedCornerShape(6.dp))
                             .background(fill)
-                            .border(if (playing) 2.dp else 1.dp, if (playing) Neon.TextPrimary else Neon.Outline, RoundedCornerShape(6.dp))
+                            .border(
+                                if (playing || isPicked) 2.dp else 1.dp,
+                                when {
+                                    isPicked -> Neon.Cyan
+                                    playing -> Neon.TextPrimary
+                                    else -> Neon.Outline
+                                },
+                                RoundedCornerShape(6.dp),
+                            )
                             .combinedClickable(
                                 onClick = {
                                     // A loop shorter than the page (an older length): its end is not editable.
-                                    if (step < project.drums.steps) { if (rollTool) actions.cycleRoll(step) else actions.toggleStep(step) }
+                                    if (step < project.drums.steps) {
+                                        when (tool) {
+                                            0 -> actions.toggleStep(step)
+                                            1 -> actions.cycleRoll(step)
+                                            else -> if (hit != null) picked = step
+                                        }
+                                    }
                                 },
                                 onLongClick = {
                                     haptics.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -320,6 +350,15 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, playing: Boo
                                 Text("×$repeats", style = MaterialTheme.typography.labelLarge, color = Color(0xFF1E2023),
                                     modifier = Modifier.align(Alignment.Center))
                             }
+                            // Own pan or pitch: a small mark at the top of the cell.
+                            val mark = listOfNotNull(
+                                hit?.pan?.takeIf { it != 0f }?.let { panShort(it) },
+                                hit?.pitch?.takeIf { it != 0 }?.let { if (it > 0) "+$it" else "$it" },
+                            ).joinToString(" ")
+                            if (mark.isNotEmpty()) {
+                                Text(mark, style = MaterialTheme.typography.labelSmall, color = Color(0xFF1E2023),
+                                    modifier = Modifier.align(Alignment.TopCenter).padding(top = 2.dp))
+                            }
                         }
                         if (isBeat) {
                             Text(
@@ -333,9 +372,25 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, playing: Boo
                 }
             }
         }
+        val pickedHit = hits[picked]?.takeIf { tool >= 2 }
+        if (pickedHit != null && tool == 2) {
+            LabeledSlider("Pan du coup ${picked % per + 1}", panLabel(pickedHit.pan), pickedHit.pan, -1f..1f, steps = 19) {
+                actions.setHitPan(picked, (it * 10).roundToInt() / 10f)
+            }
+        }
+        if (pickedHit != null && tool == 3 && ownSound) {
+            LabeledSlider("Hauteur du coup ${picked % per + 1}", semitones(pickedHit.pitch), pickedHit.pitch.toFloat(), -12f..12f, steps = 23) {
+                actions.setHitPitch(picked, it.roundToInt())
+            }
+        }
         Text(
-            if (rollTool) "Roulements : touche un coup pour le doubler, tripler, quadrupler (×2, ×3, ×4), puis revenir à un seul."
-            else "Touche une case pour ajouter un coup. Appui long sur un coup : fort → moyen → doux (la case se vide à moitié).",
+            when (tool) {
+                1 -> "Roulements : touche un coup pour le doubler, tripler, quadrupler (×2, ×3, ×4), puis revenir à un seul."
+                2 -> "Pan : touche un coup, puis glisse pour l'envoyer à gauche ou à droite (en plus du pan du pad)."
+                3 -> if (ownSound) "Hauteur : touche un coup, puis glisse pour le monter ou le descendre (en demi-tons)."
+                else "Hauteur : seulement pour un son importé, enregistré ou généré (pas pour les sons synthétisés)."
+                else -> "Touche une case pour ajouter un coup. Appui long sur un coup : fort → moyen → doux (la case se vide à moitié)."
+            },
             style = MaterialTheme.typography.bodySmall,
             color = Neon.TextSecondary,
         )
@@ -352,6 +407,8 @@ private fun GrooveCard(project: Project, transport: TransportUi, actions: Rhythm
             )
             FilterChip(selected = transport.metronome, onClick = actions.toggleMetronome, label = { Text("Métronome") }, colors = chipColors)
             FilterChip(selected = transport.countIn, onClick = actions.toggleCountIn, label = { Text("Décompte") }, colors = chipColors)
+            Box(Modifier.weight(1f))
+            OutlinedButton(onClick = actions.openEffects, modifier = Modifier.testTag("drum_effects")) { Text("Effets") }
         }
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Text("Swing", Modifier.weight(1f))
@@ -378,6 +435,8 @@ internal fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: 
                 color = if (sample != null) Neon.TextPrimary else Neon.TextSecondary,
             )
         }
+        val pan = project.drums.lanes[lane].pan
+        LabeledSlider("Pan du pad", panLabel(pan), pan, -1f..1f, steps = 19) { actions.setPadPan((it * 10).roundToInt() / 10f) }
         val info = sample?.let { ui.info[it.file] }
         val slicer = ui.slicer?.takeIf { sample != null && it.file == sample.file }
         if (sample != null && info != null && slicer != null) {
@@ -510,6 +569,20 @@ private fun PadSampleControls(s: PadSample, seconds: Double, bpm: Double, edit: 
             }
         }
     }
+}
+
+internal fun panLabel(pan: Float): String = when {
+    pan < -0.05f -> "G ${(-pan * 100).roundToInt()}"
+    pan > 0.05f -> "D ${(pan * 100).roundToInt()}"
+    else -> "Centre"
+}
+
+private fun panShort(pan: Float) = if (pan < 0f) "G" else "D"
+
+private fun semitones(n: Int) = when {
+    n == 0 -> "0"
+    n > 0 -> "+$n demi-ton${if (n > 1) "s" else ""}"
+    else -> "$n demi-ton${if (n < -1) "s" else ""}"
 }
 
 private fun ms(seconds: Float) =

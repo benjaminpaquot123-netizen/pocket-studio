@@ -91,11 +91,12 @@ class StereoChorus {
 public:
     void prepare(float rate);
     void setParam(int p, float v);
-    void reset() {}
+    void reset() { prepare(rate_); }  // DaisySP's Init clears the delay lines, no allocation
     void process(float* l, float* r, int n);
 
 private:
     void update();
+    float rate_ = 48000;
     std::array<float, 4> p_{0.3f, 0.5f, 0.4f, 0.5f};
     daisysp::Chorus chorus_;
     float mix_ = 0.5f;
@@ -300,6 +301,32 @@ private:
     float holdL_ = 0.0f, holdR_ = 0.0f;
 };
 
+// The four "macros" of a track, for quick sound play (pad XY, big knobs): colour (0 = dark
+// low-pass .. 0.5 = untouched .. 1 = thin high-pass), dirt (drive), motion (chorus) and space
+// (added to the reverb and delay sends, applied by the mixer). Each stage is skipped at rest.
+class TrackMacros {
+public:
+    enum Macro : int { Color, Dirt, Motion, Space, kCount };
+    void prepare(float rate);
+    void reset() { prepare(rate_); }  // after a NaN: every stage back to silence, no allocation
+    void set(int macro, float v);
+    float get(int macro) const { return v_[static_cast<size_t>(macro)]; }
+    void process(float* l, float* r, int n);
+
+private:
+    void update();
+    float rate_ = 48000;
+    std::array<float, kCount> v_{0.5f, 0.0f, 0.0f, 0.0f};
+    daisysp::Svf left_, right_;
+    bool highPass_ = false;
+    float filterMix_ = 0.0f;   // target
+    float filterMixNow_ = 0.0f;  // smoothed: no click when the colour leaves or reaches the middle
+    Saturator drive_;
+    float inPower_ = 0.0f, outPower_ = 0.0f, makeup_ = 1.0f;
+    bool dirtOn_ = false;
+    StereoChorus chorus_;
+};
+
 class InsertSlot {
 public:
     enum Type {
@@ -313,6 +340,7 @@ public:
     void setParam(int p, float v);
     int type() const { return type_; }
     void process(float* l, float* r, int n);
+    void reset();  // every effect's state back to silence (after a NaN), no allocation
     const Compressor& compressor() const { return comp_; }  // tests
     const Ducker& ducker() const { return pump_; }          // tests
     // Sidechain events (only the Pump type listens). `beat`: the step is a quarter note.

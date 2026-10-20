@@ -1,36 +1,46 @@
 {
-  "id": "phase9-generation",
-  "milestone": "Phase 9 : génération",
+  "id": "phase10-debutants",
+  "milestone": "Phase 10 : débutants et terrain de jeu",
   "items": [
     {
-      "id": "genre_project",
-      "title": "Démarrer un projet par style",
-      "hint": "Mes projets › Nouveau › Style · House (ou Trap…) : le tempo et les pistes sont prêts, appuie sur Lecture."
+      "id": "wizard",
+      "title": "Créer un morceau avec l'assistant",
+      "hint": "Mes projets › Nouveau projet › Assistant pas à pas : choisis UK Garage, une ambiance, écoute les sons à chaque étape, puis « Créer le morceau » et appuie sur Lecture."
     },
     {
-      "id": "model_download",
-      "title": "Télécharger le modèle de génération",
-      "hint": "En Wi-Fi : Audio › Générer › Télécharger le modèle. Ça peut prendre quelques minutes ; tu peux quitter l'appli, la notification montre l'avancement."
+      "id": "wizard_melody",
+      "title": "Les pistes mélodiques de l'assistant",
+      "hint": "Dans l'assistant, garde Basse et Nappe, active Lead. Dans le morceau créé, Synthé : trois pistes (Basse, Nappe, Lead) qui jouent ensemble sans fausse note."
     },
     {
-      "id": "generate_kick",
-      "title": "Générer un kick",
-      "hint": "Audio › Générer › touche « Kick », durée 1 s, Générer. Il se joue tout seul à la fin. Note le temps que ça a pris."
+      "id": "scale_lock",
+      "title": "Jouer sans fausse note",
+      "hint": "Synthé › Notes › Harmonie : choisis une gamme et active « Verrouiller la gamme ». Au clavier, les touches sombres ne jouent rien, toutes les autres sonnent juste."
     },
     {
-      "id": "generate_loop",
-      "title": "Générer une boucle et la poser",
-      "hint": "Touche « Boucle batterie », 8 s, Générer, puis « Piste audio » : elle apparaît dans Pistes audio et joue avec le morceau."
+      "id": "chord_pads",
+      "title": "Les pads d'accords",
+      "hint": "Synthé › Clavier › Pads : chaque pad joue un accord complet. Active l'arpège en dessous et garde un pad appuyé : les notes défilent en rythme."
     },
     {
-      "id": "generate_pad",
-      "title": "Un son généré sur un pad",
-      "hint": "Écris « metal hit », Générer, puis « Pad 1 » (ou le pad choisi) : le pad joue le nouveau son dans la boîte à rythmes."
+      "id": "progression",
+      "title": "Basse et arpège en un geste",
+      "hint": "Synthé › Notes › Harmonie › Progression : choisis-en une, puis « Ligne de basse » sur une piste et « Arpège » sur une autre."
     },
     {
-      "id": "generate_cancel",
-      "title": "Annuler une génération",
-      "hint": "Lance une génération de 11 s et appuie sur Annuler : ça s'arrête, l'appli reste fluide."
+      "id": "fx_presets",
+      "title": "Les ambiances d'effets",
+      "hint": "Bouton Effets sur une piste : essaie « Sous l'eau », « Lo-Fi Tape », « Grande cathédrale », puis « Sans effet »."
+    },
+    {
+      "id": "xy_pad",
+      "title": "Triturer le son au pad XY",
+      "hint": "Toujours dans Effets, pendant la lecture : glisse le doigt sur le pad XY. Deux touchers ramènent le son de départ."
+    },
+    {
+      "id": "drum_pan_pitch",
+      "title": "Pan et hauteur des coups",
+      "hint": "Rythme : « Pan du pad » sur un pad ; dans la grille, outil Pan puis touche un coup et glisse. Avec un son importé, outil Hauteur pareil."
     }
   ]
 }

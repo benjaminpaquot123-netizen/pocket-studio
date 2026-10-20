@@ -17,6 +17,7 @@ import com.pocketstudio.model.NoteClip
 import com.pocketstudio.app.report.AppLog
 import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.launch
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.fillMaxSize
 import android.Manifest
 import android.content.ActivityNotFoundException
@@ -178,6 +179,7 @@ fun AppRoot() {
     val rhythmVm: RhythmViewModel = viewModel()
     val remixVm: RemixViewModel = viewModel()
     val generateVm: com.pocketstudio.app.generate.GenerateViewModel = viewModel()
+    val libraryVm: com.pocketstudio.app.library.SoundLibraryViewModel = viewModel()
     var tab by rememberSaveable { mutableStateOf(AppTab.Rythme) }
     var showProjects by rememberSaveable { mutableStateOf(false) }
     val projectsVm: ProjectsViewModel = viewModel()
@@ -198,6 +200,65 @@ fun AppRoot() {
             }
         }
     }
+    // Quick effects of one mixer channel, opened from the synth, drums or audio tracks (-1: closed).
+    var fxChannel by rememberSaveable { mutableStateOf(-1) }
+    if (fxChannel >= 0) {
+        val fxProject by rhythmVm.project.collectAsStateWithLifecycle()
+        val channel = fxProject.mixer.channels.getOrNull(fxChannel)
+        if (channel != null) {
+            val name = mixerStrips(fxProject).firstOrNull { it.ch == fxChannel }?.name ?: "Piste"
+            androidx.compose.material3.AlertDialog(
+                onDismissRequest = { fxChannel = -1 },
+                title = { Text("Effets · $name") },
+                text = {
+                    Column(Modifier.verticalScroll(androidx.compose.foundation.rememberScrollState())) {
+                        com.pocketstudio.app.mixer.QuickFxPanel(
+                            fxChannel, channel,
+                            com.pocketstudio.app.mixer.QuickFxActions(rhythmVm::setMacro, rhythmVm::setMacroPair, rhythmVm::applyFx),
+                        )
+                        com.pocketstudio.app.mixer.DetailedFx(
+                            fxChannel, channel,
+                            MixerActions(setInsertType = rhythmVm::setInsertType, setInsertParam = rhythmVm::setInsertParam, setSend = rhythmVm::setSend),
+                        )
+                    }
+                },
+                confirmButton = { TextButton(onClick = { fxChannel = -1 }, modifier = Modifier.testTag("fx_close")) { Text("Fermer") } },
+            )
+        }
+    }
+    val wizardUi by libraryVm.wizard.collectAsStateWithLifecycle()
+    if (wizardUi.open) {
+        val packsUi by libraryVm.packs.collectAsStateWithLifecycle()
+        val previewing by libraryVm.playing.collectAsStateWithLifecycle()
+        androidx.compose.ui.window.Dialog(
+            onDismissRequest = libraryVm::closeWizard,
+            properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false),
+        ) {
+            androidx.activity.compose.BackHandler { if (wizardUi.step > 0) libraryVm.back() else libraryVm.closeWizard() }
+            androidx.compose.material3.Surface(color = Neon.Background, modifier = Modifier.fillMaxSize()) {
+                com.pocketstudio.app.library.WizardScreen(
+                    wizardUi, packsUi, previewing,
+                    com.pocketstudio.app.library.WizardActions(
+                        close = libraryVm::closeWizard,
+                        chooseStyle = libraryVm::chooseStyle,
+                        next = libraryVm::next,
+                        back = libraryVm::back,
+                        setEnabled = libraryVm::setRowEnabled,
+                        setCategory = libraryVm::setCategory,
+                        choose = libraryVm::choose,
+                        setMood = libraryVm::setMood,
+                        setPartEnabled = libraryVm::setPartEnabled,
+                        choosePartSound = libraryVm::choosePartSound,
+                        preview = libraryVm::preview,
+                        download = libraryVm::downloadPack,
+                        cancelDownload = libraryVm::cancelDownload,
+                        deletePack = libraryVm::deletePack,
+                        create = { libraryVm.create { project, sounds -> projectsVm.create(project, sounds) { id -> libraryVm.closeWizard(); openProject(id) } } },
+                    ),
+                )
+            }
+        }
+    }
     if (showProjects) {
         val projectsUi by projectsVm.state.collectAsStateWithLifecycle()
         LaunchedEffect(Unit) { projectsVm.refresh() }
@@ -213,6 +274,7 @@ fun AppRoot() {
                         back = { showProjects = false },
                         open = { openProject(it.id) },
                         create = { i -> projectsVm.create(PROJECT_STARTERS[i].second()) { id -> openProject(id) } },
+                        wizard = libraryVm::openWizard,
                         rename = { p, name -> if (p.id == rhythmVm.projectId) { rhythmVm.renameProject(name); projectsVm.refresh() } else projectsVm.rename(p.id, name) },
                         duplicate = { p -> openScope.launch { if (p.id == rhythmVm.projectId) rhythmVm.flushNow(); projectsVm.duplicate(p) } },
                         exportZip = { p ->
@@ -325,6 +387,10 @@ fun AppRoot() {
                 is MidiCommand.Control -> rhythmVm.midiControl(c.channel, c.controller, c.value)
             }
         }
+    }
+    // Scale lock reaches the MIDI keyboard too.
+    LaunchedEffect(Unit) {
+        rhythmVm.project.collect { midiVm.harmony = it.harmony }
     }
     // Clock out: the connected MIDI device follows our transport and tempo.
     LaunchedEffect(Unit) {
@@ -464,6 +530,10 @@ fun AppRoot() {
                                 fill = rhythmVm::fillPad,
                                 rotate = rhythmVm::rotatePad,
                                 cycleRoll = rhythmVm::cycleRoll,
+                                openEffects = { fxChannel = 0 },
+                                setPadPan = rhythmVm::setPadPan,
+                                setHitPan = rhythmVm::setHitPan,
+                                setHitPitch = rhythmVm::setHitPitch,
                                 toggleHit = rhythmVm::toggleHit,
                                 cycleVelocity = rhythmVm::cycleVelocity,
                                 clearPad = rhythmVm::clearPad,
@@ -579,6 +649,8 @@ fun AppRoot() {
                                     addChord = rhythmVm::addChord,
                                     setHarmony = rhythmVm::setHarmony,
                                     applyProgression = rhythmVm::applyProgression,
+                                    applyBassLine = rhythmVm::applyBassLine,
+                                    applyArpeggio = rhythmVm::applyArpeggio,
                                     setPerformance = rhythmVm::setPerformance,
                                     replaceClip = rhythmVm::replaceNoteClip,
                                 ),
@@ -627,6 +699,7 @@ fun AppRoot() {
                                 setColor = rhythmVm::setTrackColor,
                                 duplicate = rhythmVm::duplicateTrack,
                                 remove = rhythmVm::removeTrack,
+                                effects = { id -> fxChannel = com.pocketstudio.model.InstrumentTrack.mixerChannel(id) },
                             ),
                             browser = if (project.synthEngine == 1) {
                                 SoundBrowserUi(
@@ -690,6 +763,7 @@ fun AppRoot() {
                                 setInsertParam = rhythmVm::setInsertParam,
                                 setSend = rhythmVm::setSend,
                                 setBusParam = rhythmVm::setBusParam,
+                                quick = com.pocketstudio.app.mixer.QuickFxActions(rhythmVm::setMacro, rhythmVm::setMacroPair, rhythmVm::applyFx),
                             ),
                             master = project.mixer.master,
                             buses = project.mixer.buses,
@@ -870,6 +944,7 @@ fun AppRoot() {
                                 ),
                                 AudioTracksActions(
                                     add = rhythmVm::addAudioTrack,
+                                    effects = { id -> fxChannel = com.pocketstudio.model.AudioTrack.mixerChannel(id) },
                                     remove = rhythmVm::removeAudioTrack,
                                     rename = rhythmVm::renameAudioTrack,
                                     setColor = rhythmVm::setAudioTrackColor,

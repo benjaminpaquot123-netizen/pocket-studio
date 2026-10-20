@@ -1,5 +1,5 @@
-Phase 9 : « C'est pas faux ! » L'appli comprend enfin ce qu'on lui dit (en anglais).
-- Audio › Générer : écris une phrase, l'appli fabrique le son sur le téléphone, sans internet.
-- Écoute, puis pose le son sur un pad, un pad live ou une piste audio.
-- Nouveaux projets « Style » : house, techno, drum & bass, trap, lo-fi, synthwave.
-- Modèle de 858 Mo à télécharger une fois (Wi-Fi conseillé). Powered by Stability AI.
+Phase 10 : « Le gras, c'est la vie ! » Et les sons qui grattent aussi.
+- Assistant pas à pas (Nouveau projet) : style, ambiance, chaque son expliqué, rythme et accords de départ.
+- Plus de fausse note : gamme verrouillée, pads d'accords, basse et arpège en un geste.
+- Effets : ambiances toutes prêtes (Sous l'eau, Lo-Fi Tape…), 4 macros et un pad XY sur chaque piste.
+- Batterie : pan par pad, pan et hauteur coup par coup.

@@ -86,6 +86,11 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
     /** Counts connect and disconnect calls: a device that opens late for an old one is closed. */
     private var connection = 0
     private val held = HashSet<Int>()  // notes down on the synth, released on disconnect
+    private val playedAs = IntArray(128) { -1 }  // key → the note it plays (scale lock), under held's lock
+    private val keysOn = IntArray(128)  // keys down per played note: two keys can snap to one note
+
+    /** The project's key: when locked, keys out of the scale play the nearest note of it. */
+    @Volatile var harmony: com.pocketstudio.model.Harmony = com.pocketstudio.model.Harmony()
     private val tempo = ClockTempo()
     private var lastTempoSent = 0.0
 
@@ -197,6 +202,8 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
         synchronized(held) {
             if (NativeEngine.isAvailable) held.forEach { NativeEngine.liveNoteOff(it) }
             held.clear()
+            playedAs.fill(-1)
+            keysOn.fill(0)
         }
         _state.update { it.copy(connected = null, clockBpm = null) }
     }
@@ -308,23 +315,35 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
             val v = velocity / 127f
             if (channel == DRUM_CHANNEL) {
                 if (note in FIRST_PAD_NOTE until FIRST_PAD_NOTE + NativeEngine.LANES) NativeEngine.liveTriggerPad(note - FIRST_PAD_NOTE, v)
+                _commands.tryEmit(MidiCommand.Note(channel, note, v, true))
             } else {
+                val h = harmony
+                val played = if (h.lock) h.snap(note).coerceIn(0, 127) else note
                 synchronized(held) {
-                    held += note
-                    NativeEngine.liveNoteOn(note, v)
+                    if (note in playedAs.indices) playedAs[note] = played
+                    held += played
+                    keysOn[played]++
+                    NativeEngine.liveNoteOn(played, v)
                 }
+                _commands.tryEmit(MidiCommand.Note(channel, played, v, true))
             }
-            _commands.tryEmit(MidiCommand.Note(channel, note, v, true))
             show("Note ${noteLabel(note)}" + if (channel == DRUM_CHANNEL) " (pads)" else "")
         }
 
         override fun noteOff(channel: Int, note: Int) {
             if (!NativeEngine.isAvailable || channel == DRUM_CHANNEL) return
-            synchronized(held) {
-                held -= note
-                NativeEngine.liveNoteOff(note)
+            val played = synchronized(held) {
+                val p = playedAs.getOrNull(note)?.takeIf { it >= 0 } ?: note
+                if (note in playedAs.indices) playedAs[note] = -1
+                if (p in keysOn.indices) keysOn[p] = (keysOn[p] - 1).coerceAtLeast(0)
+                // Another key still holds the same note: it keeps sounding.
+                if (keysOn.getOrElse(p) { 0 } == 0) {
+                    held -= p
+                    NativeEngine.liveNoteOff(p)
+                }
+                p
             }
-            _commands.tryEmit(MidiCommand.Note(channel, note, 0f, false))
+            _commands.tryEmit(MidiCommand.Note(channel, played, 0f, false))
         }
 
         override fun pitchBend(channel: Int, value: Int) {
@@ -344,6 +363,10 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
                 synchronized(held) {
                     if (NativeEngine.isAvailable) held.forEach { NativeEngine.liveNoteOff(it) }
                     held.clear()
+                    playedAs.fill(-1)
+                    keysOn.fill(0)
+            playedAs.fill(-1)
+            keysOn.fill(0)
                 }
             }
         }

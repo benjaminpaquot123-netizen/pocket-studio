@@ -78,6 +78,7 @@ data class MixerActions(
     val setInsertParam: (ch: Int, slot: Int, param: Int, value: Float) -> Unit = { _, _, _, _ -> },
     val setSend: (ch: Int, bus: Int, level: Float) -> Unit = { _, _, _ -> },
     val setBusParam: (bus: Int, param: Int, value: Float) -> Unit = { _, _, _ -> },
+    val quick: QuickFxActions = QuickFxActions(),
 )
 
 val EXPORT_BARS = listOf(1, 2, 4, 8, 16)
@@ -175,8 +176,9 @@ private fun Strip(info: StripInfo, c: Channel, meter: Float, actions: MixerActio
                 }
             }
             if (!expanded) {
-                if (c.pan != 0f || c.inserts.any { it.type != 0 } || c.sends.any { it > 0f }) {
-                    Text(effectsSummary(c.inserts, c.sends), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                val fx = androidx.compose.runtime.remember(c) { quickFxSummary(c) }
+                if (c.pan != 0f || fx != "Aucun") {
+                    Text("Effets : $fx", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
                 }
                 return@NeonCard
             }
@@ -201,10 +203,11 @@ private fun Strip(info: StripInfo, c: Channel, meter: Float, actions: MixerActio
         }
         Slider(value = c.pan, onValueChange = { v -> actions.setPan(index, if (kotlin.math.abs(v) < 0.04f) 0f else v) }, valueRange = -1f..1f)
         var open by rememberSaveable(index) { mutableStateOf(false) }
-        EffectsToggle(effectsSummary(c.inserts, c.sends), open, Modifier.testTag("effects_$index")) { open = !open }
+        val summary = androidx.compose.runtime.remember(c) { quickFxSummary(c) }
+        EffectsToggle(summary, open, Modifier.testTag("effects_$index")) { open = !open }
         if (open) {
-            InsertRack(index, c.inserts, actions)
-            SendSliders(index, c.sends, actions)
+            QuickFxPanel(index, c, actions.quick)
+            DetailedFx(index, c, actions)
         }
     }
 }

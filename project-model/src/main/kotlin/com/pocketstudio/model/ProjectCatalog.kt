@@ -37,11 +37,20 @@ class ProjectCatalog(private val root: File, private val trash: File) {
         return ProjectInfo(id, p.name, modified, p.tempoBpm, scene.stepsFor(p.stepsPerBar) / p.stepsPerBar, p.allScenes.size, p.remix.setId != null)
     }
 
-    /** Saves [project] as a new project and returns its id. */
+    /**
+     * Saves [project] as a new project and returns its id. [samples] first writes the sounds it
+     * uses into its samples folder (the project only appears once they are all there).
+     */
     @Throws(IOException::class)
-    fun create(project: Project): String {
+    fun create(project: Project, samples: (File) -> Unit = {}): String {
         val id = newId()
-        store.save(id, project.sanitized())
+        try {
+            samples(File(store.folder(id), SAMPLES))
+            store.save(id, project.sanitized())
+        } catch (e: Exception) {
+            store.folder(id).deleteRecursively()
+            throw e
+        }
         return id
     }
 

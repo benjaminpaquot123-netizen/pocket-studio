@@ -14,9 +14,12 @@ enum class Scale(val label: String, val intervals: List<Int>) {
     Blues("Blues", listOf(0, 3, 5, 6, 7, 10)),
 }
 
-/** The project's key: [root] 0..11 (0 = Do) and [scale]. */
+/**
+ * The project's key: [root] 0..11 (0 = Do) and [scale]. [lock]: the keyboard, the chord pads and
+ * MIDI only play notes of the scale (no wrong note possible).
+ */
 @Serializable
-data class Harmony(val root: Int = 0, val scale: Scale = Scale.Off) {
+data class Harmony(val root: Int = 0, val scale: Scale = Scale.Off, val lock: Boolean = false) {
     fun sanitized() = copy(root = Math.floorMod(root, 12))
 
     fun inScale(pitch: Int): Boolean = Math.floorMod(pitch - root, 12) in scale.intervals
@@ -55,6 +58,33 @@ data class Harmony(val root: Int = 0, val scale: Scale = Scale.Off) {
         return octaveRoot + root + ints[Math.floorMod(degree, 7)] + 12 * Math.floorDiv(degree, 7)
     }
 }
+
+/** One pad of the chord pads: a degree of the scale and its full chord. */
+data class ChordPad(val degree: Int, val roman: String, val name: String, val notes: List<Int>)
+
+/**
+ * The scale's chords for the chord pads: degrees I to VII and I an octave up, built from
+ * [octaveRoot] (C of an octave). Scales of fewer than seven notes (and "Libre") use the major
+ * scale of the same root, so every pad is a chord that fits.
+ */
+fun Harmony.chordPads(octaveRoot: Int): List<ChordPad> {
+    val h = if (scale.intervals.size == 7) this else copy(scale = Scale.Major)
+    val numerals = listOf("I", "II", "III", "IV", "V", "VI", "VII")
+    return (0..7).map { d ->
+        val notes = h.chord(h.degreeRoot(d, octaveRoot))
+        val third = notes[1] - notes[0]
+        val fifth = notes[2] - notes[0]
+        val numeral = numerals[d % 7]
+        val (roman, suffix) = when {
+            third == 3 && fifth == 6 -> numeral.lowercase() + "°" to " dim"
+            third == 3 -> numeral.lowercase() to " m"
+            else -> numeral to ""
+        }
+        ChordPad(d, roman, NOTE_NAMES[Math.floorMod(notes[0], 12)] + suffix, notes)
+    }
+}
+
+val NOTE_NAMES = listOf("Do", "Do♯", "Ré", "Mi♭", "Mi", "Fa", "Fa♯", "Sol", "La♭", "La", "Si♭", "Si")
 
 /** Ready-made chord progressions, as scale degrees (one chord per bar). */
 enum class Progression(val label: String, val degrees: List<Int>) {

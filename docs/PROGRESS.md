@@ -105,5 +105,14 @@
   - 9.2 fait : 6 projets « Style » (house, techno, drum & bass, trap, lo-fi, synthwave) dans Nouveau projet.
   - 9.1 fait : Stable Audio Open Small sur le téléphone (ONNX Runtime, int8 partiel, 858 Mo sur la Release `modele-stable-audio-open-small-1`), tokeniseur T5 en Kotlin, Audio › Générer (phrase, exemples, durée 1 à 11 s, écoute, pose sur pad / pad live / piste audio). Test Linux : `STABLE_AUDIO_DIR=… ./scripts/separation-tests.sh`.
 
+- Phase 9 fusionnée (PR #19).
+- Phase 10 (branche ccr-80af1a1b-mn0wec), demandes de Benjamin pendant ses essais :
+  - 10.1 batterie stéréo : pan par pad, pan et hauteur par coup (outils « Pan » et « Hauteur » de la grille) ;
+  - 10.2 assistant pas à pas (Mes projets › Nouveau › Assistant) : 16 styles, ambiance, rôle de chaque ligne, sons intégrés (rendus par le moteur pour l'écoute) ou packs, basse / nappe / lead avec écoute de la première mesure ;
+  - 10.3 verrouillage de gamme, pads d'accords (Synthé › Pads), progressions en accords / basse / arpège ;
+  - 10.4 effets créatifs : ambiances, macros Couleur / Saleté / Mouvement / Espace dans le moteur, pad XY, bouton Effets sur chaque piste.
+  - Packs de sons : format, index épinglé, téléchargement et suppression prêts ; aucun pack publié (PackStore.INDEX = null).
+
 ## Prochaine étape exacte
-1. Phase 9 : PR, relecture de fin de phase, CI verte, fusion. Ensuite : Ableton Link (reporté) et restes de REVIEW.md.
+1. Phase 10 : PR, relecture de fin de phase, CI verte, fusion.
+2. Phase 11 : fabriquer les packs (scripts/packs/generate_pack.py, prototype lent en fp32 : passer en int8 et en matrice CI par style), épingler l'index, rayon de sons dans le pad.

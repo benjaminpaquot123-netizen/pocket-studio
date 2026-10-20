@@ -9,3 +9,4 @@ captures/
 .kotlin/
 *.keystore
 signing/*.jks
+__pycache__/

@@ -14,6 +14,7 @@ void Mixer::prepare(int sampleRate) {
     for (auto& strip : inserts_) {
         for (auto& slot : strip) slot.prepare(rate);
     }
+    for (auto& m : macros_) m.prepare(rate);
     reverb_.prepare(rate);
     delay_.prepare(rate);
     perf_.prepare(rate);
@@ -69,6 +70,12 @@ void Mixer::setSend(int ch, int bus, float level) {
     updateTargets();
 }
 
+void Mixer::setMacro(int ch, int macro, float v) {
+    if (ch < 0 || ch >= kChannels || ch == kMaster) return;
+    macros_[static_cast<size_t>(ch)].set(macro, v);
+    if (macro == TrackMacros::Space) updateTargets();
+}
+
 void Mixer::setBusParam(int bus, int param, float v) {
     if (bus == 0) reverb_.setParam(param, v);
     else if (bus == 1) delay_.setParam(param, v);
@@ -77,7 +84,8 @@ void Mixer::setBusParam(int bus, int param, float v) {
 void Mixer::updateTargets() {
     bool anySolo = false;
     for (const auto& s : strips_) anySolo |= s.solo;
-    for (auto& s : strips_) {
+    for (size_t ch = 0; ch < strips_.size(); ++ch) {
+        auto& s = strips_[ch];
         const bool audible = !s.mute && (!anySolo || s.solo);
         // Fader: 0.8 = unity gain, 1.0 = +2 dB, quadratic below for a natural feel.
         const float gain = audible ? (s.volume / 0.8f) * (s.volume / 0.8f) : 0.0f;
@@ -85,8 +93,14 @@ void Mixer::updateTargets() {
         const float angle = (s.pan + 1.0f) * 0.25f * 3.14159265f;
         s.gainL.setTarget(gain * std::cos(angle) * 1.41421356f);
         s.gainR.setTarget(gain * std::sin(angle) * 1.41421356f);
-        // Sends follow the fader (post-fader); squared for a usable range.
-        for (size_t b = 0; b < s.send.size(); ++b) s.sendGain[b].setTarget(s.send[b] * s.send[b]);
+        // Sends follow the fader (post-fader); squared for a usable range. The Space macro adds
+        // reverb, and some delay past its middle.
+        const float space = macros_[ch].get(TrackMacros::Space);
+        const float extra[kBuses] = {0.75f * space, 0.5f * std::max(0.0f, space - 0.5f)};
+        for (size_t b = 0; b < s.send.size(); ++b) {
+            const float level = std::min(1.0f, s.send[b] + extra[b]);
+            s.sendGain[b].setTarget(level * level);
+        }
     }
 }
 
@@ -134,6 +148,18 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
         }
         if (activeInserts_[static_cast<size_t>(ch)] > 0) {
             for (auto& slot : inserts_[static_cast<size_t>(ch)]) slot.process(chL_.data(), chR_.data(), n);
+        }
+        macros_[static_cast<size_t>(ch)].process(chL_.data(), chR_.data(), n);
+        // An effect that blew up (extreme settings on a very loud sound): this strip goes quiet
+        // for one block and its effects start again from silence, instead of a NaN reaching the
+        // buses and the master, where it would stay for good.
+        bool finite = true;
+        for (int i = 0; i < n; ++i) finite &= std::isfinite(chL_[static_cast<size_t>(i)]) && std::isfinite(chR_[static_cast<size_t>(i)]);
+        if (!finite) {
+            std::fill(chL_.begin(), chL_.begin() + n, 0.0f);
+            std::fill(chR_.begin(), chR_.begin() + n, 0.0f);
+            for (auto& slot : inserts_[static_cast<size_t>(ch)]) slot.reset();
+            macros_[static_cast<size_t>(ch)].reset();
         }
         float peak = 0.0f;
         for (int i = 0; i < n; ++i) {

@@ -91,6 +91,10 @@ enum class CommandType : uint8_t {
     SetAutomationMode,    // a: lane, b: 0 loop / 1 per scene / 2 song (value: bars of song values)
     SetAutomationSong,    // a: lane, b: bar (0..255), value 0..1: the song-long curve, one value per bar
     SetExpression,        // a: InstrumentTrack::Expression | track << 16, value (bend in semitones, mod 0..1, sustain 0/1, arpeggiator settings)
+    SetPadPan,            // a: pad, value -1..1 (synthesized and sampled sounds alike)
+    SetDrumStepDetail,    // a: pad, b: step | (pitch + 64) << 16 (semitones, sampled sounds), value: pan -1..1 added to the pad's;
+                          // after the step's SetDrumHit, which resets both
+    SetMacro,             // a: mixer channel, b: TrackMacros::Macro (colour, dirt, motion, space), value 0..1
 };
 
 // Instrument tracks: the synth commands (SynthNoteOn/Off, SynthParam, SetSynthNote, SetSynthNoteCount,
@@ -275,6 +279,8 @@ private:
     struct StagedScene {
         float drums[kLanes][kMaxSteps] = {};
         uint8_t repeats[kLanes][kMaxSteps] = {};
+        int8_t pan[kLanes][kMaxSteps] = {};    // -100..100 = -1..1
+        int8_t pitch[kLanes][kMaxSteps] = {};  // semitones
         int drumSteps = 16;
         std::array<bool, AudioTracks::kTracks> audioOn{true, true, true, true};
         std::array<AcidStep, AcidTrack::kMaxSteps> acid{};
@@ -293,21 +299,27 @@ private:
     std::array<float, kMaxBlock> stemsL_{};
     std::array<float, kMaxBlock> stemsR_{};
     std::array<float, kMaxBlock> drumsBuf_{};
+    std::array<float, kMaxBlock> drumsRBuf_{};
     std::array<float, kMaxBlock> acidBuf_{};
     std::array<std::array<float, kMaxBlock>, kTracks> trackBuf_{};
     bool metronomeOn_ = false;
     int patternSteps_ = 16;
     float pattern_[kLanes][kMaxSteps] = {};
     uint8_t repeats_[kLanes][kMaxSteps] = {};  // 0 or 1 = one hit
+    int8_t stepPan_[kLanes][kMaxSteps] = {};    // -100..100 = -1..1, added to the pad's pan
+    int8_t stepPitch_[kLanes][kMaxSteps] = {};  // semitones (sampled sounds)
+    std::array<float, kLanes> padPan_{};
     // Extra hits of rolls still to come: frames from the start of the next block.
     struct PendingHit {
         int lane;
         float velocity;
         int64_t at;
+        float pan;
+        float pitch;
     };
     std::array<PendingHit, 64> rolls_{};
     int rollCount_ = 0;
-    void hitLane(int lane, float velocity, int offset);
+    void hitLane(int lane, float velocity, int offset, float pan = 0.0f, float pitch = 0.0f);
     void playRolls(int numFrames);
     std::array<float, kMaxBlock> mix_{};
     std::atomic<int> currentStep_{-1};

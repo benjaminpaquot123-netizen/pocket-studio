@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <cmath>
 
+#include "Pan.h"
+
 namespace ps {
 
 Sampler::~Sampler() {
@@ -61,10 +63,12 @@ void Sampler::setParam(int slot, int param, float v) {
     }
 }
 
-void Sampler::trigger(int slot, float velocity, int frameOffset) {
+void Sampler::trigger(int slot, float velocity, int frameOffset, float pan, float pitch) {
     if (!has(slot)) return;
     pendingOffset_[slot] = std::max(0, frameOffset);
     pendingVelocity_[slot] = std::clamp(velocity, 0.0f, 1.0f);
+    pendingPan_[slot] = std::isfinite(pan) ? pan : 0.0f;
+    pendingPitch_[slot] = std::isfinite(pitch) ? pitch : 0.0f;
 }
 
 void Sampler::fadeOut(int slot) {
@@ -74,7 +78,7 @@ void Sampler::fadeOut(int slot) {
     voices_[slot] = Voice{};
 }
 
-void Sampler::start(int slot, float velocity) {
+void Sampler::start(int slot, float velocity, float pan, float pitch) {
     const Sample* s = slots_[slot];
     const PadParams& p = params_[slot];
     fadeOut(slot);  // the other pads of a choke group were cut at this frame by render()
@@ -82,7 +86,7 @@ void Sampler::start(int slot, float velocity) {
     double lo = std::floor(std::min(p.start, p.end) * frames);
     double hi = std::floor(std::max(p.start, p.end) * frames);
     if (hi - lo < 1.0) hi = std::min(frames, lo + 1.0);
-    const double rate = std::pow(2.0, p.pitch / 12.0);
+    const double rate = std::pow(2.0, std::clamp(p.pitch + pitch, -36.0f, 36.0f) / 12.0);
     Voice v;
     v.sample = s;
     v.lo = lo;
@@ -91,6 +95,7 @@ void Sampler::start(int slot, float velocity) {
     v.pos = p.reverse ? hi - 1.0 : lo;
     v.loop = p.loop;
     v.gain = velocity * p.gain;
+    panGains(pan, v.gainL, v.gainR);
     v.length = static_cast<int64_t>((hi - lo) / rate);
     const float sr = static_cast<float>(sampleRate_);
     v.attackFrames = p.attack * sr;
@@ -113,16 +118,23 @@ void Sampler::stopAll() {
     pendingOffset_.fill(-1);
 }
 
-void Sampler::renderVoice(Voice& v, float* out, int from, int to) {
+void Sampler::renderVoice(Voice& v, float* left, float* right, int from, int to) {
     const Sample* s = v.sample;
     if (!s) return;
     const int ch = s->channels();
     const float* d = s->data();
     const int64_t last = s->frames() - 1;
-    const float chScale = ch == 2 ? 0.5f : 1.0f;
-    auto at = [&](int64_t i) {
+    // Channel c of frame i (a mono sound gives the same to both sides).
+    auto at = [&](int64_t i, int c) {
         i = std::clamp<int64_t>(i, 0, last);
-        return ch == 2 ? d[i * 2] + d[i * 2 + 1] : d[i];
+        return ch == 2 ? d[i * 2 + c] : d[i];
+    };
+    auto hermite = [&](int64_t i1, float t, int c) {
+        const float y0 = at(i1 - 1, c), y1 = at(i1, c), y2 = at(i1 + 1, c), y3 = at(i1 + 2, c);
+        const float c1 = 0.5f * (y2 - y0);
+        const float c2 = y0 - 2.5f * y1 + 2.0f * y2 - 0.5f * y3;
+        const float c3 = 0.5f * (y3 - y0) + 1.5f * (y1 - y2);
+        return ((c3 * t + c2) * t + c1) * t + y1;
     };
     for (int i = from; i < to; ++i) {
         if (!v.loop && (v.pos >= v.hi || v.pos < v.lo)) {
@@ -132,11 +144,8 @@ void Sampler::renderVoice(Voice& v, float* out, int from, int to) {
         // 4-point Hermite interpolation: clean pitch shifts.
         const int64_t i1 = static_cast<int64_t>(std::floor(v.pos));
         const float t = static_cast<float>(v.pos - static_cast<double>(i1));
-        const float y0 = at(i1 - 1), y1 = at(i1), y2 = at(i1 + 1), y3 = at(i1 + 2);
-        const float c1 = 0.5f * (y2 - y0);
-        const float c2 = y0 - 2.5f * y1 + 2.0f * y2 - 0.5f * y3;
-        const float c3 = 0.5f * (y3 - y0) + 1.5f * (y1 - y2);
-        float x = ((c3 * t + c2) * t + c1) * t + y1;
+        const float xl = hermite(i1, t, 0);
+        const float xr = ch == 2 ? hermite(i1, t, 1) : xl;
 
         // Envelope: attack, decay to sustain, release before the end of a one-shot.
         const float age = static_cast<float>(v.age);
@@ -153,17 +162,14 @@ void Sampler::renderVoice(Voice& v, float* out, int from, int to) {
             const float remaining = static_cast<float>(v.length - v.age);
             if (remaining < v.releaseFrames) env *= std::max(0.0f, remaining / v.releaseFrames);
         }
-        x *= env * v.gain * chScale;
-
-        if (v.fade > 0) {
-            x *= static_cast<float>(v.fade) / kFadeFrames;
-            if (--v.fade == 0) {
-                out[i] += x;
-                v.sample = nullptr;
-                return;
-            }
+        float g = env * v.gain;
+        if (v.fade > 0) g *= static_cast<float>(v.fade) / kFadeFrames;
+        left[i] += xl * g * v.gainL;
+        right[i] += xr * g * v.gainR;
+        if (v.fade > 0 && --v.fade == 0) {
+            v.sample = nullptr;
+            return;
         }
-        out[i] += x;
         ++v.age;
         v.pos += v.step;
         if (v.loop) {
@@ -174,7 +180,7 @@ void Sampler::renderVoice(Voice& v, float* out, int from, int to) {
     }
 }
 
-void Sampler::render(float* out, int numFrames) {
+void Sampler::render(float* left, float* right, int numFrames) {
     // Choke groups: a hit cuts the other pads of its group at the hit's own frame.
     std::array<int, kSlots> cutAt;
     cutAt.fill(-1);
@@ -198,20 +204,20 @@ void Sampler::render(float* out, int numFrames) {
         while (cut >= 0 || at >= 0) {
             const bool cutFirst = cut >= 0 && (at < 0 || cut <= at);
             const int when = cutFirst ? cut : at;
-            renderVoice(voices_[slot], out, pos, when);
-            renderVoice(tails_[slot], out, pos, when);
+            renderVoice(voices_[slot], left, right, pos, when);
+            renderVoice(tails_[slot], left, right, pos, when);
             pos = when;
             if (cutFirst) {
                 fadeOut(slot);
                 cut = -1;
             } else {
-                start(slot, pendingVelocity_[slot]);
+                start(slot, pendingVelocity_[slot], pendingPan_[slot], pendingPitch_[slot]);
                 pendingOffset_[slot] = -1;
                 at = -1;
             }
         }
-        renderVoice(voices_[slot], out, pos, numFrames);
-        renderVoice(tails_[slot], out, pos, numFrames);
+        renderVoice(voices_[slot], left, right, pos, numFrames);
+        renderVoice(tails_[slot], left, right, pos, numFrames);
     }
 }
 

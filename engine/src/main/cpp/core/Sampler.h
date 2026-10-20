@@ -54,10 +54,11 @@ public:
     bool has(int slot) const { return slot >= 0 && slot < kSlots && slots_[slot] != nullptr; }
     void setParam(int slot, int param, float value);
     const PadParams& params(int slot) const { return params_[slot]; }
-    // Schedules a hit `frameOffset` frames into the next render() call.
-    void trigger(int slot, float velocity, int frameOffset);
-    // Adds the pads' sound (mono) into `out`.
-    void render(float* out, int numFrames);
+    // Schedules a hit `frameOffset` frames into the next render() call, panned -1..1, `pitch`
+    // semitones added to the pad's tuning for this hit only.
+    void trigger(int slot, float velocity, int frameOffset, float pan = 0.0f, float pitch = 0.0f);
+    // Adds the pads' sound into `left` / `right` (stereo sounds stay stereo).
+    void render(float* left, float* right, int numFrames);
     // Fades out looping pads (transport stop).
     void releaseLoops();
     void stopAll();
@@ -73,6 +74,7 @@ private:
         double lo = 0.0, hi = 0.0;  // region [lo, hi)
         bool loop = false;
         float gain = 0.0f;
+        float gainL = 1.0f, gainR = 1.0f;  // pan, centre = unity on each side
         int64_t age = 0;       // output frames since the hit
         int64_t length = 0;    // output frames of one pass (for the release)
         float attackFrames = 0.0f, decayFrames = 0.0f, sustain = 1.0f, releaseFrames = 1.0f;
@@ -81,9 +83,9 @@ private:
     static constexpr int kFadeFrames = 96;  // 2 ms: no click when a hit is cut
 
     void retire(Sample* s);
-    void start(int slot, float velocity);
+    void start(int slot, float velocity, float pan, float pitch);
     void fadeOut(int slot);
-    void renderVoice(Voice& v, float* out, int from, int to);
+    void renderVoice(Voice& v, float* left, float* right, int from, int to);
 
     int sampleRate_ = 48000;
     std::array<Sample*, kSlots> slots_{};
@@ -92,6 +94,8 @@ private:
     std::array<Voice, kSlots> tails_{};  // previous hit, fading out
     std::array<int, kSlots> pendingOffset_{};
     std::array<float, kSlots> pendingVelocity_{};
+    std::array<float, kSlots> pendingPan_{};
+    std::array<float, kSlots> pendingPitch_{};
     SpscQueue<Sample*, 64> retired_;
 };
 

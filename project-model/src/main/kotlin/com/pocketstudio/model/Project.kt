@@ -100,8 +100,9 @@ data class DrumPattern(
             steps = s,
             lanes = fixedLanes.map { lane ->
                 lane.copy(
-                    hits = lane.hits.filterKeys { it in 0 until s }.mapValues { (_, h) -> h.copy(repeats = h.repeats.coerceIn(1, MAX_REPEATS)) },
+                    hits = lane.hits.filterKeys { it in 0 until s }.mapValues { (_, h) -> h.sanitized() },
                     sample = lane.sample?.takeIf { it.isSafe }?.sanitized(),
+                    pan = lane.pan.finite(0f).coerceIn(-1f, 1f),
                 )
             },
         )
@@ -141,6 +142,16 @@ data class DrumPattern(
         return withHits(lane, lanes[lane].hits + (step to hit.copy(repeats = hit.repeats % MAX_REPEATS + 1)))
     }
 
+    /** The pad's place in the stereo field, -1 (left) .. 1 (right). */
+    fun withPadPan(lane: Int, pan: Float): DrumPattern =
+        copy(lanes = lanes.toMutableList().also { it[lane] = it[lane].copy(pan = pan.coerceIn(-1f, 1f)) })
+
+    /** One hit's own pan and pitch (no hit: nothing changes). */
+    fun withHitDetail(lane: Int, step: Int, pan: Float, pitch: Int): DrumPattern {
+        val hit = lanes[lane].hits[step] ?: return this
+        return withHits(lane, lanes[lane].hits + (step to hit.copy(pan = pan, pitch = pitch).sanitized()))
+    }
+
     fun withSample(lane: Int, sample: PadSample?): DrumPattern =
         copy(lanes = lanes.toMutableList().also { it[lane] = it[lane].copy(sample = sample) })
 
@@ -164,6 +175,8 @@ data class DrumLane(
     val hits: Map<Int, Hit> = emptyMap(),
     /** A sound of the user's that replaces the synthesized drum (null = the kit sound). */
     val sample: PadSample? = null,
+    /** -1 (left) .. 1 (right); like the sound, the same in every scene. */
+    val pan: Float = 0f,
 )
 
 /**
@@ -241,7 +254,23 @@ data class Hit(
     val velocity: Float = 1f,
     /** Hits in the step: 1 = plain, 2 to 4 = a roll (the step is split evenly). */
     val repeats: Int = 1,
-)
+    /** Added to the pad's pan for this hit, -1..1. */
+    val pan: Float = 0f,
+    /** Semitones for this hit, -24..24 (the pad's own sounds; the kit's synthesized drums ignore it). */
+    val pitch: Int = 0,
+) {
+    val isPlain: Boolean get() = pan == 0f && pitch == 0
+
+    fun sanitized() = copy(
+        repeats = repeats.coerceIn(1, DrumPattern.MAX_REPEATS),
+        pan = pan.finite(0f).coerceIn(-1f, 1f),
+        pitch = pitch.coerceIn(-MAX_PITCH, MAX_PITCH),
+    )
+
+    companion object {
+        const val MAX_PITCH = 24
+    }
+}
 
 @Serializable
 data class Mixer(
@@ -277,6 +306,8 @@ data class Channel(
     val inserts: List<Insert> = List(Mixer.INSERTS) { Insert() },
     /** Post-fader sends to the buses (0 = reverb, 1 = delay), 0..1. */
     val sends: List<Float> = List(Buses.COUNT) { 0f },
+    /** The quick controls ([Macros]: colour, dirt, motion, space), after the inserts. */
+    val macros: List<Float> = Macros.DEFAULTS,
 ) {
     fun sanitized(): Channel = copy(
         volume = volume.coerceIn(0f, 1f),
@@ -284,5 +315,6 @@ data class Channel(
         inserts = Mixer.sanitizeInserts(inserts),
         sends = (sends + List((Buses.COUNT - sends.size).coerceAtLeast(0)) { 0f }).take(Buses.COUNT)
             .map { v -> v.takeIf { it.isFinite() }?.coerceIn(0f, 1f) ?: 0f },
+        macros = Macros.sanitized(macros),
     )
 }

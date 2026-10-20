@@ -1,0 +1,128 @@
+name: Packs
+
+# Builds the sound packs (one per style of scripts/packs/styles.json) with Stable Audio Open
+# Small, the model the app already uses, and hosts them on a dedicated release. Runs once: an
+# existing release is left alone (publish a new tag to rebuild).
+on:
+  push:
+    paths:
+      - scripts/packs/**
+      - .github/workflows/packs.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  TAG: sons-packs-2
+  MODEL: https://github.com/benjaminpaquot123-netizen/pocket-studio/releases/download/modele-stable-audio-open-small-1
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      hosted: ${{ steps.check.outputs.hosted }}
+      styles: ${{ steps.styles.outputs.ids }}
+    steps:
+      - uses: actions/checkout@v7
+      - id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then echo "hosted=true" >> "$GITHUB_OUTPUT"; else echo "hosted=false" >> "$GITHUB_OUTPUT"; fi
+      - id: styles
+        run: echo "ids=$(python3 -c 'import json;print(json.dumps([s["id"] for s in json.load(open("scripts/packs/styles.json"))["styles"]]))')" >> "$GITHUB_OUTPUT"
+
+  # One download of the model (858 MB), shared through the cache: thirty jobs fetching it at once
+  # from the release get HTTP 500s.
+  model:
+    needs: plan
+    if: needs.plan.outputs.hosted == 'false'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/cache@v6
+        id: cache
+        with:
+          path: model
+          key: stable-audio-open-small-1
+      - name: Download
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p model && cd model
+          for f in cond_q8.onnx dit_l8.onnx dec.onnx tokenizer.json; do
+            curl -fsSL --retry 6 --retry-all-errors --retry-delay 10 -o "$f" "$MODEL/$f"
+          done
+      - name: Check
+        run: |
+          cd model
+          sha256sum -c - <<'SUMS'
+          31952d152e570649ef9e49882ea8a41d25a2746f2f6184c607e871b3ae636c82  cond_q8.onnx
+          ee73eb76a354a3bb0676bd185956bb78d169f8535a0e23188212f0cc002bcf08  dit_l8.onnx
+          96029859b4d563f3aff266e97e715190e8d53278c6e27ab94095535a0da4c911  dec.onnx
+          d2acde0d8d71dd30a711834b07781b9c89feaac33fd332f60507699282740066  tokenizer.json
+          SUMS
+
+  build:
+    needs: [plan, model]
+    if: needs.plan.outputs.hosted == 'false'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      max-parallel: 10
+      matrix:
+        style: ${{ fromJSON(needs.plan.outputs.styles) }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+      - uses: actions/cache/restore@v6
+        with:
+          path: model
+          key: stable-audio-open-small-1
+          fail-on-cache-miss: true
+      - name: Model (checked)
+        run: |
+          cd model
+          sha256sum -c - <<'SUMS'
+          31952d152e570649ef9e49882ea8a41d25a2746f2f6184c607e871b3ae636c82  cond_q8.onnx
+          ee73eb76a354a3bb0676bd185956bb78d169f8535a0e23188212f0cc002bcf08  dit_l8.onnx
+          96029859b4d563f3aff266e97e715190e8d53278c6e27ab94095535a0da4c911  dec.onnx
+          d2acde0d8d71dd30a711834b07781b9c89feaac33fd332f60507699282740066  tokenizer.json
+          SUMS
+      - run: pip install -q -r scripts/packs/requirements.txt
+      - name: Generate
+        run: python scripts/packs/generate_pack.py model scripts/packs/styles.json ${{ matrix.style }} out/${{ matrix.style }}
+      - uses: actions/upload-artifact@v7
+        with:
+          name: pack-${{ matrix.style }}
+          path: out/${{ matrix.style }}
+
+  # Published even if a few styles failed (they are simply not offered), never after a cancel.
+  publish:
+    needs: [plan, build]
+    if: ${{ !cancelled() && needs.plan.outputs.hosted == 'false' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v7
+        with:
+          pattern: pack-*
+          path: packs
+      - name: Zip and index
+        run: |
+          for d in packs/pack-*; do mv "$d" "packs/${d#packs/pack-}"; done
+          python3 scripts/packs/build_index.py packs dist
+          python3 -c "import json, sys; sys.exit(0 if json.load(open('dist/index.json'))['packs'] else 'no pack built')"
+      - name: Licence of the model the sounds come from
+        run: |
+          curl -fsSL -o dist/LICENSE-stable-audio "$MODEL/LICENSE"
+          curl -fsSL -o dist/NOTICE-stable-audio "$MODEL/NOTICE"
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$TAG" dist/* --latest=false --target main \
+            --title "Packs de sons par style" \
+            --notes "Sons générés avec Stable Audio Open Small (Powered by Stability AI, voir LICENSE-stable-audio et NOTICE-stable-audio) par scripts/packs. Un .zip par style ; index.json liste les tailles et empreintes vérifiées par l'appli."

@@ -210,3 +210,21 @@ Restant (mineur) :
 - « Annuler » de la notification arrête le travail en cours du service, quel qu'il soit.
 - Écoute du son généré sans focus audio ; « Piste audio » qui ajoute une piste fait deux pas d'annulation.
 - Pas de test unitaire de la machine d'états de GenerateViewModel.
+
+## Phase 10 (débutants et terrain de jeu), relecture de fin de phase
+
+Corrigé :
+- GRAVE : le filtre de la macro Couleur (Svf de DaisySP avec sa saturation interne) pouvait diverger près de sa coupure haute sur un son fort ; le NaN gagnait la réverbe, l'écho et la sortie, silence jusqu'au redémarrage. Saturation interne coupée ; et toute voie dont les effets produisent un NaN est remise à zéro (un bloc muet, effets réinitialisés sans allocation) au lieu de contaminer les bus. Test : bruit ±3 sur cinq réglages de couleur, toujours fini.
+- GRAVE : CI rouge (fonction de test dans un bloc exclu sous AddressSanitizer) ; et le moteur était devenu trop lourd pour la pile des tests sous ASan : inserts et macros du mixeur sur le tas, alloués une fois à la création.
+- Macros sans clic : filtre en fondu de 10 ms, saturation qui continue jusqu'à ce que sa compensation de volume revienne à 1, remise à zéro à l'activation.
+- Pads d'accords et MIDI verrouillé : une note partagée par deux pads ou deux touches tient tant que l'une est appuyée.
+- Mixeur : résumé des effets calculé une fois par changement (plus 21 comparaisons par image).
+- Assistant : ses choix restent jusqu'à l'écriture du projet ; rendu hors ligne libéré même si la préparation échoue.
+- Tests : fichiers de l'ancienne version (sans pan, hauteur, macros, verrou) relus ; sons stéréo gardés en stéréo.
+
+Restant (mineur) :
+- Un coup qui relance une voix synthétisée encore en train de sonner change son pan d'un coup (petit clic possible avec des pans alternés).
+- Le filtre d'insert existant (SweepFilter, résonance jusqu'à 0,95) garde la saturation interne de DaisySP ; la remise à zéro de la voie le rattrape s'il diverge.
+- La file de commandes (4096) n'est pas surveillée : un très gros projet resynchronisé pourrait perdre des détails de coups (joués au centre).
+- Écoute des sons (AudioTrack statique) : une écoute très longue (> 1 min) peut être refusée ; deux appuis très rapides peuvent rejouer l'ancien son.
+- Hauteur par coup réglable de −12 à +12 à l'écran (le format accepte ±24).

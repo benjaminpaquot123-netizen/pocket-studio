@@ -211,6 +211,7 @@ void Saturator::process(float* l, float* r, int n) {
 // --- Chorus ----------------------------------------------------------------------------------
 
 void StereoChorus::prepare(float rate) {
+    rate_ = rate;
     chorus_.Init(rate);
     update();
 }
@@ -235,6 +236,101 @@ void StereoChorus::process(float* l, float* r, int n) {
         l[i] += mix_ * (chorus_.GetLeft() - l[i]);
         r[i] += mix_ * (chorus_.GetRight() - r[i]);
     }
+}
+
+// --- Track macros ------------------------------------------------------------------------
+
+void TrackMacros::prepare(float rate) {
+    rate_ = rate;
+    left_.Init(rate);
+    right_.Init(rate);
+    // DaisySP's built-in cubic drive makes the filter blow up near its top cutoff on loud input.
+    left_.SetDrive(0.0f);
+    right_.SetDrive(0.0f);
+    drive_.prepare(rate);
+    chorus_.prepare(rate);
+    inPower_ = outPower_ = 0.0f;
+    makeup_ = 1.0f;
+    dirtOn_ = false;
+    update();
+    filterMixNow_ = filterMix_;
+}
+
+void TrackMacros::set(int macro, float v) {
+    if (macro < 0 || macro >= kCount || !std::isfinite(v)) return;
+    v_[static_cast<size_t>(macro)] = std::clamp(v, 0.0f, 1.0f);
+    update();
+}
+
+void TrackMacros::update() {
+    // Colour: below the middle a low-pass closes down to 150 Hz, above it a high-pass opens up to
+    // 2.5 kHz; the first 5 % around the middle fade the filter in, so the rest point is clean.
+    const float c = v_[Color] - 0.5f;
+    highPass_ = c > 0.0f;
+    filterMix_ = std::min(1.0f, std::fabs(c) * 20.0f);
+    const float amount = std::fabs(c) * 2.0f;
+    const float f = highPass_ ? expMap(amount, 20.0f, 2500.0f) : expMap(1.0f - amount, 150.0f, 18000.0f);
+    left_.SetFreq(std::min(f, rate_ * 0.45f));
+    right_.SetFreq(std::min(f, rate_ * 0.45f));
+    left_.SetRes(0.25f);
+    right_.SetRes(0.25f);
+    // Dirt: more drive and a little darker; process() keeps the loudness of the clean sound.
+    const float d = v_[Dirt];
+    drive_.setParam(0, d);
+    drive_.setParam(1, 0.75f - 0.25f * d);
+    drive_.setParam(2, std::min(1.0f, d * 3.0f));
+    drive_.setParam(3, 0.7f);
+    // Motion: a chorus that gets deeper and a bit faster.
+    const float m = v_[Motion];
+    chorus_.setParam(0, 0.2f + 0.35f * m);
+    chorus_.setParam(1, m);
+    chorus_.setParam(2, 0.4f);
+    chorus_.setParam(3, std::min(0.6f, m * 1.2f));
+}
+
+void TrackMacros::process(float* l, float* r, int n) {
+    if (filterMix_ > 0.0f || filterMixNow_ > 0.0f) {
+        const float step = 1.0f / (0.01f * rate_);  // 10 ms to fade the filter in or out
+        for (int i = 0; i < n; ++i) {
+            filterMixNow_ += std::clamp(filterMix_ - filterMixNow_, -step, step);
+            left_.Process(l[i]);
+            right_.Process(r[i]);
+            const float a = highPass_ ? left_.High() : left_.Low();
+            const float b = highPass_ ? right_.High() : right_.Low();
+            l[i] += filterMixNow_ * (a - l[i]);
+            r[i] += filterMixNow_ * (b - r[i]);
+        }
+    }
+    // Dirt: runs on until its loudness makeup is back at 1, so turning it off never jumps.
+    const bool dirt = v_[Dirt] > 0.005f;
+    if (!dirt && !dirtOn_) {
+        // fully off
+    } else if (!dirt && std::fabs(makeup_ - 1.0f) < 0.01f) {
+        dirtOn_ = false;
+        makeup_ = 1.0f;
+    } else {
+        if (!dirtOn_) {
+            dirtOn_ = true;
+            inPower_ = outPower_ = 0.0f;
+            makeup_ = 1.0f;
+        }
+        // Loudness follows the input (50 ms power averages): drive changes the colour, not the level.
+        float in = 0.0f;
+        for (int i = 0; i < n; ++i) in += l[i] * l[i] + r[i] * r[i];
+        drive_.process(l, r, n);
+        float out = 0.0f;
+        for (int i = 0; i < n; ++i) out += l[i] * l[i] + r[i] * r[i];
+        const float k = 1.0f - std::exp(-static_cast<float>(n) / (0.05f * rate_));
+        inPower_ += k * (in / static_cast<float>(n) - inPower_);
+        outPower_ += k * (out / static_cast<float>(n) - outPower_);
+        const float target = outPower_ > 1e-9f ? std::clamp(std::sqrt(inPower_ / outPower_), 0.1f, 2.0f) : 1.0f;
+        for (int i = 0; i < n; ++i) {
+            makeup_ += 0.002f * (target - makeup_);
+            l[i] *= makeup_;
+            r[i] *= makeup_;
+        }
+    }
+    if (v_[Motion] > 0.005f) chorus_.process(l, r, n);
 }
 
 // --- Filter ----------------------------------------------------------------------------------
@@ -617,6 +713,22 @@ void Bitcrusher::process(float* l, float* r, int n) {
 }
 
 // --- Insert slot -----------------------------------------------------------------------------
+
+void InsertSlot::reset() {
+    eq_.reset();
+    comp_.reset();
+    sat_.reset();
+    chorus_.reset();
+    filter_.reset();
+    pump_.reset();
+    flanger_.reset();
+    phaser_.reset();
+    gate_.reset();
+    tremolo_.reset();
+    widener_.reset();
+    crusher_.reset();
+    paramEq_.reset();
+}
 
 void InsertSlot::prepare(float rate) {
     eq_.prepare(rate);

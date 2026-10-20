@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <cmath>
 
+#include "Pan.h"
+
 namespace ps {
 
 namespace {
@@ -146,10 +148,11 @@ void DrumKit::prepare(int sampleRate) {
     chokeDecay_ = decayFor(0.004f, sampleRate);
 }
 
-void DrumKit::trigger(int voice, float velocity, int frameOffset) {
+void DrumKit::trigger(int voice, float velocity, int frameOffset, float pan) {
     if (voice < 0 || voice >= kVoices) return;
     pending_[static_cast<size_t>(voice)] = std::max(0, frameOffset);
     velocity_[static_cast<size_t>(voice)] = std::clamp(velocity, 0.0f, 1.0f);
+    pendingPan_[static_cast<size_t>(voice)] = std::isfinite(pan) ? pan : 0.0f;
 }
 
 float DrumKit::noise() {
@@ -218,6 +221,18 @@ float DrumKit::renderVoice(int voice, bool trig, float v) {
 }
 
 void DrumKit::render(float* mono, int numFrames) {
+    renderTo(numFrames, [mono](int i, float x, float, float) { mono[i] += x; });
+}
+
+void DrumKit::render(float* left, float* right, int numFrames) {
+    renderTo(numFrames, [left, right](int i, float x, float gl, float gr) {
+        left[i] += x * gl;
+        right[i] += x * gr;
+    });
+}
+
+template <typename Sink>
+void DrumKit::renderTo(int numFrames, Sink&& sink) {
     const int fadeLength = static_cast<int>(kFadeSeconds * sampleRate_);
     const int closedHatHit = pending_[ClosedHat] < numFrames ? pending_[ClosedHat] : -1;
     for (int voice = 0; voice < kVoices; ++voice) {
@@ -231,15 +246,23 @@ void DrumKit::render(float* mono, int numFrames) {
         // A closed hat cuts the open one at the exact sample, like on a real machine.
         const int chokeAt = voice == OpenHat ? closedHatHit : -1;
         int& remaining = activeFrames_[idx];
+        // Pan gains in locals: the output buffers could alias the members, which would keep the
+        // compiler from hoisting them out of the sample loop.
+        float gl = gainL_[idx], gr = gainR_[idx];
         for (int i = 0; i < numFrames; ++i) {
-            if (i == pending) remaining = maxLength;
+            if (i == pending) {
+                remaining = maxLength;
+                panGains(pendingPan_[idx], gl, gr);
+            }
             if (i == chokeAt) openHatChoke_ = 0.999f;
             const float sample = renderVoice(voice, i == pending, velocity);
             if (remaining <= 0) continue;
             const float fade = remaining < fadeLength ? static_cast<float>(remaining) / fadeLength : 1.0f;
-            mono[i] += gain * fade * sample;
+            sink(i, gain * fade * sample, gl, gr);
             --remaining;
         }
+        gainL_[idx] = gl;
+        gainR_[idx] = gr;
         if (pending >= 0) pending_[idx] = -1;
     }
 }

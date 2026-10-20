@@ -60,12 +60,40 @@ data class NoteClip(
     }
 
     /** Replaces the whole clip with [progression] in [harmony]: one chord per bar, 4 bars. */
-    fun withProgression(progression: Progression, harmony: Harmony, octaveRoot: Int = 48): NoteClip {
-        val bar = 16 * TICKS_PER_STEP
-        val chords = progression.degrees.flatMapIndexed { i, degree ->
-            harmony.chord(harmony.degreeRoot(degree, octaveRoot)).map { Note(i * bar, bar, it, 0.8f) }
+    fun withProgression(progression: Progression, harmony: Harmony, octaveRoot: Int = 48): NoteClip =
+        withChords(progression.degrees, harmony, octaveRoot)
+
+    /**
+     * A bass line: each chord's root (one chord per bar on the scale [degrees]) in the bass, on
+     * [pattern] (one character per step: 'X' strong, 'x' medium, 'o' soft, '.' nothing); each note
+     * lasts until the next one (two beats at most).
+     */
+    fun withBassLine(degrees: List<Int>, harmony: Harmony, pattern: String = "X.x.X.x.X.x.X.x.", octaveRoot: Int = 36): NoteClip {
+        val hits = pattern.take(16).mapIndexedNotNull { i, c ->
+            when (c) {
+                'X' -> i to 0.9f
+                'x' -> i to 0.75f
+                'o' -> i to 0.6f
+                else -> null
+            }
         }
-        return copy(steps = 64, notes = chords).sanitized()
+        val notes = degrees.flatMapIndexed { bar, degree ->
+            val pitch = harmony.degreeRoot(degree, octaveRoot)
+            hits.mapIndexed { i, (step, velocity) ->
+                val next = hits.getOrNull(i + 1)?.first ?: 16
+                Note((bar * 16 + step) * TICKS_PER_STEP, (next - step).coerceIn(1, 8) * TICKS_PER_STEP, pitch, velocity)
+            }
+        }
+        return copy(steps = 16 * degrees.size.coerceAtLeast(1), notes = notes).sanitized()
+    }
+
+    /** One chord per bar on the scale [degrees] (0 = I), held for the bar. */
+    fun withChords(degrees: List<Int>, harmony: Harmony, octaveRoot: Int = 48, velocity: Float = 0.8f): NoteClip {
+        val bar = 16 * TICKS_PER_STEP
+        val chords = degrees.flatMapIndexed { i, degree ->
+            harmony.chord(harmony.degreeRoot(degree, octaveRoot)).map { Note(i * bar, bar, it, velocity) }
+        }
+        return copy(steps = 16 * degrees.size.coerceAtLeast(1), notes = chords).sanitized()
     }
 
     companion object {

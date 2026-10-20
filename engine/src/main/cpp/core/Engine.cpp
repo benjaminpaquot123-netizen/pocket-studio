@@ -528,8 +528,18 @@ void Engine::process(const float* input, int numInputFrames, int inputChannels,
             done += n;
         }
         recordInput(input, numInputFrames, inputChannels);
+        // Microphone (tuner): whatever arrived this callback.
+        if (input && inputChannels > 0) {
+            for (int i = 0; i < numInputFrames; ++i) scopeWrite(micScope_, micScopeAt_, input[i * inputChannels]);
+        }
     }
 
+    // Output (analyser): mono, after the finite check below has cleaned it, one frame behind is fine.
+    for (int i = 0; i < numFrames; ++i) {
+        float m = 0.0f;
+        for (int c = 0; c < outputChannels; ++c) m += output[i * outputChannels + c];
+        scopeWrite(outScope_, outScopeAt_, std::isfinite(m) ? m / static_cast<float>(outputChannels) : 0.0f);
+    }
     float blockPeak = 0.0f;
     bool finite = true;
     const int total = numFrames * outputChannels;

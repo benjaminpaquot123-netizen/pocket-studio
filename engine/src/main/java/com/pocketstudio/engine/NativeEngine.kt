@@ -283,6 +283,14 @@ object NativeEngine {
     /** Live pad [pad] plays [sample] (null: empty). Main thread, like every command. */
     fun setClip(pad: Int, sample: NativeSample?) = nativeInstallClip(pad, sample?.handle ?: 0L)
 
+    /** Frames [readScope] fills (Engine::kScopeFrames). */
+    const val SCOPE_FRAMES = 4096
+    /** The last [SCOPE_FRAMES] of the output (mono) or of the microphone, oldest first. */
+    external fun readScope(microphone: Boolean, out: FloatArray)
+    /** Microphone on for the tuner (needs the permission); false when unavailable. Blocking (up to 1 s). */
+    external fun micOpen(): Boolean
+    external fun micClose()
+
     /** A song part switches audio track [track] on or off (follows [setStaging]). */
     fun setAudioOn(track: Int, on: Boolean) = post(CMD_AUDIO_ON, if (on) 1f else 0f, track)
 

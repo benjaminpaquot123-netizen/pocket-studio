@@ -366,6 +366,25 @@ JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_recordFi
     return out;
 }
 
+// --- Analyser and tuner ---
+
+// The last Engine::kScopeFrames of the output (mono) or of the microphone into `out`.
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_readScope(JNIEnv* env, jobject, jboolean microphone, jfloatArray out) {
+    if (env->GetArrayLength(out) < ps::Engine::kScopeFrames) return;
+    float buf[ps::Engine::kScopeFrames];
+    host().engine().readScope(microphone, buf);
+    env->SetFloatArrayRegion(out, 0, ps::Engine::kScopeFrames, buf);
+}
+
+// Microphone on for the tuner (false: unavailable); off again with micClose.
+JNIEXPORT jboolean JNICALL Java_com_pocketstudio_engine_NativeEngine_micOpen(JNIEnv*, jobject) {
+    return host().startRecordingInput() ? JNI_TRUE : JNI_FALSE;
+}
+
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_micClose(JNIEnv*, jobject) {
+    host().stopRecordingInput();
+}
+
 // --- Live pads ---
 
 JNIEXPORT jboolean JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeInstallClip(JNIEnv*, jobject, jint pad, jlong handle) {

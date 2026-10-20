@@ -20,6 +20,8 @@ public:
     void lowShelf(float rate, float freq, float gainDb);
     void highShelf(float rate, float freq, float gainDb);
     void peak(float rate, float freq, float q, float gainDb);
+    void highPass(float rate, float freq);  // 2nd order, Q 0.707
+    void bypass() { b0_ = 1; b1_ = b2_ = a1_ = a2_ = 0; }
     void reset() { z1_ = z2_ = 0.0f; }
     float process(float x) {
         const float y = b0_ * x + z1_;
@@ -182,9 +184,128 @@ private:
 
 // One insert slot: any of the insert effects, chosen by type. All are kept prepared so a
 // type change on the audio thread is just a reset.
+// Parametric EQ: one bell (frequency 20 Hz..20 kHz, gain ±18 dB, width Q 0.3..10) and a
+// low cut (0 off, else 20..500 Hz).
+class ParamEq {
+public:
+    void prepare(float rate) { rate_ = rate; update(); reset(); }
+    void setParam(int p, float v);
+    void reset();
+    void process(float* l, float* r, int n);
+
+private:
+    void update();
+    float rate_ = 48000;
+    std::array<float, 4> p_{0.5f, 0.5f, 0.4f, 0.0f};
+    Biquad bellL_, bellR_, cutL_, cutR_;
+};
+
+// Our own light effects (no big fixed buffers: 68 insert slots each hold one of every type).
+
+// Flanger: a 1-10 ms swept delay with feedback, the two sides a quarter turn apart.
+// Params: rate (0.05..5 Hz), depth, feedback (0..0.9), mix.
+class Flanger {
+public:
+    void prepare(float rate);  // allocates the delay lines
+    void setParam(int p, float v);
+    void reset();
+    void process(float* l, float* r, int n);
+
+private:
+    float rate_ = 48000;
+    std::array<float, 4> p_{0.2f, 0.6f, 0.5f, 0.5f};
+    std::vector<float> bufL_, bufR_;
+    int pos_ = 0;
+    double phase_ = 0.0;
+    float read(const std::vector<float>& b, float delay) const;
+};
+
+// Phaser: six first-order allpass stages swept by an LFO, with feedback.
+// Params: rate (0.05..5 Hz), depth, feedback (0..0.85), mix.
+class Phaser {
+public:
+    void prepare(float rate) { rate_ = rate; reset(); }
+    void setParam(int p, float v);
+    void reset();
+    void process(float* l, float* r, int n);
+
+private:
+    static constexpr int kStages = 6;
+    float rate_ = 48000;
+    std::array<float, 4> p_{0.2f, 0.7f, 0.5f, 0.5f};
+    std::array<float, kStages> zl_{}, zr_{};
+    float fbL_ = 0.0f, fbR_ = 0.0f;
+    double phase_ = 0.0;
+};
+
+// Noise gate: closes below the threshold (with hold), opens fast.
+// Params: threshold (-80..0 dB), attack (0.1..50 ms), release (10..1000 ms), range (how far it closes).
+class Gate {
+public:
+    void prepare(float rate);
+    void setParam(int p, float v);
+    void reset() { env_ = 0.0f; gain_ = 1.0f; hold_ = 0; }
+    void process(float* l, float* r, int n);
+    float gain() const { return gain_; }  // tests
+
+private:
+    void update();
+    float rate_ = 48000;
+    std::array<float, 4> p_{0.4f, 0.2f, 0.4f, 1.0f};
+    float threshold_ = 0.01f, attack_ = 0.1f, release_ = 0.001f, floor_ = 0.0f;
+    float env_ = 0.0f, gain_ = 1.0f;
+    int hold_ = 0, holdFrames_ = 2400;
+};
+
+// Tremolo / auto-pan. Params: rate (0.1..20 Hz), depth, shape (sine .. square), stereo (0 tremolo .. 1 pan).
+class Tremolo {
+public:
+    void prepare(float rate) { rate_ = rate; }
+    void setParam(int p, float v);
+    void reset() { phase_ = 0.0; }
+    void process(float* l, float* r, int n);
+
+private:
+    float rate_ = 48000;
+    std::array<float, 4> p_{0.4f, 0.6f, 0.0f, 0.0f};
+    double phase_ = 0.0;
+};
+
+// Stereo widener (mid/side). Params: width (0 mono .. 0.5 as is .. 1 twice as wide), bass in mono below
+// (0 off, else 40..300 Hz), -, -.
+class Widener {
+public:
+    void prepare(float rate) { rate_ = rate; reset(); }
+    void setParam(int p, float v);
+    void reset() { lowS_ = 0.0f; }
+    void process(float* l, float* r, int n);
+
+private:
+    float rate_ = 48000;
+    std::array<float, 4> p_{0.75f, 0.0f, 0.0f, 0.0f};
+    float lowS_ = 0.0f;
+};
+
+// Bitcrusher: fewer bits and a lower sample rate. Params: bits (16..2), downsample (1..32x), mix, volume.
+class Bitcrusher {
+public:
+    void prepare(float) {}
+    void setParam(int p, float v);
+    void reset() { count_ = 0; holdL_ = holdR_ = 0.0f; }
+    void process(float* l, float* r, int n);
+
+private:
+    std::array<float, 4> p_{0.5f, 0.3f, 1.0f, 0.7f};
+    int count_ = 0;
+    float holdL_ = 0.0f, holdR_ = 0.0f;
+};
+
 class InsertSlot {
 public:
-    enum Type { None = 0, Eq = 1, Comp = 2, Saturation = 3, Chorus = 4, Filter = 5, Pump = 6, kTypes = 7 };
+    enum Type {
+        None = 0, Eq = 1, Comp = 2, Saturation = 3, Chorus = 4, Filter = 5, Pump = 6,
+        FlangerFx = 7, PhaserFx = 8, GateFx = 9, TremoloFx = 10, WidenerFx = 11, Crusher = 12, ParamEqFx = 13, kTypes = 14
+    };
     static constexpr int kParams = 4;
 
     void prepare(float rate);
@@ -207,6 +328,13 @@ private:
     StereoChorus chorus_;
     SweepFilter filter_;
     Ducker pump_;
+    Flanger flanger_;
+    Phaser phaser_;
+    Gate gate_;
+    Tremolo tremolo_;
+    Widener widener_;
+    Bitcrusher crusher_;
+    ParamEq paramEq_;
 };
 
 // Freeverb (Jezar at Dreampoint, public domain): 8 parallel combs + 4 allpasses per side.

@@ -1847,6 +1847,60 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    private val _spectrum = MutableStateFlow<FloatArray?>(null)
+    /** Master output spectrum (dB per band) while the analyser is open. */
+    val spectrum: StateFlow<FloatArray?> = _spectrum.asStateFlow()
+
+    /** Spectrum of the output about 15 times a second while the analyser is shown. */
+    suspend fun pollSpectrum() {
+        if (!NativeEngine.isAvailable) return
+        val buf = FloatArray(NativeEngine.SCOPE_FRAMES)
+        var smooth: FloatArray? = null
+        try {
+            while (true) {
+                NativeEngine.readScope(false, buf)
+                val fresh = withContext(Dispatchers.Default) { com.pocketstudio.app.analysis.Spectrum.bands(buf, OfflineExport.SAMPLE_RATE) }
+                // Bars fall gently, rise at once.
+                smooth = smooth?.let { old -> FloatArray(fresh.size) { maxOf(fresh[it], old[it] - 3f) } } ?: fresh
+                _spectrum.value = smooth
+                kotlinx.coroutines.delay(66)
+            }
+        } finally {
+            _spectrum.value = null
+        }
+    }
+
+    private val _tuner = MutableStateFlow<com.pocketstudio.app.analysis.TunerReading?>(null)
+    val tuner: StateFlow<com.pocketstudio.app.analysis.TunerReading?> = _tuner.asStateFlow()
+    private val _tunerMic = MutableStateFlow<Boolean?>(null)
+    /** null while opening, false when the microphone is unavailable. */
+    val tunerMic: StateFlow<Boolean?> = _tunerMic.asStateFlow()
+
+    /** Listens to the microphone while the tuner is shown (needs the permission). */
+    suspend fun runTuner() {
+        if (!NativeEngine.isAvailable || _audioRecording.value != null) {
+            _tunerMic.value = false
+            return
+        }
+        _tunerMic.value = null
+        val open = withContext(Dispatchers.IO) { NativeEngine.micOpen() }
+        _tunerMic.value = open
+        if (!open) return
+        val buf = FloatArray(NativeEngine.SCOPE_FRAMES)
+        try {
+            while (true) {
+                NativeEngine.readScope(true, buf)
+                val reading = withContext(Dispatchers.Default) { com.pocketstudio.app.analysis.PitchDetector.detect(buf, OfflineExport.SAMPLE_RATE) }
+                // Hold the last note a moment when the sound fades, so the needle does not vanish at once.
+                if (reading != null) _tuner.value = reading
+                kotlinx.coroutines.delay(80)
+            }
+        } finally {
+            _tuner.value = null
+            if (_audioRecording.value == null) Thread({ NativeEngine.micClose() }, "mic-close").start()
+        }
+    }
+
     fun setChannelVolume(ch: Int, v: Float) {
         editChannel(ch, "vol") { it.copy(volume = v) }
         recordAutomation(AutoTarget(AutoTarget.VOLUME, ch), v)

@@ -33,12 +33,14 @@ import com.pocketstudio.ui.SectionLabel
 private val SHORT = mapOf(
     EffectType.NONE to "—", EffectType.EQ to "EQ", EffectType.COMPRESSOR to "Comp",
     EffectType.SATURATION to "Satu", EffectType.CHORUS to "Chorus", EffectType.FILTER to "Filtre",
-    EffectType.PUMP to "Pompe",
+    EffectType.PUMP to "Pompe", EffectType.FLANGER to "Flanger", EffectType.PHASER to "Phaser",
+    EffectType.GATE to "Gate", EffectType.TREMOLO to "Trémolo", EffectType.WIDENER to "Large",
+    EffectType.BITCRUSHER to "Crush", EffectType.PARAM_EQ to "EQ+",
 )
 
 /** One-line summary of a channel's effects, e.g. "EQ · Comp · Réverbe". */
 fun effectsSummary(inserts: List<Insert>, sends: List<Float> = emptyList()): String {
-    val parts = inserts.filter { it.effect != EffectType.NONE }.map { SHORT.getValue(it.effect) } +
+    val parts = inserts.filter { it.effect != EffectType.NONE }.map { SHORT[it.effect] ?: it.effect.label } +
         sends.mapIndexedNotNull { b, v -> if (v > 0.01f) Buses.NAMES[b] else null }
     return parts.joinToString(" · ").ifEmpty { "Aucun" }
 }
@@ -56,7 +58,7 @@ fun InsertRack(ch: Int, inserts: List<Insert>, actions: MixerActions) {
         inserts.forEachIndexed { i, ins ->
             FilterChip(
                 selected = slot == i, onClick = { slot = i },
-                label = { Text("${i + 1} ${SHORT.getValue(ins.effect)}") },
+                label = { Text("${i + 1} ${SHORT[ins.effect] ?: ins.effect.label}") },
                 colors = chipColors,
                 modifier = Modifier.testTag("slot_${ch}_$i"),
             )
@@ -74,6 +76,7 @@ fun InsertRack(ch: Int, inserts: List<Insert>, actions: MixerActions) {
             )
         }
     }
+    if (current.effect == EffectType.EQ || current.effect == EffectType.PARAM_EQ) EqCurve(current)
     current.effect.params.forEachIndexed { k, param ->
         LabeledSlider(param.label, param.format(current.params[k]), current.params[k], "fxp_${ch}_${slot}_$k") {
             actions.setInsertParam(ch, slot, k, it)

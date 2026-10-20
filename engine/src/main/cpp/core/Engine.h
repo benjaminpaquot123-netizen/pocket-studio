@@ -173,6 +173,15 @@ public:
         audio_.collectGarbage();
     }
     bool audioClipPlaying(int track) const { return audio_.playing(track); }  // tests
+
+    // The last kScopeFrames of the output (mono) or of the microphone, oldest first, for the
+    // spectrum analyser and the tuner. Any thread; the copy may straddle one block (harmless here).
+    static constexpr int kScopeFrames = 4096;
+    void readScope(bool microphone, float* out) const {
+        const auto& ring = microphone ? micScope_ : outScope_;
+        const uint32_t end = (microphone ? micScopeAt_ : outScopeAt_).load(std::memory_order_acquire);
+        for (int i = 0; i < kScopeFrames; ++i) out[i] = ring[(end + static_cast<uint32_t>(i)) % kScopeFrames].load(std::memory_order_relaxed);
+    }
     bool stemsLoaded() const { return stems_.loaded(); }  // tests
     int64_t stemPosition() const { return stems_.position(); }
     // Song position of the preview player in frames, -1 when stopped.
@@ -241,6 +250,13 @@ private:
     void recordInput(const float* input, int numInputFrames, int inputChannels);
     Automation automation_;
     void applyAutomation(int patternStep);
+    std::array<std::atomic<float>, kScopeFrames> outScope_{}, micScope_{};
+    std::atomic<uint32_t> outScopeAt_{0}, micScopeAt_{0};
+    static void scopeWrite(std::array<std::atomic<float>, kScopeFrames>& ring, std::atomic<uint32_t>& at, float v) {
+        const uint32_t i = at.load(std::memory_order_relaxed);
+        ring[i].store(v, std::memory_order_relaxed);
+        at.store((i + 1) % kScopeFrames, std::memory_order_release);
+    }
 
     // The waiting scene (filled while staging_), copied over the playing patterns at the swap.
     struct StagedScene {

@@ -433,6 +433,32 @@ class ScreenshotTest {
     }
 
     @Test
+    fun parametricEq() = shoot("param_eq") {
+        val inserts = listOf(
+            com.pocketstudio.model.Insert(com.pocketstudio.model.EffectType.PARAM_EQ.ordinal, listOf(0.62f, 0.75f, 0.45f, 0.3f)),
+            com.pocketstudio.model.Insert.of(com.pocketstudio.model.EffectType.PHASER),
+            com.pocketstudio.model.Insert.of(com.pocketstudio.model.EffectType.BITCRUSHER), com.pocketstudio.model.Insert(),
+        )
+        androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
+            com.pocketstudio.ui.NeonCard {
+                com.pocketstudio.ui.SectionLabel("Voix · effets")
+                com.pocketstudio.app.mixer.InsertRack(12, inserts, com.pocketstudio.app.mixer.MixerActions())
+            }
+        }
+    }
+
+    @Test
+    fun analyserAndTuner() = shoot("tuner") {
+        androidx.compose.foundation.layout.Column {
+            com.pocketstudio.ui.NeonCard(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
+                com.pocketstudio.ui.SectionLabel("Analyseur de spectre")
+                com.pocketstudio.app.analysis.SpectrumView(FloatArray(40) { i -> -8f - i * 1.2f - if (i % 7 == 3) 0f else 6f })
+            }
+            com.pocketstudio.app.analysis.TunerView(com.pocketstudio.app.analysis.TunerReading(111.2, 45, -9.0), micOk = true)
+        }
+    }
+
+    @Test
     fun automation() = shoot("automation") {
         val lane = com.pocketstudio.model.AutomationLane(com.pocketstudio.model.AutoTarget(com.pocketstudio.model.AutoTarget.VOLUME, 2))
             .let { l -> (0 until 16).fold(l) { acc, s -> if (s % 2 == 0) acc.withPoint(s, 0.2f + 0.05f * s) else acc } }

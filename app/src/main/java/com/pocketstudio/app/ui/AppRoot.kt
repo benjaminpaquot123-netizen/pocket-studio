@@ -105,6 +105,8 @@ import com.pocketstudio.app.AppInfo
 import com.pocketstudio.app.settings.SettingsActions
 import com.pocketstudio.app.settings.SettingsScreen
 import com.pocketstudio.app.settings.SettingsStore
+import androidx.compose.material3.Button
+import androidx.compose.foundation.layout.Arrangement
 import com.pocketstudio.app.projects.CurrentProject
 import com.pocketstudio.app.projects.ProjectStarter
 import com.pocketstudio.app.projects.ProjectsActions
@@ -331,6 +333,7 @@ fun AppRoot() {
     }
     var liveImportPad by rememberSaveable { mutableIntStateOf(0) }
     var audioPage by rememberSaveable { mutableIntStateOf(0) }
+    var analyserOn by rememberSaveable { mutableStateOf(false) }
     var audioRecordTrack by rememberSaveable { mutableIntStateOf(0) }
     var audioImportTrack by rememberSaveable { mutableIntStateOf(0) }
     val audioMicPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
@@ -632,6 +635,10 @@ fun AppRoot() {
                     }
                     AppTab.Mixeur -> {
                         val project by rhythmVm.project.collectAsStateWithLifecycle()
+                        val spectrum by rhythmVm.spectrum.collectAsStateWithLifecycle()
+                        LaunchedEffect(analyserOn) {
+                            if (analyserOn) lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollSpectrum() }
+                        }
                         val meters by rhythmVm.meters.collectAsStateWithLifecycle()
                         val export by rhythmVm.export.collectAsStateWithLifecycle()
                         LaunchedEffect(Unit) {
@@ -666,6 +673,9 @@ fun AppRoot() {
                             master = project.mixer.master,
                             buses = project.mixer.buses,
                             strips = mixerStrips(project),
+                            spectrum = spectrum,
+                            analyserOpen = analyserOn,
+                            setAnalyser = { analyserOn = it },
                             automation = AutomationUi(project.automation, project.drums.steps, if (transport.playing) live.currentStep else -1, automationRecord),
                             automationActions = AutomationActions(
                                 add = rhythmVm::addAutomation,
@@ -740,11 +750,30 @@ fun AppRoot() {
                     }
                     AppTab.Audio -> Column {
                         TabRow(selectedTabIndex = audioPage, containerColor = Neon.Surface, contentColor = Neon.Cyan) {
-                            listOf("Pistes audio", "Remix").forEachIndexed { i, label ->
+                            listOf("Pistes audio", "Remix", "Accordeur").forEachIndexed { i, label ->
                                 Tab(selected = audioPage == i, onClick = { audioPage = i }, text = { Text(label) }, modifier = Modifier.testTag("audio_page_$i"))
                             }
                         }
-                        if (audioPage == 0) {
+                        if (audioPage == 2) {
+                            val reading by rhythmVm.tuner.collectAsStateWithLifecycle()
+                            val micOk by rhythmVm.tunerMic.collectAsStateWithLifecycle()
+                            val settings by SettingsStore.state.collectAsStateWithLifecycle()
+                            var granted by remember {
+                                mutableStateOf(ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED)
+                            }
+                            val ask = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted = it }
+                            if (granted) {
+                                LaunchedEffect(Unit) {
+                                    lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.runTuner() }
+                                }
+                                com.pocketstudio.app.analysis.TunerView(reading, micOk, settings.englishNotes)
+                            } else {
+                                Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                                    Text("L'accordeur écoute le micro : autorise-le pour t'accorder.")
+                                    Button(onClick = { ask.launch(Manifest.permission.RECORD_AUDIO) }) { Text("Autoriser le micro") }
+                                }
+                            }
+                        } else if (audioPage == 0) {
                             val project by rhythmVm.project.collectAsStateWithLifecycle()
                             val recording by rhythmVm.audioRecording.collectAsStateWithLifecycle()
                             val info by rhythmVm.sampleInfo.collectAsStateWithLifecycle()

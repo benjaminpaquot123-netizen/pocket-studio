@@ -78,7 +78,7 @@ Feu vert de Benjamin (D4 = A) : fusion de la pull request en fin de phase.
 - [x] 7.3 Ligne de temps (clips posés sur des pistes) à côté des scènes ; mesures autres que 4/4
 
 ## Phase 8 : effets et contrôle
-- [ ] 8.1 Nouveaux effets (flanger, phaser, gate, trémolo, élargisseur, bitcrusher, EQ paramétrique visuel), analyseur, accordeur
+- [x] 8.1 Nouveaux effets (flanger, phaser, gate, trémolo, élargisseur, bitcrusher, EQ paramétrique visuel), analyseur, accordeur
 - [ ] 8.2 Automation en clips, par scène et sur toute la longueur
 - [ ] 8.3 Clavier expressif (vélocité selon l'appui, pitch bend, molette, sustain, arpège en direct), MIDI learn, horloge MIDI sortante, Ableton Link
 

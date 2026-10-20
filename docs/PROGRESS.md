@@ -70,7 +70,10 @@
 
 - Phase 5 (en cours, branche ccr-80af1a1b-mn0wec) :
   - 5.1 Plaits comme 2e voix du Synthé (24 modèles, test Linux, zéro allocation) ; la FM 6 op. de Plaits tient lieu de FM 4 op. ;
-  - 24 scènes (A à X) au lieu de 8, grille « Afficher 8 · 16 · 24 » (demande de Benjamin).
+  - 24 scènes (A à X) au lieu de 8, grille « Afficher 8 · 16 · 24 » (demande de Benjamin) ;
+  - pads live (lanceur de boucles 4 à 16 pads, onglet Morceau) : ClipLauncher dans le moteur, testé sur Linux ; import, son d'un pad de batterie, « → Live » depuis le Remix ;
+  - Remix : écoute des 4 pistes ensemble par le moteur, chaque piste allumée ou coupée sans arrêt ;
+  - Acide : panneau façon TB-303 à boutons rotatifs (composant Knob dans ui-components).
 
 ## Prochaine étape exacte
 1. Phase 5.2 : préréglages classés (basse, nappe, lead…), favoris, bouton « Au hasard » pour le Synthé, Plaits et l'acide.

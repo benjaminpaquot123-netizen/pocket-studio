@@ -1,12 +1,13 @@
 package com.pocketstudio.app.remix
 
 import android.app.Application
-import android.media.MediaPlayer
 import android.net.Uri
 import android.provider.OpenableColumns
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.pocketstudio.app.report.AppLog
+import com.pocketstudio.engine.NativeEngine
+import com.pocketstudio.engine.NativeStems
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,10 +24,11 @@ class RemixViewModel(app: Application) : AndroidViewModel(app) {
     private val _modelInstalled = MutableStateFlow(false)
     val modelInstalled: StateFlow<Boolean> = _modelInstalled.asStateFlow()
 
-    private val _playing = MutableStateFlow<Pair<String, String>?>(null)
-    val playing: StateFlow<Pair<String, String>?> = _playing.asStateFlow()
-
-    private var player: MediaPlayer? = null
+    private val _preview = MutableStateFlow<StemPreview?>(null)
+    /** The song whose stems are being listened to on this screen, if any. */
+    val preview: StateFlow<StemPreview?> = _preview.asStateFlow()
+    private var previewStems: NativeStems? = null
+    private var previewJob: kotlinx.coroutines.Job? = null
 
     init {
         viewModelScope.launch {
@@ -61,35 +63,92 @@ class RemixViewModel(app: Application) : AndroidViewModel(app) {
 
     fun dismiss() = SeparationJob.dismiss()
 
-    fun play(set: StemSet, stem: String) {
-        stop()
-        val mp = MediaPlayer()
-        player = mp
-        _playing.value = set.id to stem
-        try {
-            mp.setDataSource(set.stem(stem).absolutePath)
-            mp.setOnPreparedListener { it.start() }
-            mp.setOnCompletionListener { stop() }
-            mp.setOnErrorListener { _, what, extra ->
-                AppLog.add("Remix : lecture impossible ($what/$extra)")
-                stop()
-                true
+    /** Plays the four stems of [set] together, apart from the project (all on by default). */
+    fun playAll(set: StemSet) {
+        val p = _preview.value
+        if (p != null && p.setId == set.id) {
+            if (!p.loading && NativeEngine.isAvailable) {
+                NativeEngine.playPreview(true)
+                _preview.value = p.copy(playing = true)
             }
-            mp.prepareAsync()
-        } catch (e: Exception) {
-            AppLog.add("Remix : lecture impossible (${e.message})")
-            stop()
+            return
+        }
+        start(set, List(STEMS) { true })
+    }
+
+    /** Switches one stem on or off; it never stops the others. Starts [set] if another song played. */
+    fun toggleStem(set: StemSet, stem: Int) {
+        val p = _preview.value
+        if (p == null || p.setId != set.id) {
+            start(set, List(STEMS) { it == stem })
+            return
+        }
+        val on = p.on.mapIndexed { i, v -> if (i == stem) !v else v }
+        _preview.value = p.copy(on = on)
+        if (NativeEngine.isAvailable) NativeEngine.setPreviewParam(stem, MUTE, if (on[stem]) 0f else 1f)
+    }
+
+    private fun start(set: StemSet, on: List<Boolean>) {
+        stop()
+        if (!NativeEngine.isAvailable) return
+        _preview.value = StemPreview(set.id, on, loading = true)
+        previewJob = viewModelScope.launch {
+            val loaded = withContext(Dispatchers.IO) {
+                runCatching {
+                    NativeStems.load(set.stem("drums").path, set.stem("bass").path, set.stem("other").path, set.stem("vocals").path)
+                }.getOrNull()
+            }
+            val p = _preview.value
+            if (loaded == null || p == null || p.setId != set.id) {
+                loaded?.close()
+                if (loaded == null) {
+                    AppLog.add("Remix : écoute impossible de « ${set.name} »")
+                    _preview.value = null
+                }
+                return@launch
+            }
+            previewStems = loaded
+            NativeEngine.setPreviewStems(loaded)
+            p.on.forEachIndexed { i, v -> NativeEngine.setPreviewParam(i, MUTE, if (v) 0f else 1f) }
+            NativeEngine.playPreview(true)
+            _preview.value = p.copy(loading = false, playing = true, frames = loaded.frames)
         }
     }
 
     fun stop() {
-        player?.release()
-        player = null
-        _playing.value = null
+        previewJob?.cancel()
+        previewJob = null
+        if (NativeEngine.isAvailable) {
+            NativeEngine.playPreview(false)
+            NativeEngine.setPreviewStems(null)
+        }
+        previewStems?.close()  // the engine keeps its own reference until it lets go
+        previewStems = null
+        _preview.value = null
+    }
+
+    /** Follows the playhead about 30 times a second while the Remix screen is visible. */
+    suspend fun pollPreview() {
+        if (!NativeEngine.isAvailable) return
+        while (true) {
+            val p = _preview.value
+            if (p != null && p.playing) {
+                val pos = NativeEngine.previewPosition()
+                // Past the end, or stopped: the stems stay loaded, ready to play again.
+                _preview.value = if (pos < 0 && p.position >= 0) p.copy(playing = false, position = -1) else p.copy(position = pos)
+            }
+            kotlinx.coroutines.delay(33)
+        }
+    }
+
+    fun pause() {
+        val p = _preview.value ?: return
+        if (NativeEngine.isAvailable) NativeEngine.playPreview(false)
+        _preview.value = p.copy(playing = false, position = -1)
     }
 
     fun delete(set: StemSet) {
-        if (_playing.value?.first == set.id) stop()
+        if (_preview.value?.setId == set.id) stop()
         viewModelScope.launch {
             withContext(Dispatchers.IO) { StemStore.delete(set) }
             refresh()
@@ -100,3 +159,16 @@ class RemixViewModel(app: Application) : AndroidViewModel(app) {
         stop()
     }
 }
+
+/** Listening to a song's stems together; [on] says which ones sound. [position] -1 = stopped. */
+data class StemPreview(
+    val setId: String,
+    val on: List<Boolean>,
+    val loading: Boolean = false,
+    val playing: Boolean = false,
+    val position: Long = -1,
+    val frames: Long = 0,
+)
+
+private const val STEMS = 4
+private const val MUTE = 1  // StemPlayer::Mute

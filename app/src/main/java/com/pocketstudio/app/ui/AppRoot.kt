@@ -54,6 +54,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -89,6 +90,8 @@ import com.pocketstudio.app.synth.SynthScreen
 import com.pocketstudio.app.remix.RemixActions
 import com.pocketstudio.app.session.SessionActions
 import com.pocketstudio.app.session.SessionScreen
+import com.pocketstudio.app.session.LivePadsActions
+import com.pocketstudio.app.session.LivePadsUi
 import com.pocketstudio.app.session.SessionScreenUi
 import com.pocketstudio.model.Scene
 import com.pocketstudio.model.allScenes
@@ -179,6 +182,10 @@ fun AppRoot() {
     }
     val pickAudio = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) rhythmVm.importSample(uri)
+    }
+    var liveImportPad by rememberSaveable { mutableIntStateOf(0) }
+    val pickLiveAudio = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri != null) rhythmVm.importLive(liveImportPad, uri)
     }
     val pickSong = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) remixVm.separate(uri)
@@ -429,6 +436,12 @@ fun AppRoot() {
                         val project by rhythmVm.project.collectAsStateWithLifecycle()
                         val transport by rhythmVm.transport.collectAsStateWithLifecycle()
                         val sessionUi by rhythmVm.sessionUi.collectAsStateWithLifecycle()
+                        val liveStates by rhythmVm.liveStates.collectAsStateWithLifecycle()
+                        val sampleTask by rhythmVm.sampleTask.collectAsStateWithLifecycle()
+                        var liveEditing by rememberSaveable { mutableStateOf<Int?>(null) }
+                        LaunchedEffect(Unit) {
+                            lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollLiveStates() }
+                        }
                         val all = project.allScenes
                         SessionScreen(
                             SessionScreenUi(
@@ -450,25 +463,51 @@ fun AppRoot() {
                                 togglePlay = rhythmVm::togglePlay,
                                 performance = { param, v -> if (NativeEngine.isAvailable) NativeEngine.setPerformance(param, v) },
                             ),
+                            live = LivePadsUi(
+                                pads = project.live,
+                                states = liveStates,
+                                editing = liveEditing,
+                                drumSounds = project.drums.lanes.mapIndexedNotNull { i, l -> l.sample?.let { i to it.name } },
+                                busy = when (val t = sampleTask) {
+                                    is SampleTask.Busy -> t.message
+                                    is SampleTask.Failed -> t.message
+                                    else -> null
+                                },
+                            ),
+                            liveActions = LivePadsActions(
+                                tap = rhythmVm::toggleLive,
+                                stopAll = rhythmVm::stopLive,
+                                setSize = rhythmVm::setLiveSize,
+                                edit = { liveEditing = it },
+                                import = { pad -> liveImportPad = pad; rhythmVm.dismissSampleError(); pickLiveAudio.launch(arrayOf("audio/*")) },
+                                fromDrumPad = rhythmVm::liveFromDrumPad,
+                                setBeats = rhythmVm::setLiveBeats,
+                                setOneShot = rhythmVm::setLiveOneShot,
+                                setGain = rhythmVm::setLiveGain,
+                                clear = rhythmVm::clearLive,
+                            ),
                         )
                     }
                     AppTab.Remix -> {
                         val remixState by remixVm.state.collectAsStateWithLifecycle()
                         val sets by remixVm.sets.collectAsStateWithLifecycle()
                         val modelInstalled by remixVm.modelInstalled.collectAsStateWithLifecycle()
-                        val playing by remixVm.playing.collectAsStateWithLifecycle()
+                        val preview by remixVm.preview.collectAsStateWithLifecycle()
                         val remixLoading by rhythmVm.remixLoading.collectAsStateWithLifecycle()
                         val overview by rhythmVm.stemOverview.collectAsStateWithLifecycle()
                         val stemPosition by rhythmVm.stemPosition.collectAsStateWithLifecycle()
                         LaunchedEffect(Unit) {
                             lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollStemPosition() }
                         }
+                        LaunchedEffect(Unit) {
+                            lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { remixVm.pollPreview() }
+                        }
                         val project by rhythmVm.project.collectAsStateWithLifecycle()
                         val transport by rhythmVm.transport.collectAsStateWithLifecycle()
                         val sampleTask by rhythmVm.sampleTask.collectAsStateWithLifecycle()
                         RemixScreen(
                             RemixUi(
-                                modelInstalled, remixState, sets, playing,
+                                modelInstalled, remixState, sets, preview,
                                 remix = project.remix,
                                 remixLoading = remixLoading,
                                 transportPlaying = transport.playing,
@@ -486,8 +525,10 @@ fun AppRoot() {
                                 pickSong = { pickSong.launch(arrayOf("audio/*")) },
                                 cancel = remixVm::cancel,
                                 dismiss = remixVm::dismiss,
-                                play = remixVm::play,
-                                stop = remixVm::stop,
+                                playAll = remixVm::playAll,
+                                toggleStem = remixVm::toggleStem,
+                                pause = remixVm::pause,
+                                stemToLive = rhythmVm::stemToLive,
                                 delete = remixVm::delete,
                                 useSong = { set ->
                                     rhythmVm.useSong(set)

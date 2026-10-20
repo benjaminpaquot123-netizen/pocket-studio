@@ -72,11 +72,12 @@ class SessionActions(
 
 /** Scenes (session) and song: build variations, then chain them. */
 @Composable
-fun SessionScreen(ui: SessionScreenUi, actions: SessionActions) {
+fun SessionScreen(ui: SessionScreenUi, actions: SessionActions, live: LivePadsUi? = null, liveActions: LivePadsActions = LivePadsActions()) {
     Column(
         Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp).testTag("session"),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
+        if (live != null) LivePadsCard(live, liveActions)
         NeonCard {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 SectionLabel("Scènes", Modifier.weight(1f))

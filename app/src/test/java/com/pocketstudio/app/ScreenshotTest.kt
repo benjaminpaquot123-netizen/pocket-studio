@@ -281,7 +281,8 @@ class ScreenshotTest {
             File("/tmp/stems/abc"), "Ma chanson", 214.0, 0L, com.pocketstudio.app.remix.SongInfo(124.0, 0.25, 9, true),
         )
         com.pocketstudio.app.remix.RemixScreen(
-            com.pocketstudio.app.remix.RemixUi(true, com.pocketstudio.app.remix.SeparationState.Separating("Autre chanson", 0.37f), listOf(set), "abc" to "bass"),
+            com.pocketstudio.app.remix.RemixUi(true, com.pocketstudio.app.remix.SeparationState.Separating("Autre chanson", 0.37f), listOf(set),
+                com.pocketstudio.app.remix.StemPreview(set.id, listOf(true, true, false, true), playing = true, position = 48000L * 75, frames = 48000L * 200)),
             com.pocketstudio.app.remix.RemixActions(),
         )
     }
@@ -387,6 +388,24 @@ class ScreenshotTest {
             ),
             com.pocketstudio.app.session.SessionActions(),
         )
+    }
+
+    @Test
+    @Config(qualifiers = "w400dp-h1500dp-xxhdpi")
+    fun livePads() = shoot("live_pads") {
+        val clip = { n: String, b: Int -> com.pocketstudio.model.LiveClip("x.wav", n, b) }
+        val pads = com.pocketstudio.model.LivePads(8).with(0, clip("Kick 909", 1)).with(1, clip("Charley", 2))
+            .with(2, clip("Basse Da Funk", 8)).with(3, clip("Voix refrain", 16)).with(5, clip("Clap", 4).copy(oneShot = true))
+        androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
+            com.pocketstudio.app.session.LivePadsCard(
+                com.pocketstudio.app.session.LivePadsUi(pads, listOf(2, 2, 1, 0, 0, 0, 0, 0), editing = null),
+                com.pocketstudio.app.session.LivePadsActions(),
+            )
+            com.pocketstudio.app.session.LivePadsCard(
+                com.pocketstudio.app.session.LivePadsUi(pads, List(8) { 0 }, editing = 2, drumSounds = listOf(0 to "Kick importé", 3 to "Snare")),
+                com.pocketstudio.app.session.LivePadsActions(),
+            )
+        }
     }
 
     @Test

@@ -44,6 +44,9 @@ import com.pocketstudio.model.Performance
 import com.pocketstudio.model.Progression
 import com.pocketstudio.model.NoteClip
 import com.pocketstudio.model.PadSample
+import com.pocketstudio.model.LiveClip
+import com.pocketstudio.model.LivePads
+import com.pocketstudio.model.sampleFiles
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.ProjectSession
 import com.pocketstudio.model.ProjectStore
@@ -188,6 +191,81 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         pushPlaits(p)
         pushRemix(p)
         pushAutomation(p)
+        pushLive(p)
+    }
+
+    // --- Live pads: sounds switched on and off by a tap, in time ---------------------------------
+
+    private val _liveStates = MutableStateFlow(List(LivePads.MAX) { 0 })
+    /** Per live pad: 0 off, 1 waiting for its beat, 2 playing. */
+    val liveStates: StateFlow<List<Int>> = _liveStates.asStateFlow()
+
+    /** Polls the pads' lights about 30 times a second while their screen is visible. */
+    suspend fun pollLiveStates() {
+        if (!NativeEngine.isAvailable) return
+        val buf = IntArray(NativeEngine.LIVE_PADS)
+        while (true) {
+            NativeEngine.clipStates(buf)
+            val now = buf.take(LivePads.MAX)
+            if (now != _liveStates.value) _liveStates.value = now
+            kotlinx.coroutines.delay(33)
+        }
+    }
+
+    private fun pushLive(p: Project = project.value) {
+        if (!NativeEngine.isAvailable) return
+        p.live.clips.take(NativeEngine.LIVE_PADS).forEachIndexed { i, clip ->
+            if (clip != null) NativeEngine.setClipParams(i, clip.beats, clip.oneShot, clip.gain)
+            NativeEngine.setClip(i, clip?.let { padSamples.native(it.file) })
+        }
+    }
+
+    fun toggleLive(pad: Int) {
+        if (NativeEngine.isAvailable && project.value.live.clips.getOrNull(pad) != null) NativeEngine.toggleClip(pad)
+    }
+
+    fun stopLive() {
+        if (NativeEngine.isAvailable) NativeEngine.toggleClip(-1)
+    }
+
+    fun setLiveSize(size: Int) = session.edit { p -> p.copy(live = p.live.copy(size = size)) }
+
+    private fun editLive(pad: Int, key: String? = null, transform: (LiveClip) -> LiveClip) {
+        val clip = project.value.live.clips.getOrNull(pad) ?: return
+        session.edit(key) { p -> p.copy(live = p.live.with(pad, transform(clip).sanitized())) }
+        pushLive()
+    }
+
+    fun setLiveBeats(pad: Int, beats: Int) = editLive(pad) { it.copy(beats = beats) }
+    fun setLiveOneShot(pad: Int, oneShot: Boolean) = editLive(pad) { it.copy(oneShot = oneShot) }
+    fun setLiveGain(pad: Int, gain: Float) = editLive(pad, "live-gain-$pad") { it.copy(gain = gain) }
+
+    fun clearLive(pad: Int) {
+        session.edit { p -> p.copy(live = p.live.with(pad, null)) }
+        pushLive()
+    }
+
+    /** An audio file from the phone onto live pad [pad]. */
+    fun importLive(pad: Int, uri: Uri) = sampleJob("Lecture du fichier…", live = pad) {
+        val app = getApplication<Application>()
+        val name = PadSamples.nameFrom(displayName(app, uri))
+        val pcm = try {
+            AudioDecoder.decode(app, uri)
+        } catch (e: AudioDecoder.TooLongException) {
+            throw UserMessage("Ce fichier dure plus d'une minute : choisis un son plus court.")
+        } catch (e: Exception) {
+            throw UserMessage("Ce fichier n'a pas pu être lu (${e.message ?: "format inconnu"}).")
+        }
+        AppLog.add("Pad live ${pad + 1} : « $name », ${"%.1f".format(pcm.seconds)} s")
+        padSamples.add(pcm, name)
+    }
+
+    /** Live pad [pad] gets the sound of drum pad [drumPad] (the same file, nothing copied). */
+    fun liveFromDrumPad(pad: Int, drumPad: Int) {
+        val s = project.value.drums.lanes.getOrNull(drumPad)?.sample ?: return
+        val seconds = padSamples.info.value[s.file]?.seconds ?: 0.0
+        session.edit { p -> p.copy(live = p.live.with(pad, LiveClip(s.file, s.name, LivePads.beatsFor(seconds, p.tempoBpm)))) }
+        pushLive()
     }
 
     // --- Plaits (Mutable Instruments) voice for the synth track -------------------------------
@@ -585,6 +663,31 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /** [bars] bars of one stem onto the first empty live pad: switch the parts on and off in time. */
+    fun stemToLive(stem: Int, bars: Int) {
+        val source = stems ?: return
+        if (_sampleTask.value is SampleTask.Busy || _sampleTask.value is SampleTask.Recording) return
+        val pad = project.value.live.clips.indexOfFirst { it == null }
+        if (pad < 0) {
+            _sampleTask.value = SampleTask.Failed("Les 16 pads live sont pris : vides-en un dans l'onglet Morceau.")
+            return
+        }
+        val r = project.value.remix
+        val count = r.barFrames(OfflineExport.SAMPLE_RATE) * bars
+        if (count <= 0) return
+        if (count > AudioDecoder.MAX_SECONDS * OfflineExport.SAMPLE_RATE) {
+            _sampleTask.value = SampleTask.Failed("Trop long pour un pad : choisis moins de mesures.")
+            return
+        }
+        val label = STEM_LABELS.getOrElse(stem) { "Piste" }
+        if (project.value.live.size <= pad) setLiveSize(LivePads.SIZES.first { it > pad })
+        sampleJob("$label vers le pad live ${pad + 1}…", live = pad, beats = bars * 4) {
+            val audio = source.extract(stem, r.startFrame(OfflineExport.SAMPLE_RATE), count)
+            if (audio.isEmpty()) throw UserMessage("Ce passage est après la fin du morceau.")
+            padSamples.add(Pcm(audio, 2, OfflineExport.SAMPLE_RATE), "$label ${r.name}".take(40))
+        }
+    }
+
     // --- Instrument library (General MIDI banks) -------------------------------------------
 
     private val _library = MutableStateFlow<LibraryState>(LibraryState.Missing)
@@ -827,13 +930,14 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     private var recorder: MicRecorder? = null
 
     private fun loadPadSamples() {
-        val files = project.value.drums.lanes.mapNotNull { it.sample?.file }.toSet()
+        val files = project.value.sampleFiles
         // After a failed load the folder may still hold the user's sounds: never clean it then.
         val cleanUp = _notice.value == null
         viewModelScope.launch {
             val prepared = withContext(Dispatchers.IO) { padSamples.loadAll(files, cleanUp) }
             prepared.forEach(padSamples::register)
             pushPads()
+            pushLive()
         }
     }
 
@@ -1050,13 +1154,24 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     private class UserMessage(message: String) : Exception(message)
 
-    private fun sampleJob(busy: String?, work: suspend () -> Pair<PadSample, PadSamples.Prepared>) {
+    /**
+     * Runs [work] off the main thread and puts the sound it makes on the selected drum pad,
+     * or on live pad [live] (looping every [beats] beats, or as long as the sound lasts).
+     */
+    private fun sampleJob(busy: String?, live: Int? = null, beats: Int? = null, work: suspend () -> Pair<PadSample, PadSamples.Prepared>) {
         val lane = _transport.value.selectedPad
         if (busy != null) _sampleTask.value = SampleTask.Busy(busy)
         viewModelScope.launch {
             try {
                 val (sample, prepared) = withContext(Dispatchers.IO) { work() }
                 padSamples.register(prepared)
+                if (live != null) {
+                    val clip = LiveClip(sample.file, sample.name, beats ?: LivePads.beatsFor(prepared.info.seconds, project.value.tempoBpm))
+                    session.edit { p -> p.copy(live = p.live.with(live, clip)) }
+                    pushLive()
+                    _sampleTask.value = SampleTask.Idle
+                    return@launch
+                }
                 session.edit { p -> p.copy(drums = p.drums.withSample(lane, sample)) }
                 pushPads()
                 _sampleTask.value = SampleTask.Idle

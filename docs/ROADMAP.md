@@ -85,3 +85,16 @@ Feu vert de Benjamin (D4 = A) : fusion de la pull request en fin de phase.
 ## Phase 9 : génération
 - [x] 9.1 Stable Audio Open Small (ONNX Runtime, voir DECISIONS.md)
 - [x] 9.2 Modèles par genre
+
+## Phase 10 : débutants et terrain de jeu (demandes de recette)
+- [x] 10.1 Batterie : pan par pad, pan et hauteur par coup, sons en stéréo
+- [x] 10.2 Assistant « Nouveau morceau, pas à pas » : style, ambiance, une étape par ligne (rôle expliqué, son de la bibliothèque), basse / nappe / lead, rythme et accords de départ
+- [x] 10.3 Mélodie sans fausse note : verrouillage de gamme (clavier, MIDI), pads d'accords, progressions en accords / ligne de basse / arpège
+- [x] 10.4 Effets créatifs : 21 ambiances toutes prêtes, 4 macros par piste, pad XY, bouton Effets sur chaque piste
+- [ ] 10.5 Packs de sons par style et sous-style (téléchargement à la demande, suppression) : à fabriquer (phase 11)
+
+## Phase 11 : bibliothèques de sons
+- [ ] 11.1 Packs par style et sous-style fabriqués et hébergés (kicks, caisses, claps, charleys, percus, 808, basses)
+- [ ] 11.2 Rayon de sons dans le pad (parcourir, écouter, poser), gestion des packs (taille, supprimer)
+- [ ] 11.3 Ableton Link (reporté)
+

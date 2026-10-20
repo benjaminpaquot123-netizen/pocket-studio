@@ -478,6 +478,92 @@ void testCountInAndPatternTriggers() {
     CHECK(engine.currentStep() == -1);
 }
 
+void testPositionDuringTheCountIn() {
+    // 120 BPM: a sixteenth = 6000 frames; one bar of count-in = 16 sixteenths before the first step.
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SetTempo, 120.0f});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 1});
+    render(engine, 6000 * 4, 250);
+    CHECK(engine.playPosition() > -12.1 && engine.playPosition() < -11.9);  // 12 sixteenths to go
+    render(engine, 6000 * 11 + 3000, 250);
+    CHECK(engine.playPosition() > -0.55 && engine.playPosition() < -0.45);  // half a sixteenth before the "1"
+    render(engine, 6000, 250);
+    CHECK(engine.playPosition() > 0.45 && engine.playPosition() < 0.55);
+    engine.post({ps::CommandType::SetTransport, 0.0f});
+    render(engine, 256, 256);
+    CHECK(engine.playPosition() == -1.0);
+}
+
+void testHotMasterFilterKeepsPlaying() {
+    // A very hot mix (+14 dB, high-pitched) through the master's Filter at its top cutoff: the
+    // filter used to diverge into NaN and the master went silent for good.
+    std::vector<float> loud(48000);
+    std::mt19937 rng(3);
+    std::uniform_real_distribution<float> noise(-1.0f, 1.0f);
+    for (size_t i = 0; i < loud.size(); ++i) loud[i] = 5.0f * noise(rng);
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::InstallSample, 0.0f, 0, 0, ps::Sample::create(loud.data(), 48000, 1, kRate, kRate)});
+    engine.post({ps::CommandType::SetPadParam, 1.0f, 0, ps::Sampler::Loop});
+    const int master = ps::Mixer::kMaster * ps::Mixer::kInserts;
+    engine.post({ps::CommandType::SetInsertType, 0.0f, master, ps::InsertSlot::Filter});
+    engine.post({ps::CommandType::SetInsertParam, 1.0f, master, 0});   // cutoff at the top
+    engine.post({ps::CommandType::SetInsertParam, 0.9f, master, 1});   // strong resonance
+    engine.post({ps::CommandType::SetInsertParam, 0.0f, master, 2});   // low-pass
+    render(engine, 2400, 240);
+    engine.post({ps::CommandType::TriggerPad, 1.0f, 0});
+    render(engine, kRate * 2, 240);
+    const auto tail = render(engine, kRate / 2, 240);
+    double energy = 0.0;
+    for (float v : tail) energy += static_cast<double>(v) * v;
+    CHECK(energy > 1.0);  // still sounding
+    CHECK(!engine.hasNonFinite());
+}
+
+void testBigBlocksLoseNoHits() {
+    // Rolls of 4 on every sixteenth at 180 BPM (a hit every 1000 frames): Bluetooth hands the
+    // engine 960 to 1920 frames at once, and each hit must still sound, as with small blocks.
+    auto onsets = [](const std::vector<float>& x) {
+        int n = 0, quiet = 1000;
+        float env = 0.0f;
+        for (size_t i = 0; i < x.size(); i += kChannels) {
+            env = std::max(std::fabs(x[i]), env * 0.995f);
+            if (env > 0.15f && quiet > 150) { ++n; quiet = 0; }
+            if (env < 0.05f) ++quiet; else if (quiet < 1000 && quiet > 0) quiet = 0;
+        }
+        return n;
+    };
+    auto run = [&](int block) {
+        ps::Engine e(kRate);
+        e.post({ps::CommandType::SetTempo, 180.0f});
+        for (int s = 0; s < 16; ++s) e.post({ps::CommandType::SetDrumHit, 1.0f, 10, s | (4 << 16)});
+        e.post({ps::CommandType::SetChannelMute, 1.0f, 1});
+        e.post({ps::CommandType::SetTransport, 1.0f, 0});
+        return onsets(render(e, kRate * 4, block));
+    };
+    const int small = run(96);
+    CHECK(small > 150);
+    CHECK(run(1920) == small);
+    CHECK(run(1024) == small);
+}
+
+void testSustainPedalReleasesEveryNote() {
+    // The pedal down, 72 different notes played and let go, then the pedal up: all must stop.
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SetExpression, 1.0f, ps::InstrumentTrack::Sustain});
+    for (int n = 30; n < 102; ++n) {
+        engine.post({ps::CommandType::SynthNoteOn, 0.8f, n});
+        render(engine, 256, 256);
+        engine.post({ps::CommandType::SynthNoteOff, 0.0f, n});
+    }
+    render(engine, kRate / 2, 256);
+    engine.post({ps::CommandType::SetExpression, 0.0f, ps::InstrumentTrack::Sustain});
+    render(engine, kRate * 6, 256);
+    const auto after = render(engine, kRate / 2, 256);
+    double energy = 0.0;
+    for (float v : after) energy += static_cast<double>(v) * v;
+    CHECK(energy < 1e-6);
+}
+
 void testMetronomeIsSampleAccurate() {
     ps::Engine engine(kRate);
     engine.post({ps::CommandType::SetTempo, 120.0f});
@@ -1086,6 +1172,18 @@ void testOfflineExportRendersTheBeat() {
     const auto mem = r3.renderToBuffer(bar, kRate / 2);
     CHECK(mem.size() == size_t(bar + kRate / 2) * 2);
     if (mem.size() > 2000) CHECK(std::abs(int32_t(std::lrint(mem[1000] * 8388607.0f)) - sample24(f, 1000)) <= 2);
+    // A long reverb rings into the tail, which fades to nothing instead of stopping dead.
+    ps::OfflineRenderer wet(kRate);
+    wet.post({ps::CommandType::SetTempo, 120.0f});
+    wet.post({ps::CommandType::SetDrumHit, 1.0f, 0, 12});
+    wet.post({ps::CommandType::SetSend, 1.0f, 0, 0});
+    wet.post({ps::CommandType::SetBusParam, 1.0f, 0, 0});  // the longest room
+    const auto tail = wet.renderToBuffer(bar, kRate / 2);
+    float lastQuarter = 0.0f, ending = 0.0f;
+    for (size_t i = tail.size() - size_t(kRate / 4) * 2; i < tail.size() - size_t(kRate / 8) * 2; ++i) lastQuarter = std::max(lastQuarter, std::fabs(tail[i]));
+    for (size_t i = tail.size() - 64; i < tail.size(); ++i) ending = std::max(ending, std::fabs(tail[i]));
+    CHECK(lastQuarter > 1e-3f);  // still ringing a quarter of a second before the end
+    CHECK(ending < lastQuarter * 0.02f);
 
     ps::OfflineRenderer cancelled(kRate);
     cancelled.cancel();
@@ -3395,6 +3493,10 @@ int main(int argc, char** argv) {
         {"sequencer_swing", testSequencerSwing},
         {"sequencer_tempo_change", testSequencerTempoChangeKeepsGroove},
         {"count_in_and_pattern_triggers", testCountInAndPatternTriggers},
+        {"position_during_count_in", testPositionDuringTheCountIn},
+        {"hot_master_filter", testHotMasterFilterKeepsPlaying},
+        {"big_blocks_lose_no_hits", testBigBlocksLoseNoHits},
+        {"sustain_releases_every_note", testSustainPedalReleasesEveryNote},
         {"metronome_sample_accurate", testMetronomeIsSampleAccurate},
         {"every_drum_voice", testEveryDrumVoiceSoundsAndDecays},
         {"drum_velocity", testVelocityChangesLoudness},

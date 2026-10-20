@@ -72,6 +72,15 @@ OfflineRenderer::Result OfflineRenderer::render(int64_t frames, int64_t tailFram
         n = static_cast<int>(std::min<int64_t>(n, std::max<int64_t>(1, nextDue() - done)));
         if (done == frames) postNow({CommandType::SetTransport, 0.0f, 0});
         engine_->process(nullptr, 0, 0, block_, n, 2);
+        // The tail's last half second fades out: a long reverb is not cut dead at the file's end.
+        const int64_t fade = std::min<int64_t>(tailFrames, sampleRate_ / 2);
+        for (int i = 0; i < n && fade > 0; ++i) {
+            const int64_t left = total - (done + i);
+            if (left >= fade) continue;
+            const float g = static_cast<float>(left) / static_cast<float>(fade);
+            block_[2 * i] *= g;
+            block_[2 * i + 1] *= g;
+        }
         if (!sink(block_, n)) return Result::IoError;
         done += n;
         progress_.store(static_cast<float>(done) / static_cast<float>(total), std::memory_order_relaxed);

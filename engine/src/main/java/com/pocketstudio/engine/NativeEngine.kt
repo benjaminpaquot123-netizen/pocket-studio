@@ -208,7 +208,10 @@ object NativeEngine {
     /** Steps since play without wrapping (-1 stopped): the piano roll loops on its own length. */
     external fun absoluteStep(): Int
 
-    /** Position in the playing scene in sixteenths, with the fraction (live recording); -1 when stopped or counting in. */
+    /**
+     * Position in the playing scene in sixteenths, with the fraction (live recording). While the
+     * count-in clicks, negative: the sixteenths left before the first step. -1 when stopped.
+     */
     external fun playPosition(): Double
 
     /** Click volume 0..1 (0.5 = default). */
@@ -259,6 +262,9 @@ object NativeEngine {
         }
         return nativePost(type, value, a, b)
     }
+
+    /** True inside [captureInto]: commands go to an export engine, not the live one. */
+    val isCapturing: Boolean get() = captureTarget != 0L
 
     /**
      * Runs [block] (on the main thread, like every other command) with all commands sent
@@ -395,11 +401,15 @@ object NativeEngine {
     }
 
     /** Instrument track [track] plays [font]'s preset [presetIndex] (null: back to its synth). Main thread. */
-    fun setInstrument(font: SoundFont?, presetIndex: Int, track: Int = 0) {
+    /** False when the live engine did not take it (queue full, stream not running). */
+    fun setInstrument(font: SoundFont?, presetIndex: Int, track: Int = 0): Boolean {
         val target = captureTarget
         val a = onTrack(track, presetIndex)
-        if (target != 0L) exportSetInstrument(target, font?.handle ?: 0L, a)
-        else nativeSetInstrument(font?.handle ?: 0L, a)
+        if (target != 0L) {
+            exportSetInstrument(target, font?.handle ?: 0L, a)
+            return true
+        }
+        return nativeSetInstrument(font?.handle ?: 0L, a)
     }
 
     external fun soundFontLoad(path: String): Long

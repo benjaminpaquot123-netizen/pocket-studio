@@ -23,6 +23,17 @@ class TracksTest {
     }
 
     @Test
+    fun aDeletedTrackLeavesNoSoloBehind() {
+        var p = Project().addTrack("Lead")!!.addAudioTrack("Voix")!!
+        val ch = InstrumentTrack.mixerChannel(p.tracks.single().id)
+        val audio = AudioTrack.mixerChannel(p.audioTracks.single().id)
+        p = p.copy(mixer = p.mixer.copy(channels = p.mixer.channels.mapIndexed { i, c -> if (i == ch || i == audio) c.copy(solo = true, mute = true) else c }))
+        p = p.removeTrack(p.tracks.single().id).removeAudioTrack(p.audioTracks.single().id)
+        assertEquals(Channel(), p.mixer.channels[ch])
+        assertEquals(Channel(), p.mixer.channels[audio])
+    }
+
+    @Test
     fun eachTrackKeepsItsOwnSoundAndNotes() {
         var p = Project().addTrack("Basse")!!
         val id = p.tracks.single().id

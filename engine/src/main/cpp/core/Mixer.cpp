@@ -178,6 +178,7 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
             std::fill(chR_.begin(), chR_.begin() + n, 0.0f);
             for (auto& slot : inserts_[static_cast<size_t>(ch)]) slot.reset();
             macros_[static_cast<size_t>(ch)].reset();
+            blewUp_.store(true, std::memory_order_relaxed);
         }
         float peak = 0.0f;
         float* toL = pad ? padsL_.data() : mL_.data();
@@ -210,6 +211,19 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
     }
     // Always runs: the repeat and the tape stop need the last seconds already recorded.
     perf_.process(mL_.data(), mR_.data(), n);
+    // The same guard as the strips', on the master's own effects: one NaN left there would keep
+    // the whole output silent for good.
+    bool masterFinite = true;
+    for (int i = 0; i < n; ++i) masterFinite &= std::isfinite(mL_[static_cast<size_t>(i)]) && std::isfinite(mR_[static_cast<size_t>(i)]);
+    if (!masterFinite) {
+        std::fill(mL_.begin(), mL_.begin() + n, 0.0f);
+        std::fill(mR_.begin(), mR_.begin() + n, 0.0f);
+        for (auto& slot : inserts_[kMaster]) slot.reset();
+        perf_.recover();
+        reverb_.reset();
+        delay_.reset();
+        blewUp_.store(true, std::memory_order_relaxed);
+    }
 
     float masterPeak = 0.0f;
     float minGain = 1.0f;

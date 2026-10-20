@@ -81,6 +81,7 @@ void Engine::applyCommand(const Command& command) {
                 songStart_ = 0;
                 songRestart_ = false;
                 lastLocal_ = -1;
+                countInStep_ = 0;
                 playPosition_.store(-1.0, std::memory_order_relaxed);
             } else {
                 swapAt_ = -1;
@@ -102,6 +103,7 @@ void Engine::applyCommand(const Command& command) {
                 songStep_.store(-1, std::memory_order_relaxed);
                 playPosition_.store(-1.0, std::memory_order_relaxed);
                 lastLocal_ = -1;
+                countInStep_ = 0;
             }
             break;
         case CommandType::SetTempo:
@@ -350,6 +352,8 @@ void Engine::applyCommand(const Command& command) {
             break;
         case CommandType::SetInstrument: {
             auto& t = tracks_[static_cast<size_t>(trackOf(command.a))];
+            // "No instrument" on a track that has none changes nothing: its synth notes keep sounding.
+            if (command.font == nullptr && !t.instrument.active()) break;
             t.synth.allNotesOff();
             t.instrument.install(command.font, trackArg(command.a));  // takes the instance
             break;
@@ -406,7 +410,13 @@ void Engine::onStep(int offset, int step) {
         metronome_.trigger(beatStep == 0, offset);
         metronomeClicks_.fetch_add(1, std::memory_order_relaxed);
     }
-    if (step < 0) return;
+    if (step < 0) {
+        // Counting in: the position runs below zero up to the first step (a note played just
+        // ahead of the "1" is still recorded on it).
+        countInStep_ = step;
+        stepOffset_ = offset;
+        return;
+    }
     if (step == 0) {
         stems_.start(offset);
         if (record_ && recordOnStart_) {
@@ -545,9 +555,10 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
     stepOffset_ = -1;
     sequencer_.advance(numFrames, [this](int offset, int step) { onStep(offset, step); });
     playRolls(numFrames);
-    if (lastLocal_ >= 0 && sequencer_.running()) {
+    if (sequencer_.running() && (lastLocal_ >= 0 || countInStep_ < 0)) {
         sinceStep_ = stepOffset_ >= 0 ? static_cast<double>(numFrames - stepOffset_) : sinceStep_ + numFrames;
-        playPosition_.store(lastLocal_ + sinceStep_ / sequencer_.samplesPerStep(), std::memory_order_relaxed);
+        const int from = lastLocal_ >= 0 ? lastLocal_ : countInStep_;
+        playPosition_.store(from + sinceStep_ / sequencer_.samplesPerStep(), std::memory_order_relaxed);
     }
     for (auto& t : tracks_) {
         if (!t.on) continue;
@@ -661,7 +672,7 @@ void Engine::process(const float* input, int numInputFrames, int inputChannels,
         }
         blockPeak = std::max(blockPeak, std::fabs(v));
     }
-    if (!finite) nonFinite_.store(true, std::memory_order_relaxed);
+    if (!finite || mixer_.takeBlewUp()) nonFinite_.store(true, std::memory_order_relaxed);
 
     float previous = peak_.load(std::memory_order_relaxed);
     while (blockPeak > previous &&

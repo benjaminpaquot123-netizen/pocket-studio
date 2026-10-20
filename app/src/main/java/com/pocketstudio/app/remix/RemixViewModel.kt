@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.pocketstudio.app.report.AppLog
 import com.pocketstudio.engine.NativeEngine
 import com.pocketstudio.engine.NativeStems
+import com.pocketstudio.app.audio.finishOrRelease
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -94,8 +95,8 @@ class RemixViewModel(app: Application) : AndroidViewModel(app) {
         if (!NativeEngine.isAvailable) return
         _preview.value = StemPreview(set.id, on, loading = true)
         previewJob = viewModelScope.launch {
-            // Not cancellable: a bundle loaded while the user moved on is closed below, not leaked.
-            val loaded = withContext(Dispatchers.IO + kotlinx.coroutines.NonCancellable) {
+            // A bundle loaded while the user moved on is closed, not leaked.
+            val loaded = finishOrRelease(Dispatchers.IO, NativeStems::close) {
                 runCatching {
                     NativeStems.load(set.stem("drums").path, set.stem("bass").path, set.stem("other").path, set.stem("vocals").path)
                 }.getOrNull()

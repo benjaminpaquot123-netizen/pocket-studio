@@ -86,15 +86,21 @@ fun LivePad(set: (param: Int, value: Float) -> Unit) {
                             set(Perf.FILTER, x)
                         }
                         send(down.position)
-                        while (true) {
-                            val event = awaitPointerEvent()
-                            val change = event.changes.firstOrNull { it.id == down.id } ?: break
-                            if (!change.pressed) break
-                            if (change.positionChange() != Offset.Zero) send(change.position)
-                            change.consume()
+                        // Let go, or the pad leaving the screen mid-gesture: the filter always comes
+                        // back (else it would stay on the whole mix).
+                        try {
+                            while (true) {
+                                val event = awaitPointerEvent()
+                                val change = event.changes.firstOrNull { it.id == down.id } ?: break
+                                if (!change.pressed) break
+                                if (change.positionChange() != Offset.Zero) send(change.position)
+                                change.consume()
+                            }
+                        } finally {
+                            touch = null
+                            set(Perf.FILTER, 0.5f)
+                            set(Perf.RESONANCE, 0.3f)
                         }
-                        touch = null
-                        set(Perf.FILTER, 0.5f)
                     }
                 },
         ) {
@@ -154,9 +160,13 @@ private fun HoldButton(label: String, modifier: Modifier, tag: String, hold: (Bo
                 detectTapGestures(onPress = {
                     held = true
                     hold(true)
-                    tryAwaitRelease()
-                    held = false
-                    hold(false)
+                    try {
+                        tryAwaitRelease()
+                    } finally {
+                        // Also when the button leaves the screen while held: the effect stops.
+                        held = false
+                        hold(false)
+                    }
                 })
             },
         contentAlignment = Alignment.Center,

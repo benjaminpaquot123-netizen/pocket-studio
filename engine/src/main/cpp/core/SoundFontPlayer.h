@@ -57,7 +57,7 @@ private:
 
     tsf* instance_ = nullptr;
     int preset_ = 0;
-    Event events_[64];
+    Event events_[256];  // room to release all 128 notes at once (sustain pedal let go)
     int eventCount_ = 0;
     SpscQueue<tsf*, 16> retired_;
 };

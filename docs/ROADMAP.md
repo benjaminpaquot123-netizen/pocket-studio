@@ -124,3 +124,11 @@ Feu vert de Benjamin (D4 = A) : fusion de la pull request en fin de phase.
 - [x] 15.4 Claviers au choix : 2 octaves, 1 octave avec le nom des notes, ou seulement les notes de la gamme (façon GarageBand)
 - [x] 15.5 Sample au clavier : le son d'un pad (ou un fichier) joué sur tout le clavier, plus grave à gauche, plus aigu à droite
 - [x] 15.6 Effets par pad : la même boîte d'effets agit sur le pad choisi ou sur toute la batterie
+
+## Phase 16 : l'audit « en production » (demande de Benjamin)
+- [x] 16.1 Deux audits indépendants (le moteur audio, l'usage réel de l'appli), chaque problème montré par un essai ou un test
+- [x] 16.2 Perte de travail : prise micro jamais perdue (Annuler, autre projet, son en cours de pose), historique qui ne garde que ce qui change
+- [x] 16.3 Son : solo fantôme, filtre du son général qui se taisait (NaN), coups perdus en Bluetooth, notes bloquées (pédale, clavier MIDI), notes coupées par Annuler
+- [x] 16.4 Comme un vrai lecteur : arrêt quand le casque est débranché ou qu'un appel arrive
+- [x] 16.5 Calage : prise micro compensée selon la sortie (Bluetooth), note jouée juste avant le « 1 »
+- [x] 16.6 Exports : toutes les mesures (3/4…), stems sans les solos du mixage, sans les coupures de la partie qui joue, après le chargement des sons, fin en fondu

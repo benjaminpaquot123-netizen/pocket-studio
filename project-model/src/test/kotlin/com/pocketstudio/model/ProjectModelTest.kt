@@ -168,6 +168,20 @@ class ProjectSessionTest {
     }
 
     @Test
+    fun anEditSharesWhatItDidNotChange() = runTest {
+        val store = ProjectStore(tmp.root)
+        val io = StandardTestDispatcher(testScheduler)
+        val start = Project().addTrack("Basse")!!
+        val session = ProjectSession("p", start, store, this, io, clock = { testScheduler.currentTime })
+        val before = session.project.value
+        session.edit { it.copy(tempoBpm = 128.0) }
+        val after = session.project.value
+        assertEquals(128.0, after.tempoBpm, 0.0)
+        // The same objects, not copies: an undo step costs what changed, not a whole project.
+        assertTrue(after.drums === before.drums && after.tracks === before.tracks && after.mixer === before.mixer)
+    }
+
+    @Test
     fun undoIsSavedToo() = runTest {
         val store = ProjectStore(tmp.root)
         val io = StandardTestDispatcher(testScheduler)

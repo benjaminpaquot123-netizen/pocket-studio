@@ -80,9 +80,14 @@ fun Project.addAudioTrack(name: String? = null): Project? {
     )
 }
 
-fun Project.removeAudioTrack(id: Int): Project = copy(
-    audioTracks = audioTracks.filterNot { it.id == id },
-    automation = automation.filterNot { it.target.kind != AutoTarget.BUS_PARAM && it.target.ch == AudioTrack.mixerChannel(id) },
-)
+fun Project.removeAudioTrack(id: Int): Project {
+    val ch = AudioTrack.mixerChannel(id)
+    return copy(
+        audioTracks = audioTracks.filterNot { it.id == id },
+        automation = automation.filterNot { it.target.kind != AutoTarget.BUS_PARAM && it.target.ch == ch },
+        // Its strip back to neutral: a solo left on it would silence every other one.
+        mixer = mixer.copy(channels = mixer.channels.mapIndexed { i, c -> if (i == ch) Channel() else c }),
+    )
+}
 
 fun Project.withAudioTrack(t: AudioTrack): Project = copy(audioTracks = audioTracks.map { if (it.id == t.id) t.sanitized() else it })

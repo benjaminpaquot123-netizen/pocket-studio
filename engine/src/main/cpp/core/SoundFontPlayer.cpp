@@ -1,6 +1,7 @@
 #include "SoundFontPlayer.h"
 
 #include <algorithm>
+#include <iterator>
 
 #define TSF_IMPLEMENTATION
 #include "tsf.h"
@@ -68,7 +69,7 @@ void SoundFontPlayer::install(tsf* instance, int preset) {
 }
 
 void SoundFontPlayer::queue(const Event& e) {
-    if (eventCount_ >= 64) return;
+    if (eventCount_ >= static_cast<int>(std::size(events_))) return;
     int i = eventCount_++;
     while (i > 0 && events_[i - 1].offset > e.offset) {
         events_[i] = events_[i - 1];

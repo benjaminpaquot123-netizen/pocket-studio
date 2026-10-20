@@ -76,7 +76,7 @@ class InstrumentUi(
 fun InstrumentPanel(ui: InstrumentUi) {
     var showLibrary by rememberSaveable { mutableIntStateOf(if (ui.current != null) 1 else 0) }
     NeonCard(modifier = Modifier.testTag("instrument_panel")) {
-        SectionLabel("Source du son", help = Glossary.SOURCE)
+        SectionLabel("Instrument", help = Glossary.SOURCE)
         Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             FamilyChip(
                 "Synthé", Icons.Filled.Tune, Neon.Cyan, selected = ui.current == null && showLibrary == 0 && ui.synthEngine == 0,
@@ -87,7 +87,7 @@ fun InstrumentPanel(ui: InstrumentUi) {
                 onClick = { showLibrary = 0; ui.selectEngine(1) }, modifier = Modifier.testTag("source_plaits"),
             )
             FamilyChip(
-                "Échantillon", Icons.Filled.GraphicEq, Neon.Cyan, selected = ui.current == null && showLibrary == 0 && ui.synthEngine == 2,
+                "Sample", Icons.Filled.GraphicEq, Neon.Cyan, selected = ui.current == null && showLibrary == 0 && ui.synthEngine == 2,
                 onClick = { showLibrary = 0; ui.selectEngine(2) }, modifier = Modifier.testTag("source_sampled"),
             )
             FamilyChip(

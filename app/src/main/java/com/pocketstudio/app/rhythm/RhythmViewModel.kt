@@ -2651,6 +2651,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (playing) PlaybackService.start(app) else PlaybackService.stop(app)
     }
 
+    /** Stops the transport if it plays (opening the assistant: its previews must not play over the song). */
+    fun stop() {
+        if (_transport.value.playing) togglePlay()
+    }
+
     /** True while the activity is on screen; set by the UI. */
     var visible = true
 

@@ -5,8 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,6 +14,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Apps
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Stop
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.Inventory2
 import androidx.compose.material3.FilledTonalButton
@@ -37,6 +37,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.pocketstudio.model.SoundPacks
 import com.pocketstudio.app.sounds.SoundLooks
+import com.pocketstudio.ui.ChipRow
 import com.pocketstudio.ui.FamilyChip
 import com.pocketstudio.ui.Neon
 import com.pocketstudio.ui.NeonCard
@@ -53,6 +54,8 @@ class LibraryUi(
     val startKind: String = "kick",
     /** Bytes on the phone per installed pack. */
     val sizes: Map<String, Long> = emptyMap(),
+    /** The song plays (its Play/Stop stays at hand while the library covers the screen). */
+    val songPlaying: Boolean = false,
 )
 
 class LibraryActions(
@@ -62,13 +65,13 @@ class LibraryActions(
     val download: (String) -> Unit = {},
     val cancelDownload: (String) -> Unit = {},
     val deletePack: (String) -> Unit = {},
+    val togglePlay: () -> Unit = {},
 )
 
 /**
  * The sound library: every kind of sound (kicks, snares, stabs…), from the built-in kit and the
  * downloaded packs, to hear and put on a pad; and the packs themselves, to download or delete.
  */
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun LibraryScreen(ui: LibraryUi, actions: LibraryActions) {
     var kind by rememberSaveable { mutableStateOf(ui.startKind) }
@@ -78,6 +81,14 @@ fun LibraryScreen(ui: LibraryUi, actions: LibraryActions) {
             Column(Modifier.weight(1f)) {
                 Text("Bibliothèque de sons", style = MaterialTheme.typography.titleLarge)
                 Text("Pour ${ui.target}", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+            }
+            // The song's Play/Stop, as discreet as in the top bar: stop it to hear the sounds alone.
+            IconButton(onClick = actions.togglePlay, modifier = Modifier.testTag("library_play")) {
+                Icon(
+                    if (ui.songPlaying) Icons.Filled.Stop else Icons.Filled.PlayArrow,
+                    contentDescription = if (ui.songPlaying) "Arrêter le morceau" else "Jouer le morceau",
+                    tint = if (ui.songPlaying) Neon.Acid else Neon.Cyan,
+                )
             }
             IconButton(onClick = actions.close, modifier = Modifier.testTag("library_close")) { Icon(Icons.Filled.Close, contentDescription = "Fermer") }
         }
@@ -97,13 +108,13 @@ fun LibraryScreen(ui: LibraryUi, actions: LibraryActions) {
             } else {
                 val shown = categories.firstOrNull { it.id == category } ?: categories.first()
                 val look = SoundLooks.of(kind)
-                FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    categories.forEach { c ->
-                        FamilyChip(
-                            c.title.substringAfter(" · ", c.title), if (c.id == KIT_CATEGORY) Icons.Filled.Apps else Icons.Filled.Inventory2, look.color,
-                            selected = c.id == shown.id, onClick = { category = c.id }, modifier = Modifier.testTag("library_source_${c.id}"),
-                        )
-                    }
+                // The sources on one line that scrolls: the sounds stay right under them.
+                ChipRow(categories.size, categories.indexOf(shown)) { i ->
+                    val c = categories[i]
+                    FamilyChip(
+                        c.title.substringAfter(" · ", c.title), if (c.id == KIT_CATEGORY) Icons.Filled.Apps else Icons.Filled.Inventory2, look.color,
+                        selected = c.id == shown.id, onClick = { category = c.id }, modifier = Modifier.testTag("library_source_${c.id}"),
+                    )
                 }
                 NeonCard {
                     SectionLabel(shown.title, foldKey = "Sons de la bibliothèque")

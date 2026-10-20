@@ -274,7 +274,7 @@ private fun StepEditor(acid: AcidPattern, index: Int, actions: AcidActions, engl
     val chipColors = pillColors()
     NeonCard(accent = Neon.Magenta) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            SectionLabel("Pas ${index + 1}", color = Neon.Magenta, help = Glossary.ACCENT_SLIDE, foldKey = "Pas de la basse acide")
+            SectionLabel("Pas ${index + 1}", color = Neon.Magenta, help = Glossary.ACID_STEP, foldKey = "Pas de la basse acide")
             Box(Modifier.weight(1f))
             FilterChip(
                 selected = index in acid.locked,

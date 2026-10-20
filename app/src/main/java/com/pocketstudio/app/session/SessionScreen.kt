@@ -143,7 +143,7 @@ fun SessionScreen(ui: SessionScreenUi, actions: SessionActions, live: LivePadsUi
         LivePad(actions.performance)
 
         NeonCard {
-            SectionLabel("Mesure", help = Glossary.TIME_SIGNATURE)
+            SectionLabel("Temps par mesure", help = Glossary.TIME_SIGNATURE)
             Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 (2..7).forEach { b ->
                     androidx.compose.material3.FilterChip(

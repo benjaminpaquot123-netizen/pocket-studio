@@ -170,7 +170,7 @@ fun SynthScreen(
                 }
                 transcribe?.let { TranscribeCard(it) }
                 NeonCard {
-                    SectionLabel("Harmonie", help = Glossary.SCALE)
+                    SectionLabel("Gamme et accords", help = Glossary.HARMONY)
                     HarmonyPanel(notes.harmony, notes.clip.performance, notes.actions, notes.clip.notes)
                 }
                 SoundArea(trackSounds) {
@@ -305,7 +305,7 @@ private fun PresetsCard(patch: SynthPatch, actions: SynthActions, browser: Sound
 @Composable
 private fun SoundCard(patch: SynthPatch, actions: SynthActions, advanced: Boolean, setAdvanced: (Boolean) -> Unit) {
     NeonCard {
-        SectionLabel("Son")
+        SectionLabel("Réglages du son")
         Text("Forme d'onde", style = MaterialTheme.typography.bodyMedium)
         ChoiceRow(WAVES, patch.get(SynthPatch.OSC1_WAVE)) { v ->
             actions.setParam(SynthPatch.OSC1_WAVE, v)

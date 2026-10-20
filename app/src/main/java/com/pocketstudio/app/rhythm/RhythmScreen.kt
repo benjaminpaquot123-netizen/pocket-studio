@@ -490,7 +490,7 @@ internal fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: 
     val sample = project.drums.lanes[lane].sample
     NeonCard(modifier = Modifier.testTag("pad_sound")) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            SectionLabel("Son du pad", color = color, help = Glossary.SAMPLE)
+            SectionLabel("Sample du pad", color = color, help = Glossary.SAMPLE)
             Box(Modifier.weight(1f))
             Text(
                 sample?.name ?: "${DrumKitInfo.names[lane]} (synthétisé)",

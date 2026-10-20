@@ -250,9 +250,11 @@ fun AppRoot() {
                         },
                         startKind = if (forTrack) "808" else if (live >= 0) "stab" else padKind(lane),
                         sizes = sizes,
+                        songPlaying = libTransport.playing,
                     ),
                     com.pocketstudio.app.library.LibraryActions(
                         close = close,
+                        togglePlay = rhythmVm::togglePlay,
                         preview = libraryVm::preview,
                         use = { option ->
                             val token = libraryToken
@@ -352,7 +354,10 @@ fun AppRoot() {
                         back = { showProjects = false },
                         open = { openProject(it.id) },
                         create = { i -> projectsVm.create(PROJECT_STARTERS[i].second()) { id -> openProject(id) } },
-                        wizard = libraryVm::openWizard,
+                        wizard = {
+                            rhythmVm.stop()
+                            libraryVm.openWizard()
+                        },
                         rename = { p, name -> if (p.id == rhythmVm.projectId) { rhythmVm.renameProject(name); projectsVm.refresh() } else projectsVm.rename(p.id, name) },
                         duplicate = { p -> openScope.launch { if (p.id == rhythmVm.projectId) rhythmVm.flushNow(); projectsVm.duplicate(p) } },
                         exportZip = { p ->

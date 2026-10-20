@@ -98,7 +98,7 @@ fun SendSliders(ch: Int, sends: List<Float>, actions: MixerActions) {
 @Composable
 fun BusesCard(buses: List<List<Float>>, actions: MixerActions) {
     NeonCard(accent = Neon.Magenta) {
-        SectionLabel("Réverbe et écho", color = Neon.Magenta, help = Glossary.SEND)
+        SectionLabel("Réverbe et écho", color = Neon.Magenta, help = Glossary.REVERB_DELAY)
         Text(
             "Communs à toutes les voies : règle combien chaque voie y envoie dans ses effets. L'écho suit le tempo.",
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,

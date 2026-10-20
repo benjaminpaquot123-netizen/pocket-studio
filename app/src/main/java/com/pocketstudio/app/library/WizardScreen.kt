@@ -36,6 +36,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import com.pocketstudio.ui.TileGrid
 import com.pocketstudio.ui.SoundTile
+import com.pocketstudio.ui.ChipRow
 import com.pocketstudio.ui.FamilyChip
 import com.pocketstudio.app.sounds.SoundLooks
 import androidx.compose.material.icons.filled.GraphicEq
@@ -235,14 +236,13 @@ private fun LineStep(style: StarterWizard.Style, line: StarterWizard.Line, row: 
             }
         }
         // The sources on one line that scrolls: the sounds stay right under them.
-        Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            categories.forEach { c ->
-                FamilyChip(
-                    c.title.substringAfter(" · ", c.title), if (c.id == KIT_CATEGORY) Icons.Filled.Apps else Icons.Filled.Inventory2, look.color,
-                    selected = c.id == row.category, onClick = { actions.setCategory(role, c.id) },
-                    modifier = Modifier.testTag("wizard_category_${c.id}"),
-                )
-            }
+        ChipRow(categories.size, categories.indexOfFirst { it.id == row.category }) { i ->
+            val c = categories[i]
+            FamilyChip(
+                c.title.substringAfter(" · ", c.title), if (c.id == KIT_CATEGORY) Icons.Filled.Apps else Icons.Filled.Inventory2, look.color,
+                selected = c.id == row.category, onClick = { actions.setCategory(role, c.id) },
+                modifier = Modifier.testTag("wizard_category_${c.id}"),
+            )
         }
         val options = categories.firstOrNull { it.id == row.category }?.options.orEmpty()
         val listening = LocalListening.current
@@ -431,7 +431,7 @@ private fun PartStep(style: StarterWizard.Style, ui: WizardUi, packs: PacksUi, p
                     listening.preparing == ref -> "Préparation…"
                     listening.playing == ref -> "En écoute…"
                     i == 0 && sound.name == style.melody.sound(part) -> "Conseillé"
-                    sound.sampled != null -> "Échantillon d'un pack"
+                    sound.sampled != null -> "Sample d'un pack"
                     sound.plaits != null -> SoundLooks.describe(sound.plaits!!)
                     else -> SoundLooks.describe(sound.synth)
                 },

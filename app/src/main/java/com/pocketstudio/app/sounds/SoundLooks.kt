@@ -72,7 +72,7 @@ object SoundLooks {
         "cuivres", "anches", "flûtes" -> SoundLook(Icons.Filled.Air, WIND)
         "ethnique" -> SoundLook(Icons.Filled.Public, VOICE)
         "favoris" -> SoundLook(Icons.Filled.Star, LEAD)
-        "échantillon" -> SoundLook(Icons.Filled.GraphicEq, BASS)
+        "sample", "échantillon" -> SoundLook(Icons.Filled.GraphicEq, BASS)
         "classiques" -> SoundLook(Icons.Filled.Waves, LEAD)
         "sales" -> SoundLook(Icons.Filled.Bolt, FX)
         "doux" -> SoundLook(Icons.Filled.Cloud, PAD)

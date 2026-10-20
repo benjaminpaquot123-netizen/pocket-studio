@@ -123,7 +123,7 @@ fun MixerScreen(
             Strip(st, channels.getOrElse(st.ch) { Channel() }, meters.getOrElse(st.ch) { 0f }, actions, compact)
         }
         NeonCard(accent = Neon.Cyan) {
-            SectionLabel("Sortie générale", help = Glossary.LIMITER)
+            SectionLabel("Sortie générale", help = Glossary.MASTER)
             LevelMeter(meters.getOrElse(MASTER_CHANNEL) { 0f } / 0.89f)
             val gain = meters.getOrElse(LIMITER_METER) { 1f }
             Text(

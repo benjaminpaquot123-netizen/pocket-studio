@@ -34,7 +34,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.height
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.pointer.pointerInput
+import com.pocketstudio.app.rhythm.StemOverview
 import com.pocketstudio.model.Remix
+import com.pocketstudio.ui.MonoStyle
 import com.pocketstudio.separation.Demucs
 import com.pocketstudio.ui.NeonCard
 import com.pocketstudio.ui.Neon
@@ -54,6 +61,9 @@ class RemixUi(
     val projectBpm: Double = 120.0,
     /** What the last « → Pad » is doing or why it failed. */
     val padTask: String? = null,
+    /** Waveforms of the stems in the project, and where the playhead is (-1 = stopped). */
+    val overview: StemOverview? = null,
+    val position: Long = -1,
 )
 
 class RemixActions(
@@ -73,6 +83,8 @@ class RemixActions(
     val toggleStemMute: (Int) -> Unit = {},
     val toggleStemSolo: (Int) -> Unit = {},
     val stemToPad: (Int, Int) -> Unit = { _, _ -> },
+    /** Touching a waveform: start the remix at that bar (fraction 0..1 of the song). */
+    val setStartAt: (Float) -> Unit = {},
 )
 
 /** Remix: split a song into drums, bass, other and vocals, then listen to each part. */
@@ -152,6 +164,13 @@ private fun InProject(ui: RemixUi, actions: RemixActions) {
                 Icon(Icons.Filled.Add, contentDescription = "Mesure suivante")
             }
         }
+        ui.overview?.let { ov ->
+            val now = if (ui.position >= 0) ui.position else r.startFrame(SAMPLE_RATE)
+            Text(
+                "${clock(now)} / ${clock(ov.frames)}" + if (ui.position < 0) " · départ" else "",
+                style = MonoStyle, color = Neon.TextSecondary,
+            )
+        }
         if (ui.remixLoading) {
             Text("Chargement des pistes…", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
             LinearProgressIndicator(Modifier.fillMaxWidth(), color = Neon.Magenta)
@@ -189,10 +208,20 @@ private fun InProject(ui: RemixUi, actions: RemixActions) {
                 )
                 TextButton(onClick = { actions.stemToPad(i, padBars) }, modifier = Modifier.testTag("stem_pad_$i")) { Text("→ Pad") }
             }
+            ui.overview?.let { ov ->
+                Waveform(
+                    peaks = ov.peaks[i],
+                    playhead = if (ui.position >= 0) ui.position.toFloat() / ov.frames else -1f,
+                    start = r.startFrame(SAMPLE_RATE).toFloat() / ov.frames,
+                    dimmed = m.mute,
+                    onTap = actions.setStartAt,
+                    modifier = Modifier.testTag("waveform_$i"),
+                )
+            }
             Slider(value = m.volume, onValueChange = { actions.setStemVolume(i, it) }, modifier = Modifier.testTag("stem_volume_$i"))
         }
         Text(
-            "Les pistes démarrent avec le Rythme, calées sur son premier temps, à partir de la mesure choisie. « → Pad » copie les mesures choisies sur le pad sélectionné.",
+            "Les pistes démarrent avec le Rythme, à partir de la mesure choisie (trait vert). Touche une forme d'onde pour partir de là. « → Pad » copie les mesures choisies sur le pad sélectionné.",
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
         )
         TextButton(onClick = actions.clearRemix, modifier = Modifier.testTag("remix_clear")) { Text("Retirer du projet") }
@@ -235,3 +264,38 @@ private fun StemCard(set: StemSet, playing: Pair<String, String>?, inProject: Bo
         }
     }
 }
+
+private const val SAMPLE_RATE = 48_000
+
+private fun clock(frames: Long): String {
+    val s = (frames / SAMPLE_RATE).toInt()
+    return "%d:%02d".format(s / 60, s % 60)
+}
+
+/** A stem's waveform: played part bright, playhead in white, start point in green. Tap to move the start. */
+@Composable
+private fun Waveform(peaks: FloatArray, playhead: Float, start: Float, dimmed: Boolean, onTap: (Float) -> Unit, modifier: Modifier = Modifier) {
+    val bright = if (dimmed) Neon.TextSecondary.copy(alpha = 0.4f) else Neon.Cyan
+    val dark = bright.copy(alpha = 0.35f)
+    val head = Neon.TextPrimary
+    val mark = Neon.Acid
+    Canvas(
+        modifier
+            .fillMaxWidth()
+            .height(44.dp)
+            .pointerInput(Unit) { detectTapGestures { offset -> onTap(offset.x / size.width) } },
+    ) {
+        if (peaks.isEmpty()) return@Canvas
+        val step = size.width / peaks.size
+        val mid = size.height / 2
+        peaks.forEachIndexed { i, p ->
+            val x = i * step
+            val h = (p * mid).coerceAtLeast(1f)
+            val played = playhead >= 0 && x / size.width <= playhead
+            drawLine(if (played) bright else dark, Offset(x, mid - h), Offset(x, mid + h), strokeWidth = maxOf(1f, step * 0.7f))
+        }
+        if (start in 0f..1f) drawLine(mark, Offset(start * size.width, 0f), Offset(start * size.width, size.height), strokeWidth = 3f)
+        if (playhead in 0f..1f) drawLine(head, Offset(playhead * size.width, 0f), Offset(playhead * size.width, size.height), strokeWidth = 4f)
+    }
+}
+

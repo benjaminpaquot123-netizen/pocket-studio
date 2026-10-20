@@ -1,7 +1,47 @@
 {
-  "id": "phase3-remix",
-  "milestone": "Phase 3 : remix",
+  "id": "phase4-production",
+  "milestone": "Phase 4 : production",
   "items": [
+    {
+      "id": "remix_waveform",
+      "title": "Voir où on en est dans le morceau",
+      "hint": "Remix › Jouer avec le projet › Jouer : la barre blanche avance sur les 4 formes d'onde. Touche la voix juste avant qu'elle commence : le départ (trait vert) s'y place."
+    },
+    {
+      "id": "kit_keyboard",
+      "title": "Jouer un kit de batterie au clavier",
+      "hint": "Synthé › Instruments › Kits de batterie › touche un kit puis le clavier (Do grave = grosse caisse). Le bouton du dessous met le kit sur les pads."
+    },
+    {
+      "id": "effects",
+      "title": "Ajouter de la réverbe et un écho",
+      "hint": "Mixeur › Batterie › Effets : monte « Envoi réverbe ». Mets un Compresseur dans l'emplacement 1."
+    },
+    {
+      "id": "pump",
+      "title": "Faire pomper le synthé sur la grosse caisse",
+      "hint": "Mixeur › Synthé › Effets › emplacement 1 › Pompe. Lance le Rythme : le synthé se baisse à chaque grosse caisse."
+    },
+    {
+      "id": "automation",
+      "title": "Automatiser un réglage",
+      "hint": "Mixeur › Automation › Automatiser un réglage › Volume · Synthé, dessine une montée au doigt et lance le Rythme. Ou active Enregistrer et bouge le volume pendant la lecture."
+    },
+    {
+      "id": "scenes",
+      "title": "Faire une variante et l'enchaîner",
+      "hint": "Morceau › Dupliquer la scène A : tu es sur B. Va dans Rythme, change la batterie. Reviens dans Morceau, lance la lecture, touche A puis B : ça change à la mesure suivante."
+    },
+    {
+      "id": "song",
+      "title": "Jouer un morceau complet",
+      "hint": "Morceau › ajoute + A, + B, + A, règle les répétitions (×4, ×2…) et touche « Jouer le morceau » : les scènes s'enchaînent toutes seules, même écran éteint."
+    },
+    {
+      "id": "live_fx",
+      "title": "Jouer avec les effets live",
+      "hint": "Morceau › lance la lecture › glisse le doigt sur le pad XY (gauche = étouffé, droite = fin). Maintiens Répéter (1/16), puis Stop bande."
+    },
     {
       "id": "remix_separate",
       "title": "Séparer une chanson en 4 pistes",

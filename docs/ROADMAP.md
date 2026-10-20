@@ -55,10 +55,10 @@ Feu vert de Benjamin (D4 = A) : fusion de la pull request en fin de phase.
 - [x] 3.4 Mode Remix : stems calés dans un nouveau projet, mute/solo, stem vers sampler
 
 ## Phase 4 : production
-- [ ] 4.1 Effets complets (EQ, compresseur, saturation, delay, réverbes…), 4 inserts + 2 envois
-- [ ] 4.2 Sidechain, automation dessinée/enregistrée
-- [ ] 4.3 Vue Session (clips × scènes) et vue Morceau
-- [ ] 4.4 Effets de performance, pad XY
+- [x] 4.1 Effets complets (EQ, compresseur, saturation, delay, réverbes…), 4 inserts + 2 envois
+- [x] 4.2 Sidechain, automation dessinée/enregistrée
+- [x] 4.3 Vue Session (clips × scènes) et vue Morceau
+- [x] 4.4 Effets de performance, pad XY
 
 ## Phase 5 : synthèse avancée et connectivité
 - [ ] 5.1 Plaits, FM 4 opérateurs

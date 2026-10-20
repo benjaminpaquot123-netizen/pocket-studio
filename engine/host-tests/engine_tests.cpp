@@ -18,6 +18,7 @@
 #include "AcidTrack.h"
 #include "Analysis.h"
 #include "DrumKit.h"
+#include "Effects.h"
 #include "Mixer.h"
 #include "OfflineRenderer.h"
 #include "OnsetDetector.h"
@@ -1425,6 +1426,16 @@ void testProcessNeverAllocates() {
         bundle->retain();  // ours, for the re-installs below (what the app does on every push)
         engine.post(stems);
         engine.post({ps::CommandType::SetStemParam, 1.0f, 2, ps::StemPlayer::Solo});
+        // Every insert type somewhere, both sends, master inserts: effects must not allocate either.
+        for (int ch = 0; ch <= ps::Mixer::kMaster; ++ch) {
+            for (int slot = 0; slot < ps::Mixer::kInserts; ++slot) {
+                engine.post({ps::CommandType::SetInsertType, 0.0f, ch * ps::Mixer::kInserts + slot, 1 + (ch + slot) % 6});
+            }
+            if (ch < ps::Mixer::kMaster) {
+                engine.post({ps::CommandType::SetSend, 0.5f, ch, 0});
+                engine.post({ps::CommandType::SetSend, 0.5f, ch, 1});
+            }
+        }
         engine.post({ps::CommandType::SetTransport, 1.0f, 0});
         std::vector<float> out(512 * 2);
         for (int i = 0; i < 50; ++i) engine.process(nullptr, 0, 0, out.data(), 512, 2);  // warm-up
@@ -1433,6 +1444,10 @@ void testProcessNeverAllocates() {
         for (int i = 0; i < 400; ++i) {
             if (i % 50 == 0) engine.post({ps::CommandType::TriggerPad, 1.0f, 3});
             if (i % 70 == 0) engine.post({ps::CommandType::SynthNoteOn, 0.9f, 60 + i % 12});
+            if (i % 40 == 0) engine.post({ps::CommandType::SetInsertParam, (i % 80) / 80.0f, 1, 0});
+            if (i % 60 == 0) engine.post({ps::CommandType::SetInsertType, 0.0f, 5, 1 + (i / 60) % 6});
+            if (i % 55 == 0) engine.post({ps::CommandType::SetBusParam, (i % 110) / 110.0f, 1, 0});
+            if (i % 30 == 0) engine.post({ps::CommandType::SetPerformance, (i % 60) ? 1.0f : 0.0f, (i / 30) % 6});
             if (i % 90 == 0) {  // same bundle again: the old reference goes through the retire queue
                 bundle->retain();
                 ps::Command again{ps::CommandType::InstallStems};
@@ -1610,8 +1625,8 @@ void testStemsPlayInStepWithTheTransport() {
     // From WAV files at 44.1 kHz: resampled to 48 kHz, pitch kept, regions extractable.
     const auto dir = std::filesystem::temp_directory_path();
     std::vector<std::string> paths;
-    std::vector<float> tone(44100);
-    for (int i = 0; i < 44100; ++i) tone[static_cast<size_t>(i)] = 0.5f * static_cast<float>(std::sin(2 * M_PI * 1000.0 * i / 44100.0));
+    std::vector<float> tone(44100 * 3);  // several read and resampler chunks
+    for (size_t i = 0; i < tone.size(); ++i) tone[i] = 0.5f * static_cast<float>(std::sin(2 * M_PI * 1000.0 * i / 44100.0));
     for (int st = 0; st < 4; ++st) {
         paths.push_back((dir / ("ps_stem" + std::to_string(st) + ".wav")).string());
         writeTestWav(paths.back(), tone, 44100, st == 1);  // one in 16-bit PCM
@@ -1619,7 +1634,16 @@ void testStemsPlayInStepWithTheTransport() {
     auto* loaded = ps::StemBundle::load(paths, kRate);
     CHECK(loaded != nullptr);
     if (loaded) {
-        CHECK(std::llabs(loaded->frames() - kRate) <= 2);
+        CHECK(std::llabs(loaded->frames() - kRate * 3) <= 2);
+        // No click anywhere (chunk joins included): a 1 kHz sine at 0.5 never moves more than
+        // 2*pi*1000/48000*0.5 = 0.065 between two samples.
+        for (int st = 0; st < 4; ++st) {
+            const auto whole = loaded->extract(st, 0, loaded->frames());
+            float maxStep = 0.0f;
+            for (size_t i = 2 + 200; i + 400 < whole.size(); i += 2) maxStep = std::max(maxStep, std::fabs(whole[i] - whole[i - 2]));
+            if (st == 0) std::printf("  stem resample: largest step %.4f (smooth < 0.07)\n", maxStep);
+            CHECK(maxStep < 0.07f);
+        }
         const auto region = loaded->extract(2, 0, kRate / 2);
         CHECK(region.size() == static_cast<size_t>(kRate));  // half a second, stereo
         int crossings = 0;
@@ -1627,12 +1651,345 @@ void testStemsPlayInStepWithTheTransport() {
         CHECK(crossings >= 995 && crossings <= 1005);  // 1 kHz for 0.5 s
         CHECK(region[1000] == region[1001]);  // mono file on both sides
         CHECK(loaded->extract(9, 0, 10).empty() && loaded->extract(0, loaded->frames(), 10).empty());
+        const auto overview = loaded->peaks(0, 300);
+        CHECK(overview.size() == 300);
+        CHECK(std::all_of(overview.begin(), overview.end(), [](float v) { return v > 0.45f && v < 0.55f; }));  // the 0.5 sine
+        CHECK(loaded->peaks(7, 10).empty());
         CHECK(loaded->release());
         delete loaded;
     }
     paths[3] = (dir / "ps_missing.wav").string();
     CHECK(ps::StemBundle::load(paths, kRate) == nullptr);
     for (int st = 0; st < 3; ++st) std::filesystem::remove(paths[static_cast<size_t>(st)]);
+}
+
+// RMS of a stereo-identical sine through an insert, after it settles.
+float sineGainDb(ps::InsertSlot& fx, float freq, float amp = 0.25f) {
+    std::vector<float> l(9600), r(9600);
+    double sum = 0, ref = 0;
+    for (int pass = 0; pass < 2; ++pass) {
+        for (size_t i = 0; i < l.size(); ++i) l[i] = r[i] = amp * static_cast<float>(std::sin(2 * M_PI * freq * (pass * 9600 + i) / kRate));
+        fx.process(l.data(), r.data(), 9600);
+    }
+    for (size_t i = 4800; i < l.size(); ++i) {
+        sum += l[i] * l[i];
+        const double x = amp * std::sin(2 * M_PI * freq * (9600 + i) / kRate);
+        ref += x * x;
+    }
+    return static_cast<float>(10 * std::log10(sum / ref));
+}
+
+void testInsertEffects() {
+    ps::InsertSlot slot;
+    slot.prepare(kRate);
+    // Off: untouched.
+    CHECK(std::fabs(sineGainDb(slot, 1000)) < 0.01f);
+    // EQ: +12 dB low shelf boosts 50 Hz by ~12 dB, leaves 5 kHz alone; flat when centred.
+    slot.setType(ps::InsertSlot::Eq);
+    CHECK(std::fabs(sineGainDb(slot, 1000)) < 0.05f);
+    slot.setParam(0, 1.0f);
+    const float low = sineGainDb(slot, 50), high = sineGainDb(slot, 5000);
+    std::printf("  EQ low +12 dB: 50 Hz %+.1f dB, 5 kHz %+.1f dB\n", low, high);
+    CHECK(low > 10.5f && low < 12.5f);
+    CHECK(std::fabs(high) < 0.5f);
+    // Compressor: a loud sine is pulled down, a quiet one (below threshold) only gets make-up.
+    slot.setType(ps::InsertSlot::Comp);
+    slot.setParam(0, 0.5f);   // threshold -20 dB
+    slot.setParam(1, 0.54f);  // ratio ~5
+    const float loud = sineGainDb(slot, 200, 0.9f);
+    const float reduction = slot.compressor().gainReductionDb();
+    const float quiet = sineGainDb(slot, 200, 0.02f);
+    std::printf("  compressor: loud %+.1f dB, quiet %+.1f dB, reduction %.1f dB\n", loud, quiet, reduction);
+    CHECK(loud < quiet - 6.0f);  // the loud one gains much less than the quiet one
+    CHECK(reduction < -3.0f);
+    // Saturation: adds harmonics (energy at 3 kHz from a 1 kHz sine), stays finite and bounded.
+    slot.setType(ps::InsertSlot::Saturation);
+    slot.setParam(0, 0.9f);
+    slot.setParam(1, 1.0f);
+    std::vector<float> l(4800), r(4800);
+    for (size_t i = 0; i < l.size(); ++i) l[i] = r[i] = 0.8f * static_cast<float>(std::sin(2 * M_PI * 1000.0 * i / kRate));
+    slot.process(l.data(), r.data(), 4800);
+    double h3 = 0, h3s = 0, peak = 0;
+    for (size_t i = 0; i < l.size(); ++i) {
+        h3 += l[i] * std::cos(2 * M_PI * 3000.0 * i / kRate);
+        h3s += l[i] * std::sin(2 * M_PI * 3000.0 * i / kRate);
+        peak = std::max(peak, static_cast<double>(std::fabs(l[i])));
+        CHECK(std::isfinite(l[i]));
+    }
+    CHECK(std::sqrt(h3 * h3 + h3s * h3s) / 2400.0 > 0.01);
+    CHECK(peak < 2.0);
+    // Chorus and filter: finite, and the low-pass filter darkens a high tone.
+    slot.setType(ps::InsertSlot::Chorus);
+    CHECK(std::isfinite(sineGainDb(slot, 440)));
+    slot.setType(ps::InsertSlot::Filter);
+    slot.setParam(0, 0.3f);  // ~400 Hz low-pass
+    CHECK(sineGainDb(slot, 8000) < -20.0f);
+    slot.setType(99);  // ignored
+    CHECK(slot.type() == ps::InsertSlot::Filter);
+}
+
+void testSendEffects() {
+    // Delay: an impulse comes back after exactly one eighth note (2 sixteenths) at 120 BPM.
+    ps::TempoDelay delay;
+    delay.prepare(kRate);
+    delay.setParam(0, 0.2f);  // 1/8
+    delay.setParam(1, 0.5f);
+    delay.setParam(2, 0.0f);  // no ping-pong
+    delay.setStepFrames(6000.0);
+    delay.reset();
+    std::vector<float> inL(kRate, 0.0f), inR(kRate, 0.0f), outL(kRate, 0.0f), outR(kRate, 0.0f);
+    inL[100] = inR[100] = 1.0f;
+    delay.process(inL.data(), inR.data(), outL.data(), outR.data(), kRate);
+    const auto first = std::max_element(outL.begin(), outL.begin() + 20000) - outL.begin();
+    std::printf("  delay echo at frame %ld (expected %d)\n", static_cast<long>(first), 100 + 12000);
+    CHECK(std::labs(static_cast<long>(first) - 12100) <= 1);
+    CHECK(outL[24100] > 0.05f && outL[24100] < outL[12100]);  // second repeat, quieter
+    // Ping-pong: the first repeat is on the left only, the second on the right.
+    delay.setParam(2, 1.0f);
+    delay.reset();
+    std::fill(outL.begin(), outL.end(), 0.0f);
+    std::fill(outR.begin(), outR.end(), 0.0f);
+    delay.process(inL.data(), inR.data(), outL.data(), outR.data(), kRate);
+    CHECK(outL[12100] > 0.3f && std::fabs(outR[12100]) < 1e-3f);
+    CHECK(std::fabs(outL[24100]) < 1e-3f && outR[24100] > 0.05f);
+
+    // Reverb: a tail that lasts, decays and stays finite.
+    ps::Reverb reverb;
+    reverb.prepare(kRate);
+    std::fill(outL.begin(), outL.end(), 0.0f);
+    std::fill(outR.begin(), outR.end(), 0.0f);
+    reverb.process(inL.data(), inR.data(), outL.data(), outR.data(), kRate);
+    double early = 0, late = 0;
+    for (int i = 0; i < kRate; ++i) {
+        CHECK(std::isfinite(outL[static_cast<size_t>(i)]) && std::isfinite(outR[static_cast<size_t>(i)]));
+        (i < kRate / 4 ? early : late) += outL[static_cast<size_t>(i)] * outL[static_cast<size_t>(i)];
+    }
+    CHECK(early > 0 && late > 0 && late < early * 3);
+    bool differ = false;
+    for (int i = 0; i < kRate; ++i) differ |= std::fabs(outL[static_cast<size_t>(i)] - outR[static_cast<size_t>(i)]) > 1e-4f;
+    CHECK(differ);  // stereo
+}
+
+void testMixerInsertsAndSends() {
+    ps::Mixer mixer;
+    mixer.prepare(kRate);
+    mixer.setStepFrames(6000.0);  // 120 BPM
+    constexpr int frames = kRate;
+    std::vector<float> click(frames, 0.0f), zero(frames, 0.0f), out(static_cast<size_t>(frames) * 2);
+    click[100] = 0.5f;
+    const float* ch[ps::Mixer::kChannels] = {click.data(), zero.data(), zero.data(), zero.data()};
+    // Dry: the click alone, nothing after it.
+    mixer.process(ch, nullptr, out.data(), frames, 2);
+    CHECK(std::fabs(out[200] - 0.5f) < 1e-3f);
+    CHECK(std::fabs(out[(100 + 12000) * 2]) < 1e-6f);
+    // Delay send on the drums (1/8 at 120 BPM): an echo 12000 frames later, on the master.
+    mixer.setBusParam(1, 0, 0.2f);
+    mixer.setBusParam(1, 2, 0.0f);
+    mixer.setSend(0, 1, 1.0f);
+    mixer.process(ch, nullptr, out.data(), frames, 2);  // settle the send smoothing
+    mixer.process(ch, nullptr, out.data(), frames, 2);
+    float echo = 0.0f;
+    for (int i = 100 + 12000 - 2; i <= 100 + 12000 + 2; ++i) echo = std::max(echo, std::fabs(out[static_cast<size_t>(i) * 2]));
+    CHECK(echo > 0.1f);
+    mixer.setSend(0, 1, 0.0f);
+    // Reverb send: a tail after the click.
+    mixer.setSend(0, 0, 1.0f);
+    mixer.process(ch, nullptr, out.data(), frames, 2);
+    mixer.process(ch, nullptr, out.data(), frames, 2);
+    double tail = 0;
+    for (int i = 5000; i < 20000; ++i) tail += std::fabs(out[static_cast<size_t>(i) * 2]);
+    CHECK(tail > 0.1);
+    mixer.setSend(0, 0, 0.0f);
+    // Insert on channel 0 only: a low-pass filter darkens drums, not the synth.
+    std::vector<float> hiss(frames);
+    for (int i = 0; i < frames; ++i) hiss[static_cast<size_t>(i)] = 0.2f * static_cast<float>(std::sin(2 * M_PI * 8000.0 * i / kRate));
+    const float* drumsOnly[ps::Mixer::kChannels] = {hiss.data(), zero.data(), zero.data(), zero.data()};
+    const float* synthOnly[ps::Mixer::kChannels] = {zero.data(), zero.data(), hiss.data(), zero.data()};
+    mixer.setInsertType(0, 2, ps::InsertSlot::Filter);
+    mixer.setInsertParam(0, 2, 0, 0.3f);
+    for (int pass = 0; pass < 3; ++pass) mixer.process(drumsOnly, nullptr, out.data(), frames, 2);
+    float drumsPeak = 0.0f;
+    for (int i = frames / 2; i < frames; ++i) drumsPeak = std::max(drumsPeak, std::fabs(out[static_cast<size_t>(i) * 2]));
+    mixer.process(synthOnly, nullptr, out.data(), frames, 2);
+    float synthPeak = 0.0f;
+    for (int i = frames / 2; i < frames; ++i) synthPeak = std::max(synthPeak, std::fabs(out[static_cast<size_t>(i) * 2]));
+    CHECK(drumsPeak < 0.02f && synthPeak > 0.15f);
+    // Master insert: affects everything.
+    mixer.setInsertType(ps::Mixer::kMaster, 0, ps::InsertSlot::Filter);
+    mixer.setInsertParam(ps::Mixer::kMaster, 0, 0, 0.3f);
+    for (int pass = 0; pass < 3; ++pass) mixer.process(synthOnly, nullptr, out.data(), frames, 2);
+    synthPeak = 0.0f;
+    for (int i = frames / 2; i < frames; ++i) synthPeak = std::max(synthPeak, std::fabs(out[static_cast<size_t>(i) * 2]));
+    CHECK(synthPeak < 0.02f);
+    CHECK(mixer.insert(ps::Mixer::kMaster, 0).type() == ps::InsertSlot::Filter);
+}
+
+void testSidechainPumpFollowsTheKick() {
+    // A steady synth pad, a pump on its channel, the kick on steps 0 and 8 of 16 at 120 BPM.
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SetDrumHit, 1.0f, 0, 0});
+    engine.post({ps::CommandType::SetDrumHit, 1.0f, 0, 8});
+    engine.post({ps::CommandType::SetChannelMute, 1.0f, 0});  // hear only the pumped channel
+    engine.post({ps::CommandType::SetInsertType, 0.0f, 2 * ps::Mixer::kInserts + 0, ps::InsertSlot::Pump});
+    engine.post({ps::CommandType::SetInsertParam, 1.0f, 2 * ps::Mixer::kInserts + 0, 0});  // full depth
+    engine.post({ps::CommandType::SynthNoteOn, 0.8f, 57});
+    render(engine, kRate / 2, 256);  // the pad settles
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    const auto out = render(engine, kRate * 2, 256);  // one bar: kicks at 0 and 1 s
+    auto rms = [&](int from, int len) {
+        double s = 0;
+        for (int i = from; i < from + len; ++i) s += double(out[static_cast<size_t>(i) * 2]) * out[static_cast<size_t>(i) * 2];
+        return std::sqrt(s / len);
+    };
+    const double before = rms(kRate * 1 - 4800, 2400);  // just before the second kick: recovered
+    const double ducked = rms(kRate * 1 + 240, 960);    // 5..25 ms after it
+    const double between = rms(kRate / 2, 2400);        // half a beat later, between kicks
+    std::printf("  pump: before kick %.4f, on kick %.4f, between %.4f\n", before, ducked, between);
+    CHECK(ducked < before * 0.2);
+    CHECK(between > ducked * 3);
+    // "Every beat": steps 4 and 12 pump too, even without a kick there.
+    engine.post({ps::CommandType::SetInsertParam, 1.0f, 2 * ps::Mixer::kInserts + 0, 2});
+    const auto beats = render(engine, kRate * 2, 256);
+    double onBeat2 = 0, offBeat = 0;
+    for (int i = kRate / 2 + 240; i < kRate / 2 + 1200; ++i) onBeat2 += std::fabs(beats[static_cast<size_t>(i) * 2]);
+    for (int i = kRate / 2 - 3600; i < kRate / 2 - 2640; ++i) offBeat += std::fabs(beats[static_cast<size_t>(i) * 2]);
+    CHECK(onBeat2 < offBeat * 0.3);
+}
+
+void testAutomationMovesTheFader() {
+    // Synth pad at full volume; automation pulls the synth fader to 0 on step 4 and back on step 8.
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SynthNoteOn, 0.8f, 57});
+    engine.post({ps::CommandType::SetAutomationTarget, 0.0f, 0, ps::Automation::pack(ps::Automation::Volume, 2, 0, 0)});
+    engine.post({ps::CommandType::SetAutomationPoint, 0.0f, 0, 4});
+    engine.post({ps::CommandType::SetAutomationPoint, 0.8f, 0, 8});
+    engine.post({ps::CommandType::SetAutomationPoint, -1.0f, 0, 63});  // removing an empty point is harmless
+    render(engine, kRate / 2, 256);
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    const auto out = render(engine, kRate * 2, 256);  // 16 steps of 6000 frames
+    auto rms = [&](int from) {
+        double s = 0;
+        for (int i = from; i < from + 2400; ++i) s += double(out[static_cast<size_t>(i) * 2]) * out[static_cast<size_t>(i) * 2];
+        return std::sqrt(s / 2400);
+    };
+    const double loud = rms(6000 * 2), silent = rms(6000 * 5), back = rms(6000 * 9);
+    std::printf("  automation: step 2 %.4f, step 5 %.4f, step 9 %.4f\n", loud, silent, back);
+    CHECK(loud > 0.02 && silent < loud * 0.01 && back > loud * 0.5);
+    // Turning the lane off stops it touching the fader.
+    engine.post({ps::CommandType::SetAutomationTarget, 0.0f, 0, -1});
+    engine.post({ps::CommandType::SetChannelVolume, 0.8f, 2});
+    const auto after = render(engine, kRate * 2, 256);
+    double s = 0;
+    for (int i = 6000 * 5; i < 6000 * 5 + 2400; ++i) s += double(after[static_cast<size_t>(i) * 2]) * after[static_cast<size_t>(i) * 2];
+    CHECK(std::sqrt(s / 2400) > loud * 0.5);  // the pad's level wanders a little with its timbre
+}
+
+void testScenesSwapOnTheBar() {
+    ps::Engine engine(kRate);
+    // Scene A plays: pad 1 on step 0. Scene B waits: pad 3 on steps 0 and 8, a 32-step loop.
+    engine.post({ps::CommandType::SetDrumHit, 1.0f, 0, 0});
+    engine.post({ps::CommandType::SetStaging, 1.0f});
+    for (int lane = 0; lane < ps::Engine::kLanes; ++lane)
+        for (int st = 0; st < ps::Engine::kMaxSteps; ++st) engine.post({ps::CommandType::SetDrumHit, 0.0f, lane, st});
+    engine.post({ps::CommandType::SetDrumHit, 1.0f, 2, 0});
+    engine.post({ps::CommandType::SetDrumHit, 1.0f, 2, 8});
+    engine.post({ps::CommandType::SetPatternSteps, 0.0f, 32});
+    engine.post({ps::CommandType::SetStaging, 0.0f});
+    engine.post({ps::CommandType::ArmSceneSwap, 0.0f, 32});  // after two bars of scene A
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    render(engine, kRate * 4 - 1000, 256);  // just under 2 bars at 120 BPM
+    CHECK(engine.laneTriggerCount(0) == 2 && engine.laneTriggerCount(2) == 0 && engine.sceneSwaps() == 0);
+    render(engine, kRate * 4, 256);  // bars 3-4: scene B, counted from its own start
+    std::printf("  scenes: pad1 %u, pad3 %u, swaps %u\n", engine.laneTriggerCount(0), engine.laneTriggerCount(2), engine.sceneSwaps());
+    CHECK(engine.laneTriggerCount(0) == 2);  // scene A's kick is gone
+    CHECK(engine.laneTriggerCount(2) == 2);  // scene B: steps 0 and 8 of its 32-step loop
+    CHECK(engine.sceneSwaps() == 1);
+    CHECK(engine.absoluteStep() >= 0 && engine.absoluteStep() < 32);  // steps count from the scene's start
+    // Swap "at the next bar" while a bar is under way.
+    engine.post({ps::CommandType::SetStaging, 1.0f});
+    engine.post({ps::CommandType::SetDrumHit, 0.0f, 2, 0});
+    engine.post({ps::CommandType::SetDrumHit, 0.0f, 2, 8});
+    engine.post({ps::CommandType::SetDrumHit, 1.0f, 5, 0});
+    engine.post({ps::CommandType::SetPatternSteps, 0.0f, 16});
+    engine.post({ps::CommandType::SetStaging, 0.0f});
+    render(engine, kRate / 2, 256);  // a quarter into a bar
+    engine.post({ps::CommandType::ArmSceneSwap, 0.0f, 0});
+    render(engine, kRate * 2, 256);
+    CHECK(engine.sceneSwaps() == 2 && engine.laneTriggerCount(5) == 1);
+    // Cancel: an armed swap that never happens.
+    engine.post({ps::CommandType::ArmSceneSwap, 0.0f, 0});
+    engine.post({ps::CommandType::ArmSceneSwap, 0.0f, -1});
+    render(engine, kRate * 3, 256);
+    CHECK(engine.sceneSwaps() == 2);
+    // A staging burst whose "off" got lost: stopping the transport ends it, so later edits are heard.
+    engine.post({ps::CommandType::SetStaging, 1.0f});
+    engine.post({ps::CommandType::SetTransport, 0.0f});
+    engine.post({ps::CommandType::SetDrumHit, 1.0f, 7, 0});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    const auto before7 = engine.laneTriggerCount(7);
+    render(engine, kRate, 256);
+    CHECK(engine.laneTriggerCount(7) == before7 + 1);
+    // Staged acid and piano-roll notes arrive with the swap.
+    engine.post({ps::CommandType::SetStaging, 1.0f});
+    engine.post({ps::CommandType::SetAcidStep, 0.0f, 0, ps::AcidStep{0, 0, false, false, true}.pack()});
+    engine.post({ps::CommandType::SetAcidLength, 0.0f, 16});
+    engine.post({ps::CommandType::SetSynthNote, 0.9f, 0, ps::NoteTrack::pack(0, 12, 60)});
+    engine.post({ps::CommandType::SetSynthNoteCount, 0.0f, 1});
+    engine.post({ps::CommandType::ArmSceneSwap, 0.0f, 0});  // ends staging by itself
+    const auto acidBefore = engine.acidNotesPlayed();
+    render(engine, kRate * 3, 256);
+    CHECK(engine.sceneSwaps() == 3);
+    CHECK(engine.acidNotesPlayed() > acidBefore);
+}
+
+void testPerformanceEffects() {
+    ps::PerformanceFx fx;
+    fx.prepare(kRate);
+    fx.setStepFrames(6000.0);  // 120 BPM
+    constexpr int n = kRate;
+    // A rising ramp: easy to see what is replayed.
+    std::vector<float> l(n), r(n);
+    auto feed = [&](int frames, int from) {
+        for (int i = 0; i < frames; ++i) l[static_cast<size_t>(i)] = r[static_cast<size_t>(i)] = 0.001f * static_cast<float>((from + i) % 1000);
+        fx.process(l.data(), r.data(), frames);
+    };
+    feed(n, 0);
+    CHECK(!fx.active());
+    CHECK(std::fabs(l[500] - 0.5f) < 1e-6f);  // untouched when nothing is held
+    // Repeat 1/16 (6000 frames): after the fade, the output repeats with a 6000-frame period.
+    fx.setParam(ps::PerformanceFx::RepeatDivision, 0.6f);
+    fx.setParam(ps::PerformanceFx::Repeat, 1.0f);
+    feed(n, 0);
+    float worst = 0.0f;
+    for (int i = 2000; i < 2000 + 3000; ++i) worst = std::max(worst, std::fabs(l[static_cast<size_t>(i)] - l[static_cast<size_t>(i + 6000)]));
+    std::printf("  repeat: loop mismatch %.5f\n", worst);
+    CHECK(worst < 1e-4f);
+    fx.setParam(ps::PerformanceFx::Repeat, 0.0f);
+    feed(n, 0);
+    CHECK(std::fabs(l[n - 100] - 0.001f * ((n - 100) % 1000)) < 1e-4f);  // back to live
+    // Tape stop: the level falls to silence within a second.
+    fx.setParam(ps::PerformanceFx::TapeStop, 1.0f);
+    for (int i = 0; i < n; ++i) l[static_cast<size_t>(i)] = r[static_cast<size_t>(i)] = 0.5f * static_cast<float>(std::sin(2 * M_PI * 440 * i / kRate));
+    fx.process(l.data(), r.data(), n);
+    float tail = 0.0f;
+    for (int i = n - 4800; i < n; ++i) tail = std::max(tail, std::fabs(l[static_cast<size_t>(i)]));
+    CHECK(tail < 1e-3f);
+    fx.setParam(ps::PerformanceFx::TapeStop, 0.0f);
+    // Chopper: silent in the second half of each sixteenth, open in the first.
+    fx.setParam(ps::PerformanceFx::Chop, 1.0f);
+    std::vector<float> ones(24000, 0.5f), ones2(24000, 0.5f);
+    fx.onStep(0);
+    fx.process(ones.data(), ones2.data(), 24000);
+    CHECK(ones[6000 + 1500] > 0.45f && ones[6000 + 4500] < 0.01f);
+    fx.setParam(ps::PerformanceFx::Chop, 0.0f);
+    // DJ filter: low-pass at the left kills a high tone; centred, no change.
+    fx.setParam(ps::PerformanceFx::Filter, 0.1f);
+    for (int i = 0; i < n; ++i) l[static_cast<size_t>(i)] = r[static_cast<size_t>(i)] = 0.5f * static_cast<float>(std::sin(2 * M_PI * 6000 * i / kRate));
+    fx.process(l.data(), r.data(), n);
+    float hi = 0.0f;
+    for (int i = n / 2; i < n; ++i) hi = std::max(hi, std::fabs(l[static_cast<size_t>(i)]));
+    CHECK(hi < 0.05f);
+    for (int i = 0; i < n; ++i) CHECK(std::isfinite(l[static_cast<size_t>(i)]));
 }
 
 struct TestCase {
@@ -1695,6 +2052,13 @@ int main(int argc, char** argv) {
         {"time_stretch", testTimeStretchKeepsPitchAndLength},
         {"piano_roll", testPianoRollNotesAreSampleAccurate},
         {"instrument", testInstrumentPlaysTheSoundFont},
+        {"insert_effects", testInsertEffects},
+        {"send_effects", testSendEffects},
+        {"mixer_inserts_sends", testMixerInsertsAndSends},
+        {"sidechain_pump", testSidechainPumpFollowsTheKick},
+        {"automation", testAutomationMovesTheFader},
+        {"scenes", testScenesSwapOnTheBar},
+        {"performance_fx", testPerformanceEffects},
         {"tempo_and_key", testTempoAndKeyDetection},
         {"stems_follow_transport", testStemsPlayInStepWithTheTransport},
         {"no_alloc_in_process", testProcessNeverAllocates},

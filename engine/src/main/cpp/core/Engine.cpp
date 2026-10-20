@@ -71,7 +71,10 @@ void Engine::applyCommand(const Command& command) {
         case CommandType::SetTransport:
             if (command.value > 0.5f) {
                 sequencer_.start(std::clamp(command.a, 0, 4));
+                sceneStart_ = 0;
             } else {
+                swapAt_ = -1;
+                staging_ = false;  // a lost "staging off" must never trap later edits
                 sequencer_.stop();
                 stems_.stop();
                 acid_.stop();
@@ -94,13 +97,29 @@ void Engine::applyCommand(const Command& command) {
             metronomeOn_ = command.value > 0.5f;
             break;
         case CommandType::SetPatternSteps:
-            patternSteps_ = std::clamp(command.a, 16, kMaxSteps);
+            if (staging_) staged_.drumSteps = std::clamp(command.a, 16, kMaxSteps);
+            else patternSteps_ = std::clamp(command.a, 16, kMaxSteps);
             break;
         case CommandType::SetAcidStep:
-            acid_.setStep(command.a, AcidStep::unpack(command.b));
+            if (staging_) {
+                if (command.a >= 0 && command.a < AcidTrack::kMaxSteps) staged_.acid[static_cast<size_t>(command.a)] = AcidStep::unpack(command.b);
+            } else {
+                acid_.setStep(command.a, AcidStep::unpack(command.b));
+            }
             break;
         case CommandType::SetAcidLength:
-            acid_.setLength(command.a);
+            if (staging_) staged_.acidLength = std::clamp(command.a, 1, AcidTrack::kMaxSteps);
+            else acid_.setLength(command.a);
+            break;
+        case CommandType::SetPerformance:
+            mixer_.setPerformance(command.a, command.value);
+            break;
+        case CommandType::SetStaging:
+            staging_ = command.value > 0.5f;
+            break;
+        case CommandType::ArmSceneSwap:
+            swapAt_ = command.a < 0 ? -1 : command.a;
+            staging_ = false;  // arming ends a staging burst even if its "off" was dropped
             break;
         case CommandType::SetAcidRoot:
             acid_.setRoot(command.a);
@@ -144,19 +163,50 @@ void Engine::applyCommand(const Command& command) {
             sampler_.setParam(command.a, command.b, command.value);
             break;
         case CommandType::SetSynthNote:
-            notes_.setNote(command.a, command.b, command.value);
+            if (!staging_) {
+                notes_.setNote(command.a, command.b, command.value);
+            } else if (command.a >= 0 && command.a < NoteTrack::kMaxNotes) {
+                staged_.notePacked[static_cast<size_t>(command.a)] = command.b;
+                staged_.noteVelocity[static_cast<size_t>(command.a)] = command.value;
+            }
             break;
         case CommandType::SetSynthNoteCount:
-            notes_.setCount(command.a);
+            if (staging_) staged_.noteCount = std::clamp(command.a, 0, NoteTrack::kMaxNotes);
+            else notes_.setCount(command.a);
             break;
         case CommandType::SetSynthSteps:
-            notes_.setSteps(command.a);
+            if (staging_) staged_.noteSteps = command.a;
+            else notes_.setSteps(command.a);
             break;
         case CommandType::InstallStems:
             stems_.install(command.stems);  // takes the reference
             break;
         case CommandType::SetStemParam:
             stems_.setParam(command.a, command.b, command.value);
+            break;
+        case CommandType::SetInsertType:
+            mixer_.setInsertType(command.a / Mixer::kInserts, command.a % Mixer::kInserts, command.b);
+            break;
+        case CommandType::SetInsertParam:
+            mixer_.setInsertParam(command.a / Mixer::kInserts, command.a % Mixer::kInserts, command.b, command.value);
+            break;
+        case CommandType::SetSend:
+            mixer_.setSend(command.a, command.b, command.value);
+            break;
+        case CommandType::SetBusParam:
+            mixer_.setBusParam(command.a, command.b, command.value);
+            break;
+        case CommandType::SetAutomationTarget:
+            if (command.a >= 0 && command.a < Automation::kLanes) {
+                auto& lane = automation_.lanes[command.a];
+                lane.target = command.b;
+                lane.values.fill(-1.0f);
+            }
+            break;
+        case CommandType::SetAutomationPoint:
+            if (command.a >= 0 && command.a < Automation::kLanes && command.b >= 0 && command.b < Automation::kSteps) {
+                automation_.lanes[command.a].values[static_cast<size_t>(command.b)] = command.value < 0.0f ? -1.0f : std::min(command.value, 1.0f);
+            }
             break;
         case CommandType::SetStemStart:
             stems_.setStartFrame(command.a);
@@ -174,7 +224,7 @@ void Engine::applyCommand(const Command& command) {
             break;
         case CommandType::SetDrumHit:
             if (command.a >= 0 && command.a < kLanes && command.b >= 0 && command.b < kMaxSteps) {
-                pattern_[command.a][command.b] = std::clamp(command.value, 0.0f, 1.0f);
+                (staging_ ? staged_.drums : pattern_)[command.a][command.b] = std::clamp(command.value, 0.0f, 1.0f);
             }
             break;
     }
@@ -190,16 +240,60 @@ void Engine::onStep(int offset, int step) {
     }
     if (step < 0) return;
     if (step == 0) stems_.start(offset);
-    acid_.onStep(offset, step, sequencer_.samplesPerStep());
-    notes_.onStep(offset, step, sequencer_.samplesPerStep());
-    const int patternStep = step % patternSteps_;
+    // A waiting scene takes over on its step (or the next bar), before anything of this step plays.
+    if (swapAt_ >= 0) {
+        const int local = step - sceneStart_;
+        // Always on a bar line: a swap armed late waits for the next bar instead of cutting one.
+        const bool onBar = local > 0 && local % Sequencer::kStepsPerBar == 0;
+        if (onBar && (swapAt_ == 0 || local >= swapAt_)) swapScene(step);
+    }
+    // Patterns count from the start of their scene; the remix stems follow the transport.
+    const int local = step - sceneStart_;
+    acid_.onStep(offset, local, sequencer_.samplesPerStep());
+    notes_.onStep(offset, local, sequencer_.samplesPerStep());
+    const int patternStep = local % patternSteps_;
+    applyAutomation(patternStep);
+    // Sidechain pumps follow the kick lane (pad 1) or every quarter note.
+    mixer_.sidechainEvent(offset, pattern_[0][patternStep] > 0.0f, onBeat);
     currentStep_.store(patternStep, std::memory_order_relaxed);
-    absoluteStep_.store(step, std::memory_order_relaxed);
+    absoluteStep_.store(local, std::memory_order_relaxed);
     for (int lane = 0; lane < kLanes; ++lane) {
         if (pattern_[lane][patternStep] > 0.0f) {
             laneTriggers_[static_cast<size_t>(lane)].fetch_add(1, std::memory_order_relaxed);
             if (sampler_.has(lane)) sampler_.trigger(lane, pattern_[lane][patternStep], offset);
             else drums_.trigger(lane, pattern_[lane][patternStep], offset);
+        }
+    }
+}
+
+void Engine::swapScene(int step) {
+    std::copy(&staged_.drums[0][0], &staged_.drums[0][0] + kLanes * kMaxSteps, &pattern_[0][0]);
+    patternSteps_ = staged_.drumSteps;
+    for (int i = 0; i < AcidTrack::kMaxSteps; ++i) acid_.setStep(i, staged_.acid[static_cast<size_t>(i)]);
+    acid_.setLength(staged_.acidLength);
+    for (int i = 0; i < staged_.noteCount; ++i) {
+        notes_.setNote(i, staged_.notePacked[static_cast<size_t>(i)], staged_.noteVelocity[static_cast<size_t>(i)]);
+    }
+    notes_.setCount(staged_.noteCount);
+    notes_.setSteps(staged_.noteSteps);
+    sceneStart_ = step;
+    swapAt_ = -1;
+    sceneSwaps_.fetch_add(1, std::memory_order_relaxed);
+}
+
+void Engine::applyAutomation(int patternStep) {
+    if (patternStep < 0 || patternStep >= Automation::kSteps) return;
+    for (const auto& lane : automation_.lanes) {
+        const float v = lane.values[static_cast<size_t>(patternStep)];
+        if (lane.target < 0 || v < 0.0f) continue;
+        const int kind = lane.target >> 16, ch = (lane.target >> 12) & 0xF, slot = (lane.target >> 8) & 0xF, param = lane.target & 0xFF;
+        switch (kind) {
+            case Automation::Volume: mixer_.setVolume(ch, v); break;
+            case Automation::Pan: mixer_.setPan(ch, v * 2.0f - 1.0f); break;
+            case Automation::Send: mixer_.setSend(ch, slot, v); break;
+            case Automation::InsertParam: mixer_.setInsertParam(ch, slot, param, v); break;
+            case Automation::BusParam: mixer_.setBusParam(slot, param, v); break;
+            default: break;
         }
     }
 }
@@ -236,6 +330,7 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
         if (phase_ >= kTwoPi) phase_ -= kTwoPi;
     }
 
+    mixer_.setStepFrames(sequencer_.samplesPerStep());
     const float* channels[Mixer::kChannels] = {drums, acid, synth, stemsL};
     const float* rights[Mixer::kChannels] = {nullptr, nullptr, nullptr, stemsR};
     mixer_.process(channels, rights, direct, output, numFrames, outputChannels);

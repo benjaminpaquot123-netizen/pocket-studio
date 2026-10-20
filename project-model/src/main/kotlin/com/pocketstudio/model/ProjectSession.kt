@@ -51,6 +51,14 @@ class ProjectSession(
         if (history.push(next, coalesceKey, clock())) publish()
     }
 
+    /** Like [edit] but not undoable: for changes the app makes on its own, like following the song. */
+    fun editQuietly(transform: (Project) -> Project) {
+        val next = transform(history.current).sanitized()
+        if (next == history.current) return
+        history.replace(next)
+        publish()
+    }
+
     fun undo() {
         if (history.undo() != null) publish()
     }

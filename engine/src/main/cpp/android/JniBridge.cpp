@@ -211,6 +211,19 @@ JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_stemsExt
     return result;
 }
 
+JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_stemsPeaks(JNIEnv* env, jobject, jlong handle, jint stem,
+                                                                                jint buckets) {
+    std::vector<float> peaks;
+    try {
+        peaks = reinterpret_cast<ps::StemBundle*>(handle)->peaks(stem, std::clamp(buckets, 1, 4096));
+    } catch (...) {
+        peaks.clear();
+    }
+    jfloatArray result = env->NewFloatArray(static_cast<jsize>(peaks.size()));
+    if (result) env->SetFloatArrayRegion(result, 0, static_cast<jsize>(peaks.size()), peaks.data());
+    return result;
+}
+
 JNIEXPORT jboolean JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeInstallStems(JNIEnv*, jobject, jlong handle) {
     auto& engine = host().engine();
     engine.collectGarbage();
@@ -229,6 +242,10 @@ JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportInstallSt
     ps::Command command{ps::CommandType::InstallStems};
     command.stems = b;
     reinterpret_cast<ps::OfflineRenderer*>(exportHandle)->post(command);
+}
+
+JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_sceneSwaps(JNIEnv*, jobject) {
+    return static_cast<jint>(host().engine().sceneSwaps());
 }
 
 JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_stemPosition(JNIEnv*, jobject) {

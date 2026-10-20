@@ -50,11 +50,22 @@ int main(int argc, char** argv) {
         const auto stem = readStem((dir / (std::string(ps::kStemNames[s]) + ".wav")).string());
         check(stem.size() == size_t(n) * 2, "stem length");
         if (stem.size() != size_t(n) * 2) continue;
+        // Scale-invariant SDR: stems may be turned down together to stay below the ceiling.
+        double dot = 0, rr = 0;
+        for (int i = 0; i < n; ++i) { dot += double(stem[size_t(i) * 2]) * refs[s][i]; rr += double(refs[s][i]) * refs[s][i]; }
+        const double alpha = dot / rr;
         double er = 0, err = 0;
-        for (int i = 0; i < n; ++i) { er += double(refs[s][i]) * refs[s][i]; const double d = stem[size_t(i) * 2] - refs[s][i]; err += d * d; }
+        for (int i = 0; i < n; ++i) {
+            const double t = alpha * refs[s][i], d = stem[size_t(i) * 2] - t;
+            er += t * t;
+            err += d * d;
+        }
         const double sdr = 10 * std::log10(er / err);
         std::printf("  %-6s SDR %.1f dB\n", ps::kStemNames[s], sdr);
         check(sdr > 10.0, "stem holds its instrument (SDR > 10 dB)");
+        float peak = 0.0f;
+        for (float v : stem) peak = std::max(peak, std::fabs(v));
+        check(peak <= ps::kStemCeiling + 1e-4f, "stems never exceed the ceiling (no clipping in players)");
     }
     // Cancel at the first progress report: stops, writes nothing new.
     std::filesystem::remove_all(dir);

@@ -21,6 +21,16 @@ import com.pocketstudio.engine.NativeStems
 import com.pocketstudio.app.remix.StemSet
 import com.pocketstudio.app.remix.StemStore
 import com.pocketstudio.model.Remix
+import com.pocketstudio.model.Scene
+import com.pocketstudio.model.SongPart
+import com.pocketstudio.model.allScenes
+import com.pocketstudio.model.copySceneTo
+import com.pocketstudio.model.sceneView
+import com.pocketstudio.model.switchScene
+import com.pocketstudio.model.AutoTarget
+import com.pocketstudio.model.AutomationLane
+import com.pocketstudio.model.EffectType
+import com.pocketstudio.model.Insert
 import com.pocketstudio.engine.OfflineExport
 import com.pocketstudio.model.AcidGenerator
 import com.pocketstudio.model.AcidPattern
@@ -76,6 +86,12 @@ data class ExportUi(
 
 /** What the audio engine is doing right now, polled for the playhead and pad lights. */
 data class LiveUi(val currentStep: Int = -1, val litPads: Set<Int> = emptySet(), val absoluteStep: Int = -1)
+
+/** Peaks (0..1) of each stem for the waveform view, and the song length in frames at 48 kHz. */
+class StemOverview(val peaks: List<FloatArray>, val frames: Long)
+
+/** Session state: the scene waiting to take over, and the song part playing (-1 = not in song mode). */
+data class SessionUi(val pending: Int? = null, val songIndex: Int = -1)
 
 data class TransportUi(
     val playing: Boolean = false,
@@ -157,15 +173,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** Sends the whole project to the engine, e.g. after the audio stream (re)started. */
     fun syncEngine() {
         if (!NativeEngine.isAvailable) return
+        NativeEngine.setStaging(false)  // whatever happened before, edits go to the playing scene
         val p = project.value
         NativeEngine.setTempo(p.tempoBpm)
         NativeEngine.setSwing(p.swing)
-        NativeEngine.setPatternSteps(p.drums.steps)
-        p.drums.lanes.forEachIndexed { lane, l ->
-            for (step in 0 until DrumPattern.MAX_STEPS) {
-                NativeEngine.setDrumHit(lane, step, l.hits[step]?.velocity ?: 0f)
-            }
-        }
+        pushDrumPattern(p.drums)
         NativeEngine.setMetronome(_transport.value.metronome)
         pushAcid(p.acid)
         pushSynth(p.synth)
@@ -174,6 +186,216 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         pushNotes(p.synthNotes)
         pushInstrument(p)
         pushRemix(p)
+        pushAutomation(p)
+    }
+
+    private fun pushDrumPattern(drums: DrumPattern) {
+        NativeEngine.setPatternSteps(drums.steps)
+        drums.lanes.forEachIndexed { lane, l ->
+            for (step in 0 until DrumPattern.MAX_STEPS) NativeEngine.setDrumHit(lane, step, l.hits[step]?.velocity ?: 0f)
+        }
+    }
+
+    // --- Scenes and song ------------------------------------------------------------------------
+
+    private val _sessionUi = MutableStateFlow(SessionUi())
+    val sessionUi: StateFlow<SessionUi> = _sessionUi.asStateFlow()
+    private var swapsSeen = 0
+    private var swapWatch: kotlinx.coroutines.Job? = null
+
+    /** Stopped: shows and edits [index]. Playing: [index] takes over at the next bar. */
+    fun selectScene(index: Int) {
+        if (index !in 0 until Scene.MAX) return
+        if (!_transport.value.playing || !NativeEngine.isAvailable) {
+            _sessionUi.value = _sessionUi.value.copy(pending = null, songIndex = -1)
+            session.edit { it.switchScene(index) }
+            syncEngine()
+            return
+        }
+        if (index == project.value.scene && _sessionUi.value.pending == null) return
+        _sessionUi.value = _sessionUi.value.copy(pending = index, songIndex = -1)
+        stageScene(index, 0)
+    }
+
+    /** Copies the current scene to the first empty slot and shows it: the usual way to make a variation. */
+    fun duplicateScene() {
+        val p = project.value
+        val scenes = p.allScenes
+        val target = scenes.indices.firstOrNull { it != p.scene && scenes[it].isEmpty } ?: scenes.size.takeIf { it < Scene.MAX } ?: return
+        session.edit { it.copySceneTo(target) }
+        selectScene(target)
+    }
+
+    fun addSongPart(scene: Int) {
+        if (project.value.song.size >= SongPart.MAX_PARTS) return
+        session.edit { p -> p.copy(song = p.song + SongPart(scene, 1)) }
+    }
+
+    fun removeSongPart(index: Int) = session.edit { p -> p.copy(song = p.song.filterIndexed { i, _ -> i != index }) }
+
+    fun setSongRepeats(index: Int, repeats: Int) = session.edit("song-$index") { p ->
+        p.copy(song = p.song.mapIndexed { i, part -> if (i == index) part.copy(repeats = repeats.coerceIn(1, SongPart.MAX_REPEATS)) else part })
+    }
+
+    /** Plays the song from its first part (or stops it). */
+    fun toggleSong() {
+        if (_transport.value.playing) {
+            togglePlay()
+            return
+        }
+        val song = project.value.song
+        if (song.isEmpty() || !NativeEngine.isAvailable) return
+        session.edit { it.switchScene(song[0].scene) }
+        syncEngine()
+        _sessionUi.value = SessionUi(songIndex = 0)
+        togglePlay()
+        // The whole project just went to the engine: let the queue drain before the next scene.
+        viewModelScope.launch {
+            kotlinx.coroutines.delay(150)
+            if (_transport.value.playing && _sessionUi.value.songIndex == 0) stageSongPart(1)
+        }
+    }
+
+    /**
+     * In song mode the next part is sent ahead; if it is the scene being edited (a part
+     * repeated, or A then A), edits must reach that waiting copy too, or the swap would undo them.
+     */
+    private var restageJob: kotlinx.coroutines.Job? = null
+
+    private fun restageIfEditingUpcoming() {
+        val ui = _sessionUi.value
+        if (ui.songIndex < 0 || ui.pending != project.value.scene || !_transport.value.playing) return
+        restageJob?.cancel()
+        restageJob = viewModelScope.launch {
+            kotlinx.coroutines.delay(150)  // one resend after a burst of edits
+            val ui2 = _sessionUi.value
+            if (ui2.songIndex >= 0 && ui2.pending == project.value.scene && _transport.value.playing) stageSongPart(ui2.songIndex + 1)
+        }
+    }
+
+    /** The engine swapped scenes but the 40 ms watch had not seen it yet: follow it now. */
+    private fun catchUpMissedSwap() {
+        if (!NativeEngine.isAvailable) return
+        if (_sessionUi.value.pending != null && NativeEngine.sceneSwaps() != swapsSeen) {
+            swapsSeen = NativeEngine.sceneSwaps()
+            _sessionUi.value.pending?.let { now -> session.editQuietly { it.switchScene(now) } }
+        }
+    }
+
+    /** Sends scene [index] to the engine's waiting slot and arms the swap after [afterSteps] (0 = next bar). */
+    private fun stageScene(index: Int, afterSteps: Int) {
+        val view = project.value.sceneView(index)
+        NativeEngine.setStaging(true)
+        pushDrumPattern(view.drums)
+        pushAcid(view.acid)
+        pushNotes(view.synthNotes)
+        NativeEngine.setStaging(false)
+        NativeEngine.armSceneSwap(afterSteps)
+        watchSwaps()
+    }
+
+    /** Prepares the song part after the one now playing ([next] wraps around: the song loops). */
+    private fun stageSongPart(next: Int) {
+        val song = project.value.song
+        if (song.isEmpty()) return
+        val playing = song[(next - 1 + song.size) % song.size]
+        val upcoming = song[next % song.size]
+        val steps = project.value.allScenes.getOrNull(playing.scene)?.steps ?: 16
+        _sessionUi.value = _sessionUi.value.copy(pending = upcoming.scene)
+        stageScene(upcoming.scene, steps * playing.repeats)
+    }
+
+    /** Follows the engine's scene swaps (also with the screen off, while the transport runs). */
+    private fun watchSwaps() {
+        if (swapWatch?.isActive == true) return
+        swapsSeen = NativeEngine.sceneSwaps()
+        swapWatch = viewModelScope.launch {
+            while (_transport.value.playing && (_sessionUi.value.pending != null || _sessionUi.value.songIndex >= 0)) {
+                val swaps = NativeEngine.sceneSwaps()
+                if (swaps != swapsSeen) {
+                    swapsSeen = swaps
+                    onSceneSwapped()
+                }
+                kotlinx.coroutines.delay(40)
+            }
+        }
+    }
+
+    private fun onSceneSwapped() {
+        val ui = _sessionUi.value
+        val now = ui.pending ?: return
+        // The engine already plays it: only the screens follow (no undo step).
+        session.editQuietly { it.switchScene(now) }
+        val song = project.value.song
+        if (ui.songIndex >= 0 && song.isNotEmpty()) {
+            val index = (ui.songIndex + 1) % song.size
+            _sessionUi.value = SessionUi(songIndex = index)
+            stageSongPart(index + 1)
+        } else {
+            _sessionUi.value = SessionUi()
+        }
+    }
+
+    // --- Automation (mixer settings that move with the loop) ----------------------------------
+
+    private val _automationRecord = MutableStateFlow(false)
+    /** While on and playing, moving an automated control writes it on the current step. */
+    val automationRecord: StateFlow<Boolean> = _automationRecord.asStateFlow()
+
+    fun toggleAutomationRecord() {
+        _automationRecord.value = !_automationRecord.value
+    }
+
+    private fun pushAutomation(p: Project = project.value) {
+        if (!NativeEngine.isAvailable) return
+        for (i in 0 until AutomationLane.MAX_LANES) {
+            val lane = p.automation.getOrNull(i)
+            NativeEngine.setAutomationTarget(i, lane?.target?.pack() ?: -1)
+            lane?.values?.forEachIndexed { step, v -> if (v != null) NativeEngine.setAutomationPoint(i, step, v) }
+        }
+    }
+
+    fun addAutomation(target: AutoTarget) {
+        if (project.value.automation.size >= AutomationLane.MAX_LANES || project.value.automation.any { it.target == target }) return
+        session.edit { p -> p.copy(automation = p.automation + AutomationLane(target)) }
+        pushAutomation()
+    }
+
+    fun removeAutomation(index: Int) {
+        session.edit { p -> p.copy(automation = p.automation.filterIndexed { i, _ -> i != index }) }
+        pushAutomation()
+        pushMixer(project.value)  // back to the static settings
+    }
+
+    fun clearAutomation(index: Int) {
+        session.edit { p -> p.copy(automation = p.automation.mapIndexed { i, l -> if (i == index) AutomationLane(l.target) else l }) }
+        pushAutomation()
+        pushMixer(project.value)
+    }
+
+    /** Drawing: [value] 0..1 on [step] (null erases). Consecutive strokes merge into one undo step. */
+    fun setAutomationPoint(index: Int, step: Int, value: Float?) {
+        if (index !in project.value.automation.indices) return
+        session.edit("auto-$index") { p -> p.copy(automation = p.automation.mapIndexed { i, l -> if (i == index) l.withPoint(step, value) else l }) }
+        if (NativeEngine.isAvailable) NativeEngine.setAutomationPoint(index, step, value?.coerceIn(0f, 1f))
+    }
+
+    private fun recordAutomation(target: AutoTarget, value: Float) {
+        if (!_automationRecord.value || !_transport.value.playing || !NativeEngine.isAvailable) return
+        val step = NativeEngine.currentStep()
+        if (step !in 0 until AutomationLane.STEPS) return
+        var index = project.value.automation.indexOfFirst { it.target == target }
+        if (index < 0) {
+            if (project.value.automation.size >= AutomationLane.MAX_LANES) return
+            addAutomation(target)
+            index = project.value.automation.indexOfFirst { it.target == target }
+        }
+        setAutomationPoint(index, step, value)
+    }
+
+    /** After a stop, settings left where the automation put them go back to the project's values. */
+    private fun restoreAfterAutomation() {
+        if (project.value.automation.isNotEmpty()) pushMixer(project.value)
     }
 
     // --- Remix: a separated song played along with the project ---------------------------------
@@ -183,6 +405,33 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     private var stemsJob: kotlinx.coroutines.Job? = null
     private val _remixLoading = MutableStateFlow(false)
     val remixLoading: StateFlow<Boolean> = _remixLoading.asStateFlow()
+
+    /** Waveform overview of the loaded stems (null until loaded). */
+    private val _stemOverview = MutableStateFlow<StemOverview?>(null)
+    val stemOverview: StateFlow<StemOverview?> = _stemOverview.asStateFlow()
+
+    /** Song position (frames at 48 kHz) while the stems play, else -1. */
+    private val _stemPosition = MutableStateFlow(-1L)
+    val stemPosition: StateFlow<Long> = _stemPosition.asStateFlow()
+
+    /** Polls the playhead about 30 times a second while the Remix screen is visible. */
+    suspend fun pollStemPosition() {
+        if (!NativeEngine.isAvailable) return
+        while (true) {
+            _stemPosition.value = NativeEngine.stemPosition()
+            kotlinx.coroutines.delay(33)
+        }
+    }
+
+    /** Touching the waveform at [fraction] (0..1) of the song starts the remix at that bar. */
+    fun setRemixStartAt(fraction: Float) {
+        val r = project.value.remix
+        val overview = _stemOverview.value ?: return
+        val bar = r.barFrames(OfflineExport.SAMPLE_RATE)
+        if (bar <= 0) return
+        val frame = (fraction.coerceIn(0f, 1f) * overview.frames).toLong() - Math.round(r.firstBeat * OfflineExport.SAMPLE_RATE)
+        setRemixStartBar((frame / bar).toInt().coerceAtLeast(0))
+    }
 
     private fun pushRemix(p: Project = project.value) {
         if (!NativeEngine.isAvailable) return
@@ -200,6 +449,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             stems?.close()
             stems = null
             stemsId = null
+            _stemOverview.value = null
         }
         if (loaded == null && wanted != null && stemsJob?.isActive != true) loadStems(wanted)
     }
@@ -240,6 +490,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             stemsId = id
             pushRemix()
             old?.close()  // the engine keeps its own reference until it lets go
+            _stemOverview.value = withContext(Dispatchers.Default) {
+                runCatching { StemOverview(List(4) { loaded.peaks(it, OVERVIEW_BUCKETS) }, loaded.frames) }.getOrNull()
+            }
             AppLog.add("Remix : « ${wanted.name} » chargé (${loaded.frames / OfflineExport.SAMPLE_RATE} s)")
         }
     }
@@ -268,6 +521,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         stems?.close()
         stems = null
         stemsId = null
+        _stemOverview.value = null
     }
 
     fun setStemVolume(stem: Int, v: Float) = editRemix("stem-$stem-vol") { it.withStem(stem) { s -> s.copy(volume = v) } }
@@ -401,8 +655,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * (kick, snare, hats…), hats in one choke group. One undo step.
      */
     fun loadKit(kit: Preset) {
-        val font = soundFont ?: return
-        if (_sampleTask.value is SampleTask.Busy) return
+        val font = soundFont
+        if (font == null || _sampleTask.value is SampleTask.Busy) {
+            android.widget.Toast.makeText(getApplication(), "Patiente un instant, un son est en cours de préparation.", android.widget.Toast.LENGTH_SHORT).show()
+            return
+        }
         _sampleTask.value = SampleTask.Busy("Kit ${kit.name}…")
         viewModelScope.launch {
             try {
@@ -412,6 +669,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     val audio = font.renderNote(kit, note)
                     kotlinx.coroutines.yield()
                     if (audio.size < 480) return@forEachIndexed
+                    // Some kit samples peak above full scale: bring them to -1 dBFS.
+                    val peak = audio.maxOf { kotlin.math.abs(it) }
+                    if (peak > 0.89f) for (i in audio.indices) audio[i] *= 0.89f / peak
                     val (sample, prepared) = withContext(Dispatchers.IO) {
                         padSamples.add(Pcm(audio, 1, OfflineExport.SAMPLE_RATE), "${kit.name.take(18)} ${InstrumentLibrary.KIT_PAD_NAMES[pad]}")
                     }
@@ -422,10 +682,15 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 pushPads()
                 AppLog.add("Kit ${kit.name} : ${pads.size} sons sur les pads")
                 _sampleTask.value = SampleTask.Idle
+                if (NativeEngine.isAvailable) NativeEngine.triggerPad(0, 0.9f)
+                android.widget.Toast.makeText(
+                    getApplication(), "Kit « ${kit.name} » sur les pads : va dans Rythme (Annuler possible).", android.widget.Toast.LENGTH_LONG,
+                ).show()
             } catch (e: kotlinx.coroutines.CancellationException) {
                 throw e
             } catch (e: Exception) {
                 _sampleTask.value = SampleTask.Failed("Le kit n'a pas pu être chargé (${e.message}).")
+                android.widget.Toast.makeText(getApplication(), "Le kit n'a pas pu être chargé.", android.widget.Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -808,8 +1073,15 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    fun setChannelVolume(ch: Int, v: Float) = editChannel(ch, "vol") { it.copy(volume = v) }
-    fun setChannelPan(ch: Int, pan: Float) = editChannel(ch, "pan") { it.copy(pan = pan) }
+    fun setChannelVolume(ch: Int, v: Float) {
+        editChannel(ch, "vol") { it.copy(volume = v) }
+        recordAutomation(AutoTarget(AutoTarget.VOLUME, ch), v)
+    }
+
+    fun setChannelPan(ch: Int, pan: Float) {
+        editChannel(ch, "pan") { it.copy(pan = pan) }
+        recordAutomation(AutoTarget(AutoTarget.PAN, ch), (pan + 1f) / 2f)
+    }
     fun toggleMute(ch: Int) = editChannel(ch, null) { it.copy(mute = !it.mute) }
     fun toggleSolo(ch: Int) = editChannel(ch, null) { it.copy(solo = !it.solo) }
 
@@ -829,6 +1101,70 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             NativeEngine.setChannelPan(i, c.pan)
             NativeEngine.setChannelMute(i, c.mute)
             NativeEngine.setChannelSolo(i, c.solo)
+            pushInserts(i, c.inserts)
+            c.sends.forEachIndexed { bus, level -> NativeEngine.setSend(i, bus, level) }
+        }
+        pushInserts(NativeEngine.MIXER_CHANNELS, p.mixer.master)
+        p.mixer.buses.forEachIndexed { bus, params -> params.forEachIndexed { k, v -> NativeEngine.setBusParam(bus, k, v) } }
+    }
+
+    private fun pushInserts(ch: Int, inserts: List<Insert>) {
+        inserts.forEachIndexed { slot, ins ->
+            NativeEngine.setInsertType(ch, slot, ins.type)
+            ins.params.forEachIndexed { k, v -> NativeEngine.setInsertParam(ch, slot, k, v) }
+        }
+    }
+
+    // --- Effects (inserts on channels and master, sends, buses) ------------------------------
+
+    /** [ch] 0..3 = a channel, [MASTER] = the master. A new type starts from its defaults. */
+    fun setInsertType(ch: Int, slot: Int, type: EffectType) = editInserts(ch, null) { list ->
+        list.mapIndexed { i, ins -> if (i == slot) Insert.of(type) else ins }
+    }
+
+    // Sliders send only the value that moved (the whole mixer is ~130 commands).
+    fun setInsertParam(ch: Int, slot: Int, param: Int, value: Float) {
+        val v = value.coerceIn(0f, 1f)
+        editInserts(ch, "fx-$slot-$param", push = false) { list ->
+            list.mapIndexed { i, ins -> if (i == slot) ins.copy(params = ins.params.mapIndexed { k, old -> if (k == param) v else old }) else ins }
+        }
+        if (NativeEngine.isAvailable) NativeEngine.setInsertParam(ch, slot, param, v)
+        recordAutomation(AutoTarget(AutoTarget.INSERT_PARAM, ch, slot, param), v)
+    }
+
+    fun setSend(ch: Int, bus: Int, level: Float) {
+        val v = level.coerceIn(0f, 1f)
+        session.edit("mix-$ch-send-$bus") { p ->
+            val channels = p.mixer.channels.toMutableList()
+            channels[ch] = channels[ch].let { c -> c.copy(sends = c.sends.mapIndexed { b, old -> if (b == bus) v else old }) }
+            p.copy(mixer = p.mixer.copy(channels = channels))
+        }
+        if (NativeEngine.isAvailable) NativeEngine.setSend(ch, bus, v)
+        recordAutomation(AutoTarget(AutoTarget.SEND, ch, bus), v)
+    }
+
+    fun setBusParam(bus: Int, param: Int, value: Float) {
+        val v = value.coerceIn(0f, 1f)
+        session.edit("bus-$bus-$param") { p ->
+            val buses = p.mixer.buses.mapIndexed { b, ps -> if (b == bus) ps.mapIndexed { k, old -> if (k == param) v else old } else ps }
+            p.copy(mixer = p.mixer.copy(buses = buses))
+        }
+        if (NativeEngine.isAvailable) NativeEngine.setBusParam(bus, param, v)
+        recordAutomation(AutoTarget(AutoTarget.BUS_PARAM, 0, bus, param), v)
+    }
+
+    private fun editInserts(ch: Int, key: String?, push: Boolean = true, transform: (List<Insert>) -> List<Insert>) {
+        session.edit(key?.let { "fx-$ch-$it" }) { p ->
+            if (ch == MASTER) {
+                p.copy(mixer = p.mixer.copy(master = transform(p.mixer.master)))
+            } else {
+                val channels = p.mixer.channels.toMutableList()
+                channels[ch] = channels[ch].let { c -> c.copy(inserts = transform(c.inserts)) }
+                p.copy(mixer = p.mixer.copy(channels = channels))
+            }
+        }
+        if (push && NativeEngine.isAvailable) {
+            pushInserts(ch, if (ch == MASTER) project.value.mixer.master else project.value.mixer.channels[ch].inserts)
         }
     }
 
@@ -940,7 +1276,13 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val playing = !t.playing
         _transport.value = t.copy(playing = playing)
         if (!NativeEngine.isAvailable) return
-        if (playing) NativeEngine.play(if (t.countIn) 1 else 0) else NativeEngine.stopTransport()
+        if (playing) NativeEngine.play(if (t.countIn) 1 else 0) else {
+            NativeEngine.stopTransport()
+            catchUpMissedSwap()
+            _sessionUi.value = SessionUi()
+            // Engine and screens agree again on the scene, whatever the swaps did.
+            syncEngine()
+        }
         val app = getApplication<Application>()
         AppLog.add(if (playing) "Lecture (${project.value.tempoBpm.toInt()} BPM)" else "Stop")
         if (playing) PlaybackService.start(app) else PlaybackService.stop(app)
@@ -953,6 +1295,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     val keepsRunningInBackground: Boolean get() = _transport.value.playing
 
     init {
+        viewModelScope.launch { project.collect { restageIfEditingUpcoming() } }
         loadPadSamples()
         if (project.value.instrument != null) openLibrary()
         viewModelScope.launch {
@@ -1135,5 +1478,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         /** Two seconds after the last bar so releases and the acid tail ring out. */
         const val TAIL_FRAMES = 2L * OfflineExport.SAMPLE_RATE
         private val STEM_LABELS = listOf("Batterie", "Basse", "Autres", "Voix")
+        private const val OVERVIEW_BUCKETS = 400
+        /** Insert "channel" index of the master. */
+        const val MASTER = NativeEngine.MIXER_CHANNELS
     }
 }

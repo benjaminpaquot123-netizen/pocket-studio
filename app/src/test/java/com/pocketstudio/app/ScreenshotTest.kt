@@ -305,6 +305,11 @@ class ScreenshotTest {
             com.pocketstudio.app.remix.RemixUi(
                 true, com.pocketstudio.app.remix.SeparationState.Idle, listOf(set),
                 remix = remix, transportPlaying = true, projectBpm = 124.0,
+                overview = com.pocketstudio.app.rhythm.StemOverview(
+                    List(4) { st -> FloatArray(400) { i -> (if (st == 3 && i < 45) 0.02f else 0.3f + 0.5f * kotlin.math.abs(kotlin.math.sin(i * (0.11f + st * 0.05f)))) } },
+                    48_000L * 214,
+                ),
+                position = 48_000L * 80,
             ),
             com.pocketstudio.app.remix.RemixActions(),
         )
@@ -321,6 +326,59 @@ class ScreenshotTest {
             currentStep = -1,
             selected = 2,
             actions = com.pocketstudio.app.acid.AcidActions(),
+        )
+    }
+
+    @Test
+    @Config(qualifiers = "w400dp-h1300dp-xxhdpi")
+    fun mixerEffects() = shoot("mixer_effects") {
+        val inserts = listOf(
+            com.pocketstudio.model.Insert.of(com.pocketstudio.model.EffectType.COMPRESSOR),
+            com.pocketstudio.model.Insert.of(com.pocketstudio.model.EffectType.EQ).copy(params = listOf(0.75f, 0.45f, 0.6f, 0f)),
+            com.pocketstudio.model.Insert(), com.pocketstudio.model.Insert(),
+        )
+        val actions = com.pocketstudio.app.mixer.MixerActions()
+        androidx.compose.foundation.layout.Column(
+            androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f)),
+            verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(androidx.compose.ui.unit.Dp(10f)),
+        ) {
+            com.pocketstudio.ui.NeonCard {
+                com.pocketstudio.ui.SectionLabel("Batterie · effets")
+                com.pocketstudio.app.mixer.InsertRack(0, inserts, actions)
+                com.pocketstudio.app.mixer.SendSliders(0, listOf(0.35f, 0.1f), actions)
+            }
+            com.pocketstudio.app.mixer.BusesCard(com.pocketstudio.model.Buses.DEFAULTS, actions)
+        }
+    }
+
+    @Test
+    fun automation() = shoot("automation") {
+        val lane = com.pocketstudio.model.AutomationLane(com.pocketstudio.model.AutoTarget(com.pocketstudio.model.AutoTarget.VOLUME, 2))
+            .let { l -> (0 until 16).fold(l) { acc, s -> if (s % 2 == 0) acc.withPoint(s, 0.2f + 0.05f * s) else acc } }
+        val send = com.pocketstudio.model.AutomationLane(com.pocketstudio.model.AutoTarget(com.pocketstudio.model.AutoTarget.SEND, 0, 0))
+            .withPoint(0, 0f).withPoint(12, 0.9f)
+        androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
+            com.pocketstudio.app.mixer.AutomationCard(
+                com.pocketstudio.app.mixer.AutomationUi(listOf(lane, send), 16, 5, recording = true),
+                List(16) { com.pocketstudio.model.Channel() }, List(4) { com.pocketstudio.model.Insert() },
+                com.pocketstudio.app.mixer.AutomationActions(),
+            )
+        }
+    }
+
+    @Test
+    fun session() = shoot("session") {
+        val drums = com.pocketstudio.model.DrumPattern().toggle(0, 0).toggle(2, 4)
+        val a = com.pocketstudio.model.Scene("A", drums)
+        val b = com.pocketstudio.model.Scene("B", drums.copy(steps = 32))
+        com.pocketstudio.app.session.SessionScreen(
+            com.pocketstudio.app.session.SessionScreenUi(
+                scenes = listOf(a, b, com.pocketstudio.model.Scene("C")) + List(5) { null },
+                current = 0, pending = 1,
+                song = listOf(com.pocketstudio.model.SongPart(0, 4), com.pocketstudio.model.SongPart(1, 2), com.pocketstudio.model.SongPart(0, 2)),
+                songIndex = 0, playing = true, tempoBpm = 124.0,
+            ),
+            com.pocketstudio.app.session.SessionActions(),
         )
     }
 }

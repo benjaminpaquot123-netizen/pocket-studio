@@ -18,6 +18,8 @@ struct SeparationResult {
 // The stems written, in the model's order.
 constexpr const char* kStemNames[] = {"drums", "bass", "other", "vocals"};
 constexpr int kModelSampleRate = 44100;
+// Stems are written with their peak at or below this level (-0.5 dBFS).
+constexpr float kStemCeiling = 0.944f;
 
 // `interleaved` is stereo at 44.1 kHz. Writes outDir/<stem>.wav (32-bit float, stereo, 44.1 kHz).
 // `progress` gets 0..1 and returns false to cancel.

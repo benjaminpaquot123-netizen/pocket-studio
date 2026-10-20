@@ -55,6 +55,33 @@ enum class CommandType : uint8_t {
     InstallStems,      // stems: owned reference (nullptr = no song)
     SetStemParam,      // a: stem, b: StemPlayer::Param, value
     SetStemStart,      // a: song frame where playback starts on step 0
+    SetInsertType,     // a: channel * Mixer::kInserts + slot (channel kMaster = master), b: InsertSlot::Type
+    SetInsertParam,    // a: as above, b: parameter 0..3, value 0..1
+    SetSend,           // a: channel, b: bus (0 reverb, 1 delay), value 0..1
+    SetBusParam,       // a: bus, b: parameter 0..3, value 0..1
+    SetAutomationTarget,  // a: lane, b: Automation::pack(kind, channel, slot, param), or -1 = lane off
+    SetAutomationPoint,   // a: lane, b: step, value 0..1 (negative = no point on that step)
+    SetStaging,           // value 1: the next pattern commands (drums, acid, piano roll) fill the
+                          // waiting scene instead of the playing one; 0: back to the playing one
+    ArmSceneSwap,         // a > 0: the waiting scene replaces the playing one after `a` steps of the
+                          // current scene; a = 0: at the next bar; a < 0: cancel
+    SetPerformance,       // a: PerformanceFx::Param, value 0..1 (live XY pad and hold buttons)
+};
+
+// Step automation of mixer settings, played on the audio thread at each sequencer step.
+struct Automation {
+    enum Kind { Volume = 0, Pan = 1, Send = 2, InsertParam = 3, BusParam = 4 };
+    static constexpr int kLanes = 8;
+    static constexpr int kSteps = 64;
+    static int32_t pack(int kind, int ch, int slot, int param) { return (kind << 16) | (ch << 12) | (slot << 8) | param; }
+    struct Lane {
+        int32_t target = -1;
+        std::array<float, kSteps> values{};
+    };
+    Lane lanes[kLanes];
+    Automation() {
+        for (auto& l : lanes) l.values.fill(-1.0f);
+    }
 };
 
 struct Command {
@@ -120,6 +147,8 @@ public:
     int currentStep() const { return currentStep_.load(std::memory_order_relaxed); }
     // Steps since play (no wrap), -1 when stopped: the piano roll has its own loop length.
     int absoluteStep() const { return absoluteStep_.load(std::memory_order_relaxed); }
+    // How many times a waiting scene took over (the UI follows the playing scene with it).
+    uint32_t sceneSwaps() const { return sceneSwaps_.load(std::memory_order_relaxed); }
     bool transportRunning() const { return sequencer_.running(); }
     // Increments every time a lane is triggered (pad lights, tests).
     uint32_t laneTriggerCount(int lane) const { return laneTriggers_[lane].load(std::memory_order_relaxed); }
@@ -162,6 +191,26 @@ private:
     NoteRouter router_{synth_, instrument_};
     Sampler sampler_;
     StemPlayer stems_;
+    Automation automation_;
+    void applyAutomation(int patternStep);
+
+    // The waiting scene (filled while staging_), copied over the playing patterns at the swap.
+    struct StagedScene {
+        float drums[kLanes][kMaxSteps] = {};
+        int drumSteps = 16;
+        std::array<AcidStep, AcidTrack::kMaxSteps> acid{};
+        int acidLength = 16;
+        std::array<int32_t, NoteTrack::kMaxNotes> notePacked{};
+        std::array<float, NoteTrack::kMaxNotes> noteVelocity{};
+        int noteCount = 0;
+        int noteSteps = 16;
+    };
+    StagedScene staged_;
+    bool staging_ = false;
+    int swapAt_ = -1;      // local step of the swap; 0 = next bar; -1 = none
+    int sceneStart_ = 0;   // absolute step where the playing scene began
+    std::atomic<uint32_t> sceneSwaps_{0};
+    void swapScene(int step);
     Mixer mixer_;
     std::array<float, kMaxBlock> stemsL_{};
     std::array<float, kMaxBlock> stemsR_{};

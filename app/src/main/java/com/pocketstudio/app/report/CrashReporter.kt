@@ -25,6 +25,7 @@ object CrashReporter {
     fun install(context: Context) {
         appContext = context.applicationContext
         crashFile = File(context.filesDir, FILE_NAME)
+        AppLog.persistTo(context.filesDir)
         val previous = Thread.getDefaultUncaughtExceptionHandler()
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
             runCatching { crashFile.writeText(format(thread, throwable)) }
@@ -62,16 +63,48 @@ object CrashReporter {
             } ?: return null
         val kind = if (exit.reason == ApplicationExitInfo.REASON_ANR) "Blocage (ANR)" else "Plantage natif (moteur audio)"
         val date = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.FRANCE).format(Date(exit.timestamp))
-        // ANR traces are text; native traces are binary tombstones, so only the summary is kept.
+        // ANR traces are text; native ones are binary tombstones (protobuf): keep their readable
+        // strings (signal, abort message, libraries and functions of the crashing stack).
         val trace = if (exit.reason == ApplicationExitInfo.REASON_ANR) {
             exit.traceInputStream?.bufferedReader()?.useLines { it.take(120).joinToString("\n") }.orEmpty()
-        } else ""
-        return "Version ${AppInfo.versionLabel} · $date\n$kind : ${exit.description ?: "sans description"}\n${LogTail.redact(trace)}"
+        } else {
+            runCatching { exit.traceInputStream?.use { tombstoneStrings(it.readBytes()) } }.getOrNull().orEmpty()
+        }
+        val memory = "Mémoire : pss ${exit.pss / 1024} Mo, rss ${exit.rss / 1024} Mo"
+        val log = AppLog.previous(appContext.filesDir)
+        return "Version ${AppInfo.versionLabel} · $date\n$kind : ${exit.description ?: "sans description"}\n$memory\n" +
+            "--- Trace\n${LogTail.redact(trace)}\n--- Journal de la session\n${LogTail.redact(log)}"
     }
 
     private fun format(thread: Thread, throwable: Throwable): String {
         val trace = StringWriter().also { throwable.printStackTrace(PrintWriter(it)) }.toString()
         val date = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.FRANCE).format(Date())
         return "Version ${AppInfo.versionLabel} · $date · thread ${thread.name}\n${LogTail.redact(trace)}"
+    }
+
+    /**
+     * The printable strings of a tombstone, in order, without duplicates: enough to see the
+     * signal, the abort message and which library / function crashed. Capped in size.
+     */
+    internal fun tombstoneStrings(bytes: ByteArray, maxLines: Int = 80): String {
+        val out = LinkedHashSet<String>()
+        val run = StringBuilder()
+        fun flush() {
+            val s = run.toString().trim()
+            if (s.length >= 4 && (s.contains("lib") || s.contains("::") || s.contains("SIG") || s.contains("abort", ignoreCase = true) ||
+                    s.contains("Abort") || s.contains("pocketstudio") || s.contains("Exception") || s.contains("signal") ||
+                    s.contains("fault") || s.contains("_Z") || s.contains("onnx"))
+            ) {
+                out += s.take(200)
+            }
+            run.setLength(0)
+        }
+        for (b in bytes) {
+            val c = b.toInt() and 0xFF
+            if (c in 0x20..0x7E) run.append(c.toChar()) else flush()
+            if (out.size >= maxLines) break
+        }
+        flush()
+        return out.take(maxLines).joinToString("\n")
     }
 }

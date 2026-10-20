@@ -36,6 +36,18 @@ object NativeEngine {
     // 29: SetInstrument, 30: InstallStems (native only)
     private const val CMD_STEM_PARAM = 31
     private const val CMD_STEM_START = 32
+    private const val CMD_INSERT_TYPE = 33
+    private const val CMD_INSERT_PARAM = 34
+    private const val CMD_SEND = 35
+    private const val CMD_BUS_PARAM = 36
+    private const val CMD_AUTOMATION_TARGET = 37
+    private const val CMD_AUTOMATION_POINT = 38
+    private const val CMD_STAGING = 39
+    private const val CMD_ARM_SCENE_SWAP = 40
+    private const val CMD_PERFORMANCE = 41
+
+    /** Insert slots per channel (and on the master, whose channel index is [MIXER_CHANNELS]). */
+    const val INSERTS = 4
 
     /** Mixer channels: 0 drums, 1 acid bass, 2 synth, 3 remix stems. */
     const val MIXER_CHANNELS = 4
@@ -78,6 +90,24 @@ object NativeEngine {
     fun setChannelPan(ch: Int, pan: Float) = post(CMD_CHANNEL_PAN, pan, ch)
     fun setChannelMute(ch: Int, on: Boolean) = post(CMD_CHANNEL_MUTE, if (on) 1f else 0f, ch)
     fun setChannelSolo(ch: Int, on: Boolean) = post(CMD_CHANNEL_SOLO, if (on) 1f else 0f, ch)
+    /** [ch] 0..MIXER_CHANNELS (the last is the master); [type] in EffectType order. */
+    fun setInsertType(ch: Int, slot: Int, type: Int) = post(CMD_INSERT_TYPE, 0f, ch * INSERTS + slot, type)
+    fun setInsertParam(ch: Int, slot: Int, param: Int, value: Float) = post(CMD_INSERT_PARAM, value, ch * INSERTS + slot, param)
+    /** Post-fader send of [ch] to [bus] (0 reverb, 1 delay), 0..1. */
+    fun setSend(ch: Int, bus: Int, level: Float) = post(CMD_SEND, level, ch, bus)
+    fun setBusParam(bus: Int, param: Int, value: Float) = post(CMD_BUS_PARAM, value, bus, param)
+    /** Lane 0..7 follows [packedTarget] (AutoTarget.pack(), -1 = off); clears its points. */
+    fun setAutomationTarget(lane: Int, packedTarget: Int) = post(CMD_AUTOMATION_TARGET, 0f, lane, packedTarget)
+    /** [value] 0..1 on [step], or null for no point. */
+    fun setAutomationPoint(lane: Int, step: Int, value: Float?) = post(CMD_AUTOMATION_POINT, value ?: -1f, lane, step)
+    /** While on, pattern commands (drums, acid, piano roll) fill the waiting scene. */
+    fun setStaging(on: Boolean) = post(CMD_STAGING, if (on) 1f else 0f)
+    /** The waiting scene takes over after [steps] steps of the playing one (0 = next bar, -1 = cancel). */
+    fun armSceneSwap(steps: Int) = post(CMD_ARM_SCENE_SWAP, 0f, steps)
+    /** Live effects on the master: [param] 0 filter (0.5 = off), 1 resonance, 2 repeat on, 3 repeat division, 4 tape stop, 5 chop. */
+    fun setPerformance(param: Int, value: Float) = post(CMD_PERFORMANCE, value, param)
+    /** How many times a waiting scene took over since the engine started. */
+    external fun sceneSwaps(): Int
     /** Writes into [out] (size MIXER_CHANNELS + 2): channel peaks, master peak, then limiter gain. */
     external fun mixerMeters(out: FloatArray)
 
@@ -204,6 +234,7 @@ object NativeEngine {
     external fun stemsRelease(handle: Long)
     external fun stemsFrames(handle: Long): Long
     external fun stemsExtract(handle: Long, stem: Int, start: Long, count: Long): FloatArray
+    external fun stemsPeaks(handle: Long, stem: Int, buckets: Int): FloatArray
     private external fun nativeInstallStems(handle: Long): Boolean
     private external fun exportInstallStems(exportHandle: Long, handle: Long)
     private external fun exportInstallSample(exportHandle: Long, pad: Int, handle: Long)

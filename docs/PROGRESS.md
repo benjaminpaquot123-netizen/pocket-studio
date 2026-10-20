@@ -57,6 +57,16 @@
 
 - Jalon 3.4 : « Jouer avec le projet » charge les 4 stems dans le moteur (16 bits, 48 kHz), cale tempo et gamme, et les fait partir avec le Rythme au pas 0 (mesure de départ réglable) ; volume / muet / solo par stem, voie « Remix » au mixeur (et dans l'export) ; « → Pad » copie 1, 2 ou 4 mesures d'un stem sur le pad choisi. Tests Linux : départ à l'échantillon près, mute/solo, fondu à l'arrêt, chargement 44,1 → 48 kHz, aucune allocation dans le fil audio.
 
+- Phase 3 terminée et fusionnée (PR #7, 2026-10-19) : revue faite (REVIEW.md), plantage Android 16 du service corrigé (rapport n° 8), mini-clavier de l'acide.
+
+- Phase 4 (PR #13, en cours) :
+  - correctifs Remix (mémoire ONNX Runtime 5 → 2,6 Go ; règles R8 du rappel de progression ; contrôle dexdump en CI) ; formes d'onde des stems avec tête de lecture et départ au toucher ; stems sans écrêtage ; kits SF2 jouables au clavier ;
+  - 4.1 effets : 4 inserts par voie et sur la sortie (égaliseur, compresseur, saturation, chorus, filtre, pompe), envois réverbe (Freeverb) et écho calé au tempo, écran au Mixeur ;
+  - 4.2 sidechain (« Pompe » sur la grosse caisse ou chaque temps) et automation par pas (dessinée ou enregistrée), jouées par le moteur. Tests Linux pour chaque effet, la pompe, l'automation et zéro allocation ;
+  - 4.4 effets live sur la sortie : pad XY (filtre DJ + résonance, revient au neutre), répéteur 1/4–1/32 calé au tempo, hacheur sur les doubles-croches, stop bande ; dans l'onglet Morceau ; test Linux ;
+  - 4.3 scènes A–H (batterie + acide + piano roll), lancement à la mesure suivante, morceau (scènes × répétitions, en boucle) ; bascule au pas près dans le moteur (tampon d'attente), test Linux.
+
 ## Prochaine étape exacte
-1. Revue de fin de phase 3 par un sous-agent neuf (séparation, service, stems dans le moteur), corriger, CI verte, fusionner la PR #7, puis phase 4 (effets).
-2. Reste noté : lever la limite de 60 s par son ; import de packs .zip ; étirement des stems si le tempo du projet change.
+1. Revue de fin de phase 4 faite et corrigée (REVIEW.md). Dès que la CI est verte : fusionner la PR #13, puis phase 5 (Plaits, FM 4 opérateurs, presets, MIDI) sur la même branche repartie de main.
+2. Attendre les retours de Benjamin sur la 0.3.47 (formes d'onde, kits au clavier, grésillement).
+3. Reste noté : lever la limite de 60 s par son ; import de packs .zip ; étirement des stems si le tempo change.

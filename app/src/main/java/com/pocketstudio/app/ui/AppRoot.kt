@@ -29,6 +29,7 @@ import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.Equalizer
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.Layers
+import androidx.compose.material.icons.filled.QueueMusic
 import androidx.compose.material.icons.filled.Piano
 import androidx.compose.material.icons.filled.Tune
 import android.content.res.Configuration
@@ -86,6 +87,13 @@ import com.pocketstudio.app.studio.StudioScreen
 import com.pocketstudio.app.synth.SynthActions
 import com.pocketstudio.app.synth.SynthScreen
 import com.pocketstudio.app.remix.RemixActions
+import com.pocketstudio.app.session.SessionActions
+import com.pocketstudio.app.session.SessionScreen
+import com.pocketstudio.app.session.SessionScreenUi
+import com.pocketstudio.model.Scene
+import com.pocketstudio.model.allScenes
+import com.pocketstudio.app.mixer.AutomationActions
+import com.pocketstudio.app.mixer.AutomationUi
 import com.pocketstudio.app.remix.RemixScreen
 import com.pocketstudio.app.remix.RemixUi
 import com.pocketstudio.app.remix.RemixViewModel
@@ -100,6 +108,7 @@ enum class AppTab(val label: String, val icon: ImageVector) {
     Synthe("Synthé", Icons.Filled.Piano),
     Mixeur("Mixeur", Icons.Filled.Equalizer),
     Remix("Remix", Icons.Filled.Layers),
+    Morceau("Morceau", Icons.Filled.QueueMusic),
     Outils("Outils", Icons.Filled.Tune),
 }
 
@@ -200,7 +209,7 @@ fun AppRoot() {
                             selected = tab == t,
                             onClick = { tab = t },
                             icon = { Icon(t.icon, contentDescription = null) },
-                            label = { Text(t.label) },
+                            label = { Text(t.label, maxLines = 1, softWrap = false) },
                             modifier = Modifier.testTag("tab_${t.name}"),
                             colors = NavigationBarItemDefaults.colors(
                                 selectedIconColor = Neon.Cyan,
@@ -375,6 +384,12 @@ fun AppRoot() {
                         LaunchedEffect(Unit) {
                             lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollMeters() }
                         }
+                        val transport by rhythmVm.transport.collectAsStateWithLifecycle()
+                        val live by rhythmVm.live.collectAsStateWithLifecycle()
+                        val automationRecord by rhythmVm.automationRecord.collectAsStateWithLifecycle()
+                        LaunchedEffect(Unit) {
+                            lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollLive() }
+                        }
                         MixerScreen(
                             channels = project.mixer.channels,
                             meters = meters,
@@ -387,8 +402,49 @@ fun AppRoot() {
                                 export = rhythmVm::exportWav,
                                 cancelExport = rhythmVm::cancelExport,
                                 share = { export.file?.let { WavExporter.share(context, it) } },
+                                setInsertType = rhythmVm::setInsertType,
+                                setInsertParam = rhythmVm::setInsertParam,
+                                setSend = rhythmVm::setSend,
+                                setBusParam = rhythmVm::setBusParam,
+                            ),
+                            master = project.mixer.master,
+                            buses = project.mixer.buses,
+                            automation = AutomationUi(project.automation, project.drums.steps, if (transport.playing) live.currentStep else -1, automationRecord),
+                            automationActions = AutomationActions(
+                                add = rhythmVm::addAutomation,
+                                remove = rhythmVm::removeAutomation,
+                                clear = rhythmVm::clearAutomation,
+                                setPoint = rhythmVm::setAutomationPoint,
+                                toggleRecord = rhythmVm::toggleAutomationRecord,
                             ),
                             export = export,
+                        )
+                    }
+                    AppTab.Morceau -> {
+                        val project by rhythmVm.project.collectAsStateWithLifecycle()
+                        val transport by rhythmVm.transport.collectAsStateWithLifecycle()
+                        val sessionUi by rhythmVm.sessionUi.collectAsStateWithLifecycle()
+                        val all = project.allScenes
+                        SessionScreen(
+                            SessionScreenUi(
+                                scenes = List(Scene.MAX) { all.getOrNull(it) },
+                                current = project.scene,
+                                pending = sessionUi.pending,
+                                song = project.song,
+                                songIndex = sessionUi.songIndex,
+                                playing = transport.playing,
+                                tempoBpm = project.tempoBpm,
+                            ),
+                            SessionActions(
+                                select = rhythmVm::selectScene,
+                                duplicate = rhythmVm::duplicateScene,
+                                addPart = rhythmVm::addSongPart,
+                                removePart = rhythmVm::removeSongPart,
+                                setRepeats = rhythmVm::setSongRepeats,
+                                toggleSong = rhythmVm::toggleSong,
+                                togglePlay = rhythmVm::togglePlay,
+                                performance = { param, v -> if (NativeEngine.isAvailable) NativeEngine.setPerformance(param, v) },
+                            ),
                         )
                     }
                     AppTab.Remix -> {
@@ -397,6 +453,11 @@ fun AppRoot() {
                         val modelInstalled by remixVm.modelInstalled.collectAsStateWithLifecycle()
                         val playing by remixVm.playing.collectAsStateWithLifecycle()
                         val remixLoading by rhythmVm.remixLoading.collectAsStateWithLifecycle()
+                        val overview by rhythmVm.stemOverview.collectAsStateWithLifecycle()
+                        val stemPosition by rhythmVm.stemPosition.collectAsStateWithLifecycle()
+                        LaunchedEffect(Unit) {
+                            lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollStemPosition() }
+                        }
                         val project by rhythmVm.project.collectAsStateWithLifecycle()
                         val transport by rhythmVm.transport.collectAsStateWithLifecycle()
                         val sampleTask by rhythmVm.sampleTask.collectAsStateWithLifecycle()
@@ -412,6 +473,8 @@ fun AppRoot() {
                                     is SampleTask.Failed -> t.message
                                     else -> null
                                 },
+                                overview = overview,
+                                position = stemPosition,
                             ),
                             RemixActions(
                                 downloadModel = remixVm::downloadModel,
@@ -435,6 +498,7 @@ fun AppRoot() {
                                 toggleStemMute = rhythmVm::toggleStemMute,
                                 toggleStemSolo = rhythmVm::toggleStemSolo,
                                 stemToPad = rhythmVm::stemToPad,
+                                setStartAt = rhythmVm::setRemixStartAt,
                             ),
                         )
                     }

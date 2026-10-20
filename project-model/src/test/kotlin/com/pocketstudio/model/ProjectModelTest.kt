@@ -457,4 +457,76 @@ class AcidPagesTest {
         assertEquals(1f, bad.stems[0].volume, 0f)
         assertEquals(null, ProjectJson.decode("""{"name":"Vieux"}""").remix.setId)
     }
+
+    @Test
+    fun effectsSurviveSavingAndBadValues() {
+        val ch = Channel(inserts = listOf(Insert.of(EffectType.COMPRESSOR), Insert(), Insert.of(EffectType.EQ).copy(params = listOf(1f, 0.5f, 0.5f, 0f)), Insert()), sends = listOf(0.3f, 0f))
+        val p = Project(mixer = Mixer(channels = List(Mixer.CHANNELS) { if (it == 0) ch else Channel() }, master = List(4) { Insert.of(EffectType.SATURATION) }))
+        assertEquals(p, ProjectJson.decode(ProjectJson.encode(p)))
+        val bad = Mixer(
+            channels = listOf(Channel(inserts = listOf(Insert(type = 42, params = listOf(Float.NaN))), sends = listOf(9f))),
+            master = emptyList(),
+            buses = listOf(listOf(2f)),
+        ).sanitized()
+        assertEquals(EffectType.NONE, bad.channels[0].inserts[0].effect)
+        assertEquals(4, bad.channels[0].inserts.size)
+        assertEquals(4, bad.channels[0].inserts[0].params.size)
+        assertEquals(1f, bad.channels[0].sends[0], 0f)
+        assertEquals(4, bad.master.size)
+        assertEquals(listOf(1f, 0.5f, 1f, 0.1f), bad.buses[0])
+        assertEquals(Buses.DEFAULTS[1], bad.buses[1])
+        // Older files without effects load with empty slots.
+        val old = ProjectJson.decode("""{"mixer":{"channels":[{"volume":0.5}]}}""").mixer
+        assertEquals(EffectType.NONE, old.channels[0].inserts[3].effect)
+        assertEquals(Buses.DEFAULTS, old.buses)
+        assertEquals("+12.0 dB".replace('.', ','), EffectType.EQ.params[0].format(1f).replace('.', ','))
+    }
+
+    @Test
+    fun automationLanesAreKeptTidy() {
+        val vol = AutoTarget(AutoTarget.VOLUME, ch = 2)
+        val lane = AutomationLane(vol).withPoint(4, 0f).withPoint(8, 0.8f).withPoint(99, 1f)
+        assertEquals(0f, lane.values[4])
+        assertEquals(null, lane.values[5])
+        assertEquals((0 shl 16) or (2 shl 12), vol.pack())
+        val p = Project(automation = listOf(lane))
+        assertEquals(p, ProjectJson.decode(ProjectJson.encode(p)))
+        val messy = Project(
+            automation = List(12) { AutomationLane(AutoTarget(AutoTarget.SEND, ch = it % 4, slot = it / 4), listOf(Float.NaN, 3f)) } +
+                AutomationLane(AutoTarget(kind = 9)),
+        ).sanitized().automation
+        assertEquals(AutomationLane.MAX_LANES, messy.size)  // 12 distinct targets, capped at 8
+        assertEquals(messy.size, messy.map { it.target }.toSet().size)  // no duplicate targets
+        assertEquals(null, messy[0].values[0])
+        assertEquals(1f, messy[0].values[1])
+        assertEquals(AutomationLane.STEPS, messy[0].values.size)
+    }
+
+    @Test
+    fun scenesKeepTheirOwnPatterns() {
+        val a = Project(drums = DrumPattern().toggle(0, 0)).sanitized()
+        assertEquals(0, a.scenes.size)  // one scene: nothing extra stored
+        assertEquals(1, a.allScenes.size)
+        // Copy A to B, switch to B and change it: A keeps its kick only.
+        val b = a.copySceneTo(1).switchScene(1).let { it.copy(drums = it.drums.toggle(2, 4)) }.sanitized()
+        assertEquals(1, b.scene)
+        assertEquals(2, b.scenes.size)
+        assertEquals(null, b.scenes[0].drums.lanes[2].hits[4])
+        assertTrue(b.scenes[1].drums.lanes[2].hits[4] != null)
+        val backToA = b.switchScene(0)
+        assertEquals(null, backToA.drums.lanes[2].hits[4])
+        assertTrue(backToA.drums.lanes[0].hits[0] != null)
+        // The 303's sound is shared; switching to a new empty scene keeps it and clears the notes.
+        val loud = backToA.copy(acid = backToA.acid.copy(sound = backToA.acid.sound.copy(cutoff = 0.9f)))
+        val c = loud.switchScene(2)
+        assertEquals(0.9f, c.acid.sound.cutoff, 0f)
+        assertTrue(c.currentSceneContent().isEmpty)
+        assertEquals(3, c.scenes.size)
+        // Steps: the longest part, in whole bars.
+        assertEquals(32, Scene(drums = DrumPattern(steps = 16), acid = AcidPattern(length = 20)).steps)
+        // Song parts pointing at missing scenes are dropped; repeats are clamped.
+        val song = c.copy(song = listOf(SongPart(0, 0), SongPart(7, 2), SongPart(1, 99))).sanitized().song
+        assertEquals(listOf(SongPart(0, 1), SongPart(1, SongPart.MAX_REPEATS)), song)
+        assertEquals(c.sanitized(), ProjectJson.decode(ProjectJson.encode(c.sanitized())))
+    }
 }

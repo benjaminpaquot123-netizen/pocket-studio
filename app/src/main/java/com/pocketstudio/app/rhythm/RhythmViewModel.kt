@@ -546,7 +546,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** False when another sound is still being placed or recorded (nothing done). */
     fun placeOnPad(pcm: Pcm, name: String): Boolean {
         if (_sampleTask.value is SampleTask.Busy || _sampleTask.value is SampleTask.Recording) return false
-        sampleJob("Pose du son sur le pad ${_transport.value.selectedPad + 1}…") { padSamples.add(pcm, name) }
+        sampleJob("Pose du son sur le pad ${_transport.value.selectedPad + 1}…") { padSamples.add(pcm.withoutTail(), name) }
         return true
     }
 
@@ -1859,7 +1859,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             throw UserMessage("Ce fichier n'a pas pu être lu (${e.message ?: "format inconnu"}).")
         }
         AppLog.add("Import « $name » : ${pcm.channels} canal(aux), ${pcm.sampleRate} Hz, ${"%.1f".format(pcm.seconds)} s")
-        padSamples.add(pcm, name)
+        padSamples.add(pcm.withoutTail(), name)
     }
 
     /**
@@ -1985,7 +1985,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             recorder = null
             if (pcm.frames < 480 || PadSamples.isSilent(pcm)) throw UserMessage("Rien n'a été entendu : rapproche-toi du micro et réessaie.")
             AppLog.add("Enregistrement micro : ${"%.1f".format(pcm.seconds)} s")
-            padSamples.add(pcm, "Micro ${java.time.LocalTime.now().withNano(0)}")
+            padSamples.add(pcm.withoutTail(), "Micro ${java.time.LocalTime.now().withNano(0)}")
         }
     }
 

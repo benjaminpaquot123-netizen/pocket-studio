@@ -36,6 +36,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material.icons.automirrored.filled.Redo
 import androidx.compose.material.icons.automirrored.filled.Undo
 import androidx.compose.material.icons.filled.Add
@@ -494,9 +495,14 @@ internal fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: 
             Box(Modifier.weight(1f))
             Text(
                 sample?.name ?: "${DrumKitInfo.names[lane]} (synthétisé)",
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodyMedium, maxLines = 1,
                 color = if (sample != null) Neon.TextPrimary else Neon.TextSecondary,
             )
+        }
+        // The drums' effect box (filter, saturation, reverb, echo…), right where the sound is chosen.
+        OutlinedButton(onClick = actions.openEffects, modifier = Modifier.fillMaxWidth().testTag("pad_effects")) {
+            Icon(Icons.Filled.Tune, contentDescription = null)
+            Text("  Effets de la batterie")
         }
         val pan = project.drums.lanes[lane].pan
         LabeledSlider("Pan du pad", panLabel(pan), pan, -1f..1f, steps = 19) { actions.setPadPan((it * 10).roundToInt() / 10f) }

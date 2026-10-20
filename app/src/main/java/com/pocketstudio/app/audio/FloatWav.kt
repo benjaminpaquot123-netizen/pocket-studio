@@ -10,6 +10,22 @@ import java.nio.ByteOrder
 class Pcm(val data: FloatArray, val channels: Int, val sampleRate: Int) {
     val frames: Int get() = data.size / channels
     val seconds: Double get() = frames.toDouble() / sampleRate
+
+    /**
+     * Without the silence after the sound (under -60 dB of its peak, 10 ms kept), for one-shots
+     * of at most [maxSeconds]: the end of a pad then cuts what is heard from its first move.
+     */
+    fun withoutTail(maxSeconds: Double = 3.0): Pcm {
+        if (seconds > maxSeconds || frames == 0) return this
+        var peak = 0f
+        for (x in data) peak = maxOf(peak, kotlin.math.abs(x))
+        if (peak <= 0f) return this
+        val floor = peak * 0.001f
+        var last = frames - 1
+        while (last > 0 && (0 until channels).all { c -> kotlin.math.abs(data[last * channels + c]) < floor }) last--
+        val keep = (last + 1 + sampleRate / 100).coerceAtMost(frames)
+        return if (keep >= frames) this else Pcm(data.copyOf(keep * channels), channels, sampleRate)
+    }
 }
 
 /**

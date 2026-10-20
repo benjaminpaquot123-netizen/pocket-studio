@@ -15,7 +15,8 @@ import com.pocketstudio.ui.MonoStyle
 import com.pocketstudio.ui.Neon
 import com.pocketstudio.ui.SoundTile
 import com.pocketstudio.ui.TileGrid
-import com.pocketstudio.ui.TileSection
+import com.pocketstudio.ui.FoldSection
+import androidx.compose.ui.unit.dp
 import kotlin.math.roundToInt
 
 /** Plaits: pick one of 24 models by family, then shape it with the module's knobs. */
@@ -28,14 +29,15 @@ internal fun PlaitsPanel(ui: InstrumentUi) {
     )
     PlaitsPatch.FAMILIES.forEach { (family, models) ->
         val look = SoundLooks.of(family)
-        TileSection(family, look.color)
-        TileGrid(models.size) { k, m ->
-            val model = models[k]
-            SoundTile(
-                title = PlaitsPatch.MODELS[model], icon = look.icon, accent = look.color, selected = p.model == model,
-                onClick = { ui.setPlaitsModel(model) }, subtitle = SoundLooks.PLAITS_HINTS.getOrNull(model),
-                modifier = m.testTag("plaits_model_$model"),
-            )
+        FoldSection(family, color = look.color, foldKey = "Plaits : $family", spacing = 8.dp, subtle = true) {
+            TileGrid(models.size) { k, m ->
+                val model = models[k]
+                SoundTile(
+                    title = PlaitsPatch.MODELS[model], icon = look.icon, accent = look.color, selected = p.model == model,
+                    onClick = { ui.setPlaitsModel(model) }, subtitle = SoundLooks.PLAITS_HINTS.getOrNull(model),
+                    modifier = m.testTag("plaits_model_$model"),
+                )
+            }
         }
     }
     val values = p.engineValues()

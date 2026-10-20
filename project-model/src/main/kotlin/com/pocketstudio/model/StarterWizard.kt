@@ -230,8 +230,23 @@ object StarterWizard {
 
     val FAMILIES = listOf("Hip-hop", "House", "Techno", "Bass music", "Autres")
 
-    /** The styles, from the researched recipes (see StyleRecipes.kt and scripts/packs/recipes/). */
-    val STYLES: List<Style> get() = STYLE_RECIPES
+    /**
+     * The styles, most known first (a beginner finds techno, house or trap at once, riddim and
+     * jersey club further down), from the researched recipes (StyleRecipes.kt, scripts/packs/recipes/).
+     */
+    val STYLES: List<Style> by lazy { STYLE_RECIPES.sortedBy { s -> POPULAR.indexOf(s.id).let { if (it < 0) POPULAR.size else it } } }
+
+    /** How well known each style is, from the most (charts, festivals, streaming) to the least. */
+    val POPULAR = listOf(
+        "techno", "house", "trap", "pop", "dnb", "dubstep", "reggaeton", "afrobeats", "lofi", "disco",
+        "trance", "deep_house", "tech_house", "boom_bap", "drill", "synthwave", "acid_house", "hard_techno",
+        "phonk", "amapiano", "uk_garage", "minimal", "afro_house", "jungle", "retro_techno", "acid_techno",
+        "gabber", "liquid_dnb", "detroit", "grime", "industrial_techno", "neurofunk", "jersey_club",
+        "speed_garage", "riddim",
+    )
+
+    /** The first styles of [STYLES], shown apart as the best known. */
+    const val BEST_KNOWN = 10
 
     fun style(id: String): Style? = STYLES.firstOrNull { it.id == id }
 

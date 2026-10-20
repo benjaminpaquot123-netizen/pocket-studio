@@ -38,6 +38,7 @@ import com.pocketstudio.ui.TileGrid
 import com.pocketstudio.ui.SoundTile
 import com.pocketstudio.ui.ChipRow
 import com.pocketstudio.ui.FamilyChip
+import com.pocketstudio.ui.FoldSection
 import com.pocketstudio.app.sounds.SoundLooks
 import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.Inventory2
@@ -56,7 +57,6 @@ import com.pocketstudio.app.rhythm.DrumKitInfo
 import com.pocketstudio.model.PackEntry
 import com.pocketstudio.model.StarterWizard
 import com.pocketstudio.model.StarterWizard.Role
-import com.pocketstudio.ui.LocalFolding
 import com.pocketstudio.ui.Neon
 import com.pocketstudio.ui.pillColors
 import com.pocketstudio.ui.NeonCard
@@ -87,8 +87,8 @@ class WizardActions(
  */
 @Composable
 fun WizardScreen(ui: WizardUi, packs: PacksUi, playing: SoundRef?, actions: WizardActions, preparing: SoundRef? = null) {
-    // One step at a time: nothing to fold here.
-    CompositionLocalProvider(LocalFolding provides false, LocalListening provides Listening(playing, preparing)) {
+    // Cards fold here as everywhere (a long step's explanation, the sound choice), remembered by title.
+    CompositionLocalProvider(LocalListening provides Listening(playing, preparing)) {
         WizardBody(ui, packs, playing, actions)
     }
 }
@@ -172,24 +172,28 @@ private fun StyleStep(chosen: String?, packs: PacksUi, actions: WizardActions) {
             "lui vont) et je place un rythme de départ dans la grille. Tu pourras tout changer après.",
         style = MaterialTheme.typography.bodyMedium,
     )
-    StarterWizard.FAMILIES.forEach { family ->
-        val styles = StarterWizard.STYLES.filter { it.family == family }
-        if (styles.isEmpty()) return@forEach
-        SectionLabel(family)
-        styles.forEach { s ->
-            val installed = packs.installed.any { it.id == s.id }
-            NeonCard(modifier = Modifier.clickable { actions.chooseStyle(s.id) }.testTag("wizard_style_${s.id}")) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(s.name, style = MaterialTheme.typography.titleMedium, color = if (s.id == chosen) Neon.Cyan else Neon.TextPrimary,
-                        modifier = Modifier.weight(1f))
-                    Text("${s.bpm.roundToInt()} BPM", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+    // The best known first, then the others (still the better known first).
+    val sections = listOf(
+        "Les plus connus" to StarterWizard.STYLES.take(StarterWizard.BEST_KNOWN),
+        "Les autres styles" to StarterWizard.STYLES.drop(StarterWizard.BEST_KNOWN),
+    )
+    sections.forEach { (title, styles) ->
+        FoldSection("$title · ${styles.size}", foldKey = "Styles : $title") {
+            styles.forEach { s ->
+                val installed = packs.installed.any { it.id == s.id }
+                NeonCard(modifier = Modifier.clickable { actions.chooseStyle(s.id) }.testTag("wizard_style_${s.id}")) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(s.name, style = MaterialTheme.typography.titleMedium, color = if (s.id == chosen) Neon.Cyan else Neon.TextPrimary,
+                            modifier = Modifier.weight(1f))
+                        Text("${s.family} · ${s.bpm.roundToInt()} BPM", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                    }
+                    Text(s.description, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                    if (s.references.isNotEmpty()) {
+                        Text("Pour l'idée : " + s.references.take(3).joinToString(" · "), style = MaterialTheme.typography.labelMedium,
+                            color = Neon.TextSecondary.copy(alpha = 0.85f), fontStyle = FontStyle.Italic)
+                    }
+                    if (installed) Text("Pack de sons téléchargé", style = MaterialTheme.typography.labelSmall, color = Neon.Acid)
                 }
-                Text(s.description, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
-                if (s.references.isNotEmpty()) {
-                    Text("Pour l'idée : " + s.references.take(3).joinToString(" · "), style = MaterialTheme.typography.labelMedium,
-                        color = Neon.TextSecondary.copy(alpha = 0.85f), fontStyle = FontStyle.Italic)
-                }
-                if (installed) Text("Pack de sons téléchargé", style = MaterialTheme.typography.labelSmall, color = Neon.Acid)
             }
         }
     }
@@ -352,7 +356,7 @@ private fun PatternPreview(pattern: String, color: androidx.compose.ui.graphics.
 @Composable
 private fun SummaryStep(ui: WizardUi, style: StarterWizard.Style) {
     NeonCard(modifier = Modifier.testTag("wizard_summary")) {
-        SectionLabel("Ton morceau ${style.name}")
+        SectionLabel("Ton morceau ${style.name}", foldKey = "Ton morceau")
         Text("Tempo ${style.bpm.roundToInt()} BPM${if (style.swing > 0) ", avec du swing" else ""}.", style = MaterialTheme.typography.bodyMedium)
         style.lines.forEach { line ->
             val row = ui.rows[line.role]

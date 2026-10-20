@@ -29,6 +29,7 @@ void Synth::prepare(int sampleRate) {
         v.osc2.Init(sr);
         v.sub.Init(sr);
         v.sub.SetWaveform(daisysp::Oscillator::WAVE_POLYBLEP_SQUARE);
+        for (auto& u : v.unison) u.Init(sr);
         v.ladder.Init(sr);
         v.ladder.SetPassbandGain(0.5f);  // keeps the level up when resonance rises
         v.ladder.SetInputDrive(1.5f);
@@ -50,6 +51,7 @@ void Synth::prepare(int sampleRate) {
             0.0f, 0.3f, 0.3f, 0.3f,
             0.05f, 0.3f, 0.8f, 0.35f,
             0.5f, 0.0f, 0.3f, 0.0f, 0.6f,
+            0.0f, 0.3f,
         };
         for (int i = 0; i < ParamCount; ++i) params_[static_cast<size_t>(i)] = defaults[i];
     }
@@ -69,6 +71,7 @@ void Synth::setParam(Param p, float value) {
 
 void Synth::updateVoiceSettings(Voice& v) {
     v.osc1.SetWaveform(waveFor(param(Osc1Wave)));
+    for (auto& u : v.unison) u.SetWaveform(waveFor(param(Osc1Wave)));
     v.osc2.SetWaveform(waveFor(param(Osc2Wave)));
     v.ampEnv.SetAttackTime(envTime(param(AmpAttack)));
     v.ampEnv.SetDecayTime(envTime(param(AmpDecay)));
@@ -137,6 +140,8 @@ void Synth::applyEvent(const Event& e) {
     target->gate = true;
     target->age = ++clock_;
     target->baseHz = midiToHz(e.note);
+    // Unison copies start at spread phases: a wide sound from the first cycle, never one loud click.
+    for (size_t k = 0; k < target->unison.size(); ++k) target->unison[k].Reset(0.137f * static_cast<float>(k + 1));
     target->ampEnv.Retrigger(false);
     target->filterEnv.Retrigger(false);
 }
@@ -163,6 +168,16 @@ void Synth::render(float* mono, int numFrames) {
     const float sweepOctaves = param(Lfo2ToCutoff) * 3.0f;
     const float level = param(Level) * 1.4f;  // one note around -10 dBFS; chords rely on the master soft clip
     const float nyquistGuard = 0.45f * static_cast<float>(sampleRate_);
+    // Unison: oscillator 1 and up to six copies spread evenly on both sides of it.
+    const int copies = std::clamp(static_cast<int>(std::lround(param(Unison) * 6.0f)), 0, 6);
+    const float spreadCents = param(UnisonDetune) * 50.0f;
+    std::array<float, 6> ratios{};
+    for (int k = 0; k < copies; ++k) {
+        const float pos = static_cast<float>(k / 2 + 1) / static_cast<float>((copies + 1) / 2);
+        ratios[static_cast<size_t>(k)] = std::pow(2.0f, (k % 2 == 0 ? -pos : pos) * spreadCents / 1200.0f);
+    }
+    // About the same loudness whatever the number of copies (they add up like noise, not in phase).
+    const float stackGain = 1.0f / std::sqrt(1.0f + static_cast<float>(copies));
 
     int nextEvent = 0;
     // Events are kept sorted by offset (queue()).
@@ -182,14 +197,19 @@ void Synth::render(float* mono, int numFrames) {
             if (controlTick) {
                 const float hz = v.baseHz * bendRatio * std::pow(2.0f, vibratoSemis * lfo1 / 12.0f);
                 v.osc1.SetFreq(hz);
+                for (int k = 0; k < copies; ++k) v.unison[static_cast<size_t>(k)].SetFreq(hz * ratios[static_cast<size_t>(k)]);
                 v.osc2.SetFreq(hz * detuneRatio * octaveRatio);
                 v.sub.SetFreq(hz * 0.5f);
                 const float fc = std::min(nyquistGuard, cutoffHz * std::pow(2.0f, envOctaves * fenv + sweepOctaves * lfo2));
                 v.ladder.SetFreq(fc);
                 v.svf.SetFreq(fc);
             }
-            const float source = (1.0f - mix) * v.osc1.Process() + mix * v.osc2.Process() +
-                                 subLevel * v.sub.Process() + n;
+            float osc1 = v.osc1.Process();
+            if (copies > 0) {
+                for (int k = 0; k < copies; ++k) osc1 += v.unison[static_cast<size_t>(k)].Process();
+                osc1 *= stackGain;
+            }
+            const float source = (1.0f - mix) * osc1 + mix * v.osc2.Process() + subLevel * v.sub.Process() + n;
             float filtered;
             if (filterType == 0) {
                 filtered = v.ladder.Process(source);

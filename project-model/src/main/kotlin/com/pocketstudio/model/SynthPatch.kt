@@ -23,7 +23,9 @@ data class SynthPatch(val values: List<Float> = DEFAULTS) {
         const val F_ATTACK = 11; const val F_DECAY = 12; const val F_SUSTAIN = 13; const val F_RELEASE = 14
         const val A_ATTACK = 15; const val A_DECAY = 16; const val A_SUSTAIN = 17; const val A_RELEASE = 18
         const val LFO1_RATE = 19; const val VIBRATO = 20; const val LFO2_RATE = 21; const val SWEEP = 22; const val LEVEL = 23
-        const val PARAM_COUNT = 24
+        /** Copies of oscillator 1 (0 = none .. 1 = six, a supersaw) and how far apart they are tuned. */
+        const val UNISON = 24; const val UNISON_DETUNE = 25
+        const val PARAM_COUNT = 26
 
         /** Same values as Synth::prepare() in the engine. */
         val DEFAULTS: List<Float> = listOf(
@@ -32,6 +34,7 @@ data class SynthPatch(val values: List<Float> = DEFAULTS) {
             0f, 0.3f, 0.3f, 0.3f,
             0.05f, 0.3f, 0.8f, 0.35f,
             0.5f, 0f, 0.3f, 0f, 0.6f,
+            0f, 0.3f,
         )
 
         /** Ready-made sounds: name -> patch. Waves: 0 = saw, 0.5 = square, 1 = triangle. */

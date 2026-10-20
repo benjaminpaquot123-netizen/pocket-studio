@@ -10,6 +10,7 @@
 #include <filesystem>
 #include <fstream>
 #include <functional>
+#include <memory>
 #include <random>
 #include <string>
 #include <tuple>
@@ -851,6 +852,68 @@ void testSynthVoiceStealingAndCpu() {
     CHECK(peak < 4.0f);  // a loud 8-note cluster; the engine's master soft clip tames it
 #if !defined(__SANITIZE_ADDRESS__)
     CHECK(load < 0.15);
+#endif
+}
+
+void testSynthUnison() {
+    auto rms = [](const std::vector<float>& x, size_t from) {
+        double e = 0.0;
+        for (size_t i = from; i < x.size(); ++i) e += double(x[i]) * x[i];
+        return std::sqrt(e / double(x.size() - from));
+    };
+    auto make = [](float unison, float detune) {
+        auto synth = std::make_unique<ps::Synth>();
+        synth->prepare(kRate);
+        openFilter(*synth);
+        synth->setParam(ps::Synth::OscMix, 0.0f);
+        synth->setParam(ps::Synth::Unison, unison);
+        synth->setParam(ps::Synth::UnisonDetune, detune);
+        return synth;
+    };
+    // Off, the sound is exactly as before (the spread alone changes nothing).
+    auto plain = make(0.0f, 0.0f);
+    auto spreadOnly = make(0.0f, 0.8f);
+    plain->noteOn(57, 1.0f);
+    spreadOnly->noteOn(57, 1.0f);
+    const auto a = renderSynth(*plain, kRate / 2);
+    const auto b = renderSynth(*spreadOnly, kRate / 2);
+    CHECK(a == b);
+    // Seven saws: about as loud, but a different (wider) sound.
+    auto wide = make(1.0f, 0.5f);
+    wide->noteOn(57, 1.0f);
+    const auto c = renderSynth(*wide, kRate / 2);
+    const double ratio = rms(c, kRate / 10) / rms(a, kRate / 10);
+    std::printf("  unison level: %.2f of one oscillator\n", ratio);
+    CHECK(ratio > 0.5 && ratio < 1.6);
+    CHECK(a != c);
+    // Without spread the copies share the pitch: the sound repeats every A4 period (480/4.4 frames).
+    auto same = make(1.0f, 0.0f);
+    same->noteOn(69, 1.0f);
+    const auto t = renderSynth(*same, kRate);
+    double xy = 0.0, xx = 0.0, yy = 0.0;
+    for (size_t i = kRate / 2; i + 109 < t.size(); ++i) {
+        xy += double(t[i]) * t[i + 109];
+        xx += double(t[i]) * t[i];
+        yy += double(t[i + 109]) * t[i + 109];
+    }
+    const double periodic = xy / std::sqrt(xx * yy);
+    std::printf("  unison without spread repeats at A4: %.3f\n", periodic);
+    CHECK(periodic > 0.9);
+    // Eight voices of seven saws stay affordable (best of three passes).
+    double best = 1e9;
+    for (int pass = 0; pass < 3; ++pass) {
+        auto full = make(1.0f, 0.6f);
+        for (int n = 0; n < 8; ++n) full->noteOn(48 + n * 3, 1.0f);
+        const auto start = std::chrono::steady_clock::now();
+        const auto out = renderSynth(*full, kRate);
+        best = std::min(best, std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count());
+        bool finite = true;
+        for (float v : out) finite &= std::isfinite(v);
+        CHECK(finite);
+    }
+    std::printf("  unison 8 voices x 7 saws: %.1f %% of real time on this machine\n", best * 100.0);
+#if !defined(__SANITIZE_ADDRESS__)
+    CHECK(best < 0.25);
 #endif
 }
 
@@ -3189,6 +3252,7 @@ int main(int argc, char** argv) {
         {"synth_on_time_and_release", testSynthNoteStartsOnTimeAndReleases},
         {"synth_voices_and_cpu", testSynthVoiceStealingAndCpu},
         {"synth_through_engine", testSynthThroughEngine},
+        {"synth_unison", testSynthUnison},
         {"mixer_pan_mute_solo", testMixerPanMuteSolo},
         {"limiter_ceiling", testLimiterHoldsTheCeiling},
         {"wav_writer", testWavWriterRoundTrip},

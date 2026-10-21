@@ -11,6 +11,9 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import com.pocketstudio.model.addAudioTrack
+import com.pocketstudio.model.audioEndBars
+import com.pocketstudio.model.withAudioTrack
 
 class ShareSongTest {
     @Test
@@ -71,6 +74,22 @@ class ShareSongTest {
         assertEquals(16, ShareSong.loopBars(16))
         assertEquals(64, ShareSong.loopBars(64))
         assertEquals(8, ShareSong.loopBars(0))
+    }
+
+    @Test
+    fun withoutASongTheShareLastsAsLongAsTheVoice() {
+        // A 27 s take at 140 BPM is 15.75 bars: the 8 bars of the scene would cut it.
+        var p = com.pocketstudio.model.Project(tempoBpm = 140.0).addAudioTrack()!!
+        p = p.withAudioTrack(p.audioTracks[0].copy(clip = com.pocketstudio.model.AudioClip("v.wav", "Prise", 27.0)))
+        assertEquals(16, p.audioEndBars())
+        assertEquals(16, ShareSong.settings(hasSong = false, sceneBars = 4, audioBars = p.audioEndBars()).bars)
+        // Starting on bar 3 it ends on bar 18; a muted track does not count; never past 64 bars.
+        val later = p.withAudioTrack(p.audioTracks[0].copy(clip = p.audioTracks[0].clip!!.copy(start = 32)))
+        assertEquals(18, later.audioEndBars())
+        val ch = com.pocketstudio.model.AudioTrack.mixerChannel(0)
+        val muted = later.copy(mixer = later.mixer.copy(channels = later.mixer.channels.mapIndexed { i, c -> if (i == ch) c.copy(mute = true) else c }))
+        assertEquals(0, muted.audioEndBars())
+        assertEquals(64, ShareSong.loopBars(4, audioBars = 90))
     }
 
     @Test

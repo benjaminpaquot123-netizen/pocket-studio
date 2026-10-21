@@ -63,7 +63,8 @@ fun nextSteps(project: Project, marks: Set<StepGoal> = emptySet()): List<NextSte
         t.name to notes
     }.filter { it.second.isNotEmpty() }
     fun isBass(name: String, pitches: List<Int>): Boolean {
-        val lower = name.lowercase()
+        // A default name in any language reads as its French ("Bas" → "Basse"), so the language does not matter.
+        val lower = (com.pocketstudio.model.DefaultNames.french(name) ?: name).lowercase()
         if ("bass" in lower || "808" in lower) return true
         val sorted = pitches.sorted()
         return sorted[sorted.size / 2] < BASS_BELOW

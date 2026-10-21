@@ -56,3 +56,6 @@ fun tr(fr: String): String = I18n.t(fr)
 
 /** [fr] in the interface's language, its `%s` / `%d` / `%1$s` filled with [args] (numbers in the language's format). */
 fun tr(fr: String, vararg args: Any?): String = String.format(I18n.lang.locale, I18n.t(fr), *args)
+
+/** "50 %" in French (a space before the sign), "50%" in English and Dutch. */
+fun percent(value: Int): String = if (I18n.lang == Lang.FR) "$value %" else "$value%"

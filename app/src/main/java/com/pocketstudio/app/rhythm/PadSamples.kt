@@ -38,9 +38,9 @@ class PadSamples(private val dir: File) {
         return PadSample(file, name.take(40)) to prepare(file, pcm)
     }
 
-    /** Blocking (background): reads the files the project uses; others are leftovers and removed. */
-    fun loadAll(files: Set<String>, cleanUp: Boolean = true): List<Prepared> {
-        if (cleanUp) dir.listFiles()?.filter { it.name !in files }?.forEach { it.delete() }
+    /** Blocking (background): reads the files the project uses; others are leftovers and removed (but those in [keep]). */
+    fun loadAll(files: Set<String>, cleanUp: Boolean = true, keep: Set<String> = emptySet()): List<Prepared> {
+        if (cleanUp) dir.listFiles()?.filter { it.name !in files && it.name !in keep && !it.name.endsWith(".tmp") }?.forEach { it.delete() }
         return files.mapNotNull { file ->
             runCatching { prepare(file, FloatWav.read(File(dir, file))) }
                 .onFailure { AppLog.add("Son illisible $file : ${it.message}") }
@@ -67,6 +67,9 @@ class PadSamples(private val dir: File) {
     fun read(file: String): Pcm = FloatWav.read(File(dir, file))
 
     class Prepared(val file: String, val native: NativeSample, val info: SampleInfo)
+
+    /** Blocking (background): [pcm], already stored as [file] (a microphone take), ready for the engine. */
+    fun prepared(file: String, pcm: Pcm): Prepared = prepare(file, pcm)
 
     private fun prepare(file: String, pcm: Pcm): Prepared {
         val native = NativeSample.create(pcm.data, pcm.channels, pcm.sampleRate) ?: error(tr("son inutilisable"))
@@ -157,7 +160,7 @@ class PadSamples(private val dir: File) {
         }
 
         fun nameFrom(displayName: String?): String =
-            displayName?.substringBeforeLast('.')?.takeIf { it.isNotBlank() }?.take(40) ?: tr("Son importé")
+            displayName?.substringBeforeLast('.')?.takeIf { it.isNotBlank() }?.take(40) ?: "Son importé"  // shown translated (DefaultNames)
 
         fun isSilent(pcm: Pcm) = pcm.data.all { abs(it) < 1e-4f }
     }

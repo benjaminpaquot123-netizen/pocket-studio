@@ -39,7 +39,8 @@ data class Help(val term: String, val text: String)
  */
 @Composable
 fun HelpDot(help: Help, modifier: Modifier = Modifier, color: Color = Neon.TextSecondary) {
-    var open by remember { mutableStateOf(false) }
+    // Kept when the screen turns (a dialog that vanished on rotation would look like a bug).
+    var open by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(false) }
     val ink = color.copy(alpha = 0.55f)
     // The touch target is larger than the drawn circle.
     Box(

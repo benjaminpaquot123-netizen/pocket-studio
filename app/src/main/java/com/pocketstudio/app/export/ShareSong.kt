@@ -19,19 +19,25 @@ object ShareSong {
     /** A scene alone is looped up to at least this many bars, so the file sounds like a piece. */
     const val MIN_LOOP_BARS = 8
 
-    /** The whole song when there is one, else the scene looped; M4A (small, plays everywhere) with a short fade. */
-    fun settings(hasSong: Boolean, sceneBars: Int): ExportUi = ExportUi(
+    /**
+     * The whole song when there is one, else the scene looped (long enough for the audio clips
+     * heard, which end on bar [audioBars]); M4A (small, plays everywhere) with a short fade.
+     */
+    fun settings(hasSong: Boolean, sceneBars: Int, audioBars: Int = 0): ExportUi = ExportUi(
         what = if (hasSong) ExportWhat.Song else ExportWhat.Loop, whatChosen = true,
         format = ExportFormat.M4a,
         fade = ExportFade.Short, fadeChosen = true,
-        bars = loopBars(sceneBars), barsChosen = true,
+        bars = loopBars(sceneBars, audioBars), barsChosen = true,
     ).forScene(sceneBars)
 
-    /** The scene repeated whole until it lasts [MIN_LOOP_BARS] bars (at most the longest export). */
-    fun loopBars(sceneBars: Int): Int {
+    /**
+     * The scene repeated whole until it lasts [MIN_LOOP_BARS] bars, or longer when an audio clip
+     * (a recorded voice) ends later, on bar [audioBars] (at most the longest export).
+     */
+    fun loopBars(sceneBars: Int, audioBars: Int = 0): Int {
         val scene = sceneBars.coerceIn(1, RhythmViewModel.MAX_EXPORT_BARS)
         val times = (MIN_LOOP_BARS + scene - 1) / scene
-        return (scene * times).coerceAtMost(RhythmViewModel.MAX_EXPORT_BARS)
+        return maxOf(scene * times, audioBars).coerceAtMost(RhythmViewModel.MAX_EXPORT_BARS)
     }
 
     /** [fr] and its translation in every language: a default name stays one whatever the language it was given in. */

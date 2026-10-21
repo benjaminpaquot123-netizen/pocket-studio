@@ -166,8 +166,8 @@ fun Project.copySceneTo(index: Int): Project {
 fun Project.clearCurrentScene(): Project = copy(
     drums = drums.copy(lanes = drums.lanes.map { it.copy(hits = emptyMap()) }),
     acid = acid.copy(steps = acid.steps.map { it.copy(gate = false) }),
-    synthNotes = synthNotes.copy(notes = emptyList()),
-    tracks = tracks.map { it.copy(notes = it.notes.copy(notes = emptyList())) },
+    synthNotes = synthNotes.cleared(),
+    tracks = tracks.map { it.copy(notes = it.notes.cleared()) },
     automation = automation.map { it.copy(sceneValues = it.sceneValues - scene) },
 ).syncScenes()
 
@@ -324,3 +324,6 @@ fun songNextIndex(playing: Int, queued: Int, size: Int, loops: Boolean): Int {
 
 /** Bars the whole song lasts (each part's scene times its repeats). */
 val Project.songBars: Int get() = (song.sumOf { sceneSteps(it.scene) * it.repeats } + stepsPerBar - 1) / stepsPerBar
+
+/** The song step part [index] starts on: its place in the song (each part its scene's length × its repeats). */
+fun Project.songStepOf(index: Int): Int = song.take(index.coerceIn(0, song.size)).sumOf { sceneSteps(it.scene) * it.repeats }

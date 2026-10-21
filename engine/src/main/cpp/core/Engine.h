@@ -33,7 +33,7 @@ enum class CommandType : uint8_t {
     StartLatencyTest,
     CancelLatencyTest,
     // Values below are part of the JNI contract (NativeEngine.kt): append only.
-    SetTransport,     // value: 1 = play, 0 = stop; a = count-in bars
+    SetTransport,     // value: 1 = play, 0 = stop; a = count-in bars; b = song step the first step is (started from a later part)
     SetTempo,         // value: BPM
     SetSwing,         // value: 0..0.75 of a 16th
     SetMetronome,     // value: 1 = on
@@ -71,7 +71,8 @@ enum class CommandType : uint8_t {
                           // waiting scene instead of the playing one; 0: back to the playing one
     ArmSceneSwap,         // a > 0: the waiting scene replaces the playing one after `a` steps of the
                           // current scene; a = 0: at the next bar; a < 0: cancel. b = 1: it starts
-                          // the song over (song automation counts from there); b = 2: the song
+                          // the song over (song automation counts from there, from song step
+                          // `value` when it is a later part); b = 2: the song
                           // ends there: the transport stops on that bar line (nothing is swapped)
     SetPerformance,       // a: PerformanceFx::Param, value 0..1 (live XY pad and hold buttons)
     SetSynthEngine,       // a: 0 = subtractive synth, 1 = Plaits (a General MIDI instrument still wins)
@@ -85,7 +86,7 @@ enum class CommandType : uint8_t {
     SetDrumRepeat,        // a: lane, b: step, value: hits in that step (1 = plain, 2..4 = a roll)
     SetTrackOn,           // a: instrument track 1..kTracks-1, value 1 = in use (0 = silent, not rendered)
     InstallAudioClip,     // a: audio track, sample: owned reference (nullptr = empty track)
-    SetAudioClipParam,    // a: audio track, b: AudioTracks::Param, value
+    SetAudioClipParam,    // a: audio track, b: AudioTracks::Param, value (LoopSteps follows SetStaging: a part's own)
     RecordArm,            // record: buffer the app keeps; a = 1: starts when the transport reaches its first step, 0: now
     RecordStop,           // the armed or running recording ends (the buffer's state becomes 2)
     SetAudioOn,           // a: audio track, value 1 = plays (follows SetStaging: a song part's mutes)
@@ -100,6 +101,8 @@ enum class CommandType : uint8_t {
     InstallTrackSample,   // a: track << 16, sample: owned reference (nullptr = none): the sampled source's sound
     SetTrackSampleParam,  // a: SampleInstrument::Param | track << 16, value in that parameter's unit
     SetPadStrip,          // a: pad 0..15, value > 0.5: the pad plays through its own mixer strip (its effects)
+    SetMaster,            // a: 0 = gain before the limiter (value: linear 0..4), 1 = limiter (value 1 = on),
+                          // 2 = master inserts (value 1 = on; off for stems, which then add up to the mix)
 };
 
 // Instrument tracks: the synth commands (SynthNoteOn/Off, SynthParam, SetSynthNote, SetSynthNoteCount,
@@ -298,6 +301,7 @@ private:
         int8_t pitch[kLanes][kMaxSteps] = {};  // semitones
         int drumSteps = 16;
         std::array<bool, AudioTracks::kTracks> audioOn{true, true, true, true};
+        std::array<int, AudioTracks::kTracks> audioLoop{-1, -1, -1, -1};  // -1: unchanged
         std::array<AcidStep, AcidTrack::kMaxSteps> acid{};
         int acidLength = 16;
     };
@@ -307,6 +311,7 @@ private:
     int sceneStart_ = 0;   // absolute step where the playing scene began
     int songStart_ = 0;    // absolute step where the song (last) began
     bool songRestart_ = false;
+    int songRestartAt_ = 0;    // the song step the restarting part is (a later part than the first)
     bool stopAtSwap_ = false;  // the armed "swap" ends the song: the transport stops instead
     void stopTransport();
     std::atomic<int> songStep_{-1};

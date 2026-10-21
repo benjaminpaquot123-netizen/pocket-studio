@@ -67,8 +67,9 @@ class TimelineTest {
         val p = project().copy(beatsPerBar = 3).togglePartTrack(0, SongPart.DRUMS).sanitized()
         val content = MidiFile.read(MidiFile.export(p, song = true))
         assertTrue(content.notes.none { it.channel == MidiFile.DRUM_CHANNEL })
-        // Two repeats of a two-bar 3/4 scene (24 steps): the 16-step clip starts at 0 and 16 in each.
-        assertEquals(4, content.notes.count { it.channel == 0 })
+        // Two repeats of a two-bar 3/4 scene (48 steps in all): the 16-step clip runs on across the
+        // repeats as the engine plays it, starting at 0, 16 and 32.
+        assertEquals(listOf(0, 16, 32), content.notes.filter { it.channel == 0 }.map { it.start / NoteClip.TICKS_PER_STEP })
     }
 
     @Test

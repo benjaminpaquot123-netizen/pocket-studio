@@ -202,20 +202,24 @@ fun SynthScreen(
             }
         } else if (landscape) {
             // Landscape: one compact line (presets, octave), the settings scroll, and a wide
-            // three-octave keyboard stays under the thumbs.
+            // three-octave keyboard stays under the thumbs. A tablet lying down has the height
+            // for the whole sounds card and the keyboard's layouts: only a phone gets the 4 chips.
+            val tall = maxHeight >= TALL_LANDSCAPE
             Column(Modifier.fillMaxSize().padding(8.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 tracks?.let { TrackBar(it) }
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     if (notes != null) ModeSwitch(showNotes) { showNotes = it }
-                    PresetChips(patch, actions)
+                    if (!tall) PresetChips(patch, actions)
+                    else if (!chordPads) KeyLayoutChips(keyLayout, setKeyLayout)
                     Box(Modifier.weight(1f))
                     ChordChip(chordKeys) { chordKeys = it }
                     ChordPadsChip(chordPads) { chordPads = it }
                     OctaveControl(octave, actions)
                 }
-                Column(Modifier.weight(1f).verticalScroll(rememberScrollState())) {
+                Column(Modifier.weight(1f).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(if (tall) 10.dp else 0.dp)) {
                     play?.let { PlayPanel(it, playActions) }
                     instrument?.let { InstrumentPanel(it) }
+                    if (tall && instrument?.current == null) PresetsCard(patch, actions, browser)
                     if (instrument?.current == null && instrument?.synthEngine != 1) SoundCard(patch, actions, advanced) { advanced = it }
                 }
                 if (chordPads) {
@@ -298,15 +302,24 @@ private fun KeyboardCard(
         if (!chordPads) {
             // Fewer, wider keys for the fingers and to learn: one octave named, or only the notes of the key.
             FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                KeyLayout.entries.forEach { l ->
-                    FilterChip(selected = keyLayout == l, onClick = { onKeyLayout(l) }, label = { Text(l.label) }, colors = chipColors(),
-                        modifier = Modifier.testTag("key_layout_${l.name}"))
-                }
+                KeyLayoutChips(keyLayout, onKeyLayout)
             }
         }
         if (chordPads) ChordPads(harmony, 12 * (octave + 1), actions.noteOn, actions.noteOff, height = height)
         else PlayKeys(keyLayout, octave, octaves, harmony, english, keyOn, keyOff, height)
         play?.let { PlayPanel(it, playActions) }
+    }
+}
+
+/** A landscape screen at least this high (a tablet lying down) keeps the whole sounds card. */
+private val TALL_LANDSCAPE = 600.dp
+
+/** 2 octaves / 1 octave / Gamme: the keyboard's layouts. */
+@Composable
+private fun KeyLayoutChips(keyLayout: KeyLayout, onKeyLayout: (KeyLayout) -> Unit) {
+    KeyLayout.entries.forEach { l ->
+        FilterChip(selected = keyLayout == l, onClick = { onKeyLayout(l) }, label = { Text(l.label) }, colors = chipColors(),
+            modifier = Modifier.testTag("key_layout_${l.name}"))
     }
 }
 
@@ -344,7 +357,7 @@ private fun SoundCard(patch: SynthPatch, actions: SynthActions, advanced: Boolea
         com.pocketstudio.ui.AdaptiveColumns(EASY.map { (index, label) ->
             @Composable {
                 if (index == SynthPatch.UNISON) {
-                    ParamSlider(label, patch.get(index), Glossary.UNISON, tr("%d voix", 1 + (patch.get(index) * 6).roundToInt())) { actions.setParam(index, it) }
+                    ParamSlider(label, patch.get(index), Glossary.UNISON, com.pocketstudio.app.ui.voicesLabel(1 + (patch.get(index) * 6).roundToInt())) { actions.setParam(index, it) }
                 } else {
                     ParamSlider(label, patch.get(index)) { actions.setParam(index, it) }
                 }

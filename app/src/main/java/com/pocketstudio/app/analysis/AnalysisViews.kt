@@ -2,6 +2,15 @@ package com.pocketstudio.app.analysis
 
 import com.pocketstudio.app.help.Glossary
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -50,13 +59,21 @@ fun SpectrumView(bands: FloatArray?, modifier: Modifier = Modifier) {
     Text(tr("Graves  ·  Médiums  ·  Aigus"), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary)
 }
 
-private val NAMES_FR = listOf("Do", "Do♯", "Ré", "Ré♯", "Mi", "Fa", "Fa♯", "Sol", "Sol♯", "La", "La♯", "Si")
-private val NAMES_EN = listOf("C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B")
+/** A guitar's six strings in standard tuning, low to high: E2 A2 D3 G3 B3 E4 (MIDI notes). */
+val GUITAR_STRINGS = listOf(40, 45, 50, 55, 59, 64)
 
-/** The tuner: the note heard, a needle for how far off it is, and the frequency. */
+/** The index in [GUITAR_STRINGS] of the string closest to the note heard ([midi] and [cents] off it). */
+fun nearestString(midi: Int, cents: Double): Int {
+    val heard = midi + cents / 100.0
+    return GUITAR_STRINGS.indices.minBy { abs(GUITAR_STRINGS[it] - heard) }
+}
+
+/** The tuner: the note heard, a needle for how far off it is, the frequency, and a guitar's strings. */
 @Composable
 fun TunerView(reading: TunerReading?, micOk: Boolean?, englishNotes: Boolean = false) {
-    Column(Modifier.fillMaxSize().padding(16.dp).testTag("tuner"), verticalArrangement = Arrangement.spacedBy(16.dp),
+    // A comfortable width on a tablet: the needle does not stretch across a screen lying down.
+    com.pocketstudio.ui.ReadingWidth(maxWidth = 520.dp) {
+    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp).testTag("tuner"), verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally) {
         NeonCard(modifier = Modifier.fillMaxWidth()) {
             SectionLabel(tr("Accordeur"), help = Glossary.TUNER)
@@ -65,10 +82,9 @@ fun TunerView(reading: TunerReading?, micOk: Boolean?, englishNotes: Boolean = f
                 !micOk -> Text(tr("Le micro n'a pas pu être ouvert (autorisation, ou une prise est en cours)."), color = Neon.Amber)
                 reading == null -> Text(tr("Joue ou chante une note près du téléphone."), color = Neon.TextSecondary)
             }
-            val names = if (englishNotes) NAMES_EN else NAMES_FR
             val inTune = reading != null && abs(reading.cents) < 5
             Text(
-                reading?.let { names[Math.floorMod(it.midi, 12)] + "${it.midi / 12 - 1}" } ?: "—",
+                reading?.let { com.pocketstudio.model.NoteNames.withOctave(it.midi, englishNotes, sharp = "♯") } ?: "—",
                 fontSize = 64.sp, fontWeight = FontWeight.Bold,
                 color = if (inTune) Neon.Acid else Neon.TextPrimary,
                 modifier = Modifier.align(Alignment.CenterHorizontally),
@@ -98,9 +114,39 @@ fun TunerView(reading: TunerReading?, micOk: Boolean?, englishNotes: Boolean = f
                 } ?: " ",
                 style = MonoStyle, color = Neon.TextSecondary, modifier = Modifier.align(Alignment.CenterHorizontally),
             )
+            GuitarStrings(reading, englishNotes)
         }
         Text(tr("Accorde ta guitare, ta basse ou ta voix avant d'enregistrer une piste audio."), style
  = MaterialTheme.typography.bodySmall,
             color = Neon.TextSecondary)
+    }
+    }
+}
+
+/** "Guitare : E2 A2 D3 G3 B3 E4", the string nearest to the note heard lit (green once in tune). */
+@Composable
+private fun GuitarStrings(reading: TunerReading?, englishNotes: Boolean) {
+    val nearest = reading?.let { nearestString(it.midi, it.cents) }
+    Text(tr("Guitare (accordage standard)"), style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary)
+    Row(Modifier.fillMaxWidth().testTag("tuner_strings"), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        GUITAR_STRINGS.forEachIndexed { i, note ->
+            val lit = i == nearest
+            val onIt = lit && reading?.midi == note
+            val color = when {
+                onIt && abs(reading!!.cents) < 5 -> Neon.Acid
+                lit -> Neon.Cyan
+                else -> Neon.Outline
+            }
+            Box(
+                Modifier.weight(1f).height(40.dp).clip(RoundedCornerShape(8.dp))
+                    .background(if (lit) color.copy(alpha = 0.2f) else Color.Transparent)
+                    .border(if (lit) 2.dp else 1.dp, color, RoundedCornerShape(8.dp))
+                    .testTag("tuner_string_$i"),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(com.pocketstudio.model.NoteNames.withOctave(note, englishNotes, sharp = "♯"), style = MaterialTheme.typography.labelLarge,
+                    color = if (lit) color else Neon.TextSecondary, maxLines = 1)
+            }
+        }
     }
 }

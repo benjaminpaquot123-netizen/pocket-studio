@@ -68,7 +68,7 @@ internal fun SampledPanel(ui: InstrumentUi) {
         IconButton(onClick = { ui.editSampled(null) { it.copy(root = (it.root - 1f).coerceAtLeast(0f)) } }, modifier = Modifier.testTag("root_down")) {
             Icon(Icons.Filled.Remove, contentDescription = tr("Un demi-ton plus bas"))
         }
-        Text(RootNote.name(s.root), style = MonoStyle, color = Neon.Cyan, modifier = Modifier.testTag("root_note"))
+        Text(RootNote.name(s.root, com.pocketstudio.app.settings.englishNotes()), style = MonoStyle, color = Neon.Cyan, modifier = Modifier.testTag("root_note"))
         IconButton(onClick = { ui.editSampled(null) { it.copy(root = (it.root + 1f).coerceAtMost(127f)) } }, modifier = Modifier.testTag("root_up")) {
             Icon(Icons.Filled.Add, contentDescription = tr("Un demi-ton plus haut"))
         }
@@ -98,7 +98,7 @@ internal fun SampledPanel(ui: InstrumentUi) {
     Seconds(tr("Relâchement"), s.release, 0f..2f, "sampled_release") { v -> ui.editSampled("release") { it.copy(release = v) } }
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Text(tr("Volume"), Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
-        Text("${(s.gain * 100).roundToInt()} %", style = MonoStyle, color = Neon.Cyan)
+        Text(com.pocketstudio.model.i18n.percent((s.gain * 100).roundToInt()), style = MonoStyle, color = Neon.Cyan)
     }
     ProSlider(value = s.gain / 2f, onValueChange = { v -> ui.editSampled("gain") { it.copy(gain = v * 2f) } }, modifier = Modifier.testTag("sampled_gain"))
 }

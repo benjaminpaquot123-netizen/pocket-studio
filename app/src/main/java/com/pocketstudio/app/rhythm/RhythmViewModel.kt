@@ -97,7 +97,16 @@ import com.pocketstudio.model.moveSongPart
 import com.pocketstudio.model.removeSongPart
 import com.pocketstudio.model.AudioTrack
 import com.pocketstudio.model.AudioClip
+import com.pocketstudio.model.PendingTakes
+import com.pocketstudio.model.TakeAnchor
+import com.pocketstudio.model.automationBefore
+import com.pocketstudio.model.songStepOf
+import com.pocketstudio.model.takeStart
+import com.pocketstudio.model.withTake
+import com.pocketstudio.model.withTakes
 import com.pocketstudio.model.addAudioTrack
+import com.pocketstudio.model.audioEndBars
+import com.pocketstudio.model.audioPlays
 import com.pocketstudio.model.removeAudioTrack
 import com.pocketstudio.model.withAudioTrack
 import com.pocketstudio.model.instrumentTracks
@@ -139,8 +148,11 @@ sealed interface LibraryState {
     data class Failed(val message: String) : LibraryState
 }
 
-/** A microphone take on an audio track: [waiting] during the count-in. */
-data class AudioRecordingUi(val track: Int, val waiting: Boolean = true, val seconds: Float = 0f, val level: Float = 0f)
+/** A microphone take on an audio track: [waiting] during the count-in; [song]: over the whole song. */
+data class AudioRecordingUi(val track: Int, val waiting: Boolean = true, val seconds: Float = 0f, val level: Float = 0f, val song: Boolean = false)
+
+/** Where the next microphone take goes: the scene shown, or the whole song from part [fromPart]. */
+data class RecordTarget(val song: Boolean = false, val fromPart: Int = 0)
 
 /** The keyboard's arpeggiator: [steps] sixteenths per note (0.5 = 1/32 … 4 = 1/4). */
 data class ArpUi(val on: Boolean = false, val steps: Float = 1f, val mode: Int = 0, val octaves: Int = 1, val gate: Float = 0.5f)
@@ -178,6 +190,8 @@ data class ExportUi(
     val barsChosen: Boolean = false,
     /** The current scene's length in bars (offered among the lengths). */
     val sceneBars: Int = 4,
+    /** The bar where the audio clips heard end (« Partager » without a song lasts at least that long). */
+    val audioBars: Int = 0,
     /** The whole song when the project has one, the scene otherwise, until the user picks. */
     val what: ExportWhat = ExportWhat.Loop,
     val whatChosen: Boolean = false,
@@ -185,6 +199,10 @@ data class ExportUi(
     /** A short fade for the song, none for a loop, until the user picks; never on separate tracks. */
     val fade: ExportFade = ExportFade.None,
     val fadeChosen: Boolean = false,
+    /** « Sans limiteur (pour le mastering) »: the mix without the master's limiter, in 32-bit float WAV. */
+    val noLimiter: Boolean = false,
+    /** Separate tracks through the master's effects and limiter (off: they add back up to the mix). */
+    val stemsWithMaster: Boolean = false,
     /** « Partager mon morceau »: this export opens the share sheet when it is done. */
     val sharing: Boolean = false,
     val running: Boolean = false,
@@ -212,6 +230,18 @@ data class ExportUi(
         }
         return forScene(sceneBars).copy(what = w, fade = f)
     }
+
+    /** No limiter was asked for (« Sans limiteur », or separate tracks without the master). */
+    val limiterOff: Boolean get() = if (what == ExportWhat.Stems) !stemsWithMaster else noLimiter
+
+    /**
+     * The export goes through the master's limiter. Without it only a float WAV keeps the peaks
+     * over 0 dBFS: M4A and FLAC would clip them hard, so they always keep it.
+     */
+    val limited: Boolean get() = !limiterOff || format != ExportFormat.Wav
+
+    /** Through the master's effects: separate tracks skip them unless asked (together they give back the mix). */
+    val masterFx: Boolean get() = what != ExportWhat.Stems || stemsWithMaster
 
     /** Frames the end of this export fades over at 48 kHz: never more than half of the [frames] rendered. */
     fun fadeFrames(frames: Long): Long =
@@ -317,8 +347,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     private fun loadOrCreate(): Project {
         try {
+            // A take of the app closed a moment ago may still be being written.
+            TakeVault.app.awaitIdleBlocking(3000)
             val loaded = runBlocking(Dispatchers.IO) { store.load(projectId) }
-            if (loaded != null) return loaded
+            if (loaded != null) return withWaitingTakes(loaded)
         } catch (e: Exception) {
             AppLog.add("Projet illisible : ${e.message} / ${e.cause?.message}")
             // Never let the first autosave overwrite files we could not read: move them aside.
@@ -331,6 +363,31 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             }
         }
         return starterProject()
+    }
+
+    /**
+     * Takes finished while the app was closing ([TakeVault]) put on their tracks, saved with the
+     * project, then forgotten. The project as loaded when that fails (they wait for next time).
+     */
+    private fun withWaitingTakes(loaded: Project): Project {
+        val folder = store.folder(projectId)
+        val takes = runCatching { PendingTakes.read(folder) }.getOrElse { emptyList() }
+        if (takes.isEmpty()) return loaded
+        val p = loaded.withTakes(takes).sanitized()
+        return try {
+            runBlocking(Dispatchers.IO) {
+                if (p != loaded) store.save(projectId, p)
+                PendingTakes.clear(folder, takes)
+            }
+            if (p != loaded) {
+                AppLog.add("Prise récupérée : ${takes.size}")
+                _notice.value = tr("Ta dernière prise a été gardée : elle est sur sa piste audio.")
+            }
+            p
+        } catch (e: Exception) {
+            AppLog.add("Prise en attente : ${e.message}")
+            loaded
+        }
     }
 
     /** The audio stream (re)started: everything is sent again, instruments included. */
@@ -545,18 +602,35 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     private fun pushAudio(p: Project = project.value) {
         if (!NativeEngine.isAvailable) return
         val part = if (NativeEngine.isCapturing) null else playingPart()
+        // A "once" clip comes back with its scene played alone; in a song part, with the next part.
+        val sceneSteps = if (part != null) null else p.currentSceneContent().stepsFor(p.stepsPerBar)
         for (id in 0 until AudioTrack.MAX) {
-            NativeEngine.setAudioOn(id, part?.plays(SongPart.audio(id)) ?: true)
+            NativeEngine.setAudioOn(id, audioPlays(p, id, part))
             val clip = p.audioTracks.firstOrNull { it.id == id }?.clip
             val native = clip?.let { padSamples.native(it.file) }
             if (clip != null && native != null) {
                 NativeEngine.setAudioClipParams(
-                    id, clip.start, clip.loopSteps, clip.gain,
+                    id, clip.start, clip.engineLoopSteps(sceneSteps, p.tempoBpm), clip.gain,
                     (clip.fadeIn * OfflineExport.SAMPLE_RATE).toInt(), (clip.fadeOut * OfflineExport.SAMPLE_RATE).toInt(),
+                    song = clip.song, offsetFrames = clip.offsetFrames(OfflineExport.SAMPLE_RATE),
                 )
             }
             NativeEngine.setAudioClip(id, native)
         }
+    }
+
+    /** Audio track [id] sounds in song [part] (null: a scene alone); never the track being retaken (live only). */
+    private fun audioPlays(p: Project, id: Int, part: SongPart?): Boolean =
+        p.audioPlays(id, part) && (NativeEngine.isCapturing || takeMuted != id)
+
+    /** The audio track whose clip is silent while a new take is recorded on it (P3: no double voice). */
+    private var takeMuted: Int? = null
+
+    /** The retaken track sounds again (the take ended or was left). */
+    private fun endTakeMute() {
+        if (takeMuted == null) return
+        takeMuted = null
+        pushAudio()  // the part playing keeps its own mutes
     }
 
     fun addAudioTrack() {
@@ -583,8 +657,24 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     fun setAudioTrackColor(id: Int, color: Int) = editAudio(id) { it.copy(color = color) }
 
+    /** The audio track used last (the top bar's ● records the microphone on it). */
+    private var lastAudioTrack = -1
+
+    /**
+     * The audio track the top bar's ● records the microphone on: the one used last, else the
+     * first; one is added when there is none.
+     */
+    fun micTakeTrack(): Int? {
+        val tracks = project.value.audioTracks
+        tracks.firstOrNull { it.id == lastAudioTrack }?.let { return it.id }
+        tracks.firstOrNull()?.let { return it.id }
+        addAudioTrack()
+        return project.value.audioTracks.firstOrNull()?.id
+    }
+
     private fun editAudio(id: Int, key: String? = null, transform: (AudioTrack) -> AudioTrack) {
         val t = project.value.audioTracks.firstOrNull { it.id == id } ?: return
+        lastAudioTrack = id
         session.edit(key) { it.withAudioTrack(transform(t)) }
         pushAudio()
     }
@@ -594,7 +684,24 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** The clip starts on bar [bar] (1 = the first). */
     fun setAudioStart(id: Int, bar: Int) = editClip(id) { it.copy(start = (bar - 1) * project.value.stepsPerBar) }
-    fun setAudioLoopBars(id: Int, bars: Int) = editClip(id) { it.copy(loopSteps = bars * project.value.stepsPerBar) }
+    fun setAudioLoopBars(id: Int, bars: Int) = editClip(id) { it.copy(loopSteps = bars * project.value.stepsPerBar, once = false) }
+    /** Plays once in each part of its scene (true) or loops (false). */
+    fun setAudioOnce(id: Int, once: Boolean) = editClip(id) { it.copy(once = once) }
+    /**
+     * Its start becomes a bar of the song (true: where the scene shown first plays in the song)
+     * or of the scene again (false: its first bar).
+     */
+    fun setAudioSong(id: Int, song: Boolean) = editClip(id) { c ->
+        if (c.song == song) return@editClip c
+        val p = project.value
+        val first = p.song.indexOfFirst { it.scene == p.scene }
+        val start = if (song) (if (first >= 0) p.songStepOf(first) else 0) + c.start else 0
+        c.copy(song = song, start = start)
+    }
+    /** « Décaler la prise » in ms (5 ms steps, ±200). */
+    fun setAudioOffset(id: Int, ms: Float) = editClip(id, "audio-offset-$id") {
+        it.copy(offsetMs = (Math.round(ms / AudioClip.OFFSET_STEP_MS) * AudioClip.OFFSET_STEP_MS).coerceIn(-AudioClip.MAX_OFFSET_MS, AudioClip.MAX_OFFSET_MS))
+    }
     fun setAudioGain(id: Int, gain: Float) = editClip(id, "audio-gain-$id") { it.copy(gain = gain) }
     fun setAudioFadeIn(id: Int, seconds: Float) = editClip(id, "audio-in-$id") { it.copy(fadeIn = seconds) }
     fun setAudioFadeOut(id: Int, seconds: Float) = editClip(id, "audio-out-$id") { it.copy(fadeOut = seconds) }
@@ -722,45 +829,83 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    private val _recordTarget = MutableStateFlow(RecordTarget())
+    /** Where the next take goes: the scene shown, or the whole song (« Enregistrer sur »). */
+    val recordTarget: StateFlow<RecordTarget> = _recordTarget.asStateFlow()
+
+    fun setRecordTarget(target: RecordTarget) {
+        _recordTarget.value = target
+    }
+
+    /** How the take in progress is placed once it ends (see [TakeVault.Request]). */
+    private class TakePlan(val track: Int, val anchor: TakeAnchor, val start: Int, val bpm: Double, val stepsPerBar: Int, val replaces: String? = null)
+    private var takePlan: TakePlan? = null
+    /** The take plays the whole song: the song ends instead of starting over (the take stops there). */
+    private var recordingSong = false
+
     /**
-     * Records the microphone onto audio track [id]: the song starts (after the count-in) and the
-     * take begins exactly on its first step. [stopAudioRecording] ends it.
+     * Records the microphone onto audio track [id]: the scene shown (or the whole song, see
+     * [recordTarget]) starts after the count-in and the take begins exactly on its first step.
+     * The track's own clip is silent meanwhile. [stopAudioRecording] ends it.
      */
     fun recordAudio(id: Int) {
         if (!NativeEngine.isAvailable || _audioRecording.value != null) return
         if (_recording.value) stopRecordingTake()
         if (_transport.value.playing) togglePlay()
-        _audioRecording.value = AudioRecordingUi(id, waiting = true)
+        val p = project.value
+        val target = _recordTarget.value
+        val songPart = if (target.song && p.song.isNotEmpty()) target.fromPart.coerceIn(0, p.song.lastIndex) else -1
+        val anchor = if (songPart >= 0) TakeAnchor(song = true, from = p.songStepOf(songPart)) else TakeAnchor()
+        val previous = p.audioTracks.firstOrNull { it.id == id }?.clip
+        lastAudioTrack = id
+        takePlan = TakePlan(id, anchor, takeStart(previous, anchor), p.tempoBpm, p.stepsPerBar, previous?.file)
+        _audioRecording.value = AudioRecordingUi(id, waiting = true, song = songPart >= 0)
         viewModelScope.launch {
             // Opening the microphone can take up to a second: never on the main thread.
             // No longer than a track can loop at this tempo (64 bars): the rest would never play.
-            val seconds = minOf(MAX_AUDIO_SECONDS, (maxLoopSteps() * 15.0 / project.value.tempoBpm).toInt())
+            // A song take may last the whole song (up to the longest take).
+            val bars = if (songPart >= 0) maxOf(64, p.songBars - p.songStepOf(songPart) / p.stepsPerBar) else 64
+            val seconds = minOf(MAX_AUDIO_SECONDS, (bars * p.stepsPerBar * 15.0 / p.tempoBpm).toInt() + 1)
             // A microphone opened while the project closes is closed again, not left armed.
-            val handle = finishOrRelease(Dispatchers.IO, { h: Long -> if (h != 0L) finishInBackground(h) }) {
+            val handle = finishOrRelease(Dispatchers.IO, { h: Long -> TakeVault.app.discard(h) }) {
                 NativeEngine.recordStart(onStart = true, seconds = seconds)
             } ?: 0L
             if (_audioRecording.value?.track != id) {  // cancelled meanwhile
-                if (handle != 0L) finishInBackground(handle)
+                TakeVault.app.discard(handle)
                 return@launch
             }
             if (handle == 0L) {
                 _audioRecording.value = null
+                takePlan = null
                 _notice.value = tr("Le micro n'a pas pu être ouvert. Vérifie l'autorisation du micro et qu'aucune autre appli ne l'utilise.")
                 return@launch
             }
+            TakeVault.app.opened(handle)
             recordHandle = handle
             // The output the take is heard on now (a headset unplugged later must not change it).
             takeLatencyMs = Metrics.recordLatencyMs()
-            _transport.value = _transport.value.copy(playing = true)
-            NativeEngine.play(com.pocketstudio.app.settings.SettingsStore.state.value.recordCountIn.coerceAtLeast(1))
-            PlaybackService.start(getApplication())
-            AppLog.add("Prise audio sur la piste ${id + 1}")
+            // The previous take of this track stays silent (no double voice, nothing in the microphone).
+            takeMuted = id
+            NativeEngine.setAudioOn(id, false)
+            val countIn = com.pocketstudio.app.settings.SettingsStore.state.value.recordCountIn.coerceAtLeast(1)
+            if (songPart >= 0) {
+                recordingSong = true
+                playSongFrom(songPart, countIn)
+            } else {
+                _transport.value = _transport.value.copy(playing = true)
+                NativeEngine.play(countIn)
+                PlaybackService.start(getApplication())
+            }
+            AppLog.add("Prise audio sur la piste ${id + 1}" + if (songPart >= 0) " (morceau, partie ${songPart + 1})" else "")
             recordPoll = launch {
                 while (true) {
                     val st = NativeEngine.recordStatus(handle)
                     val ui = _audioRecording.value ?: break
                     _audioRecording.value = ui.copy(waiting = st[0] < 0.5f, seconds = st[1] / OfflineExport.SAMPLE_RATE.toFloat(), level = st[2])
-                    if (st[0] > 1.5f) {  // full: the take ends by itself
+                    if (st[0] > 1.5f) {  // full (or the transport stopped): the take ends by itself
+                        if (st[1] >= (seconds - 1) * OfflineExport.SAMPLE_RATE.toFloat()) {
+                            _notice.value = tr("La prise s'est arrêtée toute seule : elle a atteint sa durée maximale (%d s). Elle est gardée.", seconds)
+                        }
                         stopAudioRecording()
                         break
                     }
@@ -770,6 +915,30 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /** What [TakeVault] needs to place take [handle] (also when the screen is gone). */
+    private fun takeRequest(handle: Long, waiting: Boolean): TakeVault.Request {
+        val plan = takePlan ?: (_audioRecording.value?.track ?: 0).let { id ->
+            TakePlan(id, TakeAnchor(), 0, project.value.tempoBpm, project.value.stepsPerBar, project.value.audioTracks.firstOrNull { it.id == id }?.clip?.file)
+        }
+        val sixteenth = 15.0 / plan.bpm * OfflineExport.SAMPLE_RATE
+        return TakeVault.Request(
+            handle = handle,
+            projectFolder = store.folder(projectId),
+            track = plan.track,
+            // Saved in French, shown in the interface's language (DefaultNames).
+            name = "Prise " + java.text.SimpleDateFormat("HH:mm", java.util.Locale.FRANCE).format(java.util.Date()),
+            bpm = plan.bpm,
+            song = plan.anchor.song,
+            start = plan.start,
+            // What the microphone hears lags what was played by the round trip (speaker → micro).
+            latencyFrames = (takeLatencyMs / 1000.0 * OfflineExport.SAMPLE_RATE).toInt(),
+            // A retake that keeps a later start: what was sung before it is cut.
+            cutFrames = Math.round((plan.start - plan.anchor.from) * sixteenth).toInt(),
+            waiting = waiting,
+            replaces = plan.replaces,
+        )
+    }
+
     /** Ends the take: the song stops and the recording becomes the track's clip (Annuler possible). */
     fun stopAudioRecording() {
         val ui = _audioRecording.value ?: return
@@ -777,30 +946,46 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         recordHandle = 0L
         recordPoll?.cancel()
         _audioRecording.value = null
+        recordingSong = false
+        val request = if (handle != 0L) takeRequest(handle, ui.waiting) else null
+        takePlan = null
         if (_transport.value.playing) togglePlay()
-        if (handle == 0L) return
-        // What the microphone hears lags what was played by the round trip (speaker → micro).
-        val latencyMs = takeLatencyMs
+        endTakeMute()
+        if (request == null) return
+        // Written into the project outside this screen: closing the app now keeps the take.
+        val written = TakeVault.app.finish(request)
         _takeSaving.value = true
         takeJob = audioJob(tr("Enregistrement de la prise…"), always = true) {
-            val pcm = withContext(Dispatchers.IO) {
-                val audio = NativeEngine.recordFinish(handle) ?: throw UserMessage(tr("La prise n'a pas pu être récupérée : réessaie."))
-                if (audio.size < OfflineExport.SAMPLE_RATE / 10) null
-                else {
-                    val skip = (latencyMs / 1000.0 * OfflineExport.SAMPLE_RATE).toInt().coerceIn(0, audio.size / 2)
-                    Pcm(audio.copyOfRange(skip, audio.size), 1, OfflineExport.SAMPLE_RATE)
-                }
+            when (val r = written.await()) {
+                is TakeVault.Outcome.Saved -> placeTake(r, request.latencyFrames)
+                TakeVault.Outcome.Nothing -> Unit  // stopped during the count-in: nothing was recorded
+                TakeVault.Outcome.TooShort -> throw UserMessage(tr("La prise est trop courte ou le micro n'a rien donné."))
+                TakeVault.Outcome.Silent -> throw UserMessage(tr("Le micro n'a rien entendu : rapproche-toi et réessaie."))
+                TakeVault.Outcome.Lost -> throw UserMessage(tr("La prise n'a pas pu être récupérée : réessaie."))
+                is TakeVault.Outcome.Failed -> throw r.error
             }
-            if (pcm == null) {
-                if (!ui.waiting) throw UserMessage(tr("La prise est trop courte ou le micro n'a rien donné."))
-                return@audioJob  // stopped during the count-in: nothing was recorded
-            }
-            if (PadSamples.isSilent(pcm)) throw UserMessage(tr("Le micro n'a rien entendu : rapproche-toi et réessaie."))
-            putClip(ui.track, pcm, tr("Prise %s", java.text.SimpleDateFormat("HH:mm", java.util.Locale.FRANCE).format(java.util.Date())))
-            AppLog.add("Prise audio : ${"%.1f".format(pcm.seconds)} s, latence compensée ${latencyMs.toInt()} ms")
         }
         // Annuler waits until the take is on its track (or has failed).
         takeJob?.invokeOnCompletion { _takeSaving.value = false } ?: run { _takeSaving.value = false }
+    }
+
+    /** A written take onto its track (one undo step); once saved with the project, its waiting note goes. */
+    private suspend fun placeTake(r: TakeVault.Outcome.Saved, latencyFrames: Int) {
+        // On its track and saved first: whatever fails afterwards (memory for the engine's copy),
+        // the take is in the project, and its sound comes back from its file.
+        session.edit { it.withTake(r.take) }
+        AppLog.add("Prise audio : ${"%.1f".format(r.pcm.seconds)} s, latence compensée ${latencyFrames * 1000 / OfflineExport.SAMPLE_RATE} ms")
+        // The waiting note goes only once the project with the take is really on disk.
+        if (withContext(NonCancellable) { session.flush() }) {
+            withContext(Dispatchers.IO) { PendingTakes.remove(store.folder(projectId), r.take.file) }
+        } else {
+            AppLog.add("Prise : projet pas encore sauvé, la prise reste en attente")
+        }
+        val prepared = withContext(Dispatchers.Default) { padSamples.prepared(r.take.file, r.pcm) }
+        padSamples.register(prepared)
+        pushAudio()
+        // Long clips weigh tens of MB each: older takes and edits leave memory (Annuler reloads them).
+        padSamples.prune(project.value.sampleFiles)
     }
 
     private var takeJob: kotlinx.coroutines.Job? = null
@@ -809,7 +994,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** A stopped take is still being written to its track (Annuler waits for it). */
     val takeSaving: StateFlow<Boolean> = _takeSaving.asStateFlow()
 
-    /** Before another project opens: a take in progress is stopped and kept on its track. */
+    /** Before another project opens (or a song is shared): a take in progress is stopped and kept on its track. */
     suspend fun keepTake() {
         if (_audioRecording.value != null) stopAudioRecording()
         takeJob?.join()
@@ -821,13 +1006,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         recordHandle = 0L
         recordPoll?.cancel()
         _audioRecording.value = null
+        recordingSong = false
+        takePlan = null
         if (_transport.value.playing) togglePlay()
-        if (handle != 0L) finishInBackground(handle)
-    }
-
-    /** Frees a take and closes the microphone off the main thread (also when the project closes). */
-    private fun finishInBackground(handle: Long) {
-        Thread({ NativeEngine.recordFinish(handle) }, "record-finish").start()
+        endTakeMute()
+        TakeVault.app.discard(handle)
     }
 
     /** Clip edits: a new sound file each time, so Annuler brings the previous one back. */
@@ -1369,13 +1552,18 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             }
             else -> {
                 _sessionUi.value = SessionUi(pending = song[index].scene, queued = index)
-                stageScene(song[index].scene, 0, song[index], restartsSong = true)
+                stageScene(song[index].scene, 0, song[index], restartsSong = true, songStep = project.value.songStepOf(index))
             }
         }
     }
 
-    /** Starts the song from part [index] (the screens go to its scene, unless they stay on theirs). */
-    private fun playSongFrom(index: Int) {
+    /**
+     * Starts the song from part [index] (the screens go to its scene, unless they stay on theirs),
+     * after [countInBars] (null: the count-in switch). The song position starts at the part's place
+     * in the song, with the automation as the parts before it left it: what plays is what the
+     * export has there, and song automation records on the right bar.
+     */
+    private fun playSongFrom(index: Int, countInBars: Int? = null) {
         val song = project.value.song
         if (index !in song.indices || !NativeEngine.isAvailable) return
         val part = song[index]
@@ -1383,9 +1571,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (_followSong.value) session.editQuietly { it.switchScene(part.scene) }
         syncEngine()
         pushPart(project.value, part.scene, part)  // the part's scene without its muted tracks
+        applyAutomationState(project.value, project.value.automationBefore(index))
         heardScene = part.scene
         _sessionUi.value = SessionUi(songIndex = index)
-        toggleTransport()
+        toggleTransport(countInBars, project.value.songStepOf(index))
         // The whole project just went to the engine: let the queue drain before the next scene.
         viewModelScope.launch {
             kotlinx.coroutines.delay(150)
@@ -1411,7 +1600,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             if (ui2.pending != project.value.scene || !_transport.value.playing) return@launch
             when {
                 ui2.songIndex >= 0 -> stageSongPart()
-                ui2.queued >= 0 -> project.value.song.getOrNull(ui2.queued)?.let { stageScene(it.scene, 0, it, restartsSong = true) }
+                ui2.queued >= 0 -> project.value.song.getOrNull(ui2.queued)?.let { stageScene(it.scene, 0, it, restartsSong = true, songStep = project.value.songStepOf(ui2.queued)) }
                 else -> stageScene(ui2.pending, 0)
             }
         }
@@ -1431,12 +1620,26 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * Sends scene [index] to the engine's waiting slot and arms the swap after [afterSteps] (0 = next
      * bar). A song [part] plays without its muted tracks.
      */
-    private fun stageScene(index: Int, afterSteps: Int, part: SongPart? = null, restartsSong: Boolean = false) {
+    private fun stageScene(index: Int, afterSteps: Int, part: SongPart? = null, restartsSong: Boolean = false, songStep: Int = 0) {
         NativeEngine.setStaging(true)
         pushPart(project.value, index, part)
         NativeEngine.setStaging(false)
-        NativeEngine.armSceneSwap(afterSteps, restartsSong)
+        NativeEngine.armSceneSwap(afterSteps, restartsSong, songStep)
         watchSwaps()
+    }
+
+    /** Loop and per-scene lanes' settings as [values] (lane index → 0..1) say, like the engine sets them. */
+    private fun applyAutomationState(p: Project, values: Map<Int, Float>) {
+        values.forEach { (i, v) ->
+            val t = p.automation.getOrNull(i)?.target ?: return@forEach
+            when (t.kind) {
+                AutoTarget.VOLUME -> NativeEngine.setChannelVolume(t.ch, v)
+                AutoTarget.PAN -> NativeEngine.setChannelPan(t.ch, v * 2f - 1f)
+                AutoTarget.SEND -> NativeEngine.setSend(t.ch, t.slot, v)
+                AutoTarget.INSERT_PARAM -> NativeEngine.setInsertParam(t.ch, t.slot, t.param, v)
+                AutoTarget.BUS_PARAM -> NativeEngine.setBusParam(t.slot, t.param, v)
+            }
+        }
     }
 
     /** The patterns of scene [index] as [part] plays them (to the playing or the waiting slot). */
@@ -1447,7 +1650,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             pushDrumPattern(view.drums)
             pushAcid(view.acid)
             view.instrumentTracks.forEach { pushNotes(it.notes, it.id) }
-            for (id in 0 until AudioTrack.MAX) NativeEngine.setAudioOn(id, part?.plays(SongPart.audio(id)) ?: true)
+            for (id in 0 until AudioTrack.MAX) NativeEngine.setAudioOn(id, audioPlays(p, id, part))
+            // "Once" clips: once per song part, or once per pass of the scene played alone.
+            val sceneSteps = if (part != null) null else p.sceneSteps(index)
+            // Every clip's loop goes with its part (a stale one can never be left waiting).
+            p.audioTracks.forEach { t -> t.clip?.let { NativeEngine.setAudioLoop(t.id, it.engineLoopSteps(sceneSteps, p.tempoBpm)) } }
             // Per-scene automation clips: the scene's own steps (all of them, empty ones included).
             p.automation.forEachIndexed { i, lane ->
                 if (lane.mode == AutomationLane.PER_SCENE) lane.valuesFor(index).forEachIndexed { step, v -> NativeEngine.setAutomationPoint(i, step, v) }
@@ -1477,7 +1684,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (song.isEmpty() || ui.songIndex < 0) return
         val playing = ui.removed ?: song.getOrNull(ui.songIndex) ?: return
         val steps = p.sceneSteps(playing.scene) * playing.repeats
-        val next = songNextIndex(ui.songIndex, ui.queued, song.size, p.songLoops)
+        // Recording a take over the whole song: it ends with the song, never starts it over.
+        val next = songNextIndex(ui.songIndex, ui.queued, song.size, p.songLoops && !recordingSong)
         if (next < 0) {
             // The song ends: the engine stops on the last part's last bar line.
             _sessionUi.value = ui.copy(pending = null, ending = true)
@@ -1487,7 +1695,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
         val upcoming = song[next]
         _sessionUi.value = ui.copy(pending = upcoming.scene, ending = false)
-        stageScene(upcoming.scene, steps, upcoming, restartsSong = next == 0)
+        // The song position follows the arrangement: a part chosen out of order (or the song
+        // starting over) moves it to that part's place; the next part in order keeps it running.
+        stageScene(upcoming.scene, steps, upcoming, restartsSong = true, songStep = p.songStepOf(next))
     }
 
     /** Follows the engine's scene swaps (also with the screen off, while the transport runs). */
@@ -1870,7 +2080,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         sampleJob(tr("%s vers le pad…", label)) {
             val audio = source.extract(stem, r.startFrame(OfflineExport.SAMPLE_RATE), count)
             if (audio.isEmpty()) throw UserMessage(tr("Ce passage est après la fin du morceau."))
-            padSamples.add(Pcm(audio, 2, OfflineExport.SAMPLE_RATE), "$label ${r.name}".take(40))
+            padSamples.add(Pcm(audio, 2, OfflineExport.SAMPLE_RATE), "${STEM_LABELS.getOrElse(stem) { "Piste" }} ${r.name}".take(40))  // French, shown translated
         }
     }
 
@@ -1895,7 +2105,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         sampleJob(tr("%1\$s vers le pad live %2\$d…", label, pad + 1), live = pad, beats = bars * 4) {
             val audio = source.extract(stem, r.startFrame(OfflineExport.SAMPLE_RATE), count)
             if (audio.isEmpty()) throw UserMessage(tr("Ce passage est après la fin du morceau."))
-            padSamples.add(Pcm(audio, 2, OfflineExport.SAMPLE_RATE), "$label ${r.name}".take(40))
+            padSamples.add(Pcm(audio, 2, OfflineExport.SAMPLE_RATE), "${STEM_LABELS.getOrElse(stem) { "Piste" }} ${r.name}".take(40))  // French, shown translated
         }
     }
 
@@ -2263,7 +2473,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     fun setNoteClipSteps(steps: Int) = editNotes { it.copy(steps = steps).sanitized() }
 
-    fun clearNotes() = editNotes { it.copy(notes = emptyList()) }
+    fun clearNotes() = editNotes { it.cleared() }
 
     /** A short note so the user hears what they placed. */
     private fun previewNote(pitch: Int) {
@@ -2314,12 +2524,15 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     private fun loadPadSamples() {
         val files = project.value.sampleFiles
-        // After a failed load the folder may still hold the user's sounds: never clean it then.
-        val cleanUp = _notice.value == null
+        // After a failed load the folder may still hold the user's sounds: never clean it then, nor
+        // while a take is being written (its sound file would look unused).
+        val cleanUp = _notice.value == null && TakeVault.app.busy.value <= 0
+        val folder = store.folder(projectId)
         samplesLoad = viewModelScope.launch {
             // Sounds read while the project closes are freed, not lost on the way.
             val prepared = finishOrRelease(Dispatchers.IO, { list: List<PadSamples.Prepared> -> list.forEach { it.native.close() } }) {
-                padSamples.loadAll(files, cleanUp)
+                // Takes waiting to be put on their track keep their sound.
+                padSamples.loadAll(files, cleanUp, keep = runCatching { PendingTakes.files(folder) }.getOrElse { emptySet() })
             }.orEmpty()
             prepared.forEach(padSamples::register)
             pushPads()
@@ -2370,7 +2583,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             }
             if (data.isEmpty()) throw UserMessage(tr("Le rendu a été interrompu."))
             AppLog.add("Rééchantillonnage : $bars mesures à ${p.tempoBpm.toInt()} BPM")
-            padSamples.add(Pcm(data, 2, OfflineExport.SAMPLE_RATE), if (bars > 1) tr("Morceau %d mesures", bars) else tr("Morceau 1 mesure"))
+            padSamples.add(Pcm(data, 2, OfflineExport.SAMPLE_RATE), if (bars > 1) "Morceau $bars mesures" else "Morceau 1 mesure")  // shown translated (DefaultNames)
         }
     }
 
@@ -2737,6 +2950,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             c.macros.forEachIndexed { m, v -> NativeEngine.setMacro(i, m, v) }
         }
         pushInserts(MASTER, p.mixer.master)
+        NativeEngine.setMasterGain(p.mixer.masterGain)
         p.mixer.buses.forEachIndexed { bus, params -> params.forEachIndexed { k, v -> NativeEngine.setBusParam(bus, k, v) } }
         // Pads with effects of their own go through their strip, the others straight into the drums.
         (0 until DrumPattern.PAD_COUNT).forEach { NativeEngine.setPadStrip(it, it in pads) }
@@ -2905,6 +3119,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             stopRecordingTake()
             return
         }
+        // A microphone take is on: the notes wait (one recording at a time).
+        if (_audioRecording.value != null) return
         recordBefore = project.value
         recordDepth = session.undoDepth
         heldNotes.clear()
@@ -3175,14 +3391,17 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         toggleTransport()
     }
 
-    /** Starts or stops the transport, whatever it plays. */
-    private fun toggleTransport() {
+    /**
+     * Starts or stops the transport, whatever it plays. Starting: [countInBars] (null: the count-in
+     * switch), the first step being song step [songStep].
+     */
+    private fun toggleTransport(countInBars: Int? = null, songStep: Int = 0) {
         val t = _transport.value
         val playing = !t.playing
         _transport.value = t.copy(playing = playing)
         if (!NativeEngine.isAvailable) return
         if (!playing && _recording.value) stopRecordingTake()
-        if (playing) NativeEngine.play(if (t.countIn) 1 else 0) else {
+        if (playing) NativeEngine.play(countInBars ?: if (t.countIn) 1 else 0, songStep) else {
             NativeEngine.stopTransport()
             NativeEngine.toggleClip(-1)  // live pads too: Stop means silence
             catchUpMissedSwap()
@@ -3193,7 +3412,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
         val app = getApplication<Application>()
         AppLog.add(if (playing) "Lecture (${project.value.tempoBpm.toInt()} BPM)" else "Stop")
-        if (playing) PlaybackService.start(app) else PlaybackService.stop(app)
+        if (playing) PlaybackService.start(app) else PlaybackService.stopAfterTakes(app)
     }
 
     /** Stops the transport if it plays (opening the assistant: its previews must not play over the song). */
@@ -3228,7 +3447,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             var since = 0L
             kotlinx.coroutines.flow.combine(
-                project.map { it.name to it.tempoBpm }.distinctUntilChanged(),
+                project.map { com.pocketstudio.model.DefaultNames.shown(it.name) to it.tempoBpm }.distinctUntilChanged(),
                 _recording,
                 // null: no take; false: the microphone opens or counts in; true: it records.
                 _audioRecording.map { it?.let { take -> !take.waiting } }.distinctUntilChanged(),
@@ -3311,6 +3530,14 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** One hit's own pan (-1..1) on the selected pad. */
     fun setHitPan(step: Int, pan: Float) = editHitDetail(step, "hit-pan") { it.copy(pan = pan) }
+
+    /** One hit's strength (« Force »), 0.05..1, on the selected pad; a slide is one undo step. */
+    fun setHitVelocity(step: Int, velocity: Float) {
+        val lane = _transport.value.selectedPad
+        if (project.value.drums.lanes[lane].hits[step] == null) return
+        session.edit("hit-vel-$lane-$step") { it.copy(drums = it.drums.withHitVelocity(lane, step, velocity)) }
+        if (NativeEngine.isAvailable) pushHit(lane, step, project.value.drums.lanes[lane].hits[step])
+    }
 
     /** One hit's pitch in semitones on the selected pad (its own sound only). */
     fun setHitPitch(step: Int, pitch: Int) = editHitDetail(step, "hit-pitch") { it.copy(pitch = pitch) }
@@ -3478,7 +3705,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     private val _export = MutableStateFlow(ExportUi())
     /** The export settings, « La scène » as long as the current scene unless a length was picked. */
-    val export: StateFlow<ExportUi> = combine(_export, project) { e, p -> e.forProject(sceneBars(p), p.song.isNotEmpty()) }
+    val export: StateFlow<ExportUi> = combine(_export, project) { e, p -> e.forProject(sceneBars(p), p.song.isNotEmpty()).copy(audioBars = p.audioEndBars()) }
         .stateIn(viewModelScope, SharingStarted.Eagerly, ExportUi().forProject(sceneBars(project.value), project.value.song.isNotEmpty()))
     private var running: OfflineExport? = null
 
@@ -3500,6 +3727,20 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         _export.value = _export.value.copy(fade = fade, fadeChosen = true)
     }
 
+    fun setExportNoLimiter(on: Boolean) {
+        _export.value = _export.value.copy(noLimiter = on)
+    }
+
+    fun setStemsWithMaster(on: Boolean) {
+        _export.value = _export.value.copy(stemsWithMaster = on)
+    }
+
+    /** The master's gain before the limiter, in dB (saved with the project). */
+    fun setMasterDb(db: Float) {
+        session.edit("mix-master-db") { p -> p.copy(mixer = p.mixer.copy(masterDb = db.coerceIn(Mixer.MASTER_MIN_DB, Mixer.MASTER_MAX_DB))) }
+        if (NativeEngine.isAvailable) NativeEngine.setMasterGain(project.value.mixer.masterGain)
+    }
+
     /** Files of a finished « Partager mon morceau », for the share sheet (the screen opens it). */
     private val _shareRequests = kotlinx.coroutines.channels.Channel<List<File>>(kotlinx.coroutines.channels.Channel.CONFLATED)
     val shareRequests: kotlinx.coroutines.flow.Flow<List<File>> = _shareRequests.receiveAsFlow()
@@ -3514,7 +3755,16 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             _export.value = _export.value.copy(sharing = true, error = tr("Le moteur audio n'est pas prêt : réessaie dans un instant."))
             return
         }
-        startExport(com.pocketstudio.app.export.ShareSong.settings(p.song.isNotEmpty(), sceneBars(p)), share = true)
+        // A take just stopped may still be being written: the song waits for it.
+        viewModelScope.launch {
+            if (_takeSaving.value) {
+                _export.value = _export.value.copy(sharing = true, running = true, progress = 0f, stage = tr("Enregistrement de la prise…"), error = null, files = emptyList())
+                takeJob?.join()
+                _export.value = _export.value.copy(running = false, stage = null)
+            }
+            val now = project.value
+            startExport(com.pocketstudio.app.export.ShareSong.settings(now.song.isNotEmpty(), sceneBars(now), now.audioEndBars()), share = true)
+        }
     }
 
     /** Closes the « Partager mon morceau » window after an error. */
@@ -3533,12 +3783,16 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * Describes the project to an export engine. For the song, the first part's scene plays first
      * and each next scene is staged half a step into the part before it, swapping on its last bar line.
      */
-    private fun describe(job: OfflineExport, p: Project, song: Boolean, soloChannel: Int?) {
+    private fun describe(job: OfflineExport, p: Project, song: Boolean, soloChannel: Int?, limited: Boolean = true, masterFx: Boolean = true) {
         NativeEngine.captureInto(job) {
             val first = if (song) p.sceneView(p.song[0].scene) else p
             syncEngine(first)
             if (song) pushPart(p, p.song[0].scene, p.song[0])
             NativeEngine.setMetronome(false)
+            // A pre-master mix keeps its headroom; separate tracks also skip the master's
+            // effects, so that together they give back the mix.
+            if (!limited) NativeEngine.setLimiter(false)
+            if (soloChannel != null && !masterFx) NativeEngine.setMasterFx(false)
             if (soloChannel != null) {
                 // A stem is its strip alone, whatever solos and mutes the mix was left with.
                 for (ch in 0 until Mixer.FIRST_PAD) if (ch != MASTER) NativeEngine.setChannelSolo(ch, false)
@@ -3590,7 +3844,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val frames = if (song) songFrames(p) else OfflineExport.framesFor(settings.bars, p.tempoBpm, p.beatsPerBar)
         // A fade-out ends the file on silence: no tail to ring out after it.
         val fadeFrames = settings.fadeFrames(frames)
-        val tailFrames = if (fadeFrames > 0) 0L else TAIL_FRAMES
+        // Otherwise the tail rings out until the sound has died away (at most MAX_TAIL_FRAMES).
+        val tailFrames = if (fadeFrames > 0) 0L else MAX_TAIL_FRAMES
         // Each render: (label for the file and the screen, solo channel or null for the mix).
         val renders: List<Pair<String, Int?>> = when (settings.what) {
             ExportWhat.Stems -> stemExports(p, song)
@@ -3616,9 +3871,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             try {
                 renders.forEachIndexed { index, (label, solo) ->
                     val job = OfflineExport()
-                    describe(job, p, song, solo)
+                    describe(job, p, song, solo, settings.limited, settings.masterFx)
                     running = job
-                    val wav = runCatching { WavExporter.newFile(app, "${p.name.take(28)}-$label") }.getOrElse { throw UserMessage(tr("Impossible de préparer le fichier d'export.")) }
+                    val wav = runCatching { WavExporter.newFile(app, "${com.pocketstudio.model.DefaultNames.shown(p.name).take(28)}-$label") }.getOrElse { throw UserMessage(tr("Impossible de préparer le fichier d'export.")) }
                     _export.value = _export.value.copy(stage = if (renders.size > 1) "${stageName(label)} (${index + 1}/${renders.size})" else null)
                     val poll = launch {
                         while (true) {
@@ -3627,7 +3882,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                         }
                     }
                     val result = try {
-                        withContext(Dispatchers.IO) { job.render(wav, frames, tailFrames, fadeFrames) }
+                        withContext(Dispatchers.IO) { job.render(wav, frames, tailFrames, fadeFrames, autoTail = true, floatWav = !settings.limited) }
                     } finally {
                         poll.cancel()
                         // Closed on the main thread, after the render returned.
@@ -3699,7 +3954,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             try {
                 val file = withContext(Dispatchers.IO) {
-                    val wav = WavExporter.newFile(app, p.name + if (p.song.isNotEmpty()) "-morceau" else "")
+                    val wav = WavExporter.newFile(app, com.pocketstudio.model.DefaultNames.shown(p.name) + if (p.song.isNotEmpty()) "-morceau" else "")
                     val mid = File(wav.parentFile, wav.nameWithoutExtension + ".mid")
                     mid.writeBytes(com.pocketstudio.model.MidiFile.export(p))
                     mid
@@ -3753,8 +4008,12 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     override fun onCleared() {
         exportCancelled = true  // a conversion in progress stops and leaves no file behind
-        // A take in progress: the microphone closes and its buffer is freed.
-        recordHandle.takeIf { it != 0L }?.let { finishInBackground(it) }
+        // A take in progress is kept: written into the project away from this screen, it is on
+        // its track the next time the project opens.
+        recordHandle.takeIf { it != 0L }?.let { handle ->
+            AppLog.add("Prise en cours gardée à la fermeture")
+            TakeVault.app.finish(takeRequest(handle, _audioRecording.value?.waiting ?: false))
+        }
         recordHandle = 0L
         downloadCancelled = true
         fonts.values.forEach { it.close() }
@@ -3766,7 +4025,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         stems?.close()
         stretched?.close()
         if (NativeEngine.isAvailable) NativeEngine.stopTransport()
-        PlaybackService.stop(getApplication())
+        PlaybackService.stopAfterTakes(getApplication())
     }
 
     companion object {
@@ -3776,7 +4035,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         private const val EARLY_STEPS = 1.0
 
         /** The first project of a new install, and the "Rythme de départ" choice: a beat and an acid line. */
-        fun starterProject(name: String = tr("Mon premier rythme")): Project {
+        fun starterProject(name: String = "Mon premier rythme"): Project {
             var drums = DrumPattern()
             DrumKitInfo.starterHits.forEach { (lane, steps) -> steps.forEach { drums = drums.toggle(lane, it) } }
             val acid = AcidGenerator().generate(AcidPattern(), AcidGenerator.NOTE_SETS[5])
@@ -3790,9 +4049,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         const val MAX_AUDIO_SECONDS = 180
         const val MAX_EXPORT_BARS = 64
         private val AUDIO_EXTENSIONS = setOf("wav", "mp3", "flac", "m4a", "aac", "ogg", "opus", "aif", "aiff")
-        /** Two seconds after the last bar so releases and the acid tail ring out. */
-        const val TAIL_FRAMES = 2L * OfflineExport.SAMPLE_RATE
-        private val STEM_LABELS = listOf("Batterie", "Basse", "Autres", "Voix")
+        /** After the last bar, releases, reverbs and echoes ring out until silent (−90 dBFS), ten seconds at most. */
+        const val MAX_TAIL_FRAMES = 10L * OfflineExport.SAMPLE_RATE
+        internal val STEM_LABELS = listOf("Batterie", "Basse", "Autres", "Voix")
 
         /** An export file's label ("batterie", "piste2-basse"…) as the progress line shows it. */
         private fun stageName(label: String): String = when (label) {

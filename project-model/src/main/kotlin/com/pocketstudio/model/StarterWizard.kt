@@ -291,7 +291,7 @@ object StarterWizard {
         }
         val partOfTrack = HashMap<Int, Part>()
         var project = Project(
-            name = tr(style.name),
+            name = style.name,
             tempoBpm = style.bpm,
             swing = style.swing,
             drums = DrumPattern(steps = steps, lanes = lanes),
@@ -472,9 +472,9 @@ object StarterWizard {
     }
 
     private val Part.trackName get() = when (this) {
-        Part.Bass -> tr("Basse")
-        Part.Pad -> tr("Nappe")
-        Part.Lead -> tr("Lead")
+        Part.Bass -> "Basse"
+        Part.Pad -> "Nappe"
+        Part.Lead -> "Lead"
     }
 
     /** The scale and the four chords (scale degrees) of [mood] in [style]: the style's own, or the mood's. */

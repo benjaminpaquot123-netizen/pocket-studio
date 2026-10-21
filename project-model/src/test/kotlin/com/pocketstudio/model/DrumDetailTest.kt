@@ -24,6 +24,22 @@ class DrumDetailTest {
     }
 
     @Test
+    fun aHitsForceIsContinuousAndKeepsTheRest() {
+        val drums = DrumPattern().toggle(2, 4).withHitDetail(2, 4, 0.5f, 3).cycleRepeats(2, 4).withHitVelocity(2, 4, 0.37f)
+        val hit = drums.lanes[2].hits[4]!!
+        assertEquals(0.37f, hit.velocity)
+        assertEquals(0.5f, hit.pan)
+        assertEquals(3, hit.pitch)
+        assertEquals(2, hit.repeats)
+        // Never silent (0 removes a hit in the engine), never above full; no hit there: unchanged.
+        assertEquals(DrumPattern.MIN_VELOCITY, drums.withHitVelocity(2, 4, 0f).lanes[2].hits[4]!!.velocity)
+        assertEquals(1f, drums.withHitVelocity(2, 4, 3f).lanes[2].hits[4]!!.velocity)
+        assertEquals(0.37f, drums.withHitVelocity(2, 4, Float.NaN).lanes[2].hits[4]!!.velocity)
+        assertEquals(drums, drums.withHitVelocity(2, 5, 0.5f))
+        assertEquals(0.37f, ProjectJson.decode(ProjectJson.encode(Project(drums = drums))).drums.lanes[2].hits[4]!!.velocity)
+    }
+
+    @Test
     fun padPanSurvivesSavingAndSceneChanges() {
         val p = Project(drums = DrumPattern().withPadPan(0, -0.7f).toggle(0, 0).withHitDetail(0, 0, 0.3f, -2))
         val back = ProjectJson.decode(ProjectJson.encode(p))

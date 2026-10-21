@@ -2,6 +2,7 @@ package com.pocketstudio.model.i18n
 
 import com.pocketstudio.model.ArpMode
 import com.pocketstudio.model.Buses
+import com.pocketstudio.model.DefaultNames
 import com.pocketstudio.model.Demos
 import com.pocketstudio.model.EffectType
 import com.pocketstudio.model.FxPresets
@@ -9,6 +10,7 @@ import com.pocketstudio.model.Genres
 import com.pocketstudio.model.Macros
 import com.pocketstudio.model.PlaitsPatch
 import com.pocketstudio.model.Scale
+import com.pocketstudio.model.Scene
 import com.pocketstudio.model.SoundCategories
 import com.pocketstudio.model.SoundLibrary
 import com.pocketstudio.model.SoundPacks
@@ -76,6 +78,10 @@ class ModelTextsTest {
         // Templates and demos.
         Genres.ALL.forEach { add(it.first, it.second) }
         Demos.ALL.forEach { add(it.first, it.second) }
+
+        // Names the app gives (saved in French, shown translated) and song sections.
+        addAll(DefaultNames.TEXTS)
+        addAll(Scene.SECTIONS)
 
         // Harmony.
         Scale.entries.forEach { add(it.label) }

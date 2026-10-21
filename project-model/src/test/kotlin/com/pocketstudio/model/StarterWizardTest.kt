@@ -324,11 +324,18 @@ class ChordPadsTest {
     fun padsAreTheScalesChords() {
         val aMinor = Harmony(9, Scale.Minor).chordPads(48)
         assertEquals(listOf("i", "ii°", "III", "iv", "v", "VI", "VII", "i"), aMinor.map { it.roman })
-        assertEquals("La m", aMinor[0].name)
+        assertEquals("La m", aMinor[0].name(english = false))
+        assertEquals("Am", aMinor[0].name(english = true))
         assertEquals(listOf(57, 60, 64), aMinor[0].notes)
         assertEquals(aMinor[0].notes.map { it + 12 }, aMinor[7].notes)
         val cMajor = Harmony(0, Scale.Major).chordPads(48)
-        assertEquals(listOf("Do", "Ré m", "Mi m", "Fa", "Sol", "La m", "Si dim", "Do"), cMajor.map { it.name })
+        assertEquals(listOf("Do", "Ré m", "Mi m", "Fa", "Sol", "La m", "Si dim", "Do"), cMajor.map { it.name(false) })
+        // English notation: no French note name anywhere (C D E, as chord charts write them).
+        assertEquals(listOf("C", "Dm", "Em", "F", "G", "Am", "Bdim", "C"), cMajor.map { it.name(true) })
+        val french = Regex("Do|Ré|Mi|Fa|Sol|La|Si")
+        Scale.entries.forEach { sc -> (0..11).forEach { root ->
+            Harmony(root, sc).chordPads(48).forEach { pad -> assertFalse(pad.name(true), french.containsMatchIn(pad.name(true))) }
+        } }
         // No scale, or a pentatonic one: the major scale of the root, every note in it.
         val free = Harmony(2, Scale.Off).chordPads(48)
         assertTrue(free.all { pad -> pad.notes.all { Harmony(2, Scale.Major).inScale(it) } })

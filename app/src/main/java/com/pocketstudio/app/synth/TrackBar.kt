@@ -72,8 +72,11 @@ class TracksUi(
 @Composable
 fun TrackBar(ui: TracksUi, modifier: Modifier = Modifier) {
     var menuFor by remember { mutableStateOf<InstrumentTrack?>(null) }
-    var renaming by remember { mutableStateOf<InstrumentTrack?>(null) }
-    var colouring by remember { mutableStateOf<InstrumentTrack?>(null) }
+    // The dialogs stay open when the screen turns: kept by track id, then looked up.
+    var renamingId by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf<Int?>(null) }
+    var colouringId by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf<Int?>(null) }
+    val renaming = renamingId?.let { id -> ui.tracks.firstOrNull { it.id == id } }
+    val colouring = colouringId?.let { id -> ui.tracks.firstOrNull { it.id == id } }
     Row(
         modifier.fadingHorizontalScroll().testTag("track_bar"),
         horizontalArrangement = Arrangement.spacedBy(6.dp),
@@ -98,15 +101,15 @@ fun TrackBar(ui: TracksUi, modifier: Modifier = Modifier) {
                 ) {
                     Box(Modifier.size(10.dp).background(color, CircleShape))
                     Column(Modifier.weight(1f, fill = false)) {
-                        Text(t.name, style = MaterialTheme.typography.labelLarge, fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
+                        Text(com.pocketstudio.model.DefaultNames.shown(t.name), style = MaterialTheme.typography.labelLarge, fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
                             maxLines = 1, overflow = TextOverflow.Ellipsis)
                         Text(tr(t.soundLabel), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     }
-                    if (selected) Icon(Icons.Filled.MoreVert, contentDescription = tr("Options de %s", t.name), Modifier.size(18.dp), tint = Neon.TextSecondary)
+                    if (selected) Icon(Icons.Filled.MoreVert, contentDescription = tr("Options de %s", com.pocketstudio.model.DefaultNames.shown(t.name)), Modifier.size(18.dp), tint = Neon.TextSecondary)
                 }
                 DropdownMenu(expanded = menuFor?.id == t.id, onDismissRequest = { menuFor = null }) {
-                    DropdownMenuItem(text = { Text(tr("Renommer")) }, onClick = { menuFor = null; renaming = t })
-                    DropdownMenuItem(text = { Text(tr("Couleur")) }, onClick = { menuFor = null; colouring = t })
+                    DropdownMenuItem(text = { Text(tr("Renommer")) }, onClick = { menuFor = null; renamingId = t.id })
+                    DropdownMenuItem(text = { Text(tr("Couleur")) }, onClick = { menuFor = null; colouringId = t.id })
                     DropdownMenuItem(
                         text = { Text(tr("Dupliquer")) }, enabled = ui.tracks.size < InstrumentTrack.MAX,
                         onClick = { menuFor = null; ui.duplicate(t.id) }, modifier = Modifier.testTag("track_duplicate"),
@@ -129,35 +132,35 @@ fun TrackBar(ui: TracksUi, modifier: Modifier = Modifier) {
         }
     }
     renaming?.let { t ->
-        var name by remember(t.id) { mutableStateOf(t.name) }
+        var name by androidx.compose.runtime.saveable.rememberSaveable(t.id) { mutableStateOf(com.pocketstudio.model.DefaultNames.shown(t.name)) }
         AlertDialog(
-            onDismissRequest = { renaming = null },
+            onDismissRequest = { renamingId = null },
             title = { Text(tr("Renommer la piste")) },
             text = {
                 OutlinedTextField(value = name, onValueChange = { name = it.take(InstrumentTrack.MAX_NAME) }, singleLine = true,
                     label = { Text(tr("Nom")) }, modifier = Modifier.testTag("track_name_field"))
             },
-            confirmButton = { TextButton(onClick = { ui.rename(t.id, name); renaming = null }, enabled = name.isNotBlank()) { Text(tr("OK")) } },
-            dismissButton = { TextButton(onClick = { renaming = null }) { Text(tr("Annuler")) } },
+            confirmButton = { TextButton(onClick = { ui.rename(t.id, name); renamingId = null }, enabled = name.isNotBlank()) { Text(tr("OK")) } },
+            dismissButton = { TextButton(onClick = { renamingId = null }) { Text(tr("Annuler")) } },
         )
     }
     colouring?.let { t ->
         AlertDialog(
-            onDismissRequest = { colouring = null },
-            title = { Text(tr("Couleur de « %s »", t.name)) },
+            onDismissRequest = { colouringId = null },
+            title = { Text(tr("Couleur de « %s »", com.pocketstudio.model.DefaultNames.shown(t.name))) },
             text = {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     TrackColors.forEachIndexed { i, c ->
                         Box(
                             Modifier.size(30.dp).clip(CircleShape).background(c)
                                 .border(BorderStroke(if (i == t.color) 3.dp else 0.dp, Neon.TextPrimary), CircleShape)
-                                .clickable { ui.setColor(t.id, i); colouring = null }
+                                .clickable { ui.setColor(t.id, i); colouringId = null }
                                 .testTag("track_color_$i"),
                         )
                     }
                 }
             },
-            confirmButton = { TextButton(onClick = { colouring = null }) { Text(tr("Fermer")) } },
+            confirmButton = { TextButton(onClick = { colouringId = null }) { Text(tr("Fermer")) } },
         )
     }
 }

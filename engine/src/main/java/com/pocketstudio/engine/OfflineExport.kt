@@ -14,9 +14,14 @@ class OfflineExport : AutoCloseable {
     internal val handle: Long = NativeEngine.exportCreate()
     @Volatile private var closed = false
 
-    /** [fadeOutFrames]: the file's last frames fade to silence (a song's ending); 0: none. */
-    fun render(file: File, frames: Long, tailFrames: Long, fadeOutFrames: Long = 0): ExportResult {
+    /**
+     * [fadeOutFrames]: the file's last frames fade to silence (a song's ending); 0: none.
+     * [autoTail]: [tailFrames] is a cap, the tail ends once the sound has died away (under −90 dBFS).
+     * [floatWav]: 32-bit float samples (a mix without limiter keeps its peaks above 0 dBFS).
+     */
+    fun render(file: File, frames: Long, tailFrames: Long, fadeOutFrames: Long = 0, autoTail: Boolean = false, floatWav: Boolean = false): ExportResult {
         NativeEngine.exportSetFadeOut(handle, fadeOutFrames)
+        NativeEngine.exportSetOptions(handle, autoTail, floatWav)
         return ExportResult.entries[NativeEngine.exportRender(handle, file.absolutePath, frames, tailFrames)]
     }
 

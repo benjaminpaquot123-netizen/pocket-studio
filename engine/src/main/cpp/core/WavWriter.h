@@ -5,7 +5,8 @@
 
 namespace ps {
 
-// Streams interleaved float audio to a 24-bit PCM WAV file with TPDF dither.
+// Streams interleaved float audio to a 24-bit PCM WAV file with TPDF dither, or to a 32-bit float
+// one (`floatSamples`: no dither, nothing clipped above 0 dBFS).
 // Not for the audio thread: it does file I/O.
 class WavWriter {
 public:
@@ -14,7 +15,7 @@ public:
     WavWriter(const WavWriter&) = delete;
     WavWriter& operator=(const WavWriter&) = delete;
 
-    bool open(const char* path, int sampleRate, int channels);
+    bool open(const char* path, int sampleRate, int channels, bool floatSamples = false);
     bool write(const float* interleaved, int numFrames);
     // Patches the header sizes and closes the file; false on any I/O error.
     bool close();
@@ -30,6 +31,8 @@ private:
     int channels_ = 2;
     int64_t frames_ = 0;
     bool ok_ = true;
+    bool float_ = false;
+    int bytesPerSample() const { return float_ ? 4 : 3; }
     uint32_t seed_ = 0x9E3779B9u;
     uint8_t buffer_[4096 * 3];
 };

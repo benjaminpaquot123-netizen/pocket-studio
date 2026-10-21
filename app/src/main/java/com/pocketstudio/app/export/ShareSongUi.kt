@@ -45,7 +45,12 @@ fun rememberShareSong(rhythmVm: RhythmViewModel): () -> Unit {
     // A name the user confirmed (even a template's): not asked again while the app is open.
     var confirmed by rememberSaveable { mutableStateOf<String?>(null) }
     LaunchedEffect(rhythmVm) {
-        rhythmVm.shareRequests.collect { files -> WavExporter.share(context, files, tr("Partager mon morceau")) }
+        rhythmVm.shareRequests.collect { files ->
+            WavExporter.share(context, files, tr("Partager mon morceau"))
+            // The song is exported and the share sheet is open: the last step of the card is done
+            // (not before: a cancelled name or export leaves it to do).
+            com.pocketstudio.app.onboarding.NextStepPrefs(context, rhythmVm.projectId).mark(com.pocketstudio.app.onboarding.StepGoal.Share)
+        }
     }
     naming?.let { name ->
         NameSongDialog(
@@ -66,7 +71,7 @@ fun rememberShareSong(rhythmVm: RhythmViewModel): () -> Unit {
         val name = rhythmVm.project.value.name
         when {
             export.running -> Toast.makeText(context, tr("Un export est déjà en cours : attends qu'il finisse."), Toast.LENGTH_SHORT).show()
-            ShareSong.isDefaultName(name) && name.trim() != confirmed -> naming = ShareSong.suggestedName(name)
+            ShareSong.isDefaultName(name) && name.trim() != confirmed -> naming = ShareSong.suggestedName(com.pocketstudio.model.DefaultNames.shown(name))
             else -> rhythmVm.shareSong()
         }
     }

@@ -7,6 +7,8 @@ namespace ps {
 // One-pole parameter smoother used to avoid zipper noise and clicks.
 class Smoother {
 public:
+    Smoother() = default;
+    explicit Smoother(float value) : current_(value), target_(value) {}
     void configure(float sampleRate, float timeMs) {
         coeff_ = std::exp(-1.0f / (0.001f * timeMs * sampleRate));
     }

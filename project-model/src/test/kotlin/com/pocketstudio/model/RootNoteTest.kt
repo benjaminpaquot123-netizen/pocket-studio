@@ -61,6 +61,14 @@ class RootNoteTest {
     }
 
     @Test
+    fun namesNotesTheEnglishWayInEnglishNotation() {
+        // Middle C is C4 in English notation, not "Do 3" nor "C3".
+        assertEquals("C4", RootNote.name(60f, english = true))
+        assertEquals("A4", RootNote.name(69.2f, english = true))
+        assertEquals("C#1", RootNote.name(25f, english = true))
+    }
+
+    @Test
     fun sampledPatchesAreSanitised() {
         val bad = SampledPatch(file = "../x.wav", root = Float.NaN, glide = 5f, release = -1f)
         val ok = bad.sanitized()

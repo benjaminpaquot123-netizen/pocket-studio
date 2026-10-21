@@ -14,7 +14,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Project(
     val formatVersion: Int = FORMAT_VERSION,
-    val name: String = tr("Nouveau projet"),
+    val name: String = "Nouveau projet",
     val tempoBpm: Double = 120.0,
     /** 0 = straight, 0.5 = heavy shuffle (delay of every second 16th, as a fraction of a 16th). */
     val swing: Double = 0.0,
@@ -43,7 +43,7 @@ data class Project(
     /** Live pads: sounds switched on and off by a tap, in time. */
     val live: LivePads = LivePads(),
     /** The first instrument track's name and colour (its sound is [synth] / [plaits] / [instrument]). */
-    val synthTrackName: String = tr("Synthé"),
+    val synthTrackName: String = "Synthé",
     val synthTrackColor: Int = 0,
     /** Instrument tracks added after the first one (see [InstrumentTrack]). */
     val tracks: List<InstrumentTrack> = emptyList(),
@@ -76,7 +76,7 @@ data class Project(
         plaits = plaits.sanitized(),
         sampled = sampled.sanitized(),
         live = live.sanitized(),
-        synthTrackName = synthTrackName.take(InstrumentTrack.MAX_NAME).ifBlank { tr("Synthé") },
+        synthTrackName = synthTrackName.take(InstrumentTrack.MAX_NAME).ifBlank { "Synthé" },
         synthTrackColor = synthTrackColor.coerceIn(0, InstrumentTrack.COLORS - 1),
         tracks = tracks.filter { it.id in 1 until InstrumentTrack.MAX }.distinctBy { it.id }.sortedBy { it.id }.map { it.sanitized() },
         beatsPerBar = beatsPerBar.coerceIn(MIN_BEATS, MAX_BEATS),
@@ -159,6 +159,13 @@ data class DrumPattern(
         return withHits(lane, lanes[lane].hits + (step to hit.copy(pan = pan, pitch = pitch).sanitized()))
     }
 
+    /** One hit's strength, 0.05..1 (« Force »): its roll, pan and pitch stay. No hit there: unchanged. */
+    fun withHitVelocity(lane: Int, step: Int, velocity: Float): DrumPattern {
+        val hit = lanes[lane].hits[step] ?: return this
+        val v = if (velocity.isFinite()) velocity.coerceIn(MIN_VELOCITY, 1f) else hit.velocity
+        return withHits(lane, lanes[lane].hits + (step to hit.copy(velocity = v)))
+    }
+
     fun withSample(lane: Int, sample: PadSample?): DrumPattern =
         copy(lanes = lanes.toMutableList().also { it[lane] = it[lane].copy(sample = sample) })
 
@@ -171,6 +178,8 @@ data class DrumPattern(
     companion object {
         const val PAD_COUNT = 16
         const val MAX_REPEATS = 4
+        /** The softest hit « Force » sets (velocity 0 would remove it in the engine). */
+        const val MIN_VELOCITY = 0.05f
         const val MIN_STEPS = 8
         const val MAX_STEPS = 64
     }
@@ -286,8 +295,14 @@ data class Mixer(
     val master: List<Insert> = List(INSERTS) { Insert() },
     /** Parameters of the send buses (see [Buses]). */
     val buses: List<List<Float>> = Buses.DEFAULTS,
+    /** The master's gain in dB, before the limiter ([MASTER_MIN_DB]..[MASTER_MAX_DB]). */
+    val masterDb: Float = 0f,
 ) {
+    /** [masterDb] as a linear gain, for the engine. */
+    val masterGain: Float get() = Math.pow(10.0, masterDb / 20.0).toFloat()
+
     fun sanitized(): Mixer = copy(
+        masterDb = masterDb.takeIf { it.isFinite() }?.coerceIn(MASTER_MIN_DB, MASTER_MAX_DB) ?: 0f,
         channels = (channels + List((CHANNELS - channels.size).coerceAtLeast(0)) { Channel() })
             .take(CHANNELS)
             .map { it.sanitized() },
@@ -302,6 +317,8 @@ data class Mixer(
         const val INSERTS = 4
         /** The master's index where a channel number is expected (automation, engine). */
         const val MASTER = 4
+        const val MASTER_MIN_DB = -24f
+        const val MASTER_MAX_DB = 6f
 
         /** The strip of drum pad [lane] (its own effects, before the drums' strip). */
         fun padChannel(lane: Int) = FIRST_PAD + lane

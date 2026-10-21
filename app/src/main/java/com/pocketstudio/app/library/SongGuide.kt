@@ -39,10 +39,11 @@ fun duration(seconds: Double): String {
 }
 
 /**
- * The guide that opens once the assistant has made the song: its three sections (Intro, Couplet,
- * Refrain) and what each adds, how to play the whole song, how to hear one section, and what to
- * try next. [song]: the song's summary ([songSummary]). [inKey]: a mood was chosen, so the song's
- * key is locked and the keyboard plays no wrong note.
+ * The guide that opens once the assistant has made the song, two short pages: its three sections
+ * (Intro, Couplet, Refrain) and what each adds; then how to hear it (the whole song, or one section
+ * in a loop) and what to try next. It ends on "▶ Écouter mon morceau". [song]: the song's summary
+ * ([songSummary]). [inKey]: a mood was chosen, so the song's key is locked and the keyboard plays
+ * no wrong note.
  */
 fun songGuide(styleName: String, plan: StarterWizard.ScenePlan, inKey: Boolean, song: String = ""): List<GuidePage> {
     fun scene(index: Int): String {
@@ -53,31 +54,18 @@ fun songGuide(styleName: String, plan: StarterWizard.ScenePlan, inKey: Boolean, 
     return listOf(
         GuidePage(
             tr("Ton morceau %s est prêt", tr(styleName)),
-            listOf(tr("Il a trois sections, comme une vraie chanson. Chacune ajoute des sons à celle d'avant :")) + scenes,
+            listOf(tr("Il a trois sections, comme une vraie chanson. Chacune ajoute des sons à celle d'avant :")) + scenes +
+                tr("Pas besoin de sauvegarder : tout est gardé tout seul."),
         ),
         GuidePage(
-            tr("Jouer tout le morceau"),
+            tr("Écouter et changer"),
             listOfNotNull(
-                tr("Onglet Morceau : la liste enchaîne les sections du début à la fin."),
+                tr("▶ Jouer fait entendre tout le morceau, de l'Intro à la fin. Pour écouter en boucle la section affichée, touche « Écouter » à côté de Jouer (onglet Rythme) : « cette section »."),
                 song.takeIf { it.isNotBlank() },
-                tr("Touche « Jouer le morceau » pour l'entendre en entier. Les boutons + et − changent le nombre de fois qu'une section se répète."),
-            ),
-        ),
-        GuidePage(
-            tr("Écouter une section"),
-            listOf(
-                tr("▶ en haut joue tout le morceau, de l'Intro à la fin. Pour écouter une seule section en boucle : Morceau › Écouter « la scène »."),
-                tr("Onglet Morceau › Scènes : touche Couplet ou Refrain pour l'afficher et l'écouter. Pendant la lecture, elle prend le relais à la mesure suivante."),
-                tr("Ce que tu vois dans Rythme, Acide et Synthé, c'est toujours la section affichée."),
-            ),
-        ),
-        GuidePage(
-            tr("Et maintenant ?"),
-            listOf(
                 tr("Rythme : touche les cases pour ajouter ou enlever des coups."),
                 if (inKey) tr("Synthé : joue au clavier, il reste dans la gamme du morceau : aucune fausse note possible.")
                 else tr("Synthé : joue au clavier pour essayer des notes par-dessus le rythme."),
-                tr("Les noms Intro, Couplet et Refrain se changent dans l'onglet Morceau. Duplique une section pour en faire un Pont ou une Fin, puis ajoute-la au morceau."),
+                tr("Onglet Morceau : touche Intro, Couplet ou Refrain pour l'afficher, change son nom, ou duplique-la pour en faire un Pont ou une Fin."),
             ),
         ),
     )

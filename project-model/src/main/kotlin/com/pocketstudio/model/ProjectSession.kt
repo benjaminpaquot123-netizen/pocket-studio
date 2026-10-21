@@ -44,6 +44,14 @@ class ProjectSession(
     private val saveLock = Mutex()
     private var pendingSave: Job? = null
     private var dirty = false
+        set(value) {
+            field = value
+            _unsaved.value = value
+        }
+
+    private val _unsaved = MutableStateFlow(false)
+    /** True while changes wait to be written (the autosave delay, or a save that failed). */
+    val unsaved: StateFlow<Boolean> = _unsaved.asStateFlow()
 
     /** Applies [transform] to the project. Same [coalesceKey] in a quick burst = one undo step. */
     fun edit(coalesceKey: String? = null, transform: (Project) -> Project) {
@@ -88,10 +96,10 @@ class ProjectSession(
         if (history.redo() != null) publish()
     }
 
-    /** Writes any pending change now. */
-    suspend fun flush() {
+    /** Writes any pending change now; false when the save failed (the change is still waiting). */
+    suspend fun flush(): Boolean {
         pendingSave?.cancel()
-        saveNow()
+        return saveNow()
     }
 
     private fun publish() {
@@ -106,19 +114,22 @@ class ProjectSession(
         }
     }
 
-    private suspend fun saveNow() = saveLock.withLock {
-        if (!dirty) return@withLock
+    /** True when everything up to now is on disk. */
+    private suspend fun saveNow(): Boolean = saveLock.withLock {
+        if (!dirty) return@withLock true
         val snapshot = history.current
         dirty = false
         try {
             withContext(io) { store.save(id, snapshot) }
             _lastSaveError.value = null
+            true
         } catch (e: CancellationException) {
             dirty = true  // superseded by a newer save (flush): not an error
             throw e
         } catch (e: Exception) {
             dirty = true
             _lastSaveError.value = e
+            false
         }
     }
 }

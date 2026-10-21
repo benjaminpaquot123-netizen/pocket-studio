@@ -179,7 +179,7 @@ private fun macroText(m: Int, v: Float): String {
             else -> tr("Neutre")
         }
     }
-    return if (v < 0.01f) "0" else "${(v * 100).roundToInt()} %"
+    return if (v < 0.01f) "0" else com.pocketstudio.model.i18n.percent((v * 100).roundToInt())
 }
 
 /** One line for a closed strip: the matching ready-made effect, or what is on. */

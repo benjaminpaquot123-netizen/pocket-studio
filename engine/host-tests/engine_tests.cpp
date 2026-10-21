@@ -1246,6 +1246,142 @@ void testOfflineExportFadesOutTheEnd() {
     }
 }
 
+// Stems: with the master's inserts and limiter bypassed, the stems (each strip soloed) add back
+// up to the mix before the master, sample for sample; the limiter does not touch them.
+void testStemsAddUpToTheMix() {
+    auto song = [](ps::OfflineRenderer& r, int solo, bool bypass) {
+        r.post({ps::CommandType::SetTempo, 120.0f});
+        // The kick and the acid line, loud: together they go far over the limiter's ceiling.
+        for (int step = 0; step < 16; step += 2) r.post({ps::CommandType::SetDrumHit, 1.0f, 0, step});
+        for (int st = 0; st < 16; ++st) r.post({ps::CommandType::SetAcidStep, 0.0f, st, ps::AcidStep{st % 7, 0, st % 3 == 0, st % 4 == 1, true}.pack()});
+        r.post({ps::CommandType::SetChannelVolume, 1.0f, ps::Mixer::kDrums});
+        r.post({ps::CommandType::SetChannelVolume, 1.0f, 1});
+        // Both in the reverb and the echo: a stem carries its own share of the send returns.
+        r.post({ps::CommandType::SetSend, 0.5f, ps::Mixer::kDrums, 0});
+        r.post({ps::CommandType::SetSend, 0.4f, 1, 1});
+        // A squashing compressor on the master, and its gain up.
+        r.post({ps::CommandType::SetInsertType, 0.0f, ps::Mixer::kMaster * ps::Mixer::kInserts, ps::InsertSlot::Comp});
+        const float comp[4] = {0.0f, 1.0f, 0.0f, 0.5f};  // -40 dB threshold, 20:1, fast
+        for (int prm = 0; prm < 4; ++prm) r.post({ps::CommandType::SetInsertParam, comp[prm], ps::Mixer::kMaster * ps::Mixer::kInserts, prm});
+        r.post({ps::CommandType::SetMaster, 1.4f, 0});
+        if (solo >= 0) r.post({ps::CommandType::SetChannelSolo, 1.0f, solo});
+        if (bypass) {
+            r.post({ps::CommandType::SetMaster, 0.0f, 1});
+            r.post({ps::CommandType::SetMaster, 0.0f, 2});
+        }
+    };
+    const int64_t bars = kRate * 2 * 2;
+    auto renderOf = [&](int solo, bool bypass) {
+        ps::OfflineRenderer r(kRate);
+        song(r, solo, bypass);
+        return r.renderToBuffer(bars, kRate);
+    };
+    const auto mixed = renderOf(-1, false);
+    const auto pre = renderOf(-1, true);
+    const auto again = renderOf(-1, true);
+    const auto drums = renderOf(ps::Mixer::kDrums, true);
+    const auto acid = renderOf(1, true);
+    CHECK(pre == again);  // the renders are repeatable: the comparison below means something
+    CHECK(mixed.size() == pre.size() && drums.size() == pre.size() && acid.size() == pre.size());
+    if (drums.size() != pre.size() || acid.size() != pre.size() || mixed.size() != pre.size()) return;
+    float diff = 0.0f, peakPre = 0.0f, peakMixed = 0.0f, peakDrums = 0.0f, peakAcid = 0.0f, mixDiff = 0.0f;
+    for (size_t i = 0; i < pre.size(); ++i) {
+        diff = std::max(diff, std::fabs(drums[i] + acid[i] - pre[i]));
+        mixDiff = std::max(mixDiff, std::fabs(drums[i] + acid[i] - mixed[i]));
+        peakPre = std::max(peakPre, std::fabs(pre[i]));
+        peakMixed = std::max(peakMixed, std::fabs(mixed[i]));
+        peakDrums = std::max(peakDrums, std::fabs(drums[i]));
+        peakAcid = std::max(peakAcid, std::fabs(acid[i]));
+    }
+    CHECK(peakDrums > 0.1f && peakAcid > 0.05f);
+    CHECK(diff < 1e-4f);                    // the stems add up to the mix before the master
+    CHECK(peakPre > ps::Mixer::kCeiling);   // no limiter: the peaks over the ceiling stay
+    CHECK(peakMixed <= ps::Mixer::kCeiling + 1e-3f);  // with it, the mix is held under -1 dBFS
+    CHECK(mixDiff > 0.05f);                 // and the master's processing really changes the sound
+    // The master's gain is a plain gain before the limiter: half of it, half the level.
+    ps::OfflineRenderer half(kRate);
+    song(half, -1, true);
+    half.post({ps::CommandType::SetMaster, 0.7f, 0});
+    const auto halved = half.renderToBuffer(bars, kRate);
+    float halfDiff = 0.0f;
+    for (size_t i = 0; i < halved.size() && i < pre.size(); ++i) halfDiff = std::max(halfDiff, std::fabs(halved[i] * 2.0f - pre[i]));
+    CHECK(halved.size() == pre.size() && halfDiff < 1e-4f);
+}
+
+// The automatic tail: rendered until the output stays under -90 dBFS, longer than the old fixed
+// two seconds for a long reverb, through the gaps of an echo, and capped (with a fade) when it never ends.
+void testOfflineExportAutoTail() {
+    const int64_t bar = kRate * 2;
+    const int64_t cap = kRate * 10;
+    auto peakIn = [](const std::vector<float>& b, int64_t from, int64_t to) {
+        float m = 0.0f;
+        for (size_t i = size_t(std::max<int64_t>(0, from)) * 2; i < size_t(to) * 2 && i < b.size(); ++i) m = std::max(m, std::fabs(b[i]));
+        return m;
+    };
+    // A long reverb on a last hit.
+    ps::OfflineRenderer wet(kRate);
+    wet.post({ps::CommandType::SetTempo, 120.0f});
+    wet.post({ps::CommandType::SetDrumHit, 1.0f, 0, 12});
+    wet.post({ps::CommandType::SetSend, 1.0f, 0, 0});
+    wet.post({ps::CommandType::SetBusParam, 0.85f, 0, 0});  // a big room
+    wet.setAutoTail(true);
+    const auto room = wet.renderToBuffer(bar, cap);
+    const int64_t roomFrames = int64_t(room.size() / 2);
+    CHECK(roomFrames > bar + 2 * kRate);  // the reverb rings longer than the old fixed tail
+    CHECK(roomFrames < bar + cap);        // and still ends by itself
+    CHECK(peakIn(room, roomFrames - kRate / 5, roomFrames) < ps::OfflineRenderer::kSilence);
+    CHECK(peakIn(room, bar, bar + kRate) > 1e-3f);  // not faded: still the full reverb after the stop
+    CHECK(wet.progress() == 1.0f);
+
+    // An echo of a short hit, half a note apart (1 s at 120 BPM): silent gaps between repeats
+    // must not end the tail before the last audible one.
+    ps::OfflineRenderer echo(kRate);
+    echo.post({ps::CommandType::SetTempo, 120.0f});
+    echo.post({ps::CommandType::SetDrumHit, 1.0f, 2, 15});  // a closed hat: short
+    echo.post({ps::CommandType::SetSend, 1.0f, ps::Mixer::kDrums, 1});
+    echo.post({ps::CommandType::SetBusParam, 1.0f, 1, 0});   // 1/2 note
+    echo.post({ps::CommandType::SetBusParam, 0.25f, 1, 1});  // some feedback
+    echo.setAutoTail(true);
+    const auto echoes = echo.renderToBuffer(bar, cap);
+    const int64_t echoFrames = int64_t(echoes.size() / 2);
+    const int64_t hit = bar - bar / 16;  // the hat on step 15
+    // The third repeat (3 s after the hat) is in the file, and audible.
+    CHECK(echoFrames > hit + 3 * kRate + kRate / 10);
+    CHECK(peakIn(echoes, hit + 3 * kRate - kRate / 50, hit + 3 * kRate + kRate / 20) > 1e-3f);
+    CHECK(echoFrames < bar + cap);
+
+    // Feedback at its highest: the echo outlives the cap, which the tail stops at, fading.
+    ps::OfflineRenderer endless(kRate);
+    endless.post({ps::CommandType::SetTempo, 120.0f});
+    endless.post({ps::CommandType::SetDrumHit, 1.0f, 0, 15});
+    endless.post({ps::CommandType::SetSend, 1.0f, 0, 1});
+    endless.post({ps::CommandType::SetBusParam, 0.5f, 1, 0});
+    endless.post({ps::CommandType::SetBusParam, 1.0f, 1, 1});
+    endless.post({ps::CommandType::SetBusParam, 1.0f, 1, 3});  // bright: little lost per repeat
+    endless.setAutoTail(true);
+    const auto capped = endless.renderToBuffer(bar, cap);
+    CHECK(int64_t(capped.size() / 2) == bar + cap);
+    CHECK(peakIn(capped, bar + cap - 64, bar + cap) < 1e-3f);
+    CHECK(peakIn(capped, bar + cap - kRate, bar + cap - kRate / 2) > 1e-3f);
+
+    // Float WAV: values above 0 dBFS are kept, the header says IEEE float.
+    const std::string path = (std::filesystem::temp_directory_path() / "ps_float_test.wav").string();
+    ps::WavWriter w;
+    CHECK(w.open(path.c_str(), kRate, 2, true));
+    const float loud[4] = {1.5f, -0.25f, 0.5f, -2.0f};
+    CHECK(w.write(loud, 2));
+    CHECK(w.close());
+    const auto f = readFile(path);
+    CHECK(f.size() == 58 + 16);
+    CHECK(f[20] == 3 && f[34] == 32 && std::memcmp(f.data() + 50, "data", 4) == 0 && le32(f.data() + 54) == 16);
+    CHECK(le32(f.data() + 4) == f.size() - 8 && le32(f.data() + 46) == 2);
+    float first = 0.0f, last = 0.0f;
+    std::memcpy(&first, f.data() + 58, 4);
+    std::memcpy(&last, f.data() + 58 + 12, 4);
+    CHECK(first == 1.5f && last == -2.0f);
+    std::filesystem::remove(path);
+}
+
 void testSampleResamplesCleanly() {
     // 1 kHz sine at 44.1 kHz, 1 s, stereo -> 48 kHz: same duration and pitch, no NaN.
     const int inFrames = 44100;
@@ -1739,6 +1875,200 @@ void testAudioTracks() {
     engine.post(off);
     render(engine, 256, 256);
     engine.collectGarbage();
+}
+
+// A song clip: its start counts from the song, it plays once straight across part changes (never
+// restarted by a scene swap), a part's mute only silences it, and a song started from a later part
+// picks it up in its middle. The offline render puts it on the same sample.
+void testSongAudioClip() {
+    // 120 BPM: a step is 6000 frames. The clip: a ramp (its frame index / 1e6) with a loud mark at 0.
+    const int len = 6000 * 40;
+    std::vector<float> d(static_cast<size_t>(len));
+    for (int i = 0; i < len; ++i) d[size_t(i)] = float(i) * 1e-6f;
+    std::fill(d.begin(), d.begin() + 50, 0.9f);
+    auto install = [&](auto& target, int track) {
+        ps::Command c{ps::CommandType::InstallAudioClip, 0.0f, track};
+        c.sample = ps::Sample::create(d.data(), len, 1, kRate, kRate);
+        target.post(c);
+        target.post({ps::CommandType::SetAudioClipParam, 1.0f, track, ps::AudioTracks::Song});
+        target.post({ps::CommandType::SetAudioClipParam, 4.0f, track, ps::AudioTracks::Start});
+        target.post({ps::CommandType::SetAudioClipParam, 8.0f, track, ps::AudioTracks::LoopSteps});  // ignored by a song clip
+    };
+    // The audio strip alone at unity (0.8 = 0 dB): the output is the clip itself.
+    auto scene = [&](auto& target) {
+        target.post({ps::CommandType::SetStaging, 1.0f});
+        target.post({ps::CommandType::SetStaging, 0.0f});
+        target.post({ps::CommandType::ArmSceneSwap, 0.0f, 16});  // the next part after one bar
+    };
+    ps::Engine engine(kRate);
+    install(engine, 0);
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    scene(engine);
+    auto out = render(engine, 6000 * 30, 64);
+    CHECK(engine.sceneSwaps() == 1);
+    // Starts exactly on song step 4; a part change at step 16 does not restart it: the ramp goes on.
+    CHECK(std::fabs(out[size_t(6000 * 4 - 1) * kChannels]) < 1e-6f);
+    CHECK(out[size_t(6000 * 4) * kChannels] > 0.5f);
+    const float at20 = out[size_t(6000 * 20) * kChannels];
+    const float at16 = out[size_t(6000 * 16 + 100) * kChannels];
+    const float at25 = out[size_t(6000 * 25) * kChannels];
+    CHECK(at16 < 0.5f && at20 < 0.5f && at25 < 0.5f);  // no second mark after the swap
+    CHECK(at25 > at20 && at20 > at16);
+    const float ratio = out[size_t(6000 * 24) * kChannels] / out[size_t(6000 * 14) * kChannels];
+    CHECK(std::fabs(ratio - 2.0f) < 0.01f);  // 20 steps vs 10 steps into the clip
+    // A part that switches it off silences it; the next one brings it back where the song is.
+    engine.post({ps::CommandType::SetAudioOn, 0.0f, 0});
+    out = render(engine, 6000, 64);
+    CHECK(std::fabs(out[size_t(5000) * kChannels]) < 1e-7f);
+    CHECK(engine.audioClipPlaying(0));
+    engine.post({ps::CommandType::SetAudioOn, 1.0f, 0});
+    out = render(engine, 6000, 64);
+    const float back = out[size_t(3000) * kChannels];
+    CHECK(std::fabs(back - float(6000 * 27 + 3000) * 1e-6f) < 2e-4f);
+    engine.post({ps::CommandType::SetTransport, 0.0f, 0});
+    render(engine, 1024, 256);
+    CHECK(!engine.audioClipPlaying(0));
+
+    // Started from a later part (song step 12): it plays from 8 steps into the clip at once.
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0, 12});
+    out = render(engine, 6000, 64);
+    CHECK(engine.songStep() == 12);
+    CHECK(std::fabs(out[size_t(1000) * kChannels] - float(6000 * 8 + 1000) * 1e-6f) < 2e-5f);
+    engine.post({ps::CommandType::SetTransport, 0.0f, 0});
+    render(engine, 1024, 256);
+    // The same with swing, from an odd start step: that step sounded half a step late, so the
+    // clip is half a step less far in.
+    engine.post({ps::CommandType::SetSwing, 0.5f});
+    engine.post({ps::CommandType::SetAudioClipParam, 5.0f, 0, ps::AudioTracks::Start});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0, 14});
+    out = render(engine, 6000, 64);
+    CHECK(std::fabs(out[size_t(1000) * kChannels] - float(6000 * 9 - 3000 + 1000) * 1e-6f) < 2e-5f);
+    engine.post({ps::CommandType::SetTransport, 0.0f, 0});
+    engine.post({ps::CommandType::SetSwing, 0.0f});
+    engine.post({ps::CommandType::SetAudioClipParam, 4.0f, 0, ps::AudioTracks::Start});
+    render(engine, 1024, 256);
+
+    // Moved 120 frames later: the mark lands 120 frames after step 4; earlier: the clip starts 120 frames in.
+    engine.post({ps::CommandType::SetAudioClipParam, 120.0f, 0, ps::AudioTracks::Offset});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    out = render(engine, 6000 * 5, 64);
+    CHECK(std::fabs(out[size_t(6000 * 4 + 119) * kChannels]) < 1e-6f && out[size_t(6000 * 4 + 120) * kChannels] > 0.5f);
+    engine.post({ps::CommandType::SetTransport, 0.0f, 0});
+    render(engine, 1024, 256);
+    engine.post({ps::CommandType::SetAudioClipParam, -120.0f, 0, ps::AudioTracks::Offset});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    out = render(engine, 6000 * 5, 64);
+    CHECK(std::fabs(out[size_t(6000 * 4) * kChannels] - 120e-6f) < 1e-7f);
+    engine.post({ps::CommandType::SetTransport, 0.0f, 0});
+    engine.post({ps::CommandType::SetAudioClipParam, 0.0f, 0, ps::AudioTracks::Offset});
+    render(engine, 1024, 256);
+
+    // The export: the same song (swap after one bar) renders the clip on the same samples.
+    ps::OfflineRenderer r(kRate);
+    install(r, 0);
+    r.scheduleFrom(3000);  // half a step in, like the app's song export
+    scene(r);
+    r.scheduleFrom(-1);
+    const auto file = r.renderToBuffer(6000 * 30, 0);
+    ps::Engine live(kRate);
+    install(live, 0);
+    live.post({ps::CommandType::SetTransport, 1.0f, 0});
+    render(live, 3000, 3000);
+    scene(live);
+    const auto heard = render(live, 6000 * 30 - 3000, 100);
+    float diff = 0.0f;
+    for (int i = 0; i < 6000 * 30 - 3000; ++i) diff = std::max(diff, std::fabs(file[size_t(i + 3000) * 2] - heard[size_t(i) * kChannels]));
+    CHECK(file[size_t(6000 * 4) * 2] > 0.5f && std::fabs(file[size_t(6000 * 4 - 1) * 2]) < 1e-6f);
+    CHECK(diff < 1e-6f);
+    engine.post({ps::CommandType::InstallAudioClip, 0.0f, 0});
+    live.post({ps::CommandType::InstallAudioClip, 0.0f, 0});
+    render(engine, 256, 256);
+    render(live, 256, 256);
+    engine.collectGarbage();
+    live.collectGarbage();
+}
+
+// A scene clip that plays once (loop 0): it does not come back before its scene starts again; a
+// part's own loop, staged with its scene, takes over at the swap.
+void testOnceAudioClip() {
+    ps::Engine engine(kRate);
+    std::vector<float> d(1000, 0.5f);
+    ps::Command c{ps::CommandType::InstallAudioClip, 0.0f, 2};
+    c.sample = ps::Sample::create(d.data(), 1000, 1, kRate, kRate);
+    engine.post(c);
+    engine.post({ps::CommandType::SetAudioClipParam, 0.0f, 2, ps::AudioTracks::LoopSteps});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    render(engine, 6000 * 2, 256);
+    CHECK(engine.mixer().takeChannelPeak(ps::audioChannel(2)) > 0.3f);  // played on step 0
+    render(engine, 6000 * 30, 256);
+    CHECK(engine.mixer().takeChannelPeak(ps::audioChannel(2)) == 0.0f);  // never again
+    // The next part: it plays again from its start, then every 4 steps (that part's own loop).
+    engine.post({ps::CommandType::SetStaging, 1.0f});
+    engine.post({ps::CommandType::SetAudioClipParam, 4.0f, 2, ps::AudioTracks::LoopSteps});
+    engine.post({ps::CommandType::SetStaging, 0.0f});
+    render(engine, 6000, 256);
+    CHECK(engine.mixer().takeChannelPeak(ps::audioChannel(2)) == 0.0f);  // staged: not yet
+    engine.post({ps::CommandType::ArmSceneSwap, 0.0f, 0});
+    render(engine, 6000 * 16, 256);
+    CHECK(engine.sceneSwaps() == 1);
+    engine.mixer().takeChannelPeak(ps::audioChannel(2));
+    render(engine, 6000 * 4, 256);
+    CHECK(engine.mixer().takeChannelPeak(ps::audioChannel(2)) > 0.3f);
+    // A part staged with "once" (loop 0) that never came (Stop, or a cancelled swap) leaves
+    // nothing behind: a later swap keeps the loop set since (every 4 steps).
+    for (const bool cancel : {false, true}) {
+        engine.post({ps::CommandType::SetStaging, 1.0f});
+        engine.post({ps::CommandType::SetAudioClipParam, 0.0f, 2, ps::AudioTracks::LoopSteps});
+        engine.post({ps::CommandType::SetStaging, 0.0f});
+        if (cancel) engine.post({ps::CommandType::ArmSceneSwap, 0.0f, -1});
+        engine.post({ps::CommandType::SetTransport, 0.0f, 0});
+        engine.post({ps::CommandType::SetAudioClipParam, 4.0f, 2, ps::AudioTracks::LoopSteps});
+        engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+        engine.post({ps::CommandType::ArmSceneSwap, 0.0f, 0});  // a plain scene change, nothing staged for audio
+        render(engine, 6000 * 17, 256);
+        CHECK(engine.sceneSwaps() == (cancel ? 3u : 2u));
+        engine.mixer().takeChannelPeak(ps::audioChannel(2));
+        render(engine, 6000 * 4 + 100, 256);
+        CHECK(engine.mixer().takeChannelPeak(ps::audioChannel(2)) > 0.3f);  // still every 4 steps after the swap
+    }
+    engine.post({ps::CommandType::SetTransport, 0.0f, 0});
+    engine.post({ps::CommandType::InstallAudioClip, 0.0f, 2});
+    render(engine, 512, 256);
+    engine.collectGarbage();
+}
+
+// Started from a later part, the song position (song automation, what the app records on) is the
+// part's place in the song, not 0; the same when a scene hands over to that part.
+void testSongStartsFromALaterPart() {
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SetTransport, 1.0f, 1, 64});  // a bar of count-in, then song step 64
+    render(engine, kRate * 2 - 100, 100);
+    CHECK(engine.songStep() == -1);
+    render(engine, 6000 * 2, 100);
+    CHECK(engine.songStep() == 65);
+    // A song curve reads its value for bar 4 (step 64) at once, not bar 0's.
+    ps::Engine curve(kRate);
+    curve.post({ps::CommandType::SynthNoteOn, 0.8f, 57});
+    curve.post({ps::CommandType::SetAutomationTarget, 0.0f, 0, ps::Automation::pack(ps::Automation::Volume, 2, 0, 0)});
+    curve.post({ps::CommandType::SetAutomationMode, 8.0f, 0, ps::Automation::Song});
+    for (int b = 0; b < 8; ++b) curve.post({ps::CommandType::SetAutomationSong, b >= 4 ? 0.8f : 0.0f, 0, b});
+    curve.post({ps::CommandType::SetTransport, 1.0f, 0, 64});
+    auto out = render(curve, 12000, 256);
+    double sum = 0;
+    for (int i = 6000; i < 12000; ++i) sum += double(out[size_t(i) * 2]) * out[size_t(i) * 2];
+    CHECK(std::sqrt(sum / 6000) > 0.01);  // bar 0 would be silent
+    // A scene playing hands over to song part 3 (song step 48): the song counts from there.
+    ps::Engine scenes(kRate);
+    scenes.post({ps::CommandType::SetTransport, 1.0f, 0});
+    render(scenes, 6000 * 6, 256);
+    scenes.post({ps::CommandType::ArmSceneSwap, 48.0f, 0, 1});
+    render(scenes, 6000 * 11, 256);  // past step 16
+    CHECK(scenes.sceneSwaps() == 1);
+    CHECK(scenes.songStep() == 48);
+    // The song starting over from its first part counts from 0 again.
+    scenes.post({ps::CommandType::ArmSceneSwap, 0.0f, 0, 1});
+    render(scenes, 6000 * 16, 256);
+    CHECK(scenes.songStep() == 0);
 }
 
 void testRecordingStartsOnTheFirstStep() {
@@ -4007,6 +4337,8 @@ int main(int argc, char** argv) {
         {"wav_writer", testWavWriterRoundTrip},
         {"offline_export", testOfflineExportRendersTheBeat},
         {"offline_fade_out", testOfflineExportFadesOutTheEnd},
+        {"stems_add_up_to_the_mix", testStemsAddUpToTheMix},
+        {"offline_auto_tail", testOfflineExportAutoTail},
         {"sample_resample", testSampleResamplesCleanly},
         {"pad_sample", testPadSampleReplacesTheDrum},
         {"sample_refs", testSampleReferencesAreNeverLeakedOrFreedEarly},
@@ -4043,6 +4375,9 @@ int main(int argc, char** argv) {
         {"automation_clips", testAutomationClips},
         {"expression_arp", testExpressionAndArpeggio},
         {"audio_tracks", testAudioTracks},
+        {"song_audio_clip", testSongAudioClip},
+        {"once_audio_clip", testOnceAudioClip},
+        {"song_from_a_later_part", testSongStartsFromALaterPart},
         {"recording", testRecordingStartsOnTheFirstStep},
         {"three_four", testThreeFourAndPartMutes},
         {"live_pads_bar", testLivePadsFollowTheBar},

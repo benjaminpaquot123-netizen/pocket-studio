@@ -52,6 +52,28 @@ class MidiFileTest {
     }
 
     @Test
+    fun anAcidLineShorterThanTheSceneRunsOnAcrossThePartsRepeats() {
+        // 12 steps in a 16-step scene played twice: like the engine, the line keeps cycling
+        // (steps 0, 12, 24), it does not start over at the second repeat (0, 12, 16, 28).
+        val acid = AcidPattern(length = 12, steps = List(AcidPattern.MAX_STEPS) { i -> AcidStep(gate = i == 0) })
+        val p = Project(acid = acid, drums = DrumPattern().toggle(0, 0)).copy(song = listOf(SongPart(0, 2))).sanitized()
+        val starts = MidiFile.read(MidiFile.export(p)).notes.filter { it.channel == 1 }.map { it.start / NoteClip.TICKS_PER_STEP }
+        assertEquals(listOf(0, 12, 24), starts)
+    }
+
+    @Test
+    fun theSwingIsWrittenIntoTheTiming() {
+        val drums = DrumPattern().toggle(0, 0).toggle(2, 5).toggle(2, 6)
+        val p = Project(swing = 0.5, drums = drums, synthNotes = NoteClip(notes = listOf(Note(3 * 24 + 6, 12, 60))))
+        val notes = MidiFile.read(MidiFile.export(p, song = false)).notes
+        // Odd sixteenths start half a sixteenth late (12 ticks); even ones stay on the grid.
+        assertEquals(listOf(0, 6 * 24, 5 * 24 + 12), notes.filter { it.channel == MidiFile.DRUM_CHANNEL }.map { it.start }.sorted().let { listOf(it[0], it[2], it[1]) })
+        assertEquals(listOf(3 * 24 + 6 + 12), notes.filter { it.channel == 0 }.map { it.start })
+        // No swing: the grid as it is.
+        assertEquals(5 * 24, MidiFile.read(MidiFile.export(p.copy(swing = 0.0), song = false)).notes.filter { it.channel == MidiFile.DRUM_CHANNEL }.map { it.start }.sorted()[1])
+    }
+
+    @Test
     fun theSongIsChainedScenes() {
         val a = project()
         // Scene B: an empty copy; song A ×2 then B.

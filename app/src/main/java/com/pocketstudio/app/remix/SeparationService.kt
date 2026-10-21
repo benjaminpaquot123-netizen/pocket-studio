@@ -212,7 +212,7 @@ class SeparationService : Service() {
             // The model needs about 2.6 GB while it runs (measured), plus the song and its stems.
             val memory = android.app.ActivityManager.MemoryInfo()
             getSystemService(android.app.ActivityManager::class.java).getMemoryInfo(memory)
-            val neededRam = 2_800_000_000L + (raw.seconds * Demucs.SAMPLE_RATE * 2 * 4 * 7).toLong()
+            val neededRam = RemixMemory.needed(raw.seconds)
             AppLog.add("Séparation : mémoire libre ${memory.availMem / 1_000_000} Mo, besoin ~${neededRam / 1_000_000} Mo")
             if (memory.availMem < neededRam) {
                 return SeparationState.Failed(
@@ -310,7 +310,7 @@ class SeparationService : Service() {
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(title)
-            .setContentText(fraction?.let { "${(it * 100).roundToInt()} %" } ?: tr("Patiente un peu…"))
+            .setContentText(fraction?.let { com.pocketstudio.model.i18n.percent((it * 100).roundToInt()) } ?: tr("Patiente un peu…"))
             .setProgress(100, fraction?.let { (it * 100).roundToInt() } ?: 0, fraction == null)
             .setContentIntent(openApp())
             .setOngoing(true)

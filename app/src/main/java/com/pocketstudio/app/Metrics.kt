@@ -55,17 +55,30 @@ object Metrics {
      * moved by how much slower or faster the output is than when it was measured (a Bluetooth
      * headset adds 150 to 250 ms that a measure on the speaker does not have).
      */
-    fun recordLatencyMs(): Double = recordLatencyMs(_roundTripMs.value, measuredOutputMs, _streamInfo.value.outputLatencyMs)
+    fun recordLatencyMs(): Double = recordLatencyMs(
+        _roundTripMs.value, measuredOutputMs, _streamInfo.value.outputLatencyMs,
+        bluetooth = com.pocketstudio.app.audio.Headphones.state.value == com.pocketstudio.app.audio.Listening.Bluetooth,
+    )
+
+    /**
+     * Without a measure, the microphone of a phone or a wired headset hears about as late as the
+     * output plays, so the round trip is guessed as twice the output. Not with [bluetooth]: the
+     * music goes out through the headset (150 to 250 ms) but the voice still comes in through the
+     * phone's own microphone, a few ms away (unprocessed input): twice the output would place the
+     * take 150 to 200 ms too early. The guess is then the output plus [BLUETOOTH_INPUT_MS].
+     */
+    const val BLUETOOTH_INPUT_MS = 20.0
 
     /** See [recordLatencyMs]; [outputNow] 0 or less: unknown. */
-    fun recordLatencyMs(roundTrip: Double?, measuredOutput: Double?, outputNow: Double): Double {
+    fun recordLatencyMs(roundTrip: Double?, measuredOutput: Double?, outputNow: Double, bluetooth: Boolean = false): Double {
         val now = outputNow.takeIf { it > 0 }
+        val guess = now?.let { if (bluetooth) it + BLUETOOTH_INPUT_MS else it * 2 } ?: 0.0
         return when {
-            roundTrip == null -> (now ?: 0.0) * 2
+            roundTrip == null -> guess
             now == null -> roundTrip
             measuredOutput != null -> (roundTrip + now - measuredOutput).coerceAtLeast(0.0)
             // Measured before the output was noted: only a much slower output (Bluetooth) is trusted over it.
-            now * 2 > roundTrip * 1.5 -> now * 2
+            now * 2 > roundTrip * 1.5 -> guess
             else -> roundTrip
         }
     }

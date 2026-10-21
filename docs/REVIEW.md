@@ -529,3 +529,23 @@ Restant (mineur, noté) :
 - Téléphone couché (≥ 760 dp) : deux colonnes aussi ; pas encore de capture dédiée.
 - Quelques textes traduits deux fois (sans effet aujourd'hui) ; dates en jj/MM dans toutes les langues.
 - Anglais : « track » désigne parfois le morceau dans des descriptions de styles ; Colour/Color mélangés.
+
+## Phase 23 : audit à cinq (après les langues)
+
+Cinq auditeurs neufs, sans se voir : Léa (16 ans, premier beat sur téléphone), Karim (22 ans, rap avec voix), Marc (45 ans, guitariste, tablette en anglais), Sofia (productrice pro) et un contrôleur des langues. Rapports complets lus, synthèse, puis quatre correcteurs en parallèle (prises audio et position dans le morceau ; export pro et édition ; écrans débutants et tablette ; langues et noms de notes), réunis par l'intégrateur.
+
+Graves corrigés :
+- Prise micro perdue si l'appli était fermée pendant la prise : écriture hors de l'écran (`TakeVault`, fichier d'attente), reprise au lancement suivant ; le moteur rend la prise même flux fermé.
+- Morceau lancé depuis une partie N : automation lue et enregistrée au mauvais endroit (écrasait l'intro). Le moteur reçoit la position de la partie de départ ; l'état d'automation des parties précédentes est appliqué.
+- Pistes séparées passées par les effets et le limiteur du master : elles redonnent maintenant le mix (test moteur). Au passage : une voie coupée fuyait 100 ms au début des rendus hors ligne.
+- Noms de notes « C D E » ignorés dans le piano roll, les pads d'accords, la gamme et la note d'origine : une seule fonction `NoteNames`.
+
+Moyens corrigés : voix « du morceau » (une fois, d'un bout à l'autre), enregistrer sur tout le morceau, nouvelle prise propre (ancienne prise muette, réglages gardés), « une fois par partie », conseils écouteurs et Bluetooth, « Décaler la prise » ±200 ms, ● du haut = micro sur l'onglet Audio, partage sans morceau qui couvre la voix ; volume général, export sans limiteur (WAV 32 bits flottant), fin d'export automatique, quantifier près de la fin, coller sans perte silencieuse, notes gardées quand on raccourcit la boucle, outil Force, MIDI fidèle (boucles acides, swing) ; grille visible sans défiler, « Écouter : cette section / tout le morceau » à côté de Jouer, « Son du pad » avec « Changer le son », assistant compact avec ▶ par style et « Créer tout de suite », « ✓ Enregistré », onglet Aide, mémoire vérifiée avant le Remix, synthé complet sur tablette couchée, accordeur guitare ; noms par défaut gardés en français et traduits à l'affichage, 48 traductions revues, pluriels, dates, anglais britannique, test qui refuse un `tr(variable)` non vérifié.
+
+Gardé pour plus tard (vraies nouvelles fonctions) : instruments en stéréo ; automation des réglages d'instruments (303, synthé) et points libres sur le morceau ; vraie ligne de temps avec clips libres ; un seul mot pour section/scène/partie ; un stem par pad ; garder le temps avant le « 1 » d'une prise ; noms de prises « Prise HH:mm » encore enregistrés traduits ; messages ponctuels retraduits après un changement de langue.
+
+Relecture neuve (sous-agent qui n'a pas écrit le code) : fil audio sain (0 allocation), numéros de commandes cohérents, calculs de position dans le morceau justes, export identique au direct, stems qui redonnent le mix, fin d'export bornée, anciens projets lisibles.
+- Grave corrigé : une prise qui n'avait pas pu être posée revenait au lancement suivant et remplaçait une prise plus récente, effacée ensuite. Désormais la prise est posée et enregistrée d'abord, la note d'attente n'est retirée qu'après un enregistrement réussi, et une prise en attente ne remplace que le clip sur lequel elle a été enregistrée (test).
+- Moyens corrigés : note d'attente gardée si l'enregistrement échoue ; accords, ligne de basse, audio vers notes et import MIDI n'ajoutent plus les notes cachées ; boucles de clips en attente remises à zéro à l'arrêt ; un nom avec un nombre énorme ne fait plus planter.
+- Mineurs corrigés : nettoyage des sons qui épargne les prises en attente ; M4A et FLAC gardent toujours le limiteur (texte qui l'explique) ; noms « Prise HH:mm » gardés en français ; voix « du morceau » muette quand une scène boucle seule ; « ✓ Enregistré » seulement quand tout est écrit ; un test qui ne vérifiait rien.
+- Restant : attente de 3 s au plus au chargement si une prise s'écrit encore ; une voix « du morceau » reste à sa mesure si on insère une partie avant elle.

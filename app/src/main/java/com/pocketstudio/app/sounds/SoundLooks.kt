@@ -97,7 +97,7 @@ object SoundLooks {
         val wave = patch.get(SynthPatch.OSC1_WAVE)
         val parts = mutableListOf(if (wave < 0.25f) tr("Scie") else if (wave < 0.75f) tr("Carré") else tr("Triangle"))
         val voices = 1 + (patch.get(SynthPatch.UNISON) * 6).roundToInt()
-        if (voices > 1) parts += tr("%d voix", voices)
+        if (voices > 1) parts += com.pocketstudio.app.ui.voicesLabel(voices)
         parts += when {
             patch.get(SynthPatch.A_ATTACK) > 0.35f -> tr("monte doucement")
             patch.get(SynthPatch.A_SUSTAIN) < 0.2f -> tr("court")

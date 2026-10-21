@@ -159,21 +159,39 @@ fun SessionScreen(ui: SessionScreenUi, actions: SessionActions, live: LivePadsUi
         Modifier.testTag("session"),
         spacing = 12.dp,
         first = { SongCard(ui, actions) },
+        // A wide screen: the live pads right under the scenes, in reach without scrolling.
         second = {
             ScenesCard(ui, actions, rename = { renaming = it })
-            if (ui.song.isNotEmpty() && ui.rows.isNotEmpty()) {
-                NeonCard {
-                    SectionLabel(tr("Ligne de temps"), help = Glossary.TIMELINE)
-                    Timeline(ui, actions)
-                }
-            }
-            FoldSection(tr("Jouer en direct")) {
-                if (live != null) LivePadsCard(live, liveActions)
-                LivePad(actions.performance)
-            }
+            LiveSection(live, liveActions, actions)
+            TimelineCard(ui, actions)
+        },
+        // A phone keeps its order: the song, the scenes, the timeline, then the live tools.
+        phone = {
+            SongCard(ui, actions)
+            ScenesCard(ui, actions, rename = { renaming = it })
+            TimelineCard(ui, actions)
+            LiveSection(live, liveActions, actions)
         },
     )
     renaming?.let { i -> RenameSceneDialog(i, ui.label(i), onDone = { label -> actions.rename(i, label); renaming = null }, onDismiss = { renaming = null }) }
+}
+
+@Composable
+private fun TimelineCard(ui: SessionScreenUi, actions: SessionActions) {
+    if (ui.song.isNotEmpty() && ui.rows.isNotEmpty()) {
+        NeonCard {
+            SectionLabel(tr("Ligne de temps"), help = Glossary.TIMELINE)
+            Timeline(ui, actions)
+        }
+    }
+}
+
+@Composable
+private fun LiveSection(live: LivePadsUi?, liveActions: LivePadsActions, actions: SessionActions) {
+    FoldSection(tr("Jouer en direct")) {
+        if (live != null) LivePadsCard(live, liveActions)
+        LivePad(actions.performance)
+    }
 }
 
 @Composable
@@ -204,7 +222,7 @@ private fun SongCard(ui: SessionScreenUi, actions: SessionActions) {
         val totalBars = ui.song.sumOf { ui.barsOf(it) }
         if (totalBars > 0) {
             val seconds = (totalBars * ui.beatsPerBar * 60 / ui.tempoBpm).toInt()
-            Text(tr("%d mesures", totalBars) + " · ${seconds / 60}:%02d".format(seconds % 60), style = MonoStyle, color = Neon.TextSecondary)
+            Text((if (totalBars == 1) tr("1 mesure") else tr("%d mesures", totalBars)) + " · ${seconds / 60}:%02d".format(seconds % 60), style = MonoStyle, color = Neon.TextSecondary)
         }
         Button(
             onClick = actions.toggleSong,
@@ -251,7 +269,7 @@ private fun SongCard(ui: SessionScreenUi, actions: SessionActions) {
 }
 
 /** "2 mes." ("1 mes.": one bar, singular in other languages). */
-private fun barsLabel(bars: Int) = if (bars == 1) tr("1 mes.") else tr("%d mes.", bars)
+private fun barsLabel(bars: Int) = com.pocketstudio.app.ui.barsShort(bars)
 
 /** A label and two choices side by side ([second] chosen when [secondOn]). */
 @Composable
@@ -529,7 +547,7 @@ private fun Timeline(ui: SessionScreenUi, actions: SessionActions) {
         Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
             Box(Modifier.height(22.dp))
             ui.rows.forEach { r ->
-                Text(tr(r.name), style = MaterialTheme.typography.labelSmall, maxLines = 1, overflow = TextOverflow.Ellipsis,
+                Text(com.pocketstudio.model.DefaultNames.shown(r.name), style = MaterialTheme.typography.labelSmall, maxLines = 1, overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.width(76.dp).height(26.dp).padding(top = 5.dp))
             }
         }

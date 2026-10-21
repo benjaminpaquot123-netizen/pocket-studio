@@ -63,8 +63,16 @@ data class Harmony(val root: Int = 0, val scale: Scale = Scale.Off, val lock: Bo
     }
 }
 
-/** One pad of the chord pads: a degree of the scale and its full chord. */
-data class ChordPad(val degree: Int, val roman: String, val name: String, val notes: List<Int>)
+/**
+ * One pad of the chord pads: a degree of the scale and its full chord. [root] is the chord's pitch
+ * class and [quality] its kind ("m", "dim" or "" for major): the name is made at display, in the
+ * notation the user picked.
+ */
+data class ChordPad(val degree: Int, val roman: String, val root: Int, val quality: String, val notes: List<Int>) {
+    /** "Ré m" in French notation, "Dm" in English (the way chord charts write them). */
+    fun name(english: Boolean): String =
+        NoteNames.key(root, english) + if (quality.isEmpty()) "" else if (english) quality else " $quality"
+}
 
 /**
  * The scale's chords for the chord pads: degrees I to VII and I an octave up, built from
@@ -80,15 +88,13 @@ fun Harmony.chordPads(octaveRoot: Int): List<ChordPad> {
         val fifth = notes[2] - notes[0]
         val numeral = numerals[d % 7]
         val (roman, suffix) = when {
-            third == 3 && fifth == 6 -> numeral.lowercase() + "°" to " dim"
-            third == 3 -> numeral.lowercase() to " m"
+            third == 3 && fifth == 6 -> numeral.lowercase() + "°" to "dim"
+            third == 3 -> numeral.lowercase() to "m"
             else -> numeral to ""
         }
-        ChordPad(d, roman, NOTE_NAMES[Math.floorMod(notes[0], 12)] + suffix, notes)
+        ChordPad(d, roman, Math.floorMod(notes[0], 12), suffix, notes)
     }
 }
-
-val NOTE_NAMES = listOf("Do", "Do♯", "Ré", "Mi♭", "Mi", "Fa", "Fa♯", "Sol", "La♭", "La", "Si♭", "Si")
 
 /** Ready-made chord progressions, as scale degrees (one chord per bar). */
 enum class Progression(val label: String, val degrees: List<Int>) {

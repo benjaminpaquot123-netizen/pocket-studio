@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <array>
 #include <atomic>
 #include <cmath>
@@ -39,6 +40,31 @@ public:
     void setSend(int ch, int bus, float level);               // 0..1, post-fader
     void setMacro(int ch, int macro, float v);                // TrackMacros: colour, dirt, motion, space
     void setBusParam(int bus, int param, float v);
+    // The master: a gain before the limiter (linear, 0..4), the limiter on or off (a pre-master
+    // export keeps its headroom), and its inserts on or off (stems: each strip without the master's
+    // processing, so the stems add back up to the mix).
+    void setMasterGain(float gain) { masterGain_.setTarget(std::clamp(std::isfinite(gain) ? gain : 1.0f, 0.0f, 4.0f)); }
+    void setLimiter(bool on) { limiterOn_ = on; }
+    // Every fader, pan and send gain at its target at once (an offline render, before its first
+    // beat: a muted or not-soloed strip must not bleed in while its gain glides down).
+    void settle() {
+        for (auto& s : strips_) {
+            s.gainL.snap(s.gainL.target());
+            s.gainR.snap(s.gainR.target());
+            for (auto& g : s.sendGain) g.snap(g.target());
+        }
+        masterGain_.snap(masterGain_.target());
+    }
+    void setMasterFx(bool on) { masterFxOn_ = on; }
+    bool limiterOn() const { return limiterOn_; }
+    // The send delay's time in frames: an export's tail waits at least this long in silence for a repeat.
+    float echoFrames() const { return delay_.delayFrames(); }
+    bool echoInUse() const {
+        for (const auto& s : strips_) {
+            if (s.sendGain[1].target() > 0.0f) return true;
+        }
+        return false;
+    }
     void setStepFrames(double framesPerSixteenth) {
         delay_.setStepFrames(framesPerSixteenth);
         perf_.setStepFrames(framesPerSixteenth);
@@ -118,6 +144,9 @@ private:
     int events_ = 0;
     float envelope_ = 0.0f;
     float release_ = 0.999f;
+    Smoother masterGain_{1.0f};
+    bool limiterOn_ = true;
+    bool masterFxOn_ = true;
 };
 
 }  // namespace ps

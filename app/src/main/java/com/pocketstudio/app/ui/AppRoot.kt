@@ -10,6 +10,7 @@ import com.pocketstudio.app.audiotracks.AudioTracksUi
 import com.pocketstudio.model.viewOfTrack
 import com.pocketstudio.model.songBars
 import com.pocketstudio.model.sceneSteps
+import com.pocketstudio.model.sceneTitle
 import androidx.compose.runtime.remember
 import com.pocketstudio.app.synth.TracksUi
 import com.pocketstudio.app.synth.NotesUi
@@ -192,6 +193,8 @@ fun AppRoot() {
     val libraryVm: com.pocketstudio.app.library.SoundLibraryViewModel = viewModel()
     var tab by rememberSaveable { mutableStateOf(AppTab.Rythme) }
     var showProjects by rememberSaveable { mutableStateOf(false) }
+    // « Partager mon morceau » (Mixeur, Mes projets): name, export in M4A, share sheet.
+    val shareSong = com.pocketstudio.app.export.rememberShareSong(rhythmVm)
     val projectsVm: ProjectsViewModel = viewModel()
     val pickProjectZip = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) projectsVm.importZip(uri)
@@ -405,6 +408,7 @@ fun AppRoot() {
                         restore = projectsVm::restore,
                         dismissDeleted = projectsVm::dismissDeleted,
                         dismissMessage = projectsVm::dismissMessage,
+                        shareSong = { showProjects = false; shareSong() },
                     ),
                 )
             }
@@ -606,10 +610,14 @@ fun AppRoot() {
             // No undo during a take (or while it is written): it could remove the track it goes to.
             val undoable = !topRecording && topTake == null && !topSaving
             TopBar(
-                TopBarUi(topProject.name, topProject.tempoBpm, topTransport.playing, topUndo && undoable, topRedo && undoable, topRecording),
+                TopBarUi(
+                    topProject.name, topProject.tempoBpm, topTransport.playing, topUndo && undoable, topRedo && undoable, topRecording,
+                    scene = if (tab in SCENE_TABS) sceneChip(topProject) else null,
+                ),
                 TopBarActions(
                     projects = { showProjects = true }, undo = rhythmVm::undo, redo = rhythmVm::redo,
                     togglePlay = rhythmVm::togglePlay, toggleRecord = rhythmVm::toggleRecord,
+                    selectScene = rhythmVm::selectScene, newScene = rhythmVm::newScene,
                 ),
             )
             if (saveError != null) {
@@ -954,6 +962,8 @@ fun AppRoot() {
                                 share = { WavExporter.share(context, export.files) },
                                 setExportWhat = rhythmVm::setExportWhat,
                                 setExportFormat = rhythmVm::setExportFormat,
+                                setExportFade = rhythmVm::setExportFade,
+                                shareSong = shareSong,
                                 exportMidi = rhythmVm::exportMidi,
                                 setInsertType = rhythmVm::setInsertType,
                                 setInsertParam = rhythmVm::setInsertParam,
@@ -1383,6 +1393,20 @@ private fun LaunchPrompts(vm: MainViewModel) {
         )
         UpdateState.None -> Unit
     }
+}
+
+/** The tabs that edit one scene: the top bar shows which, and picks another. */
+private val SCENE_TABS = setOf(AppTab.Rythme, AppTab.Acide, AppTab.Synthe)
+
+/** The top bar's scene chip: every scene of the session by its title, the one edited, the empty ones. */
+internal fun sceneChip(p: Project): SceneChipUi {
+    val all = p.allScenes
+    val count = maxOf(all.size, p.scene + 1).coerceAtMost(Scene.MAX)
+    return SceneChipUi(
+        current = p.scene,
+        titles = List(count) { p.sceneTitle(it) },
+        empty = (0 until count).filter { all.getOrNull(it)?.isEmpty != false }.toSet(),
+    )
 }
 
 /** What the scene shown is, in a sentence: new and empty, a fresh copy of another, or nothing to say. */

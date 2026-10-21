@@ -1,4 +1,4 @@
-@file:OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
+@file:OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class, androidx.compose.foundation.ExperimentalFoundationApi::class)
 
 package com.pocketstudio.app.mixer
 
@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import com.pocketstudio.app.rhythm.ExportUi
 import com.pocketstudio.app.rhythm.ExportWhat
 import com.pocketstudio.app.rhythm.ExportFormat
+import com.pocketstudio.app.rhythm.ExportFade
 import com.pocketstudio.app.export.Loudness
 import com.pocketstudio.model.Buses
 import com.pocketstudio.model.Channel
@@ -42,6 +43,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.relocation.bringIntoViewRequester
+import kotlinx.coroutines.launch
 import androidx.compose.material3.Icon
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.getValue
@@ -83,6 +88,9 @@ data class MixerActions(
     val exportMidi: () -> Unit = {},
     val cancelExport: () -> Unit = {},
     val share: () -> Unit = {},
+    val setExportFade: (ExportFade) -> Unit = {},
+    /** « Partager mon morceau »: the whole song in M4A, then the share sheet. */
+    val shareSong: () -> Unit = {},
     val setInsertType: (ch: Int, slot: Int, type: EffectType) -> Unit = { _, _, _ -> },
     val setInsertParam: (ch: Int, slot: Int, param: Int, value: Float) -> Unit = { _, _, _, _ -> },
     val setSend: (ch: Int, bus: Int, level: Float) -> Unit = { _, _, _ -> },
@@ -118,10 +126,14 @@ fun MixerScreen(
     analyserOpen: Boolean = false,
     setAnalyser: (Boolean) -> Unit = {},
 ) {
+    val exportCard = androidx.compose.runtime.remember { androidx.compose.foundation.relocation.BringIntoViewRequester() }
+    val scope = androidx.compose.runtime.rememberCoroutineScope()
     Column(
         modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp).testTag("mixer"),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
+        // Sharing first: one touch, nothing to scroll for; the export card's choices are a touch away.
+        ShareSongCard(export, hasSong, actions.shareSong) { scope.launch { exportCard.bringIntoView() } }
         // Many tracks: each strip shows its volume on one line; ▾ opens pan and effects.
         val compact = strips.size > BASIC_STRIPS.size
         strips.forEach { st ->
@@ -146,7 +158,32 @@ fun MixerScreen(
         }
         BusesCard(buses, actions)
         AutomationCard(automation, channels, master, automationActions, strips)
-        ExportCard(export, actions, hasSong)
+        ExportCard(export, actions, hasSong, Modifier.bringIntoViewRequester(exportCard))
+    }
+}
+
+/** « Partager mon morceau » at the top of the mixer, and a way down to every export choice. */
+@Composable
+internal fun ShareSongCard(export: ExportUi, hasSong: Boolean, share: () -> Unit, toExport: () -> Unit) {
+    NeonCard(accent = Neon.Acid) {
+        Button(
+            onClick = share,
+            enabled = !export.running,
+            modifier = Modifier.fillMaxWidth().height(52.dp).testTag("share_song"),
+            colors = ButtonDefaults.buttonColors(containerColor = Neon.Acid, contentColor = Color.Black),
+        ) {
+            Icon(Icons.Filled.Share, contentDescription = null, modifier = Modifier.size(20.dp))
+            Text("  Partager mon morceau", style = MaterialTheme.typography.titleMedium)
+        }
+        Text(
+            if (hasSong) "Tout le morceau, avec un fondu à la fin, en M4A léger : prêt à envoyer."
+            else "Pas encore de morceau : la scène en boucle (${com.pocketstudio.app.export.ShareSong.loopBars(export.sceneBars)} mesures), en M4A léger.",
+            style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
+        )
+        TextButton(onClick = toExport, modifier = Modifier.fillMaxWidth().testTag("to_export")) {
+            Text("Autres choix d'export (WAV, pistes séparées…)", Modifier.weight(1f), color = Neon.Cyan)
+            Icon(Icons.Filled.ExpandMore, contentDescription = null, tint = Neon.Cyan)
+        }
     }
 }
 
@@ -246,45 +283,33 @@ private fun EffectsToggle(summary: String, open: Boolean, modifier: Modifier = M
 }
 
 @Composable
-internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolean = true) {
+internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolean = true, modifier: Modifier = Modifier) {
     val chipColors = pillColors(Neon.Acid)
-    NeonCard(accent = Neon.Acid) {
+    NeonCard(modifier, accent = Neon.Acid) {
         SectionLabel("Exporter", color = Neon.Acid)
-        WithHelp(Glossary.STEMS) { Text("Quoi", style = MaterialTheme.typography.bodyMedium) }
+        // The plain choices first: what, in which format, how it ends. The rest under « Avancé ».
+        Text("Quoi", style = MaterialTheme.typography.bodyMedium)
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            listOf(ExportWhat.Loop to "La scène", ExportWhat.Song to "Le morceau", ExportWhat.Stems to "Piste par piste").forEach { (what, label) ->
+            listOf(ExportWhat.Song to "Le morceau entier", ExportWhat.Loop to "La scène en boucle").forEach { (what, label) ->
                 FilterChip(
                     selected = export.what == what, onClick = { actions.setExportWhat(what) }, enabled = !export.running,
                     label = { Text(label) }, colors = chipColors, modifier = Modifier.testTag("export_what_${what.name}"),
                 )
             }
         }
+        val bars = "${export.bars} mesure${if (export.bars > 1) "s" else ""}"
         Text(
             when (export.what) {
-                ExportWhat.Loop -> "La scène en cours (elle fait ${export.sceneBars} mesure${if (export.sceneBars > 1) "s" else ""}), sur la longueur choisie."
+                ExportWhat.Loop -> "La scène en cours, jouée sur $bars (la longueur se règle dans « Avancé »)."
                 ExportWhat.Song -> if (hasSong) "Toutes les parties de l'onglet Morceau, dans l'ordre." else "Le morceau est vide : ajoute des scènes dans l'onglet Morceau."
                 ExportWhat.Stems -> "Un fichier par piste (batterie, acide, synthé, remix) pour les reprendre ailleurs. Les pistes vides ou coupées sont sautées." +
-                    if (hasSong) " Sur tout le morceau." else ""
+                    if (hasSong) " Sur tout le morceau." else " Sur $bars."
             },
             style = MaterialTheme.typography.bodySmall, color = if (export.what == ExportWhat.Song && !hasSong) Neon.Amber else Neon.TextSecondary,
         )
-        if (export.what == ExportWhat.Loop || (export.what == ExportWhat.Stems && !hasSong)) {
-            Text("Longueur", style = MaterialTheme.typography.bodyMedium)
-            FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                (EXPORT_BARS + export.sceneBars).distinct().sorted().forEach { bars ->
-                    FilterChip(
-                        selected = export.bars == bars,
-                        onClick = { actions.setExportBars(bars) },
-                        enabled = !export.running,
-                        label = { Text(if (bars == 1) "1 mesure" else "$bars") },
-                        colors = chipColors,
-                    )
-                }
-            }
-        }
         WithHelp(Glossary.FORMATS) { Text("Format", style = MaterialTheme.typography.bodyMedium) }
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            listOf(ExportFormat.Wav to "WAV", ExportFormat.Flac to "FLAC", ExportFormat.M4a to "M4A").forEach { (format, label) ->
+            listOf(ExportFormat.M4a to "M4A · pour partager", ExportFormat.Wav to "WAV · qualité max").forEach { (format, label) ->
                 FilterChip(
                     selected = export.format == format, onClick = { actions.setExportFormat(format) }, enabled = !export.running,
                     label = { Text(label) }, colors = chipColors, modifier = Modifier.testTag("export_format_${format.name}"),
@@ -294,11 +319,64 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
         Text(
             when (export.format) {
                 ExportFormat.Wav -> "Qualité studio, lu par tous les logiciels. Le plus lourd."
-                ExportFormat.Flac -> "Exactement la même qualité que le WAV, bien plus léger (souvent deux fois)."
-                ExportFormat.M4a -> "Environ dix fois plus léger, pour partager."
+                ExportFormat.Flac -> "FLAC : exactement la même qualité que le WAV, bien plus léger (souvent deux fois)."
+                ExportFormat.M4a -> "Environ dix fois plus léger, lu par tous les téléphones : pour partager."
             },
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
         )
+        if (export.what != ExportWhat.Stems) {
+            Text("Fondu de fin", style = MaterialTheme.typography.bodyMedium)
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                ExportFade.entries.forEach { fade ->
+                    FilterChip(
+                        selected = export.fade == fade, onClick = { actions.setExportFade(fade) }, enabled = !export.running,
+                        label = { Text(if (fade == ExportFade.None) fade.label else "${fade.label} (${fade.seconds} s)") },
+                        colors = chipColors, modifier = Modifier.testTag("export_fade_${fade.name}"),
+                    )
+                }
+            }
+        }
+        // Advanced: separate tracks, FLAC, the loop's length, the notes as MIDI. Open by itself when one is in use.
+        var advanced by rememberSaveable { mutableStateOf(export.what == ExportWhat.Stems || export.format == ExportFormat.Flac) }
+        TextButton(onClick = { advanced = !advanced }, modifier = Modifier.fillMaxWidth().testTag("export_advanced")) {
+            Text("Avancé", Modifier.weight(1f), color = Neon.Cyan)
+            Icon(if (advanced) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore, contentDescription = null, tint = Neon.Cyan)
+        }
+        if (advanced) {
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                FilterChip(
+                    selected = export.what == ExportWhat.Stems,
+                    onClick = { actions.setExportWhat(if (export.what == ExportWhat.Stems) (if (hasSong) ExportWhat.Song else ExportWhat.Loop) else ExportWhat.Stems) },
+                    enabled = !export.running, label = { Text("Piste par piste") }, colors = chipColors, modifier = Modifier.testTag("export_what_Stems"),
+                )
+                HelpDot(Glossary.STEMS)
+                FilterChip(
+                    selected = export.format == ExportFormat.Flac,
+                    onClick = { actions.setExportFormat(if (export.format == ExportFormat.Flac) ExportFormat.Wav else ExportFormat.Flac) },
+                    enabled = !export.running, label = { Text("FLAC (sans perte, léger)") }, colors = chipColors,
+                    modifier = Modifier.testTag("export_format_Flac"),
+                )
+            }
+            if (export.what == ExportWhat.Loop || (export.what == ExportWhat.Stems && !hasSong)) {
+                Text("Longueur de la boucle", style = MaterialTheme.typography.bodyMedium)
+                FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    (EXPORT_BARS + export.sceneBars).distinct().sorted().forEach { bars ->
+                        FilterChip(
+                            selected = export.bars == bars,
+                            onClick = { actions.setExportBars(bars) },
+                            enabled = !export.running,
+                            label = { Text(if (bars == 1) "1 mesure" else "$bars") },
+                            colors = chipColors,
+                        )
+                    }
+                }
+            }
+            if (!export.running) {
+                TextButton(onClick = actions.exportMidi, modifier = Modifier.fillMaxWidth().testTag("export_midi")) {
+                    Text("Exporter les notes en fichier MIDI" + if (hasSong) " (tout le morceau)" else "")
+                }
+            }
+        }
         when {
             export.running -> {
                 export.stage?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary) }
@@ -325,11 +403,6 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
                         },
                     )
                 }
-            }
-        }
-        if (!export.running) {
-            TextButton(onClick = actions.exportMidi, modifier = Modifier.fillMaxWidth().testTag("export_midi")) {
-                Text("Exporter les notes en fichier MIDI" + if (hasSong) " (tout le morceau)" else "")
             }
         }
         if (export.files.isNotEmpty()) {

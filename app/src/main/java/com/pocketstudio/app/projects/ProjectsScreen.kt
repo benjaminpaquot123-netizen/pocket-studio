@@ -18,6 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -71,6 +72,8 @@ class ProjectsActions(
     val restore: (TrashedProject) -> Unit = {},
     val dismissDeleted: () -> Unit = {},
     val dismissMessage: () -> Unit = {},
+    /** « Partager mon morceau »: the open project's song in M4A, then the share sheet. */
+    val shareSong: () -> Unit = {},
 )
 
 /** "Mes projets": every project on the phone, the open one first in mind; open, create, rename, copy, delete. */
@@ -205,6 +208,12 @@ private fun ProjectCard(p: ProjectInfo, open: Boolean, now: Long, actions: Proje
                     ).joinToString(" · "),
                     style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
                 )
+                if (open) {
+                    TextButton(onClick = actions.shareSong, modifier = Modifier.testTag("project_share_song")) {
+                        Icon(Icons.Filled.Share, contentDescription = null, tint = Neon.Acid, modifier = Modifier.padding(end = 6.dp))
+                        Text("Partager mon morceau", color = Neon.Acid)
+                    }
+                }
             }
             Box {
                 IconButton(onClick = { menu = true }, modifier = Modifier.testTag("project_menu_${p.id}")) {

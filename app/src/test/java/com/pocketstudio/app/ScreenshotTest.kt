@@ -717,16 +717,22 @@ class ScreenshotTest {
     }
 
     @Test
+    @Config(qualifiers = "w400dp-h1700dp-xxhdpi")
     fun session() = shoot("session") {
+        // The song first (part 1 plays, part 2 comes next), then the named scenes, then the live tools.
         val drums = com.pocketstudio.model.DrumPattern().toggle(0, 0).toggle(2, 4)
-        val a = com.pocketstudio.model.Scene("A", drums)
-        val b = com.pocketstudio.model.Scene("B", drums.copy(steps = 32))
+        val a = com.pocketstudio.model.Scene("A", drums, label = "Intro")
+        val b = com.pocketstudio.model.Scene("B", drums.copy(steps = 32), label = "Couplet")
+        val c = com.pocketstudio.model.Scene("C", drums, label = "Refrain")
         com.pocketstudio.app.session.SessionScreen(
             com.pocketstudio.app.session.SessionScreenUi(
-                scenes = listOf(a, b, com.pocketstudio.model.Scene("C")) + List(6) { null } + com.pocketstudio.model.Scene("J", drums) + List(14) { null },
+                scenes = listOf(a, b, c, com.pocketstudio.model.Scene("D")) + List(5) { null } + com.pocketstudio.model.Scene("J", drums) + List(14) { null },
                 current = 0, pending = 1,
-                song = listOf(com.pocketstudio.model.SongPart(0, 4), com.pocketstudio.model.SongPart(1, 2), com.pocketstudio.model.SongPart(0, 2)),
-                songIndex = 0, playing = true, tempoBpm = 124.0,
+                song = listOf(
+                    com.pocketstudio.model.SongPart(0, 2), com.pocketstudio.model.SongPart(1, 2),
+                    com.pocketstudio.model.SongPart(2, 2), com.pocketstudio.model.SongPart(1), com.pocketstudio.model.SongPart(2, 4),
+                ),
+                songIndex = 0, playing = true, tempoBpm = 124.0, upcoming = 1,
             ),
             com.pocketstudio.app.session.SessionActions(),
         )

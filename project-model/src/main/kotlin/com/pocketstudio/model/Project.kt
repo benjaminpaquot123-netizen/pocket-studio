@@ -52,6 +52,8 @@ data class Project(
     val beatsPerBar: Int = 4,
     /** MIDI learn: controller knobs mapped to settings. */
     val midiMap: List<MidiMapping> = emptyList(),
+    /** At the song's end: false = playback stops (the default, older projects too), true = it starts over. */
+    val songLoops: Boolean = false,
 ) {
     /** Sixteenths in a bar. */
     val stepsPerBar: Int get() = beatsPerBar * 4

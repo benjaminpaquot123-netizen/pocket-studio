@@ -993,6 +993,8 @@ fun AppRoot() {
                         val sessionUi by rhythmVm.sessionUi.collectAsStateWithLifecycle()
                         val liveStates by rhythmVm.liveStates.collectAsStateWithLifecycle()
                         val sampleTask by rhythmVm.sampleTask.collectAsStateWithLifecycle()
+                        val listenSong by rhythmVm.listenSong.collectAsStateWithLifecycle()
+                        val followSong by rhythmVm.followSong.collectAsStateWithLifecycle()
                         var liveEditing by rememberSaveable { mutableStateOf<Int?>(null) }
                         LaunchedEffect(Unit) {
                             lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollLiveStates() }
@@ -1011,17 +1013,29 @@ fun AppRoot() {
                                 beatsPerBar = project.beatsPerBar,
                                 sceneInfo = sceneInfo(project),
                                 rows = timelineRows(project),
+                                upcoming = if (transport.playing) sessionUi.upcoming(project.song.size, project.songLoops) else -1,
+                                listenSong = project.song.isNotEmpty() && listenSong != false,
+                                songLoops = project.songLoops,
+                                followSong = followSong,
                             ),
                             SessionActions(
                                 select = rhythmVm::selectScene,
                                 duplicate = rhythmVm::duplicateScene,
                                 newScene = rhythmVm::newScene,
                                 clear = rhythmVm::clearScene,
+                                rename = rhythmVm::renameScene,
                                 addPart = rhythmVm::addSongPart,
+                                insertPart = rhythmVm::insertSongPart,
+                                duplicatePart = rhythmVm::duplicateSongPart,
+                                movePart = rhythmVm::moveSongPart,
                                 removePart = rhythmVm::removeSongPart,
                                 setRepeats = rhythmVm::setSongRepeats,
+                                playPart = rhythmVm::playSongPart,
                                 toggleSong = rhythmVm::toggleSong,
                                 togglePlay = rhythmVm::togglePlay,
+                                setListenSong = rhythmVm::setListenSong,
+                                setSongLoops = rhythmVm::setSongLoops,
+                                setFollowSong = rhythmVm::setFollowSong,
                                 performance = { param, v -> if (NativeEngine.isAvailable) NativeEngine.setPerformance(param, v) },
                                 togglePartTrack = rhythmVm::togglePartTrack,
                                 setBeatsPerBar = rhythmVm::setBeatsPerBar,

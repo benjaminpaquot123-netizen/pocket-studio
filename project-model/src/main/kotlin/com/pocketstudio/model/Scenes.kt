@@ -14,6 +14,8 @@ data class Scene(
     val synthNotes: NoteClip = NoteClip(),
     /** The notes of the added instrument tracks in this scene, by track id. */
     val trackNotes: Map<Int, NoteClip> = emptyMap(),
+    /** The song section this scene stands for, named by the user ("Refrain"); empty: just its letter. */
+    val label: String = "",
 ) {
     /** Steps the scene lasts before it loops in 4/4: its longest part, rounded up to whole bars. */
     val steps: Int get() = stepsFor(16)
@@ -33,7 +35,30 @@ data class Scene(
 
         /** How many scene slots the session grid can show. */
         val GRID_SIZES = listOf(8, 16, 24)
+
+        /** Section names offered when naming a scene. */
+        val SECTIONS = listOf("Intro", "Couplet", "Pré-refrain", "Refrain", "Pont", "Drop", "Fin")
+
+        const val MAX_LABEL = 20
     }
+}
+
+/** The section name of scene [index] ("Refrain"), or "" when it has none. */
+fun Project.sceneLabel(index: Int): String = allScenes.getOrNull(index)?.label.orEmpty()
+
+/** How a scene is shown: "A · Refrain", or just "A" without a section name. */
+fun Project.sceneTitle(index: Int): String {
+    val letter = Scene.NAMES.getOrElse(index) { "?" }
+    return sceneLabel(index).takeIf { it.isNotBlank() }?.let { "$letter · $it" } ?: letter
+}
+
+/** Names scene [index] after a song section (blank: back to its letter alone). */
+fun Project.renameScene(index: Int, label: String): Project {
+    val synced = syncScenes()
+    val all = synced.allScenes
+    if (index !in all.indices) return synced
+    val clean = label.replace(Regex("\\s+"), " ").trim().take(Scene.MAX_LABEL)
+    return synced.copy(scenes = all.mapIndexed { i, s -> if (i == index) s.copy(label = clean) else s }).syncScenes()
 }
 
 /**
@@ -75,12 +100,12 @@ internal fun Project.syncScenes(): Project {
     val used = song.map { it.scene }.toSet() +
         automation.flatMap { lane -> lane.sceneValues.filterValues { v -> v.any { it != null } }.keys }
     var size = all.size
-    while (size - 1 > index && all[size - 1].isEmpty && size - 1 !in used) size--
+    while (size - 1 > index && all[size - 1].isEmpty && all[size - 1].label.isBlank() && size - 1 !in used) size--
     val list = all.take(size)
     return copy(
         scene = index,
         scenes = list.mapIndexed { i, s ->
-            if (i == index) currentSceneContent().copy(name = Scene.NAMES[i])
+            if (i == index) currentSceneContent().copy(name = Scene.NAMES[i], label = s.label)
             else s.copy(name = Scene.NAMES[i], trackNotes = s.trackNotes.filterKeys { id -> tracks.any { it.id == id } }.mapValues { it.value.sanitized() })
         },
         song = song.filter { it.scene in list.indices }.take(SongPart.MAX_PARTS)
@@ -136,7 +161,7 @@ fun Project.clearCurrentScene(): Project = copy(
 fun Project.copyOf(index: Int): Int? {
     val all = allScenes
     val s = all.getOrNull(index)?.takeUnless { it.isEmpty } ?: return null
-    return all.indices.firstOrNull { it != index && all[it].copy(name = "") == s.copy(name = "") }
+    return all.indices.firstOrNull { it != index && all[it].copy(name = "", label = "") == s.copy(name = "", label = "") }
 }
 
 /** The first empty scene slot other than the one shown (a new scene to fill), or null when all 24 are taken. */

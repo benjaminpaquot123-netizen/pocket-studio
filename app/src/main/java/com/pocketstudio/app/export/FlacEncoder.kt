@@ -4,6 +4,7 @@ import java.io.BufferedOutputStream
 import java.io.File
 import java.io.IOException
 import kotlin.math.abs
+import com.pocketstudio.model.i18n.tr
 
 /**
  * WAV to FLAC, lossless (same bit depth: 16 or 24). A small encoder: blocks of 4096 frames, the
@@ -52,7 +53,7 @@ object FlacEncoder {
                         if (frameNumber % 32 == 0L && total > 0) onProgress((done.toDouble() / total).toFloat().coerceIn(0f, 1f))
                     }
                 }
-                if (!tmp.renameTo(flac)) throw IOException("enregistrement impossible")
+                if (!tmp.renameTo(flac)) throw IOException(tr("enregistrement impossible"))
             } finally {
                 tmp.delete()
             }

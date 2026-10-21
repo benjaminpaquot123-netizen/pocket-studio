@@ -1,5 +1,6 @@
 package com.pocketstudio.app.midi
 
+import com.pocketstudio.model.i18n.tr
 import android.annotation.SuppressLint
 import android.app.Application
 import android.bluetooth.BluetoothDevice
@@ -120,12 +121,12 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
     private fun kindOf(info: MidiDeviceInfo) = when (info.type) {
         MidiDeviceInfo.TYPE_USB -> "USB"
         MidiDeviceInfo.TYPE_BLUETOOTH -> "Bluetooth"
-        else -> "Appli"
+        else -> tr("Appli")
     }
 
     private fun nameOf(info: MidiDeviceInfo): String {
         val p = info.properties
-        return p.getString(MidiDeviceInfo.PROPERTY_NAME) ?: p.getString(MidiDeviceInfo.PROPERTY_PRODUCT) ?: "Appareil MIDI"
+        return p.getString(MidiDeviceInfo.PROPERTY_NAME) ?: p.getString(MidiDeviceInfo.PROPERTY_PRODUCT) ?: tr("Appareil MIDI")
     }
 
     private fun refresh(autoConnect: Boolean) {
@@ -148,7 +149,7 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     @SuppressLint("MissingPermission")
-    private fun BluetoothDevice.safeName(): String = runCatching { name }.getOrNull() ?: "Clavier Bluetooth"
+    private fun BluetoothDevice.safeName(): String = runCatching { name }.getOrNull() ?: tr("Clavier Bluetooth")
 
     fun connect(id: String) {
         val m = manager ?: return
@@ -159,7 +160,7 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
                 d?.close()  // another device was chosen meanwhile
             } else if (d == null) {
                 AppLog.add("MIDI : ouverture impossible")
-                _state.update { it.copy(last = "Connexion impossible") }
+                _state.update { it.copy(last = tr("Connexion impossible")) }
             } else {
                 attach(id, d)
             }
@@ -176,7 +177,7 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
         val out = d.openOutputPort(0)
         if (out == null) {
             d.close()
-            _state.update { it.copy(last = "Cet appareil n'envoie rien") }
+            _state.update { it.copy(last = tr("Cet appareil n'envoie rien")) }
             return
         }
         device = d
@@ -233,7 +234,7 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
         if (_state.value.scanning) return  // already looking: a second tap must not start a second scan
         val scanner = getApplication<Application>().getSystemService(BluetoothManager::class.java)?.adapter?.bluetoothLeScanner
         if (scanner == null) {
-            _state.update { it.copy(last = "Bluetooth éteint") }
+            _state.update { it.copy(last = tr("Bluetooth éteint")) }
             return
         }
         runCatching {
@@ -331,7 +332,7 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
                 }
                 _commands.tryEmit(MidiCommand.Note(channel, played, v, true))
             }
-            show("Note ${noteLabel(note)}" + if (channel == DRUM_CHANNEL) " (pads)" else "")
+            show(if (channel == DRUM_CHANNEL) tr("Note %s (pads)", noteLabel(note)) else tr("Note %s", noteLabel(note)))
         }
 
         override fun noteOff(channel: Int, note: Int) {
@@ -355,7 +356,7 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
         }
 
         override fun controlChange(channel: Int, controller: Int, value: Int) {
-            show("Bouton $controller : $value")
+            show(tr("Bouton %d : %d", controller, value))
             if (NativeEngine.isAvailable && channel != DRUM_CHANNEL) {
                 when (controller) {
                     CC_MOD_WHEEL -> NativeEngine.liveExpression(NativeEngine.EXPR_MOD, value / 127f)
@@ -383,21 +384,21 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
             if (kotlin.math.abs(rounded - lastTempoSent) >= 0.25) {
                 lastTempoSent = rounded
                 _commands.tryEmit(MidiCommand.Tempo(rounded))
-                _state.update { it.copy(clockBpm = rounded, last = "Horloge ${"%.1f".format(rounded)} BPM") }
+                _state.update { it.copy(clockBpm = rounded, last = tr("Horloge %.1f BPM", rounded)) }
             }
         }
 
         override fun start() {
             tempo.reset()
             if (_state.value.followClock) _commands.tryEmit(MidiCommand.Start)
-            show("Départ")
+            show(tr("Départ"))
         }
 
         override fun continuePlayback() = start()
 
         override fun stop() {
             if (_state.value.followClock) _commands.tryEmit(MidiCommand.Stop)
-            show("Arrêt")
+            show(tr("Arrêt"))
         }
     }
 
@@ -420,6 +421,12 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
         /** Pitch bend wheel range in semitones. */
         const val BEND_RANGE = 2f
         private val NAMES = listOf("Do", "Do#", "Ré", "Ré#", "Mi", "Fa", "Fa#", "Sol", "Sol#", "La", "La#", "Si")
-        fun noteLabel(note: Int) = "${NAMES[note % 12]} ${note / 12 - 1}"
+        private val NAMES_EN = listOf("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B")
+
+        /** "Do 4", or "C 4" when the settings name notes C D E. */
+        fun noteLabel(note: Int): String {
+            val names = if (com.pocketstudio.app.settings.SettingsStore.state.value.englishNotes) NAMES_EN else NAMES
+            return "${names[note % 12]} ${note / 12 - 1}"
+        }
     }
 }

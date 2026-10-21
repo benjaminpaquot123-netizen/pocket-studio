@@ -5,6 +5,7 @@ import java.io.File
 import java.io.IOException
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
+import com.pocketstudio.model.i18n.tr
 
 /** Decoded audio: interleaved float samples. */
 class Pcm(val data: FloatArray, val channels: Int, val sampleRate: Int) {
@@ -50,7 +51,7 @@ object FloatWav {
             out.write(body.array())
             out.fd.sync()
         }
-        if (!tmp.renameTo(file)) throw IOException("enregistrement impossible : ${file.name}")
+        if (!tmp.renameTo(file)) throw IOException(tr("enregistrement impossible : %s", file.name))
     }
 
     /** Reads files written by [write] (and other plain 32-bit float WAVs). */

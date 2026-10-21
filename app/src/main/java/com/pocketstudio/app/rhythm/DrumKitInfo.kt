@@ -1,14 +1,16 @@
 package com.pocketstudio.app.rhythm
 
+import com.pocketstudio.model.i18n.tr
+
 import androidx.compose.ui.graphics.Color
 
-/** Pad names (French, short enough for a pad) and colours, in DrumKit voice order. */
+/** Pad names (translated when read, short enough for a pad) and colours, in DrumKit voice order. */
 object DrumKitInfo {
-    val names = listOf(
-        "Kick", "Kick 2", "Caisse", "Caisse 2",
-        "Clap", "Charley", "Charley ouvert", "Tom grave",
-        "Tom médium", "Tom aigu", "Rim", "Cloche",
-        "Cymbale", "Shaker", "Conga", "Zap",
+    val names: List<String> get() = listOf(
+        tr("Kick"), tr("Kick 2"), tr("Caisse"), tr("Caisse 2"),
+        tr("Clap"), tr("Charley"), tr("Charley ouvert"), tr("Tom grave"),
+        tr("Tom médium"), tr("Tom aigu"), tr("Rim"), tr("Cowbell"),
+        tr("Cymbale"), tr("Shaker"), tr("Conga"), tr("Zap"),
     )
 
     /** One colour family per instrument group, like the coloured channels of FL Studio. */

@@ -1,5 +1,6 @@
 package com.pocketstudio.model
 
+import com.pocketstudio.model.i18n.tr
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -57,7 +58,7 @@ class ProjectStore(private val root: File) {
                 lastError = e
             }
         }
-        throw IOException("projet illisible ($id)", lastError)
+        throw IOException(tr("projet illisible (%s)", id), lastError)
     }
 
     // Makes the rename itself durable (power cut right after a save). Best effort: not every platform allows it.

@@ -1,5 +1,7 @@
 package com.pocketstudio.app.synth
 
+import com.pocketstudio.model.i18n.tr
+
 import com.pocketstudio.ui.fadingHorizontalScroll
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -98,31 +100,31 @@ fun TrackBar(ui: TracksUi, modifier: Modifier = Modifier) {
                     Column(Modifier.weight(1f, fill = false)) {
                         Text(t.name, style = MaterialTheme.typography.labelLarge, fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
                             maxLines = 1, overflow = TextOverflow.Ellipsis)
-                        Text(t.soundLabel, style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        Text(tr(t.soundLabel), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     }
-                    if (selected) Icon(Icons.Filled.MoreVert, contentDescription = "Options de ${t.name}", Modifier.size(18.dp), tint = Neon.TextSecondary)
+                    if (selected) Icon(Icons.Filled.MoreVert, contentDescription = tr("Options de %s", t.name), Modifier.size(18.dp), tint = Neon.TextSecondary)
                 }
                 DropdownMenu(expanded = menuFor?.id == t.id, onDismissRequest = { menuFor = null }) {
-                    DropdownMenuItem(text = { Text("Renommer") }, onClick = { menuFor = null; renaming = t })
-                    DropdownMenuItem(text = { Text("Couleur") }, onClick = { menuFor = null; colouring = t })
+                    DropdownMenuItem(text = { Text(tr("Renommer")) }, onClick = { menuFor = null; renaming = t })
+                    DropdownMenuItem(text = { Text(tr("Couleur")) }, onClick = { menuFor = null; colouring = t })
                     DropdownMenuItem(
-                        text = { Text("Dupliquer") }, enabled = ui.tracks.size < InstrumentTrack.MAX,
+                        text = { Text(tr("Dupliquer")) }, enabled = ui.tracks.size < InstrumentTrack.MAX,
                         onClick = { menuFor = null; ui.duplicate(t.id) }, modifier = Modifier.testTag("track_duplicate"),
                     )
                     if (t.id != 0) {
-                        DropdownMenuItem(text = { Text("Supprimer (Annuler possible)") }, onClick = { menuFor = null; ui.remove(t.id) },
+                        DropdownMenuItem(text = { Text(tr("Supprimer (Annuler possible)")) }, onClick = { menuFor = null; ui.remove(t.id) },
                             modifier = Modifier.testTag("track_delete"))
                     }
                 }
             }
         }
         ui.effects?.let { open ->
-            OutlinedButton(onClick = { open(ui.selected) }, modifier = Modifier.height(44.dp).testTag("track_effects")) { Text("Effets") }
+            OutlinedButton(onClick = { open(ui.selected) }, modifier = Modifier.height(44.dp).testTag("track_effects")) { Text(tr("Effets")) }
         }
         if (ui.tracks.size < InstrumentTrack.MAX) {
             OutlinedButton(onClick = ui.add, modifier = Modifier.height(44.dp).testTag("track_add")) {
                 Icon(Icons.Filled.Add, contentDescription = null, Modifier.size(18.dp))
-                Text(" Piste")
+                Text(tr(" Piste"))
             }
         }
     }
@@ -130,19 +132,19 @@ fun TrackBar(ui: TracksUi, modifier: Modifier = Modifier) {
         var name by remember(t.id) { mutableStateOf(t.name) }
         AlertDialog(
             onDismissRequest = { renaming = null },
-            title = { Text("Renommer la piste") },
+            title = { Text(tr("Renommer la piste")) },
             text = {
                 OutlinedTextField(value = name, onValueChange = { name = it.take(InstrumentTrack.MAX_NAME) }, singleLine = true,
-                    label = { Text("Nom") }, modifier = Modifier.testTag("track_name_field"))
+                    label = { Text(tr("Nom")) }, modifier = Modifier.testTag("track_name_field"))
             },
-            confirmButton = { TextButton(onClick = { ui.rename(t.id, name); renaming = null }, enabled = name.isNotBlank()) { Text("OK") } },
-            dismissButton = { TextButton(onClick = { renaming = null }) { Text("Annuler") } },
+            confirmButton = { TextButton(onClick = { ui.rename(t.id, name); renaming = null }, enabled = name.isNotBlank()) { Text(tr("OK")) } },
+            dismissButton = { TextButton(onClick = { renaming = null }) { Text(tr("Annuler")) } },
         )
     }
     colouring?.let { t ->
         AlertDialog(
             onDismissRequest = { colouring = null },
-            title = { Text("Couleur de « ${t.name} »") },
+            title = { Text(tr("Couleur de « %s »", t.name)) },
             text = {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     TrackColors.forEachIndexed { i, c ->
@@ -155,7 +157,7 @@ fun TrackBar(ui: TracksUi, modifier: Modifier = Modifier) {
                     }
                 }
             },
-            confirmButton = { TextButton(onClick = { colouring = null }) { Text("Fermer") } },
+            confirmButton = { TextButton(onClick = { colouring = null }) { Text(tr("Fermer")) } },
         )
     }
 }

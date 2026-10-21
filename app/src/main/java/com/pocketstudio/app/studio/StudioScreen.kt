@@ -1,5 +1,6 @@
 package com.pocketstudio.app.studio
 
+import com.pocketstudio.model.i18n.tr
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -36,7 +37,6 @@ import com.pocketstudio.ui.Neon
 import com.pocketstudio.ui.NeonCard
 import com.pocketstudio.ui.SectionLabel
 import com.pocketstudio.ui.StatRow
-import java.util.Locale
 import kotlin.math.ln
 import kotlin.math.log2
 import kotlin.math.pow
@@ -45,14 +45,16 @@ import kotlin.math.roundToInt
 private const val MIN_HZ = 55f
 private const val MAX_HZ = 1760f
 private val NOTE_NAMES = listOf("La", "La#", "Si", "Do", "Do#", "Ré", "Ré#", "Mi", "Fa", "Fa#", "Sol", "Sol#")
+private val NOTE_NAMES_EN = listOf("A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#")
 
-/** French note name closest to [hz], e.g. "La 4". */
+/** Note name closest to [hz], e.g. "La 4" (or "A 4" when the settings name notes C D E). */
 fun noteName(hz: Float): String {
     val semitonesFromA4 = (12 * log2(hz / 440f)).roundToInt()
     val index = Math.floorMod(semitonesFromA4, 12)
     // Octave numbers change on Do (C), three semitones above La (A).
     val octave = 4 + Math.floorDiv(semitonesFromA4 + 9, 12)
-    return "${NOTE_NAMES[index]} $octave"
+    val names = if (com.pocketstudio.app.settings.SettingsStore.state.value.englishNotes) NOTE_NAMES_EN else NOTE_NAMES
+    return "${names[index]} $octave"
 }
 
 private fun hzToSlider(hz: Float) = (ln(hz / MIN_HZ) / ln(MAX_HZ / MIN_HZ)).coerceIn(0f, 1f)
@@ -68,72 +70,72 @@ fun StudioScreen(
     onVolume: (Float) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(
-        modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp).testTag("studio"),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        Text("Son de test", style = MaterialTheme.typography.headlineMedium, color = Neon.TextPrimary)
-        Text("Une note pure pour vérifier que le moteur audio sonne juste.", color = Neon.TextSecondary)
+    // A page to read: centred at a comfortable width on a tablet.
+    com.pocketstudio.ui.ReadingWidth {
+        Column(
+            modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp).testTag("studio"),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Text(tr("Son de test"), style = MaterialTheme.typography.headlineMedium, color = Neon.TextPrimary)
+            Text(tr("Une note pure pour vérifier que le moteur audio sonne juste."), color = Neon.TextSecondary)
 
-        NeonCard(accent = if (state.playing) Neon.Cyan else Neon.Outline) {
-            SectionLabel("Oscillateur de test")
-            val buttonColor by animateColorAsState(if (state.playing) Neon.Magenta else Neon.Cyan, label = "play")
-            Button(
-                onClick = onTogglePlay,
-                enabled = engineAvailable,
-                modifier = Modifier.fillMaxWidth().height(64.dp).testTag("play"),
-                colors = ButtonDefaults.buttonColors(containerColor = buttonColor),
-            ) {
-                Icon(
-                    if (state.playing) Icons.Filled.Stop else Icons.Filled.PlayArrow,
-                    contentDescription = null,
-                    modifier = Modifier.size(28.dp),
-                )
-                Spacer(Modifier.width(8.dp))
-                Text(if (state.playing) "Arrêter" else "Jouer", style = MaterialTheme.typography.titleMedium)
-            }
-            LevelMeter(stream.peak)
-
-            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Text("Hauteur", Modifier.weight(1f))
-                Text(
-                    "${noteName(state.frequencyHz)} · ${state.frequencyHz.roundToInt()} Hz",
-                    style = MonoStyle,
-                    color = Neon.Cyan,
-                )
-            }
-            ProSlider(value = hzToSlider(state.frequencyHz), onValueChange = { onFrequency(sliderToHz(it)) })
-
-            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Text("Volume", Modifier.weight(1f))
-                Text("${(state.volume * 100).roundToInt()} %", style = MonoStyle, color = Neon.Cyan)
-            }
-            ProSlider(value = state.volume, onValueChange = onVolume)
-        }
-
-        NeonCard {
-            SectionLabel("Flux audio")
-            if (!engineAvailable) {
-                Text("Moteur audio indisponible sur cet appareil.", color = Neon.Red)
-            }
-            StatRow("Mode", IssueReport.describeStream(stream).substringBefore(", ${stream.sampleRate}"))
-            StatRow("Fréquence", if (stream.sampleRate > 0) "${stream.sampleRate} Hz" else "–")
-            StatRow("Taille de burst", if (stream.framesPerBurst > 0) "${stream.framesPerBurst} éch." else "–")
-            StatRow(
-                "Buffer",
-                if (stream.bufferSize > 0) {
-                    String.format(
-                        Locale.FRANCE, "%d éch. (%.1f ms)",
-                        stream.bufferSize, 1000.0 * stream.bufferSize / stream.sampleRate,
+            NeonCard(accent = if (state.playing) Neon.Cyan else Neon.Outline) {
+                SectionLabel(tr("Oscillateur de test"))
+                val buttonColor by animateColorAsState(if (state.playing) Neon.Magenta else Neon.Cyan, label = "play")
+                Button(
+                    onClick = onTogglePlay,
+                    enabled = engineAvailable,
+                    modifier = Modifier.fillMaxWidth().height(64.dp).testTag("play"),
+                    colors = ButtonDefaults.buttonColors(containerColor = buttonColor),
+                ) {
+                    Icon(
+                        if (state.playing) Icons.Filled.Stop else Icons.Filled.PlayArrow,
+                        contentDescription = null,
+                        modifier = Modifier.size(28.dp),
                     )
-                } else "–",
-            )
-            StatRow("Latence de sortie", IssueReport.formatMs(stream.outputLatencyMs))
-            StatRow(
-                "Décrochages",
-                stream.xruns.toString(),
-                if (stream.xruns == 0) Neon.Acid else Neon.Red,
-            )
+                    Spacer(Modifier.width(8.dp))
+                    Text(if (state.playing) tr("Arrêter") else tr("Jouer"), style = MaterialTheme.typography.titleMedium)
+                }
+                LevelMeter(stream.peak)
+
+                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                    Text(tr("Hauteur"), Modifier.weight(1f))
+                    Text(
+                        "${noteName(state.frequencyHz)} · ${state.frequencyHz.roundToInt()} Hz",
+                        style = MonoStyle,
+                        color = Neon.Cyan,
+                    )
+                }
+                ProSlider(value = hzToSlider(state.frequencyHz), onValueChange = { onFrequency(sliderToHz(it)) })
+
+                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                    Text("Volume", Modifier.weight(1f))
+                    Text("${(state.volume * 100).roundToInt()} %", style = MonoStyle, color = Neon.Cyan)
+                }
+                ProSlider(value = state.volume, onValueChange = onVolume)
+            }
+
+            NeonCard {
+                SectionLabel(tr("Flux audio"))
+                if (!engineAvailable) {
+                    Text(tr("Moteur audio indisponible sur cet appareil."), color = Neon.Red)
+                }
+                StatRow(tr("Mode"), IssueReport.describeStream(stream, onScreen = true).substringBefore(", ${stream.sampleRate}"))
+                StatRow(tr("Fréquence"), if (stream.sampleRate > 0) "${stream.sampleRate} Hz" else "–")
+                StatRow(tr("Taille de burst"), if (stream.framesPerBurst > 0) tr("%d éch.", stream.framesPerBurst) else "–")
+                StatRow(
+                    "Buffer",
+                    if (stream.bufferSize > 0) {
+                        tr("%d éch. (%.1f ms)", stream.bufferSize, 1000.0 * stream.bufferSize / stream.sampleRate)
+                    } else "–",
+                )
+                StatRow(tr("Latence de sortie"), IssueReport.formatMs(stream.outputLatencyMs, onScreen = true))
+                StatRow(
+                    tr("Décrochages"),
+                    stream.xruns.toString(),
+                    if (stream.xruns == 0) Neon.Acid else Neon.Red,
+                )
+            }
         }
     }
 }

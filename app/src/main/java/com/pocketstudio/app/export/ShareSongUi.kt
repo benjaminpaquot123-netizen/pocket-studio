@@ -30,6 +30,7 @@ import com.pocketstudio.app.rhythm.ExportUi
 import com.pocketstudio.app.rhythm.RhythmViewModel
 import com.pocketstudio.model.ProjectCatalog
 import com.pocketstudio.ui.Neon
+import com.pocketstudio.model.i18n.tr
 
 /**
  * « Partager mon morceau », wherever it is asked from: the name first when the project still has a
@@ -44,7 +45,7 @@ fun rememberShareSong(rhythmVm: RhythmViewModel): () -> Unit {
     // A name the user confirmed (even a template's): not asked again while the app is open.
     var confirmed by rememberSaveable { mutableStateOf<String?>(null) }
     LaunchedEffect(rhythmVm) {
-        rhythmVm.shareRequests.collect { files -> WavExporter.share(context, files, "Partager mon morceau") }
+        rhythmVm.shareRequests.collect { files -> WavExporter.share(context, files, tr("Partager mon morceau")) }
     }
     naming?.let { name ->
         NameSongDialog(
@@ -64,7 +65,7 @@ fun rememberShareSong(rhythmVm: RhythmViewModel): () -> Unit {
     return {
         val name = rhythmVm.project.value.name
         when {
-            export.running -> Toast.makeText(context, "Un export est déjà en cours : attends qu'il finisse.", Toast.LENGTH_SHORT).show()
+            export.running -> Toast.makeText(context, tr("Un export est déjà en cours : attends qu'il finisse."), Toast.LENGTH_SHORT).show()
             ShareSong.isDefaultName(name) && name.trim() != confirmed -> naming = ShareSong.suggestedName(name)
             else -> rhythmVm.shareSong()
         }
@@ -76,12 +77,12 @@ fun rememberShareSong(rhythmVm: RhythmViewModel): () -> Unit {
 fun NameSongDialog(name: String, onName: (String) -> Unit, confirm: () -> Unit, dismiss: () -> Unit) {
     AlertDialog(
         onDismissRequest = dismiss,
-        title = { Text("Nomme ton morceau") },
+        title = { Text(tr("Nomme ton morceau")) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("C'est le nom que verront ceux qui l'écoutent.", style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary)
+                Text(tr("C'est le nom que verront ceux qui l'écoutent."), style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary)
                 OutlinedTextField(
-                    value = name, onValueChange = onName, singleLine = true, label = { Text("Nom du morceau") },
+                    value = name, onValueChange = onName, singleLine = true, label = { Text(tr("Nom du morceau")) },
                     keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences, imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(onDone = { if (name.isNotBlank()) confirm() }),
                     modifier = Modifier.fillMaxWidth().testTag("share_name_field"),
@@ -89,9 +90,9 @@ fun NameSongDialog(name: String, onName: (String) -> Unit, confirm: () -> Unit, 
             }
         },
         confirmButton = {
-            TextButton(onClick = confirm, enabled = name.isNotBlank(), modifier = Modifier.testTag("share_name_ok")) { Text("Partager") }
+            TextButton(onClick = confirm, enabled = name.isNotBlank(), modifier = Modifier.testTag("share_name_ok")) { Text(tr("Partager")) }
         },
-        dismissButton = { TextButton(onClick = dismiss) { Text("Annuler") } },
+        dismissButton = { TextButton(onClick = dismiss) { Text(tr("Annuler")) } },
     )
 }
 
@@ -101,26 +102,27 @@ fun ShareProgressDialog(export: ExportUi, cancel: () -> Unit, dismiss: () -> Uni
     val failed = !export.running && export.error != null
     AlertDialog(
         onDismissRequest = { if (!export.running) dismiss() },
-        title = { Text(if (failed) "Partage impossible" else "Je prépare ton morceau…") },
+        title = { Text(if (failed) tr("Partage impossible") else tr("Je prépare ton morceau…")) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.testTag("share_progress")) {
                 if (failed) {
                     Text(export.error.orEmpty(), color = Neon.Red, style = MaterialTheme.typography.bodyMedium)
                 } else {
-                    Text(export.stage ?: "Enregistrement du son, puis compression en M4A.", style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary)
+                    Text(export.stage ?: tr("Enregistrement du son, puis compression en M4A."), style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary)
                     LinearProgressIndicator(
                         progress = { export.progress },
                         modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
                         color = Neon.Acid,
                         trackColor = Neon.SurfaceHigh,
                     )
-                    Text("Ensuite, choisis l'appli pour l'envoyer.", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                    Text(tr("Ensuite, choisis l'appli pour l'envoyer."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
                 }
             }
         },
         confirmButton = {
-            if (export.running) TextButton(onClick = cancel, modifier = Modifier.testTag("share_cancel")) { Text("Annuler") }
-            else TextButton(onClick = dismiss, modifier = Modifier.testTag("share_dismiss")) { Text("OK") }
+            if (export.running) TextButton(onClick = cancel, modifier = Modifier.testTag("share_cancel")) { Text(tr("Annuler")) }
+            else
+ TextButton(onClick = dismiss, modifier = Modifier.testTag("share_dismiss")) { Text("OK") }
         },
     )
 }

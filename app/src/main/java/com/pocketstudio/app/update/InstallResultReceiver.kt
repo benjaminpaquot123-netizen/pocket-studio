@@ -1,5 +1,6 @@
 package com.pocketstudio.app.update
 
+import com.pocketstudio.model.i18n.tr
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -20,7 +21,7 @@ class InstallResultReceiver : BroadcastReceiver() {
             else -> {
                 val message = intent.getStringExtra(PackageInstaller.EXTRA_STATUS_MESSAGE)
                 Log.w("PocketStudio", "update failed: $status $message")
-                Toast.makeText(context, "Mise à jour impossible : $message", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, tr("Mise à jour impossible : %s", message), Toast.LENGTH_LONG).show()
             }
         }
     }

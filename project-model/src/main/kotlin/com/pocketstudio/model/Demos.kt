@@ -1,5 +1,6 @@
 package com.pocketstudio.model
 
+import com.pocketstudio.model.i18n.tr
 import kotlin.random.Random
 
 /** Demo projects to listen to and take apart (Mes projets › Nouveau projet). Same result every time. */
@@ -23,7 +24,7 @@ object Demos {
         val acidA = AcidGenerator(Random(303)).generate(AcidPattern(root = 36), AcidGenerator.NOTE_SETS[0])
         val acidB = AcidGenerator(Random(909)).generate(AcidPattern(root = 36, density = 0.8f), AcidGenerator.NOTE_SETS[0])
         val sound = SoundLibrary.ACID.first { it.name == "Squelchy" }.sound
-        val a = Project(name = "Démo · Acid house", tempoBpm = 126.0, drums = beatA, acid = acidA.copy(sound = sound))
+        val a = Project(name = tr("Démo · Acid house"), tempoBpm = 126.0, drums = beatA, acid = acidA.copy(sound = sound))
         return a.copySceneTo(1).switchScene(1).let { it.copy(drums = beatB.copy(lanes = beatB.lanes), acid = it.acid.copy(steps = acidB.steps)) }
             .switchScene(0).copy(song = listOf(SongPart(0, 2), SongPart(1, 2), SongPart(0, 1), SongPart(1, 2))).sanitized()
     }
@@ -37,7 +38,7 @@ object Demos {
         val acid = AcidGenerator(Random(111)).generate(AcidPattern(root = 31, density = 0.55f), AcidGenerator.NOTE_SETS[2])
         val soft = SoundLibrary.ACID.first { it.name == "Basse ronde" }.sound
         return Project(
-            name = "Démo · Funk en Sol mineur", tempoBpm = 111.0, swing = 0.15, drums = beat, harmony = harmony,
+            name = tr("Démo · Funk en Sol mineur"), tempoBpm = 111.0, swing = 0.15, drums = beat, harmony = harmony,
             synth = SoundLibrary.SYNTH.first { it.name == "Orgue" }.sound, synthNotes = notes, acid = acid.copy(sound = soft),
         ).sanitized()
     }
@@ -49,7 +50,7 @@ object Demos {
         val harmony = Harmony(0, Scale.Major)
         val notes = NoteClip().withProgression(Progression.Sad, harmony, octaveRoot = 60)
         return Project(
-            name = "Démo · Chill", tempoBpm = 88.0, swing = 0.25, drums = beat, harmony = harmony,
+            name = tr("Démo · Chill"), tempoBpm = 88.0, swing = 0.25, drums = beat, harmony = harmony,
             synth = SoundLibrary.SYNTH.first { it.name == "Piano électrique" }.sound, synthNotes = notes,
             acid = AcidPattern(),  // no acid line: drums and piano only
         ).sanitized()

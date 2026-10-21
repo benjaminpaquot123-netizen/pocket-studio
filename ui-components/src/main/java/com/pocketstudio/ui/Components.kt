@@ -71,6 +71,7 @@ import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.pocketstudio.model.i18n.tr
 
 /**
  * Where folded cards are remembered, by title. The app gives one that lasts (its preferences);
@@ -202,7 +203,7 @@ fun SectionLabel(text: String, modifier: Modifier = Modifier, color: Color = Neo
             }
         }
     }
-    val key = foldKey ?: text
+    val key = foldKey ?: com.pocketstudio.model.i18n.I18n.frenchOf(text)
     val store = LocalFoldStore.current
     val folded = isHeader && store.isFolded(key)
     if (isHeader && fold!!.key != key) {
@@ -251,11 +252,11 @@ private fun SectionTitle(text: String, color: Color, folded: Boolean?, subtle: B
 private fun Modifier.foldToggle(key: String, folded: Boolean, beforeToggle: () -> Unit = {}): Modifier {
     val store = LocalFoldStore.current
     return clip(RoundedCornerShape(6.dp))
-        .clickable(role = Role.Button, onClickLabel = if (folded) "Déplier" else "Replier") {
+        .clickable(role = Role.Button, onClickLabel = if (folded) tr("Déplier") else tr("Replier")) {
             beforeToggle()
             store.setFolded(key, !folded)
         }
-        .semantics { stateDescription = if (folded) "Replié" else "Déplié" }
+        .semantics { stateDescription = if (folded) tr("Replié") else tr("Déplié") }
         .heightIn(min = 24.dp)
         .testTag("fold_$key")
 }

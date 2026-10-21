@@ -58,6 +58,7 @@ import com.pocketstudio.ui.Neon
 import com.pocketstudio.ui.pillColors
 import com.pocketstudio.ui.SectionLabel
 import kotlin.math.roundToInt
+import com.pocketstudio.model.i18n.tr
 
 class RemixUi(
     val modelInstalled: Boolean,
@@ -110,47 +111,61 @@ class RemixActions(
 /** Remix: split a song into drums, bass, other and vocals, then listen to each part. */
 @Composable
 fun RemixScreen(ui: RemixUi, actions: RemixActions) {
-    Column(
-        Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        if (ui.remix.setId != null) InProject(ui, actions)
-        NeonCard(modifier = Modifier.testTag("remix_start")) {
-            SectionLabel("Séparer une chanson", help = Glossary.REMIX)
-            Text(
-                "Choisis un morceau du téléphone : l'appli le découpe en batterie, basse, voix et le reste. " +
-                    "Compte quelques minutes ; tu peux éteindre l'écran.",
-                style = MaterialTheme.typography.bodyMedium,
-            )
-            when (val s = ui.state) {
-                is SeparationState.DownloadingModel -> Progress("Téléchargement du modèle… ${(s.progress * 100).roundToInt()} %", s.progress, actions.cancel)
-                is SeparationState.Decoding -> Progress("Lecture de « ${s.name} »…", null, actions.cancel)
-                is SeparationState.Separating -> Progress("Séparation de « ${s.name} »… ${(s.progress * 100).roundToInt()} %", s.progress, actions.cancel)
-                is SeparationState.Analysing -> Progress("Tempo et tonalité de « ${s.name} »…", null, actions.cancel)
-                else -> {
-                    if (s is SeparationState.Failed) {
-                        Text(s.message, color = Neon.Amber, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.testTag("remix_error"))
-                    }
-                    if (!ui.modelInstalled) {
-                        Text(
-                            "Il faut d'abord le modèle de séparation (${SeparationModel.SPEC.sizeLabel}, une seule fois, Wi-Fi conseillé).",
-                            style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
-                        )
-                        OutlinedButton(onClick = actions.downloadModel, modifier = Modifier.fillMaxWidth().testTag("remix_download")) {
-                            Text("Télécharger le modèle (${SeparationModel.SPEC.sizeLabel})")
-                        }
-                    }
-                    Button(onClick = actions.pickSong, modifier = Modifier.fillMaxWidth().testTag("remix_pick")) {
-                        Text("Choisir une chanson")
-                    }
+    // On a tablet: the remix in the project and a new separation on the left, the separated songs on the right.
+    // Nothing separated yet: one column at a reading width.
+    if (ui.sets.isEmpty()) {
+        com.pocketstudio.ui.ReadingWidth {
+            Column(
+                Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) { RemixStart(ui, actions) }
+        }
+    } else {
+        com.pocketstudio.ui.AdaptivePanes(
+            spacing = 12.dp,
+            first = { RemixStart(ui, actions) },
+            second = { ui.sets.forEach { set -> StemCard(set, ui.preview?.takeIf { it.setId == set.id }, ui.remix.setId == set.id, actions) } },
+        )
+    }
+}
+
+@Composable
+private fun RemixStart(ui: RemixUi, actions: RemixActions) {
+    if (ui.remix.setId != null) InProject(ui, actions)
+    NeonCard(modifier = Modifier.testTag("remix_start")) {
+        SectionLabel(tr("Séparer une chanson"), help = Glossary.REMIX)
+        Text(
+            tr("Choisis un morceau du téléphone : l'appli le découpe en batterie, basse, voix et le reste.") + " " +
+                tr("Compte quelques minutes ; tu peux éteindre l'écran."),
+            style = MaterialTheme.typography.bodyMedium,
+        )
+        when (val s = ui.state) {
+            is SeparationState.DownloadingModel -> Progress(tr("Téléchargement du modèle… %d %%", (s.progress * 100).roundToInt()), s.progress, actions.cancel)
+            is SeparationState.Decoding -> Progress(tr("Lecture de « %s »…", s.name), null, actions.cancel)
+            is SeparationState.Separating -> Progress(tr("Séparation de « %s »… %d %%", s.name, (s.progress * 100).roundToInt()), s.progress, actions.cancel)
+            is SeparationState.Analysing -> Progress(tr("Tempo et tonalité de « %s »…", s.name), null, actions.cancel)
+            else -> {
+                if (s is SeparationState.Failed) {
+                    Text(s.message, color = Neon.Amber, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.testTag("remix_error"))
+                }
+                if (!ui.modelInstalled) {
                     Text(
-                        "${SeparationService.MAX_SECONDS / 60} minutes au maximum. Les ${StemStore.KEEP} derniers morceaux séparés sont gardés, et ceux qu'un projet utilise.",
+                        tr("Il faut d'abord le modèle de séparation (%s, une seule fois, Wi-Fi conseillé).", SeparationModel.SPEC.sizeLabel),
                         style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
                     )
+                    OutlinedButton(onClick = actions.downloadModel, modifier = Modifier.fillMaxWidth().testTag("remix_download")) {
+                        Text(tr("Télécharger le modèle (%s)", SeparationModel.SPEC.sizeLabel))
+                    }
                 }
+                Button(onClick = actions.pickSong, modifier = Modifier.fillMaxWidth().testTag("remix_pick")) {
+                    Text(tr("Choisir une chanson"))
+                }
+                Text(
+                    tr("%d minutes au maximum. Les %d derniers morceaux séparés sont gardés, et ceux qu'un projet utilise.", SeparationService.MAX_SECONDS / 60, StemStore.KEEP),
+                    style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
+                )
             }
         }
-        ui.sets.forEach { set -> StemCard(set, ui.preview?.takeIf { it.setId == set.id }, ui.remix.setId == set.id, actions) }
     }
 }
 
@@ -162,7 +177,7 @@ private fun Progress(text: String, fraction: Float?, cancel: () -> Unit) {
     } else {
         LinearProgressIndicator(progress = { fraction }, modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), color = Neon.Cyan)
     }
-    OutlinedButton(onClick = cancel, modifier = Modifier.fillMaxWidth().testTag("remix_cancel")) { Text("Annuler") }
+    OutlinedButton(onClick = cancel, modifier = Modifier.fillMaxWidth().testTag("remix_cancel")) { Text(tr("Annuler")) }
 }
 
 @Composable
@@ -170,52 +185,52 @@ private fun InProject(ui: RemixUi, actions: RemixActions) {
     val r = ui.remix
     var padBars by rememberSaveable { mutableIntStateOf(1) }
     NeonCard(modifier = Modifier.testTag("remix_project")) {
-        SectionLabel("Dans le projet : ${r.name}", color = Neon.Magenta, foldKey = "Dans le projet")
+        SectionLabel(tr("Dans le projet : %s", r.name), color = Neon.Magenta, foldKey = "Dans le projet")
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Button(onClick = actions.togglePlay, modifier = Modifier.testTag("remix_play")) {
                 Icon(if (ui.transportPlaying) Icons.Filled.Stop else Icons.Filled.PlayArrow, contentDescription = null)
-                Text(if (ui.transportPlaying) " Arrêter" else " Jouer")
+                Text(" " + if (ui.transportPlaying) tr("Arrêter") else tr("Jouer"))
             }
-            Text("Mesure ${r.startBar + 1}", Modifier.weight(1f), maxLines = 1)
+            Text(tr("Mesure %d", r.startBar + 1), Modifier.weight(1f), maxLines = 1)
             IconButton(onClick = { actions.setStartBar(r.startBar - 1) }, enabled = r.startBar > 0) {
-                Icon(Icons.Filled.Remove, contentDescription = "Mesure précédente")
+                Icon(Icons.Filled.Remove, contentDescription = tr("Mesure précédente"))
             }
             IconButton(onClick = { actions.setStartBar(r.startBar + 1) }, modifier = Modifier.testTag("remix_bar_next")) {
-                Icon(Icons.Filled.Add, contentDescription = "Mesure suivante")
+                Icon(Icons.Filled.Add, contentDescription = tr("Mesure suivante"))
             }
         }
         ui.overview?.let { ov ->
             val now = if (ui.position >= 0) ui.position else r.startFrame(SAMPLE_RATE)
             Text(
-                "${clock(now)} / ${clock(ov.frames)}" + if (ui.position < 0) " · départ" else "",
+                "${clock(now)} / ${clock(ov.frames)}" + if (ui.position < 0) " · " + tr("départ") else "",
                 style = MonoStyle, color = Neon.TextSecondary,
             )
         }
         if (ui.remixLoading) {
-            Text("Chargement des pistes…", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+            Text(tr("Chargement des pistes…"), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
             LinearProgressIndicator(Modifier.fillMaxWidth(), color = Neon.Magenta)
         }
         if (r.songBpm > 0 && kotlin.math.abs(ui.projectBpm - r.songBpm) > 0.05) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    if (r.followTempo) "Le morceau (%.1f BPM) suit le tempo du projet (%.1f BPM), sans changer de hauteur.".format(r.songBpm, ui.projectBpm)
-                    else "Le projet est à %.1f BPM, le morceau à %.1f : les pistes gardent leur vitesse et se décalent.".format(ui.projectBpm, r.songBpm),
+                    if (r.followTempo) tr("Le morceau (%.1f BPM) suit le tempo du projet (%.1f BPM), sans changer de hauteur.", r.songBpm, ui.projectBpm)
+                    else tr("Le projet est à %.1f BPM, le morceau à %.1f : les pistes gardent leur vitesse et se décalent.", ui.projectBpm, r.songBpm),
                     style = MaterialTheme.typography.bodySmall, color = if (r.followTempo) Neon.TextSecondary else Neon.Amber,
                     modifier = Modifier.weight(1f),
                 )
                 Switch(checked = r.followTempo, onCheckedChange = actions.setFollowTempo, modifier = Modifier.testTag("remix_follow_tempo"))
             }
             if (ui.stretching) {
-                Text("Calage du morceau au tempo…", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                Text(tr("Calage du morceau au tempo…"), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
                 LinearProgressIndicator(Modifier.fillMaxWidth(), color = Neon.Magenta)
             }
         }
         FlowRow(itemVerticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            Text("Vers le pad :", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+            Text(tr("Vers le pad :"), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
             listOf(1, 2, 4).forEach { b ->
                 FilterChip(
                     selected = padBars == b, onClick = { padBars = b },
-                    label = { Text("$b mes.") },
+                    label = { Text(tr("%d mes.", b)) },
                     colors = pillColors(),
                 )
             }
@@ -224,7 +239,7 @@ private fun InProject(ui: RemixUi, actions: RemixActions) {
         Demucs.STEMS.forEachIndexed { i, stem ->
             val m = r.stems[i]
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                Text(StemStore.LABELS[stem] ?: stem, Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge)
+                Text(StemStore.label(stem), Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge)
                 FilterChip(
                     selected = m.mute, onClick = { actions.toggleStemMute(i) }, label = { Text("M") },
                     colors = pillColors(Neon.Amber),
@@ -251,23 +266,24 @@ private fun InProject(ui: RemixUi, actions: RemixActions) {
             ProSlider(value = m.volume, onValueChange = { actions.setStemVolume(i, it) }, modifier = Modifier.testTag("stem_volume_$i"))
         }
         Text(
-            "Les pistes démarrent avec le Rythme, à partir de la mesure choisie (trait vert). Touche une forme d'onde pour partir de là. « → Pad » copie les mesures choisies sur le pad sélectionné, « → Live » sur un pad live libre (onglet Morceau) pour lancer et couper chaque partie en rythme.",
+            tr("Les pistes démarrent avec le Rythme, à partir de la mesure choisie (trait vert). Touche une forme d'onde pour partir de là.") + " " +
+                tr("« → Pad » copie les mesures choisies sur le pad sélectionné, « → Live » sur un pad live libre (onglet Morceau) pour lancer et couper chaque partie en rythme."),
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
         )
-        TextButton(onClick = actions.clearRemix, modifier = Modifier.testTag("remix_clear")) { Text("Retirer du projet") }
+        TextButton(onClick = actions.clearRemix, modifier = Modifier.testTag("remix_clear")) { Text(tr("Retirer du projet")) }
     }
 }
 
 /** Asks before deleting a separated song; refuses while a project plays it along. */
 @Composable
 private fun DeleteStemsDialog(set: StemSet, inProject: Boolean, onDelete: () -> Unit, onDismiss: () -> Unit) {
-    val users = (listOfNotNull("le projet ouvert".takeIf { inProject }) + set.usedBy.map { "« $it »" }).distinct()
+    val users = (listOfNotNull(tr("le projet ouvert").takeIf { inProject }) + set.usedBy.map { "« $it »" }).distinct()
     if (users.isNotEmpty()) {
         AlertDialog(
             onDismissRequest = onDismiss,
-            title = { Text("Morceau utilisé") },
+            title = { Text(tr("Morceau utilisé")) },
             text = {
-                Text("« ${set.name} » joue dans ${users.joinToString(", ")}. Retire-le d'abord de ce projet (« Retirer du projet ») pour pouvoir le supprimer.")
+                Text(tr("« %s » joue dans %s. Retire-le d'abord de ce projet (« Retirer du projet ») pour pouvoir le supprimer.", set.name, users.joinToString(", ")))
             },
             confirmButton = { TextButton(onClick = onDismiss, modifier = Modifier.testTag("delete_stems_ok")) { Text("OK") } },
             modifier = Modifier.testTag("delete_stems_dialog"),
@@ -275,12 +291,12 @@ private fun DeleteStemsDialog(set: StemSet, inProject: Boolean, onDelete: () -> 
     } else {
         AlertDialog(
             onDismissRequest = onDismiss,
-            title = { Text("Supprimer ce morceau ?") },
-            text = { Text("Les pistes séparées de « ${set.name} » seront effacées. Pour les retrouver, il faudra séparer la chanson à nouveau.") },
+            title = { Text(tr("Supprimer ce morceau ?")) },
+            text = { Text(tr("Les pistes séparées de « %s » seront effacées. Pour les retrouver, il faudra séparer la chanson à nouveau.", set.name)) },
             confirmButton = {
-                TextButton(onClick = { onDismiss(); onDelete() }, modifier = Modifier.testTag("delete_stems_confirm")) { Text("Supprimer", color = Neon.Red) }
+                TextButton(onClick = { onDismiss(); onDelete() }, modifier = Modifier.testTag("delete_stems_confirm")) { Text(tr("Supprimer"), color = Neon.Red) }
             },
-            dismissButton = { TextButton(onClick = onDismiss) { Text("Annuler") } },
+            dismissButton = { TextButton(onClick = onDismiss) { Text(tr("Annuler")) } },
             modifier = Modifier.testTag("delete_stems_dialog"),
         )
     }
@@ -302,13 +318,13 @@ private fun StemCard(set: StemSet, preview: StemPreview?, inProject: Boolean, ac
                 Text(details, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.testTag("song_info_${set.id}"))
             }
             IconButton(onClick = { confirmDelete = true }, modifier = Modifier.testTag("delete_${set.id}")) {
-                Icon(Icons.Filled.Delete, contentDescription = "Supprimer")
+                Icon(Icons.Filled.Delete, contentDescription = tr("Supprimer"))
             }
         }
         if (confirmDelete) DeleteStemsDialog(set, inProject, onDelete = { actions.delete(set) }, onDismiss = { confirmDelete = false })
         if (!inProject) {
             Button(onClick = { actions.useSong(set) }, modifier = Modifier.fillMaxWidth().testTag("use_${set.id}")) {
-                Text("Jouer avec le projet")
+                Text(tr("Jouer avec le projet"))
             }
         }
         val playing = preview?.playing == true
@@ -319,12 +335,12 @@ private fun StemCard(set: StemSet, preview: StemPreview?, inProject: Boolean, ac
                 modifier = Modifier.testTag("listen_${set.id}"),
             ) {
                 Icon(if (playing) Icons.Filled.Stop else Icons.Filled.PlayArrow, contentDescription = null, tint = if (playing) Neon.Acid else Neon.Cyan)
-                Text(if (playing) " Arrêter" else " Écouter", color = if (playing) Neon.Acid else Neon.Cyan)
+                Text(" " + if (playing) tr("Arrêter") else tr("Écouter"), color = if (playing) Neon.Acid else Neon.Cyan)
             }
             val clockText = when {
-                preview?.loading == true -> "Chargement…"
+                preview?.loading == true -> tr("Chargement…")
                 playing && preview.frames > 0 -> "${clock(preview.position.coerceAtLeast(0))} / ${clock(preview.frames)}"
-                else -> "Allume ou coupe chaque partie, même en pleine lecture."
+                else -> tr("Allume ou coupe chaque partie, même en pleine lecture.")
             }
             Text(clockText, style = if (playing) MonoStyle else MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.weight(1f))
         }
@@ -350,7 +366,8 @@ private fun StemCard(set: StemSet, preview: StemPreview?, inProject: Boolean, ac
                     contentPadding = androidx.compose.foundation.layout.PaddingValues(2.dp),
                     modifier = Modifier.weight(1f).height(56.dp).testTag("stem_${set.id}_$stem"),
                 ) {
-                    Text(StemStore.LABELS[stem] ?: stem, fontSize = 13.sp, maxLines = 1, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+                    Text(StemStore.label(stem), fontSize
+ = 13.sp, maxLines = 1, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
                 }
             }
         }

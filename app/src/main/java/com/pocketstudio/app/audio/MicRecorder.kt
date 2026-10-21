@@ -7,6 +7,7 @@ import android.media.MediaRecorder
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.isActive
 import kotlin.math.abs
+import com.pocketstudio.model.i18n.tr
 
 /**
  * Records the microphone (mono, 48 kHz float) for a pad. [record] blocks until [stop] or the
@@ -31,7 +32,7 @@ class MicRecorder(private val maxSeconds: Int = 30) {
             runCatching { AudioRecord(source, rate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_FLOAT, bufferBytes) }
                 .getOrNull()
                 ?.takeIf { it.state == AudioRecord.STATE_INITIALIZED || run { it.release(); false } }
-        } ?: error("micro indisponible")
+        } ?: error(tr("micro indisponible"))
         val out = FloatArray(rate * maxSeconds)
         var size = 0
         val chunk = FloatArray(1024)

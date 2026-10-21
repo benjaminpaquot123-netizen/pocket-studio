@@ -1,5 +1,7 @@
 package com.pocketstudio.app.sounds
 
+import com.pocketstudio.model.i18n.tr
+
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Adjust
 import androidx.compose.material.icons.filled.Air
@@ -93,30 +95,30 @@ object SoundLooks {
     /** A few words on a synth patch: its wave, its unison, how it sounds over time. */
     fun describe(patch: SynthPatch): String {
         val wave = patch.get(SynthPatch.OSC1_WAVE)
-        val parts = mutableListOf(if (wave < 0.25f) "Scie" else if (wave < 0.75f) "Carré" else "Triangle")
+        val parts = mutableListOf(if (wave < 0.25f) tr("Scie") else if (wave < 0.75f) tr("Carré") else tr("Triangle"))
         val voices = 1 + (patch.get(SynthPatch.UNISON) * 6).roundToInt()
-        if (voices > 1) parts += "$voices voix"
+        if (voices > 1) parts += tr("%d voix", voices)
         parts += when {
-            patch.get(SynthPatch.A_ATTACK) > 0.35f -> "monte doucement"
-            patch.get(SynthPatch.A_SUSTAIN) < 0.2f -> "court"
-            else -> "tenu"
+            patch.get(SynthPatch.A_ATTACK) > 0.35f -> tr("monte doucement")
+            patch.get(SynthPatch.A_SUSTAIN) < 0.2f -> tr("court")
+            else -> tr("tenu")
         }
         return parts.joinToString(" · ")
     }
 
-    fun describe(patch: PlaitsPatch): String = PlaitsPatch.MODELS.getOrElse(patch.model) { "" }
+    fun describe(patch: PlaitsPatch): String = PlaitsPatch.MODELS.getOrNull(patch.model)?.let { tr(it) }.orEmpty()
 
     fun describe(sound: AcidSound): String =
-        (if (sound.waveform < 0.5f) "Scie" else "Carré") + if (sound.drive > 0.6f) " · saturé" else if (sound.resonance > 0.75f) " · piquant" else ""
+        (if (sound.waveform < 0.5f) tr("Scie") else tr("Carré")) + if (sound.drive > 0.6f) " · " + tr("saturé") else if (sound.resonance > 0.75f) " · " + tr("piquant") else ""
 
     /** One line about each of Plaits' 24 models, in PlaitsPatch.MODELS order. */
-    val PLAITS_HINTS = listOf(
-        "Deux oscillateurs et un filtre", "Rond ou mordant, façon Casio CZ", "Les sons du DX7, série 1",
-        "Les sons du DX7, série 2", "Les sons du DX7, série 3", "Une onde qui se promène",
-        "Cordes des années 70", "Les jeux vidéo 8 bits", "Le synthé classique", "Doux à très saturé",
-        "Cloches et métal", "Des voyelles qui chantent", "Orgue et harmoniques", "Sons numériques des années 80",
-        "Un accord entier par touche", "Un robot qui parle", "Un essaim de scies, très large",
-        "Souffle et vent filtrés", "Poussière et crépitements", "Guitare, harpe, cordes pincées",
-        "Marimba, cloches, bois", "Kick analogique", "Caisse claire analogique", "Charley analogique",
+    val PLAITS_HINTS: List<String> get() = listOf(
+        tr("Deux oscillateurs et un filtre"), tr("Rond ou mordant, façon Casio CZ"), tr("Les sons du DX7, série 1"),
+        tr("Les sons du DX7, série 2"), tr("Les sons du DX7, série 3"), tr("Une onde qui se promène"),
+        tr("Cordes des années 70"), tr("Les jeux vidéo 8 bits"), tr("Le synthé classique"), tr("Doux à très saturé"),
+        tr("Cloches et métal"), tr("Des voyelles qui chantent"), tr("Orgue et harmoniques"), tr("Sons numériques des années 80"),
+        tr("Un accord entier par touche"), tr("Un robot qui parle"), tr("Un essaim de scies, très large"),
+        tr("Souffle et vent filtrés"), tr("Poussière et crépitements"), tr("Guitare, harpe, cordes pincées"),
+        tr("Marimba, cloches, bois"), tr("Kick analogique"), tr("Caisse claire analogique"), tr("Charley analogique"),
     )
 }

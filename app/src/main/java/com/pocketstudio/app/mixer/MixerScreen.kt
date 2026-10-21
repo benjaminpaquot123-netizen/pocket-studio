@@ -63,6 +63,7 @@ import com.pocketstudio.ui.NeonCard
 import com.pocketstudio.ui.SectionLabel
 import kotlin.math.log10
 import kotlin.math.roundToInt
+import com.pocketstudio.model.i18n.tr
 
 /** A strip on screen: its mixer channel, its name and, for an instrument track, its colour. */
 data class StripInfo(val ch: Int, val name: String, val color: androidx.compose.ui.graphics.Color? = null)
@@ -70,7 +71,7 @@ data class StripInfo(val ch: Int, val name: String, val color: androidx.compose.
 /** The mixer channel index of the master (inserts, automation, meters). */
 const val MASTER_CHANNEL = 4
 
-/** Drums, acid, the first instrument track, the remix: a project with no added track. */
+/** Drums, acid, the first instrument track, the remix: a project with no added track (names shown through tr()). */
 val BASIC_STRIPS = listOf(StripInfo(0, "Batterie"), StripInfo(1, "Basse acide"), StripInfo(2, "Synthé"), StripInfo(3, "Remix"))
 
 /** Index of the limiter gain in the meters (after one peak per mixer channel). */
@@ -105,7 +106,7 @@ fun faderDb(v: Float): String {
     if (v <= 0.001f) return "−∞ dB"
     val gain = (v / 0.8f) * (v / 0.8f)
     val db = 20 * log10(gain)
-    return (if (db >= 0) "+" else "") + String.format(java.util.Locale.FRANCE, "%.1f dB", db)
+    return (if (db >= 0) "+" else "") + String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f dB", db)
 }
 
 @Composable
@@ -128,10 +129,8 @@ fun MixerScreen(
 ) {
     val exportCard = androidx.compose.runtime.remember { androidx.compose.foundation.relocation.BringIntoViewRequester() }
     val scope = androidx.compose.runtime.rememberCoroutineScope()
-    Column(
-        modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp).testTag("mixer"),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
-    ) {
+    // On a tablet the channel strips stay on the left; the master, buses, automation and export on the right.
+    com.pocketstudio.ui.AdaptivePanes(modifier.testTag("mixer"), first = {
         // Sharing first: one touch, nothing to scroll for; the export card's choices are a touch away.
         ShareSongCard(export, hasSong, actions.shareSong) { scope.launch { exportCard.bringIntoView() } }
         // Many tracks: each strip shows its volume on one line; ▾ opens pan and effects.
@@ -139,27 +138,28 @@ fun MixerScreen(
         strips.forEach { st ->
             Strip(st, channels.getOrElse(st.ch) { Channel() }, meters.getOrElse(st.ch) { 0f }, actions, compact)
         }
+    }, second = {
         NeonCard(accent = Neon.Cyan) {
-            SectionLabel("Sortie générale", help = Glossary.MASTER)
+            SectionLabel(tr("Sortie générale"), help = Glossary.MASTER)
             LevelMeter(meters.getOrElse(MASTER_CHANNEL) { 0f } / 0.89f)
             val gain = meters.getOrElse(LIMITER_METER) { 1f }
             Text(
-                if (gain < 0.98f) "Le limiteur protège la sortie (−${String.format(java.util.Locale.FRANCE, "%.1f", -20 * log10(gain))} dB)"
-                else "Pas de saturation : tout va bien.",
+                if (gain < 0.98f) tr("Le limiteur protège la sortie (−%.1f dB)", -20 * log10(gain))
+                else tr("Pas de saturation : tout va bien."),
                 style = MaterialTheme.typography.bodySmall,
                 color = if (gain < 0.7f) Neon.Amber else Neon.TextSecondary,
             )
             var open by rememberSaveable { mutableStateOf(false) }
             EffectsToggle(effectsSummary(master), open) { open = !open }
             if (open) InsertRack(MASTER_CHANNEL, master, actions)
-            FilterChip(selected = analyserOpen, onClick = { setAnalyser(!analyserOpen) }, label = { Text("Analyseur de spectre") },
+            FilterChip(selected = analyserOpen, onClick = { setAnalyser(!analyserOpen) }, label = { Text(tr("Analyseur de spectre")) },
                 modifier = Modifier.testTag("analyser"))
             if (analyserOpen) com.pocketstudio.app.analysis.SpectrumView(spectrum)
         }
         BusesCard(buses, actions)
         AutomationCard(automation, channels, master, automationActions, strips)
         ExportCard(export, actions, hasSong, Modifier.bringIntoViewRequester(exportCard))
-    }
+    })
 }
 
 /** « Partager mon morceau » at the top of the mixer, and a way down to every export choice. */
@@ -173,15 +173,15 @@ internal fun ShareSongCard(export: ExportUi, hasSong: Boolean, share: () -> Unit
             colors = ButtonDefaults.buttonColors(containerColor = Neon.Acid, contentColor = Color.Black),
         ) {
             Icon(Icons.Filled.Share, contentDescription = null, modifier = Modifier.size(20.dp))
-            Text("  Partager mon morceau", style = MaterialTheme.typography.titleMedium)
+            Text("  " + tr("Partager mon morceau"), style = MaterialTheme.typography.titleMedium)
         }
         Text(
-            if (hasSong) "Tout le morceau, avec un fondu à la fin, en M4A léger : prêt à envoyer."
-            else "Pas encore de morceau : la scène en boucle (${com.pocketstudio.app.export.ShareSong.loopBars(export.sceneBars)} mesures), en M4A léger.",
+            if (hasSong) tr("Tout le morceau, avec un fondu à la fin, en M4A léger : prêt à envoyer.")
+            else tr("Pas encore de morceau : la scène en boucle (%d mesures), en M4A léger.", com.pocketstudio.app.export.ShareSong.loopBars(export.sceneBars)),
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
         )
         TextButton(onClick = toExport, modifier = Modifier.fillMaxWidth().testTag("to_export")) {
-            Text("Autres choix d'export (WAV, pistes séparées…)", Modifier.weight(1f), color = Neon.Cyan)
+            Text(tr("Autres choix d'export (WAV, pistes séparées…)"), Modifier.weight(1f), color = Neon.Cyan)
             Icon(Icons.Filled.ExpandMore, contentDescription = null, tint = Neon.Cyan)
         }
     }
@@ -189,7 +189,7 @@ internal fun ShareSongCard(export: ExportUi, hasSong: Boolean, share: () -> Unit
 
 @Composable
 private fun Strip(info: StripInfo, c: Channel, meter: Float, actions: MixerActions, compact: Boolean = false) {
-    val name = info.name
+    val name = tr(info.name)
     val index = info.ch
     var expanded by rememberSaveable(index) { mutableStateOf(false) }
     var open by rememberSaveable(index) { mutableStateOf(false) }
@@ -207,11 +207,11 @@ private fun Strip(info: StripInfo, c: Channel, meter: Float, actions: MixerActio
             FilterChip(
                 selected = c.mute,
                 onClick = { actions.toggleMute(index) },
-                label = { Text("Muet") },
+                label = { Text(tr("Muet")) },
                 colors = pillColors(Neon.Red),
                 modifier = Modifier.testTag("mute_$index"),
             )
-            FilterChip(selected = c.solo, onClick = { actions.toggleSolo(index) }, label = { Text("Solo") }, colors = chipColors,
+            FilterChip(selected = c.solo, onClick = { actions.toggleSolo(index) }, label = { Text(tr("Solo")) }, colors = chipColors,
                 modifier = Modifier.testTag("solo_$index"))
             if (index == 0) HelpDot(Glossary.MUTE_SOLO)
         }
@@ -231,40 +231,49 @@ private fun Strip(info: StripInfo, c: Channel, meter: Float, actions: MixerActio
                         open = show
                     },
                     leadingIcon = { Icon(Icons.Filled.AutoAwesome, contentDescription = null, modifier = Modifier.size(16.dp)) },
-                    label = { Text(if (active > 0) "Effets · $active" else "Effets", maxLines = 1, softWrap = false) },
+                    label = { Text(if (active > 0) tr("Effets · %d", active) else tr("Effets"), maxLines = 1, softWrap = false) },
                     colors = pillColors(Neon.Magenta),
                     modifier = Modifier.padding(start = 6.dp).testTag("strip_more_$index"),
                 )
             }
             if (!expanded) {
                 val fx = androidx.compose.runtime.remember(c) { quickFxSummary(c) }
-                if (c.pan != 0f || fx != "Aucun") {
-                    Text("Effets : $fx", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                if (c.pan != 0f || fx != tr("Aucun")) {
+                    Text(tr("Effets : %s", fx), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
                 }
                 return@NeonCard
             }
-        } else {
+        }
+        val panSlider: @Composable () -> Unit = {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Text("Volume", Modifier.weight(1f))
-                Text(faderDb(c.volume), style = MonoStyle, color = Neon.Cyan)
+                Text(tr("Panoramique"))
+                HelpDot(Glossary.PAN)
+                androidx.compose.foundation.layout.Spacer(Modifier.weight(1f))
+                val pan = (c.pan * 100).roundToInt()
+                Text(
+                    when {
+                        pan < -2 -> tr("Gauche %d", -pan)
+                        pan > 2 -> tr("Droite %d", pan)
+                        else -> tr("Centre")
+                    },
+                    style = MonoStyle, color = Neon.Cyan,
+                )
             }
-            ProSlider(value = c.volume, onValueChange = { actions.setVolume(index, it) }, modifier = Modifier.testTag("volume_$index"))
+            ProSlider(value = c.pan, onValueChange = { v -> actions.setPan(index, if (kotlin.math.abs(v) < 0.04f) 0f else v) }, valueRange = -1f..1f)
         }
-        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Text("Panoramique")
-            HelpDot(Glossary.PAN)
-            androidx.compose.foundation.layout.Spacer(Modifier.weight(1f))
-            val pan = (c.pan * 100).roundToInt()
-            Text(
-                when {
-                    pan < -2 -> "Gauche ${-pan}"
-                    pan > 2 -> "Droite $pan"
-                    else -> "Centre"
-                },
-                style = MonoStyle, color = Neon.Cyan,
-            )
+        if (compact) {
+            panSlider()
+        } else {
+            // Volume and pan side by side when the strip is wide (tablet), one under the other on a phone.
+            val volumeSlider: @Composable () -> Unit = {
+                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                    Text(tr("Volume"), Modifier.weight(1f))
+                    Text(faderDb(c.volume), style = MonoStyle, color = Neon.Cyan)
+                }
+                ProSlider(value = c.volume, onValueChange = { actions.setVolume(index, it) }, modifier = Modifier.testTag("volume_$index"))
+            }
+            com.pocketstudio.ui.AdaptiveColumns(listOf(volumeSlider, panSlider), minCellWidth = 240.dp)
         }
-        ProSlider(value = c.pan, onValueChange = { v -> actions.setPan(index, if (kotlin.math.abs(v) < 0.04f) 0f else v) }, valueRange = -1f..1f)
         val summary = androidx.compose.runtime.remember(c) { quickFxSummary(c) }
         EffectsToggle(summary, open, Modifier.testTag("effects_$index")) { open = !open }
         if (open) {
@@ -277,7 +286,7 @@ private fun Strip(info: StripInfo, c: Channel, meter: Float, actions: MixerActio
 @Composable
 private fun EffectsToggle(summary: String, open: Boolean, modifier: Modifier = Modifier, toggle: () -> Unit) {
     TextButton(onClick = toggle, modifier = modifier.fillMaxWidth()) {
-        Text("Effets : $summary", Modifier.weight(1f), color = Neon.Cyan)
+        Text(tr("Effets : %s", summary), Modifier.weight(1f), color = Neon.Cyan)
         Icon(if (open) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore, contentDescription = null, tint = Neon.Cyan)
     }
 }
@@ -286,30 +295,31 @@ private fun EffectsToggle(summary: String, open: Boolean, modifier: Modifier = M
 internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolean = true, modifier: Modifier = Modifier) {
     val chipColors = pillColors(Neon.Acid)
     NeonCard(modifier, accent = Neon.Acid) {
-        SectionLabel("Exporter", color = Neon.Acid)
+        SectionLabel(tr("Exporter"), color = Neon.Acid)
         // The plain choices first: what, in which format, how it ends. The rest under « Avancé ».
-        Text("Quoi", style = MaterialTheme.typography.bodyMedium)
+        Text(tr("Quoi"), style = MaterialTheme.typography.bodyMedium)
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            listOf(ExportWhat.Song to "Le morceau entier", ExportWhat.Loop to "La scène en boucle").forEach { (what, label) ->
+            listOf(ExportWhat.Song to tr("Le morceau entier"), ExportWhat.Loop to tr("La scène en boucle")).forEach { (what, label) ->
                 FilterChip(
                     selected = export.what == what, onClick = { actions.setExportWhat(what) }, enabled = !export.running,
                     label = { Text(label) }, colors = chipColors, modifier = Modifier.testTag("export_what_${what.name}"),
                 )
             }
         }
-        val bars = "${export.bars} mesure${if (export.bars > 1) "s" else ""}"
+        val bars = if (export.bars > 1) tr("%d mesures", export.bars) else tr("%d mesure", export.bars)
         Text(
             when (export.what) {
-                ExportWhat.Loop -> "La scène en cours, jouée sur $bars (la longueur se règle dans « Avancé »)."
-                ExportWhat.Song -> if (hasSong) "Toutes les parties de l'onglet Morceau, dans l'ordre." else "Le morceau est vide : ajoute des scènes dans l'onglet Morceau."
-                ExportWhat.Stems -> "Un fichier par piste (batterie, acide, synthé, remix) pour les reprendre ailleurs. Les pistes vides ou coupées sont sautées." +
-                    if (hasSong) " Sur tout le morceau." else " Sur $bars."
+                ExportWhat.Loop -> tr("La scène en cours, jouée sur %s (la longueur se règle dans « Avancé »).", bars)
+                ExportWhat.Song -> if (hasSong) tr("Toutes les parties de l'onglet Morceau, dans l'ordre.") else tr("Le morceau est vide : ajoute des scènes dans l'onglet Morceau.")
+                ExportWhat.Stems ->
+                    if (hasSong) tr("Un fichier par piste (batterie, acide, synthé, remix) pour les reprendre ailleurs. Les pistes vides ou coupées sont sautées. Sur tout le morceau.")
+                    else tr("Un fichier par piste (batterie, acide, synthé, remix) pour les reprendre ailleurs. Les pistes vides ou coupées sont sautées. Sur %s.", bars)
             },
             style = MaterialTheme.typography.bodySmall, color = if (export.what == ExportWhat.Song && !hasSong) Neon.Amber else Neon.TextSecondary,
         )
-        WithHelp(Glossary.FORMATS) { Text("Format", style = MaterialTheme.typography.bodyMedium) }
+        WithHelp(Glossary.FORMATS) { Text(tr("Format"), style = MaterialTheme.typography.bodyMedium) }
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            listOf(ExportFormat.M4a to "M4A · pour partager", ExportFormat.Wav to "WAV · qualité max").forEach { (format, label) ->
+            listOf(ExportFormat.M4a to tr("M4A · pour partager"), ExportFormat.Wav to tr("WAV · qualité max")).forEach { (format, label) ->
                 FilterChip(
                     selected = export.format == format, onClick = { actions.setExportFormat(format) }, enabled = !export.running,
                     label = { Text(label) }, colors = chipColors, modifier = Modifier.testTag("export_format_${format.name}"),
@@ -318,14 +328,14 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
         }
         Text(
             when (export.format) {
-                ExportFormat.Wav -> "Qualité studio, lu par tous les logiciels. Le plus lourd."
-                ExportFormat.Flac -> "FLAC : exactement la même qualité que le WAV, bien plus léger (souvent deux fois)."
-                ExportFormat.M4a -> "Environ dix fois plus léger, lu par tous les téléphones : pour partager."
+                ExportFormat.Wav -> tr("Qualité studio, lu par tous les logiciels. Le plus lourd.")
+                ExportFormat.Flac -> tr("FLAC : exactement la même qualité que le WAV, bien plus léger (souvent deux fois).")
+                ExportFormat.M4a -> tr("Environ dix fois plus léger, lu par tous les téléphones : pour partager.")
             },
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
         )
         if (export.what != ExportWhat.Stems) {
-            Text("Fondu de fin", style = MaterialTheme.typography.bodyMedium)
+            Text(tr("Fondu de fin"), style = MaterialTheme.typography.bodyMedium)
             FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 ExportFade.entries.forEach { fade ->
                     FilterChip(
@@ -339,7 +349,7 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
         // Advanced: separate tracks, FLAC, the loop's length, the notes as MIDI. Open by itself when one is in use.
         var advanced by rememberSaveable { mutableStateOf(export.what == ExportWhat.Stems || export.format == ExportFormat.Flac) }
         TextButton(onClick = { advanced = !advanced }, modifier = Modifier.fillMaxWidth().testTag("export_advanced")) {
-            Text("Avancé", Modifier.weight(1f), color = Neon.Cyan)
+            Text(tr("Avancé"), Modifier.weight(1f), color = Neon.Cyan)
             Icon(if (advanced) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore, contentDescription = null, tint = Neon.Cyan)
         }
         if (advanced) {
@@ -347,25 +357,25 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
                 FilterChip(
                     selected = export.what == ExportWhat.Stems,
                     onClick = { actions.setExportWhat(if (export.what == ExportWhat.Stems) (if (hasSong) ExportWhat.Song else ExportWhat.Loop) else ExportWhat.Stems) },
-                    enabled = !export.running, label = { Text("Piste par piste") }, colors = chipColors, modifier = Modifier.testTag("export_what_Stems"),
+                    enabled = !export.running, label = { Text(tr("Piste par piste")) }, colors = chipColors, modifier = Modifier.testTag("export_what_Stems"),
                 )
                 HelpDot(Glossary.STEMS)
                 FilterChip(
                     selected = export.format == ExportFormat.Flac,
                     onClick = { actions.setExportFormat(if (export.format == ExportFormat.Flac) ExportFormat.Wav else ExportFormat.Flac) },
-                    enabled = !export.running, label = { Text("FLAC (sans perte, léger)") }, colors = chipColors,
+                    enabled = !export.running, label = { Text(tr("FLAC (sans perte, léger)")) }, colors = chipColors,
                     modifier = Modifier.testTag("export_format_Flac"),
                 )
             }
             if (export.what == ExportWhat.Loop || (export.what == ExportWhat.Stems && !hasSong)) {
-                Text("Longueur de la boucle", style = MaterialTheme.typography.bodyMedium)
+                Text(tr("Longueur de la boucle"), style = MaterialTheme.typography.bodyMedium)
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     (EXPORT_BARS + export.sceneBars).distinct().sorted().forEach { bars ->
                         FilterChip(
                             selected = export.bars == bars,
                             onClick = { actions.setExportBars(bars) },
                             enabled = !export.running,
-                            label = { Text(if (bars == 1) "1 mesure" else "$bars") },
+                            label = { Text(if (bars == 1) tr("1 mesure") else "$bars") },
                             colors = chipColors,
                         )
                     }
@@ -373,7 +383,7 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
             }
             if (!export.running) {
                 TextButton(onClick = actions.exportMidi, modifier = Modifier.fillMaxWidth().testTag("export_midi")) {
-                    Text("Exporter les notes en fichier MIDI" + if (hasSong) " (tout le morceau)" else "")
+                    Text(if (hasSong) tr("Exporter les notes en fichier MIDI (tout le morceau)") else tr("Exporter les notes en fichier MIDI"))
                 }
             }
         }
@@ -386,7 +396,7 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
                     color = Neon.Acid,
                     trackColor = Neon.SurfaceHigh,
                 )
-                OutlinedButton(onClick = actions.cancelExport, modifier = Modifier.fillMaxWidth()) { Text("Annuler") }
+                OutlinedButton(onClick = actions.cancelExport, modifier = Modifier.fillMaxWidth()) { Text(tr("Annuler")) }
             }
             else -> {
                 Button(
@@ -397,9 +407,9 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
                 ) {
                     Text(
                         when (export.what) {
-                            ExportWhat.Loop -> "Exporter ${export.bars} mesure${if (export.bars > 1) "s" else ""}"
-                            ExportWhat.Song -> "Exporter le morceau"
-                            ExportWhat.Stems -> "Exporter les pistes"
+                            ExportWhat.Loop -> if (export.bars > 1) tr("Exporter %d mesures", export.bars) else tr("Exporter %d mesure", export.bars)
+                            ExportWhat.Song -> tr("Exporter le morceau")
+                            ExportWhat.Stems -> tr("Exporter les pistes")
                         },
                     )
                 }
@@ -407,21 +417,24 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
         }
         if (export.files.isNotEmpty()) {
             Text(
-                (if (export.savedInMusic) "Enregistré dans Musique › Pocket Studio : " else "Prêt : ") + export.files.joinToString(", ") { it.name },
+                export.files.joinToString(", ") { it.name }.let { names ->
+                    if (export.savedInMusic) tr("Enregistré dans Musique › Pocket Studio : %s", names) else tr("Prêt : %s", names)
+                },
                 style = MaterialTheme.typography.bodySmall,
                 color = Neon.TextSecondary,
             )
             export.loudness?.let { lufs ->
                 WithHelp(Glossary.LUFS) {
                     Text(
-                        "Volume perçu : " + String.format(java.util.Locale.FRANCE, "%.1f", lufs).replace('-', '−') + " LUFS, " + Loudness.describe(lufs),
+                        tr("Volume perçu : %s LUFS, %s", String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f", lufs).replace('-', '−'), Loudness.describe(lufs)),
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier.weight(1f, fill = false).testTag("export_loudness"),
                     )
                 }
             }
             OutlinedButton(onClick = actions.share, modifier = Modifier.fillMaxWidth().testTag("share")) {
-                Text(if (export.files.size > 1) "Partager les ${export.files.size} fichiers" else "Partager")
+                Text(if (export.files.size > 1) tr("Partager les %d fichiers", export.files.size) else tr("Partager"))
+
             }
         }
         export.error?.let { Text(it, color = Neon.Red, style = MaterialTheme.typography.bodySmall) }

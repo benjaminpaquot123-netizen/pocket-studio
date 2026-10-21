@@ -1,5 +1,7 @@
 package com.pocketstudio.app.synth
 
+import com.pocketstudio.model.i18n.tr
+
 import com.pocketstudio.ui.fadingHorizontalScroll
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -29,7 +31,7 @@ class PlayActions(
 )
 
 private val RATES = listOf(0.5f to "1/32", 1f to "1/16", 2f to "1/8", 4f to "1/4")
-private val ARP_MODES = listOf("Montant", "Descendant", "Aller-retour", "Au hasard")
+private val ARP_MODES: List<String> get() = listOf(tr("Montant"), tr("Descendant"), tr("Aller-retour"), tr("Au hasard"))
 
 /**
  * Live playing under the keyboard: pitch bend (springs back), modulation, sustain pedal and the
@@ -39,7 +41,7 @@ private val ARP_MODES = listOf("Montant", "Descendant", "Aller-retour", "Au hasa
 fun PlayPanel(play: PlayUi, actions: PlayActions) {
     Column(Modifier.fillMaxWidth().testTag("play_panel")) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            Text("Bend", style = MaterialTheme.typography.labelLarge, modifier = Modifier.width(52.dp))
+            Text(tr("Bend"), style = MaterialTheme.typography.labelLarge, modifier = Modifier.width(52.dp))
             ProSlider(
                 value = play.bend, onValueChange = actions.setBend, valueRange = -1f..1f,
                 onValueChangeFinished = { actions.setBend(0f) },  // a pitch wheel springs back
@@ -47,13 +49,13 @@ fun PlayPanel(play: PlayUi, actions: PlayActions) {
             )
         }
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            Text("Modul.", style = MaterialTheme.typography.labelLarge, modifier = Modifier.width(52.dp))
+            Text(tr("Modul."), style = MaterialTheme.typography.labelLarge, modifier = Modifier.width(52.dp))
             ProSlider(value = play.mod, onValueChange = actions.setMod, modifier = Modifier.weight(1f).testTag("mod"))
         }
         Row(Modifier.fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            FilterChip(selected = play.sustain, onClick = { actions.setSustain(!play.sustain) }, label = { Text("Sustain") },
+            FilterChip(selected = play.sustain, onClick = { actions.setSustain(!play.sustain) }, label = { Text(tr("Sustain")) },
                 modifier = Modifier.testTag("sustain"))
-            FilterChip(selected = play.arp.on, onClick = { actions.setArp(play.arp.copy(on = !play.arp.on)) }, label = { Text("Arpège") },
+            FilterChip(selected = play.arp.on, onClick = { actions.setArp(play.arp.copy(on = !play.arp.on)) }, label = { Text(tr("Arpège")) },
                 modifier = Modifier.testTag("arp"))
             if (play.arp.on) {
                 RATES.forEach { (steps, label) ->
@@ -68,15 +70,15 @@ fun PlayPanel(play: PlayUi, actions: PlayActions) {
                 }
                 (1..4).forEach { o ->
                     FilterChip(selected = play.arp.octaves == o, onClick = { actions.setArp(play.arp.copy(octaves = o)) },
-                        label = { Text(if (o == 1) "1 octave" else "$o oct.") })
+                        label = { Text(if (o == 1) tr("1 octave") else tr("%d oct.", o)) })
                 }
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("Longueur des notes", style = MaterialTheme.typography.labelLarge, modifier = Modifier.weight(1f))
+                Text(tr("Longueur des notes"), style = MaterialTheme.typography.labelLarge, modifier = Modifier.weight(1f))
                 Text("${(play.arp.gate * 100).toInt()} %", color = Neon.Cyan)
             }
             ProSlider(value = play.arp.gate, onValueChange = { actions.setArp(play.arp.copy(gate = it.coerceIn(0.05f, 1f))) })
-            Text("Garde des touches enfoncées : l'arpège les joue à tour de rôle, en rythme.",
+            Text(tr("Garde des touches enfoncées : l'arpège les joue à tour de rôle, en rythme."),
                 style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         }
     }

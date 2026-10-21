@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import com.pocketstudio.model.i18n.tr
 
 class RemixViewModel(app: Application) : AndroidViewModel(app) {
     val state: StateFlow<SeparationState> = SeparationJob.state
@@ -56,7 +57,7 @@ class RemixViewModel(app: Application) : AndroidViewModel(app) {
             app.contentResolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)?.use {
                 if (it.moveToFirst()) it.getString(0) else null
             }
-        }.getOrNull() ?: uri.lastPathSegment ?: "Morceau"
+        }.getOrNull() ?: uri.lastPathSegment ?: tr("Morceau")
         stop()
         SeparationService.separate(app, uri, name.substringBeforeLast('.').ifBlank { name })
     }

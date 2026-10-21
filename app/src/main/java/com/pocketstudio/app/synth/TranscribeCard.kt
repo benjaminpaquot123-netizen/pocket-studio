@@ -1,5 +1,7 @@
 package com.pocketstudio.app.synth
 
+import com.pocketstudio.model.i18n.tr
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -35,21 +37,21 @@ class TranscribeUi(
 @Composable
 fun TranscribeCard(ui: TranscribeUi) {
     NeonCard(modifier = Modifier.testTag("transcribe")) {
-        SectionLabel("Importer des notes")
+        SectionLabel(tr("Importer des notes"), foldKey = "Importer des notes")
         Text(
-            "Chante, siffle ou joue une mélodie (ou choisis un enregistrement, ou un fichier MIDI) : ses notes remplacent celles du piano roll. Annuler les ramène.",
+            tr("Chante, siffle ou joue une mélodie (ou choisis un enregistrement, ou un fichier MIDI) : ses notes remplacent celles du piano roll. Annuler les ramène."),
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
         )
         when (val t = ui.task) {
             is SampleTask.Recording -> {
-                Text("Enregistrement… ${"%.0f".format(t.seconds)} s", color = Neon.Acid)
+                Text(tr("Enregistrement… %.0f s", t.seconds), color = Neon.Acid)
                 LinearProgressIndicator(progress = { t.level.coerceIn(0f, 1f) }, modifier = Modifier.fillMaxWidth(), color = Neon.Acid)
                 Button(
                     onClick = ui.stop, modifier = Modifier.fillMaxWidth().testTag("transcribe_stop"),
                     colors = ButtonDefaults.buttonColors(containerColor = Neon.Acid),
                 ) {
                     Icon(Icons.Filled.Stop, contentDescription = null)
-                    Text("  Terminé")
+                    Text(tr("  Terminé"))
                 }
             }
             is SampleTask.Busy -> {
@@ -61,16 +63,16 @@ fun TranscribeCard(ui: TranscribeUi) {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedButton(onClick = ui.record, modifier = Modifier.weight(1f).testTag("transcribe_record")) {
                         Icon(Icons.Filled.Mic, contentDescription = null)
-                        Text("  Au micro")
+                        Text(tr("  Au micro"))
                     }
                     OutlinedButton(onClick = ui.pickFile, modifier = Modifier.weight(1f).testTag("transcribe_file")) {
                         Icon(Icons.Filled.FileOpen, contentDescription = null)
-                        Text("  Un son")
+                        Text(tr("  Un son"))
                     }
                 }
                 OutlinedButton(onClick = ui.pickMidi, modifier = Modifier.fillMaxWidth().testTag("import_midi")) {
                     Icon(Icons.Filled.FileOpen, contentDescription = null)
-                    Text("  Un fichier MIDI (.mid)")
+                    Text(tr("  Un fichier MIDI (.mid)"))
                 }
             }
         }

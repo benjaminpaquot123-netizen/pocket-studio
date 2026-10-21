@@ -163,7 +163,7 @@
 - Phase 20 (branche phase20-wip, fusion de phase20-a/b/c) : corrections de l'audit d'utilisation, voir `docs/REVIEW.md`.
 
 ## Prochaine étape exacte
-1. Phases 16 à 21 fusionnées (#27 à #32). Phase 21 = du brouillon au morceau (scènes nommées, assistant en sections, morceau éditable, partage en un geste). En cours : phase 22 (langues FR/EN/NL + tablette), puis audit à 5 (3 débutants, 1 pro, 1 contrôleur des langues), puis l'assistant style par style (vraie chanson de ~3 min).
+1. Phases 16 à 21 fusionnées (#27 à #32). Phase 21 = du brouillon au morceau (scènes nommées, assistant en sections, morceau éditable, partage en un geste). Phase 22 (langues FR/EN/NL + tablette) : PR ouverte, Benjamin teste sur sa Galaxy Tab. Ensuite : audit à 5 (3 débutants, 1 pro, 1 contrôleur des langues), puis l'assistant style par style (vraie chanson de ~3 min).
 2. Ensuite, dans l'ordre :
    - le niveau général (marge, limiteur, vumètre avant le limiteur), à mesurer sur le téléphone ;
    - le tempo changé pendant la lecture (pads calés, Remix) ;

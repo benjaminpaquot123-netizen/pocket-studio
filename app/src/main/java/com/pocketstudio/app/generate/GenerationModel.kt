@@ -1,5 +1,7 @@
 package com.pocketstudio.app.generate
 
+import com.pocketstudio.model.i18n.tr
+
 import android.content.Context
 import com.pocketstudio.app.download.VerifiedFile
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,7 +26,7 @@ object GenerationModel {
         VerifiedFile(BASE + "NOTICE", "NOTICE", "556b1b69ff89db713abcd7aebac1c5fd0e81d24161a6d4dfb4960b17939251f0", 2_130L),
     )
     val TOTAL_BYTES = SPECS.sumOf { it.sizeBytes }
-    val SIZE_LABEL = "${(TOTAL_BYTES + 500_000) / 1_000_000} Mo"
+    val SIZE_LABEL: String get() = tr("%d Mo", (TOTAL_BYTES + 500_000) / 1_000_000)
 
     fun dir(context: Context) = File(File(context.filesDir, "models"), VERSION)
 

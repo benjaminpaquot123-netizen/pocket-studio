@@ -8,6 +8,8 @@ class PocketStudioApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         CrashReporter.install(this)
+        // The interface language is known before any screen or notification is drawn.
+        com.pocketstudio.app.settings.SettingsStore.load(this)
         Metrics.init(this)
         AppLog.add("Démarrage ${AppInfo.versionLabel}")
     }

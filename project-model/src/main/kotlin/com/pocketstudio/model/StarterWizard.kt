@@ -1,5 +1,7 @@
 package com.pocketstudio.model
 
+import com.pocketstudio.model.i18n.tr
+
 /**
  * The beginner's assistant for a new song: a style, then one step per drum line (what it does,
  * which sound), then a project with those sounds on the pads and a basic groove to start from.
@@ -289,7 +291,7 @@ object StarterWizard {
         }
         val partOfTrack = HashMap<Int, Part>()
         var project = Project(
-            name = style.name,
+            name = tr(style.name),
             tempoBpm = style.bpm,
             swing = style.swing,
             drums = DrumPattern(steps = steps, lanes = lanes),
@@ -340,17 +342,17 @@ object StarterWizard {
      * layers pile up instead of each one alone). Each line or part maps to the scenes it plays in.
      */
     data class ScenePlan(val lines: Map<Role, Set<Int>>, val parts: Map<Part, Set<Int>>, val acid: Set<Int>) {
-        /** The section scene [index] stands for ("Intro", "Couplet", "Refrain"). */
-        fun title(index: Int): String = LABELS[index]
+        /** The section scene [index] stands for ("Intro", "Couplet", "Refrain"), in the interface's language. */
+        fun title(index: Int): String = tr(LABELS[index])
 
-        /** What the section is for, in a few words. */
-        fun role(index: Int): String = ROLES[index]
+        /** What the section is for, in a few words (translated). */
+        fun role(index: Int): String = tr(ROLES[index])
 
-        /** The names of what scene [index] plays, in the order of the assistant. */
+        /** The names of what scene [index] plays, in the order of the assistant (translated). */
         fun contents(index: Int): List<String> =
-            lines.filterValues { index in it }.keys.sortedBy { it.ordinal }.map { it.title } +
-                parts.filterValues { index in it }.keys.sortedBy { it.ordinal }.map { it.title } +
-                listOfNotNull(ACID_TITLE.takeIf { index in acid })
+            lines.filterValues { index in it }.keys.sortedBy { it.ordinal }.map { tr(it.title) } +
+                parts.filterValues { index in it }.keys.sortedBy { it.ordinal }.map { tr(it.title) } +
+                listOfNotNull(tr(ACID_TITLE).takeIf { index in acid })
 
         val isEmpty: Boolean get() = (0 until COUNT).all { contents(it).isEmpty() }
 
@@ -361,10 +363,10 @@ object StarterWizard {
             val ROLES = listOf("le début, en douceur", "le groove, avec la basse", "tout le monde joue")
             const val ACID_TITLE = "Ligne acide"
 
-            /** "Intro", "Couplet et Refrain", "Intro, Couplet et Refrain": the sections of [scenes]. */
+            /** "Intro", "Couplet et Refrain", "Intro, Couplet et Refrain": the sections of [scenes], translated. */
             fun sections(scenes: Set<Int>): String {
-                val names = scenes.sorted().map { LABELS[it] }
-                return if (names.size <= 1) names.joinToString() else names.dropLast(1).joinToString(", ") + " et " + names.last()
+                val names = scenes.sorted().map { tr(LABELS[it]) }
+                return if (names.size <= 1) names.joinToString() else tr("%s et %s", names.dropLast(1).joinToString(", "), names.last())
             }
         }
     }
@@ -464,14 +466,15 @@ object StarterWizard {
         )
         val loopBars = project.allScenes.maxOf { it.stepsFor(project.stepsPerBar) } / project.stepsPerBar
         project = project.copy(song = songOf(loopBars, bpm, project.beatsPerBar))
+        // Section names are saved in French and shown in the interface's language.
         ScenePlan.LABELS.forEachIndexed { i, label -> project = project.renameScene(i, label) }
         return project
     }
 
     private val Part.trackName get() = when (this) {
-        Part.Bass -> "Basse"
-        Part.Pad -> "Nappe"
-        Part.Lead -> "Lead"
+        Part.Bass -> tr("Basse")
+        Part.Pad -> tr("Nappe")
+        Part.Lead -> tr("Lead")
     }
 
     /** The scale and the four chords (scale degrees) of [mood] in [style]: the style's own, or the mood's. */

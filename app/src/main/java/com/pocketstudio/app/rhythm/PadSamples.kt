@@ -1,5 +1,7 @@
 package com.pocketstudio.app.rhythm
 
+import com.pocketstudio.model.i18n.tr
+
 import com.pocketstudio.app.audio.FloatWav
 import com.pocketstudio.app.audio.Pcm
 import com.pocketstudio.app.report.AppLog
@@ -67,7 +69,7 @@ class PadSamples(private val dir: File) {
     class Prepared(val file: String, val native: NativeSample, val info: SampleInfo)
 
     private fun prepare(file: String, pcm: Pcm): Prepared {
-        val native = NativeSample.create(pcm.data, pcm.channels, pcm.sampleRate) ?: error("son inutilisable")
+        val native = NativeSample.create(pcm.data, pcm.channels, pcm.sampleRate) ?: error(tr("son inutilisable"))
         return Prepared(file, native, SampleInfo(pcm.seconds, peaks(pcm)))
     }
 
@@ -155,7 +157,7 @@ class PadSamples(private val dir: File) {
         }
 
         fun nameFrom(displayName: String?): String =
-            displayName?.substringBeforeLast('.')?.takeIf { it.isNotBlank() }?.take(40) ?: "Son importé"
+            displayName?.substringBeforeLast('.')?.takeIf { it.isNotBlank() }?.take(40) ?: tr("Son importé")
 
         fun isSilent(pcm: Pcm) = pcm.data.all { abs(it) < 1e-4f }
     }

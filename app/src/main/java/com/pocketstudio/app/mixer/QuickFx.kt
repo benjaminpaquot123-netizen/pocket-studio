@@ -48,6 +48,7 @@ import com.pocketstudio.ui.KnobColors
 import com.pocketstudio.ui.Neon
 import com.pocketstudio.ui.pillColors
 import kotlin.math.roundToInt
+import com.pocketstudio.model.i18n.tr
 
 class QuickFxActions(
     val setMacro: (ch: Int, macro: Int, value: Float) -> Unit = { _, _, _ -> },
@@ -66,22 +67,22 @@ fun QuickFxPanel(ch: Int, channel: Channel, actions: QuickFxActions) {
     val current = channel.matchingFx()
     var category by rememberSaveable(ch) { mutableStateOf(current?.category?.takeIf { it.isNotEmpty() } ?: FxPresets.CATEGORIES.first()) }
     Column(Modifier.fillMaxWidth().testTag("quick_fx_$ch"), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        WithHelp(Glossary.FX_PRESET) { Text("Ambiances toutes prêtes", style = MaterialTheme.typography.labelLarge, color = Neon.Magenta) }
+        WithHelp(Glossary.FX_PRESET) { Text(tr("Ambiances toutes prêtes"), style = MaterialTheme.typography.labelLarge, color = Neon.Magenta) }
         Row(Modifier.fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             FxPresets.CATEGORIES.forEach { c ->
-                FilterChip(selected = category == c, onClick = { category = c }, label = { Text(c) },
+                FilterChip(selected = category == c, onClick = { category = c }, label = { Text(tr(c)) },
                     modifier = Modifier.testTag("fx_category_$c"))
             }
         }
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             FxPresets.ALL.filter { it.category == category }.forEach { p ->
-                FilterChip(selected = current?.id == p.id, onClick = { actions.applyFx(ch, p.id) }, label = { Text(p.name) },
+                FilterChip(selected = current?.id == p.id, onClick = { actions.applyFx(ch, p.id) }, label = { Text(tr(p.name)) },
                     colors = chipColors, modifier = Modifier.testTag("fx_preset_${p.id}"))
             }
             FilterChip(selected = current?.id == FxPresets.NONE.id, onClick = { actions.applyFx(ch, FxPresets.NONE.id) },
-                label = { Text(FxPresets.NONE.name) }, colors = chipColors, modifier = Modifier.testTag("fx_preset_none"))
+                label = { Text(tr(FxPresets.NONE.name)) }, colors = chipColors, modifier = Modifier.testTag("fx_preset_none"))
         }
-        Text(current?.description ?: "Touche une ambiance pour l'essayer : tu peux toujours revenir avec Annuler.",
+        Text(current?.description?.let { tr(it) } ?: tr("Touche une ambiance pour l'essayer : tu peux toujours revenir avec Annuler."),
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         XyPad(ch, channel.macros, actions)
         MacroKnobs(ch, channel.macros, actions)
@@ -97,10 +98,10 @@ private fun XyPad(ch: Int, macros: List<Float>, actions: QuickFxActions) {
     val currentY by rememberUpdatedState(yMacro)
     val set by rememberUpdatedState(actions.setMacroPair)
     Row(Modifier.fadingHorizontalScroll(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-        Text("Pad XY, haut-bas :", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, maxLines = 1)
+        Text(tr("Pad XY, haut-bas :"), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, maxLines = 1)
         HelpDot(Glossary.XY_PAD)
         listOf(Macros.SPACE, Macros.DIRT, Macros.MOTION).forEach { m ->
-            FilterChip(selected = yMacro == m, onClick = { yMacro = m }, label = { Text(Macros.NAMES[m]) },
+            FilterChip(selected = yMacro == m, onClick = { yMacro = m }, label = { Text(tr(Macros.NAMES[m])) },
                 modifier = Modifier.testTag("xy_axis_$m"))
         }
     }
@@ -134,15 +135,15 @@ private fun XyPad(ch: Int, macros: List<Float>, actions: QuickFxActions) {
             drawCircle(accent.copy(alpha = 0.25f), radius = 34f, center = at)
             drawCircle(accent, radius = 16f, center = at)
         }
-        val (dark, bright) = Macros.ENDS[Macros.COLOR]
-        val (low, high) = Macros.ENDS[yMacro]
+        val (dark, bright) = Macros.ENDS[Macros.COLOR].let { (a, b) -> tr(a) to tr(b) }
+        val (low, high) = Macros.ENDS[yMacro].let { (a, b) -> tr(a) to tr(b) }
         Text("← $dark", Modifier.align(Alignment.BottomStart).padding(8.dp), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary)
         Text("$bright →", Modifier.align(Alignment.BottomEnd).padding(8.dp), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary)
         Text("↑ $high", Modifier.align(Alignment.TopStart).padding(8.dp), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary)
         Text("↓ $low", Modifier.align(Alignment.BottomStart).padding(start = 8.dp, bottom = 26.dp), style = MaterialTheme.typography.labelSmall,
             color = Neon.TextSecondary)
     }
-    Text("Glisse le doigt pour triturer le son en direct. Deux touchers : retour au son de départ.",
+    Text(tr("Glisse le doigt pour triturer le son en direct. Deux touchers : retour au son de départ."),
         style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
 }
 
@@ -158,7 +159,7 @@ private fun MacroKnobs(ch: Int, macros: List<Float>, actions: QuickFxActions) {
             Knob(
                 value = v,
                 onValueChange = { actions.setMacro(ch, m, it) },
-                label = name,
+                label = tr(name),
                 default = Macros.DEFAULTS[m],
                 size = 52.dp,
                 colors = colors,
@@ -173,9 +174,9 @@ private fun macroText(m: Int, v: Float): String {
     if (m == Macros.COLOR) {
         val c = ((v - 0.5f) * 200).roundToInt()
         return when {
-            c < -2 -> "Sombre ${-c}"
-            c > 2 -> "Brillant $c"
-            else -> "Neutre"
+            c < -2 -> tr("Sombre %d", -c)
+            c > 2 -> tr("Brillant %d", c)
+            else -> tr("Neutre")
         }
     }
     return if (v < 0.01f) "0" else "${(v * 100).roundToInt()} %"
@@ -183,9 +184,10 @@ private fun macroText(m: Int, v: Float): String {
 
 /** One line for a closed strip: the matching ready-made effect, or what is on. */
 fun quickFxSummary(c: Channel): String {
-    c.matchingFx()?.let { return if (it.id == FxPresets.NONE.id) "Aucun" else it.name }
-    val macros = c.macros.mapIndexedNotNull { m, v -> if (v != Macros.DEFAULTS[m]) Macros.NAMES[m] else null }
-    return (listOf(effectsSummary(c.inserts, c.sends)).filter { it != "Aucun" } + macros).joinToString(" · ").ifEmpty { "Aucun" }
+    val none = tr("Aucun")
+    c.matchingFx()?.let { return if (it.id == FxPresets.NONE.id) none else tr(it.name) }
+    val macros = c.macros.mapIndexedNotNull { m, v -> if (v != Macros.DEFAULTS[m]) tr(Macros.NAMES[m]) else null }
+    return (listOf(effectsSummary(c.inserts, c.sends)).filter { it != none } + macros).joinToString(" · ").ifEmpty { none }
 }
 
 /** The detailed effect slots and sends, behind a button (for those who want every setting). */
@@ -193,7 +195,8 @@ fun quickFxSummary(c: Channel): String {
 fun DetailedFx(ch: Int, channel: Channel, actions: MixerActions) {
     var open by rememberSaveable(ch) { mutableStateOf(false) }
     TextButton(onClick = { open = !open }, modifier = Modifier.testTag("fx_detail_$ch")) {
-        Text(if (open) "Masquer les réglages détaillés" else "Réglages détaillés (effets un par un, envois)", color = Neon.TextSecondary)
+        Text(if (open) tr("Masquer les réglages détaillés") else tr("Réglages détaillés (effets un par un, envois)"), color
+ = Neon.TextSecondary)
     }
     if (open) {
         InsertRack(ch, channel.inserts, actions)

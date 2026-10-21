@@ -28,6 +28,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.pocketstudio.model.i18n.tr
 
 /** A word of the app explained in one or two plain sentences. */
 data class Help(val term: String, val text: String)
@@ -46,7 +47,7 @@ fun HelpDot(help: Help, modifier: Modifier = Modifier, color: Color = Neon.TextS
             .clip(CircleShape)
             .clickable { open = true }
             .padding(4.dp)
-            .semantics { contentDescription = "Qu'est-ce que « ${help.term} » ?" }
+            .semantics { contentDescription = tr("Qu'est-ce que « %s » ?", help.term) }
             .testTag("help_${help.term}"),
         contentAlignment = Alignment.Center,
     ) {
@@ -61,7 +62,7 @@ fun HelpDot(help: Help, modifier: Modifier = Modifier, color: Color = Neon.TextS
 fun HelpDialog(help: Help, onDismiss: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        confirmButton = { TextButton(onClick = onDismiss) { Text("Compris") } },
+        confirmButton = { TextButton(onClick = onDismiss) { Text(tr("Compris")) } },
         title = { Text(help.term) },
         text = { Text(help.text, style = MaterialTheme.typography.bodyMedium) },
         containerColor = Neon.Surface,

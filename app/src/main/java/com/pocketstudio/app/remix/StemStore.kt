@@ -3,15 +3,21 @@ package com.pocketstudio.app.remix
 import android.content.Context
 import com.pocketstudio.app.projects.projectCatalog
 import com.pocketstudio.separation.Demucs
+import com.pocketstudio.model.i18n.tr
 import org.json.JSONObject
 import java.io.File
 
 /** What the analysis found: [bpm] 0 when unknown, [root] 0 = Do … 11 = Si or null. */
 data class SongInfo(val bpm: Double = 0.0, val firstBeat: Double = 0.0, val root: Int? = null, val minor: Boolean = false) {
-    val keyLabel: String? get() = root?.let { "${NOTE_NAMES[it]} ${if (minor) "mineur" else "majeur"}" }
+    /** "La mineur": note names as Réglages › Notation says, the words in the interface's language. */
+    val keyLabel: String? get() = root?.let {
+        val note = (if (com.pocketstudio.app.settings.SettingsStore.state.value.englishNotes) NOTE_NAMES_EN else NOTE_NAMES)[it]
+        if (minor) tr("%s mineur", note) else tr("%s majeur", note)
+    }
 
     companion object {
         val NOTE_NAMES = listOf("Do", "Do#", "Ré", "Mib", "Mi", "Fa", "Fa#", "Sol", "Lab", "La", "Sib", "Si")
+        val NOTE_NAMES_EN = listOf("C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B")
     }
 }
 
@@ -39,8 +45,14 @@ data class StemSet(
 object StemStore {
     const val KEEP = 3
 
-    /** French names, in [Demucs.STEMS] order. */
-    val LABELS = mapOf("drums" to "Batterie", "bass" to "Basse", "other" to "Autres", "vocals" to "Voix")
+    /** A stem's name ([Demucs.STEMS]) in the interface's language. */
+    fun label(stem: String): String = when (stem) {
+        "drums" -> tr("Batterie")
+        "bass" -> tr("Basse")
+        "other" -> tr("Autres")
+        "vocals" -> tr("Voix")
+        else -> stem
+    }
 
     private fun root(context: Context) = File(context.filesDir, "stems")
 
@@ -77,7 +89,7 @@ object StemStore {
                 .put("bpm", info.bpm).put("firstBeat", info.firstBeat).put("root", info.root ?: -1).put("minor", info.minor)
                 .toString(),
         )
-        if (!tmp.renameTo(File(dir, META))) throw java.io.IOException("enregistrement impossible")
+        if (!tmp.renameTo(File(dir, META))) throw java.io.IOException(tr("enregistrement impossible"))
         return set
     }
 

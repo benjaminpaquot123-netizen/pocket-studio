@@ -33,6 +33,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import com.pocketstudio.model.i18n.tr
 
 /** What the phone shows while the app plays: the project, its tempo, and whether it records. */
 data class PlaybackStatus(
@@ -87,8 +88,8 @@ class PlaybackService : Service() {
         super.onCreate()
         running = true
         getSystemService(NotificationManager::class.java).createNotificationChannel(
-            NotificationChannel(CHANNEL_ID, "Lecture", NotificationManager.IMPORTANCE_LOW).apply {
-                description = "Affichée pendant que la musique joue ou s'enregistre"
+            NotificationChannel(CHANNEL_ID, tr("Lecture"), NotificationManager.IMPORTANCE_LOW).apply {
+                description = tr("Affichée pendant que la musique joue ou s'enregistre")
                 setShowBadge(false)
             },
         )
@@ -98,7 +99,7 @@ class PlaybackService : Service() {
                 PlaybackState.Builder()
                     .setActions(PlaybackState.ACTION_STOP or PlaybackState.ACTION_PAUSE or PlaybackState.ACTION_PLAY_PAUSE)
                     // The control centre builds its buttons from here (Android 13+): a real "Arrêter".
-                    .addCustomAction(PlaybackState.CustomAction.Builder(ACTION_STOP, "Arrêter", R.drawable.ic_stop).build())
+                    .addCustomAction(PlaybackState.CustomAction.Builder(ACTION_STOP, tr("Arrêter"), R.drawable.ic_stop).build())
                     .setState(PlaybackState.STATE_PLAYING, PlaybackState.PLAYBACK_POSITION_UNKNOWN, 1f)
                     .build(),
             )
@@ -206,7 +207,7 @@ class PlaybackService : Service() {
 
     /** Playing: a media player notification tied to the session (control centre, lock screen). */
     private fun playingNotification(s: PlaybackStatus): Notification {
-        val stop = Notification.Action.Builder(Icon.createWithResource(this, R.drawable.ic_stop), "Arrêter", stopIntent()).build()
+        val stop = Notification.Action.Builder(Icon.createWithResource(this, R.drawable.ic_stop), tr("Arrêter"), stopIntent()).build()
         val style = Notification.MediaStyle().setShowActionsInCompactView(0)
         session?.let { style.setMediaSession(it.sessionToken) }
         return Notification.Builder(this, CHANNEL_ID)
@@ -230,7 +231,7 @@ class PlaybackService : Service() {
     private fun recordingNotification(s: PlaybackStatus): Notification =
         NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle(if (s.microphone) "● Prise au micro" else "● Enregistrement")
+            .setContentTitle(if (s.microphone) tr("● Prise au micro") else tr("● Enregistrement"))
             .setContentText(s.title)
             .setContentIntent(openApp())
             .setOngoing(true)
@@ -244,7 +245,8 @@ class PlaybackService : Service() {
             .setUsesChronometer(s.recordingSince > 0)
             .setShortCriticalText("REC")
             .setRequestPromotedOngoing(true)
-            .addAction(R.drawable.ic_stop, "Arrêter", stopIntent())
+            .addAction(R.drawable.ic_stop, tr("Arrêter"), stopIntent())
+
             .build()
 
     companion object {

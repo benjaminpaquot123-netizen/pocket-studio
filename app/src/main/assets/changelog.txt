@@ -1,5 +1,5 @@
-Phase 21 : « C'est pas faux ! » (enfin un vrai morceau)
-- Accueil : « Créer mon premier morceau » ; l'assistant fait Intro, Couplet, Refrain qui s'empilent, et une fin.
-- Scènes nommées (Intro, Refrain…) et la scène en cours en haut de l'écran, à changer d'un geste.
-- Morceau : déplacer, insérer, dupliquer une partie, jouer depuis une partie ; ▶ joue tout et s'arrête à la fin.
-- « Partager mon morceau » en un geste (avec un joli fondu de fin) et une carte « Prochaine étape ».
+Phase 22 : « Excalibur ! » (en trois langues, et sur grand écran)
+- Langues : français (par défaut), anglais et néerlandais, au premier lancement et dans Réglages.
+- Tablette : deux colonnes sur grand écran (pads à gauche, pas à droite ; morceau et scènes côte à côte).
+- Plus rien d'étiré : grilles, curseurs et listes gardent une taille confortable, en portrait comme en paysage.
+- Piano roll sur toute la largeur, clavier de trois octaves en portrait.

@@ -2,6 +2,7 @@
 
 package com.pocketstudio.app.session
 
+import com.pocketstudio.model.i18n.tr
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import com.pocketstudio.app.help.Glossary
@@ -63,9 +64,9 @@ fun LivePad(set: (param: Int, value: Float) -> Unit) {
     var touch by remember { mutableStateOf<Offset?>(null) }
     var division by rememberSaveable { mutableIntStateOf(2) }
     NeonCard(accent = Neon.Acid, modifier = Modifier.testTag("live")) {
-        SectionLabel("Effets live", color = Neon.Acid, help = Glossary.PERFORMANCE)
+        SectionLabel(tr("Effets live"), color = Neon.Acid, help = Glossary.PERFORMANCE)
         Text(
-            "Glisse sur le pad : à gauche ça coupe les aigus, à droite les graves, en haut ça résonne. Lâche : tout revient.",
+            tr("Glisse sur le pad : à gauche ça coupe les aigus, à droite les graves, en haut ça résonne. Lâche : tout revient."),
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
         )
         val padColor = Neon.Acid
@@ -125,11 +126,11 @@ fun LivePad(set: (param: Int, value: Float) -> Unit) {
                     drawCircle(Color.White.copy(alpha = 0.8f), radius = 8f, center = c)
                 }
             }
-            Text("Passe-bas", Modifier.align(Alignment.BottomStart).padding(8.dp), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary)
-            Text("Passe-haut", Modifier.align(Alignment.BottomEnd).padding(8.dp), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary)
+            Text(tr("Passe-bas"), Modifier.align(Alignment.BottomStart).padding(8.dp), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary)
+            Text(tr("Passe-haut"), Modifier.align(Alignment.BottomEnd).padding(8.dp), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary)
         }
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp), itemVerticalAlignment = Alignment.CenterVertically) {
-            Text("Répéter :", style = MaterialTheme.typography.bodyMedium)
+            Text(tr("Répéter :"), style = MaterialTheme.typography.bodyMedium)
             listOf("1/4", "1/8", "1/16", "1/32").forEachIndexed { i, label ->
                 FilterChip(
                     selected = division == i,
@@ -140,12 +141,12 @@ fun LivePad(set: (param: Int, value: Float) -> Unit) {
             }
         }
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            HoldButton("Répéter", Modifier.weight(1f), "hold_repeat") { on ->
+            HoldButton(tr("Répéter"), Modifier.weight(1f), "hold_repeat") { on ->
                 if (on) set(Perf.DIVISION, (division + 0.5f) / 4f)
                 set(Perf.REPEAT, if (on) 1f else 0f)
             }
-            HoldButton("Hacher", Modifier.weight(1f), "hold_chop") { on -> set(Perf.CHOP, if (on) 1f else 0f) }
-            HoldButton("Stop bande", Modifier.weight(1f), "hold_stop") { on -> set(Perf.TAPE_STOP, if (on) 1f else 0f) }
+            HoldButton(tr("Hacher"), Modifier.weight(1f), "hold_chop") { on -> set(Perf.CHOP, if (on) 1f else 0f) }
+            HoldButton(tr("Stop bande"), Modifier.weight(1f), "hold_stop") { on -> set(Perf.TAPE_STOP, if (on) 1f else 0f) }
         }
     }
 }

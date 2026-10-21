@@ -1,5 +1,6 @@
 package com.pocketstudio.model
 
+import com.pocketstudio.model.i18n.tr
 import kotlinx.serialization.Serializable
 
 /**
@@ -13,7 +14,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Project(
     val formatVersion: Int = FORMAT_VERSION,
-    val name: String = "Nouveau projet",
+    val name: String = tr("Nouveau projet"),
     val tempoBpm: Double = 120.0,
     /** 0 = straight, 0.5 = heavy shuffle (delay of every second 16th, as a fraction of a 16th). */
     val swing: Double = 0.0,
@@ -42,7 +43,7 @@ data class Project(
     /** Live pads: sounds switched on and off by a tap, in time. */
     val live: LivePads = LivePads(),
     /** The first instrument track's name and colour (its sound is [synth] / [plaits] / [instrument]). */
-    val synthTrackName: String = "Synthé",
+    val synthTrackName: String = tr("Synthé"),
     val synthTrackColor: Int = 0,
     /** Instrument tracks added after the first one (see [InstrumentTrack]). */
     val tracks: List<InstrumentTrack> = emptyList(),
@@ -75,7 +76,7 @@ data class Project(
         plaits = plaits.sanitized(),
         sampled = sampled.sanitized(),
         live = live.sanitized(),
-        synthTrackName = synthTrackName.take(InstrumentTrack.MAX_NAME).ifBlank { "Synthé" },
+        synthTrackName = synthTrackName.take(InstrumentTrack.MAX_NAME).ifBlank { tr("Synthé") },
         synthTrackColor = synthTrackColor.coerceIn(0, InstrumentTrack.COLORS - 1),
         tracks = tracks.filter { it.id in 1 until InstrumentTrack.MAX }.distinctBy { it.id }.sortedBy { it.id }.map { it.sanitized() },
         beatsPerBar = beatsPerBar.coerceIn(MIN_BEATS, MAX_BEATS),

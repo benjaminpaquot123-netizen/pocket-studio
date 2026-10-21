@@ -48,6 +48,7 @@ import com.pocketstudio.ui.Neon
 import com.pocketstudio.ui.pillColors
 import com.pocketstudio.ui.NeonCard
 import com.pocketstudio.ui.SectionLabel
+import com.pocketstudio.model.i18n.tr
 
 data class AutomationUi(
     val lanes: List<AutomationLane> = emptyList(),
@@ -73,23 +74,24 @@ data class AutomationActions(
     val setSongPoint: (lane: Int, bar: Int, value: Float?) -> Unit = { _, _, _ -> },
 )
 
-private val MODES = listOf(AutomationLane.LOOP to "Boucle", AutomationLane.PER_SCENE to "Par scène", AutomationLane.SONG to "Morceau")
+/** The lane modes and their names (read when drawn, in the interface's language). */
+private val MODES get() = listOf(AutomationLane.LOOP to tr("Boucle"), AutomationLane.PER_SCENE to tr("Par scène"), AutomationLane.SONG to tr("Morceau"))
 
-private fun List<StripInfo>.nameOf(ch: Int) = firstOrNull { it.ch == ch }?.name ?: "Sortie"
+private fun List<StripInfo>.nameOf(ch: Int) = firstOrNull { it.ch == ch }?.name?.let { tr(it) } ?: tr("Sortie")
 
 /** What a target is called on screen. */
 fun automationLabel(t: AutoTarget, channels: List<Channel>, master: List<Insert>, strips: List<StripInfo> = BASIC_STRIPS): String {
     fun channelName(ch: Int) = strips.nameOf(ch)
     return when (t.kind) {
-    AutoTarget.VOLUME -> "Volume · ${channelName(t.ch)}"
-    AutoTarget.PAN -> "Panoramique · ${channelName(t.ch)}"
-    AutoTarget.SEND -> "Envoi ${Buses.NAMES.getOrElse(t.slot) { "?" }.lowercase()} · ${channelName(t.ch)}"
+    AutoTarget.VOLUME -> tr("Volume · %s", channelName(t.ch))
+    AutoTarget.PAN -> tr("Panoramique · %s", channelName(t.ch))
+    AutoTarget.SEND -> tr("Envoi %s · %s", tr(Buses.NAMES.getOrElse(t.slot) { "?" }).lowercase(), channelName(t.ch))
     AutoTarget.INSERT_PARAM -> {
         val inserts = if (t.ch == MASTER_CHANNEL) master else channels.getOrNull(t.ch)?.inserts.orEmpty()
         val effect = inserts.getOrNull(t.slot)?.effect ?: EffectType.NONE
-        "${effect.label} ${effect.params.getOrNull(t.param)?.label.orEmpty()} · ${channelName(t.ch)}"
+        "${tr(effect.label)} ${effect.params.getOrNull(t.param)?.label?.let { tr(it) }.orEmpty()} · ${channelName(t.ch)}"
     }
-    AutoTarget.BUS_PARAM -> "${Buses.NAMES.getOrElse(t.slot) { "?" }} ${Buses.PARAMS.getOrNull(t.slot)?.getOrNull(t.param)?.label.orEmpty()}"
+    AutoTarget.BUS_PARAM -> "${tr(Buses.NAMES.getOrElse(t.slot) { "?" })} ${Buses.PARAMS.getOrNull(t.slot)?.getOrNull(t.param)?.label?.let { tr(it) }.orEmpty()}"
     else -> "?"
     }
 }
@@ -112,25 +114,25 @@ fun automationTargets(channels: List<Channel>, master: List<Insert>, strips: Lis
 fun AutomationCard(ui: AutomationUi, channels: List<Channel>, master: List<Insert>, actions: AutomationActions, strips: List<StripInfo> = BASIC_STRIPS) {
     NeonCard(accent = Neon.Amber, modifier = Modifier.testTag("automation")) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            SectionLabel("Automation", Modifier.weight(1f), color = Neon.Amber, help = Glossary.AUTOMATION)
+            SectionLabel(tr("Automation"), Modifier.weight(1f), color = Neon.Amber, help = Glossary.AUTOMATION)
             FilterChip(
                 selected = ui.recording, onClick = actions.toggleRecord,
-                label = { Text("Enregistrer") },
+                label = { Text(tr("Enregistrer")) },
                 leadingIcon = { Icon(Icons.Filled.FiberManualRecord, contentDescription = null, tint = if (ui.recording) Neon.Red else Neon.TextSecondary) },
                 colors = pillColors(Neon.Red),
                 modifier = Modifier.testTag("automation_record"),
             )
         }
         Text(
-            if (ui.recording) "Lance la lecture et bouge un réglage : il s'enregistre pas à pas sur la boucle."
-            else "Dessine au doigt la valeur de chaque pas de la boucle (deux touches rapides : effacer le pas).",
+            if (ui.recording) tr("Lance la lecture et bouge un réglage : il s'enregistre pas à pas sur la boucle.")
+            else tr("Dessine au doigt la valeur de chaque pas de la boucle (deux touches rapides : effacer le pas)."),
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
         )
         ui.lanes.forEachIndexed { i, lane ->
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(automationLabel(lane.target, channels, master, strips), Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
-                TextButton(onClick = { actions.clear(i) }) { Text("Vider") }
-                IconButton(onClick = { actions.remove(i) }) { Icon(Icons.Filled.Delete, contentDescription = "Supprimer") }
+                TextButton(onClick = { actions.clear(i) }) { Text(tr("Vider")) }
+                IconButton(onClick = { actions.remove(i) }) { Icon(Icons.Filled.Delete, contentDescription = tr("Supprimer")) }
             }
             FlowRow(horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(6.dp), verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(6.dp)) {
                 MODES.forEach { (mode, label) ->
@@ -144,15 +146,15 @@ fun AutomationCard(ui: AutomationUi, channels: List<Channel>, master: List<Inser
                 AutomationLane.SONG -> {
                     val bars = maxOf(ui.songBars, 8)
                     Text(
-                        if (ui.songBars == 0) "Morceau vide : la courbe suit les mesures depuis le début de la lecture."
-                        else "Une valeur par mesure sur tout le morceau ($bars mesures) ; elle glisse d'un point à l'autre.",
+                        if (ui.songBars == 0) tr("Morceau vide : la courbe suit les mesures depuis le début de la lecture.")
+                        else tr("Une valeur par mesure sur tout le morceau (%d mesures) ; elle glisse d'un point à l'autre.", bars),
                         style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
                     )
                     SongLaneEditor(lane, bars, ui.songBar) { bar, v -> actions.setSongPoint(i, bar, v) }
                 }
                 else -> {
                     if (lane.mode == AutomationLane.PER_SCENE) {
-                        Text("Pas de la scène ${com.pocketstudio.model.Scene.NAMES.getOrElse(ui.scene) { "?" }} (chaque scène a les siens).",
+                        Text(tr("Pas de la scène %s (chaque scène a les siens).", com.pocketstudio.model.Scene.NAMES.getOrElse(ui.scene) { "?" }),
                             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
                     }
                     LaneEditor(lane.copy(values = lane.valuesFor(ui.scene)), ui.steps, ui.currentStep) { step, v -> actions.setPoint(i, step, v) }
@@ -164,7 +166,8 @@ fun AutomationCard(ui: AutomationUi, channels: List<Channel>, master: List<Inser
             Box {
                 OutlinedButton(onClick = { open = true }, modifier = Modifier.fillMaxWidth().testTag("automation_add")) {
                     Icon(Icons.Filled.Add, contentDescription = null)
-                    Text(" Automatiser un réglage")
+                    Text(" " + tr("Automatiser un réglage"))
+
                 }
                 DropdownMenu(expanded = open, onDismissRequest = { open = false }) {
                     val used = ui.lanes.map { it.target }.toSet()

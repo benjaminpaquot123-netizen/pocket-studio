@@ -1,5 +1,7 @@
 package com.pocketstudio.model
 
+import com.pocketstudio.model.i18n.I18n
+import com.pocketstudio.model.i18n.tr
 import kotlinx.serialization.Serializable
 import kotlin.math.pow
 import kotlin.math.roundToInt
@@ -39,7 +41,7 @@ enum class EffectType(val label: String, val params: List<Param>, val defaults: 
         "Compresseur",
         listOf(
             Param("Seuil") { "${(-40 + 40 * it).roundToInt()} dB" },
-            Param("Ratio") { String.format(java.util.Locale.FRANCE, "%.1f:1", expMap(it, 1f, 20f)) },
+            Param("Ratio") { num("%.1f:1", expMap(it, 1f, 20f)) },
             Param("Attaque") { ms(expMap(it, 0.1f, 80f)) },
             Param("Relâche") { ms(expMap(it, 20f, 800f)) },
         ),
@@ -52,7 +54,7 @@ enum class EffectType(val label: String, val params: List<Param>, val defaults: 
     ),
     CHORUS(
         "Chorus",
-        listOf(Param("Vitesse") { String.format(java.util.Locale.FRANCE, "%.2f Hz", expMap(it, 0.05f, 5f)) }, Param("Profondeur", ::percent), Param("Retard", ::percent), Param("Mélange", ::percent)),
+        listOf(Param("Vitesse") { num("%.2f Hz", expMap(it, 0.05f, 5f)) }, Param("Profondeur", ::percent), Param("Retard", ::percent), Param("Mélange", ::percent)),
         listOf(0.3f, 0.5f, 0.4f, 0.5f),
     ),
     FILTER(
@@ -60,7 +62,7 @@ enum class EffectType(val label: String, val params: List<Param>, val defaults: 
         listOf(
             Param("Coupure") { hz(expMap(it, 40f, 18000f)) },
             Param("Résonance", ::percent),
-            Param("Type") { listOf("Passe-bas", "Passe-bande", "Passe-haut")[(it * 3).toInt().coerceIn(0, 2)] },
+            Param("Type") { listOf(tr("Passe-bas"), tr("Passe-bande"), tr("Passe-haut"))[(it * 3).toInt().coerceIn(0, 2)] },
             Param("Mélange", ::percent),
         ),
         listOf(0.6f, 0.2f, 0f, 1f),
@@ -70,18 +72,18 @@ enum class EffectType(val label: String, val params: List<Param>, val defaults: 
         listOf(
             Param("Profondeur", ::percent),
             Param("Relâche") { ms(expMap(it, 50f, 600f)) },
-            Param("Déclenche") { if (it < 0.5f) "Grosse caisse" else "Chaque temps" },
+            Param("Déclenche") { if (it < 0.5f) tr("Grosse caisse") else tr("Chaque temps") },
         ),
         listOf(0.7f, 0.4f, 0f, 0f),
     ),
     FLANGER(
         "Flanger",
-        listOf(Param("Vitesse") { String.format(java.util.Locale.FRANCE, "%.2f Hz", expMap(it, 0.05f, 5f)) }, Param("Profondeur", ::percent), Param("Retour", ::percent), Param("Mélange", ::percent)),
+        listOf(Param("Vitesse") { num("%.2f Hz", expMap(it, 0.05f, 5f)) }, Param("Profondeur", ::percent), Param("Feedback", ::percent), Param("Mélange", ::percent)),
         listOf(0.2f, 0.6f, 0.5f, 0.5f),
     ),
     PHASER(
         "Phaser",
-        listOf(Param("Vitesse") { String.format(java.util.Locale.FRANCE, "%.2f Hz", expMap(it, 0.05f, 5f)) }, Param("Profondeur", ::percent), Param("Retour", ::percent), Param("Mélange", ::percent)),
+        listOf(Param("Vitesse") { num("%.2f Hz", expMap(it, 0.05f, 5f)) }, Param("Profondeur", ::percent), Param("Feedback", ::percent), Param("Mélange", ::percent)),
         listOf(0.2f, 0.7f, 0.5f, 0.5f),
     ),
     GATE(
@@ -97,9 +99,9 @@ enum class EffectType(val label: String, val params: List<Param>, val defaults: 
     TREMOLO(
         "Trémolo",
         listOf(
-            Param("Vitesse") { String.format(java.util.Locale.FRANCE, "%.1f Hz", expMap(it, 0.1f, 20f)) },
+            Param("Vitesse") { num("%.1f Hz", expMap(it, 0.1f, 20f)) },
             Param("Profondeur", ::percent),
-            Param("Forme") { if (it < 0.33f) "Douce" else if (it < 0.66f) "Marquée" else "Carrée" },
+            Param("Forme") { if (it < 0.33f) tr("Douce") else if (it < 0.66f) tr("Marquée") else tr("Carrée") },
             Param("Gauche/droite", ::percent),
         ),
         listOf(0.4f, 0.6f, 0f, 0f),
@@ -107,8 +109,8 @@ enum class EffectType(val label: String, val params: List<Param>, val defaults: 
     WIDENER(
         "Élargisseur",
         listOf(
-            Param("Largeur") { if (it < 0.01f) "Mono" else "${(it * 200).roundToInt()} %" },
-            Param("Basses au centre") { if (it < 0.01f) "Non" else "sous ${hz(expMap(it, 40f, 300f))}" },
+            Param("Largeur") { if (it < 0.01f) tr("Mono") else "${(it * 200).roundToInt()} %" },
+            Param("Basses au centre") { if (it < 0.01f) tr("Non") else tr("sous %s", hz(expMap(it, 40f, 300f))) },
         ),
         listOf(0.75f, 0f, 0f, 0f),
     ),
@@ -126,19 +128,19 @@ enum class EffectType(val label: String, val params: List<Param>, val defaults: 
         "EQ paramétrique",
         listOf(
             Param("Fréquence") { hz(expMap(it, 20f, 20000f)) },
-            Param("Gain") { v -> val db = (v - 0.5f) * 36f; (if (db >= 0.05f) "+" else "") + String.format(java.util.Locale.FRANCE, "%.1f dB", db) },
-            Param("Largeur") { String.format(java.util.Locale.FRANCE, "Q %.1f", expMap(it, 0.3f, 10f)) },
-            Param("Coupe-bas") { if (it < 0.01f) "Non" else hz(expMap(it, 20f, 500f)) },
+            Param("Gain") { v -> val db = (v - 0.5f) * 36f; (if (db >= 0.05f) "+" else "") + num("%.1f dB", db) },
+            Param("Largeur") { num("Q %.1f", expMap(it, 0.3f, 10f)) },
+            Param("Coupe-bas") { if (it < 0.01f) tr("Non") else hz(expMap(it, 20f, 500f)) },
         ),
         listOf(0.5f, 0.5f, 0.4f, 0f),
     ),
     ROBOT(
         "Robot",
         listOf(
-            Param("Voix") { hz(expMap(it, 30f, 2000f)) },
+            Param("Hauteur de voix") { hz(expMap(it, 30f, 2000f)) },
             Param("Mélange", ::percent),
             Param("Tremblement", ::percent),
-            Param("Vitesse") { String.format(java.util.Locale.FRANCE, "%.1f Hz", expMap(it, 0.1f, 8f)) },
+            Param("Vitesse") { num("%.1f Hz", expMap(it, 0.1f, 8f)) },
         ),
         listOf(0.45f, 1f, 0f, 0.3f),
         "Transforme n'importe quel son en voix de robot métallique (un modulateur en anneau).", crazy = true,
@@ -172,7 +174,7 @@ enum class EffectType(val label: String, val params: List<Param>, val defaults: 
             Param("Motif") { listOf("x.x.", "xx.x", "x..x", "x.xx", ".x.x", "xxx.", "x...", "xx..")[(it * 8).toInt().coerceIn(0, 7)].replace('x', '■').replace('.', '□') },
             Param("Profondeur", ::percent),
             Param("Douceur") { ms(expMap(it, 1f, 30f)) },
-            Param("Vitesse") { if (it < 0.5f) "Doubles-croches" else "Triples-croches" },
+            Param("Vitesse") { if (it < 0.5f) tr("Doubles-croches") else tr("Triples-croches") },
         ),
         listOf(0f, 1f, 0.2f, 0f),
         "Découpe le son en rythme, calé sur le tempo : le bégaiement des drops.", crazy = true,
@@ -193,7 +195,7 @@ object Buses {
         listOf(Param("Taille", ::percent), Param("Amorti", ::percent), Param("Largeur", ::percent), Param("Pré-délai") { ms(200 * it) }),
         listOf(
             Param("Temps") { listOf("1/16", "1/8", "3/16", "1/4", "3/8", "1/2")[(it * 6).toInt().coerceIn(0, 5)] },
-            Param("Retour", ::percent),
+            Param("Feedback", ::percent),
             Param("Ping-pong", ::percent),
             Param("Tonalité") { hz(expMap(it, 800f, 16000f)) },
         ),
@@ -206,11 +208,14 @@ object Buses {
     }
 }
 
+/** A number in the interface language's format (1,5 in French, 1.5 in English). */
+private fun num(format: String, vararg args: Any?) = String.format(I18n.lang.locale, format, *args)
+
 private fun expMap(v: Float, lo: Float, hi: Float) = lo * (hi / lo).pow(v.coerceIn(0f, 1f))
 private fun eqDb(v: Float): String {
     val db = (v - 0.5f) * 24f
-    return (if (db >= 0.05f) "+" else "") + String.format(java.util.Locale.FRANCE, "%.1f dB", db)
+    return (if (db >= 0.05f) "+" else "") + num("%.1f dB", db)
 }
 private fun percent(v: Float) = "${(v * 100).roundToInt()} %"
-private fun ms(v: Float) = if (v < 10) String.format(java.util.Locale.FRANCE, "%.1f ms", v) else "${v.roundToInt()} ms"
-private fun hz(v: Float) = if (v >= 1000) String.format(java.util.Locale.FRANCE, "%.1f kHz", v / 1000) else "${v.roundToInt()} Hz"
+private fun ms(v: Float) = if (v < 10) num("%.1f ms", v) else "${v.roundToInt()} ms"
+private fun hz(v: Float) = if (v >= 1000) num("%.1f kHz", v / 1000) else "${v.roundToInt()} Hz"

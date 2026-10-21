@@ -30,26 +30,39 @@ import com.pocketstudio.ui.Neon
 import com.pocketstudio.ui.pillColors
 import com.pocketstudio.ui.NeonCard
 import com.pocketstudio.ui.SectionLabel
+import com.pocketstudio.model.i18n.tr
 
-/** Short names for the slot chips. */
-private val SHORT = mapOf(
-    EffectType.NONE to "—", EffectType.EQ to "EQ", EffectType.COMPRESSOR to "Comp",
-    EffectType.SATURATION to "Satu", EffectType.CHORUS to "Chorus", EffectType.FILTER to "Filtre",
-    EffectType.PUMP to "Pompe", EffectType.FLANGER to "Flanger", EffectType.PHASER to "Phaser",
-    EffectType.GATE to "Gate", EffectType.TREMOLO to "Trémolo", EffectType.WIDENER to "Large",
-    EffectType.BITCRUSHER to "Crush", EffectType.PARAM_EQ to "EQ+",
-    EffectType.ROBOT to "Robot", EffectType.WAH to "Wah", EffectType.VINYL to "Vinyle",
-    EffectType.RADIO to "Radio", EffectType.CHOPPER to "Hachoir",
-)
+/** Short names for the slot chips (read when drawn, in the interface's language). */
+private fun shortName(type: EffectType): String = when (type) {
+    EffectType.NONE -> "—"
+    EffectType.EQ -> "EQ"
+    EffectType.COMPRESSOR -> "Comp"
+    EffectType.SATURATION -> tr("Satu")
+    EffectType.CHORUS -> "Chorus"
+    EffectType.FILTER -> tr("Filtre")
+    EffectType.PUMP -> tr("Pompe")
+    EffectType.FLANGER -> "Flanger"
+    EffectType.PHASER -> "Phaser"
+    EffectType.GATE -> "Gate"
+    EffectType.TREMOLO -> tr("Trémolo")
+    EffectType.WIDENER -> tr("Large")
+    EffectType.BITCRUSHER -> "Crush"
+    EffectType.PARAM_EQ -> "EQ+"
+    EffectType.ROBOT -> "Robot"
+    EffectType.WAH -> "Wah"
+    EffectType.VINYL -> tr("Vinyle")
+    EffectType.RADIO -> "Radio"
+    EffectType.CHOPPER -> tr("Hachoir")
+}
 
 /** The crazy effects' colour: a fun violet, apart from every theme's accent. */
 private val CRAZY = androidx.compose.ui.graphics.Color(0xFFB388FF)
 
 /** One-line summary of a channel's effects, e.g. "EQ · Comp · Réverbe". */
 fun effectsSummary(inserts: List<Insert>, sends: List<Float> = emptyList()): String {
-    val parts = inserts.filter { it.effect != EffectType.NONE }.map { SHORT[it.effect] ?: it.effect.label } +
-        sends.mapIndexedNotNull { b, v -> if (v > 0.01f) Buses.NAMES[b] else null }
-    return parts.joinToString(" · ").ifEmpty { "Aucun" }
+    val parts = inserts.filter { it.effect != EffectType.NONE }.map { shortName(it.effect) } +
+        sends.mapIndexedNotNull { b, v -> if (v > 0.01f) tr(Buses.NAMES[b]) else null }
+    return parts.joinToString(" · ").ifEmpty { tr("Aucun") }
 }
 
 /**
@@ -65,7 +78,7 @@ fun InsertRack(ch: Int, inserts: List<Insert>, actions: MixerActions) {
         inserts.forEachIndexed { i, ins ->
             FilterChip(
                 selected = slot == i, onClick = { slot = i },
-                label = { Text("${i + 1} ${SHORT[ins.effect] ?: ins.effect.label}") },
+                label = { Text("${i + 1} ${shortName(ins.effect)}") },
                 colors = chipColors,
                 modifier = Modifier.testTag("slot_${ch}_$i"),
             )
@@ -74,13 +87,13 @@ fun InsertRack(ch: Int, inserts: List<Insert>, actions: MixerActions) {
     val current = inserts.getOrNull(slot) ?: return
     // The classics, then the crazy ones in their own colour: the fun is easy to find.
     listOf(false to Neon.Magenta, true to CRAZY).forEach { (crazy, colour) ->
-        if (crazy) Text("Effets fous", style = MaterialTheme.typography.labelLarge, color = colour)
+        if (crazy) Text(tr("Effets fous"), style = MaterialTheme.typography.labelLarge, color = colour)
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             EffectType.entries.filter { it.crazy == crazy }.forEach { type ->
                 FilterChip(
                     selected = current.effect == type,
                     onClick = { if (current.effect != type) actions.setInsertType(ch, slot, type) },
-                    label = { Text(type.label, maxLines = 1, softWrap = false) },
+                    label = { Text(tr(type.label), maxLines = 1, softWrap = false) },
                     colors = pillColors(colour),
                     modifier = Modifier.testTag("fx_${ch}_${slot}_${type.name}"),
                 )
@@ -88,11 +101,11 @@ fun InsertRack(ch: Int, inserts: List<Insert>, actions: MixerActions) {
         }
     }
     if (current.effect.blurb.isNotEmpty()) {
-        Text(current.effect.blurb, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+        Text(tr(current.effect.blurb), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
     }
     if (current.effect == EffectType.EQ || current.effect == EffectType.PARAM_EQ) EqCurve(current)
     current.effect.params.forEachIndexed { k, param ->
-        LabeledSlider(param.label, param.format(current.params[k]), current.params[k], "fxp_${ch}_${slot}_$k") {
+        LabeledSlider(tr(param.label), tr(param.format(current.params[k])), current.params[k], "fxp_${ch}_${slot}_$k") {
             actions.setInsertParam(ch, slot, k, it)
         }
     }
@@ -101,7 +114,7 @@ fun InsertRack(ch: Int, inserts: List<Insert>, actions: MixerActions) {
 @Composable
 fun SendSliders(ch: Int, sends: List<Float>, actions: MixerActions) {
     sends.forEachIndexed { bus, level ->
-        LabeledSlider("Envoi ${Buses.NAMES[bus].lowercase()}", "${(level * 100).toInt()} %", level, "send_${ch}_$bus") {
+        LabeledSlider(tr("Envoi %s", tr(Buses.NAMES[bus]).lowercase()), "${(level * 100).toInt()} %", level, "send_${ch}_$bus") {
             actions.setSend(ch, bus, it)
         }
     }
@@ -111,15 +124,16 @@ fun SendSliders(ch: Int, sends: List<Float>, actions: MixerActions) {
 @Composable
 fun BusesCard(buses: List<List<Float>>, actions: MixerActions) {
     NeonCard(accent = Neon.Magenta) {
-        SectionLabel("Réverbe et écho", color = Neon.Magenta, help = Glossary.REVERB_DELAY)
+        SectionLabel(tr("Réverbe et écho"), color = Neon.Magenta, help = Glossary.REVERB_DELAY)
         Text(
-            "Communs à toutes les voies : règle combien chaque voie y envoie dans ses effets. L'écho suit le tempo.",
+            tr("Communs à toutes les voies : règle combien chaque voie y envoie dans ses effets. L'écho suit le tempo."),
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
         )
         buses.forEachIndexed { bus, params ->
-            Text(Buses.NAMES[bus], style = MaterialTheme.typography.titleSmall, color = Neon.Magenta)
+            Text(tr(Buses.NAMES[bus]), style = MaterialTheme.typography.titleSmall, color = Neon.Magenta)
             Buses.PARAMS[bus].forEachIndexed { k, p ->
-                LabeledSlider(p.label, p.format(params[k]), params[k], "bus_${bus}_$k") { actions.setBusParam(bus, k, it) }
+                LabeledSlider(tr(p.label), tr(p.format(params[k])), params[k], "bus_${bus}_$k") { actions.setBusParam(bus, k, it) }
+
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.pocketstudio.app.midi
 
+import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.app.help.Glossary
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -58,87 +59,90 @@ class LearnUi(
 /** MIDI keyboards and controllers: connect, see what arrives, follow another machine's clock. */
 @Composable
 fun MidiScreen(ui: MidiUi, actions: MidiActions, learn: LearnUi = LearnUi()) {
-    Column(
-        Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp).testTag("midi"),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        NeonCard {
-            SectionLabel("Clavier MIDI", help = Glossary.MIDI)
-            if (!ui.available) {
-                Text("Ce téléphone ne gère pas le MIDI.", color = Neon.Amber)
-                return@NeonCard
+    // A page to read: centred at a comfortable width on a tablet.
+    com.pocketstudio.ui.ReadingWidth {
+        Column(
+            Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp).testTag("midi"),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            NeonCard {
+                SectionLabel(tr("Clavier MIDI"), help = Glossary.MIDI)
+                if (!ui.available) {
+                    Text(tr("Ce téléphone ne gère pas le MIDI."), color = Neon.Amber)
+                    return@NeonCard
+                }
+                val connected = ui.sources.firstOrNull { it.id == ui.connected }
+                Text(
+                    if (connected != null) tr("Connecté : %s (%s)", connected.name, connected.kind)
+                    else tr("Branche un clavier en USB (il se connecte tout seul) ou cherche-le en Bluetooth."),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = if (connected != null) Neon.Acid else Neon.TextPrimary,
+                )
+                Text(ui.last ?: tr("En attente…"), style = MonoStyle, color = Neon.Cyan, modifier = Modifier.testTag("midi_last"))
+                ui.sources.forEach { s ->
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(if (s.kind == "Bluetooth") Icons.Filled.Bluetooth else Icons.Filled.Piano, contentDescription = null, tint = Neon.TextSecondary)
+                        Text("  ${s.name}", Modifier.weight(1f), maxLines = 1)
+                        if (s.id == ui.connected) TextButton(onClick = actions.disconnect) { Text(tr("Déconnecter")) }
+                        else TextButton(onClick = { actions.connect(s.id) }, modifier = Modifier.testTag("midi_connect_${s.id}")) { Text(tr("Connecter")) }
+                    }
+                }
+                OutlinedButton(onClick = actions.scanBluetooth, enabled = !ui.scanning, modifier = Modifier.fillMaxWidth().testTag("midi_scan")) {
+                    Icon(Icons.Filled.Bluetooth, contentDescription = null)
+                    Text("  " + if (ui.scanning) tr("Recherche en cours…") else tr("Chercher un clavier Bluetooth"))
+                }
+                Text(
+                    tr("Les notes jouent le Synthé. Sur le canal 10, les notes Do 2 à Ré# 3 (36 à 51) tapent les 16 pads."),
+                    style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
+                )
             }
-            val connected = ui.sources.firstOrNull { it.id == ui.connected }
-            Text(
-                if (connected != null) "Connecté : ${connected.name} (${connected.kind})"
-                else "Branche un clavier en USB (il se connecte tout seul) ou cherche-le en Bluetooth.",
-                style = MaterialTheme.typography.bodyLarge,
-                color = if (connected != null) Neon.Acid else Neon.TextPrimary,
-            )
-            Text(ui.last ?: "En attente…", style = MonoStyle, color = Neon.Cyan, modifier = Modifier.testTag("midi_last"))
-            ui.sources.forEach { s ->
+            NeonCard {
+                SectionLabel(tr("Horloge"))
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(if (s.kind == "Bluetooth") Icons.Filled.Bluetooth else Icons.Filled.Piano, contentDescription = null, tint = Neon.TextSecondary)
-                    Text("  ${s.name}", Modifier.weight(1f), maxLines = 1)
-                    if (s.id == ui.connected) TextButton(onClick = actions.disconnect) { Text("Déconnecter") }
-                    else TextButton(onClick = { actions.connect(s.id) }, modifier = Modifier.testTag("midi_connect_${s.id}")) { Text("Connecter") }
+                    Column(Modifier.weight(1f)) {
+                        Text(tr("Suivre l'horloge MIDI"), style = MaterialTheme.typography.bodyLarge)
+                        Text(tr("Tempo, départ et arrêt viennent de l'autre machine (boîte à rythmes, ordinateur…)."),
+                            style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                    }
+                    Switch(checked = ui.followClock, onCheckedChange = actions.setFollowClock, modifier = Modifier.testTag("midi_follow"))
+                }
+                ui.clockBpm?.let { Text(tr("Tempo reçu : %.1f BPM", it), style = MonoStyle, color = Neon.Cyan) }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Column(Modifier.weight(1f)) {
+                        Text(tr("Envoyer l'horloge MIDI"), style = MaterialTheme.typography.bodyLarge)
+                        Text(tr("L'appareil branché suit ton tempo, ton départ et ton arrêt."),
+                            style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                    }
+                    Switch(checked = ui.sendClock, onCheckedChange = actions.setSendClock, modifier = Modifier.testTag("midi_send_clock"))
                 }
             }
-            OutlinedButton(onClick = actions.scanBluetooth, enabled = !ui.scanning, modifier = Modifier.fillMaxWidth().testTag("midi_scan")) {
-                Icon(Icons.Filled.Bluetooth, contentDescription = null)
-                Text(if (ui.scanning) "  Recherche en cours…" else "  Chercher un clavier Bluetooth")
-            }
-            Text(
-                "Les notes jouent le Synthé. Sur le canal 10, les notes Do 2 à Ré# 3 (36 à 51) tapent les 16 pads.",
-                style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
-            )
+            LearnCard(learn)
         }
-        NeonCard {
-            SectionLabel("Horloge")
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Column(Modifier.weight(1f)) {
-                    Text("Suivre l'horloge MIDI", style = MaterialTheme.typography.bodyLarge)
-                    Text("Tempo, départ et arrêt viennent de l'autre machine (boîte à rythmes, ordinateur…).",
-                        style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
-                }
-                Switch(checked = ui.followClock, onCheckedChange = actions.setFollowClock, modifier = Modifier.testTag("midi_follow"))
-            }
-            ui.clockBpm?.let { Text("Tempo reçu : ${"%.1f".format(it)} BPM", style = MonoStyle, color = Neon.Cyan) }
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Column(Modifier.weight(1f)) {
-                    Text("Envoyer l'horloge MIDI", style = MaterialTheme.typography.bodyLarge)
-                    Text("L'appareil branché suit ton tempo, ton départ et ton arrêt.",
-                        style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
-                }
-                Switch(checked = ui.sendClock, onCheckedChange = actions.setSendClock, modifier = Modifier.testTag("midi_send_clock"))
-            }
-        }
-        LearnCard(learn)
     }
 }
 
 @Composable
 private fun LearnCard(learn: LearnUi) {
     NeonCard(modifier = Modifier.testTag("midi_learn")) {
-        SectionLabel("Boutons du contrôleur (MIDI learn)", help = Glossary.MIDI_LEARN)
+        SectionLabel(tr("Boutons du contrôleur (MIDI learn)"), help = Glossary.MIDI_LEARN)
         Text(
-            "Associe un bouton ou un fader de ton contrôleur à un réglage : choisis le réglage, puis tourne le bouton.",
+            tr("Associe un bouton ou un fader de ton contrôleur à un réglage : choisis le réglage, puis tourne le bouton."),
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
         )
         learn.mappings.forEach { (cc, label) ->
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("Bouton $cc", style = MonoStyle, color = Neon.Cyan, modifier = Modifier.padding(end = 8.dp))
+                Text(tr("Bouton %d", cc), style = MonoStyle, color = Neon.Cyan, modifier = Modifier.padding(end = 8.dp))
                 Text(label, Modifier.weight(1f), maxLines = 2)
-                TextButton(onClick = { learn.remove(cc) }) { Text("Retirer") }
+                TextButton(onClick = { learn.remove(cc) }) { Text(tr("Retirer")) }
             }
         }
         if (learn.waiting != null) {
-            Text("Tourne maintenant le bouton pour « ${learn.waiting} »…", color = Neon.Amber, modifier = Modifier.testTag("midi_learning"))
-            TextButton(onClick = { learn.learn(null) }) { Text("Annuler") }
+            Text(tr("Tourne maintenant le bouton pour « %s »…", learn.waiting), color = Neon.Amber, modifier = Modifier.testTag("midi_learning"))
+            TextButton(onClick = { learn.learn(null) }) { Text(tr("Annuler")) }
         } else {
             var open by remember { mutableStateOf(false) }
             Box {
-                OutlinedButton(onClick = { open = true }, modifier = Modifier.fillMaxWidth().testTag("midi_learn_add")) { Text("Associer un bouton") }
+                OutlinedButton(onClick = { open = true }, modifier = Modifier.fillMaxWidth().testTag("midi_learn_add")) { Text(tr("Associer un bouton")) }
                 DropdownMenu(expanded = open, onDismissRequest = { open = false }) {
                     learn.targets.forEach { (label, key) ->
                         DropdownMenuItem(text = { Text(label) }, onClick = { open = false; learn.learn(key) })

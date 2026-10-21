@@ -1,5 +1,6 @@
 package com.pocketstudio.app.onboarding
 
+import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.app.ui.AppTab
 import com.pocketstudio.model.Channel
 import com.pocketstudio.model.Project
@@ -7,14 +8,24 @@ import com.pocketstudio.model.allScenes
 import com.pocketstudio.model.instrumentTracks
 
 /** The steps from a first beat to a song worth sharing, in the order a beginner takes them. */
-enum class StepGoal(val title: String) {
-    Rhythm("Rythme"),
-    Bass("Basse"),
-    Melody("Mélodie"),
-    Sections("Sections"),
-    Song("Morceau"),
-    Volumes("Volumes"),
-    Share("Partager"),
+enum class StepGoal {
+    Rhythm,
+    Bass,
+    Melody,
+    Sections,
+    Song,
+    Volumes,
+    Share;
+
+    val title: String get() = when (this) {
+        Rhythm -> tr("Rythme")
+        Bass -> tr("Basse")
+        Melody -> tr("Mélodie")
+        Sections -> tr("Sections")
+        Song -> tr("Morceau")
+        Volumes -> tr("Volumes")
+        Share -> tr("Partager")
+    }
 }
 
 /**
@@ -67,18 +78,18 @@ fun nextSteps(project: Project, marks: Set<StepGoal> = emptySet()): List<NextSte
     val default = Channel()
     val mixed = project.mixer.channels.any { it.volume != default.volume || it.pan != default.pan }
     return listOf(
-        NextStep(StepGoal.Rhythm, rhythm, "Touche les cases de la grille pour poser un rythme (le kick sur chaque temps, pour commencer).", AppTab.Rythme, "Rythme"),
-        NextStep(StepGoal.Bass, bass, "Ajoute une basse : génère une ligne dans l'onglet Acide, ou joue des notes graves dans Synthé.", AppTab.Acide, "Aller à Acide"),
-        NextStep(StepGoal.Melody, melody, "Ajoute une mélodie : joue quelques notes au clavier de Synthé, il reste dans la gamme.", AppTab.Synthe, "Aller à Synthé"),
+        NextStep(StepGoal.Rhythm, rhythm, tr("Touche les cases de la grille pour poser un rythme (le kick sur chaque temps, pour commencer)."), AppTab.Rythme, tr("Rythme")),
+        NextStep(StepGoal.Bass, bass, tr("Ajoute une basse : génère une ligne dans l'onglet Acide, ou joue des notes graves dans Synthé."), AppTab.Acide, tr("Aller à Acide")),
+        NextStep(StepGoal.Melody, melody, tr("Ajoute une mélodie : joue quelques notes au clavier de Synthé, il reste dans la gamme."), AppTab.Synthe, tr("Aller à Synthé")),
         NextStep(
             StepGoal.Sections, sections,
-            if (filled.size < 2) "Fais une deuxième section : duplique ta scène dans l'onglet Morceau, puis change-la (un couplet, un refrain)."
-            else "Donne un nom à chaque section (Intro, Couplet, Refrain…) dans l'onglet Morceau pour t'y retrouver.",
-            AppTab.Morceau, "Aller à Morceau",
+            if (filled.size < 2) tr("Fais une deuxième section : duplique ta scène dans l'onglet Morceau, puis change-la (un couplet, un refrain).")
+            else tr("Donne un nom à chaque section (Intro, Couplet, Refrain…) dans l'onglet Morceau pour t'y retrouver."),
+            AppTab.Morceau, tr("Aller à Morceau"),
         ),
-        NextStep(StepGoal.Song, song, "Enchaîne tes sections dans le morceau : au moins trois parties, avec un début et une fin.", AppTab.Morceau, "Aller à Morceau"),
-        NextStep(StepGoal.Volumes, mixed || StepGoal.Volumes in marks, "Écoute le morceau en entier et règle le volume de chaque piste dans le Mixeur.", AppTab.Mixeur, "Aller au Mixeur", manual = true),
-        NextStep(StepGoal.Share, StepGoal.Share in marks, "Exporte ton morceau et fais-le écouter à tes amis !", AppTab.Mixeur, "Partager", manual = true),
+        NextStep(StepGoal.Song, song, tr("Enchaîne tes sections dans le morceau : au moins trois parties, avec un début et une fin."), AppTab.Morceau, tr("Aller à Morceau")),
+        NextStep(StepGoal.Volumes, mixed || StepGoal.Volumes in marks, tr("Écoute le morceau en entier et règle le volume de chaque piste dans le Mixeur."), AppTab.Mixeur, tr("Aller au Mixeur"), manual = true),
+        NextStep(StepGoal.Share, StepGoal.Share in marks, tr("Exporte ton morceau et fais-le écouter à tes amis !"), AppTab.Mixeur, tr("Partager"), manual = true),
     )
 }
 

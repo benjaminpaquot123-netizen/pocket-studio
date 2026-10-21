@@ -1,5 +1,6 @@
 package com.pocketstudio.app.settings
 
+import com.pocketstudio.model.i18n.tr
 import androidx.compose.foundation.background
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -33,56 +34,57 @@ import com.pocketstudio.ui.Neon
 /** One page of the first-steps guide. */
 class GuidePage(val title: String, val lines: List<String>)
 
-val GUIDE_PAGES = listOf(
+/** The first-steps guide, in the interface's language. */
+val GUIDE_PAGES: List<GuidePage> get() = listOf(
     GuidePage(
-        "Bienvenue dans Pocket Studio",
+        tr("Bienvenue dans Pocket Studio"),
         listOf(
-            "Fais de la musique avec ton téléphone : des rythmes, une basse acide, un synthé, et même le remix de tes morceaux préférés.",
-            "Tout est enregistré tout seul, à chaque geste.",
+            tr("Fais de la musique avec ton téléphone : des rythmes, une basse acide, un synthé, et même le remix de tes morceaux préférés."),
+            tr("Tout est enregistré tout seul, à chaque geste."),
         ),
     ),
     GuidePage(
-        "La barre du haut",
+        tr("La barre du haut"),
         listOf(
-            "📁 Le nom du projet : touche-le pour ouvrir, créer ou envoyer tes projets.",
-            "↶ ↷ Annuler et rétablir : on peut toujours revenir en arrière.",
-            "● Enregistrer : ce que tu joues (clavier, pads, clavier MIDI) s'écrit en rythme.",
-            "▶ Jouer et arrêter, sur tous les écrans.",
+            tr("📁 Le nom du projet : touche-le pour ouvrir, créer ou envoyer tes projets."),
+            tr("↶ ↷ Annuler et rétablir : on peut toujours revenir en arrière."),
+            tr("● Enregistrer : ce que tu joues (clavier, pads, clavier MIDI) s'écrit en rythme."),
+            tr("▶ Jouer et arrêter, sur tous les écrans."),
         ),
     ),
     GuidePage(
-        "Les onglets du bas",
+        tr("Les onglets du bas"),
         listOf(
-            "Rythme : les 16 pads et leurs pas.",
-            "Acide : la ligne de basse façon 303, avec « Génère-moi un pattern ».",
-            "Synthé : le clavier, les notes (piano roll) et les sons.",
-            "Mixeur : volumes, effets, et l'export de ta musique.",
-            "Audio : le micro, les sons importés et le Remix (sépare un morceau en batterie, basse, voix et le reste).",
-            "Morceau : les scènes, les pads live et les effets en direct.",
-            "Outils : les réglages, le clavier MIDI, la recette.",
+            tr("Rythme : les 16 pads et leurs pas."),
+            tr("Acide : la ligne de basse façon 303, avec « Génère-moi un pattern »."),
+            tr("Synthé : le clavier, les notes (piano roll) et les sons."),
+            tr("Mixeur : volumes, effets, et l'export de ta musique."),
+            tr("Audio : le micro, les sons importés et le Remix (sépare un morceau en batterie, basse, voix et le reste)."),
+            tr("Morceau : les scènes, les pads live et les effets en direct."),
+            tr("Outils : les réglages, le clavier MIDI, la recette."),
         ),
     ),
     GuidePage(
-        "Trois gestes à connaître",
+        tr("Trois gestes à connaître"),
         listOf(
-            "Appui long sur un pas ou une note : plus fort ou plus doux.",
-            "Sur un potard : glisse vers le haut ou le bas ; deux touchers le remettent à zéro.",
-            "Une erreur ? ↶ répare tout, autant de fois que tu veux.",
+            tr("Appui long sur un pas ou une note : plus fort ou plus doux."),
+            tr("Sur un potard : glisse vers le haut ou le bas ; deux touchers le remettent à zéro."),
+            tr("Une erreur ? ↶ répare tout, autant de fois que tu veux."),
         ),
     ),
     GuidePage(
-        "Et ensuite ?",
+        tr("Et ensuite ?"),
         listOf(
-            "Pour commencer : touche ▶, puis les pads de l'onglet Rythme.",
-            "Pour partager : Mixeur › Exporter (WAV, M4A ou MIDI).",
-            "Ce guide se retrouve dans Outils › Réglages.",
+            tr("Pour commencer : touche ▶, puis les pads de l'onglet Rythme."),
+            tr("Pour partager : Mixeur › Exporter (WAV, M4A ou MIDI)."),
+            tr("Ce guide se retrouve dans Outils › Réglages."),
         ),
     ),
 )
 
 /** A guide of a few [pages] (the first steps by default), "Passer" at any time, [done] on the last page. */
 @Composable
-fun GuideDialog(onClose: () -> Unit, pages: List<GuidePage> = GUIDE_PAGES, tag: String = "guide", done: String = "C'est parti !") {
+fun GuideDialog(onClose: () -> Unit, pages: List<GuidePage> = GUIDE_PAGES, tag: String = "guide", done: String = tr("C'est parti !")) {
     var page by rememberSaveable(tag) { mutableIntStateOf(0) }
     val p = pages[page.coerceIn(0, pages.lastIndex)]
     val last = page >= pages.lastIndex
@@ -103,11 +105,11 @@ fun GuideDialog(onClose: () -> Unit, pages: List<GuidePage> = GUIDE_PAGES, tag: 
                     }
                 }
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                    TextButton(onClick = onClose, modifier = Modifier.testTag("guide_skip")) { Text(if (last) "" else "Passer") }
+                    TextButton(onClick = onClose, modifier = Modifier.testTag("guide_skip")) { Text(if (last) "" else tr("Passer")) }
                     Box(Modifier.weight(1f))
-                    if (page > 0) TextButton(onClick = { page-- }) { Text("Retour") }
+                    if (page > 0) TextButton(onClick = { page-- }) { Text(tr("Retour")) }
                     Button(onClick = { if (last) onClose() else page++ }, modifier = Modifier.testTag("guide_next")) {
-                        Text(if (last) done else "Suivant")
+                        Text(if (last) done else tr("Suivant"))
                     }
                 }
             }

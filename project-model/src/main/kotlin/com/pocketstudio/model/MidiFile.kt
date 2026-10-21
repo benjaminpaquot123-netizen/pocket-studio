@@ -1,5 +1,6 @@
 package com.pocketstudio.model
 
+import com.pocketstudio.model.i18n.tr
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import kotlin.math.roundToInt
@@ -61,11 +62,11 @@ object MidiFile {
         val tracks = listOf(
             conductor,
             noteTrack(project.synthTrackName, 0, program, synth),
-            noteTrack("Basse acide", 1, 38, acid),  // GM "Synth Bass 1"
+            noteTrack(tr("Basse acide"), 1, 38, acid),  // GM "Synth Bass 1"
         ) + project.tracks.map { t ->
             // Channels 3..9 (index 2..8): never the drums' channel 10.
             noteTrack(t.name, 1 + t.id, t.instrument?.takeIf { it.bank < 128 }?.program ?: 81, added.getValue(t.id))
-        } + noteTrack("Batterie", DRUM_CHANNEL, null, drums)
+        } + noteTrack(tr("Batterie"), DRUM_CHANNEL, null, drums)
         val out = ByteArrayOutputStream()
         out.write("MThd".toByteArray())
         out.int32(6)
@@ -196,20 +197,20 @@ object MidiFile {
     /** Reads a type 0 or 1 file. Throws IOException when it is not a MIDI file. */
     fun read(data: ByteArray): Content {
         val r = Reader(data)
-        if (r.text(4) != "MThd") throw IOException("pas un fichier MIDI")
+        if (r.text(4) != "MThd") throw IOException(tr("pas un fichier MIDI"))
         val headerLength = r.int32()
         r.int16()  // format
         val tracks = r.int16()
         val division = r.int16()
         r.skip(headerLength - 6)
-        if (division <= 0 || division and 0x8000 != 0) throw IOException("fichier MIDI en SMPTE non pris en charge")
+        if (division <= 0 || division and 0x8000 != 0) throw IOException(tr("fichier MIDI en SMPTE non pris en charge"))
         val notes = ArrayList<MidiNote>()
         var tempo: Double? = null
         repeat(tracks) {
             if (r.remaining < 8) return@repeat
             val id = r.text(4)
             val length = r.int32()
-            if (length < 0 || length > r.remaining) throw IOException("fichier MIDI tronqué")
+            if (length < 0 || length > r.remaining) throw IOException(tr("fichier MIDI tronqué"))
             if (id != "MTrk") { r.skip(length); return@repeat }
             val end = r.pos + length
             var tick = 0L
@@ -243,7 +244,7 @@ object MidiFile {
                     }
                     0xA0, 0xB0, 0xE0 -> r.skip(2)
                     0xC0, 0xD0 -> r.skip(1)
-                    else -> throw IOException("événement MIDI inconnu")
+                    else -> throw IOException(tr("événement MIDI inconnu"))
                 }
             }
             r.pos = end
@@ -275,7 +276,7 @@ object MidiFile {
                 if (i == 0) {
                     p = p.copy(synthNotes = p.synthNotes.copy(steps = steps, notes = notes).sanitized())
                 } else {
-                    val next = p.addTrack("Canal ${channel + 1}") ?: return@forEachIndexed
+                    val next = p.addTrack(tr("Canal %d", channel + 1)) ?: return@forEachIndexed
                     val t = next.tracks.first { n -> p.tracks.none { it.id == n.id } }
                     p = next.withTrack(t.copy(notes = NoteClip(steps = steps, notes = notes).sanitized()))
                 }
@@ -321,11 +322,11 @@ object MidiFile {
     private class Reader(val data: ByteArray) {
         var pos = 0
         val remaining get() = data.size - pos
-        fun u8(): Int { if (pos >= data.size) throw IOException("fichier MIDI tronqué"); return data[pos++].toInt() and 0xFF }
+        fun u8(): Int { if (pos >= data.size) throw IOException(tr("fichier MIDI tronqué")); return data[pos++].toInt() and 0xFF }
         fun int16() = (u8() shl 8) or u8()
         fun int32() = (u8() shl 24) or (u8() shl 16) or (u8() shl 8) or u8()
         fun text(n: Int) = String(ByteArray(n) { u8().toByte() }, Charsets.US_ASCII)
-        fun skip(n: Int) { if (n < 0 || pos + n > data.size) throw IOException("fichier MIDI tronqué"); pos += n }
+        fun skip(n: Int) { if (n < 0 || pos + n > data.size) throw IOException(tr("fichier MIDI tronqué")); pos += n }
         fun varLen(): Int {
             var v = 0
             repeat(4) {
@@ -333,7 +334,7 @@ object MidiFile {
                 v = (v shl 7) or (b and 0x7F)
                 if (b and 0x80 == 0) return v
             }
-            throw IOException("fichier MIDI abîmé")
+            throw IOException(tr("fichier MIDI abîmé"))
         }
     }
 }

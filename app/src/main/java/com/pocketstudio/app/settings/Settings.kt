@@ -1,18 +1,37 @@
 package com.pocketstudio.app.settings
 
+import com.pocketstudio.model.i18n.tr
 import android.content.Context
+import com.pocketstudio.model.i18n.I18n
+import com.pocketstudio.model.i18n.Lang
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 /** Look of the app (see Palettes in ui-components). */
-enum class AppTheme(val label: String) { Studio("Studio (gris et orange)"), Night("Nuit (plus sombre)"), Colorblind("Couleurs pour daltoniens") }
+enum class AppTheme {
+    Studio, Night, Colorblind;
+
+    val label: String get() = when (this) {
+        Studio -> tr("Studio (gris et orange)")
+        Night -> tr("Nuit (plus sombre)")
+        Colorblind -> tr("Couleurs pour daltoniens")
+    }
+}
 
 /**
  * The synth keyboard: two octaves of piano, one wider octave with every note named, or only the
  * notes of the song's key as wide bars (GarageBand's "Scale", Push's "In key"): no wrong note.
  */
-enum class KeyLayout(val label: String) { TwoOctaves("2 octaves"), OneOctave("1 octave"), Scale("Gamme") }
+enum class KeyLayout {
+    TwoOctaves, OneOctave, Scale;
+
+    val label: String get() = when (this) {
+        TwoOctaves -> tr("2 octaves")
+        OneOctave -> tr("1 octave")
+        Scale -> tr("Gamme")
+    }
+}
 
 /** User preferences, the same for every project. */
 data class AppSettings(
@@ -34,10 +53,12 @@ data class AppSettings(
     /** The first-steps guide was seen (it opens at the first launch). */
     val guideSeen: Boolean = false,
     val keyLayout: KeyLayout = KeyLayout.TwoOctaves,
+    /** Language of the interface (French unless chosen). */
+    val language: Lang = Lang.FR,
 ) {
     companion object {
         val UI_SCALES = listOf(0.85f, 1f, 1.15f, 1.3f)
-        val BUFFERS = listOf(2 to "Rapide", 4 to "Sûr", 6 to "Très sûr")
+        val BUFFERS: List<Pair<Int, String>> get() = listOf(2 to tr("Rapide"), 4 to tr("Sûr"), 6 to tr("Très sûr"))
     }
 }
 
@@ -65,13 +86,16 @@ object SettingsStore {
             bufferBursts = p.getInt("bufferBursts", d.bufferBursts).takeIf { b -> AppSettings.BUFFERS.any { it.first == b } } ?: d.bufferBursts,
             guideSeen = p.getBoolean("guideSeen", d.guideSeen),
             keyLayout = runCatching { KeyLayout.valueOf(p.getString("keyLayout", d.keyLayout.name)!!) }.getOrDefault(d.keyLayout),
+            language = Lang.of(p.getString("language", d.language.code)),
         )
+        I18n.lang = _state.value.language
         loaded = true
         return _state.value
     }
 
     fun update(context: Context, transform: (AppSettings) -> AppSettings) {
         val s = transform(load(context))
+        I18n.lang = s.language
         _state.value = s
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
             .putString("theme", s.theme.name)
@@ -84,9 +108,10 @@ object SettingsStore {
             .putInt("bufferBursts", s.bufferBursts)
             .putBoolean("guideSeen", s.guideSeen)
             .putString("keyLayout", s.keyLayout.name)
+            .putString("language", s.language.code)
             .apply()
     }
 
     /** Back to the defaults (the guide is not shown again). */
-    fun reset(context: Context) = update(context) { AppSettings(guideSeen = true) }
+    fun reset(context: Context) = update(context) { AppSettings(guideSeen = true, language = it.language) }
 }

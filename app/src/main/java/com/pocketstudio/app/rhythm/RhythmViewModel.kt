@@ -1,5 +1,6 @@
 package com.pocketstudio.app.rhythm
 
+import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.app.report.forUser
 import com.pocketstudio.app.report.AppLog
 import android.app.Application
@@ -161,7 +162,15 @@ enum class ExportWhat { Loop, Song, Stems }
 enum class ExportFormat(val extension: String, val mime: String) { Wav("wav", "audio/wav"), M4a("m4a", "audio/mp4"), Flac("flac", "audio/flac") }
 
 /** « Fondu de fin »: the end of an export fades to silence over [seconds] (none for a loop by default). */
-enum class ExportFade(val seconds: Int, val label: String) { None(0, "Aucun"), Short(3, "Court"), Long(8, "Long") }
+enum class ExportFade(val seconds: Int) {
+    None(0), Short(3), Long(8);
+
+    val label: String get() = when (this) {
+        None -> tr("Aucun")
+        Short -> tr("Court")
+        Long -> tr("Long")
+    }
+}
 
 data class ExportUi(
     /** Length of « La scène », in bars: the scene's own ([sceneBars]) until the user picks one. */
@@ -316,9 +325,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             val aside = File(store.folder(projectId).parentFile, "$projectId-illisible-${System.currentTimeMillis()}")
             val moved = store.folder(projectId).renameTo(aside)
             _notice.value = if (moved) {
-                "Le projet n'a pas pu être relu. Il est mis de côté (${aside.name}) et un nouveau projet commence."
+                tr("Le projet n'a pas pu être relu. Il est mis de côté (%s) et un nouveau projet commence.", aside.name)
             } else {
-                "Le projet n'a pas pu être relu ; un nouveau projet commence."
+                tr("Le projet n'a pas pu être relu ; un nouveau projet commence.")
             }
         }
         return starterProject()
@@ -410,15 +419,15 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /** An audio file from the phone onto live pad [pad]. */
-    fun importLive(pad: Int, uri: Uri) = sampleJob("Lecture du fichier…", live = pad) {
+    fun importLive(pad: Int, uri: Uri) = sampleJob(tr("Lecture du fichier…"), live = pad) {
         val app = getApplication<Application>()
         val name = PadSamples.nameFrom(displayName(app, uri))
         val pcm = try {
             AudioDecoder.decode(app, uri)
         } catch (e: AudioDecoder.TooLongException) {
-            throw UserMessage("Ce fichier est trop long : choisis un son plus court.")
+            throw UserMessage(tr("Ce fichier est trop long : choisis un son plus court."))
         } catch (e: Exception) {
-            throw UserMessage("Ce fichier n'a pas pu être lu (${e.message ?: "format inconnu"}).")
+            throw UserMessage(tr("Ce fichier n'a pas pu être lu (%s).", e.message ?: tr("format inconnu")))
         }
         AppLog.add("Pad live ${pad + 1} : « $name », ${"%.1f".format(pcm.seconds)} s")
         padSamples.add(pcm, name)
@@ -460,7 +469,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun addTrack() {
         val p = project.value
         val next = p.addTrack() ?: run {
-            _notice.value = "Huit pistes d'instruments au maximum : supprime-en une pour en ajouter une autre."
+            _notice.value = tr("Huit pistes d'instruments au maximum : supprime-en une pour en ajouter une autre.")
             return
         }
         val id = next.tracks.first { t -> p.tracks.none { it.id == t.id } }.id
@@ -474,7 +483,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun duplicateTrack(id: Int) {
         val p = project.value
         val next = p.duplicateTrack(id) ?: run {
-            _notice.value = "Huit pistes d'instruments au maximum : supprime-en une pour en dupliquer une autre."
+            _notice.value = tr("Huit pistes d'instruments au maximum : supprime-en une pour en dupliquer une autre.")
             return
         }
         session.edit { next }
@@ -552,7 +561,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     fun addAudioTrack() {
         val next = project.value.addAudioTrack() ?: run {
-            _notice.value = "Quatre pistes audio au maximum : supprime-en une pour en ajouter une autre."
+            _notice.value = tr("Quatre pistes audio au maximum : supprime-en une pour en ajouter une autre.")
             return
         }
         session.edit { next }
@@ -622,21 +631,21 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         minOf(com.pocketstudio.model.AudioClip.MAX_LOOP, com.pocketstudio.model.AudioClip.MAX_LOOP / 16 * project.value.stepsPerBar)
 
     fun importAudio(id: Int, uri: Uri) {
-        audioJob("Lecture du fichier…") {
+        audioJob(tr("Lecture du fichier…")) {
             val app = getApplication<Application>()
             val name = PadSamples.nameFrom(displayName(app, uri))
             val pcm = try {
                 withContext(Dispatchers.IO) { AudioDecoder.decode(app, uri) }  // 2 minutes at most (cut)
             } catch (e: Exception) {
-                throw UserMessage("Ce fichier n'a pas pu être lu (${e.message ?: "format inconnu"}).")
+                throw UserMessage(tr("Ce fichier n'a pas pu être lu (%s).", e.message ?: tr("format inconnu")))
             }
             AppLog.add("Piste audio ${id + 1} : « $name », ${"%.1f".format(pcm.seconds)} s")
             val loopSeconds = maxLoopSteps() * 15.0 / project.value.tempoBpm
             when {
                 pcm.seconds >= AudioDecoder.MAX_SECONDS - 0.5 ->
-                    _notice.value = "Ce fichier dure plus de ${AudioDecoder.MAX_SECONDS / 60} minutes : seul le début est gardé."
+                    _notice.value = tr("Ce fichier dure plus de %d minutes : seul le début est gardé.", AudioDecoder.MAX_SECONDS / 60)
                 pcm.seconds > loopSeconds ->
-                    _notice.value = "À ce tempo, une piste audio boucle au bout de 64 mesures : la fin de « $name » ne sera pas jouée."
+                    _notice.value = tr("À ce tempo, une piste audio boucle au bout de 64 mesures : la fin de « %s » ne sera pas jouée.", name)
             }
             putClip(id, pcm, name)
         }
@@ -649,7 +658,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun placeOnPad(pcm: Pcm, name: String, oneShot: Boolean = false): Boolean {
         if (_sampleTask.value is SampleTask.Busy || _sampleTask.value is SampleTask.Recording) return false
         // A library one-shot loses its silent tail; a loop or a phrase keeps its length.
-        sampleJob("Pose du son sur le pad ${_transport.value.selectedPad + 1}…") { padSamples.add(if (oneShot) pcm.withoutTail() else pcm, name) }
+        sampleJob(tr("Pose du son sur le pad %d…", _transport.value.selectedPad + 1)) { padSamples.add(if (oneShot) pcm.withoutTail() else pcm, name) }
         return true
     }
 
@@ -658,11 +667,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (_sampleTask.value is SampleTask.Busy || _sampleTask.value is SampleTask.Recording) return
         val pad = project.value.live.clips.indexOfFirst { it == null }
         if (pad < 0) {
-            _sampleTask.value = SampleTask.Failed("Les 16 pads live sont pris : vides-en un dans l'onglet Morceau.")
+            _sampleTask.value = SampleTask.Failed(tr("Les 16 pads live sont pris : vides-en un dans l'onglet Morceau."))
             return
         }
         if (project.value.live.size <= pad) setLiveSize(LivePads.SIZES.first { it > pad })
-        sampleJob("Pose du son sur le pad live ${pad + 1}…", live = pad) { padSamples.add(pcm, name) }
+        sampleJob(tr("Pose du son sur le pad live %d…", pad + 1), live = pad) { padSamples.add(pcm, name) }
     }
 
     /** On live pad [pad] (from the sound library), its length in beats fitted to the tempo; false when busy. */
@@ -670,7 +679,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (_sampleTask.value is SampleTask.Busy || _sampleTask.value is SampleTask.Recording) return false
         if (pad !in 0 until LivePads.MAX) return true
         AppLog.add("Pad live ${pad + 1} : « $name » de la bibliothèque")
-        sampleJob("Pose du son sur le pad live ${pad + 1}…", live = pad) { padSamples.add(pcm, name) }
+        sampleJob(tr("Pose du son sur le pad live %d…", pad + 1), live = pad) { padSamples.add(pcm, name) }
         return true
     }
 
@@ -680,7 +689,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val p = project.value
         val id = p.audioTracks.firstOrNull { it.clip == null }?.id ?: run {
             val next = p.addAudioTrack() ?: run {
-                _notice.value = "Les quatre pistes audio sont prises : vide-en une ou pose le son sur un pad."
+                _notice.value = tr("Les quatre pistes audio sont prises : vide-en une ou pose le son sur un pad.")
                 return
             }
             session.edit { next }
@@ -688,7 +697,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             next.audioTracks.first { t -> p.audioTracks.none { it.id == t.id } }.id
         }
         AppLog.add("Son généré « $name » sur la piste audio ${id + 1}")
-        audioJob("Pose du son…") { putClip(id, pcm, name) }
+        audioJob(tr("Pose du son…")) { putClip(id, pcm, name) }
     }
 
     /**
@@ -705,10 +714,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             } catch (e: kotlinx.coroutines.CancellationException) {
                 throw e
             } catch (e: OutOfMemoryError) {
-                _sampleTask.value = SampleTask.Failed("Pas assez de mémoire pour ce son : essaie plus court.")
+                _sampleTask.value = SampleTask.Failed(tr("Pas assez de mémoire pour ce son : essaie plus court."))
             } catch (e: Exception) {
                 AppLog.add("Piste audio : échec (${e.message})")
-                _sampleTask.value = SampleTask.Failed(if (e is UserMessage) e.message!! else "Ça n'a pas marché : ${e.message ?: e.javaClass.simpleName}")
+                _sampleTask.value = SampleTask.Failed(if (e is UserMessage) e.message!! else tr("Ça n'a pas marché : %s", e.message ?: e.javaClass.simpleName))
             }
         }
     }
@@ -736,7 +745,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             }
             if (handle == 0L) {
                 _audioRecording.value = null
-                _notice.value = "Le micro n'a pas pu être ouvert. Vérifie l'autorisation du micro et qu'aucune autre appli ne l'utilise."
+                _notice.value = tr("Le micro n'a pas pu être ouvert. Vérifie l'autorisation du micro et qu'aucune autre appli ne l'utilise.")
                 return@launch
             }
             recordHandle = handle
@@ -773,9 +782,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         // What the microphone hears lags what was played by the round trip (speaker → micro).
         val latencyMs = takeLatencyMs
         _takeSaving.value = true
-        takeJob = audioJob("Enregistrement de la prise…", always = true) {
+        takeJob = audioJob(tr("Enregistrement de la prise…"), always = true) {
             val pcm = withContext(Dispatchers.IO) {
-                val audio = NativeEngine.recordFinish(handle) ?: throw UserMessage("La prise n'a pas pu être récupérée : réessaie.")
+                val audio = NativeEngine.recordFinish(handle) ?: throw UserMessage(tr("La prise n'a pas pu être récupérée : réessaie."))
                 if (audio.size < OfflineExport.SAMPLE_RATE / 10) null
                 else {
                     val skip = (latencyMs / 1000.0 * OfflineExport.SAMPLE_RATE).toInt().coerceIn(0, audio.size / 2)
@@ -783,11 +792,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 }
             }
             if (pcm == null) {
-                if (!ui.waiting) throw UserMessage("La prise est trop courte ou le micro n'a rien donné.")
+                if (!ui.waiting) throw UserMessage(tr("La prise est trop courte ou le micro n'a rien donné."))
                 return@audioJob  // stopped during the count-in: nothing was recorded
             }
-            if (PadSamples.isSilent(pcm)) throw UserMessage("Le micro n'a rien entendu : rapproche-toi et réessaie.")
-            putClip(ui.track, pcm, "Prise ${java.text.SimpleDateFormat("HH:mm", java.util.Locale.FRANCE).format(java.util.Date())}")
+            if (PadSamples.isSilent(pcm)) throw UserMessage(tr("Le micro n'a rien entendu : rapproche-toi et réessaie."))
+            putClip(ui.track, pcm, tr("Prise %s", java.text.SimpleDateFormat("HH:mm", java.util.Locale.FRANCE).format(java.util.Date())))
             AppLog.add("Prise audio : ${"%.1f".format(pcm.seconds)} s, latence compensée ${latencyMs.toInt()} ms")
         }
         // Annuler waits until the take is on its track (or has failed).
@@ -831,10 +840,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /** Loudest point at -1 dBFS. */
-    fun normalizeAudio(id: Int) = editClipAudio(id, "Normalisation") { AudioEdits.normalize(it) }
-    fun reverseAudio(id: Int) = editClipAudio(id, "Inversion") { AudioEdits.reverse(it) }
+    fun normalizeAudio(id: Int) = editClipAudio(id, tr("Normalisation")) { AudioEdits.normalize(it) }
+    fun reverseAudio(id: Int) = editClipAudio(id, tr("Inversion")) { AudioEdits.reverse(it) }
     /** Keeps [from]..[to] (fractions of the clip). */
-    fun trimAudio(id: Int, from: Float, to: Float) = editClipAudio(id, "Découpe") { AudioEdits.trim(it, from, to) }
+    fun trimAudio(id: Int, from: Float, to: Float) = editClipAudio(id, tr("Découpe")) { AudioEdits.trim(it, from, to) }
 
     // --- Live playing: velocity, pitch bend, mod wheel, sustain, arpeggiator --------------------
 
@@ -959,7 +968,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 padSamples.register(prepared)
                 // The track went away meanwhile (deleted, undone): never land on another one.
                 if (id != 0 && project.value.tracks.none { it.id == id }) {
-                    _trackSoundBusy.value = "La piste a été supprimée entre-temps : rien n'a changé."
+                    _trackSoundBusy.value = tr("La piste a été supprimée entre-temps : rien n'a changé.")
                     return@launch
                 }
                 // A 808 glides, unless the track plays chords (one gliding voice would drop them).
@@ -981,13 +990,13 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 pushPlaits(id = id)
                 releaseUnusedFonts()
                 padSamples.prune(project.value.sampleFiles)
-                _trackSoundBusy.value = if (root == null) "Note d'origine introuvable : règle-la à l'oreille avec − et +." else null
+                _trackSoundBusy.value = if (root == null) tr("Note d'origine introuvable : règle-la à l'oreille avec − et +.") else null
                 if (NativeEngine.isAvailable && !_transport.value.playing) previewNote(root?.let { Math.round(it) }?.coerceIn(24, 96) ?: 60)
             } catch (e: kotlinx.coroutines.CancellationException) {
                 throw e
             } catch (e: Throwable) {
                 AppLog.add("Son au clavier : échec (${e.message})")
-                _trackSoundBusy.value = "Ce son n'a pas pu être préparé."
+                _trackSoundBusy.value = tr("Ce son n'a pas pu être préparé.")
             }
         }
         return true
@@ -1004,7 +1013,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             val pcm = runCatching { withContext(Dispatchers.IO) { padSamples.read(s.file) } }.getOrNull()
             if (pcm == null || pcm.frames == 0) {
-                if (_trackSoundBusy.value != BUSY_TRACK_SOUND) _trackSoundBusy.value = "Ce son n'a pas pu être lu."
+                if (_trackSoundBusy.value != BUSY_TRACK_SOUND) _trackSoundBusy.value = tr("Ce son n'a pas pu être lu.")
                 return@launch
             }
             val ch = pcm.channels
@@ -1027,7 +1036,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             val name = PadSamples.nameFrom(displayName(app, uri))
             val pcm = runCatching { withContext(Dispatchers.IO) { AudioDecoder.decode(app, uri) } }.getOrNull()
             if (pcm == null || PadSamples.isSilent(pcm)) {
-                if (_trackSoundBusy.value != BUSY_TRACK_SOUND) _trackSoundBusy.value = "Ce fichier n'a pas pu être lu."
+                if (_trackSoundBusy.value != BUSY_TRACK_SOUND) _trackSoundBusy.value = tr("Ce fichier n'a pas pu être lu.")
                 return@launch
             }
             AppLog.add("Son au clavier importé « $name » : ${"%.1f".format(pcm.seconds)} s")
@@ -1180,7 +1189,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun newScene() {
         val target = project.value.firstEmptyScene()
         if (target == null) {
-            _notice.value = "Les ${Scene.MAX} scènes sont déjà prises : vide-en une pour recommencer."
+            _notice.value = tr("Les %d scènes sont déjà prises : vide-en une pour recommencer.", Scene.MAX)
             return
         }
         selectScene(target)
@@ -1198,7 +1207,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val scenes = p.allScenes
         val target = scenes.indices.firstOrNull { it != p.scene && scenes[it].isEmpty } ?: scenes.size.takeIf { it < Scene.MAX }
         if (target == null) {
-            _notice.value = "Les ${Scene.MAX} scènes sont déjà prises : plus de place pour une copie."
+            _notice.value = tr("Les %d scènes sont déjà prises : plus de place pour une copie.", Scene.MAX)
             return
         }
         if (!_transport.value.playing || !NativeEngine.isAvailable || (!_followSong.value && songPlaying())) {
@@ -1235,7 +1244,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** Scene [scene] played once at place [at] of the song (one undo step). */
     fun insertSongPart(at: Int, scene: Int) {
         if (project.value.song.size >= SongPart.MAX_PARTS) {
-            _notice.value = "Le morceau a déjà ${SongPart.MAX_PARTS} parties : retires-en une pour en ajouter une autre."
+            _notice.value = tr("Le morceau a déjà %d parties : retires-en une pour en ajouter une autre.", SongPart.MAX_PARTS)
             return
         }
         val place = at.coerceIn(0, project.value.song.size)
@@ -1251,7 +1260,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun duplicateSongPart(index: Int) {
         if (index !in project.value.song.indices) return
         if (project.value.song.size >= SongPart.MAX_PARTS) {
-            _notice.value = "Le morceau a déjà ${SongPart.MAX_PARTS} parties : retires-en une pour en ajouter une autre."
+            _notice.value = tr("Le morceau a déjà %d parties : retires-en une pour en ajouter une autre.", SongPart.MAX_PARTS)
             return
         }
         val following = songPlaying()
@@ -1670,7 +1679,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (id to ratio in stretchFailed) return  // tried already: no new attempt on every mixer move
         if (ratio !in 0.5..2.0) {
             stretchFailed += id to ratio
-            _notice.value = "Le tempo du projet est trop loin de celui du morceau pour le caler (de la moitié au double)."
+            _notice.value = tr("Le tempo du projet est trop loin de celui du morceau pour le caler (de la moitié au double).")
             return
         }
         remixStretchJob?.cancel()
@@ -1691,7 +1700,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             if (copy == null) {
                 stretchFailed += id to ratio
                 AppLog.add("Remix : calage au tempo impossible (mémoire ?)")
-                _notice.value = "Le morceau n'a pas pu être calé au tempo (mémoire insuffisante) : il garde son tempo."
+                _notice.value = tr("Le morceau n'a pas pu être calé au tempo (mémoire insuffisante) : il garde son tempo.")
                 return@launch
             }
             val old = stretched
@@ -1787,7 +1796,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             if (loaded == null) {
                 if (wanted.setId == id) {
                     AppLog.add("Remix : pistes de « ${wanted.name} » introuvables ou illisibles")
-                    _notice.value = "Les pistes de « ${wanted.name} » ne sont plus sur le téléphone (ou la mémoire manque). Sépare à nouveau le morceau."
+                    _notice.value = tr("Les pistes de « %s » ne sont plus sur le téléphone (ou la mémoire manque). Sépare à nouveau le morceau.", wanted.name)
                 }
                 return@launch
             }
@@ -1854,13 +1863,13 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val count = r.barFrames(OfflineExport.SAMPLE_RATE) * bars
         if (count <= 0) return
         if (count > AudioDecoder.MAX_SECONDS * OfflineExport.SAMPLE_RATE) {
-            _sampleTask.value = SampleTask.Failed("Trop long pour un pad : choisis moins de mesures.")
+            _sampleTask.value = SampleTask.Failed(tr("Trop long pour un pad : choisis moins de mesures."))
             return
         }
-        val label = STEM_LABELS.getOrElse(stem) { "Piste" }
-        sampleJob("$label vers le pad…") {
+        val label = tr(STEM_LABELS.getOrElse(stem) { "Piste" })
+        sampleJob(tr("%s vers le pad…", label)) {
             val audio = source.extract(stem, r.startFrame(OfflineExport.SAMPLE_RATE), count)
-            if (audio.isEmpty()) throw UserMessage("Ce passage est après la fin du morceau.")
+            if (audio.isEmpty()) throw UserMessage(tr("Ce passage est après la fin du morceau."))
             padSamples.add(Pcm(audio, 2, OfflineExport.SAMPLE_RATE), "$label ${r.name}".take(40))
         }
     }
@@ -1871,21 +1880,21 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (_sampleTask.value is SampleTask.Busy || _sampleTask.value is SampleTask.Recording) return
         val pad = project.value.live.clips.indexOfFirst { it == null }
         if (pad < 0) {
-            _sampleTask.value = SampleTask.Failed("Les 16 pads live sont pris : vides-en un dans l'onglet Morceau.")
+            _sampleTask.value = SampleTask.Failed(tr("Les 16 pads live sont pris : vides-en un dans l'onglet Morceau."))
             return
         }
         val r = project.value.remix
         val count = r.barFrames(OfflineExport.SAMPLE_RATE) * bars
         if (count <= 0) return
         if (count > AudioDecoder.MAX_SECONDS * OfflineExport.SAMPLE_RATE) {
-            _sampleTask.value = SampleTask.Failed("Trop long pour un pad : choisis moins de mesures.")
+            _sampleTask.value = SampleTask.Failed(tr("Trop long pour un pad : choisis moins de mesures."))
             return
         }
-        val label = STEM_LABELS.getOrElse(stem) { "Piste" }
+        val label = tr(STEM_LABELS.getOrElse(stem) { "Piste" })
         if (project.value.live.size <= pad) setLiveSize(LivePads.SIZES.first { it > pad })
-        sampleJob("$label vers le pad live ${pad + 1}…", live = pad, beats = bars * 4) {
+        sampleJob(tr("%1\$s vers le pad live %2\$d…", label, pad + 1), live = pad, beats = bars * 4) {
             val audio = source.extract(stem, r.startFrame(OfflineExport.SAMPLE_RATE), count)
-            if (audio.isEmpty()) throw UserMessage("Ce passage est après la fin du morceau.")
+            if (audio.isEmpty()) throw UserMessage(tr("Ce passage est après la fin du morceau."))
             padSamples.add(Pcm(audio, 2, OfflineExport.SAMPLE_RATE), "$label ${r.name}".take(40))
         }
     }
@@ -1983,7 +1992,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 else null.also { InstrumentLibrary.file(app, bank).delete() }
             }
             if (font == null) {
-                _library.value = LibraryState.Failed("La bibliothèque était abîmée : télécharge-la à nouveau.")
+                _library.value = LibraryState.Failed(tr("La bibliothèque était abîmée : télécharge-la à nouveau."))
                 return@launch
             }
             if (fonts.containsKey(bank.id)) font.close() else fonts[bank.id] = font
@@ -2011,7 +2020,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             } catch (e: Exception) {
                 AppLog.add("Téléchargement de ${bank.name} : ${e.message}")
                 _library.value = if (downloadCancelled) LibraryState.Missing
-                else LibraryState.Failed("Le téléchargement a échoué (${e.forUser()}). Vérifie la connexion et réessaie.")
+                else LibraryState.Failed(tr("Le téléchargement a échoué (%s). Vérifie la connexion et réessaie.", e.forUser()))
             }
         }
     }
@@ -2040,10 +2049,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun loadKit(kit: Preset) {
         val font = soundFont
         if (font == null || _sampleTask.value is SampleTask.Busy) {
-            android.widget.Toast.makeText(getApplication(), "Patiente un instant, un son est en cours de préparation.", android.widget.Toast.LENGTH_SHORT).show()
+            android.widget.Toast.makeText(getApplication(), tr("Patiente un instant, un son est en cours de préparation."), android.widget.Toast.LENGTH_SHORT).show()
             return
         }
-        _sampleTask.value = SampleTask.Busy("Kit ${kit.name}…")
+        _sampleTask.value = SampleTask.Busy(tr("Kit %s…", tr(kit.name)))
         viewModelScope.launch {
             try {
                 val pads = ArrayList<Pair<Int, PadSample>>()
@@ -2056,7 +2065,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     val peak = audio.maxOf { kotlin.math.abs(it) }
                     if (peak > 0.89f) for (i in audio.indices) audio[i] *= 0.89f / peak
                     val (sample, prepared) = withContext(Dispatchers.IO) {
-                        padSamples.add(Pcm(audio, 1, OfflineExport.SAMPLE_RATE), "${kit.name.take(18)} ${InstrumentLibrary.KIT_PAD_NAMES[pad]}")
+                        padSamples.add(Pcm(audio, 1, OfflineExport.SAMPLE_RATE), "${tr(kit.name).take(18)} ${InstrumentLibrary.KIT_PAD_NAMES[pad]}")
                     }
                     padSamples.register(prepared)
                     pads += pad to sample.copy(choke = if (note == 42 || note == 46) 1 else 0)
@@ -2067,13 +2076,13 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 _sampleTask.value = SampleTask.Idle
                 if (NativeEngine.isAvailable) NativeEngine.triggerPad(0, 0.9f)
                 android.widget.Toast.makeText(
-                    getApplication(), "Kit « ${kit.name} » sur les pads : va dans Rythme (Annuler possible).", android.widget.Toast.LENGTH_LONG,
+                    getApplication(), tr("Kit « %s » sur les pads : va dans Rythme (Annuler possible).", tr(kit.name)), android.widget.Toast.LENGTH_LONG,
                 ).show()
             } catch (e: kotlinx.coroutines.CancellationException) {
                 throw e
             } catch (e: Exception) {
-                _sampleTask.value = SampleTask.Failed("Le kit n'a pas pu être chargé (${e.message}).")
-                android.widget.Toast.makeText(getApplication(), "Le kit n'a pas pu être chargé.", android.widget.Toast.LENGTH_LONG).show()
+                _sampleTask.value = SampleTask.Failed(tr("Le kit n'a pas pu être chargé (%s).", e.message))
+                android.widget.Toast.makeText(getApplication(), tr("Le kit n'a pas pu être chargé."), android.widget.Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -2172,11 +2181,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /** An audio file (a hummed tune, a melody played on a guitar…) to piano-roll notes. */
-    fun transcribeFile(uri: Uri) = transcribeJob("Lecture du fichier…") {
+    fun transcribeFile(uri: Uri) = transcribeJob(tr("Lecture du fichier…")) {
         try {
             AudioDecoder.decode(getApplication(), uri)
         } catch (e: AudioDecoder.TooLongException) {
-            throw UserMessage("Ce fichier est trop long : choisis un passage plus court.")
+            throw UserMessage(tr("Ce fichier est trop long : choisis un passage plus court."))
         }
     }
 
@@ -2188,7 +2197,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         transcribeJob(null) {
             val pcm = rec.record { sec -> _transcription.value = SampleTask.Recording(sec, rec.level) }
             noteRecorder = null
-            if (pcm.frames < 4800 || PadSamples.isSilent(pcm)) throw UserMessage("Rien n'a été entendu : rapproche-toi du micro et réessaie.")
+            if (pcm.frames < 4800 || PadSamples.isSilent(pcm)) throw UserMessage(tr("Rien n'a été entendu : rapproche-toi du micro et réessaie."))
             pcm
         }
     }
@@ -2210,7 +2219,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             try {
                 val heard = withContext(Dispatchers.Default) {
                     val pcm = read()
-                    _transcription.value = SampleTask.Busy("Écoute des notes…")
+                    _transcription.value = SampleTask.Busy(tr("Écoute des notes…"))
                     val mono = FloatArray(pcm.frames) { f ->
                         var v = 0f
                         for (c in 0 until pcm.channels) v += pcm.data[f * pcm.channels + c]
@@ -2218,7 +2227,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     }
                     BasicPitch.transcribe(pitchModel(), mono, pcm.sampleRate).map { HeardNote(it.start, it.end, it.pitch, it.amplitude) }
                 }
-                if (heard.isEmpty()) throw UserMessage("Aucune note reconnue : essaie une mélodie plus nette, une note à la fois.")
+                if (heard.isEmpty()) throw UserMessage(tr("Aucune note reconnue : essaie une mélodie plus nette, une note à la fois."))
                 AppLog.add("Audio vers notes : ${heard.size} notes")
                 editNotes { Transcription.toClip(heard, project.value.tempoBpm, base = it) }
                 _transcription.value = SampleTask.Idle
@@ -2227,7 +2236,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             } catch (e: Exception) {
                 noteRecorder = null
                 AppLog.add("Audio vers notes : échec (${e.message})")
-                _transcription.value = SampleTask.Failed(if (e is UserMessage) e.message!! else "Ça n'a pas marché : ${e.message ?: e.javaClass.simpleName}")
+                _transcription.value = SampleTask.Failed(if (e is UserMessage) e.message!! else tr("Ça n'a pas marché : %s", e.message ?: e.javaClass.simpleName))
             }
         }
     }
@@ -2321,15 +2330,15 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /** Decodes an audio file from the phone and puts it on the selected pad. */
-    fun importSample(uri: Uri) = sampleJob("Lecture du fichier…") {
+    fun importSample(uri: Uri) = sampleJob(tr("Lecture du fichier…")) {
         val app = getApplication<Application>()
         val name = PadSamples.nameFrom(displayName(app, uri))
         val pcm = try {
             AudioDecoder.decode(app, uri)
         } catch (e: AudioDecoder.TooLongException) {
-            throw UserMessage("Ce fichier est trop long : choisis un son plus court.")
+            throw UserMessage(tr("Ce fichier est trop long : choisis un son plus court."))
         } catch (e: Exception) {
-            throw UserMessage("Ce fichier n'a pas pu être lu (${e.message ?: "format inconnu"}).")
+            throw UserMessage(tr("Ce fichier n'a pas pu être lu (%s).", e.message ?: tr("format inconnu")))
         }
         AppLog.add("Import « $name » : ${pcm.channels} canal(aux), ${pcm.sampleRate} Hz, ${"%.1f".format(pcm.seconds)} s")
         padSamples.add(pcm, name)
@@ -2344,7 +2353,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val p = project.value
         val frames = OfflineExport.framesFor(bars, p.tempoBpm, p.beatsPerBar)
         if (frames > AudioDecoder.MAX_SECONDS * OfflineExport.SAMPLE_RATE) {
-            _sampleTask.value = SampleTask.Failed("Trop long à ce tempo : choisis moins de mesures.")
+            _sampleTask.value = SampleTask.Failed(tr("Trop long à ce tempo : choisis moins de mesures."))
             return
         }
         val job = OfflineExport()
@@ -2352,16 +2361,16 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             syncEngine()
             NativeEngine.setMetronome(false)
         }
-        sampleJob("Enregistrement du morceau…") {
+        sampleJob(tr("Enregistrement du morceau…")) {
             val data = try {
                 job.renderToArray(frames, 0)
             } finally {
                 // Native instruments share reference counts: free them on the main thread only.
                 withContext(kotlinx.coroutines.NonCancellable + Dispatchers.Main) { job.close() }
             }
-            if (data.isEmpty()) throw UserMessage("Le rendu a été interrompu.")
+            if (data.isEmpty()) throw UserMessage(tr("Le rendu a été interrompu."))
             AppLog.add("Rééchantillonnage : $bars mesures à ${p.tempoBpm.toInt()} BPM")
-            padSamples.add(Pcm(data, 2, OfflineExport.SAMPLE_RATE), "Morceau $bars mesure${if (bars > 1) "s" else ""}")
+            padSamples.add(Pcm(data, 2, OfflineExport.SAMPLE_RATE), if (bars > 1) tr("Morceau %d mesures", bars) else tr("Morceau 1 mesure"))
         }
     }
 
@@ -2369,20 +2378,20 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * A sample pack: the audio files of a folder (by name) go onto the pads from the selected
      * one on, one undo step. Files that cannot be read are skipped.
      */
-    fun importFolder(tree: Uri) = importPack("Lecture du dossier…", "Aucun son dans ce dossier (MP3, WAV, FLAC, M4A, OGG).") { app, max ->
+    fun importFolder(tree: Uri) = importPack(tr("Lecture du dossier…"), tr("Aucun son dans ce dossier (MP3, WAV, FLAC, M4A, OGG).")) { app, max ->
         audioFilesIn(app, tree).take(max)
     }
 
     /** A sample pack as a .zip: its audio files (any folder inside) go onto the pads in name order. */
-    fun importZip(zip: Uri) = importPack("Ouverture du pack…", "Aucun son dans ce .zip (MP3, WAV, FLAC, M4A, OGG).") { app, max ->
+    fun importZip(zip: Uri) = importPack(tr("Ouverture du pack…"), tr("Aucun son dans ce .zip (MP3, WAV, FLAC, M4A, OGG).")) { app, max ->
         val dir = File(app.cacheDir, "zip-pack")
-        val stream = app.contentResolver.openInputStream(zip) ?: throw UserMessage("Le .zip n'a pas pu être ouvert.")
+        val stream = app.contentResolver.openInputStream(zip) ?: throw UserMessage(tr("Le .zip n'a pas pu être ouvert."))
         try {
             stream.use { ZipPack.extractAudio(it, dir, max, AUDIO_EXTENSIONS) }.map { (file, name) -> Uri.fromFile(file) to name }
         } catch (e: ZipPack.TooBigException) {
-            throw UserMessage("Ce pack est trop gros (plus de 256 Mo de sons).")
+            throw UserMessage(tr("Ce pack est trop gros (plus de 256 Mo de sons)."))
         } catch (e: java.util.zip.ZipException) {
-            throw UserMessage("Ce fichier n'est pas un .zip lisible.")
+            throw UserMessage(tr("Ce fichier n'est pas un .zip lisible."))
         }
     }
 
@@ -2401,7 +2410,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 if (files.isEmpty()) throw UserMessage(empty)
                 val added = ArrayList<Pair<Int, PadSample>>()
                 files.forEachIndexed { i, (uri, name) ->
-                    _sampleTask.value = SampleTask.Busy("Import ${i + 1}/${files.size} : $name")
+                    _sampleTask.value = SampleTask.Busy(tr("Import %1\$d/%2\$d : %3\$s", i + 1, files.size, name))
                     val result = withContext(Dispatchers.IO) {
                         runCatching { padSamples.add(AudioDecoder.decode(app, uri), PadSamples.nameFrom(name)) }.getOrNull()
                     }
@@ -2414,13 +2423,13 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 pushPads()
                 AppLog.add("Pack : ${added.size}/${files.size} sons sur les pads ${first + 1}…")
                 _sampleTask.value = if (added.size == files.size) SampleTask.Idle
-                else SampleTask.Failed("${files.size - added.size} fichier(s) illisible(s) ignoré(s).")
+                else SampleTask.Failed(tr("%d fichier(s) illisible(s) ignoré(s).", files.size - added.size))
             } catch (e: UserMessage) {
                 _sampleTask.value = SampleTask.Failed(e.message!!)
             } catch (e: kotlinx.coroutines.CancellationException) {
                 throw e
             } catch (e: Exception) {
-                _sampleTask.value = SampleTask.Failed("Le pack n'a pas pu être lu (${e.message}).")
+                _sampleTask.value = SampleTask.Failed(tr("Le pack n'a pas pu être lu (%s).", e.message))
             } finally {
                 withContext(kotlinx.coroutines.NonCancellable + Dispatchers.IO) { File(app.cacheDir, "zip-pack").deleteRecursively() }
             }
@@ -2456,9 +2465,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         sampleJob(null) {
             val pcm = rec.record { sec -> _sampleTask.value = SampleTask.Recording(sec, rec.level) }
             recorder = null
-            if (pcm.frames < 480 || PadSamples.isSilent(pcm)) throw UserMessage("Rien n'a été entendu : rapproche-toi du micro et réessaie.")
+            if (pcm.frames < 480 || PadSamples.isSilent(pcm)) throw UserMessage(tr("Rien n'a été entendu : rapproche-toi du micro et réessaie."))
             AppLog.add("Enregistrement micro : ${"%.1f".format(pcm.seconds)} s")
-            padSamples.add(pcm.withoutTail(), "Micro ${java.time.LocalTime.now().withNano(0)}")
+            padSamples.add(pcm.withoutTail(), tr("Micro %s", java.time.LocalTime.now().withNano(0)))
         }
     }
 
@@ -2583,12 +2592,12 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             } catch (e: OutOfMemoryError) {
                 recorder = null
                 AppLog.add("Son du pad : mémoire insuffisante")
-                _sampleTask.value = SampleTask.Failed("Pas assez de mémoire pour ce son : essaie plus court.")
+                _sampleTask.value = SampleTask.Failed(tr("Pas assez de mémoire pour ce son : essaie plus court."))
             } catch (e: Exception) {
                 recorder = null
                 AppLog.add("Son du pad : échec (${e.message})")
                 _sampleTask.value = SampleTask.Failed(
-                    if (e is UserMessage) e.message!! else "Ça n'a pas marché : ${e.message ?: e.javaClass.simpleName}",
+                    if (e is UserMessage) e.message!! else tr("Ça n'a pas marché : %s", e.message ?: e.javaClass.simpleName),
                 )
             }
         }
@@ -3027,7 +3036,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     private fun <T> addFavorite(list: List<T>, add: () -> Favorites) {
         if (list.size >= Favorites.MAX) {
-            _notice.value = "Tu as déjà ${Favorites.MAX} favoris de ce son : supprime-en un pour en garder un nouveau."
+            _notice.value = tr("Tu as déjà %d favoris de ce son : supprime-en un pour en garder un nouveau.", Favorites.MAX)
             return
         }
         editFavorites { add() }
@@ -3046,7 +3055,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     private fun deleteFavorite(name: String, transform: (Favorites) -> Favorites) {
         favoritesBeforeDelete = _favorites.value
         editFavorites(transform)
-        _notice.value = "Favori « $name » supprimé."
+        _notice.value = tr("Favori « %s » supprimé.", name)
     }
     fun deleteSynthFavorite(i: Int) = _favorites.value.synth.getOrNull(i)?.let { deleteFavorite(it.name) { f -> f.copy(synth = f.synth.filterIndexed { k, _ -> k != i }) } }
     fun deletePlaitsFavorite(i: Int) = _favorites.value.plaits.getOrNull(i)?.let { deleteFavorite(it.name) { f -> f.copy(plaits = f.plaits.filterIndexed { k, _ -> k != i }) } }
@@ -3502,7 +3511,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun shareSong() {
         val p = project.value
         if (!NativeEngine.isAvailable) {
-            _export.value = _export.value.copy(sharing = true, error = "Le moteur audio n'est pas prêt : réessaie dans un instant.")
+            _export.value = _export.value.copy(sharing = true, error = tr("Le moteur audio n'est pas prêt : réessaie dans un instant."))
             return
         }
         startExport(com.pocketstudio.app.export.ShareSong.settings(p.song.isNotEmpty(), sceneBars(p)), share = true)
@@ -3575,7 +3584,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val shown = _export.value.copy(sharing = share)
         val song = settings.what == ExportWhat.Song || (settings.what == ExportWhat.Stems && p.song.isNotEmpty())
         if (settings.what == ExportWhat.Song && p.song.isEmpty()) {
-            _export.value = shown.copy(error = "Le morceau est vide : ajoute des scènes dans l'onglet Morceau.", files = emptyList())
+            _export.value = shown.copy(error = tr("Le morceau est vide : ajoute des scènes dans l'onglet Morceau."), files = emptyList())
             return
         }
         val frames = if (song) songFrames(p) else OfflineExport.framesFor(settings.bars, p.tempoBpm, p.beatsPerBar)
@@ -3589,7 +3598,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             ExportWhat.Loop -> listOf("boucle" to null)
         }
         if (renders.isEmpty()) {
-            _export.value = shown.copy(error = "Rien à exporter : chaque piste est vide ou coupée dans le mixeur.", files = emptyList())
+            _export.value = shown.copy(error = tr("Rien à exporter : chaque piste est vide ou coupée dans le mixeur."), files = emptyList())
             return
         }
         _export.value = shown.copy(running = true, progress = 0f, files = emptyList(), error = null, stage = null, loudness = null)
@@ -3609,8 +3618,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     val job = OfflineExport()
                     describe(job, p, song, solo)
                     running = job
-                    val wav = runCatching { WavExporter.newFile(app, "${p.name.take(28)}-$label") }.getOrElse { throw UserMessage("Impossible de préparer le fichier d'export.") }
-                    _export.value = _export.value.copy(stage = if (renders.size > 1) "${label.replaceFirstChar { it.uppercase() }} (${index + 1}/${renders.size})" else null)
+                    val wav = runCatching { WavExporter.newFile(app, "${p.name.take(28)}-$label") }.getOrElse { throw UserMessage(tr("Impossible de préparer le fichier d'export.")) }
+                    _export.value = _export.value.copy(stage = if (renders.size > 1) "${stageName(label)} (${index + 1}/${renders.size})" else null)
                     val poll = launch {
                         while (true) {
                             _export.value = _export.value.copy(progress = (index + job.progress) / renders.size)
@@ -3627,7 +3636,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     }
                     when (result) {
                         ExportResult.Cancelled -> { wav.delete(); throw kotlinx.coroutines.CancellationException("annulé") }
-                        ExportResult.IoError -> { wav.delete(); throw UserMessage("L'écriture du fichier a échoué (stockage plein ?).") }
+                        ExportResult.IoError -> { wav.delete(); throw UserMessage(tr("L'écriture du fichier a échoué (stockage plein ?).")) }
                         ExportResult.Ok -> Unit
                     }
                     // Measured on the full-quality mix, before any compression.
@@ -3639,7 +3648,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     val out = if (settings.format == ExportFormat.Wav) {
                         wav
                     } else {
-                        val name = if (settings.format == ExportFormat.M4a) "Compression M4A" else "Conversion FLAC"
+                        val name = if (settings.format == ExportFormat.M4a) tr("Compression M4A") else tr("Conversion FLAC")
                         val part = if (renders.size > 1) " (${index + 1}/${renders.size})" else ""
                         _export.value = _export.value.copy(stage = name + part)
                         val packed = File(wav.parentFile, wav.nameWithoutExtension + "." + settings.format.extension)
@@ -3675,7 +3684,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 AppLog.add("Export : échec (${e.message})")
                 // « Partager mon morceau » keeps its window open to show what went wrong.
                 _export.value = _export.value.copy(running = false, files = emptyList(), stage = null,
-                    error = if (e is UserMessage) e.message else "L'export a échoué : ${e.message ?: e.javaClass.simpleName}")
+                    error = if (e is UserMessage) e.message else tr("L'export a échoué : %s", e.message ?: e.javaClass.simpleName))
             } finally {
                 exportCancelled = false
                 exportJob = null
@@ -3699,7 +3708,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 _export.value = _export.value.copy(files = listOf(file), savedInMusic = music, error = null, loudness = null)
                 AppLog.add("Export MIDI : ${file.length()} octets")
             } catch (e: Exception) {
-                _export.value = _export.value.copy(error = "L'export MIDI a échoué : ${e.message}")
+                _export.value = _export.value.copy(error = tr("L'export MIDI a échoué : %s", e.message))
             }
         }
     }
@@ -3717,19 +3726,19 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                             val n = input.read(buf)
                             if (n < 0) break
                             out.write(buf, 0, n)
-                            if (out.size() > MAX_MIDI_BYTES) throw UserMessage("Ce fichier MIDI est trop gros.")
+                            if (out.size() > MAX_MIDI_BYTES) throw UserMessage(tr("Ce fichier MIDI est trop gros."))
                         }
                         out.toByteArray()
-                    } ?: throw UserMessage("Le fichier n'a pas pu être ouvert.")
+                    } ?: throw UserMessage(tr("Le fichier n'a pas pu être ouvert."))
                     com.pocketstudio.model.MidiFile.read(bytes)
                 }
-                if (content.notes.isEmpty()) throw UserMessage("Aucune note dans ce fichier MIDI.")
+                if (content.notes.isEmpty()) throw UserMessage(tr("Aucune note dans ce fichier MIDI."))
                 session.edit { com.pocketstudio.model.MidiFile.importInto(it, content) }
                 syncEngine()
                 AppLog.add("Import MIDI : ${content.notes.size} notes")
                 _transcription.value = SampleTask.Idle
             } catch (e: Exception) {
-                _transcription.value = SampleTask.Failed(if (e is UserMessage) e.message!! else "Ce fichier MIDI n'a pas pu être lu (${e.message}).")
+                _transcription.value = SampleTask.Failed(if (e is UserMessage) e.message!! else tr("Ce fichier MIDI n'a pas pu être lu (%s).", e.message))
             }
         }
     }
@@ -3767,7 +3776,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         private const val EARLY_STEPS = 1.0
 
         /** The first project of a new install, and the "Rythme de départ" choice: a beat and an acid line. */
-        fun starterProject(name: String = "Mon premier rythme"): Project {
+        fun starterProject(name: String = tr("Mon premier rythme")): Project {
             var drums = DrumPattern()
             DrumKitInfo.starterHits.forEach { (lane, steps) -> steps.forEach { drums = drums.toggle(lane, it) } }
             val acid = AcidGenerator().generate(AcidPattern(), AcidGenerator.NOTE_SETS[5])
@@ -3784,6 +3793,16 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         /** Two seconds after the last bar so releases and the acid tail ring out. */
         const val TAIL_FRAMES = 2L * OfflineExport.SAMPLE_RATE
         private val STEM_LABELS = listOf("Batterie", "Basse", "Autres", "Voix")
+
+        /** An export file's label ("batterie", "piste2-basse"…) as the progress line shows it. */
+        private fun stageName(label: String): String = when (label) {
+            "morceau" -> tr("Morceau")
+            "boucle" -> tr("Boucle")
+            "batterie" -> tr("Batterie")
+            "acide" -> tr("Acide")
+            "synthe" -> tr("Synthé")
+            else -> label.replaceFirstChar { it.uppercase() }
+        }
         private const val OVERVIEW_BUCKETS = 400
         /** Insert "channel" index of the master. */
         const val MASTER = NativeEngine.MASTER

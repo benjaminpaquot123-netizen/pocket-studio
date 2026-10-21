@@ -58,6 +58,8 @@ class ModelTextsTest {
 
         // Effects, sends, macros, ready-made treatments.
         EffectType.entries.forEach { e -> add(e.label, e.blurb); addAll(e.params.map { it.label }) }
+        com.pocketstudio.model.EffectGroup.entries.forEach { add(it.label) }
+        com.pocketstudio.model.SoundKind.entries.forEach { add(it.label) }
         addAll(Buses.NAMES)
         Buses.PARAMS.forEach { list -> addAll(list.map { it.label }) }
         addAll(Macros.NAMES)

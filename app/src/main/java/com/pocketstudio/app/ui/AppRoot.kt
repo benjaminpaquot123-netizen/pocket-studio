@@ -101,6 +101,8 @@ import com.pocketstudio.app.export.WavExporter
 import com.pocketstudio.app.latency.LatencyScreen
 import com.pocketstudio.app.playback.BackgroundPage
 import com.pocketstudio.app.mixer.MixerActions
+import com.pocketstudio.model.longFxCount
+import com.pocketstudio.model.soundKindOf
 import com.pocketstudio.app.mixer.MixerScreen
 import com.pocketstudio.app.latency.LatencyViewModel
 import com.pocketstudio.app.recette.RecetteScreen
@@ -359,14 +361,8 @@ fun AppRoot() {
                 title = { Text(tr("Effets · %s", name)) },
                 text = {
                     Column(Modifier.verticalScroll(androidx.compose.foundation.rememberScrollState())) {
-                        com.pocketstudio.app.mixer.QuickFxPanel(
-                            fxChannel, channel,
-                            com.pocketstudio.app.mixer.QuickFxActions(rhythmVm::setMacro, rhythmVm::setMacroPair, rhythmVm::applyFx),
-                        )
-                        com.pocketstudio.app.mixer.DetailedFx(
-                            fxChannel, channel,
-                            MixerActions(setInsertType = rhythmVm::setInsertType, setInsertParam = rhythmVm::setInsertParam, setSend = rhythmVm::setSend),
-                        )
+                        // The same box as under every sound (Synthé, Acide), here whole: pad XY, macros and sends too.
+                        com.pocketstudio.app.mixer.EffectsBox(fxChannel, channel, effectsActions(rhythmVm))
                     }
                 },
                 confirmButton = { TextButton(onClick = { fxChannel = -1 }, modifier = Modifier.testTag("fx_close")) { Text(tr("Fermer")) } },
@@ -893,6 +889,9 @@ fun AppRoot() {
                             }
                             val favorites by rhythmVm.favorites.collectAsStateWithLifecycle()
                             AcidScreen(
+                                effects = project.mixer.channels.getOrNull(1)?.let { c ->
+                                    com.pocketstudio.app.mixer.EffectsUi(1, c, effectsActions(rhythmVm)) { fxChannel = 1 }
+                                },
                                 acid = project.acid,
                                 playing = transport.playing,
                                 currentStep = live.absoluteStep,
@@ -943,7 +942,11 @@ fun AppRoot() {
                             }
                             val favorites by rhythmVm.favorites.collectAsStateWithLifecycle()
                             val transcription by rhythmVm.transcription.collectAsStateWithLifecycle()
+                            val trackFx = com.pocketstudio.model.InstrumentTrack.mixerChannel(shownTrack)
                             SynthScreen(
+                                effects = fullProject.mixer.channels.getOrNull(trackFx)?.let { c ->
+                                    com.pocketstudio.app.mixer.EffectsUi(trackFx, c, effectsActions(rhythmVm)) { fxChannel = trackFx }
+                                },
                                 patch = project.synth,
                                 octave = octave,
                                 actions = SynthActions(
@@ -1098,6 +1101,11 @@ fun AppRoot() {
                                     setSend = rhythmVm::setSend,
                                     setBusParam = rhythmVm::setBusParam,
                                     quick = com.pocketstudio.app.mixer.QuickFxActions(rhythmVm::setMacro, rhythmVm::setMacroPair, rhythmVm::applyFx),
+                                    setInsertBypass = rhythmVm::setInsertBypass,
+                                    moveInsert = rhythmVm::moveInsert,
+                                    kindOf = effectsActions(rhythmVm).kindOf,
+                                    longFxCount = effectsActions(rhythmVm).longFxCount,
+                                    cpuBusy = rhythmVm.cpuBusy,
                                 ),
                                 master = project.mixer.master,
                                 masterDb = project.mixer.masterDb,
@@ -1163,6 +1171,7 @@ fun AppRoot() {
                                     newScene = rhythmVm::newScene,
                                     clear = rhythmVm::clearScene,
                                     rename = rhythmVm::renameScene,
+                                    moveScene = rhythmVm::moveScene,
                                     addPart = rhythmVm::addSongPart,
                                     insertPart = rhythmVm::insertSongPart,
                                     duplicatePart = rhythmVm::duplicateSongPart,
@@ -1203,6 +1212,8 @@ fun AppRoot() {
                                     setOneShot = rhythmVm::setLiveOneShot,
                                     setGain = rhythmVm::setLiveGain,
                                     clear = rhythmVm::clearLive,
+                                    // The live pads play through the remix's strip: its effects.
+                                    effects = { fxChannel = 3 },
                                 ),
                             )
                         }
@@ -1390,6 +1401,7 @@ fun AppRoot() {
                                     memoryNever = remixMemoryNever,
                                 ),
                                 RemixActions(
+                                    effects = { fxChannel = 3 },
                                     downloadModel = remixVm::downloadModel,
                                     checkMemory = remixVm::checkMemory,
                                     pickSong = { pickSong.launch(arrayOf("audio/*")) },
@@ -1623,6 +1635,19 @@ fun mixerStrips(p: com.pocketstudio.model.Project): List<com.pocketstudio.app.mi
             com.pocketstudio.app.mixer.StripInfo(com.pocketstudio.model.AudioTrack.mixerChannel(t.id), t.name, com.pocketstudio.ui.trackColor(t.color))
         } +
         com.pocketstudio.app.mixer.StripInfo(3, "Remix")
+
+/** What the effects box does, wherever it shows (one box for every sound). */
+fun effectsActions(vm: RhythmViewModel): MixerActions = MixerActions(
+    setInsertType = vm::setInsertType,
+    setInsertParam = vm::setInsertParam,
+    setSend = vm::setSend,
+    quick = com.pocketstudio.app.mixer.QuickFxActions(vm::setMacro, vm::setMacroPair, vm::applyFx),
+    setInsertBypass = vm::setInsertBypass,
+    moveInsert = vm::moveInsert,
+    kindOf = { ch -> vm.project.value.soundKindOf(ch) },
+    longFxCount = { type -> vm.project.value.mixer.longFxCount(type) },
+    cpuBusy = vm.cpuBusy,
+)
 
 /** The timeline rows: drums, acid, then each instrument and audio track in its colour. */
 fun timelineRows(p: Project): List<com.pocketstudio.app.session.TimelineRow> =

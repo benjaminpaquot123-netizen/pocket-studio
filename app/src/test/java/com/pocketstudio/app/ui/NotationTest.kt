@@ -14,7 +14,6 @@ import com.pocketstudio.app.synth.ChordPads
 import com.pocketstudio.app.synth.HarmonyPanel
 import com.pocketstudio.app.synth.PianoRollActions
 import com.pocketstudio.model.Harmony
-import com.pocketstudio.model.Performance
 import com.pocketstudio.model.Scale
 import com.pocketstudio.model.i18n.I18n
 import com.pocketstudio.model.i18n.Lang
@@ -64,7 +63,7 @@ class NotationTest {
     @Test
     fun theKeyChipsAndGuessesInEnglishNameNotesCDE() {
         SettingsStore.update(app) { it.copy(language = Lang.EN, englishNotes = true) }
-        compose.setContent { PocketStudioTheme { Column { HarmonyPanel(Harmony(9, Scale.Minor), Performance(), PianoRollActions()) } } }
+        compose.setContent { PocketStudioTheme { Column { HarmonyPanel(Harmony(9, Scale.Minor), com.pocketstudio.model.NoteClip(), PianoRollActions()) } } }
         compose.onNodeWithText("B♭").assertExists()
         compose.onNodeWithText("F♯").assertExists()
         assertNoFrenchNoteNames()

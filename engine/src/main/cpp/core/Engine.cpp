@@ -295,6 +295,9 @@ void Engine::applyCommand(const Command& command) {
         case CommandType::SetInsertType:
             mixer_.setInsertType(command.a / Mixer::kInserts, command.a % Mixer::kInserts, command.b);
             break;
+        case CommandType::ClearInserts:
+            mixer_.clearInserts(command.a);
+            break;
         case CommandType::SetInsertParam:
             mixer_.setInsertParam(command.a / Mixer::kInserts, command.a % Mixer::kInserts, command.b, command.value);
             break;
@@ -696,6 +699,8 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
 void Engine::process(const float* input, int numInputFrames, int inputChannels,
                      float* output, int numFrames, int outputChannels) {
     DenormalGuard denormals;
+    // A clock read (no lock, no allocation): how long this callback takes, for cpuLoad().
+    const auto started = std::chrono::steady_clock::now();
     Command command;
     while (commands_.pop(command)) applyCommand(command);
 
@@ -744,6 +749,14 @@ void Engine::process(const float* input, int numInputFrames, int inputChannels,
     }
     callbacks_.fetch_add(1, std::memory_order_relaxed);
     frames_.fetch_add(static_cast<uint64_t>(numFrames), std::memory_order_relaxed);
+    if (numFrames > 0 && sampleRate_ > 0) {
+        const float lasted = static_cast<float>(numFrames) / static_cast<float>(sampleRate_);
+        const float took = std::chrono::duration<float>(std::chrono::steady_clock::now() - started).count();
+        // About half a second of smoothing whatever the callback's size.
+        const float k = std::min(1.0f, lasted / 0.5f);
+        load_ += k * (std::min(took / lasted, 4.0f) - load_);
+        cpuLoad_.store(load_, std::memory_order_relaxed);
+    }
 }
 
 void Engine::finishRecording() {

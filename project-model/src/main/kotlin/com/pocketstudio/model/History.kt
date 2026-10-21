@@ -10,20 +10,29 @@ class History<T>(initial: T, private val coalesceWindowMs: Long = 600) {
     var current: T = initial
         private set
 
-    private val undoStack = ArrayDeque<T>()
-    private val redoStack = ArrayDeque<T>()
+    // Each entry: the value on the other side of a step, and that step's tag (see [push]).
+    private val undoStack = ArrayDeque<Pair<T, Any?>>()
+    private val redoStack = ArrayDeque<Pair<T, Any?>>()
     private var lastKey: String? = null
+
+    /** The tag of the step the last [undo] or [redo] went through (null: none, or untagged). */
+    var lastTag: Any? = null
+        private set
     private var lastTime = Long.MIN_VALUE
 
     val canUndo: Boolean get() = undoStack.isNotEmpty()
     val canRedo: Boolean get() = redoStack.isNotEmpty()
     val undoDepth: Int get() = undoStack.size
 
-    /** Records [next] as the new value. Returns false (and records nothing) if nothing changed. */
-    fun push(next: T, coalesceKey: String? = null, nowMs: Long = System.currentTimeMillis()): Boolean {
+    /**
+     * Records [next] as the new value. Returns false (and records nothing) if nothing changed.
+     * [tag]: what the step was, handed back as [lastTag] when it is undone or redone (a merged
+     * step keeps its first tag).
+     */
+    fun push(next: T, coalesceKey: String? = null, nowMs: Long = System.currentTimeMillis(), tag: Any? = null): Boolean {
         if (next == current) return false
         val merge = coalesceKey != null && coalesceKey == lastKey && nowMs - lastTime <= coalesceWindowMs && canUndo
-        if (!merge) undoStack.addLast(current)
+        if (!merge) undoStack.addLast(current to tag)
         current = next
         redoStack.clear()
         lastKey = coalesceKey
@@ -50,24 +59,26 @@ class History<T>(initial: T, private val coalesceWindowMs: Long = 600) {
     fun commitFrom(before: T, depth: Int = undoStack.size) {
         if (current == before) return
         while (undoStack.size > depth.coerceAtLeast(0)) undoStack.removeLast()
-        undoStack.addLast(before)
+        undoStack.addLast(before to null)
         redoStack.clear()
         lastKey = null
     }
 
     fun undo(): T? {
-        val previous = undoStack.removeLastOrNull() ?: return null
-        redoStack.addLast(current)
+        val (previous, tag) = undoStack.removeLastOrNull() ?: return null
+        redoStack.addLast(current to tag)
         current = previous
         lastKey = null
+        lastTag = tag
         return current
     }
 
     fun redo(): T? {
-        val next = redoStack.removeLastOrNull() ?: return null
-        undoStack.addLast(current)
+        val (next, tag) = redoStack.removeLastOrNull() ?: return null
+        undoStack.addLast(current to tag)
         current = next
         lastKey = null
+        lastTag = tag
         return current
     }
 }

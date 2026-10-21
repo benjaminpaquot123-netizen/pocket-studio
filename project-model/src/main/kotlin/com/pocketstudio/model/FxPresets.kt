@@ -86,9 +86,92 @@ object FxPresets {
             listOf(fx(EffectType.PUMP, 0.8f, 0.4f, 0f))),
         FxPreset("punch", "Punch", "Plus serré et plus fort, pour une batterie qui claque.", "Rythme",
             listOf(fx(EffectType.COMPRESSOR, 0.45f, 0.45f, 0.45f, 0.3f), fx(EffectType.SATURATION, 0.25f, 0.8f, 0.6f, 0.7f))),
+        // The electronic music classics (phase 25).
+        FxPreset("scream_lead", "Lead qui crie", "Saturé, il perce le mix ; un écho à la croche pointée le suit.", "Saleté",
+            listOf(fx(EffectType.DISTORTION, 0.6f, 0.65f, 0f, 1f), fx(EffectType.ECHO, 0.42f, 0.35f, 0.5f, 0.3f))),
+        FxPreset("edm_pump", "Pompe EDM", "Énorme et serré (OTT), et qui respire sur chaque kick.", "Rythme",
+            listOf(fx(EffectType.OTT, 0.7f, 0.5f, 0.7f, 0.7f), fx(EffectType.PUMP, 0.8f, 0.4f, 0f))),
+        FxPreset("dub_deep", "Dub profond", "Un écho sombre qui tourne longtemps, noyé dans la réverbe.", "Ambiance",
+            listOf(fx(EffectType.ECHO, 0.42f, 0.6f, 0.3f, 0.4f), fx(EffectType.REVERB, 0.75f, 0.6f, 0.1f, 0.25f))),
+        FxPreset("wide_alive", "Large et vivant", "Il bouge de gauche à droite et s'épaissit : parfait pour une nappe ou des accords.", "Mouvement",
+            listOf(fx(EffectType.AUTO_PAN, 0.42f, 0.5f, 0f), fx(EffectType.CHORUS, 0.3f, 0.5f, 0.4f, 0.5f))),
+        FxPreset("fat_bass", "Basse grasse", "Une basse fuzz épaisse, compressée en trois bandes : elle remplit tout.", "Saleté",
+            listOf(fx(EffectType.DISTORTION, 0.4f, 0.35f, 0.3f, 0.6f), fx(EffectType.OTT, 0.5f, 0.5f, 0.6f, 0.6f))),
+        FxPreset("pluck_pingpong", "Pluck ping-pong", "Chaque note rebondit à gauche et à droite dans une petite réverbe.", "Ambiance",
+            listOf(fx(EffectType.PING_PONG, 0.25f, 0.45f, 0.6f, 0.35f), fx(EffectType.REVERB, 0.5f, 0.5f, 0.1f, 0.2f))),
     )
 
     fun byId(id: String) = (ALL + NONE).firstOrNull { it.id == id }
+
+    /** The ready-made treatments that suit [kind] best, in order (shown first for that sound). */
+    fun suggestedFor(kind: SoundKind): List<FxPreset> = when (kind) {
+        SoundKind.LEAD -> listOf("scream_lead", "wide_alive", "dub_deep", "dream", "distortion", "far_away")
+        SoundKind.PLUCK -> listOf("pluck_pingpong", "dub_deep", "wide_alive", "small_room", "lofi_tape")
+        SoundKind.BASS -> listOf("fat_bass", "edm_pump", "pump", "crunch", "distortion")
+        SoundKind.PAD -> listOf("wide_alive", "space", "cathedral", "edm_pump", "underwater", "dream")
+        SoundKind.KEYS -> listOf("small_room", "warm_vinyl", "lofi_tape", "wide_alive", "dub_deep")
+        SoundKind.DRUMS -> listOf("punch", "edm_pump", "crunch", "lofi_tape", "small_room")
+        SoundKind.ACID -> listOf("dub_deep", "fat_bass", "crunch", "jet", "pump")
+        SoundKind.AUDIO -> listOf("small_room", "dub_deep", "radio", "phone", "cathedral")
+    }.mapNotNull { byId(it) }
+}
+
+/** What a sound is for, to offer the right ready-made effects first. */
+enum class SoundKind(val label: String) {
+    LEAD("Lead"), PLUCK("Pluck"), BASS("Basse"), PAD("Nappe"), KEYS("Clavier"), DRUMS("Batterie"), ACID("Basse acide"), AUDIO("Audio");
+
+    companion object {
+        /** From a sound library family ("Basses", "Nappes"…), if it says. */
+        fun ofCategory(category: String?): SoundKind? = when (category) {
+            "Basses" -> BASS
+            "Leads" -> LEAD
+            "Nappes" -> PAD
+            "Pluck" -> PLUCK
+            "Claviers" -> KEYS
+            "Batterie" -> DRUMS
+            else -> null
+        }
+
+        /** From a track's name (« Basse », « Nappe / accords », « Lead »…), if it says. */
+        fun ofName(name: String): SoundKind? {
+            val n = name.lowercase()
+            return when {
+                listOf("bass", "basse", "808", "sub").any { it in n } -> BASS
+                listOf("nappe", "pad", "accord", "chord").any { it in n } -> PAD
+                "pluck" in n -> PLUCK
+                listOf("piano", "clavier", "keys", "orgue").any { it in n } -> KEYS
+                listOf("lead", "mélodie", "melod").any { it in n } -> LEAD
+                else -> null
+            }
+        }
+
+        /** A General MIDI program's family. */
+        fun ofProgram(program: Int): SoundKind = when (program) {
+            in 0..23 -> KEYS
+            in 24..31, in 104..111 -> PLUCK
+            in 32..39 -> BASS
+            in 48..55, in 88..95 -> PAD
+            else -> LEAD
+        }
+    }
+}
+
+/** The kind of the sound on an instrument track: its library family, its name, else a lead. */
+fun InstrumentTrack.soundKind(): SoundKind {
+    instrument?.let { return SoundKind.ofName(name) ?: SoundKind.ofProgram(it.program) }
+    val category = when (engine) {
+        1 -> SoundLibrary.PLAITS.firstOrNull { it.sound == plaits.copy(level = it.sound.level) }?.category
+        0 -> SoundLibrary.SYNTH.firstOrNull { it.sound.sanitized() == synth.sanitized() }?.category
+        else -> null
+    }
+    return SoundKind.ofCategory(category) ?: SoundKind.ofName(name) ?: SoundKind.LEAD
+}
+
+/** The kind of sound on mixer channel [ch], for the effects offered first. */
+fun Project.soundKindOf(ch: Int): SoundKind = when {
+    ch == 0 || ch >= Mixer.FIRST_PAD -> SoundKind.DRUMS
+    ch == 1 -> SoundKind.ACID
+    else -> instrumentTracks.firstOrNull { InstrumentTrack.mixerChannel(it.id) == ch }?.soundKind() ?: SoundKind.AUDIO
 }
 
 /** [preset] on this track: its inserts (the others emptied), sends and macros; the fader stays. */

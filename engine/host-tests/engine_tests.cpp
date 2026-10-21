@@ -9,12 +9,14 @@
 #include <chrono>
 #include <cstdlib>
 #include <cstring>
+#include <ctime>
 #include <filesystem>
 #include <fstream>
 #include <functional>
 #include <memory>
 #include <random>
 #include <string>
+#include <thread>
 #include <tuple>
 #include <vector>
 
@@ -76,6 +78,33 @@ bool g_updateReferences = false;
             std::fprintf(stderr, "  FAILED %s:%d: %s\n", __FILE__, __LINE__, #cond); \
             ++g_failures;                                                        \
         }                                                                        \
+    } while (0)
+
+// CPU time spent by this thread (not wall time): other processes taking the cores do not count,
+// so a timing test means the same on an idle laptop and on a busy CI runner.
+double threadSeconds() {
+    timespec ts{};
+    clock_gettime(CLOCK_THREAD_CPUTIME_ID, &ts);
+    return static_cast<double>(ts.tv_sec) + static_cast<double>(ts.tv_nsec) * 1e-9;
+}
+
+// Clearly overloaded: more runnable work than cores (caches and memory bandwidth shared, clocks
+// down). A timing bound missed then is reported, not counted: never a flaky failure.
+bool machineOverloaded() {
+    double avg[1] = {0.0};
+    if (getloadavg(avg, 1) < 1) return false;
+    return avg[0] > static_cast<double>(std::max(1u, std::thread::hardware_concurrency()));
+}
+
+#define CHECK_TIMING(cond)                                                                        \
+    do {                                                                                          \
+        if (!(cond)) {                                                                            \
+            if (machineOverloaded()) {                                                            \
+                std::printf("  timing missed on an overloaded machine (not counted): %s\n", #cond); \
+            } else {                                                                              \
+                CHECK(cond);                                                                      \
+            }                                                                                     \
+        }                                                                                         \
     } while (0)
 
 constexpr int kRate = 48000;
@@ -681,16 +710,16 @@ void testFullKitCpuBudget() {
     std::vector<float> out;
     double load = 1e9;
     for (int pass = 0; pass < 3; ++pass) {
-        const auto start = std::chrono::steady_clock::now();
+        const double start = threadSeconds();
         out = render(engine, frames, 256);
-        const double seconds = std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count();
+        const double seconds = (threadSeconds() - start);
         load = std::min(load, seconds / (static_cast<double>(frames) / kRate));
     }
     std::printf("  full kit: %.1f %% of real time on this machine\n", load * 100.0);
 #if defined(__SANITIZE_ADDRESS__)
     (void)load;  // sanitizer builds are several times slower: timing is meaningless there
 #else
-    CHECK(load < 0.10);  // leaves a large margin for a phone and for synths/effects
+    CHECK_TIMING(load < 0.10);  // leaves a large margin for a phone and for synths/effects
 #endif
     bool finite = true;
     float peak = 0.0f;
@@ -856,13 +885,13 @@ void testAcidCpuBudget() {
     ps::AcidTrack acid;
     acid.prepare(kRate);
     for (int i = 0; i < 16; ++i) acid.setStep(i, note(i % 12, i % 3 == 0, i % 4 == 0));
-    const auto start = std::chrono::steady_clock::now();
+    const double start = threadSeconds();
     renderAcid(acid, 64);
-    const double seconds = std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count();
+    const double seconds = (threadSeconds() - start);
     const double load = seconds / (64 * 6000.0 / kRate);
     std::printf("  acid voice: %.1f %% of real time on this machine\n", load * 100.0);
 #if !defined(__SANITIZE_ADDRESS__)
-    CHECK(load < 0.05);
+    CHECK_TIMING(load < 0.05);
 #endif
 }
 
@@ -925,9 +954,9 @@ void testSynthVoiceStealingAndCpu() {
     synth.setParam(ps::Synth::Lfo1ToPitch, 0.5f);
     synth.setParam(ps::Synth::Lfo2ToCutoff, 0.5f);
     for (int n = 0; n < 10; ++n) synth.noteOn(48 + n * 3, 1.0f);
-    const auto start = std::chrono::steady_clock::now();
+    const double start = threadSeconds();
     const auto out = renderSynth(synth, kRate * 2);
-    const double load = std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count() / 2.0;
+    const double load = (threadSeconds() - start) / 2.0;
     std::printf("  synth 8 voices: %.1f %% of real time on this machine\n", load * 100.0);
     CHECK(synth.activeVoices() == ps::Synth::kVoices);
     bool finite = true;
@@ -939,7 +968,7 @@ void testSynthVoiceStealingAndCpu() {
     CHECK(finite);
     CHECK(peak < 4.0f);  // a loud 8-note cluster; the engine's master soft clip tames it
 #if !defined(__SANITIZE_ADDRESS__)
-    CHECK(load < 0.15);
+    CHECK_TIMING(load < 0.15);
 #endif
 }
 
@@ -1137,16 +1166,16 @@ void testSynthUnison() {
     for (int pass = 0; pass < 3; ++pass) {
         auto full = make(1.0f, 0.6f);
         for (int n = 0; n < 8; ++n) full->noteOn(48 + n * 3, 1.0f);
-        const auto start = std::chrono::steady_clock::now();
+        const double start = threadSeconds();
         const auto out = renderSynth(*full, kRate);
-        best = std::min(best, std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count());
+        best = std::min(best, (threadSeconds() - start));
         bool finite = true;
         for (float v : out) finite &= std::isfinite(v);
         CHECK(finite);
     }
     std::printf("  unison 8 voices x 7 saws: %.1f %% of real time on this machine\n", best * 100.0);
 #if !defined(__SANITIZE_ADDRESS__)
-    CHECK(best < 0.25);
+    CHECK_TIMING(best < 0.25);
 #endif
 }
 
@@ -2558,7 +2587,7 @@ void testProcessNeverAllocates() {
         // Every insert type somewhere, both sends, master inserts: effects must not allocate either.
         for (int ch = 0; ch <= ps::Mixer::kMaster; ++ch) {
             for (int slot = 0; slot < ps::Mixer::kInserts; ++slot) {
-                engine.post({ps::CommandType::SetInsertType, 0.0f, ch * ps::Mixer::kInserts + slot, 1 + (ch + slot) % 13});
+                engine.post({ps::CommandType::SetInsertType, 0.0f, ch * ps::Mixer::kInserts + slot, 1 + (ch + slot) % (ps::InsertSlot::kTypes - 1)});
             }
             if (ch < ps::Mixer::kMaster) {
                 engine.post({ps::CommandType::SetSend, 0.5f, ch, 0});
@@ -2582,7 +2611,8 @@ void testProcessNeverAllocates() {
             if (i % 35 == 0) engine.post({ps::CommandType::SetPadStrip, (i / 35) % 2 ? 0.0f : 1.0f, 3});  // routed, then not
             if (i % 70 == 0) engine.post({ps::CommandType::SynthNoteOn, 0.9f, 60 + i % 12});
             if (i % 40 == 0) engine.post({ps::CommandType::SetInsertParam, (i % 80) / 80.0f, 1, 0});
-            if (i % 60 == 0) engine.post({ps::CommandType::SetInsertType, 0.0f, 5, 1 + (i / 60) % 13});
+            if (i % 60 == 0) engine.post({ps::CommandType::SetInsertType, 0.0f, 5, 1 + (i / 60) % (ps::InsertSlot::kTypes - 1)});
+            if (i % 65 == 0) engine.post({ps::CommandType::SetInsertType, 0.0f, 9, (i / 65) % 2 ? ps::InsertSlot::ReverbFx : ps::InsertSlot::EchoFx});
             if (i % 55 == 0) engine.post({ps::CommandType::SetBusParam, (i % 110) / 110.0f, 1, 0});
             if (i % 45 == 0) {
                 for (int m = 0; m < ps::TrackMacros::kCount; ++m) engine.post({ps::CommandType::SetMacro, (i % 90) / 90.0f, (i / 45) % 4, m});
@@ -3033,6 +3063,7 @@ void testNewEffects() {
     const size_t n = kRate;
     std::vector<float> l(n), r(n), dryL(n);
     for (int type = ps::InsertSlot::FlangerFx; type < ps::InsertSlot::kTypes; ++type) {
+        if (ps::InsertSlot::isLong(type)) continue;  // they need the mixer's pool: testElectronicEffects
         ps::InsertSlot fx;
         fx.prepare(kRate);
         fx.setType(type);
@@ -3085,6 +3116,289 @@ void testNewEffects() {
     double lo = 1, hi = 0;
     for (size_t at = 0; at + 480 <= n; at += 480) { const double v = rms(l, at, at + 480); lo = std::min(lo, v); hi = std::max(hi, v); }
     CHECK(lo < 0.03 && hi > 0.18);
+}
+
+// Goertzel: the level of `hz` in x[from, to).
+double toneLevel(const std::vector<float>& x, size_t from, size_t to, double hz) {
+    double re = 0, im = 0;
+    for (size_t i = from; i < to; ++i) {
+        re += x[i] * std::cos(2 * M_PI * hz * double(i) / kRate);
+        im += x[i] * std::sin(2 * M_PI * hz * double(i) / kRate);
+    }
+    return 2.0 * std::sqrt(re * re + im * im) / double(to - from);
+}
+
+void testElectronicEffects() {
+    // Phase 25: distortion, echo, ping-pong, reverb, auto-pan, OTT, frequency shifter, tape stop.
+    const int kNew[] = {ps::InsertSlot::DistortionFx, ps::InsertSlot::EchoFx, ps::InsertSlot::PingPongFx, ps::InsertSlot::ReverbFx,
+                        ps::InsertSlot::AutoPanFx, ps::InsertSlot::OttFx, ps::InsertSlot::FreqShiftFx, ps::InsertSlot::TapeStopFx};
+    // 1. Every one on a mixer strip (the long ones borrow from the pool): no allocation, no NaN,
+    // bounded even with a loud, noisy input and every knob at 0, in the middle, then at 1.
+    {
+        std::mt19937 rng(7);
+        std::uniform_real_distribution<float> noise(-0.3f, 0.3f);
+        const int frames = 4096;
+        std::vector<float> in(frames), out(size_t(frames) * 2), zero(frames, 0.0f);
+        for (int i = 0; i < frames; ++i) in[size_t(i)] = 0.7f * float(std::sin(2 * M_PI * 110.0 * i / kRate)) + noise(rng);
+        for (int type : kNew) {
+            for (float knob : {0.0f, 0.5f, 1.0f}) {
+                ps::Mixer mixer;
+                mixer.prepare(kRate);
+                mixer.setLimiter(false);  // the effect's own level is what is bounded, not the limiter's
+                mixer.setStepFrames(6000.0);
+                mixer.setInsertType(2, 0, type);
+                for (int k = 0; k < 4; ++k) mixer.setInsertParam(2, 0, k, knob);
+                CHECK(mixer.insert(2, 0).hasUnit() == ps::InsertSlot::isLong(type));
+                const float* ch[ps::Mixer::kChannels] = {zero.data(), zero.data(), in.data(), zero.data()};
+                bool ok = true;
+                float peak = 0.0f;
+#if !defined(__SANITIZE_ADDRESS__)
+                g_allocations = 0;
+                g_countAllocations = true;
+#endif
+                for (int pass = 0; pass < 24; ++pass) {
+                    if (pass % 4 == 0) mixer.sidechainEvent(100, true, true);
+                    mixer.process(ch, nullptr, out.data(), frames, 2);
+                    for (float v : out) { ok &= std::isfinite(v); peak = std::max(peak, std::fabs(v)); }
+                }
+#if !defined(__SANITIZE_ADDRESS__)
+                g_countAllocations = false;
+                CHECK(g_allocations.load() == 0);
+#endif
+                if (!ok) std::fprintf(stderr, "  type %d knob %.1f: not finite\n", type, knob);
+                CHECK(ok);
+                CHECK(!mixer.takeBlewUp());
+                if (peak >= 4.0f) std::fprintf(stderr, "  type %d knob %.1f: peak %.2f\n", type, knob, peak);
+                CHECK(peak < 4.0f);
+            }
+            // Straight on the slot (pre-limiter): bounded too.
+            ps::Mixer mixer;
+            mixer.prepare(kRate);
+            mixer.setInsertType(2, 0, type);
+            for (int k = 0; k < 4; ++k) mixer.setInsertParam(2, 0, k, 1.0f);
+            std::vector<float> l(in), r(in);
+            auto& slot = const_cast<ps::InsertSlot&>(mixer.insert(2, 0));
+            float peak = 0.0f;
+            for (int pass = 0; pass < 12; ++pass) {
+                l = in;
+                r = in;
+                slot.process(l.data(), r.data(), frames);
+                for (int i = 0; i < frames; ++i) peak = std::max(peak, std::max(std::fabs(l[size_t(i)]), std::fabs(r[size_t(i)])));
+            }
+            std::printf("  type %d at full: peak %.2f\n", type, peak);
+            CHECK(std::isfinite(peak) && peak < 4.0f);
+        }
+    }
+    // 2. Distortion: every curve stays in [-1, 1]; it adds harmonics; a hot drive is not much
+    // louder than a light one (levelled); the four types sound different.
+    {
+        for (int t = 0; t < ps::Distortion::kTypes; ++t) {
+            for (float x = -80.0f; x <= 80.0f; x += 0.37f) CHECK(std::fabs(ps::Distortion::shape(t, x)) <= 1.0001f);
+        }
+        auto run = [](float drive, float type) {
+            ps::Distortion d;
+            d.prepare(kRate);
+            d.setParam(0, drive);
+            d.setParam(1, 1.0f);
+            d.setParam(2, type);
+            std::vector<float> l(9600), r(9600);
+            for (size_t i = 0; i < l.size(); ++i) l[i] = r[i] = 0.5f * float(std::sin(2 * M_PI * 1000.0 * double(i) / kRate));
+            d.process(l.data(), r.data(), int(l.size()));
+            return l;
+        };
+        const auto light = run(0.1f, 0.0f), hot = run(1.0f, 0.0f);
+        double rl = 0, rh = 0;
+        for (size_t i = 4800; i < 9600; ++i) { rl += light[i] * light[i]; rh += hot[i] * hot[i]; }
+        std::printf("  distortion: light %.3f, hot %.3f rms; 3rd harmonic %.3f\n", std::sqrt(rl / 4800), std::sqrt(rh / 4800), toneLevel(hot, 4800, 9600, 3000));
+        CHECK(std::sqrt(rh / rl) < 2.0);
+        CHECK(toneLevel(hot, 4800, 9600, 3000) > 0.05);
+        CHECK(toneLevel(light, 4800, 9600, 3000) < toneLevel(hot, 4800, 9600, 3000));
+        // Fuzz is lopsided: an even harmonic (2 kHz) the symmetric overdrive does not make.
+        const auto fuzz = run(0.7f, 0.3f), over = run(0.7f, 0.0f);
+        CHECK(toneLevel(fuzz, 4800, 9600, 2000) > 0.02);
+        CHECK(toneLevel(over, 4800, 9600, 2000) < 0.005);
+        const auto soft = run(0.35f, 0.0f), clip = run(0.35f, 0.6f), fold = run(0.35f, 0.9f);
+        double d1 = 0, d2 = 0;
+        for (size_t i = 4800; i < 9600; ++i) { d1 += std::fabs(clip[i] - soft[i]); d2 += std::fabs(fold[i] - clip[i]); }
+        std::printf("  distortion types: clip vs overdrive %.3f, foldback vs clip %.3f\n", d1 / 4800, d2 / 4800);
+        CHECK(d1 / 4800 > 0.01 && d2 / 4800 > 0.01);
+    }
+    // 3. Insert echo: an impulse comes back after a dotted eighth (3 sixteenths: 18000 frames at
+    // 120 BPM), the dry sound untouched below mid-mix; ping-pong: the first repeat on the left only,
+    // the second on the right.
+    {
+        ps::InsertEcho echo;
+        echo.prepare(kRate);
+        echo.setStepFrames(6000.0);
+        echo.setParam(0, 0.42f);  // dotted 1/8
+        echo.setParam(1, 0.5f);
+        echo.setParam(2, 1.0f);   // bright repeats
+        echo.setParam(3, 0.5f);
+        echo.reset();
+        std::vector<float> l(kRate, 0.0f), r(kRate, 0.0f);
+        l[100] = r[100] = 1.0f;
+        echo.process(l.data(), r.data(), kRate);
+        CHECK(std::fabs(l[100] - 1.0f) < 1e-4f);
+        const auto first = std::max_element(l.begin() + 200, l.begin() + 30000) - l.begin();
+        std::printf("  insert echo at frame %ld (expected %d)\n", long(first), 18100);
+        CHECK(std::labs(long(first) - 18100) <= 2);
+        CHECK(l[size_t(first)] > 0.3f && std::fabs(r[size_t(first)] - l[size_t(first)]) < 1e-3f);
+        echo.setPingPong(true);
+        echo.setParam(0, 0.25f);  // 1/8
+        echo.reset();
+        std::fill(l.begin(), l.end(), 0.0f);
+        std::fill(r.begin(), r.end(), 0.0f);
+        l[100] = r[100] = 1.0f;
+        echo.process(l.data(), r.data(), kRate);
+        CHECK(l[12100] > 0.2f && std::fabs(r[12100]) < 1e-3f);
+        CHECK(std::fabs(l[24100]) < 1e-3f && r[24100] > 0.05f);
+        // Mix 0: only the dry sound.
+        echo.setParam(3, 0.0f);
+        echo.reset();
+        std::fill(l.begin(), l.end(), 0.0f);
+        std::fill(r.begin(), r.end(), 0.0f);
+        l[100] = r[100] = 1.0f;
+        echo.process(l.data(), r.data(), kRate);
+        float rest = 0;
+        for (size_t i = 200; i < l.size(); ++i) rest = std::max(rest, std::fabs(l[i]));
+        CHECK(rest < 1e-6f);
+    }
+    // 4. Insert reverb: a tail that lasts and decays after a click; dry at mix 0.
+    {
+        ps::InsertReverb verb;
+        verb.prepare(kRate);
+        std::vector<float> l(kRate, 0.0f), r(kRate, 0.0f);
+        l[100] = r[100] = 1.0f;
+        verb.process(l.data(), r.data(), kRate);
+        double early = 0, late = 0;
+        for (size_t i = 1000; i < size_t(kRate); ++i) (i < 12000 ? early : late) += l[i] * l[i];
+        CHECK(early > 1e-4 && late > 1e-6 && late / (kRate - 12000) < early / 11000);
+        verb.setParam(3, 0.0f);
+        verb.reset();
+        std::fill(l.begin(), l.end(), 0.0f);
+        std::fill(r.begin(), r.end(), 0.0f);
+        l[100] = r[100] = 1.0f;
+        verb.process(l.data(), r.data(), kRate);
+        float rest = 0;
+        for (size_t i = 200; i < l.size(); ++i) rest = std::max(rest, std::fabs(l[i]));
+        CHECK(rest < 1e-6f);
+    }
+    // 5. Auto-pan at a quarter note, full depth, square: left in the first half of each beat, right
+    // in the second; a beat puts it back on the grid.
+    {
+        ps::AutoPan pan;
+        pan.prepare(kRate);
+        pan.setStepFrames(6000.0);  // a beat = 24000 frames
+        pan.setParam(0, 0.55f);     // 1/4
+        pan.setParam(1, 1.0f);
+        pan.setParam(2, 1.0f);
+        CHECK(ps::AutoPan::stepsOf(0.55f) == 4);
+        std::vector<float> l(256), r(256);
+        double lFirst = 0, rFirst = 0, lSecond = 0, rSecond = 0;
+        for (int at = 0; at < 48000; at += 256) {
+            if (at == 0) pan.beat(0);
+            std::fill(l.begin(), l.end(), 0.5f);
+            std::fill(r.begin(), r.end(), 0.5f);
+            pan.process(l.data(), r.data(), 256);
+            const int inBeat = at % 24000;
+            if (inBeat > 2000 && inBeat < 10000) { lFirst += l[128]; rFirst += r[128]; }
+            if (inBeat > 14000 && inBeat < 22000) { lSecond += l[128]; rSecond += r[128]; }
+        }
+        // sin starts upwards: pan > 0 = right first.
+        CHECK(rFirst > 3 * lFirst && lSecond > 3 * rSecond);
+        // Off the grid (a tempo change), then a beat: back on it.
+        for (int i = 0; i < 37; ++i) pan.process(l.data(), r.data(), 100);
+        pan.beat(10);
+        pan.process(l.data(), r.data(), 11);
+        CHECK(pan.phase() < 2.0 / 24000.0);
+    }
+    // 6. OTT at full depth: a quiet sound comes up a lot, a loud one does not get louder.
+    {
+        auto gainDb = [](float amp, float hz) {
+            ps::Ott ott;
+            ott.prepare(kRate);
+            ott.setParam(0, 1.0f);
+            std::vector<float> l(kRate), r(kRate);
+            for (size_t i = 0; i < l.size(); ++i) l[i] = r[i] = amp * float(std::sin(2 * M_PI * hz * double(i) / kRate));
+            ott.process(l.data(), r.data(), kRate);
+            return 20.0 * std::log10(toneLevel(l, kRate / 2, kRate, hz) / amp);
+        };
+        const double quiet = gainDb(0.01f, 1000.0f), loud = gainDb(0.7f, 1000.0f), quietBass = gainDb(0.01f, 60.0f), loudHigh = gainDb(0.7f, 6000.0f);
+        std::printf("  OTT: -40 dB %+.1f dB, -3 dB %+.1f dB; bass -40 dB %+.1f dB, highs -3 dB %+.1f dB\n", quiet, loud, quietBass, loudHigh);
+        CHECK(quiet > 8.0 && quietBass > 8.0);
+        CHECK(loud < -2.0 && loudHigh < -2.0);
+        // At depth 0: untouched.
+        ps::Ott dry;
+        dry.prepare(kRate);
+        dry.setParam(0, 0.0f);
+        std::vector<float> l(4800), r(4800);
+        for (size_t i = 0; i < l.size(); ++i) l[i] = r[i] = 0.3f * float(std::sin(0.01 * double(i)));
+        const std::vector<float> before = l;
+        dry.process(l.data(), r.data(), 4800);
+        CHECK(l == before);
+    }
+    // 7. Frequency shifter: a 1 kHz tone comes out at 1.2 kHz (+200 Hz), or 800 Hz (-200 Hz).
+    {
+        for (float sign : {1.0f, -1.0f}) {
+            ps::FreqShifter fs;
+            fs.prepare(kRate);
+            const float v = 0.5f + 0.5f * sign * std::sqrt(200.0f / 2000.0f);
+            CHECK(std::fabs(ps::FreqShifter::shiftHz(v) - 200.0f * sign) < 0.5f);
+            fs.setParam(0, v);
+            fs.setParam(2, 1.0f);  // all wet
+            std::vector<float> l(kRate), r(kRate);
+            for (size_t i = 0; i < l.size(); ++i) l[i] = r[i] = 0.5f * float(std::sin(2 * M_PI * 1000.0 * double(i) / kRate));
+            fs.process(l.data(), r.data(), kRate);
+            const double target = toneLevel(l, kRate / 2, kRate, 1000.0 + 200.0 * sign);
+            const double original = toneLevel(l, kRate / 2, kRate, 1000.0), mirror = toneLevel(l, kRate / 2, kRate, 1000.0 - 200.0 * sign);
+            std::printf("  shifter %+.0f Hz: target %.3f, original %.4f, mirror %.4f\n", 200.0 * sign, target, original, mirror);
+            CHECK(target > 0.4 && original < 0.02 && mirror < 0.02);
+        }
+    }
+    // 8. Tape stop: the knob past its middle slows the sound to silence in the stop time; back
+    // under it, the sound returns.
+    {
+        ps::TapeStop tape;
+        tape.prepare(kRate);
+        tape.setParam(1, 0.0f);  // 0.1 s
+        tape.setParam(2, 0.0f);  // no fade back
+        std::vector<float> l(480), r(480);
+        auto block = [&](double& t) {
+            for (size_t i = 0; i < l.size(); ++i, t += 1.0) l[i] = r[i] = 0.5f * float(std::sin(2 * M_PI * 440.0 * t / kRate));
+            tape.process(l.data(), r.data(), int(l.size()));
+            float peak = 0;
+            for (float v : l) peak = std::max(peak, std::fabs(v));
+            return peak;
+        };
+        double t = 0;
+        for (int b = 0; b < 10; ++b) CHECK(block(t) > 0.45f);  // playing: untouched
+        tape.setParam(0, 1.0f);
+        float during = block(t);
+        CHECK(during > 0.1f && tape.speed() < 0.95f);
+        for (int b = 0; b < 12; ++b) block(t);  // > 0.1 s
+        CHECK(tape.speed() == 0.0f && block(t) == 0.0f);
+        tape.setParam(0, 0.0f);
+        block(t);
+        CHECK(block(t) > 0.45f);
+    }
+    // 9. The pool: as many echoes as it holds play (on channels 0..2, all eight slots), one more
+    // waits and gets the unit the first one gives back.
+    {
+        ps::Mixer mixer;
+        mixer.prepare(kRate);
+        static_assert(ps::LongFxPool::kEchoes < 3 * ps::Mixer::kInserts);
+        for (int i = 0; i < ps::LongFxPool::kEchoes; ++i) mixer.setInsertType(i / ps::Mixer::kInserts, i % ps::Mixer::kInserts, ps::InsertSlot::EchoFx);
+        CHECK(mixer.longFxPool().echoes.available() == 0);
+        mixer.setInsertType(5, 0, ps::InsertSlot::EchoFx);
+        CHECK(!mixer.insert(5, 0).hasUnit() && mixer.insert(5, 0).waitingForUnit());
+        mixer.setInsertParam(5, 0, 3, 0.9f);  // remembered for when it plays
+        mixer.setInsertType(0, 0, ps::InsertSlot::None);
+        CHECK(mixer.insert(5, 0).hasUnit() && !mixer.insert(0, 0).hasUnit());
+        CHECK(mixer.echoInUse() && mixer.echoFrames() > 0.0f);
+        // Another type in place of an echo gives it back; a reverb comes from its own pool.
+        mixer.setInsertType(1, 0, ps::InsertSlot::ReverbFx);
+        CHECK(mixer.longFxPool().echoes.available() == 1 && mixer.insert(1, 0).hasUnit());
+    }
 }
 
 void testParametricEq() {
@@ -3327,6 +3641,290 @@ void testAutomationMovesTheFader() {
     double s = 0;
     for (int i = 6000 * 5; i < 6000 * 5 + 2400; ++i) s += double(after[static_cast<size_t>(i) * 2]) * after[static_cast<size_t>(i) * 2];
     CHECK(std::sqrt(s / 2400) > loud * 0.5);  // the pad's level wanders a little with its timbre
+}
+
+// Eight effects per strip: commands and automation reach slots 4..7 (channel x 8 + slot, the
+// app's packing), a slot-7 effect is heard, its automated knob moves on the step, and the export
+// renders exactly what the live engine plays.
+void testEightInsertSlots() {
+    static_assert(ps::Mixer::kInserts == 8);
+    // 1. Packing: channel 2's slot 7 and the master's slot 7, not channel 3's slot 3 (4-wide packing).
+    {
+        ps::Engine engine(kRate);
+        engine.post({ps::CommandType::SetInsertType, 0.0f, 2 * ps::Mixer::kInserts + 7, ps::InsertSlot::Filter});
+        engine.post({ps::CommandType::SetInsertType, 0.0f, ps::Mixer::kMaster * ps::Mixer::kInserts + 7, ps::InsertSlot::Comp});
+        engine.post({ps::CommandType::SetInsertParam, 0.25f, 2 * ps::Mixer::kInserts + 7, 0});
+        render(engine, 512, 256);
+        CHECK(engine.mixer().insert(2, 7).type() == ps::InsertSlot::Filter);
+        CHECK(engine.mixer().insert(3, 3).type() == ps::InsertSlot::None && engine.mixer().insert(3, 7).type() == ps::InsertSlot::None);
+        CHECK(engine.mixer().insert(ps::Mixer::kMaster, 7).type() == ps::InsertSlot::Comp);
+        // Out of range: ignored, nothing else touched.
+        engine.post({ps::CommandType::SetInsertType, 0.0f, ps::Mixer::kChannels * ps::Mixer::kInserts, ps::InsertSlot::Filter});
+        render(engine, 256, 256);
+        CHECK(ps::Automation::pack(ps::Automation::InsertParam, 15, 7, 3) == ((3 << 16) | (15 << 12) | (7 << 8) | 3));
+    }
+    // 2. A synth pad through all eight slots of its strip: seven gentle effects, then a low-pass
+    // on slot 7 whose cutoff a lane closes on step 4 and opens again on step 8.
+    // The long effects really heard (echo at a sixteenth and reverb, half wet): their pool units
+    // must sound the same live and in the export.
+    auto setUp = [](auto& target, bool automate, float wet = 0.5f) {
+        target.post({ps::CommandType::SynthNoteOn, 0.8f, 57});
+        const int types[7] = {ps::InsertSlot::Eq, ps::InsertSlot::Comp, ps::InsertSlot::Saturation, ps::InsertSlot::Chorus,
+                              ps::InsertSlot::ReverbFx, ps::InsertSlot::ParamEqFx, ps::InsertSlot::EchoFx};
+        for (int slot = 0; slot < 7; ++slot) target.post({ps::CommandType::SetInsertType, 0.0f, 2 * ps::Mixer::kInserts + slot, types[slot]});
+        target.post({ps::CommandType::SetInsertParam, wet, 2 * ps::Mixer::kInserts + 4, 3});  // reverb mix
+        target.post({ps::CommandType::SetInsertParam, 0.0f, 2 * ps::Mixer::kInserts + 6, 0});  // echo every sixteenth
+        target.post({ps::CommandType::SetInsertParam, wet, 2 * ps::Mixer::kInserts + 6, 3});  // echo mix
+        const int a = 2 * ps::Mixer::kInserts + 7;
+        target.post({ps::CommandType::SetInsertType, 0.0f, a, ps::InsertSlot::Filter});
+        const float filter[4] = {1.0f, 0.0f, 0.0f, 1.0f};  // open low-pass, no resonance, fully wet
+        for (int prm = 0; prm < 4; ++prm) target.post({ps::CommandType::SetInsertParam, filter[prm], a, prm});
+        if (automate) {
+            target.post({ps::CommandType::SetAutomationTarget, 0.0f, 0, ps::Automation::pack(ps::Automation::InsertParam, 2, 7, 0)});
+            target.post({ps::CommandType::SetAutomationPoint, 0.0f, 0, 4});
+            target.post({ps::CommandType::SetAutomationPoint, 1.0f, 0, 8});
+        }
+    };
+    const int frames = kRate * 2;  // 16 steps of 6000 frames at 120 BPM
+    ps::OfflineRenderer exporter(kRate);
+    setUp(exporter, true);
+    const auto exported = exporter.renderToBuffer(frames, 0);
+    // The live engine, driven the way the export drives its own: the same commands, a tenth of a
+    // second to settle, then play (in the export's block size).
+    ps::Engine live(kRate);
+    setUp(live, true);
+    render(live, kRate / 10, ps::OfflineRenderer::kBlock);
+    live.mixer().settle();
+    live.post({ps::CommandType::SetTransport, 1.0f, 0});
+    const auto played = render(live, frames, ps::OfflineRenderer::kBlock);
+    CHECK(exported.size() == played.size());
+    float diff = 0.0f;
+    for (size_t i = 0; i < std::min(exported.size(), played.size()); ++i) diff = std::max(diff, std::fabs(exported[i] - played[i]));
+    CHECK(diff == 0.0f);
+    auto rms = [](const std::vector<float>& o, int from) {
+        double sum = 0;
+        for (int i = from; i < from + 2400 && size_t(i) * 2 < o.size(); ++i) sum += double(o[size_t(i) * 2]) * o[size_t(i) * 2];
+        return std::sqrt(sum / 2400);
+    };
+    const double open = rms(exported, 6000 * 2 + 1000), closed = rms(exported, 6000 * 5 + 1000), back = rms(exported, 6000 * 9 + 1000);
+    std::printf("  slot 7 automated: step 2 %.4f, step 5 %.4f, step 9 %.4f (live vs export %.2g)\n", open, closed, back, double(diff));
+    CHECK(open > 0.02 && closed < open * 0.2 && back > open * 0.5);  // the reverb and echo tails are filtered too
+    // Without the lane, step 5 stays open: the lane on slot 7 is what closed it.
+    ps::OfflineRenderer still(kRate);
+    setUp(still, false);
+    const auto plain = still.renderToBuffer(frames, 0);
+    CHECK(rms(plain, 6000 * 5 + 1000) > open * 0.5);
+    // The echo and the reverb are really in what was compared: fully dry, the render differs.
+    ps::OfflineRenderer dry(kRate);
+    setUp(dry, true, 0.0f);
+    const auto dryOut = dry.renderToBuffer(frames, 0);
+    float wetDiff = 0.0f;
+    for (size_t i = 0; i < std::min(dryOut.size(), exported.size()); ++i) wetDiff = std::max(wetDiff, std::fabs(dryOut[i] - exported[i]));
+    std::printf("  echo and reverb half wet vs dry: %.3f\n", double(wetDiff));
+    CHECK(wetDiff > 0.02f);
+}
+
+// The app's long effects (echo, reverb, tape stop) and the pool they borrow from.
+void testLongEffectsFollowTheApp() {
+    static_assert(static_cast<int>(ps::CommandType::SetMaster) == 67 && static_cast<int>(ps::CommandType::ClearInserts) == 68,
+                  "NativeEngine.kt's CMD_MASTER and CMD_CLEAR_INSERTS");
+    // 1. A strip the app no longer uses (track deleted, undone, another project) is emptied in one
+    // command: its units go back, and an echo placed elsewhere afterwards is heard.
+    {
+        ps::Engine engine(kRate);
+        for (int i = 0; i < ps::LongFxPool::kEchoes; ++i) {
+            const int ch = ps::Mixer::kFirstPad + i / ps::Mixer::kInserts;
+            engine.post({ps::CommandType::SetInsertType, 0.0f, ch * ps::Mixer::kInserts + i % ps::Mixer::kInserts, ps::InsertSlot::EchoFx});
+        }
+        engine.post({ps::CommandType::SetInsertType, 0.0f, (ps::Mixer::kFirstPad + 2) * ps::Mixer::kInserts, ps::InsertSlot::EchoFx});
+        render(engine, 256, 256);
+        CHECK(engine.mixer().longFxPool().echoes.available() == 0);
+        CHECK(engine.mixer().insert(ps::Mixer::kFirstPad + 2, 0).waitingForUnit());
+        engine.post({ps::CommandType::ClearInserts, 0.0f, ps::Mixer::kFirstPad});
+        engine.post({ps::CommandType::ClearInserts, 0.0f, ps::Mixer::kFirstPad + 1});
+        engine.post({ps::CommandType::ClearInserts, 0.0f, ps::Mixer::kFirstPad + 2});
+        engine.post({ps::CommandType::ClearInserts, 0.0f, ps::Mixer::kChannels});  // out of range: ignored
+        render(engine, 256, 256);
+        CHECK(engine.mixer().longFxPool().echoes.available() == ps::LongFxPool::kEchoes);
+        for (int ch = ps::Mixer::kFirstPad; ch < ps::Mixer::kFirstPad + 3; ++ch) {
+            for (int slot = 0; slot < ps::Mixer::kInserts; ++slot) CHECK(engine.mixer().insert(ch, slot).type() == ps::InsertSlot::None);
+        }
+        engine.post({ps::CommandType::SetInsertType, 0.0f, 2 * ps::Mixer::kInserts, ps::InsertSlot::EchoFx});
+        render(engine, 256, 256);
+        CHECK(engine.mixer().insert(2, 0).hasUnit());
+    }
+    // 2. The first repeat of a new echo is on time, without a glide from the defaults (3/16) to
+    // its real time (1/16 = 6000 frames at 120 BPM): live, the type and its settings arrive in
+    // the same callback.
+    {
+        ps::Mixer mixer;
+        mixer.prepare(kRate);
+        mixer.setStepFrames(6000.0);
+        mixer.setInsertType(2, 0, ps::InsertSlot::EchoFx);
+        mixer.setInsertParam(2, 0, 0, 0.0f);  // 1/16
+        mixer.setInsertParam(2, 0, 1, 0.0f);  // a single repeat
+        mixer.setInsertParam(2, 0, 3, 1.0f);  // wet only
+        auto& slot = const_cast<ps::InsertSlot&>(mixer.insert(2, 0));
+        std::vector<float> l(kRate, 0.0f), r(kRate, 0.0f);
+        l[0] = r[0] = 1.0f;
+        for (int at = 0; at < kRate; at += 192) {
+            mixer.setStepFrames(6000.0);
+            slot.process(l.data() + at, r.data() + at, std::min(192, kRate - at));
+        }
+        int peakAt = 0;
+        for (int i = 1; i < kRate; ++i) {
+            if (std::fabs(l[size_t(i)]) > std::fabs(l[size_t(peakAt)])) peakAt = i;
+        }
+        std::printf("  new echo: first repeat at frame %d (6000 expected), %.3f\n", peakAt, double(l[size_t(peakAt)]));
+        CHECK(peakAt == 6000);
+        CHECK(std::fabs(l[size_t(peakAt)]) > 0.9f);
+    }
+    // ... and in the export (whose pre-roll used to glide it): a kick at step 0, echoed wet only.
+    {
+        ps::OfflineRenderer exporter(kRate);
+        exporter.post({ps::CommandType::SetDrumHit, 1.0f, 0, 0});
+        exporter.post({ps::CommandType::SetInsertType, 0.0f, ps::Mixer::kDrums * ps::Mixer::kInserts, ps::InsertSlot::EchoFx});
+        exporter.post({ps::CommandType::SetInsertParam, 0.0f, ps::Mixer::kDrums * ps::Mixer::kInserts, 0});
+        exporter.post({ps::CommandType::SetInsertParam, 0.0f, ps::Mixer::kDrums * ps::Mixer::kInserts, 1});
+        exporter.post({ps::CommandType::SetInsertParam, 1.0f, ps::Mixer::kDrums * ps::Mixer::kInserts, 3});
+        const auto out = exporter.renderToBuffer(9000, 0);
+        int first = -1;
+        for (size_t i = 0; i * 2 < out.size(); ++i) {
+            if (std::fabs(out[i * 2]) > 1e-3f) {
+                first = static_cast<int>(i);
+                break;
+            }
+        }
+        std::printf("  exported echo: first sound at frame %d (6000 expected)\n", first);
+        CHECK(first >= 6000 && first <= 6004);
+    }
+    // 3. A unit given back and borrowed again starts silent (its reset clears nothing: what the
+    // last user left there is never heard), echo and tape stop alike.
+    {
+        ps::Mixer mixer;
+        mixer.prepare(kRate);
+        mixer.setStepFrames(6000.0);
+        for (int i = 0; i < ps::LongFxPool::kEchoes; ++i) {
+            mixer.setInsertType(i / ps::Mixer::kInserts, i % ps::Mixer::kInserts, ps::InsertSlot::EchoFx);
+            mixer.setInsertParam(i / ps::Mixer::kInserts, i % ps::Mixer::kInserts, 0, 1.0f);  // half notes
+        }
+        for (int i = 0; i < ps::LongFxPool::kTapeStops; ++i) mixer.setInsertType(3, i, ps::InsertSlot::TapeStopFx);
+        std::vector<float> l(kRate), r(kRate);
+        auto fill = [&](float level) {
+            for (int i = 0; i < kRate; ++i) l[size_t(i)] = r[size_t(i)] = level * float(std::sin(2 * M_PI * 220.0 * i / kRate));
+        };
+        for (int i = 0; i < ps::LongFxPool::kEchoes; ++i) {
+            fill(0.8f);
+            const_cast<ps::InsertSlot&>(mixer.insert(i / ps::Mixer::kInserts, i % ps::Mixer::kInserts)).process(l.data(), r.data(), kRate);
+        }
+        for (int i = 0; i < ps::LongFxPool::kTapeStops; ++i) {
+            fill(0.8f);
+            const_cast<ps::InsertSlot&>(mixer.insert(3, i)).process(l.data(), r.data(), kRate);
+        }
+        for (int ch = 0; ch < 4; ++ch) mixer.clearInserts(ch);
+        CHECK(mixer.longFxPool().echoes.available() == ps::LongFxPool::kEchoes);
+        CHECK(mixer.longFxPool().tapeStops.available() == ps::LongFxPool::kTapeStops);
+        float stale = 0.0f;
+        for (int i = 0; i < ps::LongFxPool::kEchoes; ++i) {
+            mixer.setInsertType(5 + i / ps::Mixer::kInserts, i % ps::Mixer::kInserts, ps::InsertSlot::EchoFx);
+            mixer.setInsertParam(5 + i / ps::Mixer::kInserts, i % ps::Mixer::kInserts, 0, 1.0f);
+            mixer.setInsertParam(5 + i / ps::Mixer::kInserts, i % ps::Mixer::kInserts, 3, 1.0f);
+            fill(0.0f);
+            const_cast<ps::InsertSlot&>(mixer.insert(5 + i / ps::Mixer::kInserts, i % ps::Mixer::kInserts)).process(l.data(), r.data(), kRate);
+            for (int k = 0; k < kRate; ++k) stale = std::max(stale, std::max(std::fabs(l[size_t(k)]), std::fabs(r[size_t(k)])));
+        }
+        for (int i = 0; i < ps::LongFxPool::kTapeStops; ++i) {
+            mixer.setInsertType(7, i, ps::InsertSlot::TapeStopFx);
+            mixer.setInsertParam(7, i, 0, 1.0f);  // stopping at once: it plays back what it holds
+            fill(0.0f);
+            const_cast<ps::InsertSlot&>(mixer.insert(7, i)).process(l.data(), r.data(), kRate);
+            for (int k = 0; k < kRate; ++k) stale = std::max(stale, std::max(std::fabs(l[size_t(k)]), std::fabs(r[size_t(k)])));
+        }
+        std::printf("  borrowed units: %.3g left from their last user\n", double(stale));
+        CHECK(stale == 0.0f);
+    }
+}
+
+// The worst case of eight effects everywhere: eight of the heaviest effects (long ones included:
+// beyond the pool's units they pass the sound through) on every strip of a full project (the 15
+// channels and the master), then on every strip there is (the 16 pads' own strips too). No
+// allocation; the time per 192-frame block is noted. A phone is several times slower than this
+// machine: past what it can take, the app warns (Engine::cpuLoad) rather than refusing effects.
+void testEightInsertsCpuWorstCase() {
+    const int heavy[] = {ps::InsertSlot::PhaserFx, ps::InsertSlot::ReverbFx, ps::InsertSlot::VinylFx, ps::InsertSlot::TremoloFx,
+                         ps::InsertSlot::EchoFx, ps::InsertSlot::AutoPanFx, ps::InsertSlot::RadioFx, ps::InsertSlot::FreqShiftFx,
+                         ps::InsertSlot::OttFx, ps::InsertSlot::RobotFx, ps::InsertSlot::FlangerFx, ps::InsertSlot::PingPongFx};
+    constexpr int kHeavy = sizeof(heavy) / sizeof(heavy[0]);
+    constexpr int kBlock = 192;  // a usual phone callback (4 ms at 48 kHz)
+    auto loadWith = [&](int strips) {
+        ps::Mixer mixer;
+        mixer.prepare(kRate);
+        mixer.setStepFrames(6000.0);
+        std::vector<std::vector<float>> inputs(ps::Mixer::kChannels, std::vector<float>(kBlock));
+        std::vector<const float*> channels(ps::Mixer::kChannels, nullptr);
+        for (int ch = 0; ch < strips; ++ch) {
+            for (int slot = 0; slot < ps::Mixer::kInserts; ++slot) {
+                mixer.setInsertType(ch, slot, heavy[(ch * 5 + slot) % kHeavy]);
+                for (int p = 0; p < 4; ++p) mixer.setInsertParam(ch, slot, p, 0.6f);
+            }
+            if (ch == ps::Mixer::kMaster) continue;
+            mixer.setVolume(ch, 0.1f);
+            for (int i = 0; i < kBlock; ++i) inputs[size_t(ch)][size_t(i)] = 0.2f * float(std::sin(2 * M_PI * (110.0 + 37.0 * ch) * i / kRate));
+            channels[size_t(ch)] = inputs[size_t(ch)].data();
+        }
+        std::vector<float> out(kBlock * 2);
+        const int blocks = kRate * 2 / kBlock;
+        for (int b = 0; b < 50; ++b) mixer.process(channels.data(), nullptr, out.data(), kBlock, 2);  // warm-up
+        double best = 1e9;
+        bool finite = true;
+#if defined(PS_COUNT_ALLOCATIONS)
+        g_allocations = 0;
+        g_countAllocations = true;
+#endif
+        // Best of three passes: a busy machine only ever makes a pass slower.
+        for (int pass = 0; pass < 3; ++pass) {
+            const double start = threadSeconds();
+            for (int b = 0; b < blocks; ++b) {
+                if (b % 100 == 0) mixer.sidechainEvent(0, true, true);
+                mixer.process(channels.data(), nullptr, out.data(), kBlock, 2);
+                for (float v : out) finite &= std::isfinite(v);
+            }
+            best = std::min(best, (threadSeconds() - start) / 2.0);
+        }
+#if defined(PS_COUNT_ALLOCATIONS)
+        g_countAllocations = false;
+        CHECK(g_allocations == 0);
+#endif
+        CHECK(finite);
+        std::printf("  %d strips x %d heavy effects: %.1f %% of real time on this machine, %.0f us per %d-frame block (%.0f us)\n",
+                    strips, ps::Mixer::kInserts, best * 100.0, best * kBlock * 1e6 / kRate, kBlock, kBlock * 1e6 / kRate);
+        return best;
+    };
+    const double project = loadWith(ps::Mixer::kFirstPad), everything = loadWith(ps::Mixer::kChannels);
+#if defined(__SANITIZE_ADDRESS__)
+    (void)project;
+    (void)everything;  // sanitizer builds are several times slower: timing is meaningless there
+#else
+    CHECK_TIMING(project < 0.75);     // a full project, every slot taken by a heavy effect
+    CHECK_TIMING(everything < 1.5);   // every strip: the cost grows in step with the effects, nothing worse
+#endif
+    // The engine reports its load (the app's warning): far more with heavy effects than without.
+    auto loadOf = [&](bool effects) {
+        ps::Engine engine(kRate);
+        engine.post({ps::CommandType::SynthNoteOn, 0.8f, 57});
+        for (int ch : {0, 1, 2, 3, ps::Mixer::kMaster}) {
+            for (int slot = 0; effects && slot < ps::Mixer::kInserts; ++slot) {
+                engine.post({ps::CommandType::SetInsertType, 0.0f, ch * ps::Mixer::kInserts + slot, heavy[(ch * 5 + slot) % kHeavy]});
+            }
+        }
+        render(engine, kRate, kBlock);
+        return engine.cpuLoad();
+    };
+    const float idle = loadOf(false), loaded = loadOf(true);
+    std::printf("  engine load: %.1f %% without effects, %.1f %% with 40 heavy ones\n", idle * 100.0, loaded * 100.0);
+    CHECK(idle > 0.0f);
+    CHECK_TIMING(idle < 0.5f);
+    CHECK_TIMING(loaded > idle * 1.5f);  // the engine's own clock is wall time
 }
 
 void testAutomationClips() {
@@ -3901,16 +4499,16 @@ void testPlaitsVoices() {
         plaits.setParam(ps::PlaitsSynth::Model, model / float(ps::PlaitsSynth::kModels - 1));
         for (int v = 0; v < ps::PlaitsSynth::kVoices; ++v) plaits.noteOn(48 + v * 3, 0.9f, v * 7);
         std::vector<float> buf(kRate / 4, 0.0f);
-        const auto start = std::chrono::steady_clock::now();
+        const double start = threadSeconds();
         plaits.render(buf.data(), kRate / 4);
-        const double load = std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count() / 0.25;
+        const double load = (threadSeconds() - start) / 0.25;
         float pk = 0.0f;
         bool finite = true;
         for (float v : buf) { pk = std::max(pk, std::fabs(v)); finite &= std::isfinite(v); }
         if (!finite || pk < 1e-3f || pk > 3.0f || load > 0.12) std::printf("  model %d: peak %.3f load %.0f %% finite %d\n", model, pk, load * 100, finite);
         CHECK(finite && pk > 1e-3f && pk < 3.0f);
 #if !defined(__SANITIZE_ADDRESS__)
-        CHECK(load < 0.12);  // heavy models are capped in voices: any model stays cheap here
+        CHECK_TIMING(load < 0.12);  // heavy models are capped in voices: any model stays cheap here
 #endif
         plaits.allNotesOff();
         std::vector<float> flush(kRate, 0.0f);
@@ -4525,8 +5123,10 @@ void testStemPreviewPlaysWithoutTheTransport() {
 }
 
 int main(int argc, char** argv) {
+    const char* only = nullptr;  // a test's name: run that one alone
     for (int i = 1; i < argc; ++i) {
         if (std::strcmp(argv[i], "--update-references") == 0) g_updateReferences = true;
+        else only = argv[i];
     }
     const TestCase tests[] = {
         {"spsc_queue", testSpscQueue},
@@ -4630,8 +5230,13 @@ int main(int argc, char** argv) {
         {"track_macros", testTrackMacros},
         {"sampled_instrument", testSampledInstrument},
         {"no_alloc_in_process", testProcessNeverAllocates},
+        {"electronic_effects", testElectronicEffects},
+        {"eight_insert_slots", testEightInsertSlots},
+        {"eight_inserts_cpu", testEightInsertsCpuWorstCase},
+        {"long_effects_follow_the_app", testLongEffectsFollowTheApp},
     };
     for (const auto& t : tests) {
+        if (only && std::strcmp(only, t.name) != 0) continue;
         const int before = g_failures;
         t.fn();
         std::printf("[%s] %s\n", g_failures == before ? " OK " : "FAIL", t.name);

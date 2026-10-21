@@ -7,7 +7,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -58,6 +58,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.boundsInRoot
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.unit.IntOffset
+import kotlin.math.roundToInt
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -141,6 +151,8 @@ class SessionActions(
     val clear: () -> Unit = {},
     /** Names scene (index) after a song section (blank: its letter alone). */
     val rename: (Int, String) -> Unit = { _, _ -> },
+    /** Scene (first) dragged onto slot (second): moved or swapped, or put in its place (third: replace). */
+    val moveScene: (Int, Int, Boolean) -> Unit = { _, _, _ -> },
     val addPart: (Int) -> Unit = {},
     /** A part playing scene (second) inserted at place (first). */
     val insertPart: (Int, Int) -> Unit = { _, _ -> },
@@ -380,7 +392,7 @@ private fun ScenesCard(ui: SessionScreenUi, actions: SessionActions, rename: (In
             when {
                 ui.playing && ui.songIndex >= 0 && !ui.followSong -> tr("Touche une scène pour la modifier : le morceau continue de jouer.")
                 ui.playing -> tr("Touche une scène : elle prend le relais à la mesure suivante.")
-                else -> tr("Une scène = la batterie, l'acide et le piano roll. Touche-en une pour la modifier, appui long pour la nommer.")
+                else -> tr("Une scène = la batterie, l'acide et le piano roll. Touche-en une pour la modifier, maintiens et glisse pour la déplacer.")
             },
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
         )
@@ -400,11 +412,7 @@ private fun ScenesCard(ui: SessionScreenUi, actions: SessionActions, rename: (In
                 )
             }
         }
-        (0 until shown step 4).forEach { start ->
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                for (i in start until start + 4) SceneButton(i, ui, actions, rename, Modifier.weight(1f))
-            }
-        }
+        SceneGrid(ui, shown, actions)
         // What the scene shown is: a new one starts empty, a copy says whose copy it is.
         if (ui.sceneInfo.isNotEmpty()) {
             Text(ui.sceneInfo, style = MaterialTheme.typography.bodyMedium, color = Neon.Cyan, modifier = Modifier.testTag("scene_info"))
@@ -422,6 +430,107 @@ private fun ScenesCard(ui: SessionScreenUi, actions: SessionActions, rename: (In
             SceneAction(Icons.Filled.DeleteSweep, tr("Vider"), tr("Vider la scène %s", letter), !empty, actions.clear, "scene_clear", Modifier.weight(1f))
         }
     }
+}
+
+/** A scene being dragged: where it comes from, the finger, and every slot's place (in the root's coordinates). */
+@Stable
+private class SceneDrag(private val onDrop: (from: Int, to: Int) -> Unit) {
+    var from by mutableStateOf<Int?>(null)
+    var pointer by mutableStateOf(Offset.Zero)
+    val cells = mutableMapOf<Int, Rect>()
+
+    fun start(i: Int, at: Offset) {
+        from = i
+        pointer = (cells[i]?.topLeft ?: Offset.Zero) + at
+    }
+
+    /** The slot under the finger, or null. */
+    fun target(): Int? = cells.entries.firstOrNull { it.value.contains(pointer) }?.key
+
+    fun drop() {
+        val f = from ?: return
+        val t = target()
+        from = null
+        if (t != null && t != f) onDrop(f, t)
+    }
+}
+
+/**
+ * The scene slots, four per row. Held and dragged, a scene follows the finger: dropped on an
+ * empty slot it moves there; on another scene, a question: swap them, replace it, or nothing.
+ */
+@Composable
+private fun SceneGrid(ui: SessionScreenUi, shown: Int, actions: SessionActions) {
+    val latest by rememberUpdatedState(ui)
+    val latestActions by rememberUpdatedState(actions)
+    var asking by remember { mutableStateOf<Pair<Int, Int>?>(null) }
+    val drag = remember {
+        SceneDrag { from, to ->
+            if (latest.scenes.getOrNull(to)?.isEmpty != false) latestActions.moveScene(from, to, false) else asking = from to to
+        }
+    }
+    var origin by remember { mutableStateOf(Offset.Zero) }
+    Box(Modifier.fillMaxWidth().onGloballyPositioned { origin = it.boundsInRoot().topLeft }) {
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            (0 until shown step 4).forEach { start ->
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    for (i in start until start + 4) SceneButton(i, ui, actions, drag, Modifier.weight(1f))
+                }
+            }
+        }
+        // The scene carried, just above the finger (not hidden under it).
+        drag.from?.let { i ->
+            val density = androidx.compose.ui.platform.LocalDensity.current
+            val w = with(density) { 72.dp.toPx() }
+            val h = with(density) { 60.dp.toPx() }
+            val lift = with(density) { 24.dp.toPx() }
+            Box(
+                Modifier
+                    .offset { IntOffset((drag.pointer.x - origin.x - w / 2).roundToInt(), (drag.pointer.y - origin.y - h - lift).roundToInt()) }
+                    .size(72.dp, 60.dp)
+                    .shadow(12.dp, RoundedCornerShape(12.dp), ambientColor = Neon.Cyan, spotColor = Neon.Cyan)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(Neon.SurfaceHigh)
+                    .border(2.dp, Neon.Cyan, RoundedCornerShape(12.dp))
+                    .testTag("scene_drag_ghost"),
+                contentAlignment = Alignment.Center,
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(Scene.NAMES[i], fontSize = 22.sp, fontWeight = FontWeight.Bold, color = Neon.TextPrimary, lineHeight = 24.sp)
+                    if (ui.label(i).isNotBlank()) {
+                        Text(Scene.shownLabel(ui.label(i)), fontSize = 12.sp, color = Neon.TextPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    }
+                }
+            }
+        }
+    }
+    asking?.let { (from, to) ->
+        MoveSceneDialog(from, to, ui, onChoose = { replace -> actions.moveScene(from, to, replace); asking = null }, onDismiss = { asking = null })
+    }
+}
+
+/** A scene dropped on another one: swap them, or replace it (Annuler brings it back), or nothing. */
+@Composable
+private fun MoveSceneDialog(from: Int, to: Int, ui: SessionScreenUi, onChoose: (replace: Boolean) -> Unit, onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(tr("Déplacer %s sur %s", ui.title(from), ui.title(to))) },
+        text = {
+            Text(
+                tr("La scène %s n'est pas vide.", Scene.NAMES[to]) + " " + tr("La remplacer efface aussi son automation et ses prises audio (Annuler les rend)."),
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        },
+        confirmButton = {
+            Column(horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                TextButton(onClick = { onChoose(false) }, modifier = Modifier.heightIn(min = 48.dp).testTag("scene_move_swap")) { Text(tr("Échanger les scènes")) }
+                TextButton(onClick = { onChoose(true) }, modifier = Modifier.heightIn(min = 48.dp).testTag("scene_move_replace")) {
+                    Text(tr("Remplacer la scène %s", Scene.NAMES[to]))
+                }
+                TextButton(onClick = onDismiss, modifier = Modifier.heightIn(min = 48.dp).testTag("scene_move_cancel")) { Text(tr("Annuler")) }
+            }
+        },
+    )
 }
 
 /** One of the scene's tools: a small icon over a short word, the whole action said to TalkBack. */
@@ -450,7 +559,7 @@ private fun SceneAction(
 }
 
 @Composable
-private fun SceneButton(i: Int, ui: SessionScreenUi, actions: SessionActions, rename: (Int) -> Unit, modifier: Modifier) {
+private fun SceneButton(i: Int, ui: SessionScreenUi, actions: SessionActions, drag: SceneDrag, modifier: Modifier) {
     val scene = ui.scenes.getOrNull(i)
     val current = i == ui.current
     val pending = i == ui.pending
@@ -464,14 +573,20 @@ private fun SceneButton(i: Int, ui: SessionScreenUi, actions: SessionActions, re
     }
     val shape = RoundedCornerShape(12.dp)
     val label = ui.label(i)
+    val dragged = drag.from == i
+    val target = drag.from != null && drag.target() == i && !dragged
+    val haptic = androidx.compose.ui.platform.LocalHapticFeedback.current
     Box(
         // Capped on a wide pane (tablet), so 24 scenes still fit on the screen.
         modifier.aspectRatioAtMost(1.2f, 84.dp)
+            .onGloballyPositioned { drag.cells[i] = it.boundsInRoot() }
+            .graphicsLayer { alpha = if (dragged) 0.35f else 1f }
             .then(if (current) Modifier.shadow(if (ui.playing) 16.dp else 8.dp, shape, ambientColor = lit, spotColor = lit) else Modifier)
             .clip(shape)
             .background(container)
             .border(
                 when {
+                    target -> BorderStroke(3.dp, Neon.Cyan)
                     pending -> BorderStroke(3.dp, Neon.Amber)
                     current -> BorderStroke(1.dp, Color.White.copy(alpha = 0.35f))
                     empty -> BorderStroke(1.dp, Color.White.copy(alpha = 0.06f))
@@ -479,13 +594,23 @@ private fun SceneButton(i: Int, ui: SessionScreenUi, actions: SessionActions, re
                 },
                 shape,
             )
-            // A touch shows (or launches) the scene; a long touch names it.
-            .combinedClickable(
-                role = Role.Button,
-                onClickLabel = tr("Choisir la scène"),
-                onLongClickLabel = tr("Nommer la scène"),
-                onLongClick = { rename(i) },
-                onClick = { actions.select(i) },
+            // A touch shows (or launches) the scene; held, it follows the finger to another slot
+            // (inside the clickable: a drop consumes the touch, so it is not also a tap).
+            .clickable(role = Role.Button, onClickLabel = tr("Choisir la scène"), onClick = { actions.select(i) })
+            .then(
+                // Only a scene with something in it (or a name) can be carried.
+                if (scene == null || (empty && label.isBlank())) Modifier
+                else Modifier.pointerInput(i) {
+                    detectDragGesturesAfterLongPress(
+                        onDragStart = { at ->
+                            haptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                            drag.start(i, at)
+                        },
+                        onDrag = { change, amount -> change.consume(); drag.pointer += amount },
+                        onDragEnd = { drag.drop() },
+                        onDragCancel = { drag.from = null },
+                    )
+                },
             )
             .padding(2.dp)
             .testTag("scene_$i"),

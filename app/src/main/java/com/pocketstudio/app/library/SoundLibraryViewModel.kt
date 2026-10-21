@@ -1,5 +1,6 @@
 package com.pocketstudio.app.library
 
+import com.pocketstudio.app.audio.finishOrRelease
 import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.app.report.forUser
 import android.app.Application
@@ -334,7 +335,8 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
     private suspend fun kitVoice(voice: Int): Pcm? {
         kitCache[voice]?.let { return it }
         if (!NativeEngine.isAvailable) return null
-        val job = OfflineExport()
+        // A private engine costs tens of milliseconds to build: not on the main thread (never lost if cancelled).
+        val job = finishOrRelease(Dispatchers.Default, OfflineExport::close) { OfflineExport() }!!
         val data = try {
             NativeEngine.captureInto(job) {
                 NativeEngine.setTempo(120.0)
@@ -453,7 +455,8 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         val steps = StarterWizard.drumSteps(style)
         val ticks = bars * 16 * com.pocketstudio.model.NoteClip.TICKS_PER_STEP
         val natives = ArrayList<com.pocketstudio.engine.NativeSample?>()
-        val job = OfflineExport()
+        // A private engine costs tens of milliseconds to build: not on the main thread (never lost if cancelled).
+        val job = finishOrRelease(Dispatchers.Default, OfflineExport::close) { OfflineExport() }!!
         val data = try {
             // Resampled to 48 kHz off the main thread, and always kept so that the finally below frees them.
             withContext(Dispatchers.Default + NonCancellable) {

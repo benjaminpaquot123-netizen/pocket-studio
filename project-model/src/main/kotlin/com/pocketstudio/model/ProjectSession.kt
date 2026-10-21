@@ -53,10 +53,13 @@ class ProjectSession(
     /** True while changes wait to be written (the autosave delay, or a save that failed). */
     val unsaved: StateFlow<Boolean> = _unsaved.asStateFlow()
 
-    /** Applies [transform] to the project. Same [coalesceKey] in a quick burst = one undo step. */
-    fun edit(coalesceKey: String? = null, transform: (Project) -> Project) {
+    /**
+     * Applies [transform] to the project. Same [coalesceKey] in a quick burst = one undo step.
+     * [tag]: what the step was, returned by [undo] and [redo] when they go through it.
+     */
+    fun edit(coalesceKey: String? = null, tag: Any? = null, transform: (Project) -> Project) {
         val next = apply(transform)
-        if (history.push(next, coalesceKey, clock())) publish()
+        if (history.push(next, coalesceKey, clock(), tag)) publish()
     }
 
     /** Like [edit] but not undoable: for changes the app makes on its own, like following the song. */
@@ -99,12 +102,18 @@ class ProjectSession(
         return if (s == p) p else s
     }
 
-    fun undo() {
-        if (history.undo() != null) publish()
+    /** Goes one step back; returns that step's tag (see [edit]), null when untagged or none. */
+    fun undo(): Any? {
+        if (history.undo() == null) return null
+        publish()
+        return history.lastTag
     }
 
-    fun redo() {
-        if (history.redo() != null) publish()
+    /** Goes one step forward again; returns that step's tag, null when untagged or none. */
+    fun redo(): Any? {
+        if (history.redo() == null) return null
+        publish()
+        return history.lastTag
     }
 
     /** Writes any pending change now; false when the save failed (the change is still waiting). */

@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import com.pocketstudio.model.Channel
 import com.pocketstudio.model.FxPresets
 import com.pocketstudio.model.Macros
+import com.pocketstudio.model.SoundKind
 import com.pocketstudio.model.matchingFx
 import com.pocketstudio.ui.Knob
 import com.pocketstudio.ui.KnobColors
@@ -58,24 +59,34 @@ class QuickFxActions(
 
 /**
  * Sound play for one track, no technical knobs: ready-made effects named after what they sound
- * like, a pad XY to sweep two of the track's macros at once, and the four macros as big knobs.
+ * like (those that suit [kind] first), then, unless [compact], a pad XY to sweep two of the
+ * track's macros at once and the four macros as big knobs.
  */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun QuickFxPanel(ch: Int, channel: Channel, actions: QuickFxActions) {
+fun QuickFxPanel(ch: Int, channel: Channel, actions: QuickFxActions, kind: SoundKind? = null, compact: Boolean = false) {
     val chipColors = pillColors(Neon.Magenta)
     val current = channel.matchingFx()
-    var category by rememberSaveable(ch) { mutableStateOf(current?.category?.takeIf { it.isNotEmpty() } ?: FxPresets.CATEGORIES.first()) }
+    val suggested = kind?.let { FxPresets.suggestedFor(it) }.orEmpty()
+    // With suggestions, the families wait behind « Toutes » (unless the one in use is elsewhere).
+    val startAll = suggested.isEmpty() || (current != null && current.id != FxPresets.NONE.id && current !in suggested)
+    var category by rememberSaveable(ch, kind) {
+        mutableStateOf(if (startAll) current?.category?.takeIf { it.isNotEmpty() } ?: FxPresets.CATEGORIES.first() else SUGGESTED)
+    }
     Column(Modifier.fillMaxWidth().testTag("quick_fx_$ch"), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         WithHelp(Glossary.FX_PRESET) { Text(tr("Ambiances toutes prêtes"), style = MaterialTheme.typography.labelLarge, color = Neon.Magenta) }
         Row(Modifier.fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            if (kind != null) {
+                FilterChip(selected = category == SUGGESTED, onClick = { category = SUGGESTED }, label = { Text(tr("Pour : %s", tr(kind.label))) },
+                    modifier = Modifier.testTag("fx_category_suggested"))
+            }
             FxPresets.CATEGORIES.forEach { c ->
                 FilterChip(selected = category == c, onClick = { category = c }, label = { Text(tr(c)) },
                     modifier = Modifier.testTag("fx_category_$c"))
             }
         }
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            FxPresets.ALL.filter { it.category == category }.forEach { p ->
+            (if (category == SUGGESTED) suggested else FxPresets.ALL.filter { it.category == category }).forEach { p ->
                 FilterChip(selected = current?.id == p.id, onClick = { actions.applyFx(ch, p.id) }, label = { Text(tr(p.name)) },
                     colors = chipColors, modifier = Modifier.testTag("fx_preset_${p.id}"))
             }
@@ -84,10 +95,15 @@ fun QuickFxPanel(ch: Int, channel: Channel, actions: QuickFxActions) {
         }
         Text(current?.description?.let { tr(it) } ?: tr("Touche une ambiance pour l'essayer : tu peux toujours revenir avec Annuler."),
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
-        XyPad(ch, channel.macros, actions)
-        MacroKnobs(ch, channel.macros, actions)
+        if (!compact) {
+            XyPad(ch, channel.macros, actions)
+            MacroKnobs(ch, channel.macros, actions)
+        }
     }
 }
+
+/** The suggestions' tab (not a preset category). */
+private const val SUGGESTED = "suggested"
 
 /** X: the colour (dark ↔ bright); Y: a macro of choice. Double tap: both back to rest. */
 @Composable
@@ -188,18 +204,4 @@ fun quickFxSummary(c: Channel): String {
     c.matchingFx()?.let { return if (it.id == FxPresets.NONE.id) none else tr(it.name) }
     val macros = c.macros.mapIndexedNotNull { m, v -> if (v != Macros.DEFAULTS[m]) tr(Macros.NAMES[m]) else null }
     return (listOf(effectsSummary(c.inserts, c.sends)).filter { it != none } + macros).joinToString(" · ").ifEmpty { none }
-}
-
-/** The detailed effect slots and sends, behind a button (for those who want every setting). */
-@Composable
-fun DetailedFx(ch: Int, channel: Channel, actions: MixerActions) {
-    var open by rememberSaveable(ch) { mutableStateOf(false) }
-    TextButton(onClick = { open = !open }, modifier = Modifier.testTag("fx_detail_$ch")) {
-        Text(if (open) tr("Masquer les réglages détaillés") else tr("Réglages détaillés (effets un par un, envois)"), color
- = Neon.TextSecondary)
-    }
-    if (open) {
-        InsertRack(ch, channel.inserts, actions)
-        SendSliders(ch, channel.sends, actions)
-    }
 }

@@ -320,7 +320,7 @@ data class Mixer(
         /** 0..15 the tracks (4 is the master's index), 16..31 the drum pads' own strips. */
         const val CHANNELS = 32
         const val FIRST_PAD = 16
-        const val INSERTS = 4
+        const val INSERTS = 8
         /** The master's index where a channel number is expected (automation, engine). */
         const val MASTER = 4
         const val MASTER_MIN_DB = -24f

@@ -29,9 +29,13 @@ import com.pocketstudio.app.remix.StemStore
 import com.pocketstudio.model.Remix
 import com.pocketstudio.model.Mixer
 import com.pocketstudio.model.Macros
+import com.pocketstudio.model.insertsOf
+import com.pocketstudio.model.withInsertsSwapped
 import com.pocketstudio.model.FxPresets
 import com.pocketstudio.model.currentSceneContent
 import com.pocketstudio.model.withFx
+import com.pocketstudio.model.longFxLimitNotice
+import com.pocketstudio.model.longFxOverLimit
 import com.pocketstudio.model.withoutStaleInsertLanes
 import com.pocketstudio.model.Scene
 import com.pocketstudio.model.SongPart
@@ -91,6 +95,8 @@ import com.pocketstudio.model.songIndexAfterRemoval
 import com.pocketstudio.model.songIndexAfterMove
 import com.pocketstudio.model.songNextIndex
 import com.pocketstudio.model.renameScene
+import com.pocketstudio.model.moveScene
+import com.pocketstudio.model.SceneMove
 import com.pocketstudio.model.insertSongPart
 import com.pocketstudio.model.duplicateSongPart
 import com.pocketstudio.model.moveSongPart
@@ -556,6 +562,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             _notice.value = tr("Huit pistes d'instruments au maximum : supprime-en une pour en dupliquer une autre.")
             return
         }
+        if (longFxRefused(next)) return
         session.edit { next }
         pushTracks()
         pushMixer()
@@ -1475,6 +1482,55 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun renameScene(index: Int, label: String) {
         if (index !in project.value.allScenes.indices) return
         session.edit { it.renameScene(index, label) }
+    }
+
+    /**
+     * Scene [from] dragged onto slot [to] (one undo step): moved to an empty slot, or swapped
+     * with the scene there, or put in its place ([replace]). What plays goes on: the scene heard,
+     * the one waiting and the song parts follow their scene's new place.
+     */
+    fun moveScene(from: Int, to: Int, replace: Boolean = false) {
+        if (from == to || from !in project.value.allScenes.indices || to !in 0 until Scene.MAX) return
+        // A take records into its scene's slot (as for Annuler, the take ends first).
+        if (_recording.value || _audioRecording.value != null || _takeSaving.value) {
+            _notice.value = tr("Arrête d'abord l'enregistrement pour déplacer une scène.")
+            return
+        }
+        val move = SceneMove(from, to, replace)
+        val heard = sceneHeard()?.let(move::forward)
+        followSceneMove(move::forward)
+        session.edit(tag = move) { it.moveScene(from, to, replace) }
+        // The engine gets the scenes as they are now, and the waiting one is sent again (the song
+        // keeps its order and the part chosen to come next; outside the song, as after Annuler).
+        if (heard != null && _sessionUi.value.songIndex >= 0) {
+            syncEngine()
+            stageSongPart()
+        } else {
+            followPlaybackAfterHistory(heard)
+        }
+    }
+
+    /**
+     * True (and the warning shown) when [next] has more long effects of a pool (echoes, reverbs,
+     * tape stops) than the engine holds and more than now: the edit must not happen, or the last
+     * one would stay silent with nothing said.
+     */
+    private fun longFxRefused(next: Project): Boolean {
+        val over = next.mixer.longFxOverLimit(project.value.mixer) ?: return false
+        _notice.value = longFxLimitNotice(over)
+        return true
+    }
+
+    /** After a project opens, or Annuler/Rétablir: more long effects than the engine holds are said, not left silent. */
+    private fun warnLongFxOverLimit(before: Project? = null) {
+        project.value.mixer.longFxOverLimit(before?.mixer)?.let { _notice.value = longFxLimitNotice(it) }
+    }
+
+    /** What plays and waits follows a scene move (done, undone or redone): [map] gives each scene's new place. */
+    private fun followSceneMove(map: (Int) -> Int) {
+        heardScene = heardScene?.let(map)
+        val ui = _sessionUi.value
+        _sessionUi.value = ui.copy(pending = ui.pending?.let(map), removed = ui.removed?.let { it.copy(scene = map(it.scene)) })
     }
 
     /** Shows a new, empty scene (the first free slot), to start something else. */
@@ -2954,6 +3010,23 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** Peak per mixer channel (the master's at [MASTER]), then the limiter gain. */
     val meters: StateFlow<FloatArray> = _meters.asStateFlow()
 
+    /**
+     * True while the audio thread has almost no time to spare (too many heavy effects at once):
+     * the effects box says so. Polled twice a second, only while a box is on screen.
+     */
+    val cpuBusy: StateFlow<Boolean> = kotlinx.coroutines.flow.flow {
+        if (!NativeEngine.isAvailable) {
+            emit(false)
+            return@flow
+        }
+        var busy = false
+        while (true) {
+            busy = com.pocketstudio.app.mixer.cpuBusyNext(busy, NativeEngine.cpuLoad())
+            emit(busy)
+            kotlinx.coroutines.delay(500)
+        }
+    }.distinctUntilChanged().stateIn(viewModelScope, SharingStarted.WhileSubscribed(1000), false)
+
     /** Polls meter peaks about 20 times a second while the mixer is visible. */
     suspend fun pollMeters() {
         if (!NativeEngine.isAvailable) return
@@ -3053,19 +3126,21 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (!NativeEngine.isAvailable) return
         // Only the strips in use: the engine's command queue has room for whole projects.
         val pads = (0 until DrumPattern.PAD_COUNT).filter { p.mixer.channels.getOrNull(Mixer.padChannel(it))?.hasOwnFx() == true }
-        val used = setOf(0, 1, 3) + p.instrumentTracks.map { InstrumentTrack.mixerChannel(it.id) } + p.audioTracks.map { AudioTrack.mixerChannel(it.id) } +
-            pads.map { Mixer.padChannel(it) }
-        p.mixer.channels.take(NativeEngine.MIXER_CHANNELS).forEachIndexed { i, c ->
-            if (i == MASTER) return@forEachIndexed  // the master's index: its settings are below
-            if (i !in used) {
-                // A strip of a track gone (deleted, undone, another project): no solo or mute may
-                // linger in the engine, where a solo would silence everything else.
-                if (i < Mixer.FIRST_PAD) {
-                    NativeEngine.setChannelMute(i, false)
-                    NativeEngine.setChannelSolo(i, false)
-                }
-                return@forEachIndexed
+        val used = usedStrips(p)
+        // First the strips of tracks gone (deleted, undone, another project): their effects go in
+        // one command, giving their echo, reverb and tape stop memory back before the strips in
+        // use ask for it (else an effect there would stay silent live while the export plays it).
+        // No solo or mute may linger in the engine either, where a solo would silence the rest.
+        stripsToClear(p).forEach { i ->
+            NativeEngine.clearInserts(i)
+            if (i < Mixer.FIRST_PAD) {
+                NativeEngine.setChannelMute(i, false)
+                NativeEngine.setChannelSolo(i, false)
             }
+        }
+        p.mixer.channels.take(NativeEngine.MIXER_CHANNELS).forEachIndexed { i, c ->
+            // The master's index (its settings are below) and the strips just emptied.
+            if (i == MASTER || i !in used) return@forEachIndexed
             NativeEngine.setChannelVolume(i, c.volume)
             NativeEngine.setChannelPan(i, c.pan)
             NativeEngine.setChannelMute(i, c.mute)
@@ -3097,10 +3172,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     private fun pushInserts(ch: Int, inserts: List<Insert>) {
-        inserts.forEachIndexed { slot, ins ->
-            NativeEngine.setInsertType(ch, slot, ins.type)
-            ins.params.forEachIndexed { k, v -> NativeEngine.setInsertParam(ch, slot, k, v) }
-        }
+        insertCommands(inserts, { slot, type -> NativeEngine.setInsertType(ch, slot, type) }) { slot, k, v -> NativeEngine.setInsertParam(ch, slot, k, v) }
     }
 
     // --- Effects (inserts on channels and master, sends, buses) ------------------------------
@@ -3110,7 +3182,21 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         list.mapIndexed { i, ins -> if (i == slot) Insert.of(type) else ins }
     }
 
-    // Sliders send only the value that moved (the whole mixer is ~130 commands).
+    /** An effect switched off (kept with its settings) or on again (one undo step). */
+    fun setInsertBypass(ch: Int, slot: Int, bypass: Boolean) = editInserts(ch, null) { list ->
+        list.mapIndexed { i, ins -> if (i == slot && ins.effect != EffectType.NONE) ins.copy(bypass = bypass) else ins }
+    }
+
+    /** An effect moved up or down the chain: slots [from] and [to] swap, their automation with them. */
+    fun moveInsert(ch: Int, from: Int, to: Int) {
+        if (ch !in 0 until Mixer.CHANNELS || from == to) return
+        session.edit { p -> p.withInsertsSwapped(ch, from, to) }
+        pushAutomation()
+        if (NativeEngine.isAvailable) pushInserts(ch, project.value.insertsOf(ch))
+        if (ch != MASTER) routePad(ch)
+    }
+
+    // Sliders send only the value that moved (the whole mixer is over a thousand commands).
     fun setInsertParam(ch: Int, slot: Int, param: Int, value: Float) {
         val v = value.coerceIn(0f, 1f)
         editInserts(ch, "fx-$slot-$param", push = false) { list ->
@@ -3144,11 +3230,13 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val preset = FxPresets.byId(presetId) ?: return
         if (ch !in 0 until Mixer.CHANNELS || ch == MASTER) return
         val lanes = project.value.automation.size
-        session.edit { p ->
+        val edit = { p: Project ->
             val channels = p.mixer.channels.toMutableList()
             channels[ch] = channels[ch].withFx(preset)
             p.copy(mixer = p.mixer.copy(channels = channels)).withoutStaleInsertLanes(p)
         }
+        if (longFxRefused(edit(project.value))) return
+        session.edit(transform = edit)
         if (project.value.automation.size != lanes) pushAutomation()
         if (NativeEngine.isAvailable) {
             val c = project.value.mixer.channels[ch]
@@ -3184,7 +3272,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     private fun editInserts(ch: Int, key: String?, push: Boolean = true, transform: (List<Insert>) -> List<Insert>) {
         val lanes = project.value.automation.size
-        session.edit(key?.let { "fx-$ch-$it" }) { p ->
+        val edit = { p: Project ->
             val edited = if (ch == MASTER) {
                 p.copy(mixer = p.mixer.copy(master = transform(p.mixer.master)))
             } else {
@@ -3194,6 +3282,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             }
             edited.withoutStaleInsertLanes(p)
         }
+        // An effect added or switched on past what the engine holds: refused, said (never silent).
+        if (longFxRefused(edit(project.value))) return
+        session.edit(key?.let { "fx-$ch-$it" }, transform = edit)
         if (project.value.automation.size != lanes) pushAutomation()
         if (push && NativeEngine.isAvailable) {
             pushInserts(ch, if (ch == MASTER) project.value.mixer.master else project.value.mixer.channels[ch].inserts)
@@ -3598,6 +3689,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     init {
         viewModelScope.launch { project.collect { restageIfEditingUpcoming() } }
+        // A project with more long effects than the engine holds (made elsewhere, or by hand): said at once.
+        if (_notice.value == null) warnLongFxOverLimit()
         loadPadSamples()
         if (project.value.instrument != null) openLibrary()
         loadTrackFonts()
@@ -3762,9 +3855,13 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         // A take ends first: a live one then undoes in one step; a mic take keeps its track.
         if (_recording.value || _audioRecording.value != null || _takeSaving.value) return
         val heard = sceneHeard()
-        session.undo()
+        val before = project.value
+        // A scene move undone: the scene playing goes on from its old place (not the one now there).
+        val move = session.undo() as? SceneMove
+        move?.let { followSceneMove(it::back) }
         keepListenChoice()
-        followPlaybackAfterHistory(heard)
+        followPlaybackAfterHistory(if (move != null) heard?.let(move::back) else heard)
+        warnLongFxOverLimit(before)
         loadTrackFonts()
         reloadMissingSamples()
     }
@@ -3772,15 +3869,22 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun redo() {
         if (_recording.value || _audioRecording.value != null || _takeSaving.value) return
         val heard = sceneHeard()
-        session.redo()
+        val before = project.value
+        val move = session.redo() as? SceneMove
+        move?.let { followSceneMove(it::forward) }
         keepListenChoice()
-        followPlaybackAfterHistory(heard)
+        followPlaybackAfterHistory(if (move != null) heard?.let(move::forward) else heard)
+        warnLongFxOverLimit(before)
         loadTrackFonts()
         reloadMissingSamples()
     }
 
+    /** Tests (no engine there): behave as while playing, for what follows the scene heard. */
+    internal var playingForTest = false
+
     /** While playing: the scene the engine plays now (a swap the 40 ms watch missed is followed first); else null. */
     private fun sceneHeard(): Int? {
+        if (playingForTest) return heardScene ?: project.value.scene
         if (!_transport.value.playing || !NativeEngine.isAvailable) return null
         if ((_sessionUi.value.pending != null || _sessionUi.value.ending) && NativeEngine.sceneSwaps() != swapsSeen) {
             swapsSeen = NativeEngine.sceneSwaps()
@@ -4049,7 +4153,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             ) kotlinx.coroutines.delay(50)
             try {
                 renders.forEachIndexed { index, (label, solo) ->
-                    val job = OfflineExport()
+                    // A private engine costs tens of milliseconds to build: not on the main thread (never lost if cancelled).
+                    val job = finishOrRelease(Dispatchers.Default, OfflineExport::close) { OfflineExport() }!!
                     describe(job, p, song, solo, settings.limited, settings.masterFx)
                     running = job
                     val wav = runCatching { WavExporter.newFile(app, "${com.pocketstudio.model.DefaultNames.shown(p.name).take(28)}-$label") }.getOrElse { throw UserMessage(tr("Impossible de préparer le fichier d'export.")) }
@@ -4245,5 +4350,30 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         private const val OVERVIEW_BUCKETS = 400
         /** Insert "channel" index of the master. */
         const val MASTER = NativeEngine.MASTER
+
+        /** The mixer strips [p] uses (the drums, acid, synth, its tracks, the pads with effects of their own). */
+        internal fun usedStrips(p: Project): Set<Int> {
+            val pads = (0 until DrumPattern.PAD_COUNT).filter { p.mixer.channels.getOrNull(Mixer.padChannel(it))?.hasOwnFx() == true }
+            return setOf(0, 1, 3) + p.instrumentTracks.map { InstrumentTrack.mixerChannel(it.id) } +
+                p.audioTracks.map { AudioTrack.mixerChannel(it.id) } + pads.map { Mixer.padChannel(it) }
+        }
+
+        /** The engine's strips [p] does not use (the master's index aside): emptied at each sync. */
+        internal fun stripsToClear(p: Project): List<Int> {
+            val used = usedStrips(p)
+            return (0 until NativeEngine.MIXER_CHANNELS).filter { it != MASTER && it !in used }
+        }
+
+        /**
+         * A strip's effects as engine commands: each slot's type (a switched-off effect: an empty
+         * slot, its settings kept here), and the settings of the slots heard only (the engine
+         * ignores them on an empty slot, and switching an effect on sends the slot again).
+         */
+        internal inline fun insertCommands(inserts: List<Insert>, type: (slot: Int, type: Int) -> Unit, param: (slot: Int, k: Int, v: Float) -> Unit) {
+            inserts.forEachIndexed { slot, ins ->
+                type(slot, ins.heardType)
+                if (ins.heardType != 0) ins.params.forEachIndexed { k, v -> param(slot, k, v) }
+            }
+        }
     }
 }

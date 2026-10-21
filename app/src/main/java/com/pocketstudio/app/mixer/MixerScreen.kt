@@ -103,6 +103,16 @@ data class MixerActions(
     val setSend: (ch: Int, bus: Int, level: Float) -> Unit = { _, _, _ -> },
     val setBusParam: (bus: Int, param: Int, value: Float) -> Unit = { _, _, _ -> },
     val quick: QuickFxActions = QuickFxActions(),
+    /** An effect kept with its settings but not heard (true), or heard again. */
+    val setInsertBypass: (ch: Int, slot: Int, bypass: Boolean) -> Unit = { _, _, _ -> },
+    /** Two slots of a strip swapped (an effect moved up or down the chain). */
+    val moveInsert: (ch: Int, from: Int, to: Int) -> Unit = { _, _, _ -> },
+    /** What sounds on a strip (its suggested ready-made effects come first); null: not known. */
+    val kindOf: (ch: Int) -> com.pocketstudio.model.SoundKind? = { null },
+    /** How many effects of this long kind (echo, reverb, tape stop) the project already plays. */
+    val longFxCount: (EffectType) -> Int = { 0 },
+    /** The audio thread has almost no time to spare: the box warns (see [cpuBusyNext]). */
+    val cpuBusy: kotlinx.coroutines.flow.StateFlow<Boolean> = kotlinx.coroutines.flow.MutableStateFlow(false),
 )
 
 val EXPORT_BARS = listOf(1, 2, 4, 8, 16)
@@ -122,7 +132,7 @@ fun MixerScreen(
     actions: MixerActions,
     modifier: Modifier = Modifier,
     export: ExportUi = ExportUi(),
-    master: List<Insert> = List(4) { Insert() },
+    master: List<Insert> = List(com.pocketstudio.model.Mixer.INSERTS) { Insert() },
     /** The master's gain before the limiter, in dB. */
     masterDb: Float = 0f,
     buses: List<List<Float>> = Buses.DEFAULTS,
@@ -159,8 +169,8 @@ fun MixerScreen(
                 color = if (gain < 0.7f) Neon.Amber else Neon.TextSecondary,
             )
             var open by rememberSaveable { mutableStateOf(false) }
-            EffectsToggle(effectsSummary(master), open) { open = !open }
-            if (open) InsertRack(MASTER_CHANNEL, master, actions)
+            EffectsToggle(effectsSummary(master), open, Modifier.testTag("master_effects")) { open = !open }
+            if (open) InsertChain(MASTER_CHANNEL, master, actions)
             FilterChip(selected = analyserOpen, onClick = { setAnalyser(!analyserOpen) }, label = { Text(tr("Analyseur de spectre")) },
                 modifier = Modifier.testTag("analyser"))
             if (analyserOpen) com.pocketstudio.app.analysis.SpectrumView(spectrum)
@@ -310,10 +320,7 @@ private fun Strip(info: StripInfo, c: Channel, meter: Float, actions: MixerActio
         }
         val summary = androidx.compose.runtime.remember(c) { quickFxSummary(c) }
         EffectsToggle(summary, open, Modifier.testTag("effects_$index")) { open = !open }
-        if (open) {
-            QuickFxPanel(index, c, actions.quick)
-            DetailedFx(index, c, actions)
-        }
+        if (open) EffectsBox(index, c, actions)
     }
 }
 

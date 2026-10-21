@@ -2947,6 +2947,52 @@ void testScenesSwapOnTheBar() {
     CHECK(engine.acidNotesPlayed() > acidBefore);
 }
 
+void testSongEndsOnTheBar() {
+    ps::Engine engine(kRate);
+    // The last part: pad 1 on every beat, the metronome on, a held piano-roll note. The song
+    // ends after two bars: the transport stops exactly on that bar line, before its step plays.
+    for (int st = 0; st < 16; st += 4) engine.post({ps::CommandType::SetDrumHit, 1.0f, 0, st});
+    engine.post({ps::CommandType::SetSynthNote, 0.9f, 0, ps::NoteTrack::pack(0, 16, 60)});
+    engine.post({ps::CommandType::SetSynthNoteCount, 0.0f, 1});
+    engine.post({ps::CommandType::SetMetronome, 1.0f});
+    engine.post({ps::CommandType::ArmSceneSwap, 0.0f, 32, 2});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    constexpr int kBar = kRate * 2;  // 120 BPM, 4/4
+    render(engine, 2 * kBar, 256);   // up to the last frame before the end
+    CHECK(engine.transportRunning());
+    CHECK(engine.laneTriggerCount(0) == 8 && engine.metronomeClicks() == 8 && engine.sceneSwaps() == 0);
+    render(engine, 1, 1);  // the bar line itself
+    std::printf("  song end: running %d, pad1 %u, clicks %llu, swaps %u\n", engine.transportRunning() ? 1 : 0,
+                engine.laneTriggerCount(0), static_cast<unsigned long long>(engine.metronomeClicks()), engine.sceneSwaps());
+    CHECK(!engine.transportRunning());
+    CHECK(engine.sceneSwaps() == 1);                 // the app sees it as the swap it armed
+    CHECK(engine.laneTriggerCount(0) == 8);          // no kick on the bar line
+    CHECK(engine.metronomeClicks() == 8);            // nor a click
+    CHECK(engine.currentStep() == -1 && engine.songStep() == -1);
+    // What still rings fades out: no NaN, no clipping, and silence after a while.
+    const auto tail = render(engine, kRate * 2, 256);
+    float peakEnd = 0.0f;
+    for (size_t i = 0; i < tail.size(); ++i) {
+        CHECK(std::isfinite(tail[i]) && std::fabs(tail[i]) <= 1.0f);
+        if (i >= tail.size() - kRate / 2 * kChannels) peakEnd = std::max(peakEnd, std::fabs(tail[i]));
+    }
+    CHECK(peakEnd < 1e-3f);
+    CHECK(engine.laneTriggerCount(0) == 8 && engine.synthActiveVoices() == 0);
+    // Playing again starts clean: the end armed before is gone.
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    render(engine, 3 * kBar, 256);
+    CHECK(engine.transportRunning() && engine.laneTriggerCount(0) == 8 + 12);
+    // An end armed "at the next bar" in the middle of one waits for that bar line; a plain
+    // swap armed afterwards replaces it (the song goes on).
+    engine.post({ps::CommandType::ArmSceneSwap, 0.0f, 0, 2});
+    engine.post({ps::CommandType::ArmSceneSwap, 0.0f, -1});
+    render(engine, 2 * kBar, 256);
+    CHECK(engine.transportRunning());
+    engine.post({ps::CommandType::ArmSceneSwap, 0.0f, 0, 2});
+    render(engine, kBar + 256, 256);
+    CHECK(!engine.transportRunning() && engine.sceneSwaps() == 2);
+}
+
 void testPerformanceEffects() {
     ps::PerformanceFx fx;
     fx.prepare(kRate);
@@ -3923,6 +3969,7 @@ int main(int argc, char** argv) {
         {"sidechain_pump", testSidechainPumpFollowsTheKick},
         {"automation", testAutomationMovesTheFader},
         {"scenes", testScenesSwapOnTheBar},
+        {"song-end", testSongEndsOnTheBar},
         {"performance_fx", testPerformanceEffects},
         {"performance_filter_fades", testPerformanceFilterFadesInAndOut},
         {"voice_stealing_spares_held", testVoiceStealingSparesHeldNotes},

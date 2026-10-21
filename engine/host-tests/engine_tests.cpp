@@ -896,6 +896,168 @@ void testAcidCpuBudget() {
 }
 
 
+// Brightness of a stretch of signal: the energy of its sample-to-sample differences over its energy
+// (a closed low-pass gives little of the first).
+double brightness(const std::vector<float>& x, size_t from, size_t to, size_t stride = 1) {
+    double d = 0.0, e = 0.0;
+    for (size_t i = from + stride; i < to; i += stride) {
+        const double a = x[i], b = x[i - stride];
+        d += (a - b) * (a - b);
+        e += a * a;
+    }
+    return e > 0.0 ? d / e : 0.0;
+}
+
+void testAcidKnobAutomation() {
+    // A busy 303 line at 185 BPM, its cutoff automated: closed on the first half of the bar, open
+    // on the second. The engine's step frame carries the change (with the step's note), so any
+    // block size renders the same samples: live and export sound alike.
+    auto run = [](int block, bool automated) {
+        ps::Engine engine(kRate);
+        engine.post({ps::CommandType::SetTempo, 185.0f});
+        for (int i = 0; i < 16; ++i) engine.post({ps::CommandType::SetAcidStep, 0.0f, i, note(i % 2 ? 12 : 0, i % 4 == 2).pack()});
+        engine.post({ps::CommandType::SetAcidParam, 0.5f, ps::AcidTrack::Cutoff});
+        engine.post({ps::CommandType::SetAcidParam, 0.0f, ps::AcidTrack::EnvMod});
+        if (automated) {
+            engine.post({ps::CommandType::SetAutomationTarget, 0.0f, 0, ps::Automation::pack(ps::Automation::Acid, 1, 0, ps::AcidTrack::Cutoff)});
+            for (int st = 0; st < 16; ++st) engine.post({ps::CommandType::SetAutomationPoint, st < 8 ? 0.0f : 1.0f, 0, st});
+            // Resonance and saturation lanes too: every 303 knob goes through the same path.
+            engine.post({ps::CommandType::SetAutomationTarget, 0.0f, 1, ps::Automation::pack(ps::Automation::Acid, 1, 0, ps::AcidTrack::Drive)});
+            engine.post({ps::CommandType::SetAutomationPoint, 0.8f, 1, 0});
+        }
+        engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+        return render(engine, 2 * 16 * 3892, block);  // two bars
+    };
+    const auto live = run(192, true);
+    const auto big = run(ps::OfflineRenderer::kBlock, true);
+    const auto odd = run(997, true);
+    float maxDiff = 0.0f;
+    bool finite = true;
+    for (size_t i = 0; i < live.size(); ++i) {
+        maxDiff = std::max({maxDiff, std::fabs(live[i] - big[i]), std::fabs(live[i] - odd[i])});
+        finite &= std::isfinite(live[i]);
+    }
+    std::printf("  acid automation: block sizes differ by %.2e\n", static_cast<double>(maxDiff));
+    CHECK(finite);
+    CHECK(maxDiff < 1e-6f);
+    // Second bar (the lane loops): closed half against open half, left channel.
+    const size_t step = 3892, bar2 = 16 * step;
+    const double closed = brightness(live, (bar2 + step) * 2, (bar2 + 8 * step) * 2, 2);
+    const double open = brightness(live, (bar2 + 9 * step) * 2, (bar2 + 16 * step) * 2, 2);
+    const auto plain = run(192, false);
+    const double plainOpen = brightness(plain, (bar2 + 9 * step) * 2, (bar2 + 16 * step) * 2, 2);
+    std::printf("  acid automation: brightness closed %.4f, open %.4f (no lane %.4f)\n", closed, open, plainOpen);
+    CHECK(open > 3.0 * closed);
+    CHECK(open > 1.5 * plainOpen);  // the lane did open it beyond the knob's own setting
+    // Stopped, the next start plays the knob where the lane left it until a point says otherwise.
+}
+
+void testAcidAutomationWaitsForTheStep() {
+    // The new setting lands on its frame, never at the start of the block before it: the frames
+    // before the step are those of an untouched track.
+    auto run = [](bool automate) {
+        ps::AcidTrack acid;
+        acid.prepare(kRate);
+        acid.setParam(ps::AcidTrack::Cutoff, 0.0f);
+        acid.setStep(0, note(0));
+        acid.setStep(1, note(12));
+        ps::Sequencer seq;
+        seq.prepare(kRate);
+        seq.setTempo(120.0);
+        seq.start(0);
+        std::vector<float> out(12000, 0.0f);
+        for (int pos = 0; pos < 12000; pos += 1024) {
+            const int n = std::min(1024, 12000 - pos);
+            seq.advance(n, [&](int offset, int step) {
+                acid.onStep(offset, step, seq.samplesPerStep());
+                if (automate && step == 1) acid.automate(ps::AcidTrack::Cutoff, 1.0f, offset);
+            });
+            acid.render(out.data() + pos, n);
+        }
+        return out;
+    };
+    const auto a = run(false), b = run(true);
+    float before = 0.0f, after = 0.0f;
+    for (int i = 0; i < 6000; ++i) before = std::max(before, std::fabs(a[static_cast<size_t>(i)] - b[static_cast<size_t>(i)]));
+    for (int i = 6000; i < 12000; ++i) after = std::max(after, std::fabs(a[static_cast<size_t>(i)] - b[static_cast<size_t>(i)]));
+    CHECK(before == 0.0f);
+    CHECK(after > 0.01f);
+}
+
+
+// Touch take-over: while a finger holds a 303 knob, its automation lane leaves it alone (the
+// knob is heard as turned); let go, the lane drives it again from the next step. Generic: any
+// target (a mixer fader here too), several at once, a release never seen held is harmless.
+void testAutomationHoldTakesOver() {
+    static_assert(static_cast<int>(ps::CommandType::SetInsertOn) == 69 && static_cast<int>(ps::CommandType::SetAutomationHold) == 70,
+                  "NativeEngine.kt's CMD_INSERT_ON and CMD_AUTOMATION_HOLD");
+    const int32_t cutoff = ps::Automation::pack(ps::Automation::Acid, 1, 0, ps::AcidTrack::Cutoff);
+    const size_t step = 3892, bar = 16 * step;  // 185 BPM
+    // Bar 1: the lane keeps the filter closed. Bar 2: the knob turned wide open (held or not).
+    // Bar 3: let go.
+    auto run = [&](bool hold) {
+        ps::Engine engine(kRate);
+        engine.post({ps::CommandType::SetTempo, 185.0f});
+        for (int i = 0; i < 16; ++i) engine.post({ps::CommandType::SetAcidStep, 0.0f, i, note(i % 2 ? 12 : 0, i % 4 == 2).pack()});
+        engine.post({ps::CommandType::SetAcidParam, 0.0f, ps::AcidTrack::Cutoff});
+        engine.post({ps::CommandType::SetAcidParam, 0.0f, ps::AcidTrack::EnvMod});
+        engine.post({ps::CommandType::SetAutomationTarget, 0.0f, 0, cutoff});
+        for (int st = 0; st < 16; ++st) engine.post({ps::CommandType::SetAutomationPoint, 0.0f, 0, st});
+        engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+        auto out = render(engine, static_cast<int>(bar + step / 2), 192);
+        if (hold) engine.post({ps::CommandType::SetAutomationHold, 1.0f, cutoff});
+        engine.post({ps::CommandType::SetAcidParam, 1.0f, ps::AcidTrack::Cutoff});
+        auto more = render(engine, static_cast<int>(bar), 192);
+        out.insert(out.end(), more.begin(), more.end());
+        if (hold) engine.post({ps::CommandType::SetAutomationHold, 0.0f, cutoff});
+        more = render(engine, static_cast<int>(bar), 192);
+        out.insert(out.end(), more.begin(), more.end());
+        return out;
+    };
+    const auto held = run(true), loose = run(false);
+    auto bright = [&](const std::vector<float>& v, size_t from, size_t to) { return brightness(v, from * 2, to * 2, 2); };
+    const size_t b2 = bar + 2 * step, b3 = 2 * bar + 2 * step;
+    const double heldOpen = bright(held, b2, b2 + 12 * step), freeOpen = bright(loose, b2, b2 + 12 * step);
+    const double heldBack = bright(held, b3, b3 + 12 * step), closed = bright(held, step, 14 * step);
+    std::printf("  hold: turned and held %.4f, pulled back by the lane %.4f; let go %.4f (closed %.4f)\n", heldOpen, freeOpen, heldBack, closed);
+    CHECK(heldOpen > 3.0 * freeOpen);  // the finger wins while it holds
+    CHECK(freeOpen < 1.5 * closed);    // without a hold, the lane closes it again at once
+    CHECK(heldBack < 1.5 * closed);    // let go: the lane has it again
+    // Generic and bounded: a fader held, more holds than slots, releases of what was never held.
+    ps::Automation a;
+    const int32_t fader = ps::Automation::pack(ps::Automation::Volume, 2, 0, 0);
+    a.hold(fader, true);
+    a.hold(fader, true);  // twice: still one slot
+    CHECK(a.isHeld(fader) && !a.isHeld(cutoff));
+    for (int i = 0; i < 2 * ps::Automation::kHolds; ++i) a.hold(ps::Automation::pack(ps::Automation::Acid, 1, 0, i), true);
+    CHECK(a.isHeld(fader));
+    a.hold(fader, false);
+    CHECK(!a.isHeld(fader));
+    a.hold(ps::Automation::pack(ps::Automation::Pan, 3, 0, 0), false);  // never held: nothing happens
+    a.hold(-1, true);
+    CHECK(!a.isHeld(-1));
+    for (int i = 0; i < 2 * ps::Automation::kHolds; ++i) a.hold(ps::Automation::pack(ps::Automation::Acid, 1, 0, i), false);
+    for (int32_t h : a.held) CHECK(h == -1);
+}
+
+// A slot given another effect, or emptied, plays in every scene again: an off gate left by the
+// effect before does not keep the new one silent (the app sends « Joue dans » after it).
+void testNewEffectInASlotIsHeard() {
+    ps::Mixer mixer;
+    mixer.prepare(kRate);
+    mixer.setInsertType(ps::Mixer::kDrums, 1, ps::InsertSlot::Saturation);
+    mixer.setInsertOn(ps::Mixer::kDrums, 1, false);
+    CHECK(!mixer.insertOn(ps::Mixer::kDrums, 1));
+    mixer.setInsertType(ps::Mixer::kDrums, 1, ps::InsertSlot::Saturation);  // the same: unchanged
+    CHECK(!mixer.insertOn(ps::Mixer::kDrums, 1));
+    mixer.setInsertType(ps::Mixer::kDrums, 1, ps::InsertSlot::Chorus);
+    CHECK(mixer.insertOn(ps::Mixer::kDrums, 1));
+    mixer.setInsertOn(ps::Mixer::kDrums, 1, false);
+    mixer.setInsertOn(ps::Mixer::kDrums, 3, false);
+    mixer.clearInserts(ps::Mixer::kDrums);
+    CHECK(mixer.insertOn(ps::Mixer::kDrums, 1) && mixer.insertOn(ps::Mixer::kDrums, 3));
+}
+
 std::vector<float> renderSynth(ps::Synth& synth, int frames, int block = 256) {
     std::vector<float> out(static_cast<size_t>(frames), 0.0f);
     for (int pos = 0; pos < frames; pos += block) synth.render(out.data() + pos, std::min(block, frames - pos));
@@ -2168,6 +2330,93 @@ void testOnceAudioClip() {
     engine.collectGarbage();
 }
 
+// « Joue dans »: an effect kept to some scenes lets the sound through untouched elsewhere and
+// switches on the scene swap's very frame (a 5 ms glide from there), live as in the export, whatever
+// the block size. Here a saturation at volume 0 (silence) plays in scene B only: scene A's kicks
+// come through untouched, scene B is silent once the glide is over, A again after the next swap.
+void testInsertPlaysInSomeScenes() {
+    const int step = 6000;  // 120 BPM
+    const int slot = ps::Mixer::kDrums * ps::Mixer::kInserts + 2;
+    auto setup = [&](auto& target, bool limited) {
+        target.post({ps::CommandType::SetTempo, 120.0f});
+        for (int st = 0; st < 16; st += 2) target.post({ps::CommandType::SetDrumHit, 1.0f, 0, st});
+        target.post({ps::CommandType::SetInsertType, 0.0f, slot, ps::InsertSlot::Saturation});
+        target.post({ps::CommandType::SetInsertParam, 0.0f, slot, 3});  // volume 0: silence when heard
+        if (limited) target.post({ps::CommandType::SetInsertOn, 0.0f, slot});  // not in scene A
+    };
+    // Scene B (the same kicks), its effect on, takes over after 16 steps; then A again, 16 later.
+    auto stage = [&](auto& target, bool on, bool limited) {
+        target.post({ps::CommandType::SetStaging, 1.0f});
+        for (int st = 0; st < 16; st += 2) target.post({ps::CommandType::SetDrumHit, 1.0f, 0, st});
+        if (limited) target.post({ps::CommandType::SetInsertOn, on ? 1.0f : 0.0f, slot});
+        target.post({ps::CommandType::SetStaging, 0.0f});
+        target.post({ps::CommandType::ArmSceneSwap, 0.0f, 16});
+    };
+    const int frames = step * 40;
+    auto exportOf = [&](bool limited) {
+        ps::OfflineRenderer r(kRate);
+        setup(r, limited);
+        r.scheduleFrom(step / 2);
+        stage(r, true, limited);
+        r.scheduleFrom(step * 16 + step / 2);
+        stage(r, false, limited);
+        r.scheduleFrom(-1);
+        return r.renderToBuffer(frames, 0);
+    };
+    const auto exported = exportOf(true);
+    const auto always = exportOf(false);  // « Tout »: the effect plays everywhere (silence)
+    // Live, in odd blocks, the scenes staged while the part before plays.
+    ps::Engine engine(kRate);
+    setup(engine, true);
+    render(engine, kRate / 10, 100);
+    engine.mixer().settle();
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    auto live = render(engine, step / 2, 97);
+    stage(engine, true, true);
+    auto more = render(engine, step * 16, 97);
+    live.insert(live.end(), more.begin(), more.end());
+    stage(engine, false, true);
+    more = render(engine, frames - step / 2 - step * 16, 97);
+    live.insert(live.end(), more.begin(), more.end());
+    CHECK(engine.sceneSwaps() == 2u);
+    CHECK(live.size() == exported.size());
+    if (live.size() != exported.size() || always.size() != exported.size()) return;
+    float diff = 0.0f;
+    for (size_t i = 0; i < live.size(); ++i) diff = std::max(diff, std::fabs(live[i] - exported[i]));
+    CHECK(diff < 1e-6f);  // the export sounds as the live engine plays
+    auto peak = [&](const std::vector<float>& v, int from, int to) {
+        float p = 0.0f;
+        for (int i = from * kChannels; i < to * kChannels; ++i) p = std::max(p, std::fabs(v[size_t(i)]));
+        return p;
+    };
+    const int swap = step * 16, back = step * 32;
+    const int glide = kRate * 5 / 1000;
+    CHECK(peak(always, 0, frames) < 1e-6f);             // heard everywhere: silence all along
+    CHECK(peak(exported, swap - step, swap) > 0.2f);    // scene A: the kicks, untouched
+    CHECK(peak(exported, swap - 1, swap) > 1e-4f);      // still sounding on the last frame before the swap
+    CHECK(peak(exported, swap + glide, back) < 1e-6f);  // scene B: silent once the glide is over
+    CHECK(peak(exported, back + 1, back + step) > 0.2f);  // A again from the next swap
+    // The switch starts on the swap's frame: its first frames are still almost the dry kick.
+    CHECK(peak(exported, swap, swap + 10) > 0.5f * peak(exported, swap - 10, swap));
+    // Stopped, a change of scene by the user switches it at once; a staged one that never comes
+    // (cancelled) changes nothing at a later swap.
+    engine.post({ps::CommandType::SetTransport, 0.0f, 0});
+    engine.post({ps::CommandType::SetInsertOn, 1.0f, slot});
+    render(engine, 256, 256);
+    CHECK(engine.mixer().insertOn(ps::Mixer::kDrums, 2));
+    engine.post({ps::CommandType::SetStaging, 1.0f});
+    engine.post({ps::CommandType::SetInsertOn, 0.0f, slot});
+    engine.post({ps::CommandType::SetStaging, 0.0f});
+    engine.post({ps::CommandType::ArmSceneSwap, 0.0f, -1});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    engine.post({ps::CommandType::ArmSceneSwap, 0.0f, 0});
+    render(engine, step * 17, 256);
+    CHECK(engine.sceneSwaps() == 3u);
+    CHECK(engine.mixer().insertOn(ps::Mixer::kDrums, 2));
+    engine.post({ps::CommandType::SetTransport, 0.0f, 0});
+    render(engine, 256, 256);
+}
+
 // Started from a later part, the song position (song automation, what the app records on) is the
 // part's place in the song, not 0; the same when a scene hands over to that part.
 void testSongStartsFromALaterPart() {
@@ -2550,6 +2799,9 @@ void testProcessNeverAllocates() {
         engine.post({ps::CommandType::SetAutomationTarget, 0.0f, 3, ps::Automation::pack(ps::Automation::Volume, 5, 0, 0)});
         engine.post({ps::CommandType::SetAutomationMode, 16.0f, 3, ps::Automation::Song});
         for (int b = 0; b < 16; ++b) engine.post({ps::CommandType::SetAutomationSong, b / 16.0f, 3, b});
+        // And a 303 knob on a loop lane (it lands on the step's frame).
+        engine.post({ps::CommandType::SetAutomationTarget, 0.0f, 4, ps::Automation::pack(ps::Automation::Acid, 1, 0, ps::AcidTrack::Cutoff)});
+        for (int st = 0; st < 16; ++st) engine.post({ps::CommandType::SetAutomationPoint, st / 16.0f, 4, st});
         // An audio track looping a clip, and the microphone being recorded.
         sample->retain();
         ps::Command audio{ps::CommandType::InstallAudioClip, 0.0f, 2};
@@ -2601,11 +2853,21 @@ void testProcessNeverAllocates() {
             engine.post({ps::CommandType::SetInsertType, 0.0f, ch * ps::Mixer::kInserts, 1 + lane % 13});
             engine.post({ps::CommandType::SetSend, 0.5f, ch, 0});
         }
+        // A strip of long effects only (two of each kind and two short ones), for the swaps below.
+        const int longCh = ps::Mixer::kFirstPad + 6;
+        {
+            const int types[ps::Mixer::kInserts] = {ps::InsertSlot::EchoFx, ps::InsertSlot::ReverbFx, ps::InsertSlot::TapeStopFx, ps::InsertSlot::PingPongFx,
+                                                    ps::InsertSlot::ReverbFx, ps::InsertSlot::TapeStopFx, ps::InsertSlot::Chorus, ps::InsertSlot::FlangerFx};
+            for (int k = 0; k < ps::Mixer::kInserts; ++k) engine.post({ps::CommandType::SetInsertType, 0.0f, longCh * ps::Mixer::kInserts + k, types[k]});
+            engine.post({ps::CommandType::SetPadStrip, 1.0f, 6});
+        }
         engine.post({ps::CommandType::SetTransport, 1.0f, 0});
         std::vector<float> out(512 * 2);
         for (int i = 0; i < 50; ++i) engine.process(nullptr, 0, 0, out.data(), 512, 2);  // warm-up
         g_allocations = 0;
         g_countAllocations = true;
+        uint32_t swapsSeen = engine.sceneSwaps();
+        bool stagedOn = true;
         for (int i = 0; i < 400; ++i) {
             if (i % 50 == 0) engine.post({ps::CommandType::TriggerPad, 1.0f, 3});
             if (i % 35 == 0) engine.post({ps::CommandType::SetPadStrip, (i / 35) % 2 ? 0.0f : 1.0f, 3});  // routed, then not
@@ -2614,6 +2876,21 @@ void testProcessNeverAllocates() {
             if (i % 60 == 0) engine.post({ps::CommandType::SetInsertType, 0.0f, 5, 1 + (i / 60) % (ps::InsertSlot::kTypes - 1)});
             if (i % 65 == 0) engine.post({ps::CommandType::SetInsertType, 0.0f, 9, (i / 65) % 2 ? ps::InsertSlot::ReverbFx : ps::InsertSlot::EchoFx});
             if (i % 55 == 0) engine.post({ps::CommandType::SetBusParam, (i % 110) / 110.0f, 1, 0});
+            // A finger on the automated 303 cutoff, then let go (touch take-over).
+            if (i % 20 == 0) engine.post({ps::CommandType::SetAutomationHold, (i / 20) % 2 ? 0.0f : 1.0f, 0,
+                                          ps::Automation::pack(ps::Automation::Acid, 1, 0, ps::AcidTrack::Cutoff)});
+            // « Joue dans » at the scene swaps (one per bar): the long effects (echo, reverb, tape
+            // stop) and short ones leave at the first swap and come back at the next (back from
+            // silence, each one's state is reset in the callback).
+            if (i == 5 || engine.sceneSwaps() != swapsSeen) {
+                swapsSeen = engine.sceneSwaps();
+                stagedOn = !stagedOn;
+                engine.post({ps::CommandType::SetStaging, 1.0f});
+                for (int k = 0; k < ps::Mixer::kInserts; ++k) engine.post({ps::CommandType::SetInsertOn, stagedOn ? 1.0f : 0.0f, longCh * ps::Mixer::kInserts + k});
+                for (int k = 0; k < ps::Mixer::kInserts; k += 2) engine.post({ps::CommandType::SetInsertOn, stagedOn ? 1.0f : 0.0f, k});
+                engine.post({ps::CommandType::SetStaging, 0.0f});
+                engine.post({ps::CommandType::ArmSceneSwap, 0.0f, 0});
+            }
             if (i % 45 == 0) {
                 for (int m = 0; m < ps::TrackMacros::kCount; ++m) engine.post({ps::CommandType::SetMacro, (i % 90) / 90.0f, (i / 45) % 4, m});
             }
@@ -2629,7 +2906,9 @@ void testProcessNeverAllocates() {
             engine.process(nullptr, 0, 0, out.data(), 512, 2);
         }
         g_countAllocations = false;
-        std::printf("  allocations during %d blocks: %d\n", 400, g_allocations.load());
+        std::printf("  allocations during %d blocks: %d (%u scene swaps)\n", 400, g_allocations.load(), engine.sceneSwaps());
+        CHECK(engine.sceneSwaps() >= 2u);  // the effects left at a swap and came back at the next
+        if (engine.sceneSwaps() == 2u) CHECK(engine.mixer().insertOn(longCh, 0));  // back on at the second
         CHECK(g_allocations.load() == 0);
         engine.collectGarbage();
         CHECK(bundle->refCount() == 3);  // ours + the two players', none leaked by the re-installs
@@ -5163,6 +5442,10 @@ int main(int argc, char** argv) {
         {"acid_slide", testAcidSlideHoldsTheNote},
         {"acid_stops_cleanly", testAcidStopsCleanly},
         {"acid_cpu", testAcidCpuBudget},
+        {"acid_knob_automation", testAcidKnobAutomation},
+        {"automation_hold_takes_over", testAutomationHoldTakesOver},
+        {"new_effect_in_a_slot_is_heard", testNewEffectInASlotIsHeard},
+        {"acid_automation_on_step", testAcidAutomationWaitsForTheStep},
         {"synth_pitch", testSynthPitchIsRight},
         {"synth_on_time_and_release", testSynthNoteStartsOnTimeAndReleases},
         {"synth_voices_and_cpu", testSynthVoiceStealingAndCpu},
@@ -5216,6 +5499,7 @@ int main(int argc, char** argv) {
         {"audio_tracks", testAudioTracks},
         {"song_audio_clip", testSongAudioClip},
         {"once_audio_clip", testOnceAudioClip},
+        {"insert_plays_in_some_scenes", testInsertPlaysInSomeScenes},
         {"song_from_a_later_part", testSongStartsFromALaterPart},
         {"scene_alone_outside_song", testSceneAloneIsOutsideTheSong},
         {"recording", testRecordingStartsOnTheFirstStep},

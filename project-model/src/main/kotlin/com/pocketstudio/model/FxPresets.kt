@@ -186,6 +186,7 @@ fun Channel.matchingFx(): FxPreset? {
     val clean = sanitized()
     return (FxPresets.ALL + FxPresets.NONE).firstOrNull { p ->
         val made = clean.withFx(p)
-        made.inserts == clean.inserts && made.sends == clean.sends && made.macros == clean.macros
+        // An effect of the preset kept to some scenes only is still that preset.
+        made.inserts == clean.inserts.map { it.copy(scenes = null) } && made.sends == clean.sends && made.macros == clean.macros
     }
 }

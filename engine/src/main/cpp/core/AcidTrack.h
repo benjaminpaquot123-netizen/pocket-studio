@@ -39,6 +39,9 @@ public:
     void setRoot(int midiNote);
     // value: 0..1 for every parameter (mapped to musical ranges inside).
     void setParam(Param param, float value);
+    // Automation: `param` takes `value` at `frameOffset` of the coming block (with the step's note,
+    // whatever the block size). Real-time safe.
+    void automate(Param param, float value, int frameOffset);
 
     // Called by the sequencer for each 16th step at `frameOffset` in the coming block.
     void onStep(int frameOffset, int step, double samplesPerStep);
@@ -64,6 +67,12 @@ private:
     int length_ = 16;
     int root_ = 36;
     float drive_ = 0.3f;
+    float driveGain_ = 1.0f;  // from drive_: input gain of the saturation and its loudness makeup
+    float makeup_ = 1.0f;
+    // Automated settings waiting for their frame (negative = none).
+    std::array<float, ParamCount> automated_{};
+    int automatedAt_ = -1;
+    void applyAutomated();
     float level_ = 0.7f;
     bool previousSlide_ = false;
     PendingEvent pending_;

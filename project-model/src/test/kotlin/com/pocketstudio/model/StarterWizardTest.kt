@@ -28,7 +28,7 @@ class StarterWizardTest {
             // The mood proposed first has the style's own chords; tips and effects point at what exists.
             assertTrue(s.name, s.melody.mood in s.melody.progressions)
             assertTrue(s.name, s.melody.tips.values.all { it.isNotBlank() })
-            val targets = StarterWizard.Part.entries.map { it.id } + s.lines.map { it.role.id } + listOf("acid", "drums")
+            val targets = StarterWizard.Part.entries.map { it.id } + s.lines.map { it.role.id } + listOf("acid", "drums", "master")
             for (fx in s.effects) {
                 assertTrue("${s.name} ${fx.target}", fx.target in targets)
                 assertTrue("${s.name} ${fx.preset}", fx.preset.isEmpty() || FxPresets.byId(fx.preset) != null)

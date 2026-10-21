@@ -154,7 +154,9 @@ class I18nCatalogTest {
             "DefaultNames.kt: rest",  // a kit pad's name (DefaultNames.KIT_PADS, in DefaultNames.TEXTS)
             "Effects.kt: type.label",  // an effect name (EffectType, checked by ModelTextsTest)
             "EffectsBox.kt: group.label",
+            "EffectsBox.kt: Macros.NAMES[m]",
             "EffectsBox.kt: ins.effect.blurb",
+            "EffectsBox.kt: it.name",
             "EffectsBox.kt: param.format(ins.params[k])",
             "EffectsBox.kt: param.label",
             "EffectsBox.kt: type.label",
@@ -207,6 +209,11 @@ class I18nCatalogTest {
             "WizardScreen.kt: StarterWizard.progressionOf(style, m).first.label",
             "WizardScreen.kt: StarterWizard.progressionOf(style, mood).first.label",
             "WizardScreen.kt: it",
+            // The assistant's quick 303 sounds (WizardAcid.SOUNDS, in ModelTextsTest).
+            "WizardScreen.kt: acidSoundLabel",
+            // "+ Piste": the kinds of track (TrackKind, in ModelTextsTest).
+            "TrackAdd.kt: kind.title",
+            "TrackAdd.kt: kind.description",
             "WizardScreen.kt: it.name",
             "WizardScreen.kt: line.role.title",
             "WizardScreen.kt: StarterWizard.ScenePlan.ACID_TITLE",

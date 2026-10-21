@@ -44,9 +44,10 @@ fun duration(seconds: Double): String {
  * it (the whole song, or one section in a loop) and what to try next, the voice on top included.
  * It ends on "▶ Écouter mon morceau". [song]: the song's summary ([songSummary]). [inKey]: a mood
  * was chosen, so the song's key is locked and the keyboard plays no wrong note. [acid]: the song
- * has the style's 303 line.
+ * has the style's 303 line; [acidMoves]: its cutoff follows a song curve (acid styles), so the
+ * guide says it moves on its own and how to take it over.
  */
-fun songGuide(styleName: String, plan: StarterWizard.ScenePlan, inKey: Boolean, song: String = "", acid: Boolean = false): List<GuidePage> {
+fun songGuide(styleName: String, plan: StarterWizard.ScenePlan, inKey: Boolean, song: String = "", acid: Boolean = false, acidMoves: Boolean = false): List<GuidePage> {
     fun scene(index: Int): String {
         val what = plan.contents(index).joinToString(", ") { it.substringBefore(" (").substringBefore(" / ") }
         return tr("%s · %s, %s : %s.", StarterWizard.ScenePlan.NAMES[index], plan.title(index), plan.role(index), what.ifEmpty { tr("rien pour l'instant") })
@@ -68,7 +69,10 @@ fun songGuide(styleName: String, plan: StarterWizard.ScenePlan, inKey: Boolean, 
                 tr("Rythme : touche les cases pour ajouter ou enlever des coups."),
                 if (inKey) tr("Synthé : joue au clavier, il reste dans la gamme du morceau : aucune fausse note possible.")
                 else tr("Synthé : joue au clavier pour essayer des notes par-dessus le rythme."),
-                if (acid) tr("Acide : touche un pas pour changer la ligne 303, tourne « Coupure » pour la faire crier.") else null,
+                // The 303 line made on its step: where it plays, and where to change it.
+                if (!acid || plan.acid.isEmpty()) null
+                else if (acidMoves) tr("Acide : ta ligne 303 joue dans %s. Dans l'onglet Acide, touche un pas pour la changer. La coupure s'ouvre toute seule le long du morceau : pour la tourner toi-même, garde le doigt sur « Coupure ».", plan.sections(plan.acid))
+                else tr("Acide : ta ligne 303 joue dans %s. Dans l'onglet Acide, touche un pas pour la changer et tourne « Coupure » pour la faire crier.", plan.sections(plan.acid)),
                 tr("Audio : enregistre ta voix par-dessus le morceau (mets des écouteurs, sinon le micro entend la musique)."),
                 tr("Onglet Morceau : touche une section (Intro, Couplet ou Refrain) pour l'afficher, la renommer ou la dupliquer pour en faire un Pont ou une Fin."),
             ),

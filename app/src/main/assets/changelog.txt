@@ -1,5 +1,5 @@
-Phase 25 : « On en a gros ! » (des effets partout)
-- Effets : la même boîte sur tout ce qui fait du son (synthé, acide, pads, batterie, voix, remix, master), 8 effets par son.
-- Nouveaux effets : distorsion, écho, écho ping-pong, réverbe, auto-pan, OTT, décalage de fréquence, arrêt de bande.
-- Synthé : mêmes réglages du son en Clavier et en Notes ; « Jeu des accords » expliqué ; notes remises dans la gamme.
-- Morceau : maintiens une scène et glisse-la ailleurs (échanger, remplacer ou annuler).
+Phase 26 : « C'est pas faux » (l'acide sous les doigts)
+- Assistant : écris ta ligne 303 sur sa propre étape (pas, accent, glisse, « Génère-moi une ligne », 4 sons, coupure et résonance) ; l'écoute avec le rythme ne s'arrête plus quand tu changes de son.
+- « + Piste » demande quoi ajouter : mélodie, accords, basse, arpège, pluck, ou « Écrire une mélodie pour moi ».
+- Nouveau style Acidcore (185 BPM, kick saturé, 303 qui hurle, breaks) ; en Acid techno et Acid house, le filtre bouge le long du morceau.
+- Les potards de la 303 s'automatisent (« Enregistrer » sur la carte du son) ; un effet peut ne jouer que dans certaines scènes (« Joue dans ») ; acide à 100 % = toutes les notes.

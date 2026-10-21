@@ -5,6 +5,9 @@ import com.pocketstudio.app.help.Glossary
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.runtime.collectAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -87,6 +90,15 @@ class WizardActions(
     val setMood: (StarterWizard.Mood?) -> Unit = {},
     val setPartEnabled: (StarterWizard.Part, Boolean) -> Unit = { _, _ -> },
     val setAcidEnabled: (Boolean) -> Unit = {},
+    /** The 303's step editor: a touch (next note), a long touch (accent, slide). */
+    val acidTap: (Int) -> Unit = {},
+    val acidHold: (Int) -> Unit = {},
+    val generateAcid: () -> Unit = {},
+    val setAcidDensity: (Float) -> Unit = {},
+    val setAcidBars: (Int) -> Unit = {},
+    val acidFromStyle: () -> Unit = {},
+    val chooseAcidSound: (String) -> Unit = {},
+    val setAcidKnob: (Int, Float) -> Unit = { _, _ -> },
     val choosePartSound: (StarterWizard.Part, StarterWizard.PartSound) -> Unit = { _, _ -> },
     val preview: (SoundRef) -> Unit = {},
     val download: (String) -> Unit = {},
@@ -502,22 +514,126 @@ private fun styleTip(style: StarterWizard.Style, tip: String): String {
     return tr("En %s : %s", tr(style.name), lower)
 }
 
-/** The style's 303 line: what it is, heard over the beat, kept or not. */
+/**
+ * The style's 303 line, to make one's own: heard over the beat in a loop, its steps touched one by
+ * one (the next note of the scale; a long touch for the accent and the slide), a new line from the
+ * generator or the style's back, one or two bars, and its sound (four quick choices, two knobs).
+ */
 @Composable
 private fun AcidStep(style: StarterWizard.Style, ui: WizardUi, actions: WizardActions) {
     NeonCard(modifier = Modifier.testTag("wizard_acid")) {
         SectionLabel(tr("Ligne acide (TB-303)"), color = Neon.Acid)
-        Text(tr("La ligne qui couine et qui gronde, jouée par une TB-303 : c'est la star du style. Elle est déjà écrite pour toi."),
+        Text(tr("La ligne qui couine et qui gronde, jouée par une TB-303 : c'est la star du style. Elle est déjà écrite pour toi : change-la comme tu veux."),
             style = MaterialTheme.typography.bodyLarge)
-        Text(tr("Tu pourras changer ses notes et tourner ses boutons (« Coupure » la fait crier) dans l'onglet Acide."),
-            style = MaterialTheme.typography.bodySmall, fontStyle = FontStyle.Italic, color = Neon.TextSecondary)
-        ListenButton(SoundRef.AcidDemo, { actions.preview(SoundRef.AcidDemo) }, Modifier.testTag("wizard_acid_listen"), label = tr("Avec le rythme"))
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(tr("Utiliser la ligne acide"), modifier = Modifier.weight(1f))
             Switch(checked = ui.acid, onCheckedChange = actions.setAcidEnabled, modifier = Modifier.testTag("wizard_acid_enabled"))
         }
-        if (ui.acid) SceneBadge(ui.plan.acid, ui.plan)
-        else Text(tr("Pas de ligne acide : l'onglet Acide restera libre pour la tienne."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+        if (!ui.acid) {
+            Text(tr("Pas de ligne acide : l'onglet Acide restera libre pour la tienne."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+            return@NeonCard
+        }
+        if (ui.acidPlays) SceneBadge(ui.plan.acid, ui.plan)
+        else Text(tr("La ligne n'a plus aucune note : elle ne jouera pas."), style = MaterialTheme.typography.bodySmall, color = Neon.Amber,
+            modifier = Modifier.testTag("wizard_acid_silent"))
+    }
+    val line = ui.acidPattern ?: return
+    if (!ui.acid) return
+    AcidLineCard(line, ui, actions)
+    AcidSoundCard(line, ui, actions)
+}
+
+/** The 303 line on its steps, one bar per two rows of eight, with « Avec le rythme », its length and the generator. */
+@OptIn(androidx.compose.foundation.ExperimentalFoundationApi::class)
+@Composable
+private fun AcidLineCard(line: com.pocketstudio.model.AcidPattern, ui: WizardUi, actions: WizardActions) {
+    val settings by com.pocketstudio.app.settings.SettingsStore.state.collectAsState()
+    val english = settings.englishNotes
+    val chipColors = pillColors()
+    NeonCard(modifier = Modifier.testTag("wizard_acid_line")) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            SectionLabel(tr("Les notes"), Modifier.weight(1f), foldKey = "Les notes de la 303")
+            ListenButton(SoundRef.AcidDemo, { actions.preview(SoundRef.AcidDemo) }, Modifier.testTag("wizard_acid_listen"), label = tr("Avec le rythme"))
+        }
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            Text(tr("Longueur"), style = MaterialTheme.typography.bodySmall)
+            com.pocketstudio.model.WizardAcid.BARS.forEach { bars ->
+                androidx.compose.material3.FilterChip(
+                    selected = line.length == bars * com.pocketstudio.model.AcidPattern.STEPS_PER_PAGE,
+                    onClick = { actions.setAcidBars(bars) },
+                    label = { Text(if (bars == 1) tr("1 mesure") else tr("%d mesures", bars)) },
+                    colors = chipColors,
+                    modifier = Modifier.testTag("wizard_acid_bars_$bars"),
+                )
+            }
+        }
+        val bars = (line.length + 15) / 16
+        for (bar in 0 until bars) {
+            if (bars > 1) Text(tr("Mesure %d", bar + 1), style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary)
+            for (row in 0 until 2) {
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    for (col in 0 until 8) {
+                        val i = bar * 16 + row * 8 + col
+                        com.pocketstudio.app.acid.AcidStepCell(
+                            line, i, english,
+                            modifier = Modifier.weight(1f)
+                                .combinedClickable(onClick = { actions.acidTap(i) }, onLongClick = { actions.acidHold(i) })
+                                .testTag("wizard_acid_step_$i"),
+                        )
+                    }
+                }
+            }
+        }
+        Text(
+            tr("Touche un pas : la note suivante de la gamme (après la plus haute, un silence –). Appui long : accent (couleur pleine), puis slide ⌒, puis les deux."),
+            style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
+        )
+        Button(onClick = actions.generateAcid, modifier = Modifier.fillMaxWidth().testTag("wizard_acid_generate")) {
+            Icon(Icons.Filled.AutoAwesome, contentDescription = null)
+            Text("  " + tr("Génère-moi une ligne"))
+        }
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Text(tr("Densité"), Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
+            Text(com.pocketstudio.model.i18n.percent((ui.acidDensity * 100).roundToInt()), style = com.pocketstudio.ui.MonoStyle, color = Neon.Cyan)
+        }
+        com.pocketstudio.ui.ProSlider(value = ui.acidDensity, onValueChange = actions.setAcidDensity, modifier = Modifier.testTag("wizard_acid_density"))
+        OutlinedButton(onClick = actions.acidFromStyle, enabled = ui.acidNotes != null, modifier = Modifier.fillMaxWidth().testTag("wizard_acid_style")) {
+            Text(tr("Celle du style"))
+        }
+    }
+}
+
+/** The 303's sound: four quick choices and the two knobs that make it cry. */
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun AcidSoundCard(line: com.pocketstudio.model.AcidPattern, ui: WizardUi, actions: WizardActions) {
+    NeonCard(modifier = Modifier.testTag("wizard_acid_sound")) {
+        SectionLabel(tr("Le son de la 303"), foldKey = "Le son de la 303")
+        androidx.compose.foundation.layout.FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            com.pocketstudio.model.WizardAcid.SOUNDS.forEach { (acidSoundLabel, _) ->
+                FamilyChip(
+                    tr(acidSoundLabel), Icons.Filled.GraphicEq, Neon.Acid, selected = ui.acidSoundName == acidSoundLabel,
+                    onClick = { actions.chooseAcidSound(acidSoundLabel) }, modifier = Modifier.testTag("wizard_acid_sound_$acidSoundLabel"),
+                )
+            }
+        }
+        val knobColors = com.pocketstudio.ui.KnobColors(
+            cap = Neon.SurfaceHigh, capEdge = Neon.Outline, pointer = Neon.TextPrimary,
+            track = Neon.Outline, value = Neon.Acid, label = Neon.TextSecondary,
+        )
+        val defaults = com.pocketstudio.model.AcidSound().values()
+        val values = line.sound.values()
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+            listOf(0 to tr("Coupure"), 1 to tr("Résonance")).forEach { (i, label) ->
+                com.pocketstudio.ui.Knob(
+                    value = values[i], onValueChange = { actions.setAcidKnob(i, it) }, label = label, default = defaults[i],
+                    size = 64.dp, colors = knobColors, valueText = "${(values[i] * 100).roundToInt()}",
+                    modifier = Modifier.testTag("wizard_acid_knob_$i"),
+                )
+            }
+        }
+        Text(tr("Tourne « Coupure » vers le haut pour la faire crier ; « Résonance » la fait siffler. Le reste se règle dans l'onglet Acide."),
+            style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
     }
 }
 
@@ -549,7 +665,8 @@ private fun SummaryStep(ui: WizardUi, style: StarterWizard.Style) {
             if (style.melody.acid != null) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(tr(StarterWizard.ScenePlan.ACID_TITLE), modifier = Modifier.weight(1f))
-                    Text(if (ui.acid) "TB-303" else tr("pas utilisée"), style = MaterialTheme.typography.bodySmall, color = if (ui.acid) Neon.TextPrimary else Neon.TextSecondary)
+                    Text(acidSummary(ui), style = MaterialTheme.typography.bodySmall, color = if (ui.acidPlays) Neon.TextPrimary else Neon.TextSecondary,
+                        modifier = Modifier.testTag("wizard_summary_acid"))
                 }
             }
             StarterWizard.Part.entries.forEach { part ->
@@ -588,6 +705,19 @@ private fun ScenesCard(plan: StarterWizard.ScenePlan, style: StarterWizard.Style
         }
         Text(tr("Le morceau : %s", songSummary(style, plan)), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.testTag("wizard_song"))
     }
+}
+
+/** The 303 in the summary: "TB-303 · Saturée · 2 mesures", "ta ligne" when written on its step, or "pas utilisée". */
+internal fun acidSummary(ui: WizardUi): String {
+    val line = ui.acidPattern
+    if (!ui.acidPlays || line == null) return tr("pas utilisée")
+    val bars = (line.length + 15) / 16
+    return listOfNotNull(
+        "TB-303",
+        ui.acidSoundName?.let { tr(it) },
+        if (bars == 1) tr("1 mesure") else tr("%d mesures", bars),
+        tr("ta ligne").takeIf { ui.acidNotes != null },
+    ).joinToString(" · ")
 }
 
 /** How the sections build up: one after the other, then (club music) a Break before the last Drop. */

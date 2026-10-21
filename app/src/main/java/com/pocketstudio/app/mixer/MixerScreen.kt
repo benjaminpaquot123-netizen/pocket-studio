@@ -113,6 +113,10 @@ data class MixerActions(
     val longFxCount: (EffectType) -> Int = { 0 },
     /** The audio thread has almost no time to spare: the box warns (see [cpuBusyNext]). */
     val cpuBusy: kotlinx.coroutines.flow.StateFlow<Boolean> = kotlinx.coroutines.flow.MutableStateFlow(false),
+    /** « Joue dans »: an effect plays only in some scenes (null: in all of them). */
+    val setInsertScenes: (ch: Int, slot: Int, scenes: Set<Int>?) -> Unit = { _, _, _ -> },
+    /** The project's scenes, by index: each one's section name ("" for its letter alone). */
+    val scenes: kotlinx.coroutines.flow.StateFlow<List<String>> = kotlinx.coroutines.flow.MutableStateFlow(emptyList()),
 )
 
 val EXPORT_BARS = listOf(1, 2, 4, 8, 16)

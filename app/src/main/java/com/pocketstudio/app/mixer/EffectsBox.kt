@@ -40,8 +40,15 @@ import com.pocketstudio.app.help.Glossary
 import com.pocketstudio.model.Channel
 import com.pocketstudio.model.EffectGroup
 import com.pocketstudio.model.EffectType
+import com.pocketstudio.model.FxPresets
 import com.pocketstudio.model.Insert
+import com.pocketstudio.model.Macros
+import com.pocketstudio.model.Scene
 import com.pocketstudio.model.freeInsertSlot
+import com.pocketstudio.model.matchingFx
+import com.pocketstudio.model.scenesToggled
+import com.pocketstudio.ui.fadingHorizontalScroll
+import kotlin.math.roundToInt
 import com.pocketstudio.model.longFxLimitNotice
 import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.ui.Neon
@@ -59,7 +66,8 @@ import com.pocketstudio.ui.pillColors
 @Composable
 fun EffectsBox(ch: Int, channel: Channel, actions: MixerActions, compact: Boolean = false, more: (() -> Unit)? = null) {
     Column(Modifier.fillMaxWidth().testTag("effects_box_$ch"), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        InsertChain(ch, channel.inserts, actions)
+        InsertChain(ch, channel.inserts, actions, alsoSet = channel.alsoSet())
+        AlsoSet(ch, channel, actions)
         QuickFxPanel(ch, channel, actions.quick, kind = actions.kindOf(ch), compact = compact)
         if (!compact) {
             Text(tr("Réverbe et écho communs"), style = MaterialTheme.typography.labelLarge, color = Neon.Magenta)
@@ -108,11 +116,12 @@ private fun groupColour(group: EffectGroup): Color = when (group) {
  * « + Ajouter un effet » opens every effect by family; the list stays open to add several in a row.
  */
 @Composable
-fun InsertChain(ch: Int, inserts: List<Insert>, actions: MixerActions) {
+fun InsertChain(ch: Int, inserts: List<Insert>, actions: MixerActions, alsoSet: Boolean = false) {
     var open by rememberSaveable(ch) { mutableIntStateOf(-1) }
     var picking by rememberSaveable(ch) { mutableStateOf(false) }
     val used = inserts.indices.filter { inserts[it].effect != EffectType.NONE }
     val busy by actions.cpuBusy.collectAsState()
+    val scenes by actions.scenes.collectAsState()
     Column(Modifier.fillMaxWidth().testTag("fx_chain_$ch"), verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Text(tr("Effets en place : %1\$d sur %2\$d", used.size, inserts.size), style = MaterialTheme.typography.labelLarge, color = Neon.Magenta)
         if (busy) {
@@ -121,7 +130,8 @@ fun InsertChain(ch: Int, inserts: List<Insert>, actions: MixerActions) {
                 style = MaterialTheme.typography.bodySmall, color = Neon.Amber, modifier = Modifier.testTag("fx_cpu_busy"),
             )
         }
-        if (used.isEmpty()) {
+        // With an ambience that sets no effect in place, what it does set is listed just below.
+        if (used.isEmpty() && !alsoSet) {
             Text(tr("Aucun pour l'instant : ajoute un effet, ou touche une ambiance toute prête."),
                 style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         }
@@ -133,7 +143,13 @@ fun InsertChain(ch: Int, inserts: List<Insert>, actions: MixerActions) {
                 toggle = { open = if (open == i) -1 else i }, actions = actions,
                 removed = { if (open == i) open = -1 },
             )
+            // « Joue dans »: only worth it with several scenes (song sections), or to say it plays nowhere.
+            if (scenes.size > 1 || ins.scenes?.isEmpty() == true) PlaysIn(ch, i, ins, scenes, actions)
             if (open == i) InsertEditor(ch, i, ins, actions)
+        }
+        if (scenes.size > 1 && used.isNotEmpty()) {
+            Text(tr("Un effet peut ne jouer que dans certaines sections : touche ses lettres."),
+                style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.testTag("fx_scenes_help_$ch"))
         }
         OutlinedButton(
             onClick = { picking = !picking },
@@ -181,6 +197,84 @@ private fun InsertRow(
         }
         IconButton(onClick = { removed(); actions.setInsertType(ch, slot, EffectType.NONE) }, modifier = Modifier.testTag("fx_remove_${ch}_$slot")) {
             Icon(Icons.Filled.Close, contentDescription = tr("Retirer l'effet"), tint = Neon.TextSecondary)
+        }
+    }
+}
+
+/**
+ * « Joue dans » under an effect: « Tout » (every scene), or the scenes (song sections) it plays
+ * in, by letter and name. Elsewhere the sound goes through it untouched, switching right on the
+ * scene change, in the song and in the export alike.
+ */
+@Composable
+private fun PlaysIn(ch: Int, slot: Int, ins: Insert, labels: List<String>, actions: MixerActions) {
+    val colours = pillColors(Neon.Acid)
+    // No scene left (its only scene was replaced by another one): it is silent, and says so.
+    if (ins.scenes?.isEmpty() == true) {
+        Text(
+            tr("Ne joue dans aucune scène : touche une lettre ou « Tout »."),
+            style = MaterialTheme.typography.bodySmall, color = Neon.Amber, modifier = Modifier.testTag("fx_scenes_none_${ch}_$slot"),
+        )
+    }
+    Row(
+        Modifier.fillMaxWidth().fadingHorizontalScroll().testTag("fx_scenes_${ch}_$slot"),
+        verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp),
+    ) {
+        Text(tr("Joue dans :"), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, maxLines = 1, softWrap = false)
+        FilterChip(
+            selected = ins.scenes == null, onClick = { actions.setInsertScenes(ch, slot, null) },
+            label = { Text(tr("Tout"), maxLines = 1, softWrap = false) }, colors = colours,
+            modifier = Modifier.testTag("fx_scene_${ch}_${slot}_all"),
+        )
+        labels.forEachIndexed { i, label ->
+            val letter = Scene.NAMES.getOrElse(i) { "?" }
+            FilterChip(
+                selected = ins.scenes?.contains(i) == true,
+                onClick = { actions.setInsertScenes(ch, slot, ins.scenesToggled(i, labels.size)) },
+                label = { Text(if (label.isBlank()) letter else "$letter · ${Scene.shownLabel(label)}", maxLines = 1, softWrap = false) },
+                colors = colours, modifier = Modifier.testTag("fx_scene_${ch}_${slot}_$i"),
+            )
+        }
+    }
+}
+
+/** The shared reverb and echo sends and the quick controls this strip has away from rest (see [AlsoSet]). */
+private fun Channel.alsoSetKeys(): List<String> =
+    sends.indices.filter { sends[it] > 0.005f }.map { "send$it" } +
+        macros.indices.filter { kotlin.math.abs(macros[it] - Macros.DEFAULTS[it]) > 0.005f }.map { "macro$it" }
+
+/** Something besides the effects in place changes the sound (a ready-made ambience may set only that). */
+internal fun Channel.alsoSet(): Boolean = alsoSetKeys().isNotEmpty()
+
+/**
+ * What changes the sound besides the effects in place: the shared reverb and echo sends and the
+ * quick controls away from rest, each with its slider, under the ambience that set them. A
+ * ready-made ambience like « Petite pièce » sets no effect in place, only these: the box shows
+ * them, as the strip's « Effets : » line names it. A line stays until another ambience is chosen
+ * (a slider taken down to 0 does not vanish under the finger).
+ */
+@Composable
+private fun AlsoSet(ch: Int, channel: Channel, actions: MixerActions) {
+    val vibe = channel.matchingFx()?.takeIf { it.id != FxPresets.NONE.id }
+    // Another ambience chosen: only what it sets.
+    var kept by remember(ch, vibe?.id) { mutableStateOf(emptySet<String>()) }
+    val keys = channel.alsoSetKeys().toSet() + kept
+    androidx.compose.runtime.SideEffect { if (keys != kept) kept = keys }
+    if (keys.isEmpty()) return
+    Column(Modifier.fillMaxWidth().testTag("fx_also_$ch"), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+        Text(
+            vibe?.let { tr("« %s » règle aussi :", tr(it.name)) } ?: tr("Réglé aussi sur ce son :"),
+            style = MaterialTheme.typography.labelLarge, color = Neon.Magenta,
+        )
+        channel.sends.indices.filter { "send$it" in keys }.forEach { bus ->
+            val v = channel.sends[bus]
+            LabeledSlider(if (bus == 0) tr("Réverbe commune") else tr("Écho commun"), com.pocketstudio.model.i18n.percent((v * 100).roundToInt()), v, "fx_also_send_${ch}_$bus") {
+                actions.setSend(ch, bus, it)
+            }
+        }
+        channel.macros.indices.filter { "macro$it" in keys }.forEach { m ->
+            val v = channel.macros[m]
+            LabeledSlider(tr(Macros.NAMES[m]), macroText(m, v), v, "fx_also_macro_${ch}_$m") { actions.quick.setMacro(ch, m, it) }
         }
     }
 }

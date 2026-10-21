@@ -186,7 +186,7 @@ private fun MacroKnobs(ch: Int, macros: List<Float>, actions: QuickFxActions) {
     }
 }
 
-private fun macroText(m: Int, v: Float): String {
+internal fun macroText(m: Int, v: Float): String {
     if (m == Macros.COLOR) {
         val c = ((v - 0.5f) * 200).roundToInt()
         return when {

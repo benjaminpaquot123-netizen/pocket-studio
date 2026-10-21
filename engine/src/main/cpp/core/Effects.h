@@ -572,7 +572,7 @@ public:
     void setParam(int p, float v);
     int type() const { return type_; }
     void process(float* l, float* r, int n);
-    void reset();  // every effect's state back to silence (after a NaN), no allocation
+    void reset();  // the effect's state back to silence (after a NaN, back in a scene), no allocation
     const Compressor& compressor() const { return comp_; }  // tests
     const Ducker& ducker() const { return pump_; }          // tests
     // Sidechain events (only the Pump type listens). `beat`: the step is a quarter note.
@@ -593,6 +593,7 @@ public:
 
 private:
     void releaseUnit();
+    void resetState();  // the state of the type in place (not the long units)
     int type_ = None;
     LongFxPool* pool_ = nullptr;
     InsertEcho* echo_ = nullptr;

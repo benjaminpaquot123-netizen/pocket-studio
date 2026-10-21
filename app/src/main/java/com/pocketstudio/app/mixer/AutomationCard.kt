@@ -92,13 +92,27 @@ fun automationLabel(t: AutoTarget, channels: List<Channel>, master: List<Insert>
         "${tr(effect.label)} ${effect.params.getOrNull(t.param)?.label?.let { tr(it) }.orEmpty()} · ${channelName(t.ch)}"
     }
     AutoTarget.BUS_PARAM -> "${tr(Buses.NAMES.getOrElse(t.slot) { "?" })} ${Buses.PARAMS.getOrNull(t.slot)?.getOrNull(t.param)?.label?.let { tr(it) }.orEmpty()}"
+    AutoTarget.ACID -> "303 ${acidKnobName(t.param)} · ${channelName(t.ch)}"
     else -> "?"
     }
+}
+
+/** A 303 knob's name, as the Acide screen shows it ([com.pocketstudio.model.AcidSound.values] order). */
+fun acidKnobName(param: Int): String = when (param) {
+    0 -> tr("Coupure")
+    1 -> tr("Résonance")
+    2 -> tr("Enveloppe")
+    3 -> tr("Déclin")
+    4 -> tr("Accent")
+    7 -> tr("Saturation")
+    else -> "?"
 }
 
 /** Every setting that can be automated with the current effects. */
 fun automationTargets(channels: List<Channel>, master: List<Insert>, strips: List<StripInfo> = BASIC_STRIPS): List<AutoTarget> = buildList {
     strips.map { it.ch }.forEach { ch ->
+        // The acid line's knobs first: the filter that opens and closes is what acid music moves.
+        if (ch == AutoTarget.ACID_CHANNEL) AutoTarget.ACID_PARAMS.forEach { add(AutoTarget.acid(it)) }
         add(AutoTarget(AutoTarget.VOLUME, ch))
         add(AutoTarget(AutoTarget.PAN, ch))
         repeat(Buses.COUNT) { add(AutoTarget(AutoTarget.SEND, ch, it)) }

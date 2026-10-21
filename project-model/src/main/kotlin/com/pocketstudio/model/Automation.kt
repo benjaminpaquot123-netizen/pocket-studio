@@ -5,7 +5,8 @@ import kotlinx.serialization.Serializable
 /**
  * What an automation lane moves: [kind] in [AutoTarget] order (same numbers as the engine),
  * the channel [ch] (4 = the master, for insert parameters), the insert [slot] or the bus,
- * and the effect [param].
+ * and the effect [param]. [ACID]: a knob of the 303 ([param] in [AcidSound.values] order, one of
+ * [ACID_PARAMS]) on the acid line's strip ([ACID_CHANNEL]).
  */
 @Serializable
 data class AutoTarget(val kind: Int, val ch: Int = 0, val slot: Int = 0, val param: Int = 0) {
@@ -15,7 +16,11 @@ data class AutoTarget(val kind: Int, val ch: Int = 0, val slot: Int = 0, val par
      * The engine reads 4 bits of channel: the pads' own strips (16..31) cannot be automated. An
      * effect's knob: one of the strip's [Mixer.INSERTS] slots (4 bits of slot in the engine too).
      */
-    val isValid: Boolean get() = kind in VOLUME..BUS_PARAM && ch in 0..MAX_CH && (kind != INSERT_PARAM || slot in 0 until Mixer.INSERTS)
+    val isValid: Boolean get() = kind in VOLUME..ACID && ch in 0..MAX_CH && (kind != INSERT_PARAM || slot in 0 until Mixer.INSERTS) &&
+        (kind != ACID || (ch == ACID_CHANNEL && slot == 0 && param in ACID_PARAMS))
+
+    /** A 303 knob: its index in [AcidSound.values], else null. */
+    val acidParam: Int? get() = param.takeIf { kind == ACID && isValid }
 
     companion object {
         const val MAX_CH = 15
@@ -24,6 +29,18 @@ data class AutoTarget(val kind: Int, val ch: Int = 0, val slot: Int = 0, val par
         const val SEND = 2
         const val INSERT_PARAM = 3
         const val BUS_PARAM = 4
+        const val ACID = 5
+
+        /** The acid line's mixer strip. */
+        const val ACID_CHANNEL = 1
+
+        /**
+         * The 303 knobs a lane (or a live gesture) can move, in [AcidSound.values] order: cutoff,
+         * resonance, envelope, decay, accent, saturation (tuning, waveform and volume stay put).
+         */
+        val ACID_PARAMS = listOf(0, 1, 2, 3, 4, 7)
+
+        fun acid(param: Int) = AutoTarget(ACID, ACID_CHANNEL, 0, param)
     }
 }
 
@@ -154,3 +171,26 @@ fun Project.songCurvesAt(scene: Int): Map<Int, Float> {
     }
     return out
 }
+
+/** The lane writes something: a point on a step (loop), in some scene (per scene), or on the song curve. */
+val AutomationLane.hasPoints: Boolean get() = when (mode) {
+    AutomationLane.SONG -> songValues.any { it != null }
+    AutomationLane.PER_SCENE -> sceneValues.values.any { v -> v.any { it != null } }
+    else -> values.any { it != null }
+}
+
+/**
+ * The 303 knobs a lane drives while scene [scene] plays ([inSong]: as a part of the song, else on
+ * its own): a loop or per-scene lane with a point in that scene, a song curve with points while
+ * the song plays (or on a scene of the song alone, where [songCurvesAt] holds it). The others
+ * go back to the project's setting when the scene is sent.
+ */
+fun Project.acidKnobsDriven(scene: Int, inSong: Boolean): Set<Int> = automation.filter { lane ->
+    when (lane.mode) {
+        AutomationLane.SONG -> lane.hasPoints && (inSong || song.any { it.scene == scene })
+        else -> lane.valuesFor(scene).any { it != null }
+    }
+}.mapNotNull { it.target.acidParam }.toSet()
+
+/** The 303 knobs some lane moves (somewhere in the project): the Acide tab says so under them. */
+val Project.automatedAcidKnobs: Set<Int> get() = automation.filter { it.hasPoints }.mapNotNull { it.target.acidParam }.toSet()

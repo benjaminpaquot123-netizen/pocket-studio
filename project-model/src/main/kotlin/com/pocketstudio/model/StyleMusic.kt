@@ -115,12 +115,14 @@ fun NoteClip.withLine(degrees: List<Int>, harmony: Harmony, pattern: String, oct
 /**
  * An acid line for the 303 track: [pattern] tokens as in [withLine] on the key's root chord (a 303
  * riff stays on it while the chords move; every recipe's progression starts there), [accents] and
- * [slides] one 'x' per step that has one.
+ * [slides] one 'x' per step that has one. One bar (16 steps) or a two-bar riff (32: the line lasts
+ * two bars).
  */
 fun acidLine(harmony: Harmony, pattern: String, accents: String, slides: String, base: AcidPattern = AcidPattern()): AcidPattern {
-    val bar = pattern.padEnd(16, '.').take(16)
+    val length = if (pattern.length > 16) 32 else 16
+    val bar = pattern.padEnd(length, '.').take(length)
     val tonic = harmony.degreeRoot(0, 0)
-    val steps = (0 until 16).map { i ->
+    val steps = (0 until length).map { i ->
         val token = bar[i]
         val step = StepLine.stepOf(token)
         if (step == null) {
@@ -134,5 +136,5 @@ fun acidLine(harmony: Harmony, pattern: String, accents: String, slides: String,
             )
         }
     }
-    return base.copy(length = 16, root = (36 + Math.floorMod(harmony.root, 12)).coerceIn(24, 60), steps = steps + List(AcidPattern.MAX_STEPS - 16) { AcidStep() }).sanitized()
+    return base.copy(length = length, root = (36 + Math.floorMod(harmony.root, 12)).coerceIn(24, 60), steps = steps + List(AcidPattern.MAX_STEPS - length) { AcidStep() }).sanitized()
 }

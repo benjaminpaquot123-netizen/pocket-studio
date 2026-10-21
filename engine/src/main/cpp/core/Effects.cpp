@@ -932,28 +932,10 @@ void Chopper::process(float* l, float* r, int n) {
 // --- Insert slot -----------------------------------------------------------------------------
 
 void InsertSlot::reset() {
-    eq_.reset();
-    comp_.reset();
-    sat_.reset();
-    chorus_.reset();
-    filter_.reset();
-    pump_.reset();
-    flanger_.reset();
-    phaser_.reset();
-    gate_.reset();
-    tremolo_.reset();
-    widener_.reset();
-    crusher_.reset();
-    paramEq_.reset();
-    robot_.reset();
-    wah_.reset();
-    vinyl_.reset();
-    radio_.reset();
-    chopper_.reset();
-    distortion_.reset();
-    autoPan_.reset();
-    ott_.reset();
-    shifter_.reset();
+    // Only the effect in place: the others' states are cleared when their type is set (setType).
+    // A slot coming back in at a scene change thus clears one small state (the long units clear in
+    // constant time), not the delay lines of every effect it could hold.
+    resetState();
     if (echo_) echo_->reset();
     if (reverb_) reverb_->reset();
     if (tape_) tape_->reset();
@@ -1041,14 +1023,7 @@ void InsertSlot::setStepFrames(double framesPerSixteenth) {
 
 float InsertSlot::echoFrames() const { return echo_ ? echo_->delayFrames() : 0.0f; }
 
-void InsertSlot::setType(int type) {
-    if (type < 0 || type >= kTypes || type == type_) return;
-    releaseUnit();
-    type_ = type;
-    if (isLong(type_)) {
-        longParams_ = longDefaults(type_);
-        takeUnit();
-    }
+void InsertSlot::resetState() {
     switch (type_) {
         case Eq: eq_.reset(); break;
         case Comp: comp_.reset(); break;
@@ -1074,6 +1049,17 @@ void InsertSlot::setType(int type) {
         case FreqShiftFx: shifter_.reset(); break;
         default: break;
     }
+}
+
+void InsertSlot::setType(int type) {
+    if (type < 0 || type >= kTypes || type == type_) return;
+    releaseUnit();
+    type_ = type;
+    if (isLong(type_)) {
+        longParams_ = longDefaults(type_);
+        takeUnit();
+    }
+    resetState();
 }
 
 void InsertSlot::setParam(int p, float v) {

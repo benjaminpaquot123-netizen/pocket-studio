@@ -55,14 +55,19 @@ class TabletLandscapeScreenshotTest : ScreenshotTest() {
 @Config(qualifiers = "w600dp-h1006dp-tvdpi")
 class SmallTabletScreenshotTest : ScreenshotTest() {
     override val prefix = "tablet8/"
-    override fun wanted(name: String) = name in TabletScreenshotTest.SCREENS || name in EFFECTS
+    override fun wanted(name: String) = name in TabletScreenshotTest.SCREENS || name in EFFECTS || name in PHASE26
 
     companion object {
         /** The effects box where each sound is chosen (phase 25), on Benjamin's tablet too. */
-        val EFFECTS = setOf("effects_box", "effects_picker", "effects_full", "synth_effects", "acid_effects")
+        val EFFECTS = setOf("effects_box", "effects_picker", "effects_full", "synth_effects", "acid_effects", "effects_scenes", "effects_vibe")
+        /** The 303 made in the assistant and « + Piste »'s choices, on Benjamin's tablet too. */
+        val PHASE26 = setOf("wizard_acid_sound", "track_add")
     }
     override val chrome = androidx.compose.foundation.layout.PaddingValues(top = 80.dp, bottom = 128.dp)
 
+    // « Joue dans » and an ambience's settings at the tablet's own size.
+    @Test override fun effectsScenes() = super.effectsScenes()
+    @Test override fun effectsVibe() = super.effectsVibe()
     @Test override fun session() = super.session()
     @Test override fun settings() = super.settings()
     @Test override fun timeline() = super.timeline()

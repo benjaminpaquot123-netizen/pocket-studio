@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Turns the researched genre recipes (JSON, see the brief) into the assistant's styles (Kotlin).
 
-Usage: recipes_to_kotlin.py <out .kt> <recipes.json>...
+Usage: recipes_to_kotlin.py <out .kt> <recipes.json>...    (or --names: the sounds, presets and effects it accepts)
   python3 scripts/packs/recipes_to_kotlin.py project-model/src/main/kotlin/com/pocketstudio/model/StyleRecipes.kt scripts/packs/recipes/*.json
 Every value is checked (patterns, scales, sounds, packs) so that a typo fails here, not in the app.
 A test (StyleRecipesUpToDateTest) fails when StyleRecipes.kt is not what this script makes.
@@ -9,7 +9,8 @@ A test (StyleRecipesUpToDateTest) fails when StyleRecipes.kt is not what this sc
 Recipe syntax (one JSON object per style; one character per sixteenth, 16 = a bar, 32 = two bars):
   drums[]: {"role": kick|snare|clap|hat|open_hat|perc|808, "pattern": "X...x...o...2...", "tip_fr": "...",
             "source": <pack the line's sound comes from, default the style's own>,
-            "voice": <built-in kit voice when no pack is there, default the pad's own: see VOICES>}
+            "voice": <built-in kit voice when no pack is there, default the pad's own: see VOICES>,
+            "build": <the line in the second section (Groove/Couplet), where it builds up: hats that come in>}
     pattern: 'X' strong, 'x' medium, 'o' soft, '.' nothing, '2' '3' '4' a medium roll of that many hits in the step.
   bass/lead "pattern" (and acid "pattern"): one token per step on the bar's chord: 'R' root, '2'..'7' scale
     steps, 'O' octave up (lower case 'r' 'o' softer), '-' holds the note, '.' silence, '/' holds the note and
@@ -24,16 +25,51 @@ Recipe syntax (one JSON object per style; one character per sixteenth, 16 = a ba
   "defaults": {"bass": bool, "chords": bool, "lead": bool}: the parts switched on in the assistant.
   "default_mood": dark|happy|future|dreamy: the mood proposed first (default dark).
   "signature": bass|chords|lead: the part that makes the style; it plays in every section of the song.
-  "form": song|club: Intro/Couplet/Refrain, or Intro/Groove/Drop with a Break (default from the family:
-    club for House, Techno and Bass music).
+  "form": song|club|rave: Intro/Couplet/Refrain, or Intro/Groove/Drop with a Break (default from the family:
+    club for House, Techno and Bass music); rave: the 303 alone in the Intro, two Breaks, an outro.
   "bass_tip" / "pad_tip" / "lead_tip": what that part does in this style (French), shown on its step.
-  "fx": [{"on": bass|chords|lead|<drum role>|acid|drums, "preset": <FX_PRESETS id>, "insert": <EFFECTS name>,
-          "reverb": 0..1, "delay": 0..1}]: effects put on that layer when the song is made
-          (e.g. {"on": "chords", "insert": "VINYL"}, {"on": "bass", "preset": "pump"}, {"on": "snare", "reverb": 0.4}).
+  "fx": [{"on": bass|chords|lead|<drum role>|acid|drums|master, "preset": <FX_PRESETS id>, "insert": <EFFECTS name>,
+          "params": [up to 4 values 0..1 of the insert, the others its defaults], "reverb": 0..1, "delay": 0..1}]:
+          effects put on that layer when the song is made (e.g. {"on": "chords", "insert": "VINYL"},
+          {"on": "bass", "preset": "pump"}, {"on": "snare", "reverb": 0.4}); on the master: inserts only (a preset's
+          inserts, or one), in its free slots.
+  "acid": {"use": true, "pattern": 16 or 32 tokens (a two-bar riff), "accents"/"slides": one 'x' or '.' per step,
+          "sound": <a 303 sound of SoundLibrary.ACID>, "knobs": {<knob>: 0..1} set on top of it,
+          "moves": {<knob>: {"intro"|"groove"|"drop"|"break": [start, end]}}: the knob turned along the song (an
+          automation curve: each section from its start value to its end value; the outro runs the intro backwards)}.
+    knobs: cutoff, resonance, env_mod, decay, accent, tuning, waveform, drive, level (moves: not tuning, waveform, level).
   "references": every landmark track, the most recent / best known first (all are shown).
 """
 import json
+import os
+import re
 import sys
+
+MODEL = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "project-model", "src", "main", "kotlin", "com", "pocketstudio", "model")
+
+
+def _source(name):
+    with open(os.path.join(MODEL, name), encoding="utf-8") as f:
+        return f.read()
+
+
+def _between(text, start, end):
+    i = text.index(start)
+    return text[i:text.index(end, i)]
+
+
+def code_lists():
+    """The names the app knows, read from its code: a sound, preset or effect added there is accepted here."""
+    library = _source("SoundLibrary.kt")
+    sounds = set(re.findall(r'NamedSound\("([^"]+)"', _between(library, "val SYNTH:", "val ACID:")))
+    acid = set(re.findall(r'NamedSound\("([^"]+)"', _between(library, "val ACID:", "\n    )\n")))
+    presets = set(re.findall(r'FxPreset\("([a-z0-9_]+)"', _between(_source("FxPresets.kt"), "val ALL:", "fun byId")))
+    enum = _between(_source("Effects.kt"), "enum class EffectType", "\n    ;\n")
+    effects = set(re.findall(r"^    ([A-Z][A-Z0-9_]*)\(", enum, re.M)) - {"NONE"}
+    return sounds, acid, presets, effects
+
+
+SOUNDS_IN_CODE, ACID_SOUNDS, PRESETS_IN_CODE, EFFECTS_IN_CODE = code_lists()
 
 NAMES = {
     "boom_bap": ("Boom bap", "Hip-hop"), "trap": ("Trap", "Hip-hop"), "drill": ("Drill", "Hip-hop"),
@@ -45,7 +81,7 @@ NAMES = {
     "techno": ("Techno", "Techno"), "retro_techno": ("Rétro techno", "Techno"), "detroit": ("Techno de Detroit", "Techno"),
     "industrial_techno": ("Techno industrielle", "Techno"), "hard_techno": ("Hard techno", "Techno"),
     "acid_techno": ("Acid techno", "Techno"),
-    "gabber": ("Gabber", "Techno"), "minimal": ("Minimal", "Techno"), "trance": ("Trance", "Techno"),
+    "gabber": ("Gabber", "Techno"), "acidcore": ("Acidcore", "Techno"), "minimal": ("Minimal", "Techno"), "trance": ("Trance", "Techno"),
     "dnb": ("Drum & bass", "Bass music"), "liquid_dnb": ("Liquid DnB", "Bass music"), "neurofunk": ("Neurofunk", "Bass music"),
     "jungle": ("Jungle", "Bass music"), "dubstep": ("Dubstep", "Bass music"), "riddim": ("Riddim", "Bass music"),
     "reggaeton": ("Reggaeton", "Autres"), "afrobeats": ("Afrobeats", "Autres"), "synthwave": ("Synthwave", "Autres"),
@@ -61,13 +97,8 @@ SCALES = {
 MOODS = {"dark": "Dark", "happy": "Happy", "future": "Future", "dreamy": "Dreamy"}
 VOICINGS = {"triad": "Triad", "seventh": "Seventh", "ninth": "Ninth", "sus2": "Sus2", "sus4": "Sus4", "power": "Power", "octave": "Octave", "single": "Single"}
 ROOTS = {"C": 0, "C#": 1, "Db": 1, "D": 2, "D#": 3, "Eb": 3, "E": 4, "F": 5, "F#": 6, "Gb": 6, "G": 7, "G#": 8, "Ab": 8, "A": 9, "A#": 10, "Bb": 10, "B": 11}
-PRESETS = {
-    "Basse ronde", "Basse sub", "Basse reese", "Reese moderne", "Basse analogique", "Basse FM", "Basse pincée",
-    "Lead", "Lead carré", "Lead acide", "Supersaw", "Lead trance", "Hoover", "Lead filtré", "Lead chiptune", "Voix robot",
-    "Nappe", "Nappe chaude", "Accords future bass", "Cordes", "Nappe d'accords", "Machine à cordes", "Essaim",
-    "Pluck", "Pluck future", "Arpège", "Cloche", "Piano FM", "Marimba", "Orgue", "Piano électrique",
-    "Basse wobble", "Basse qui parle", "Log drum",
-}
+# Synth and Plaits sounds of SoundLibrary.kt (every one, the effects "Sirène" and "Souffle" too).
+PRESETS = SOUNDS_IN_CODE
 PACKS = set(NAMES) | {"tr808", "tr909", "tr707", "tr606", "cr78", "linndrum", "sp1200", "mpc60", "juno", "jupiter", "dx7",
                       "minimoog", "tb303", "modern_808", "hyperpop", "future_bass", "vocal_chops", "fx"}
 KINDS = {"kick", "snare", "clap", "hat", "open_hat", "perc", "808", "bass", "stab", "tom", "pad", "lead", "pluck", "keys", "vocal", "fx"}
@@ -91,12 +122,14 @@ VOICES = {"kick": 0, "kick2": 1, "snare": 2, "snare2": 3, "clap": 4, "hat": 5, "
           "tom_mid": 8, "tom_high": 9, "rim": 10, "cowbell": 11, "cymbal": 12, "shaker": 13, "conga": 14, "zap": 15}
 # Kit voices that can play a melody (StarterWizard.KIT_MELODIC) and their synth stand-in.
 KIT_MELODIC = {"cowbell": "Cloche"}
-FX_PRESETS = {"underwater", "cathedral", "small_room", "far_away", "space", "dub_echo", "lofi_tape", "warm_vinyl", "radio",
-              "phone", "bright", "distortion", "crunch", "robot", "8bit", "dream", "jet", "wobble", "chopper", "pump", "punch"}
-EFFECTS = {"EQ", "COMPRESSOR", "SATURATION", "CHORUS", "FILTER", "PUMP", "FLANGER", "PHASER", "GATE", "TREMOLO", "WIDENER",
-           "BITCRUSHER", "PARAM_EQ", "ROBOT", "WAH", "VINYL", "RADIO", "CHOPPER"}
-FX_TARGETS = {"bass": "bass", "chords": "pad", "lead": "lead", "acid": "acid", "drums": "drums"}
-FORMS = {"song": "Song", "club": "Club"}
+FX_PRESETS = PRESETS_IN_CODE  # FxPresets.ALL ids
+EFFECTS = EFFECTS_IN_CODE  # EffectType names (NONE apart)
+FX_TARGETS = {"bass": "bass", "chords": "pad", "lead": "lead", "acid": "acid", "drums": "drums", "master": "master"}
+FORMS = {"song": "Song", "club": "Club", "rave": "Rave"}
+# The 303's knobs (AcidSound.values order) and those a song curve can turn (AutoTarget.ACID_PARAMS).
+ACID_KNOBS = {"cutoff": 0, "resonance": 1, "env_mod": 2, "decay": 3, "accent": 4, "tuning": 5, "waveform": 6, "drive": 7, "level": 8}
+ACID_MOVES = {"cutoff", "resonance", "env_mod", "decay", "accent", "drive"}
+SECTIONS = {"intro": 0, "groove": 1, "drop": 2, "break": 3}
 
 
 def kstr(s):
@@ -148,6 +181,9 @@ def style(r):
         voice = d.get("voice")
         check(voice is None or voice in VOICES, f"{gid} {d['role']}: unknown voice {voice} ({sorted(VOICES)})")
         extra = f", voice = {VOICES[voice]}" if voice is not None else ""
+        if d.get("build"):
+            line(d["build"], DRUM_CHARS, gid, d["role"] + " build")
+            extra += f", build = {kstr(d['build'])}"
         lines.append(f'                Line(Role.{role}, {kstr(pat)}, {kstr(d["tip_fr"])}{extra}),')
         src = d.get("source", gid)
         check(src in PACKS, f"{gid} {d['role']}: unknown source {src}")
@@ -198,13 +234,17 @@ def style(r):
         check(target, f"{gid} fx: unknown target {on}")
         check(on not in ROLES or any(d["role"] == on for d in r["drums"]), f"{gid} fx: no {on} line")
         preset, insert = fx.get("preset", ""), fx.get("insert", "")
-        check(not preset or preset in FX_PRESETS, f"{gid} fx: unknown preset {preset}")
-        check(not insert or insert in EFFECTS, f"{gid} fx: unknown insert {insert}")
+        check(not preset or preset in FX_PRESETS, f"{gid} fx: unknown preset {preset} ({sorted(FX_PRESETS)})")
+        check(not insert or insert in EFFECTS, f"{gid} fx: unknown insert {insert} ({sorted(EFFECTS)})")
+        params = fx.get("params", [])
+        check(not params or (insert and len(params) <= 4 and all(0 <= float(v) <= 1 for v in params)), f"{gid} fx: params 0..1 of an insert")
+        check(on != "master" or not (fx.get("reverb") or fx.get("delay")), f"{gid} fx: no sends on the master")
         rev, dly = float(fx.get("reverb", 0)), float(fx.get("delay", 0))
         check(0 <= rev <= 1 and 0 <= dly <= 1, f"{gid} fx: sends 0..1")
         check(preset or insert or rev or dly, f"{gid} fx on {on}: nothing to do")
         args = [kstr(target)] + ([f"preset = {kstr(preset)}"] if preset else []) + ([f"insert = {kstr(insert)}"] if insert else []) + \
-            ([f"reverb = {rev}f"] if rev else []) + ([f"delay = {dly}f"] if dly else [])
+            ([f"reverb = {rev}f"] if rev else []) + ([f"delay = {dly}f"] if dly else []) + \
+            ([f"params = listOf({', '.join(f'{float(v)}f' for v in params)})"] if params else [])
         fxs.append(f"StyleFx({', '.join(args)})")
     out = [
         "        Style(",
@@ -224,13 +264,33 @@ def style(r):
         f"                parts = setOf({', '.join('Part.' + p for p in parts)}),",
     ]
     if acid.get("use"):
-        # The acid track plays one bar: a second one would be dropped without a word.
+        # One bar or a two-bar riff (the acid line then lasts two bars).
         pat = acid["pattern"]
-        check(len(pat) == 16 and set(pat) <= LINE_CHARS, f"{gid} acid: one bar of {sorted(LINE_CHARS)} expected, got {pat}")
+        check(len(pat) in (16, 32) and set(pat) <= LINE_CHARS, f"{gid} acid: 16 or 32 of {sorted(LINE_CHARS)} expected, got {pat}")
         for what in ("accents", "slides"):
             marks = acid.get(what, "")
-            check(marks == "" or (len(marks) == 16 and set(marks) <= set("x.")), f"{gid} acid {what}: 16 of 'x' or '.', got {marks}")
-        out.append(f"                acid = AcidRecipe({kstr(pat)}, {kstr(acid.get('accents', ''))}, {kstr(acid.get('slides', ''))}),")
+            check(marks == "" or (len(marks) == len(pat) and set(marks) <= set("x.")), f"{gid} acid {what}: {len(pat)} of 'x' or '.', got {marks}")
+        args = [kstr(pat), kstr(acid.get("accents", "")), kstr(acid.get("slides", ""))]
+        sound = acid.get("sound", "")
+        check(not sound or sound in ACID_SOUNDS, f"{gid} acid: unknown sound {sound} ({sorted(ACID_SOUNDS)})")
+        if sound:
+            args.append(f"sound = {kstr(sound)}")
+        knobs = acid.get("knobs", {})
+        for k, v in knobs.items():
+            check(k in ACID_KNOBS and 0 <= float(v) <= 1, f"{gid} acid knob {k}: one of {sorted(ACID_KNOBS)}, 0..1")
+        if knobs:
+            args.append(f"knobs = mapOf({', '.join(f'{ACID_KNOBS[k]} to {float(v)}f' for k, v in knobs.items())})")
+        moves = []
+        for k, sections in acid.get("moves", {}).items():
+            check(k in ACID_MOVES, f"{gid} acid move {k}: one of {sorted(ACID_MOVES)}")
+            pairs = []
+            for sec, ends in sections.items():
+                check(sec in SECTIONS and len(ends) == 2 and all(0 <= float(v) <= 1 for v in ends), f"{gid} acid move {k} {sec}: [start, end] 0..1")
+                pairs.append(f"{SECTIONS[sec]} to ({float(ends[0])}f to {float(ends[1])}f)")
+            moves.append(f"AcidMove({ACID_KNOBS[k]}, mapOf({', '.join(pairs)}))")
+        if moves:
+            args.append(f"moves = listOf({', '.join(moves)})")
+        out.append(f"                acid = AcidRecipe({', '.join(args)}),")
     if sig:
         out.append(f"                signature = Part.{PART[sig]},")
     if tips:
@@ -260,6 +320,7 @@ def main(out, *paths):
     text = "\n".join([
         "package com.pocketstudio.model",
         "",
+        "import com.pocketstudio.model.StarterWizard.AcidMove",
         "import com.pocketstudio.model.StarterWizard.AcidRecipe",
         "import com.pocketstudio.model.StarterWizard.Line",
         "import com.pocketstudio.model.StarterWizard.Melody",
@@ -285,4 +346,9 @@ def main(out, *paths):
 
 
 if __name__ == "__main__":
-    main(*sys.argv[1:])
+    if sys.argv[1:] == ["--names"]:
+        # What the converter accepts, for StyleRecipesUpToDateTest to compare with the app's own lists.
+        print(json.dumps({"sounds": sorted(PRESETS), "acid_sounds": sorted(ACID_SOUNDS), "fx_presets": sorted(FX_PRESETS),
+                          "effects": sorted(EFFECTS)}))
+    else:
+        main(*sys.argv[1:])

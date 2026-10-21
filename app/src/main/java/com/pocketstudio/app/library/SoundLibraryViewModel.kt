@@ -15,7 +15,11 @@ import com.pocketstudio.app.report.AppLog
 import com.pocketstudio.app.rhythm.DrumKitInfo
 import com.pocketstudio.engine.NativeEngine
 import com.pocketstudio.engine.OfflineExport
+import com.pocketstudio.model.AcidPattern
+import com.pocketstudio.model.AcidSound
 import com.pocketstudio.model.PackIndex
+import com.pocketstudio.model.WizardAcid
+import com.pocketstudio.model.automatedAcidKnobs
 import com.pocketstudio.model.PackManifest
 import com.pocketstudio.model.PackSound
 import com.pocketstudio.model.PadSample
@@ -94,6 +98,14 @@ data class WizardUi(
     val acid: Boolean = true,
     val creating: Boolean = false,
     val error: String? = null,
+    /** The 303 line as written on its step (null: the style's, in the chosen mood). */
+    val acidNotes: AcidPattern? = null,
+    /** The 303's sound as set on its step (null: the style's). */
+    val acidSound: AcidSound? = null,
+    /** The quick sound picked for the 303 ([WizardAcid.SOUNDS] label), if any. */
+    val acidSoundName: String? = null,
+    /** How busy a generated 303 line is (0..1), as on the Acide tab. */
+    val acidDensity: Float = AcidPattern().density,
 ) {
     val style: StarterWizard.Style? get() = styleId?.let(StarterWizard::style)
     /** Without a melody ([mood] null) the melodic parts' steps are left out; the mood is chosen before them, so [step] stays put. */
@@ -101,12 +113,33 @@ data class WizardUi(
     val lastStep: Int get() = steps.size - 1
     val current: StarterWizard.Step get() = steps[step.coerceIn(0, lastStep)]
 
-    /** Which sections (Intro, Couplet, Refrain…) each chosen line and part will play in (what "Créer le morceau" builds). */
+    /**
+     * The 303 line the song gets with [mood] (null: the style has none): the one written on its
+     * step, or the style's in that mood, with the sound set there.
+     */
+    fun acidIn(mood: StarterWizard.Mood): AcidPattern? {
+        val recipe = style?.let { WizardAcid.recipe(it, mood) } ?: return null
+        return (acidNotes ?: recipe).copy(sound = acidSound ?: recipe.sound, density = acidDensity)
+    }
+
+    /** The 303 line as it is now (in the chosen mood, else the style's own). */
+    val acidPattern: AcidPattern? get() = style?.let { acidIn(mood ?: it.melody.mood) }
+
+    /** The 303 really plays in the song: a mood, the line kept, and at least one note in it. */
+    val acidPlays: Boolean get() = mood != null && acid && acidPattern?.let(WizardAcid::plays) == true
+
+    /** The song's key for the 303's notes. */
+    val acidHarmony: com.pocketstudio.model.Harmony? get() = style?.let { StarterWizard.harmonyOf(it, mood ?: it.melody.mood) }
+
+    /**
+     * Which sections (Intro, Couplet, Refrain…) each chosen line and part will play in (what
+     * "Créer le morceau" builds): only what really plays, a line with its sound, a part with a
+     * mood, the 303 with a note.
+     */
     val plan: StarterWizard.ScenePlan get() {
         val lines = style?.lines.orEmpty().map { it.role }.filter { r -> rows[r]?.let { it.enabled && it.sound != null } == true }.toSet()
         val used = if (mood == null) emptySet() else parts.filterValues { it.enabled }.keys
-        val withAcid = mood != null && acid && style?.melody?.acid != null
-        return style?.let { StarterWizard.planFor(it, lines, used, withAcid) } ?: StarterWizard.scenePlan(lines, used, withAcid)
+        return style?.let { StarterWizard.planFor(it, lines, used, acidPlays) } ?: StarterWizard.scenePlan(lines, used, acidPlays)
     }
 }
 
@@ -175,7 +208,8 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
     private var previewJob: Job? = null
 
     private val player = PcmPlayer { _playing.value = null }
-    private val kitCache = HashMap<Int, Pcm>()
+    /** Kit voices already rendered (internal: tests put a sound there as if heard before). */
+    internal val kitCache = HashMap<Int, Pcm>()
     private val cancelled = HashMap<String, AtomicBoolean>()
 
     // --- Packs ---------------------------------------------------------------------------------
@@ -270,10 +304,22 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
             stopPreview()
             return
         }
+        startPreview(ref)
+    }
+
+    /**
+     * Renders [ref] and plays it, after [waitMs] (edits in a row make one render); what plays
+     * goes on until the new excerpt is ready.
+     */
+    private fun startPreview(ref: SoundRef, waitMs: Long = 0) {
         // The last touch wins: an excerpt still rendering for another sound is dropped.
         previewJob?.cancel()
-        previewJob = viewModelScope.launch {
+        // Started only once it is known as the current job: on the main thread a cached sound (a
+        // kit voice already rendered) runs to its end at start(), before an assignment after
+        // launch, and its finally would not see itself as the current render (a spinner forever).
+        val job = viewModelScope.launch(start = kotlinx.coroutines.CoroutineStart.LAZY) {
             _preparing.value = ref
+            if (waitMs > 0) kotlinx.coroutines.delay(waitMs)
             val pcm = try {
                 load(ref)
             } catch (e: CancellationException) {
@@ -285,15 +331,19 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                 AppLog.add("Écoute impossible : mémoire pleine")
                 null
             } finally {
-                if (_preparing.value == ref) _preparing.value = null
+                // Not when a newer render of the same excerpt took over (the 303 edited again).
+                if (_preparing.value == ref && previewJob === coroutineContext[Job]) _preparing.value = null
             }
             if (pcm == null) {
                 AppLog.add("Écoute impossible : $ref")
                 return@launch
             }
-            if (player.play(pcm)) _playing.value = ref
+            // A line tried with the beat (a drum line, the 303) goes round until stopped, to compare in time.
+            if (player.play(pcm, loop = loops(ref))) _playing.value = ref
             else AppLog.add("Le téléphone a refusé de jouer l'extrait (${pcm.frames} images)")
         }
+        previewJob = job
+        job.start()
     }
 
     fun stopPreview() {
@@ -377,7 +427,8 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         val style = w.style ?: return null
         val before = StarterWizard.Part.entries.takeWhile { it != ref.part }
             .mapNotNull { p -> w.parts[p]?.takeIf { it.enabled }?.let { p to it.sound } }
-        return groove(style, chosenBeat(w, style), before + (ref.part to ref.sound), w.mood ?: style.melody.mood, bars = 2, focusPart = before.size)
+        val mood = w.mood ?: style.melody.mood
+        return groove(style, chosenBeat(w, style), before + (ref.part to ref.sound), mood, bars = 2, acid = w.acidIn(mood)?.takeIf { w.acid }, focusPart = before.size)
     }
 
     /** The mood's four chords on the style's parts (its 303 line, or bass and pad), over the beat as chosen so far. */
@@ -387,7 +438,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         val parts = demoParts(style).map { p ->
             p to (w.parts[p]?.sound ?: StarterWizard.soundsFor(p, style, _packs.value.installed).first())
         }
-        return groove(style, chosenBeat(w, style), parts, mood, bars = 4, acid = w.acid)
+        return groove(style, chosenBeat(w, style), parts, mood, bars = 4, acid = w.acidIn(mood)?.takeIf { w.acid })
     }
 
     /**
@@ -405,14 +456,16 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         val installed = _packs.value.installed
         val beat = style.lines.mapNotNull { line -> defaultRow(line.role, id, installed).sound?.let { line to it.ref } }
         val parts = demoParts(style).map { it to StarterWizard.soundsFor(it, style, installed).first() }
-        return groove(style, beat, parts, style.melody.mood, bars = STYLE_DEMO_BARS)
+        return groove(style, beat, parts, style.melody.mood, bars = STYLE_DEMO_BARS, acid = WizardAcid.recipe(style, style.melody.mood))
     }
 
-    /** The 303 line over the beat chosen so far, in the chosen mood. */
+    /** The 303 line as written on its step, with its sound, over the beat chosen so far: one loop of it. */
     private suspend fun acidDemo(): Pcm? {
         val w = _wizard.value
         val style = w.style ?: return null
-        return groove(style, chosenBeat(w, style), emptyList(), w.mood ?: style.melody.mood, bars = 2)
+        val line = w.acidPattern ?: return null
+        val bars = (line.length + AcidPattern.STEPS_PER_PAGE - 1) / AcidPattern.STEPS_PER_PAGE
+        return groove(style, chosenBeat(w, style), emptyList(), w.mood ?: style.melody.mood, bars = bars.coerceAtLeast(2), acid = line, loop = true)
     }
 
     /** The beat up to the line, that line played with the sound being tried. */
@@ -422,7 +475,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         val upTo = style.lines.indexOfFirst { it.role == ref.role }
         if (upTo < 0) return null
         val beat = style.lines.take(upTo).mapNotNull { line -> enabledSound(w, line) } + (style.lines[upTo] to ref.sound.ref)
-        return groove(style, beat, emptyList(), w.mood ?: style.melody.mood, bars = 2, acid = false, focusLane = style.lines[upTo].role.lane)
+        return groove(style, beat, emptyList(), w.mood ?: style.melody.mood, bars = 2, acid = null, focusLane = style.lines[upTo].role.lane, loop = true)
     }
 
     private fun enabledSound(w: WizardUi, line: StarterWizard.Line): Pair<StarterWizard.Line, SoundRef>? =
@@ -441,11 +494,13 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         parts: List<Pair<StarterWizard.Part, StarterWizard.PartSound>>,
         mood: StarterWizard.Mood,
         bars: Int,
-        /** The style's 303 line too (not while trying a drum line alone). */
-        acid: Boolean = true,
+        /** The 303 line to play too (null: none, e.g. while trying a drum line alone). */
+        acid: AcidPattern?,
         /** The sound being tried, in front of the rest: part [focusPart] (index in [parts]) or the pad of [focusLane]. */
         focusPart: Int? = null,
         focusLane: Int? = null,
+        /** Made to go round: exactly [bars] bars, the ringing end laid over the start. */
+        loop: Boolean = false,
     ): Pcm? {
         if (!NativeEngine.isAvailable) return null
         // Audio first: the kit voice already on its pad needs nothing, the others are decoded or rendered.
@@ -472,10 +527,9 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                     natives[i]?.let { NativeEngine.setPadSample(lane, it) }
                     StarterWizard.hits(line, steps).forEach { (step, hit) -> NativeEngine.setDrumHit(lane, step, hit.velocity, hit.repeats) }
                 }
-                // The style's 303 line under its chords (acid house, rave techno).
-                val recipe = style.melody.acid
-                if (recipe != null && acid) {
-                    val line = com.pocketstudio.model.acidLine(harmony, recipe.pattern, recipe.accents, recipe.slides)
+                // The 303 line under the chords (acid house, rave techno).
+                if (acid != null) {
+                    val line = acid.sanitized()
                     NativeEngine.setAcidLength(line.length)
                     NativeEngine.setAcidRoot(line.root)
                     line.steps.forEachIndexed { i, s -> NativeEngine.setAcidStep(i, s.pack()) }
@@ -504,6 +558,22 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                     notes.forEachIndexed { i, n -> NativeEngine.setSynthNote(i, n.start, n.length, n.pitch, n.velocity, track) }
                     NativeEngine.setSynthNoteCount(notes.size, track)
                 }
+                // The 303 heard with the beat sounds as in the song: through the style's effects on
+                // the acid line, the drums and the master (Acidcore's saturation and OTT).
+                if (acid != null) {
+                    val fx = StarterWizard.effectsMixer(style, beat.map { it.first.role }.toSet(), acid = true)
+                    for (ch in listOf(0, 1)) {
+                        val strip = fx.channels[ch]
+                        com.pocketstudio.app.rhythm.RhythmViewModel.insertCommands(strip.inserts, { slot, type -> NativeEngine.setInsertType(ch, slot, type) }) { slot, k, v ->
+                            NativeEngine.setInsertParam(ch, slot, k, v)
+                        }
+                        strip.sends.forEachIndexed { bus, v -> NativeEngine.setSend(ch, bus, v) }
+                        strip.macros.forEachIndexed { m, v -> NativeEngine.setMacro(ch, m, v) }
+                    }
+                    com.pocketstudio.app.rhythm.RhythmViewModel.insertCommands(fx.master, { slot, type -> NativeEngine.setInsertType(NativeEngine.MASTER, slot, type) }) { slot, k, v ->
+                        NativeEngine.setInsertParam(NativeEngine.MASTER, slot, k, v)
+                    }
+                }
                 // The sound being tried stands out (+3 dB), the song around it steps back (−9 dB):
                 // it is the one to judge, the rest is only there to place it.
                 if (focusPart != null) {
@@ -530,7 +600,8 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                 natives.forEach { it?.close() }
             }
         }
-        return if (data.isEmpty()) null else Pcm(trimSilence(data), 2, OfflineExport.SAMPLE_RATE)
+        if (data.isEmpty()) return null
+        return Pcm(if (loop) loopOf(data, OfflineExport.framesFor(bars, style.bpm)) else trimSilence(data), 2, OfflineExport.SAMPLE_RATE)
     }
 
     // --- The assistant -------------------------------------------------------------------------
@@ -557,6 +628,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
             w.copy(
                 styleId = id, step = 1, rows = style.lines.associate { it.role to defaultRow(it.role, id, installed) },
                 mood = style.melody.mood,
+                acidNotes = null, acidSound = null, acidSoundName = null, acidDensity = AcidPattern().density,
                 // The recipe's parts on (the riddim's bass alone, no bass under the gabber's kick, the
                 // acid styles' 303 alone); the others can be ticked on their step.
                 parts = StarterWizard.Part.entries.associateWith { PartRow(it in StarterWizard.defaultParts(style), StarterWizard.soundsFor(it, style, installed).first()) },
@@ -568,13 +640,72 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
 
     /** null: the beat only, no melodic tracks. */
     fun setMood(mood: StarterWizard.Mood?) {
-        _wizard.update { it.copy(mood = mood) }
+        _wizard.update { w ->
+            // A 303 line written before (the 303 step comes after the mood's) moves into the new
+            // key's scale, so that the song's 303 stays in tune with its chords.
+            val style = w.style
+            val notes = w.acidNotes
+            val moved = if (notes != null && style != null && mood != null) WizardAcid.inScale(notes, StarterWizard.harmonyOf(style, mood)) else notes
+            w.copy(mood = mood, acidNotes = moved)
+        }
         val ref = mood?.let { SoundRef.MoodDemo(it) }
         if (ref == null) stopPreview() else if (_playing.value != ref && _preparing.value != ref) preview(ref)
     }
 
     /** Keeps the style's 303 line or leaves it out. */
     fun setAcidEnabled(enabled: Boolean) = _wizard.update { it.copy(acid = enabled) }
+
+    /** A touch on 303 step [index]: the next note up the song's scale (a rest after the top one). */
+    fun acidTapStep(index: Int) = editAcidNotes { p, h -> p.withStep(index, WizardAcid.nextNote(p.steps[index], h)) }
+
+    /** A long touch on 303 step [index]: its accent, its slide, both, neither. */
+    fun acidHoldStep(index: Int) = editAcidNotes { p, _ -> p.withStep(index, WizardAcid.nextMarks(p.steps[index])) }
+
+    /** A new 303 line from the generator, at the density chosen, on the song's scale. */
+    fun generateAcid() = editAcidNotes { p, h ->
+        val feel = _wizard.value.styleId?.let { com.pocketstudio.model.AcidGenerator.Feel.forStyle(it) } ?: com.pocketstudio.model.AcidGenerator.Feel.CLASSIC
+        WizardAcid.generate(p.copy(density = _wizard.value.acidDensity), h, feel = feel)
+    }
+
+    fun setAcidDensity(density: Float) = _wizard.update { it.copy(acidDensity = density.coerceIn(0f, 1f)) }
+
+    /** The 303 line over one or two bars (a second bar starts as a copy of the first). */
+    fun setAcidBars(bars: Int) = editAcidNotes { p, _ -> WizardAcid.withBars(p, bars) }
+
+    /** Back to the style's own 303 line (the sound stays as set). */
+    fun acidFromStyle() {
+        _wizard.update { it.copy(acidNotes = null) }
+        refreshAcidDemo()
+    }
+
+    /** One of the quick 303 sounds ([WizardAcid.SOUNDS]). */
+    fun chooseAcidSound(label: String) {
+        _wizard.update { w ->
+            val sound = WizardAcid.sound(label, w.acidPattern?.sound ?: AcidSound()) ?: return@update w
+            w.copy(acidSound = sound, acidSoundName = label)
+        }
+        refreshAcidDemo()
+    }
+
+    /** Turns one of the 303's knobs (index as in [AcidSound.values]: 0 cutoff, 1 resonance). */
+    fun setAcidKnob(index: Int, value: Float) {
+        _wizard.update { w -> w.acidPattern?.let { w.copy(acidSound = it.sound.with(index, value)) } ?: w }
+        refreshAcidDemo()
+    }
+
+    private fun editAcidNotes(transform: (AcidPattern, com.pocketstudio.model.Harmony) -> AcidPattern) {
+        _wizard.update { w ->
+            val line = w.acidPattern ?: return@update w
+            val harmony = w.acidHarmony ?: return@update w
+            w.copy(acidNotes = transform(line, harmony).sanitized(), acid = true)
+        }
+        refreshAcidDemo()
+    }
+
+    /** The 303 heard with the beat (« Avec le rythme ») starts again with the change, still in a loop. */
+    private fun refreshAcidDemo() {
+        if (restartsOnEdit(_playing.value, _preparing.value)) startPreview(SoundRef.AcidDemo, waitMs = EDIT_SETTLE_MS)
+    }
 
     fun setPartEnabled(part: StarterWizard.Part, enabled: Boolean) =
         _wizard.update { w -> w.parts[part]?.let { w.copy(parts = w.parts + (part to it.copy(enabled = enabled))) } ?: w }
@@ -604,10 +735,14 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         editRow(role) { it.copy(category = categoryId, sound = category.options.firstOrNull(), chosen = true) }
     }
 
-    /** Picks the sound for the line and lets it be heard. */
+    /**
+     * Picks the sound for the line and lets it be heard: alone, or, while the line is being heard
+     * with the beat (« Avec le rythme »), with the beat again straight away with the new sound.
+     */
     fun choose(role: Role, option: SoundOption) {
         editRow(role) { it.copy(sound = option, enabled = true, chosen = true) }
-        if (_preparing.value != option.ref) preview(option.ref)
+        val next = soundOnChoose(_playing.value ?: _preparing.value, role, option)
+        if (_preparing.value != next && _playing.value != next) preview(next)
     }
 
     private fun editRow(role: Role, transform: (WizardRow) -> WizardRow) =
@@ -688,8 +823,13 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                 }
                 AppLog.add("Assistant : morceau ${style.name}, ${sounds.size} lignes, ${parts.size} pistes mélodiques")
                 // The choices stay until the project is written (the caller closes the assistant then).
-                val guide = songGuide(style.name, w.plan, inKey = w.mood != null, song = songSummary(style, w.plan), acid = w.mood != null && w.acid && style.melody.acid != null)
-                then(StarterWizard.build(style, sounds, w.mood, parts, acid = w.acid), files, guide)
+                val project = StarterWizard.build(style, sounds, w.mood, parts, acid = w.acidPlays, chosenAcid = w.acidPattern)
+                // The song's 303 cutoff follows a curve (acid styles): the guide says how to take it over.
+                val guide = songGuide(
+                    style.name, w.plan, inKey = w.mood != null, song = songSummary(style, w.plan), acid = w.acidPlays,
+                    acidMoves = 0 in project.automatedAcidKnobs,
+                )
+                then(project, files, guide)
             } catch (e: Exception) {
                 _wizard.update { it.copy(creating = false, error = tr("Le morceau n'a pas pu être préparé (%s).", e.message)) }
             }
@@ -706,6 +846,20 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         /** Bars of a style heard on its card (a few seconds). */
         private const val STYLE_DEMO_BARS = 4
 
+        /** Edits of the 303 in a row (a knob turned) wait this long before the loop is rendered again. */
+        private const val EDIT_SETTLE_MS = 250L
+
+        /**
+         * One loop of exactly [frames] frames from a stereo render that rings on after them: the
+         * ringing end is laid over the start, as it sounds when the loop goes round.
+         */
+        fun loopOf(stereo: FloatArray, frames: Long): FloatArray {
+            val n = (frames * 2).coerceAtMost(stereo.size.toLong()).toInt().coerceAtLeast(2)
+            val out = stereo.copyOf(n)
+            for (i in n until stereo.size) out[(i - n) % n] += stereo[i]
+            return out
+        }
+
         /** Drops the silent end of a render (keeps 20 ms after the last audible frame). */
         fun trimSilence(stereo: FloatArray): FloatArray {
             var last = stereo.size / 2 - 1
@@ -715,3 +869,17 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 }
+
+/**
+ * What to play when the sound [option] is picked for line [role]: the line with the beat again
+ * when that is what is being heard ([current]), else the sound alone.
+ */
+internal fun soundOnChoose(current: SoundRef?, role: Role, option: SoundOption): SoundRef =
+    if (current is SoundRef.LineDemo && current.role == role) SoundRef.LineDemo(role, option) else option.ref
+
+/** Excerpts that go round until stopped: a drum line with the beat, the 303 with the beat. */
+internal fun loops(ref: SoundRef): Boolean = ref is SoundRef.LineDemo || ref == SoundRef.AcidDemo
+
+/** An edit of the 303 restarts what is heard when it is the 303 with the beat ([playing] or being [preparing]). */
+internal fun restartsOnEdit(playing: SoundRef?, preparing: SoundRef?): Boolean =
+    playing == SoundRef.AcidDemo || preparing == SoundRef.AcidDemo

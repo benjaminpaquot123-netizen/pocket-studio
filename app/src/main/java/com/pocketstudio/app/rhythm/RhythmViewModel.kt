@@ -30,6 +30,7 @@ import com.pocketstudio.model.Remix
 import com.pocketstudio.model.Mixer
 import com.pocketstudio.model.Macros
 import com.pocketstudio.model.insertsOf
+import com.pocketstudio.model.withInsertScenes
 import com.pocketstudio.model.withInsertsSwapped
 import com.pocketstudio.model.FxPresets
 import com.pocketstudio.model.currentSceneContent
@@ -111,6 +112,7 @@ import com.pocketstudio.model.restorePreviousTake
 import com.pocketstudio.model.withSongRepeats
 import com.pocketstudio.model.previousTakeFiles
 import com.pocketstudio.model.songCurvesAt
+import com.pocketstudio.model.acidKnobsDriven
 import com.pocketstudio.model.automationBefore
 import com.pocketstudio.model.songStepOf
 import com.pocketstudio.model.takeStart
@@ -125,6 +127,7 @@ import com.pocketstudio.model.instrumentTracks
 import com.pocketstudio.model.track
 import com.pocketstudio.model.withTrack
 import com.pocketstudio.model.addTrack
+import com.pocketstudio.model.sceneTitle
 import com.pocketstudio.model.duplicateTrack
 import com.pocketstudio.model.removeTrack
 import com.pocketstudio.model.ProjectSession
@@ -554,6 +557,27 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         pushMixer()
         selectTrack(id)
         AppLog.add("Piste ajoutée : ${project.value.track(id).name}")
+    }
+
+    /**
+     * A new instrument track for [kind] (a melody, chords, a bass…), named for it, with a sound
+     * suited to it (the style's, when the project was made from one), selected at once; with
+     * [write], four bars of melody in the song's key in the scene shown. One step to undo.
+     */
+    fun addTrackOf(kind: com.pocketstudio.model.TrackKind, write: Boolean = false) {
+        val p = project.value
+        val style = com.pocketstudio.app.library.styleOfProject(p.name)?.let(com.pocketstudio.model.StarterWizard::style)
+        val next = com.pocketstudio.model.NewTracks.add(p, kind, style, write) ?: run {
+            _notice.value = tr("Huit pistes d'instruments au maximum : supprime-en une pour en ajouter une autre.")
+            return
+        }
+        val id = next.tracks.first { t -> p.tracks.none { it.id == t.id } }.id
+        session.edit { next }
+        pushTracks()
+        pushMixer()
+        selectTrack(id)
+        if (write) _notice.value = tr("Mélodie écrite : 4 mesures dans la tonalité du morceau, dans la scène %s. « Annuler » la retire.", project.value.sceneTitle(project.value.scene))
+        AppLog.add("Piste ajoutée : ${project.value.track(id).name}${if (write) " (mélodie écrite)" else ""}")
     }
 
     fun duplicateTrack(id: Int) {
@@ -1212,6 +1236,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             AutoTarget.SEND -> setSend(t.ch, t.slot, v)
             AutoTarget.INSERT_PARAM -> setInsertParam(t.ch, t.slot, t.param, v)
             AutoTarget.BUS_PARAM -> setBusParam(t.slot, t.param, v)
+            AutoTarget.ACID -> setAcidSound(t.param, v)
             MidiMapping.SYNTH -> setSynthParam(t.param, v)
             MidiMapping.PLAITS -> setPlaitsParam(t.param, v)
             MidiMapping.PERFORMANCE -> if (NativeEngine.isAvailable) NativeEngine.setPerformance(t.param, v)
@@ -1451,6 +1476,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * stay): pattern edits must not reach the playing slot. They reach the engine when their scene
      * is sent ahead of its turn ([stageSongPart], [restageIfEditingUpcoming]).
      */
+    /** The scene the engine plays now (another one than [p]'s while staying on a scene during the song). */
+    private fun engineScene(p: Project): Int = if (editsWait) heardScene ?: p.scene else p.scene
+
     private val editsWait: Boolean get() {
         val heard = heardScene ?: return false
         return !pushingPart && !NativeEngine.isCapturing && _transport.value.playing && heard != project.value.scene
@@ -1804,6 +1832,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 AutoTarget.SEND -> NativeEngine.setSend(t.ch, t.slot, v)
                 AutoTarget.INSERT_PARAM -> NativeEngine.setInsertParam(t.ch, t.slot, t.param, v)
                 AutoTarget.BUS_PARAM -> NativeEngine.setBusParam(t.slot, t.param, v)
+                AutoTarget.ACID -> NativeEngine.setAcidParam(t.param, v)
             }
         }
     }
@@ -1814,7 +1843,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         try {
             val view = if (part != null) p.partView(part) else p.sceneView(index)
             pushDrumPattern(view.drums)
-            pushAcid(view.acid)
+            // The 303 knobs that lanes move in this scene stay where the automation has them;
+            // the others (a lane without points here) go back to the project's setting.
+            pushAcid(view.acid, keep = p.acidKnobsDriven(index, inSong = part != null))
             view.instrumentTracks.forEach { pushNotes(it.notes, it.id) }
             for (id in 0 until AudioTrack.MAX) NativeEngine.setAudioOn(id, audioPlays(p, id, part, index))
             // "Once" clips: once per song part, or once per pass of the scene played alone.
@@ -1825,6 +1856,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             p.automation.forEachIndexed { i, lane ->
                 if (lane.mode == AutomationLane.PER_SCENE) lane.valuesFor(index).forEachIndexed { step, v -> NativeEngine.setAutomationPoint(i, step, v) }
             }
+            // « Joue dans »: each effect heard plays in this scene or lets the sound through.
+            (usedStrips(p) + MASTER).forEach { ch -> insertOnCommands(p.insertsOf(ch), index) { slot, on -> NativeEngine.setInsertOn(ch, slot, on) } }
         } finally {
             pushingPart = false
         }
@@ -1936,7 +1969,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             if (lane == null) continue
             pushSongCurve(p, i, lane)
             // Per-scene clips: those of the scene the engine plays (another one while staying on this one).
-            val scene = if (editsWait) heardScene ?: p.scene else p.scene
+            val scene = engineScene(p)
             lane.valuesFor(scene).forEachIndexed { step, v -> if (v != null) NativeEngine.setAutomationPoint(i, step, v) }
         }
     }
@@ -2001,8 +2034,15 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     private fun recordAutomation(target: AutoTarget, value: Float) {
         if (!_automationRecord.value || !_transport.value.playing || !NativeEngine.isAvailable || !target.isValid) return
-        val step = NativeEngine.currentStep()
-        if (step !in 0 until AutomationLane.STEPS) return
+        recordGesture(target, value, NativeEngine.currentStep(), NativeEngine.songStep())
+    }
+
+    /**
+     * A gesture on [target] recorded at pattern [step] (song lanes: on the bar of [songStep], the
+     * engine's song position): into its lane, made when there is none yet.
+     */
+    internal fun recordGesture(target: AutoTarget, value: Float, step: Int, songStep: Int) {
+        if (!target.isValid || step !in 0 until AutomationLane.STEPS) return
         var index = project.value.automation.indexOfFirst { it.target == target }
         if (index < 0) {
             if (project.value.automation.size >= AutomationLane.MAX_LANES) return
@@ -2013,7 +2053,6 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (project.value.automation[index].mode == AutomationLane.SONG) {
             // The bar the engine's song curve is reading now (it restarts when the song loops);
             // none while a scene plays on its own: its bars are not the song's.
-            val songStep = NativeEngine.songStep()
             if (songStep >= 0 && (songPlaying() || project.value.song.isEmpty())) {
                 setAutomationSongPoint(index, songStep / project.value.stepsPerBar, value)
             } else {
@@ -3027,6 +3066,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
     }.distinctUntilChanged().stateIn(viewModelScope, SharingStarted.WhileSubscribed(1000), false)
 
+    /** Each scene's section name, by scene ("" for its letter alone): the effects box's « Joue dans ». */
+    val sceneLabels: StateFlow<List<String>> = project.map { p -> p.allScenes.map { it.label } }.distinctUntilChanged()
+        .stateIn(viewModelScope, SharingStarted.Eagerly, project.value.allScenes.map { it.label })
+
     /** Polls meter peaks about 20 times a second while the mixer is visible. */
     suspend fun pollMeters() {
         if (!NativeEngine.isAvailable) return
@@ -3173,6 +3216,28 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     private fun pushInserts(ch: Int, inserts: List<Insert>) {
         insertCommands(inserts, { slot, type -> NativeEngine.setInsertType(ch, slot, type) }) { slot, k, v -> NativeEngine.setInsertParam(ch, slot, k, v) }
+        pushInsertScenes(ch, inserts)
+    }
+
+    /**
+     * « Joue dans »: whether each effect of [ch] plays in the scene the engine plays now, and in
+     * the scene waiting to take over (its copy in the engine was sent before this change).
+     */
+    private fun pushInsertScenes(ch: Int, inserts: List<Insert>) {
+        insertOnCommands(inserts, engineScene(project.value)) { slot, on -> NativeEngine.setInsertOn(ch, slot, on) }
+        val waiting = _sessionUi.value.pending
+        if (waiting != null && _transport.value.playing && !NativeEngine.isCapturing && inserts.any { it.heardType != 0 }) {
+            NativeEngine.setStaging(true)
+            insertOnCommands(inserts, waiting) { slot, on -> NativeEngine.setInsertOn(ch, slot, on) }
+            NativeEngine.setStaging(false)
+        }
+    }
+
+    /** « Joue dans »: effect [slot] of strip [ch] plays only in [scenes] (null: in every scene). One undo step. */
+    fun setInsertScenes(ch: Int, slot: Int, scenes: Set<Int>?) {
+        if (ch !in 0 until Mixer.CHANNELS) return
+        session.edit { it.withInsertScenes(ch, slot, scenes) }
+        if (NativeEngine.isAvailable) pushInsertScenes(ch, project.value.insertsOf(ch))
     }
 
     // --- Effects (inserts on channels and master, sends, buses) ------------------------------
@@ -3607,7 +3672,30 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun setAcidSound(index: Int, value: Float) {
         session.edit("acid-sound-$index") { p -> p.copy(acid = p.acid.copy(sound = p.acid.sound.with(index, value))) }
         if (NativeEngine.isAvailable) NativeEngine.setAcidParam(index, project.value.acid.sound.values()[index])
+        // Turned while the automation records: the gesture goes into a lane of that knob.
+        if (index in AutoTarget.ACID_PARAMS) recordAutomation(AutoTarget.acid(index), value.coerceIn(0f, 1f))
     }
+
+    /** A finger on 303 knob [index] or off it: while held, its automation lane lets the finger play it (see [holdSetting]). */
+    fun holdAcidKnob(index: Int, held: Boolean) {
+        if (index in AutoTarget.ACID_PARAMS) holdSetting(AutoTarget.acid(index), held)
+    }
+
+    /**
+     * Touch take-over: while a finger holds the control of [target] (a 303 knob now; a fader or an
+     * effect's knob later, the Live screen's big controls), no automation lane writes that setting
+     * in the engine, so the gesture is heard during the song; let go, the lanes drive it again from
+     * the next step. While recording, the gesture is still written into its lane ([recordAutomation]).
+     */
+    fun holdSetting(target: AutoTarget, held: Boolean) {
+        if (!target.isValid) return
+        val changed = if (held) heldSettings.add(target) else heldSettings.remove(target)
+        if (changed && NativeEngine.isAvailable) NativeEngine.setAutomationHold(target.pack(), held)
+    }
+
+    /** The settings a finger holds now (touch take-over). */
+    private val heldSettings = HashSet<AutoTarget>()
+    internal val heldSettingsForTests: Set<AutoTarget> get() = heldSettings
 
     fun shiftAcidRoot(semitones: Int) {
         session.edit { p -> p.copy(acid = p.acid.copy(root = p.acid.root + semitones)) }
@@ -3618,14 +3706,15 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         session.edit("acid-density") { p -> p.copy(acid = p.acid.copy(density = density)) }
     }
 
-    private fun pushAcid(acid: AcidPattern) {
+    /** The acid line to the engine: its notes (unless [editsWait]), root and knobs ([keep]: knobs left as they are). */
+    private fun pushAcid(acid: AcidPattern, keep: Set<Int> = emptySet()) {
         if (!NativeEngine.isAvailable) return
         // Another scene plays (staying on this one during the song): only the sound goes now.
         val notes = !editsWait
         if (notes) NativeEngine.setAcidLength(acid.length)
         NativeEngine.setAcidRoot(acid.root)
         if (notes) acid.steps.forEachIndexed { i, s -> NativeEngine.setAcidStep(i, s.pack()) }
-        acid.sound.values().forEachIndexed { i, v -> NativeEngine.setAcidParam(i, v) }
+        acid.sound.values().forEachIndexed { i, v -> if (i !in keep) NativeEngine.setAcidParam(i, v) }
     }
 
     /** ▶ / ■: plays the song from its first part when listening to the song ([listensToSong]), else the scene shown. */
@@ -4369,6 +4458,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
          * slot, its settings kept here), and the settings of the slots heard only (the engine
          * ignores them on an empty slot, and switching an effect on sends the slot again).
          */
+        /** « Joue dans » as engine commands: each effect heard plays in [scene] or not (empty and switched-off slots: nothing). */
+        internal inline fun insertOnCommands(inserts: List<Insert>, scene: Int, on: (slot: Int, on: Boolean) -> Unit) {
+            inserts.forEachIndexed { slot, ins -> if (ins.heardType != 0) on(slot, ins.playsIn(scene)) }
+        }
+
         internal inline fun insertCommands(inserts: List<Insert>, type: (slot: Int, type: Int) -> Unit, param: (slot: Int, k: Int, v: Float) -> Unit) {
             inserts.forEachIndexed { slot, ins ->
                 type(slot, ins.heardType)

@@ -87,7 +87,10 @@ class SongGuideTest {
         val clubPages = songGuide("House", club, inKey = true, song = songSummary(house, club), acid = true)
         assertTrue(clubPages.first().lines.any { it.startsWith("D · Break") })
         assertTrue(clubPages.first().lines.first().contains("quatre sections"))
-        assertTrue(clubPages.flatMap { it.lines }.any { it.contains("ligne 303") })
+        // The 303 is named only when the plan plays it, with the sections it plays in.
+        assertTrue(clubPages.flatMap { it.lines }.none { it.contains("ligne 303") })
+        val withAcid = StarterWizard.planFor(house, house.lines.map { it.role }.toSet(), setOf(StarterWizard.Part.Bass, StarterWizard.Part.Pad), true)
+        assertTrue(songGuide("House", withAcid, inKey = true, acid = true).flatMap { it.lines }.any { it.startsWith("Acide : ta ligne 303 joue dans Groove et Drop.") })
         assertTrue(songSummary(house, club).startsWith("Intro → Groove → Drop → Break → Drop → Intro pour finir"))
     }
 

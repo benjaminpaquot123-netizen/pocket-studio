@@ -108,6 +108,10 @@ enum class CommandType : uint8_t {
     SetMaster,            // a: 0 = gain before the limiter (value: linear 0..4), 1 = limiter (value 1 = on),
                           // 2 = master inserts (value 1 = on; off for stems, which then add up to the mix)
     ClearInserts,         // a: mixer channel: every insert slot emptied (a strip no longer used gives its pool units back)
+    SetInsertOn,          // a: channel * Mixer::kInserts + slot, value 1: the effect plays in this scene, 0: the sound goes
+                          // through it untouched (« Joue dans »). Follows SetStaging: the waiting scene's, switched at the swap
+    SetAutomationHold,    // a: Automation::pack(kind, channel, slot, param) of a setting, value 1: a finger holds it (touch
+                          // take-over: no lane writes it until let go), 0: let go (lanes drive it again from the next step)
 };
 
 // Instrument tracks: the synth commands (SynthNoteOn/Off, SynthParam, SetSynthNote, SetSynthNoteCount,
@@ -125,7 +129,8 @@ inline int audioChannel(int track) { return 12 + track; }
 
 // Step automation of mixer settings, played on the audio thread at each sequencer step.
 struct Automation {
-    enum Kind { Volume = 0, Pan = 1, Send = 2, InsertParam = 3, BusParam = 4 };
+    // Acid: a knob of the 303 (param: AcidTrack::Param), taking effect on the step's frame.
+    enum Kind { Volume = 0, Pan = 1, Send = 2, InsertParam = 3, BusParam = 4, Acid = 5 };
     static constexpr int kLanes = 8;
     static constexpr int kSteps = 64;
     static constexpr int kSongBars = 256;
@@ -141,8 +146,25 @@ struct Automation {
         int songBars = 0;
     };
     Lane lanes[kLanes];
+    // Settings a finger holds (packed targets, -1 = free slot): lanes leave them alone meanwhile,
+    // so a knob turned during the song is not pulled back by its curve. Audio thread only.
+    static constexpr int kHolds = 8;
+    std::array<int32_t, kHolds> held{};
     Automation() {
         for (auto& l : lanes) l.values.fill(-1.0f);
+        held.fill(-1);
+    }
+    bool isHeld(int32_t target) const {
+        if (target < 0) return false;
+        for (const int32_t h : held) if (h == target) return true;
+        return false;
+    }
+    // Real-time safe. More than kHolds held at once (ten fingers): the extra ones are not taken over.
+    void hold(int32_t target, bool on) {
+        if (target < 0) return;
+        for (auto& h : held) if (h == target) { if (!on) h = -1; return; }
+        if (!on) return;
+        for (auto& h : held) if (h < 0) { h = target; return; }
     }
 };
 
@@ -293,7 +315,7 @@ private:
     // No input (nullptr) while recording writes `numFrames` of silence: the take stays in time.
     void recordInput(const float* input, int numInputFrames, int inputChannels, int numFrames);
     Automation automation_;
-    void applyAutomation(int patternStep, int songStep);
+    void applyAutomation(int patternStep, int songStep, int offset);
     std::array<std::atomic<float>, kScopeFrames> outScope_{}, micScope_{};
     std::atomic<uint32_t> outScopeAt_{0}, micScopeAt_{0};
     static void scopeWrite(std::array<std::atomic<float>, kScopeFrames>& ring, std::atomic<uint32_t>& at, float v) {
@@ -313,7 +335,14 @@ private:
         std::array<int, AudioTracks::kTracks> audioLoop{-1, -1, -1, -1};  // -1: unchanged
         std::array<AcidStep, AcidTrack::kMaxSteps> acid{};
         int acidLength = 16;
+        // Per insert slot: 1 plays, 0 passed by in the waiting scene, -1 unchanged.
+        std::array<int8_t, Mixer::kChannels * Mixer::kInserts> insertOn = unchangedInserts();
     };
+    static std::array<int8_t, Mixer::kChannels * Mixer::kInserts> unchangedInserts() {
+        std::array<int8_t, Mixer::kChannels * Mixer::kInserts> a{};
+        a.fill(-1);
+        return a;
+    }
     StagedScene staged_;
     bool staging_ = false;
     int swapAt_ = -1;      // local step of the swap; 0 = next bar; -1 = none
@@ -328,7 +357,7 @@ private:
     void stopTransport();
     std::atomic<int> songStep_{-1};
     std::atomic<uint32_t> sceneSwaps_{0};
-    void swapScene(int step);
+    void swapScene(int step, int offset);
     Mixer mixer_;
     std::array<float, kMaxBlock> stemsL_{};
     std::array<float, kMaxBlock> stemsR_{};

@@ -94,38 +94,108 @@ data class AcidPattern(
  * Generates acid lines in the spirit of The Endless Acid Banger by David Whiting
  * (https://github.com/vitling/acid-banger, CC BY 4.0): a note set chosen among a few
  * characteristic offset sets, notes more likely on strong steps, random accents and slides.
- * Locked steps are kept as they are.
+ * Locked steps are kept as they are. A [Feel] other than [Feel.CLASSIC] shapes the line for a
+ * genre: more or fewer accents and slides, octave jumps (accented, sliding into the high note), a
+ * phrase of two bars whose second bar answers the first.
  */
 class AcidGenerator(private val random: Random = Random.Default) {
 
-    fun generate(pattern: AcidPattern, noteSet: List<Int> = NOTE_SETS.random(random)): AcidPattern {
+    /**
+     * How a genre plays the 303. [accents] and [slides]: the chance of each on a note; [octaveJumps]:
+     * the chance that an offbeat note leaps up an octave (the acidcore and acid techno bounce);
+     * [phraseBars] 2: a two-bar phrase, the second bar a variation of the first ([variation]: the
+     * share of its second half played differently), repeated over a longer line.
+     */
+    data class Feel(
+        val accents: Double = 0.3,
+        val slides: Double = 0.1,
+        val octaveJumps: Double = 0.0,
+        val phraseBars: Int = 1,
+        val variation: Double = 0.35,
+    ) {
+        companion object {
+            /** The original generator, unchanged. */
+            val CLASSIC = Feel()
+            /** Chicago 1987: a looping one-bar line, quite a few slides, accents here and there. */
+            val ACID_HOUSE = Feel(accents = 0.25, slides = 0.18, octaveJumps = 0.15)
+            /** Acid techno: a busier two-bar line that jumps octaves, sharper accents. */
+            val ACID_TECHNO = Feel(accents = 0.3, slides = 0.12, octaveJumps = 0.3, phraseBars = 2)
+            /** Acidcore: almost every sixteenth, octave leaps on the offbeats, accented high notes, a two-bar riff. */
+            val ACIDCORE = Feel(accents = 0.35, slides = 0.1, octaveJumps = 0.4, phraseBars = 2, variation = 0.4)
+
+            /** The feel of a style of the assistant ([StarterWizard.Style.id]), [CLASSIC] for the others. */
+            fun forStyle(id: String): Feel = when (id) {
+                "acid_house" -> ACID_HOUSE
+                "acid_techno" -> ACID_TECHNO
+                "acidcore" -> ACIDCORE
+                else -> CLASSIC
+            }
+        }
+    }
+
+    fun generate(pattern: AcidPattern, noteSet: List<Int> = NOTE_SETS.random(random), feel: Feel = Feel.CLASSIC): AcidPattern {
         val steps = pattern.steps.toMutableList()
-        for (i in 0 until pattern.length) {
+        // A two-bar phrase needs two bars: a one-bar line grows to two.
+        val length = if (feel.phraseBars >= 2) maxOf(pattern.length, 2 * AcidPattern.STEPS_PER_PAGE).coerceAtMost(AcidPattern.MAX_STEPS) else pattern.length
+        // The bars written fresh: every bar, or only the first one of a phrase.
+        val fresh = if (feel.phraseBars >= 2) AcidPattern.STEPS_PER_PAGE else length
+        for (i in 0 until fresh) {
             if (i in pattern.locked) continue
-            val base = when {
-                i % 4 == 0 -> 0.6
-                i % 3 == 0 -> 0.5
-                i % 2 == 0 -> 0.3
-                else -> 0.1
-            }
-            // density 0.8 reproduces the original feel; 1.0 is busier, 0 nearly empty.
-            val chance = (base * pattern.density / 0.8).coerceAtMost(0.95)
-            steps[i] = if (random.nextDouble() < chance) {
-                val offset = noteSet.random(random)
-                AcidStep(
-                    note = offset % 12,
-                    octave = (offset / 12).coerceAtMost(2),
-                    accent = random.nextDouble() < 0.3,
-                    slide = random.nextDouble() < 0.1,
-                    gate = true,
-                )
-            } else {
-                AcidStep()
-            }
+            steps[i] = randomStep(i, pattern.density.toDouble(), noteSet, feel)
         }
         // Always start on the one so the loop has an anchor.
         if (0 !in pattern.locked && !steps[0].gate) steps[0] = AcidStep(gate = true, accent = true)
-        return pattern.copy(steps = steps)
+        if (feel.phraseBars >= 2) {
+            val bar = AcidPattern.STEPS_PER_PAGE
+            for (i in bar until length) {
+                if (i in pattern.locked) continue
+                val inBar = i % bar
+                val answer = (i / bar) % 2 == 1
+                // The answering bar keeps the first half and plays its second half differently.
+                steps[i] = if (answer && inBar >= bar / 2 && random.nextDouble() < feel.variation) {
+                    randomStep(inBar, pattern.density.toDouble(), noteSet, feel)
+                } else {
+                    steps[inBar]
+                }
+            }
+            // The phrase ends on a turn: the last step of the answer leaps up and slides back home.
+            val last = 2 * bar - 1
+            if (last < length && last !in pattern.locked && feel.octaveJumps > 0.0) {
+                val s = steps[last]
+                steps[last] = AcidStep(note = s.note, octave = (s.octave + 1).coerceAtMost(2), accent = true, slide = true, gate = true)
+            }
+            for (start in 2 * bar until length step 2 * bar) {
+                for (k in 0 until 2 * bar) if (start + k < length && start + k !in pattern.locked) steps[start + k] = steps[k]
+            }
+        }
+        return pattern.copy(steps = steps, length = length)
+    }
+
+    /** One step of a fresh bar: a note (or a rest) chosen as the original generator does, then the [feel]'s jumps. */
+    private fun randomStep(i: Int, d: Double, noteSet: List<Int>, feel: Feel): AcidStep {
+        val base = when {
+            i % 4 == 0 -> 0.6
+            i % 3 == 0 -> 0.5
+            i % 2 == 0 -> 0.3
+            else -> 0.1
+        }
+        // Density 0.8 reproduces the original feel and 0 is nearly empty; above it every step
+        // gets closer to a note, until 1.0 (100 %) fills them all.
+        val chance = if (d <= 0.8) base * d / 0.8 else base + (1.0 - base) * (d - 0.8) / 0.2
+        if (random.nextDouble() >= chance) return AcidStep()
+        val offset = noteSet.random(random)
+        var step = AcidStep(
+            note = offset % 12,
+            octave = (offset / 12).coerceAtMost(2),
+            accent = random.nextDouble() < feel.accents,
+            slide = random.nextDouble() < feel.slides,
+            gate = true,
+        )
+        // An offbeat leaping an octave up, accented: the bounce of acid techno and acidcore.
+        if (feel.octaveJumps > 0.0 && i % 2 == 1 && step.octave < 2 && random.nextDouble() < feel.octaveJumps) {
+            step = step.copy(octave = step.octave + 1, accent = step.accent || random.nextDouble() < 0.5)
+        }
+        return step
     }
 
     companion object {

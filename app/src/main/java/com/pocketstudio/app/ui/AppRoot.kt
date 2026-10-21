@@ -140,6 +140,7 @@ import com.pocketstudio.app.midi.MidiViewModel
 import com.pocketstudio.app.sounds.SoundBrowserUi
 import com.pocketstudio.app.sounds.SoundLooks
 import com.pocketstudio.model.AcidSound
+import com.pocketstudio.model.automatedAcidKnobs
 import com.pocketstudio.model.PlaitsPatch
 import com.pocketstudio.model.SynthPatch
 import com.pocketstudio.model.SoundCategories
@@ -408,6 +409,14 @@ fun AppRoot() {
                         setMood = libraryVm::setMood,
                         setPartEnabled = libraryVm::setPartEnabled,
                         setAcidEnabled = libraryVm::setAcidEnabled,
+                        acidTap = libraryVm::acidTapStep,
+                        acidHold = libraryVm::acidHoldStep,
+                        generateAcid = libraryVm::generateAcid,
+                        setAcidDensity = libraryVm::setAcidDensity,
+                        setAcidBars = libraryVm::setAcidBars,
+                        acidFromStyle = libraryVm::acidFromStyle,
+                        chooseAcidSound = libraryVm::chooseAcidSound,
+                        setAcidKnob = libraryVm::setAcidKnob,
                         choosePartSound = libraryVm::choosePartSound,
                         preview = libraryVm::preview,
                         download = libraryVm::downloadPack,
@@ -530,6 +539,8 @@ fun AppRoot() {
         // Turning the phone also stops the activity: the take, the held notes and the sound go on.
         if (context.findActivity()?.isChangingConfigurations == true) return@LifecycleEventEffect
         latencyVm.cancel()
+        // A sound being tried (the line looping with the beat) stops when the app is left.
+        libraryVm.stopPreview()
         rhythmVm.visible = false
         rhythmVm.synthAllOff()
         rhythmVm.stopRecording()  // never keep the microphone open in the background
@@ -888,6 +899,7 @@ fun AppRoot() {
                                 lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollLive() }
                             }
                             val favorites by rhythmVm.favorites.collectAsStateWithLifecycle()
+                            val automationRecording by rhythmVm.automationRecord.collectAsStateWithLifecycle()
                             AcidScreen(
                                 effects = project.mixer.channels.getOrNull(1)?.let { c ->
                                     com.pocketstudio.app.mixer.EffectsUi(1, c, effectsActions(rhythmVm)) { fxChannel = 1 }
@@ -907,7 +919,11 @@ fun AppRoot() {
                                     setDensity = rhythmVm::setAcidDensity,
                                     setBars = rhythmVm::setAcidBars,
                                     copyPage = rhythmVm::copyAcidPage,
+                                    toggleRecord = rhythmVm::toggleAutomationRecord,
+                                    holdSound = rhythmVm::holdAcidKnob,
                                 ),
+                                recording = automationRecording,
+                                automated = project.automatedAcidKnobs,
                                 browser = SoundBrowserUi(
                                     SoundCategories.ACID, SoundLibrary.ACID, favorites.acid,
                                     current = (SoundLibrary.ACID + favorites.acid).firstOrNull {
@@ -1023,6 +1039,7 @@ fun AppRoot() {
                                     selected = shownTrack,
                                     select = rhythmVm::selectTrack,
                                     add = rhythmVm::addTrack,
+                                    addKind = rhythmVm::addTrackOf,
                                     rename = rhythmVm::renameTrack,
                                     setColor = rhythmVm::setTrackColor,
                                     duplicate = rhythmVm::duplicateTrack,
@@ -1106,6 +1123,8 @@ fun AppRoot() {
                                     kindOf = effectsActions(rhythmVm).kindOf,
                                     longFxCount = effectsActions(rhythmVm).longFxCount,
                                     cpuBusy = rhythmVm.cpuBusy,
+                                    setInsertScenes = rhythmVm::setInsertScenes,
+                                    scenes = rhythmVm.sceneLabels,
                                 ),
                                 master = project.mixer.master,
                                 masterDb = project.mixer.masterDb,
@@ -1647,6 +1666,8 @@ fun effectsActions(vm: RhythmViewModel): MixerActions = MixerActions(
     kindOf = { ch -> vm.project.value.soundKindOf(ch) },
     longFxCount = { type -> vm.project.value.mixer.longFxCount(type) },
     cpuBusy = vm.cpuBusy,
+    setInsertScenes = vm::setInsertScenes,
+    scenes = vm.sceneLabels,
 )
 
 /** The timeline rows: drums, acid, then each instrument and audio track in its colour. */

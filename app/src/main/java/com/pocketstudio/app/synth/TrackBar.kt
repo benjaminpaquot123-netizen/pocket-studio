@@ -56,6 +56,8 @@ class TracksUi(
     val selected: Int,
     val select: (Int) -> Unit = {},
     val add: () -> Unit = {},
+    /** A track of a kind (null: the plain one of [add]), with its notes written when true; null: "+ Piste" adds the plain one at once. */
+    val addKind: ((com.pocketstudio.model.TrackKind, Boolean) -> Unit)? = null,
     val rename: (Int, String) -> Unit = { _, _ -> },
     val setColor: (Int, Int) -> Unit = { _, _ -> },
     val duplicate: (Int) -> Unit = {},
@@ -84,6 +86,7 @@ fun TrackBar(ui: TracksUi, modifier: Modifier = Modifier) {
     var colouringId by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf<Int?>(null) }
     val renaming = renamingId?.let { id -> ui.tracks.firstOrNull { it.id == id } }
     val colouring = colouringId?.let { id -> ui.tracks.firstOrNull { it.id == id } }
+    var choosing by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(false) }
     Row(
         modifier.fadingHorizontalScroll().testTag("track_bar"),
         horizontalArrangement = Arrangement.spacedBy(6.dp),
@@ -138,10 +141,16 @@ fun TrackBar(ui: TracksUi, modifier: Modifier = Modifier) {
             OutlinedButton(onClick = { open(ui.selected) }, modifier = Modifier.height(44.dp).testTag("track_effects")) { Text(tr("Effets")) }
         }
         if (ui.tracks.size < InstrumentTrack.MAX) {
-            OutlinedButton(onClick = ui.add, modifier = Modifier.height(44.dp).testTag("track_add")) {
+            OutlinedButton(onClick = { if (ui.addKind != null) choosing = true else ui.add() }, modifier = Modifier.height(44.dp).testTag("track_add")) {
                 Icon(Icons.Filled.Add, contentDescription = null, Modifier.size(18.dp))
                 Text(tr(" Piste"))
             }
+        }
+    }
+    if (choosing) {
+        TrackAddDialog(onDismiss = { choosing = false }) { kind, write ->
+            choosing = false
+            if (kind == null) ui.add() else ui.addKind?.invoke(kind, write)
         }
     }
     renaming?.let { t ->

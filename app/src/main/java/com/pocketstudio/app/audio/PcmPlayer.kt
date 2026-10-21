@@ -13,8 +13,8 @@ class PcmPlayer(private val onStop: () -> Unit = {}) {
 
     val isPlaying: Boolean get() = track != null
 
-    /** False when the phone refused to play it. */
-    fun play(pcm: Pcm): Boolean {
+    /** False when the phone refused to play it. [loop]: round and round until [stop]. */
+    fun play(pcm: Pcm, loop: Boolean = false): Boolean {
         stop()
         val mask = if (pcm.channels == 2) AudioFormat.CHANNEL_OUT_STEREO else AudioFormat.CHANNEL_OUT_MONO
         val t = runCatching {
@@ -33,13 +33,17 @@ class PcmPlayer(private val onStop: () -> Unit = {}) {
         // limited at -1 dB) in the phone's mixer: 6 dB down keeps a preview over the music clean.
         // Alone (the song stopped), it plays at full level.
         if (com.pocketstudio.app.playback.PlaybackService.running) t.setVolume(PREVIEW_GAIN)
-        t.setNotificationMarkerPosition(pcm.frames)
-        t.setPlaybackPositionUpdateListener(object : AudioTrack.OnPlaybackPositionUpdateListener {
-            override fun onMarkerReached(at: AudioTrack) {
-                if (track === at) stop()
-            }
-            override fun onPeriodicNotification(at: AudioTrack) = Unit
-        })
+        if (loop && t.setLoopPoints(0, pcm.frames, -1) == AudioTrack.SUCCESS) {
+            // Loops until stopped: no end marker.
+        } else {
+            t.setNotificationMarkerPosition(pcm.frames)
+            t.setPlaybackPositionUpdateListener(object : AudioTrack.OnPlaybackPositionUpdateListener {
+                override fun onMarkerReached(at: AudioTrack) {
+                    if (track === at) stop()
+                }
+                override fun onPeriodicNotification(at: AudioTrack) = Unit
+            })
+        }
         track = t
         t.play()
         return true

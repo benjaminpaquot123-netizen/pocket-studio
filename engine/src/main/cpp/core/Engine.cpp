@@ -211,7 +211,11 @@ void Engine::applyCommand(const Command& command) {
             break;
         case CommandType::ArmSceneSwap:
             swapAt_ = command.a < 0 ? -1 : command.a;
-            if (command.a < 0) staged_.audioLoop.fill(-1);  // the cancelled scene's loops never apply later
+            if (command.a < 0) {
+                // The cancelled scene's loops and effects never apply later.
+                staged_.audioLoop.fill(-1);
+                staged_.insertOn.fill(-1);
+            }
             songRestart_ = command.b == 1;  // the waiting scene starts the song over (it loops)
             songRestartAt_ = command.b == 1 && std::isfinite(command.value) ? std::max(0, static_cast<int>(std::lround(command.value))) : 0;
             stopAtSwap_ = command.b == 2;   // the song ends there: the transport stops instead
@@ -298,6 +302,12 @@ void Engine::applyCommand(const Command& command) {
         case CommandType::ClearInserts:
             mixer_.clearInserts(command.a);
             break;
+        case CommandType::SetInsertOn:
+            if (command.a >= 0 && command.a < Mixer::kChannels * Mixer::kInserts) {
+                if (staging_) staged_.insertOn[static_cast<size_t>(command.a)] = command.value > 0.5f ? 1 : 0;
+                else mixer_.setInsertOn(command.a / Mixer::kInserts, command.a % Mixer::kInserts, command.value > 0.5f);
+            }
+            break;
         case CommandType::SetInsertParam:
             mixer_.setInsertParam(command.a / Mixer::kInserts, command.a % Mixer::kInserts, command.b, command.value);
             break;
@@ -338,6 +348,9 @@ void Engine::applyCommand(const Command& command) {
                     lane.values[static_cast<size_t>(command.b)] = v;
                 }
             }
+            break;
+        case CommandType::SetAutomationHold:
+            automation_.hold(command.a, command.value > 0.5f);
             break;
         case CommandType::SetAutomationMode:
             if (command.a >= 0 && command.a < Automation::kLanes) {
@@ -412,6 +425,7 @@ void Engine::stopTransport() {
     leaveSong_ = false;
     staging_ = false;  // a lost "staging off" must never trap later edits
     staged_.audioLoop.fill(-1);  // a part that never came must not change a clip's loop at a later swap
+    staged_.insertOn.fill(-1);   // nor its effects
     sequencer_.stop();
     rollCount_ = 0;
     stems_.stop();
@@ -471,7 +485,7 @@ void Engine::onStep(int offset, int step) {
         const int local = step - sceneStart_;
         // Always on a bar line: a swap armed late waits for the next bar instead of cutting one.
         const bool onBar = local > 0 && local % bar == 0;
-        if (onBar && !stopAtSwap_ && (swapAt_ == 0 || local >= swapAt_)) swapScene(step);
+        if (onBar && !stopAtSwap_ && (swapAt_ == 0 || local >= swapAt_)) swapScene(step, offset);
     }
     // Patterns count from the start of their scene; the remix stems follow the transport.
     const int local = step - sceneStart_;
@@ -485,7 +499,7 @@ void Engine::onStep(int offset, int step) {
     }
     const int patternStep = local % patternSteps_;
     songStep_.store(songStep, std::memory_order_relaxed);
-    applyAutomation(patternStep, songStep);
+    applyAutomation(patternStep, songStep, offset);
     // Sidechain pumps follow the kick lane (pad 1) or every quarter note.
     mixer_.sidechainEvent(offset, pattern_[0][patternStep] > 0.0f, onBeat);
     currentStep_.store(patternStep, std::memory_order_relaxed);
@@ -529,7 +543,7 @@ void Engine::playRolls(int numFrames) {
     rollCount_ = kept;
 }
 
-void Engine::swapScene(int step) {
+void Engine::swapScene(int step, int offset) {
     std::copy(&staged_.drums[0][0], &staged_.drums[0][0] + kLanes * kMaxSteps, &pattern_[0][0]);
     std::copy(&staged_.repeats[0][0], &staged_.repeats[0][0] + kLanes * kMaxSteps, &repeats_[0][0]);
     std::copy(&staged_.pan[0][0], &staged_.pan[0][0] + kLanes * kMaxSteps, &stepPan_[0][0]);
@@ -543,6 +557,12 @@ void Engine::swapScene(int step) {
         auto& loop = staged_.audioLoop[static_cast<size_t>(k)];
         if (loop >= 0) audio_.setParam(k, AudioTracks::LoopSteps, static_cast<float>(loop));
         loop = -1;
+    }
+    // Effects that play in some scenes only switch on the swap's frame.
+    for (size_t i = 0; i < staged_.insertOn.size(); ++i) {
+        auto& on = staged_.insertOn[i];
+        if (on >= 0) mixer_.scheduleInsertOn(static_cast<int>(i) / Mixer::kInserts, static_cast<int>(i) % Mixer::kInserts, on == 1, offset);
+        on = -1;
     }
     for (auto& lane : automation_.lanes) {
         if (!lane.hasStaged) continue;
@@ -574,7 +594,7 @@ void Engine::leaveSongNow() {
     inSong_ = false;
 }
 
-void Engine::applyAutomation(int patternStep, int songStep) {
+void Engine::applyAutomation(int patternStep, int songStep, int offset) {
     if (patternStep < 0 || patternStep >= Automation::kSteps) return;
     const int bar = sequencer_.stepsPerBar();
     for (const auto& lane : automation_.lanes) {
@@ -591,6 +611,8 @@ void Engine::applyAutomation(int patternStep, int songStep) {
             v = lane.values[static_cast<size_t>(patternStep)];
         }
         if (lane.target < 0 || v < 0.0f) continue;
+        // Touch take-over: the finger on it wins until let go.
+        if (automation_.isHeld(lane.target)) continue;
         const int kind = lane.target >> 16, ch = (lane.target >> 12) & 0xF, slot = (lane.target >> 8) & 0xF, param = lane.target & 0xFF;
         switch (kind) {
             case Automation::Volume: mixer_.setVolume(ch, v); break;
@@ -598,6 +620,9 @@ void Engine::applyAutomation(int patternStep, int songStep) {
             case Automation::Send: mixer_.setSend(ch, slot, v); break;
             case Automation::InsertParam: mixer_.setInsertParam(ch, slot, param, v); break;
             case Automation::BusParam: mixer_.setBusParam(slot, param, v); break;
+            case Automation::Acid:
+                if (param < AcidTrack::ParamCount) acid_.automate(static_cast<AcidTrack::Param>(param), v, offset);
+                break;
             default: break;
         }
     }

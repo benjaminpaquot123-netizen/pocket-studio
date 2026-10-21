@@ -21,7 +21,7 @@ object DefaultNames {
                 "Nouveau projet", "Mon premier rythme", "Mon projet", "Mon morceau", "Mon son",
                 "Synthé", "Basse", "Nappe", "Lead", "Batterie", "Basse acide", "Remix", "Piste", "Sample",
                 "Son importé", "Morceau 1 mesure", "Voix",
-            ) + Demos.ALL.map { it.first } + StarterWizard.STYLES.map { it.name }
+            ) + TrackKind.entries.map { it.trackName } + Demos.ALL.map { it.first } + StarterWizard.STYLES.map { it.name }
             ).toSet()
     }
 

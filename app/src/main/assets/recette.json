@@ -1,46 +1,56 @@
 {
-  "id": "phase25-effets",
-  "milestone": "Phase 25 : effets partout, Synthé cohérent, scènes à glisser",
+  "id": "phase26-acide",
+  "milestone": "Phase 26 : l'acide sous les doigts",
   "items": [
     {
-      "id": "fx_synth",
-      "title": "Effets sur le synthé",
-      "hint": "Synthé › choisis « Corde pincée » (Plaits) : la carte Effets est sous les réglages du son. « + Ajouter un effet » : Distorsion puis Écho ping-pong."
+      "id": "wiz_acid",
+      "title": "Écrire l'acide dans l'assistant",
+      "hint": "Nouveau morceau pas à pas › Acid house › étape « Ligne acide » : touche un pas (note suivante), appui long (accent, glisse). « Génère-moi une ligne », puis « Celle du style »."
     },
     {
-      "id": "fx_everywhere",
-      "title": "Effets partout",
-      "hint": "Ouvre les effets d'un pad (Rythme), de la batterie entière, de la 303 (Acide), d'une piste audio et du master (Mixeur) : c'est la même boîte."
+      "id": "wiz_acid_sound",
+      "title": "Son de la 303 dans l'assistant",
+      "hint": "Même étape : lance « Avec le rythme », change Classique → Saturée → Criarde, tourne Coupure et Résonance : la boucle continue et suit tes réglages."
     },
     {
-      "id": "fx_eight",
-      "title": "8 effets par son",
-      "hint": "Ajoute 8 effets sur une piste : le 9e est refusé avec un message. Coupe-en un (⏻) puis rallume-le, monte-le ou descends-le."
+      "id": "wiz_acid_song",
+      "title": "Ta ligne dans le morceau",
+      "hint": "Crée le morceau : l'onglet Acide joue exactement la ligne et le son choisis dans l'assistant."
     },
     {
-      "id": "fx_vibes",
-      "title": "Ambiances toutes prêtes",
-      "hint": "Sur une basse : « Basse grasse » ; sur un lead : « Lead qui crie » ; essaie « Dub profond »."
+      "id": "wiz_kick_loop",
+      "title": "Changer de kick sans arrêter",
+      "hint": "Étape Kick : « Avec le rythme », puis choisis un autre kick : la boucle continue avec le nouveau."
     },
     {
-      "id": "synth_same",
-      "title": "Notes et Clavier pareils",
-      "hint": "Synthé : passe de Clavier à Notes, les cartes Instrument / Sons prêts à jouer / Réglages du son / Effets sont les mêmes, dans le même ordre."
+      "id": "add_track",
+      "title": "« + Piste » demande quoi ajouter",
+      "hint": "Morceau sans mélodie › Synthé › « + Piste » : choisis Mélodie, puis « Écrire une mélodie pour moi » : 4 mesures dans la bonne tonalité ; Annuler l'enlève."
     },
     {
-      "id": "chords_play",
-      "title": "Jeu des accords",
-      "hint": "Notes › Gamme et accords : sans accord, Arpège et Strum sont grisés et expliqués ; « Mettre les notes hors gamme dans la gamme » corrige les fausses notes."
+      "id": "acidcore",
+      "title": "Style Acidcore",
+      "hint": "Assistant › Acidcore : 303 seule au début, kick saturé, drops et breaks, ~3 min 30. Écoute si ça ressemble à Confusion A."
     },
     {
-      "id": "scene_drag",
-      "title": "Glisser une scène",
-      "hint": "Morceau › Scènes : maintiens B et glisse-la sur une case vide (elle s'y déplace), puis sur une scène occupée (Échanger / Remplacer / Annuler). ↶ annule."
+      "id": "acid_moves",
+      "title": "Filtre qui bouge",
+      "hint": "Morceau Acid techno ou Acid house : le filtre de la 303 s'ouvre dans les drops et balaye dans le break."
     },
     {
-      "id": "cpu_warn",
-      "title": "Téléphone essoufflé",
-      "hint": "Avec beaucoup d'effets lourds partout, la boîte affiche « Le téléphone est à bout de souffle… ». Écoute si le son craque."
+      "id": "acid_rec",
+      "title": "Enregistrer les potards de la 303",
+      "hint": "Acide › carte du son › « Enregistrer », lecture, tourne Coupure : au tour suivant, le potard bouge tout seul."
+    },
+    {
+      "id": "fx_scenes",
+      "title": "Effet dans certaines scènes",
+      "hint": "Ajoute un effet sur une piste, « Joue dans » : coche seulement la scène B. Lance A puis B : l'effet n'arrive qu'en B, sans clic."
+    },
+    {
+      "id": "acid_full",
+      "title": "Acide à 100 %",
+      "hint": "Acide › Densité à 100 % › Générer : tous les pas jouent une note."
     }
   ]
 }

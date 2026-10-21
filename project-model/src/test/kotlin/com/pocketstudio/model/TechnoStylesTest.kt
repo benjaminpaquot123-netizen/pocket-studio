@@ -31,7 +31,7 @@ class TechnoStylesTest {
 
     @Test
     fun everyTechnoStyleHasItsOwnBeatAndSounds() {
-        assertEquals(9, techno.size)
+        assertEquals(10, techno.size)
         val beats = techno.map { s -> s.lines.map { Triple(it.role, it.pattern, it.voice) }.toSet() to s.swing }
         assertEquals("two techno styles share their beat", beats.size, beats.toSet().size)
         val sounds = techno.map { s -> listOf(s.melody.bass, s.melody.pad, s.melody.lead) + s.melody.packSounds.values }

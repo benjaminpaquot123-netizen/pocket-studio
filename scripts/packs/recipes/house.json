@@ -759,7 +759,37 @@
    "use": true,
    "pattern": "RROR.R7RR.5OR.3R",
    "accents": "x.x...x....x..x.",
-   "slides": "..x.......xx...."
+   "slides": "..x.......xx....",
+   "moves": {
+    "cutoff": {
+     "groove": [
+      0.25,
+      0.35
+     ],
+     "drop": [
+      0.38,
+      0.5
+     ],
+     "break": [
+      0.3,
+      0.6
+     ]
+    },
+    "resonance": {
+     "groove": [
+      0.65,
+      0.7
+     ],
+     "drop": [
+      0.75,
+      0.8
+     ],
+     "break": [
+      0.7,
+      0.85
+     ]
+    }
+   }
   },
   "defaults": {
    "bass": false,
@@ -774,7 +804,7 @@
     "delay": 0.2
    }
   ],
-  "notes": "The TB-303 is the whole track: one 16-step pattern with octave jumps, accents and slides, looped while cutoff and resonance are slowly turned (the engine cannot automate the 303 knobs yet). A little grit and echo on it. Raw TR-707 drums: continuous hats, cowbell on the offbeats. No chords in Acid Tracks; a held string-machine pad (Voodoo Ray) is optional, as are the bass and the lead."
+  "notes": "The TB-303 is the whole track: one 16-step pattern with octave jumps, accents and slides, looped while cutoff and resonance are slowly turned. A little grit and echo on it. Raw TR-707 drums: continuous hats, cowbell on the offbeats. No chords in Acid Tracks; a held string-machine pad (Voodoo Ray) is optional, as are the bass and the lead. Cutoff and resonance now move slowly along the song (song automation of the 303 knobs): opening a little through each section, a slow sweep in the Break."
  },
  {
   "id": "afro_house",

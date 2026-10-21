@@ -73,6 +73,8 @@ object NativeEngine {
     private const val CMD_PAD_STRIP = 66
     private const val CMD_MASTER = 67
     private const val CMD_CLEAR_INSERTS = 68
+    private const val CMD_INSERT_ON = 69
+    private const val CMD_AUTOMATION_HOLD = 70
 
     // Kinds of [setExpression] (InstrumentTrack::Expression).
     const val EXPR_BEND = 0
@@ -173,6 +175,11 @@ object NativeEngine {
     /** Every insert slot of [ch] emptied in one command (a strip no longer used gives back its echo and reverb memory). */
     fun clearInserts(ch: Int) = post(CMD_CLEAR_INSERTS, 0f, ch)
     fun setInsertParam(ch: Int, slot: Int, param: Int, value: Float) = post(CMD_INSERT_PARAM, value, ch * INSERTS + slot, param)
+    /**
+     * « Joue dans »: effect [slot] of [ch] plays in this scene ([on]) or lets the sound through
+     * untouched. Follows [setStaging]: the waiting scene's, switched on the swap's frame.
+     */
+    fun setInsertOn(ch: Int, slot: Int, on: Boolean) = post(CMD_INSERT_ON, if (on) 1f else 0f, ch * INSERTS + slot)
     /** Post-fader send of [ch] to [bus] (0 reverb, 1 delay), 0..1. */
     fun setSend(ch: Int, bus: Int, level: Float) = post(CMD_SEND, level, ch, bus)
     /** A track's quick control (Macros: colour, dirt, motion, space), 0..1. */
@@ -180,6 +187,12 @@ object NativeEngine {
     fun setBusParam(bus: Int, param: Int, value: Float) = post(CMD_BUS_PARAM, value, bus, param)
     /** Lane 0..7 follows [packedTarget] (AutoTarget.pack(), -1 = off); clears its points. */
     fun setAutomationTarget(lane: Int, packedTarget: Int) = post(CMD_AUTOMATION_TARGET, 0f, lane, packedTarget)
+    /**
+     * Touch take-over: while [held], no automation lane writes the setting [packedTarget]
+     * (AutoTarget.pack(): a 303 knob, a mixer setting), so the finger on it is heard; let go, the
+     * lanes drive it again from the next step.
+     */
+    fun setAutomationHold(packedTarget: Int, held: Boolean) = post(CMD_AUTOMATION_HOLD, if (held) 1f else 0f, packedTarget)
     /** [value] 0..1 on [step], or null for no point. */
     fun setAutomationPoint(lane: Int, step: Int, value: Float?) = post(CMD_AUTOMATION_POINT, value ?: -1f, lane, step)
     /** While on, pattern commands (drums, acid, piano roll) fill the waiting scene. */

@@ -40,6 +40,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FiberManualRecord
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Lock
@@ -67,6 +68,7 @@ import com.pocketstudio.app.sounds.SoundBrowser
 import com.pocketstudio.app.sounds.SoundBrowserUi
 import com.pocketstudio.model.AcidSound
 import com.pocketstudio.ui.Knob
+import com.pocketstudio.ui.holding
 import com.pocketstudio.ui.KnobColors
 import com.pocketstudio.model.AcidStep
 import com.pocketstudio.ui.MonoStyle
@@ -100,6 +102,10 @@ data class AcidActions(
     val setDensity: (Float) -> Unit = {},
     val setBars: (Int) -> Unit = {},
     val copyPage: (from: Int, to: Int) -> Unit = { _, _ -> },
+    /** Automation recording on or off (the knobs turned while playing go into lanes). */
+    val toggleRecord: () -> Unit = {},
+    /** A finger on knob (or slider) [index] or off it: while held, its automation lane leaves it to the finger. */
+    val holdSound: (Int, Boolean) -> Unit = { _, _ -> },
 )
 
 @Composable
@@ -113,6 +119,10 @@ fun AcidScreen(
     browser: SoundBrowserUi? = null,
     /** The acid line's effects, in a card under its sound (null: none shown). */
     effects: com.pocketstudio.app.mixer.EffectsUi? = null,
+    /** Knob gestures are being recorded into automation lanes. */
+    recording: Boolean = false,
+    /** The knobs ([AcidSound.values] indices) an automation lane moves: a line under them says so. */
+    automated: Set<Int> = emptySet(),
 ) {
     val context = LocalContext.current
     val settings by com.pocketstudio.app.settings.SettingsStore.state.collectAsState()
@@ -148,7 +158,7 @@ fun AcidScreen(
         StepGrid(acid, playing, currentStep, selected, actions, english, setEnglish)
     }, second = {
         StepEditor(acid, selected, actions, english)
-        SoundCard(acid, actions, browser)
+        SoundCard(acid, actions, browser, recording, automated)
         effects?.let { com.pocketstudio.app.mixer.EffectsCard(it) }
     })
 }
@@ -215,51 +225,10 @@ private fun StepGrid(
             Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 for (col in 0 until 8) {
                     val i = shown * AcidPattern.STEPS_PER_PAGE + row * 8 + col
-                    val s = acid.steps[i]
-                    val isSelected = i == selected
-                    val fill = when {
-                        !s.gate -> Neon.Surface
-                        s.accent -> Neon.Cyan
-                        else -> Neon.Cyan.copy(alpha = 0.45f)
-                    }
-                    Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            // Capped on a wide pane (tablet): the two rows of steps stay compact.
-                            .aspectRatioAtMost(0.7f, 76.dp)
-                            .clip(RoundedCornerShape(6.dp))
-                            .background(fill)
-                            .border(
-                                width = if (isSelected || i == playStep) 2.dp else 1.dp,
-                                color = when {
-                                    i == playStep -> Neon.TextPrimary
-                                    isSelected -> Neon.Magenta
-                                    else -> Neon.Outline
-                                },
-                                shape = RoundedCornerShape(6.dp),
-                            )
-                            .clickable { actions.selectStep(i) }
-                            .testTag("acid_step_$i"),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(
-                                if (s.gate) noteName(acid.root + s.note, english) else "–",
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = if (s.gate && s.accent) Neon.Background else Neon.TextPrimary,
-                            )
-                            val marks = buildString {
-                                if (s.gate && s.octave > 0) append("↑".repeat(s.octave))
-                                if (s.gate && s.octave < 0) append("↓")
-                                if (s.gate && s.slide) append("⌒")
-                                if (i in acid.locked) append("🔒")
-                            }
-                            if (marks.isNotEmpty()) {
-                                Text(marks, fontSize = 11.sp, color = if (s.gate && s.accent) Neon.Background else Neon.TextSecondary)
-                            }
-                        }
-                    }
+                    AcidStepCell(
+                        acid, i, english, selected = i == selected, playing = i == playStep,
+                        modifier = Modifier.weight(1f).clickable { actions.selectStep(i) }.testTag("acid_step_$i"),
+                    )
                 }
             }
         }
@@ -268,6 +237,57 @@ private fun StepGrid(
             style = MaterialTheme.typography.bodySmall,
             color = Neon.TextSecondary,
         )
+    }
+}
+
+/**
+ * One step of the 303 line, as the Acide tab and the assistant draw it: its note's name (– for a
+ * rest), full colour for an accent, ↑ ↓ for its octave, ⌒ for a slide, 🔒 when the generator keeps
+ * it; a thicker edge when [selected] or [playing]. [modifier] carries its size and its touches.
+ */
+@Composable
+fun AcidStepCell(acid: AcidPattern, index: Int, english: Boolean, modifier: Modifier = Modifier, selected: Boolean = false, playing: Boolean = false) {
+    val s = acid.steps[index]
+    val fill = when {
+        !s.gate -> Neon.Surface
+        s.accent -> Neon.Cyan
+        else -> Neon.Cyan.copy(alpha = 0.45f)
+    }
+    Box(
+        modifier = Modifier
+            // Capped on a wide pane (tablet): the two rows of steps stay compact.
+            .aspectRatioAtMost(0.7f, 76.dp)
+            .clip(RoundedCornerShape(6.dp))
+            .background(fill)
+            .border(
+                width = if (selected || playing) 2.dp else 1.dp,
+                color = when {
+                    playing -> Neon.TextPrimary
+                    selected -> Neon.Magenta
+                    else -> Neon.Outline
+                },
+                shape = RoundedCornerShape(6.dp),
+            )
+            .then(modifier),
+        contentAlignment = Alignment.Center,
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                if (s.gate) noteName(acid.root + s.note, english) else "–",
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                color = if (s.gate && s.accent) Neon.Background else Neon.TextPrimary,
+            )
+            val marks = buildString {
+                if (s.gate && s.octave > 0) append("↑".repeat(s.octave))
+                if (s.gate && s.octave < 0) append("↓")
+                if (s.gate && s.slide) append("⌒")
+                if (index in acid.locked) append("🔒")
+            }
+            if (marks.isNotEmpty()) {
+                Text(marks, fontSize = 11.sp, color = if (s.gate && s.accent) Neon.Background else Neon.TextSecondary)
+            }
+        }
     }
 }
 
@@ -323,7 +343,7 @@ private fun StepEditor(acid: AcidPattern, index: Int, actions: AcidActions, engl
 }
 
 @Composable
-private fun SoundCard(acid: AcidPattern, actions: AcidActions, browser: SoundBrowserUi?) {
+private fun SoundCard(acid: AcidPattern, actions: AcidActions, browser: SoundBrowserUi?, recording: Boolean = false, automated: Set<Int> = emptySet()) {
     val values = acid.sound.values()
     val context = LocalContext.current
     var sliders by remember { mutableStateOf(SoundView.sliders(context)) }
@@ -340,8 +360,24 @@ private fun SoundCard(acid: AcidPattern, actions: AcidActions, browser: SoundBro
             }
         }
         browser?.let { SoundBrowser(it) }
+        // The knobs' moves recorded into automation lanes (the Mixer's Automation card shows them).
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            FilterChip(
+                selected = recording, onClick = actions.toggleRecord,
+                label = { Text(tr("Enregistrer")) },
+                leadingIcon = { Icon(Icons.Filled.FiberManualRecord, contentDescription = null, tint = if (recording) Neon.Red else Neon.TextSecondary) },
+                colors = com.pocketstudio.ui.pillColors(Neon.Red),
+                modifier = Modifier.testTag("acid_record"),
+            )
+            Text(
+                if (recording) tr("Lance la lecture et tourne un bouton : son mouvement s'enregistre (Mixeur › Automation).")
+                else tr("Enregistre tes mouvements de bouton pendant la lecture."),
+                Modifier.weight(1f), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
+            )
+        }
         if (!sliders) {
-            Panel303(values, actions.setSound)
+            Panel303(values, actions.setSound, actions.holdSound)
+            AutomatedHint(automated)
             return@NeonCard
         }
         // Two columns of sliders when the card is wide (tablet).
@@ -354,11 +390,26 @@ private fun SoundCard(acid: AcidPattern, actions: AcidActions, browser: SoundBro
                 ProSlider(
                     value = values[i],
                     onValueChange = { actions.setSound(i, it) },
-                    modifier = Modifier.testTag("acid_sound_$i"),
+                    modifier = Modifier.holding { actions.holdSound(i, it) }.testTag("acid_sound_$i"),
                 )
             }
         }, minCellWidth = 240.dp)
+        AutomatedHint(automated)
     }
+}
+
+/**
+ * Under the 303's controls when an automation lane moves some of them: why they move on their
+ * own during the song, and how to take one back (a finger on it).
+ */
+@Composable
+private fun AutomatedHint(automated: Set<Int>) {
+    if (automated.isEmpty()) return
+    val names = automated.sorted().mapNotNull { SOUND_LABELS.getOrNull(it) }.joinToString(", ")
+    Text(
+        tr("Bouge tout seul (courbe d'automation) : %s. Garde le doigt dessus pour le reprendre.", names),
+        style = MaterialTheme.typography.bodySmall, color = Neon.Amber, modifier = Modifier.testTag("acid_automated"),
+    )
 }
 
 /** Remembers whether the 303's sound shows as the knob panel (default) or as sliders. */
@@ -376,7 +427,7 @@ private val PANEL_LABELS: List<String>
 
 /** The 303's sound as two compact rows of knobs. */
 @Composable
-internal fun Panel303(values: List<Float>, setSound: (Int, Float) -> Unit) {
+internal fun Panel303(values: List<Float>, setSound: (Int, Float) -> Unit, hold: (Int, Boolean) -> Unit = { _, _ -> }) {
     val defaults = AcidSound().values()
     val knobColors = KnobColors(
         cap = Neon.SurfaceHigh, capEdge = Neon.Outline, pointer = Neon.TextPrimary,
@@ -394,6 +445,7 @@ internal fun Panel303(values: List<Float>, setSound: (Int, Float) -> Unit) {
                         size = 44.dp,
                         colors = knobColors,
                         valueText = knobText(i, values[i]),
+                        onHold = { hold(i, it) },
                         modifier = Modifier.weight(1f).testTag("acid_knob_$i"),
                     )
                 }

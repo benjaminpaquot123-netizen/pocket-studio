@@ -389,6 +389,198 @@
   "notes": "The overdriven TR-909 kick IS the bass: tuned to the key and distorted until it 'sings' the root. The built-in kick sits at 47 Hz (F#1), so the key is F#: the kick plays the root, and its distortion (distortion preset) adds the audible harmonics. A pack kick is not retuned (no per-recipe pad pitch yet). The bass part stays off; if used, it doubles the kick on F#1. Early Rotterdam 150-180 BPM, 190-200 by the mid-90s. Top layer: a hoover/choir stab held on the 1, plus a piercing minor riff in 8ths over a pedal root (lead, off). Closed hats moved off the open hat's steps."
  },
  {
+  "id": "acidcore",
+  "references": [
+   "Confusion A – Out of World (1997)",
+   "Hardfloor – Acperience 1 (1992)",
+   "Mescalinum United – We Have Arrived (1990)"
+  ],
+  "description_fr": "Le hardcore acide : la 303 en furie sur un kick de gabber saturé, à 185 BPM. Elle joue presque chaque pas, saute d'octave, et son filtre s'ouvre et se ferme tout au long du morceau.",
+  "bpm": 185,
+  "swing": 0.0,
+  "root": "F#",
+  "drums": [
+   {
+    "role": "kick",
+    "pattern": "X...X...X...X...",
+    "source": "gabber",
+    "tip_fr": "Un kick de gabber saturé sur chaque temps, dans la note du morceau (Fa#) : il cogne comme un marteau et fait aussi la basse. Il n'arrive qu'après l'intro, où la 303 joue seule."
+   },
+   {
+    "role": "open_hat",
+    "pattern": "..X...X...X...X.",
+    "source": "tr909",
+    "tip_fr": "Le charley ouvert entre chaque kick donne le galop du hardcore. Il attend le Drop."
+   },
+   {
+    "role": "hat",
+    "pattern": "xx.xxx.xxx.xxx.x",
+    "build": "..x...x...x...x.",
+    "source": "tr909",
+    "tip_fr": "Des charleys très serrés (quatre par temps) qui roulent sans s'arrêter autour du charley ouvert. Dans le Groove, ils ne tapent qu'entre les kicks : la tension monte jusqu'au Drop."
+   }
+  ],
+  "progressions": {
+   "dark": {
+    "scale": "phrygian",
+    "degrees": [
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   "future": {
+    "scale": "minor",
+    "degrees": [
+     0,
+     0,
+     6,
+     6
+    ]
+   },
+   "happy": {
+    "scale": "dorian",
+    "degrees": [
+     0,
+     0,
+     3,
+     3
+    ]
+   },
+   "dreamy": {
+    "scale": "minor",
+    "degrees": [
+     0,
+     0,
+     5,
+     5
+    ]
+   }
+  },
+  "chords": {
+   "type": "stab",
+   "rhythm": "X-------........",
+   "voicing": "power",
+   "octave": 4,
+   "sound": "Hoover"
+  },
+  "bass": {
+   "pattern": "R...R...R...R...",
+   "octave": 1,
+   "sound": "Basse analogique",
+   "glide": false
+  },
+  "lead": {
+   "type": "riff",
+   "pattern": "O.O.5.O.O.3.O.7.",
+   "arp_rate": 24,
+   "octave": 4,
+   "sound": "Lead acide"
+  },
+  "acid": {
+   "use": true,
+   "pattern": "RRORROR2RROR3RO7RRORROR2RO5O3O2O",
+   "accents": "..x..x....x...x...x..x...x...x.x",
+   "slides": ".x.......x...x...x....x.......xx",
+   "sound": "Hurleur",
+   "knobs": {
+    "cutoff": 0.4,
+    "resonance": 0.8,
+    "env_mod": 0.65,
+    "decay": 0.3,
+    "accent": 0.85,
+    "drive": 0.7
+   },
+   "moves": {
+    "cutoff": {
+     "intro": [
+      0.08,
+      0.45
+     ],
+     "groove": [
+      0.4,
+      0.5
+     ],
+     "drop": [
+      0.55,
+      0.68
+     ],
+     "break": [
+      0.2,
+      0.85
+     ]
+    },
+    "env_mod": {
+     "intro": [
+      0.4,
+      0.6
+     ],
+     "groove": [
+      0.6,
+      0.65
+     ],
+     "drop": [
+      0.7,
+      0.75
+     ],
+     "break": [
+      0.5,
+      0.9
+     ]
+    }
+   }
+  },
+  "defaults": {
+   "bass": false,
+   "chords": false,
+   "lead": false
+  },
+  "default_mood": "dark",
+  "form": "rave",
+  "bass_tip": "Pas besoin : le kick saturé et la 303 font déjà la basse. Si tu l'allumes, elle double le kick sur la même note.",
+  "pad_tip": "Un accord « aspirateur » (hoover) frappé une fois par mesure, pour faire crier la foule dans les Drops.",
+  "lead_tip": "Une deuxième ligne acide, plus aiguë, qui saute entre la note de base et son octave : à ajouter quand la 303 tourne bien.",
+  "fx": [
+   {
+    "on": "kick",
+    "preset": "distortion"
+   },
+   {
+    "on": "acid",
+    "insert": "SATURATION",
+    "params": [
+     0.45,
+     0.75,
+     1.0,
+     0.7
+    ],
+    "delay": 0.12
+   },
+   {
+    "on": "master",
+    "insert": "OTT",
+    "params": [
+     0.3,
+     0.5,
+     0.5,
+     0.5
+    ]
+   },
+   {
+    "on": "master",
+    "insert": "SATURATION",
+    "params": [
+     0.2,
+     0.85,
+     1.0,
+     0.8
+    ]
+   }
+  ],
+  "notes": "Acidcore (hardcore with the 303 as the star), modelled on Confusion A - Out of World (1997, Benjamin's reference, measured: ~185 BPM, A minor, a busy two-bar 303 riff jumping A2/A3 with accented high notes, the filter opening and closing over the track, rolling 16th hats, a distorted gabber kick, form 303 alone ~16 s, kick, hats building, Break without kick at ~2:30, a second one at ~4:30, outro; loud compressed master). The key is F# rather than A: the built-in kick rings at 47 Hz (F#1), so the kick plays the root as in gabber (a pack kick is not retuned). Two-bar riff on the root with octave jumps (R/O), the b2 of the phrygian dark mood and the b3, b7, accents on the high notes, slides into the jumps; almost every 16th played. Hurleur 303 with a saturation insert; distortion preset on the kick; gentle OTT and saturation on the master (the limiter follows). Song (form rave): Intro = the 303 alone, its cutoff opening (song automation of the 303 cutoff and envelope, AutoTarget kind 5), Groove = kick + offbeat closed hats (the hat's build pattern), Drop = rolling hats + open hats, Break = the 303 alone with a filter sweep, Drop, a short second Break, Drop, the Intro again as the outro with the filter closing. No clap: the hats and the 303 fill the space. References: only tracks whose existence and year are known; no French acidcore track verified."
+ },
+ {
   "id": "minimal",
   "references": [
    "Ricardo Villalobos – Fizheuer Zieheuer (2006)",

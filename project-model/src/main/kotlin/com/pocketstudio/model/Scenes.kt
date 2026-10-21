@@ -112,7 +112,7 @@ internal fun Project.syncScenes(): Project {
     // Empty scenes at the end go when nothing uses them (a tap on a far slot leaves no trail of them).
     val used = song.map { it.scene }.toSet() +
         automation.flatMap { lane -> lane.sceneValues.filterValues { v -> v.any { it != null } }.keys } +
-        scenesWithTakes()
+        scenesWithTakes() + mixer.insertScenes
     var size = all.size
     while (size - 1 > index && all[size - 1].isEmpty && all[size - 1].label.isBlank() && size - 1 !in used) size--
     val list = all.take(size)
@@ -182,9 +182,10 @@ data class SceneMove(val from: Int, val to: Int, val replace: Boolean) {
 /**
  * Scene [from] dragged onto slot [to] (one edit, see [sceneIndexAfterMove]). Everything that
  * names a scene by its place follows: the song's parts (the song sounds the same after a swap),
- * per-scene automation, scene audio clips, and the scene shown (it follows its content). With
- * [replace], the scene at [to] and what was its own are gone: its automation and its audio takes
- * (they would otherwise play over the scene moved there); Annuler brings them back.
+ * per-scene automation, scene audio clips, the effects that play in some scenes only, and the
+ * scene shown (it follows its content). With [replace], the scene at [to] and what was its own
+ * are gone: its automation and its audio takes (they would otherwise play over the scene moved
+ * there); Annuler brings them back.
  */
 fun Project.moveScene(from: Int, to: Int, replace: Boolean = false): Project {
     if (from == to || from !in 0 until Scene.MAX || to !in 0 until Scene.MAX) return this
@@ -205,10 +206,18 @@ fun Project.moveScene(from: Int, to: Int, replace: Boolean = false): Project {
             lane.copy(sceneValues = lane.sceneValues.filterKeys { !(replace && it == to) }.mapKeys { map(it.key) })
         },
         audioTracks = synced.audioTracks.map { t -> t.copy(clip = t.clip.kept(), previous = t.previous.kept()) },
+        // With replace, slot [to] now is scene [from]: an effect plays there exactly when it played in
+        // [from]. One that played only in the scene replaced plays nowhere (kept, and the box says so).
+        mixer = synced.mixer.mapInserts { ins ->
+            ins.scenes?.let { set -> ins.copy(scenes = set.filter { !(replace && it == to) }.map(map).sorted().toSet()) } ?: ins
+        },
     ).showing(list, map(synced.scene))
 }
 
-/** Copies the current scene into [index] (to start a variation from it), its per-scene automation too. */
+/**
+ * Copies the current scene into [index] (to start a variation from it), its per-scene automation
+ * too, and the effects that play in some scenes only play in the copy as in the scene copied.
+ */
 fun Project.copySceneTo(index: Int): Project {
     if (index !in 0 until Scene.MAX) return this
     val synced = syncScenes()
@@ -220,7 +229,10 @@ fun Project.copySceneTo(index: Int): Project {
         val own = lane.sceneValues[synced.scene]
         lane.copy(sceneValues = if (own != null) lane.sceneValues + (index to own) else lane.sceneValues - index)
     }
-    return synced.copy(scenes = list, automation = automation).syncScenes()
+    val mixer = synced.mixer.mapInserts { ins ->
+        ins.scenes?.let { set -> ins.copy(scenes = (if (synced.scene in set) set + index else set - index).sorted().toSet()) } ?: ins
+    }
+    return synced.copy(scenes = list, automation = automation, mixer = mixer).syncScenes()
 }
 
 /**

@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -554,6 +555,36 @@ open class ScreenshotTest {
             com.pocketstudio.app.library.PacksUi(com.pocketstudio.app.library.IndexState.Unavailable), null, com.pocketstudio.app.library.WizardActions())
     }
 
+    /** The 303 step scrolled down: the generator, « Celle du style » and the 303's sound (a quick choice made, two bars). */
+    @Test
+    fun wizardAcidSound() = shoot("wizard_acid_sound", prepare = {
+        compose.onNodeWithTag("wizard_acid_sound").performScrollTo()
+    }) {
+        val style = com.pocketstudio.model.StarterWizard.style("acid_house")!!
+        val rows = style.lines.associate { l ->
+            val cats = com.pocketstudio.app.library.soundCategories(l.role, style.id, emptyList())
+            l.role to com.pocketstudio.app.library.WizardRow(true, cats.first().id, cats.first().options.first())
+        }
+        val ui = com.pocketstudio.app.library.WizardUi(true, 0, style.id, rows, com.pocketstudio.model.StarterWizard.Mood.Dark, emptyMap())
+        val line = com.pocketstudio.model.WizardAcid.withBars(ui.acidPattern!!, 2)
+        com.pocketstudio.app.library.WizardScreen(
+            ui.copy(step = ui.steps.indexOf(com.pocketstudio.model.StarterWizard.Step.Acid), acidNotes = line,
+                acidSound = com.pocketstudio.model.WizardAcid.sound("Saturée"), acidSoundName = "Saturée"),
+            com.pocketstudio.app.library.PacksUi(com.pocketstudio.app.library.IndexState.Unavailable), null, com.pocketstudio.app.library.WizardActions(),
+        )
+    }
+
+    /** « + Piste »: what to add, a melody written for me first. */
+    @Test
+    fun trackAdd() = shoot("track_add") {
+        androidx.compose.foundation.layout.Box(Modifier.fillMaxSize(), contentAlignment = androidx.compose.ui.Alignment.Center) {
+            androidx.compose.material3.Surface(shape = androidx.compose.foundation.shape.RoundedCornerShape(20.dp), color = Neon.Surface,
+                modifier = Modifier.padding(16.dp).widthIn(max = 520.dp)) {
+                com.pocketstudio.app.synth.TrackAddChoices(onPick = { _, _ -> }, onDismiss = {})
+            }
+        }
+    }
+
     @Test
     fun wizardLead() = shoot("wizard_lead") {
         // A lead the recipe leaves out, playing a written riff (no arpeggiator).
@@ -722,6 +753,8 @@ open class ScreenshotTest {
             currentStep = -1,
             selected = 2,
             actions = com.pocketstudio.app.acid.AcidActions(),
+            // The song's curves move the cutoff and the resonance: a line under the knobs says so.
+            automated = setOf(0, 1),
         )
     }
 
@@ -769,6 +802,50 @@ open class ScreenshotTest {
     fun effectsBox() = shoot("effects_box", prepare = { tap("fx_chip_2_0") }) {
         androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
             com.pocketstudio.app.mixer.EffectsBox(2, leadFx(), fxActions(com.pocketstudio.model.SoundKind.LEAD))
+        }
+    }
+
+    /**
+     * « Joue dans »: with four scenes, the distortion plays in « Groove » and « Refrain » only, the
+     * chorus everywhere; under the chain, what else is set on the sound (shared sends, Space).
+     */
+    @Test
+    @Config(qualifiers = "w400dp-h1700dp-xxhdpi")
+    open fun effectsScenes() = shoot("effects_scenes") {
+        val channel = com.pocketstudio.model.Channel(
+            inserts = com.pocketstudio.model.Mixer.sanitizeInserts(listOf(
+                com.pocketstudio.model.Insert.of(com.pocketstudio.model.EffectType.DISTORTION).copy(scenes = setOf(1, 3)),
+                com.pocketstudio.model.Insert.of(com.pocketstudio.model.EffectType.CHORUS),
+                // Its only scene was replaced by another one: it says it plays nowhere.
+                com.pocketstudio.model.Insert.of(com.pocketstudio.model.EffectType.WAH).copy(scenes = emptySet()),
+            )),
+            sends = listOf(0.3f, 0.2f),
+            macros = listOf(0.5f, 0f, 0f, 0.25f),
+        )
+        val actions = com.pocketstudio.app.mixer.MixerActions(
+            kindOf = { com.pocketstudio.model.SoundKind.LEAD },
+            scenes = kotlinx.coroutines.flow.MutableStateFlow(listOf("Intro", "Groove", "", "Refrain")),
+        )
+        // Scrollable, as in the app: the tablet's shorter screen shows its top.
+        androidx.compose.foundation.layout.Column(
+            androidx.compose.ui.Modifier.verticalScroll(androidx.compose.foundation.rememberScrollState()).padding(androidx.compose.ui.unit.Dp(12f)),
+        ) {
+            com.pocketstudio.app.mixer.EffectsBox(2, channel, actions)
+        }
+    }
+
+    /** « Petite pièce »: no effect in place, the card says what the ambience sets (Space), as the strip's line names it. */
+    @Test
+    @Config(qualifiers = "w400dp-h1000dp-xxhdpi")
+    open fun effectsVibe() = shoot("effects_vibe") {
+        val actions = com.pocketstudio.app.mixer.MixerActions(
+            kindOf = { com.pocketstudio.model.SoundKind.PAD },
+            scenes = kotlinx.coroutines.flow.MutableStateFlow(listOf("", "Refrain")),
+        )
+        androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
+            com.pocketstudio.app.mixer.EffectsCard(
+                com.pocketstudio.app.mixer.EffectsUi(2, com.pocketstudio.model.Channel().withFx(com.pocketstudio.model.FxPresets.byId("small_room")!!), actions) {},
+            )
         }
     }
 
@@ -1031,7 +1108,7 @@ open class ScreenshotTest {
     @Test
     fun acidPanel() = shoot("acid_panel") {
         androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
-            com.pocketstudio.app.acid.Panel303(com.pocketstudio.model.AcidSound(cutoff = 0.62f, waveform = 1f).values()) { _, _ -> }
+            com.pocketstudio.app.acid.Panel303(com.pocketstudio.model.AcidSound(cutoff = 0.62f, waveform = 1f).values(), { _, _ -> })
         }
     }
 

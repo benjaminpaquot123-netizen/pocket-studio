@@ -57,6 +57,8 @@ fun Knob(
     size: Dp = 64.dp,
     colors: KnobColors,
     valueText: String? = null,
+    /** A finger on the knob (true) and off it (false): see [holding]. */
+    onHold: ((Boolean) -> Unit)? = null,
 ) {
     val current by rememberUpdatedState(value)
     val change by rememberUpdatedState(onValueChange)
@@ -64,6 +66,7 @@ fun Knob(
     Column(modifier, horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(0.dp)) {
         Canvas(
             Modifier.size(size)
+                .holding(onHold)
                 .semantics {
                     contentDescription = label
                     progressBarRangeInfo = ProgressBarRangeInfo(value, 0f..1f)

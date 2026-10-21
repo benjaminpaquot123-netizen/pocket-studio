@@ -1,5 +1,6 @@
 package com.pocketstudio.model
 
+import com.pocketstudio.model.StarterWizard.AcidMove
 import com.pocketstudio.model.StarterWizard.AcidRecipe
 import com.pocketstudio.model.StarterWizard.Line
 import com.pocketstudio.model.StarterWizard.Melody
@@ -339,7 +340,7 @@ internal val STYLE_RECIPES: List<Style> = listOf(
             bassOctave = 2, leadPattern = "", arpRate = 24, leadOctave = 4,
             packSounds = mapOf(),
             parts = setOf(),
-            acid = AcidRecipe("RROR.R7RR.5OR.3R", "x.x...x....x..x.", "..x.......xx...."),
+            acid = AcidRecipe("RROR.R7RR.5OR.3R", "x.x...x....x..x.", "..x.......xx....", moves = listOf(AcidMove(0, mapOf(1 to (0.25f to 0.35f), 2 to (0.38f to 0.5f), 3 to (0.3f to 0.6f))), AcidMove(1, mapOf(1 to (0.65f to 0.7f), 2 to (0.75f to 0.8f), 3 to (0.7f to 0.85f))))),
             tips = mapOf(Part.Pad to "En option : une nappe de cordes tenue derrière la 303, comme dans « Voodoo Ray »."),
         ),
         references = listOf("Phuture – Acid Tracks (1987)", "A Guy Called Gerald – Voodoo Ray (1988)", "Sleezy D – I've Lost Control (1986)"),
@@ -566,7 +567,7 @@ internal val STYLE_RECIPES: List<Style> = listOf(
             bassOctave = 1, leadPattern = "O..O..O..O..O.5.", arpRate = 24, leadOctave = 4,
             packSounds = mapOf(Part.Pad to "acid_techno:stab"),
             parts = setOf(),
-            acid = AcidRecipe("RRO.RO.3R.OR7.O5", "..x....x..x...x.", ".x.........x..x."),
+            acid = AcidRecipe("RRO.RO.3R.OR7.O5", "..x....x..x...x.", ".x.........x..x.", moves = listOf(AcidMove(0, mapOf(1 to (0.3f to 0.42f), 2 to (0.45f to 0.55f), 3 to (0.28f to 0.65f))))),
             tips = mapOf(Part.Bass to "Pas besoin au départ : la vraie basse, c'est la ligne acide (la 303). Celle-ci ajoute un grave rond en dessous, pour qui veut.", Part.Pad to "Un accord frappé de temps en temps pour ponctuer : la ligne acide fait le reste.", Part.Lead to "Une deuxième ligne qui couine, plus aiguë et décalée : à ajouter seulement quand la première tourne bien."),
         ),
         references = listOf("Josh Wink – Higher State of Consciousness (1995)", "Hardfloor – Acperience 1 (1992)", "Emmanuel Top – Acid Phase (1994)", "Plastikman – Krakpot (1993)"),
@@ -596,6 +597,31 @@ internal val STYLE_RECIPES: List<Style> = listOf(
         references = listOf("Rotterdam Termination Source – Poing (1992)", "Euromasters – Amsterdam Waar Lech Dat Dan? (1992)", "Sperminator – No Women Allowed (1992)", "Mescalinum United – We Have Arrived (1990)"),
         kit = mapOf(Role.Hat to "tr909"),
         effects = listOf(StyleFx("kick", preset = "distortion")),
+    ),
+    Style(
+        "acidcore", "Acidcore", "Techno", 185.0,
+        "Le hardcore acide : la 303 en furie sur un kick de gabber saturé, à 185 BPM. Elle joue presque chaque pas, saute d'octave, et son filtre s'ouvre et se ferme tout au long du morceau.",
+        listOf(
+            Line(Role.Kick, "X...X...X...X...", "Un kick de gabber saturé sur chaque temps, dans la note du morceau (Fa#) : il cogne comme un marteau et fait aussi la basse. Il n'arrive qu'après l'intro, où la 303 joue seule."),
+            Line(Role.OpenHat, "..X...X...X...X.", "Le charley ouvert entre chaque kick donne le galop du hardcore. Il attend le Drop."),
+            Line(Role.Hat, "xx.xxx.xxx.xxx.x", "Des charleys très serrés (quatre par temps) qui roulent sans s'arrêter autour du charley ouvert. Dans le Groove, ils ne tapent qu'entre les kicks : la tension monte jusqu'au Drop.", build = "..x...x...x...x."),
+        ),
+        swing = 0.0,
+        melody = Melody(
+            root = 6, mood = Mood.Dark, bassPattern = "R...R...R...R...",
+            bass = "Basse analogique", pad = "Hoover", lead = "Lead acide",
+            progressions = mapOf(Mood.Dark to (Scale.Phrygian to listOf(0, 0, 0, 0)), Mood.Future to (Scale.Minor to listOf(0, 0, 6, 6)), Mood.Happy to (Scale.Dorian to listOf(0, 0, 3, 3)), Mood.Dreamy to (Scale.Minor to listOf(0, 0, 5, 5))),
+            chordRhythm = "X-------........", voicing = Voicing.Power, chordOctave = 4,
+            bassOctave = 1, leadPattern = "O.O.5.O.O.3.O.7.", arpRate = 24, leadOctave = 4,
+            packSounds = mapOf(),
+            parts = setOf(),
+            acid = AcidRecipe("RRORROR2RROR3RO7RRORROR2RO5O3O2O", "..x..x....x...x...x..x...x...x.x", ".x.......x...x...x....x.......xx", sound = "Hurleur", knobs = mapOf(0 to 0.4f, 1 to 0.8f, 2 to 0.65f, 3 to 0.3f, 4 to 0.85f, 7 to 0.7f), moves = listOf(AcidMove(0, mapOf(0 to (0.08f to 0.45f), 1 to (0.4f to 0.5f), 2 to (0.55f to 0.68f), 3 to (0.2f to 0.85f))), AcidMove(2, mapOf(0 to (0.4f to 0.6f), 1 to (0.6f to 0.65f), 2 to (0.7f to 0.75f), 3 to (0.5f to 0.9f))))),
+            tips = mapOf(Part.Bass to "Pas besoin : le kick saturé et la 303 font déjà la basse. Si tu l'allumes, elle double le kick sur la même note.", Part.Pad to "Un accord « aspirateur » (hoover) frappé une fois par mesure, pour faire crier la foule dans les Drops.", Part.Lead to "Une deuxième ligne acide, plus aiguë, qui saute entre la note de base et son octave : à ajouter quand la 303 tourne bien."),
+        ),
+        references = listOf("Confusion A – Out of World (1997)", "Hardfloor – Acperience 1 (1992)", "Mescalinum United – We Have Arrived (1990)"),
+        kit = mapOf(Role.Kick to "gabber", Role.OpenHat to "tr909", Role.Hat to "tr909"),
+        form = SongForm.Rave,
+        effects = listOf(StyleFx("kick", preset = "distortion"), StyleFx("acid", insert = "SATURATION", delay = 0.12f, params = listOf(0.45f, 0.75f, 1.0f, 0.7f)), StyleFx("master", insert = "OTT", params = listOf(0.3f, 0.5f, 0.5f, 0.5f)), StyleFx("master", insert = "SATURATION", params = listOf(0.2f, 0.85f, 1.0f, 0.8f))),
     ),
     Style(
         "minimal", "Minimal", "Techno", 128.0,

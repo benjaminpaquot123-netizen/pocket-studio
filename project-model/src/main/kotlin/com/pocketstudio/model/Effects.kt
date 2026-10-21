@@ -3,6 +3,8 @@ package com.pocketstudio.model
 import com.pocketstudio.model.i18n.I18n
 import com.pocketstudio.model.i18n.percent
 import com.pocketstudio.model.i18n.tr
+import kotlinx.serialization.EncodeDefault
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlin.math.pow
 import kotlin.math.roundToInt
@@ -10,19 +12,31 @@ import kotlin.math.roundToInt
 /**
  * One insert slot: [type] in [EffectType] order (same numbers as the engine), 4 parameters 0..1.
  * [bypass]: kept with its settings but not heard (the engine gets an empty slot).
+ * [scenes]: the scenes (song sections) it plays in, by index; null: all of them (« Tout »).
+ * Elsewhere the engine lets the sound through it untouched, switching at the scene change.
  */
+@OptIn(ExperimentalSerializationApi::class)
 @Serializable
-data class Insert(val type: Int = 0, val params: List<Float> = EffectType.NONE.defaults, val bypass: Boolean = false) {
+data class Insert(
+    val type: Int = 0,
+    val params: List<Float> = EffectType.NONE.defaults,
+    val bypass: Boolean = false,
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val scenes: Set<Int>? = null,
+) {
     val effect: EffectType get() = EffectType.of(type)
 
     /** The type the engine plays: none while bypassed. */
     val heardType: Int get() = if (bypass) 0 else EffectType.of(type).ordinal
 
+    /** It plays while scene [scene] plays (always without a choice of scenes). */
+    fun playsIn(scene: Int): Boolean = scenes == null || scene in scenes
+
     fun sanitized(): Insert {
         val t = EffectType.of(type)
         val p = (params + t.defaults.drop(params.size)).take(EffectType.PARAMS)
             .map { v -> v.takeIf { it.isFinite() }?.coerceIn(0f, 1f) ?: 0.5f }
-        return Insert(t.ordinal, p, bypass && t != EffectType.NONE)
+        val s = if (t == EffectType.NONE) null else scenes?.filter { it in 0 until Scene.MAX }?.sorted()?.toSet()
+        return Insert(t.ordinal, p, bypass && t != EffectType.NONE, s)
     }
 
     companion object {
@@ -379,6 +393,36 @@ fun freeInsertSlot(inserts: List<Insert>): Int? {
     val last = inserts.indexOfLast { it.effect != EffectType.NONE }
     return (last + 1 until inserts.size).firstOrNull { inserts[it].effect == EffectType.NONE }
         ?: inserts.indices.firstOrNull { inserts[it].effect == EffectType.NONE }
+}
+
+/**
+ * « Joue dans » after a touch on scene [scene] (of [sceneCount]): from « Tout », that scene alone;
+ * otherwise it is added or taken out. No scene left, or every one: « Tout » again (null).
+ */
+fun Insert.scenesToggled(scene: Int, sceneCount: Int): Set<Int>? {
+    val now = scenes ?: return setOf(scene)
+    val next = if (scene in now) now - scene else now + scene
+    return if (next.isEmpty() || (0 until sceneCount).all { it in next }) null else next.sorted().toSet()
+}
+
+/** Every insert of the mixer (each strip's and the master's) through [transform]. */
+fun Mixer.mapInserts(transform: (Insert) -> Insert): Mixer = copy(
+    channels = channels.map { c -> c.copy(inserts = c.inserts.map(transform)) },
+    master = master.map(transform),
+)
+
+/** The scenes some effect is limited to (« Joue dans »). */
+val Mixer.insertScenes: Set<Int> get() =
+    (channels.flatMap { it.inserts } + master).filter { it.effect != EffectType.NONE }.flatMap { it.scenes.orEmpty() }.toSet()
+
+/** Effect [slot] of strip [ch] plays only in [scenes] (null: in every scene). */
+fun Project.withInsertScenes(ch: Int, slot: Int, scenes: Set<Int>?): Project {
+    val list = insertsOf(ch)
+    val ins = list.getOrNull(slot)?.takeIf { it.effect != EffectType.NONE } ?: return this
+    val edited = list.toMutableList().also { it[slot] = ins.copy(scenes = scenes?.filter { s -> s in 0 until Scene.MAX }?.sorted()?.toSet()) }
+    return copy(mixer = if (ch == Mixer.MASTER) mixer.copy(master = edited) else mixer.copy(
+        channels = mixer.channels.mapIndexed { i, c -> if (i == ch) c.copy(inserts = edited) else c },
+    ))
 }
 
 /** The inserts of strip [ch] ([Mixer.MASTER]: the master's). */

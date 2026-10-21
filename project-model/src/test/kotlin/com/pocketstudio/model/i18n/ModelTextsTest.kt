@@ -53,6 +53,9 @@ class ModelTextsTest {
         add(StarterWizard.SongForm.BREAK_LABEL, StarterWizard.SongForm.BREAK_ROLE)
         add(StarterWizard.ScenePlan.ACID_TITLE)
         addAll(StarterWizard.KIT_MELODIC.values)
+        // The assistant's quick 303 sounds, and the kinds of track "+ Piste" offers (with their names).
+        addAll(com.pocketstudio.model.WizardAcid.SOUNDS.map { it.first })
+        com.pocketstudio.model.TrackKind.entries.forEach { add(it.trackName, it.title, it.description) }
         // The sounds the assistant proposes ("Cloche (Plaits)"…).
         StarterWizard.STYLES.forEach { style -> StarterWizard.Part.entries.forEach { p -> addAll(StarterWizard.soundsFor(p, style).map { it.name }) } }
 

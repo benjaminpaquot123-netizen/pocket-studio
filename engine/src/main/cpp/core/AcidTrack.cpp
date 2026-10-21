@@ -38,6 +38,7 @@ AcidStep AcidStep::unpack(int32_t bits) {
 }
 
 AcidTrack::AcidTrack() : voice_(std::make_unique<AcidVoice>()) {
+    automated_.fill(-1.0f);
     voice_->setVolume(-6.0);
     // Musical defaults: squelchy but not screaming.
     setParam(Cutoff, 0.35f);
@@ -80,10 +81,31 @@ void AcidTrack::setParam(Param param, float value) {
         case Accent: voice_->setAccent(100.0 * v); break;
         case Tuning: voice_->setTuning(440.0 * std::pow(2.0, (v - 0.5) * 2.0)); break;  // +/- 1 octave
         case Waveform: voice_->setWaveform(v); break;
-        case Drive: drive_ = static_cast<float>(v); break;
+        case Drive:
+            drive_ = static_cast<float>(v);
+            driveGain_ = 1.0f + 9.0f * drive_;
+            makeup_ = 1.0f / std::tanh(driveGain_);  // keeps loudness steady as drive changes
+            break;
         case Level: level_ = static_cast<float>(v); break;
         default: break;
     }
+}
+
+void AcidTrack::automate(Param param, float value, int frameOffset) {
+    if (param < 0 || param >= ParamCount) return;
+    // Two steps in one block: the earlier one's settings take effect now.
+    if (automatedAt_ >= 0 && frameOffset != automatedAt_) applyAutomated();
+    automated_[static_cast<size_t>(param)] = std::clamp(value, 0.0f, 1.0f);
+    automatedAt_ = std::max(0, frameOffset);
+}
+
+void AcidTrack::applyAutomated() {
+    for (int p = 0; p < ParamCount; ++p) {
+        float& v = automated_[static_cast<size_t>(p)];
+        if (v >= 0.0f) setParam(static_cast<Param>(p), v);
+        v = -1.0f;
+    }
+    automatedAt_ = -1;
 }
 
 void AcidTrack::onStep(int frameOffset, int step, double samplesPerStep) {
@@ -106,14 +128,15 @@ void AcidTrack::onStep(int frameOffset, int step, double samplesPerStep) {
 
 void AcidTrack::stop() {
     pending_.offset = -1;
+    if (automatedAt_ >= 0) applyAutomated();
     releaseCountdown_ = 1;
     previousSlide_ = false;
 }
 
 void AcidTrack::render(float* mono, int numFrames) {
-    const float driveGain = 1.0f + 9.0f * drive_;
-    const float makeup = 1.0f / std::tanh(driveGain);  // keeps loudness steady as drive changes
     for (int i = 0; i < numFrames; ++i) {
+        // The step's automated settings first, so that its note starts with them.
+        if (i == automatedAt_) applyAutomated();
         if (i == pending_.offset) {
             if (pending_.slide) {
                 voice_->slide(pending_.key, pending_.accent);
@@ -130,9 +153,10 @@ void AcidTrack::render(float* mono, int numFrames) {
             sounding_ = false;
         }
         const float dry = static_cast<float>(voice_->getSample());
-        mono[i] += level_ * makeup * std::tanh(driveGain * dry);
+        mono[i] += level_ * makeup_ * std::tanh(driveGain_ * dry);
     }
     if (pending_.offset >= numFrames) pending_.offset -= numFrames;
+    if (automatedAt_ >= numFrames) automatedAt_ -= numFrames;
 }
 
 }  // namespace ps

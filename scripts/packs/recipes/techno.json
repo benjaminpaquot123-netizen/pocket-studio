@@ -369,7 +369,23 @@
    "use": true,
    "pattern": "RRO.RO.3R.OR7.O5",
    "accents": "..x....x..x...x.",
-   "slides": ".x.........x..x."
+   "slides": ".x.........x..x.",
+   "moves": {
+    "cutoff": {
+     "groove": [
+      0.3,
+      0.42
+     ],
+     "drop": [
+      0.45,
+      0.55
+     ],
+     "break": [
+      0.28,
+      0.65
+     ]
+    }
+   }
   },
   "defaults": {
    "bass": false,
@@ -391,7 +407,7 @@
     "preset": "crunch"
    }
   ],
-  "notes": "The TB-303 line IS the track and the bass: nothing else is on by default (no bass, chords nor lead), no percussion line either, so the 303 is alone between the 909 hits; it carries the Break too. The acid track stays on the key's root for its one bar, so no progression puts a bass note a semitone from its notes (dark: i alone, future i-VII, dreamy i-III; the classic bII move would clash with the 303 until the acid line follows the chords). 303: mostly roots, octave jumps, b3 and b7, slides into the octave jumps, 4 sparse accents; crunch preset + a little delay. Crunchy 909 kick. Tempo: Plastikman/Hardfloor ~130, London acid techno 135-145. Optional lead: a second, higher 303-like riff."
+  "notes": "The TB-303 line IS the track and the bass: nothing else is on by default (no bass, chords nor lead), no percussion line either, so the 303 is alone between the 909 hits; it carries the Break too. The acid track stays on the key's root for its one bar, so no progression puts a bass note a semitone from its notes (dark: i alone, future i-VII, dreamy i-III; the classic bII move would clash with the 303 until the acid line follows the chords). 303: mostly roots, octave jumps, b3 and b7, slides into the octave jumps, 4 sparse accents; crunch preset + a little delay. Crunchy 909 kick. Tempo: Plastikman/Hardfloor ~130, London acid techno 135-145. Optional lead: a second, higher 303-like riff. The 303's cutoff moves gently along the song (song automation): a little brighter in each Drop, a slow sweep up through the Break."
  },
  {
   "id": "detroit",

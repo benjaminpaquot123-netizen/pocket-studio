@@ -42,6 +42,14 @@ public:
     // Every slot of `ch` emptied at once (a strip the app no longer uses: its pool units go back).
     void clearInserts(int ch);
     void setInsertParam(int ch, int slot, int param, float v);
+    // « Joue dans »: a slot outside the scenes it plays in lets the sound through untouched (and
+    // costs nothing). The switch glides over kGateMs from its frame; switched back on, the effect
+    // starts again from silence (no stale tail from the last scene it played in).
+    static constexpr float kGateMs = 5.0f;
+    void setInsertOn(int ch, int slot, bool on);  // from the next frame processed
+    // The same `offset` frames into the next process() call (a scene swap, sample-accurate).
+    void scheduleInsertOn(int ch, int slot, bool on, int offset);
+    bool insertOn(int ch, int slot) const { return gates_[static_cast<size_t>(ch)][static_cast<size_t>(slot)].on; }  // tests
     void setSend(int ch, int bus, float level);               // 0..1, post-fader
     void setMacro(int ch, int macro, float v);                // TrackMacros: colour, dirt, motion, space
     void setBusParam(int bus, int param, float v);
@@ -135,6 +143,22 @@ private:
     void updateTargets();
     void processChunk(const float* const* channels, const float* const* rights, const float* direct, float* out, int n,
                       int outChannels, int offset);
+    // The inserts of `ch` over l/r, each slot heard as far as its « Joue dans » gate lets it.
+    void processInserts(int ch, float* l, float* r, int n);
+    void applyGate(int ch, int slot, bool on);
+    struct Gate {
+        bool on = true;
+        float mix = 1.0f;  // 0: passed by, 1: heard
+    };
+    std::array<std::array<Gate, kInserts>, kChannels> gates_{};
+    struct GateEvent {
+        int ch, slot, offset;
+        bool on;
+    };
+    std::array<GateEvent, kChannels * kInserts> gateEvents_{};
+    int gateCount_ = 0;
+    float gateStep_ = 1.0f / 240.0f;  // per frame (kGateMs at 48 kHz until prepared)
+    std::array<float, kChunk> dryL_{}, dryR_{};
     static void storeMax(std::atomic<float>& a, float v);
 
     std::array<Strip, kChannels> strips_{};

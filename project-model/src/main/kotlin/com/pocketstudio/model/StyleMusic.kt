@@ -28,21 +28,26 @@ fun Harmony.nearShift(degree: Int, octaveRoot: Int): Int =
 
 /**
  * Music written as one character per sixteenth step (16 per bar; a 32-character line covers two
- * bars and repeats). A note or chord starts on any character other than '-' and '.', lasts while
- * '-' follows, and '.' is silence.
+ * bars and repeats). A note or chord starts on any character other than '-', '/' and '.', lasts
+ * while '-' or '/' follows, and '.' is silence. A '/' also says the note slides into the next one
+ * ([Event.slide]): an 808 or a "talking" bass gliding between two notes.
  */
 object StepLine {
-    data class Event(val step: Int, val length: Int, val token: Char)
+    data class Event(val step: Int, val length: Int, val token: Char, val slide: Boolean = false)
 
     fun parse(bar: String): List<Event> {
         val events = ArrayList<Event>()
         var i = 0
         while (i < bar.length) {
             val c = bar[i]
-            if (c == '-' || c == '.') { i++; continue }
+            if (c == '-' || c == '.' || c == '/') { i++; continue }
             var len = 1
-            while (i + len < bar.length && bar[i + len] == '-') len++
-            events += Event(i, len, c)
+            var slide = false
+            while (i + len < bar.length && (bar[i + len] == '-' || bar[i + len] == '/')) {
+                slide = slide || bar[i + len] == '/'
+                len++
+            }
+            events += Event(i, len, c, slide)
             i += len
         }
         return events
@@ -89,15 +94,19 @@ fun NoteClip.withChordRhythm(degrees: List<Int>, harmony: Harmony, rhythm: Strin
 /**
  * A line on the chords: each token of [pattern] is a note of the current bar's chord ('R' root,
  * '3' third, '5' fifth, '7' seventh, '2' '4' '6' the scale's other notes, 'O' the root an octave
- * up; lower case is softer), from [octaveRoot]. Bass lines, riffs, hooks.
+ * up; lower case is softer), from [octaveRoot]. Bass lines, riffs, hooks. A note followed by '/'
+ * lasts [StarterWizard.SLIDE_OVERLAP] ticks into the next one: a gliding sound slides there.
  */
 fun NoteClip.withLine(degrees: List<Int>, harmony: Harmony, pattern: String, octaveRoot: Int, velocity: Float = 0.9f): NoteClip {
+    val total = 16 * degrees.size.coerceAtLeast(1) * NoteClip.TICKS_PER_STEP
     val notes = degrees.flatMapIndexed { bar, degree ->
         val shift = harmony.nearShift(degree, octaveRoot)
         StepLine.parse(StepLine.barOf(pattern, bar)).mapNotNull { e ->
             val step = StepLine.stepOf(e.token) ?: return@mapNotNull null
             val v = if (e.token.isLowerCase()) velocity * 0.7f else velocity
-            Note((bar * 16 + e.step) * NoteClip.TICKS_PER_STEP, e.length * NoteClip.TICKS_PER_STEP, harmony.degreeRoot(degree + step, octaveRoot) + shift, v)
+            val start = (bar * 16 + e.step) * NoteClip.TICKS_PER_STEP
+            val length = e.length * NoteClip.TICKS_PER_STEP + if (e.slide) StarterWizard.SLIDE_OVERLAP else 0
+            Note(start, length.coerceAtMost(total - start), harmony.degreeRoot(degree + step, octaveRoot) + shift, v)
         }
     }
     return copy(steps = 16 * degrees.size.coerceAtLeast(1), notes = notes).sanitized()
@@ -121,7 +130,7 @@ fun acidLine(harmony: Harmony, pattern: String, accents: String, slides: String,
             val offset = harmony.degreeRoot(step, 0) - tonic
             AcidStep(
                 note = Math.floorMod(offset, 12), octave = Math.floorDiv(offset, 12),
-                accent = accents.getOrNull(i) == 'x', slide = slides.getOrNull(i) == 'x' || bar.getOrNull(i + 1) == '-', gate = true,
+                accent = accents.getOrNull(i) == 'x', slide = slides.getOrNull(i) == 'x' || bar.getOrNull(i + 1) == '-' || bar.getOrNull(i + 1) == '/', gate = true,
             )
         }
     }

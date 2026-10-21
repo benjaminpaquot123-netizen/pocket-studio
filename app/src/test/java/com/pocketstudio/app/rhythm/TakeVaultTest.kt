@@ -99,4 +99,21 @@ class TakeVaultTest {
         assertNull(TakeVault.keptRange(48000, 0, 47000))
         assertEquals(24000 until 48000, TakeVault.keptRange(48000, 30000, 0))  // latency: at most half
     }
+
+    @Test
+    fun theSilenceCheckOfALongTakeAllocatesNothing() {
+        // Five minutes at 48 kHz, silent: the check walks every sample without boxing one.
+        val audio = FloatArray(48000 * 300)
+        val threads = java.lang.management.ManagementFactory.getThreadMXBean() as com.sun.management.ThreadMXBean
+        val id = Thread.currentThread().id
+        TakeVault.isSilent(audio, 0..999)  // warmed up
+        val before = threads.getThreadAllocatedBytes(id)
+        val silent = TakeVault.isSilent(audio, audio.indices)
+        val allocated = threads.getThreadAllocatedBytes(id) - before
+        assertTrue(silent)
+        assertTrue("$allocated bytes allocated", allocated < 1_000_000)
+        audio[audio.size - 1] = 0.01f
+        assertFalse(TakeVault.isSilent(audio, audio.indices))
+        assertTrue(TakeVault.isSilent(audio, 0 until audio.size - 1))
+    }
 }

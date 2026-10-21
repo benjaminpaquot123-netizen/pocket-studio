@@ -92,7 +92,7 @@ fun LatencyScreen(
                         )
                     }
                     LatencyUiState.Idle -> Text(
-                        tr("Le téléphone émet un petit « pschht » et l'écoute avec son micro."),
+                        tr("L'appareil émet un petit « pschht » et l'écoute avec son micro."),
                         color = Neon.TextSecondary,
                         style = MaterialTheme.typography.bodySmall,
                     )

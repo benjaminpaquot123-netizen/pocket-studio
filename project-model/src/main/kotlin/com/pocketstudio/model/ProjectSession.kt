@@ -55,13 +55,13 @@ class ProjectSession(
 
     /** Applies [transform] to the project. Same [coalesceKey] in a quick burst = one undo step. */
     fun edit(coalesceKey: String? = null, transform: (Project) -> Project) {
-        val next = clean(transform(history.current))
+        val next = apply(transform)
         if (history.push(next, coalesceKey, clock())) publish()
     }
 
     /** Like [edit] but not undoable: for changes the app makes on its own, like following the song. */
     fun editQuietly(transform: (Project) -> Project) {
-        val next = clean(transform(history.current))
+        val next = apply(transform)
         if (next == history.current) return
         history.replace(next)
         publish()
@@ -77,6 +77,17 @@ class ProjectSession(
     fun commitQuietEdits(before: Project, depth: Int = history.undoDepth) {
         history.commitFrom(before.sanitized(), depth)
         publish()
+    }
+
+    /**
+     * [transform] on the current project, cleaned; a scene that now lasts longer or shorter (or
+     * another time signature) moves what the song places after it (see [followPartLengths]).
+     */
+    private fun apply(transform: (Project) -> Project): Project {
+        val before = history.current
+        val next = clean(transform(before))
+        val followed = next.followPartLengths(before)
+        return if (followed === next) next else clean(followed)
     }
 
     /**

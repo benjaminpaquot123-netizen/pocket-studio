@@ -1,5 +1,7 @@
 package com.pocketstudio.ui
 
+import androidx.compose.ui.graphics.drawscope.clipRect
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
@@ -171,8 +173,11 @@ fun NeonCard(
     ) {
         CompositionLocalProvider(LocalCardFold provides fold) {
             Column(
-                // Folded, the content keeps its natural size and is only cut under the title.
-                modifier = Modifier.wrapContentHeight(Alignment.Top, unbounded = folded).padding(16.dp),
+                // Folded, the content keeps its natural size and is only cut under the title; nothing
+                // under the title is drawn, so no half line of text or row of chips peeks out.
+                modifier = Modifier.wrapContentHeight(Alignment.Top, unbounded = folded)
+                    .then(if (folded) Modifier.drawWithContent { clipRect(bottom = fold.headerBottom) { this@drawWithContent.drawContent() } } else Modifier)
+                    .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 content = content,
             )

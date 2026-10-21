@@ -2,6 +2,9 @@
 
 package com.pocketstudio.app.synth
 
+import androidx.compose.material.icons.filled.DeleteSweep
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import com.pocketstudio.model.i18n.tr
 
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -58,6 +61,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.pocketstudio.app.settings.SettingsStore
+import com.pocketstudio.model.NoteNames
 import com.pocketstudio.app.settings.KeyLayout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.runtime.collectAsState
@@ -111,6 +115,7 @@ private val ADVANCED: List<Pair<Int, String>> get() = listOf(
     SynthPatch.A_DECAY to tr("Volume : déclin"), SynthPatch.A_SUSTAIN to tr("Volume : maintien"),
     SynthPatch.LFO1_RATE to tr("Vibrato : vitesse"), SynthPatch.VIBRATO to tr("Vibrato : profondeur"),
     SynthPatch.LFO2_RATE to tr("Balayage : vitesse"), SynthPatch.SWEEP to tr("Balayage du filtre"),
+    SynthPatch.LFO2_SYNC to tr("Balayage calé sur le tempo"), SynthPatch.GLIDE to tr("Glissé entre les notes"),
 )
 
 private val WAVES: List<Pair<Float, String>> get() = listOf(0f to tr("Scie"), 0.5f to tr("Carré"), 1f to tr("Triangle"))
@@ -161,12 +166,23 @@ fun SynthScreen(
     val minSoundsPx = with(LocalDensity.current) { 64.dp.toPx() }
     val trackKeyboard = Modifier.onGloballyPositioned { keyboardInView = it.boundsInWindow().height >= it.size.height * 0.5f }
     val trackSounds = Modifier.onGloballyPositioned { soundsInView = it.boundsInWindow().height >= minOf(minSoundsPx, it.size.height * 0.5f) && it.size.height > 0 }
+    // A tablet by the device (its smaller side at least 600 dp), whatever the rounding of the width given.
+    val tablet = isTablet()
     BoxWithConstraints(modifier.fillMaxSize().testTag("synth")) {
         val keyboardHeight = (maxHeight * 0.45f).coerceIn(110.dp, 220.dp)
         val landscape = maxWidth > maxHeight
-        val rollHeight = if (landscape) (maxHeight - 140.dp).coerceAtLeast(160.dp) else if (maxWidth >= com.pocketstudio.ui.TWO_PANES_FROM) (maxHeight - 420.dp).coerceIn(380.dp, 640.dp) else 380.dp
-        // A tablet held upright: a wider, taller keyboard (three octaves, like lying down).
+        // A tablet held upright (an 8.7" one is 600 dp wide): taller keys, and in Notes mode a
+        // keyboard under the piano roll to hear and record notes while they are seen.
+        val tabletUpright = !landscape && (tablet || maxWidth >= TABLET_WIDTH)
+        val rollHeight = when {
+            landscape -> (maxHeight - 140.dp).coerceAtLeast(160.dp)
+            // Room left for the keyboard under it (once the tools above are scrolled away).
+            tabletUpright -> (maxHeight - 480.dp).coerceIn(300.dp, 640.dp)
+            else -> 380.dp
+        }
+        // A wide tablet held upright: a wider keyboard (three octaves, like lying down).
         val wide = maxWidth >= com.pocketstudio.ui.TWO_PANES_FROM
+        val uprightOctaves = if (wide) 3 else 2
         val hasSounds = instrument != null || browser != null
         val follows = hasSounds && ((notes != null && showNotes) || !landscape)
         val floatKeys = if (landscape) 96.dp else 120.dp
@@ -178,13 +194,26 @@ fun SynthScreen(
                 verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 tracks?.let { TrackBar(it) }
-                ModeSwitch(showNotes) { showNotes = it }
+                ModeSwitch(showNotes, tracks) { showNotes = it }
                 NeonCard {
                     PianoRoll(
                         notes.clip, notes.ghosts, notes.playStep, notes.actions,
                         gridHeight = rollHeight,
                         harmony = notes.harmony,
+                        keyOn = keyOn, keyOff = keyOff,
                     )
+                }
+                if (tabletUpright) {
+                    // A pianist plays what she sees placed (and records it with ●) without leaving the notes.
+                    NeonCard(modifier = Modifier.testTag("notes_keyboard")) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            SectionLabel(if (chordPads) tr("Pads d'accords") else tr("Clavier"), foldKey = "Clavier des notes")
+                            Box(Modifier.weight(1f))
+                            OctaveControl(octave, actions)
+                        }
+                        if (chordPads) ChordPads(harmony, 12 * (octave + 1), actions.noteOn, actions.noteOff, height = 120.dp)
+                        else PlayKeys(keyLayout, octave, uprightOctaves, harmony, english, keyOn, keyOff, 120.dp, tag = "notes_keyboard_keys", keyTag = "notes_key")
+                    }
                 }
                 transcribe?.let { TranscribeCard(it) }
                 NeonCard {
@@ -208,9 +237,9 @@ fun SynthScreen(
             Column(Modifier.fillMaxSize().padding(8.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 tracks?.let { TrackBar(it) }
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    if (notes != null) ModeSwitch(showNotes) { showNotes = it }
+                    if (notes != null) ModeSwitch(showNotes, tracks) { showNotes = it }
                     if (!tall) PresetChips(patch, actions)
-                    else if (!chordPads) KeyLayoutChips(keyLayout, setKeyLayout)
+                    else if (!chordPads) KeyLayoutChips(keyLayout, setKeyLayout, wideOctaves = 3)
                     Box(Modifier.weight(1f))
                     ChordChip(chordKeys) { chordKeys = it }
                     ChordPadsChip(chordPads) { chordPads = it }
@@ -234,8 +263,8 @@ fun SynthScreen(
                 verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 tracks?.let { TrackBar(it) }
-                if (notes != null) ModeSwitch(showNotes) { showNotes = it }
-                KeyboardCard(octave, octaves = if (wide) 3 else 2, height = if (wide) 190.dp else 150.dp, actions = actions, harmony = harmony, chordKeys = chordKeys,
+                if (notes != null) ModeSwitch(showNotes, tracks) { showNotes = it }
+                KeyboardCard(octave, octaves = uprightOctaves, height = if (tabletUpright) 190.dp else 150.dp, actions = actions, harmony = harmony, chordKeys = chordKeys,
                     onChordKeys = { chordKeys = it }, keyOn = keyOn, keyOff = keyOff, play = play, playActions = playActions,
                     chordPads = chordPads, onChordPads = { chordPads = it }, modifier = trackKeyboard,
                     keyLayout = keyLayout, onKeyLayout = setKeyLayout, english = english)
@@ -250,7 +279,8 @@ fun SynthScreen(
             }
         }
         if (follows) {
-            val wanted = soundsInView && (showNotes && notes != null || !keyboardInView)
+            // In Notes mode on an upright tablet the keyboard under the roll is there already.
+            val wanted = soundsInView && (showNotes && notes != null && !tabletUpright || !keyboardInView)
             // Folding holds until the real keyboard is back: the next time it is out of reach, the floating one returns.
             LaunchedEffect(wanted) { if (!wanted) floatFolded = false }
             FloatingKeyboard(
@@ -302,7 +332,7 @@ private fun KeyboardCard(
         if (!chordPads) {
             // Fewer, wider keys for the fingers and to learn: one octave named, or only the notes of the key.
             FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                KeyLayoutChips(keyLayout, onKeyLayout)
+                KeyLayoutChips(keyLayout, onKeyLayout, octaves)
             }
         }
         if (chordPads) ChordPads(harmony, 12 * (octave + 1), actions.noteOn, actions.noteOff, height = height)
@@ -311,14 +341,20 @@ private fun KeyboardCard(
     }
 }
 
-/** A landscape screen at least this high (a tablet lying down) keeps the whole sounds card. */
-private val TALL_LANDSCAPE = 600.dp
+/**
+ * A landscape screen at least this high keeps the whole sounds card and the keyboard's layouts: a
+ * tablet lying down (an 8.7" Galaxy Tab A11 leaves about 470 dp under the bars), not a phone (about 330).
+ */
+internal val TALL_LANDSCAPE = 440.dp
 
-/** 2 octaves / 1 octave / Gamme: the keyboard's layouts. */
+/** From this width a screen held upright is a tablet's (an 8.7" one is 600 dp wide). */
+internal val TABLET_WIDTH = 600.dp
+
+/** 2 octaves / 1 octave / Gamme: the keyboard's layouts; the full piano says how many octaves it shows. */
 @Composable
-private fun KeyLayoutChips(keyLayout: KeyLayout, onKeyLayout: (KeyLayout) -> Unit) {
+private fun KeyLayoutChips(keyLayout: KeyLayout, onKeyLayout: (KeyLayout) -> Unit, wideOctaves: Int) {
     KeyLayout.entries.forEach { l ->
-        FilterChip(selected = keyLayout == l, onClick = { onKeyLayout(l) }, label = { Text(l.label) }, colors = chipColors(),
+        FilterChip(selected = keyLayout == l, onClick = { onKeyLayout(l) }, label = { Text(l.label(wideOctaves)) }, colors = chipColors(),
             modifier = Modifier.testTag("key_layout_${l.name}"))
     }
 }
@@ -386,18 +422,34 @@ private fun SoundCard(patch: SynthPatch, actions: SynthActions, advanced: Boolea
 }
 
 @Composable
-private fun ModeSwitch(showNotes: Boolean, onChange: (Boolean) -> Unit) {
-    Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+private fun ModeSwitch(showNotes: Boolean, tracks: TracksUi?, onChange: (Boolean) -> Unit) {
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
         FilterChip(selected = !showNotes, onClick = { onChange(false) }, label = { Text(tr("Clavier")) }, colors = chipColors(),
             modifier = Modifier.testTag("mode_keyboard"))
         FilterChip(selected = showNotes, onClick = { onChange(true) }, label = { Text(tr("Notes")) }, colors = chipColors(),
             modifier = Modifier.testTag("mode_notes"))
+        // Empties this track in the scene shown, in one touch (Annuler brings it back): to take the
+        // synth out of a copied scene, or start again after trying sounds.
+        val clear = tracks?.clear
+        if (clear != null) {
+            androidx.compose.foundation.layout.Spacer(Modifier.weight(1f))
+            TextButton(
+                onClick = { clear(tracks.selected) }, enabled = tracks.hasNotes(tracks.selected),
+                modifier = Modifier.testTag("track_clear_button")
+                    .semantics { contentDescription = tr("Vider cette piste dans la scène %s", tracks.scene) },
+            ) {
+                Icon(Icons.Filled.DeleteSweep, contentDescription = null, modifier = Modifier.size(18.dp))
+                Text(" " + tr("Vider"))
+            }
+        }
     }
 }
 
 @Composable
 internal fun OctaveControl(octave: Int, actions: SynthActions) {
-    // − Octave 4 + in one dark capsule, like a hardware selector.
+    // − Octave 4 + in one dark capsule, like a hardware selector. The number follows Réglages ›
+    // Notation: the keyboard starting on middle C is "Octave 3" in Do Ré Mi, "Octave 4" in C D E.
+    val english = SettingsStore.state.collectAsState().value.englishNotes
     Row(
         Modifier.clip(RoundedCornerShape(50)).background(Color.Black.copy(alpha = 0.25f)),
         verticalAlignment = Alignment.CenterVertically,
@@ -405,7 +457,7 @@ internal fun OctaveControl(octave: Int, actions: SynthActions) {
         IconButton(onClick = { actions.shiftOctave(-1) }, modifier = Modifier.size(40.dp)) {
             Icon(Icons.Filled.Remove, contentDescription = tr("Octave plus bas"), modifier = Modifier.size(18.dp))
         }
-        Text(tr("Octave %d", octave), style = MonoStyle, color = Neon.Cyan, maxLines = 1, softWrap = false)
+        Text(tr("Octave %d", NoteNames.keyboardOctave(octave, english)), style = MonoStyle, color = Neon.Cyan, maxLines = 1, softWrap = false)
         IconButton(onClick = { actions.shiftOctave(1) }, modifier = Modifier.size(40.dp)) {
             Icon(Icons.Filled.Add, contentDescription = tr("Octave plus haut"), modifier = Modifier.size(18.dp))
         }

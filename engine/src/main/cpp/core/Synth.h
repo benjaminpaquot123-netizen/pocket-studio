@@ -26,6 +26,8 @@ public:
         // Appended (the JNI contract and saved projects keep the order above).
         Unison,        // 0 = oscillator 1 alone, up to 1 = six copies with it (seven voices: supersaw, Reese)
         UnisonDetune,  // 0..1 = spread of the voices, ±3 .. ±50 cents, centred on the note
+        Lfo2Sync,      // 0 = the sweep runs at Lfo2Rate; above, locked to the tempo (see syncCyclesPerBeat), restarted on each attack
+        Glide,         // 0 = none; above, portamento up to 0.5 s: a note starting while another is held slides from it (one voice)
         ParamCount
     };
 
@@ -39,6 +41,13 @@ public:
     // Live expression: pitch bend in semitones, mod wheel 0..1 (more vibrato).
     void setBend(float semitones) { bend_ = semitones; }
     void setMod(float amount) { mod_ = amount; }
+    // The length of a beat in frames, from the sequencer, every block: the tempo-locked sweep follows it.
+    void setBeatFrames(double frames);
+    // Sweep cycles per beat (Lfo2Sync's divisions): free, 1 bar, 1/2, 1/4, 1/8, 1/16, 1/4 triplet, 1/8 triplet.
+    static constexpr int kSyncDivisions = 8;
+    static float syncCyclesPerBeat(float sync);
+    // The sweep's rate in Hz as set now (free or locked), for tests.
+    float sweepHz() const { return sweepHz_; }
     void render(float* mono, int numFrames);
 
     int activeVoices() const;
@@ -56,6 +65,9 @@ private:
         uint32_t age = 0;
         float baseHz = 440.0f;
         float level = 0.0f;  // last amplitude envelope value (voice stealing takes the quietest released one)
+        float semis = 0.0f;      // pitch now (MIDI note, fractional while gliding)
+        float target = 0.0f;     // where the glide goes
+        float glideStep = 0.0f;  // semitones per control tick, 0 = not gliding
     };
 
     struct Event {
@@ -68,6 +80,7 @@ private:
     void applyEvent(const Event& e);
     void queue(const Event& e);
     void updateVoiceSettings(Voice& v);
+    void updateSweepRate();
     float noise();
 
     int sampleRate_ = 48000;
@@ -81,6 +94,8 @@ private:
     float bend_ = 0.0f, mod_ = 0.0f;
     float unisonGain_ = 1.0f;  // follows the stack gain smoothly when the number of copies changes
     uint32_t noiseState_ = 1234567u;
+    double beatFrames_ = 24000.0;  // 120 BPM at 48 kHz until the sequencer says otherwise
+    float sweepHz_ = 0.0f;
 };
 
 }  // namespace ps

@@ -38,7 +38,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import com.pocketstudio.model.PackManifest
 import com.pocketstudio.model.SoundPacks
+import com.pocketstudio.model.StarterWizard
+import com.pocketstudio.app.rhythm.DrumKitInfo
 import com.pocketstudio.app.sounds.SoundLooks
 import com.pocketstudio.ui.ChipRow
 import com.pocketstudio.ui.FamilyChip
@@ -59,6 +62,8 @@ class LibraryUi(
     val sizes: Map<String, Long> = emptyMap(),
     /** The song plays (its Play/Stop stays at hand while the library covers the screen). */
     val songPlaying: Boolean = false,
+    /** The style the project was made from (the assistant names it after it), if known: its packs come first. */
+    val styleId: String? = null,
 )
 
 class LibraryActions(
@@ -100,13 +105,15 @@ fun LibraryScreen(ui: LibraryUi, actions: LibraryActions) {
             Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 // Errors and notices at the top, where they are seen (the pack list can be far below).
                 ui.packs.message?.let { Text(it, color = Neon.Amber, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.testTag("library_message")) }
+                // Without its pack, a style has one or two kicks to offer: the pack is proposed first.
+                StylePackOffer(ui, actions)
                 Row(Modifier.fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     SoundPacks.KIND_LABELS.filterKeys { it != "loop" }.forEach { (k, label) ->
                         val look = SoundLooks.of(k)
                         FamilyChip(tr(label), look.icon, look.color, selected = kind == k, onClick = { kind = k }, modifier = Modifier.testTag("library_kind_$k"))
                     }
                 }
-                val categories = libraryCategories(kind, ui.packs.installed)
+                val categories = libraryChoices(kind, ui.packs.installed, ui.styleId)
                 if (categories.isEmpty()) {
                     Text(tr("Aucun son de ce type pour l'instant : télécharge un pack ci-dessous qui en contient."),
                         style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary)
@@ -117,7 +124,7 @@ fun LibraryScreen(ui: LibraryUi, actions: LibraryActions) {
                     ChipRow(categories.size, categories.indexOf(shown)) { i ->
                         val c = categories[i]
                         FamilyChip(
-                            c.title.substringAfter(" · ", c.title), if (c.id == KIT_CATEGORY) Icons.Filled.Apps else Icons.Filled.Inventory2, look.color,
+                            c.title.substringAfter(" · ", c.title), if (c.id == KIT_CATEGORY || c.id == KIT_OTHER_CATEGORY) Icons.Filled.Apps else Icons.Filled.Inventory2, look.color,
                             selected = c.id == shown.id, onClick = { category = c.id }, modifier = Modifier.testTag("library_source_${c.id}"),
                         )
                     }
@@ -146,6 +153,58 @@ fun LibraryScreen(ui: LibraryUi, actions: LibraryActions) {
     }
 }
 
+/** The id of the "other sounds of the kit" category. */
+internal const val KIT_OTHER_CATEGORY = "kit_other"
+
+/**
+ * The categories of [kind] in the library: the packs of the project's style first ([styleId]),
+ * the kit's own voice(s) for that kind, then the kit's other voices (a tom or a rim can make a
+ * kick or a snare), then the other packs.
+ */
+internal fun libraryChoices(kind: String, installed: List<PackManifest>, styleId: String?): List<SoundCategory> {
+    val role = StarterWizard.Role.entries.firstOrNull { it.id == kind } ?: return libraryCategories(kind, installed)
+    val categories = soundCategories(role, styleId, installed).toMutableList()
+    // Names in French, as a project stores them (shown translated).
+    val others = DrumKitInfo.names.indices.filter { it !in role.builtIn }
+        .map { SoundOption(SoundRef.Kit(it), com.pocketstudio.model.i18n.I18n.frenchOf(DrumKitInfo.names[it])) }
+    val kit = categories.indexOfFirst { it.id == KIT_CATEGORY }
+    categories.add(kit + 1, SoundCategory(KIT_OTHER_CATEGORY, tr("Autres sons du kit"), others))
+    return categories
+}
+
+/** The style the assistant made the project from, read from its name (« Trap », « Trap 2 »), if any. */
+internal fun styleOfProject(name: String): String? =
+    StarterWizard.STYLES.filter { name == it.name || name.startsWith(it.name + " ") }.maxByOrNull { it.name.length }?.id
+
+/**
+ * The packs that make the project's style sound right, not yet on the device: one button gets
+ * them all (the library otherwise offers only the kit's one or two sounds of a kind).
+ */
+@Composable
+private fun StylePackOffer(ui: LibraryUi, actions: LibraryActions) {
+    val style = ui.styleId?.let(StarterWizard::style) ?: return
+    val index = (ui.packs.index as? IndexState.Ready)?.index ?: return
+    val missing = style.packs.mapNotNull { id -> index.packs.firstOrNull { it.id == id } }
+        .filter { e -> ui.packs.installed.none { it.id == e.id } }
+    if (missing.isEmpty()) return
+    val downloading = missing.mapNotNull { ui.packs.downloading[it.id] }
+    NeonCard(accent = Neon.Cyan, modifier = Modifier.testTag("library_style_packs")) {
+        SectionLabel(tr("Les vrais sons du style"))
+        Text(
+            tr("Plus de sons %s : %s (%s), à télécharger seulement si tu veux.", tr(style.name), missing.joinToString(", ") { it.name }, mb(missing.sumOf { it.sizeBytes })),
+            style = MaterialTheme.typography.bodyMedium,
+        )
+        if (downloading.isNotEmpty()) {
+            LinearProgressIndicator(progress = { downloading.average().toFloat() }, modifier = Modifier.fillMaxWidth(), color = Neon.Cyan)
+        } else {
+            androidx.compose.material3.Button(
+                onClick = { missing.forEach { actions.download(it.id) } },
+                modifier = Modifier.fillMaxWidth().testTag("library_style_packs_download"),
+            ) { Text(tr("Télécharger les sons du style")) }
+        }
+    }
+}
+
 /** Every pack of the index: installed (its size, delete), downloading, or to download. */
 @Composable
 private fun PackList(ui: LibraryUi, actions: LibraryActions) {
@@ -167,7 +226,7 @@ private fun PackList(ui: LibraryUi, actions: LibraryActions) {
                         Column(Modifier.weight(1f)) {
                             Text(entry.name)
                             Text(
-                                if (installed) tr("%d sons · %s sur le téléphone", entry.sounds, mb(ui.sizes[entry.id] ?: entry.sizeBytes))
+                                if (installed) tr("%d sons · %s sur l'appareil", entry.sounds, mb(ui.sizes[entry.id] ?: entry.sizeBytes))
                                 else tr("%d sons · %s", entry.sounds, entry.sizeLabel),
                                 style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
                             )
@@ -192,7 +251,7 @@ private fun PackList(ui: LibraryUi, actions: LibraryActions) {
         AlertDialog(
             onDismissRequest = { deleting = null },
             title = { Text(tr("Supprimer le pack ?")) },
-            text = { Text(tr("Les sons de « %s » quittent le téléphone. Tes projets gardent ceux qu'ils utilisent ; pour les autres, il faudra retélécharger le pack.", name)) },
+            text = { Text(tr("Les sons de « %s » quittent l'appareil. Tes projets gardent ceux qu'ils utilisent ; pour les autres, il faudra retélécharger le pack.", name)) },
             confirmButton = {
                 TextButton(onClick = { deleting = null; actions.deletePack(id) }, modifier = Modifier.testTag("library_delete_confirm")) {
                     Text(tr("Supprimer"), color = Neon.Red)

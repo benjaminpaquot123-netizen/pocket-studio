@@ -155,7 +155,7 @@ class ProjectCatalog(private val root: File, private val trash: File) {
             zip.putNextEntry(java.util.zip.ZipEntry(ProjectStore.MAIN))
             zip.write(ProjectJson.encode(project).toByteArray(Charsets.UTF_8))
             zip.closeEntry()
-            val used = project.sampleFiles
+            val used = project.sampleFiles + project.previousTakeFiles
             File(store.folder(id), SAMPLES).listFiles()?.filter { it.name in used }?.sortedBy { it.name }?.forEach { f ->
                 zip.putNextEntry(java.util.zip.ZipEntry("$SAMPLES/${f.name}"))
                 f.inputStream().use { it.copyTo(zip) }

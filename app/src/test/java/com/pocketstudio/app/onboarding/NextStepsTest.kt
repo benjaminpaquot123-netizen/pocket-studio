@@ -35,10 +35,10 @@ class NextStepsTest {
         // Each step says what to do in one line and where.
         assertTrue(steps.all { it.hint.isNotBlank() && it.button.isNotBlank() && '\n' !in it.hint })
         assertEquals(
-            listOf(AppTab.Rythme, AppTab.Acide, AppTab.Synthe, AppTab.Morceau, AppTab.Morceau, AppTab.Mixeur, AppTab.Mixeur),
+            listOf(AppTab.Rythme, AppTab.Acide, AppTab.Synthe, AppTab.Morceau, AppTab.Morceau, AppTab.Audio, AppTab.Mixeur, AppTab.Mixeur),
             steps.map { it.tab },
         )
-        assertEquals((1..7).toList(), steps.map { it.number })
+        assertEquals((1..8).toList(), steps.map { it.number })
     }
 
     @Test
@@ -90,15 +90,26 @@ class NextStepsTest {
     }
 
     @Test
-    fun theGuidedSongLeavesOnlyTheMixAndTheSharing() {
+    fun theVoiceIsDoneOnceRecordedOrTicked() {
+        val p = Project()
+        val voice = nextSteps(p).first { it.goal == StepGoal.Voice }
+        assertFalse(voice.done)
+        assertEquals(AppTab.Audio, voice.tab)
+        assertTrue(voice.hint, voice.hint.contains("écouteurs") && voice.manual)
+        assertTrue(nextSteps(p, setOf(StepGoal.Voice)).first { it.goal == StepGoal.Voice }.done)
+    }
+
+    @Test
+    fun theGuidedSongLeavesTheVoiceTheMixAndTheSharing() {
         val style = StarterWizard.style("house")!!
         val parts = StarterWizard.Part.entries.associateWith { StarterWizard.soundsFor(it, style).first() }
         val song = StarterWizard.build(style, style.lines.associate { it.role to null as PadSample? }, StarterWizard.Mood.Happy, parts)
         val steps = nextSteps(song)
         assertEquals(setOf(StepGoal.Rhythm, StepGoal.Bass, StepGoal.Melody, StepGoal.Sections, StepGoal.Song), steps.done())
-        assertEquals(StepGoal.Volumes, steps.next()!!.goal)
+        // Next: the voice on top (rap, song), then the mix.
+        assertEquals(StepGoal.Voice, steps.next()!!.goal)
         // Everything done: no next step (the card hides).
-        assertNull(nextSteps(song, setOf(StepGoal.Volumes, StepGoal.Share)).next())
+        assertNull(nextSteps(song, setOf(StepGoal.Voice, StepGoal.Volumes, StepGoal.Share)).next())
         // Still true on another scene shown.
         assertEquals(steps.done(), nextSteps(song.switchScene(2)).done())
     }

@@ -44,9 +44,9 @@ import kotlin.math.roundToInt
 
 private const val MIN_HZ = 55f
 private const val MAX_HZ = 1760f
-/** Note name closest to [hz], e.g. "La 3" for 440 Hz (or "A 4" when the settings name notes C D E). */
+/** Note name closest to [hz], e.g. "La3" for 440 Hz (or "A4" when the settings name notes C D E). */
 fun noteName(hz: Float, english: Boolean = com.pocketstudio.app.settings.SettingsStore.state.value.englishNotes): String =
-    com.pocketstudio.model.NoteNames.withOctave(69 + (12 * log2(hz / 440f)).roundToInt(), english, separator = " ")
+    com.pocketstudio.model.NoteNames.withOctave(69 + (12 * log2(hz / 440f)).roundToInt(), english)
 
 private fun hzToSlider(hz: Float) = (ln(hz / MIN_HZ) / ln(MAX_HZ / MIN_HZ)).coerceIn(0f, 1f)
 private fun sliderToHz(v: Float) = MIN_HZ * (MAX_HZ / MIN_HZ).pow(v)

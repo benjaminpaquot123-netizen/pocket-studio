@@ -55,14 +55,14 @@ class RootNoteTest {
 
     @Test
     fun namesNotesTheFrenchWay() {
-        assertEquals("Do 3", RootNote.name(60f))
-        assertEquals("La 3", RootNote.name(69.2f))
-        assertEquals("Do 0", RootNote.name(24f))
+        assertEquals("Do3", RootNote.name(60f))
+        assertEquals("La3", RootNote.name(69.2f))
+        assertEquals("Do0", RootNote.name(24f))
     }
 
     @Test
     fun namesNotesTheEnglishWayInEnglishNotation() {
-        // Middle C is C4 in English notation, not "Do 3" nor "C3".
+        // Middle C is C4 in English notation, not "Do3" nor "C3".
         assertEquals("C4", RootNote.name(60f, english = true))
         assertEquals("A4", RootNote.name(69.2f, english = true))
         assertEquals("C#1", RootNote.name(25f, english = true))

@@ -163,7 +163,7 @@
 - Phase 20 (branche phase20-wip, fusion de phase20-a/b/c) : corrections de l'audit d'utilisation, voir `docs/REVIEW.md`.
 
 ## Prochaine étape exacte
-1. Phases 16 à 21 fusionnées (#27 à #32). Phase 21 = du brouillon au morceau (scènes nommées, assistant en sections, morceau éditable, partage en un geste). Phase 22 (langues FR/EN/NL + tablette) : fusionnée (PR #33). Phase 23 (corrections de l'audit à cinq) : PR ouverte. Prochaine étape, demandée par Benjamin : un nouvel audit général sur la version corrigée, puis l'audit des 35 styles (un pro et un débutant par style : recette, sons, rythme, morceau produit, textes) et leurs corrections ; ensuite l'assistant style par style (vraie chanson de ~3 min).
+1. Phases 16 à 21 fusionnées (#27 à #32). Phase 21 = du brouillon au morceau (scènes nommées, assistant en sections, morceau éditable, partage en un geste). Phase 22 (langues FR/EN/NL + tablette) : fusionnée (PR #33). Phase 23 fusionnée (#34). Phase 24 (audit général + audit des 35 styles, recettes réécrites, voix et morceau, tablette 8,7") : PR ouverte. Phase 25 en cours : boîte à effets sur tout ce qui fait du son + nouveaux effets (distorsion, écho, réverbe, auto-pan, OTT…), Synthé cohérent Notes/Clavier, scènes déplaçables au doigt. Ensuite : l'assistant style par style (vraie chanson de ~3 min), puis les points restants de REVIEW.md.
 2. Ensuite, dans l'ordre :
    - le niveau général (marge, limiteur, vumètre avant le limiteur), à mesurer sur le téléphone ;
    - le tempo changé pendant la lecture (pads calés, Remix) ;

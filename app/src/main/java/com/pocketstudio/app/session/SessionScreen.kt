@@ -13,7 +13,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -63,6 +65,8 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -117,7 +121,16 @@ class SessionScreenUi(
 }
 
 /** A timeline row: a track key (SongPart.DRUMS…), its name and colour. */
-class TimelineRow(val key: String, val name: String, val color: androidx.compose.ui.graphics.Color)
+/**
+ * A timeline row. [spans]: an audio track's, for each song part where its clip is really heard
+ * (fractions of the part); null for the other tracks (a lit block plays all along).
+ */
+class TimelineRow(
+    val key: String,
+    val name: String,
+    val color: androidx.compose.ui.graphics.Color,
+    val spans: List<List<ClosedFloatingPointRange<Float>>>? = null,
+)
 
 class SessionActions(
     val select: (Int) -> Unit = {},
@@ -208,7 +221,7 @@ private fun SongCard(ui: SessionScreenUi, actions: SessionActions) {
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
         )
         if (ui.song.isNotEmpty()) {
-            ChoiceRow(tr("Écouter :"), tr("la scène"), tr("le morceau"), ui.listenSong, actions.setListenSong, "listen")
+            ChoiceRow(tr("Écouter :"), tr("cette section"), tr("tout le morceau"), ui.listenSong, actions.setListenSong, "listen")
         }
         ui.song.forEachIndexed { i, part -> PartRow(i, part, ui, actions, insertAfter = { inserting = it }) }
         Text(if (ui.song.isEmpty()) tr("Ajouter :") else tr("Ajouter à la fin :"), style = MaterialTheme.typography.bodyMedium)
@@ -397,25 +410,42 @@ private fun ScenesCard(ui: SessionScreenUi, actions: SessionActions, rename: (In
             Text(ui.sceneInfo, style = MaterialTheme.typography.bodyMedium, color = Neon.Cyan, modifier = Modifier.testTag("scene_info"))
         }
         val letter = Scene.NAMES[ui.current]
-        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            OutlinedButton(onClick = { rename(ui.current) }, modifier = Modifier.testTag("scene_rename")) {
-                Icon(Icons.Filled.Edit, contentDescription = null)
-                Text("  " + if (ui.label(ui.current).isBlank()) tr("Nommer la scène %s", letter) else tr("Renommer la scène %s", letter), maxLines = 1, softWrap = false)
-            }
-            OutlinedButton(onClick = actions.newScene, modifier = Modifier.testTag("scene_new")) {
-                Icon(Icons.Filled.Add, contentDescription = null)
-                Text("  " + tr("Nouvelle scène vide"), maxLines = 1, softWrap = false)
-            }
-            OutlinedButton(onClick = actions.duplicate, modifier = Modifier.testTag("scene_duplicate")) {
-                Icon(Icons.Filled.ContentCopy, contentDescription = null)
-                Text("  " + tr("Dupliquer la scène %s", letter), maxLines = 1, softWrap = false)
-            }
-            val empty = ui.scenes.getOrNull(ui.current)?.isEmpty != false
-            OutlinedButton(onClick = actions.clear, enabled = !empty, modifier = Modifier.testTag("scene_clear")) {
-                Icon(Icons.Filled.DeleteSweep, contentDescription = null)
-                Text("  " + tr("Vider la scène %s", letter), maxLines = 1, softWrap = false)
-            }
+        val named = ui.label(ui.current).isNotBlank()
+        val empty = ui.scenes.getOrNull(ui.current)?.isEmpty != false
+        // The scene's four actions on one compact row of tools (icon over a short word), the full
+        // sentence kept for TalkBack.
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            SceneAction(Icons.Filled.Edit, if (named) tr("Renommer") else tr("Nommer"),
+                if (named) tr("Renommer la scène %s", letter) else tr("Nommer la scène %s", letter), true, { rename(ui.current) }, "scene_rename", Modifier.weight(1f))
+            SceneAction(Icons.Filled.Add, tr("Nouvelle"), tr("Nouvelle scène vide"), true, actions.newScene, "scene_new", Modifier.weight(1f))
+            SceneAction(Icons.Filled.ContentCopy, tr("Dupliquer"), tr("Dupliquer la scène %s", letter), true, actions.duplicate, "scene_duplicate", Modifier.weight(1f))
+            SceneAction(Icons.Filled.DeleteSweep, tr("Vider"), tr("Vider la scène %s", letter), !empty, actions.clear, "scene_clear", Modifier.weight(1f))
         }
+    }
+}
+
+/** One of the scene's tools: a small icon over a short word, the whole action said to TalkBack. */
+@Composable
+private fun SceneAction(
+    icon: androidx.compose.ui.graphics.vector.ImageVector, short: String, full: String, enabled: Boolean,
+    onClick: () -> Unit, tag: String, modifier: Modifier,
+) {
+    val tint = if (enabled) Neon.TextPrimary else Neon.TextSecondary.copy(alpha = 0.5f)
+    Column(
+        modifier
+            .clip(RoundedCornerShape(12.dp))
+            .border(1.dp, Neon.TextSecondary.copy(alpha = if (enabled) 0.45f else 0.2f), RoundedCornerShape(12.dp))
+            .clickable(enabled = enabled, role = Role.Button, onClickLabel = full, onClick = onClick)
+            .semantics { contentDescription = full }
+            .heightIn(min = 52.dp)
+            .padding(vertical = 6.dp)
+            .testTag(tag),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(20.dp))
+        Text(short, style = MaterialTheme.typography.labelMedium, color = tint, maxLines = 1, softWrap = false,
+            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
     }
 }
 
@@ -567,13 +597,28 @@ private fun Timeline(ui: SessionScreenUi, actions: SessionActions) {
                     }
                     ui.rows.forEach { r ->
                         val on = part.plays(r.key)
+                        // An audio track: its block is pale, and the stretches its take is heard are drawn on it.
+                        val spans = r.spans?.getOrNull(i)
+                        val fill = when {
+                            !on -> Neon.Surface
+                            spans != null -> r.color.copy(alpha = 0.22f)
+                            else -> r.color.copy(alpha = if (active) 0.95f else 0.7f)
+                        }
                         Box(
                             Modifier.width(width).height(26.dp).clip(RoundedCornerShape(4.dp))
-                                .background(if (on) r.color.copy(alpha = if (active) 0.95f else 0.7f) else Neon.Surface)
+                                .background(fill)
                                 .border(1.dp, if (on) r.color else Neon.Outline, RoundedCornerShape(4.dp))
                                 .clickable { actions.togglePartTrack(i, r.key) }
                                 .testTag("timeline_${i}_${r.key}"),
-                        )
+                        ) {
+                            spans?.forEach { span ->
+                                Box(
+                                    Modifier.offset(x = width * span.start).width(width * (span.endInclusive - span.start)).fillMaxHeight()
+                                        .background(r.color.copy(alpha = if (active) 0.95f else 0.8f))
+                                        .testTag("timeline_take_${i}_${r.key}"),
+                                )
+                            }
+                        }
                     }
                 }
             }

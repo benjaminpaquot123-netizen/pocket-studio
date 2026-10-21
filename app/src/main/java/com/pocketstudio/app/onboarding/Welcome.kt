@@ -110,7 +110,7 @@ fun WelcomeScreen(actions: WelcomeActions) {
             Text("Pocket Studio", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold, color = Neon.Cyan)
             // The language first: French is ticked, the other ones are one tap away.
             com.pocketstudio.app.settings.LanguagePicker()
-            Text(tr("Bienvenue ! Fais ta musique sur ton téléphone. Par quoi on commence ?"), style = MaterialTheme.typography.bodyLarge)
+            Text(tr("Bienvenue ! Fais ta musique sur ton appareil. Par quoi on commence ?"), style = MaterialTheme.typography.bodyLarge)
             Choice(
                 Icons.Filled.AutoAwesome, tr("Créer mon premier morceau (guidé)"),
                 tr("Choisis un style, je t'aide pas à pas : intro, couplet, refrain."),

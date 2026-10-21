@@ -186,7 +186,7 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
                         // Too narrow for the word (a small phone): the tick alone, never "E…".
                         var cut by remember { mutableStateOf(false) }
                         Text(
-                            tr("Enregistré"), style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.sp), color = Neon.TextSecondary,
+                            tr("Sauvegardé"), style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.sp), color = Neon.TextSecondary,
                             maxLines = 1, softWrap = false, overflow = TextOverflow.Clip, onTextLayout = { cut = it.hasVisualOverflow },
                             modifier = Modifier.padding(start = 2.dp).graphicsLayer { alpha = if (cut) 0f else 1f },
                         )

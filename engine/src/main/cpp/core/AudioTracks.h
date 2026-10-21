@@ -24,7 +24,7 @@ public:
     static constexpr int kTracks = 4;
     // Fades and offset in frames.
     enum Param { Start = 0, LoopSteps = 1, Gain = 2, FadeIn = 3, FadeOut = 4, Song = 5, Offset = 6 };
-    static constexpr int kMaxOffset = 9600;  // 200 ms at 48 kHz
+    static constexpr int kMaxOffset = 14400;  // 300 ms at 48 kHz
 
     AudioTracks() = default;
     ~AudioTracks();

@@ -62,7 +62,14 @@ class TracksUi(
     val remove: (Int) -> Unit = {},
     /** Opens the quick effects of a track (null: no button). */
     val effects: ((Int) -> Unit)? = null,
-)
+    /** Empties a track's notes in the scene shown (null: not offered). */
+    val clear: ((Int) -> Unit)? = null,
+    /** The scene shown, as its chip names it (« B », « Refrain »). */
+    val scene: String = "",
+) {
+    /** Whether track [id] plays notes in the scene shown. */
+    fun hasNotes(id: Int) = tracks.firstOrNull { it.id == id }?.notes?.notes?.isNotEmpty() == true
+}
 
 /**
  * One coloured tab per instrument track (name and sound), "+" to add one. The screen below shows
@@ -114,6 +121,12 @@ fun TrackBar(ui: TracksUi, modifier: Modifier = Modifier) {
                         text = { Text(tr("Dupliquer")) }, enabled = ui.tracks.size < InstrumentTrack.MAX,
                         onClick = { menuFor = null; ui.duplicate(t.id) }, modifier = Modifier.testTag("track_duplicate"),
                     )
+                    ui.clear?.let { clear ->
+                        DropdownMenuItem(
+                            text = { Text(tr("Vider dans la scène %s", ui.scene)) }, enabled = ui.hasNotes(t.id),
+                            onClick = { menuFor = null; clear(t.id) }, modifier = Modifier.testTag("track_clear"),
+                        )
+                    }
                     if (t.id != 0) {
                         DropdownMenuItem(text = { Text(tr("Supprimer (Annuler possible)")) }, onClick = { menuFor = null; ui.remove(t.id) },
                             modifier = Modifier.testTag("track_delete"))

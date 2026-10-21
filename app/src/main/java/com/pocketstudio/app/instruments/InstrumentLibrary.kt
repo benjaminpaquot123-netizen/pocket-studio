@@ -67,8 +67,4 @@ object InstrumentLibrary {
 
     /** General MIDI drum notes for our 16 pads, in pad order (DrumKitInfo.names). */
     val KIT_NOTES = listOf(36, 35, 38, 40, 39, 42, 46, 41, 45, 48, 37, 56, 49, 70, 63, 54)
-    val KIT_PAD_NAMES: List<String> get() = listOf(
-        tr("Kick"), tr("Kick 2"), tr("Caisse"), tr("Caisse 2"), tr("Clap"), tr("Charley"), tr("Charley ouvert"), tr("Tom grave"),
-        tr("Tom médium"), tr("Tom aigu"), tr("Rim"), tr("Cowbell"), tr("Crash"), tr("Maracas"), tr("Conga"), tr("Tambourin"),
-    )
 }

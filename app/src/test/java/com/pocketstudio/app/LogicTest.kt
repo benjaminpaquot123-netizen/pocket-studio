@@ -50,16 +50,16 @@ class LogicTest {
 
     @Test
     fun noteNamesFollowTheNotation() {
-        // French: the French octave numbers (the A of 440 Hz is La 3, middle C is Do 3).
-        assertEquals("La 3", noteName(440f, english = false))
-        assertEquals("Do 3", noteName(261.63f, english = false))
-        assertEquals("Do 4", noteName(523.25f, english = false))
-        assertEquals("Si 2", noteName(246.94f, english = false))
-        assertEquals("La 0", noteName(55f, english = false))
+        // French: the French octave numbers (the A of 440 Hz is La3, middle C is Do3).
+        assertEquals("La3", noteName(440f, english = false))
+        assertEquals("Do3", noteName(261.63f, english = false))
+        assertEquals("Do4", noteName(523.25f, english = false))
+        assertEquals("Si2", noteName(246.94f, english = false))
+        assertEquals("La0", noteName(55f, english = false))
         // English: middle C is C4.
-        assertEquals("A 4", noteName(440f, english = true))
-        assertEquals("C 4", noteName(261.63f, english = true))
-        assertEquals("B 3", noteName(246.94f, english = true))
+        assertEquals("A4", noteName(440f, english = true))
+        assertEquals("C4", noteName(261.63f, english = true))
+        assertEquals("B3", noteName(246.94f, english = true))
     }
 
     @Test

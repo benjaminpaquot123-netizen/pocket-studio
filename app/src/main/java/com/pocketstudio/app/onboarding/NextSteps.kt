@@ -14,6 +14,7 @@ enum class StepGoal {
     Melody,
     Sections,
     Song,
+    Voice,
     Volumes,
     Share;
 
@@ -23,6 +24,7 @@ enum class StepGoal {
         Melody -> tr("Mélodie")
         Sections -> tr("Sections")
         Song -> tr("Morceau")
+        Voice -> tr("Voix")
         Volumes -> tr("Volumes")
         Share -> tr("Partager")
     }
@@ -50,8 +52,8 @@ private const val BASS_BELOW = 48
 /**
  * Where [project] stands on the way to a finished song, computed from what it holds: drum hits,
  * a bass line (the acid line, an 808 or a low instrument track), a melody (a higher instrument
- * track or a recording), two named sections, a song of three parts or more, the mixer touched.
- * [marks]: the steps the user ticked by hand (the volumes, the sharing).
+ * track or a recording), two named sections, a song of three parts or more, a voice recorded on
+ * top, the mixer touched. [marks]: the steps the user ticked by hand (the voice, the volumes, the sharing).
  */
 fun nextSteps(project: Project, marks: Set<StepGoal> = emptySet()): List<NextStep> {
     val scenes = project.allScenes
@@ -76,6 +78,8 @@ fun nextSteps(project: Project, marks: Set<StepGoal> = emptySet()): List<NextSte
     val named = filled.count { scenes[it].label.isNotBlank() }
     val sections = filled.size >= 2 && named == filled.size
     val song = project.song.size >= 3
+    // A recording on an audio track: the voice is there.
+    val voice = project.audioTracks.any { it.clip != null }
     val default = Channel()
     val mixed = project.mixer.channels.any { it.volume != default.volume || it.pan != default.pan }
     return listOf(
@@ -89,6 +93,10 @@ fun nextSteps(project: Project, marks: Set<StepGoal> = emptySet()): List<NextSte
             AppTab.Morceau, tr("Aller à Morceau"),
         ),
         NextStep(StepGoal.Song, song, tr("Enchaîne tes sections dans le morceau : au moins trois parties, avec un début et une fin."), AppTab.Morceau, tr("Aller à Morceau")),
+        NextStep(
+            StepGoal.Voice, voice || StepGoal.Voice in marks,
+            tr("Pose ta voix : onglet Audio, touche ● pour chanter ou rapper sur le morceau (avec des écouteurs)."), AppTab.Audio, tr("Aller à Audio"), manual = true,
+        ),
         NextStep(StepGoal.Volumes, mixed || StepGoal.Volumes in marks, tr("Écoute le morceau en entier et règle le volume de chaque piste dans le Mixeur."), AppTab.Mixeur, tr("Aller au Mixeur"), manual = true),
         NextStep(StepGoal.Share, StepGoal.Share in marks, tr("Exporte ton morceau et fais-le écouter à tes amis !"), AppTab.Mixeur, tr("Partager"), manual = true),
     )

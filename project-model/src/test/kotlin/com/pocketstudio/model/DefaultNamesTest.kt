@@ -37,7 +37,9 @@ class DefaultNamesTest {
         assertEquals("My project 3", DefaultNames.shown("Mon projet 3"))
         assertEquals("Track 2 (copy)", DefaultNames.shown("Piste 2 (copie)"))
         assertEquals("Funk (copy)", DefaultNames.shown("Funk (copie)"))
-        assertEquals("Drums Da Funk", DefaultNames.shownSample("Batterie Da Funk"))
+        assertEquals("Drums · Da Funk", DefaultNames.shownSample(DefaultNames.stemPad("Batterie", "Da Funk")))
+        assertEquals("Standard · Snare 2", DefaultNames.shownSample(DefaultNames.kitPad("Standard", 3)))
+        assertEquals("Mic 21:14:05", DefaultNames.shownSample("Micro 21:14:05"))
         I18n.lang = Lang.NL
         assertEquals("Spoor 3", DefaultNames.shown("Piste 3"))
         assertEquals("Mijn eerste beat", DefaultNames.shown("Mon premier rythme"))
@@ -63,6 +65,20 @@ class DefaultNamesTest {
         // "Son", "Couplet" and "Refrain" are words the app translates, but not names it gives.
         listOf("Son", "Couplet", "Refrain", "Ma basse", "Piste funky", "Funk 2").forEach { name -> assertEquals(name, DefaultNames.shown(name)) }
         assertNull(DefaultNames.french("Ma basse"))
+    }
+
+    @Test
+    fun anImportedFileNameIsNeverTranslated() {
+        // A pad or a take keeps its file's name ("Bass groove.wav" → "Bass groove"), whatever its first or last word.
+        val files = listOf("Bass groove", "Basse groove", "Voix off", "Vocals off", "Drums loop", "Batterie live", "Bas en zang", "Funky Caisse", "Mic check")
+        Lang.entries.forEach { lang ->
+            I18n.lang = lang
+            files.forEach { name -> assertEquals("$lang: $name", name, DefaultNames.shownSample(name)) }
+        }
+        I18n.lang = Lang.EN
+        // The names the app saves are still translated (in French on disk).
+        assertEquals("Vocals · Da Funk", DefaultNames.shownSample("Voix · Da Funk"))
+        assertEquals("Imported sound", DefaultNames.shownSample("Son importé"))
     }
 
     @Test

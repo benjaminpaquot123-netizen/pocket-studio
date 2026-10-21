@@ -53,7 +53,7 @@ object FlacEncoder {
                         if (frameNumber % 32 == 0L && total > 0) onProgress((done.toDouble() / total).toFloat().coerceIn(0f, 1f))
                     }
                 }
-                if (!tmp.renameTo(flac)) throw IOException(tr("enregistrement impossible"))
+                if (!tmp.renameTo(flac)) throw IOException(tr("écriture impossible"))
             } finally {
                 tmp.delete()
             }

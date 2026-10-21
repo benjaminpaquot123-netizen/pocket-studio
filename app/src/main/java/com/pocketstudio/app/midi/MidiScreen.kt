@@ -1,6 +1,7 @@
 package com.pocketstudio.app.midi
 
 import com.pocketstudio.model.i18n.tr
+import com.pocketstudio.model.NoteNames
 import com.pocketstudio.app.help.Glossary
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -31,6 +32,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -68,7 +70,7 @@ fun MidiScreen(ui: MidiUi, actions: MidiActions, learn: LearnUi = LearnUi()) {
             NeonCard {
                 SectionLabel(tr("Clavier MIDI"), help = Glossary.MIDI)
                 if (!ui.available) {
-                    Text(tr("Ce téléphone ne gère pas le MIDI."), color = Neon.Amber)
+                    Text(tr("Cet appareil ne gère pas le MIDI."), color = Neon.Amber)
                     return@NeonCard
                 }
                 val connected = ui.sources.firstOrNull { it.id == ui.connected }
@@ -91,8 +93,10 @@ fun MidiScreen(ui: MidiUi, actions: MidiActions, learn: LearnUi = LearnUi()) {
                     Icon(Icons.Filled.Bluetooth, contentDescription = null)
                     Text("  " + if (ui.scanning) tr("Recherche en cours…") else tr("Chercher un clavier Bluetooth"))
                 }
+                // The pads' notes named as the settings name notes (MIDI 36 is Do1 in Do Ré Mi, C2 in C D E).
+                val english = com.pocketstudio.app.settings.SettingsStore.state.collectAsState().value.englishNotes
                 Text(
-                    tr("Les notes jouent le Synthé. Sur le canal 10, les notes Do 2 à Ré# 3 (36 à 51) tapent les 16 pads."),
+                    tr("Les notes jouent le Synthé. Sur le canal 10, les notes %1\$s à %2\$s (36 à 51) tapent les 16 pads.", NoteNames.withOctave(36, english), NoteNames.withOctave(51, english)),
                     style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
                 )
             }

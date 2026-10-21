@@ -107,4 +107,30 @@ class NoteEditsTest {
         val midi = MidiFile.read(MidiFile.export(Project(synthNotes = short).sanitized(), song = false)).notes.filter { it.channel == 0 }
         assertEquals(listOf(60), midi.map { it.pitch })
     }
+
+    @Test
+    fun aDuplicateThatDoesNotFitSaysHowManyNotesWereLeftOut() {
+        // The three notes span six steps: their copies fit.
+        val all = NoteEdits.duplicate(clip, setOf(c4, e4, g4))
+        assertEquals(0, all.dropped)
+        // A note near the end: its copy would start past the loop.
+        val late = Note(clip.ticks - 48, 24, 72)
+        val full = clip.copy(notes = clip.notes + late)
+        val dup = NoteEdits.duplicate(full, setOf(c4, late))
+        assertEquals(1, dup.dropped)
+        assertEquals(1, dup.selection.size)
+    }
+
+    @Test
+    fun transposingTheWholeClipMovesTheHiddenNotesToo() {
+        val long = NoteClip(steps = 32, notes = listOf(c4, Note(400, 24, 62))).sanitized()
+        val short = long.copy(steps = 16).sanitized()
+        // Everything chosen: the hidden note moves with the rest and comes back in key.
+        val all = NoteEdits.transpose(short, short.notes.toSet(), 2).clip
+        assertEquals(listOf(64), all.hidden.map { it.pitch })
+        assertEquals(listOf(62, 64), all.copy(steps = 32).sanitized().notes.map { it.pitch })
+        // Only some notes chosen: the hidden ones stay.
+        val some = NoteEdits.transpose(clip.copy(hidden = listOf(Note(400, 24, 62))), setOf(c4), 2).clip
+        assertEquals(listOf(62), some.hidden.map { it.pitch })
+    }
 }

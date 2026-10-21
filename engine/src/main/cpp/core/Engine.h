@@ -33,7 +33,8 @@ enum class CommandType : uint8_t {
     StartLatencyTest,
     CancelLatencyTest,
     // Values below are part of the JNI contract (NativeEngine.kt): append only.
-    SetTransport,     // value: 1 = play, 0 = stop; a = count-in bars; b = song step the first step is (started from a later part)
+    SetTransport,     // value: 1 = play, 0 = stop; a = count-in bars; b = song step the first step is (started from a later part),
+                      // b < 0: a scene on its own, outside the song (no song position: song clips and curves wait)
     SetTempo,         // value: BPM
     SetSwing,         // value: 0..0.75 of a 16th
     SetMetronome,     // value: 1 = on
@@ -73,7 +74,9 @@ enum class CommandType : uint8_t {
                           // current scene; a = 0: at the next bar; a < 0: cancel. b = 1: it starts
                           // the song over (song automation counts from there, from song step
                           // `value` when it is a later part); b = 2: the song
-                          // ends there: the transport stops on that bar line (nothing is swapped)
+                          // ends there: the transport stops on that bar line (nothing is swapped);
+                          // b = 3: the waiting scene plays on its own, outside the song (with
+                          // a < 0: right away, the scene playing)
     SetPerformance,       // a: PerformanceFx::Param, value 0..1 (live XY pad and hold buttons)
     SetSynthEngine,       // a: 0 = subtractive synth, 1 = Plaits (a General MIDI instrument still wins)
     SetPlaitsParam,       // a: PlaitsSynth::Param, value 0..1
@@ -232,7 +235,8 @@ public:
     double playPosition() const { return playPosition_.load(std::memory_order_relaxed); }
     // How many times a waiting scene took over (the UI follows the playing scene with it).
     uint32_t sceneSwaps() const { return sceneSwaps_.load(std::memory_order_relaxed); }
-    // Steps since the song (re)started, as song automation reads it; -1 before the first step.
+    // Steps since the song (re)started, as song automation reads it; -1 before the first step and
+    // while a scene plays on its own, outside the song.
     int songStep() const { return songStep_.load(std::memory_order_relaxed); }
     bool transportRunning() const { return sequencer_.running(); }
     // Increments every time a lane is triggered (pad lights, tests).
@@ -313,6 +317,9 @@ private:
     bool songRestart_ = false;
     int songRestartAt_ = 0;    // the song step the restarting part is (a later part than the first)
     bool stopAtSwap_ = false;  // the armed "swap" ends the song: the transport stops instead
+    bool leaveSong_ = false;   // the armed swap leaves the song: its scene plays on its own
+    bool inSong_ = true;       // the song plays (else a scene on its own: no song position)
+    void leaveSongNow();
     void stopTransport();
     std::atomic<int> songStep_{-1};
     std::atomic<uint32_t> sceneSwaps_{0};

@@ -25,7 +25,22 @@ data class SynthPatch(val values: List<Float> = DEFAULTS) {
         const val LFO1_RATE = 19; const val VIBRATO = 20; const val LFO2_RATE = 21; const val SWEEP = 22; const val LEVEL = 23
         /** Copies of oscillator 1 (0 = none .. 1 = six, a supersaw) and how far apart they are tuned. */
         const val UNISON = 24; const val UNISON_DETUNE = 25
-        const val PARAM_COUNT = 26
+        /**
+         * The filter sweep locked to the tempo (0 = free, at [LFO2_RATE]; then a bar, 1/2, 1/4, 1/8,
+         * 1/16, 1/4 and 1/8 triplets: value = index / 7, see [syncValue]), restarted on each attack: the wobble.
+         */
+        const val LFO2_SYNC = 26
+        /** Portamento (0 = none, up to 0.5 s): a note that starts while another is held slides from it. */
+        const val GLIDE = 27
+        const val PARAM_COUNT = 28
+
+        /** Tempo divisions of [LFO2_SYNC] (engine Synth::kSyncDivisions), free included. */
+        const val SYNC_DIVISIONS = 8
+        const val SYNC_BAR = 1; const val SYNC_HALF = 2; const val SYNC_QUARTER = 3; const val SYNC_EIGHTH = 4
+        const val SYNC_SIXTEENTH = 5; const val SYNC_QUARTER_TRIPLET = 6; const val SYNC_EIGHTH_TRIPLET = 7
+
+        /** The [LFO2_SYNC] value for tempo division [index] (0 = free, [SYNC_BAR]…[SYNC_EIGHTH_TRIPLET]). */
+        fun syncValue(index: Int): Float = index.coerceIn(0, SYNC_DIVISIONS - 1) / (SYNC_DIVISIONS - 1f)
 
         /** Same values as Synth::prepare() in the engine. */
         val DEFAULTS: List<Float> = listOf(
@@ -35,6 +50,7 @@ data class SynthPatch(val values: List<Float> = DEFAULTS) {
             0.05f, 0.3f, 0.8f, 0.35f,
             0.5f, 0f, 0.3f, 0f, 0.6f,
             0f, 0.3f,
+            0f, 0f,
         )
 
         /** Ready-made sounds: name -> patch. Waves: 0 = saw, 0.5 = square, 1 = triangle. */

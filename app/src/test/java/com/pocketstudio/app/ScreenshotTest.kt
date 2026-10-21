@@ -19,6 +19,7 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.onNodeWithTag
 import com.github.takahirom.roborazzi.captureRoboImage
 import com.pocketstudio.model.withFx
+import com.pocketstudio.model.withAudioTrack
 import com.pocketstudio.app.latency.LatencyScreen
 import com.pocketstudio.app.latency.LatencyUiState
 import com.pocketstudio.app.recette.CheckResult
@@ -71,12 +72,19 @@ open class ScreenshotTest {
     protected open val prefix: String = ""
     protected open fun wanted(name: String): Boolean = true
 
+    /**
+     * Room taken around a screen by the app's own bars on the device simulated (status bar, top bar,
+     * tab bar or rail, system navigation): the screen is drawn inside, so it gets the size it really
+     * has. Zero (the whole window) unless a subclass simulates a given device.
+     */
+    protected open val chrome = androidx.compose.foundation.layout.PaddingValues(0.dp)
+
     /** [prepare]: touches made before the image (a switch that only the screen itself holds). */
     protected fun shoot(name: String, palette: Palette = Palettes.Studio, prepare: () -> Unit = {}, content: @Composable () -> Unit) {
         org.junit.Assume.assumeTrue(wanted(name))
         compose.setContent {
             PocketStudioTheme(palette) {
-                Box(Modifier.fillMaxSize().background(Neon.Background)) { content() }
+                Box(Modifier.fillMaxSize().background(androidx.compose.ui.graphics.Color.Black).padding(chrome).background(Neon.Background)) { content() }
             }
         }
         prepare()
@@ -217,11 +225,16 @@ open class ScreenshotTest {
     @Test
     fun tracks() = shoot("tracks") {
         val p = withTracks()
+        val clip = com.pocketstudio.model.NoteClip(16, listOf(com.pocketstudio.model.Note(start = 0, length = 48, pitch = 60, velocity = 1f)))
         com.pocketstudio.app.synth.SynthScreen(
             patch = p.synth,
             octave = 4,
             actions = com.pocketstudio.app.synth.SynthActions(),
-            tracks = com.pocketstudio.app.synth.TracksUi(p.instrumentTracks, selected = 2),
+            // The selected track plays notes in scene B: « Vider » next to Clavier / Notes empties it there.
+            notes = com.pocketstudio.app.synth.NotesUi(clip, emptyList(), playStep = -1, actions = com.pocketstudio.app.synth.PianoRollActions()),
+            tracks = com.pocketstudio.app.synth.TracksUi(
+                p.instrumentTracks.map { if (it.id == 2) it.copy(notes = clip) else it }, selected = 2, clear = {}, scene = "B",
+            ),
         )
     }
 
@@ -250,13 +263,15 @@ open class ScreenshotTest {
     @Test
     fun audioTracksOnTheSong() = shoot("audio_tracks_song") {
         // Before a take: « Enregistrer sur » the whole song from part 2; a song clip recorded at
-        // another tempo, nudged 15 ms earlier; Bluetooth headphones.
+        // another tempo in part 2, nudged 15 ms earlier, with a previous take to bring back; a
+        // scene take of the couplet; Bluetooth headphones.
         val tracks = listOf(
             com.pocketstudio.model.AudioTrack(
                 0, "Voix", 1,
-                com.pocketstudio.model.AudioClip("v.wav", "Prise 21:14", 54.0, start = 128, song = true, offsetMs = -15f, bpm = 138.0),
+                com.pocketstudio.model.AudioClip("v.wav", "Prise 21:14", 54.0, start = 256, song = true, offsetMs = -15f, bpm = 138.0),
+                previous = com.pocketstudio.model.AudioClip("w.wav", "Prise 21:02", 50.0, start = 256, song = true),
             ),
-            com.pocketstudio.model.AudioTrack(1, "Guitare", 3, com.pocketstudio.model.AudioClip("g.wav", "Prise 21:20", 6.2, once = true)),
+            com.pocketstudio.model.AudioTrack(1, "Guitare", 3, com.pocketstudio.model.AudioClip("g.wav", "Prise 21:20", 6.2, once = true, scene = 1)),
         )
         com.pocketstudio.app.audiotracks.AudioTracksScreen(
             com.pocketstudio.app.audiotracks.AudioTracksUi(
@@ -266,6 +281,9 @@ open class ScreenshotTest {
                 songBars = 64,
                 tempoBpm = 140.0,
                 target = com.pocketstudio.app.rhythm.RecordTarget(song = true, fromPart = 1),
+                scene = 1,
+                sceneTitles = listOf("A · Intro", "B · Couplet", "C · Refrain"),
+                partStarts = listOf(0, 256, 512, 768),
                 listening = com.pocketstudio.app.audio.Listening.Bluetooth,
                 latencyMeasured = true,
             ),
@@ -514,6 +532,36 @@ open class ScreenshotTest {
     }
 
     @Test
+    fun wizardStyleOpen() = shoot("wizard_style_open") {
+        // A card touched: its whole description, every reference, ▶ and "Choisir ce style".
+        com.pocketstudio.app.library.WizardScreen(com.pocketstudio.app.library.WizardUi(open = true, styleId = "trap"),
+            com.pocketstudio.app.library.PacksUi(com.pocketstudio.app.library.IndexState.Unavailable), null, com.pocketstudio.app.library.WizardActions())
+    }
+
+    @Test
+    fun wizardAcid() = shoot("wizard_acid") {
+        val style = com.pocketstudio.model.StarterWizard.style("acid_house")!!
+        val rows = style.lines.associate { l ->
+            val cats = com.pocketstudio.app.library.soundCategories(l.role, style.id, emptyList())
+            l.role to com.pocketstudio.app.library.WizardRow(true, cats.first().id, cats.first().options.first())
+        }
+        val parts = com.pocketstudio.model.StarterWizard.Part.entries.associateWith {
+            com.pocketstudio.app.library.PartRow(it in com.pocketstudio.model.StarterWizard.defaultParts(style), com.pocketstudio.model.StarterWizard.soundsFor(it, style).first())
+        }
+        val ui = com.pocketstudio.app.library.WizardUi(true, 0, style.id, rows, com.pocketstudio.model.StarterWizard.Mood.Dark, parts)
+        com.pocketstudio.app.library.WizardScreen(ui.copy(step = ui.steps.indexOf(com.pocketstudio.model.StarterWizard.Step.Acid)),
+            com.pocketstudio.app.library.PacksUi(com.pocketstudio.app.library.IndexState.Unavailable), null, com.pocketstudio.app.library.WizardActions())
+    }
+
+    @Test
+    fun wizardLead() = shoot("wizard_lead") {
+        // A lead the recipe leaves out, playing a written riff (no arpeggiator).
+        val ui = wizardUi(2 + com.pocketstudio.model.StarterWizard.style("house")!!.lines.size + 2)
+        com.pocketstudio.app.library.WizardScreen(ui.copy(parts = ui.parts + (com.pocketstudio.model.StarterWizard.Part.Lead to ui.parts.getValue(com.pocketstudio.model.StarterWizard.Part.Lead).copy(enabled = false))),
+            com.pocketstudio.app.library.PacksUi(com.pocketstudio.app.library.IndexState.Unavailable), null, com.pocketstudio.app.library.WizardActions())
+    }
+
+    @Test
     fun wizardMood() = shoot("wizard_mood") {
         com.pocketstudio.app.library.WizardScreen(wizardUi(1), com.pocketstudio.app.library.PacksUi(com.pocketstudio.app.library.IndexState.Unavailable),
             null, com.pocketstudio.app.library.WizardActions())
@@ -559,6 +607,22 @@ open class ScreenshotTest {
             com.pocketstudio.app.library.LibraryUi(
                 com.pocketstudio.app.library.PacksUi(com.pocketstudio.app.library.IndexState.Ready(index), installed, mapOf("uk_garage" to 0.4f)),
                 target = "le pad 1 (Kick)", sizes = mapOf("retro_techno" to 1_380_000L),
+            ),
+            com.pocketstudio.app.library.LibraryActions(),
+        )
+    }
+
+    /** « Changer le son » on a song made by the assistant, its style's pack not downloaded yet. */
+    @Test
+    fun libraryStyleOffer() = shoot("library_style_offer") {
+        val style = com.pocketstudio.model.StarterWizard.style("trap") ?: com.pocketstudio.model.StarterWizard.STYLES.first()
+        val index = com.pocketstudio.model.PackIndex(style.packs.mapIndexed { i, id ->
+            com.pocketstudio.model.PackEntry(id, if (id == style.id) style.name else id.uppercase(), "$id.zip", "a".repeat(64), 1_300_000L + i * 200_000L, 64)
+        })
+        com.pocketstudio.app.library.LibraryScreen(
+            com.pocketstudio.app.library.LibraryUi(
+                com.pocketstudio.app.library.PacksUi(com.pocketstudio.app.library.IndexState.Ready(index)),
+                target = "le pad 1 (Kick)", styleId = style.id,
             ),
             com.pocketstudio.app.library.LibraryActions(),
         )
@@ -716,10 +780,14 @@ open class ScreenshotTest {
     fun analyserAndTuner() = shoot("tuner") {
         androidx.compose.foundation.layout.Column {
             com.pocketstudio.ui.NeonCard(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
-                com.pocketstudio.ui.SectionLabel("Analyseur de spectre")
+                // As the app shows it: the title translated, the note names the settings ask for (C D E in English).
+                com.pocketstudio.ui.SectionLabel(com.pocketstudio.model.i18n.tr("Analyseur de spectre"))
                 com.pocketstudio.app.analysis.SpectrumView(FloatArray(40) { i -> -8f - i * 1.2f - if (i % 7 == 3) 0f else 6f })
             }
-            com.pocketstudio.app.analysis.TunerView(com.pocketstudio.app.analysis.TunerReading(111.2, 45, -9.0), micOk = true)
+            com.pocketstudio.app.analysis.TunerView(
+                com.pocketstudio.app.analysis.TunerReading(111.2, 45, -9.0), micOk = true,
+                englishNotes = com.pocketstudio.app.settings.englishNotes(),
+            )
         }
     }
 
@@ -821,6 +889,25 @@ open class ScreenshotTest {
         )
     }
 
+    /** Right after the assistant on a small phone (360 x 800 dp): the next step on one line, the first cells on screen. */
+    @Test
+    @Config(qualifiers = "w360dp-h616dp-xxhdpi")
+    fun rhythmAfterWizard() = shoot("rhythm_after_wizard") {
+        val project = com.pocketstudio.app.rhythm.RhythmViewModel.starterProject()
+        val steps = com.pocketstudio.app.onboarding.nextSteps(project)
+            .map { it.copy(done = it.goal < com.pocketstudio.app.onboarding.StepGoal.Volumes) }
+        RhythmScreen(
+            project = project,
+            transport = TransportUi(selectedPad = 0),
+            live = LiveUi(),
+            canUndo = false,
+            canRedo = false,
+            actions = RhythmActions(),
+            listenSong = false,
+            header = { com.pocketstudio.app.onboarding.NextStepCard(steps) },
+        )
+    }
+
     @Test
     fun guide() = shoot("guide") {
         com.pocketstudio.app.settings.GuideDialog(onClose = {})
@@ -834,7 +921,7 @@ open class ScreenshotTest {
                     com.pocketstudio.app.midi.MidiSource("midi-1", "Arturia MiniLab 3", "USB"),
                     com.pocketstudio.app.midi.MidiSource("ble-2", "Clavier Bluetooth", "Bluetooth"),
                 ),
-                connected = "midi-1", last = "Note Do 4", clockBpm = 124.0, sendClock = true,
+                connected = "midi-1", last = "Note Do4", clockBpm = 124.0, sendClock = true,
             ),
             com.pocketstudio.app.midi.MidiActions(),
             com.pocketstudio.app.midi.LearnUi(
@@ -941,17 +1028,20 @@ open class ScreenshotTest {
         val drums = com.pocketstudio.model.DrumPattern().toggle(0, 0).toggle(2, 4)
         val a = com.pocketstudio.model.Scene("A", drums)
         val b = com.pocketstudio.model.Scene("B", drums.copy(steps = 32))
-        val p = withTracks()
+        val song = listOf(
+            com.pocketstudio.model.SongPart(0, 2, muted = setOf("acid", "inst:1", "inst:2", "inst:3", "audio:0")),
+            com.pocketstudio.model.SongPart(1, 2, muted = setOf("audio:0")),
+            com.pocketstudio.model.SongPart(0, 4),
+            com.pocketstudio.model.SongPart(1, 1, muted = setOf("drums", "acid")),
+        )
+        // The voice: a song take from part 3, heard into the start of part 4.
+        var p = withTracks().copy(drums = drums, scenes = listOf(a, b), song = song).sanitized()
+        p = p.withAudioTrack(p.audioTracks[0].copy(clip = com.pocketstudio.model.AudioClip("v.wav", "Prise", 9.0, start = 96, song = true)))
         com.pocketstudio.app.session.SessionScreen(
             com.pocketstudio.app.session.SessionScreenUi(
                 scenes = listOf(a, b) + List(22) { null },
                 current = 1, pending = null,
-                song = listOf(
-                    com.pocketstudio.model.SongPart(0, 2, muted = setOf("acid", "inst:1", "inst:2", "inst:3", "audio:0")),
-                    com.pocketstudio.model.SongPart(1, 2, muted = setOf("audio:0")),
-                    com.pocketstudio.model.SongPart(0, 4),
-                    com.pocketstudio.model.SongPart(1, 1, muted = setOf("drums", "acid")),
-                ),
+                song = song,
                 songIndex = 1, playing = true, tempoBpm = 124.0, beatsPerBar = 4,
                 rows = com.pocketstudio.app.ui.timelineRows(p),
             ),

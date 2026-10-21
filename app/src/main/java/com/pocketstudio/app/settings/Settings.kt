@@ -26,8 +26,9 @@ enum class AppTheme {
 enum class KeyLayout {
     TwoOctaves, OneOctave, Scale;
 
-    val label: String get() = when (this) {
-        TwoOctaves -> tr("2 octaves")
+    /** The chip's name when the full piano shows [wideOctaves] octaves (3 on a tablet or lying down). */
+    fun label(wideOctaves: Int): String = when (this) {
+        TwoOctaves -> if (wideOctaves == 2) tr("2 octaves") else tr("%d octaves", wideOctaves)
         OneOctave -> tr("1 octave")
         Scale -> tr("Gamme")
     }

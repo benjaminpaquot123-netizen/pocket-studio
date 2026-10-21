@@ -17,6 +17,15 @@ object RemixMemory {
     /** The song and its stems in memory, per second of music. */
     private const val BYTES_PER_SECOND = Demucs.SAMPLE_RATE * 2L * 4 * 7
 
+    /**
+     * Total memory under which the separation never fits: Android itself and the apps that always
+     * run keep 2 GB or more, so a 4 GB device (about 3.7 GB reported) never has 3 GB free.
+     */
+    const val SMALLEST_DEVICE_BYTES = 5_000_000_000L
+
+    /** True when [problem] can never go away on this device (no use checking again). */
+    fun never(totalBytes: Long): Boolean = totalBytes < SMALLEST_DEVICE_BYTES
+
     /** Memory the separation of [seconds] of music needs free. */
     fun needed(seconds: Double): Long = MODEL_BYTES + (seconds * BYTES_PER_SECOND).toLong()
 
@@ -27,12 +36,13 @@ object RemixMemory {
     fun problem(totalBytes: Long, availableBytes: Long): String? {
         val least = needed(SHORTEST_SECONDS)
         return when {
-            totalBytes < least -> tr(
-                "Cet appareil n'a pas assez de mémoire pour le Remix (%.1f Go en tout, il en faut au moins %.1f de libres). Le reste de l'appli marche normalement.",
-                totalBytes / 1e9, least / 1e9,
+            // Said at once, plainly: closing apps would never be enough (no « check again » loop).
+            never(totalBytes) -> tr(
+                "Cet appareil n'a pas assez de mémoire pour le Remix : il a %.1f Go en tout, il en faut au moins 6. Fermer des applis n'y changera rien. Le reste de l'appli marche normalement.",
+                totalBytes / 1e9,
             )
             availableBytes < least -> tr(
-                "Pas assez de mémoire libre pour le Remix en ce moment (%.1f Go, il en faut au moins %.1f). Ferme les autres applis, puis touche « Vérifier à nouveau ». Sur un appareil de 4 Go, ça ne suffira sans doute pas.",
+                "Pas assez de mémoire libre pour le Remix en ce moment (%.1f Go, il en faut au moins %.1f). Ferme les autres applis, puis touche « Vérifier à nouveau ».",
                 availableBytes / 1e9, least / 1e9,
             )
             else -> null

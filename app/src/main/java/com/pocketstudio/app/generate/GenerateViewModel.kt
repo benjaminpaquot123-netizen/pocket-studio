@@ -115,7 +115,7 @@ class GenerateViewModel(app: Application) : AndroidViewModel(app) {
             return
         }
         if (!StableAudio.isAvailable) {
-            _state.value = GenerateState.Failed(tr("La génération n'est pas disponible sur ce téléphone."))
+            _state.value = GenerateState.Failed(tr("La génération n'est pas disponible sur cet appareil."))
             return
         }
         if (SeparationJob.state.value.busy || GenerationJob.download.value is ModelDownload.Running) {

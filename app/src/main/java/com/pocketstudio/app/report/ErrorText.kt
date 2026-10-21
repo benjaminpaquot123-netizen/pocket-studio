@@ -17,6 +17,6 @@ fun Throwable.forUser(): String = when (this) {
     is SocketTimeoutException -> tr("la connexion est trop lente ou a coupé")
     is SSLException -> tr("la connexion sécurisée a échoué")
     is FileNotFoundException -> tr("fichier introuvable")
-    is IOException -> if (message?.contains("ENOSPC") == true || message?.contains("No space") == true) tr("le téléphone est plein") else message ?: tr("erreur de lecture ou d'écriture")
+    is IOException -> if (message?.contains("ENOSPC") == true || message?.contains("No space") == true) tr("l'appareil est plein") else message ?: tr("erreur de lecture ou d'écriture")
     else -> message ?: tr("erreur")
 }

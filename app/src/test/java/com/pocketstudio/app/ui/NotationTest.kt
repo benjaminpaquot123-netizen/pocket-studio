@@ -77,4 +77,15 @@ class NotationTest {
         compose.onNodeWithText("Accords de La mineure").assertExists()
         compose.onNodeWithText("Si dim").assertExists()
     }
+
+    @Test
+    fun theKeyboardOctaveFollowsTheNotation() {
+        // The keyboard starting on middle C (MIDI 60): Do3 in Do Ré Mi, C4 in C D E.
+        SettingsStore.update(app) { it.copy(englishNotes = false) }
+        compose.setContent { PocketStudioTheme { com.pocketstudio.app.synth.OctaveControl(4, com.pocketstudio.app.synth.SynthActions()) } }
+        compose.onNodeWithText("Octave 3").assertExists()
+        SettingsStore.update(app) { it.copy(englishNotes = true) }
+        compose.waitForIdle()
+        compose.onNodeWithText("Octave 4").assertExists()
+    }
 }

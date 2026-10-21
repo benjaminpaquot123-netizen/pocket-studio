@@ -23,6 +23,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -37,6 +39,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -52,6 +55,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalViewConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.pocketstudio.model.Note
 import com.pocketstudio.model.NoteEdits
 import com.pocketstudio.model.NoteClip
@@ -79,7 +83,12 @@ data class PianoRollActions(
 
 private const val LOW = 24   // C1
 private const val HIGH = 96  // C7
+/** A row (a semitone) on a phone, and on a tablet where fingers aim at a single row. */
 private val ROW = 20.dp
+private val TABLET_ROW = 28.dp
+/** The keys column on the left: the C's named on a phone, every note on a tablet. */
+private val KEYS = 36.dp
+private val TABLET_KEYS = 56.dp
 private val TICK = NoteClip.TICKS_PER_STEP
 private val NEW_LENGTHS = listOf(1 to "1/16", 2 to "1/8", 4 to "1/4", 8 to "1/2")
 private val BLACK = setOf(1, 3, 6, 8, 10)
@@ -111,6 +120,9 @@ fun PianoRoll(
     gridHeight: androidx.compose.ui.unit.Dp = 380.dp,
     harmony: Harmony = Harmony(),
     initialSelection: Set<Note> = emptySet(),
+    /** The keys on the left play their note (heard, and recorded while ● records); null: silent names. */
+    keyOn: ((Int, Float) -> Unit)? = null,
+    keyOff: ((Int) -> Unit)? = null,
 ) {
     var newSteps by rememberSaveable { mutableIntStateOf(2) }
     var chordMode by rememberSaveable { mutableStateOf(false) }
@@ -126,40 +138,61 @@ fun PianoRoll(
     val apply: (NoteEdits.Result, String?) -> Unit = { r, key -> actions.replaceClip(r.clip, key); selection = r.selection }
     val chipColors = pillColors()
     val hScroll = rememberScrollState()
+    // A tablet: taller rows for the fingers, every note named, tools that wrap instead of being cut.
+    val tablet = isTablet()
+    val keysWidth = if (tablet) TABLET_KEYS else KEYS
     // Short loops fill the width on a big screen (tablet) instead of leaving the right half empty.
     androidx.compose.foundation.layout.BoxWithConstraints(modifier) {
-        val stepWidth = maxOf(ZOOMS[zoom], (maxWidth - 36.dp) / clip.steps)
+        val stepWidth = maxOf(ZOOMS[zoom], (maxWidth - keysWidth) / clip.steps)
         Column(Modifier, verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            Row(Modifier.fadingHorizontalScroll(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            ToolRow(tablet) {
                 FilterChip(selected = !selectMode, onClick = { selectMode = false; selection = emptySet() }, label = { Text(tr("✏ Dessiner")) }, colors = chipColors,
                     modifier = Modifier.testTag("mode_draw"))
                 FilterChip(selected = selectMode, onClick = { selectMode = true }, label = { Text(tr("⬚ Sélectionner")) }, colors = chipColors,
                     modifier = Modifier.testTag("mode_select"))
                 Text(tr("  Zoom"), style = MaterialTheme.typography.bodySmall)
-                TextButton(onClick = { zoom = (zoom - 1).coerceAtLeast(0) }, enabled = zoom > 0, modifier = Modifier.testTag("zoom_out")) { Text("−") }
-                TextButton(onClick = { zoom = (zoom + 1).coerceAtMost(ZOOMS.lastIndex) }, enabled = zoom < ZOOMS.lastIndex, modifier = Modifier.testTag("zoom_in")) { Text("+") }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    TextButton(onClick = { zoom = (zoom - 1).coerceAtLeast(0) }, enabled = zoom > 0, modifier = Modifier.testTag("zoom_out")) { Text("−") }
+                    // The level between − and +, so the gap between them means something.
+                    if (tablet) Text("${zoom + 1}×", style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary, modifier = Modifier.testTag("zoom_level"))
+                    TextButton(onClick = { zoom = (zoom + 1).coerceAtMost(ZOOMS.lastIndex) }, enabled = zoom < ZOOMS.lastIndex, modifier = Modifier.testTag("zoom_in")) { Text("+") }
+                }
             }
-            Row(Modifier.fadingHorizontalScroll(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            val loop: @Composable () -> Unit = {
                 Text(tr("Boucle"), style = MaterialTheme.typography.bodySmall)
                 NoteClip.LENGTHS_IN_STEPS.forEach { steps ->
                     FilterChip(selected = clip.steps == steps, onClick = { actions.setSteps(steps) },
                         label = { Text(com.pocketstudio.app.ui.barsShort(steps / 16)) }, colors = chipColors)
                 }
+            }
+            val noteLengths: @Composable () -> Unit = {
                 Text(tr("  Note"), style = MaterialTheme.typography.bodySmall)
                 NEW_LENGTHS.forEach { (steps, label) ->
                     FilterChip(selected = newSteps == steps, onClick = { newSteps = steps }, label = { Text(label) }, colors = chipColors)
                 }
+            }
+            val grids: @Composable () -> Unit = {
                 Text(tr("  Grille"), style = MaterialTheme.typography.bodySmall)
                 GRIDS.forEach { (ticks, label) ->
                     FilterChip(selected = grid == ticks, onClick = { grid = ticks }, label = { Text(label) }, colors = chipColors,
                         modifier = Modifier.testTag("grid_$ticks"))
                 }
             }
+            if (tablet) {
+                // A tablet: whole groups wrap (never a lone « 1/32 » on its line).
+                ToolRow(true) {
+                    listOf(loop, noteLengths, grids).forEach { group ->
+                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) { group() }
+                    }
+                }
+            } else {
+                ToolRow(false) { loop(); noteLengths(); grids() }
+            }
             if (selectMode) {
-                SelectionBar(clip, selection, clipboard, playStep, grid, chipColors,
+                SelectionBar(clip, selection, clipboard, playStep, grid, chipColors, tablet,
                     select = { selection = it }, copy = { clipboard = NoteEdits.copy(selection) }, apply = apply)
             } else {
-                Row(Modifier.fadingHorizontalScroll(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+                ToolRow(tablet, spacing = 2.dp) {
                     TextButton(onClick = { actions.quantize(grid, 0.5f) }, modifier = Modifier.testTag("quantize_50")) { Text(tr("Quantifier 50 %")) }
                     TextButton(onClick = { actions.quantize(grid, 1f) }) { Text(com.pocketstudio.model.i18n.percent(100)) }
                     FilterChip(selected = showGhosts, onClick = { showGhosts = !showGhosts }, label = { Text(tr("Basse en fantôme")) }, colors = chipColors)
@@ -171,8 +204,9 @@ fun PianoRoll(
             Grid(
                 clip, if (showGhosts) ghosts else emptyList(), playStep, newSteps * TICK, actions, gridHeight, harmony, chordMode,
                 hScroll, stepWidth, grid, selectMode, selection, select = { selection = it }, apply = apply,
+                rowHeight = if (tablet) TABLET_ROW else ROW, keysWidth = keysWidth, allNames = tablet, keyOn = keyOn, keyOff = keyOff,
             )
-            VelocityLane(clip, selection, hScroll, stepWidth, apply)
+            VelocityLane(clip, selection, hScroll, stepWidth, apply, keysWidth)
             Text(
                 if (selectMode) tr("Touche des notes ou trace un cadre pour les choisir ; glisse une note choisie pour tout déplacer. Couloir du bas : la force de chaque note.")
                 else tr("Touche une case : ajoute une note. Touche une note : l'enlève. Glisse : déplace. Glisse le bout : allonge. Couloir du bas : glisse pour régler la force."),
@@ -192,6 +226,7 @@ private fun SelectionBar(
     playStep: Int,
     grid: Int,
     chipColors: androidx.compose.material3.SelectableChipColors,
+    wrap: Boolean,
     select: (Set<Note>) -> Unit,
     copy: () -> Unit,
     apply: (NoteEdits.Result, String?) -> Unit,
@@ -200,7 +235,7 @@ private fun SelectionBar(
     // A paste that did not all fit in the loop says so (until the next paste).
     var noRoom by rememberSaveable { mutableStateOf(false) }
     Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-        Row(Modifier.fadingHorizontalScroll(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+        ToolRow(wrap, spacing = 2.dp) {
             Text(if (!any) tr("Rien de choisi") else if (selection.size > 1) tr("%d notes", selection.size) else tr("%d note", selection.size),
                 style = MaterialTheme.typography.bodySmall, color = Neon.Cyan, modifier = Modifier.testTag("selection_count"))
             TextButton(onClick = { select(clip.notes.toSet()) }, modifier = Modifier.testTag("select_all")) { Text(tr("Tout")) }
@@ -212,8 +247,16 @@ private fun SelectionBar(
             TextButton(onClick = { apply(NoteEdits.shift(clip, selection, -grid), "sel-move") }, enabled = any) { Text("◀") }
             TextButton(onClick = { apply(NoteEdits.shift(clip, selection, grid), "sel-move") }, enabled = any) { Text("▶") }
         }
-        Row(Modifier.fadingHorizontalScroll(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-            TextButton(onClick = { apply(NoteEdits.duplicate(clip, selection), null) }, enabled = any, modifier = Modifier.testTag("sel_duplicate")) { Text(tr("Dupliquer")) }
+        ToolRow(wrap, spacing = 2.dp) {
+            TextButton(
+                onClick = {
+                    // Like a paste: copies that do not fit in the loop are said, not silently lost.
+                    val copied = NoteEdits.duplicate(clip, selection)
+                    noRoom = copied.dropped > 0
+                    if (copied.selection.isNotEmpty()) apply(copied, null)
+                },
+                enabled = any, modifier = Modifier.testTag("sel_duplicate"),
+            ) { Text(tr("Dupliquer")) }
             TextButton(onClick = copy, enabled = any, modifier = Modifier.testTag("sel_copy")) { Text(tr("Copier")) }
             TextButton(
                 onClick = {
@@ -234,7 +277,7 @@ private fun SelectionBar(
             }
         }
         if (noRoom) {
-            Text(tr("Plus de place : allonge la boucle pour tout coller."), style = MaterialTheme.typography.bodySmall, color = Neon.Amber,
+            Text(tr("Plus de place : allonge la boucle pour que tout y tienne."), style = MaterialTheme.typography.bodySmall, color = Neon.Amber,
                 modifier = Modifier.testTag("paste_no_room"))
         }
     }
@@ -248,6 +291,7 @@ private fun VelocityLane(
     hScroll: androidx.compose.foundation.ScrollState,
     stepWidth: androidx.compose.ui.unit.Dp,
     apply: (NoteEdits.Result, String?) -> Unit,
+    keysWidth: androidx.compose.ui.unit.Dp,
 ) {
     val density = LocalDensity.current
     val stepPx = with(density) { stepWidth.toPx() }
@@ -257,7 +301,14 @@ private fun VelocityLane(
     // Latest values for the gesture without restarting it on every edit.
     val current by androidx.compose.runtime.rememberUpdatedState(clip to selection)
     Row(Modifier.fillMaxWidth().height(56.dp)) {
-        Box(Modifier.width(36.dp), contentAlignment = Alignment.Center) { Text(tr("Vél."), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary) }
+        // The same word as the Rhythm tool and the glossary ("Force", "Velocity", "Kracht"), shrunk to fit the keys' width.
+        Box(Modifier.width(keysWidth).padding(horizontal = 1.dp), contentAlignment = Alignment.Center) {
+            val label = MaterialTheme.typography.labelSmall
+            androidx.compose.foundation.text.BasicText(
+                tr("Force"), style = label.copy(color = Neon.TextSecondary, letterSpacing = 0.sp), maxLines = 1,
+                autoSize = androidx.compose.foundation.text.TextAutoSize.StepBased(minFontSize = 5.sp, maxFontSize = label.fontSize, stepSize = 0.5.sp),
+            )
+        }
         Box(Modifier.weight(1f).horizontalScroll(hScroll)) {
             Canvas(
                 Modifier.size(stepWidth * clip.steps, 56.dp).testTag("velocity_lane").pointerInput(stepPx) {
@@ -308,11 +359,16 @@ private fun Grid(
     selection: Set<Note>,
     select: (Set<Note>) -> Unit,
     apply: (NoteEdits.Result, String?) -> Unit,
+    rowHeight: androidx.compose.ui.unit.Dp,
+    keysWidth: androidx.compose.ui.unit.Dp,
+    allNames: Boolean,
+    keyOn: ((Int, Float) -> Unit)?,
+    keyOff: ((Int) -> Unit)?,
 ) {
     val vScroll = rememberScrollState()
     val english = com.pocketstudio.app.settings.englishNotes()
     val density = LocalDensity.current
-    val rowPx = with(density) { ROW.toPx() }
+    val rowPx = with(density) { rowHeight.toPx() }
     val stepPx = with(density) { stepWidth.toPx() }
     val slop = LocalViewConfiguration.current.touchSlop
     val rows = HIGH - LOW + 1
@@ -330,17 +386,13 @@ private fun Grid(
     )
     val selColor = Neon.Acid
     Row(Modifier.fillMaxWidth().height(height)) {
-        Column(Modifier.width(36.dp).verticalScroll(vScroll)) {
-            for (p in HIGH downTo LOW) {
-                Box(Modifier.size(36.dp, ROW), contentAlignment = Alignment.CenterStart) {
-                    if (p % 12 == 0) Text(com.pocketstudio.model.NoteNames.withOctave(p, english), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary)
-                }
-            }
+        Column(Modifier.width(keysWidth).verticalScroll(vScroll).testTag("roll_keys")) {
+            for (p in HIGH downTo LOW) RollKey(p, rowHeight, keysWidth, english, named = allNames || p % 12 == 0, keyOn, keyOff)
         }
         Box(Modifier.weight(1f).verticalScroll(vScroll).horizontalScroll(hScroll)) {
             Canvas(
                 Modifier
-                    .size(stepWidth * clip.steps, ROW * rows)
+                    .size(stepWidth * clip.steps, rowHeight * rows)
                     .testTag("piano_roll")
                     .pointerInput(clip, newLength, harmony, chordMode, selectMode, selection, grid, stepPx) {
                         fun pitchAt(y: Float) = (HIGH - (y / rowPx).toInt()).coerceIn(LOW, HIGH)
@@ -517,12 +569,118 @@ private val STRUMS: List<Pair<Int, String>>
 
 @Composable
 private fun ChipRow(label: String, help: Help? = null, content: @Composable () -> Unit) {
-    Row(Modifier.fadingHorizontalScroll(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-        Row(Modifier.width(78.dp), verticalAlignment = Alignment.CenterVertically) {
-            Text(label, style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(1f, fill = false))
+    // The labels line up at 78 dp; a longer one (Dutch « Akkoordenschema ») takes what it needs, never cut.
+    val title: @Composable () -> Unit = {
+        Row(Modifier.widthIn(min = 78.dp), verticalAlignment = Alignment.CenterVertically) {
+            Text(label, style = MaterialTheme.typography.bodySmall, maxLines = 1, softWrap = false)
             if (help != null) HelpDot(help)
         }
-        content()
+    }
+    if (isTablet()) {
+        // A tablet: the choices wrap under each other instead of running off the card's edge.
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            title()
+            androidx.compose.foundation.layout.FlowRow(
+                Modifier.weight(1f), itemVerticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(2.dp),
+            ) { content() }
+        }
+    } else {
+        Row(Modifier.fadingHorizontalScroll(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            title()
+            content()
+        }
+    }
+}
+
+/** A tablet (its smaller side at least 600 dp, upright or lying down), not a phone lying down. */
+@Composable
+internal fun isTablet(): Boolean = androidx.compose.ui.platform.LocalConfiguration.current.smallestScreenWidthDp >= 600
+
+/** A row of tools: one line that scrolls on a phone, wrapped lines on a tablet ([wrap]). */
+@OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
+@Composable
+private fun ToolRow(wrap: Boolean, spacing: androidx.compose.ui.unit.Dp = 6.dp, content: @Composable () -> Unit) {
+    if (wrap) {
+        androidx.compose.foundation.layout.FlowRow(
+            itemVerticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(spacing), verticalArrangement = Arrangement.spacedBy(2.dp),
+        ) { content() }
+    } else {
+        Row(Modifier.fadingHorizontalScroll(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(spacing)) { content() }
+    }
+}
+
+/**
+ * One key of the piano roll's keyboard on the left, the height of its row: white or black like a
+ * piano's, [named] with its note, and played while touched when [keyOn] is given.
+ */
+@Composable
+private fun RollKey(
+    pitch: Int,
+    height: androidx.compose.ui.unit.Dp,
+    width: androidx.compose.ui.unit.Dp,
+    english: Boolean,
+    named: Boolean,
+    keyOn: ((Int, Float) -> Unit)?,
+    keyOff: ((Int) -> Unit)?,
+) {
+    val black = pitch % 12 in BLACK
+    var down by remember { mutableStateOf(false) }
+    val white = Color(0xFFE6E6E1)
+    val ebony = Color(0xFF1E2023)
+    // The latest pair (chord keys toggled meanwhile), without restarting a gesture under the finger.
+    val currentOn by rememberUpdatedState(keyOn)
+    val currentOff by rememberUpdatedState(keyOff)
+    Box(
+        Modifier.size(width, height)
+            .then(
+                if (keyOn == null) Modifier
+                else Modifier.pointerInput(pitch) {
+                    awaitEachGesture {
+                        awaitFirstDown(requireUnconsumed = false)
+                        // The note stops with the pair that started it (a chord stops as a chord).
+                        val on = currentOn ?: return@awaitEachGesture
+                        val off = currentOff
+                        down = true
+                        on(pitch, 0.8f)
+                        try {
+                            // Released, or the column scrolled under the finger: the note stops.
+                            waitForUpOrCancellation()
+                        } finally {
+                            // Also when the gesture is cancelled (tab switch, rotation): no stuck note.
+                            down = false
+                            off?.invoke(pitch)
+                        }
+                    }
+                },
+            )
+            .testTag("roll_key_$pitch"),
+        contentAlignment = Alignment.CenterEnd,
+    ) {
+        val lit = Neon.Cyan
+        Canvas(Modifier.matchParentSize()) {
+            drawRect(if (down && !black) lit else white)
+            // A thin line between white keys; a C's line a little stronger (the octave starts there).
+            drawLine(Color.Black.copy(alpha = if (pitch % 12 == 0) 0.45f else 0.15f), Offset(0f, size.height - 0.5f), Offset(size.width, size.height - 0.5f), 1f)
+            if (black) drawRect(if (down) lit else ebony, Offset.Zero, Size(size.width * 0.6f, size.height))
+        }
+        if (named) {
+            // The C's carry their octave (where am I?); the others just their name, a black key's on it.
+            val name = if (pitch % 12 == 0) com.pocketstudio.model.NoteNames.withOctave(pitch, english)
+            else com.pocketstudio.model.NoteNames.pitchClass(pitch, english, sharp = "♯")
+            Text(
+                name,
+                style = MaterialTheme.typography.labelSmall,
+                color = when {
+                    black -> Color(0xFFB9BCC2)
+                    pitch % 12 == 0 -> Color(0xFF1E2023)
+                    else -> Color(0xFF5A5D63)
+                },
+                maxLines = 1, softWrap = false,
+                modifier = if (black) Modifier.align(Alignment.CenterStart).padding(start = 3.dp) else Modifier.padding(end = 3.dp),
+            )
+        }
     }
 }
 

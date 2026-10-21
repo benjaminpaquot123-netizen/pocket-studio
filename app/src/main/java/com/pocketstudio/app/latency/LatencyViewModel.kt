@@ -116,12 +116,12 @@ class LatencyViewModel : ViewModel() {
             o.start == LatencyStart.NotForeground -> tr("Mesure interrompue : l'appli est passée en arrière-plan.")
             o.start == LatencyStart.OutputFailed -> tr("Le haut-parleur n'a pas pu démarrer. Réessaie dans quelques secondes.")
             o.start == LatencyStart.MicSilent || o.result?.failure == LatencyFailure.Interrupted ->
-                tr("Le téléphone coupe le son dès que le micro démarre, sur tous les réglages essayés. Envoie-moi une capture de cette page.")
+                tr("L'appareil coupe le son dès que le micro démarre, sur tous les réglages essayés. Envoie-moi une capture de cette page.")
             o.result?.failure == LatencyFailure.NoInput ->
                 tr("Le micro ne livre aucun son malgré plusieurs réglages essayés. Relance la mesure : l'appli continue d'essayer d'autres réglages.")
             o.result?.failure == LatencyFailure.SilentInput ->
                 tr("Le micro n'entend que du silence absolu : l'accès au micro est sans doute coupé dans les réglages rapides (icône Micro).")
-            else -> tr("Signal trop faible pour être repéré. Volume média à fond, téléphone posé sur une table, et réessaie.")
+            else -> tr("Signal trop faible pour être repéré. Volume média à fond, appareil posé sur une table, et réessaie.")
         }
 
         /** Each run in a few technical words, in the interface's language (in French for the report and the log). */

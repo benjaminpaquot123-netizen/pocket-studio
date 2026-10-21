@@ -10,6 +10,8 @@ object NativeEngine {
     private const val CMD_SET_GAIN = 2
     // 3, 4: latency test (native only)
     private const val CMD_SET_TRANSPORT = 5
+    /** [play]: the transport plays a scene on its own, outside the song. */
+    const val OUTSIDE_SONG = -1
     private const val CMD_SET_TEMPO = 6
     private const val CMD_SET_SWING = 7
     private const val CMD_SET_METRONOME = 8
@@ -122,8 +124,11 @@ object NativeEngine {
     fun setFrequency(hz: Float) = post(CMD_SET_FREQUENCY, hz)
     fun setGain(gain: Float) = post(CMD_SET_GAIN, gain)
 
-    /** [songStep]: the song position of the first step (the song started from a later part). */
-    fun play(countInBars: Int = 0, songStep: Int = 0) = post(CMD_SET_TRANSPORT, 1f, countInBars, songStep.coerceAtLeast(0))
+    /**
+     * [songStep]: the song position of the first step (the song started from a later part);
+     * [OUTSIDE_SONG]: a scene played on its own (song curves and song clips wait for the song).
+     */
+    fun play(countInBars: Int = 0, songStep: Int = 0) = post(CMD_SET_TRANSPORT, 1f, countInBars, songStep.coerceAtLeast(OUTSIDE_SONG))
     fun stopTransport() = post(CMD_SET_TRANSPORT, 0f)
     fun setTempo(bpm: Double) = post(CMD_SET_TEMPO, bpm.toFloat())
     fun setSwing(swing: Double) = post(CMD_SET_SWING, swing.toFloat())
@@ -181,8 +186,10 @@ object NativeEngine {
      * [restartsSong]: the waiting scene starts the song (again): song automation and song clips
      * count from there, from song step [songStep] when it is a later part than the first.
      */
-    fun armSceneSwap(steps: Int, restartsSong: Boolean = false, songStep: Int = 0) =
-        post(CMD_ARM_SCENE_SWAP, songStep.coerceAtLeast(0).toFloat(), steps, if (restartsSong) 1 else 0)
+    fun armSceneSwap(steps: Int, restartsSong: Boolean = false, songStep: Int = 0, leavesSong: Boolean = false) =
+        post(CMD_ARM_SCENE_SWAP, songStep.coerceAtLeast(0).toFloat(), steps, if (restartsSong) 1 else if (leavesSong) 3 else 0)
+    /** The swap armed is cancelled and the scene playing goes on by itself, outside the song. */
+    fun leaveSong() = post(CMD_ARM_SCENE_SWAP, 0f, -1, 3)
     /** The song ends after [steps] steps of the playing scene: the transport stops on that bar line (counted in [sceneSwaps]). */
     fun armSongEnd(steps: Int) = post(CMD_ARM_SCENE_SWAP, 0f, steps, 2)
     /** Steps since the song (re)started, as song automation reads them; -1 when stopped. */

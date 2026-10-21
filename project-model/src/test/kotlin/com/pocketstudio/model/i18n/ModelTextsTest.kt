@@ -44,13 +44,15 @@ class ModelTextsTest {
         StarterWizard.STYLES.forEach { style ->
             add(style.name, style.family, style.description, style.melody.bass, style.melody.pad, style.melody.lead)
             style.lines.forEach { add(it.tip) }
+            addAll(style.melody.tips.values)
         }
         StarterWizard.Role.entries.forEach { add(it.title, it.explanation) }
         StarterWizard.Mood.entries.forEach { add(it.label, it.description) }
         StarterWizard.Part.entries.forEach { add(it.title, it.explanation); addAll(it.categories) }
-        addAll(StarterWizard.ScenePlan.LABELS)
-        addAll(StarterWizard.ScenePlan.ROLES)
+        StarterWizard.SongForm.entries.forEach { addAll(it.labels); addAll(it.roles) }
+        add(StarterWizard.SongForm.BREAK_LABEL, StarterWizard.SongForm.BREAK_ROLE)
         add(StarterWizard.ScenePlan.ACID_TITLE)
+        addAll(StarterWizard.KIT_MELODIC.values)
         // The sounds the assistant proposes ("Cloche (Plaits)"…).
         StarterWizard.STYLES.forEach { style -> StarterWizard.Part.entries.forEach { p -> addAll(StarterWizard.soundsFor(p, style).map { it.name }) } }
 
@@ -111,9 +113,9 @@ class ModelTextsTest {
         assertTrue(tr(style.description) != style.description)
         assertTrue(tr(EffectType.EQ.label) != EffectType.EQ.label)
         val plan = StarterWizard.scenePlan(setOf(StarterWizard.Role.Kick), setOf(StarterWizard.Part.Bass), acid = false)
-        assertTrue(plan.title(1) != StarterWizard.ScenePlan.LABELS[1])
+        assertTrue(plan.title(1) != plan.labels[1])
         I18n.lang = Lang.FR
         assertTrue(plan.title(1) == "Couplet")
-        assertTrue(StarterWizard.ScenePlan.sections(setOf(1, 2)) == "Couplet et Refrain")
+        assertTrue(plan.sections(setOf(1, 2)) == "Couplet et Refrain")
     }
 }

@@ -1,5 +1,5 @@
-Phase 23 : « C'est pas faux ! » (cinq auditeurs, quatre correcteurs)
-- Voix : elle joue d'un bout à l'autre du morceau, s'enregistre pendant qu'il défile, ne se perd plus si l'appli est fermée.
-- Débutants : grille visible tout de suite, « cette section / tout le morceau » à côté de Jouer, « Changer le son », styles à écouter.
-- Pro : pistes séparées propres, volume général, export sans limiteur, outil Force, morceau lancé du milieu au bon endroit.
-- Langues : C D E partout en anglais et néerlandais, 48 traductions revues, accordeur guitare, tablette couchée plus complète.
+Phase 24 : « Le gras, c'est la vie ! » (35 styles réécrits, 15 auditeurs)
+- Assistant : chaque style respecte sa recette (pistes, ambiance, son signature), morceaux de 2 min 30 à 3 min avec break.
+- Sons : 808 qui glisse, vrais roulements, basse wobble, log drum, effets posés par le style ; ▶ fait entendre le style entier.
+- Voix : une prise de scène joue dans sa scène, voix et réglages suivent le morceau, prises jusqu'à 5 min.
+- Confort : tablette 8,7", outils de scène compacts, « Vider » une piste, chaque onglet garde son état.

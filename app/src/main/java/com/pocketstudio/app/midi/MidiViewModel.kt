@@ -41,7 +41,7 @@ data class MidiUi(
     val available: Boolean = true,
     val sources: List<MidiSource> = emptyList(),
     val connected: String? = null,
-    /** The last thing received, in words ("Note Do 4", "Horloge 124 BPM"). */
+    /** The last thing received, in words ("Note Do4", "Horloge 124 BPM"). */
     val last: String? = null,
     val followClock: Boolean = true,
     val clockBpm: Double? = null,
@@ -420,8 +420,8 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
         const val CC_SUSTAIN = 64
         /** Pitch bend wheel range in semitones. */
         const val BEND_RANGE = 2f
-        /** "Do 3" for MIDI 60, or "C 4" when the settings name notes C D E. */
+        /** "Do3" for MIDI 60, or "C4" when the settings name notes C D E. */
         fun noteLabel(note: Int): String =
-            com.pocketstudio.model.NoteNames.withOctave(note, com.pocketstudio.app.settings.SettingsStore.state.value.englishNotes, separator = " ")
+            com.pocketstudio.model.NoteNames.withOctave(note, com.pocketstudio.app.settings.SettingsStore.state.value.englishNotes)
     }
 }

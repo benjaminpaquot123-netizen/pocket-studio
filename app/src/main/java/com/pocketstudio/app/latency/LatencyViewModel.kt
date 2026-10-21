@@ -1,5 +1,6 @@
 package com.pocketstudio.app.latency
 
+import com.pocketstudio.model.i18n.I18n
 import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.app.report.AppLog
 import androidx.lifecycle.ViewModel
@@ -16,7 +17,11 @@ import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Locale
@@ -33,7 +38,19 @@ private data class RunOutcome(val start: LatencyStart, val result: LatencyResult
 
 class LatencyViewModel : ViewModel() {
     private val _state = MutableStateFlow<LatencyUiState>(LatencyUiState.Idle)
-    val state: StateFlow<LatencyUiState> = _state.asStateFlow()
+    /** The last measurement's runs: its texts are worded again when the language changes. */
+    private var lastOutcomes: List<RunOutcome> = emptyList()
+    val state: StateFlow<LatencyUiState> =
+        combine(_state, com.pocketstudio.app.settings.SettingsStore.state.map { it.language }.distinctUntilChanged()) { s, _ -> reworded(s) }
+            .stateIn(viewModelScope, SharingStarted.Eagerly, LatencyUiState.Idle)
+
+    /** [s] in the interface's language (the messages of a measurement made before a language switch). */
+    private fun reworded(s: LatencyUiState): LatencyUiState = when {
+        lastOutcomes.isEmpty() -> s
+        s is LatencyUiState.Measured -> s.copy(diagnostic = diagnostic(lastOutcomes))
+        s is LatencyUiState.Failed -> s.copy(message = explain(lastOutcomes.last()), diagnostic = diagnostic(lastOutcomes))
+        else -> s
+    }
 
     private var job: Job? = null
 
@@ -56,9 +73,12 @@ class LatencyViewModel : ViewModel() {
             }
             val values = outcomes.mapNotNull { o -> o.result?.takeIf { it.valid }?.latencyMs }
             val diagnostic = diagnostic(outcomes)
-            Metrics.updateLatencyDiagnostic(diagnostic)
+            // The report and the log stay in French, whatever the interface's language.
+            val french = diagnostic(outcomes, french = true)
+            Metrics.updateLatencyDiagnostic(french)
+            lastOutcomes = outcomes.toList()
             if (values.isEmpty()) {
-                AppLog.add("Latence : échec ($diagnostic)")
+                AppLog.add("Latence : échec ($french)")
                 _state.value = LatencyUiState.Failed(explain(outcomes.last()), diagnostic)
             } else {
                 val median = values.sorted()[values.size / 2]
@@ -104,16 +124,19 @@ class LatencyViewModel : ViewModel() {
             else -> tr("Signal trop faible pour être repéré. Volume média à fond, téléphone posé sur une table, et réessaie.")
         }
 
-        private fun diagnostic(outcomes: List<RunOutcome>): String {
+        /** Each run in a few technical words, in the interface's language (in French for the report and the log). */
+        private fun diagnostic(outcomes: List<RunOutcome>, french: Boolean = false): String {
+            val locale = if (french) Locale.FRANCE else I18n.lang.locale
             return outcomes.joinToString(" | ") { o ->
                 val r = o.result
-                val detail = if (r == null) "départ ${o.start}"
+                val detail = if (r == null) String.format(locale, if (french) "départ %s" else tr("départ %s"), o.start)
                 else String.format(
-                    Locale.FRANCE, "%s, niveau %.4f, confiance %.1f, %d éch.",
-                    if (r.valid) "OK %.1f ms".format(Locale.FRANCE, r.latencyMs) else r.failure.name,
+                    locale,
+                    if (french) "%1\$s, niveau %2\$.4f, confiance %3\$.1f, %4\$d éch." else tr("%1\$s, niveau %2\$.4f, confiance %3\$.1f, %4\$d éch."),
+                    if (r.valid) String.format(locale, "OK %.1f ms", r.latencyMs) else r.failure.name,
                     r.inputPeak, r.confidence, r.inputFrames,
                 )
-                "micro ${o.mic} : $detail"
+                String.format(locale, if (french) "micro %1\$s : %2\$s" else tr("micro %1\$s : %2\$s"), o.mic, detail)
             }
         }
     }

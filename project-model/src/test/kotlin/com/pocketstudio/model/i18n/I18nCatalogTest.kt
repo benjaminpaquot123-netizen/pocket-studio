@@ -81,6 +81,146 @@ class I18nCatalogTest {
         assertTrue("${problems.size} problems (all in project-model/build/i18n-problems.txt):\n" + problems.take(80).joinToString("\n"), problems.isEmpty())
     }
 
+    /** The first argument of every `tr(...)` call that is not a text literal, as "File.kt: expression". */
+    private fun dynamicCalls(): Map<String, String> {
+        val found = linkedMapOf<String, String>()
+        val start = Regex("""(?<![A-Za-z0-9_.])tr\(""")
+        roots.forEach { root ->
+            root.walkTopDown().filter { it.extension == "kt" }.forEach { f ->
+                val src = f.readText()
+                start.findAll(src).forEach { m ->
+                    var j = m.range.last + 1
+                    var depth = 0
+                    while (j < src.length) {
+                        val c = src[j]
+                        if (c == '"') {
+                            if (src.startsWith("\"\"\"", j)) { j = src.indexOf("\"\"\"", j + 3) + 3; continue }
+                            j++
+                            while (src[j] != '"') j += if (src[j] == '\\') 2 else 1
+                            j++
+                            continue
+                        }
+                        if (c in "([{") depth++
+                        else if (c in ")]}") { if (depth == 0) break; depth-- }
+                        else if (c == ',' && depth == 0) break
+                        j++
+                    }
+                    val arg = src.substring(m.range.last + 1, j).trim().replace(Regex("""\s+"""), " ")
+                    if (arg.isNotEmpty() && !arg.startsWith("\"") && !arg.startsWith("fr:")) found.putIfAbsent("${f.name}: $arg", arg)
+                }
+            }
+        }
+        return found
+    }
+
+    /**
+     * A text passed to [tr] in a variable is not seen by [everyTextHasItsTranslations]: each such
+     * call is listed here once its source is checked (the model's data by ModelTextsTest, the app's
+     * by AppTextsTest, names by DefaultNames). A new one fails until it is checked and added.
+     */
+    @Test
+    fun everyTextPassedInAVariableComesFromACheckedSource() {
+        val calls = dynamicCalls()
+        assertTrue("no dynamic tr() found", calls.size > 40)
+        val unknown = calls.keys - CHECKED_SOURCES
+        assertTrue(
+            "tr() with a variable whose texts nobody checks (add the data to ModelTextsTest or AppTextsTest, then here):\n" +
+                unknown.joinToString("\n"),
+            unknown.isEmpty(),
+        )
+        // A fallback written inside such a call ("Piste", "réglage") is a key too.
+        val literal = Regex(""""((?:[^"\\]|\\.)*)"""")
+        listOf(Lang.EN, Lang.NL).forEach { lang ->
+            val table = I18n.table(lang)
+            calls.values.flatMap { arg -> literal.findAll(arg).map { it.groupValues[1] } }
+                .filter { it.any(Char::isLetter) }
+                .forEach { assertTrue("no ${lang.code} for fallback \"$it\"", !table[it].isNullOrBlank()) }
+        }
+    }
+
+    companion object {
+        /** Calls of tr() with a variable, each one's texts checked elsewhere (see the test above). */
+        private val CHECKED_SOURCES = setOf(
+            "AppRoot.kt: com.pocketstudio.model.PlaitsPatch.PARAMS.getOrElse(target.param - 1) { \"réglage\" }",
+            "AutomationCard.kt: Buses.NAMES.getOrElse(t.slot) { \"?\" }",
+            "AutomationCard.kt: effect.label",
+            "AutomationCard.kt: it",
+            "ChordPads.kt: key.scale.label",
+            "DefaultNames.kt: COPY",
+            "DefaultNames.kt: fr",
+            "DefaultNames.kt: it",
+            "DefaultNames.kt: name",
+            "EffectsPanel.kt: Buses.NAMES[b]",
+            "EffectsPanel.kt: Buses.NAMES[bus]",
+            "EffectsPanel.kt: current.effect.blurb",
+            "EffectsPanel.kt: p.format(params[k])",
+            "EffectsPanel.kt: p.label",
+            "EffectsPanel.kt: param.format(current.params[k])",
+            "EffectsPanel.kt: param.label",
+            "EffectsPanel.kt: type.label",
+            "InstrumentPanel.kt: name",
+            "LibraryScreen.kt: label",
+            "LibraryScreen.kt: option.name.substringBefore(\" · \")",
+            "PianoRoll.kt: g.scale.label",
+            "PianoRoll.kt: m.label",
+            "PianoRoll.kt: pr.label",
+            "PianoRoll.kt: sc.label",
+            "PlaitsPanel.kt: PlaitsPatch.MODELS[model]",
+            "PlaitsPanel.kt: family",
+            "PlaitsPanel.kt: label",
+            "ProjectsScreen.kt: s.description",
+            "ProjectsScreen.kt: s.title",
+            "QuickFx.kt: FxPresets.NONE.name",
+            "QuickFx.kt: Macros.NAMES[m]",
+            "QuickFx.kt: a",
+            "QuickFx.kt: b",
+            "QuickFx.kt: c",
+            "QuickFx.kt: it",
+            "QuickFx.kt: it.name",
+            "QuickFx.kt: name",
+            "QuickFx.kt: p.name",
+            "RhythmViewModel.kt: STEM_LABELS.getOrElse(stem) { \"Piste\" }",
+            "RhythmViewModel.kt: kit.name",
+            "Scenes.kt: label",
+            "Scenes.kt: section",
+            "SessionScreen.kt: s",
+            "SongGuide.kt: styleName",
+            "SoundBrowser.kt: f",
+            "SoundBrowser.kt: s.name",
+            "SoundLibraryViewModel.kt: SoundPacks.KIND_LABELS[kind] ?: kind",
+            "SoundLibraryViewModel.kt: SoundPacks.KIND_LABELS[role.id] ?: role.title",
+            "SoundLibraryViewModel.kt: sound.name",
+            "SoundLooks.kt: it",
+            "StarterWizard.kt: ACID_TITLE",
+            "StarterWizard.kt: LABELS[index]",
+            "StarterWizard.kt: LABELS[it]",
+            "StarterWizard.kt: ROLES[index]",
+            "StarterWizard.kt: it.title",
+            "SynthScreen.kt: name",
+            "TrackBar.kt: t.soundLabel",
+            "WizardScreen.kt: StarterWizard.progressionOf(style, m).first.label",
+            "WizardScreen.kt: StarterWizard.progressionOf(style, mood).first.label",
+            "WizardScreen.kt: it",
+            "WizardScreen.kt: it.name",
+            "WizardScreen.kt: line.role.title",
+            "WizardScreen.kt: line.tip",
+            "WizardScreen.kt: m.description",
+            "WizardScreen.kt: m.label",
+            "WizardScreen.kt: mood.label",
+            "WizardScreen.kt: option.name.substringBefore(\" · \")",
+            "WizardScreen.kt: part.explanation",
+            "WizardScreen.kt: part.title",
+            "WizardScreen.kt: role.explanation",
+            "WizardScreen.kt: role.title",
+            "WizardScreen.kt: row!!.sound!!.name.substringBefore(\" · \")",
+            "WizardScreen.kt: row!!.sound.name",
+            "WizardScreen.kt: s.description",
+            "WizardScreen.kt: s.name",
+            "WizardScreen.kt: sound.name",
+            "WizardScreen.kt: style.name",
+        )
+    }
+
     @Test
     fun theLanguageIsFollowedAndFrenchIsTheFallback() {
         assertEquals(Lang.FR, Lang.of(null))

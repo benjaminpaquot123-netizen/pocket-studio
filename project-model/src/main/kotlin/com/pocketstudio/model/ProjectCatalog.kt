@@ -216,10 +216,10 @@ class ProjectCatalog(private val root: File, private val trash: File) {
         }
     }
 
-    /** "Mon projet 3": the first free number among the existing names. */
-    fun nextName(prefix: String = tr("Mon projet")): String {
-        val names = list().map { it.name }.toSet()
-        return generateSequence(1) { it + 1 }.map { "$prefix $it" }.first { it !in names }
+    /** "Mon projet 3" (saved in French, see [DefaultNames]): the first free number among the existing names, in any language. */
+    fun nextName(prefix: String = "Mon projet"): String {
+        val names = list().map { DefaultNames.shown(it.name) }.toSet()
+        return generateSequence(1) { it + 1 }.map { "$prefix $it" }.first { DefaultNames.shown(it) !in names }
     }
 
     private fun newId() = "p-" + UUID.randomUUID().toString().take(8)

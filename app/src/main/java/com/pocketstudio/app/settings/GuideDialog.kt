@@ -50,18 +50,20 @@ val GUIDE_PAGES: List<GuidePage> get() = listOf(
             tr("↶ ↷ Annuler et rétablir : on peut toujours revenir en arrière."),
             tr("● Enregistrer : ce que tu joues (clavier, pads, clavier MIDI) s'écrit en rythme."),
             tr("▶ Jouer et arrêter, sur tous les écrans."),
+            tr("Quand il y a un morceau, « Écouter » à côté de Jouer (onglet Rythme) choisit ce que ▶ fait entendre : cette section en boucle, ou tout le morceau."),
         ),
     ),
     GuidePage(
-        tr("Les onglets du bas"),
+        tr("Les onglets"),
         listOf(
+            tr("En bas de l'écran, ou à gauche quand l'écran est couché :"),
             tr("Rythme : les 16 pads et leurs pas."),
             tr("Acide : la ligne de basse façon 303, avec « Génère-moi un pattern »."),
             tr("Synthé : le clavier, les notes (piano roll) et les sons."),
             tr("Mixeur : volumes, effets, et l'export de ta musique."),
-            tr("Audio : le micro, les sons importés et le Remix (sépare un morceau en batterie, basse, voix et le reste)."),
+            tr("Audio : le micro, les sons importés, le Remix (sépare un morceau en batterie, basse, voix et le reste), l'Accordeur et Générer."),
             tr("Morceau : les scènes, les pads live et les effets en direct."),
-            tr("Outils : les réglages, le clavier MIDI, la recette."),
+            tr("Outils : l'aide et le lexique, les réglages, le clavier MIDI, la recette."),
         ),
     ),
     GuidePage(
@@ -76,15 +78,15 @@ val GUIDE_PAGES: List<GuidePage> get() = listOf(
         tr("Et ensuite ?"),
         listOf(
             tr("Pour commencer : touche ▶, puis les pads de l'onglet Rythme."),
-            tr("Pour partager : Mixeur › Exporter (WAV, M4A ou MIDI)."),
-            tr("Ce guide se retrouve dans Outils › Réglages."),
+            tr("Pour partager : le bouton « Partager mon morceau » (carte Prochaine étape, Mixeur ou Mes projets)."),
+            tr("Ce guide se retrouve dans Outils › Aide."),
         ),
     ),
 )
 
-/** A guide of a few [pages] (the first steps by default), "Passer" at any time, [done] on the last page. */
+/** A guide of a few [pages] (the first steps by default), "Passer" at any time, [done] on the last page ([onDone], closing by default). */
 @Composable
-fun GuideDialog(onClose: () -> Unit, pages: List<GuidePage> = GUIDE_PAGES, tag: String = "guide", done: String = tr("C'est parti !")) {
+fun GuideDialog(onClose: () -> Unit, pages: List<GuidePage> = GUIDE_PAGES, tag: String = "guide", done: String = tr("C'est parti !"), onDone: () -> Unit = onClose) {
     var page by rememberSaveable(tag) { mutableIntStateOf(0) }
     val p = pages[page.coerceIn(0, pages.lastIndex)]
     val last = page >= pages.lastIndex
@@ -108,7 +110,7 @@ fun GuideDialog(onClose: () -> Unit, pages: List<GuidePage> = GUIDE_PAGES, tag: 
                     TextButton(onClick = onClose, modifier = Modifier.testTag("guide_skip")) { Text(if (last) "" else tr("Passer")) }
                     Box(Modifier.weight(1f))
                     if (page > 0) TextButton(onClick = { page-- }) { Text(tr("Retour")) }
-                    Button(onClick = { if (last) onClose() else page++ }, modifier = Modifier.testTag("guide_next")) {
+                    Button(onClick = { if (last) onDone() else page++ }, modifier = Modifier.testTag("guide_next")) {
                         Text(if (last) done else tr("Suivant"))
                     }
                 }

@@ -55,4 +55,56 @@ class NoteEditsTest {
         assertEquals(Scale.Minor, best.scale)
         assertEquals(emptyList<Harmony>(), NoteEdits.guessScales(emptyList()))
     }
+
+    @Test
+    fun aNoteQuantizedOntoTheLoopsEndStartsTheLoop() {
+        // Played a little before the next « 1 » (the loop's end, 384 ticks): it belongs on step 0,
+        // not a tick before the end where it would flam with the kick.
+        val late = Note(380, 12, 60)
+        val q = NoteEdits.quantize(NoteClip(steps = 16, notes = listOf(late)), setOf(late), 24)
+        assertEquals(listOf(0), q.clip.notes.map { it.start })
+        assertEquals(listOf(0), q.selection.map { it.start })
+        assertEquals(listOf(0), NoteClip(steps = 16, notes = listOf(late)).quantized(24, 1f).notes.map { it.start })
+        // Half way: still inside the loop, not wrapped.
+        assertEquals(listOf(382), NoteClip(steps = 16, notes = listOf(late)).quantized(24, 0.5f).notes.map { it.start })
+        // Earlier notes still go to their nearest line.
+        assertEquals(listOf(360), NoteEdits.quantize(clip.copy(notes = listOf(Note(365, 12, 60))), setOf(Note(365, 12, 60)), 24).clip.notes.map { it.start })
+    }
+
+    @Test
+    fun aPasteThatDoesNotFitSaysHowManyNotesWereLeftOut() {
+        val board = NoteEdits.copy(setOf(e4, g4))  // starts 0 and 72
+        val fits = NoteEdits.paste(clip, board, 300)
+        assertEquals(0, fits.dropped)
+        val half = NoteEdits.paste(clip, board, 360)  // 432 is past the loop
+        assertEquals(1, half.dropped)
+        assertEquals(setOf(360), half.selection.map { it.start }.toSet())
+        // After the last note of a full loop: nothing fits, nothing changes (no stray note a tick before the end).
+        val none = NoteEdits.paste(clip, board, 384)
+        assertEquals(2, none.dropped)
+        assertEquals(clip.notes, none.clip.notes)
+        assertTrue(none.selection.isEmpty())
+    }
+
+    @Test
+    fun shorteningTheLoopHidesTheNotesPastItsEndAndLengtheningBringsThemBack() {
+        val long = NoteClip(steps = 32, notes = listOf(c4, Note(400, 24, 62), Note(700, 24, 64))).sanitized()
+        val short = long.copy(steps = 16).sanitized()
+        assertEquals(listOf(c4), short.notes)  // played, shown and exported: the loop's notes only
+        assertEquals(listOf(400, 700), short.hidden.map { it.start })
+        // Edits of the short loop keep them.
+        val edited = NoteEdits.transpose(short, setOf(c4), 2).clip
+        assertEquals(2, edited.hidden.size)
+        val back = edited.copy(steps = 32).sanitized()
+        assertEquals(listOf(0, 400, 700), back.notes.map { it.start })
+        assertTrue(back.hidden.isEmpty())
+        // Saved with the project; an older file without the field loads with none.
+        assertEquals(short, ProjectJson.decode(ProjectJson.encode(Project(synthNotes = short))).synthNotes)
+        assertTrue(ProjectJson.decode("""{"synthNotes":{"steps":16,"notes":[{"start":0,"length":24,"pitch":60}]}}""").synthNotes.hidden.isEmpty())
+        // « Effacer » removes them too.
+        assertTrue(short.cleared().copy(steps = 32).sanitized().notes.isEmpty())
+        // The MIDI file has only what is heard.
+        val midi = MidiFile.read(MidiFile.export(Project(synthNotes = short).sanitized(), song = false)).notes.filter { it.channel == 0 }
+        assertEquals(listOf(60), midi.map { it.pitch })
+    }
 }

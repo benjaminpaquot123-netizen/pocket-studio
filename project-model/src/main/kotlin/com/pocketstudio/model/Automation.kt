@@ -108,3 +108,30 @@ fun Project.withoutStaleInsertLanes(before: Project): Project {
     }
     return if (kept.size == automation.size) this else copy(automation = kept)
 }
+
+/**
+ * Where each loop or per-scene lane (by index) has left its setting when song part [index]
+ * begins, as the song played from its start leaves it: a step without a point keeps the last
+ * value written (the engine's rule), so the part before decides. Lanes that wrote nothing yet
+ * are not listed (the mixer's own setting holds); song lanes set theirs on every step.
+ */
+fun Project.automationBefore(index: Int): Map<Int, Float> {
+    val out = HashMap<Int, Float>()
+    val scenes = allScenes
+    song.take(index.coerceIn(0, song.size)).forEach { part ->
+        // The engine reads the lanes on the drum loop's step (8..64 steps).
+        val drumSteps = (scenes.getOrNull(part.scene)?.drums?.steps ?: DrumPattern().steps).coerceIn(8, AutomationLane.STEPS)
+        val total = sceneSteps(part.scene) * part.repeats
+        automation.forEachIndexed { i, lane ->
+            if (lane.mode == AutomationLane.SONG) return@forEachIndexed
+            val values = lane.valuesFor(part.scene)
+            // The last step of this part that writes a value.
+            for (local in total - 1 downTo maxOf(0, total - drumSteps)) {
+                val v = values.getOrNull(local % drumSteps) ?: continue
+                out[i] = v
+                break
+            }
+        }
+    }
+    return out
+}

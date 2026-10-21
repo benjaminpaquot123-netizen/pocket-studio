@@ -61,7 +61,7 @@ fun SettingsScreen(s: AppSettings, version: String, actions: SettingsActions) {
             FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 AppSettings.UI_SCALES.forEach { scale ->
                     FilterChip(selected = s.uiScale == scale, onClick = { actions.update { it.copy(uiScale = scale) } },
-                        label = { Text("${(scale * 100).roundToInt()} %") }, colors = chip, modifier = Modifier.testTag("scale_${(scale * 100).roundToInt()}"))
+                        label = { Text(com.pocketstudio.model.i18n.percent((scale * 100).roundToInt())) }, colors = chip, modifier = Modifier.testTag("scale_${(scale * 100).roundToInt()}"))
                 }
             }
             Text(tr("Noms des notes"), style = MaterialTheme.typography.bodyMedium)
@@ -131,5 +131,39 @@ private fun Toggle(title: String, hint: String, checked: Boolean, tag: String, o
             Text(hint, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         }
         Switch(checked = checked, onCheckedChange = onChange, modifier = Modifier.testTag(tag))
+    }
+}
+
+class HelpActions(
+    val openGuide: () -> Unit = {},
+    /** Shows the open project's "Prochaine étape" card again and goes to it. */
+    val showSteps: () -> Unit = {},
+)
+
+/** Outils › Aide, the first page of Outils: the guide, the song's steps, and every word explained. */
+@Composable
+fun HelpPage(actions: HelpActions) {
+    com.pocketstudio.ui.ReadingWidth {
+        Column(
+            Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp).testTag("help_page"),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            NeonCard {
+                SectionLabel(tr("Aide"))
+                OutlinedButton(onClick = actions.openGuide, modifier = Modifier.fillMaxWidth().testTag("help_guide")) { Text(tr("Revoir le guide des premiers pas")) }
+                OutlinedButton(onClick = actions.showSteps, modifier = Modifier.fillMaxWidth().testTag("help_steps")) { Text(tr("Afficher les étapes du morceau")) }
+                Text(tr("Partout dans l'appli, le petit « ? » à côté d'un mot l'explique aussi."),
+                    style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+            }
+            NeonCard {
+                SectionLabel(tr("Lexique"))
+                Glossary.ALL.forEach { h ->
+                    Column {
+                        Text(h.term, style = MaterialTheme.typography.titleSmall, color = Neon.Cyan)
+                        Text(h.text, style = MaterialTheme.typography.bodySmall)
+                    }
+                }
+            }
+        }
     }
 }

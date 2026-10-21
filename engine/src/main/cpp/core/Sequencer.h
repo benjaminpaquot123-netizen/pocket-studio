@@ -37,6 +37,7 @@ public:
     void stop() { running_ = false; }
     bool running() const { return running_; }
 
+    double swing() const { return swing_; }
     double samplesPerStep() const { return sampleRate_ * 60.0 / (bpm_ * kStepsPerBeat); }
 
     // Calls onStep(frameOffsetInBlock, step) for every step that starts inside the next

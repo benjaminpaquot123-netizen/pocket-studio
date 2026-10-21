@@ -90,6 +90,12 @@ data class MixerActions(
     val cancelExport: () -> Unit = {},
     val share: () -> Unit = {},
     val setExportFade: (ExportFade) -> Unit = {},
+    /** « Sans limiteur (pour le mastering) » for the mix. */
+    val setExportNoLimiter: (Boolean) -> Unit = {},
+    /** Separate tracks through the master's effects and limiter. */
+    val setStemsWithMaster: (Boolean) -> Unit = {},
+    /** The master's gain before the limiter, in dB. */
+    val setMasterDb: (Float) -> Unit = {},
     /** « Partager mon morceau »: the whole song in M4A, then the share sheet. */
     val shareSong: () -> Unit = {},
     val setInsertType: (ch: Int, slot: Int, type: EffectType) -> Unit = { _, _, _ -> },
@@ -117,6 +123,8 @@ fun MixerScreen(
     modifier: Modifier = Modifier,
     export: ExportUi = ExportUi(),
     master: List<Insert> = List(4) { Insert() },
+    /** The master's gain before the limiter, in dB. */
+    masterDb: Float = 0f,
     buses: List<List<Float>> = Buses.DEFAULTS,
     automation: AutomationUi = AutomationUi(),
     automationActions: AutomationActions = AutomationActions(),
@@ -142,6 +150,7 @@ fun MixerScreen(
         NeonCard(accent = Neon.Cyan) {
             SectionLabel(tr("Sortie générale"), help = Glossary.MASTER)
             LevelMeter(meters.getOrElse(MASTER_CHANNEL) { 0f } / 0.89f)
+            MasterGain(masterDb, actions.setMasterDb)
             val gain = meters.getOrElse(LIMITER_METER) { 1f }
             Text(
                 if (gain < 0.98f) tr("Le limiteur protège la sortie (−%.1f dB)", -20 * log10(gain))
@@ -162,6 +171,26 @@ fun MixerScreen(
     })
 }
 
+/** The master's fader: a gain before the limiter, −24..+6 dB (one move gives the limiter less work). */
+@Composable
+private fun MasterGain(db: Float, setDb: (Float) -> Unit) {
+    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        Text(tr("Volume général"), Modifier.weight(1f))
+        Text(masterDbLabel(db), style = MonoStyle, color = Neon.Cyan)
+    }
+    ProSlider(
+        value = db,
+        // Snaps to 0 dB near the middle, as the pan snaps to the centre.
+        onValueChange = { v -> setDb(if (kotlin.math.abs(v) < 0.4f) 0f else (v * 2).roundToInt() / 2f) },
+        valueRange = com.pocketstudio.model.Mixer.MASTER_MIN_DB..com.pocketstudio.model.Mixer.MASTER_MAX_DB,
+        modifier = Modifier.testTag("master_gain"),
+    )
+}
+
+/** The master's gain as the screen shows it ("+1.5 dB", "0.0 dB", "−6.0 dB"). */
+fun masterDbLabel(db: Float): String =
+    (if (db > 0f) "+" else "") + String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f dB", db).replace('-', '−')
+
 /** « Partager mon morceau » at the top of the mixer, and a way down to every export choice. */
 @Composable
 internal fun ShareSongCard(export: ExportUi, hasSong: Boolean, share: () -> Unit, toExport: () -> Unit) {
@@ -177,7 +206,7 @@ internal fun ShareSongCard(export: ExportUi, hasSong: Boolean, share: () -> Unit
         }
         Text(
             if (hasSong) tr("Tout le morceau, avec un fondu à la fin, en M4A léger : prêt à envoyer.")
-            else tr("Pas encore de morceau : la scène en boucle (%d mesures), en M4A léger.", com.pocketstudio.app.export.ShareSong.loopBars(export.sceneBars)),
+            else tr("Pas encore de morceau : la scène en boucle (%d mesures), en M4A léger.", com.pocketstudio.app.export.ShareSong.loopBars(export.sceneBars, export.audioBars)),
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
         )
         TextButton(onClick = toExport, modifier = Modifier.fillMaxWidth().testTag("to_export")) {
@@ -189,7 +218,7 @@ internal fun ShareSongCard(export: ExportUi, hasSong: Boolean, share: () -> Unit
 
 @Composable
 private fun Strip(info: StripInfo, c: Channel, meter: Float, actions: MixerActions, compact: Boolean = false) {
-    val name = tr(info.name)
+    val name = com.pocketstudio.model.DefaultNames.shown(info.name)
     val index = info.ch
     var expanded by rememberSaveable(index) { mutableStateOf(false) }
     var open by rememberSaveable(index) { mutableStateOf(false) }
@@ -366,7 +395,31 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
                     enabled = !export.running, label = { Text(tr("FLAC (sans perte, léger)")) }, colors = chipColors,
                     modifier = Modifier.testTag("export_format_Flac"),
                 )
+                // For a mixing or mastering engineer: no limiter on the mix, stems that add back up to it.
+                if (export.what == ExportWhat.Stems) {
+                    FilterChip(
+                        selected = export.stemsWithMaster, onClick = { actions.setStemsWithMaster(!export.stemsWithMaster) },
+                        enabled = !export.running, label = { Text(tr("Avec les effets de la sortie générale")) }, colors = chipColors,
+                        modifier = Modifier.testTag("export_stems_master"),
+                    )
+                } else {
+                    FilterChip(
+                        selected = export.noLimiter, onClick = { actions.setExportNoLimiter(!export.noLimiter) },
+                        enabled = !export.running, label = { Text(tr("Sans limiteur (pour le mastering)")) }, colors = chipColors,
+                        modifier = Modifier.testTag("export_no_limiter"),
+                    )
+                }
             }
+            val pro = when {
+                // M4A and FLAC cannot hold peaks over 0 dBFS: the limiter stays rather than clip them.
+                export.limiterOff && export.format != ExportFormat.Wav ->
+                    tr("En M4A et en FLAC, le limiteur reste en place : sans lui, les pointes seraient écrêtées. Choisis WAV pour t'en passer.")
+                export.what == ExportWhat.Stems && export.stemsWithMaster -> tr("Chaque piste passe par les effets et le limiteur de la sortie générale, comme si elle jouait seule.")
+                export.what == ExportWhat.Stems -> tr("Sans les effets ni le limiteur de la sortie générale : remises ensemble, les pistes redonnent le mix.")
+                export.noLimiter -> tr("Le mix garde sa marge, sans limiteur. En WAV, fichier 32 bits flottants : rien n'est écrêté.")
+                else -> null
+            }
+            pro?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary) }
             if (export.what == ExportWhat.Loop || (export.what == ExportWhat.Stems && !hasSong)) {
                 Text(tr("Longueur de la boucle"), style = MaterialTheme.typography.bodyMedium)
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {

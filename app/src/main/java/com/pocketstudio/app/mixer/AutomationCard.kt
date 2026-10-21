@@ -77,7 +77,7 @@ data class AutomationActions(
 /** The lane modes and their names (read when drawn, in the interface's language). */
 private val MODES get() = listOf(AutomationLane.LOOP to tr("Boucle"), AutomationLane.PER_SCENE to tr("Par scène"), AutomationLane.SONG to tr("Morceau"))
 
-private fun List<StripInfo>.nameOf(ch: Int) = firstOrNull { it.ch == ch }?.name?.let { tr(it) } ?: tr("Sortie")
+private fun List<StripInfo>.nameOf(ch: Int) = firstOrNull { it.ch == ch }?.name?.let { com.pocketstudio.model.DefaultNames.shown(it) } ?: tr("Sortie")
 
 /** What a target is called on screen. */
 fun automationLabel(t: AutoTarget, channels: List<Channel>, master: List<Insert>, strips: List<StripInfo> = BASIC_STRIPS): String {

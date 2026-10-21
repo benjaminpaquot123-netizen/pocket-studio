@@ -44,18 +44,9 @@ import kotlin.math.roundToInt
 
 private const val MIN_HZ = 55f
 private const val MAX_HZ = 1760f
-private val NOTE_NAMES = listOf("La", "La#", "Si", "Do", "Do#", "Ré", "Ré#", "Mi", "Fa", "Fa#", "Sol", "Sol#")
-private val NOTE_NAMES_EN = listOf("A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#")
-
-/** Note name closest to [hz], e.g. "La 4" (or "A 4" when the settings name notes C D E). */
-fun noteName(hz: Float): String {
-    val semitonesFromA4 = (12 * log2(hz / 440f)).roundToInt()
-    val index = Math.floorMod(semitonesFromA4, 12)
-    // Octave numbers change on Do (C), three semitones above La (A).
-    val octave = 4 + Math.floorDiv(semitonesFromA4 + 9, 12)
-    val names = if (com.pocketstudio.app.settings.SettingsStore.state.value.englishNotes) NOTE_NAMES_EN else NOTE_NAMES
-    return "${names[index]} $octave"
-}
+/** Note name closest to [hz], e.g. "La 3" for 440 Hz (or "A 4" when the settings name notes C D E). */
+fun noteName(hz: Float, english: Boolean = com.pocketstudio.app.settings.SettingsStore.state.value.englishNotes): String =
+    com.pocketstudio.model.NoteNames.withOctave(69 + (12 * log2(hz / 440f)).roundToInt(), english, separator = " ")
 
 private fun hzToSlider(hz: Float) = (ln(hz / MIN_HZ) / ln(MAX_HZ / MIN_HZ)).coerceIn(0f, 1f)
 private fun sliderToHz(v: Float) = MIN_HZ * (MAX_HZ / MIN_HZ).pow(v)
@@ -110,7 +101,7 @@ fun StudioScreen(
 
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                     Text("Volume", Modifier.weight(1f))
-                    Text("${(state.volume * 100).roundToInt()} %", style = MonoStyle, color = Neon.Cyan)
+                    Text(com.pocketstudio.model.i18n.percent((state.volume * 100).roundToInt()), style = MonoStyle, color = Neon.Cyan)
                 }
                 ProSlider(value = state.volume, onValueChange = onVolume)
             }

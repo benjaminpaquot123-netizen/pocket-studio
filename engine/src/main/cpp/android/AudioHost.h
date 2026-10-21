@@ -82,6 +82,15 @@ public:
     // microphone cannot be opened or stays silent (no permission, busy).
     bool startRecordingInput(MicUser user);
     void stopRecordingInput(MicUser user);
+    // Runs `fn` only while no output stream exists (the audio thread cannot run until a start(),
+    // which waits for `fn`); false when the stream is open.
+    template <typename F>
+    bool runWhileStopped(F&& fn) {
+        std::lock_guard<std::mutex> guard(lock_);
+        if (output_ || closingOutput_) return false;
+        fn();
+        return true;
+    }
 
     oboe::DataCallbackResult onAudioReady(oboe::AudioStream* stream, void* audioData,
                                           int32_t numFrames) override;

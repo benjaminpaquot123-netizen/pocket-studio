@@ -10,6 +10,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onRoot
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.test.click
+import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.onNodeWithTag
 import com.github.takahirom.roborazzi.captureRoboImage
 import com.pocketstudio.model.withFx
 import com.pocketstudio.app.latency.LatencyScreen
@@ -64,13 +71,15 @@ open class ScreenshotTest {
     protected open val prefix: String = ""
     protected open fun wanted(name: String): Boolean = true
 
-    private fun shoot(name: String, palette: Palette = Palettes.Studio, content: @Composable () -> Unit) {
+    /** [prepare]: touches made before the image (a switch that only the screen itself holds). */
+    protected fun shoot(name: String, palette: Palette = Palettes.Studio, prepare: () -> Unit = {}, content: @Composable () -> Unit) {
         org.junit.Assume.assumeTrue(wanted(name))
         compose.setContent {
             PocketStudioTheme(palette) {
                 Box(Modifier.fillMaxSize().background(Neon.Background)) { content() }
             }
         }
+        prepare()
         compose.onRoot().captureRoboImage("screenshots/$prefix$name.png")
     }
 
@@ -118,6 +127,40 @@ open class ScreenshotTest {
         }
     }
 
+    /** « Force »: a touch low on a hit makes it soft, the slider shows its strength. */
+    @Test
+    @Config(qualifiers = "w400dp-h1300dp-xxhdpi")
+    fun rhythmVelocity() {
+        org.junit.Assume.assumeTrue(wanted("rhythm_velocity"))
+        var drums = DrumPattern()
+        DrumKitInfo.starterHits.forEach { (lane, steps) -> steps.forEach { drums = drums.toggle(lane, it) } }
+        drums = drums.withHitVelocity(0, 8, 0.65f).withHitVelocity(0, 12, 0.3f)
+        var project by androidx.compose.runtime.mutableStateOf(Project(tempoBpm = 124.0, drums = drums))
+        compose.setContent {
+            PocketStudioTheme {
+                Box(Modifier.fillMaxSize().background(Neon.Background)) {
+                    RhythmScreen(
+                        project = project,
+                        transport = TransportUi(selectedPad = 0),
+                        live = LiveUi(),
+                        canUndo = true,
+                        canRedo = false,
+                        actions = RhythmActions(setHitVelocity = { step, v -> project = project.copy(drums = project.drums.withHitVelocity(0, step, v)) }),
+                    )
+                }
+            }
+        }
+        compose.onNodeWithTag("velocity_tool").performScrollTo().performClick()
+        // Three quarters down the cell: a soft hit (about a quarter).
+        compose.onNodeWithTag("step_4").performTouchInput { click(androidx.compose.ui.geometry.Offset(width / 2f, height * 0.75f)) }
+        compose.waitForIdle()
+        org.junit.Assert.assertEquals(0.25f, project.drums.lanes[0].hits[4]!!.velocity, 0.05f)
+        // An empty cell gets no hit from this tool.
+        compose.onNodeWithTag("step_1").performTouchInput { click(center) }
+        org.junit.Assert.assertNull(project.drums.lanes[0].hits[1])
+        compose.onRoot().captureRoboImage("screenshots/${prefix}rhythm_velocity.png")
+    }
+
     @Test
     fun rhythm() = shoot("rhythm") {
         var drums = DrumPattern()
@@ -136,6 +179,8 @@ open class ScreenshotTest {
             canRedo = false,
             actions = RhythmActions(),
             padSound = com.pocketstudio.app.rhythm.PadSoundUi(mapOf("k.wav" to info)),
+            // A project with a song: next to Play, what it plays (here the section, in a loop).
+            listenSong = false,
         )
     }
 
@@ -195,6 +240,34 @@ open class ScreenshotTest {
             com.pocketstudio.app.audiotracks.AudioTracksUi(
                 tracks, recording = com.pocketstudio.app.rhythm.AudioRecordingUi(1, waiting = false, seconds = 3.4f, level = 0.6f),
                 info = mapOf("v.wav" to com.pocketstudio.app.rhythm.SampleInfo(7.6, peaks)),
+                sceneTitle = "B · Couplet",
+                listening = com.pocketstudio.app.audio.Listening.Speaker,
+            ),
+            com.pocketstudio.app.audiotracks.AudioTracksActions(),
+        )
+    }
+
+    @Test
+    fun audioTracksOnTheSong() = shoot("audio_tracks_song") {
+        // Before a take: « Enregistrer sur » the whole song from part 2; a song clip recorded at
+        // another tempo, nudged 15 ms earlier; Bluetooth headphones.
+        val tracks = listOf(
+            com.pocketstudio.model.AudioTrack(
+                0, "Voix", 1,
+                com.pocketstudio.model.AudioClip("v.wav", "Prise 21:14", 54.0, start = 128, song = true, offsetMs = -15f, bpm = 138.0),
+            ),
+            com.pocketstudio.model.AudioTrack(1, "Guitare", 3, com.pocketstudio.model.AudioClip("g.wav", "Prise 21:20", 6.2, once = true)),
+        )
+        com.pocketstudio.app.audiotracks.AudioTracksScreen(
+            com.pocketstudio.app.audiotracks.AudioTracksUi(
+                tracks,
+                sceneTitle = "B · Couplet",
+                songParts = listOf("A · Intro", "B · Couplet", "C · Refrain", "B · Couplet"),
+                songBars = 64,
+                tempoBpm = 140.0,
+                target = com.pocketstudio.app.rhythm.RecordTarget(song = true, fromPart = 1),
+                listening = com.pocketstudio.app.audio.Listening.Bluetooth,
+                latencyMeasured = true,
             ),
             com.pocketstudio.app.audiotracks.AudioTracksActions(),
         )
@@ -246,18 +319,29 @@ open class ScreenshotTest {
 
     @Test
     fun topBar() = shoot("top_bar") {
-        // The scene chip at a small phone's, a usual phone's and a big phone's width.
-        val scenes = com.pocketstudio.app.ui.SceneChipUi(current = 2, titles = listOf("A · Intro", "B · Couplet", "C · Refrain", "D · Fin"))
+        // The scene chip at a small phone's, a usual phone's and a big phone's width, built the app's way
+        // (section names saved in French, shown in the interface's language).
+        val labels = listOf("Intro", "Couplet", "Refrain", "Fin")
+        val project = com.pocketstudio.model.Project(
+            scenes = labels.mapIndexed { i, l -> com.pocketstudio.model.Scene(com.pocketstudio.model.Scene.NAMES[i], com.pocketstudio.model.DrumPattern().toggle(0, 0), label = l) },
+            scene = 2,
+        )
+        val scenes = com.pocketstudio.app.ui.sceneChip(project)
         androidx.compose.foundation.layout.Column(verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(16.dp)) {
             listOf(300, 360, 400).forEach { w ->
                 Box(Modifier.width(w.dp)) {
                     com.pocketstudio.app.ui.TopBar(
-                        com.pocketstudio.app.ui.TopBarUi("Da Funk (remix)", 111.0, playing = false, canUndo = true, canRedo = true, scene = scenes),
+                        com.pocketstudio.app.ui.TopBarUi("Da Funk (remix)", 111.0, playing = false, canUndo = true, canRedo = true, scene = scenes, saved = true),
                         com.pocketstudio.app.ui.TopBarActions(),
                     )
                 }
             }
         }
+    }
+
+    @Test
+    fun helpPage() = shoot("help_page") {
+        com.pocketstudio.app.settings.HelpPage(com.pocketstudio.app.settings.HelpActions())
     }
 
     @Test
@@ -486,6 +570,22 @@ open class ScreenshotTest {
             val c = com.pocketstudio.model.Channel().let { it.withFx(com.pocketstudio.model.FxPresets.byId("underwater")!!) }
             com.pocketstudio.app.mixer.QuickFxPanel(2, c, com.pocketstudio.app.mixer.QuickFxActions())
         }
+    }
+
+    @Test
+    fun synthChordPads() = shoot("synth_chord_pads", prepare = {
+        compose.onNode(androidx.compose.ui.test.hasTestTag("chord_pads_switch")).performClick()
+    }) {
+        // The synth with its chord pads on (a guitarist's way in), in A minor.
+        com.pocketstudio.app.synth.SynthScreen(
+            patch = com.pocketstudio.model.SynthPatch.PRESETS[1].second,
+            octave = 4,
+            actions = com.pocketstudio.app.synth.SynthActions(),
+            notes = com.pocketstudio.app.synth.NotesUi(
+                com.pocketstudio.model.NoteClip(), emptyList(), -1, com.pocketstudio.app.synth.PianoRollActions(),
+                harmony = com.pocketstudio.model.Harmony(9, com.pocketstudio.model.Scale.Minor, lock = true),
+            ),
+        )
     }
 
     @Test

@@ -364,25 +364,35 @@ JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_recordSt
     return out;
 }
 
-// Ends the recording and returns what was recorded (mono, 48 kHz), freeing the buffer; null when
-// the engine could not let go of it in time (the buffer is then kept, never freed under it).
+static jfloatArray takeOut(JNIEnv* env, ps::RecordBuffer* b) {
+    const auto frames = static_cast<jsize>(std::min<int64_t>(b->written.load(std::memory_order_acquire), static_cast<int64_t>(b->data.size())));
+    jfloatArray out = env->NewFloatArray(frames);
+    if (out && frames > 0) env->SetFloatArrayRegion(out, 0, frames, b->data.data());
+    return out;
+}
+
+// Ends the recording and returns what was recorded (mono, 48 kHz), freeing the buffer. When the
+// stream is closed (the app was closed in the middle of a take), the engine cannot let go of it:
+// what was recorded is copied out all the same (the audio thread cannot run meanwhile) and the
+// buffer is kept until the engine lets go. Null only when the stream runs but never answered.
 JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_recordFinish(JNIEnv* env, jobject, jlong handle) {
     auto* b = reinterpret_cast<ps::RecordBuffer*>(handle);
     host().post({ps::CommandType::RecordStop, 0.0f});
     for (int waited = 0; waited < 1000 && b->state.load(std::memory_order_acquire) != 2; waited += 2) {
+        if (host().runWhileStopped([] {})) break;  // closed: no callback will apply the stop
         std::this_thread::sleep_for(std::chrono::milliseconds(2));
     }
     host().stopRecordingInput(ps::AudioHost::MicRecording);
     if (b->state.load(std::memory_order_acquire) != 2) {
+        jfloatArray out = nullptr;
+        host().runWhileStopped([&] { out = takeOut(env, b); });
         // The engine may still apply the queued commands when the stream comes back: keep the
         // buffer until it says it let go.
         std::lock_guard<std::mutex> guard(zombieLock);
         zombies.push_back(b);
-        return nullptr;
+        return out;
     }
-    const auto frames = static_cast<jsize>(std::min<int64_t>(b->written.load(std::memory_order_acquire), static_cast<int64_t>(b->data.size())));
-    jfloatArray out = env->NewFloatArray(frames);
-    if (out && frames > 0) env->SetFloatArrayRegion(out, 0, frames, b->data.data());
+    jfloatArray out = takeOut(env, b);
     delete b;
     freeReleasedTakes();
     return out;
@@ -534,6 +544,13 @@ JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportScheduleF
 // The last `frames` of the next render fade to silence (0: none).
 JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportSetFadeOut(JNIEnv*, jobject, jlong handle, jlong frames) {
     renderer(handle)->setFadeOut(frames);
+}
+
+// The next render's tail ends by itself (tail = a cap); its WAV is 32-bit float.
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportSetOptions(JNIEnv*, jobject, jlong handle, jboolean autoTail,
+                                                                                jboolean floatWav) {
+    renderer(handle)->setAutoTail(autoTail);
+    renderer(handle)->setFloatWav(floatWav);
 }
 
 JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_exportRender(JNIEnv* env, jobject, jlong handle,

@@ -76,15 +76,8 @@ import com.pocketstudio.ui.NeonCard
 import com.pocketstudio.ui.SectionLabel
 import kotlin.math.roundToInt
 
-private val NOTE_NAMES = listOf("Do", "Do#", "Ré", "Ré#", "Mi", "Fa", "Fa#", "Sol", "Sol#", "La", "La#", "Si")
-private val NOTE_NAMES_EN = listOf("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B")
-
-/** "La" for a MIDI note, French names, no octave. */
-fun noteNameFr(midi: Int): String = NOTE_NAMES[Math.floorMod(midi, 12)]
-
-/** French (Do Ré Mi) or English (C D E) name, as most tabs found online use. */
-fun noteName(midi: Int, english: Boolean): String =
-    (if (english) NOTE_NAMES_EN else NOTE_NAMES)[Math.floorMod(midi, 12)]
+/** French (Do Ré Mi) or English (C D E) name, no octave, as most tabs found online use. */
+fun noteName(midi: Int, english: Boolean): String = com.pocketstudio.model.NoteNames.pitchClass(midi, english)
 
 /** The note naming the user picked, remembered on the phone. */
 /** Note names follow Réglages › Notation (also switchable from the acid grid). */
@@ -146,7 +139,7 @@ fun AcidScreen(
             }
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 Text(tr("Densité"), Modifier.weight(1f))
-                Text("${(acid.density * 100).roundToInt()} %", style = MonoStyle, color = Neon.Cyan)
+                Text(com.pocketstudio.model.i18n.percent((acid.density * 100).roundToInt()), style = MonoStyle, color = Neon.Cyan)
             }
             ProSlider(value = acid.density, onValueChange = actions.setDensity)
         }

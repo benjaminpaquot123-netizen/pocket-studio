@@ -1,41 +1,61 @@
 {
-  "id": "phase22-langues-tablette",
-  "milestone": "Phase 22 : langues et tablette",
+  "id": "phase23-audit-a-cinq",
+  "milestone": "Phase 23 : corrections de l'audit à cinq",
   "items": [
     {
-      "id": "lang_first",
-      "title": "Langue au démarrage",
-      "hint": "Efface les données de l'appli (ou réinstalle) : le premier écran montre Français (coché), English, Nederlands en haut."
+      "id": "wizard_fast",
+      "title": "Assistant express",
+      "hint": "Nouveau morceau guidé : les styles tiennent à 5 ou 6 par écran, ▶ fait écouter un style. Dès l'étape 2, « Créer tout de suite » fabrique le morceau."
     },
     {
-      "id": "lang_switch",
-      "title": "Changer de langue",
-      "hint": "Outils › Réglages › Langue : choisis English. Tout l'écran passe en anglais, les noms de notes deviennent C D E. Reviens en Français."
+      "id": "grid_visible",
+      "title": "Grille visible",
+      "hint": "Onglet Rythme sur le téléphone : la première rangée de cases se voit sans faire défiler. La phrase sous les pads explique pads et cases."
     },
     {
-      "id": "lang_nl",
-      "title": "Néerlandais",
-      "hint": "Passe en Nederlands et fais un tour : Rythme, Morceau, Mixeur. Note un texte coupé ou resté en français."
+      "id": "listen_toggle",
+      "title": "Écouter : section ou morceau",
+      "hint": "À côté de Jouer, choisis « cette section » : ▶ boucle la section affichée. « tout le morceau » joue tout du début."
     },
     {
-      "id": "tab_portrait",
-      "title": "Tablette debout",
-      "hint": "Sur la Galaxy Tab tenue droite : Rythme montre les pads à gauche et les pas à droite ; Morceau, le morceau à gauche et les scènes à droite."
+      "id": "pad_sound",
+      "title": "Changer le son d'un pad",
+      "hint": "Touche un pad, puis « Changer le son » en haut de la carte « Son du pad » : la bibliothèque s'ouvre."
     },
     {
-      "id": "tab_landscape",
+      "id": "voice_song",
+      "title": "Voix sur tout le morceau",
+      "hint": "Audio › Pistes audio : « Enregistrer sur : Tout le morceau », chante un couplet, arrête. Relance le morceau : la voix ne redémarre pas à chaque partie."
+    },
+    {
+      "id": "voice_safe",
+      "title": "Prise jamais perdue",
+      "hint": "Pendant une prise, ferme l'appli depuis les applis récentes. Rouvre-la : la prise est sur sa piste."
+    },
+    {
+      "id": "headphones",
+      "title": "Écouteurs",
+      "hint": "Sans écouteurs, la carte de prise conseille d'en mettre. Avec un casque Bluetooth, un petit avertissement de retard apparaît. « Décaler la prise » recale la voix."
+    },
+    {
+      "id": "top_record",
+      "title": "Le ● du haut",
+      "hint": "Sur Audio › Pistes audio, le ● rouge du haut lance une prise au micro sur la piste."
+    },
+    {
+      "id": "stems",
+      "title": "Pistes séparées",
+      "hint": "Mixeur › Exporter › « Piste par piste » : remises ensemble dans une autre appli, les pistes redonnent le mix."
+    },
+    {
+      "id": "notes_en",
+      "title": "C D E en anglais",
+      "hint": "Réglages › Langue › English : pads d'accords « Am, Dm », piano roll en C D E, accordeur avec les cordes de guitare E2 A2 D3 G3 B3 E4."
+    },
+    {
+      "id": "tablet_land",
       "title": "Tablette couchée",
-      "hint": "Tourne la tablette : la barre d'onglets passe sur le côté, les deux colonnes restent, rien n'est géant ni coupé."
-    },
-    {
-      "id": "tab_synth",
-      "title": "Synthé sur tablette",
-      "hint": "Synthé, tablette debout : clavier de trois octaves ; Notes : le piano roll prend toute la largeur."
-    },
-    {
-      "id": "tab_mixer",
-      "title": "Mixeur sur tablette",
-      "hint": "Mixeur : les voies à gauche, la sortie et les effets à droite ; « Partager mon morceau » en haut."
+      "hint": "Synthé en paysage : tous les sons tout prêts et le choix 2 octaves / 1 octave / Gamme sont là."
     }
   ]
 }

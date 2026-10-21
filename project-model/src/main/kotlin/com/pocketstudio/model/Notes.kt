@@ -9,20 +9,26 @@ data class Note(val start: Int, val length: Int, val pitch: Int, val velocity: F
     val end: Int get() = start + length
 }
 
-/** The synth's notes: a loop of [steps] sixteenths (1 to 8 bars). */
+/**
+ * The synth's notes: a loop of [steps] sixteenths (1 to 8 bars). [notes] are the ones in the loop
+ * (played, shown, exported); [hidden] the ones past its end after it was shortened: kept unheard
+ * and back in [notes] when the loop is long enough again, as the drums keep their hits.
+ */
 @Serializable
 data class NoteClip(
     val steps: Int = 16,
     val notes: List<Note> = emptyList(),
     val performance: Performance = Performance(),
+    val hidden: List<Note> = emptyList(),
 ) {
     val ticks: Int get() = steps * TICKS_PER_STEP
 
     fun sanitized(): NoteClip {
         val s = steps.coerceIn(MIN_STEPS, MAX_STEPS).let { (it / 16).coerceAtLeast(1) * 16 }
         val total = s * TICKS_PER_STEP
-        val clean = notes.asSequence()
-            .filter { it.start in 0 until total && it.velocity.isFinite() }
+        val clean = (notes + hidden).asSequence()
+            // Past the longest loop a note goes for good.
+            .filter { it.start in 0 until MAX_STEPS * TICKS_PER_STEP && it.velocity.isFinite() }
             .map {
                 it.copy(
                     length = it.length.coerceIn(1, MAX_TICKS),
@@ -31,16 +37,26 @@ data class NoteClip(
                 )
             }
             .sortedWith(compareBy({ it.start }, { it.pitch }))
-            .take(MAX_NOTES)
             .toList()
-        return copy(steps = s, notes = clean, performance = performance.sanitized())
+        val (inLoop, past) = clean.partition { it.start < total }
+        val shown = inLoop.take(MAX_NOTES)
+        return copy(steps = s, notes = shown, hidden = past.take(MAX_NOTES - shown.size), performance = performance.sanitized())
     }
+
+    /** No note at all, not even past the loop's end (« Effacer »). */
+    fun cleared(): NoteClip = copy(notes = emptyList(), hidden = emptyList())
 
     fun add(note: Note) = copy(notes = notes + note).sanitized()
 
     fun remove(note: Note) = copy(notes = notes - note)
 
     fun replace(old: Note, new: Note) = copy(notes = notes.map { if (it == old) new else it }).sanitized()
+
+    /**
+     * [tick] folded into the loop: a note quantized onto the loop's end (the next « 1 ») starts the
+     * loop, as it is heard, instead of sitting a tick before it.
+     */
+    fun wrap(tick: Int): Int = Math.floorMod(tick, ticks.coerceAtLeast(1))
 
     /** The note under ([tick], [pitch]), the most recent first. */
     fun noteAt(tick: Int, pitch: Int): Note? = notes.lastOrNull { it.pitch == pitch && tick >= it.start && tick < it.end }
@@ -54,7 +70,7 @@ data class NoteClip(
         return copy(
             notes = notes.map { n ->
                 val target = (n.start.toFloat() / gridTicks).roundToInt() * gridTicks
-                n.copy(start = (n.start + (target - n.start) * k).roundToInt().coerceIn(0, ticks - 1))
+                n.copy(start = wrap((n.start + (target - n.start) * k).roundToInt()))
             },
         ).sanitized()
     }
@@ -84,7 +100,8 @@ data class NoteClip(
                 Note((bar * 16 + step) * TICKS_PER_STEP, (next - step).coerceIn(1, 8) * TICKS_PER_STEP, pitch, velocity)
             }
         }
-        return copy(steps = 16 * degrees.size.coerceAtLeast(1), notes = notes).sanitized()
+        // A new clip: notes hidden by an earlier shortening do not come back inside it.
+        return copy(steps = 16 * degrees.size.coerceAtLeast(1), notes = notes, hidden = emptyList()).sanitized()
     }
 
     /** One chord per bar on the scale [degrees] (0 = I), held for the bar. */
@@ -93,7 +110,7 @@ data class NoteClip(
         val chords = degrees.flatMapIndexed { i, degree ->
             harmony.chord(harmony.degreeRoot(degree, octaveRoot)).map { Note(i * bar, bar, it, velocity) }
         }
-        return copy(steps = 16 * degrees.size.coerceAtLeast(1), notes = chords).sanitized()
+        return copy(steps = 16 * degrees.size.coerceAtLeast(1), notes = chords, hidden = emptyList()).sanitized()
     }
 
     companion object {

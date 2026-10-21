@@ -34,6 +34,19 @@ class ProjectJsonTest {
     }
 
     @Test
+    fun theMasterGainIsSavedAndOldProjectsStayAtUnity() {
+        assertEquals(0f, ProjectJson.decode("""{"name":"Vieux","mixer":{"buses":[]}}""").mixer.masterDb, 0f)
+        val p = Project().copy(mixer = Mixer(masterDb = -6f))
+        val back = ProjectJson.decode(ProjectJson.encode(p))
+        assertEquals(-6f, back.mixer.masterDb, 0f)
+        assertEquals(0.501f, back.mixer.masterGain, 0.001f)
+        assertEquals(1f, Mixer().masterGain, 0f)
+        // Out of range (a hand-edited file): held to -24..+6 dB.
+        assertEquals(Mixer.MASTER_MAX_DB, ProjectJson.decode("""{"mixer":{"masterDb":40}}""").mixer.masterDb, 0f)
+        assertEquals(Mixer.MASTER_MIN_DB, ProjectJson.decode("""{"mixer":{"masterDb":-400}}""").mixer.masterDb, 0f)
+    }
+
+    @Test
     fun newerFileWithUnknownFieldsStillLoads() {
         val decoded = ProjectJson.decode("""{"name":"Futur","tempoBpm":128,"stems":[1,2,3],"drums":{"steps":16,"groove":"x"}}""")
         assertEquals("Futur", decoded.name)
@@ -203,8 +216,24 @@ class ProjectSessionTest {
         val io = StandardTestDispatcher(testScheduler)
         val session = ProjectSession("p", Project(), store, this, io, clock = { testScheduler.currentTime })
         session.edit { it.copy(name = "x") }
-        session.flush()
+        assertTrue(session.unsaved.value)
+        // flush says so: a take's waiting note must not be removed then.
+        assertFalse(session.flush())
         assertNotNull(session.lastSaveError.value)
+        assertTrue(session.unsaved.value)
+    }
+
+    @Test
+    fun flushSaysWhenEverythingIsOnDisk() = runTest {
+        val store = ProjectStore(tmp.root)
+        val io = StandardTestDispatcher(testScheduler)
+        val session = ProjectSession("p", Project(), store, this, io, clock = { testScheduler.currentTime })
+        assertTrue(session.flush())  // nothing waiting
+        session.edit { it.copy(name = "x") }
+        assertTrue(session.unsaved.value)
+        assertTrue(session.flush())
+        assertFalse(session.unsaved.value)
+        assertEquals("x", store.load("p")!!.name)
     }
 }
 

@@ -307,7 +307,7 @@ object Glossary {
     )
     val AUDIO_TRACK: Help get() = Help(
         tr("Piste audio"),
-        tr("Une piste qui joue un enregistrement (micro ou fichier) à partir d'un endroit du morceau."),
+        tr("Une piste qui joue un enregistrement (micro ou fichier) : une fois dans chaque partie de sa scène, ou d'un bout à l'autre du morceau. Enregistre avec des écouteurs."),
     )
     val GENERATE: Help get() = Help(
         tr("Générer un son"),

@@ -78,8 +78,10 @@ void Engine::applyCommand(const Command& command) {
             if (command.value > 0.5f) {
                 sequencer_.start(std::clamp(command.a, 0, 4));
                 sceneStart_ = 0;
-                songStart_ = 0;
+                // Started from a later song part: the song position counts from that part's place.
+                songStart_ = -std::max(0, command.b);
                 songRestart_ = false;
+                audio_.songJump();
                 lastLocal_ = -1;
                 countInStep_ = 0;
                 playPosition_.store(-1.0, std::memory_order_relaxed);
@@ -130,7 +132,12 @@ void Engine::applyCommand(const Command& command) {
             audio_.install(command.a, command.sample);  // takes the reference
             break;
         case CommandType::SetAudioClipParam:
-            audio_.setParam(command.a, command.b, command.value);
+            // A part's own loop ("once" clips): it takes over with the waiting scene.
+            if (staging_ && command.b == AudioTracks::LoopSteps && command.a >= 0 && command.a < AudioTracks::kTracks) {
+                staged_.audioLoop[static_cast<size_t>(command.a)] = std::max(0, static_cast<int>(std::lround(command.value)));
+            } else {
+                audio_.setParam(command.a, command.b, command.value);
+            }
             break;
         case CommandType::RecordArm:
             finishRecording();
@@ -201,7 +208,9 @@ void Engine::applyCommand(const Command& command) {
             break;
         case CommandType::ArmSceneSwap:
             swapAt_ = command.a < 0 ? -1 : command.a;
+            if (command.a < 0) staged_.audioLoop.fill(-1);  // the cancelled scene's loops never apply later
             songRestart_ = command.b == 1;  // the waiting scene starts the song over (it loops)
+            songRestartAt_ = command.b == 1 && std::isfinite(command.value) ? std::max(0, static_cast<int>(std::lround(command.value))) : 0;
             stopAtSwap_ = command.b == 2;   // the song ends there: the transport stops instead
             staging_ = false;  // arming ends a staging burst even if its "off" was dropped
             break;
@@ -286,6 +295,11 @@ void Engine::applyCommand(const Command& command) {
             break;
         case CommandType::SetMacro:
             mixer_.setMacro(command.a, command.b, command.value);
+            break;
+        case CommandType::SetMaster:
+            if (command.a == 0) mixer_.setMasterGain(command.value);
+            else if (command.a == 1) mixer_.setLimiter(command.value > 0.5f);
+            else if (command.a == 2) mixer_.setMasterFx(command.value > 0.5f);
             break;
         case CommandType::SetSend:
             mixer_.setSend(command.a, command.b, command.value);
@@ -388,6 +402,7 @@ void Engine::stopTransport() {
     swapAt_ = -1;
     stopAtSwap_ = false;
     staging_ = false;  // a lost "staging off" must never trap later edits
+    staged_.audioLoop.fill(-1);  // a part that never came must not change a clip's loop at a later swap
     sequencer_.stop();
     rollCount_ = 0;
     stems_.stop();
@@ -452,7 +467,7 @@ void Engine::onStep(int offset, int step) {
     // Patterns count from the start of their scene; the remix stems follow the transport.
     const int local = step - sceneStart_;
     acid_.onStep(offset, local, sequencer_.samplesPerStep());
-    audio_.onStep(offset, local);
+    audio_.onStep(offset, local, step - songStart_, sequencer_.samplesPerStep(), sequencer_.swing(), songStart_);
     for (auto& t : tracks_) {
         if (t.on) t.notes.onStep(offset, local, sequencer_.samplesPerStep());
         t.arpSync(offset, step, sequencer_.samplesPerStep());
@@ -512,15 +527,27 @@ void Engine::swapScene(int step) {
     for (int i = 0; i < AcidTrack::kMaxSteps; ++i) acid_.setStep(i, staged_.acid[static_cast<size_t>(i)]);
     acid_.setLength(staged_.acidLength);
     for (auto& t : tracks_) t.swapIn();
-    for (int k = 0; k < AudioTracks::kTracks; ++k) audio_.setOn(k, staged_.audioOn[static_cast<size_t>(k)]);
+    for (int k = 0; k < AudioTracks::kTracks; ++k) {
+        audio_.setOn(k, staged_.audioOn[static_cast<size_t>(k)]);
+        auto& loop = staged_.audioLoop[static_cast<size_t>(k)];
+        if (loop >= 0) audio_.setParam(k, AudioTracks::LoopSteps, static_cast<float>(loop));
+        loop = -1;
+    }
     for (auto& lane : automation_.lanes) {
         if (!lane.hasStaged) continue;
         lane.values = lane.staged;
         lane.hasStaged = false;
     }
     sceneStart_ = step;
-    if (songRestart_) songStart_ = step;
+    if (songRestart_) {
+        // A part that simply follows keeps the song running; a jump (back to the start, or to
+        // another part) moves it, and song clips pick up there.
+        const int start = step - songRestartAt_;
+        if (start != songStart_) audio_.songJump();
+        songStart_ = start;
+    }
     songRestart_ = false;
+    songRestartAt_ = 0;
     swapAt_ = -1;
     sceneSwaps_.fetch_add(1, std::memory_order_relaxed);
 }

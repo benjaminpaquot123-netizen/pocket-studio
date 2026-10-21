@@ -52,7 +52,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalViewConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
-import com.pocketstudio.app.acid.noteNameFr
 import com.pocketstudio.model.Note
 import com.pocketstudio.model.NoteEdits
 import com.pocketstudio.model.NoteClip
@@ -144,7 +143,7 @@ fun PianoRoll(
                 Text(tr("Boucle"), style = MaterialTheme.typography.bodySmall)
                 NoteClip.LENGTHS_IN_STEPS.forEach { steps ->
                     FilterChip(selected = clip.steps == steps, onClick = { actions.setSteps(steps) },
-                        label = { Text(tr("%d mes.", steps / 16)) }, colors = chipColors)
+                        label = { Text(com.pocketstudio.app.ui.barsShort(steps / 16)) }, colors = chipColors)
                 }
                 Text(tr("  Note"), style = MaterialTheme.typography.bodySmall)
                 NEW_LENGTHS.forEach { (steps, label) ->
@@ -162,7 +161,7 @@ fun PianoRoll(
             } else {
                 Row(Modifier.fadingHorizontalScroll(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
                     TextButton(onClick = { actions.quantize(grid, 0.5f) }, modifier = Modifier.testTag("quantize_50")) { Text(tr("Quantifier 50 %")) }
-                    TextButton(onClick = { actions.quantize(grid, 1f) }) { Text("100 %") }
+                    TextButton(onClick = { actions.quantize(grid, 1f) }) { Text(com.pocketstudio.model.i18n.percent(100)) }
                     FilterChip(selected = showGhosts, onClick = { showGhosts = !showGhosts }, label = { Text(tr("Basse en fantôme")) }, colors = chipColors)
                     FilterChip(selected = chordMode, onClick = { chordMode = !chordMode }, label = { Text(tr("Accords")) }, colors = chipColors,
                         modifier = Modifier.testTag("chord_mode"))
@@ -198,6 +197,8 @@ private fun SelectionBar(
     apply: (NoteEdits.Result, String?) -> Unit,
 ) {
     val any = selection.isNotEmpty()
+    // A paste that did not all fit in the loop says so (until the next paste).
+    var noRoom by rememberSaveable { mutableStateOf(false) }
     Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
         Row(Modifier.fadingHorizontalScroll(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
             Text(if (!any) tr("Rien de choisi") else if (selection.size > 1) tr("%d notes", selection.size) else tr("%d note", selection.size),
@@ -219,7 +220,9 @@ private fun SelectionBar(
                     // At the playhead while it plays, else just after the last note.
                     val at = if (playStep >= 0) (playStep % clip.steps) * TICK / grid * grid
                     else ((clip.notes.maxOfOrNull { it.end } ?: 0) + grid - 1) / grid * grid
-                    apply(NoteEdits.paste(clip, clipboard, at.coerceIn(0, clip.ticks - 1)), null)
+                    val pasted = NoteEdits.paste(clip, clipboard, at)
+                    noRoom = pasted.dropped > 0
+                    if (pasted.selection.isNotEmpty()) apply(pasted, null)
                 },
                 enabled = clipboard.isNotEmpty(), modifier = Modifier.testTag("sel_paste"),
             ) { Text(tr("Coller")) }
@@ -229,6 +232,10 @@ private fun SelectionBar(
             TextButton(onClick = { apply(NoteEdits.delete(clip, selection), null) }, enabled = any, modifier = Modifier.testTag("sel_delete")) {
                 Text(tr("Supprimer"), color = if (any) Neon.Red else Neon.TextSecondary)
             }
+        }
+        if (noRoom) {
+            Text(tr("Plus de place : allonge la boucle pour tout coller."), style = MaterialTheme.typography.bodySmall, color = Neon.Amber,
+                modifier = Modifier.testTag("paste_no_room"))
         }
     }
 }
@@ -250,7 +257,7 @@ private fun VelocityLane(
     // Latest values for the gesture without restarting it on every edit.
     val current by androidx.compose.runtime.rememberUpdatedState(clip to selection)
     Row(Modifier.fillMaxWidth().height(56.dp)) {
-        Box(Modifier.width(36.dp), contentAlignment = Alignment.Center) { Text(tr("Force"), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary) }
+        Box(Modifier.width(36.dp), contentAlignment = Alignment.Center) { Text(tr("Vél."), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary) }
         Box(Modifier.weight(1f).horizontalScroll(hScroll)) {
             Canvas(
                 Modifier.size(stepWidth * clip.steps, 56.dp).testTag("velocity_lane").pointerInput(stepPx) {
@@ -303,6 +310,7 @@ private fun Grid(
     apply: (NoteEdits.Result, String?) -> Unit,
 ) {
     val vScroll = rememberScrollState()
+    val english = com.pocketstudio.app.settings.englishNotes()
     val density = LocalDensity.current
     val rowPx = with(density) { ROW.toPx() }
     val stepPx = with(density) { stepWidth.toPx() }
@@ -325,7 +333,7 @@ private fun Grid(
         Column(Modifier.width(36.dp).verticalScroll(vScroll)) {
             for (p in HIGH downTo LOW) {
                 Box(Modifier.size(36.dp, ROW), contentAlignment = Alignment.CenterStart) {
-                    if (p % 12 == 0) Text("${noteNameFr(p)}${p / 12 - 1}", style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary)
+                    if (p % 12 == 0) Text(com.pocketstudio.model.NoteNames.withOctave(p, english), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary)
                 }
             }
         }
@@ -503,7 +511,6 @@ private class GridColors(
     val note: Color, val ghost: Color, val play: Color, val outside: Color, val rootRow: Color,
 )
 
-private val ROOTS = listOf("Do", "Do#", "Ré", "Ré#", "Mi", "Fa", "Fa#", "Sol", "Sol#", "La", "La#", "Si")
 private val ARP_RATES = listOf(48 to "1/8", 24 to "1/16", 12 to "1/32")
 private val STRUMS: List<Pair<Int, String>>
     get() = listOf(0 to tr("Non"), 3 to tr("Léger"), 8 to tr("Moyen"), 16 to tr("Lent"))
@@ -523,12 +530,13 @@ private fun ChipRow(label: String, help: Help? = null, content: @Composable () -
 @Composable
 fun HarmonyPanel(harmony: Harmony, performance: Performance, actions: PianoRollActions, notes: List<Note> = emptyList()) {
     val chipColors = pillColors()
+    val english = com.pocketstudio.app.settings.englishNotes()
     val guesses = NoteEdits.guessScales(notes)
     if (guesses.isNotEmpty()) {
         ChipRow(tr("Deviner")) {
             guesses.forEach { g ->
                 TextButton(onClick = { actions.setHarmony(g.copy(lock = harmony.lock)) }, modifier = Modifier.testTag("guess_${g.root}_${g.scale.name}")) {
-                    Text("${ROOTS[g.root]} ${tr(g.scale.label).lowercase()}")
+                    Text("${com.pocketstudio.model.NoteNames.key(g.root, english)} ${tr(g.scale.label).lowercase()}")
                 }
             }
         }
@@ -541,7 +549,8 @@ fun HarmonyPanel(harmony: Harmony, performance: Performance, actions: PianoRollA
     }
     if (harmony.scale != Scale.Off) {
         ChipRow(tr("Tonique")) {
-            ROOTS.forEachIndexed { i, name ->
+            (0..11).forEach { i ->
+                val name = com.pocketstudio.model.NoteNames.key(i, english)
                 FilterChip(selected = harmony.root == i, onClick = { actions.setHarmony(harmony.copy(root = i)) }, label = { Text(name) }, colors = chipColors)
             }
         }

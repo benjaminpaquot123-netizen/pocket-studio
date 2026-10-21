@@ -93,8 +93,7 @@ class LivePadsActions(
 private fun beatsLabel(beats: Int) = when {
     beats == 1 -> tr("1 temps")
     beats < 4 -> tr("%d temps", beats)
-    beats == 4 -> tr("1 mes.")
-    beats % 4 == 0 -> tr("%d mes.", beats / 4)
+    beats % 4 == 0 -> com.pocketstudio.app.ui.barsShort(beats / 4)
     else -> tr("%d temps", beats)
 }
 
@@ -143,7 +142,7 @@ fun LivePadsCard(ui: LivePadsUi, actions: LivePadsActions) {
         }
         ui.busy?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = Neon.Amber) }
         if (ui.editing == null) {
-            OutlinedButton(onClick = { actions.edit(0) }, modifier = Modifier.fillMaxWidth().testTag("live_edit")) { Text("Régler les pads") }
+            OutlinedButton(onClick = { actions.edit(0) }, modifier = Modifier.fillMaxWidth().testTag("live_edit")) { Text(tr("Régler les pads")) }
         } else {
             PadEditor(ui.editing, ui.pads.clips.getOrNull(ui.editing), ui.drumSounds, actions)
         }
@@ -173,7 +172,7 @@ private fun LivePad(i: Int, clip: LiveClip?, state: Int, selected: Boolean, wait
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(4.dp)) {
             val ink = if (state == 2) Color(0xFF14210F) else if (clip == null) Neon.TextSecondary else Neon.TextPrimary
-            Text(clip?.name?.let { tr(it) } ?: "+", color = ink, fontSize = if (clip == null) 22.sp else 12.sp, fontWeight = FontWeight.Bold,
+            Text(clip?.name?.let { com.pocketstudio.model.DefaultNames.shownSample(it) } ?: "+", color = ink, fontSize = if (clip == null) 22.sp else 12.sp, fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center, maxLines = 2, lineHeight = 13.sp)
             if (clip != null) Text(if (clip.oneShot) tr("une fois") else beatsLabel(clip.beats), color = ink.copy(alpha = 0.75f), fontSize = 10.sp, maxLines = 1)
         }
@@ -183,7 +182,7 @@ private fun LivePad(i: Int, clip: LiveClip?, state: Int, selected: Boolean, wait
 @Composable
 private fun PadEditor(pad: Int, clip: LiveClip?, drumSounds: List<Pair<Int, String>>, actions: LivePadsActions) {
     Column(verticalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.testTag("live_editor")) {
-        Text(tr("Pad %1\$d : %2\$s", pad + 1, clip?.name?.let { tr(it) } ?: tr("vide")), style = MaterialTheme.typography.titleSmall)
+        Text(tr("Pad %1\$d : %2\$s", pad + 1, clip?.name?.let { com.pocketstudio.model.DefaultNames.shownSample(it) } ?: tr("vide")), style = MaterialTheme.typography.titleSmall)
         Button(onClick = { actions.library(pad) }, modifier = Modifier.fillMaxWidth().testTag("live_library")) {
             Icon(Icons.Filled.LibraryMusic, contentDescription = null)
             Text("  " + tr("Bibliothèque de sons"))
@@ -204,7 +203,7 @@ private fun PadEditor(pad: Int, clip: LiveClip?, drumSounds: List<Pair<Int, Stri
             Text(tr("Ou le son d'un pad de batterie :"), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
             Row(Modifier.fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 drumSounds.forEach { (drum, name) ->
-                    OutlinedButton(onClick = { actions.fromDrumPad(pad, drum) }) { Text("${drum + 1}. ${tr(name).take(14)}", maxLines = 1) }
+                    OutlinedButton(onClick = { actions.fromDrumPad(pad, drum) }) { Text("${drum + 1}. ${com.pocketstudio.model.DefaultNames.shownSample(name).take(14)}", maxLines = 1) }
                 }
             }
         }
@@ -234,7 +233,7 @@ private fun PadEditor(pad: Int, clip: LiveClip?, drumSounds: List<Pair<Int, Stri
                     Text(" " + tr("Vider"))
                 }
             }
-            OutlinedButton(onClick = { actions.edit(null) }, modifier = Modifier.weight(1f).testTag("live_done")) { Text(tr("Jouer")) }
+            OutlinedButton(onClick = { actions.edit(null) }, modifier = Modifier.weight(1f).testTag("live_done")) { Text(tr("Terminé")) }
         }
     }
 }

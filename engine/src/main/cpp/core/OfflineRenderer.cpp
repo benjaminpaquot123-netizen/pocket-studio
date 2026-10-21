@@ -1,6 +1,7 @@
 #include "OfflineRenderer.h"
 
 #include <algorithm>
+#include <cmath>
 #include <cstdint>
 
 #include "WavWriter.h"
@@ -59,9 +60,15 @@ OfflineRenderer::Result OfflineRenderer::render(int64_t frames, int64_t tailFram
     progress_.store(0.0f, std::memory_order_relaxed);
     // Let parameter smoothers reach the project's settings before the first beat.
     renderSilent(sampleRate_ / 10);
+    engine_->mixer().settle();
     postNow({CommandType::SetTransport, 1.0f, 0});
 
     const int64_t total = frames + tailFrames;
+    // The tail's last half second fades out: a long reverb is not cut dead at the file's end (with
+    // the automatic tail, only one still ringing at the cap gets there).
+    const int64_t fade = std::min<int64_t>(tailFrames, sampleRate_ / 2);
+    const int64_t fadeOut = std::min<int64_t>(fadeOut_, total);
+    int64_t quiet = 0;  // frames in a row under -90 dBFS, in the tail
     for (int64_t done = 0; done < total;) {
         if (cancelled_.load(std::memory_order_relaxed)) return Result::Cancelled;
         // Stop exactly at the end of the loop, then render the tail.
@@ -72,11 +79,8 @@ OfflineRenderer::Result OfflineRenderer::render(int64_t frames, int64_t tailFram
         n = static_cast<int>(std::min<int64_t>(n, std::max<int64_t>(1, nextDue() - done)));
         if (done == frames) postNow({CommandType::SetTransport, 0.0f, 0});
         engine_->process(nullptr, 0, 0, block_, n, 2);
-        // The tail's last half second fades out: a long reverb is not cut dead at the file's end.
         // A requested fade-out takes the end of the file down to silence along a squared curve
         // (closer to how loudness is heard than a straight line). Gains never exceed 1: no clipping.
-        const int64_t fade = std::min<int64_t>(tailFrames, sampleRate_ / 2);
-        const int64_t fadeOut = std::min<int64_t>(fadeOut_, total);
         for (int i = 0; i < n && (fade > 0 || fadeOut > 0); ++i) {
             const int64_t left = total - (done + i);
             if (left >= fade && left >= fadeOut) continue;
@@ -89,16 +93,34 @@ OfflineRenderer::Result OfflineRenderer::render(int64_t frames, int64_t tailFram
             block_[2 * i] *= g;
             block_[2 * i + 1] *= g;
         }
-        if (!sink(block_, n)) return Result::IoError;
-        done += n;
+        // The automatic tail ends on the frame where the output has been quiet long enough.
+        int keep = n;
+        bool ended = false;
+        if (autoTail_ && done + n > frames) {
+            auto& mixer = engine_->mixer();
+            const int64_t window = sampleRate_ / 5 + (mixer.echoInUse() ? static_cast<int64_t>(mixer.echoFrames()) : 0);
+            for (int i = static_cast<int>(std::max<int64_t>(0, frames - done)); i < n; ++i) {
+                const bool silent = std::fabs(block_[2 * i]) < kSilence && std::fabs(block_[2 * i + 1]) < kSilence;
+                quiet = silent ? quiet + 1 : 0;
+                if (quiet >= window) {
+                    keep = i + 1;
+                    ended = true;
+                    break;
+                }
+            }
+        }
+        if (!sink(block_, keep)) return Result::IoError;
+        done += keep;
+        if (ended) break;
         progress_.store(static_cast<float>(done) / static_cast<float>(total), std::memory_order_relaxed);
     }
+    progress_.store(1.0f, std::memory_order_relaxed);
     return Result::Ok;
 }
 
 OfflineRenderer::Result OfflineRenderer::renderToWav(const char* path, int64_t frames, int64_t tailFrames) {
     WavWriter wav;
-    if (!wav.open(path, sampleRate_, 2)) return Result::IoError;
+    if (!wav.open(path, sampleRate_, 2, floatWav_)) return Result::IoError;
     const Result r = render(frames, tailFrames, [&wav](const float* b, int n) { return wav.write(b, n); });
     const bool closed = wav.close();
     if (r != Result::Ok) return r;

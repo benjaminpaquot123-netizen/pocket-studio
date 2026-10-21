@@ -11,13 +11,8 @@ import java.io.File
 data class SongInfo(val bpm: Double = 0.0, val firstBeat: Double = 0.0, val root: Int? = null, val minor: Boolean = false) {
     /** "La mineur": note names as Réglages › Notation says, the words in the interface's language. */
     val keyLabel: String? get() = root?.let {
-        val note = (if (com.pocketstudio.app.settings.SettingsStore.state.value.englishNotes) NOTE_NAMES_EN else NOTE_NAMES)[it]
+        val note = com.pocketstudio.model.NoteNames.key(it, com.pocketstudio.app.settings.SettingsStore.state.value.englishNotes)
         if (minor) tr("%s mineur", note) else tr("%s majeur", note)
-    }
-
-    companion object {
-        val NOTE_NAMES = listOf("Do", "Do#", "Ré", "Mib", "Mi", "Fa", "Fa#", "Sol", "Lab", "La", "Sib", "Si")
-        val NOTE_NAMES_EN = listOf("C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B")
     }
 }
 

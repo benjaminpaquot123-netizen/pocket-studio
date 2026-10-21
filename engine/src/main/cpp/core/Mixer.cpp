@@ -19,6 +19,8 @@ void Mixer::prepare(int sampleRate) {
     delay_.prepare(rate);
     perf_.prepare(rate);
     release_ = std::exp(-1.0f / (0.12f * rate));  // 120 ms release
+    masterGain_.configure(rate, 15.0f);
+    masterGain_.snap(masterGain_.target());
     updateTargets();
     for (auto& s : strips_) {
         s.gainL.snap(s.gainL.target());
@@ -206,7 +208,7 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
             mR_[static_cast<size_t>(i)] += direct[offset + i];
         }
     }
-    if (activeInserts_[kMaster] > 0) {
+    if (activeInserts_[kMaster] > 0 && masterFxOn_) {
         for (auto& slot : inserts_[kMaster]) slot.process(mL_.data(), mR_.data(), n);
     }
     // Always runs: the repeat and the tape stop need the last seconds already recorded.
@@ -231,10 +233,14 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
         float l = mL_[static_cast<size_t>(i)], r = mR_[static_cast<size_t>(i)];
         if (!std::isfinite(l)) l = 0.0f;
         if (!std::isfinite(r)) r = 0.0f;
-        // Peak limiter: instant attack, smooth release, ceiling at -1 dBFS.
+        // The master's gain, then the peak limiter: instant attack, smooth release, ceiling at
+        // -1 dBFS. Without the limiter (a pre-master export) the peaks above 0 dBFS stay as they are.
+        const float master = masterGain_.next();
+        l *= master;
+        r *= master;
         const float peak = std::max(std::fabs(l), std::fabs(r));
         envelope_ = peak > envelope_ ? peak : envelope_ * release_ + peak * (1.0f - release_);
-        const float gain = envelope_ > kCeiling ? kCeiling / envelope_ : 1.0f;
+        const float gain = limiterOn_ && envelope_ > kCeiling ? kCeiling / envelope_ : 1.0f;
         minGain = std::min(minGain, gain);
         l *= gain;
         r *= gain;

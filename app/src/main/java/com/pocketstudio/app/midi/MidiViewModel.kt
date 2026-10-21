@@ -420,13 +420,8 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
         const val CC_SUSTAIN = 64
         /** Pitch bend wheel range in semitones. */
         const val BEND_RANGE = 2f
-        private val NAMES = listOf("Do", "Do#", "Ré", "Ré#", "Mi", "Fa", "Fa#", "Sol", "Sol#", "La", "La#", "Si")
-        private val NAMES_EN = listOf("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B")
-
-        /** "Do 4", or "C 4" when the settings name notes C D E. */
-        fun noteLabel(note: Int): String {
-            val names = if (com.pocketstudio.app.settings.SettingsStore.state.value.englishNotes) NAMES_EN else NAMES
-            return "${names[note % 12]} ${note / 12 - 1}"
-        }
+        /** "Do 3" for MIDI 60, or "C 4" when the settings name notes C D E. */
+        fun noteLabel(note: Int): String =
+            com.pocketstudio.model.NoteNames.withOctave(note, com.pocketstudio.app.settings.SettingsStore.state.value.englishNotes, separator = " ")
     }
 }

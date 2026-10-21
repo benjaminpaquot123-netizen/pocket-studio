@@ -65,7 +65,8 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun duplicate(info: ProjectInfo) = io(tr("Copie du projet")) {
-        catalog.duplicate(info.id, tr("%s (copie)", info.name).take(ProjectCatalog.MAX_NAME))
+        // Saved in French, shown translated (DefaultNames).
+        catalog.duplicate(info.id, "${info.name} (copie)".take(ProjectCatalog.MAX_NAME))
         refreshNow()
     }
 
@@ -78,7 +79,7 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
     fun delete(info: ProjectInfo) = io(tr("Suppression")) {
         val entry = catalog.delete(info.id)
         AppLog.add("Projet mis à la corbeille : « ${info.name} »")
-        _state.value = _state.value.copy(deleted = entry to info.name)
+        _state.value = _state.value.copy(deleted = entry to com.pocketstudio.model.DefaultNames.shown(info.name))
         refreshNow()
     }
 
@@ -86,7 +87,7 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
     fun exportZip(info: ProjectInfo, then: (File) -> Unit) = io(tr("Export du projet")) {
         val app = getApplication<Application>()
         // Dated like the audio exports (old ones cleaned): a share still reading an earlier export is never overwritten.
-        val file = com.pocketstudio.app.export.WavExporter.newFile(app, info.name.ifBlank { "projet" })
+        val file = com.pocketstudio.app.export.WavExporter.newFile(app, com.pocketstudio.model.DefaultNames.shown(info.name).ifBlank { "projet" })
             .let { File(it.parentFile, it.name.removeSuffix(".wav") + ".pocketstudio.zip") }
         file.outputStream().use { catalog.exportZip(info.id, it) }
         AppLog.add("Projet exporté : ${file.length() / 1024} Ko")
@@ -99,7 +100,7 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
         val stream = app.contentResolver.openInputStream(uri) ?: throw java.io.IOException(tr("fichier introuvable"))
         val id = stream.use { catalog.importZip(it) }
         AppLog.add("Projet importé")
-        _state.value = _state.value.copy(message = tr("Projet importé : « %s ». Touche-le pour l'ouvrir.", catalog.info(id)?.name), messageOk = true)
+        _state.value = _state.value.copy(message = tr("Projet importé : « %s ». Touche-le pour l'ouvrir.", catalog.info(id)?.name?.let { com.pocketstudio.model.DefaultNames.shown(it) }), messageOk = true)
         refreshNow()
     }
 

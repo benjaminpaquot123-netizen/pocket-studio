@@ -48,6 +48,8 @@ sealed interface SoundRef {
     data class MoodDemo(val mood: StarterWizard.Mood) : SoundRef
     /** The beat chosen so far, up to [role] played with [sound]: the line heard in its groove. */
     data class LineDemo(val role: Role, val sound: SoundOption) : SoundRef
+    /** A style's drums with its advised sounds, a few bars at its tempo: heard before choosing it. */
+    data class StyleDemo(val styleId: String) : SoundRef
 }
 
 data class SoundOption(val ref: SoundRef, val name: String)
@@ -308,6 +310,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         is SoundRef.Melodic -> partInContext(ref)
         is SoundRef.MoodDemo -> moodDemo(ref.mood)
         is SoundRef.LineDemo -> lineDemo(ref)
+        is SoundRef.StyleDemo -> styleDemo(ref.styleId)
         is SoundRef.Pack -> withContext(Dispatchers.IO) {
             val file = PackStore.file(getApplication(), ref.packId, ref.sound)
             runCatching { AudioDecoder.decode(getApplication(), Uri.fromFile(file)) }
@@ -368,6 +371,14 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
             p to (w.parts[p]?.sound ?: StarterWizard.soundsFor(p, style).first())
         }
         return groove(style, chosenBeat(w, style), parts, mood, bars = 4)
+    }
+
+    /** The style's whole beat with the sounds the assistant would advise, four bars, no melody. */
+    private suspend fun styleDemo(id: String): Pcm? {
+        val style = StarterWizard.style(id) ?: return null
+        val installed = _packs.value.installed
+        val beat = style.lines.mapNotNull { line -> defaultRow(line.role, id, installed).sound?.let { line to it.ref } }
+        return groove(style, beat, emptyList(), style.melody.mood, bars = STYLE_DEMO_BARS, acid = false)
     }
 
     /** The beat up to the line, that line played with the sound being tried. */
@@ -644,6 +655,8 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
 
     companion object {
         private const val KIT_FRAMES = OfflineExport.SAMPLE_RATE * 3L / 2
+        /** Bars of a style heard on its card (a few seconds). */
+        private const val STYLE_DEMO_BARS = 4
 
         /** Drops the silent end of a render (keeps 20 ms after the last audible frame). */
         fun trimSilence(stereo: FloatArray): FloatArray {

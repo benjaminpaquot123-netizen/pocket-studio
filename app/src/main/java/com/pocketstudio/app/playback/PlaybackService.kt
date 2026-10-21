@@ -25,6 +25,7 @@ import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
 import com.pocketstudio.app.MainActivity
 import com.pocketstudio.app.R
+import com.pocketstudio.app.rhythm.TakeVault
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.BufferOverflow
@@ -177,10 +178,14 @@ class PlaybackService : Service() {
         return START_NOT_STICKY
     }
 
-    // The user swiped the app away: stop like a music player would.
+    // The user swiped the app away: stop like a music player would. A microphone take is kept:
+    // the service (and so the app) stays until it is written into the project.
     override fun onTaskRemoved(rootIntent: Intent?) {
         _stopRequests.tryEmit("appli fermée")
-        stopSelf()
+        scope.launch {
+            TakeVault.app.awaitIdle(TAKE_WAIT_MS)
+            stopSelf()
+        }
     }
 
     private fun openApp(): PendingIntent = PendingIntent.getActivity(
@@ -271,11 +276,32 @@ class PlaybackService : Service() {
         }
 
         fun start(context: Context) {
+            starts++
             runCatching { ContextCompat.startForegroundService(context, Intent(context, PlaybackService::class.java)) }
         }
 
         fun stop(context: Context) {
             context.stopService(Intent(context, PlaybackService::class.java))
         }
+
+        /** How long the app is kept for a take being written after it was closed. */
+        const val TAKE_WAIT_MS = 15_000L
+
+        /** [stop], once no microphone take is left to write (the app closing in the middle of one). */
+        fun stopAfterTakes(context: Context) {
+            val app = context.applicationContext
+            if (TakeVault.app.busy.value <= 0) {
+                stop(app)
+                return
+            }
+            val since = starts
+            MainScope().launch {
+                TakeVault.app.awaitIdle(TAKE_WAIT_MS)
+                if (starts == since) stop(app)  // not if the music started again meanwhile
+            }
+        }
+
+        @Volatile
+        private var starts = 0
     }
 }

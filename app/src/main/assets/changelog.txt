@@ -1,5 +1,5 @@
-Phase 22 : « Excalibur ! » (en trois langues, et sur grand écran)
-- Langues : français (par défaut), anglais et néerlandais, au premier lancement et dans Réglages.
-- Tablette : deux colonnes sur grand écran (pads à gauche, pas à droite ; morceau et scènes côte à côte).
-- Plus rien d'étiré : grilles, curseurs et listes gardent une taille confortable, en portrait comme en paysage.
-- Piano roll sur toute la largeur, clavier de trois octaves en portrait.
+Phase 23 : « C'est pas faux ! » (cinq auditeurs, quatre correcteurs)
+- Voix : elle joue d'un bout à l'autre du morceau, s'enregistre pendant qu'il défile, ne se perd plus si l'appli est fermée.
+- Débutants : grille visible tout de suite, « cette section / tout le morceau » à côté de Jouer, « Changer le son », styles à écouter.
+- Pro : pistes séparées propres, volume général, export sans limiteur, outil Force, morceau lancé du milieu au bon endroit.
+- Langues : C D E partout en anglais et néerlandais, 48 traductions revues, accordeur guitare, tablette couchée plus complète.

@@ -78,6 +78,8 @@ class RemixUi(
     /** Waveforms of the stems in the project, and where the playhead is (-1 = stopped). */
     val overview: StemOverview? = null,
     val position: Long = -1,
+    /** Why this device cannot separate a song (not enough memory), said before any download. */
+    val memoryProblem: String? = null,
 )
 
 class RemixActions(
@@ -106,6 +108,8 @@ class RemixActions(
     val setFollowTempo: (Boolean) -> Unit = {},
     /** Touching a waveform: start the remix at that bar (fraction 0..1 of the song). */
     val setStartAt: (Float) -> Unit = {},
+    /** Reads the free memory again. */
+    val checkMemory: () -> Unit = {},
 )
 
 /** Remix: split a song into drums, bass, other and vocals, then listen to each part. */
@@ -147,6 +151,14 @@ private fun RemixStart(ui: RemixUi, actions: RemixActions) {
             else -> {
                 if (s is SeparationState.Failed) {
                     Text(s.message, color = Neon.Amber, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.testTag("remix_error"))
+                }
+                // Said before the model's download, not after it: no song can be separated here now.
+                if (ui.memoryProblem != null) {
+                    Text(ui.memoryProblem, color = Neon.Amber, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.testTag("remix_memory"))
+                    OutlinedButton(onClick = actions.checkMemory, modifier = Modifier.fillMaxWidth().testTag("remix_memory_check")) {
+                        Text(tr("Vérifier à nouveau"))
+                    }
+                    return@NeonCard
                 }
                 if (!ui.modelInstalled) {
                     Text(
@@ -230,7 +242,7 @@ private fun InProject(ui: RemixUi, actions: RemixActions) {
             listOf(1, 2, 4).forEach { b ->
                 FilterChip(
                     selected = padBars == b, onClick = { padBars = b },
-                    label = { Text(tr("%d mes.", b)) },
+                    label = { Text(com.pocketstudio.app.ui.barsShort(b)) },
                     colors = pillColors(),
                 )
             }

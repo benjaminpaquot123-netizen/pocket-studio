@@ -1,6 +1,7 @@
 package com.pocketstudio.app
 
-import com.pocketstudio.model.i18n.I18n
+import androidx.test.core.app.ApplicationProvider
+import com.pocketstudio.app.settings.SettingsStore
 import com.pocketstudio.model.i18n.Lang
 import org.junit.After
 import org.junit.Before
@@ -23,16 +24,19 @@ open class I18nScreenshotTest : ScreenshotTest() {
 
     @Before
     fun language() {
-        I18n.lang = lang
+        // As the language picker does: English and Dutch name notes C D E.
+        SettingsStore.update(ApplicationProvider.getApplicationContext()) { it.copy(language = lang, englishNotes = true) }
     }
 
     @After
     fun french() {
-        I18n.lang = Lang.FR
+        SettingsStore.update(ApplicationProvider.getApplicationContext()) { it.copy(language = Lang.FR, englishNotes = false) }
     }
 
     companion object {
-        val SCREENS = setOf("session", "top_bar", "welcome", "rhythm")
+        val SCREENS = setOf(
+            "session", "top_bar", "welcome", "rhythm", "chord_pads", "piano_roll", "live_pads", "projects", "sampled_instrument", "synth_landscape",
+        )
     }
 }
 

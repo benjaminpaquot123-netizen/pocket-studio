@@ -75,7 +75,7 @@ fun PlayPanel(play: PlayUi, actions: PlayActions) {
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(tr("Longueur des notes"), style = MaterialTheme.typography.labelLarge, modifier = Modifier.weight(1f))
-                Text("${(play.arp.gate * 100).toInt()} %", color = Neon.Cyan)
+                Text(com.pocketstudio.model.i18n.percent((play.arp.gate * 100).toInt()), color = Neon.Cyan)
             }
             ProSlider(value = play.arp.gate, onValueChange = { actions.setArp(play.arp.copy(gate = it.coerceIn(0.05f, 1f))) })
             Text(tr("Garde des touches enfoncées : l'arpège les joue à tour de rôle, en rythme."),

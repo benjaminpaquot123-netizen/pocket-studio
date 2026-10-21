@@ -8,7 +8,8 @@ import kotlin.random.Random
  * function returns the new clip and the new selection, so the edited notes stay selected.
  */
 object NoteEdits {
-    data class Result(val clip: NoteClip, val selection: Set<Note>)
+    /** [dropped]: notes of a paste that did not fit in the loop (none were added for them). */
+    data class Result(val clip: NoteClip, val selection: Set<Note>, val dropped: Int = 0)
 
     private fun replace(clip: NoteClip, selection: Set<Note>, transform: (Note) -> Note): Result {
         val changed = selection.associateWith(transform)
@@ -36,7 +37,7 @@ object NoteEdits {
     fun quantize(clip: NoteClip, selection: Set<Note>, grid: Int, strength: Float = 1f): Result =
         replace(clip, selection) { n ->
             val target = (n.start.toFloat() / grid).roundToInt() * grid
-            n.copy(start = (n.start + (target - n.start) * strength.coerceIn(0f, 1f)).roundToInt().coerceIn(0, clip.ticks - 1))
+            n.copy(start = clip.wrap((n.start + (target - n.start) * strength.coerceIn(0f, 1f)).roundToInt()))
         }
 
     /** Each note lasts until the next note starts (chords: notes starting together end together). */
@@ -74,11 +75,16 @@ object NoteEdits {
         return selection.map { it.copy(start = it.start - first) }.sortedWith(compareBy({ it.start }, { it.pitch }))
     }
 
-    /** Pastes [clipboard] at [at] ticks; the pasted notes become the selection. */
+    /**
+     * Pastes [clipboard] at [at] ticks; the pasted notes become the selection. What starts past the
+     * loop's end is not pasted: [Result.dropped] counts it (the screen asks for a longer loop).
+     */
     fun paste(clip: NoteClip, clipboard: List<Note>, at: Int): Result {
-        val pasted = clipboard.map { it.copy(start = at + it.start) }.filter { it.start < clip.ticks }
+        val pasted = clipboard.map { it.copy(start = at.coerceAtLeast(0) + it.start) }.filter { it.start < clip.ticks }
+        if (pasted.isEmpty()) return Result(clip, emptySet(), clipboard.size)
         val next = clip.copy(notes = clip.notes + pasted).sanitized()
-        return Result(next, pasted.filter { it in next.notes }.toSet())
+        val kept = pasted.filter { it in next.notes }.toSet()
+        return Result(next, kept, clipboard.size - kept.size)
     }
 
     fun delete(clip: NoteClip, selection: Set<Note>): Result = Result(clip.copy(notes = clip.notes - selection), emptySet())

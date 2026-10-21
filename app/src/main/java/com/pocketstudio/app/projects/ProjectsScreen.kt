@@ -1,5 +1,7 @@
 package com.pocketstudio.app.projects
 
+import com.pocketstudio.model.i18n.I18n
+import com.pocketstudio.model.i18n.Lang
 import com.pocketstudio.model.i18n.tr
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
@@ -94,9 +96,11 @@ class ProjectsActions(
 /** "Mes projets": every project on the phone, the open one first in mind; open, create, rename, copy, delete. */
 @Composable
 fun ProjectsScreen(ui: ProjectsUi, currentId: String, starters: List<ProjectStarter>, actions: ProjectsActions, now: Long = System.currentTimeMillis()) {
-    var renaming by remember { mutableStateOf<ProjectInfo?>(null) }
-    var choosingStart by remember { mutableStateOf(false) }
-    var showTrash by remember { mutableStateOf(false) }
+    // Kept when the screen turns: by id (a project's info is not saveable), then looked up.
+    var renamingId by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf<String?>(null) }
+    val renaming = renamingId?.let { id -> ui.projects.firstOrNull { it.id == id } }
+    var choosingStart by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(false) }
+    var showTrash by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(false) }
     // A list to read: centred at a comfortable width on a tablet.
     com.pocketstudio.ui.ReadingWidth {
         Column(Modifier.fillMaxSize().padding(12.dp).testTag("projects"), verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -136,7 +140,7 @@ fun ProjectsScreen(ui: ProjectsUi, currentId: String, starters: List<ProjectStar
             }
             LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.weight(1f)) {
                 items(ui.projects, key = { it.id }) { p ->
-                    ProjectCard(p, p.id == currentId, now, actions, onRename = { renaming = p })
+                    ProjectCard(p, p.id == currentId, now, actions, onRename = { renamingId = p.id })
                 }
                 if (ui.trash.isNotEmpty()) {
                     item(key = "trash") {
@@ -155,18 +159,18 @@ fun ProjectsScreen(ui: ProjectsUi, currentId: String, starters: List<ProjectStar
         }
     }
     renaming?.let { p ->
-        var name by remember(p.id) { mutableStateOf(p.name) }
+        var name by androidx.compose.runtime.saveable.rememberSaveable(p.id) { mutableStateOf(com.pocketstudio.model.DefaultNames.shown(p.name)) }
         AlertDialog(
-            onDismissRequest = { renaming = null },
+            onDismissRequest = { renamingId = null },
             title = { Text(tr("Renommer")) },
             text = {
                 OutlinedTextField(value = name, onValueChange = { name = it.take(40) }, singleLine = true, label = { Text(tr("Nom du projet")) },
                     modifier = Modifier.testTag("project_name_field"))
             },
             confirmButton = {
-                TextButton(onClick = { actions.rename(p, name); renaming = null }, enabled = name.isNotBlank(), modifier = Modifier.testTag("project_rename_ok")) { Text("OK") }
+                TextButton(onClick = { actions.rename(p, name); renamingId = null }, enabled = name.isNotBlank(), modifier = Modifier.testTag("project_rename_ok")) { Text("OK") }
             },
-            dismissButton = { TextButton(onClick = { renaming = null }) { Text(tr("Annuler")) } },
+            dismissButton = { TextButton(onClick = { renamingId = null }) { Text(tr("Annuler")) } },
         )
     }
     if (choosingStart) {
@@ -225,7 +229,7 @@ private fun ProjectCard(p: ProjectInfo, open: Boolean, now: Long, actions: Proje
         Row(Modifier.padding(start = 14.dp, top = 10.dp, bottom = 10.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(p.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, maxLines = 1,
+                    Text(com.pocketstudio.model.DefaultNames.shown(p.name), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, maxLines = 1,
                         overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f, fill = false))
                     if (open) SectionLabel("  " + tr("ouvert"), color = Neon.Acid)
                 }
@@ -233,7 +237,7 @@ private fun ProjectCard(p: ProjectInfo, open: Boolean, now: Long, actions: Proje
                     listOfNotNull(
                         whenText(p.modified, now),
                         if (p.tempoBpm > 0) "${p.tempoBpm.toInt()} BPM" else null,
-                        if (p.bars > 0) tr("%d mes.", p.bars) else null,
+                        if (p.bars > 0) com.pocketstudio.app.ui.barsShort(p.bars) else null,
                         if (p.scenes > 1) tr("%d scènes", p.scenes) else null,
                         if (p.hasRemix) "remix" else null,
                     ).joinToString(" · "),
@@ -248,7 +252,7 @@ private fun ProjectCard(p: ProjectInfo, open: Boolean, now: Long, actions: Proje
             }
             Box {
                 IconButton(onClick = { menu = true }, modifier = Modifier.testTag("project_menu_${p.id}")) {
-                    Icon(Icons.Filled.MoreVert, contentDescription = tr("Options de %s", p.name))
+                    Icon(Icons.Filled.MoreVert, contentDescription = tr("Options de %s", com.pocketstudio.model.DefaultNames.shown(p.name)))
                 }
                 DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
                     DropdownMenuItem(text = { Text(tr("Renommer")) }, onClick = { menu = false; onRename() })
@@ -277,7 +281,7 @@ private fun TrashedCard(t: TrashedProject, now: Long, actions: ProjectsActions) 
     ) {
         Row(Modifier.padding(start = 14.dp, top = 4.dp, bottom = 4.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
-                Text(t.name, style = MaterialTheme.typography.titleMedium, color = Neon.TextSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(com.pocketstudio.model.DefaultNames.shown(t.name), style = MaterialTheme.typography.titleMedium, color = Neon.TextSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Text(tr("supprimé %s", whenText(t.deletedAt, now)), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
             }
             TextButton(onClick = { actions.restore(t) }, modifier = Modifier.testTag("restore_${t.entry}")) { Text(tr("Restaurer")) }
@@ -293,6 +297,12 @@ fun whenText(time: Long, now: Long): String {
         minutes < 60 -> tr("il y a %d min", minutes)
         minutes < 24 * 60 -> tr("il y a %d h", minutes / 60)
         minutes < 48 * 60 -> tr("hier")
-        else -> tr("le %s", SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).format(Date(time)))
+        else -> tr("le %s", shortDate(time))
     }
+}
+
+/** A date the way the interface's language writes it: 21/10/2026 in French and British English, 21-10-2026 in Dutch. */
+fun shortDate(time: Long, lang: Lang = I18n.lang): String {
+    val pattern = if (lang == Lang.NL) "dd-MM-yyyy" else "dd/MM/yyyy"
+    return SimpleDateFormat(pattern, lang.locale).format(Date(time))
 }

@@ -11,6 +11,7 @@ class PocketStudioApplication : Application() {
         // The interface language is known before any screen or notification is drawn.
         com.pocketstudio.app.settings.SettingsStore.load(this)
         Metrics.init(this)
+        com.pocketstudio.app.audio.Headphones.watch(this)
         AppLog.add("Démarrage ${AppInfo.versionLabel}")
     }
 }

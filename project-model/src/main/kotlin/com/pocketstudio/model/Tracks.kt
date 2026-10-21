@@ -25,7 +25,7 @@ data class InstrumentTrack(
     val sampled: SampledPatch = SampledPatch(),
 ) {
     fun sanitized(): InstrumentTrack = copy(
-        name = name.take(MAX_NAME).ifBlank { tr("Piste %d", id + 1) },
+        name = name.take(MAX_NAME).ifBlank { "Piste ${id + 1}" },
         color = color.coerceIn(0, COLORS - 1),
         engine = engine.coerceIn(0, 2),
         synth = synth.sanitized(),
@@ -84,7 +84,7 @@ fun Project.addTrack(name: String? = null, engine: Int = 0): Project? {
     val id = (1 until InstrumentTrack.MAX).firstOrNull { free -> tracks.none { it.id == free } } ?: return null
     val color = (0 until InstrumentTrack.COLORS).firstOrNull { c -> instrumentTracks.none { it.color == c } } ?: (id % InstrumentTrack.COLORS)
     val steps = maxOf(synthNotes.steps, tracks.maxOfOrNull { it.notes.steps } ?: 16)
-    val track = InstrumentTrack(id, name ?: tr("Piste %d", instrumentTracks.size + 1), color, engine, notes = NoteClip(steps = steps))
+    val track = InstrumentTrack(id, name ?: "Piste ${instrumentTracks.size + 1}", color, engine, notes = NoteClip(steps = steps))
     val ch = InstrumentTrack.mixerChannel(id)
     return copy(
         tracks = (tracks + track).sortedBy { it.id },

@@ -20,6 +20,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.AlertDialog
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.Button
@@ -55,6 +65,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.pocketstudio.app.rhythm.DrumKitInfo
 import com.pocketstudio.model.PackEntry
 import com.pocketstudio.model.StarterWizard
@@ -126,20 +137,34 @@ private fun WizardBody(ui: WizardUi, packs: PacksUi, playing: SoundRef?, actions
     // Steps to read: centred at a comfortable width on a tablet.
     com.pocketstudio.ui.ReadingWidth {
         Column(Modifier.fillMaxSize().background(Neon.Background).testTag("wizard")) {
+            // From the third step on, closing loses real choices: asked first.
+            var confirmClose by rememberSaveable { mutableStateOf(false) }
+            val total = wizardStepCount(ui)
             Row(Modifier.fillMaxWidth().padding(start = 16.dp, end = 4.dp, top = 8.dp), verticalAlignment = Alignment.CenterVertically) {
                 Column(Modifier.weight(1f)) {
                     Text(tr("Nouveau morceau, pas à pas"), style = MaterialTheme.typography.titleLarge)
                     Text(
-                        if (ui.step == 0) tr("Étape 1 : le style") else tr("Étape %d sur %d", ui.step + 1, ui.lastStep + 1) + (style?.let { " · ${tr(it.name)}" } ?: ""),
-                        style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
+                        tr("Étape %d sur %d", ui.step + 1, total) + (style?.let { " · ${tr(it.name)}" } ?: ""),
+                        style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.testTag("wizard_step"),
                     )
                 }
-                IconButton(onClick = actions.close, modifier = Modifier.testTag("wizard_close")) { Icon(Icons.Filled.Close, contentDescription = tr("Fermer")) }
+                IconButton(
+                    onClick = { if (ui.step >= CONFIRM_CLOSE_FROM) confirmClose = true else actions.close() },
+                    modifier = Modifier.testTag("wizard_close"),
+                ) { Icon(Icons.Filled.Close, contentDescription = tr("Fermer")) }
             }
-            LinearProgressIndicator(
-                progress = { if (style == null) 0.05f else (ui.step + 1f) / (ui.lastStep + 1f) },
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 6.dp), color = Neon.Cyan,
-            )
+            StepProgress(ui.step + 1, total)
+            if (confirmClose) {
+                AlertDialog(
+                    onDismissRequest = { confirmClose = false },
+                    title = { Text(tr("Quitter l'assistant ?")) },
+                    text = { Text(tr("Tes choix seront perdus. Tu pourras le relancer depuis Mes projets › « Nouveau morceau guidé ».")) },
+                    confirmButton = {
+                        TextButton(onClick = { confirmClose = false; actions.close() }, modifier = Modifier.testTag("wizard_close_confirm")) { Text(tr("Quitter")) }
+                    },
+                    dismissButton = { TextButton(onClick = { confirmClose = false }) { Text(tr("Continuer")) } },
+                )
+            }
             Column(
                 Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(horizontal = 12.dp, vertical = 6.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -153,8 +178,15 @@ private fun WizardBody(ui: WizardUi, packs: PacksUi, playing: SoundRef?, actions
                 }
                 ui.error?.let { Text(it, color = Neon.Amber, modifier = Modifier.testTag("wizard_error")) }
             }
+            if (style != null && ui.step > 0 && ui.step < ui.lastStep) {
+                // The details are for whoever wants them: the advised choices are already made.
+                TextButton(
+                    onClick = actions.create, enabled = !ui.creating,
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp).testTag("wizard_create_now"),
+                ) { Text(if (ui.creating) tr("Préparation…") else tr("Créer tout de suite (choix conseillés)"), textAlign = TextAlign.Center) }
+            }
             if (style != null && ui.step > 0) {
-                Row(Modifier.fillMaxWidth().padding(12.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                Row(Modifier.fillMaxWidth().padding(start = 12.dp, end = 12.dp, bottom = 12.dp, top = 4.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     OutlinedButton(onClick = actions.back, modifier = Modifier.weight(1f).testTag("wizard_back")) { Text(tr("Retour")) }
                     if (ui.step >= ui.lastStep) {
                         Button(onClick = actions.create, enabled = !ui.creating, modifier = Modifier.weight(1f).testTag("wizard_create")) {
@@ -169,12 +201,31 @@ private fun WizardBody(ui: WizardUi, packs: PacksUi, playing: SoundRef?, actions
     }
 }
 
+/** Steps of the assistant: before a style is chosen, those of the first style (most have as many). */
+internal fun wizardStepCount(ui: WizardUi): Int =
+    if (ui.style != null) ui.lastStep + 1 else StarterWizard.steps(StarterWizard.STYLES.first()).size
+
+/** Closing the assistant from this step on (the third) asks first. */
+internal const val CONFIRM_CLOSE_FROM = 2
+
+/** How far the assistant is: the steps done in the accent colour on a plain track, nothing else. */
+@Composable
+private fun StepProgress(step: Int, total: Int) {
+    val fraction = (step.toFloat() / total.coerceAtLeast(1)).coerceIn(0f, 1f)
+    Box(
+        Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 6.dp).height(6.dp)
+            .clip(RoundedCornerShape(3.dp)).background(Neon.SurfaceHigh).testTag("wizard_progress"),
+    ) {
+        Box(Modifier.fillMaxWidth(fraction).fillMaxHeight().clip(RoundedCornerShape(3.dp)).background(Neon.Cyan))
+    }
+}
+
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun StyleStep(chosen: String?, packs: PacksUi, actions: WizardActions) {
     Text(
-        tr("Choisis un style. Ensuite, je te présente chaque ligne de la batterie (à quoi elle sert, quels sons lui vont) et je place un rythme de départ dans la grille.") + " " +
-            tr("À la fin, ton morceau aura trois sections, Intro, Couplet et Refrain, qui s'enchaînent du début jusqu'à la fin. Tu pourras tout changer après."),
+        tr("Choisis un style : je prépare la batterie, puis Intro, Couplet et Refrain. Tu pourras tout changer.") + " " +
+            tr("▶ pour l'écouter."),
         style = MaterialTheme.typography.bodyMedium,
     )
     // The best known first, then the others (still the better known first).
@@ -185,27 +236,55 @@ private fun StyleStep(chosen: String?, packs: PacksUi, actions: WizardActions) {
     // Folded or not under the French title, whatever the language.
     sections.forEach { (key, title, styles) ->
         FoldSection("$title · ${styles.size}", foldKey = "Styles : $key") {
-            styles.forEach { s ->
-                val installed = packs.installed.any { it.id == s.id }
-                NeonCard(modifier = Modifier.clickable { actions.chooseStyle(s.id) }.testTag("wizard_style_${s.id}")) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(tr(s.name), style = MaterialTheme.typography.titleMedium, color = if (s.id == chosen) Neon.Cyan else Neon.TextPrimary,
-                            modifier = Modifier.weight(1f))
-                        // Its family when it says something ("Techno" under Techno, "Autres" do not).
-                        val family = s.family.takeIf { it != s.name && it != StarterWizard.FAMILIES.last() }
-                        Text(listOfNotNull(family?.let { tr(it) }, "${s.bpm.roundToInt()} BPM").joinToString(" · "), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
-                    }
-                    Text(tr(s.description), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
-                    if (s.references.isNotEmpty()) {
-                        Text(tr("Pour l'idée :") + " " + s.references.take(3).joinToString(" · "), style = MaterialTheme.typography.labelMedium,
-                            color = Neon.TextSecondary.copy(alpha = 0.85f), fontStyle = FontStyle.Italic)
-                    }
-                    if (installed) Text(tr("Pack de sons téléchargé"), style = MaterialTheme.typography.labelSmall, color = Neon.Acid)
-                }
-            }
+            styles.forEach { s -> StyleCard(s, s.id == chosen, packs.installed.any { it.id == s.id }, actions) }
         }
     }
     InstalledPacks(packs, actions)
+}
+
+/**
+ * One style, compact so that five or six fit on a phone: ▶ to hear its drums, its name and tempo,
+ * two lines of description (all of it once chosen), its reference tracks on one small line.
+ */
+@Composable
+private fun StyleCard(s: StarterWizard.Style, chosen: Boolean, installed: Boolean, actions: WizardActions) {
+    val shape = RoundedCornerShape(14.dp)
+    Row(
+        Modifier.fillMaxWidth().clip(shape)
+            .background(Neon.Surface)
+            .border(if (chosen) 1.5.dp else 1.dp, if (chosen) Neon.Cyan else Neon.Outline, shape)
+            .clickable { actions.chooseStyle(s.id) }
+            .padding(start = 2.dp, end = 12.dp, top = 6.dp, bottom = 8.dp)
+            .testTag("wizard_style_${s.id}"),
+        verticalAlignment = Alignment.Top,
+    ) {
+        val demo = SoundRef.StyleDemo(s.id)
+        ListenButton(demo, { actions.preview(demo) }, Modifier.testTag("wizard_style_listen_${s.id}"))
+        Column(Modifier.weight(1f).padding(top = 6.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                // The name takes what the tempo leaves; the pack's tick stays right after it.
+                Row(Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically) {
+                    Text(tr(s.name), style = MaterialTheme.typography.titleMedium, color = if (chosen) Neon.Cyan else Neon.TextPrimary,
+                        maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f, fill = false))
+                    if (installed) {
+                        Icon(Icons.Filled.Check, contentDescription = tr("Pack de sons téléchargé"), tint = Neon.Acid,
+                            modifier = Modifier.padding(start = 4.dp).size(16.dp).testTag("wizard_style_installed_${s.id}"))
+                    }
+                }
+                // Its family when it says something ("Techno" under Techno, "Autres" do not).
+                val family = s.family.takeIf { it != s.name && it != StarterWizard.FAMILIES.last() }
+                Text(listOfNotNull(family?.let { tr(it) }, "${s.bpm.roundToInt()} BPM").joinToString(" · "), style = MaterialTheme.typography.bodySmall,
+                    color = Neon.TextSecondary, maxLines = 1, modifier = Modifier.padding(start = 8.dp))
+            }
+            Text(tr(s.description), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
+                maxLines = if (chosen) Int.MAX_VALUE else 2, overflow = TextOverflow.Ellipsis)
+            if (s.references.isNotEmpty()) {
+                Text(tr("Pour l'idée :") + " " + s.references.take(3).joinToString(" · "), style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.sp),
+                    color = Neon.TextSecondary.copy(alpha = 0.8f), fontStyle = FontStyle.Italic,
+                    maxLines = if (chosen) Int.MAX_VALUE else 1, overflow = TextOverflow.Ellipsis)
+            }
+        }
+    }
 }
 
 /** The packs on the phone, each with what it takes and a way to delete it. */
@@ -453,12 +532,10 @@ private fun SceneLetter(index: Int) {
     }
 }
 
-private val KEY_NAMES = listOf("Do", "Do♯", "Ré", "Mi♭", "Mi", "Fa", "Fa♯", "Sol", "La♭", "La", "Si♭", "Si")
-private val KEY_NAMES_EN = listOf("C", "C♯", "D", "E♭", "E", "F", "F♯", "G", "A♭", "A", "B♭", "B")
 
 /** The key's name, Do Ré Mi or C D E as the settings say. */
 private fun keyName(root: Int) =
-    (if (com.pocketstudio.app.settings.SettingsStore.state.value.englishNotes) KEY_NAMES_EN else KEY_NAMES)[Math.floorMod(root, 12)]
+    com.pocketstudio.model.NoteNames.key(root, com.pocketstudio.app.settings.SettingsStore.state.value.englishNotes)
 
 /** The feeling of the song: it picks the scale and the chords, so nothing can sound wrong. */
 @Composable

@@ -30,6 +30,13 @@ public:
     // The last `frames` of the next render fade to silence (a song's "fondu de fin"); 0: none.
     // Applied on this private engine's output, never on the live audio thread.
     void setFadeOut(int64_t frames) { fadeOut_ = std::max<int64_t>(0, frames); }
+    // Automatic tail: the `tailFrames` of the next render become a cap. The tail ends once the
+    // output has stayed under -90 dBFS for 200 ms (longer than the send echo's time when it is in
+    // use, so a gap between two repeats does not end it); only a tail that reaches the cap fades out.
+    void setAutoTail(bool on) { autoTail_ = on; }
+    // renderToWav writes 32-bit float samples (no clipping above 0 dBFS: a mix without limiter).
+    void setFloatWav(bool on) { floatWav_ = on; }
+    static constexpr float kSilence = 3.1623e-5f;  // -90 dBFS
 
     // Plays the transport for `frames`, then renders `tailFrames` stopped so
     // releases ring out. Output is 24-bit stereo.
@@ -54,6 +61,8 @@ private:
     std::unique_ptr<Engine> engine_;
     int64_t scheduleAt_ = -1;
     int64_t fadeOut_ = 0;
+    bool autoTail_ = false;
+    bool floatWav_ = false;
     std::vector<std::pair<int64_t, Command>> scheduled_;  // in posting order
     size_t nextScheduled_ = 0;
     std::atomic<float> progress_{0.0f};

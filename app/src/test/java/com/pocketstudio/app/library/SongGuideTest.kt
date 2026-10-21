@@ -47,11 +47,14 @@ class SongGuideTest {
         assertTrue(first.lines.single { it.startsWith("B · Couplet") }.let { it.contains("Basse") && !it.contains("Lead") })
         assertTrue(first.lines.single { it.startsWith("C · Refrain") }.let { it.contains("Basse") && it.contains("Lead") && it.contains("Kick") })
         val all = pages.flatMap { it.lines }.joinToString("\n")
-        assertTrue(all.contains("Jouer le morceau"))
+        // Two short pages: what the song holds, then how to hear it (all of it, or one section in a loop).
+        assertEquals(2, pages.size)
+        assertTrue(all.contains("tout le morceau") && all.contains("« Écouter » à côté de Jouer") && all.contains("« cette section »"))
         assertTrue(all.contains("Intro → Couplet → Refrain → Couplet → Refrain → Intro pour finir : environ "))
-        assertTrue(all.contains("Morceau › Scènes"))
+        // Nothing to save by hand.
+        assertTrue(all.contains("Pas besoin de sauvegarder"))
         // The sections can be renamed, and copied for a bridge or an ending.
-        assertTrue(all.contains("se changent dans l'onglet Morceau") && all.contains("Pont ou une Fin"))
+        assertTrue(all.contains("change son nom") && all.contains("Pont ou une Fin"))
         assertTrue(all.contains("aucune fausse note possible"))
     }
 

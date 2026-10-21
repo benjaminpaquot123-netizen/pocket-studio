@@ -36,6 +36,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -78,10 +79,14 @@ class TopBarUi(
     val playing: Boolean,
     val canUndo: Boolean,
     val canRedo: Boolean,
-    /** Live recording armed: what is played is written into the loop. */
+    /** Live recording armed (what is played is written into the loop), or a microphone take on. */
     val recording: Boolean = false,
+    /** The ● records the microphone on an audio track (the Audio tracks screen, or a take on). */
+    val micTake: Boolean = false,
     /** The scene chip, on the screens that edit a scene (null: not shown). */
     val scene: SceneChipUi? = null,
+    /** The project is saved (on its own, after each change): a small "✓ Enregistré" under its name. */
+    val saved: Boolean = false,
 )
 
 class TopBarActions(
@@ -172,7 +177,22 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
             ) {
                 Icon(Icons.Filled.FolderOpen, contentDescription = tr("Mes projets"), tint = Neon.OnAccent, modifier = Modifier.size(18.dp))
             }
-            Text(ui.projectName, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            androidx.compose.foundation.layout.Column {
+                Text(ui.projectName, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                // Nothing to save by hand: said where the project is named, quietly.
+                if (ui.saved) {
+                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.testTag("top_saved")) {
+                        Icon(Icons.Filled.Check, contentDescription = null, tint = Neon.Acid, modifier = Modifier.size(12.dp))
+                        // Too narrow for the word (a small phone): the tick alone, never "E…".
+                        var cut by remember { mutableStateOf(false) }
+                        Text(
+                            tr("Enregistré"), style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.sp), color = Neon.TextSecondary,
+                            maxLines = 1, softWrap = false, overflow = TextOverflow.Clip, onTextLayout = { cut = it.hasVisualOverflow },
+                            modifier = Modifier.padding(start = 2.dp).graphicsLayer { alpha = if (cut) 0f else 1f },
+                        )
+                    }
+                }
+            }
         }
         if (ui.scene != null && layout.scene != SceneChipMode.Hidden) {
             SceneChip(ui.scene, layout.scene == SceneChipMode.Full, layout.sceneMaxWidth, actions)
@@ -197,7 +217,12 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
             ) {
                 Icon(
                     Icons.Filled.FiberManualRecord,
-                    contentDescription = if (ui.recording) tr("Arrêter l'enregistrement") else tr("Enregistrer ce que je joue"),
+                    contentDescription = when {
+                        ui.micTake && ui.recording -> tr("Arrêter la prise et la garder")
+                        ui.micTake -> tr("Enregistrer le micro sur la piste audio")
+                        ui.recording -> tr("Arrêter l'enregistrement")
+                        else -> tr("Enregistrer ce que je joue")
+                    },
                     tint = if (ui.recording) Neon.Red.copy(alpha = alpha) else Neon.Red.copy(alpha = 0.7f),
                     modifier = Modifier.size(14.dp),
                 )

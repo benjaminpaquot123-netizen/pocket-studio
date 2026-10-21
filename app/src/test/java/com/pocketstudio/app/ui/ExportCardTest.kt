@@ -1,5 +1,7 @@
 package com.pocketstudio.app.ui
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -68,5 +70,51 @@ class ExportCardTest {
         assertEquals(1, shared)
         compose.onNodeWithTag("to_export").performClick()
         assertEquals(1, scrolled)
+    }
+
+    @Test
+    fun theProChoicesWaitUnderAdvancedAndFitWhatIsExported() {
+        var noLimiter: Boolean? = null
+        var withMaster: Boolean? = null
+        var ui by androidx.compose.runtime.mutableStateOf(ExportUi().forProject(sceneBars = 4, hasSong = true))
+        compose.setContent {
+            PocketStudioTheme {
+                ExportCard(ui, MixerActions(setExportNoLimiter = { noLimiter = it }, setStemsWithMaster = { withMaster = it }), hasSong = true)
+            }
+        }
+        compose.onNodeWithTag("export_no_limiter").assertDoesNotExist()
+        compose.onNodeWithTag("export_advanced").performClick()
+        // The mix: « Sans limiteur », no stems choice.
+        compose.onNodeWithTag("export_stems_master").assertDoesNotExist()
+        compose.onNodeWithTag("export_no_limiter").performClick()
+        assertEquals(true, noLimiter)
+        // Separate tracks: the master's processing is the choice, off by default.
+        ui = ui.copy(what = ExportWhat.Stems, whatChosen = true)
+        compose.onNodeWithTag("export_no_limiter").assertDoesNotExist()
+        compose.onNodeWithTag("export_stems_master").performClick()
+        assertEquals(true, withMaster)
+    }
+
+    @Test
+    fun onlyTheMixWithItsLimiterIsLimited() {
+        assertEquals(true, ExportUi().limited)
+        assertEquals(false, ExportUi(noLimiter = true).limited)
+        // Stems skip the master (and so its limiter) unless asked; « Sans limiteur » is the mix's own.
+        assertEquals(false, ExportUi(what = ExportWhat.Stems).limited)
+        assertEquals(false, ExportUi(what = ExportWhat.Stems, noLimiter = false).limited)
+        assertEquals(true, ExportUi(what = ExportWhat.Stems, stemsWithMaster = true).limited)
+    }
+
+    @Test
+    fun m4aAndFlacKeepTheLimiterRatherThanClip() {
+        // Their samples cannot go over 0 dBFS: without the limiter the peaks would be cut flat.
+        listOf(com.pocketstudio.app.rhythm.ExportFormat.M4a, com.pocketstudio.app.rhythm.ExportFormat.Flac).forEach { f ->
+            assertEquals(true, ExportUi(noLimiter = true, format = f).limited)
+            assertEquals(true, ExportUi(what = ExportWhat.Stems, format = f).limited)
+        }
+        // Stems still skip the master's effects (they add back up to the mix), whatever the format.
+        assertEquals(false, ExportUi(what = ExportWhat.Stems, format = com.pocketstudio.app.rhythm.ExportFormat.M4a).masterFx)
+        assertEquals(true, ExportUi(what = ExportWhat.Stems, stemsWithMaster = true).masterFx)
+        assertEquals(true, ExportUi(noLimiter = true).masterFx)
     }
 }

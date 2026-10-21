@@ -31,7 +31,7 @@ import com.pocketstudio.model.ChordPad
 import com.pocketstudio.model.Harmony
 import com.pocketstudio.model.Scale
 import com.pocketstudio.model.chordPads
-import com.pocketstudio.model.NOTE_NAMES
+import com.pocketstudio.model.NoteNames
 import com.pocketstudio.ui.Neon
 
 /**
@@ -45,6 +45,7 @@ fun ChordPads(
     onNoteOn: (Int, Float) -> Unit,
     onNoteOff: (Int) -> Unit,
     height: Dp = 150.dp,
+    english: Boolean = com.pocketstudio.app.settings.englishNotes(),
 ) {
     val pads = harmony.chordPads(octaveRoot)
     // Pads share notes (I and iii share two): a note sounds while any pad holding it is down.
@@ -65,17 +66,17 @@ fun ChordPads(
     }
     Column(Modifier.fillMaxWidth().testTag("chord_pads"), verticalArrangement = Arrangement.spacedBy(6.dp)) {
         val key = if (harmony.scale.intervals.size == 7) harmony else harmony.copy(scale = Scale.Major)
-        Text(tr("Accords de %s %s", NOTE_NAMES[harmony.root], tr(key.scale.label).lowercase()), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+        Text(tr("Accords de %s %s", NoteNames.key(harmony.root, english), tr(key.scale.label).lowercase()), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         for (row in 0 until 2) {
             Row(Modifier.fillMaxWidth().height((height - 24.dp) / 2), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                pads.drop(row * 4).take(4).forEach { pad -> ChordPadKey(pad, Modifier.weight(1f).fillMaxHeight(), on, off) }
+                pads.drop(row * 4).take(4).forEach { pad -> ChordPadKey(pad, english, Modifier.weight(1f).fillMaxHeight(), on, off) }
             }
         }
     }
 }
 
 @Composable
-private fun ChordPadKey(pad: ChordPad, modifier: Modifier, onNoteOn: (Int, Float) -> Unit, onNoteOff: (Int) -> Unit) {
+private fun ChordPadKey(pad: ChordPad, english: Boolean, modifier: Modifier, onNoteOn: (Int, Float) -> Unit, onNoteOff: (Int) -> Unit) {
     var down by remember { mutableStateOf(false) }
     // Tonic chords (I) stand out: they sound like "home".
     val home = pad.degree % 7 == 0
@@ -101,7 +102,7 @@ private fun ChordPadKey(pad: ChordPad, modifier: Modifier, onNoteOn: (Int, Float
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(pad.roman, style = MaterialTheme.typography.titleMedium, color = if (down) Neon.Background else Neon.TextPrimary)
-            Text(pad.name, style = MaterialTheme.typography.bodySmall, color = if (down) Neon.Background else Neon.TextSecondary)
+            Text(pad.name(english), style = MaterialTheme.typography.bodySmall, color = if (down) Neon.Background else Neon.TextSecondary)
         }
     }
 }

@@ -131,7 +131,7 @@ fun WelcomeScreen(actions: WelcomeActions) {
                     Text(tr("Plus tard : voir le rythme de départ"), color = Neon.TextSecondary)
                 }
             }
-            Text(tr("Le guide des premiers pas reste dans Outils › Réglages."), style = MaterialTheme.typography.bodySmall,
+            Text(tr("Le guide des premiers pas reste dans Outils › Aide."), style = MaterialTheme.typography.bodySmall,
                 color = Neon.TextSecondary, modifier = Modifier.align(Alignment.CenterHorizontally))
         }
     }

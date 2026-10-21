@@ -74,9 +74,7 @@ object RootNote {
         return lag + shift.coerceIn(-1.0, 1.0)
     }
 
-    /** "Do 2"-style name of a MIDI note (C4 = 60 = Do 3, the French convention). */
-    fun name(note: Float): String {
-        val n = Math.round(note)
-        return NOTE_NAMES[Math.floorMod(n, 12)] + " " + (Math.floorDiv(n, 12) - 2)
-    }
+    /** The name of a MIDI note: "Do 3" in French notation (MIDI 60, the French octave numbers), "C4" in English. */
+    fun name(note: Float, english: Boolean = false): String =
+        NoteNames.withOctave(Math.round(note), english, separator = if (english) "" else " ")
 }

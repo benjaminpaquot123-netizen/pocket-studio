@@ -26,7 +26,7 @@ class TabletScreenshotTest : ScreenshotTest() {
         val SCREENS = setOf(
             "rhythm", "acid", "synth", "mixer", "piano_roll", "wizard_style", "wizard_summary", "projects", "welcome",
             "session", "top_bar", "next_steps", "audio_tracks", "remix",
-            "settings", "timeline", "generate_result", "remix_project", "library", "tracks", "instruments",
+            "settings", "timeline", "generate_result", "remix_project", "library", "tracks", "instruments", "tuner",
         )
     }
 }

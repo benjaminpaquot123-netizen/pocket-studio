@@ -69,6 +69,7 @@ object NativeEngine {
     // 64: InstallTrackSample (native only)
     private const val CMD_TRACK_SAMPLE_PARAM = 65
     private const val CMD_PAD_STRIP = 66
+    private const val CMD_MASTER = 67
 
     // Kinds of [setExpression] (InstrumentTrack::Expression).
     const val EXPR_BEND = 0
@@ -121,7 +122,8 @@ object NativeEngine {
     fun setFrequency(hz: Float) = post(CMD_SET_FREQUENCY, hz)
     fun setGain(gain: Float) = post(CMD_SET_GAIN, gain)
 
-    fun play(countInBars: Int = 0) = post(CMD_SET_TRANSPORT, 1f, countInBars)
+    /** [songStep]: the song position of the first step (the song started from a later part). */
+    fun play(countInBars: Int = 0, songStep: Int = 0) = post(CMD_SET_TRANSPORT, 1f, countInBars, songStep.coerceAtLeast(0))
     fun stopTransport() = post(CMD_SET_TRANSPORT, 0f)
     fun setTempo(bpm: Double) = post(CMD_SET_TEMPO, bpm.toFloat())
     fun setSwing(swing: Double) = post(CMD_SET_SWING, swing.toFloat())
@@ -175,8 +177,12 @@ object NativeEngine {
     /** While on, pattern commands (drums, acid, piano roll) fill the waiting scene. */
     fun setStaging(on: Boolean) = post(CMD_STAGING, if (on) 1f else 0f)
     /** The waiting scene takes over after [steps] steps of the playing one (0 = next bar, -1 = cancel). */
-    /** [restartsSong]: the waiting scene is the song's first part again (song automation restarts). */
-    fun armSceneSwap(steps: Int, restartsSong: Boolean = false) = post(CMD_ARM_SCENE_SWAP, 0f, steps, if (restartsSong) 1 else 0)
+    /**
+     * [restartsSong]: the waiting scene starts the song (again): song automation and song clips
+     * count from there, from song step [songStep] when it is a later part than the first.
+     */
+    fun armSceneSwap(steps: Int, restartsSong: Boolean = false, songStep: Int = 0) =
+        post(CMD_ARM_SCENE_SWAP, songStep.coerceAtLeast(0).toFloat(), steps, if (restartsSong) 1 else 0)
     /** The song ends after [steps] steps of the playing scene: the transport stops on that bar line (counted in [sceneSwaps]). */
     fun armSongEnd(steps: Int) = post(CMD_ARM_SCENE_SWAP, 0f, steps, 2)
     /** Steps since the song (re)started, as song automation reads them; -1 when stopped. */
@@ -351,14 +357,26 @@ object NativeEngine {
         else nativeInstallAudioClip(track, sample?.handle ?: 0L)
     }
 
-    /** Where and how the clip plays: from step [start], again every [loopSteps], fades in frames at 48 kHz. */
-    fun setAudioClipParams(track: Int, start: Int, loopSteps: Int, gain: Float, fadeInFrames: Int, fadeOutFrames: Int) {
+    /**
+     * Where and how the clip plays: from step [start] (of the scene, or of the song when [song]),
+     * again every [loopSteps] (0: once, until its scene starts again; song clips play once),
+     * fades and [offsetFrames] (later > 0, earlier < 0) in frames at 48 kHz.
+     */
+    fun setAudioClipParams(
+        track: Int, start: Int, loopSteps: Int, gain: Float, fadeInFrames: Int, fadeOutFrames: Int,
+        song: Boolean = false, offsetFrames: Int = 0,
+    ) {
+        post(CMD_AUDIO_CLIP_PARAM, if (song) 1f else 0f, track, 5)
         post(CMD_AUDIO_CLIP_PARAM, start.toFloat(), track, 0)
         post(CMD_AUDIO_CLIP_PARAM, loopSteps.toFloat(), track, 1)
         post(CMD_AUDIO_CLIP_PARAM, gain, track, 2)
         post(CMD_AUDIO_CLIP_PARAM, fadeInFrames.toFloat(), track, 3)
         post(CMD_AUDIO_CLIP_PARAM, fadeOutFrames.toFloat(), track, 4)
+        post(CMD_AUDIO_CLIP_PARAM, offsetFrames.toFloat(), track, 6)
     }
+
+    /** A song part's own loop for audio track [track] (follows [setStaging]): "once" clips play once per part. */
+    fun setAudioLoop(track: Int, loopSteps: Int) = post(CMD_AUDIO_CLIP_PARAM, loopSteps.toFloat(), track, 1)
 
     /**
      * Opens the microphone and arms a recording of at most [seconds] (0 = microphone unavailable).
@@ -383,6 +401,13 @@ object NativeEngine {
 
     /** Drum pad [pad] plays through its own mixer strip (its own effects) or straight into the drums'. */
     fun setPadStrip(pad: Int, on: Boolean) = post(CMD_PAD_STRIP, if (on) 1f else 0f, pad)
+
+    /** The master's gain before the limiter (linear, 1 = unity). */
+    fun setMasterGain(gain: Float) = post(CMD_MASTER, gain, 0)
+    /** The master's limiter (off only for a pre-master export: the mix keeps its headroom). */
+    fun setLimiter(on: Boolean) = post(CMD_MASTER, if (on) 1f else 0f, 1)
+    /** The master's inserts (off for stems, which then add back up to the mix). */
+    fun setMasterFx(on: Boolean) = post(CMD_MASTER, if (on) 1f else 0f, 2)
     private external fun nativeInstallTrackSample(track: Int, handle: Long): Boolean
     private external fun exportInstallTrackSample(exportHandle: Long, track: Int, handle: Long)
     private external fun exportInstallAudioClip(exportHandle: Long, track: Int, handle: Long)
@@ -451,6 +476,7 @@ object NativeEngine {
     private external fun exportScheduleFrom(handle: Long, frame: Long)
     external fun exportRender(handle: Long, path: String, frames: Long, tail: Long): Int
     external fun exportSetFadeOut(handle: Long, frames: Long)
+    external fun exportSetOptions(handle: Long, autoTail: Boolean, floatWav: Boolean)
     external fun exportProgress(handle: Long): Float
     external fun exportRenderFloat(handle: Long, frames: Long, tail: Long): FloatArray
     external fun exportCancel(handle: Long)

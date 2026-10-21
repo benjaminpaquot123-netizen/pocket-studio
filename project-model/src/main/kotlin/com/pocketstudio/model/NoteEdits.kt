@@ -101,6 +101,29 @@ object NoteEdits {
         clip.notes.filter { it.end > fromTick && it.start < toTick && it.pitch in low..high }.toSet()
 
     /**
+     * True when some notes start together (a chord): only then do the arpeggio and the strum
+     * change anything ([Performance.expand] plays single notes as they are).
+     */
+    fun hasChords(notes: List<Note>): Boolean = notes.groupingBy { it.start }.eachCount().values.any { it > 1 }
+
+    /** How many notes are out of [harmony]'s scale (0 without a scale). */
+    fun outOfScale(notes: List<Note>, harmony: Harmony): Int =
+        if (harmony.scale == Scale.Off) 0 else notes.count { !harmony.inScale(it.pitch) }
+
+    /**
+     * « Mettre les notes dans la gamme »: every note out of the scale moves to the nearest note of
+     * it ([Harmony.snap]), the hidden ones past the loop too; a note that lands on another one
+     * (same start, same pitch) merges into it, the longer and louder kept.
+     */
+    fun fitToScale(clip: NoteClip, harmony: Harmony): NoteClip {
+        if (harmony.scale == Scale.Off) return clip
+        fun fit(list: List<Note>) = list.map { it.copy(pitch = harmony.snap(it.pitch)) }
+            .groupBy { it.start to it.pitch }.values
+            .map { same -> same.reduce { a, b -> a.copy(length = maxOf(a.length, b.length), velocity = maxOf(a.velocity, b.velocity)) } }
+        return clip.copy(notes = fit(clip.notes), hidden = fit(clip.hidden)).sanitized()
+    }
+
+    /**
      * The scales that fit the notes best (most notes inside, the root used most breaking ties), best
      * first. Empty when there are no notes.
      */

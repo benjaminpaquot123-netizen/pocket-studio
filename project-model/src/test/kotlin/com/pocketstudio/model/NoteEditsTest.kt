@@ -133,4 +133,28 @@ class NoteEditsTest {
         val some = NoteEdits.transpose(clip.copy(hidden = listOf(Note(400, 24, 62))), setOf(c4), 2).clip
         assertEquals(listOf(62), some.hidden.map { it.pitch })
     }
+
+    @Test
+    fun chordsAreNotesStartingTogether() {
+        assertEquals(false, NoteEdits.hasChords(clip.notes))
+        assertEquals(true, NoteEdits.hasChords(clip.notes + Note(0, 24, 64)))
+        assertEquals(false, NoteEdits.hasChords(emptyList()))
+    }
+
+    @Test
+    fun notesAreFittedIntoTheScaleWithoutDoubles() {
+        val cMajor = Harmony(0, Scale.Major)
+        // C# (61) goes down to C (60), where a C already starts: they merge, the longer kept.
+        val sharp = Note(0, 48, 61, 0.5f)
+        val past = Note(400, 24, 66)  // F#, hidden past the loop
+        val c = NoteClip(steps = 16, notes = listOf(c4, sharp, e4, g4), hidden = listOf(past))
+        assertEquals(2, NoteEdits.outOfScale(c.notes + past, cMajor))
+        val fitted = NoteEdits.fitToScale(c, cMajor)
+        assertEquals(listOf(Note(0, 48, 60, 0.85f), e4, g4), fitted.notes)
+        assertEquals(listOf(65), fitted.hidden.map { it.pitch })
+        assertEquals(0, NoteEdits.outOfScale(fitted.notes, cMajor))
+        // Without a scale nothing moves.
+        assertEquals(c, NoteEdits.fitToScale(c, Harmony()))
+        assertEquals(0, NoteEdits.outOfScale(c.notes, Harmony()))
+    }
 }

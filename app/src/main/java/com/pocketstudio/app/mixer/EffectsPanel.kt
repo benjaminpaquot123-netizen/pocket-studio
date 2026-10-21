@@ -53,62 +53,21 @@ private fun shortName(type: EffectType): String = when (type) {
     EffectType.VINYL -> tr("Vinyle")
     EffectType.RADIO -> "Radio"
     EffectType.CHOPPER -> tr("Hachoir")
+    EffectType.DISTORTION -> tr("Disto")
+    EffectType.ECHO -> tr("Écho")
+    EffectType.PING_PONG -> tr("Ping-pong")
+    EffectType.REVERB -> tr("Réverbe")
+    EffectType.AUTO_PAN -> tr("Auto-pan")
+    EffectType.OTT -> "OTT"
+    EffectType.FREQ_SHIFT -> tr("Décalage")
+    EffectType.TAPE_STOP -> tr("Arrêt")
 }
-
-/** The crazy effects' colour: a fun violet, apart from every theme's accent. */
-private val CRAZY = androidx.compose.ui.graphics.Color(0xFFB388FF)
 
 /** One-line summary of a channel's effects, e.g. "EQ · Comp · Réverbe". */
 fun effectsSummary(inserts: List<Insert>, sends: List<Float> = emptyList()): String {
-    val parts = inserts.filter { it.effect != EffectType.NONE }.map { shortName(it.effect) } +
+    val parts = inserts.filter { it.effect != EffectType.NONE && !it.bypass }.map { shortName(it.effect) } +
         sends.mapIndexedNotNull { b, v -> if (v > 0.01f) tr(Buses.NAMES[b]) else null }
     return parts.joinToString(" · ").ifEmpty { tr("Aucun") }
-}
-
-/**
- * The 4 insert slots of a channel (or the master): pick a slot, choose its effect, then shape
- * it with up to 4 sliders. Effects run in slot order.
- */
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-fun InsertRack(ch: Int, inserts: List<Insert>, actions: MixerActions) {
-    var slot by rememberSaveable(ch) { mutableIntStateOf(0) }
-    val chipColors = pillColors()
-    Row(Modifier.fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-        inserts.forEachIndexed { i, ins ->
-            FilterChip(
-                selected = slot == i, onClick = { slot = i },
-                label = { Text("${i + 1} ${shortName(ins.effect)}") },
-                colors = chipColors,
-                modifier = Modifier.testTag("slot_${ch}_$i"),
-            )
-        }
-    }
-    val current = inserts.getOrNull(slot) ?: return
-    // The classics, then the crazy ones in their own colour: the fun is easy to find.
-    listOf(false to Neon.Magenta, true to CRAZY).forEach { (crazy, colour) ->
-        if (crazy) Text(tr("Effets fous"), style = MaterialTheme.typography.labelLarge, color = colour)
-        FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            EffectType.entries.filter { it.crazy == crazy }.forEach { type ->
-                FilterChip(
-                    selected = current.effect == type,
-                    onClick = { if (current.effect != type) actions.setInsertType(ch, slot, type) },
-                    label = { Text(tr(type.label), maxLines = 1, softWrap = false) },
-                    colors = pillColors(colour),
-                    modifier = Modifier.testTag("fx_${ch}_${slot}_${type.name}"),
-                )
-            }
-        }
-    }
-    if (current.effect.blurb.isNotEmpty()) {
-        Text(tr(current.effect.blurb), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
-    }
-    if (current.effect == EffectType.EQ || current.effect == EffectType.PARAM_EQ) EqCurve(current)
-    current.effect.params.forEachIndexed { k, param ->
-        LabeledSlider(tr(param.label), tr(param.format(current.params[k])), current.params[k], "fxp_${ch}_${slot}_$k") {
-            actions.setInsertParam(ch, slot, k, it)
-        }
-    }
 }
 
 @Composable
@@ -140,7 +99,7 @@ fun BusesCard(buses: List<List<Float>>, actions: MixerActions) {
 }
 
 @Composable
-private fun LabeledSlider(label: String, value: String, v: Float, tag: String, onChange: (Float) -> Unit) {
+internal fun LabeledSlider(label: String, value: String, v: Float, tag: String, onChange: (Float) -> Unit) {
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Text(label, Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
         Text(value, style = MonoStyle, color = Neon.Cyan)

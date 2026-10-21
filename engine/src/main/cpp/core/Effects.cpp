@@ -48,6 +48,11 @@ void Biquad::peak(float rate, float freq, float q, float gainDb) {
     set(1 + alpha * a, -2 * cs, 1 - alpha * a, 1 + alpha / a, -2 * cs, 1 - alpha / a);
 }
 
+void Biquad::lowPass(float rate, float freq) {
+    const double w = 2 * kPi * freq / rate, cs = std::cos(w), alpha = std::sin(w) / (2 * 0.7071);
+    set((1 - cs) / 2, 1 - cs, (1 - cs) / 2, 1 + alpha, -2 * cs, 1 - alpha);
+}
+
 void Biquad::highPass(float rate, float freq) {
     const double w = 2 * kPi * freq / rate, cs = std::cos(w), alpha = std::sin(w) / (2 * 0.7071);
     set((1 + cs) / 2, -(1 + cs), (1 + cs) / 2, 1 + alpha, -2 * cs, 1 - alpha);
@@ -945,6 +950,13 @@ void InsertSlot::reset() {
     vinyl_.reset();
     radio_.reset();
     chopper_.reset();
+    distortion_.reset();
+    autoPan_.reset();
+    ott_.reset();
+    shifter_.reset();
+    if (echo_) echo_->reset();
+    if (reverb_) reverb_->reset();
+    if (tape_) tape_->reset();
 }
 
 void InsertSlot::prepare(float rate) {
@@ -966,11 +978,77 @@ void InsertSlot::prepare(float rate) {
     vinyl_.prepare(rate);
     radio_.prepare(rate);
     chopper_.prepare(rate);
+    distortion_.prepare(rate);
+    autoPan_.prepare(rate);
+    ott_.prepare(rate);
+    shifter_.prepare(rate);
 }
+
+namespace {
+// The engine's defaults of the long effects (the same as the app's), for a unit borrowed before
+// any parameter came.
+std::array<float, 4> longDefaults(int type) {
+    switch (type) {
+        case InsertSlot::EchoFx: return {0.42f, 0.4f, 0.55f, 0.35f};
+        case InsertSlot::PingPongFx: return {0.25f, 0.45f, 0.55f, 0.35f};
+        case InsertSlot::ReverbFx: return {0.6f, 0.5f, 0.1f, 0.3f};
+        case InsertSlot::TapeStopFx: return {0.0f, 0.5f, 0.2f, 0.0f};
+        default: return {0.0f, 0.0f, 0.0f, 0.0f};
+    }
+}
+}  // namespace
+
+void InsertSlot::releaseUnit() {
+    if (pool_) {
+        if (echo_) pool_->echoes.give(echo_);
+        if (reverb_) pool_->reverbs.give(reverb_);
+        if (tape_) pool_->tapeStops.give(tape_);
+    }
+    echo_ = nullptr;
+    reverb_ = nullptr;
+    tape_ = nullptr;
+}
+
+void InsertSlot::takeUnit() {
+    if (!pool_ || !isLong(type_) || hasUnit()) return;
+    switch (type_) {
+        case EchoFx:
+        case PingPongFx:
+            echo_ = pool_->echoes.take();
+            if (echo_) {
+                echo_->setPingPong(type_ == PingPongFx);
+                // take() has just reset it (once: no second clear in the callback).
+                for (int k = 0; k < kParams; ++k) echo_->setParam(k, longParams_[static_cast<size_t>(k)]);
+            }
+            break;
+        case ReverbFx:
+            reverb_ = pool_->reverbs.take();
+            if (reverb_) for (int k = 0; k < kParams; ++k) reverb_->setParam(k, longParams_[static_cast<size_t>(k)]);
+            break;
+        case TapeStopFx:
+            tape_ = pool_->tapeStops.take();
+            if (tape_) for (int k = 0; k < kParams; ++k) tape_->setParam(k, longParams_[static_cast<size_t>(k)]);
+            break;
+        default: break;
+    }
+}
+
+void InsertSlot::setStepFrames(double framesPerSixteenth) {
+    chopper_.setStepFrames(framesPerSixteenth);
+    autoPan_.setStepFrames(framesPerSixteenth);
+    if (echo_) echo_->setStepFrames(framesPerSixteenth);
+}
+
+float InsertSlot::echoFrames() const { return echo_ ? echo_->delayFrames() : 0.0f; }
 
 void InsertSlot::setType(int type) {
     if (type < 0 || type >= kTypes || type == type_) return;
+    releaseUnit();
     type_ = type;
+    if (isLong(type_)) {
+        longParams_ = longDefaults(type_);
+        takeUnit();
+    }
     switch (type_) {
         case Eq: eq_.reset(); break;
         case Comp: comp_.reset(); break;
@@ -990,11 +1068,16 @@ void InsertSlot::setType(int type) {
         case VinylFx: vinyl_.reset(); break;
         case RadioFx: radio_.reset(); break;
         case ChopperFx: chopper_.reset(); break;
+        case DistortionFx: distortion_.reset(); break;
+        case AutoPanFx: autoPan_.reset(); break;
+        case OttFx: ott_.reset(); break;
+        case FreqShiftFx: shifter_.reset(); break;
         default: break;
     }
 }
 
 void InsertSlot::setParam(int p, float v) {
+    if (isLong(type_) && p >= 0 && p < kParams && std::isfinite(v)) longParams_[static_cast<size_t>(p)] = std::clamp(v, 0.0f, 1.0f);
     switch (type_) {
         case Eq: eq_.setParam(p, v); break;
         case Comp: comp_.setParam(p, v); break;
@@ -1014,6 +1097,14 @@ void InsertSlot::setParam(int p, float v) {
         case VinylFx: vinyl_.setParam(p, v); break;
         case RadioFx: radio_.setParam(p, v); break;
         case ChopperFx: chopper_.setParam(p, v); break;
+        case DistortionFx: distortion_.setParam(p, v); break;
+        case AutoPanFx: autoPan_.setParam(p, v); break;
+        case OttFx: ott_.setParam(p, v); break;
+        case FreqShiftFx: shifter_.setParam(p, v); break;
+        case EchoFx:
+        case PingPongFx: if (echo_) echo_->setParam(p, v); break;
+        case ReverbFx: if (reverb_) reverb_->setParam(p, v); break;
+        case TapeStopFx: if (tape_) tape_->setParam(p, v); break;
         default: break;
     }
 }
@@ -1038,6 +1129,14 @@ void InsertSlot::process(float* l, float* r, int n) {
         case VinylFx: vinyl_.process(l, r, n); break;
         case RadioFx: radio_.process(l, r, n); break;
         case ChopperFx: chopper_.process(l, r, n); break;
+        case DistortionFx: distortion_.process(l, r, n); break;
+        case AutoPanFx: autoPan_.process(l, r, n); break;
+        case OttFx: ott_.process(l, r, n); break;
+        case FreqShiftFx: shifter_.process(l, r, n); break;
+        case EchoFx:
+        case PingPongFx: if (echo_) echo_->process(l, r, n); break;
+        case ReverbFx: if (reverb_) reverb_->process(l, r, n); break;
+        case TapeStopFx: if (tape_) tape_->process(l, r, n); break;
         default: break;
     }
 }
@@ -1131,9 +1230,9 @@ void Reverb::process(const float* inL, const float* inR, float* outL, float* out
 
 // --- Tempo delay -----------------------------------------------------------------------------
 
-void TempoDelay::prepare(float rate) {
+void TempoDelay::prepare(float rate, float maxSeconds) {
     rate_ = rate;
-    bufL_.assign(static_cast<size_t>(kMaxSeconds * rate) + 4, 0.0f);
+    bufL_.assign(static_cast<size_t>(maxSeconds * rate) + 4, 0.0f);
     bufR_.assign(bufL_.size(), 0.0f);
     smooth_ = 1.0f - std::exp(-1.0f / (0.05f * rate));  // 50 ms glide on time changes
     update();
@@ -1162,25 +1261,37 @@ void TempoDelay::update() {
     feedback_ = 0.9f * p_[1];
     pingPong_ = p_[2];
     toneCoef_ = onePoleCoef(rate_, expMap(p_[3], 800.0f, 16000.0f));
+    if (fresh_) current_ = target_;
 }
 
 void TempoDelay::reset() {
-    std::fill(bufL_.begin(), bufL_.end(), 0.0f);
-    std::fill(bufR_.begin(), bufR_.end(), 0.0f);
+    // No clearing: what was written before reads as silence (filled_), in constant time.
     write_ = 0;
+    filled_ = 0;
+    fresh_ = true;
+    current_ = target_;  // nothing to glide from: the time is right from the first repeat
     lpL_ = lpR_ = 0.0f;
 }
 
 float TempoDelay::read(const std::vector<float>& buf, float delay) const {
-    const float pos = static_cast<float>(write_) - delay + static_cast<float>(buf.size());
+    const size_t size = buf.size();
+    const float pos = static_cast<float>(write_) - delay + static_cast<float>(size);
     const auto i0 = static_cast<size_t>(pos);
     const float frac = pos - static_cast<float>(i0);
-    const float a = buf[i0 % buf.size()], b = buf[(i0 + 1) % buf.size()];
+    const size_t j0 = i0 % size, j1 = (i0 + 1) % size;
+    float a = buf[j0], b = buf[j1];
+    if (filled_ < size) {
+        // Only the frames written since the reset count (age 1 = the last one written).
+        const size_t age0 = (write_ + size - j0) % size, age1 = (write_ + size - j1) % size;
+        if (age0 == 0 || age0 > filled_) a = 0.0f;
+        if (age1 == 0 || age1 > filled_) b = 0.0f;
+    }
     return a + frac * (b - a);
 }
 
 void TempoDelay::process(const float* inL, const float* inR, float* outL, float* outR, int n) {
     if (bufL_.empty()) return;
+    if (n > 0) fresh_ = false;
     for (int i = 0; i < n; ++i) {
         current_ += smooth_ * (target_ - current_);
         const float dl = read(bufL_, current_), dr = read(bufR_, current_);
@@ -1193,6 +1304,7 @@ void TempoDelay::process(const float* inL, const float* inR, float* outL, float*
         bufL_[write_] = pingPong_ * mono + (1.0f - pingPong_) * inL[i] + feedback_ * feedL;
         bufR_[write_] = (1.0f - pingPong_) * inR[i] + feedback_ * feedR;
         if (++write_ >= bufL_.size()) write_ = 0;
+        if (filled_ < bufL_.size()) ++filled_;
         outL[i] += dl;
         outR[i] += dr;
     }

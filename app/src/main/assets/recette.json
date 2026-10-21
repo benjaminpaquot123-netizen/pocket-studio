@@ -1,51 +1,46 @@
 {
-  "id": "phase24-styles-et-voix",
-  "milestone": "Phase 24 : styles réécrits, voix et morceau",
+  "id": "phase25-effets",
+  "milestone": "Phase 25 : effets partout, Synthé cohérent, scènes à glisser",
   "items": [
     {
-      "id": "style_open",
-      "title": "Choisir un style",
-      "hint": "Nouveau morceau guidé : touche une carte de style, elle s'ouvre (texte complet, références). ▶ fait entendre batterie, basse et nappe. « Choisir ce style » pour continuer."
+      "id": "fx_synth",
+      "title": "Effets sur le synthé",
+      "hint": "Synthé › choisis « Corde pincée » (Plaits) : la carte Effets est sous les réglages du son. « + Ajouter un effet » : Distorsion puis Écho ping-pong."
     },
     {
-      "id": "style_parts",
-      "title": "Le style respecte sa recette",
-      "hint": "Riddim : seulement batterie et basse. Acid techno : la 303 seule. Pop : ambiance joyeuse cochée."
+      "id": "fx_everywhere",
+      "title": "Effets partout",
+      "hint": "Ouvre les effets d'un pad (Rythme), de la batterie entière, de la 303 (Acide), d'une piste audio et du master (Mixeur) : c'est la même boîte."
     },
     {
-      "id": "song_length",
-      "title": "Morceau de 2 min 30 à 3 min",
-      "hint": "Crée un morceau Reggaeton ou House : vérifie la durée dans Morceau, et la partie Break pour la house/techno."
+      "id": "fx_eight",
+      "title": "8 effets par son",
+      "hint": "Ajoute 8 effets sur une piste : le 9e est refusé avec un message. Coupe-en un (⏻) puis rallume-le, monte-le ou descends-le."
     },
     {
-      "id": "glide",
-      "title": "808 qui glisse",
-      "hint": "Style Trap ou Drill : écoute la basse, certaines notes glissent vers la suivante."
+      "id": "fx_vibes",
+      "title": "Ambiances toutes prêtes",
+      "hint": "Sur une basse : « Basse grasse » ; sur un lead : « Lead qui crie » ; essaie « Dub profond »."
     },
     {
-      "id": "scene_take",
-      "title": "Voix sur une scène",
-      "hint": "Audio › enregistre « sur la scène » B : la voix ne joue que dans les parties de B quand le morceau tourne."
+      "id": "synth_same",
+      "title": "Notes et Clavier pareils",
+      "hint": "Synthé : passe de Clavier à Notes, les cartes Instrument / Sons prêts à jouer / Réglages du son / Effets sont les mêmes, dans le même ordre."
     },
     {
-      "id": "clear_track",
-      "title": "Vider une piste",
-      "hint": "Synthé, scène B : « Vider » à côté de Clavier/Notes efface la piste dans B. ↶ la ramène."
+      "id": "chords_play",
+      "title": "Jeu des accords",
+      "hint": "Notes › Gamme et accords : sans accord, Arpège et Strum sont grisés et expliqués ; « Mettre les notes hors gamme dans la gamme » corrige les fausses notes."
     },
     {
-      "id": "scene_tools",
-      "title": "Outils de scène",
-      "hint": "Morceau › Scènes : une seule ligne Renommer / Nouvelle / Dupliquer / Vider."
+      "id": "scene_drag",
+      "title": "Glisser une scène",
+      "hint": "Morceau › Scènes : maintiens B et glisse-la sur une case vide (elle s'y déplace), puis sur une scène occupée (Échanger / Remplacer / Annuler). ↶ annule."
     },
     {
-      "id": "tab_state",
-      "title": "Les onglets se souviennent",
-      "hint": "Synthé en mode Notes, va au Mixeur puis reviens : tu es toujours en Notes."
-    },
-    {
-      "id": "tablet8",
-      "title": "Tablette Galaxy Tab A11",
-      "hint": "Debout et couchée : rien de coupé ni d'étiré, le synthé couché garde tous ses sons."
+      "id": "cpu_warn",
+      "title": "Téléphone essoufflé",
+      "hint": "Avec beaucoup d'effets lourds partout, la boîte affiche « Le téléphone est à bout de souffle… ». Écoute si le son craque."
     }
   ]
 }

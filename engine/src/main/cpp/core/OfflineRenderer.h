@@ -47,8 +47,9 @@ public:
     float progress() const { return progress_.load(std::memory_order_relaxed); }
     void cancel() { cancelled_.store(true, std::memory_order_relaxed); }
 
+    static constexpr int kBlock = 512;  // frames per engine call (tests drive a live engine alike)
+
 private:
-    static constexpr int kBlock = 512;
     void renderSilent(int frames);
     // Plays the song through `sink` block by block; the sink returns false to stop with an I/O error.
     Result render(int64_t frames, int64_t tailFrames, const std::function<bool(const float*, int)>& sink);

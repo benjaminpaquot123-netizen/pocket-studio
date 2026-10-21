@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -726,12 +727,11 @@ open class ScreenshotTest {
 
     @Test
     @Config(qualifiers = "w400dp-h1300dp-xxhdpi")
-    fun mixerEffects() = shoot("mixer_effects") {
-        val inserts = listOf(
+    fun mixerEffects() = shoot("mixer_effects", prepare = { tap("fx_chip_0_1") }) {
+        val inserts = com.pocketstudio.model.Mixer.sanitizeInserts(listOf(
             com.pocketstudio.model.Insert.of(com.pocketstudio.model.EffectType.COMPRESSOR),
             com.pocketstudio.model.Insert.of(com.pocketstudio.model.EffectType.EQ).copy(params = listOf(0.75f, 0.45f, 0.6f, 0f)),
-            com.pocketstudio.model.Insert(), com.pocketstudio.model.Insert(),
-        )
+        ))
         val actions = com.pocketstudio.app.mixer.MixerActions()
         androidx.compose.foundation.layout.Column(
             androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f)),
@@ -739,39 +739,125 @@ open class ScreenshotTest {
         ) {
             com.pocketstudio.ui.NeonCard {
                 com.pocketstudio.ui.SectionLabel("Batterie · effets")
-                com.pocketstudio.app.mixer.InsertRack(0, inserts, actions)
+                com.pocketstudio.app.mixer.InsertChain(0, inserts, actions)
                 com.pocketstudio.app.mixer.SendSliders(0, listOf(0.35f, 0.1f), actions)
             }
             com.pocketstudio.app.mixer.BusesCard(com.pocketstudio.model.Buses.DEFAULTS, actions)
         }
     }
 
+    private fun tap(tag: String) {
+        compose.onNode(androidx.compose.ui.test.hasTestTag(tag)).performClick()
+        compose.waitForIdle()
+    }
+
+    /** A lead with three effects in its chain (the echo switched off), as in the effects box of the mixer or a track. */
+    private fun leadFx(): com.pocketstudio.model.Channel = com.pocketstudio.model.Channel(
+        inserts = com.pocketstudio.model.Mixer.sanitizeInserts(listOf(
+            com.pocketstudio.model.Insert.of(com.pocketstudio.model.EffectType.DISTORTION),
+            com.pocketstudio.model.Insert.of(com.pocketstudio.model.EffectType.ECHO).copy(bypass = true),
+            com.pocketstudio.model.Insert.of(com.pocketstudio.model.EffectType.OTT),
+        )),
+        sends = listOf(0.2f, 0f),
+    )
+
+    private fun fxActions(kind: com.pocketstudio.model.SoundKind) = com.pocketstudio.app.mixer.MixerActions(kindOf = { kind })
+
+    /** The whole effects box (Effets of a track, a pad, the mixer): the chain, one effect open, the vibes, pad XY and sends. */
     @Test
-    fun crazyEffects() = shoot("crazy_effects") {
-        val inserts = listOf(
+    @Config(qualifiers = "w400dp-h1500dp-xxhdpi")
+    fun effectsBox() = shoot("effects_box", prepare = { tap("fx_chip_2_0") }) {
+        androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
+            com.pocketstudio.app.mixer.EffectsBox(2, leadFx(), fxActions(com.pocketstudio.model.SoundKind.LEAD))
+        }
+    }
+
+    /** « + Ajouter un effet »: every effect by family, the list open to add several in a row. */
+    @Test
+    @Config(qualifiers = "w400dp-h1300dp-xxhdpi")
+    fun effectsPicker() = shoot("effects_picker", prepare = { tap("fx_add_2") }) {
+        androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
+            com.pocketstudio.app.mixer.EffectsCard(com.pocketstudio.app.mixer.EffectsUi(2, leadFx(), fxActions(com.pocketstudio.model.SoundKind.LEAD)) {})
+        }
+    }
+
+    /**
+     * Eight effects stacked on one sound: « 8 sur 8 », the list open says why no more can be added,
+     * and the phone is struggling (the warning above the chain).
+     */
+    @Test
+    @Config(qualifiers = "w400dp-h1800dp-xxhdpi")
+    fun effectsFull() = shoot("effects_full", prepare = { tap("fx_add_2") }) {
+        val eight = listOf(
+            com.pocketstudio.model.EffectType.EQ, com.pocketstudio.model.EffectType.COMPRESSOR, com.pocketstudio.model.EffectType.DISTORTION,
+            com.pocketstudio.model.EffectType.CHORUS, com.pocketstudio.model.EffectType.PHASER, com.pocketstudio.model.EffectType.ECHO,
+            com.pocketstudio.model.EffectType.REVERB, com.pocketstudio.model.EffectType.OTT,
+        ).map { com.pocketstudio.model.Insert.of(it) }
+        val actions = com.pocketstudio.app.mixer.MixerActions(
+            kindOf = { com.pocketstudio.model.SoundKind.LEAD },
+            cpuBusy = kotlinx.coroutines.flow.MutableStateFlow(true),
+        )
+        androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
+            com.pocketstudio.app.mixer.EffectsCard(com.pocketstudio.app.mixer.EffectsUi(2, com.pocketstudio.model.Channel(inserts = eight), actions) {})
+        }
+    }
+
+    /** Synthé: the « Effets » card right under the sound (scrolled to it). */
+    @Test
+    fun synthEffects() = shoot("synth_effects", prepare = {
+        compose.onNode(androidx.compose.ui.test.hasTestTag("effects_card")).performScrollTo()
+        compose.waitForIdle()
+    }) {
+        com.pocketstudio.app.synth.SynthScreen(
+            patch = com.pocketstudio.model.SynthPatch.PRESETS[1].second,
+            octave = 4,
+            actions = com.pocketstudio.app.synth.SynthActions(),
+            effects = com.pocketstudio.app.mixer.EffectsUi(
+                2, com.pocketstudio.model.Channel().withFx(com.pocketstudio.model.FxPresets.byId("fat_bass")!!), fxActions(com.pocketstudio.model.SoundKind.BASS),
+            ) {},
+        )
+    }
+
+    /** Acide: the same card under the 303's sound. */
+    @Test
+    fun acidEffects() = shoot("acid_effects", prepare = {
+        compose.onNode(androidx.compose.ui.test.hasTestTag("effects_card")).performScrollTo()
+        compose.waitForIdle()
+    }) {
+        val pattern = com.pocketstudio.model.AcidGenerator(kotlin.random.Random(3))
+            .generate(com.pocketstudio.model.AcidPattern(length = 32, locked = setOf(2)))
+        com.pocketstudio.app.acid.AcidScreen(
+            acid = pattern, playing = false, currentStep = -1, selected = 2,
+            actions = com.pocketstudio.app.acid.AcidActions(),
+            effects = com.pocketstudio.app.mixer.EffectsUi(1, com.pocketstudio.model.Channel(), fxActions(com.pocketstudio.model.SoundKind.ACID)) {},
+        )
+    }
+
+    @Test
+    fun crazyEffects() = shoot("crazy_effects", prepare = { tap("fx_chip_4_0") }) {
+        val inserts = com.pocketstudio.model.Mixer.sanitizeInserts(listOf(
             com.pocketstudio.model.Insert.of(com.pocketstudio.model.EffectType.CHOPPER).copy(params = listOf(0.3f, 1f, 0.2f, 0f)),
             com.pocketstudio.model.Insert.of(com.pocketstudio.model.EffectType.VINYL),
-            com.pocketstudio.model.Insert(), com.pocketstudio.model.Insert(),
-        )
+        ))
         androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
             com.pocketstudio.ui.NeonCard {
                 com.pocketstudio.ui.SectionLabel("Nappe · effets")
-                com.pocketstudio.app.mixer.InsertRack(4, inserts, com.pocketstudio.app.mixer.MixerActions())
+                com.pocketstudio.app.mixer.InsertChain(4, inserts, com.pocketstudio.app.mixer.MixerActions())
             }
         }
     }
 
     @Test
-    fun parametricEq() = shoot("param_eq") {
-        val inserts = listOf(
+    fun parametricEq() = shoot("param_eq", prepare = { tap("fx_chip_12_0") }) {
+        val inserts = com.pocketstudio.model.Mixer.sanitizeInserts(listOf(
             com.pocketstudio.model.Insert(com.pocketstudio.model.EffectType.PARAM_EQ.ordinal, listOf(0.62f, 0.75f, 0.45f, 0.3f)),
             com.pocketstudio.model.Insert.of(com.pocketstudio.model.EffectType.PHASER),
-            com.pocketstudio.model.Insert.of(com.pocketstudio.model.EffectType.BITCRUSHER), com.pocketstudio.model.Insert(),
-        )
+            com.pocketstudio.model.Insert.of(com.pocketstudio.model.EffectType.BITCRUSHER),
+        ))
         androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
             com.pocketstudio.ui.NeonCard {
                 com.pocketstudio.ui.SectionLabel("Voix · effets")
-                com.pocketstudio.app.mixer.InsertRack(12, inserts, com.pocketstudio.app.mixer.MixerActions())
+                com.pocketstudio.app.mixer.InsertChain(12, inserts, com.pocketstudio.app.mixer.MixerActions())
             }
         }
     }
@@ -966,6 +1052,51 @@ open class ScreenshotTest {
                     com.pocketstudio.model.SongPart(2, 2), com.pocketstudio.model.SongPart(1), com.pocketstudio.model.SongPart(2, 4),
                 ),
                 songIndex = 0, playing = true, tempoBpm = 124.0, upcoming = 1,
+            ),
+            com.pocketstudio.app.session.SessionActions(),
+        )
+    }
+
+    @Test
+    fun harmonyPanel() = shoot("harmony_panel") {
+        // A melody without a chord (one note out of Do mineur): the chord playing is off and says
+        // where the sound is set; the scale says it keeps the notes, and offers to fit them.
+        val melody = listOf(60, 63, 66, 67).mapIndexed { i, p -> com.pocketstudio.model.Note(i * 48, 40, p) }
+        androidx.compose.foundation.layout.Column(
+            Modifier.verticalScroll(androidx.compose.foundation.rememberScrollState()).padding(12.dp),
+        ) {
+            com.pocketstudio.ui.NeonCard {
+                com.pocketstudio.ui.SectionLabel(com.pocketstudio.model.i18n.tr("Gamme et accords"))
+                com.pocketstudio.app.synth.HarmonyPanel(
+                    com.pocketstudio.model.Harmony(0, com.pocketstudio.model.Scale.Minor),
+                    com.pocketstudio.model.NoteClip(16, melody, performance = com.pocketstudio.model.Performance(arp = com.pocketstudio.model.ArpMode.Up)),
+                    com.pocketstudio.app.synth.PianoRollActions(), toSound = {},
+                )
+            }
+        }
+    }
+
+    @Test
+    fun sceneDrag() = shoot("scene_drag", prepare = {
+        // Scene B held and carried towards F: it follows the finger, the slot under it lights up.
+        compose.onNodeWithTag("scene_5").performScrollTo()
+        val a = compose.onNodeWithTag("scene_1").fetchSemanticsNode().boundsInRoot
+        val b = compose.onNodeWithTag("scene_5").fetchSemanticsNode().boundsInRoot
+        compose.onNodeWithTag("scene_1").performTouchInput {
+            down(center)
+            advanceEventTime(viewConfiguration.longPressTimeoutMillis + 200)
+            repeat(10) { moveBy((b.center - a.center) / 10f, delayMillis = 16) }
+        }
+        compose.waitForIdle()
+    }) {
+        val drums = com.pocketstudio.model.DrumPattern().toggle(0, 0).toggle(2, 4)
+        com.pocketstudio.app.session.SessionScreen(
+            com.pocketstudio.app.session.SessionScreenUi(
+                scenes = listOf(
+                    com.pocketstudio.model.Scene("A", drums, label = "Intro"), com.pocketstudio.model.Scene("B", drums, label = "Couplet"),
+                    com.pocketstudio.model.Scene("C", drums, label = "Refrain"),
+                ) + List(21) { null },
+                current = 0, pending = null, song = emptyList(), songIndex = -1, playing = false, tempoBpm = 124.0,
             ),
             com.pocketstudio.app.session.SessionActions(),
         )

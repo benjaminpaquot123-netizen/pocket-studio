@@ -20,6 +20,7 @@ import com.pocketstudio.model.DrumPattern
 import com.pocketstudio.model.Scene
 import com.pocketstudio.model.SongPart
 import com.pocketstudio.model.sceneTitle
+import com.pocketstudio.model.allScenes
 import com.pocketstudio.ui.PocketStudioTheme
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -101,6 +102,99 @@ class SongArrangementTest {
         assertEquals("B · Refrain", vm.project.value.sceneTitle(1))
         // Renaming does not change the scene shown.
         assertEquals(0, vm.project.value.scene)
+    }
+
+    @Test
+    fun aSceneMovedByDragKeepsTheSongAndUndoesInOneStep() {
+        val vm = vmWithSong()
+        vm.renameScene(1, "Couplet")
+        val before = vm.project.value
+        val hits = { i: Int -> vm.project.value.allScenes[i].drums.lanes[0].hits.keys }
+        // B to the empty slot F: the song plays the same scenes from their new places.
+        vm.moveScene(1, 5)
+        assertEquals(listOf(0, 5, 2), vm.songScenes())
+        assertEquals(before.allScenes[1].drums.lanes[0].hits.keys, hits(5))
+        assertEquals("F · Couplet", vm.project.value.sceneTitle(5))
+        // A (shown) swapped with C: the screens stay on A, now in C's slot.
+        vm.moveScene(0, 2)
+        assertEquals(listOf(2, 5, 0), vm.songScenes())
+        assertEquals(2, vm.project.value.scene)
+        vm.undo()
+        assertEquals(listOf(0, 5, 2), vm.songScenes())
+        assertEquals(0, vm.project.value.scene)
+        vm.undo()
+        assertEquals(listOf(0, 1, 2), vm.songScenes())
+        assertEquals(before.allScenes, vm.project.value.allScenes)
+        // Replacing C with A: every part of A or C now plays A.
+        vm.moveScene(0, 2, replace = true)
+        assertEquals(listOf(2, 1, 2), vm.songScenes())
+        assertEquals(before.allScenes[0].drums.lanes[0].hits.keys, hits(2))
+    }
+
+    @Test
+    fun undoingASceneMoveWhilePlayingStaysOnTheSceneHeard() {
+        val vm = vmWithSong()
+        vm.playingForTest = true  // what follows the scene heard, as while playing
+        val hits = { vm.project.value.drums.lanes[0].hits.keys }
+        val a = hits()
+        // A (shown and heard) swapped with C: A plays on from slot C.
+        vm.moveScene(0, 2)
+        assertEquals(2, vm.project.value.scene)
+        assertEquals(a, hits())
+        // Annuler: A back in its slot, still the scene heard and shown (not C, now in slot C).
+        vm.undo()
+        assertEquals(0, vm.project.value.scene)
+        assertEquals(a, hits())
+        vm.redo()
+        assertEquals(2, vm.project.value.scene)
+        assertEquals(a, hits())
+        vm.undo()
+        // Replacing C with A, then Annuler: A again, from slot A.
+        vm.moveScene(0, 2, replace = true)
+        assertEquals(a, hits())
+        vm.undo()
+        assertEquals(0, vm.project.value.scene)
+        assertEquals(a, hits())
+        assertEquals(listOf(0, 1, 2), vm.songScenes())
+    }
+
+    @Test
+    fun aSceneIsDraggedOntoAnotherSlotAndAFullOneAsks() {
+        val moves = mutableListOf<String>()
+        val selected = mutableListOf<Int>()
+        showScreen(SessionActions(select = { selected += it }, moveScene = { f, t, r -> moves += "$f>$t" + if (r) " replace" else "" }))
+        // B onto the empty F: moved at once.
+        drag(1, 5)
+        assertEquals(listOf("1>5"), moves)
+        // B onto A (not empty): a question first.
+        drag(1, 0)
+        compose.onNodeWithTag("scene_move_swap").performClick()
+        drag(1, 0)
+        compose.onNodeWithTag("scene_move_replace").assertTextContains("A", substring = true).performClick()
+        drag(1, 0)
+        compose.onNodeWithTag("scene_move_cancel").performClick()
+        assertEquals(listOf("1>5", "1>0", "1>0 replace"), moves)
+        // A drag is never also a touch; a touch still picks the scene.
+        assertTrue(selected.isEmpty())
+        compose.onNodeWithTag("scene_1").performClick()
+        assertEquals(listOf(1), selected)
+    }
+
+    /** Holds scene [from], then slides the finger onto slot [to] and lets go. */
+    private fun drag(from: Int, to: Int) {
+        compose.onNodeWithTag("scene_$to").performScrollTo()
+        compose.onNodeWithTag("scene_$from").performScrollTo()
+        val a = compose.onNodeWithTag("scene_$from").fetchSemanticsNode().boundsInRoot
+        val b = compose.onNodeWithTag("scene_$to").fetchSemanticsNode().boundsInRoot
+        compose.onNodeWithTag("scene_$from").performTouchInput {
+            down(center)
+            advanceEventTime(viewConfiguration.longPressTimeoutMillis + 200)
+            moveBy(androidx.compose.ui.geometry.Offset(0f, 1f))
+            val steps = 10
+            repeat(steps) { moveBy((b.center - a.center) / steps.toFloat(), delayMillis = 16) }
+            up()
+        }
+        compose.waitForIdle()
     }
 
     @Test

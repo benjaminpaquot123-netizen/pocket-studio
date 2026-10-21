@@ -72,6 +72,7 @@ object NativeEngine {
     private const val CMD_TRACK_SAMPLE_PARAM = 65
     private const val CMD_PAD_STRIP = 66
     private const val CMD_MASTER = 67
+    private const val CMD_CLEAR_INSERTS = 68
 
     // Kinds of [setExpression] (InstrumentTrack::Expression).
     const val EXPR_BEND = 0
@@ -87,7 +88,7 @@ object NativeEngine {
     const val LIVE_PADS = 16
 
     /** Insert slots per channel (and on the master, whose channel index is [MASTER]). */
-    const val INSERTS = 4
+    const val INSERTS = 8
 
     /**
      * Mixer channels: 0 drums, 1 acid bass, 2 synth (instrument track 0), 3 remix stems, 5..11
@@ -169,6 +170,8 @@ object NativeEngine {
     fun setChannelSolo(ch: Int, on: Boolean) = post(CMD_CHANNEL_SOLO, if (on) 1f else 0f, ch)
     /** [ch] 0..MIXER_CHANNELS (the last is the master); [type] in EffectType order. */
     fun setInsertType(ch: Int, slot: Int, type: Int) = post(CMD_INSERT_TYPE, 0f, ch * INSERTS + slot, type)
+    /** Every insert slot of [ch] emptied in one command (a strip no longer used gives back its echo and reverb memory). */
+    fun clearInserts(ch: Int) = post(CMD_CLEAR_INSERTS, 0f, ch)
     fun setInsertParam(ch: Int, slot: Int, param: Int, value: Float) = post(CMD_INSERT_PARAM, value, ch * INSERTS + slot, param)
     /** Post-fader send of [ch] to [bus] (0 reverb, 1 delay), 0..1. */
     fun setSend(ch: Int, bus: Int, level: Float) = post(CMD_SEND, level, ch, bus)
@@ -220,6 +223,12 @@ object NativeEngine {
 
     /** Current pattern step, or -1 when stopped or counting in. */
     external fun currentStep(): Int
+
+    /**
+     * How busy the audio thread is: its render time over the time its sound lasts, smoothed over
+     * about half a second. Near 1 the sound starts to crackle (too many heavy effects at once).
+     */
+    external fun cpuLoad(): Float
     /** Steps since play without wrapping (-1 stopped): the piano roll loops on its own length. */
     external fun absoluteStep(): Int
 

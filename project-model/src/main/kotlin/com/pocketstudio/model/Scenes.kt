@@ -132,9 +132,16 @@ fun Project.switchScene(index: Int): Project {
     val synced = syncScenes()
     if (index !in 0 until Scene.MAX) return synced
     val existing = synced.allScenes
-    val list = existing + List((index + 1 - existing.size).coerceAtLeast(0)) { Scene() }
+    return synced.showing(existing + List((index + 1 - existing.size).coerceAtLeast(0)) { Scene() }, index)
+}
+
+/**
+ * The project with the scenes [list] (already in step: no current content to save first),
+ * scene [index] shown and mirrored in drums / acid / notes.
+ */
+private fun Project.showing(list: List<Scene>, index: Int): Project {
     val target = list[index]
-    return synced.copy(
+    return copy(
         scenes = list,
         scene = index,
         // Pad sounds and the 303's sound and root are shared by all scenes: only the notes change.
@@ -143,6 +150,62 @@ fun Project.switchScene(index: Int): Project {
         synthNotes = target.synthNotes,
         tracks = tracks.map { t -> t.copy(notes = target.trackNotes[t.id] ?: NoteClip(steps = t.notes.steps)) },
     ).syncScenes()
+}
+
+/**
+ * Where scene [index] is once scene [from] was dropped on slot [to]: [from] goes to [to]; with
+ * [replace] the scene at [to] is overwritten (what pointed at [to] stays there and now plays the
+ * scene moved), else the two swap places (dropping on an empty slot is a swap with nothing).
+ */
+fun sceneIndexAfterMove(index: Int, from: Int, to: Int, replace: Boolean): Int = when (index) {
+    from -> to
+    to -> if (replace) to else from
+    else -> index
+}
+
+/**
+ * The way back of [sceneIndexAfterMove] (undoing the move): what is at [index] after the move came
+ * from there. A swap is its own way back; after a replace, slot [to] holds the scene from [from].
+ */
+fun sceneIndexBeforeMove(index: Int, from: Int, to: Int, replace: Boolean): Int = when (index) {
+    to -> from
+    from -> if (replace) from else to
+    else -> index
+}
+
+/** A scene move, as an undo step's tag: undoing or redoing it, what plays follows its scene. */
+data class SceneMove(val from: Int, val to: Int, val replace: Boolean) {
+    fun forward(index: Int) = sceneIndexAfterMove(index, from, to, replace)
+    fun back(index: Int) = sceneIndexBeforeMove(index, from, to, replace)
+}
+
+/**
+ * Scene [from] dragged onto slot [to] (one edit, see [sceneIndexAfterMove]). Everything that
+ * names a scene by its place follows: the song's parts (the song sounds the same after a swap),
+ * per-scene automation, scene audio clips, and the scene shown (it follows its content). With
+ * [replace], the scene at [to] and what was its own are gone: its automation and its audio takes
+ * (they would otherwise play over the scene moved there); Annuler brings them back.
+ */
+fun Project.moveScene(from: Int, to: Int, replace: Boolean = false): Project {
+    if (from == to || from !in 0 until Scene.MAX || to !in 0 until Scene.MAX) return this
+    val synced = syncScenes()
+    val existing = synced.allScenes
+    if (from !in existing.indices) return synced
+    val list = (existing + List((to + 1 - existing.size).coerceAtLeast(0)) { Scene() }).toMutableList()
+    val moving = list[from]
+    list[from] = if (replace) Scene() else list[to]
+    list[to] = moving
+    val map = { i: Int -> sceneIndexAfterMove(i, from, to, replace) }
+    fun AudioClip.moved() = copy(scene = scene?.let(map))
+    // With replace, the takes of the scene replaced go with it.
+    fun AudioClip?.kept() = this?.takeIf { !(replace && it.scene == to) }?.moved()
+    return synced.copy(
+        song = synced.song.map { it.copy(scene = map(it.scene)) },
+        automation = synced.automation.map { lane ->
+            lane.copy(sceneValues = lane.sceneValues.filterKeys { !(replace && it == to) }.mapKeys { map(it.key) })
+        },
+        audioTracks = synced.audioTracks.map { t -> t.copy(clip = t.clip.kept(), previous = t.previous.kept()) },
+    ).showing(list, map(synced.scene))
 }
 
 /** Copies the current scene into [index] (to start a variation from it), its per-scene automation too. */

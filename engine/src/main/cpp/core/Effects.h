@@ -23,6 +23,7 @@ public:
     void highShelf(float rate, float freq, float gainDb);
     void peak(float rate, float freq, float q, float gainDb);
     void highPass(float rate, float freq);  // 2nd order, Q 0.707
+    void lowPass(float rate, float freq);   // 2nd order, Q 0.707
     void bypass() { b0_ = 1; b1_ = b2_ = a1_ = a2_ = 0; }
     void reset() { z1_ = z2_ = 0.0f; }
     float process(float x) {
@@ -442,13 +443,128 @@ private:
     int pending_ = -1;
 };
 
+
+// --- The electronic music classics (phase 25): small ones, held by every slot ---------------
+
+// Distortion: drive into one of four curves, then a tone low-pass and a dry/wet mix. The output
+// is levelled (a hot drive is not much louder than a light one). Params: drive (x1..x60), tone
+// (800 Hz..18 kHz), type (overdrive, fuzz, hard clip, foldback), mix.
+class Distortion {
+public:
+    static constexpr int kTypes = 4;
+    void prepare(float rate) { rate_ = rate; reset(); }
+    void setParam(int p, float v);
+    void reset() { lp1L_ = lp2L_ = lp1R_ = lp2R_ = dcInL_ = dcOutL_ = dcInR_ = dcOutR_ = 0.0f; }
+    void process(float* l, float* r, int n);
+    static float shape(int type, float x);  // tests
+
+private:
+    float rate_ = 48000;
+    std::array<float, 4> p_{0.45f, 0.6f, 0.0f, 1.0f};
+    float lp1L_ = 0, lp2L_ = 0, lp1R_ = 0, lp2R_ = 0;
+    float dcInL_ = 0, dcOutL_ = 0, dcInR_ = 0, dcOutR_ = 0;
+};
+
+// Auto-pan in time with the song: the sound travels left and right once per 2 bars, bar, 1/2,
+// 1/4, 1/8 or 1/16 note; each beat puts it back on the grid. Params: rate, depth, shape (sine ..
+// square), -.
+class AutoPan {
+public:
+    static constexpr int kRates = 6;
+    void prepare(float rate) { rate_ = rate; }
+    void setParam(int p, float v);
+    void reset() { phase_ = 0.0; pending_ = -1; }
+    void setStepFrames(double framesPerSixteenth) { if (framesPerSixteenth > 0.0) stepFrames_ = framesPerSixteenth; }
+    void beat(int offset) { pending_ = offset; }
+    void process(float* l, float* r, int n);
+    double phase() const { return phase_; }  // tests
+    static int stepsOf(float v);              // sixteenths per round trip
+
+private:
+    float rate_ = 48000;
+    std::array<float, 4> p_{0.58f, 0.7f, 0.0f, 0.0f};
+    double phase_ = 0.0, stepFrames_ = 6000.0;
+    int pending_ = -1;
+};
+
+// "OTT": three-band compression, upwards and downwards at once (the loud parts squashed, the
+// quiet details brought up), the famous over-the-top sound of EDM. Bands split at 120 Hz and
+// 2.5 kHz (Linkwitz-Riley, 24 dB/octave). Params: depth (dry/wet), speed (attack and release
+// x0.25..x4), upward, downward.
+class Ott {
+public:
+    void prepare(float rate);
+    void setParam(int p, float v);
+    void reset();
+    void process(float* l, float* r, int n);
+    float bandGainDb(int band) const { return gainDb_[static_cast<size_t>(band)]; }  // tests
+
+private:
+    void update();
+    float rate_ = 48000;
+    std::array<float, 4> p_{0.6f, 0.5f, 0.7f, 0.7f};
+    // Per side: low = LP1·LP1, rest = HP1·HP1, mid = LP2·LP2(rest), high = HP2·HP2(rest).
+    struct Split {
+        Biquad lp1a, lp1b, hp1a, hp1b, lp2a, lp2b, hp2a, hp2b;
+    };
+    Split left_, right_;
+    std::array<float, 3> env_{}, gainDb_{}, gain_{1.0f, 1.0f, 1.0f}, attack_{}, release_{};
+    int count_ = 0;
+};
+
+// Frequency shifter: every partial moves up (or down) by the same number of hertz, which no pitch
+// shift does: metallic, bell-like, or a slow phasing when the shift is a few hertz. A Hilbert
+// transform (two chains of allpasses, Olli Niemitalo's coefficients) and a quadrature oscillator.
+// Params: shift (0.5 = none, -2000..+2000 Hz, finer near the middle), feedback, mix.
+class FreqShifter {
+public:
+    void prepare(float rate) { rate_ = rate; reset(); }
+    void setParam(int p, float v);
+    void reset();
+    void process(float* l, float* r, int n);
+    static float shiftHz(float v);
+
+private:
+    struct Allpass2 {
+        float a2 = 0, x1 = 0, x2 = 0, y1 = 0, y2 = 0;
+        float run(float x) {
+            const float y = a2 * (x + y2) - x2;
+            x2 = x1; x1 = x; y2 = y1; y1 = y;
+            return y;
+        }
+    };
+    struct Hilbert {
+        std::array<Allpass2, 4> a, b;
+        float aDelay = 0;
+        void init();
+        void run(float x, float& re, float& im);
+    };
+    float rate_ = 48000;
+    std::array<float, 4> p_{0.6f, 0.0f, 0.5f, 0.0f};
+    Hilbert hL_, hR_;
+    double phase_ = 0.0;
+    float fbL_ = 0, fbR_ = 0;
+};
+
+// Effects with seconds of memory (insert echo, insert reverb, tape stop) are too big for every
+// slot to hold one: a few of each wait in a pool the mixer fills before the stream starts, and a
+// slot borrows one when it takes that type (no allocation on the audio thread).
+class InsertEcho;
+class InsertReverb;
+class TapeStop;
+class LongFxPool;
+
 class InsertSlot {
 public:
     enum Type {
         None = 0, Eq = 1, Comp = 2, Saturation = 3, Chorus = 4, Filter = 5, Pump = 6,
         FlangerFx = 7, PhaserFx = 8, GateFx = 9, TremoloFx = 10, WidenerFx = 11, Crusher = 12, ParamEqFx = 13,
-        RobotFx = 14, WahFx = 15, VinylFx = 16, RadioFx = 17, ChopperFx = 18, kTypes = 19
+        RobotFx = 14, WahFx = 15, VinylFx = 16, RadioFx = 17, ChopperFx = 18,
+        DistortionFx = 19, EchoFx = 20, PingPongFx = 21, ReverbFx = 22, AutoPanFx = 23, OttFx = 24,
+        FreqShiftFx = 25, TapeStopFx = 26, kTypes = 27
     };
+    // Whether `type` needs a unit of the pool (seconds of memory).
+    static bool isLong(int type) { return type == EchoFx || type == PingPongFx || type == ReverbFx || type == TapeStopFx; }
     static constexpr int kParams = 4;
 
     void prepare(float rate);
@@ -460,14 +576,34 @@ public:
     const Compressor& compressor() const { return comp_; }  // tests
     const Ducker& ducker() const { return pump_; }          // tests
     // Sidechain events (only the Pump type listens). `beat`: the step is a quarter note.
-    void setStepFrames(double framesPerSixteenth) { chopper_.setStepFrames(framesPerSixteenth); }
+    void setStepFrames(double framesPerSixteenth);
     void sidechain(int offset, bool kick, bool beat) {
         if (type_ == Pump && (pump_.everyBeat() ? beat : kick)) pump_.trigger(offset);
         if (type_ == ChopperFx && beat) chopper_.beat(offset);
+        if (type_ == AutoPanFx && beat) autoPan_.beat(offset);
     }
+    // The pool the long effects borrow from (none: those types let the sound through untouched).
+    void attachPool(LongFxPool* pool) { pool_ = pool; }
+    // A long type still waiting for a free unit (they were all taken): try again (audio thread, no allocation).
+    bool waitingForUnit() const { return isLong(type_) && !hasUnit(); }
+    void takeUnit();
+    bool hasUnit() const { return echo_ != nullptr || reverb_ != nullptr || tape_ != nullptr; }
+    // The insert echo's repeat time when one plays here (0: none), for the export's tail.
+    float echoFrames() const;
 
 private:
+    void releaseUnit();
     int type_ = None;
+    LongFxPool* pool_ = nullptr;
+    InsertEcho* echo_ = nullptr;
+    InsertReverb* reverb_ = nullptr;
+    TapeStop* tape_ = nullptr;
+    // The last parameters of the current type: a unit borrowed later starts from them.
+    std::array<float, kParams> longParams_{};
+    Distortion distortion_;
+    AutoPan autoPan_;
+    Ott ott_;
+    FreqShifter shifter_;
     Eq3 eq_;
     Compressor comp_;
     Saturator sat_;
@@ -523,7 +659,8 @@ private:
 class TempoDelay {
 public:
     static constexpr float kMaxSeconds = 2.5f;
-    void prepare(float rate);
+    void prepare(float rate) { prepare(rate, kMaxSeconds); }
+    void prepare(float rate, float maxSeconds);
     void setParam(int p, float v);
     void setStepFrames(double framesPerSixteenth);  // from the sequencer, each block
     void reset();
@@ -536,10 +673,118 @@ private:
     std::array<float, 4> p_{0.33f, 0.4f, 1.0f, 0.6f};
     std::vector<float> bufL_, bufR_;
     size_t write_ = 0;
+    // Frames written since the last reset (up to the buffer's size): older ones read as silence,
+    // so a reset never has to clear seconds of memory (a pool unit borrowed in the callback).
+    size_t filled_ = 0;
+    // Reset and nothing played since: the time follows its target at once (the first repeat of
+    // a new echo is on time, without a glide from the defaults to its real settings).
+    bool fresh_ = true;
     double stepFrames_ = 6000.0;
     float target_ = 12000.0f, current_ = 12000.0f, smooth_ = 0.001f;
     float feedback_ = 0.4f, pingPong_ = 1.0f, toneCoef_ = 0.5f, lpL_ = 0, lpR_ = 0;
     float rate_ = 48000;
+};
+
+// Insert echo: the send delay's engine on one track, with a dry/wet mix. Two types share it:
+// "Écho" (straight stereo repeats) and "Écho ping-pong" (repeats bouncing left and right).
+// Params: time (1/16, 1/8, dotted 1/8, 1/4, dotted 1/4, 1/2 note), feedback, tone of the repeats, mix.
+class InsertEcho {
+public:
+    static constexpr float kMaxSeconds = 1.6f;  // a half note at 40 BPM is 1.5 s
+    void prepare(float rate) { delay_.prepare(rate, kMaxSeconds); applyParams(); }
+    void setParam(int p, float v);
+    void setPingPong(bool on) { pingPong_ = on; delay_.setParam(2, on ? 1.0f : 0.0f); }
+    void setStepFrames(double framesPerSixteenth) { delay_.setStepFrames(framesPerSixteenth); }
+    void reset() { delay_.reset(); }
+    void process(float* l, float* r, int n);
+    float delayFrames() const { return delay_.delayFrames(); }
+
+private:
+    void applyParams();
+    TempoDelay delay_;
+    std::array<float, 4> p_{0.42f, 0.4f, 0.55f, 0.35f};
+    bool pingPong_ = false;
+};
+
+// Insert reverb: the send reverb (Freeverb) on one track, with a dry/wet mix.
+// Params: size, damping, pre-delay (0..200 ms), mix.
+class InsertReverb {
+public:
+    void prepare(float rate) { reverb_.prepare(rate); applyParams(); }
+    void setParam(int p, float v);
+    void reset() { reverb_.reset(); }
+    void process(float* l, float* r, int n);
+
+private:
+    void applyParams();
+    Reverb reverb_;
+    std::array<float, 4> p_{0.6f, 0.5f, 0.1f, 0.3f};
+};
+
+// Tape stop ("Arrêt de bande"): the "stop" knob past its middle slows the sound to a halt like a
+// tape machine losing power; back under the middle, the sound returns (faded in). Automate the
+// knob to place it in a song. Params: stop (switch), stop time (0.1..2 s), return fade (0..300 ms).
+class TapeStop {
+public:
+    static constexpr float kMaxSeconds = 1.05f;  // the most the reading falls behind: half the stop time
+    void prepare(float rate);
+    void setParam(int p, float v);
+    void reset();
+    void process(float* l, float* r, int n);
+    float speed() const { return static_cast<float>(speed_); }  // tests
+
+private:
+    std::array<float, 4> p_{0.0f, 0.5f, 0.2f, 0.0f};
+    float rate_ = 48000;
+    std::vector<float> bufL_, bufR_;
+    size_t write_ = 0;
+    double readPos_ = 0.0, speed_ = 1.0;
+    bool stopping_ = false;
+    float back_ = 1.0f;  // the return fade-in, 0..1
+};
+
+template <class T, int N>
+class UnitPool {
+public:
+    void prepare(float rate) {
+        for (auto& u : units_) u.prepare(rate);
+    }
+    T* take() {
+        for (size_t i = 0; i < units_.size(); ++i) {
+            if (!used_[i]) {
+                used_[i] = true;
+                units_[i].reset();
+                return &units_[i];
+            }
+        }
+        return nullptr;
+    }
+    void give(T* unit) {
+        for (size_t i = 0; i < units_.size(); ++i) {
+            if (&units_[i] == unit) used_[i] = false;
+        }
+    }
+    int available() const { return static_cast<int>(std::count(used_.begin(), used_.end(), false)); }
+
+private:
+    std::array<T, N> units_{};
+    std::array<bool, N> used_{};
+};
+
+class LongFxPool {
+public:
+    // Shared by every slot of the mixer (32 strips x 8 slots): about 7.5 MB of echoes (0.62 MB
+    // each), 1.8 MB of reverbs (0.15 MB) and 2.5 MB of tape stops (0.41 MB) at 48 kHz, 11.7 MB
+    // in all per engine (the export's engine holds the same while it renders).
+    static constexpr int kEchoes = 12, kReverbs = 12, kTapeStops = 6;
+    void prepare(float rate) {
+        echoes.prepare(rate);
+        reverbs.prepare(rate);
+        tapeStops.prepare(rate);
+    }
+    UnitPool<InsertEcho, kEchoes> echoes;
+    UnitPool<InsertReverb, kReverbs> reverbs;
+    UnitPool<TapeStop, kTapeStops> tapeStops;
 };
 
 }  // namespace ps

@@ -11,8 +11,13 @@ void Mixer::prepare(int sampleRate) {
         s.gainR.configure(rate, 15.0f);
         for (auto& g : s.sendGain) g.configure(rate, 15.0f);
     }
+    pool_->prepare(rate);
     for (auto& strip : inserts_) {
-        for (auto& slot : strip) slot.prepare(rate);
+        for (auto& slot : strip) {
+            slot.prepare(rate);
+            slot.attachPool(pool_.get());
+            slot.takeUnit();  // a long type chosen before the stream opened
+        }
     }
     for (auto& m : macros_) m.prepare(rate);
     reverb_.prepare(rate);
@@ -57,6 +62,23 @@ void Mixer::setInsertType(int ch, int slot, int type) {
     if (ch < 0 || ch >= kChannels || slot < 0 || slot >= kInserts) return;
     auto& strip = inserts_[static_cast<size_t>(ch)];
     strip[static_cast<size_t>(slot)].setType(type);
+    afterInsertChange(ch);
+}
+
+void Mixer::clearInserts(int ch) {
+    if (ch < 0 || ch >= kChannels) return;
+    for (auto& slot : inserts_[static_cast<size_t>(ch)]) slot.setType(InsertSlot::None);
+    afterInsertChange(ch);
+}
+
+void Mixer::afterInsertChange(int ch) {
+    auto& strip = inserts_[static_cast<size_t>(ch)];
+    // A unit given back may be waiting for: the first slot still without one gets it.
+    for (auto& s : inserts_) {
+        for (auto& other : s) {
+            if (other.waitingForUnit()) other.takeUnit();
+        }
+    }
     activeInserts_[static_cast<size_t>(ch)] =
         static_cast<int>(std::count_if(strip.begin(), strip.end(), [](const InsertSlot& s) { return s.type() != InsertSlot::None; }));
 }

@@ -112,6 +112,8 @@ class RemixActions(
     val setStartAt: (Float) -> Unit = {},
     /** Reads the free memory again. */
     val checkMemory: () -> Unit = {},
+    /** The effects box of the remix's strip (the live pads play there too); null: no button. */
+    val effects: (() -> Unit)? = null,
 )
 
 /** Remix: split a song into drums, bass, other and vocals, then listen to each part. */
@@ -208,6 +210,9 @@ private fun InProject(ui: RemixUi, actions: RemixActions) {
                 Text(" " + if (ui.transportPlaying) tr("Arrêter") else tr("Jouer"))
             }
             Text(tr("Mesure %d", r.startBar + 1), Modifier.weight(1f), maxLines = 1)
+            actions.effects?.let { open ->
+                TextButton(onClick = open, modifier = Modifier.testTag("remix_effects")) { Text(tr("Effets")) }
+            }
             IconButton(onClick = { actions.setStartBar(r.startBar - 1) }, enabled = r.startBar > 0) {
                 Icon(Icons.Filled.Remove, contentDescription = tr("Mesure précédente"))
             }

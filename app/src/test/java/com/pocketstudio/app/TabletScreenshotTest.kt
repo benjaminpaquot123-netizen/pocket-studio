@@ -27,7 +27,7 @@ class TabletScreenshotTest : ScreenshotTest() {
         val SCREENS = setOf(
             "rhythm", "acid", "synth", "mixer", "piano_roll", "wizard_style", "wizard_style_open", "wizard_acid", "wizard_summary", "projects", "welcome",
             "session", "top_bar", "next_steps", "audio_tracks", "remix",
-            "settings", "timeline", "generate_result", "remix_project", "library", "tracks", "instruments", "tuner",
+            "settings", "timeline", "generate_result", "remix_project", "library", "tracks", "instruments", "tuner", "harmony_panel",
         )
     }
 }
@@ -55,7 +55,12 @@ class TabletLandscapeScreenshotTest : ScreenshotTest() {
 @Config(qualifiers = "w600dp-h1006dp-tvdpi")
 class SmallTabletScreenshotTest : ScreenshotTest() {
     override val prefix = "tablet8/"
-    override fun wanted(name: String) = name in TabletScreenshotTest.SCREENS
+    override fun wanted(name: String) = name in TabletScreenshotTest.SCREENS || name in EFFECTS
+
+    companion object {
+        /** The effects box where each sound is chosen (phase 25), on Benjamin's tablet too. */
+        val EFFECTS = setOf("effects_box", "effects_picker", "effects_full", "synth_effects", "acid_effects")
+    }
     override val chrome = androidx.compose.foundation.layout.PaddingValues(top = 80.dp, bottom = 128.dp)
 
     @Test override fun session() = super.session()

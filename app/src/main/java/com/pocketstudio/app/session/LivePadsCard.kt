@@ -88,6 +88,8 @@ class LivePadsActions(
     val setOneShot: (Int, Boolean) -> Unit = { _, _ -> },
     val setGain: (Int, Float) -> Unit = { _, _ -> },
     val clear: (Int) -> Unit = {},
+    /** The effects box of the live pads' strip (shared with the remix), null: no button. */
+    val effects: (() -> Unit)? = null,
 )
 
 private fun beatsLabel(beats: Int) = when {
@@ -103,6 +105,9 @@ fun LivePadsCard(ui: LivePadsUi, actions: LivePadsActions) {
     NeonCard(accent = Neon.Cyan, modifier = Modifier.testTag("live_pads")) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             SectionLabel(tr("Pads live"), Modifier.weight(1f), help = Glossary.LIVE_PADS)
+            actions.effects?.let { open ->
+                TextButton(onClick = open, modifier = Modifier.testTag("live_effects")) { Text(tr("Effets")) }
+            }
             TextButton(onClick = actions.stopAll, modifier = Modifier.testTag("live_stop_all")) {
                 Icon(Icons.Filled.Stop, contentDescription = null)
                 Text(" " + tr("Tout couper"))

@@ -586,9 +586,12 @@ private fun ChipRow(label: String, help: Help? = null, content: @Composable () -
             ) { content() }
         }
     } else {
-        Row(Modifier.fadingHorizontalScroll(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        // The label stays put (never scrolled out of sight, never cut): only the choices scroll.
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             title()
-            content()
+            Row(Modifier.weight(1f).fadingHorizontalScroll(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                content()
+            }
         }
     }
 }
@@ -684,9 +687,14 @@ private fun RollKey(
     }
 }
 
-/** Key, scale, progressions and how chords are played (arpeggio, strum). */
+/**
+ * Key, scale, progressions and how chords are played (arpeggio, strum). [toSound]: takes the user
+ * to the track's sound, which these settings do not change.
+ */
 @Composable
-fun HarmonyPanel(harmony: Harmony, performance: Performance, actions: PianoRollActions, notes: List<Note> = emptyList()) {
+fun HarmonyPanel(harmony: Harmony, clip: NoteClip, actions: PianoRollActions, toSound: (() -> Unit)? = null) {
+    val performance = clip.performance
+    val notes = clip.notes
     val chipColors = pillColors()
     val english = com.pocketstudio.app.settings.englishNotes()
     val guesses = NoteEdits.guessScales(notes)
@@ -720,6 +728,15 @@ fun HarmonyPanel(harmony: Harmony, performance: Performance, actions: PianoRollA
             }
             Switch(checked = harmony.lock, onCheckedChange = { actions.setHarmony(harmony.copy(lock = it)) }, modifier = Modifier.testTag("scale_lock"))
         }
+        // A scale guides, it does not rewrite: the notes already placed stay where they are, unless asked.
+        Text(tr("Changer de gamme ne déplace pas les notes déjà posées."),
+            style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.testTag("scale_keeps_notes"))
+        val outside = NoteEdits.outOfScale(notes, harmony)
+        if (outside > 0) {
+            TextButton(onClick = { actions.replaceClip(NoteEdits.fitToScale(clip, harmony), null) }, modifier = Modifier.testTag("fit_to_scale")) {
+                Text(if (outside == 1) tr("Mettre la note hors gamme dans la gamme") else tr("Mettre les %d notes hors gamme dans la gamme", outside))
+            }
+        }
     }
     // Pick a progression, then what to make of it: chords, a bass line or an arpeggio.
     var chosen by rememberSaveable { mutableStateOf(Progression.Pop) }
@@ -736,29 +753,40 @@ fun HarmonyPanel(harmony: Harmony, performance: Performance, actions: PianoRollA
     }
     Text(tr("Remplace les notes de la piste choisie (Annuler les rend). Une piste par rôle : basse, accords, arpège."),
         style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+    // Arpeggio and strum only play chords (notes starting together): without one they have nothing to do.
+    val chords = NoteEdits.hasChords(notes)
+    Text(tr("Jeu des accords"), style = MaterialTheme.typography.titleSmall, color = Neon.TextPrimary,
+        modifier = Modifier.padding(top = 6.dp).testTag("chord_play_title"))
+    Text(tr("Agit sur les accords (plusieurs notes en même temps)."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
     ChipRow(tr("Arpège"), Glossary.ARPEGGIO) {
         ArpMode.entries.forEach { m ->
-            FilterChip(selected = performance.arp == m, onClick = { actions.setPerformance(performance.copy(arp = m)) },
+            // « Off » stays at hand: an arpeggio left on must be able to go, chord or not.
+            FilterChip(selected = performance.arp == m, onClick = { actions.setPerformance(performance.copy(arp = m)) }, enabled = chords || m == ArpMode.Off,
                 label = { Text(tr(m.label)) }, colors = chipColors, modifier = Modifier.testTag("arp_${m.name}"))
         }
     }
     if (performance.arp != ArpMode.Off) {
         ChipRow(tr("Vitesse")) {
             ARP_RATES.forEach { (ticks, label) ->
-                FilterChip(selected = performance.arpRate == ticks, onClick = { actions.setPerformance(performance.copy(arpRate = ticks)) },
+                FilterChip(selected = performance.arpRate == ticks, onClick = { actions.setPerformance(performance.copy(arpRate = ticks)) }, enabled = chords,
                     label = { Text(label) }, colors = chipColors)
             }
         }
     }
     ChipRow(tr("Strum")) {
         STRUMS.forEach { (ticks, label) ->
-            FilterChip(selected = performance.strum == ticks, onClick = { actions.setPerformance(performance.copy(strum = ticks)) },
-                label = { Text(label) }, colors = chipColors)
+            FilterChip(selected = performance.strum == ticks, onClick = { actions.setPerformance(performance.copy(strum = ticks)) }, enabled = chords || ticks == 0,
+                label = { Text(label) }, colors = chipColors, modifier = Modifier.testTag("strum_$ticks"))
         }
     }
-    Text(
-        tr("La progression remplace les notes (Annuler possible). Arpège et strum jouent les accords posés ensemble."),
-        style = MaterialTheme.typography.bodySmall,
-        color = Neon.TextSecondary,
-    )
+    if (!chords) {
+        // The usual mix-up: a note chosen, its sound looked for here. The sound is the track's.
+        Text(
+            tr("Pas d'accord dans ces notes : rien à changer ici. Le son, lui, est le même pour toute la piste et se règle plus bas."),
+            style = MaterialTheme.typography.bodySmall, color = Neon.Amber, modifier = Modifier.testTag("chord_play_none"),
+        )
+        if (toSound != null) {
+            TextButton(onClick = toSound, modifier = Modifier.testTag("go_to_sound")) { Text(tr("Régler le son de la piste")) }
+        }
+    }
 }

@@ -111,6 +111,8 @@ fun AcidScreen(
     actions: AcidActions,
     modifier: Modifier = Modifier,
     browser: SoundBrowserUi? = null,
+    /** The acid line's effects, in a card under its sound (null: none shown). */
+    effects: com.pocketstudio.app.mixer.EffectsUi? = null,
 ) {
     val context = LocalContext.current
     val settings by com.pocketstudio.app.settings.SettingsStore.state.collectAsState()
@@ -147,6 +149,7 @@ fun AcidScreen(
     }, second = {
         StepEditor(acid, selected, actions, english)
         SoundCard(acid, actions, browser)
+        effects?.let { com.pocketstudio.app.mixer.EffectsCard(it) }
     })
 }
 

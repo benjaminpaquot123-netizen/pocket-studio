@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <array>
 #include <atomic>
+#include <chrono>
 #include <cstdint>
 #include <memory>
 
@@ -106,6 +107,7 @@ enum class CommandType : uint8_t {
     SetPadStrip,          // a: pad 0..15, value > 0.5: the pad plays through its own mixer strip (its effects)
     SetMaster,            // a: 0 = gain before the limiter (value: linear 0..4), 1 = limiter (value 1 = on),
                           // 2 = master inserts (value 1 = on; off for stems, which then add up to the mix)
+    ClearInserts,         // a: mixer channel: every insert slot emptied (a strip no longer used gives its pool units back)
 };
 
 // Instrument tracks: the synth commands (SynthNoteOn/Off, SynthParam, SetSynthNote, SetSynthNoteCount,
@@ -183,6 +185,9 @@ public:
 
     int sampleRate() const { return sampleRate_; }
     uint64_t callbackCount() const { return callbacks_.load(std::memory_order_relaxed); }
+    // How busy the audio thread is: the time process() takes over the time its frames last,
+    // smoothed over about half a second (1 = no time to spare: the sound starts to crackle).
+    float cpuLoad() const { return cpuLoad_.load(std::memory_order_relaxed); }
     uint64_t framesRendered() const { return frames_.load(std::memory_order_relaxed); }
     // Highest absolute sample since the last call.
     float takePeak() { return peak_.exchange(0.0f, std::memory_order_acq_rel); }
@@ -369,6 +374,8 @@ private:
     std::atomic<bool> playing_{false};
     std::atomic<bool> nonFinite_{false};
     std::atomic<uint64_t> callbacks_{0};
+    float load_ = 0.0f;  // audio thread: the smoothed load, published in cpuLoad_
+    std::atomic<float> cpuLoad_{0.0f};
     std::atomic<uint64_t> frames_{0};
     std::atomic<float> peak_{0.0f};
 };

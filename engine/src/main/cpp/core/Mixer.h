@@ -25,7 +25,10 @@ public:
     static constexpr int kFirstPad = 16;
     static constexpr int kPads = 16;
     static constexpr int kDrums = 0;
-    static constexpr int kInserts = 4;   // per channel, and on the master
+    // Effects per channel, and on the master. Every slot is built and prepared with the mixer,
+    // never in the callback: about 38 kB each, 32 x 8 = 9.7 MB per engine on the heap. The long
+    // effects' seconds of memory are the pool's (LongFxPool, 11.7 MB): about 25 MB per mixer.
+    static constexpr int kInserts = 8;
     static constexpr int kMaster = 4;    // insert "channel" index of the master
     static constexpr int kBuses = 2;
     static constexpr float kCeiling = 0.89f;  // -1 dBFS
@@ -36,6 +39,8 @@ public:
     void setMute(int ch, bool on);
     void setSolo(int ch, bool on);
     void setInsertType(int ch, int slot, int type);           // ch 0..kMaster
+    // Every slot of `ch` emptied at once (a strip the app no longer uses: its pool units go back).
+    void clearInserts(int ch);
     void setInsertParam(int ch, int slot, int param, float v);
     void setSend(int ch, int bus, float level);               // 0..1, post-fader
     void setMacro(int ch, int macro, float v);                // TrackMacros: colour, dirt, motion, space
@@ -58,13 +63,26 @@ public:
     void setMasterFx(bool on) { masterFxOn_ = on; }
     bool limiterOn() const { return limiterOn_; }
     // The send delay's time in frames: an export's tail waits at least this long in silence for a repeat.
-    float echoFrames() const { return delay_.delayFrames(); }
+    // The longest repeat time among the send delay and the tracks' own echoes.
+    float echoFrames() const {
+        float frames = delay_.delayFrames();
+        for (const auto& strip : inserts_) {
+            for (const auto& slot : strip) frames = std::max(frames, slot.echoFrames());
+        }
+        return frames;
+    }
     bool echoInUse() const {
         for (const auto& s : strips_) {
             if (s.sendGain[1].target() > 0.0f) return true;
         }
+        for (const auto& strip : inserts_) {
+            for (const auto& slot : strip) {
+                if (slot.echoFrames() > 0.0f) return true;
+            }
+        }
         return false;
     }
+    const LongFxPool& longFxPool() const { return *pool_; }  // tests
     void setStepFrames(double framesPerSixteenth) {
         delay_.setStepFrames(framesPerSixteenth);
         perf_.setStepFrames(framesPerSixteenth);
@@ -104,6 +122,7 @@ public:
 
 private:
     static constexpr int kChunk = 256;
+    void afterInsertChange(int ch);
     struct Strip {
         float volume = 0.8f;
         float pan = 0.0f;
@@ -126,6 +145,8 @@ private:
     std::unique_ptr<InsertBank> insertBank_ = std::make_unique<InsertBank>();
     std::unique_ptr<MacroBank> macroBank_ = std::make_unique<MacroBank>();
     InsertBank& inserts_ = *insertBank_;
+    // The few echoes, reverbs and tape stops the slots borrow (seconds of memory each).
+    std::unique_ptr<LongFxPool> pool_ = std::make_unique<LongFxPool>();
     std::array<int, kChannels> activeInserts_{};  // count of non-empty slots
     MacroBank& macros_ = *macroBank_;
     Reverb reverb_;

@@ -20,3 +20,33 @@ Décision de Benjamin (2026-10-18) : **moderne, mais pas trop, et facile à pren
 
 ## Références
 FL Studio Mobile (organisation, couleurs franches, look « outil »), en plus clair ; simplicité de Koala Sampler ; lisibilité de Material 3.
+
+## Boîte à effets (phase 25)
+Une seule boîte d'effets, la même partout où un son se choisit : carte « Effets » sous le son (Synthé, en Clavier comme en Notes, et Acide), boutons « Effets » de la batterie et de chaque pad (Rythme), de chaque piste audio (Audio › Pistes audio : la prise passe par la voie de sa piste), du remix et des pads live (ils partagent la voie « Remix »), voies et sortie générale du Mixeur. Dedans : les effets en place dans l'ordre où le son les traverse (toucher pour régler, ⏻ couper sans perdre les réglages, ↑ ↓ déplacer, ✕ retirer), « + Ajouter un effet » (tous les effets par famille, la liste reste ouverte pour en ajouter plusieurs d'affilée), puis les ambiances toutes prêtes, celles qui vont au son en premier (« Pour : Basse »). La version complète (Mixeur, bouton Effets) ajoute pad XY, macros et envois communs. Quatre effets par voie au maximum (limite du moteur).
+
+### Les effets les plus utilisés en musique électronique, et ce que l'app couvre
+| Effet | Pourquoi on s'en sert | Dans l'app |
+|---|---|---|
+| Égaliseur (EQ) | creuser, faire de la place, couper les graves inutiles | Égaliseur 3 bandes, EQ paramétrique |
+| Compresseur | serrer, faire claquer | Compresseur |
+| Sidechain / pompe | la nappe ou la basse qui respire sur le kick | Pompe (kick ou chaque temps) |
+| Réverbe | l'espace, la profondeur | Réverbe en insert + envoi réverbe commun |
+| Delay / écho calé sur le tempo | 1/8 pointée, ping-pong, dub | Écho et Écho ping-pong en insert (1/16 à 1/2, croches pointées) + envoi écho commun |
+| Distorsion / saturation | grain, mordant, leads qui crient, basses grasses | Distorsion (overdrive, fuzz, écrêtage dur, repliement), Saturation |
+| Filtre (passe-bas / haut, balayé) | montées, breaks, filtre DJ | Filtre, filtre DJ du pad live, macro Couleur, automation |
+| OTT / compression multibande | le son énorme et brillant de l'EDM | OTT multibande (3 bandes, vers le haut et le bas) |
+| Chorus | épaissir, élargir | Chorus |
+| Flanger / phaser | balayages, avion à réaction | Flanger, Phaser |
+| Bitcrusher / lo-fi | grain numérique, lofi | Bitcrusher, Vieux vinyle, Talkie-walkie |
+| Élargisseur stéréo | largeur, basses au centre | Élargisseur |
+| Auto-pan / trémolo | mouvement gauche-droite, pulsation | Auto-pan calé sur le tempo, Trémolo |
+| Gate rythmique / trance gate | hacher en rythme | Hachoir |
+| Arrêt de bande (tape stop) | fin de phrase, transition | Arrêt de bande (bouton « Arrêt » ou automation), arrêt du pad live |
+| Beat repeat / stutter | répétitions de drop | Répétition du pad live (sortie générale) |
+| Modulateur en anneau | sons métalliques, voix robot | Robot |
+| Décalage de fréquence | métal, cloches, tourbillon | Décalage de fréquence |
+| Wah / filtre d'enveloppe | funk, basse qui parle | Wah-wah |
+| Noise gate | couper les queues, nettoyer | Noise gate |
+| Pitch shift / harmoniseur | voix plus aiguë ou plus grave | pas encore (pitch des pads et des prises seulement) |
+| Vocoder, granulaire, convolution | voix robot musicale, textures, vraies salles | pas encore |
+| Limiteur / maximiseur | volume final | limiteur de la sortie générale (fixe) |

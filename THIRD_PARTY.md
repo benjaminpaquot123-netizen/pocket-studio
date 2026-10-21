@@ -26,6 +26,7 @@
 | [Inter](https://github.com/rsms/inter) (Google Fonts, v20) | 4.x | SIL OFL 1.1 | Police de l'interface (5 graisses statiques, chiffres à chasse fixe) ; licence livrée dans `ui-components/src/main/assets/licenses/inter-ofl.txt` |
 | AndroidX Activity / Lifecycle / Core | 1.13.0 / 2.11.0 / 1.19.1 | Apache-2.0 | Socle Android, ViewModel |
 | [kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization) | 1.11.0 | Apache-2.0 | Format JSON des projets |
+| [Hilbert IIR d'Olli Niemitalo](https://yehar.com/blog/?p=368) | coefficients publiés (8 allpasses) | domaine public (publication libre de l'auteur) | Paire de déphaseurs à 90° du « Décalage de fréquence » (`ExtraEffects.cpp`) ; la Réverbe en insert réutilise Freeverb (Jezar, domaine public) déjà dans `Effects.cpp` |
 | [kotlinx.coroutines](https://github.com/Kotlin/kotlinx.coroutines) | 1.11.0 | Apache-2.0 | Tâches asynchrones |
 | [Robolectric](https://github.com/robolectric/robolectric) | 4.17 | MIT | Tests sur JVM (tests uniquement) |
 | [Roborazzi](https://github.com/takahirom/roborazzi) | 1.76.0 | Apache-2.0 | Captures d'écran automatiques (tests uniquement) |

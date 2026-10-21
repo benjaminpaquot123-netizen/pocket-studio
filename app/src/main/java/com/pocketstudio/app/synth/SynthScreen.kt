@@ -53,6 +53,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
+import kotlinx.coroutines.launch
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -144,6 +148,8 @@ fun SynthScreen(
     tracks: TracksUi? = null,
     play: PlayUi? = null,
     playActions: PlayActions = PlayActions(),
+    /** The selected track's effects, in a card under its sound (null: none shown). */
+    effects: com.pocketstudio.app.mixer.EffectsUi? = null,
 ) {
     var advanced by rememberSaveable { mutableStateOf(false) }
     var showNotes by rememberSaveable { mutableStateOf(startWithNotes) }
@@ -168,6 +174,9 @@ fun SynthScreen(
     val trackSounds = Modifier.onGloballyPositioned { soundsInView = it.boundsInWindow().height >= minOf(minSoundsPx, it.size.height * 0.5f) && it.size.height > 0 }
     // A tablet by the device (its smaller side at least 600 dp), whatever the rounding of the width given.
     val tablet = isTablet()
+    // « Gamme et accords » can send the user down to the track's sound (it is not set note by note).
+    val soundRequester = remember { BringIntoViewRequester() }
+    val scope = rememberCoroutineScope()
     BoxWithConstraints(modifier.fillMaxSize().testTag("synth")) {
         val keyboardHeight = (maxHeight * 0.45f).coerceIn(110.dp, 220.dp)
         val landscape = maxWidth > maxHeight
@@ -218,38 +227,32 @@ fun SynthScreen(
                 transcribe?.let { TranscribeCard(it) }
                 NeonCard {
                     SectionLabel(tr("Gamme et accords"), help = Glossary.HARMONY, foldKey = "Gamme et accords")
-                    HarmonyPanel(notes.harmony, notes.clip.performance, notes.actions, notes.clip.notes)
+                    HarmonyPanel(notes.harmony, notes.clip, notes.actions, toSound = { scope.launch { soundRequester.bringIntoView() } })
                 }
-                SoundArea(trackSounds) {
-                    instrument?.let { InstrumentPanel(it) }
-                    if (instrument?.current == null) {
-                        PresetsCard(patch, actions, browser)
-                        if (instrument?.synthEngine != 1) SoundCard(patch, actions, advanced) { advanced = it }
-                    }
+                // The same sound sections, in the same order, as in Clavier mode.
+                SoundArea(trackSounds.bringIntoViewRequester(soundRequester)) {
+                    SoundSections(patch, actions, instrument, browser, advanced, effects) { advanced = it }
                 }
                 Spacer(Modifier.height(floatRoom))
             }
         } else if (landscape) {
-            // Landscape: one compact line (presets, octave), the settings scroll, and a wide
-            // three-octave keyboard stays under the thumbs. A tablet lying down has the height
-            // for the whole sounds card and the keyboard's layouts: only a phone gets the 4 chips.
+            // Landscape: one compact line (mode, octave), the sound sections scroll (the same ones,
+            // in the same order, as upright), and a wide three-octave keyboard stays under the
+            // thumbs. A tablet lying down also has the room for the keyboard's layouts.
             val tall = maxHeight >= TALL_LANDSCAPE
             Column(Modifier.fillMaxSize().padding(8.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 tracks?.let { TrackBar(it) }
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     if (notes != null) ModeSwitch(showNotes, tracks) { showNotes = it }
-                    if (!tall) PresetChips(patch, actions)
-                    else if (!chordPads) KeyLayoutChips(keyLayout, setKeyLayout, wideOctaves = 3)
+                    if (tall && !chordPads) KeyLayoutChips(keyLayout, setKeyLayout, wideOctaves = 3)
                     Box(Modifier.weight(1f))
                     ChordChip(chordKeys) { chordKeys = it }
                     ChordPadsChip(chordPads) { chordPads = it }
                     OctaveControl(octave, actions)
                 }
-                Column(Modifier.weight(1f).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(if (tall) 10.dp else 0.dp)) {
+                Column(Modifier.weight(1f).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(if (tall) 10.dp else 8.dp)) {
                     play?.let { PlayPanel(it, playActions) }
-                    instrument?.let { InstrumentPanel(it) }
-                    if (tall && instrument?.current == null) PresetsCard(patch, actions, browser)
-                    if (instrument?.current == null && instrument?.synthEngine != 1) SoundCard(patch, actions, advanced) { advanced = it }
+                    SoundArea(Modifier) { SoundSections(patch, actions, instrument, browser, advanced, effects) { advanced = it } }
                 }
                 if (chordPads) {
                     ChordPads(harmony, 12 * (octave + 1), actions.noteOn, actions.noteOff, height = keyboardHeight)
@@ -268,12 +271,9 @@ fun SynthScreen(
                     onChordKeys = { chordKeys = it }, keyOn = keyOn, keyOff = keyOff, play = play, playActions = playActions,
                     chordPads = chordPads, onChordPads = { chordPads = it }, modifier = trackKeyboard,
                     keyLayout = keyLayout, onKeyLayout = setKeyLayout, english = english)
+                // The same sound sections, in the same order, as in Notes mode.
                 SoundArea(trackSounds) {
-                    instrument?.let { InstrumentPanel(it) }
-                    if (instrument?.current == null) {
-                        PresetsCard(patch, actions, browser)
-                        if (instrument?.synthEngine != 1) SoundCard(patch, actions, advanced) { advanced = it }
-                    }
+                    SoundSections(patch, actions, instrument, browser, advanced, effects) { advanced = it }
                 }
                 Spacer(Modifier.height(floatRoom))
             }
@@ -293,10 +293,43 @@ fun SynthScreen(
     }
 }
 
-/** The instrument, its ready-made sounds and its settings, in one block whose visibility is followed. */
+/**
+ * The track's sound under a short title saying it is the track's (the same for all its notes),
+ * in one block whose visibility is followed.
+ */
 @Composable
 private fun SoundArea(track: Modifier, content: @Composable () -> Unit) {
-    Column(track, verticalArrangement = Arrangement.spacedBy(10.dp)) { content() }
+    Column(track, verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        Text(
+            tr("Le son de la piste (le même pour toutes ses notes)"),
+            style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
+            modifier = Modifier.padding(start = 4.dp, top = 4.dp).testTag("sound_area_title"),
+        )
+        content()
+    }
+}
+
+/**
+ * The track's sound, the same sections in the same order in Clavier and Notes, upright and lying
+ * down: the instrument, its ready-made sounds, then the settings (the synth's own).
+ */
+@Composable
+private fun SoundSections(
+    patch: SynthPatch,
+    actions: SynthActions,
+    instrument: InstrumentUi?,
+    browser: SoundBrowserUi?,
+    advanced: Boolean,
+    effects: com.pocketstudio.app.mixer.EffectsUi?,
+    setAdvanced: (Boolean) -> Unit,
+) {
+    instrument?.let { InstrumentPanel(it) }
+    if (instrument?.current == null) {
+        PresetsCard(patch, actions, browser)
+        if (instrument?.synthEngine != 1) SoundCard(patch, actions, advanced, setAdvanced)
+    }
+    // The track's effects, right after its sound, in every mode.
+    effects?.let { com.pocketstudio.app.mixer.EffectsCard(it) }
 }
 
 @Composable

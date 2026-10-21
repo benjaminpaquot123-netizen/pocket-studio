@@ -164,11 +164,14 @@ fun RhythmScreen(
     actions: RhythmActions,
     modifier: Modifier = Modifier,
     padSound: PadSoundUi = PadSoundUi(),
+    /** Shown above everything (the "Prochaine étape" card). */
+    header: @Composable () -> Unit = {},
 ) {
     Column(
         modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp).testTag("rhythm"),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
+        header()
         TransportBar(project, transport, canUndo, canRedo, actions)
         PadGrid(project, transport.selectedPad, live.litPads, actions.hitPad)
         StepGrid(project, transport.selectedPad, live.currentStep, transport.playing, actions)

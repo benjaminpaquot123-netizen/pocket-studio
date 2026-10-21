@@ -432,7 +432,9 @@ class ScreenshotTest {
 
     @Test
     fun songGuide() = shoot("song_guide") {
-        com.pocketstudio.app.settings.GuideDialog(onClose = {}, pages = com.pocketstudio.app.library.songGuide("House", wizardUi(99).plan, inKey = true), tag = "song_guide")
+        val plan = wizardUi(99).plan
+        val song = com.pocketstudio.app.library.songSummary(com.pocketstudio.model.StarterWizard.style("house")!!, plan)
+        com.pocketstudio.app.settings.GuideDialog(onClose = {}, pages = com.pocketstudio.app.library.songGuide("House", plan, inKey = true, song = song), tag = "song_guide")
     }
 
     @Test
@@ -672,6 +674,25 @@ class ScreenshotTest {
             com.pocketstudio.app.settings.AppSettings(uiScale = 1.15f, bufferBursts = 4, guideSeen = true),
             "0.5.70 (preview)",
             com.pocketstudio.app.settings.SettingsActions(),
+        )
+    }
+
+    @Test
+    fun welcome() = shoot("welcome") {
+        com.pocketstudio.app.onboarding.WelcomeScreen(com.pocketstudio.app.onboarding.WelcomeActions())
+    }
+
+    @Test
+    fun nextSteps() = shoot("next_steps") {
+        val project = com.pocketstudio.app.rhythm.RhythmViewModel.starterProject()
+        RhythmScreen(
+            project = project,
+            transport = TransportUi(selectedPad = 0),
+            live = LiveUi(),
+            canUndo = false,
+            canRedo = false,
+            actions = RhythmActions(),
+            header = { com.pocketstudio.app.onboarding.NextStepCard(com.pocketstudio.app.onboarding.nextSteps(project)) },
         )
     }
 

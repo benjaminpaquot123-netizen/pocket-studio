@@ -1,0 +1,161 @@
+package com.pocketstudio.app.onboarding
+
+import android.content.Context
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import com.pocketstudio.app.ui.AppTab
+import com.pocketstudio.model.Project
+import com.pocketstudio.ui.Neon
+import com.pocketstudio.ui.NeonCard
+import com.pocketstudio.ui.SectionLabel
+
+/**
+ * What the "Prochaine étape" card remembers, per project (SharedPreferences "next_steps"): closed
+ * for good, and the steps ticked by hand.
+ */
+class NextStepPrefs(context: Context, private val projectId: String) {
+    private val prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+    var closed by mutableStateOf(prefs.getBoolean("$projectId.closed", false))
+        private set
+    var marks by mutableStateOf(
+        prefs.getStringSet("$projectId.marks", emptySet()).orEmpty().mapNotNull { n -> StepGoal.entries.firstOrNull { it.name == n } }.toSet(),
+    )
+        private set
+
+    fun close() {
+        closed = true
+        prefs.edit().putBoolean("$projectId.closed", true).apply()
+    }
+
+    fun mark(goal: StepGoal) {
+        marks = marks + goal
+        prefs.edit().putStringSet("$projectId.marks", marks.map { it.name }.toSet()).apply()
+    }
+
+    companion object {
+        const val PREFS = "next_steps"
+    }
+}
+
+/**
+ * The "Prochaine étape" card of the open project ([projectId]), at the top of the Rythme tab:
+ * shown until every step is done or the user closes it. [go] opens a tab.
+ */
+@Composable
+fun ProjectNextSteps(project: Project, projectId: String, go: (AppTab) -> Unit) {
+    val context = LocalContext.current
+    val prefs = remember(projectId) { NextStepPrefs(context, projectId) }
+    if (prefs.closed) return
+    val steps = nextSteps(project, prefs.marks)
+    if (steps.all { it.done }) return
+    NextStepCard(steps, go = go, mark = prefs::mark, close = prefs::close)
+}
+
+/**
+ * The checklist from a first beat to a shared song: seven numbered steps (ticked when done), and
+ * the one chosen (the first left to do at first) with its hint and a button to the right tab.
+ * [here]: the tab the card is on (no button to it). Folds by its title; the cross closes it.
+ */
+@Composable
+fun NextStepCard(
+    steps: List<NextStep>,
+    go: (AppTab) -> Unit = {},
+    mark: (StepGoal) -> Unit = {},
+    close: () -> Unit = {},
+    here: AppTab = AppTab.Rythme,
+) {
+    val next = steps.next() ?: return
+    var chosenGoal by rememberSaveable { mutableStateOf<StepGoal?>(null) }
+    // A step chosen and then done gives way to the next one left.
+    val shown = steps.firstOrNull { it.goal == chosenGoal && !it.done } ?: next
+    NeonCard(accent = Neon.Cyan, modifier = Modifier.testTag("next_steps")) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            SectionLabel(
+                "Prochaine étape · ${steps.count { it.done }}/${steps.size}",
+                Modifier.weight(1f), foldKey = "next_steps",
+            )
+            IconButton(onClick = close, modifier = Modifier.size(40.dp).testTag("next_steps_close")) {
+                Icon(Icons.Filled.Close, contentDescription = "Fermer les étapes", tint = Neon.TextSecondary, modifier = Modifier.size(18.dp))
+            }
+        }
+        // The seven steps in a row: a tick when done, the one shown lit.
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            steps.forEach { s -> StepDot(s, s.goal == shown.goal, Modifier.weight(1f)) { chosenGoal = s.goal } }
+        }
+        Text("${shown.number}. ${shown.goal.title}", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold,
+            modifier = Modifier.testTag("next_step_title"))
+        Text(shown.hint, style = MaterialTheme.typography.bodyMedium)
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            if (shown.tab != here) {
+                Button(onClick = { go(shown.tab) }, modifier = Modifier.heightIn(min = 48.dp).testTag("next_step_go")) { Text(shown.button) }
+            }
+            if (shown.manual) {
+                OutlinedButton(onClick = { mark(shown.goal) }, modifier = Modifier.heightIn(min = 48.dp).testTag("next_step_done")) { Text("C'est fait") }
+            }
+        }
+    }
+}
+
+/** One step: its number (a tick once done); a touch shows its name and hint below the row. */
+@Composable
+private fun StepDot(step: NextStep, shown: Boolean, modifier: Modifier, onClick: () -> Unit) {
+    val color = when {
+        step.done -> Neon.Acid
+        shown -> Neon.Cyan
+        else -> Neon.TextSecondary
+    }
+    Column(
+        modifier.clip(RoundedCornerShape(8.dp)).clickable(role = Role.Button, onClick = onClick)
+            .heightIn(min = 48.dp).padding(vertical = 4.dp)
+            .semantics { contentDescription = "${step.number}. ${step.goal.title}${if (step.done) ", fait" else ""}" }
+            .testTag("next_step_${step.goal.name}"),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(2.dp),
+    ) {
+        Box(
+            Modifier.size(32.dp).clip(CircleShape)
+                .background(if (step.done) Neon.Acid.copy(alpha = 0.25f) else if (shown) Neon.Cyan.copy(alpha = 0.2f) else Neon.Surface)
+                .border(1.dp, color, CircleShape),
+            contentAlignment = Alignment.Center,
+        ) {
+            if (step.done) Icon(Icons.Filled.Check, contentDescription = null, tint = Neon.Acid, modifier = Modifier.size(16.dp))
+            else Text("${step.number}", style = MaterialTheme.typography.labelMedium, color = color)
+        }
+    }
+}

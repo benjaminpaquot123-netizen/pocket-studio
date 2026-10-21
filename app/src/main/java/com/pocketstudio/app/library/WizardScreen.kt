@@ -170,8 +170,8 @@ private fun WizardBody(ui: WizardUi, packs: PacksUi, playing: SoundRef?, actions
 private fun StyleStep(chosen: String?, packs: PacksUi, actions: WizardActions) {
     Text(
         "Choisis un style. Ensuite, je te présente chaque ligne de la batterie (à quoi elle sert, quels sons " +
-            "lui vont) et je place un rythme de départ dans la grille. À la fin, ton morceau aura trois scènes " +
-            "(trois boucles) à enchaîner : A, B puis C. Tu pourras tout changer après.",
+            "lui vont) et je place un rythme de départ dans la grille. À la fin, ton morceau aura trois sections, " +
+            "Intro, Couplet et Refrain, qui s'enchaînent du début jusqu'à la fin. Tu pourras tout changer après.",
         style = MaterialTheme.typography.bodyMedium,
     )
     // The best known first, then the others (still the better known first).
@@ -238,7 +238,7 @@ private fun LineStep(
             Text("Utiliser cette ligne", modifier = Modifier.weight(1f))
             Switch(checked = row?.enabled ?: false, onCheckedChange = { actions.setEnabled(role, it) }, modifier = Modifier.testTag("wizard_enabled"))
         }
-        plan.lines[role]?.let { SceneBadge(plan, it) }
+        plan.lines[role]?.let { SceneBadge(it) }
     }
     if (row == null || !row.enabled) {
         Text("Cette ligne restera vide : tu pourras l'ajouter plus tard en touchant les cases de la grille.",
@@ -337,10 +337,6 @@ private fun PackOffer(style: StarterWizard.Style, packs: PacksUi, actions: Wizar
                 Text("Télécharger le pack ${style.name} (${entry.sizeLabel})")
             }
         }
-        packs.index is IndexState.Unavailable -> Text(
-            "Les packs de sons par style arrivent bientôt. En attendant, les sons intégrés font très bien l'affaire.",
-            style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
-        )
         else -> Unit
     }
     packs.message?.let { Text(it, color = Neon.Amber, style = MaterialTheme.typography.bodySmall) }
@@ -364,8 +360,8 @@ private fun PatternPreview(pattern: String, color: androidx.compose.ui.graphics.
 
 @Composable
 private fun SummaryStep(ui: WizardUi, style: StarterWizard.Style) {
-    // The two scenes first: what the beginner will find in the song.
-    ScenesCard(ui.plan)
+    // The three sections first: what the beginner will find in the song.
+    ScenesCard(ui.plan, style)
     NeonCard(modifier = Modifier.testTag("wizard_summary")) {
         SectionLabel("Ton morceau ${style.name}", foldKey = "Ton morceau")
         Text("Tempo ${style.bpm.roundToInt()} BPM${if (style.swing > 0) ", avec du swing" else ""}.", style = MaterialTheme.typography.bodyMedium)
@@ -400,39 +396,40 @@ private fun SummaryStep(ui: WizardUi, style: StarterWizard.Style) {
     }
     Text(
         "« Créer le morceau » ouvre un nouveau projet : chaque son est sur son pad et le rythme est dans la grille. " +
-            "Un petit guide te montre ensuite comment écouter chaque scène et jouer tout le morceau.",
+            "Un petit guide te montre ensuite comment jouer tout le morceau et écouter chaque section.",
         style = MaterialTheme.typography.bodyMedium,
     )
 }
 
-/** The three scenes the song will have, what each holds, and the song that chains them. */
+/** The three sections the song will have (Intro, Couplet, Refrain), what each holds, and the song that chains them. */
 @Composable
-private fun ScenesCard(plan: StarterWizard.ScenePlan) {
+private fun ScenesCard(plan: StarterWizard.ScenePlan, style: StarterWizard.Style) {
     NeonCard(accent = Neon.Magenta, modifier = Modifier.testTag("wizard_scenes")) {
-        SectionLabel("Trois scènes", color = Neon.Magenta, help = Glossary.SCENE)
-        Text("Une scène, c'est une boucle qui tourne en rond. Ton morceau en aura trois :", style = MaterialTheme.typography.bodyMedium)
+        SectionLabel("Trois sections", color = Neon.Magenta, help = Glossary.SCENE)
+        Text("Comme une vraie chanson : chaque section ajoute des sons à celle d'avant.", style = MaterialTheme.typography.bodyMedium)
         (0 until StarterWizard.ScenePlan.COUNT).forEach { index ->
             Row(verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 SceneLetter(index)
                 Column(Modifier.weight(1f)) {
-                    Text(plan.title(index).replaceFirstChar { it.uppercase() }, style = MaterialTheme.typography.titleSmall)
+                    Text("${plan.title(index)} · ${plan.role(index)}", style = MaterialTheme.typography.titleSmall)
                     val what = plan.contents(index).joinToString(", ") { it.substringBefore(" (").substringBefore(" / ") }
-                    Text(what, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                    Text(what.ifEmpty { "rien pour l'instant" }, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
                 }
             }
         }
-        Text("Le morceau : A deux fois, puis B deux fois, puis C deux fois, et ça recommence.", style = MaterialTheme.typography.bodyMedium)
+        Text("Le morceau : " + songSummary(style, plan), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.testTag("wizard_song"))
     }
 }
 
-/** "Cette ligne va dans la scène A · le rythme". */
+/** "Joue dans Couplet et Refrain", after the letters of those sections. */
 @Composable
-private fun SceneBadge(plan: StarterWizard.ScenePlan, index: Int) {
-    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.testTag("wizard_scene_badge")) {
-        SceneLetter(index)
+private fun SceneBadge(scenes: Set<Int>) {
+    if (scenes.isEmpty()) return
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.testTag("wizard_scene_badge")) {
+        scenes.sorted().forEach { SceneLetter(it) }
         Text(
-            "Va dans la scène ${StarterWizard.ScenePlan.NAMES[index]} · ${plan.title(index)}",
-            style = MaterialTheme.typography.bodyMedium, color = sceneColor(index),
+            "Joue dans ${if (scenes.size == StarterWizard.ScenePlan.COUNT) "les trois sections" else StarterWizard.ScenePlan.sections(scenes)}",
+            style = MaterialTheme.typography.bodyMedium, color = sceneColor(scenes.min()), modifier = Modifier.padding(start = 4.dp),
         )
     }
 }
@@ -518,7 +515,7 @@ private fun PartStep(style: StarterWizard.Style, ui: WizardUi, packs: PacksUi, p
             Text("Créer cette piste", modifier = Modifier.weight(1f))
             Switch(checked = row?.enabled ?: false, onCheckedChange = { actions.setPartEnabled(part, it) }, modifier = Modifier.testTag("wizard_part_enabled"))
         }
-        ui.plan.parts[part]?.let { SceneBadge(ui.plan, it) }
+        ui.plan.parts[part]?.let { SceneBadge(it) }
     }
     if (row == null || !row.enabled) return
     val look = SoundLooks.of(part.categories.first())

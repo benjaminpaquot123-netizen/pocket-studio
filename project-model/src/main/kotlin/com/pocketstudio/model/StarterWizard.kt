@@ -331,93 +331,141 @@ object StarterWizard {
             parts = partOfTrack.values.toSet(),
             acid = mood != null && style.melody.acid != null,
         )
-        return inScenes(project, plan, partOfTrack).sanitized()
+        return inScenes(project, plan, partOfTrack, style.bpm).sanitized()
     }
 
     /**
-     * Where the assistant puts each line and part: scene A (0), B (1) or C (2), so a beginner starts
-     * with three scenes to play one after the other. [acid]: the acid line's scene (null: no acid
-     * line). [copies]: a scene left empty by the sharing starts as a copy of another one, to vary.
+     * Where the assistant puts each line and part: the three scenes are the sections of a song,
+     * A "Intro", B "Couplet", C "Refrain", each one adding to the one before (a beginner hears the
+     * layers pile up instead of each one alone). Each line or part maps to the scenes it plays in.
      */
-    data class ScenePlan(val lines: Map<Role, Int>, val parts: Map<Part, Int>, val acid: Int?, val copies: Map<Int, Int> = emptyMap()) {
-        /** Scene C holds the chords and the lead (A the drums, B the bass lines). */
-        val melodyInC: Boolean get() = parts.any { it.value == 2 }
+    data class ScenePlan(val lines: Map<Role, Set<Int>>, val parts: Map<Part, Set<Int>>, val acid: Set<Int>) {
+        /** The section scene [index] stands for ("Intro", "Couplet", "Refrain"). */
+        fun title(index: Int): String = LABELS[index]
 
-        /** The scene whose content scene [index] plays ([index] itself unless it is a copy). */
-        fun source(index: Int): Int = copies[index] ?: index
-
-        /** What scene [index] is, in a few words ("le rythme", "la basse", "la mélodie"…). */
-        fun title(index: Int): String {
-            if (index in copies) return "une copie de la scène ${NAMES[source(index)]}, à varier"
-            return if (melodyInC) listOf("le rythme", "la basse", "la mélodie")[index]
-            else listOf("la base", "le groove", "le relief")[index]
-        }
+        /** What the section is for, in a few words. */
+        fun role(index: Int): String = ROLES[index]
 
         /** The names of what scene [index] plays, in the order of the assistant. */
-        fun contents(index: Int): List<String> {
-            val i = source(index)
-            return lines.filterValues { it == i }.keys.sortedBy { it.ordinal }.map { it.title } +
-                parts.filterValues { it == i }.keys.sortedBy { it.ordinal }.map { it.title } +
-                listOfNotNull(ACID_TITLE.takeIf { acid == i })
-        }
+        fun contents(index: Int): List<String> =
+            lines.filterValues { index in it }.keys.sortedBy { it.ordinal }.map { it.title } +
+                parts.filterValues { index in it }.keys.sortedBy { it.ordinal }.map { it.title } +
+                listOfNotNull(ACID_TITLE.takeIf { index in acid })
+
+        val isEmpty: Boolean get() = (0 until COUNT).all { contents(it).isEmpty() }
 
         companion object {
             const val COUNT = 3
             val NAMES = listOf("A", "B", "C")
+            val LABELS = listOf("Intro", "Couplet", "Refrain")
+            val ROLES = listOf("le début, en douceur", "le groove, avec la basse", "tout le monde joue")
             const val ACID_TITLE = "Ligne acide"
-        }
-    }
 
-    /**
-     * Shares the [lines] and [parts] used (and the acid line, when there is one) between scenes A,
-     * B and C. With chords or a lead: the drums in A, the bass lines (bass, 808, acid) in B, the
-     * chords and the lead in C. Without: kick, snare and clap in A, the hats in B, the percussion
-     * and the bass lines in C. A scene left empty starts as a copy of the scene before it (none
-     * when nothing is used at all).
-     */
-    fun scenePlan(lines: Set<Role>, parts: Set<Part>, acid: Boolean): ScenePlan {
-        val melody = Part.Pad in parts || Part.Lead in parts
-        val lineScenes = lines.associateWith { r ->
-            when {
-                r == Role.Bass808 -> if (melody) 1 else 2
-                melody -> 0
-                r == Role.Kick || r == Role.Snare || r == Role.Clap -> 0
-                r == Role.Hat || r == Role.OpenHat -> 1
-                else -> 2
+            /** "Intro", "Couplet et Refrain", "Intro, Couplet et Refrain": the sections of [scenes]. */
+            fun sections(scenes: Set<Int>): String {
+                val names = scenes.sorted().map { LABELS[it] }
+                return if (names.size <= 1) names.joinToString() else names.dropLast(1).joinToString(", ") + " et " + names.last()
             }
         }
-        val partScenes = parts.associateWith { if (it == Part.Bass) (if (melody) 1 else 2) else 2 }
-        val acidScene = (if (melody) 1 else 2).takeIf { acid }
-        val used = (lineScenes.values + partScenes.values + listOfNotNull(acidScene)).toSet()
-        // An empty scene copies the nearest filled one before it (or after it, for A).
-        val copies = (0 until ScenePlan.COUNT).filter { it !in used }.associateWith { empty ->
-            (empty - 1 downTo 0).firstOrNull { it in used } ?: (empty + 1 until ScenePlan.COUNT).firstOrNull { it in used }
-        }.filterValues { it != null }.mapValues { it.value!! }
-        return ScenePlan(lineScenes, partScenes, acidScene, copies)
     }
 
-    /** [full] cut in three scenes by [plan] (A current), and a song that plays each one twice. */
-    private fun inScenes(full: Project, plan: ScenePlan, partOfTrack: Map<Int, Part>): Project {
+    /** Light drum lines: the intro starts with them alone. */
+    private val INTRO_LINES = setOf(Role.Kick, Role.Hat)
+
+    /** Drum lines kept for the chorus when it has no melodic part of its own to add. */
+    private val CHORUS_LINES = setOf(Role.OpenHat, Role.Perc)
+
+    /**
+     * Shares the [lines] and [parts] used (and the acid line, when there is one) between the three
+     * sections, cumulatively. Refrain (C): everything. Couplet (B): everything but the chorus's own
+     * layer, the lead (or the chords without a lead, or the open hat and the percussion without
+     * either). Intro (A): the kick and the hats, and the chords; no bass. A section that would be
+     * silent plays what the next one plays (nothing at all when nothing is used).
+     */
+    fun scenePlan(lines: Set<Role>, parts: Set<Part>, acid: Boolean): ScenePlan {
+        val bassLines = setOf(Role.Bass808)
+        val chorusParts = when {
+            Part.Lead in parts -> setOf(Part.Lead)
+            Part.Pad in parts -> setOf(Part.Pad)
+            else -> emptySet()
+        }
+        val chorusLines = if (chorusParts.isEmpty()) lines intersect CHORUS_LINES else emptySet()
+        val verseLines = lines - chorusLines
+        val verseParts = parts - chorusParts
+        val introLines = (lines intersect INTRO_LINES).ifEmpty { verseLines - bassLines }
+        val introParts = parts intersect setOf(Part.Pad)
+        // A silent section plays what the next one plays (the acid line counts in the couplet).
+        val verseSilent = verseLines.isEmpty() && verseParts.isEmpty() && !acid
+        val couplet = if (verseSilent) lines to parts else verseLines to verseParts
+        val introSilent = introLines.isEmpty() && introParts.isEmpty()
+        val intro = if (introSilent) couplet else introLines to introParts
+        val scenes = listOf(intro, couplet, lines to parts)
+        return ScenePlan(
+            lines = lines.associateWith { r -> scenes.indices.filter { r in scenes[it].first }.toSet() },
+            parts = parts.associateWith { p -> scenes.indices.filter { p in scenes[it].second }.toSet() },
+            acid = if (!acid) emptySet() else if (introSilent) setOf(0, 1, 2) else setOf(1, 2),
+        )
+    }
+
+    /** The song plan: Intro, Couplet, Refrain, Couplet, Refrain, then the Intro again to end; and each one's length in phrases. */
+    private val SONG_SECTIONS = listOf(0, 1, 2, 1, 2, 0)
+    private val SONG_WEIGHTS = listOf(1, 2, 2, 2, 2, 1)
+
+    /** Longest song the assistant makes: three minutes. */
+    const val MAX_SONG_SECONDS = 180.0
+
+    /**
+     * The song of the three sections: Intro, Couplet, Refrain, Couplet, Refrain and the Intro again
+     * as the ending, in phrases of 8 bars (4 when that would last over three minutes at [bpm]), each
+     * scene of [loopBars] bars repeated to fill its phrase.
+     */
+    fun songOf(loopBars: Int, bpm: Double, beatsPerBar: Int = 4): List<SongPart> {
+        val bars = loopBars.coerceAtLeast(1)
+        val long = SONG_WEIGHTS.sum() * 8 * beatsPerBar * 60.0 / bpm <= MAX_SONG_SECONDS
+        val unit = if (long) 8 else 4
+        return SONG_SECTIONS.mapIndexed { i, scene ->
+            SongPart(scene, (unit * SONG_WEIGHTS[i] / bars).coerceIn(1, SongPart.MAX_REPEATS))
+        }
+    }
+
+    /** Bars each scene of [style]'s song lasts with [plan]: the beat, or the four bars of the melodic parts. */
+    fun loopBars(style: Style, plan: ScenePlan): Int {
+        val steps = maxOf(drumSteps(style), if (plan.parts.isNotEmpty()) 64 else 0, if (plan.acid.isNotEmpty()) 16 else 0)
+        return (steps + 15) / 16
+    }
+
+    /** The song the assistant makes for [style] with [plan]. */
+    fun songOf(style: Style, plan: ScenePlan): List<SongPart> = songOf(loopBars(style, plan), style.bpm)
+
+    /** How long [song] lasts, in seconds, with scenes of [loopBars] bars. */
+    fun seconds(song: List<SongPart>, loopBars: Int, bpm: Double, beatsPerBar: Int = 4): Double =
+        song.sumOf { it.repeats } * loopBars * beatsPerBar * 60.0 / bpm
+
+    /** [full] cut in the three sections of [plan] (Intro current), named, and a song that chains them. */
+    private fun inScenes(full: Project, plan: ScenePlan, partOfTrack: Map<Int, Part>, bpm: Double): Project {
         fun only(index: Int): Project {
             val drums = full.drums.copy(lanes = full.drums.lanes.mapIndexed { lane, l ->
                 val role = Role.entries.firstOrNull { it.lane == lane }
-                if (role != null && plan.lines[role] == index) l else l.copy(hits = emptyMap())
+                if (role != null && index in plan.lines[role].orEmpty()) l else l.copy(hits = emptyMap())
             })
-            val acid = if (plan.acid == index) full.acid else full.acid.copy(steps = full.acid.steps.map { it.copy(gate = false) })
+            val acid = if (index in plan.acid) full.acid else full.acid.copy(steps = full.acid.steps.map { it.copy(gate = false) })
             var p = full.copy(drums = drums, acid = acid)
             for ((id, part) in partOfTrack) {
-                if (plan.parts[part] == index) continue
+                if (index in plan.parts[part].orEmpty()) continue
                 val t = p.track(id)
                 p = p.withTrack(t.copy(notes = t.notes.copy(notes = emptyList())))
             }
             return p
         }
-        val views = (0 until ScenePlan.COUNT).map { only(plan.source(it)) }
-        return views[0].copy(
+        val views = (0 until ScenePlan.COUNT).map { only(it) }
+        var project = views[0].copy(
             scenes = views.mapIndexed { i, v -> v.currentSceneContent().copy(name = ScenePlan.NAMES[i]) },
             scene = 0,
-            song = (0 until ScenePlan.COUNT).map { SongPart(it, 2) },
         )
+        val loopBars = project.allScenes.maxOf { it.stepsFor(project.stepsPerBar) } / project.stepsPerBar
+        project = project.copy(song = songOf(loopBars, bpm, project.beatsPerBar))
+        ScenePlan.LABELS.forEachIndexed { i, label -> project = project.renameScene(i, label) }
+        return project
     }
 
     private val Part.trackName get() = when (this) {

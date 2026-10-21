@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -27,6 +28,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -50,8 +52,11 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-/** A way to start a project: a name, a line saying what it holds, and how to build it. */
-class ProjectStarter(val title: String, val description: String, val tag: String)
+/** The headings of the "Nouveau projet" choices (the guided song comes first, apart). */
+enum class StarterGroup(val title: String) { Style("Partir d'un style"), Demo("Écouter une démo"), Empty("Vide") }
+
+/** A way to start a project: a name, a line saying what it holds, its heading, and how to build it. */
+class ProjectStarter(val title: String, val description: String, val tag: String, val group: StarterGroup = StarterGroup.Empty)
 
 class ProjectsActions(
     val back: () -> Unit = {},
@@ -86,9 +91,14 @@ fun ProjectsScreen(ui: ProjectsUi, currentId: String, starters: List<ProjectStar
             }
             Text("Mes projets", style = MaterialTheme.typography.headlineSmall, modifier = Modifier.weight(1f))
         }
-        Button(onClick = { choosingStart = true }, modifier = Modifier.fillMaxWidth().height(52.dp).testTag("project_new")) {
+        // The guided song first: the main action for a beginner.
+        Button(onClick = actions.wizard, modifier = Modifier.fillMaxWidth().height(56.dp).testTag("project_wizard")) {
+            Icon(Icons.Filled.AutoAwesome, contentDescription = null)
+            Text("  Nouveau morceau guidé", style = MaterialTheme.typography.titleMedium)
+        }
+        OutlinedButton(onClick = { choosingStart = true }, modifier = Modifier.fillMaxWidth().height(52.dp).testTag("project_new")) {
             Icon(Icons.Filled.Add, contentDescription = null)
-            Text("  Nouveau projet", style = MaterialTheme.typography.titleMedium)
+            Text("  Nouveau projet : style, démo ou vide", style = MaterialTheme.typography.titleSmall)
         }
         TextButton(onClick = actions.importZip, modifier = Modifier.fillMaxWidth().testTag("project_import")) {
             Text("Importer un projet (.zip)")
@@ -151,24 +161,31 @@ fun ProjectsScreen(ui: ProjectsUi, currentId: String, starters: List<ProjectStar
             title = { Text("Nouveau projet") },
             text = {
                 Column(Modifier.verticalScroll(androidx.compose.foundation.rememberScrollState()), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    SectionLabel("Guidé")
                     Card(
                         colors = CardDefaults.cardColors(containerColor = Neon.Cyan.copy(alpha = 0.18f)),
                         modifier = Modifier.fillMaxWidth().clickable { choosingStart = false; actions.wizard() }.testTag("starter_wizard"),
                     ) {
                         Column(Modifier.padding(12.dp)) {
-                            Text("Assistant pas à pas", style = MaterialTheme.typography.titleMedium, color = Neon.Cyan)
-                            Text("Idéal pour débuter : choisis un style, je t'explique chaque son et je prépare la grille.",
+                            Text("Nouveau morceau guidé", style = MaterialTheme.typography.titleMedium, color = Neon.Cyan)
+                            Text("Idéal pour débuter : choisis un style, je t'explique chaque son et je prépare l'intro, le couplet et le refrain.",
                                 style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
                         }
                     }
-                    starters.forEachIndexed { i, s ->
-                        Card(
-                            colors = CardDefaults.cardColors(containerColor = Neon.SurfaceHigh),
-                            modifier = Modifier.fillMaxWidth().clickable { choosingStart = false; actions.create(i) }.testTag("starter_${s.tag}"),
-                        ) {
-                            Column(Modifier.padding(12.dp)) {
-                                Text(s.title, style = MaterialTheme.typography.titleMedium)
-                                Text(s.description, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                    // The other starters under their headings, in the order of the headings.
+                    StarterGroup.entries.forEach { group ->
+                        val inGroup = starters.withIndex().filter { it.value.group == group }
+                        if (inGroup.isEmpty()) return@forEach
+                        SectionLabel(group.title, Modifier.padding(top = 8.dp))
+                        inGroup.forEach { (i, s) ->
+                            Card(
+                                colors = CardDefaults.cardColors(containerColor = Neon.SurfaceHigh),
+                                modifier = Modifier.fillMaxWidth().clickable { choosingStart = false; actions.create(i) }.testTag("starter_${s.tag}"),
+                            ) {
+                                Column(Modifier.padding(12.dp)) {
+                                    Text(s.title, style = MaterialTheme.typography.titleMedium)
+                                    Text(s.description, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                                }
                             }
                         }
                     }

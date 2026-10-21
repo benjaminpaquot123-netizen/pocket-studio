@@ -37,9 +37,10 @@ class SmokeTest {
     fun appStartsPlaysAndNavigates() {
         assertTrue("native engine must load", NativeEngine.isAvailable)
         compose.waitUntil(10_000) { NativeEngine.streamInfo().let { it.running && it.callbacks > 0 } }
-        // First launch: the first-steps guide opens; skip it.
+        // First launch: the welcome choices open; "later" keeps the starter beat.
         compose.waitForIdle()
-        if (compose.onAllNodesWithTag("guide_skip").fetchSemanticsNodes().isNotEmpty()) compose.onNodeWithTag("guide_skip").performClick()
+        if (compose.onAllNodesWithTag("welcome_later").fetchSemanticsNodes().isNotEmpty()) compose.onNodeWithTag("welcome_later").performScrollTo().performClick()
+        compose.waitForIdle()
 
         // Rhythm screen: the starter groove plays and makes sound.
         compose.onNodeWithTag("rhythm").assertIsDisplayed()
@@ -56,7 +57,7 @@ class SmokeTest {
 
         // A live pad fires its lane.
         val before = IntArray(NativeEngine.LANES).also { NativeEngine.laneTriggers(it) }
-        compose.onNodeWithTag("pad_4").performClick()
+        compose.onNodeWithTag("pad_4").performScrollTo().performClick()
         compose.waitUntil(2_000) {
             IntArray(NativeEngine.LANES).also { NativeEngine.laneTriggers(it) }[4] > before[4]
         }

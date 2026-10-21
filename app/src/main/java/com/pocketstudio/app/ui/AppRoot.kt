@@ -118,6 +118,7 @@ import androidx.compose.material3.Button
 import androidx.compose.foundation.layout.Arrangement
 import com.pocketstudio.app.projects.CurrentProject
 import com.pocketstudio.app.projects.ProjectStarter
+import com.pocketstudio.app.projects.StarterGroup
 import com.pocketstudio.app.projects.ProjectsActions
 import com.pocketstudio.app.projects.ProjectsScreen
 import com.pocketstudio.app.projects.ProjectsViewModel
@@ -162,15 +163,16 @@ enum class AppTab(val label: String, val icon: ImageVector) {
 
 private enum class ToolPage(val label: String) { Reglages("Réglages"), Recette("Recette"), Midi("MIDI"), Fond("Fond"), Latence("Latence"), Son("Son") }
 
-/** Ways to start a new project (Mes projets › Nouveau projet). */
+/** Ways to start a new project (Mes projets › Nouveau projet), by group (the guided song comes apart). */
 private val PROJECT_STARTERS: List<Pair<ProjectStarter, () -> Project>> = listOf(
-    ProjectStarter("Projet vide", "Tout est vierge : à toi de jouer.", "empty") to { Project(name = "") },
-    ProjectStarter("Rythme de départ", "Un rythme et une ligne d'acide prêts à tourner.", "starter") to { RhythmViewModel.starterProject("") },
+    ProjectStarter("Rythme de départ", "Un rythme et une ligne d'acide prêts à tourner.", "starter", StarterGroup.Style) to { RhythmViewModel.starterProject("") },
 ) + com.pocketstudio.model.Genres.ALL.mapIndexed { i, (title, description, build) ->
-    ProjectStarter("Style · $title", description, "genre_$i") to build
+    ProjectStarter(title, description, "genre_$i", StarterGroup.Style) to build
 } + com.pocketstudio.model.Demos.ALL.mapIndexed { i, (title, description, build) ->
-    ProjectStarter(title, description, "demo_$i") to build
-}
+    ProjectStarter(title.removePrefix("Démo · "), description, "demo_$i", StarterGroup.Demo) to build
+} + listOf(
+    ProjectStarter("Projet vide", "Tout est vierge : à toi de jouer.", "empty", StarterGroup.Empty) to { Project(name = "") },
+)
 
 private tailrec fun android.content.Context.findActivity(): androidx.activity.ComponentActivity? = when (this) {
     is androidx.activity.ComponentActivity -> this
@@ -415,12 +417,24 @@ fun AppRoot() {
     var showGuide by rememberSaveable { mutableStateOf(false) }
     // After the crash report's question (never both dialogs on top of each other).
     val pendingCrash by mainVm.crash.collectAsStateWithLifecycle()
-    if ((showGuide || !settings.guideSeen) && pendingCrash == null) {
+    if (showGuide && pendingCrash == null) {
         GuideDialog(onClose = {
             showGuide = false
             SettingsStore.update(context) { it.copy(guideSeen = true) }
         })
     }
+    // The first launch: three big choices (guided song, demo, empty project), not pages of text.
+    val firstLaunchSeen = { SettingsStore.update(context) { it.copy(guideSeen = true) } }
+    com.pocketstudio.app.onboarding.FirstLaunch(
+        show = !settings.guideSeen && pendingCrash == null,
+        actions = com.pocketstudio.app.onboarding.WelcomeActions(
+            guided = { firstLaunchSeen(); rhythmVm.stop(); libraryVm.openWizard() },
+            demo = { firstLaunchSeen(); projectsVm.create(com.pocketstudio.model.Demos.ALL.first().third()) { id -> openProject(id) } },
+            empty = { firstLaunchSeen(); projectsVm.create(Project(name = "")) { id -> openProject(id) } },
+            later = firstLaunchSeen,
+        ),
+        playDemo = { if (rhythmVm.project.value.song.isNotEmpty()) rhythmVm.toggleSong() else rhythmVm.togglePlay() },
+    )
     // Réglages › Écran toujours allumé: only while the music plays.
     val screenTransport by rhythmVm.transport.collectAsStateWithLifecycle()
     LaunchedEffect(screenTransport.playing, settings.keepScreenOn) {
@@ -750,6 +764,7 @@ fun AppRoot() {
                                 importZip = { pickZip.launch(arrayOf("application/zip", "application/x-zip-compressed", "application/octet-stream")) },
                             ),
                             padSound = PadSoundUi(sampleInfo, sampleTask, slicer),
+                            header = { com.pocketstudio.app.onboarding.ProjectNextSteps(project, rhythmVm.projectId) { tab = it } },
                         )
                     }
                     AppTab.Acide -> {

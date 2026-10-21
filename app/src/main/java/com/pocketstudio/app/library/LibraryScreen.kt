@@ -151,7 +151,7 @@ private fun PackList(ui: LibraryUi, actions: LibraryActions) {
         SectionLabel("Packs de sons", help = Glossary.SOUND_PACK)
         when (val index = packs.index) {
             IndexState.Loading -> Text("Chargement de la liste…", color = Neon.TextSecondary)
-            IndexState.Unavailable -> Text("Les packs de sons arrivent bientôt.", color = Neon.TextSecondary)
+            IndexState.Unavailable -> Text("Aucun pack à télécharger : les sons intégrés sont tous là, prêts à servir.", color = Neon.TextSecondary)
             is IndexState.Failed -> Text(index.message, color = Neon.Amber)
             is IndexState.Ready -> {
                 Text("À télécharger seulement si tu veux ; chaque pack se supprime d'un geste pour libérer la place.",

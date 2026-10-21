@@ -531,6 +531,11 @@ JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportScheduleF
     renderer(handle)->scheduleFrom(frame);
 }
 
+// The last `frames` of the next render fade to silence (0: none).
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportSetFadeOut(JNIEnv*, jobject, jlong handle, jlong frames) {
+    renderer(handle)->setFadeOut(frames);
+}
+
 JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_exportRender(JNIEnv* env, jobject, jlong handle,
                                                                             jstring path, jlong frames, jlong tail) {
     const char* p = env->GetStringUTFChars(path, nullptr);

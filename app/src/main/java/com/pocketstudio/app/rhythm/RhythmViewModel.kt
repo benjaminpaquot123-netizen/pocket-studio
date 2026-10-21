@@ -113,6 +113,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.asCoroutineDispatcher
@@ -152,14 +153,24 @@ enum class ExportWhat { Loop, Song, Stems }
 /** WAV 24 bits (studio quality), FLAC (the same, about half the size) or M4A/AAC (about ten times smaller, for sharing). */
 enum class ExportFormat(val extension: String, val mime: String) { Wav("wav", "audio/wav"), M4a("m4a", "audio/mp4"), Flac("flac", "audio/flac") }
 
+/** « Fondu de fin »: the end of an export fades to silence over [seconds] (none for a loop by default). */
+enum class ExportFade(val seconds: Int, val label: String) { None(0, "Aucun"), Short(3, "Court"), Long(8, "Long") }
+
 data class ExportUi(
     /** Length of « La scène », in bars: the scene's own ([sceneBars]) until the user picks one. */
     val bars: Int = 4,
     val barsChosen: Boolean = false,
     /** The current scene's length in bars (offered among the lengths). */
     val sceneBars: Int = 4,
+    /** The whole song when the project has one, the scene otherwise, until the user picks. */
     val what: ExportWhat = ExportWhat.Loop,
+    val whatChosen: Boolean = false,
     val format: ExportFormat = ExportFormat.Wav,
+    /** A short fade for the song, none for a loop, until the user picks; never on separate tracks. */
+    val fade: ExportFade = ExportFade.None,
+    val fadeChosen: Boolean = false,
+    /** « Partager mon morceau »: this export opens the share sheet when it is done. */
+    val sharing: Boolean = false,
     val running: Boolean = false,
     val progress: Float = 0f,
     /** Step being done ("Batterie 1/4", "Compression M4A"…). */
@@ -174,6 +185,25 @@ data class ExportUi(
 
     /** These settings for a scene [sceneBars] long: its length is the default. */
     fun forScene(sceneBars: Int): ExportUi = copy(sceneBars = sceneBars, bars = if (barsChosen) bars else sceneBars)
+
+    /** These settings for a project: the scene's length, the song if there is one, the fade that goes with it. */
+    fun forProject(sceneBars: Int, hasSong: Boolean): ExportUi {
+        val w = if (whatChosen) what else if (hasSong) ExportWhat.Song else ExportWhat.Loop
+        val f = when {
+            w == ExportWhat.Stems -> ExportFade.None
+            fadeChosen -> fade
+            else -> defaultFade(w)
+        }
+        return forScene(sceneBars).copy(what = w, fade = f)
+    }
+
+    /** Frames the end of this export fades over at 48 kHz: never more than half of the [frames] rendered. */
+    fun fadeFrames(frames: Long): Long =
+        if (what == ExportWhat.Stems) 0L else minOf(fade.seconds.toLong() * com.pocketstudio.engine.OfflineExport.SAMPLE_RATE, frames / 2)
+
+    companion object {
+        fun defaultFade(what: ExportWhat) = if (what == ExportWhat.Song) ExportFade.Short else ExportFade.None
+    }
 }
 
 /** What the audio engine is doing right now, polled for the playhead and pad lights. */
@@ -3185,8 +3215,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     private val _export = MutableStateFlow(ExportUi())
     /** The export settings, « La scène » as long as the current scene unless a length was picked. */
-    val export: StateFlow<ExportUi> = combine(_export, project) { e, p -> e.forScene(sceneBars(p)) }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, ExportUi().forScene(sceneBars(project.value)))
+    val export: StateFlow<ExportUi> = combine(_export, project) { e, p -> e.forProject(sceneBars(p), p.song.isNotEmpty()) }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, ExportUi().forProject(sceneBars(project.value), project.value.song.isNotEmpty()))
     private var running: OfflineExport? = null
 
     private fun sceneBars(p: Project) = (p.currentSceneContent().stepsFor(p.stepsPerBar) / p.stepsPerBar).coerceIn(1, MAX_EXPORT_BARS)
@@ -3196,11 +3226,37 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun setExportWhat(what: ExportWhat) {
-        _export.value = _export.value.copy(what = what)
+        _export.value = _export.value.copy(what = what, whatChosen = true)
     }
 
     fun setExportFormat(format: ExportFormat) {
         _export.value = _export.value.copy(format = format)
+    }
+
+    fun setExportFade(fade: ExportFade) {
+        _export.value = _export.value.copy(fade = fade, fadeChosen = true)
+    }
+
+    /** Files of a finished « Partager mon morceau », for the share sheet (the screen opens it). */
+    private val _shareRequests = kotlinx.coroutines.channels.Channel<List<File>>(kotlinx.coroutines.channels.Channel.CONFLATED)
+    val shareRequests: kotlinx.coroutines.flow.Flow<List<File>> = _shareRequests.receiveAsFlow()
+
+    /**
+     * « Partager mon morceau »: the whole song (or the scene looped when there is none) in M4A,
+     * with a short fade, then the share sheet. The export card's own choices stay as they were.
+     */
+    fun shareSong() {
+        val p = project.value
+        if (!NativeEngine.isAvailable) {
+            _export.value = _export.value.copy(sharing = true, error = "Le moteur audio n'est pas prêt : réessaie dans un instant.")
+            return
+        }
+        startExport(com.pocketstudio.app.export.ShareSong.settings(p.song.isNotEmpty(), sceneBars(p)), share = true)
+    }
+
+    /** Closes the « Partager mon morceau » window after an error. */
+    fun dismissShare() {
+        _export.value = _export.value.copy(sharing = false, error = null)
     }
 
     /** Frames of the whole song (each part: its scene's length × its repeats). */
@@ -3251,17 +3307,27 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * into WAV (or M4A), then copies the files to Music › Pocket Studio.
      */
     fun exportWav() {
+        val p = project.value
+        startExport(_export.value.forProject(sceneBars(p), p.song.isNotEmpty()), share = false)
+    }
+
+    /** Renders with [settings] (the card's, or « Partager mon morceau »'s with [share]). */
+    private fun startExport(settings: ExportUi, share: Boolean) {
         if (!NativeEngine.isAvailable || running != null || exportJob != null) return
         exportCancelled = false
         val app = getApplication<Application>()
         val p = project.value
-        val settings = _export.value.forScene(sceneBars(p))
+        // The card keeps its own choices; only the run's state (progress, files, error) is shown.
+        val shown = _export.value.copy(sharing = share)
         val song = settings.what == ExportWhat.Song || (settings.what == ExportWhat.Stems && p.song.isNotEmpty())
         if (settings.what == ExportWhat.Song && p.song.isEmpty()) {
-            _export.value = settings.copy(error = "Le morceau est vide : ajoute des scènes dans l'onglet Morceau.", files = emptyList())
+            _export.value = shown.copy(error = "Le morceau est vide : ajoute des scènes dans l'onglet Morceau.", files = emptyList())
             return
         }
         val frames = if (song) songFrames(p) else OfflineExport.framesFor(settings.bars, p.tempoBpm, p.beatsPerBar)
+        // A fade-out ends the file on silence: no tail to ring out after it.
+        val fadeFrames = settings.fadeFrames(frames)
+        val tailFrames = if (fadeFrames > 0) 0L else TAIL_FRAMES
         // Each render: (label for the file and the screen, solo channel or null for the mix).
         val renders: List<Pair<String, Int?>> = when (settings.what) {
             ExportWhat.Stems -> stemExports(p, song)
@@ -3269,10 +3335,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             ExportWhat.Loop -> listOf("boucle" to null)
         }
         if (renders.isEmpty()) {
-            _export.value = settings.copy(error = "Rien à exporter : chaque piste est vide ou coupée dans le mixeur.", files = emptyList())
+            _export.value = shown.copy(error = "Rien à exporter : chaque piste est vide ou coupée dans le mixeur.", files = emptyList())
             return
         }
-        _export.value = settings.copy(running = true, progress = 0f, files = emptyList(), error = null, stage = null, loudness = null)
+        _export.value = shown.copy(running = true, progress = 0f, files = emptyList(), error = null, stage = null, loudness = null)
         exportJob = viewModelScope.launch {
             val done = ArrayList<File>()
             var musicOk = true
@@ -3298,7 +3364,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                         }
                     }
                     val result = try {
-                        withContext(Dispatchers.IO) { job.render(wav, frames, TAIL_FRAMES) }
+                        withContext(Dispatchers.IO) { job.render(wav, frames, tailFrames, fadeFrames) }
                     } finally {
                         poll.cancel()
                         // Closed on the main thread, after the render returned.
@@ -3343,14 +3409,17 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     if (exportCancelled) throw kotlinx.coroutines.CancellationException("annulé")
                     musicOk = withContext(Dispatchers.IO) { WavExporter.copyToMusic(app, out, settings.format.mime) } && musicOk
                 }
-                _export.value = _export.value.copy(running = false, files = done, savedInMusic = musicOk, stage = null, loudness = loudness)
-                AppLog.add("Export ${settings.what} ${settings.format} : ${done.size} fichier(s), ${frames / OfflineExport.SAMPLE_RATE} s")
+                _export.value = _export.value.copy(running = false, files = done, savedInMusic = musicOk, stage = null, loudness = loudness, sharing = false)
+                AppLog.add("Export ${settings.what} ${settings.format} : ${done.size} fichier(s), ${frames / OfflineExport.SAMPLE_RATE} s" +
+                    if (share) " (partage)" else "")
+                if (share) _shareRequests.trySend(done.toList())
             } catch (e: kotlinx.coroutines.CancellationException) {
                 done.forEach { it.delete() }
-                _export.value = _export.value.copy(running = false, files = emptyList(), stage = null)
+                _export.value = _export.value.copy(running = false, files = emptyList(), stage = null, sharing = false)
             } catch (e: Exception) {
                 done.forEach { it.delete() }
                 AppLog.add("Export : échec (${e.message})")
+                // « Partager mon morceau » keeps its window open to show what went wrong.
                 _export.value = _export.value.copy(running = false, files = emptyList(), stage = null,
                     error = if (e is UserMessage) e.message else "L'export a échoué : ${e.message ?: e.javaClass.simpleName}")
             } finally {

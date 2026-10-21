@@ -24,10 +24,10 @@ class HouseStylesTest {
             assertTrue("$a and $b share their beat", hats.any { x[it]?.keys != y[it]?.keys })
             assertTrue("$a and $b share their hats", x[StarterWizard.Role.Hat]?.keys != y[StarterWizard.Role.Hat]?.keys)
         }
-        // Disco has a drummer's snare, house a clap; afro house no open hat but a shaker and congas.
+        // Disco has a drummer's snare, house a clap; afro house a shaker and congas, and only a discreet open hat.
         assertTrue(style("disco").lines.any { it.role == StarterWizard.Role.Snare })
         val afro = style("afro_house")
-        assertTrue(afro.lines.none { it.role == StarterWizard.Role.OpenHat })
+        assertTrue(afro.lines.filter { it.role == StarterWizard.Role.OpenHat }.all { 'X' !in it.pattern })
         assertEquals(VOICE_SHAKER, afro.lines.single { it.role == StarterWizard.Role.Hat }.voice)
         assertEquals(VOICE_CONGA, afro.lines.single { it.role == StarterWizard.Role.Perc }.voice)
         assertEquals(VOICE_COWBELL, style("acid_house").lines.single { it.role == StarterWizard.Role.Perc }.voice)

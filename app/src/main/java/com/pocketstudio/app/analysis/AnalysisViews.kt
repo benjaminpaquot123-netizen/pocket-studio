@@ -26,6 +26,7 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -148,5 +149,16 @@ private fun GuitarStrings(reading: TunerReading?, englishNotes: Boolean) {
                     color = if (lit) color else Neon.TextSecondary, maxLines = 1)
             }
         }
+    }
+}
+
+/** The output spectrum as faint bars from the bottom (lows on the left), behind a pad. */
+fun DrawScope.drawSpectrumBackdrop(bands: FloatArray?, color: Color) {
+    if (bands == null || bands.isEmpty()) return
+    val n = bands.size
+    val w = size.width / n
+    for (i in 0 until n) {
+        val h = ((bands[i] - Spectrum.MIN_DB) / -Spectrum.MIN_DB).coerceIn(0f, 1f) * size.height
+        if (h > 0f) drawRect(color, Offset(i * w + 1f, size.height - h), Size((w - 2f).coerceAtLeast(1f), h))
     }
 }

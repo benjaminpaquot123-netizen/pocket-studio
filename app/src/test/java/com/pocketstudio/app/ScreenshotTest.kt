@@ -81,12 +81,17 @@ open class ScreenshotTest {
      */
     protected open val chrome = androidx.compose.foundation.layout.PaddingValues(0.dp)
 
+    /** The same for a page that hides the app's bars (the Live page): only the system's are left. */
+    protected open val fullScreenChrome = androidx.compose.foundation.layout.PaddingValues(0.dp)
+
     /** [prepare]: touches made before the image (a switch that only the screen itself holds). */
-    protected fun shoot(name: String, palette: Palette = Palettes.Studio, prepare: () -> Unit = {}, content: @Composable () -> Unit) {
+    protected fun shoot(
+        name: String, palette: Palette = Palettes.Studio, prepare: () -> Unit = {}, fullScreen: Boolean = false, content: @Composable () -> Unit,
+    ) {
         org.junit.Assume.assumeTrue(wanted(name))
         compose.setContent {
             PocketStudioTheme(palette) {
-                Box(Modifier.fillMaxSize().background(androidx.compose.ui.graphics.Color.Black).padding(chrome).background(Neon.Background)) { content() }
+                Box(Modifier.fillMaxSize().background(androidx.compose.ui.graphics.Color.Black).padding(if (fullScreen) fullScreenChrome else chrome).background(Neon.Background)) { content() }
             }
         }
         prepare()
@@ -380,6 +385,152 @@ open class ScreenshotTest {
             octave = 3,
             actions = com.pocketstudio.app.synth.SynthActions(),
         )
+    }
+
+
+    /** The Live page's example: four named scenes, drums, acid, two instrument tracks, a voice and a remix. */
+    private fun liveUi(acidStopped: Boolean = false, spectrum: Boolean = false, fx: com.pocketstudio.app.live.LiveFxUi = com.pocketstudio.app.live.LiveFxUi()): com.pocketstudio.app.live.LiveScreenUi {
+        val drums = DrumPattern().toggle(0, 0).toggle(0, 8).toggle(2, 4).toggle(2, 12)
+        val acid = com.pocketstudio.model.AcidPattern(steps = List(com.pocketstudio.model.AcidPattern.MAX_STEPS) { i -> com.pocketstudio.model.AcidStep(gate = i % 3 == 0) })
+        val notes = com.pocketstudio.model.NoteClip(16, listOf(com.pocketstudio.model.Note(0, 48, 60), com.pocketstudio.model.Note(96, 48, 63)))
+        var p = Project(
+            scenes = listOf(
+                com.pocketstudio.model.Scene("A", drums = drums, label = "Intro"),
+                com.pocketstudio.model.Scene("B", drums = drums, acid = acid, label = "Couplet"),
+                com.pocketstudio.model.Scene("C", drums = drums, acid = acid, synthNotes = notes, label = "Refrain"),
+                com.pocketstudio.model.Scene("D", acid = acid, synthNotes = notes, label = "Drop"),
+            ),
+            scene = 1, drums = drums, acid = acid,
+            remix = com.pocketstudio.model.Remix(setId = "x", name = "Chanson"),
+        ).addTrack("Basse")!!.addAudioTrack("Voix")!!
+        val bass = p.tracks.first().id
+        p = p.withAudioTrack(p.audioTracks.first().copy(clip = com.pocketstudio.model.AudioClip("v.wav", "Voix", scene = 2)))
+            .copy(scenes = p.scenes.mapIndexed { i, sc -> if (i >= 2) sc.copy(trackNotes = mapOf(bass to notes)) else sc })
+            .sanitized()
+        var g = com.pocketstudio.model.LiveState.on(1, 32)
+        g = g.launched(com.pocketstudio.model.LiveSlots.DRUMS, 2, 32)
+            .launched(com.pocketstudio.model.LiveSlots.INST + bass, -1, 32)
+            .armed(com.pocketstudio.model.LiveSlots.mask(com.pocketstudio.model.LiveSlots.INST), 3)
+        if (acidStopped) g = g.launched(com.pocketstudio.model.LiveSlots.ACID, -1, 32)
+        return com.pocketstudio.app.live.LiveScreenUi(
+            p, g, clock = 45, playing = true, muted = setOf(com.pocketstudio.model.SongPart.audio(0)),
+            acid = mapOf(0 to 0.62f, 1 to 0.8f, 7 to 0.55f),
+            // A kick and a bass under some hats: what the pads show faintly behind them.
+            spectrum = if (!spectrum) ({ null }) else ({ FloatArray(40) { b -> -14f - b * 1.1f - if (b in 18..24) 10f else 0f } }),
+            fx = fx,
+        )
+    }
+
+    @Test
+    fun liveGrid() = shoot("live_grid", fullScreen = true) {
+        com.pocketstudio.app.live.LiveScreen(liveUi(), com.pocketstudio.app.live.LiveActions())
+    }
+
+    @Test
+    fun liveFx() = shoot("live_fx", fullScreen = true, prepare = {
+        compose.onNodeWithTag("live_fx_inst:0").performScrollTo().performClick()
+    }) {
+        com.pocketstudio.app.live.LiveScreen(liveUi(), com.pocketstudio.app.live.LiveActions())
+    }
+
+    /** « Tenus » with the lock on: « Freinage » kept (its padlock), the bass cut while held. */
+    @Test
+    fun liveFxLock() = shoot("live_fx_lock", fullScreen = true, prepare = {
+        compose.onNodeWithTag("live_lock").performClick()
+        compose.onNodeWithTag("live_page_HOLDS").performClick()
+        compose.waitForIdle()
+    }) {
+        com.pocketstudio.app.live.LiveScreen(
+            liveUi(
+                spectrum = true,
+                fx = com.pocketstudio.app.live.LiveFxUi(
+                    values = mapOf(com.pocketstudio.model.AutoTarget.LIVE_TAPE_STOP to 1f, com.pocketstudio.model.AutoTarget.LIVE_KILL_LOW to 1f),
+                    locks = setOf(com.pocketstudio.model.AutoTarget.LIVE_TAPE_STOP),
+                ),
+            ),
+            com.pocketstudio.app.live.LiveActions(),
+        )
+    }
+
+    /** « Montée » half way, the Drop armed for the next bar. */
+    @Test
+    fun liveFxBuild() = shoot("live_fx_build", fullScreen = true, prepare = {
+        compose.onNodeWithTag("live_page_BUILD").performClick()
+        compose.waitForIdle()
+    }) {
+        com.pocketstudio.app.live.LiveScreen(
+            liveUi(fx = com.pocketstudio.app.live.LiveFxUi(values = mapOf(com.pocketstudio.model.AutoTarget.LIVE_BUILD_UP to 0.6f), dropArmed = true)),
+            com.pocketstudio.app.live.LiveActions(),
+        )
+    }
+
+    /** The roll pads, 1/16 rolling. */
+    @Test
+    fun liveFxRolls() = shoot("live_fx_rolls", fullScreen = true, prepare = {
+        compose.onNodeWithTag("live_page_ROLLS").performClick()
+        compose.waitForIdle()
+    }) {
+        com.pocketstudio.app.live.LiveScreen(
+            liveUi(
+                fx = com.pocketstudio.app.live.LiveFxUi(
+                    values = mapOf(
+                        com.pocketstudio.model.AutoTarget.LIVE_REPEAT to 1f,
+                        com.pocketstudio.model.AutoTarget.LIVE_DIVISION to com.pocketstudio.model.LiveDivision.SIXTEENTH.engineValue,
+                    ),
+                ),
+            ),
+            com.pocketstudio.app.live.LiveActions(),
+        )
+    }
+
+    /** The effects' settings (⚙). */
+    @Test
+    fun liveFxSettings() = shoot("live_fx_settings", fullScreen = true, prepare = {
+        compose.onNodeWithTag("live_fx_settings").performClick()
+        compose.waitForIdle()
+    }) {
+        com.pocketstudio.app.live.LiveScreen(liveUi(), com.pocketstudio.app.live.LiveActions())
+    }
+
+    @Test
+    fun liveAcid() = shoot("live_acid", fullScreen = true) {
+        com.pocketstudio.app.live.LiveScreen(liveUi(acidStopped = true), com.pocketstudio.app.live.LiveActions(), initialTab = com.pocketstudio.app.live.LivePanelTab.Acide)
+    }
+
+    /** « Enregistrer la performance »: a take on its way, after a song of two parts. */
+    @Test
+    fun liveRec() = shoot("live_rec", fullScreen = true, prepare = {
+        compose.onNodeWithTag("live_fx_acid").performScrollTo().performClick()
+    }) {
+        val ui = liveUi()
+        val song = ui.project.copy(song = listOf(com.pocketstudio.model.SongPart(0, 2), com.pocketstudio.model.SongPart(1))).sanitized()
+        com.pocketstudio.app.live.LiveScreen(
+            com.pocketstudio.app.live.LiveScreenUi(
+                song, ui.grid, 45, ui.playing, ui.muted, ui.acid, listOf(0.7f, 0.5f),
+                take = com.pocketstudio.app.live.TakeUi.Recording(32, 42, 21), takeAppend = true, chops = setOf(1),
+            ),
+            com.pocketstudio.app.live.LiveActions(),
+        )
+    }
+
+    /** The take written: what it wrote, Annuler and Écouter. */
+    @Test
+    fun liveRecDone() = shoot("live_rec_done", fullScreen = true) {
+        val ui = liveUi()
+        com.pocketstudio.app.live.LiveScreen(
+            com.pocketstudio.app.live.LiveScreenUi(
+                ui.project, ui.grid, 45, ui.playing, ui.muted, ui.acid,
+                take = com.pocketstudio.app.live.TakeUi.Done(parts = 7, settings = 3, firstPart = 0),
+            ),
+            com.pocketstudio.app.live.LiveActions(),
+            initialTab = com.pocketstudio.app.live.LivePanelTab.Acide,
+        )
+    }
+
+    @Test
+    @Config(qualifiers = "w860dp-h400dp-land-xxhdpi")
+    fun liveLandscape() = shoot("live_landscape", fullScreen = true) {
+        com.pocketstudio.app.live.LiveScreen(liveUi(), com.pocketstudio.app.live.LiveActions())
     }
 
     @Test
@@ -794,7 +945,23 @@ open class ScreenshotTest {
         sends = listOf(0.2f, 0f),
     )
 
-    private fun fxActions(kind: com.pocketstudio.model.SoundKind) = com.pocketstudio.app.mixer.MixerActions(kindOf = { kind })
+    /** The sound going through strip 2 (its effects light up), one vibe starred. */
+    private fun fxActions(kind: com.pocketstudio.model.SoundKind) = com.pocketstudio.app.mixer.MixerActions(
+        kindOf = { kind },
+        meters = kotlinx.coroutines.flow.MutableStateFlow(FloatArray(com.pocketstudio.model.Mixer.CHANNELS + 1) { if (it == 2) 0.35f else 0f }),
+        quick = com.pocketstudio.app.mixer.QuickFxActions(favourites = kotlinx.coroutines.flow.MutableStateFlow(setOf("scream_lead"))),
+    )
+
+    /** The vibes by music style (Dubstep), one starred, the one in use with its star. */
+    @Test
+    @Config(qualifiers = "w400dp-h1100dp-xxhdpi")
+    fun effectsStyles() = shoot("effects_styles", prepare = { tap("fx_genre_dubstep") }) {
+        androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
+            com.pocketstudio.app.mixer.EffectsCard(
+                com.pocketstudio.app.mixer.EffectsUi(2, com.pocketstudio.model.Channel().withFx(com.pocketstudio.model.FxPresets.byId("scream_lead")!!), fxActions(com.pocketstudio.model.SoundKind.LEAD)) {},
+            )
+        }
+    }
 
     /** The whole effects box (Effets of a track, a pad, the mixer): the chain, one effect open, the vibes, pad XY and sends. */
     @Test
@@ -1241,6 +1408,8 @@ open class ScreenshotTest {
             com.pocketstudio.model.SongPart(1, 2, muted = setOf("audio:0")),
             com.pocketstudio.model.SongPart(0, 4),
             com.pocketstudio.model.SongPart(1, 1, muted = setOf("drums", "acid")),
+            // Written from the live grid: the acid on B, the drums carrying on, two bars of its own.
+            com.pocketstudio.model.SongPart(0, 1, play = mapOf("acid" to 1), from = mapOf("drums" to 1), bars = 2),
         )
         // The voice: a song take from part 3, heard into the start of part 4.
         var p = withTracks().copy(drums = drums, scenes = listOf(a, b), song = song).sanitized()

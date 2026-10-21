@@ -78,7 +78,8 @@ enum class CommandType : uint8_t {
                           // ends there: the transport stops on that bar line (nothing is swapped);
                           // b = 3: the waiting scene plays on its own, outside the song (with
                           // a < 0: right away, the scene playing)
-    SetPerformance,       // a: PerformanceFx::Param, value 0..1 (live XY pad and hold buttons)
+    SetPerformance,       // a: PerformanceFx::Param, value 0..1 (the Live page's effects and their settings; 6, 7: the
+                          // reverb and echo returns, 0.5 = as mixed)
     SetSynthEngine,       // a: 0 = subtractive synth, 1 = Plaits (a General MIDI instrument still wins)
     SetPlaitsParam,       // a: PlaitsSynth::Param, value 0..1
     InstallClip,          // a: live pad, sample: owned reference (nullptr = empty pad)
@@ -95,13 +96,16 @@ enum class CommandType : uint8_t {
     RecordStop,           // the armed or running recording ends (the buffer's state becomes 2)
     SetAudioOn,           // a: audio track, value 1 = plays (follows SetStaging: a song part's mutes)
     SetBeatsPerBar,       // a: 2..7 (time signature a/4): metronome accent, bar lines, live pads grid
-    SetAutomationMode,    // a: lane, b: 0 loop / 1 per scene / 2 song (value: bars of song values)
-    SetAutomationSong,    // a: lane, b: bar (0..255), value 0..1: the song-long curve, one value per bar
+    SetAutomationMode,    // a: lane, b: 0 loop / 1 per scene / 2 song, | 16: a song point per beat, | 32: song points held (no
+                          // slide: on/off controls); value: song points sent
+    SetAutomationSong,    // a: lane, b: point (a bar 0..255, or a beat 0..1023), value 0..1: the song-long curve
     SetExpression,        // a: InstrumentTrack::Expression | track << 16, value (bend in semitones, mod 0..1, sustain 0/1, arpeggiator settings)
     SetPadPan,            // a: pad, value -1..1 (synthesized and sampled sounds alike)
     SetDrumStepDetail,    // a: pad, b: step | (pitch + 64) << 16 (semitones, sampled sounds), value: pan -1..1 added to the pad's;
                           // after the step's SetDrumHit, which resets both
-    SetMacro,             // a: mixer channel, b: TrackMacros::Macro (colour, dirt, motion, space), value 0..1
+    SetMacro,             // a: mixer channel, b: TrackMacros::Macro (colour, dirt, motion, space; 4 = the strip's
+                          // chopper, on above 0.5; 5..7 its bass / mid / high kill; 8, 9 a throw into the reverb /
+                          // echo on a rise: Mixer::setMacro), value 0..1
     InstallTrackSample,   // a: track << 16, sample: owned reference (nullptr = none): the sampled source's sound
     SetTrackSampleParam,  // a: SampleInstrument::Param | track << 16, value in that parameter's unit
     SetPadStrip,          // a: pad 0..15, value > 0.5: the pad plays through its own mixer strip (its effects)
@@ -112,6 +116,49 @@ enum class CommandType : uint8_t {
                           // through it untouched (« Joue dans »). Follows SetStaging: the waiting scene's, switched at the swap
     SetAutomationHold,    // a: Automation::pack(kind, channel, slot, param) of a setting, value 1: a finger holds it (touch
                           // take-over: no lane writes it until let go), 0: let go (lanes drive it again from the next step)
+    // Live grid (one slot per track, see Slot below):
+    ArmLaunch,            // a: mask of slots (1 << slot), b: quantum in steps (>= 1 bar), value: scene tag >= 0 (its
+                          // content was staged with SetStaging before) or -1 = stop. On the first transport step that is a
+                          // multiple of b, before anything of that step sounds, each slot takes over its staged part (or is
+                          // emptied: stop) and counts from there. The whole mask = a row: also master/bus curves and effects,
+                          // the scene start and sceneSwaps(). The last command for a slot wins; ArmSceneSwap cancels.
+    CancelLaunch,         // a: mask of slots whose armed launch is dropped
+    SetSlotOffset,        // a: slot, b: steps the slot's content has already played when it takes over. Follows
+                          // SetStaging: while staging, used by the next launch or scene swap of that slot (then back to
+                          // 0); else by the transport's next start (SetTransport), never by a swap already staged
+    SetBusReturn,         // a: send bus (0 reverb, 1 echo), value: its return 0..2 (1 = as mixed): the live grid's sliders
+    MarkSong,             // a: quantum in steps (>= 1 bar), value: a song step. On the next transport step that is a multiple of
+                          // a, the song position becomes `value` there (song curves and song clips follow): the start of a
+                          // recorded performance (songMarkStep() tells the step). a <= 0: cancel a mark not yet made
+    SetAutomationSongRun, // a: lane, b: first point | count << 16, value 0..1: that many song points at once (a curve
+                          // sent as runs of equal values: a whole take fits in the command queue)
+    SetRemixOn,           // value 1: the remix plays, 0: silent (keeping its place). Follows SetStaging: a song part's,
+                          // taken at the scene swap (a swap without one plays it); else at once
+    SetAutomationSongRamp,// a: lane | end << 8 (end value 0..65535 = 0..1), b: first point | count << 16, value: the first
+                          // point's value: `count` points on a straight line from `value` toward the end value (the next
+                          // point's): a slide of a song curve in one command
+    SetAutomationSongFlat,// a: lane, b: first point | count << 16, value 1: the curve holds over those points instead
+                          // of sliding toward the next one (the point after is a jump: a take's Drop, a let-go);
+                          // 0: slides again. SetAutomationMode clears them (sent first with each curve)
+};
+
+// The live grid's slots: one per track, each playing its own scene's part from its own start.
+enum Slot : int {
+    kSlotDrums = 0,
+    kSlotAcid = 1,
+    kSlotInst = 2,    // + instrument track 0..kTracks-1
+    kSlotAudio = 10,  // + audio track 0..3
+    kSlotRemix = 14,
+    kSlots = 15,
+};
+constexpr int32_t kAllSlots = (1 << kSlots) - 1;
+
+// A launch that happened (audio thread -> UI): the slot, its new tag (-1: stopped) and the
+// transport step it took over on.
+struct LaunchEvent {
+    int16_t slot = 0;
+    int16_t tag = -1;
+    int32_t step = 0;
 };
 
 // Instrument tracks: the synth commands (SynthNoteOn/Off, SynthParam, SetSynthNote, SetSynthNoteCount,
@@ -129,12 +176,17 @@ inline int audioChannel(int track) { return 12 + track; }
 
 // Step automation of mixer settings, played on the audio thread at each sequencer step.
 struct Automation {
-    // Acid: a knob of the 303 (param: AcidTrack::Param), taking effect on the step's frame.
-    enum Kind { Volume = 0, Pan = 1, Send = 2, InsertParam = 3, BusParam = 4, Acid = 5 };
-    static constexpr int kLanes = 8;
+    // Acid: a knob of the 303 (param: AcidTrack::Param), taking effect on the step's frame. Macro: a strip's
+    // macro (param 0..3), its chopper (4), its kills (5..7) or throws (8, 9) (Mixer::setMacro). Live: the
+    // master's PerformanceFx (PerformanceFx::Param), except 6 and 7: the reverb and echo returns (0.5 = as mixed).
+    enum Kind { Volume = 0, Pan = 1, Send = 2, InsertParam = 3, BusParam = 4, Acid = 5, Macro = 6, Live = 7 };
+    static constexpr int kLanes = 16;
     static constexpr int kSteps = 64;
     static constexpr int kSongBars = 256;
+    static constexpr int kSongPoints = 1024;  // a point per beat: 256 bars of 4/4
     enum Mode { Loop = 0, PerScene = 1, Song = 2 };
+    static constexpr int kPerBeat = 16;  // SetAutomationMode flags
+    static constexpr int kHeld = 32;
     static int32_t pack(int kind, int ch, int slot, int param) { return (kind << 16) | (ch << 12) | (slot << 8) | param; }
     struct Lane {
         int32_t target = -1;
@@ -142,13 +194,20 @@ struct Automation {
         std::array<float, kSteps> values{};
         std::array<float, kSteps> staged{};  // per-scene lanes: the waiting scene's values
         bool hasStaged = false;
-        std::array<float, kSongBars> song{};  // song lanes: a value per bar, linear in between
-        int songBars = 0;
+        std::array<float, kSongPoints> song{};  // song lanes: a value per bar (or beat), linear in between
+        int songPoints = 0;
+        bool perBeat = false;  // a point per beat instead of per bar
+        bool held = false;     // each point holds until the next (on/off controls)
+        std::array<uint8_t, kSongPoints> flat{};  // 1: this point holds (the next one is a jump)
     };
-    Lane lanes[kLanes];
+    // On the heap (about 70 kB), allocated once with the engine.
+    std::unique_ptr<std::array<Lane, kLanes>> laneBank = std::make_unique<std::array<Lane, kLanes>>();
+    std::array<Lane, kLanes>& lanes = *laneBank;
     // Settings a finger holds (packed targets, -1 = free slot): lanes leave them alone meanwhile,
     // so a knob turned during the song is not pulled back by its curve. Audio thread only.
-    static constexpr int kHolds = 8;
+    // Room for every lane (16) and every control of the Live page at once (filter, held effects,
+    // 15 track choppers, the 303's six), as a take holds what it moved until its end.
+    static constexpr int kHolds = 32;
     std::array<int32_t, kHolds> held{};
     Automation() {
         for (auto& l : lanes) l.values.fill(-1.0f);
@@ -265,7 +324,27 @@ public:
     // Steps since the song (re)started, as song automation reads it; -1 before the first step and
     // while a scene plays on its own, outside the song.
     int songStep() const { return songStep_.load(std::memory_order_relaxed); }
+    // The transport step a MarkSong took effect on (-1: none yet since play).
+    int songMarkStep() const { return songMarkStep_.load(std::memory_order_relaxed); }
+    // Where the transport is, in sixteenths since play with the fraction (a gesture's place in a
+    // recorded performance); -1 when stopped or counting in. Updated once per block.
+    double transportPosition() const { return transportPosition_.load(std::memory_order_relaxed); }
     bool transportRunning() const { return sequencer_.running(); }
+    // Transport steps since play (the live grid's clock, the quantum counts from it), -1 when
+    // stopped or counting in.
+    int transportStep() const { return transportStep_.load(std::memory_order_relaxed); }
+    // Per slot: the tag playing (scene >= 0, -1 stopped, -2 the row's scene), the tag waiting
+    // (-3 none, -1 stop, >= 0 a scene) and the transport step it started on.
+    static constexpr int kNoLaunch = -3;
+    static constexpr int kRowTag = -2;
+    // The largest song step or slot offset a command may give (2^20 sixteenths: hours of song).
+    static constexpr int kMaxSongStep = 1 << 20;
+    int slotTag(int slot) const { return slotTag_[static_cast<size_t>(slot)].load(std::memory_order_relaxed); }
+    int slotPending(int slot) const { return slotPending_[static_cast<size_t>(slot)].load(std::memory_order_relaxed); }
+    int slotStart(int slot) const { return slotStart_[static_cast<size_t>(slot)].load(std::memory_order_relaxed); }
+    // Consumer side of the launch events (one thread). False when none is waiting.
+    bool popLaunchEvent(LaunchEvent& e) { return launchEvents_.pop(e); }
+    static constexpr int kLaunchEvents = 256;
     // Increments every time a lane is triggered (pad lights, tests).
     uint32_t laneTriggerCount(int lane) const { return laneTriggers_[lane].load(std::memory_order_relaxed); }
     // Number of metronome clicks triggered since startup (tests).
@@ -337,6 +416,7 @@ private:
         int acidLength = 16;
         // Per insert slot: 1 plays, 0 passed by in the waiting scene, -1 unchanged.
         std::array<int8_t, Mixer::kChannels * Mixer::kInserts> insertOn = unchangedInserts();
+        bool remixOn = true;  // SetRemixOn while staging: false when the waiting song part mutes the remix
     };
     static std::array<int8_t, Mixer::kChannels * Mixer::kInserts> unchangedInserts() {
         std::array<int8_t, Mixer::kChannels * Mixer::kInserts> a{};
@@ -357,7 +437,38 @@ private:
     void stopTransport();
     std::atomic<int> songStep_{-1};
     std::atomic<uint32_t> sceneSwaps_{0};
+    // MarkSong: armed on a quantum (0: none), the song step it starts.
+    int markQuantum_ = 0;
+    int markSongStep_ = 0;
+    std::atomic<int> songMarkStep_{-1};
+    std::atomic<double> transportPosition_{-1.0};
+    int lastTransport_ = -1;  // transport step of the last step played
     void swapScene(int step, int offset);
+
+    // --- Live grid ---
+    struct SlotPlay {
+        int start = 0;           // transport step its content counts from
+        int pending = kNoLaunch; // tag armed (kNoLaunch: none, -1: stop)
+        int quantum = 16;        // steps: it fires on a multiple of this
+        int stagedOffset = 0;    // SetSlotOffset while staging: steps already played when its next launch or swap takes over
+        int transportOffset = 0; // SetSlotOffset otherwise: the same for the transport's next start (SetTransport)
+        int tag = kRowTag;
+    };
+    std::array<SlotPlay, kSlots> slots_{};
+    bool anyPending_ = false;
+    std::array<std::atomic<int>, kSlots> slotTag_{}, slotPending_{}, slotStart_{};
+    std::atomic<int> transportStep_{-1};
+    SpscQueue<LaunchEvent, kLaunchEvents> launchEvents_;
+    void resetSlots(int start);
+    void publishSlot(int k);
+    void cancelLaunches(int32_t mask, bool dropStaged);
+    void launchSlots(int step, int offset);
+    // Slot k takes over its part of the staging ([empty]: emptied instead, a stop).
+    void swapSlot(int k, int step, int offset, bool empty);
+    void emptySlot(int k);
+    static int slotOfChannel(int ch);
+    static int slotOfTarget(int32_t target);
+    int localOf(int k, int step) const { return step - slots_[static_cast<size_t>(k)].start; }
     Mixer mixer_;
     std::array<float, kMaxBlock> stemsL_{};
     std::array<float, kMaxBlock> stemsR_{};

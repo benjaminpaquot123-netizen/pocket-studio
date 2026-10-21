@@ -79,7 +79,9 @@ object NewTracks {
         val written = if (write) melody(project, style) else null
         var notes = written?.first ?: track.notes
         if (kind == TrackKind.Arp) notes = notes.copy(performance = notes.performance.copy(arp = ArpMode.UpDown, arpRate = style?.melody?.arpRate ?: NoteClip.TICKS_PER_STEP))
-        val glides = kind == TrackKind.Bass && style?.melody?.bassGlide == true
+        // The style's line slides where it says '/' (its bass, the riff a Melody track writes).
+        val glides = (kind == TrackKind.Bass && style?.melody?.bassGlide == true) ||
+            (kind == TrackKind.Melody && write && style?.melody?.leadGlide == true)
         val made = track.copy(
             notes = notes,
             synth = if (glides) sound.synth.with(SynthPatch.GLIDE, StarterWizard.BASS_GLIDE) else sound.synth,

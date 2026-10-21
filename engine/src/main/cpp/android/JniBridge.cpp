@@ -452,6 +452,49 @@ JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_sceneSwaps(JNIE
     return static_cast<jint>(host().engine().sceneSwaps());
 }
 
+// --- Live grid ---
+
+JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_transportStep(JNIEnv*, jobject) {
+    return static_cast<jint>(host().engine().transportStep());
+}
+
+JNIEXPORT jdouble JNICALL Java_com_pocketstudio_engine_NativeEngine_transportPosition(JNIEnv*, jobject) {
+    return host().engine().transportPosition();
+}
+
+JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_songMarkStep(JNIEnv*, jobject) {
+    return static_cast<jint>(host().engine().songMarkStep());
+}
+
+// Per slot: tag playing, tag waiting, start step (3 * Engine::kSlots values).
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_slotStates(JNIEnv* env, jobject, jintArray out) {
+    jint values[ps::kSlots * 3];
+    auto& engine = host().engine();
+    for (int k = 0; k < ps::kSlots; ++k) {
+        values[k * 3] = engine.slotTag(k);
+        values[k * 3 + 1] = engine.slotPending(k);
+        values[k * 3 + 2] = engine.slotStart(k);
+    }
+    const jsize n = std::min<jsize>(env->GetArrayLength(out), ps::kSlots * 3);
+    env->SetIntArrayRegion(out, 0, n, values);
+}
+
+// The launches that happened since the last call (slot, tag, step each), at most out.length / 3.
+JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_drainLaunchEvents(JNIEnv* env, jobject, jintArray out) {
+    const jsize room = env->GetArrayLength(out) / 3;
+    jint values[ps::Engine::kLaunchEvents * 3];
+    jsize n = 0;
+    ps::LaunchEvent e;
+    while (n < room && n < ps::Engine::kLaunchEvents && host().engine().popLaunchEvent(e)) {
+        values[n * 3] = e.slot;
+        values[n * 3 + 1] = e.tag;
+        values[n * 3 + 2] = e.step;
+        ++n;
+    }
+    if (n > 0) env->SetIntArrayRegion(out, 0, n * 3, values);
+    return n;
+}
+
 JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_stemPosition(JNIEnv*, jobject) {
     return static_cast<jlong>(host().engine().stemPosition());
 }

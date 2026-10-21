@@ -1,56 +1,86 @@
 {
-  "id": "phase26-acide",
-  "milestone": "Phase 26 : l'acide sous les doigts",
+  "id": "phase27-live",
+  "milestone": "Phase 27 : mode Live et styles revus",
   "items": [
     {
-      "id": "wiz_acid",
-      "title": "Écrire l'acide dans l'assistant",
-      "hint": "Nouveau morceau pas à pas › Acid house › étape « Ligne acide » : touche un pas (note suivante), appui long (accent, glisse). « Génère-moi une ligne », puis « Celle du style »."
+      "id": "live_open",
+      "title": "Ouvrir le Live",
+      "hint": "Morceau › « Live : jouer les sections piste par piste » en haut : la grille s'ouvre en plein écran, une colonne par piste, une ligne par scène."
     },
     {
-      "id": "wiz_acid_sound",
-      "title": "Son de la 303 dans l'assistant",
-      "hint": "Même étape : lance « Avec le rythme », change Classique → Saturée → Criarde, tourne Coupure et Résonance : la boucle continue et suit tes réglages."
+      "id": "live_launch",
+      "title": "Lancer à la mesure",
+      "hint": "▶ lancé, touche une case d'une autre scène : elle clignote puis part au début de la mesure suivante. Touche « Lancer à 1 mesure » pour passer à 2 mesures."
     },
     {
-      "id": "wiz_acid_song",
-      "title": "Ta ligne dans le morceau",
-      "hint": "Crée le morceau : l'onglet Acide joue exactement la ligne et le son choisis dans l'assistant."
+      "id": "live_stop",
+      "title": "Arrêter une piste",
+      "hint": "■ sous une colonne : la piste s'arrête à la mesure suivante ; M coupe le son tout de suite. « ■ Tout » arrête tout."
     },
     {
-      "id": "wiz_kick_loop",
-      "title": "Changer de kick sans arrêter",
-      "hint": "Étape Kick : « Avec le rythme », puis choisis un autre kick : la boucle continue avec le nouveau."
+      "id": "live_fx",
+      "title": "Effets en direct",
+      "hint": "Live › Effets › Pad : promène le doigt (filtre DJ). Change de mode : Acide, Espace."
     },
     {
-      "id": "add_track",
-      "title": "« + Piste » demande quoi ajouter",
-      "hint": "Morceau sans mélodie › Synthé › « + Piste » : choisis Mélodie, puis « Écrire une mélodie pour moi » : 4 mesures dans la bonne tonalité ; Annuler l'enlève."
+      "id": "live_rolls",
+      "title": "Pads Répéter",
+      "hint": "Effets › Répéter : maintiens 1/8 puis glisse vers 1/16 et 1/32 : la répétition tombe pile sur le temps."
     },
     {
-      "id": "acidcore",
-      "title": "Style Acidcore",
-      "hint": "Assistant › Acidcore : 303 seule au début, kick saturé, drops et breaks, ~3 min 30. Écoute si ça ressemble à Confusion A."
+      "id": "live_holds",
+      "title": "Effets tenus et cadenas",
+      "hint": "Effets › Tenus : Freinage, À l'envers, Demi-tempo, Sans graves. « Verrouiller » puis un effet : il reste allumé ; « Tout remettre » éteint tout."
     },
     {
-      "id": "acid_moves",
-      "title": "Filtre qui bouge",
-      "hint": "Morceau Acid techno ou Acid house : le filtre de la 303 s'ouvre dans les drops et balaye dans le break."
+      "id": "live_build",
+      "title": "Montée et Drop",
+      "hint": "Effets › Montée : monte le curseur sur 4 mesures, puis « Drop » : tout revient pile au début de la mesure suivante."
     },
     {
-      "id": "acid_rec",
-      "title": "Enregistrer les potards de la 303",
-      "hint": "Acide › carte du son › « Enregistrer », lecture, tourne Coupure : au tour suivant, le potard bouge tout seul."
+      "id": "live_dub",
+      "title": "Dub",
+      "hint": "Effets › Dub : « Réverbe figée » et un lancer dans l'écho sur un seul temps."
     },
     {
-      "id": "fx_scenes",
-      "title": "Effet dans certaines scènes",
-      "hint": "Ajoute un effet sur une piste, « Joue dans » : coche seulement la scène B. Lance A puis B : l'effet n'arrive qu'en B, sans clic."
+      "id": "fx_wobble",
+      "title": "Wobble",
+      "hint": "Sur une basse : boîte à effets › ambiance « Wob dubstep » (garde le doigt pour écouter avant). Étoile = favori."
     },
     {
-      "id": "acid_full",
-      "title": "Acide à 100 %",
-      "hint": "Acide › Densité à 100 % › Générer : tous les pas jouent une note."
+      "id": "live_303",
+      "title": "Potards 303 au doigt",
+      "hint": "Onglet 303 : promène le doigt sur le grand pad (Coupure × Résonance), monte Accent et Saturation. Deux touchers : retour au son enregistré."
+    },
+    {
+      "id": "live_rec",
+      "title": "Enregistrer la performance",
+      "hint": "● puis joue 8 mesures (lancements + effets), ■ Fin : « Morceau écrit ». Écouter : le morceau rejoue ta prise. Annuler : tout revient."
+    },
+    {
+      "id": "live_song",
+      "title": "Prise dans Morceau",
+      "hint": "Après une prise : la ligne du temps montre la lettre de scène par piste quand elles diffèrent ; appui long sur une case pour changer sa scène."
+    },
+    {
+      "id": "style_drop",
+      "title": "Vrai drop",
+      "hint": "Assistant › Drum and bass ou Dubstep : écoute la Montée (plus de kick, caisse claire qui accélère) puis le Drop (kick et basse ensemble)."
+    },
+    {
+      "id": "style_riser",
+      "title": "Montée de bruit",
+      "hint": "Assistant › Techno : avant chaque Drop, un souffle monte et éclate au Drop. Il ne doit pas souffler quand une scène tourne en boucle."
+    },
+    {
+      "id": "style_rumble",
+      "title": "Grondement",
+      "hint": "Assistant › Hard techno : le grondement sous le kick (basse coupée). Dis si ça sature trop sur téléphone."
+    },
+    {
+      "id": "style_techhouse",
+      "title": "Basse tech house",
+      "hint": "Assistant › Tech house : la basse s'entend enfin sur le haut-parleur du téléphone et glisse."
     }
   ]
 }

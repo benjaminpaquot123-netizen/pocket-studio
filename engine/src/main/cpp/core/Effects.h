@@ -147,58 +147,8 @@ private:
     int pending_ = -1;
 };
 
-// Live performance effects on the master, played from the XY pad and hold buttons:
-// DJ filter (bipolar low/high-pass), beat repeat (loops the last 1/4..1/32 note, tempo-synced),
-// tape stop (slows to a halt) and a sixteenth-note chopper. Stereo, in place.
-class PerformanceFx {
-public:
-    enum Param { Filter = 0, Resonance = 1, Repeat = 2, RepeatDivision = 3, TapeStop = 4, Chop = 5, kParams = 6 };
-    static constexpr float kBufferSeconds = 4.0f;
-
-    void prepare(float rate);
-    void setParam(int p, float v);
-    void setStepFrames(double frames) { stepFrames_ = frames > 0 ? frames : stepFrames_; }
-    // A sequencer step starts `offset` frames into the next process() (keeps the chopper on the grid).
-    void onStep(int offset) { stepOffset_ = offset; }
-    void process(float* l, float* r, int n);
-    bool active() const { return filterOn_ || filterMix_ > 0.0f || repeatOn_ || stopOn_ || stopping_ || chopOn_ || repeating_; }
-    // After a NaN reached the master: the filter and the recorded seconds start again from silence
-    // (no allocation; clearing the 4 s of memory is a one-off).
-    void recover();
-    // Cutoff and resonance from filter_ and resonance_ (no allocation).
-    void applyFilter();
-
-private:
-    float readRing(const std::vector<float>& buf, double pos) const;
-    float rate_ = 48000;
-    std::vector<float> ringL_, ringR_;
-    size_t write_ = 0;
-    double stepFrames_ = 6000.0;
-    // Filter: 0.5 = off, below = low-pass sweeping down, above = high-pass sweeping up.
-    float filter_ = 0.5f, resonance_ = 0.3f;
-    bool filterOn_ = false;
-    // The filter always runs (its memory follows the music); what is heard crossfades between the
-    // dry and the filtered sound in about 10 ms, so pressing and letting go never click.
-    float filterMix_ = 0.0f;
-    bool filterLow_ = true;  // the side being heard (it changes only while faded out)
-    daisysp::Svf svfL_, svfR_;
-    float filterGain_ = 1.0f;  // resonance compensation
-    // Repeat.
-    bool repeatOn_ = false, repeating_ = false;
-    float division_ = 0.5f;
-    double loopStart_ = 0, loopLen_ = 0, loopPos_ = 0;
-    float repeatMix_ = 0.0f;
-    // Tape stop.
-    bool stopOn_ = false, stopping_ = false;
-    double speed_ = 1.0, readPos_ = 0;
-    float stopMix_ = 0.0f;
-    // Chopper.
-    bool chopOn_ = false;
-    double chopPhase_ = 0;
-    float chopGain_ = 1.0f;
-    int stepOffset_ = -1;
-    float fade_ = 0.002f;  // per-sample crossfade speed (about 10 ms)
-};
+// The live performance effects of the master (PerformanceFx) are at the end of this file: they
+// use the delay and the band split declared below.
 
 // One insert slot: any of the insert effects, chosen by type. All are kept prepared so a
 // type change on the audio thread is just a reset.
@@ -428,6 +378,8 @@ public:
     void reset() { gain_ = 1.0f; sinceBeat_ = 0; pending_ = -1; }
     // A beat lands `offset` frames into the next process() call: the pattern starts again there.
     void beat(int offset) { pending_ = offset; }
+    // Starting to play [frames] after the last beat (it counts only while it plays): in phase at once.
+    void syncTo(int64_t frames) { sinceBeat_ = std::max<int64_t>(0, frames); pending_ = -1; }
     // The song's tempo, from the sequencer every block: a beat is four sixteenths.
     void setStepFrames(double framesPerSixteenth) {
         if (framesPerSixteenth > 0.0) beatFrames_ = std::max<int64_t>(1, std::llround(4.0 * framesPerSixteenth));
@@ -554,6 +506,36 @@ class InsertReverb;
 class TapeStop;
 class LongFxPool;
 
+// Wobble (phase 27): a resonant low-pass whose cutoff an LFO moves in time with the song: the
+// dubstep "wob", the drum & bass reese's movement. The LFO's phase follows the transport (each
+// beat puts it back where the song is), so it plays the same live and in an export.
+// Params: rate (1/1, 1/2, 1/4, 1/4T, 1/8, 1/8T, 1/16, 1/16T, 1/32), depth (how far up the
+// filter opens from 80 Hz: up to 8 octaves), resonance, shape (sine, triangle, saw down, square).
+class Wobble {
+public:
+    static constexpr int kRates = 9, kShapes = 4;
+    void prepare(float rate);
+    void setParam(int p, float v);
+    void reset();
+    void setStepFrames(double framesPerSixteenth) { if (framesPerSixteenth > 0.0) stepFrames_ = framesPerSixteenth; }
+    // A beat lands `offset` frames into the next process(); `step`: the transport step it is (-1: unknown).
+    void beat(int offset, int step) { pending_ = offset; pendingStep_ = step; }
+    void process(float* l, float* r, int n);
+    static double stepsOf(float v);  // sixteenths per LFO cycle
+    static float shape(int shape, double phase);  // 0..1
+    double phase() const { return phase_; }  // tests
+    float cutoff() const { return cutoffNow_; }  // tests
+
+private:
+    float rate_ = 48000;
+    std::array<float, 4> p_{0.45f, 0.7f, 0.5f, 0.0f};
+    daisysp::Svf left_, right_;
+    double phase_ = 0.0, stepFrames_ = 6000.0;
+    int pending_ = -1, pendingStep_ = -1;
+    float cutoffNow_ = 80.0f;
+    int countdown_ = 0;
+};
+
 class InsertSlot {
 public:
     enum Type {
@@ -561,7 +543,7 @@ public:
         FlangerFx = 7, PhaserFx = 8, GateFx = 9, TremoloFx = 10, WidenerFx = 11, Crusher = 12, ParamEqFx = 13,
         RobotFx = 14, WahFx = 15, VinylFx = 16, RadioFx = 17, ChopperFx = 18,
         DistortionFx = 19, EchoFx = 20, PingPongFx = 21, ReverbFx = 22, AutoPanFx = 23, OttFx = 24,
-        FreqShiftFx = 25, TapeStopFx = 26, kTypes = 27
+        FreqShiftFx = 25, TapeStopFx = 26, WobbleFx = 27, kTypes = 28
     };
     // Whether `type` needs a unit of the pool (seconds of memory).
     static bool isLong(int type) { return type == EchoFx || type == PingPongFx || type == ReverbFx || type == TapeStopFx; }
@@ -577,11 +559,14 @@ public:
     const Ducker& ducker() const { return pump_; }          // tests
     // Sidechain events (only the Pump type listens). `beat`: the step is a quarter note.
     void setStepFrames(double framesPerSixteenth);
-    void sidechain(int offset, bool kick, bool beat) {
+    // `step`: the transport step it is (-1: unknown), for the wobble's phase.
+    void sidechain(int offset, bool kick, bool beat, int step = -1) {
         if (type_ == Pump && (pump_.everyBeat() ? beat : kick)) pump_.trigger(offset);
         if (type_ == ChopperFx && beat) chopper_.beat(offset);
         if (type_ == AutoPanFx && beat) autoPan_.beat(offset);
+        if (type_ == WobbleFx && beat) wobble_.beat(offset, step);
     }
+    const Wobble& wobble() const { return wobble_; }  // tests
     // The pool the long effects borrow from (none: those types let the sound through untouched).
     void attachPool(LongFxPool* pool) { pool_ = pool; }
     // A long type still waiting for a free unit (they were all taken): try again (audio thread, no allocation).
@@ -623,6 +608,7 @@ private:
     Vinyl vinyl_;
     Radio radio_;
     Chopper chopper_;
+    Wobble wobble_;
 };
 
 // Freeverb (Jezar at Dreampoint, public domain): 8 parallel combs + 4 allpasses per side.
@@ -632,6 +618,11 @@ public:
     void prepare(float rate);
     void setParam(int p, float v);
     void reset();
+    // Freeze (Freeverb's own): the input fades out and the tank rings on for ever (feedback 1, no
+    // damping), gliding in and out over about 10 ms. Off, the tail dies away as usual.
+    void setFreeze(bool on) { freeze_ = on; }
+    bool frozen() const { return freeze_; }
+    float freezeMix() const { return freezeMix_; }  // tests
     // Adds the reverb of (inL, inR) into (outL, outR).
     void process(const float* inL, const float* inR, float* outL, float* outR, int n);
 
@@ -653,6 +644,8 @@ private:
     size_t preIdx_ = 0, preLen_ = 1;
     float feedback_ = 0.84f, damp1_ = 0.2f, damp2_ = 0.8f, wet1_ = 1.0f, wet2_ = 0.0f;
     float rate_ = 48000;
+    bool freeze_ = false;
+    float freezeMix_ = 0.0f, freezeStep_ = 1.0f / 480.0f;
 };
 
 // Tempo-synced stereo delay with ping-pong, feedback tone and smooth time changes.
@@ -786,6 +779,206 @@ public:
     UnitPool<InsertEcho, kEchoes> echoes;
     UnitPool<InsertReverb, kReverbs> reverbs;
     UnitPool<TapeStop, kTapeStops> tapeStops;
+};
+
+// DJ isolator (« kills »): three bands split at 250 Hz and 2.5 kHz (Linkwitz-Riley, 24 dB per
+// octave), each of which can be cut. At rest it costs nothing and the sound is untouched; a kill
+// crossfades the split in (about 10 ms: its phase is not quite the dry sound's), each band's gain
+// glides in about 10 ms, and with no kill left the split crossfades back out.
+class Isolator {
+public:
+    static constexpr int kBands = 3;
+    void prepare(float rate);
+    void reset();
+    void setKill(int band, bool on) {
+        if (band >= 0 && band < kBands) kill_[static_cast<size_t>(band)] = on;
+    }
+    bool kill(int band) const { return band >= 0 && band < kBands && kill_[static_cast<size_t>(band)]; }
+    bool active() const { return engaged() || mix_ > 0.0f; }
+    void process(float* l, float* r, int n);
+    float bandGain(int band) const { return gain_[static_cast<size_t>(band)]; }  // tests
+
+private:
+    bool engaged() const { return kill_[0] || kill_[1] || kill_[2]; }
+    struct Split {
+        Biquad lp1a, lp1b, hp1a, hp1b, lp2a, lp2b, hp2a, hp2b;
+    };
+    float rate_ = 48000;
+    Split left_, right_;
+    std::array<bool, kBands> kill_{};
+    std::array<float, kBands> gain_{1.0f, 1.0f, 1.0f};
+    float mix_ = 0.0f, step_ = 1.0f / 480.0f;
+};
+
+// Live performance effects on the master, played from the Live page (and from the song curves a
+// recorded performance wrote): DJ filter, beat repeat (grid-locked rolls 1/4..1/32 and triplets),
+// tape stop with a restart, backspin, reverse, half time, chopper, echo out, isolator kills, a
+// noise riser / downlifter and the one-knob « Montée » (build-up). Stereo, in place.
+//
+// Timing (all in the audio thread, from the sequencer's steps): a held effect starts on the next
+// line of the grid (Grid: off, 1/16 or beat; with the transport stopped, at once); a repeat loops
+// a slice that starts on its division's line (the music played since that line goes on to the
+// next one, then repeats); a riser starts on the next bar line and ends on a bar line; « Drop »
+// resets everything on the next bar line. What a song curve switches on a beat therefore sounds
+// the same as the gesture it was recorded from.
+//
+// The reverb freeze and the throws are the mixer's (they act on its send buses); the mixer reads
+// gridSteps() and buildSend() from here.
+class PerformanceFx {
+public:
+    enum Param {
+        Filter = 0, Resonance = 1, Repeat = 2, RepeatDivision = 3, TapeStop = 4, Chop = 5,
+        // 6 and 7 are the reverb and echo returns (the mixer's: the same numbers as Automation::Live).
+        Backspin = 8, Reverse = 9, HalfTime = 10, EchoOut = 11, KillLow = 12, KillMid = 13, KillHigh = 14,
+        ReverbFreeze = 15, ThrowReverb = 16, ThrowEcho = 17,
+        // Settings (the project's, sent with it: the export hears the same).
+        BrakeLength = 18, BrakeRestart = 19, BackspinLength = 20, ChopDivision = 21, HalfTimeLength = 22,
+        ReleaseMode = 23, Grid = 24, RiserLength = 25, ReverseLength = 26,
+        // Riser and Downlifter start on a rise of their value (a press); BuildUp 0..1; Drop: everything
+        // back at rest on the next bar line; ResetAll: at once (« Tout remettre »).
+        Riser = 27, Downlifter = 28, BuildUp = 29, Drop = 30, ResetAll = 31,
+        kParams = 32
+    };
+    static constexpr int kReverbReturn = 6, kEchoReturn = 7;
+    // How a held repeat, chopper, reverse or half time ends when let go (ReleaseMode * 4).
+    enum Release { ReleaseCut = 0, ReleaseEcho = 1, ReleaseBrake = 2, ReleaseBackspin = 3 };
+    static constexpr float kBufferSeconds = 4.0f;  // the input's last seconds (the heads read them)
+    static constexpr float kLoopSeconds = 2.0f;    // the longest repeat slice (a beat at 30 BPM)
+
+    PerformanceFx();
+    void prepare(float rate);  // allocates (the ring, the slice, the echo)
+    void setParam(int p, float v);
+    float setting(int p) const { return p >= 0 && p < kParams ? settings_[static_cast<size_t>(p)] : 0.0f; }  // tests
+    void setStepFrames(double frames) {
+        if (frames > 0) stepFrames_ = frames;
+        echo_.setStepFrames(stepFrames_);
+    }
+    // A transport runs (steps arrive): held effects wait for the grid. Stopped: they start at once,
+    // and a Drop still waiting for its bar line happens now (nothing stays on while stopped).
+    void setClock(bool running);
+    // A sequencer step starts `offset` frames into the next process(): transport step `step` (-1:
+    // the one after the last) of a bar of `stepsPerBar` steps.
+    void onStep(int offset, int step, int stepsPerBar);
+    void onStep(int offset) { onStep(offset, -1, stepsPerBar_); }
+    void process(float* l, float* r, int n);
+    bool active() const;
+    // After a NaN reached the master: everything starts again from silence (no allocation; clearing
+    // the seconds of memory is a one-off).
+    void recover();
+    // Cutoff and resonance from filter_ and resonance_ (no allocation).
+    void applyFilter();
+
+    // The grid held effects start on, in steps (0: at once).
+    int gridSteps() const { return gridSteps_; }
+    // How much of the whole mix the build-up sends into send bus `bus` (0 reverb, 1 echo).
+    // (Its target: the mixer's send glides on its own, and only moves on a chunk's first frame.)
+    float buildSend(int bus) const { return buildTarget_ * (bus == 0 ? 0.55f : 0.4f); }
+    // Sixteenths of a repeat or chopper division value (1/4, 1/8T, 1/8, 1/16, 1/16T, 1/32).
+    static double divisionSteps(float v);
+    // Tests.
+    bool repeating() const { return repeating_; }
+    int loopLength() const { return loopLen_; }
+    bool riserRunning() const { return riserRunning_; }
+    float buildUp() const { return build_; }
+    bool killOn(int band) const { return isolator_.kill(band); }
+    float dryGain() const { return dry_; }
+
+private:
+    struct Hold {
+        bool want = false;  // asked (a finger, a song curve)
+        bool on = false;    // playing (started on a grid line)
+        bool user = false;  // asked by the performer while it played (its release may end with a release effect)
+    };
+    float readRing(const std::vector<float>& buf, double frame) const;  // absolute frame, interpolated
+    bool due(int grid) const { return !clock_ || grid <= 0 || (stepHere_ && step_ % grid == 0); }
+    bool barLine() const { return stepHere_ && step_ % stepsPerBar_ == 0; }
+    double sinceLine(double steps) const;
+    double beatsToFrames(double beats, double maxSeconds) const;
+    void onLine();
+    void updateHolds();
+    void startRepeat(double steps);
+    void startBrake();
+    void startSpin();
+    void startEcho();
+    void startRelease();
+    void endRelease();
+    void interruptRelease();
+    void startRiser(bool down);
+    void reset(bool hard);
+
+    float rate_ = 48000;
+    float fade_ = 0.002f;  // per-sample crossfade speed (about 10 ms)
+    // The input's last seconds (absolute frames modulo the size); frame_: the frame just written.
+    std::vector<float> ringL_, ringR_;
+    int64_t frame_ = -1;
+    // The clock.
+    bool clock_ = false;
+    double stepFrames_ = 6000.0;
+    int stepsPerBar_ = 16;
+    int stepAt_ = -1, pendingStep_ = -1;
+    int64_t step_ = -1;
+    bool stepHere_ = false;
+    double sinceStep_ = 0, sinceEighth_ = 0, sinceBeat_ = 0, sinceBar_ = 0;
+    int gridSteps_ = 0;
+    std::array<float, kParams> settings_{};
+    // DJ filter: 0.5 = off, below = low-pass sweeping down, above = high-pass sweeping up. It
+    // always runs (its memory follows the music); what is heard crossfades in about 10 ms.
+    float filter_ = 0.5f, resonance_ = 0.3f;
+    bool filterOn_ = false;
+    float filterMix_ = 0.0f;
+    bool filterLow_ = true;  // the side being heard (it changes only while faded out)
+    daisysp::Svf svfL_, svfR_;
+    float filterGain_ = 1.0f;  // resonance compensation
+    // Held effects.
+    Hold repeat_, brake_, spin_, chop_, reverse_, half_, echoOut_;
+    std::array<Hold, Isolator::kBands> kills_{};
+    bool userRepeat_ = false;
+    // Repeat: a slice copied from the ring, then filled live up to its end.
+    std::vector<float> loopL_, loopR_;
+    float division_ = 0.5f;
+    double loopSteps_ = 0.0;
+    int loopLen_ = 0, loopFilled_ = 0, loopPos_ = 0;
+    bool repeating_ = false, loopWrapped_ = false;
+    double pendingSteps_ = 0.0;  // another division asked while repeating: taken at the slice's end
+    float repeatMix_ = 0.0f, fadeIn_ = 1.0f;
+    // Tape heads reading the ring: the brake (with its restart) and the backspin.
+    bool brakeRunning_ = false, brakeAuto_ = false, restarting_ = false, restartPending_ = false;
+    double brakePos_ = 0, brakeT_ = 0, brakeLen_ = 1, restartT_ = 0, restartLen_ = 1, restartFrom_ = 0;
+    float brakeMix_ = 0.0f;
+    bool spinRunning_ = false, spinAuto_ = false;
+    double spinPos_ = 0, spinT_ = 0, spinLen_ = 1;
+    float spinMix_ = 0.0f;
+    // Reverse and half time (they read the ring by the clock), chopper.
+    int64_t reverseStart_ = 0, halfStart_ = 0, chopStart_ = 0;
+    float reverseMix_ = 0.0f, halfMix_ = 0.0f;
+    float chopGain_ = 1.0f;
+    // Echo out: its own echo; the dry sound fades out over a beat while the echo takes it.
+    TempoDelay echo_;
+    bool echoAuto_ = false;
+    float dry_ = 1.0f, send_ = 0.0f;
+    int64_t echoAlive_ = 0;
+    // A release effect playing: the dry sound comes back on this bar line (or after these frames).
+    int64_t returnStep_ = -1;
+    double returnFrames_ = -1.0;
+    Isolator isolator_;
+    // Riser / downlifter: white noise through a sweeping filter.
+    bool riserWant_ = false, downWant_ = false, riserPending_ = false, pendingDown_ = false;
+    bool riserRunning_ = false, riserDown_ = false, riserEnding_ = false;
+    int64_t riserEndStep_ = -1;
+    double riserT_ = 0, riserTotal_ = 1;
+    float riserOut_ = 1.0f;  // the last millisecond's fade at its end
+    daisysp::Svf riserL_, riserR_;
+    uint32_t seedL_ = 1, seedR_ = 2;
+    float riserGain_ = 0.0f;
+    // Build-up (« Montée »): a rising high-pass, noise, sends and faster repeats.
+    float buildTarget_ = 0.0f, build_ = 0.0f, buildCoef_ = 0.001f, buildMix_ = 0.0f;
+    bool buildOn_ = false;
+    // The drop: the build-up (high-pass and noise) fades out in 2 ms on the bar line, no click.
+    float dropFade_ = 0.0f, dropFadeStep_ = 0.01f;
+    daisysp::Svf buildL_, buildR_, buildNoiseL_, buildNoiseR_;
+    uint32_t buildSeedL_ = 3, buildSeedR_ = 4;
+    int buildCount_ = 0, riserCount_ = 0;
+    bool dropWant_ = false, resetWant_ = false, dropPending_ = false;
 };
 
 }  // namespace ps

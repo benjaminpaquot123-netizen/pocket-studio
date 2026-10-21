@@ -112,6 +112,9 @@ void AcidTrack::onStep(int frameOffset, int step, double samplesPerStep) {
     const int index = step % length_;
     const AcidStep& s = steps_[static_cast<size_t>(index)];
     if (!s.gate) {
+        // A note held to slide into this step that has none (the line changed under it: a scene
+        // swap, a live launch or stop): it lets go here instead of droning on.
+        if (sounding_ && releaseCountdown_ < 0 && pending_.offset < 0) releaseCountdown_ = frameOffset + 1;
         previousSlide_ = false;
         return;
     }

@@ -9,6 +9,65 @@ import org.junit.Test
 class AutomationClipsTest {
     private val volume = AutoTarget(AutoTarget.VOLUME, 2)
 
+    /** The curve the engine builds from [commands] (as Engine.cpp applies them). */
+    private fun replay(commands: List<CurveCommand>, size: Int): List<Float> {
+        val out = MutableList(size) { -1f }
+        for (c in commands) when (c) {
+            is CurveCommand.Run -> for (i in c.first until c.first + c.count) out[i] = c.value
+            is CurveCommand.Ramp -> {
+                val to = Math.round(c.to * 65535f) / 65535f  // sixteen bits, as sent
+                for (i in c.first until c.first + c.count) out[i] = c.from + (to - c.from) * (i - c.first) / c.count
+            }
+        }
+        return out
+    }
+
+    @Test
+    fun songCurvesGoToTheEngineInFewCommands() {
+        // A wizard's sweep (a point a bar over 256 bars, 40 points drawn) spread over beats: 1024 points.
+        var sweep = AutomationLane(volume, mode = AutomationLane.SONG)
+        for (b in 0 until 256 step 6) sweep = sweep.withSongPoint(b, (b % 17) / 17f)
+        val curve = sweep.perBeat(4).songCurve(1024)
+        val commands = songCurveCommands(curve)
+        val replayed = replay(commands, curve.size)
+        for (i in curve.indices) assertEquals("point $i", curve[i], replayed[i], 1e-4f)
+        assertTrue("${commands.size} commands", commands.size <= 2 * 43 + 2)
+        // Sixteen such lanes fit in the engine's queue (4096) with room to spare.
+        assertTrue(16 * commands.size < 2048)
+        // A dense take (a new value every beat, held flat): never more commands than points.
+        var take = AutomationLane(volume, mode = AutomationLane.SONG, songPerBeat = true, hold = true)
+        for (b in 0 until 640) take = take.withSongPoint(b, ((b * 37) % 100) / 100f)
+        val dense = take.songCurve(640)
+        val denseCommands = songCurveCommands(dense)
+        assertTrue(denseCommands.size <= dense.size)
+        val back = replay(denseCommands, dense.size)
+        for (i in dense.indices) assertEquals(dense[i], back[i], 1e-4f)
+        assertTrue(songCurveCommands(emptyList()).isEmpty())
+        assertEquals(listOf(CurveCommand.Run(0, 3, 0.5f)), songCurveCommands(listOf(0.5f, 0.5f, 0.5f)))
+    }
+
+    @Test
+    fun theSongCurveIsTheSameInOneWalk() {
+        // The curve as it was computed (for each point, the points drawn around it).
+        fun naive(lane: AutomationLane, points: Int): List<Float> {
+            val drawn = lane.songValues.withIndex().filter { it.value != null }.map { it.index to it.value!! }
+            if (drawn.isEmpty()) return emptyList()
+            return List(points.coerceIn(1, lane.maxSongPoints)) { b ->
+                val after = drawn.firstOrNull { it.first >= b } ?: return@List drawn.last().second
+                val before = drawn.lastOrNull { it.first <= b } ?: return@List after.second
+                if (after.first == before.first || lane.hold) before.second
+                else before.second + (after.second - before.second) * (b - before.first) / (after.first - before.first)
+            }
+        }
+        val random = java.util.Random(7)
+        repeat(50) { n ->
+            var lane = AutomationLane(volume, mode = AutomationLane.SONG, songPerBeat = n % 2 == 0, hold = n % 3 == 0)
+            repeat(random.nextInt(12)) { lane = lane.withSongPoint(random.nextInt(300), random.nextFloat()) }
+            val points = 1 + random.nextInt(400)
+            assertEquals(naive(lane, points), lane.songCurve(points))
+        }
+    }
+
     @Test
     fun aPadsOwnStripIsNeverAutomated() {
         // The engine reads 4 bits of channel: pad 5's send (strip 20) would land on the master's first effect.

@@ -75,6 +75,27 @@ object NativeEngine {
     private const val CMD_CLEAR_INSERTS = 68
     private const val CMD_INSERT_ON = 69
     private const val CMD_AUTOMATION_HOLD = 70
+    private const val CMD_ARM_LAUNCH = 71
+    private const val CMD_CANCEL_LAUNCH = 72
+    private const val CMD_SLOT_OFFSET = 73
+    private const val CMD_BUS_RETURN = 74
+    private const val CMD_MARK_SONG = 75
+    private const val CMD_AUTOMATION_SONG_RUN = 76
+    private const val CMD_REMIX_ON = 77
+    private const val CMD_AUTOMATION_SONG_RAMP = 78
+    private const val CMD_AUTOMATION_SONG_FLAT = 79
+
+    // Live grid slots (Engine.h Slot): one per track.
+    const val SLOT_DRUMS = 0
+    const val SLOT_ACID = 1
+    const val SLOT_INST = 2  // + instrument track 0..7
+    const val SLOT_AUDIO = 10  // + audio track 0..3
+    const val SLOT_REMIX = 14
+    const val SLOTS = 15
+    const val ALL_SLOTS = (1 shl SLOTS) - 1
+    /** [slotStates]: the tag of a slot playing the row's scene (a scene swap), and of no launch waiting. */
+    const val ROW_TAG = -2
+    const val NO_LAUNCH = -3
 
     // Kinds of [setExpression] (InstrumentTrack::Expression).
     const val EXPR_BEND = 0
@@ -297,8 +318,16 @@ object NativeEngine {
             exportPost(target, type, value, a, b)
             return true
         }
-        return nativePost(type, value, a, b)
+        if (nativePost(type, value, a, b)) return true
+        // The queue stayed full (the stream stalled for 100 ms): the command is lost. Callers that
+        // send a lot (a whole project, long curves) check [droppedCommands] and send again.
+        droppedCommands++
+        return false
     }
+
+    /** Commands the live engine could not take since the app started (main thread). */
+    var droppedCommands = 0
+        private set
 
     /** True inside [captureInto]: commands go to an export engine, not the live one. */
     val isCapturing: Boolean get() = captureTarget != 0L
@@ -372,9 +401,32 @@ object NativeEngine {
     /** A song part switches audio track [track] on or off (follows [setStaging]). */
     fun setAudioOn(track: Int, on: Boolean) = post(CMD_AUDIO_ON, if (on) 1f else 0f, track)
 
-    /** Automation lane [lane]: 0 loop, 1 per scene, 2 song ([songBars] values sent with [setAutomationSong]). */
-    fun setAutomationMode(lane: Int, mode: Int, songBars: Int) = post(CMD_AUTOMATION_MODE, songBars.toFloat(), lane, mode)
-    fun setAutomationSong(lane: Int, bar: Int, value: Float) = post(CMD_AUTOMATION_SONG, value, lane, bar)
+    /**
+     * Automation lane [lane]: 0 loop, 1 per scene, 2 song ([songPoints] values sent with
+     * [setAutomationSong]: a point per bar, or per beat with [perBeat]; [held]: each point holds
+     * until the next instead of sliding).
+     */
+    fun setAutomationMode(lane: Int, mode: Int, songPoints: Int, perBeat: Boolean = false, held: Boolean = false) =
+        post(CMD_AUTOMATION_MODE, songPoints.toFloat(), lane, mode or (if (perBeat) 16 else 0) or (if (held) 32 else 0))
+    fun setAutomationSong(lane: Int, point: Int, value: Float) = post(CMD_AUTOMATION_SONG, value, lane, point)
+    /** [count] song points of lane [lane] from [first] at [value] (a run of equal values, one command). */
+    /**
+     * Song points [first] .. [first] + [count] - 1 of [lane] on a straight line from [from] toward
+     * [to] (the value of the point after them, reached there): a slide in one command.
+     */
+    fun setAutomationSongRamp(lane: Int, first: Int, count: Int, from: Float, to: Float) =
+        post(CMD_AUTOMATION_SONG_RAMP, from, (lane and 0xFF) or (Math.round(to.coerceIn(0f, 1f) * 65535f) shl 8), (first and 0xFFFF) or ((count.coerceIn(0, 0xFFFF)) shl 16))
+    /**
+     * Song points [first] .. [first] + [count] - 1 of [lane] hold their value instead of sliding
+     * toward the next point (the next one is a jump: a take's Drop, a let-go). Sent after
+     * [setAutomationMode], which clears them.
+     */
+    fun setAutomationSongFlat(lane: Int, first: Int, count: Int) =
+        post(CMD_AUTOMATION_SONG_FLAT, 1f, lane, (first and 0xFFFF) or ((count.coerceIn(0, 0xFFFF)) shl 16))
+    /** The remix plays (or is silent, keeping its place): a song part's (follows [setStaging]). */
+    fun setRemixOn(on: Boolean) = post(CMD_REMIX_ON, if (on) 1f else 0f)
+    fun setAutomationSongRun(lane: Int, first: Int, count: Int, value: Float) =
+        post(CMD_AUTOMATION_SONG_RUN, value, lane, (first and 0xFFFF) or ((count.coerceIn(0, 0xFFFF)) shl 16))
 
     /** Time signature [beats]/4 (2..7): count-in, bar lines, metronome accent, live pads grid. */
     fun setBeatsPerBar(beats: Int) = post(CMD_BEATS_PER_BAR, 0f, beats)
@@ -450,6 +502,33 @@ object NativeEngine {
     fun toggleClip(pad: Int) = post(CMD_TOGGLE_CLIP, 0f, pad)
     /** Per pad: 0 off, 1 waiting for the grid, 2 playing ([LIVE_PADS] values). */
     external fun clipStates(out: IntArray)
+
+    /**
+     * The live grid: the slots of [mask] (1 shl slot) take over their part of [scene] (staged with
+     * [setStaging] just before) or stop ([scene] < 0) on the first transport step that is a
+     * multiple of [quantumSteps]. The whole mask is a row (the scene changes, [sceneSwaps]).
+     */
+    fun armLaunch(mask: Int, quantumSteps: Int, scene: Int) = post(CMD_ARM_LAUNCH, scene.toFloat(), mask and ALL_SLOTS, quantumSteps.coerceAtLeast(1))
+    fun cancelLaunch(mask: Int) = post(CMD_CANCEL_LAUNCH, 0f, mask and ALL_SLOTS)
+    /** Slot [slot]'s next launch (or scene swap) starts [steps] into its part. */
+    fun setSlotOffset(slot: Int, steps: Int) = post(CMD_SLOT_OFFSET, 0f, slot, steps.coerceAtLeast(0))
+    /** The return of send bus [bus] (0 reverb, 1 echo) times [gain] (0..2, 1 = as mixed): a live gesture, not saved. */
+    fun setBusReturn(bus: Int, gain: Float) = post(CMD_BUS_RETURN, gain.coerceIn(0f, 2f), bus)
+    /** Transport steps since play (-1 stopped or counting in): the live grid's clock. */
+    external fun transportStep(): Int
+    /** The transport's place in sixteenths since play, with the fraction (-1 stopped or counting in). */
+    external fun transportPosition(): Double
+    /**
+     * A recorded performance starts on the next transport step that is a multiple of [quantumSteps]:
+     * the song position there becomes [songStep] ([quantumSteps] 0: cancelled).
+     */
+    fun markSong(quantumSteps: Int, songStep: Int) = post(CMD_MARK_SONG, songStep.toFloat(), quantumSteps.coerceAtLeast(0))
+    /** The transport step the last [markSong] took effect on (-1: not yet). */
+    external fun songMarkStep(): Int
+    /** Per slot, 3 values: tag playing (scene, -1 stopped, [ROW_TAG]), tag waiting ([NO_LAUNCH], -1 stop, scene), start step. */
+    external fun slotStates(out: IntArray)
+    /** The launches that happened since the last call into [out] (slot, tag, step each); returns how many. */
+    external fun drainLaunchEvents(out: IntArray): Int
 
     /** [values] in Sampler::Param order (see PadSample.engineParams). */
     fun setPadParams(pad: Int, values: FloatArray) {

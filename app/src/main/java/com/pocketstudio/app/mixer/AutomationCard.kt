@@ -39,6 +39,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.pocketstudio.model.AutoTarget
+import com.pocketstudio.model.Macros
 import com.pocketstudio.model.AutomationLane
 import com.pocketstudio.model.Buses
 import com.pocketstudio.model.Channel
@@ -93,8 +94,49 @@ fun automationLabel(t: AutoTarget, channels: List<Channel>, master: List<Insert>
     }
     AutoTarget.BUS_PARAM -> "${tr(Buses.NAMES.getOrElse(t.slot) { "?" })} ${Buses.PARAMS.getOrNull(t.slot)?.getOrNull(t.param)?.label?.let { tr(it) }.orEmpty()}"
     AutoTarget.ACID -> "303 ${acidKnobName(t.param)} · ${channelName(t.ch)}"
+    AutoTarget.MACRO -> {
+        val macro = t.param.coerceIn(0, com.pocketstudio.model.Macros.COUNT - 1)
+        val name = when (t.param) {
+            AutoTarget.MACRO_CHOP -> tr("Hachoir de voie")
+            AutoTarget.MACRO_KILL_LOW -> tr("Coupe graves")
+            AutoTarget.MACRO_KILL_MID -> tr("Coupe médiums")
+            AutoTarget.MACRO_KILL_HIGH -> tr("Coupe aigus")
+            AutoTarget.MACRO_THROW_REVERB -> tr("Lancer réverbe")
+            AutoTarget.MACRO_THROW_ECHO -> tr("Lancer écho")
+            else -> tr(Macros.NAMES[macro])
+        }
+        "$name · ${channelName(t.ch)}"
+    }
+    AutoTarget.LIVE -> tr("Live : %s", liveSettingName(t.param))
     else -> "?"
     }
+}
+
+/** A Live page's whole-mix setting, as its page names it. */
+private fun liveSettingName(param: Int): String = when (param) {
+    AutoTarget.LIVE_FILTER -> tr("Filtre DJ")
+    AutoTarget.LIVE_RESONANCE -> tr("Résonance")
+    AutoTarget.LIVE_REPEAT -> tr("Répéter")
+    AutoTarget.LIVE_DIVISION -> tr("Division")
+    AutoTarget.LIVE_TAPE_STOP -> tr("Freinage")
+    AutoTarget.LIVE_CHOP -> tr("Hachoir")
+    AutoTarget.LIVE_REVERB_RETURN -> tr("Réverbe")
+    AutoTarget.LIVE_ECHO_RETURN -> tr("Écho")
+    AutoTarget.LIVE_BACKSPIN -> tr("Rembobinage")
+    AutoTarget.LIVE_REVERSE -> tr("À l'envers")
+    AutoTarget.LIVE_HALF_TIME -> tr("Demi-tempo")
+    AutoTarget.LIVE_ECHO_OUT -> tr("Sortie en écho")
+    AutoTarget.LIVE_KILL_LOW -> tr("Coupe graves")
+    AutoTarget.LIVE_KILL_MID -> tr("Coupe médiums")
+    AutoTarget.LIVE_KILL_HIGH -> tr("Coupe aigus")
+    AutoTarget.LIVE_FREEZE -> tr("Réverbe figée")
+    AutoTarget.LIVE_THROW_REVERB -> tr("Lancer réverbe")
+    AutoTarget.LIVE_THROW_ECHO -> tr("Lancer écho")
+    AutoTarget.LIVE_RISER -> tr("Souffle montant")
+    AutoTarget.LIVE_DOWNLIFTER -> tr("Souffle descendant")
+    AutoTarget.LIVE_BUILD_UP -> tr("Montée")
+    AutoTarget.LIVE_DROP -> tr("Drop")
+    else -> tr("Tout remettre")
 }
 
 /** A 303 knob's name, as the Acide screen shows it ([com.pocketstudio.model.AcidSound.values] order). */
@@ -160,11 +202,14 @@ fun AutomationCard(ui: AutomationUi, channels: List<Channel>, master: List<Inser
                 AutomationLane.SONG -> {
                     val bars = maxOf(ui.songBars, 8)
                     Text(
-                        if (ui.songBars == 0) tr("Morceau vide : la courbe suit les mesures depuis le début de la lecture.")
-                        else tr("Une valeur par mesure sur tout le morceau (%d mesures) ; elle glisse d'un point à l'autre.", bars),
+                        when {
+                            ui.songBars == 0 -> tr("Morceau vide : la courbe suit les mesures depuis le début de la lecture.")
+                            lane.songPerBeat -> tr("Une valeur par temps sur tout le morceau (%d mesures), écrite depuis la page Live.", bars)
+                            else -> tr("Une valeur par mesure sur tout le morceau (%d mesures) ; elle glisse d'un point à l'autre.", bars)
+                        },
                         style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
                     )
-                    SongLaneEditor(lane, bars, ui.songBar) { bar, v -> actions.setSongPoint(i, bar, v) }
+                    SongLaneEditor(lane, bars, ui.songBar, lane.pointsPerBar(ui.stepsPerBar / 4)) { bar, v -> actions.setSongPoint(i, bar, v) }
                 }
                 else -> {
                     if (lane.mode == AutomationLane.PER_SCENE) {
@@ -241,7 +286,7 @@ private fun LaneEditor(lane: AutomationLane, steps: Int, currentStep: Int, setPo
 
 /** A song clip: a point per bar (drawn by finger), the line the engine follows between them. */
 @Composable
-private fun SongLaneEditor(lane: AutomationLane, bars: Int, playingBar: Int, setPoint: (Int, Float?) -> Unit) {
+private fun SongLaneEditor(lane: AutomationLane, bars: Int, playingBar: Int, perBar: Int = 1, setPoint: (Int, Float?) -> Unit) {
     val onPoint by rememberUpdatedState(setPoint)
     val color = Neon.Amber
     val grid = Neon.Outline
@@ -269,18 +314,20 @@ private fun SongLaneEditor(lane: AutomationLane, bars: Int, playingBar: Int, set
         val w = size.width / bars
         for (b in 0 until bars) if (b % 4 == 0) drawLine(grid, Offset(b * w, 0f), Offset(b * w, size.height), strokeWidth = if (b % 16 == 0) 2f else 1f)
         if (playingBar in 0 until bars) drawRect(head.copy(alpha = 0.2f), Offset(playingBar * w, 0f), Size(w, size.height))
-        val curve = lane.songCurve(bars)
+        // A point per bar, or per beat (a curve written from the Live page: [perBar] points a bar).
+        val pw = w / perBar
+        val curve = lane.songCurve(bars * perBar)
         if (curve.isNotEmpty()) {
             val path = androidx.compose.ui.graphics.Path()
             curve.forEachIndexed { b, v ->
-                val x = b * w + w / 2
+                val x = b * pw + pw / 2
                 val y = size.height - v * size.height
                 if (b == 0) path.moveTo(x, y) else path.lineTo(x, y)
             }
             drawPath(path, color.copy(alpha = 0.6f), style = androidx.compose.ui.graphics.drawscope.Stroke(width = 3f))
         }
         lane.songValues.forEachIndexed { b, v ->
-            if (v != null && b < bars) drawCircle(color, radius = minOf(w / 2, 10f), center = Offset(b * w + w / 2, size.height - v * size.height))
+            if (v != null && b < bars * perBar) drawCircle(color, radius = minOf(pw / 2, 10f).coerceAtLeast(2f), center = Offset(b * pw + pw / 2, size.height - v * size.height))
         }
     }
 }

@@ -32,25 +32,32 @@ object MidiFile {
         // Each song part plays its scene for all its repeats in one go, as the engine does: a loop
         // whose length does not divide the scene's (an acid line of 12 steps) runs on across the
         // repeats instead of starting over.
-        val parts: List<Pair<Int, Int>> = if (useSong) project.song.map { it.scene to it.repeats.coerceAtLeast(1) }
-        else listOf(project.scene.coerceIn(0, scenes.lastIndex) to 1)
+        // A part written from the live grid: each track its own scene, carrying on from where it was.
+        val parts: List<SongPart> = if (useSong) project.song else listOf(SongPart(project.scene.coerceIn(0, scenes.lastIndex)))
         val synth = ArrayList<MidiNote>()
         val acid = ArrayList<MidiNote>()
         val drums = ArrayList<MidiNote>()
         val added = project.tracks.associate { it.id to ArrayList<MidiNote>() }
         var at = 0
-        parts.forEachIndexed { i, (index, repeats) ->
-            val scene = scenes.getOrNull(index) ?: return@forEachIndexed
-            val partSteps = scene.stepsFor(project.stepsPerBar) * repeats
+        parts.forEach { part ->
+            if (scenes.getOrNull(part.scene) == null) return@forEach
+            val partSteps = project.partSteps(part)
             val partTicks = partSteps * NoteClip.TICKS_PER_STEP
             // A song part leaves out its muted tracks (the timeline).
-            val part = if (useSong) project.song[i] else null
-            fun plays(key: String) = part?.plays(key) ?: true
-            if (plays(SongPart.inst(0))) synth += loopNotes(scene.synthNotes, partTicks, at)
-            if (plays(SongPart.ACID)) acid += acidNotes(scene.acid, project.acid.root, partSteps, at)
-            if (plays(SongPart.DRUMS)) drums += drumNotes(scene.drums, partSteps, at)
+            fun plays(key: String) = part.plays(key) && scenes.getOrNull(part.sceneFor(key)) != null
+            fun sceneOf(key: String) = scenes[part.sceneFor(key)]
+            // Steps the track had already played: its notes from there on, those before left out.
+            fun skip(key: String) = part.fromBars(key) * project.stepsPerBar
+            fun MutableList<MidiNote>.addFrom(key: String, make: (steps: Int, offset: Int) -> List<MidiNote>) {
+                val skipped = skip(key) * NoteClip.TICKS_PER_STEP
+                this += make(skip(key) + partSteps, at - skipped).filter { it.start >= at }
+            }
+            if (plays(SongPart.inst(0))) synth.addFrom(SongPart.inst(0)) { steps, off -> loopNotes(sceneOf(SongPart.inst(0)).synthNotes, steps * NoteClip.TICKS_PER_STEP, off) }
+            if (plays(SongPart.ACID)) acid.addFrom(SongPart.ACID) { steps, off -> acidNotes(sceneOf(SongPart.ACID).acid, project.acid.root, steps, off) }
+            if (plays(SongPart.DRUMS)) drums.addFrom(SongPart.DRUMS) { steps, off -> drumNotes(sceneOf(SongPart.DRUMS).drums, steps, off) }
             project.tracks.forEach { t ->
-                if (plays(SongPart.inst(t.id))) scene.trackNotes[t.id]?.let { added.getValue(t.id) += loopNotes(it, partTicks, at) }
+                val key = SongPart.inst(t.id)
+                if (plays(key)) sceneOf(key).trackNotes[t.id]?.let { clip -> added.getValue(t.id).addFrom(key) { steps, off -> loopNotes(clip, steps * NoteClip.TICKS_PER_STEP, off) } }
             }
             at += partTicks
         }

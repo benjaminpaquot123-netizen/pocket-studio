@@ -7,6 +7,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -121,7 +122,7 @@ class SessionScreenUi(
     val followSong: Boolean = true,
 ) {
     val stepsPerBar get() = beatsPerBar * 4
-    fun barsOf(part: SongPart) = (scenes.getOrNull(part.scene)?.stepsFor(stepsPerBar) ?: stepsPerBar) / stepsPerBar * part.repeats
+    fun barsOf(part: SongPart) = part.bars ?: ((scenes.getOrNull(part.scene)?.stepsFor(stepsPerBar) ?: stepsPerBar) / stepsPerBar * part.repeats)
 
     /** The section name of scene [i] ("Refrain"), or "". */
     fun label(i: Int): String = scenes.getOrNull(i)?.label.orEmpty()
@@ -172,7 +173,11 @@ class SessionActions(
     val performance: (Int, Float) -> Unit = { _, _ -> },
     /** The timeline: a track on or off in a song part. */
     val togglePartTrack: (Int, String) -> Unit = { _, _ -> },
+    /** The timeline's long press: in part (first), track (second) plays scene (third). */
+    val setPartScene: (Int, String, Int) -> Unit = { _, _, _ -> },
     val setBeatsPerBar: (Int) -> Unit = {},
+    /** The Live page (full screen): every track's sections on pads, effects and 303 under the fingers. */
+    val openLive: () -> Unit = {},
 )
 
 /** The song first (the arrangement), then the scenes it is made of, the timeline, and the live tools. */
@@ -183,7 +188,10 @@ fun SessionScreen(ui: SessionScreenUi, actions: SessionActions, live: LivePadsUi
     com.pocketstudio.ui.AdaptivePanes(
         Modifier.testTag("session"),
         spacing = 12.dp,
-        first = { SongCard(ui, actions) },
+        first = {
+            LiveEntry(actions.openLive)
+            SongCard(ui, actions)
+        },
         // A wide screen: the live pads right under the scenes, in reach without scrolling.
         second = {
             ScenesCard(ui, actions, rename = { renaming = it })
@@ -192,6 +200,7 @@ fun SessionScreen(ui: SessionScreenUi, actions: SessionActions, live: LivePadsUi
         },
         // A phone keeps its order: the song, the scenes, the timeline, then the live tools.
         phone = {
+            LiveEntry(actions.openLive)
             SongCard(ui, actions)
             ScenesCard(ui, actions, rename = { renaming = it })
             TimelineCard(ui, actions)
@@ -199,6 +208,22 @@ fun SessionScreen(ui: SessionScreenUi, actions: SessionActions, live: LivePadsUi
         },
     )
     renaming?.let { i -> RenameSceneDialog(i, ui.label(i), onDone = { label -> actions.rename(i, label); renaming = null }, onDismiss = { renaming = null }) }
+}
+
+/** The way to the Live page: one wide button, on top. */
+@Composable
+private fun LiveEntry(open: () -> Unit) {
+    Button(
+        onClick = open,
+        modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("open_live"),
+        colors = ButtonDefaults.buttonColors(containerColor = Neon.Cyan, contentColor = Neon.OnAccent),
+    ) {
+        Icon(Icons.Filled.PlayArrow, contentDescription = null)
+        Column(Modifier.padding(start = 8.dp)) {
+            Text(tr("Live : jouer les sections piste par piste"), style = MaterialTheme.typography.titleSmall)
+            Text(tr("Pads de toutes les pistes, effets et 303 sous les doigts"), style = MaterialTheme.typography.bodySmall)
+        }
+    }
 }
 
 @Composable
@@ -333,7 +358,8 @@ private fun PartRow(i: Int, part: SongPart, ui: SessionScreenUi, actions: Sessio
                     color = if (active) Neon.Magenta else Neon.TextPrimary,
                 )
                 Text(
-                    "× ${part.repeats}  ·  " + barsLabel(ui.barsOf(part)) + when {
+                    (if (part.bars == null) "× ${part.repeats}  ·  " else "") + barsLabel(ui.barsOf(part)) +
+                        (if (part.mixed) "  ·  " + tr("mélange") else "") + when {
                         active -> "  ·  " + tr("joue")
                         next -> "  ·  " + tr("ensuite")
                         else -> ""
@@ -347,8 +373,9 @@ private fun PartRow(i: Int, part: SongPart, ui: SessionScreenUi, actions: Sessio
                 )
             }
         }
-        IconButton(onClick = { actions.setRepeats(i, part.repeats - 1) }, enabled = part.repeats > 1) { Icon(Icons.Filled.Remove, contentDescription = tr("Une fois de moins")) }
-        IconButton(onClick = { actions.setRepeats(i, part.repeats + 1) }, enabled = part.repeats < SongPart.MAX_REPEATS) { Icon(Icons.Filled.Add, contentDescription = tr("Une fois de plus")) }
+        // A part written from the live grid has its own length: no repeats.
+        IconButton(onClick = { actions.setRepeats(i, part.repeats - 1) }, enabled = part.bars == null && part.repeats > 1) { Icon(Icons.Filled.Remove, contentDescription = tr("Une fois de moins")) }
+        IconButton(onClick = { actions.setRepeats(i, part.repeats + 1) }, enabled = part.bars == null && part.repeats < SongPart.MAX_REPEATS) { Icon(Icons.Filled.Add, contentDescription = tr("Une fois de plus")) }
         Box {
             var menu by remember { mutableStateOf(false) }
             IconButton(onClick = { menu = true }, modifier = Modifier.testTag("part_menu_$i")) { Icon(Icons.Filled.MoreVert, contentDescription = tr("Plus d'actions")) }
@@ -689,13 +716,19 @@ private fun ScenePickerDialog(title: String, ui: SessionScreenUi, onPick: (Int) 
 
 /**
  * The song as a timeline: one column per part (as wide as its bars), one row per track. A lit
- * block plays; tap it to silence that track in that part (tap again to bring it back).
+ * block plays; tap it to silence that track in that part (tap again to bring it back); hold it to
+ * choose the scene that track plays there. A track on another scene than its part shows that
+ * scene's letter, « ↪ » when it carries on from where it was (a part written from the live grid);
+ * such a part is marked « mélange ».
  */
 @Composable
 private fun Timeline(ui: SessionScreenUi, actions: SessionActions) {
     val barWidth = 14.dp
+    // The scene picker of a long press (part, track key): kept through a rotation.
+    var choosingPart by rememberSaveable { mutableIntStateOf(-1) }
+    var choosingKey by rememberSaveable { mutableStateOf("") }
     Text(
-        tr("Touche un bloc pour couper ou remettre une piste dans une partie."),
+        tr("Touche un bloc pour couper ou remettre une piste dans une partie ; appui long : choisir sa scène."),
         style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
     )
     Row(Modifier.testTag("timeline")) {
@@ -703,7 +736,7 @@ private fun Timeline(ui: SessionScreenUi, actions: SessionActions) {
             Box(Modifier.height(22.dp))
             ui.rows.forEach { r ->
                 Text(com.pocketstudio.model.DefaultNames.shown(r.name), style = MaterialTheme.typography.labelSmall, maxLines = 1, overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.width(76.dp).height(26.dp).padding(top = 5.dp))
+                    modifier = Modifier.width(76.dp).height(TIMELINE_ROW).padding(top = 15.dp))
             }
         }
         Row(Modifier.fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(3.dp)) {
@@ -711,14 +744,26 @@ private fun Timeline(ui: SessionScreenUi, actions: SessionActions) {
                 val width = (barWidth * ui.barsOf(part)).coerceAtLeast(48.dp)
                 val active = i == ui.shownSongIndex
                 Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
-                    Box(
+                    Row(
                         Modifier.width(width).height(22.dp).clip(RoundedCornerShape(4.dp))
                             .background(if (active) Neon.Magenta.copy(alpha = 0.35f) else Neon.SurfaceHigh)
                             .padding(horizontal = 3.dp),
-                        contentAlignment = Alignment.Center,
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center,
                     ) {
-                        Text("${ui.title(part.scene)}${if (part.repeats > 1) " ×${part.repeats}" else ""}",
+                        Text("${ui.title(part.scene)}${if (part.bars == null && part.repeats > 1) " ×${part.repeats}" else ""}",
+                            Modifier.weight(1f, fill = false),
                             style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        if (part.mixed) {
+                            // The word is in the song's list; here a short mark keeps the scene's name readable.
+                            val mixed = tr("mélange")
+                            Text(
+                                "≈",
+                                Modifier.padding(start = 3.dp).clip(RoundedCornerShape(3.dp)).background(Neon.Amber.copy(alpha = 0.85f))
+                                    .padding(horizontal = 3.dp).testTag("timeline_mixed_$i").semantics { contentDescription = mixed },
+                                style = MaterialTheme.typography.labelSmall, color = Color.Black, maxLines = 1,
+                            )
+                        }
                     }
                     ui.rows.forEach { r ->
                         val on = part.plays(r.key)
@@ -729,12 +774,19 @@ private fun Timeline(ui: SessionScreenUi, actions: SessionActions) {
                             spans != null -> r.color.copy(alpha = 0.22f)
                             else -> r.color.copy(alpha = if (active) 0.95f else 0.7f)
                         }
+                        val other = part.play[r.key]
+                        val carries = part.fromBars(r.key) > 0
                         Box(
-                            Modifier.width(width).height(26.dp).clip(RoundedCornerShape(4.dp))
+                            Modifier.width(width).height(TIMELINE_ROW).clip(RoundedCornerShape(4.dp))
                                 .background(fill)
                                 .border(1.dp, if (on) r.color else Neon.Outline, RoundedCornerShape(4.dp))
-                                .clickable { actions.togglePartTrack(i, r.key) }
+                                .combinedClickable(
+                                    onClickLabel = if (on) tr("Couper la piste dans cette partie") else tr("Remettre la piste dans cette partie"),
+                                    onLongClickLabel = tr("Choisir la scène de la piste"),
+                                    onLongClick = { choosingPart = i; choosingKey = r.key },
+                                ) { actions.togglePartTrack(i, r.key) }
                                 .testTag("timeline_${i}_${r.key}"),
+                            contentAlignment = Alignment.CenterStart,
                         ) {
                             spans?.forEach { span ->
                                 Box(
@@ -743,10 +795,31 @@ private fun Timeline(ui: SessionScreenUi, actions: SessionActions) {
                                         .testTag("timeline_take_${i}_${r.key}"),
                                 )
                             }
+                            if (on && (other != null || carries)) {
+                                Text(
+                                    (if (carries) "↪" else "") + (other?.let { Scene.NAMES.getOrElse(it) { "?" } } ?: ""),
+                                    Modifier.padding(start = 4.dp).testTag("timeline_scene_${i}_${r.key}"),
+                                    style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold, color = Color.Black, maxLines = 1,
+                                )
+                            }
                         }
                     }
                 }
             }
         }
     }
+    if (choosingPart in ui.song.indices && ui.rows.any { it.key == choosingKey }) {
+        val i = choosingPart
+        val key = choosingKey
+        val name = ui.rows.firstOrNull { it.key == key }?.name?.let { com.pocketstudio.model.DefaultNames.shown(it) } ?: key
+        ScenePickerDialog(
+            title = tr("Partie %1\$d : la scène de %2\$s", i + 1, name),
+            ui = ui,
+            onPick = { scene -> actions.setPartScene(i, key, scene); choosingPart = -1 },
+            onDismiss = { choosingPart = -1 },
+        )
+    }
 }
+
+/** A track's row in the timeline: a block a finger can hit (touched, held for its scene). */
+private val TIMELINE_ROW = 48.dp

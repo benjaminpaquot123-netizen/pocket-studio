@@ -51,7 +51,16 @@ public:
     void scheduleInsertOn(int ch, int slot, bool on, int offset);
     bool insertOn(int ch, int slot) const { return gates_[static_cast<size_t>(ch)][static_cast<size_t>(slot)].on; }  // tests
     void setSend(int ch, int bus, float level);               // 0..1, post-fader
-    void setMacro(int ch, int macro, float v);                // TrackMacros: colour, dirt, motion, space
+    // TrackMacros: colour, dirt, motion, space; kChopMacro: the strip's chopper on (v > 0.5) or off;
+    // kKillMacro + band (0 low, 1 mid, 2 high): that band of the strip cut while on (on the grid,
+    // both ways); kThrowMacro + bus (0 reverb, 1 echo): on a rise, the strip's send to that bus wide
+    // open for one beat from the next beat line (a dub « throw »).
+    static constexpr int kChopMacro = 4;
+    static constexpr int kKillMacro = 5;
+    static constexpr int kThrowMacro = 8;
+    static constexpr int kMacroParams = 10;
+    void setMacro(int ch, int macro, float v);
+    bool chopOn(int ch) const { return chopOn_[static_cast<size_t>(ch)]; }  // tests
     void setBusParam(int bus, int param, float v);
     // The master: a gain before the limiter (linear, 0..4), the limiter on or off (a pre-master
     // export keeps its headroom), and its inserts on or off (stems: each strip without the master's
@@ -92,20 +101,40 @@ public:
     }
     const LongFxPool& longFxPool() const { return *pool_; }  // tests
     void setStepFrames(double framesPerSixteenth) {
+        if (framesPerSixteenth > 0.0) stepFrames_ = framesPerSixteenth;
         delay_.setStepFrames(framesPerSixteenth);
         perf_.setStepFrames(framesPerSixteenth);
+        for (auto& c : chops_) c.setStepFrames(framesPerSixteenth);
         // The rhythmic effects know the beat's length at once (not only after two beats).
         for (auto& strip : inserts_) {
             for (auto& slot : strip) slot.setStepFrames(framesPerSixteenth);
         }
     }
-    void setPerformance(int param, float v) { perf_.setParam(param, v); }
-    // A sequencer step lands `offset` frames into the next process() call (sidechain pumps).
-    void sidechainEvent(int offset, bool kick, bool beat) {
+    // The Live page's effects (PerformanceFx::Param): the master's PerformanceFx, plus what acts on
+    // the send buses here (reverb freeze, whole-mix throws, « Drop » and « Tout remettre »).
+    void setPerformance(int param, float v);
+    // A transport runs (steps arrive with sidechainEvent): live switches wait for the grid's lines.
+    void setClockRunning(bool on);
+    // A setting a song curve moves on a step (the Live page's effects: PerformanceFx, the bus
+    // returns, a strip's macros and chopper), `offset` frames into the next process() call: on
+    // that frame, whatever the size of the blocks (a recorded performance plays back as it was).
+    enum SettingKind { PerformanceSetting = 0, ReturnSetting = 1, MacroSetting = 2 };
+    void scheduleSetting(int kind, int a, int b, float v, int offset);
+    // The live grid's return of send bus `bus` (0 reverb, 1 echo): its effect's output times
+    // `gain` (0..2, 1 = as mixed). Smoothed; at 1 the mix is the plain one, sample for sample.
+    void setBusReturn(int bus, float gain) {
+        if (bus >= 0 && bus < kBuses) busReturn_[static_cast<size_t>(bus)].setTarget(std::clamp(std::isfinite(gain) ? gain : 1.0f, 0.0f, 2.0f));
+    }
+    float busReturn(int bus) const { return busReturn_[static_cast<size_t>(bus)].target(); }  // tests
+    // A sequencer step lands `offset` frames into the next process() call (sidechain pumps, the live
+    // effects' grid): transport step `step` (-1: unknown) of a bar of `stepsPerBar` steps.
+    void sidechainEvent(int offset, bool kick, bool beat, int step = -1, int stepsPerBar = 16) {
         if (events_ < static_cast<int>(eventOffset_.size())) {
             eventOffset_[static_cast<size_t>(events_)] = offset;
             eventKick_[static_cast<size_t>(events_)] = kick;
             eventBeat_[static_cast<size_t>(events_)] = beat;
+            eventStep_[static_cast<size_t>(events_)] = step;
+            eventBar_[static_cast<size_t>(events_)] = stepsPerBar;
             ++events_;
         }
     }
@@ -124,6 +153,12 @@ public:
     // Current limiter gain (1 = not limiting).
     float limiterGain() const { return limiterGainOut_.load(std::memory_order_relaxed); }
     const InsertSlot& insert(int ch, int slot) const { return inserts_[static_cast<size_t>(ch)][static_cast<size_t>(slot)]; }
+    // Tests.
+    const PerformanceFx& performance() const { return perf_; }
+    const Reverb& reverb() const { return reverb_; }
+    const Isolator& isolator(int ch) const { return (*isolators_)[static_cast<size_t>(ch)]; }
+    bool throwing(int ch, int bus) const { return throws_[static_cast<size_t>(ch)][static_cast<size_t>(bus)].on; }
+    float masterSend(int bus) const { return masterSend_[static_cast<size_t>(bus)].target(); }
 
     /** True once after a NaN was caught and silenced (for the reports). */
     bool takeBlewUp() { return blewUp_.exchange(false, std::memory_order_relaxed); }
@@ -157,6 +192,14 @@ private:
     };
     std::array<GateEvent, kChannels * kInserts> gateEvents_{};
     int gateCount_ = 0;
+    struct SettingEvent {
+        int kind, a, b;
+        float v;
+        int offset;
+    };
+    void applySetting(const SettingEvent& e);
+    std::array<SettingEvent, 64> settingEvents_{};
+    int settingCount_ = 0;
     float gateStep_ = 1.0f / 240.0f;  // per frame (kGateMs at 48 kHz until prepared)
     std::array<float, kChunk> dryL_{}, dryR_{};
     static void storeMax(std::atomic<float>& a, float v);
@@ -166,6 +209,14 @@ private:
     // mixer, so an engine never weighs megabytes on a thread's stack.
     using InsertBank = std::array<std::array<InsertSlot, kInserts>, kChannels>;
     using MacroBank = std::array<TrackMacros, kChannels>;
+    // Each strip's chopper: on, or still gliding back to the plain sound.
+    std::array<Chopper, kChannels> chops_{};
+    std::array<bool, kChannels> chopOn_{};
+    // Frames since the transport's last beat, at the end of the last chunk processed.
+    int64_t framesSinceBeat_ = 0;
+    bool chopActive(int ch) const {
+        return chopOn_[static_cast<size_t>(ch)] || chops_[static_cast<size_t>(ch)].gain() < 0.9999f;
+    }
     std::unique_ptr<InsertBank> insertBank_ = std::make_unique<InsertBank>();
     std::unique_ptr<MacroBank> macroBank_ = std::make_unique<MacroBank>();
     InsertBank& inserts_ = *insertBank_;
@@ -181,12 +232,38 @@ private:
     // The pads' strips, summed before the drums' strip processes them.
     std::array<float, kChunk> padsL_{}, padsR_{};
     std::array<std::array<float, kChunk>, kBuses> busL_{}, busR_{};
+    std::array<Smoother, kBuses> busReturn_{Smoother(1.0f), Smoother(1.0f)};
+    std::array<float, kChunk> retL_{}, retR_{};
     std::array<std::atomic<float>, kChannels> peaks_{};
     std::atomic<float> masterPeak_{0.0f};
     std::atomic<float> limiterGainOut_{1.0f};
-    std::array<int, 32> eventOffset_{};
+    std::array<int, 32> eventOffset_{}, eventStep_{}, eventBar_{};
     std::array<bool, 32> eventKick_{}, eventBeat_{};
     int events_ = 0;
+    // --- The Live page's switches on the send buses and the strips (sample-exact: a chunk starts
+    // on every step, and a switch waiting for the grid takes effect at the start of one).
+    void liveLine(int step, int stepsPerBar);  // a step at the chunk's start
+    bool lineWaits() const { return clock_ && perf_.gridSteps() > 0; }
+    void throwEdge(int ch, int bus, bool on);
+    void startThrow(int ch, int bus);
+    void liveReset();
+    void updateMasterSends();
+    bool clock_ = false;
+    double stepFrames_ = 6000.0;
+    int lastStep_ = -1;
+    bool freezeWant_ = false, dropWant_ = false, resetWant_ = false, dropPending_ = false;
+    struct Throw {
+        bool want = false, pending = false, on = false;
+        int endStep = -1;
+        double framesLeft = 0.0;
+    };
+    // Per strip and bus (the master's index, kMaster, is the whole mix's).
+    std::array<std::array<Throw, kBuses>, kChannels> throws_{};
+    bool anyThrow_ = false;
+    std::array<std::array<bool, Isolator::kBands>, kChannels> killWant_{};
+    std::unique_ptr<std::array<Isolator, kChannels>> isolators_ = std::make_unique<std::array<Isolator, kChannels>>();
+    // The whole mix into the send buses (the build-up's sends, the whole-mix throws).
+    std::array<Smoother, kBuses> masterSend_{Smoother(0.0f), Smoother(0.0f)};
     float envelope_ = 0.0f;
     float release_ = 0.999f;
     Smoother masterGain_{1.0f};

@@ -16,9 +16,9 @@
   "drums": [
    {
     "role": "kick",
-    "pattern": "X...X...X...X...",
+    "pattern": "X...X...X...X...X...X...X...X.x.",
     "source": "tr909",
-    "tip_fr": "Un coup sur chaque temps, du début à la fin : c'est la règle de la house."
+    "tip_fr": "Un coup sur chaque temps, du début à la fin. À la fin de la deuxième mesure, un petit coup en plus, plus doux : il relance la boucle (le « jack » de Chicago)."
    },
    {
     "role": "clap",
@@ -40,9 +40,10 @@
    },
    {
     "role": "perc",
-    "pattern": "...x.....x....x.",
+    "pattern": "..x...x...x...x.",
     "source": "tr707",
-    "tip_fr": "Quelques petits coups décalés, comme sur les vieilles boîtes à rythmes de Chicago : ça donne envie de bouger."
+    "tip_fr": "Un tambourin de vieille boîte à rythmes (la 707) entre chaque temps : il fait danser les épaules.",
+    "voice": "shaker"
    }
   ],
   "progressions": {
@@ -93,8 +94,8 @@
   },
   "bass": {
    "pattern": "R..R..O.R..R..O.",
-   "octave": 1,
-   "sound": "pack:juno:bass",
+   "octave": 2,
+   "sound": "pack:juno:bass|Basse ronde",
    "glide": false
   },
   "lead": {
@@ -122,6 +123,10 @@
    {
     "on": "clap",
     "reverb": 0.2
+   },
+   {
+    "on": "chords",
+    "reverb": 0.15
    }
   ],
   "notes": "Roland TR-909 drums (707 percussion) with a light shuffle (MPC ~57%). The piano riff (Korg M1 / real piano, played in the middle register) is the hook of piano/anthem house (Move Your Body, Promised Land), in rhythmic unison with a bouncy root-octave bass. Optional 16th-note Juno arpeggio as in Frankie Knuckles/Jamie Principle 'Your Love'. A soft ghost kick on the last 16th adds 'jack' (left out: the beginner's rule is one kick per beat). Happy major I-IV-vi-V first."
@@ -142,13 +147,13 @@
    {
     "role": "kick",
     "pattern": "X...X...X...X...",
-    "source": "deep_house",
+    "source": "tr909",
     "tip_fr": "Une grosse caisse ronde sur chaque temps, présente mais jamais agressive."
    },
    {
     "role": "clap",
     "pattern": "....x.......x...",
-    "source": "deep_house",
+    "source": "tr909",
     "tip_fr": "Sur 2 et 4, un peu en retrait, pour garder le côté doux."
    },
    {
@@ -163,6 +168,13 @@
     "source": "deep_house",
     "voice": "conga",
     "tip_fr": "Quelques petites percussions légères et décalées, comme jouées à la main."
+   },
+   {
+    "role": "tom",
+    "voice": "tom_mid",
+    "source": "tr909",
+    "pattern": "..x.....x.x.....",
+    "tip_fr": "Un tom 909 qui roule doucement entre les kicks : le groove « rolling » de la deep house."
    }
   ],
   "progressions": {
@@ -253,7 +265,25 @@
     "delay": 0.35
    }
   ],
-  "notes": "Lazy MPC swing (~60%) that only shows on 16th ghost hats. Harmony is the soul: minor 7th / 9th chords (Rhodes) as syncopated stabs off the kick, Larry Heard's dorian i-IV-VII-v first; they are the signature and play throughout. Round, legato bass between the kicks, sidechained to them. Single-word vocal chops with delay as the top line. Tempo 118-124."
+  "notes": "Lazy MPC swing (~60%) that only shows on 16th ghost hats. Harmony is the soul: minor 7th / 9th chords (Rhodes) as syncopated stabs off the kick, Larry Heard's dorian i-IV-VII-v first; they are the signature and play throughout. Round, legato bass between the kicks, sidechained to them. Single-word vocal chops with delay as the top line. Tempo 118-124.",
+  "break": [
+   "bass",
+   "chords",
+   "lead",
+   "clap",
+   "hat",
+   "perc",
+   "tom"
+  ],
+  "sweeps": [
+   {
+    "on": "chords",
+    "intro": [
+     0.3,
+     0.8
+    ]
+   }
+  ]
  },
  {
   "id": "tech_house",
@@ -276,15 +306,15 @@
    },
    {
     "role": "clap",
-    "pattern": "....X.......X.......X.......X..o",
+    "pattern": "....X.......X.......X.......Xo..",
     "source": "tech_house",
-    "tip_fr": "Sur 2 et 4, sec et claquant, avec un petit coup en plus à la fin de la deuxième mesure."
+    "tip_fr": "Sur 2 et 4, sec et claquant. À la fin de la deuxième mesure, un petit écho plus doux juste après : il relance la boucle."
    },
    {
     "role": "hat",
-    "pattern": ".x.x.x.x.x.x.x.x",
+    "pattern": "ox.xox.xox.xox.xox.xox.xox.xo3..",
     "source": "tech_house",
-    "tip_fr": "Des petits coups entre tous les autres, poussés en retard par le swing : c'est ce qui fait rouler la machine."
+    "tip_fr": "Trois petits coups sur quatre, en laissant libre la place du « tchi » ouvert : le swing pousse en retard ceux qui tombent entre les autres, c'est ce qui fait rouler. Un petit roulement ferme la deuxième mesure."
    },
    {
     "role": "open_hat",
@@ -298,6 +328,17 @@
     "source": "tech_house",
     "voice": "rim",
     "tip_fr": "Un petit motif de « toc » sur deux mesures qui accroche l'oreille : la signature des boucles tech house."
+   },
+   {
+    "role": "perc2",
+    "voice": "shaker",
+    "pattern": "ooxoooxooox.ooxo",
+    "tip_fr": "Un shaker en continu, plus ou moins fort selon les coups : il fait tourner le groove entre les charleys."
+   },
+   {
+    "role": "ride",
+    "pattern": "o...o...o...o...",
+    "tip_fr": "Une ride presque inaudible sur les temps : elle arrive au Drop et ajoute de la brillance."
    }
   ],
   "progressions": {
@@ -346,10 +387,10 @@
    "sound": "Orgue"
   },
   "bass": {
-   "pattern": "..Rr..Rr..Rr..RO",
-   "octave": 1,
-   "sound": "Basse analogique",
-   "glide": false
+   "pattern": "..Rr..Rr..Rr..RO..Rr..Rr..Rr.5/O",
+   "octave": 2,
+   "sound": "pack:tech_house:bass|Basse ronde",
+   "glide": true
   },
   "lead": {
    "type": "riff",
@@ -370,7 +411,7 @@
    "lead": true
   },
   "signature": "bass",
-  "bass_tip": "C'est elle, le refrain : des notes courtes entre les coups de grosse caisse, qui se baissent à chaque coup (l'effet « pompe »).",
+  "bass_tip": "C'est elle, le refrain : deux notes courtes juste après chaque coup de grosse caisse, qui se baissent à chaque coup (l'effet « pompe »). À la fin de la deuxième mesure, elle glisse vers l'aigu.",
   "pad_tip": "Presque rien : au plus un petit coup d'orgue de temps en temps.",
   "lead_tip": "Des bouts de voix répétés, comme un cri dans le club : c'est ce qu'on chante en tech house.",
   "fx": [
@@ -385,9 +426,34 @@
    {
     "on": "clap",
     "reverb": 0.15
+   },
+   {
+    "on": "kick",
+    "preset": "punch"
    }
   ],
-  "notes": "The bassline is the hook: short gritty notes rolling on the offbeats between the kicks, hard sidechain. Hats on the offbeat 16ths (pushed by the swing) with a short offbeat open hat; a rim/cowbell riff over two bars. Harmony is minimal (one organ stab or none, off by default); spoken or chopped vocal shouts carry the top line (on by default). Keys like F, F# or G minor; 124-128 BPM."
+  "notes": "The bassline is the hook: short gritty notes rolling on the offbeats between the kicks, hard sidechain. Hats on the offbeat 16ths (pushed by the swing) with a short offbeat open hat; a rim/cowbell riff over two bars. Harmony is minimal (one organ stab or none, off by default); spoken or chopped vocal shouts carry the top line (on by default). Keys like F, F# or G minor; 124-128 BPM.",
+  "drop": [
+   "open_hat",
+   "ride"
+  ],
+  "break": [
+   "bass",
+   "perc",
+   "hat",
+   "lead",
+   "perc2"
+  ],
+  "riser": true,
+  "sweeps": [
+   {
+    "on": "bass",
+    "break": [
+     0.3,
+     0.85
+    ]
+   }
+  ]
  },
  {
   "id": "uk_garage",
@@ -404,15 +470,16 @@
   "drums": [
    {
     "role": "kick",
-    "pattern": "X.........X.....X......x..X.....",
+    "pattern": "X.........X.....X.........X....o",
     "source": "uk_garage",
-    "tip_fr": "Seulement sur le 1 et juste après le 3 : ce trou au milieu fait sautiller tout le rythme (le « 2-step »)."
+    "tip_fr": "Seulement sur le 1 et juste après le 3 : ce trou au milieu fait sautiller tout le rythme (le « 2-step »). Tout à la fin, un petit coup doux annonce la boucle suivante."
    },
    {
     "role": "snare",
-    "pattern": "....X.......X...",
+    "pattern": "....x..o....x.......x..o...ox.o.",
     "source": "uk_garage",
-    "tip_fr": "Sur 2 et 4 : le repère fixe autour duquel tout se balance."
+    "tip_fr": "Un petit « toc » sur le bord de la caisse : sur 2 et 4 avec le clap, et quelques coups plus doux en décalé qui se répondent.",
+    "voice": "rim"
    },
    {
     "role": "clap",
@@ -428,15 +495,16 @@
    },
    {
     "role": "open_hat",
-    "pattern": "..X...X.......X.",
+    "pattern": "..x...x.......x.",
     "source": "uk_garage",
-    "tip_fr": "Quelques « tchi » ouverts pour faire respirer la mesure."
+    "tip_fr": "Quelques « tchi » ouverts, discrets, pour faire respirer la mesure sans sonner house."
    },
    {
     "role": "perc",
-    "pattern": "...x..x....x..x.",
+    "pattern": "ooxoooxoooxoooxo",
     "source": "uk_garage",
-    "tip_fr": "Des petits coups sur le bord de la caisse (le « rim »), placés dans les trous laissés par la grosse caisse."
+    "tip_fr": "Un tambourin ou un shaker en continu, plus fort entre les temps : avec le swing, il fait rouler le rythme.",
+    "voice": "shaker"
    }
   ],
   "progressions": {
@@ -487,9 +555,9 @@
    "sound": "Orgue"
   },
   "bass": {
-   "pattern": "...R--.R-....R-O",
+   "pattern": "R--....R..R--.O-",
    "octave": 2,
-   "sound": "Basse ronde",
+   "sound": "pack:uk_garage:bass|Basse ronde",
    "glide": false
   },
   "lead": {
@@ -510,7 +578,7 @@
    "chords": true,
    "lead": true
   },
-  "bass_tip": "Une basse grave qui répond à la grosse caisse dans ses trous, au lieu de jouer avec elle.",
+  "bass_tip": "Une basse grave qui tape avec la grosse caisse puis lui répond dans ses trous : elle fait rebondir le 2-step.",
   "pad_tip": "Des accords d'orgue jazzy en petits coups décalés, comme chez MJ Cole.",
   "lead_tip": "Des bouts de voix découpés et rejoués comme une mélodie : la signature du garage.",
   "fx": [
@@ -532,14 +600,14 @@
  {
   "id": "speed_garage",
   "references": [
-   "Sneaker Pimps – Spin Spin Sugar (Armand's Dark Garage Mix) (1997)",
    "Double 99 – RipGroove (1997)",
+   "Sneaker Pimps – Spin Spin Sugar (Armand's Dark Garage Mix) (1997)",
    "187 Lockdown – Gunman (1997)",
-   "Tina Moore – Never Gonna Let You Go (Kelly G. Bump-N-Go Vocal Mix) (1997)",
+   "CJ Bolland – Sugar Is Sweeter (Armand's Drum & Bass Mix) (1996)",
    "T2 feat. Jodie Aysha – Heartbroken (2007)"
   ],
   "description_fr": "Le cousin du UK garage, fin des années 90 : une grosse caisse sur chaque temps comme en house, et une énorme basse qui ondule et semble « parler ».",
-  "bpm": 134,
+  "bpm": 130,
   "swing": 0.25,
   "root": "G",
   "drums": [
@@ -620,7 +688,7 @@
    "sound": "Orgue"
   },
   "bass": {
-   "pattern": "R----/O/R----/5/",
+   "pattern": "R-----.R--/O-.R-R-----.R--/5-.O-",
    "octave": 2,
    "sound": "Basse qui parle",
    "glide": true
@@ -644,10 +712,14 @@
    "lead": true
   },
   "signature": "bass",
-  "bass_tip": "La star du style : de longues notes qui glissent de l'une à l'autre pendant que le son s'ouvre et se ferme, comme une voix qui dit « ouaou ».",
+  "bass_tip": "La star du style : de longues notes graves qui grondent, glissent vers une autre et sautent d'octave, pendant que le son s'ouvre et se ferme comme une voix qui dit « ouaou ».",
   "pad_tip": "Quelques coups d'orgue épars, juste pour la couleur.",
   "lead_tip": "Des bouts de voix avec de l'écho, comme les cris d'un MC.",
   "fx": [
+   {
+    "on": "bass",
+    "preset": "pump"
+   },
    {
     "on": "lead",
     "delay": 0.35
@@ -657,7 +729,10 @@
     "reverb": 0.2
    }
   ],
-  "notes": "NY garage four-on-the-floor sped up to 130-136 BPM, shuffled hats and jungle-style ghost snares. The star is the huge warped bass: long reese notes with a tempo-locked filter sweep ('Basse qui parle', half-note sweep) sliding between notes and jumping octaves, as in Armand Van Helden's remixes and Double 99 'RipGroove'; played an octave up so its sub stays above 45 Hz. Sparse organ stabs; vocal shouts with echo. Club form with a break. Heartbroken (bassline, 2007) is its best-known descendant."
+  "notes": "NY garage four-on-the-floor sped up to 130-136 BPM, shuffled hats and jungle-style ghost snares. The star is the huge warped bass: long reese notes with a tempo-locked filter sweep ('Basse qui parle', half-note sweep) sliding between notes and jumping octaves, as in Armand Van Helden's remixes and Double 99 'RipGroove'; played an octave up so its sub stays above 45 Hz. Sparse organ stabs; vocal shouts with echo. Club form with a break. Heartbroken (bassline, 2007) is its best-known descendant.",
+  "drop": [
+   "bass"
+  ]
  },
  {
   "id": "acid_house",
@@ -667,20 +742,20 @@
    "Sleezy D – I've Lost Control (1986)"
   ],
   "description_fr": "La house de Chicago de 1987 avec sa petite machine magique, la TB-303, qui fait « couiner » une ligne de basse qui tourne en boucle.",
-  "bpm": 122,
+  "bpm": 120,
   "swing": 0.1,
   "root": "A",
   "drums": [
    {
     "role": "kick",
     "pattern": "X...X...X...X...",
-    "source": "acid_house",
+    "source": "tr707",
     "tip_fr": "Une grosse caisse toute simple sur chaque temps, pour laisser toute la place à la 303, la ligne qui couine."
    },
    {
     "role": "clap",
     "pattern": "....X.......X...",
-    "source": "acid_house",
+    "source": "tr707",
     "tip_fr": "Sur 2 et 4, sec, comme sur les vieilles boîtes à rythmes."
    },
    {
@@ -817,7 +892,7 @@
   ],
   "description_fr": "La house d'Afrique du Sud portée par les percussions : congas, shaker, marimba et nappes chaudes.",
   "bpm": 122,
-  "swing": 0.15,
+  "swing": 0.2,
   "root": "E",
   "drums": [
    {
@@ -845,6 +920,24 @@
     "pattern": "....x.......x...",
     "source": "afro_house",
     "tip_fr": "Sur 2 et 4, discret : ici ce sont les percussions qui mènent."
+   },
+   {
+    "role": "open_hat",
+    "pattern": "..x...x...x...x.",
+    "source": "afro_house",
+    "tip_fr": "Un « tchi » discret entre chaque coup de grosse caisse : il donne de l'élan sans couvrir les percussions."
+   },
+   {
+    "role": "perc2",
+    "voice": "rim",
+    "pattern": "o..o..o.o..o..o.",
+    "tip_fr": "Un petit « toc » de bois en 3-3-2 : il croise les congas et fait danser les hanches."
+   },
+   {
+    "role": "tom",
+    "voice": "tom_high",
+    "pattern": "..............x.......x.......x.",
+    "tip_fr": "Un tom aigu, comme un bongo, qui répond en fin de mesure."
    }
   ],
   "progressions": {
@@ -854,7 +947,7 @@
      0,
      6,
      5,
-     6
+     3
     ]
    },
    "happy": {
@@ -893,7 +986,7 @@
    "sound": "Nappe chaude"
   },
   "bass": {
-   "pattern": "..R..R....R..R..",
+   "pattern": "..R-.R....R-.R-...R-.R....R-.5-.",
    "octave": 2,
    "sound": "Basse sub",
    "glide": false
@@ -917,7 +1010,7 @@
    "lead": true
   },
   "signature": "lead",
-  "bass_tip": "Une basse ronde et grave, entre les coups de grosse caisse, qui se baisse à chaque coup (l'effet « pompe »).",
+  "bass_tip": "Une basse ronde et grave, entre les coups de grosse caisse, qui se baisse à chaque coup (l'effet « pompe ») ; à la fin de la deuxième mesure elle monte d'une note pour relancer.",
   "pad_tip": "Des nappes chaudes et lentes qui laissent toute la place aux percussions.",
   "lead_tip": "Un petit air de marimba qui revient toutes les trois cases : il tourne à côté des temps et fait danser.",
   "fx": [
@@ -935,7 +1028,18 @@
     "delay": 0.2
    }
   ],
-  "notes": "Built from the percussion: a continuous shaker (built-in shaker voice), congas in 3-3-2 over two bars (built-in conga), soft clap; no open hat (that is house). Warm four-on-the-floor kick. Minor 9th pads that move slowly; a subby bass between the kicks, sidechained. The marimba motif every three 16ths (3 against 4) is the signature and plays throughout. 120-124 BPM."
+  "notes": "Built from the percussion: a continuous shaker (built-in shaker voice), congas in 3-3-2 over two bars (built-in conga), soft clap; no open hat (that is house). Warm four-on-the-floor kick. Minor 9th pads that move slowly; a subby bass between the kicks, sidechained. The marimba motif every three 16ths (3 against 4) is the signature and plays throughout. 120-124 BPM.",
+  "break": [
+   "bass",
+   "chords",
+   "lead",
+   "perc",
+   "hat",
+   "clap",
+   "open_hat",
+   "perc2",
+   "tom"
+  ]
  },
  {
   "id": "disco",

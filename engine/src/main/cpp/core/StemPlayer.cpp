@@ -214,8 +214,22 @@ void StemPlayer::stop() {
     if (playing_) fadeLeft_ = fadeLength_;
 }
 
+void StemPlayer::setLive(bool on, int offset) {
+    if (on == live_) return;
+    live_ = on;
+    liveAt_ = std::max(0, offset);
+}
+
 void StemPlayer::render(float* left, float* right, int numFrames) {
-    if (!bundle_) return;
+    // Frames of this block before the live gate may move (-1: it moves from the first one). Silent,
+    // it simply is where it should be by the next start.
+    const int wait = liveAt_;
+    liveAt_ = liveAt_ >= numFrames ? liveAt_ - numFrames : -1;
+    const float liveTarget = live_ ? 1.0f : 0.0f;
+    if (!bundle_) {
+        if (wait < numFrames) liveGain_ = liveTarget;
+        return;
+    }
     int from = 0;
     if (pendingStart_ >= 0 && pendingStart_ < numFrames) {
         from = pendingStart_;
@@ -225,8 +239,12 @@ void StemPlayer::render(float* left, float* right, int numFrames) {
     } else if (pendingStart_ >= numFrames) {
         pendingStart_ -= numFrames;
     }
-    if (!playing_) return;
+    if (!playing_) {
+        if (wait < numFrames) liveGain_ = liveTarget;
+        return;
+    }
     const int64_t total = bundle_->frames();
+    const float liveStep = 1.0f / static_cast<float>(fadeLength_);
     const int16_t* stems[StemBundle::kStems];
     for (int s = 0; s < StemBundle::kStems; ++s) stems[s] = bundle_->stem(s);
     constexpr float kScale = kHeadroom / 32768.0f;
@@ -250,6 +268,11 @@ void StemPlayer::render(float* left, float* right, int numFrames) {
             l += stems[s][at] * g;
             r += stems[s][at + 1] * g;
         }
+        // The remix slot stopped or launched: a short ramp from its frame (exactly 1 when heard).
+        if (liveGain_ != liveTarget && i >= wait) {
+            liveGain_ = live_ ? std::min(1.0f, liveGain_ + liveStep) : std::max(0.0f, liveGain_ - liveStep);
+        }
+        fade *= liveGain_;
         left[i] += l * fade;
         right[i] += r * fade;
         ++pos_;

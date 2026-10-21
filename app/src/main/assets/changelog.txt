@@ -1,5 +1,5 @@
-Phase 26 : « C'est pas faux » (l'acide sous les doigts)
-- Assistant : écris ta ligne 303 sur sa propre étape (pas, accent, glisse, « Génère-moi une ligne », 4 sons, coupure et résonance) ; l'écoute avec le rythme ne s'arrête plus quand tu changes de son.
-- « + Piste » demande quoi ajouter : mélodie, accords, basse, arpège, pluck, ou « Écrire une mélodie pour moi ».
-- Nouveau style Acidcore (185 BPM, kick saturé, 303 qui hurle, breaks) ; en Acid techno et Acid house, le filtre bouge le long du morceau.
-- Les potards de la 303 s'automatisent (« Enregistrer » sur la carte du son) ; un effet peut ne jouer que dans certaines scènes (« Joue dans ») ; acide à 100 % = toutes les notes.
+Phase 27 : « Le Live, c'est pas sorcier ! » (on joue, on enregistre)
+- Mode Live (Morceau › Live) : chaque piste en colonne de pads, ce que tu touches part à la mesure suivante, ■ pour arrêter une piste.
+- Effets du Live calés sur le temps : Répéter (1/4 à 1/32, triolets), Tenus (freinage, à l'envers, demi-tempo, sans graves…), Dub, Montée + Drop, cadenas et « Tout remettre » ; 303 en grand pour les doigts.
+- Bouton ● : ta performance (lancements, effets, potards) est écrite dans le morceau ; un seul Annuler l'efface.
+- Styles revus d'après la recherche : vrai Drop avec montée, ride, toms, grondement sous le kick en techno, filtres qui s'ouvrent.

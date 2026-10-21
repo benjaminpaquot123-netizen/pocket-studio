@@ -20,9 +20,19 @@ void Mixer::prepare(int sampleRate) {
         }
     }
     for (auto& m : macros_) m.prepare(rate);
+    for (size_t ch = 0; ch < chops_.size(); ++ch) {
+        chops_[ch].prepare(rate);
+        chops_[ch].setParam(1, chopOn_[ch] ? 1.0f : 0.0f);  // depth: off lets the sound through
+    }
     reverb_.prepare(rate);
     delay_.prepare(rate);
+    for (auto& r : busReturn_) r.configure(rate, 20.0f);
     perf_.prepare(rate);
+    for (auto& iso : *isolators_) iso.prepare(rate);
+    for (size_t ch = 0; ch < killWant_.size(); ++ch) {
+        for (int b = 0; b < Isolator::kBands; ++b) (*isolators_)[ch].setKill(b, killWant_[ch][static_cast<size_t>(b)]);
+    }
+    for (auto& m : masterSend_) m.configure(rate, 15.0f);
     gateStep_ = 1.0f / std::max(1.0f, kGateMs * 0.001f * rate);
     for (auto& strip : gates_) {
         for (auto& g : strip) g.mix = g.on ? 1.0f : 0.0f;
@@ -155,6 +165,28 @@ void Mixer::setSend(int ch, int bus, float level) {
 
 void Mixer::setMacro(int ch, int macro, float v) {
     if (ch < 0 || ch >= kChannels || ch == kMaster) return;
+    if (macro >= kKillMacro && macro < kKillMacro + Isolator::kBands) {
+        const bool on = std::isfinite(v) && v > 0.5f;
+        killWant_[static_cast<size_t>(ch)][static_cast<size_t>(macro - kKillMacro)] = on;
+        if (!lineWaits()) (*isolators_)[static_cast<size_t>(ch)].setKill(macro - kKillMacro, on);
+        return;
+    }
+    if (macro >= kThrowMacro && macro < kThrowMacro + kBuses) {
+        throwEdge(ch, macro - kThrowMacro, std::isfinite(v) && v > 0.5f);
+        return;
+    }
+    if (macro == kChopMacro) {
+        // The strip's chopper (« Hachoir de voie »): sixteenths on and off, in time with the beat.
+        const bool on = std::isfinite(v) && v > 0.5f;
+        auto& was = chopOn_[static_cast<size_t>(ch)];
+        if (on == was) return;
+        // Switched on between two beats (a finger, any frame): it starts where the beat is, as it
+        // does from a song curve on a beat (it only counts while it plays).
+        if (on && !chopActive(ch)) chops_[static_cast<size_t>(ch)].syncTo(framesSinceBeat_);
+        was = on;
+        chops_[static_cast<size_t>(ch)].setParam(1, on ? 1.0f : 0.0f);
+        return;
+    }
     macros_[static_cast<size_t>(ch)].set(macro, v);
     if (macro == TrackMacros::Space) updateTargets();
 }
@@ -187,7 +219,8 @@ void Mixer::updateTargets() {
         const float space = macros_[ch].get(TrackMacros::Space);
         const float extra[kBuses] = {0.75f * space, 0.5f * std::max(0.0f, space - 0.5f)};
         for (size_t b = 0; b < s.send.size(); ++b) {
-            const float level = std::min(1.0f, s.send[b] + extra[b]);
+            // A throw: the send wide open for its beat.
+            const float level = throws_[ch][b].on ? 1.0f : std::min(1.0f, s.send[b] + extra[b]);
             s.sendGain[b].setTarget(level * level * (pad ? drumsFader : 1.0f));
         }
     }
@@ -214,16 +247,62 @@ void Mixer::process(const float* const* channels, const float* const* rights, co
                 end = ev.offset;
             }
         }
+        for (int e = 0; e < settingCount_; ++e) {
+            auto& ev = settingEvents_[static_cast<size_t>(e)];
+            if (ev.offset < 0) continue;
+            if (ev.offset <= offset) {
+                applySetting(ev);
+                ev.offset = -1;
+            } else if (ev.offset < end) {
+                end = ev.offset;
+            }
+        }
+        // A chunk starts on every step: the live switches waiting for a grid line take effect on
+        // its first frame, whatever the size of the blocks (the export sounds like the take).
+        for (int e = 0; e < events_; ++e) {
+            const int at = eventOffset_[static_cast<size_t>(e)];
+            if (at > offset && at < end) end = at;
+        }
+        for (int e = 0; e < events_; ++e) {
+            if (eventOffset_[static_cast<size_t>(e)] == offset) liveLine(eventStep_[static_cast<size_t>(e)], eventBar_[static_cast<size_t>(e)]);
+        }
         const int n = end - offset;
+        // Without a transport, a throw lasts a beat of frames.
+        if (anyThrow_ && !clock_) {
+            for (int ch = 0; ch < kChannels; ++ch) {
+                for (int b = 0; b < kBuses; ++b) {
+                    auto& t = throws_[static_cast<size_t>(ch)][static_cast<size_t>(b)];
+                    if (!t.on || t.endStep >= 0) continue;
+                    t.framesLeft -= n;
+                    if (t.framesLeft <= 0.0) {
+                        t.on = false;
+                        updateTargets();
+                        updateMasterSends();
+                    }
+                }
+            }
+        }
+        updateMasterSends();
         // Hand this chunk's sidechain events to the pumps (every insert slot, master included).
+        int beatAt = -1;
         for (int e = 0; e < events_; ++e) {
             const int at = eventOffset_[static_cast<size_t>(e)];
             if (at < offset || at >= offset + n) continue;
             for (auto& strip : inserts_) {
-                for (auto& slot : strip) slot.sidechain(at - offset, eventKick_[static_cast<size_t>(e)], eventBeat_[static_cast<size_t>(e)]);
+                for (auto& slot : strip) {
+                    slot.sidechain(at - offset, eventKick_[static_cast<size_t>(e)], eventBeat_[static_cast<size_t>(e)], eventStep_[static_cast<size_t>(e)]);
+                }
             }
-            perf_.onStep(at - offset);
+            perf_.onStep(at - offset, eventStep_[static_cast<size_t>(e)], eventBar_[static_cast<size_t>(e)]);
+            if (eventBeat_[static_cast<size_t>(e)]) {
+                beatAt = at;
+                for (size_t ch = 0; ch < chops_.size(); ++ch) {
+                    if (chopActive(static_cast<int>(ch))) chops_[ch].beat(at - offset);
+                }
+            }
         }
+        // Frames since the last beat at this chunk's end (a chopper switched on there starts in phase).
+        framesSinceBeat_ = beatAt >= 0 ? offset + n - beatAt : framesSinceBeat_ + n;
         processChunk(channels, rights, direct, out + static_cast<size_t>(offset) * outChannels, n, outChannels, offset);
         offset = end;
     }
@@ -233,7 +312,31 @@ void Mixer::process(const float* const* channels, const float* const* rights, co
         if (ev.offset >= 0) applyGate(ev.ch, ev.slot, ev.on);
     }
     gateCount_ = 0;
+    for (int e = 0; e < settingCount_; ++e) {
+        const auto& ev = settingEvents_[static_cast<size_t>(e)];
+        if (ev.offset >= 0) applySetting(ev);
+    }
+    settingCount_ = 0;
     events_ = 0;
+}
+
+void Mixer::scheduleSetting(int kind, int a, int b, float v, int offset) {
+    const SettingEvent e{kind, a, b, v, std::max(0, offset)};
+    // Full (never with 16 lanes a step): at once rather than lost.
+    if (settingCount_ >= static_cast<int>(settingEvents_.size())) {
+        applySetting(e);
+        return;
+    }
+    settingEvents_[static_cast<size_t>(settingCount_++)] = e;
+}
+
+void Mixer::applySetting(const SettingEvent& e) {
+    switch (e.kind) {
+        case PerformanceSetting: setPerformance(e.a, e.v); break;
+        case ReturnSetting: setBusReturn(e.a, e.v); break;
+        case MacroSetting: setMacro(e.a, e.b, e.v); break;
+        default: break;
+    }
 }
 
 void Mixer::processChunk(const float* const* channels, const float* const* rights, const float* direct, float* out, int n,
@@ -268,6 +371,9 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
         }
         if (activeInserts_[static_cast<size_t>(ch)] > 0) processInserts(ch, chL_.data(), chR_.data(), n);
         macros_[static_cast<size_t>(ch)].process(chL_.data(), chR_.data(), n);
+        if (chopActive(ch)) chops_[static_cast<size_t>(ch)].process(chL_.data(), chR_.data(), n);
+        auto& iso = (*isolators_)[static_cast<size_t>(ch)];
+        if (iso.active()) iso.process(chL_.data(), chR_.data(), n);
         // An effect that blew up (extreme settings on a very loud sound): this strip goes quiet
         // for one block and its effects start again from silence, instead of a NaN reaching the
         // buses and the master, where it would stay for good.
@@ -278,6 +384,7 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
             std::fill(chR_.begin(), chR_.begin() + n, 0.0f);
             for (auto& slot : inserts_[static_cast<size_t>(ch)]) slot.reset();
             macros_[static_cast<size_t>(ch)].reset();
+            iso.reset();
             blewUp_.store(true, std::memory_order_relaxed);
         }
         float peak = 0.0f;
@@ -297,9 +404,40 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
         }
         blockPeaks[static_cast<size_t>(ch)] = peak;
     }
+    // The whole mix into the buses (the build-up, a whole-mix throw).
+    for (size_t b = 0; b < kBuses; ++b) {
+        auto& g = masterSend_[b];
+        if (g.target() <= 0.0f && g.current() <= 0.0f) continue;
+        for (int i = 0; i < n; ++i) {
+            // Back at rest on a frame of its own (not a block's): the same whatever the blocks.
+            if (g.target() <= 0.0f && g.current() < 1e-5f) g.snap(0.0f);
+            const float k = g.next();
+            busL_[b][static_cast<size_t>(i)] += mL_[static_cast<size_t>(i)] * k;
+            busR_[b][static_cast<size_t>(i)] += mR_[static_cast<size_t>(i)] * k;
+        }
+    }
     // Send returns, then the metronome / test tone, then the master inserts.
-    reverb_.process(busL_[0].data(), busR_[0].data(), mL_.data(), mR_.data(), n);
-    delay_.process(busL_[1].data(), busR_[1].data(), mL_.data(), mR_.data(), n);
+    for (size_t b = 0; b < kBuses; ++b) {
+        auto& ret = busReturn_[b];
+        const bool plain = ret.target() == 1.0f && ret.current() == 1.0f;
+        // Turned by the live grid: the effect plays into its own buffer, then into the mix scaled.
+        float* outL = plain ? mL_.data() : retL_.data();
+        float* outR = plain ? mR_.data() : retR_.data();
+        if (!plain) {
+            std::fill(retL_.begin(), retL_.begin() + n, 0.0f);
+            std::fill(retR_.begin(), retR_.begin() + n, 0.0f);
+        }
+        if (b == 0) reverb_.process(busL_[b].data(), busR_[b].data(), outL, outR, n);
+        else delay_.process(busL_[b].data(), busR_[b].data(), outL, outR, n);
+        if (plain) continue;
+        for (int i = 0; i < n; ++i) {
+            const float g = ret.next();
+            mL_[static_cast<size_t>(i)] += retL_[static_cast<size_t>(i)] * g;
+            mR_[static_cast<size_t>(i)] += retR_[static_cast<size_t>(i)] * g;
+        }
+        // Back at rest: the plain path again from the next block.
+        if (std::fabs(ret.current() - ret.target()) < 1e-5f) ret.snap(ret.target());
+    }
     if (direct) {
         for (int i = 0; i < n; ++i) {
             mL_[static_cast<size_t>(i)] += direct[offset + i];
@@ -352,6 +490,156 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
     for (int ch = 0; ch < kChannels; ++ch) storeMax(peaks_[static_cast<size_t>(ch)], blockPeaks[static_cast<size_t>(ch)]);
     storeMax(masterPeak_, masterPeak);
     limiterGainOut_.store(minGain, std::memory_order_relaxed);
+}
+
+// --- The Live page's switches --------------------------------------------------------------
+
+void Mixer::setPerformance(int param, float v) {
+    if (!std::isfinite(v)) return;
+    const bool on = v > 0.5f;
+    switch (param) {
+        case PerformanceFx::kReverbReturn:
+        case PerformanceFx::kEchoReturn: setBusReturn(param - PerformanceFx::kReverbReturn, 2.0f * std::clamp(v, 0.0f, 1.0f)); return;
+        case PerformanceFx::ReverbFreeze:
+            freezeWant_ = on;
+            if (!lineWaits()) reverb_.setFreeze(on);
+            return;
+        case PerformanceFx::ThrowReverb:
+        case PerformanceFx::ThrowEcho: throwEdge(kMaster, param - PerformanceFx::ThrowReverb, on); return;
+        case PerformanceFx::Drop:
+            // The buses' part of the drop, on the same bar line as the master's effects.
+            if (on && !dropWant_) {
+                if (clock_) dropPending_ = true;
+                else liveReset();
+            }
+            dropWant_ = on;
+            break;
+        case PerformanceFx::ResetAll:
+            if (on && !resetWant_) liveReset();
+            resetWant_ = on;
+            break;
+        default: break;
+    }
+    perf_.setParam(param, v);
+    if (param == PerformanceFx::BuildUp) updateMasterSends();
+}
+
+void Mixer::setClockRunning(bool on) {
+    if (on == clock_) return;
+    clock_ = on;
+    perf_.setClock(on);
+    if (on) return;
+    // Stopped: what waited for a line happens now; a throw counting steps ends.
+    reverb_.setFreeze(freezeWant_);
+    for (size_t ch = 0; ch < killWant_.size(); ++ch) {
+        for (int b = 0; b < Isolator::kBands; ++b) (*isolators_)[ch].setKill(b, killWant_[ch][static_cast<size_t>(b)]);
+    }
+    for (int ch = 0; ch < kChannels; ++ch) {
+        for (int b = 0; b < kBuses; ++b) {
+            auto& t = throws_[static_cast<size_t>(ch)][static_cast<size_t>(b)];
+            if (t.pending) startThrow(ch, b);
+            else if (t.on && t.endStep >= 0) t.on = false;
+        }
+    }
+    if (dropPending_) liveReset();
+    updateTargets();
+    updateMasterSends();
+}
+
+void Mixer::throwEdge(int ch, int bus, bool on) {
+    if (ch < 0 || ch >= kChannels || bus < 0 || bus >= kBuses) return;
+    auto& t = throws_[static_cast<size_t>(ch)][static_cast<size_t>(bus)];
+    // A press: the next beat line (at once without the grid or a transport).
+    if (on && !t.want) {
+        if (lineWaits()) {
+            t.pending = true;
+            anyThrow_ = true;
+        } else {
+            startThrow(ch, bus);
+        }
+    }
+    t.want = on;
+}
+
+void Mixer::startThrow(int ch, int bus) {
+    auto& t = throws_[static_cast<size_t>(ch)][static_cast<size_t>(bus)];
+    t.pending = false;
+    t.on = true;
+    // One beat: to the step a beat after this one (or a beat of frames with no transport).
+    t.endStep = clock_ && lastStep_ >= 0 ? lastStep_ + 4 : -1;
+    t.framesLeft = 4.0 * stepFrames_;
+    anyThrow_ = true;
+    updateTargets();
+    updateMasterSends();
+}
+
+void Mixer::updateMasterSends() {
+    for (int b = 0; b < kBuses; ++b) {
+        const float t = throws_[kMaster][static_cast<size_t>(b)].on ? 1.0f : perf_.buildSend(b);
+        masterSend_[static_cast<size_t>(b)].setTarget(t);
+    }
+}
+
+void Mixer::liveLine(int step, int stepsPerBar) {
+    if (step < 0) return;
+    lastStep_ = step;
+    const int grid = perf_.gridSteps();
+    const bool onGrid = grid <= 0 || step % grid == 0;
+    if (dropPending_ && stepsPerBar > 0 && step % stepsPerBar == 0) liveReset();
+    if (onGrid && reverb_.frozen() != freezeWant_) reverb_.setFreeze(freezeWant_);
+    if (onGrid) {
+        for (size_t ch = 0; ch < killWant_.size(); ++ch) {
+            auto& iso = (*isolators_)[ch];
+            for (int b = 0; b < Isolator::kBands; ++b) {
+                if (iso.kill(b) != killWant_[ch][static_cast<size_t>(b)]) iso.setKill(b, killWant_[ch][static_cast<size_t>(b)]);
+            }
+        }
+    }
+    if (!anyThrow_) return;
+    bool any = false, changed = false;
+    for (int ch = 0; ch < kChannels; ++ch) {
+        for (int b = 0; b < kBuses; ++b) {
+            auto& t = throws_[static_cast<size_t>(ch)][static_cast<size_t>(b)];
+            if (t.on && t.endStep >= 0 && step >= t.endStep) {
+                t.on = false;
+                changed = true;
+            }
+            // Throws wait for a beat line.
+            if (t.pending && step % 4 == 0) {
+                t.pending = false;
+                t.on = true;
+                t.endStep = step + 4;
+                t.framesLeft = 4.0 * stepFrames_;
+                changed = true;
+            }
+            any |= t.on || t.pending;
+        }
+    }
+    anyThrow_ = any;
+    if (changed) {
+        updateTargets();
+        updateMasterSends();
+    }
+}
+
+void Mixer::liveReset() {
+    // « Tout remettre » (or the drop on its bar line): the freeze, the throws, the strips' kills and
+    // the returns back at rest; the master's effects reset themselves (PerformanceFx).
+    dropPending_ = false;
+    freezeWant_ = false;
+    reverb_.setFreeze(false);
+    for (auto& strip : throws_) {
+        for (auto& t : strip) t = Throw{t.want, false, false, -1, 0.0};
+    }
+    anyThrow_ = false;
+    for (size_t ch = 0; ch < killWant_.size(); ++ch) {
+        killWant_[ch].fill(false);
+        for (int b = 0; b < Isolator::kBands; ++b) (*isolators_)[ch].setKill(b, false);
+    }
+    for (int b = 0; b < kBuses; ++b) setBusReturn(b, 1.0f);
+    perf_.setParam(PerformanceFx::BuildUp, 0.0f);  // its sends close with the rest (the drop's bar line)
+    updateTargets();
+    updateMasterSends();
 }
 
 }  // namespace ps

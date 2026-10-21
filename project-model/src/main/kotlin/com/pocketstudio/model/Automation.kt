@@ -135,3 +135,19 @@ fun Project.automationBefore(index: Int): Map<Int, Float> {
     }
     return out
 }
+
+/**
+ * The value of each song lane (by index) on the bar where scene [scene] first plays in the song:
+ * the scene played on its own holds them there (song curves only move with the song). Lanes
+ * without points, or a scene not in the song, are not listed (the mixer's own setting holds).
+ */
+fun Project.songCurvesAt(scene: Int): Map<Int, Float> {
+    val part = song.indexOfFirst { it.scene == scene }
+    if (part < 0) return emptyMap()
+    val bar = songStepOf(part) / stepsPerBar
+    val out = HashMap<Int, Float>()
+    automation.forEachIndexed { i, lane ->
+        if (lane.mode == AutomationLane.SONG) lane.songCurve(bar + 1).getOrNull(bar)?.let { out[i] = it }
+    }
+    return out
+}

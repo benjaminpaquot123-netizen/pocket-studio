@@ -132,7 +132,7 @@ fun GenerateScreen(ui: GenerateUi, actions: GenerateActions) {
 private fun GenerateFooter(ui: GenerateUi, actions: GenerateActions) {
     Text(
         "Powered by Stability AI · Stable Audio Open Small, " + tr("licence Stability AI Community.") + " " +
-            tr("Le son est créé sur le téléphone, sans internet."),
+            tr("Le son est créé sur l'appareil, sans internet."),
         style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
         modifier = Modifier.testTag("generate_credit"),
     )
@@ -211,7 +211,7 @@ private fun PromptCard(ui: GenerateUi, actions: GenerateActions) {
                 Button(onClick = actions.generate, enabled = ui.prompt.isNotBlank(), modifier = Modifier.fillMaxWidth().testTag("generate_go")) {
                     Text(if (ui.result == null) tr("Générer") else tr("Générer un autre essai"))
                 }
-                Text(tr("Quelques secondes à une minute selon le téléphone."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                Text(tr("Quelques secondes à une minute selon l'appareil."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
             }
         }
     }

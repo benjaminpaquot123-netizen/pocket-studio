@@ -27,6 +27,10 @@ object SoundLibrary {
             NamedSound("Basse sub", "Basses", synth(OSC1_WAVE to 1f, OSC_MIX to 0f, SUB to 0.9f, CUTOFF to 0.3f, RESONANCE to 0.1f, FILTER_ENV to 0.2f, A_RELEASE to 0.15f)),
             NamedSound("Basse reese", "Basses", synth(OSC2_DETUNE to 0.75f, CUTOFF to 0.42f, RESONANCE to 0.25f, SUB to 0.4f, SWEEP to 0.2f, LFO2_RATE to 0.15f, A_RELEASE to 0.2f)),
             NamedSound("Reese moderne", "Basses", synth(UNISON to 0.67f, UNISON_DETUNE to 0.35f, OSC_MIX to 0.3f, OSC2_DETUNE to 0.7f, CUTOFF to 0.36f, RESONANCE to 0.2f, SUB to 0.5f, SWEEP to 0.25f, LFO2_RATE to 0.12f, A_RELEASE to 0.2f)),
+            // The dubstep wobble: a deep filter sweep locked to the tempo (eighth notes), restarted on each note.
+            NamedSound("Basse wobble", "Basses", synth(OSC2_WAVE to 0.5f, OSC2_DETUNE to 0.55f, OSC_MIX to 0.45f, SUB to 0.7f, CUTOFF to 0.37f, RESONANCE to 0.45f, FILTER_ENV to 0f, SWEEP to 0.9f, LFO2_RATE to 0.64f, LFO2_SYNC to syncValue(SYNC_EIGHTH), A_ATTACK to 0f, A_SUSTAIN to 1f, A_RELEASE to 0.15f)),
+            // The speed garage bass that "talks": a reese whose filter opens and closes every half note, sliding between notes.
+            NamedSound("Basse qui parle", "Basses", synth(OSC2_DETUNE to 0.7f, OSC_MIX to 0.5f, SUB to 0.6f, CUTOFF to 0.33f, RESONANCE to 0.45f, FILTER_ENV to 0.2f, SWEEP to 0.75f, LFO2_RATE to 0.45f, LFO2_SYNC to syncValue(SYNC_HALF), GLIDE to 0.4f, A_RELEASE to 0.2f)),
             NamedSound("Lead", "Leads", SynthPatch.PRESETS[1].second),
             NamedSound("Lead carré", "Leads", synth(OSC1_WAVE to 0.5f, OSC2_WAVE to 0.5f, OSC2_DETUNE to 0.52f, CUTOFF to 0.75f, RESONANCE to 0.2f, VIBRATO to 0.1f, LFO1_RATE to 0.5f)),
             NamedSound("Lead acide", "Leads", synth(CUTOFF to 0.28f, RESONANCE to 0.8f, FILTER_ENV to 0.8f, F_DECAY to 0.2f, F_SUSTAIN to 0f, A_RELEASE to 0.15f)),
@@ -52,6 +56,8 @@ object SoundLibrary {
         NamedSound("Basse analogique", "Basses", PlaitsPatch(model = 8, harmonics = 0.3f, timbre = 0.35f, morph = 0.2f, decay = 0.35f)),
         NamedSound("Basse FM", "Basses", PlaitsPatch(model = 10, harmonics = 0.25f, timbre = 0.45f, morph = 0.3f, decay = 0.3f)),
         NamedSound("Basse pincée", "Basses", PlaitsPatch(model = 19, harmonics = 0.3f, timbre = 0.3f, morph = 0.4f, decay = 0.4f)),
+        // The amapiano log drum: Plaits' bass drum played on the notes, a tuned thud whose pitch drops.
+        NamedSound("Log drum", "Basses", PlaitsPatch(model = 21, harmonics = 0.6f, timbre = 0.45f, morph = 0.55f, decay = 0.6f)),
         NamedSound("Lead filtré", "Leads", PlaitsPatch(model = 0, harmonics = 0.6f, timbre = 0.6f, morph = 0.5f, decay = 0.7f)),
         NamedSound("Lead chiptune", "Leads", PlaitsPatch(model = 7, harmonics = 0.5f, timbre = 0.5f, morph = 0.3f, decay = 0.6f)),
         NamedSound("Voix robot", "Leads", PlaitsPatch(model = 11, harmonics = 0.4f, timbre = 0.6f, morph = 0.5f, decay = 0.7f)),
@@ -63,7 +69,7 @@ object SoundLibrary {
         NamedSound("Cloche", "Pluck", PlaitsPatch(model = 20, harmonics = 0.75f, timbre = 0.7f, morph = 0.7f, decay = 0.7f)),
         NamedSound("Grosse caisse", "Batterie", PlaitsPatch(model = 21, harmonics = 0.4f, timbre = 0.5f, morph = 0.4f, decay = 0.5f)),
         NamedSound("Caisse claire", "Batterie", PlaitsPatch(model = 22, harmonics = 0.5f, timbre = 0.5f, morph = 0.5f, decay = 0.4f)),
-        NamedSound("Charleston", "Batterie", PlaitsPatch(model = 23, harmonics = 0.5f, timbre = 0.6f, morph = 0.3f, decay = 0.2f)),
+        NamedSound("Charley", "Batterie", PlaitsPatch(model = 23, harmonics = 0.5f, timbre = 0.6f, morph = 0.3f, decay = 0.2f)),
         NamedSound("Pluie", "Effets", PlaitsPatch(model = 18, harmonics = 0.5f, timbre = 0.6f, morph = 0.5f, decay = 0.8f)),
         NamedSound("Vent", "Effets", PlaitsPatch(model = 17, harmonics = 0.3f, timbre = 0.4f, morph = 0.6f, decay = 0.9f, release = 0.8f)),
     )

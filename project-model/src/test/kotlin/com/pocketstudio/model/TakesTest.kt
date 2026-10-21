@@ -169,7 +169,7 @@ class TakesTest {
         assertEquals(0.0, c.bpm, 0.0)
         assertEquals(32, c.engineLoopSteps(64, 120.0))
         assertNull(AudioClip("a.wav", "a", offsetMs = Float.NaN).sanitized().offsetMs.takeIf { it != 0f })
-        assertEquals(200f, AudioClip("a.wav", "a", offsetMs = 900f).sanitized().offsetMs)
+        assertEquals(AudioClip.MAX_OFFSET_MS, AudioClip("a.wav", "a", offsetMs = 900f).sanitized().offsetMs)
         assertEquals(-240, AudioClip("a.wav", "a", offsetMs = -5f).offsetFrames(48000))
         assertTrue(AudioClip("a.wav", "a", bpm = 124.0).tempoDiffers(126.0))
         assertFalse(AudioClip("a.wav", "a").tempoDiffers(126.0))

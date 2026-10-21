@@ -11,7 +11,8 @@ import org.junit.Test
 class SceneInfoTest {
     @Test
     fun theSceneShownSaysWhatItIs() {
-        val style = StarterWizard.style("house")!!
+        // A song: three sections (A, B, C), D free.
+        val style = StarterWizard.style("pop")!!
         val p = StarterWizard.build(style, style.lines.associate { it.role to null as PadSample? })
         assertEquals("", sceneInfo(p))
         assertTrue(sceneInfo(p.switchScene(3)).startsWith("Scène D : nouvelle et vide"))

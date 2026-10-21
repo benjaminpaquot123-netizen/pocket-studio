@@ -110,7 +110,7 @@ fun LivePadsCard(ui: LivePadsUi, actions: LivePadsActions) {
         }
         Text(
             if (ui.editing == null) tr("Touche un pad pour lancer son son, retouche-le pour l'arrêter. Tout reste calé sur le temps.")
-            else tr("Choisis le son du pad %d et sa longueur, puis « Jouer ».", ui.editing + 1),
+            else tr("Choisis le son du pad %d et sa longueur, puis « Terminé ».", ui.editing + 1),
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
         )
         FlowRow(itemVerticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -194,7 +194,7 @@ private fun PadEditor(pad: Int, clip: LiveClip?, drumSounds: List<Pair<Int, Stri
             }
             OutlinedButton(onClick = { actions.import(pad) }, modifier = Modifier.weight(1f).testTag("live_import")) {
                 Icon(Icons.Filled.FileOpen, contentDescription = null)
-                Text(" " + tr("Du téléphone"))
+                Text(" " + tr("De l'appareil"))
             }
         }
         Text(tr("« Générer » fabrique une boucle à partir d'une phrase (Audio › Générer), puis la pose sur un pad live libre."),

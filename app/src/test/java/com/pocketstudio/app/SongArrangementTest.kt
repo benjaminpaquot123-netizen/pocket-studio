@@ -119,6 +119,9 @@ class SongArrangementTest {
         val vm = RhythmViewModel(app)
         assertFalse(vm.listensToSong)  // no song yet: ▶ plays the scene
         vm.addSongPart(0)
+        // Until chosen: the section being edited on the editing tabs, the song on the Morceau tab.
+        assertFalse(vm.listensToSong)
+        vm.onSongTab = true
         assertTrue(vm.listensToSong)
         vm.setListenSong(false)
         assertFalse(vm.listensToSong)
@@ -194,6 +197,9 @@ class SongArrangementTest {
                 setFollowSong = { set += "follow $it" },
             ),
         )
+        // The same words as the switch next to Play in the Rhythm tab: one setting, one label.
+        compose.onNode(androidx.compose.ui.test.hasTestTag("listen_0") and androidx.compose.ui.test.hasText("cette section")).assertExists()
+        compose.onNode(androidx.compose.ui.test.hasTestTag("listen_1") and androidx.compose.ui.test.hasText("tout le morceau")).assertExists()
         compose.onNodeWithTag("listen_0").performClick()
         compose.onNodeWithTag("song_end_1").performScrollTo().performClick()
         compose.onNodeWithTag("follow_1").performScrollTo().performClick()

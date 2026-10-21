@@ -3,6 +3,7 @@
 package com.pocketstudio.app.rhythm
 
 import com.pocketstudio.model.i18n.tr
+import com.pocketstudio.model.i18n.percent
 
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.ui.input.pointer.pointerInput
@@ -34,6 +35,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
 import com.pocketstudio.ui.aspectRatioAtMost
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -97,6 +99,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.hasOwnFx
+import com.pocketstudio.model.allScenes
+import com.pocketstudio.model.sceneLabel
 import com.pocketstudio.ui.MonoStyle
 import com.pocketstudio.ui.Neon
 import com.pocketstudio.ui.pillColors
@@ -198,6 +202,7 @@ fun RhythmScreen(
     // On a tablet the pads stay on the left and the steps of the chosen pad on the right.
     com.pocketstudio.ui.AdaptivePanes(
         modifier.testTag("rhythm"),
+        spacing = 8.dp,
         first = {
             header(showGrid)
             TransportBar(project, transport, canUndo, canRedo, actions, listenSong)
@@ -222,8 +227,11 @@ fun RhythmScreen(
 
 @Composable
 private fun TransportBar(project: Project, transport: TransportUi, canUndo: Boolean, canRedo: Boolean, actions: RhythmActions, listenSong: Boolean?) {
+    // A small phone (360 dp): a slimmer Play, and redo left to the top bar, so the listening
+    // choice and « Taper » keep their words.
+    val narrow = androidx.compose.ui.platform.LocalConfiguration.current.screenWidthDp < 380
     NeonCard {
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(if (narrow) 6.dp else 8.dp)) {
             val playColor = if (transport.playing) Neon.Magenta else Neon.Cyan
             val shape = RoundedCornerShape(18.dp)
             Row(
@@ -232,7 +240,7 @@ private fun TransportBar(project: Project, transport: TransportUi, canUndo: Bool
                     .clip(shape)
                     .background(Brush.verticalGradient(listOf(lerp(playColor, Color.White, 0.18f), playColor, lerp(playColor, Color.Black, 0.12f))))
                     .clickable(role = Role.Button, onClick = actions.togglePlay)
-                    .padding(horizontal = 22.dp)
+                    .padding(horizontal = if (narrow) 14.dp else 22.dp)
                     .testTag("transport_play"),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -245,8 +253,10 @@ private fun TransportBar(project: Project, transport: TransportUi, canUndo: Bool
             IconButton(onClick = actions.undo, enabled = canUndo, modifier = Modifier.size(44.dp)) {
                 Icon(Icons.AutoMirrored.Filled.Undo, contentDescription = tr("Annuler la dernière action"))
             }
-            IconButton(onClick = actions.redo, enabled = canRedo, modifier = Modifier.size(44.dp)) {
-                Icon(Icons.AutoMirrored.Filled.Redo, contentDescription = tr("Rétablir"))
+            if (!narrow) {
+                IconButton(onClick = actions.redo, enabled = canRedo, modifier = Modifier.size(44.dp)) {
+                    Icon(Icons.AutoMirrored.Filled.Redo, contentDescription = tr("Rétablir"))
+                }
             }
         }
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -255,7 +265,7 @@ private fun TransportBar(project: Project, transport: TransportUi, canUndo: Bool
             Row(
                 Modifier.clip(RoundedCornerShape(10.dp)).background(Color.Black.copy(alpha = 0.35f))
                     .border(1.dp, Color.White.copy(alpha = 0.06f), RoundedCornerShape(10.dp))
-                    .padding(horizontal = 12.dp, vertical = 4.dp).testTag("tempo"),
+                    .padding(horizontal = if (narrow) 8.dp else 12.dp, vertical = 4.dp).testTag("tempo"),
                 verticalAlignment = Alignment.Bottom,
             ) {
                 Text("${project.tempoBpm.roundToInt()}", style = MonoStyle.copy(fontSize = 26.sp, fontWeight = FontWeight.ExtraBold), color = Neon.Cyan)
@@ -267,6 +277,7 @@ private fun TransportBar(project: Project, transport: TransportUi, canUndo: Bool
             OutlinedButton(
                 onClick = actions.tapTempo,
                 colors = ButtonDefaults.outlinedButtonColors(contentColor = Neon.TextPrimary),
+                contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = if (narrow) 12.dp else 24.dp),
                 modifier = Modifier.testTag("tap"),
             ) { Text(tr("Taper"), maxLines = 1, softWrap = false) }
         }
@@ -332,7 +343,10 @@ private const val REPEAT_FASTEST_MS = 50L
 @Composable
 private fun PadGrid(project: Project, selected: Int, lit: Set<Int>, onHit: (Int) -> Unit, compact: Boolean = false) {
     val haptics = LocalHapticFeedback.current
-    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+    // A tablet held upright gets the one column too (600 dp wide): taller pads, not a phone's flat ones.
+    val padHeight = if (androidx.compose.ui.platform.LocalConfiguration.current.smallestScreenWidthDp >= 600) TABLET_COLUMN_PAD_HEIGHT else PHONE_PAD_HEIGHT
+    // A phone: rows a little closer, so the first row of cells stays on screen under the pads.
+    Column(verticalArrangement = Arrangement.spacedBy(if (compact) 4.dp else 6.dp)) {
         for (row in 0 until 4) {
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 for (col in 0 until 4) {
@@ -347,15 +361,16 @@ private fun PadGrid(project: Project, selected: Int, lit: Set<Int>, onHit: (Int)
                             onHit(lane)
                         },
                         // On a phone, lower pads leave the first row of steps on screen.
-                        modifier = Modifier.weight(1f).then(if (compact) Modifier.height(PHONE_PAD_HEIGHT) else Modifier).testTag("pad_$lane"),
+                        modifier = Modifier.weight(1f).then(if (compact) Modifier.height(padHeight) else Modifier).testTag("pad_$lane"),
                         ratio = !compact,
                     )
                 }
             }
         }
         // A pad only sounds: what stays in the beat is in the cells (beginners tap pads and wait).
+        // One short line: on a 360 dp phone the cells must start on screen.
         Text(
-            tr("Les pads font juste sonner :") + "\n" + tr("pour garder un coup, touche les cases."),
+            tr("Les pads sonnent, les cases gardent les coups."),
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth().testTag("pads_hint"),
         )
@@ -364,6 +379,9 @@ private fun PadGrid(project: Project, selected: Int, lit: Set<Int>, onHit: (Int)
 
 /** A phone pad's height (wide pads, a little lower than on a tablet). */
 private val PHONE_PAD_HEIGHT = 56.dp
+
+/** A pad on an upright 8.7" tablet (one column, 600 dp wide): the first cells still show under them. */
+private val TABLET_COLUMN_PAD_HEIGHT = 80.dp
 
 /** The pad's name: the sound placed on it (a sample, a library sound), else the kit voice's name. */
 internal fun padName(project: Project, lane: Int): String =
@@ -409,7 +427,8 @@ private fun DrumPad(name: String, color: Color, selected: Boolean, lit: Boolean,
             color = lerp(Neon.TextPrimary, Color(0xFF1E2023), glow),
             maxLines = 2,
             overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
-            modifier = Modifier.padding(horizontal = if (ratio) 4.dp else 12.dp, vertical = 2.dp).padding(bottom = if (ratio) 0.dp else 4.dp),
+            // A phone's pads are narrow (80 dp on a 360 dp phone): « Cymbale » must not break mid-word.
+            modifier = Modifier.padding(horizontal = if (ratio) 4.dp else 8.dp, vertical = 2.dp).padding(bottom = if (ratio) 0.dp else 4.dp),
         )
         // A small LED when the pad has hits in the loop.
         if (hasHits) {
@@ -452,49 +471,41 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, playing: Boo
     val chipColors = pillColors()
     NeonCard {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            SectionLabel(if (allPads) tr("Pas : tous les pads") else tr("Pas : %s", DrumKitInfo.names[lane]), color = if (allPads) Neon.Cyan else color, help = Glossary.STEP, foldKey = "Pas")
-            Box(Modifier.weight(1f))
+            // The sound on the pad now (« Kick de ma voix ») and the section being edited (the top bar
+            // only has room for its letter on a narrow phone); a long name wraps.
+            val section = if (project.allScenes.size > 1) " · " + com.pocketstudio.model.Scene.shownLabel(project.sceneLabel(project.scene)).ifBlank { com.pocketstudio.model.Scene.NAMES.getOrElse(project.scene) { "?" } } else ""
+            SectionLabel(
+                (if (allPads) tr("Pas : tous les pads") else tr("Pas : %s", padName(project, lane))) + section, Modifier.weight(1f),
+                color = if (allPads) Neon.Cyan else color, help = Glossary.STEP, foldKey = "Pas",
+            )
             FilterChip(selected = allPads, onClick = { allPads = !allPads }, label = { Text(tr("Tous les pads"), maxLines = 1, softWrap = false) }, colors = chipColors,
                 modifier = Modifier.testTag("all_pads"))
-            if (!allPads) TextButton(onClick = actions.clearPad, enabled = hits.isNotEmpty()) { Text(tr("Effacer"), maxLines = 1, softWrap = false) }
         }
-        FlowRow(itemVerticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            Text(tr("Longueur"), style = MaterialTheme.typography.bodyMedium)
-            (1..4).filter { it * per <= 64 }.forEach { b ->
-                FilterChip(selected = bars == b, onClick = { actions.setBars(b) }, label = { Text(if (b == 1) tr("1 mesure") else "$b") },
-                    colors = chipColors, modifier = Modifier.testTag("drum_bars_$b"))
-            }
-        }
-        if (bars > 1) {
+        // The loop's length and its bar pages come under the cells: on a phone the first row of
+        // cells stays on screen under the pads (the length is changed far less often than hits).
+        val lengths: @Composable () -> Unit = {
             FlowRow(itemVerticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                Text(tr("Mesure"), style = MaterialTheme.typography.bodyMedium)
-                (0 until bars).forEach { b ->
-                    FilterChip(selected = bar == b, onClick = { chosenBar = b; follow = false }, label = { Text("${b + 1}") },
-                        colors = chipColors, modifier = Modifier.testTag("drum_page_$b"))
+                Text(tr("Longueur"), style = MaterialTheme.typography.bodyMedium)
+                (1..4).filter { it * per <= 64 }.forEach { b ->
+                    FilterChip(selected = bars == b, onClick = { actions.setBars(b) }, label = { Text(if (b == 1) tr("1 mesure") else "$b") },
+                        colors = chipColors, modifier = Modifier.testTag("drum_bars_$b"))
                 }
-                FilterChip(selected = follow, onClick = { follow = !follow; chosenBar = bar }, label = { Text(tr("Suivre")) }, colors = chipColors)
+            }
+            if (bars > 1) {
+                FlowRow(itemVerticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Text(tr("Mesure"), style = MaterialTheme.typography.bodyMedium)
+                    (0 until bars).forEach { b ->
+                        FilterChip(selected = bar == b, onClick = { chosenBar = b; follow = false }, label = { Text("${b + 1}") },
+                            colors = chipColors, modifier = Modifier.testTag("drum_page_$b"))
+                    }
+                    FilterChip(selected = follow, onClick = { follow = !follow; chosenBar = bar }, label = { Text(tr("Suivre")) }, colors = chipColors)
+                }
             }
         }
         if (allPads) {
             AllPadsGrid(project, bar, currentStep, actions)
+            lengths()
             return@NeonCard
-        }
-        Row(Modifier.fadingHorizontalScroll(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-            FilterChip(selected = tool == 0, onClick = { tool = 0 }, label = { Text(tr("Coups")) }, colors = chipColors)
-            FilterChip(selected = tool == 1, onClick = { tool = 1 }, label = { Text(tr("Roulements")) }, colors = chipColors,
-                modifier = Modifier.testTag("roll_tool"))
-            FilterChip(selected = tool == 2, onClick = { tool = 2 }, label = { Text(tr("Pan")) }, colors = chipColors,
-                modifier = Modifier.testTag("pan_tool"))
-            FilterChip(selected = tool == 3, onClick = { tool = 3 }, label = { Text(tr("Hauteur")) }, colors = chipColors,
-                modifier = Modifier.testTag("pitch_tool"))
-            FilterChip(selected = tool == 4, onClick = { tool = 4 }, label = { Text(tr("Force")) }, colors = chipColors,
-                modifier = Modifier.testTag("velocity_tool"))
-            Text(tr("  Remplir"), style = MaterialTheme.typography.bodySmall)
-            listOf(1 to tr("tout"), 2 to "1/2", 4 to "1/4").forEach { (every, label) ->
-                TextButton(onClick = { actions.fill(every) }, modifier = Modifier.testTag("fill_$every")) { Text(label) }
-            }
-            TextButton(onClick = { actions.rotate(-1) }, enabled = hits.isNotEmpty(), modifier = Modifier.testTag("rotate_left")) { Text("◀") }
-            TextButton(onClick = { actions.rotate(1) }, enabled = hits.isNotEmpty(), modifier = Modifier.testTag("rotate_right")) { Text("▶") }
         }
         for (row in 0 until 2) {
             Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -591,6 +602,29 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, playing: Boo
                 }
             }
         }
+        Row(Modifier.fadingHorizontalScroll(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            FilterChip(selected = tool == 0, onClick = { tool = 0 }, label = { Text(tr("Coups")) }, colors = chipColors)
+            FilterChip(selected = tool == 1, onClick = { tool = 1 }, label = { Text(tr("Roulements")) }, colors = chipColors,
+                modifier = Modifier.testTag("roll_tool"))
+            FilterChip(selected = tool == 2, onClick = { tool = 2 }, label = { Text(tr("Pan")) }, colors = chipColors,
+                modifier = Modifier.testTag("pan_tool"))
+            FilterChip(selected = tool == 3, onClick = { tool = 3 }, label = { Text(tr("Hauteur")) }, colors = chipColors,
+                modifier = Modifier.testTag("pitch_tool"))
+            FilterChip(selected = tool == 4, onClick = { tool = 4 }, label = { Text(tr("Force")) }, colors = chipColors,
+                modifier = Modifier.testTag("velocity_tool"))
+        }
+        // Whole-pad edits, on their own line that wraps: none is cut on a small phone.
+        val tight = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp)
+        val small = Modifier.defaultMinSize(minWidth = 44.dp)
+        FlowRow(itemVerticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+            Text(tr("Remplir"), style = MaterialTheme.typography.bodySmall)
+            listOf(1 to tr("tout"), 2 to "1/2", 4 to "1/4").forEach { (every, label) ->
+                TextButton(onClick = { actions.fill(every) }, contentPadding = tight, modifier = small.testTag("fill_$every")) { Text(label) }
+            }
+            TextButton(onClick = { actions.rotate(-1) }, enabled = hits.isNotEmpty(), contentPadding = tight, modifier = small.testTag("rotate_left")) { Text("◀") }
+            TextButton(onClick = { actions.rotate(1) }, enabled = hits.isNotEmpty(), contentPadding = tight, modifier = small.testTag("rotate_right")) { Text("▶") }
+            TextButton(onClick = actions.clearPad, enabled = hits.isNotEmpty(), contentPadding = tight, modifier = small.testTag("clear_pad")) { Text(tr("Effacer"), maxLines = 1, softWrap = false) }
+        }
         val pickedHit = hits[picked]?.takeIf { tool >= 2 }
         if (pickedHit != null && tool == 2) {
             LabeledSlider(tr("Pan du coup %d", picked % per + 1), panLabel(pickedHit.pan), pickedHit.pan, -1f..1f, steps = 19) {
@@ -598,7 +632,7 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, playing: Boo
             }
         }
         if (pickedHit != null && tool == 4) {
-            LabeledSlider(tr("Force du coup %d", picked % per + 1), "${(pickedHit.velocity * 100).roundToInt()} %", pickedHit.velocity,
+            LabeledSlider(tr("Force du coup %d", picked % per + 1), percent((pickedHit.velocity * 100).roundToInt()), pickedHit.velocity,
                 com.pocketstudio.model.DrumPattern.MIN_VELOCITY..1f) { actions.setHitVelocity(picked, it) }
         }
         if (pickedHit != null && tool == 3 && ownSound) {
@@ -618,6 +652,7 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, playing: Boo
             style = MaterialTheme.typography.bodySmall,
             color = Neon.TextSecondary,
         )
+        lengths()
     }
 }
 
@@ -639,7 +674,7 @@ private fun GrooveCard(project: Project, transport: TransportUi, actions: Rhythm
             Text(tr("Swing"))
             HelpDot(Glossary.SWING)
             Box(Modifier.weight(1f))
-            Text("${(project.swing / Project.MAX_SWING * 100).roundToInt()} %", style = MonoStyle, color = Neon.Cyan)
+            Text(percent((project.swing / Project.MAX_SWING * 100).roundToInt()), style = MonoStyle, color = Neon.Cyan)
         }
         ProSlider(
             value = (project.swing / Project.MAX_SWING).toFloat(),
@@ -791,7 +826,7 @@ internal fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: 
                     }
                 } else {
                     Text(
-                        tr("Mets ton propre son sur ce pad : un fichier du téléphone (MP3, WAV, FLAC, M4A…) ou le micro."),
+                        tr("Mets ton propre son sur ce pad : un fichier de l'appareil (MP3, WAV, FLAC, M4A…) ou le micro."),
                         style = MaterialTheme.typography.bodySmall,
                         color = Neon.TextSecondary,
                     )
@@ -847,10 +882,10 @@ private fun PadSampleControls(s: PadSample, seconds: Double, bpm: Double, edit: 
         HelpDot(Glossary.ENVELOPE)
     }
     if (advanced) {
-        LabeledSlider(tr("Volume"), "${(s.gain * 100).roundToInt()} %", s.gain, 0f..2f) { v -> edit("gain") { it.copy(gain = v) } }
+        LabeledSlider(tr("Volume"), percent((s.gain * 100).roundToInt()), s.gain, 0f..2f) { v -> edit("gain") { it.copy(gain = v) } }
         LabeledSlider(tr("Attaque"), ms(s.attack), s.attack, 0f..1f) { v -> edit("attack") { it.copy(attack = v) } }
         LabeledSlider(tr("Décroissance"), ms(s.decay), s.decay, 0f..2f) { v -> edit("decay") { it.copy(decay = v) } }
-        LabeledSlider(tr("Maintien"), "${(s.sustain * 100).roundToInt()} %", s.sustain, 0f..1f) { v -> edit("sustain") { it.copy(sustain = v) } }
+        LabeledSlider(tr("Maintien"), percent((s.sustain * 100).roundToInt()), s.sustain, 0f..1f) { v -> edit("sustain") { it.copy(sustain = v) } }
         LabeledSlider(tr("Relâche"), ms(s.release), s.release, 0f..2f) { v -> edit("release") { it.copy(release = v) } }
         Text(tr("Groupe d'étouffement : un coup coupe les autres pads du même groupe (charleston ouvert/fermé)."),
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
@@ -916,7 +951,7 @@ private fun SlicerPanel(s: SlicerUi, info: SampleInfo, lane: Int, color: Color, 
     when (s.mode) {
         SliceMode.Attacks -> LabeledSlider(
             tr("Sensibilité"),
-            if (s.busy) "…" else "${(s.sensitivity * 100).roundToInt()} %",
+            if (s.busy) "…" else percent((s.sensitivity * 100).roundToInt()),
             s.sensitivity, 0f..1f,
         ) { actions.setSliceSensitivity(it) }
         SliceMode.Grid -> FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {

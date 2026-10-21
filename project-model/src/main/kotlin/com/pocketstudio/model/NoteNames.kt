@@ -2,7 +2,7 @@ package com.pocketstudio.model
 
 /**
  * Note names as the screens show them, following Réglages › Notation: French (Do Ré Mi, the French
- * octave numbers: middle C = Do 3) or English (C D E, middle C = C4). Every screen that names a
+ * octave numbers: middle C = Do3) or English (C D E, middle C = C4). Every screen that names a
  * note goes through here, so the setting is never half applied.
  */
 object NoteNames {
@@ -23,7 +23,10 @@ object NoteNames {
     /** The octave number of MIDI [note]: middle C (60) is in octave 4 in English, 3 in French. */
     fun octave(note: Int, english: Boolean): Int = Math.floorDiv(note, 12) - if (english) 1 else 2
 
-    /** "Do3" or "C4" for MIDI 60 ([separator] between the name and the octave). */
-    fun withOctave(note: Int, english: Boolean, separator: String = "", sharp: String = "#"): String =
-        pitchClass(note, english, sharp) + separator + octave(note, english)
+    /** "Do3" or "C4" for MIDI 60: never a space between the name and the octave, on every screen. */
+    fun withOctave(note: Int, english: Boolean, sharp: String = "#"): String =
+        pitchClass(note, english, sharp) + octave(note, english)
+
+    /** The number shown by the keyboard's octave selector whose lowest key is MIDI 12 × ([keyboardOctave] + 1): 4 or 3 for middle C. */
+    fun keyboardOctave(keyboardOctave: Int, english: Boolean): Int = octave(12 * (keyboardOctave + 1), english)
 }

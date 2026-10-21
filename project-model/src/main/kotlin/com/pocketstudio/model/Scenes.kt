@@ -38,7 +38,7 @@ data class Scene(
         val GRID_SIZES = listOf(8, 16, 24)
 
         /** Section names offered when naming a scene. */
-        val SECTIONS = listOf("Intro", "Couplet", "Pré-refrain", "Refrain", "Pont", "Drop", "Fin")
+        val SECTIONS = listOf("Intro", "Couplet", "Pré-refrain", "Refrain", "Pont", "Groove", "Break", "Drop", "Fin")
 
         /**
          * A scene label as shown: a section name ("Refrain", or a copy's "Refrain 2") in the
@@ -111,7 +111,8 @@ internal fun Project.syncScenes(): Project {
     val index = scene.coerceIn(0, all.lastIndex)
     // Empty scenes at the end go when nothing uses them (a tap on a far slot leaves no trail of them).
     val used = song.map { it.scene }.toSet() +
-        automation.flatMap { lane -> lane.sceneValues.filterValues { v -> v.any { it != null } }.keys }
+        automation.flatMap { lane -> lane.sceneValues.filterValues { v -> v.any { it != null } }.keys } +
+        scenesWithTakes()
     var size = all.size
     while (size - 1 > index && all[size - 1].isEmpty && all[size - 1].label.isBlank() && size - 1 !in used) size--
     val list = all.take(size)
@@ -181,8 +182,13 @@ fun Project.copyOf(index: Int): Int? {
 /** The first empty scene slot other than the one shown (a new scene to fill), or null when all 24 are taken. */
 fun Project.firstEmptyScene(): Int? {
     val all = allScenes
-    return all.indices.firstOrNull { it != scene && all[it].isEmpty } ?: all.size.takeIf { it < Scene.MAX }
+    val takes = scenesWithTakes()
+    return all.indices.firstOrNull { it != scene && all[it].isEmpty && it !in takes } ?: all.size.takeIf { it < Scene.MAX }
 }
+
+/** Scenes an audio take belongs to (its clip, or the previous take kept to bring back). */
+internal fun Project.scenesWithTakes(): Set<Int> =
+    audioTracks.flatMap { t -> listOfNotNull(t.clip, t.previous) }.filter { !it.song }.mapNotNull { it.scene }.toSet()
 
 /** A project shaped as if [index] were current, for sending a scene to the engine ahead of time. */
 fun Project.sceneView(index: Int): Project = if (index == scene) this else switchScene(index)
@@ -235,7 +241,7 @@ fun Project.withBeatsPerBar(beats: Int): Project {
     fun convert(c: AudioClip): AudioClip {
         val bars = ((c.loopSteps + from - 1) / from).coerceAtLeast(1)
         return c.copy(
-            start = (c.start / from * to + (c.start % from).coerceAtMost(to - 1)).coerceAtMost(AudioClip.MAX_START / to * to),
+            start = (c.start / from * to + (c.start % from).coerceAtMost(to - 1)).coerceAtMost((if (c.song) AudioClip.MAX_SONG_START else AudioClip.MAX_START) / to * to),
             loopSteps = (bars * to).coerceAtMost(AudioClip.MAX_LOOP / to * to),
         )
     }
@@ -276,12 +282,14 @@ fun Project.insertSongPart(at: Int, scene: Int): Project {
     if (song.size >= SongPart.MAX_PARTS || scene !in allScenes.indices) return this
     val i = at.coerceIn(0, song.size)
     return copy(song = song.take(i) + SongPart(scene, 1) + song.drop(i))
+        .followArrangement(this, song.indices.toList().let { it.take(i) + null + it.drop(i) })
 }
 
 /** Song part [index] played again right after itself (same scene, repeats and silenced tracks). */
 fun Project.duplicateSongPart(index: Int): Project {
     if (song.size >= SongPart.MAX_PARTS || index !in song.indices) return this
     return copy(song = song.take(index + 1) + song[index] + song.drop(index + 1))
+        .followArrangement(this, song.indices.toList().let { it.take(index + 1) + index + it.drop(index + 1) })
 }
 
 /** Song part [from] moved to place [to] (the others close up around it). */
@@ -289,12 +297,24 @@ fun Project.moveSongPart(from: Int, to: Int): Project {
     if (from !in song.indices || to !in song.indices || from == to) return this
     val list = song.toMutableList()
     list.add(to, list.removeAt(from))
-    return copy(song = list)
+    val origin = song.indices.toMutableList<Int?>()
+    origin.add(to, origin.removeAt(from))
+    return copy(song = list).followArrangement(this, origin)
 }
 
 /** Song part [index] taken out of the song. */
 fun Project.removeSongPart(index: Int): Project =
-    if (index !in song.indices) this else copy(song = song.filterIndexed { i, _ -> i != index })
+    if (index !in song.indices) this
+    else copy(song = song.filterIndexed { i, _ -> i != index }).followArrangement(this, song.indices.filter { it != index })
+
+/** Song part [index] plays its scene [repeats] times (1..[SongPart.MAX_REPEATS]); what is placed after it follows. */
+fun Project.withSongRepeats(index: Int, repeats: Int): Project {
+    if (index !in song.indices) return this
+    val n = repeats.coerceIn(1, SongPart.MAX_REPEATS)
+    if (song[index].repeats == n) return this
+    return copy(song = song.mapIndexed { i, part -> if (i == index) part.copy(repeats = n) else part })
+        .followArrangement(this, song.indices.toList())
+}
 
 /** Where song part [index] is once part [from] moved to [to]. */
 fun songIndexAfterMove(index: Int, from: Int, to: Int): Int = when {

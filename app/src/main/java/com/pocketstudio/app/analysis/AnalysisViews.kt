@@ -70,7 +70,7 @@ fun nearestString(midi: Int, cents: Double): Int {
 
 /** The tuner: the note heard, a needle for how far off it is, the frequency, and a guitar's strings. */
 @Composable
-fun TunerView(reading: TunerReading?, micOk: Boolean?, englishNotes: Boolean = false) {
+fun TunerView(reading: TunerReading?, micOk: Boolean?, englishNotes: Boolean) {
     // A comfortable width on a tablet: the needle does not stretch across a screen lying down.
     com.pocketstudio.ui.ReadingWidth(maxWidth = 520.dp) {
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp).testTag("tuner"), verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -80,7 +80,7 @@ fun TunerView(reading: TunerReading?, micOk: Boolean?, englishNotes: Boolean = f
             when {
                 micOk == null -> Text(tr("Ouverture du micro…"), color = Neon.TextSecondary)
                 !micOk -> Text(tr("Le micro n'a pas pu être ouvert (autorisation, ou une prise est en cours)."), color = Neon.Amber)
-                reading == null -> Text(tr("Joue ou chante une note près du téléphone."), color = Neon.TextSecondary)
+                reading == null -> Text(tr("Joue ou chante une note près de l'appareil."), color = Neon.TextSecondary)
             }
             val inTune = reading != null && abs(reading.cents) < 5
             Text(

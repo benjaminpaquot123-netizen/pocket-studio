@@ -136,7 +136,7 @@ fun ProjectsScreen(ui: ProjectsUi, currentId: String, starters: List<ProjectStar
                     modifier = Modifier.clickable(onClick = actions.dismissMessage))
             }
             if (!ui.loading && ui.projects.isEmpty()) {
-                Text(tr("Aucun projet enregistré pour l'instant."), color = Neon.TextSecondary)
+                Text(tr("Aucun projet sauvegardé pour l'instant."), color = Neon.TextSecondary)
             }
             LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.weight(1f)) {
                 items(ui.projects, key = { it.id }) { p ->

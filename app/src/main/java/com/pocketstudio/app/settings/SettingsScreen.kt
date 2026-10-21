@@ -151,7 +151,7 @@ fun HelpPage(actions: HelpActions) {
             NeonCard {
                 SectionLabel(tr("Aide"))
                 OutlinedButton(onClick = actions.openGuide, modifier = Modifier.fillMaxWidth().testTag("help_guide")) { Text(tr("Revoir le guide des premiers pas")) }
-                OutlinedButton(onClick = actions.showSteps, modifier = Modifier.fillMaxWidth().testTag("help_steps")) { Text(tr("Afficher les étapes du morceau")) }
+                OutlinedButton(onClick = actions.showSteps, modifier = Modifier.fillMaxWidth().testTag("help_steps")) { Text(tr("Revoir la carte « Prochaine étape »")) }
                 Text(tr("Partout dans l'appli, le petit « ? » à côté d'un mot l'explique aussi."),
                     style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
             }

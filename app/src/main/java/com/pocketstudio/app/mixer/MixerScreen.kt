@@ -194,25 +194,30 @@ fun masterDbLabel(db: Float): String =
 /** « Partager mon morceau » at the top of the mixer, and a way down to every export choice. */
 @Composable
 internal fun ShareSongCard(export: ExportUi, hasSong: Boolean, share: () -> Unit, toExport: () -> Unit) {
-    NeonCard(accent = Neon.Acid) {
+    // One compact row: the share button and, beside it, the way down to every export choice.
+    androidx.compose.foundation.layout.Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         Button(
             onClick = share,
             enabled = !export.running,
-            modifier = Modifier.fillMaxWidth().height(52.dp).testTag("share_song"),
+            modifier = Modifier.weight(1f).height(40.dp).testTag("share_song"),
+            contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 12.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Neon.Acid, contentColor = Color.Black),
         ) {
-            Icon(Icons.Filled.Share, contentDescription = null, modifier = Modifier.size(20.dp))
-            Text("  " + tr("Partager mon morceau"), style = MaterialTheme.typography.titleMedium)
+            Icon(Icons.Filled.Share, contentDescription = null, modifier = Modifier.size(18.dp))
+            Text("  " + tr("Partager mon morceau"), style = MaterialTheme.typography.labelLarge, maxLines = 1,
+                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
         }
-        Text(
-            if (hasSong) tr("Tout le morceau, avec un fondu à la fin, en M4A léger : prêt à envoyer.")
-            else tr("Pas encore de morceau : la scène en boucle (%d mesures), en M4A léger.", com.pocketstudio.app.export.ShareSong.loopBars(export.sceneBars, export.audioBars)),
-            style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
-        )
-        TextButton(onClick = toExport, modifier = Modifier.fillMaxWidth().testTag("to_export")) {
-            Text(tr("Autres choix d'export (WAV, pistes séparées…)"), Modifier.weight(1f), color = Neon.Cyan)
-            Icon(Icons.Filled.ExpandMore, contentDescription = null, tint = Neon.Cyan)
+        TextButton(onClick = toExport, modifier = Modifier.testTag("to_export")) {
+            Text(tr("Autres exports"), color = Neon.Cyan, maxLines = 1)
+            Icon(Icons.Filled.ExpandMore, contentDescription = tr("Autres choix d'export (WAV, pistes séparées…)"), tint = Neon.Cyan)
         }
+    }
+    Text(
+        if (hasSong) tr("Tout le morceau, avec un fondu à la fin, en M4A léger : prêt à envoyer.")
+        else tr("Pas encore de morceau : la scène en boucle (%d mesures), en M4A léger.", com.pocketstudio.app.export.ShareSong.loopBars(export.sceneBars, export.audioBars)),
+        style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, maxLines = 2,
+    )
     }
 }
 
@@ -359,7 +364,7 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
             when (export.format) {
                 ExportFormat.Wav -> tr("Qualité studio, lu par tous les logiciels. Le plus lourd.")
                 ExportFormat.Flac -> tr("FLAC : exactement la même qualité que le WAV, bien plus léger (souvent deux fois).")
-                ExportFormat.M4a -> tr("Environ dix fois plus léger, lu par tous les téléphones : pour partager.")
+                ExportFormat.M4a -> tr("Environ dix fois plus léger, lu par tous les appareils : pour partager.")
             },
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
         )
@@ -471,7 +476,7 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
         if (export.files.isNotEmpty()) {
             Text(
                 export.files.joinToString(", ") { it.name }.let { names ->
-                    if (export.savedInMusic) tr("Enregistré dans Musique › Pocket Studio : %s", names) else tr("Prêt : %s", names)
+                    if (export.savedInMusic) tr("Sauvegardé dans Musique › Pocket Studio : %s", names) else tr("Prêt : %s", names)
                 },
                 style = MaterialTheme.typography.bodySmall,
                 color = Neon.TextSecondary,

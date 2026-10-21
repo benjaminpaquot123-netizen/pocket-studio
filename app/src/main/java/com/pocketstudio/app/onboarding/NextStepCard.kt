@@ -18,6 +18,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -117,17 +119,30 @@ fun NextStepCard(
     here: AppTab = AppTab.Rythme,
     share: (() -> Unit)? = null,
     showHere: (() -> Unit)? = null,
+    /** One line that opens on a touch (a phone: the grid stays on screen under it); null: a phone's width decides. */
+    compact: Boolean? = null,
 ) {
     val next = steps.next() ?: return
     var chosenGoal by rememberSaveable { mutableStateOf<StepGoal?>(null) }
     // A step chosen and then done gives way to the next one left.
     val shown = steps.firstOrNull { it.goal == chosenGoal && !it.done } ?: next
+    val small = compact ?: (androidx.compose.ui.platform.LocalConfiguration.current.screenWidthDp < com.pocketstudio.ui.TWO_PANES_FROM.value)
+    var opened by rememberSaveable { mutableStateOf(false) }
+    if (small && !opened) {
+        CompactNextStep(steps, shown) { opened = true }
+        return
+    }
     NeonCard(accent = Neon.Cyan, modifier = Modifier.testTag("next_steps")) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             SectionLabel(
                 tr("Prochaine étape · %d/%d", steps.count { it.done }, steps.size),
                 Modifier.weight(1f), foldKey = "next_steps",
             )
+            if (small) {
+                IconButton(onClick = { opened = false }, modifier = Modifier.size(40.dp).testTag("next_steps_shrink")) {
+                    Icon(Icons.Filled.ExpandLess, contentDescription = tr("Replier"), tint = Neon.TextSecondary)
+                }
+            }
             IconButton(onClick = close, modifier = Modifier.size(40.dp).testTag("next_steps_close")) {
                 Icon(Icons.Filled.Close, contentDescription = tr("Fermer les étapes"), tint = Neon.TextSecondary, modifier = Modifier.size(18.dp))
             }
@@ -153,6 +168,35 @@ fun NextStepCard(
                 OutlinedButton(onClick = { mark(shown.goal) }, modifier = Modifier.heightIn(min = 48.dp).testTag("next_step_done")) { Text(tr("C'est fait")) }
             }
         }
+    }
+}
+
+/**
+ * The card on a phone: one line (« Prochaine étape · 5/7 », the step's number and name) that opens
+ * the whole card on a touch, so the beat's grid stays on screen right under it.
+ */
+@Composable
+private fun CompactNextStep(steps: List<NextStep>, shown: NextStep, open: () -> Unit) {
+    val shape = RoundedCornerShape(16.dp)
+    Row(
+        Modifier.fillMaxWidth().heightIn(min = 48.dp).clip(shape).background(Neon.Surface)
+            .border(1.5.dp, Neon.Cyan.copy(alpha = 0.8f), shape)
+            .clickable(role = Role.Button, onClickLabel = tr("Déplier"), onClick = open)
+            .padding(horizontal = 12.dp, vertical = 4.dp)
+            .testTag("next_steps_compact"),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        Box(
+            Modifier.size(30.dp).clip(CircleShape).background(Neon.Cyan.copy(alpha = 0.2f)).border(1.dp, Neon.Cyan, CircleShape),
+            contentAlignment = Alignment.Center,
+        ) { Text("${shown.number}", style = MaterialTheme.typography.labelMedium, color = Neon.Cyan) }
+        Column(Modifier.weight(1f)) {
+            Text(tr("Prochaine étape · %d/%d", steps.count { it.done }, steps.size).uppercase(), style = MaterialTheme.typography.labelSmall, color = Neon.Cyan, maxLines = 1)
+            Text(shown.goal.title, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, maxLines = 1,
+                modifier = Modifier.testTag("next_step_title"))
+        }
+        Icon(Icons.Filled.ExpandMore, contentDescription = null, tint = Neon.TextSecondary)
     }
 }
 

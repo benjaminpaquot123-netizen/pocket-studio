@@ -37,6 +37,8 @@ data class PendingTake(
     val start: Int = 0,
     /** The clip file the track had when the take began (null: none): the take only replaces that one. */
     val replaces: String? = null,
+    /** A scene take: the scene it was recorded on (it plays in that scene's parts only). */
+    val scene: Int? = null,
 )
 
 /**
@@ -51,7 +53,7 @@ fun Project.withTake(take: PendingTake): Project {
     var p = this
     if (p.audioTracks.none { it.id == take.track }) {
         val color = (0 until InstrumentTrack.COLORS).firstOrNull { c -> p.instrumentTracks.none { it.color == c } && p.audioTracks.none { it.color == c } } ?: 0
-        p = p.copy(audioTracks = (p.audioTracks + AudioTrack(take.track, "Audio ${take.track + 1}", color)).sortedBy { it.id })
+        p = p.copy(audioTracks = (p.audioTracks + AudioTrack(take.track, voiceName(p), color)).sortedBy { it.id })
     }
     val track = p.audioTracks.first { it.id == take.track }
     val previous = track.clip
@@ -68,8 +70,40 @@ fun Project.withTake(take: PendingTake): Project {
         loopSteps = bars * stepsPerBar,
         once = if (sameAnchor) previous!!.once else !take.song,
         bpm = take.bpm,
+        scene = if (take.song) null else take.scene,
     )
-    return p.withAudioTrack(track.copy(clip = clip))
+    // The take it replaces stays one touch away (« Prise précédente »).
+    return p.withAudioTrack(track.copy(clip = clip, previous = previous ?: track.previous))
+}
+
+/** The name of an audio track made for a voice: « Voix », then « Voix 2 »… (saved in French). */
+fun voiceName(p: Project): String {
+    val names = p.audioTracks.map { it.name }.toSet()
+    return (listOf("Voix") + (2..AudioTrack.MAX + 1).map { "Voix $it" }).first { it !in names }
+}
+
+/**
+ * The audio track the top bar's ● records the microphone on, for a take from [anchor] (scene
+ * [scene] shown): the track recorded on last ([last]) when it is empty or its clip is the same
+ * passage (a retake), else an empty track. Never another passage's take: null when a track must
+ * be added for it (or none can be: all four hold a take).
+ */
+fun Project.micTrackFor(last: Int?, anchor: TakeAnchor, scene: Int): Int? {
+    fun samePassage(c: AudioClip): Boolean =
+        if (anchor.song) c.song && partAt(c.start) == partAt(anchor.from) else !c.song && c.belongsTo(scene)
+    audioTracks.firstOrNull { it.id == last }?.let { t -> if (t.clip == null || samePassage(t.clip)) return t.id }
+    return audioTracks.firstOrNull { it.clip == null }?.id
+}
+
+/** The song part playing at song step [step] (the last one past the end; -1 without a song). */
+fun Project.partAt(step: Int): Int {
+    if (song.isEmpty()) return -1
+    var at = 0
+    song.forEachIndexed { i, part ->
+        at += sceneSteps(part.scene) * part.repeats
+        if (step < at) return i
+    }
+    return song.lastIndex
 }
 
 /** Takes not yet on their track, one small file each in `<project>/takes/`. Blocking (background). */

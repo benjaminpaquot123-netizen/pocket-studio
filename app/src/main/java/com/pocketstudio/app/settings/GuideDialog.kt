@@ -39,8 +39,8 @@ val GUIDE_PAGES: List<GuidePage> get() = listOf(
     GuidePage(
         tr("Bienvenue dans Pocket Studio"),
         listOf(
-            tr("Fais de la musique avec ton téléphone : des rythmes, une basse acide, un synthé, et même le remix de tes morceaux préférés."),
-            tr("Tout est enregistré tout seul, à chaque geste."),
+            tr("Fais de la musique avec ton appareil : des rythmes, une basse acide, un synthé, et même le remix de tes morceaux préférés."),
+            tr("Tout est sauvegardé tout seul, à chaque geste."),
         ),
     ),
     GuidePage(

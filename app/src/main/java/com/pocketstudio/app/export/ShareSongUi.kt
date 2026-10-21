@@ -113,7 +113,7 @@ fun ShareProgressDialog(export: ExportUi, cancel: () -> Unit, dismiss: () -> Uni
                 if (failed) {
                     Text(export.error.orEmpty(), color = Neon.Red, style = MaterialTheme.typography.bodyMedium)
                 } else {
-                    Text(export.stage ?: tr("Enregistrement du son, puis compression en M4A."), style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary)
+                    Text(export.stage ?: tr("Fabrication du son, puis compression en M4A."), style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary)
                     LinearProgressIndicator(
                         progress = { export.progress },
                         modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),

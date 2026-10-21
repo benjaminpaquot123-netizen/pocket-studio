@@ -55,6 +55,12 @@ data class Project(
     val midiMap: List<MidiMapping> = emptyList(),
     /** At the song's end: false = playback stops (the default, older projects too), true = it starts over. */
     val songLoops: Boolean = false,
+    /**
+     * What ▶ plays once the project has a song, as last chosen (« Écouter : cette section / tout
+     * le morceau »): true the song, false the section shown; null (never chosen): the section on
+     * the editing tabs, the song on the Morceau tab.
+     */
+    val listenSong: Boolean? = null,
 ) {
     /** Sixteenths in a bar. */
     val stepsPerBar: Int get() = beatsPerBar * 4

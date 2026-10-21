@@ -191,7 +191,7 @@ class SeparationService : Service() {
     }
 
     private fun separate(uri: Uri, name: String): SeparationState {
-        if (!Demucs.isAvailable) return SeparationState.Failed(tr("La séparation n'est pas disponible sur ce téléphone."))
+        if (!Demucs.isAvailable) return SeparationState.Failed(tr("La séparation n'est pas disponible sur cet appareil."))
         if (GenerationJob.generating.get()) return SeparationState.Failed(tr("Une génération de son est en cours : relance quand elle sera finie."))
         SeparationJob.set(SeparationState.Decoding(name))
         progress(tr("Lecture de « %s »", name), null)
@@ -245,7 +245,7 @@ class SeparationService : Service() {
             progress(tr("Tempo et tonalité de « %s »", name), null)
             val info = analyse(part)
             final.deleteRecursively()
-            if (!part.renameTo(final)) throw IOException(tr("enregistrement impossible"))
+            if (!part.renameTo(final)) throw IOException(tr("écriture impossible"))
             val set = StemStore.commit(final, name, raw.seconds, info)
             StemStore.prune(this)
             AppLog.add("Séparation : « $name » (${raw.seconds.roundToInt()} s) terminée")
@@ -327,7 +327,7 @@ class SeparationService : Service() {
     }
 
     companion object {
-        /** Whole songs; the model needs about 1 GB of native memory for 7 minutes. */
+        /** Whole songs; 7 minutes need about 3.9 GB free (the model, then the song and its stems: see RemixMemory). */
         const val MAX_SECONDS = 7 * 60
         private const val CHANNEL_ID = "separation"
         private const val NOTIFICATION_ID = 3

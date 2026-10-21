@@ -46,7 +46,7 @@ data class PlaitsPatch(
             "Analogique + filtre", "Distorsion de phase", "FM 6 op. · banque 1", "FM 6 op. · banque 2", "FM 6 op. · banque 3",
             "Terrain d'onde", "Machine à cordes", "Chiptune",
             "Analogique", "Waveshaper", "FM 2 op.", "Formants", "Additif", "Table d'ondes", "Accords", "Voix parlée",
-            "Essaim", "Bruit filtré", "Particules", "Corde pincée", "Modal (percussion)", "Grosse caisse", "Caisse claire", "Charleston",
+            "Essaim", "Bruit filtré", "Particules", "Corde pincée", "Modal (percussion)", "Grosse caisse", "Caisse claire", "Charley",
         )
         val FAMILIES = listOf(
             "Analogiques" to listOf(8, 0, 9, 1, 7),

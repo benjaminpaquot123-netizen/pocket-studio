@@ -17,7 +17,7 @@ object StarterWizard {
         ),
         Snare(
             "snare", 2, "Caisse claire",
-            "Elle marque le contre-temps (les temps 2 et 4) : elle répond au kick et donne l'élan.",
+            "Elle répond au kick, souvent sur les temps 2 et 4 : c'est elle qui donne l'élan.",
             listOf(2, 3, 10),
         ),
         Clap(
@@ -49,9 +49,39 @@ object StarterWizard {
 
     /**
      * [pattern]: one character per step (16 = one bar of 4/4): 'X' strong, 'x' medium, 'o' soft,
-     * '.' nothing. [tip]: why the line sits where it does in this style.
+     * '2' '3' '4' a medium roll of that many hits in the step, '.' nothing. [tip]: why the line sits
+     * where it does in this style. [voice]: the built-in kit voice that plays it best (a shaker for
+     * the hats, a cowbell or a conga for the percussion), null: the pad's own voice.
      */
-    data class Line(val role: Role, val pattern: String, val tip: String)
+    data class Line(val role: Role, val pattern: String, val tip: String, val voice: Int? = null)
+
+    /**
+     * How the song is laid out. [Song]: Intro, Couplet, Refrain (rap, pop). [Club]: Intro, Groove,
+     * Drop and a Break without kick nor bass before the last drop (house, techno, bass music), with
+     * longer sections for the DJ. [labels]: the sections' names (saved in French), [roles] what
+     * each is for.
+     */
+    enum class SongForm(val labels: List<String>, val roles: List<String>) {
+        Song(listOf("Intro", "Couplet", "Refrain"), listOf("le début, en douceur", "le groove, avec la basse", "tout le monde joue")),
+        Club(listOf("Intro", "Groove", "Drop"), listOf("la batterie pour démarrer", "le groove, avec la basse", "tout le monde joue")),
+        ;
+
+        companion object {
+            const val BREAK_LABEL = "Break"
+            const val BREAK_ROLE = "une pause sans kick ni basse"
+
+            /** The layout of a family's songs: club music for House, Techno and Bass music. */
+            fun of(family: String): SongForm = if (family in setOf("House", "Techno", "Bass music")) Club else Song
+        }
+    }
+
+    /**
+     * An effect the style puts on one of its layers when the song is made. [target]: a part's id
+     * ("bass", "pad", "lead"), a drum line's ("kick", "snare"…), "acid" or "drums" (the whole
+     * beat). [preset]: a ready-made treatment of [FxPresets] ("pump", "dub_echo"…), [insert] an
+     * effect added with its defaults ([EffectType] name: "VINYL"), [reverb] and [delay] the sends.
+     */
+    data class StyleFx(val target: String, val preset: String = "", val insert: String = "", val reverb: Float = 0f, val delay: Float = 0f)
 
     data class Style(
         val id: String,
@@ -66,10 +96,18 @@ object StarterWizard {
         val references: List<String> = emptyList(),
         /** The pack each drum line is taken from when it is on the phone (a machine such as tr909, or the style's own). */
         val kit: Map<Role, String> = emptyMap(),
+        /** How its songs are laid out (club music has a Break and longer sections). */
+        val form: SongForm = SongForm.of(family),
+        /** Effects put on its layers ("Vieux vinyle" on lo-fi chords, the pump on a house bass…). */
+        val effects: List<StyleFx> = emptyList(),
     ) {
         /** Packs that make this style sound right: its machines, its melodic sources, its own pack. */
-        val packs: List<String> get() = (kit.values + melody.packSounds.values.map { it.substringBefore(':') } + id).distinct()
+        val packs: List<String> get() =
+            (kit.values + melody.packSounds.values.filter { !it.startsWith(KIT_SOUND) }.map { it.substringBefore(':') } + id).distinct()
     }
+
+    /** A melodic part played by a voice of the built-in kit across the keys: "kit:<voice>" in [Melody.packSounds]. */
+    const val KIT_SOUND = "kit:"
 
     /**
      * The style's melodic side: its usual key ([root] 0..11, 0 = Do), the mood proposed first,
@@ -79,7 +117,7 @@ object StarterWizard {
     data class Melody(
         val root: Int = 9,
         val mood: Mood = Mood.Dark,
-        /** The bass line, one character per step on the bar's chord (see [withLine]: R root, 5 fifth, O octave…). */
+        /** The bass line, one character per step on the bar's chord (see [withLine]: R root, 5 fifth, O octave, '/' slide…). */
         val bassPattern: String = "R.......R.......",
         val bass: String = "Basse ronde",
         val pad: String = "Nappe",
@@ -95,12 +133,21 @@ object StarterWizard {
         val leadPattern: String = "",
         val arpRate: Int = NoteClip.TICKS_PER_STEP,
         val leadOctave: Int = 5,
-        /** A pack sound per part when that pack is on the phone: "pack id:kind" (e.g. "retro_techno:stab"). */
+        /**
+         * A pack sound per part when that pack is on the phone: "pack id:kind" (e.g. "retro_techno:stab");
+         * or a voice of the built-in kit played across the keys, "kit:<voice>" (the 808 cowbell).
+         */
         val packSounds: Map<Part, String> = emptyMap(),
-        /** The parts a beginner gets switched on. */
+        /** The parts a beginner gets switched on (the others stay off until ticked). */
         val parts: Set<Part> = setOf(Part.Bass, Part.Pad),
         /** A TB-303 line on the acid track, where it is the style's signature. */
         val acid: AcidRecipe? = null,
+        /** The part that makes the style (the boom bap's piano loop, the phonk's cowbell): it plays in every section. */
+        val signature: Part? = null,
+        /** What a part does in this style, shown on its step (empty: the general explanation alone). */
+        val tips: Map<Part, String> = emptyMap(),
+        /** The bass slides from note to note (808, "talking" bass): its synth or sample glides where the line says '/'. */
+        val bassGlide: Boolean = false,
     ) {
         fun sound(part: Part) = when (part) {
             Part.Bass -> bass
@@ -115,7 +162,7 @@ object StarterWizard {
     /** The feeling of the song: it sets the scale and the chords, so every note sounds right. */
     enum class Mood(val id: String, val label: String, val description: String, val scale: Scale, val degrees: List<Int>, val chordsLabel: String) {
         Dark(
-            "dark", "Mélancolique / sombre", "Des accords mineurs, un peu tristes ou mystérieux.",
+            "dark", "Sombre / épique", "Des accords mineurs : mystérieux, intenses ou un peu tristes.",
             Scale.Minor, listOf(0, 5, 2, 6), "i – VI – III – VII",
         ),
         Happy(
@@ -141,12 +188,12 @@ object StarterWizard {
         ),
         Pad(
             "pad", "Nappe / accords",
-            "Des accords tenus qui remplissent l'espace et posent l'ambiance. Ils changent à chaque mesure.",
+            "Des accords qui posent l'ambiance : tenus ou joués en petits coups, selon le style.",
             listOf("Nappes", "Claviers"), true,
         ),
         Lead(
             "lead", "Lead / mélodie",
-            "Un synthé plus aigu qui joue les notes des accords une par une, en rythme (un arpège) : un premier bout de mélodie.",
+            "Un son plus aigu qui joue une petite mélodie sur les accords : le bout qu'on retient.",
             listOf("Leads", "Pluck", "Claviers"), false,
         ),
     }
@@ -160,9 +207,22 @@ object StarterWizard {
         /** The pack and file of a pack sound, or null. */
         val packFile: Pair<String, String>? get() = sampled?.file?.takeIf { it.startsWith(PACK_FILE) }
             ?.removePrefix(PACK_FILE)?.split('/')?.takeIf { it.size == 2 }?.let { it[0] to it[1] }
+
+        /** The built-in kit voice played across the keys ("kit:<voice>" until the project is written), or null. */
+        val kitVoice: Int? get() = sampled?.file?.takeIf { it.startsWith(KIT_SOUND) }?.removePrefix(KIT_SOUND)?.toIntOrNull()
+            ?.takeIf { it in 0 until DrumPattern.PAD_COUNT }
     }
 
     const val PACK_FILE = "pack:"
+
+    /** Kit voices that make a melodic sound, and their names (the 808 cowbell of phonk and Memphis rap). */
+    val KIT_MELODIC = mapOf(11 to "Cowbell 808")
+
+    /** The sound of kit voice [voice] played across the keys by [part]. */
+    fun kitPartSound(voice: Int, part: Part) = PartSound(
+        KIT_MELODIC[voice] ?: "Kit $voice",
+        sampled = SampledPatch(file = KIT_SOUND + voice, name = KIT_MELODIC[voice] ?: "Kit $voice", release = if (part == Part.Pad) 0.4f else 0.15f),
+    )
 
     /** Pack sounds that suit a part: 808s and basses for the bass, pads and keys for the chords, leads for the melody. */
     private fun packKinds(part: Part) = when (part) {
@@ -182,8 +242,11 @@ object StarterWizard {
         val plaits = SoundLibrary.PLAITS.filter { it.category in part.categories }
             .map { PartSound(if (it.name in plaitsNames) "${it.name} (Plaits)" else it.name, plaits = it.sound) }
         val all = synth + plaits
+        // A kit voice played across the keys (the phonk's cowbell) is always there: it comes first.
+        val kit = style.melody.packSounds[part]?.takeIf { it.startsWith(KIT_SOUND) }?.removePrefix(KIT_SOUND)?.toIntOrNull()
+            ?.let { kitPartSound(it, part) }
         // The style's own pack sound first when its pack is on the phone, else its synth sound.
-        val packChoice = style.melody.packSounds[part]?.split(':')?.takeIf { it.size == 2 }
+        val packChoice = style.melody.packSounds[part]?.takeIf { !it.startsWith(KIT_SOUND) }?.split(':')?.takeIf { it.size == 2 }
         val chosenPack = packChoice?.let { (id, _) -> installed.firstOrNull { it.id == id } }
         // The style's synth sound may come from another family (a hoover as chord stabs).
         val wanted = style.melody.sound(part)
@@ -197,7 +260,7 @@ object StarterWizard {
             // The chosen kind first in the chosen pack (its stabs for a rave lead).
             val packKinds = if (m.id == chosenPack?.id) listOf(packChoice[1]) + (kinds - packChoice[1]) else kinds
             packKinds.flatMap { m.ofKind(it) }.take(if (own) Int.MAX_VALUE else 4).map { sound ->
-                val slide = sound.kind == "808"
+                val slide = sound.kind == "808" || (part == Part.Bass && style.melody.bassGlide)
                 PartSound(
                     "${sound.name} · ${m.name}",
                     sampled = SampledPatch(
@@ -213,8 +276,8 @@ object StarterWizard {
             }
         }
         val preferredPack = if (chosenPack != null) packs.take(1) else emptyList()
-        val preferred = preferredPack.ifEmpty { preferredSynth }
-        return preferred + (all - preferred.toSet()) + (packs - preferred.toSet())
+        val preferred = listOfNotNull(kit).ifEmpty { preferredPack.ifEmpty { preferredSynth } }
+        return preferred + (all - preferred.toSet()) + (packs - preferred.toSet()) + (preferredSynth - preferred.toSet() - all.toSet())
     }
 
     /**
@@ -225,6 +288,8 @@ object StarterWizard {
         data object Style : Step
         data object Mood : Step
         data class Drum(val line: Line) : Step
+        /** The style's 303 line (acid house, acid techno): what it is, heard, kept or not. */
+        data object Acid : Step
         data class Melodic(val part: Part) : Step
         data object Summary : Step
     }
@@ -232,6 +297,7 @@ object StarterWizard {
     fun steps(style: Style?, melody: Boolean = true): List<Step> =
         if (style == null) listOf(Step.Style)
         else listOf(Step.Style, Step.Mood) + style.lines.map { Step.Drum(it) } +
+            (if (melody && style.melody.acid != null) listOf(Step.Acid) else emptyList()) +
             (if (melody) Part.entries.map { Step.Melodic(it) } else emptyList()) + Step.Summary
 
     val FAMILIES = listOf("Hip-hop", "House", "Techno", "Bass music", "Autres")
@@ -244,9 +310,9 @@ object StarterWizard {
 
     /** How well known each style is, from the most (charts, festivals, streaming) to the least. */
     val POPULAR = listOf(
-        "techno", "house", "trap", "pop", "dnb", "dubstep", "reggaeton", "afrobeats", "lofi", "disco",
-        "trance", "deep_house", "tech_house", "boom_bap", "drill", "synthwave", "acid_house", "hard_techno",
-        "phonk", "amapiano", "uk_garage", "minimal", "afro_house", "jungle", "retro_techno", "acid_techno",
+        "techno", "house", "trap", "drill", "pop", "phonk", "dnb", "reggaeton", "afrobeats", "lofi",
+        "dubstep", "disco", "trance", "deep_house", "tech_house", "boom_bap", "synthwave", "acid_house", "hard_techno",
+        "amapiano", "uk_garage", "minimal", "afro_house", "jungle", "retro_techno", "acid_techno",
         "gabber", "liquid_dnb", "detroit", "grime", "industrial_techno", "neurofunk", "jersey_club",
         "speed_garage", "riddim",
     )
@@ -266,12 +332,13 @@ object StarterWizard {
             .filter { it.first < steps }.toMap()
     }
 
-    /** A pattern string as hits (steps without a hit are left out). */
+    /** A pattern string as hits (steps without a hit are left out; '2' to '4': a roll of that many hits). */
     fun hits(pattern: String): Map<Int, Hit> = pattern.mapIndexedNotNull { i, c ->
         when (c) {
             'X' -> i to Hit(1f)
             'x' -> i to Hit(0.6f)
             'o' -> i to Hit(0.35f)
+            in '2'..'4' -> i to Hit(0.6f, repeats = c - '0')
             else -> null
         }
     }.toMap()
@@ -280,9 +347,10 @@ object StarterWizard {
      * The new project: the style's tempo and swing, each chosen line's sound on its pad
      * ([sounds]: role → the pad's own sound, or null for the kit voice already on that pad) and
      * its groove in the grid. Lines left out of [sounds] stay empty. With [mood], the key is set
-     * and locked, and each part of [parts] becomes a track with its sound and first notes.
+     * and locked, each part of [parts] becomes a track with its sound and first notes, and the
+     * style's 303 line plays unless [acid] is false. The style's effects go on what is used.
      */
-    fun build(style: Style, sounds: Map<Role, PadSample?>, mood: Mood? = null, parts: Map<Part, PartSound> = emptyMap()): Project {
+    fun build(style: Style, sounds: Map<Role, PadSample?>, mood: Mood? = null, parts: Map<Part, PartSound> = emptyMap(), acid: Boolean = true): Project {
         val steps = drumSteps(style)
         val lanes = MutableList(DrumPattern.PAD_COUNT) { DrumLane() }
         for (line in style.lines) {
@@ -296,16 +364,19 @@ object StarterWizard {
             swing = style.swing,
             drums = DrumPattern(steps = steps, lanes = lanes),
         )
+        val withAcid = mood != null && acid && style.melody.acid != null
         if (mood != null) {
             val harmony = harmonyOf(style, mood)
             project = project.copy(harmony = harmony)
-            style.melody.acid?.let { a -> project = project.copy(acid = acidLine(harmony, a.pattern, a.accents, a.slides, project.acid)) }
+            if (withAcid) style.melody.acid?.let { a -> project = project.copy(acid = acidLine(harmony, a.pattern, a.accents, a.slides, project.acid)) }
             var first = true
             for (part in Part.entries) {
                 val sound = parts[part] ?: continue
                 val notes = startingNotes(part, style, mood, harmony)
+                // The bass glides where its line says '/' (its notes overlap there): the synth's portamento.
+                val glides = part == Part.Bass && style.melody.bassGlide
                 fun InstrumentTrack.withSound() = copy(
-                    name = part.trackName, notes = notes, synth = sound.synth,
+                    name = part.trackName, notes = notes, synth = if (glides) sound.synth.with(SynthPatch.GLIDE, BASS_GLIDE) else sound.synth,
                     engine = when {
                         sound.sampled != null -> 2
                         sound.plaits != null -> 1
@@ -314,7 +385,7 @@ object StarterWizard {
                     plaits = sound.plaits ?: plaits,
                     // A pack sound plays in the octave of the part's notes (and glides only on a single line).
                     sampled = sound.sampled?.let { s ->
-                        s.copy(root = SampledPatch.fitRoot(s.root, notes.notes), glide = if (SampledPatch.isMonophonic(notes.notes)) s.glide else 0f)
+                        s.copy(root = SampledPatch.fitRoot(s.root, notes.notes), glide = if (isLine(notes.notes)) s.glide else 0f)
                     } ?: sampled,
                 )
                 if (first) {
@@ -328,25 +399,75 @@ object StarterWizard {
                 }
             }
         }
-        val plan = scenePlan(
-            lines = style.lines.map { it.role }.filter { it in sounds }.toSet(),
-            parts = partOfTrack.values.toSet(),
-            acid = mood != null && style.melody.acid != null,
-        )
+        val plan = planFor(style, style.lines.map { it.role }.filter { it in sounds }.toSet(), partOfTrack.values.toSet(), withAcid)
+        project = withEffects(project, style, sounds.keys, partOfTrack, withAcid)
         return inScenes(project, plan, partOfTrack, style.bpm).sanitized()
     }
 
+    /** The bass synth's portamento where its line slides (0.4 = 80 ms, an 808 slide). */
+    const val BASS_GLIDE = 0.4f
+
+    /** Ticks a note sliding into the next one ('/') still sounds after the next one starts. */
+    const val SLIDE_OVERLAP = NoteClip.TICKS_PER_STEP / 2
+
+    /** A single line (no chord): notes may overlap only by a slide's few ticks. */
+    fun isLine(notes: List<Note>): Boolean =
+        notes.sortedBy { it.start }.zipWithNext().none { (a, b) -> b.start == a.start || b.start < a.end - SLIDE_OVERLAP }
+
     /**
-     * Where the assistant puts each line and part: the three scenes are the sections of a song,
-     * A "Intro", B "Couplet", C "Refrain", each one adding to the one before (a beginner hears the
-     * layers pile up instead of each one alone). Each line or part maps to the scenes it plays in.
+     * The style's effects on the strips of what is used: a part's track, a drum line's pad, the
+     * acid line, the whole beat. A preset replaces the strip's effects; an insert goes in the first
+     * free slot; the sends only go up.
      */
-    data class ScenePlan(val lines: Map<Role, Set<Int>>, val parts: Map<Part, Set<Int>>, val acid: Set<Int>) {
-        /** The section scene [index] stands for ("Intro", "Couplet", "Refrain"), in the interface's language. */
-        fun title(index: Int): String = tr(LABELS[index])
+    internal fun withEffects(project: Project, style: Style, lines: Set<Role>, partOfTrack: Map<Int, Part>, acid: Boolean): Project {
+        if (style.effects.isEmpty()) return project
+        var channels = project.mixer.channels
+        for (fx in style.effects) {
+            val channel = Part.entries.firstOrNull { it.id == fx.target }?.let { part ->
+                partOfTrack.entries.firstOrNull { it.value == part }?.key?.let { InstrumentTrack.mixerChannel(it) }
+            } ?: Role.entries.firstOrNull { it.id == fx.target && it in lines }?.let { Mixer.padChannel(it.lane) }
+                ?: when (fx.target) {
+                    "acid" -> 1.takeIf { acid }
+                    "drums" -> 0.takeIf { lines.isNotEmpty() }
+                    else -> null
+                } ?: continue
+            var c = channels[channel]
+            FxPresets.byId(fx.preset)?.let { c = c.withFx(it) }
+            EffectType.entries.firstOrNull { it.name == fx.insert && it != EffectType.NONE }?.let { type ->
+                val slot = c.inserts.indexOfFirst { it.type == 0 }
+                if (slot >= 0) c = c.copy(inserts = c.inserts.toMutableList().also { it[slot] = Insert(type.ordinal, type.defaults) })
+            }
+            c = c.copy(sends = c.sends.mapIndexed { i, v -> maxOf(v, listOf(fx.reverb, fx.delay).getOrElse(i) { 0f }) })
+            channels = channels.toMutableList().also { it[channel] = c.sanitized() }
+        }
+        return project.copy(mixer = project.mixer.copy(channels = channels))
+    }
+
+    /**
+     * Where the assistant puts each line and part: the scenes are the sections of the song
+     * ([form]: Intro, Couplet, Refrain; or Intro, Groove, Drop, and a Break as scene D), the first
+     * three each adding to the one before (a beginner hears the layers pile up). Each line or part
+     * maps to the scenes it plays in.
+     */
+    data class ScenePlan(
+        val lines: Map<Role, Set<Int>>,
+        val parts: Map<Part, Set<Int>>,
+        val acid: Set<Int>,
+        val form: SongForm = SongForm.Song,
+        /** The Break (scene D) is there: club music with something to play without kick nor bass. */
+        val hasBreak: Boolean = false,
+    ) {
+        /** How many sections: three, or four with the Break. */
+        val count: Int get() = if (hasBreak) 4 else 3
+
+        /** The sections' names, saved in French ("Intro", "Couplet", "Refrain" or "Intro", "Groove", "Drop", "Break"). */
+        val labels: List<String> get() = form.labels + listOfNotNull(SongForm.BREAK_LABEL.takeIf { hasBreak })
+
+        /** The section scene [index] stands for, in the interface's language. */
+        fun title(index: Int): String = tr(labels[index])
 
         /** What the section is for, in a few words (translated). */
-        fun role(index: Int): String = tr(ROLES[index])
+        fun role(index: Int): String = tr((form.roles + SongForm.BREAK_ROLE)[index])
 
         /** The names of what scene [index] plays, in the order of the assistant (translated). */
         fun contents(index: Int): List<String> =
@@ -354,79 +475,131 @@ object StarterWizard {
                 parts.filterValues { index in it }.keys.sortedBy { it.ordinal }.map { tr(it.title) } +
                 listOfNotNull(tr(ACID_TITLE).takeIf { index in acid })
 
-        val isEmpty: Boolean get() = (0 until COUNT).all { contents(it).isEmpty() }
+        val isEmpty: Boolean get() = (0 until count).all { contents(it).isEmpty() }
+
+        /** "Intro", "Couplet et Refrain", "Intro, Couplet et Refrain": the sections of [scenes], translated. */
+        fun sections(scenes: Set<Int>): String {
+            val names = scenes.sorted().map { title(it) }
+            return if (names.size <= 1) names.joinToString() else tr("%s et %s", names.dropLast(1).joinToString(", "), names.last())
+        }
 
         companion object {
-            const val COUNT = 3
-            val NAMES = listOf("A", "B", "C")
-            val LABELS = listOf("Intro", "Couplet", "Refrain")
-            val ROLES = listOf("le début, en douceur", "le groove, avec la basse", "tout le monde joue")
+            /** The scenes' letters. */
+            val NAMES = listOf("A", "B", "C", "D")
             const val ACID_TITLE = "Ligne acide"
-
-            /** "Intro", "Couplet et Refrain", "Intro, Couplet et Refrain": the sections of [scenes], translated. */
-            fun sections(scenes: Set<Int>): String {
-                val names = scenes.sorted().map { tr(LABELS[it]) }
-                return if (names.size <= 1) names.joinToString() else tr("%s et %s", names.dropLast(1).joinToString(", "), names.last())
-            }
         }
     }
 
     /** Light drum lines: the intro starts with them alone. */
     private val INTRO_LINES = setOf(Role.Kick, Role.Hat)
 
-    /** Drum lines kept for the chorus when it has no melodic part of its own to add. */
+    /** A club intro: the beat a DJ mixes on, kick, hats and percussion. */
+    private val CLUB_INTRO_LINES = setOf(Role.Kick, Role.Hat, Role.Perc)
+
+    /** Drum lines kept for the chorus (they lift it). */
     private val CHORUS_LINES = setOf(Role.OpenHat, Role.Perc)
 
+    /** The parts a beginner finds switched on for [style]: the recipe's (the riddim's bass alone, the acid styles' 303 alone). */
+    fun defaultParts(style: Style): Set<Part> = style.melody.parts
+
+    /** The plan of [style]'s song with these lines, parts and acid line. */
+    fun planFor(style: Style, lines: Set<Role>, parts: Set<Part>, acid: Boolean): ScenePlan =
+        scenePlan(lines, parts, acid, style.melody.signature, style.form)
+
     /**
-     * Shares the [lines] and [parts] used (and the acid line, when there is one) between the three
-     * sections, cumulatively. Refrain (C): everything. Couplet (B): everything but the chorus's own
-     * layer, the lead (or the chords without a lead, or the open hat and the percussion without
-     * either). Intro (A): the kick and the hats, and the chords; no bass. A section that would be
-     * silent plays what the next one plays (nothing at all when nothing is used).
+     * Shares the [lines] and [parts] used (and the acid line, when there is one) between the
+     * sections. The last of the three (Refrain, Drop): everything. The middle one (Couplet,
+     * Groove): everything but the chorus's own layer, the lead (or the chords without a lead, never
+     * the [signature]), and in a song the open hat and the percussion. The first (Intro): in a song
+     * the [signature] and the hats, or the kick, the hats and the chords; in club music the kick,
+     * the hats, the percussion and the signature; never the bass. The [signature] plays in every
+     * section. A section that would be silent plays what the next one plays. Club music also gets a
+     * Break (scene D): the chords, the lead and the signature, without kick nor bass (the acid line,
+     * or the hats and the percussion, when there is no chord nor lead).
      */
-    fun scenePlan(lines: Set<Role>, parts: Set<Part>, acid: Boolean): ScenePlan {
+    fun scenePlan(lines: Set<Role>, parts: Set<Part>, acid: Boolean, signature: Part? = null, form: SongForm = SongForm.Song): ScenePlan {
         val bassLines = setOf(Role.Bass808)
-        val chorusParts = when {
-            Part.Lead in parts -> setOf(Part.Lead)
-            Part.Pad in parts -> setOf(Part.Pad)
+        val sig = signature?.takeIf { it in parts }
+        val chorusParts = listOf(Part.Lead, Part.Pad).firstOrNull { it in parts && it != sig }?.let { setOf(it) }.orEmpty()
+        val chorusLines = when {
+            form == SongForm.Song -> (lines intersect CHORUS_LINES).takeIf { (lines - it).isNotEmpty() }.orEmpty()
+            chorusParts.isEmpty() -> lines intersect CHORUS_LINES
             else -> emptySet()
         }
-        val chorusLines = if (chorusParts.isEmpty()) lines intersect CHORUS_LINES else emptySet()
         val verseLines = lines - chorusLines
         val verseParts = parts - chorusParts
-        val introLines = (lines intersect INTRO_LINES).ifEmpty { verseLines - bassLines }
-        val introParts = parts intersect setOf(Part.Pad)
+        val introLines = when {
+            form == SongForm.Club -> (lines intersect CLUB_INTRO_LINES).ifEmpty { verseLines - bassLines }
+            sig != null && sig != Part.Bass -> (lines intersect setOf(Role.Hat))
+            else -> (lines intersect INTRO_LINES).ifEmpty { verseLines - bassLines }
+        } intersect verseLines
+        // Never a layer the next section drops (the chords of a song without a lead stay for the Refrain).
+        val introParts = (if (form == SongForm.Song) setOf(Part.Pad) else emptySet<Part>()).plus(listOfNotNull(sig)).minus(Part.Bass) intersect verseParts
         // A silent section plays what the next one plays (the acid line counts in the couplet).
         val verseSilent = verseLines.isEmpty() && verseParts.isEmpty() && !acid
         val couplet = if (verseSilent) lines to parts else verseLines to verseParts
         val introSilent = introLines.isEmpty() && introParts.isEmpty()
         val intro = if (introSilent) couplet else introLines to introParts
-        val scenes = listOf(intro, couplet, lines to parts)
+        val scenes = mutableListOf(intro, couplet, lines to parts)
+        var acidScenes = if (!acid) emptySet() else if (introSilent) setOf(0, 1, 2) else setOf(1, 2)
+        if (form == SongForm.Club) {
+            val breakParts = parts intersect (setOf(Part.Pad, Part.Lead) + listOfNotNull(sig) - Part.Bass)
+            val breakAcid = acid && breakParts.isEmpty()
+            val breakLines = if (breakParts.isEmpty() && !breakAcid) lines intersect setOf(Role.Hat, Role.OpenHat, Role.Perc) else emptySet()
+            // A break with nothing but what the drop also has without its kick: worth a section of its own.
+            if (breakParts.isNotEmpty() || breakAcid || (breakLines.isNotEmpty() && breakLines != lines)) {
+                scenes += breakLines to breakParts
+                if (breakAcid) acidScenes = acidScenes + 3
+            }
+        }
         return ScenePlan(
             lines = lines.associateWith { r -> scenes.indices.filter { r in scenes[it].first }.toSet() },
             parts = parts.associateWith { p -> scenes.indices.filter { p in scenes[it].second }.toSet() },
-            acid = if (!acid) emptySet() else if (introSilent) setOf(0, 1, 2) else setOf(1, 2),
+            acid = acidScenes,
+            form = form,
+            hasBreak = scenes.size == 4,
         )
     }
 
-    /** The song plan: Intro, Couplet, Refrain, Couplet, Refrain, then the Intro again to end; and each one's length in phrases. */
-    private val SONG_SECTIONS = listOf(0, 1, 2, 1, 2, 0)
-    private val SONG_WEIGHTS = listOf(1, 2, 2, 2, 2, 1)
+    /** Bars of the main sections (Couplet, Refrain, Groove, Drop), of the Break, of a long intro. */
+    const val SECTION_BARS = 16
+    const val BREAK_BARS = 8
 
-    /** Longest song the assistant makes: three minutes. */
-    const val MAX_SONG_SECONDS = 180.0
+    /** Longest song the assistant makes, with its intro and ending shortened if need be: 3 min 30. */
+    const val MAX_SONG_SECONDS = 210.0
 
     /**
-     * The song of the three sections: Intro, Couplet, Refrain, Couplet, Refrain and the Intro again
-     * as the ending, in phrases of 8 bars (4 when that would last over three minutes at [bpm]), each
-     * scene of [loopBars] bars repeated to fill its phrase.
+     * The song of [form]'s sections, each one (bars, scene):
+     * a song is Intro, Couplet, Refrain, Couplet, Refrain and the Intro again as the ending, the
+     * Couplets and Refrains 16 bars, the Intro 8 (4 when that would last over [MAX_SONG_SECONDS]);
+     * club music is Intro, Groove, Drop, Break (8 bars; a Groove without one), Drop and the Intro
+     * again, the Intro 16 bars (8 when too long) and the Drops 32 when a fast tempo leaves room.
      */
-    fun songOf(loopBars: Int, bpm: Double, beatsPerBar: Int = 4): List<SongPart> {
+    fun sectionsOf(bpm: Double, form: SongForm = SongForm.Song, hasBreak: Boolean = false, beatsPerBar: Int = 4): List<Pair<Int, Int>> {
+        fun seconds(list: List<Pair<Int, Int>>) = list.sumOf { it.first } * beatsPerBar * 60.0 / bpm
+        val s = SECTION_BARS
+        val candidates = if (form == SongForm.Song) listOf(8, 4).map { intro -> listOf(intro to 0, s to 1, s to 2, s to 1, s to 2, intro to 0) }
+        else listOf(2 * s to s, s to s, s to s / 2).map { (drop, intro) ->
+            listOf(intro to 0, s to 1, drop to 2, (if (hasBreak) BREAK_BARS to 3 else s to 1), drop to 2, intro to 0)
+        }
+        return candidates.firstOrNull { seconds(it) <= MAX_SONG_SECONDS } ?: candidates.last()
+    }
+
+    /**
+     * The song as parts of the scenes, each scene of [loopBars] bars repeated to fill its section
+     * (a section longer than [SongPart.MAX_REPEATS] loops is cut in two parts of the same scene).
+     */
+    fun songOf(loopBars: Int, bpm: Double, beatsPerBar: Int = 4, form: SongForm = SongForm.Song, hasBreak: Boolean = false): List<SongPart> {
         val bars = loopBars.coerceAtLeast(1)
-        val long = SONG_WEIGHTS.sum() * 8 * beatsPerBar * 60.0 / bpm <= MAX_SONG_SECONDS
-        val unit = if (long) 8 else 4
-        return SONG_SECTIONS.mapIndexed { i, scene ->
-            SongPart(scene, (unit * SONG_WEIGHTS[i] / bars).coerceIn(1, SongPart.MAX_REPEATS))
+        return sectionsOf(bpm, form, hasBreak, beatsPerBar).flatMap { (length, scene) ->
+            var left = (length / bars).coerceAtLeast(1)
+            val parts = ArrayList<SongPart>()
+            while (left > 0) {
+                val n = left.coerceAtMost(SongPart.MAX_REPEATS)
+                parts += SongPart(scene, n)
+                left -= n
+            }
+            parts
         }
     }
 
@@ -437,13 +610,13 @@ object StarterWizard {
     }
 
     /** The song the assistant makes for [style] with [plan]. */
-    fun songOf(style: Style, plan: ScenePlan): List<SongPart> = songOf(loopBars(style, plan), style.bpm)
+    fun songOf(style: Style, plan: ScenePlan): List<SongPart> = songOf(loopBars(style, plan), style.bpm, form = plan.form, hasBreak = plan.hasBreak)
 
     /** How long [song] lasts, in seconds, with scenes of [loopBars] bars. */
     fun seconds(song: List<SongPart>, loopBars: Int, bpm: Double, beatsPerBar: Int = 4): Double =
         song.sumOf { it.repeats } * loopBars * beatsPerBar * 60.0 / bpm
 
-    /** [full] cut in the three sections of [plan] (Intro current), named, and a song that chains them. */
+    /** [full] cut in the sections of [plan] (Intro current), named, and a song that chains them. */
     private fun inScenes(full: Project, plan: ScenePlan, partOfTrack: Map<Int, Part>, bpm: Double): Project {
         fun only(index: Int): Project {
             val drums = full.drums.copy(lanes = full.drums.lanes.mapIndexed { lane, l ->
@@ -459,15 +632,15 @@ object StarterWizard {
             }
             return p
         }
-        val views = (0 until ScenePlan.COUNT).map { only(it) }
+        val views = (0 until plan.count).map { only(it) }
         var project = views[0].copy(
             scenes = views.mapIndexed { i, v -> v.currentSceneContent().copy(name = ScenePlan.NAMES[i]) },
             scene = 0,
         )
         val loopBars = project.allScenes.maxOf { it.stepsFor(project.stepsPerBar) } / project.stepsPerBar
-        project = project.copy(song = songOf(loopBars, bpm, project.beatsPerBar))
+        project = project.copy(song = songOf(loopBars, bpm, project.beatsPerBar, plan.form, plan.hasBreak))
         // Section names are saved in French and shown in the interface's language.
-        ScenePlan.LABELS.forEachIndexed { i, label -> project = project.renameScene(i, label) }
+        plan.labels.forEachIndexed { i, label -> project = project.renameScene(i, label) }
         return project
     }
 

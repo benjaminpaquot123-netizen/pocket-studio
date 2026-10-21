@@ -65,7 +65,7 @@ object Glossary {
     )
     val VELOCITY: Help get() = Help(
         tr("Force (vélocité)"),
-        tr("La force d'un coup ou d'une note : plus c'est fort, plus ça tape. Appui long sur une case pour la changer."),
+        tr("La force d'un coup ou d'une note : plus c'est fort, plus ça tape. Dans Rythme, outil « Force » ou appui long sur une case."),
     )
     val PAN: Help get() = Help(
         tr("Pan"),
@@ -261,7 +261,7 @@ object Glossary {
     )
     val MASTER: Help get() = Help(
         tr("Sortie générale"),
-        tr("Tout le morceau mélangé, tel qu'il sort du téléphone. Son limiteur l'empêche de saturer quand tout joue fort."),
+        tr("Tout le morceau mélangé, tel qu'il sort de l'appareil. Son limiteur l'empêche de saturer quand tout joue fort."),
     )
     val REVERB_DELAY: Help get() = Help(
         tr("Réverbe et écho"),
@@ -311,7 +311,7 @@ object Glossary {
     )
     val GENERATE: Help get() = Help(
         tr("Générer un son"),
-        tr("Une IA fabrique un son à partir d'une phrase (« kick de techno sombre »), directement sur le téléphone."),
+        tr("Une IA fabrique un son à partir d'une phrase (« kick de techno sombre »), directement sur l'appareil."),
     )
     val TUNER: Help get() = Help(
         tr("Accordeur"),

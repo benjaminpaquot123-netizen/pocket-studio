@@ -39,22 +39,25 @@ fun duration(seconds: Double): String {
 }
 
 /**
- * The guide that opens once the assistant has made the song, two short pages: its three sections
- * (Intro, Couplet, Refrain) and what each adds; then how to hear it (the whole song, or one section
- * in a loop) and what to try next. It ends on "▶ Écouter mon morceau". [song]: the song's summary
- * ([songSummary]). [inKey]: a mood was chosen, so the song's key is locked and the keyboard plays
- * no wrong note.
+ * The guide that opens once the assistant has made the song, two short pages: its sections
+ * (Intro, Couplet, Refrain; or Intro, Groove, Drop and Break) and what each adds; then how to hear
+ * it (the whole song, or one section in a loop) and what to try next, the voice on top included.
+ * It ends on "▶ Écouter mon morceau". [song]: the song's summary ([songSummary]). [inKey]: a mood
+ * was chosen, so the song's key is locked and the keyboard plays no wrong note. [acid]: the song
+ * has the style's 303 line.
  */
-fun songGuide(styleName: String, plan: StarterWizard.ScenePlan, inKey: Boolean, song: String = ""): List<GuidePage> {
+fun songGuide(styleName: String, plan: StarterWizard.ScenePlan, inKey: Boolean, song: String = "", acid: Boolean = false): List<GuidePage> {
     fun scene(index: Int): String {
         val what = plan.contents(index).joinToString(", ") { it.substringBefore(" (").substringBefore(" / ") }
         return tr("%s · %s, %s : %s.", StarterWizard.ScenePlan.NAMES[index], plan.title(index), plan.role(index), what.ifEmpty { tr("rien pour l'instant") })
     }
-    val scenes = (0 until StarterWizard.ScenePlan.COUNT).map(::scene)
+    val scenes = (0 until plan.count).map(::scene)
+    val intro = if (plan.hasBreak) tr("Il a quatre sections, comme un vrai morceau de club : les sons s'empilent, puis le Break fait une pause avant le dernier Drop :")
+    else tr("Il a trois sections, comme une vraie chanson. Chacune ajoute des sons à celle d'avant :")
     return listOf(
         GuidePage(
             tr("Ton morceau %s est prêt", tr(styleName)),
-            listOf(tr("Il a trois sections, comme une vraie chanson. Chacune ajoute des sons à celle d'avant :")) + scenes +
+            listOf(intro) + scenes +
                 tr("Pas besoin de sauvegarder : tout est gardé tout seul."),
         ),
         GuidePage(
@@ -65,7 +68,9 @@ fun songGuide(styleName: String, plan: StarterWizard.ScenePlan, inKey: Boolean, 
                 tr("Rythme : touche les cases pour ajouter ou enlever des coups."),
                 if (inKey) tr("Synthé : joue au clavier, il reste dans la gamme du morceau : aucune fausse note possible.")
                 else tr("Synthé : joue au clavier pour essayer des notes par-dessus le rythme."),
-                tr("Onglet Morceau : touche Intro, Couplet ou Refrain pour l'afficher, change son nom, ou duplique-la pour en faire un Pont ou une Fin."),
+                if (acid) tr("Acide : touche un pas pour changer la ligne 303, tourne « Coupure » pour la faire crier.") else null,
+                tr("Audio : enregistre ta voix par-dessus le morceau (mets des écouteurs, sinon le micro entend la musique)."),
+                tr("Onglet Morceau : touche une section (Intro, Couplet ou Refrain) pour l'afficher, la renommer ou la dupliquer pour en faire un Pont ou une Fin."),
             ),
         ),
     )

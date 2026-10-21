@@ -2,21 +2,23 @@
  {
   "id": "house",
   "references": [
-   "Jesse Saunders – On and On (1984)",
+   "Robin S – Show Me Love (1992)",
    "Marshall Jefferson – Move Your Body (1986)",
+   "Joe Smooth – Promised Land (1987)",
+   "Frankie Knuckles & Jamie Principle – Your Love (1987)",
    "Farley \"Jackmaster\" Funk – Love Can't Turn Around (1986)",
-   "Joe Smooth – Promised Land (1987)"
+   "Jesse Saunders – On and On (1984)"
   ],
-  "description_fr": "La house de Chicago des années 80 : une grosse caisse sur chaque temps, un « tchi » entre chaque coup et un piano joyeux qui donne envie de danser.",
+  "description_fr": "La house classique, née à Chicago : un piano joyeux, un kick sur chaque temps et un « tchi » entre les coups.",
   "bpm": 122,
-  "swing": 0.1,
+  "swing": 0.15,
   "root": "A",
   "drums": [
    {
     "role": "kick",
     "pattern": "X...X...X...X...",
     "source": "tr909",
-    "tip_fr": "Un coup sur chaque temps : c'est le cœur qui bat dans toute la house."
+    "tip_fr": "Un coup sur chaque temps, du début à la fin : c'est la règle de la house."
    },
    {
     "role": "clap",
@@ -28,19 +30,19 @@
     "role": "open_hat",
     "pattern": "..X...X...X...X.",
     "source": "tr909",
-    "tip_fr": "Entre deux grosses caisses, ce « tchi » pousse le corps vers l'avant."
+    "tip_fr": "Le « tchi » entre deux coups de grosse caisse : il pousse le corps vers l'avant."
    },
    {
     "role": "hat",
     "pattern": "xo.oxo.oxo.oxo.o",
     "source": "tr909",
-    "tip_fr": "Un petit tapis rapide et léger qui fait rouler le rythme."
+    "tip_fr": "Un petit tapis rapide et léger, avec un trou là où sonne le « tchi »."
    },
    {
     "role": "perc",
     "pattern": "...x.....x....x.",
     "source": "tr707",
-    "tip_fr": "Quelques touches décalées de la boîte à rythmes 707, pour le côté « jack » de Chicago."
+    "tip_fr": "Quelques petits coups décalés, comme sur les vieilles boîtes à rythmes de Chicago : ça donne envie de bouger."
    }
   ],
   "progressions": {
@@ -81,11 +83,12 @@
     ]
    }
   },
+  "default_mood": "happy",
   "chords": {
    "type": "keys",
    "rhythm": "X..X..X...X..X..",
    "voicing": "seventh",
-   "octave": 4,
+   "octave": 3,
    "sound": "gm:Acoustic Grand Piano"
   },
   "bass": {
@@ -112,20 +115,29 @@
    "chords": true,
    "lead": false
   },
-  "notes": "Roland TR-909/TR-707 drums with a light shuffle (MPC ~55-58%). The piano riff (real piano or Korg M1 piano) is the hook of piano/anthem house (Move Your Body, Promised Land) and often moves in rhythmic unison with a bouncy root-octave synth bass. Optional 16th-note Juno arpeggio as in Frankie Knuckles/Jamie Principle 'Your Love'. A soft ghost kick on the last 16th of the bar adds 'jack'."
+  "bass_tip": "Elle saute entre la note grave et la même note plus haut, dans le même rythme que le piano.",
+  "pad_tip": "Des accords de piano joués en petits coups : c'est le refrain qu'on retient en house.",
+  "lead_tip": "Une petite boucle de notes rapides (un arpège), comme dans « Your Love » de Frankie Knuckles.",
+  "fx": [
+   {
+    "on": "clap",
+    "reverb": 0.2
+   }
+  ],
+  "notes": "Roland TR-909 drums (707 percussion) with a light shuffle (MPC ~57%). The piano riff (Korg M1 / real piano, played in the middle register) is the hook of piano/anthem house (Move Your Body, Promised Land), in rhythmic unison with a bouncy root-octave bass. Optional 16th-note Juno arpeggio as in Frankie Knuckles/Jamie Principle 'Your Love'. A soft ghost kick on the last 16th adds 'jack' (left out: the beginner's rule is one kick per beat). Happy major I-IV-vi-V first."
  },
  {
   "id": "deep_house",
   "references": [
-   "Mr. Fingers – Mystery of Love (1985)",
    "Mr. Fingers – Can You Feel It (1986)",
+   "Kerri Chandler – Bar A Thym (2005)",
    "Pepe Braddock – Deep Burnt (1999)",
-   "Kerri Chandler – Bar A Thym (2005)"
+   "Mr. Fingers – Mystery of Love (1985)"
   ],
-  "description_fr": "Une house plus douce et feutrée, avec des accords chauds de piano électrique et une basse ronde qui se glisse entre les coups de grosse caisse.",
+  "description_fr": "La house douce et chaude : piano électrique feutré, basse ronde, ambiance coucher de soleil.",
   "bpm": 120,
   "swing": 0.2,
-  "root": "C",
+  "root": "F",
   "drums": [
    {
     "role": "kick",
@@ -141,15 +153,16 @@
    },
    {
     "role": "hat",
-    "pattern": "..X...X...X...X.",
+    "pattern": "o.Xoo.Xoo.Xoo.Xo",
     "source": "deep_house",
-    "tip_fr": "Le charleston entre les coups donne le balancement tranquille."
+    "tip_fr": "Un charley entre les temps, entouré de petits coups très doux : avec le swing, ils balancent paresseusement."
    },
    {
     "role": "perc",
     "pattern": "...o..x...o..x.o",
     "source": "deep_house",
-    "tip_fr": "Quelques percussions décalées et légères pour que ça respire comme un vrai musicien."
+    "voice": "conga",
+    "tip_fr": "Quelques petites percussions légères et décalées, comme jouées à la main."
    }
   ],
   "progressions": {
@@ -190,6 +203,7 @@
     ]
    }
   },
+  "default_mood": "dreamy",
   "chords": {
    "type": "keys",
    "rhythm": "..X..X....X..X..",
@@ -198,7 +212,7 @@
    "sound": "Piano électrique"
   },
   "bass": {
-   "pattern": "..R...R...R..rO.",
+   "pattern": "..R-..R-..R-.rO-",
    "octave": 2,
    "sound": "Basse ronde",
    "glide": false
@@ -221,49 +235,69 @@
    "chords": true,
    "lead": false
   },
-  "notes": "Lazy MPC swing (~60-61%). Harmony is the soul: minor 7th / minor 9th chords (Rhodes, organ or soft keys) played as syncopated stabs off the kick; warm Jupiter-style pads are the alternative (Larry Heard). Subby, low-passed bass placed between the kicks and sidechained to them. Single-word vocal chops with reverb/delay as the top line. Tempo 118-124."
+  "signature": "chords",
+  "bass_tip": "Une basse ronde et liée qui se glisse entre les coups de grosse caisse, et se baisse à chaque coup (l'effet « pompe »).",
+  "pad_tip": "Des accords riches de piano électrique, joués juste après les temps : c'est l'âme de la deep house.",
+  "lead_tip": "Quelques bouts de voix avec de l'écho, posés de temps en temps.",
+  "fx": [
+   {
+    "on": "bass",
+    "preset": "pump"
+   },
+   {
+    "on": "chords",
+    "reverb": 0.3
+   },
+   {
+    "on": "lead",
+    "delay": 0.35
+   }
+  ],
+  "notes": "Lazy MPC swing (~60%) that only shows on 16th ghost hats. Harmony is the soul: minor 7th / 9th chords (Rhodes) as syncopated stabs off the kick, Larry Heard's dorian i-IV-VII-v first; they are the signature and play throughout. Round, legato bass between the kicks, sidechained to them. Single-word vocal chops with delay as the top line. Tempo 118-124."
  },
  {
   "id": "tech_house",
   "references": [
-   "Green Velvet – La La Land (2001)",
+   "Mau P – Drugs From Amsterdam (2022)",
+   "Fisher – Losing It (2018)",
    "Patrick Topping – Forget (2014)",
-   "Fisher – Losing It (2018)"
+   "Green Velvet – La La Land (2001)"
   ],
-  "description_fr": "Le mélange de la house et de la techno : un rythme qui roule sans s'arrêter, une basse grave et accrocheuse, et presque pas d'accords.",
+  "description_fr": "La house des gros clubs d'aujourd'hui : un rythme sec qui roule, une basse accrocheuse, presque pas d'accords.",
   "bpm": 126,
-  "swing": 0.1,
+  "swing": 0.15,
   "root": "G",
   "drums": [
    {
     "role": "kick",
     "pattern": "X...X...X...X...",
     "source": "tech_house",
-    "tip_fr": "Courte et lourde sur chaque temps : c'est le moteur du morceau."
+    "tip_fr": "Courte et sèche sur chaque temps : comme en house, mais ici tout repose sur la basse et les petits « toc »."
    },
    {
     "role": "clap",
-    "pattern": "....X.......X...",
+    "pattern": "....X.......X.......X.......X..o",
     "source": "tech_house",
-    "tip_fr": "Sur 2 et 4, sec et claquant, pour marquer le pas."
+    "tip_fr": "Sur 2 et 4, sec et claquant, avec un petit coup en plus à la fin de la deuxième mesure."
    },
    {
     "role": "hat",
-    "pattern": "xo.oxo.oxo.oxo.o",
+    "pattern": ".x.x.x.x.x.x.x.x",
     "source": "tech_house",
-    "tip_fr": "De petits coups rapides qui font tourner la machine sans arrêt."
+    "tip_fr": "Des petits coups entre tous les autres, poussés en retard par le swing : c'est ce qui fait rouler la machine."
    },
    {
     "role": "open_hat",
     "pattern": "..X...X...X...X.",
     "source": "tech_house",
-    "tip_fr": "Entre chaque grosse caisse, il fait monter l'énergie."
+    "tip_fr": "Un « tchi » court entre chaque grosse caisse, coupé net par le charley fermé."
    },
    {
     "role": "perc",
-    "pattern": "...x..x....x..x.",
+    "pattern": "...x..x....x..x....x..x...x..x..",
     "source": "tech_house",
-    "tip_fr": "Un petit motif de cloche ou de bois qui accroche l'oreille."
+    "voice": "rim",
+    "tip_fr": "Un petit motif de « toc » sur deux mesures qui accroche l'oreille : la signature des boucles tech house."
    }
   ],
   "progressions": {
@@ -309,10 +343,10 @@
    "rhythm": "...X......X.....",
    "voicing": "seventh",
    "octave": 4,
-   "sound": "pack:juno:stab"
+   "sound": "Orgue"
   },
   "bass": {
-   "pattern": "..R..rR...R..rO.",
+   "pattern": "..Rr..Rr..Rr..RO",
    "octave": 1,
    "sound": "Basse analogique",
    "glide": false
@@ -333,19 +367,37 @@
   "defaults": {
    "bass": true,
    "chords": false,
-   "lead": false
+   "lead": true
   },
-  "notes": "The bassline is the hook: short, punchy, gritty notes on the offbeats between the kicks, with velocity driving the filter, hard sidechain. Closed hats on 3 of every 4 sixteenths with an offbeat open hat; a 909 ride on every beat and a cowbell/rim riff in key are common. Harmony is minimal (one dub/organ stab or none); spoken-word or chopped vocal shouts carry the top line. Keys like F, F# or G minor; 124-128 BPM."
+  "signature": "bass",
+  "bass_tip": "C'est elle, le refrain : des notes courtes entre les coups de grosse caisse, qui se baissent à chaque coup (l'effet « pompe »).",
+  "pad_tip": "Presque rien : au plus un petit coup d'orgue de temps en temps.",
+  "lead_tip": "Des bouts de voix répétés, comme un cri dans le club : c'est ce qu'on chante en tech house.",
+  "fx": [
+   {
+    "on": "bass",
+    "preset": "pump"
+   },
+   {
+    "on": "lead",
+    "delay": 0.3
+   },
+   {
+    "on": "clap",
+    "reverb": 0.15
+   }
+  ],
+  "notes": "The bassline is the hook: short gritty notes rolling on the offbeats between the kicks, hard sidechain. Hats on the offbeat 16ths (pushed by the swing) with a short offbeat open hat; a rim/cowbell riff over two bars. Harmony is minimal (one organ stab or none, off by default); spoken or chopped vocal shouts carry the top line (on by default). Keys like F, F# or G minor; 124-128 BPM."
  },
  {
   "id": "uk_garage",
   "references": [
-   "MJ Cole – Sincere (1998)",
-   "Shanks & Bigfoot – Sweet Like Chocolate (1999)",
    "Artful Dodger feat. Craig David – Re-Rewind (1999)",
-   "Sweet Female Attitude – Flowers (Sunship Edit) (2000)"
+   "Sweet Female Attitude – Flowers (Sunship Edit) (2000)",
+   "Shanks & Bigfoot – Sweet Like Chocolate (1999)",
+   "MJ Cole – Sincere (1998)"
   ],
-  "description_fr": "Le garage anglais des années 2000 : un rythme qui sautille, une grosse caisse qui saute des temps, des petits coups balancés et des accords d'orgue jazzy.",
+  "description_fr": "Le « 2-step » anglais de la fin des années 90 : une grosse caisse qui saute des temps, des charleys qui balancent, un orgue jazzy et des bouts de voix. Son nom vient d'un club de New York.",
   "bpm": 132,
   "swing": 0.3,
   "root": "A",
@@ -354,7 +406,7 @@
     "role": "kick",
     "pattern": "X.........X.....X......x..X.....",
     "source": "uk_garage",
-    "tip_fr": "Seulement sur le 1 et juste après le 3 : ce trou au milieu fait sautiller tout le rythme."
+    "tip_fr": "Seulement sur le 1 et juste après le 3 : ce trou au milieu fait sautiller tout le rythme (le « 2-step »)."
    },
    {
     "role": "snare",
@@ -363,10 +415,16 @@
     "tip_fr": "Sur 2 et 4 : le repère fixe autour duquel tout se balance."
    },
    {
+    "role": "clap",
+    "pattern": "....X.......X...",
+    "source": "uk_garage",
+    "tip_fr": "Le clap posé sur la caisse claire : c'est le claquement sec du garage."
+   },
+   {
     "role": "hat",
     "pattern": "xo.o.o..xo.o.o..",
     "source": "uk_garage",
-    "tip_fr": "De petits coups joués un peu en retard, qui donnent le balancement garage."
+    "tip_fr": "Des charleys joués un peu en retard (le swing) : c'est le balancement garage."
    },
    {
     "role": "open_hat",
@@ -376,9 +434,9 @@
    },
    {
     "role": "perc",
-    "pattern": "...x..x...x..x..",
+    "pattern": "...x..x....x..x.",
     "source": "uk_garage",
-    "tip_fr": "Des coups de bord de caisse décalés qui remplissent les trous laissés par la grosse caisse."
+    "tip_fr": "Des petits coups sur le bord de la caisse (le « rim »), placés dans les trous laissés par la grosse caisse."
    }
   ],
   "progressions": {
@@ -419,6 +477,8 @@
     ]
    }
   },
+  "default_mood": "happy",
+  "form": "song",
   "chords": {
    "type": "stab",
    "rhythm": "...X..X....X..X.",
@@ -428,7 +488,7 @@
   },
   "bass": {
    "pattern": "...R--.R-....R-O",
-   "octave": 1,
+   "octave": 2,
    "sound": "Basse ronde",
    "glide": false
   },
@@ -448,9 +508,26 @@
   "defaults": {
    "bass": true,
    "chords": true,
-   "lead": false
+   "lead": true
   },
-  "notes": "2-step: kick on beat 1 and the 'and' of beat 3 (never on 2 and 4), snare/clap anchored on 2 and 4, 16th hats pushed late (heavy MPC-style shuffle, ~62-68%). The sub bass answers the kick in its gaps instead of doubling it (jungle heritage). Korg M1-style organ stabs or jazzy Rhodes 7th/9th chords (MJ Cole); chopped and pitched R&B vocal fragments (Todd Edwards style) are the signature top line. Below 128 BPM the shuffle drags."
+  "bass_tip": "Une basse grave qui répond à la grosse caisse dans ses trous, au lieu de jouer avec elle.",
+  "pad_tip": "Des accords d'orgue jazzy en petits coups décalés, comme chez MJ Cole.",
+  "lead_tip": "Des bouts de voix découpés et rejoués comme une mélodie : la signature du garage.",
+  "fx": [
+   {
+    "on": "chords",
+    "reverb": 0.2
+   },
+   {
+    "on": "lead",
+    "delay": 0.25
+   },
+   {
+    "on": "snare",
+    "reverb": 0.15
+   }
+  ],
+  "notes": "2-step: kick on beat 1 and the 'and' of beat 3 (never on 2 and 4), snare + clap on 2 and 4, 16th hats pushed late (heavy MPC shuffle, ~65%). The bass answers the kick in its gaps (jungle heritage), played an octave up so its sub stays audible. M1-style organ stabs or jazzy 7th/9th chords; chopped and pitched R&B vocal fragments (Todd Edwards) are the signature top line, on by default. A song form (Intro/Couplet/Refrain): garage is song music."
  },
  {
   "id": "speed_garage",
@@ -458,9 +535,10 @@
    "Sneaker Pimps – Spin Spin Sugar (Armand's Dark Garage Mix) (1997)",
    "Double 99 – RipGroove (1997)",
    "187 Lockdown – Gunman (1997)",
-   "Tina Moore – Never Gonna Let You Go (Kelly G. Bump-N-Go Vocal Mix) (1997)"
+   "Tina Moore – Never Gonna Let You Go (Kelly G. Bump-N-Go Vocal Mix) (1997)",
+   "T2 feat. Jodie Aysha – Heartbroken (2007)"
   ],
-  "description_fr": "Le garage accéléré de la fin des années 90 : une grosse caisse sur chaque temps, un rythme qui sautille et une énorme basse qui ondule et semble « parler ».",
+  "description_fr": "Le cousin du UK garage, fin des années 90 : une grosse caisse sur chaque temps comme en house, et une énorme basse qui ondule et semble « parler ».",
   "bpm": 134,
   "swing": 0.25,
   "root": "G",
@@ -469,13 +547,13 @@
     "role": "kick",
     "pattern": "X...X...X...X...",
     "source": "speed_garage",
-    "tip_fr": "Une grosse caisse sur chaque temps, comme en house, mais jouée plus vite."
+    "tip_fr": "Une grosse caisse sur chaque temps, comme en house : c'est ce qui le sépare du UK garage."
    },
    {
     "role": "snare",
-    "pattern": "....X.......X.......X..x....X.x.",
+    "pattern": "....X.......X.......X..o....X.o.",
     "source": "speed_garage",
-    "tip_fr": "Sur 2 et 4, avec de petites notes en plus qui rappellent la jungle."
+    "tip_fr": "Sur 2 et 4, avec de petits coups très doux en plus (des « notes fantômes ») qui rappellent la jungle."
    },
    {
     "role": "hat",
@@ -542,9 +620,9 @@
    "sound": "Orgue"
   },
   "bass": {
-   "pattern": "R-----O-R-----5-",
-   "octave": 1,
-   "sound": "Basse reese",
+   "pattern": "R----/O/R----/5/",
+   "octave": 2,
+   "sound": "Basse qui parle",
    "glide": true
   },
   "lead": {
@@ -563,16 +641,30 @@
   "defaults": {
    "bass": true,
    "chords": true,
-   "lead": false
+   "lead": true
   },
-  "notes": "NY garage four-on-the-floor sped up to 130-136 BPM, with shuffled hats and jungle-style ghost snares (breakbeat fragments). The star is the huge warped bass: long Reese/sub notes bent and wobbled (pitch bend, LFO on filter), octave jumps with glides, as in Armand Van Helden's 'Sugar Is Sweeter' / 'Spin Spin Sugar' remixes and Double 99 'RipGroove'. Sparse organ stabs; ragga/MC vocal shouts, time-stretched vocals, gunshot and siren FX; breakdowns with the beat stripped back."
+  "signature": "bass",
+  "bass_tip": "La star du style : de longues notes qui glissent de l'une à l'autre pendant que le son s'ouvre et se ferme, comme une voix qui dit « ouaou ».",
+  "pad_tip": "Quelques coups d'orgue épars, juste pour la couleur.",
+  "lead_tip": "Des bouts de voix avec de l'écho, comme les cris d'un MC.",
+  "fx": [
+   {
+    "on": "lead",
+    "delay": 0.35
+   },
+   {
+    "on": "snare",
+    "reverb": 0.2
+   }
+  ],
+  "notes": "NY garage four-on-the-floor sped up to 130-136 BPM, shuffled hats and jungle-style ghost snares. The star is the huge warped bass: long reese notes with a tempo-locked filter sweep ('Basse qui parle', half-note sweep) sliding between notes and jumping octaves, as in Armand Van Helden's remixes and Double 99 'RipGroove'; played an octave up so its sub stays above 45 Hz. Sparse organ stabs; vocal shouts with echo. Club form with a break. Heartbroken (bassline, 2007) is its best-known descendant."
  },
  {
   "id": "acid_house",
   "references": [
-   "Sleezy D – I've Lost Control (1986)",
    "Phuture – Acid Tracks (1987)",
-   "A Guy Called Gerald – Voodoo Ray (1988)"
+   "A Guy Called Gerald – Voodoo Ray (1988)",
+   "Sleezy D – I've Lost Control (1986)"
   ],
   "description_fr": "La house de Chicago de 1987 avec sa petite machine magique, la TB-303, qui fait « couiner » une ligne de basse qui tourne en boucle.",
   "bpm": 122,
@@ -583,7 +675,7 @@
     "role": "kick",
     "pattern": "X...X...X...X...",
     "source": "acid_house",
-    "tip_fr": "Une grosse caisse toute simple sur chaque temps, pour laisser toute la place à la 303."
+    "tip_fr": "Une grosse caisse toute simple sur chaque temps, pour laisser toute la place à la 303, la ligne qui couine."
    },
    {
     "role": "clap",
@@ -595,13 +687,14 @@
     "role": "hat",
     "pattern": "xoxoxoxoxoxoxoxo",
     "source": "tr707",
-    "tip_fr": "Le charleston de la 707 en continu, un coup fort, un coup doux."
+    "tip_fr": "Le charley de la 707 en continu, un coup fort, un coup doux."
    },
    {
     "role": "perc",
-    "pattern": "...x...x...x..x.",
+    "pattern": "..x...x...x...x.",
     "source": "tr707",
-    "tip_fr": "Une cloche de la 707 à contretemps, typique des premiers disques acid."
+    "voice": "cowbell",
+    "tip_fr": "Une cloche (cowbell) entre chaque temps, typique des premiers disques acid."
    }
   ],
   "progressions": {
@@ -651,7 +744,7 @@
   },
   "bass": {
    "pattern": "R.......R.......",
-   "octave": 1,
+   "octave": 2,
    "sound": "Basse sub",
    "glide": false
   },
@@ -660,7 +753,7 @@
    "pattern": "",
    "arp_rate": 24,
    "octave": 4,
-   "sound": "Lead acide"
+   "sound": "Pluck"
   },
   "acid": {
    "use": true,
@@ -673,20 +766,29 @@
    "chords": false,
    "lead": false
   },
-  "notes": "The TB-303 is the whole track: one 16-step pattern in one octave plus octave jumps, with accents and slides, looped for minutes while cutoff, resonance and envelope mod are slowly opened and closed (tweaking IS the performance). Low cutoff + high resonance, saw wave, some distortion. Raw TR-707/909/808 drums, minimal, no chords in Acid Tracks; a held string-machine pad (Voodoo Ray style) is optional. Odd pattern lengths (13/15 steps) are a classic variation."
+  "pad_tip": "En option : une nappe de cordes tenue derrière la 303, comme dans « Voodoo Ray ».",
+  "fx": [
+   {
+    "on": "acid",
+    "preset": "crunch",
+    "delay": 0.2
+   }
+  ],
+  "notes": "The TB-303 is the whole track: one 16-step pattern with octave jumps, accents and slides, looped while cutoff and resonance are slowly turned (the engine cannot automate the 303 knobs yet). A little grit and echo on it. Raw TR-707 drums: continuous hats, cowbell on the offbeats. No chords in Acid Tracks; a held string-machine pad (Voodoo Ray) is optional, as are the bass and the lead."
  },
  {
   "id": "afro_house",
   "references": [
-   "Black Coffee feat. Bucie – Superman (2009)",
-   "Mafikizolo feat. Uhuru – Khona (2013)",
    "Master KG feat. Nomcebo Zikode – Jerusalema (2019)",
-   "Zakes Bantwini & Kasango – Osama (2023)"
+   "Adam Port & Stryv feat. Malachiii – Move (2024)",
+   "Black Coffee feat. Bucie – Superman (2009)",
+   "Zakes Bantwini & Kasango – Osama (2021)",
+   "Mafikizolo feat. Uhuru – Khona (2013)"
   ],
-  "description_fr": "La house venue d'Afrique du Sud : un rythme profond et chaloupé, plein de percussions (congas, shakers), des nappes chaudes et un petit air de marimba.",
+  "description_fr": "La house d'Afrique du Sud portée par les percussions : congas, shaker, marimba et nappes chaudes.",
   "bpm": 122,
   "swing": 0.15,
-  "root": "D",
+  "root": "E",
   "drums": [
    {
     "role": "kick",
@@ -696,21 +798,17 @@
    },
    {
     "role": "perc",
-    "pattern": "o..x..x.o..x..x.",
+    "pattern": "o..x..x.o..x..x.o..x..x.o.x.x.x.",
     "source": "afro_house",
-    "tip_fr": "Les congas en rythme 3-3-2 : c'est elles qui font chalouper à l'africaine."
+    "voice": "conga",
+    "tip_fr": "Les congas en « un-deux-trois, un-deux-trois, un-deux » : c'est ce qui fait chalouper."
    },
    {
     "role": "hat",
-    "pattern": "xo.oxo.oxo.oxo.o",
+    "pattern": "oxoxoxoxoxoxoxox",
     "source": "afro_house",
-    "tip_fr": "Le shaker qui tourne sans arrêt, la base de tout le groove."
-   },
-   {
-    "role": "open_hat",
-    "pattern": "..X...X...X...X.",
-    "source": "afro_house",
-    "tip_fr": "Le « tchi » entre les coups qui fait avancer la danse."
+    "voice": "shaker",
+    "tip_fr": "Le shaker qui tourne sans arrêt, plus fort entre les coups : la base de tout le groove."
    },
    {
     "role": "clap",
@@ -739,12 +837,12 @@
     ]
    },
    "future": {
-    "scale": "phrygian",
+    "scale": "minor",
     "degrees": [
      0,
+     3,
      0,
-     1,
-     1
+     3
     ]
    },
    "dreamy": {
@@ -788,17 +886,38 @@
    "chords": true,
    "lead": true
   },
-  "notes": "Build from the percussion: shaker/cabasa, congas, bongos, djembe and woodblock in counterpoint, with 3-3-2 cross-rhythms and slightly off-grid timing. Warm, deep four-on-the-floor kick; soft clap or rim. Minor 7th/9th pads that evolve slowly with filter sweeps; a simple subby sine bass in a 1-2 bar loop that follows the chord roots, sidechained. Marimba, kalimba, flute or bell plucks in a repeating 3-against-4 motif; chanted vocals in African languages. 120-124 BPM."
+  "signature": "lead",
+  "bass_tip": "Une basse ronde et grave, entre les coups de grosse caisse, qui se baisse à chaque coup (l'effet « pompe »).",
+  "pad_tip": "Des nappes chaudes et lentes qui laissent toute la place aux percussions.",
+  "lead_tip": "Un petit air de marimba qui revient toutes les trois cases : il tourne à côté des temps et fait danser.",
+  "fx": [
+   {
+    "on": "bass",
+    "preset": "pump"
+   },
+   {
+    "on": "chords",
+    "reverb": 0.35
+   },
+   {
+    "on": "lead",
+    "reverb": 0.25,
+    "delay": 0.2
+   }
+  ],
+  "notes": "Built from the percussion: a continuous shaker (built-in shaker voice), congas in 3-3-2 over two bars (built-in conga), soft clap; no open hat (that is house). Warm four-on-the-floor kick. Minor 9th pads that move slowly; a subby bass between the kicks, sidechained. The marimba motif every three 16ths (3 against 4) is the signature and plays throughout. 120-124 BPM."
  },
  {
   "id": "disco",
   "references": [
-   "Donna Summer – I Feel Love (1977)",
-   "Bee Gees – Stayin' Alive (1977)",
+   "Daft Punk feat. Pharrell Williams & Nile Rodgers – Get Lucky (2013)",
+   "Chic – Good Times (1979)",
    "Chic – Le Freak (1978)",
-   "Chic – Good Times (1979)"
+   "Donna Summer – I Feel Love (1977)",
+   "Cerrone – Supernature (1977)",
+   "Bee Gees – Stayin' Alive (1977)"
   ],
-  "description_fr": "Le son des boîtes de nuit des années 70 : une batterie qui marque chaque temps, un charleston qui siffle entre les coups, une basse qui saute d'octave en octave et une guitare funky.",
+  "description_fr": "Les boîtes de nuit des années 70 : un kick sur chaque temps, un « tsss » entre les coups, une basse qui saute d'octave et des cordes.",
   "bpm": 120,
   "swing": 0.05,
   "root": "A",
@@ -811,9 +930,9 @@
    },
    {
     "role": "snare",
-    "pattern": "....X.......X...",
+    "pattern": "....X......oX..o",
     "source": "disco",
-    "tip_fr": "La caisse claire sur 2 et 4, comme un vrai batteur."
+    "tip_fr": "Une vraie caisse claire sur 2 et 4, avec de petits coups très doux autour, comme un batteur."
    },
    {
     "role": "open_hat",
@@ -823,15 +942,16 @@
    },
    {
     "role": "hat",
-    "pattern": "xo.oxo.oxo.oxo.o",
+    "pattern": "x..ox..ox..ox..o",
     "source": "disco",
-    "tip_fr": "Le charleston fermé joué en continu, comme les deux mains du batteur."
+    "tip_fr": "Le charley fermé sur les temps, et juste après chaque « tsss » pour le couper : « tsss-tchic »."
    },
    {
     "role": "perc",
     "pattern": "...x..x....x.x..",
     "source": "disco",
-    "tip_fr": "Congas et tambourin pour la chaleur des percussions jouées à la main."
+    "voice": "conga",
+    "tip_fr": "Des congas jouées à la main pour la chaleur."
    }
   ],
   "progressions": {
@@ -872,15 +992,16 @@
     ]
    }
   },
+  "default_mood": "happy",
   "chords": {
    "type": "keys",
    "rhythm": "..X.X..X..X.X..X",
    "voicing": "seventh",
-   "octave": 3,
+   "octave": 4,
    "sound": "gm:Electric Guitar (muted)"
   },
   "bass": {
-   "pattern": "R.O.R.O.R.O.R.O.",
+   "pattern": "R.O.R.O.R.O.R.O.R.O.R.O.R.O.RrOo",
    "octave": 1,
    "sound": "gm:Electric Bass (finger)",
    "glide": false
@@ -901,18 +1022,31 @@
   "defaults": {
    "bass": true,
    "chords": true,
-   "lead": false
+   "lead": true
   },
-  "notes": "A live band groove: four-on-the-floor kick, snare on 2 and 4, 16th hats with the open-hat 'tsss' on every offbeat, nearly straight timing. Root-octave eighth-note bass (add a 16th octave pickup for variation, as in 'Hot Stuff'); the synth alternative is Giorgio Moroder's sequenced 16th bass of 'I Feel Love'. Nile Rodgers-style muted 16th-note guitar chops on min7/dom7 chords, often a two-chord dorian vamp (Good Times = Em7-A7). Lush strings and brass for the hook."
+  "bass_tip": "Elle saute de la note grave à la même note plus haut, deux fois par temps, avec une petite relance à la fin.",
+  "pad_tip": "Des accords en petits coups secs, à la manière de la guitare funky de Nile Rodgers (Chic).",
+  "lead_tip": "Des cordes qui s'envolent sur le refrain, comme chez Chic ou les Bee Gees.",
+  "fx": [
+   {
+    "on": "lead",
+    "reverb": 0.35
+   },
+   {
+    "on": "snare",
+    "reverb": 0.15
+   }
+  ],
+  "notes": "A live band groove: four-on-the-floor kick, a real snare on 2 and 4 with ghost notes, the open-hat 'tsss' on every offbeat closed right after ('tsss-chick'), congas, nearly straight. Root-octave eighth-note bass with a 16th pickup every other bar. Nile Rodgers-style 16th chops (no guitar sound yet: a pluck stands in) on a two-chord dorian vamp (Good Times: Am7-D7), happy first. Strings for the hook, on by default."
  },
  {
   "id": "amapiano",
   "references": [
+   "Tyla – Water (2023)",
    "Focalistic & Vigro Deep – Ke Star (2020)",
-   "Tyler ICU & Tumela_za – Mnike (2023)",
-   "Tyla – Water (2023)"
+   "Tyler ICU & Tumela_za – Mnike (2023)"
   ],
-  "description_fr": "La house sud-africaine lente et chaloupée : une basse « log drum » qui rebondit comme un tambour de bois, des shakers qui tournent et un piano jazzy.",
+  "description_fr": "La house sud-africaine plus lente : une basse qui rebondit comme un tambour de bois (le « log drum ») et un piano jazzy.",
   "bpm": 112,
   "swing": 0.15,
   "root": "C",
@@ -921,12 +1055,13 @@
     "role": "kick",
     "pattern": "x...x...x...x...",
     "source": "amapiano",
-    "tip_fr": "Une grosse caisse douce sur chaque temps, qui laisse toute la place au log drum."
+    "tip_fr": "Une grosse caisse douce sur chaque temps, qui laisse la place au log drum, la basse qui rebondit (tu la choisiras à l'étape Basse)."
    },
    {
     "role": "hat",
     "pattern": "xoxoxoxoxoxoxoxo",
     "source": "amapiano",
+    "voice": "shaker",
     "tip_fr": "Le shaker tourne tout le long, avec des coups plus ou moins forts."
    },
    {
@@ -937,9 +1072,10 @@
    },
    {
     "role": "perc",
-    "pattern": "....x..x..x.x...",
+    "pattern": "......x..x...x.......x..x.x.x...",
     "source": "amapiano",
-    "tip_fr": "Des congas qui répondent au log drum, comme une conversation."
+    "voice": "rim",
+    "tip_fr": "Des petits « toc » de bois qui répondent au log drum, comme une conversation."
    }
   ],
   "progressions": {
@@ -975,11 +1111,12 @@
     "degrees": [
      3,
      4,
-     2,
+     0,
      5
     ]
    }
   },
+  "default_mood": "happy",
   "chords": {
    "type": "keys",
    "rhythm": "...X..X...X.....",
@@ -988,10 +1125,10 @@
    "sound": "Piano électrique"
   },
   "bass": {
-   "pattern": "..R..R.O..R..5..",
+   "pattern": "..R-.R-O-.R-.5-...R-.R-..O-..R5-",
    "octave": 2,
-   "sound": "pack:amapiano:bass",
-   "glide": true
+   "sound": "Log drum",
+   "glide": false
   },
   "lead": {
    "type": "riff",
@@ -1011,6 +1148,20 @@
    "chords": true,
    "lead": false
   },
-  "notes": "The log drum is both bass and hook: a woody, pitched percussive bass (FM, e.g. Fruity DX10) with fast pitch glides, landing BETWEEN the soft kicks (if they line up the bounce flattens), following the chord roots with octave/fifth jumps; write 2-bar call-and-response phrases. Constant 16th shaker with velocity variation and light swing (54-58%) applied to the log drum too; congas/woodblocks/rims answering. Jazzy 7th/9th Rhodes or piano chords entering after the 1 with gaps (e.g. Cm9-F7-Bbmaj9-Gm7). 108-115 BPM."
+  "signature": "bass",
+  "bass_tip": "Le log drum : un tambour grave qui joue les notes de la basse, toujours entre les coups de grosse caisse, en question-réponse sur deux mesures.",
+  "pad_tip": "Des accords jazzy de piano électrique qui arrivent juste après le temps, avec des silences.",
+  "lead_tip": "Une petite phrase de piano qui répond au log drum.",
+  "fx": [
+   {
+    "on": "chords",
+    "reverb": 0.3
+   },
+   {
+    "on": "lead",
+    "delay": 0.25
+   }
+  ],
+  "notes": "The log drum is both bass and hook: a woody pitched drum ('Log drum' = Plaits bass drum played on the notes; it cannot glide), landing BETWEEN the soft kicks, following the roots with octave/fifth jumps, as a two-bar call and response. Constant 16th shaker (built-in shaker voice) with velocity variation and light swing; rim/woodblock 'toc' answering over two bars. Jazzy 9th chords entering after the 1 with gaps (Cm9-F9-Bbmaj9-Gm9, happy first). The log drum leaves in the break and comes back on the drop. 108-115 BPM."
  }
 ]

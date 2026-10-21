@@ -79,6 +79,9 @@ void Engine::applyCommand(const Command& command) {
                 sequencer_.start(std::clamp(command.a, 0, 4));
                 sceneStart_ = 0;
                 // Started from a later song part: the song position counts from that part's place.
+                // b < 0: a scene played on its own, outside the song (song automation and song
+                // clips wait for the song).
+                inSong_ = command.b >= 0;
                 songStart_ = -std::max(0, command.b);
                 songRestart_ = false;
                 audio_.songJump();
@@ -212,6 +215,8 @@ void Engine::applyCommand(const Command& command) {
             songRestart_ = command.b == 1;  // the waiting scene starts the song over (it loops)
             songRestartAt_ = command.b == 1 && std::isfinite(command.value) ? std::max(0, static_cast<int>(std::lround(command.value))) : 0;
             stopAtSwap_ = command.b == 2;   // the song ends there: the transport stops instead
+            leaveSong_ = command.b == 3;    // the waiting scene plays on its own, outside the song
+            if (command.a < 0 && command.b == 3) leaveSongNow();
             staging_ = false;  // arming ends a staging burst even if its "off" was dropped
             break;
         case CommandType::SetAcidRoot:
@@ -401,6 +406,7 @@ void Engine::applyCommand(const Command& command) {
 void Engine::stopTransport() {
     swapAt_ = -1;
     stopAtSwap_ = false;
+    leaveSong_ = false;
     staging_ = false;  // a lost "staging off" must never trap later edits
     staged_.audioLoop.fill(-1);  // a part that never came must not change a clip's loop at a later swap
     sequencer_.stop();
@@ -467,14 +473,16 @@ void Engine::onStep(int offset, int step) {
     // Patterns count from the start of their scene; the remix stems follow the transport.
     const int local = step - sceneStart_;
     acid_.onStep(offset, local, sequencer_.samplesPerStep());
-    audio_.onStep(offset, local, step - songStart_, sequencer_.samplesPerStep(), sequencer_.swing(), songStart_);
+    // Outside the song, no song position: song clips and song curves wait for the song.
+    const int songStep = inSong_ ? step - songStart_ : -1;
+    audio_.onStep(offset, local, songStep, sequencer_.samplesPerStep(), sequencer_.swing(), songStart_);
     for (auto& t : tracks_) {
-        if (t.on) t.notes.onStep(offset, local, sequencer_.samplesPerStep());
+        if (t.on) t.notes.onStep(offset, local, sequencer_.samplesPerStep(), sequencer_.swing());
         t.arpSync(offset, step, sequencer_.samplesPerStep());
     }
     const int patternStep = local % patternSteps_;
-    songStep_.store(step - songStart_, std::memory_order_relaxed);
-    applyAutomation(patternStep, step - songStart_);
+    songStep_.store(songStep, std::memory_order_relaxed);
+    applyAutomation(patternStep, songStep);
     // Sidechain pumps follow the kick lane (pad 1) or every quarter note.
     mixer_.sidechainEvent(offset, pattern_[0][patternStep] > 0.0f, onBeat);
     currentStep_.store(patternStep, std::memory_order_relaxed);
@@ -541,15 +549,26 @@ void Engine::swapScene(int step) {
     sceneStart_ = step;
     if (songRestart_) {
         // A part that simply follows keeps the song running; a jump (back to the start, or to
-        // another part) moves it, and song clips pick up there.
+        // another part, or into the song from a scene played on its own) moves it, and song
+        // clips pick up there.
         const int start = step - songRestartAt_;
-        if (start != songStart_) audio_.songJump();
+        if (start != songStart_ || !inSong_) audio_.songJump();
         songStart_ = start;
+        inSong_ = true;
+    } else if (leaveSong_) {
+        leaveSongNow();
     }
     songRestart_ = false;
+    leaveSong_ = false;
     songRestartAt_ = 0;
     swapAt_ = -1;
     sceneSwaps_.fetch_add(1, std::memory_order_relaxed);
+}
+
+// The scene playing goes on by itself, outside the song: song clips fade, song curves hold.
+void Engine::leaveSongNow() {
+    if (inSong_) audio_.songJump();
+    inSong_ = false;
 }
 
 void Engine::applyAutomation(int patternStep, int songStep) {
@@ -605,6 +624,8 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
     }
     for (auto& t : tracks_) {
         if (!t.on) continue;
+        // The tempo-locked filter sweep follows the beat (a plain store when the tempo is unchanged).
+        t.synth.setBeatFrames(sequencer_.samplesPerStep() * 4.0);
         t.notes.advance(numFrames, t);
         t.arpAdvance(numFrames, sequencer_.samplesPerStep());
     }

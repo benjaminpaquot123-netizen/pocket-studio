@@ -14,11 +14,17 @@ data class AudioTrack(
     val name: String,
     val color: Int = 0,
     val clip: AudioClip? = null,
+    /**
+     * « Prise précédente »: the clip a new take replaced (one level), kept on disk (not in memory)
+     * so it can be brought back ([restorePreviousTake]).
+     */
+    val previous: AudioClip? = null,
 ) {
     fun sanitized(): AudioTrack = copy(
         name = name.take(InstrumentTrack.MAX_NAME).ifBlank { "Audio ${id + 1}" },
         color = color.coerceIn(0, InstrumentTrack.COLORS - 1),
         clip = clip?.takeIf { PadSample(it.file, "").isSafe }?.sanitized(),
+        previous = previous?.takeIf { PadSample(it.file, "").isSafe && it.file != clip?.file }?.sanitized(),
     )
 
     companion object {
@@ -52,6 +58,11 @@ data class AudioClip(
     val offsetMs: Float = 0f,
     /** The tempo it was recorded at (0: unknown, an imported file). */
     val bpm: Double = 0.0,
+    /**
+     * A scene clip that belongs to scene [scene]: it plays only in the song parts of that scene
+     * (and when that scene plays on its own). Null: in every part (older projects, an imported file).
+     */
+    val scene: Int? = null,
 ) {
     fun sanitized(): AudioClip = copy(
         name = name.take(40),
@@ -63,7 +74,30 @@ data class AudioClip(
         fadeOut = fadeOut.takeIf { it.isFinite() }?.coerceIn(0f, 10f) ?: 0f,
         offsetMs = offsetMs.takeIf { it.isFinite() }?.coerceIn(-MAX_OFFSET_MS, MAX_OFFSET_MS) ?: 0f,
         bpm = bpm.takeIf { it.isFinite() && it in 20.0..400.0 } ?: 0.0,
+        scene = scene?.takeIf { !song && it in 0 until Scene.MAX },
     )
+
+    /** It sounds in the parts of [scene] (a song clip: wherever the song is). */
+    fun belongsTo(scene: Int): Boolean = song || this.scene == null || this.scene == scene
+
+    /**
+     * The clip once the first [cutSeconds] of its sound are cut (« Garder la sélection »): what
+     * remains stays where it was heard. The start moves by whole eighth notes (never onto a
+     * swung sixteenth) at [projectBpm], the rest goes into « Décaler la prise ». A scene clip
+     * never starts at or past its scene's end ([sceneSteps]): there it would never play, so a
+     * cut that long keeps the clip's start and the kept sound starts there.
+     */
+    fun afterCutStart(cutSeconds: Double, projectBpm: Double, sceneSteps: Int = Int.MAX_VALUE): AudioClip {
+        if (cutSeconds <= 0.0 || !cutSeconds.isFinite() || projectBpm <= 0.0) return this
+        val eighthMs = 30_000.0 / projectBpm
+        val total = offsetMs + cutSeconds * 1000.0
+        val eighths = Math.round(total / eighthMs).toInt()
+        val max = if (song) MAX_SONG_START else MAX_START
+        val newStart = (start + eighths * 2).coerceIn(0, max)
+        if (!song && newStart >= sceneSteps) return this
+        val rest = total - (newStart - start) / 2.0 * eighthMs
+        return copy(start = newStart, offsetMs = rest.toFloat().coerceIn(-MAX_OFFSET_MS, MAX_OFFSET_MS))
+    }
 
     /** Sixteenths it lasts at [bpm] (rounded up). */
     fun steps(bpm: Double): Int = kotlin.math.ceil(seconds * bpm / 15.0 - 1e-6).toInt().coerceAtLeast(1)
@@ -100,9 +134,12 @@ data class AudioClip(
         const val MAX_LOOP = 1024
         /** What the engine loops on at most (AudioTracks::LoopSteps). */
         const val ENGINE_MAX_LOOP = 4096
-        const val MAX_OFFSET_MS = 200f
-        /** « Décaler la prise » moves by this much per touch. */
+        /** A Bluetooth headset can lag by 200 ms and more. */
+        const val MAX_OFFSET_MS = 300f
+        /** « Décaler la prise » moves by this much per touch (the fine buttons)… */
         const val OFFSET_STEP_MS = 5f
+        /** …and by this much with the coarse ones. */
+        const val OFFSET_BIG_STEP_MS = 50f
 
         /** The whole bars of [beatsPerBar] beats a clip of [seconds] lasts at [bpm] (at least one). */
         fun barsFor(seconds: Double, bpm: Double, beatsPerBar: Int = 4): Int {
@@ -145,14 +182,58 @@ fun Project.audioEndBars(): Int = audioTracks.maxOfOrNull { t ->
     val clip = t.clip ?: return@maxOfOrNull 0
     val strip = mixer.channels.getOrNull(AudioTrack.mixerChannel(t.id))
     // A song clip is silent in a loop export (see [audioPlays]).
-    if (clip.song || clip.gain <= 0f || strip?.mute == true || (strip?.volume ?: 1f) <= 0f) return@maxOfOrNull 0
+    if (clip.song || !clip.belongsTo(scene) || clip.gain <= 0f || strip?.mute == true || (strip?.volume ?: 1f) <= 0f) return@maxOfOrNull 0
     val end = clip.start + clip.steps(tempoBpm) + kotlin.math.max(0, Math.round(clip.offsetMs / 1000.0 * tempoBpm / 15.0).toInt())
     (end + stepsPerBar - 1) / stepsPerBar
 } ?: 0
 
 /**
- * Audio track [id] sounds in song [part]; null: a scene played on its own (live or a loop export),
- * where a song clip stays silent (it belongs to the song: it plays in song playback and its export).
+ * Audio track [id] sounds in song [part]; null: scene [scene] played on its own (live or a loop
+ * export), where a song clip stays silent (it belongs to the song: it plays in song playback and
+ * its export). A scene clip sounds only with its own scene ([AudioClip.scene]).
  */
-fun Project.audioPlays(id: Int, part: SongPart?): Boolean =
-    part?.plays(SongPart.audio(id)) ?: (audioTracks.firstOrNull { it.id == id }?.clip?.song != true)
+fun Project.audioPlays(id: Int, part: SongPart?, scene: Int = this.scene): Boolean {
+    val clip = audioTracks.firstOrNull { it.id == id }?.clip
+    if (part != null) return part.plays(SongPart.audio(id)) && clip?.belongsTo(part.scene) != false
+    return clip?.song != true && clip?.belongsTo(scene) != false
+}
+
+/** Sound files kept for « Prise précédente » only: on disk and in backups, not loaded. */
+val Project.previousTakeFiles: Set<String> get() = audioTracks.mapNotNull { it.previous?.file }.toSet()
+
+/** Audio track [id] gets back the take a new one replaced (and keeps that one as the previous). */
+fun Project.restorePreviousTake(id: Int): Project {
+    val t = audioTracks.firstOrNull { it.id == id } ?: return this
+    val previous = t.previous ?: return this
+    return withAudioTrack(t.copy(clip = previous, previous = t.clip))
+}
+
+/**
+ * Where audio track [id] is heard in each song part: for each part, the stretches (fractions
+ * 0..1 of the part) where its clip sounds (empty: silent there, switched off or not its scene).
+ */
+fun Project.audioSpans(id: Int): List<List<ClosedFloatingPointRange<Float>>> {
+    val clip = audioTracks.firstOrNull { it.id == id }?.clip ?: return song.map { emptyList() }
+    val length = clip.steps(tempoBpm) + Math.round(clip.offsetMs / 1000.0 * tempoBpm / 15.0).toInt()
+    var at = 0
+    return song.map { part ->
+        val steps = sceneSteps(part.scene) * part.repeats
+        val partStart = at
+        at += steps
+        if (steps <= 0 || !audioPlays(id, part)) return@map emptyList()
+        // Stretches in steps from the part's start, then as fractions.
+        val stretches = when {
+            clip.song -> listOf(clip.start - partStart to clip.start - partStart + length)
+            clip.once -> listOf(clip.start to clip.start + length)
+            else -> {
+                val loop = clip.loopSteps.coerceAtLeast(1)
+                (clip.start until steps step loop).take(256).map { it to it + minOf(length, loop) }
+            }
+        }
+        stretches.mapNotNull { (a, b) ->
+            val from = a.coerceIn(0, steps)
+            val to = b.coerceIn(0, steps)
+            if (to > from) from.toFloat() / steps..to.toFloat() / steps else null
+        }
+    }
+}

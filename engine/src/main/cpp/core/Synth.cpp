@@ -52,20 +52,44 @@ void Synth::prepare(int sampleRate) {
             0.05f, 0.3f, 0.8f, 0.35f,
             0.5f, 0.0f, 0.3f, 0.0f, 0.6f,
             0.0f, 0.3f,
+            0.0f, 0.0f,
         };
         for (int i = 0; i < ParamCount; ++i) params_[static_cast<size_t>(i)] = defaults[i];
     }
     prepared_ = true;
     for (auto& v : voices_) updateVoiceSettings(v);
     lfo1_.SetFreq(0.05f * std::pow(400.0f, param(Lfo1Rate)));
-    lfo2_.SetFreq(0.05f * std::pow(400.0f, param(Lfo2Rate)));
+    sweepHz_ = 0.0f;
+    updateSweepRate();
+}
+
+float Synth::syncCyclesPerBeat(float sync) {
+    // Free, then a bar, a half, a quarter, an eighth, a sixteenth, quarter and eighth triplets.
+    static constexpr float kCycles[kSyncDivisions] = {0.0f, 0.25f, 0.5f, 1.0f, 2.0f, 4.0f, 1.5f, 3.0f};
+    const int i = std::clamp(static_cast<int>(std::lround(sync * static_cast<float>(kSyncDivisions - 1))), 0, kSyncDivisions - 1);
+    return kCycles[i];
+}
+
+void Synth::updateSweepRate() {
+    const float cycles = syncCyclesPerBeat(param(Lfo2Sync));
+    const float hz = cycles > 0.0f ? cycles * static_cast<float>(sampleRate_ / beatFrames_)
+                                   : 0.05f * std::pow(400.0f, param(Lfo2Rate));
+    if (hz == sweepHz_) return;
+    sweepHz_ = hz;
+    lfo2_.SetFreq(hz);
+}
+
+void Synth::setBeatFrames(double frames) {
+    if (!(frames > 1.0) || std::fabs(frames - beatFrames_) < 0.5) return;
+    beatFrames_ = frames;
+    if (param(Lfo2Sync) > 0.0f) updateSweepRate();
 }
 
 void Synth::setParam(Param p, float value) {
     if (p < 0 || p >= ParamCount) return;
     params_[static_cast<size_t>(p)] = std::clamp(value, 0.0f, 1.0f);
     if (p == Lfo1Rate) lfo1_.SetFreq(0.05f * std::pow(400.0f, param(Lfo1Rate)));
-    if (p == Lfo2Rate) lfo2_.SetFreq(0.05f * std::pow(400.0f, param(Lfo2Rate)));
+    if (p == Lfo2Rate || p == Lfo2Sync) updateSweepRate();
     for (auto& v : voices_) updateVoiceSettings(v);
 }
 
@@ -116,6 +140,23 @@ void Synth::applyEvent(const Event& e) {
         }
         return;
     }
+    // Glide: a key pressed while another is held takes over its voice and slides to the new
+    // pitch, without a new attack (the 808 or "talking" bass slide of a line whose notes overlap).
+    if (param(Glide) > 0.0f) {
+        Voice* held = nullptr;
+        for (auto& v : voices_) {
+            if (v.gate && (held == nullptr || v.age > held->age)) held = &v;
+        }
+        if (held != nullptr) {
+            const float seconds = 0.5f * param(Glide) * param(Glide);
+            const float ticks = std::max(1.0f, seconds * static_cast<float>(sampleRate_) / static_cast<float>(kControlRate));
+            held->note = e.note;
+            held->target = static_cast<float>(e.note);
+            held->glideStep = (held->target - held->semis) / ticks;
+            held->age = ++clock_;
+            return;
+        }
+    }
     // Same note already sounding: retrigger it. Otherwise a free voice, else the quietest one
     // already let go, else the oldest held one (a held chord outlives quick notes fading out).
     Voice* target = nullptr;
@@ -148,6 +189,10 @@ void Synth::applyEvent(const Event& e) {
     target->gate = true;
     target->age = ++clock_;
     target->baseHz = midiToHz(e.note);
+    target->semis = target->target = static_cast<float>(e.note);
+    target->glideStep = 0.0f;
+    // A tempo-locked sweep starts each attack from its lowest point: every note "wobbles" the same way.
+    if (param(Lfo2Sync) > 0.0f) lfo2_.Reset(0.5f);
     if (idle && param(Unison) > 0.0f) {
         // Unison voices start at spread phases, oscillator 1 included: wide from the first cycle,
         // the same level for every note.
@@ -218,6 +263,14 @@ void Synth::render(float* mono, int numFrames) {
             v.level = amp;
             const float fenv = v.filterEnv.Process(v.gate);
             if (controlTick) {
+                if (v.glideStep != 0.0f) {
+                    v.semis += v.glideStep;
+                    if ((v.glideStep > 0.0f && v.semis >= v.target) || (v.glideStep < 0.0f && v.semis <= v.target)) {
+                        v.semis = v.target;
+                        v.glideStep = 0.0f;
+                    }
+                    v.baseHz = 440.0f * std::pow(2.0f, (v.semis - 69.0f) / 12.0f);
+                }
                 const float hz = v.baseHz * bendRatio * std::pow(2.0f, vibratoSemis * lfo1 / 12.0f);
                 v.osc1.SetFreq(hz * osc1Ratio);
                 // All six follow the note, so a copy switched on mid-note starts at the right pitch.

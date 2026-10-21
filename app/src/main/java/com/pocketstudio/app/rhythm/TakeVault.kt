@@ -52,10 +52,15 @@ class TakeVault(
         val sampleRate: Int = 48000,
         /** The track's clip file when the take began (see [PendingTake.replaces]). */
         val replaces: String? = null,
+        /** A scene take: the scene it was recorded on (see [PendingTake.scene]). */
+        val scene: Int? = null,
     )
 
     sealed interface Outcome {
-        class Saved(val take: PendingTake, val pcm: Pcm) : Outcome
+        /** [pcm] is read back from the written file when first asked (off the main thread): minutes of sound are never held twice. */
+        class Saved(val take: PendingTake, load: () -> Pcm) : Outcome {
+            val pcm: Pcm by lazy(load)
+        }
         /** Stopped during the count-in. */
         data object Nothing : Outcome
         data object TooShort : Outcome
@@ -111,15 +116,17 @@ class TakeVault(
     private fun store(r: Request): Outcome {
         val audio = finishTake(r.handle) ?: return Outcome.Lost
         val keep = keptRange(audio.size, r.latencyFrames, r.cutFrames, r.sampleRate) ?: return if (r.waiting && audio.size < r.sampleRate / 10) Outcome.Nothing else Outcome.TooShort
-        val pcm = Pcm(audio.copyOfRange(keep.first, keep.last + 1), 1, r.sampleRate)
-        if (pcm.data.all { abs(it) < 1e-4f }) return Outcome.Silent
+        if (isSilent(audio, keep)) return Outcome.Silent
         val samples = File(r.projectFolder, "samples").apply { mkdirs() }
         val file = "${UUID.randomUUID().toString().take(12)}.wav"
-        FloatWav.write(File(samples, file), pcm)
-        val take = PendingTake(r.track, file, r.name.take(40), pcm.seconds, r.bpm, r.song, r.start, r.replaces)
+        val wav = File(samples, file)
+        // Straight from the engine's copy: no second copy of a long take in memory.
+        FloatWav.write(wav, audio, keep.first, keep.last + 1, 1, r.sampleRate)
+        val seconds = (keep.last + 1 - keep.first).toDouble() / r.sampleRate
+        val take = PendingTake(r.track, file, r.name.take(40), seconds, r.bpm, r.song, r.start, r.replaces, scene = r.scene)
         PendingTakes.write(r.projectFolder, take)
-        AppLog.add("Prise écrite : ${"%.1f".format(pcm.seconds)} s")
-        return Outcome.Saved(take, pcm)
+        AppLog.add("Prise écrite : ${"%.1f".format(seconds)} s")
+        return Outcome.Saved(take) { FloatWav.read(wav) }
     }
 
     /** Suspends until no take is recording or being written, at most [timeoutMs]. */
@@ -141,6 +148,12 @@ class TakeVault(
             val from = latencyFrames.coerceIn(0, size / 2).toLong() + cutFrames.coerceAtLeast(0)
             if (size - from < sampleRate / 10) return null
             return from.toInt() until size
+        }
+
+        /** No sound above -80 dB in [range] of [audio] (a microphone that stayed shut). */
+        fun isSilent(audio: FloatArray, range: IntRange): Boolean {
+            for (i in range.first..range.last) if (abs(audio[i]) >= 1e-4f) return false
+            return true
         }
     }
 }

@@ -44,7 +44,7 @@ object VerifiedDownload {
                 }
             }
             if (hex(digest.digest()) != spec.sha256) throw IOException(tr("fichier abîmé (empreinte différente)"))
-            if (!part.renameTo(target)) throw IOException(tr("enregistrement impossible"))
+            if (!part.renameTo(target)) throw IOException(tr("écriture impossible"))
             return target
         } finally {
             connection.disconnect()

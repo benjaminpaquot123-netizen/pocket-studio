@@ -30,18 +30,26 @@ public:
     void setSteps(int steps);
     int steps() const { return steps_; }
 
-    // Called for every sequencer step (absolute index): queues the notes starting in it.
-    void onStep(int offset, int step, double samplesPerStep);
+    // A note ending at most this many frames after another starts only touches it (grid rounding).
+    static constexpr int64_t kTouchFrames = 2;
+
+    // Called for every sequencer step (index from the scene's start, so its parity is the
+    // sequencer's): queues the notes starting in it. `swing` is the sequencer's (odd steps late).
+    void onStep(int offset, int step, double samplesPerStep, double swing = 0.0);
     // Sends this block's note-ons and note-offs to `sink` (noteOn/noteOff with a frame offset),
-    // before it renders.
+    // before it renders. At the same frame the note-offs go first: a note that ends where the next
+    // one starts lets go before it (a new attack, not a glide).
     template <typename Sink>
     void advance(int numFrames, Sink& sink) {
+        for (int i = 0; i < pendingCount_; ++i) {
+            const Pending& p = pending_[static_cast<size_t>(i)];
+            if (p.at < numFrames && p.velocity == 0.0f) sink.noteOff(p.pitch, static_cast<int>(p.at));
+        }
         int kept = 0;
         for (int i = 0; i < pendingCount_; ++i) {
             Pending p = pending_[static_cast<size_t>(i)];
             if (p.at < numFrames) {
                 if (p.velocity > 0.0f) sink.noteOn(p.pitch, p.velocity, static_cast<int>(p.at));
-                else sink.noteOff(p.pitch, static_cast<int>(p.at));
             } else {
                 p.at -= numFrames;
                 pending_[static_cast<size_t>(kept++)] = p;

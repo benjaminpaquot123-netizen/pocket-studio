@@ -84,7 +84,7 @@ object StemStore {
                 .put("bpm", info.bpm).put("firstBeat", info.firstBeat).put("root", info.root ?: -1).put("minor", info.minor)
                 .toString(),
         )
-        if (!tmp.renameTo(File(dir, META))) throw java.io.IOException(tr("enregistrement impossible"))
+        if (!tmp.renameTo(File(dir, META))) throw java.io.IOException(tr("écriture impossible"))
         return set
     }
 

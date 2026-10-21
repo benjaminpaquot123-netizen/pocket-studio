@@ -8,7 +8,7 @@ import kotlin.random.Random
  * function returns the new clip and the new selection, so the edited notes stay selected.
  */
 object NoteEdits {
-    /** [dropped]: notes of a paste that did not fit in the loop (none were added for them). */
+    /** [dropped]: notes of a paste or a copy that did not fit in the loop (none were added for them). */
     data class Result(val clip: NoteClip, val selection: Set<Note>, val dropped: Int = 0)
 
     private fun replace(clip: NoteClip, selection: Set<Note>, transform: (Note) -> Note): Result {
@@ -19,9 +19,15 @@ object NoteEdits {
         return Result(next, changed.values.filter { it in next.notes }.toSet())
     }
 
-    /** Up or down by [semitones]; notes past the keyboard stay where they are. */
-    fun transpose(clip: NoteClip, selection: Set<Note>, semitones: Int): Result =
-        replace(clip, selection) { n -> if (n.pitch + semitones in 0..127) n.copy(pitch = n.pitch + semitones) else n }
+    /**
+     * Up or down by [semitones]; notes past the keyboard stay where they are. The whole clip
+     * chosen: the notes hidden past its end (a shortened loop) move too, so they come back in key.
+     */
+    fun transpose(clip: NoteClip, selection: Set<Note>, semitones: Int): Result {
+        val move = { n: Note -> if (n.pitch + semitones in 0..127) n.copy(pitch = n.pitch + semitones) else n }
+        val all = clip.hidden.isNotEmpty() && selection.isNotEmpty() && selection.containsAll(clip.notes)
+        return replace(if (all) clip.copy(hidden = clip.hidden.map(move)) else clip, selection, move)
+    }
 
     /** Earlier or later by [ticks], inside the loop. */
     fun shift(clip: NoteClip, selection: Set<Note>, ticks: Int): Result =
@@ -66,7 +72,8 @@ object NoteEdits {
         val span = roundUp(end - first, NoteClip.TICKS_PER_STEP)
         val copies = selection.map { it.copy(start = it.start + span) }.filter { it.start < clip.ticks }
         val next = clip.copy(notes = clip.notes + copies).sanitized()
-        return Result(next, copies.filter { it in next.notes }.toSet())
+        val kept = copies.filter { it in next.notes }.toSet()
+        return Result(next, kept, selection.size - kept.size)
     }
 
     /** The selection as a clipboard: notes relative to the first start. */

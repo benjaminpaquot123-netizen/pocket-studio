@@ -26,6 +26,8 @@ import com.pocketstudio.app.ui.AppTab
 import com.pocketstudio.model.StarterWizard
 import com.pocketstudio.ui.PocketStudioTheme
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -69,7 +71,7 @@ class OnboardingUiTest {
         var closed = false
         // The starter beat: the melody is next, in Synthé.
         val steps = nextSteps(RhythmViewModel.starterProject())
-        compose.setContent { PocketStudioTheme { NextStepCard(steps, go = { tabs += it }, close = { closed = true }) } }
+        compose.setContent { PocketStudioTheme { NextStepCard(steps, go = { tabs += it }, close = { closed = true }, compact = false) } }
         compose.onNodeWithTag("next_step_title").assertExists()
         compose.onNodeWithText("3. Mélodie").assertExists()
         compose.onNodeWithTag("next_step_go").performClick()
@@ -88,7 +90,7 @@ class OnboardingUiTest {
         val marked = mutableListOf<StepGoal>()
         compose.setContent {
             PocketStudioTheme {
-                NextStepCard(nextSteps(com.pocketstudio.model.Project()), mark = { marked += it })
+                NextStepCard(nextSteps(com.pocketstudio.model.Project()), mark = { marked += it }, compact = false)
             }
         }
         compose.onNodeWithText("1. Rythme").assertExists()
@@ -123,7 +125,7 @@ class OnboardingUiTest {
 
     @Test
     fun theSummaryShowsTheThreeSectionsAndTheSong() {
-        val style = StarterWizard.style("house")!!
+        val style = StarterWizard.style("pop")!!
         val rows = style.lines.associate { l ->
             val cats = soundCategories(l.role, style.id, emptyList())
             l.role to WizardRow(true, cats.first().id, cats.first().options.first())
@@ -140,6 +142,24 @@ class OnboardingUiTest {
     }
 
     @Test
+    fun clubMusicShowsItsFourSectionsWithTheBreak() {
+        val style = StarterWizard.style("house")!!
+        val rows = style.lines.associate { l ->
+            val cats = soundCategories(l.role, style.id, emptyList())
+            l.role to WizardRow(true, cats.first().id, cats.first().options.first())
+        }
+        val parts = StarterWizard.Part.entries.associateWith { PartRow(true, StarterWizard.soundsFor(it, style).first()) }
+        val ui = WizardUi(true, 0, style.id, rows, StarterWizard.Mood.Happy, parts)
+        compose.setContent {
+            PocketStudioTheme { WizardScreen(ui.copy(step = ui.lastStep), PacksUi(IndexState.Unavailable), null, WizardActions()) }
+        }
+        compose.onNodeWithText("Quatre sections", substring = true, ignoreCase = true).assertExists()
+        compose.onNodeWithText("Intro · la batterie pour démarrer").assertExists()
+        compose.onNodeWithText("Break · une pause sans kick ni basse").assertExists()
+        compose.onNodeWithText("Intro → Groove → Drop → Break → Drop → Intro pour finir", substring = true).assertExists()
+    }
+
+    @Test
     fun eachLineSaysWhichSectionsItPlaysIn() {
         val style = StarterWizard.style("house")!!
         val rows = style.lines.associate { l ->
@@ -148,7 +168,8 @@ class OnboardingUiTest {
         }
         val ui = WizardUi(true, 2, style.id, rows, null, emptyMap())  // step 2: the kick
         compose.setContent { PocketStudioTheme { WizardScreen(ui, PacksUi(IndexState.Unavailable), null, WizardActions()) } }
-        compose.onNodeWithText("Joue dans les trois sections").assertExists()
+        // House is club music: the kick plays everywhere but in the Break.
+        compose.onNodeWithText("Joue dans Intro, Groove et Drop").assertExists()
     }
     @Test
     fun theShareStepIsTickedOnlyOnceTheSongIsShared() {
@@ -156,8 +177,8 @@ class OnboardingUiTest {
         var shared = 0
         // Everything done but the sharing: the card shows it, with its one-touch button.
         val steps = nextSteps(com.pocketstudio.model.Project()).map { it.copy(done = it.goal != StepGoal.Share) }
-        compose.setContent { PocketStudioTheme { NextStepCard(steps, mark = { marked += it }, share = { shared++ }) } }
-        compose.onNodeWithText("7. Partager").assertExists()
+        compose.setContent { PocketStudioTheme { NextStepCard(steps, mark = { marked += it }, share = { shared++ }, compact = false) } }
+        compose.onNodeWithText("8. Partager").assertExists()
         compose.onNodeWithTag("next_step_go").performClick()
         // The export and the share sheet tick it (rememberShareSong), not the touch: cancelling leaves it to do.
         assertEquals(1, shared)
@@ -165,9 +186,28 @@ class OnboardingUiTest {
     }
 
     @Test
+    fun onAPhoneTheCardIsOneLineThatOpens() {
+        val tabs = mutableListOf<AppTab>()
+        // Right after the assistant: rhythm, bass, melody, sections and song done, the volumes next.
+        val steps = nextSteps(com.pocketstudio.model.Project()).map { it.copy(done = it.goal < StepGoal.Volumes) }
+        compose.setContent { PocketStudioTheme { NextStepCard(steps, go = { tabs += it }) } }
+        // A phone's width: one line, the step's name, no hint or button yet.
+        compose.onNodeWithTag("next_steps_compact").assertExists()
+        compose.onNodeWithText("Volumes").assertExists()
+        compose.onNodeWithTag("next_step_go").assertDoesNotExist()
+        compose.onNodeWithTag("next_steps_compact").performClick()
+        compose.onNodeWithText("7. Volumes").assertExists()
+        compose.onNodeWithTag("next_step_go").performClick()
+        assertEquals(listOf(AppTab.Mixeur), tabs)
+        // And it folds back to its line.
+        compose.onNodeWithTag("next_steps_shrink").performClick()
+        compose.onNodeWithTag("next_steps_compact").assertExists()
+    }
+
+    @Test
     fun theRhythmStepBringsTheGridIntoView() {
         var shown = 0
-        compose.setContent { PocketStudioTheme { NextStepCard(nextSteps(com.pocketstudio.model.Project()), showHere = { shown++ }) } }
+        compose.setContent { PocketStudioTheme { NextStepCard(nextSteps(com.pocketstudio.model.Project()), showHere = { shown++ }, compact = false) } }
         compose.onNodeWithText("1. Rythme").assertExists()
         compose.onNodeWithTag("next_step_here").assertTextEquals("Voir la grille").performClick()
         assertEquals(1, shown)
@@ -227,7 +267,7 @@ class OnboardingUiTest {
         ui = houseUi(2)
         compose.onNodeWithTag("wizard_close").performClick()
         assertEquals(1, closed)
-        compose.onNodeWithText("Quitter l'assistant ?").assertExists()
+        compose.onNodeWithText("Quitter sans créer le morceau ?").assertExists()
         compose.onNodeWithText("Continuer").performClick()
         assertEquals(1, closed)
         compose.onNodeWithTag("wizard_close").performClick()
@@ -246,9 +286,44 @@ class OnboardingUiTest {
         }
         compose.onNodeWithTag("wizard_style_listen_house").performScrollTo().performClick()
         assertEquals(listOf<com.pocketstudio.app.library.SoundRef>(com.pocketstudio.app.library.SoundRef.StyleDemo("house")), heard)
-        // Listening does not choose: the card itself does.
+        // Listening does not choose, nor does a touch on the card: it opens it to be read.
         assertEquals(emptyList<String>(), chosen)
+        compose.onNodeWithTag("wizard_style_choose_house").assertDoesNotExist()
         compose.onNodeWithTag("wizard_style_house").performClick()
+        assertEquals(emptyList<String>(), chosen)
+        // Opened: every reference, and the button that chooses.
+        StarterWizard.style("house")!!.references.forEach { compose.onNodeWithText("• $it").assertExists() }
+        compose.onNodeWithTag("wizard_style_choose_house").performScrollTo().performClick()
         assertEquals(listOf("house"), chosen)
+    }
+
+    @Test
+    fun theStylesCanBeFilteredByFamily() {
+        compose.setContent {
+            PocketStudioTheme { WizardScreen(WizardUi(open = true), PacksUi(IndexState.Unavailable), null, WizardActions()) }
+        }
+        compose.onNodeWithTag("wizard_family_Bass music").performScrollTo().performClick()
+        compose.waitForIdle()
+        StarterWizard.STYLES.forEach { s ->
+            if (s.family == "Bass music") compose.onNodeWithTag("wizard_style_${s.id}").assertExists()
+            else compose.onNodeWithTag("wizard_style_${s.id}").assertDoesNotExist()
+        }
+        compose.onNodeWithTag("wizard_family_all").performScrollTo().performClick()
+        compose.onNodeWithTag("wizard_style_house").assertExists()
+    }
+
+    @Test
+    fun aPartTheRecipeLeavesOutSaysSoAndTheLeadIsNoArpeggioWhenItIsARiff() {
+        val trap = StarterWizard.style("trap")!!
+        assertTrue(trap.melody.leadPattern.isNotBlank())
+        val riff = com.pocketstudio.app.library.partNotes(trap, StarterWizard.Part.Lead).joinToString()
+        assertFalse(riff, riff.contains("arpégiateur"))
+        val riddim = StarterWizard.style("riddim")!!
+        assertTrue(riddim.melody.leadPattern.isBlank())
+        assertTrue(com.pocketstudio.app.library.partNotes(riddim, StarterWizard.Part.Lead).joinToString().contains("arpégiateur"))
+        // A recipe's own word and its signature are said.
+        val signed = trap.copy(melody = trap.melody.copy(signature = StarterWizard.Part.Lead, tips = mapOf(StarterWizard.Part.Lead to "La cloche qui tourne.")))
+        assertEquals(listOf("En Trap : la cloche qui tourne.", "C'est le son qui fait le style : il joue dans toutes les sections."),
+            com.pocketstudio.app.library.partNotes(signed, StarterWizard.Part.Lead))
     }
 }

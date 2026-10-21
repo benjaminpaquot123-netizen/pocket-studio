@@ -80,10 +80,10 @@ object PackStore {
                 // The pack already there stays until the new one is in place.
                 val final = File(root, entry.id)
                 val old = File(root, "${entry.id}.old").apply { deleteRecursively() }
-                if (final.exists() && !final.renameTo(old)) throw IOException(tr("enregistrement impossible"))
+                if (final.exists() && !final.renameTo(old)) throw IOException(tr("écriture impossible"))
                 if (!part.renameTo(final)) {
                     old.renameTo(final)
-                    throw IOException(tr("enregistrement impossible"))
+                    throw IOException(tr("écriture impossible"))
                 }
                 old.deleteRecursively()
             } finally {

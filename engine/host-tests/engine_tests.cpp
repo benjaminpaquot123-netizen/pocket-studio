@@ -3,6 +3,8 @@
 
 #include <cmath>
 #include <cstdio>
+#include <algorithm>
+#include <array>
 #include <atomic>
 #include <chrono>
 #include <cstdlib>
@@ -939,6 +941,106 @@ void testSynthVoiceStealingAndCpu() {
 #if !defined(__SANITIZE_ADDRESS__)
     CHECK(load < 0.15);
 #endif
+}
+
+/** Rising zero crossings of [x] in [from, to), as a frequency in Hz. */
+double crossingHz(const std::vector<float>& x, int from, int to) {
+    int crossings = 0;
+    for (int i = from + 1; i < to; ++i) {
+        if (x[static_cast<size_t>(i - 1)] < 0.0f && x[static_cast<size_t>(i)] >= 0.0f) ++crossings;
+    }
+    return crossings * static_cast<double>(kRate) / (to - from);
+}
+
+void testSynthGlide() {
+    auto make = [](float glide) {
+        auto synth = std::make_unique<ps::Synth>();
+        synth->prepare(kRate);
+        openFilter(*synth);
+        synth->setParam(ps::Synth::Osc1Wave, 1.0f);
+        synth->setParam(ps::Synth::OscMix, 0.0f);
+        synth->setParam(ps::Synth::Glide, glide);
+        // A3, then A4 starting while A3 is still held (a line whose notes overlap), then A3 let go.
+        synth->noteOn(57, 1.0f, 0);
+        synth->noteOn(69, 1.0f, kRate / 2);
+        synth->noteOff(57, kRate / 2 + 480);
+        return synth;
+    };
+    // 0.4 = 80 ms: one voice slides from 220 to 440 Hz, without a second attack.
+    auto gliding = make(0.4f);
+    std::vector<float> out(static_cast<size_t>(kRate), 0.0f);
+    int most = 0;
+    for (int pos = 0; pos < kRate; pos += 256) {
+        gliding->render(out.data() + pos, std::min(256, kRate - pos));
+        most = std::max(most, gliding->activeVoices());
+    }
+    const double before = crossingHz(out, kRate / 4, kRate / 2), after = crossingHz(out, kRate * 3 / 4, kRate);
+    const double during = crossingHz(out, kRate / 2, kRate / 2 + 1920);  // the first 40 ms of the slide
+    std::printf("  synth glide: %.0f Hz -> %.0f Hz (%.0f Hz while sliding), %d voice(s)\n", before, after, during, most);
+    CHECK(std::abs(before - 220.0) < 6.0 && std::abs(after - 440.0) < 6.0);
+    CHECK(during > 240.0 && during < 420.0);
+    CHECK(most == 1);
+    // Without glide the same notes are two voices, the second one at its pitch at once.
+    auto plain = make(0.0f);
+    int voices = 0;
+    std::vector<float> dry(static_cast<size_t>(kRate), 0.0f);
+    for (int pos = 0; pos < kRate; pos += 256) {
+        plain->render(dry.data() + pos, std::min(256, kRate - pos));
+        if (pos <= kRate / 2 + 100 && kRate / 2 + 100 < pos + 256) voices = plain->activeVoices();
+    }
+    CHECK(voices == 2);
+    CHECK(std::abs(crossingHz(dry, kRate * 3 / 4, kRate) - 440.0) < 6.0);
+}
+
+void testSynthSweepFollowsTheTempo() {
+    ps::Synth synth;
+    synth.prepare(kRate);
+    synth.setParam(ps::Synth::Lfo2Rate, 0.3f);
+    const float free = synth.sweepHz();
+    CHECK(std::abs(free - 0.05f * std::pow(400.0f, 0.3f)) < 1e-4f);
+    // Locked to a quarter note at 120 BPM (a beat of 24000 frames): 2 Hz, whatever the rate knob.
+    synth.setBeatFrames(kRate * 60.0 / 120.0);
+    synth.setParam(ps::Synth::Lfo2Sync, 3.0f / 7.0f);
+    CHECK(std::abs(synth.sweepHz() - 2.0f) < 1e-4f);
+    // The tempo changes: the sweep follows (140 BPM, eighth notes: 4.67 Hz).
+    synth.setParam(ps::Synth::Lfo2Sync, 4.0f / 7.0f);
+    synth.setBeatFrames(kRate * 60.0 / 140.0);
+    CHECK(std::abs(synth.sweepHz() - 140.0f / 60.0f * 2.0f) < 1e-3f);
+    CHECK(std::abs(ps::Synth::syncCyclesPerBeat(1.0f) - 3.0f) < 1e-6f);  // eighth-note triplets
+    // Back to free: the knob's rate again.
+    synth.setParam(ps::Synth::Lfo2Sync, 0.0f);
+    CHECK(synth.sweepHz() == free);
+
+    // Heard: a held saw under a deep sweep breathes once per beat, its loudest moments a beat apart.
+    ps::Synth wob;
+    wob.prepare(kRate);
+    wob.setParam(ps::Synth::Cutoff, 0.35f);
+    wob.setParam(ps::Synth::Resonance, 0.0f);
+    wob.setParam(ps::Synth::FilterEnvAmount, 0.0f);
+    wob.setParam(ps::Synth::Lfo2ToCutoff, 0.9f);
+    wob.setParam(ps::Synth::AmpSustain, 1.0f);
+    wob.setBeatFrames(kRate * 60.0 / 120.0);
+    wob.setParam(ps::Synth::Lfo2Sync, 3.0f / 7.0f);
+    wob.noteOn(45, 1.0f);
+    const auto out = renderSynth(wob, kRate * 2);
+    constexpr int kWindow = 480;  // 10 ms
+    std::vector<double> rms;
+    for (int w = 0; w + kWindow <= kRate * 2; w += kWindow) {
+        double e = 0.0;
+        for (int i = w; i < w + kWindow; ++i) e += double(out[static_cast<size_t>(i)]) * out[static_cast<size_t>(i)];
+        rms.push_back(std::sqrt(e / kWindow));
+    }
+    // The strongest repeat of the loudness curve, between 0.3 and 0.8 s: a beat (0.5 s).
+    int best = 0;
+    double bestScore = -1e30;
+    for (int lag = 30; lag <= 80; ++lag) {
+        double score = 0.0;
+        for (size_t i = 0; i + static_cast<size_t>(lag) < rms.size(); ++i) score += rms[i] * rms[i + static_cast<size_t>(lag)];
+        score /= static_cast<double>(rms.size() - static_cast<size_t>(lag));
+        if (score > bestScore) { bestScore = score; best = lag; }
+    }
+    std::printf("  synced sweep repeats every %d ms\n", best * 10);
+    CHECK(std::abs(best - 50) <= 2);
 }
 
 void testSynthUnison() {
@@ -2069,6 +2171,76 @@ void testSongStartsFromALaterPart() {
     scenes.post({ps::CommandType::ArmSceneSwap, 0.0f, 0, 1});
     render(scenes, 6000 * 16, 256);
     CHECK(scenes.songStep() == 0);
+}
+
+// A scene played on its own (transport started outside the song, b < 0) has no song position:
+// song curves do not drive the mixer and song clips wait; a part that starts the song brings
+// both back, and a scene that leaves the song (b = 3) stops them again.
+void testSceneAloneIsOutsideTheSong() {
+    auto setup = [](ps::Engine& e) {
+        e.post({ps::CommandType::SynthNoteOn, 0.8f, 57});
+        // A song curve that silences the synth on every bar of the song.
+        e.post({ps::CommandType::SetAutomationTarget, 0.0f, 0, ps::Automation::pack(ps::Automation::Volume, 2, 0, 0)});
+        e.post({ps::CommandType::SetAutomationMode, 8.0f, 0, ps::Automation::Song});
+        for (int b = 0; b < 8; ++b) e.post({ps::CommandType::SetAutomationSong, 0.0f, 0, b});
+        // A song clip on song step 0.
+        std::vector<float> d(48000, 0.5f);
+        ps::Command c{ps::CommandType::InstallAudioClip, 0.0f, 1};
+        c.sample = ps::Sample::create(d.data(), 48000, 1, kRate, kRate);
+        e.post(c);
+        e.post({ps::CommandType::SetAudioClipParam, 1.0f, 1, ps::AudioTracks::Song});
+    };
+    // In the song: the curve silences the synth, the clip plays.
+    ps::Engine song(kRate);
+    setup(song);
+    song.post({ps::CommandType::SetTransport, 1.0f, 0, 0});
+    render(song, 12000, 256);
+    CHECK(song.songStep() == 1);
+    CHECK(song.audioClipPlaying(1));
+    song.mixer().takeChannelPeak(2);
+    render(song, 6000, 256);
+    CHECK(song.mixer().takeChannelPeak(2) < 1e-3f);
+    // On its own: the synth keeps the mixer's level, the song clip stays silent, no song position.
+    ps::Engine alone(kRate);
+    setup(alone);
+    alone.post({ps::CommandType::SetTransport, 1.0f, 0, -1});
+    render(alone, 12000, 256);
+    CHECK(alone.songStep() == -1);
+    CHECK(!alone.audioClipPlaying(1));
+    alone.mixer().takeChannelPeak(2);
+    render(alone, 6000, 256);
+    CHECK(alone.mixer().takeChannelPeak(2) > 0.01f);
+    // The song starts from its first part at the next bar: song position from 0, the clip starts.
+    alone.post({ps::CommandType::ArmSceneSwap, 0.0f, 0, 1});
+    render(alone, 6000 * 16, 256);
+    CHECK(alone.sceneSwaps() == 1);
+    CHECK(alone.songStep() >= 0 && alone.songStep() < 4);
+    CHECK(alone.audioClipPlaying(1));
+    // A scene chosen to play on its own takes over at the next bar: outside the song again.
+    alone.post({ps::CommandType::ArmSceneSwap, 0.0f, 0, 3});
+    render(alone, 6000 * 16, 256);
+    CHECK(alone.sceneSwaps() == 2);
+    CHECK(alone.songStep() == -1);
+    // The song again, then left right away (the song stops being followed: the scene loops on).
+    alone.post({ps::CommandType::ArmSceneSwap, 0.0f, 0, 1});
+    render(alone, 6000 * 16, 256);
+    CHECK(alone.songStep() >= 0);
+    alone.post({ps::CommandType::ArmSceneSwap, 0.0f, -1, 3});
+    render(alone, 6000 * 2, 256);
+    CHECK(alone.songStep() == -1);
+    // A plain swap (b = 0, the song export's) keeps the song going.
+    ps::Engine plain(kRate);
+    plain.post({ps::CommandType::SetTransport, 1.0f, 0, 0});
+    plain.post({ps::CommandType::ArmSceneSwap, 0.0f, 0, 0});
+    render(plain, 6000 * 17, 256);
+    CHECK(plain.sceneSwaps() == 1);
+    CHECK(plain.songStep() == 16);
+    for (ps::Engine* e : {&song, &alone}) {
+        e->post({ps::CommandType::SetTransport, 0.0f, 0});
+        e->post({ps::CommandType::InstallAudioClip, 0.0f, 1});
+        render(*e, 512, 256);
+        e->collectGarbage();
+    }
 }
 
 void testRecordingStartsOnTheFirstStep() {
@@ -3570,6 +3742,70 @@ void testNoteTrackKeepsNoteOffs() {
     CHECK(track.pendingCount() == 0);
 }
 
+// Counts the note-ons that would glide (another note still held when it starts), with the events
+// of each block sorted by frame like the synth's queue.
+struct GlideCounter {
+    struct Event { int at; bool on; int pitch; };
+    std::vector<Event> block;
+    std::vector<int> held;
+    int glides = 0, attacks = 0;
+    void noteOn(int pitch, float, int at) { block.push_back({at, true, pitch}); }
+    void noteOff(int pitch, int at) { block.push_back({at, false, pitch}); }
+    void flush() {
+        std::stable_sort(block.begin(), block.end(), [](const Event& a, const Event& b) { return a.at < b.at; });
+        for (const Event& e : block) {
+            if (!e.on) { held.erase(std::remove(held.begin(), held.end(), e.pitch), held.end()); continue; }
+            if (held.empty()) ++attacks; else ++glides;
+            held.push_back(e.pitch);
+        }
+        block.clear();
+    }
+};
+
+GlideCounter playNotes(const std::vector<std::array<int, 3>>& notes, double bpm, double swing, int steps, int bars) {
+    ps::Sequencer seq;
+    seq.prepare(kRate);
+    seq.setTempo(bpm);
+    seq.setSwing(swing);
+    ps::NoteTrack track;
+    track.setSteps(steps);
+    for (size_t i = 0; i < notes.size(); ++i) track.setNote(int(i), ps::NoteTrack::pack(notes[i][0], notes[i][1], notes[i][2]), 0.8f);
+    track.setCount(int(notes.size()));
+    GlideCounter sink;
+    seq.start(0);
+    const int frames = int(seq.samplesPerStep() * steps * bars) - 512;  // ends before the next loop starts
+    for (int pos = 0; pos < frames; pos += 256) {
+        seq.advance(256, [&](int offset, int step) { track.onStep(offset, step, seq.samplesPerStep(), seq.swing()); });
+        track.advance(256, sink);
+        sink.flush();
+    }
+    return sink;
+}
+
+void testTouchingNotesNeverGlide() {
+    // A bass line of one-step notes that only touch, changing pitch every step.
+    std::vector<std::array<int, 3>> line;
+    for (int s = 0; s < 16; ++s) line.push_back({s * 24, 24, s % 2 == 0 ? 36 : 43});
+    for (double swing : {0.0, 0.25, 0.6}) {
+        for (double bpm : {130.0, 134.0, 97.0}) {
+            const auto g = playNotes(line, bpm, swing, 16, 8);
+            if (g.glides != 0) std::printf("  touching notes glide: swing %.2f, %.0f BPM: %d glides\n", swing, bpm, g.glides);
+            CHECK(g.glides == 0);
+            CHECK(g.attacks == 16 * 8);
+        }
+    }
+    // Phonk at 130 BPM, "R-5" (steps 10 to 12): the frame rounding never makes it slide.
+    const auto phonk = playNotes({{240, 48, 36}, {288, 24, 41}}, 130.0, 0.0, 16, 64);
+    CHECK(phonk.glides == 0);
+    // A written slide ('/': the note lasts half a step into the next one) still glides, swung or not.
+    for (double swing : {0.0, 0.25}) {
+        const auto slide = playNotes({{0, 24 + 12, 36}, {24, 24, 43}, {96, 24, 36}, {120, 24, 41}}, 134.0, swing, 16, 4);
+        std::printf("  written slide, swing %.2f: %d glides, %d attacks\n", swing, slide.glides, slide.attacks);
+        CHECK(slide.glides == 4);
+        CHECK(slide.attacks == 12);
+    }
+}
+
 void testTempoIgnoresNonFiniteValues() {
     ps::Sequencer seq;
     seq.prepare(kRate);
@@ -4332,6 +4568,8 @@ int main(int argc, char** argv) {
         {"synth_voices_and_cpu", testSynthVoiceStealingAndCpu},
         {"synth_through_engine", testSynthThroughEngine},
         {"synth_unison", testSynthUnison},
+        {"synth_glide", testSynthGlide},
+        {"synth_sweep_follows_tempo", testSynthSweepFollowsTheTempo},
         {"mixer_pan_mute_solo", testMixerPanMuteSolo},
         {"limiter_ceiling", testLimiterHoldsTheCeiling},
         {"wav_writer", testWavWriterRoundTrip},
@@ -4361,6 +4599,7 @@ int main(int argc, char** argv) {
         {"performance_filter_fades", testPerformanceFilterFadesInAndOut},
         {"voice_stealing_spares_held", testVoiceStealingSparesHeldNotes},
         {"note_track_keeps_note_offs", testNoteTrackKeepsNoteOffs},
+        {"touching_notes_never_glide", testTouchingNotesNeverGlide},
         {"tempo_ignores_non_finite", testTempoIgnoresNonFiniteValues},
         {"plaits", testPlaitsVoices},
         {"plaits_engine", testPlaitsThroughEngine},
@@ -4378,6 +4617,7 @@ int main(int argc, char** argv) {
         {"song_audio_clip", testSongAudioClip},
         {"once_audio_clip", testOnceAudioClip},
         {"song_from_a_later_part", testSongStartsFromALaterPart},
+        {"scene_alone_outside_song", testSceneAloneIsOutsideTheSong},
         {"recording", testRecordingStartsOnTheFirstStep},
         {"three_four", testThreeFourAndPartMutes},
         {"live_pads_bar", testLivePadsFollowTheBar},

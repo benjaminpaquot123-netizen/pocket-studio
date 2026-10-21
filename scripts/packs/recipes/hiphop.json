@@ -2,33 +2,36 @@
  {
   "id": "boom_bap",
   "references": [
-   "Pete Rock & CL Smooth – They Reminisce Over You (T.R.O.Y.) (1992)",
+   "Nekfeu – On verra (2015)",
+   "IAM – Petit frère (1997)",
+   "Mobb Deep – Shook Ones, Pt. II (1995)",
    "Nas – N.Y. State of Mind (1994)",
    "Gang Starr – Mass Appeal (1994)",
-   "Mobb Deep – Shook Ones, Pt. II (1995)"
+   "Pete Rock & CL Smooth – They Reminisce Over You (T.R.O.Y.) (1992)"
   ],
-  "description_fr": "Le rap new-yorkais des années 90 : une grosse caisse ronde, une caisse claire qui claque, un groove qui balance et une boucle de piano jazz poussiéreuse.",
+  "description_fr": "Le rap à l'ancienne de New York : une boucle de piano jazz, un kick rond, une caisse claire qui claque et un groove qui balance.",
   "bpm": 90,
   "swing": 0.2,
   "root": "D",
+  "default_mood": "dark",
   "drums": [
    {
     "role": "kick",
     "pattern": "X.....X...X.....X.x.......X..x..",
     "source": "boom_bap",
-    "tip_fr": "La grosse caisse tape sur le 1 et rebondit avant le 3 : c'est le « boum »."
+    "tip_fr": "Le kick tape sur le 1 et rebondit juste après le 2 et le 3 : c'est le « boum »."
    },
    {
     "role": "snare",
-    "pattern": "....X.......X.......X.......X..o",
+    "pattern": "....X.......X.......X......oX..o",
     "source": "sp1200",
-    "tip_fr": "Caisse claire sèche sur les temps 2 et 4 : c'est le « bap »."
+    "tip_fr": "Caisse claire sèche sur les temps 2 et 4 : c'est le « bap ». Deux petites notes fantômes la font rouler."
    },
    {
     "role": "hat",
     "pattern": "x.x.x.xox.x.x.xo",
     "source": "mpc60",
-    "tip_fr": "Charley régulier avec quelques petites notes en plus que le swing fait balancer."
+    "tip_fr": "Charley régulier avec quelques petites notes en plus, que le swing fait balancer."
    },
    {
     "role": "open_hat",
@@ -106,26 +109,38 @@
    "chords": true,
    "lead": false
   },
-  "notes": "Swing is the genre: MPC 60-62% on 16ths (Premier/Pete Rock push kicks late, snares early). The chords stand in for a looped jazz/soul sample: one or two minor-7th chords, low-passed and dusty, never a pop progression. No 808: a short round bass that follows the kick (1, 2-and, 3-and). Kick is two bars with a ghost kick in bar 2; open hat only at the end of bar 2. Snare from the SP-1200 pack for 12-bit crunch."
+  "signature": "chords",
+  "bass_tip": "Une basse courte et ronde qui tape avec le kick, comme une contrebasse : pas de 808 ici.",
+  "pad_tip": "La boucle de piano jazz, comme un vieux disque samplé : elle tourne du début à la fin du morceau.",
+  "lead_tip": "Une petite phrase de vibraphone de temps en temps : laisse de la place au rappeur.",
+  "fx": [
+   {
+    "on": "chords",
+    "preset": "warm_vinyl"
+   }
+  ],
+  "notes": "Swing is the genre: MPC 60% on 16ths. The chords stand in for a looped jazz/soul sample (minor 7ths, 'Vinyle chaud' on them) and are the signature: they play in every section. No 808: a short round bass that follows the kick (1, 2-and, 3-and). Two-bar kick with a ghost kick in bar 2, two ghost snares, open hat only at the end of bar 2. Snare from the SP-1200 pack for 12-bit crunch, hats from the MPC60 pack."
  },
  {
   "id": "trap",
   "references": [
-   "Waka Flocka Flame – Hard in da Paint (2010)",
-   "Migos – Bad and Boujee (2016)",
+   "Travis Scott – FE!N (2023)",
    "Future – Mask Off (2017)",
-   "Travis Scott – Sicko Mode (2018)"
+   "Migos – Bad and Boujee (2016)",
+   "Kaaris – Zoo (2013)",
+   "Waka Flocka Flame – Hard in da Paint (2010)"
   ],
-  "description_fr": "Le rap d'Atlanta : un tempo rapide mais un groove posé, des charleys qui roulent très vite, un clap lourd et une grosse basse qui fait trembler.",
+  "description_fr": "Le rap d'aujourd'hui, né à Atlanta : une 808 qui fait trembler, des hi-hats qui roulent très vite, un clap lourd et une mélodie qui tourne.",
   "bpm": 140,
   "swing": 0.0,
   "root": "F",
+  "default_mood": "dark",
   "drums": [
    {
     "role": "kick",
     "pattern": "X......X..X.....",
     "source": "trap",
-    "tip_fr": "La grosse caisse tape en même temps que la grosse basse, peu de coups."
+    "tip_fr": "Peu de coups de kick, toujours en même temps que la 808."
    },
    {
     "role": "clap",
@@ -135,9 +150,9 @@
    },
    {
     "role": "hat",
-    "pattern": "X.x.X.x.X.x.X.x.X.x.X.x.X.xxXxxx",
+    "pattern": "X.x.X.x.X.x.X.x.X.x.X.x.X3x.2222",
     "source": "trap",
-    "tip_fr": "Charleys réguliers, puis une rafale en fin de boucle : le fameux roulement."
+    "tip_fr": "Charleys réguliers, puis des rafales très rapides en fin de boucle : le fameux roulement."
    },
    {
     "role": "open_hat",
@@ -192,7 +207,7 @@
    "sound": "Cordes"
   },
   "bass": {
-   "pattern": "R------R--O----.",
+   "pattern": "R------R-/O----.",
    "octave": 1,
    "sound": "pack:trap:808",
    "glide": true
@@ -215,49 +230,70 @@
    "chords": true,
    "lead": true
   },
-  "notes": "Half-time: 140 BPM but one clap per bar on beat 3, so it feels like 70. The 808 is the bass and hits with the kick; it slides up an octave on its 3rd note (glide). Real hat rolls are 1/32 or 1/16-triplet ratchets: if the engine can ratchet, turn the last four hats of bar 2 into a 1/32 roll. The melody (bell, piano or flute, minor, short 3-3-2 motif) matters more than the chords: keep the pad dark and quiet (strings/choir), not pop chords. For a darker modern 808 use pack:modern_808:808."
+  "signature": "lead",
+  "bass_tip": "C'est la 808 : une basse très grave qui tape avec le kick, puis glisse vers l'aigu.",
+  "pad_tip": "Des cordes sombres en fond, discrètes : elles arrivent au refrain.",
+  "lead_tip": "La mélodie de cloche qui tourne en boucle du début à la fin : c'est elle qu'on retient.",
+  "fx": [
+   {
+    "on": "bass",
+    "preset": "crunch"
+   },
+   {
+    "on": "lead",
+    "reverb": 0.3
+   },
+   {
+    "on": "clap",
+    "reverb": 0.15
+   }
+  ],
+  "notes": "Half-time: 140 BPM but one clap per bar on beat 3, so it feels like 70. The 808 is the bass, hits with the kick and slides up an octave into its 3rd note ('/', glide); 'Croustillant' saturates it a little. Hat rolls: a 1/32 triplet on 3-e of bar 2, then the whole 4th beat in 1/32. The bell melody is the signature (it plays from the intro on); the pad stays dark and quiet (strings) and only joins in the chorus. For a darker modern 808 use pack:modern_808:808."
  },
  {
   "id": "drill",
   "references": [
-   "Chief Keef – I Don't Like (2012)",
+   "Central Cee – Doja (2022)",
+   "Gazo – DIE (2022)",
+   "Pop Smoke – Dior (2019)",
    "Unknown T – Homerton B (2018)",
-   "Pop Smoke – Welcome to the Party (2019)",
-   "Russ Millions & Tion Wayne – Body (2021)"
+   "Chief Keef – I Don't Like (2012)"
   ],
-  "description_fr": "Le cousin sombre et nerveux de la trap, venu de Chicago puis de Londres et Brooklyn : caisse claire décalée, charleys qui sautillent et basse qui glisse d'une note à l'autre.",
+  "description_fr": "La trap version sombre, de Londres à Paris : une 808 qui glisse, une caisse claire décalée et des hi-hats qui sautillent.",
   "bpm": 142,
   "swing": 0.0,
   "root": "G",
+  "default_mood": "dark",
   "drums": [
    {
     "role": "kick",
     "pattern": "X.........X.......X....X........",
     "source": "drill",
-    "tip_fr": "Peu de coups de grosse caisse, jamais au même endroit d'une mesure à l'autre."
+    "tip_fr": "Peu de coups de kick, jamais au même endroit d'une mesure à l'autre."
    },
    {
     "role": "snare",
     "pattern": "........X...................X...",
     "source": "drill",
-    "tip_fr": "Caisse claire sur le 3 de la 1re mesure puis sur le 4 de la 2e : ce décalage fait tout le style."
+    "tip_fr": "Caisse claire sur le 3 de la 1re mesure, puis sur le 4 de la 2e : ce décalage fait tout le style."
    },
    {
     "role": "hat",
-    "pattern": "X..x..x.X..x..x.X..x..x.X..xxxx.",
+    "pattern": "X..x..x.X..x..x.X..x..x.X.33.3x.",
     "source": "drill",
-    "tip_fr": "Charleys en « trois-trois-deux » avec une petite rafale : ça sautille."
+    "tip_fr": "Charleys en « 3-3-2 » avec de petites rafales en triolets : ça sautille."
    },
    {
     "role": "perc",
     "pattern": "......x.......x.......x....o....",
     "source": "drill",
-    "tip_fr": "Un petit rim qui répond à la caisse claire et annonce le coup suivant."
+    "tip_fr": "Un petit « toc » (rim) qui répond à la caisse claire et annonce le coup suivant.",
+    "voice": "rim"
    }
   ],
   "progressions": {
    "dark": {
-    "scale": "minor",
+    "scale": "harmonic_minor",
     "degrees": [
      0,
      5,
@@ -301,7 +337,7 @@
    "sound": "Cordes"
   },
   "bass": {
-   "pattern": "R-------..R---O-",
+   "pattern": "R-------..R--/O-..R---/5----....",
    "octave": 1,
    "sound": "pack:drill:808",
    "glide": true
@@ -324,7 +360,25 @@
    "chords": true,
    "lead": true
   },
-  "notes": "Two-bar pocket is the whole identity: snare on beat 3 of bar 1, then on beat 4 of bar 2 (UK drill). Hats are really triplet rolls and skips; the 16th grid only approximates them, use 1/16-triplet ratchets if available. 808 slides sparingly (one per bar, landing on root/octave, timed with a kick); never slide every note. Melody: cold minor piano, strings, choir or bells with lots of space; harmonic minor colour (b2, major V) is typical. Brooklyn drill = same grid, harder kicks, heavier slides, sample-led melodies."
+  "signature": "lead",
+  "bass_tip": "C'est la 808 : elle tape avec le kick et glisse vers une note plus aiguë, une fois par mesure.",
+  "pad_tip": "Des cordes froides en fond : elles arrivent au refrain pour rendre le tout plus dramatique.",
+  "lead_tip": "Une mélodie de piano froide et lente, avec beaucoup de vide : elle joue du début à la fin.",
+  "fx": [
+   {
+    "on": "bass",
+    "preset": "crunch"
+   },
+   {
+    "on": "lead",
+    "reverb": 0.35
+   },
+   {
+    "on": "chords",
+    "reverb": 0.25
+   }
+  ],
+  "notes": "Two-bar pocket is the whole identity: snare on beat 3 of bar 1, then on beat 4 of bar 2 (UK drill). Hats are really triplets and skips; the 16th grid approximates them with 3-hit rolls. The 808 slides once per bar ('/', glide), timed with a kick: up to the octave in bar 1, to the fifth in bar 2. Dark mood in harmonic minor (i-VI-iv-V with a major V): the sinister drill colour. Cold piano melody is the signature; strings join in the chorus."
  },
  {
   "id": "lofi",
@@ -333,34 +387,36 @@
    "Nujabes feat. Cise Starr & Akin – Feather (2005)",
    "J Dilla – Don't Cry (2006)"
   ],
-  "description_fr": "Du hip-hop doux et un peu flou, parfait pour réviser : une batterie feutrée qui traîne, des accords jazz au piano électrique et le grain d'un vieux vinyle.",
+  "description_fr": "Le hip-hop tout doux des vidéos « Lofi Girl », parfait pour réviser : des accords jazz au piano électrique, une batterie feutrée et le craquement d'un vieux vinyle.",
   "bpm": 80,
   "swing": 0.25,
   "root": "F",
+  "default_mood": "dark",
   "drums": [
    {
     "role": "kick",
     "pattern": "X......x..X.....X.x.......X.....",
     "source": "lofi",
-    "tip_fr": "Grosse caisse douce et peu chargée, elle varie un peu d'une mesure à l'autre."
+    "tip_fr": "Kick doux et peu chargé, qui change un peu d'une mesure à l'autre."
    },
    {
     "role": "snare",
-    "pattern": "....X.......X...",
+    "pattern": "....x.......x...",
     "source": "lofi",
-    "tip_fr": "Caisse claire feutrée sur 2 et 4, comme jouée un peu en retard."
+    "tip_fr": "Caisse claire feutrée sur 2 et 4, jouée tout doucement."
    },
    {
     "role": "hat",
-    "pattern": "x.o.x.oox.o.x.o.",
+    "pattern": "x.oxx.o.x.oxx.oo",
     "source": "lofi",
-    "tip_fr": "Charley léger et irrégulier : le swing fort lui donne son côté nonchalant."
+    "tip_fr": "Charley léger avec des petites notes entre les temps : le swing les fait traîner, c'est le côté nonchalant."
    },
    {
     "role": "perc",
-    "pattern": "..o...o...o...o.",
+    "pattern": "...o...o...o...o",
     "source": "lofi",
-    "tip_fr": "Un shaker presque inaudible entre les temps, juste pour la texture."
+    "tip_fr": "Un shaker (une petite maraca) presque inaudible juste avant chaque temps, pour la texture.",
+    "voice": "shaker"
    }
   ],
   "progressions": {
@@ -395,9 +451,9 @@
     "scale": "major",
     "degrees": [
      3,
-     2,
+     5,
      1,
-     0
+     4
     ]
    }
   },
@@ -409,7 +465,7 @@
    "sound": "Piano électrique"
   },
   "bass": {
-   "pattern": "R-------R---5---",
+   "pattern": "R---------R-5---",
    "octave": 2,
    "sound": "pack:lofi:bass",
    "glide": false
@@ -432,26 +488,45 @@
    "chords": true,
    "lead": false
   },
-  "notes": "Jazz harmony is the point: ii-V-I and IVmaj7-iii7-ii7-Imaj7 loops with maj7/m9 voicings on a soft Rhodes, low-passed. Heavy lazy swing (MPC ~62%) and soft velocities, the Dilla 'drunk' feel; boom-bap drums played quieter. Add vinyl crackle, tape wobble and a master low-pass if available. Bass is soft and warm, no 808. The lead is only a lazy fill at the end of the bar (vibes, flute or guitar)."
+  "signature": "chords",
+  "bass_tip": "Une basse douce et chaude, calée sur le kick : elle reste discrète.",
+  "pad_tip": "Des accords jazz au piano électrique, avec le craquement du vinyle : ils tournent du début à la fin.",
+  "lead_tip": "Une petite phrase paresseuse au vibraphone, à la fin de la mesure, de temps en temps.",
+  "fx": [
+   {
+    "on": "chords",
+    "insert": "VINYL",
+    "reverb": 0.2
+   },
+   {
+    "on": "drums",
+    "preset": "warm_vinyl"
+   },
+   {
+    "on": "lead",
+    "reverb": 0.3
+   }
+  ],
+  "notes": "Jazz harmony is the point: ii-V-I and IVmaj7-vi-ii-V loops in 9th voicings on a soft Rhodes (dreamy avoids the iii, whose 9th would be minor). The Rhodes is the signature, with 'Vieux vinyle' crackle on it and 'Vinyle chaud' on the drums. Heavy lazy swing (62%): the app's swing only delays odd 16ths, so the hats and the shaker have hits there. Soft snare. Bass soft and warm, on the kicks, no 808. The lead is only a lazy fill at the end of the bar."
  },
  {
   "id": "phonk",
   "references": [
-   "Three 6 Mafia – Tear da Club Up '97 (1997)",
-   "Kaito Shoma – Scary Garry (2016)",
+   "Kordhell – Murder in My Mind (2022)",
    "DVRST – Close Eyes (2021)",
-   "Kordhell – Murder in My Mind (2022)"
+   "Three 6 Mafia – Tear da Club Up '97 (1997)"
   ],
-  "description_fr": "Le rap sombre de Memphis remis au goût du jour : une mélodie de cloche qui tourne en boucle, une basse saturée qui gronde et une batterie qui cogne fort.",
-  "bpm": 120,
+  "description_fr": "Le son des vidéos de drift : une mélodie de cowbell qui tourne en boucle, une 808 saturée qui gronde et une batterie qui cogne fort.",
+  "bpm": 130,
   "swing": 0.0,
   "root": "F",
+  "default_mood": "dark",
   "drums": [
    {
     "role": "kick",
     "pattern": "X.....X...X.....",
     "source": "phonk",
-    "tip_fr": "Grosse caisse lourde, calée sur les notes de la basse."
+    "tip_fr": "Kick lourd, calé sur les notes de la 808."
    },
    {
     "role": "clap",
@@ -463,13 +538,13 @@
     "role": "snare",
     "pattern": "............X...",
     "source": "phonk",
-    "tip_fr": "Une caisse claire ajoutée sur un clap sur deux pour qu'il frappe encore plus fort."
+    "tip_fr": "Une caisse claire ajoutée sur un clap sur deux, pour qu'il frappe encore plus fort."
    },
    {
     "role": "hat",
-    "pattern": "x.x.x.x.x.x.x.xx",
+    "pattern": "x.x.x.x.x.x.x.xxx.x.x.x.x.x.x.22",
     "source": "phonk",
-    "tip_fr": "Charleys rapides et réguliers, avec une petite relance à la fin."
+    "tip_fr": "Charleys rapides et réguliers, avec une petite rafale à la fin de la boucle."
    }
   ],
   "progressions": {
@@ -518,7 +593,7 @@
    "sound": "Nappe"
   },
   "bass": {
-   "pattern": "R-----R---R-5-O-",
+   "pattern": "R-----R---R-5/O-",
    "octave": 1,
    "sound": "pack:phonk:808",
    "glide": true
@@ -528,7 +603,7 @@
    "pattern": "R..R..R.3..3..2.",
    "arp_rate": 24,
    "octave": 5,
-   "sound": "Cloche"
+   "sound": "kit:cowbell"
   },
   "acid": {
    "use": false,
@@ -541,38 +616,55 @@
    "chords": false,
    "lead": true
   },
-  "notes": "Drift phonk (the sound most beginners mean): the hook is a pitched TR-808 cowbell melody, short 3-5 note motif in Phrygian, 3-3-2 rhythm, repeated and distorted. 'Cloche' is the closest preset (the phonk and tr808 perc packs are rims/shakers, not cowbells). Push the 808 and drums into heavy saturation/clipping; the 808 follows the kick and slides. Harmony is a drone, chords off by default (a dark pad only for intros). Memphis/classic phonk variant: same grid counted half-time (clap only on step 8 at ~130-140), swing 0.2, eerie pad, chopped pitched-down rap vocal (vocal_chops pack). Tempo sources disagree (drift phonk quoted 90-120 with backbeat, or 140-160 counted half-time)."
+  "signature": "lead",
+  "bass_tip": "C'est la 808, saturée pour qu'elle gronde : elle tape avec le kick et glisse à la fin de la mesure.",
+  "pad_tip": "Une nappe sombre, en option : le phonk s'en passe souvent, la cowbell suffit.",
+  "lead_tip": "La cowbell, une petite cloche de boîte à rythmes, joue la mélodie en boucle : c'est elle qui fait le phonk.",
+  "fx": [
+   {
+    "on": "bass",
+    "preset": "distortion"
+   },
+   {
+    "on": "lead",
+    "preset": "crunch",
+    "reverb": 0.2
+   }
+  ],
+  "notes": "Drift phonk (the sound most beginners mean): the hook is a pitched TR-808 cowbell melody (the kit's cowbell played across the keys, 'kit:cowbell'; 'Cloche' stands in), short motif in Phrygian, 3-3-2 rhythm, repeated and crunched; it is the signature. The 808 is distorted and slides into the octave ('/'). Chords off by default (a drone harmony). Tempo: 130 as the phonk pack (sources quote 120-140 with a backbeat, à vérifier on Murder in My Mind). Memphis variant: same grid half-time, swing 0.2, chopped pitched-down vocal (vocal_chops pack). 'Kaito Shoma – Scary Garry (2016)' was dropped: its year could not be checked."
  },
  {
   "id": "grime",
   "references": [
-   "Wiley – Eskimo (2002)",
-   "Dizzee Rascal – I Luv U (2003)",
+   "Stormzy – Shut Up (2015)",
    "Skepta feat. JME – That's Not Me (2014)",
-   "Stormzy – Shut Up (2015)"
+   "Dizzee Rascal – I Luv U (2003)",
+   "Wiley – Eskimo (2002)"
   ],
-  "description_fr": "Le rap électronique de l'Est de Londres, à 140 : une batterie sèche pleine de trous, une basse brute et des petites notes de synthé glacées.",
+  "description_fr": "Le rap électronique de Londres, rapide et brut : une batterie sèche pleine de trous, une basse carrée qui grogne et de petits accords glacés.",
   "bpm": 140,
   "swing": 0.0,
   "root": "E",
+  "default_mood": "dark",
   "drums": [
    {
     "role": "kick",
     "pattern": "X......X..X.....X.........X..X..",
     "source": "grime",
-    "tip_fr": "Grosse caisse sèche et décalée, qui joue avec la basse plutôt que sur chaque temps."
+    "tip_fr": "Kick sec et décalé, qui joue avec la basse plutôt que sur chaque temps."
    },
    {
     "role": "clap",
     "pattern": "....X.......X...",
     "source": "grime",
-    "tip_fr": "Clap sur 2 et 4 : à 140, ça file vite, c'est fait pour que les rappeurs foncent."
+    "tip_fr": "Clap sur 2 et 4 : ça file vite, c'est fait pour que les rappeurs foncent."
    },
    {
     "role": "perc",
     "pattern": "..x...x...x...x.",
     "source": "grime",
-    "tip_fr": "Un petit clic sec entre les temps remplace le charley : c'est le son « eski »."
+    "tip_fr": "Un petit « clic » sec entre les temps remplace le charley, comme dans les premiers morceaux de Wiley.",
+    "voice": "rim"
    }
   ],
   "progressions": {
@@ -621,7 +713,7 @@
    "sound": "Pluck"
   },
   "bass": {
-   "pattern": "R..R..R...5...3.",
+   "pattern": "R-.R-.R---5---3-",
    "octave": 2,
    "sound": "Lead carré",
    "glide": false
@@ -644,19 +736,24 @@
    "chords": true,
    "lead": false
   },
-  "notes": "Eskibeat template: one raw, unfiltered square wave as bass ('Lead carré' played in octave 2, no filter polish), short cold stabs, lots of empty space; the MC carries the melody. Hats minimal: the off-beat 'eski click' replaces them. Snare/clap on 2 and 4 at 140 (fast feel); a half-time grime variant puts it on beat 3 only. Change one element every 8 bars (bass drop-out, stab entry). Minor/modal riffs, no pop progressions; string-machine or marimba/pizzicato presets were typical (Korg Triton era)."
+  "signature": "chords",
+  "bass_tip": "Une onde carrée brute, sans arrondi : la basse qui grogne du grime.",
+  "pad_tip": "Des petits accords secs et glacés, avec beaucoup de vide autour : c'est la place du MC.",
+  "lead_tip": "Une petite mélodie de marimba, comme sur les claviers des années 2000.",
+  "notes": "Eskibeat template: one raw square wave as bass ('Lead carré' in octave 2), short cold stabs (the signature: the intro is the stabs alone), lots of empty space; the MC carries the melody. No hats: the off-beat click (rim) replaces them. Clap on 2 and 4 at 140; a half-time grime variant puts it on beat 3 only. Bass notes held a little ('R-.R-.R---5---3-'). Minor/modal riffs; marimba lead (Korg Triton era)."
  },
  {
   "id": "jersey_club",
   "references": [
-   "Cookiee Kawaii – Vibe (If I Back It Up) (2019)",
    "Lil Uzi Vert – Just Wanna Rock (2022)",
-   "Drake – Sticky (2022)"
+   "Drake – Sticky (2022)",
+   "Cookiee Kawaii – Vibe (If I Back It Up) (2019)"
   ],
-  "description_fr": "La musique de danse du New Jersey, à 140 : cinq coups de grosse caisse qui rebondissent dans chaque mesure, des petits bouts de voix répétés et beaucoup d'énergie.",
+  "description_fr": "La musique de danse du New Jersey, star de TikTok : cinq coups de kick qui rebondissent, des petits bouts de voix répétés et plein d'énergie.",
   "bpm": 140,
   "swing": 0.0,
   "root": "F",
+  "default_mood": "dark",
   "drums": [
    {
     "role": "kick",
@@ -668,19 +765,20 @@
     "role": "clap",
     "pattern": "........X..X............X.xX....",
     "source": "jersey_club",
-    "tip_fr": "Le clap double les derniers coups de grosse caisse pour les faire claquer."
+    "tip_fr": "Le clap double les derniers coups de kick pour les faire claquer."
    },
    {
     "role": "hat",
-    "pattern": "....X.......X...",
+    "pattern": "..x...x...x...x.",
     "source": "jersey_club",
-    "tip_fr": "Très peu de charley : la grosse caisse occupe déjà toute la place."
+    "tip_fr": "Un charley léger entre les temps : le kick occupe déjà toute la place."
    },
    {
     "role": "perc",
     "pattern": "..o...o..o..o...",
     "source": "jersey_club",
-    "tip_fr": "Une petite percu entre les coups imite le fameux grincement du style."
+    "tip_fr": "Un petit « toc » entre les coups de kick. Dans les vrais morceaux, c'est souvent un grincement de lit !",
+    "voice": "rim"
    }
   ],
   "progressions": {
@@ -752,32 +850,37 @@
    "chords": false,
    "lead": true
   },
-  "notes": "Kick = 16ths 1, 5, 9, 12, 15 (1-based), spacing 4-4-3-3-2, inherited from Baltimore club. The hook is staccato one-syllable vocal chops repeated in quick runs between the kicks (lead uses the vocal_chops pack), not a sung topline or pop chords. Signature extra: the 'bed squeak' (from Trillville's 'Some Cut', 2004) on or between kicks; perc line stands in for it. 808/sub doubles the kick figure, high-pass the kick. Chords optional (often a chopped R&B sample), off by default."
+  "signature": "lead",
+  "bass_tip": "Une 808 qui double les coups de kick : elle donne du poids au rebond.",
+  "pad_tip": "Des accords doux, en option : le style s'en passe souvent.",
+  "lead_tip": "Des petits bouts de voix répétés entre les coups de kick : c'est le crochet du style, du début à la fin.",
+  "notes": "Kick = 16ths 1, 5, 9, 12, 15 (1-based), spacing 4-4-3-3-2, inherited from Baltimore club. The hook is staccato one-syllable vocal chops between the kicks (vocal_chops pack, signature: from the intro on). The 'bed squeak' (Trillville's 'Some Cut', 2004) has no sound in the packs nor the kit: the perc line is a rim and its tip says so. Light off-beat hats. 808 doubles the kick. Chords off by default."
  },
  {
   "id": "reggaeton",
   "references": [
-   "Daddy Yankee – Gasolina (2004)",
+   "Bad Bunny – Tití Me Preguntó (2022)",
    "Luis Fonsi feat. Daddy Yankee – Despacito (2017)",
    "J Balvin & Willy William – Mi Gente (2017)",
-   "Bad Bunny – Tití Me Preguntó (2022)"
+   "Daddy Yankee – Gasolina (2004)"
   ],
-  "description_fr": "Le rythme latino qui fait danser partout : le fameux « boum-tchi-boum-tchi » du dembow, une basse ronde et quelques accords simples qui chaloupent.",
+  "description_fr": "Le rythme latino qui fait danser partout : le « boum-tchi-boum-tchi » du dembow, une basse ronde et des accords qui chaloupent.",
   "bpm": 95,
   "swing": 0.0,
   "root": "B",
+  "default_mood": "dark",
   "drums": [
    {
     "role": "kick",
     "pattern": "X...X...X...X...",
     "source": "reggaeton",
-    "tip_fr": "Grosse caisse sur chaque temps : le socle régulier qui fait danser."
+    "tip_fr": "Kick sur chaque temps : le socle régulier qui fait danser."
    },
    {
     "role": "snare",
     "pattern": "...X..X....X..X.",
     "source": "reggaeton",
-    "tip_fr": "La caisse claire en « trois-trois-deux » : c'est le dembow, le cœur du style."
+    "tip_fr": "C'est le dembow, le cœur du style : la caisse claire tape juste avant les temps 2 et 4, puis juste après."
    },
    {
     "role": "hat",
@@ -787,9 +890,10 @@
    },
    {
     "role": "perc",
-    "pattern": "............................x.xx",
+    "pattern": "............................x2x3",
     "source": "reggaeton",
-    "tip_fr": "Un petit roulement de percu en fin de boucle, façon timbales."
+    "tip_fr": "Un petit roulement de timbales (des toms aigus) en fin de boucle, pour relancer.",
+    "voice": "tom_high"
    }
   ],
   "progressions": {
@@ -838,17 +942,17 @@
    "sound": "Pluck"
   },
   "bass": {
-   "pattern": "R-------R-----5-",
+   "pattern": "R-----R-R----/5-",
    "octave": 1,
    "sound": "pack:reggaeton:808",
-   "glide": false
+   "glide": true
   },
   "lead": {
    "type": "riff",
    "pattern": "R..3..5.O..5..3.",
    "arp_rate": 24,
-   "octave": 4,
-   "sound": "gm:Acoustic Guitar (nylon)"
+   "octave": 5,
+   "sound": "Marimba"
   },
   "acid": {
    "use": false,
@@ -861,44 +965,59 @@
    "chords": true,
    "lead": false
   },
-  "notes": "Dembow = kick on every quarter + snare on 16ths 4, 7, 12, 15 (1-based): 'boom-ch-boom-chick', 3-3-2 feel (from Shabba Ranks' 'Dem Bow' riddim, 1990). Keep it straight, 90-100 BPM. Chord stabs lock to the snare hits (classic Gasolina era); modern Bad Bunny/J Balvin style uses held pads or nylon guitar and an 808 with short slides. i-VI-III-VII (Despacito) is the stock minor loop. Add a timbale/rim fill every 4 bars."
+  "signature": "chords",
+  "bass_tip": "Une 808 ronde qui suit le dembow, avec une petite glissade à la fin de la mesure.",
+  "pad_tip": "Des petits accords calés sur la caisse claire. En ambiance sombre, ce sont ceux de « Despacito » : Si m, Sol, Ré, La.",
+  "lead_tip": "Une petite mélodie au marimba qui répond au chant ; dans les vrais morceaux, c'est souvent une guitare.",
+  "fx": [
+   {
+    "on": "chords",
+    "reverb": 0.15
+   }
+  ],
+  "notes": "Dembow = kick on every quarter + snare on 16ths 4, 7, 12, 15 (1-based): 'boom-ch-boom-chick', from Shabba Ranks' 'Dem Bow' riddim (1990). Straight, 90-100 BPM. Chord stabs lock to the snare (Gasolina era) and are the signature. The 808 hits 1, 2-and, 3 and slides into the fifth (modern style). Lead on Marimba an octave above the stabs (a nylon guitar is not in the library; 'Pluck' was the same sound as the stabs). Timbale fill on the high tom. i-VI-III-VII in B minor = Despacito."
  },
  {
   "id": "afrobeats",
   "references": [
-   "Wizkid – Ojuelegba (2014)",
-   "Davido – Fall (2017)",
+   "Rema & Selena Gomez – Calm Down (2022)",
+   "Wizkid feat. Tems – Essence (2020)",
    "Burna Boy – Ye (2018)",
-   "Wizkid feat. Tems – Essence (2020)"
+   "Davido – Fall (2017)",
+   "Wizkid – Ojuelegba (2014)"
   ],
   "description_fr": "La pop venue du Nigeria et du Ghana : un groove souple et dansant, des percussions qui se répondent et des mélodies ensoleillées.",
   "bpm": 105,
   "swing": 0.15,
   "root": "A",
+  "default_mood": "happy",
   "drums": [
    {
     "role": "kick",
     "pattern": "X.....X.X.....x.",
     "source": "afrobeats",
-    "tip_fr": "Grosse caisse sur le 1, puis un coup décalé juste avant le 3 : c'est ce qui donne l'élan."
+    "tip_fr": "Kick sur le 1, puis un coup décalé juste avant le 3 : c'est ce qui donne l'élan."
    },
    {
     "role": "snare",
-    "pattern": "....X.......X...",
+    "pattern": "....x.......x...",
     "source": "afrobeats",
-    "tip_fr": "Un coup léger, plutôt un rim, sur 2 et 4 : jamais une grosse caisse claire."
+    "tip_fr": "Un petit coup sec sur 2 et 4, sur le bord de la caisse (le « rim ») : jamais une caisse claire qui claque fort.",
+    "voice": "rim"
    },
    {
     "role": "hat",
     "pattern": "XoxoXoxoXoxoXoxo",
     "source": "afrobeats",
-    "tip_fr": "Le shaker joue en continu, plus fort sur les temps : c'est le moteur du groove."
+    "tip_fr": "Un shaker (une petite maraca) en continu, plus fort sur les temps : c'est le moteur du groove.",
+    "voice": "shaker"
    },
    {
     "role": "perc",
     "pattern": "...x..x...x..x.....x..x...x.xx..",
     "source": "afrobeats",
-    "tip_fr": "Les percus sautillent entre les coups de grosse caisse, comme une réponse."
+    "tip_fr": "Les congas sautillent entre les coups de kick, comme une réponse.",
+    "voice": "conga"
    }
   ],
   "progressions": {
@@ -941,13 +1060,13 @@
   },
   "chords": {
    "type": "keys",
-   "rhythm": "X..X..X...X..X..",
+   "rhythm": "X-.X-.X--.X-.X-.",
    "voicing": "seventh",
    "octave": 3,
    "sound": "Piano électrique"
   },
   "bass": {
-   "pattern": "R.....R.R..5.O..",
+   "pattern": "R-----R-R-.5-O-.",
    "octave": 1,
    "sound": "pack:afrobeats:bass",
    "glide": false
@@ -970,6 +1089,10 @@
    "chords": true,
    "lead": true
   },
-  "notes": "Groove before everything: continuous 16th shaker with light swing (MPC ~57%), uneven kick (1, 2-and, 3), soft rim backbeat, percussion layers answering each other; never a hard trap snare or straight four-on-the-floor. Harmony mostly major, 2-4 chord loops (I-V-vi-IV), Rhodes or muted highlife guitar comping in skipping 3-3-4-3-3 hits, marimba/kalimba/pluck hook. Recent tracks borrow the amapiano log drum as bass (pack:amapiano:bass) with short glides."
+  "signature": "chords",
+  "bass_tip": "Une basse ronde et liée qui suit le kick et rebondit vers l'aigu.",
+  "pad_tip": "Le piano électrique joue des petits coups qui sautillent (3-3-4-3-3) : c'est lui qui fait danser.",
+  "lead_tip": "Une petite mélodie ensoleillée au marimba : elle arrive au refrain.",
+  "notes": "Groove before everything: continuous 16th shaker (kit shaker; the pack only has closed hats) with light swing (57%), uneven kick (1, 2-and, 3), soft rim backbeat, congas answering; never a hard trap snare nor four-on-the-floor. Happy by default (I-V-vi-IV). Rhodes comping in 3-3-4-3-3 with longer notes, the signature; round tied bass; marimba hook in the chorus. Recent tracks borrow the amapiano log drum as bass ('Log drum')."
  }
 ]

@@ -12,6 +12,8 @@ import com.pocketstudio.model.viewOfTrack
 import com.pocketstudio.model.songBars
 import com.pocketstudio.model.sceneSteps
 import com.pocketstudio.model.sceneTitle
+import com.pocketstudio.model.audioSpans
+import com.pocketstudio.model.songStepOf
 import androidx.compose.runtime.remember
 import com.pocketstudio.app.synth.TracksUi
 import com.pocketstudio.app.synth.NotesUi
@@ -54,6 +56,7 @@ import androidx.compose.material.icons.filled.Tune
 import android.content.res.Configuration
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.foundation.layout.Row
+import androidx.compose.ui.Alignment
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
@@ -71,6 +74,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -175,7 +179,7 @@ enum class AppTab(val icon: ImageVector) {
     }
 }
 
-private enum class ToolPage {
+internal enum class ToolPage {
     // Help first: where a lost beginner looks.
     Aide, Reglages, Recette, Midi, Fond, Latence, Son;
 
@@ -187,6 +191,20 @@ private enum class ToolPage {
         Fond -> tr("Fond")
         Latence -> tr("Latence")
         Son -> tr("Son")
+    }
+
+    companion object {
+        /** Outils opens on Aide the first time, then on the page last chosen ([saved]: its name). */
+        fun initial(saved: String?): ToolPage = entries.firstOrNull { it.name == saved } ?: Aide
+
+        private const val PREFS = "tools"
+        private const val KEY = "page"
+
+        fun load(context: android.content.Context): ToolPage =
+            initial(context.getSharedPreferences(PREFS, android.content.Context.MODE_PRIVATE).getString(KEY, null))
+
+        fun save(context: android.content.Context, page: ToolPage) =
+            context.getSharedPreferences(PREFS, android.content.Context.MODE_PRIVATE).edit().putString(KEY, page.name).apply()
     }
 }
 
@@ -219,10 +237,13 @@ fun AppRoot() {
     val remixVm: RemixViewModel = viewModel()
     val generateVm: com.pocketstudio.app.generate.GenerateViewModel = viewModel()
     val libraryVm: com.pocketstudio.app.library.SoundLibraryViewModel = viewModel()
+    val tabStates = androidx.compose.runtime.saveable.rememberSaveableStateHolder()
     var tab by rememberSaveable { mutableStateOf(AppTab.Rythme) }
     var showProjects by rememberSaveable { mutableStateOf(false) }
     // « Partager mon morceau » (Mixeur, Mes projets): name, export in M4A, share sheet.
     val shareSong = com.pocketstudio.app.export.rememberShareSong(rhythmVm)
+    // ▶ plays the song on the Morceau tab until the user chooses; the section being edited elsewhere.
+    SideEffect { rhythmVm.onSongTab = tab == AppTab.Morceau }
     val projectsVm: ProjectsViewModel = viewModel()
     val pickProjectZip = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) projectsVm.importZip(uri)
@@ -235,7 +256,7 @@ fun AppRoot() {
             rhythmVm.flushNow()
             // Not saved (a full phone): stay here rather than reopen this project without its latest edits.
             if (rhythmVm.session.lastSaveError.value != null) {
-                Toast.makeText(context, tr("Le projet n'a pas pu être enregistré (téléphone plein ?) : libère de la place avant d'en ouvrir un autre."), Toast.LENGTH_LONG).show()
+                Toast.makeText(context, tr("Le projet n'a pas pu être sauvegardé (appareil plein ?) : libère de la place avant d'en ouvrir un autre."), Toast.LENGTH_LONG).show()
                 return@launch
             }
             showProjects = false  // remembered across the rebuild: close it first
@@ -284,11 +305,13 @@ fun AppRoot() {
                         target = when {
                             forTrack -> tr("la piste « %s »", com.pocketstudio.model.DefaultNames.shown(libProject.track(libTrack).name))
                             live >= 0 -> tr("le pad live %d", live + 1)
-                            else -> tr("le pad %1\$d (%2\$s)", lane + 1, com.pocketstudio.app.rhythm.DrumKitInfo.names[lane])
+                            // The sound on the pad now (« Kick de ma voix »), as the pad and the grid name it.
+                            else -> tr("le pad %1\$d (%2\$s)", lane + 1, com.pocketstudio.app.rhythm.padName(libProject, lane))
                         },
                         startKind = if (forTrack) "808" else if (live >= 0) "stab" else padKind(lane),
                         sizes = sizes,
                         songPlaying = libTransport.playing,
+                        styleId = com.pocketstudio.app.library.styleOfProject(libProject.name),
                     ),
                     com.pocketstudio.app.library.LibraryActions(
                         close = close,
@@ -388,6 +411,7 @@ fun AppRoot() {
                         choose = libraryVm::choose,
                         setMood = libraryVm::setMood,
                         setPartEnabled = libraryVm::setPartEnabled,
+                        setAcidEnabled = libraryVm::setAcidEnabled,
                         choosePartSound = libraryVm::choosePartSound,
                         preview = libraryVm::preview,
                         download = libraryVm::downloadPack,
@@ -451,7 +475,7 @@ fun AppRoot() {
             }
         }
     }
-    var toolPage by rememberSaveable { mutableStateOf(ToolPage.Reglages) }
+    var toolPage by rememberSaveable { mutableStateOf(ToolPage.load(context)) }
     val settings by SettingsStore.state.collectAsStateWithLifecycle()
     var showGuide by rememberSaveable { mutableStateOf(false) }
     // After the crash report's question (never both dialogs on top of each other).
@@ -583,7 +607,7 @@ fun AppRoot() {
     }
     val bluetoothPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { granted ->
         if (granted.values.all { it }) midiVm.scanBluetooth()
-        else permissionHelp = tr("Le Bluetooth (appareils à proximité) est refusé : autorise-le dans les réglages du téléphone pour trouver un clavier MIDI.")
+        else permissionHelp = tr("Le Bluetooth (appareils à proximité) est refusé : autorise-le dans les réglages de l'appareil pour trouver un clavier MIDI.")
     }
     // MIDI clock, start and stop drive the project's tempo and transport (main thread).
     LaunchedEffect(Unit) {
@@ -675,7 +699,8 @@ fun AppRoot() {
                     togglePlay = rhythmVm::togglePlay,
                     toggleRecord = {
                         when {
-                            !micMode -> rhythmVm.toggleRecord()
+                            // From the synth the take is a played phrase: a one-bar loop grows to four first.
+                            !micMode -> rhythmVm.toggleRecord(notes = tab == AppTab.Synthe)
                             topTake != null -> rhythmVm.stopAudioRecording()
                             !topSaving -> rhythmVm.micTakeTrack()?.let { id ->
                                 if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
@@ -692,12 +717,28 @@ fun AppRoot() {
             )
             if (saveError != null) {
                 Text(
-                    tr("Sauvegarde impossible (mémoire pleine ?). Tes dernières modifications ne sont pas encore enregistrées."),
+                    tr("Sauvegarde impossible (mémoire pleine ?). Tes dernières modifications ne sont pas encore sauvegardées."),
                     color = Color.Black,
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.fillMaxWidth().background(Neon.Amber).padding(8.dp)
                         .testTag("save_error"),
                 )
+            }
+            val loopGrown by rhythmVm.takeLoopGrown.collectAsStateWithLifecycle()
+            val loopSong by rhythmVm.takeLoopSong.collectAsStateWithLifecycle()
+            if (loopGrown) {
+                // Said where the eyes are during the count-in, without a window in front of the keys.
+                Row(
+                    Modifier.fillMaxWidth().background(Neon.Surface).padding(start = 12.dp, end = 4.dp).testTag("take_loop_grown"),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        if (loopSong) tr("La boucle passe à 4 mesures pour ta prise, et les parties du morceau avec cette scène aussi. ↶ en haut pour revenir à 1 mesure.")
+                        else tr("La boucle passe à 4 mesures pour ta prise : ta phrase ne se repliera pas sur une seule mesure. ↶ en haut pour revenir à 1 mesure."),
+                        style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(1f),
+                    )
+                    TextButton(onClick = rhythmVm::dismissTakeLoop) { Text(tr("Compris")) }
+                }
             }
         },
         bottomBar = {
@@ -762,701 +803,716 @@ fun AppRoot() {
                 }
             }
             Box(Modifier.weight(1f)) {
+                // Each tab keeps its own screen state (Notes or Clavier, folded cards, chosen tools)
+                // while another tab is shown, as long as the app lives.
+                tabStates.SaveableStateProvider(tab.name) {
                 when (tab) {
-                    AppTab.Rythme -> {
-                        val project by rhythmVm.project.collectAsStateWithLifecycle()
-                        val transport by rhythmVm.transport.collectAsStateWithLifecycle()
-                        val live by rhythmVm.live.collectAsStateWithLifecycle()
-                        val canUndo by rhythmVm.session.canUndo.collectAsStateWithLifecycle()
-                        val canRedo by rhythmVm.session.canRedo.collectAsStateWithLifecycle()
-                        val take by rhythmVm.audioRecording.collectAsStateWithLifecycle()
-                        val sampleInfo by rhythmVm.sampleInfo.collectAsStateWithLifecycle()
-                        val sampleTask by rhythmVm.sampleTask.collectAsStateWithLifecycle()
-                        val slicer by rhythmVm.slicer.collectAsStateWithLifecycle()
-                        val rhythmListen by rhythmVm.listenSong.collectAsStateWithLifecycle()
-                        LaunchedEffect(Unit) {
-                            lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollLive() }
-                        }
-                        RhythmScreen(
-                            project = project,
-                            transport = transport,
-                            live = live,
-                            canUndo = canUndo && take == null,
-                            canRedo = canRedo && take == null,
-                            actions = RhythmActions(
-                                togglePlay = rhythmVm::togglePlay,
-                                toggleMetronome = rhythmVm::toggleMetronome,
-                                toggleCountIn = rhythmVm::toggleCountIn,
-                                hitPad = rhythmVm::hitPad,
-                                toggleStep = rhythmVm::toggleStep,
-                                setBars = rhythmVm::setDrumBars,
-                                fill = rhythmVm::fillPad,
-                                rotate = rhythmVm::rotatePad,
-                                cycleRoll = rhythmVm::cycleRoll,
-                                openEffects = { fxChannel = 0 },
-                                openPadEffects = { fxChannel = com.pocketstudio.model.Mixer.padChannel(rhythmVm.transport.value.selectedPad) },
-                                openLibrary = { showLibrary = true },
-                                toKeyboard = { if (rhythmVm.padToKeyboard()) tab = AppTab.Synthe },
-                                setPadPan = rhythmVm::setPadPan,
-                                setHitPan = rhythmVm::setHitPan,
-                                setHitPitch = rhythmVm::setHitPitch,
-                                setHitVelocity = rhythmVm::setHitVelocity,
-                                toggleHit = rhythmVm::toggleHit,
-                                cycleVelocity = rhythmVm::cycleVelocity,
-                                clearPad = rhythmVm::clearPad,
-                                nudgeTempo = rhythmVm::nudgeTempo,
-                                tapTempo = rhythmVm::tapTempo,
-                                setSwing = rhythmVm::setSwing,
-                                undo = rhythmVm::undo,
-                                redo = rhythmVm::redo,
-                                importSample = { pickAudio.launch(arrayOf("audio/*")) },
-                                startRecording = {
-                                    if (hasMic(context)) rhythmVm.startRecording()
-                                    else recordPermission.launch(Manifest.permission.RECORD_AUDIO)
-                                },
-                                stopRecording = rhythmVm::stopRecording,
-                                removeSample = rhythmVm::removeSample,
-                                dismissSampleError = rhythmVm::dismissSampleError,
-                                editSample = rhythmVm::editPadSample,
-                                openSlicer = rhythmVm::openSlicer,
-                                closeSlicer = rhythmVm::closeSlicer,
-                                setSliceMode = rhythmVm::setSliceMode,
-                                setSliceSensitivity = rhythmVm::setSliceSensitivity,
-                                setSliceGrid = rhythmVm::setSliceGrid,
-                                toggleSliceMarker = rhythmVm::toggleSliceMarker,
-                                applySlices = rhythmVm::applySlices,
-                                resampleSong = rhythmVm::resampleSong,
-                                importFolder = { pickFolder.launch(null) },
-                                importZip = { pickZip.launch(arrayOf("application/zip", "application/x-zip-compressed", "application/octet-stream")) },
-                                setListenSong = rhythmVm::setListenSong,
-                            ),
-                            padSound = PadSoundUi(sampleInfo, sampleTask, slicer),
-                            // The same choice as Morceau › Écouter, shown where ▶ is touched.
-                            listenSong = if (project.song.isEmpty()) null else rhythmListen != false,
-                            header = { showGrid ->
-                                com.pocketstudio.app.onboarding.ProjectNextSteps(project, rhythmVm.projectId, share = shareSong, showHere = showGrid) { tab = it }
-                            },
-                        )
-                    }
-                    AppTab.Acide -> {
-                        val project by rhythmVm.project.collectAsStateWithLifecycle()
-                        val transport by rhythmVm.transport.collectAsStateWithLifecycle()
-                        val live by rhythmVm.live.collectAsStateWithLifecycle()
-                        val selected by rhythmVm.selectedAcidStep.collectAsStateWithLifecycle()
-                        LaunchedEffect(Unit) {
-                            lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollLive() }
-                        }
-                        val favorites by rhythmVm.favorites.collectAsStateWithLifecycle()
-                        AcidScreen(
-                            acid = project.acid,
-                            playing = transport.playing,
-                            currentStep = live.absoluteStep,
-                            selected = selected,
-                            actions = AcidActions(
-                                togglePlay = rhythmVm::togglePlay,
-                                generate = rhythmVm::generateAcid,
-                                selectStep = rhythmVm::selectAcidStep,
-                                editStep = rhythmVm::editAcidStep,
-                                toggleLock = rhythmVm::toggleAcidLock,
-                                setSound = rhythmVm::setAcidSound,
-                                shiftRoot = rhythmVm::shiftAcidRoot,
-                                setDensity = rhythmVm::setAcidDensity,
-                                setBars = rhythmVm::setAcidBars,
-                                copyPage = rhythmVm::copyAcidPage,
-                            ),
-                            browser = SoundBrowserUi(
-                                SoundCategories.ACID, SoundLibrary.ACID, favorites.acid,
-                                current = (SoundLibrary.ACID + favorites.acid).firstOrNull {
-                                    it.sound.copy(tuning = project.acid.sound.tuning, level = project.acid.sound.level) == project.acid.sound
-                                }?.name,
-                                // Tuning and volume stay as they are: a sound changes the character only.
-                                pick = { rhythmVm.applyAcidSound(SoundLibrary.ACID[it].sound.copy(tuning = project.acid.sound.tuning, level = project.acid.sound.level)) },
-                                pickFavorite = { rhythmVm.applyAcidSound(favorites.acid[it].sound) },
-                                deleteFavorite = rhythmVm::deleteAcidFavorite,
-                                random = rhythmVm::randomAcid,
-                                save = rhythmVm::saveAcidFavorite,
-                                tag = "acid_sounds",
-                                describe = { (it.sound as? AcidSound)?.let(SoundLooks::describe) },
-                            ),
-                        )
-                    }
-                    AppTab.Synthe -> {
-                        DisposableEffect(Unit) { onDispose { rhythmVm.synthAllOff() } }
-                        val fullProject by rhythmVm.project.collectAsStateWithLifecycle()
-                        val selectedTrack by rhythmVm.selectedTrack.collectAsStateWithLifecycle()
-                        // The selected instrument track's sound and notes, where the synth screen looks.
-                        val project = remember(fullProject, selectedTrack) { fullProject.viewOfTrack(selectedTrack) }
-                        val shownTrack = if (fullProject.tracks.any { it.id == selectedTrack }) selectedTrack else 0
-                        val playUi by rhythmVm.play.collectAsStateWithLifecycle()
-                        val octave by rhythmVm.keyboardOctave.collectAsStateWithLifecycle()
-                        val live by rhythmVm.live.collectAsStateWithLifecycle()
-                        val library by rhythmVm.library.collectAsStateWithLifecycle()
-                        val trackSoundMessage by rhythmVm.trackSoundBusy.collectAsStateWithLifecycle()
-                        val bankId by rhythmVm.bankId.collectAsStateWithLifecycle()
-                        LaunchedEffect(Unit) {
-                            lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollLive() }
-                        }
-                        val favorites by rhythmVm.favorites.collectAsStateWithLifecycle()
-                        val transcription by rhythmVm.transcription.collectAsStateWithLifecycle()
-                        SynthScreen(
-                            patch = project.synth,
-                            octave = octave,
-                            actions = SynthActions(
-                                noteOn = rhythmVm::synthNoteOn,
-                                noteOff = rhythmVm::synthNoteOff,
-                                shiftOctave = rhythmVm::shiftKeyboardOctave,
-                                setParam = rhythmVm::setSynthParam,
-                                applyPreset = rhythmVm::applySynthPreset,
-                                chordOn = rhythmVm::synthChordOn,
-                                chordOff = rhythmVm::synthChordOff,
-                            ),
-                            notes = NotesUi(
-                                clip = project.synthNotes,
-                                ghosts = NoteClip.ghostsOf(project.acid, project.synthNotes.steps),
-                                playStep = live.absoluteStep,
-                                actions = PianoRollActions(
-                                    add = rhythmVm::addNote,
-                                    remove = rhythmVm::removeNote,
-                                    change = rhythmVm::changeNote,
-                                    quantize = rhythmVm::quantizeNotes,
-                                    setSteps = rhythmVm::setNoteClipSteps,
-                                    clear = rhythmVm::clearNotes,
-                                    addChord = rhythmVm::addChord,
-                                    setHarmony = rhythmVm::setHarmony,
-                                    applyProgression = rhythmVm::applyProgression,
-                                    applyBassLine = rhythmVm::applyBassLine,
-                                    applyArpeggio = rhythmVm::applyArpeggio,
-                                    setPerformance = rhythmVm::setPerformance,
-                                    replaceClip = rhythmVm::replaceNoteClip,
-                                ),
-                                harmony = project.harmony,
-                            ),
-                            instrument = InstrumentUi(
-                                library = library,
-                                current = project.instrument,
-                                open = rhythmVm::openLibrary,
-                                download = rhythmVm::downloadLibrary,
-                                cancel = rhythmVm::cancelLibraryDownload,
-                                select = rhythmVm::selectInstrument,
-                                bankId = bankId,
-                                selectBank = rhythmVm::selectBank,
-                                loadKit = rhythmVm::loadKit,
-                                synthEngine = project.synthEngine,
-                                plaits = project.plaits,
-                                selectEngine = rhythmVm::selectSynthEngine,
-                                setPlaitsModel = rhythmVm::setPlaitsModel,
-                                setPlaitsParam = rhythmVm::setPlaitsParam,
-                                sampled = project.sampled,
-                                chooseSample = { rhythmVm.dismissTrackSoundMessage(); libraryTrack = true; showLibrary = true },
-                                importSample = { rhythmVm.dismissTrackSoundMessage(); pickKeyboardSound.launch(arrayOf("audio/*")) },
-                                editSampled = rhythmVm::editSampled,
-                                sampledMessage = trackSoundMessage?.let { if (it == RhythmViewModel.BUSY_TRACK_SOUND) tr("Préparation du son…") else it },
-                            ),
-                            transcribe = TranscribeUi(
-                                task = transcription,
-                                pickFile = { rhythmVm.dismissTranscription(); pickNotesAudio.launch(arrayOf("audio/*")) },
-                                record = {
-                                    rhythmVm.dismissTranscription()
-                                    if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) rhythmVm.recordNotes()
-                                    else notesMicPermission.launch(Manifest.permission.RECORD_AUDIO)
-                                },
-                                stop = rhythmVm::stopNoteRecording,
-                                pickMidi = { rhythmVm.dismissTranscription(); pickMidiFile.launch(arrayOf("audio/midi", "audio/x-midi", "application/x-midi", "application/octet-stream")) },
-                            ),
-                            play = playUi,
-                            playActions = com.pocketstudio.app.synth.PlayActions(
-                                setBend = rhythmVm::setBend,
-                                setMod = rhythmVm::setMod,
-                                setSustain = rhythmVm::setSustain,
-                                setArp = rhythmVm::setArp,
-                            ),
-                            tracks = TracksUi(
-                                tracks = fullProject.instrumentTracks,
-                                selected = shownTrack,
-                                select = rhythmVm::selectTrack,
-                                add = rhythmVm::addTrack,
-                                rename = rhythmVm::renameTrack,
-                                setColor = rhythmVm::setTrackColor,
-                                duplicate = rhythmVm::duplicateTrack,
-                                remove = rhythmVm::removeTrack,
-                                effects = { id -> fxChannel = com.pocketstudio.model.InstrumentTrack.mixerChannel(id) },
-                            ),
-                            browser = if (project.synthEngine == 1) {
-                                SoundBrowserUi(
-                                    SoundCategories.PLAITS, SoundLibrary.PLAITS, favorites.plaits,
-                                    current = (SoundLibrary.PLAITS + favorites.plaits).firstOrNull { it.sound == project.plaits.copy(level = it.sound.level) }?.name,
-                                    pick = { rhythmVm.applyPlaits(SoundLibrary.PLAITS[it].sound.copy(level = project.plaits.level)) },
-                                    pickFavorite = { rhythmVm.applyPlaits(favorites.plaits[it].sound) },
-                                    deleteFavorite = rhythmVm::deletePlaitsFavorite,
-                                    random = rhythmVm::randomPlaits,
-                                    save = rhythmVm::savePlaitsFavorite,
-                                    tag = "plaits_sounds",
-                                    describe = { (it.sound as? PlaitsPatch)?.let(SoundLooks::describe) },
-                                )
-                            } else {
-                                SoundBrowserUi(
-                                    SoundCategories.SYNTH, SoundLibrary.SYNTH, favorites.synth,
-                                    current = (SoundLibrary.SYNTH + favorites.synth).firstOrNull { it.sound.sanitized() == project.synth.sanitized() }?.name,
-                                    pick = { rhythmVm.applySynthPreset(SoundLibrary.SYNTH[it].sound) },
-                                    pickFavorite = { rhythmVm.applySynthPreset(favorites.synth[it].sound) },
-                                    deleteFavorite = rhythmVm::deleteSynthFavorite,
-                                    random = rhythmVm::randomSynth,
-                                    save = rhythmVm::saveSynthFavorite,
-                                    tag = "synth_sounds",
-                                    describe = { (it.sound as? SynthPatch)?.let(SoundLooks::describe) },
-                                )
-                            },
-                        )
-                    }
-                    AppTab.Mixeur -> {
-                        val project by rhythmVm.project.collectAsStateWithLifecycle()
-                        val sessionUi by rhythmVm.sessionUi.collectAsStateWithLifecycle()
-                        val spectrum by rhythmVm.spectrum.collectAsStateWithLifecycle()
-                        LaunchedEffect(analyserOn) {
-                            if (analyserOn) lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollSpectrum() }
-                        }
-                        val meters by rhythmVm.meters.collectAsStateWithLifecycle()
-                        val export by rhythmVm.export.collectAsStateWithLifecycle()
-                        LaunchedEffect(Unit) {
-                            lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollMeters() }
-                        }
-                        val transport by rhythmVm.transport.collectAsStateWithLifecycle()
-                        val live by rhythmVm.live.collectAsStateWithLifecycle()
-                        val automationRecord by rhythmVm.automationRecord.collectAsStateWithLifecycle()
-                        LaunchedEffect(Unit) {
-                            lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollLive() }
-                        }
-                        MixerScreen(
-                            channels = project.mixer.channels,
-                            meters = meters,
-                            actions = MixerActions(
-                                setVolume = rhythmVm::setChannelVolume,
-                                setPan = rhythmVm::setChannelPan,
-                                toggleMute = rhythmVm::toggleMute,
-                                toggleSolo = rhythmVm::toggleSolo,
-                                setExportBars = rhythmVm::setExportBars,
-                                export = rhythmVm::exportWav,
-                                cancelExport = rhythmVm::cancelExport,
-                                share = { WavExporter.share(context, export.files) },
-                                setExportWhat = rhythmVm::setExportWhat,
-                                setExportFormat = rhythmVm::setExportFormat,
-                                setExportFade = rhythmVm::setExportFade,
-                                setExportNoLimiter = rhythmVm::setExportNoLimiter,
-                                setStemsWithMaster = rhythmVm::setStemsWithMaster,
-                                setMasterDb = rhythmVm::setMasterDb,
-                                shareSong = shareSong,
-                                exportMidi = rhythmVm::exportMidi,
-                                setInsertType = rhythmVm::setInsertType,
-                                setInsertParam = rhythmVm::setInsertParam,
-                                setSend = rhythmVm::setSend,
-                                setBusParam = rhythmVm::setBusParam,
-                                quick = com.pocketstudio.app.mixer.QuickFxActions(rhythmVm::setMacro, rhythmVm::setMacroPair, rhythmVm::applyFx),
-                            ),
-                            master = project.mixer.master,
-                            masterDb = project.mixer.masterDb,
-                            buses = project.mixer.buses,
-                            strips = mixerStrips(project),
-                            spectrum = spectrum,
-                            analyserOpen = analyserOn,
-                            setAnalyser = { analyserOn = it },
-                            automation = AutomationUi(
-                                project.automation, project.drums.steps, if (transport.playing) live.currentStep else -1, automationRecord,
-                                scene = project.scene,
-                                songBars = project.songBars,
-                                songBar = if (transport.playing && live.songStep >= 0) live.songStep / project.stepsPerBar else -1,
-                                stepsPerBar = project.stepsPerBar,
-                            ),
-                            automationActions = AutomationActions(
-                                add = rhythmVm::addAutomation,
-                                remove = rhythmVm::removeAutomation,
-                                clear = rhythmVm::clearAutomation,
-                                setPoint = rhythmVm::setAutomationPoint,
-                                toggleRecord = rhythmVm::toggleAutomationRecord,
-                                setMode = rhythmVm::setAutomationMode,
-                                setSongPoint = rhythmVm::setAutomationSongPoint,
-                            ),
-                            export = export,
-                            hasSong = project.song.isNotEmpty(),
-                        )
-                    }
-                    AppTab.Morceau -> {
-                        val project by rhythmVm.project.collectAsStateWithLifecycle()
-                        val transport by rhythmVm.transport.collectAsStateWithLifecycle()
-                        val sessionUi by rhythmVm.sessionUi.collectAsStateWithLifecycle()
-                        val liveStates by rhythmVm.liveStates.collectAsStateWithLifecycle()
-                        val sampleTask by rhythmVm.sampleTask.collectAsStateWithLifecycle()
-                        val listenSong by rhythmVm.listenSong.collectAsStateWithLifecycle()
-                        val followSong by rhythmVm.followSong.collectAsStateWithLifecycle()
-                        var liveEditing by rememberSaveable { mutableStateOf<Int?>(null) }
-                        LaunchedEffect(Unit) {
-                            lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollLiveStates() }
-                        }
-                        val all = project.allScenes
-                        SessionScreen(
-                            SessionScreenUi(
-                                scenes = List(Scene.MAX) { all.getOrNull(it) },
-                                current = project.scene,
-                                pending = sessionUi.pending,
-                                song = project.song,
-                                songIndex = sessionUi.songIndex,
-                                shownSongIndex = sessionUi.shownSongIndex,
-                                playing = transport.playing,
-                                tempoBpm = project.tempoBpm,
-                                beatsPerBar = project.beatsPerBar,
-                                sceneInfo = sceneInfo(project),
-                                rows = timelineRows(project),
-                                upcoming = if (transport.playing) sessionUi.upcoming(project.song.size, project.songLoops) else -1,
-                                listenSong = project.song.isNotEmpty() && listenSong != false,
-                                songLoops = project.songLoops,
-                                followSong = followSong,
-                            ),
-                            SessionActions(
-                                select = rhythmVm::selectScene,
-                                duplicate = rhythmVm::duplicateScene,
-                                newScene = rhythmVm::newScene,
-                                clear = rhythmVm::clearScene,
-                                rename = rhythmVm::renameScene,
-                                addPart = rhythmVm::addSongPart,
-                                insertPart = rhythmVm::insertSongPart,
-                                duplicatePart = rhythmVm::duplicateSongPart,
-                                movePart = rhythmVm::moveSongPart,
-                                removePart = rhythmVm::removeSongPart,
-                                setRepeats = rhythmVm::setSongRepeats,
-                                playPart = rhythmVm::playSongPart,
-                                toggleSong = rhythmVm::toggleSong,
-                                togglePlay = rhythmVm::togglePlay,
-                                setListenSong = rhythmVm::setListenSong,
-                                setSongLoops = rhythmVm::setSongLoops,
-                                setFollowSong = rhythmVm::setFollowSong,
-                                performance = { param, v -> if (NativeEngine.isAvailable) NativeEngine.setPerformance(param, v) },
-                                togglePartTrack = rhythmVm::togglePartTrack,
-                                setBeatsPerBar = rhythmVm::setBeatsPerBar,
-                            ),
-                            live = LivePadsUi(
-                                pads = project.live,
-                                states = liveStates,
-                                editing = liveEditing,
-                                drumSounds = project.drums.lanes.mapIndexedNotNull { i, l -> l.sample?.let { i to it.name } },
-                                busy = when (val t = sampleTask) {
-                                    is SampleTask.Busy -> t.message
-                                    is SampleTask.Failed -> t.message
-                                    else -> null
-                                },
-                            ),
-                            liveActions = LivePadsActions(
-                                tap = rhythmVm::toggleLive,
-                                stopAll = rhythmVm::stopLive,
-                                setSize = rhythmVm::setLiveSize,
-                                edit = { liveEditing = it },
-                                import = { pad -> liveImportPad = pad; rhythmVm.dismissSampleError(); pickLiveAudio.launch(arrayOf("audio/*")) },
-                                library = { pad -> rhythmVm.dismissSampleError(); libraryLive = pad; showLibrary = true },
-                                generate = { liveEditing = null; tab = AppTab.Audio; audioPage = 3 },
-                                fromDrumPad = rhythmVm::liveFromDrumPad,
-                                setBeats = rhythmVm::setLiveBeats,
-                                setOneShot = rhythmVm::setLiveOneShot,
-                                setGain = rhythmVm::setLiveGain,
-                                clear = rhythmVm::clearLive,
-                            ),
-                        )
-                    }
-                    AppTab.Audio -> Column {
-                        // Scrollable: whole words on a small phone or with big text (never "Remi/x").
-                        androidx.compose.material3.ScrollableTabRow(selectedTabIndex = audioPage, containerColor = Neon.Surface, contentColor = Neon.Cyan, edgePadding = 8.dp) {
-                            listOf(tr("Pistes audio"), tr("Remix"), tr("Accordeur"), tr("Générer")).forEachIndexed { i, label ->
-                                Tab(selected = audioPage == i, onClick = { audioPage = i }, text = { Text(label, maxLines = 1, softWrap = false) }, modifier = Modifier.testTag("audio_page_$i"))
-                            }
-                        }
-                        if (audioPage == 3) {
-                            val installed by generateVm.installed.collectAsStateWithLifecycle()
-                            val download by generateVm.download.collectAsStateWithLifecycle()
-                            val genState by generateVm.state.collectAsStateWithLifecycle()
-                            val prompt by generateVm.prompt.collectAsStateWithLifecycle()
-                            val seconds by generateVm.seconds.collectAsStateWithLifecycle()
-                            val generated by generateVm.result.collectAsStateWithLifecycle()
-                            val previewPlaying by generateVm.playing.collectAsStateWithLifecycle()
+                        AppTab.Rythme -> {
                             val project by rhythmVm.project.collectAsStateWithLifecycle()
                             val transport by rhythmVm.transport.collectAsStateWithLifecycle()
-                            val task by rhythmVm.sampleTask.collectAsStateWithLifecycle()
-                            DisposableEffect(Unit) {
-                                generateVm.visible = true
-                                onDispose {
-                                    generateVm.visible = false
-                                    generateVm.stopPreview()
-                                }
+                            val live by rhythmVm.live.collectAsStateWithLifecycle()
+                            val canUndo by rhythmVm.session.canUndo.collectAsStateWithLifecycle()
+                            val canRedo by rhythmVm.session.canRedo.collectAsStateWithLifecycle()
+                            val take by rhythmVm.audioRecording.collectAsStateWithLifecycle()
+                            val sampleInfo by rhythmVm.sampleInfo.collectAsStateWithLifecycle()
+                            val sampleTask by rhythmVm.sampleTask.collectAsStateWithLifecycle()
+                            val slicer by rhythmVm.slicer.collectAsStateWithLifecycle()
+                            val rhythmListen by rhythmVm.listenSong.collectAsStateWithLifecycle()
+                            LaunchedEffect(Unit) {
+                                lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollLive() }
                             }
-                            com.pocketstudio.app.generate.GenerateScreen(
-                                com.pocketstudio.app.generate.GenerateUi(
-                                    installed, download, genState, prompt, seconds,
-                                    result = generated?.name,
-                                    resultSeconds = generated?.pcm?.seconds ?: 0.0,
-                                    playing = previewPlaying,
-                                    projectBpm = project.tempoBpm.roundToInt(),
-                                    selectedPad = transport.selectedPad,
-                                    placeTask = when (val t = task) {
-                                        is SampleTask.Busy -> t.message
-                                        is SampleTask.Failed -> t.message
-                                        else -> null
+                            RhythmScreen(
+                                project = project,
+                                transport = transport,
+                                live = live,
+                                canUndo = canUndo && take == null,
+                                canRedo = canRedo && take == null,
+                                actions = RhythmActions(
+                                    togglePlay = rhythmVm::togglePlay,
+                                    toggleMetronome = rhythmVm::toggleMetronome,
+                                    toggleCountIn = rhythmVm::toggleCountIn,
+                                    hitPad = rhythmVm::hitPad,
+                                    toggleStep = rhythmVm::toggleStep,
+                                    setBars = rhythmVm::setDrumBars,
+                                    fill = rhythmVm::fillPad,
+                                    rotate = rhythmVm::rotatePad,
+                                    cycleRoll = rhythmVm::cycleRoll,
+                                    openEffects = { fxChannel = 0 },
+                                    openPadEffects = { fxChannel = com.pocketstudio.model.Mixer.padChannel(rhythmVm.transport.value.selectedPad) },
+                                    openLibrary = { showLibrary = true },
+                                    toKeyboard = { if (rhythmVm.padToKeyboard()) tab = AppTab.Synthe },
+                                    setPadPan = rhythmVm::setPadPan,
+                                    setHitPan = rhythmVm::setHitPan,
+                                    setHitPitch = rhythmVm::setHitPitch,
+                                    setHitVelocity = rhythmVm::setHitVelocity,
+                                    toggleHit = rhythmVm::toggleHit,
+                                    cycleVelocity = rhythmVm::cycleVelocity,
+                                    clearPad = rhythmVm::clearPad,
+                                    nudgeTempo = rhythmVm::nudgeTempo,
+                                    tapTempo = rhythmVm::tapTempo,
+                                    setSwing = rhythmVm::setSwing,
+                                    undo = rhythmVm::undo,
+                                    redo = rhythmVm::redo,
+                                    importSample = { pickAudio.launch(arrayOf("audio/*")) },
+                                    startRecording = {
+                                        if (hasMic(context)) rhythmVm.startRecording()
+                                        else recordPermission.launch(Manifest.permission.RECORD_AUDIO)
                                     },
+                                    stopRecording = rhythmVm::stopRecording,
+                                    removeSample = rhythmVm::removeSample,
+                                    dismissSampleError = rhythmVm::dismissSampleError,
+                                    editSample = rhythmVm::editPadSample,
+                                    openSlicer = rhythmVm::openSlicer,
+                                    closeSlicer = rhythmVm::closeSlicer,
+                                    setSliceMode = rhythmVm::setSliceMode,
+                                    setSliceSensitivity = rhythmVm::setSliceSensitivity,
+                                    setSliceGrid = rhythmVm::setSliceGrid,
+                                    toggleSliceMarker = rhythmVm::toggleSliceMarker,
+                                    applySlices = rhythmVm::applySlices,
+                                    resampleSong = rhythmVm::resampleSong,
+                                    importFolder = { pickFolder.launch(null) },
+                                    importZip = { pickZip.launch(arrayOf("application/zip", "application/x-zip-compressed", "application/octet-stream")) },
+                                    setListenSong = rhythmVm::setListenSong,
                                 ),
-                                com.pocketstudio.app.generate.GenerateActions(
-                                    download = generateVm::downloadModel,
-                                    cancelDownload = generateVm::cancelDownload,
-                                    setPrompt = generateVm::setPrompt,
-                                    setSeconds = generateVm::setSeconds,
-                                    generate = generateVm::generate,
-                                    cancel = generateVm::cancel,
-                                    dismissError = generateVm::dismissError,
-                                    play = generateVm::play,
-                                    stop = generateVm::stopPreview,
-                                    toPad = { generated?.let { rhythmVm.placeOnPad(it.pcm, it.name) } },
-                                    toLive = { generated?.let { rhythmVm.placeOnLive(it.pcm, it.name) } },
-                                    toAudioTrack = { generated?.let { rhythmVm.placeOnAudioTrack(it.pcm, it.name) } },
-                                    discard = generateVm::discard,
-                                    removeModel = generateVm::removeModel,
+                                padSound = PadSoundUi(sampleInfo, sampleTask, slicer),
+                                // The same choice as Morceau › Écouter, shown where ▶ is touched.
+                                // Until chosen (saved with the project), ▶ here plays the section being edited.
+                                listenSong = if (project.song.isEmpty()) null else rhythmListen == true,
+                                header = { showGrid ->
+                                    com.pocketstudio.app.onboarding.ProjectNextSteps(project, rhythmVm.projectId, share = shareSong, showHere = showGrid) { tab = it }
+                                },
+                            )
+                        }
+                        AppTab.Acide -> {
+                            val project by rhythmVm.project.collectAsStateWithLifecycle()
+                            val transport by rhythmVm.transport.collectAsStateWithLifecycle()
+                            val live by rhythmVm.live.collectAsStateWithLifecycle()
+                            val selected by rhythmVm.selectedAcidStep.collectAsStateWithLifecycle()
+                            LaunchedEffect(Unit) {
+                                lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollLive() }
+                            }
+                            val favorites by rhythmVm.favorites.collectAsStateWithLifecycle()
+                            AcidScreen(
+                                acid = project.acid,
+                                playing = transport.playing,
+                                currentStep = live.absoluteStep,
+                                selected = selected,
+                                actions = AcidActions(
+                                    togglePlay = rhythmVm::togglePlay,
+                                    generate = rhythmVm::generateAcid,
+                                    selectStep = rhythmVm::selectAcidStep,
+                                    editStep = rhythmVm::editAcidStep,
+                                    toggleLock = rhythmVm::toggleAcidLock,
+                                    setSound = rhythmVm::setAcidSound,
+                                    shiftRoot = rhythmVm::shiftAcidRoot,
+                                    setDensity = rhythmVm::setAcidDensity,
+                                    setBars = rhythmVm::setAcidBars,
+                                    copyPage = rhythmVm::copyAcidPage,
+                                ),
+                                browser = SoundBrowserUi(
+                                    SoundCategories.ACID, SoundLibrary.ACID, favorites.acid,
+                                    current = (SoundLibrary.ACID + favorites.acid).firstOrNull {
+                                        it.sound.copy(tuning = project.acid.sound.tuning, level = project.acid.sound.level) == project.acid.sound
+                                    }?.name,
+                                    // Tuning and volume stay as they are: a sound changes the character only.
+                                    pick = { rhythmVm.applyAcidSound(SoundLibrary.ACID[it].sound.copy(tuning = project.acid.sound.tuning, level = project.acid.sound.level)) },
+                                    pickFavorite = { rhythmVm.applyAcidSound(favorites.acid[it].sound) },
+                                    deleteFavorite = rhythmVm::deleteAcidFavorite,
+                                    random = rhythmVm::randomAcid,
+                                    save = rhythmVm::saveAcidFavorite,
+                                    tag = "acid_sounds",
+                                    describe = { (it.sound as? AcidSound)?.let(SoundLooks::describe) },
                                 ),
                             )
-                        } else if (audioPage == 2) {
-                            val reading by rhythmVm.tuner.collectAsStateWithLifecycle()
-                            val micOk by rhythmVm.tunerMic.collectAsStateWithLifecycle()
-                            val settings by SettingsStore.state.collectAsStateWithLifecycle()
-                            var granted by remember {
-                                mutableStateOf(ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED)
+                        }
+                        AppTab.Synthe -> {
+                            DisposableEffect(Unit) { onDispose { rhythmVm.synthAllOff() } }
+                            val fullProject by rhythmVm.project.collectAsStateWithLifecycle()
+                            val selectedTrack by rhythmVm.selectedTrack.collectAsStateWithLifecycle()
+                            // The selected instrument track's sound and notes, where the synth screen looks.
+                            val project = remember(fullProject, selectedTrack) { fullProject.viewOfTrack(selectedTrack) }
+                            val shownTrack = if (fullProject.tracks.any { it.id == selectedTrack }) selectedTrack else 0
+                            val playUi by rhythmVm.play.collectAsStateWithLifecycle()
+                            val octave by rhythmVm.keyboardOctave.collectAsStateWithLifecycle()
+                            val live by rhythmVm.live.collectAsStateWithLifecycle()
+                            val library by rhythmVm.library.collectAsStateWithLifecycle()
+                            val trackSoundMessage by rhythmVm.trackSoundBusy.collectAsStateWithLifecycle()
+                            val bankId by rhythmVm.bankId.collectAsStateWithLifecycle()
+                            LaunchedEffect(Unit) {
+                                lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollLive() }
                             }
-                            val ask = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
-                                granted = it
-                                if (!it) permissionHelp = MIC_REFUSED
-                            }
-                            if (granted) {
-                                LaunchedEffect(Unit) {
-                                    lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.runTuner() }
-                                }
-                                com.pocketstudio.app.analysis.TunerView(reading, micOk, settings.englishNotes)
-                            } else {
-                                Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                                    Text(tr("L'accordeur écoute le micro : autorise-le pour t'accorder."))
-                                    Button(onClick = { ask.launch(Manifest.permission.RECORD_AUDIO) }) { Text(tr("Autoriser le micro")) }
-                                }
-                            }
-                        } else if (audioPage == 0) {
+                            val favorites by rhythmVm.favorites.collectAsStateWithLifecycle()
+                            val transcription by rhythmVm.transcription.collectAsStateWithLifecycle()
+                            SynthScreen(
+                                patch = project.synth,
+                                octave = octave,
+                                actions = SynthActions(
+                                    noteOn = rhythmVm::synthNoteOn,
+                                    noteOff = rhythmVm::synthNoteOff,
+                                    shiftOctave = rhythmVm::shiftKeyboardOctave,
+                                    setParam = rhythmVm::setSynthParam,
+                                    applyPreset = rhythmVm::applySynthPreset,
+                                    chordOn = rhythmVm::synthChordOn,
+                                    chordOff = rhythmVm::synthChordOff,
+                                ),
+                                notes = NotesUi(
+                                    clip = project.synthNotes,
+                                    ghosts = NoteClip.ghostsOf(project.acid, project.synthNotes.steps),
+                                    playStep = live.absoluteStep,
+                                    actions = PianoRollActions(
+                                        add = rhythmVm::addNote,
+                                        remove = rhythmVm::removeNote,
+                                        change = rhythmVm::changeNote,
+                                        quantize = rhythmVm::quantizeNotes,
+                                        setSteps = rhythmVm::setNoteClipSteps,
+                                        clear = rhythmVm::clearNotes,
+                                        addChord = rhythmVm::addChord,
+                                        setHarmony = rhythmVm::setHarmony,
+                                        applyProgression = rhythmVm::applyProgression,
+                                        applyBassLine = rhythmVm::applyBassLine,
+                                        applyArpeggio = rhythmVm::applyArpeggio,
+                                        setPerformance = rhythmVm::setPerformance,
+                                        replaceClip = rhythmVm::replaceNoteClip,
+                                    ),
+                                    harmony = project.harmony,
+                                ),
+                                instrument = InstrumentUi(
+                                    library = library,
+                                    current = project.instrument,
+                                    open = rhythmVm::openLibrary,
+                                    download = rhythmVm::downloadLibrary,
+                                    cancel = rhythmVm::cancelLibraryDownload,
+                                    select = rhythmVm::selectInstrument,
+                                    bankId = bankId,
+                                    selectBank = rhythmVm::selectBank,
+                                    loadKit = rhythmVm::loadKit,
+                                    synthEngine = project.synthEngine,
+                                    plaits = project.plaits,
+                                    selectEngine = rhythmVm::selectSynthEngine,
+                                    setPlaitsModel = rhythmVm::setPlaitsModel,
+                                    setPlaitsParam = rhythmVm::setPlaitsParam,
+                                    sampled = project.sampled,
+                                    chooseSample = { rhythmVm.dismissTrackSoundMessage(); libraryTrack = true; showLibrary = true },
+                                    importSample = { rhythmVm.dismissTrackSoundMessage(); pickKeyboardSound.launch(arrayOf("audio/*")) },
+                                    editSampled = rhythmVm::editSampled,
+                                    sampledMessage = trackSoundMessage?.let { if (it == RhythmViewModel.BUSY_TRACK_SOUND) tr("Préparation du son…") else it },
+                                ),
+                                transcribe = TranscribeUi(
+                                    task = transcription,
+                                    pickFile = { rhythmVm.dismissTranscription(); pickNotesAudio.launch(arrayOf("audio/*")) },
+                                    record = {
+                                        rhythmVm.dismissTranscription()
+                                        if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) rhythmVm.recordNotes()
+                                        else notesMicPermission.launch(Manifest.permission.RECORD_AUDIO)
+                                    },
+                                    stop = rhythmVm::stopNoteRecording,
+                                    pickMidi = { rhythmVm.dismissTranscription(); pickMidiFile.launch(arrayOf("audio/midi", "audio/x-midi", "application/x-midi", "application/octet-stream")) },
+                                ),
+                                play = playUi,
+                                playActions = com.pocketstudio.app.synth.PlayActions(
+                                    setBend = rhythmVm::setBend,
+                                    setMod = rhythmVm::setMod,
+                                    setSustain = rhythmVm::setSustain,
+                                    setArp = rhythmVm::setArp,
+                                ),
+                                tracks = TracksUi(
+                                    tracks = fullProject.instrumentTracks,
+                                    selected = shownTrack,
+                                    select = rhythmVm::selectTrack,
+                                    add = rhythmVm::addTrack,
+                                    rename = rhythmVm::renameTrack,
+                                    setColor = rhythmVm::setTrackColor,
+                                    duplicate = rhythmVm::duplicateTrack,
+                                    remove = rhythmVm::removeTrack,
+                                    effects = { id -> fxChannel = com.pocketstudio.model.InstrumentTrack.mixerChannel(id) },
+                                    clear = rhythmVm::clearTrackNotes,
+                                    scene = fullProject.sceneTitle(fullProject.scene),
+                                ),
+                                browser = if (project.synthEngine == 1) {
+                                    SoundBrowserUi(
+                                        SoundCategories.PLAITS, SoundLibrary.PLAITS, favorites.plaits,
+                                        current = (SoundLibrary.PLAITS + favorites.plaits).firstOrNull { it.sound == project.plaits.copy(level = it.sound.level) }?.name,
+                                        pick = { rhythmVm.applyPlaits(SoundLibrary.PLAITS[it].sound.copy(level = project.plaits.level)) },
+                                        pickFavorite = { rhythmVm.applyPlaits(favorites.plaits[it].sound) },
+                                        deleteFavorite = rhythmVm::deletePlaitsFavorite,
+                                        random = rhythmVm::randomPlaits,
+                                        save = rhythmVm::savePlaitsFavorite,
+                                        tag = "plaits_sounds",
+                                        describe = { (it.sound as? PlaitsPatch)?.let(SoundLooks::describe) },
+                                    )
+                                } else {
+                                    SoundBrowserUi(
+                                        SoundCategories.SYNTH, SoundLibrary.SYNTH, favorites.synth,
+                                        current = (SoundLibrary.SYNTH + favorites.synth).firstOrNull { it.sound.sanitized() == project.synth.sanitized() }?.name,
+                                        pick = { rhythmVm.applySynthPreset(SoundLibrary.SYNTH[it].sound) },
+                                        pickFavorite = { rhythmVm.applySynthPreset(favorites.synth[it].sound) },
+                                        deleteFavorite = rhythmVm::deleteSynthFavorite,
+                                        random = rhythmVm::randomSynth,
+                                        save = rhythmVm::saveSynthFavorite,
+                                        tag = "synth_sounds",
+                                        describe = { (it.sound as? SynthPatch)?.let(SoundLooks::describe) },
+                                    )
+                                },
+                            )
+                        }
+                        AppTab.Mixeur -> {
                             val project by rhythmVm.project.collectAsStateWithLifecycle()
-                            val recording by rhythmVm.audioRecording.collectAsStateWithLifecycle()
-                            val info by rhythmVm.sampleInfo.collectAsStateWithLifecycle()
-                            val task by rhythmVm.sampleTask.collectAsStateWithLifecycle()
-                            val roundTripMs by Metrics.roundTripMs.collectAsStateWithLifecycle()
-                            val listening by com.pocketstudio.app.audio.Headphones.state.collectAsStateWithLifecycle()
-                            val recordTarget by rhythmVm.recordTarget.collectAsStateWithLifecycle()
-                            val takeSaving by rhythmVm.takeSaving.collectAsStateWithLifecycle()
-                            AudioTracksScreen(
-                                AudioTracksUi(
-                                    project.audioTracks, recording, info,
-                                    task = when (val t = task) {
+                            val sessionUi by rhythmVm.sessionUi.collectAsStateWithLifecycle()
+                            val spectrum by rhythmVm.spectrum.collectAsStateWithLifecycle()
+                            LaunchedEffect(analyserOn) {
+                                if (analyserOn) lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollSpectrum() }
+                            }
+                            val meters by rhythmVm.meters.collectAsStateWithLifecycle()
+                            val export by rhythmVm.export.collectAsStateWithLifecycle()
+                            LaunchedEffect(Unit) {
+                                lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollMeters() }
+                            }
+                            val transport by rhythmVm.transport.collectAsStateWithLifecycle()
+                            val live by rhythmVm.live.collectAsStateWithLifecycle()
+                            val automationRecord by rhythmVm.automationRecord.collectAsStateWithLifecycle()
+                            LaunchedEffect(Unit) {
+                                lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollLive() }
+                            }
+                            MixerScreen(
+                                channels = project.mixer.channels,
+                                meters = meters,
+                                actions = MixerActions(
+                                    setVolume = rhythmVm::setChannelVolume,
+                                    setPan = rhythmVm::setChannelPan,
+                                    toggleMute = rhythmVm::toggleMute,
+                                    toggleSolo = rhythmVm::toggleSolo,
+                                    setExportBars = rhythmVm::setExportBars,
+                                    export = rhythmVm::exportWav,
+                                    cancelExport = rhythmVm::cancelExport,
+                                    share = { WavExporter.share(context, export.files) },
+                                    setExportWhat = rhythmVm::setExportWhat,
+                                    setExportFormat = rhythmVm::setExportFormat,
+                                    setExportFade = rhythmVm::setExportFade,
+                                    setExportNoLimiter = rhythmVm::setExportNoLimiter,
+                                    setStemsWithMaster = rhythmVm::setStemsWithMaster,
+                                    setMasterDb = rhythmVm::setMasterDb,
+                                    shareSong = shareSong,
+                                    exportMidi = rhythmVm::exportMidi,
+                                    setInsertType = rhythmVm::setInsertType,
+                                    setInsertParam = rhythmVm::setInsertParam,
+                                    setSend = rhythmVm::setSend,
+                                    setBusParam = rhythmVm::setBusParam,
+                                    quick = com.pocketstudio.app.mixer.QuickFxActions(rhythmVm::setMacro, rhythmVm::setMacroPair, rhythmVm::applyFx),
+                                ),
+                                master = project.mixer.master,
+                                masterDb = project.mixer.masterDb,
+                                buses = project.mixer.buses,
+                                strips = mixerStrips(project),
+                                spectrum = spectrum,
+                                analyserOpen = analyserOn,
+                                setAnalyser = { analyserOn = it },
+                                automation = AutomationUi(
+                                    project.automation, project.drums.steps, if (transport.playing) live.currentStep else -1, automationRecord,
+                                    scene = project.scene,
+                                    songBars = project.songBars,
+                                    songBar = if (transport.playing && live.songStep >= 0) live.songStep / project.stepsPerBar else -1,
+                                    stepsPerBar = project.stepsPerBar,
+                                ),
+                                automationActions = AutomationActions(
+                                    add = rhythmVm::addAutomation,
+                                    remove = rhythmVm::removeAutomation,
+                                    clear = rhythmVm::clearAutomation,
+                                    setPoint = rhythmVm::setAutomationPoint,
+                                    toggleRecord = rhythmVm::toggleAutomationRecord,
+                                    setMode = rhythmVm::setAutomationMode,
+                                    setSongPoint = rhythmVm::setAutomationSongPoint,
+                                ),
+                                export = export,
+                                hasSong = project.song.isNotEmpty(),
+                            )
+                        }
+                        AppTab.Morceau -> {
+                            val project by rhythmVm.project.collectAsStateWithLifecycle()
+                            val transport by rhythmVm.transport.collectAsStateWithLifecycle()
+                            val sessionUi by rhythmVm.sessionUi.collectAsStateWithLifecycle()
+                            val liveStates by rhythmVm.liveStates.collectAsStateWithLifecycle()
+                            val sampleTask by rhythmVm.sampleTask.collectAsStateWithLifecycle()
+                            val listenSong by rhythmVm.listenSong.collectAsStateWithLifecycle()
+                            val followSong by rhythmVm.followSong.collectAsStateWithLifecycle()
+                            var liveEditing by rememberSaveable { mutableStateOf<Int?>(null) }
+                            LaunchedEffect(Unit) {
+                                lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollLiveStates() }
+                            }
+                            val all = project.allScenes
+                            SessionScreen(
+                                SessionScreenUi(
+                                    scenes = List(Scene.MAX) { all.getOrNull(it) },
+                                    current = project.scene,
+                                    pending = sessionUi.pending,
+                                    song = project.song,
+                                    songIndex = sessionUi.songIndex,
+                                    shownSongIndex = sessionUi.shownSongIndex,
+                                    playing = transport.playing,
+                                    tempoBpm = project.tempoBpm,
+                                    beatsPerBar = project.beatsPerBar,
+                                    sceneInfo = sceneInfo(project),
+                                    rows = timelineRows(project),
+                                    upcoming = if (transport.playing) sessionUi.upcoming(project.song.size, project.songLoops) else -1,
+                                    listenSong = project.song.isNotEmpty() && listenSong != false,
+                                    songLoops = project.songLoops,
+                                    followSong = followSong,
+                                ),
+                                SessionActions(
+                                    select = rhythmVm::selectScene,
+                                    duplicate = rhythmVm::duplicateScene,
+                                    newScene = rhythmVm::newScene,
+                                    clear = rhythmVm::clearScene,
+                                    rename = rhythmVm::renameScene,
+                                    addPart = rhythmVm::addSongPart,
+                                    insertPart = rhythmVm::insertSongPart,
+                                    duplicatePart = rhythmVm::duplicateSongPart,
+                                    movePart = rhythmVm::moveSongPart,
+                                    removePart = rhythmVm::removeSongPart,
+                                    setRepeats = rhythmVm::setSongRepeats,
+                                    playPart = rhythmVm::playSongPart,
+                                    toggleSong = rhythmVm::toggleSong,
+                                    togglePlay = rhythmVm::togglePlay,
+                                    setListenSong = rhythmVm::setListenSong,
+                                    setSongLoops = rhythmVm::setSongLoops,
+                                    setFollowSong = rhythmVm::setFollowSong,
+                                    performance = { param, v -> if (NativeEngine.isAvailable) NativeEngine.setPerformance(param, v) },
+                                    togglePartTrack = rhythmVm::togglePartTrack,
+                                    setBeatsPerBar = rhythmVm::setBeatsPerBar,
+                                ),
+                                live = LivePadsUi(
+                                    pads = project.live,
+                                    states = liveStates,
+                                    editing = liveEditing,
+                                    drumSounds = project.drums.lanes.mapIndexedNotNull { i, l -> l.sample?.let { i to it.name } },
+                                    busy = when (val t = sampleTask) {
                                         is SampleTask.Busy -> t.message
                                         is SampleTask.Failed -> t.message
                                         else -> null
                                     },
-                                    latencyMeasured = roundTripMs != null,
-                                    stepsPerBar = project.stepsPerBar,
-                                    listening = listening,
-                                    target = recordTarget,
-                                    sceneTitle = project.sceneTitle(project.scene),
-                                    songParts = project.song.map { project.sceneTitle(it.scene) },
-                                    songBars = project.songBars,
-                                    tempoBpm = project.tempoBpm,
-                                    saving = takeSaving,
                                 ),
-                                AudioTracksActions(
-                                    add = rhythmVm::addAudioTrack,
-                                    effects = { id -> fxChannel = com.pocketstudio.model.AudioTrack.mixerChannel(id) },
-                                    remove = rhythmVm::removeAudioTrack,
-                                    rename = rhythmVm::renameAudioTrack,
-                                    setColor = rhythmVm::setAudioTrackColor,
-                                    record = { id ->
-                                        if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
-                                            rhythmVm.recordAudio(id)
-                                        } else {
-                                            audioRecordTrack = id
-                                            audioMicPermission.launch(Manifest.permission.RECORD_AUDIO)
+                                liveActions = LivePadsActions(
+                                    tap = rhythmVm::toggleLive,
+                                    stopAll = rhythmVm::stopLive,
+                                    setSize = rhythmVm::setLiveSize,
+                                    edit = { liveEditing = it },
+                                    import = { pad -> liveImportPad = pad; rhythmVm.dismissSampleError(); pickLiveAudio.launch(arrayOf("audio/*")) },
+                                    library = { pad -> rhythmVm.dismissSampleError(); libraryLive = pad; showLibrary = true },
+                                    generate = { liveEditing = null; tab = AppTab.Audio; audioPage = 3 },
+                                    fromDrumPad = rhythmVm::liveFromDrumPad,
+                                    setBeats = rhythmVm::setLiveBeats,
+                                    setOneShot = rhythmVm::setLiveOneShot,
+                                    setGain = rhythmVm::setLiveGain,
+                                    clear = rhythmVm::clearLive,
+                                ),
+                            )
+                        }
+                        AppTab.Audio -> Column {
+                            // Scrollable: whole words on a small phone or with big text (never "Remi/x").
+                            androidx.compose.material3.ScrollableTabRow(selectedTabIndex = audioPage, containerColor = Neon.Surface, contentColor = Neon.Cyan, edgePadding = 8.dp) {
+                                listOf(tr("Pistes audio"), tr("Remix"), tr("Accordeur"), tr("Générer")).forEachIndexed { i, label ->
+                                    Tab(selected = audioPage == i, onClick = { audioPage = i }, text = { Text(label, maxLines = 1, softWrap = false) }, modifier = Modifier.testTag("audio_page_$i"))
+                                }
+                            }
+                            if (audioPage == 3) {
+                                val installed by generateVm.installed.collectAsStateWithLifecycle()
+                                val download by generateVm.download.collectAsStateWithLifecycle()
+                                val genState by generateVm.state.collectAsStateWithLifecycle()
+                                val prompt by generateVm.prompt.collectAsStateWithLifecycle()
+                                val seconds by generateVm.seconds.collectAsStateWithLifecycle()
+                                val generated by generateVm.result.collectAsStateWithLifecycle()
+                                val previewPlaying by generateVm.playing.collectAsStateWithLifecycle()
+                                val project by rhythmVm.project.collectAsStateWithLifecycle()
+                                val transport by rhythmVm.transport.collectAsStateWithLifecycle()
+                                val task by rhythmVm.sampleTask.collectAsStateWithLifecycle()
+                                DisposableEffect(Unit) {
+                                    generateVm.visible = true
+                                    onDispose {
+                                        generateVm.visible = false
+                                        generateVm.stopPreview()
+                                    }
+                                }
+                                com.pocketstudio.app.generate.GenerateScreen(
+                                    com.pocketstudio.app.generate.GenerateUi(
+                                        installed, download, genState, prompt, seconds,
+                                        result = generated?.name,
+                                        resultSeconds = generated?.pcm?.seconds ?: 0.0,
+                                        playing = previewPlaying,
+                                        projectBpm = project.tempoBpm.roundToInt(),
+                                        selectedPad = transport.selectedPad,
+                                        placeTask = when (val t = task) {
+                                            is SampleTask.Busy -> t.message
+                                            is SampleTask.Failed -> t.message
+                                            else -> null
+                                        },
+                                    ),
+                                    com.pocketstudio.app.generate.GenerateActions(
+                                        download = generateVm::downloadModel,
+                                        cancelDownload = generateVm::cancelDownload,
+                                        setPrompt = generateVm::setPrompt,
+                                        setSeconds = generateVm::setSeconds,
+                                        generate = generateVm::generate,
+                                        cancel = generateVm::cancel,
+                                        dismissError = generateVm::dismissError,
+                                        play = generateVm::play,
+                                        stop = generateVm::stopPreview,
+                                        toPad = { generated?.let { rhythmVm.placeOnPad(it.pcm, it.name) } },
+                                        toLive = { generated?.let { rhythmVm.placeOnLive(it.pcm, it.name) } },
+                                        toAudioTrack = { generated?.let { rhythmVm.placeOnAudioTrack(it.pcm, it.name) } },
+                                        discard = generateVm::discard,
+                                        removeModel = generateVm::removeModel,
+                                    ),
+                                )
+                            } else if (audioPage == 2) {
+                                val reading by rhythmVm.tuner.collectAsStateWithLifecycle()
+                                val micOk by rhythmVm.tunerMic.collectAsStateWithLifecycle()
+                                val settings by SettingsStore.state.collectAsStateWithLifecycle()
+                                var granted by remember {
+                                    mutableStateOf(ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED)
+                                }
+                                val ask = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
+                                    granted = it
+                                    if (!it) permissionHelp = MIC_REFUSED
+                                }
+                                if (granted) {
+                                    LaunchedEffect(Unit) {
+                                        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.runTuner() }
+                                    }
+                                    com.pocketstudio.app.analysis.TunerView(reading, micOk, settings.englishNotes)
+                                } else {
+                                    Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                                        Text(tr("L'accordeur écoute le micro : autorise-le pour t'accorder."))
+                                        Button(onClick = { ask.launch(Manifest.permission.RECORD_AUDIO) }) { Text(tr("Autoriser le micro")) }
+                                    }
+                                }
+                            } else if (audioPage == 0) {
+                                val project by rhythmVm.project.collectAsStateWithLifecycle()
+                                val recording by rhythmVm.audioRecording.collectAsStateWithLifecycle()
+                                val info by rhythmVm.sampleInfo.collectAsStateWithLifecycle()
+                                val task by rhythmVm.sampleTask.collectAsStateWithLifecycle()
+                                val roundTripMs by Metrics.roundTripMs.collectAsStateWithLifecycle()
+                                val listening by com.pocketstudio.app.audio.Headphones.state.collectAsStateWithLifecycle()
+                                val recordTarget by rhythmVm.recordTarget.collectAsStateWithLifecycle()
+                                val takeSaving by rhythmVm.takeSaving.collectAsStateWithLifecycle()
+                                AudioTracksScreen(
+                                    AudioTracksUi(
+                                        project.audioTracks, recording, info,
+                                        task = when (val t = task) {
+                                            is SampleTask.Busy -> t.message
+                                            is SampleTask.Failed -> t.message
+                                            else -> null
+                                        },
+                                        latencyMeasured = roundTripMs != null,
+                                        stepsPerBar = project.stepsPerBar,
+                                        listening = listening,
+                                        target = recordTarget,
+                                        sceneTitle = project.sceneTitle(project.scene),
+                                        songParts = project.song.map { project.sceneTitle(it.scene) },
+                                        songBars = project.songBars,
+                                        tempoBpm = project.tempoBpm,
+                                        saving = takeSaving,
+                                        scene = project.scene,
+                                        sceneTitles = project.allScenes.indices.map { project.sceneTitle(it) },
+                                        partStarts = project.song.indices.map { project.songStepOf(it) },
+                                    ),
+                                    AudioTracksActions(
+                                        add = rhythmVm::addAudioTrack,
+                                        effects = { id -> fxChannel = com.pocketstudio.model.AudioTrack.mixerChannel(id) },
+                                        remove = rhythmVm::removeAudioTrack,
+                                        rename = rhythmVm::renameAudioTrack,
+                                        setColor = rhythmVm::setAudioTrackColor,
+                                        record = { id ->
+                                            if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
+                                                rhythmVm.recordAudio(id)
+                                            } else {
+                                                audioRecordTrack = id
+                                                audioMicPermission.launch(Manifest.permission.RECORD_AUDIO)
+                                            }
+                                        },
+                                        stop = rhythmVm::stopAudioRecording,
+                                        cancel = rhythmVm::cancelAudioRecording,
+                                        import = { id -> audioImportTrack = id; pickTrackAudio.launch(arrayOf("audio/*")) },
+                                        setStart = rhythmVm::setAudioStart,
+                                        setLoopBars = rhythmVm::setAudioLoopBars,
+                                        setGain = rhythmVm::setAudioGain,
+                                        setFadeIn = rhythmVm::setAudioFadeIn,
+                                        setFadeOut = rhythmVm::setAudioFadeOut,
+                                        normalize = rhythmVm::normalizeAudio,
+                                        reverse = rhythmVm::reverseAudio,
+                                        trim = rhythmVm::trimAudio,
+                                        clear = rhythmVm::clearAudioClip,
+                                        setTarget = rhythmVm::setRecordTarget,
+                                        setOnce = rhythmVm::setAudioOnce,
+                                        setSong = rhythmVm::setAudioSong,
+                                        setOffset = rhythmVm::setAudioOffset,
+                                        setScene = rhythmVm::setAudioScene,
+                                        playFrom = rhythmVm::playFromTake,
+                                        restorePrevious = rhythmVm::restorePreviousTake,
+                                    ),
+                                )
+                            } else {
+                            val remixState by remixVm.state.collectAsStateWithLifecycle()
+                            val sets by remixVm.sets.collectAsStateWithLifecycle()
+                            val modelInstalled by remixVm.modelInstalled.collectAsStateWithLifecycle()
+                            val preview by remixVm.preview.collectAsStateWithLifecycle()
+                            val remixMemory by remixVm.memoryProblem.collectAsStateWithLifecycle()
+                            val remixMemoryNever by remixVm.memoryNever.collectAsStateWithLifecycle()
+                            // The free memory changes: read again each time the Remix page is shown.
+                            LaunchedEffect(Unit) { remixVm.checkMemory() }
+                            val remixLoading by rhythmVm.remixLoading.collectAsStateWithLifecycle()
+                            val remixStretching by rhythmVm.remixStretching.collectAsStateWithLifecycle()
+                            val overview by rhythmVm.stemOverview.collectAsStateWithLifecycle()
+                            val stemPosition by rhythmVm.stemPosition.collectAsStateWithLifecycle()
+                            LaunchedEffect(Unit) {
+                                lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollStemPosition() }
+                            }
+                            LaunchedEffect(Unit) {
+                                lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { remixVm.pollPreview() }
+                            }
+                            val project by rhythmVm.project.collectAsStateWithLifecycle()
+                            val transport by rhythmVm.transport.collectAsStateWithLifecycle()
+                            val sampleTask by rhythmVm.sampleTask.collectAsStateWithLifecycle()
+                            RemixScreen(
+                                RemixUi(
+                                    modelInstalled, remixState, sets, preview,
+                                    remix = project.remix,
+                                    remixLoading = remixLoading,
+                                    stretching = remixStretching,
+                                    transportPlaying = transport.playing,
+                                    projectBpm = project.tempoBpm,
+                                    padTask = when (val t = sampleTask) {
+                                        is SampleTask.Busy -> t.message
+                                        is SampleTask.Failed -> t.message
+                                        else -> null
+                                    },
+                                    overview = overview,
+                                    position = stemPosition,
+                                    memoryProblem = remixMemory,
+                                    memoryNever = remixMemoryNever,
+                                ),
+                                RemixActions(
+                                    downloadModel = remixVm::downloadModel,
+                                    checkMemory = remixVm::checkMemory,
+                                    pickSong = { pickSong.launch(arrayOf("audio/*")) },
+                                    cancel = remixVm::cancel,
+                                    dismiss = remixVm::dismiss,
+                                    playAll = remixVm::playAll,
+                                    toggleStem = remixVm::toggleStem,
+                                    pause = remixVm::pause,
+                                    stemToLive = rhythmVm::stemToLive,
+                                    setFollowTempo = rhythmVm::setRemixFollowTempo,
+                                    delete = remixVm::delete,
+                                    useSong = { set ->
+                                        rhythmVm.useSong(set)
+                                        val what = listOfNotNull(set.info.bpm.takeIf { it > 0 }?.let { "%.0f BPM".format(it) }, set.info.keyLabel)
+                                        if (what.isNotEmpty()) {
+                                            android.widget.Toast.makeText(context, tr("Projet calé : %s", what.joinToString(", ")), android.widget.Toast.LENGTH_SHORT).show()
                                         }
                                     },
-                                    stop = rhythmVm::stopAudioRecording,
-                                    cancel = rhythmVm::cancelAudioRecording,
-                                    import = { id -> audioImportTrack = id; pickTrackAudio.launch(arrayOf("audio/*")) },
-                                    setStart = rhythmVm::setAudioStart,
-                                    setLoopBars = rhythmVm::setAudioLoopBars,
-                                    setGain = rhythmVm::setAudioGain,
-                                    setFadeIn = rhythmVm::setAudioFadeIn,
-                                    setFadeOut = rhythmVm::setAudioFadeOut,
-                                    normalize = rhythmVm::normalizeAudio,
-                                    reverse = rhythmVm::reverseAudio,
-                                    trim = rhythmVm::trimAudio,
-                                    clear = rhythmVm::clearAudioClip,
-                                    setTarget = rhythmVm::setRecordTarget,
-                                    setOnce = rhythmVm::setAudioOnce,
-                                    setSong = rhythmVm::setAudioSong,
-                                    setOffset = rhythmVm::setAudioOffset,
+                                    clearRemix = rhythmVm::clearRemix,
+                                    togglePlay = rhythmVm::togglePlay,
+                                    setStartBar = rhythmVm::setRemixStartBar,
+                                    setStemVolume = rhythmVm::setStemVolume,
+                                    toggleStemMute = rhythmVm::toggleStemMute,
+                                    toggleStemSolo = rhythmVm::toggleStemSolo,
+                                    stemToPad = rhythmVm::stemToPad,
+                                    setStartAt = rhythmVm::setRemixStartAt,
                                 ),
                             )
-                        } else {
-                        val remixState by remixVm.state.collectAsStateWithLifecycle()
-                        val sets by remixVm.sets.collectAsStateWithLifecycle()
-                        val modelInstalled by remixVm.modelInstalled.collectAsStateWithLifecycle()
-                        val preview by remixVm.preview.collectAsStateWithLifecycle()
-                        val remixMemory by remixVm.memoryProblem.collectAsStateWithLifecycle()
-                        // The free memory changes: read again each time the Remix page is shown.
-                        LaunchedEffect(Unit) { remixVm.checkMemory() }
-                        val remixLoading by rhythmVm.remixLoading.collectAsStateWithLifecycle()
-                        val remixStretching by rhythmVm.remixStretching.collectAsStateWithLifecycle()
-                        val overview by rhythmVm.stemOverview.collectAsStateWithLifecycle()
-                        val stemPosition by rhythmVm.stemPosition.collectAsStateWithLifecycle()
-                        LaunchedEffect(Unit) {
-                            lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollStemPosition() }
-                        }
-                        LaunchedEffect(Unit) {
-                            lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { remixVm.pollPreview() }
-                        }
-                        val project by rhythmVm.project.collectAsStateWithLifecycle()
-                        val transport by rhythmVm.transport.collectAsStateWithLifecycle()
-                        val sampleTask by rhythmVm.sampleTask.collectAsStateWithLifecycle()
-                        RemixScreen(
-                            RemixUi(
-                                modelInstalled, remixState, sets, preview,
-                                remix = project.remix,
-                                remixLoading = remixLoading,
-                                stretching = remixStretching,
-                                transportPlaying = transport.playing,
-                                projectBpm = project.tempoBpm,
-                                padTask = when (val t = sampleTask) {
-                                    is SampleTask.Busy -> t.message
-                                    is SampleTask.Failed -> t.message
-                                    else -> null
-                                },
-                                overview = overview,
-                                position = stemPosition,
-                                memoryProblem = remixMemory,
-                            ),
-                            RemixActions(
-                                downloadModel = remixVm::downloadModel,
-                                checkMemory = remixVm::checkMemory,
-                                pickSong = { pickSong.launch(arrayOf("audio/*")) },
-                                cancel = remixVm::cancel,
-                                dismiss = remixVm::dismiss,
-                                playAll = remixVm::playAll,
-                                toggleStem = remixVm::toggleStem,
-                                pause = remixVm::pause,
-                                stemToLive = rhythmVm::stemToLive,
-                                setFollowTempo = rhythmVm::setRemixFollowTempo,
-                                delete = remixVm::delete,
-                                useSong = { set ->
-                                    rhythmVm.useSong(set)
-                                    val what = listOfNotNull(set.info.bpm.takeIf { it > 0 }?.let { "%.0f BPM".format(it) }, set.info.keyLabel)
-                                    if (what.isNotEmpty()) {
-                                        android.widget.Toast.makeText(context, tr("Projet calé : %s", what.joinToString(", ")), android.widget.Toast.LENGTH_SHORT).show()
-                                    }
-                                },
-                                clearRemix = rhythmVm::clearRemix,
-                                togglePlay = rhythmVm::togglePlay,
-                                setStartBar = rhythmVm::setRemixStartBar,
-                                setStemVolume = rhythmVm::setStemVolume,
-                                toggleStemMute = rhythmVm::toggleStemMute,
-                                toggleStemSolo = rhythmVm::toggleStemSolo,
-                                stemToPad = rhythmVm::stemToPad,
-                                setStartAt = rhythmVm::setRemixStartAt,
-                            ),
-                        )
-                        }
-                    }
-                    AppTab.Outils -> Column {
-                        androidx.compose.material3.ScrollableTabRow(selectedTabIndex = toolPage.ordinal, containerColor = Neon.Surface, contentColor = Neon.Cyan, edgePadding = 8.dp) {
-                            ToolPage.entries.forEach { page ->
-                                Tab(
-                                    selected = toolPage == page,
-                                    onClick = { toolPage = page },
-                                    text = { Text(page.label, maxLines = 1, softWrap = false) },
-                                    modifier = Modifier.testTag("tool_${page.name}"),
-                                )
                             }
                         }
-                        when (toolPage) {
-                            ToolPage.Aide -> com.pocketstudio.app.settings.HelpPage(
-                                com.pocketstudio.app.settings.HelpActions(
-                                    openGuide = { showGuide = true },
-                                    showSteps = {
-                                        com.pocketstudio.app.onboarding.NextStepPrefs(context, rhythmVm.projectId).reopen()
-                                        tab = AppTab.Rythme
-                                    },
-                                ),
-                            )
-                            ToolPage.Recette -> {
-                                val state by recetteVm.state.collectAsStateWithLifecycle()
-                                RecetteScreen(
-                                    state = state,
-                                    stream = stream,
-                                    roundTripMs = roundTrip,
-                                    onUpdate = recetteVm::update,
-                                    onSendReport = { recetteVm.buildReport { openUri(context, it) } },
-                                    onReportProblem = { text -> recetteVm.buildProblem(text) { openUri(context, it) } },
-                                )
+                        AppTab.Outils -> Column {
+                            androidx.compose.material3.ScrollableTabRow(selectedTabIndex = toolPage.ordinal, containerColor = Neon.Surface, contentColor = Neon.Cyan, edgePadding = 8.dp) {
+                                ToolPage.entries.forEach { page ->
+                                    Tab(
+                                        selected = toolPage == page,
+                                        onClick = { toolPage = page; ToolPage.save(context, page) },
+                                        text = { Text(page.label, maxLines = 1, softWrap = false) },
+                                        modifier = Modifier.testTag("tool_${page.name}"),
+                                    )
+                                }
                             }
-                            ToolPage.Reglages -> SettingsScreen(
-                                settings,
-                                AppInfo.versionLabel,
-                                SettingsActions(
-                                    update = { t -> SettingsStore.update(context, t) },
-                                    // The default settings also open every folded card (a beginner may not find a fold again).
-                                    reset = {
-                                        SettingsStore.reset(context)
-                                        (foldStore as? com.pocketstudio.ui.MemoryFoldStore)?.unfoldAll()
-                                    },
-                                    openGuide = { showGuide = true },
-                                ),
-                            )
-                            ToolPage.Midi -> {
-                                val midi by midiVm.state.collectAsStateWithLifecycle()
-                                val project by rhythmVm.project.collectAsStateWithLifecycle()
-                                val learning by rhythmVm.learning.collectAsStateWithLifecycle()
-                                val strips = mixerStrips(project)
-                                MidiScreen(
-                                    midi,
-                                    MidiActions(
-                                        connect = midiVm::connect,
-                                        disconnect = midiVm::disconnect,
-                                        scanBluetooth = { bluetoothPermission.launch(arrayOf(Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT)) },
-                                        setFollowClock = midiVm::setFollowClock,
-                                        setSendClock = midiVm::setSendClock,
-                                    ),
-                                    com.pocketstudio.app.midi.LearnUi(
-                                        mappings = project.midiMap.map { it.controller to controlLabel(it.target, project, strips) },
-                                        targets = learnTargets(project, strips).map { controlLabel(it, project, strips) to it },
-                                        waiting = learning?.let { controlLabel(it, project, strips) },
-                                        learn = { rhythmVm.learn(it as? com.pocketstudio.model.AutoTarget) },
-                                        remove = rhythmVm::removeMapping,
+                            when (toolPage) {
+                                ToolPage.Aide -> com.pocketstudio.app.settings.HelpPage(
+                                    com.pocketstudio.app.settings.HelpActions(
+                                        openGuide = { showGuide = true },
+                                        showSteps = {
+                                            com.pocketstudio.app.onboarding.NextStepPrefs(context, rhythmVm.projectId).reopen()
+                                            tab = AppTab.Rythme
+                                        },
                                     ),
                                 )
-                            }
-                            ToolPage.Fond -> BackgroundPage()
-                            ToolPage.Latence -> {
-                                val state by latencyVm.state.collectAsStateWithLifecycle()
-                                LatencyScreen(
-                                    state = state,
-                                    stream = stream,
-                                    lastRoundTripMs = roundTrip,
-                                    engineAvailable = engineAvailable,
-                                    onMeasure = {
-                                        if (hasMic(context)) latencyVm.measure()
-                                        else micPermission.launch(Manifest.permission.RECORD_AUDIO)
-                                    },
+                                ToolPage.Recette -> {
+                                    val state by recetteVm.state.collectAsStateWithLifecycle()
+                                    RecetteScreen(
+                                        state = state,
+                                        stream = stream,
+                                        roundTripMs = roundTrip,
+                                        onUpdate = recetteVm::update,
+                                        onSendReport = { recetteVm.buildReport { openUri(context, it) } },
+                                        onReportProblem = { text -> recetteVm.buildProblem(text) { openUri(context, it) } },
+                                    )
+                                }
+                                ToolPage.Reglages -> SettingsScreen(
+                                    settings,
+                                    AppInfo.versionLabel,
+                                    SettingsActions(
+                                        update = { t -> SettingsStore.update(context, t) },
+                                        // The default settings also open every folded card (a beginner may not find a fold again).
+                                        reset = {
+                                            SettingsStore.reset(context)
+                                            (foldStore as? com.pocketstudio.ui.MemoryFoldStore)?.unfoldAll()
+                                        },
+                                        openGuide = { showGuide = true },
+                                    ),
                                 )
-                            }
-                            ToolPage.Son -> {
-                                val state by studioVm.state.collectAsStateWithLifecycle()
-                                StudioScreen(
-                                    state = state,
-                                    stream = stream,
-                                    engineAvailable = engineAvailable,
-                                    onTogglePlay = studioVm::togglePlaying,
-                                    onFrequency = studioVm::setFrequency,
-                                    onVolume = studioVm::setVolume,
-                                )
+                                ToolPage.Midi -> {
+                                    val midi by midiVm.state.collectAsStateWithLifecycle()
+                                    val project by rhythmVm.project.collectAsStateWithLifecycle()
+                                    val learning by rhythmVm.learning.collectAsStateWithLifecycle()
+                                    val strips = mixerStrips(project)
+                                    MidiScreen(
+                                        midi,
+                                        MidiActions(
+                                            connect = midiVm::connect,
+                                            disconnect = midiVm::disconnect,
+                                            scanBluetooth = { bluetoothPermission.launch(arrayOf(Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT)) },
+                                            setFollowClock = midiVm::setFollowClock,
+                                            setSendClock = midiVm::setSendClock,
+                                        ),
+                                        com.pocketstudio.app.midi.LearnUi(
+                                            mappings = project.midiMap.map { it.controller to controlLabel(it.target, project, strips) },
+                                            targets = learnTargets(project, strips).map { controlLabel(it, project, strips) to it },
+                                            waiting = learning?.let { controlLabel(it, project, strips) },
+                                            learn = { rhythmVm.learn(it as? com.pocketstudio.model.AutoTarget) },
+                                            remove = rhythmVm::removeMapping,
+                                        ),
+                                    )
+                                }
+                                ToolPage.Fond -> BackgroundPage()
+                                ToolPage.Latence -> {
+                                    val state by latencyVm.state.collectAsStateWithLifecycle()
+                                    LatencyScreen(
+                                        state = state,
+                                        stream = stream,
+                                        lastRoundTripMs = roundTrip,
+                                        engineAvailable = engineAvailable,
+                                        onMeasure = {
+                                            if (hasMic(context)) latencyVm.measure()
+                                            else micPermission.launch(Manifest.permission.RECORD_AUDIO)
+                                        },
+                                    )
+                                }
+                                ToolPage.Son -> {
+                                    val state by studioVm.state.collectAsStateWithLifecycle()
+                                    StudioScreen(
+                                        state = state,
+                                        stream = stream,
+                                        engineAvailable = engineAvailable,
+                                        onTogglePlay = studioVm::togglePlaying,
+                                        onFrequency = studioVm::setFrequency,
+                                        onVolume = studioVm::setVolume,
+                                    )
+                                }
                             }
                         }
                     }
@@ -1544,7 +1600,7 @@ internal fun sceneInfo(p: Project): String {
     }
 }
 
-private val MIC_REFUSED: String get() = tr("Le micro est refusé : autorise-le dans les réglages du téléphone (Autorisations › Micro), puis réessaie.")
+private val MIC_REFUSED: String get() = tr("Le micro est refusé : autorise-le dans les réglages de l'appareil (Autorisations › Micro), puis réessaie.")
 
 private fun hasMic(context: Context) =
     ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
@@ -1576,7 +1632,8 @@ fun timelineRows(p: Project): List<com.pocketstudio.app.session.TimelineRow> =
     ) + p.instrumentTracks.map { t ->
         com.pocketstudio.app.session.TimelineRow(com.pocketstudio.model.SongPart.inst(t.id), t.name, com.pocketstudio.ui.trackColor(t.color))
     } + p.audioTracks.map { t ->
-        com.pocketstudio.app.session.TimelineRow(com.pocketstudio.model.SongPart.audio(t.id), t.name, com.pocketstudio.ui.trackColor(t.color))
+        // Where its take is really heard in each part (its scene's parts, its place in the song).
+        com.pocketstudio.app.session.TimelineRow(com.pocketstudio.model.SongPart.audio(t.id), t.name, com.pocketstudio.ui.trackColor(t.color), spans = p.audioSpans(t.id))
     }
 
 /** Settings a MIDI knob can move: the instrument's sound, live effects, tempo, then the mixer. */

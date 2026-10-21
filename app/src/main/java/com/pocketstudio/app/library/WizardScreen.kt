@@ -86,6 +86,7 @@ class WizardActions(
     val choose: (Role, SoundOption) -> Unit = { _, _ -> },
     val setMood: (StarterWizard.Mood?) -> Unit = {},
     val setPartEnabled: (StarterWizard.Part, Boolean) -> Unit = { _, _ -> },
+    val setAcidEnabled: (Boolean) -> Unit = {},
     val choosePartSound: (StarterWizard.Part, StarterWizard.PartSound) -> Unit = { _, _ -> },
     val preview: (SoundRef) -> Unit = {},
     val download: (String) -> Unit = {},
@@ -157,7 +158,7 @@ private fun WizardBody(ui: WizardUi, packs: PacksUi, playing: SoundRef?, actions
             if (confirmClose) {
                 AlertDialog(
                     onDismissRequest = { confirmClose = false },
-                    title = { Text(tr("Quitter l'assistant ?")) },
+                    title = { Text(tr("Quitter sans créer le morceau ?")) },
                     text = { Text(tr("Tes choix seront perdus. Tu pourras le relancer depuis Mes projets › « Nouveau morceau guidé ».")) },
                     confirmButton = {
                         TextButton(onClick = { confirmClose = false; actions.close() }, modifier = Modifier.testTag("wizard_close_confirm")) { Text(tr("Quitter")) }
@@ -173,6 +174,7 @@ private fun WizardBody(ui: WizardUi, packs: PacksUi, playing: SoundRef?, actions
                     StarterWizard.Step.Style -> StyleStep(ui.styleId, packs, actions)
                     StarterWizard.Step.Mood -> MoodStep(style!!, ui.mood, packs, actions)
                     is StarterWizard.Step.Drum -> LineStep(style!!, current.line, ui.rows[current.line.role], ui.plan, packs, playing, actions)
+                    StarterWizard.Step.Acid -> AcidStep(style!!, ui, actions)
                     is StarterWizard.Step.Melodic -> PartStep(style!!, ui, packs, current.part, playing, actions)
                     StarterWizard.Step.Summary -> SummaryStep(ui, style!!)
                 }
@@ -224,36 +226,56 @@ private fun StepProgress(step: Int, total: Int) {
 @Composable
 private fun StyleStep(chosen: String?, packs: PacksUi, actions: WizardActions) {
     Text(
-        tr("Choisis un style : je prépare la batterie, puis Intro, Couplet et Refrain. Tu pourras tout changer.") + " " +
-            tr("▶ pour l'écouter."),
+        tr("Choisis un style : je prépare la batterie, puis les sections du morceau. Tu pourras tout changer.") + " " +
+            tr("Touche une carte pour lire sa description, ▶ pour l'écouter."),
         style = MaterialTheme.typography.bodyMedium,
     )
-    // The best known first, then the others (still the better known first).
-    val sections = listOf(
-        Triple("Les plus connus", tr("Les plus connus"), StarterWizard.STYLES.take(StarterWizard.BEST_KNOWN)),
-        Triple("Les autres styles", tr("Les autres styles"), StarterWizard.STYLES.drop(StarterWizard.BEST_KNOWN)),
-    )
-    // Folded or not under the French title, whatever the language.
-    sections.forEach { (key, title, styles) ->
-        FoldSection("$title · ${styles.size}", foldKey = "Styles : $key") {
-            styles.forEach { s -> StyleCard(s, s.id == chosen, packs.installed.any { it.id == s.id }, actions) }
+    // One family at a time, or all of them ("Tous").
+    var family by rememberSaveable { mutableStateOf<String?>(null) }
+    // The card opened to be read (the chosen style's when coming back).
+    var open by rememberSaveable { mutableStateOf(chosen) }
+    val families = listOf<String?>(null) + StarterWizard.FAMILIES
+    // Six chips: all of them laid out (a phone scrolls them sideways), so each one can be found.
+    Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).testTag("wizard_families"), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        families.forEach { f ->
+            FamilyChip(
+                if (f == null) tr("Tous") else tr(f), if (f == null) Icons.Filled.Apps else Icons.Filled.GraphicEq, Neon.Cyan,
+                selected = f == family, onClick = { family = f }, modifier = Modifier.testTag("wizard_family_${f ?: "all"}"),
+            )
         }
+    }
+    val card: @Composable (StarterWizard.Style) -> Unit = { s ->
+        StyleCard(s, s.id == chosen, s.id == open, packs.installed.any { it.id == s.id }, { open = if (open == s.id) null else s.id }, actions)
+    }
+    if (family == null) {
+        // The best known first, then the others (still the better known first).
+        val sections = listOf(
+            Triple("Les plus connus", tr("Les plus connus"), StarterWizard.STYLES.take(StarterWizard.BEST_KNOWN)),
+            Triple("Les autres styles", tr("Les autres styles"), StarterWizard.STYLES.drop(StarterWizard.BEST_KNOWN)),
+        )
+        // Folded or not under the French title, whatever the language.
+        sections.forEach { (key, title, styles) ->
+            FoldSection("$title · ${styles.size}", foldKey = "Styles : $key") { styles.forEach { card(it) } }
+        }
+    } else {
+        StarterWizard.STYLES.filter { it.family == family }.forEach { card(it) }
     }
     InstalledPacks(packs, actions)
 }
 
 /**
- * One style, compact so that five or six fit on a phone: ▶ to hear its drums, its name and tempo,
- * two lines of description (all of it once chosen), its reference tracks on one small line.
+ * One style, compact so that five or six fit on a phone: ▶ to hear it, its name and tempo, two
+ * lines of description, its best known reference. A touch opens it ([expanded]): the whole
+ * description, every reference, and "Choisir ce style".
  */
 @Composable
-private fun StyleCard(s: StarterWizard.Style, chosen: Boolean, installed: Boolean, actions: WizardActions) {
+private fun StyleCard(s: StarterWizard.Style, chosen: Boolean, expanded: Boolean, installed: Boolean, toggle: () -> Unit, actions: WizardActions) {
     val shape = RoundedCornerShape(14.dp)
     Row(
         Modifier.fillMaxWidth().clip(shape)
             .background(Neon.Surface)
-            .border(if (chosen) 1.5.dp else 1.dp, if (chosen) Neon.Cyan else Neon.Outline, shape)
-            .clickable { actions.chooseStyle(s.id) }
+            .border(if (chosen || expanded) 1.5.dp else 1.dp, if (chosen || expanded) Neon.Cyan else Neon.Outline, shape)
+            .clickable(onClick = toggle)
             .padding(start = 2.dp, end = 12.dp, top = 6.dp, bottom = 8.dp)
             .testTag("wizard_style_${s.id}"),
         verticalAlignment = Alignment.Top,
@@ -264,7 +286,7 @@ private fun StyleCard(s: StarterWizard.Style, chosen: Boolean, installed: Boolea
             Row(verticalAlignment = Alignment.CenterVertically) {
                 // The name takes what the tempo leaves; the pack's tick stays right after it.
                 Row(Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically) {
-                    Text(tr(s.name), style = MaterialTheme.typography.titleMedium, color = if (chosen) Neon.Cyan else Neon.TextPrimary,
+                    Text(tr(s.name), style = MaterialTheme.typography.titleMedium, color = if (chosen || expanded) Neon.Cyan else Neon.TextPrimary,
                         maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f, fill = false))
                     if (installed) {
                         Icon(Icons.Filled.Check, contentDescription = tr("Pack de sons téléchargé"), tint = Neon.Acid,
@@ -276,12 +298,24 @@ private fun StyleCard(s: StarterWizard.Style, chosen: Boolean, installed: Boolea
                 Text(listOfNotNull(family?.let { tr(it) }, "${s.bpm.roundToInt()} BPM").joinToString(" · "), style = MaterialTheme.typography.bodySmall,
                     color = Neon.TextSecondary, maxLines = 1, modifier = Modifier.padding(start = 8.dp))
             }
-            Text(tr(s.description), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
-                maxLines = if (chosen) Int.MAX_VALUE else 2, overflow = TextOverflow.Ellipsis)
-            if (s.references.isNotEmpty()) {
-                Text(tr("Pour l'idée :") + " " + s.references.take(3).joinToString(" · "), style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.sp),
-                    color = Neon.TextSecondary.copy(alpha = 0.8f), fontStyle = FontStyle.Italic,
-                    maxLines = if (chosen) Int.MAX_VALUE else 1, overflow = TextOverflow.Ellipsis)
+            Text(tr(s.description), style = MaterialTheme.typography.bodySmall, color = if (expanded) Neon.TextPrimary else Neon.TextSecondary,
+                maxLines = if (expanded) Int.MAX_VALUE else 2, overflow = TextOverflow.Ellipsis)
+            if (s.references.isNotEmpty() && !expanded) {
+                Text(tr("Pour l'idée :") + " " + s.references.first(), style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.sp),
+                    color = Neon.TextSecondary.copy(alpha = 0.8f), fontStyle = FontStyle.Italic, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            }
+            if (expanded) {
+                if (s.references.isNotEmpty()) {
+                    Text(tr("Pour l'idée :"), style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary, modifier = Modifier.padding(top = 4.dp))
+                    // Every reference, the best known first (the recipe's order).
+                    s.references.forEach { r ->
+                        Text("• $r", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, fontStyle = FontStyle.Italic)
+                    }
+                }
+                // ▶ stays at the card's left: one wide button to choose, readable in every language.
+                Button(onClick = { actions.chooseStyle(s.id) }, modifier = Modifier.fillMaxWidth().padding(top = 6.dp).testTag("wizard_style_choose_${s.id}")) {
+                    Text(tr("Choisir ce style"), textAlign = TextAlign.Center)
+                }
             }
         }
     }
@@ -315,13 +349,13 @@ private fun LineStep(
     NeonCard(modifier = Modifier.testTag("wizard_line_${role.id}")) {
         SectionLabel(tr(role.title), color = color)
         Text(tr(role.explanation), style = MaterialTheme.typography.bodyLarge)
-        Text(tr("En %s : %s", tr(style.name), tr(line.tip)), style = MaterialTheme.typography.bodyMedium, fontStyle = FontStyle.Italic, color = Neon.TextSecondary)
+        Text(styleTip(style, line.tip), style = MaterialTheme.typography.bodyMedium, fontStyle = FontStyle.Italic, color = Neon.TextSecondary)
         PatternPreview(line.pattern, color)
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(tr("Utiliser cette ligne"), modifier = Modifier.weight(1f))
             Switch(checked = row?.enabled ?: false, onCheckedChange = { actions.setEnabled(role, it) }, modifier = Modifier.testTag("wizard_enabled"))
         }
-        plan.lines[role]?.let { SceneBadge(it) }
+        plan.lines[role]?.let { SceneBadge(it, plan) }
     }
     if (row == null || !row.enabled) {
         Text(tr("Cette ligne restera vide : tu pourras l'ajouter plus tard en touchant les cases de la grille."),
@@ -403,7 +437,7 @@ private fun PackOffer(style: StarterWizard.Style, packs: PacksUi, actions: Wizar
     val progress = packs.downloading[style.id]
     when {
         installed != null -> Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(tr("Pack %s : %d sons sur le téléphone.", installed.name, installed.sounds.size), style = MaterialTheme.typography.bodySmall,
+            Text(tr("Pack %s : %d sons sur l'appareil.", installed.name, installed.sounds.size), style = MaterialTheme.typography.bodySmall,
                 color = Neon.TextSecondary, modifier = Modifier.weight(1f))
             TextButton(onClick = { actions.deletePack(style.id) }, modifier = Modifier.testTag("wizard_delete_pack")) { Text(tr("Supprimer")) }
         }
@@ -424,19 +458,66 @@ private fun PackOffer(style: StarterWizard.Style, packs: PacksUi, actions: Wizar
     packs.message?.let { Text(it, color = Neon.Amber, style = MaterialTheme.typography.bodySmall) }
 }
 
-/** The line's groove, one square per step, filled as strong as the hit. */
+/** The line's groove, one square per step, filled as strong as the hit; the beats numbered, a gap between bars. */
 @Composable
 private fun PatternPreview(pattern: String, color: androidx.compose.ui.graphics.Color) {
     val hits = StarterWizard.hits(pattern)
-    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(3.dp)) {
-        pattern.indices.forEach { step ->
-            val v = hits[step]?.velocity
-            Box(
-                Modifier.weight(1f).aspectRatio(0.7f).clip(RoundedCornerShape(3.dp))
-                    .background(if (v != null) color.copy(alpha = 0.3f + 0.7f * v) else if (step % 4 == 0) Neon.SurfaceHigh else Neon.Surface)
-                    .border(1.dp, Neon.Outline, RoundedCornerShape(3.dp)),
-            )
+    val bars = pattern.indices.chunked(16)
+    Column(Modifier.fillMaxWidth().testTag("wizard_pattern"), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            bars.forEach { bar ->
+                Row(Modifier.weight(bar.size.toFloat()), horizontalArrangement = Arrangement.spacedBy(if (pattern.length > 16) 2.dp else 3.dp)) {
+                    bar.forEach { step ->
+                        val hit = hits[step]
+                        Box(
+                            Modifier.weight(1f).aspectRatio(0.7f).clip(RoundedCornerShape(3.dp))
+                                .background(if (hit != null) color.copy(alpha = 0.3f + 0.7f * hit.velocity) else if (step % 4 == 0) Neon.SurfaceHigh else Neon.Surface)
+                                .border(1.dp, if (step % 4 == 0) Neon.TextSecondary.copy(alpha = 0.5f) else Neon.Outline, RoundedCornerShape(3.dp)),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            // A roll: its number of hits in the square.
+                            if (hit != null && hit.repeats > 1) Text("${hit.repeats}", style = MaterialTheme.typography.labelSmall, color = Neon.Background)
+                        }
+                    }
+                }
+            }
         }
+        // The beats' numbers under their first square: "1 2 3 4", and again for a second bar.
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            bars.forEach { bar ->
+                Row(Modifier.weight(bar.size.toFloat())) {
+                    bar.chunked(4).forEachIndexed { beat, steps ->
+                        Text("${beat + 1}", style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, modifier = Modifier.weight(steps.size.toFloat()))
+                    }
+                }
+            }
+        }
+    }
+}
+
+/** "En House : un coup…": the style's own word on a line or a part (its first letter in lower case after the colon). */
+private fun styleTip(style: StarterWizard.Style, tip: String): String {
+    val text = tr(tip)
+    val lower = if (text.length > 1 && text[1].isLowerCase()) text.replaceFirstChar { it.lowercase() } else text
+    return tr("En %s : %s", tr(style.name), lower)
+}
+
+/** The style's 303 line: what it is, heard over the beat, kept or not. */
+@Composable
+private fun AcidStep(style: StarterWizard.Style, ui: WizardUi, actions: WizardActions) {
+    NeonCard(modifier = Modifier.testTag("wizard_acid")) {
+        SectionLabel(tr("Ligne acide (TB-303)"), color = Neon.Acid)
+        Text(tr("La ligne qui couine et qui gronde, jouée par une TB-303 : c'est la star du style. Elle est déjà écrite pour toi."),
+            style = MaterialTheme.typography.bodyLarge)
+        Text(tr("Tu pourras changer ses notes et tourner ses boutons (« Coupure » la fait crier) dans l'onglet Acide."),
+            style = MaterialTheme.typography.bodySmall, fontStyle = FontStyle.Italic, color = Neon.TextSecondary)
+        ListenButton(SoundRef.AcidDemo, { actions.preview(SoundRef.AcidDemo) }, Modifier.testTag("wizard_acid_listen"), label = tr("Avec le rythme"))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(tr("Utiliser la ligne acide"), modifier = Modifier.weight(1f))
+            Switch(checked = ui.acid, onCheckedChange = actions.setAcidEnabled, modifier = Modifier.testTag("wizard_acid_enabled"))
+        }
+        if (ui.acid) SceneBadge(ui.plan.acid, ui.plan)
+        else Text(tr("Pas de ligne acide : l'onglet Acide restera libre pour la tienne."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
     }
 }
 
@@ -465,6 +546,12 @@ private fun SummaryStep(ui: WizardUi, style: StarterWizard.Style) {
             Text(tr("Ambiance : %s · accords %s, gamme %s %s verrouillée.", tr(mood.label), StarterWizard.chordsLabel(style, mood), keyName(style.melody.root),
                 tr(StarterWizard.progressionOf(style, mood).first.label).lowercase()),
                 style = MaterialTheme.typography.bodyMedium)
+            if (style.melody.acid != null) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(tr(StarterWizard.ScenePlan.ACID_TITLE), modifier = Modifier.weight(1f))
+                    Text(if (ui.acid) "TB-303" else tr("pas utilisée"), style = MaterialTheme.typography.bodySmall, color = if (ui.acid) Neon.TextPrimary else Neon.TextSecondary)
+                }
+            }
             StarterWizard.Part.entries.forEach { part ->
                 val row = ui.parts[part]
                 val used = row?.enabled == true
@@ -483,13 +570,13 @@ private fun SummaryStep(ui: WizardUi, style: StarterWizard.Style) {
     )
 }
 
-/** The three sections the song will have (Intro, Couplet, Refrain), what each holds, and the song that chains them. */
+/** The sections the song will have (Intro, Couplet, Refrain; or Intro, Groove, Drop, Break), what each holds, and the song that chains them. */
 @Composable
 private fun ScenesCard(plan: StarterWizard.ScenePlan, style: StarterWizard.Style) {
     NeonCard(accent = Neon.Magenta, modifier = Modifier.testTag("wizard_scenes")) {
-        SectionLabel(tr("Trois sections"), color = Neon.Magenta, help = Glossary.SCENE)
-        Text(tr("Comme une vraie chanson : chaque section ajoute des sons à celle d'avant."), style = MaterialTheme.typography.bodyMedium)
-        (0 until StarterWizard.ScenePlan.COUNT).forEach { index ->
+        SectionLabel(if (plan.count == 4) tr("Quatre sections") else tr("Trois sections"), color = Neon.Magenta, help = Glossary.SCENE)
+        Text(sectionsIntro(plan), style = MaterialTheme.typography.bodyMedium)
+        (0 until plan.count).forEach { index ->
             Row(verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 SceneLetter(index)
                 Column(Modifier.weight(1f)) {
@@ -503,14 +590,19 @@ private fun ScenesCard(plan: StarterWizard.ScenePlan, style: StarterWizard.Style
     }
 }
 
+/** How the sections build up: one after the other, then (club music) a Break before the last Drop. */
+internal fun sectionsIntro(plan: StarterWizard.ScenePlan): String =
+    if (plan.hasBreak) tr("Comme un vrai morceau de club : les sons s'empilent, puis le Break fait une pause sans kick ni basse avant le dernier Drop.")
+    else tr("Comme une vraie chanson : chaque section ajoute des sons à celle d'avant.")
+
 /** "Joue dans Couplet et Refrain", after the letters of those sections. */
 @Composable
-private fun SceneBadge(scenes: Set<Int>) {
+private fun SceneBadge(scenes: Set<Int>, plan: StarterWizard.ScenePlan) {
     if (scenes.isEmpty()) return
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.testTag("wizard_scene_badge")) {
         scenes.sorted().forEach { SceneLetter(it) }
         Text(
-            if (scenes.size == StarterWizard.ScenePlan.COUNT) tr("Joue dans les trois sections") else tr("Joue dans %s", StarterWizard.ScenePlan.sections(scenes)),
+            if (scenes.size == plan.count) tr("Joue dans toutes les sections") else tr("Joue dans %s", plan.sections(scenes)),
             style = MaterialTheme.typography.bodyMedium, color = sceneColor(scenes.min()), modifier = Modifier.padding(start = 4.dp),
         )
     }
@@ -520,7 +612,8 @@ private fun SceneBadge(scenes: Set<Int>) {
 private fun sceneColor(index: Int) = when (index) {
     0 -> Neon.Cyan
     1 -> androidx.compose.ui.graphics.Color(0xFF5BB8F5)  // sky blue, apart from the accent and the "playing" green
-    else -> Neon.Magenta
+    2 -> Neon.Magenta
+    else -> Neon.Amber  // the Break
 }
 
 /** The scene's letter in a small square of its colour, as on the Morceau tab. */
@@ -571,7 +664,7 @@ private fun MoodStep(style: StarterWizard.Style, mood: StarterWizard.Mood?, pack
             RadioButton(selected = mood == null, onClick = { actions.setMood(null) })
         }
     }
-    if (style.melody.mood == mood) Text(tr("C'est l'ambiance la plus courante en %s.", tr(style.name)), style = MaterialTheme.typography.bodySmall, color = Neon.Acid)
+    if (style.melody.mood == mood) Text(tr("C'est l'ambiance conseillée pour %s.", tr(style.name)), style = MaterialTheme.typography.bodySmall, color = Neon.Acid)
 }
 
 /** One melodic part: what it does, use it or not, and its sound from the library (heard on its first bar). */
@@ -589,15 +682,18 @@ private fun PartStep(style: StarterWizard.Style, ui: WizardUi, packs: PacksUi, p
     NeonCard(modifier = Modifier.testTag("wizard_part_${part.id}")) {
         SectionLabel(tr(part.title), color = Neon.Magenta)
         Text(tr(part.explanation), style = MaterialTheme.typography.bodyLarge)
-        if (part == StarterWizard.Part.Lead) {
-            Text(tr("C'est l'arpégiateur qui fait bouger les notes : tu pourras changer sa vitesse ou l'arrêter dans Synthé."),
-                style = MaterialTheme.typography.bodySmall, fontStyle = FontStyle.Italic, color = Neon.TextSecondary)
+        partNotes(style, part).forEach { note ->
+            Text(note, style = MaterialTheme.typography.bodyMedium, fontStyle = FontStyle.Italic, color = Neon.TextSecondary)
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(tr("Créer cette piste"), modifier = Modifier.weight(1f))
             Switch(checked = row?.enabled ?: false, onCheckedChange = { actions.setPartEnabled(part, it) }, modifier = Modifier.testTag("wizard_part_enabled"))
         }
-        ui.plan.parts[part]?.let { SceneBadge(it) }
+        ui.plan.parts[part]?.let { SceneBadge(it, ui.plan) }
+        if (row != null && !row.enabled && part !in StarterWizard.defaultParts(style)) {
+            Text(tr("Ne fait pas partie du style au départ : active-la si tu veux l'essayer."),
+                style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.testTag("wizard_part_not_in_recipe"))
+        }
     }
     if (row == null || !row.enabled) return
     val look = SoundLooks.of(part.categories.first())
@@ -628,4 +724,22 @@ private fun PartStep(style: StarterWizard.Style, ui: WizardUi, packs: PacksUi, p
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
         )
     }
+}
+
+/**
+ * What the part does in [style], under its general explanation: the recipe's own word, else how
+ * the lead plays (an arpeggio, only when it is one; else a written riff); and whether it is the
+ * style's signature, heard in every section.
+ */
+internal fun partNotes(style: StarterWizard.Style, part: StarterWizard.Part): List<String> {
+    val own = style.melody.tips[part]?.takeIf { it.isNotBlank() }?.let { styleTip(style, it) }
+    val general = when {
+        own != null -> own
+        part == StarterWizard.Part.Lead && style.melody.leadPattern.isBlank() ->
+            tr("Ici, c'est l'arpégiateur qui joue les notes des accords une par une : tu pourras changer sa vitesse ou l'arrêter dans Synthé.")
+        part == StarterWizard.Part.Lead -> tr("Un petit riff écrit pour ce style : tu pourras changer ses notes dans Synthé.")
+        else -> null
+    }
+    val signature = if (style.melody.signature == part) tr("C'est le son qui fait le style : il joue dans toutes les sections.") else null
+    return listOfNotNull(general, signature)
 }

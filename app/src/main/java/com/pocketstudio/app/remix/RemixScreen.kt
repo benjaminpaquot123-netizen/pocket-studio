@@ -80,6 +80,8 @@ class RemixUi(
     val position: Long = -1,
     /** Why this device cannot separate a song (not enough memory), said before any download. */
     val memoryProblem: String? = null,
+    /** [memoryProblem] is the device's size: checking again would change nothing. */
+    val memoryNever: Boolean = false,
 )
 
 class RemixActions(
@@ -139,7 +141,7 @@ private fun RemixStart(ui: RemixUi, actions: RemixActions) {
     NeonCard(modifier = Modifier.testTag("remix_start")) {
         SectionLabel(tr("Séparer une chanson"), help = Glossary.REMIX)
         Text(
-            tr("Choisis un morceau du téléphone : l'appli le découpe en batterie, basse, voix et le reste.") + " " +
+            tr("Choisis un morceau de l'appareil : l'appli le découpe en batterie, basse, voix et le reste.") + " " +
                 tr("Compte quelques minutes ; tu peux éteindre l'écran."),
             style = MaterialTheme.typography.bodyMedium,
         )
@@ -155,8 +157,10 @@ private fun RemixStart(ui: RemixUi, actions: RemixActions) {
                 // Said before the model's download, not after it: no song can be separated here now.
                 if (ui.memoryProblem != null) {
                     Text(ui.memoryProblem, color = Neon.Amber, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.testTag("remix_memory"))
-                    OutlinedButton(onClick = actions.checkMemory, modifier = Modifier.fillMaxWidth().testTag("remix_memory_check")) {
-                        Text(tr("Vérifier à nouveau"))
+                    if (!ui.memoryNever) {
+                        OutlinedButton(onClick = actions.checkMemory, modifier = Modifier.fillMaxWidth().testTag("remix_memory_check")) {
+                            Text(tr("Vérifier à nouveau"))
+                        }
                     }
                     return@NeonCard
                 }
@@ -289,7 +293,7 @@ private fun InProject(ui: RemixUi, actions: RemixActions) {
 /** Asks before deleting a separated song; refuses while a project plays it along. */
 @Composable
 private fun DeleteStemsDialog(set: StemSet, inProject: Boolean, onDelete: () -> Unit, onDismiss: () -> Unit) {
-    val users = (listOfNotNull(tr("le projet ouvert").takeIf { inProject }) + set.usedBy.map { "« $it »" }).distinct()
+    val users = (listOfNotNull(tr("le projet ouvert").takeIf { inProject }) + set.usedBy.map { tr("« %s »", com.pocketstudio.model.DefaultNames.shown(it)) }).distinct()
     if (users.isNotEmpty()) {
         AlertDialog(
             onDismissRequest = onDismiss,

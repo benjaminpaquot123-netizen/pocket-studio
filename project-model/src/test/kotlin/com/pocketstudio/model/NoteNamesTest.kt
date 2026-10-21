@@ -15,9 +15,17 @@ class NoteNamesTest {
     @Test
     fun englishNamesPutMiddleCInOctaveFour() {
         assertEquals("C4", NoteNames.withOctave(60, english = true))
-        assertEquals("A 4", NoteNames.withOctave(69, english = true, separator = " "))
+        assertEquals("A4", NoteNames.withOctave(69, english = true))
         assertEquals("B3", NoteNames.withOctave(59, english = true))
         assertEquals("F♯2", NoteNames.withOctave(42, english = true, sharp = "♯"))
+    }
+
+    @Test
+    fun theKeyboardOctaveFollowsTheNotation() {
+        // The keyboard starting on middle C (selector value 4, MIDI 60) is in octave 3 in Do Ré Mi.
+        assertEquals(4, NoteNames.keyboardOctave(4, english = true))
+        assertEquals(3, NoteNames.keyboardOctave(4, english = false))
+        assertEquals(NoteNames.octave(48, english = false), NoteNames.keyboardOctave(3, english = false))
     }
 
     @Test

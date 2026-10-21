@@ -30,6 +30,9 @@ class RemixViewModel(app: Application) : AndroidViewModel(app) {
     private val _memoryProblem = MutableStateFlow<String?>(null)
     /** Why this device cannot separate a song now (checked before the model is offered), or null. */
     val memoryProblem: StateFlow<String?> = _memoryProblem.asStateFlow()
+    private val _memoryNever = MutableStateFlow(false)
+    /** The device is too small for good: [memoryProblem] comes without « Vérifier à nouveau ». */
+    val memoryNever: StateFlow<Boolean> = _memoryNever.asStateFlow()
 
     private val _preview = MutableStateFlow<StemPreview?>(null)
     /** The song whose stems are being listened to on this screen, if any. */
@@ -57,6 +60,7 @@ class RemixViewModel(app: Application) : AndroidViewModel(app) {
         val memory = android.app.ActivityManager.MemoryInfo()
         getApplication<Application>().getSystemService(android.app.ActivityManager::class.java)?.getMemoryInfo(memory) ?: return
         _memoryProblem.value = RemixMemory.problem(memory.totalMem, memory.availMem)
+        _memoryNever.value = RemixMemory.never(memory.totalMem)
     }
 
     fun downloadModel() = SeparationService.downloadModel(getApplication())

@@ -8,7 +8,8 @@ import org.junit.Test
 
 class SceneClearTest {
     private fun filled(): Project {
-        val style = StarterWizard.style("techno")!!
+        // A song (three sections: club music has a fourth, the Break).
+        val style = StarterWizard.style("pop")!!
         val parts = StarterWizard.Part.entries.associateWith { StarterWizard.soundsFor(it, style).first() }
         return StarterWizard.build(style, style.lines.associate { it.role to null as PadSample? }, StarterWizard.Mood.Dark, parts)
     }

@@ -35,6 +35,52 @@ object AudioDecoder {
         return Pcm(out.toArray(keep), channels, rate)
     }
 
+    /** An audio track holds a whole song's voice: up to 5 minutes (a longer file is cut). */
+    const val TRACK_MAX_SECONDS = 300
+
+    /** Past this, a file for an audio track is kept in mono: 5 minutes then weigh 58 MB, not 115. */
+    const val TRACK_STEREO_SECONDS = 120
+
+    /**
+     * A file for an audio track: its first [TRACK_MAX_SECONDS] seconds, in mono past
+     * [TRACK_STEREO_SECONDS]. Decoded through a file in [cacheDir], so only the result sits in memory.
+     */
+    fun decodeForTrack(context: Context, uri: Uri, cacheDir: File): Pcm {
+        val raw = File(cacheDir, "track-import-${System.nanoTime()}.raw")
+        try {
+            val audio = decodeToFile(context, uri, raw, TRACK_MAX_SECONDS.toDouble(), { false }, cut = true)
+            val frames = minOf(audio.frames, TRACK_MAX_SECONDS.toLong() * audio.sampleRate).toInt()
+            val mono = audio.channels == 2 && frames > TRACK_STEREO_SECONDS.toLong() * audio.sampleRate
+            return Pcm(readRaw(raw, frames, audio.channels, mono), if (mono) 1 else audio.channels, audio.sampleRate)
+        } finally {
+            raw.delete()
+        }
+    }
+
+    /** [frames] of raw interleaved floats ([channels]), folded to mono when [mono]. */
+    internal fun readRaw(file: File, frames: Int, channels: Int, mono: Boolean): FloatArray {
+        val out = FloatArray(frames * if (mono) 1 else channels)
+        val bytes = ByteArray(channels * 4 * 4096)
+        val floats = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).asFloatBuffer()
+        val frame = FloatArray(channels * 4096)
+        java.io.DataInputStream(file.inputStream().buffered(1 shl 16)).use { input ->
+            var at = 0
+            while (at < frames) {
+                val n = minOf(4096, frames - at)
+                input.readFully(bytes, 0, n * channels * 4)
+                floats.clear()
+                floats.get(frame, 0, n * channels)
+                if (mono) {
+                    for (i in 0 until n) out[at + i] = (frame[i * 2] + frame[i * 2 + 1]) * 0.5f
+                } else {
+                    System.arraycopy(frame, 0, out, at * channels, n * channels)
+                }
+                at += n
+            }
+        }
+        return out
+    }
+
     /** Where a long decode went: raw interleaved little-endian floats. */
     data class RawAudio(val file: File, val channels: Int, val sampleRate: Int, val frames: Long) {
         val seconds get() = frames.toDouble() / sampleRate
@@ -44,11 +90,11 @@ object AudioDecoder {
      * Whole songs: decodes straight into [target] (raw interleaved floats, 1 or 2 channels at the
      * file's rate) so minutes of audio never sit on the Java heap.
      */
-    fun decodeToFile(context: Context, uri: Uri, target: File, maxSeconds: Double, isCancelled: () -> Boolean): RawAudio {
+    fun decodeToFile(context: Context, uri: Uri, target: File, maxSeconds: Double, isCancelled: () -> Boolean, cut: Boolean = false): RawAudio {
         target.parentFile?.mkdirs()
         val sink = FileSink(target)
         val (channels, rate) = try {
-            sink.use { decodeInto(context, uri, it, maxSeconds, isCancelled = isCancelled) }
+            sink.use { decodeInto(context, uri, it, maxSeconds, cut = cut, isCancelled = isCancelled) }
         } catch (e: Throwable) {
             target.delete()
             throw e

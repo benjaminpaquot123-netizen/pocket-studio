@@ -1192,6 +1192,60 @@ void testOfflineExportRendersTheBeat() {
     std::filesystem::remove(path);
 }
 
+// "Fondu de fin": the song's last seconds fade to silence, the rest is untouched and nothing gets louder.
+void testOfflineExportFadesOutTheEnd() {
+    auto beat = [](ps::OfflineRenderer& r) {
+        r.post({ps::CommandType::SetTempo, 120.0f});
+        // The kick alone: no noise source, so two renders give the very same samples.
+        for (int step = 0; step < 16; step += 2) r.post({ps::CommandType::SetDrumHit, step % 4 == 0 ? 1.0f : 0.7f, 0, step});
+    };
+    const int64_t bars = kRate * 2 * 4;  // four bars at 120 BPM
+    const int64_t fade = kRate * 3;      // the short fade
+    ps::OfflineRenderer plainR(kRate), fadedR(kRate);
+    beat(plainR);
+    beat(fadedR);
+    fadedR.setFadeOut(fade);
+    const auto plain = plainR.renderToBuffer(bars, 0);
+    const auto faded = fadedR.renderToBuffer(bars, 0);
+    CHECK(plain.size() == size_t(bars) * 2 && faded.size() == plain.size());
+    if (faded.size() != plain.size() || plain.empty()) return;
+    const size_t fadeStart = size_t(bars - fade) * 2;
+    float diffBefore = 0.0f, peakPlain = 0.0f, peakFaded = 0.0f;
+    bool louder = false, finite = true;
+    for (size_t i = 0; i < plain.size(); ++i) {
+        if (!std::isfinite(faded[i])) finite = false;
+        if (i < fadeStart) diffBefore = std::max(diffBefore, std::fabs(plain[i] - faded[i]));
+        if (std::fabs(faded[i]) > std::fabs(plain[i]) + 1e-6f) louder = true;
+        peakPlain = std::max(peakPlain, std::fabs(plain[i]));
+        peakFaded = std::max(peakFaded, std::fabs(faded[i]));
+    }
+    CHECK(finite);
+    CHECK(diffBefore == 0.0f);  // before the fade: the very same samples
+    CHECK(!louder);             // the fade never adds level, so it cannot clip
+    CHECK(peakFaded <= peakPlain && peakFaded <= 0.9f);
+    // The level goes down along the fade: its last quarter is far quieter than the start, and
+    // the very end is silent.
+    auto peakIn = [&](const std::vector<float>& b, int64_t from, int64_t to) {
+        float m = 0.0f;
+        for (size_t i = size_t(from) * 2; i < size_t(to) * 2; ++i) m = std::max(m, std::fabs(b[i]));
+        return m;
+    };
+    const float fadeHead = peakIn(faded, bars - fade, bars - fade + kRate / 2);
+    const float fadeEnd = peakIn(faded, bars - fade / 4, bars);
+    CHECK(fadeHead > 0.1f);
+    CHECK(fadeEnd < fadeHead * 0.1f);
+    CHECK(peakIn(faded, bars - 64, bars) < 1e-3f);
+    // Longer than the song: the whole render fades, still no NaN and nothing louder.
+    ps::OfflineRenderer shortR(kRate);
+    beat(shortR);
+    shortR.setFadeOut(bars * 10);
+    const auto whole = shortR.renderToBuffer(bars, 0);
+    CHECK(whole.size() == plain.size());
+    for (size_t i = 0; i < whole.size() && i < plain.size(); ++i) {
+        if (!std::isfinite(whole[i]) || std::fabs(whole[i]) > std::fabs(plain[i]) + 1e-6f) { CHECK(false); break; }
+    }
+}
+
 void testSampleResamplesCleanly() {
     // 1 kHz sine at 44.1 kHz, 1 s, stereo -> 48 kHz: same duration and pitch, no NaN.
     const int inFrames = 44100;
@@ -3906,6 +3960,7 @@ int main(int argc, char** argv) {
         {"limiter_ceiling", testLimiterHoldsTheCeiling},
         {"wav_writer", testWavWriterRoundTrip},
         {"offline_export", testOfflineExportRendersTheBeat},
+        {"offline_fade_out", testOfflineExportFadesOutTheEnd},
         {"sample_resample", testSampleResamplesCleanly},
         {"pad_sample", testPadSampleReplacesTheDrum},
         {"sample_refs", testSampleReferencesAreNeverLeakedOrFreedEarly},

@@ -73,11 +73,19 @@ OfflineRenderer::Result OfflineRenderer::render(int64_t frames, int64_t tailFram
         if (done == frames) postNow({CommandType::SetTransport, 0.0f, 0});
         engine_->process(nullptr, 0, 0, block_, n, 2);
         // The tail's last half second fades out: a long reverb is not cut dead at the file's end.
+        // A requested fade-out takes the end of the file down to silence along a squared curve
+        // (closer to how loudness is heard than a straight line). Gains never exceed 1: no clipping.
         const int64_t fade = std::min<int64_t>(tailFrames, sampleRate_ / 2);
-        for (int i = 0; i < n && fade > 0; ++i) {
+        const int64_t fadeOut = std::min<int64_t>(fadeOut_, total);
+        for (int i = 0; i < n && (fade > 0 || fadeOut > 0); ++i) {
             const int64_t left = total - (done + i);
-            if (left >= fade) continue;
-            const float g = static_cast<float>(left) / static_cast<float>(fade);
+            if (left >= fade && left >= fadeOut) continue;
+            float g = 1.0f;
+            if (left < fade) g = static_cast<float>(left) / static_cast<float>(fade);
+            if (left < fadeOut) {
+                const float x = static_cast<float>(left) / static_cast<float>(fadeOut);
+                g = std::min(g, x * x);
+            }
             block_[2 * i] *= g;
             block_[2 * i + 1] *= g;
         }

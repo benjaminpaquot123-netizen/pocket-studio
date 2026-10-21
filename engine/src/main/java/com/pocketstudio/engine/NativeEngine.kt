@@ -448,6 +448,7 @@ object NativeEngine {
     private external fun exportPost(handle: Long, type: Int, value: Float, a: Int, b: Int)
     private external fun exportScheduleFrom(handle: Long, frame: Long)
     external fun exportRender(handle: Long, path: String, frames: Long, tail: Long): Int
+    external fun exportSetFadeOut(handle: Long, frames: Long)
     external fun exportProgress(handle: Long): Float
     external fun exportRenderFloat(handle: Long, frames: Long, tail: Long): FloatArray
     external fun exportCancel(handle: Long)

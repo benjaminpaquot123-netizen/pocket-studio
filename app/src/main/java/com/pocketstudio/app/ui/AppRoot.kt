@@ -772,7 +772,7 @@ fun AppRoot() {
                                 importZip = { pickZip.launch(arrayOf("application/zip", "application/x-zip-compressed", "application/octet-stream")) },
                             ),
                             padSound = PadSoundUi(sampleInfo, sampleTask, slicer),
-                            header = { com.pocketstudio.app.onboarding.ProjectNextSteps(project, rhythmVm.projectId) { tab = it } },
+                            header = { com.pocketstudio.app.onboarding.ProjectNextSteps(project, rhythmVm.projectId, share = shareSong) { tab = it } },
                         )
                     }
                     AppTab.Acide -> {

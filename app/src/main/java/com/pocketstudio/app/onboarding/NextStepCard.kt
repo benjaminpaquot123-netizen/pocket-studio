@@ -78,13 +78,13 @@ class NextStepPrefs(context: Context, private val projectId: String) {
  * shown until every step is done or the user closes it. [go] opens a tab.
  */
 @Composable
-fun ProjectNextSteps(project: Project, projectId: String, go: (AppTab) -> Unit) {
+fun ProjectNextSteps(project: Project, projectId: String, share: () -> Unit = {}, go: (AppTab) -> Unit) {
     val context = LocalContext.current
     val prefs = remember(projectId) { NextStepPrefs(context, projectId) }
     if (prefs.closed) return
     val steps = nextSteps(project, prefs.marks)
     if (steps.all { it.done }) return
-    NextStepCard(steps, go = go, mark = prefs::mark, close = prefs::close)
+    NextStepCard(steps, go = go, mark = prefs::mark, close = prefs::close, share = share)
 }
 
 /**
@@ -99,6 +99,7 @@ fun NextStepCard(
     mark: (StepGoal) -> Unit = {},
     close: () -> Unit = {},
     here: AppTab = AppTab.Rythme,
+    share: (() -> Unit)? = null,
 ) {
     val next = steps.next() ?: return
     var chosenGoal by rememberSaveable { mutableStateOf<StepGoal?>(null) }
@@ -122,10 +123,13 @@ fun NextStepCard(
             modifier = Modifier.testTag("next_step_title"))
         Text(shown.hint, style = MaterialTheme.typography.bodyMedium)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            if (shown.tab != here) {
+            if (shown.goal == StepGoal.Share && share != null) {
+                // Sharing is one tap from here: export the song and open the share sheet.
+                Button(onClick = { share(); mark(StepGoal.Share) }, modifier = Modifier.heightIn(min = 48.dp).testTag("next_step_go")) { Text("Partager mon morceau") }
+            } else if (shown.tab != here) {
                 Button(onClick = { go(shown.tab) }, modifier = Modifier.heightIn(min = 48.dp).testTag("next_step_go")) { Text(shown.button) }
             }
-            if (shown.manual) {
+            if (shown.manual && !(shown.goal == StepGoal.Share && share != null)) {
                 OutlinedButton(onClick = { mark(shown.goal) }, modifier = Modifier.heightIn(min = 48.dp).testTag("next_step_done")) { Text("C'est fait") }
             }
         }

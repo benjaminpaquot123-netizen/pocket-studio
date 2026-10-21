@@ -84,26 +84,7 @@ void Engine::applyCommand(const Command& command) {
                 countInStep_ = 0;
                 playPosition_.store(-1.0, std::memory_order_relaxed);
             } else {
-                swapAt_ = -1;
-                staging_ = false;  // a lost "staging off" must never trap later edits
-                sequencer_.stop();
-                rollCount_ = 0;
-                stems_.stop();
-                acid_.stop();
-                audio_.stop();
-                if (record_ && !recordOnStart_) finishRecording();
-                sampler_.releaseLoops();
-                for (auto& t : tracks_) {
-                    t.notes.stop(t);
-                    // Belt and braces: a note-off dropped by a full queue must not leave a note hanging.
-                    t.allNotesOff();
-                }
-                currentStep_.store(-1, std::memory_order_relaxed);
-                absoluteStep_.store(-1, std::memory_order_relaxed);
-                songStep_.store(-1, std::memory_order_relaxed);
-                playPosition_.store(-1.0, std::memory_order_relaxed);
-                lastLocal_ = -1;
-                countInStep_ = 0;
+                stopTransport();
             }
             break;
         case CommandType::SetTempo:
@@ -221,6 +202,7 @@ void Engine::applyCommand(const Command& command) {
         case CommandType::ArmSceneSwap:
             swapAt_ = command.a < 0 ? -1 : command.a;
             songRestart_ = command.b == 1;  // the waiting scene starts the song over (it loops)
+            stopAtSwap_ = command.b == 2;   // the song ends there: the transport stops instead
             staging_ = false;  // arming ends a staging burst even if its "off" was dropped
             break;
         case CommandType::SetAcidRoot:
@@ -401,10 +383,44 @@ void Engine::applyCommand(const Command& command) {
     }
 }
 
+// Stop: everything the transport started goes quiet (the stop command, or a song that ends).
+void Engine::stopTransport() {
+    swapAt_ = -1;
+    stopAtSwap_ = false;
+    staging_ = false;  // a lost "staging off" must never trap later edits
+    sequencer_.stop();
+    rollCount_ = 0;
+    stems_.stop();
+    acid_.stop();
+    audio_.stop();
+    if (record_ && !recordOnStart_) finishRecording();
+    sampler_.releaseLoops();
+    for (auto& t : tracks_) {
+        t.notes.stop(t);
+        // Belt and braces: a note-off dropped by a full queue must not leave a note hanging.
+        t.allNotesOff();
+    }
+    currentStep_.store(-1, std::memory_order_relaxed);
+    absoluteStep_.store(-1, std::memory_order_relaxed);
+    songStep_.store(-1, std::memory_order_relaxed);
+    playPosition_.store(-1.0, std::memory_order_relaxed);
+    lastLocal_ = -1;
+    countInStep_ = 0;
+}
+
 void Engine::onStep(int offset, int step) {
     const int bar = sequencer_.stepsPerBar();
     const int beatStep = ((step % bar) + bar) % bar;
     const bool onBeat = beatStep % Sequencer::kStepsPerBeat == 0;
+    // The song ends on this bar line: the transport stops before anything of this step sounds.
+    if (step >= 0 && swapAt_ >= 0 && stopAtSwap_) {
+        const int local = step - sceneStart_;
+        if (local > 0 && local % bar == 0 && (swapAt_ == 0 || local >= swapAt_)) {
+            stopTransport();
+            sceneSwaps_.fetch_add(1, std::memory_order_relaxed);
+            return;
+        }
+    }
     // Clicks during the count-in always; afterwards only with the metronome on.
     if (onBeat && (step < 0 || metronomeOn_)) {
         metronome_.trigger(beatStep == 0, offset);
@@ -431,7 +447,7 @@ void Engine::onStep(int offset, int step) {
         const int local = step - sceneStart_;
         // Always on a bar line: a swap armed late waits for the next bar instead of cutting one.
         const bool onBar = local > 0 && local % bar == 0;
-        if (onBar && (swapAt_ == 0 || local >= swapAt_)) swapScene(step);
+        if (onBar && !stopAtSwap_ && (swapAt_ == 0 || local >= swapAt_)) swapScene(step);
     }
     // Patterns count from the start of their scene; the remix stems follow the transport.
     const int local = step - sceneStart_;

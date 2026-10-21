@@ -71,7 +71,8 @@ enum class CommandType : uint8_t {
                           // waiting scene instead of the playing one; 0: back to the playing one
     ArmSceneSwap,         // a > 0: the waiting scene replaces the playing one after `a` steps of the
                           // current scene; a = 0: at the next bar; a < 0: cancel. b = 1: it starts
-                          // the song over (song automation counts from there)
+                          // the song over (song automation counts from there); b = 2: the song
+                          // ends there: the transport stops on that bar line (nothing is swapped)
     SetPerformance,       // a: PerformanceFx::Param, value 0..1 (live XY pad and hold buttons)
     SetSynthEngine,       // a: 0 = subtractive synth, 1 = Plaits (a General MIDI instrument still wins)
     SetPlaitsParam,       // a: PlaitsSynth::Param, value 0..1
@@ -306,6 +307,8 @@ private:
     int sceneStart_ = 0;   // absolute step where the playing scene began
     int songStart_ = 0;    // absolute step where the song (last) began
     bool songRestart_ = false;
+    bool stopAtSwap_ = false;  // the armed "swap" ends the song: the transport stops instead
+    void stopTransport();
     std::atomic<int> songStep_{-1};
     std::atomic<uint32_t> sceneSwaps_{0};
     void swapScene(int step);

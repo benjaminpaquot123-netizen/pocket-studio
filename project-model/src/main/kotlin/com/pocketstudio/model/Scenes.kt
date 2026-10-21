@@ -257,5 +257,56 @@ fun followSongIndex(song: List<SongPart>, index: Int, scene: Int): Int {
     return (song.indices).map { (start + it) % song.size }.firstOrNull { song[it].scene == scene } ?: -1
 }
 
+/** A song part playing scene [scene] once is added at [at] (0 = first, the song's size = last). */
+fun Project.insertSongPart(at: Int, scene: Int): Project {
+    if (song.size >= SongPart.MAX_PARTS || scene !in allScenes.indices) return this
+    val i = at.coerceIn(0, song.size)
+    return copy(song = song.take(i) + SongPart(scene, 1) + song.drop(i))
+}
+
+/** Song part [index] played again right after itself (same scene, repeats and silenced tracks). */
+fun Project.duplicateSongPart(index: Int): Project {
+    if (song.size >= SongPart.MAX_PARTS || index !in song.indices) return this
+    return copy(song = song.take(index + 1) + song[index] + song.drop(index + 1))
+}
+
+/** Song part [from] moved to place [to] (the others close up around it). */
+fun Project.moveSongPart(from: Int, to: Int): Project {
+    if (from !in song.indices || to !in song.indices || from == to) return this
+    val list = song.toMutableList()
+    list.add(to, list.removeAt(from))
+    return copy(song = list)
+}
+
+/** Song part [index] taken out of the song. */
+fun Project.removeSongPart(index: Int): Project =
+    if (index !in song.indices) this else copy(song = song.filterIndexed { i, _ -> i != index })
+
+/** Where song part [index] is once part [from] moved to [to]. */
+fun songIndexAfterMove(index: Int, from: Int, to: Int): Int = when {
+    index == from -> to
+    from < index && index <= to -> index - 1
+    to <= index && index < from -> index + 1
+    else -> index
+}
+
+/** Where song part [index] is once a part was inserted at [at] (a part inserted at its place pushes it on). */
+fun songIndexAfterInsert(index: Int, at: Int): Int = if (at <= index) index + 1 else index
+
+/**
+ * Song playback: the part that follows part [playing] when [queued] (a part chosen to come next,
+ * or -1 for none) is taken into account, or -1 when the song ends there ([loops] false) — the
+ * song then wraps round to its first part when it [loops]. [size]: parts in the song.
+ */
+fun songNextIndex(playing: Int, queued: Int, size: Int, loops: Boolean): Int {
+    if (size <= 0) return -1
+    val next = if (queued >= 0) queued else playing + 1
+    return when {
+        next < size -> next
+        loops -> 0
+        else -> -1
+    }
+}
+
 /** Bars the whole song lasts (each part's scene times its repeats). */
 val Project.songBars: Int get() = (song.sumOf { sceneSteps(it.scene) * it.repeats } + stepsPerBar - 1) / stepsPerBar

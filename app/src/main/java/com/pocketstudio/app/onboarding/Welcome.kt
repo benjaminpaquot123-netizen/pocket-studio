@@ -1,5 +1,6 @@
 package com.pocketstudio.app.onboarding
 
+import com.pocketstudio.model.i18n.tr
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -81,17 +82,17 @@ fun FirstLaunch(show: Boolean, actions: WelcomeActions, playDemo: () -> Unit) {
     } else if (demoReady) {
         AlertDialog(
             onDismissRequest = { demoReady = false },
-            title = { Text("Ta démo est prête") },
+            title = { Text(tr("Ta démo est prête")) },
             text = {
-                Text("Écoute-la en entier, puis va voir dans l'onglet Morceau comment elle est construite : tu peux tout changer.")
+                Text(tr("Écoute-la en entier, puis va voir dans l'onglet Morceau comment elle est construite : tu peux tout changer."))
             },
             confirmButton = {
                 Button(onClick = { demoReady = false; playDemo() }, modifier = Modifier.testTag("demo_play")) {
                     Icon(Icons.Filled.PlayArrow, contentDescription = null)
-                    Text(" Écouter")
+                    Text(" " + tr("Écouter"))
                 }
             },
-            dismissButton = { TextButton(onClick = { demoReady = false }) { Text("Plus tard") } },
+            dismissButton = { TextButton(onClick = { demoReady = false }) { Text(tr("Plus tard")) } },
             modifier = Modifier.testTag("demo_ready"),
         )
     }
@@ -100,34 +101,39 @@ fun FirstLaunch(show: Boolean, actions: WelcomeActions, playDemo: () -> Unit) {
 /** The choice screen itself: the guided song first and biggest, then the demo, then the empty project. */
 @Composable
 fun WelcomeScreen(actions: WelcomeActions) {
-    Column(
-        Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 20.dp, vertical = 28.dp).testTag("welcome"),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-    ) {
-        Text("Pocket Studio", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold, color = Neon.Cyan)
-        Text("Bienvenue ! Fais ta musique sur ton téléphone. Par quoi on commence ?", style = MaterialTheme.typography.bodyLarge)
-        Choice(
-            Icons.Filled.AutoAwesome, "Créer mon premier morceau (guidé)",
-            "Choisis un style, je t'aide pas à pas : intro, couplet, refrain.",
-            Neon.Cyan, primary = true, onClick = actions.guided, tag = "welcome_guided",
-        )
-        Choice(
-            Icons.Filled.Headphones, "Écouter une démo",
-            "Un morceau déjà prêt, pour découvrir ce qu'on peut faire.",
-            Color(0xFF5BB8F5), onClick = actions.demo, tag = "welcome_demo",  // sky blue: green means "playing"
-        )
-        Choice(
-            Icons.Filled.Add, "Partir de zéro",
-            "Un projet vide : à toi de jouer.",
-            Neon.TextSecondary, onClick = actions.empty, tag = "welcome_empty",
-        )
-        Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-            TextButton(onClick = actions.later, modifier = Modifier.heightIn(min = 48.dp).testTag("welcome_later")) {
-                Text("Plus tard : voir le rythme de départ", color = Neon.TextSecondary)
+    // Steps to read: centred at a comfortable width on a tablet.
+    com.pocketstudio.ui.ReadingWidth(maxWidth = 600.dp) {
+        Column(
+            Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 20.dp, vertical = 28.dp).testTag("welcome"),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            Text("Pocket Studio", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold, color = Neon.Cyan)
+            // The language first: French is ticked, the other ones are one tap away.
+            com.pocketstudio.app.settings.LanguagePicker()
+            Text(tr("Bienvenue ! Fais ta musique sur ton téléphone. Par quoi on commence ?"), style = MaterialTheme.typography.bodyLarge)
+            Choice(
+                Icons.Filled.AutoAwesome, tr("Créer mon premier morceau (guidé)"),
+                tr("Choisis un style, je t'aide pas à pas : intro, couplet, refrain."),
+                Neon.Cyan, primary = true, onClick = actions.guided, tag = "welcome_guided",
+            )
+            Choice(
+                Icons.Filled.Headphones, tr("Écouter une démo"),
+                tr("Un morceau déjà prêt, pour découvrir ce qu'on peut faire."),
+                Color(0xFF5BB8F5), onClick = actions.demo, tag = "welcome_demo",  // sky blue: green means "playing"
+            )
+            Choice(
+                Icons.Filled.Add, tr("Partir de zéro"),
+                tr("Un projet vide : à toi de jouer."),
+                Neon.TextSecondary, onClick = actions.empty, tag = "welcome_empty",
+            )
+            Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                TextButton(onClick = actions.later, modifier = Modifier.heightIn(min = 48.dp).testTag("welcome_later")) {
+                    Text(tr("Plus tard : voir le rythme de départ"), color = Neon.TextSecondary)
+                }
             }
+            Text(tr("Le guide des premiers pas reste dans Outils › Réglages."), style = MaterialTheme.typography.bodySmall,
+                color = Neon.TextSecondary, modifier = Modifier.align(Alignment.CenterHorizontally))
         }
-        Text("Le guide des premiers pas reste dans Outils › Réglages.", style = MaterialTheme.typography.bodySmall,
-            color = Neon.TextSecondary, modifier = Modifier.align(Alignment.CenterHorizontally))
     }
 }
 

@@ -1,10 +1,19 @@
 package com.pocketstudio.app.rhythm
 
+import com.pocketstudio.model.i18n.tr
+
 import com.pocketstudio.model.DrumPattern
 import com.pocketstudio.model.PadSample
 import kotlin.math.abs
 
-enum class SliceMode(val label: String) { Attacks("Attaques"), Grid("Grille") }
+enum class SliceMode {
+    Attacks, Grid;
+
+    val label: String get() = when (this) {
+        Attacks -> tr("Attaques")
+        Grid -> tr("Grille")
+    }
+}
 
 /** The slicing panel: cut positions (fractions of the whole sound, the first is always 0). */
 data class SlicerUi(

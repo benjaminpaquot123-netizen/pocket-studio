@@ -1,5 +1,6 @@
 package com.pocketstudio.model
 
+import com.pocketstudio.model.i18n.tr
 import kotlinx.serialization.Serializable
 import kotlin.random.Random
 
@@ -125,7 +126,7 @@ data class Favorites(
         const val MAX = 48
 
         /** "Mon son 3": the first number not taken in [names]. */
-        fun nextName(names: List<String>, prefix: String = "Mon son"): String =
+        fun nextName(names: List<String>, prefix: String = tr("Mon son")): String =
             generateSequence(1) { it + 1 }.map { "$prefix $it" }.first { it !in names }
     }
 }

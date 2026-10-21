@@ -39,6 +39,7 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import com.pocketstudio.ui.Neon
 import com.pocketstudio.ui.NeonCard
 import com.pocketstudio.ui.SectionLabel
+import com.pocketstudio.model.i18n.tr
 
 data class BackgroundState(val notifications: Boolean, val batteryFree: Boolean, val honor: Boolean)
 
@@ -75,25 +76,27 @@ fun BackgroundScreen(
     onAppSettings: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(
-        modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp).testTag("background"),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
-    ) {
-        Text(
-            "Pour que la musique continue écran éteint ou dans une autre appli :",
-            style = MaterialTheme.typography.bodyMedium,
-        )
-        Step(1, "Notification de lecture", "Elle montre que le studio joue, avec un bouton Arrêter.", state.notifications, "Autoriser", onNotifications)
-        Step(2, "Batterie sans restriction", "Android ne coupe plus le son pour économiser la batterie.", state.batteryFree, "Autoriser", onBattery)
-        if (state.honor) {
-            NeonCard(accent = Neon.Amber) {
-                SectionLabel("3. Réglage Honor", color = Neon.Amber)
-                Text(
-                    "Paramètres › Batterie › Lancement d'applications › Pocket Studio : " +
-                        "désactive « Gérer automatiquement », puis laisse les trois interrupteurs allumés.",
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-                OutlinedButton(onClick = onAppSettings, modifier = Modifier.fillMaxWidth()) { Text("Ouvrir les réglages de l'appli") }
+    // A page to read: centred at a comfortable width on a tablet.
+    com.pocketstudio.ui.ReadingWidth {
+        Column(
+            modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp).testTag("background"),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            Text(
+                tr("Pour que la musique continue écran éteint ou dans une autre appli :"),
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            Step(1, tr("Notification de lecture"), tr("Elle montre que le studio joue, avec un bouton Arrêter."), state.notifications, tr("Autoriser"), onNotifications)
+            Step(2, tr("Batterie sans restriction"), tr("Android ne coupe plus le son pour économiser la batterie."), state.batteryFree, tr("Autoriser"), onBattery)
+            if (state.honor) {
+                NeonCard(accent = Neon.Amber) {
+                    SectionLabel(tr("3. Réglage Honor"), color = Neon.Amber)
+                    Text(
+                        tr("Paramètres › Batterie › Lancement d'applications › Pocket Studio : désactive « Gérer automatiquement », puis laisse les trois interrupteurs allumés."),
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                    OutlinedButton(onClick = onAppSettings, modifier = Modifier.fillMaxWidth()) { Text(tr("Ouvrir les réglages de l'appli")) }
+                }
             }
         }
     }
@@ -104,7 +107,8 @@ private fun Step(number: Int, title: String, text: String, done: Boolean, action
     NeonCard(accent = if (done) Neon.Acid else Neon.Cyan) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             SectionLabel("$number. $title", Modifier.weight(1f), color = if (done) Neon.Acid else Neon.Cyan)
-            Text(if (done) "✓ fait" else "à faire", color = if (done) Neon.Acid else Neon.TextSecondary)
+            Text(if (done) tr("✓ fait") else tr("à faire"), color
+ = if (done) Neon.Acid else Neon.TextSecondary)
         }
         Text(text, style = MaterialTheme.typography.bodyMedium)
         if (!done) Button(onClick = onClick, modifier = Modifier.fillMaxWidth()) { Text(action) }

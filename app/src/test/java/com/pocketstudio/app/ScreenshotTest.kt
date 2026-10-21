@@ -50,7 +50,7 @@ import java.io.File
 @RunWith(RobolectricTestRunner::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
 @Config(qualifiers = "w400dp-h890dp-xxhdpi")
-class ScreenshotTest {
+open class ScreenshotTest {
     @get:Rule
     val compose = createComposeRule()
 
@@ -60,13 +60,18 @@ class ScreenshotTest {
         running = true, callbacks = 1000, peak = 0.42f,
     )
 
+    /** Folder prefix of the images ("" for the phone; the tablet subclass shoots a chosen few again). */
+    protected open val prefix: String = ""
+    protected open fun wanted(name: String): Boolean = true
+
     private fun shoot(name: String, palette: Palette = Palettes.Studio, content: @Composable () -> Unit) {
+        org.junit.Assume.assumeTrue(wanted(name))
         compose.setContent {
             PocketStudioTheme(palette) {
                 Box(Modifier.fillMaxSize().background(Neon.Background)) { content() }
             }
         }
-        compose.onRoot().captureRoboImage("screenshots/$name.png")
+        compose.onRoot().captureRoboImage("screenshots/$prefix$name.png")
     }
 
     @Test
@@ -689,7 +694,7 @@ class ScreenshotTest {
 
     @Test
     @Config(qualifiers = "w400dp-h1300dp-xxhdpi")
-    fun settings() = shoot("settings") {
+    open fun settings() = shoot("settings") {
         com.pocketstudio.app.settings.SettingsScreen(
             com.pocketstudio.app.settings.AppSettings(uiScale = 1.15f, bufferBursts = 4, guideSeen = true),
             "0.5.70 (preview)",
@@ -759,7 +764,7 @@ class ScreenshotTest {
 
     @Test
     @Config(qualifiers = "w400dp-h1700dp-xxhdpi")
-    fun session() = shoot("session") {
+    open fun session() = shoot("session") {
         // The song first (part 1 plays, part 2 comes next), then the named scenes, then the live tools.
         val drums = com.pocketstudio.model.DrumPattern().toggle(0, 0).toggle(2, 4)
         val a = com.pocketstudio.model.Scene("A", drums, label = "Intro")
@@ -832,7 +837,7 @@ class ScreenshotTest {
 
     @Test
     @Config(qualifiers = "w400dp-h2200dp-xxhdpi")
-    fun timeline() = shoot("timeline") {
+    open fun timeline() = shoot("timeline") {
         val drums = com.pocketstudio.model.DrumPattern().toggle(0, 0).toggle(2, 4)
         val a = com.pocketstudio.model.Scene("A", drums)
         val b = com.pocketstudio.model.Scene("B", drums.copy(steps = 32))

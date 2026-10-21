@@ -278,6 +278,18 @@ class StarterWizardTest {
     }
 
     @Test
+    fun sectionNamesAreSavedInFrenchWhateverTheLanguage() {
+        val style = StarterWizard.style("house")!!
+        com.pocketstudio.model.i18n.I18n.lang = com.pocketstudio.model.i18n.Lang.EN
+        try {
+            val p = StarterWizard.build(style, emptyMap())
+            assertEquals(listOf("Intro", "Couplet", "Refrain"), p.allScenes.map { it.label })
+        } finally {
+            com.pocketstudio.model.i18n.I18n.lang = com.pocketstudio.model.i18n.Lang.FR
+        }
+    }
+
+    @Test
     fun everyChoiceFollowsThePlanAndSurvivesSavingAndSwitching() {
         for (style in StarterWizard.STYLES) for (mood in listOf(null) + StarterWizard.Mood.entries.take(2)) {
             val lines = style.lines.associate { it.role to null as PadSample? }

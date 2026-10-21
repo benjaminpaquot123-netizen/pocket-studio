@@ -1,5 +1,6 @@
 package com.pocketstudio.app.library
 
+import com.pocketstudio.model.i18n.tr
 import android.content.Context
 import com.pocketstudio.app.download.VerifiedDownload
 import com.pocketstudio.app.download.VerifiedFile
@@ -71,18 +72,18 @@ object PackStore {
             try {
                 unpack(zip, part)
                 val manifest = SoundPacks.parseManifest(File(part, MANIFEST).readText())
-                if (manifest.id != entry.id) throw IOException("pack inattendu")
+                if (manifest.id != entry.id) throw IOException(tr("pack inattendu"))
                 // Only the sounds the manifest lists are kept; it must list at least one that is there.
                 val kept = manifest.copy(sounds = manifest.sounds.filter { File(part, it.file).isFile })
-                if (kept.sounds.isEmpty()) throw IOException("pack vide")
+                if (kept.sounds.isEmpty()) throw IOException(tr("pack vide"))
                 part.listFiles()?.filter { f -> f.name != MANIFEST && kept.sounds.none { it.file == f.name } }?.forEach { it.delete() }
                 // The pack already there stays until the new one is in place.
                 val final = File(root, entry.id)
                 val old = File(root, "${entry.id}.old").apply { deleteRecursively() }
-                if (final.exists() && !final.renameTo(old)) throw IOException("enregistrement impossible")
+                if (final.exists() && !final.renameTo(old)) throw IOException(tr("enregistrement impossible"))
                 if (!part.renameTo(final)) {
                     old.renameTo(final)
-                    throw IOException("enregistrement impossible")
+                    throw IOException(tr("enregistrement impossible"))
                 }
                 old.deleteRecursively()
             } finally {
@@ -107,7 +108,7 @@ object PackStore {
                         val n = z.read(buffer)
                         if (n < 0) break
                         total += n
-                        if (total > PackEntry.MAX_BYTES * 2) throw IOException("pack trop gros")
+                        if (total > PackEntry.MAX_BYTES * 2) throw IOException(tr("pack trop gros"))
                         out.write(buffer, 0, n)
                     }
                 }

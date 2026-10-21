@@ -1,5 +1,6 @@
 package com.pocketstudio.app.latency
 
+import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.app.help.Glossary
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -37,83 +38,86 @@ fun LatencyScreen(
     onMeasure: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(
-        modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp).testTag("latency"),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        Text("Latence", style = MaterialTheme.typography.headlineMedium, color = Neon.TextPrimary)
-        Text("Le temps entre ton doigt et tes oreilles. Objectif : moins de 20 ms.", color = Neon.TextSecondary)
+    // A page to read: centred at a comfortable width on a tablet.
+    com.pocketstudio.ui.ReadingWidth {
+        Column(
+            modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp).testTag("latency"),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Text(tr("Latence"), style = MaterialTheme.typography.headlineMedium, color = Neon.TextPrimary)
+            Text(tr("Le temps entre ton doigt et tes oreilles. Objectif : moins de 20 ms."), color = Neon.TextSecondary)
 
-        NeonCard(accent = Neon.Cyan) {
-            SectionLabel("Aller-retour mesuré", help = Glossary.LATENCY)
-            // A failed run shows no number: the previous success is mentioned below instead.
-            val shown = when (state) {
-                is LatencyUiState.Measured -> state.roundTripMs
-                is LatencyUiState.Failed -> null
-                else -> lastRoundTripMs
-            }
-            val color = when {
-                shown == null -> Neon.TextSecondary
-                shown < TARGET_MS -> Neon.Acid
-                shown < 30 -> Neon.Amber
-                else -> Neon.Red
-            }
-            Text(
-                shown?.let { IssueReport.formatMs(it) } ?: "– ms",
-                fontSize = 48.sp,
-                fontWeight = FontWeight.Bold,
-                color = color,
-            )
-            when (state) {
-                is LatencyUiState.Running -> {
-                    Text("Essai ${state.run}… chut !", color = Neon.Cyan)
-                    LinearProgressIndicator(
-                        progress = { (state.run - 1f) / state.total },
-                        modifier = Modifier.fillMaxWidth(),
-                    )
+            NeonCard(accent = Neon.Cyan) {
+                SectionLabel(tr("Aller-retour mesuré"), help = Glossary.LATENCY)
+                // A failed run shows no number: the previous success is mentioned below instead.
+                val shown = when (state) {
+                    is LatencyUiState.Measured -> state.roundTripMs
+                    is LatencyUiState.Failed -> null
+                    else -> lastRoundTripMs
                 }
-                is LatencyUiState.Measured -> Text(
-                    "Mesures : " + state.runs.joinToString(" · ") { IssueReport.formatMs(it) },
-                    color = Neon.TextSecondary,
-                    style = MaterialTheme.typography.bodySmall,
+                val color = when {
+                    shown == null -> Neon.TextSecondary
+                    shown < TARGET_MS -> Neon.Acid
+                    shown < 30 -> Neon.Amber
+                    else -> Neon.Red
+                }
+                Text(
+                    shown?.let { IssueReport.formatMs(it, onScreen = true) } ?: "– ms",
+                    fontSize = 48.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = color,
                 )
-                is LatencyUiState.Failed -> {
-                    Text(state.message, color = Neon.Red)
-                    lastRoundTripMs?.let {
-                        Text("Dernière mesure réussie : ${IssueReport.formatMs(it)}", color = Neon.TextSecondary)
+                when (state) {
+                    is LatencyUiState.Running -> {
+                        Text(tr("Essai %d… chut !", state.run), color = Neon.Cyan)
+                        LinearProgressIndicator(
+                            progress = { (state.run - 1f) / state.total },
+                            modifier = Modifier.fillMaxWidth(),
+                        )
                     }
-                    Text(
-                        "Détails techniques (joints au rapport) : ${state.diagnostic}",
+                    is LatencyUiState.Measured -> Text(
+                        tr("Mesures : %s", state.runs.joinToString(" · ") { IssueReport.formatMs(it, onScreen = true) }),
+                        color = Neon.TextSecondary,
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                    is LatencyUiState.Failed -> {
+                        Text(state.message, color = Neon.Red)
+                        lastRoundTripMs?.let {
+                            Text(tr("Dernière mesure réussie : %s", IssueReport.formatMs(it, onScreen = true)), color = Neon.TextSecondary)
+                        }
+                        Text(
+                            tr("Détails techniques (joints au rapport) : %s", state.diagnostic),
+                            color = Neon.TextSecondary,
+                            style = MaterialTheme.typography.bodySmall,
+                        )
+                    }
+                    LatencyUiState.Idle -> Text(
+                        tr("Le téléphone émet un petit « pschht » et l'écoute avec son micro."),
                         color = Neon.TextSecondary,
                         style = MaterialTheme.typography.bodySmall,
                     )
                 }
-                LatencyUiState.Idle -> Text(
-                    "Le téléphone émet un petit « pschht » et l'écoute avec son micro.",
-                    color = Neon.TextSecondary,
-                    style = MaterialTheme.typography.bodySmall,
-                )
+                Button(
+                    onClick = onMeasure,
+                    enabled = engineAvailable && state !is LatencyUiState.Running,
+                    modifier = Modifier.fillMaxWidth().height(52.dp).testTag("measure"),
+                ) {
+                    Text(if (shown == null) tr("Mesurer la latence") else tr("Mesurer à nouveau"))
+                }
             }
-            Button(
-                onClick = onMeasure,
-                enabled = engineAvailable && state !is LatencyUiState.Running,
-                modifier = Modifier.fillMaxWidth().height(52.dp).testTag("measure"),
-            ) {
-                Text(if (shown == null) "Mesurer la latence" else "Mesurer à nouveau")
+
+            NeonCard {
+                SectionLabel(tr("Sortie seule (estimation du système)"))
+                StatRow(tr("Latence de sortie"), IssueReport.formatMs(stream.outputLatencyMs, onScreen = true))
+                StatRow(tr("Mode audio"), IssueReport.describeStream(stream, onScreen = true))
             }
-        }
 
-        NeonCard {
-            SectionLabel("Sortie seule (estimation du système)")
-            StatRow("Latence de sortie", IssueReport.formatMs(stream.outputLatencyMs))
-            StatRow("Mode audio", IssueReport.describeStream(stream))
-        }
-
-        NeonCard(accent = Neon.Amber) {
-            SectionLabel("Pour une mesure fiable", color = Neon.Amber)
-            Text("• Retire casque et écouteurs Bluetooth.", style = MaterialTheme.typography.bodyMedium)
-            Text("• Volume média au maximum, pièce calme.", style = MaterialTheme.typography.bodyMedium)
-            Text("• Pour jouer en direct, préfère un casque filaire USB-C : le Bluetooth ajoute 100 à 200 ms.", style = MaterialTheme.typography.bodyMedium)
+            NeonCard(accent = Neon.Amber) {
+                SectionLabel(tr("Pour une mesure fiable"), color = Neon.Amber)
+                Text(tr("• Retire casque et écouteurs Bluetooth."), style = MaterialTheme.typography.bodyMedium)
+                Text(tr("• Volume média au maximum, pièce calme."), style = MaterialTheme.typography.bodyMedium)
+                Text(tr("• Pour jouer en direct, préfère un casque filaire USB-C : le Bluetooth ajoute 100 à 200 ms."), style = MaterialTheme.typography.bodyMedium)
+            }
         }
     }
 }

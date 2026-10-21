@@ -7,6 +7,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalDensity
@@ -46,6 +48,10 @@ class MainActivity : ComponentActivity() {
             ) {
                 PocketStudioTheme(palette) {
                     AppRoot()
+                    // A new language rebuilds the screen (texts are read when drawn); recreating the
+                    // activity keeps the open tab and the other saved screen state.
+                    val startLanguage = remember { settings.language }
+                    LaunchedEffect(settings.language) { if (settings.language != startLanguage) recreate() }
                 }
             }
         }

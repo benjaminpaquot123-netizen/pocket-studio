@@ -1,5 +1,6 @@
 package com.pocketstudio.model
 
+import com.pocketstudio.model.i18n.tr
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
@@ -55,7 +56,7 @@ data class PackEntry(
     val isSafe: Boolean get() = PackManifest.safeName(id) && PackManifest.safeName(file) && file.endsWith(".zip") &&
         sha256.matches(Regex("[0-9a-f]{64}")) && sizeBytes in 1..MAX_BYTES
 
-    val sizeLabel: String get() = "${((sizeBytes + 500_000) / 1_000_000).coerceAtLeast(1)} Mo"
+    val sizeLabel: String get() = tr("%d Mo", ((sizeBytes + 500_000) / 1_000_000).coerceAtLeast(1))
 
     companion object {
         const val MAX_BYTES = 200_000_000L

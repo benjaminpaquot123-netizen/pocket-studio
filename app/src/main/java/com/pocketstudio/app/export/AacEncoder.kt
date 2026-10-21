@@ -9,6 +9,7 @@ import java.io.IOException
 import java.io.RandomAccessFile
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
+import com.pocketstudio.model.i18n.tr
 
 /**
  * Turns one of our 24-bit stereo WAV exports into an M4A (AAC-LC) with Android's own encoder:
@@ -85,7 +86,7 @@ object AacEncoder {
             muxer.release()
             if (stopped.isFailure && out.exists()) {
                 out.delete()
-                throw IOException("fichier M4A incomplet")
+                throw IOException(tr("fichier M4A incomplet"))
             }
         }
     }
@@ -143,7 +144,7 @@ class WavPcm private constructor(private val file: RandomAccessFile, val channel
             try {
                 val header = ByteArray(12)
                 f.readFully(header)
-                if (String(header, 0, 4) != "RIFF" || String(header, 8, 4) != "WAVE") throw IOException("pas un WAV")
+                if (String(header, 0, 4) != "RIFF" || String(header, 8, 4) != "WAVE") throw IOException(tr("pas un WAV"))
                 var channels = 0
                 var rate = 0
                 var bits = 0
@@ -165,7 +166,7 @@ class WavPcm private constructor(private val file: RandomAccessFile, val channel
                         float = code == 3
                         if (size % 2 == 1L) f.skipBytes(1)
                     } else if (id == "data") {
-                        if (channels !in 1..2 || rate <= 0 || bits !in listOf(16, 24, 32)) throw IOException("WAV non pris en charge")
+                        if (channels !in 1..2 || rate <= 0 || bits !in listOf(16, 24, 32)) throw IOException(tr("WAV non pris en charge"))
                         return WavPcm(f, channels, rate, bits, float, size)
                     } else {
                         f.skipBytes((size + (size and 1)).toInt())

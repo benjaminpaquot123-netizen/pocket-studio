@@ -1,5 +1,6 @@
 package com.pocketstudio.app.onboarding
 
+import com.pocketstudio.model.i18n.tr
 import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -108,11 +109,11 @@ fun NextStepCard(
     NeonCard(accent = Neon.Cyan, modifier = Modifier.testTag("next_steps")) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             SectionLabel(
-                "Prochaine étape · ${steps.count { it.done }}/${steps.size}",
+                tr("Prochaine étape · %d/%d", steps.count { it.done }, steps.size),
                 Modifier.weight(1f), foldKey = "next_steps",
             )
             IconButton(onClick = close, modifier = Modifier.size(40.dp).testTag("next_steps_close")) {
-                Icon(Icons.Filled.Close, contentDescription = "Fermer les étapes", tint = Neon.TextSecondary, modifier = Modifier.size(18.dp))
+                Icon(Icons.Filled.Close, contentDescription = tr("Fermer les étapes"), tint = Neon.TextSecondary, modifier = Modifier.size(18.dp))
             }
         }
         // The seven steps in a row: a tick when done, the one shown lit.
@@ -125,12 +126,12 @@ fun NextStepCard(
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             if (shown.goal == StepGoal.Share && share != null) {
                 // Sharing is one tap from here: export the song and open the share sheet.
-                Button(onClick = { share(); mark(StepGoal.Share) }, modifier = Modifier.heightIn(min = 48.dp).testTag("next_step_go")) { Text("Partager mon morceau") }
+                Button(onClick = { share(); mark(StepGoal.Share) }, modifier = Modifier.heightIn(min = 48.dp).testTag("next_step_go")) { Text(tr("Partager mon morceau")) }
             } else if (shown.tab != here) {
                 Button(onClick = { go(shown.tab) }, modifier = Modifier.heightIn(min = 48.dp).testTag("next_step_go")) { Text(shown.button) }
             }
             if (shown.manual && !(shown.goal == StepGoal.Share && share != null)) {
-                OutlinedButton(onClick = { mark(shown.goal) }, modifier = Modifier.heightIn(min = 48.dp).testTag("next_step_done")) { Text("C'est fait") }
+                OutlinedButton(onClick = { mark(shown.goal) }, modifier = Modifier.heightIn(min = 48.dp).testTag("next_step_done")) { Text(tr("C'est fait")) }
             }
         }
     }
@@ -147,7 +148,7 @@ private fun StepDot(step: NextStep, shown: Boolean, modifier: Modifier, onClick:
     Column(
         modifier.clip(RoundedCornerShape(8.dp)).clickable(role = Role.Button, onClick = onClick)
             .heightIn(min = 48.dp).padding(vertical = 4.dp)
-            .semantics { contentDescription = "${step.number}. ${step.goal.title}${if (step.done) ", fait" else ""}" }
+            .semantics { contentDescription = if (step.done) tr("%d. %s, fait", step.number, step.goal.title) else "${step.number}. ${step.goal.title}" }
             .testTag("next_step_${step.goal.name}"),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(2.dp),

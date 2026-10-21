@@ -1,5 +1,6 @@
 package com.pocketstudio.app.report
 
+import com.pocketstudio.model.i18n.tr
 import android.net.Uri
 import com.pocketstudio.app.AppInfo
 import com.pocketstudio.engine.StreamInfo
@@ -41,18 +42,24 @@ object IssueReport {
         c.latencyDiagnostic?.let { appendLine("- Dernière mesure de latence : $it") }
     }
 
-    fun describeStream(s: StreamInfo): String =
-        if (s.sampleRate == 0) "flux fermé"
+    /** The audio stream in a few words: in French for the report, in the interface's language [onScreen]. */
+    fun describeStream(s: StreamInfo, onScreen: Boolean = false): String =
+        if (s.sampleRate == 0) (if (onScreen) tr("flux fermé") else "flux fermé")
         else listOf(
             if (s.aaudio) "AAudio" else "OpenSL ES",
-            if (s.exclusive) "exclusif" else "partagé",
+            if (s.exclusive) (if (onScreen) tr("exclusif") else "exclusif") else (if (onScreen) tr("partagé") else "partagé"),
             if (s.mmap) "MMAP" else "legacy",
             "${s.sampleRate} Hz",
             "burst ${s.framesPerBurst}",
             "buffer ${s.bufferSize}/${s.bufferCapacity}",
         ).joinToString(", ")
 
-    fun formatMs(ms: Double): String = if (ms < 0) "inconnue" else String.format(Locale.FRANCE, "%.1f ms", ms)
+    /** "12,3 ms" for the report; [onScreen], in the interface's language. */
+    fun formatMs(ms: Double, onScreen: Boolean = false): String = when {
+        ms < 0 -> if (onScreen) tr("inconnue") else "inconnue"
+        onScreen -> tr("%.1f ms", ms)
+        else -> String.format(Locale.FRANCE, "%.1f ms", ms)
+    }
 
     fun recetteIssue(milestone: String, lines: List<String>, c: Context): Uri {
         val title = "Recette ${c.versionLabel} : $milestone"

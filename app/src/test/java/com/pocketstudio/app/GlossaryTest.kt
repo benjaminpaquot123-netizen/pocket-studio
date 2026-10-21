@@ -10,9 +10,10 @@ class GlossaryTest {
     fun everyTermIsListedOnceAndShort() {
         val all = Glossary.ALL
         assertEquals(all.size, all.map { it.term }.toSet().size)
-        // Every Help declared in Glossary appears in the lexicon.
-        val declared = Glossary::class.java.declaredFields.filter { it.type == com.pocketstudio.ui.Help::class.java }
-            .map { f -> f.isAccessible = true; f.get(Glossary) }
+        // Every Help declared in Glossary appears in the lexicon (getters: translated when read).
+        val declared = Glossary::class.java.declaredMethods
+            .filter { it.returnType == com.pocketstudio.ui.Help::class.java && it.parameterCount == 0 }
+            .map { m -> m.isAccessible = true; m.invoke(Glossary) }
         assertTrue(declared.isNotEmpty())
         assertTrue(declared.all { it in all })
         // One or two sentences: readable in the bubble without scrolling.

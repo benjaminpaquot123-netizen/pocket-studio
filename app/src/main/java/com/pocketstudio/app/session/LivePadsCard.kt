@@ -2,6 +2,7 @@
 
 package com.pocketstudio.app.session
 
+import com.pocketstudio.model.i18n.tr
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import com.pocketstudio.ui.fadingHorizontalScroll
@@ -24,7 +25,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
+import com.pocketstudio.ui.aspectRatioAtMost
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -90,10 +91,11 @@ class LivePadsActions(
 )
 
 private fun beatsLabel(beats: Int) = when {
-    beats == 1 -> "1 temps"
-    beats < 4 -> "$beats temps"
-    beats % 4 == 0 -> "${beats / 4} mes."
-    else -> "$beats temps"
+    beats == 1 -> tr("1 temps")
+    beats < 4 -> tr("%d temps", beats)
+    beats == 4 -> tr("1 mes.")
+    beats % 4 == 0 -> tr("%d mes.", beats / 4)
+    else -> tr("%d temps", beats)
 }
 
 /** Live pads: a tap switches a sound on (in time), the next tap switches it off. */
@@ -101,19 +103,19 @@ private fun beatsLabel(beats: Int) = when {
 fun LivePadsCard(ui: LivePadsUi, actions: LivePadsActions) {
     NeonCard(accent = Neon.Cyan, modifier = Modifier.testTag("live_pads")) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            SectionLabel("Pads live", Modifier.weight(1f), help = Glossary.LIVE_PADS)
+            SectionLabel(tr("Pads live"), Modifier.weight(1f), help = Glossary.LIVE_PADS)
             TextButton(onClick = actions.stopAll, modifier = Modifier.testTag("live_stop_all")) {
                 Icon(Icons.Filled.Stop, contentDescription = null)
-                Text(" Tout couper")
+                Text(" " + tr("Tout couper"))
             }
         }
         Text(
-            if (ui.editing == null) "Touche un pad pour lancer son son, retouche-le pour l'arrêter. Tout reste calé sur le temps."
-            else "Choisis le son du pad ${ui.editing + 1} et sa longueur, puis « Jouer ».",
+            if (ui.editing == null) tr("Touche un pad pour lancer son son, retouche-le pour l'arrêter. Tout reste calé sur le temps.")
+            else tr("Choisis le son du pad %d et sa longueur, puis « Jouer ».", ui.editing + 1),
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
         )
         FlowRow(itemVerticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            Text("Pads :", style = MaterialTheme.typography.bodyMedium)
+            Text(tr("Pads :"), style = MaterialTheme.typography.bodyMedium)
             LivePads.SIZES.forEach { size ->
                 FilterChip(
                     selected = ui.pads.size == size,
@@ -164,16 +166,16 @@ private fun LivePad(i: Int, clip: LiveClip?, state: Int, selected: Boolean, wait
         else -> BorderStroke(1.dp, Color.White.copy(alpha = 0.16f))
     }
     Box(
-        modifier.aspectRatio(1f)
+        modifier.aspectRatioAtMost(1f, 96.dp)
             .then(if (state == 2) Modifier.shadow(14.dp, shape, ambientColor = Neon.Acid, spotColor = Neon.Acid) else Modifier)
             .clip(shape).background(fill).border(border, shape).clickable(onClick = onClick).testTag("live_pad_$i"),
         contentAlignment = Alignment.Center,
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(4.dp)) {
             val ink = if (state == 2) Color(0xFF14210F) else if (clip == null) Neon.TextSecondary else Neon.TextPrimary
-            Text(clip?.name ?: "+", color = ink, fontSize = if (clip == null) 22.sp else 12.sp, fontWeight = FontWeight.Bold,
+            Text(clip?.name?.let { tr(it) } ?: "+", color = ink, fontSize = if (clip == null) 22.sp else 12.sp, fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center, maxLines = 2, lineHeight = 13.sp)
-            if (clip != null) Text(if (clip.oneShot) "une fois" else beatsLabel(clip.beats), color = ink.copy(alpha = 0.75f), fontSize = 10.sp, maxLines = 1)
+            if (clip != null) Text(if (clip.oneShot) tr("une fois") else beatsLabel(clip.beats), color = ink.copy(alpha = 0.75f), fontSize = 10.sp, maxLines = 1)
         }
     }
 }
@@ -181,40 +183,40 @@ private fun LivePad(i: Int, clip: LiveClip?, state: Int, selected: Boolean, wait
 @Composable
 private fun PadEditor(pad: Int, clip: LiveClip?, drumSounds: List<Pair<Int, String>>, actions: LivePadsActions) {
     Column(verticalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.testTag("live_editor")) {
-        Text("Pad ${pad + 1} : ${clip?.name ?: "vide"}", style = MaterialTheme.typography.titleSmall)
+        Text(tr("Pad %1\$d : %2\$s", pad + 1, clip?.name?.let { tr(it) } ?: tr("vide")), style = MaterialTheme.typography.titleSmall)
         Button(onClick = { actions.library(pad) }, modifier = Modifier.fillMaxWidth().testTag("live_library")) {
             Icon(Icons.Filled.LibraryMusic, contentDescription = null)
-            Text("  Bibliothèque de sons")
+            Text("  " + tr("Bibliothèque de sons"))
         }
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             OutlinedButton(onClick = actions.generate, modifier = Modifier.weight(1f).testTag("live_generate")) {
                 Icon(Icons.Filled.AutoAwesome, contentDescription = null)
-                Text(" Générer")
+                Text(" " + tr("Générer"))
             }
             OutlinedButton(onClick = { actions.import(pad) }, modifier = Modifier.weight(1f).testTag("live_import")) {
                 Icon(Icons.Filled.FileOpen, contentDescription = null)
-                Text(" Du téléphone")
+                Text(" " + tr("Du téléphone"))
             }
         }
-        Text("« Générer » fabrique une boucle à partir d'une phrase (Audio › Générer), puis la pose sur un pad live libre.",
+        Text(tr("« Générer » fabrique une boucle à partir d'une phrase (Audio › Générer), puis la pose sur un pad live libre."),
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         if (drumSounds.isNotEmpty()) {
-            Text("Ou le son d'un pad de batterie :", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+            Text(tr("Ou le son d'un pad de batterie :"), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
             Row(Modifier.fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 drumSounds.forEach { (drum, name) ->
-                    OutlinedButton(onClick = { actions.fromDrumPad(pad, drum) }) { Text("${drum + 1}. ${name.take(14)}", maxLines = 1) }
+                    OutlinedButton(onClick = { actions.fromDrumPad(pad, drum) }) { Text("${drum + 1}. ${tr(name).take(14)}", maxLines = 1) }
                 }
             }
         }
         if (clip != null) {
             FlowRow(itemVerticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                listOf(false to "En boucle", true to "Une fois").forEach { (once, label) ->
+                listOf(false to tr("En boucle"), true to tr("Une fois")).forEach { (once, label) ->
                     FilterChip(selected = clip.oneShot == once, onClick = { actions.setOneShot(pad, once) }, label = { Text(label) })
                 }
                 HelpDot(Glossary.LOOP)
             }
             if (!clip.oneShot) {
-                Text("Repart tous les :", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                Text(tr("Repart tous les :"), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
                 Row(Modifier.fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     LivePads.BEATS.forEach { b ->
                         FilterChip(selected = clip.beats == b, onClick = { actions.setBeats(pad, b) }, label = { Text(beatsLabel(b)) },
@@ -222,17 +224,17 @@ private fun PadEditor(pad: Int, clip: LiveClip?, drumSounds: List<Pair<Int, Stri
                     }
                 }
             }
-            Text("Volume", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+            Text(tr("Volume"), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
             ProSlider(value = clip.gain / 2f, onValueChange = { actions.setGain(pad, it * 2f) })
         }
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             if (clip != null) {
                 OutlinedButton(onClick = { actions.clear(pad) }, modifier = Modifier.weight(1f)) {
                     Icon(Icons.Filled.Delete, contentDescription = null)
-                    Text(" Vider")
+                    Text(" " + tr("Vider"))
                 }
             }
-            OutlinedButton(onClick = { actions.edit(null) }, modifier = Modifier.weight(1f).testTag("live_done")) { Text("Jouer") }
+            OutlinedButton(onClick = { actions.edit(null) }, modifier = Modifier.weight(1f).testTag("live_done")) { Text(tr("Jouer")) }
         }
     }
 }

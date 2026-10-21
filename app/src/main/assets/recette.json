@@ -1,46 +1,41 @@
 {
-  "id": "phase21-morceau",
-  "milestone": "Phase 21 : du brouillon au morceau",
+  "id": "phase22-langues-tablette",
+  "milestone": "Phase 22 : langues et tablette",
   "items": [
     {
-      "id": "welcome",
-      "title": "Accueil",
-      "hint": "Réinstalle l'appli (ou efface ses données) : le premier écran propose « Créer mon premier morceau (guidé) », « Écouter une démo », « Partir de zéro »."
+      "id": "lang_first",
+      "title": "Langue au démarrage",
+      "hint": "Efface les données de l'appli (ou réinstalle) : le premier écran montre Français (coché), English, Nederlands en haut."
     },
     {
-      "id": "wizard_song",
-      "title": "L'assistant fait un vrai morceau",
-      "hint": "Mes projets › « Nouveau morceau guidé », choisis un style, crée. Joue le morceau : l'intro est légère, le couplet ajoute la basse, le refrain met tout. Il finit tout seul."
+      "id": "lang_switch",
+      "title": "Changer de langue",
+      "hint": "Outils › Réglages › Langue : choisis English. Tout l'écran passe en anglais, les noms de notes deviennent C D E. Reviens en Français."
     },
     {
-      "id": "scene_chip",
-      "title": "La scène en haut",
-      "hint": "Dans Rythme, la puce en haut dit « A · Intro ▾ ». Touche-la et choisis « B · Couplet » : la grille change de scène."
+      "id": "lang_nl",
+      "title": "Néerlandais",
+      "hint": "Passe en Nederlands et fais un tour : Rythme, Morceau, Mixeur. Note un texte coupé ou resté en français."
     },
     {
-      "id": "rename",
-      "title": "Nommer une scène",
-      "hint": "Morceau : appui long sur une scène (ou « Renommer »), choisis « Pont » ou écris un nom. Il apparaît partout."
+      "id": "tab_portrait",
+      "title": "Tablette debout",
+      "hint": "Sur la Galaxy Tab tenue droite : Rythme montre les pads à gauche et les pas à droite ; Morceau, le morceau à gauche et les scènes à droite."
     },
     {
-      "id": "song_edit",
-      "title": "Ranger le morceau",
-      "hint": "Morceau : déplace une partie vers le haut, insère-en une, duplique-la. Touche une partie : la lecture part de là."
+      "id": "tab_landscape",
+      "title": "Tablette couchée",
+      "hint": "Tourne la tablette : la barre d'onglets passe sur le côté, les deux colonnes restent, rien n'est géant ni coupé."
     },
     {
-      "id": "song_end",
-      "title": "Le morceau s'arrête",
-      "hint": "▶ en haut joue tout le morceau puis s'arrête à la fin (réglable : « recommencer »)."
+      "id": "tab_synth",
+      "title": "Synthé sur tablette",
+      "hint": "Synthé, tablette debout : clavier de trois octaves ; Notes : le piano roll prend toute la largeur."
     },
     {
-      "id": "share",
-      "title": "Partager mon morceau",
-      "hint": "Mixeur (ou Mes projets) : « Partager mon morceau ». Donne-lui un nom, l'appli exporte et ouvre le partage. Écoute la fin : elle s'efface en douceur."
-    },
-    {
-      "id": "next_steps",
-      "title": "Prochaine étape",
-      "hint": "Dans Rythme, la carte « Prochaine étape » montre où tu en es et t'emmène au bon onglet."
+      "id": "tab_mixer",
+      "title": "Mixeur sur tablette",
+      "hint": "Mixeur : les voies à gauche, la sortie et les effets à droite ; « Partager mon morceau » en haut."
     }
   ]
 }

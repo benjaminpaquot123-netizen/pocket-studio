@@ -1,5 +1,6 @@
 package com.pocketstudio.app.library
 
+import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.app.report.forUser
 import android.app.Application
 import android.net.Uri
@@ -114,8 +115,8 @@ private const val PACK_PREFIX = "pack:"
  * the other packs that have that kind of sound.
  */
 fun soundCategories(role: Role, styleId: String?, installed: List<PackManifest>): List<SoundCategory> {
-    val label = SoundPacks.KIND_LABELS[role.id] ?: role.title
-    val kit = SoundCategory(KIT_CATEGORY, "Sons intégrés", role.builtIn.map { SoundOption(SoundRef.Kit(it), DrumKitInfo.names[it]) })
+    val label = tr(SoundPacks.KIND_LABELS[role.id] ?: role.title)
+    val kit = SoundCategory(KIT_CATEGORY, tr("Sons intégrés"), role.builtIn.map { SoundOption(SoundRef.Kit(it), DrumKitInfo.names[it]) })
     val packs = installed.mapNotNull { m ->
         val sounds = m.ofKind(role.id)
         if (sounds.isEmpty()) null
@@ -131,7 +132,7 @@ fun soundCategories(role: Role, styleId: String?, installed: List<PackManifest>)
 fun libraryCategories(kind: String, installed: List<PackManifest>): List<SoundCategory> {
     val role = Role.entries.firstOrNull { it.id == kind }
     if (role != null) return soundCategories(role, null, installed)
-    val label = SoundPacks.KIND_LABELS[kind] ?: kind
+    val label = tr(SoundPacks.KIND_LABELS[kind] ?: kind)
     return installed.mapNotNull { m ->
         val sounds = m.ofKind(kind)
         if (sounds.isEmpty()) null
@@ -179,7 +180,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
             val index = withContext(Dispatchers.IO) {
                 runCatching { PackStore.fetchIndex(app) }.fold(
                     { it?.let { i -> IndexState.Ready(i) } ?: IndexState.Unavailable },
-                    { IndexState.Failed("La liste des packs n'a pas pu être chargée (réseau ?).") },
+                    { IndexState.Failed(tr("La liste des packs n'a pas pu être chargée (réseau ?).")) },
                 )
             }
             _packs.update { it.copy(index = index) }
@@ -207,7 +208,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                     message = when (error) {
                         null -> null
                         is VerifiedDownload.CancelledException -> null
-                        else -> "Le pack « ${entry.name} » n'a pas pu être téléchargé : ${error.forUser()}.".also { m -> AppLog.add(m) }
+                        else -> tr("Le pack « %s » n'a pas pu être téléchargé : %s.", entry.name, error.forUser()).also { m -> AppLog.add(m) }
                     },
                 )
             }
@@ -294,7 +295,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             val pcm = load(ref)
             if (pcm == null) {
-                _packs.update { it.copy(message = "Ce son n'a pas pu être lu.") }
+                _packs.update { it.copy(message = tr("Ce son n'a pas pu être lu.")) }
                 return@launch
             }
             then(pcm)
@@ -609,20 +610,20 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                         sounds[line.role] = null
                         continue
                     }
-                    val pcm = load(ref) ?: throw IllegalStateException("son illisible : ${option.name}")
+                    val pcm = load(ref) ?: throw IllegalStateException(tr("son illisible : %s", option.name))
                     val file = "${UUID.randomUUID().toString().take(12)}.wav"
                     files[file] = pcm
                     sounds[line.role] = PadSample(file, option.name.substringBefore(" · ").take(40))
                 }
                 if (sounds.isEmpty() && (w.mood == null || w.parts.values.none { it.enabled })) {
-                    _wizard.update { it.copy(creating = false, error = "Garde au moins une ligne pour commencer.") }
+                    _wizard.update { it.copy(creating = false, error = tr("Garde au moins une ligne pour commencer.")) }
                     return@launch
                 }
                 val chosen = if (w.mood == null) emptyMap() else w.parts.filterValues { it.enabled }.mapValues { it.value.sound }
                 // Pack sounds played across the keys: copied into the project, set on their own note.
                 val parts = chosen.mapValues { (_, sound) ->
                     if (sound.packFile == null) return@mapValues sound
-                    val (pcm, root) = packPartSound(sound) ?: throw IllegalStateException("son illisible : ${sound.name}")
+                    val (pcm, root) = packPartSound(sound) ?: throw IllegalStateException(tr("son illisible : %s", tr(sound.name)))
                     val file = "${UUID.randomUUID().toString().take(12)}.wav"
                     files[file] = pcm
                     sound.copy(sampled = sound.sampled!!.copy(file = file, root = root ?: 60f))
@@ -631,7 +632,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                 // The choices stay until the project is written (the caller closes the assistant then).
                 then(StarterWizard.build(style, sounds, w.mood, parts), files, songGuide(style.name, w.plan, inKey = w.mood != null, song = songSummary(style, w.plan)))
             } catch (e: Exception) {
-                _wizard.update { it.copy(creating = false, error = "Le morceau n'a pas pu être préparé (${e.message}).") }
+                _wizard.update { it.copy(creating = false, error = tr("Le morceau n'a pas pu être préparé (%s).", e.message)) }
             }
         }
     }

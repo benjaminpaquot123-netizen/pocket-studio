@@ -1,5 +1,6 @@
 package com.pocketstudio.app.download
 
+import com.pocketstudio.model.i18n.tr
 import java.io.File
 import java.io.IOException
 import java.net.HttpURLConnection
@@ -8,11 +9,11 @@ import java.security.MessageDigest
 
 /** A big file hosted on a release, checked by size and SHA-256 before anything parses it. */
 data class VerifiedFile(val url: String, val fileName: String, val sha256: String, val sizeBytes: Long) {
-    val sizeLabel: String get() = "${(sizeBytes + 500_000) / 1_000_000} Mo"
+    val sizeLabel: String get() = tr("%d Mo", (sizeBytes + 500_000) / 1_000_000)
 }
 
 object VerifiedDownload {
-    class CancelledException : IOException("annulé")
+    class CancelledException : IOException(tr("annulé"))
 
     /** Blocking (background). [onProgress] 0..1. Throws on network error, cancel or a wrong file. */
     fun fetch(spec: VerifiedFile, target: File, onProgress: (Float) -> Unit, isCancelled: () -> Boolean = { false }): File {
@@ -42,8 +43,8 @@ object VerifiedDownload {
                     out.fd.sync()
                 }
             }
-            if (hex(digest.digest()) != spec.sha256) throw IOException("fichier abîmé (empreinte différente)")
-            if (!part.renameTo(target)) throw IOException("enregistrement impossible")
+            if (hex(digest.digest()) != spec.sha256) throw IOException(tr("fichier abîmé (empreinte différente)"))
+            if (!part.renameTo(target)) throw IOException(tr("enregistrement impossible"))
             return target
         } finally {
             connection.disconnect()

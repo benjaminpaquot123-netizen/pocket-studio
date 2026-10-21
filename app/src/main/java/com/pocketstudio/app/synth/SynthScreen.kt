@@ -2,6 +2,8 @@
 
 package com.pocketstudio.app.synth
 
+import com.pocketstudio.model.i18n.tr
+
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import com.pocketstudio.ui.HelpDot
@@ -92,27 +94,27 @@ data class SynthActions(
     val chordOff: (Int) -> Unit = {},
 )
 
-private val EASY = listOf(
-    SynthPatch.CUTOFF to "Coupure", SynthPatch.RESONANCE to "Résonance", SynthPatch.FILTER_ENV to "Enveloppe du filtre",
-    SynthPatch.A_ATTACK to "Attaque", SynthPatch.A_RELEASE to "Relâchement", SynthPatch.OSC2_DETUNE to "Épaisseur (désaccord)",
-    SynthPatch.SUB to "Sous-basse", SynthPatch.UNISON to "Unisson (supersaw)", SynthPatch.UNISON_DETUNE to "Écart de l'unisson",
-    SynthPatch.LEVEL to "Volume",
+private val EASY: List<Pair<Int, String>> get() = listOf(
+    SynthPatch.CUTOFF to tr("Coupure"), SynthPatch.RESONANCE to tr("Résonance"), SynthPatch.FILTER_ENV to tr("Enveloppe du filtre"),
+    SynthPatch.A_ATTACK to tr("Attaque"), SynthPatch.A_RELEASE to tr("Relâchement"), SynthPatch.OSC2_DETUNE to tr("Épaisseur (désaccord)"),
+    SynthPatch.SUB to tr("Sous-basse"), SynthPatch.UNISON to tr("Unisson (supersaw)"), SynthPatch.UNISON_DETUNE to tr("Écart de l'unisson"),
+    SynthPatch.LEVEL to tr("Volume"),
 )
 
 /** Every synth parameter a knob can move, with its name (MIDI learn). */
 internal val SYNTH_LABELS: List<Pair<Int, String>> get() = EASY + ADVANCED
 
-private val ADVANCED = listOf(
-    SynthPatch.OSC_MIX to "Mélange oscillateurs", SynthPatch.NOISE to "Bruit",
-    SynthPatch.F_ATTACK to "Filtre : attaque", SynthPatch.F_DECAY to "Filtre : déclin",
-    SynthPatch.F_SUSTAIN to "Filtre : maintien", SynthPatch.F_RELEASE to "Filtre : relâchement",
-    SynthPatch.A_DECAY to "Volume : déclin", SynthPatch.A_SUSTAIN to "Volume : maintien",
-    SynthPatch.LFO1_RATE to "Vibrato : vitesse", SynthPatch.VIBRATO to "Vibrato : profondeur",
-    SynthPatch.LFO2_RATE to "Balayage : vitesse", SynthPatch.SWEEP to "Balayage du filtre",
+private val ADVANCED: List<Pair<Int, String>> get() = listOf(
+    SynthPatch.OSC_MIX to tr("Mélange oscillateurs"), SynthPatch.NOISE to tr("Bruit"),
+    SynthPatch.F_ATTACK to tr("Filtre : attaque"), SynthPatch.F_DECAY to tr("Filtre : déclin"),
+    SynthPatch.F_SUSTAIN to tr("Filtre : maintien"), SynthPatch.F_RELEASE to tr("Filtre : relâchement"),
+    SynthPatch.A_DECAY to tr("Volume : déclin"), SynthPatch.A_SUSTAIN to tr("Volume : maintien"),
+    SynthPatch.LFO1_RATE to tr("Vibrato : vitesse"), SynthPatch.VIBRATO to tr("Vibrato : profondeur"),
+    SynthPatch.LFO2_RATE to tr("Balayage : vitesse"), SynthPatch.SWEEP to tr("Balayage du filtre"),
 )
 
-private val WAVES = listOf(0f to "Scie", 0.5f to "Carré", 1f to "Triangle")
-private val FILTERS = listOf(0f to "Ladder", 0.3f to "Passe-bas", 0.6f to "Passe-haut", 0.9f to "Passe-bande")
+private val WAVES: List<Pair<Float, String>> get() = listOf(0f to tr("Scie"), 0.5f to tr("Carré"), 1f to tr("Triangle"))
+private val FILTERS: List<Pair<Float, String>> get() = listOf(0f to "Ladder", 0.3f to tr("Passe-bas"), 0.6f to tr("Passe-haut"), 0.9f to tr("Passe-bande"))
 
 /** The piano roll's data, when the screen shows it (null: keyboard only, e.g. in tests). */
 class NotesUi(
@@ -162,7 +164,9 @@ fun SynthScreen(
     BoxWithConstraints(modifier.fillMaxSize().testTag("synth")) {
         val keyboardHeight = (maxHeight * 0.45f).coerceIn(110.dp, 220.dp)
         val landscape = maxWidth > maxHeight
-        val rollHeight = if (landscape) (maxHeight - 140.dp).coerceAtLeast(160.dp) else 380.dp
+        val rollHeight = if (landscape) (maxHeight - 140.dp).coerceAtLeast(160.dp) else if (maxWidth >= com.pocketstudio.ui.TWO_PANES_FROM) (maxHeight - 420.dp).coerceIn(380.dp, 640.dp) else 380.dp
+        // A tablet held upright: a wider, taller keyboard (three octaves, like lying down).
+        val wide = maxWidth >= com.pocketstudio.ui.TWO_PANES_FROM
         val hasSounds = instrument != null || browser != null
         val follows = hasSounds && ((notes != null && showNotes) || !landscape)
         val floatKeys = if (landscape) 96.dp else 120.dp
@@ -184,7 +188,7 @@ fun SynthScreen(
                 }
                 transcribe?.let { TranscribeCard(it) }
                 NeonCard {
-                    SectionLabel("Gamme et accords", help = Glossary.HARMONY)
+                    SectionLabel(tr("Gamme et accords"), help = Glossary.HARMONY, foldKey = "Gamme et accords")
                     HarmonyPanel(notes.harmony, notes.clip.performance, notes.actions, notes.clip.notes)
                 }
                 SoundArea(trackSounds) {
@@ -227,7 +231,7 @@ fun SynthScreen(
             ) {
                 tracks?.let { TrackBar(it) }
                 if (notes != null) ModeSwitch(showNotes) { showNotes = it }
-                KeyboardCard(octave, octaves = 2, height = 150.dp, actions = actions, harmony = harmony, chordKeys = chordKeys,
+                KeyboardCard(octave, octaves = if (wide) 3 else 2, height = if (wide) 190.dp else 150.dp, actions = actions, harmony = harmony, chordKeys = chordKeys,
                     onChordKeys = { chordKeys = it }, keyOn = keyOn, keyOff = keyOff, play = play, playActions = playActions,
                     chordPads = chordPads, onChordPads = { chordPads = it }, modifier = trackKeyboard,
                     keyLayout = keyLayout, onKeyLayout = setKeyLayout, english = english)
@@ -247,7 +251,7 @@ fun SynthScreen(
             LaunchedEffect(wanted) { if (!wanted) floatFolded = false }
             FloatingKeyboard(
                 visible = wanted, folded = floatFolded, onFold = { floatFolded = it },
-                octave = octave, octaves = if (landscape) 3 else 2, keysHeight = floatKeys, actions = actions, harmony = harmony,
+                octave = octave, octaves = if (landscape || wide) 3 else 2, keysHeight = floatKeys, actions = actions, harmony = harmony,
                 chordPads = chordPads, keyOn = keyOn, keyOff = keyOff, modifier = Modifier.align(Alignment.BottomCenter),
                 keyLayout = keyLayout, english = english,
             )
@@ -283,7 +287,7 @@ private fun KeyboardCard(
 ) {
     NeonCard(modifier = modifier) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            SectionLabel(if (chordPads) "Pads d'accords" else "Clavier", help = if (chordPads) Glossary.CHORD else null, foldKey = "Clavier")
+            SectionLabel(if (chordPads) tr("Pads d'accords") else tr("Clavier"), help = if (chordPads) Glossary.CHORD else null, foldKey = "Clavier")
             Box(Modifier.weight(1f))
             OctaveControl(octave, actions)
         }
@@ -308,20 +312,20 @@ private fun KeyboardCard(
 
 @Composable
 private fun ChordPadsChip(on: Boolean, onChange: (Boolean) -> Unit) {
-    FilterChip(selected = on, onClick = { onChange(!on) }, label = { Text("Pads") }, colors = chipColors(),
+    FilterChip(selected = on, onClick = { onChange(!on) }, label = { Text(tr("Pads")) }, colors = chipColors(),
         modifier = Modifier.testTag("chord_pads_switch"))
 }
 
 @Composable
 private fun ChordChip(on: Boolean, onChange: (Boolean) -> Unit) {
-    FilterChip(selected = on, onClick = { onChange(!on) }, label = { Text("Accords") }, colors = chipColors(),
+    FilterChip(selected = on, onClick = { onChange(!on) }, label = { Text(tr("Accords")) }, colors = chipColors(),
         modifier = Modifier.testTag("chord_keys"))
 }
 
 @Composable
 private fun PresetsCard(patch: SynthPatch, actions: SynthActions, browser: SoundBrowserUi?) {
     NeonCard {
-        SectionLabel("Sons prêts à jouer")
+        SectionLabel(tr("Sons prêts à jouer"), foldKey = "Sons prêts à jouer")
         if (browser != null) SoundBrowser(browser)
         else Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) { PresetChips(patch, actions) }
     }
@@ -330,33 +334,39 @@ private fun PresetsCard(patch: SynthPatch, actions: SynthActions, browser: Sound
 @Composable
 private fun SoundCard(patch: SynthPatch, actions: SynthActions, advanced: Boolean, setAdvanced: (Boolean) -> Unit) {
     NeonCard {
-        SectionLabel("Réglages du son")
-        Text("Forme d'onde", style = MaterialTheme.typography.bodyMedium)
+        SectionLabel(tr("Réglages du son"), foldKey = "Réglages du son")
+        Text(tr("Forme d'onde"), style = MaterialTheme.typography.bodyMedium)
         ChoiceRow(WAVES, patch.get(SynthPatch.OSC1_WAVE)) { v ->
             actions.setParam(SynthPatch.OSC1_WAVE, v)
             actions.setParam(SynthPatch.OSC2_WAVE, v)
         }
-        EASY.forEach { (index, label) ->
-            if (index == SynthPatch.UNISON) {
-                ParamSlider(label, patch.get(index), Glossary.UNISON, "${1 + (patch.get(index) * 6).roundToInt()} voix") { actions.setParam(index, it) }
-            } else {
-                ParamSlider(label, patch.get(index)) { actions.setParam(index, it) }
+        // Two or three columns of sliders when the card is wide (tablet), one under the other on a phone.
+        com.pocketstudio.ui.AdaptiveColumns(EASY.map { (index, label) ->
+            @Composable {
+                if (index == SynthPatch.UNISON) {
+                    ParamSlider(label, patch.get(index), Glossary.UNISON, tr("%d voix", 1 + (patch.get(index) * 6).roundToInt())) { actions.setParam(index, it) }
+                } else {
+                    ParamSlider(label, patch.get(index)) { actions.setParam(index, it) }
+                }
             }
-        }
+        }, minCellWidth = 260.dp, maxColumns = 3)
         TextButton(onClick = { setAdvanced(!advanced) }) {
             Icon(if (advanced) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore, contentDescription = null)
-            Text(if (advanced) "Masquer les réglages avancés" else "Réglages avancés")
+            Text(if (advanced) tr("Masquer les réglages avancés") else tr("Réglages avancés"))
         }
         AnimatedVisibility(visible = advanced) {
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Text("Oscillateur 2", style = MaterialTheme.typography.bodyMedium)
+                Text(tr("Oscillateur 2"), style = MaterialTheme.typography.bodyMedium)
                 ChoiceRow(WAVES, patch.get(SynthPatch.OSC2_WAVE)) { actions.setParam(SynthPatch.OSC2_WAVE, it) }
-                ChoiceRow(listOf(0f to "Octave −1", 0.5f to "Même octave", 1f to "Octave +1"), patch.get(SynthPatch.OSC2_OCTAVE)) {
+                ChoiceRow(listOf(0f to tr("Octave −1"), 0.5f to tr("Même octave"), 1f to tr("Octave +1")), patch.get(SynthPatch.OSC2_OCTAVE)) {
                     actions.setParam(SynthPatch.OSC2_OCTAVE, it)
                 }
-                Text("Type de filtre", style = MaterialTheme.typography.bodyMedium)
+                Text(tr("Type de filtre"), style = MaterialTheme.typography.bodyMedium)
                 ChoiceRow(FILTERS, patch.get(SynthPatch.FILTER_TYPE)) { actions.setParam(SynthPatch.FILTER_TYPE, it) }
-                ADVANCED.forEach { (index, label) -> ParamSlider(label, patch.get(index)) { actions.setParam(index, it) } }
+                com.pocketstudio.ui.AdaptiveColumns(
+                    ADVANCED.map { (index, label) -> @Composable { ParamSlider(label, patch.get(index)) { actions.setParam(index, it) } } },
+                    minCellWidth = 260.dp, maxColumns = 3, spacing = 4.dp,
+                )
             }
         }
     }
@@ -365,9 +375,9 @@ private fun SoundCard(patch: SynthPatch, actions: SynthActions, advanced: Boolea
 @Composable
 private fun ModeSwitch(showNotes: Boolean, onChange: (Boolean) -> Unit) {
     Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-        FilterChip(selected = !showNotes, onClick = { onChange(false) }, label = { Text("Clavier") }, colors = chipColors(),
+        FilterChip(selected = !showNotes, onClick = { onChange(false) }, label = { Text(tr("Clavier")) }, colors = chipColors(),
             modifier = Modifier.testTag("mode_keyboard"))
-        FilterChip(selected = showNotes, onClick = { onChange(true) }, label = { Text("Notes") }, colors = chipColors(),
+        FilterChip(selected = showNotes, onClick = { onChange(true) }, label = { Text(tr("Notes")) }, colors = chipColors(),
             modifier = Modifier.testTag("mode_notes"))
     }
 }
@@ -380,11 +390,11 @@ internal fun OctaveControl(octave: Int, actions: SynthActions) {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         IconButton(onClick = { actions.shiftOctave(-1) }, modifier = Modifier.size(40.dp)) {
-            Icon(Icons.Filled.Remove, contentDescription = "Octave plus bas", modifier = Modifier.size(18.dp))
+            Icon(Icons.Filled.Remove, contentDescription = tr("Octave plus bas"), modifier = Modifier.size(18.dp))
         }
-        Text("Octave $octave", style = MonoStyle, color = Neon.Cyan, maxLines = 1, softWrap = false)
+        Text(tr("Octave %d", octave), style = MonoStyle, color = Neon.Cyan, maxLines = 1, softWrap = false)
         IconButton(onClick = { actions.shiftOctave(1) }, modifier = Modifier.size(40.dp)) {
-            Icon(Icons.Filled.Add, contentDescription = "Octave plus haut", modifier = Modifier.size(18.dp))
+            Icon(Icons.Filled.Add, contentDescription = tr("Octave plus haut"), modifier = Modifier.size(18.dp))
         }
     }
 }
@@ -395,7 +405,7 @@ private fun PresetChips(patch: SynthPatch, actions: SynthActions) {
         FilterChip(
             selected = patch.sanitized() == preset.sanitized(),
             onClick = { actions.applyPreset(preset) },
-            label = { Text(name) },
+            label = { Text(tr(name)) },
             colors = chipColors(),
             modifier = Modifier.testTag("preset_$name"),
         )

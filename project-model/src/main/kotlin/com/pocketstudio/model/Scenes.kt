@@ -1,5 +1,6 @@
 package com.pocketstudio.model
 
+import com.pocketstudio.model.i18n.tr
 import kotlinx.serialization.Serializable
 
 /**
@@ -39,6 +40,18 @@ data class Scene(
         /** Section names offered when naming a scene. */
         val SECTIONS = listOf("Intro", "Couplet", "Pré-refrain", "Refrain", "Pont", "Drop", "Fin")
 
+        /**
+         * A scene label as shown: a section name ("Refrain", or a copy's "Refrain 2") in the
+         * interface's language; any other name the user typed stays as it is. The label is
+         * saved in French so a project reads the same in every language.
+         */
+        fun shownLabel(label: String): String {
+            if (label in SECTIONS) return tr(label)
+            val numbered = Regex("""^(.+) (\d+)$""").matchEntire(label) ?: return label
+            val (section, n) = numbered.destructured
+            return if (section in SECTIONS) "${tr(section)} $n" else label
+        }
+
         const val MAX_LABEL = 20
     }
 }
@@ -49,7 +62,7 @@ fun Project.sceneLabel(index: Int): String = allScenes.getOrNull(index)?.label.o
 /** How a scene is shown: "A · Refrain", or just "A" without a section name. */
 fun Project.sceneTitle(index: Int): String {
     val letter = Scene.NAMES.getOrElse(index) { "?" }
-    return sceneLabel(index).takeIf { it.isNotBlank() }?.let { "$letter · $it" } ?: letter
+    return sceneLabel(index).takeIf { it.isNotBlank() }?.let { "$letter · ${Scene.shownLabel(it)}" } ?: letter
 }
 
 /** Names scene [index] after a song section (blank: back to its letter alone). */

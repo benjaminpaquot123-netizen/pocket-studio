@@ -1,5 +1,6 @@
 package com.pocketstudio.app.export
 
+import com.pocketstudio.model.i18n.tr
 import java.io.File
 import kotlin.math.PI
 import kotlin.math.log10
@@ -25,11 +26,11 @@ object Loudness {
 
     /** What a number means, for someone who is not a sound engineer. */
     fun describe(lufs: Double): String = when {
-        lufs > -9.0 -> "très fort (les plateformes le baisseront)"
-        lufs > -12.0 -> "fort, comme la musique de club"
-        lufs > -16.0 -> "comme la musique en streaming (−14)"
-        lufs > -23.0 -> "assez doux"
-        else -> "très doux : monte un peu le volume"
+        lufs > -9.0 -> tr("très fort (les plateformes le baisseront)")
+        lufs > -12.0 -> tr("fort, comme la musique de club")
+        lufs > -16.0 -> tr("comme la musique en streaming (−14)")
+        lufs > -23.0 -> tr("assez doux")
+        else -> tr("très doux : monte un peu le volume")
     }
 
     class Meter(private val rate: Int, private val channels: Int) {

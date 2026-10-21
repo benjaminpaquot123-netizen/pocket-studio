@@ -2,6 +2,8 @@
 
 package com.pocketstudio.app.acid
 
+import com.pocketstudio.model.i18n.tr
+
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import com.pocketstudio.ui.fadingHorizontalScroll
@@ -29,7 +31,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
+import com.pocketstudio.ui.aspectRatioAtMost
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -91,7 +93,8 @@ private object Notation {
     fun setEnglish(context: Context, on: Boolean) = com.pocketstudio.app.settings.SettingsStore.update(context) { it.copy(englishNotes = on) }
 }
 
-private val SOUND_LABELS = listOf("Coupure", "Résonance", "Enveloppe", "Déclin", "Accent", "Accord", "Onde (scie → carré)", "Saturation", "Volume")
+private val SOUND_LABELS: List<String>
+    get() = listOf(tr("Coupure"), tr("Résonance"), tr("Enveloppe"), tr("Déclin"), tr("Accent"), tr("Accordage"), tr("Onde (scie → carré)"), tr("Saturation"), tr("Volume"))
 
 data class AcidActions(
     val togglePlay: () -> Unit = {},
@@ -116,10 +119,12 @@ fun AcidScreen(
     modifier: Modifier = Modifier,
     browser: SoundBrowserUi? = null,
 ) {
-    Column(
-        modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp).testTag("acid"),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
-    ) {
+    val context = LocalContext.current
+    val settings by com.pocketstudio.app.settings.SettingsStore.state.collectAsState()
+    val english = settings.englishNotes
+    val setEnglish: (Boolean) -> Unit = { Notation.setEnglish(context, it) }
+    // On a tablet the line (generator and steps) on the left; the chosen step and the sound on the right.
+    com.pocketstudio.ui.AdaptivePanes(modifier.testTag("acid"), first = {
         NeonCard {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Button(
@@ -136,24 +141,20 @@ fun AcidScreen(
                     shape = RoundedCornerShape(10.dp),
                 ) {
                     Icon(Icons.Filled.AutoAwesome, contentDescription = null)
-                    Text("  Génère-moi un pattern", style = MaterialTheme.typography.titleSmall)
+                    Text(tr("  Génère-moi un pattern"), style = MaterialTheme.typography.titleSmall)
                 }
             }
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Text("Densité", Modifier.weight(1f))
+                Text(tr("Densité"), Modifier.weight(1f))
                 Text("${(acid.density * 100).roundToInt()} %", style = MonoStyle, color = Neon.Cyan)
             }
             ProSlider(value = acid.density, onValueChange = actions.setDensity)
         }
-
-        val context = LocalContext.current
-        val settings by com.pocketstudio.app.settings.SettingsStore.state.collectAsState()
-        val english = settings.englishNotes
-        val setEnglish: (Boolean) -> Unit = { Notation.setEnglish(context, it) }
         StepGrid(acid, playing, currentStep, selected, actions, english, setEnglish)
+    }, second = {
         StepEditor(acid, selected, actions, english)
         SoundCard(acid, actions, browser)
-    }
+    })
 }
 
 @Composable
@@ -176,7 +177,7 @@ private fun StepGrid(
     val chipColors = pillColors()
     NeonCard {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            SectionLabel("Ligne de basse · base ${noteName(acid.root, english)}", Modifier.weight(1f), help = Glossary.ACID, foldKey = "Ligne de basse")
+            SectionLabel(tr("Ligne de basse · base %s", noteName(acid.root, english)), Modifier.weight(1f), help = Glossary.ACID, foldKey = "Ligne de basse")
             FilterChip(
                 selected = english, onClick = { setEnglish(!english) },
                 label = { Text(if (english) "C D E" else "Do Ré Mi") },
@@ -185,12 +186,12 @@ private fun StepGrid(
             )
         }
         Row(Modifier.fadingHorizontalScroll(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            Text("Longueur", style = MaterialTheme.typography.bodySmall)
+            Text(tr("Longueur"), style = MaterialTheme.typography.bodySmall)
             AcidPattern.LENGTHS_IN_BARS.forEach { bars ->
                 FilterChip(
                     selected = acid.length == bars * AcidPattern.STEPS_PER_PAGE,
                     onClick = { actions.setBars(bars) },
-                    label = { Text(if (bars == 1) "1 mesure" else "$bars") },
+                    label = { Text(if (bars == 1) tr("1 mesure") else "$bars") },
                     colors = chipColors,
                     modifier = Modifier.testTag("acid_bars_$bars"),
                 )
@@ -198,7 +199,7 @@ private fun StepGrid(
         }
         if (pages > 1) {
             Row(Modifier.fadingHorizontalScroll(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                Text("Mesure", style = MaterialTheme.typography.bodySmall)
+                Text(tr("Mesure"), style = MaterialTheme.typography.bodySmall)
                 for (p in 0 until pages) {
                     FilterChip(
                         selected = shown == p,
@@ -208,9 +209,9 @@ private fun StepGrid(
                         modifier = Modifier.testTag("acid_page_$p"),
                     )
                 }
-                FilterChip(selected = follow, onClick = { follow = !follow }, label = { Text("Suivre") }, colors = chipColors)
+                FilterChip(selected = follow, onClick = { follow = !follow }, label = { Text(tr("Suivre")) }, colors = chipColors)
                 TextButton(onClick = { actions.copyPage(shown, (shown + 1) % pages) }, modifier = Modifier.testTag("acid_copy_page")) {
-                    Text("Copier → ${(shown + 1) % pages + 1}")
+                    Text(tr("Copier → %d", (shown + 1) % pages + 1))
                 }
             }
         }
@@ -228,7 +229,8 @@ private fun StepGrid(
                     Box(
                         modifier = Modifier
                             .weight(1f)
-                            .aspectRatio(0.7f)
+                            // Capped on a wide pane (tablet): the two rows of steps stay compact.
+                            .aspectRatioAtMost(0.7f, 76.dp)
                             .clip(RoundedCornerShape(6.dp))
                             .background(fill)
                             .border(
@@ -266,7 +268,7 @@ private fun StepGrid(
             }
         }
         Text(
-            "Touche un pas pour le modifier. Couleur pleine = accent, ⌒ = slide, ↑ = octave au-dessus (Up), ↓ = en dessous (Down), – = silence, 🔒 = gardé par le générateur.",
+            tr("Touche un pas pour le modifier. Couleur pleine = accent, ⌒ = slide, ↑ = octave au-dessus (Up), ↓ = en dessous (Down), – = silence, 🔒 = gardé par le générateur."),
             style = MaterialTheme.typography.bodySmall,
             color = Neon.TextSecondary,
         )
@@ -279,18 +281,18 @@ private fun StepEditor(acid: AcidPattern, index: Int, actions: AcidActions, engl
     val chipColors = pillColors()
     NeonCard(accent = Neon.Magenta) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            SectionLabel("Pas ${index + 1}", color = Neon.Magenta, help = Glossary.ACID_STEP, foldKey = "Pas de la basse acide")
+            SectionLabel(tr("Pas %d", index + 1), color = Neon.Magenta, help = Glossary.ACID_STEP, foldKey = "Pas de la basse acide")
             Box(Modifier.weight(1f))
             FilterChip(
                 selected = index in acid.locked,
                 onClick = actions.toggleLock,
-                label = { Text("Verrou") },
+                label = { Text(tr("Verrou")) },
                 leadingIcon = { Icon(Icons.Filled.Lock, contentDescription = null) },
                 colors = chipColors,
             )
         }
         Text(
-            if (s.gate) noteName(acid.root + s.note, english) + octaveMark(s.octave) else "Silence",
+            if (s.gate) noteName(acid.root + s.note, english) + octaveMark(s.octave) else tr("Silence"),
             style = MonoStyle.copy(fontSize = 22.sp, fontWeight = FontWeight.Bold),
             color = if (s.gate) Neon.Cyan else Neon.TextSecondary,
         )
@@ -301,25 +303,25 @@ private fun StepEditor(acid: AcidPattern, index: Int, actions: AcidActions, engl
             onPick = { pc -> actions.editStep { it.copy(note = Math.floorMod(pc - acid.root, 12), gate = true) } },
         )
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            FilterChip(selected = s.gate, onClick = { actions.editStep { it.copy(gate = !it.gate) } }, label = { Text("Note") }, colors = chipColors)
-            FilterChip(selected = s.accent, onClick = { actions.editStep { it.copy(accent = !it.accent, gate = true) } }, label = { Text("Accent") }, colors = chipColors)
-            FilterChip(selected = s.slide, onClick = { actions.editStep { it.copy(slide = !it.slide, gate = true) } }, label = { Text("Slide") }, colors = chipColors)
+            FilterChip(selected = s.gate, onClick = { actions.editStep { it.copy(gate = !it.gate) } }, label = { Text(tr("Note")) }, colors = chipColors)
+            FilterChip(selected = s.accent, onClick = { actions.editStep { it.copy(accent = !it.accent, gate = true) } }, label = { Text(tr("Accent")) }, colors = chipColors)
+            FilterChip(selected = s.slide, onClick = { actions.editStep { it.copy(slide = !it.slide, gate = true) } }, label = { Text(tr("Slide")) }, colors = chipColors)
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text("Octave (Down ↓ / Up ↑)", Modifier.weight(1f))
+            Text(tr("Octave (Down ↓ / Up ↑)"), Modifier.weight(1f))
             IconButton(onClick = { actions.editStep { it.copy(octave = (it.octave - 1).coerceAtLeast(-1), gate = true) } }) {
-                Icon(Icons.Filled.Remove, contentDescription = "Octave plus bas")
+                Icon(Icons.Filled.Remove, contentDescription = tr("Octave plus bas"))
             }
             Text(if (s.octave > 0) "+${s.octave}" else "${s.octave}", style = MonoStyle, color = Neon.Cyan)
             IconButton(onClick = { actions.editStep { it.copy(octave = (it.octave + 1).coerceAtMost(2), gate = true) } }) {
-                Icon(Icons.Filled.Add, contentDescription = "Octave plus haut")
+                Icon(Icons.Filled.Add, contentDescription = tr("Octave plus haut"))
             }
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text("Note de base", Modifier.weight(1f))
-            IconButton(onClick = { actions.shiftRoot(-1) }) { Icon(Icons.Filled.Remove, contentDescription = "Base plus grave") }
+            Text(tr("Note de base"), Modifier.weight(1f))
+            IconButton(onClick = { actions.shiftRoot(-1) }) { Icon(Icons.Filled.Remove, contentDescription = tr("Base plus grave")) }
             Text(noteName(acid.root, english), style = MonoStyle, color = Neon.Cyan)
-            IconButton(onClick = { actions.shiftRoot(1) }) { Icon(Icons.Filled.Add, contentDescription = "Base plus aiguë") }
+            IconButton(onClick = { actions.shiftRoot(1) }) { Icon(Icons.Filled.Add, contentDescription = tr("Base plus aiguë")) }
         }
     }
 }
@@ -331,8 +333,8 @@ private fun SoundCard(acid: AcidPattern, actions: AcidActions, browser: SoundBro
     var sliders by remember { mutableStateOf(SoundView.sliders(context)) }
     NeonCard {
         FlowRow(itemVerticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            SectionLabel("Son", Modifier.weight(1f), help = Glossary.FILTER, foldKey = "Son acide")
-            listOf(false to "Panneau", true to "Curseurs").forEach { (mode, label) ->
+            SectionLabel(tr("Son"), Modifier.weight(1f), help = Glossary.FILTER, foldKey = "Son acide")
+            listOf(false to tr("Panneau"), true to tr("Curseurs")).forEach { (mode, label) ->
                 FilterChip(
                     selected = sliders == mode,
                     onClick = { sliders = mode; SoundView.setSliders(context, mode) },
@@ -346,17 +348,20 @@ private fun SoundCard(acid: AcidPattern, actions: AcidActions, browser: SoundBro
             Panel303(values, actions.setSound)
             return@NeonCard
         }
-        SOUND_LABELS.forEachIndexed { i, label ->
-            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Text(label, Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
-                Text("${(values[i] * 100).roundToInt()}", style = MonoStyle, color = Neon.Cyan)
+        // Two columns of sliders when the card is wide (tablet).
+        com.pocketstudio.ui.AdaptiveColumns(SOUND_LABELS.mapIndexed { i, label ->
+            @Composable {
+                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                    Text(label, Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
+                    Text("${(values[i] * 100).roundToInt()}", style = MonoStyle, color = Neon.Cyan)
+                }
+                ProSlider(
+                    value = values[i],
+                    onValueChange = { actions.setSound(i, it) },
+                    modifier = Modifier.testTag("acid_sound_$i"),
+                )
             }
-            ProSlider(
-                value = values[i],
-                onValueChange = { actions.setSound(i, it) },
-                modifier = Modifier.testTag("acid_sound_$i"),
-            )
-        }
+        }, minCellWidth = 240.dp)
     }
 }
 
@@ -370,7 +375,8 @@ private object SoundView {
 
 // Knob layout of the panel, in rows (AcidSound value indices): the filter first, then the rest.
 private val PANEL_ROWS = listOf(listOf(0, 1, 2, 3, 4), listOf(5, 6, 7, 8))
-private val PANEL_LABELS = listOf("Coupure", "Réso.", "Env.", "Déclin", "Accent", "Accord", "Onde", "Satur.", "Volume")
+private val PANEL_LABELS: List<String>
+    get() = listOf(tr("Coupure"), tr("Réso."), tr("Env."), tr("Déclin"), tr("Accent"), tr("Accordage"), tr("Onde"), tr("Satur."), tr("Volume"))
 
 /** The 303's sound as two compact rows of knobs. */
 @Composable
@@ -399,16 +405,16 @@ internal fun Panel303(values: List<Float>, setSound: (Int, Float) -> Unit) {
                 repeat(PANEL_ROWS[0].size - row.size) { Box(Modifier.weight(1f)) }
             }
         }
-        Text("Glisse vers le haut ou le bas pour tourner ; deux touchers : réglage de départ.", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+        Text(tr("Glisse vers le haut ou le bas pour tourner ; deux touchers : réglage de départ."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
     }
 }
 
 private fun knobText(index: Int, v: Float): String = when (index) {
-    5 -> "%+.1f".format((v - 0.5f) * 24f).replace('.', ',')  // tuning: ±12 semitones
+    5 -> tr("%+.1f", (v - 0.5f) * 24f)  // tuning: ±12 semitones, decimal mark of the language
     6 -> when {
-        v < 0.15f -> "scie"
-        v > 0.85f -> "carré"
-        else -> "mélange"
+        v < 0.15f -> tr("scie")
+        v > 0.85f -> tr("carré")
+        else -> tr("mélange")
     }
     else -> "${(v * 100).roundToInt()}"
 }

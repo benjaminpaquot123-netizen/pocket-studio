@@ -1,5 +1,6 @@
 package com.pocketstudio.app.ui
 
+import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.model.track
 import kotlin.math.roundToInt
 import com.pocketstudio.app.instruments.InstrumentUi
@@ -35,6 +36,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.foundation.background
 import androidx.compose.ui.graphics.Brush
@@ -152,17 +154,39 @@ import com.pocketstudio.engine.NativeEngine
 import com.pocketstudio.ui.Neon
 import kotlinx.coroutines.delay
 
-enum class AppTab(val label: String, val icon: ImageVector) {
-    Rythme("Rythme", Icons.Filled.GridView),
-    Acide("Acide", Icons.Filled.GraphicEq),
-    Synthe("Synthé", Icons.Filled.Piano),
-    Mixeur("Mixeur", Icons.Filled.Equalizer),
-    Audio("Audio", Icons.Filled.Mic),
-    Morceau("Morceau", Icons.Filled.QueueMusic),
-    Outils("Outils", Icons.Filled.Tune),
+enum class AppTab(val icon: ImageVector) {
+    Rythme(Icons.Filled.GridView),
+    Acide(Icons.Filled.GraphicEq),
+    Synthe(Icons.Filled.Piano),
+    Mixeur(Icons.Filled.Equalizer),
+    Audio(Icons.Filled.Mic),
+    Morceau(Icons.Filled.QueueMusic),
+    Outils(Icons.Filled.Tune);
+
+    /** The tab's name in the interface's language. */
+    val label: String get() = when (this) {
+        Rythme -> tr("Rythme")
+        Acide -> tr("Acide")
+        Synthe -> tr("Synthé")
+        Mixeur -> tr("Mixeur")
+        Audio -> tr("Audio")
+        Morceau -> tr("Morceau")
+        Outils -> tr("Outils")
+    }
 }
 
-private enum class ToolPage(val label: String) { Reglages("Réglages"), Recette("Recette"), Midi("MIDI"), Fond("Fond"), Latence("Latence"), Son("Son") }
+private enum class ToolPage {
+    Reglages, Recette, Midi, Fond, Latence, Son;
+
+    val label: String get() = when (this) {
+        Reglages -> tr("Réglages")
+        Recette -> tr("Recette")
+        Midi -> "MIDI"
+        Fond -> tr("Fond")
+        Latence -> tr("Latence")
+        Son -> tr("Son")
+    }
+}
 
 /** Ways to start a new project (Mes projets › Nouveau projet), by group (the guided song comes apart). */
 private val PROJECT_STARTERS: List<Pair<ProjectStarter, () -> Project>> = listOf(
@@ -209,7 +233,7 @@ fun AppRoot() {
             rhythmVm.flushNow()
             // Not saved (a full phone): stay here rather than reopen this project without its latest edits.
             if (rhythmVm.session.lastSaveError.value != null) {
-                Toast.makeText(context, "Le projet n'a pas pu être enregistré (téléphone plein ?) : libère de la place avant d'en ouvrir un autre.", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, tr("Le projet n'a pas pu être enregistré (téléphone plein ?) : libère de la place avant d'en ouvrir un autre."), Toast.LENGTH_LONG).show()
                 return@launch
             }
             showProjects = false  // remembered across the rebuild: close it first
@@ -256,9 +280,9 @@ fun AppRoot() {
                     com.pocketstudio.app.library.LibraryUi(
                         packsUi, previewing,
                         target = when {
-                            forTrack -> "la piste « ${libProject.track(libTrack).name} »"
-                            live >= 0 -> "le pad live ${live + 1}"
-                            else -> "le pad ${lane + 1} (${com.pocketstudio.app.rhythm.DrumKitInfo.names[lane]})"
+                            forTrack -> tr("la piste « %s »", tr(libProject.track(libTrack).name))
+                            live >= 0 -> tr("le pad live %d", live + 1)
+                            else -> tr("le pad %1\$d (%2\$s)", lane + 1, com.pocketstudio.app.rhythm.DrumKitInfo.names[lane])
                         },
                         startKind = if (forTrack) "808" else if (live >= 0) "stab" else padKind(lane),
                         sizes = sizes,
@@ -279,7 +303,7 @@ fun AppRoot() {
                                     else -> rhythmVm.placeOnPad(pcm, name, oneShot = true)
                                 }
                                 if (placed) close()
-                                else libraryVm.notice("Un son est encore en train d'être posé ou enregistré : réessaie dans un instant.")
+                                else libraryVm.notice(tr("Un son est encore en train d'être posé ou enregistré : réessaie dans un instant."))
                             }
                         },
                         download = libraryVm::downloadPack,
@@ -298,16 +322,16 @@ fun AppRoot() {
         if (channel != null) {
             val name = if (fxChannel >= com.pocketstudio.model.Mixer.FIRST_PAD) {
                 val lane = fxChannel - com.pocketstudio.model.Mixer.FIRST_PAD
-                "pad ${lane + 1} (${fxProject.drums.lanes.getOrNull(lane)?.sample?.name ?: com.pocketstudio.app.rhythm.DrumKitInfo.names[lane]})"
+                tr("pad %1\$d (%2\$s)", lane + 1, fxProject.drums.lanes.getOrNull(lane)?.sample?.name?.let { tr(it) } ?: com.pocketstudio.app.rhythm.DrumKitInfo.names[lane])
             } else {
-                mixerStrips(fxProject).firstOrNull { it.ch == fxChannel }?.name ?: "Piste"
+                tr(mixerStrips(fxProject).firstOrNull { it.ch == fxChannel }?.name ?: "Piste")
             }
             androidx.compose.material3.AlertDialog(
                 onDismissRequest = { fxChannel = -1 },
                 // The whole width of the phone: everything seen at once, nothing to scroll for.
                 properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false),
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp),
-                title = { Text("Effets · $name") },
+                modifier = Modifier.widthIn(max = 640.dp).fillMaxWidth().padding(horizontal = 10.dp),
+                title = { Text(tr("Effets · %s", name)) },
                 text = {
                     Column(Modifier.verticalScroll(androidx.compose.foundation.rememberScrollState())) {
                         com.pocketstudio.app.mixer.QuickFxPanel(
@@ -320,7 +344,7 @@ fun AppRoot() {
                         )
                     }
                 },
-                confirmButton = { TextButton(onClick = { fxChannel = -1 }, modifier = Modifier.testTag("fx_close")) { Text("Fermer") } },
+                confirmButton = { TextButton(onClick = { fxChannel = -1 }, modifier = Modifier.testTag("fx_close")) { Text(tr("Fermer")) } },
             )
         }
     }
@@ -328,7 +352,7 @@ fun AppRoot() {
     // Kept through the rebuild that opening the new project does (the activity is recreated).
     var songGuide by com.pocketstudio.app.library.rememberSongGuide()
     songGuide?.let { pages ->
-        com.pocketstudio.app.settings.GuideDialog(onClose = { songGuide = null }, pages = pages, tag = "song_guide", done = "À moi de jouer !")
+        com.pocketstudio.app.settings.GuideDialog(onClose = { songGuide = null }, pages = pages, tag = "song_guide", done = tr("À moi de jouer !"))
     }
     val wizardUi by libraryVm.wizard.collectAsStateWithLifecycle()
     if (wizardUi.open) {
@@ -401,7 +425,7 @@ fun AppRoot() {
                         exportZip = { p ->
                             openScope.launch {
                                 if (p.id == rhythmVm.projectId) rhythmVm.flushNow()
-                                projectsVm.exportZip(p) { file -> WavExporter.share(context, listOf(file), "Envoyer le projet") }
+                                projectsVm.exportZip(p) { file -> WavExporter.share(context, listOf(file), tr("Envoyer le projet")) }
                             }
                         },
                         importZip = { pickProjectZip.launch(arrayOf("application/zip", "application/x-zip-compressed", "application/octet-stream")) },
@@ -488,9 +512,9 @@ fun AppRoot() {
     notice?.let { text ->
         AlertDialog(
             onDismissRequest = rhythmVm::dismissNotice,
-            confirmButton = { TextButton(onClick = rhythmVm::dismissNotice) { Text("Compris") } },
+            confirmButton = { TextButton(onClick = rhythmVm::dismissNotice) { Text(tr("Compris")) } },
             dismissButton = if (rhythmVm.canUndoFavoriteDelete) {
-                { TextButton(onClick = rhythmVm::undoFavoriteDelete, modifier = Modifier.testTag("favorite_undo")) { Text("Annuler") } }
+                { TextButton(onClick = rhythmVm::undoFavoriteDelete, modifier = Modifier.testTag("favorite_undo")) { Text(tr("Annuler")) } }
             } else null,
             text = { Text(text) },
         )
@@ -522,9 +546,9 @@ fun AppRoot() {
                                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
                         )
                     }
-                }, modifier = Modifier.testTag("permission_settings")) { Text("Ouvrir les réglages") }
+                }, modifier = Modifier.testTag("permission_settings")) { Text(tr("Ouvrir les réglages")) }
             },
-            dismissButton = { TextButton(onClick = { permissionHelp = null }) { Text("Plus tard") } },
+            dismissButton = { TextButton(onClick = { permissionHelp = null }) { Text(tr("Plus tard")) } },
         )
     }
     val micPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
@@ -548,7 +572,7 @@ fun AppRoot() {
     }
     val bluetoothPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { granted ->
         if (granted.values.all { it }) midiVm.scanBluetooth()
-        else permissionHelp = "Le Bluetooth (appareils à proximité) est refusé : autorise-le dans les réglages du téléphone pour trouver un clavier MIDI."
+        else permissionHelp = tr("Le Bluetooth (appareils à proximité) est refusé : autorise-le dans les réglages du téléphone pour trouver un clavier MIDI.")
     }
     // MIDI clock, start and stop drive the project's tempo and transport (main thread).
     LaunchedEffect(Unit) {
@@ -636,7 +660,7 @@ fun AppRoot() {
             )
             if (saveError != null) {
                 Text(
-                    "Sauvegarde impossible (mémoire pleine ?). Tes dernières modifications ne sont pas encore enregistrées.",
+                    tr("Sauvegarde impossible (mémoire pleine ?). Tes dernières modifications ne sont pas encore enregistrées."),
                     color = Color.Black,
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.fillMaxWidth().background(Neon.Amber).padding(8.dp)
@@ -887,7 +911,7 @@ fun AppRoot() {
                                 chooseSample = { rhythmVm.dismissTrackSoundMessage(); libraryTrack = true; showLibrary = true },
                                 importSample = { rhythmVm.dismissTrackSoundMessage(); pickKeyboardSound.launch(arrayOf("audio/*")) },
                                 editSampled = rhythmVm::editSampled,
-                                sampledMessage = trackSoundMessage,
+                                sampledMessage = trackSoundMessage?.let { if (it == RhythmViewModel.BUSY_TRACK_SOUND) tr("Préparation du son…") else it },
                             ),
                             transcribe = TranscribeUi(
                                 task = transcription,
@@ -1095,7 +1119,7 @@ fun AppRoot() {
                     AppTab.Audio -> Column {
                         // Scrollable: whole words on a small phone or with big text (never "Remi/x").
                         androidx.compose.material3.ScrollableTabRow(selectedTabIndex = audioPage, containerColor = Neon.Surface, contentColor = Neon.Cyan, edgePadding = 8.dp) {
-                            listOf("Pistes audio", "Remix", "Accordeur", "Générer").forEachIndexed { i, label ->
+                            listOf(tr("Pistes audio"), tr("Remix"), tr("Accordeur"), tr("Générer")).forEachIndexed { i, label ->
                                 Tab(selected = audioPage == i, onClick = { audioPage = i }, text = { Text(label, maxLines = 1, softWrap = false) }, modifier = Modifier.testTag("audio_page_$i"))
                             }
                         }
@@ -1166,8 +1190,8 @@ fun AppRoot() {
                                 com.pocketstudio.app.analysis.TunerView(reading, micOk, settings.englishNotes)
                             } else {
                                 Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                                    Text("L'accordeur écoute le micro : autorise-le pour t'accorder.")
-                                    Button(onClick = { ask.launch(Manifest.permission.RECORD_AUDIO) }) { Text("Autoriser le micro") }
+                                    Text(tr("L'accordeur écoute le micro : autorise-le pour t'accorder."))
+                                    Button(onClick = { ask.launch(Manifest.permission.RECORD_AUDIO) }) { Text(tr("Autoriser le micro")) }
                                 }
                             }
                         } else if (audioPage == 0) {
@@ -1264,7 +1288,7 @@ fun AppRoot() {
                                     rhythmVm.useSong(set)
                                     val what = listOfNotNull(set.info.bpm.takeIf { it > 0 }?.let { "%.0f BPM".format(it) }, set.info.keyLabel)
                                     if (what.isNotEmpty()) {
-                                        android.widget.Toast.makeText(context, "Projet calé : ${what.joinToString(", ")}", android.widget.Toast.LENGTH_SHORT).show()
+                                        android.widget.Toast.makeText(context, tr("Projet calé : %s", what.joinToString(", ")), android.widget.Toast.LENGTH_SHORT).show()
                                     }
                                 },
                                 clearRemix = rhythmVm::clearRemix,
@@ -1382,16 +1406,16 @@ private fun LaunchPrompts(vm: MainViewModel) {
     if (crash != null) {
         AlertDialog(
             onDismissRequest = vm::dismissCrash,
-            title = { Text("Aïe, l'appli est tombée") },
-            text = { Text("Elle s'est fermée brutalement la dernière fois. Envoyer le rapport ? Il est déjà rédigé, tu n'as qu'à appuyer sur Envoyer.") },
+            title = { Text(tr("Aïe, l'appli est tombée")) },
+            text = { Text(tr("Elle s'est fermée brutalement la dernière fois. Envoyer le rapport ? Il est déjà rédigé, tu n'as qu'à appuyer sur Envoyer.")) },
             confirmButton = {
                 TextButton(onClick = {
                     val uri = vm.crashReportUri()
                     vm.dismissCrash()
                     uri?.let { openUri(context, it) }
-                }) { Text("Envoyer le rapport") }
+                }) { Text(tr("Envoyer le rapport")) }
             },
-            dismissButton = { TextButton(onClick = vm::dismissCrash) { Text("Ignorer") } },
+            dismissButton = { TextButton(onClick = vm::dismissCrash) { Text(tr("Ignorer")) } },
         )
         return
     }
@@ -1401,24 +1425,24 @@ private fun LaunchPrompts(vm: MainViewModel) {
             val info = if (u is UpdateState.Available) u.info else (u as UpdateState.Failed).info
             AlertDialog(
                 onDismissRequest = { vm.dismissUpdate(remember = false) },
-                title = { Text("Nouvelle version ${info.versionName}") },
+                title = { Text(tr("Nouvelle version %s", info.versionName)) },
                 text = {
                     // Long notes scroll: the buttons always stay on screen.
                     Column(Modifier.verticalScroll(androidx.compose.foundation.rememberScrollState())) {
-                        if (u is UpdateState.Failed) Text("Le téléchargement a échoué, on retente ?", color = Neon.Red)
-                        Text(info.notes.ifBlank { "Une nouvelle version est prête." })
+                        if (u is UpdateState.Failed) Text(tr("Le téléchargement a échoué, on retente ?"), color = Neon.Red)
+                        Text(info.notes.ifBlank { tr("Une nouvelle version est prête.") })
                     }
                 },
-                confirmButton = { TextButton(onClick = vm::installUpdate) { Text("Installer") } },
-                dismissButton = { TextButton(onClick = { vm.dismissUpdate() }) { Text("Plus tard") } },
+                confirmButton = { TextButton(onClick = vm::installUpdate) { Text(tr("Installer")) } },
+                dismissButton = { TextButton(onClick = { vm.dismissUpdate() }) { Text(tr("Plus tard")) } },
             )
         }
         is UpdateState.Downloading -> AlertDialog(
             onDismissRequest = {},
-            title = { Text("Téléchargement…") },
+            title = { Text(tr("Téléchargement…")) },
             text = { LinearProgressIndicator(progress = { u.progress }) },
             confirmButton = {},
-            dismissButton = { TextButton(onClick = vm::cancelUpdate, modifier = Modifier.testTag("update_cancel")) { Text("Annuler") } },
+            dismissButton = { TextButton(onClick = vm::cancelUpdate, modifier = Modifier.testTag("update_cancel")) { Text(tr("Annuler")) } },
         )
         UpdateState.None -> Unit
     }
@@ -1442,14 +1466,14 @@ internal fun sceneChip(p: Project): SceneChipUi {
 internal fun sceneInfo(p: Project): String {
     val name = Scene.NAMES[p.scene]
     val all = p.allScenes
-    val global = if (p.audioTracks.any { it.clip != null } || p.remix.setId != null) " Les pistes audio et le remix jouent dans toutes les scènes." else ""
+    val global = if (p.audioTracks.any { it.clip != null } || p.remix.setId != null) " " + tr("Les pistes audio et le remix jouent dans toutes les scènes.") else ""
     return when {
-        all.getOrNull(p.scene)?.isEmpty != false -> "Scène $name : nouvelle et vide. Remplis-la dans Rythme, Acide ou Synthé.$global"
-        else -> p.copyOf(p.scene)?.let { "Scène $name : copie de la scène ${Scene.NAMES[it]}. Change-la pour en faire une variante, ou « Vider »." } ?: ""
+        all.getOrNull(p.scene)?.isEmpty != false -> tr("Scène %s : nouvelle et vide. Remplis-la dans Rythme, Acide ou Synthé.", name) + global
+        else -> p.copyOf(p.scene)?.let { tr("Scène %1\$s : copie de la scène %2\$s. Change-la pour en faire une variante, ou « Vider ».", name, Scene.NAMES[it]) } ?: ""
     }
 }
 
-private const val MIC_REFUSED = "Le micro est refusé : autorise-le dans les réglages du téléphone (Autorisations › Micro), puis réessaie."
+private val MIC_REFUSED: String get() = tr("Le micro est refusé : autorise-le dans les réglages du téléphone (Autorisations › Micro), puis réessaie.")
 
 private fun hasMic(context: Context) =
     ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
@@ -1458,7 +1482,7 @@ private fun openUri(context: Context, uri: Uri) {
     try {
         context.startActivity(Intent(Intent.ACTION_VIEW, uri).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
     } catch (_: ActivityNotFoundException) {
-        Toast.makeText(context, "Aucun navigateur pour ouvrir GitHub", Toast.LENGTH_LONG).show()
+        Toast.makeText(context, tr("Aucun navigateur pour ouvrir GitHub"), Toast.LENGTH_LONG).show()
     }
 }
 
@@ -1498,11 +1522,11 @@ fun learnTargets(p: Project, strips: List<com.pocketstudio.app.mixer.StripInfo>)
 fun controlLabel(target: com.pocketstudio.model.AutoTarget, p: Project, strips: List<com.pocketstudio.app.mixer.StripInfo>): String =
     when (target.kind) {
         com.pocketstudio.model.MidiMapping.SYNTH ->
-            "Synthé : " + (com.pocketstudio.app.synth.SYNTH_LABELS.firstOrNull { it.first == target.param }?.second ?: "réglage") + " (piste choisie)"
+            tr("Synthé : %s (piste choisie)", com.pocketstudio.app.synth.SYNTH_LABELS.firstOrNull { it.first == target.param }?.second ?: tr("réglage"))
         com.pocketstudio.model.MidiMapping.PLAITS ->
-            "Plaits : " + com.pocketstudio.model.PlaitsPatch.PARAMS.getOrElse(target.param - 1) { "réglage" } + " (piste choisie)"
-        com.pocketstudio.model.MidiMapping.PERFORMANCE -> if (target.param == 0) "Effet live : filtre" else "Effet live : résonance"
-        com.pocketstudio.model.MidiMapping.TEMPO -> "Tempo (60 à 200 BPM)"
+            tr("Plaits : %s (piste choisie)", tr(com.pocketstudio.model.PlaitsPatch.PARAMS.getOrElse(target.param - 1) { "réglage" }))
+        com.pocketstudio.model.MidiMapping.PERFORMANCE -> if (target.param == 0) tr("Effet live : filtre") else tr("Effet live : résonance")
+        com.pocketstudio.model.MidiMapping.TEMPO -> tr("Tempo (60 à 200 BPM)")
         else -> com.pocketstudio.app.mixer.automationLabel(target, p.mixer.channels, p.mixer.master, strips)
     }
 

@@ -1,5 +1,7 @@
 package com.pocketstudio.app.generate
 
+import com.pocketstudio.model.i18n.tr
+
 import android.app.ActivityManager
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -109,15 +111,15 @@ class GenerateViewModel(app: Application) : AndroidViewModel(app) {
         if (_state.value is GenerateState.Running || _state.value is GenerateState.Checking) return
         val text = prompt.trim()
         if (text.isEmpty()) {
-            _state.value = GenerateState.Failed("Écris d'abord ce que tu veux entendre.")
+            _state.value = GenerateState.Failed(tr("Écris d'abord ce que tu veux entendre."))
             return
         }
         if (!StableAudio.isAvailable) {
-            _state.value = GenerateState.Failed("La génération n'est pas disponible sur ce téléphone.")
+            _state.value = GenerateState.Failed(tr("La génération n'est pas disponible sur ce téléphone."))
             return
         }
         if (SeparationJob.state.value.busy || GenerationJob.download.value is ModelDownload.Running) {
-            _state.value = GenerateState.Failed("Une séparation ou un téléchargement est en cours : attends qu'il finisse.")
+            _state.value = GenerateState.Failed(tr("Une séparation ou un téléchargement est en cours : attends qu'il finisse."))
             return
         }
         if (!GenerationJob.generating.compareAndSet(false, true)) return
@@ -130,11 +132,11 @@ class GenerateViewModel(app: Application) : AndroidViewModel(app) {
             // The native work cannot be interrupted halfway: it always finishes (or sees the cancel flag).
             val outcome = withContext(Dispatchers.Default + NonCancellable) {
                 try { runCatching {
-                    if (!verify(app)) return@runCatching "Modèle abîmé, supprimé : retélécharge-le."
+                    if (!verify(app)) return@runCatching tr("Modèle abîmé, supprimé : retélécharge-le.")
                     val memory = ActivityManager.MemoryInfo()
                     app.getSystemService(ActivityManager::class.java).getMemoryInfo(memory)
                     if (memory.availMem < NEEDED_RAM) {
-                        return@runCatching "Pas assez de mémoire libre (${"%.1f".format(memory.availMem / 1e9)} Go, il en faut ${"%.1f".format(NEEDED_RAM / 1e9)}). Ferme des applis et réessaie."
+                        return@runCatching tr("Pas assez de mémoire libre (%.1f Go, il en faut %.1f). Ferme des applis et réessaie.", memory.availMem / 1e9, NEEDED_RAM / 1e9)
                     }
                     val tokens = tokenizerFor(app).encode(text)
                     _state.value = GenerateState.Running(0f)
@@ -143,13 +145,13 @@ class GenerateViewModel(app: Application) : AndroidViewModel(app) {
                         _state.value = GenerateState.Running(p)
                         !cancelled.get()
                     }
-                    if (audio == null) return@runCatching if (cancelled.get()) null else "Le modèle a échoué (mémoire ou fichiers) : réessaie."
+                    if (audio == null) return@runCatching if (cancelled.get()) null else tr("Le modèle a échoué (mémoire ou fichiers) : réessaie.")
                     AppLog.add("Génération : « ${text.take(40)} », ${seconds.roundToInt()} s en ${(System.nanoTime() - started) / 1_000_000_000} s")
                     _result.value = Generated(AudioEdits.normalize(Pcm(audio, 2, StableAudio.SAMPLE_RATE)), text, seed)
                     null
                 }.getOrElse { e ->
                     AppLog.add("Génération : ${e.javaClass.simpleName} ${e.message}")
-                    if (e is OutOfMemoryError) "Pas assez de mémoire : essaie un son plus court." else "Ça n'a pas marché (${e.javaClass.simpleName})."
+                    if (e is OutOfMemoryError) tr("Pas assez de mémoire : essaie un son plus court.") else tr("Ça n'a pas marché (%s).", e.javaClass.simpleName)
                 } } finally {
                     // Here, not after: a cleared screen never resumes past this block.
                     GenerationJob.generating.set(false)
@@ -195,7 +197,7 @@ class GenerateViewModel(app: Application) : AndroidViewModel(app) {
     fun play() {
         val r = _result.value ?: return
         if (!player.play(r.pcm)) {
-            _state.value = GenerateState.Failed("L'écoute n'a pas pu démarrer : pose le son et écoute-le dans le projet.")
+            _state.value = GenerateState.Failed(tr("L'écoute n'a pas pu démarrer : pose le son et écoute-le dans le projet."))
             return
         }
         _playing.value = true

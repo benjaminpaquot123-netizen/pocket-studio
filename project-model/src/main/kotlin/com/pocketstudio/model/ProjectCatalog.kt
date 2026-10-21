@@ -1,5 +1,6 @@
 package com.pocketstudio.model
 
+import com.pocketstudio.model.i18n.tr
 import java.io.File
 import java.io.IOException
 import java.util.UUID
@@ -32,7 +33,7 @@ class ProjectCatalog(private val root: File, private val trash: File) {
         val modified = listOf(File(dir, ProjectStore.MAIN), File(dir, ProjectStore.BACKUP)).filter { it.exists() }.maxOfOrNull { it.lastModified() }
             ?: return null
         val p = runCatching { store.load(id) }.getOrNull()
-            ?: return ProjectInfo(id, "Projet illisible", modified, 0.0, 0, 0, false)
+            ?: return ProjectInfo(id, tr("Projet illisible"), modified, 0.0, 0, 0, false)
         val scene = p.currentSceneContent()
         return ProjectInfo(id, p.name, modified, p.tempoBpm, scene.stepsFor(p.stepsPerBar) / p.stepsPerBar, p.allScenes.size, p.remix.setId != null)
     }
@@ -57,7 +58,7 @@ class ProjectCatalog(private val root: File, private val trash: File) {
     /** A copy of [id] (its sounds included) named [name]; returns the new id. */
     @Throws(IOException::class)
     fun duplicate(id: String, name: String): String {
-        val source = store.load(id) ?: throw IOException("projet introuvable")
+        val source = store.load(id) ?: throw IOException(tr("projet introuvable"))
         val copy = newId()
         try {
             val samples = File(store.folder(id), SAMPLES)
@@ -66,7 +67,7 @@ class ProjectCatalog(private val root: File, private val trash: File) {
         } catch (e: Exception) {
             // A half-copied folder (storage full…) would show up as a broken project: remove it.
             store.folder(copy).deleteRecursively()
-            throw if (e is IOException) e else IOException("copie impossible", e)
+            throw if (e is IOException) e else IOException(tr("copie impossible"), e)
         }
         return copy
     }
@@ -74,7 +75,7 @@ class ProjectCatalog(private val root: File, private val trash: File) {
     /** Renames a project that is not open (an open one is renamed through its session). */
     @Throws(IOException::class)
     fun rename(id: String, name: String) {
-        val p = store.load(id) ?: throw IOException("projet introuvable")
+        val p = store.load(id) ?: throw IOException(tr("projet introuvable"))
         store.save(id, p.copy(name = name.take(MAX_NAME)))
     }
 
@@ -84,10 +85,10 @@ class ProjectCatalog(private val root: File, private val trash: File) {
         trash.mkdirs()
         val entry = "$id@${System.currentTimeMillis()}"
         val from = store.folder(id)
-        if (!from.exists()) throw IOException("projet introuvable")
+        if (!from.exists()) throw IOException(tr("projet introuvable"))
         if (!from.renameTo(File(trash, entry))) {
             // Another file system: copy, then remove the original only once the copy is complete.
-            if (!from.copyRecursively(File(trash, entry), overwrite = true)) throw IOException("copie impossible")
+            if (!from.copyRecursively(File(trash, entry), overwrite = true)) throw IOException(tr("copie impossible"))
             from.deleteRecursively()
         }
         return entry
@@ -97,10 +98,10 @@ class ProjectCatalog(private val root: File, private val trash: File) {
     @Throws(IOException::class)
     fun restore(entry: String): String {
         val from = File(trash, entry)
-        if (!from.isDirectory) throw IOException("rien à restaurer")
+        if (!from.isDirectory) throw IOException(tr("rien à restaurer"))
         val wanted = entry.substringBefore('@')
         val id = if (store.folder(wanted).exists()) newId() else wanted
-        if (!from.renameTo(store.folder(id))) throw IOException("restauration impossible")
+        if (!from.renameTo(store.folder(id))) throw IOException(tr("restauration impossible"))
         return id
     }
 
@@ -109,7 +110,7 @@ class ProjectCatalog(private val root: File, private val trash: File) {
         val bin = ProjectStore(trash)
         return bin.list().mapNotNull { entry ->
             val at = entry.substringAfterLast('@').toLongOrNull() ?: return@mapNotNull null
-            val name = runCatching { bin.load(entry)?.name }.getOrNull() ?: "Projet illisible"
+            val name = runCatching { bin.load(entry)?.name }.getOrNull() ?: tr("Projet illisible")
             TrashedProject(entry, name, at)
         }.sortedByDescending { it.deletedAt }
     }
@@ -124,7 +125,7 @@ class ProjectCatalog(private val root: File, private val trash: File) {
         fun scan(from: ProjectStore, trashed: Boolean) = from.list().forEach { id ->
             val p = runCatching { from.load(id) }.getOrNull()
             val sets = if (p != null) listOfNotNull(p.remix.setId) else rawSetIds(from.folder(id))
-            val name = (p?.name ?: "Projet illisible") + if (trashed) " (corbeille)" else ""
+            val name = (p?.name ?: tr("Projet illisible")) + if (trashed) tr(" (corbeille)") else ""
             sets.forEach { users.getOrPut(it) { mutableListOf() } += name }
         }
         scan(store, trashed = false)
@@ -149,7 +150,7 @@ class ProjectCatalog(private val root: File, private val trash: File) {
     /** The project and its sounds as a .zip (project.json + samples/…), for a backup or another phone. */
     @Throws(IOException::class)
     fun exportZip(id: String, out: java.io.OutputStream) {
-        val project = store.load(id) ?: throw IOException("projet introuvable")
+        val project = store.load(id) ?: throw IOException(tr("projet introuvable"))
         java.util.zip.ZipOutputStream(out.buffered()).use { zip ->
             zip.putNextEntry(java.util.zip.ZipEntry(ProjectStore.MAIN))
             zip.write(ProjectJson.encode(project).toByteArray(Charsets.UTF_8))
@@ -180,7 +181,7 @@ class ProjectCatalog(private val root: File, private val trash: File) {
                     val entry = zip.nextEntry ?: break
                     if (entry.isDirectory) continue
                     val name = entry.name.replace('\\', '/')
-                    if (!seen.add(name)) throw IOException("fichier en double dans le .zip")
+                    if (!seen.add(name)) throw IOException(tr("fichier en double dans le .zip"))
                     val target = when {
                         name == ProjectStore.MAIN -> null
                         name.startsWith("$SAMPLES/") && PadSample(name.removePrefix("$SAMPLES/"), "").isSafe ->
@@ -195,28 +196,28 @@ class ProjectCatalog(private val root: File, private val trash: File) {
                         if (n < 0) break
                         size += n
                         total += n
-                        if (size > (if (target == null) MAX_PROJECT_JSON else MAX_ZIP_ENTRY) || total > MAX_ZIP_TOTAL) throw IOException("projet trop gros")
+                        if (size > (if (target == null) MAX_PROJECT_JSON else MAX_ZIP_ENTRY) || total > MAX_ZIP_TOTAL) throw IOException(tr("projet trop gros"))
                         if (target == null) bytes.write(buf, 0, n) else target.appendBytes(buf.copyOf(n))
                     }
                     if (target == null) project = ProjectJson.decode(bytes.toString(Charsets.UTF_8.name()))
                 }
             }
             // Cleaned first: only plain file names count (a path like ../x is dropped here).
-            val p = (project ?: throw IOException("ce .zip n'est pas un projet Pocket Studio")).sanitized()
+            val p = (project ?: throw IOException(tr("ce .zip n'est pas un projet Pocket Studio"))).sanitized()
             val missing = p.sampleFiles.filterNot { File(dir, "$SAMPLES/$it").exists() }
-            if (missing.isNotEmpty()) throw IOException("${missing.size} son(s) manquant(s) dans le .zip")
+            if (missing.isNotEmpty()) throw IOException(tr("%d son(s) manquant(s) dans le .zip", missing.size))
             store.save(id, p)
             return id
         } catch (e: Throwable) {
             // Also an OutOfMemoryError: nothing half-imported stays behind, and the app does not crash.
             dir.deleteRecursively()
-            // Our own messages are French; a library's (JSON parser, zip reader) is not shown as is.
-            throw if (e.javaClass == IOException::class.java) e else IOException("fichier illisible ou abîmé", e)
+            // Our own messages are translated; a library's (JSON parser, zip reader) is not shown as is.
+            throw if (e.javaClass == IOException::class.java) e else IOException(tr("fichier illisible ou abîmé"), e)
         }
     }
 
     /** "Mon projet 3": the first free number among the existing names. */
-    fun nextName(prefix: String = "Mon projet"): String {
+    fun nextName(prefix: String = tr("Mon projet")): String {
         val names = list().map { it.name }.toSet()
         return generateSequence(1) { it + 1 }.map { "$prefix $it" }.first { it !in names }
     }

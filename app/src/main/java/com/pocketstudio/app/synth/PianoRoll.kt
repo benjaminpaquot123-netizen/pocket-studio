@@ -1,5 +1,7 @@
 package com.pocketstudio.app.synth
 
+import com.pocketstudio.model.i18n.tr
+
 import com.pocketstudio.ui.fadingHorizontalScroll
 import com.pocketstudio.ui.WithHelp
 import com.pocketstudio.ui.HelpDot
@@ -125,57 +127,60 @@ fun PianoRoll(
     val apply: (NoteEdits.Result, String?) -> Unit = { r, key -> actions.replaceClip(r.clip, key); selection = r.selection }
     val chipColors = pillColors()
     val hScroll = rememberScrollState()
-    val stepWidth = ZOOMS[zoom]
-    Column(modifier, verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        Row(Modifier.fadingHorizontalScroll(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            FilterChip(selected = !selectMode, onClick = { selectMode = false; selection = emptySet() }, label = { Text("✏ Dessiner") }, colors = chipColors,
-                modifier = Modifier.testTag("mode_draw"))
-            FilterChip(selected = selectMode, onClick = { selectMode = true }, label = { Text("⬚ Sélectionner") }, colors = chipColors,
-                modifier = Modifier.testTag("mode_select"))
-            Text("  Zoom", style = MaterialTheme.typography.bodySmall)
-            TextButton(onClick = { zoom = (zoom - 1).coerceAtLeast(0) }, enabled = zoom > 0, modifier = Modifier.testTag("zoom_out")) { Text("−") }
-            TextButton(onClick = { zoom = (zoom + 1).coerceAtMost(ZOOMS.lastIndex) }, enabled = zoom < ZOOMS.lastIndex, modifier = Modifier.testTag("zoom_in")) { Text("+") }
+    // Short loops fill the width on a big screen (tablet) instead of leaving the right half empty.
+    androidx.compose.foundation.layout.BoxWithConstraints(modifier) {
+        val stepWidth = maxOf(ZOOMS[zoom], (maxWidth - 36.dp) / clip.steps)
+        Column(Modifier, verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            Row(Modifier.fadingHorizontalScroll(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                FilterChip(selected = !selectMode, onClick = { selectMode = false; selection = emptySet() }, label = { Text(tr("✏ Dessiner")) }, colors = chipColors,
+                    modifier = Modifier.testTag("mode_draw"))
+                FilterChip(selected = selectMode, onClick = { selectMode = true }, label = { Text(tr("⬚ Sélectionner")) }, colors = chipColors,
+                    modifier = Modifier.testTag("mode_select"))
+                Text(tr("  Zoom"), style = MaterialTheme.typography.bodySmall)
+                TextButton(onClick = { zoom = (zoom - 1).coerceAtLeast(0) }, enabled = zoom > 0, modifier = Modifier.testTag("zoom_out")) { Text("−") }
+                TextButton(onClick = { zoom = (zoom + 1).coerceAtMost(ZOOMS.lastIndex) }, enabled = zoom < ZOOMS.lastIndex, modifier = Modifier.testTag("zoom_in")) { Text("+") }
+            }
+            Row(Modifier.fadingHorizontalScroll(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                Text(tr("Boucle"), style = MaterialTheme.typography.bodySmall)
+                NoteClip.LENGTHS_IN_STEPS.forEach { steps ->
+                    FilterChip(selected = clip.steps == steps, onClick = { actions.setSteps(steps) },
+                        label = { Text(tr("%d mes.", steps / 16)) }, colors = chipColors)
+                }
+                Text(tr("  Note"), style = MaterialTheme.typography.bodySmall)
+                NEW_LENGTHS.forEach { (steps, label) ->
+                    FilterChip(selected = newSteps == steps, onClick = { newSteps = steps }, label = { Text(label) }, colors = chipColors)
+                }
+                Text(tr("  Grille"), style = MaterialTheme.typography.bodySmall)
+                GRIDS.forEach { (ticks, label) ->
+                    FilterChip(selected = grid == ticks, onClick = { grid = ticks }, label = { Text(label) }, colors = chipColors,
+                        modifier = Modifier.testTag("grid_$ticks"))
+                }
+            }
+            if (selectMode) {
+                SelectionBar(clip, selection, clipboard, playStep, grid, chipColors,
+                    select = { selection = it }, copy = { clipboard = NoteEdits.copy(selection) }, apply = apply)
+            } else {
+                Row(Modifier.fadingHorizontalScroll(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+                    TextButton(onClick = { actions.quantize(grid, 0.5f) }, modifier = Modifier.testTag("quantize_50")) { Text(tr("Quantifier 50 %")) }
+                    TextButton(onClick = { actions.quantize(grid, 1f) }) { Text("100 %") }
+                    FilterChip(selected = showGhosts, onClick = { showGhosts = !showGhosts }, label = { Text(tr("Basse en fantôme")) }, colors = chipColors)
+                    FilterChip(selected = chordMode, onClick = { chordMode = !chordMode }, label = { Text(tr("Accords")) }, colors = chipColors,
+                        modifier = Modifier.testTag("chord_mode"))
+                    TextButton(onClick = actions.clear, enabled = clip.notes.isNotEmpty()) { Text(tr("Effacer")) }
+                }
+            }
+            Grid(
+                clip, if (showGhosts) ghosts else emptyList(), playStep, newSteps * TICK, actions, gridHeight, harmony, chordMode,
+                hScroll, stepWidth, grid, selectMode, selection, select = { selection = it }, apply = apply,
+            )
+            VelocityLane(clip, selection, hScroll, stepWidth, apply)
+            Text(
+                if (selectMode) tr("Touche des notes ou trace un cadre pour les choisir ; glisse une note choisie pour tout déplacer. Couloir du bas : la force de chaque note.")
+                else tr("Touche une case : ajoute une note. Touche une note : l'enlève. Glisse : déplace. Glisse le bout : allonge. Couloir du bas : glisse pour régler la force."),
+                style = MaterialTheme.typography.bodySmall,
+                color = Neon.TextSecondary,
+            )
         }
-        Row(Modifier.fadingHorizontalScroll(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            Text("Boucle", style = MaterialTheme.typography.bodySmall)
-            NoteClip.LENGTHS_IN_STEPS.forEach { steps ->
-                FilterChip(selected = clip.steps == steps, onClick = { actions.setSteps(steps) },
-                    label = { Text("${steps / 16} mes.") }, colors = chipColors)
-            }
-            Text("  Note", style = MaterialTheme.typography.bodySmall)
-            NEW_LENGTHS.forEach { (steps, label) ->
-                FilterChip(selected = newSteps == steps, onClick = { newSteps = steps }, label = { Text(label) }, colors = chipColors)
-            }
-            Text("  Grille", style = MaterialTheme.typography.bodySmall)
-            GRIDS.forEach { (ticks, label) ->
-                FilterChip(selected = grid == ticks, onClick = { grid = ticks }, label = { Text(label) }, colors = chipColors,
-                    modifier = Modifier.testTag("grid_$ticks"))
-            }
-        }
-        if (selectMode) {
-            SelectionBar(clip, selection, clipboard, playStep, grid, chipColors,
-                select = { selection = it }, copy = { clipboard = NoteEdits.copy(selection) }, apply = apply)
-        } else {
-            Row(Modifier.fadingHorizontalScroll(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-                TextButton(onClick = { actions.quantize(grid, 0.5f) }, modifier = Modifier.testTag("quantize_50")) { Text("Quantifier 50 %") }
-                TextButton(onClick = { actions.quantize(grid, 1f) }) { Text("100 %") }
-                FilterChip(selected = showGhosts, onClick = { showGhosts = !showGhosts }, label = { Text("Basse en fantôme") }, colors = chipColors)
-                FilterChip(selected = chordMode, onClick = { chordMode = !chordMode }, label = { Text("Accords") }, colors = chipColors,
-                    modifier = Modifier.testTag("chord_mode"))
-                TextButton(onClick = actions.clear, enabled = clip.notes.isNotEmpty()) { Text("Effacer") }
-            }
-        }
-        Grid(
-            clip, if (showGhosts) ghosts else emptyList(), playStep, newSteps * TICK, actions, gridHeight, harmony, chordMode,
-            hScroll, stepWidth, grid, selectMode, selection, select = { selection = it }, apply = apply,
-        )
-        VelocityLane(clip, selection, hScroll, stepWidth, apply)
-        Text(
-            if (selectMode) "Touche des notes ou trace un cadre pour les choisir ; glisse une note choisie pour tout déplacer. Couloir du bas : la force de chaque note."
-            else "Touche une case : ajoute une note. Touche une note : l'enlève. Glisse : déplace. Glisse le bout : allonge. Couloir du bas : glisse pour régler la force.",
-            style = MaterialTheme.typography.bodySmall,
-            color = Neon.TextSecondary,
-        )
     }
 }
 
@@ -195,20 +200,20 @@ private fun SelectionBar(
     val any = selection.isNotEmpty()
     Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
         Row(Modifier.fadingHorizontalScroll(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-            Text(if (any) "${selection.size} note${if (selection.size > 1) "s" else ""}" else "Rien de choisi",
+            Text(if (!any) tr("Rien de choisi") else if (selection.size > 1) tr("%d notes", selection.size) else tr("%d note", selection.size),
                 style = MaterialTheme.typography.bodySmall, color = Neon.Cyan, modifier = Modifier.testTag("selection_count"))
-            TextButton(onClick = { select(clip.notes.toSet()) }, modifier = Modifier.testTag("select_all")) { Text("Tout") }
-            TextButton(onClick = { select(emptySet()) }, enabled = any) { Text("Aucune") }
-            TextButton(onClick = { apply(NoteEdits.transpose(clip, selection, 1), "sel-pitch") }, enabled = any, modifier = Modifier.testTag("sel_up")) { Text("▲ ½ ton") }
-            TextButton(onClick = { apply(NoteEdits.transpose(clip, selection, -1), "sel-pitch") }, enabled = any) { Text("▼ ½ ton") }
-            TextButton(onClick = { apply(NoteEdits.transpose(clip, selection, 12), "sel-pitch") }, enabled = any) { Text("▲ octave") }
-            TextButton(onClick = { apply(NoteEdits.transpose(clip, selection, -12), "sel-pitch") }, enabled = any) { Text("▼ octave") }
+            TextButton(onClick = { select(clip.notes.toSet()) }, modifier = Modifier.testTag("select_all")) { Text(tr("Tout")) }
+            TextButton(onClick = { select(emptySet()) }, enabled = any) { Text(tr("Aucune")) }
+            TextButton(onClick = { apply(NoteEdits.transpose(clip, selection, 1), "sel-pitch") }, enabled = any, modifier = Modifier.testTag("sel_up")) { Text(tr("▲ ½ ton")) }
+            TextButton(onClick = { apply(NoteEdits.transpose(clip, selection, -1), "sel-pitch") }, enabled = any) { Text(tr("▼ ½ ton")) }
+            TextButton(onClick = { apply(NoteEdits.transpose(clip, selection, 12), "sel-pitch") }, enabled = any) { Text(tr("▲ octave")) }
+            TextButton(onClick = { apply(NoteEdits.transpose(clip, selection, -12), "sel-pitch") }, enabled = any) { Text(tr("▼ octave")) }
             TextButton(onClick = { apply(NoteEdits.shift(clip, selection, -grid), "sel-move") }, enabled = any) { Text("◀") }
             TextButton(onClick = { apply(NoteEdits.shift(clip, selection, grid), "sel-move") }, enabled = any) { Text("▶") }
         }
         Row(Modifier.fadingHorizontalScroll(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-            TextButton(onClick = { apply(NoteEdits.duplicate(clip, selection), null) }, enabled = any, modifier = Modifier.testTag("sel_duplicate")) { Text("Dupliquer") }
-            TextButton(onClick = copy, enabled = any, modifier = Modifier.testTag("sel_copy")) { Text("Copier") }
+            TextButton(onClick = { apply(NoteEdits.duplicate(clip, selection), null) }, enabled = any, modifier = Modifier.testTag("sel_duplicate")) { Text(tr("Dupliquer")) }
+            TextButton(onClick = copy, enabled = any, modifier = Modifier.testTag("sel_copy")) { Text(tr("Copier")) }
             TextButton(
                 onClick = {
                     // At the playhead while it plays, else just after the last note.
@@ -217,12 +222,12 @@ private fun SelectionBar(
                     apply(NoteEdits.paste(clip, clipboard, at.coerceIn(0, clip.ticks - 1)), null)
                 },
                 enabled = clipboard.isNotEmpty(), modifier = Modifier.testTag("sel_paste"),
-            ) { Text("Coller") }
-            TextButton(onClick = { apply(NoteEdits.quantize(clip, selection, grid), null) }, enabled = any) { Text("Quantifier") }
-            TextButton(onClick = { apply(NoteEdits.legato(clip, selection), null) }, enabled = any) { Text("Legato") }
-            TextButton(onClick = { apply(NoteEdits.humanize(clip, selection), null) }, enabled = any) { Text("Humaniser") }
+            ) { Text(tr("Coller")) }
+            TextButton(onClick = { apply(NoteEdits.quantize(clip, selection, grid), null) }, enabled = any) { Text(tr("Quantifier")) }
+            TextButton(onClick = { apply(NoteEdits.legato(clip, selection), null) }, enabled = any) { Text(tr("Legato")) }
+            TextButton(onClick = { apply(NoteEdits.humanize(clip, selection), null) }, enabled = any) { Text(tr("Humaniser")) }
             TextButton(onClick = { apply(NoteEdits.delete(clip, selection), null) }, enabled = any, modifier = Modifier.testTag("sel_delete")) {
-                Text("Supprimer", color = if (any) Neon.Red else Neon.TextSecondary)
+                Text(tr("Supprimer"), color = if (any) Neon.Red else Neon.TextSecondary)
             }
         }
     }
@@ -245,7 +250,7 @@ private fun VelocityLane(
     // Latest values for the gesture without restarting it on every edit.
     val current by androidx.compose.runtime.rememberUpdatedState(clip to selection)
     Row(Modifier.fillMaxWidth().height(56.dp)) {
-        Box(Modifier.width(36.dp), contentAlignment = Alignment.Center) { Text("Force", style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary) }
+        Box(Modifier.width(36.dp), contentAlignment = Alignment.Center) { Text(tr("Force"), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary) }
         Box(Modifier.weight(1f).horizontalScroll(hScroll)) {
             Canvas(
                 Modifier.size(stepWidth * clip.steps, 56.dp).testTag("velocity_lane").pointerInput(stepPx) {
@@ -500,7 +505,8 @@ private class GridColors(
 
 private val ROOTS = listOf("Do", "Do#", "Ré", "Ré#", "Mi", "Fa", "Fa#", "Sol", "Sol#", "La", "La#", "Si")
 private val ARP_RATES = listOf(48 to "1/8", 24 to "1/16", 12 to "1/32")
-private val STRUMS = listOf(0 to "Non", 3 to "Léger", 8 to "Moyen", 16 to "Lent")
+private val STRUMS: List<Pair<Int, String>>
+    get() = listOf(0 to tr("Non"), 3 to tr("Léger"), 8 to tr("Moyen"), 16 to tr("Lent"))
 
 @Composable
 private fun ChipRow(label: String, help: Help? = null, content: @Composable () -> Unit) {
@@ -519,30 +525,30 @@ fun HarmonyPanel(harmony: Harmony, performance: Performance, actions: PianoRollA
     val chipColors = pillColors()
     val guesses = NoteEdits.guessScales(notes)
     if (guesses.isNotEmpty()) {
-        ChipRow("Deviner") {
+        ChipRow(tr("Deviner")) {
             guesses.forEach { g ->
                 TextButton(onClick = { actions.setHarmony(g.copy(lock = harmony.lock)) }, modifier = Modifier.testTag("guess_${g.root}_${g.scale.name}")) {
-                    Text("${ROOTS[g.root]} ${g.scale.label.lowercase()}")
+                    Text("${ROOTS[g.root]} ${tr(g.scale.label).lowercase()}")
                 }
             }
         }
     }
-    ChipRow("Gamme") {
+    ChipRow(tr("Gamme")) {
         Scale.entries.forEach { sc ->
             FilterChip(selected = harmony.scale == sc, onClick = { actions.setHarmony(harmony.copy(scale = sc)) },
-                label = { Text(sc.label) }, colors = chipColors, modifier = Modifier.testTag("scale_${sc.name}"))
+                label = { Text(tr(sc.label)) }, colors = chipColors, modifier = Modifier.testTag("scale_${sc.name}"))
         }
     }
     if (harmony.scale != Scale.Off) {
-        ChipRow("Tonique") {
+        ChipRow(tr("Tonique")) {
             ROOTS.forEachIndexed { i, name ->
                 FilterChip(selected = harmony.root == i, onClick = { actions.setHarmony(harmony.copy(root = i)) }, label = { Text(name) }, colors = chipColors)
             }
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
-                WithHelp(Glossary.SCALE_LOCK) { Text("Verrouiller la gamme", style = MaterialTheme.typography.bodyMedium) }
-                Text("Le clavier, les pads d'accords et le MIDI ne jouent que les notes de la gamme : pas de fausse note.",
+                WithHelp(Glossary.SCALE_LOCK) { Text(tr("Verrouiller la gamme"), style = MaterialTheme.typography.bodyMedium) }
+                Text(tr("Le clavier, les pads d'accords et le MIDI ne jouent que les notes de la gamme : pas de fausse note."),
                     style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
             }
             Switch(checked = harmony.lock, onCheckedChange = { actions.setHarmony(harmony.copy(lock = it)) }, modifier = Modifier.testTag("scale_lock"))
@@ -550,41 +556,41 @@ fun HarmonyPanel(harmony: Harmony, performance: Performance, actions: PianoRollA
     }
     // Pick a progression, then what to make of it: chords, a bass line or an arpeggio.
     var chosen by rememberSaveable { mutableStateOf(Progression.Pop) }
-    ChipRow("Progression", Glossary.PROGRESSION) {
+    ChipRow(tr("Progression"), Glossary.PROGRESSION) {
         Progression.entries.forEach { pr ->
-            FilterChip(selected = chosen == pr, onClick = { chosen = pr }, label = { Text(pr.label) }, colors = chipColors,
+            FilterChip(selected = chosen == pr, onClick = { chosen = pr }, label = { Text(tr(pr.label)) }, colors = chipColors,
                 modifier = Modifier.testTag("progression_${pr.name}"))
         }
     }
-    ChipRow("Créer") {
-        TextButton(onClick = { actions.applyProgression(chosen) }, modifier = Modifier.testTag("make_chords")) { Text("Accords") }
-        TextButton(onClick = { actions.applyBassLine(chosen) }, modifier = Modifier.testTag("make_bass")) { Text("Ligne de basse") }
-        TextButton(onClick = { actions.applyArpeggio(chosen) }, modifier = Modifier.testTag("make_arp")) { Text("Arpège") }
+    ChipRow(tr("Créer")) {
+        TextButton(onClick = { actions.applyProgression(chosen) }, modifier = Modifier.testTag("make_chords")) { Text(tr("Accords")) }
+        TextButton(onClick = { actions.applyBassLine(chosen) }, modifier = Modifier.testTag("make_bass")) { Text(tr("Ligne de basse")) }
+        TextButton(onClick = { actions.applyArpeggio(chosen) }, modifier = Modifier.testTag("make_arp")) { Text(tr("Arpège")) }
     }
-    Text("Remplace les notes de la piste choisie (Annuler les rend). Une piste par rôle : basse, accords, arpège.",
+    Text(tr("Remplace les notes de la piste choisie (Annuler les rend). Une piste par rôle : basse, accords, arpège."),
         style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
-    ChipRow("Arpège", Glossary.ARPEGGIO) {
+    ChipRow(tr("Arpège"), Glossary.ARPEGGIO) {
         ArpMode.entries.forEach { m ->
             FilterChip(selected = performance.arp == m, onClick = { actions.setPerformance(performance.copy(arp = m)) },
-                label = { Text(m.label) }, colors = chipColors, modifier = Modifier.testTag("arp_${m.name}"))
+                label = { Text(tr(m.label)) }, colors = chipColors, modifier = Modifier.testTag("arp_${m.name}"))
         }
     }
     if (performance.arp != ArpMode.Off) {
-        ChipRow("Vitesse") {
+        ChipRow(tr("Vitesse")) {
             ARP_RATES.forEach { (ticks, label) ->
                 FilterChip(selected = performance.arpRate == ticks, onClick = { actions.setPerformance(performance.copy(arpRate = ticks)) },
                     label = { Text(label) }, colors = chipColors)
             }
         }
     }
-    ChipRow("Strum") {
+    ChipRow(tr("Strum")) {
         STRUMS.forEach { (ticks, label) ->
             FilterChip(selected = performance.strum == ticks, onClick = { actions.setPerformance(performance.copy(strum = ticks)) },
                 label = { Text(label) }, colors = chipColors)
         }
     }
     Text(
-        "La progression remplace les notes (Annuler possible). Arpège et strum jouent les accords posés ensemble.",
+        tr("La progression remplace les notes (Annuler possible). Arpège et strum jouent les accords posés ensemble."),
         style = MaterialTheme.typography.bodySmall,
         color = Neon.TextSecondary,
     )

@@ -1,5 +1,7 @@
 package com.pocketstudio.app.synth
 
+import com.pocketstudio.model.i18n.tr
+
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.Spring
@@ -104,12 +106,12 @@ internal fun FloatingKeyboard(
                 Row(dragToFold, verticalAlignment = Alignment.CenterVertically) {
                     Icon(Icons.Filled.Piano, contentDescription = null, tint = Neon.Cyan, modifier = Modifier.size(18.dp))
                     Text(
-                        if (chordPads) "  Pads d'accords" else "  Clavier",
+                        if (chordPads) tr("  Pads d'accords") else tr("  Clavier"),
                         style = MaterialTheme.typography.labelLarge, color = Neon.TextPrimary, modifier = Modifier.weight(1f),
                     )
                     OctaveControl(octave, actions)
                     IconButton(onClick = { onFold(true) }, modifier = Modifier.testTag("float_keyboard_fold")) {
-                        Icon(Icons.Filled.KeyboardArrowDown, contentDescription = "Ranger le clavier")
+                        Icon(Icons.Filled.KeyboardArrowDown, contentDescription = tr("Ranger le clavier"))
                     }
                 }
                 if (chordPads) ChordPads(harmony, 12 * (octave + 1), actions.noteOn, actions.noteOff, height = keysHeight)
@@ -135,7 +137,7 @@ internal fun FloatingKeyboard(
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
             ) {
                 Icon(Icons.Filled.Piano, contentDescription = null, tint = Neon.OnAccent, modifier = Modifier.size(18.dp))
-                Text("Clavier", style = MaterialTheme.typography.labelLarge, color = Neon.OnAccent)
+                Text(tr("Clavier"), style = MaterialTheme.typography.labelLarge, color = Neon.OnAccent)
             }
         }
     }

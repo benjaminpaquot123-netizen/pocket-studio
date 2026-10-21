@@ -83,4 +83,17 @@ class ShareSongTest {
         assertEquals("Mon morceau", ShareSong.suggestedName(""))
         assertEquals("House", ShareSong.suggestedName("House"))
     }
+
+    @Test
+    fun aDefaultNameGivenInAnotherLanguageIsStillOne() {
+        // "My song 2" (English) or "Mijn nummer" (Dutch): not chosen by the user, whatever the language now.
+        listOf("My song 2", "Mijn nummer", "Mon morceau 4").forEach { assertTrue("« $it »", ShareSong.isDefaultName(it)) }
+        try {
+            com.pocketstudio.model.i18n.I18n.lang = com.pocketstudio.model.i18n.Lang.EN
+            assertEquals("My song", ShareSong.suggestedName("Mon projet 3"))
+            assertTrue(ShareSong.isDefaultName("Mon morceau"))
+        } finally {
+            com.pocketstudio.model.i18n.I18n.lang = com.pocketstudio.model.i18n.Lang.FR
+        }
+    }
 }

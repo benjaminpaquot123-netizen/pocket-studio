@@ -8,6 +8,7 @@ import androidx.core.content.FileProvider
 import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import com.pocketstudio.model.i18n.tr
 
 /** Where exported files go and how they leave the app. */
 object WavExporter {
@@ -55,7 +56,8 @@ object WavExporter {
     fun share(context: Context, file: File) = share(context, listOf(file))
 
     /** One file or several (the tracks of a stems export) through Android's share menu. */
-    fun share(context: Context, files: List<File>, title: String = "Partager le morceau") {
+    fun share(context: Context, files: List<File>, title: String = tr("Partager le morceau")) {
+
         if (files.isEmpty()) return
         val uris = ArrayList(files.map { FileProvider.getUriForFile(context, context.packageName + ".files", it) })
         val mime = when {

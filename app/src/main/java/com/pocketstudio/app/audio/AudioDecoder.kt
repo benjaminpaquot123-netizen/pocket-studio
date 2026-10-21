@@ -13,6 +13,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
+import com.pocketstudio.model.i18n.tr
 
 /**
  * Decodes MP3, WAV, FLAC, M4A/AAC, OGG… with Android's own codecs into float PCM
@@ -29,7 +30,7 @@ object AudioDecoder {
     fun decode(context: Context, uri: Uri): Pcm {
         val out = FloatBuilder()
         val (channels, rate) = decodeInto(context, uri, out, MAX_SECONDS.toDouble(), cut = true) { false }
-        if (out.size < channels) throw IOException("fichier vide")
+        if (out.size < channels) throw IOException(tr("fichier vide"))
         val keep = minOf(out.size, MAX_SECONDS.toLong() * rate * channels).toInt() / channels * channels
         return Pcm(out.toArray(keep), channels, rate)
     }
@@ -54,7 +55,7 @@ object AudioDecoder {
         }
         if (sink.size < channels) {
             target.delete()
-            throw IOException("fichier vide")
+            throw IOException(tr("fichier vide"))
         }
         return RawAudio(target, channels, rate, sink.size / channels)
     }
@@ -67,7 +68,7 @@ object AudioDecoder {
             extractor.setDataSource(context, uri, null)
             val track = (0 until extractor.trackCount).firstOrNull {
                 extractor.getTrackFormat(it).getString(MediaFormat.KEY_MIME)?.startsWith("audio/") == true
-            } ?: throw IOException("pas de piste audio")
+            } ?: throw IOException(tr("pas de piste audio"))
             extractor.selectTrack(track)
             val format = extractor.getTrackFormat(track)
             val codec = MediaCodec.createDecoderByType(format.getString(MediaFormat.KEY_MIME)!!)

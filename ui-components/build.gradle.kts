@@ -22,6 +22,8 @@ android {
 }
 
 dependencies {
+    // tr(): the interface texts in the chosen language.
+    implementation(project(":project-model"))
     api(platform(libs.compose.bom))
     api(libs.compose.ui)
     api(libs.compose.ui.graphics)

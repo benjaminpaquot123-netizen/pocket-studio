@@ -64,6 +64,7 @@ import androidx.compose.ui.semantics.semantics
 import com.pocketstudio.model.Scene
 import com.pocketstudio.ui.MonoStyle
 import com.pocketstudio.ui.Neon
+import com.pocketstudio.model.i18n.tr
 
 /**
  * The scene being edited, shown as a chip in the top bar: [current] is its index, [titles] every
@@ -169,7 +170,7 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
                     .background(Brush.linearGradient(listOf(Neon.Cyan, lerp(Neon.Cyan, Color.Black, 0.3f)))),
                 contentAlignment = Alignment.Center,
             ) {
-                Icon(Icons.Filled.FolderOpen, contentDescription = "Mes projets", tint = Neon.OnAccent, modifier = Modifier.size(18.dp))
+                Icon(Icons.Filled.FolderOpen, contentDescription = tr("Mes projets"), tint = Neon.OnAccent, modifier = Modifier.size(18.dp))
             }
             Text(ui.projectName, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
@@ -177,11 +178,11 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
             SceneChip(ui.scene, layout.scene == SceneChipMode.Full, layout.sceneMaxWidth, actions)
         }
         IconButton(onClick = actions.undo, enabled = ui.canUndo, modifier = Modifier.testTag("top_undo")) {
-            Icon(Icons.AutoMirrored.Filled.Undo, contentDescription = "Annuler")
+            Icon(Icons.AutoMirrored.Filled.Undo, contentDescription = tr("Annuler la dernière action"))
         }
         if (showRedo) {
             IconButton(onClick = actions.redo, enabled = ui.canRedo, modifier = Modifier.testTag("top_redo")) {
-                Icon(Icons.AutoMirrored.Filled.Redo, contentDescription = "Rétablir")
+                Icon(Icons.AutoMirrored.Filled.Redo, contentDescription = tr("Rétablir"))
             }
         }
         // Record: a red dot, pulsing and glowing while armed.
@@ -196,7 +197,7 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
             ) {
                 Icon(
                     Icons.Filled.FiberManualRecord,
-                    contentDescription = if (ui.recording) "Arrêter l'enregistrement" else "Enregistrer ce que je joue",
+                    contentDescription = if (ui.recording) tr("Arrêter l'enregistrement") else tr("Enregistrer ce que je joue"),
                     tint = if (ui.recording) Neon.Red.copy(alpha = alpha) else Neon.Red.copy(alpha = 0.7f),
                     modifier = Modifier.size(14.dp),
                 )
@@ -217,13 +218,13 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
                 .shadow(if (ui.playing) 14.dp else 6.dp, CircleShape, ambientColor = playColor, spotColor = playColor)
                 .clip(CircleShape)
                 .background(Brush.verticalGradient(listOf(lerp(playColor, Color.White, 0.2f), playColor)))
-                .clickable(role = Role.Button, onClickLabel = if (ui.playing) "Arrêter" else "Jouer", onClick = actions.togglePlay)
+                .clickable(role = Role.Button, onClickLabel = if (ui.playing) tr("Arrêter") else tr("Jouer"), onClick = actions.togglePlay)
                 .testTag("top_play"),
             contentAlignment = Alignment.Center,
         ) {
             Icon(
                 if (ui.playing) Icons.Filled.Stop else Icons.Filled.PlayArrow,
-                contentDescription = if (ui.playing) "Arrêter" else "Jouer",
+                contentDescription = if (ui.playing) tr("Arrêter") else tr("Jouer"),
                 tint = Neon.OnAccent,
             )
         }
@@ -242,8 +243,8 @@ private fun SceneChip(scene: SceneChipUi, full: Boolean, maxWidth: Dp, actions: 
                 .clip(RoundedCornerShape(18.dp))
                 .background(Neon.Cyan.copy(alpha = 0.14f))
                 .border(1.dp, Neon.Cyan.copy(alpha = 0.45f), RoundedCornerShape(18.dp))
-                .clickable(role = Role.Button, onClickLabel = "Changer de scène") { open = true }
-                .semantics { contentDescription = "Scène en cours : $title. Toucher pour changer de scène." }
+                .clickable(role = Role.Button, onClickLabel = tr("Changer de scène")) { open = true }
+                .semantics { contentDescription = tr("Scène en cours : %s. Toucher pour changer de scène.", title) }
                 .padding(start = 10.dp, end = 4.dp)
                 .testTag("top_scene"),
             verticalAlignment = Alignment.CenterVertically,
@@ -257,7 +258,7 @@ private fun SceneChip(scene: SceneChipUi, full: Boolean, maxWidth: Dp, actions: 
         }
         DropdownMenu(expanded = open, onDismissRequest = { open = false }, modifier = Modifier.testTag("scene_menu")) {
             Text(
-                "Scène à modifier", style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary,
+                tr("Scène à modifier"), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
             )
             scene.titles.forEachIndexed { i, t ->
@@ -265,13 +266,13 @@ private fun SceneChip(scene: SceneChipUi, full: Boolean, maxWidth: Dp, actions: 
                 DropdownMenuItem(
                     text = {
                         Text(
-                            if (i in scene.empty && !current) "$t (vide)" else t,
+                            if (i in scene.empty && !current) tr("%s (vide)", t) else t,
                             fontWeight = if (current) FontWeight.Bold else FontWeight.Normal,
                             color = if (current) Neon.Cyan else Neon.TextPrimary,
                         )
                     },
                     leadingIcon = {
-                        if (current) Icon(Icons.Filled.Check, contentDescription = "Scène en cours", tint = Neon.Cyan)
+                        if (current) Icon(Icons.Filled.Check, contentDescription = tr("Scène en cours"), tint = Neon.Cyan)
                         else Spacer(Modifier.size(24.dp))
                     },
                     onClick = {
@@ -283,7 +284,8 @@ private fun SceneChip(scene: SceneChipUi, full: Boolean, maxWidth: Dp, actions: 
             }
             HorizontalDivider(color = Neon.Outline)
             DropdownMenuItem(
-                text = { Text("Nouvelle scène vide") },
+                text = { Text(tr("Nouvelle scène vide")) },
+
                 leadingIcon = { Icon(Icons.Filled.Add, contentDescription = null, tint = Neon.Acid) },
                 onClick = {
                     open = false

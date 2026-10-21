@@ -27,6 +27,7 @@ import com.pocketstudio.ui.NeonCard
 import com.pocketstudio.ui.SectionLabel
 import kotlin.math.abs
 import kotlin.math.roundToInt
+import com.pocketstudio.model.i18n.tr
 
 /** Spectrum bars (from [Spectrum.bands]): lows on the left, highs on the right. */
 @Composable
@@ -46,7 +47,7 @@ fun SpectrumView(bands: FloatArray?, modifier: Modifier = Modifier) {
             if (h > 0f) drawRoundRect(if (db > -6f) hot else bar, Offset(x, size.height - h), Size(w, h), CornerRadius(2f))
         }
     }
-    Text("Graves  ·  Médiums  ·  Aigus", style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary)
+    Text(tr("Graves  ·  Médiums  ·  Aigus"), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary)
 }
 
 private val NAMES_FR = listOf("Do", "Do♯", "Ré", "Ré♯", "Mi", "Fa", "Fa♯", "Sol", "Sol♯", "La", "La♯", "Si")
@@ -58,11 +59,11 @@ fun TunerView(reading: TunerReading?, micOk: Boolean?, englishNotes: Boolean = f
     Column(Modifier.fillMaxSize().padding(16.dp).testTag("tuner"), verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally) {
         NeonCard(modifier = Modifier.fillMaxWidth()) {
-            SectionLabel("Accordeur", help = Glossary.TUNER)
+            SectionLabel(tr("Accordeur"), help = Glossary.TUNER)
             when {
-                micOk == null -> Text("Ouverture du micro…", color = Neon.TextSecondary)
-                !micOk -> Text("Le micro n'a pas pu être ouvert (autorisation, ou une prise est en cours).", color = Neon.Amber)
-                reading == null -> Text("Joue ou chante une note près du téléphone.", color = Neon.TextSecondary)
+                micOk == null -> Text(tr("Ouverture du micro…"), color = Neon.TextSecondary)
+                !micOk -> Text(tr("Le micro n'a pas pu être ouvert (autorisation, ou une prise est en cours)."), color = Neon.Amber)
+                reading == null -> Text(tr("Joue ou chante une note près du téléphone."), color = Neon.TextSecondary)
             }
             val names = if (englishNotes) NAMES_EN else NAMES_FR
             val inTune = reading != null && abs(reading.cents) < 5
@@ -89,16 +90,17 @@ fun TunerView(reading: TunerReading?, micOk: Boolean?, englishNotes: Boolean = f
             Text(
                 reading?.let {
                     val c = it.cents.roundToInt()
-                    "${"%.1f".format(java.util.Locale.FRANCE, it.hz)} Hz · " + when {
-                        abs(c) < 5 -> "juste"
-                        c < 0 -> "trop bas de ${-c} cents"
-                        else -> "trop haut de $c cents"
+                    "${"%.1f".format(com.pocketstudio.model.i18n.I18n.lang.locale, it.hz)} Hz · " + when {
+                        abs(c) < 5 -> tr("juste")
+                        c < 0 -> tr("trop bas de %d cents", -c)
+                        else -> tr("trop haut de %d cents", c)
                     }
                 } ?: " ",
                 style = MonoStyle, color = Neon.TextSecondary, modifier = Modifier.align(Alignment.CenterHorizontally),
             )
         }
-        Text("Accorde ta guitare, ta basse ou ta voix avant d'enregistrer une piste audio.", style = MaterialTheme.typography.bodySmall,
+        Text(tr("Accorde ta guitare, ta basse ou ta voix avant d'enregistrer une piste audio."), style
+ = MaterialTheme.typography.bodySmall,
             color = Neon.TextSecondary)
     }
 }

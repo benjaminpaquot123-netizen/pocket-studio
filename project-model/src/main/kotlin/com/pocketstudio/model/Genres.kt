@@ -1,5 +1,6 @@
 package com.pocketstudio.model
 
+import com.pocketstudio.model.i18n.tr
 import kotlin.random.Random
 
 /**
@@ -43,7 +44,7 @@ object Genres {
         return Project(
             name = "House", tempoBpm = 124.0, drums = beat, harmony = harmony, synth = synth("Nappe"), synthNotes = chords,
             acid = AcidPattern(),
-        ).withBass("Basse", synth("Basse ronde"), listOf(Triple(33, 2, 1), Triple(33, 6, 1), Triple(33, 10, 1), Triple(36, 14, 1))).sanitized()
+        ).withBass(tr("Basse"), synth("Basse ronde"), listOf(Triple(33, 2, 1), Triple(33, 6, 1), Triple(33, 10, 1), Triple(36, 14, 1))).sanitized()
     }
 
     private fun techno(): Project {
@@ -87,7 +88,7 @@ object Genres {
         val harmony = Harmony(3, Scale.Major)  // E flat major
         return Project(name = "Lo-fi", tempoBpm = 84.0, swing = 0.3, drums = beat, harmony = harmony, synth = synth("Piano électrique"),
             synthNotes = NoteClip(steps = 64).withProgression(Progression.Jazz, harmony, octaveRoot = 63), acid = AcidPattern())
-            .withBass("Basse", synth("Basse sub"), listOf(Triple(39, 0, 3), Triple(41, 6, 2), Triple(43, 10, 4)))
+            .withBass(tr("Basse"), synth("Basse sub"), listOf(Triple(39, 0, 3), Triple(41, 6, 2), Triple(43, 10, 4)))
             .sanitized()
     }
 
@@ -100,7 +101,7 @@ object Genres {
         val bass = (0 until 16 step 2).map { Triple(33, it, 1) }
         return Project(name = "Synthwave", tempoBpm = 100.0, drums = beat, harmony = harmony, synth = synth("Cordes"),
             synthNotes = NoteClip(steps = 64).withProgression(Progression.Epic, harmony, octaveRoot = 57), acid = AcidPattern())
-            .withBass("Basse", synth("Basse ronde"), bass)
+            .withBass(tr("Basse"), synth("Basse ronde"), bass)
             .sanitized()
     }
 }

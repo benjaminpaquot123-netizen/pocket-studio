@@ -1,5 +1,6 @@
 package com.pocketstudio.app.projects
 
+import com.pocketstudio.model.i18n.tr
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -22,6 +23,8 @@ data class ProjectsUi(
     /** Trash entry of the project just deleted (for "Annuler"), with its name. */
     val deleted: Pair<String, String>? = null,
     val message: String? = null,
+    /** [message] is good news (a project imported), not an error. */
+    val messageOk: Boolean = false,
     /** Deleted projects, kept [ProjectCatalog.TRASH_DAYS] days. */
     val trash: List<TrashedProject> = emptyList(),
 )
@@ -41,10 +44,10 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch(Dispatchers.IO) { catalog.purgeTrash(ProjectCatalog.TRASH_DAYS * 24 * 3600 * 1000) }
     }
 
-    fun refresh() = io("Liste des projets") { refreshNow() }
+    fun refresh() = io(tr("Liste des projets")) { refreshNow() }
 
     /** Creates [project] (a blank or a demo) named after the next free number unless it has a name; returns its id. */
-    fun create(project: Project, then: (String) -> Unit) = io("Nouveau projet") {
+    fun create(project: Project, then: (String) -> Unit) = io(tr("Nouveau projet")) {
         val named = if (project.name.isBlank() || project.name == Project().name) project.copy(name = catalog.nextName()) else project
         val id = catalog.create(named)
         refreshNow()
@@ -52,7 +55,7 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /** A new project with its own sounds ([sounds]: file name in its samples folder → audio). */
-    fun create(project: Project, sounds: Map<String, com.pocketstudio.app.audio.Pcm>, failed: (String) -> Unit = {}, then: (String) -> Unit) = io("Nouveau morceau", failed) {
+    fun create(project: Project, sounds: Map<String, com.pocketstudio.app.audio.Pcm>, failed: (String) -> Unit = {}, then: (String) -> Unit) = io(tr("Nouveau morceau"), failed) {
         val id = catalog.create(project) { dir ->
             dir.mkdirs()
             sounds.forEach { (name, pcm) -> com.pocketstudio.app.audio.FloatWav.write(java.io.File(dir, name), pcm) }
@@ -61,18 +64,18 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
         withContext(Dispatchers.Main) { then(id) }
     }
 
-    fun duplicate(info: ProjectInfo) = io("Copie du projet") {
-        catalog.duplicate(info.id, "${info.name} (copie)".take(ProjectCatalog.MAX_NAME))
+    fun duplicate(info: ProjectInfo) = io(tr("Copie du projet")) {
+        catalog.duplicate(info.id, tr("%s (copie)", info.name).take(ProjectCatalog.MAX_NAME))
         refreshNow()
     }
 
-    fun rename(id: String, name: String) = io("Renommage") {
+    fun rename(id: String, name: String) = io(tr("Renommage")) {
         val clean = name.trim()
         if (clean.isNotEmpty()) catalog.rename(id, clean)
         refreshNow()
     }
 
-    fun delete(info: ProjectInfo) = io("Suppression") {
+    fun delete(info: ProjectInfo) = io(tr("Suppression")) {
         val entry = catalog.delete(info.id)
         AppLog.add("Projet mis à la corbeille : « ${info.name} »")
         _state.value = _state.value.copy(deleted = entry to info.name)
@@ -80,7 +83,7 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /** The project and its sounds as a .zip in the export folder; [then] gets the file (to share it). */
-    fun exportZip(info: ProjectInfo, then: (File) -> Unit) = io("Export du projet") {
+    fun exportZip(info: ProjectInfo, then: (File) -> Unit) = io(tr("Export du projet")) {
         val app = getApplication<Application>()
         // Dated like the audio exports (old ones cleaned): a share still reading an earlier export is never overwritten.
         val file = com.pocketstudio.app.export.WavExporter.newFile(app, info.name.ifBlank { "projet" })
@@ -91,18 +94,18 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /** A project .zip (from this app) becomes a new project in the list. */
-    fun importZip(uri: android.net.Uri) = io("Import du projet") {
+    fun importZip(uri: android.net.Uri) = io(tr("Import du projet")) {
         val app = getApplication<Application>()
-        val stream = app.contentResolver.openInputStream(uri) ?: throw java.io.IOException("fichier introuvable")
+        val stream = app.contentResolver.openInputStream(uri) ?: throw java.io.IOException(tr("fichier introuvable"))
         val id = stream.use { catalog.importZip(it) }
         AppLog.add("Projet importé")
-        _state.value = _state.value.copy(message = "Projet importé : « ${catalog.info(id)?.name} ». Touche-le pour l'ouvrir.")
+        _state.value = _state.value.copy(message = tr("Projet importé : « %s ». Touche-le pour l'ouvrir.", catalog.info(id)?.name), messageOk = true)
         refreshNow()
     }
 
     fun undoDelete() {
         val (entry, _) = _state.value.deleted ?: return
-        io("Restauration") {
+        io(tr("Restauration")) {
             catalog.restore(entry)
             _state.value = _state.value.copy(deleted = null)
             refreshNow()
@@ -110,7 +113,7 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /** Brings a project back from the trash ("Corbeille" list). */
-    fun restore(item: TrashedProject) = io("Restauration") {
+    fun restore(item: TrashedProject) = io(tr("Restauration")) {
         catalog.restore(item.entry)
         AppLog.add("Projet restauré : « ${item.name} »")
         if (_state.value.deleted?.first == item.entry) _state.value = _state.value.copy(deleted = null)
@@ -122,7 +125,7 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun dismissMessage() {
-        _state.value = _state.value.copy(message = null)
+        _state.value = _state.value.copy(message = null, messageOk = false)
     }
 
     private fun refreshNow() {
@@ -135,8 +138,8 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
                 block()
             } catch (e: Exception) {
                 AppLog.add("$what impossible : ${e.message}")
-                val message = "$what impossible (${e.message ?: "erreur"})."
-                _state.value = _state.value.copy(message = message, loading = false)
+                val message = tr("%s impossible (%s).", what, e.message ?: tr("erreur"))
+                _state.value = _state.value.copy(message = message, messageOk = false, loading = false)
                 withContext(Dispatchers.Main) { failed(message) }
             }
         }

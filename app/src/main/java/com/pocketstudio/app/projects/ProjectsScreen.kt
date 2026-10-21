@@ -1,5 +1,6 @@
 package com.pocketstudio.app.projects
 
+import com.pocketstudio.model.i18n.tr
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.verticalScroll
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -54,7 +56,15 @@ import java.util.Date
 import java.util.Locale
 
 /** The headings of the "Nouveau projet" choices (the guided song comes first, apart). */
-enum class StarterGroup(val title: String) { Style("Partir d'un style"), Demo("Écouter une démo"), Empty("Vide") }
+enum class StarterGroup {
+    Style, Demo, Empty;
+
+    val title: String get() = when (this) {
+        Style -> tr("Partir d'un style")
+        Demo -> tr("Écouter une démo")
+        Empty -> tr("Vide")
+    }
+}
 
 /** A way to start a project: a name, a line saying what it holds, its heading, and how to build it. */
 class ProjectStarter(val title: String, val description: String, val tag: String, val group: StarterGroup = StarterGroup.Empty)
@@ -87,56 +97,59 @@ fun ProjectsScreen(ui: ProjectsUi, currentId: String, starters: List<ProjectStar
     var renaming by remember { mutableStateOf<ProjectInfo?>(null) }
     var choosingStart by remember { mutableStateOf(false) }
     var showTrash by remember { mutableStateOf(false) }
-    Column(Modifier.fillMaxSize().padding(12.dp).testTag("projects"), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            IconButton(onClick = actions.back, modifier = Modifier.testTag("projects_back")) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Retour")
-            }
-            Text("Mes projets", style = MaterialTheme.typography.headlineSmall, modifier = Modifier.weight(1f))
-        }
-        // The guided song first: the main action for a beginner.
-        Button(onClick = actions.wizard, modifier = Modifier.fillMaxWidth().height(56.dp).testTag("project_wizard")) {
-            Icon(Icons.Filled.AutoAwesome, contentDescription = null)
-            Text("  Nouveau morceau guidé", style = MaterialTheme.typography.titleMedium)
-        }
-        OutlinedButton(onClick = { choosingStart = true }, modifier = Modifier.fillMaxWidth().height(52.dp).testTag("project_new")) {
-            Icon(Icons.Filled.Add, contentDescription = null)
-            Text("  Nouveau projet : style, démo ou vide", style = MaterialTheme.typography.titleSmall)
-        }
-        TextButton(onClick = actions.importZip, modifier = Modifier.fillMaxWidth().testTag("project_import")) {
-            Text("Importer un projet (.zip)")
-        }
-        ui.deleted?.let { (_, name) ->
-            Card(colors = CardDefaults.cardColors(containerColor = Neon.SurfaceHigh), modifier = Modifier.testTag("project_deleted")) {
-                Row(Modifier.padding(start = 12.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Text("« $name » est dans la corbeille (30 jours).", Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
-                    TextButton(onClick = actions.undoDelete, modifier = Modifier.testTag("project_undo_delete")) { Text("Annuler") }
-                    TextButton(onClick = actions.dismissDeleted) { Text("OK") }
+    // A list to read: centred at a comfortable width on a tablet.
+    com.pocketstudio.ui.ReadingWidth {
+        Column(Modifier.fillMaxSize().padding(12.dp).testTag("projects"), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                IconButton(onClick = actions.back, modifier = Modifier.testTag("projects_back")) {
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = tr("Retour"))
                 }
+                Text(tr("Mes projets"), style = MaterialTheme.typography.headlineSmall, modifier = Modifier.weight(1f))
             }
-        }
-        ui.message?.let {
-            Text(it, color = if (it.startsWith("Projet importé")) Neon.Acid else Neon.Amber, style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier.clickable(onClick = actions.dismissMessage))
-        }
-        if (!ui.loading && ui.projects.isEmpty()) {
-            Text("Aucun projet enregistré pour l'instant.", color = Neon.TextSecondary)
-        }
-        LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.weight(1f)) {
-            items(ui.projects, key = { it.id }) { p ->
-                ProjectCard(p, p.id == currentId, now, actions, onRename = { renaming = p })
+            // The guided song first: the main action for a beginner.
+            Button(onClick = actions.wizard, modifier = Modifier.fillMaxWidth().height(56.dp).testTag("project_wizard")) {
+                Icon(Icons.Filled.AutoAwesome, contentDescription = null)
+                Text("  " + tr("Nouveau morceau guidé"), style = MaterialTheme.typography.titleMedium)
             }
-            if (ui.trash.isNotEmpty()) {
-                item(key = "trash") {
-                    TextButton(onClick = { showTrash = !showTrash }, modifier = Modifier.fillMaxWidth().testTag("project_trash")) {
-                        Text(
-                            "${if (showTrash) "▾" else "▸"} Corbeille (${ui.trash.size}) · gardés ${ProjectCatalog.TRASH_DAYS} jours",
-                            color = Neon.TextSecondary, modifier = Modifier.weight(1f),
-                        )
+            OutlinedButton(onClick = { choosingStart = true }, modifier = Modifier.fillMaxWidth().height(52.dp).testTag("project_new")) {
+                Icon(Icons.Filled.Add, contentDescription = null)
+                Text("  " + tr("Nouveau projet : style, démo ou vide"), style = MaterialTheme.typography.titleSmall)
+            }
+            TextButton(onClick = actions.importZip, modifier = Modifier.fillMaxWidth().testTag("project_import")) {
+                Text(tr("Importer un projet (.zip)"))
+            }
+            ui.deleted?.let { (_, name) ->
+                Card(colors = CardDefaults.cardColors(containerColor = Neon.SurfaceHigh), modifier = Modifier.testTag("project_deleted")) {
+                    Row(Modifier.padding(start = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Text(tr("« %s » est dans la corbeille (30 jours).", name), Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
+                        TextButton(onClick = actions.undoDelete, modifier = Modifier.testTag("project_undo_delete")) { Text(tr("Annuler")) }
+                        TextButton(onClick = actions.dismissDeleted) { Text("OK") }
                     }
                 }
-                if (showTrash) {
-                    items(ui.trash, key = { "trash_${it.entry}" }) { t -> TrashedCard(t, now, actions) }
+            }
+            ui.message?.let {
+                Text(it, color = if (ui.messageOk) Neon.Acid else Neon.Amber, style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.clickable(onClick = actions.dismissMessage))
+            }
+            if (!ui.loading && ui.projects.isEmpty()) {
+                Text(tr("Aucun projet enregistré pour l'instant."), color = Neon.TextSecondary)
+            }
+            LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.weight(1f)) {
+                items(ui.projects, key = { it.id }) { p ->
+                    ProjectCard(p, p.id == currentId, now, actions, onRename = { renaming = p })
+                }
+                if (ui.trash.isNotEmpty()) {
+                    item(key = "trash") {
+                        TextButton(onClick = { showTrash = !showTrash }, modifier = Modifier.fillMaxWidth().testTag("project_trash")) {
+                            Text(
+                                (if (showTrash) "▾ " else "▸ ") + tr("Corbeille (%d) · gardés %d jours", ui.trash.size, ProjectCatalog.TRASH_DAYS),
+                                color = Neon.TextSecondary, modifier = Modifier.weight(1f),
+                            )
+                        }
+                    }
+                    if (showTrash) {
+                        items(ui.trash, key = { "trash_${it.entry}" }) { t -> TrashedCard(t, now, actions) }
+                    }
                 }
             }
         }
@@ -145,33 +158,34 @@ fun ProjectsScreen(ui: ProjectsUi, currentId: String, starters: List<ProjectStar
         var name by remember(p.id) { mutableStateOf(p.name) }
         AlertDialog(
             onDismissRequest = { renaming = null },
-            title = { Text("Renommer") },
+            title = { Text(tr("Renommer")) },
             text = {
-                OutlinedTextField(value = name, onValueChange = { name = it.take(40) }, singleLine = true, label = { Text("Nom du projet") },
+                OutlinedTextField(value = name, onValueChange = { name = it.take(40) }, singleLine = true, label = { Text(tr("Nom du projet")) },
                     modifier = Modifier.testTag("project_name_field"))
             },
             confirmButton = {
                 TextButton(onClick = { actions.rename(p, name); renaming = null }, enabled = name.isNotBlank(), modifier = Modifier.testTag("project_rename_ok")) { Text("OK") }
             },
-            dismissButton = { TextButton(onClick = { renaming = null }) { Text("Annuler") } },
+            dismissButton = { TextButton(onClick = { renaming = null }) { Text(tr("Annuler")) } },
         )
     }
     if (choosingStart) {
         AlertDialog(
             onDismissRequest = { choosingStart = false },
             properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false),
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp),
-            title = { Text("Nouveau projet") },
+            // The phone's whole width; a comfortable width on a tablet.
+            modifier = Modifier.widthIn(max = 640.dp).fillMaxWidth().padding(horizontal = 10.dp),
+            title = { Text(tr("Nouveau projet")) },
             text = {
                 Column(Modifier.verticalScroll(androidx.compose.foundation.rememberScrollState()), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    SectionLabel("Guidé")
+                    SectionLabel(tr("Guidé"))
                     Card(
                         colors = CardDefaults.cardColors(containerColor = Neon.Cyan.copy(alpha = 0.18f)),
                         modifier = Modifier.fillMaxWidth().clickable { choosingStart = false; actions.wizard() }.testTag("starter_wizard"),
                     ) {
                         Column(Modifier.padding(12.dp)) {
-                            Text("Nouveau morceau guidé", style = MaterialTheme.typography.titleMedium, color = Neon.Cyan)
-                            Text("Idéal pour débuter : choisis un style, je t'explique chaque son et je prépare l'intro, le couplet et le refrain.",
+                            Text(tr("Nouveau morceau guidé"), style = MaterialTheme.typography.titleMedium, color = Neon.Cyan)
+                            Text(tr("Idéal pour débuter : choisis un style, je t'explique chaque son et je prépare l'intro, le couplet et le refrain."),
                                 style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
                         }
                     }
@@ -186,15 +200,15 @@ fun ProjectsScreen(ui: ProjectsUi, currentId: String, starters: List<ProjectStar
                                 modifier = Modifier.fillMaxWidth().clickable { choosingStart = false; actions.create(i) }.testTag("starter_${s.tag}"),
                             ) {
                                 Column(Modifier.padding(12.dp)) {
-                                    Text(s.title, style = MaterialTheme.typography.titleMedium)
-                                    Text(s.description, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                                    Text(tr(s.title), style = MaterialTheme.typography.titleMedium)
+                                    Text(tr(s.description), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
                                 }
                             }
                         }
                     }
                 }
             },
-            confirmButton = { TextButton(onClick = { choosingStart = false }) { Text("Annuler") } },
+            confirmButton = { TextButton(onClick = { choosingStart = false }) { Text(tr("Annuler")) } },
         )
     }
 }
@@ -213,14 +227,14 @@ private fun ProjectCard(p: ProjectInfo, open: Boolean, now: Long, actions: Proje
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(p.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, maxLines = 1,
                         overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f, fill = false))
-                    if (open) SectionLabel("  ouvert", color = Neon.Acid)
+                    if (open) SectionLabel("  " + tr("ouvert"), color = Neon.Acid)
                 }
                 Text(
                     listOfNotNull(
                         whenText(p.modified, now),
                         if (p.tempoBpm > 0) "${p.tempoBpm.toInt()} BPM" else null,
-                        if (p.bars > 0) "${p.bars} mes." else null,
-                        if (p.scenes > 1) "${p.scenes} scènes" else null,
+                        if (p.bars > 0) tr("%d mes.", p.bars) else null,
+                        if (p.scenes > 1) tr("%d scènes", p.scenes) else null,
                         if (p.hasRemix) "remix" else null,
                     ).joinToString(" · "),
                     style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
@@ -228,20 +242,20 @@ private fun ProjectCard(p: ProjectInfo, open: Boolean, now: Long, actions: Proje
                 if (open) {
                     TextButton(onClick = actions.shareSong, modifier = Modifier.testTag("project_share_song")) {
                         Icon(Icons.Filled.Share, contentDescription = null, tint = Neon.Acid, modifier = Modifier.padding(end = 6.dp))
-                        Text("Partager mon morceau", color = Neon.Acid)
+                        Text(tr("Partager mon morceau"), color = Neon.Acid)
                     }
                 }
             }
             Box {
                 IconButton(onClick = { menu = true }, modifier = Modifier.testTag("project_menu_${p.id}")) {
-                    Icon(Icons.Filled.MoreVert, contentDescription = "Options de ${p.name}")
+                    Icon(Icons.Filled.MoreVert, contentDescription = tr("Options de %s", p.name))
                 }
                 DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
-                    DropdownMenuItem(text = { Text("Renommer") }, onClick = { menu = false; onRename() })
-                    DropdownMenuItem(text = { Text("Dupliquer") }, onClick = { menu = false; actions.duplicate(p) })
-                    DropdownMenuItem(text = { Text("Envoyer / sauvegarder (.zip)") }, onClick = { menu = false; actions.exportZip(p) })
+                    DropdownMenuItem(text = { Text(tr("Renommer")) }, onClick = { menu = false; onRename() })
+                    DropdownMenuItem(text = { Text(tr("Dupliquer")) }, onClick = { menu = false; actions.duplicate(p) })
+                    DropdownMenuItem(text = { Text(tr("Envoyer / sauvegarder (.zip)")) }, onClick = { menu = false; actions.exportZip(p) })
                     DropdownMenuItem(
-                        text = { Text(if (open) "Supprimer (ouvre d'abord un autre projet)" else "Supprimer") },
+                        text = { Text(if (open) tr("Supprimer (ouvre d'abord un autre projet)") else tr("Supprimer")) },
                         enabled = !open,
                         onClick = { menu = false; actions.delete(p) },
                         modifier = Modifier.testTag("project_delete_${p.id}"),
@@ -264,9 +278,9 @@ private fun TrashedCard(t: TrashedProject, now: Long, actions: ProjectsActions) 
         Row(Modifier.padding(start = 14.dp, top = 4.dp, bottom = 4.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
                 Text(t.name, style = MaterialTheme.typography.titleMedium, color = Neon.TextSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                Text("supprimé ${whenText(t.deletedAt, now)}", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                Text(tr("supprimé %s", whenText(t.deletedAt, now)), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
             }
-            TextButton(onClick = { actions.restore(t) }, modifier = Modifier.testTag("restore_${t.entry}")) { Text("Restaurer") }
+            TextButton(onClick = { actions.restore(t) }, modifier = Modifier.testTag("restore_${t.entry}")) { Text(tr("Restaurer")) }
         }
     }
 }
@@ -275,10 +289,10 @@ private fun TrashedCard(t: TrashedProject, now: Long, actions: ProjectsActions) 
 fun whenText(time: Long, now: Long): String {
     val minutes = (now - time) / 60_000
     return when {
-        minutes < 1 -> "à l'instant"
-        minutes < 60 -> "il y a $minutes min"
-        minutes < 24 * 60 -> "il y a ${minutes / 60} h"
-        minutes < 48 * 60 -> "hier"
-        else -> "le " + SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).format(Date(time))
+        minutes < 1 -> tr("à l'instant")
+        minutes < 60 -> tr("il y a %d min", minutes)
+        minutes < 24 * 60 -> tr("il y a %d h", minutes / 60)
+        minutes < 48 * 60 -> tr("hier")
+        else -> tr("le %s", SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).format(Date(time)))
     }
 }

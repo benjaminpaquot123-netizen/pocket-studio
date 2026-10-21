@@ -512,3 +512,20 @@ Restant (mineur, noté) :
 - La durée annoncée par l'assistant (« environ 2 min 40 ») peut différer un peu de la durée réelle.
 - Le menu ⋮ d'une partie reste à l'ancienne place après un déplacement.
 - La fenêtre « Nommer la scène » n'a pas de test d'écran (Robolectric ne se stabilise pas avec un champ de texte dans une fenêtre).
+
+## Phase 22 : langues (FR, EN, NL) et tablette
+
+Quatre traducteurs en parallèle (données du modèle ; accueil et outils ; rythme et synthé ; mixeur et audio), un dernier pour le Morceau et le ratissage, un correcteur tablette. Relecture neuve : aucun grave (placeholders, `%` littéraux, templates vérifiés par script ; rien de figé à l'initialisation).
+
+Moyens corrigés :
+- Changer de langue renvoyait à l'onglet Rythme (état perdu) : l'activité est recréée, l'état d'écran reste.
+- L'assistant enregistrait les noms de sections traduits : ils restent en français, traduits à l'affichage (test).
+- Même mot français, deux sens selon la zone (Accord, Voix, Cloche…) : « Accordage » pour la 303, « Cowbell » pour le pad, « Hauteur de voix » pour l'effet robot ; un test refuse désormais deux traductions pour une même clé.
+- Les cartes repliées gardent leur état quand la langue change (clé = texte français).
+
+Restant (mineur, noté) :
+- La fenêtre « Nommer la scène » préremplit le nom français d'une section standard.
+- Générer et Remix : sur téléphone, l'écran remonte en haut quand le premier résultat arrive.
+- Téléphone couché (≥ 760 dp) : deux colonnes aussi ; pas encore de capture dédiée.
+- Quelques textes traduits deux fois (sans effet aujourd'hui) ; dates en jj/MM dans toutes les langues.
+- Anglais : « track » désigne parfois le morceau dans des descriptions de styles ; Colour/Color mélangés.

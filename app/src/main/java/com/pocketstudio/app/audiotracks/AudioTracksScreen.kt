@@ -64,6 +64,8 @@ import com.pocketstudio.ui.SectionLabel
 import com.pocketstudio.ui.TrackColors
 import com.pocketstudio.ui.trackColor
 import kotlin.math.roundToInt
+import com.pocketstudio.model.i18n.I18n
+import com.pocketstudio.model.i18n.tr
 
 class AudioTracksUi(
     val tracks: List<AudioTrack>,
@@ -112,24 +114,30 @@ fun AudioTracksScreen(ui: AudioTracksUi, actions: AudioTracksActions, modifier: 
         ui.task?.let { Text(it, color = Neon.Amber, style = MaterialTheme.typography.bodySmall) }
         if (ui.tracks.isEmpty()) {
             NeonCard {
-                SectionLabel("Pistes audio", help = Glossary.AUDIO_TRACK)
+                SectionLabel(tr("Pistes audio"), help = Glossary.AUDIO_TRACK)
                 Text(
-                    "Enregistre ta voix, une guitare, des claquements de mains… par-dessus ta musique, ou ajoute un fichier son. " +
-                        "Chaque prise se cale sur la mesure et tourne en boucle avec le morceau.",
+                    tr("Enregistre ta voix, une guitare, des claquements de mains… par-dessus ta musique, ou ajoute un fichier son.") + " " +
+                        tr("Chaque prise se cale sur la mesure et tourne en boucle avec le morceau."),
                     style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary,
                 )
             }
         }
-        ui.tracks.forEach { t -> TrackCard(t, ui, actions) }
-        if (ui.tracks.size < AudioTrack.MAX) {
-            Button(onClick = actions.add, modifier = Modifier.fillMaxWidth().height(48.dp).testTag("audio_add")) {
-                Icon(Icons.Filled.Add, contentDescription = null)
-                Text("  Piste audio")
-            }
-        }
+        // The tracks, then the button for one more: in two columns on a tablet.
+        val cards = ui.tracks.map { t -> @Composable { TrackCard(t, ui, actions) } } +
+            listOfNotNull(
+                if (ui.tracks.size < AudioTrack.MAX) {
+                    @Composable {
+                        Button(onClick = actions.add, modifier = Modifier.fillMaxWidth().height(48.dp).testTag("audio_add")) {
+                            Icon(Icons.Filled.Add, contentDescription = null)
+                            Text("  " + tr("Piste audio"))
+                        }
+                    }
+                } else null,
+            )
+        com.pocketstudio.ui.AdaptiveColumns(cards, minCellWidth = 360.dp, spacing = 10.dp, columnSpacing = 10.dp, masonry = true)
         if (!ui.latencyMeasured && ui.tracks.isNotEmpty()) {
             Text(
-                "Astuce : mesure la latence une fois (Outils › Latence) pour que tes prises tombent pile sur le temps.",
+                tr("Astuce : mesure la latence une fois (Outils › Latence) pour que tes prises tombent pile sur le temps."),
                 style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
             )
         }
@@ -142,7 +150,7 @@ private fun RecordingCard(rec: AudioRecordingUi, track: AudioTrack?, actions: Au
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Icon(Icons.Filled.FiberManualRecord, contentDescription = null, tint = Neon.Red)
             Text(
-                if (rec.waiting) "Décompte… la prise commence sur le premier temps" else "Enregistrement : ${String.format(java.util.Locale.FRANCE, "%.1f", rec.seconds)} s",
+                if (rec.waiting) tr("Décompte… la prise commence sur le premier temps") else tr("Enregistrement : %.1f s", rec.seconds),
                 style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f),
             )
         }
@@ -150,9 +158,9 @@ private fun RecordingCard(rec: AudioRecordingUi, track: AudioTrack?, actions: Au
         LevelMeter(rec.level)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Button(onClick = actions.stop, colors = ButtonDefaults.buttonColors(containerColor = Neon.Red), modifier = Modifier.weight(1f).testTag("audio_stop")) {
-                Text("Arrêter et garder")
+                Text(tr("Arrêter et garder"))
             }
-            OutlinedButton(onClick = actions.cancel, modifier = Modifier.weight(1f)) { Text("Annuler") }
+            OutlinedButton(onClick = actions.cancel, modifier = Modifier.weight(1f)) { Text(tr("Annuler")) }
         }
     }
 }
@@ -168,12 +176,12 @@ private fun TrackCard(t: AudioTrack, ui: AudioTracksUi, actions: AudioTracksActi
             Box(Modifier.size(12.dp).background(color, CircleShape))
             Text(t.name, style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f), maxLines = 1, overflow = TextOverflow.Ellipsis)
             Box {
-                IconButton(onClick = { menu = true }) { Icon(Icons.Filled.MoreVert, contentDescription = "Options de ${t.name}") }
+                IconButton(onClick = { menu = true }) { Icon(Icons.Filled.MoreVert, contentDescription = tr("Options de %s", t.name)) }
                 DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
-                    DropdownMenuItem(text = { Text("Renommer") }, onClick = { menu = false; renaming = true })
-                    DropdownMenuItem(text = { Text("Couleur") }, onClick = { menu = false; colouring = true })
-                    if (t.clip != null) DropdownMenuItem(text = { Text("Vider la piste") }, onClick = { menu = false; actions.clear(t.id) })
-                    DropdownMenuItem(text = { Text("Supprimer la piste (Annuler possible)") }, onClick = { menu = false; actions.remove(t.id) })
+                    DropdownMenuItem(text = { Text(tr("Renommer")) }, onClick = { menu = false; renaming = true })
+                    DropdownMenuItem(text = { Text(tr("Couleur")) }, onClick = { menu = false; colouring = true })
+                    if (t.clip != null) DropdownMenuItem(text = { Text(tr("Vider la piste")) }, onClick = { menu = false; actions.clear(t.id) })
+                    DropdownMenuItem(text = { Text(tr("Supprimer la piste (Annuler possible)")) }, onClick = { menu = false; actions.remove(t.id) })
                 }
             }
         }
@@ -185,11 +193,11 @@ private fun TrackCard(t: AudioTrack, ui: AudioTracksUi, actions: AudioTracksActi
                 modifier = Modifier.weight(1f).testTag("audio_record_${t.id}"),
             ) {
                 Icon(Icons.Filled.FiberManualRecord, contentDescription = null, Modifier.size(16.dp))
-                Text(if (t.clip == null) " Enregistrer" else " Nouvelle prise")
+                Text(" " + if (t.clip == null) tr("Enregistrer") else tr("Nouvelle prise"))
             }
-            OutlinedButton(onClick = { actions.import(t.id) }, enabled = !busy, modifier = Modifier.weight(1f)) { Text("Fichier son") }
+            OutlinedButton(onClick = { actions.import(t.id) }, enabled = !busy, modifier = Modifier.weight(1f)) { Text(tr("Fichier son")) }
         }
-        TextButton(onClick = { actions.effects(t.id) }, modifier = Modifier.testTag("audio_effects_${t.id}")) { Text("Effets de cette piste") }
+        TextButton(onClick = { actions.effects(t.id) }, modifier = Modifier.testTag("audio_effects_${t.id}")) { Text(tr("Effets de cette piste")) }
         val clip = t.clip ?: return@NeonCard
         ClipEditor(t.id, clip, ui.info[clip.file], color, actions, ui.stepsPerBar)
     }
@@ -197,16 +205,16 @@ private fun TrackCard(t: AudioTrack, ui: AudioTracksUi, actions: AudioTracksActi
         var name by remember(t.id) { mutableStateOf(t.name) }
         AlertDialog(
             onDismissRequest = { renaming = false },
-            title = { Text("Renommer la piste") },
-            text = { OutlinedTextField(value = name, onValueChange = { name = it.take(24) }, singleLine = true, label = { Text("Nom") }) },
+            title = { Text(tr("Renommer la piste")) },
+            text = { OutlinedTextField(value = name, onValueChange = { name = it.take(24) }, singleLine = true, label = { Text(tr("Nom")) }) },
             confirmButton = { TextButton(onClick = { actions.rename(t.id, name); renaming = false }, enabled = name.isNotBlank()) { Text("OK") } },
-            dismissButton = { TextButton(onClick = { renaming = false }) { Text("Annuler") } },
+            dismissButton = { TextButton(onClick = { renaming = false }) { Text(tr("Annuler")) } },
         )
     }
     if (colouring) {
         AlertDialog(
             onDismissRequest = { colouring = false },
-            title = { Text("Couleur de « ${t.name} »") },
+            title = { Text(tr("Couleur de « %s »", t.name)) },
             text = {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     TrackColors.forEachIndexed { i, c ->
@@ -218,7 +226,7 @@ private fun TrackCard(t: AudioTrack, ui: AudioTracksUi, actions: AudioTracksActi
                     }
                 }
             },
-            confirmButton = { TextButton(onClick = { colouring = false }) { Text("Fermer") } },
+            confirmButton = { TextButton(onClick = { colouring = false }) { Text(tr("Fermer")) } },
         )
     }
 }
@@ -228,33 +236,34 @@ private fun TrackCard(t: AudioTrack, ui: AudioTracksUi, actions: AudioTracksActi
 private fun ClipEditor(id: Int, clip: AudioClip, info: SampleInfo?, color: androidx.compose.ui.graphics.Color, actions: AudioTracksActions, per: Int) {
     val chip = pillColors()
     var range by remember(clip.file) { mutableStateOf(0f..1f) }
-    Text("${clip.name} · ${String.format(java.util.Locale.FRANCE, "%.1f", clip.seconds)} s", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+    Text("${clip.name} · ${String.format(I18n.lang.locale, "%.1f", clip.seconds)} s", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
     info?.let { Waveform(it.peaks, color, region = range.start to range.endInclusive) }
     // Cut: keep the part between the two handles.
     RangeSlider(value = range, onValueChange = { range = it }, modifier = Modifier.testTag("audio_trim_$id"))
     Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.fadingHorizontalScroll()) {
         OutlinedButton(onClick = { actions.trim(id, range.start, range.endInclusive) }, enabled = range.start > 0.001f || range.endInclusive < 0.999f) {
-            Text("Garder la sélection")
+            Text(tr("Garder la sélection"))
         }
-        OutlinedButton(onClick = { actions.normalize(id) }, modifier = Modifier.testTag("audio_normalize_$id")) { Text("Normaliser") }
-        OutlinedButton(onClick = { actions.reverse(id) }) { Text("Inverser") }
+        OutlinedButton(onClick = { actions.normalize(id) }, modifier = Modifier.testTag("audio_normalize_$id")) { Text(tr("Normaliser")) }
+        OutlinedButton(onClick = { actions.reverse(id) }) { Text(tr("Inverser")) }
     }
-    Text("Commence à la mesure", style = MaterialTheme.typography.bodyMedium)
+    Text(tr("Commence à la mesure"), style = MaterialTheme.typography.bodyMedium)
     Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.fadingHorizontalScroll()) {
         (1..8).forEach { bar ->
             FilterChip(selected = clip.start == (bar - 1) * per, onClick = { actions.setStart(id, bar) }, label = { Text("$bar") }, colors = chip)
         }
     }
-    Text("Revient toutes les", style = MaterialTheme.typography.bodyMedium)
+    Text(tr("Revient toutes les"), style = MaterialTheme.typography.bodyMedium)
     Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.fadingHorizontalScroll()) {
         LOOP_BARS.forEach { bars ->
             FilterChip(selected = clip.loopSteps == bars * per, onClick = { actions.setLoopBars(id, bars) },
-                label = { Text(if (bars == 1) "1 mesure" else "$bars mesures") }, colors = chip)
+                label = { Text(if (bars == 1) tr("1 mesure") else tr("%d mesures", bars)) }, colors = chip)
         }
     }
-    LabeledSlider("Volume", "${(clip.gain * 100).roundToInt()} %", clip.gain / 2f) { actions.setGain(id, it * 2f) }
-    LabeledSlider("Fondu au début", "${String.format(java.util.Locale.FRANCE, "%.2f", clip.fadeIn)} s", clip.fadeIn / 2f) { actions.setFadeIn(id, it * 2f) }
-    LabeledSlider("Fondu à la fin", "${String.format(java.util.Locale.FRANCE, "%.2f", clip.fadeOut)} s", clip.fadeOut / 2f) { actions.setFadeOut(id, it * 2f) }
+    LabeledSlider(tr("Volume"), "${(clip.gain * 100).roundToInt()} %", clip.gain / 2f) { actions.setGain(id, it * 2f) }
+    LabeledSlider(tr("Fondu au début"), "${String.format(I18n.lang.locale, "%.2f", clip.fadeIn)} s", clip.fadeIn / 2f) { actions.setFadeIn(id, it * 2f) }
+    LabeledSlider(tr("Fondu à la fin"), "${String.format(I18n.lang.locale, "%.2f", clip.fadeOut)} s", clip.fadeOut / 2f) { actions.setFadeOut(id, it * 2f) }
+
 }
 
 @Composable

@@ -1,5 +1,7 @@
 package com.pocketstudio.app.instruments
 
+import com.pocketstudio.model.i18n.tr
+
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
@@ -24,16 +26,16 @@ import kotlin.math.roundToInt
 internal fun PlaitsPanel(ui: InstrumentUi) {
     val p = ui.plaits
     Text(
-        "24 modèles de synthèse du module Plaits (Mutable Instruments) : du son analogique à la FM façon DX7, des cordes aux percussions.",
+        tr("24 modèles de synthèse du module Plaits (Mutable Instruments) : du son analogique à la FM façon DX7, des cordes aux percussions."),
         style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
     )
     PlaitsPatch.FAMILIES.forEach { (family, models) ->
         val look = SoundLooks.of(family)
-        FoldSection(family, color = look.color, foldKey = "Plaits : $family", spacing = 8.dp, subtle = true) {
+        FoldSection(tr(family), color = look.color, foldKey = "Plaits : $family", spacing = 8.dp, subtle = true) {
             TileGrid(models.size) { k, m ->
                 val model = models[k]
                 SoundTile(
-                    title = PlaitsPatch.MODELS[model], icon = look.icon, accent = look.color, selected = p.model == model,
+                    title = tr(PlaitsPatch.MODELS[model]), icon = look.icon, accent = look.color, selected = p.model == model,
                     onClick = { ui.setPlaitsModel(model) }, subtitle = SoundLooks.PLAITS_HINTS.getOrNull(model),
                     modifier = m.testTag("plaits_model_$model"),
                 )
@@ -44,7 +46,7 @@ internal fun PlaitsPanel(ui: InstrumentUi) {
     PlaitsPatch.PARAMS.forEachIndexed { i, label ->
         val param = i + 1
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Text(label, Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
+            Text(tr(label), Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
             Text("${(values[param] * 100).roundToInt()}", style = MonoStyle, color = Neon.Cyan)
         }
         ProSlider(value = values[param], onValueChange = { ui.setPlaitsParam(param, it) }, modifier = Modifier.testTag("plaits_param_$param"))

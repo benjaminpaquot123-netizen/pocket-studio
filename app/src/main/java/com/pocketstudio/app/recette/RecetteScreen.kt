@@ -1,5 +1,6 @@
 package com.pocketstudio.app.recette
 
+import com.pocketstudio.model.i18n.tr
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -48,40 +49,43 @@ fun RecetteScreen(
 ) {
     var showProblemDialog by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(false) }
 
-    LazyColumn(
-        modifier = modifier.fillMaxSize().testTag("recette"),
-        contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        item {
-            Text("Recette", style = MaterialTheme.typography.headlineMedium, color = Neon.TextPrimary)
-            Text(state.checklist.milestone, color = Neon.Magenta, style = MaterialTheme.typography.titleMedium)
-        }
-        if (state.changelog.isNotBlank()) {
+    // A page to read: centred at a comfortable width on a tablet.
+    com.pocketstudio.ui.ReadingWidth {
+        LazyColumn(
+            modifier = modifier.fillMaxSize().testTag("recette"),
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
             item {
-                NeonCard(accent = Neon.Magenta) {
-                    SectionLabel("Nouveautés", color = Neon.Magenta)
-                    Text(state.changelog, style = MaterialTheme.typography.bodyMedium)
+                Text(tr("Recette"), style = MaterialTheme.typography.headlineMedium, color = Neon.TextPrimary)
+                Text(state.checklist.milestone, color = Neon.Magenta, style = MaterialTheme.typography.titleMedium)
+            }
+            if (state.changelog.isNotBlank()) {
+                item {
+                    NeonCard(accent = Neon.Magenta) {
+                        SectionLabel(tr("Nouveautés"), color = Neon.Magenta)
+                        Text(state.changelog, style = MaterialTheme.typography.bodyMedium)
+                    }
                 }
             }
-        }
-        item { AutoMeasures(stream, roundTripMs) }
-        items(state.checklist.items, key = { it.id }) { item ->
-            CheckCard(item, state.results[item.id] ?: CheckResult(), onUpdate)
-        }
-        item {
-            val done = state.results.values.count { it.status != CheckStatus.Untested }
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text(
-                    "$done / ${state.checklist.items.size} vérifications faites",
-                    color = Neon.TextSecondary,
-                    style = MaterialTheme.typography.bodySmall,
-                )
-                Button(onClick = onSendReport, modifier = Modifier.fillMaxWidth().height(52.dp)) {
-                    Text("Envoyer le rapport de recette")
-                }
-                OutlinedButton(onClick = { showProblemDialog = true }, modifier = Modifier.fillMaxWidth()) {
-                    Text("Signaler un problème")
+            item { AutoMeasures(stream, roundTripMs) }
+            items(state.checklist.items, key = { it.id }) { item ->
+                CheckCard(item, state.results[item.id] ?: CheckResult(), onUpdate)
+            }
+            item {
+                val done = state.results.values.count { it.status != CheckStatus.Untested }
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        tr("%d / %d vérifications faites", done, state.checklist.items.size),
+                        color = Neon.TextSecondary,
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                    Button(onClick = onSendReport, modifier = Modifier.fillMaxWidth().height(52.dp)) {
+                        Text(tr("Envoyer le rapport de recette"))
+                    }
+                    OutlinedButton(onClick = { showProblemDialog = true }, modifier = Modifier.fillMaxWidth()) {
+                        Text(tr("Signaler un problème"))
+                    }
                 }
             }
         }
@@ -101,18 +105,18 @@ fun RecetteScreen(
 @Composable
 private fun AutoMeasures(stream: StreamInfo, roundTripMs: Double?) {
     NeonCard {
-        SectionLabel("Mesures automatiques")
+        SectionLabel(tr("Mesures automatiques"))
         val rtOk = roundTripMs != null && roundTripMs < TARGET_ROUND_TRIP_MS
         StatRow(
-            "Latence aller-retour (< 20 ms)",
-            roundTripMs?.let { IssueReport.formatMs(it) } ?: "à mesurer",
+            tr("Latence aller-retour (< 20 ms)"),
+            roundTripMs?.let { IssueReport.formatMs(it, onScreen = true) } ?: tr("à mesurer"),
             if (roundTripMs == null) Neon.TextSecondary else if (rtOk) Neon.Acid else Neon.Amber,
         )
-        StatRow("Décrochages audio (0)", stream.xruns.toString(), if (stream.xruns == 0) Neon.Acid else Neon.Red)
+        StatRow(tr("Décrochages audio (0)"), stream.xruns.toString(), if (stream.xruns == 0) Neon.Acid else Neon.Red)
         val bufferOk = stream.bufferSize in 1..TARGET_BUFFER_FRAMES
         StatRow(
-            "Buffer (≤ 256 échantillons)",
-            if (stream.bufferSize > 0) stream.bufferSize.toString() else "flux fermé",
+            tr("Buffer (≤ 256 échantillons)"),
+            if (stream.bufferSize > 0) stream.bufferSize.toString() else tr("flux fermé"),
             if (stream.bufferSize == 0) Neon.TextSecondary else if (bufferOk) Neon.Acid else Neon.Amber,
         )
     }
@@ -131,10 +135,10 @@ private fun CheckCard(item: CheckItem, result: CheckResult, onUpdate: (String, C
             Text(item.hint, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         }
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            StatusChip("✅ Ça marche", result.status == CheckStatus.Pass, Neon.Acid) {
+            StatusChip(tr("✅ Ça marche"), result.status == CheckStatus.Pass, Neon.Acid) {
                 onUpdate(item.id, result.copy(status = toggle(result.status, CheckStatus.Pass)))
             }
-            StatusChip("❌ Problème", result.status == CheckStatus.Fail, Neon.Red) {
+            StatusChip(tr("❌ Problème"), result.status == CheckStatus.Fail, Neon.Red) {
                 onUpdate(item.id, result.copy(status = toggle(result.status, CheckStatus.Fail)))
             }
         }
@@ -143,7 +147,7 @@ private fun CheckCard(item: CheckItem, result: CheckResult, onUpdate: (String, C
                 value = result.comment,
                 onValueChange = { onUpdate(item.id, result.copy(comment = it)) },
                 modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text("Commentaire (facultatif)") },
+                placeholder = { Text(tr("Commentaire (facultatif)")) },
             )
         }
     }
@@ -168,17 +172,17 @@ private fun ProblemDialog(onDismiss: () -> Unit, onSend: (String) -> Unit) {
     var text by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf("") }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Signaler un problème") },
+        title = { Text(tr("Signaler un problème")) },
         text = {
             OutlinedTextField(
                 value = text,
                 onValueChange = { text = it },
                 modifier = Modifier.fillMaxWidth(),
                 minLines = 3,
-                placeholder = { Text("Qu'est-ce qui cloche ? (une phrase suffit)") },
+                placeholder = { Text(tr("Qu'est-ce qui cloche ? (une phrase suffit)")) },
             )
         },
-        confirmButton = { TextButton(onClick = { onSend(text) }) { Text("Préparer le rapport") } },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Annuler") } },
+        confirmButton = { TextButton(onClick = { onSend(text) }) { Text(tr("Préparer le rapport")) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(tr("Annuler")) } },
     )
 }

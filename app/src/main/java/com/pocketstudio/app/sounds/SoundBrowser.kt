@@ -1,5 +1,7 @@
 package com.pocketstudio.app.sounds
 
+import com.pocketstudio.model.i18n.tr
+
 import com.pocketstudio.ui.fadingHorizontalScroll
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
@@ -70,7 +72,7 @@ fun SoundBrowser(ui: SoundBrowserUi) {
             families.forEach { f ->
                 val look = SoundLooks.of(f)
                 FamilyChip(
-                    label = f, icon = look.icon, accent = look.color, selected = family == f, onClick = { family = f },
+                    label = tr(f), icon = look.icon, accent = look.color, selected = family == f, onClick = { family = f },
                     modifier = Modifier.testTag("${ui.tag}_family_$f"),
                 )
             }
@@ -82,11 +84,11 @@ fun SoundBrowser(ui: SoundBrowserUi) {
                     val s = ui.favorites[i]
                     val own = SoundLooks.of(s.category)
                     SoundTile(
-                        title = s.name, icon = own.icon, accent = own.color, selected = s.name == ui.current,
+                        title = tr(s.name), icon = own.icon, accent = own.color, selected = s.name == ui.current,
                         onClick = { ui.pickFavorite(i) }, subtitle = ui.describe(s),
                         trailing = {
                             IconButton(onClick = { ui.deleteFavorite(i) }, modifier = Modifier.size(32.dp)) {
-                                Icon(Icons.Filled.Close, contentDescription = "Retirer ${s.name}", tint = Neon.TextSecondary, modifier = Modifier.size(18.dp))
+                                Icon(Icons.Filled.Close, contentDescription = tr("Retirer %s", tr(s.name)), tint = Neon.TextSecondary, modifier = Modifier.size(18.dp))
                             }
                         },
                         modifier = m.testTag("${ui.tag}_fav_$i"),
@@ -97,7 +99,7 @@ fun SoundBrowser(ui: SoundBrowserUi) {
                 TileGrid(shownSounds.size) { k, m ->
                     val (i, s) = shownSounds[k]
                     SoundTile(
-                        title = s.name, icon = look.icon, accent = look.color, selected = s.name == ui.current,
+                        title = tr(s.name), icon = look.icon, accent = look.color, selected = s.name == ui.current,
                         onClick = { ui.pick(i) }, subtitle = ui.describe(s),
                         modifier = m.testTag("${ui.tag}_$i"),
                     )
@@ -108,15 +110,15 @@ fun SoundBrowser(ui: SoundBrowserUi) {
             val tight = PaddingValues(horizontal = 10.dp, vertical = 8.dp)
             OutlinedButton(onClick = ui.random, contentPadding = tight, modifier = Modifier.weight(1f).testTag("${ui.tag}_random")) {
                 Icon(Icons.Filled.Casino, contentDescription = null)
-                Text("  Au hasard", maxLines = 1)
+                Text(tr("  Au hasard"), maxLines = 1)
             }
             OutlinedButton(onClick = ui.save, contentPadding = tight, modifier = Modifier.weight(1f).testTag("${ui.tag}_save")) {
                 Icon(Icons.Filled.Star, contentDescription = null)
-                Text("  Garder ce son", maxLines = 1)
+                Text(tr("  Garder ce son"), maxLines = 1)
             }
         }
         if (ui.favorites.isEmpty()) {
-            Text("« Garder ce son » le range dans tes favoris, pour tous tes projets.", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+            Text(tr("« Garder ce son » le range dans tes favoris, pour tous tes projets."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         }
     }
 }

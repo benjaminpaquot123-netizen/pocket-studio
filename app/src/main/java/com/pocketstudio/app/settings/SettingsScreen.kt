@@ -2,6 +2,7 @@
 
 package com.pocketstudio.app.settings
 
+import com.pocketstudio.model.i18n.tr
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.runtime.setValue
@@ -45,48 +46,49 @@ class SettingsActions(
 @Composable
 fun SettingsScreen(s: AppSettings, version: String, actions: SettingsActions) {
     val chip = pillColors()
-    Column(
-        Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp).testTag("settings"),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
+    // On a tablet: look and feel on the left, sound and help on the right.
+    com.pocketstudio.ui.AdaptivePanes(Modifier.testTag("settings"), spacing = 12.dp, first = {
         NeonCard {
-            SectionLabel("Affichage")
-            Text("Thème", style = MaterialTheme.typography.bodyMedium)
+            SectionLabel(tr("Affichage"))
+            Text(tr("Langue"), style = MaterialTheme.typography.bodyMedium)
+            LanguagePicker()
+            Text(tr("Thème"), style = MaterialTheme.typography.bodyMedium)
             AppTheme.entries.forEach { t ->
                 FilterChip(selected = s.theme == t, onClick = { actions.update { it.copy(theme = t) } }, label = { Text(t.label) },
                     colors = chip, modifier = Modifier.testTag("theme_${t.name}"))
             }
-            Text("Taille de l'interface", style = MaterialTheme.typography.bodyMedium)
+            Text(tr("Taille de l'interface"), style = MaterialTheme.typography.bodyMedium)
             FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 AppSettings.UI_SCALES.forEach { scale ->
                     FilterChip(selected = s.uiScale == scale, onClick = { actions.update { it.copy(uiScale = scale) } },
                         label = { Text("${(scale * 100).roundToInt()} %") }, colors = chip, modifier = Modifier.testTag("scale_${(scale * 100).roundToInt()}"))
                 }
             }
-            Text("Noms des notes", style = MaterialTheme.typography.bodyMedium)
+            Text(tr("Noms des notes"), style = MaterialTheme.typography.bodyMedium)
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 FilterChip(selected = !s.englishNotes, onClick = { actions.update { it.copy(englishNotes = false) } }, label = { Text("Do Ré Mi") }, colors = chip)
                 FilterChip(selected = s.englishNotes, onClick = { actions.update { it.copy(englishNotes = true) } }, label = { Text("C D E") }, colors = chip)
             }
         }
         NeonCard {
-            SectionLabel("Toucher")
-            Toggle("Vibrations", "Une petite vibration sur les pads et les appuis longs.", s.haptics, "haptics") { v -> actions.update { it.copy(haptics = v) } }
-            Toggle("Écran toujours allumé pendant la lecture", "L'écran ne s'éteint pas tant que la musique joue.", s.keepScreenOn, "keep_screen") { v ->
+            SectionLabel(tr("Toucher"))
+            Toggle(tr("Vibrations"), tr("Une petite vibration sur les pads et les appuis longs."), s.haptics, "haptics") { v -> actions.update { it.copy(haptics = v) } }
+            Toggle(tr("Écran toujours allumé pendant la lecture"), tr("L'écran ne s'éteint pas tant que la musique joue."), s.keepScreenOn, "keep_screen") { v ->
                 actions.update { it.copy(keepScreenOn = v) }
             }
         }
+    }, second = {
         NeonCard {
-            SectionLabel("Son")
-            Text("Volume du métronome : ${(s.metronomeLevel * 100).roundToInt()} %", style = MaterialTheme.typography.bodyMedium)
+            SectionLabel(tr("Son"))
+            Text(tr("Volume du métronome : %d %%", (s.metronomeLevel * 100).roundToInt()), style = MaterialTheme.typography.bodyMedium)
             ProSlider(value = s.metronomeLevel, onValueChange = { v -> actions.update { it.copy(metronomeLevel = v) } }, modifier = Modifier.testTag("metronome_level"))
-            Text("Décompte avant d'enregistrer", style = MaterialTheme.typography.bodyMedium)
+            Text(tr("Décompte avant d'enregistrer"), style = MaterialTheme.typography.bodyMedium)
             FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                listOf(0 to "Aucun", 1 to "1 mesure", 2 to "2 mesures").forEach { (bars, label) ->
+                listOf(0 to tr("Aucun"), 1 to tr("1 mesure"), 2 to tr("2 mesures")).forEach { (bars, label) ->
                     FilterChip(selected = s.recordCountIn == bars, onClick = { actions.update { it.copy(recordCountIn = bars) } }, label = { Text(label) }, colors = chip)
                 }
             }
-            Text("Mode du son", style = MaterialTheme.typography.bodyMedium)
+            Text(tr("Mode du son"), style = MaterialTheme.typography.bodyMedium)
             FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 AppSettings.BUFFERS.forEach { (bursts, label) ->
                     FilterChip(selected = s.bufferBursts == bursts, onClick = { actions.update { it.copy(bufferBursts = bursts) } }, label = { Text(label) },
@@ -94,19 +96,19 @@ fun SettingsScreen(s: AppSettings, version: String, actions: SettingsActions) {
                 }
             }
             Text(
-                "« Rapide » répond au doigt sans délai. Si le son craque, passe à « Sûr » : un tout petit peu plus de retard, mais fini les craquements.",
+                tr("« Rapide » répond au doigt sans délai. Si le son craque, passe à « Sûr » : un tout petit peu plus de retard, mais fini les craquements."),
                 style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
             )
         }
         NeonCard {
-            SectionLabel("Aide")
-            OutlinedButton(onClick = actions.openGuide, modifier = Modifier.fillMaxWidth().testTag("open_guide")) { Text("Revoir le guide des premiers pas") }
+            SectionLabel(tr("Aide"))
+            OutlinedButton(onClick = actions.openGuide, modifier = Modifier.fillMaxWidth().testTag("open_guide")) { Text(tr("Revoir le guide des premiers pas")) }
             var lexicon by rememberSaveable { mutableStateOf(false) }
             OutlinedButton(onClick = { lexicon = !lexicon }, modifier = Modifier.fillMaxWidth().testTag("open_lexicon")) {
-                Text(if (lexicon) "Fermer le lexique" else "Lexique : les mots de la musique expliqués")
+                Text(if (lexicon) tr("Fermer le lexique") else tr("Lexique : les mots de la musique expliqués"))
             }
             if (lexicon) {
-                Text("Partout dans l'appli, le petit « ? » à côté d'un mot l'explique aussi.",
+                Text(tr("Partout dans l'appli, le petit « ? » à côté d'un mot l'explique aussi."),
                     style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
                 Glossary.ALL.forEach { h ->
                     Column(Modifier.testTag("lexicon_${h.term}")) {
@@ -115,10 +117,10 @@ fun SettingsScreen(s: AppSettings, version: String, actions: SettingsActions) {
                     }
                 }
             }
-            TextButton(onClick = actions.reset, modifier = Modifier.fillMaxWidth().testTag("settings_reset")) { Text("Remettre les réglages par défaut") }
+            TextButton(onClick = actions.reset, modifier = Modifier.fillMaxWidth().testTag("settings_reset")) { Text(tr("Remettre les réglages par défaut")) }
             Text("Pocket Studio $version", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         }
-    }
+    })
 }
 
 @Composable

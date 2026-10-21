@@ -1,5 +1,6 @@
 package com.pocketstudio.app.library
 
+import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.ui.fadingHorizontalScroll
 import com.pocketstudio.app.help.Glossary
 import androidx.compose.foundation.background
@@ -78,66 +79,69 @@ class LibraryActions(
 fun LibraryScreen(ui: LibraryUi, actions: LibraryActions) {
     var kind by rememberSaveable { mutableStateOf(ui.startKind) }
     var category by rememberSaveable(kind) { mutableStateOf<String?>(null) }
-    Column(Modifier.fillMaxSize().background(Neon.Background).testTag("library")) {
-        Row(Modifier.fillMaxWidth().padding(start = 16.dp, end = 4.dp, top = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-            Column(Modifier.weight(1f)) {
-                Text("Bibliothèque de sons", style = MaterialTheme.typography.titleLarge)
-                Text("Pour ${ui.target}", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
-            }
-            // The song's Play/Stop, as discreet as in the top bar: stop it to hear the sounds alone.
-            IconButton(onClick = actions.togglePlay, modifier = Modifier.testTag("library_play")) {
-                Icon(
-                    if (ui.songPlaying) Icons.Filled.Stop else Icons.Filled.PlayArrow,
-                    contentDescription = if (ui.songPlaying) "Arrêter le morceau" else "Jouer le morceau",
-                    tint = if (ui.songPlaying) Neon.Acid else Neon.Cyan,
-                )
-            }
-            IconButton(onClick = actions.close, modifier = Modifier.testTag("library_close")) { Icon(Icons.Filled.Close, contentDescription = "Fermer") }
-        }
-        Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            // Errors and notices at the top, where they are seen (the pack list can be far below).
-            ui.packs.message?.let { Text(it, color = Neon.Amber, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.testTag("library_message")) }
-            Row(Modifier.fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                SoundPacks.KIND_LABELS.filterKeys { it != "loop" }.forEach { (k, label) ->
-                    val look = SoundLooks.of(k)
-                    FamilyChip(label, look.icon, look.color, selected = kind == k, onClick = { kind = k }, modifier = Modifier.testTag("library_kind_$k"))
+    // A list to read: centred at a comfortable width on a tablet.
+    com.pocketstudio.ui.ReadingWidth {
+        Column(Modifier.fillMaxSize().background(Neon.Background).testTag("library")) {
+            Row(Modifier.fillMaxWidth().padding(start = 16.dp, end = 4.dp, top = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                Column(Modifier.weight(1f)) {
+                    Text(tr("Bibliothèque de sons"), style = MaterialTheme.typography.titleLarge)
+                    Text(tr("Pour %s", ui.target), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
                 }
-            }
-            val categories = libraryCategories(kind, ui.packs.installed)
-            if (categories.isEmpty()) {
-                Text("Aucun son de ce type pour l'instant : télécharge un pack ci-dessous qui en contient.",
-                    style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary)
-            } else {
-                val shown = categories.firstOrNull { it.id == category } ?: categories.first()
-                val look = SoundLooks.of(kind)
-                // The sources on one line that scrolls: the sounds stay right under them.
-                ChipRow(categories.size, categories.indexOf(shown)) { i ->
-                    val c = categories[i]
-                    FamilyChip(
-                        c.title.substringAfter(" · ", c.title), if (c.id == KIT_CATEGORY) Icons.Filled.Apps else Icons.Filled.Inventory2, look.color,
-                        selected = c.id == shown.id, onClick = { category = c.id }, modifier = Modifier.testTag("library_source_${c.id}"),
+                // The song's Play/Stop, as discreet as in the top bar: stop it to hear the sounds alone.
+                IconButton(onClick = actions.togglePlay, modifier = Modifier.testTag("library_play")) {
+                    Icon(
+                        if (ui.songPlaying) Icons.Filled.Stop else Icons.Filled.PlayArrow,
+                        contentDescription = if (ui.songPlaying) tr("Arrêter le morceau") else tr("Jouer le morceau"),
+                        tint = if (ui.songPlaying) Neon.Acid else Neon.Cyan,
                     )
                 }
-                NeonCard {
-                    SectionLabel(shown.title, foldKey = "Sons de la bibliothèque")
-                    TileGrid(shown.options.size, minTileWidth = 260.dp) { i, m ->
-                        val option = shown.options[i]
-                        val playing = ui.playing == option.ref
-                        SoundTile(
-                            title = option.name.substringBefore(" · "), icon = if (playing) Icons.Filled.GraphicEq else look.icon,
-                            accent = look.color, selected = playing, onClick = { actions.preview(option.ref) },
-                            subtitle = if (playing) "En écoute… touche pour arrêter" else "Touche pour écouter",
-                            trailing = {
-                                FilledTonalButton(onClick = { actions.use(option) }, modifier = Modifier.testTag("library_use_$i")) { Text("Poser") }
-                            },
-                            modifier = m.testTag("library_sound_$i"),
+                IconButton(onClick = actions.close, modifier = Modifier.testTag("library_close")) { Icon(Icons.Filled.Close, contentDescription = tr("Fermer")) }
+            }
+            Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                // Errors and notices at the top, where they are seen (the pack list can be far below).
+                ui.packs.message?.let { Text(it, color = Neon.Amber, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.testTag("library_message")) }
+                Row(Modifier.fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    SoundPacks.KIND_LABELS.filterKeys { it != "loop" }.forEach { (k, label) ->
+                        val look = SoundLooks.of(k)
+                        FamilyChip(tr(label), look.icon, look.color, selected = kind == k, onClick = { kind = k }, modifier = Modifier.testTag("library_kind_$k"))
+                    }
+                }
+                val categories = libraryCategories(kind, ui.packs.installed)
+                if (categories.isEmpty()) {
+                    Text(tr("Aucun son de ce type pour l'instant : télécharge un pack ci-dessous qui en contient."),
+                        style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary)
+                } else {
+                    val shown = categories.firstOrNull { it.id == category } ?: categories.first()
+                    val look = SoundLooks.of(kind)
+                    // The sources on one line that scrolls: the sounds stay right under them.
+                    ChipRow(categories.size, categories.indexOf(shown)) { i ->
+                        val c = categories[i]
+                        FamilyChip(
+                            c.title.substringAfter(" · ", c.title), if (c.id == KIT_CATEGORY) Icons.Filled.Apps else Icons.Filled.Inventory2, look.color,
+                            selected = c.id == shown.id, onClick = { category = c.id }, modifier = Modifier.testTag("library_source_${c.id}"),
                         )
                     }
-                    Text("Touche un son pour l'écouter, « Poser » pour le mettre sur ${ui.target}.",
-                        style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                    NeonCard {
+                        SectionLabel(shown.title, foldKey = "Sons de la bibliothèque")
+                        TileGrid(shown.options.size, minTileWidth = 260.dp) { i, m ->
+                            val option = shown.options[i]
+                            val playing = ui.playing == option.ref
+                            SoundTile(
+                                title = tr(option.name.substringBefore(" · ")), icon = if (playing) Icons.Filled.GraphicEq else look.icon,
+                                accent = look.color, selected = playing, onClick = { actions.preview(option.ref) },
+                                subtitle = if (playing) tr("En écoute… touche pour arrêter") else tr("Touche pour écouter"),
+                                trailing = {
+                                    FilledTonalButton(onClick = { actions.use(option) }, modifier = Modifier.testTag("library_use_$i")) { Text(tr("Poser")) }
+                                },
+                                modifier = m.testTag("library_sound_$i"),
+                            )
+                        }
+                        Text(tr("Touche un son pour l'écouter, « Poser » pour le mettre sur %s.", ui.target),
+                            style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                    }
                 }
+                PackList(ui, actions)
             }
-            PackList(ui, actions)
         }
     }
 }
@@ -148,13 +152,13 @@ private fun PackList(ui: LibraryUi, actions: LibraryActions) {
     val packs = ui.packs
     var deleting by rememberSaveable { mutableStateOf<String?>(null) }
     NeonCard(modifier = Modifier.testTag("library_packs")) {
-        SectionLabel("Packs de sons", help = Glossary.SOUND_PACK)
+        SectionLabel(tr("Packs de sons"), help = Glossary.SOUND_PACK)
         when (val index = packs.index) {
-            IndexState.Loading -> Text("Chargement de la liste…", color = Neon.TextSecondary)
-            IndexState.Unavailable -> Text("Aucun pack à télécharger : les sons intégrés sont tous là, prêts à servir.", color = Neon.TextSecondary)
+            IndexState.Loading -> Text(tr("Chargement de la liste…"), color = Neon.TextSecondary)
+            IndexState.Unavailable -> Text(tr("Aucun pack à télécharger : les sons intégrés sont tous là, prêts à servir."), color = Neon.TextSecondary)
             is IndexState.Failed -> Text(index.message, color = Neon.Amber)
             is IndexState.Ready -> {
-                Text("À télécharger seulement si tu veux ; chaque pack se supprime d'un geste pour libérer la place.",
+                Text(tr("À télécharger seulement si tu veux ; chaque pack se supprime d'un geste pour libérer la place."),
                     style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
                 index.index.packs.sortedBy { it.name.lowercase() }.forEach { entry ->
                     val installed = packs.installed.any { it.id == entry.id }
@@ -163,19 +167,19 @@ private fun PackList(ui: LibraryUi, actions: LibraryActions) {
                         Column(Modifier.weight(1f)) {
                             Text(entry.name)
                             Text(
-                                if (installed) "${entry.sounds} sons · ${mb(ui.sizes[entry.id] ?: entry.sizeBytes)} sur le téléphone"
-                                else "${entry.sounds} sons · ${entry.sizeLabel}",
+                                if (installed) tr("%d sons · %s sur le téléphone", entry.sounds, mb(ui.sizes[entry.id] ?: entry.sizeBytes))
+                                else tr("%d sons · %s", entry.sounds, entry.sizeLabel),
                                 style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
                             )
                             if (progress != null) LinearProgressIndicator(progress = { progress }, modifier = Modifier.fillMaxWidth(), color = Neon.Cyan)
                         }
                         when {
-                            progress != null -> TextButton(onClick = { actions.cancelDownload(entry.id) }) { Text("Annuler") }
+                            progress != null -> TextButton(onClick = { actions.cancelDownload(entry.id) }) { Text(tr("Annuler")) }
                             installed -> TextButton(onClick = { deleting = entry.id }, modifier = Modifier.testTag("library_delete_${entry.id}")) {
-                                Text("Supprimer", color = Neon.Red)
+                                Text(tr("Supprimer"), color = Neon.Red)
                             }
                             else -> OutlinedButton(onClick = { actions.download(entry.id) }, modifier = Modifier.testTag("library_download_${entry.id}")) {
-                                Text("Télécharger")
+                                Text(tr("Télécharger"))
                             }
                         }
                     }
@@ -187,17 +191,17 @@ private fun PackList(ui: LibraryUi, actions: LibraryActions) {
         val name = (packs.index as? IndexState.Ready)?.index?.packs?.firstOrNull { it.id == id }?.name ?: id
         AlertDialog(
             onDismissRequest = { deleting = null },
-            title = { Text("Supprimer le pack ?") },
-            text = { Text("Les sons de « $name » quittent le téléphone. Tes projets gardent ceux qu'ils utilisent ; pour les autres, il faudra retélécharger le pack.") },
+            title = { Text(tr("Supprimer le pack ?")) },
+            text = { Text(tr("Les sons de « %s » quittent le téléphone. Tes projets gardent ceux qu'ils utilisent ; pour les autres, il faudra retélécharger le pack.", name)) },
             confirmButton = {
                 TextButton(onClick = { deleting = null; actions.deletePack(id) }, modifier = Modifier.testTag("library_delete_confirm")) {
-                    Text("Supprimer", color = Neon.Red)
+                    Text(tr("Supprimer"), color = Neon.Red)
                 }
             },
-            dismissButton = { TextButton(onClick = { deleting = null }) { Text("Annuler") } },
+            dismissButton = { TextButton(onClick = { deleting = null }) { Text(tr("Annuler")) } },
         )
     }
 }
 
 private fun mb(bytes: Long) =
-    if (bytes < 1_000_000) "${(bytes / 1000).coerceAtLeast(1)} ko" else String.format(java.util.Locale.FRANCE, "%.1f Mo", bytes / 1e6)
+    if (bytes < 1_000_000) tr("%d ko", (bytes / 1000).coerceAtLeast(1)) else tr("%.1f Mo", bytes / 1e6)

@@ -10,6 +10,9 @@ import com.pocketstudio.model.Genres
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.ProjectCatalog
 import com.pocketstudio.model.StarterWizard
+import com.pocketstudio.model.i18n.I18n
+import com.pocketstudio.model.i18n.Lang
+import com.pocketstudio.model.i18n.tr
 
 /** « Partager mon morceau » in one touch: what it renders and when it asks for a name first. */
 object ShareSong {
@@ -31,20 +34,27 @@ object ShareSong {
         return (scene * times).coerceAtMost(RhythmViewModel.MAX_EXPORT_BARS)
     }
 
-    private val NUMBERED = Regex("(Mon projet|Mon morceau|Nouveau projet)( \\d+)?")
+    /** [fr] and its translation in every language: a default name stays one whatever the language it was given in. */
+    private fun everyLanguage(fr: String): List<String> =
+        listOf(fr) + Lang.entries.mapNotNull { I18n.table(it)[fr]?.takeIf { t -> t.isNotBlank() } }
+
+    private val NUMBERED: Regex by lazy {
+        val names = listOf("Mon projet", "Mon morceau", "Nouveau projet").flatMap(::everyLanguage).distinct()
+        Regex("(" + names.joinToString("|") { Regex.escape(it) } + ")( \\d+)?")
+    }
 
     /** Names the app gives by itself: a song shared under one of them is asked for a real name first. */
     private val TEMPLATE_NAMES: Set<String> by lazy {
-        buildSet {
+        buildList {
             add(Project().name)
             add("Mon premier rythme")
             Genres.ALL.forEach { add(it.first) }
             Demos.ALL.forEach { add(it.first) }
             StarterWizard.STYLES.forEach { add(it.name) }
-        }
+        }.flatMap(::everyLanguage).toSet()
     }
 
-    /** True when [name] was not chosen by the user (empty, "Mon projet 3", a template's or a style's name). */
+    /** True when [name] was not chosen by the user (empty, "Mon projet 3", a template's or a style's name, in any language). */
     fun isDefaultName(name: String): Boolean {
         val clean = name.trim()
         return clean.isEmpty() || NUMBERED.matches(clean) || clean in TEMPLATE_NAMES
@@ -53,6 +63,7 @@ object ShareSong {
     /** What the « Nomme ton morceau » field starts with: the style's name is a fine start, a number is not. */
     fun suggestedName(name: String): String {
         val clean = name.trim()
-        return if (clean.isEmpty() || NUMBERED.matches(clean)) "Mon morceau" else clean.take(ProjectCatalog.MAX_NAME)
+        return if (clean.isEmpty() || NUMBERED.matches(clean)) tr("Mon morceau") else clean.take(ProjectCatalog.MAX_NAME)
+
     }
 }

@@ -1,5 +1,7 @@
 package com.pocketstudio.app.instruments
 
+import com.pocketstudio.model.i18n.tr
+
 import com.pocketstudio.ui.fadingHorizontalScroll
 import com.pocketstudio.app.help.Glossary
 import androidx.compose.foundation.horizontalScroll
@@ -79,10 +81,10 @@ class InstrumentUi(
 fun InstrumentPanel(ui: InstrumentUi) {
     var showLibrary by rememberSaveable { mutableIntStateOf(if (ui.current != null) 1 else 0) }
     NeonCard(modifier = Modifier.testTag("instrument_panel")) {
-        SectionLabel("Instrument", help = Glossary.SOURCE)
+        SectionLabel(tr("Instrument"), help = Glossary.SOURCE, foldKey = "Instrument")
         Row(Modifier.fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             FamilyChip(
-                "Synthé", Icons.Filled.Tune, Neon.Cyan, selected = ui.current == null && showLibrary == 0 && ui.synthEngine == 0,
+                tr("Synthé"), Icons.Filled.Tune, Neon.Cyan, selected = ui.current == null && showLibrary == 0 && ui.synthEngine == 0,
                 onClick = { showLibrary = 0; ui.selectEngine(0) },
             )
             FamilyChip(
@@ -90,11 +92,11 @@ fun InstrumentPanel(ui: InstrumentUi) {
                 onClick = { showLibrary = 0; ui.selectEngine(1) }, modifier = Modifier.testTag("source_plaits"),
             )
             FamilyChip(
-                "Sample", Icons.Filled.GraphicEq, Neon.Cyan, selected = ui.current == null && showLibrary == 0 && ui.synthEngine == 2,
+                tr("Sample"), Icons.Filled.GraphicEq, Neon.Cyan, selected = ui.current == null && showLibrary == 0 && ui.synthEngine == 2,
                 onClick = { showLibrary = 0; ui.selectEngine(2) }, modifier = Modifier.testTag("source_sampled"),
             )
             FamilyChip(
-                "Instruments", Icons.Filled.Piano, Neon.Cyan, selected = ui.current != null || showLibrary == 1,
+                tr("Instruments"), Icons.Filled.Piano, Neon.Cyan, selected = ui.current != null || showLibrary == 1,
                 onClick = { showLibrary = 1; ui.open() }, modifier = Modifier.testTag("source_instruments"),
             )
         }
@@ -115,25 +117,25 @@ fun InstrumentPanel(ui: InstrumentUi) {
             when (val lib = ui.library) {
                 LibraryState.Missing -> {
                     Text(
-                        "À télécharger une seule fois (${bank.sizeLabel}, Wi-Fi conseillé). Licence libre.",
+                        tr("À télécharger une seule fois (%s, Wi-Fi conseillé). Licence libre.", bank.sizeLabel),
                         style = MaterialTheme.typography.bodyMedium,
                     )
                     Button(onClick = ui.download, modifier = Modifier.fillMaxWidth().testTag("download_library")) {
-                        Text("Télécharger ${bank.name} (${bank.sizeLabel})")
+                        Text(tr("Télécharger %s (%s)", bank.name, bank.sizeLabel))
                     }
                 }
                 is LibraryState.Downloading -> {
-                    Text("Téléchargement… ${(lib.progress * 100).roundToInt()} %")
+                    Text(tr("Téléchargement… %d %%", (lib.progress * 100).roundToInt()))
                     LinearProgressIndicator(progress = { lib.progress }, modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), color = Neon.Cyan)
-                    OutlinedButton(onClick = ui.cancel, modifier = Modifier.fillMaxWidth()) { Text("Annuler") }
+                    OutlinedButton(onClick = ui.cancel, modifier = Modifier.fillMaxWidth()) { Text(tr("Annuler")) }
                 }
                 LibraryState.Loading -> Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     CircularProgressIndicator(Modifier.padding(2.dp), strokeWidth = 2.dp)
-                    Text("Ouverture de la bibliothèque…")
+                    Text(tr("Ouverture de la bibliothèque…"))
                 }
                 is LibraryState.Failed -> {
                     Text(lib.message, color = Neon.Red)
-                    Button(onClick = ui.download, modifier = Modifier.fillMaxWidth()) { Text("Réessayer") }
+                    Button(onClick = ui.download, modifier = Modifier.fillMaxWidth()) { Text(tr("Réessayer")) }
                 }
                 is LibraryState.Ready -> Browser(lib.presets, ui.current, ui.bankId, ui.select, ui.loadKit)
             }
@@ -155,13 +157,13 @@ private fun Browser(
     Row(Modifier.fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
         InstrumentLibrary.FAMILIES.forEachIndexed { i, name ->
             val look = SoundLooks.of(name)
-            FamilyChip(name, look.icon, look.color, selected = family == i, onClick = { family = i })
+            FamilyChip(tr(name), look.icon, look.color, selected = family == i, onClick = { family = i })
         }
         val drums = SoundLooks.of(KITS_LABEL)
-        FamilyChip(KITS_LABEL, drums.icon, drums.color, selected = family == KITS, onClick = { family = KITS }, modifier = Modifier.testTag("family_kits"))
+        FamilyChip(tr("Kits de batterie"), drums.icon, drums.color, selected = family == KITS, onClick = { family = KITS }, modifier = Modifier.testTag("family_kits"))
     }
     if (family == KITS) {
-        Text("Touche un kit : il se joue au clavier et dans le piano roll (Do = grosse caisse, Ré = caisse claire, Fa# = charleston).",
+        Text(tr("Touche un kit : il se joue au clavier et dans le piano roll (Do = grosse caisse, Ré = caisse claire, Fa# = charleston)."),
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         val kits = presets.filter { it.bank == 128 }.sortedBy { it.program }
         val look = SoundLooks.of(KITS_LABEL)
@@ -177,7 +179,7 @@ private fun Browser(
         val chosen = kits.firstOrNull { current?.bankId == bankId && current.bank == 128 && current.program == it.program }
         if (chosen != null) {
             Button(onClick = { loadKit(chosen) }, modifier = Modifier.fillMaxWidth().testTag("kit_to_pads")) {
-                Text("Mettre « ${chosen.name} » sur les 16 pads du Rythme")
+                Text(tr("Mettre « %s » sur les 16 pads du Rythme", chosen.name))
             }
         }
         return
@@ -191,12 +193,12 @@ private fun Browser(
             title = p.name, icon = look.icon, accent = look.color,
             selected = current?.bankId == bankId && current.bank == p.bank && current.program == p.program,
             onClick = { select(InstrumentChoice(p.bank, p.program, p.name, bankId)) },
-            subtitle = if (p.bank > 0) "Variante ${p.bank}" else null,
+            subtitle = if (p.bank > 0) tr("Variante %d", p.bank) else null,
             modifier = m.testTag("preset_${p.bank}_${p.program}"),
         )
     }
     Text(
-        current?.let { "Joue : ${it.name}. Le piano roll et le clavier utilisent cet instrument." } ?: "Choisis un instrument : il remplace le synthé.",
+        current?.let { tr("Joue : %s. Le piano roll et le clavier utilisent cet instrument.", it.name) } ?: tr("Choisis un instrument : il remplace le synthé."),
         style = MaterialTheme.typography.bodySmall,
         color = Neon.TextSecondary,
     )

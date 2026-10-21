@@ -1,5 +1,5 @@
-Phase 20 : « On en a gros ! » (de bugs en moins)
-- Grand audit : 4 parcours passés au peigne fin, une trentaine de bugs corrigés (son, plantages, fichiers, écrans).
-- Morceau : « Nouvelle scène vide », « Vider la scène », et l'appli te dit si la scène est neuve ou une copie.
-- Petits écrans, texte agrandi et paysage : plus rien de coupé ni d'inaccessible.
-- Ton travail est mieux protégé : remix jamais effacé, corbeille accessible, Annuler fiable pendant la lecture.
+Phase 21 : « C'est pas faux ! » (enfin un vrai morceau)
+- Accueil : « Créer mon premier morceau » ; l'assistant fait Intro, Couplet, Refrain qui s'empilent, et une fin.
+- Scènes nommées (Intro, Refrain…) et la scène en cours en haut de l'écran, à changer d'un geste.
+- Morceau : déplacer, insérer, dupliquer une partie, jouer depuis une partie ; ▶ joue tout et s'arrête à la fin.
+- « Partager mon morceau » en un geste (avec un joli fondu de fin) et une carte « Prochaine étape ».

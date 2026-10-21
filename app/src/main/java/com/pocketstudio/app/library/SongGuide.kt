@@ -65,7 +65,7 @@ fun songGuide(styleName: String, plan: StarterWizard.ScenePlan, inKey: Boolean, 
         GuidePage(
             "Écouter une section",
             listOf(
-                "▶ en haut joue la section affichée, en boucle. Tu commences sur l'Intro.",
+                "▶ en haut joue tout le morceau, de l'Intro à la fin. Pour écouter une seule section en boucle : Morceau › Écouter « la scène ».",
                 "Onglet Morceau › Scènes : touche Couplet ou Refrain pour l'afficher et l'écouter. Pendant la lecture, elle prend le relais à la mesure suivante.",
                 "Ce que tu vois dans Rythme, Acide et Synthé, c'est toujours la section affichée.",
             ),

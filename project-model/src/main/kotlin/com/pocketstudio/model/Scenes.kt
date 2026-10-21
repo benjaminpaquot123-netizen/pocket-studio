@@ -137,7 +137,8 @@ fun Project.copySceneTo(index: Int): Project {
     val synced = syncScenes()
     val existing = synced.allScenes
     val list = (existing + List((index + 1 - existing.size).coerceAtLeast(0)) { Scene() }).toMutableList()
-    list[index] = synced.currentSceneContent()
+    // A named slot keeps its name (copying the Couplet onto « Couplet 2 »).
+    list[index] = synced.currentSceneContent().copy(label = list[index].label)
     val automation = synced.automation.map { lane ->
         val own = lane.sceneValues[synced.scene]
         lane.copy(sceneValues = if (own != null) lane.sceneValues + (index to own) else lane.sceneValues - index)

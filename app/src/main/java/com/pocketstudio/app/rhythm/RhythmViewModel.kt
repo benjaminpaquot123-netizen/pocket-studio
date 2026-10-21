@@ -1240,7 +1240,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
         val place = at.coerceIn(0, project.value.song.size)
         val following = songPlaying()
+        val before = project.value.song
         session.edit { it.insertSongPart(place, scene) }
+        if (project.value.song == before) return  // refused (a scene no longer there): nothing moved
         // Playing: the part on now keeps playing; one inserted right after it comes next.
         if (following) followSongEdit { i, explicit -> if (if (explicit) place <= i else place < i) i + 1 else i }
     }
@@ -1368,7 +1370,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val song = project.value.song
         if (index !in song.indices || !NativeEngine.isAvailable) return
         val part = song[index]
-        if (_followSong.value) session.edit { it.switchScene(part.scene) }
+        // Playing is not an edit: no undo step for the screens going to the part's scene.
+        if (_followSong.value) session.editQuietly { it.switchScene(part.scene) }
         syncEngine()
         pushPart(project.value, part.scene, part)  // the part's scene without its muted tracks
         heardScene = part.scene
@@ -1450,6 +1453,15 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * [SessionUi.queued]), the first again when the song starts over, or the song's end.
      */
     private fun stageSongPart() {
+        // The engine may have swapped (or ended the song) since the 40 ms watch last looked: follow
+        // it first, or this would stage from a part that is no longer playing.
+        if (NativeEngine.isAvailable && _transport.value.playing && NativeEngine.sceneSwaps() != swapsSeen &&
+            (_sessionUi.value.pending != null || _sessionUi.value.ending)
+        ) {
+            swapsSeen = NativeEngine.sceneSwaps()
+            onSceneSwapped()
+            return
+        }
         val ui = _sessionUi.value
         val p = project.value
         val song = p.song
@@ -1500,6 +1512,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             song.isEmpty() -> -1
             ui.songIndex >= 0 -> songNextIndex(ui.songIndex, ui.queued, song.size, loops = true)
             else -> ui.queued.takeIf { it in song.indices } ?: -1  // the song starts from the part chosen
+        }
+        // Edits held for this scene ("rester sur ma scène") that the waiting copy missed: it plays now.
+        if (restageJob?.isActive == true && now == project.value.scene) {
+            restageJob?.cancel()
+            pushPart(project.value, now, song.getOrNull(index)?.takeIf { it.scene == now })
         }
         if (index >= 0) {
             _sessionUi.value = SessionUi(songIndex = index)

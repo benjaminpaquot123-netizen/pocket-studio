@@ -1,46 +1,46 @@
 {
-  "id": "phase20-audit",
-  "milestone": "Phase 20 : le grand audit",
+  "id": "phase21-morceau",
+  "milestone": "Phase 21 : du brouillon au morceau",
   "items": [
     {
-      "id": "new_scene",
-      "title": "Nouvelle scène vide",
-      "hint": "Morceau : touche « Nouvelle scène vide ». La phrase sous la grille dit « nouvelle et vide » ; Rythme et Synthé n'ont plus aucune note. « Dupliquer » dit « copie de la scène … »."
+      "id": "welcome",
+      "title": "Accueil",
+      "hint": "Réinstalle l'appli (ou efface ses données) : le premier écran propose « Créer mon premier morceau (guidé) », « Écouter une démo », « Partir de zéro »."
     },
     {
-      "id": "clear_scene",
-      "title": "Vider la scène",
-      "hint": "Sur une scène remplie, touche « Vider la scène » : tout part, les sons restent. Annuler (↶) la ramène."
+      "id": "wizard_song",
+      "title": "L'assistant fait un vrai morceau",
+      "hint": "Mes projets › « Nouveau morceau guidé », choisis un style, crée. Joue le morceau : l'intro est légère, le couplet ajoute la basse, le refrain met tout. Il finit tout seul."
     },
     {
-      "id": "wizard_off",
-      "title": "Assistant sans plantage",
-      "hint": "Nouveau morceau pas à pas : choisis « Pas de mélodie », puis désactive toutes les lignes de batterie une à une. L'appli ne plante plus (elle demande de garder au moins une ligne)."
+      "id": "scene_chip",
+      "title": "La scène en haut",
+      "hint": "Dans Rythme, la puce en haut dit « A · Intro ▾ ». Touche-la et choisis « B · Couplet » : la grille change de scène."
     },
     {
-      "id": "big_text",
-      "title": "Grand texte",
-      "hint": "Outils › Réglages › taille 130 % : la barre du haut garde « Mes projets » et Lecture ; les onglets d'Outils se lisent en entier. Tourne le téléphone : tous les onglets sont accessibles."
+      "id": "rename",
+      "title": "Nommer une scène",
+      "hint": "Morceau : appui long sur une scène (ou « Renommer »), choisis « Pont » ou écris un nom. Il apparaît partout."
     },
     {
-      "id": "rotate_take",
-      "title": "Tourner pendant une prise",
-      "hint": "Audio : lance une prise au micro, tourne le téléphone, continue à parler, arrête : la prise contient tout."
+      "id": "song_edit",
+      "title": "Ranger le morceau",
+      "hint": "Morceau : déplace une partie vers le haut, insère-en une, duplique-la. Touche une partie : la lecture part de là."
     },
     {
-      "id": "time_sig",
-      "title": "3/4 puis 4/4",
-      "hint": "Morceau : passe en 3/4 puis reviens en 4/4. La batterie est exactement comme avant."
+      "id": "song_end",
+      "title": "Le morceau s'arrête",
+      "hint": "▶ en haut joue tout le morceau puis s'arrête à la fin (réglable : « recommencer »)."
     },
     {
-      "id": "trash",
-      "title": "La corbeille",
-      "hint": "Mes projets : supprime un projet, puis ouvre « Corbeille » en bas de la liste et touche « Restaurer »."
+      "id": "share",
+      "title": "Partager mon morceau",
+      "hint": "Mixeur (ou Mes projets) : « Partager mon morceau ». Donne-lui un nom, l'appli exporte et ouvre le partage. Écoute la fin : elle s'efface en douceur."
     },
     {
-      "id": "xy_filter",
-      "title": "Filtre XY sans clic",
-      "hint": "Morceau › Effets live : pendant la lecture, appuie et relâche le pad XY plusieurs fois : plus de clic."
+      "id": "next_steps",
+      "title": "Prochaine étape",
+      "hint": "Dans Rythme, la carte « Prochaine étape » montre où tu en es et t'emmène au bon onglet."
     }
   ]
 }

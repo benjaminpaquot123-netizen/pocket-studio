@@ -177,6 +177,8 @@ object NativeEngine {
     /** The waiting scene takes over after [steps] steps of the playing one (0 = next bar, -1 = cancel). */
     /** [restartsSong]: the waiting scene is the song's first part again (song automation restarts). */
     fun armSceneSwap(steps: Int, restartsSong: Boolean = false) = post(CMD_ARM_SCENE_SWAP, 0f, steps, if (restartsSong) 1 else 0)
+    /** The song ends after [steps] steps of the playing scene: the transport stops on that bar line (counted in [sceneSwaps]). */
+    fun armSongEnd(steps: Int) = post(CMD_ARM_SCENE_SWAP, 0f, steps, 2)
     /** Steps since the song (re)started, as song automation reads them; -1 when stopped. */
     external fun songStep(): Int
     /** Live effects on the master: [param] 0 filter (0.5 = off), 1 resonance, 2 repeat on, 3 repeat division, 4 tape stop, 5 chop. */
@@ -448,6 +450,7 @@ object NativeEngine {
     private external fun exportPost(handle: Long, type: Int, value: Float, a: Int, b: Int)
     private external fun exportScheduleFrom(handle: Long, frame: Long)
     external fun exportRender(handle: Long, path: String, frames: Long, tail: Long): Int
+    external fun exportSetFadeOut(handle: Long, frames: Long)
     external fun exportProgress(handle: Long): Float
     external fun exportRenderFloat(handle: Long, frames: Long, tail: Long): FloatArray
     external fun exportCancel(handle: Long)

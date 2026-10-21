@@ -93,7 +93,7 @@ data class WizardUi(
     val lastStep: Int get() = steps.size - 1
     val current: StarterWizard.Step get() = steps[step.coerceIn(0, lastStep)]
 
-    /** Which scene each chosen line and part will land in (what "Créer le morceau" builds). */
+    /** Which sections (Intro, Couplet, Refrain) each chosen line and part will play in (what "Créer le morceau" builds). */
     val plan: StarterWizard.ScenePlan get() {
         val lines = style?.lines.orEmpty().map { it.role }.filter { r -> rows[r]?.let { it.enabled && it.sound != null } == true }.toSet()
         val used = if (mood == null) emptySet() else parts.filterValues { it.enabled }.keys
@@ -629,7 +629,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                 }
                 AppLog.add("Assistant : morceau ${style.name}, ${sounds.size} lignes, ${parts.size} pistes mélodiques")
                 // The choices stay until the project is written (the caller closes the assistant then).
-                then(StarterWizard.build(style, sounds, w.mood, parts), files, songGuide(style.name, w.plan, inKey = w.mood != null))
+                then(StarterWizard.build(style, sounds, w.mood, parts), files, songGuide(style.name, w.plan, inKey = w.mood != null, song = songSummary(style, w.plan)))
             } catch (e: Exception) {
                 _wizard.update { it.copy(creating = false, error = "Le morceau n'a pas pu être préparé (${e.message}).") }
             }

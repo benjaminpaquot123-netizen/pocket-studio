@@ -40,12 +40,12 @@ public:
     double samplesPerStep() const { return sampleRate_ * 60.0 / (bpm_ * kStepsPerBeat); }
 
     // Calls onStep(frameOffsetInBlock, step) for every step that starts inside the next
-    // `numFrames` frames, in order, then moves the clock forward.
+    // `numFrames` frames, in order (until one of them stops the clock), then moves the clock forward.
     template <typename F>
     void advance(int numFrames, F&& onStep) {
         if (!running_) return;
         const int64_t blockEnd = frame_ + numFrames;
-        while (true) {
+        while (running_) {  // a step may stop the clock (the song's end): no step after it
             const double eventFrame = gridFrame_ + (isOdd(nextStep_) ? swing_ * samplesPerStep() : 0.0);
             const auto eventSample = static_cast<int64_t>(std::llround(eventFrame));
             if (eventSample >= blockEnd) break;

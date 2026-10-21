@@ -48,8 +48,28 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.Dp
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import com.pocketstudio.model.Scene
 import com.pocketstudio.ui.MonoStyle
 import com.pocketstudio.ui.Neon
+
+/**
+ * The scene being edited, shown as a chip in the top bar: [current] is its index, [titles] every
+ * scene of the session as it is shown ("A · Intro", "B"), [empty] those with nothing in them yet.
+ */
+class SceneChipUi(val current: Int, val titles: List<String>, val empty: Set<Int> = emptySet())
 
 class TopBarUi(
     val projectName: String,
@@ -59,6 +79,8 @@ class TopBarUi(
     val canRedo: Boolean,
     /** Live recording armed: what is played is written into the loop. */
     val recording: Boolean = false,
+    /** The scene chip, on the screens that edit a scene (null: not shown). */
+    val scene: SceneChipUi? = null,
 )
 
 class TopBarActions(
@@ -67,15 +89,68 @@ class TopBarActions(
     val redo: () -> Unit = {},
     val togglePlay: () -> Unit = {},
     val toggleRecord: () -> Unit = {},
+    val selectScene: (Int) -> Unit = {},
+    val newScene: () -> Unit = {},
 )
 
-/** Always on top: the open project (tap for "Mes projets"), undo/redo, tempo and play, on every screen. */
+/** How the scene chip shows: not at all, its letter alone, or its letter and section name. */
+enum class SceneChipMode { Hidden, Letter, Full }
+
+/** What fits in the top bar: [sceneMaxWidth] caps a full scene chip (its name is cut with "…" beyond). */
+data class TopBarLayout(val showTempo: Boolean, val showRedo: Boolean, val scene: SceneChipMode, val sceneMaxWidth: Dp = 0.dp)
+
+/**
+ * Fits the top bar into [width]. Never removed: the projects button (with room for a bit of the
+ * name), undo, record and play. Then, while there is room, by priority: the scene's letter, the
+ * scene's section name, redo, the tempo window.
+ */
+fun topBarLayout(width: Dp, hasScene: Boolean): TopBarLayout {
+    // No scene shown (Morceau, Outils…): the tempo window, then redo, give way below these widths.
+    if (!hasScene) return TopBarLayout(showTempo = width >= 400.dp, showRedo = width >= 340.dp, scene = SceneChipMode.Hidden)
+    var budget = width - ALWAYS_SHOWN - PROJECT_MIN
+    val letter = budget >= SCENE_LETTER
+    if (letter) budget -= SCENE_LETTER
+    // The extras leave the project name a readable width, not just its first letters.
+    budget -= EXTRAS_RESERVE
+    fun take(w: Dp): Boolean = (budget >= w).also { if (it) budget -= w }
+    // The section name ("C · Refrain") before redo: knowing what is edited matters more than
+    // redo, which stays one step away (undo is always there). It takes what is left, up to a cap.
+    val full = letter && budget >= SCENE_NAME_MIN
+    var sceneMax = SCENE_LETTER
+    if (full) {
+        val extra = minOf(budget, SCENE_FULL_MAX - SCENE_LETTER)
+        sceneMax += extra
+        budget -= extra
+    }
+    val redo = take(BUTTON)
+    val tempo = take(TEMPO)
+    val mode = when {
+        full -> SceneChipMode.Full
+        letter -> SceneChipMode.Letter
+        else -> SceneChipMode.Hidden
+    }
+    return TopBarLayout(showTempo = tempo, showRedo = redo, scene = mode, sceneMaxWidth = if (mode == SceneChipMode.Hidden) 0.dp else sceneMax)
+}
+
+private val BUTTON = 48.dp
+/** Undo, record, play (48 dp each) and the bar's side padding. */
+private val ALWAYS_SHOWN = BUTTON * 3 + 12.dp
+/** The projects button keeps its icon and a few letters of the name. */
+private val PROJECT_MIN = 92.dp
+private val EXTRAS_RESERVE = 36.dp
+private val SCENE_LETTER = 52.dp
+private val SCENE_NAME_MIN = 60.dp
+private val SCENE_FULL_MAX = 140.dp
+private val TEMPO = 84.dp
+
+/** Always on top: the open project (tap for "Mes projets"), the scene edited, undo/redo, tempo and play, on every screen. */
 @Composable
 fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.layout.BoxWithConstraints(Modifier.fillMaxWidth()) {
-    // Narrow (a small phone, a big text size): the tempo window, then redo, give their room to
-    // the project name; the projects button and play never go.
-    val showTempo = maxWidth >= 400.dp
-    val showRedo = maxWidth >= 340.dp
+    // Narrow (a small phone, a big text size): the tempo window, redo, then the scene's name give
+    // their room to the project name; the projects button, the scene's letter and play never go.
+    val layout = topBarLayout(maxWidth, ui.scene != null)
+    val showTempo = layout.showTempo
+    val showRedo = layout.showRedo
     Row(
         Modifier.fillMaxWidth()
             .background(Brush.verticalGradient(listOf(lerp(Neon.Surface, Color.Black, 0.12f), lerp(Neon.Background, Color.Black, 0.1f))))
@@ -97,6 +172,9 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
                 Icon(Icons.Filled.FolderOpen, contentDescription = "Mes projets", tint = Neon.OnAccent, modifier = Modifier.size(18.dp))
             }
             Text(ui.projectName, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        }
+        if (ui.scene != null && layout.scene != SceneChipMode.Hidden) {
+            SceneChip(ui.scene, layout.scene == SceneChipMode.Full, layout.sceneMaxWidth, actions)
         }
         IconButton(onClick = actions.undo, enabled = ui.canUndo, modifier = Modifier.testTag("top_undo")) {
             Icon(Icons.AutoMirrored.Filled.Undo, contentDescription = "Annuler")
@@ -147,6 +225,71 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
                 if (ui.playing) Icons.Filled.Stop else Icons.Filled.PlayArrow,
                 contentDescription = if (ui.playing) "Arrêter" else "Jouer",
                 tint = Neon.OnAccent,
+            )
+        }
+    }
+}
+
+/** The scene being edited ("A · Intro ▾"): a touch lists every scene to pick another, or a new empty one. */
+@Composable
+private fun SceneChip(scene: SceneChipUi, full: Boolean, maxWidth: Dp, actions: TopBarActions) {
+    var open by remember { mutableStateOf(false) }
+    val title = scene.titles.getOrElse(scene.current) { Scene.NAMES.getOrElse(scene.current) { "?" } }
+    val letter = Scene.NAMES.getOrElse(scene.current) { "?" }
+    Box {
+        Row(
+            Modifier.padding(horizontal = 2.dp).widthIn(min = 48.dp, max = maxWidth).height(36.dp)
+                .clip(RoundedCornerShape(18.dp))
+                .background(Neon.Cyan.copy(alpha = 0.14f))
+                .border(1.dp, Neon.Cyan.copy(alpha = 0.45f), RoundedCornerShape(18.dp))
+                .clickable(role = Role.Button, onClickLabel = "Changer de scène") { open = true }
+                .semantics { contentDescription = "Scène en cours : $title. Toucher pour changer de scène." }
+                .padding(start = 10.dp, end = 4.dp)
+                .testTag("top_scene"),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                if (full) title else letter,
+                style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = Neon.Cyan,
+                maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f, fill = false).testTag("top_scene_text"),
+            )
+            Icon(Icons.Filled.ArrowDropDown, contentDescription = null, tint = Neon.Cyan, modifier = Modifier.size(20.dp))
+        }
+        DropdownMenu(expanded = open, onDismissRequest = { open = false }, modifier = Modifier.testTag("scene_menu")) {
+            Text(
+                "Scène à modifier", style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
+            )
+            scene.titles.forEachIndexed { i, t ->
+                val current = i == scene.current
+                DropdownMenuItem(
+                    text = {
+                        Text(
+                            if (i in scene.empty && !current) "$t (vide)" else t,
+                            fontWeight = if (current) FontWeight.Bold else FontWeight.Normal,
+                            color = if (current) Neon.Cyan else Neon.TextPrimary,
+                        )
+                    },
+                    leadingIcon = {
+                        if (current) Icon(Icons.Filled.Check, contentDescription = "Scène en cours", tint = Neon.Cyan)
+                        else Spacer(Modifier.size(24.dp))
+                    },
+                    onClick = {
+                        open = false
+                        if (!current) actions.selectScene(i)
+                    },
+                    modifier = Modifier.testTag("scene_pick_$i"),
+                )
+            }
+            HorizontalDivider(color = Neon.Outline)
+            DropdownMenuItem(
+                text = { Text("Nouvelle scène vide") },
+                leadingIcon = { Icon(Icons.Filled.Add, contentDescription = null, tint = Neon.Acid) },
+                onClick = {
+                    open = false
+                    actions.newScene()
+                },
+                modifier = Modifier.testTag("scene_new"),
             )
         }
     }

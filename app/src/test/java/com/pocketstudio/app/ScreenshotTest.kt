@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -214,11 +215,14 @@ class ScreenshotTest {
             channels = channels,
             meters = FloatArray(17).also { m -> listOf(0.62f, 0.81f, 0f, 0.4f, 0.88f).forEachIndexed { i, v -> m[i] = v }; m[16] = 0.8f },
             actions = com.pocketstudio.app.mixer.MixerActions(),
-            export = com.pocketstudio.app.rhythm.ExportUi(bars = 4, files = listOf(java.io.File("Mon-premier-rythme-20261018-221500.wav")), savedInMusic = true, loudness = -13.24),
+            export = com.pocketstudio.app.rhythm.ExportUi(bars = 4, files = listOf(java.io.File("Mon-premier-rythme-20261018-221500.wav")), savedInMusic = true, loudness = -13.24)
+                .forProject(sceneBars = 4, hasSong = true),
+            hasSong = true,
         )
     }
 
     @Test
+    @Config(qualifiers = "w400dp-h1250dp-xxhdpi")
     fun mixerExporting() = shoot("mixer_export") {
         androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
             com.pocketstudio.app.mixer.ExportCard(
@@ -229,9 +233,25 @@ class ScreenshotTest {
                 com.pocketstudio.app.rhythm.ExportUi(
                     bars = 4, what = com.pocketstudio.app.rhythm.ExportWhat.Song, format = com.pocketstudio.app.rhythm.ExportFormat.Flac,
                     files = listOf(java.io.File("Da-Funk-morceau-20261020-101500.flac")), savedInMusic = true, loudness = -8.43,
-                ),
+                ).forProject(sceneBars = 4, hasSong = true),
                 com.pocketstudio.app.mixer.MixerActions(),
             )
+        }
+    }
+
+    @Test
+    fun topBar() = shoot("top_bar") {
+        // The scene chip at a small phone's, a usual phone's and a big phone's width.
+        val scenes = com.pocketstudio.app.ui.SceneChipUi(current = 2, titles = listOf("A · Intro", "B · Couplet", "C · Refrain", "D · Fin"))
+        androidx.compose.foundation.layout.Column(verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(16.dp)) {
+            listOf(300, 360, 400).forEach { w ->
+                Box(Modifier.width(w.dp)) {
+                    com.pocketstudio.app.ui.TopBar(
+                        com.pocketstudio.app.ui.TopBarUi("Da Funk (remix)", 111.0, playing = false, canUndo = true, canRedo = true, scene = scenes),
+                        com.pocketstudio.app.ui.TopBarActions(),
+                    )
+                }
+            }
         }
     }
 
@@ -432,7 +452,9 @@ class ScreenshotTest {
 
     @Test
     fun songGuide() = shoot("song_guide") {
-        com.pocketstudio.app.settings.GuideDialog(onClose = {}, pages = com.pocketstudio.app.library.songGuide("House", wizardUi(99).plan, inKey = true), tag = "song_guide")
+        val plan = wizardUi(99).plan
+        val song = com.pocketstudio.app.library.songSummary(com.pocketstudio.model.StarterWizard.style("house")!!, plan)
+        com.pocketstudio.app.settings.GuideDialog(onClose = {}, pages = com.pocketstudio.app.library.songGuide("House", plan, inKey = true, song = song), tag = "song_guide")
     }
 
     @Test
@@ -676,6 +698,25 @@ class ScreenshotTest {
     }
 
     @Test
+    fun welcome() = shoot("welcome") {
+        com.pocketstudio.app.onboarding.WelcomeScreen(com.pocketstudio.app.onboarding.WelcomeActions())
+    }
+
+    @Test
+    fun nextSteps() = shoot("next_steps") {
+        val project = com.pocketstudio.app.rhythm.RhythmViewModel.starterProject()
+        RhythmScreen(
+            project = project,
+            transport = TransportUi(selectedPad = 0),
+            live = LiveUi(),
+            canUndo = false,
+            canRedo = false,
+            actions = RhythmActions(),
+            header = { com.pocketstudio.app.onboarding.NextStepCard(com.pocketstudio.app.onboarding.nextSteps(project)) },
+        )
+    }
+
+    @Test
     fun guide() = shoot("guide") {
         com.pocketstudio.app.settings.GuideDialog(onClose = {})
     }
@@ -717,16 +758,22 @@ class ScreenshotTest {
     }
 
     @Test
+    @Config(qualifiers = "w400dp-h1700dp-xxhdpi")
     fun session() = shoot("session") {
+        // The song first (part 1 plays, part 2 comes next), then the named scenes, then the live tools.
         val drums = com.pocketstudio.model.DrumPattern().toggle(0, 0).toggle(2, 4)
-        val a = com.pocketstudio.model.Scene("A", drums)
-        val b = com.pocketstudio.model.Scene("B", drums.copy(steps = 32))
+        val a = com.pocketstudio.model.Scene("A", drums, label = "Intro")
+        val b = com.pocketstudio.model.Scene("B", drums.copy(steps = 32), label = "Couplet")
+        val c = com.pocketstudio.model.Scene("C", drums, label = "Refrain")
         com.pocketstudio.app.session.SessionScreen(
             com.pocketstudio.app.session.SessionScreenUi(
-                scenes = listOf(a, b, com.pocketstudio.model.Scene("C")) + List(6) { null } + com.pocketstudio.model.Scene("J", drums) + List(14) { null },
+                scenes = listOf(a, b, c, com.pocketstudio.model.Scene("D")) + List(5) { null } + com.pocketstudio.model.Scene("J", drums) + List(14) { null },
                 current = 0, pending = 1,
-                song = listOf(com.pocketstudio.model.SongPart(0, 4), com.pocketstudio.model.SongPart(1, 2), com.pocketstudio.model.SongPart(0, 2)),
-                songIndex = 0, playing = true, tempoBpm = 124.0,
+                song = listOf(
+                    com.pocketstudio.model.SongPart(0, 2), com.pocketstudio.model.SongPart(1, 2),
+                    com.pocketstudio.model.SongPart(2, 2), com.pocketstudio.model.SongPart(1), com.pocketstudio.model.SongPart(2, 4),
+                ),
+                songIndex = 0, playing = true, tempoBpm = 124.0, upcoming = 1,
             ),
             com.pocketstudio.app.session.SessionActions(),
         )

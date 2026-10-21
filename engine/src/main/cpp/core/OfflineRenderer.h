@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <atomic>
 #include <cstdint>
 #include <functional>
@@ -26,6 +27,9 @@ public:
     // Later post() calls take effect at `frame` of the song (-1: at once again). A song export
     // stages each next scene this way while the previous one plays.
     void scheduleFrom(int64_t frame) { scheduleAt_ = frame; }
+    // The last `frames` of the next render fade to silence (a song's "fondu de fin"); 0: none.
+    // Applied on this private engine's output, never on the live audio thread.
+    void setFadeOut(int64_t frames) { fadeOut_ = std::max<int64_t>(0, frames); }
 
     // Plays the transport for `frames`, then renders `tailFrames` stopped so
     // releases ring out. Output is 24-bit stereo.
@@ -49,6 +53,7 @@ private:
     int sampleRate_;
     std::unique_ptr<Engine> engine_;
     int64_t scheduleAt_ = -1;
+    int64_t fadeOut_ = 0;
     std::vector<std::pair<int64_t, Command>> scheduled_;  // in posting order
     size_t nextScheduled_ = 0;
     std::atomic<float> progress_{0.0f};

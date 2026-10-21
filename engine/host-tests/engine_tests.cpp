@@ -1192,6 +1192,60 @@ void testOfflineExportRendersTheBeat() {
     std::filesystem::remove(path);
 }
 
+// "Fondu de fin": the song's last seconds fade to silence, the rest is untouched and nothing gets louder.
+void testOfflineExportFadesOutTheEnd() {
+    auto beat = [](ps::OfflineRenderer& r) {
+        r.post({ps::CommandType::SetTempo, 120.0f});
+        // The kick alone: no noise source, so two renders give the very same samples.
+        for (int step = 0; step < 16; step += 2) r.post({ps::CommandType::SetDrumHit, step % 4 == 0 ? 1.0f : 0.7f, 0, step});
+    };
+    const int64_t bars = kRate * 2 * 4;  // four bars at 120 BPM
+    const int64_t fade = kRate * 3;      // the short fade
+    ps::OfflineRenderer plainR(kRate), fadedR(kRate);
+    beat(plainR);
+    beat(fadedR);
+    fadedR.setFadeOut(fade);
+    const auto plain = plainR.renderToBuffer(bars, 0);
+    const auto faded = fadedR.renderToBuffer(bars, 0);
+    CHECK(plain.size() == size_t(bars) * 2 && faded.size() == plain.size());
+    if (faded.size() != plain.size() || plain.empty()) return;
+    const size_t fadeStart = size_t(bars - fade) * 2;
+    float diffBefore = 0.0f, peakPlain = 0.0f, peakFaded = 0.0f;
+    bool louder = false, finite = true;
+    for (size_t i = 0; i < plain.size(); ++i) {
+        if (!std::isfinite(faded[i])) finite = false;
+        if (i < fadeStart) diffBefore = std::max(diffBefore, std::fabs(plain[i] - faded[i]));
+        if (std::fabs(faded[i]) > std::fabs(plain[i]) + 1e-6f) louder = true;
+        peakPlain = std::max(peakPlain, std::fabs(plain[i]));
+        peakFaded = std::max(peakFaded, std::fabs(faded[i]));
+    }
+    CHECK(finite);
+    CHECK(diffBefore == 0.0f);  // before the fade: the very same samples
+    CHECK(!louder);             // the fade never adds level, so it cannot clip
+    CHECK(peakFaded <= peakPlain && peakFaded <= 0.9f);
+    // The level goes down along the fade: its last quarter is far quieter than the start, and
+    // the very end is silent.
+    auto peakIn = [&](const std::vector<float>& b, int64_t from, int64_t to) {
+        float m = 0.0f;
+        for (size_t i = size_t(from) * 2; i < size_t(to) * 2; ++i) m = std::max(m, std::fabs(b[i]));
+        return m;
+    };
+    const float fadeHead = peakIn(faded, bars - fade, bars - fade + kRate / 2);
+    const float fadeEnd = peakIn(faded, bars - fade / 4, bars);
+    CHECK(fadeHead > 0.1f);
+    CHECK(fadeEnd < fadeHead * 0.1f);
+    CHECK(peakIn(faded, bars - 64, bars) < 1e-3f);
+    // Longer than the song: the whole render fades, still no NaN and nothing louder.
+    ps::OfflineRenderer shortR(kRate);
+    beat(shortR);
+    shortR.setFadeOut(bars * 10);
+    const auto whole = shortR.renderToBuffer(bars, 0);
+    CHECK(whole.size() == plain.size());
+    for (size_t i = 0; i < whole.size() && i < plain.size(); ++i) {
+        if (!std::isfinite(whole[i]) || std::fabs(whole[i]) > std::fabs(plain[i]) + 1e-6f) { CHECK(false); break; }
+    }
+}
+
 void testSampleResamplesCleanly() {
     // 1 kHz sine at 44.1 kHz, 1 s, stereo -> 48 kHz: same duration and pitch, no NaN.
     const int inFrames = 44100;
@@ -2947,6 +3001,52 @@ void testScenesSwapOnTheBar() {
     CHECK(engine.acidNotesPlayed() > acidBefore);
 }
 
+void testSongEndsOnTheBar() {
+    ps::Engine engine(kRate);
+    // The last part: pad 1 on every beat, the metronome on, a held piano-roll note. The song
+    // ends after two bars: the transport stops exactly on that bar line, before its step plays.
+    for (int st = 0; st < 16; st += 4) engine.post({ps::CommandType::SetDrumHit, 1.0f, 0, st});
+    engine.post({ps::CommandType::SetSynthNote, 0.9f, 0, ps::NoteTrack::pack(0, 16, 60)});
+    engine.post({ps::CommandType::SetSynthNoteCount, 0.0f, 1});
+    engine.post({ps::CommandType::SetMetronome, 1.0f});
+    engine.post({ps::CommandType::ArmSceneSwap, 0.0f, 32, 2});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    constexpr int kBar = kRate * 2;  // 120 BPM, 4/4
+    render(engine, 2 * kBar, 256);   // up to the last frame before the end
+    CHECK(engine.transportRunning());
+    CHECK(engine.laneTriggerCount(0) == 8 && engine.metronomeClicks() == 8 && engine.sceneSwaps() == 0);
+    render(engine, 1, 1);  // the bar line itself
+    std::printf("  song end: running %d, pad1 %u, clicks %llu, swaps %u\n", engine.transportRunning() ? 1 : 0,
+                engine.laneTriggerCount(0), static_cast<unsigned long long>(engine.metronomeClicks()), engine.sceneSwaps());
+    CHECK(!engine.transportRunning());
+    CHECK(engine.sceneSwaps() == 1);                 // the app sees it as the swap it armed
+    CHECK(engine.laneTriggerCount(0) == 8);          // no kick on the bar line
+    CHECK(engine.metronomeClicks() == 8);            // nor a click
+    CHECK(engine.currentStep() == -1 && engine.songStep() == -1);
+    // What still rings fades out: no NaN, no clipping, and silence after a while.
+    const auto tail = render(engine, kRate * 2, 256);
+    float peakEnd = 0.0f;
+    for (size_t i = 0; i < tail.size(); ++i) {
+        CHECK(std::isfinite(tail[i]) && std::fabs(tail[i]) <= 1.0f);
+        if (i >= tail.size() - kRate / 2 * kChannels) peakEnd = std::max(peakEnd, std::fabs(tail[i]));
+    }
+    CHECK(peakEnd < 1e-3f);
+    CHECK(engine.laneTriggerCount(0) == 8 && engine.synthActiveVoices() == 0);
+    // Playing again starts clean: the end armed before is gone.
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    render(engine, 3 * kBar, 256);
+    CHECK(engine.transportRunning() && engine.laneTriggerCount(0) == 8 + 12);
+    // An end armed "at the next bar" in the middle of one waits for that bar line; a plain
+    // swap armed afterwards replaces it (the song goes on).
+    engine.post({ps::CommandType::ArmSceneSwap, 0.0f, 0, 2});
+    engine.post({ps::CommandType::ArmSceneSwap, 0.0f, -1});
+    render(engine, 2 * kBar, 256);
+    CHECK(engine.transportRunning());
+    engine.post({ps::CommandType::ArmSceneSwap, 0.0f, 0, 2});
+    render(engine, kBar + 256, 256);
+    CHECK(!engine.transportRunning() && engine.sceneSwaps() == 2);
+}
+
 void testPerformanceEffects() {
     ps::PerformanceFx fx;
     fx.prepare(kRate);
@@ -3906,6 +4006,7 @@ int main(int argc, char** argv) {
         {"limiter_ceiling", testLimiterHoldsTheCeiling},
         {"wav_writer", testWavWriterRoundTrip},
         {"offline_export", testOfflineExportRendersTheBeat},
+        {"offline_fade_out", testOfflineExportFadesOutTheEnd},
         {"sample_resample", testSampleResamplesCleanly},
         {"pad_sample", testPadSampleReplacesTheDrum},
         {"sample_refs", testSampleReferencesAreNeverLeakedOrFreedEarly},
@@ -3923,6 +4024,7 @@ int main(int argc, char** argv) {
         {"sidechain_pump", testSidechainPumpFollowsTheKick},
         {"automation", testAutomationMovesTheFader},
         {"scenes", testScenesSwapOnTheBar},
+        {"song-end", testSongEndsOnTheBar},
         {"performance_fx", testPerformanceEffects},
         {"performance_filter_fades", testPerformanceFilterFadesInAndOut},
         {"voice_stealing_spares_held", testVoiceStealingSparesHeldNotes},

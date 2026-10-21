@@ -492,3 +492,23 @@ Restant (mineur, noté) :
 - Rotation pendant une prise : les instruments GM sont reconstruits (notes tenues coupées sur ces pistes).
 - Filtre XY passe-bas → passe-haut : ~10 ms de fondu avec la mauvaise coupure.
 - `HeldKeysTest` teste une copie de la logique plutôt que le vrai ViewModel.
+
+## Phase 21 : du brouillon au morceau
+
+Trois audits neufs (débutant, moyen, confirmé), puis trois correcteurs en parallèle (assistant et accueil ; morceau ; barre du haut et partage). Relecture neuve : aucun grave.
+
+Moyens corrigés :
+- Une modification du morceau juste après un changement de partie (ou la fin) partait de l'ancienne partie : l'app rattrape d'abord le moteur.
+- « Rester sur ma scène » : une modification faite juste avant le passage de sa scène pouvait ne pas s'entendre ; elle est renvoyée à la prise de relais.
+- Lancer le morceau laissait une étape d'annulation ; le guide disait encore que ▶ joue la section affichée.
+- Insérer une partie refusée décalait la lecture ; copier sur une scène nommée effaçait son nom.
+
+Restant (mineur, noté) :
+- La logique de lecture du morceau dans le ViewModel (garde des modifications, remappage des parties pendant la lecture) n'est testée qu'à l'arrêt : sortir ces calculs en fonctions pures.
+- `songIndexAfterInsert` est testé mais le ViewModel a ses propres lambdas.
+- Annuler pendant la lecture du morceau oublie la partie choisie « ensuite ».
+- Enregistrer pendant « rester sur ma scène » : les notes vont dans la scène affichée, calées sur celle qui joue.
+- Partage terminé en arrière-plan : la feuille de partage peut s'ouvrir plus tard ; le fichier partagé apparaît aussi dans la liste des exports.
+- La durée annoncée par l'assistant (« environ 2 min 40 ») peut différer un peu de la durée réelle.
+- Le menu ⋮ d'une partie reste à l'ancienne place après un déplacement.
+- La fenêtre « Nommer la scène » n'a pas de test d'écran (Robolectric ne se stabilise pas avec un champ de texte dans une fenêtre).

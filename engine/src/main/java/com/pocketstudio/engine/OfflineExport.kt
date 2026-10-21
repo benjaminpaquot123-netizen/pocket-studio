@@ -14,8 +14,11 @@ class OfflineExport : AutoCloseable {
     internal val handle: Long = NativeEngine.exportCreate()
     @Volatile private var closed = false
 
-    fun render(file: File, frames: Long, tailFrames: Long): ExportResult =
-        ExportResult.entries[NativeEngine.exportRender(handle, file.absolutePath, frames, tailFrames)]
+    /** [fadeOutFrames]: the file's last frames fade to silence (a song's ending); 0: none. */
+    fun render(file: File, frames: Long, tailFrames: Long, fadeOutFrames: Long = 0): ExportResult {
+        NativeEngine.exportSetFadeOut(handle, fadeOutFrames)
+        return ExportResult.entries[NativeEngine.exportRender(handle, file.absolutePath, frames, tailFrames)]
+    }
 
     /** Interleaved stereo at 48 kHz; empty if cancelled. Worker thread. */
     fun renderToArray(frames: Long, tailFrames: Long): FloatArray = NativeEngine.exportRenderFloat(handle, frames, tailFrames)

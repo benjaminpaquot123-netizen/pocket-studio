@@ -87,6 +87,13 @@ import com.pocketstudio.model.songBars
 import com.pocketstudio.model.withBeatsPerBar
 import com.pocketstudio.model.followSongIndex
 import com.pocketstudio.model.songIndexAfterRemoval
+import com.pocketstudio.model.songIndexAfterMove
+import com.pocketstudio.model.songNextIndex
+import com.pocketstudio.model.renameScene
+import com.pocketstudio.model.insertSongPart
+import com.pocketstudio.model.duplicateSongPart
+import com.pocketstudio.model.moveSongPart
+import com.pocketstudio.model.removeSongPart
 import com.pocketstudio.model.AudioTrack
 import com.pocketstudio.model.AudioClip
 import com.pocketstudio.model.addAudioTrack
@@ -113,6 +120,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.asCoroutineDispatcher
@@ -152,14 +160,24 @@ enum class ExportWhat { Loop, Song, Stems }
 /** WAV 24 bits (studio quality), FLAC (the same, about half the size) or M4A/AAC (about ten times smaller, for sharing). */
 enum class ExportFormat(val extension: String, val mime: String) { Wav("wav", "audio/wav"), M4a("m4a", "audio/mp4"), Flac("flac", "audio/flac") }
 
+/** « Fondu de fin »: the end of an export fades to silence over [seconds] (none for a loop by default). */
+enum class ExportFade(val seconds: Int, val label: String) { None(0, "Aucun"), Short(3, "Court"), Long(8, "Long") }
+
 data class ExportUi(
     /** Length of « La scène », in bars: the scene's own ([sceneBars]) until the user picks one. */
     val bars: Int = 4,
     val barsChosen: Boolean = false,
     /** The current scene's length in bars (offered among the lengths). */
     val sceneBars: Int = 4,
+    /** The whole song when the project has one, the scene otherwise, until the user picks. */
     val what: ExportWhat = ExportWhat.Loop,
+    val whatChosen: Boolean = false,
     val format: ExportFormat = ExportFormat.Wav,
+    /** A short fade for the song, none for a loop, until the user picks; never on separate tracks. */
+    val fade: ExportFade = ExportFade.None,
+    val fadeChosen: Boolean = false,
+    /** « Partager mon morceau »: this export opens the share sheet when it is done. */
+    val sharing: Boolean = false,
     val running: Boolean = false,
     val progress: Float = 0f,
     /** Step being done ("Batterie 1/4", "Compression M4A"…). */
@@ -174,6 +192,25 @@ data class ExportUi(
 
     /** These settings for a scene [sceneBars] long: its length is the default. */
     fun forScene(sceneBars: Int): ExportUi = copy(sceneBars = sceneBars, bars = if (barsChosen) bars else sceneBars)
+
+    /** These settings for a project: the scene's length, the song if there is one, the fade that goes with it. */
+    fun forProject(sceneBars: Int, hasSong: Boolean): ExportUi {
+        val w = if (whatChosen) what else if (hasSong) ExportWhat.Song else ExportWhat.Loop
+        val f = when {
+            w == ExportWhat.Stems -> ExportFade.None
+            fadeChosen -> fade
+            else -> defaultFade(w)
+        }
+        return forScene(sceneBars).copy(what = w, fade = f)
+    }
+
+    /** Frames the end of this export fades over at 48 kHz: never more than half of the [frames] rendered. */
+    fun fadeFrames(frames: Long): Long =
+        if (what == ExportWhat.Stems) 0L else minOf(fade.seconds.toLong() * com.pocketstudio.engine.OfflineExport.SAMPLE_RATE, frames / 2)
+
+    companion object {
+        fun defaultFade(what: ExportWhat) = if (what == ExportWhat.Song) ExportFade.Short else ExportFade.None
+    }
 }
 
 /** What the audio engine is doing right now, polled for the playhead and pad lights. */
@@ -182,15 +219,29 @@ data class LiveUi(val currentStep: Int = -1, val litPads: Set<Int> = emptySet(),
 /** Peaks (0..1) of each stem for the waveform view, and the song length in frames at 48 kHz. */
 class StemOverview(val peaks: List<FloatArray>, val frames: Long)
 
-/** Session state: the scene waiting to take over, and the song part playing (-1 = not in song mode). */
 /**
- * [pending]: the scene waiting to take over; [songIndex]: the song part playing (-1: not the
- * song). [removed]: that part was taken out of the song while it played and still finishes
- * ([songIndex] is then the part before the one that comes next).
+ * Session state. [pending]: the scene waiting to take over; [songIndex]: the song part playing
+ * (-1: not the song). [removed]: that part was taken out of the song while it played and still
+ * finishes ([songIndex] then only says the song plays). [queued]: the part chosen to come next
+ * (-1: the one after [songIndex]; while a removed part finishes, the part that followed it).
+ * [ending]: the song ends after the part playing (the engine stops on its last bar line).
  */
-data class SessionUi(val pending: Int? = null, val songIndex: Int = -1, val removed: SongPart? = null) {
+data class SessionUi(
+    val pending: Int? = null,
+    val songIndex: Int = -1,
+    val removed: SongPart? = null,
+    val queued: Int = -1,
+    val ending: Boolean = false,
+) {
     /** The part to light up in the song: none while a removed one finishes. */
     val shownSongIndex: Int get() = if (removed == null) songIndex else -1
+
+    /** The part that comes next in a song of [size] parts, or -1 (not playing the song, or it ends). */
+    fun upcoming(size: Int, loops: Boolean): Int = when {
+        songIndex < 0 -> queued.takeIf { pending != null && it in 0 until size } ?: -1
+        ending -> -1
+        else -> songNextIndex(songIndex, queued, size, loops)
+    }
 }
 
 data class TransportUi(
@@ -1029,6 +1080,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     private fun pushDrumPattern(drums: DrumPattern) {
+        if (editsWait) return  // another scene plays: this one goes to the engine on its turn
         NativeEngine.setPatternSteps(drums.steps)
         drums.lanes.forEachIndexed { lane, l ->
             for (step in 0 until DrumPattern.MAX_STEPS) pushHit(lane, step, l.hits[step])
@@ -1045,7 +1097,61 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** The song part still playing after it was taken out of the song (see [SessionUi.removed]). */
     private val removedPlaying: SongPart? get() = _sessionUi.value.removed
 
-    /** Stopped: shows and edits [index]. Playing: [index] takes over at the next bar. */
+    private val _listenSong = MutableStateFlow<Boolean?>(null)
+    /** What ▶ plays: the song (true) or the scene shown (false); null: the song as soon as there is one. */
+    val listenSong: StateFlow<Boolean?> = _listenSong.asStateFlow()
+
+    /** ▶ plays the song (from its first part) rather than the scene shown. */
+    fun setListenSong(song: Boolean) {
+        _listenSong.value = song
+    }
+
+    /** True when ▶ plays the song. */
+    val listensToSong: Boolean get() = project.value.song.isNotEmpty() && _listenSong.value != false
+
+    private val _followSong = MutableStateFlow(true)
+    /** While the song plays: the screens follow the part playing (true) or stay on the scene picked (false). */
+    val followSong: StateFlow<Boolean> = _followSong.asStateFlow()
+
+    fun setFollowSong(follow: Boolean) {
+        _followSong.value = follow
+        // Following again: the screens jump to what plays now.
+        val heard = heardScene
+        if (follow && heard != null && heard != project.value.scene && heard in project.value.allScenes.indices) {
+            session.editQuietly { it.switchScene(heard) }
+        }
+    }
+
+    /** At the song's end: stop (false) or start over (true). One undo step. */
+    fun setSongLoops(loops: Boolean) {
+        session.edit { it.copy(songLoops = loops) }
+        if (songPlaying()) stageSongPart()
+    }
+
+    /**
+     * The scene the engine plays while the transport runs (null: not tracked, the scene shown).
+     * Staying on a scene while the song plays, it differs from the scene shown: edits then wait
+     * for that scene's turn (see [editsWait]).
+     */
+    private var heardScene: Int? = null
+
+    /** True while [pushPart] sends a part on purpose (to the playing or the waiting slot). */
+    private var pushingPart = false
+
+    /**
+     * The engine plays another scene than the one being edited (the song goes on, the screens
+     * stay): pattern edits must not reach the playing slot. They reach the engine when their scene
+     * is sent ahead of its turn ([stageSongPart], [restageIfEditingUpcoming]).
+     */
+    private val editsWait: Boolean get() {
+        val heard = heardScene ?: return false
+        return !pushingPart && !NativeEngine.isCapturing && _transport.value.playing && heard != project.value.scene
+    }
+
+    /** The screens follow the scene the engine swaps in (always, except while staying on a scene during the song). */
+    private fun screensFollow(ui: SessionUi): Boolean = _followSong.value || (ui.songIndex < 0 && ui.queued < 0)
+
+    /** Stopped: shows and edits [index]. Playing: [index] takes over at the next bar (or, staying on a scene during the song, is just shown). */
     fun selectScene(index: Int) {
         if (index !in 0 until Scene.MAX) return
         if (!_transport.value.playing || !NativeEngine.isAvailable) {
@@ -1054,9 +1160,20 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             syncEngine()
             return
         }
+        if (!_followSong.value && songPlaying()) {
+            // The song plays on; the screens show [index] (its edits wait for its turn).
+            if (index != project.value.scene) session.edit { it.switchScene(index) }
+            return
+        }
         if (index == project.value.scene && _sessionUi.value.pending == null) return
         _sessionUi.value = SessionUi(pending = index)
         stageScene(index, 0)
+    }
+
+    /** Names scene [index] after a song section ("Refrain"; blank: back to its letter). One undo step. */
+    fun renameScene(index: Int, label: String) {
+        if (index !in project.value.allScenes.indices) return
+        session.edit { it.renameScene(index, label) }
     }
 
     /** Shows a new, empty scene (the first free slot), to start something else. */
@@ -1084,8 +1201,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             _notice.value = "Les ${Scene.MAX} scènes sont déjà prises : plus de place pour une copie."
             return
         }
-        if (!_transport.value.playing || !NativeEngine.isAvailable) {
-            _sessionUi.value = SessionUi()
+        if (!_transport.value.playing || !NativeEngine.isAvailable || (!_followSong.value && songPlaying())) {
+            if (!_transport.value.playing || !NativeEngine.isAvailable) _sessionUi.value = SessionUi()
             session.edit { it.copySceneTo(target).switchScene(target) }
             syncEngine()
             return
@@ -1109,21 +1226,66 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val song = project.value.song
         if (!NativeEngine.isAvailable || !_transport.value.playing || ui.songIndex < 0 || song.isEmpty()) return
         if (ui.songIndex == index && removedPlaying == null) pushPart(project.value, song[index].scene, song[index])
-        stageSongPart(ui.songIndex + 1)
+        stageSongPart()
     }
 
-    fun addSongPart(scene: Int) {
-        if (project.value.song.size >= SongPart.MAX_PARTS) return
-        session.edit { p -> p.copy(song = p.song + SongPart(scene, 1)) }
-        // Playing the last part: the new one comes next instead of the first.
-        if (songPlaying()) stageSongPart(_sessionUi.value.songIndex + 1)
+    /** Scene [scene] added at the end of the song. */
+    fun addSongPart(scene: Int) = insertSongPart(project.value.song.size, scene)
+
+    /** Scene [scene] played once at place [at] of the song (one undo step). */
+    fun insertSongPart(at: Int, scene: Int) {
+        if (project.value.song.size >= SongPart.MAX_PARTS) {
+            _notice.value = "Le morceau a déjà ${SongPart.MAX_PARTS} parties : retires-en une pour en ajouter une autre."
+            return
+        }
+        val place = at.coerceIn(0, project.value.song.size)
+        val following = songPlaying()
+        val before = project.value.song
+        session.edit { it.insertSongPart(place, scene) }
+        if (project.value.song == before) return  // refused (a scene no longer there): nothing moved
+        // Playing: the part on now keeps playing; one inserted right after it comes next.
+        if (following) followSongEdit { i, explicit -> if (if (explicit) place <= i else place < i) i + 1 else i }
+    }
+
+    /** Song part [index] played again right after itself (one undo step). */
+    fun duplicateSongPart(index: Int) {
+        if (index !in project.value.song.indices) return
+        if (project.value.song.size >= SongPart.MAX_PARTS) {
+            _notice.value = "Le morceau a déjà ${SongPart.MAX_PARTS} parties : retires-en une pour en ajouter une autre."
+            return
+        }
+        val following = songPlaying()
+        session.edit { it.duplicateSongPart(index) }
+        if (following) followSongEdit { i, explicit -> if (if (explicit) index + 1 <= i else index + 1 < i) i + 1 else i }
+    }
+
+    /** Song part [from] moved to place [to] (one undo step): up or down the song. */
+    fun moveSongPart(from: Int, to: Int) {
+        val song = project.value.song
+        if (from !in song.indices || to !in song.indices || from == to) return
+        val following = songPlaying()
+        session.edit { it.moveSongPart(from, to) }
+        if (following) followSongEdit { i, _ -> if (i < song.size) songIndexAfterMove(i, from, to) else i }
+    }
+
+    /**
+     * Playing the song while it was edited: the part on now and the one chosen to come next keep
+     * their place ([map]: an old index to the new one; its flag: an index the user chose, not
+     * just "the part that follows"), then the next part is sent again.
+     */
+    private fun followSongEdit(map: (Int, Boolean) -> Int) {
+        val ui = _sessionUi.value
+        val playing = if (ui.removed == null) map(ui.songIndex, true) else ui.songIndex
+        val queued = if (ui.queued < 0) -1 else map(ui.queued, ui.removed == null)
+        _sessionUi.value = ui.copy(songIndex = playing.coerceIn(0, (project.value.song.size - 1).coerceAtLeast(0)), queued = queued)
+        stageSongPart()
     }
 
     fun removeSongPart(index: Int) {
         val before = project.value.song
         if (index !in before.indices) return
         val following = songPlaying()
-        session.edit { p -> p.copy(song = p.song.filterIndexed { i, _ -> i != index }) }
+        session.edit { it.removeSongPart(index) }
         if (!following) return
         // Playing the song: what plays now finishes, then the song goes on in its new order.
         val ui = _sessionUi.value
@@ -1132,10 +1294,16 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             endSongFollow()
             return
         }
-        val removed = ui.removed ?: before[index].takeIf { index == ui.songIndex }
+        val removedNow = ui.removed == null && index == ui.songIndex
+        val queued = when {
+            ui.queued >= 0 -> if (ui.queued > index) ui.queued - 1 else ui.queued
+            removedNow -> index  // the part that followed it (now at its place) comes next
+            else -> -1
+        }
+        val removed = ui.removed ?: before[index].takeIf { removedNow }
         val playing = songIndexAfterRemoval(ui.songIndex, index, song.size)
-        _sessionUi.value = ui.copy(songIndex = playing, removed = removed)
-        stageSongPart(playing + 1)
+        _sessionUi.value = ui.copy(songIndex = playing, removed = removed, queued = queued)
+        stageSongPart()
     }
 
     fun setSongRepeats(index: Int, repeats: Int) {
@@ -1143,15 +1311,25 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             p.copy(song = p.song.mapIndexed { i, part -> if (i == index) part.copy(repeats = repeats.coerceIn(1, SongPart.MAX_REPEATS)) else part })
         }
         // The part playing now: its end moves (a swap armed for a bar already gone waits for the next bar).
-        if (songPlaying() && index == _sessionUi.value.songIndex && removedPlaying == null) stageSongPart(index + 1)
+        if (songPlaying() && index == _sessionUi.value.songIndex && removedPlaying == null) stageSongPart()
     }
 
     /** True while the song plays in the engine (song mode). */
     private fun songPlaying(): Boolean =
         NativeEngine.isAvailable && _transport.value.playing && _sessionUi.value.songIndex >= 0 && project.value.song.isNotEmpty()
 
-    /** The song stops following its parts: the scene playing goes on as a loop. */
+    /**
+     * The song stops following its parts: the scene playing goes on as a loop. Staying on another
+     * scene, that one takes over at the next bar (the screens and the sound agree again).
+     */
     private fun endSongFollow() {
+        val edited = project.value.scene
+        val heard = heardScene
+        if (NativeEngine.isAvailable && _transport.value.playing && heard != null && heard != edited) {
+            _sessionUi.value = SessionUi(pending = edited)
+            stageScene(edited, 0)
+            return
+        }
         _sessionUi.value = SessionUi()
         if (NativeEngine.isAvailable) NativeEngine.armSceneSwap(-1)
     }
@@ -1159,46 +1337,84 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** Plays the song from its first part (or stops it). */
     fun toggleSong() {
         if (_transport.value.playing) {
-            togglePlay()
+            toggleTransport()
             return
         }
+        playSongFrom(0)
+    }
+
+    /**
+     * A touch on song part [index]: stopped, the song plays from there; playing the song, that
+     * part comes next (a touch on the part already chosen goes back to the usual order);
+     * playing a scene, the song starts from that part at the next bar.
+     */
+    fun playSongPart(index: Int) {
         val song = project.value.song
-        if (song.isEmpty() || !NativeEngine.isAvailable) return
-        session.edit { it.switchScene(song[0].scene) }
+        if (index !in song.indices || !NativeEngine.isAvailable) return
+        val ui = _sessionUi.value
+        when {
+            !_transport.value.playing -> playSongFrom(index)
+            ui.songIndex >= 0 -> {
+                _sessionUi.value = ui.copy(queued = if (ui.queued == index && ui.removed == null) -1 else index)
+                stageSongPart()
+            }
+            else -> {
+                _sessionUi.value = SessionUi(pending = song[index].scene, queued = index)
+                stageScene(song[index].scene, 0, song[index], restartsSong = true)
+            }
+        }
+    }
+
+    /** Starts the song from part [index] (the screens go to its scene, unless they stay on theirs). */
+    private fun playSongFrom(index: Int) {
+        val song = project.value.song
+        if (index !in song.indices || !NativeEngine.isAvailable) return
+        val part = song[index]
+        // Playing is not an edit: no undo step for the screens going to the part's scene.
+        if (_followSong.value) session.editQuietly { it.switchScene(part.scene) }
         syncEngine()
-        pushPart(project.value, song[0].scene, song[0])  // the first part without its muted tracks
-        _sessionUi.value = SessionUi(songIndex = 0)
-        togglePlay()
+        pushPart(project.value, part.scene, part)  // the part's scene without its muted tracks
+        heardScene = part.scene
+        _sessionUi.value = SessionUi(songIndex = index)
+        toggleTransport()
         // The whole project just went to the engine: let the queue drain before the next scene.
         viewModelScope.launch {
             kotlinx.coroutines.delay(150)
-            if (_transport.value.playing && _sessionUi.value.songIndex == 0) stageSongPart(1)
+            val ui = _sessionUi.value
+            if (_transport.value.playing && ui.songIndex == index && ui.pending == null && !ui.ending) stageSongPart()
         }
     }
 
     /**
      * In song mode the next part is sent ahead; if it is the scene being edited (a part
      * repeated, or A then A), edits must reach that waiting copy too, or the swap would undo them.
+     * The same for a scene waiting to take over at the next bar.
      */
     private var restageJob: kotlinx.coroutines.Job? = null
 
     private fun restageIfEditingUpcoming() {
         val ui = _sessionUi.value
-        if (ui.songIndex < 0 || ui.pending != project.value.scene || !_transport.value.playing) return
+        if (ui.pending != project.value.scene || !_transport.value.playing || !NativeEngine.isAvailable) return
         restageJob?.cancel()
         restageJob = viewModelScope.launch {
             kotlinx.coroutines.delay(150)  // one resend after a burst of edits
             val ui2 = _sessionUi.value
-            if (ui2.songIndex >= 0 && ui2.pending == project.value.scene && _transport.value.playing) stageSongPart(ui2.songIndex + 1)
+            if (ui2.pending != project.value.scene || !_transport.value.playing) return@launch
+            when {
+                ui2.songIndex >= 0 -> stageSongPart()
+                ui2.queued >= 0 -> project.value.song.getOrNull(ui2.queued)?.let { stageScene(it.scene, 0, it, restartsSong = true) }
+                else -> stageScene(ui2.pending, 0)
+            }
         }
     }
 
     /** The engine swapped scenes but the 40 ms watch had not seen it yet: follow it now. */
     private fun catchUpMissedSwap() {
         if (!NativeEngine.isAvailable) return
-        if (_sessionUi.value.pending != null && NativeEngine.sceneSwaps() != swapsSeen) {
+        val ui = _sessionUi.value
+        if (ui.pending != null && NativeEngine.sceneSwaps() != swapsSeen) {
             swapsSeen = NativeEngine.sceneSwaps()
-            _sessionUi.value.pending?.let { now -> session.editQuietly { it.switchScene(now) } }
+            ui.pending.let { now -> if (screensFollow(ui)) session.editQuietly { it.switchScene(now) } }
         }
     }
 
@@ -1216,26 +1432,53 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** The patterns of scene [index] as [part] plays them (to the playing or the waiting slot). */
     private fun pushPart(p: Project, index: Int, part: SongPart?) {
-        val view = if (part != null) p.partView(part) else p.sceneView(index)
-        pushDrumPattern(view.drums)
-        pushAcid(view.acid)
-        view.instrumentTracks.forEach { pushNotes(it.notes, it.id) }
-        for (id in 0 until AudioTrack.MAX) NativeEngine.setAudioOn(id, part?.plays(SongPart.audio(id)) ?: true)
-        // Per-scene automation clips: the scene's own steps (all of them, empty ones included).
-        p.automation.forEachIndexed { i, lane ->
-            if (lane.mode == AutomationLane.PER_SCENE) lane.valuesFor(index).forEachIndexed { step, v -> NativeEngine.setAutomationPoint(i, step, v) }
+        pushingPart = true
+        try {
+            val view = if (part != null) p.partView(part) else p.sceneView(index)
+            pushDrumPattern(view.drums)
+            pushAcid(view.acid)
+            view.instrumentTracks.forEach { pushNotes(it.notes, it.id) }
+            for (id in 0 until AudioTrack.MAX) NativeEngine.setAudioOn(id, part?.plays(SongPart.audio(id)) ?: true)
+            // Per-scene automation clips: the scene's own steps (all of them, empty ones included).
+            p.automation.forEachIndexed { i, lane ->
+                if (lane.mode == AutomationLane.PER_SCENE) lane.valuesFor(index).forEachIndexed { step, v -> NativeEngine.setAutomationPoint(i, step, v) }
+            }
+        } finally {
+            pushingPart = false
         }
     }
 
-    /** Prepares the song part after the one now playing ([next] wraps around: the song loops). */
-    private fun stageSongPart(next: Int) {
-        val song = project.value.song
-        if (song.isEmpty()) return
-        val playing = removedPlaying ?: song[Math.floorMod(next - 1, song.size)]
-        val upcoming = song[Math.floorMod(next, song.size)]
-        val steps = project.value.sceneSteps(playing.scene)
-        _sessionUi.value = _sessionUi.value.copy(pending = upcoming.scene)
-        stageScene(upcoming.scene, steps * playing.repeats, upcoming, restartsSong = Math.floorMod(next, song.size) == 0)
+    /**
+     * Prepares what follows the song part now playing: the next part (or the one chosen, see
+     * [SessionUi.queued]), the first again when the song starts over, or the song's end.
+     */
+    private fun stageSongPart() {
+        // The engine may have swapped (or ended the song) since the 40 ms watch last looked: follow
+        // it first, or this would stage from a part that is no longer playing.
+        if (NativeEngine.isAvailable && _transport.value.playing && NativeEngine.sceneSwaps() != swapsSeen &&
+            (_sessionUi.value.pending != null || _sessionUi.value.ending)
+        ) {
+            swapsSeen = NativeEngine.sceneSwaps()
+            onSceneSwapped()
+            return
+        }
+        val ui = _sessionUi.value
+        val p = project.value
+        val song = p.song
+        if (song.isEmpty() || ui.songIndex < 0) return
+        val playing = ui.removed ?: song.getOrNull(ui.songIndex) ?: return
+        val steps = p.sceneSteps(playing.scene) * playing.repeats
+        val next = songNextIndex(ui.songIndex, ui.queued, song.size, p.songLoops)
+        if (next < 0) {
+            // The song ends: the engine stops on the last part's last bar line.
+            _sessionUi.value = ui.copy(pending = null, ending = true)
+            NativeEngine.armSongEnd(steps)
+            watchSwaps()
+            return
+        }
+        val upcoming = song[next]
+        _sessionUi.value = ui.copy(pending = upcoming.scene, ending = false)
+        stageScene(upcoming.scene, steps, upcoming, restartsSong = next == 0)
     }
 
     /** Follows the engine's scene swaps (also with the screen off, while the transport runs). */
@@ -1256,17 +1499,38 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     private fun onSceneSwapped() {
         val ui = _sessionUi.value
+        if (ui.ending) {
+            songEnded()
+            return
+        }
         val now = ui.pending ?: return
+        heardScene = now
         // The engine already plays it: only the screens follow (no undo step).
-        session.editQuietly { it.switchScene(now) }
+        if (screensFollow(ui)) session.editQuietly { it.switchScene(now) }
         val song = project.value.song
-        if (ui.songIndex >= 0 && song.isNotEmpty()) {
-            val index = (ui.songIndex + 1) % song.size
+        val index = when {
+            song.isEmpty() -> -1
+            ui.songIndex >= 0 -> songNextIndex(ui.songIndex, ui.queued, song.size, loops = true)
+            else -> ui.queued.takeIf { it in song.indices } ?: -1  // the song starts from the part chosen
+        }
+        // Edits held for this scene ("rester sur ma scène") that the waiting copy missed: it plays now.
+        if (restageJob?.isActive == true && now == project.value.scene) {
+            restageJob?.cancel()
+            pushPart(project.value, now, song.getOrNull(index)?.takeIf { it.scene == now })
+        }
+        if (index >= 0) {
             _sessionUi.value = SessionUi(songIndex = index)
-            stageSongPart(index + 1)
+            stageSongPart()
         } else {
             _sessionUi.value = SessionUi()
         }
+    }
+
+    /** The engine stopped on the song's last bar line: the app stops too (a microphone take is kept). */
+    private fun songEnded() {
+        AppLog.add("Fin du morceau")
+        if (_audioRecording.value != null) stopAudioRecording()
+        else if (_transport.value.playing) toggleTransport()
     }
 
     // --- Automation (mixer settings that move with the loop) ----------------------------------
@@ -1286,7 +1550,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             NativeEngine.setAutomationTarget(i, lane?.target?.pack() ?: -1)
             if (lane == null) continue
             pushSongCurve(p, i, lane)
-            lane.valuesFor(p.scene).forEachIndexed { step, v -> if (v != null) NativeEngine.setAutomationPoint(i, step, v) }
+            // Per-scene clips: those of the scene the engine plays (another one while staying on this one).
+            val scene = if (editsWait) heardScene ?: p.scene else p.scene
+            lane.valuesFor(scene).forEachIndexed { step, v -> if (v != null) NativeEngine.setAutomationPoint(i, step, v) }
         }
     }
 
@@ -1342,7 +1608,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun setAutomationPoint(index: Int, step: Int, value: Float?) {
         if (index !in project.value.automation.indices) return
         session.edit("auto-$index") { p -> p.copy(automation = p.automation.mapIndexed { i, l -> if (i == index) l.withPoint(step, value, p.scene) else l }) }
-        if (NativeEngine.isAvailable && project.value.automation[index].mode != AutomationLane.SONG) {
+        val mode = project.value.automation[index].mode
+        if (NativeEngine.isAvailable && mode != AutomationLane.SONG && !(mode == AutomationLane.PER_SCENE && editsWait)) {
             NativeEngine.setAutomationPoint(index, step, value?.coerceIn(0f, 1f))
         }
     }
@@ -1815,7 +2082,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** The engine plays the clip as performed: arpeggios and strums expanded here. */
     private fun pushNotes(clip: NoteClip, id: Int = track) {
-        if (!NativeEngine.isAvailable) return
+        if (!NativeEngine.isAvailable || editsWait) return
         val played = clip.performance.expand(clip)
         NativeEngine.setSynthSteps(clip.steps, id)
         played.forEachIndexed { i, n -> NativeEngine.setSynthNote(i, n.start, n.length, n.pitch, n.velocity, id) }
@@ -2854,7 +3121,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun editAcidStep(transform: (AcidStep) -> AcidStep) {
         val index = _selectedAcidStep.value
         session.edit { p -> p.copy(acid = p.acid.withStep(index, transform(p.acid.steps[index]))) }
-        if (NativeEngine.isAvailable) NativeEngine.setAcidStep(index, project.value.acid.steps[index].pack())
+        if (NativeEngine.isAvailable && !editsWait) NativeEngine.setAcidStep(index, project.value.acid.steps[index].pack())
     }
 
     fun toggleAcidLock() {
@@ -2881,13 +3148,26 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     private fun pushAcid(acid: AcidPattern) {
         if (!NativeEngine.isAvailable) return
-        NativeEngine.setAcidLength(acid.length)
+        // Another scene plays (staying on this one during the song): only the sound goes now.
+        val notes = !editsWait
+        if (notes) NativeEngine.setAcidLength(acid.length)
         NativeEngine.setAcidRoot(acid.root)
-        acid.steps.forEachIndexed { i, s -> NativeEngine.setAcidStep(i, s.pack()) }
+        if (notes) acid.steps.forEachIndexed { i, s -> NativeEngine.setAcidStep(i, s.pack()) }
         acid.sound.values().forEachIndexed { i, v -> NativeEngine.setAcidParam(i, v) }
     }
 
+    /** ▶ / ■: plays the song from its first part when listening to the song ([listensToSong]), else the scene shown. */
     fun togglePlay() {
+        if (!_transport.value.playing && NativeEngine.isAvailable && listensToSong) {
+            playSongFrom(0)
+            return
+        }
+        if (!_transport.value.playing) heardScene = project.value.scene
+        toggleTransport()
+    }
+
+    /** Starts or stops the transport, whatever it plays. */
+    private fun toggleTransport() {
         val t = _transport.value
         val playing = !t.playing
         _transport.value = t.copy(playing = playing)
@@ -2898,6 +3178,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             NativeEngine.toggleClip(-1)  // live pads too: Stop means silence
             catchUpMissedSwap()
             _sessionUi.value = SessionUi()
+            heardScene = null
             // Engine and screens agree again on the scene, whatever the swaps did.
             syncEngine()
         }
@@ -3093,11 +3374,12 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** While playing: the scene the engine plays now (a swap the 40 ms watch missed is followed first); else null. */
     private fun sceneHeard(): Int? {
         if (!_transport.value.playing || !NativeEngine.isAvailable) return null
-        if (_sessionUi.value.pending != null && NativeEngine.sceneSwaps() != swapsSeen) {
+        if ((_sessionUi.value.pending != null || _sessionUi.value.ending) && NativeEngine.sceneSwaps() != swapsSeen) {
             swapsSeen = NativeEngine.sceneSwaps()
             onSceneSwapped()
+            if (!_transport.value.playing) return null  // the song just ended
         }
-        return project.value.scene
+        return heardScene ?: project.value.scene
     }
 
     /**
@@ -3111,10 +3393,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             syncEngine()
             return
         }
-        if (project.value.scene != heard && heard in project.value.allScenes.indices) session.editQuietly { it.switchScene(heard) }
         val ui = _sessionUi.value
+        // Staying on a scene during the song: the screens keep the scene the step brought back.
+        if (screensFollow(ui) && project.value.scene != heard && heard in project.value.allScenes.indices) session.editQuietly { it.switchScene(heard) }
         if (ui.songIndex >= 0) {
-            val index = followSongIndex(project.value.song, ui.songIndex, project.value.scene)
+            val index = followSongIndex(project.value.song, ui.songIndex, heard)
             if (index < 0) {
                 endSongFollow()
                 syncEngine()
@@ -3122,7 +3405,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             }
             _sessionUi.value = SessionUi(songIndex = index)
             syncEngine()  // the part on now, with its muted tracks
-            stageSongPart(index + 1)
+            stageSongPart()
         } else {
             syncEngine()
             // A waiting scene that undo took away (a duplicate) is dropped, not played empty.
@@ -3146,6 +3429,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** A hit and its roll (rolls only travel with hits: an empty step needs nothing more). */
     private fun pushHit(lane: Int, step: Int, hit: Hit?) {
+        if (editsWait) return
         NativeEngine.setDrumHit(lane, step, hit?.velocity ?: 0f, hit?.repeats ?: 1)
         // Only hits with their own pan or pitch need more (the hit command resets both).
         if (hit != null && !hit.isPlain) NativeEngine.setDrumStepDetail(lane, step, hit.pan, hit.pitch)
@@ -3185,8 +3469,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     private val _export = MutableStateFlow(ExportUi())
     /** The export settings, « La scène » as long as the current scene unless a length was picked. */
-    val export: StateFlow<ExportUi> = combine(_export, project) { e, p -> e.forScene(sceneBars(p)) }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, ExportUi().forScene(sceneBars(project.value)))
+    val export: StateFlow<ExportUi> = combine(_export, project) { e, p -> e.forProject(sceneBars(p), p.song.isNotEmpty()) }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, ExportUi().forProject(sceneBars(project.value), project.value.song.isNotEmpty()))
     private var running: OfflineExport? = null
 
     private fun sceneBars(p: Project) = (p.currentSceneContent().stepsFor(p.stepsPerBar) / p.stepsPerBar).coerceIn(1, MAX_EXPORT_BARS)
@@ -3196,11 +3480,37 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun setExportWhat(what: ExportWhat) {
-        _export.value = _export.value.copy(what = what)
+        _export.value = _export.value.copy(what = what, whatChosen = true)
     }
 
     fun setExportFormat(format: ExportFormat) {
         _export.value = _export.value.copy(format = format)
+    }
+
+    fun setExportFade(fade: ExportFade) {
+        _export.value = _export.value.copy(fade = fade, fadeChosen = true)
+    }
+
+    /** Files of a finished « Partager mon morceau », for the share sheet (the screen opens it). */
+    private val _shareRequests = kotlinx.coroutines.channels.Channel<List<File>>(kotlinx.coroutines.channels.Channel.CONFLATED)
+    val shareRequests: kotlinx.coroutines.flow.Flow<List<File>> = _shareRequests.receiveAsFlow()
+
+    /**
+     * « Partager mon morceau »: the whole song (or the scene looped when there is none) in M4A,
+     * with a short fade, then the share sheet. The export card's own choices stay as they were.
+     */
+    fun shareSong() {
+        val p = project.value
+        if (!NativeEngine.isAvailable) {
+            _export.value = _export.value.copy(sharing = true, error = "Le moteur audio n'est pas prêt : réessaie dans un instant.")
+            return
+        }
+        startExport(com.pocketstudio.app.export.ShareSong.settings(p.song.isNotEmpty(), sceneBars(p)), share = true)
+    }
+
+    /** Closes the « Partager mon morceau » window after an error. */
+    fun dismissShare() {
+        _export.value = _export.value.copy(sharing = false, error = null)
     }
 
     /** Frames of the whole song (each part: its scene's length × its repeats). */
@@ -3251,17 +3561,27 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * into WAV (or M4A), then copies the files to Music › Pocket Studio.
      */
     fun exportWav() {
+        val p = project.value
+        startExport(_export.value.forProject(sceneBars(p), p.song.isNotEmpty()), share = false)
+    }
+
+    /** Renders with [settings] (the card's, or « Partager mon morceau »'s with [share]). */
+    private fun startExport(settings: ExportUi, share: Boolean) {
         if (!NativeEngine.isAvailable || running != null || exportJob != null) return
         exportCancelled = false
         val app = getApplication<Application>()
         val p = project.value
-        val settings = _export.value.forScene(sceneBars(p))
+        // The card keeps its own choices; only the run's state (progress, files, error) is shown.
+        val shown = _export.value.copy(sharing = share)
         val song = settings.what == ExportWhat.Song || (settings.what == ExportWhat.Stems && p.song.isNotEmpty())
         if (settings.what == ExportWhat.Song && p.song.isEmpty()) {
-            _export.value = settings.copy(error = "Le morceau est vide : ajoute des scènes dans l'onglet Morceau.", files = emptyList())
+            _export.value = shown.copy(error = "Le morceau est vide : ajoute des scènes dans l'onglet Morceau.", files = emptyList())
             return
         }
         val frames = if (song) songFrames(p) else OfflineExport.framesFor(settings.bars, p.tempoBpm, p.beatsPerBar)
+        // A fade-out ends the file on silence: no tail to ring out after it.
+        val fadeFrames = settings.fadeFrames(frames)
+        val tailFrames = if (fadeFrames > 0) 0L else TAIL_FRAMES
         // Each render: (label for the file and the screen, solo channel or null for the mix).
         val renders: List<Pair<String, Int?>> = when (settings.what) {
             ExportWhat.Stems -> stemExports(p, song)
@@ -3269,10 +3589,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             ExportWhat.Loop -> listOf("boucle" to null)
         }
         if (renders.isEmpty()) {
-            _export.value = settings.copy(error = "Rien à exporter : chaque piste est vide ou coupée dans le mixeur.", files = emptyList())
+            _export.value = shown.copy(error = "Rien à exporter : chaque piste est vide ou coupée dans le mixeur.", files = emptyList())
             return
         }
-        _export.value = settings.copy(running = true, progress = 0f, files = emptyList(), error = null, stage = null, loudness = null)
+        _export.value = shown.copy(running = true, progress = 0f, files = emptyList(), error = null, stage = null, loudness = null)
         exportJob = viewModelScope.launch {
             val done = ArrayList<File>()
             var musicOk = true
@@ -3298,7 +3618,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                         }
                     }
                     val result = try {
-                        withContext(Dispatchers.IO) { job.render(wav, frames, TAIL_FRAMES) }
+                        withContext(Dispatchers.IO) { job.render(wav, frames, tailFrames, fadeFrames) }
                     } finally {
                         poll.cancel()
                         // Closed on the main thread, after the render returned.
@@ -3343,14 +3663,17 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     if (exportCancelled) throw kotlinx.coroutines.CancellationException("annulé")
                     musicOk = withContext(Dispatchers.IO) { WavExporter.copyToMusic(app, out, settings.format.mime) } && musicOk
                 }
-                _export.value = _export.value.copy(running = false, files = done, savedInMusic = musicOk, stage = null, loudness = loudness)
-                AppLog.add("Export ${settings.what} ${settings.format} : ${done.size} fichier(s), ${frames / OfflineExport.SAMPLE_RATE} s")
+                _export.value = _export.value.copy(running = false, files = done, savedInMusic = musicOk, stage = null, loudness = loudness, sharing = false)
+                AppLog.add("Export ${settings.what} ${settings.format} : ${done.size} fichier(s), ${frames / OfflineExport.SAMPLE_RATE} s" +
+                    if (share) " (partage)" else "")
+                if (share) _shareRequests.trySend(done.toList())
             } catch (e: kotlinx.coroutines.CancellationException) {
                 done.forEach { it.delete() }
-                _export.value = _export.value.copy(running = false, files = emptyList(), stage = null)
+                _export.value = _export.value.copy(running = false, files = emptyList(), stage = null, sharing = false)
             } catch (e: Exception) {
                 done.forEach { it.delete() }
                 AppLog.add("Export : échec (${e.message})")
+                // « Partager mon morceau » keeps its window open to show what went wrong.
                 _export.value = _export.value.copy(running = false, files = emptyList(), stage = null,
                     error = if (e is UserMessage) e.message else "L'export a échoué : ${e.message ?: e.javaClass.simpleName}")
             } finally {

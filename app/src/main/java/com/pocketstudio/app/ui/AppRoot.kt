@@ -10,6 +10,7 @@ import com.pocketstudio.app.audiotracks.AudioTracksUi
 import com.pocketstudio.model.viewOfTrack
 import com.pocketstudio.model.songBars
 import com.pocketstudio.model.sceneSteps
+import com.pocketstudio.model.sceneTitle
 import androidx.compose.runtime.remember
 import com.pocketstudio.app.synth.TracksUi
 import com.pocketstudio.app.synth.NotesUi
@@ -118,6 +119,7 @@ import androidx.compose.material3.Button
 import androidx.compose.foundation.layout.Arrangement
 import com.pocketstudio.app.projects.CurrentProject
 import com.pocketstudio.app.projects.ProjectStarter
+import com.pocketstudio.app.projects.StarterGroup
 import com.pocketstudio.app.projects.ProjectsActions
 import com.pocketstudio.app.projects.ProjectsScreen
 import com.pocketstudio.app.projects.ProjectsViewModel
@@ -162,15 +164,16 @@ enum class AppTab(val label: String, val icon: ImageVector) {
 
 private enum class ToolPage(val label: String) { Reglages("Réglages"), Recette("Recette"), Midi("MIDI"), Fond("Fond"), Latence("Latence"), Son("Son") }
 
-/** Ways to start a new project (Mes projets › Nouveau projet). */
+/** Ways to start a new project (Mes projets › Nouveau projet), by group (the guided song comes apart). */
 private val PROJECT_STARTERS: List<Pair<ProjectStarter, () -> Project>> = listOf(
-    ProjectStarter("Projet vide", "Tout est vierge : à toi de jouer.", "empty") to { Project(name = "") },
-    ProjectStarter("Rythme de départ", "Un rythme et une ligne d'acide prêts à tourner.", "starter") to { RhythmViewModel.starterProject("") },
+    ProjectStarter("Rythme de départ", "Un rythme et une ligne d'acide prêts à tourner.", "starter", StarterGroup.Style) to { RhythmViewModel.starterProject("") },
 ) + com.pocketstudio.model.Genres.ALL.mapIndexed { i, (title, description, build) ->
-    ProjectStarter("Style · $title", description, "genre_$i") to build
+    ProjectStarter(title, description, "genre_$i", StarterGroup.Style) to build
 } + com.pocketstudio.model.Demos.ALL.mapIndexed { i, (title, description, build) ->
-    ProjectStarter(title, description, "demo_$i") to build
-}
+    ProjectStarter(title.removePrefix("Démo · "), description, "demo_$i", StarterGroup.Demo) to build
+} + listOf(
+    ProjectStarter("Projet vide", "Tout est vierge : à toi de jouer.", "empty", StarterGroup.Empty) to { Project(name = "") },
+)
 
 private tailrec fun android.content.Context.findActivity(): androidx.activity.ComponentActivity? = when (this) {
     is androidx.activity.ComponentActivity -> this
@@ -192,6 +195,8 @@ fun AppRoot() {
     val libraryVm: com.pocketstudio.app.library.SoundLibraryViewModel = viewModel()
     var tab by rememberSaveable { mutableStateOf(AppTab.Rythme) }
     var showProjects by rememberSaveable { mutableStateOf(false) }
+    // « Partager mon morceau » (Mixeur, Mes projets): name, export in M4A, share sheet.
+    val shareSong = com.pocketstudio.app.export.rememberShareSong(rhythmVm)
     val projectsVm: ProjectsViewModel = viewModel()
     val pickProjectZip = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) projectsVm.importZip(uri)
@@ -405,6 +410,7 @@ fun AppRoot() {
                         restore = projectsVm::restore,
                         dismissDeleted = projectsVm::dismissDeleted,
                         dismissMessage = projectsVm::dismissMessage,
+                        shareSong = { showProjects = false; shareSong() },
                     ),
                 )
             }
@@ -415,12 +421,24 @@ fun AppRoot() {
     var showGuide by rememberSaveable { mutableStateOf(false) }
     // After the crash report's question (never both dialogs on top of each other).
     val pendingCrash by mainVm.crash.collectAsStateWithLifecycle()
-    if ((showGuide || !settings.guideSeen) && pendingCrash == null) {
+    if (showGuide && pendingCrash == null) {
         GuideDialog(onClose = {
             showGuide = false
             SettingsStore.update(context) { it.copy(guideSeen = true) }
         })
     }
+    // The first launch: three big choices (guided song, demo, empty project), not pages of text.
+    val firstLaunchSeen = { SettingsStore.update(context) { it.copy(guideSeen = true) } }
+    com.pocketstudio.app.onboarding.FirstLaunch(
+        show = !settings.guideSeen && pendingCrash == null,
+        actions = com.pocketstudio.app.onboarding.WelcomeActions(
+            guided = { firstLaunchSeen(); rhythmVm.stop(); libraryVm.openWizard() },
+            demo = { firstLaunchSeen(); projectsVm.create(com.pocketstudio.model.Demos.ALL.first().third()) { id -> openProject(id) } },
+            empty = { firstLaunchSeen(); projectsVm.create(Project(name = "")) { id -> openProject(id) } },
+            later = firstLaunchSeen,
+        ),
+        playDemo = { if (rhythmVm.project.value.song.isNotEmpty()) rhythmVm.toggleSong() else rhythmVm.togglePlay() },
+    )
     // Réglages › Écran toujours allumé: only while the music plays.
     val screenTransport by rhythmVm.transport.collectAsStateWithLifecycle()
     LaunchedEffect(screenTransport.playing, settings.keepScreenOn) {
@@ -606,10 +624,14 @@ fun AppRoot() {
             // No undo during a take (or while it is written): it could remove the track it goes to.
             val undoable = !topRecording && topTake == null && !topSaving
             TopBar(
-                TopBarUi(topProject.name, topProject.tempoBpm, topTransport.playing, topUndo && undoable, topRedo && undoable, topRecording),
+                TopBarUi(
+                    topProject.name, topProject.tempoBpm, topTransport.playing, topUndo && undoable, topRedo && undoable, topRecording,
+                    scene = if (tab in SCENE_TABS) sceneChip(topProject) else null,
+                ),
                 TopBarActions(
                     projects = { showProjects = true }, undo = rhythmVm::undo, redo = rhythmVm::redo,
                     togglePlay = rhythmVm::togglePlay, toggleRecord = rhythmVm::toggleRecord,
+                    selectScene = rhythmVm::selectScene, newScene = rhythmVm::newScene,
                 ),
             )
             if (saveError != null) {
@@ -750,6 +772,7 @@ fun AppRoot() {
                                 importZip = { pickZip.launch(arrayOf("application/zip", "application/x-zip-compressed", "application/octet-stream")) },
                             ),
                             padSound = PadSoundUi(sampleInfo, sampleTask, slicer),
+                            header = { com.pocketstudio.app.onboarding.ProjectNextSteps(project, rhythmVm.projectId, share = shareSong) { tab = it } },
                         )
                     }
                     AppTab.Acide -> {
@@ -954,6 +977,8 @@ fun AppRoot() {
                                 share = { WavExporter.share(context, export.files) },
                                 setExportWhat = rhythmVm::setExportWhat,
                                 setExportFormat = rhythmVm::setExportFormat,
+                                setExportFade = rhythmVm::setExportFade,
+                                shareSong = shareSong,
                                 exportMidi = rhythmVm::exportMidi,
                                 setInsertType = rhythmVm::setInsertType,
                                 setInsertParam = rhythmVm::setInsertParam,
@@ -993,6 +1018,8 @@ fun AppRoot() {
                         val sessionUi by rhythmVm.sessionUi.collectAsStateWithLifecycle()
                         val liveStates by rhythmVm.liveStates.collectAsStateWithLifecycle()
                         val sampleTask by rhythmVm.sampleTask.collectAsStateWithLifecycle()
+                        val listenSong by rhythmVm.listenSong.collectAsStateWithLifecycle()
+                        val followSong by rhythmVm.followSong.collectAsStateWithLifecycle()
                         var liveEditing by rememberSaveable { mutableStateOf<Int?>(null) }
                         LaunchedEffect(Unit) {
                             lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollLiveStates() }
@@ -1011,17 +1038,29 @@ fun AppRoot() {
                                 beatsPerBar = project.beatsPerBar,
                                 sceneInfo = sceneInfo(project),
                                 rows = timelineRows(project),
+                                upcoming = if (transport.playing) sessionUi.upcoming(project.song.size, project.songLoops) else -1,
+                                listenSong = project.song.isNotEmpty() && listenSong != false,
+                                songLoops = project.songLoops,
+                                followSong = followSong,
                             ),
                             SessionActions(
                                 select = rhythmVm::selectScene,
                                 duplicate = rhythmVm::duplicateScene,
                                 newScene = rhythmVm::newScene,
                                 clear = rhythmVm::clearScene,
+                                rename = rhythmVm::renameScene,
                                 addPart = rhythmVm::addSongPart,
+                                insertPart = rhythmVm::insertSongPart,
+                                duplicatePart = rhythmVm::duplicateSongPart,
+                                movePart = rhythmVm::moveSongPart,
                                 removePart = rhythmVm::removeSongPart,
                                 setRepeats = rhythmVm::setSongRepeats,
+                                playPart = rhythmVm::playSongPart,
                                 toggleSong = rhythmVm::toggleSong,
                                 togglePlay = rhythmVm::togglePlay,
+                                setListenSong = rhythmVm::setListenSong,
+                                setSongLoops = rhythmVm::setSongLoops,
+                                setFollowSong = rhythmVm::setFollowSong,
                                 performance = { param, v -> if (NativeEngine.isAvailable) NativeEngine.setPerformance(param, v) },
                                 togglePartTrack = rhythmVm::togglePartTrack,
                                 setBeatsPerBar = rhythmVm::setBeatsPerBar,
@@ -1383,6 +1422,20 @@ private fun LaunchPrompts(vm: MainViewModel) {
         )
         UpdateState.None -> Unit
     }
+}
+
+/** The tabs that edit one scene: the top bar shows which, and picks another. */
+private val SCENE_TABS = setOf(AppTab.Rythme, AppTab.Acide, AppTab.Synthe)
+
+/** The top bar's scene chip: every scene of the session by its title, the one edited, the empty ones. */
+internal fun sceneChip(p: Project): SceneChipUi {
+    val all = p.allScenes
+    val count = maxOf(all.size, p.scene + 1).coerceAtMost(Scene.MAX)
+    return SceneChipUi(
+        current = p.scene,
+        titles = List(count) { p.sceneTitle(it) },
+        empty = (0 until count).filter { all.getOrNull(it)?.isEmpty != false }.toSet(),
+    )
 }
 
 /** What the scene shown is, in a sentence: new and empty, a fresh copy of another, or nothing to say. */

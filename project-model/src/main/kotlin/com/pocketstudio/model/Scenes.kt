@@ -14,6 +14,8 @@ data class Scene(
     val synthNotes: NoteClip = NoteClip(),
     /** The notes of the added instrument tracks in this scene, by track id. */
     val trackNotes: Map<Int, NoteClip> = emptyMap(),
+    /** The song section this scene stands for, named by the user ("Refrain"); empty: just its letter. */
+    val label: String = "",
 ) {
     /** Steps the scene lasts before it loops in 4/4: its longest part, rounded up to whole bars. */
     val steps: Int get() = stepsFor(16)
@@ -33,7 +35,30 @@ data class Scene(
 
         /** How many scene slots the session grid can show. */
         val GRID_SIZES = listOf(8, 16, 24)
+
+        /** Section names offered when naming a scene. */
+        val SECTIONS = listOf("Intro", "Couplet", "Pré-refrain", "Refrain", "Pont", "Drop", "Fin")
+
+        const val MAX_LABEL = 20
     }
+}
+
+/** The section name of scene [index] ("Refrain"), or "" when it has none. */
+fun Project.sceneLabel(index: Int): String = allScenes.getOrNull(index)?.label.orEmpty()
+
+/** How a scene is shown: "A · Refrain", or just "A" without a section name. */
+fun Project.sceneTitle(index: Int): String {
+    val letter = Scene.NAMES.getOrElse(index) { "?" }
+    return sceneLabel(index).takeIf { it.isNotBlank() }?.let { "$letter · $it" } ?: letter
+}
+
+/** Names scene [index] after a song section (blank: back to its letter alone). */
+fun Project.renameScene(index: Int, label: String): Project {
+    val synced = syncScenes()
+    val all = synced.allScenes
+    if (index !in all.indices) return synced
+    val clean = label.replace(Regex("\\s+"), " ").trim().take(Scene.MAX_LABEL)
+    return synced.copy(scenes = all.mapIndexed { i, s -> if (i == index) s.copy(label = clean) else s }).syncScenes()
 }
 
 /**
@@ -75,12 +100,12 @@ internal fun Project.syncScenes(): Project {
     val used = song.map { it.scene }.toSet() +
         automation.flatMap { lane -> lane.sceneValues.filterValues { v -> v.any { it != null } }.keys }
     var size = all.size
-    while (size - 1 > index && all[size - 1].isEmpty && size - 1 !in used) size--
+    while (size - 1 > index && all[size - 1].isEmpty && all[size - 1].label.isBlank() && size - 1 !in used) size--
     val list = all.take(size)
     return copy(
         scene = index,
         scenes = list.mapIndexed { i, s ->
-            if (i == index) currentSceneContent().copy(name = Scene.NAMES[i])
+            if (i == index) currentSceneContent().copy(name = Scene.NAMES[i], label = s.label)
             else s.copy(name = Scene.NAMES[i], trackNotes = s.trackNotes.filterKeys { id -> tracks.any { it.id == id } }.mapValues { it.value.sanitized() })
         },
         song = song.filter { it.scene in list.indices }.take(SongPart.MAX_PARTS)
@@ -112,7 +137,8 @@ fun Project.copySceneTo(index: Int): Project {
     val synced = syncScenes()
     val existing = synced.allScenes
     val list = (existing + List((index + 1 - existing.size).coerceAtLeast(0)) { Scene() }).toMutableList()
-    list[index] = synced.currentSceneContent()
+    // A named slot keeps its name (copying the Couplet onto « Couplet 2 »).
+    list[index] = synced.currentSceneContent().copy(label = list[index].label)
     val automation = synced.automation.map { lane ->
         val own = lane.sceneValues[synced.scene]
         lane.copy(sceneValues = if (own != null) lane.sceneValues + (index to own) else lane.sceneValues - index)
@@ -136,7 +162,7 @@ fun Project.clearCurrentScene(): Project = copy(
 fun Project.copyOf(index: Int): Int? {
     val all = allScenes
     val s = all.getOrNull(index)?.takeUnless { it.isEmpty } ?: return null
-    return all.indices.firstOrNull { it != index && all[it].copy(name = "") == s.copy(name = "") }
+    return all.indices.firstOrNull { it != index && all[it].copy(name = "", label = "") == s.copy(name = "", label = "") }
 }
 
 /** The first empty scene slot other than the one shown (a new scene to fill), or null when all 24 are taken. */
@@ -230,6 +256,57 @@ fun followSongIndex(song: List<SongPart>, index: Int, scene: Int): Int {
     if (song.isEmpty()) return -1
     val start = index.coerceIn(0, song.size - 1)
     return (song.indices).map { (start + it) % song.size }.firstOrNull { song[it].scene == scene } ?: -1
+}
+
+/** A song part playing scene [scene] once is added at [at] (0 = first, the song's size = last). */
+fun Project.insertSongPart(at: Int, scene: Int): Project {
+    if (song.size >= SongPart.MAX_PARTS || scene !in allScenes.indices) return this
+    val i = at.coerceIn(0, song.size)
+    return copy(song = song.take(i) + SongPart(scene, 1) + song.drop(i))
+}
+
+/** Song part [index] played again right after itself (same scene, repeats and silenced tracks). */
+fun Project.duplicateSongPart(index: Int): Project {
+    if (song.size >= SongPart.MAX_PARTS || index !in song.indices) return this
+    return copy(song = song.take(index + 1) + song[index] + song.drop(index + 1))
+}
+
+/** Song part [from] moved to place [to] (the others close up around it). */
+fun Project.moveSongPart(from: Int, to: Int): Project {
+    if (from !in song.indices || to !in song.indices || from == to) return this
+    val list = song.toMutableList()
+    list.add(to, list.removeAt(from))
+    return copy(song = list)
+}
+
+/** Song part [index] taken out of the song. */
+fun Project.removeSongPart(index: Int): Project =
+    if (index !in song.indices) this else copy(song = song.filterIndexed { i, _ -> i != index })
+
+/** Where song part [index] is once part [from] moved to [to]. */
+fun songIndexAfterMove(index: Int, from: Int, to: Int): Int = when {
+    index == from -> to
+    from < index && index <= to -> index - 1
+    to <= index && index < from -> index + 1
+    else -> index
+}
+
+/** Where song part [index] is once a part was inserted at [at] (a part inserted at its place pushes it on). */
+fun songIndexAfterInsert(index: Int, at: Int): Int = if (at <= index) index + 1 else index
+
+/**
+ * Song playback: the part that follows part [playing] when [queued] (a part chosen to come next,
+ * or -1 for none) is taken into account, or -1 when the song ends there ([loops] false) — the
+ * song then wraps round to its first part when it [loops]. [size]: parts in the song.
+ */
+fun songNextIndex(playing: Int, queued: Int, size: Int, loops: Boolean): Int {
+    if (size <= 0) return -1
+    val next = if (queued >= 0) queued else playing + 1
+    return when {
+        next < size -> next
+        loops -> 0
+        else -> -1
+    }
 }
 
 /** Bars the whole song lasts (each part's scene times its repeats). */

@@ -158,3 +158,24 @@ Feu vert de Benjamin (D4 = A) : fusion de la pull request en fin de phase.
 - [x] 20.4 Fichiers : pistes séparées jamais supprimées si un projet s'en sert, corbeille accessible, automation qui suit l'effet, export de la scène à sa vraie longueur
 - [x] 20.5 Son : filtre XY sans clic, accords qui se chevauchent, vol de voix, prise micro calée même si le son change de sortie
 - [x] 20.6 Scènes (demande de Benjamin) : « Nouvelle scène vide », « Vider la scène », et une phrase qui dit si la scène est neuve ou une copie
+
+## Phases 21 à 24 : d'un brouillon à un morceau complet (audit débutant / moyen / confirmé, 2026-10-21)
+
+Trois audits neufs (débutant, musicien moyen, producteur confirmé) ont lu le code et les captures. Points communs : l'assistant joue la batterie, puis la basse, puis la mélodie, chacune seule ; les scènes n'ont qu'une lettre ; on ne sait pas quelle scène on modifie ; ▶ ne joue pas le morceau ; la liste du morceau ne se réorganise pas ; le morceau ne finit jamais ; l'export est enfoui. Côté son : instruments en mono, pas de marge, limiteur dur. Côté enregistrement : une prise audio repart de zéro à chaque partie.
+
+### Phase 21 : du brouillon au morceau (intuitif)
+- 21.1 Scènes nommées (Intro, Couplet, Refrain…), le nom partout ; puce « scène en cours » dans la barre du haut, sélecteur depuis chaque onglet.
+- 21.2 Assistant : couches cumulées et sections nommées (Intro → Couplet → Refrain), vraie structure de morceau avec une fin.
+- 21.3 Morceau : la liste du morceau en premier ; déplacer, insérer, dupliquer une partie ; jouer depuis une partie ; ▶ joue le morceau quand il existe ; l'édition peut rester sur sa scène pendant la lecture ; le morceau s'arrête à la fin.
+- 21.4 Premier lancement : « Créer mon premier morceau (guidé) » ; nouveaux projets regroupés ; carte « prochaine étape ».
+- 21.5 « Partager mon morceau » en un geste (tout le morceau, M4A, nom), fondu de fin, export par défaut sur le morceau.
+- Critère : un débutant crée un morceau Intro/Couplet/Refrain/Fin et le partage sans aide.
+
+### Phase 22 : un son pro par défaut
+- Instruments en stéréo (GM, Plaits, unisson du synthé) ; marge par défaut ; limiteur avec anticipation et plafond ; mesure LUFS en direct ; préréglages de mastering et « Prêt pour le streaming (−14 LUFS) » ; compresseur avec gain manuel et indicateur de réduction ; métronome hors master ; pistes séparées sans le master et par pad ; export 44,1 kHz.
+
+### Phase 23 : enregistrer un vrai morceau
+- Clips audio placés sur le morceau (plusieurs par piste, 8 pistes) ; s'entendre au casque ; prises multiples ; punch-in ; MIDI horodaté par le moteur, quantification d'entrée, pédale de sustain.
+
+### Phase 24 : écrire plus vite et plus fin
+- Piano roll pour téléphone (zoom à deux doigts, lignes plus hautes, clavier à gauche, presse-papier entre scènes, coller à l'endroit touché, notes fantômes de n'importe quelle piste, durée de la sélection) ; batterie : vélocité, copier/vider une mesure, boucles de 8 à 16 mesures, fills et transitions par partie, triolets, swing par piste ; bus de groupe, EQ 4 bandes, sidechain au choix ; automation plus fine ; glide et LFO calé au tempo.

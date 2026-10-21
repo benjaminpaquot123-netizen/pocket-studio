@@ -18,10 +18,18 @@ class SongGuideTest {
     }
 
     @Test
-    fun theAssistantSaysWhereEachLineAndPartGoes() {
+    fun theAssistantSaysWhichSectionsEachLineAndPartPlaysIn() {
         val plan = ui(StarterWizard.Mood.Happy, setOf(StarterWizard.Part.Bass, StarterWizard.Part.Pad)).plan
-        house.lines.forEach { assertEquals(if (it.role == StarterWizard.Role.Bass808) 1 else 0, plan.lines[it.role]) }
-        assertEquals(mapOf(StarterWizard.Part.Bass to 1, StarterWizard.Part.Pad to 2), plan.parts)
+        // Cumulative: the kick from the Intro on, the other drums and the bass from the Couplet on.
+        house.lines.forEach {
+            val expected = when (it.role) {
+                StarterWizard.Role.Kick, StarterWizard.Role.Hat -> setOf(0, 1, 2)
+                else -> setOf(1, 2)
+            }
+            assertEquals(it.role.title, expected, plan.lines[it.role])
+        }
+        // Without a lead, the chords open the Intro and come back in the Refrain.
+        assertEquals(mapOf(StarterWizard.Part.Bass to setOf(1, 2), StarterWizard.Part.Pad to setOf(0, 2)), plan.parts)
         // A line switched off goes nowhere, and a part without a mood neither.
         val off = ui(null, setOf(StarterWizard.Part.Pad)).let { it.copy(rows = it.rows + (StarterWizard.Role.Kick to it.rows.getValue(StarterWizard.Role.Kick).copy(enabled = false))) }
         assertEquals(null, off.plan.lines[StarterWizard.Role.Kick])
@@ -29,21 +37,35 @@ class SongGuideTest {
     }
 
     @Test
-    fun theGuideNamesBothScenesAndHowToPlayThem() {
+    fun theGuideNamesTheSectionsAndHowToPlayTheSong() {
         val plan = ui(StarterWizard.Mood.Happy, setOf(StarterWizard.Part.Bass, StarterWizard.Part.Pad, StarterWizard.Part.Lead)).plan
-        val pages = songGuide("House", plan, inKey = true)
+        val pages = songGuide("House", plan, inKey = true, song = songSummary(house, plan))
         val first = pages.first()
         assertEquals("Ton morceau House est prêt", first.title)
-        assertTrue(first.lines.any { it.startsWith("Scène A · le rythme : Kick") && !it.contains("Basse") })
-        assertTrue(first.lines.any { it.startsWith("Scène B · la basse :") && it.contains("Basse") })
-        assertTrue(first.lines.any { it == "Scène C · la mélodie : Nappe, Lead." })
+        val intro = first.lines.single { it.startsWith("A · Intro") }
+        assertTrue(intro, intro.contains("Kick") && intro.contains("Nappe") && !intro.contains("Basse") && !intro.contains("Lead"))
+        assertTrue(first.lines.single { it.startsWith("B · Couplet") }.let { it.contains("Basse") && !it.contains("Lead") })
+        assertTrue(first.lines.single { it.startsWith("C · Refrain") }.let { it.contains("Basse") && it.contains("Lead") && it.contains("Kick") })
         val all = pages.flatMap { it.lines }.joinToString("\n")
         assertTrue(all.contains("Jouer le morceau"))
+        assertTrue(all.contains("Intro → Couplet → Refrain → Couplet → Refrain → Intro pour finir : environ "))
         assertTrue(all.contains("Morceau › Scènes"))
-        // The assistant makes A, B and C: a copy lands in D.
-        assertTrue(all.contains("une scène D") && all.contains("« + D »"))
-        assertTrue(!all.contains("scène C pour une variante"))
+        // The sections can be renamed, and copied for a bridge or an ending.
+        assertTrue(all.contains("se changent dans l'onglet Morceau") && all.contains("Pont ou une Fin"))
         assertTrue(all.contains("aucune fausse note possible"))
+    }
+
+    @Test
+    fun theSongSummarySaysHowLongItLasts() {
+        assertEquals("2 min 40", duration(160.0))
+        assertEquals("2 min", duration(118.0))
+        assertEquals("1 min 50", duration(113.0))
+        assertEquals("50 s", duration(47.0))
+        // House at 122 BPM, chords on four bars: 80 bars, about 2 min 40.
+        val plan = ui(StarterWizard.Mood.Happy, setOf(StarterWizard.Part.Bass, StarterWizard.Part.Pad)).plan
+        val bars = StarterWizard.songOf(house, plan).sumOf { it.repeats } * StarterWizard.loopBars(house, plan)
+        assertEquals(80, bars)
+        assertTrue(songSummary(house, plan).endsWith("environ ${duration(80 * 4 * 60 / house.bpm)}."))
     }
 
     @Test
@@ -70,7 +92,7 @@ class SongGuideTest {
     fun aPlanWithEverythingOffDoesNotCrash() {
         val w = ui(null, emptySet())
         val off = w.copy(rows = w.rows.mapValues { it.value.copy(enabled = false) })
-        assertTrue(off.plan.copies.isEmpty())
+        assertTrue(off.plan.isEmpty)
         assertTrue(songGuide("House", off.plan, inKey = false).isNotEmpty())
     }
 }

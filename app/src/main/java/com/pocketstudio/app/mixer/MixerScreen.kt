@@ -40,6 +40,8 @@ import com.pocketstudio.model.Channel
 import com.pocketstudio.model.EffectType
 import com.pocketstudio.model.Insert
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ShowChart
+import androidx.compose.material3.IconButton
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.AutoAwesome
@@ -158,20 +160,49 @@ fun MixerScreen(
     spectrum: FloatArray? = null,
     analyserOpen: Boolean = false,
     setAnalyser: (Boolean) -> Unit = {},
+    /** « Ce qui joue » (null: every track), or « Ce qui bouge sur cette piste » (a channel). */
+    overview: (Int?) -> Unit = {},
+    /** Where « Ce qui joue » sent the user (shown, then [onFocused]). */
+    focus: Where? = null,
+    onFocused: () -> Unit = {},
 ) {
     val exportCard = androidx.compose.runtime.remember { androidx.compose.foundation.relocation.BringIntoViewRequester() }
+    val automationCard = androidx.compose.runtime.remember { androidx.compose.foundation.relocation.BringIntoViewRequester() }
+    val masterCard = androidx.compose.runtime.remember { androidx.compose.foundation.relocation.BringIntoViewRequester() }
+    val busesCard = androidx.compose.runtime.remember { androidx.compose.foundation.relocation.BringIntoViewRequester() }
     val scope = androidx.compose.runtime.rememberCoroutineScope()
+    androidx.compose.runtime.LaunchedEffect(focus) {
+        when (focus) {
+            Where.Master -> masterCard.bringIntoView()
+            Where.Buses -> busesCard.bringIntoView()
+            // The lane itself is brought into view by the automation card.
+            is Where.Lane -> automationCard.bringIntoView()
+            else -> return@LaunchedEffect
+        }
+        kotlinx.coroutines.delay(1500)
+        onFocused()
+    }
+    val lanesOn = androidx.compose.runtime.remember(automation.lanes) {
+        automation.lanes.groupingBy { it.target.ch.takeIf { _ -> it.target.kind != com.pocketstudio.model.AutoTarget.BUS_PARAM && it.target.kind != com.pocketstudio.model.AutoTarget.LIVE } ?: -1 }.eachCount()
+    }
     // On a tablet the channel strips stay on the left; the master, buses, automation and export on the right.
     com.pocketstudio.ui.AdaptivePanes(modifier.testTag("mixer"), first = {
         // Sharing first: one touch, nothing to scroll for; the export card's choices are a touch away.
         ShareSongCard(export, hasSong, actions.shareSong) { scope.launch { exportCard.bringIntoView() } }
+        // Automation and everything that acts on the sound, near the top: no scrolling to find them.
+        AutomationEntry(automation.lanes.size, show = { scope.launch { automationCard.bringIntoView() } }, overview = { overview(null) })
         // Many tracks: each strip shows its volume on one line; ▾ opens pan and effects.
         val compact = strips.size > BASIC_STRIPS.size
         strips.forEach { st ->
-            Strip(st, channels.getOrElse(st.ch) { Channel() }, { meters().getOrElse(st.ch) { 0f } }, actions, compact)
+            Strip(st, channels.getOrElse(st.ch) { Channel() }, { meters().getOrElse(st.ch) { 0f } }, actions, compact, lanesOn[st.ch] ?: 0) { overview(st.ch) }
         }
     }, second = {
-        NeonCard(accent = Neon.Cyan) {
+        AutomationCard(
+            automation.copy(focusLane = (focus as? Where.Lane)?.lane ?: -1), channels, master,
+            automationActions.copy(overview = { overview(null) }), strips,
+            Modifier.bringIntoViewRequester(automationCard),
+        )
+        NeonCard(Modifier.bringIntoViewRequester(masterCard), accent = if (focus == Where.Master) Neon.Amber else Neon.Cyan) {
             SectionLabel(tr("Sortie générale"), help = Glossary.MASTER)
             // What goes into the limiter (red above −1 dBFS, where it starts to work), not what is left after it.
             MasterMeter { meters().getOrElse(MASTER_IN_METER) { 0f } }
@@ -185,10 +216,39 @@ fun MixerScreen(
                 modifier = Modifier.testTag("analyser"))
             if (analyserOpen) com.pocketstudio.app.analysis.SpectrumView(spectrum)
         }
-        BusesCard(buses, actions)
-        AutomationCard(automation, channels, master, automationActions, strips)
+        androidx.compose.foundation.layout.Box(Modifier.bringIntoViewRequester(busesCard)) { BusesCard(buses, actions) }
         ExportCard(export, actions, hasSong, Modifier.bringIntoViewRequester(exportCard))
     })
+}
+
+/** Automation near the top of the mixer: how many curves move, a touch to them, a touch to « Ce qui joue ». */
+@Composable
+private fun AutomationEntry(lanes: Int, show: () -> Unit, overview: () -> Unit) {
+    NeonCard(Modifier.testTag("automation_entry"), accent = Neon.Amber) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(Icons.AutoMirrored.Filled.ShowChart, contentDescription = null, tint = Neon.Amber)
+            Column(Modifier.weight(1f).padding(start = 10.dp)) {
+                Text(tr("Automation et effets"), style = MaterialTheme.typography.titleMedium)
+                Text(
+                    when (lanes) {
+                        0 -> tr("Rien ne bouge encore : fais s'ouvrir un filtre, monter un volume…")
+                        1 -> tr("1 réglage bouge tout seul.")
+                        else -> tr("%d réglages bougent tout seuls.", lanes)
+                    },
+                    style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
+                )
+            }
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            androidx.compose.material3.Button(
+                onClick = show, modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("automation_entry_open"),
+                colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = Neon.Amber, contentColor = Neon.OnAccent),
+            ) { Text(if (lanes == 0) tr("Automatiser") else tr("Voir les courbes"), maxLines = 1) }
+            androidx.compose.material3.OutlinedButton(onClick = overview, modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("automation_entry_overview")) {
+                Text(tr("Ce qui joue"), maxLines = 1)
+            }
+        }
+    }
 }
 
 /** What the limiter does: composed again only when its words change, not at each meter reading. */
@@ -385,7 +445,7 @@ internal fun ShareSongCard(export: ExportUi, hasSong: Boolean, share: () -> Unit
 }
 
 @Composable
-private fun Strip(info: StripInfo, c: Channel, meter: () -> Float, actions: MixerActions, compact: Boolean = false) {
+private fun Strip(info: StripInfo, c: Channel, meter: () -> Float, actions: MixerActions, compact: Boolean = false, moves: Int = 0, openMoves: () -> Unit = {}) {
     SideEffect { stripCompositions++ }
     val name = com.pocketstudio.model.DefaultNames.shown(info.name)
     val index = info.ch
@@ -402,6 +462,17 @@ private fun Strip(info: StripInfo, c: Channel, meter: () -> Float, actions: Mixe
             )
             Text(name, style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f), maxLines = 1,
                 overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+            // « Ce qui bouge sur cette piste »: lit (with how many curves) when automation moves it.
+            IconButton(onClick = openMoves, modifier = Modifier.testTag("strip_moves_$index")) {
+                androidx.compose.material3.BadgedBox(badge = {
+                    if (moves > 0) androidx.compose.material3.Badge(containerColor = Neon.Amber, contentColor = Neon.OnAccent) { Text("$moves") }
+                }) {
+                    Icon(
+                        Icons.AutoMirrored.Filled.ShowChart, contentDescription = tr("Ce qui bouge sur cette piste"),
+                        tint = if (moves > 0) Neon.Amber else Neon.TextSecondary,
+                    )
+                }
+            }
             FilterChip(
                 selected = c.mute,
                 onClick = { actions.toggleMute(index) },

@@ -1,12 +1,17 @@
 """Generates one sound pack with Stable Audio Open Small (fp32 ONNX), keeps the good takes.
 
-usage: generate_pack.py MODEL_DIR styles.json STYLE_ID OUT_DIR [--scale F]
+usage: generate_pack.py MODEL_DIR styles.json STYLE_ID OUT_DIR [--scale F] [--extend]
 
 For each kind of sound of the style (kick, snare, ...), seeds 1, 2, ... are generated from the
 kind's prompt with the style's words; each take is trimmed, faded, normalized and checked (not
 silent, energy where that kind of sound has it, a real hit for drums). The first good takes
 (the kind's count, times --scale) are written as 16-bit FLAC <kind>_<n>.flac, plus pack.json
-(names and kinds, read by the app).
+(names, kinds, tags and the pack's version, read by the app). A kind may give its sounds another
+kind for the app ("as": a finger snap is a clap) and search tags.
+
+--extend: OUT_DIR already holds the pack (an earlier version): its sounds stay as they are, and only
+the takes missing to reach the new counts are generated, from seeds the earlier build never tried,
+numbered after the existing ones.
 """
 import json
 import sys
@@ -87,10 +92,10 @@ def clean(audio, one_shot):
     return out
 
 
-def accept(kind, audio):
+def accept(kind, audio, rule=None):
     mono = audio.mean(axis=1)
     rms = np.sqrt((mono ** 2).mean())
-    rule = KIND_RULES.get(kind, {})
+    rule = KIND_RULES.get(kind, {}) if rule is None else rule
     if rms < 0.01:
         return False
     if 'low' in rule and band_share(mono, 20, 200) < rule['low']:
@@ -135,38 +140,53 @@ KIND_RULES = {
     'vocal': {'max_seconds': 1.4},
     'fx': {},
     'loop': {},
+    'foley': {'max_seconds': 2.5},
+    'ride': {'high': 0.3},
+    'mallet': {'max_seconds': 3.0},
 }
 
 
 def main():
     model_dir, styles_path, style_id, out_dir = sys.argv[1:5]
     scale = float(sys.argv[sys.argv.index('--scale') + 1]) if '--scale' in sys.argv else 1.0
+    extend = '--extend' in sys.argv
     catalog = json.loads(Path(styles_path).read_text())
     style = next(s for s in catalog['styles'] if s['id'] == style_id)
-    model = Model(model_dir)
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
     sounds = []
+    if extend and (out / 'pack.json').is_file():
+        sounds = [s for s in json.loads((out / 'pack.json').read_text())['sounds'] if (out / s['file']).is_file()]
+    model = Model(model_dir)
     for k in style['kinds']:
         kind = catalog['kinds'][k]
-        count = max(1, round(style.get('counts', {}).get(k, kind['count']) * scale))
-        one_shot = k not in ('loop', 'fx')
-        prompt = kind['prompt'].replace('{words}', style['words'])
-        kept, seed = 0, 0
-        while kept < count and seed < count * 5:
+        out_kind = kind.get('as', k)
+        base = style.get('counts', {}).get(k, kind['count'])
+        count = max(1, round(base * scale))
+        one_shot = out_kind not in ('loop', 'fx') and not kind.get('ambience')
+        prompt = kind['prompt'].replace('{words}', style['words']).strip()
+        rule = kind.get('rules', KIND_RULES.get(k, KIND_RULES.get(out_kind, {})))
+        prefix = f'{k}_'
+        have = [s for s in sounds if s['file'].startswith(prefix) and s['file'][len(prefix):-5].isdigit()]
+        kept = len(have)
+        # The first build tried seeds 1..base*5: an extension starts after them (new takes only).
+        seed = base * 5 if have else 0
+        limit = seed + max(1, count - kept) * 5
+        while kept < count and seed < limit:
             seed += 1
             take = clean(model.generate(prompt, kind['seconds'], seed), one_shot)
-            if take is None or not accept(k, take):
+            if take is None or not accept(out_kind, take, rule):
                 continue
             kept += 1
             name = f'{k}_{kept:02d}.flac'
             sf.write(out / name, take.astype(np.float32), RATE, subtype='PCM_16')
-            sounds.append({'file': name, 'kind': k, 'name': f"{kind['label']} {kept}"})
+            sounds.append({'file': name, 'kind': out_kind, 'name': f"{kind['label']} {kept}", 'tags': kind.get('tags', [])})
             print(f'{style_id}: {name} ({len(take) / RATE:.2f} s, seed {seed})', flush=True)
         if kept < count:
             print(f'{style_id}: only {kept}/{count} {k}', flush=True)
     (out / 'pack.json').write_text(json.dumps({
-        'id': style_id, 'name': style['name'], 'family': style['family'], 'bpm': style['bpm'], 'sounds': sounds,
+        'id': style_id, 'name': style['name'], 'family': style['family'], 'bpm': style['bpm'],
+        'version': style.get('version', catalog.get('version', 1)), 'sounds': sounds,
     }, ensure_ascii=False, indent=1))
 
 

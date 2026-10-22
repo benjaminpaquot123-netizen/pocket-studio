@@ -53,7 +53,8 @@ class AddTrackKindTest {
         // The style's key, its lead sound.
         assertEquals(acidHouse.melody.root, p.harmony.root)
         t.notes.notes.forEach { assertTrue(p.harmony.inScale(it.pitch)) }
-        assertEquals(NewTracks.sound(TrackKind.Melody, acidHouse).synth.sanitized(), t.synth)
+        // The style's sound, at the level of its part (phase 30: GAIN lowered for a lead).
+        assertEquals(NewTracks.sound(TrackKind.Melody, acidHouse).synth.sanitized().withGainOf(t.synth), t.synth)
         vm.undo()
         assertEquals(before, vm.project.value.tracks.size)
     }

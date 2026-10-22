@@ -251,9 +251,9 @@ object StarterWizard {
         val knobs: Map<Int, Float> = emptyMap(),
         val moves: List<AcidMove> = emptyList(),
     ) {
-        /** The 303's sound for this riff: [sound] with [knobs], keeping [base]'s tuning and volume. */
+        /** The 303's sound for this riff: [sound] (at its calibrated level) with [knobs], keeping [base]'s tuning. */
         fun soundFrom(base: AcidSound): AcidSound {
-            val preset = SoundLibrary.ACID.firstOrNull { it.name == sound }?.sound?.copy(tuning = base.tuning, level = base.level) ?: base
+            val preset = SoundLibrary.ACID.firstOrNull { it.name == sound }?.sound?.copy(tuning = base.tuning) ?: base
             return knobs.entries.fold(preset) { acc, (i, v) -> acc.with(i, v) }
         }
     }
@@ -439,25 +439,35 @@ object StarterWizard {
             (if (melody && style.melody.acid != null) listOf(Step.Acid) else emptyList()) +
             (if (melody) Part.entries.map { Step.Melodic(it) } else emptyList()) + Step.Summary
 
-    val FAMILIES = listOf("Hip-hop", "House", "Techno", "Bass music", "Autres")
+    /** The style families, in the order shown (Benjamin's, 2026-10-22): each opens and closes. */
+    val FAMILIES = listOf("Techno", "House", "Bass music", "Hip-hop", "Autres")
+
+    /** The families open at first (those of Benjamin's favourite styles); the others wait folded. */
+    val OPEN_FAMILIES = setOf("Techno", "House", "Bass music")
 
     /**
-     * The styles, most known first (a beginner finds techno, house or trap at once, riddim and
-     * jersey club further down), from the researched recipes (StyleRecipes.kt, scripts/packs/recipes/).
+     * The styles in Benjamin's order (2026-10-22): his favourites first, family by family, then the
+     * others in the same families (StyleRecipes.kt, scripts/packs/recipes/).
      */
-    val STYLES: List<Style> by lazy { STYLE_RECIPES.sortedBy { s -> POPULAR.indexOf(s.id).let { if (it < 0) POPULAR.size else it } } }
+    val STYLES: List<Style> by lazy { STYLE_RECIPES.sortedBy { s -> ORDER.indexOf(s.id).let { if (it < 0) ORDER.size else it } } }
 
-    /** How well known each style is, from the most (charts, festivals, streaming) to the least. */
-    val POPULAR = listOf(
-        "techno", "house", "trap", "drill", "pop", "phonk", "dnb", "reggaeton", "afrobeats", "lofi",
-        "dubstep", "jump_up", "disco", "trance", "deep_house", "tech_house", "boom_bap", "synthwave", "acid_house", "hard_techno",
-        "amapiano", "uk_garage", "minimal", "afro_house", "jungle", "retro_techno", "acid_techno",
-        "gabber", "acidcore", "liquid_dnb", "detroit", "grime", "industrial_techno", "neurofunk", "jersey_club",
-        "speed_garage", "riddim",
+    /** The order of [STYLES]: the [FAVORITES] first, then the others. */
+    val ORDER = listOf(
+        "techno", "detroit", "acid_techno", "hard_techno", "industrial_techno", "retro_techno", "acidcore", "trance",
+        "house", "deep_house", "tech_house", "acid_house", "uk_garage",
+        "dnb", "jump_up", "dubstep",
+        "minimal", "gabber",
+        "afro_house", "speed_garage", "amapiano", "disco",
+        "liquid_dnb", "neurofunk", "jungle", "riddim",
+        "trap", "drill", "phonk", "boom_bap", "grime", "jersey_club", "lofi",
+        "reggaeton", "afrobeats", "synthwave", "pop",
     )
 
-    /** The first styles of [STYLES], shown apart as the best known. */
-    const val BEST_KNOWN = 10
+    /** How many of [STYLES] are Benjamin's favourites (they come first). */
+    const val FAVORITES = 16
+
+    /** [family]'s styles, in the order of [STYLES]. */
+    fun stylesOf(family: String): List<Style> = STYLES.filter { it.family == family }
 
     fun style(id: String): Style? = STYLES.firstOrNull { it.id == id }
 

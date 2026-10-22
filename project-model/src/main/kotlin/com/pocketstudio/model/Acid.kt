@@ -30,8 +30,15 @@ data class AcidSound(
     val tuning: Float = 0.5f,
     val waveform: Float = 0f,
     val drive: Float = 0.3f,
-    val level: Float = 0.7f,
+    val level: Float = DEFAULT_LEVEL,
 ) {
+    companion object {
+        /** « Acide de base » at about -16 LUFS alone (see [SoundLibrary.ACID]). */
+        const val DEFAULT_LEVEL = 0.48f
+        /** The level every 303 had before its calibration (phase 30). */
+        const val OLD_LEVEL = 0.7f
+    }
+
     /** In engine parameter order (AcidTrack::Param). */
     fun values(): List<Float> = listOf(cutoff, resonance, envMod, decay, accent, tuning, waveform, drive, level)
 

@@ -106,25 +106,4 @@ class FoldTest {
         compose.onNodeWithTag("inside").assertExists()
         compose.onNodeWithTag("fold_groupe").assertDoesNotExist()
     }
-
-    @Test
-    fun theAssistantFoldsTheLessKnownStyles() {
-        val store = MemoryFoldStore()
-        val known = StarterWizard.STYLES.first()
-        val other = StarterWizard.STYLES.last()
-        compose.setContent {
-            PocketStudioTheme {
-                CompositionLocalProvider(LocalFoldStore provides store) {
-                    WizardScreen(WizardUi(open = true), PacksUi(IndexState.Unavailable), null, WizardActions())
-                }
-            }
-        }
-        compose.onNodeWithTag("wizard_style_${other.id}").assertExists()
-
-        compose.onNodeWithTag("fold_Styles : Les autres styles").performScrollTo().performClick()
-        compose.waitForIdle()
-        assertTrue(store.isFolded("Styles : Les autres styles"))
-        compose.onNodeWithTag("wizard_style_${other.id}").assertDoesNotExist()
-        compose.onNodeWithTag("wizard_style_${known.id}").assertExists()
-    }
 }

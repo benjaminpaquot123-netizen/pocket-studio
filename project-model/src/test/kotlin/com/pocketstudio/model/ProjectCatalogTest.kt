@@ -32,6 +32,17 @@ class ProjectCatalogTest {
     }
 
     @Test
+    fun aSecondSongOfTheSameStyleGetsItsOwnName() {
+        assertEquals("Rétro techno", catalog.freeName("Rétro techno"))
+        val a = catalog.create(Project(name = catalog.freeName("Rétro techno")))
+        val b = catalog.create(Project(name = catalog.freeName("Rétro techno")))
+        val c = catalog.create(Project(name = catalog.freeName("Rétro techno")))
+        assertEquals(setOf(a, b, c), catalog.list().map { it.id }.toSet())  // three projects, none replaced
+        assertEquals(listOf("Rétro techno", "Rétro techno 2", "Rétro techno 3"), listOf(a, b, c).map { catalog.info(it)!!.name })
+        dir.deleteRecursively()
+    }
+
+    @Test
     fun deleteGoesToTheTrashAndComesBack() {
         val a = catalog.create(Project(name = "Précieux"))
         val entry = catalog.delete(a)

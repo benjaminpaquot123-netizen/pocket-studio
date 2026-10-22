@@ -242,36 +242,11 @@ private fun StyleStep(chosen: String?, packs: PacksUi, actions: WizardActions) {
             tr("Touche une carte pour lire sa description, ▶ pour l'écouter."),
         style = MaterialTheme.typography.bodyMedium,
     )
-    // One family at a time, or all of them ("Tous").
-    var family by rememberSaveable { mutableStateOf<String?>(null) }
     // The card opened to be read (the chosen style's when coming back).
     var open by rememberSaveable { mutableStateOf(chosen) }
-    val families = listOf<String?>(null) + StarterWizard.FAMILIES
-    // Six chips: all of them laid out (a phone scrolls them sideways), so each one can be found.
-    Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).testTag("wizard_families"), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-        families.forEach { f ->
-            FamilyChip(
-                if (f == null) tr("Tous") else tr(f), if (f == null) Icons.Filled.Apps else Icons.Filled.GraphicEq, Neon.Cyan,
-                selected = f == family, onClick = { family = f }, modifier = Modifier.testTag("wizard_family_${f ?: "all"}"),
-            )
-        }
-    }
-    val card: @Composable (StarterWizard.Style) -> Unit = { s ->
+    StyleFamilies("wizard", style = { s ->
         StyleCard(s, s.id == chosen, s.id == open, packs.installed.any { it.id == s.id }, { open = if (open == s.id) null else s.id }, actions)
-    }
-    if (family == null) {
-        // The best known first, then the others (still the better known first).
-        val sections = listOf(
-            Triple("Les plus connus", tr("Les plus connus"), StarterWizard.STYLES.take(StarterWizard.BEST_KNOWN)),
-            Triple("Les autres styles", tr("Les autres styles"), StarterWizard.STYLES.drop(StarterWizard.BEST_KNOWN)),
-        )
-        // Folded or not under the French title, whatever the language.
-        sections.forEach { (key, title, styles) ->
-            FoldSection("$title · ${styles.size}", foldKey = "Styles : $key") { styles.forEach { card(it) } }
-        }
-    } else {
-        StarterWizard.STYLES.filter { it.family == family }.forEach { card(it) }
-    }
+    }, open = StarterWizard.OPEN_FAMILIES + listOfNotNull(chosen?.let { StarterWizard.style(it) }?.family))
     InstalledPacks(packs, actions)
 }
 

@@ -24,4 +24,19 @@ object CurrentProject {
     fun set(context: Context, id: String) {
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putString(KEY, id).commit()
     }
+
+    private const val DELETE = "delete_after_open"
+
+    /** [id] (the project just left) goes to the trash at the next start of « Mes projets » (see [takeDeleteLater]). */
+    fun deleteLater(context: Context, id: String) {
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putString(DELETE, id).commit()
+    }
+
+    /** The project to trash now, once (never the one open). */
+    fun takeDeleteLater(context: Context): String? {
+        val prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+        val id = prefs.getString(DELETE, null) ?: return null
+        prefs.edit().remove(DELETE).commit()
+        return id.takeIf { it != get(context) }
+    }
 }

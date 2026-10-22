@@ -65,9 +65,11 @@ object SoundLooks {
         "nappes", "pad", "synthé nappe" -> SoundLook(Icons.Filled.Cloud, PAD)
         "pluck", "plucks" -> SoundLook(Icons.Filled.Grain, PLUCK)
         "claviers", "keys", "pianos", "orgues" -> SoundLook(Icons.Filled.Piano, KEYS)
-        "percussions mélodiques" -> SoundLook(Icons.Filled.Notifications, KEYS)
-        "effets", "fx", "effets synthé", "bruitages" -> SoundLook(Icons.Filled.AutoAwesome, FX)
+        "percussions mélodiques", "mallet" -> SoundLook(Icons.Filled.Notifications, KEYS)
+        "effets", "fx", "effets synthé" -> SoundLook(Icons.Filled.AutoAwesome, FX)
         "voix", "vocal" -> SoundLook(Icons.Filled.RecordVoiceOver, VOICE)
+        "bruitages", "foley" -> SoundLook(Icons.Filled.Vibration, FX)
+        "cymbales", "ride" -> SoundLook(Icons.Filled.BlurOn, OPEN_HAT)
         // Each drum family in its pad's colour (Rythme tab), so they tell apart at a glance.
         "batterie", "kits", "kits de batterie" -> SoundLook(Icons.Filled.Adjust, DRUMS)
         "kicks", "kick" -> SoundLook(Icons.Filled.Adjust, KICK)

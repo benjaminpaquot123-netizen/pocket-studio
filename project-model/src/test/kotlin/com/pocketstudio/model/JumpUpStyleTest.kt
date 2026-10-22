@@ -24,7 +24,7 @@ class JumpUpStyleTest {
     fun itIsADrumAndBassOfTheBassMusicFamilyInTheWizard() {
         assertEquals("Bass music", style.family)
         assertTrue(style.bpm in 172.0..176.0)
-        assertTrue(style in StarterWizard.STYLES && "jump_up" in StarterWizard.POPULAR)
+        assertTrue(style in StarterWizard.STYLES && "jump_up" in StarterWizard.ORDER)
         assertEquals(StarterWizard.SongForm.Build, style.form)
         assertTrue(style.riser)
         assertEquals(Mood.Dark, style.melody.mood)

@@ -795,5 +795,13 @@
   "événement MIDI inconnu": "unknown MIDI event",
   "↑": "↑",
   "↑↓": "↑↓",
-  "↓": "↓"
+  "↓": "↓",
+  "Cymbales": "Cymbals",
+  "Bruitages : maison et objets": "Foley: home and objects",
+  "Bruitages : chocs, bois et métal": "Foley: hits, wood and metal",
+  "Bruitages : corps, voix et pas": "Foley: body, voice and steps",
+  "Bruitages : eau, feu et ambiances": "Foley: water, fire and ambiences",
+  "Clics, bips et jeux vidéo": "Clicks, beeps and video games",
+  "Percussions acoustiques": "Acoustic percussion",
+  "Bruitages : doigts, balles et bouche": "Foley: fingers, balls and mouth"
 }

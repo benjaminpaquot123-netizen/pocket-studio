@@ -795,5 +795,13 @@
   "événement MIDI inconnu": "onbekende MIDI-gebeurtenis",
   "↑": "↑",
   "↑↓": "↑↓",
-  "↓": "↓"
+  "↓": "↓",
+  "Cymbales": "Bekkens",
+  "Bruitages : maison et objets": "Geluidseffecten: huis en voorwerpen",
+  "Bruitages : chocs, bois et métal": "Geluidseffecten: klappen, hout en metaal",
+  "Bruitages : corps, voix et pas": "Geluidseffecten: lichaam, stem en stappen",
+  "Bruitages : eau, feu et ambiances": "Geluidseffecten: water, vuur en sferen",
+  "Clics, bips et jeux vidéo": "Klikjes, piepjes en videogames",
+  "Percussions acoustiques": "Akoestische percussie",
+  "Bruitages : doigts, balles et bouche": "Geluidseffecten: vingers, ballen en mond"
 }

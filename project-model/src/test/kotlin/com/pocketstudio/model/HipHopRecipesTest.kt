@@ -106,8 +106,7 @@ class HipHopRecipesTest {
     }
 
     @Test
-    fun drillAndPhonkAreAmongTheBestKnown() {
-        val best = StarterWizard.STYLES.take(StarterWizard.BEST_KNOWN).map { it.id }
-        assertTrue(best.toString(), "drill" in best && "phonk" in best && "trap" in best)
+    fun hipHopComesInBenjaminsOrder() {
+        assertEquals(listOf("trap", "drill", "phonk", "boom_bap", "grime", "jersey_club", "lofi"), StarterWizard.stylesOf("Hip-hop").map { it.id })
     }
 }

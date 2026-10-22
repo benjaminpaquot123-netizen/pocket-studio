@@ -104,6 +104,9 @@ internal object WizardMix {
         return p
     }
 
+    /** [track] (playing [part]) at the level the assistant gives that part: a track added after the song is made sits in its mix too. */
+    fun withPartLevel(project: Project, track: Int, part: Part, held: Boolean): Project = project.louder(track, partDb(part, held))
+
     /**
      * [track]'s sound [db] louder (or softer): its calibration ([SynthPatch.GAIN], [PlaitsPatch.gain])
      * or its sample's gain, so that the faders stay at 0 dB for the user.

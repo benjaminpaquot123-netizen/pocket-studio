@@ -315,6 +315,14 @@ class ProjectCatalog(private val root: File, private val trash: File, private va
         return generateSequence(1) { it + 1 }.map { "$prefix $it" }.first { DefaultNames.shown(it) !in names }
     }
 
+    /** [name], or « [name] 2 », « 3 »… when a project already has it (as shown): never two songs alike in the list. */
+    fun freeName(name: String): String {
+        val names = list().map { DefaultNames.shown(it.name) }.toSet()
+        if (DefaultNames.shown(name) !in names) return name
+        val base = name.take(MAX_NAME - 4)
+        return generateSequence(2) { it + 1 }.map { "$base $it" }.first { DefaultNames.shown(it) !in names }
+    }
+
     private fun newId() = "p-" + UUID.randomUUID().toString().take(8)
 
     companion object {

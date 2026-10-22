@@ -125,24 +125,21 @@ class OnboardingUiTest {
         assertEquals(1, wizard)
         compose.onNodeWithTag("project_new").performClick()
         for (heading in listOf("GUIDÉ", "PARTIR D'UN STYLE", "ÉCOUTER UNE DÉMO", "VIDE")) compose.onNodeWithText(heading).assertExists()
-        // The assistant's styles, the best known first: one touch makes the whole song.
-        val best = StarterWizard.STYLES.take(StarterWizard.BEST_KNOWN)
-        best.forEach { compose.onNodeWithTag("quick_style_${it.id}").assertExists() }
-        compose.onNodeWithTag("quick_style_${StarterWizard.STYLES[StarterWizard.BEST_KNOWN].id}").assertDoesNotExist()
+        // The assistant's styles by family, Benjamin's families open: one touch makes the whole song.
+        StarterWizard.STYLES.filter { it.family in StarterWizard.OPEN_FAMILIES }.forEach { compose.onNodeWithTag("quick_style_${it.id}").assertExists() }
+        compose.onNodeWithTag("quick_style_trap").assertDoesNotExist()  // Hip-hop folded at first
         compose.onNodeWithTag("quick_style_techno").performScrollTo().performClick()
         compose.onNodeWithTag("quick_style_house").performScrollTo().performClick()
         assertEquals(listOf("techno", "house"), quick)
-        // « Personnaliser pas à pas » opens the assistant on that style.
+        // A folded family opens with one touch; « Personnaliser pas à pas » opens the assistant on that style.
+        compose.onNodeWithTag("quick_family_Hip-hop").performScrollTo().performClick()
         compose.onNodeWithTag("quick_custom_trap").performScrollTo().performClick()
         assertEquals(listOf("trap"), custom)
-        // Every style of the assistant on demand, and each family alone.
-        compose.onNodeWithTag("quick_more").performScrollTo().performClick()
-        StarterWizard.STYLES.forEach { compose.onNodeWithTag("quick_style_${it.id}").assertExists() }
-        compose.onNodeWithTag("quick_families").performScrollTo()  // up the list, then along the chips
+        // An open family closes the same way.
         compose.onNodeWithTag("quick_family_Bass music").performScrollTo().performClick()
-        compose.onNodeWithTag("quick_family_Bass music").assertIsSelected()
-        compose.onNodeWithTag("quick_style_dnb").assertExists()
-        compose.onNodeWithTag("quick_style_house").assertDoesNotExist()
+        compose.waitForIdle()
+        compose.onNodeWithTag("quick_style_dnb").assertDoesNotExist()
+        compose.onNodeWithTag("quick_style_house").assertExists()
         // The other starters still there; the old one-scene genres are gone.
         compose.onNodeWithTag("starter_starter").assertExists()
         compose.onNodeWithTag("starter_genre_0").assertDoesNotExist()
@@ -352,17 +349,21 @@ class OnboardingUiTest {
     }
 
     @Test
-    fun theStylesCanBeFilteredByFamily() {
+    fun theStylesComeByFamilyInBenjaminsOrder() {
         compose.setContent {
             PocketStudioTheme { WizardScreen(WizardUi(open = true), PacksUi(IndexState.Unavailable), null, WizardActions()) }
         }
-        compose.onNodeWithTag("wizard_family_Bass music").performScrollTo().performClick()
-        compose.waitForIdle()
+        // Techno, House, Bass music open; Hip-hop and Autres folded until touched.
         StarterWizard.STYLES.forEach { s ->
-            if (s.family == "Bass music") compose.onNodeWithTag("wizard_style_${s.id}").assertExists()
+            if (s.family in StarterWizard.OPEN_FAMILIES) compose.onNodeWithTag("wizard_style_${s.id}").assertExists()
             else compose.onNodeWithTag("wizard_style_${s.id}").assertDoesNotExist()
         }
-        compose.onNodeWithTag("wizard_family_all").performScrollTo().performClick()
+        compose.onNodeWithTag("wizard_family_Hip-hop").performScrollTo().performClick()
+        compose.waitForIdle()
+        StarterWizard.stylesOf("Hip-hop").forEach { compose.onNodeWithTag("wizard_style_${it.id}").assertExists() }
+        compose.onNodeWithTag("wizard_family_Techno").performScrollTo().performClick()
+        compose.waitForIdle()
+        compose.onNodeWithTag("wizard_style_techno").assertDoesNotExist()
         compose.onNodeWithTag("wizard_style_house").assertExists()
     }
 

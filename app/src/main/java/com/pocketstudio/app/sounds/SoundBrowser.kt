@@ -66,6 +66,11 @@ fun SoundBrowser(ui: SoundBrowserUi) {
     val start = ui.sounds.firstOrNull { it.name == ui.current }?.category
         ?: if (ui.favorites.any { it.name == ui.current }) SoundCategories.FAVORITES else ui.categories.first()
     var family by rememberSaveable(ui.tag) { mutableStateOf(start) }
+    // The family of the sound playing now, whenever it changes (another track shown, a sound
+    // chosen elsewhere): never the family left open for the previous track.
+    val currentFamily = ui.sounds.firstOrNull { it.name == ui.current }?.category
+        ?: SoundCategories.FAVORITES.takeIf { ui.favorites.any { it.name == ui.current } }
+    androidx.compose.runtime.LaunchedEffect(ui.current) { if (currentFamily != null) family = currentFamily }
     if (family !in families) family = ui.categories.first()
     Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.testTag(ui.tag)) {
         Row(Modifier.fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {

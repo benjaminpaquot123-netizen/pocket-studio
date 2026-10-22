@@ -22,7 +22,7 @@ class NewTracksTest {
             assertTrue(t.notes.notes.isEmpty())
         }
         // The style's own sounds, as the assistant gives them.
-        assertEquals(StarterWizard.soundsFor(StarterWizard.Part.Bass, house).first().synth.sanitized(), added(p, NewTracks.add(p, TrackKind.Bass, house)!!).synth)
+        assertEquals(StarterWizard.soundsFor(StarterWizard.Part.Bass, house).first().name, SoundLibrary.synthNameOf(added(p, NewTracks.add(p, TrackKind.Bass, house)!!).synth))
         assertEquals(StarterWizard.soundsFor(StarterWizard.Part.Pad, house).first().name, NewTracks.sound(TrackKind.Chords, house).name)
         assertEquals(StarterWizard.soundsFor(StarterWizard.Part.Lead, house).first().name, NewTracks.sound(TrackKind.Melody, house).name)
         // Without a style: the first of the family.

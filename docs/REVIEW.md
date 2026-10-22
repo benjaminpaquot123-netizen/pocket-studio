@@ -736,3 +736,8 @@ Relecture neuve : 0 grave, 3 moyens, 4 mineurs. Fil audio propre (limiteur, vum�
 - Corrigé : échantillon absurde ou non fini avant le limiteur remis à 0 (plus de NaN possible) ; file des chansons séparées retirées portée à 64 (plus de fuite pendant un long glissé de tempo).
 - Restant : `asNewProject` considère « 0 dB » comme « non choisi » (aucun appelant ne le règle exprès aujourd'hui) ; un clic possible à l'écrasement de la queue d'un pad ; fondu d'entrée d'un échange qui peut démarrer un peu tard ; canal de notification d'export recréé à chaque mise à jour.
 - Corps : le Break n'est que 2 dB sous le Drop quand une scène tourne seule (le balayage n'agit que dans le morceau) ; charleys du kit encore ternes ; leads un peu forts en trap et drill. À écouter sur téléphone.
+
+## Phase 30 (relecture unique, légère)
+Relecture neuve : 0 grave, 4 moyens, 8 mineurs (détail dans la sortie de la relecture, résumé ici).
+- Corrigé : un pack en échec reste proposé par « Tout compléter » (seuls les packs installés sont marqués vus) ; place libre vérifiée avant chaque pack (zip + sons) ; le chrono du morceau suit l'arrêt (lecture du transport observée).
+- Restant : une vieille copie locale du catalogue passe avant l'index épinglé (plus ancien en pratique ; URL et SHA-256 restent vérifiés) ; tests manquants : échec puis « vu », reprise HTTP Range, zip piégé à `unpack` (l'extraction est déjà aplatie).

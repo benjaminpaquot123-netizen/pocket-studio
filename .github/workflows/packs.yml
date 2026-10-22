@@ -1,8 +1,13 @@
 name: Packs
 
-# Builds the sound packs (one per style of scripts/packs/styles.json) with Stable Audio Open
-# Small, the model the app already uses, and hosts them on a dedicated release. Runs once: an
-# existing release is left alone (publish a new tag to rebuild).
+# Builds the sound packs and hosts them on a dedicated release. Runs once: an existing release is
+# left alone (publish a new tag to rebuild).
+# - one pack per style of scripts/packs/styles.json, generated with Stable Audio Open Small (the
+#   model the app already uses); a pack of the previous release is reused, and extended with new
+#   takes when styles.json's version is higher than the pack's;
+# - one pack per entry of scripts/packs/libraries.json, made from free sound libraries (CC0).
+# Then index.json (versions, sizes, SHA-256) goes on the release and on the fixed `sons-packs`
+# catalogue release the app reads: new packs and updates reach phones without a new app.
 on:
   push:
     paths:
@@ -19,9 +24,11 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  TAG: sons-packs-4
-  # Packs already built there are reused as they are; only new styles are generated.
-  PREVIOUS: sons-packs-3
+  TAG: sons-packs-5
+  # Packs already built there are reused (and extended when styles.json asks for more).
+  PREVIOUS: sons-packs-4
+  # Fixed release whose index.json the app reads first (PackStore.CATALOGUE).
+  CATALOGUE: sons-packs
   MODEL: https://github.com/benjaminpaquot123-netizen/pocket-studio/releases/download/modele-stable-audio-open-small-1
 
 jobs:
@@ -30,6 +37,7 @@ jobs:
     outputs:
       hosted: ${{ steps.check.outputs.hosted }}
       styles: ${{ steps.styles.outputs.ids }}
+      libraries: ${{ steps.styles.outputs.libraries }}
     steps:
       - uses: actions/checkout@v7
       - id: check
@@ -38,7 +46,9 @@ jobs:
         run: |
           if gh release view "$TAG" >/dev/null 2>&1; then echo "hosted=true" >> "$GITHUB_OUTPUT"; else echo "hosted=false" >> "$GITHUB_OUTPUT"; fi
       - id: styles
-        run: echo "ids=$(python3 -c 'import json;print(json.dumps([s["id"] for s in json.load(open("scripts/packs/styles.json"))["styles"]]))')" >> "$GITHUB_OUTPUT"
+        run: |
+          echo "ids=$(python3 -c 'import json;print(json.dumps([s["id"] for s in json.load(open("scripts/packs/styles.json"))["styles"]]))')" >> "$GITHUB_OUTPUT"
+          echo "libraries=$(python3 -c 'import json;print(json.dumps([p["id"] for p in json.load(open("scripts/packs/libraries.json"))["packs"]]))')" >> "$GITHUB_OUTPUT"
 
   # One download of the model (858 MB), shared through the cache: thirty jobs fetching it at once
   # from the release get HTTP 500s.
@@ -112,17 +122,47 @@ jobs:
           else
             rm -rf "out/${{ matrix.style }}" prev
           fi
-      - name: Generate
-        if: steps.reuse.outputs.reused != 'true'
-        run: python scripts/packs/generate_pack.py model scripts/packs/styles.json ${{ matrix.style }} out/${{ matrix.style }}
+      - name: Generate (or extend the reused pack)
+        run: |
+          read -r WANT SCALE < <(python3 -c 'import json;d=json.load(open("scripts/packs/styles.json"));print(d.get("version",1),d.get("scale",1))')
+          HAVE=$(python3 -c 'import json,sys;print(json.load(open(sys.argv[1])).get("version",1))' "out/${{ matrix.style }}/pack.json" 2>/dev/null || echo 0)
+          if [ "${{ steps.reuse.outputs.reused }}" != "true" ]; then
+            python scripts/packs/generate_pack.py model scripts/packs/styles.json ${{ matrix.style }} out/${{ matrix.style }} --scale "$SCALE"
+          elif [ "$HAVE" -lt "$WANT" ]; then
+            python scripts/packs/generate_pack.py model scripts/packs/styles.json ${{ matrix.style }} out/${{ matrix.style }} --scale "$SCALE" --extend
+          fi
       - uses: actions/upload-artifact@v7
         with:
           name: pack-${{ matrix.style }}
           path: out/${{ matrix.style }}
 
-  # Published even if a few styles failed (they are simply not offered), never after a cancel.
+  # Packs made from free libraries (no model): downloaded, picked, trimmed, normalized.
+  library:
+    needs: plan
+    if: needs.plan.outputs.hosted == 'false'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        pack: ${{ fromJSON(needs.plan.outputs.libraries) }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+      - run: pip install -q -r scripts/packs/requirements.txt
+      - name: Build
+        run: python scripts/packs/library_pack.py scripts/packs/libraries.json ${{ matrix.pack }} out/${{ matrix.pack }} --cache "$RUNNER_TEMP/sources"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: pack-${{ matrix.pack }}
+          path: out/${{ matrix.pack }}
+
+  # Published even if a few packs failed (they are simply not offered), never after a cancel.
   publish:
-    needs: [plan, build]
+    needs: [plan, build, library]
     if: ${{ !cancelled() && needs.plan.outputs.hosted == 'false' }}
     runs-on: ubuntu-latest
     steps:
@@ -134,7 +174,7 @@ jobs:
       - name: Zip and index
         run: |
           for d in packs/pack-*; do mv "$d" "packs/${d#packs/pack-}"; done
-          python3 scripts/packs/build_index.py packs dist
+          python3 scripts/packs/build_index.py packs dist --release "$TAG"
           python3 -c "import json, sys; sys.exit(0 if json.load(open('dist/index.json'))['packs'] else 'no pack built')"
       - name: Licence of the model the sounds come from
         run: |
@@ -146,4 +186,11 @@ jobs:
         run: |
           gh release create "$TAG" dist/* --latest=false --target main \
             --title "Packs de sons par style" \
-            --notes "Sons générés avec Stable Audio Open Small (Powered by Stability AI, voir LICENSE-stable-audio et NOTICE-stable-audio) par scripts/packs. Un .zip par style ; index.json liste les tailles et empreintes vérifiées par l'appli."
+            --notes "Sons générés avec Stable Audio Open Small (Powered by Stability AI, voir LICENSE-stable-audio et NOTICE-stable-audio) par scripts/packs, et sons libres (CC0 : Kenney, OpenGameArt, VCSL ; auteurs dans le pack.json de chaque pack et THIRD_PARTY.md). Un .zip par pack ; index.json liste les versions, tailles et empreintes vérifiées par l'appli."
+      - name: Catalogue the app reads
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view "$CATALOGUE" >/dev/null 2>&1 || gh release create "$CATALOGUE" --latest=false --target main \
+            --title "Catalogue des packs de sons" --notes "index.json : la liste des packs à jour, lue par l'appli (les .zip sont sur les releases sons-packs-N)."
+          gh release upload "$CATALOGUE" dist/index.json --clobber

@@ -1,5 +1,5 @@
-Phase 29 : « Du corps, du corps, du corps ! »
-- Nouveau projet › un style : le morceau complet en un toucher ; nouveau style Jump up DnB (basse growl et sous-basse, façon Chase & Status).
-- Morceaux de l'assistant plus pleins : sons au même volume, vrai mélange de départ, roulements, deuxième Drop plus gros, sous-basse en DnB et dubstep.
-- Son : limiteur plus propre, vumètre avant le limiteur, plus de clic en changeant d'effet ou de son, tempo du Remix sans saut, export qui continue en arrière-plan.
-- Morceau : ce que tu joues va dans la scène entendue, « Enregistrer le morceau » sans figer, export MIDI avec arpèges et roulements.
+Phase 30 : « Tout ce qui joue, sous tes yeux » (tes retours)
+- « Ce qui joue » : par scène, morceau ou piste, tous les effets et courbes en clair, avec « Modifier » qui t'y emmène ; Automation en haut du Mixeur.
+- Courbes plus faciles : outil Ligne, Lisser, zoom ; tête de lecture verte qui avance ; Morceau affiche le temps écoulé.
+- Sons : grande bibliothèque libre (bruitages, doigts, ping-pong…), « Tout télécharger » et « Tout compléter », recherche.
+- Styles rangés en familles ; projet ouvert supprimable, nouveaux morceaux numérotés ; acide au bon volume ; son choisi en surbrillance.

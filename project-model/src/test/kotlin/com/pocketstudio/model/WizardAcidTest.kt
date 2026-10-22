@@ -69,7 +69,7 @@ class WizardAcidTest {
         val keep = AcidSound(tuning = 0.6f, level = 0.5f)
         val sat = WizardAcid.sound("Saturée", keep)!!
         assertEquals(0.6f, sat.tuning)
-        assertEquals(0.5f, sat.level)
+        assertEquals(SoundLibrary.ACID.first { it.name == "Carré saturé" }.sound.level, sat.level)  // its calibrated level (phase 30)
         assertEquals(0.9f, sat.drive)
     }
 

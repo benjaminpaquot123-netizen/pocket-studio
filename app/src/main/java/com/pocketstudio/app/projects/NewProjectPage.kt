@@ -56,9 +56,6 @@ import kotlin.math.roundToInt
 internal fun NewProjectPage(starters: List<ProjectStarter>, quick: QuickUi, actions: ProjectsActions, close: () -> Unit) {
     // While a song is being prepared, every other choice waits.
     val busy = quick.creating != null
-    // One family at a time, or the best known (then all of them on demand).
-    var family by rememberSaveable { mutableStateOf<String?>(null) }
-    var allStyles by rememberSaveable { mutableStateOf(false) }
     Column(Modifier.fillMaxSize().padding(12.dp).testTag("new_project"), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = close, enabled = !busy, modifier = Modifier.testTag("new_project_back")) {
@@ -90,27 +87,8 @@ internal fun NewProjectPage(starters: List<ProjectStarter>, quick: QuickUi, acti
                 Text(it, color = Neon.Amber, style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.fillMaxWidth().clickable(onClick = actions.dismissQuickError).testTag("quick_error"))
             }
-            // The assistant's families, laid out in a row a phone scrolls sideways.
-            Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).testTag("quick_families"), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                (listOf<String?>(null) + StarterWizard.FAMILIES).forEach { f ->
-                    FamilyChip(
-                        if (f == null) tr("Tous") else tr(f), if (f == null) Icons.Filled.Apps else Icons.Filled.GraphicEq, Neon.Cyan,
-                        selected = f == family, onClick = { family = f }, modifier = Modifier.testTag("quick_family_${f ?: "all"}"),
-                    )
-                }
-            }
-            val styles = when {
-                family != null -> StarterWizard.STYLES.filter { it.family == family }
-                allStyles -> StarterWizard.STYLES
-                else -> StarterWizard.STYLES.take(StarterWizard.BEST_KNOWN)
-            }
-            styles.forEach { QuickStyleCard(it, quick, actions) }
-            if (family == null) {
-                val more = StarterWizard.STYLES.size - StarterWizard.BEST_KNOWN
-                TextButton(onClick = { allStyles = !allStyles }, modifier = Modifier.fillMaxWidth().testTag("quick_more")) {
-                    Text(if (allStyles) "▾ " + tr("Moins de styles") else "▸ " + tr("Voir les %d autres styles", more))
-                }
-            }
+            // The assistant's families, big and foldable, Benjamin's open: one touch on a style makes its song.
+            com.pocketstudio.app.library.StyleFamilies("quick", style = { QuickStyleCard(it, quick, actions) })
             // The other starters under their headings (the starting beat closes the styles' group).
             StarterGroup.entries.forEach { group ->
                 val inGroup = starters.withIndex().filter { it.value.group == group }

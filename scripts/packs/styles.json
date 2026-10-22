@@ -1,4 +1,7 @@
 {
+  "_comment": "Packs generated with Stable Audio Open Small. version: the packs' version (the app offers an update when it rises); scale: each kind's count is multiplied by it. Raising both extends the packs already published (their sounds stay, new takes are added).",
+  "version": 2,
+  "scale": 2,
   "kinds": {
     "kick": {
       "label": "Kick",
@@ -95,6 +98,229 @@
       "prompt": "{words} sound effect, riser, impact or sweep",
       "seconds": 3.0,
       "count": 8
+    },
+    "snap": {
+      "label": "Claquement de doigts",
+      "as": "clap",
+      "prompt": "single finger snap one shot, close mic, dry room",
+      "seconds": 0.6,
+      "count": 12,
+      "tags": [
+        "doigts",
+        "claquement",
+        "snap",
+        "corps"
+      ],
+      "rules": {
+        "max_seconds": 0.8,
+        "transient": true,
+        "max_low": 0.3
+      }
+    },
+    "pingpong": {
+      "label": "Balle de ping-pong",
+      "as": "perc",
+      "prompt": "single ping pong ball bounce on a table, one shot, close mic",
+      "seconds": 0.6,
+      "count": 10,
+      "tags": [
+        "ping-pong",
+        "balle",
+        "rebond"
+      ],
+      "rules": {
+        "max_seconds": 0.8,
+        "transient": true
+      }
+    },
+    "handclap": {
+      "label": "Claquement de mains",
+      "as": "clap",
+      "prompt": "single real hand clap one shot, close mic, dry room",
+      "seconds": 0.6,
+      "count": 10,
+      "tags": [
+        "mains",
+        "clap",
+        "corps"
+      ],
+      "rules": {
+        "max_seconds": 0.8,
+        "transient": true,
+        "max_low": 0.5
+      }
+    },
+    "knock": {
+      "label": "Toc sur le bois",
+      "as": "perc",
+      "prompt": "single knuckle knock on a wooden door, one shot, dry",
+      "seconds": 0.6,
+      "count": 10,
+      "tags": [
+        "toc",
+        "porte",
+        "bois",
+        "frapper"
+      ],
+      "rules": {
+        "max_seconds": 0.8,
+        "transient": true
+      }
+    },
+    "body": {
+      "label": "Percussion corporelle",
+      "as": "perc",
+      "prompt": "body percussion one shot, hand slap on thigh, dry",
+      "seconds": 0.6,
+      "count": 10,
+      "tags": [
+        "corps",
+        "claque",
+        "cuisse",
+        "body percussion"
+      ],
+      "rules": {
+        "max_seconds": 0.8,
+        "transient": true
+      }
+    },
+    "beatbox_kick": {
+      "label": "Beatbox kick",
+      "as": "kick",
+      "prompt": "human beatbox kick drum one shot, mouth sound, close mic",
+      "seconds": 0.8,
+      "count": 8,
+      "tags": [
+        "beatbox",
+        "bouche",
+        "voix"
+      ],
+      "rules": {
+        "max_seconds": 1.0,
+        "transient": true
+      }
+    },
+    "beatbox_snare": {
+      "label": "Beatbox caisse claire",
+      "as": "snare",
+      "prompt": "human beatbox snare one shot, mouth sound, close mic",
+      "seconds": 0.8,
+      "count": 8,
+      "tags": [
+        "beatbox",
+        "bouche",
+        "voix"
+      ],
+      "rules": {
+        "max_seconds": 1.0,
+        "transient": true
+      }
+    },
+    "mouth": {
+      "label": "Bruit de bouche",
+      "as": "vocal",
+      "prompt": "tongue click mouth pop one shot, close mic",
+      "seconds": 0.6,
+      "count": 8,
+      "tags": [
+        "bouche",
+        "langue",
+        "pop",
+        "voix"
+      ],
+      "rules": {
+        "max_seconds": 0.8
+      }
+    },
+    "glass": {
+      "label": "Verre tinté",
+      "as": "foley",
+      "prompt": "glass clink one shot, two wine glasses touching",
+      "seconds": 1.0,
+      "count": 8,
+      "tags": [
+        "verre",
+        "tchin",
+        "cristal"
+      ],
+      "rules": {
+        "max_seconds": 1.4
+      }
+    },
+    "coin": {
+      "label": "Pièce qui tombe",
+      "as": "foley",
+      "prompt": "single coin dropped on a table, one shot",
+      "seconds": 1.0,
+      "count": 8,
+      "tags": [
+        "pièce",
+        "monnaie",
+        "métal"
+      ],
+      "rules": {
+        "max_seconds": 1.4
+      }
+    },
+    "pen": {
+      "label": "Clic de stylo",
+      "as": "perc",
+      "prompt": "ballpoint pen click one shot, close mic",
+      "seconds": 0.5,
+      "count": 8,
+      "tags": [
+        "stylo",
+        "clic",
+        "bureau"
+      ],
+      "rules": {
+        "max_seconds": 0.6,
+        "transient": true
+      }
+    },
+    "drop": {
+      "label": "Goutte d'eau",
+      "as": "foley",
+      "prompt": "single water drop falling into water, one shot, close mic",
+      "seconds": 0.8,
+      "count": 8,
+      "tags": [
+        "eau",
+        "goutte",
+        "ploc"
+      ],
+      "rules": {
+        "max_seconds": 1.0
+      }
+    },
+    "paper": {
+      "label": "Papier froissé",
+      "as": "foley",
+      "prompt": "paper crumple short one shot, close mic",
+      "seconds": 1.0,
+      "count": 6,
+      "tags": [
+        "papier",
+        "froissé"
+      ],
+      "rules": {
+        "max_seconds": 1.4
+      }
+    },
+    "can": {
+      "label": "Canette qu'on ouvre",
+      "as": "foley",
+      "prompt": "soda can opening pop and fizz, one shot",
+      "seconds": 1.0,
+      "count": 6,
+      "tags": [
+        "canette",
+        "pschitt",
+        "boisson"
+      ],
+      "rules": {
+        "max_seconds": 1.4
+      }
     }
   },
   "styles": [
@@ -874,6 +1100,30 @@
       "counts": {
         "fx": 20
       }
+    },
+    {
+      "id": "bruitages_ia",
+      "name": "Bruitages : doigts, balles et bouche",
+      "family": "Bruitages",
+      "bpm": 120,
+      "words": "",
+      "kinds": [
+        "snap",
+        "pingpong",
+        "handclap",
+        "knock",
+        "body",
+        "beatbox_kick",
+        "beatbox_snare",
+        "mouth",
+        "glass",
+        "coin",
+        "pen",
+        "drop",
+        "paper",
+        "can"
+      ],
+      "counts": {}
     }
   ]
 }

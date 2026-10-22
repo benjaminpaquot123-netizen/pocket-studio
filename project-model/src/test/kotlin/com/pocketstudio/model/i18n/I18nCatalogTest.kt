@@ -147,6 +147,10 @@ class I18nCatalogTest {
             "AutomationCard.kt: effect.label",
             "AutomationCard.kt: it",
             "ChordPads.kt: key.scale.label",
+            "WhatPlays.kt: it",  // an effect's blurb (EffectType, checked by ModelTextsTest)
+            "WhatPlays.kt: e.label",
+            "WhatPlays.kt: Macros.NAMES[a.macro]",
+            "WhatPlays.kt: side",  // a macro's end (Macros.ENDS, checked by ModelTextsTest)
             "DefaultNames.kt: COPY",
             "DefaultNames.kt: first",  // a stem label (DefaultNames.TEXTS) or a kit's preset name (shown as it is when unknown)
             "DefaultNames.kt: fr",
@@ -201,6 +205,11 @@ class I18nCatalogTest {
             "SongGuide.kt: styleName",
             "SoundBrowser.kt: f",
             "SoundBrowser.kt: s.name",
+            // Pack names from the index (the free-library ones are checked by PackCatalogTest; a style pack shows its French name).
+            "LibraryScreen.kt: entry.name",
+            "LibraryScreen.kt: packName",
+            "LibraryScreen.kt: queue.current",
+            "LibraryScreen.kt: hit.pack.name",
             "SoundLibraryViewModel.kt: SoundPacks.KIND_LABELS[kind] ?: kind",
             "SoundLibraryViewModel.kt: SoundPacks.KIND_LABELS[role.packKind] ?: role.title",
             "SoundLibraryViewModel.kt: sound.name",
@@ -226,6 +235,7 @@ class I18nCatalogTest {
             "WizardScreen.kt: line.role.title",
             "WizardScreen.kt: StarterWizard.ScenePlan.ACID_TITLE",
             "WizardScreen.kt: f",
+            "StyleFamilies.kt: family",
             "WizardScreen.kt: tip",
             "WizardScreen.kt: m.description",
             "WizardScreen.kt: m.label",

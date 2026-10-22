@@ -15,12 +15,17 @@ import java.util.zip.ZipInputStream
 
 /**
  * The sound packs on the phone: `files/packs/<id>/` with its pack.json and FLAC files. Each one
- * is downloaded on demand from our Release (checked by SHA-256) and can be deleted at any time.
+ * is downloaded on demand from our Releases (checked by SHA-256) and can be deleted at any time.
+ * The list comes from the fixed `sons-packs` catalogue release (new packs and updates arrive
+ * without a new app), else from its last copy, else from the index pinned in the app.
  * Blocking calls: background threads only.
  */
 object PackStore {
     const val RELEASE = "sons-packs-4"
-    private const val BASE = "https://github.com/benjaminpaquot123-netizen/pocket-studio/releases/download/$RELEASE/"
+    private const val RELEASES = "https://github.com/benjaminpaquot123-netizen/pocket-studio/releases/download/"
+    private const val BASE = "$RELEASES$RELEASE/"
+    const val CATALOGUE = RELEASES + "sons-packs/index.json"
+    private const val CATALOGUE_MAX = 1_000_000
 
     /** The list of packs the Packs workflow published (53: styles, machines, current sounds); null would mean none published yet. */
     val INDEX: VerifiedFile? = VerifiedFile(
@@ -53,20 +58,65 @@ object PackStore {
         if (PackManifest.safeName(packId)) File(dir(context), packId).deleteRecursively()
     }
 
-    /** The list of packs on the Release, or null when none is published yet. */
+    /** The list of packs: the catalogue, its last copy, or the pinned index; null when none is published yet. */
     fun fetchIndex(context: Context): PackIndex? {
+        // Next to the packs (left out of backups like them).
+        val saved = File(dir(context), "catalogue.json")
+        runCatching { fetchCatalogue() }.getOrNull()?.let { (text, index) ->
+            runCatching { saved.parentFile?.mkdirs(); saved.writeText(text) }
+            return index
+        }
+        runCatching { SoundPacks.parseIndex(saved.readText()) }.getOrNull()?.takeIf { it.packs.isNotEmpty() }?.let { return it }
         val spec = INDEX ?: return null
         val target = File(context.cacheDir, "packs-index.json")
         if (!VerifiedDownload.verify(spec, target)) VerifiedDownload.fetch(spec, target, {})
         return SoundPacks.parseIndex(target.readText())
     }
 
-    /** Downloads, checks and unpacks [entry]; a pack already there is replaced only when complete. */
-    fun install(context: Context, entry: PackEntry, onProgress: (Float) -> Unit, isCancelled: () -> Boolean) {
-        val zip = File(context.cacheDir, "pack-${entry.id}.zip")
-        val spec = VerifiedFile(BASE + entry.file, zip.name, entry.sha256, entry.sizeBytes)
+    /** The catalogue (HTTPS from our own release, size capped; each pack in it is checked by its SHA-256). */
+    private fun fetchCatalogue(): Pair<String, PackIndex>? {
+        val c = (java.net.URL(CATALOGUE).openConnection() as java.net.HttpURLConnection).apply {
+            connectTimeout = 10_000
+            readTimeout = 15_000
+            instanceFollowRedirects = true
+        }
         try {
-            VerifiedDownload.fetch(spec, zip, onProgress, isCancelled)
+            if (c.responseCode != 200) return null
+            val out = java.io.ByteArrayOutputStream()
+            c.inputStream.use { input ->
+                val buffer = ByteArray(16 * 1024)
+                while (true) {
+                    val n = input.read(buffer)
+                    if (n < 0) break
+                    out.write(buffer, 0, n)
+                    if (out.size() > CATALOGUE_MAX) return null
+                }
+            }
+            val bytes = out.toByteArray()
+            val text = bytes.toString(Charsets.UTF_8)
+            return SoundPacks.parseIndex(text).takeIf { it.packs.isNotEmpty() }?.let { text to it }
+        } finally {
+            c.disconnect()
+        }
+    }
+
+    /** Where [entry]'s zip is: its own release, or the pinned index's. */
+    fun url(entry: PackEntry) = RELEASES + entry.release.ifEmpty { RELEASE } + "/" + entry.file
+
+    /**
+     * Downloads, checks and unpacks [entry]; a pack already there is replaced only when complete.
+     * A cut download resumes where it stopped on the next try (the same file only: its SHA-256 is in the name).
+     */
+    fun install(context: Context, entry: PackEntry, onProgress: (Float) -> Unit, isCancelled: () -> Boolean) {
+        val zip = File(context.cacheDir, "pack-${entry.id}-${entry.sha256.take(12)}.zip")
+        val spec = VerifiedFile(url(entry), zip.name, entry.sha256, entry.sizeBytes)
+        // The zip plus its unpacked sounds: refused before downloading when the phone is full.
+        val needed = entry.sizeBytes * 3
+        if (context.filesDir.usableSpace < needed) {
+            throw IOException(tr("Stockage plein : il faut %d Mo libres.", needed / 1_000_000))
+        }
+        try {
+            VerifiedDownload.fetch(spec, zip, onProgress, isCancelled, resume = true)
             val root = dir(context).apply { mkdirs() }
             val part = File(root, "${entry.id}.part").apply { deleteRecursively(); mkdirs() }
             try {
@@ -77,6 +127,8 @@ object PackStore {
                 val kept = manifest.copy(sounds = manifest.sounds.filter { File(part, it.file).isFile })
                 if (kept.sounds.isEmpty()) throw IOException(tr("pack vide"))
                 part.listFiles()?.filter { f -> f.name != MANIFEST && kept.sounds.none { it.file == f.name } }?.forEach { it.delete() }
+                // The version the index announced is the one installed: no update offered again for it.
+                File(part, MANIFEST).writeText(json.encodeToString(PackManifest.serializer(), kept.copy(version = maxOf(kept.version, entry.version))))
                 // The pack already there stays until the new one is in place.
                 val final = File(root, entry.id)
                 val old = File(root, "${entry.id}.old").apply { deleteRecursively() }
@@ -117,4 +169,5 @@ object PackStore {
     }
 
     private const val MANIFEST = "pack.json"
+    private val json = kotlinx.serialization.json.Json { encodeDefaults = true }
 }

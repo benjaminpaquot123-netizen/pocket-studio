@@ -10,6 +10,7 @@ import com.pocketstudio.app.audiotracks.AudioTracksScreen
 import com.pocketstudio.app.audiotracks.AudioTracksUi
 import com.pocketstudio.model.viewOfTrack
 import com.pocketstudio.model.songBars
+import com.pocketstudio.model.partSteps
 import com.pocketstudio.model.sceneSteps
 import com.pocketstudio.model.sceneTitle
 import com.pocketstudio.model.audioSpans
@@ -247,6 +248,11 @@ fun AppRoot() {
     val libraryVm: com.pocketstudio.app.library.SoundLibraryViewModel = viewModel()
     val tabStates = androidx.compose.runtime.saveable.rememberSaveableStateHolder()
     var tab by rememberSaveable { mutableStateOf(AppTab.Rythme) }
+    // « Ce qui joue »: -2 closed, -1 the whole song, else a scene; [overviewCh]: one track's (-1: all).
+    var overviewScene by rememberSaveable { mutableStateOf(-2) }
+    var overviewCh by rememberSaveable { mutableStateOf(-1) }
+    // Where « Ce qui joue » sent the user in the mixer (a lane, the master, the buses).
+    var mixerFocus by remember { mutableStateOf<com.pocketstudio.app.mixer.Where?>(null) }
     var showProjects by rememberSaveable { mutableStateOf(false) }
     // « Partager mon morceau » (Mixeur, Mes projets): name, export in M4A, share sheet.
     val shareSong = com.pocketstudio.app.export.rememberShareSong(rhythmVm)
@@ -258,7 +264,9 @@ fun AppRoot() {
     }
     val openScope = rememberCoroutineScope()
     // Another project: save this one, remember the choice, then rebuild every screen on it.
-    val openProject: (String) -> Unit = { id ->
+    // [deleteAfter]: the project left goes to the trash once the next one is open (the open
+    // project itself deleted from « Mes projets », which then stays on screen).
+    val switchProject: (String, String?) -> Unit = { id, deleteAfter ->
         openScope.launch {
             rhythmVm.keepTake()  // a microphone take in progress lands on its track first
             rhythmVm.flushNow()
@@ -267,8 +275,9 @@ fun AppRoot() {
                 Toast.makeText(context, tr("Le projet n'a pas pu être sauvegardé (appareil plein ?) : libère de la place avant d'en ouvrir un autre."), Toast.LENGTH_LONG).show()
                 return@launch
             }
-            showProjects = false  // remembered across the rebuild: close it first
+            showProjects = deleteAfter != null  // remembered across the rebuild
             CurrentProject.set(context, id)
+            deleteAfter?.let { CurrentProject.deleteLater(context, it) }
             AppLog.add("Ouverture d'un autre projet")
             context.findActivity()?.let { activity ->
                 activity.viewModelStore.clear()
@@ -276,6 +285,7 @@ fun AppRoot() {
             }
         }
     }
+    val openProject: (String) -> Unit = { id -> switchProject(id, null) }
     // The sound library, for the selected drum pad or for a live pad (libraryLive >= 0).
     var showLibrary by rememberSaveable { mutableStateOf(false) }
     var libraryLive by rememberSaveable { mutableIntStateOf(-1) }
@@ -319,6 +329,9 @@ fun AppRoot() {
                         sizes = sizes,
                         songPlaying = libTransport.playing,
                         styleId = com.pocketstudio.app.library.styleOfProject(libProject.name),
+                        metered = androidx.compose.runtime.remember {
+                            runCatching { context.getSystemService(android.net.ConnectivityManager::class.java).isActiveNetworkMetered }.getOrDefault(false)
+                        },
                     ),
                     com.pocketstudio.app.library.LibraryActions(
                         close = close,
@@ -339,6 +352,8 @@ fun AppRoot() {
                         download = libraryVm::downloadPack,
                         cancelDownload = libraryVm::cancelDownload,
                         deletePack = libraryVm::deletePack,
+                        downloadAll = libraryVm::downloadAll,
+                        cancelAll = libraryVm::cancelAll,
                     ),
                 )
             }
@@ -371,6 +386,26 @@ fun AppRoot() {
                 confirmButton = { TextButton(onClick = { fxChannel = -1 }, modifier = Modifier.testTag("fx_close")) { Text(tr("Fermer")) } },
             )
         }
+    }
+    if (overviewScene >= -1) {
+        val p by rhythmVm.project.collectAsStateWithLifecycle()
+        val all = p.allScenes
+        val sceneChoices = (p.song.map { it.scene } + p.scene).distinct().sorted().filter { it in all.indices }.map { i ->
+            i to (Scene.NAMES.getOrElse(i) { "?" } + all[i].label.takeIf { it.isNotBlank() }?.let { " · " + Scene.shownLabel(it) }.orEmpty())
+        }
+        com.pocketstudio.app.mixer.WhatPlaysDialog(
+            p, mixerStrips(p), scene = overviewScene.takeIf { it >= 0 }, onlyCh = overviewCh.takeIf { it >= 0 }, scenes = sceneChoices,
+            setScene = { overviewScene = it ?: -1 },
+            showAll = { overviewCh = -1 },
+            go = { w ->
+                overviewScene = -2
+                when (w) {
+                    is com.pocketstudio.app.mixer.Where.Effects -> fxChannel = w.ch
+                    else -> { tab = AppTab.Mixeur; mixerFocus = w }
+                }
+            },
+            dismiss = { overviewScene = -2 },
+        )
     }
     // The assistant made a song: a short guide to its two scenes and what to do next.
     // Kept through the rebuild that opening the new project does (the activity is recreated).
@@ -489,7 +524,17 @@ fun AppRoot() {
                             }
                         },
                         importZip = { pickProjectZip.launch(arrayOf("application/zip", "application/x-zip-compressed", "application/octet-stream")) },
-                        delete = projectsVm::delete,
+                        // The open project too (an assistant's song included): another one opens first
+                        // (the latest, else a new blank one), then it goes to the trash.
+                        delete = { p ->
+                            if (p.id != rhythmVm.projectId) projectsVm.delete(p)
+                            else {
+                                rhythmVm.stop()
+                                val next = projectsUi.projects.firstOrNull { it.id != p.id }
+                                if (next != null) switchProject(next.id, p.id)
+                                else projectsVm.create(Project(name = "")) { id -> switchProject(id, p.id) }
+                            }
+                        },
                         undoDelete = projectsVm::undoDelete,
                         restore = projectsVm::restore,
                         deleteForever = projectsVm::deleteForever,
@@ -997,8 +1042,8 @@ fun AppRoot() {
                                     current = (SoundLibrary.ACID + favorites.acid).firstOrNull {
                                         it.sound.copy(tuning = project.acid.sound.tuning, level = project.acid.sound.level) == project.acid.sound
                                     }?.name,
-                                    // Tuning and volume stay as they are: a sound changes the character only.
-                                    pick = { rhythmVm.applyAcidSound(SoundLibrary.ACID[it].sound.copy(tuning = project.acid.sound.tuning, level = project.acid.sound.level)) },
+                                    // Tuning stays; the volume is the sound's calibrated one unless the user set their own.
+                                    pick = { rhythmVm.applyAcidSound(SoundLibrary.withAcidPreset(SoundLibrary.ACID[it].sound, project.acid.sound)) },
                                     pickFavorite = { rhythmVm.applyAcidSound(favorites.acid[it].sound) },
                                     deleteFavorite = rhythmVm::deleteAcidFavorite,
                                     random = rhythmVm::randomAcid,
@@ -1131,7 +1176,7 @@ fun AppRoot() {
                                 } else {
                                     SoundBrowserUi(
                                         SoundCategories.SYNTH, SoundLibrary.SYNTH, favorites.synth,
-                                        current = (SoundLibrary.SYNTH + favorites.synth).firstOrNull { it.sound.sanitized() == project.synth.withGainOf(it.sound) }?.name,
+                                        current = SoundLibrary.synthNameOf(project.synth, SoundLibrary.SYNTH + favorites.synth),
                                         pick = { rhythmVm.applySynthPreset(SoundLibrary.SYNTH[it].sound) },
                                         pickFavorite = { rhythmVm.applySynthPreset(favorites.synth[it].sound) },
                                         deleteFavorite = rhythmVm::deleteSynthFavorite,
@@ -1157,11 +1202,13 @@ fun AppRoot() {
                                 lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollMeters() }
                             }
                             val transport by rhythmVm.transport.collectAsStateWithLifecycle()
-                            val live by rhythmVm.live.collectAsStateWithLifecycle()
+                            // Read only when the curves draw their playhead: a step composes nothing.
+                            val live = rhythmVm.live.collectAsStateWithLifecycle()
                             val automationRecord by rhythmVm.automationRecord.collectAsStateWithLifecycle()
                             LaunchedEffect(Unit) {
                                 lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollLive() }
                             }
+                            val playing = transport.playing
                             MixerScreen(
                                 channels = project.mixer.channels,
                                 meters = { meters.value },
@@ -1205,12 +1252,16 @@ fun AppRoot() {
                                 analyserOpen = analyserOn,
                                 setAnalyser = { analyserOn = it },
                                 automation = AutomationUi(
-                                    project.automation, project.drums.steps, if (transport.playing) live.currentStep else -1, automationRecord,
+                                    project.automation, project.drums.steps, -1, automationRecord,
                                     scene = project.scene,
                                     songBars = project.songBars,
-                                    songBar = if (transport.playing && live.songStep >= 0) live.songStep / project.stepsPerBar else -1,
                                     stepsPerBar = project.stepsPerBar,
+                                    playStep = { if (playing) live.value.currentStep else -1 },
+                                    playSongStep = { if (playing) live.value.songStep else -1 },
                                 ),
+                                overview = { ch -> overviewCh = ch ?: -1; overviewScene = -1 },
+                                focus = mixerFocus,
+                                onFocused = { mixerFocus = null },
                                 automationActions = AutomationActions(
                                     add = rhythmVm::addAutomation,
                                     remove = rhythmVm::removeAutomation,
@@ -1219,6 +1270,8 @@ fun AppRoot() {
                                     toggleRecord = rhythmVm::toggleAutomationRecord,
                                     setMode = rhythmVm::setAutomationMode,
                                     setSongPoint = rhythmVm::setAutomationSongPoint,
+                                    edit = rhythmVm::editAutomationLane,
+                                    addFilter = rhythmVm::addFilterAutomation,
                                 ),
                                 export = export,
                                 hasSong = project.song.isNotEmpty(),
@@ -1234,6 +1287,11 @@ fun AppRoot() {
                             val followSong by rhythmVm.followSong.collectAsStateWithLifecycle()
                             LaunchedEffect(Unit) {
                                 lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollLiveStates() }
+                            }
+                            // The song's clock and progress: read only when drawn (and once a beat by the clock's words).
+                            val songLive = rhythmVm.live.collectAsStateWithLifecycle()
+                            LaunchedEffect(Unit) {
+                                lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollLive() }
                             }
                             val all = project.allScenes
                             SessionScreen(
@@ -1253,6 +1311,8 @@ fun AppRoot() {
                                     listenSong = project.song.isNotEmpty() && listenSong != false,
                                     songLoops = project.songLoops,
                                     followSong = followSong,
+                                    songStep = { if (transport.playing) songLive.value.songStep else -1 },
+                                    partSteps = project.song.map { project.partSteps(it) },
                                 ),
                                 SessionActions(
                                     select = rhythmVm::selectScene,
@@ -1278,6 +1338,7 @@ fun AppRoot() {
                                     setPartScene = rhythmVm::setPartScene,
                                     setBeatsPerBar = rhythmVm::setBeatsPerBar,
                                     openLive = { showLive = true },
+                                    whatPlays = { scene -> overviewCh = -1; overviewScene = scene ?: -1 },
                                 ),
                                 live = LivePadsUi(
                                     pads = project.live,

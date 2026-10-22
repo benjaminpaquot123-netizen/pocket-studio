@@ -88,7 +88,10 @@ object NewTracks {
             engine = if (sound.plaits != null) 1 else 0,
             plaits = sound.plaits ?: track.plaits,
         ).sanitized()
-        var next = added.withTrack(made)
+        // At the level the assistant gives that part (its sound already calibrated): the bass up
+        // front, a held pad behind; not louder than the song it joins.
+        val held = kind == TrackKind.Chords && (style == null || WizardMix.holds(style, sound))
+        var next = WizardMix.withPartLevel(added.withTrack(made), made.id, part(kind), held)
         if (written != null && project.harmony.scale == Scale.Off) next = next.copy(harmony = written.second)
         return next
     }

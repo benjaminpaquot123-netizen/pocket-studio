@@ -19,10 +19,10 @@ object WizardAcid {
     /** Lengths the assistant offers, in bars. */
     val BARS = listOf(1, 2)
 
-    /** The sound of quick choice [label], keeping [keep]'s tuning and level (null: unknown label). */
+    /** The sound of quick choice [label], at its calibrated level, keeping [keep]'s tuning (null: unknown label). */
     fun sound(label: String, keep: AcidSound = AcidSound()): AcidSound? =
         SOUNDS.firstOrNull { it.first == label }?.let { (_, name) -> SoundLibrary.ACID.firstOrNull { it.name == name }?.sound }
-            ?.copy(tuning = keep.tuning, level = keep.level)
+            ?.copy(tuning = keep.tuning)  // at its calibrated level
 
     /** [style]'s 303 line in [mood]'s key, with the style's 303 sound (null: the style has none). */
     fun recipe(style: StarterWizard.Style, mood: StarterWizard.Mood): AcidPattern? = style.melody.acid?.let { a ->

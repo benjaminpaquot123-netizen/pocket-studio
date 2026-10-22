@@ -82,6 +82,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.material.icons.filled.GraphicEq
 import com.pocketstudio.app.help.Glossary
 import com.pocketstudio.model.Scene
 import com.pocketstudio.model.SongPart
@@ -120,7 +123,15 @@ class SessionScreenUi(
     val songLoops: Boolean = false,
     /** While the song plays, the screens follow it (true) or stay on the scene picked (false). */
     val followSong: Boolean = true,
+    /** The song step playing (16ths from the song's start), -1 outside the song: read only when drawn. */
+    val songStep: () -> Int = { -1 },
+    /** Each part's length in steps (null: from [barsOf]). */
+    val partSteps: List<Int>? = null,
 ) {
+    /** Each part's length in steps, and where it starts. */
+    val partLengths: List<Int> get() = partSteps ?: song.map { barsOf(it) * stepsPerBar }
+    val partStarts: List<Int> get() = partLengths.runningFold(0) { a, b -> a + b }
+
     val stepsPerBar get() = beatsPerBar * 4
     fun barsOf(part: SongPart) = part.bars ?: ((scenes.getOrNull(part.scene)?.stepsFor(stepsPerBar) ?: stepsPerBar) / stepsPerBar * part.repeats)
 
@@ -178,6 +189,8 @@ class SessionActions(
     val setBeatsPerBar: (Int) -> Unit = {},
     /** The Live page (full screen): every track's sections on pads, effects and 303 under the fingers. */
     val openLive: () -> Unit = {},
+    /** « Ce qui joue »: everything acting on the sound of a scene (null: of the whole song). */
+    val whatPlays: (Int?) -> Unit = {},
 )
 
 /** The song first (the arrangement), then the scenes it is made of, the timeline, and the live tools. */
@@ -260,6 +273,9 @@ private fun SongCard(ui: SessionScreenUi, actions: SessionActions) {
         if (ui.song.isNotEmpty()) {
             ChoiceRow(tr("Écouter :"), tr("cette section"), tr("tout le morceau"), ui.listenSong, actions.setListenSong, "listen")
         }
+        // Where the song is (time, bar, a line over the parts), right above them.
+        val totalBars = ui.song.sumOf { ui.barsOf(it) }
+        if (totalBars > 0) SongClock(ui, totalBars)
         ui.song.forEachIndexed { i, part -> PartRow(i, part, ui, actions, insertAfter = { inserting = it }) }
         Text(if (ui.song.isEmpty()) tr("Ajouter :") else tr("Ajouter à la fin :"), style = MaterialTheme.typography.bodyMedium)
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -269,11 +285,6 @@ private fun SongCard(ui: SessionScreenUi, actions: SessionActions) {
                 }
             }
         }
-        val totalBars = ui.song.sumOf { ui.barsOf(it) }
-        if (totalBars > 0) {
-            val seconds = (totalBars * ui.beatsPerBar * 60 / ui.tempoBpm).toInt()
-            Text((if (totalBars == 1) tr("1 mesure") else tr("%d mesures", totalBars)) + " · ${seconds / 60}:%02d".format(seconds % 60), style = MonoStyle, color = Neon.TextSecondary)
-        }
         Button(
             onClick = actions.toggleSong,
             enabled = ui.song.isNotEmpty() || ui.playing,
@@ -282,6 +293,15 @@ private fun SongCard(ui: SessionScreenUi, actions: SessionActions) {
         ) {
             Icon(if (ui.playing) Icons.Filled.Stop else Icons.Filled.PlayArrow, contentDescription = null)
             Text("  " + if (ui.playing) tr("Arrêter") else tr("Jouer le morceau"))
+        }
+        // Everything acting on the sound (effects, sends, curves), each with a way to where it is set.
+        val playingScene = ui.song.getOrNull(ui.shownSongIndex)?.scene
+        OutlinedButton(
+            onClick = { actions.whatPlays(playingScene) },
+            modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("song_what_plays"),
+        ) {
+            Icon(Icons.Filled.GraphicEq, contentDescription = null, modifier = Modifier.size(18.dp))
+            Text("  " + if (playingScene != null) tr("Ce qui joue dans %s", ui.title(playingScene)) else tr("Ce qui joue dans le morceau"), maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
         FoldSection(tr("Réglages du morceau"), subtle = true, spacing = 8.dp) {
             ChoiceRow(tr("À la fin :"), tr("s'arrêter"), tr("recommencer"), ui.songLoops, actions.setSongLoops, "song_end")
@@ -318,6 +338,56 @@ private fun SongCard(ui: SessionScreenUi, actions: SessionActions) {
     }
 }
 
+/** "1:05" from seconds. */
+private fun clock(seconds: Int) = "%d:%02d".format(seconds / 60, seconds % 60)
+
+/**
+ * Where the song is: the time gone and the whole length, the bar and beat, and a line over the
+ * whole song (its parts marked, the playhead moving). The words change once a beat at most; the
+ * line is drawn from the step playing, read only when drawn.
+ */
+@Composable
+private fun SongClock(ui: SessionScreenUi, totalBars: Int) {
+    val spb = ui.stepsPerBar
+    val totalSteps = ui.partStarts.last().coerceAtLeast(1)
+    val beatSeconds = 60.0 / ui.tempoBpm
+    val total = (totalSteps / 4 * beatSeconds).toInt()
+    val beat by remember(ui.songStep) { derivedStateOf { ui.songStep().let { if (it < 0) -1 else it / 4 } } }
+    val playing = ui.playing && beat >= 0
+    Row(Modifier.fillMaxWidth().testTag("song_clock"), verticalAlignment = Alignment.CenterVertically) {
+        Text(
+            if (playing) clock((beat * beatSeconds).toInt()) + " / " + clock(total)
+            else (if (totalBars == 1) tr("1 mesure") else tr("%d mesures", totalBars)) + " · " + clock(total),
+            style = MonoStyle, fontSize = if (playing) 18.sp else MonoStyle.fontSize,
+            color = if (playing) Neon.TextPrimary else Neon.TextSecondary, modifier = Modifier.weight(1f),
+        )
+        if (playing) {
+            val beatsPerBar = (spb / 4).coerceAtLeast(1)
+            Text(tr("mes. %1\$d.%2\$d", beat / beatsPerBar + 1, beat % beatsPerBar + 1) + " / " + totalBars, style = MonoStyle, fontSize = 18.sp, color = Neon.Magenta)
+        }
+    }
+    val track = Neon.SurfaceHigh
+    val done = Neon.Magenta
+    val tick = Neon.Outline
+    val head = Neon.TextPrimary
+    val starts = ui.partStarts
+    androidx.compose.foundation.Canvas(Modifier.fillMaxWidth().height(14.dp).testTag("song_progress")) {
+        val h = 6.dp.toPx()
+        val y = (size.height - h) / 2
+        val r = androidx.compose.ui.geometry.CornerRadius(h / 2)
+        drawRoundRect(track, androidx.compose.ui.geometry.Offset(0f, y), androidx.compose.ui.geometry.Size(size.width, h), r)
+        val s = ui.songStep()
+        val f = if (s < 0) 0f else (s + 1).toFloat() / totalSteps
+        if (f > 0f) drawRoundRect(done, androidx.compose.ui.geometry.Offset(0f, y), androidx.compose.ui.geometry.Size(size.width * f.coerceIn(0f, 1f), h), r)
+        // Where each part starts.
+        for (st in starts.drop(1).dropLast(1)) {
+            val x = size.width * st / totalSteps
+            drawLine(tick, androidx.compose.ui.geometry.Offset(x, 0f), androidx.compose.ui.geometry.Offset(x, size.height), 2f)
+        }
+        if (s >= 0) drawCircle(head, radius = size.height / 2, center = androidx.compose.ui.geometry.Offset(size.width * f.coerceIn(0f, 1f), size.height / 2))
+    }
+}
+
 /** "2 mes." ("1 mes.": one bar, singular in other languages). */
 private fun barsLabel(bars: Int) = com.pocketstudio.app.ui.barsShort(bars)
 
@@ -337,10 +407,20 @@ private fun PartRow(i: Int, part: SongPart, ui: SessionScreenUi, actions: Sessio
     val active = i == ui.shownSongIndex
     val next = i == ui.upcoming
     val shape = RoundedCornerShape(10.dp)
+    val fill = Neon.Magenta.copy(alpha = 0.22f)
+    val start = ui.partStarts.getOrElse(i) { 0 }
+    val length = ui.partLengths.getOrElse(i) { 1 }.coerceAtLeast(1)
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxWidth().clip(shape)
             .background(if (active) Neon.Magenta.copy(alpha = 0.16f) else Color.Transparent)
+            // How far the part playing has got: filled from the left, read only when drawn.
+            .then(
+                if (active) Modifier.drawBehind {
+                    val s = ui.songStep()
+                    if (s >= start) drawRect(fill, size = androidx.compose.ui.geometry.Size(size.width * ((s - start + 1).toFloat() / length).coerceIn(0f, 1f), size.height))
+                } else Modifier,
+            )
             .border(1.dp, if (next) Neon.Amber else if (active) Neon.Magenta.copy(alpha = 0.6f) else Color.Transparent, shape)
             .testTag("part_$i"),
     ) {
@@ -381,6 +461,10 @@ private fun PartRow(i: Int, part: SongPart, ui: SessionScreenUi, actions: Sessio
             IconButton(onClick = { menu = true }, modifier = Modifier.testTag("part_menu_$i")) { Icon(Icons.Filled.MoreVert, contentDescription = tr("Plus d'actions")) }
             DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
                 val full = ui.song.size >= SongPart.MAX_PARTS
+                DropdownMenuItem(
+                    text = { Text(tr("Ce qui joue dans cette partie")) }, leadingIcon = { Icon(Icons.Filled.GraphicEq, null) },
+                    onClick = { menu = false; actions.whatPlays(part.scene) }, modifier = Modifier.testTag("part_what_plays_$i"),
+                )
                 DropdownMenuItem(
                     text = { Text(tr("Monter")) }, leadingIcon = { Icon(Icons.Filled.ArrowUpward, null) }, enabled = i > 0,
                     onClick = { menu = false; actions.movePart(i, i - 1) }, modifier = Modifier.testTag("part_up_$i"),

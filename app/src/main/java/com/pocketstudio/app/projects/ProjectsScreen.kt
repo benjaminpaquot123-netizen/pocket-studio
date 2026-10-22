@@ -274,8 +274,8 @@ private fun ProjectCard(p: ProjectInfo, open: Boolean, now: Long, actions: Proje
                     DropdownMenuItem(text = { Text(tr("Dupliquer")) }, onClick = { menu = false; actions.duplicate(p) })
                     DropdownMenuItem(text = { Text(tr("Envoyer / sauvegarder (.zip)")) }, onClick = { menu = false; actions.exportZip(p) })
                     DropdownMenuItem(
-                        text = { Text(if (open) tr("Supprimer (ouvre d'abord un autre projet)") else tr("Supprimer")) },
-                        enabled = !open && !busy,
+                        text = { Text(tr("Supprimer")) },
+                        enabled = !busy,
                         onClick = { menu = false; actions.delete(p) },
                         modifier = Modifier.testTag("project_delete_${p.id}"),
                     )

@@ -3405,6 +3405,27 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (NativeEngine.isAvailable) pushSongCurve(project.value, index, project.value.automation[index])
     }
 
+    /**
+     * One edit of lane [index] (a ramp, smoothing, a point of a beat curve): one undo step, strokes
+     * with the same [key] merged; the lane's points stay where they always were (same fields).
+     */
+    fun editAutomationLane(index: Int, key: String?, transform: (AutomationLane, Project) -> AutomationLane) {
+        if (index !in project.value.automation.indices) return
+        session.edit(key) { p -> p.copy(automation = p.automation.mapIndexed { i, l -> if (i == index) transform(l, p).sanitized() else l }) }
+        val lane = project.value.automation.getOrNull(index) ?: return
+        if (!NativeEngine.isAvailable) return
+        if (lane.mode == AutomationLane.SONG) pushSongCurve(project.value, index, lane) else pushAutomation()
+    }
+
+    /** « Filtre (balayage) »: a filter on the track's first free slot, its cutoff automated. */
+    fun addFilterAutomation(ch: Int) {
+        val c = project.value.mixer.channels.getOrNull(ch) ?: return
+        val slot = c.inserts.indexOfFirst { it.effect == com.pocketstudio.model.EffectType.NONE }
+        if (slot < 0 || project.value.automation.size >= AutomationLane.MAX_LANES) return
+        setInsertType(ch, slot, com.pocketstudio.model.EffectType.FILTER)
+        addAutomation(AutoTarget(AutoTarget.INSERT_PARAM, ch, slot, 0))
+    }
+
     fun addAutomation(target: AutoTarget) {
         if (!target.isValid || project.value.automation.size >= AutomationLane.MAX_LANES || project.value.automation.any { it.target == target }) return
         session.edit { p -> p.copy(automation = p.automation + AutomationLane(target)) }

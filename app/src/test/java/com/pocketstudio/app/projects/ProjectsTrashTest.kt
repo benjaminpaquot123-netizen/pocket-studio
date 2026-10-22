@@ -65,5 +65,19 @@ class ProjectsTrashTest {
         compose.onNodeWithTag("project_delete_forever_ok").performClick()
         assertEquals(1, emptied)
     }
-}
 
+    @Test
+    fun theOpenProjectCanBeDeletedToo() {
+        // An assistant's song is the open project right after it is made: it must be deletable.
+        val open = com.pocketstudio.model.ProjectInfo("p-open", "Rétro techno", 1_800_000_000_000L, 132.0, 16, 1, false)
+        val deleted = mutableListOf<com.pocketstudio.model.ProjectInfo>()
+        compose.setContent {
+            PocketStudioTheme {
+                ProjectsScreen(ProjectsUi(loading = false, projects = listOf(open)), open.id, emptyList(), ProjectsActions(delete = { deleted += it }))
+            }
+        }
+        compose.onNodeWithTag("project_menu_${open.id}").performClick()
+        compose.onNodeWithTag("project_delete_${open.id}").performClick()
+        assertEquals(listOf(open), deleted)
+    }
+}

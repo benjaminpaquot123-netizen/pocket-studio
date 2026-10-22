@@ -1,0 +1,1448 @@
+{
+ "_comment": "Free sound libraries turned into packs by library_pack.py (licences checked on each page; see THIRD_PARTY.md). Bump a pack's version when its rules change: the app offers the update.",
+ "sources": [
+  {
+   "id": "oga-sfx1",
+   "type": "zip",
+   "title": "100 CC0 SFX",
+   "author": "rubberduck",
+   "licence": "CC0-1.0",
+   "page": "https://opengameart.org/content/100-cc0-sfx",
+   "url": "https://opengameart.org/sites/default/files/100-CC0-SFX_0.zip"
+  },
+  {
+   "id": "oga-sfx2",
+   "type": "zip",
+   "title": "100 CC0 SFX #2",
+   "author": "rubberduck",
+   "licence": "CC0-1.0",
+   "page": "https://opengameart.org/content/100-cc0-sfx-2",
+   "url": "https://opengameart.org/sites/default/files/sfx_100_v2.zip"
+  },
+  {
+   "id": "oga-woodmetal",
+   "type": "zip",
+   "title": "100 CC0 metal and wood SFX",
+   "author": "rubberduck",
+   "licence": "CC0-1.0",
+   "page": "https://opengameart.org/content/100-cc0-metal-and-wood-sfx",
+   "url": "https://opengameart.org/sites/default/files/100-CC0-wood-metal-SFX.zip"
+  },
+  {
+   "id": "oga-breaking",
+   "type": "zip",
+   "title": "75 CC0 breaking / falling / hit sfx",
+   "author": "rubberduck",
+   "licence": "CC0-1.0",
+   "page": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+   "url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip"
+  },
+  {
+   "id": "oga-water",
+   "type": "zip",
+   "title": "40 CC0 water / splash / slime SFX",
+   "author": "rubberduck",
+   "licence": "CC0-1.0",
+   "page": "https://opengameart.org/content/40-cc0-water-splash-slime-sfx",
+   "url": "https://opengameart.org/sites/default/files/water-splash-slime-sfx.zip"
+  },
+  {
+   "id": "oga-bang",
+   "type": "zip",
+   "title": "25 CC0 bang / firework SFX",
+   "author": "rubberduck",
+   "licence": "CC0-1.0",
+   "page": "https://opengameart.org/content/25-cc0-bang-firework-sfx",
+   "url": "https://opengameart.org/sites/default/files/25-CC0-bang-sfx.zip"
+  },
+  {
+   "id": "oga-retro",
+   "type": "zip",
+   "title": "50 CC0 retro / synth SFX",
+   "author": "rubberduck",
+   "licence": "CC0-1.0",
+   "page": "https://opengameart.org/content/50-cc0-retro-synth-sfx",
+   "url": "https://opengameart.org/sites/default/files/50-CC0-retro-synth-SFX.zip"
+  },
+  {
+   "id": "oga-rpg",
+   "type": "zip",
+   "title": "80 CC0 RPG SFX",
+   "author": "rubberduck",
+   "licence": "CC0-1.0",
+   "page": "https://opengameart.org/content/80-cc0-rpg-sfx",
+   "url": "https://opengameart.org/sites/default/files/80-CC0-RPG-SFX_0.zip"
+  },
+  {
+   "id": "oga-owlish",
+   "type": "zip",
+   "title": "Sound Effects Pack",
+   "author": "OwlishMedia",
+   "licence": "CC0-1.0",
+   "page": "https://opengameart.org/content/sound-effects-pack",
+   "url": "https://opengameart.org/sites/default/files/Owlish%20Media%20Sound%20Effects.zip"
+  },
+  {
+   "id": "oga-clicks",
+   "type": "zip",
+   "title": "87 Clickety Clips",
+   "author": "OwlishMedia",
+   "licence": "CC0-1.0",
+   "page": "https://opengameart.org/content/87-clickety-clips",
+   "url": "https://opengameart.org/sites/default/files/Click_Clips.zip"
+  },
+  {
+   "id": "oga-snaps",
+   "type": "files",
+   "title": "Snap of the fingers sounds",
+   "author": "Vinrax",
+   "licence": "CC0-1.0",
+   "page": "https://opengameart.org/content/snap-of-the-fingers-sounds",
+   "urls": [
+    "https://opengameart.org/sites/default/files/snap_of_the_fingers1.wav",
+    "https://opengameart.org/sites/default/files/snap_of_the_fingers2.wav",
+    "https://opengameart.org/sites/default/files/snap_of_the_fingers3.wav",
+    "https://opengameart.org/sites/default/files/snap_of_the_fingers4.wav",
+    "https://opengameart.org/sites/default/files/snap_of_the_fingers5.wav",
+    "https://opengameart.org/sites/default/files/snap_of_the_fingers6.wav",
+    "https://opengameart.org/sites/default/files/snap_of_the_fingers7.wav",
+    "https://opengameart.org/sites/default/files/snap_of_the_fingers8.wav"
+   ]
+  },
+  {
+   "id": "oga-pingpong",
+   "type": "files",
+   "title": "Ping pong sounds",
+   "author": "Aj_",
+   "licence": "CC0-1.0",
+   "page": "https://opengameart.org/content/ping-pong-sounds",
+   "urls": [
+    "https://opengameart.org/sites/default/files/pingpongbat.ogg",
+    "https://opengameart.org/sites/default/files/pingpongboard_0.ogg"
+   ]
+  },
+  {
+   "id": "oga-scorcher",
+   "type": "files",
+   "title": "Scorchers Foley Sounds",
+   "author": "scorcher24",
+   "licence": "CC0-1.0",
+   "page": "https://opengameart.org/content/scorchers-foley-sounds",
+   "urls": [
+    "https://opengameart.org/sites/default/files/paper_rustling.wav",
+    "https://opengameart.org/sites/default/files/shaking_cup_long.wav",
+    "https://opengameart.org/sites/default/files/shaking_cup_short.wav",
+    "https://opengameart.org/sites/default/files/stiring_cup_long.wav",
+    "https://opengameart.org/sites/default/files/stiring_cup_short.wav"
+   ]
+  },
+  {
+   "id": "oga-keyboard",
+   "type": "zip",
+   "title": "Keyboard Soundpack #1",
+   "author": "unicaegames",
+   "licence": "CC0-1.0",
+   "page": "https://opengameart.org/content/keyboard-soundpack-1-typing-and-single-keystrokes",
+   "url": "https://opengameart.org/sites/default/files/unicae_games_keyboard_soundpack_1_0.zip"
+  },
+  {
+   "id": "oga-thwack",
+   "type": "zip",
+   "title": "Thwack Sounds",
+   "author": "AntumDeluge",
+   "licence": "CC0-1.0",
+   "page": "https://opengameart.org/content/thwack-sounds",
+   "url": "https://opengameart.org/sites/default/files/thwack-1.0.zip"
+  },
+  {
+   "id": "kenney-rpg",
+   "type": "kenney",
+   "title": "RPG Audio",
+   "author": "Kenney (kenney.nl)",
+   "licence": "CC0-1.0",
+   "page": "https://kenney.nl/assets/rpg-audio"
+  },
+  {
+   "id": "kenney-impact",
+   "type": "kenney",
+   "title": "Impact Sounds",
+   "author": "Kenney (kenney.nl)",
+   "licence": "CC0-1.0",
+   "page": "https://kenney.nl/assets/impact-sounds"
+  },
+  {
+   "id": "kenney-interface",
+   "type": "kenney",
+   "title": "Interface Sounds",
+   "author": "Kenney (kenney.nl)",
+   "licence": "CC0-1.0",
+   "page": "https://kenney.nl/assets/interface-sounds"
+  },
+  {
+   "id": "kenney-casino",
+   "type": "kenney",
+   "title": "Casino Audio",
+   "author": "Kenney (kenney.nl)",
+   "licence": "CC0-1.0",
+   "page": "https://kenney.nl/assets/casino-audio"
+  },
+  {
+   "id": "kenney-ui",
+   "type": "kenney",
+   "title": "UI Audio",
+   "author": "Kenney (kenney.nl)",
+   "licence": "CC0-1.0",
+   "page": "https://kenney.nl/assets/ui-audio"
+  },
+  {
+   "id": "kenney-digital",
+   "type": "kenney",
+   "title": "Digital Audio",
+   "author": "Kenney (kenney.nl)",
+   "licence": "CC0-1.0",
+   "page": "https://kenney.nl/assets/digital-audio"
+  },
+  {
+   "id": "kenney-scifi",
+   "type": "kenney",
+   "title": "Sci-fi Sounds",
+   "author": "Kenney (kenney.nl)",
+   "licence": "CC0-1.0",
+   "page": "https://kenney.nl/assets/sci-fi-sounds"
+  },
+  {
+   "id": "kenney-voice",
+   "type": "kenney",
+   "title": "Voiceover Pack",
+   "author": "Kenney (kenney.nl)",
+   "licence": "CC0-1.0",
+   "page": "https://kenney.nl/assets/voiceover-pack"
+  },
+  {
+   "id": "kenney-jingles",
+   "type": "kenney",
+   "title": "Music Jingles",
+   "author": "Kenney (kenney.nl)",
+   "licence": "CC0-1.0",
+   "page": "https://kenney.nl/assets/music-jingles"
+  },
+  {
+   "id": "vcsl",
+   "type": "git",
+   "title": "Versilian Community Sample Library (VCSL)",
+   "author": "Versilian Studios (Sam Gossner)",
+   "licence": "CC0-1.0",
+   "page": "https://github.com/sgossner/VCSL",
+   "repo": "https://github.com/sgossner/VCSL.git",
+   "commit": "c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e",
+   "paths": [
+    "/Idiophones/",
+    "/Membranophones/Struck Membranophones/"
+   ]
+  }
+ ],
+ "packs": [
+  {
+   "id": "bruitages_maison",
+   "name": "Bruitages : maison et objets",
+   "family": "Bruitages",
+   "version": 1,
+   "max_seconds": 3.0,
+   "sources": [
+    "oga-snaps",
+    "oga-pingpong",
+    "oga-sfx1",
+    "oga-sfx2",
+    "oga-woodmetal",
+    "oga-owlish",
+    "oga-scorcher",
+    "oga-keyboard",
+    "oga-clicks",
+    "oga-rpg",
+    "kenney-rpg",
+    "kenney-casino",
+    "kenney-ui"
+   ],
+   "exclude": [
+    "/generated typing/",
+    "loop",
+    "oga-owlish/(ui|scifi|ambience|footsteps|human|impacts)/",
+    "\\.pkf$"
+   ],
+   "rules": [
+    {
+     "match": "oga-snaps/|click-finger-snap",
+     "kind": "clap",
+     "slug": "doigts",
+     "label": "Claquement de doigts",
+     "tags": [
+      "doigts",
+      "claquement",
+      "snap",
+      "corps"
+     ],
+     "max": 12
+    },
+    {
+     "match": "oga-pingpong/",
+     "kind": "perc",
+     "slug": "pingpong",
+     "label": "Balle de ping-pong",
+     "tags": [
+      "ping-pong",
+      "balle",
+      "rebond",
+      "tennis de table"
+     ]
+    },
+    {
+     "match": "kenney-casino/.*card",
+     "kind": "foley",
+     "slug": "cartes",
+     "label": "Cartes à jouer",
+     "tags": [
+      "cartes",
+      "papier",
+      "jeu"
+     ],
+     "max": 14
+    },
+    {
+     "match": "kenney-casino/.*chip",
+     "kind": "foley",
+     "slug": "jetons",
+     "label": "Jetons",
+     "tags": [
+      "jetons",
+      "plastique",
+      "jeu"
+     ],
+     "max": 12
+    },
+    {
+     "match": "kenney-casino/.*(dice|die-)",
+     "kind": "foley",
+     "slug": "des",
+     "label": "Dés",
+     "tags": [
+      "dés",
+      "jeu",
+      "lancer"
+     ],
+     "max": 10
+    },
+    {
+     "match": "coins",
+     "kind": "foley",
+     "slug": "pieces",
+     "label": "Pièces de monnaie",
+     "tags": [
+      "pièces",
+      "monnaie",
+      "argent",
+      "métal"
+     ],
+     "max": 8
+    },
+    {
+     "match": "keys_|key_open|lock|metalclick|metallatch",
+     "kind": "foley",
+     "slug": "cles",
+     "label": "Clés et serrures",
+     "tags": [
+      "clés",
+      "serrure",
+      "métal"
+     ],
+     "max": 14
+    },
+    {
+     "match": "door|box_open",
+     "kind": "foley",
+     "slug": "portes",
+     "label": "Portes et tiroirs",
+     "tags": [
+      "porte",
+      "tiroir",
+      "maison"
+     ],
+     "max": 14
+    },
+    {
+     "match": "glass|dishes|pot_|metalpot|_cup",
+     "kind": "foley",
+     "slug": "vaisselle",
+     "label": "Verres et vaisselle",
+     "tags": [
+      "verre",
+      "vaisselle",
+      "cuisine",
+      "tasse"
+     ],
+     "max": 16
+    },
+    {
+     "match": "paper|book|pageturn|crumple|tissue|pencil",
+     "kind": "foley",
+     "slug": "papier",
+     "label": "Papier et livres",
+     "tags": [
+      "papier",
+      "livre",
+      "page",
+      "crayon"
+     ],
+     "max": 16
+    },
+    {
+     "match": "cloth|belt|leather|zipper|blanket",
+     "kind": "foley",
+     "slug": "tissus",
+     "label": "Tissus et cuir",
+     "tags": [
+      "tissu",
+      "vêtement",
+      "cuir",
+      "fermeture éclair"
+     ],
+     "max": 12
+    },
+    {
+     "match": "oga-keyboard/.*(keypress|human_vel)",
+     "kind": "foley",
+     "slug": "clavier",
+     "label": "Touche de clavier",
+     "tags": [
+      "clavier",
+      "frappe",
+      "ordinateur",
+      "touche"
+     ],
+     "max": 16
+    },
+    {
+     "match": "oga-clicks/",
+     "kind": "perc",
+     "slug": "clic",
+     "label": "Clic",
+     "tags": [
+      "clic",
+      "bouton",
+      "stylo"
+     ],
+     "max": 20,
+     "max_seconds": 1.0
+    },
+    {
+     "match": "switch|plugpull|mouse",
+     "kind": "foley",
+     "slug": "interrupteurs",
+     "label": "Interrupteurs et souris",
+     "tags": [
+      "interrupteur",
+      "clic",
+      "souris",
+      "bouton"
+     ],
+     "max": 14
+    },
+    {
+     "match": "microwave|toilet|spring|tools|knife|chop|clock|pill-bottle|spray|kettle|record_player|item_|sfx100v2_items|sfx100v2_misc|other_",
+     "kind": "foley",
+     "slug": "objets",
+     "label": "Objets de la maison",
+     "tags": [
+      "maison",
+      "objet",
+      "cuisine"
+     ],
+     "max": 30
+    }
+   ]
+  },
+  {
+   "id": "bruitages_chocs",
+   "name": "Bruitages : chocs, bois et métal",
+   "family": "Bruitages",
+   "version": 1,
+   "max_seconds": 3.0,
+   "sources": [
+    "oga-sfx1",
+    "oga-sfx2",
+    "oga-woodmetal",
+    "oga-breaking",
+    "oga-thwack",
+    "oga-owlish",
+    "oga-rpg",
+    "kenney-impact"
+   ],
+   "exclude": [
+    "loop",
+    "footstep",
+    "oga-owlish/(?!impacts/)",
+    "thwack/.*\\.oga$",
+    "door|keys|lock|glass_0|dishes|item_|_cup"
+   ],
+   "rules": [
+    {
+     "match": "thwack",
+     "kind": "perc",
+     "slug": "claque",
+     "label": "Claque",
+     "tags": [
+      "claque",
+      "fouet",
+      "coup"
+     ],
+     "max": 10
+    },
+    {
+     "match": "punch|slap|shouldergrab|oga-owlish/impacts/hit",
+     "kind": "perc",
+     "slug": "coups",
+     "label": "Coup de poing",
+     "tags": [
+      "coup",
+      "poing",
+      "frappe",
+      "corps"
+     ],
+     "max": 12
+    },
+    {
+     "match": "glass|impactglass",
+     "kind": "foley",
+     "slug": "verre",
+     "label": "Verre cogné ou brisé",
+     "tags": [
+      "verre",
+      "casse",
+      "choc"
+     ],
+     "max": 16
+    },
+    {
+     "match": "gong|bell_|impactbell",
+     "kind": "perc",
+     "slug": "cloches",
+     "label": "Cloches et gongs",
+     "tags": [
+      "cloche",
+      "gong",
+      "métal"
+     ],
+     "max": 10,
+     "max_seconds": 4.0
+    },
+    {
+     "match": "wood|plank|toasterstep",
+     "kind": "foley",
+     "slug": "bois",
+     "label": "Bois",
+     "tags": [
+      "bois",
+      "coup",
+      "craquement",
+      "toc"
+     ],
+     "max": 24
+    },
+    {
+     "match": "metal|tin|plate|hammer|chain|blade|tools",
+     "kind": "foley",
+     "slug": "metal",
+     "label": "Métal",
+     "tags": [
+      "métal",
+      "coup",
+      "outil",
+      "tôle"
+     ],
+     "max": 24
+    },
+    {
+     "match": "rock|stone|mining",
+     "kind": "foley",
+     "slug": "pierre",
+     "label": "Pierre",
+     "tags": [
+      "pierre",
+      "caillou",
+      "roche"
+     ],
+     "max": 12
+    },
+    {
+     "match": "impactsoft|impactgeneric|clamour|fruit|scrape|tap\\.wav|flip|gulp",
+     "kind": "foley",
+     "slug": "sourds",
+     "label": "Choc sourd",
+     "tags": [
+      "choc",
+      "impact",
+      "sourd"
+     ],
+     "max": 18
+    },
+    {
+     "match": "slam|falling|breaking|hit|misc|weird|spring",
+     "kind": "foley",
+     "slug": "divers",
+     "label": "Choc",
+     "tags": [
+      "choc",
+      "chute",
+      "impact"
+     ],
+     "max": 24
+    }
+   ]
+  },
+  {
+   "id": "bruitages_corps",
+   "name": "Bruitages : corps, voix et pas",
+   "family": "Bruitages",
+   "version": 1,
+   "max_seconds": 3.0,
+   "sources": [
+    "oga-owlish",
+    "oga-sfx2",
+    "kenney-rpg",
+    "kenney-impact",
+    "kenney-voice"
+   ],
+   "exclude": [
+    "oga-owlish/(?!human|footsteps|impacts/(slap|djembe))",
+    "oga-sfx2/(?!.*footstep)",
+    "kenney-rpg/(?!.*footstep)",
+    "kenney-impact/(?!.*footstep)",
+    "shoes_breath|running-shoes|grass_footsteps|womens_shoes",
+    "scream"
+   ],
+   "rules": [
+    {
+     "match": "solo-clap",
+     "kind": "clap",
+     "slug": "mains",
+     "label": "Claquement de mains",
+     "tags": [
+      "mains",
+      "clap",
+      "applaudissement",
+      "corps"
+     ],
+     "max": 4
+    },
+    {
+     "match": "click-finger-snap",
+     "kind": "clap",
+     "slug": "doigts",
+     "label": "Claquement de doigts",
+     "tags": [
+      "doigts",
+      "claquement",
+      "snap",
+      "corps"
+     ],
+     "max": 4
+    },
+    {
+     "match": "slap",
+     "kind": "perc",
+     "slug": "claque",
+     "label": "Claque sur la peau",
+     "tags": [
+      "corps",
+      "claque",
+      "peau"
+     ],
+     "max": 4
+    },
+    {
+     "match": "djembe",
+     "kind": "perc",
+     "slug": "djembe",
+     "label": "Djembé",
+     "tags": [
+      "djembé",
+      "tambour",
+      "main"
+     ],
+     "max": 4
+    },
+    {
+     "match": "footstep|step|stumble",
+     "kind": "foley",
+     "slug": "pas",
+     "label": "Pas",
+     "tags": [
+      "pas",
+      "chaussure",
+      "marche",
+      "sol"
+     ],
+     "max": 40
+    },
+    {
+     "match": "breath|gasp|sniff|shh|yawn|cough|laugh|drink|whistle",
+     "kind": "vocal",
+     "slug": "bouche",
+     "label": "Souffle et bouche",
+     "tags": [
+      "souffle",
+      "bouche",
+      "voix",
+      "respiration"
+     ],
+     "max": 20
+    },
+    {
+     "match": "kenney-voice/",
+     "kind": "vocal",
+     "slug": "annonce",
+     "label": "Voix d'annonce",
+     "tags": [
+      "voix",
+      "annonce",
+      "anglais",
+      "parole"
+     ],
+     "max": 60,
+     "max_seconds": 2.5
+    }
+   ]
+  },
+  {
+   "id": "bruitages_nature",
+   "name": "Bruitages : eau, feu et ambiances",
+   "family": "Bruitages",
+   "version": 1,
+   "max_seconds": 3.0,
+   "sources": [
+    "oga-water",
+    "oga-bang",
+    "oga-sfx1",
+    "oga-sfx2",
+    "oga-owlish"
+   ],
+   "exclude": [
+    "oga-owlish/(?!ambience|technology/record)",
+    "oga-sfx1/(?!.*(splash|plop|explosion|shot|noise|toilet))",
+    "oga-sfx2/(?!.*(loop|air|thunder|stones))"
+   ],
+   "rules": [
+    {
+     "match": "splash|plop|toilet",
+     "kind": "foley",
+     "slug": "eclaboussures",
+     "label": "Plouf",
+     "tags": [
+      "eau",
+      "plouf",
+      "éclaboussure"
+     ],
+     "max": 20
+    },
+    {
+     "match": "bubble",
+     "kind": "foley",
+     "slug": "bulles",
+     "label": "Bulles",
+     "tags": [
+      "eau",
+      "bulle"
+     ],
+     "max": 8
+    },
+    {
+     "match": "slime",
+     "kind": "foley",
+     "slug": "gluant",
+     "label": "Gluant",
+     "tags": [
+      "slime",
+      "gluant",
+      "visqueux"
+     ],
+     "max": 10
+    },
+    {
+     "match": "loop_water|loop_rain|loop_bubbles",
+     "kind": "loop",
+     "slug": "eau",
+     "label": "Eau qui coule",
+     "tags": [
+      "eau",
+      "pluie",
+      "rivière",
+      "ambiance"
+     ],
+     "max": 8,
+     "max_seconds": 8.0,
+     "ambience": true
+    },
+    {
+     "match": "loop|crickets|earthquake|clock|record_player",
+     "kind": "loop",
+     "slug": "ambiances",
+     "label": "Ambiance",
+     "tags": [
+      "ambiance",
+      "nature",
+      "ville",
+      "machine"
+     ],
+     "max": 14,
+     "max_seconds": 8.0,
+     "ambience": true
+    },
+    {
+     "match": "thunder",
+     "kind": "fx",
+     "slug": "tonnerre",
+     "label": "Tonnerre",
+     "tags": [
+      "orage",
+      "tonnerre"
+     ],
+     "max": 3,
+     "max_seconds": 6.0
+    },
+    {
+     "match": "bang|cannon|fw|shot|explosion",
+     "kind": "fx",
+     "slug": "explosions",
+     "label": "Pétard et explosion",
+     "tags": [
+      "explosion",
+      "pétard",
+      "feu d'artifice",
+      "boum"
+     ],
+     "max": 24,
+     "max_seconds": 4.0
+    },
+    {
+     "match": "air|noise|stones",
+     "kind": "fx",
+     "slug": "souffles",
+     "label": "Souffle",
+     "tags": [
+      "air",
+      "vent",
+      "souffle"
+     ],
+     "max": 10
+    }
+   ]
+  },
+  {
+   "id": "sons_jeux",
+   "name": "Clics, bips et jeux vidéo",
+   "family": "Bruitages",
+   "version": 1,
+   "max_seconds": 3.0,
+   "sources": [
+    "kenney-interface",
+    "kenney-ui",
+    "kenney-digital",
+    "kenney-scifi",
+    "oga-retro",
+    "oga-owlish",
+    "kenney-jingles"
+   ],
+   "exclude": [
+    "oga-owlish/(?!ui/|scifi/|technology/)",
+    "alien effects",
+    "kenney-ui/.*switch"
+   ],
+   "rules": [
+    {
+     "match": "kenney-interface/",
+     "kind": "perc",
+     "slug": "interface",
+     "label": "Bip d'interface",
+     "tags": [
+      "interface",
+      "bip",
+      "clic",
+      "bouton"
+     ],
+     "max": 40,
+     "max_seconds": 1.5
+    },
+    {
+     "match": "kenney-ui/|oga-owlish/ui/",
+     "kind": "fx",
+     "slug": "ui",
+     "label": "Son d'interface",
+     "tags": [
+      "interface",
+      "bouton",
+      "menu"
+     ],
+     "max": 24,
+     "max_seconds": 1.5
+    },
+    {
+     "match": "kenney-digital/|oga-retro/",
+     "kind": "fx",
+     "slug": "retro",
+     "label": "Rétro 8 bits",
+     "tags": [
+      "8 bits",
+      "rétro",
+      "jeu vidéo",
+      "chiptune"
+     ],
+     "max": 40
+    },
+    {
+     "match": "kenney-scifi/",
+     "kind": "fx",
+     "slug": "scifi",
+     "label": "Science-fiction",
+     "tags": [
+      "laser",
+      "vaisseau",
+      "science-fiction",
+      "espace"
+     ],
+     "max": 30
+    },
+    {
+     "match": "oga-owlish/(scifi|technology)/",
+     "kind": "fx",
+     "slug": "machines",
+     "label": "Robot et machine",
+     "tags": [
+      "robot",
+      "téléphone",
+      "ordinateur",
+      "machine"
+     ],
+     "max": 16
+    },
+    {
+     "match": "kenney-jingles/",
+     "kind": "loop",
+     "slug": "jingles",
+     "label": "Jingle",
+     "tags": [
+      "jingle",
+      "mélodie",
+      "jeu vidéo"
+     ],
+     "max": 40,
+     "max_seconds": 6.0,
+     "ambience": true
+    }
+   ]
+  },
+  {
+   "id": "percussions_acoustiques",
+   "name": "Percussions acoustiques",
+   "family": "Acoustique",
+   "version": 1,
+   "max_seconds": 2.5,
+   "max_per_rule": 10,
+   "sources": [
+    "vcsl"
+   ],
+   "exclude": [
+    "legacy.*legacy"
+   ],
+   "rules": [
+    {
+     "match": "vcsl/membranophones/struck membranophones/bass drum",
+     "kind": "kick",
+     "slug": "grosse_caisse",
+     "label": "Grosse caisse",
+     "tags": [
+      "grosse caisse",
+      "acoustique",
+      "orchestre"
+     ],
+     "max": 16
+    },
+    {
+     "match": "vcsl/membranophones/struck membranophones/(snare drum|legacy snares)",
+     "kind": "snare",
+     "slug": "caisse_claire",
+     "label": "Caisse claire",
+     "tags": [
+      "caisse claire",
+      "acoustique"
+     ],
+     "max": 20
+    },
+    {
+     "match": "vcsl/membranophones/struck membranophones/(tom [12]|legacy toms)",
+     "kind": "tom",
+     "slug": "tom",
+     "label": "Tom",
+     "tags": [
+      "tom",
+      "acoustique"
+     ],
+     "max": 14
+    },
+    {
+     "match": "vcsl/membranophones/struck membranophones/timpani 1/",
+     "kind": "tom",
+     "slug": "timbale",
+     "label": "Timbale",
+     "tags": [
+      "timbale",
+      "orchestre"
+     ],
+     "max": 6,
+     "max_seconds": 3.0
+    },
+    {
+     "match": "vcsl/idiophones/struck idiophones/hi-hat",
+     "kind": "hat",
+     "slug": "charley",
+     "label": "Charley",
+     "tags": [
+      "charley",
+      "hi-hat",
+      "acoustique"
+     ],
+     "max": 12
+    },
+    {
+     "match": "vcsl/idiophones/struck idiophones/claps/",
+     "kind": "clap",
+     "slug": "mains",
+     "label": "Clap à la main",
+     "tags": [
+      "mains",
+      "clap",
+      "applaudissement"
+     ],
+     "max": 10
+    },
+    {
+     "match": "vcsl/idiophones/struck idiophones/((suspended|clash) cymbal|finger cymbals)",
+     "kind": "ride",
+     "slug": "cymbale",
+     "label": "Cymbale",
+     "tags": [
+      "cymbale",
+      "crash",
+      "ride"
+     ],
+     "max": 16,
+     "max_seconds": 4.0
+    },
+    {
+     "match": "vcsl/membranophones/struck membranophones/conga/",
+     "kind": "perc",
+     "slug": "conga",
+     "label": "Conga",
+     "tags": [
+      "conga",
+      "latin",
+      "main"
+     ],
+     "max": 10
+    },
+    {
+     "match": "vcsl/membranophones/struck membranophones/bongos/",
+     "kind": "perc",
+     "slug": "bongo",
+     "label": "Bongo",
+     "tags": [
+      "bongo",
+      "latin",
+      "main"
+     ],
+     "max": 10
+    },
+    {
+     "match": "vcsl/idiophones/struck idiophones/cajon/",
+     "kind": "perc",
+     "slug": "cajon",
+     "label": "Cajón",
+     "tags": [
+      "cajón",
+      "flamenco",
+      "main"
+     ],
+     "max": 10
+    },
+    {
+     "match": "vcsl/membranophones/struck membranophones/darbuka/",
+     "kind": "perc",
+     "slug": "darbouka",
+     "label": "Darbouka",
+     "tags": [
+      "darbouka",
+      "oriental",
+      "main"
+     ],
+     "max": 10
+    },
+    {
+     "match": "vcsl/membranophones/struck membranophones/frame drum/",
+     "kind": "perc",
+     "slug": "bendir",
+     "label": "Tambour sur cadre",
+     "tags": [
+      "bendir",
+      "tambour",
+      "main"
+     ],
+     "max": 8
+    },
+    {
+     "match": "vcsl/idiophones/struck idiophones/slit drum/",
+     "kind": "perc",
+     "slug": "slit",
+     "label": "Tambour à fente",
+     "tags": [
+      "bois",
+      "tambour"
+     ],
+     "max": 6
+    },
+    {
+     "match": "vcsl/idiophones/struck idiophones/shaker",
+     "kind": "perc",
+     "slug": "shaker",
+     "label": "Shaker",
+     "tags": [
+      "shaker",
+      "maracas"
+     ],
+     "max": 10
+    },
+    {
+     "match": "vcsl/idiophones/struck idiophones/tambourine",
+     "kind": "perc",
+     "slug": "tambourin",
+     "label": "Tambourin",
+     "tags": [
+      "tambourin",
+      "cymbalettes"
+     ],
+     "max": 10
+    },
+    {
+     "match": "vcsl/idiophones/struck idiophones/cabasa/",
+     "kind": "perc",
+     "slug": "cabasa",
+     "label": "Cabasa",
+     "tags": [
+      "cabasa",
+      "latin"
+     ],
+     "max": 6
+    },
+    {
+     "match": "vcsl/idiophones/struck idiophones/cowbells/",
+     "kind": "perc",
+     "slug": "cloche",
+     "label": "Cloche de vache",
+     "tags": [
+      "cowbell",
+      "cloche"
+     ],
+     "max": 8
+    },
+    {
+     "match": "vcsl/idiophones/struck idiophones/claves/",
+     "kind": "perc",
+     "slug": "claves",
+     "label": "Claves",
+     "tags": [
+      "claves",
+      "bois",
+      "latin"
+     ],
+     "max": 8
+    },
+    {
+     "match": "vcsl/idiophones/struck idiophones/woodblock/",
+     "kind": "perc",
+     "slug": "woodblock",
+     "label": "Wood-block",
+     "tags": [
+      "bois",
+      "toc",
+      "wood-block"
+     ],
+     "max": 8
+    },
+    {
+     "match": "vcsl/idiophones/struck idiophones/agogo",
+     "kind": "perc",
+     "slug": "agogo",
+     "label": "Agogo",
+     "tags": [
+      "agogo",
+      "cloche",
+      "brésil"
+     ],
+     "max": 8
+    },
+    {
+     "match": "vcsl/idiophones/struck idiophones/guiro/",
+     "kind": "perc",
+     "slug": "guiro",
+     "label": "Guiro",
+     "tags": [
+      "guiro",
+      "latin",
+      "râpe"
+     ],
+     "max": 6
+    },
+    {
+     "match": "vcsl/idiophones/struck idiophones/triangles/",
+     "kind": "perc",
+     "slug": "triangle",
+     "label": "Triangle",
+     "tags": [
+      "triangle",
+      "métal"
+     ],
+     "max": 8,
+     "max_seconds": 4.0
+    },
+    {
+     "match": "vcsl/idiophones/struck idiophones/vibraslap/",
+     "kind": "perc",
+     "slug": "vibraslap",
+     "label": "Vibraslap",
+     "tags": [
+      "vibraslap",
+      "latin"
+     ],
+     "max": 4
+    },
+    {
+     "match": "vcsl/idiophones/struck idiophones/ratchet/",
+     "kind": "perc",
+     "slug": "crecelle",
+     "label": "Crécelle",
+     "tags": [
+      "crécelle",
+      "bois"
+     ],
+     "max": 4
+    },
+    {
+     "match": "vcsl/idiophones/struck idiophones/slapstick/",
+     "kind": "perc",
+     "slug": "slapstick",
+     "label": "Fouet d'orchestre",
+     "tags": [
+      "fouet",
+      "claque",
+      "bois"
+     ],
+     "max": 5
+    },
+    {
+     "match": "vcsl/idiophones/struck idiophones/sleigh bells/",
+     "kind": "perc",
+     "slug": "grelots",
+     "label": "Grelots",
+     "tags": [
+      "grelots",
+      "noël",
+      "clochettes"
+     ],
+     "max": 6
+    },
+    {
+     "match": "vcsl/idiophones/struck idiophones/(mark trees|bell tree)",
+     "kind": "perc",
+     "slug": "carillon",
+     "label": "Carillon",
+     "tags": [
+      "carillon",
+      "clochettes"
+     ],
+     "max": 6,
+     "max_seconds": 4.0
+    },
+    {
+     "match": "vcsl/idiophones/struck idiophones/anvil/",
+     "kind": "perc",
+     "slug": "enclume",
+     "label": "Enclume",
+     "tags": [
+      "enclume",
+      "métal"
+     ],
+     "max": 6
+    },
+    {
+     "match": "vcsl/idiophones/struck idiophones/brake drum/",
+     "kind": "perc",
+     "slug": "frein",
+     "label": "Tambour de frein",
+     "tags": [
+      "métal",
+      "frein"
+     ],
+     "max": 6
+    },
+    {
+     "match": "vcsl/idiophones/struck idiophones/flexatone/",
+     "kind": "perc",
+     "slug": "flexatone",
+     "label": "Flexatone",
+     "tags": [
+      "flexatone",
+      "métal"
+     ],
+     "max": 4
+    },
+    {
+     "match": "vcsl/idiophones/struck idiophones/gong",
+     "kind": "fx",
+     "slug": "gong",
+     "label": "Gong",
+     "tags": [
+      "gong",
+      "métal",
+      "orchestre"
+     ],
+     "max": 6,
+     "max_seconds": 5.0
+    }
+   ]
+  },
+  {
+   "id": "percussions_melodiques",
+   "name": "Percussions mélodiques",
+   "family": "Acoustique",
+   "version": 1,
+   "max_seconds": 4.0,
+   "max_per_rule": 12,
+   "sources": [
+    "vcsl"
+   ],
+   "rules": [
+    {
+     "match": "vcsl/idiophones/struck idiophones/glockenspiel/",
+     "kind": "mallet",
+     "slug": "glockenspiel",
+     "label": "Glockenspiel",
+     "tags": [
+      "glockenspiel",
+      "clochettes"
+     ]
+    },
+    {
+     "match": "vcsl/idiophones/struck idiophones/tubular glockenspiel/",
+     "kind": "mallet",
+     "slug": "glock_tubulaire",
+     "label": "Glockenspiel tubulaire",
+     "tags": [
+      "glockenspiel",
+      "tubes"
+     ]
+    },
+    {
+     "match": "vcsl/idiophones/struck idiophones/marimba/",
+     "kind": "mallet",
+     "slug": "marimba",
+     "label": "Marimba",
+     "tags": [
+      "marimba",
+      "bois"
+     ]
+    },
+    {
+     "match": "vcsl/idiophones/struck idiophones/vibraphone/",
+     "kind": "mallet",
+     "slug": "vibraphone",
+     "label": "Vibraphone",
+     "tags": [
+      "vibraphone",
+      "jazz"
+     ]
+    },
+    {
+     "match": "vcsl/idiophones/struck idiophones/xylophone/",
+     "kind": "mallet",
+     "slug": "xylophone",
+     "label": "Xylophone",
+     "tags": [
+      "xylophone",
+      "bois"
+     ]
+    },
+    {
+     "match": "vcsl/idiophones/struck idiophones/balafon/",
+     "kind": "mallet",
+     "slug": "balafon",
+     "label": "Balafon",
+     "tags": [
+      "balafon",
+      "afrique",
+      "bois"
+     ]
+    },
+    {
+     "match": "vcsl/idiophones/struck idiophones/tubular bells",
+     "kind": "mallet",
+     "slug": "cloches_tubulaires",
+     "label": "Cloches tubulaires",
+     "tags": [
+      "cloches",
+      "orchestre"
+     ],
+     "max_seconds": 5.0
+    },
+    {
+     "match": "vcsl/idiophones/struck idiophones/(hand chimes|hand bells)",
+     "kind": "mallet",
+     "slug": "clochettes",
+     "label": "Clochettes à main",
+     "tags": [
+      "clochettes",
+      "cloches"
+     ]
+    },
+    {
+     "match": "vcsl/idiophones/plucked idiophones/kalimba",
+     "kind": "mallet",
+     "slug": "kalimba",
+     "label": "Kalimba",
+     "tags": [
+      "kalimba",
+      "afrique",
+      "piano à pouces"
+     ]
+    },
+    {
+     "match": "vcsl/idiophones/plucked idiophones/(mbira|nyunga)",
+     "kind": "mallet",
+     "slug": "mbira",
+     "label": "Mbira",
+     "tags": [
+      "mbira",
+      "afrique",
+      "piano à pouces"
+     ]
+    },
+    {
+     "match": "vcsl/idiophones/friction idiophones/wine glasses",
+     "kind": "mallet",
+     "slug": "verres",
+     "label": "Verres chantants",
+     "tags": [
+      "verre",
+      "cristal"
+     ]
+    }
+   ]
+  }
+ ]
+}

@@ -1,46 +1,46 @@
 {
-  "id": "phase29-corps",
-  "milestone": "Phase 29 : du corps, un style en un toucher, Jump up DnB",
+  "id": "phase30-retours",
+  "milestone": "Phase 30 : tes retours (ce qui joue, automation, sons)",
   "items": [
     {
-      "id": "quick_style",
-      "title": "Un style, un morceau",
-      "hint": "Mes projets › Nouveau projet › Partir d'un style › Trap : un toucher, le morceau complet (plusieurs scènes, ~3 min)."
+      "id": "what_plays",
+      "title": "Ce qui joue",
+      "hint": "Morceau › « Ce qui joue » sur une partie : toutes les courbes et effets expliqués ; « Modifier » t'emmène au bon endroit."
     },
     {
-      "id": "jump_up",
-      "title": "Jump up DnB",
-      "hint": "Partir d'un style › Jump up DnB : basse qui grogne, sous-basse, réponse au Drop. Ça ressemble à Chase & Status ?"
+      "id": "auto_top",
+      "title": "Automation en haut",
+      "hint": "Mixeur : la carte « Automation et effets » est tout en haut, avec le nombre de réglages qui bougent."
     },
     {
-      "id": "body",
-      "title": "Du corps",
-      "hint": "Crée Disco puis Minimal : la basse s'entend enfin ; écoute le roulement toutes les 4 mesures et le 2e Drop plus plein."
+      "id": "auto_edit",
+      "title": "Courbes faciles",
+      "hint": "Automation › outil Ligne : deux touchers pour une rampe ; essaie « Lisser » et le zoom."
     },
     {
-      "id": "level",
-      "title": "Niveau",
-      "hint": "Mixeur : le vumètre du master a une zone rouge ; un vieux projet qui sature propose « Baisser de 6 dB »."
+      "id": "playhead",
+      "title": "Tête de lecture",
+      "hint": "Lecture du morceau : barre verte qui avance sur les courbes ; Morceau affiche le temps écoulé / total."
     },
     {
-      "id": "fx_click",
-      "title": "Sans clic",
-      "hint": "Pendant la lecture, change un effet sur une piste, puis le son d'un pad qui joue : pas de clic, fondu court."
+      "id": "packs_all",
+      "title": "Tout télécharger",
+      "hint": "Bibliothèque › « Tout télécharger » : taille annoncée, progression, « Arrêter » ; puis cherche « ping-pong » ou « doigts »."
     },
     {
-      "id": "remix_tempo",
-      "title": "Tempo du Remix",
-      "hint": "Remix qui suit le tempo : glisse le tempo pendant la lecture, la chanson garde sa place dans la mesure."
+      "id": "families",
+      "title": "Styles en familles",
+      "hint": "Nouveau projet › Partir d'un style : familles Techno, House, Bass music ouvertes, Hip-hop et Autres fermées."
     },
     {
-      "id": "export_bg",
-      "title": "Export en arrière-plan",
-      "hint": "Partage un morceau puis quitte l'appli : une notification montre l'export, qui va au bout."
+      "id": "delete_open",
+      "title": "Supprimer le projet ouvert",
+      "hint": "Mes projets : supprime le projet ouvert ; un autre s'ouvre, « Annuler » le rend."
     },
     {
-      "id": "song_rec",
-      "title": "Jouer dans le morceau",
-      "hint": "▶ Écouter le morceau, joue des pads : les coups vont dans la scène entendue."
+      "id": "acid_level",
+      "title": "Acide au bon volume",
+      "hint": "Ajoute une piste acide : elle ne couvre plus la nappe."
     }
   ]
 }

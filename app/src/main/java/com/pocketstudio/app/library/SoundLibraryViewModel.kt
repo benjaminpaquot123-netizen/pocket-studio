@@ -77,7 +77,22 @@ data class PacksUi(
     /** Pack id → download progress 0..1. */
     val downloading: Map<String, Float> = emptyMap(),
     val message: String? = null,
-)
+    /** Ids of the index the user has already been offered (« Tout compléter » brings the others). */
+    val seen: Set<String> = emptySet(),
+    /** « Tout télécharger » / « Tout compléter » running, if any. */
+    val queue: QueueUi? = null,
+) {
+    private val ready get() = (index as? IndexState.Ready)?.index
+    /** Every pack not on the phone or older there. */
+    val toDownload: List<com.pocketstudio.model.PackEntry> get() = ready?.let { com.pocketstudio.model.PackCatalog.downloadAll(it, installed) }.orEmpty()
+    /** Updates and new packs: the badge's count. */
+    val toComplete: List<com.pocketstudio.model.PackEntry> get() = ready?.let { com.pocketstudio.model.PackCatalog.complete(it, installed, seen) }.orEmpty()
+    /** Packs whose newer version is published. */
+    val outdated: Set<String> get() = ready?.let { com.pocketstudio.model.PackCatalog.outdated(it, installed) }.orEmpty().map { it.id }.toSet()
+}
+
+/** The download-all queue: [done] of [count] packs, [fraction] of all the bytes, the pack [current]ly coming. */
+data class QueueUi(val done: Int, val count: Int, val current: String?, val fraction: Float)
 
 /** One line of the beat in the assistant: used or not, the category shown, the chosen sound ([chosen]: by the user). */
 data class WizardRow(val enabled: Boolean, val category: String, val sound: SoundOption?, val chosen: Boolean = false)
@@ -232,7 +247,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                 if (idle) PackStore.cleanLeftovers(app)
                 PackStore.installed(app)
             }
-            _packs.update { it.copy(installed = installed) }
+            _packs.update { it.copy(installed = installed, seen = seenPacks() ?: it.seen) }
             // The assistant opened on a style before the packs were known: its lines move to them.
             refreshWizardDefaults()
             if (_packs.value.index is IndexState.Ready) return@launch
@@ -243,14 +258,81 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                     { IndexState.Failed(tr("La liste des packs n'a pas pu être chargée (réseau ?).")) },
                 )
             }
+            // The first time: what is installed counts as seen; with nothing installed, the whole
+            // list does (« Tout télécharger » is there for it): only later packs are « new ».
+            if (index is IndexState.Ready && seenPacks() == null) {
+                val ids = if (installed.isEmpty()) index.index.packs.map { it.id } else installed.map { it.id }
+                markSeen(ids)
+            }
             _packs.update { it.copy(index = index) }
         }
     }
 
+    private fun prefs() = getApplication<Application>().getSharedPreferences("packs", android.content.Context.MODE_PRIVATE)
+
+    private fun seenPacks(): Set<String>? = runCatching { prefs().getStringSet("seen", null)?.toSet() }.getOrNull()
+
+    private fun markSeen(ids: Collection<String>) {
+        val all = (seenPacks().orEmpty() + ids).toSet()
+        runCatching { prefs().edit().putStringSet("seen", all).apply() }
+        _packs.update { it.copy(seen = all) }
+    }
+
+    private val queueStop = AtomicBoolean(false)
+
+    /**
+     * « Tout télécharger » ([complete] false: every pack missing or older) or « Tout compléter »
+     * (updates and new packs only), one pack after the other, each tried again on a network error.
+     * Killed half-way, it starts again from what is missing (a cut file resumes where it stopped).
+     */
+    fun downloadAll(complete: Boolean) {
+        val ui = _packs.value
+        if (ui.index !is IndexState.Ready || ui.queue != null) return
+        val entries = (if (complete) ui.toComplete else ui.toDownload).filter { it.id !in ui.downloading }
+        if (entries.isEmpty()) return
+        queueStop.set(false)
+        _packs.update { it.copy(queue = QueueUi(0, entries.size, entries.first().name, 0f), message = null) }
+        viewModelScope.launch {
+            val app = getApplication<Application>()
+            val queue = com.pocketstudio.model.PackQueue({ e, progress, cancelled -> PackStore.install(app, e, progress, cancelled) })
+            val result = withContext(Dispatchers.IO + NonCancellable) {
+                queue.run(entries, queueStop::get) { p ->
+                    _packs.update { it.copy(queue = QueueUi(p.done, p.count, p.current?.name, p.fraction)) }
+                }
+            }
+            val installed = withContext(Dispatchers.IO) { PackStore.installed(app) }
+            // Only what got in: a pack that failed stays offered by « Tout compléter ».
+            markSeen(installed.map { it.id })
+            val names = entries.associate { it.id to it.name }
+            _packs.update {
+                it.copy(
+                    installed = installed, queue = null,
+                    message = when {
+                        result.failed.isNotEmpty() -> {
+                            val failed = result.failed.keys.joinToString(", ") { id -> names[id] ?: id }
+                            tr("%1\$d packs installés ; %2\$d n'ont pas pu venir (%3\$s) : touche « Tout compléter » pour réessayer.", result.installed.size, result.failed.size, failed)
+                                .also { m -> AppLog.add(m) }
+                        }
+                        result.cancelled -> tr("Téléchargement arrêté : %d packs installés, le reste viendra avec « Tout compléter ».", result.installed.size)
+                        else -> tr("%d packs installés : toute la bibliothèque est à jour.", result.installed.size)
+                    },
+                )
+            }
+            if (result.installed.isNotEmpty()) {
+                AppLog.add("Packs installés : ${result.installed.joinToString()}")
+                refreshWizardDefaults()
+            }
+        }
+    }
+
+    fun cancelAll() = queueStop.set(true)
+
     fun downloadPack(id: String) {
         val entry = (_packs.value.index as? IndexState.Ready)?.index?.packs?.firstOrNull { it.id == id } ?: return
         if (id in _packs.value.downloading) return
+        if (_packs.value.queue != null) return
         val stop = AtomicBoolean(false).also { cancelled[id] = it }
+        markSeen(listOf(id))
         _packs.update { it.copy(downloading = it.downloading + (id to 0f), message = null) }
         viewModelScope.launch {
             val app = getApplication<Application>()

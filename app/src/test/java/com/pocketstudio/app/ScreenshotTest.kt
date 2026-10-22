@@ -18,6 +18,7 @@ import androidx.compose.ui.test.click
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.onNodeWithTag
 import com.github.takahirom.roborazzi.captureRoboImage
 import com.pocketstudio.model.withFx
@@ -816,6 +817,63 @@ open class ScreenshotTest {
         )
     }
 
+    /** The packs of the « Tout télécharger » screenshots: a style pack with a richer version, new free-library packs. */
+    private fun allPacksUi(query: Boolean = false): com.pocketstudio.app.library.PacksUi {
+        val e = { id: String, name: String, size: Long, sounds: Int, v: Int ->
+            com.pocketstudio.model.PackEntry(id, name, "$id.zip", "a".repeat(64), size, sounds, v, "sons-packs-5")
+        }
+        val index = com.pocketstudio.model.PackIndex(listOf(
+            e("retro_techno", "Rétro techno", 2_800_000, 136, 2),
+            e("bruitages_maison", "Bruitages : maison et objets", 8_600_000, 203, 1),
+            e("bruitages_corps", "Bruitages : corps, voix et pas", 5_200_000, 123, 1),
+            e("percussions_acoustiques", "Percussions acoustiques", 28_500_000, 267, 1),
+            e("detroit", "Techno de Detroit", 2_600_000, 148, 2),
+        ))
+        val foley = com.pocketstudio.model.PackManifest("bruitages_maison", "Bruitages : maison et objets", "Bruitages", 120.0, listOf(
+            com.pocketstudio.model.PackSound("clap_doigts_01.flac", "clap", "Claquement de doigts 1", listOf("doigts", "snap")),
+            com.pocketstudio.model.PackSound("clap_doigts_02.flac", "clap", "Claquement de doigts 2", listOf("doigts", "snap")),
+            com.pocketstudio.model.PackSound("perc_pingpong_01.flac", "perc", "Balle de ping-pong 1", listOf("ping-pong", "balle")),
+        ))
+        val retro = com.pocketstudio.model.PackManifest("retro_techno", "Rétro techno", "Techno", 132.0,
+            (1..5).map { com.pocketstudio.model.PackSound("kick_0$it.flac", "kick", "Kick $it") })
+        val installed = if (query) listOf(retro, foley) else listOf(retro)
+        return com.pocketstudio.app.library.PacksUi(
+            com.pocketstudio.app.library.IndexState.Ready(index), installed, seen = setOf("retro_techno", "detroit", "bruitages_corps"),
+        )
+    }
+
+    /** New packs and a richer version published: the badge and « Tout compléter » at the top of the library. */
+    @Test
+    fun libraryNews() = shoot("library_news") {
+        com.pocketstudio.app.library.LibraryScreen(
+            com.pocketstudio.app.library.LibraryUi(allPacksUi(), target = "le pad 1 (Kick)"),
+            com.pocketstudio.app.library.LibraryActions(),
+        )
+    }
+
+    /** The library's search (« doigts ») and the pack list with « Tout télécharger » and an update. */
+    @Config(qualifiers = "w400dp-h1500dp-xxhdpi")
+    @Test
+    open fun librarySearch() = shoot("library_search", prepare = {
+        compose.onNode(androidx.compose.ui.test.hasTestTag("library_search")).performTextInput("doigts")
+    }) {
+        com.pocketstudio.app.library.LibraryScreen(
+            com.pocketstudio.app.library.LibraryUi(allPacksUi(query = true), target = "le pad 1 (Kick)"),
+            com.pocketstudio.app.library.LibraryActions(),
+        )
+    }
+
+    /** « Tout télécharger » running: which pack, how far, Stop. */
+    @Test
+    fun libraryQueue() = shoot("library_queue") {
+        com.pocketstudio.app.library.LibraryScreen(
+            com.pocketstudio.app.library.LibraryUi(
+                allPacksUi().copy(queue = com.pocketstudio.app.library.QueueUi(2, 5, "Percussions acoustiques", 0.46f)), target = "le pad 1 (Kick)",
+            ),
+            com.pocketstudio.app.library.LibraryActions(),
+        )
+    }
+
     @Test
     fun quickFx() = shoot("quick_fx") {
         androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
@@ -1127,6 +1185,7 @@ open class ScreenshotTest {
     }
 
     @Test
+    @Config(qualifiers = "w400dp-h1700dp-xxhdpi")
     fun automation() = shoot("automation") {
         val lane = com.pocketstudio.model.AutomationLane(com.pocketstudio.model.AutoTarget(com.pocketstudio.model.AutoTarget.VOLUME, 2))
             .let { l -> (0 until 16).fold(l) { acc, s -> if (s % 2 == 0) acc.withPoint(s, 0.2f + 0.05f * s) else acc } }
@@ -1136,7 +1195,7 @@ open class ScreenshotTest {
             mode = com.pocketstudio.model.AutomationLane.SONG).withSongPoint(0, 0.1f).withSongPoint(8, 0.9f).withSongPoint(16, 0.5f).withSongPoint(23, 0.95f)
         androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
             com.pocketstudio.app.mixer.AutomationCard(
-                com.pocketstudio.app.mixer.AutomationUi(listOf(lane, send, filter), 16, 5, recording = true, songBars = 24, songBar = 10),
+                com.pocketstudio.app.mixer.AutomationUi(listOf(lane, send, filter), 16, recording = true, songBars = 24, playStep = { 5 }, playSongStep = { 10 * 16 + 6 }, focusLane = 2),
                 List(16) { com.pocketstudio.model.Channel() }, List(4) { com.pocketstudio.model.Insert() },
                 com.pocketstudio.app.mixer.AutomationActions(),
             )
@@ -1345,8 +1404,60 @@ open class ScreenshotTest {
                     com.pocketstudio.model.SongPart(2, 2), com.pocketstudio.model.SongPart(1), com.pocketstudio.model.SongPart(2, 4),
                 ),
                 songIndex = 0, playing = true, tempoBpm = 124.0, upcoming = 1,
+                // A bar and a half into the song: the clock, the bar and the line say where it is.
+                songStep = { 16 + 9 },
             ),
             com.pocketstudio.app.session.SessionActions(),
+        )
+    }
+
+    @Test
+    @Config(qualifiers = "w400dp-h2600dp-xxhdpi")
+    open fun whatPlays() = shoot("what_plays") {
+        // « Ce qui joue » in the Break of the assistant's Jump up DnB: each track, its effects, sends and curves.
+        val p = WhatPlaysTest.wizard("jump_up")
+        val strips = com.pocketstudio.app.ui.mixerStrips(p)
+        val brk = p.allScenesList().indexOfFirst { it.label == com.pocketstudio.model.StarterWizard.SongForm.BREAK_LABEL }.takeIf { it >= 0 } ?: 3
+        val scenes = p.song.map { it.scene }.distinct().sorted().map { it to com.pocketstudio.model.Scene.NAMES[it] + " · " + com.pocketstudio.model.Scene.shownLabel(p.allScenesList()[it].label) }
+        androidx.compose.foundation.layout.Column(Modifier.verticalScroll(androidx.compose.foundation.rememberScrollState()).padding(12.dp)) {
+            com.pocketstudio.ui.NeonCard {
+                androidx.compose.material3.Text(com.pocketstudio.model.i18n.tr("Ce qui joue"), style = androidx.compose.material3.MaterialTheme.typography.titleLarge)
+                com.pocketstudio.app.mixer.WhatPlaysContent(com.pocketstudio.app.mixer.whatPlaysGroups(p, brk, strips), brk, null, scenes, {}, {}, {})
+            }
+        }
+    }
+
+    @Test
+    @Config(qualifiers = "w400dp-h1800dp-xxhdpi")
+    open fun automationPicker() = shoot("automation_picker") {
+        // « Que veux-tu faire bouger ? »: by track, the filter first (or one to add), then volume and reverb.
+        val p = withTracks().let { p ->
+            val ch = p.mixer.channels.toMutableList()
+            val lead = com.pocketstudio.model.InstrumentTrack.mixerChannel(p.instrumentTracks.last().id)
+            ch[lead] = ch[lead].copy(inserts = listOf(com.pocketstudio.model.Insert.of(com.pocketstudio.model.EffectType.FILTER)) + ch[lead].inserts.drop(1))
+            p.copy(mixer = p.mixer.copy(channels = ch))
+        }
+        androidx.compose.foundation.layout.Column(Modifier.verticalScroll(androidx.compose.foundation.rememberScrollState()).padding(12.dp)) {
+            com.pocketstudio.ui.NeonCard {
+                androidx.compose.material3.Text(com.pocketstudio.model.i18n.tr("Que veux-tu faire bouger ?"), style = androidx.compose.material3.MaterialTheme.typography.titleLarge)
+                com.pocketstudio.app.mixer.TargetPickerContent(emptySet(), p.mixer.channels, p.mixer.master, com.pocketstudio.app.ui.mixerStrips(p), {}, {})
+            }
+        }
+    }
+
+    @Test
+    @Config(qualifiers = "w400dp-h1500dp-xxhdpi")
+    open fun mixerMoves() = shoot("mixer_moves") {
+        // The assistant's Rétro techno in the mixer: « Automation et effets » on top, a badge on each track that moves.
+        val p = WhatPlaysTest.wizard("retro_techno")
+        com.pocketstudio.app.mixer.MixerScreen(
+            channels = p.mixer.channels,
+            meters = { FloatArray(com.pocketstudio.engine.NativeEngine.METERS) { 0.4f }.also { it[com.pocketstudio.engine.NativeEngine.METER_LIMITER] = 1f } },
+            actions = com.pocketstudio.app.mixer.MixerActions(),
+            strips = com.pocketstudio.app.ui.mixerStrips(p),
+            master = p.mixer.master,
+            automation = com.pocketstudio.app.mixer.AutomationUi(p.automation, 16, songBars = p.songBarsCount(), stepsPerBar = 16, playSongStep = { 16 * 20 + 8 }),
+            hasSong = true,
         )
     }
 

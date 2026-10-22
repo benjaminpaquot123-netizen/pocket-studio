@@ -101,15 +101,41 @@ object SoundLibrary {
         NamedSound("Vent", "Effets", PlaitsPatch(model = 17, harmonics = 0.3f, timbre = 0.4f, morph = 0.6f, decay = 0.9f, release = 0.8f)),
     ).map { it.copy(sound = it.sound.copy(gain = SynthPatch.gainValue(PLAITS_GAIN_DB[it.name] ?: 0f))) }
 
+    /**
+     * The 303 sounds, each [AcidSound.level] calibrated like the synth's ([SYNTH_GAIN_DB]): a
+     * one-bar riff (accents, slides) at 130 BPM alone measured about -16 LUFS, as the basses and
+     * leads (phase 30; before, 0.7 everywhere spread them from -8.7 to -16.8 LUFS, the 303 4 to 9 dB
+     * over a pad).
+     */
     val ACID: List<NamedSound<AcidSound>> = listOf(
         NamedSound("Acide de base", "Classiques", AcidSound()),
-        NamedSound("Squelchy", "Classiques", AcidSound(cutoff = 0.25f, resonance = 0.85f, envMod = 0.75f, decay = 0.25f, accent = 0.8f)),
-        NamedSound("Da Funk", "Classiques", AcidSound(cutoff = 0.4f, resonance = 0.55f, envMod = 0.45f, decay = 0.45f, accent = 0.5f, waveform = 1f, drive = 0.45f)),
-        NamedSound("Hurleur", "Sales", AcidSound(cutoff = 0.45f, resonance = 0.9f, envMod = 0.8f, decay = 0.35f, accent = 0.9f, drive = 0.8f)),
-        NamedSound("Carré saturé", "Sales", AcidSound(cutoff = 0.35f, resonance = 0.7f, envMod = 0.6f, decay = 0.3f, waveform = 1f, drive = 0.9f, level = 0.6f)),
-        NamedSound("Basse ronde", "Doux", AcidSound(cutoff = 0.2f, resonance = 0.3f, envMod = 0.25f, decay = 0.5f, accent = 0.3f, drive = 0.1f)),
-        NamedSound("Bulle", "Doux", AcidSound(cutoff = 0.3f, resonance = 0.6f, envMod = 0.35f, decay = 0.15f, accent = 0.4f, drive = 0.15f)),
+        NamedSound("Squelchy", "Classiques", AcidSound(cutoff = 0.25f, resonance = 0.85f, envMod = 0.75f, decay = 0.25f, accent = 0.8f, level = 0.46f)),
+        NamedSound("Da Funk", "Classiques", AcidSound(cutoff = 0.4f, resonance = 0.55f, envMod = 0.45f, decay = 0.45f, accent = 0.5f, waveform = 1f, drive = 0.45f, level = 0.43f)),
+        NamedSound("Hurleur", "Sales", AcidSound(cutoff = 0.45f, resonance = 0.9f, envMod = 0.8f, decay = 0.35f, accent = 0.9f, drive = 0.8f, level = 0.3f)),
+        NamedSound("Carré saturé", "Sales", AcidSound(cutoff = 0.35f, resonance = 0.7f, envMod = 0.6f, decay = 0.3f, waveform = 1f, drive = 0.9f, level = 0.32f)),
+        NamedSound("Basse ronde", "Doux", AcidSound(cutoff = 0.2f, resonance = 0.3f, envMod = 0.25f, decay = 0.5f, accent = 0.3f, drive = 0.1f, level = 0.77f)),
+        NamedSound("Bulle", "Doux", AcidSound(cutoff = 0.3f, resonance = 0.6f, envMod = 0.35f, decay = 0.15f, accent = 0.4f, drive = 0.15f, level = 0.7f)),
     )
+
+    /**
+     * The name of the sound of [among] that [patch] plays, whatever its loudness calibration and
+     * glide (the assistant raises or lowers a part's [SynthPatch.GAIN] and makes its bass slide):
+     * the same sound, shown as chosen in « Sons prêts à jouer ».
+     */
+    fun synthNameOf(patch: SynthPatch, among: List<NamedSound<SynthPatch>> = SYNTH): String? {
+        fun SynthPatch.identity() = sanitized().with(SynthPatch.GAIN, 0.5f).with(SynthPatch.GLIDE, 0f)
+        val wanted = patch.identity()
+        return among.firstOrNull { it.sound.identity() == wanted }?.name
+    }
+
+    /**
+     * The 303 [preset] taken by a 303 now sounding [current]: its tuning kept; its volume the
+     * preset's calibrated one, unless the user set their own (a level no preset has, nor the old 0.7).
+     */
+    fun withAcidPreset(preset: AcidSound, current: AcidSound): AcidSound {
+        val untouched = current.level == AcidSound.OLD_LEVEL || current.level == 0.6f || ACID.any { it.sound.level == current.level }
+        return preset.copy(tuning = current.tuning, level = if (untouched) preset.level else current.level)
+    }
 
     /** A random synth sound that stays musical: one of the families, then nudged. */
     fun randomSynth(rng: Random = Random.Default): SynthPatch {

@@ -15,40 +15,70 @@ data class VerifiedFile(val url: String, val fileName: String, val sha256: Strin
 object VerifiedDownload {
     class CancelledException : IOException(tr("annulé"))
 
-    /** Blocking (background). [onProgress] 0..1. Throws on network error, cancel or a wrong file. */
-    fun fetch(spec: VerifiedFile, target: File, onProgress: (Float) -> Unit, isCancelled: () -> Boolean = { false }): File {
+    /**
+     * Blocking (background). [onProgress] 0..1. Throws on network error, cancel or a wrong file.
+     * [resume]: what a cut connection already brought stays in `<target>.part` and the next call
+     * asks the server for the rest only (HTTP Range); a cancel or a wrong file still starts over.
+     */
+    fun fetch(
+        spec: VerifiedFile, target: File, onProgress: (Float) -> Unit, isCancelled: () -> Boolean = { false }, resume: Boolean = false,
+    ): File {
         target.parentFile!!.mkdirs()
         val part = File(target.parentFile, target.name + ".part")
+        var have = if (resume && part.isFile && part.length() in 1 until spec.sizeBytes) part.length() else 0L
+        if (have == 0L) part.delete()
         val connection = (URL(spec.url).openConnection() as HttpURLConnection).apply {
             connectTimeout = 15_000
             readTimeout = 30_000
             instanceFollowRedirects = true
+            if (have > 0) setRequestProperty("Range", "bytes=$have-")
         }
+        // A network error keeps what came (resume); a refused range or a wrong file does not.
+        var keep = resume
         try {
-            if (connection.responseCode != 200) throw IOException("HTTP ${connection.responseCode}")
+            val code = connection.responseCode
+            if (code == 416) keep = false
+            if (code == 200) have = 0L // the server sends it all again
+            else if (code != 206 || have == 0L) throw IOException("HTTP $code")
             val digest = MessageDigest.getInstance("SHA-256")
-            var done = 0L
+            if (have > 0) part.inputStream().use { input ->
+                val buffer = ByteArray(256 * 1024)
+                while (true) {
+                    val n = input.read(buffer)
+                    if (n < 0) break
+                    digest.update(buffer, 0, n)
+                }
+            }
+            var done = have
             connection.inputStream.use { input ->
-                part.outputStream().use { out ->
+                java.io.FileOutputStream(part, have > 0).use { out ->
                     val buffer = ByteArray(64 * 1024)
                     while (true) {
-                        if (isCancelled()) throw CancelledException()
+                        if (isCancelled()) {
+                            keep = false
+                            throw CancelledException()
+                        }
                         val n = input.read(buffer)
                         if (n < 0) break
                         out.write(buffer, 0, n)
                         digest.update(buffer, 0, n)
                         done += n
+                        if (done > spec.sizeBytes) {
+                            keep = false
+                            throw IOException(tr("fichier abîmé (empreinte différente)"))
+                        }
                         onProgress((done.toFloat() / spec.sizeBytes).coerceAtMost(1f))
                     }
                     out.fd.sync()
                 }
             }
+            keep = false
             if (hex(digest.digest()) != spec.sha256) throw IOException(tr("fichier abîmé (empreinte différente)"))
             if (!part.renameTo(target)) throw IOException(tr("écriture impossible"))
             return target
         } finally {
             connection.disconnect()
-            part.delete()
+            if (!keep) part.delete()
         }
     }
 

@@ -65,6 +65,8 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
             val orphans = runCatching { catalog.cleanOrphans(keep = setOf(CurrentProject.get(app))) }.getOrDefault(0)
             if (orphans > 0) AppLog.add("Dossiers de projet inachevés effacés : $orphans")
             forgetGoneJournals()
+            // The open project deleted from the list: trashed now that another one is open.
+            CurrentProject.takeDeleteLater(app)?.let { id -> catalog.info(id)?.let(::delete) }
         }
     }
 
@@ -86,7 +88,10 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
 
     /** A new project with its own sounds ([sounds]: file name in its samples folder → audio). */
     fun create(project: Project, sounds: Map<String, com.pocketstudio.app.audio.Pcm>, failed: (String) -> Unit = {}, then: (String) -> Unit) = io(tr("Nouveau morceau"), failed) {
-        val id = catalog.create(project.asNewProject()) { dir ->
+        // Never the same name as a song already there (a second « Rétro techno » is « Rétro techno 2 »):
+        // the new song is plainly another project, the first one still in the list.
+        val named = if (project.name.isBlank()) project.copy(name = catalog.nextName()) else project.copy(name = catalog.freeName(project.name))
+        val id = catalog.create(named.asNewProject()) { dir ->
             dir.mkdirs()
             sounds.forEach { (name, pcm) -> com.pocketstudio.app.audio.FloatWav.write(java.io.File(dir, name), pcm) }
         }

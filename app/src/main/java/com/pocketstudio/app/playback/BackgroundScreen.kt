@@ -44,11 +44,33 @@ import com.pocketstudio.model.i18n.tr
 data class BackgroundState(val notifications: Boolean, val batteryFree: Boolean, val honor: Boolean)
 
 fun backgroundState(context: Context) = BackgroundState(
-    notifications = ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) ==
-        PackageManager.PERMISSION_GRANTED,
+    notifications = notificationPermitted(context) && playbackNotificationsShown(context),
     batteryFree = context.getSystemService(PowerManager::class.java).isIgnoringBatteryOptimizations(context.packageName),
     honor = Build.MANUFACTURER.equals("HONOR", ignoreCase = true) || Build.MANUFACTURER.equals("HUAWEI", ignoreCase = true),
 )
+
+/** Android 13 and later ask before an app may notify; before, it may unless turned off. */
+private fun notificationPermitted(context: Context) = Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
+    ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
+
+/** The app's notifications on, and its « Lecture » channel not turned off by hand. */
+internal fun playbackNotificationsShown(context: Context): Boolean {
+    val manager = androidx.core.app.NotificationManagerCompat.from(context)
+    if (!manager.areNotificationsEnabled()) return false
+    val channel = manager.getNotificationChannel(PlaybackService.CHANNEL_ID) ?: return true  // made on the first playback
+    return channel.importance != android.app.NotificationManager.IMPORTANCE_NONE
+}
+
+/** What « Autoriser » does for the notification. */
+enum class NotificationAsk { Ask, OpenSettings }
+
+/**
+ * Asking again only works while Android still shows its question: once the user refused twice
+ * ([askedBefore] and no [rationale] to show), or when the permission is there but the
+ * notifications or their channel are off, only the app's notification settings can change it.
+ */
+fun notificationAsk(permitted: Boolean, askedBefore: Boolean, rationale: Boolean): NotificationAsk =
+    if (permitted || (askedBefore && !rationale)) NotificationAsk.OpenSettings else NotificationAsk.Ask
 
 /** Guides the three settings that let the music keep playing with the screen off. */
 @Composable
@@ -59,9 +81,20 @@ fun BackgroundPage(modifier: Modifier = Modifier) {
     val notifications = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
         state = backgroundState(context)
     }
+    val prefs = remember { context.getSharedPreferences("background", Context.MODE_PRIVATE) }
     BackgroundScreen(
         state = state,
-        onNotifications = { notifications.launch(Manifest.permission.POST_NOTIFICATIONS) },
+        onNotifications = {
+            val activity = context.findActivity()
+            val rationale = activity != null && androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.POST_NOTIFICATIONS)
+            when (notificationAsk(notificationPermitted(context), prefs.getBoolean(ASKED, false), rationale)) {
+                NotificationAsk.Ask -> {
+                    prefs.edit().putBoolean(ASKED, true).apply()
+                    notifications.launch(Manifest.permission.POST_NOTIFICATIONS)
+                }
+                NotificationAsk.OpenSettings -> openNotificationSettings(context)
+            }
+        },
         onBattery = { requestBatteryExemption(context) },
         onAppSettings = { openAppSettings(context) },
         modifier = modifier,
@@ -120,6 +153,20 @@ private fun requestBatteryExemption(context: Context) {
     val direct = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, Uri.parse("package:${context.packageName}"))
     runCatching { context.startActivity(direct) }
         .onFailure { runCatching { context.startActivity(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)) } }
+}
+
+private const val ASKED = "notificationsAsked"
+
+private tailrec fun Context.findActivity(): android.app.Activity? = when (this) {
+    is android.app.Activity -> this
+    is android.content.ContextWrapper -> baseContext.findActivity()
+    else -> null
+}
+
+/** The app's notification settings (where a refused permission or a muted channel is turned back on). */
+private fun openNotificationSettings(context: Context) {
+    val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+    runCatching { context.startActivity(intent) }.onFailure { openAppSettings(context) }
 }
 
 private fun openAppSettings(context: Context) {

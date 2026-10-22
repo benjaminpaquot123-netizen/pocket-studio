@@ -6,6 +6,8 @@
 
 #include "Pan.h"
 
+extern "C" uint32_t ps_rand_exchange(uint32_t state);  // ps_rand.c
+
 namespace ps {
 
 namespace {
@@ -71,6 +73,7 @@ void DrumKit::prepare(int sampleRate) {
     const float sr = static_cast<float>(sampleRate);
     pending_.fill(-1);
     activeFrames_.fill(0);
+    resetNoise();
 
     // Kicks: low, long and punchy (Benjamin: "pas assez puissants"); see kKickDrive below.
     kick_.configure(sampleRate, 47.0f, 3.2f, 0.035f, 0.42f, 0.35f);
@@ -158,6 +161,14 @@ void DrumKit::prepare(int sampleRate) {
     chokeDecay_ = decayFor(0.004f, sampleRate);
 }
 
+void DrumKit::resetNoise() {
+    for (size_t v = 0; v < noiseState_.size(); ++v) {
+        noiseState_[v] = 22222u + 7919u * static_cast<uint32_t>(v);
+        randState_[v] = 0x2545F491u ^ (0x85EBCA6Bu * static_cast<uint32_t>(v + 1));
+        if (randState_[v] == 0) randState_[v] = 1;
+    }
+}
+
 void DrumKit::trigger(int voice, float velocity, int frameOffset, float pan) {
     if (voice < 0 || voice >= kVoices) return;
     pending_[static_cast<size_t>(voice)] = std::max(0, frameOffset);
@@ -165,11 +176,21 @@ void DrumKit::trigger(int voice, float velocity, int frameOffset, float pan) {
     pendingPan_[static_cast<size_t>(voice)] = std::isfinite(pan) ? pan : 0.0f;
 }
 
-float DrumKit::noise() {
-    noiseState_ ^= noiseState_ << 13;
-    noiseState_ ^= noiseState_ >> 17;
-    noiseState_ ^= noiseState_ << 5;
-    return static_cast<float>(noiseState_) * (2.0f / 4294967296.0f) - 1.0f;
+float DrumKit::noise(int voice) {
+    uint32_t& s = noiseState_[static_cast<size_t>(voice)];
+    s ^= s << 13;
+    s ^= s >> 17;
+    s ^= s << 5;
+    return static_cast<float>(s) * (2.0f / 4294967296.0f) - 1.0f;
+}
+
+void DrumKit::warmUp(int voice) {
+    constexpr int kWarmFrames = 128;
+    if (voice == Clap) {
+        for (int k = 0; k < kWarmFrames; ++k) clapFilter_.Process(noise(Clap));
+    } else if (voice == Shaker) {
+        for (int k = 0; k < kWarmFrames; ++k) shakerFilter_.Process(noise(Shaker));
+    }
 }
 
 float DrumKit::renderVoice(int voice, bool trig, float v) {
@@ -205,12 +226,12 @@ float DrumKit::renderVoice(int voice, bool trig, float v) {
                 if (clapCounter_ == 2 * burstGap) clapTail_.hit(0.6f * v);
                 if (++clapCounter_ > 2 * burstGap) clapCounter_ = -1;
             }
-            clapFilter_.Process(noise());
+            clapFilter_.Process(noise(Clap));
             return clapFilter_.Band() * (clapBurst_.next() + clapTail_.next()) * 3.0f;
         }
         case Rim: {
             if (trig) rimEnv_.hit(v);
-            rimFilter_.Process((trig ? 4.0f * v : 0.0f) + 0.05f * noise() * rimEnv_.level);
+            rimFilter_.Process((trig ? 4.0f * v : 0.0f) + 0.05f * noise(Rim) * rimEnv_.level);
             return rimFilter_.Band() * rimEnv_.next() * 2.0f;
         }
         case Cowbell: {
@@ -223,7 +244,7 @@ float DrumKit::renderVoice(int voice, bool trig, float v) {
         }
         case Shaker: {
             if (trig) shakerEnv_.hit(v);
-            shakerFilter_.Process(noise());
+            shakerFilter_.Process(noise(Shaker));
             return shakerFilter_.High() * shakerEnv_.next();
         }
         default: return 0.0f;
@@ -259,19 +280,35 @@ void DrumKit::renderTo(int numFrames, Sink&& sink) {
         const int maxLength = static_cast<int>(kMaxSeconds[voice] * sampleRate_);
         const float level = kLevels[voice];
         const float velocity = velocity_[idx];
-        const float gain = level * (0.4f + 0.6f * velocity);
+        // The ringing hit keeps its own loudness up to the new hit's frame.
+        float gain = hitGain_[idx];
         // A closed hat cuts the open one at the exact sample, like on a real machine.
         const int chokeAt = voice == OpenHat ? closedHatHit : -1;
         int& remaining = activeFrames_[idx];
         // Pan gains in locals: the output buffers could alias the members, which would keep the
         // compiler from hoisting them out of the sample loop.
         float gl = gainL_[idx], gr = gainR_[idx];
+        const uint32_t sharedRand = ps_rand_exchange(randState_[idx]);
         for (int i = 0; i < numFrames; ++i) {
             if (i == pending) {
+                // A noise voice waking up: its filter already running on its noise, as it always
+                // was (a cold filter overshoots), for a fixed time (the same whatever the blocks).
+                if (remaining <= 0) warmUp(voice);
                 remaining = maxLength;
                 panGains(pendingPan_[idx], gl, gr);
+                gain = level * (0.4f + 0.6f * velocity);
             }
             if (i == chokeAt) openHatChoke_ = 0.999f;
+            if (remaining <= 0 && i != pending) {
+                // Silent: nothing is computed until its hit (or the block's end), so the voice is
+                // in the same state on its hit whatever the block size (an export sounds like live).
+                if (pending > i) {
+                    if (voice == OpenHat && chokeAt > i && chokeAt < pending) openHatChoke_ = 0.999f;
+                    i = pending - 1;
+                    continue;
+                }
+                break;
+            }
             const float sample = renderVoice(voice, i == pending, velocity);
             if (remaining <= 0) continue;
             const float fade = remaining < fadeLength ? static_cast<float>(remaining) / fadeLength : 1.0f;
@@ -280,6 +317,8 @@ void DrumKit::renderTo(int numFrames, Sink&& sink) {
         }
         gainL_[idx] = gl;
         gainR_[idx] = gr;
+        hitGain_[idx] = gain;
+        randState_[idx] = ps_rand_exchange(sharedRand);
         if (pending >= 0) pending_[idx] = -1;
     }
 }

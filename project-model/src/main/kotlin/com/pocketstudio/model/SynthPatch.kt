@@ -14,7 +14,7 @@ data class SynthPatch(val values: List<Float> = DEFAULTS) {
         copy(values = sanitized().values.toMutableList().also { it[index] = value.coerceIn(0f, 1f) })
 
     fun sanitized(): SynthPatch =
-        SynthPatch(List(PARAM_COUNT) { i -> values.getOrElse(i) { DEFAULTS[i] }.coerceIn(0f, 1f) })
+        SynthPatch(List(PARAM_COUNT) { i -> values.getOrElse(i) { DEFAULTS[i] }.finite(DEFAULTS[i]).coerceIn(0f, 1f) })
 
     companion object {
         const val OSC1_WAVE = 0; const val OSC2_WAVE = 1; const val OSC2_DETUNE = 2; const val OSC2_OCTAVE = 3

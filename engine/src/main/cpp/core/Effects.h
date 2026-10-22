@@ -178,6 +178,7 @@ public:
     void setParam(int p, float v);
     void reset();
     void process(float* l, float* r, int n);
+    void restartLfo() { phase_ = 0.0; }
 
 private:
     float rate_ = 48000;
@@ -196,6 +197,7 @@ public:
     void setParam(int p, float v);
     void reset();
     void process(float* l, float* r, int n);
+    void restartLfo() { phase_ = 0.0; }
 
 private:
     static constexpr int kStages = 6;
@@ -232,6 +234,7 @@ public:
     void setParam(int p, float v);
     void reset() { phase_ = 0.0; }
     void process(float* l, float* r, int n);
+    void restartLfo() { phase_ = 0.0; }
 
 private:
     float rate_ = 48000;
@@ -305,6 +308,7 @@ public:
     void setParam(int p, float v);
     void reset() { phase_ = 0.0; lfo_ = 0.0; }
     void process(float* l, float* r, int n);
+    void restartLfo() { phase_ = 0.0; lfo_ = 0.0; }
 
 private:
     float rate_ = 48000;
@@ -318,7 +322,7 @@ class AutoWah {
 public:
     void prepare(float rate) { rate_ = rate; reset(); }
     void setParam(int p, float v);
-    void reset() { env_ = 0.0f; s1L_ = s2L_ = s1R_ = s2R_ = 0.0f; }
+    void reset() { env_ = 0.0f; s1L_ = s2L_ = s1R_ = s2R_ = 0.0f; tick_ = 0; }
     void process(float* l, float* r, int n);
     float cutoff() const { return cutoff_; }  // tests
 
@@ -328,6 +332,7 @@ private:
     float env_ = 0.0f, cutoff_ = 0.0f;
     float s1L_ = 0.0f, s2L_ = 0.0f, s1R_ = 0.0f, s2R_ = 0.0f;  // TPT state-variable filter
     float g_ = 0.0f, a1_ = 1.0f, a2_ = 0.0f;                    // its coefficients (every 8 frames)
+    int tick_ = 0;  // frames to the next update, across calls (the same frames whatever the block size)
 };
 
 // Old record ("Vieux vinyle"): wow and flutter (a slowly moving short delay), crackles, hiss and
@@ -338,6 +343,12 @@ public:
     void setParam(int p, float v);
     void reset();
     void process(float* l, float* r, int n);
+    // The wow and flutter from their start (the knob's glide done), the crackles from their first draw.
+    void restartLfo() {
+        wow_ = flutter_ = 0.0;
+        wowNow_ = p_[0];
+        seed_ = 0x9E3779B9u;
+    }
 
 private:
     float noise();
@@ -474,6 +485,7 @@ public:
     void setParam(int p, float v);
     void reset();
     void process(float* l, float* r, int n);
+    void restartLfo() { phase_ = 0.0; }
     static float shiftHz(float v);
 
 private:
@@ -555,6 +567,10 @@ public:
     int type() const { return type_; }
     void process(float* l, float* r, int n);
     void reset();  // the effect's state back to silence (after a NaN, back in a scene), no allocation
+    // The transport starts: free-running LFOs (flanger, phaser, tremolo, robot, vinyl, frequency
+    // shifter) from their start, as in an export, which starts with them there. (The chorus is
+    // DaisySP's, whose LFO cannot be restarted without clearing its delay line.)
+    void restartLfo();
     const Compressor& compressor() const { return comp_; }  // tests
     const Ducker& ducker() const { return pump_; }          // tests
     // Sidechain events (only the Pump type listens). `beat`: the step is a quarter note.
@@ -652,7 +668,9 @@ private:
 // 100 % wet. Params: time (1/16, 1/8, 3/16, 1/4, 3/8, 1/2 note), feedback, ping-pong, tone.
 class TempoDelay {
 public:
-    static constexpr float kMaxSeconds = 2.5f;
+    // The longest time it plays: a half note at 40 BPM, the slowest tempo (8 sixteenths of 0.375 s
+    // = 3 s), with a margin for the read's interpolation.
+    static constexpr float kMaxSeconds = 3.05f;
     void prepare(float rate) { prepare(rate, kMaxSeconds); }
     void prepare(float rate, float maxSeconds);
     void setParam(int p, float v);
@@ -684,7 +702,8 @@ private:
 // Params: time (1/16, 1/8, dotted 1/8, 1/4, dotted 1/4, 1/2 note), feedback, tone of the repeats, mix.
 class InsertEcho {
 public:
-    static constexpr float kMaxSeconds = 1.6f;  // a half note at 40 BPM is 1.5 s
+    // Every note value at every tempo: a half note at 40 BPM is 3 s (the send delay's length).
+    static constexpr float kMaxSeconds = TempoDelay::kMaxSeconds;
     void prepare(float rate) { delay_.prepare(rate, kMaxSeconds); applyParams(); }
     void setParam(int p, float v);
     void setPingPong(bool on) { pingPong_ = on; delay_.setParam(2, on ? 1.0f : 0.0f); }
@@ -767,9 +786,9 @@ private:
 
 class LongFxPool {
 public:
-    // Shared by every slot of the mixer (32 strips x 8 slots): about 7.5 MB of echoes (0.62 MB
-    // each), 1.8 MB of reverbs (0.15 MB) and 2.5 MB of tape stops (0.41 MB) at 48 kHz, 11.7 MB
-    // in all per engine (the export's engine holds the same while it renders).
+    // Shared by every slot of the mixer (32 strips x 8 slots): about 14 MB of echoes (1.17 MB
+    // each: 3.05 s, a half note at 40 BPM), 1.8 MB of reverbs (0.15 MB) and 2.5 MB of tape stops
+    // (0.41 MB) at 48 kHz, 18.4 MB in all per engine (the export's engine holds the same while it renders).
     static constexpr int kEchoes = 12, kReverbs = 12, kTapeStops = 6;
     void prepare(float rate) {
         echoes.prepare(rate);
@@ -861,6 +880,11 @@ public:
     void onStep(int offset, int step, int stepsPerBar);
     void onStep(int offset) { onStep(offset, -1, stepsPerBar_); }
     void process(float* l, float* r, int n);
+    // The sounds it makes on its own (the riser, the downlifter, the build-up's noise): they come
+    // from no track, so a track-by-track export plays them in one file of their own.
+    enum Noises { NoisesMixed = 0, NoisesOff = 1, NoisesOnly = 2 };
+    void setNoises(int mode) { noises_ = mode == NoisesOff || mode == NoisesOnly ? mode : NoisesMixed; }
+    int noises() const { return noises_; }
     bool active() const;
     // After a NaN reached the master: everything starts again from silence (no allocation; clearing
     // the seconds of memory is a one-off).
@@ -979,6 +1003,7 @@ private:
     uint32_t buildSeedL_ = 3, buildSeedR_ = 4;
     int buildCount_ = 0, riserCount_ = 0;
     bool dropWant_ = false, resetWant_ = false, dropPending_ = false;
+    int noises_ = NoisesMixed;
 };
 
 }  // namespace ps

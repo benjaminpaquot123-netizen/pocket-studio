@@ -55,12 +55,12 @@ class ProjectCatalogTest {
         File(catalog.store.folder(a), "samples").apply { mkdirs() }.resolve("kick.wav").writeText("boum")
         File(catalog.store.folder(a), "samples/old.wav").writeText("plus utilisé")
         val bytes = java.io.ByteArrayOutputStream().also { catalog.exportZip(a, it) }.toByteArray()
-        val b = catalog.importZip(bytes.inputStream())
+        val b = catalog.importZip(bytes.inputStream()).id
         assertNotEquals(a, b)
         assertEquals("Voyage", catalog.store.load(b)!!.name)
         assertEquals("boum", File(catalog.store.folder(b), "samples/kick.wav").readText())
         assertFalse(File(catalog.store.folder(b), "samples/old.wav").exists())  // unused sounds stay home
-        // Not a project, or a project missing its sound: refused, nothing left behind.
+        // Not a project: refused, nothing left behind.
         val before = catalog.list().size
         assertTrue(runCatching { catalog.importZip("pas un zip".byteInputStream()) }.isFailure)
         val noSound = java.io.ByteArrayOutputStream().also { out ->
@@ -69,9 +69,12 @@ class ProjectCatalogTest {
                 z.putNextEntry(java.util.zip.ZipEntry("../../evil.wav")); z.write(1); z.closeEntry()
             }
         }.toByteArray()
-        assertTrue(runCatching { catalog.importZip(noSound.inputStream()) }.isFailure)
-        assertEquals(before, catalog.list().size)
+        // A project missing its sound comes in without it (it used to refuse the whole .zip); a path is never followed.
+        val holed = catalog.importZip(noSound.inputStream())
+        assertEquals(1, holed.missingSounds)
         assertFalse(File(dir, "evil.wav").exists())
+        catalog.store.delete(holed.id)
+        assertEquals(before, catalog.list().size)
         // Twice the same sound, or a giant project.json: refused.
         val twice = java.io.ByteArrayOutputStream().also { out ->
             java.util.zip.ZipOutputStream(out).use { z ->
@@ -83,10 +86,10 @@ class ProjectCatalogTest {
         assertTrue(runCatching { catalog.importZip(twice.inputStream()) }.isFailure)
         val giant = java.io.ByteArrayOutputStream().also { out ->
             java.util.zip.ZipOutputStream(out).use { z ->
-                z.putNextEntry(java.util.zip.ZipEntry("project.json")); z.write(ByteArray(5 * 1024 * 1024) { ' '.code.toByte() }); z.closeEntry()
+                z.putNextEntry(java.util.zip.ZipEntry("project.json")); z.write(ByteArray((ProjectCatalog.MAX_PROJECT_JSON + 1).toInt()) { ' '.code.toByte() }); z.closeEntry()
             }
         }.toByteArray()
-        assertTrue(runCatching { catalog.importZip(giant.inputStream()) }.isFailure)
+        assertEquals("projet trop gros", runCatching { catalog.importZip(giant.inputStream()) }.exceptionOrNull()?.message)
         assertEquals(before, catalog.list().size)
         dir.deleteRecursively()
     }

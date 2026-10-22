@@ -301,9 +301,9 @@ private fun TrackCard(t: AudioTrack, ui: AudioTracksUi, actions: AudioTracksActi
                 modifier = Modifier.weight(1f).testTag("audio_record_${t.id}"),
             ) {
                 Icon(Icons.Filled.FiberManualRecord, contentDescription = null, Modifier.size(16.dp))
-                Text(" " + if (t.clip == null) tr("Enregistrer") else tr("Nouvelle prise"))
+                com.pocketstudio.ui.WholeWordsText(" " + if (t.clip == null) tr("Enregistrer") else tr("Nouvelle prise"))
             }
-            OutlinedButton(onClick = { actions.import(t.id) }, enabled = !busy, modifier = Modifier.weight(1f)) { Text(tr("Fichier son")) }
+            OutlinedButton(onClick = { actions.import(t.id) }, enabled = !busy, modifier = Modifier.weight(1f)) { com.pocketstudio.ui.WholeWordsText(tr("Fichier son"), textAlign = androidx.compose.ui.text.style.TextAlign.Center) }
         }
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp), modifier = Modifier.fadingHorizontalScroll()) {
             TextButton(onClick = { actions.effects(t.id) }, modifier = Modifier.testTag("audio_effects_${t.id}")) { Text(tr("Effets de cette piste")) }

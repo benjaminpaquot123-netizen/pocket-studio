@@ -72,8 +72,9 @@ fun FirstLaunch(show: Boolean, actions: WelcomeActions, playDemo: () -> Unit) {
                 WelcomeScreen(
                     WelcomeActions(
                         guided = actions.guided,
-                        demo = { demoReady = true; leaving = true; actions.demo() },
-                        empty = { leaving = true; actions.empty() },
+                        // A second quick touch while the first project opens makes no second one.
+                        demo = { if (!leaving) { demoReady = true; leaving = true; actions.demo() } },
+                        empty = { if (!leaving) { leaving = true; actions.empty() } },
                         later = { leaving = false; demoReady = false; actions.later() },
                     ),
                 )

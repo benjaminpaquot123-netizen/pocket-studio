@@ -67,6 +67,38 @@ class LiveScreenTest {
         assertEquals(listOf("pad drums 1", "row 1", "stop acid", "stop all", "mute drums", "quantum 2"), calls)
     }
 
+    /** Audit 28 live M5: a pad launches on the finger's down; a finger sliding on (the grid scrolling) takes it back. */
+    @Test
+    fun aPadLaunchesOnTheFingersDownAndASlideTakesItBack() {
+        val calls = mutableListOf<String>()
+        val actions = LiveActions(
+            launchPad = { key, scene -> calls += "tap $key $scene" },
+            stopTrack = { calls += "tap stop $it" },
+            press = { key, scene -> calls += "press $key $scene"; true },
+            retract = { calls += "retract $it" },
+        )
+        compose.setContent { PocketStudioTheme { LiveScreen(LiveScreenUi(project, LiveState.on(0), clock = 5, playing = true), actions) } }
+        val pad = compose.onNodeWithTag("live_pad_drums_1")
+        pad.performTouchInput { down(center) }
+        compose.waitForIdle()
+        assertEquals(listOf("press drums 1"), calls)  // before the let-go
+        pad.performTouchInput { up() }
+        compose.waitForIdle()
+        assertEquals(listOf("press drums 1"), calls)  // the let-go adds nothing
+        calls.clear()
+        pad.performTouchInput {
+            down(center)
+            moveBy(androidx.compose.ui.geometry.Offset(0f, 40f))
+            moveBy(androidx.compose.ui.geometry.Offset(0f, 120f))
+            up()
+        }
+        compose.waitForIdle()
+        assertEquals(listOf("press drums 1", "retract drums"), calls)
+        calls.clear()
+        compose.onNodeWithTag("live_stop_acid").performClick()
+        assertEquals(listOf("press acid -1"), calls)
+    }
+
     @Test
     fun aPadXyKeepsItsValuesClearOfItsTopAndBottomLabels() {
         val h = 300f

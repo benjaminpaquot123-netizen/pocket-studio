@@ -1,6 +1,8 @@
 #include "PlaitsSynth.h"
+#include "Params.h"
 
 #include <algorithm>
+#include <atomic>
 #include <cmath>
 
 #include "plaits/dsp/voice.h"
@@ -57,6 +59,10 @@ struct PlaitsSynth::Impl {
     int outPos = kBlock;  // samples of `out` already used
     uint32_t clock = 0;
     uint32_t block = 0;  // counts rendered blocks
+    // Plaits' random generator is one global: each synth swaps its own state in while it renders,
+    // so its noise never depends on the other tracks nor on the block size.
+    static constexpr uint32_t kRandomSeed = 0x21u;
+    uint32_t random = kRandomSeed;
     float bend = 0.0f, mod = 0.0f;  // live pitch bend (semitones) and mod wheel
     float attackStep = 0.0f, releaseCoef = 0.0f;
     float rate = 48000.0f;  // the stream's (prepare)
@@ -163,8 +169,8 @@ void PlaitsSynth::prepare(int sampleRate) {
 }
 
 void PlaitsSynth::setParam(Param p, float value) {
-    if (p < 0 || p >= ParamCount) return;
-    impl_->params[static_cast<size_t>(p)] = std::clamp(value, 0.0f, 1.0f);
+    // A NaN would become a table index inside Plaits (decay, colour): out of bounds.
+    if (p < 0 || p >= ParamCount || !clampSetting(impl_->params[static_cast<size_t>(p)], value, 0.0f, 1.0f)) return;
     impl_->updatePatch();
     if (p == Model) {
         // A heavier model has fewer voices: release the ones beyond its limit.
@@ -194,6 +200,8 @@ void PlaitsSynth::allNotesOff() {
     impl_->eventCount = 0;
 }
 
+static_assert(std::atomic<uint32_t>::is_always_lock_free, "the noise generator's state must be lock-free on the audio thread");
+
 void PlaitsSynth::render(float* mono, int numFrames) {
     auto& im = *impl_;
     // Insertion sort, stable and allocation-free (std::stable_sort may allocate a buffer).
@@ -207,10 +215,16 @@ void PlaitsSynth::render(float* mono, int numFrames) {
         im.events[static_cast<size_t>(j + 1)] = e;
     }
     int next = 0;
+    // This synth's own noise sequence swapped in while it renders (one atomic step each way: see
+    // stmlib/utils/random.h). Another engine rendering at the same moment on another thread may
+    // draw from it too: its noise is then not the same from one render to the next, never unsafe.
+    const uint32_t sharedRandom = stmlib::Random::Exchange(im.random);
     for (int i = 0; i < numFrames; ++i) {
         if (im.outPos >= kBlock) {
-            // Events due before the end of this block start with it (at most 11 samples early).
-            while (next < im.eventCount && im.events[static_cast<size_t>(next)].at < i + kBlock) {
+            // Events due by this block's first frame start with it (at most 11 samples late): the
+            // block an event lands in never depends on how the callback is cut (the next call's
+            // events cannot be seen yet, so taking them early would depend on it).
+            while (next < im.eventCount && im.events[static_cast<size_t>(next)].at <= i) {
                 if (!im.apply(im.events[static_cast<size_t>(next)])) break;  // the rest waits a block
                 ++next;
             }
@@ -220,6 +234,7 @@ void PlaitsSynth::render(float* mono, int numFrames) {
         }
         mono[i] += im.out[im.outPos++];
     }
+    im.random = stmlib::Random::Exchange(sharedRandom);
     // Events past this call (offset beyond numFrames) move to the next one.
     int kept = 0;
     for (int k = next; k < im.eventCount; ++k) {
@@ -229,6 +244,8 @@ void PlaitsSynth::render(float* mono, int numFrames) {
     }
     im.eventCount = kept;
 }
+
+void PlaitsSynth::restartNoise() { impl_->random = Impl::kRandomSeed; }
 
 int PlaitsSynth::activeVoices() const {
     int n = 0;

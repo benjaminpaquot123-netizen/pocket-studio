@@ -44,8 +44,9 @@ data class AcidSound(
         }
     }
 
-    fun sanitized() = AcidSound().let { _ ->
-        values().foldIndexed(this) { i, acc, v -> acc.with(i, v) }
+    fun sanitized() = AcidSound().let { d ->
+        val defaults = d.values()
+        values().foldIndexed(this) { i, acc, v -> acc.with(i, v.finite(defaults[i])) }
     }
 }
 
@@ -61,6 +62,8 @@ data class AcidPattern(
     val density: Float = 0.8f,
 ) {
     fun sanitized(): AcidPattern {
+        // Already clean: the pattern itself (an edit on a big project rebuilds only what changed).
+        if (isClean()) return this
         val fixed = (steps + List((MAX_STEPS - steps.size).coerceAtLeast(0)) { AcidStep() }).take(MAX_STEPS)
         return copy(
             length = length.coerceIn(1, MAX_STEPS),
@@ -68,9 +71,13 @@ data class AcidPattern(
             steps = fixed.map { it.sanitized() },
             sound = sound.sanitized(),
             locked = locked.filter { it in 0 until MAX_STEPS }.toSet(),
-            density = density.coerceIn(0f, 1f),
+            density = density.finite(0.8f).coerceIn(0f, 1f),
         )
     }
+
+    private fun isClean(): Boolean =
+        steps.size == MAX_STEPS && length in 1..MAX_STEPS && root in 24..60 && density.isFinite() && density in 0f..1f &&
+            steps.all { it.note in 0..12 && it.octave in -1..2 } && locked.all { it in 0 until MAX_STEPS } && sound.sanitized() == sound
 
     /** Copies the 16 steps of bar [from] onto bar [to] (both 0-based), locks included. */
     fun copyPage(from: Int, to: Int): AcidPattern {

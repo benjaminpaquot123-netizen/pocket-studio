@@ -9,7 +9,9 @@
 namespace ps {
 
 OfflineRenderer::OfflineRenderer(int sampleRate)
-    : sampleRate_(sampleRate), engine_(std::make_unique<Engine>(sampleRate)) {}
+    : sampleRate_(sampleRate), engine_(std::make_unique<Engine>(sampleRate)) {
+    engine_->setCommandBudget(0);  // every command at once: the scheduled ones land on their frame
+}
 
 OfflineRenderer::~OfflineRenderer() {
     // Scheduled commands never reached (cancelled render) may still own references.

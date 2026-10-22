@@ -139,11 +139,11 @@ fun NextStepCard(
                 Modifier.weight(1f), foldKey = "next_steps",
             )
             if (small) {
-                IconButton(onClick = { opened = false }, modifier = Modifier.size(40.dp).testTag("next_steps_shrink")) {
+                IconButton(onClick = { opened = false }, modifier = Modifier.size(48.dp).testTag("next_steps_shrink")) {
                     Icon(Icons.Filled.ExpandLess, contentDescription = tr("Replier"), tint = Neon.TextSecondary)
                 }
             }
-            IconButton(onClick = close, modifier = Modifier.size(40.dp).testTag("next_steps_close")) {
+            IconButton(onClick = close, modifier = Modifier.size(48.dp).testTag("next_steps_close")) {
                 Icon(Icons.Filled.Close, contentDescription = tr("Fermer les étapes"), tint = Neon.TextSecondary, modifier = Modifier.size(18.dp))
             }
         }

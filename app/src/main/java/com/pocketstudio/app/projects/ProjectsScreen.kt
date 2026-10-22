@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -22,6 +23,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.DeleteForever
+import androidx.compose.material.icons.filled.DeleteSweep
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.AlertDialog
@@ -87,6 +90,10 @@ class ProjectsActions(
     val undoDelete: () -> Unit = {},
     /** Brings a project back from the "Corbeille" list. */
     val restore: (TrashedProject) -> Unit = {},
+    /** Deletes a trashed project for good (after the screen's confirmation). */
+    val deleteForever: (TrashedProject) -> Unit = {},
+    /** Deletes every trashed project for good (after the screen's confirmation). */
+    val emptyTrash: () -> Unit = {},
     val dismissDeleted: () -> Unit = {},
     val dismissMessage: () -> Unit = {},
     /** « Partager mon morceau »: the open project's song in M4A, then the share sheet. */
@@ -101,6 +108,8 @@ fun ProjectsScreen(ui: ProjectsUi, currentId: String, starters: List<ProjectStar
     val renaming = renamingId?.let { id -> ui.projects.firstOrNull { it.id == id } }
     var choosingStart by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(false) }
     var showTrash by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(false) }
+    // A deletion for good is asked first: the trash entry (or EMPTY_ALL for the whole trash).
+    var confirmingDelete by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf<String?>(null) }
     // A list to read: centred at a comfortable width on a tablet.
     com.pocketstudio.ui.ReadingWidth {
         Column(Modifier.fillMaxSize().padding(12.dp).testTag("projects"), verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -111,11 +120,11 @@ fun ProjectsScreen(ui: ProjectsUi, currentId: String, starters: List<ProjectStar
                 Text(tr("Mes projets"), style = MaterialTheme.typography.headlineSmall, modifier = Modifier.weight(1f))
             }
             // The guided song first: the main action for a beginner.
-            Button(onClick = actions.wizard, modifier = Modifier.fillMaxWidth().height(56.dp).testTag("project_wizard")) {
+            Button(onClick = actions.wizard, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("project_wizard")) {
                 Icon(Icons.Filled.AutoAwesome, contentDescription = null)
                 Text("  " + tr("Nouveau morceau guidé"), style = MaterialTheme.typography.titleMedium)
             }
-            OutlinedButton(onClick = { choosingStart = true }, modifier = Modifier.fillMaxWidth().height(52.dp).testTag("project_new")) {
+            OutlinedButton(onClick = { choosingStart = true }, modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp).testTag("project_new")) {
                 Icon(Icons.Filled.Add, contentDescription = null)
                 Text("  " + tr("Nouveau projet : style, démo ou vide"), style = MaterialTheme.typography.titleSmall)
             }
@@ -126,7 +135,7 @@ fun ProjectsScreen(ui: ProjectsUi, currentId: String, starters: List<ProjectStar
                 Card(colors = CardDefaults.cardColors(containerColor = Neon.SurfaceHigh), modifier = Modifier.testTag("project_deleted")) {
                     Row(Modifier.padding(start = 12.dp), verticalAlignment = Alignment.CenterVertically) {
                         Text(tr("« %s » est dans la corbeille (30 jours).", name), Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
-                        TextButton(onClick = actions.undoDelete, modifier = Modifier.testTag("project_undo_delete")) { Text(tr("Annuler")) }
+                        TextButton(onClick = actions.undoDelete, enabled = !ui.busy, modifier = Modifier.testTag("project_undo_delete")) { Text(tr("Annuler")) }
                         TextButton(onClick = actions.dismissDeleted) { Text("OK") }
                     }
                 }
@@ -140,7 +149,7 @@ fun ProjectsScreen(ui: ProjectsUi, currentId: String, starters: List<ProjectStar
             }
             LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.weight(1f)) {
                 items(ui.projects, key = { it.id }) { p ->
-                    ProjectCard(p, p.id == currentId, now, actions, onRename = { renamingId = p.id })
+                    ProjectCard(p, p.id == currentId, now, actions, busy = ui.busy, onRename = { renamingId = p.id })
                 }
                 if (ui.trash.isNotEmpty()) {
                     item(key = "trash") {
@@ -152,7 +161,14 @@ fun ProjectsScreen(ui: ProjectsUi, currentId: String, starters: List<ProjectStar
                         }
                     }
                     if (showTrash) {
-                        items(ui.trash, key = { "trash_${it.entry}" }) { t -> TrashedCard(t, now, actions) }
+                        // While a deletion or a restore runs, the trash waits (its buttons off).
+                        items(ui.trash, key = { "trash_${it.entry}" }) { t -> TrashedCard(t, now, actions, busy = ui.busy, onDelete = { confirmingDelete = t.entry }) }
+                        item(key = "trash_empty") {
+                            TextButton(onClick = { confirmingDelete = EMPTY_ALL }, enabled = !ui.busy, modifier = Modifier.fillMaxWidth().testTag("project_empty_trash")) {
+                                Icon(Icons.Filled.DeleteSweep, contentDescription = null, tint = Neon.Amber, modifier = Modifier.padding(end = 6.dp))
+                                Text(tr("Vider la corbeille"), color = Neon.Amber)
+                            }
+                        }
                     }
                 }
             }
@@ -171,6 +187,32 @@ fun ProjectsScreen(ui: ProjectsUi, currentId: String, starters: List<ProjectStar
                 TextButton(onClick = { actions.rename(p, name); renamingId = null }, enabled = name.isNotBlank(), modifier = Modifier.testTag("project_rename_ok")) { Text("OK") }
             },
             dismissButton = { TextButton(onClick = { renamingId = null }) { Text(tr("Annuler")) } },
+        )
+    }
+    confirmingDelete?.let { which ->
+        val all = which == EMPTY_ALL
+        val item = ui.trash.firstOrNull { it.entry == which }
+        if (!all && item == null) return@let  // restored or gone meanwhile
+        AlertDialog(
+            onDismissRequest = { confirmingDelete = null },
+            title = { Text(if (all) tr("Vider la corbeille ?") else tr("Supprimer définitivement ?")) },
+            text = {
+                Text(
+                    if (all) tr("Les %d projets de la corbeille et leurs sons seront effacés pour de bon. Impossible de revenir en arrière.", ui.trash.size)
+                    else tr("« %s » et ses sons seront effacés pour de bon. Impossible de revenir en arrière.", com.pocketstudio.model.DefaultNames.shown(item!!.name)),
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        if (all) actions.emptyTrash() else item?.let(actions.deleteForever)
+                        confirmingDelete = null
+                    },
+                    enabled = !ui.busy,
+                    modifier = Modifier.testTag("project_delete_forever_ok"),
+                ) { Text(if (all) tr("Vider") else tr("Supprimer"), color = Neon.Amber) }
+            },
+            dismissButton = { TextButton(onClick = { confirmingDelete = null }) { Text(tr("Annuler")) } },
         )
     }
     if (choosingStart) {
@@ -218,7 +260,7 @@ fun ProjectsScreen(ui: ProjectsUi, currentId: String, starters: List<ProjectStar
 }
 
 @Composable
-private fun ProjectCard(p: ProjectInfo, open: Boolean, now: Long, actions: ProjectsActions, onRename: () -> Unit) {
+private fun ProjectCard(p: ProjectInfo, open: Boolean, now: Long, actions: ProjectsActions, busy: Boolean = false, onRename: () -> Unit) {
     var menu by remember { mutableStateOf(false) }
     Card(
         shape = RoundedCornerShape(10.dp),
@@ -260,7 +302,7 @@ private fun ProjectCard(p: ProjectInfo, open: Boolean, now: Long, actions: Proje
                     DropdownMenuItem(text = { Text(tr("Envoyer / sauvegarder (.zip)")) }, onClick = { menu = false; actions.exportZip(p) })
                     DropdownMenuItem(
                         text = { Text(if (open) tr("Supprimer (ouvre d'abord un autre projet)") else tr("Supprimer")) },
-                        enabled = !open,
+                        enabled = !open && !busy,
                         onClick = { menu = false; actions.delete(p) },
                         modifier = Modifier.testTag("project_delete_${p.id}"),
                     )
@@ -270,9 +312,12 @@ private fun ProjectCard(p: ProjectInfo, open: Boolean, now: Long, actions: Proje
     }
 }
 
-/** A deleted project: its name, when it was deleted, and a way back. */
+/** [ProjectsScreen]'s confirmation for the whole trash, not one entry (an entry always holds a « @ »). */
+private const val EMPTY_ALL = "*"
+
+/** A deleted project: its name, when it was deleted, a way back, and a way to delete it for good. */
 @Composable
-private fun TrashedCard(t: TrashedProject, now: Long, actions: ProjectsActions) {
+private fun TrashedCard(t: TrashedProject, now: Long, actions: ProjectsActions, busy: Boolean = false, onDelete: () -> Unit) {
     Card(
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(containerColor = Neon.Surface),
@@ -284,7 +329,10 @@ private fun TrashedCard(t: TrashedProject, now: Long, actions: ProjectsActions) 
                 Text(com.pocketstudio.model.DefaultNames.shown(t.name), style = MaterialTheme.typography.titleMedium, color = Neon.TextSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Text(tr("supprimé %s", whenText(t.deletedAt, now)), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
             }
-            TextButton(onClick = { actions.restore(t) }, modifier = Modifier.testTag("restore_${t.entry}")) { Text(tr("Restaurer")) }
+            TextButton(onClick = { actions.restore(t) }, enabled = !busy, modifier = Modifier.testTag("restore_${t.entry}")) { Text(tr("Restaurer")) }
+            IconButton(onClick = onDelete, enabled = !busy, modifier = Modifier.testTag("delete_forever_${t.entry}")) {
+                Icon(Icons.Filled.DeleteForever, contentDescription = tr("Supprimer définitivement"), tint = Neon.TextSecondary)
+            }
         }
     }
 }

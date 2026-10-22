@@ -816,7 +816,7 @@ internal val STYLE_RECIPES: List<Style> = listOf(
             bass = "Basse sub", pad = "Nappe chaude", lead = "Hoover",
             progressions = mapOf(Mood.Dark to (Scale.Minor to listOf(0, 0, 5, 6)), Mood.Happy to (Scale.Major to listOf(0, 3, 4, 3)), Mood.Future to (Scale.Phrygian to listOf(0, 0, 1, 1)), Mood.Dreamy to (Scale.Major to listOf(3, 2, 1, 0))),
             chordRhythm = "X---------------", voicing = Voicing.Seventh, chordOctave = 4,
-            bassOctave = 2, leadPattern = "O---------------................", arpRate = 24, leadOctave = 5,
+            bassOctave = 2, leadPattern = "O---------------................", arpRate = 24, leadOctave = 3,
             packSounds = mapOf(),
             parts = setOf(Part.Bass, Part.Pad),
             tips = mapOf(Part.Bass to "Une basse ronde et profonde venue du reggae et du dub : elle chante une petite mélodie lente, deux fois moins pressée que la batterie.", Part.Pad to "Une nappe chaude et planante, pour le côté rêveur de la jungle des débuts.", Part.Lead to "Un « hoover », le synthé qui hurle des raves du début des années 90 : une note tenue une mesure sur deux."),

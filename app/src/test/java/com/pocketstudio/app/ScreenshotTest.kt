@@ -84,14 +84,19 @@ open class ScreenshotTest {
     /** The same for a page that hides the app's bars (the Live page): only the system's are left. */
     protected open val fullScreenChrome = androidx.compose.foundation.layout.PaddingValues(0.dp)
 
+    /** Réglages › Taille de l'interface, applied as the app does (density and the width screens see). */
+    protected open val uiScale = 1f
+
     /** [prepare]: touches made before the image (a switch that only the screen itself holds). */
     protected fun shoot(
         name: String, palette: Palette = Palettes.Studio, prepare: () -> Unit = {}, fullScreen: Boolean = false, content: @Composable () -> Unit,
     ) {
         org.junit.Assume.assumeTrue(wanted(name))
         compose.setContent {
-            PocketStudioTheme(palette) {
-                Box(Modifier.fillMaxSize().background(androidx.compose.ui.graphics.Color.Black).padding(if (fullScreen) fullScreenChrome else chrome).background(Neon.Background)) { content() }
+            com.pocketstudio.app.ui.UiScaled(uiScale) {
+                PocketStudioTheme(palette) {
+                    Box(Modifier.fillMaxSize().background(androidx.compose.ui.graphics.Color.Black).padding(if (fullScreen) fullScreenChrome else chrome).background(Neon.Background)) { content() }
+                }
             }
         }
         prepare()
@@ -303,7 +308,7 @@ open class ScreenshotTest {
         val p = withTracks()
         com.pocketstudio.app.mixer.MixerScreen(
             channels = p.mixer.channels,
-            meters = FloatArray(17) { if (it in listOf(0, 2, 5, 6, 4, 12)) 0.5f + it * 0.02f else 0f }.also { it[16] = 1f },
+            meters = { FloatArray(17) { if (it in listOf(0, 2, 5, 6, 4, 12)) 0.5f + it * 0.02f else 0f }.also { it[16] = 1f } },
             actions = com.pocketstudio.app.mixer.MixerActions(),
             strips = com.pocketstudio.app.ui.mixerStrips(p),
         )
@@ -316,7 +321,7 @@ open class ScreenshotTest {
         channels[2] = channels[2].copy(mute = true, volume = 0.5f)
         com.pocketstudio.app.mixer.MixerScreen(
             channels = channels,
-            meters = FloatArray(17).also { m -> listOf(0.62f, 0.81f, 0f, 0.4f, 0.88f).forEachIndexed { i, v -> m[i] = v }; m[16] = 0.8f },
+            meters = { FloatArray(17).also { m -> listOf(0.62f, 0.81f, 0f, 0.4f, 0.88f).forEachIndexed { i, v -> m[i] = v }; m[16] = 0.8f } },
             actions = com.pocketstudio.app.mixer.MixerActions(),
             export = com.pocketstudio.app.rhythm.ExportUi(bars = 4, files = listOf(java.io.File("Mon-premier-rythme-20261018-221500.wav")), savedInMusic = true, loudness = -13.24)
                 .forProject(sceneBars = 4, hasSong = true),
@@ -1188,6 +1193,29 @@ open class ScreenshotTest {
                 now = now,
             )
         }
+    }
+
+    /** The trash unfolded: restore, delete for good, empty the bin. */
+    @Test
+    fun projectsTrash() = shoot("projects_trash", prepare = {
+        compose.onNodeWithTag("project_trash").performScrollTo().performClick()
+        compose.waitForIdle()
+    }) {
+        val now = 1_800_000_000_000L
+        com.pocketstudio.app.projects.ProjectsScreen(
+            com.pocketstudio.app.projects.ProjectsUi(
+                listOf(com.pocketstudio.model.ProjectInfo("a", "Da Funk (remix)", now - 120_000, 111.0, 8, 3, true)),
+                loading = false,
+                trash = listOf(
+                    com.pocketstudio.model.TrashedProject("x@2", "Essai", now - 60_000),
+                    com.pocketstudio.model.TrashedProject("y@1", "Prise voix (5 min)", now - 3 * 86_400_000L),
+                ),
+            ),
+            currentId = "a",
+            starters = emptyList(),
+            actions = com.pocketstudio.app.projects.ProjectsActions(),
+            now = now,
+        )
     }
 
     @Test

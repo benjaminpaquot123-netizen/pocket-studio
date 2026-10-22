@@ -6,7 +6,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.plus
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Redo
 import androidx.compose.material.icons.automirrored.filled.Undo
@@ -27,6 +32,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.animation.core.RepeatMode
@@ -151,17 +157,21 @@ private val TEMPO = 84.dp
 
 /** Always on top: the open project (tap for "Mes projets"), the scene edited, undo/redo, tempo and play, on every screen. */
 @Composable
-fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.layout.BoxWithConstraints(Modifier.fillMaxWidth()) {
+fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.layout.BoxWithConstraints(
+    Modifier.fillMaxWidth()
+        .background(Brush.verticalGradient(listOf(lerp(Neon.Surface, Color.Black, 0.12f), lerp(Neon.Background, Color.Black, 0.1f))))
+        .drawBehind { drawLine(Color.White.copy(alpha = 0.07f), Offset(0f, size.height - 1f), Offset(size.width, size.height - 1f), 1f) }
+        // The status bar above; lying down, the 3-button navigation bar and the camera hole on the
+        // sides: the bar's own buttons stay clear of them (the background goes under).
+        .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)),
+) {
     // Narrow (a small phone, a big text size): the tempo window, redo, then the scene's name give
     // their room to the project name; the projects button, the scene's letter and play never go.
     val layout = topBarLayout(maxWidth, ui.scene != null)
     val showTempo = layout.showTempo
     val showRedo = layout.showRedo
     Row(
-        Modifier.fillMaxWidth()
-            .background(Brush.verticalGradient(listOf(lerp(Neon.Surface, Color.Black, 0.12f), lerp(Neon.Background, Color.Black, 0.1f))))
-            .drawBehind { drawLine(Color.White.copy(alpha = 0.07f), Offset(0f, size.height - 1f), Offset(size.width, size.height - 1f), 1f) }
-            .statusBarsPadding().height(56.dp).padding(horizontal = 6.dp).testTag("top_bar"),
+        Modifier.fillMaxWidth().height(56.dp).padding(horizontal = 6.dp).testTag("top_bar"),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Row(
@@ -238,20 +248,26 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
             Text(" BPM", style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary)
         }
         val playColor = if (ui.playing) Neon.Acid else Neon.Cyan
+        // A 42 dp disc inside a 48 dp touch target.
         Box(
-            Modifier.padding(start = 4.dp, end = 2.dp).requiredSize(42.dp)
-                .shadow(if (ui.playing) 14.dp else 6.dp, CircleShape, ambientColor = playColor, spotColor = playColor)
-                .clip(CircleShape)
-                .background(Brush.verticalGradient(listOf(lerp(playColor, Color.White, 0.2f), playColor)))
+            Modifier.requiredSize(48.dp).clip(CircleShape)
                 .clickable(role = Role.Button, onClickLabel = if (ui.playing) tr("Arrêter") else tr("Jouer"), onClick = actions.togglePlay)
                 .testTag("top_play"),
             contentAlignment = Alignment.Center,
         ) {
-            Icon(
-                if (ui.playing) Icons.Filled.Stop else Icons.Filled.PlayArrow,
-                contentDescription = if (ui.playing) tr("Arrêter") else tr("Jouer"),
-                tint = Neon.OnAccent,
-            )
+            Box(
+                Modifier.requiredSize(42.dp)
+                    .shadow(if (ui.playing) 14.dp else 6.dp, CircleShape, ambientColor = playColor, spotColor = playColor)
+                    .clip(CircleShape)
+                    .background(Brush.verticalGradient(listOf(lerp(playColor, Color.White, 0.2f), playColor))),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    if (ui.playing) Icons.Filled.Stop else Icons.Filled.PlayArrow,
+                    contentDescription = if (ui.playing) tr("Arrêter") else tr("Jouer"),
+                    tint = Neon.OnAccent,
+                )
+            }
         }
     }
 }
@@ -262,7 +278,8 @@ private fun SceneChip(scene: SceneChipUi, full: Boolean, maxWidth: Dp, actions: 
     var open by remember { mutableStateOf(false) }
     val title = scene.titles.getOrElse(scene.current) { Scene.NAMES.getOrElse(scene.current) { "?" } }
     val letter = Scene.NAMES.getOrElse(scene.current) { "?" }
-    Box {
+    // A 36 dp chip inside a 48 dp touch target (the bar is 56 dp high).
+    Box(Modifier.heightIn(min = 48.dp), contentAlignment = Alignment.Center) {
         Row(
             Modifier.padding(horizontal = 2.dp).widthIn(min = 48.dp, max = maxWidth).height(36.dp)
                 .clip(RoundedCornerShape(18.dp))

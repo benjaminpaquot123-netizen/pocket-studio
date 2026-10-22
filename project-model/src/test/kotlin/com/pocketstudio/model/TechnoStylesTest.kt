@@ -110,7 +110,8 @@ class TechnoStylesTest {
         val breakScene = p.allScenes[3]
         assertTrue(breakScene.drums.lanes[TR.Kick.lane].hits.isEmpty())
         val (bass, pad, lead) = p.instrumentTracks
-        assertEquals(listOf("Basse", "Nappe", "Lead"), listOf(bass.name, pad.name, lead.name))
+        // Its supersaw chords hit in short stabs: the track says so.
+        assertEquals(listOf("Basse", "Stabs", "Lead"), listOf(bass.name, pad.name, lead.name))
         assertTrue(breakScene.synthNotes.notes.isEmpty())
         assertTrue(breakScene.trackNotes.getValue(pad.id).notes.isNotEmpty() && breakScene.trackNotes.getValue(lead.id).notes.isNotEmpty())
         val pump = EffectType.PUMP.ordinal

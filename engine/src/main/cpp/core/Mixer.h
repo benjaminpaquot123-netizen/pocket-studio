@@ -27,7 +27,7 @@ public:
     static constexpr int kDrums = 0;
     // Effects per channel, and on the master. Every slot is built and prepared with the mixer,
     // never in the callback: about 38 kB each, 32 x 8 = 9.7 MB per engine on the heap. The long
-    // effects' seconds of memory are the pool's (LongFxPool, 11.7 MB): about 25 MB per mixer.
+    // effects' seconds of memory are the pool's (LongFxPool, 18.4 MB): about 32 MB per mixer.
     static constexpr int kInserts = 8;
     static constexpr int kMaster = 4;    // insert "channel" index of the master
     static constexpr int kBuses = 2;
@@ -78,6 +78,12 @@ public:
         masterGain_.snap(masterGain_.target());
     }
     void setMasterFx(bool on) { masterFxOn_ = on; }
+    void setLiveNoises(int mode) { perf_.setNoises(mode); }  // PerformanceFx::Noises
+    // The transport starts: the effects' free LFOs from their start (InsertSlot::restartLfo).
+    void restartLfos() {
+        for (auto& strip : inserts_)
+            for (auto& slot : strip) slot.restartLfo();
+    }
     bool limiterOn() const { return limiterOn_; }
     // The send delay's time in frames: an export's tail waits at least this long in silence for a repeat.
     // The longest repeat time among the send delay and the tracks' own echoes.

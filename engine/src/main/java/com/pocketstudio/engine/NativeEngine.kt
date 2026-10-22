@@ -121,6 +121,11 @@ object NativeEngine {
     const val MIXER_CHANNELS = 32
     const val MASTER = 4
 
+    /** [setLiveNoises] modes (the engine's PerformanceFx::Noises). */
+    const val LIVE_NOISES_MIXED = 0
+    const val LIVE_NOISES_OFF = 1
+    const val LIVE_NOISES_ONLY = 2
+
     /** Instrument tracks (the synth track is track 0). */
     const val TRACKS = 8
 
@@ -489,6 +494,11 @@ object NativeEngine {
     fun setLimiter(on: Boolean) = post(CMD_MASTER, if (on) 1f else 0f, 1)
     /** The master's inserts (off for stems, which then add back up to the mix). */
     fun setMasterFx(on: Boolean) = post(CMD_MASTER, if (on) 1f else 0f, 2)
+    /**
+     * The Live page's own sounds (riser, downlifter, the build-up's noise): [LIVE_NOISES_MIXED] in
+     * the mix, [LIVE_NOISES_OFF] left out (a track's stem), [LIVE_NOISES_ONLY] alone (the stem « Effets live »).
+     */
+    fun setLiveNoises(mode: Int) = post(CMD_MASTER, mode.toFloat(), 3)
     private external fun nativeInstallTrackSample(track: Int, handle: Long): Boolean
     private external fun exportInstallTrackSample(exportHandle: Long, track: Int, handle: Long)
     private external fun exportInstallAudioClip(exportHandle: Long, track: Int, handle: Long)

@@ -1,4 +1,5 @@
 #include "Synth.h"
+#include "Params.h"
 
 #include <algorithm>
 #include <cmath>
@@ -86,8 +87,7 @@ void Synth::setBeatFrames(double frames) {
 }
 
 void Synth::setParam(Param p, float value) {
-    if (p < 0 || p >= ParamCount) return;
-    params_[static_cast<size_t>(p)] = std::clamp(value, 0.0f, 1.0f);
+    if (p < 0 || p >= ParamCount || !clampSetting(params_[static_cast<size_t>(p)], value, 0.0f, 1.0f)) return;
     if (p == Lfo1Rate) lfo1_.SetFreq(0.05f * std::pow(400.0f, param(Lfo1Rate)));
     if (p == Lfo2Rate || p == Lfo2Sync) updateSweepRate();
     for (auto& v : voices_) updateVoiceSettings(v);
@@ -191,6 +191,7 @@ void Synth::applyEvent(const Event& e) {
     target->baseHz = midiToHz(e.note);
     target->semis = target->target = static_cast<float>(e.note);
     target->glideStep = 0.0f;
+    target->fresh = true;
     // A tempo-locked sweep starts each attack from its lowest point: every note "wobbles" the same way.
     if (param(Lfo2Sync) > 0.0f) lfo2_.Reset(0.5f);
     if (idle && param(Unison) > 0.0f) {
@@ -252,7 +253,8 @@ void Synth::render(float* mono, int numFrames) {
         }
         const float lfo1 = lfo1_.Process();
         const float lfo2 = lfo2_.Process();
-        const bool controlTick = (i % kControlRate) == 0;
+        const bool controlTick = controlCountdown_ <= 0;
+        controlCountdown_ = controlTick ? kControlRate - 1 : controlCountdown_ - 1;
         const float n = noiseLevel > 0.0f ? noise() : 0.0f;
         // A change of the number of copies fades in over a few milliseconds instead of a step.
         unisonGain_ += (stackGain - unisonGain_) * 0.005f;
@@ -262,8 +264,9 @@ void Synth::render(float* mono, int numFrames) {
             const float amp = v.ampEnv.Process(v.gate);
             v.level = amp;
             const float fenv = v.filterEnv.Process(v.gate);
-            if (controlTick) {
-                if (v.glideStep != 0.0f) {
+            if (controlTick || v.fresh) {
+                v.fresh = false;
+                if (controlTick && v.glideStep != 0.0f) {
                     v.semis += v.glideStep;
                     if ((v.glideStep > 0.0f && v.semis >= v.target) || (v.glideStep < 0.0f && v.semis <= v.target)) {
                         v.semis = v.target;

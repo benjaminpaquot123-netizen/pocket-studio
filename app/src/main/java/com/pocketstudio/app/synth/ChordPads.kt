@@ -29,9 +29,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.pocketstudio.model.ChordPad
 import com.pocketstudio.model.Harmony
-import com.pocketstudio.model.Scale
 import com.pocketstudio.model.chordPads
-import com.pocketstudio.model.NoteNames
 import com.pocketstudio.ui.Neon
 
 /**
@@ -65,8 +63,10 @@ fun ChordPads(
         }
     }
     Column(Modifier.fillMaxWidth().testTag("chord_pads"), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        val key = if (harmony.scale.intervals.size == 7) harmony else harmony.copy(scale = Scale.Major)
-        Text(tr("Accords de %s %s", NoteNames.key(harmony.root, english), tr(key.scale.label).lowercase()), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+        // The chords of the scale the pads play: the minor's for the minor pentatonic and the blues, the major's for « Libre ».
+        val key = harmony.chordKey
+        Text(tr("Accords de %s %s", key.keyName(english), tr(key.scale.label).lowercase()), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
+            modifier = Modifier.testTag("chord_pads_title"))
         for (row in 0 until 2) {
             Row(Modifier.fillMaxWidth().height((height - 24.dp) / 2), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 pads.drop(row * 4).take(4).forEach { pad -> ChordPadKey(pad, english, Modifier.weight(1f).fillMaxHeight(), on, off) }

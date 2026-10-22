@@ -255,7 +255,7 @@ class PlaybackService : Service() {
             .build()
 
     companion object {
-        private const val CHANNEL_ID = "playback"
+        internal const val CHANNEL_ID = "playback"
         private const val NOTIFICATION_ID = 7
         private const val ACTION_STOP = "com.pocketstudio.app.STOP"
 

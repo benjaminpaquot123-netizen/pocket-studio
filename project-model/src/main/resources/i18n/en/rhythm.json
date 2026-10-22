@@ -141,6 +141,8 @@
   "Taper": "Tap",
   "Tempo moins": "Tempo down",
   "Tempo plus": "Tempo up",
+  "Tes favoris n'ont pas pu être relus : le fichier est gardé tel quel et les nouveaux favoris ne seront pas enregistrés.": "Your favourites couldn't be read: the file is kept as it is and new favourites won't be saved.",
+  "Tes favoris n'ont pas pu être relus. Le fichier est mis de côté (%s) et une nouvelle liste commence.": "Your favourites couldn't be read. The file has been set aside (%s) and a new list starts.",
   "Tom aigu": "High tom",
   "Tom grave": "Low tom",
   "Tom médium": "Mid tom",

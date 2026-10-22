@@ -134,7 +134,7 @@ class ClubTransitionsTest {
     fun filtersSweepAlongTheSong() {
         // Techno: the stab's low-pass opens through each Drop and from dark to open in the Break.
         val techno = full(style("techno"))
-        val pad = techno.instrumentTracks.first { it.name == "Nappe" }
+        val pad = techno.instrumentTracks.first { it.name in StarterWizard.CHORD_TRACK_NAMES }
         val ch = InstrumentTrack.mixerChannel(pad.id)
         val inserts = techno.mixer.channels[ch].inserts
         val slot = inserts.indexOfLast { it.effect == EffectType.FILTER }
@@ -153,7 +153,7 @@ class ClubTransitionsTest {
         assertTrue(StarterWizard.hasSweeps(techno))
         // Bass music: the pad opens all along the Montée (it is shut at its start, open at the Drop).
         val dnb = full(style("dnb"))
-        val dnbPad = InstrumentTrack.mixerChannel(dnb.instrumentTracks.first { it.name == "Nappe" }.id)
+        val dnbPad = InstrumentTrack.mixerChannel(dnb.instrumentTracks.first { it.name in StarterWizard.CHORD_TRACK_NAMES }.id)
         val dnbLane = dnb.automation.single { it.target.kind == AutoTarget.INSERT_PARAM && it.target.ch == dnbPad }
         val montee = dnb.sections().first { it.first == 1 }
         val dnbCurve = dnbLane.songCurve(dnb.songBars)

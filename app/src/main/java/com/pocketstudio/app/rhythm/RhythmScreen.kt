@@ -259,7 +259,11 @@ private fun TransportBar(project: Project, transport: TransportUi, canUndo: Bool
                 }
             }
         }
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+        // Too narrow for « Taper » beside the tempo (a big interface size): it goes under, whole.
+        androidx.compose.foundation.layout.FlowRow(
+            itemVerticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
             RepeatingIconButton({ actions.nudgeTempo(-1) }) { Icon(Icons.Filled.Remove, contentDescription = tr("Tempo moins")) }
             // The tempo on a small dark display, as on a drum machine.
             Row(
@@ -419,15 +423,15 @@ private fun DrumPad(name: String, color: Color, selected: Boolean, lit: Boolean,
             .clickable(interactionSource = interaction, indication = null, onClick = onHit),
         contentAlignment = Alignment.Center,
     ) {
-        Text(
+        // A phone's pads are narrow (75 dp at a big interface size): « Cymbale » shrinks a little
+        // rather than break mid-word.
+        com.pocketstudio.ui.WholeWordsText(
             name,
             textAlign = TextAlign.Center,
             // Lower pads (a phone): two lines set closer, clear of the LED and of the colour strip.
             style = if (ratio) MaterialTheme.typography.labelLarge else MaterialTheme.typography.labelLarge.copy(lineHeight = 16.sp),
             color = lerp(Neon.TextPrimary, Color(0xFF1E2023), glow),
             maxLines = 2,
-            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
-            // A phone's pads are narrow (80 dp on a 360 dp phone): « Cymbale » must not break mid-word.
             modifier = Modifier.padding(horizontal = if (ratio) 4.dp else 8.dp, vertical = 2.dp).padding(bottom = if (ratio) 0.dp else 4.dp),
         )
         // A small LED when the pad has hits in the loop.
@@ -714,10 +718,10 @@ internal fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: 
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             OutlinedButton(onClick = actions.openPadEffects, contentPadding = narrow, modifier = Modifier.weight(1f).testTag("pad_effects")) {
                 Icon(Icons.Filled.Tune, contentDescription = null, modifier = Modifier.size(18.dp))
-                Text(tr("  Effets du pad"), maxLines = 1, softWrap = false, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+                com.pocketstudio.ui.WholeWordsText(tr("  Effets du pad").trim(), Modifier.padding(start = 6.dp))
             }
             OutlinedButton(onClick = actions.openEffects, contentPadding = narrow, modifier = Modifier.weight(1f).testTag("drum_kit_effects")) {
-                Text(tr("Toute la batterie"), maxLines = 1, softWrap = false, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+                com.pocketstudio.ui.WholeWordsText(tr("Toute la batterie"), textAlign = TextAlign.Center)
             }
         }
         val pan = project.drums.lanes[lane].pan
@@ -761,7 +765,7 @@ internal fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: 
                 Text(task.message)
             }
             is SampleTask.Recording -> {
-                Text(tr("Enregistrement… %.1f s / 30 s", task.seconds), color = Neon.Red)
+                Text(tr("Enregistrement… %.1f s / 30 s", task.seconds), color = Neon.RedText)
                 LevelMeter(task.level)
                 Button(
                     onClick = actions.stopRecording,
@@ -771,14 +775,14 @@ internal fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: 
             }
             else -> {
                 if (task is SampleTask.Failed) {
-                    Text(task.message, color = Neon.Red, style = MaterialTheme.typography.bodySmall)
+                    Text(task.message, color = Neon.RedText, style = MaterialTheme.typography.bodySmall)
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    OutlinedButton(onClick = { actions.dismissSampleError(); actions.importSample() }, modifier = Modifier.weight(1f).testTag("import_sample")) {
-                        Icon(Icons.Filled.FolderOpen, contentDescription = null); Text(tr(" Importer"))
+                    OutlinedButton(onClick = { actions.dismissSampleError(); actions.importSample() }, contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 10.dp), modifier = Modifier.weight(1f).testTag("import_sample")) {
+                        Icon(Icons.Filled.FolderOpen, contentDescription = null); com.pocketstudio.ui.WholeWordsText(tr(" Importer"), maxLines = 1)
                     }
-                    OutlinedButton(onClick = { actions.dismissSampleError(); actions.startRecording() }, modifier = Modifier.weight(1f).testTag("record_sample")) {
-                        Icon(Icons.Filled.Mic, contentDescription = null); Text(tr(" Micro"))
+                    OutlinedButton(onClick = { actions.dismissSampleError(); actions.startRecording() }, contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 10.dp), modifier = Modifier.weight(1f).testTag("record_sample")) {
+                        Icon(Icons.Filled.Mic, contentDescription = null); com.pocketstudio.ui.WholeWordsText(tr(" Micro"), maxLines = 1)
                     }
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {

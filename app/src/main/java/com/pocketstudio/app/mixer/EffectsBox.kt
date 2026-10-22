@@ -180,7 +180,11 @@ private fun InsertRow(
 ) {
     SideEffect { insertRowCompositions++ }
     val type = ins.effect
-    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+    // A narrow screen (a small phone, a big interface size): the four buttons go under the chip,
+    // which keeps the effect's name readable (« 1. V… » otherwise).
+    androidx.compose.foundation.layout.BoxWithConstraints(Modifier.fillMaxWidth()) {
+    val stacked = maxWidth < INSERT_ROW_ONE_LINE
+    val chip = @Composable { m: Modifier ->
         FilterChip(
             selected = selected, onClick = toggle,
             label = {
@@ -195,8 +199,10 @@ private fun InsertRow(
             // (On the chip filled with its colour when open: drawn in the dark ink of its label.)
             leadingIcon = { FxActivity(ins, if (selected) Neon.OnAccent else groupColour(type.group), level, "fx_activity_${ch}_$slot") },
             colors = pillColors(groupColour(type.group)),
-            modifier = Modifier.weight(1f).testTag("fx_chip_${ch}_$slot"),
+            modifier = m.testTag("fx_chip_${ch}_$slot"),
         )
+    }
+    val buttons = @Composable {
         IconButton(onClick = { actions.setInsertBypass(ch, slot, !ins.bypass) }, modifier = Modifier.testTag("fx_bypass_${ch}_$slot")) {
             Icon(
                 Icons.Filled.PowerSettingsNew,
@@ -214,7 +220,22 @@ private fun InsertRow(
             Icon(Icons.Filled.Close, contentDescription = tr("Retirer l'effet"), tint = Neon.TextSecondary)
         }
     }
+    if (stacked) {
+        Column(Modifier.fillMaxWidth()) {
+            chip(Modifier.fillMaxWidth())
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically) { buttons() }
+        }
+    } else {
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            chip(Modifier.weight(1f))
+            buttons()
+        }
+    }
+    }
 }
+
+/** From this width an effect's chip and its four buttons share one line. */
+private val INSERT_ROW_ONE_LINE = 340.dp
 
 /**
  * « Joue dans » under an effect: « Tout » (every scene), or the scenes (song sections) it plays

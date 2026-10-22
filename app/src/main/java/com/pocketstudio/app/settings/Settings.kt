@@ -139,6 +139,11 @@ object SettingsStore {
         _favouriteFx.value = emptySet()
     }
 
-    /** Back to the defaults (the guide is not shown again). */
-    fun reset(context: Context) = update(context) { AppSettings(guideSeen = true, language = it.language, favouriteFx = it.favouriteFx) }
+    /**
+     * Back to the defaults (the guide is not shown again). The notes keep the language's naming,
+     * as the language picker sets it (C D E in English and Dutch).
+     */
+    fun reset(context: Context) = update(context) {
+        AppSettings(guideSeen = true, language = it.language, favouriteFx = it.favouriteFx, englishNotes = it.language != com.pocketstudio.model.i18n.Lang.FR)
+    }
 }

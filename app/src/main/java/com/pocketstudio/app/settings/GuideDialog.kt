@@ -107,7 +107,8 @@ fun GuideDialog(onClose: () -> Unit, pages: List<GuidePage> = GUIDE_PAGES, tag: 
                     }
                 }
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                    TextButton(onClick = onClose, modifier = Modifier.testTag("guide_skip")) { Text(if (last) "" else tr("Passer")) }
+                    // The last page has nothing left to skip: no empty button (TalkBack read « Bouton »).
+                    if (!last) TextButton(onClick = onClose, modifier = Modifier.testTag("guide_skip")) { Text(tr("Passer")) }
                     Box(Modifier.weight(1f))
                     if (page > 0) TextButton(onClick = { page-- }) { Text(tr("Retour")) }
                     Button(onClick = { if (last) onDone() else page++ }, modifier = Modifier.testTag("guide_next")) {

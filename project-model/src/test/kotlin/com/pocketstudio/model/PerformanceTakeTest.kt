@@ -43,6 +43,25 @@ class PerformanceTakeTest {
         assertEquals(0, w.settings)
     }
 
+    /**
+     * Audit 28 live m4: drums stopped, then another launch: the next part keeps the drums' count
+     * since their stop (loop curves count with the drums), as the engine did live.
+     */
+    @Test
+    fun stoppedDrumsKeepTheirCountInTheNextPart() {
+        val p = project().switchScene(2)  // row C: drums of two bars
+        val take = PerformanceTake(0, LiveState.on(2, 0))
+        take.launched(LiveSlots.DRUMS, -1, 16)  // stopped at bar 2
+        take.launched(LiveSlots.ACID, 1, 32)    // the acid on B at bar 3: the drums stopped a bar ago
+        val song = p.writeTake(take, 64, append = false).project.song
+        assertEquals(3, song.size)
+        assertEquals(setOf(SongPart.DRUMS), song[2].muted)
+        assertEquals(1, song[2].fromBars(SongPart.DRUMS))
+        // As the engine counts the drums live there: (32 - 16) steps since the stop.
+        val baked = p.writeTake(take, 64, append = false).project
+        assertEquals(1 * 16, baked.song[2].fromBars(SongPart.DRUMS) * baked.stepsPerBar)
+    }
+
     @Test
     fun tracksThatCarryOnStartWhereTheyWere() {
         val p = project()

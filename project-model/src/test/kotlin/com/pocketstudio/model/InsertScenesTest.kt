@@ -57,7 +57,7 @@ class InsertScenesTest {
         // A project saved before « Joue dans »: no "scenes" anywhere, and none written for « Tout ».
         val text = ProjectJson.encode(p)
         val insertScenes = Regex("\"scenes\"\\s*:\\s*\\[\\s*\\d")  // a list of scene numbers (the project's own scenes are objects)
-        assertFalse(text.contains("\"scenes\": null"))
+        assertFalse(Regex("\"scenes\"\\s*:\\s*null").containsMatchIn(text))
         assertFalse(insertScenes.containsMatchIn(text))
         assertEquals(p, ProjectJson.decode(text))
         val limited = p.withInsertScenes(0, 1, setOf(2, 1))

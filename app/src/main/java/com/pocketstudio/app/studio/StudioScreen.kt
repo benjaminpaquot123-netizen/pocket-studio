@@ -109,7 +109,7 @@ fun StudioScreen(
             NeonCard {
                 SectionLabel(tr("Flux audio"))
                 if (!engineAvailable) {
-                    Text(tr("Moteur audio indisponible sur cet appareil."), color = Neon.Red)
+                    Text(tr("Moteur audio indisponible sur cet appareil."), color = Neon.RedText)
                 }
                 StatRow(tr("Mode"), IssueReport.describeStream(stream, onScreen = true).substringBefore(", ${stream.sampleRate}"))
                 StatRow(tr("Fréquence"), if (stream.sampleRate > 0) "${stream.sampleRate} Hz" else "–")

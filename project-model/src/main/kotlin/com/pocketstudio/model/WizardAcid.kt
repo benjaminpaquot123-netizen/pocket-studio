@@ -96,4 +96,34 @@ object WizardAcid {
         val asked = if (pattern.length <= AcidPattern.STEPS_PER_PAGE) feel.copy(phraseBars = 1) else feel
         return AcidGenerator(random).generate(pattern.copy(locked = emptySet()), set, asked).sanitized()
     }
+
+    /**
+     * The Acide tab's « Générer » for [project]: a new line at the line's density and length, its
+     * locked steps kept, with the feel of the style the project was made from (its name, when the
+     * assistant gave it), and in the project's key when it has one: the generator's note set brought
+     * onto the scale from the line's own root, so that a 303 transposed away from the key still
+     * plays the key's notes. Without a key: the generator as it is.
+     */
+    fun generateFor(project: Project, random: Random = Random.Default): AcidPattern {
+        val pattern = project.acid
+        val feel = AcidGenerator.Feel.forStyle(StarterWizard.STYLES.firstOrNull { it.name == project.name }?.id.orEmpty())
+        val asked = if (pattern.length <= AcidPattern.STEPS_PER_PAGE) feel.copy(phraseBars = 1) else feel
+        val harmony = project.harmony
+        if (harmony.scale == Scale.Off) return AcidGenerator(random).generate(pattern, feel = asked)
+        val set = AcidGenerator.NOTE_SETS.random(random).map { o ->
+            (harmony.snap(pattern.root + o) - pattern.root).let { if (it < 0) it + 12 else it }
+        }
+        val line = AcidGenerator(random).generate(pattern, set, asked)
+        // A rest the generator turns into a note (the phrase's last turn) lands on the line's root: onto the scale too.
+        return line.copy(
+            steps = line.steps.mapIndexed { i, st ->
+                if (!st.gate || i in pattern.locked) st else {
+                    val pitch = pattern.root + st.note + 12 * st.octave
+                    val snapped = harmony.snap(pitch) - pattern.root
+                    // Under the line's root (or over its range): the same scale note an octave up (or down).
+                    st.copy(note = Math.floorMod(snapped, 12), octave = Math.floorDiv(snapped, 12).coerceIn(0, 2))
+                }
+            },
+        ).sanitized()
+    }
 }

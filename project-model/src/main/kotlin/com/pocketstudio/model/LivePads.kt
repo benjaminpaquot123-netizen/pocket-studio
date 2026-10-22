@@ -65,3 +65,24 @@ val Project.sampleFiles: Set<String> get() =
     (allScenes.flatMap { s -> s.drums.lanes.mapNotNull { it.sample?.file } } +
         drums.lanes.mapNotNull { it.sample?.file } + live.clips.mapNotNull { it?.file } +
         audioTracks.mapNotNull { it.clip?.file } + instrumentTracks.mapNotNull { it.sampled.file }).toSet()
+
+/**
+ * The project without the sounds [files] (missing from an imported .zip): a drum pad goes back to
+ * its kit sound, a live pad or an audio clip goes empty, a sampled track keeps its notes and plays
+ * its synth until a sound is chosen again.
+ */
+fun Project.withoutSounds(files: Set<String>): Project {
+    if (files.isEmpty()) return this
+    fun DrumPattern.cleaned() = copy(lanes = lanes.map { lane -> if (lane.sample?.file?.let { it in files } == true) lane.copy(sample = null) else lane })
+    fun SampledPatch.cleaned() = if (file?.let { it in files } == true) copy(file = null, name = "") else this
+    return copy(
+        drums = drums.cleaned(),
+        scenes = scenes.map { it.copy(drums = it.drums.cleaned()) },
+        live = live.copy(clips = live.clips.map { c -> c?.takeIf { it.file !in files } }),
+        audioTracks = audioTracks.map { t ->
+            t.copy(clip = t.clip?.takeIf { it.file !in files }, previous = t.previous?.takeIf { it.file !in files })
+        },
+        sampled = sampled.cleaned(),
+        tracks = tracks.map { it.copy(sampled = it.sampled.cleaned()) },
+    ).sanitized()
+}

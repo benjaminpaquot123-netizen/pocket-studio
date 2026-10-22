@@ -31,6 +31,6 @@
 namespace stmlib {
 
 /* static */
-uint32_t Random::rng_state_ = 0x21;
+std::atomic<uint32_t> Random::rng_state_{0x21};  // Pocket Studio: atomic (see random.h)
 
 }  // namespace stmlib

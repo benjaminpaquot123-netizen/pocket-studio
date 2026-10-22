@@ -112,7 +112,7 @@ class StarterWizardTest {
                 assertEquals(StarterWizard.progressionOf(style, mood).first, p.harmony.scale)
                 // Club music with a riser gets its « Montée » track after the parts.
                 val riser = style.riser && style.form != StarterWizard.SongForm.Song
-                assertEquals(listOf("Basse", "Nappe", "Lead") + listOfNotNull(StarterWizard.RISER_TRACK.takeIf { riser }), p.instrumentTracks.map { it.name })
+                assertEquals(listOf("Basse", StarterWizard.trackName(P.Pad, parts[P.Pad], style), "Lead") + listOfNotNull(StarterWizard.RISER_TRACK.takeIf { riser }), p.instrumentTracks.map { it.name })
                 for (t in p.instrumentTracks.take(3)) {
                     val notes = p.notesOf(t.id)
                     assertTrue("${style.name} $mood ${t.name}", notes.notes.isNotEmpty())
@@ -219,7 +219,8 @@ class StarterWizardTest {
             assertEquals(line.role.title, expected, p.drumsIn(line.role))
         }
         val (bass, pad, lead) = p.instrumentTracks
-        assertEquals(listOf("Basse", "Nappe", "Lead"), listOf(bass.name, pad.name, lead.name))
+        // The pop's chords are a piano: its track is named so (a beginner looks for « le piano »).
+        assertEquals(listOf("Basse", "Piano", "Lead"), listOf(bass.name, pad.name, lead.name))
         assertEquals(listOf(false, true, true), p.notesIn(bass.id))
         assertEquals(listOf(true, true, true), p.notesIn(pad.id))
         assertEquals(listOf(false, false, true), p.notesIn(lead.id))
@@ -354,15 +355,26 @@ class StarterWizardTest {
             val plan = StarterWizard.planFor(style, lines.keys, parts.keys, acid = melody && style.melody.acid != null)
             assertEquals(style.name, p.song, StarterWizard.songOf(style, plan))
             assertEquals(style.name, seconds, StarterWizard.songSeconds(style, plan), 0.01)
-            // Couplets and Refrains (Grooves and Drops) of 16 bars at least, whatever the tempo; a Montée of 8.
+            // Couplets and Refrains (Grooves and Drops) of 16 bars at least, whatever the tempo; a Montée of 8;
+            // a slow song's second Couplet of 8, so that it stays under 3 min 30.
             val sections = StarterWizard.sectionsOf(style.bpm, plan.form, plan.hasBreak)
             val montee = plan.form == StarterWizard.SongForm.Build
-            assertTrue(style.name, sections.filter { it.second in 1..2 }.all { it.first >= if (montee && it.second == 1) StarterWizard.BUILD_BARS else 16 })
+            val secondCouplet = sections.withIndex().filter { it.value.second == 1 }.drop(1).map { it.index }.toSet()
+            assertTrue(style.name, sections.withIndex().filter { it.value.second in 1..2 }.all { (i, s) ->
+                s.first >= when {
+                    montee && s.second == 1 -> StarterWizard.BUILD_BARS
+                    plan.form == StarterWizard.SongForm.Song && i in secondCouplet -> 8
+                    else -> 16
+                }
+            })
+            assertTrue("${style.name} $melody: $seconds s", seconds <= StarterWizard.MAX_SONG_SECONDS)
         }
         // A song: 16-bar Couplets and Refrains, an 8-bar Intro, 4 bars when that would last over 3 min 30.
         assertEquals(listOf(2, 4, 4, 4, 4, 2), StarterWizard.songOf(4, 128.0).map { it.repeats })
         assertEquals(listOf(2, 4, 4, 4, 4, 2), StarterWizard.songOf(4, 95.0).map { it.repeats })  // 3 min 22 (was 1 min 41)
         assertEquals(listOf(1, 4, 4, 4, 4, 1), StarterWizard.songOf(4, 85.0).map { it.repeats })
+        // Slower (lo-fi, 80 BPM): the second Couplet of 8 bars, 3 min 12 instead of 3 min 36.
+        assertEquals(listOf(1, 4, 4, 2, 4, 1), StarterWizard.songOf(4, 80.0).map { it.repeats })
         assertEquals(listOf(8, 16, 16, 16, 16, 8), StarterWizard.songOf(1, 128.0).map { it.repeats })
         // A section longer than a song part can repeat is cut in two parts of the same scene.
         val fast = StarterWizard.songOf(1, 174.0, form = StarterWizard.SongForm.Club, hasBreak = true)

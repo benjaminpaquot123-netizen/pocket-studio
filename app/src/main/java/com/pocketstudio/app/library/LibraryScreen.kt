@@ -89,7 +89,7 @@ fun LibraryScreen(ui: LibraryUi, actions: LibraryActions) {
         Column(Modifier.fillMaxSize().background(Neon.Background).testTag("library")) {
             Row(Modifier.fillMaxWidth().padding(start = 16.dp, end = 4.dp, top = 8.dp), verticalAlignment = Alignment.CenterVertically) {
                 Column(Modifier.weight(1f)) {
-                    Text(tr("Bibliothèque de sons"), style = MaterialTheme.typography.titleLarge)
+                    com.pocketstudio.ui.WholeWordsText(tr("Bibliothèque de sons"), style = MaterialTheme.typography.titleLarge)
                     Text(tr("Pour %s", ui.target), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
                 }
                 // The song's Play/Stop, as discreet as in the top bar: stop it to hear the sounds alone.
@@ -235,7 +235,7 @@ private fun PackList(ui: LibraryUi, actions: LibraryActions) {
                         when {
                             progress != null -> TextButton(onClick = { actions.cancelDownload(entry.id) }) { Text(tr("Annuler")) }
                             installed -> TextButton(onClick = { deleting = entry.id }, modifier = Modifier.testTag("library_delete_${entry.id}")) {
-                                Text(tr("Supprimer"), color = Neon.Red)
+                                Text(tr("Supprimer"), color = Neon.RedText)
                             }
                             else -> OutlinedButton(onClick = { actions.download(entry.id) }, modifier = Modifier.testTag("library_download_${entry.id}")) {
                                 Text(tr("Télécharger"))
@@ -254,7 +254,7 @@ private fun PackList(ui: LibraryUi, actions: LibraryActions) {
             text = { Text(tr("Les sons de « %s » quittent l'appareil. Tes projets gardent ceux qu'ils utilisent ; pour les autres, il faudra retélécharger le pack.", name)) },
             confirmButton = {
                 TextButton(onClick = { deleting = null; actions.deletePack(id) }, modifier = Modifier.testTag("library_delete_confirm")) {
-                    Text(tr("Supprimer"), color = Neon.Red)
+                    Text(tr("Supprimer"), color = Neon.RedText)
                 }
             },
             dismissButton = { TextButton(onClick = { deleting = null }) { Text(tr("Annuler")) } },

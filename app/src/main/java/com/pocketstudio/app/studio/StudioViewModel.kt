@@ -26,6 +26,13 @@ class StudioViewModel : ViewModel() {
         if (NativeEngine.isAvailable) NativeEngine.setPlaying(_state.value.playing)
     }
 
+    /** The test tone stops (its page left): it never goes on under the music elsewhere. */
+    fun stop() {
+        if (!_state.value.playing) return
+        _state.update { it.copy(playing = false) }
+        if (NativeEngine.isAvailable) NativeEngine.setPlaying(false)
+    }
+
     fun setFrequency(hz: Float) {
         _state.update { it.copy(frequencyHz = hz) }
         if (NativeEngine.isAvailable) NativeEngine.setFrequency(hz)

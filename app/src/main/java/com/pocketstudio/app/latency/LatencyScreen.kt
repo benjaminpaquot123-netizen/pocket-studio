@@ -81,7 +81,7 @@ fun LatencyScreen(
                         style = MaterialTheme.typography.bodySmall,
                     )
                     is LatencyUiState.Failed -> {
-                        Text(state.message, color = Neon.Red)
+                        Text(state.message, color = Neon.RedText)
                         lastRoundTripMs?.let {
                             Text(tr("Dernière mesure réussie : %s", IssueReport.formatMs(it, onScreen = true)), color = Neon.TextSecondary)
                         }

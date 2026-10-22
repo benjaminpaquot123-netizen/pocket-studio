@@ -1,4 +1,5 @@
 #include "Mixer.h"
+#include "Params.h"
 
 #include <algorithm>
 
@@ -51,13 +52,13 @@ void Mixer::prepare(int sampleRate) {
 
 void Mixer::setVolume(int ch, float v) {
     if (ch < 0 || ch >= kChannels || ch == kMaster) return;
-    strips_[static_cast<size_t>(ch)].volume = std::clamp(v, 0.0f, 1.0f);
+    if (!clampSetting(strips_[static_cast<size_t>(ch)].volume, v, 0.0f, 1.0f)) return;
     updateTargets();
 }
 
 void Mixer::setPan(int ch, float pan) {
     if (ch < 0 || ch >= kChannels || ch == kMaster) return;
-    strips_[static_cast<size_t>(ch)].pan = std::clamp(pan, -1.0f, 1.0f);
+    if (!clampSetting(strips_[static_cast<size_t>(ch)].pan, pan, -1.0f, 1.0f)) return;
     updateTargets();
 }
 
@@ -159,7 +160,7 @@ void Mixer::processInserts(int ch, float* l, float* r, int n) {
 
 void Mixer::setSend(int ch, int bus, float level) {
     if (ch < 0 || ch >= kChannels || ch == kMaster || bus < 0 || bus >= kBuses) return;
-    strips_[static_cast<size_t>(ch)].send[static_cast<size_t>(bus)] = std::clamp(level, 0.0f, 1.0f);
+    if (!clampSetting(strips_[static_cast<size_t>(ch)].send[static_cast<size_t>(bus)], level, 0.0f, 1.0f)) return;
     updateTargets();
 }
 
@@ -445,19 +446,29 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
         }
     }
     if (activeInserts_[kMaster] > 0 && masterFxOn_) processInserts(kMaster, mL_.data(), mR_.data(), n);
-    // Always runs: the repeat and the tape stop need the last seconds already recorded.
-    perf_.process(mL_.data(), mR_.data(), n);
-    // The same guard as the strips', on the master's own effects: one NaN left there would keep
-    // the whole output silent for good.
-    bool masterFinite = true;
-    for (int i = 0; i < n; ++i) masterFinite &= std::isfinite(mL_[static_cast<size_t>(i)]) && std::isfinite(mR_[static_cast<size_t>(i)]);
-    if (!masterFinite) {
+    // The same guard as the strips', on the send effects and the master's own effects: one NaN
+    // left there would keep the whole output silent for good. Checked before the Live effects,
+    // which write what they hear into their memory with every NaN made 0 (the NaN's source would
+    // then never be found nor reset), and once more after them, for their own state.
+    auto finiteMix = [this, n]() {
+        bool finite = true;
+        for (int i = 0; i < n; ++i) finite &= std::isfinite(mL_[static_cast<size_t>(i)]) && std::isfinite(mR_[static_cast<size_t>(i)]);
+        return finite;
+    };
+    if (!finiteMix()) {
         std::fill(mL_.begin(), mL_.begin() + n, 0.0f);
         std::fill(mR_.begin(), mR_.begin() + n, 0.0f);
         for (auto& slot : inserts_[kMaster]) slot.reset();
-        perf_.recover();
         reverb_.reset();
         delay_.reset();
+        blewUp_.store(true, std::memory_order_relaxed);
+    }
+    // Always runs: the repeat and the tape stop need the last seconds already recorded.
+    perf_.process(mL_.data(), mR_.data(), n);
+    if (!finiteMix()) {
+        std::fill(mL_.begin(), mL_.begin() + n, 0.0f);
+        std::fill(mR_.begin(), mR_.begin() + n, 0.0f);
+        perf_.recover();
         blewUp_.store(true, std::memory_order_relaxed);
     }
 

@@ -409,7 +409,8 @@ private fun PresetsCard(patch: SynthPatch, actions: SynthActions, browser: Sound
     NeonCard {
         SectionLabel(tr("Sons prêts à jouer"), foldKey = "Sons prêts à jouer")
         if (browser != null) SoundBrowser(browser)
-        else Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) { PresetChips(patch, actions) }
+        // Chips go to a second line rather than squeeze (« Pluck » cut in two on a narrow screen).
+        else androidx.compose.foundation.layout.FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) { PresetChips(patch, actions) }
     }
 }
 

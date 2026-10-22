@@ -37,6 +37,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.widthIn
@@ -277,8 +280,6 @@ fun AppRoot() {
     var libraryLive by rememberSaveable { mutableIntStateOf(-1) }
     // ... or for the selected instrument track's sampled sound.
     var libraryTrack by rememberSaveable { mutableStateOf(false) }
-    // Bumped at every close: a sound still loading when the library closed lands nowhere.
-    var libraryToken by remember { mutableIntStateOf(0) }
     if (showLibrary) {
         val packsUi by libraryVm.packs.collectAsStateWithLifecycle()
         val previewing by libraryVm.playing.collectAsStateWithLifecycle()
@@ -293,7 +294,8 @@ fun AppRoot() {
                 packsUi.installed.associate { it.id to com.pocketstudio.app.library.PackStore.bytesOnDisk(context, it.id) }
             }
         }
-        val close = { libraryVm.stopPreview(); showLibrary = false; libraryLive = -1; libraryTrack = false; libraryToken += 1 }
+        // A sound still loading when the library closed lands nowhere (libraryVm.closed()).
+        val close = { libraryVm.closed(); showLibrary = false; libraryLive = -1; libraryTrack = false }
         val live = libraryLive
         val forTrack = libraryTrack
         val libProject by rhythmVm.project.collectAsStateWithLifecycle()
@@ -322,9 +324,7 @@ fun AppRoot() {
                         togglePlay = rhythmVm::togglePlay,
                         preview = libraryVm::preview,
                         use = { option ->
-                            val token = libraryToken
                             libraryVm.use(option.ref) { pcm ->
-                                if (token != libraryToken) return@use
                                 val name = option.name.substringBefore(" · ")
                                 val placed = when {
                                     forTrack -> rhythmVm.useAsTrackSound(pcm, name, (option.ref as? com.pocketstudio.app.library.SoundRef.Pack)?.sound?.kind)
@@ -462,17 +462,19 @@ fun AppRoot() {
                             if (p.id == rhythmVm.projectId) openScope.launch { rhythmVm.renameProject(name); rhythmVm.flushNow(); projectsVm.refresh() }
                             else projectsVm.rename(p.id, name)
                         },
-                        duplicate = { p -> openScope.launch { if (p.id == rhythmVm.projectId) rhythmVm.flushNow(); projectsVm.duplicate(p) } },
+                        // The open project is saved first; not saved (a full phone): refused, not copied as it was on disk.
+                        duplicate = { p -> projectsVm.duplicate(p, saveFirst = { p.id != rhythmVm.projectId || rhythmVm.flushNow() }) },
                         exportZip = { p ->
-                            openScope.launch {
-                                if (p.id == rhythmVm.projectId) rhythmVm.flushNow()
-                                projectsVm.exportZip(p) { file -> WavExporter.share(context, listOf(file), tr("Envoyer le projet")) }
+                            projectsVm.exportZip(p, saveFirst = { p.id != rhythmVm.projectId || rhythmVm.flushNow() }) { file ->
+                                WavExporter.share(context, listOf(file), tr("Envoyer le projet"))
                             }
                         },
                         importZip = { pickProjectZip.launch(arrayOf("application/zip", "application/x-zip-compressed", "application/octet-stream")) },
                         delete = projectsVm::delete,
                         undoDelete = projectsVm::undoDelete,
                         restore = projectsVm::restore,
+                        deleteForever = projectsVm::deleteForever,
+                        emptyTrash = projectsVm::emptyTrash,
                         dismissDeleted = projectsVm::dismissDeleted,
                         dismissMessage = projectsVm::dismissMessage,
                         shareSong = { showProjects = false; shareSong() },
@@ -737,10 +739,10 @@ fun AppRoot() {
             )
             if (saveError != null) {
                 Text(
-                    tr("Sauvegarde impossible (mémoire pleine ?). Tes dernières modifications ne sont pas encore sauvegardées."),
+                    tr("Sauvegarde impossible (mémoire pleine ?). Tes dernières modifications ne sont pas encore sauvegardées. Pour faire de la place : Mes projets › Corbeille › Vider la corbeille."),
                     color = Color.Black,
                     style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.fillMaxWidth().background(Neon.Amber).padding(8.dp)
+                    modifier = Modifier.fillMaxWidth().background(Neon.Amber).windowInsetsPadding(SIDE_INSETS).padding(8.dp)
                         .testTag("save_error"),
                 )
             }
@@ -749,7 +751,7 @@ fun AppRoot() {
             if (loopGrown) {
                 // Said where the eyes are during the count-in, without a window in front of the keys.
                 Row(
-                    Modifier.fillMaxWidth().background(Neon.Surface).padding(start = 12.dp, end = 4.dp).testTag("take_loop_grown"),
+                    Modifier.fillMaxWidth().background(Neon.Surface).windowInsetsPadding(SIDE_INSETS).padding(start = 12.dp, end = 4.dp).testTag("take_loop_grown"),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
@@ -1126,7 +1128,8 @@ fun AppRoot() {
                             LaunchedEffect(analyserOn) {
                                 if (analyserOn) lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollSpectrum() }
                             }
-                            val meters by rhythmVm.meters.collectAsStateWithLifecycle()
+                            // Read only by the meters when they draw: a reading (20 a second) composes nothing.
+                            val meters = rhythmVm.meters.collectAsStateWithLifecycle()
                             val export by rhythmVm.export.collectAsStateWithLifecycle()
                             LaunchedEffect(Unit) {
                                 lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollMeters() }
@@ -1139,7 +1142,7 @@ fun AppRoot() {
                             }
                             MixerScreen(
                                 channels = project.mixer.channels,
-                                meters = meters,
+                                meters = { meters.value },
                                 actions = MixerActions(
                                     setVolume = rhythmVm::setChannelVolume,
                                     setPan = rhythmVm::setChannelPan,
@@ -1343,9 +1346,9 @@ fun AppRoot() {
                                 val reading by rhythmVm.tuner.collectAsStateWithLifecycle()
                                 val micOk by rhythmVm.tunerMic.collectAsStateWithLifecycle()
                                 val settings by SettingsStore.state.collectAsStateWithLifecycle()
-                                var granted by remember {
-                                    mutableStateOf(ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED)
-                                }
+                                var granted by remember { mutableStateOf(hasMic(context)) }
+                                // Back from the device's settings (« Autoriser le micro » there): read again.
+                                LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { granted = hasMic(context) }
                                 val ask = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
                                     granted = it
                                     if (!it) permissionHelp = MIC_REFUSED
@@ -1582,6 +1585,8 @@ fun AppRoot() {
                                 }
                                 ToolPage.Son -> {
                                     val state by studioVm.state.collectAsStateWithLifecycle()
+                                    // Leaving the page (another tab, another tool) stops the 440 Hz.
+                                    androidx.compose.runtime.DisposableEffect(studioVm) { onDispose { studioVm.stop() } }
                                     StudioScreen(
                                         state = state,
                                         stream = stream,
@@ -1634,7 +1639,7 @@ private fun LaunchPrompts(vm: MainViewModel) {
                 text = {
                     // Long notes scroll: the buttons always stay on screen.
                     Column(Modifier.verticalScroll(androidx.compose.foundation.rememberScrollState())) {
-                        if (u is UpdateState.Failed) Text(tr("Le téléchargement a échoué, on retente ?"), color = Neon.Red)
+                        if (u is UpdateState.Failed) Text(tr("Le téléchargement a échoué, on retente ?"), color = Neon.RedText)
                         Text(info.notes.ifBlank { tr("Une nouvelle version est prête.") })
                     }
                 },
@@ -1655,6 +1660,10 @@ private fun LaunchPrompts(vm: MainViewModel) {
 
 /** The tabs that edit one scene: the top bar shows which, and picks another. */
 private val SCENE_TABS = setOf(AppTab.Rythme, AppTab.Acide, AppTab.Synthe)
+
+/** The lines under the top bar keep clear of a side navigation bar and the camera hole (lying down). */
+private val SIDE_INSETS: androidx.compose.foundation.layout.WindowInsets
+    @Composable get() = androidx.compose.foundation.layout.WindowInsets.safeDrawing.only(androidx.compose.foundation.layout.WindowInsetsSides.Horizontal)
 
 /** The top bar's scene chip: every scene of the session by its title, the one edited, the empty ones. */
 internal fun sceneChip(p: Project): SceneChipUi {
@@ -1786,6 +1795,8 @@ fun liveActionsOf(
     launchRow = vm::launchRow,
     stopTrack = vm::stopLiveTrack,
     stopAll = vm::stopLiveAll,
+    press = vm::pressLive,
+    retract = vm::retractLive,
     toggleMute = vm::toggleLiveMute,
     performance = vm::livePerformance,
     setReturn = vm::setLiveReturn,

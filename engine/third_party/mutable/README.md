@@ -1,4 +1,5 @@
-Vendored subset of Mutable Instruments' code (MIT license, Emilie Gillet), unmodified:
+Vendored subset of Mutable Instruments' code (MIT license, Emilie Gillet), unmodified except
+`stmlib/utils/random.{h,cc}` (the generator's state is a relaxed atomic, for engines on two threads):
 
 - `plaits/dsp`, `plaits/resources.{cc,h}` from https://github.com/pichenettes/eurorack
   at commit f4cfa7697095a28d292bff758beb51deb49b5a86 (STM32F projects: MIT, see each file's header)

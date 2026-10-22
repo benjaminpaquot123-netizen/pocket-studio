@@ -89,10 +89,12 @@ private fun ScaleKeys(
     val scale = if (harmony.scale == Scale.Off) Scale.Major else harmony.scale
     val root = if (harmony.scale == Scale.Off) 0 else Math.floorMod(harmony.root, 12)
     val notes = scale.intervals.map { octaveStart + root + it } + (octaveStart + root + 12)
+    val key = Harmony(root, scale)
     Row(Modifier.fillMaxWidth().height(height).testTag(tag), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
         notes.forEachIndexed { i, note ->
             ScaleKey(
-                note = note, name = noteName(note, english), degree = i + 1, isRoot = i == 0 || i == notes.lastIndex,
+                // Spelt as the key writes it (Mi♭ mineur: Sol♭, not Fa♯), as the chord pads name their chords.
+                note = note, name = key.noteName(note, english), degree = i + 1, isRoot = i == 0 || i == notes.lastIndex,
                 onNoteOn = onNoteOn, onNoteOff = onNoteOff, modifier = Modifier.weight(1f).fillMaxHeight().testTag("${keyTag}_$note"),
             )
         }

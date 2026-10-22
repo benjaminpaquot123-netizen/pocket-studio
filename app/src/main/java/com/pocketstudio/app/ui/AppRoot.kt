@@ -215,12 +215,13 @@ internal enum class ToolPage {
     }
 }
 
-/** Ways to start a new project (Mes projets › Nouveau projet), by group (the guided song comes apart). */
+/**
+ * Ways to start a new project (Mes projets › Nouveau projet), by group, besides the guided song
+ * and the assistant's styles made whole in one touch (shown by the page itself).
+ */
 internal val PROJECT_STARTERS: List<Pair<ProjectStarter, () -> Project>> = listOf(
     ProjectStarter("Rythme de départ", "Un rythme et une ligne d'acide prêts à tourner.", "starter", StarterGroup.Style) to { RhythmViewModel.starterProject("") },
-) + com.pocketstudio.model.Genres.ALL.mapIndexed { i, (title, description, build) ->
-    ProjectStarter(title, description, "genre_$i", StarterGroup.Style) to build
-} + com.pocketstudio.model.Demos.ALL.mapIndexed { i, (title, description, build) ->
+) + com.pocketstudio.model.Demos.ALL.mapIndexed { i, (title, description, build) ->
     ProjectStarter(title.removePrefix("Démo · "), description, "demo_$i", StarterGroup.Demo) to build
 } + listOf(
     ProjectStarter("Projet vide", "Tout est vierge : à toi de jouer.", "empty", StarterGroup.Empty) to { Project(name = "") },
@@ -440,6 +441,7 @@ fun AppRoot() {
     }
     if (showProjects) {
         val projectsUi by projectsVm.state.collectAsStateWithLifecycle()
+        val quickUi by libraryVm.quick.collectAsStateWithLifecycle()
         LaunchedEffect(Unit) { projectsVm.refresh() }
         androidx.activity.compose.BackHandler { showProjects = false }
         androidx.compose.ui.window.Dialog(
@@ -449,7 +451,8 @@ fun AppRoot() {
             androidx.compose.material3.Surface(color = Neon.Background, modifier = Modifier.fillMaxSize()) {
                 ProjectsScreen(
                     projectsUi, rhythmVm.projectId, PROJECT_STARTERS.map { it.first },
-                    ProjectsActions(
+                    quick = quickUi,
+                    actions = ProjectsActions(
                         back = { showProjects = false },
                         open = { openProject(it.id) },
                         create = { i -> projectsVm.create(PROJECT_STARTERS[i].second()) { id -> openProject(id) } },
@@ -457,6 +460,22 @@ fun AppRoot() {
                             rhythmVm.stop()
                             libraryVm.openWizard()
                         },
+                        // A style's whole song in one touch: the assistant's own song, its guide after.
+                        quickStyle = { id ->
+                            rhythmVm.stop()
+                            libraryVm.quickCreate(id) { project, sounds, guide ->
+                                projectsVm.create(project, sounds, failed = libraryVm::quickFailed) { newId ->
+                                    songGuide = guide
+                                    libraryVm.quickDone()
+                                    openProject(newId)
+                                }
+                            }
+                        },
+                        customStyle = { id ->
+                            rhythmVm.stop()
+                            libraryVm.openWizard(id)
+                        },
+                        dismissQuickError = libraryVm::dismissQuickError,
                         rename = { p, name ->
                             // The open project: saved first, so the list reads its new name.
                             if (p.id == rhythmVm.projectId) openScope.launch { rhythmVm.renameProject(name); rhythmVm.flushNow(); projectsVm.refresh() }
@@ -698,6 +717,7 @@ fun AppRoot() {
             val topUndo by rhythmVm.session.canUndo.collectAsStateWithLifecycle()
             val topRedo by rhythmVm.session.canRedo.collectAsStateWithLifecycle()
             val topRecording by rhythmVm.recording.collectAsStateWithLifecycle()
+            val topRecordInto by rhythmVm.recordInto.collectAsStateWithLifecycle()
             val topTake by rhythmVm.audioRecording.collectAsStateWithLifecycle()
             val topSaving by rhythmVm.takeSaving.collectAsStateWithLifecycle()
             val topPerformance by rhythmVm.take.collectAsStateWithLifecycle()
@@ -715,6 +735,7 @@ fun AppRoot() {
                     // The Audio tracks screen records on the scene shown: it can be changed from there.
                     scene = if (tab in SCENE_TABS || (tab == AppTab.Audio && audioPage == 0)) sceneChip(topProject) else null,
                     saved = saveError == null && !topUnsaved,
+                    recordInto = topRecordInto?.let { topProject.sceneTitle(it) },
                 ),
                 TopBarActions(
                     projects = { showProjects = true }, undo = rhythmVm::undo, redo = rhythmVm::redo,
@@ -923,6 +944,7 @@ fun AppRoot() {
                                     toggleSliceMarker = rhythmVm::toggleSliceMarker,
                                     applySlices = rhythmVm::applySlices,
                                     resampleSong = rhythmVm::resampleSong,
+                                    cancelResample = rhythmVm::cancelResample,
                                     importFolder = { pickFolder.launch(null) },
                                     importZip = { pickZip.launch(arrayOf("application/zip", "application/x-zip-compressed", "application/octet-stream")) },
                                     setListenSong = rhythmVm::setListenSong,
@@ -1097,7 +1119,7 @@ fun AppRoot() {
                                 browser = if (project.synthEngine == 1) {
                                     SoundBrowserUi(
                                         SoundCategories.PLAITS, SoundLibrary.PLAITS, favorites.plaits,
-                                        current = (SoundLibrary.PLAITS + favorites.plaits).firstOrNull { it.sound == project.plaits.copy(level = it.sound.level) }?.name,
+                                        current = (SoundLibrary.PLAITS + favorites.plaits).firstOrNull { it.sound == project.plaits.copy(level = it.sound.level, gain = it.sound.gain) }?.name,
                                         pick = { rhythmVm.applyPlaits(SoundLibrary.PLAITS[it].sound.copy(level = project.plaits.level)) },
                                         pickFavorite = { rhythmVm.applyPlaits(favorites.plaits[it].sound) },
                                         deleteFavorite = rhythmVm::deletePlaitsFavorite,
@@ -1109,7 +1131,7 @@ fun AppRoot() {
                                 } else {
                                     SoundBrowserUi(
                                         SoundCategories.SYNTH, SoundLibrary.SYNTH, favorites.synth,
-                                        current = (SoundLibrary.SYNTH + favorites.synth).firstOrNull { it.sound.sanitized() == project.synth.sanitized() }?.name,
+                                        current = (SoundLibrary.SYNTH + favorites.synth).firstOrNull { it.sound.sanitized() == project.synth.withGainOf(it.sound) }?.name,
                                         pick = { rhythmVm.applySynthPreset(SoundLibrary.SYNTH[it].sound) },
                                         pickFavorite = { rhythmVm.applySynthPreset(favorites.synth[it].sound) },
                                         deleteFavorite = rhythmVm::deleteSynthFavorite,

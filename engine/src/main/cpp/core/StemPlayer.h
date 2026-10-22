@@ -22,7 +22,8 @@ public:
     // nullptr when a file is missing or unreadable. Starts with one reference.
     static StemBundle* load(const std::vector<std::string>& wavPaths, int targetRate);
     // Tests: interleaved stereo float at the target rate, one vector per stem, same length.
-    static StemBundle* fromFloat(const std::vector<std::vector<float>>& stereo);
+    // `sameSongAs`: the new bundle stands for a copy of that song at another tempo.
+    static StemBundle* fromFloat(const std::vector<std::vector<float>>& stereo, const StemBundle* sameSongAs = nullptr);
 
     int64_t frames() const { return frames_; }
     const int16_t* stem(int i) const { return data_[static_cast<size_t>(i)].data(); }
@@ -38,11 +39,14 @@ public:
     void retain() { refs_.fetch_add(1, std::memory_order_relaxed); }
     bool release() { return refs_.fetch_sub(1, std::memory_order_acq_rel) == 1; }
     int refCount() const { return refs_.load(std::memory_order_acquire); }
+    // Same for a song and every copy stretched from it (the player maps its position between them).
+    uint64_t song() const { return song_; }
 
 private:
-    StemBundle() = default;
+    StemBundle();
     std::array<std::vector<int16_t>, kStems> data_;
     int64_t frames_ = 0;
+    uint64_t song_ = 0;
     std::atomic<int> refs_{1};
 };
 
@@ -54,12 +58,16 @@ public:
 
     ~StemPlayer();
     void prepare(int sampleRate);
-    // Takes over one reference (nullptr = no song). The previous bundle is retired.
+    // Takes over one reference (nullptr = no song). The previous bundle is retired. While it
+    // plays, the old one crossfades into the new one over 10 ms (nullptr: it fades out); a copy
+    // of the same song at another tempo goes on from the same musical position (the position
+    // and the start frame scaled by the ratio of their lengths).
     void install(StemBundle* bundle);
     void setParam(int stem, int param, float value);
     void setStartFrame(int64_t frame) { startFrame_ = frame < 0 ? 0 : frame; }
 
-    // Starts `offset` frames into the next render() call.
+    // Starts `offset` frames into the next render() call, with a 5 ms fade in (what was playing
+    // fades out under it).
     void start(int offset);
     // Short fade then silence.
     void stop();
@@ -80,9 +88,12 @@ public:
 private:
     void retire(StemBundle* b);
     void updateTargets();
+    // The bundle playing now fades out on its own over `frames` (from its current fade level).
+    void fadeAway(int frames);
+    void renderFrames(float* left, float* right, int from, int to, int wait);
 
     StemBundle* bundle_ = nullptr;
-    SpscQueue<StemBundle*, 16> retired_;
+    SpscQueue<StemBundle*, 64> retired_;
     std::array<float, StemBundle::kStems> gain_{0.8f, 0.8f, 0.8f, 0.8f};
     std::array<bool, StemBundle::kStems> mute_{};
     std::array<bool, StemBundle::kStems> solo_{};
@@ -93,6 +104,15 @@ private:
     bool playing_ = false;
     int fadeLeft_ = 0;
     int fadeLength_ = 240;
+    int fadeIn_ = 0;          // > 0: fading in (start, or the new bundle of a crossfade)
+    int fadeInLength_ = 1;
+    int crossfade_ = 480;     // 10 ms
+    // The bundle that played before, fading out at its own position (it holds a reference).
+    struct Outgoing {
+        StemBundle* bundle = nullptr;
+        int64_t pos = 0;
+        int left = 0, length = 1;
+    } out_;
     bool live_ = true;
     int liveAt_ = -1;       // frame of the next render() where the live gain starts to move, -1 none
     float liveGain_ = 1.0f; // 1 = heard: the plain mix, sample for sample

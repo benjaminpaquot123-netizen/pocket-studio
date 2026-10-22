@@ -13,6 +13,9 @@ data class SynthPatch(val values: List<Float> = DEFAULTS) {
     fun with(index: Int, value: Float): SynthPatch =
         copy(values = sanitized().values.toMutableList().also { it[index] = value.coerceIn(0f, 1f) })
 
+    /** This sound with [other]'s loudness calibration ([GAIN]): the same sound, whatever its calibration. */
+    fun withGainOf(other: SynthPatch): SynthPatch = with(GAIN, other.get(GAIN))
+
     fun sanitized(): SynthPatch =
         SynthPatch(List(PARAM_COUNT) { i -> values.getOrElse(i) { DEFAULTS[i] }.finite(DEFAULTS[i]).coerceIn(0f, 1f) })
 
@@ -32,7 +35,21 @@ data class SynthPatch(val values: List<Float> = DEFAULTS) {
         const val LFO2_SYNC = 26
         /** Portamento (0 = none, up to 0.5 s): a note that starts while another is held slides from it. */
         const val GLIDE = 27
-        const val PARAM_COUNT = 28
+        /**
+         * The sound's loudness calibration (0.5 = 0 dB, 0..1 = -30..+30 dB, engine Synth::Gain): set by
+         * the library so that every sound plays about as loud as the others; not a knob.
+         */
+        const val GAIN = 28
+        const val PARAM_COUNT = 29
+
+        /** Decibels of [GAIN] at 0 and 1 (engine Synth::kGainRangeDb). */
+        const val GAIN_RANGE_DB = 30f
+
+        /** The [GAIN] (or [PlaitsPatch.gain]) value of [db] decibels. */
+        fun gainValue(db: Float): Float = (0.5f + db / (2 * GAIN_RANGE_DB)).coerceIn(0f, 1f)
+
+        /** The decibels of a [GAIN] (or [PlaitsPatch.gain]) value. */
+        fun gainDb(value: Float): Float = (value - 0.5f) * 2 * GAIN_RANGE_DB
 
         /** Tempo divisions of [LFO2_SYNC] (engine Synth::kSyncDivisions), free included. */
         const val SYNC_DIVISIONS = 8
@@ -51,6 +68,7 @@ data class SynthPatch(val values: List<Float> = DEFAULTS) {
             0.5f, 0f, 0.3f, 0f, 0.6f,
             0f, 0.3f,
             0f, 0f,
+            0.5f,
         )
 
         /** Ready-made sounds: name -> patch. Waves: 0 = saw, 0.5 = square, 1 = triangle. */
@@ -62,8 +80,9 @@ data class SynthPatch(val values: List<Float> = DEFAULTS) {
                 .with(RESONANCE, 0.45f).with(VIBRATO, 0.15f).with(LFO1_RATE, 0.55f).with(A_RELEASE, 0.3f),
             "Nappe" to SynthPatch(DEFAULTS).with(OSC2_DETUNE, 0.8f).with(CUTOFF, 0.5f).with(FILTER_ENV, 0.2f)
                 .with(A_ATTACK, 0.65f).with(A_SUSTAIN, 0.9f).with(A_RELEASE, 0.75f).with(SWEEP, 0.3f).with(LFO2_RATE, 0.2f),
+            // Decays of about 50 ms (filter) and 140 ms (level): a pluck, not a click.
             "Pluck" to SynthPatch(DEFAULTS).with(OSC1_WAVE, 0.5f).with(CUTOFF, 0.35f).with(RESONANCE, 0.5f)
-                .with(FILTER_ENV, 0.7f).with(F_DECAY, 0.2f).with(F_SUSTAIN, 0f).with(A_DECAY, 0.35f)
+                .with(FILTER_ENV, 0.7f).with(F_DECAY, 0.45f).with(F_SUSTAIN, 0f).with(A_DECAY, 0.58f)
                 .with(A_SUSTAIN, 0f).with(A_RELEASE, 0.25f),
         )
     }

@@ -6,6 +6,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.assertTextEquals
+import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import com.pocketstudio.app.library.IndexState
@@ -104,14 +105,19 @@ class OnboardingUiTest {
     fun newProjectChoicesAreGroupedUnderHeadings() {
         var wizard = 0
         val created = mutableListOf<Int>()
+        val quick = mutableListOf<String>()
+        val custom = mutableListOf<String>()
         val starters = listOf(
-            ProjectStarter("Techno", "4/4", "genre_0", StarterGroup.Style),
+            ProjectStarter("Rythme de départ", "Un rythme", "starter", StarterGroup.Style),
             ProjectStarter("Acid house", "Démo", "demo_0", StarterGroup.Demo),
             ProjectStarter("Projet vide", "Vierge", "empty", StarterGroup.Empty),
         )
         compose.setContent {
             PocketStudioTheme {
-                ProjectsScreen(ProjectsUi(loading = false), "p-0", starters, ProjectsActions(wizard = { wizard++ }, create = { created += it }))
+                ProjectsScreen(
+                    ProjectsUi(loading = false), "p-0", starters,
+                    ProjectsActions(wizard = { wizard++ }, create = { created += it }, quickStyle = { quick += it }, customStyle = { custom += it }),
+                )
             }
         }
         // The guided song is the main button of the list.
@@ -119,8 +125,56 @@ class OnboardingUiTest {
         assertEquals(1, wizard)
         compose.onNodeWithTag("project_new").performClick()
         for (heading in listOf("GUIDÉ", "PARTIR D'UN STYLE", "ÉCOUTER UNE DÉMO", "VIDE")) compose.onNodeWithText(heading).assertExists()
+        // The assistant's styles, the best known first: one touch makes the whole song.
+        val best = StarterWizard.STYLES.take(StarterWizard.BEST_KNOWN)
+        best.forEach { compose.onNodeWithTag("quick_style_${it.id}").assertExists() }
+        compose.onNodeWithTag("quick_style_${StarterWizard.STYLES[StarterWizard.BEST_KNOWN].id}").assertDoesNotExist()
+        compose.onNodeWithTag("quick_style_techno").performScrollTo().performClick()
+        compose.onNodeWithTag("quick_style_house").performScrollTo().performClick()
+        assertEquals(listOf("techno", "house"), quick)
+        // « Personnaliser pas à pas » opens the assistant on that style.
+        compose.onNodeWithTag("quick_custom_trap").performScrollTo().performClick()
+        assertEquals(listOf("trap"), custom)
+        // Every style of the assistant on demand, and each family alone.
+        compose.onNodeWithTag("quick_more").performScrollTo().performClick()
+        StarterWizard.STYLES.forEach { compose.onNodeWithTag("quick_style_${it.id}").assertExists() }
+        compose.onNodeWithTag("quick_families").performScrollTo()  // up the list, then along the chips
+        compose.onNodeWithTag("quick_family_Bass music").performScrollTo().performClick()
+        compose.onNodeWithTag("quick_family_Bass music").assertIsSelected()
+        compose.onNodeWithTag("quick_style_dnb").assertExists()
+        compose.onNodeWithTag("quick_style_house").assertDoesNotExist()
+        // The other starters still there; the old one-scene genres are gone.
+        compose.onNodeWithTag("starter_starter").assertExists()
+        compose.onNodeWithTag("starter_genre_0").assertDoesNotExist()
         compose.onNodeWithTag("starter_demo_0").performScrollTo().performClick()
         assertEquals(listOf(1), created)
+    }
+
+    @Test
+    fun aStyleSongBeingPreparedIsShownAndTheOtherChoicesWait() {
+        val quick = mutableListOf<String>()
+        var dismissed = 0
+        var state by androidx.compose.runtime.mutableStateOf(com.pocketstudio.app.library.QuickUi(creating = "house"))
+        compose.setContent {
+            PocketStudioTheme {
+                ProjectsScreen(
+                    ProjectsUi(loading = false), "p-0", emptyList(),
+                    ProjectsActions(quickStyle = { quick += it }, dismissQuickError = { dismissed++ }), quick = state,
+                )
+            }
+        }
+        compose.onNodeWithTag("project_new").performClick()
+        compose.onNodeWithTag("quick_preparing", useUnmergedTree = true).assertExists()
+        compose.onNodeWithText("Préparation du morceau…", substring = true).assertExists()
+        compose.onNodeWithTag("quick_style_techno").performScrollTo().performClick()
+        assertTrue(quick.isEmpty())
+        // A failure is said in plain words, and the styles can be touched again.
+        state = com.pocketstudio.app.library.QuickUi(error = "Le morceau n'a pas pu être préparé (son illisible : Kick).")
+        compose.onNodeWithTag("quick_preparing").assertDoesNotExist()
+        compose.onNodeWithTag("quick_error").assertTextEquals("Le morceau n'a pas pu être préparé (son illisible : Kick).").performClick()
+        assertEquals(1, dismissed)
+        compose.onNodeWithTag("quick_style_techno").performScrollTo().performClick()
+        assertEquals(listOf("techno"), quick)
     }
 
     @Test

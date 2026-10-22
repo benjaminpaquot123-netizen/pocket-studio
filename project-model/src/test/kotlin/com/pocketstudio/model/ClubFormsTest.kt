@@ -23,7 +23,7 @@ class ClubFormsTest {
 
     @Test
     fun bassMusicBuildsUpWithoutKickThenDrops() {
-        for (id in listOf("dnb", "liquid_dnb", "neurofunk", "dubstep", "riddim", "gabber")) {
+        for (id in listOf("dnb", "liquid_dnb", "neurofunk", "jump_up", "dubstep", "riddim", "gabber")) {
             val s = style(id)
             assertEquals(id, StarterWizard.SongForm.Build, s.form)
             val p = full(s)

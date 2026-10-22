@@ -46,8 +46,8 @@ class StyleRecipesUpToDateTest {
         assertEquals(SoundLibrary.ACID.map { it.name }.toSet(), list("acid_sounds"))
         assertEquals(FxPresets.ALL.map { it.id }.toSet(), list("fx_presets"))
         assertEquals((EffectType.entries - EffectType.NONE).map { it.name }.toSet(), list("effects"))
-        for (wanted in listOf("Sirène", "Souffle")) assertEquals(wanted, true, wanted in list("sounds"))
-        for (wanted in listOf("dub_deep", "fat_bass", "scream_lead", "edm_pump", "wide_alive", "pluck_pingpong")) assertEquals(wanted, true, wanted in list("fx_presets"))
+        for (wanted in listOf("Sirène", "Souffle", "Basse growl", "Sub pur")) assertEquals(wanted, true, wanted in list("sounds"))
+        for (wanted in listOf("dub_deep", "fat_bass", "scream_lead", "edm_pump", "wide_alive", "pluck_pingpong", "growl")) assertEquals(wanted, true, wanted in list("fx_presets"))
         for (wanted in listOf("DISTORTION", "ECHO", "REVERB", "OTT", "TAPE_STOP")) assertEquals(wanted, true, wanted in list("effects"))
     }
 }

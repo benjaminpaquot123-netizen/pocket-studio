@@ -83,6 +83,57 @@ class MidiFileTest {
         assertEquals(listOf(0, 96, bar, bar + 96, 2 * bar, 2 * bar + 96), synth.map { it.start })  // B is a copy of A
     }
 
+    /** Phase 29 C6: the file has what is heard, an arpeggio or a strum played out, not the chord held. */
+    @Test
+    fun arpeggiosAndStrumsAreWrittenAsTheyPlay() {
+        // A C major chord over a quarter note, arpeggiated upwards every sixteenth.
+        val chord = listOf(Note(0, 96, 60), Note(0, 96, 64), Note(0, 96, 67))
+        val arp = NoteClip(steps = 16, notes = chord, performance = Performance(arp = ArpMode.Up, arpRate = 24))
+        val notes = MidiFile.read(MidiFile.export(Project(synthNotes = arp), song = false)).notes.filter { it.channel == 0 }
+        assertEquals(listOf(60 to 0, 64 to 24, 67 to 48, 60 to 72), notes.map { it.pitch to it.start })
+        assertTrue(notes.all { it.length == 24 })
+        // Strummed: each note a little later, all ending together.
+        val strum = arp.copy(performance = Performance(strum = 6))
+        val strummed = MidiFile.read(MidiFile.export(Project(synthNotes = strum), song = false)).notes.filter { it.channel == 0 }
+        assertEquals(listOf(60 to 0, 64 to 6, 67 to 12), strummed.map { it.pitch to it.start })
+        assertEquals(listOf(96, 90, 84), strummed.map { it.length })
+        // An added track arpeggiates too.
+        var p = Project().addTrack("Cordes")!!
+        val id = p.tracks.single().id
+        p = p.withTrack(p.track(id).copy(notes = arp)).sanitized()
+        assertEquals(4, MidiFile.read(MidiFile.export(p, song = false)).notes.count { it.channel == 1 + id })
+    }
+
+    /** Phase 29 C6: a roll is its hits, the step split evenly, each a little softer (as the engine plays it). */
+    @Test
+    fun rollsAreWrittenHitByHit() {
+        val drums = DrumPattern().toggle(2, 4).cycleRepeats(2, 4).cycleRepeats(2, 4).cycleRepeats(2, 4)  // 4 hits
+        assertEquals(4, drums.lanes[2].hits[4]!!.repeats)
+        val notes = MidiFile.read(MidiFile.export(Project(drums = drums), song = false)).notes.filter { it.channel == MidiFile.DRUM_CHANNEL }
+        val step = NoteClip.TICKS_PER_STEP
+        assertEquals(listOf(4 * step, 4 * step + 6, 4 * step + 12, 4 * step + 18), notes.map { it.start })
+        assertTrue(notes.all { it.pitch == 38 })
+        // Softer each time (0.85 per hit), never overlapping the next one.
+        assertEquals(listOf(127, 108, 92, 78), notes.map { it.velocity })
+        notes.zipWithNext().forEach { (a, b) -> assertTrue(a.start + a.length <= b.start) }
+        // Swung: the odd step is shorter, its roll stays inside it (before the next step).
+        val swung = DrumPattern().toggle(2, 5).cycleRepeats(2, 5)
+        val late = MidiFile.read(MidiFile.export(Project(drums = swung, swing = 0.5), song = false)).notes.filter { it.channel == MidiFile.DRUM_CHANNEL }
+        assertEquals(listOf(5 * step + 12, 5 * step + 12 + 6), late.map { it.start })
+    }
+
+    /** Phase 29 C6: two notes of one pitch overlapping (a long note, an arpeggio over it) never hide each other. */
+    @Test
+    fun overlappingNotesOfOnePitchEndBeforeTheNextStarts() {
+        val clip = NoteClip(steps = 16, notes = listOf(Note(0, 96, 60), Note(48, 24, 60), Note(48, 12, 64)))
+        val notes = MidiFile.read(MidiFile.export(Project(synthNotes = clip), song = false)).notes.filter { it.channel == 0 }
+        assertEquals(listOf(Triple(60, 0, 48), Triple(60, 48, 24), Triple(64, 48, 12)), notes.map { Triple(it.pitch, it.start, it.length) })
+        // A note running past the loop's end does not swallow the loop's next start either.
+        val looping = NoteClip(steps = 16, notes = listOf(Note(0, 24, 62), Note(360, 48, 62)))
+        val again = MidiFile.read(MidiFile.export(Project(synthNotes = looping).copy(song = listOf(SongPart(0, 2))).sanitized())).notes.filter { it.channel == 0 }
+        assertEquals(listOf(0 to 24, 360 to 24, 384 to 24, 744 to 24), again.map { it.start to it.length })
+    }
+
     @Test
     fun foreignFilesAndBadData() {
         // Type 0, 480 PPQ, running status, a note-on at velocity 0 as note-off.

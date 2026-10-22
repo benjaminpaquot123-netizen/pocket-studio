@@ -157,6 +157,7 @@ data class RhythmActions(
     val toggleSliceMarker: (Float) -> Unit = {},
     val applySlices: () -> Unit = {},
     val resampleSong: (bars: Int) -> Unit = {},
+    val cancelResample: () -> Unit = {},
     val importFolder: () -> Unit = {},
     /** A sample pack as a .zip file. */
     val importZip: () -> Unit = {},
@@ -762,7 +763,10 @@ internal fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: 
         when (val task = ui.task) {
             is SampleTask.Busy -> Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp, color = color)
-                Text(task.message)
+                Text(task.message, modifier = Modifier.weight(1f))
+                if (task.cancellable) {
+                    TextButton(onClick = actions.cancelResample, modifier = Modifier.testTag("resample_cancel")) { Text(tr("Annuler")) }
+                }
             }
             is SampleTask.Recording -> {
                 Text(tr("Enregistrement… %.1f s / 30 s", task.seconds), color = Neon.RedText)

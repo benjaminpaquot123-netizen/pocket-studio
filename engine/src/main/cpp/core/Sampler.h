@@ -48,8 +48,10 @@ public:
     void prepare(int sampleRate);
 
     // Audio thread: takes over the caller's reference to `sample` (may be nullptr to clear).
-    // The previous sample's reference is released; if it was the last one the sample is
-    // queued for collectGarbage().
+    // A sound still playing on the slot fades out over 5 ms instead of being cut (a looping pad
+    // goes on with the new sound at the same point of its region: a tempo change keeps the loop);
+    // the previous sample's reference is released once nothing plays it any more, and if it was
+    // the last one the sample is queued for collectGarbage().
     void install(int slot, Sample* sample);
     bool has(int slot) const { return slot >= 0 && slot < kSlots && slots_[slot] != nullptr; }
     void setParam(int slot, int param, float value);
@@ -80,11 +82,17 @@ private:
         int64_t age = 0;       // output frames since the hit
         int64_t length = 0;    // output frames of one pass (for the release)
         float attackFrames = 0.0f, decayFrames = 0.0f, sustain = 1.0f, releaseFrames = 1.0f;
+        float velocity = 0.0f, hitPitch = 0.0f;  // of the hit (a swapped sound keeps them)
         int fade = 0;          // > 0: fading out over the remaining frames
+        int fadeLength = 1;    // frames of that fade
+        int fadeIn = 0;        // > 0: fading in (a loop going on with a swapped sound)
+        int fadeInLength = 1;
     };
     static constexpr int kFadeFrames = 96;  // 2 ms: no click when a hit is cut
 
     void retire(Sample* s);
+    // Region, speed and envelope of the slot's settings on `s` for a hit (position left alone).
+    void shape(Voice& v, const Sample* s, const PadParams& p, float velocity, float pitch) const;
     void start(int slot, float velocity, float pan, float pitch);
     void fadeOut(int slot);
     void renderVoice(Voice& v, float* left, float* right, int from, int to);
@@ -94,6 +102,9 @@ private:
     std::array<PadParams, kSlots> params_{};
     std::array<Voice, kSlots> voices_{};
     std::array<Voice, kSlots> tails_{};  // previous hit, fading out
+    // A replaced sound the slot's tail still plays: its reference is released when the tail ends.
+    std::array<Sample*, kSlots> held_{};
+    int swapFadeFrames_ = 240;  // 5 ms: a replaced sound fades out (and a loop's new sound in)
     std::array<int, kSlots> pendingOffset_{};
     std::array<float, kSlots> pendingVelocity_{};
     std::array<float, kSlots> pendingPan_{};

@@ -5,7 +5,6 @@ import com.pocketstudio.app.rhythm.ExportFormat
 import com.pocketstudio.app.rhythm.ExportUi
 import com.pocketstudio.app.rhythm.ExportWhat
 import com.pocketstudio.engine.OfflineExport
-import com.pocketstudio.model.Genres
 import com.pocketstudio.model.StarterWizard
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -94,7 +93,7 @@ class ShareSongTest {
 
     @Test
     fun defaultNamesAreAskedForARealOne() {
-        listOf("", "  ", "Nouveau projet", "Mon projet 3", "Mon premier rythme", "Mon morceau", Genres.ALL.first().first, StarterWizard.STYLES.first().name)
+        listOf("", "  ", "Nouveau projet", "Mon projet 3", "Mon premier rythme", "Mon morceau", "Lo-fi", StarterWizard.STYLES.first().name)
             .forEach { assertTrue("« $it »", ShareSong.isDefaultName(it)) }
         listOf("Da Funk (remix)", "Acide du dimanche", "Mon projet de l'été", "House du samedi")
             .forEach { assertFalse("« $it »", ShareSong.isDefaultName(it)) }

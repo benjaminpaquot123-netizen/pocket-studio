@@ -143,6 +143,12 @@ data class WizardUi(
     }
 }
 
+/**
+ * « Nouveau projet › Partir d'un style »: the whole song made in one touch with the assistant's
+ * advised choices. [creating]: the style whose song is being prepared; [error]: what went wrong.
+ */
+data class QuickUi(val creating: String? = null, val error: String? = null)
+
 /** Fader of the sound being tried in an assistant excerpt (+3 dB) and of the song around it (−9 dB). */
 private const val FOCUS_VOLUME = 0.95f
 private const val BACKGROUND_VOLUME = 0.48f
@@ -198,6 +204,10 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
     private val _wizard = MutableStateFlow(WizardUi())
     val wizard: StateFlow<WizardUi> = _wizard.asStateFlow()
 
+    private val _quick = MutableStateFlow(QuickUi())
+    /** The song made in one touch from « Nouveau projet » (the assistant stays closed). */
+    val quick: StateFlow<QuickUi> = _quick.asStateFlow()
+
     private val _playing = MutableStateFlow<SoundRef?>(null)
     /** The sound being previewed, if any. */
     val playing: StateFlow<SoundRef?> = _playing.asStateFlow()
@@ -223,6 +233,8 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                 PackStore.installed(app)
             }
             _packs.update { it.copy(installed = installed) }
+            // The assistant opened on a style before the packs were known: its lines move to them.
+            refreshWizardDefaults()
             if (_packs.value.index is IndexState.Ready) return@launch
             _packs.update { it.copy(index = IndexState.Loading) }
             val index = withContext(Dispatchers.IO) {
@@ -634,9 +646,11 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
 
     // --- The assistant -------------------------------------------------------------------------
 
-    fun openWizard() {
+    /** [styleId]: opened on that style's first step (« Personnaliser pas à pas »), else on the styles. */
+    fun openWizard(styleId: String? = null) {
         _wizard.value = WizardUi(open = true)
         refreshPacks()
+        styleId?.let(::chooseStyle)
     }
 
     /** Writing the new project failed: the choices are still there, to try again. */
@@ -652,18 +666,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
     fun chooseStyle(id: String) {
         val style = StarterWizard.style(id) ?: return
         val installed = _packs.value.installed
-        _wizard.update { w ->
-            w.copy(
-                styleId = id, step = 1, rows = style.lines.associate { it.role to defaultRow(it.role, id, installed).copy(enabled = !it.off) },
-                mood = style.melody.mood,
-                acidNotes = null, acidSound = null, acidSoundName = null, acidDensity = AcidPattern().density,
-                // The recipe's parts on (the riddim's bass alone, no bass under the gabber's kick, the
-                // acid styles' 303 alone); the others can be ticked on their step.
-                parts = StarterWizard.Part.entries.associateWith { PartRow(it in StarterWizard.defaultParts(style), StarterWizard.soundsFor(it, style, installed).first()) },
-                acid = true,
-                error = null,
-            )
-        }
+        _wizard.update { withStyle(it, style, installed) }
     }
 
     /** null: the beat only, no melodic tracks. */
@@ -809,66 +812,140 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /**
-     * Builds the new song: [then] gets the project and the sounds to store in its folder
-     * (file name → audio), on the main thread.
-     */
-    /**
-     * Builds the song from the choices as they are now and hands it to [then] with its sounds and
-     * the guide that describes it; the assistant stays "creating" until it is closed or [createFailed].
+     * Builds the song from the choices as they are now and hands it to [then] with its sounds
+     * (file name in its folder → audio) and the guide that describes it, on the main thread; the
+     * assistant stays "creating" until it is closed or [createFailed].
      */
     fun create(then: (Project, Map<String, Pcm>, List<com.pocketstudio.app.settings.GuidePage>) -> Unit) {
         val w = _wizard.value
-        val style = w.style ?: return
-        if (w.creating) return
+        if (w.style == null || w.creating) return
         stopPreview()
         _wizard.update { it.copy(creating = true, error = null) }
         viewModelScope.launch {
             try {
-                val sounds = HashMap<Role, PadSample?>()
-                val files = HashMap<String, Pcm>()
-                for (line in style.lines) {
-                    val row = w.rows[line.role] ?: continue
-                    val option = row.sound ?: continue
-                    if (!row.enabled) continue
-                    val ref = option.ref
-                    // The kit voice the pad already has needs no file (unless the line shapes it: the ride).
-                    if (ref is SoundRef.Kit && ref.voice == line.role.lane && !StarterWizard.shapesKit(line.role)) {
-                        sounds[line.role] = null
-                        continue
-                    }
-                    val pcm = load(ref) ?: throw IllegalStateException(tr("son illisible : %s", option.name))
-                    val file = "${UUID.randomUUID().toString().take(12)}.wav"
-                    files[file] = pcm
-                    val sample = PadSample(file, option.name.substringBefore(" · ").take(40))
-                    sounds[line.role] = if (ref is SoundRef.Kit) StarterWizard.kitShaped(line.role, sample) else sample
-                }
-                if (sounds.isEmpty() && (w.mood == null || w.parts.values.none { it.enabled })) {
+                val song = songFrom(w)
+                if (song == null) {
                     _wizard.update { it.copy(creating = false, error = tr("Garde au moins une ligne pour commencer.")) }
                     return@launch
                 }
-                val chosen = if (w.mood == null) emptyMap() else w.parts.filterValues { it.enabled }.mapValues { it.value.sound }
-                // Pack sounds and kit voices played across the keys: copied into the project, set on their own note.
-                val parts = chosen.mapValues { (_, sound) ->
-                    if (sound.packFile == null && sound.kitVoice == null) return@mapValues sound
-                    val (pcm, root) = packPartSound(sound) ?: throw IllegalStateException(tr("son illisible : %s", tr(sound.name)))
-                    val file = "${UUID.randomUUID().toString().take(12)}.wav"
-                    files[file] = pcm
-                    sound.copy(sampled = sound.sampled!!.copy(file = file, root = root ?: 60f))
-                }
-                AppLog.add("Assistant : morceau ${style.name}, ${sounds.size} lignes, ${parts.size} pistes mélodiques")
                 // The choices stay until the project is written (the caller closes the assistant then).
-                val project = StarterWizard.build(style, sounds, w.mood, parts, acid = w.acidPlays, chosenAcid = w.acidPattern)
-                // The song's 303 cutoff follows a curve (acid styles): the guide says how to take it over.
-                val guide = songGuide(
-                    style.name, w.plan, inKey = w.mood != null, song = songSummary(style, w.plan), acid = w.acidPlays,
-                    acidMoves = 0 in project.automatedAcidKnobs,
-                    sweeps = StarterWizard.hasSweeps(project),
-                )
-                then(project, files, guide)
+                then(song.project, song.files, song.guide)
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
-                _wizard.update { it.copy(creating = false, error = tr("Le morceau n'a pas pu être préparé (%s).", e.message)) }
+                _wizard.update { it.copy(creating = false, error = tr("Le morceau n'a pas pu être préparé (%s).", e.message ?: e.javaClass.simpleName)) }
             }
         }
+    }
+
+    /**
+     * « Nouveau projet › Partir d'un style »: the whole song of [styleId] in one touch, exactly as
+     * the assistant makes it with its advised choices (its lines and their sounds, its mood, its
+     * parts, its 303, effects, automation and guide), without opening it. The downloaded packs are
+     * read first as the assistant would see them; a pack sound that cannot be read gives way to
+     * the built-in sounds. [then] as for [create]; [quick] says "creating" until [quickDone] or
+     * [quickFailed].
+     */
+    fun quickCreate(styleId: String, then: (Project, Map<String, Pcm>, List<com.pocketstudio.app.settings.GuidePage>) -> Unit) {
+        val style = StarterWizard.style(styleId) ?: return
+        if (_quick.value.creating != null) return
+        stopPreview()
+        _quick.value = QuickUi(creating = styleId)
+        viewModelScope.launch {
+            try {
+                val app = getApplication<Application>()
+                val installed = withContext(Dispatchers.IO) { runCatching { PackStore.installed(app) }.getOrElse { _packs.value.installed } }
+                _packs.update { it.copy(installed = installed) }
+                val song = try {
+                    songFrom(withStyle(WizardUi(), style, installed))
+                } catch (e: CancellationException) {
+                    throw e
+                } catch (e: Exception) {
+                    if (installed.isEmpty()) throw e
+                    AppLog.add("Morceau en un geste : un son de pack illisible (${e.message}), sons intégrés à la place")
+                    songFrom(withStyle(WizardUi(), style, emptyList()))
+                } ?: throw IllegalStateException(tr("aucun son à jouer"))
+                then(song.project, song.files, song.guide)
+            } catch (e: CancellationException) {
+                _quick.value = QuickUi()
+                throw e
+            } catch (e: Exception) {
+                AppLog.add("Morceau en un geste impossible : ${e.javaClass.simpleName}")
+                _quick.value = QuickUi(error = tr("Le morceau n'a pas pu être préparé (%s).", e.message ?: e.javaClass.simpleName))
+            } catch (e: OutOfMemoryError) {
+                AppLog.add("Morceau en un geste impossible : mémoire pleine")
+                _quick.value = QuickUi(error = tr("Le morceau n'a pas pu être préparé (%s).", tr("mémoire pleine")))
+            }
+        }
+    }
+
+    /** The song made in one touch is written and opened. */
+    fun quickDone() {
+        _quick.value = QuickUi()
+    }
+
+    /** Writing the song made in one touch failed: said, to try again. */
+    fun quickFailed(message: String) {
+        _quick.value = QuickUi(error = message)
+    }
+
+    fun dismissQuickError() = _quick.update { it.copy(error = null) }
+
+    /** The assistant on [style] with its advised choices: what "Choisir ce style" sets and the one-touch song uses. */
+    private fun withStyle(w: WizardUi, style: StarterWizard.Style, installed: List<PackManifest>): WizardUi = w.copy(
+        styleId = style.id, step = 1, rows = style.lines.associate { it.role to defaultRow(it.role, style.id, installed).copy(enabled = !it.off) },
+        mood = style.melody.mood,
+        acidNotes = null, acidSound = null, acidSoundName = null, acidDensity = AcidPattern().density,
+        // The recipe's parts on (the riddim's bass alone, no bass under the gabber's kick, the
+        // acid styles' 303 alone); the others can be ticked on their step.
+        parts = StarterWizard.Part.entries.associateWith { PartRow(it in StarterWizard.defaultParts(style), StarterWizard.soundsFor(it, style, installed).first()) },
+        acid = true,
+        error = null,
+    )
+
+    /** A song built by the assistant: the project, the sounds to store in its folder, its guide. */
+    private class Song(val project: Project, val files: Map<String, Pcm>, val guide: List<com.pocketstudio.app.settings.GuidePage>)
+
+    /** The song the choices [w] make (null: nothing would play); throws when a sound cannot be read. */
+    private suspend fun songFrom(w: WizardUi): Song? {
+        val style = w.style ?: return null
+        val sounds = HashMap<Role, PadSample?>()
+        val files = HashMap<String, Pcm>()
+        for (line in style.lines) {
+            val row = w.rows[line.role] ?: continue
+            val option = row.sound ?: continue
+            if (!row.enabled) continue
+            val ref = option.ref
+            // The kit voice the pad already has needs no file (unless the line shapes it: the ride).
+            if (ref is SoundRef.Kit && ref.voice == line.role.lane && !StarterWizard.shapesKit(line.role)) {
+                sounds[line.role] = null
+                continue
+            }
+            val pcm = load(ref) ?: throw IllegalStateException(tr("son illisible : %s", option.name))
+            val file = "${UUID.randomUUID().toString().take(12)}.wav"
+            files[file] = pcm
+            val sample = PadSample(file, option.name.substringBefore(" · ").take(40))
+            sounds[line.role] = if (ref is SoundRef.Kit) StarterWizard.kitShaped(line.role, sample) else sample
+        }
+        if (sounds.isEmpty() && (w.mood == null || w.parts.values.none { it.enabled })) return null
+        val chosen = if (w.mood == null) emptyMap() else w.parts.filterValues { it.enabled }.mapValues { it.value.sound }
+        // Pack sounds and kit voices played across the keys: copied into the project, set on their own note.
+        val parts = chosen.mapValues { (_, sound) ->
+            if (sound.packFile == null && sound.kitVoice == null) return@mapValues sound
+            val (pcm, root) = packPartSound(sound) ?: throw IllegalStateException(tr("son illisible : %s", tr(sound.name)))
+            val file = "${UUID.randomUUID().toString().take(12)}.wav"
+            files[file] = pcm
+            sound.copy(sampled = sound.sampled!!.copy(file = file, root = root ?: 60f))
+        }
+        AppLog.add("Assistant : morceau ${style.name}, ${sounds.size} lignes, ${parts.size} pistes mélodiques")
+        val project = StarterWizard.build(style, sounds, w.mood, parts, acid = w.acidPlays, chosenAcid = w.acidPattern)
+        // The song's 303 cutoff follows a curve (acid styles): the guide says how to take it over.
+        val guide = songGuide(
+            style.name, w.plan, inKey = w.mood != null, song = songSummary(style, w.plan), acid = w.acidPlays,
+            acidMoves = 0 in project.automatedAcidKnobs,
+            sweeps = StarterWizard.hasSweeps(project),
+        )
+        return Song(project, files, guide)
     }
 
     override fun onCleared() {

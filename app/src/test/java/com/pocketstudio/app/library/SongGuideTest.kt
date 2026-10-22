@@ -36,7 +36,8 @@ class SongGuideTest {
         pop.lines.forEach {
             val expected = when (it.role) {
                 StarterWizard.Role.Kick, StarterWizard.Role.Hat -> setOf(0, 1, 2)
-                StarterWizard.Role.OpenHat, StarterWizard.Role.Perc -> setOf(2)
+                // The tambourine (second percussion) waits for the Refrain too.
+                StarterWizard.Role.OpenHat, StarterWizard.Role.Perc, StarterWizard.Role.Perc2 -> setOf(2)
                 else -> setOf(1, 2)
             }
             assertEquals(it.role.title, expected, plan.lines[it.role])

@@ -730,3 +730,9 @@ Relecture neuve de toute la phase (`git diff ad8e680 HEAD`) : 2 graves, 4 moyens
   - m8 : le hasard de Plaits et de DaisySP reste partagé entre moteurs (pas de stockage par fil : bionic réserve de la mémoire et prend un verrou à son premier usage dans une bibliothèque chargée par dlopen) : un export pendant qu'on joue mélange leurs bruits, sans danger ni effet audible.
   - m6 : deux doigts sur la même colonne, ou une ligne puis un pad : le retrait du premier reprend aussi le second (rare).
   - Un journal Live de 30 min de gestes continus pèse encore ~2,7 Mo, réécrit toutes les 5 s hors du fil principal.
+
+## Phase 29 (relecture unique)
+Relecture neuve : 0 grave, 3 moyens, 4 mineurs. Fil audio propre (limiteur, vumètres, fondus, pitch bend, gain par son), anciens projets inchangés.
+- Corrigé : échantillon absurde ou non fini avant le limiteur remis à 0 (plus de NaN possible) ; file des chansons séparées retirées portée à 64 (plus de fuite pendant un long glissé de tempo).
+- Restant : `asNewProject` considère « 0 dB » comme « non choisi » (aucun appelant ne le règle exprès aujourd'hui) ; un clic possible à l'écrasement de la queue d'un pad ; fondu d'entrée d'un échange qui peut démarrer un peu tard ; canal de notification d'export recréé à chaque mise à jour.
+- Corps : le Break n'est que 2 dB sous le Drop quand une scène tourne seule (le balayage n'agit que dans le morceau) ; charleys du kit encore ternes ; leads un peu forts en trap et drill. À écouter sur téléphone.

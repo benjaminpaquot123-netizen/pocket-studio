@@ -13,10 +13,12 @@ data class PlaitsPatch(
     val colour: Float = 0.5f,
     val release: Float = 0.3f,
     val level: Float = 0.8f,
+    /** The sound's loudness calibration, as [SynthPatch.GAIN] (0.5 = 0 dB): set by the library, not a knob. */
+    val gain: Float = 0.5f,
 ) {
     /** Values in the engine's PlaitsSynth::Param order. */
     fun engineValues(): List<Float> =
-        listOf(model / (MODELS.size - 1f), harmonics, timbre, morph, decay, colour, release, level)
+        listOf(model / (MODELS.size - 1f), harmonics, timbre, morph, decay, colour, release, level, gain)
 
     fun with(param: Int, value: Float): PlaitsPatch {
         val v = value.coerceIn(0f, 1f)
@@ -28,6 +30,7 @@ data class PlaitsPatch(
             5 -> copy(colour = v)
             6 -> copy(release = v)
             7 -> copy(level = v)
+            GAIN -> copy(gain = v)
             else -> this
         }
     }
@@ -36,11 +39,14 @@ data class PlaitsPatch(
         fun f(v: Float, d: Float) = v.takeIf { it.isFinite() }?.coerceIn(0f, 1f) ?: d
         return PlaitsPatch(
             model.coerceIn(0, MODELS.lastIndex), f(harmonics, 0.5f), f(timbre, 0.5f), f(morph, 0.5f),
-            f(decay, 0.5f), f(colour, 0.5f), f(release, 0.3f), f(level, 0.8f),
+            f(decay, 0.5f), f(colour, 0.5f), f(release, 0.3f), f(level, 0.8f), f(gain, 0.5f),
         )
     }
 
     companion object {
+        /** [engineValues] index of [gain] (after the knobs of [PARAMS]). */
+        const val GAIN = 8
+
         /** French names, grouped as on the module: the 1.2 additions first, then the classics. */
         val MODELS = listOf(
             "Analogique + filtre", "Distorsion de phase", "FM 6 op. · banque 1", "FM 6 op. · banque 2", "FM 6 op. · banque 3",

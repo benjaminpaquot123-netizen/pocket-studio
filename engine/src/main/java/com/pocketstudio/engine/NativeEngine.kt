@@ -120,6 +120,12 @@ object NativeEngine {
     /** 16 track strips (4 = the master's index) and the 16 drum pads' own strips. */
     const val MIXER_CHANNELS = 32
     const val MASTER = 4
+    /** [mixerMeters]: after one peak per channel, the limiter's lowest gain since the last reading… */
+    const val METER_LIMITER = MIXER_CHANNELS
+    /** …then the master's peak going into the limiter (above −1 dBFS, the limiter works). */
+    const val METER_MASTER_IN = MIXER_CHANNELS + 1
+    /** Size of the array [mixerMeters] fills. */
+    const val METERS = MIXER_CHANNELS + 2
 
     /** [setLiveNoises] modes (the engine's PerformanceFx::Noises). */
     const val LIVE_NOISES_MIXED = 0
@@ -244,7 +250,7 @@ object NativeEngine {
     fun setPlaitsParam(param: Int, value: Float, track: Int = 0) = post(CMD_PLAITS_PARAM, value, onTrack(track, param))
     /** How many times a waiting scene took over since the engine started. */
     external fun sceneSwaps(): Int
-    /** Writes into [out] (size MIXER_CHANNELS + 1): channel peaks (the master's at [MASTER]), then the limiter gain. */
+    /** Writes into [out] (size [METERS]): channel peaks (the master's output at [MASTER]), the limiter gain, the master's level into the limiter. */
     external fun mixerMeters(out: FloatArray)
 
     /** Plays a pad right now (live). */

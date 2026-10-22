@@ -23,7 +23,7 @@ data class MidiMapping(val controller: Int, val target: AutoTarget) {
             AutoTarget.INSERT_PARAM -> t.ch in 0 until Mixer.CHANNELS && t.slot in 0 until Mixer.INSERTS && t.param in 0 until EffectType.PARAMS
             AutoTarget.BUS_PARAM -> t.slot in 0 until Buses.COUNT && t.param in 0 until EffectType.PARAMS
             AutoTarget.ACID -> t.isValid
-            SYNTH -> t.param in 0 until SynthPatch.DEFAULTS.size
+            SYNTH -> t.param in 0 until SynthPatch.GAIN
             PLAITS -> t.param in 1..PlaitsPatch.PARAMS.size
             PERFORMANCE -> t.param in 0..5
             TEMPO -> true

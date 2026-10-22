@@ -55,7 +55,7 @@ class TabletLandscapeScreenshotTest : ScreenshotTest() {
 @Config(qualifiers = "w600dp-h1006dp-tvdpi")
 class SmallTabletScreenshotTest : ScreenshotTest() {
     override val prefix = "tablet8/"
-    override fun wanted(name: String) = name in TabletScreenshotTest.SCREENS || name in EFFECTS || name in PHASE26 || name in LIVE
+    override fun wanted(name: String) = name in TabletScreenshotTest.SCREENS || name in EFFECTS || name in PHASE26 || name in LIVE || name in PHASE29
 
     companion object {
         /** The Live page (phase 27), full screen: only the status bar and the system navigation around it. */
@@ -64,6 +64,8 @@ class SmallTabletScreenshotTest : ScreenshotTest() {
         val EFFECTS = setOf("effects_box", "effects_picker", "effects_full", "synth_effects", "acid_effects", "effects_scenes", "effects_vibe", "effects_styles")
         /** The 303 made in the assistant and « + Piste »'s choices, on Benjamin's tablet too. */
         val PHASE26 = setOf("wizard_acid_sound", "track_add")
+        /** « Nouveau projet »'s styles, each made whole in one touch, on Benjamin's tablet too. */
+        val PHASE29 = setOf("projects_new")
     }
     override val chrome = androidx.compose.foundation.layout.PaddingValues(top = 80.dp, bottom = 128.dp)
     override val fullScreenChrome = androidx.compose.foundation.layout.PaddingValues(top = 24.dp, bottom = 48.dp)

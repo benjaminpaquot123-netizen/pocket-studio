@@ -110,6 +110,8 @@ bool machineOverloaded() {
 
 constexpr int kRate = 48000;
 constexpr int kChannels = 2;
+// The limiter's look-ahead: the live output comes this many frames late (an export drops them).
+const int kLate = static_cast<int>(std::lround(ps::Mixer::kLookAheadMs * 0.001f * kRate)) - 1;
 
 // Four bars of 4/4 at 120 BPM.
 constexpr int kFourBarsFrames = kRate * 8;
@@ -317,8 +319,11 @@ void testReferenceRender() {
     std::vector<float> ref(out.size());
     f.read(reinterpret_cast<char*>(ref.data()), static_cast<std::streamsize>(ref.size() * sizeof(float)));
     CHECK(static_cast<size_t>(f.gcount()) == ref.size() * sizeof(float));
+    // The same tone, the limiter's look-ahead later.
     float maxDiff = 0.0f;
-    for (size_t i = 0; i < ref.size(); ++i) maxDiff = std::max(maxDiff, std::fabs(ref[i] - out[i]));
+    const size_t late = static_cast<size_t>(kLate) * kChannels;
+    for (size_t i = 0; i < late; ++i) maxDiff = std::max(maxDiff, std::fabs(out[i]));
+    for (size_t i = late; i < ref.size(); ++i) maxDiff = std::max(maxDiff, std::fabs(ref[i - late] - out[i]));
     CHECK(maxDiff < 1e-4f);
 }
 
@@ -610,8 +615,8 @@ void testMetronomeIsSampleAccurate() {
         return -1;
     };
     // sin(0) = 0 at the onset, so the first non-zero sample is the one right after.
-    CHECK(firstSoundAfter(0) == 1);
-    CHECK(firstSoundAfter(20000) == 24001);
+    CHECK(firstSoundAfter(0) == 1 + kLate);
+    CHECK(firstSoundAfter(20000) == 24001 + kLate);
     float peak = 0.0f;
     for (float v : out) peak = std::max(peak, std::fabs(v));
     CHECK(peak > 0.3f && peak <= 0.5f);
@@ -706,7 +711,7 @@ void testPatternDrivesDrums() {
     for (int i = 0; i < 6000 * 8 && first < 0; ++i) {
         if (out[static_cast<size_t>(i) * kChannels] != 0.0f) first = i;
     }
-    CHECK(first >= 24000 && first <= 24001);
+    CHECK(first >= 24000 + kLate && first <= 24001 + kLate);
     float peak = 0.0f;
     for (float v : out) peak = std::max(peak, std::fabs(v));
     CHECK(peak > 0.1f && peak < 1.5f);
@@ -1739,9 +1744,9 @@ void testPadSampleReplacesTheDrum() {
     for (int i = 0; i < 6000 * 6 && first < 0; ++i) {
         if (out[size_t(i) * kChannels] != 0.0f) first = i;
     }
-    CHECK(first == 24000);
+    CHECK(first == 24000 + kLate);
     // The sample's shape, not a kick: a click, silence, a smaller negative click, then nothing.
-    const float a = out[size_t(24000) * kChannels], b = out[size_t(24100) * kChannels];
+    const float a = out[size_t(24000 + kLate) * kChannels], b = out[size_t(24100 + kLate) * kChannels];
     CHECK(a > 0.3f && b < 0.0f && std::fabs(b / a - (-0.4f / 0.9f)) < 0.02f);
     float tail = 0.0f;
     for (int i = 24600; i < 6000 * 6; ++i) tail = std::max(tail, std::fabs(out[size_t(i) * kChannels]));
@@ -1762,7 +1767,7 @@ void testSampleReferencesAreNeverLeakedOrFreedEarly() {
         CHECK(!s->release());  // owner done, engine still plays it
         engine.post({ps::CommandType::TriggerPad, 1.0f, 3});
         const auto out = render(engine, 256, 256);
-        CHECK(std::fabs(out[0] - 0.25f) < 1e-6f);
+        CHECK(std::fabs(out[size_t(kLate) * kChannels] - 0.25f) < 1e-6f);
         engine.post({ps::CommandType::InstallSample, 0.0f, 3, 0, nullptr});  // back to the drum
         render(engine, 256, 256);
         CHECK(!engine.padHasSample(3));
@@ -1904,6 +1909,240 @@ void testPadLoopEnvelopeAndChoke() {
     sampler.trigger(1, 1.0f, 0);
     renderMono(sampler, out.data() + 1000, 1000);
     CHECK(out[1000 + 200] == 0.0f);
+}
+
+// --- Phase 29 B: sound continuity across sound and tempo changes -------------------------------
+
+// Largest jump between two neighbouring samples of x[from..to).
+float largestStep(const std::vector<float>& x, int from, int to) {
+    float most = 0.0f;
+    for (int i = std::max(1, from); i < to && i < static_cast<int>(x.size()); ++i) most = std::max(most, std::fabs(x[size_t(i)] - x[size_t(i) - 1]));
+    return most;
+}
+
+void renderSamplerInto(ps::Sampler& sampler, std::vector<float>& out, int from, int to, int block = 128) {
+    for (int done = from; done < to; done += block) renderMono(sampler, out.data() + done, std::min(block, to - done));
+}
+
+void testPadSoundSwapFadesAndKeepsTheLoop() {
+    // A tempo-fitted loop: a 1 s ramp 0..1 looping; half way, its copy for a tempo 0.8 times as
+    // fast lands (1.25 s, same ramp): the loop goes on from the same point, no jump, no gap.
+    std::vector<float> rampA(48000), rampB(60000);
+    for (int i = 0; i < 48000; ++i) rampA[size_t(i)] = i / 48000.0f;
+    for (int i = 0; i < 60000; ++i) rampB[size_t(i)] = i / 60000.0f;
+    ps::Sampler sampler;
+    sampler.prepare(kRate);
+    ps::Sample* a = ps::Sample::create(rampA.data(), 48000, 1, kRate, kRate);
+    a->retain();  // ours, to watch when the sampler lets go
+    sampler.install(0, a);
+    sampler.setParam(0, ps::Sampler::Loop, 1.0f);
+    std::vector<float> out(48000, 0.0f);
+    sampler.trigger(0, 1.0f, 0);
+    renderSamplerInto(sampler, out, 0, 24000);
+    sampler.install(0, ps::Sample::create(rampB.data(), 60000, 1, kRate, kRate));
+    CHECK(a->refCount() == 2);  // still fading out on the tail: not let go yet
+    renderSamplerInto(sampler, out, 24000, 48000);
+    const float jump = largestStep(out, 23900, 30000);
+    std::printf("  loop swap: largest step %.5f, after %.4f (0.5167 wanted)\n", jump, out[25000]);
+    CHECK(jump < 0.005f);
+    CHECK(std::fabs(out[25000] - (0.5f + 1000.0f / 60000.0f)) < 0.002f);  // the new copy, same point
+    CHECK(out[47000] > 0.85f);  // still looping on the new sound
+    CHECK(a->refCount() == 1);  // the tail ended: the sampler let go of the old sound
+    CHECK(a->release());
+    delete a;
+
+    // A one-shot replaced while it plays fades out in 5 ms instead of being cut; the next hit
+    // plays the new sound.
+    std::vector<float> dcHalf(48000, 0.5f), dcQuarter(48000, 0.25f);
+    sampler.install(0, nullptr);  // the loop above leaves the mix
+    ps::Sampler shots;
+    shots.prepare(kRate);
+    shots.install(1, ps::Sample::create(dcHalf.data(), 48000, 1, kRate, kRate));
+    std::vector<float> shot(4000, 0.0f);
+    shots.trigger(1, 1.0f, 0);
+    renderSamplerInto(shots, shot, 0, 1000);
+    shots.install(1, ps::Sample::create(dcQuarter.data(), 48000, 1, kRate, kRate));
+    renderSamplerInto(shots, shot, 1000, 2000);
+    std::printf("  one-shot swap: largest step %.5f\n", largestStep(shot, 990, 2000));
+    CHECK(largestStep(shot, 990, 2000) < 0.01f);
+    CHECK(shot[1100] > 0.2f);    // still fading
+    CHECK(shot[1300] == 0.0f);   // then gone: a one-shot does not start again by itself
+    shots.trigger(1, 1.0f, 0);
+    renderSamplerInto(shots, shot, 2000, 4000);
+    CHECK(std::fabs(shot[3000] - 0.25f) < 1e-4f);
+
+    // Two swaps inside one fade, then none: every reference is released exactly once (ASan).
+    ps::Sample* c = ps::Sample::create(dcHalf.data(), 48000, 1, kRate, kRate);
+    c->retain();
+    sampler.install(2, c);
+    sampler.trigger(2, 1.0f, 0);
+    std::vector<float> scratch(512, 0.0f);
+    renderSamplerInto(sampler, scratch, 0, 256);
+    sampler.install(2, ps::Sample::create(dcQuarter.data(), 48000, 1, kRate, kRate));
+    sampler.install(2, ps::Sample::create(dcHalf.data(), 48000, 1, kRate, kRate));
+    sampler.install(2, nullptr);
+    CHECK(c->refCount() == 1);
+    CHECK(!sampler.has(2));
+    renderSamplerInto(sampler, scratch, 256, 512);
+    sampler.collectGarbage();
+    CHECK(c->release());
+    delete c;
+}
+
+double pitchHz(const std::vector<float>& x, int from, int len);
+std::vector<uint8_t> tinySoundFont();
+
+void testArpeggioKeepsHeldKeysAcrossStop() {
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SynthParam, 0.0f, ps::Synth::Lfo1ToPitch});
+    engine.post({ps::CommandType::SynthParam, 0.0f, ps::Synth::SubLevel});
+    engine.post({ps::CommandType::SynthParam, 0.0f, ps::Synth::OscMix});
+    engine.post({ps::CommandType::SynthParam, 0.0f, ps::Synth::AmpRelease});
+    engine.post({ps::CommandType::SetExpression, 1.0f, ps::InstrumentTrack::ArpOn});
+    engine.post({ps::CommandType::SetExpression, 0.9f, ps::InstrumentTrack::ArpGate});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    for (int n : {57, 64}) engine.post({ps::CommandType::SynthNoteOn, 0.9f, n});
+    render(engine, 6000 * 4, 100);
+    // Stop with the keys still down: the arpeggio goes on with them.
+    engine.post({ps::CommandType::SetTransport, 0.0f});
+    auto out = render(engine, 6000 * 4, 100);
+    std::vector<float> mono(out.size() / 2);
+    float loud = 0.0f;
+    for (size_t i = 0; i < mono.size(); ++i) {
+        mono[i] = out[i * 2];
+        if (i > 6000) loud = std::max(loud, std::fabs(mono[i]));
+    }
+    std::printf("  arpeggio after stop: peak %.3f\n", loud);
+    CHECK(loud > 0.05f);
+    // Keys let go while stopped leave it: silence, and ▶ does not bring them back.
+    for (int n : {57, 64}) engine.post({ps::CommandType::SynthNoteOff, 0.0f, n});
+    render(engine, kRate, 256);
+    CHECK(engine.synthActiveVoices() == 0);
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    render(engine, 6000 * 3, 100);
+    CHECK(engine.synthActiveVoices() == 0);
+    // A panic forgets held keys.
+    engine.post({ps::CommandType::SynthNoteOn, 0.9f, 60});
+    render(engine, 6000, 100);
+    engine.post({ps::CommandType::SynthAllOff});
+    render(engine, kRate, 256);
+    CHECK(engine.synthActiveVoices() == 0);
+}
+
+void testGeneralMidiPitchBend() {
+    const std::string path = (std::filesystem::temp_directory_path() / "ps_bend.sf2").string();
+    { auto bytes = tinySoundFont(); std::ofstream(path, std::ios::binary).write(reinterpret_cast<const char*>(bytes.data()), std::streamsize(bytes.size())); }
+    tsf* master = ps::SoundFontPlayer::loadFile(path.c_str());
+    CHECK(master != nullptr);
+    if (!master) return;
+    auto pitchOf = [](const std::vector<float>& x, int from, int to) {
+        int up = 0;
+        for (int i = from + 1; i < to; ++i) if (x[size_t(i - 1) * kChannels] < 0.0f && x[size_t(i) * kChannels] >= 0.0f) ++up;
+        return up / ((to - from) / double(kRate));
+    };
+    {
+        ps::Engine engine(kRate);
+        ps::Command install{ps::CommandType::SetInstrument, 0.0f, 0};
+        install.font = ps::SoundFontPlayer::makeInstance(master, kRate);
+        engine.post(install);
+        engine.post({ps::CommandType::SynthNoteOn, 1.0f, 69});
+        auto plain = render(engine, kRate / 4, 256);
+        // The wheel up two semitones: the held A4 goes to B4.
+        engine.post({ps::CommandType::SetExpression, 2.0f, ps::InstrumentTrack::Bend});
+        auto up = render(engine, kRate / 4, 256);
+        std::printf("  GM bend: %.1f Hz -> %.1f Hz (493.9 wanted)\n", pitchOf(plain, 2400, 12000), pitchOf(up, 2400, 12000));
+        CHECK(std::fabs(pitchOf(plain, 2400, 12000) - 440.0) < 6.0);
+        CHECK(std::fabs(pitchOf(up, 2400, 12000) - 493.88) < 7.0);
+        // A note played while the wheel is down starts bent; back to the centre, back in tune.
+        engine.post({ps::CommandType::SynthNoteOff, 0.0f, 69});
+        engine.post({ps::CommandType::SetExpression, -12.0f, ps::InstrumentTrack::Bend});
+        engine.post({ps::CommandType::SynthNoteOn, 1.0f, 81});
+        auto down = render(engine, kRate / 4, 256);
+        CHECK(std::fabs(pitchOf(down, 2400, 12000) - 440.0) < 6.0);
+        engine.post({ps::CommandType::SetExpression, 0.0f, ps::InstrumentTrack::Bend});
+        auto centre = render(engine, kRate / 4, 256);
+        CHECK(std::fabs(pitchOf(centre, 2400, 12000) - 880.0) < 12.0);
+        engine.post({ps::CommandType::SetExpression, NAN, ps::InstrumentTrack::Bend});  // ignored
+        CHECK(!engine.hasNonFinite());
+    }
+    ps::SoundFontPlayer::close(master);
+    std::filesystem::remove(path);
+}
+
+void testSoundSwapsNeverAllocate() {
+#ifdef PS_COUNT_ALLOCATIONS
+    // Pad sounds and Remix copies swapped while they play, a GM instrument bent, the transport
+    // stopped and started with arpeggio keys held: no allocation in process().
+    const std::string path = (std::filesystem::temp_directory_path() / "ps_swap_alloc.sf2").string();
+    { auto bytes = tinySoundFont(); std::ofstream(path, std::ios::binary).write(reinterpret_cast<const char*>(bytes.data()), std::streamsize(bytes.size())); }
+    tsf* master = ps::SoundFontPlayer::loadFile(path.c_str());
+    std::vector<float> wave(4800);
+    for (size_t i = 0; i < wave.size(); ++i) wave[i] = 0.3f * std::sin(0.05f * float(i));
+    ps::Sample* one = ps::Sample::create(wave.data(), 4800, 1, kRate, kRate);
+    ps::Sample* two = ps::Sample::create(wave.data(), 3000, 1, kRate, kRate);
+    auto* song = ps::StemBundle::fromFloat(std::vector<std::vector<float>>(4, std::vector<float>(kRate * 20, 0.1f)));
+    auto* copy = ps::StemBundle::fromFloat(std::vector<std::vector<float>>(4, std::vector<float>(kRate * 25, 0.1f)), song);
+    {
+        ps::Engine engine(kRate);
+        one->retain();
+        ps::Command pad{ps::CommandType::InstallSample, 0.0f, 3, 0};
+        pad.sample = one;
+        engine.post(pad);
+        engine.post({ps::CommandType::SetPadParam, 1.0f, 3, ps::Sampler::Loop});
+        song->retain();
+        ps::Command stems{ps::CommandType::InstallStems};
+        stems.stems = song;
+        engine.post(stems);
+        ps::Command inst{ps::CommandType::SetInstrument, 0.0f, 1};
+        inst.font = ps::SoundFontPlayer::makeInstance(master, kRate);
+        engine.post({ps::CommandType::SetTrackOn, 1.0f, 1});
+        engine.post(inst);
+        engine.post({ps::CommandType::SetExpression, 1.0f, ps::InstrumentTrack::ArpOn});
+        for (int n : {60, 64, 67}) engine.post({ps::CommandType::SynthNoteOn, 0.8f, n});
+        engine.post({ps::CommandType::SynthNoteOn, 0.8f, 69 | (1 << 16)});
+        engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+        engine.post({ps::CommandType::TriggerPad, 1.0f, 3});
+        std::vector<float> out(512 * 2);
+        for (int i = 0; i < 30; ++i) engine.process(nullptr, 0, 0, out.data(), 512, 2);  // warm-up
+        g_allocations = 0;
+        g_countAllocations = true;
+        for (int i = 0; i < 300; ++i) {
+            if (i % 20 == 0) {
+                ps::Sample* s = (i / 20) % 2 ? one : two;
+                s->retain();
+                ps::Command swap{ps::CommandType::InstallSample, 0.0f, 3, 0};
+                swap.sample = s;
+                engine.post(swap);
+            }
+            if (i % 33 == 0) engine.post({ps::CommandType::TriggerPad, 1.0f, 3});
+            if (i % 40 == 7) {
+                ps::StemBundle* b = (i / 40) % 2 ? song : copy;
+                b->retain();
+                ps::Command swap{ps::CommandType::InstallStems};
+                swap.stems = b;
+                engine.post(swap);
+            }
+            if (i % 9 == 0) engine.post({ps::CommandType::SetExpression, float(i % 5) - 2.0f, ps::InstrumentTrack::Bend | (1 << 16)});
+            if (i % 75 == 30) engine.post({ps::CommandType::SetTransport, 0.0f});
+            if (i % 75 == 45) engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+            engine.process(nullptr, 0, 0, out.data(), 512, 2);
+        }
+        g_countAllocations = false;
+        std::printf("  allocations during sound swaps: %d\n", g_allocations.load());
+        CHECK(g_allocations.load() == 0);
+        CHECK(!engine.hasNonFinite());
+        engine.collectGarbage();
+    }
+    CHECK(one->refCount() == 1 && two->refCount() == 1);  // none leaked by the swaps
+    CHECK(song->refCount() == 1 && copy->refCount() == 1);
+    CHECK(one->release() && two->release() && song->release() && copy->release());
+    delete one;
+    delete two;
+    delete song;
+    delete copy;
+    ps::SoundFontPlayer::close(master);
+    std::filesystem::remove(path);
+#endif
 }
 
 void testPadParamCommandsReachTheSampler() {
@@ -2215,8 +2454,8 @@ void testSongAudioClip() {
     auto out = render(engine, 6000 * 30, 64);
     CHECK(engine.sceneSwaps() == 1);
     // Starts exactly on song step 4; a part change at step 16 does not restart it: the ramp goes on.
-    CHECK(std::fabs(out[size_t(6000 * 4 - 1) * kChannels]) < 1e-6f);
-    CHECK(out[size_t(6000 * 4) * kChannels] > 0.5f);
+    CHECK(std::fabs(out[size_t(6000 * 4 - 1 + kLate) * kChannels]) < 1e-6f);
+    CHECK(out[size_t(6000 * 4 + kLate) * kChannels] > 0.5f);
     const float at20 = out[size_t(6000 * 20) * kChannels];
     const float at16 = out[size_t(6000 * 16 + 100) * kChannels];
     const float at25 = out[size_t(6000 * 25) * kChannels];
@@ -2241,7 +2480,7 @@ void testSongAudioClip() {
     engine.post({ps::CommandType::SetTransport, 1.0f, 0, 12});
     out = render(engine, 6000, 64);
     CHECK(engine.songStep() == 12);
-    CHECK(std::fabs(out[size_t(1000) * kChannels] - float(6000 * 8 + 1000) * 1e-6f) < 2e-5f);
+    CHECK(std::fabs(out[size_t(1000 + kLate) * kChannels] - float(6000 * 8 + 1000) * 1e-6f) < 2e-5f);
     engine.post({ps::CommandType::SetTransport, 0.0f, 0});
     render(engine, 1024, 256);
     // The same with swing, from an odd start step: that step sounded half a step late, so the
@@ -2250,7 +2489,7 @@ void testSongAudioClip() {
     engine.post({ps::CommandType::SetAudioClipParam, 5.0f, 0, ps::AudioTracks::Start});
     engine.post({ps::CommandType::SetTransport, 1.0f, 0, 14});
     out = render(engine, 6000, 64);
-    CHECK(std::fabs(out[size_t(1000) * kChannels] - float(6000 * 9 - 3000 + 1000) * 1e-6f) < 2e-5f);
+    CHECK(std::fabs(out[size_t(1000 + kLate) * kChannels] - float(6000 * 9 - 3000 + 1000) * 1e-6f) < 2e-5f);
     engine.post({ps::CommandType::SetTransport, 0.0f, 0});
     engine.post({ps::CommandType::SetSwing, 0.0f});
     engine.post({ps::CommandType::SetAudioClipParam, 4.0f, 0, ps::AudioTracks::Start});
@@ -2260,13 +2499,13 @@ void testSongAudioClip() {
     engine.post({ps::CommandType::SetAudioClipParam, 120.0f, 0, ps::AudioTracks::Offset});
     engine.post({ps::CommandType::SetTransport, 1.0f, 0});
     out = render(engine, 6000 * 5, 64);
-    CHECK(std::fabs(out[size_t(6000 * 4 + 119) * kChannels]) < 1e-6f && out[size_t(6000 * 4 + 120) * kChannels] > 0.5f);
+    CHECK(std::fabs(out[size_t(6000 * 4 + 119 + kLate) * kChannels]) < 1e-6f && out[size_t(6000 * 4 + 120 + kLate) * kChannels] > 0.5f);
     engine.post({ps::CommandType::SetTransport, 0.0f, 0});
     render(engine, 1024, 256);
     engine.post({ps::CommandType::SetAudioClipParam, -120.0f, 0, ps::AudioTracks::Offset});
     engine.post({ps::CommandType::SetTransport, 1.0f, 0});
     out = render(engine, 6000 * 5, 64);
-    CHECK(std::fabs(out[size_t(6000 * 4) * kChannels] - 120e-6f) < 1e-7f);
+    CHECK(std::fabs(out[size_t(6000 * 4 + kLate) * kChannels] - 120e-6f) < 1e-7f);
     engine.post({ps::CommandType::SetTransport, 0.0f, 0});
     engine.post({ps::CommandType::SetAudioClipParam, 0.0f, 0, ps::AudioTracks::Offset});
     render(engine, 1024, 256);
@@ -2285,7 +2524,8 @@ void testSongAudioClip() {
     scene(live);
     const auto heard = render(live, 6000 * 30 - 3000, 100);
     float diff = 0.0f;
-    for (int i = 0; i < 6000 * 30 - 3000; ++i) diff = std::max(diff, std::fabs(file[size_t(i + 3000) * 2] - heard[size_t(i) * kChannels]));
+    // Heard the limiter's look-ahead later than the file has it.
+    for (int i = 0; i < 6000 * 30 - 3000 - kLate; ++i) diff = std::max(diff, std::fabs(file[size_t(i + 3000) * 2] - heard[size_t(i + kLate) * kChannels]));
     CHECK(file[size_t(6000 * 4) * 2] > 0.5f && std::fabs(file[size_t(6000 * 4 - 1) * 2]) < 1e-6f);
     CHECK(diff < 1e-6f);
     engine.post({ps::CommandType::InstallAudioClip, 0.0f, 0});
@@ -2397,7 +2637,8 @@ void testInsertPlaysInSomeScenes() {
     CHECK(live.size() == exported.size());
     if (live.size() != exported.size() || always.size() != exported.size()) return;
     float diff = 0.0f;
-    for (size_t i = 0; i < live.size(); ++i) diff = std::max(diff, std::fabs(live[i] - exported[i]));
+    const size_t late = size_t(kLate) * kChannels;  // heard the limiter's look-ahead later
+    for (size_t i = 0; i + late < live.size(); ++i) diff = std::max(diff, std::fabs(live[i + late] - exported[i]));
     CHECK(diff < 1e-6f);  // the export sounds as the live engine plays
     auto peak = [&](const std::vector<float>& v, int from, int to) {
         float p = 0.0f;
@@ -2647,7 +2888,7 @@ void testPianoRollNotesAreSampleAccurate() {
         return -1;
     };
     const int first = firstSound(0);
-    CHECK(first >= 9000 && first <= 9002);
+    CHECK(first >= 9000 + kLate && first <= 9002 + kLate);
     // Released at 9000 + 12000: by the next loop's note (96000 + 9000) it has died away, then sounds again.
     float quiet = 0.0f;
     for (int i = 96000 + 8000; i < 96000 + 9000; ++i) quiet = std::max(quiet, std::fabs(out[size_t(i) * kChannels]));
@@ -2890,6 +3131,8 @@ void testProcessNeverAllocates() {
             if (i % 40 == 0) engine.post({ps::CommandType::SetInsertParam, (i % 80) / 80.0f, 1, 0});
             if (i % 60 == 0) engine.post({ps::CommandType::SetInsertType, 0.0f, 5, 1 + (i / 60) % (ps::InsertSlot::kTypes - 1)});
             if (i % 65 == 0) engine.post({ps::CommandType::SetInsertType, 0.0f, 9, (i / 65) % 2 ? ps::InsertSlot::ReverbFx : ps::InsertSlot::EchoFx});
+            if (i % 65 == 0) engine.post({ps::CommandType::SetInsertParam, 0.7f, 9, 3});  // waits for the swap's glide
+            if (i % 90 == 45) engine.post({ps::CommandType::ClearInserts, 0.0f, ps::Mixer::kFirstPad + 3});  // a sounding strip emptied
             if (i % 55 == 0) engine.post({ps::CommandType::SetBusParam, (i % 110) / 110.0f, 1, 0});
             // A finger on the automated 303 cutoff, then let go (touch take-over).
             if (i % 20 == 0) engine.post({ps::CommandType::SetAutomationHold, (i / 20) % 2 ? 0.0f : 1.0f, 0,
@@ -2957,6 +3200,203 @@ void testLimiterHoldsTheCeiling() {
     mixConstant(mixer, 0.0f, 0.0f, 0.0f, kRate);
     auto quiet = mixConstant(mixer, 0.3f, 0.0f, 0.0f);
     CHECK(std::fabs(quiet.back() - 0.3f) < 1e-3f);
+}
+
+// The look-ahead limiter: a burst 12 dB over the ceiling comes out under it from its very first
+// frame (no overshoot), the gain glides down over the look-ahead instead of jumping on the peak
+// (a jump is a click and distortion), the meter before the limiter shows the overload and the
+// gain reduction is read. An instant-attack limiter jumps by the whole reduction in one frame.
+void testLimiterLooksAhead() {
+    ps::Mixer mixer;
+    mixer.prepare(kRate);
+    CHECK(mixer.lookAhead() >= 2 && mixer.lookAhead() <= 48);  // at most 1 ms
+    constexpr int frames = kRate / 2;
+    const float burst = ps::Mixer::kCeiling * 4.0f;  // +12 dB over the ceiling
+    std::vector<float> in(frames), zero(frames, 0.0f), out(size_t(frames) * 2);
+    for (int i = 0; i < frames; ++i) in[size_t(i)] = i >= 12000 && i < 18000 ? burst : 0.3f;  // DC: the gain is out / in
+    const float* ch[ps::Mixer::kChannels] = {in.data(), zero.data(), zero.data(), zero.data()};
+    for (int pos = 0; pos < frames; pos += 192) {
+        const int n = std::min(192, frames - pos);
+        const float* part[ps::Mixer::kChannels] = {in.data() + pos, zero.data(), zero.data(), zero.data()};
+        mixer.process(part, nullptr, out.data() + size_t(pos) * 2, n, 2);
+    }
+    (void)ch;
+    float peak = 0.0f, worstStep = 0.0f, lowest = 1.0f;
+    for (int i = 0; i + kLate < frames; ++i) {
+        const float y = out[size_t(i + kLate) * 2];
+        peak = std::max(peak, std::fabs(y));
+        const float g = y / in[size_t(i)];
+        lowest = std::min(lowest, g);
+        if (i > 0) worstStep = std::max(worstStep, std::fabs(g - out[size_t(i - 1 + kLate) * 2] / in[size_t(i - 1)]));
+    }
+    std::printf("  limiter: peak %.4f, lowest gain %.3f, largest gain step %.4f\n", double(peak), double(lowest), double(worstStep));
+    CHECK(peak <= ps::Mixer::kCeiling + 1e-6f);      // held from the first frame of the burst
+    CHECK(lowest > 0.24f && lowest < 0.26f);          // -12 dB, no more
+    CHECK(worstStep < 0.02f);  // glides over the look-ahead (an instant attack: 0.75 in one frame)
+    CHECK(out[size_t(12000 + kLate - 1) * 2] < 0.3f);  // already gliding down before the burst
+    // A loud sine through it: no distortion from the gain (it only glides), still under the ceiling.
+    std::vector<float> sine(frames);
+    for (int i = 0; i < frames; ++i) sine[size_t(i)] = 2.0f * static_cast<float>(std::sin(2.0 * M_PI * 100.0 * i / kRate));
+    const float* sch[ps::Mixer::kChannels] = {sine.data(), zero.data(), zero.data(), zero.data()};
+    mixer.takeMasterPeak();
+    mixer.takeMasterInputPeak();
+    mixer.takeLimiterGain();
+    mixer.process(sch, nullptr, out.data(), frames, 2);
+    float sinePeak = 0.0f;
+    for (float v : out) sinePeak = std::max(sinePeak, std::fabs(v));
+    CHECK(sinePeak <= ps::Mixer::kCeiling + 1e-6f && sinePeak > 0.85f);
+    // The meters: before the limiter the overload (2.0), after it the ceiling, and the reduction.
+    CHECK(mixer.takeMasterInputPeak() > 1.9f);
+    CHECK(mixer.takeMasterPeak() <= ps::Mixer::kCeiling + 1e-6f);
+    const float gr = mixer.takeLimiterGain();
+    CHECK(gr < 0.5f && gr > 0.4f);
+    CHECK(mixer.takeLimiterGain() == 1.0f);  // reading resets it
+}
+
+// Headroom: the default kit, the acid line and a synth chord at their default levels, four bars.
+// At a master gain of 0 dB the limiter works hard; a new project's master starts lower (the app's
+// Mixer.NEW_PROJECT_DB, -6 dB) and the limiter then takes at most 3 dB off the peaks.
+float gainReductionDb(float masterGain) {
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SetTempo, 130.0f});
+    // As the app's starter project: kick on the beats, snare on 2 and 4, closed hats on the eighths, an open hat.
+    for (int st : {0, 4, 8, 12}) engine.post({ps::CommandType::SetDrumHit, 1.0f, ps::DrumKit::Kick, st});
+    for (int st : {4, 12}) engine.post({ps::CommandType::SetDrumHit, 1.0f, ps::DrumKit::Snare, st});
+    for (int st = 0; st < 16; st += 2) engine.post({ps::CommandType::SetDrumHit, 1.0f, ps::DrumKit::ClosedHat, st});
+    engine.post({ps::CommandType::SetDrumHit, 1.0f, ps::DrumKit::OpenHat, 14});
+    for (int st = 0; st < 16; ++st) {
+        engine.post({ps::CommandType::SetAcidStep, 0.0f, st, ps::AcidStep{(st * 5) % 12, st % 7 == 3 ? 1 : 0, st % 4 == 2, st % 6 == 5, st % 8 != 7}.pack()});
+    }
+    engine.post({ps::CommandType::SetSynthSteps, 0.0f, 16});
+    const int chord[3] = {57, 60, 64};
+    for (int k = 0; k < 3; ++k) engine.post({ps::CommandType::SetSynthNote, 0.8f, k, ps::NoteTrack::pack(0, 16 * 24 - 12, chord[k])});
+    engine.post({ps::CommandType::SetSynthNoteCount, 0.0f, 3});
+    engine.post({ps::CommandType::SetMaster, masterGain, 0});
+    render(engine, kRate / 10, 256);
+    engine.mixer().settle();
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    engine.mixer().takeLimiterGain();
+    engine.mixer().takeMasterInputPeak();
+    const int fourBars = static_cast<int>(4 * 4 * 60.0 / 130.0 * kRate);
+    render(engine, fourBars, 256);
+    const float gain = engine.mixer().takeLimiterGain();
+    std::printf("  master %.1f dB: peak into the limiter %.2f, gain reduction %.1f dB\n", 20.0 * std::log10(double(masterGain)),
+                double(engine.mixer().takeMasterInputPeak()), -20.0 * std::log10(double(gain)));
+    return -20.0f * std::log10(gain);
+}
+
+void testNewProjectsHaveHeadroom() {
+    const float atZero = gainReductionDb(1.0f);
+    const float trimmed = gainReductionDb(0.5011872f);  // -6 dB
+    CHECK(atZero > 3.0f);   // the old default: the limiter squashes the peaks
+    CHECK(trimmed <= 3.0f);
+}
+
+// Swapping an insert while the strip sounds: the old effect fades out, the new one fades in, no
+// click (a closed low-pass swapped for nothing used to jump from silence to the full tone at once).
+// Parameters sent meanwhile go to the new effect; the swap lands on the same frame whatever the blocks.
+void testInsertSwapHasNoClick() {
+    constexpr int frames = kRate / 4;
+    std::vector<float> tone(frames), zero(frames, 0.0f);
+    for (int i = 0; i < frames; ++i) tone[size_t(i)] = 0.5f * static_cast<float>(std::sin(2.0 * M_PI * 220.0 * i / kRate));
+    auto run = [&](int block, auto&& during) {
+        auto mixer = std::make_unique<ps::Mixer>();
+        mixer->prepare(kRate);
+        mixer->setInsertType(0, 0, ps::InsertSlot::Filter);
+        const float closed[4] = {0.0f, 0.0f, 0.0f, 1.0f};  // low-pass shut, fully wet: near silence
+        for (int p = 0; p < 4; ++p) mixer->setInsertParam(0, 0, p, closed[p]);
+        std::vector<float> out(size_t(frames) * 2);
+        for (int pos = 0; pos < frames; pos += block) {
+            const int n = std::min(block, frames - pos);
+            if (pos == 23 * 256) during(*mixer);  // in the middle of a cycle of the tone
+            const float* ch[ps::Mixer::kChannels] = {tone.data() + pos, zero.data(), zero.data(), zero.data()};
+            mixer->process(ch, nullptr, out.data() + size_t(pos) * 2, n, 2);
+        }
+        return std::make_pair(std::move(mixer), out);
+    };
+    auto worstStep = [](const std::vector<float>& out) {
+        float worst = 0.0f;
+        for (size_t i = 2; i < out.size(); i += 2) worst = std::max(worst, std::fabs(out[i] - out[i - 2]));
+        return worst;
+    };
+    const float toneStep = 0.5f * static_cast<float>(2.0 * M_PI * 220.0 / kRate);  // the tone's own largest step
+    // Taken out (type None) while it plays: glides from near silence to the tone.
+    auto [removed, out] = run(256, [](ps::Mixer& m) {
+        m.setInsertType(0, 0, ps::InsertSlot::None);
+        CHECK(m.pendingType(0, 0) == ps::InsertSlot::None);
+        CHECK(m.insert(0, 0).type() == ps::InsertSlot::Filter);  // still fading out
+    });
+    std::printf("  insert swap: largest step %.4f (the tone's own %.4f)\n", double(worstStep(out)), double(toneStep));
+    CHECK(worstStep(out) < 2.5f * toneStep);
+    CHECK(removed->insert(0, 0).type() == ps::InsertSlot::None && removed->pendingType(0, 0) == -1);
+    float tail = 0.0f;
+    for (int i = frames - 2000; i < frames; ++i) tail = std::max(tail, std::fabs(out[size_t(i) * 2]));
+    CHECK(tail > 0.45f);  // the tone, untouched, once the glide is over
+    // Swapped for a crusher whose settings follow the swap: they reach the crusher, not the filter.
+    auto swap = [](ps::Mixer& m) {
+        m.setInsertType(0, 0, ps::InsertSlot::Saturation);
+        m.setInsertParam(0, 0, 3, 0.0f);  // its volume at 0: silence once in
+    };
+    auto [swapped, a] = run(256, swap);
+    auto [again, b] = run(64, swap);
+    CHECK(worstStep(a) < 2.5f * toneStep);
+    CHECK(swapped->insert(0, 0).type() == ps::InsertSlot::Saturation);
+    float end = 0.0f;
+    for (int i = frames - 2000; i < frames; ++i) end = std::max(end, std::fabs(a[size_t(i) * 2]));
+    CHECK(end < 1e-3f);  // the new effect has its volume at 0
+    float diff = 0.0f;
+    for (size_t i = 0; i < a.size(); ++i) diff = std::max(diff, std::fabs(a[i] - b[i]));
+    CHECK(diff < 1e-6f);  // the same in blocks of 256 and of 64 frames (the glide spans several)
+    // Emptied while it plays (a strip let go): the long effect's unit goes back after the glide.
+    auto [cleared, c] = run(256, [](ps::Mixer& m) {
+        m.setInsertType(0, 1, ps::InsertSlot::ReverbFx);  // in from silence on the next frames
+        m.clearInserts(0);
+    });
+    CHECK(worstStep(c) < 2.5f * toneStep);
+    CHECK(cleared->insert(0, 0).type() == ps::InsertSlot::None && cleared->insert(0, 1).type() == ps::InsertSlot::None);
+    CHECK(cleared->longFxPool().reverbs.available() == ps::LongFxPool::kReverbs);
+    // « Joue dans » sent during the glide: the new effect starts out of the scene.
+    auto [gated, d] = run(256, [](ps::Mixer& m) {
+        m.setInsertType(0, 0, ps::InsertSlot::Saturation);
+        m.setInsertParam(0, 0, 3, 0.0f);
+        m.setInsertOn(0, 0, false);
+    });
+    CHECK(!gated->insertOn(0, 0));
+    float through = 0.0f;
+    for (int i = frames - 2000; i < frames; ++i) through = std::max(through, std::fabs(d[size_t(i) * 2]));
+    CHECK(through > 0.45f);  // passed by: the tone untouched
+    // Silent strip (before the first beat, an export's set-up): in at once, as always.
+    ps::Mixer quiet;
+    quiet.prepare(kRate);
+    quiet.setInsertType(0, 0, ps::InsertSlot::Comp);
+    CHECK(quiet.insert(0, 0).type() == ps::InsertSlot::Comp && quiet.pendingType(0, 0) == -1);
+}
+
+// The metronome (and the test tone) after the master's effects and the Live effects: a master
+// low-pass shut or a tape stop leaves the click as it is.
+void testMetronomeAfterTheMasterChain() {
+    auto clickPeak = [](bool masterFx, bool tapeStop) {
+        ps::Engine engine(kRate);
+        engine.post({ps::CommandType::SetTempo, 120.0f});
+        engine.post({ps::CommandType::SetMetronome, 1.0f});
+        if (masterFx) {
+            const int slot = ps::Mixer::kMaster * ps::Mixer::kInserts;
+            engine.post({ps::CommandType::SetInsertType, 0.0f, slot, ps::InsertSlot::Filter});
+            const float closed[4] = {0.0f, 0.0f, 0.0f, 1.0f};
+            for (int p = 0; p < 4; ++p) engine.post({ps::CommandType::SetInsertParam, closed[p], slot, p});
+        }
+        if (tapeStop) engine.post({ps::CommandType::SetPerformance, 1.0f, ps::PerformanceFx::TapeStop});
+        engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+        const auto out = render(engine, kRate * 2, 256);
+        float peak = 0.0f;
+        for (int i = kRate; i < kRate * 2; ++i) peak = std::max(peak, std::fabs(out[size_t(i) * kChannels]));
+        return peak;
+    };
+    const float plain = clickPeak(false, false), filtered = clickPeak(true, false), stopped = clickPeak(false, true);
+    std::printf("  click peak %.3f, under a shut master low-pass %.3f, in a tape stop %.3f\n", double(plain), double(filtered), double(stopped));
+    CHECK(plain > 0.3f);
+    CHECK(std::fabs(filtered - plain) < 1e-3f);
+    CHECK(std::fabs(stopped - plain) < 1e-3f);
 }
 
 // Writes mono `x` as a WAV: 32-bit float, or 16-bit PCM when `pcm16`.
@@ -3067,12 +3507,14 @@ void testStemsPlayInStepWithTheTransport() {
         const auto out = render(engine, kRate * 3, 256);
         CHECK(engine.stemsLoaded());
         const int start = kRate * 2;
-        CHECK(std::fabs(out[static_cast<size_t>(start - 1) * 2]) < 1e-4f);  // silent through the count-in (metronome off-beat aside)
+        CHECK(std::fabs(out[static_cast<size_t>(start - 1 + kLate) * 2]) < 1e-4f);  // silent through the count-in (metronome off-beat aside)
         const float left = out[static_cast<size_t>(start + 4800) * 2];
         CHECK(std::fabs(left - 0.5f) < 2e-3f);  // all four stems at unity on the remix channel
-        // Right side = the ramp: the song position at step 0 is exactly the start frame.
-        const float right = out[static_cast<size_t>(start) * 2 + 1];
-        CHECK(std::fabs(right - 0.25f * kRate / songFrames) < 1e-3f);
+        // Right side = the ramp: the song position at step 0 is exactly the start frame (after a
+        // 5 ms fade in from silence; the output is kLate frames late through the limiter).
+        CHECK(std::fabs(out[static_cast<size_t>(start + kLate) * 2 + 1]) < 1e-4f);
+        const float right = out[static_cast<size_t>(start + kLate + 480) * 2 + 1];
+        CHECK(std::fabs(right - 0.25f * (kRate + 480) / songFrames) < 1e-3f);
         CHECK(engine.stemPosition() > kRate);
         // Mute the loudest stem, then solo the quietest.
         engine.post({ps::CommandType::SetStemParam, 1.0f, 3, ps::StemPlayer::Mute});
@@ -3838,8 +4280,8 @@ void testMixerInsertsAndSends() {
     const float* ch[ps::Mixer::kChannels] = {click.data(), zero.data(), zero.data(), zero.data()};
     // Dry: the click alone, nothing after it.
     mixer.process(ch, nullptr, out.data(), frames, 2);
-    CHECK(std::fabs(out[200] - 0.5f) < 1e-3f);
-    CHECK(std::fabs(out[(100 + 12000) * 2]) < 1e-6f);
+    CHECK(std::fabs(out[(100 + kLate) * 2] - 0.5f) < 1e-3f);
+    CHECK(std::fabs(out[(100 + kLate + 12000) * 2]) < 1e-6f);
     // Delay send on the drums (1/8 at 120 BPM): an echo 12000 frames later, on the master.
     mixer.setBusParam(1, 0, 0.2f);
     mixer.setBusParam(1, 2, 0.0f);
@@ -3847,7 +4289,7 @@ void testMixerInsertsAndSends() {
     mixer.process(ch, nullptr, out.data(), frames, 2);  // settle the send smoothing
     mixer.process(ch, nullptr, out.data(), frames, 2);
     float echo = 0.0f;
-    for (int i = 100 + 12000 - 2; i <= 100 + 12000 + 2; ++i) echo = std::max(echo, std::fabs(out[static_cast<size_t>(i) * 2]));
+    for (int i = 100 + kLate + 12000 - 2; i <= 100 + kLate + 12000 + 2; ++i) echo = std::max(echo, std::fabs(out[static_cast<size_t>(i) * 2]));
     CHECK(echo > 0.1f);
     mixer.setSend(0, 1, 0.0f);
     // Reverb send: a tail after the click.
@@ -3998,7 +4440,8 @@ void testEightInsertSlots() {
     const auto played = render(live, frames, ps::OfflineRenderer::kBlock);
     CHECK(exported.size() == played.size());
     float diff = 0.0f;
-    for (size_t i = 0; i < std::min(exported.size(), played.size()); ++i) diff = std::max(diff, std::fabs(exported[i] - played[i]));
+    const size_t late = size_t(kLate) * kChannels;  // heard the limiter's look-ahead later
+    for (size_t i = 0; i + late < std::min(exported.size(), played.size()); ++i) diff = std::max(diff, std::fabs(exported[i] - played[i + late]));
     CHECK(diff == 0.0f);
     auto rms = [](const std::vector<float>& o, int from) {
         double sum = 0;
@@ -4818,6 +5261,44 @@ void testPlaitsVoices() {
 // Audit 28 review m8: an export (or a preview) renders Plaits on its own thread while the audio
 // thread does: they share stmlib's noise generator, now a relaxed atomic (a plain static before:
 // a data race, which ThreadSanitizer reports). Each synth alone keeps its own noise sequence.
+// A sound's calibration gain (Synth::Gain, PlaitsSynth::Gain): 0.5 is exactly the sound as before
+// (old projects unchanged), +6 dB doubles it, and it stays finite at both ends.
+void testSoundCalibrationGain() {
+    auto rms = [](const std::vector<float>& v) {
+        double s = 0.0;
+        for (float x : v) s += static_cast<double>(x) * x;
+        return std::sqrt(s / static_cast<double>(v.size()));
+    };
+    auto synthAt = [&](float gain, bool set) {
+        ps::Synth synth;
+        synth.prepare(kRate);
+        if (set) synth.setParam(ps::Synth::Gain, gain);
+        synth.noteOn(48, 0.8f);
+        return renderSynth(synth, kRate / 2);
+    };
+    const auto unset = synthAt(0.5f, false), unity = synthAt(0.5f, true), up = synthAt(0.6f, true);
+    CHECK(unset == unity);
+    const double ratio = rms(up) / rms(unity);
+    std::printf("  synth +6 dB gain: x%.3f\n", ratio);
+    CHECK(std::fabs(ratio - 1.995) < 0.02);
+    for (float g : {0.0f, 1.0f}) for (float v : synthAt(g, true)) CHECK(std::isfinite(v));
+    auto plaitsAt = [&](float gain, bool set) {
+        ps::PlaitsSynth plaits;
+        plaits.prepare(kRate);
+        plaits.setParam(ps::PlaitsSynth::Model, 0.0f);
+        if (set) plaits.setParam(ps::PlaitsSynth::Gain, gain);
+        plaits.noteOn(57, 1.0f, 0);
+        std::vector<float> out(kRate / 2, 0.0f);
+        plaits.render(out.data(), kRate / 2);
+        return out;
+    };
+    const auto pUnset = plaitsAt(0.5f, false), pUnity = plaitsAt(0.5f, true), pDown = plaitsAt(0.4f, true);
+    CHECK(pUnset == pUnity);
+    const double pRatio = rms(pDown) / rms(pUnity);
+    std::printf("  plaits -6 dB gain: x%.3f\n", pRatio);
+    CHECK(std::fabs(pRatio - 0.501) < 0.01);
+}
+
 void testPlaitsOnTwoThreads() {
     auto render = [](int model, int frames) {
         ps::PlaitsSynth plaits;
@@ -5260,7 +5741,9 @@ void testDrumPanAndStepPitch() {
         engine.post({ps::CommandType::SetTransport, 0.0f});
         render(engine, 6000 * 4, 256);
         engine.post({ps::CommandType::SetTransport, 1.0f, 0});
-        const auto again = render(engine, 6000, 256);
+        auto again = render(engine, 6000, 256);
+        // (The centred kick still rings in the limiter's look-ahead until the new hit cuts it.)
+        again.erase(again.begin(), again.begin() + size_t(kLate) * kChannels);
         CHECK(energy(again, 1) < energy(again, 0) * 1e-6);
     }
     {
@@ -5416,6 +5899,76 @@ void testStemsStretchToTheProjectTempo() {
     CHECK(bundle->stretched(10.0, kRate) == nullptr);
     CHECK(bundle->release());
     delete bundle;
+}
+
+void testStemsKeepTheirPlaceAcrossATempoChange() {
+    // A ramp on every stem's left side reads the song position. Two seconds in, the copy of the
+    // song for a tempo 0.8 times as fast lands (1.25 times as long, same ramp): it goes on from the
+    // same musical point (frame x 1.25), crossfading in, no jump, no restart.
+    constexpr int songFrames = kRate * 8;
+    auto ramp = [](int frames) {
+        std::vector<float> x(static_cast<size_t>(frames) * 2, 0.0f);
+        for (int i = 0; i < frames; ++i) x[static_cast<size_t>(i) * 2] = 0.1f * static_cast<float>(i) / frames;
+        return std::vector<std::vector<float>>(4, x);
+    };
+    auto* song = ps::StemBundle::fromFloat(ramp(songFrames));
+    auto* slow = ps::StemBundle::fromFloat(ramp(songFrames * 5 / 4), song);
+    auto* other = ps::StemBundle::fromFloat(ramp(songFrames));  // another song: no mapping
+    CHECK(slow->song() == song->song() && other->song() != song->song());
+    ps::StemPlayer player;
+    player.prepare(kRate);
+    song->retain();
+    player.install(song);
+    player.start(0);
+    std::vector<float> l(kRate * 4, 0.0f), r(kRate * 4, 0.0f);
+    auto play = [&](int from, int to) {
+        for (int at = from; at < to; at += 256) player.render(l.data() + at, r.data() + at, std::min(256, to - at));
+    };
+    play(0, kRate * 2);
+    CHECK(std::fabs(l[0]) < 1e-6f);  // start: a fade in, no click
+    slow->retain();
+    player.install(slow);
+    play(kRate * 2, kRate * 3);
+    const float jump = largestStep(l, kRate * 2 - 10, kRate * 3);
+    // A second later the new copy is a second further: (2 x 1.25 + 1) s of its 10 s (the old,
+    // unmapped position would read 3 s of 10 s: 0.12 instead of 0.14).
+    const float want = 0.4f * static_cast<float>(kRate * 3.5 - 1) / (songFrames * 1.25f);
+    std::printf("  stems tempo swap: largest step %.6f, at 3 s %.5f (%.5f wanted)\n", jump, l[kRate * 3 - 1], want);
+    CHECK(jump < 1e-3f);
+    CHECK(std::fabs(l[kRate * 3 - 1] - want) < 1e-3f);
+    CHECK(player.position() == std::llround(kRate * 2 * 1.25) + kRate);
+    // Another song replacing it crossfades too, at the same frame (no mapping).
+    other->retain();
+    player.install(other);
+    play(kRate * 3, kRate * 3 + 2048);
+    CHECK(player.position() == std::llround(kRate * 2 * 1.25) + kRate + 2048);
+    CHECK(largestStep(l, kRate * 3 - 10, kRate * 3 + 2048) < 0.01f);
+    // Stop: faded out, then silence. Unload while silent: let go at once.
+    player.stop();
+    play(kRate * 3 + 2048, kRate * 4);
+    CHECK(largestStep(l, kRate * 3 + 2048, kRate * 4) < 0.01f);
+    CHECK(l[kRate * 4 - 1] == 0.0f);
+    CHECK(player.position() == -1);
+    player.install(nullptr);
+    player.collectGarbage();
+    CHECK(song->refCount() == 1 && slow->refCount() == 1 && other->refCount() == 1);
+    // Unload while playing: a fade out, not a cut; the bundle is let go after it.
+    other->retain();
+    player.install(other);
+    player.start(0);
+    std::fill(l.begin(), l.end(), 0.0f);
+    play(0, kRate);
+    player.install(nullptr);
+    CHECK(other->refCount() == 2);  // still fading
+    play(kRate, kRate + 2048);
+    CHECK(largestStep(l, kRate - 10, kRate + 2048) < 0.01f);
+    CHECK(l[kRate + 2047] == 0.0f);
+    player.collectGarbage();
+    CHECK(other->refCount() == 1);
+    for (auto* b : {song, slow, other}) {
+        CHECK(b->release());
+        delete b;
+    }
 }
 
 void testStemPreviewPlaysWithoutTheTransport() {
@@ -7019,6 +7572,7 @@ void testRollsOnSwungStepsStayInside() {
         std::vector<int> want = {0, 1500, 3000, 4500};
         for (int k = 0; k < 4; ++k) want.push_back(odd + static_cast<int>(k * oddEvery));
         want.push_back(12000);
+        for (int& w : want) w += kLate;  // the limiter's look-ahead
         std::printf("  swing %.2f: hits at", swing);
         for (int h : hits) std::printf(" %d", h);
         std::printf("\n");
@@ -7027,10 +7581,11 @@ void testRollsOnSwungStepsStayInside() {
     }
 }
 
-// The master's NaN guard: a NaN reaching the master (here the direct path, into a master EQ that
-// keeps it in its state) is caught before the Live effects (which make every NaN 0 in their
-// memory, so the guard never saw it), reported, and the master's effects start again: the
-// sound comes back on the next block instead of a silence for good.
+// The master's NaN guard: a NaN reaching the master (here a master EQ overflowing on a huge, still
+// finite sample, which then keeps an infinity in its state) is caught before the Live effects
+// (which make every NaN 0 in their memory, so the guard never saw it), reported, and the master's
+// effects start again: the sound comes back on the next block instead of a silence for good.
+// A NaN on the direct path (metronome, test tone; after the master's effects) is reported too.
 void testMasterNanGuardReportsAndRecovers() {
     auto mixer = std::make_unique<ps::Mixer>();
     mixer->prepare(kRate);
@@ -7047,7 +7602,7 @@ void testMasterNanGuardReportsAndRecovers() {
             phase += 2.0 * M_PI * 440.0 / kRate;
         }
         std::fill(direct.begin(), direct.end(), 0.0f);
-        if (nan) direct[10] = std::numeric_limits<float>::quiet_NaN();
+        if (nan) tone[10] = std::numeric_limits<float>::max();
         mixer->process(channels, direct.data(), out.data(), n, 2);
         float peak = 0.0f;
         bool finite = true;
@@ -7069,6 +7624,11 @@ void testMasterNanGuardReportsAndRecovers() {
     CHECK(before > 0.1f);
     CHECK(after > 0.5f * before);  // the sound is back
     CHECK(!mixer->takeBlewUp());
+    std::fill(direct.begin(), direct.end(), 0.0f);
+    direct[3] = std::numeric_limits<float>::quiet_NaN();
+    mixer->process(channels, direct.data(), out.data(), n, 2);
+    CHECK(mixer->takeBlewUp());
+    for (float v : out) CHECK(std::isfinite(v));
 }
 
 // NaN, +-Inf and huge values on every setting path, then a sane value: never a crash (an echo time
@@ -7261,7 +7821,8 @@ void testLfosRestartWithTheTransport() {
     };
     const auto fresh = run(false), warm = run(true);
     float worst = 0.0f, peak = 0.0f;
-    for (size_t i = 0; i < fresh.size(); ++i) {
+    // From the take's first frame (the limiter's look-ahead still holds what played before it).
+    for (size_t i = size_t(kLate) * kChannels; i < fresh.size(); ++i) {
         worst = std::max(worst, std::fabs(fresh[i] - warm[i]));
         peak = std::max(peak, std::fabs(fresh[i]));
     }
@@ -7399,6 +7960,10 @@ int main(int argc, char** argv) {
         {"synth_sweep_follows_tempo", testSynthSweepFollowsTheTempo},
         {"mixer_pan_mute_solo", testMixerPanMuteSolo},
         {"limiter_ceiling", testLimiterHoldsTheCeiling},
+        {"limiter_looks_ahead", testLimiterLooksAhead},
+        {"new_projects_have_headroom", testNewProjectsHaveHeadroom},
+        {"insert_swap_has_no_click", testInsertSwapHasNoClick},
+        {"metronome_after_the_master_chain", testMetronomeAfterTheMasterChain},
         {"wav_writer", testWavWriterRoundTrip},
         {"offline_export", testOfflineExportRendersTheBeat},
         {"offline_fade_out", testOfflineExportFadesOutTheEnd},
@@ -7411,6 +7976,10 @@ int main(int argc, char** argv) {
         {"pad_pitch_region_reverse", testPadPitchRegionAndReverse},
         {"pad_loop_envelope_choke", testPadLoopEnvelopeAndChoke},
         {"pad_param_commands", testPadParamCommandsReachTheSampler},
+        {"pad_sound_swap", testPadSoundSwapFadesAndKeepsTheLoop},
+        {"arp_keeps_keys_across_stop", testArpeggioKeepsHeldKeysAcrossStop},
+        {"gm_pitch_bend", testGeneralMidiPitchBend},
+        {"sound_swaps_never_allocate", testSoundSwapsNeverAllocate},
         {"onsets", testOnsetsFindTheHits},
         {"time_stretch", testTimeStretchKeepsPitchAndLength},
         {"piano_roll", testPianoRollNotesAreSampleAccurate},
@@ -7430,6 +7999,7 @@ int main(int argc, char** argv) {
         {"tempo_ignores_non_finite", testTempoIgnoresNonFiniteValues},
         {"plaits", testPlaitsVoices},
         {"plaits_engine", testPlaitsThroughEngine},
+        {"sound_calibration_gain", testSoundCalibrationGain},
         {"plaits_two_threads", testPlaitsOnTwoThreads},
         {"tempo_and_key", testTempoAndKeyDetection},
         {"stems_follow_transport", testStemsPlayInStepWithTheTransport},
@@ -7486,6 +8056,7 @@ int main(int argc, char** argv) {
         {"live_pads_bar", testLivePadsFollowTheBar},
         {"stem_preview", testStemPreviewPlaysWithoutTheTransport},
         {"stems_stretch", testStemsStretchToTheProjectTempo},
+        {"stems_keep_place_across_tempo", testStemsKeepTheirPlaceAcrossATempoChange},
         {"play_position", testPlayPositionForLiveRecording},
         {"song_export", testSongExportSwapsScenesOnTime},
         {"drum_rolls", testDrumRollsSplitTheStep},

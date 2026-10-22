@@ -111,6 +111,9 @@ object FxPresets {
             listOf(fx(EffectType.DISTORTION, 0.35f, 0.75f, 0f, 0.7f), fx(EffectType.WOBBLE, 0.5f, 0.78f, 0.62f, 0f), fx(EffectType.OTT, 0.35f, 0.5f, 0.5f, 0.6f))),
         FxPreset("reese_dnb", "Reese DnB", "Une basse épaisse qui bouge lentement : doublée, elle respire sur une demi-mesure, comme en drum & bass.", "Mouvement",
             listOf(fx(EffectType.CHORUS, 0.15f, 0.7f, 0.5f, 0.55f), fx(EffectType.WOBBLE, 0.12f, 0.5f, 0.3f, 0.3f), fx(EffectType.DISTORTION, 0.2f, 0.6f, 0f, 0.5f))),
+        // The jump up growl (phase 29): folded back for a metallic grit, then squashed in three bands.
+        FxPreset("growl", "Growl", "Une basse qui grogne : saturée jusqu'au métal et écrasée en trois bandes, grasse comme en dubstep.", "Saleté",
+            listOf(fx(EffectType.DISTORTION, 0.55f, 0.6f, 0.8f, 0.75f), fx(EffectType.OTT, 0.75f, 0.5f, 0.75f, 0.7f))),
     )
 
     fun byId(id: String) = (ALL + NONE).firstOrNull { it.id == id }
@@ -119,7 +122,7 @@ object FxPresets {
     fun suggestedFor(kind: SoundKind): List<FxPreset> = when (kind) {
         SoundKind.LEAD -> listOf("scream_lead", "wide_alive", "dub_deep", "dream", "distortion", "far_away")
         SoundKind.PLUCK -> listOf("pluck_pingpong", "dub_deep", "wide_alive", "small_room", "lofi_tape")
-        SoundKind.BASS -> listOf("fat_bass", "wob_dubstep", "reese_dnb", "edm_pump", "pump", "crunch", "distortion")
+        SoundKind.BASS -> listOf("fat_bass", "growl", "wob_dubstep", "reese_dnb", "edm_pump", "pump", "crunch", "distortion")
         SoundKind.PAD -> listOf("wide_alive", "space", "cathedral", "edm_pump", "underwater", "dream")
         SoundKind.KEYS -> listOf("small_room", "warm_vinyl", "lofi_tape", "wide_alive", "dub_deep")
         SoundKind.DRUMS -> listOf("punch", "edm_pump", "crunch", "lofi_tape", "small_room", "rumble")
@@ -183,8 +186,8 @@ enum class SoundKind(val label: String) {
 fun InstrumentTrack.soundKind(): SoundKind {
     instrument?.let { return SoundKind.ofName(name) ?: SoundKind.ofProgram(it.program) }
     val category = when (engine) {
-        1 -> SoundLibrary.PLAITS.firstOrNull { it.sound == plaits.copy(level = it.sound.level) }?.category
-        0 -> SoundLibrary.SYNTH.firstOrNull { it.sound.sanitized() == synth.sanitized() }?.category
+        1 -> SoundLibrary.PLAITS.firstOrNull { it.sound == plaits.copy(level = it.sound.level, gain = it.sound.gain) }?.category
+        0 -> SoundLibrary.SYNTH.firstOrNull { it.sound.sanitized() == synth.withGainOf(it.sound) }?.category
         else -> null
     }
     return SoundKind.ofCategory(category) ?: SoundKind.ofName(name) ?: SoundKind.LEAD

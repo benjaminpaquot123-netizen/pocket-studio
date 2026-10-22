@@ -42,6 +42,11 @@
     "pattern": "..o...o...o...o...o...o...o..oo.",
     "source": "dnb",
     "tip_fr": "Petites percussions discrètes qui imitent un « break » : un bout de batterie de vieux disque funk, découpé et accéléré."
+   },
+   {
+    "role": "ride",
+    "pattern": "..x...x...x...x...x...x...x...x.",
+    "tip_fr": "Une cymbale ride qui tinte à chaque contretemps : elle arrive au Drop et le fait briller."
    }
   ],
   "progressions": {
@@ -93,7 +98,8 @@
    "pattern": "R-------..R-----R-------..R--/O-",
    "octave": 2,
    "sound": "Basse reese",
-   "glide": true
+   "glide": true,
+   "sub": true
   },
   "lead": {
    "type": "riff",
@@ -111,7 +117,7 @@
   "defaults": {
    "bass": true,
    "chords": true,
-   "lead": false
+   "lead": true
   },
   "notes": "Classic 174 BPM two-step: kick on step 1 and step 11 (the 'and' of beat 3), snares on beats 2 and 4, ghost snares only in bar 2. The reese bass (two detuned saws, from Kevin Saunderson's 'Reese', popularised in DnB by Renegade 'Terrorist' 1994) is held long and follows the kick; play it in F2 so that its sub oscillator sits in F1 (~44 Hz) and duck it under kick and snare. The pad lives in intro/breakdown; the drop is drums + reese only, so a beginner can mute chords there.",
   "bass_tip": "Une basse « reese » : deux synthés un peu désaccordés qui grondent ensemble. Elle tient sur la grosse caisse, et à la fin de la 2e mesure elle glisse vers l'aigu, comme un coup de manette.",
@@ -129,6 +135,15 @@
    {
     "on": "snare",
     "reverb": 0.15
+   },
+   {
+    "on": "chords",
+    "insert": "PUMP",
+    "params": [
+     0.55,
+     0.4,
+     0
+    ]
    }
   ],
   "signature": "chords",
@@ -142,6 +157,12 @@
      1.0
     ]
    }
+  ],
+  "break": [
+   "chords",
+   "lead",
+   "hat",
+   "perc"
   ]
  },
  {
@@ -186,6 +207,11 @@
     "pattern": "..o...o...o..o....o...o...o...oo",
     "voice": "shaker",
     "tip_fr": "Un shaker léger, en plus du charley : il imite le « break » de vieux disque soul qu'on glisse sous la batterie en liquid."
+   },
+   {
+    "role": "ride",
+    "pattern": "x.x.x.x.x.x.x.x.",
+    "tip_fr": "Une cymbale ride qui tinte à la croche : elle arrive au Drop et le fait briller."
    }
   ],
   "progressions": {
@@ -275,6 +301,15 @@
    {
     "on": "bass",
     "insert": "PUMP"
+   },
+   {
+    "on": "chords",
+    "insert": "PUMP",
+    "params": [
+     0.45,
+     0.4,
+     0
+    ]
    }
   ],
   "build": true,
@@ -376,7 +411,8 @@
    "pattern": "R-.R--.R-.......R-.R--.R-...R-O-",
    "octave": 2,
    "sound": "pack:neurofunk:bass|Basse qui parle",
-   "glide": false
+   "glide": false,
+   "sub": true
   },
   "lead": {
    "type": "riff",
@@ -393,7 +429,7 @@
   },
   "defaults": {
    "bass": true,
-   "chords": true,
+   "chords": false,
    "lead": true
   },
   "notes": "Neurofunk grew out of techstep (Ed Rush & Optical, 1997-98; name coined by Simon Reynolds): cleaner, tighter, very regular two-step drums with razor-sharp snares, no swing. The bass is the lead instrument: a reese/FM growl whose timbre keeps moving over a steady sub, chopped in 16th-note syncopations that lock with the kick. Harmony is near-static (one minor or phrygian root, b2 for menace) and melodies are scarce; the 'lead' here is a talking mid-bass layer (Voix robot, octave 3) answering the reese call-and-response style. The pad is just a cold background for intros. If the neurofunk pack's bass is installed, it can replace the reese as the mid layer.",
@@ -421,6 +457,12 @@
      1.0
     ]
    }
+  ],
+  "break": [
+   "chords",
+   "lead",
+   "hat",
+   "perc"
   ]
  },
  {
@@ -460,6 +502,11 @@
     "pattern": "..........................x.....",
     "source": "jungle",
     "tip_fr": "Un charley ouvert à la fin du break pour relancer la boucle."
+   },
+   {
+    "role": "ride",
+    "pattern": "x.x.x.x.x.x.x.x.",
+    "tip_fr": "Une cymbale ride qui tinte à la croche : elle arrive au Drop et le fait briller."
    }
   ],
   "progressions": {
@@ -529,7 +576,7 @@
   "defaults": {
    "bass": true,
    "chords": true,
-   "lead": false
+   "lead": true
   },
   "notes": "Jungle 1993-95 = chopped Amen break (The Winstons, 'Amen, Brother', 1969) at 160-170 BPM over a slow, deep sub bass in the dub/reggae/dancehall tradition (the bass feels half-time against the drums). Drum grid follows the Amen: bar 1 kicks on 1, 1&, 3&, 3a; snares on 2, 2a, 3e, 4, 4a; bar 2 drops a kick and delays the beat-4 snare to 4&, with an open hat on 3&. Keep it loose (light swing), the break's feel comes from its microtiming. Add ragga vocal shouts, sirens and rewinds (fx/vocal_chops packs) rather than a synth lead; atmospheric pads suit the 'Valley of the Shadows' side, a reese ('Terrorist') suits the darker side.",
   "bass_tip": "Une basse ronde et profonde venue du reggae et du dub : elle chante une petite mélodie lente, deux fois moins pressée que la batterie.",
@@ -554,7 +601,187 @@
    }
   ],
   "drop": [
-   "bass"
+   "bass",
+   "ride"
+  ],
+  "riser": true,
+  "break": [
+   "chords",
+   "lead",
+   "hat"
+  ]
+ },
+ {
+  "id": "jump_up",
+  "references": [
+   "Chase & Status x Bou – Baddadan (2023)",
+   "Chase & Status, Hedex & ArrDee – Liquor & Cigarettes (2023)",
+   "Dimension – Offender (2020)",
+   "Sub Focus & Dimension – Desire (2018)",
+   "Kanine – Steamroller (2018)",
+   "Macky Gee – Tour (2017)",
+   "DJ Hazard & Distorted Minds – Mr Happy (2007)"
+  ],
+  "description_fr": "La drum & bass des gros dancefloors : une basse grasse qui grogne comme en dubstep, sur une batterie rapide à 174 BPM.",
+  "bpm": 174,
+  "swing": 0.0,
+  "root": "F",
+  "drums": [
+   {
+    "role": "kick",
+    "pattern": "X.........X.....",
+    "source": "dnb",
+    "tip_fr": "Le « two-step » de la drum & bass : un coup sur le 1, un juste après le 3. Un kick court qui claque : la basse prend toute la place autour."
+   },
+   {
+    "role": "snare",
+    "pattern": "....X.......X.......X.......X.2.",
+    "source": "dnb",
+    "tip_fr": "Une caisse claire énorme sur 2 et 4 : c'est elle qui fait sauter la salle. Un petit roulement à la fin de la 2e mesure relance la boucle."
+   },
+   {
+    "role": "clap",
+    "pattern": "....X.......X...",
+    "tip_fr": "Un clap pile sur la caisse claire : les deux ensemble font un « clac » plus épais et plus large."
+   },
+   {
+    "role": "hat",
+    "pattern": "o.x.o.x.o.x.o.xo",
+    "source": "dnb",
+    "tip_fr": "Un charley deux fois par temps, plus fort entre les temps : il donne la vitesse sans gêner la basse."
+   },
+   {
+    "role": "perc",
+    "pattern": "......o.......o.......o.....o.o.",
+    "source": "dnb",
+    "tip_fr": "Quelques petits coups discrets entre les temps : ils font rouler le rythme."
+   }
+  ],
+  "progressions": {
+   "dark": {
+    "scale": "phrygian",
+    "degrees": [
+     0,
+     0,
+     0,
+     1
+    ]
+   },
+   "happy": {
+    "scale": "major",
+    "degrees": [
+     5,
+     3,
+     0,
+     4
+    ]
+   },
+   "future": {
+    "scale": "minor",
+    "degrees": [
+     0,
+     0,
+     5,
+     6
+    ]
+   },
+   "dreamy": {
+    "scale": "dorian",
+    "degrees": [
+     0,
+     3,
+     0,
+     3
+    ]
+   }
+  },
+  "chords": {
+   "type": "pad",
+   "rhythm": "X---------------",
+   "voicing": "triad",
+   "octave": 4,
+   "sound": "Nappe"
+  },
+  "bass": {
+   "pattern": "R-.R..R-..R-....R-.R..R-..R--/O-",
+   "octave": 2,
+   "sound": "Basse growl",
+   "glide": true,
+   "sub": true
+  },
+  "lead": {
+   "type": "riff",
+   "pattern": "............O-7-........5-......",
+   "arp_rate": 0,
+   "octave": 3,
+   "sound": "Basse wobble"
+  },
+  "acid": {
+   "use": false,
+   "pattern": "",
+   "accents": "",
+   "slides": ""
+  },
+  "defaults": {
+   "bass": true,
+   "chords": true,
+   "lead": true
+  },
+  "default_mood": "dark",
+  "notes": "Jump up / dancefloor drum & bass (Chase & Status, Sub Focus, Dimension, Hedex, Kanine, Bou, Macky Gee, DJ Hazard): 174 BPM (most DnB sits at 174-175: Beatportal's Sub Focus guide calls 174 'the sweet spot for dancefloor D&B', Loopmasters' jump up bass tutorial works at 175); straight two-step drums, 'really basic compared to most styles' (dnbforum): kick on 1 and on the 'and' of 3 (step 10), a big snare on 2 and 4 layered with a clap, hats on the eighths with the offbeat louder, a few ghost percussions, a snare fill at the end of the two-bar loop. The bass is the star and is 'really similar to the wobble sound in dubstep' (dnbforum): a gritty mid-range growl (saw + square, resonant filter moved every 16th and restarted on each note = 'Basse growl', then the 'growl' fx preset: foldback distortion + OTT, then the pump on the kick) with a clean sine sub layer an octave below (Loopmasters: duplicate the MIDI to a sub patch, -12 semitones, one voice; Beatportal: sine sub, mono, low-passed ~80 Hz, sidechained to the kick) = the recipe's 'sub' layer, 'Sub pur' on its own 'Sub' track, ducked by the kick. Jump up basslines are 'usually one-note, in a minor key, with rhythmic variation' and distortion is key to their grit (EDMProd): the growl hits with the kick in a 3-3-4 grouping, keeps quiet before each snare and at the end of bar 1 for the answer, and slides up an octave at the end of bar 2 (a pitch slide); the 'lead' is the call-and-response second bass (Basse wobble at octave 3, 1/8 wobble) playing in the growl's gaps. Keys: F (F1 = 44 Hz sub); dark mood = phrygian with the b2 on bar 4 (dubstep's menace), future = minor i-i-VI-VII, happy = the uplifting vi-IV-I-V of the Sub Focus side. Form: build (Intro drums + pad, Montée of 8 bars with the snare roll, the pad's filter opening and the white noise riser, Drop with kick, growl, sub and the answer, Break with the pad and the hats, Montée, last Drop, outro) = about 2 min 45 at 174 (Intro 16, Drops 32 bars: the 16/32-bar phrasing of DnB, EDMProd). Loud: punch on kick and snare, gentle OTT on the master (the limiter follows). Not possible yet: a second drop with a different bass patch (the 'switch-up'), vocal chops/MC, stabs together with the pad. Sources: https://www.beatportal.com/articles/818379-step-by-step-guide-to-producing-drum-and-bass-like-sub-focus-a-m-c-and-delta-heavy ; https://www.loopmasters.com/articles/4480-How-To-Get-the-Perfect-Jump-Up-Bass-A-D-B-Bass-Tutorial ; https://www.edmprod.com/how-to-make-drum-and-bass/ ; https://blog.native-instruments.com/drum-and-bass/ ; https://dnbforum.com/threads/about-to-begin-to-learn-to-make-jump-up.190662/ . References checked: Baddadan (July 2023, UK #5) and Liquor & Cigarettes (2023, UK #17) in the Chase & Status discography (Wikipedia); Offender (2020) and Desire (2018, with Sub Focus) in Dimension's discography (Wikipedia); Kanine - Steamroller (Low Down Deep, 2018, filed as Jump Up on Beatport); Macky Gee - Tour (2017, UKF's most-streamed upload); DJ Hazard & Distorted Minds - Mr Happy (2007, UKF).",
+  "bass_tip": "La vedette : une basse grasse qui grogne, comme en dubstep. Elle frappe avec le kick, se tait avant la caisse claire pour laisser répondre la deuxième basse, puis glisse vers l'aigu. Une piste « Sub » la double une octave plus bas : le grave qu'on sent dans le ventre.",
+  "lead_tip": "Ici, pas de mélodie : le lead est une deuxième basse qui fait « wob wob » et répond à la première dans ses silences. C'est le jeu « question, réponse » du jump up.",
+  "pad_tip": "Une nappe sombre pour l'intro et la pause ; dans la montée, son filtre s'ouvre petit à petit jusqu'au Drop.",
+  "fx": [
+   {
+    "on": "bass",
+    "preset": "growl",
+    "insert": "PUMP"
+   },
+   {
+    "on": "lead",
+    "preset": "fat_bass",
+    "insert": "PUMP"
+   },
+   {
+    "on": "chords",
+    "reverb": 0.35
+   },
+   {
+    "on": "kick",
+    "preset": "punch"
+   },
+   {
+    "on": "snare",
+    "preset": "punch",
+    "reverb": 0.15
+   },
+   {
+    "on": "master",
+    "insert": "OTT",
+    "params": [
+     0.25,
+     0.5,
+     0.5,
+     0.5
+    ]
+   }
+  ],
+  "signature": "chords",
+  "build": true,
+  "riser": true,
+  "break": [
+   "chords",
+   "hat"
+  ],
+  "sweeps": [
+   {
+    "on": "chords",
+    "groove": [
+     0.25,
+     1.0
+    ]
+   }
   ]
  },
  {
@@ -645,7 +872,8 @@
    "pattern": "R-------..R---O-R-----------2-..",
    "octave": 2,
    "sound": "Basse wobble",
-   "glide": false
+   "glide": false,
+   "sub": true
   },
   "lead": {
    "type": "riff",
@@ -663,7 +891,7 @@
   "defaults": {
    "bass": true,
    "chords": true,
-   "lead": false
+   "lead": true
   },
   "notes": "UK dubstep (Croydon/Brixton, FWD>> and DMZ nights): ~140 BPM felt half-time, kick on 1 and snare/clap on beat 3, hats and percussion in normal time with moderate shuffle; a kick triplet between beats 1 and 3 is a common variation. Minor or phrygian keys, very sparse arrangement, lots of space. The bass is the point: a clean sine sub below ~100 Hz plus a mid 'wobble' made by an LFO on the filter cutoff synced at 1/4, 1/8 or 1/16. The bass pattern retriggers in a 3-3-2 grouping to fake the wob; if the synth can sync a filter LFO, hold one long note per chord instead. Stay in E1-F1 for the sub. Dub delay on the snare and pad is idiomatic. Phase 24: 'Basse wobble' = filter LFO synced at 1/8 and restarted on each note, so the bass holds long notes following the kick; played in E2 so its sub oscillator gives E1.",
   "bass_tip": "La « wobble » : un filtre s'ouvre et se ferme en rythme sur chaque note tenue, ça fait « wob wob ». À la fin, elle monte d'une note, juste assez pour faire frissonner.",
@@ -682,6 +910,19 @@
    {
     "on": "lead",
     "preset": "dub_echo"
+   },
+   {
+    "on": "bass",
+    "preset": "fat_bass"
+   },
+   {
+    "on": "chords",
+    "insert": "PUMP",
+    "params": [
+     0.6,
+     0.45,
+     0
+    ]
    }
   ],
   "lead_tip": "Quelques notes de cloche, rares et inquiétantes, avec beaucoup d'écho : à allumer pour l'ambiance.",
@@ -696,6 +937,12 @@
      1.0
     ]
    }
+  ],
+  "break": [
+   "chords",
+   "lead",
+   "hat",
+   "perc"
   ]
  },
  {
@@ -822,6 +1069,16 @@
    {
     "on": "clap",
     "reverb": 0.25
+   },
+   {
+    "on": "master",
+    "insert": "OTT",
+    "params": [
+     0.3,
+     0.5,
+     0.5,
+     0.5
+    ]
    }
   ],
   "build": true,
@@ -833,7 +1090,19 @@
      0.25,
      1.0
     ]
+   },
+   {
+    "on": "bass",
+    "break": [
+     0.15,
+     0.5
+    ]
    }
+  ],
+  "break": [
+   "bass",
+   "hat",
+   "perc"
   ]
  },
  {
@@ -880,6 +1149,11 @@
     "pattern": "............................XxXx",
     "voice": "tom_mid",
     "tip_fr": "Un petit roulement de toms toutes les deux mesures, pour relancer comme un batteur des années 80."
+   },
+   {
+    "role": "open_hat",
+    "pattern": "..x...x...x...x.",
+    "tip_fr": "Le charley ouvert sur chaque contretemps, comme dans les années 80 : il arrive au refrain."
    }
   ],
   "progressions": {
@@ -924,7 +1198,7 @@
    "type": "pad",
    "rhythm": "X---------------",
    "voicing": "triad",
-   "octave": 4,
+   "octave": 3,
    "sound": "Nappe chaude"
   },
   "bass": {
@@ -958,6 +1232,10 @@
   "bass_tip": "Une basse qui pulse deux fois par temps sur la note de l'accord, comme un moteur qui tourne.",
   "fx": [
    {
+    "on": "chords",
+    "preset": "wide_alive"
+   },
+   {
     "on": "snare",
     "reverb": 0.5
    },
@@ -974,7 +1252,8 @@
     "on": "lead",
     "delay": 0.25
    }
-  ]
+  ],
+  "riser": true
  },
  {
   "id": "pop",
@@ -1027,6 +1306,12 @@
     "source": "pop",
     "voice": "shaker",
     "tip_fr": "Un shaker entre les temps : il donne de l'élan au refrain."
+   },
+   {
+    "role": "perc2",
+    "pattern": "....x.......x...",
+    "voice": "shaker",
+    "tip_fr": "Un tambourin sur les temps 2 et 4 : il arrive au refrain et le fait sonner plus grand."
    }
   ],
   "progressions": {
@@ -1106,6 +1391,10 @@
   "fx": [
    {
     "on": "chords",
+    "preset": "wide_alive"
+   },
+   {
+    "on": "chords",
     "reverb": 0.25
    },
    {
@@ -1116,6 +1405,7 @@
     "on": "lead",
     "delay": 0.2
    }
-  ]
+  ],
+  "riser": true
  }
 ]

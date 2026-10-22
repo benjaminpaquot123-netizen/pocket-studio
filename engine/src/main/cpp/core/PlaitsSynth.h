@@ -11,7 +11,9 @@ namespace ps {
 // Real-time safe: everything is allocated by the constructor.
 class PlaitsSynth {
 public:
-    enum Param { Model = 0, Harmonics = 1, Timbre = 2, Morph = 3, Decay = 4, Colour = 5, Release = 6, Level = 7, ParamCount = 8 };
+    enum Param { Model = 0, Harmonics = 1, Timbre = 2, Morph = 3, Decay = 4, Colour = 5, Release = 6, Level = 7,
+        // Appended: the sound's loudness calibration, as Synth::Gain (0.5 = 0 dB).
+        Gain = 8, ParamCount = 9 };
     static constexpr int kVoices = 6;
     static constexpr int kModels = 24;
 

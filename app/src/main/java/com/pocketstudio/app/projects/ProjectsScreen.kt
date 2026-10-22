@@ -81,6 +81,11 @@ class ProjectsActions(
     val create: (Int) -> Unit = {},
     /** The beginner's step-by-step assistant. */
     val wizard: () -> Unit = {},
+    /** A style's whole song in one touch, with the assistant's advised choices (its id). */
+    val quickStyle: (String) -> Unit = {},
+    /** The assistant opened on that style (« Personnaliser pas à pas »). */
+    val customStyle: (String) -> Unit = {},
+    val dismissQuickError: () -> Unit = {},
     val rename: (ProjectInfo, String) -> Unit = { _, _ -> },
     val duplicate: (ProjectInfo) -> Unit = {},
     /** Share the project and its sounds as a .zip. */
@@ -102,7 +107,11 @@ class ProjectsActions(
 
 /** "Mes projets": every project on the phone, the open one first in mind; open, create, rename, copy, delete. */
 @Composable
-fun ProjectsScreen(ui: ProjectsUi, currentId: String, starters: List<ProjectStarter>, actions: ProjectsActions, now: Long = System.currentTimeMillis()) {
+fun ProjectsScreen(
+    ui: ProjectsUi, currentId: String, starters: List<ProjectStarter>, actions: ProjectsActions, now: Long = System.currentTimeMillis(),
+    /** The song made in one touch from a style (« Nouveau projet »). */
+    quick: com.pocketstudio.app.library.QuickUi = com.pocketstudio.app.library.QuickUi(),
+) {
     // Kept when the screen turns: by id (a project's info is not saveable), then looked up.
     var renamingId by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf<String?>(null) }
     val renaming = renamingId?.let { id -> ui.projects.firstOrNull { it.id == id } }
@@ -112,6 +121,12 @@ fun ProjectsScreen(ui: ProjectsUi, currentId: String, starters: List<ProjectStar
     var confirmingDelete by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf<String?>(null) }
     // A list to read: centred at a comfortable width on a tablet.
     com.pocketstudio.ui.ReadingWidth {
+        // « Nouveau projet » takes the screen (a song being prepared keeps it there).
+        if (choosingStart) {
+            androidx.activity.compose.BackHandler { if (quick.creating == null) choosingStart = false }
+            NewProjectPage(starters, quick, actions, close = { choosingStart = false })
+            return@ReadingWidth
+        }
         Column(Modifier.fillMaxSize().padding(12.dp).testTag("projects"), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 IconButton(onClick = actions.back, modifier = Modifier.testTag("projects_back")) {
@@ -213,48 +228,6 @@ fun ProjectsScreen(ui: ProjectsUi, currentId: String, starters: List<ProjectStar
                 ) { Text(if (all) tr("Vider") else tr("Supprimer"), color = Neon.Amber) }
             },
             dismissButton = { TextButton(onClick = { confirmingDelete = null }) { Text(tr("Annuler")) } },
-        )
-    }
-    if (choosingStart) {
-        AlertDialog(
-            onDismissRequest = { choosingStart = false },
-            properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false),
-            // The phone's whole width; a comfortable width on a tablet.
-            modifier = Modifier.widthIn(max = 640.dp).fillMaxWidth().padding(horizontal = 10.dp),
-            title = { Text(tr("Nouveau projet")) },
-            text = {
-                Column(Modifier.verticalScroll(androidx.compose.foundation.rememberScrollState()), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    SectionLabel(tr("Guidé"))
-                    Card(
-                        colors = CardDefaults.cardColors(containerColor = Neon.Cyan.copy(alpha = 0.18f)),
-                        modifier = Modifier.fillMaxWidth().clickable { choosingStart = false; actions.wizard() }.testTag("starter_wizard"),
-                    ) {
-                        Column(Modifier.padding(12.dp)) {
-                            Text(tr("Nouveau morceau guidé"), style = MaterialTheme.typography.titleMedium, color = Neon.Cyan)
-                            Text(tr("Idéal pour débuter : choisis un style, je t'explique chaque son et je prépare l'intro, le couplet et le refrain."),
-                                style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
-                        }
-                    }
-                    // The other starters under their headings, in the order of the headings.
-                    StarterGroup.entries.forEach { group ->
-                        val inGroup = starters.withIndex().filter { it.value.group == group }
-                        if (inGroup.isEmpty()) return@forEach
-                        SectionLabel(group.title, Modifier.padding(top = 8.dp))
-                        inGroup.forEach { (i, s) ->
-                            Card(
-                                colors = CardDefaults.cardColors(containerColor = Neon.SurfaceHigh),
-                                modifier = Modifier.fillMaxWidth().clickable { choosingStart = false; actions.create(i) }.testTag("starter_${s.tag}"),
-                            ) {
-                                Column(Modifier.padding(12.dp)) {
-                                    Text(tr(s.title), style = MaterialTheme.typography.titleMedium)
-                                    Text(tr(s.description), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            confirmButton = { TextButton(onClick = { choosingStart = false }) { Text(tr("Annuler")) } },
         )
     }
 }

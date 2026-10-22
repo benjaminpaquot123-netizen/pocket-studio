@@ -8,7 +8,7 @@ import org.junit.Test
 
 /** What the recipes of scripts/packs/recipes/bass.json promise (bass music, synthwave, pop). */
 class BassRecipesTest {
-    private val ids = listOf("dnb", "liquid_dnb", "neurofunk", "jungle", "dubstep", "riddim", "synthwave", "pop")
+    private val ids = listOf("dnb", "liquid_dnb", "neurofunk", "jungle", "jump_up", "dubstep", "riddim", "synthwave", "pop")
 
     private fun style(id: String) = StarterWizard.style(id)!!
 

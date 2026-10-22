@@ -345,7 +345,8 @@
      0.9
     ]
    }
-  ]
+  ],
+  "riser": true
  },
  {
   "id": "acid_techno",
@@ -383,6 +384,11 @@
     "pattern": "Xx.xXx.xXx.xXx.x",
     "source": "tr909",
     "tip_fr": "Des charleys fermés très serrés font avancer le tout très vite."
+   },
+   {
+    "role": "ride",
+    "pattern": "..o...o...o...o.",
+    "tip_fr": "Une cymbale ride qui tinte à chaque contretemps : elle arrive au Drop et le fait briller."
    }
   ],
   "progressions": {
@@ -483,10 +489,22 @@
    {
     "on": "kick",
     "preset": "crunch"
+   },
+   {
+    "on": "acid",
+    "insert": "PUMP",
+    "params": [
+     0.5,
+     0.35,
+     0
+    ]
    }
   ],
   "notes": "The TB-303 line IS the track and the bass: nothing else is on by default (no bass, chords nor lead), no percussion line either, so the 303 is alone between the 909 hits; it carries the Break too. The acid track stays on the key's root for its one bar, so no progression puts a bass note a semitone from its notes (dark: i alone, future i-VII, dreamy i-III; the classic bII move would clash with the 303 until the acid line follows the chords). 303: mostly roots, octave jumps, b3 and b7, slides into the octave jumps, 4 sparse accents; crunch preset + a little delay. Crunchy 909 kick. Tempo: Plastikman/Hardfloor ~130, London acid techno 135-145. Optional lead: a second, higher 303-like riff. The 303's cutoff moves gently along the song (song automation): a little brighter in each Drop, a slow sweep up through the Break.",
-  "riser": true
+  "riser": true,
+  "drop": [
+   "ride"
+  ]
  },
  {
   "id": "detroit",
@@ -605,7 +623,7 @@
   "defaults": {
    "bass": true,
    "chords": true,
-   "lead": false
+   "lead": true
   },
   "default_mood": "happy",
   "signature": "chords",
@@ -642,6 +660,7 @@
      0.75
     ]
    }
-  ]
+  ],
+  "riser": true
  }
 ]

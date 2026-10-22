@@ -5,9 +5,12 @@ import com.pocketstudio.app.rhythm.RhythmViewModel
 import com.pocketstudio.model.ProjectCatalog
 import java.io.File
 
-/** Every project on the phone, and the trash. Blocking file work: call it off the main thread. */
+/**
+ * Every project on the phone, and the trash; separated songs live in files/stems (see StemStore).
+ * Blocking file work: call it off the main thread.
+ */
 fun projectCatalog(context: Context) =
-    ProjectCatalog(File(context.filesDir, "projects"), File(context.filesDir, "projects-trash"))
+    ProjectCatalog(File(context.filesDir, "projects"), File(context.filesDir, "projects-trash"), File(context.filesDir, "stems"))
 
 /** Which project the app opens: the last one used (the first project's id on a new install). */
 object CurrentProject {

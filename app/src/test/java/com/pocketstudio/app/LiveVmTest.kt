@@ -9,6 +9,7 @@ import com.pocketstudio.model.AutomationLane
 import com.pocketstudio.model.LiveSlots
 import com.pocketstudio.model.SongPart
 import com.pocketstudio.model.LiveSlot
+import com.pocketstudio.model.liveColumns
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
@@ -29,6 +30,7 @@ class LiveVmTest {
     /** Two scenes: A (shown) with a kick, B with another drum hit. */
     private fun twoScenes(): RhythmViewModel {
         File(app.filesDir, "projects").deleteRecursively()
+        app.filesDir.listFiles()?.filter { it.name.startsWith("live-take") }?.forEach { it.delete() }
         val vm = RhythmViewModel(app)
         vm.toggleHit(0, 0)
         vm.duplicateScene()  // B, shown
@@ -231,6 +233,276 @@ class LiveVmTest {
         vm.togglePerformance()  // ends on the bar line 112
         assertTrue(vm.takeHeldForTest.isEmpty())
         assertEquals(listOf(SongPart(0, 1, setOf(SongPart.DRUMS), play = mapOf(SongPart.ACID to 1), bars = 2)), vm.project.value.song)
+    }
+
+    /**
+     * Audit 28 live M6: a pad launched plays what the song's part would: the effects of every strip
+     * of its track (the drum pads' own ones too), and the 303's knobs no lane drives in the scene
+     * launched go back to the project's settings (else they stay where the last scene's curve left them).
+     */
+    @Test
+    fun aPadLaunchedPlaysItsTracksEffectsAndThe303AsTheSongDoes() {
+        val vm = twoScenes()
+        val pad = com.pocketstudio.model.Mixer.padChannel(2)
+        vm.setInsertType(pad, 0, com.pocketstudio.model.EffectType.EQ)
+        assertEquals(listOf(0, pad), vm.slotStrips(vm.project.value, LiveSlots.DRUMS))
+        assertEquals(listOf(1), vm.slotStrips(vm.project.value, LiveSlots.ACID))
+        // The cutoff driven by a per-scene lane in A only.
+        val lane = AutomationLane(AutoTarget.acid(0), mode = AutomationLane.PER_SCENE, sceneValues = mapOf(0 to List(AutomationLane.STEPS) { 0.1f }))
+        vm.session.edit { it.copy(automation = listOf(lane)) }
+        val cutoff = vm.project.value.acid.sound.values()[0]
+        vm.togglePlay()
+        vm.liveCommandsForTest = mutableListOf()
+        vm.launchPad(SongPart.ACID, 1)
+        vm.liveLaunchedForTest(LiveSlots.ACID, 1, 16)
+        val sent = vm.liveCommandsForTest!!
+        assertTrue(sent.toString(), "acid 0 $cutoff" in sent)
+        // Back on A: its lane drives the cutoff, left to it.
+        sent.clear()
+        vm.launchPad(SongPart.ACID, 0)
+        vm.liveLaunchedForTest(LiveSlots.ACID, 0, 32)
+        assertFalse(sent.toString(), sent.any { it.startsWith("acid 0 ") })
+    }
+
+    /** Audit 28 live m1: « Lancer à » changed while a launch waits: its ring counts to the line it was armed for. */
+    @Test
+    fun aWaitingLaunchKeepsItsQuantumOnScreen() {
+        val vm = twoScenes()
+        vm.setLiveQuantum(4)
+        vm.togglePlay()
+        vm.launchPad(SongPart.DRUMS, 1)
+        vm.setLiveQuantum(1)
+        val g = vm.liveGrid.value!!
+        assertEquals(64, g.slot(LiveSlots.DRUMS).quantum)
+        // On step 20: the launch is 44 steps away (step 64), not 12 (the next bar).
+        assertEquals(64, com.pocketstudio.app.live.nextLaunchQuantum(g, 20, vm.project.value.stepsPerBar))
+        assertEquals(1f - 20f / 64f, com.pocketstudio.app.live.launchWaitLeft(20, 64), 1e-6f)
+    }
+
+    /** Audit 28 live m2: « Ajouter à la suite » chosen while armed with a full song: it stays « Remplacer » and says why. */
+    @Test
+    fun appendChosenWhileArmedWithAFullSongStaysReplace() {
+        val vm = twoScenes()
+        vm.session.edit { it.copy(song = List(SongPart.MAX_PARTS) { SongPart(it % 2) }) }
+        vm.togglePlay()
+        vm.takeClockForTest = 3
+        vm.togglePerformance()
+        assertTrue(vm.take.value is TakeUi.Armed)
+        vm.setTakeAppend(true)
+        assertFalse(vm.takeAppend.value)
+        assertTrue(vm.notice.value!!.contains("Remplacer"))
+        vm.takeClockForTest = 16
+        vm.tickPerformance()
+        vm.takeClockForTest = 40
+        vm.togglePerformance()
+        assertEquals(TakeUi.Done(1, 0, 0), vm.take.value)  // written, in place of the song
+    }
+
+    /** Audit 28 live m3: every column brought to B pad by pad makes B the row (the slots without a track follow). */
+    @Test
+    fun padsLaunchedOneByOneOnAnotherSceneMakeItTheRow() {
+        val vm = twoScenes()
+        vm.togglePlay()
+        vm.liveCommandsForTest = mutableListOf()
+        var step = 16
+        for (key in vm.project.value.liveColumns) {
+            vm.launchPad(key, 1)
+            vm.liveLaunchedForTest(LiveSlots.of(key)!!, 1, step)
+            step += 16
+        }
+        val g = vm.liveGrid.value!!
+        assertEquals(1, g.row)
+        assertFalse(g.diverged)
+        assertEquals(1, vm.project.value.scene)  // the screens follow
+        assertTrue(vm.liveCommandsForTest.toString(), "master 1" in vm.liveCommandsForTest!!)  // the master's part of B too
+    }
+
+    /** Audit 28 données m1: « Lancer à » and the live effects' settings are not undone by ↶ of something else. */
+    @Test
+    fun undoOfSomethingElseKeepsTheLiveSettings() {
+        val vm = twoScenes()
+        vm.toggleHit(3, 3)
+        vm.setLiveQuantum(4)
+        vm.setLiveFxSettings(vm.project.value.liveFx.copy(riserBars = 8))
+        vm.undo()
+        assertFalse(vm.project.value.drums.lanes[3].hits.containsKey(3))
+        assertEquals(4, vm.project.value.liveQuantum)
+        assertEquals(8, vm.project.value.liveFx.riserBars)
+        vm.redo()
+        assertTrue(vm.project.value.drums.lanes[3].hits.containsKey(3))
+        assertEquals(4, vm.project.value.liveQuantum)
+        assertEquals(8, vm.project.value.liveFx.riserBars)
+    }
+
+    /**
+     * Audit 28 données G1 / live m6: the app closed (or killed) during a take: the take kept on
+     * disk is written into the song when the project opens again.
+     */
+    @Test
+    fun aTakeTheAppCouldNotFinishIsWrittenAtTheNextOpening() {
+        val vm = twoScenes()
+        vm.togglePlay()
+        vm.takeClockForTest = 5
+        vm.togglePerformance()
+        vm.takeClockForTest = 16
+        vm.tickPerformance()
+        vm.launchPad(SongPart.DRUMS, 1)
+        vm.liveLaunchedForTest(LiveSlots.DRUMS, 1, 32)
+        vm.takeClockForTest = 36
+        vm.setLiveAcid(0, 0.9f)
+        vm.takeClockForTest = 45
+        vm.keepTakeJournalForTest()  // what the app keeps while it records (and when it closes)
+        kotlinx.coroutines.runBlocking { vm.flushNow() }
+        // A new screen on the same project (the app opened again): the take is in the song.
+        val again = RhythmViewModel(app)
+        val song = again.project.value.song
+        assertEquals(listOf(SongPart(0, 1), SongPart(0, 1, play = mapOf(SongPart.DRUMS to 1), bars = 1)), song)
+        assertTrue(again.project.value.automation.any { it.target == AutoTarget.acid(0) })
+        assertTrue(again.notice.value!!.contains("2"))
+        // Written once: the next opening has nothing more to add.
+        val third = RhythmViewModel(app)
+        assertEquals(song, third.project.value.song)
+    }
+
+    /** A take recorded up to step 45 (a launch, a 303 knob moved), its clock there. */
+    private fun recording(): RhythmViewModel {
+        val vm = twoScenes()
+        vm.togglePlay()
+        vm.takeClockForTest = 5
+        vm.togglePerformance()
+        vm.takeClockForTest = 16
+        vm.tickPerformance()
+        vm.launchPad(SongPart.DRUMS, 1)
+        vm.liveLaunchedForTest(LiveSlots.DRUMS, 1, 32)
+        vm.takeClockForTest = 36
+        vm.setLiveAcid(0, 0.9f)
+        vm.takeClockForTest = 45
+        assertTrue(vm.take.value is TakeUi.Recording)
+        return vm
+    }
+
+    private fun waitFor(what: String, condition: () -> Boolean) {
+        val until = System.currentTimeMillis() + 10_000
+        while (!condition()) {
+            check(System.currentTimeMillis() < until) { "waited too long for $what" }
+            org.robolectric.Shadows.shadowOf(android.os.Looper.getMainLooper()).idle()
+            Thread.sleep(10)
+        }
+    }
+
+    /**
+     * Audit 28 review G2: the 5 s journal write is under way when « ■ Fin » is tapped. It lands
+     * after the end before the fix, and the next opening wrote the take again over the song (the
+     * edits made after the take lost). Now it never lands, and the song stays as it was saved.
+     */
+    @Test
+    fun aJournalWriteUnderWayAtTheEndIsNeverWrittenAgain() {
+        val vm = recording()
+        val journals = vm.journalsForTest
+        val reached = java.util.concurrent.CountDownLatch(1)
+        val go = java.util.concurrent.CountDownLatch(1)
+        journals.beforeMove = { reached.countDown(); go.await(5, java.util.concurrent.TimeUnit.SECONDS) }
+        try {
+            vm.keepTakeJournalForTest(wait = false)  // the 5 s write, encoded, about to replace the journal
+            assertTrue(reached.await(5, java.util.concurrent.TimeUnit.SECONDS))
+            vm.togglePerformance()  // ■ Fin
+            assertTrue(vm.take.value is TakeUi.Done)
+        } finally {
+            go.countDown()
+            journals.beforeMove = null
+        }
+        assertTrue(journals.awaitIdle(5000))
+        assertFalse("the late write never lands", journals.file(vm.projectId).exists())
+        // The take saved (on the main thread's scope: let it run rather than block it), then the
+        // song edited after the take, saved.
+        waitFor("the take saved") { vm.session.settled }
+        val song = vm.project.value.song
+        assertEquals(2, song.size)
+        vm.removeSongPart(1)
+        val edited = vm.project.value.song
+        kotlinx.coroutines.runBlocking { vm.flushNow() }
+        val again = RhythmViewModel(app)
+        assertEquals(edited, again.project.value.song)
+        assertNull(again.notice.value)
+    }
+
+    /**
+     * G2 / m1: the journal stays until the song holding the take is saved; found again after
+     * that (the app killed in between), it is not written a second time.
+     */
+    @Test
+    fun aJournalFoundAgainAfterItsTakeWasSavedIsNotWrittenTwice() {
+        val vm = recording()
+        vm.keepTakeJournalForTest()
+        val file = vm.journalsForTest.file(vm.projectId)
+        val kept = file.readText()
+        vm.togglePerformance()  // ■ Fin: written into the song, saved, then the journal goes
+        waitFor("the journal dropped once saved") { !file.exists() }
+        val song = vm.project.value.song
+        assertEquals(song, com.pocketstudio.model.ProjectStore(File(app.filesDir, "projects")).load(vm.projectId)!!.song)
+        // Killed just before the journal went: it is still there at the next opening.
+        file.writeText(kept)
+        val again = RhythmViewModel(app)
+        assertEquals(song, again.project.value.song)
+        assertNull(again.notice.value)
+        assertFalse(again.journalsForTest.file(again.projectId).exists())
+        // Recovered once at an opening, then found again (killed before it went): once too.
+        val recovered = recording()
+        recovered.keepTakeJournalForTest()
+        val text = recovered.journalsForTest.file(recovered.projectId).readText()
+        kotlinx.coroutines.runBlocking { recovered.flushNow() }
+        val first = RhythmViewModel(app)
+        val firstSong = first.project.value.song
+        assertTrue(first.notice.value!!.contains("gardée"))
+        first.journalsForTest.file(first.projectId).writeText(text)
+        val second = RhythmViewModel(app)
+        assertEquals(firstSong, second.project.value.song)
+        assertNull(second.notice.value)
+    }
+
+    /** m9: the screen closed (the app swiped away) while a take records: its journal is written, and the next opening has it. */
+    @Test
+    fun aScreenClosedDuringATakeKeepsItsJournal() {
+        File(app.filesDir, "projects").deleteRecursively()
+        app.filesDir.listFiles()?.filter { it.name.startsWith("live-take") }?.forEach { it.delete() }
+        val owner = androidx.lifecycle.ViewModelStore()
+        val vm = androidx.lifecycle.ViewModelProvider(owner, androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.getInstance(app))[RhythmViewModel::class.java]
+        vm.toggleHit(0, 0)
+        vm.duplicateScene()
+        vm.toggleHit(2, 4)
+        vm.selectScene(0)
+        vm.togglePlay()
+        vm.takeClockForTest = 5
+        vm.togglePerformance()
+        vm.takeClockForTest = 16
+        vm.tickPerformance()
+        vm.launchPad(SongPart.DRUMS, 1)
+        vm.liveLaunchedForTest(LiveSlots.DRUMS, 1, 32)
+        vm.takeClockForTest = 45
+        owner.clear()  // onCleared, Recording
+        val again = RhythmViewModel(app)
+        assertEquals(2, again.project.value.song.size)
+        assertTrue(again.notice.value!!.contains("gardée"))
+    }
+
+    /**
+     * Audit 28 review m6: two fingers on two columns, the first one then slides (the grid
+     * scrolls): its launch is taken back, the second one's stays.
+     */
+    @Test
+    fun theFirstOfTwoFingersSlidingTakesBackItsOwnLaunch() {
+        val vm = twoScenes()
+        vm.togglePlay()
+        assertTrue(vm.pressLive(SongPart.DRUMS, 1))
+        assertTrue(vm.pressLive(SongPart.ACID, 1))
+        assertEquals(1, vm.liveGrid.value!!.slot(LiveSlots.DRUMS).pending)
+        assertEquals(1, vm.liveGrid.value!!.slot(LiveSlots.ACID).pending)
+        vm.retractLive(SongPart.DRUMS)
+        assertNull(vm.liveGrid.value!!.slot(LiveSlots.DRUMS).pending)
+        assertEquals(1, vm.liveGrid.value!!.slot(LiveSlots.ACID).pending)
+        // Its press is used up: a second retract does nothing more.
+        vm.retractLive(SongPart.DRUMS)
+        assertEquals(1, vm.liveGrid.value!!.slot(LiveSlots.ACID).pending)
     }
 
     @Test

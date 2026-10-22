@@ -1,5 +1,5 @@
-Phase 27 : « Le Live, c'est pas sorcier ! » (on joue, on enregistre)
-- Mode Live (Morceau › Live) : chaque piste en colonne de pads, ce que tu touches part à la mesure suivante, ■ pour arrêter une piste.
-- Effets du Live calés sur le temps : Répéter (1/4 à 1/32, triolets), Tenus (freinage, à l'envers, demi-tempo, sans graves…), Dub, Montée + Drop, cadenas et « Tout remettre » ; 303 en grand pour les doigts.
-- Bouton ● : ta performance (lancements, effets, potards) est écrite dans le morceau ; un seul Annuler l'efface.
-- Styles revus d'après la recherche : vrai Drop avec montée, ride, toms, grondement sous le kick en techno, filtres qui s'ouvrent.
+Phase 28 : « Cinq experts, zéro pitié » (la chasse aux bugs)
+- Live : les cases partent dès que le doigt appuie ; une prise survit à la fermeture de l'appli et peut durer bien plus longtemps ; le Drop reste pile même après une retouche du morceau.
+- Sauvegarde : même en jouant sans pause, corbeille à vider, sauvegarde Google des projets, gros projets réimportables, favoris jamais perdus.
+- Musique : accords justes dans toutes les gammes, « Générer » de l'acide dans la tonalité, leads moins perchés, piste d'accords nommée d'après son son.
+- Appli et son : taille d'interface 130 % propre, échos justes à tempo lent, roulements dans le swing, export piste par piste exact.

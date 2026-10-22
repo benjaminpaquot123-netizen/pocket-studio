@@ -163,7 +163,7 @@ data class AutomationLane(
         )
     }
 
-    /** Points the song curve can hold: a bar each (256), or a beat each (1024). */
+    /** Points the song curve can hold: a bar each (256), or a beat each (4096). */
     val maxSongPoints: Int get() = if (songPerBeat) MAX_SONG_BEATS else MAX_SONG_BARS
 
     /** Song points in a bar of [beatsPerBar] beats: one, or one per beat. */
@@ -267,8 +267,11 @@ data class AutomationLane(
         const val PER_SCENE = 1
         const val SONG = 2
         const val MAX_SONG_BARS = 256
-        /** A curve written from the live grid: a point per beat (256 bars of 4/4). */
-        const val MAX_SONG_BEATS = 1024
+        /**
+         * A curve written from the live grid: a point per beat (1024 bars of 4/4: a set of half an
+         * hour at 128 BPM). The engine holds as many (Automation::kSongPoints).
+         */
+        const val MAX_SONG_BEATS = 4096
 
         private fun clean(list: List<Float?>, size: Int) = (list + List((size - list.size).coerceAtLeast(0)) { null }).take(size)
             .map { v -> v?.takeIf { it.isFinite() }?.coerceIn(0f, 1f) }

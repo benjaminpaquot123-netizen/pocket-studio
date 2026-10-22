@@ -271,8 +271,9 @@ class LiveTest {
         assertEquals(bars.songCurve(3)[1], beats.songCurve(12)[4], 1e-6f)
         // Hold: steps instead of sliding.
         assertEquals(listOf(0f, 0f, 1f), bars.copy(hold = true).songCurve(3))
-        // Per-beat curves hold up to 1024 points.
-        assertEquals(1023, AutomationLane(target, songPerBeat = true).withSongPoint(1023, 1f).songValues.lastIndex)
+        // Per-beat curves hold up to 4096 points (1024 bars of 4/4: a long live set).
+        assertEquals(4095, AutomationLane(target, songPerBeat = true).withSongPoint(4095, 1f).songValues.lastIndex)
+        assertTrue(AutomationLane(target, songPerBeat = true).withSongPoint(4096, 1f).songValues.isEmpty())
         assertTrue(AutomationLane(target).withSongPoint(300, 1f).songValues.isEmpty())
     }
 }

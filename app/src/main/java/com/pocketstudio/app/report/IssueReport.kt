@@ -68,9 +68,8 @@ object IssueReport {
             appendLine()
             lines.forEach { appendLine(it) }
             appendLine()
-            append(environmentSection(c))
         }
-        return issueUri(title, head, c.log, "recette")
+        return issueUri(title, head, environmentSection(c), c.log, "recette")
     }
 
     fun problemIssue(description: String, c: Context): Uri {
@@ -79,9 +78,8 @@ object IssueReport {
             appendLine("## Problème")
             appendLine(description.ifBlank { "(pas de description)" })
             appendLine()
-            append(environmentSection(c))
         }
-        return issueUri("Bug ${c.versionLabel} : $summary", head, c.log, "bug")
+        return issueUri("Bug ${c.versionLabel} : $summary", head, environmentSection(c), c.log, "bug")
     }
 
     fun crashIssue(crash: String, c: Context): Uri {
@@ -90,23 +88,36 @@ object IssueReport {
             appendLine("## Plantage")
             appendLine("L'appli s'est fermée brutalement lors de la session précédente.")
             appendLine()
-            append(environmentSection(c))
         }
-        return issueUri("Crash ${c.versionLabel} : $firstLine", head, crash, "crash")
+        return issueUri("Crash ${c.versionLabel} : $firstLine", head, environmentSection(c), crash, "crash")
     }
 
-    private fun issueUri(title: String, head: String, log: String, label: String): Uri {
+    /**
+     * The new issue's link, under GitHub's length limit: the log is shortened first (its most
+     * recent part kept), then, for very long comments or descriptions, [head] itself is cut with
+     * « … (suite coupée) ». The environment ([env]) always stays.
+     */
+    private fun issueUri(title: String, head: String, env: String, log: String, label: String): Uri {
         var tail = log
+        var text = head
         while (true) {
-            val body = head + "\n<details><summary>Journal</summary>\n\n```\n" + tail + "\n```\n</details>\n"
+            val body = text + env + "\n<details><summary>Journal</summary>\n\n```\n" + tail + "\n```\n</details>\n"
             val uri = Uri.parse("https://github.com/${AppInfo.repo}/issues/new").buildUpon()
                 .appendQueryParameter("title", title)
                 .appendQueryParameter("labels", label)
                 .appendQueryParameter("body", body)
                 .build()
-            if (uri.toString().length <= MAX_URL_LENGTH || tail.isEmpty()) return uri
-            // Keep the most recent part of the log.
-            tail = tail.substring(minOf(tail.length, maxOf(200, tail.length / 4)))
+            if (uri.toString().length <= MAX_URL_LENGTH) return uri
+            if (tail.isNotEmpty()) {
+                // Keep the most recent part of the log.
+                tail = tail.substring(minOf(tail.length, maxOf(200, tail.length / 4)))
+            } else {
+                val keep = text.removeSuffix(CUT).length * 3 / 4
+                if (keep < 40) return uri
+                text = text.take(keep) + CUT
+            }
         }
     }
+
+    private const val CUT = "\n… (suite coupée)\n\n"
 }

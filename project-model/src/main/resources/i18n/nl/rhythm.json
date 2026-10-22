@@ -141,6 +141,8 @@
   "Taper": "Tik",
   "Tempo moins": "Tempo lager",
   "Tempo plus": "Tempo hoger",
+  "Tes favoris n'ont pas pu être relus : le fichier est gardé tel quel et les nouveaux favoris ne seront pas enregistrés.": "Je favorieten konden niet worden gelezen: het bestand blijft zoals het is en nieuwe favorieten worden niet bewaard.",
+  "Tes favoris n'ont pas pu être relus. Le fichier est mis de côté (%s) et une nouvelle liste commence.": "Je favorieten konden niet worden gelezen. Het bestand is apart gezet (%s) en er begint een nieuwe lijst.",
   "Tom aigu": "Hoge tom",
   "Tom grave": "Lage tom",
   "Tom médium": "Midtom",

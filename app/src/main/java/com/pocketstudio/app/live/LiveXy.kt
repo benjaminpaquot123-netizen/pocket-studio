@@ -587,6 +587,14 @@ internal fun Modifier.countdownRing(left: () -> Float?, color: Color): Modifier 
     drawArc(color, -90f, 360f * f.coerceIn(0f, 1f), false, topLeft, Size(d, d), style = Stroke(w))
 }
 
+/**
+ * The quantum (steps) of the launch due first on grid [g] at transport [step]: each pending slot
+ * waits for a line of its own quantum (as armed); [fallback] when none waits or none says.
+ */
+fun nextLaunchQuantum(g: com.pocketstudio.model.LiveState, step: Int, fallback: Int): Int =
+    g.slots.filter { it.pending != null }.map { it.quantum.takeIf { q -> q > 0 } ?: fallback }
+        .minByOrNull { q -> if (step < 0) 0 else q - step % q } ?: fallback
+
 /** The part of the wait left until the next launch line ([quantum] steps), from the transport [step]. */
 fun launchWaitLeft(step: Int, quantum: Int): Float = if (step < 0 || quantum <= 0) 1f else 1f - (step % quantum) / quantum.toFloat()
 

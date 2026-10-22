@@ -4,6 +4,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,8 +18,9 @@ import kotlinx.coroutines.withContext
  * The open project: edits, undo/redo and autosave.
  *
  * Every edit schedules a save [autosaveDelayMs] later (successive edits push it back), so a
- * slider drag writes once, not sixty times a second. [flush] forces the pending save, e.g.
- * when the app goes to the background.
+ * slider drag writes once, not sixty times a second; but never more than [maxSaveDelayMs] after
+ * the first change still waiting, so minutes of non-stop recording (pads, keys) are on disk as
+ * they go. [flush] forces the pending save, e.g. when the app goes to the background.
  */
 class ProjectSession(
     val id: String,
@@ -27,6 +29,7 @@ class ProjectSession(
     private val scope: CoroutineScope,
     private val io: CoroutineDispatcher,
     private val autosaveDelayMs: Long = 400,
+    private val maxSaveDelayMs: Long = 2500,
     private val clock: () -> Long = System::currentTimeMillis,
 ) {
     private val history = History(initial.sanitized())
@@ -48,10 +51,19 @@ class ProjectSession(
             field = value
             _unsaved.value = value
         }
+    /** [clock] when the oldest change not yet on disk was made (see [maxSaveDelayMs]). */
+    private var dirtySince = 0L
 
     private val _unsaved = MutableStateFlow(false)
     /** True while changes wait to be written (the autosave delay, or a save that failed). */
     val unsaved: StateFlow<Boolean> = _unsaved.asStateFlow()
+
+    /**
+     * Everything is on disk: nothing waits ([unsaved]) and no save is being written (during one,
+     * its changes are no longer [unsaved] but not on disk yet: a screen closing then still
+     * [flush]es, which waits for it).
+     */
+    val settled: Boolean get() = !_unsaved.value && !saveLock.isLocked
 
     /**
      * Applies [transform] to the project. Same [coalesceKey] in a quick burst = one undo step.
@@ -126,11 +138,17 @@ class ProjectSession(
         _project.value = history.current
         _canUndo.value = history.canUndo
         _canRedo.value = history.canRedo
+        val now = clock()
+        if (!dirty) dirtySince = now
         dirty = true
+        // Pushed back by each edit, but not past the deadline of the oldest unsaved change.
+        val wait = autosaveDelayMs.coerceAtMost((dirtySince + maxSaveDelayMs - now).coerceAtLeast(0))
         pendingSave?.cancel()
         pendingSave = scope.launch {
-            delay(autosaveDelayMs)
-            saveNow()
+            delay(wait)
+            // Only the wait is pushed back: a save under way finishes (the next edit cancelling it
+            // each time would keep a non-stop recording off the disk).
+            withContext(NonCancellable) { saveNow() }
         }
     }
 
@@ -148,6 +166,7 @@ class ProjectSession(
             throw e
         } catch (e: Exception) {
             dirty = true
+            dirtySince = clock()  // a full phone: try again later, not at every gesture
             _lastSaveError.value = e
             false
         }

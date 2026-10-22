@@ -315,7 +315,7 @@ private fun DeleteStemsDialog(set: StemSet, inProject: Boolean, onDelete: () -> 
             title = { Text(tr("Supprimer ce morceau ?")) },
             text = { Text(tr("Les pistes séparées de « %s » seront effacées. Pour les retrouver, il faudra séparer la chanson à nouveau.", set.name)) },
             confirmButton = {
-                TextButton(onClick = { onDismiss(); onDelete() }, modifier = Modifier.testTag("delete_stems_confirm")) { Text(tr("Supprimer"), color = Neon.Red) }
+                TextButton(onClick = { onDismiss(); onDelete() }, modifier = Modifier.testTag("delete_stems_confirm")) { Text(tr("Supprimer"), color = Neon.RedText) }
             },
             dismissButton = { TextButton(onClick = onDismiss) { Text(tr("Annuler")) } },
             modifier = Modifier.testTag("delete_stems_dialog"),

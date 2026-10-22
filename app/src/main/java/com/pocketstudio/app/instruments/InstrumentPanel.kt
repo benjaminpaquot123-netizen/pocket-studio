@@ -134,7 +134,7 @@ fun InstrumentPanel(ui: InstrumentUi) {
                     Text(tr("Ouverture de la bibliothèque…"))
                 }
                 is LibraryState.Failed -> {
-                    Text(lib.message, color = Neon.Red)
+                    Text(lib.message, color = Neon.RedText)
                     Button(onClick = ui.download, modifier = Modifier.fillMaxWidth()) { Text(tr("Réessayer")) }
                 }
                 is LibraryState.Ready -> Browser(lib.presets, ui.current, ui.bankId, ui.select, ui.loadKit)

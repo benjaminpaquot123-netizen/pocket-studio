@@ -18,12 +18,16 @@ data class ProjectInfo(
     val hasRemix: Boolean,
 )
 
+/** A project .zip brought in: the new project's [id], and the sounds it named but did not hold (left out). */
+data class ImportedProject(val id: String, val missingSounds: Int = 0)
+
 /**
  * Every project on the phone: one folder each under [root] (see [ProjectStore]). Deleting moves
  * the folder to [trash] so a slip of the finger never loses work; [purgeTrash] forgets old ones.
+ * [stems]: where separated songs live (`stems/<set id>/`), so a remix's .zip carries its song.
  * Blocking file work: call it off the main thread.
  */
-class ProjectCatalog(private val root: File, private val trash: File) {
+class ProjectCatalog(private val root: File, private val trash: File, private val stems: File? = null) {
     val store = ProjectStore(root)
 
     fun list(): List<ProjectInfo> = store.list().mapNotNull { info(it) }.sortedByDescending { it.modified }
@@ -139,6 +143,48 @@ class ProjectCatalog(private val root: File, private val trash: File) {
             SET_ID.findAll(text).map { it.groupValues[1] }.toList()
         }.toSet()
 
+    /** Deletes a trashed project for good (its sounds with it): the place comes back now. */
+    @Throws(IOException::class)
+    fun deleteForever(entry: String) {
+        val f = File(trash, entry)
+        // Only an entry of the trash itself: never a path elsewhere.
+        if (entry.isEmpty() || entry.contains('/') || entry.contains('\\') || entry.startsWith(".") || f.parentFile != trash) throw IOException(tr("rien à supprimer"))
+        if (f.exists() && !f.deleteRecursively()) throw IOException(tr("suppression impossible"))
+    }
+
+    /** Empties the trash (« Vider la corbeille »); returns how many projects went. */
+    @Throws(IOException::class)
+    fun emptyTrash(): Int {
+        val entries = trash.listFiles().orEmpty()
+        val projects = entries.count { it.isDirectory }
+        entries.forEach { if (!it.deleteRecursively()) throw IOException(tr("suppression impossible")) }
+        return projects
+    }
+
+    /**
+     * Folders left by a creation, import or copy cut short (the app killed): sounds but no
+     * project.json, never listed. Those untouched for [maxAgeMs] go, except [keep] (the open
+     * project, which may not be saved yet). A complete first save cut short just before its last
+     * step (only project.json.tmp) is put back instead. Returns how many folders went.
+     */
+    fun cleanOrphans(keep: Set<String>, maxAgeMs: Long = 3_600_000, now: Long = System.currentTimeMillis()): Int {
+        var removed = 0
+        root.listFiles()?.forEach { dir ->
+            if (!dir.isDirectory || dir.name in keep) return@forEach
+            if (File(dir, ProjectStore.MAIN).exists() || File(dir, ProjectStore.BACKUP).exists()) return@forEach
+            if (dir.walkTopDown().any { it.lastModified() > now - maxAgeMs }) return@forEach
+            val tmp = File(dir, ProjectStore.TMP)
+            if (tmp.isFile && runCatching { ProjectJson.decode(tmp.readText(Charsets.UTF_8)) }.isSuccess && tmp.renameTo(File(dir, ProjectStore.MAIN))) return@forEach
+            if (dir.deleteRecursively()) removed++
+        }
+        return removed
+    }
+
+    /** The ids of every project folder, in the list or in the trash (which may come back), readable or not. */
+    fun knownIds(): Set<String> =
+        root.listFiles().orEmpty().filter { it.isDirectory }.map { it.name }.toSet() +
+            trash.listFiles().orEmpty().filter { it.isDirectory }.map { it.name.substringBefore('@') }
+
     /** Forgets trashed projects older than [maxAgeMs]. */
     fun purgeTrash(maxAgeMs: Long, now: Long = System.currentTimeMillis()) {
         trash.listFiles()?.forEach { f ->
@@ -147,31 +193,57 @@ class ProjectCatalog(private val root: File, private val trash: File) {
         }
     }
 
-    /** The project and its sounds as a .zip (project.json + samples/…), for a backup or another phone. */
+    /**
+     * The project and its sounds as a .zip (project.json + samples/…), for a backup or another
+     * phone; a remix's separated song goes with it (stems/<set id>/…). Returns how many sounds the
+     * project names that are not on the phone any more (left out: the import goes on without them).
+     */
     @Throws(IOException::class)
-    fun exportZip(id: String, out: java.io.OutputStream) {
+    fun exportZip(id: String, out: java.io.OutputStream): Int {
         val project = store.load(id) ?: throw IOException(tr("projet introuvable"))
+        val used = project.sampleFiles + project.previousTakeFiles
+        val files = File(store.folder(id), SAMPLES).listFiles()?.filter { it.isFile && it.name in used }?.sortedBy { it.name }.orEmpty()
         java.util.zip.ZipOutputStream(out.buffered()).use { zip ->
             zip.putNextEntry(java.util.zip.ZipEntry(ProjectStore.MAIN))
             zip.write(ProjectJson.encode(project).toByteArray(Charsets.UTF_8))
             zip.closeEntry()
-            val used = project.sampleFiles + project.previousTakeFiles
-            File(store.folder(id), SAMPLES).listFiles()?.filter { it.name in used }?.sortedBy { it.name }?.forEach { f ->
-                zip.putNextEntry(java.util.zip.ZipEntry("$SAMPLES/${f.name}"))
-                f.inputStream().use { it.copyTo(zip) }
-                zip.closeEntry()
+            files.forEach { f -> zip.putFile("$SAMPLES/${f.name}", f) }
+            stemSetDir(project.remix.setId)?.let { set ->
+                // Float WAVs hardly compress: the fastest level, not minutes of work for a few percent.
+                zip.setLevel(java.util.zip.Deflater.BEST_SPEED)
+                set.listFiles()?.filter { it.isFile && PadSample(it.name, "").isSafe }?.sortedBy { it.name }
+                    ?.forEach { f -> zip.putFile("$STEMS/${set.name}/${f.name}", f) }
             }
         }
+        return (project.sampleFiles - files.map { it.name }.toSet()).size
+    }
+
+    private fun java.util.zip.ZipOutputStream.putFile(name: String, f: File) {
+        putNextEntry(java.util.zip.ZipEntry(name))
+        f.inputStream().use { it.copyTo(this) }
+        closeEntry()
+    }
+
+    /** The folder of separated song [setId] on this phone, when there is one (and a safe name). */
+    private fun stemSetDir(setId: String?): File? {
+        val dir = File(stems ?: return null, setId?.takeIf { PadSample(it, "").isSafe } ?: return null)
+        return dir.takeIf { it.isDirectory }
     }
 
     /**
-     * A project .zip made by [exportZip] becomes a new project (never replaces one); returns its
-     * id. Only project.json and plain sample files are read; size limits guard the phone.
+     * A project .zip made by [exportZip] becomes a new project (never replaces one). Only
+     * project.json, plain sample files and the remix's song are read; size limits guard the phone.
+     * A sound the .zip lacks is left out of the project (its pad goes back to the kit sound), and
+     * counted in the result so the screen can say so.
      */
     @Throws(IOException::class)
-    fun importZip(input: java.io.InputStream): String {
+    fun importZip(input: java.io.InputStream): ImportedProject {
         val id = newId()
         val dir = store.folder(id)
+        // The remix's song is unpacked beside the project first, moved to [stems] at the end.
+        val stemsIn = File(dir, ".stems")
+        // project.json goes to a file first, then is read as it goes (never whole in memory as text).
+        val projectIn = File(dir, ".project.json")
         var project: Project? = null
         var total = 0L
         val seen = HashSet<String>()
@@ -182,38 +254,59 @@ class ProjectCatalog(private val root: File, private val trash: File) {
                     if (entry.isDirectory) continue
                     val name = entry.name.replace('\\', '/')
                     if (!seen.add(name)) throw IOException(tr("fichier en double dans le .zip"))
+                    val parts = name.split('/')
                     val target = when {
-                        name == ProjectStore.MAIN -> null
-                        name.startsWith("$SAMPLES/") && PadSample(name.removePrefix("$SAMPLES/"), "").isSafe ->
+                        name == ProjectStore.MAIN -> projectIn.also { it.parentFile.mkdirs() }
+                        parts.size == 2 && parts[0] == SAMPLES && PadSample(parts[1], "").isSafe ->
                             File(dir, name).also { it.parentFile.mkdirs() }
+                        stems != null && parts.size == 3 && parts[0] == STEMS && parts.drop(1).all { PadSample(it, "").isSafe } ->
+                            File(stemsIn, "${parts[1]}/${parts[2]}").also { it.parentFile.mkdirs() }
                         else -> continue  // anything else in the archive is ignored
                     }
-                    val bytes = java.io.ByteArrayOutputStream()
                     val buf = ByteArray(64 * 1024)
                     var size = 0L
-                    while (true) {
-                        val n = zip.read(buf)
-                        if (n < 0) break
-                        size += n
-                        total += n
-                        if (size > (if (target == null) MAX_PROJECT_JSON else MAX_ZIP_ENTRY) || total > MAX_ZIP_TOTAL) throw IOException(tr("projet trop gros"))
-                        if (target == null) bytes.write(buf, 0, n) else target.appendBytes(buf.copyOf(n))
+                    target.outputStream().buffered().use { sink ->
+                        while (true) {
+                            val n = zip.read(buf)
+                            if (n < 0) break
+                            size += n
+                            total += n
+                            if (size > (if (target == projectIn) MAX_PROJECT_JSON else MAX_ZIP_ENTRY) || total > MAX_ZIP_TOTAL) throw IOException(tr("projet trop gros"))
+                            sink.write(buf, 0, n)
+                        }
                     }
-                    if (target == null) project = ProjectJson.decode(bytes.toString(Charsets.UTF_8.name()))
+                    if (target == projectIn) project = projectIn.inputStream().buffered().use { ProjectJson.decode(it) }
                 }
             }
             // Cleaned first: only plain file names count (a path like ../x is dropped here).
-            val p = (project ?: throw IOException(tr("ce .zip n'est pas un projet Pocket Studio"))).sanitized()
-            val missing = p.sampleFiles.filterNot { File(dir, "$SAMPLES/$it").exists() }
-            if (missing.isNotEmpty()) throw IOException(tr("%d son(s) manquant(s) dans le .zip", missing.size))
+            val read = (project ?: throw IOException(tr("ce .zip n'est pas un projet Pocket Studio"))).sanitized()
+            val missing = read.sampleFiles.filterNot { File(dir, "$SAMPLES/$it").isFile }.toSet()
+            val p = if (missing.isEmpty()) read else read.withoutSounds(missing)
             store.save(id, p)
-            return id
+            moveStems(stemsIn, p.remix.setId)
+            return ImportedProject(id, missing.size)
         } catch (e: Throwable) {
             // Also an OutOfMemoryError: nothing half-imported stays behind, and the app does not crash.
             dir.deleteRecursively()
             // Our own messages are translated; a library's (JSON parser, zip reader) is not shown as is.
             throw if (e.javaClass == IOException::class.java) e else IOException(tr("fichier illisible ou abîmé"), e)
+        } finally {
+            stemsIn.deleteRecursively()
+            projectIn.delete()
         }
+    }
+
+    /** The imported remix's song into [stems], unless this phone already has it (the same song gives the same id). */
+    private fun moveStems(from: File, setId: String?) {
+        val root = stems ?: return
+        val set = File(from, setId?.takeIf { PadSample(it, "").isSafe } ?: return)
+        if (!set.isDirectory) return
+        val target = File(root, set.name)
+        if (target.exists()) return
+        root.mkdirs()
+        // The same file system: a rename. A song that cannot move is not worth failing the import:
+        // the Remix tab then says the song is not on the phone, as for an older .zip.
+        set.renameTo(target)
     }
 
     /** "Mon projet 3" (saved in French, see [DefaultNames]): the first free number among the existing names, in any language. */
@@ -226,11 +319,18 @@ class ProjectCatalog(private val root: File, private val trash: File) {
 
     companion object {
         const val SAMPLES = "samples"
+        const val STEMS = "stems"
         const val MAX_NAME = 40
         const val TRASH_DAYS = 30L
-        const val MAX_ZIP_ENTRY = 128L * 1024 * 1024
-        const val MAX_PROJECT_JSON = 4L * 1024 * 1024
-        const val MAX_ZIP_TOTAL = 1024L * 1024 * 1024
+        /** A 7-minute stem (the longest song separated) is about 150 MB. */
+        const val MAX_ZIP_ENTRY = 256L * 1024 * 1024
+        /**
+         * Guards memory: project.json is read as it goes, but the project it holds is whole in
+         * memory. The fullest project the app allows is about
+         * 7 MB compact (29 MB in the indented files of older versions, which still import).
+         */
+        const val MAX_PROJECT_JSON = 32L * 1024 * 1024
+        const val MAX_ZIP_TOTAL = 2048L * 1024 * 1024
         private val SET_ID = Regex("\"setId\"\\s*:\\s*\"([^\"]+)\"")
     }
 }

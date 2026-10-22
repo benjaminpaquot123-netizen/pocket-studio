@@ -53,20 +53,26 @@ object FloatWav {
         val chunk = ByteBuffer.allocate(CHUNK * 4).order(ByteOrder.LITTLE_ENDIAN)
         val floats = chunk.asFloatBuffer()
         val tmp = File(file.parentFile, file.name + ".tmp")
-        java.io.FileOutputStream(tmp).use { out ->
-            out.write(header.array())
-            var at = from * channels
-            val end = at + samples
-            while (at < end) {
-                val n = minOf(CHUNK, end - at)
-                floats.clear()
-                floats.put(data, at, n)
-                out.write(chunk.array(), 0, n * 4)
-                at += n
+        try {
+            java.io.FileOutputStream(tmp).use { out ->
+                out.write(header.array())
+                var at = from * channels
+                val end = at + samples
+                while (at < end) {
+                    val n = minOf(CHUNK, end - at)
+                    floats.clear()
+                    floats.put(data, at, n)
+                    out.write(chunk.array(), 0, n * 4)
+                    at += n
+                }
+                out.fd.sync()
             }
-            out.fd.sync()
+            if (!tmp.renameTo(file)) throw IOException(tr("écriture impossible : %s", file.name))
+        } catch (e: Throwable) {
+            // A take that failed (a full phone) leaves no half file behind: it would take the room again.
+            tmp.delete()
+            throw e
         }
-        if (!tmp.renameTo(file)) throw IOException(tr("écriture impossible : %s", file.name))
     }
 
     /** Reads files written by [write] (and other plain 32-bit float WAVs), a piece at a time. */

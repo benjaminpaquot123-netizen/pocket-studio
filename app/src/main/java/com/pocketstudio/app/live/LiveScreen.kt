@@ -183,6 +183,13 @@ class LiveActions(
     val launchRow: (Int) -> Unit = {},
     val stopTrack: (String) -> Unit = {},
     val stopAll: () -> Unit = {},
+    /**
+     * A finger down on a pad ([key], [scene]), a row ([key] null) or a ■ ([scene] -1): true when it
+     * launched there and then (the let-go then does nothing); false: the tap launches.
+     */
+    val press: (key: String?, scene: Int) -> Boolean = { _, _ -> false },
+    /** The finger that pressed slid on (the grid scrolls): what its press armed is taken back. */
+    val retract: (key: String?) -> Unit = {},
     val toggleMute: (String) -> Unit = {},
     val performance: (param: Int, value: Float) -> Unit = { _, _ -> },
     val setReturn: (bus: Int, value: Float) -> Unit = { _, _ -> },
@@ -329,41 +336,60 @@ private fun LeaveDuringTake(armed: Boolean, leave: () -> Unit, stay: () -> Unit)
 
 /** ← Morceau, ▶/■, « Lancer à », the counter (bar.beat, its ring filling up to the next launch) and ●. */
 @Composable
-private fun LiveTopBar(ui: LiveScreenUi, actions: LiveActions, leave: () -> Unit) {
+private fun LiveTopBar(ui: LiveScreenUi, actions: LiveActions, leave: () -> Unit) = BoxWithConstraints(
+    Modifier.fillMaxWidth().height(56.dp).background(Neon.Surface).testTag("live_top_bar"),
+) {
     val p = ui.project
+    // A narrow screen (a small phone, a big interface size): ← alone, « Lancer à » gives way with
+    // « … ». The counter and ● REC are placed first and never squeezed out.
+    val compact = maxWidth < LIVE_BAR_FULL
     Row(
-        Modifier.fillMaxWidth().height(56.dp).background(Neon.Surface).padding(horizontal = 4.dp),
+        Modifier.fillMaxSize().padding(horizontal = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(6.dp),
+        horizontalArrangement = Arrangement.spacedBy(if (compact) 4.dp else 6.dp),
     ) {
-        TextButton(onClick = leave, modifier = Modifier.testTag("live_back")) {
-            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
-            Text(tr("Morceau"), maxLines = 1)
+        if (compact) {
+            IconButton(onClick = leave, modifier = Modifier.size(48.dp).testTag("live_back")) {
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = tr("Revenir au morceau"))
+            }
+        } else {
+            TextButton(onClick = leave, modifier = Modifier.testTag("live_back")) {
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
+                Text(tr("Morceau"), maxLines = 1)
+            }
         }
         Box(
-            Modifier.size(44.dp).clip(CircleShape).background(if (ui.playing) Neon.Acid else Neon.Cyan)
-                .clickable(onClick = actions.togglePlay).testTag("live_play")
+            Modifier.size(48.dp).clip(CircleShape).clickable(onClick = actions.togglePlay).testTag("live_play")
                 .semantics { contentDescription = if (ui.playing) tr("Arrêter") else tr("Jouer") },
             contentAlignment = Alignment.Center,
         ) {
-            Icon(if (ui.playing) Icons.Filled.Stop else Icons.Filled.PlayArrow, contentDescription = null, tint = Neon.OnAccent)
+            Box(Modifier.size(44.dp).clip(CircleShape).background(if (ui.playing) Neon.Acid else Neon.Cyan), contentAlignment = Alignment.Center) {
+                Icon(if (ui.playing) Icons.Filled.Stop else Icons.Filled.PlayArrow, contentDescription = null, tint = Neon.OnAccent)
+            }
         }
-        // « Lancer à » : touching it goes 1 → 2 → 4 bars.
+        // « Lancer à » : touching it goes 1 → 2 → 4 bars. It takes what is left, cut with « … ».
         val bars = p.liveQuantum
         val next = LiveSlots.QUANTA[(LiveSlots.QUANTA.indexOf(bars) + 1).mod(LiveSlots.QUANTA.size)]
-        Column(
-            Modifier.heightIn(min = 48.dp).clip(RoundedCornerShape(12.dp)).background(Neon.SurfaceHigh)
-                .clickable { actions.setQuantum(next) }.padding(horizontal = 10.dp, vertical = 4.dp).testTag("live_quantum"),
-            verticalArrangement = Arrangement.Center,
-        ) {
-            Text(tr("Lancer à"), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, maxLines = 1)
-            Text(if (bars == 1) tr("1 mesure") else tr("%d mesures", bars), style = MaterialTheme.typography.labelLarge, maxLines = 1)
+        Box(Modifier.weight(1f)) {
+            Column(
+                Modifier.heightIn(min = 48.dp).clip(RoundedCornerShape(12.dp)).background(Neon.SurfaceHigh)
+                    .clickable { actions.setQuantum(next) }.padding(horizontal = if (compact) 8.dp else 10.dp, vertical = 4.dp).testTag("live_quantum"),
+                verticalArrangement = Arrangement.Center,
+            ) {
+                Text(tr("Lancer à"), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(
+                    if (bars == 1) tr("1 mesure") else tr("%d mesures", bars), style = MaterialTheme.typography.labelLarge,
+                    maxLines = 1, overflow = TextOverflow.Ellipsis,
+                )
+            }
         }
-        Spacer(Modifier.weight(1f))
         Counter(ui)
         RecordButton(ui.take, actions.record)
     }
 }
+
+/** Below this width the Live bar's ← loses its word. */
+private val LIVE_BAR_FULL = 380.dp
 
 /**
  * ●: ready (a red dot), armed (a blinking ring until the take starts on the launch line),
@@ -425,10 +451,18 @@ private fun TakeBanner(ui: LiveScreenUi, actions: LiveActions) {
         when (take) {
             is TakeUi.Recording -> {
                 Box(Modifier.size(12.dp).clip(CircleShape).background(Neon.Red))
-                Text(
-                    tr("REC %1\$d:%2\$02d · mesure %3\$d", take.seconds / 60, take.seconds % 60, take.bar),
-                    Modifier.weight(1f).testTag("live_take_clock"), style = MonoStyle, maxLines = 1,
-                )
+                Column(Modifier.weight(1f)) {
+                    Text(
+                        tr("REC %1\$d:%2\$02d · mesure %3\$d", take.seconds / 60, take.seconds % 60, take.bar),
+                        Modifier.testTag("live_take_clock"), style = MonoStyle, maxLines = 1,
+                    )
+                    // A limit coming is said before it bites; else what the take leaves out.
+                    Text(
+                        take.warning ?: tr("M et les pads de l'onglet Pads ne sont pas enregistrés."),
+                        Modifier.testTag("live_take_note"), style = MaterialTheme.typography.labelSmall,
+                        color = if (take.warning != null) Neon.Amber else Neon.TextSecondary, maxLines = 2,
+                    )
+                }
                 TextButton(onClick = actions.record, modifier = Modifier.testTag("live_take_end")) { Text(tr("■ Fin"), maxLines = 1) }
             }
             is TakeUi.Writing -> Text(tr("Écriture du morceau…"), Modifier.weight(1f), style = style)
@@ -481,8 +515,9 @@ private fun Counter(ui: LiveScreenUi) {
     val p = ui.project
     // The only part of the bar that follows the clock (it alone recomposes, 30 times a second).
     val step = ui.clockOf()
-    val q = p.liveQuantumSteps
     val waiting = ui.grid?.hasPending == true
+    // Waiting: the ring counts down to the first launch line armed (each keeps the quantum it was armed with).
+    val q = ui.grid?.let { g -> nextLaunchQuantum(g, step, p.liveQuantumSteps) } ?: p.liveQuantumSteps
     val ring = if (step < 0) 0f else (step % q) / q.toFloat()
     val text = if (step < 0) "–" else "${step / p.stepsPerBar + 1}.${step % p.stepsPerBar / 4 + 1}"
     val accent = if (waiting) Neon.Cyan else Neon.Outline
@@ -511,42 +546,48 @@ private fun LiveGrid(ui: LiveScreenUi, columns: List<LiveColumn>, actions: LiveA
     val gap = 6.dp
     // Blinks only while a launch or a stop waits, and only redraws (the cells read it when drawn).
     val blink = rememberBlink(ui.playing && ui.grid?.hasPending == true)
-    Column(modifier.padding(horizontal = 8.dp, vertical = 6.dp).testTag("live_grid"), verticalArrangement = Arrangement.spacedBy(gap)) {
-        Row(horizontalArrangement = Arrangement.spacedBy(gap)) {
-            Box(Modifier.width(sceneWidth).height(HEADER_HEIGHT), contentAlignment = Alignment.BottomStart) {
-                Text(tr("Scènes"), style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary)
+    // A touch that only stops a fling launches nothing (see launchOnPress).
+    val scrolling = remember(h, v) { { h.isScrollInProgress || v.isScrollInProgress } }
+    androidx.compose.runtime.CompositionLocalProvider(LocalGridScrolling provides scrolling) {
+        Column(modifier.padding(horizontal = 8.dp, vertical = 6.dp).testTag("live_grid"), verticalArrangement = Arrangement.spacedBy(gap)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(gap)) {
+                Box(Modifier.width(sceneWidth).height(HEADER_HEIGHT), contentAlignment = Alignment.BottomStart) {
+                    Text(tr("Scènes"), style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary)
+                }
+                ScrolledRow(h, gap) { columns.forEach { c -> ColumnHeader(c, c.key in ui.muted, pad) { actions.toggleMute(c.key) } } }
             }
-            ScrolledRow(h, gap) { columns.forEach { c -> ColumnHeader(c, c.key in ui.muted, pad) { actions.toggleMute(c.key) } } }
-        }
-        Column(Modifier.weight(1f, fill = false).fadingVerticalEdges(v).verticalScroll(v), verticalArrangement = Arrangement.spacedBy(gap)) {
-            scenes.forEach { scene ->
-                Row(horizontalArrangement = Arrangement.spacedBy(gap)) {
-                    SceneButton(ui, scene, sceneWidth, pad, blink) { actions.launchRow(scene) }
-                    ScrolledRow(h, gap) {
-                        columns.forEach { c ->
-                            val slot = LiveSlots.of(c.key) ?: return@forEach
-                            val state = ui.grid?.slot(slot)
-                            val playing = ui.playing && state?.playing == scene
-                            val start = state?.start ?: 0
-                            val loop = if (playing) p.slotLoopSteps(c.key, scene) else 0
-                            LivePadCell(
-                                c, rowName(p, scene), pad, p.cellHasContent(c.key, scene), playing, pending = ui.playing && state?.pending == scene,
-                                position = { livePosition(ui.clockOf(), start, loop) }, blink,
-                                waitLeft = { launchWaitLeft(ui.clockOf(), p.liveQuantumSteps) },
-                                tag = "live_pad_${c.key}_$scene",
-                            ) { actions.launchPad(c.key, scene) }
+            Column(Modifier.weight(1f, fill = false).fadingVerticalEdges(v).verticalScroll(v), verticalArrangement = Arrangement.spacedBy(gap)) {
+                scenes.forEach { scene ->
+                    Row(horizontalArrangement = Arrangement.spacedBy(gap)) {
+                        SceneButton(ui, scene, sceneWidth, pad, blink, press = { actions.press(null, scene) }, retract = { actions.retract(null) }) { actions.launchRow(scene) }
+                        ScrolledRow(h, gap) {
+                            columns.forEach { c ->
+                                val slot = LiveSlots.of(c.key) ?: return@forEach
+                                val state = ui.grid?.slot(slot)
+                                val playing = ui.playing && state?.playing == scene
+                                val start = state?.start ?: 0
+                                val loop = if (playing) p.slotLoopSteps(c.key, scene) else 0
+                                LivePadCell(
+                                    c, rowName(p, scene), pad, p.cellHasContent(c.key, scene), playing, pending = ui.playing && state?.pending == scene,
+                                    position = { livePosition(ui.clockOf(), start, loop) }, blink,
+                                    // The line the launch was armed for (« Lancer à » changed since does not move it).
+                                    waitLeft = { launchWaitLeft(ui.clockOf(), state?.quantum?.takeIf { it > 0 } ?: p.liveQuantumSteps) },
+                                    tag = "live_pad_${c.key}_$scene",
+                                    press = { actions.press(c.key, scene) }, retract = { actions.retract(c.key) },
+                                ) { actions.launchPad(c.key, scene) }
+                            }
                         }
                     }
                 }
             }
-        }
-        Row(horizontalArrangement = Arrangement.spacedBy(gap)) {
-            StopButton(tr("■ Tout"), sceneWidth, waiting = false, blink, "live_stop_all", actions.stopAll)
-            ScrolledRow(h, gap) {
-                columns.forEach { c ->
-                    val slot = LiveSlots.of(c.key) ?: return@forEach
-                    val state = ui.grid?.slot(slot)
-                    StopButton("■", pad, waiting = ui.playing && state?.pending == -1, blink, "live_stop_${c.key}") { actions.stopTrack(c.key) }
+            Row(horizontalArrangement = Arrangement.spacedBy(gap)) {
+                StopButton(tr("■ Tout"), sceneWidth, waiting = false, blink, "live_stop_all", { actions.press(null, -1) }, { actions.retract(null) }, actions.stopAll)
+                ScrolledRow(h, gap) {
+                    columns.forEach { c ->
+                        val slot = LiveSlots.of(c.key) ?: return@forEach
+                        val state = ui.grid?.slot(slot)
+                        StopButton("■", pad, waiting = ui.playing && state?.pending == -1, blink, "live_stop_${c.key}", { actions.press(c.key, -1) }, { actions.retract(c.key) }) { actions.stopTrack(c.key) }
+                    }
                 }
             }
         }
@@ -581,7 +622,7 @@ private fun ColumnHeader(c: LiveColumn, muted: Boolean, pad: Dp, toggleMute: () 
 }
 
 @Composable
-private fun SceneButton(ui: LiveScreenUi, scene: Int, width: Dp, height: Dp, blink: State<Float>, launch: () -> Unit) {
+private fun SceneButton(ui: LiveScreenUi, scene: Int, width: Dp, height: Dp, blink: State<Float>, press: () -> Boolean, retract: () -> Unit, launch: () -> Unit) {
     val p = ui.project
     val current = ui.playing && ui.grid?.row == scene
     val waiting = ui.playing && ui.grid?.pendingRow == scene
@@ -594,7 +635,7 @@ private fun SceneButton(ui: LiveScreenUi, scene: Int, width: Dp, height: Dp, bli
                 if (waiting) m.blinkingBorder(2.dp, 12.dp) { cyan.copy(alpha = blink.value) }
                 else m.border(2.dp, if (current) Neon.Cyan else Color.White.copy(alpha = 0.06f), RoundedCornerShape(12.dp))
             }
-            .clickable(onClick = launch).padding(horizontal = 8.dp).testTag("live_row_$scene"),
+            .launchOnPress(press, retract, launch).padding(horizontal = 8.dp).testTag("live_row_$scene"),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(6.dp),
     ) {
@@ -619,6 +660,8 @@ private fun LivePadCell(
     blink: State<Float>,
     waitLeft: () -> Float,
     tag: String,
+    press: () -> Boolean,
+    retract: () -> Unit,
     launch: () -> Unit,
 ) {
     SideEffect { livePadCompositions++ }
@@ -635,10 +678,15 @@ private fun LivePadCell(
                 if (pending) m.blinkingBorder(3.dp, 12.dp) { c.color.copy(alpha = blink.value) }
                 else m.border(1.dp, Color.White.copy(alpha = if (hasContent) 0.14f else 0.05f), shape)
             }
-            .clickable {
-                haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                launch()
-            }
+            // Launched on the finger's down (a controller's pad), a light buzz then.
+            .launchOnPress(
+                press = { press().also { if (it) haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove) } },
+                retract = retract,
+                tap = {
+                    haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                    launch()
+                },
+            )
             .testTag(tag)
             .semantics {
                 // TalkBack: the track, the row, and what the pad does now.
@@ -670,14 +718,14 @@ private fun LivePadCell(
 }
 
 @Composable
-private fun StopButton(label: String, width: Dp, waiting: Boolean, blink: State<Float>, tag: String, stop: () -> Unit) {
+private fun StopButton(label: String, width: Dp, waiting: Boolean, blink: State<Float>, tag: String, press: () -> Boolean, retract: () -> Unit, stop: () -> Unit) {
     Box(
         Modifier.width(width).height(48.dp).clip(RoundedCornerShape(10.dp))
             .let { m ->
                 val red = Neon.Red
                 if (waiting) m.drawBehind { drawRect(red.copy(alpha = 0.25f + 0.35f * blink.value)) } else m.background(Neon.SurfaceHigh)
             }
-            .clickable(onClick = stop).testTag(tag)
+            .launchOnPress(press, retract, stop).testTag(tag)
             .semantics { if (label == "■") contentDescription = tr("Arrêter la piste") },
         contentAlignment = Alignment.Center,
     ) {

@@ -65,14 +65,20 @@ data class Project(
     val liveQuantum: Int = 1,
     /** The Live page's effect settings (grid, release effect, lengths): see [LiveFxSettings]. */
     val liveFx: LiveFxSettings = LiveFxSettings(),
+    /**
+     * The id of the last Live take written into the song ([PerformanceTake.id]): a take kept on
+     * disk while it recorded ([TakeJournal]) is never written into the song a second time.
+     */
+    val liveTake: String = "",
 ) {
     /** Sixteenths in a bar. */
     val stepsPerBar: Int get() = beatsPerBar * 4
 
     /** Returns a copy with every value inside its allowed range. */
     fun sanitized(): Project = copy(
-        tempoBpm = tempoBpm.coerceIn(MIN_TEMPO, MAX_TEMPO),
-        swing = swing.coerceIn(0.0, MAX_SWING),
+        // A value that is not a number (NaN) would make every later save fail: back to the default.
+        tempoBpm = (if (tempoBpm.isFinite()) tempoBpm else 120.0).coerceIn(MIN_TEMPO, MAX_TEMPO),
+        swing = (if (swing.isFinite()) swing else 0.0).coerceIn(0.0, MAX_SWING),
         drums = drums.sanitized(),
         acid = acid.sanitized(),
         synth = synth.sanitized(),
@@ -94,6 +100,7 @@ data class Project(
         audioTracks = audioTracks.filter { it.id in 0 until AudioTrack.MAX }.distinctBy { it.id }.sortedBy { it.id }.map { it.sanitized() },
         liveQuantum = liveQuantum.takeIf { it in LiveSlots.QUANTA } ?: 1,
         liveFx = liveFx.sanitized(),
+        liveTake = liveTake.take(64),
     ).syncScenes().withFittedSampleRoots()
 
     companion object {
@@ -113,6 +120,8 @@ data class DrumPattern(
 ) {
     fun sanitized(): DrumPattern {
         val s = steps.coerceIn(MIN_STEPS, MAX_STEPS) / 4 * 4
+        // Already clean: the pattern itself (an edit on a big project rebuilds only what changed).
+        if (s == steps && lanes.size == PAD_COUNT && lanes.all { it.isClean() }) return this
         val fixedLanes = (lanes + List((PAD_COUNT - lanes.size).coerceAtLeast(0)) { DrumLane() }).take(PAD_COUNT)
         return copy(
             steps = s,
@@ -205,7 +214,13 @@ data class DrumLane(
     val sample: PadSample? = null,
     /** -1 (left) .. 1 (right); like the sound, the same in every scene. */
     val pan: Float = 0f,
-)
+) {
+    /** What [DrumPattern.sanitized] would leave as it is. */
+    internal fun isClean(): Boolean =
+        pan.isFinite() && pan in -1f..1f &&
+            (sample == null || (sample.isSafe && sample.sanitized() == sample)) &&
+            hits.all { (step, h) -> step in 0 until DrumPattern.MAX_STEPS && h.isClean() }
+}
 
 /**
  * A pad's own sound. [file] lives in the project folder under `samples/`; [name] is what the
@@ -230,7 +245,7 @@ data class PadSample(
     val fitBeats: Int = 0,
 ) {
     /** Only a plain file name may come from disk: never a path. */
-    val isSafe: Boolean get() = file.isNotEmpty() && file.length <= 80 && file.matches(Regex("[A-Za-z0-9._-]+")) && !file.startsWith(".")
+    val isSafe: Boolean get() = file.isNotEmpty() && file.length <= 80 && file.matches(SAFE_NAME) && !file.startsWith(".")
 
     fun sanitized(): PadSample {
         val s = start.finite(0f).coerceIn(0f, 0.999f)
@@ -264,6 +279,7 @@ data class PadSample(
     fun fittedFrames(bpm: Double): Long = Math.round(fitBeats * 60.0 / bpm * 48_000)
 
     companion object {
+        private val SAFE_NAME = Regex("[A-Za-z0-9._-]+")
         const val CHOKE_GROUPS = 4
         val FIT_BEATS = listOf(0, 1, 2, 4, 8, 16, 32)
 
@@ -275,7 +291,7 @@ data class PadSample(
     }
 }
 
-private fun Float.finite(default: Float) = if (isFinite()) this else default
+internal fun Float.finite(default: Float) = if (isFinite()) this else default
 
 @Serializable
 data class Hit(
@@ -289,7 +305,13 @@ data class Hit(
 ) {
     val isPlain: Boolean get() = pan == 0f && pitch == 0
 
+    /** What [sanitized] would leave as it is. */
+    internal fun isClean(): Boolean = velocity.isFinite() && repeats in 1..DrumPattern.MAX_REPEATS &&
+        pan.isFinite() && pan in -1f..1f && pitch in -MAX_PITCH..MAX_PITCH
+
     fun sanitized() = copy(
+        // Not clamped (any strength already saved stays); only a NaN, which no save could write, goes.
+        velocity = velocity.finite(1f),
         repeats = repeats.coerceIn(1, DrumPattern.MAX_REPEATS),
         pan = pan.finite(0f).coerceIn(-1f, 1f),
         pitch = pitch.coerceIn(-MAX_PITCH, MAX_PITCH),
@@ -357,8 +379,8 @@ data class Channel(
     val macros: List<Float> = Macros.DEFAULTS,
 ) {
     fun sanitized(): Channel = copy(
-        volume = volume.coerceIn(0f, 1f),
-        pan = pan.coerceIn(-1f, 1f),
+        volume = volume.finite(0.8f).coerceIn(0f, 1f),
+        pan = pan.finite(0f).coerceIn(-1f, 1f),
         inserts = Mixer.sanitizeInserts(inserts),
         sends = (sends + List((Buses.COUNT - sends.size).coerceAtLeast(0)) { 0f }).take(Buses.COUNT)
             .map { v -> v.takeIf { it.isFinite() }?.coerceIn(0f, 1f) ?: 0f },

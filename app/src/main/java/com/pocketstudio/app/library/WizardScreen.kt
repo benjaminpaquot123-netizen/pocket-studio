@@ -819,7 +819,7 @@ private fun PartStep(style: StarterWizard.Style, ui: WizardUi, packs: PacksUi, p
     NeonCard(modifier = Modifier.testTag("wizard_part_${part.id}")) {
         SectionLabel(tr(part.title), color = Neon.Magenta)
         Text(tr(part.explanation), style = MaterialTheme.typography.bodyLarge)
-        partNotes(style, part).forEach { note ->
+        partNotes(style, part, ui.plan).forEach { note ->
             Text(note, style = MaterialTheme.typography.bodyMedium, fontStyle = FontStyle.Italic, color = Neon.TextSecondary)
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -868,7 +868,7 @@ private fun PartStep(style: StarterWizard.Style, ui: WizardUi, packs: PacksUi, p
  * the lead plays (an arpeggio, only when it is one; else a written riff); and whether it is the
  * style's signature, heard in every section.
  */
-internal fun partNotes(style: StarterWizard.Style, part: StarterWizard.Part): List<String> {
+internal fun partNotes(style: StarterWizard.Style, part: StarterWizard.Part, plan: StarterWizard.ScenePlan? = null): List<String> {
     val own = style.melody.tips[part]?.takeIf { it.isNotBlank() }?.let { styleTip(style, it) }
     val general = when {
         own != null -> own
@@ -877,6 +877,13 @@ internal fun partNotes(style: StarterWizard.Style, part: StarterWizard.Part): Li
         part == StarterWizard.Part.Lead -> tr("Un petit riff écrit pour ce style : tu pourras changer ses notes dans Synthé.")
         else -> null
     }
-    val signature = if (style.melody.signature == part) tr("C'est le son qui fait le style : il joue dans toutes les sections.") else null
+    // « Every section » only when the song's plan really says so (a signature bass waits for the Groove, or the Drop).
+    val everywhere = plan?.parts?.get(part)?.let { it.size == plan.count }
+        ?: (part != StarterWizard.Part.Bass && part !in style.drop.parts)
+    val signature = when {
+        style.melody.signature != part -> null
+        everywhere -> tr("C'est le son qui fait le style : il joue dans toutes les sections.")
+        else -> tr("C'est le son qui fait le style.")
+    }
     return listOfNotNull(general, signature)
 }

@@ -55,10 +55,12 @@ object WavExporter {
 
     fun share(context: Context, file: File) = share(context, listOf(file))
 
-    /** One file or several (the tracks of a stems export) through Android's share menu. */
-    fun share(context: Context, files: List<File>, title: String = tr("Partager le morceau")) {
-
-        if (files.isEmpty()) return
+    /**
+     * One file or several (the tracks of a stems export) through Android's share menu. False when
+     * it could not open (no file, no app to share with).
+     */
+    fun share(context: Context, files: List<File>, title: String = tr("Partager le morceau")): Boolean {
+        if (files.isEmpty()) return false
         val uris = ArrayList(files.map { FileProvider.getUriForFile(context, context.packageName + ".files", it) })
         val mime = when {
             files.all { it.extension == "m4a" } -> "audio/mp4"
@@ -76,6 +78,6 @@ object WavExporter {
             type = mime
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
-        context.startActivity(Intent.createChooser(send, title).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+        return runCatching { context.startActivity(Intent.createChooser(send, title).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) }.isSuccess
     }
 }

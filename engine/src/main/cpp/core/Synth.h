@@ -49,6 +49,12 @@ public:
     // The sweep's rate in Hz as set now (free or locked), for tests.
     float sweepHz() const { return sweepHz_; }
     void render(float* mono, int numFrames);
+    // The transport starts: both LFOs and the noise from their start, as in an export.
+    void restartLfos() {
+        lfo1_.Reset(0.0f);
+        lfo2_.Reset(0.0f);
+        noiseState_ = kNoiseSeed;
+    }
 
     int activeVoices() const;
 
@@ -68,6 +74,7 @@ private:
         float semis = 0.0f;      // pitch now (MIDI note, fractional while gliding)
         float target = 0.0f;     // where the glide goes
         float glideStep = 0.0f;  // semitones per control tick, 0 = not gliding
+        bool fresh = false;      // a new note: its pitch and cutoff are set on its first frame (not the next tick)
     };
 
     struct Event {
@@ -93,7 +100,11 @@ private:
     uint32_t clock_ = 0;
     float bend_ = 0.0f, mod_ = 0.0f;
     float unisonGain_ = 1.0f;  // follows the stack gain smoothly when the number of copies changes
-    uint32_t noiseState_ = 1234567u;
+    // Frames to the next control tick: counted across calls, so the ticks fall on the same frames
+    // whatever the callback's size (an export in blocks of 512 sounds like the phone's 192).
+    int controlCountdown_ = 0;
+    static constexpr uint32_t kNoiseSeed = 1234567u;
+    uint32_t noiseState_ = kNoiseSeed;
     double beatFrames_ = 24000.0;  // 120 BPM at 48 kHz until the sequencer says otherwise
     float sweepHz_ = 0.0f;
 };

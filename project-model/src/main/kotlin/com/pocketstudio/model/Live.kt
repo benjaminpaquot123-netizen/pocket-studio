@@ -49,9 +49,11 @@ object LiveSlots {
 
 /**
  * One column as the engine plays it: [playing] the scene heard (-1: stopped), [pending] the scene
- * armed (-1: a stop; null: nothing waits), [start] the transport step its part started on.
+ * armed (-1: a stop; null: nothing waits), [start] the transport step its part started on,
+ * [quantum] the launch line its pending launch waits for (steps; 0: the project's « Lancer à »),
+ * kept as armed when « Lancer à » changes meanwhile (the engine keeps it too).
  */
-data class LiveSlot(val playing: Int = 0, val pending: Int? = null, val start: Int = 0)
+data class LiveSlot(val playing: Int = 0, val pending: Int? = null, val start: Int = 0, val quantum: Int = 0)
 
 /**
  * What the grid plays: [row] the scene last launched as a whole (the scene shown and edited),
@@ -67,9 +69,9 @@ data class LiveState(
     val hasPending: Boolean get() = pendingRow != null || slots.any { it.pending != null }
     fun slot(k: Int): LiveSlot = slots.getOrElse(k) { LiveSlot(row) }
 
-    /** [mask]'s slots wait for [scene] (-1: a stop); the last choice for a slot wins. */
-    fun armed(mask: Int, scene: Int): LiveState = copy(
-        slots = slots.mapIndexed { k, s -> if (mask and (1 shl k) != 0) s.copy(pending = scene.coerceAtLeast(-1)) else s },
+    /** [mask]'s slots wait for [scene] (-1: a stop) on a line of [quantum] steps; the last choice for a slot wins. */
+    fun armed(mask: Int, scene: Int, quantum: Int = 0): LiveState = copy(
+        slots = slots.mapIndexed { k, s -> if (mask and (1 shl k) != 0) s.copy(pending = scene.coerceAtLeast(-1), quantum = quantum.coerceAtLeast(0)) else s },
         // A slot armed on its own breaks a row that waited (the engine launches it as tracks then).
         pendingRow = if (mask == LiveSlots.ALL && scene >= 0) scene else null,
     )
@@ -81,17 +83,20 @@ data class LiveState(
     )
 
     /**
-     * The engine launched [slot] on [scene] (-1: stopped) at transport [step]. Every slot on one
-     * scene again: that scene is the row (the grid is a plain scene once more).
+     * The engine launched [slot] on [scene] (-1: stopped) at transport [step]. Every column on one
+     * scene again: that scene is the row (the grid is a plain scene once more). [columns]: the
+     * slots that are columns of the grid (a track there); the others have nothing to hear and
+     * follow the row.
      */
-    fun launched(slot: Int, scene: Int, step: Int): LiveState {
+    fun launched(slot: Int, scene: Int, step: Int, columns: Int = LiveSlots.ALL): LiveState {
         if (slot !in slots.indices) return this
         val next = slots.mapIndexed { k, s -> if (k == slot) LiveSlot(scene.coerceAtLeast(-1), null, step) else s }
-        val whole = next.first().playing.takeIf { p -> p >= 0 && next.all { it.playing == p } }
+        val heard = next.filterIndexed { k, _ -> columns and (1 shl k) != 0 }.ifEmpty { next }
+        val whole = heard.first().playing.takeIf { p -> p >= 0 && heard.all { it.playing == p } }
         val stillWaiting = next.any { it.pending != null }
         return copy(
             row = whole ?: row,
-            slots = next,
+            slots = if (whole == null) next else next.mapIndexed { k, s -> if (columns and (1 shl k) == 0 && s.pending == null) s.copy(playing = whole) else s },
             pendingRow = if (whole != null && whole == pendingRow && !stillWaiting) null else pendingRow,
         )
     }
@@ -133,6 +138,9 @@ fun Project.liveStateOf(part: SongPart?, scene: Int, start: Int, states: IntArra
 /** The live grid's columns in order: drums, acid, each instrument track, each audio track, and the remix when one is loaded. */
 val Project.liveColumns: List<String> get() = partKeys + if (remix.setId != null) listOf(SongPart.REMIX) else emptyList()
 
+/** The grid slots that are columns (a track there), as a mask. */
+val Project.liveColumnsMask: Int get() = liveColumns.mapNotNull { LiveSlots.of(it) }.fold(0) { m, k -> m or (1 shl k) }
+
 /** The launch quantum in steps. */
 val Project.liveQuantumSteps: Int get() = liveQuantum.coerceIn(1, 4) * stepsPerBar
 
@@ -141,7 +149,7 @@ fun Project.cellHasContent(key: String, scene: Int): Boolean {
     val s = allScenes.getOrNull(scene) ?: return false
     return when {
         key == SongPart.DRUMS -> s.drums.lanes.any { lane -> lane.hits.keys.any { it < s.drums.steps } }
-        key == SongPart.ACID -> s.acid.steps.take(s.acid.length).any { it.gate }
+        key == SongPart.ACID -> s.acid.steps.take(s.acid.length.coerceAtLeast(0)).any { it.gate }
         key == SongPart.REMIX -> remix.setId != null
         key.startsWith("inst:") -> notesOf(s, key.removePrefix("inst:").toIntOrNull() ?: -1)?.notes?.isNotEmpty() == true
         key.startsWith("audio:") -> {

@@ -89,6 +89,44 @@ class SongFollowTest {
         assertEquals(mapOf(SongPart.DRUMS to 1), q.song[0].from)
     }
 
+    /**
+     * A take's Montée (per beat) ramping up to the Drop on the last part's bar line, then a jump to
+     * 0 (song A, B, A: the Drop on beat 12). Whatever the arrangement edit, the jump stays on the
+     * Drop's point: the beat before it holds 1 (no slide down), no jump lands inside the ramp.
+     */
+    private fun dropSong(): Project {
+        val p = song()
+        val lane = AutomationLane(AutoTarget.live(AutoTarget.LIVE_BUILD_UP), mode = AutomationLane.SONG, songPerBeat = true)
+            .withSongPoint(0, 0f).withSongPoint(11, 1f).withSongPoint(12, 0f).withSongJump(12, true)
+        return p.copy(automation = listOf(lane)).sanitized()
+    }
+
+    /** The Drop on beat [drop]: the beat before it held at 1 all through, then 0 at once. */
+    private fun assertDropOn(q: Project, drop: Int) {
+        val lane = q.automation[0]
+        assertEquals(listOf(drop), lane.songJumps)
+        val points = drop + 4
+        for (s in (drop - 1) * 4 until drop * 4) assertEquals("step $s", 1f, lane.songValueAtStep(s, points, q.stepsPerBar)!!, 1e-6f)
+        assertEquals(0f, lane.songValueAtStep(drop * 4, points, q.stepsPerBar)!!, 1e-6f)
+    }
+
+    @Test
+    fun theDropStaysOnItsBarLineWhateverTheArrangementEdit() {
+        val p = dropSong()
+        assertDropOn(p, 12)
+        // A one-bar part inserted first: everything four beats on.
+        assertDropOn(p.insertSongPart(0, 0), 16)
+        // The first part removed: four beats back.
+        assertDropOn(p.removeSongPart(0), 8)
+        // B twice: two bars more before the Drop.
+        assertDropOn(p.withSongRepeats(1, 2), 20)
+        // The last part moved to the start: its Drop goes with it (on its first beat, the song's start).
+        assertTrue(p.moveSongPart(2, 0).automation[0].songJumps.all { it == 0 })
+        // B's scene a bar longer (its own edit): the Drop a bar later.
+        val longer = p.switchScene(1).let { it.copy(drums = it.drums.copy(steps = 48)) }.sanitized().switchScene(0)
+        assertDropOn(longer.followPartLengths(p), 16)
+    }
+
     @Test
     fun moreRepeatsHoldTheLastValueAndPushTheRest() {
         val p = song()

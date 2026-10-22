@@ -99,6 +99,8 @@ object MidiFile {
     /** The clip's notes over [sceneTicks], the clip repeating like it does when the scene plays. */
     private fun loopNotes(clip: NoteClip, sceneTicks: Int, offset: Int): List<MidiNote> {
         val out = ArrayList<MidiNote>()
+        // A clip of no length (a damaged file) would loop forever.
+        if (clip.ticks <= 0 || clip.notes.isEmpty()) return out
         var loop = 0
         while (loop < sceneTicks) {
             clip.notes.forEach { n ->
@@ -113,6 +115,7 @@ object MidiFile {
     private fun acidNotes(acid: AcidPattern, root: Int, sceneSteps: Int, offset: Int): List<MidiNote> {
         val out = ArrayList<MidiNote>()
         val step = NoteClip.TICKS_PER_STEP
+        if (acid.length <= 0 || acid.steps.size < acid.length) return out  // a damaged file
         var s = 0
         while (s < sceneSteps) {
             val a = acid.steps[s % acid.length]
@@ -128,8 +131,9 @@ object MidiFile {
 
     private fun drumNotes(drums: DrumPattern, sceneSteps: Int, offset: Int): List<MidiNote> {
         val out = ArrayList<MidiNote>()
+        if (drums.steps <= 0) return out  // a damaged file
         for (s in 0 until sceneSteps) {
-            drums.lanes.forEachIndexed { lane, l ->
+            drums.lanes.take(PAD_NOTES.size).forEachIndexed { lane, l ->
                 l.hits[s % drums.steps]?.let { hit ->
                     out += MidiNote(DRUM_CHANNEL, PAD_NOTES[lane], offset + s * NoteClip.TICKS_PER_STEP, NoteClip.TICKS_PER_STEP / 2, velocity(hit.velocity))
                 }

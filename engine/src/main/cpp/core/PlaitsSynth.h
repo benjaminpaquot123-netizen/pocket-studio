@@ -31,6 +31,8 @@ public:
     // Adds the voices into `mono`.
     void render(float* mono, int numFrames);
     int activeVoices() const;
+    // The transport starts: Plaits' noise from its first value (an export starts there too).
+    void restartNoise();
 
 private:
     struct Impl;

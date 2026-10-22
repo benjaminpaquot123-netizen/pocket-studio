@@ -77,7 +77,8 @@ enum class CommandType : uint8_t {
                           // `value` when it is a later part); b = 2: the song
                           // ends there: the transport stops on that bar line (nothing is swapped);
                           // b = 3: the waiting scene plays on its own, outside the song (with
-                          // a < 0: right away, the scene playing)
+                          // a < 0: right away, the scene playing; the live grid's launches still
+                          // waiting are kept when no scene swap was armed: a take's end)
     SetPerformance,       // a: PerformanceFx::Param, value 0..1 (the Live page's effects and their settings; 6, 7: the
                           // reverb and echo returns, 0.5 = as mixed)
     SetSynthEngine,       // a: 0 = subtractive synth, 1 = Plaits (a General MIDI instrument still wins)
@@ -98,7 +99,7 @@ enum class CommandType : uint8_t {
     SetBeatsPerBar,       // a: 2..7 (time signature a/4): metronome accent, bar lines, live pads grid
     SetAutomationMode,    // a: lane, b: 0 loop / 1 per scene / 2 song, | 16: a song point per beat, | 32: song points held (no
                           // slide: on/off controls); value: song points sent
-    SetAutomationSong,    // a: lane, b: point (a bar 0..255, or a beat 0..1023), value 0..1: the song-long curve
+    SetAutomationSong,    // a: lane, b: point (a bar 0..255, or a beat 0..4095), value 0..1: the song-long curve
     SetExpression,        // a: InstrumentTrack::Expression | track << 16, value (bend in semitones, mod 0..1, sustain 0/1, arpeggiator settings)
     SetPadPan,            // a: pad, value -1..1 (synthesized and sampled sounds alike)
     SetDrumStepDetail,    // a: pad, b: step | (pitch + 64) << 16 (semitones, sampled sounds), value: pan -1..1 added to the pad's;
@@ -111,6 +112,8 @@ enum class CommandType : uint8_t {
     SetPadStrip,          // a: pad 0..15, value > 0.5: the pad plays through its own mixer strip (its effects)
     SetMaster,            // a: 0 = gain before the limiter (value: linear 0..4), 1 = limiter (value 1 = on),
                           // 2 = master inserts (value 1 = on; off for stems, which then add up to the mix)
+                          // 3 = the Live page's own sounds (riser, downlifter, build-up noise; value 0 = in the mix,
+                          // 1 = left out: a track's stem, 2 = alone: the stem « Effets live », PerformanceFx::Noises)
     ClearInserts,         // a: mixer channel: every insert slot emptied (a strip no longer used gives its pool units back)
     SetInsertOn,          // a: channel * Mixer::kInserts + slot, value 1: the effect plays in this scene, 0: the sound goes
                           // through it untouched (« Joue dans »). Follows SetStaging: the waiting scene's, switched at the swap
@@ -183,7 +186,7 @@ struct Automation {
     static constexpr int kLanes = 16;
     static constexpr int kSteps = 64;
     static constexpr int kSongBars = 256;
-    static constexpr int kSongPoints = 1024;  // a point per beat: 256 bars of 4/4
+    static constexpr int kSongPoints = 4096;  // a point per beat: 1024 bars of 4/4 (AutomationLane.MAX_SONG_BEATS)
     enum Mode { Loop = 0, PerScene = 1, Song = 2 };
     static constexpr int kPerBeat = 16;  // SetAutomationMode flags
     static constexpr int kHeld = 32;
@@ -200,7 +203,7 @@ struct Automation {
         bool held = false;     // each point holds until the next (on/off controls)
         std::array<uint8_t, kSongPoints> flat{};  // 1: this point holds (the next one is a jump)
     };
-    // On the heap (about 70 kB), allocated once with the engine.
+    // On the heap (about 340 kB), allocated once with the engine.
     std::unique_ptr<std::array<Lane, kLanes>> laneBank = std::make_unique<std::array<Lane, kLanes>>();
     std::array<Lane, kLanes>& lanes = *laneBank;
     // Settings a finger holds (packed targets, -1 = free slot): lanes leave them alone meanwhile,
@@ -259,6 +262,14 @@ public:
 
     // Producer side; callers must serialise (single producer).
     bool post(const Command& command) { return commands_.push(command); }
+    // How much of the queue one callback applies (0, the default: everything). The phone's stream
+    // sets kLiveCommandBudget: a full resync (thousands of commands) is spread over a few callbacks
+    // instead of making one of them miss its deadline; switching an effect type (a long one clears
+    // seconds of memory) counts as kHeavyCommand. A staged scene (SetStaging on) is always taken
+    // whole, so a swap never finds it half there. An offline render takes everything at once (its
+    // commands land on exact frames). Not real-time: set it before the stream runs.
+    static constexpr int kLiveCommandBudget = 1024, kHeavyCommand = 8;
+    void setCommandBudget(int budget) { commandBudget_ = std::max(0, budget); }
 
     // Real-time safe.
     void process(const float* input, int numInputFrames, int inputChannels,
@@ -371,6 +382,7 @@ private:
     Smoother gain_;
     float volume_ = 0.5f;
     SpscQueue<Command, 4096> commands_;
+    int commandBudget_ = 0;
     RoundTripMeter meter_;
 
     Sequencer sequencer_;

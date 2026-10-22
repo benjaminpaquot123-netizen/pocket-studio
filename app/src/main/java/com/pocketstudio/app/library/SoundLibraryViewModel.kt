@@ -356,14 +356,26 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
     fun use(ref: SoundRef, then: (Pcm) -> Unit) {
         stopPreview()
         dismissMessage()
+        val opened = openings
         viewModelScope.launch {
             val pcm = load(ref)
+            // The library closed meanwhile (even across a rotation): the sound lands nowhere.
+            if (opened != openings) return@launch
             if (pcm == null) {
                 _packs.update { it.copy(message = tr("Ce son n'a pas pu être lu.")) }
                 return@launch
             }
             then(pcm)
         }
+    }
+
+    /** Bumped each time the library closes: kept here, it outlives the screen's rotation. */
+    private var openings = 0
+
+    /** The library closed: a sound still loading is dropped, the preview stops. */
+    fun closed() {
+        openings++
+        stopPreview()
     }
 
     /** The sound as audio: the kit voice rendered once by the engine, or the pack file decoded. */

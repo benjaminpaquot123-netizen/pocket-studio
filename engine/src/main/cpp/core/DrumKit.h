@@ -26,6 +26,9 @@ public:
     void prepare(int sampleRate);
     // Schedules a hit `frameOffset` frames into the next render() call, panned -1..1.
     void trigger(int voice, float velocity, int frameOffset, float pan = 0.0f);
+    // Every voice's noise from its first value again (the transport starts: an export, which
+    // starts there too, gets the same noise as the take).
+    void resetNoise();
     // Adds all voices into a mono buffer (pans ignored).
     void render(float* mono, int numFrames);
     // Adds all voices into a stereo pair, each voice at the pan of its last hit.
@@ -66,10 +69,14 @@ private:
     float renderVoice(int voice, bool trig, float velocity);
     // Calls sink(voice, frame, value, gainLeft, gainRight) for every sample a voice adds.
     template <typename Sink> void renderTo(int numFrames, Sink&& sink);
-    float noise();
 
     int sampleRate_ = 48000;
-    uint32_t noiseState_ = 22222u;
+    // Noise: each voice its own generators (ours, and DaisySP's rand() swapped in while it
+    // renders), so what one voice draws never depends on the others nor on the block size.
+    float noise(int voice);
+    void warmUp(int voice);
+    std::array<uint32_t, kVoices> noiseState_{};
+    std::array<uint32_t, kVoices> randState_{};
     std::array<int, kVoices> pending_{};
     std::array<float, kVoices> velocity_{};
     std::array<float, kVoices> pendingPan_{};
@@ -80,6 +87,7 @@ private:
         return a;
     }
     std::array<int, kVoices> activeFrames_{};
+    std::array<float, kVoices> hitGain_{};  // the sounding hit's level (its velocity's)
     float openHatChoke_ = 1.0f;
     float chokeDecay_ = 0.99f;
 

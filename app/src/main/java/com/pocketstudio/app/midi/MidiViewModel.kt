@@ -245,11 +245,21 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
             return
         }
         _state.update { it.copy(scanning = true) }
+        activeScanner = scanner
         viewModelScope.launch {
             kotlinx.coroutines.delay(10_000)
-            runCatching { scanner.stopScan(scanCallback) }
+            stopScan()
             _state.update { it.copy(scanning = false) }
         }
+    }
+
+    /** The scanner of a search under way: stopped after ten seconds, or when this ViewModel goes. */
+    private var activeScanner: android.bluetooth.le.BluetoothLeScanner? = null
+
+    @SuppressLint("MissingPermission")
+    private fun stopScan() {
+        activeScanner?.let { runCatching { it.stopScan(scanCallback) } }
+        activeScanner = null
     }
 
     // --- Incoming events (MIDI thread) -----------------------------------------------------------
@@ -407,6 +417,9 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     override fun onCleared() {
+        // Another project opened within the ten seconds: the timer is cancelled with the scope,
+        // so the search (battery, and this ViewModel kept by its callback) stops here.
+        stopScan()
         manager?.unregisterDeviceCallback(callback)
         disconnect()
     }

@@ -20,6 +20,33 @@ object NoteNames {
     /** A key or a chord root, spelt the usual way (E♭, A♭, B♭): "Mi♭" or "E♭". */
     fun key(note: Int, english: Boolean): String = (if (english) EN_KEY else FR_KEY)[Math.floorMod(note, 12)]
 
+    private val FR_LETTERS = listOf("Do", "Ré", "Mi", "Fa", "Sol", "La", "Si")
+    private val EN_LETTERS = listOf("C", "D", "E", "F", "G", "A", "B")
+    private val NATURALS = listOf(0, 2, 4, 5, 7, 9, 11)
+
+    /** The letter [key] writes pitch class [pc] on (0 = Do … 6 = Si): Mi for Mi♭, Fa for Fa♯. */
+    fun usualLetter(pc: Int): Int = listOf(0, 0, 1, 2, 2, 3, 3, 4, 5, 5, 6, 6)[Math.floorMod(pc, 12)]
+
+    /** The accidental pitch class [pc] needs on [letter] (0 = Do … 6 = Si): 0, 1 (♯) or -1 (♭); null when it takes more. */
+    fun accidental(pc: Int, letter: Int): Int? = (Math.floorMod(pc - NATURALS[letter] + 6, 12) - 6).takeIf { it in -1..1 }
+
+    /** Pitch class [pc] written on [letter] (0 = Do … 6 = Si): "Sol♯", "Mi♯", "Do♭", "G♯"; null when it would need a double sharp or flat. */
+    fun spelt(pc: Int, letter: Int, english: Boolean): String? {
+        val a = accidental(pc, letter) ?: return null
+        return (if (english) EN_LETTERS else FR_LETTERS)[letter] + when (a) {
+            1 -> "♯"
+            -1 -> "♭"
+            else -> ""
+        }
+    }
+
+    /** Pitch class [pc] with sharps ([sharps]: "Ré♯") or flats ("Mi♭"), a natural note plain. */
+    fun withAccidentals(pc: Int, english: Boolean, sharps: Boolean): String {
+        val p = Math.floorMod(pc, 12)
+        val letter = NATURALS.indexOf(p).takeIf { it >= 0 } ?: if (sharps) NATURALS.indexOf(p - 1) else NATURALS.indexOf(p + 1)
+        return spelt(p, letter, english)!!
+    }
+
     /** The octave number of MIDI [note]: middle C (60) is in octave 4 in English, 3 in French. */
     fun octave(note: Int, english: Boolean): Int = Math.floorDiv(note, 12) - if (english) 1 else 2
 

@@ -297,6 +297,8 @@ object StarterWizard {
      * pack sound played across the keys ([sampled] set; its file is "pack:<pack>/<file>" until the
      * project is written, then the copy in the project's folder). [chord]: a pack sound recorded as a
      * whole chord (a stab, a pad, keys): the chords play it as one note each, not a chord of chords.
+     * [family]: its library category ("Nappes", "Claviers"…) or its pack kind ("pad", "keys", "stab"…),
+     * which names the chords' track ([trackName]).
      */
     data class PartSound(
         val name: String,
@@ -304,6 +306,7 @@ object StarterWizard {
         val plaits: PlaitsPatch? = null,
         val sampled: SampledPatch? = null,
         val chord: Boolean = false,
+        val family: String = "",
     ) {
         /** The pack and file of a pack sound, or null. */
         val packFile: Pair<String, String>? get() = sampled?.file?.takeIf { it.startsWith(PACK_FILE) }
@@ -358,10 +361,10 @@ object StarterWizard {
      * a few of each other pack).
      */
     fun soundsFor(part: Part, style: Style, installed: List<PackManifest> = emptyList()): List<PartSound> {
-        val synth = SoundLibrary.SYNTH.filter { it.category in part.categories }.map { PartSound(it.name, synth = it.sound) }
+        val synth = SoundLibrary.SYNTH.filter { it.category in part.categories }.map { PartSound(it.name, synth = it.sound, family = it.category) }
         val plaitsNames = synth.map { it.name }.toSet()
         val plaits = SoundLibrary.PLAITS.filter { it.category in part.categories }
-            .map { PartSound(if (it.name in plaitsNames) "${it.name} (Plaits)" else it.name, plaits = it.sound) }
+            .map { PartSound(if (it.name in plaitsNames) "${it.name} (Plaits)" else it.name, plaits = it.sound, family = it.category) }
         val all = synth + plaits
         // A kit voice played across the keys (the phonk's cowbell) is always there: it comes first.
         val kit = style.melody.packSounds[part]?.takeIf { it.startsWith(KIT_SOUND) }?.removePrefix(KIT_SOUND)?.toIntOrNull()
@@ -372,8 +375,8 @@ object StarterWizard {
         // The style's synth sound may come from another family (a hoover as chord stabs).
         val wanted = style.melody.sound(part)
         val preferredSynth = all.filter { it.name == wanted }.ifEmpty {
-            SoundLibrary.SYNTH.filter { it.name == wanted }.map { PartSound(it.name, synth = it.sound) } +
-                SoundLibrary.PLAITS.filter { it.name == wanted }.map { PartSound(it.name, plaits = it.sound) }
+            SoundLibrary.SYNTH.filter { it.name == wanted }.map { PartSound(it.name, synth = it.sound, family = it.category) } +
+                SoundLibrary.PLAITS.filter { it.name == wanted }.map { PartSound(it.name, plaits = it.sound, family = it.category) }
         }.take(1)
         val kinds = packKinds(part)
         val packs = installed.sortedBy { if (it.id == chosenPack?.id) 0 else if (it.id == style.id) 1 else 2 }.flatMap { m ->
@@ -394,6 +397,7 @@ object StarterWizard {
                         },
                     ),
                     chord = sound.kind in CHORD_KINDS,
+                    family = sound.kind,
                 )
             }
         }
@@ -502,8 +506,9 @@ object StarterWizard {
                 val notes = startingNotes(part, style, mood, harmony, sound)
                 // The bass (or the lead) glides where its line says '/' (its notes overlap there): the synth's portamento.
                 val glides = glides(part, style)
+                val name = trackName(part, sound, style)
                 fun InstrumentTrack.withSound() = copy(
-                    name = part.trackName, notes = notes, synth = if (glides) sound.synth.with(SynthPatch.GLIDE, BASS_GLIDE) else sound.synth,
+                    name = name, notes = notes, synth = if (glides) sound.synth.with(SynthPatch.GLIDE, BASS_GLIDE) else sound.synth,
                     engine = when {
                         sound.sampled != null -> 2
                         sound.plaits != null -> 1
@@ -520,7 +525,7 @@ object StarterWizard {
                     partOfTrack[0] = part
                     first = false
                 } else {
-                    val added = project.addTrack(part.trackName) ?: continue
+                    val added = project.addTrack(name) ?: continue
                     project = added.withTrack(added.tracks.last().withSound())
                     partOfTrack[added.tracks.last().id] = part
                 }
@@ -865,8 +870,11 @@ object StarterWizard {
 
     /** The plan of [style]'s song with these lines, parts and acid line. */
     fun planFor(style: Style, lines: Set<Role>, parts: Set<Part>, acid: Boolean): ScenePlan =
-        scenePlan(lines, parts, acid, style.melody.signature, style.form, style.drop, style.breakWith)
+        scenePlan(lines, parts, acid, style.melody.signature, style.form, style.drop, style.breakWith, acidInBreak = acidBreaks(style))
             .let { if (style.riser && it.form != SongForm.Song) it.copy(riser = true) else it }
+
+    /** [style]'s 303 turns its knobs in the Break (the acid house filter opening): it keeps playing there, chords or not. */
+    fun acidBreaks(style: Style): Boolean = style.melody.acid?.moves?.any { 3 in it.sections } == true
 
     /**
      * Shares the [lines] and [parts] used (and the acid line, when there is one) between the
@@ -877,28 +885,42 @@ object StarterWizard {
      * the hats, the percussion and the signature; never the bass. The [signature] plays in every
      * section. A section that would be silent plays what the next one plays. Club music also gets a
      * Break (scene D): the chords, the lead and the signature, without kick nor bass (the acid line,
-     * or the hats and the percussion, when there is no chord nor lead).
+     * or the hats and the percussion, when there is no chord nor lead; with [acidInBreak], the acid
+     * line whatever else plays there). Last, a section left silent (only the rumble kept, only the
+     * chords in acidcore) plays what the next one plays.
      */
     fun scenePlan(
         lines: Set<Role>, parts: Set<Part>, acid: Boolean, signature: Part? = null, form: SongForm = SongForm.Song,
-        drop: Layers = Layers(), breakWith: Layers? = null,
+        drop: Layers = Layers(), breakWith: Layers? = null, acidInBreak: Boolean = false,
     ): ScenePlan {
         val plan = when (form) {
             SongForm.Rave -> ravePlan(lines, parts, acid, signature)
             SongForm.Build -> buildPlan(lines, parts, acid, signature, breakWith)
-            else -> layeredPlan(lines, parts, acid, signature, form, drop, breakWith)
+            else -> layeredPlan(lines, parts, acid, signature, form, drop, breakWith, acidInBreak)
         }
         // The rumble is the kick's own tail: it plays wherever the kick plays (else in the last section, like a bass),
         // and in the Break when the style keeps it there without the kick (industrial techno).
-        if (Role.Rumble !in lines) return plan
+        if (Role.Rumble !in lines) return withoutSilence(plan)
         val inBreak = breakWith?.lines?.contains(Role.Rumble) == true && plan.hasBreak
         val rumble = (plan.lines[Role.Kick] ?: setOf(2)) + if (inBreak) setOf(3) else emptySet()
-        return plan.copy(lines = plan.lines + (Role.Rumble to rumble))
+        return withoutSilence(plan.copy(lines = plan.lines + (Role.Rumble to rumble)))
+    }
+
+    /** [plan] where a section with no line, no part and no acid line plays what the next one plays (the last ones first). */
+    private fun withoutSilence(plan: ScenePlan): ScenePlan {
+        var p = plan
+        for (i in plan.count - 2 downTo 0) {
+            if (p.lines.values.any { i in it } || p.parts.values.any { i in it } || i in p.acid) continue
+            fun Set<Int>.joined() = if (i + 1 in this) this + i else this
+            p = p.copy(lines = p.lines.mapValues { it.value.joined() }, parts = p.parts.mapValues { it.value.joined() }, acid = p.acid.joined())
+        }
+        return p
     }
 
     /** [scenePlan] of a song or of club music: the layers pile up, section after section. */
     private fun layeredPlan(
         lines: Set<Role>, parts: Set<Part>, acid: Boolean, signature: Part?, form: SongForm, drop: Layers, breakWith: Layers?,
+        acidInBreak: Boolean = false,
     ): ScenePlan {
         val bassLines = setOf(Role.Bass808, Role.Rumble)
         val sig = signature?.takeIf { it in parts }
@@ -936,7 +958,7 @@ object StarterWizard {
             val own = breakWith?.let { (lines intersect it.lines - Role.Kick) to (parts intersect it.parts) }
                 ?.takeIf { it.first.isNotEmpty() || it.second.isNotEmpty() }
             val breakParts = own?.second ?: (parts intersect (setOf(Part.Pad, Part.Lead) + listOfNotNull(sig) - Part.Bass))
-            val breakAcid = acid && breakParts.isEmpty()
+            val breakAcid = acid && (breakParts.isEmpty() || acidInBreak)
             val breakLines = own?.first ?: if (breakParts.isEmpty() && !breakAcid) lines intersect BREAK_LINES else emptySet()
             // A break with nothing but what the drop also has without its kick: worth a section of its own.
             if (breakParts.isNotEmpty() || breakAcid || (breakLines.isNotEmpty() && breakLines != lines)) {
@@ -1032,7 +1054,8 @@ object StarterWizard {
     /**
      * The song of [form]'s sections, each one (bars, scene):
      * a song is Intro, Couplet, Refrain, Couplet, Refrain and the Intro again as the ending, the
-     * Couplets and Refrains 16 bars, the Intro 8 (4 when that would last over [MAX_SONG_SECONDS]);
+     * Couplets and Refrains 16 bars, the Intro 8 (4 when that would last over [MAX_SONG_SECONDS], and
+     * then the second Couplet 8);
      * club music is Intro, Groove, Drop, Break (8 bars; a Groove without one), Drop and the Intro
      * again, the Intro 16 bars (8 when too long) and the Drops 32 when a fast tempo leaves room.
      */
@@ -1041,7 +1064,9 @@ object StarterWizard {
         val s = SECTION_BARS
         // The rave's second Break (8 bars), or a Groove when there is no Break.
         val brk = if (hasBreak) 3 else 1
-        val candidates = if (form == SongForm.Song) listOf(8, 4).map { intro -> listOf(intro to 0, s to 1, s to 2, s to 1, s to 2, intro to 0) }
+        val candidates = if (form == SongForm.Song) listOf(8, 4).map { intro -> listOf(intro to 0, s to 1, s to 2, s to 1, s to 2, intro to 0) } +
+            // A slow song (lo-fi): the second Couplet half as long.
+            listOf(listOf(4 to 0, s to 1, s to 2, s / 2 to 1, s to 2, 4 to 0))
         else if (form == SongForm.Rave) listOf(
             // 303 alone, kick and hats, Drop, Break with its filter sweep, Drop, a short Break, Drop, outro.
             listOf(s to 0, s to 1, 2 * s to 2, s to brk, 2 * s to 2, BREAK_BARS to brk, 3 * s / 2 to 2, s to 0),
@@ -1164,11 +1189,34 @@ object StarterWizard {
         i to Hit((0.3f + 0.7f * i / (steps - 1)).coerceAtMost(1f), repeats = repeats)
     }.toMap()
 
-    private val Part.trackName get() = when (this) {
+    /**
+     * The name of [part]'s track playing [sound] in [style] (saved in French, translated at
+     * display): the chords are named after what is heard, so that a beginner finds « le piano »:
+     * « Nappe » for a pad, « Piano », « Orgue » or « Clavier » for keys, « Stabs » for a stab
+     * sample or short hits, « Accords » for another sound.
+     */
+    fun trackName(part: Part, sound: PartSound?, style: Style): String = when (part) {
         Part.Bass -> "Basse"
-        Part.Pad -> "Nappe"
         Part.Lead -> "Lead"
+        Part.Pad -> {
+            val name = sound?.name.orEmpty().lowercase()
+            val family = sound?.family.orEmpty()
+            when {
+                family == "Nappes" || family == "pad" -> "Nappe"
+                "piano" in name -> "Piano"
+                "orgue" in name || "organ" in name -> "Orgue"
+                family == "Claviers" || family == "keys" -> "Clavier"
+                family == "stab" || isStabs(style.melody.chordRhythm) -> "Stabs"
+                else -> "Accords"
+            }
+        }
     }
+
+    /** The names [trackName] gives the chords' track (each one saved in French, translated at display). */
+    val CHORD_TRACK_NAMES = listOf("Nappe", "Piano", "Orgue", "Clavier", "Stabs", "Accords")
+
+    /** A chord rhythm of short hits only (none longer than an eighth): stabs, not held chords. */
+    private fun isStabs(rhythm: String): Boolean = StepLine.parse(rhythm).let { e -> e.isNotEmpty() && e.all { it.length <= 2 } }
 
     /** The scale and the four chords (scale degrees) of [mood] in [style]: the style's own, or the mood's. */
     fun progressionOf(style: Style, mood: Mood): Pair<Scale, List<Int>> = style.melody.progressions[mood] ?: (mood.scale to mood.degrees)
@@ -1197,13 +1245,40 @@ object StarterWizard {
                 val voicing = if (sound?.chord == true) Voicing.Single else m.voicing
                 NoteClip().withChordRhythm(degrees, harmony, m.chordRhythm, voicing, 12 * (m.chordOctave + 1), velocity = 0.75f)
             }
-            Part.Lead -> if (m.leadPattern.isBlank()) {
-                NoteClip(performance = Performance(arp = ArpMode.UpDown, arpRate = m.arpRate))
-                    .withChordRhythm(degrees, harmony, "X---------------", Voicing.Triad, 12 * (m.leadOctave + 1), velocity = 0.65f)
-            } else {
-                NoteClip().withLine(degrees, harmony, m.leadPattern, 12 * (m.leadOctave + 1), velocity = 0.8f)
-            }
-            Part.Bass -> NoteClip().withLine(degrees, harmony, m.bassPattern, 12 * (m.bassOctave + 1))
+            Part.Lead -> inLeadRange(
+                when {
+                    m.leadPattern.isNotBlank() -> NoteClip().withLine(degrees, harmony, m.leadPattern, 12 * (m.leadOctave + 1), velocity = 0.8f)
+                    // A sound recorded as a chord (a stab) arpeggiated would play chords of chords: it hits the chords' roots instead.
+                    sound?.chord == true -> NoteClip().withChordRhythm(
+                        degrees, harmony, if (isStabs(m.chordRhythm)) m.chordRhythm else LEAD_STABS, Voicing.Single, 12 * (m.leadOctave + 1), velocity = 0.7f,
+                    )
+                    else -> NoteClip(performance = Performance(arp = ArpMode.UpDown, arpRate = m.arpRate))
+                        .withChordRhythm(degrees, harmony, "X---------------", Voicing.Triad, 12 * (m.leadOctave + 1), velocity = 0.65f)
+                },
+            )
+            Part.Bass -> NoteClip().withLine(degrees, harmony, m.bassPattern, 12 * (m.bassOctave + 1), bass = true)
         }
+    }
+
+    /** The stabs a lead recorded as a chord plays when the style's chords are held: 3-3-2, twice a bar. */
+    const val LEAD_STABS = "X..x..X.X..x..X."
+
+    /** The highest note the assistant gives a lead (Do7 in English notation). */
+    const val LEAD_TOP = 96
+
+    /** The highest middle note of a lead's line (Mi6 in English notation): above it, a lead squeals. */
+    const val LEAD_MIDDLE = 88
+
+    /**
+     * [clip] taken down by octaves while its top note is over [LEAD_TOP] or its middle note over
+     * [LEAD_MIDDLE] (a riff written from the octave of a key high in the octave, a V a fifth up), as
+     * long as it stays above Do3 (48, English notation): a lead stays in a playable range.
+     */
+    fun inLeadRange(clip: NoteClip): NoteClip {
+        val pitches = clip.notes.map { it.pitch }.sorted()
+        if (pitches.isEmpty()) return clip
+        var shift = 0
+        while ((pitches.last() + shift > LEAD_TOP || pitches[pitches.size / 2] + shift > LEAD_MIDDLE) && pitches.first() + shift - 12 >= 48) shift -= 12
+        return if (shift == 0) clip else clip.copy(notes = clip.notes.map { it.copy(pitch = it.pitch + shift) })
     }
 }

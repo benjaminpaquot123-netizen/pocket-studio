@@ -30,7 +30,7 @@ data class Scene(
     }
 
     val isEmpty: Boolean get() = drums.lanes.all { lane -> lane.hits.keys.none { it < drums.steps } } &&
-        acid.steps.take(acid.length).none { it.gate } && synthNotes.notes.isEmpty() && trackNotes.values.all { it.notes.isEmpty() }
+        acid.steps.take(acid.length.coerceAtLeast(0)).none { it.gate } && synthNotes.notes.isEmpty() && trackNotes.values.all { it.notes.isEmpty() }
 
     companion object {
         const val MAX = 24
@@ -149,8 +149,11 @@ val Project.allScenes: List<Scene> get() = scenes.ifEmpty { listOf(currentSceneC
  */
 internal fun Project.syncScenes(): Project {
     if (scenes.isEmpty()) return copy(scene = 0, song = song.filter { it.scene == 0 }.take(SongPart.MAX_PARTS).map { it.sanitized(partKeys, 1, remix.setId != null) })
-    val all = scenes.take(Scene.MAX)
-    val index = scene.coerceIn(0, all.lastIndex)
+    val index = scene.coerceIn(0, scenes.size.coerceAtMost(Scene.MAX) - 1)
+    // Every other scene is cleaned too (a damaged or hand-edited file: a loop of 0 steps would hang
+    // the MIDI export, an acid length of -1 crash the live grid). The current one is mirrored below.
+    val trackIds = tracks.mapTo(HashSet()) { it.id }
+    val all = scenes.take(Scene.MAX).mapIndexed { i, s -> if (i == index) s else s.cleaned(trackIds) }
     // Empty scenes at the end go when nothing uses them (a tap on a far slot leaves no trail of them).
     val used = song.flatMap { listOf(it.scene) + it.play.values }.toSet() +
         automation.flatMap { lane -> lane.sceneValues.filterValues { v -> v.any { it != null } }.keys } +
@@ -162,10 +165,24 @@ internal fun Project.syncScenes(): Project {
         scene = index,
         scenes = list.mapIndexed { i, s ->
             if (i == index) currentSceneContent().copy(name = Scene.NAMES[i], label = s.label)
-            else s.copy(name = Scene.NAMES[i], trackNotes = s.trackNotes.filterKeys { id -> tracks.any { it.id == id } }.mapValues { it.value.sanitized() })
+            else if (s.name == Scene.NAMES[i]) s else s.copy(name = Scene.NAMES[i])
         },
         song = song.filter { it.scene in list.indices }.take(SongPart.MAX_PARTS).map { it.sanitized(partKeys, list.size, remix.setId != null) },
     )
+}
+
+/**
+ * This scene (not the current one) with its loops in range and only the notes of tracks [trackIds];
+ * itself when nothing needed it (each clean part returns itself: an edit stays cheap).
+ */
+private fun Scene.cleaned(trackIds: Set<Int>): Scene {
+    val d = drums.sanitized()
+    val a = acid.sanitized()
+    val n = synthNotes.sanitized()
+    val t = if (trackNotes.all { (id, clip) -> id in trackIds && clip.sanitized() === clip }) trackNotes
+    else trackNotes.filterKeys { it in trackIds }.mapValues { it.value.sanitized() }
+    return if (d === drums && a === acid && n === synthNotes && t === trackNotes) this
+    else copy(drums = d, acid = a, synthNotes = n, trackNotes = t)
 }
 
 /** Makes [index] the current scene (adding empty scenes up to it if needed). */

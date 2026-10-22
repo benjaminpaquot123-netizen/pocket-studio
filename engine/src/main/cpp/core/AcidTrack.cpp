@@ -1,4 +1,5 @@
 #include "AcidTrack.h"
+#include "Params.h"
 
 #include <algorithm>
 #include <cmath>
@@ -72,6 +73,7 @@ void AcidTrack::setLength(int steps) { length_ = std::clamp(steps, 1, kMaxSteps)
 void AcidTrack::setRoot(int midiNote) { root_ = std::clamp(midiNote, 24, 60); }
 
 void AcidTrack::setParam(Param param, float value) {
+    if (std::isnan(value)) return;  // see Params.h
     const double v = std::clamp(static_cast<double>(value), 0.0, 1.0);
     switch (param) {
         case Cutoff: voice_->setCutoff(314.0 * std::pow(2394.0 / 314.0, v)); break;

@@ -26,6 +26,12 @@ data class NoteClip(
     fun sanitized(): NoteClip {
         val s = steps.coerceIn(MIN_STEPS, MAX_STEPS).let { (it / 16).coerceAtLeast(1) * 16 }
         val total = s * TICKS_PER_STEP
+        // Already clean (nearly always: every edit cleans the whole project): the clip itself, not
+        // a rebuilt copy, so a gesture on a big project neither sorts nor compares every note again.
+        if (s == steps && isClean(total)) {
+            val perf = performance.sanitized()
+            if (perf == performance) return this
+        }
         val clean = (notes + hidden).asSequence()
             // Past the longest loop a note goes for good.
             .filter { it.start in 0 until MAX_STEPS * TICKS_PER_STEP && it.velocity.isFinite() }
@@ -41,6 +47,22 @@ data class NoteClip(
         val (inLoop, past) = clean.partition { it.start < total }
         val shown = inLoop.take(MAX_NOTES)
         return copy(steps = s, notes = shown, hidden = past.take(MAX_NOTES - shown.size), performance = performance.sanitized())
+    }
+
+    /** What [sanitized] would leave as it is: notes in the loop and [hidden] past it, both in order, all in range. */
+    private fun isClean(total: Int): Boolean {
+        if (notes.size + hidden.size > MAX_NOTES) return false
+        fun ordered(list: List<Note>, from: Int, until: Int): Boolean {
+            var previous: Note? = null
+            for (n in list) {
+                if (n.start !in from until until || n.length !in 1..MAX_TICKS || n.pitch !in 0..127) return false
+                if (!n.velocity.isFinite() || n.velocity < 0.05f || n.velocity > 1f) return false
+                if (previous != null && (n.start < previous.start || (n.start == previous.start && n.pitch < previous.pitch))) return false
+                previous = n
+            }
+            return true
+        }
+        return ordered(notes, 0, total) && ordered(hidden, total, MAX_STEPS * TICKS_PER_STEP)
     }
 
     /** No note at all, not even past the loop's end (« Effacer »). */
@@ -75,14 +97,18 @@ data class NoteClip(
         ).sanitized()
     }
 
-    /** Replaces the whole clip with [progression] in [harmony]: one chord per bar, 4 bars. */
+    /**
+     * Replaces the whole clip with [progression] in [harmony]: one chord per bar, 4 bars, the
+     * scale's own chords ([Harmony.progressionDegree]).
+     */
     fun withProgression(progression: Progression, harmony: Harmony, octaveRoot: Int = 48): NoteClip =
         withChords(progression.degrees, harmony, octaveRoot)
 
     /**
      * A bass line: each chord's root (one chord per bar on the scale [degrees]) in the bass, on
      * [pattern] (one character per step: 'X' strong, 'x' medium, 'o' soft, '.' nothing); each note
-     * lasts until the next one (two beats at most).
+     * lasts until the next one (two beats at most). A diminished or augmented degree plays its
+     * closest major or minor chord's root ([Harmony.progressionDegree]), as [withChords] does.
      */
     fun withBassLine(degrees: List<Int>, harmony: Harmony, pattern: String = "X.x.X.x.X.x.X.x.", octaveRoot: Int = 36): NoteClip {
         val hits = pattern.take(16).mapIndexedNotNull { i, c ->
@@ -94,7 +120,7 @@ data class NoteClip(
             }
         }
         val notes = degrees.flatMapIndexed { bar, degree ->
-            val pitch = harmony.degreeRoot(degree, octaveRoot)
+            val pitch = harmony.degreeRoot(harmony.progressionDegree(degree), octaveRoot)
             hits.mapIndexed { i, (step, velocity) ->
                 val next = hits.getOrNull(i + 1)?.first ?: 16
                 Note((bar * 16 + step) * TICKS_PER_STEP, (next - step).coerceIn(1, 8) * TICKS_PER_STEP, pitch, velocity)
@@ -104,11 +130,15 @@ data class NoteClip(
         return copy(steps = 16 * degrees.size.coerceAtLeast(1), notes = notes, hidden = emptyList()).sanitized()
     }
 
-    /** One chord per bar on the scale [degrees] (0 = I), held for the bar. */
+    /**
+     * One chord per bar on the scale [degrees] (0 = I), held for the bar: the triads of the key's
+     * seven-note scale ([Scale.parent]: the minor pentatonic and the blues take the minor's,
+     * « Libre » the major's), a diminished or augmented one replaced ([Harmony.progressionDegree]).
+     */
     fun withChords(degrees: List<Int>, harmony: Harmony, octaveRoot: Int = 48, velocity: Float = 0.8f): NoteClip {
         val bar = 16 * TICKS_PER_STEP
         val chords = degrees.flatMapIndexed { i, degree ->
-            harmony.chord(harmony.degreeRoot(degree, octaveRoot)).map { Note(i * bar, bar, it, velocity) }
+            harmony.chord(harmony.degreeRoot(harmony.progressionDegree(degree), octaveRoot)).map { Note(i * bar, bar, it, velocity) }
         }
         return copy(steps = 16 * degrees.size.coerceAtLeast(1), notes = chords, hidden = emptyList()).sanitized()
     }

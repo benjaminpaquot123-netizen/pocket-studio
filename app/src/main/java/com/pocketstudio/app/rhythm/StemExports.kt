@@ -1,6 +1,7 @@
 package com.pocketstudio.app.rhythm
 
 import com.pocketstudio.model.AudioTrack
+import com.pocketstudio.model.AutoTarget
 import com.pocketstudio.model.InstrumentTrack
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.SongPart
@@ -28,5 +29,23 @@ internal fun stemExports(p: Project, song: Boolean): List<Pair<String, Int>> {
         "audio${t.id + 1}-${slug(t.name)}" to AudioTrack.mixerChannel(t.id) to
             (t.clip != null && (!song || p.song.isEmpty() || p.song.any { it.plays(SongPart.audio(t.id)) }))
     }
-    return all.filter { (stem, sounds) -> sounds && p.mixer.channels.getOrNull(stem.second)?.mute != true }.map { it.first }
+    val tracks = all.filter { (stem, sounds) -> sounds && p.mixer.channels.getOrNull(stem.second)?.mute != true }.map { it.first }
+    // The Live page's own sounds (riser, downlifter, the build-up's noise) come from no track: each
+    // track's file leaves them out, and they get a file of their own, so the files add up to the mix.
+    return if (tracks.isNotEmpty() && hasLiveNoises(p, song)) tracks + (LIVE_FX_STEM_LABEL to LIVE_FX_STEM) else tracks
+}
+
+/** The « Effets live » file's channel in [stemExports]: no strip, the Live page's own sounds alone. */
+internal const val LIVE_FX_STEM = -1
+internal const val LIVE_FX_STEM_LABEL = "effets-live"
+
+/** The Live params that make a sound of their own (not a change of the mix). */
+private val LIVE_NOISES = setOf(AutoTarget.LIVE_RISER, AutoTarget.LIVE_DOWNLIFTER, AutoTarget.LIVE_BUILD_UP)
+
+/** Whether a lane of [p] plays the riser, the downlifter or the build-up in the export ([song]: the whole song). */
+internal fun hasLiveNoises(p: Project, song: Boolean): Boolean = p.automation.any { lane ->
+    lane.target.kind == AutoTarget.LIVE && lane.target.param in LIVE_NOISES && (
+        lane.values.any { (it ?: 0f) > 0f } || lane.sceneValues.values.any { v -> v.any { (it ?: 0f) > 0f } } ||
+            ((song || !lane.songOnly) && lane.songValues.any { (it ?: 0f) > 0f })
+        )
 }

@@ -41,7 +41,10 @@ constexpr int kMicWaitMs = 1000;
 }  // namespace
 
 AudioHost::AudioHost()
-    : engine_(kSampleRate), inputBuffer_(kMaxInputFrames, 0.0f), inputRing_(kInputRingSize), inputCallback_(inputRing_) {}
+    : engine_(kSampleRate), inputBuffer_(kMaxInputFrames, 0.0f), inputRing_(kInputRingSize), inputCallback_(inputRing_) {
+    // A full resync spread over a few callbacks rather than one missing its deadline.
+    engine_.setCommandBudget(Engine::kLiveCommandBudget);
+}
 
 AudioHost::~AudioHost() { stop(); }
 

@@ -26,6 +26,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import com.pocketstudio.app.rhythm.ExportUi
 import com.pocketstudio.app.rhythm.RhythmViewModel
 import com.pocketstudio.model.ProjectCatalog
@@ -44,12 +45,14 @@ fun rememberShareSong(rhythmVm: RhythmViewModel): () -> Unit {
     var naming by rememberSaveable { mutableStateOf<String?>(null) }
     // A name the user confirmed (even a template's): not asked again while the app is open.
     var confirmed by rememberSaveable { mutableStateOf<String?>(null) }
-    LaunchedEffect(rhythmVm) {
-        rhythmVm.shareRequests.collect { files ->
-            WavExporter.share(context, files, tr("Partager mon morceau"))
+    val lifecycle = androidx.lifecycle.compose.LocalLifecycleOwner.current.lifecycle
+    LaunchedEffect(rhythmVm, lifecycle) {
+        shareWhileShown(lifecycle, rhythmVm.shareRequests) { files ->
             // The song is exported and the share sheet is open: the last step of the card is done
-            // (not before: a cancelled name or export leaves it to do).
-            com.pocketstudio.app.onboarding.NextStepPrefs(context, rhythmVm.projectId).mark(com.pocketstudio.app.onboarding.StepGoal.Share)
+            // (not before: a cancelled name or export, or a sheet that could not open, leaves it to do).
+            if (WavExporter.share(context, files, tr("Partager mon morceau"))) {
+                com.pocketstudio.app.onboarding.NextStepPrefs(context, rhythmVm.projectId).mark(com.pocketstudio.app.onboarding.StepGoal.Share)
+            }
         }
     }
     naming?.let { name ->
@@ -75,6 +78,15 @@ fun rememberShareSong(rhythmVm: RhythmViewModel): () -> Unit {
             else -> rhythmVm.shareSong()
         }
     }
+}
+
+/**
+ * Opens each finished song's share sheet only while the app is on screen: Android does not open
+ * one for an app in the background. A song finished while the user was in another app waits (the
+ * request stays queued) and its sheet opens when they come back.
+ */
+internal suspend fun shareWhileShown(lifecycle: androidx.lifecycle.Lifecycle, requests: kotlinx.coroutines.flow.Flow<List<java.io.File>>, share: (List<java.io.File>) -> Unit) {
+    lifecycle.repeatOnLifecycle(androidx.lifecycle.Lifecycle.State.STARTED) { requests.collect { share(it) } }
 }
 
 /** « Nomme ton morceau »: the name the shared file (and the project) will carry. */
@@ -111,7 +123,7 @@ fun ShareProgressDialog(export: ExportUi, cancel: () -> Unit, dismiss: () -> Uni
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.testTag("share_progress")) {
                 if (failed) {
-                    Text(export.error.orEmpty(), color = Neon.Red, style = MaterialTheme.typography.bodyMedium)
+                    Text(export.error.orEmpty(), color = Neon.RedText, style = MaterialTheme.typography.bodyMedium)
                 } else {
                     Text(export.stage ?: tr("Fabrication du son, puis compression en M4A."), style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary)
                     LinearProgressIndicator(

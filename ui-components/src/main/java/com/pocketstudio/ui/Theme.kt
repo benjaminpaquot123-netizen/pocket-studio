@@ -34,6 +34,8 @@ data class Palette(
     val textPrimary: Color,
     val textSecondary: Color,
     val onAccent: Color,
+    /** [bad] as small text (errors, « Supprimer »): light enough for 4.5:1 on [surface] and [surfaceHigh]. */
+    val badText: Color = bad,
 )
 
 object Palettes {
@@ -55,7 +57,9 @@ object Palettes {
         background = Color(0xFF2B2F35), surface = Color(0xFF41464E), surfaceHigh = Color(0xFF50565F),
         outline = Color(0xFF5A616B), accent = Color(0xFFFF9F43), playing = Color(0xFF6EE07A),
         good = Color(0xFF8FE07A), warning = Color(0xFFFFD166), bad = Color(0xFFFF6B6B),
-        textPrimary = Color(0xFFF6F7F9), textSecondary = Color(0xFFBBC1CA), onAccent = Color(0xFF1C1E22),
+        // Secondary text and red text reach 4.5:1 on the lighter panels (dialogs, rows).
+        textPrimary = Color(0xFFF6F7F9), textSecondary = Color(0xFFC8CDD5), onAccent = Color(0xFF1C1E22),
+        badText = Color(0xFFFFB8B8),
     )
 }
 
@@ -63,7 +67,7 @@ object Palettes {
 val ColorblindPalette = Palettes.Studio.copy(
     // "Good" (a bluish green) apart from "playing" (blue); "bad" light enough to read on the dark panels.
     accent = Color(0xFFE69F00), playing = Color(0xFF56B4E9), good = Color(0xFF3CC9A3),
-    warning = Color(0xFFF0E442), bad = Color(0xFFFF8A50),
+    warning = Color(0xFFF0E442), bad = Color(0xFFFF8A50), badText = Color(0xFFFFC0A3),
 )
 
 val LocalPalette = staticCompositionLocalOf { Palettes.Studio }
@@ -79,6 +83,8 @@ object Neon {
     val Acid: Color @Composable @ReadOnlyComposable get() = LocalPalette.current.good
     val Amber: Color @Composable @ReadOnlyComposable get() = LocalPalette.current.warning
     val Red: Color @Composable @ReadOnlyComposable get() = LocalPalette.current.bad
+    /** Red for small text (errors, « Supprimer »): readable on the panels. */
+    val RedText: Color @Composable @ReadOnlyComposable get() = LocalPalette.current.badText
     val TextPrimary: Color @Composable @ReadOnlyComposable get() = LocalPalette.current.textPrimary
     val TextSecondary: Color @Composable @ReadOnlyComposable get() = LocalPalette.current.textSecondary
     val OnAccent: Color @Composable @ReadOnlyComposable get() = LocalPalette.current.onAccent

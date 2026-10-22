@@ -735,6 +735,7 @@ void PerformanceFx::process(float* l, float* r, int n) {
         }
 
         // --- Riser / downlifter, and the build-up's noise, on top.
+        float riserL = 0.0f, riserR = 0.0f;
         if (riserRunning_) {
             const double u = std::min(1.0, riserT_ / riserTotal_);
             if (riserCount_-- <= 0) {
@@ -748,15 +749,17 @@ void PerformanceFx::process(float* l, float* r, int n) {
             riserR_.Process(noise(seedR_));
             if (riserEnding_) riserOut_ = std::max(0.0f, riserOut_ - 1.0f / (kRiserFade * rate_));
             const float g = riserGain_ * riserOut_;
-            xl += g * (0.6f * riserL_.Band() + 0.4f * riserL_.High());
-            xr += g * (0.6f * riserR_.Band() + 0.4f * riserR_.High());
+            riserL = g * (0.6f * riserL_.Band() + 0.4f * riserL_.High());
+            riserR = g * (0.6f * riserR_.Band() + 0.4f * riserR_.High());
             riserT_ += 1.0;
             // Its last milliseconds fade out, so it is silent on the bar line it ends on (onLine).
             if (riserT_ >= riserTotal_ - kRiserFade * rate_) riserEnding_ = true;
             if (riserEnding_ && riserOut_ <= 0.0f && riserEndStep_ < 0) riserRunning_ = false;
         }
-        l[i] = xl + buildNoiseL;
-        r[i] = xr + buildNoiseR;
+        // Its own sounds run the same in every mode (an export's file of them sounds like the mix).
+        const float noiseL = riserL + buildNoiseL, noiseR = riserR + buildNoiseR;
+        l[i] = noises_ == NoisesOnly ? noiseL : noises_ == NoisesOff ? xl : xl + noiseL;
+        r[i] = noises_ == NoisesOnly ? noiseR : noises_ == NoisesOff ? xr : xr + noiseR;
 
         sinceStep_ += 1.0;
         sinceEighth_ += 1.0;

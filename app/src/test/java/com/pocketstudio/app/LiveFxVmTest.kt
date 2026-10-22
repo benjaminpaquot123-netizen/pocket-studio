@@ -270,6 +270,112 @@ class LiveFxVmTest {
         assertTrue(vm.project.value.automation.none { it.target == AutoTarget.live(AutoTarget.LIVE_KILL_MID) })
     }
 
+    /** Audit 28 live M2: « Tout remettre » cancels a Drop waiting (as the engine does). */
+    @Test
+    fun resetAllCancelsAWaitingDropSoWhatIsHeldAfterItIsLetGo() {
+        val vm = fresh()
+        recording(vm)
+        vm.takeClockForTest = 20
+        vm.setLiveBuildUp(0.8f)
+        vm.takeClockForTest = 37
+        vm.liveDrop()  // waits for the bar line at 48
+        vm.takeClockForTest = 38
+        vm.liveResetAll()
+        assertFalse(vm.liveFx.value.dropArmed)
+        vm.takeClockForTest = 40
+        vm.liveHold(AutoTarget.LIVE_CHOP, true)
+        vm.liveCommandsForTest = mutableListOf()
+        // The bar line passes, the finger still down: the chopper goes on (no Drop came).
+        vm.takeClockForTest = 50
+        vm.tickPerformance()
+        assertTrue(vm.liveFx.value.on(AutoTarget.LIVE_CHOP))
+        vm.takeClockForTest = 53
+        vm.liveHold(AutoTarget.LIVE_CHOP, false)
+        val sent = vm.liveCommandsForTest!!
+        assertTrue(sent.toString(), "perf ${AutoTarget.LIVE_CHOP} 0.0" in sent)
+        vm.takeClockForTest = 66
+        vm.tickPerformance()
+        vm.togglePerformance()
+        // The song: the Montée at rest from the reset (step 38: song beat 6), not from the Drop's
+        // bar (beat 8); no Drop; the chopper from step 40 (beat 6) to its let-go (beat 9).
+        val build = laneOf(vm, AutoTarget.live(AutoTarget.LIVE_BUILD_UP)).songCurve(16)
+        assertEquals(0.8f, build[5], 1e-6f)
+        assertEquals(0f, build[6], 1e-6f)
+        val drop = vm.project.value.automation.firstOrNull { it.target == AutoTarget.live(AutoTarget.LIVE_DROP) }
+        assertTrue(drop == null || drop.songCurve(16).all { it == 0f })
+        val chop = laneOf(vm, AutoTarget.live(AutoTarget.LIVE_CHOP)).songCurve(16)
+        assertEquals(listOf(1f, 1f, 1f, 0f), chop.subList(6, 10))
+    }
+
+    /** Audit 28 live M3: a tap let go before the grid line its press waits for: not played, not written. */
+    @Test
+    fun aTapShorterThanTheGridWaitIsNeitherPlayedNorWritten() {
+        val vm = fresh()
+        vm.setLiveFxSettings(LiveFxSettings(grid = LiveFxSettings.GRID_BEAT))
+        recording(vm)
+        vm.takeClockForTest = 37
+        vm.liveHold(AutoTarget.LIVE_CHOP, true)  // waits for step 40
+        vm.takeClockForTest = 38
+        vm.liveHold(AutoTarget.LIVE_CHOP, false)
+        vm.takeClockForTest = 41
+        vm.liveKill(0, true, ch = 1)  // a track's bass, waits for 44
+        vm.takeClockForTest = 42
+        vm.liveKill(0, false, ch = 1)
+        vm.takeClockForTest = 45
+        vm.liveKill(0, true)  // the whole mix's bass, waits for 48
+        vm.takeClockForTest = 46
+        vm.liveKill(0, false)
+        // Let go after its line: played, and written (a beat at least).
+        vm.takeClockForTest = 49
+        vm.liveHold(AutoTarget.LIVE_REVERSE, true)  // 52
+        vm.takeClockForTest = 53
+        vm.liveHold(AutoTarget.LIVE_REVERSE, false)
+        vm.takeClockForTest = 66
+        vm.tickPerformance()
+        vm.togglePerformance()
+        val lanes = vm.project.value.automation
+        for (t in listOf(AutoTarget.live(AutoTarget.LIVE_CHOP), AutoTarget.macro(1, AutoTarget.MACRO_KILL_LOW), AutoTarget.live(AutoTarget.LIVE_KILL_LOW))) {
+            val lane = lanes.firstOrNull { it.target == t }
+            assertTrue("$t: ${lane?.songValues}", lane == null || lane.songCurve(16).all { it == 0f })
+        }
+        val reverse = laneOf(vm, AutoTarget.live(AutoTarget.LIVE_REVERSE)).songCurve(16)
+        assertEquals(listOf(0f, 1f, 0f), reverse.subList(8, 11))
+    }
+
+    /**
+     * Audit 28 live M4: an effect's setting (the Wobble pad, « Effets… »), a fader, a MIDI knob on
+     * the live filter or the 303, played during a take, are written into the song where they were.
+     */
+    @Test
+    fun aTakeWritesEffectsFadersAndMidiKnobsPlayedDuringIt() {
+        val vm = fresh()
+        vm.setInsertType(2, 0, com.pocketstudio.model.EffectType.EQ)
+        vm.learn(AutoTarget(com.pocketstudio.model.MidiMapping.PERFORMANCE, Mixer.MASTER, 0, AutoTarget.LIVE_FILTER))
+        vm.midiControl(0, 20, 0)
+        vm.learn(AutoTarget.acid(0))
+        vm.midiControl(0, 21, 0)
+        val savedCutoff = vm.project.value.acid.sound.values()[0]
+        recording(vm)
+        vm.takeClockForTest = 24
+        vm.setInsertParam(2, 0, 0, 0.9f)
+        vm.setChannelVolume(2, 0.3f)
+        vm.midiControl(0, 20, 25)   // the live filter down
+        vm.midiControl(0, 21, 127)  // the 303's cutoff open
+        assertEquals(25 / 127f, vm.liveFx.value.value(AutoTarget.LIVE_FILTER, 0.5f), 1e-6f)  // followed by the page
+        vm.takeClockForTest = 50
+        vm.tickPerformance()
+        vm.togglePerformance()
+        // Song beat (24 - 16) / 4 = 2: each at its new value from there, as before it up to there.
+        val eq = laneOf(vm, AutoTarget(AutoTarget.INSERT_PARAM, 2, 0, 0)).songCurve(8)
+        assertEquals(0.5f, eq[1], 1e-6f)
+        assertEquals(0.9f, eq[2], 1e-6f)
+        assertEquals(0.3f, laneOf(vm, AutoTarget(AutoTarget.VOLUME, 2)).songCurve(8)[2], 1e-6f)
+        assertEquals(25 / 127f, laneOf(vm, AutoTarget.live(AutoTarget.LIVE_FILTER)).songCurve(8)[2], 1e-6f)
+        assertEquals(1f, laneOf(vm, AutoTarget.acid(0)).songCurve(8)[2], 1e-6f)
+        // The 303's saved setting stays (the take plays it as the Live page does).
+        assertEquals(savedCutoff, vm.project.value.acid.sound.values()[0], 1e-6f)
+    }
+
     @Test
     fun stopEndsEveryLiveEffect() {
         val vm = fresh()

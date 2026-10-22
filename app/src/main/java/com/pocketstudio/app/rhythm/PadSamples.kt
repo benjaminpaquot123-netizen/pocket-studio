@@ -38,9 +38,15 @@ class PadSamples(private val dir: File) {
         return PadSample(file, name.take(40)) to prepare(file, pcm)
     }
 
-    /** Blocking (background): reads the files the project uses; others are leftovers and removed (but those in [keep]). */
-    fun loadAll(files: Set<String>, cleanUp: Boolean = true, keep: Set<String> = emptySet()): List<Prepared> {
-        if (cleanUp) dir.listFiles()?.filter { it.name !in files && it.name !in keep && !it.name.endsWith(".tmp") }?.forEach { it.delete() }
+    /**
+     * Blocking (background): reads the files the project uses; others are leftovers and removed (but
+     * those in [keep]). A .tmp is a sound being written: spared, unless it is over an hour old (the
+     * app killed while writing it), when it is only lost room.
+     */
+    fun loadAll(files: Set<String>, cleanUp: Boolean = true, keep: Set<String> = emptySet(), now: Long = System.currentTimeMillis()): List<Prepared> {
+        if (cleanUp) dir.listFiles()?.filter {
+            it.name !in files && it.name !in keep && (!it.name.endsWith(".tmp") || it.lastModified() < now - STALE_TMP_MS)
+        }?.forEach { it.delete() }
         return files.mapNotNull { file ->
             runCatching { prepare(file, FloatWav.read(File(dir, file))) }
                 .onFailure { AppLog.add("Son illisible $file : ${it.message}") }
@@ -135,6 +141,8 @@ class PadSamples(private val dir: File) {
 
     companion object {
         const val PEAK_BUCKETS = 2048
+        /** A .tmp untouched this long is a write the app never finished (see [loadAll]). */
+        const val STALE_TMP_MS = 3_600_000L
 
         /** Min and max of each bucket, interleaved; channels mixed. */
         fun peaks(pcm: Pcm, buckets: Int = PEAK_BUCKETS): FloatArray {

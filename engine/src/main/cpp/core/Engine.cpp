@@ -1,9 +1,11 @@
 #include "Engine.h"
+#include "Params.h"
 
 #include "DenormalGuard.h"
 
 #include <algorithm>
 #include <cmath>
+#include <limits>
 
 namespace ps {
 
@@ -65,10 +67,10 @@ void Engine::applyCommand(const Command& command) {
             playing_.store(command.value > 0.5f, std::memory_order_relaxed);
             break;
         case CommandType::SetFrequency:
-            frequency_.setTarget(std::clamp(command.value, kMinFrequency, kMaxFrequency));
+            if (!std::isnan(command.value)) frequency_.setTarget(std::clamp(command.value, kMinFrequency, kMaxFrequency));
             break;
         case CommandType::SetGain:
-            volume_ = std::clamp(command.value, 0.0f, 1.0f);
+            volume_ = clampOr(command.value, 0.0f, 1.0f, volume_);
             break;
         case CommandType::StartLatencyTest:
             meter_.start();
@@ -104,6 +106,14 @@ void Engine::applyCommand(const Command& command) {
                 lastLocal_ = -1;
                 countInStep_ = 0;
                 playPosition_.store(-1.0, std::memory_order_relaxed);
+                // Free LFOs and noise from their start: an export, which starts here, sounds like
+                // the take (otherwise their phase is the time since the effect was put on).
+                drums_.resetNoise();
+                mixer_.restartLfos();
+                for (auto& t : tracks_) {
+                    t.synth.restartLfos();
+                    t.plaits.restartNoise();
+                }
             } else {
                 stopTransport();
             }
@@ -225,11 +235,16 @@ void Engine::applyCommand(const Command& command) {
         case CommandType::SetStaging:
             staging_ = command.value > 0.5f;
             break;
-        case CommandType::ArmSceneSwap:
+        case CommandType::ArmSceneSwap: {
+            // Leaving the song at once (a take's end) with no scene swap armed: the live grid's
+            // launches still waiting stay armed, with what they staged (only the song position goes).
+            bool gridWaits = false;
+            for (const auto& sl : slots_) gridWaits |= sl.pending != kNoLaunch;
+            const bool keepLaunches = command.a < 0 && command.b == 3 && swapAt_ < 0 && gridWaits;
             // The whole scene (the song, a scene chosen): what the live grid armed is dropped.
-            cancelLaunches(kAllSlots, false);  // (its staging was just sent: kept)
+            if (!keepLaunches) cancelLaunches(kAllSlots, false);  // (its staging was just sent: kept)
             swapAt_ = command.a < 0 ? -1 : command.a;
-            if (command.a < 0) {
+            if (command.a < 0 && !keepLaunches) {
                 // The cancelled scene's loops and effects never apply later.
                 staged_.audioLoop.fill(-1);
                 staged_.insertOn.fill(-1);
@@ -243,6 +258,7 @@ void Engine::applyCommand(const Command& command) {
             if (command.a < 0 && command.b == 3) leaveSongNow();
             staging_ = false;  // arming ends a staging burst even if its "off" was dropped
             break;
+        }
         case CommandType::SetAcidRoot:
             acid_.setRoot(command.a);
             break;
@@ -338,6 +354,7 @@ void Engine::applyCommand(const Command& command) {
             if (command.a == 0) mixer_.setMasterGain(command.value);
             else if (command.a == 1) mixer_.setLimiter(command.value > 0.5f);
             else if (command.a == 2) mixer_.setMasterFx(command.value > 0.5f);
+            else if (command.a == 3 && std::isfinite(command.value)) mixer_.setLiveNoises(static_cast<int>(std::lround(std::clamp(command.value, 0.0f, 2.0f))));
             break;
         case CommandType::SetSend:
             mixer_.setSend(command.a, command.b, command.value);
@@ -651,9 +668,11 @@ void Engine::onStep(int offset, int step) {
             const float pan = stepPan_[lane][patternStep] * 0.01f;
             const float pitch = stepPitch_[lane][patternStep];
             hitLane(lane, v, offset, pan, pitch);
-            // A roll: the other hits share the step evenly, each a little softer.
+            // A roll: the other hits share the step evenly, each a little softer. A swung (odd)
+            // step is shorter by the swing: its roll stays inside it, before the next step's hit.
             const int n = repeats_[lane][patternStep];
-            const double every = sequencer_.samplesPerStep() / std::max(1, n);
+            const double length = sequencer_.samplesPerStep() * ((step & 1) != 0 ? 1.0 - sequencer_.swing() : 1.0);
+            const double every = length / std::max(1, n);
             for (int k = 1; k < n && rollCount_ < static_cast<int>(rolls_.size()); ++k) {
                 rolls_[static_cast<size_t>(rollCount_++)] = {lane, v * std::pow(0.85f, static_cast<float>(k)), offset + static_cast<int64_t>(k * every), pan, pitch};
             }
@@ -1043,7 +1062,12 @@ void Engine::process(const float* input, int numInputFrames, int inputChannels,
     // A clock read (no lock, no allocation): how long this callback takes, for cpuLoad().
     const auto started = std::chrono::steady_clock::now();
     Command command;
-    while (commands_.pop(command)) applyCommand(command);
+    int budget = commandBudget_ > 0 ? commandBudget_ : std::numeric_limits<int>::max();
+    while ((budget > 0 || staging_) && commands_.pop(command)) {
+        const bool heavy = command.type == CommandType::SetInsertType || command.type == CommandType::ClearInserts;
+        budget -= heavy ? kHeavyCommand : 1;
+        applyCommand(command);
+    }
 
     if (meter_.state() == RoundTripMeter::State::Running) {
         meter_.process(input, numInputFrames, inputChannels, output, numFrames, outputChannels);

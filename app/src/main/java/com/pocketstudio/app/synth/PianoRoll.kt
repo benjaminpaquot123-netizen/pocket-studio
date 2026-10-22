@@ -11,6 +11,7 @@ import com.pocketstudio.model.ArpMode
 import com.pocketstudio.model.Harmony
 import com.pocketstudio.model.Performance
 import com.pocketstudio.model.Progression
+import com.pocketstudio.model.labelIn
 import com.pocketstudio.model.Scale
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.awaitEachGesture
@@ -82,7 +83,7 @@ data class PianoRollActions(
 )
 
 private const val LOW = 24   // C1
-private const val HIGH = 96  // C7
+private const val HIGH = 108 // C8: the top of a piano, where the keyboard's highest octaves still write
 /** A row (a semitone) on a phone, and on a tablet where fingers aim at a single row. */
 private val ROW = 20.dp
 private val TABLET_ROW = 28.dp
@@ -702,7 +703,7 @@ fun HarmonyPanel(harmony: Harmony, clip: NoteClip, actions: PianoRollActions, to
         ChipRow(tr("Deviner")) {
             guesses.forEach { g ->
                 TextButton(onClick = { actions.setHarmony(g.copy(lock = harmony.lock)) }, modifier = Modifier.testTag("guess_${g.root}_${g.scale.name}")) {
-                    Text("${com.pocketstudio.model.NoteNames.key(g.root, english)} ${tr(g.scale.label).lowercase()}")
+                    Text("${g.keyName(english)} ${tr(g.scale.label).lowercase()}")
                 }
             }
         }
@@ -742,7 +743,8 @@ fun HarmonyPanel(harmony: Harmony, clip: NoteClip, actions: PianoRollActions, to
     var chosen by rememberSaveable { mutableStateOf(Progression.Pop) }
     ChipRow(tr("Progression"), Glossary.PROGRESSION) {
         Progression.entries.forEach { pr ->
-            FilterChip(selected = chosen == pr, onClick = { chosen = pr }, label = { Text(tr(pr.label)) }, colors = chipColors,
+            // The numerals of the chords this key really gives (minor ones in lower case).
+            FilterChip(selected = chosen == pr, onClick = { chosen = pr }, label = { Text(pr.labelIn(harmony)) }, colors = chipColors,
                 modifier = Modifier.testTag("progression_${pr.name}"))
         }
     }

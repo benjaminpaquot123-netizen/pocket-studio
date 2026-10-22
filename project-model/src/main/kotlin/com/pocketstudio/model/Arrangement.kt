@@ -106,7 +106,11 @@ fun Project.followArrangement(before: Project, origin: List<Int?>): Project {
                 }
             }
         }
-        lane.copy(songValues = out.toList().dropLastWhile { it == null })
+        // The jumps (a Drop, a let-go) move with their points: a jump stays on the point it was on,
+        // never on another one (a ramp would hold, the Drop would slide).
+        val oldJumps = was.songJumps.toHashSet()
+        val jumps = (0 until size).filter { b -> from[b] >= 0 && from[b] in oldJumps && out[b] != null }
+        lane.copy(songValues = out.toList().dropLastWhile { it == null }, songJumps = jumps)
     }
     return copy(audioTracks = tracks, automation = lanes)
 }

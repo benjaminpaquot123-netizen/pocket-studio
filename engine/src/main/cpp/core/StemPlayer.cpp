@@ -1,4 +1,5 @@
 #include "StemPlayer.h"
+#include "Params.h"
 
 #include <algorithm>
 #include <cmath>
@@ -185,7 +186,9 @@ void StemPlayer::setParam(int stem, int param, float value) {
     if (stem < 0 || stem >= StemBundle::kStems) return;
     const auto i = static_cast<size_t>(stem);
     switch (param) {
-        case Gain: gain_[i] = std::clamp(value, 0.0f, 1.0f); break;
+        case Gain:
+            if (!clampSetting(gain_[i], value, 0.0f, 1.0f)) return;
+            break;
         case Mute: mute_[i] = value > 0.5f; break;
         case Solo: solo_[i] = value > 0.5f; break;
         default: return;

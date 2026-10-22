@@ -13,18 +13,27 @@ enum class Voicing(val scaleSteps: List<Int>, val octaveUp: Boolean = false) {
     Single(listOf(0)),
 }
 
-/** The notes of the chord on scale [degree] (0 = I) from [octaveRoot], stacked as [voicing]. */
+/**
+ * The notes of the chord on scale [degree] (0 = I) from [octaveRoot], stacked as [voicing]. A sus2
+ * whose next scale note is only a semitone up (the i of the phrygian, the iii of a major key) is
+ * no sus2 but a grinding minor second: that chord takes the fourth instead (sus4).
+ */
 fun Harmony.voiced(degree: Int, octaveRoot: Int, voicing: Voicing): List<Int> {
-    val notes = voicing.scaleSteps.map { degreeRoot(degree + it, octaveRoot) }
-    return if (voicing.octaveUp) notes + (notes.first() + 12) else notes
+    val v = if (voicing == Voicing.Sus2 && degreeRoot(degree + 1, octaveRoot) - degreeRoot(degree, octaveRoot) == 1) Voicing.Sus4 else voicing
+    val notes = v.scaleSteps.map { degreeRoot(degree + it, octaveRoot) }
+    return if (v.octaveUp) notes + (notes.first() + 12) else notes
 }
 
 /**
  * Octaves to move the chord on [degree] by so that its root stays close to the key's root (no more
  * than a fifth above, a fourth below): the bass and the chords move by small steps, as played.
+ * [maxAbove]: the most semitones the root may sit above the key's (a bass: a fourth, it goes down
+ * to the fifth below rather than up under the chords), unless that would take it under [lowest].
  */
-fun Harmony.nearShift(degree: Int, octaveRoot: Int): Int =
-    if (degreeRoot(degree, octaveRoot) - degreeRoot(0, octaveRoot) > 7) -12 else 0
+fun Harmony.nearShift(degree: Int, octaveRoot: Int, maxAbove: Int = 7, lowest: Int = 0): Int {
+    val above = degreeRoot(degree, octaveRoot) - degreeRoot(0, octaveRoot)
+    return if (above > 7 || (above > maxAbove && degreeRoot(degree, octaveRoot) - 12 >= lowest)) -12 else 0
+}
 
 /**
  * Music written as one character per sixteenth step (16 per bar; a 32-character line covers two
@@ -96,11 +105,13 @@ fun NoteClip.withChordRhythm(degrees: List<Int>, harmony: Harmony, rhythm: Strin
  * '3' third, '5' fifth, '7' seventh, '2' '4' '6' the scale's other notes, 'O' the root an octave
  * up; lower case is softer), from [octaveRoot]. Bass lines, riffs, hooks. A note followed by '/'
  * lasts [StarterWizard.SLIDE_OVERLAP] ticks into the next one: a gliding sound slides there.
+ * A [bass] line keeps its chord roots within a fourth above the key's root ([nearShift]).
  */
-fun NoteClip.withLine(degrees: List<Int>, harmony: Harmony, pattern: String, octaveRoot: Int, velocity: Float = 0.9f): NoteClip {
+fun NoteClip.withLine(degrees: List<Int>, harmony: Harmony, pattern: String, octaveRoot: Int, velocity: Float = 0.9f, bass: Boolean = false): NoteClip {
     val total = 16 * degrees.size.coerceAtLeast(1) * NoteClip.TICKS_PER_STEP
     val notes = degrees.flatMapIndexed { bar, degree ->
-        val shift = harmony.nearShift(degree, octaveRoot)
+        // A bass on the V goes down a fourth rather than up a fifth: it stays under the chords.
+        val shift = if (bass) harmony.nearShift(degree, octaveRoot, maxAbove = 5, lowest = LOWEST_BASS) else harmony.nearShift(degree, octaveRoot)
         StepLine.parse(StepLine.barOf(pattern, bar)).mapNotNull { e ->
             val step = StepLine.stepOf(e.token) ?: return@mapNotNull null
             val v = if (e.token.isLowerCase()) velocity * 0.7f else velocity
@@ -111,6 +122,12 @@ fun NoteClip.withLine(degrees: List<Int>, harmony: Harmony, pattern: String, oct
     }
     return copy(steps = 16 * degrees.size.coerceAtLeast(1), notes = notes).sanitized()
 }
+
+/**
+ * The lowest root a bass line moves down to (Si1 in English notation, 62 Hz): the bass sounds add
+ * a sub an octave below, and under 31 Hz nobody hears it.
+ */
+const val LOWEST_BASS = 35
 
 /**
  * An acid line for the 303 track: [pattern] tokens as in [withLine] on the key's root chord (a 303

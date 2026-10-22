@@ -312,7 +312,14 @@ fun StatRow(label: String, value: String, valueColor: Color = Neon.TextPrimary) 
 
 /** Horizontal level meter as a row of LEDs, green to amber to red. [level] is linear 0..1. */
 @Composable
-fun LevelMeter(level: Float, modifier: Modifier = Modifier) {
+fun LevelMeter(level: Float, modifier: Modifier = Modifier) = LevelMeter({ level }, modifier)
+
+/**
+ * The same, [level] read only when drawn: a meter fed 20 times a second redraws itself alone,
+ * nothing around it is composed again.
+ */
+@Composable
+fun LevelMeter(level: () -> Float, modifier: Modifier = Modifier) {
     val off = Neon.SurfaceHigh
     val low = Neon.Acid
     val mid = Neon.Amber
@@ -321,7 +328,7 @@ fun LevelMeter(level: Float, modifier: Modifier = Modifier) {
         val segments = 32
         val gap = 2.dp.toPx()
         val w = (size.width - gap * (segments - 1)) / segments
-        val lit = level.coerceIn(0f, 1f) * segments
+        val lit = level().coerceIn(0f, 1f) * segments
         val radius = CornerRadius(2.dp.toPx())
         for (i in 0 until segments) {
             val x = i * (w + gap)

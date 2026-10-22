@@ -4815,6 +4815,36 @@ void testPlaitsVoices() {
     }
 }
 
+// Audit 28 review m8: an export (or a preview) renders Plaits on its own thread while the audio
+// thread does: they share stmlib's noise generator, now a relaxed atomic (a plain static before:
+// a data race, which ThreadSanitizer reports). Each synth alone keeps its own noise sequence.
+void testPlaitsOnTwoThreads() {
+    auto render = [](int model, int frames) {
+        ps::PlaitsSynth plaits;
+        plaits.prepare(kRate);
+        plaits.setParam(ps::PlaitsSynth::Model, model / float(ps::PlaitsSynth::kModels - 1));
+        plaits.setParam(ps::PlaitsSynth::Release, 1.0f);
+        std::vector<float> out(static_cast<size_t>(frames), 0.0f);
+        for (int at = 0; at < frames; at += 256) {
+            if (at % 4800 == 0) plaits.noteOn(48 + (at / 4800) % 12, 0.9f, 0);
+            plaits.render(out.data() + at, std::min(256, frames - at));
+        }
+        return out;
+    };
+    // Alone: the same noise each time (its own sequence, whatever was drawn before).
+    for (int model = 0; model < ps::PlaitsSynth::kModels; ++model) CHECK(render(model, 9600) == render(model, 9600));
+    // Two threads at once, every model: finite and bounded.
+    bool ok[2] = {true, true};
+    std::thread other([&] {
+        for (int model = 0; model < ps::PlaitsSynth::kModels; ++model)
+            for (float v : render(model, 9600)) ok[1] = ok[1] && std::isfinite(v) && std::fabs(v) < 4.0f;
+    });
+    for (int model = ps::PlaitsSynth::kModels - 1; model >= 0; --model)
+        for (float v : render(model, 9600)) ok[0] = ok[0] && std::isfinite(v) && std::fabs(v) < 4.0f;
+    other.join();
+    CHECK(ok[0] && ok[1]);
+}
+
 void testPlaitsThroughEngine() {
     ps::Engine engine(kRate);
     engine.post({ps::CommandType::SetSynthEngine, 0.0f, 1});
@@ -5639,6 +5669,36 @@ void testSceneSwapCancelsLaunches() {
     CHECK(engine.transportStep() == -1);
 }
 
+// ■ Fin of a take (leaveSong: ArmSceneSwap(-1, 3)) while a pad waits: it still launches on its
+// line, with what it staged (audit 28 live M1). During the song (a swap armed), leaving it drops
+// what was armed, as before.
+void testLeaveSongKeepsTheGridsLaunches() {
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SetDrumHit, 1.0f, 0, 0});
+    stageDrums(engine, {{2, 0}}, 16);
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    int64_t now = 0;
+    renderToStep(engine, now, 6);
+    engine.post({ps::CommandType::ArmLaunch, 1.0f, 1 << ps::kSlotDrums, 16});
+    engine.post({ps::CommandType::ArmSceneSwap, 0.0f, -1, 3});
+    renderToStep(engine, now, 16, 10);
+    const unsigned before = engine.laneTriggerCount(2);
+    renderToStep(engine, now, 20);
+    std::printf("  leave song with a pad waiting: drums tag %d, pending %d, lane 3 hits %u\n",
+                engine.slotTag(ps::kSlotDrums), engine.slotPending(ps::kSlotDrums), engine.laneTriggerCount(2));
+    CHECK(engine.slotTag(ps::kSlotDrums) == 1 && engine.slotStart(ps::kSlotDrums) == 16);
+    CHECK(engine.slotPending(ps::kSlotDrums) == ps::Engine::kNoLaunch);
+    CHECK(engine.laneTriggerCount(2) >= 1 && before >= 1);
+    // A scene swap armed (the song following its parts): leaving the song drops the launches too.
+    renderToStep(engine, now, 22);
+    engine.post({ps::CommandType::ArmLaunch, 2.0f, 1 << ps::kSlotAcid, 16});
+    engine.post({ps::CommandType::ArmSceneSwap, 0.0f, 0, 1});
+    engine.post({ps::CommandType::ArmLaunch, 2.0f, 1 << ps::kSlotAcid, 16});
+    engine.post({ps::CommandType::ArmSceneSwap, 0.0f, -1, 3});
+    renderToStep(engine, now, 32, 10);
+    CHECK(engine.slotPending(ps::kSlotAcid) == ps::Engine::kNoLaunch && engine.slotTag(ps::kSlotAcid) != 2);
+}
+
 // Armed while stopped: it fires on the very first step. A slot can start part-way into its part.
 void testLiveLaunchFromStopAndOffset() {
     ps::Engine engine(kRate);
@@ -5929,6 +5989,31 @@ void testPerBeatSongCurves() {
     const float slid = level(false), held = level(true);
     std::printf("  per-beat curve, half a beat in: sliding %.4f, held %.4f\n", slid, held);
     CHECK(held > 1.3f * slid && slid > 0.0f);
+}
+
+// A long set's per-beat curves: points past the old 1024 (256 bars) are heard (audit 28 live G2).
+void testPerBeatSongCurvesOfALongSet() {
+    auto level = [](int songStep) {
+        ps::Engine engine(kRate);
+        engine.post({ps::CommandType::SetSynthNote, 0.9f, 0, ps::NoteTrack::pack(0, 64 * 24, 60)});
+        engine.post({ps::CommandType::SetSynthNoteCount, 0.0f, 1});
+        engine.post({ps::CommandType::SetSynthSteps, 0.0f, 64});
+        engine.post({ps::CommandType::SetAutomationTarget, 0.0f, 3, ps::Automation::pack(ps::Automation::Volume, 2, 0, 0)});
+        // Loud up to beat 3000, silent from beat 3001 (a beat each, held).
+        engine.post({ps::CommandType::SetAutomationSongRun, 0.8f, 3, 0 | (3001 << 16)});
+        engine.post({ps::CommandType::SetAutomationSong, 0.0f, 3, 3001});
+        engine.post({ps::CommandType::SetAutomationMode, 3010.0f, 3, ps::Automation::Song | ps::Automation::kPerBeat | ps::Automation::kHeld});
+        engine.post({ps::CommandType::SetTransport, 1.0f, 0, songStep});
+        int64_t now = 0;
+        renderToStep(engine, now, 1, 3000);
+        engine.mixer().takeChannelPeak(2);
+        render(engine, 3000, 250);
+        return engine.mixer().takeChannelPeak(2);
+    };
+    const float before = level(3000 * 4), after = level(3001 * 4);
+    std::printf("  per-beat curve at beat 3000: %.4f, at beat 3001: %.4f\n", before, after);
+    CHECK(before > 0.05f && after < 0.01f);
+    CHECK(ps::Automation::kSongPoints >= 4096);
 }
 
 // The Live page's « Hachoir de voie »: a strip chopped in sixteenths, then plain again.
@@ -6759,6 +6844,506 @@ void testLiveBuildUpAndDropSongMatchesTheTake() {
     CHECK(finiteAndUnclipped(take) && finiteAndUnclipped(song));
 }
 
+// --- Phase 28 (engine audit) ----------------------------------------------------------------
+
+namespace p28 {
+
+void post(ps::Engine& e, ps::CommandType t, float v = 0.0f, int32_t a = 0, int32_t b = 0) {
+    ps::Command c;
+    c.type = t;
+    c.value = v;
+    c.a = a;
+    c.b = b;
+    while (!e.post(c)) {
+        float tmp[2];
+        e.process(nullptr, 0, 0, tmp, 0, 2);
+    }
+}
+
+// Residual of `sum` against `ref`, in dB below `ref`.
+double residualDb(const std::vector<float>& sum, const std::vector<float>& ref) {
+    double err = 0.0, level = 0.0;
+    for (size_t i = 0; i < ref.size() && i < sum.size(); ++i) {
+        const double d = double(sum[i]) - ref[i];
+        err += d * d;
+        level += double(ref[i]) * ref[i];
+    }
+    return 10.0 * std::log10(err / std::max(level, 1e-30) + 1e-30);
+}
+
+}  // namespace p28
+
+// « Piste par piste » of a recorded Live performance with the build-up, the riser or the
+// downlifter: their noise comes from no track. Each track's stem leaves it out (SetMaster a=3,
+// 1) and the stem « Effets live » holds it alone (2): together they add back up to the mix.
+void testLiveNoisesStemAddsUp() {
+    using ps::CommandType;
+    auto setup = [](ps::Engine& e, int liveParam, int solo, int noises) {
+        p28::post(e, CommandType::SetTempo, 128.0f);
+        // The kick and the acid line only: the kit's noisy voices (hats, snare) draw from DaisySP's
+        // shared random state, so two engines never play quite the same noise (inaudible, but
+        // the residual measured below would be that, not the Live noise).
+        for (int s = 0; s < 16; ++s) {
+            if (s % 4 == 0) p28::post(e, CommandType::SetDrumHit, 1.0f, 0, s);
+            ps::AcidStep st;
+            st.note = (s * 5) % 12;
+            st.gate = s % 3 != 2;
+            p28::post(e, CommandType::SetAcidStep, 0.0f, s, st.pack());
+        }
+        p28::post(e, CommandType::SetSend, 0.3f, 1, 0);
+        // The recorded performance: a song curve per beat on the Live param, on for beats 8..23.
+        p28::post(e, CommandType::SetAutomationTarget, 0.0f, 0, ps::Automation::pack(ps::Automation::Live, 0, 0, liveParam));
+        p28::post(e, CommandType::SetAutomationMode, 64.0f, 0, ps::Automation::Song | ps::Automation::kPerBeat | ps::Automation::kHeld);
+        for (int b = 0; b < 64; ++b) {
+            const float on = liveParam == ps::PerformanceFx::BuildUp ? 0.9f : 1.0f;
+            p28::post(e, CommandType::SetAutomationSong, (b >= 8 && b < 24) ? on : 0.0f, 0, b);
+        }
+        // As describe() does: no limiter, stems without the master's effects.
+        p28::post(e, CommandType::SetMaster, 0.0f, 1);
+        if (noises != 0) {
+            p28::post(e, CommandType::SetMaster, 0.0f, 2);
+            p28::post(e, CommandType::SetMaster, static_cast<float>(noises), 3);
+        }
+        if (solo >= 0) p28::post(e, CommandType::SetChannelSolo, 1.0f, solo);
+        render(e, 4800, 512);
+        e.mixer().settle();
+        p28::post(e, CommandType::SetTransport, 1.0f, 0, 0);
+    };
+    const int frames = kRate * 9;
+    for (int param : {ps::PerformanceFx::BuildUp, ps::PerformanceFx::Riser, ps::PerformanceFx::Downlifter}) {
+        auto run = [&](int solo, int noises) {
+            auto e = std::make_unique<ps::Engine>(kRate);
+            setup(*e, param, solo, noises);
+            return render(*e, frames, 512);
+        };
+        const auto mix = run(-1, 0);
+        const auto drums = run(0, 1), acid = run(1, 1), live = run(-1, 2);
+        const auto drumsWithNoise = run(0, 0);
+        std::vector<float> sum(mix.size()), old(mix.size()), tracks(mix.size());
+        double liveEnergy = 0.0;
+        for (size_t i = 0; i < mix.size(); ++i) {
+            tracks[i] = drums[i] + acid[i];
+            sum[i] = tracks[i] + live[i];
+            old[i] = drumsWithNoise[i] + acid[i] + live[i];  // what each stem gave before: the noise twice
+            liveEnergy += double(live[i]) * live[i];
+        }
+        const double res = p28::residualDb(sum, mix), without = p28::residualDb(tracks, mix), doubled = p28::residualDb(old, mix);
+        std::printf("  param %d: stems + « Effets live » %.1f dB, without it %.1f dB, noise in a track's stem %.1f dB\n", param, res, without, doubled);
+        CHECK(res < -80.0);
+        CHECK(without > -40.0);  // the noise is really there, and only in the « Effets live » file
+        CHECK(doubled > -40.0);
+        CHECK(liveEnergy > 1.0);
+        // Before the first press and after the last fade, the « Effets live » file is silent.
+        float early = 0.0f;
+        for (size_t i = 0; i < size_t(kRate) * 2 * 3; ++i) early = std::max(early, std::fabs(live[i]));
+        CHECK(early == 0.0f);
+    }
+}
+
+// Every echo note value at every tempo (40..300 BPM): the first repeat is on time, for the insert
+// echo (it used to stop at 1.6 s: a half note under 75 BPM came early) and the send delay (2.5 s).
+void testEchoTimesAtSlowTempos() {
+    const int steps[6] = {1, 2, 3, 4, 6, 8};  // 1/16, 1/8, 1/8 dotted, 1/4, 1/4 dotted, 1/2
+    const int n = kRate * 4;
+    int worst = 0;
+    for (int insert = 0; insert < 2; ++insert) {
+        for (float bpm : {40.0f, 47.0f, 60.0f, 70.0f, 74.0f, 120.0f, 300.0f}) {
+            const double stepFrames = kRate * 60.0 / (bpm * 4.0);
+            for (int c = 0; c < 6; ++c) {
+                std::vector<float> l(size_t(n), 0.0f), r(size_t(n), 0.0f), ol(size_t(n), 0.0f), orr(size_t(n), 0.0f);
+                l[0] = r[0] = 1.0f;
+                const float choice = (static_cast<float>(c) + 0.5f) / 6.0f;  // the middle of the app's bin
+                if (insert == 1) {
+                    auto echo = std::make_unique<ps::InsertEcho>();
+                    echo->prepare(kRate);
+                    echo->setStepFrames(stepFrames);
+                    echo->setParam(0, choice);
+                    echo->setParam(1, 0.0f);  // no feedback
+                    echo->setParam(2, 1.0f);  // bright
+                    echo->setParam(3, 1.0f);  // wet only
+                    for (int at = 0; at < n; at += 256) echo->process(l.data() + at, r.data() + at, std::min(256, n - at));
+                    ol = l;
+                } else {
+                    auto delay = std::make_unique<ps::TempoDelay>();
+                    delay->prepare(kRate);
+                    delay->setStepFrames(stepFrames);
+                    delay->setParam(0, choice);
+                    delay->setParam(1, 0.0f);
+                    delay->setParam(2, 0.0f);
+                    delay->setParam(3, 1.0f);
+                    for (int at = 0; at < n; at += 256) {
+                        const int m = std::min(256, n - at);
+                        delay->process(l.data() + at, r.data() + at, ol.data() + at, orr.data() + at, m);
+                    }
+                }
+                int first = -1;
+                for (int i = 1; i < n; ++i) {
+                    if (std::fabs(ol[size_t(i)]) > 0.05f) { first = i; break; }
+                }
+                const int want = static_cast<int>(std::lround(steps[c] * stepFrames));
+                const int off = first < 0 ? n : std::abs(first - want);
+                worst = std::max(worst, off);
+                if (off > 48) std::printf("  %s %.0f BPM, %d sixteenths: repeat at %d, want %d\n", insert ? "insert" : "send", bpm, steps[c], first, want);
+                CHECK(off <= 48);  // within 1 ms
+            }
+        }
+    }
+    std::printf("  worst first repeat: %d frames off\n", worst);
+}
+
+// A roll on a swung (odd) step shares that step's real length: none of its hits lands on or after
+// the next step's hit (it used to: a flam at swing 0.3, hits doubled at 0.6). An even step's roll
+// keeps the plain step length.
+void testRollsOnSwungStepsStayInside() {
+    using ps::CommandType;
+    for (float swing : {0.0f, 0.3f, 0.6f, 0.75f}) {
+        ps::Engine e(kRate);
+        p28::post(e, CommandType::SetTempo, 120.0f);  // a step = 6000 frames
+        p28::post(e, CommandType::SetSwing, swing);
+        std::vector<float> click(64, 0.0f);
+        click[0] = 1.0f;
+        e.post({CommandType::InstallSample, 0.0f, 5, 0, ps::Sample::create(click.data(), 64, 1, kRate, kRate)});
+        p28::post(e, CommandType::SetPadParam, 0.0f, 5, ps::Sampler::Release);
+        p28::post(e, CommandType::SetDrumHit, 1.0f, 5, 0 | (4 << 16));  // a roll of 4 on step 0 (even)
+        p28::post(e, CommandType::SetDrumHit, 1.0f, 5, 1 | (4 << 16));  // a roll of 4 on step 1 (odd: swung)
+        p28::post(e, CommandType::SetDrumHit, 1.0f, 5, 2);              // a plain hit on step 2
+        p28::post(e, CommandType::SetTransport, 1.0f, 0, 0);
+        const auto out = render(e, 13000, 192);
+        std::vector<int> hits;
+        for (int i = 0; i < 13000; ++i) {
+            const bool on = std::fabs(out[size_t(i) * 2]) > 0.05f;
+            if (on && (i == 0 || std::fabs(out[size_t(i - 1) * 2]) <= 0.05f)) hits.push_back(i);
+        }
+        const int odd = static_cast<int>(std::lround(6000.0 * (1.0 + swing)));
+        const double oddEvery = 6000.0 * (1.0 - swing) / 4.0;
+        std::vector<int> want = {0, 1500, 3000, 4500};
+        for (int k = 0; k < 4; ++k) want.push_back(odd + static_cast<int>(k * oddEvery));
+        want.push_back(12000);
+        std::printf("  swing %.2f: hits at", swing);
+        for (int h : hits) std::printf(" %d", h);
+        std::printf("\n");
+        CHECK(hits.size() == want.size());
+        for (size_t k = 0; k < hits.size() && k < want.size(); ++k) CHECK(std::abs(hits[k] - want[k]) <= 1);
+    }
+}
+
+// The master's NaN guard: a NaN reaching the master (here the direct path, into a master EQ that
+// keeps it in its state) is caught before the Live effects (which make every NaN 0 in their
+// memory, so the guard never saw it), reported, and the master's effects start again: the
+// sound comes back on the next block instead of a silence for good.
+void testMasterNanGuardReportsAndRecovers() {
+    auto mixer = std::make_unique<ps::Mixer>();
+    mixer->prepare(kRate);
+    mixer->setInsertType(ps::Mixer::kMaster, 0, ps::InsertSlot::Eq);
+    mixer->setInsertParam(ps::Mixer::kMaster, 0, 0, 0.8f);
+    const int n = 256;
+    std::vector<float> tone(static_cast<size_t>(n)), direct(static_cast<size_t>(n), 0.0f), out(static_cast<size_t>(n) * 2);
+    const float* channels[ps::Mixer::kChannels] = {};
+    channels[ps::Mixer::kDrums] = tone.data();
+    double phase = 0.0;
+    auto block = [&](bool nan) {
+        for (int i = 0; i < n; ++i) {
+            tone[size_t(i)] = 0.4f * static_cast<float>(std::sin(phase));
+            phase += 2.0 * M_PI * 440.0 / kRate;
+        }
+        std::fill(direct.begin(), direct.end(), 0.0f);
+        if (nan) direct[10] = std::numeric_limits<float>::quiet_NaN();
+        mixer->process(channels, direct.data(), out.data(), n, 2);
+        float peak = 0.0f;
+        bool finite = true;
+        for (float v : out) {
+            finite &= std::isfinite(v);
+            peak = std::max(peak, std::fabs(v));
+        }
+        CHECK(finite);
+        return peak;
+    };
+    for (int k = 0; k < 20; ++k) block(false);
+    CHECK(!mixer->takeBlewUp());
+    const float before = block(false);
+    block(true);
+    CHECK(mixer->takeBlewUp());  // reported (crash reports, « hasNonFinite »)
+    float after = 0.0f;
+    for (int k = 0; k < 20; ++k) after = block(false);
+    std::printf("  peak before %.3f, after the NaN %.3f\n", before, after);
+    CHECK(before > 0.1f);
+    CHECK(after > 0.5f * before);  // the sound is back
+    CHECK(!mixer->takeBlewUp());
+}
+
+// NaN, +-Inf and huge values on every setting path, then a sane value: never a crash (an echo time
+// of NaN used to index kSteps[INT_MIN], a Plaits decay or colour of NaN a table inside Plaits),
+// never a NaN out, and the sound comes back (a NaN volume, pan, send, reverb or echo setting, test
+// tone frequency, synth, acid or effect knob used to silence it for good).
+void testNanSettingsAreIgnored() {
+    using ps::CommandType;
+    ps::Engine e(kRate);
+    // A busy project: drums with rolls, the acid line, the synth (track 0) and Plaits (track 1), sends.
+    p28::post(e, CommandType::SetTempo, 128.0f);
+    p28::post(e, CommandType::SetPatternSteps, 0.0f, 16);
+    for (int st = 0; st < 16; ++st) {
+        if (st % 4 == 0) p28::post(e, CommandType::SetDrumHit, 1.0f, 0, st);
+        if (st % 8 == 4) p28::post(e, CommandType::SetDrumHit, 0.9f, 1, st);
+        p28::post(e, CommandType::SetDrumHit, 0.6f, 2, st | (st % 4 == 3 ? 3 << 16 : 0));
+        ps::AcidStep a;
+        a.note = (st * 5) % 12;
+        a.gate = st % 3 != 2;
+        p28::post(e, CommandType::SetAcidStep, 0.0f, st, a.pack());
+    }
+    p28::post(e, CommandType::SetSynthSteps, 0.0f, 16);
+    for (int k = 0; k < 4; ++k) p28::post(e, CommandType::SetSynthNote, 0.8f, k, ps::NoteTrack::pack(k * 4 * 24, 3 * 24, 60 + k * 3));
+    p28::post(e, CommandType::SetSynthNoteCount, 0.0f, 4);
+    p28::post(e, CommandType::SetTrackOn, 1.0f, 1);
+    p28::post(e, CommandType::SetSynthEngine, 0.0f, (1 << 16) | 1);
+    p28::post(e, CommandType::SetSynthSteps, 0.0f, (1 << 16) | 16);
+    for (int k = 0; k < 8; ++k) p28::post(e, CommandType::SetSynthNote, 0.7f, (1 << 16) | k, ps::NoteTrack::pack(k * 2 * 24, 24, 72 + k));
+    p28::post(e, CommandType::SetSynthNoteCount, 0.0f, (1 << 16) | 8);
+    p28::post(e, CommandType::SetSend, 0.4f, 2, 0);
+    p28::post(e, CommandType::SetSend, 0.3f, 1, 1);
+    p28::post(e, CommandType::SetTransport, 1.0f, 0, 0);
+    const auto first = render(e, kRate * 2, 192);
+    double baseline = 0.0;
+    for (float v : first) baseline += double(v) * v;
+    baseline = std::sqrt(baseline / double(first.size()));
+    CHECK(baseline > 0.05);
+
+    const float bad[] = {std::numeric_limits<float>::quiet_NaN(), std::numeric_limits<float>::infinity(),
+                         -std::numeric_limits<float>::infinity(), 1e30f, -1e30f};
+    int cases = 0, dead = 0;
+    double ref = baseline;  // the level expected back (an effect's own, with its sane settings)
+    auto level = [&](int frames) {
+        const auto out = render(e, frames, 192);
+        double sum = 0.0;
+        for (float x : out) sum += double(x) * x;
+        return std::sqrt(sum / double(out.size()));
+    };
+    // Sends `type` (a, b) a bad value, then `sane`: the output stays finite and comes back.
+    auto check = [&](CommandType type, int32_t a, int32_t b, float sane, const char* what) {
+        for (float v : bad) {
+            p28::post(e, type, v, a, b);
+            const auto during = render(e, kRate / 20, 192);
+            p28::post(e, type, sane, a, b);
+            const auto after = render(e, kRate / 6, 192);
+            bool finite = true;
+            double sum = 0.0;
+            for (float x : during) finite &= std::isfinite(x);
+            for (float x : after) {
+                finite &= std::isfinite(x);
+                sum += double(x) * x;
+            }
+            const double rms = std::sqrt(sum / double(after.size()));
+            ++cases;
+            if (!finite || rms < 0.2 * ref) {
+                ++dead;
+                std::printf("  %s (a=%d, b=%d) = %g then %g: rms %.4f (expected about %.4f)%s\n", what, a, b, double(v), double(sane), rms, ref,
+                            finite ? "" : ", not finite");
+            }
+        }
+    };
+    check(CommandType::SetGain, 0, 0, 0.5f, "SetGain");
+    check(CommandType::SetFrequency, 0, 0, 440.0f, "SetFrequency");
+    for (int ch : {0, 1, 2, 5}) {
+        check(CommandType::SetChannelVolume, ch, 0, 0.8f, "SetChannelVolume");
+        check(CommandType::SetChannelPan, ch, 0, 0.0f, "SetChannelPan");
+        check(CommandType::SetSend, ch, 0, 0.2f, "SetSend");
+        check(CommandType::SetSend, ch, 1, 0.2f, "SetSend");
+    }
+    for (int bus = 0; bus < 2; ++bus)
+        for (int prm = 0; prm < 4; ++prm) check(CommandType::SetBusParam, bus, prm, 0.5f, "SetBusParam");
+    for (int prm = 0; prm < ps::AcidTrack::ParamCount; ++prm) check(CommandType::SetAcidParam, prm, 0, 0.5f, "SetAcidParam");
+    for (int prm = 0; prm < ps::Synth::ParamCount; ++prm) check(CommandType::SynthParam, prm, 0, 0.5f, "SynthParam");
+    for (int prm = 0; prm < ps::PlaitsSynth::ParamCount; ++prm) check(CommandType::SetPlaitsParam, (1 << 16) | prm, 0, 0.5f, "SetPlaitsParam");
+    // Every effect, on the drums' strip and on the master, each knob.
+    for (int type = 1; type < ps::InsertSlot::kTypes; ++type) {
+        for (int ch : {0, ps::Mixer::kMaster}) {
+            p28::post(e, CommandType::SetInsertType, 0.0f, ch * ps::Mixer::kInserts, type);
+            for (int prm = 0; prm < 4; ++prm) p28::post(e, CommandType::SetInsertParam, 0.3f, ch * ps::Mixer::kInserts, prm);
+        }
+        ref = level(kRate / 2);
+        const int deadBefore = dead;
+        for (int prm = 0; prm < 4; ++prm) {
+            check(CommandType::SetInsertParam, 0, prm, 0.3f, "SetInsertParam (drums)");
+            check(CommandType::SetInsertParam, ps::Mixer::kMaster * ps::Mixer::kInserts, prm, 0.3f, "SetInsertParam (master)");
+        }
+        if (dead > deadBefore) std::printf("  (effect type %d)\n", type);
+        for (int ch : {0, ps::Mixer::kMaster}) p28::post(e, CommandType::SetInsertType, 0.0f, ch * ps::Mixer::kInserts, 0);
+    }
+    std::printf("  %d cases, %d without their sound back\n", cases, dead);
+    CHECK(dead == 0);
+    CHECK(!e.hasNonFinite());  // ignored before reaching the sound: no NaN ever caught
+}
+
+// The same project rendered in the phone's bursts (192, 7, 997 frames) and in the export's blocks
+// of 512 gives the same samples: every drum voice (noise included, a new hit's level from its own
+// frame), the synth (its control ticks counted across calls, a new note's pitch set on its first
+// frame), Plaits (its notes on the first 12-frame block at or after them, its noise its own) and
+// the wah (its updates counted across calls).
+void testRenderIsBlockSizeIndependent() {
+    using ps::CommandType;
+    auto setup = [](ps::Engine& e) {
+        p28::post(e, CommandType::SetTempo, 133.0f);
+        p28::post(e, CommandType::SetSwing, 0.31f);
+        p28::post(e, CommandType::SetPatternSteps, 0.0f, 16);
+        for (int lane = 0; lane < 16; ++lane)
+            for (int st = lane % 3; st < 16; st += 3 + lane % 4) p28::post(e, CommandType::SetDrumHit, 0.5f + 0.03f * lane, lane, st | (st % 5 == 4 ? 3 << 16 : 0));
+        // Track 0: the synth with unison, a synced sweep, vibrato and noise; track 1: Plaits.
+        p28::post(e, CommandType::SynthParam, 0.5f, ps::Synth::Unison);
+        p28::post(e, CommandType::SynthParam, 0.5f, ps::Synth::Lfo2Sync);
+        p28::post(e, CommandType::SynthParam, 0.5f, ps::Synth::Lfo2ToCutoff);
+        p28::post(e, CommandType::SynthParam, 0.4f, ps::Synth::Lfo1ToPitch);
+        p28::post(e, CommandType::SynthParam, 0.3f, ps::Synth::NoiseLevel);
+        p28::post(e, CommandType::SetSynthSteps, 0.0f, 16);
+        int idx = 0;
+        for (int st = 0; st < 16; st += 2) p28::post(e, CommandType::SetSynthNote, 0.8f, idx++, ps::NoteTrack::pack(st * 24 + 5, 30, 48 + st * 2));
+        p28::post(e, CommandType::SetSynthNoteCount, 0.0f, idx);
+        p28::post(e, CommandType::SetTrackOn, 1.0f, 1);
+        p28::post(e, CommandType::SetSynthEngine, 0.0f, (1 << 16) | 1);
+        p28::post(e, CommandType::SetSynthSteps, 0.0f, (1 << 16) | 16);
+        for (int k = 0; k < 8; ++k) p28::post(e, CommandType::SetSynthNote, 0.7f, (1 << 16) | k, ps::NoteTrack::pack(k * 2 * 24 + 7, 24, 60 + 3 * k));
+        p28::post(e, CommandType::SetSynthNoteCount, 0.0f, (1 << 16) | 8);
+        // A wah on the drums, a flanger on the synth.
+        p28::post(e, CommandType::SetInsertType, 0.0f, 0 * ps::Mixer::kInserts, ps::InsertSlot::WahFx);
+        p28::post(e, CommandType::SetInsertType, 0.0f, 2 * ps::Mixer::kInserts, ps::InsertSlot::FlangerFx);
+        p28::post(e, CommandType::SetTransport, 1.0f, 0, 0);
+    };
+    const int frames = kRate * 5;
+    auto run = [&](int block) {
+        auto e = std::make_unique<ps::Engine>(kRate);
+        setup(*e);
+        return render(*e, frames, block);
+    };
+    const auto ref = run(512);
+    double level = 0.0;
+    for (float v : ref) level = std::max(level, double(std::fabs(v)));
+    CHECK(level > 0.3);
+    for (int block : {192, 7, 997}) {
+        const auto out = run(block);
+        float worst = 0.0f;
+        for (size_t i = 0; i < ref.size(); ++i) worst = std::max(worst, std::fabs(out[i] - ref[i]));
+        std::printf("  blocks of %d: max diff %.2g\n", block, double(worst));
+        CHECK(worst < 1e-5f);
+    }
+}
+
+// A take starts its effects' free LFOs (flanger, phaser, tremolo, robot, vinyl) with the
+// transport, as the export does: a live engine that has been playing for a while
+// sounds, from ▶, like a fresh export engine.
+void testLfosRestartWithTheTransport() {
+    using ps::CommandType;
+    auto setup = [](ps::Engine& e) {
+        p28::post(e, CommandType::SetTempo, 120.0f);
+        p28::post(e, CommandType::SetPatternSteps, 0.0f, 16);
+        // A sampled pad: a sound with no state of its own. (The kit's hi-hats keep their metallic
+        // oscillators' phases from one hit to the next, a take's and an export's alike: not here.)
+        for (int st = 0; st < 16; st += 2) p28::post(e, CommandType::SetDrumHit, 0.8f, 3, st);
+        const int types[] = {ps::InsertSlot::FlangerFx, ps::InsertSlot::PhaserFx, ps::InsertSlot::TremoloFx, ps::InsertSlot::RobotFx,
+                             ps::InsertSlot::VinylFx};
+        for (int k = 0; k < 5; ++k) {
+            p28::post(e, CommandType::SetInsertType, 0.0f, 0 * ps::Mixer::kInserts + k, types[k]);
+            p28::post(e, CommandType::SetInsertParam, 0.25f, 0 * ps::Mixer::kInserts + k, 0);
+        }
+        p28::post(e, CommandType::SetTransport, 1.0f, 0, 0);
+    };
+    auto run = [&](bool warm) {
+        auto e = std::make_unique<ps::Engine>(kRate);
+        std::vector<float> tone(4800);
+        for (size_t i = 0; i < tone.size(); ++i) tone[i] = 0.5f * static_cast<float>(std::sin(2.0 * M_PI * 330.0 * double(i) / kRate)) * (1.0f - float(i) / float(tone.size()));
+        e->post({CommandType::InstallSample, 0.0f, 3, 0, ps::Sample::create(tone.data(), static_cast<int>(tone.size()), 1, kRate, kRate)});
+        if (warm) {
+            // Played for a while, stopped long enough for everything to have died away.
+            setup(*e);
+            render(*e, kRate + 4321, 192);
+            p28::post(*e, CommandType::SetTransport, 0.0f);
+            render(*e, kRate * 4, 192);
+        }
+        setup(*e);
+        return render(*e, kRate * 3, 192);
+    };
+    const auto fresh = run(false), warm = run(true);
+    float worst = 0.0f, peak = 0.0f;
+    for (size_t i = 0; i < fresh.size(); ++i) {
+        worst = std::max(worst, std::fabs(fresh[i] - warm[i]));
+        peak = std::max(peak, std::fabs(fresh[i]));
+    }
+    std::printf("  a take after playing a while vs a fresh export: max diff %.2g (peak %.2f)\n", double(worst), double(peak));
+    CHECK(peak > 0.1f);
+    CHECK(worst < 1e-4f);
+}
+
+// A synth note sounds at its own pitch from its first frame, not at the voice's last one until
+// the next control tick (up to 15 frames): the same note started 9 frames into a callback is the
+// same sound as one started on a tick.
+void testSynthNoteHasItsPitchFromItsFirstFrame() {
+    auto run = [](int offset) {
+        auto synth = std::make_unique<ps::Synth>();
+        synth->prepare(kRate);
+        openFilter(*synth);
+        synth->setParam(ps::Synth::Lfo1ToPitch, 0.0f);
+        synth->setParam(ps::Synth::AmpAttack, 0.0f);  // 1 ms: loud from the start
+        // The voice played a low note first (its last pitch), long released.
+        synth->noteOn(30, 1.0f, 0);
+        std::vector<float> out(4096, 0.0f);
+        synth->render(out.data(), 1024);
+        synth->noteOff(30, 0);
+        std::fill(out.begin(), out.end(), 0.0f);
+        for (int k = 0; k < 64; ++k) synth->render(out.data(), 1024);
+        std::fill(out.begin(), out.end(), 0.0f);
+        synth->noteOn(96, 1.0f, offset);
+        synth->render(out.data(), 256);
+        return std::vector<float>(out.begin() + offset, out.begin() + offset + 64);
+    };
+    const auto onTick = run(0), between = run(9);
+    float worst = 0.0f, peak = 0.0f;
+    for (size_t i = 0; i < onTick.size(); ++i) {
+        worst = std::max(worst, std::fabs(onTick[i] - between[i]));
+        peak = std::max(peak, std::fabs(onTick[i]));
+    }
+    std::printf("  note on a tick vs 9 frames off it: max diff %.2g (peak %.2f)\n", double(worst), double(peak));
+    CHECK(peak > 0.05f);
+    CHECK(worst < 1e-5f);
+}
+
+// The phone's stream applies at most a budget of commands per callback (a full resync in one
+// callback could miss its deadline: 4096 reverb switches took 8 ms), effect switches counting
+// more; a staged scene is still taken whole; an offline render takes everything at once.
+void testCommandBudgetPerCallback() {
+    using ps::CommandType;
+    float out[2 * 64];
+    {
+        ps::Engine e(kRate);
+        e.setCommandBudget(ps::Engine::kLiveCommandBudget);
+        for (int i = 0; i < 1500; ++i) CHECK(e.post({CommandType::SetChannelVolume, 0.5f + 0.0001f * float(i % 7), 0}));
+        CHECK(e.post({CommandType::SetPlaying, 1.0f}));
+        e.process(nullptr, 0, 0, out, 64, 2);
+        CHECK(!e.isPlaying());  // 1024 applied: the rest waits
+        e.process(nullptr, 0, 0, out, 64, 2);
+        CHECK(e.isPlaying());
+        // Effect switches weigh kHeavyCommand.
+        for (int i = 0; i < 200; ++i) CHECK(e.post({CommandType::SetInsertType, 0.0f, (i % 4) * ps::Mixer::kInserts + 7, i % 2 ? ps::InsertSlot::ReverbFx : 0}));
+        CHECK(e.post({CommandType::SetPlaying, 0.0f}));
+        e.process(nullptr, 0, 0, out, 64, 2);
+        CHECK(e.isPlaying());
+        e.process(nullptr, 0, 0, out, 64, 2);
+        CHECK(!e.isPlaying());
+        // A staged scene of more than the budget, taken whole in one callback.
+        CHECK(e.post({CommandType::SetStaging, 1.0f}));
+        for (int lane = 0; lane < ps::Engine::kLanes; ++lane)
+            for (int st = 0; st < ps::Engine::kMaxSteps; ++st) CHECK(e.post({CommandType::SetDrumHit, st % 4 == 0 ? 1.0f : 0.0f, lane, st}));
+        CHECK(e.post({CommandType::SetPlaying, 1.0f}));  // its last command (not a staged one: it shows)
+        CHECK(e.post({CommandType::SetStaging, 0.0f}));
+        e.process(nullptr, 0, 0, out, 64, 2);
+        CHECK(e.isPlaying());
+    }
+    {
+        // Without a budget (the default: tests, the export), everything at once.
+        ps::Engine e(kRate);
+        for (int i = 0; i < 3000; ++i) CHECK(e.post({CommandType::SetChannelVolume, 0.5f, 0}));
+        CHECK(e.post({CommandType::SetPlaying, 1.0f}));
+        e.process(nullptr, 0, 0, out, 64, 2);
+        CHECK(e.isPlaying());
+    }
+}
+
 int main(int argc, char** argv) {
     const char* only = nullptr;  // a test's name: run that one alone
     for (int i = 1; i < argc; ++i) {
@@ -6845,6 +7430,7 @@ int main(int argc, char** argv) {
         {"tempo_ignores_non_finite", testTempoIgnoresNonFiniteValues},
         {"plaits", testPlaitsVoices},
         {"plaits_engine", testPlaitsThroughEngine},
+        {"plaits_two_threads", testPlaitsOnTwoThreads},
         {"tempo_and_key", testTempoAndKeyDetection},
         {"stems_follow_transport", testStemsPlayInStepWithTheTransport},
         {"live_pads", testLivePadsLoopOnTheBeat},
@@ -6863,6 +7449,8 @@ int main(int argc, char** argv) {
         {"live_stop_is_emptied_content", testLiveStopIsEmptiedContent},
         {"live_last_command_wins", testLiveLastCommandWins},
         {"scene_swap_cancels_launches", testSceneSwapCancelsLaunches},
+        {"per_beat_song_curves_of_a_long_set", testPerBeatSongCurvesOfALongSet},
+        {"leave_song_keeps_the_grids_launches", testLeaveSongKeepsTheGridsLaunches},
         {"live_launch_from_stop_and_offset", testLiveLaunchFromStopAndOffset},
         {"live_remix_slot", testLiveRemixSlot},
         {"live_launches_allocate_nothing", testLiveLaunchesAllocateNothing},
@@ -6909,6 +7497,15 @@ int main(int argc, char** argv) {
         {"eight_insert_slots", testEightInsertSlots},
         {"eight_inserts_cpu", testEightInsertsCpuWorstCase},
         {"long_effects_follow_the_app", testLongEffectsFollowTheApp},
+        {"live_noises_stem_adds_up", testLiveNoisesStemAddsUp},
+        {"echo_times_at_slow_tempos", testEchoTimesAtSlowTempos},
+        {"rolls_on_swung_steps_stay_inside", testRollsOnSwungStepsStayInside},
+        {"master_nan_guard_reports_and_recovers", testMasterNanGuardReportsAndRecovers},
+        {"nan_settings_are_ignored", testNanSettingsAreIgnored},
+        {"render_is_block_size_independent", testRenderIsBlockSizeIndependent},
+        {"lfos_restart_with_the_transport", testLfosRestartWithTheTransport},
+        {"synth_note_has_its_pitch_from_its_first_frame", testSynthNoteHasItsPitchFromItsFirstFrame},
+        {"command_budget_per_callback", testCommandBudgetPerCallback},
     };
     for (const auto& t : tests) {
         if (only && std::strcmp(only, t.name) != 0) continue;

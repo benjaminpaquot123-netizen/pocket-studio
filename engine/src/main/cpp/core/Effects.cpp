@@ -1,4 +1,5 @@
 #include "Effects.h"
+#include "Params.h"
 
 #include <algorithm>
 #include <cmath>
@@ -101,8 +102,7 @@ void Eq3::prepare(float rate) {
 }
 
 void Eq3::setParam(int p, float v) {
-    if (p < 0 || p >= 3) return;
-    gain_[static_cast<size_t>(p)] = std::clamp(v, 0.0f, 1.0f);
+    if (p < 0 || p >= 3 || !clampSetting(gain_[static_cast<size_t>(p)], v, 0.0f, 1.0f)) return;
     update();
 }
 
@@ -141,8 +141,7 @@ void Compressor::prepare(float rate) {
 }
 
 void Compressor::setParam(int p, float v) {
-    if (p < 0 || p >= 4) return;
-    p_[static_cast<size_t>(p)] = std::clamp(v, 0.0f, 1.0f);
+    if (p < 0 || p >= 4 || !clampSetting(p_[static_cast<size_t>(p)], v, 0.0f, 1.0f)) return;
     update();
 }
 
@@ -190,8 +189,7 @@ void Saturator::prepare(float rate) {
 }
 
 void Saturator::setParam(int p, float v) {
-    if (p < 0 || p >= 4) return;
-    p_[static_cast<size_t>(p)] = std::clamp(v, 0.0f, 1.0f);
+    if (p < 0 || p >= 4 || !clampSetting(p_[static_cast<size_t>(p)], v, 0.0f, 1.0f)) return;
     update();
 }
 
@@ -222,8 +220,7 @@ void StereoChorus::prepare(float rate) {
 }
 
 void StereoChorus::setParam(int p, float v) {
-    if (p < 0 || p >= 4) return;
-    p_[static_cast<size_t>(p)] = std::clamp(v, 0.0f, 1.0f);
+    if (p < 0 || p >= 4 || !clampSetting(p_[static_cast<size_t>(p)], v, 0.0f, 1.0f)) return;
     update();
 }
 
@@ -359,8 +356,7 @@ void SweepFilter::prepare(float rate) {
 }
 
 void SweepFilter::setParam(int p, float v) {
-    if (p < 0 || p >= 4) return;
-    p_[static_cast<size_t>(p)] = std::clamp(v, 0.0f, 1.0f);
+    if (p < 0 || p >= 4 || !clampSetting(p_[static_cast<size_t>(p)], v, 0.0f, 1.0f)) return;
     update();
 }
 
@@ -396,8 +392,7 @@ void Ducker::prepare(float rate) {
 }
 
 void Ducker::setParam(int p, float v) {
-    if (p < 0 || p >= 4) return;
-    p_[static_cast<size_t>(p)] = std::clamp(v, 0.0f, 1.0f);
+    if (p < 0 || p >= 4 || !clampSetting(p_[static_cast<size_t>(p)], v, 0.0f, 1.0f)) return;
     update();
 }
 
@@ -432,7 +427,7 @@ void Ducker::process(float* l, float* r, int n) {
 
 namespace {
 void setClamped(std::array<float, 4>& p, int i, float v) {
-    if (i >= 0 && i < 4 && std::isfinite(v)) p[static_cast<size_t>(i)] = std::clamp(v, 0.0f, 1.0f);
+    if (i >= 0 && i < 4) clampSetting(p[static_cast<size_t>(i)], v, 0.0f, 1.0f);
 }
 constexpr double kTwoPiD = 2.0 * kPi;
 }  // namespace
@@ -644,7 +639,8 @@ void AutoWah::process(float* l, float* r, int n) {
         const float x = std::max(std::fabs(l[i]), std::fabs(r[i]));
         env_ += (x - env_) * (x > env_ ? attack : release);
         // The cutoff only moves every 8 frames: tan() is the costly part.
-        if ((i & 7) == 0) {
+        if (tick_-- <= 0) {
+            tick_ = 7;
             cutoff_ = std::min(low * std::exp2(3.5f * std::min(1.0f, env_ * gain)), 0.45f * rate_);
             g_ = std::tan(static_cast<float>(kPi) * cutoff_ / rate_);
             a1_ = 1.0f / (1.0f + g_ * (g_ + k));
@@ -924,6 +920,18 @@ void InsertSlot::setType(int type) {
     resetState();
 }
 
+void InsertSlot::restartLfo() {
+    switch (type_) {
+        case FlangerFx: flanger_.restartLfo(); break;
+        case PhaserFx: phaser_.restartLfo(); break;
+        case TremoloFx: tremolo_.restartLfo(); break;
+        case RobotFx: robot_.restartLfo(); break;
+        case VinylFx: vinyl_.restartLfo(); break;
+        case FreqShiftFx: shifter_.restartLfo(); break;
+        default: break;
+    }
+}
+
 void InsertSlot::setParam(int p, float v) {
     if (isLong(type_) && p >= 0 && p < kParams && std::isfinite(v)) longParams_[static_cast<size_t>(p)] = std::clamp(v, 0.0f, 1.0f);
     switch (type_) {
@@ -1018,8 +1026,7 @@ void Reverb::prepare(float rate) {
 }
 
 void Reverb::setParam(int p, float v) {
-    if (p < 0 || p >= 4) return;
-    p_[static_cast<size_t>(p)] = std::clamp(v, 0.0f, 1.0f);
+    if (p < 0 || p >= 4 || !clampSetting(p_[static_cast<size_t>(p)], v, 0.0f, 1.0f)) return;
     update();
 }
 
@@ -1097,8 +1104,7 @@ void TempoDelay::prepare(float rate, float maxSeconds) {
 }
 
 void TempoDelay::setParam(int p, float v) {
-    if (p < 0 || p >= 4) return;
-    p_[static_cast<size_t>(p)] = std::clamp(v, 0.0f, 1.0f);
+    if (p < 0 || p >= 4 || !clampSetting(p_[static_cast<size_t>(p)], v, 0.0f, 1.0f)) return;
     update();
 }
 
@@ -1111,7 +1117,7 @@ void TempoDelay::setStepFrames(double framesPerSixteenth) {
 
 void TempoDelay::update() {
     static constexpr int kSteps[6] = {1, 2, 3, 4, 6, 8};  // 1/16, 1/8, 3/16, 1/4, 3/8, 1/2
-    const int steps = kSteps[std::min(5, static_cast<int>(p_[0] * 6.0f))];
+    const int steps = kSteps[std::clamp(static_cast<int>(p_[0] * 6.0f), 0, 5)];
     const float maxFrames = static_cast<float>(bufL_.empty() ? 1 : bufL_.size() - 2);
     target_ = std::clamp(static_cast<float>(steps * stepFrames_), 1.0f, maxFrames);
     feedback_ = 0.9f * p_[1];

@@ -11,13 +11,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.unit.Density
 import com.pocketstudio.app.settings.AppTheme
 import com.pocketstudio.app.settings.FoldPrefs
 import com.pocketstudio.app.settings.SettingsStore
 import com.pocketstudio.app.ui.AppRoot
+import com.pocketstudio.app.ui.UiScaled
 import com.pocketstudio.ui.ColorblindPalette
 import com.pocketstudio.ui.LocalFoldStore
 import com.pocketstudio.ui.Palettes
@@ -38,20 +37,21 @@ class MainActivity : ComponentActivity() {
                 AppTheme.Night -> Palettes.Dark
                 AppTheme.Colorblind -> ColorblindPalette
             }
-            // Réglages › Taille de l'interface scales everything; Vibrations off silences haptics.
-            val density = LocalDensity.current
+            // Réglages › Taille de l'interface scales everything (and the width the screens see);
+            // Vibrations off silences haptics.
             val haptics = if (settings.haptics) LocalHapticFeedback.current else NoHaptics
-            CompositionLocalProvider(
-                LocalDensity provides Density(density.density * settings.uiScale, density.fontScale),
-                LocalHapticFeedback provides haptics,
-                LocalFoldStore provides folds,
-            ) {
-                PocketStudioTheme(palette) {
-                    AppRoot()
-                    // A new language rebuilds the screen (texts are read when drawn); recreating the
-                    // activity keeps the open tab and the other saved screen state.
-                    val startLanguage = remember { settings.language }
-                    LaunchedEffect(settings.language) { if (settings.language != startLanguage) recreate() }
+            UiScaled(settings.uiScale) {
+                CompositionLocalProvider(
+                    LocalHapticFeedback provides haptics,
+                    LocalFoldStore provides folds,
+                ) {
+                    PocketStudioTheme(palette) {
+                        AppRoot()
+                        // A new language rebuilds the screen (texts are read when drawn); recreating the
+                        // activity keeps the open tab and the other saved screen state.
+                        val startLanguage = remember { settings.language }
+                        LaunchedEffect(settings.language) { if (settings.language != startLanguage) recreate() }
+                    }
                 }
             }
         }

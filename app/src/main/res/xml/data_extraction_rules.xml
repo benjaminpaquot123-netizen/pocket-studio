@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  What Android backs up (Android 12 and later). The cloud backup is capped at 25 MB per app and
+  saves NOTHING once over it, so it holds only the user's own work: the projects (and their
+  sounds), the favourites and the preferences. Re-downloadable or huge files stay out: models,
+  sound packs, instrument banks, separated songs (stems), caches, latency measured on this phone.
+  A phone-to-phone transfer has no such cap: it also carries the separated songs and the trash.
+  Keep in step with backup_rules.xml (older Android) and BackupRulesTest.
+-->
+<data-extraction-rules>
+    <cloud-backup>
+        <include domain="file" path="projects/" />
+        <include domain="file" path="favorites.json" />
+        <include domain="sharedpref" path="settings.xml" />
+        <include domain="sharedpref" path="projects.xml" />
+        <include domain="sharedpref" path="ui.xml" />
+        <include domain="sharedpref" path="folds.xml" />
+        <include domain="sharedpref" path="tools.xml" />
+        <include domain="sharedpref" path="next_steps.xml" />
+        <include domain="sharedpref" path="recette.xml" />
+    </cloud-backup>
+    <device-transfer>
+        <include domain="file" path="projects/" />
+        <include domain="file" path="projects-trash/" />
+        <include domain="file" path="favorites.json" />
+        <include domain="file" path="stems/" />
+        <include domain="file" path="stems-pinned.txt" />
+        <include domain="sharedpref" path="settings.xml" />
+        <include domain="sharedpref" path="projects.xml" />
+        <include domain="sharedpref" path="ui.xml" />
+        <include domain="sharedpref" path="folds.xml" />
+        <include domain="sharedpref" path="tools.xml" />
+        <include domain="sharedpref" path="next_steps.xml" />
+        <include domain="sharedpref" path="recette.xml" />
+    </device-transfer>
+</data-extraction-rules>

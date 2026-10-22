@@ -45,11 +45,13 @@ import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.relocation.bringIntoViewRequester
 import kotlinx.coroutines.launch
 import androidx.compose.material3.Icon
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.SideEffect
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.background
 import androidx.compose.runtime.mutableStateOf
@@ -136,7 +138,8 @@ fun faderDb(v: Float): String {
 @Composable
 fun MixerScreen(
     channels: List<Channel>,
-    meters: FloatArray,
+    /** Peaks by channel, then the limiter's gain: read only when the meters are drawn. */
+    meters: () -> FloatArray,
     actions: MixerActions,
     modifier: Modifier = Modifier,
     export: ExportUi = ExportUi(),
@@ -162,20 +165,14 @@ fun MixerScreen(
         // Many tracks: each strip shows its volume on one line; ▾ opens pan and effects.
         val compact = strips.size > BASIC_STRIPS.size
         strips.forEach { st ->
-            Strip(st, channels.getOrElse(st.ch) { Channel() }, meters.getOrElse(st.ch) { 0f }, actions, compact)
+            Strip(st, channels.getOrElse(st.ch) { Channel() }, { meters().getOrElse(st.ch) { 0f } }, actions, compact)
         }
     }, second = {
         NeonCard(accent = Neon.Cyan) {
             SectionLabel(tr("Sortie générale"), help = Glossary.MASTER)
-            LevelMeter(meters.getOrElse(MASTER_CHANNEL) { 0f } / 0.89f)
+            LevelMeter({ meters().getOrElse(MASTER_CHANNEL) { 0f } / 0.89f })
             MasterGain(masterDb, actions.setMasterDb)
-            val gain = meters.getOrElse(LIMITER_METER) { 1f }
-            Text(
-                if (gain < 0.98f) tr("Le limiteur protège la sortie (−%.1f dB)", -20 * log10(gain))
-                else tr("Pas de saturation : tout va bien."),
-                style = MaterialTheme.typography.bodySmall,
-                color = if (gain < 0.7f) Neon.Amber else Neon.TextSecondary,
-            )
+            LimiterLine { meters().getOrElse(LIMITER_METER) { 1f } }
             var open by rememberSaveable { mutableStateOf(false) }
             EffectsToggle(effectsSummary(master), open, Modifier.testTag("master_effects")) { open = !open }
             if (open) InsertChain(MASTER_CHANNEL, master, actions)
@@ -187,6 +184,26 @@ fun MixerScreen(
         AutomationCard(automation, channels, master, automationActions, strips)
         ExportCard(export, actions, hasSong, Modifier.bringIntoViewRequester(exportCard))
     })
+}
+
+/** What the limiter does: composed again only when its words change, not at each meter reading. */
+@Composable
+private fun LimiterLine(gain: () -> Float) {
+    val shown by androidx.compose.runtime.remember(gain) {
+        androidx.compose.runtime.derivedStateOf {
+            val g = gain()
+            // Tenths of a dB, and whether it works hard: what the line shows.
+            (if (g < 0.98f) (-200 * log10(g)).roundToInt() else 0) to (g < 0.7f)
+        }
+    }
+    val (tenths, hard) = shown
+    Text(
+        if (tenths > 0) tr("Le limiteur protège la sortie (−%.1f dB)", tenths / 10f)
+        else tr("Pas de saturation : tout va bien."),
+        style = MaterialTheme.typography.bodySmall,
+        color = if (hard) Neon.Amber else Neon.TextSecondary,
+        modifier = Modifier.testTag("limiter_line"),
+    )
 }
 
 /** The master's fader: a gain before the limiter, −24..+6 dB (one move gives the limiter less work). */
@@ -218,13 +235,12 @@ internal fun ShareSongCard(export: ExportUi, hasSong: Boolean, share: () -> Unit
         Button(
             onClick = share,
             enabled = !export.running,
-            modifier = Modifier.weight(1f).height(40.dp).testTag("share_song"),
+            modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("share_song"),
             contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 12.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Neon.Acid, contentColor = Color.Black),
         ) {
             Icon(Icons.Filled.Share, contentDescription = null, modifier = Modifier.size(18.dp))
-            Text("  " + tr("Partager mon morceau"), style = MaterialTheme.typography.labelLarge, maxLines = 1,
-                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+            com.pocketstudio.ui.WholeWordsText("  " + tr("Partager mon morceau"), style = MaterialTheme.typography.labelLarge, maxLines = 2, minScale = 0.85f)
         }
         TextButton(onClick = toExport, modifier = Modifier.testTag("to_export")) {
             Text(tr("Autres exports"), color = Neon.Cyan, maxLines = 1)
@@ -240,7 +256,8 @@ internal fun ShareSongCard(export: ExportUi, hasSong: Boolean, share: () -> Unit
 }
 
 @Composable
-private fun Strip(info: StripInfo, c: Channel, meter: Float, actions: MixerActions, compact: Boolean = false) {
+private fun Strip(info: StripInfo, c: Channel, meter: () -> Float, actions: MixerActions, compact: Boolean = false) {
+    SideEffect { stripCompositions++ }
     val name = com.pocketstudio.model.DefaultNames.shown(info.name)
     val index = info.ch
     var expanded by rememberSaveable(index) { mutableStateOf(false) }
@@ -267,7 +284,7 @@ private fun Strip(info: StripInfo, c: Channel, meter: Float, actions: MixerActio
                 modifier = Modifier.testTag("solo_$index"))
             if (index == 0) HelpDot(Glossary.MUTE_SOLO)
         }
-        LevelMeter(meter / 0.89f)
+        LevelMeter({ meter() / 0.89f })
         if (compact) {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 ProSlider(value = c.volume, onValueChange = { actions.setVolume(index, it) }, modifier = Modifier.weight(1f).testTag("volume_$index"))
@@ -510,6 +527,31 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
 
             }
         }
-        export.error?.let { Text(it, color = Neon.Red, style = MaterialTheme.typography.bodySmall) }
+        export.error?.let { Text(it, color = Neon.RedText, style = MaterialTheme.typography.bodySmall) }
     }
 }
+
+/** How many times a mixer strip was composed (tests: a meter reading must not compose it again). */
+@androidx.annotation.VisibleForTesting
+internal var stripCompositions = 0
+
+/**
+ * One meter reading: each channel's peak held with a gentle fall (readable bars), the last value
+ * (the limiter's gain) taken as is. A fallen peak under [METER_FLOOR] is silence. True when
+ * something moved, so a silent, stopped mixer publishes nothing.
+ */
+fun holdMeterPeaks(peaks: FloatArray, fresh: FloatArray): Boolean {
+    var changed = false
+    val last = peaks.size - 1
+    for (i in 0..last) {
+        val v = if (i == last) fresh[i] else maxOf(fresh[i], peaks[i] * 0.85f).let { if (it < METER_FLOOR) 0f else it }
+        if (v != peaks[i]) {
+            peaks[i] = v
+            changed = true
+        }
+    }
+    return changed
+}
+
+/** Below this a meter shows nothing at all (−60 dB). */
+private const val METER_FLOOR = 0.001f

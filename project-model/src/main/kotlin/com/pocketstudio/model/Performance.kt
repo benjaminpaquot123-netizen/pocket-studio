@@ -1,5 +1,7 @@
 package com.pocketstudio.model
 
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 import kotlin.math.roundToInt
 
 /**
@@ -10,7 +12,15 @@ import kotlin.math.roundToInt
  * song parts, and the gestures on the Live page's effects and 303 become song automation, a point
  * per beat. [write] turns it into the project's song in one go (one undo step for the app).
  */
-class PerformanceTake(start: Int, initial: LiveState) {
+class PerformanceTake(
+    start: Int,
+    initial: LiveState,
+    private val columns: Int = LiveSlots.ALL,
+    /** This take's own id (kept with its journal and in the project it is written into: never written twice). */
+    val id: String = "",
+    /** Moves that change nothing in what [writeTake] writes are not kept (see [gesture]); false only in tests. */
+    private val compact: Boolean = true,
+) {
     /** The transport step the take starts on (moved by [startsAt] when the engine marked it later). */
     var start: Int = start
         private set
@@ -21,9 +31,17 @@ class PerformanceTake(start: Int, initial: LiveState) {
     private val launches = ArrayList<TakeLaunch>()
     private val gestures = ArrayList<TakeGesture>()
 
+    /**
+     * Per setting, the moves kept in its current half beat ([HALF_BEAT_STEPS], from an even step):
+     * the first one, the first one with another value ([mid]) and the latest one ([last]), as
+     * indexes into [gestures] (-1: none yet).
+     */
+    private class Window(val half: Long, val first: Int, var mid: Int = -1, var last: Int = -1)
+    private val windows = HashMap<AutoTarget, Window>()
+
     /** The engine launched [slot] on [scene] (-1: stopped) at transport [step]. */
     fun launched(slot: Int, scene: Int, step: Int) {
-        if (step <= start) initial = initial.launched(slot, scene, step)
+        if (step <= start) initial = initial.launched(slot, scene, step, columns)
         else launches += TakeLaunch(slot, scene, step)
     }
 
@@ -34,7 +52,7 @@ class PerformanceTake(start: Int, initial: LiveState) {
     fun startsAt(step: Int) {
         if (step <= start) return
         start = step
-        launches.filter { it.step <= step }.sortedBy { it.step }.forEach { initial = initial.launched(it.slot, it.scene, it.step) }
+        launches.filter { it.step <= step }.sortedBy { it.step }.forEach { initial = initial.launched(it.slot, it.scene, it.step, columns) }
         launches.removeAll { it.step <= step }
     }
 
@@ -46,26 +64,153 @@ class PerformanceTake(start: Int, initial: LiveState) {
      */
     fun gesture(target: AutoTarget, value: Float, at: Double, before: Float, jump: Boolean = false) {
         if (!target.isValid || !value.isFinite() || !at.isFinite()) return
-        gestures += TakeGesture(target, value.coerceIn(0f, 1f), at, before.coerceIn(0f, 1f), jump)
+        val g = TakeGesture(target, value.coerceIn(0f, 1f), at, before.coerceIn(0f, 1f), jump)
+        if (compact && !target.isOnOff) {
+            // A finger dragging a knob makes ~60 moves a second; [writeTake] keeps one point per
+            // beat. Within a half beat (from an even step: the take's start, its end and its beats'
+            // limits are even steps, so a half beat never straddles one), only three moves count:
+            // the first, the first with another value (the first may change nothing) and the last
+            // (the value written, and the time the next move's « still, then moved » is counted
+            // from). The moves between them only slide inside one beat: same song, far less to
+            // keep (and to write in the journal every 5 s) on a long set.
+            val half = kotlin.math.floor(at / HALF_BEAT_STEPS).toLong()
+            val w = windows[target]
+            val latest = w?.let { gestures[if (it.last >= 0) it.last else if (it.mid >= 0) it.mid else it.first] }
+            if (w != null && latest != null && !jump && w.half == half && at >= latest.at) {
+                when {
+                    w.mid < 0 && g.value != gestures[w.first].value -> if (w.last >= 0) {
+                        gestures[w.last] = g  // the one replaced had the first's value: it changed nothing
+                        w.mid = w.last
+                        w.last = -1
+                    } else {
+                        gestures += g
+                        w.mid = gestures.lastIndex
+                    }
+                    w.last >= 0 -> gestures[w.last] = g
+                    else -> {
+                        gestures += g
+                        w.last = gestures.lastIndex
+                    }
+                }
+                return
+            }
+            windows[target] = Window(half, gestures.size)
+        }
+        gestures += g
+    }
+
+    /**
+     * A press of [target] waiting for its grid line [at] was let go before it: the engine never
+     * played it, so the take forgets it (nothing is written for it, its let-go neither).
+     */
+    fun forget(target: AutoTarget, at: Double) {
+        windows.clear()  // indexes move
+        gestures.removeAll { it.target == target && it.at == at }
+    }
+
+    /**
+     * A Drop waiting for its bar line [at] was cancelled at [now] (« Tout remettre »: the engine
+     * puts everything at rest at once, the Drop never comes): the Drop's press goes, and what it
+     * put at rest on its bar line is at rest from [now].
+     */
+    fun dropCancelled(at: Double, now: Double) {
+        val drop = AutoTarget.live(AutoTarget.LIVE_DROP)
+        // Moved after what was played meanwhile (gestures of a setting are written in the order made).
+        val moved = gestures.filter { it.at == at && it.target != drop }.map { it.copy(at = minOf(now, at)) }
+        windows.clear()  // indexes move
+        gestures.removeAll { it.at == at }
+        gestures += moved
     }
 
     val launchCount: Int get() = launches.size
     val gestureCount: Int get() = gestures.size
 
+    /**
+     * The take so far as a journal ([TakeJournal]) of project [projectId]: kept on disk while it
+     * records, so that a take the app could not finish (closed, killed) is written at the next
+     * opening; [end]: the transport step it ends on (a bar line), [append]: after the song.
+     */
+    fun journal(projectId: String, end: Int, append: Boolean): TakeJournal = TakeJournal(
+        projectId = projectId, takeId = id, start = start, row = initial.row,
+        playing = initial.slots.map { it.playing }, starts = initial.slots.map { it.start },
+        columns = columns, launches = launches.toList(), gestures = gestures.toList(), end = end, append = append,
+    )
+
+    internal fun restore(launched: List<TakeLaunch>, moved: List<TakeGesture>) {
+        windows.clear()
+        launches += launched
+        gestures += moved.filter { it.target.isValid && it.value.isFinite() && it.at.isFinite() && it.before.isFinite() }
+    }
+
     internal fun launchesUpTo(end: Int): List<TakeLaunch> = launches.filter { it.step < end }.sortedBy { it.step }
     internal fun gesturesUpTo(end: Int): List<TakeGesture> = gestures.filter { it.at < end }
 }
 
+@Serializable
 data class TakeLaunch(val slot: Int, val scene: Int, val step: Int)
 
+@Serializable
 data class TakeGesture(val target: AutoTarget, val value: Float, val at: Double, val before: Float, val jump: Boolean = false)
+
+/**
+ * A take in progress as kept on disk ([PerformanceTake.journal]): written while it records, it is
+ * written into project [projectId]'s song at the next opening when the app could not finish it
+ * (closed or killed during the take). [end]: the transport step it ends on.
+ */
+@Serializable
+data class TakeJournal(
+    val projectId: String,
+    /** The take's id ([PerformanceTake.id]; empty in journals of older versions). */
+    val takeId: String = "",
+    val start: Int,
+    val row: Int,
+    val playing: List<Int>,
+    val starts: List<Int>,
+    val columns: Int = LiveSlots.ALL,
+    val launches: List<TakeLaunch> = emptyList(),
+    val gestures: List<TakeGesture> = emptyList(),
+    val end: Int,
+    val append: Boolean = false,
+) {
+    /** The take again (its grid at the start, its launches and gestures). */
+    fun take(): PerformanceTake {
+        val slots = List(LiveSlots.COUNT) { k -> LiveSlot(playing.getOrElse(k) { row }.coerceAtLeast(-1), null, starts.getOrElse(k) { start }) }
+        return PerformanceTake(start.coerceAtLeast(0), LiveState(row.coerceAtLeast(0), slots), columns, takeId).also {
+            it.restore(launches.filter { l -> l.slot in 0 until LiveSlots.COUNT }, gestures)
+        }
+    }
+
+    fun encode(): String = json.encodeToString(serializer(), this)
+
+    companion object {
+        private val json = Json { ignoreUnknownKeys = true; coerceInputValues = true }
+
+        /** Null when unreadable. */
+        fun decode(text: String): TakeJournal? = runCatching { json.decodeFromString(serializer(), text) }.getOrNull()
+    }
+}
+
+/**
+ * Take [journal] written into this project's song (see [writeTake]) when it was this project's
+ * (else unchanged, with 0 parts).
+ */
+fun Project.writeJournal(journal: TakeJournal, projectId: String): TakeWritten = when {
+    journal.projectId != projectId -> TakeWritten(this, 0, 0)
+    // Already in the song (written at ■ Fin, or at an opening the app was killed after): never twice.
+    journal.takeId.isNotEmpty() && journal.takeId == liveTake -> TakeWritten(this, 0, 0, already = true)
+    else -> writeTake(journal.take(), journal.end, journal.append && song.isNotEmpty()).let { w ->
+        if (w.parts > 0 && journal.takeId.isNotEmpty()) w.copy(project = w.project.copy(liveTake = journal.takeId)) else w
+    }
+}
 
 /**
  * What writing a take did: the project, how many song parts and settings (automation lanes) it
  * wrote; [cut]: the song was full ([SongPart.MAX_PARTS]) and the take's end was left out;
- * [skipped]: settings moved that had no lane left ([AutomationLane.MAX_LANES]).
+ * [skipped]: settings moved that had no lane left ([AutomationLane.MAX_LANES]); [late]: moves
+ * past the song curves' end ([AutomationLane.MAX_SONG_BEATS]) left out (the parts go on);
+ * [already]: the take was already in the song ([Project.liveTake]), nothing written.
  */
-data class TakeWritten(val project: Project, val parts: Int, val settings: Int, val cut: Boolean = false, val skipped: Int = 0)
+data class TakeWritten(val project: Project, val parts: Int, val settings: Int, val cut: Boolean = false, val skipped: Int = 0, val late: Int = 0, val already: Boolean = false)
 
 /**
  * The song parts take [take] makes up to transport step [end] (none when it is too short), each
@@ -92,7 +237,7 @@ fun Project.takeParts(take: PerformanceTake, end: Int): List<Pair<SongPart, Int>
         if (step > at) stretches += Stretch(at, step, state)
         while (i < launches.size && launches[i].step == step) {
             val l = launches[i]
-            state = state.launched(l.slot, l.scene, l.step)
+            state = state.launched(l.slot, l.scene, l.step, liveColumnsMask)
             i++
         }
         at = maxOf(at, step)
@@ -135,8 +280,10 @@ fun Project.takeParts(take: PerformanceTake, end: Int): List<Pair<SongPart, Int>
         val scenes = scenesOf(s.state)
         val muted = scenes.filterValues { it < 0 }.keys
         val play = scenes.filter { (k, it) -> k in keys && it >= 0 && it != row }
-        val from = scenes.filter { (k, it) -> k in keys && it >= 0 }.mapValues { (k, scene) ->
-            Math.floorMod(elapsed(s.state, k, s.from), period(k, scene)) / bar
+        // Stopped drums too: loop curves count with the drums (stopped, from their stop), so the
+        // song's part keeps that count (with the row's loop) rather than starting it over.
+        val from = scenes.filter { (k, it) -> k in keys && (it >= 0 || k == SongPart.DRUMS) }.mapValues { (k, scene) ->
+            Math.floorMod(elapsed(s.state, k, s.from), period(k, if (scene >= 0) scene else row)) / bar
         }.filterValues { it > 0 }
         val length = s.to - s.from
         val sceneLength = sceneSteps(row)
@@ -188,6 +335,7 @@ fun Project.writeTake(take: PerformanceTake, end: Int, append: Boolean): TakeWri
     if (!append) lanes = lanes.map { it.songCutAt(lastBeat + 1, beatsPerBar) }
     var settings = 0
     var skipped = 0
+    var late = 0
     take.gesturesUpTo(stop).groupBy { it.target }.forEach { (target, moves) ->
         // The beat each move lands on (nearest), in the song, and whether the setting jumped there:
         // pressed at once ([TakeGesture.jump]), or moved after staying still (half a beat or more,
@@ -208,6 +356,11 @@ fun Project.writeTake(take: PerformanceTake, end: Int, append: Boolean): TakeWri
                 if (last.value != previous) beat = last.beat + 1
             }
             if (beat > lastBeat) continue
+            // Past the song curves' last point: not written (the take's parts go on).
+            if (beat >= AutomationLane.MAX_SONG_BEATS) {
+                late++
+                continue
+            }
             if (last != null && beat <= last.beat) changes[changes.lastIndex] = Change(last.beat, m.value, last.jump || jumped)
             else if (m.value != current || changes.isEmpty()) changes += Change(beat, m.value, jumped)
             current = changes.last().value
@@ -256,7 +409,7 @@ fun Project.writeTake(take: PerformanceTake, end: Int, append: Boolean): TakeWri
         lanes = if (index >= 0) lanes.mapIndexed { k, l -> if (k == index) lane else l } else lanes + lane
         settings++
     }
-    return TakeWritten(copy(song = newSong, automation = lanes).sanitized(), kept.size, settings, cut, skipped)
+    return TakeWritten(copy(song = newSong, automation = lanes).sanitized(), kept.size, settings, cut, skipped, late)
 }
 
 /**
@@ -331,6 +484,9 @@ private fun laneKey(target: AutoTarget): String? = when (target.kind) {
 
 /** A setting still for this many steps (half a beat) and then moved jumps to its new value in a take. */
 private const val STILL_STEPS = 2.0
+
+/** [PerformanceTake.gesture] keeps at most three moves of a setting per this many steps (half a beat, at most [STILL_STEPS]). */
+private const val HALF_BEAT_STEPS = 2.0
 
 private fun gcd(a: Int, b: Int): Int = if (b == 0) a else gcd(b, a % b)
 private fun lcm(a: Int, b: Int): Int = a / gcd(a, b) * b

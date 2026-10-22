@@ -9,7 +9,8 @@ package com.pocketstudio.app.live
 sealed interface TakeUi {
     data object Ready : TakeUi
     data class Armed(val start: Int, val stepsLeft: Int = 0) : TakeUi
-    data class Recording(val start: Int, val seconds: Int = 0, val bar: Int = 1) : TakeUi
+    /** [warning]: a limit near or reached (the song's parts, the bar the effects are written up to), said before it bites. */
+    data class Recording(val start: Int, val seconds: Int = 0, val bar: Int = 1, val warning: String? = null) : TakeUi
     data object Writing : TakeUi
     data class Done(val parts: Int, val settings: Int, val firstPart: Int) : TakeUi
 

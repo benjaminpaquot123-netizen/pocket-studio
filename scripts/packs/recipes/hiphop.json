@@ -38,6 +38,12 @@
     "pattern": "..............................x.",
     "source": "boom_bap",
     "tip_fr": "Un charley ouvert à la toute fin relance la boucle."
+   },
+   {
+    "role": "perc2",
+    "pattern": "..o...o...o...o.",
+    "voice": "shaker",
+    "tip_fr": "Un shaker discret à contretemps : il arrive au refrain et l'aère."
    }
   ],
   "progressions": {
@@ -82,7 +88,7 @@
    "type": "keys",
    "rhythm": "X------.X---.X-.",
    "voicing": "seventh",
-   "octave": 4,
+   "octave": 3,
    "sound": "gm:Acoustic Grand Piano"
   },
   "bass": {
@@ -117,6 +123,10 @@
    {
     "on": "chords",
     "preset": "warm_vinyl"
+   },
+   {
+    "on": "chords",
+    "reverb": 0.15
    }
   ],
   "notes": "Swing is the genre: MPC 60% on 16ths. The chords stand in for a looped jazz/soul sample (minor 7ths, 'Vinyle chaud' on them) and are the signature: they play in every section. No 808: a short round bass that follows the kick (1, 2-and, 3-and). Two-bar kick with a ghost kick in bar 2, two ghost snares, open hat only at the end of bar 2. Snare from the SP-1200 pack for 12-bit crunch, hats from the MPC60 pack."
@@ -152,7 +162,8 @@
     "role": "hat",
     "pattern": "X.x.X.x.X.x.X.x.X.x.X.x.X3x.2222",
     "source": "trap",
-    "tip_fr": "Charleys réguliers, puis des rafales très rapides en fin de boucle : le fameux roulement."
+    "tip_fr": "Charleys réguliers, puis des rafales très rapides en fin de boucle : le fameux roulement.",
+    "build": "x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x."
    },
    {
     "role": "open_hat",
@@ -203,7 +214,7 @@
    "type": "pad",
    "rhythm": "X-------X-------",
    "voicing": "triad",
-   "octave": 4,
+   "octave": 3,
    "sound": "Cordes"
   },
   "bass": {
@@ -246,9 +257,18 @@
    {
     "on": "clap",
     "reverb": 0.15
+   },
+   {
+    "on": "chords",
+    "preset": "wide_alive"
+   },
+   {
+    "on": "lead",
+    "delay": 0.2
    }
   ],
-  "notes": "Half-time: 140 BPM but one clap per bar on beat 3, so it feels like 70. The 808 is the bass, hits with the kick and slides up an octave into its 3rd note ('/', glide); 'Croustillant' saturates it a little. Hat rolls: a 1/32 triplet on 3-e of bar 2, then the whole 4th beat in 1/32. The bell melody is the signature (it plays from the intro on); the pad stays dark and quiet (strings) and only joins in the chorus. For a darker modern 808 use pack:modern_808:808."
+  "notes": "Half-time: 140 BPM but one clap per bar on beat 3, so it feels like 70. The 808 is the bass, hits with the kick and slides up an octave into its 3rd note ('/', glide); 'Croustillant' saturates it a little. Hat rolls: a 1/32 triplet on 3-e of bar 2, then the whole 4th beat in 1/32. The bell melody is the signature (it plays from the intro on); the pad stays dark and quiet (strings) and only joins in the chorus. For a darker modern 808 use pack:modern_808:808.",
+  "riser": true
  },
  {
   "id": "drill",
@@ -333,7 +353,7 @@
    "type": "pad",
    "rhythm": "X---------------",
    "voicing": "triad",
-   "octave": 4,
+   "octave": 3,
    "sound": "Cordes"
   },
   "bass": {
@@ -375,10 +395,12 @@
    },
    {
     "on": "chords",
+    "preset": "wide_alive",
     "reverb": 0.25
    }
   ],
-  "notes": "Two-bar pocket is the whole identity: snare on beat 3 of bar 1, then on beat 4 of bar 2 (UK drill). Hats are really triplets and skips; the 16th grid approximates them with 3-hit rolls. The 808 slides once per bar ('/', glide), timed with a kick: up to the octave in bar 1, to the fifth in bar 2. Dark mood in harmonic minor (i-VI-iv-V with a major V): the sinister drill colour. Cold piano melody is the signature; strings join in the chorus."
+  "notes": "Two-bar pocket is the whole identity: snare on beat 3 of bar 1, then on beat 4 of bar 2 (UK drill). Hats are really triplets and skips; the 16th grid approximates them with 3-hit rolls. The 808 slides once per bar ('/', glide), timed with a kick: up to the octave in bar 1, to the fifth in bar 2. Dark mood in harmonic minor (i-VI-iv-V with a major V): the sinister drill colour. Cold piano melody is the signature; strings join in the chorus.",
+  "riser": true
  },
  {
   "id": "lofi",
@@ -409,7 +431,8 @@
     "role": "hat",
     "pattern": "x.oxx.o.x.oxx.oo",
     "source": "lofi",
-    "tip_fr": "Charley léger avec des petites notes entre les temps : le swing les fait traîner, c'est le côté nonchalant."
+    "tip_fr": "Charley léger avec des petites notes entre les temps : le swing les fait traîner, c'est le côté nonchalant.",
+    "build": "x...x.o.x...x.o."
    },
    {
     "role": "perc",
@@ -495,6 +518,10 @@
   "fx": [
    {
     "on": "chords",
+    "preset": "wide_alive"
+   },
+   {
+    "on": "chords",
     "insert": "VINYL",
     "reverb": 0.2
    },
@@ -545,6 +572,11 @@
     "pattern": "x.x.x.x.x.x.x.xxx.x.x.x.x.x.x.22",
     "source": "phonk",
     "tip_fr": "Charleys rapides et réguliers, avec une petite rafale à la fin de la boucle."
+   },
+   {
+    "role": "open_hat",
+    "pattern": "..............x...............x.",
+    "tip_fr": "Un charley ouvert en fin de mesure : il arrive au refrain et relance la boucle."
    }
   ],
   "progressions": {
@@ -589,7 +621,7 @@
    "type": "pad",
    "rhythm": "X---------------",
    "voicing": "triad",
-   "octave": 4,
+   "octave": 3,
    "sound": "Nappe"
   },
   "bass": {
@@ -631,7 +663,8 @@
     "reverb": 0.2
    }
   ],
-  "notes": "Drift phonk (the sound most beginners mean): the hook is a pitched TR-808 cowbell melody (the kit's cowbell played across the keys, 'kit:cowbell'; 'Cloche' stands in), short motif in Phrygian, 3-3-2 rhythm, repeated and crunched; it is the signature. The 808 is distorted and slides into the octave ('/'). Chords off by default (a drone harmony). Tempo: 130 as the phonk pack (sources quote 120-140 with a backbeat, à vérifier on Murder in My Mind). Memphis variant: same grid half-time, swing 0.2, chopped pitched-down vocal (vocal_chops pack). 'Kaito Shoma – Scary Garry (2016)' was dropped: its year could not be checked."
+  "notes": "Drift phonk (the sound most beginners mean): the hook is a pitched TR-808 cowbell melody (the kit's cowbell played across the keys, 'kit:cowbell'; 'Cloche' stands in), short motif in Phrygian, 3-3-2 rhythm, repeated and crunched; it is the signature. The 808 is distorted and slides into the octave ('/'). Chords off by default (a drone harmony). Tempo: 130 as the phonk pack (sources quote 120-140 with a backbeat, à vérifier on Murder in My Mind). Memphis variant: same grid half-time, swing 0.2, chopped pitched-down vocal (vocal_chops pack). 'Kaito Shoma – Scary Garry (2016)' was dropped: its year could not be checked.",
+  "riser": true
  },
  {
   "id": "grime",
@@ -665,6 +698,12 @@
     "source": "grime",
     "tip_fr": "Un petit « clic » sec entre les temps remplace le charley, comme dans les premiers morceaux de Wiley.",
     "voice": "rim"
+   },
+   {
+    "role": "hat",
+    "pattern": "x.x.x.x.x.x.x.x.",
+    "build": "x...x...x...x...",
+    "tip_fr": "Des charleys à la croche qui tiennent le tempo : plus nus au couplet, complets au refrain."
    }
   ],
   "progressions": {
@@ -709,8 +748,8 @@
    "type": "stab",
    "rhythm": "X.....X.........",
    "voicing": "triad",
-   "octave": 4,
-   "sound": "Pluck"
+   "octave": 3,
+   "sound": "Orgue"
   },
   "bass": {
    "pattern": "R-.R-.R---5---3-",
@@ -740,7 +779,17 @@
   "bass_tip": "Une onde carrée brute, sans arrondi : la basse qui grogne du grime.",
   "pad_tip": "Des petits accords secs et glacés, avec beaucoup de vide autour : c'est la place du MC.",
   "lead_tip": "Une petite mélodie de marimba, comme sur les claviers des années 2000.",
-  "notes": "Eskibeat template: one raw square wave as bass ('Lead carré' in octave 2), short cold stabs (the signature: the intro is the stabs alone), lots of empty space; the MC carries the melody. No hats: the off-beat click (rim) replaces them. Clap on 2 and 4 at 140; a half-time grime variant puts it on beat 3 only. Bass notes held a little ('R-.R-.R---5---3-'). Minor/modal riffs; marimba lead (Korg Triton era)."
+  "notes": "Eskibeat template: one raw square wave as bass ('Lead carré' in octave 2), short cold stabs (the signature: the intro is the stabs alone), lots of empty space; the MC carries the melody. No hats: the off-beat click (rim) replaces them. Clap on 2 and 4 at 140; a half-time grime variant puts it on beat 3 only. Bass notes held a little ('R-.R-.R---5---3-'). Minor/modal riffs; marimba lead (Korg Triton era).",
+  "fx": [
+   {
+    "on": "chords",
+    "reverb": 0.2
+   },
+   {
+    "on": "lead",
+    "delay": 0.2
+   }
+  ]
  },
  {
   "id": "jersey_club",
@@ -779,6 +828,11 @@
     "source": "jersey_club",
     "tip_fr": "Un petit « toc » entre les coups de kick. Dans les vrais morceaux, c'est souvent un grincement de lit !",
     "voice": "rim"
+   },
+   {
+    "role": "open_hat",
+    "pattern": "......x.......x.",
+    "tip_fr": "Un charley ouvert qui répond aux kicks en rafale : il arrive au refrain."
    }
   ],
   "progressions": {
@@ -854,7 +908,18 @@
   "bass_tip": "Une 808 qui double les coups de kick : elle donne du poids au rebond.",
   "pad_tip": "Des accords doux, en option : le style s'en passe souvent.",
   "lead_tip": "Des petits bouts de voix répétés entre les coups de kick : c'est le crochet du style, du début à la fin.",
-  "notes": "Kick = 16ths 1, 5, 9, 12, 15 (1-based), spacing 4-4-3-3-2, inherited from Baltimore club. The hook is staccato one-syllable vocal chops between the kicks (vocal_chops pack, signature: from the intro on). The 'bed squeak' (Trillville's 'Some Cut', 2004) has no sound in the packs nor the kit: the perc line is a rim and its tip says so. Light off-beat hats. 808 doubles the kick. Chords off by default."
+  "notes": "Kick = 16ths 1, 5, 9, 12, 15 (1-based), spacing 4-4-3-3-2, inherited from Baltimore club. The hook is staccato one-syllable vocal chops between the kicks (vocal_chops pack, signature: from the intro on). The 'bed squeak' (Trillville's 'Some Cut', 2004) has no sound in the packs nor the kit: the perc line is a rim and its tip says so. Light off-beat hats. 808 doubles the kick. Chords off by default.",
+  "fx": [
+   {
+    "on": "chords",
+    "preset": "wide_alive"
+   },
+   {
+    "on": "lead",
+    "delay": 0.2
+   }
+  ],
+  "riser": true
  },
  {
   "id": "reggaeton",
@@ -894,6 +959,17 @@
     "source": "reggaeton",
     "tip_fr": "Un petit roulement de timbales (des toms aigus) en fin de boucle, pour relancer.",
     "voice": "tom_high"
+   },
+   {
+    "role": "perc2",
+    "pattern": "x.xxx.xxx.xxx.xx",
+    "voice": "shaker",
+    "tip_fr": "La güira, un grattoir métallique qui roule sans arrêt : elle arrive au refrain."
+   },
+   {
+    "role": "open_hat",
+    "pattern": "..............x.",
+    "tip_fr": "Un charley ouvert à la fin de chaque mesure : il relance le dembow au refrain."
    }
   ],
   "progressions": {
@@ -938,8 +1014,8 @@
    "type": "stab",
    "rhythm": "...X..X....X..X.",
    "voicing": "triad",
-   "octave": 4,
-   "sound": "Pluck"
+   "octave": 3,
+   "sound": "Orgue"
   },
   "bass": {
    "pattern": "R-----R-R----/5-",
@@ -972,10 +1048,12 @@
   "fx": [
    {
     "on": "chords",
-    "reverb": 0.15
+    "preset": "wide_alive",
+    "reverb": 0.2
    }
   ],
-  "notes": "Dembow = kick on every quarter + snare on 16ths 4, 7, 12, 15 (1-based): 'boom-ch-boom-chick', from Shabba Ranks' 'Dem Bow' riddim (1990). Straight, 90-100 BPM. Chord stabs lock to the snare (Gasolina era) and are the signature. The 808 hits 1, 2-and, 3 and slides into the fifth (modern style). Lead on Marimba an octave above the stabs (a nylon guitar is not in the library; 'Pluck' was the same sound as the stabs). Timbale fill on the high tom. i-VI-III-VII in B minor = Despacito."
+  "notes": "Dembow = kick on every quarter + snare on 16ths 4, 7, 12, 15 (1-based): 'boom-ch-boom-chick', from Shabba Ranks' 'Dem Bow' riddim (1990). Straight, 90-100 BPM. Chord stabs lock to the snare (Gasolina era) and are the signature. The 808 hits 1, 2-and, 3 and slides into the fifth (modern style). Lead on Marimba an octave above the stabs (a nylon guitar is not in the library; 'Pluck' was the same sound as the stabs). Timbale fill on the high tom. i-VI-III-VII in B minor = Despacito.",
+  "riser": true
  },
  {
   "id": "afrobeats",
@@ -1093,6 +1171,21 @@
   "bass_tip": "Une basse ronde et liée qui suit le kick et rebondit vers l'aigu.",
   "pad_tip": "Le piano électrique joue des petits coups qui sautillent (3-3-4-3-3) : c'est lui qui fait danser.",
   "lead_tip": "Une petite mélodie ensoleillée au marimba : elle arrive au refrain.",
-  "notes": "Groove before everything: continuous 16th shaker (kit shaker; the pack only has closed hats) with light swing (57%), uneven kick (1, 2-and, 3), soft rim backbeat, congas answering; never a hard trap snare nor four-on-the-floor. Happy by default (I-V-vi-IV). Rhodes comping in 3-3-4-3-3 with longer notes, the signature; round tied bass; marimba hook in the chorus. Recent tracks borrow the amapiano log drum as bass ('Log drum')."
+  "notes": "Groove before everything: continuous 16th shaker (kit shaker; the pack only has closed hats) with light swing (57%), uneven kick (1, 2-and, 3), soft rim backbeat, congas answering; never a hard trap snare nor four-on-the-floor. Happy by default (I-V-vi-IV). Rhodes comping in 3-3-4-3-3 with longer notes, the signature; round tied bass; marimba hook in the chorus. Recent tracks borrow the amapiano log drum as bass ('Log drum').",
+  "fx": [
+   {
+    "on": "chords",
+    "reverb": 0.25
+   },
+   {
+    "on": "lead",
+    "reverb": 0.2,
+    "delay": 0.15
+   },
+   {
+    "on": "perc",
+    "reverb": 0.15
+   }
+  ]
  }
 ]

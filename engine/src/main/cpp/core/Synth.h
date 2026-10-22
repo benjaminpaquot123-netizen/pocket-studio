@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <cmath>
 #include <cstdint>
 
 #include "Control/adsr.h"
@@ -16,6 +17,10 @@ namespace ps {
 class Synth {
 public:
     static constexpr int kVoices = 8;
+    /** Decibels of the Gain parameter at 0 and 1 (0.5 = unity), shared with PlaitsSynth and the model. */
+    static constexpr float kGainRangeDb = 30.0f;
+    /** The linear gain of a Gain parameter value (0.5 = 1). */
+    static float gainOf(float value) { return std::pow(10.0f, (value - 0.5f) * 2.0f * kGainRangeDb / 20.0f); }
 
     enum Param : int {
         Osc1Wave = 0, Osc2Wave, Osc2Detune, Osc2Octave, OscMix, SubLevel, NoiseLevel,
@@ -28,6 +33,7 @@ public:
         UnisonDetune,  // 0..1 = spread of the voices, ±3 .. ±50 cents, centred on the note
         Lfo2Sync,      // 0 = the sweep runs at Lfo2Rate; above, locked to the tempo (see syncCyclesPerBeat), restarted on each attack
         Glide,         // 0 = none; above, portamento up to 0.5 s: a note starting while another is held slides from it (one voice)
+        Gain,          // calibration of the sound's loudness: 0.5 = 0 dB, 0..1 = -30..+30 dB (see kGainRangeDb)
         ParamCount
     };
 

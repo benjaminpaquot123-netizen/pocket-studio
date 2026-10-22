@@ -84,7 +84,11 @@ fun songGuide(
                 if (!acid || plan.acid.isEmpty()) null
                 else if (acidMoves) tr("Acide : ta ligne 303 joue dans %s. Dans l'onglet Acide, touche un pas pour la changer. La coupure s'ouvre toute seule le long du morceau : pour la tourner toi-même, garde le doigt sur « Coupure ».", plan.sections(plan.acid))
                 else tr("Acide : ta ligne 303 joue dans %s. Dans l'onglet Acide, touche un pas pour la changer et tourne « Coupure » pour la faire crier.", plan.sections(plan.acid)),
-                tr("Souffle montant : il monte avant chaque Drop et claque sur son premier temps. On ne l'entend qu'en jouant tout le morceau ; baisse la piste « Souffle montant » dans le Mixeur s'il te gêne.").takeIf { plan.riser },
+                tr("Rythme : chaque section finit ses 4 mesures par un petit roulement, qui annonce la suite.").takeIf { plan.parts.isNotEmpty() },
+                if (!plan.riser) null
+                else if (plan.form == StarterWizard.SongForm.Song) tr("Impact : un souffle claque sur le premier temps de chaque Refrain. On ne l'entend qu'en jouant tout le morceau ; baisse la piste « Souffle montant » dans le Mixeur s'il te gêne.")
+                else tr("Souffle montant : il monte avant chaque Drop et claque sur son premier temps. On ne l'entend qu'en jouant tout le morceau ; baisse la piste « Souffle montant » dans le Mixeur s'il te gêne."),
+                tr("Contre-chant : une petite réponse aux accords arrive au milieu du premier %s, puis joue dans tout le suivant : le deuxième sonne plus plein.", plan.title(2)).takeIf { plan.counter },
                 tr("Filtres : certains sons s'ouvrent et se ferment tout seuls le long du morceau (Mixeur, Automation).").takeIf { sweeps },
                 tr("Audio : enregistre ta voix par-dessus le morceau (mets des écouteurs, sinon le micro entend la musique)."),
                 tr("Onglet Morceau : touche une section (Intro, Couplet ou Refrain) pour l'afficher, la renommer ou la dupliquer pour en faire un Pont ou une Fin."),

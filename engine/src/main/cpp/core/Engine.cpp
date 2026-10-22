@@ -570,8 +570,9 @@ void Engine::stopTransport() {
     sampler_.releaseLoops();
     for (auto& t : tracks_) {
         t.notes.stop(t);
-        // Belt and braces: a note-off dropped by a full queue must not leave a note hanging.
-        t.allNotesOff();
+        // Belt and braces: a note-off dropped by a full queue must not leave a note hanging. Keys
+        // still held stay in the arpeggiator: it goes on with them.
+        t.allNotesOff(true);
     }
     currentStep_.store(-1, std::memory_order_relaxed);
     absoluteStep_.store(-1, std::memory_order_relaxed);

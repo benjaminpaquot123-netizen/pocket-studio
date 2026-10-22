@@ -266,6 +266,8 @@ class MusicTheoryTest {
                     val range = when (t.name) {
                         // The trap 808 goes down to Do♯1 (35 Hz), as the genre does.
                         "Basse" -> 24..72
+                        // The jump up's clean sub, an octave under its growl (Fa1, 44 Hz).
+                        StarterWizard.SUB_TRACK -> 24..60
                         "Lead" -> 36..StarterWizard.LEAD_TOP
                         else -> 36..96
                     }

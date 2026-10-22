@@ -6,7 +6,6 @@ import com.pocketstudio.model.DefaultNames
 import com.pocketstudio.model.Demos
 import com.pocketstudio.model.EffectType
 import com.pocketstudio.model.FxPresets
-import com.pocketstudio.model.Genres
 import com.pocketstudio.model.Macros
 import com.pocketstudio.model.PlaitsPatch
 import com.pocketstudio.model.Scale
@@ -53,6 +52,7 @@ class ModelTextsTest {
         add(StarterWizard.SongForm.BREAK_LABEL, StarterWizard.SongForm.BREAK_ROLE)
         add(StarterWizard.SongForm.BREAK_ROLE_WITH_BASS, StarterWizard.SongForm.GROOVE_ROLE_NO_BASS)
         add(StarterWizard.ScenePlan.ACID_TITLE, StarterWizard.ScenePlan.RISER_TITLE, StarterWizard.ScenePlan.IMPACT_TITLE, StarterWizard.RISER_TRACK)
+        add(StarterWizard.ScenePlan.COUNTER_TITLE, StarterWizard.COUNTER_TRACK)
         addAll(StarterWizard.KIT_MELODIC.values)
         // The assistant's quick 303 sounds, and the kinds of track "+ Piste" offers (with their names).
         addAll(com.pocketstudio.model.WizardAcid.SOUNDS.map { it.first })
@@ -84,7 +84,6 @@ class ModelTextsTest {
         addAll(PlaitsPatch.PARAMS)
 
         // Templates and demos.
-        Genres.ALL.forEach { add(it.first, it.second) }
         Demos.ALL.forEach { add(it.first, it.second) }
 
         // Names the app gives (saved in French, shown translated) and song sections.

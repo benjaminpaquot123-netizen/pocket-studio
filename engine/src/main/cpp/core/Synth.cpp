@@ -54,6 +54,7 @@ void Synth::prepare(int sampleRate) {
             0.5f, 0.0f, 0.3f, 0.0f, 0.6f,
             0.0f, 0.3f,
             0.0f, 0.0f,
+            0.5f,
         };
         for (int i = 0; i < ParamCount; ++i) params_[static_cast<size_t>(i)] = defaults[i];
     }
@@ -224,7 +225,7 @@ void Synth::render(float* mono, int numFrames) {
     const float vibratoSemis = param(Lfo1ToPitch) * 2.0f + mod_ * 0.5f;
     const float bendRatio = std::pow(2.0f, bend_ / 12.0f);
     const float sweepOctaves = param(Lfo2ToCutoff) * 3.0f;
-    const float level = param(Level) * 1.4f;  // one note around -10 dBFS; chords rely on the master soft clip
+    const float level = param(Level) * 1.4f * gainOf(param(Gain));  // one note around -10 dBFS (Gain 0 dB); chords rely on the master soft clip
     const float nyquistGuard = 0.45f * static_cast<float>(sampleRate_);
     // Unison: oscillator 1 and up to six copies spread evenly on both sides, the whole stack
     // centred on the note (an odd number of copies would otherwise pull it flat). A few cents of

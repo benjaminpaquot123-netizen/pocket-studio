@@ -3,6 +3,7 @@ package com.pocketstudio.app.onboarding
 import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.app.ui.AppTab
 import com.pocketstudio.model.Channel
+import com.pocketstudio.model.Mixer
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.allScenes
 import com.pocketstudio.model.instrumentTracks
@@ -81,7 +82,8 @@ fun nextSteps(project: Project, marks: Set<StepGoal> = emptySet()): List<NextSte
     // A recording on an audio track: the voice is there.
     val voice = project.audioTracks.any { it.clip != null }
     val default = Channel()
-    val mixed = project.mixer.channels.any { it.volume != default.volume || it.pan != default.pan }
+    // The tracks' faders (the pads' own strips hold the assistant's balance of the kit, not the user's mix).
+    val mixed = project.mixer.channels.take(Mixer.FIRST_PAD).any { it.volume != default.volume || it.pan != default.pan }
     return listOf(
         NextStep(StepGoal.Rhythm, rhythm, tr("Touche les cases de la grille pour poser un rythme (le kick sur chaque temps, pour commencer)."), AppTab.Rythme, tr("Rythme")),
         NextStep(StepGoal.Bass, bass, tr("Ajoute une basse : génère une ligne dans l'onglet Acide, ou joue des notes graves dans Synthé."), AppTab.Acide, tr("Aller à Acide")),

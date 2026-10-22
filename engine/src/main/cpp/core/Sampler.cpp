@@ -12,11 +12,16 @@ Sampler::~Sampler() {
         if (s && s->release()) delete s;
         s = nullptr;
     }
+    for (auto*& s : held_) {
+        if (s && s->release()) delete s;
+        s = nullptr;
+    }
     collectGarbage();
 }
 
 void Sampler::prepare(int sampleRate) {
     sampleRate_ = sampleRate;
+    swapFadeFrames_ = std::max(1, sampleRate / 200);
     stopAll();
 }
 
@@ -36,12 +41,42 @@ void Sampler::install(int slot, Sample* sample) {
         retire(sample);
         return;
     }
-    // Voices may still point at the old sample: silence them before it can be freed.
-    voices_[slot] = Voice{};
-    tails_[slot] = Voice{};
-    pendingOffset_[slot] = -1;
-    retire(slots_[slot]);
+    Sample* old = slots_[slot];
+    Voice& voice = voices_[slot];
+    Voice& tail = tails_[slot];
+    // A sound replaced less than 5 ms ago is still fading: it goes now (only one fade per slot).
+    if (held_[slot]) {
+        if (tail.sample == held_[slot]) tail = Voice{};
+        retire(held_[slot]);
+        held_[slot] = nullptr;
+    }
+    if (voice.sample) {
+        // No hard cut: the old sound fades out on the tail (a fading hit there is let go).
+        const Voice was = voice;
+        tail = was;
+        tail.fade = tail.fadeLength = swapFadeFrames_;
+        voice = Voice{};
+        // A loop goes on with the new sound at the same point of its region (a tempo-fitted copy
+        // replaced after a tempo change keeps its place in the bar), fading in under the old one.
+        if (was.loop && sample) {
+            Voice v;
+            shape(v, sample, params_[slot], was.velocity, was.hitPitch);
+            const double span = was.hi - was.lo;
+            double phase = span > 0.0 ? (was.pos - was.lo) / span : 0.0;
+            phase = std::clamp(phase, 0.0, 1.0);
+            v.pos = std::min(v.lo + phase * (v.hi - v.lo), std::max(v.lo, v.hi - 1.0));
+            v.gainL = was.gainL;
+            v.gainR = was.gainR;
+            v.age = was.age;  // the envelope goes on where it was
+            v.fadeIn = v.fadeInLength = swapFadeFrames_;
+            voice = v;
+        }
+    }
+    if (!sample) pendingOffset_[slot] = -1;  // a hit waiting for this frame plays the new sound
     slots_[slot] = sample;
+    // The old sound is let go once its tail no longer plays it (end of render()).
+    if (old && tail.sample == old) held_[slot] = old;
+    else retire(old);
 }
 
 void Sampler::setParam(int slot, int param, float v) {
@@ -74,28 +109,24 @@ void Sampler::trigger(int slot, float velocity, int frameOffset, float pan, floa
 void Sampler::fadeOut(int slot) {
     if (!voices_[slot].sample) return;
     tails_[slot] = voices_[slot];
-    tails_[slot].fade = kFadeFrames;
+    tails_[slot].fade = tails_[slot].fadeLength = kFadeFrames;
     voices_[slot] = Voice{};
 }
 
-void Sampler::start(int slot, float velocity, float pan, float pitch) {
-    const Sample* s = slots_[slot];
-    const PadParams& p = params_[slot];
-    fadeOut(slot);  // the other pads of a choke group were cut at this frame by render()
+void Sampler::shape(Voice& v, const Sample* s, const PadParams& p, float velocity, float pitch) const {
     const double frames = static_cast<double>(s->frames());
     double lo = std::floor(std::min(p.start, p.end) * frames);
     double hi = std::floor(std::max(p.start, p.end) * frames);
     if (hi - lo < 1.0) hi = std::min(frames, lo + 1.0);
     const double rate = std::pow(2.0, std::clamp(p.pitch + pitch, -36.0f, 36.0f) / 12.0);
-    Voice v;
     v.sample = s;
     v.lo = lo;
     v.hi = hi;
     v.step = p.reverse ? -rate : rate;
-    v.pos = p.reverse ? hi - 1.0 : lo;
     v.loop = p.loop;
+    v.velocity = velocity;
+    v.hitPitch = pitch;
     v.gain = velocity * p.gain;
-    panGains(pan, v.gainL, v.gainR);
     v.length = static_cast<int64_t>((hi - lo) / rate);
     const float sr = static_cast<float>(sampleRate_);
     v.attackFrames = p.attack * sr;
@@ -103,6 +134,15 @@ void Sampler::start(int slot, float velocity, float pan, float pitch) {
     v.sustain = p.sustain;
     // Never let the release eat more than half of a short sound.
     v.releaseFrames = std::max(1.0f, std::min(p.release * sr, 0.5f * static_cast<float>(v.length)));
+}
+
+void Sampler::start(int slot, float velocity, float pan, float pitch) {
+    const PadParams& p = params_[slot];
+    fadeOut(slot);  // the other pads of a choke group were cut at this frame by render()
+    Voice v;
+    shape(v, slots_[slot], p, velocity, pitch);
+    v.pos = p.reverse ? v.hi - 1.0 : v.lo;
+    panGains(pan, v.gainL, v.gainR);
     voices_[slot] = v;
 }
 
@@ -116,6 +156,10 @@ void Sampler::stopAll() {
     voices_.fill(Voice{});
     tails_.fill(Voice{});
     pendingOffset_.fill(-1);
+    for (auto*& s : held_) {
+        retire(s);
+        s = nullptr;
+    }
 }
 
 void Sampler::renderVoice(Voice& v, float* left, float* right, int from, int to) {
@@ -163,7 +207,11 @@ void Sampler::renderVoice(Voice& v, float* left, float* right, int from, int to)
             if (remaining < v.releaseFrames) env *= std::max(0.0f, remaining / v.releaseFrames);
         }
         float g = env * v.gain;
-        if (v.fade > 0) g *= static_cast<float>(v.fade) / kFadeFrames;
+        if (v.fadeIn > 0) {
+            g *= 1.0f - static_cast<float>(v.fadeIn) / static_cast<float>(v.fadeInLength);
+            --v.fadeIn;
+        }
+        if (v.fade > 0) g *= static_cast<float>(v.fade) / static_cast<float>(v.fadeLength);
         left[i] += xl * g * v.gainL;
         right[i] += xr * g * v.gainR;
         if (v.fade > 0 && --v.fade == 0) {
@@ -227,6 +275,11 @@ void Sampler::render(float* const* lefts, float* const* rights, int numFrames) {
         }
         renderVoice(voices_[slot], left, right, pos, numFrames);
         renderVoice(tails_[slot], left, right, pos, numFrames);
+        // A replaced sound whose fade is over (or was cut by a new hit) can go.
+        if (held_[slot] && tails_[slot].sample != held_[slot] && voices_[slot].sample != held_[slot]) {
+            retire(held_[slot]);
+            held_[slot] = nullptr;
+        }
     }
 }
 

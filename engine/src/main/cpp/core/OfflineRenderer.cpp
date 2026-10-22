@@ -71,19 +71,31 @@ OfflineRenderer::Result OfflineRenderer::render(int64_t frames, int64_t tailFram
     const int64_t fade = std::min<int64_t>(tailFrames, sampleRate_ / 2);
     const int64_t fadeOut = std::min<int64_t>(fadeOut_, total);
     int64_t quiet = 0;  // frames in a row under -90 dBFS, in the tail
-    for (int64_t done = 0; done < total;) {
+    // The limiter's look-ahead delays the output: the file drops its first frames, so that it
+    // starts on the song's first frame (a hit on step 0 is on frame 0, as on the grid). The engine
+    // runs in the same blocks as without it: the same sound as live, sample for sample.
+    const int64_t skip = engine_->mixer().lookAhead() - 1;
+    for (int64_t at = 0; at < total + skip;) {  // `at`: the engine's frame
         if (cancelled_.load(std::memory_order_relaxed)) return Result::Cancelled;
         // Stop exactly at the end of the loop, then render the tail.
-        int n = static_cast<int>(std::min<int64_t>(kBlock, total - done));
-        if (done < frames) n = static_cast<int>(std::min<int64_t>(n, frames - done));
+        int n = static_cast<int>(std::min<int64_t>(kBlock, total + skip - at));
+        if (at < frames) n = static_cast<int>(std::min<int64_t>(n, frames - at));
         // Scheduled commands land on their exact frame: the block stops there.
-        postDue(done);
-        n = static_cast<int>(std::min<int64_t>(n, std::max<int64_t>(1, nextDue() - done)));
-        if (done == frames) postNow({CommandType::SetTransport, 0.0f, 0});
+        postDue(at);
+        n = static_cast<int>(std::min<int64_t>(n, std::max<int64_t>(1, nextDue() - at)));
+        if (at == frames) postNow({CommandType::SetTransport, 0.0f, 0});
         engine_->process(nullptr, 0, 0, block_, n, 2);
+        const int first = static_cast<int>(std::clamp<int64_t>(skip - at, 0, n));
+        if (first == n) {
+            at += n;
+            continue;
+        }
+        float* out = block_ + 2 * first;
+        const int m = n - first;
+        const int64_t done = at + first - skip;  // the file's frame of out[0]
         // A requested fade-out takes the end of the file down to silence along a squared curve
         // (closer to how loudness is heard than a straight line). Gains never exceed 1: no clipping.
-        for (int i = 0; i < n && (fade > 0 || fadeOut > 0); ++i) {
+        for (int i = 0; i < m && (fade > 0 || fadeOut > 0); ++i) {
             const int64_t left = total - (done + i);
             if (left >= fade && left >= fadeOut) continue;
             float g = 1.0f;
@@ -92,17 +104,17 @@ OfflineRenderer::Result OfflineRenderer::render(int64_t frames, int64_t tailFram
                 const float x = static_cast<float>(left) / static_cast<float>(fadeOut);
                 g = std::min(g, x * x);
             }
-            block_[2 * i] *= g;
-            block_[2 * i + 1] *= g;
+            out[2 * i] *= g;
+            out[2 * i + 1] *= g;
         }
         // The automatic tail ends on the frame where the output has been quiet long enough.
-        int keep = n;
+        int keep = m;
         bool ended = false;
-        if (autoTail_ && done + n > frames) {
+        if (autoTail_ && done + m > frames) {
             auto& mixer = engine_->mixer();
             const int64_t window = sampleRate_ / 5 + (mixer.echoInUse() ? static_cast<int64_t>(mixer.echoFrames()) : 0);
-            for (int i = static_cast<int>(std::max<int64_t>(0, frames - done)); i < n; ++i) {
-                const bool silent = std::fabs(block_[2 * i]) < kSilence && std::fabs(block_[2 * i + 1]) < kSilence;
+            for (int i = static_cast<int>(std::max<int64_t>(0, frames - done)); i < m; ++i) {
+                const bool silent = std::fabs(out[2 * i]) < kSilence && std::fabs(out[2 * i + 1]) < kSilence;
                 quiet = silent ? quiet + 1 : 0;
                 if (quiet >= window) {
                     keep = i + 1;
@@ -111,10 +123,10 @@ OfflineRenderer::Result OfflineRenderer::render(int64_t frames, int64_t tailFram
                 }
             }
         }
-        if (!sink(block_, keep)) return Result::IoError;
-        done += keep;
+        if (!sink(out, keep)) return Result::IoError;
+        at += first + keep;
         if (ended) break;
-        progress_.store(static_cast<float>(done) / static_cast<float>(total), std::memory_order_relaxed);
+        progress_.store(static_cast<float>(done + keep) / static_cast<float>(total), std::memory_order_relaxed);
     }
     progress_.store(1.0f, std::memory_order_relaxed);
     return Result::Ok;

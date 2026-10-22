@@ -32,16 +32,27 @@ public:
     static constexpr int kMaster = 4;    // insert "channel" index of the master
     static constexpr int kBuses = 2;
     static constexpr float kCeiling = 0.89f;  // -1 dBFS
+    // The limiter looks this far ahead (1 ms, at most kLookAheadMax frames): its gain glides down
+    // over that time and reaches the peak's on the peak's frame, instead of jumping on it. The
+    // output is that many frames minus one late (the same live and in an export).
+    static constexpr float kLookAheadMs = 1.0f;
+    static constexpr int kLookAheadMax = 96;
+    int lookAhead() const { return lookAhead_; }  // frames
 
     void prepare(int sampleRate);
     void setVolume(int ch, float v);   // 0..1 (0.8 = unity, up to +2 dB)
     void setPan(int ch, float pan);    // -1..1
     void setMute(int ch, bool on);
     void setSolo(int ch, bool on);
-    void setInsertType(int ch, int slot, int type);           // ch 0..kMaster
-    // Every slot of `ch` emptied at once (a strip the app no longer uses: its pool units go back).
+    // ch 0..kMaster. While the strip sounds, the slot's effect fades out over kGateMs first, the new
+    // one is put in from silence and fades in (no click); parameters sent meanwhile wait for it.
+    void setInsertType(int ch, int slot, int type);
+    // Every slot of `ch` emptied (a strip the app no longer uses: its pool units go back, after the
+    // same fade when it sounds).
     void clearInserts(int ch);
     void setInsertParam(int ch, int slot, int param, float v);
+    // The type a slot is fading out to put in (-1: none waiting). Tests.
+    int pendingType(int ch, int slot) const { return swaps_[static_cast<size_t>(ch)][static_cast<size_t>(slot)].type; }
     // « Joue dans »: a slot outside the scenes it plays in lets the sound through untouched (and
     // costs nothing). The switch glides over kGateMs from its frame; switched back on, the effect
     // starts again from silence (no stale tail from the last scene it played in).
@@ -156,8 +167,13 @@ public:
     // Peak since last read, per channel and for the master (UI meters).
     float takeChannelPeak(int ch) { return peaks_[static_cast<size_t>(ch)].exchange(0.0f, std::memory_order_acq_rel); }
     float takeMasterPeak() { return masterPeak_.exchange(0.0f, std::memory_order_acq_rel); }
-    // Current limiter gain (1 = not limiting).
+    // The master's peak going into the limiter (after the master's gain, the metronome included),
+    // since last read: above kCeiling, the limiter works.
+    float takeMasterInputPeak() { return masterInPeak_.exchange(0.0f, std::memory_order_acq_rel); }
+    // Current limiter gain (1 = not limiting): its lowest over the last block processed.
     float limiterGain() const { return limiterGainOut_.load(std::memory_order_relaxed); }
+    // The limiter's lowest gain since last read (the meters).
+    float takeLimiterGain() { return limiterMin_.exchange(1.0f, std::memory_order_acq_rel); }
     const InsertSlot& insert(int ch, int slot) const { return inserts_[static_cast<size_t>(ch)][static_cast<size_t>(slot)]; }
     // Tests.
     const PerformanceFx& performance() const { return perf_; }
@@ -209,6 +225,38 @@ private:
     float gateStep_ = 1.0f / 240.0f;  // per frame (kGateMs at 48 kHz until prepared)
     std::array<float, kChunk> dryL_{}, dryR_{};
     static void storeMax(std::atomic<float>& a, float v);
+    static void storeMin(std::atomic<float>& a, float v);
+    static float blockPeak(const float* l, const float* r, int n);
+    // --- Effect swaps without a click (setInsertType while the strip sounds).
+    struct Swap {
+        int type = -1;      // the type waiting for the old one to fade out (-1: none)
+        float fade = 1.0f;  // the old effect's share (1 heard .. 0 gone)
+        bool gateOn = true;  // « Joue dans » for the new effect (SetInsertOn sent meanwhile)
+        unsigned mask = 0;   // parameters sent meanwhile (bits), for the new effect
+        std::array<float, InsertSlot::kParams> params{};
+    };
+    std::array<std::array<Swap, kInserts>, kChannels> swaps_{};
+    // Each strip's level going into and out of its inserts at the last block (the master's at
+    // kMaster): under kSilentLevel, a swap needs no fade.
+    std::array<float, kChannels> stripLevel_{};
+    static constexpr float kSilentLevel = 1e-4f;  // -80 dBFS
+    bool slotHeard(int ch, int slot) const;
+    void requestType(int ch, int slot, int type);
+    void swapNow(int ch, int slot, int type, bool fadeIn);
+    void finishSwaps(int ch);  // the strip is not heard: every effect waiting goes in now
+    // --- The limiter (look-ahead, see kLookAheadMs).
+    float limit(float& l, float& r);
+    int lookAhead_ = 48;
+    int64_t limFrame_ = 0;
+    std::array<float, kLookAheadMax> delayL_{}, delayR_{}, gainRing_{};
+    double gainSum_ = kLookAheadMax;
+    float releasedGain_ = 1.0f;
+    // The lowest gain the frames still in the window need: a monotonic queue (frame, gain).
+    static constexpr int kQueue = 128;
+    static_assert(kQueue > kLookAheadMax, "the queue holds a window");
+    std::array<int64_t, kQueue> minFrame_{};
+    std::array<float, kQueue> minGain_{};
+    int minHead_ = 0, minTail_ = 0;
 
     std::array<Strip, kChannels> strips_{};
     // Large (each chorus holds its delay lines, about 20 kB): on the heap, allocated once with the
@@ -242,7 +290,9 @@ private:
     std::array<float, kChunk> retL_{}, retR_{};
     std::array<std::atomic<float>, kChannels> peaks_{};
     std::atomic<float> masterPeak_{0.0f};
+    std::atomic<float> masterInPeak_{0.0f};
     std::atomic<float> limiterGainOut_{1.0f};
+    std::atomic<float> limiterMin_{1.0f};
     std::array<int, 32> eventOffset_{}, eventStep_{}, eventBar_{};
     std::array<bool, 32> eventKick_{}, eventBeat_{};
     int events_ = 0;
@@ -270,7 +320,6 @@ private:
     std::unique_ptr<std::array<Isolator, kChannels>> isolators_ = std::make_unique<std::array<Isolator, kChannels>>();
     // The whole mix into the send buses (the build-up's sends, the whole-mix throws).
     std::array<Smoother, kBuses> masterSend_{Smoother(0.0f), Smoother(0.0f)};
-    float envelope_ = 0.0f;
     float release_ = 0.999f;
     Smoother masterGain_{1.0f};
     bool limiterOn_ = true;

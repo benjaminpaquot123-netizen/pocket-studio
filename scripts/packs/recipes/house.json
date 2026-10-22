@@ -44,6 +44,17 @@
     "source": "tr707",
     "tip_fr": "Un tambourin de vieille boîte à rythmes (la 707) entre chaque temps : il fait danser les épaules.",
     "voice": "shaker"
+   },
+   {
+    "role": "ride",
+    "pattern": "..o...o...o...o.",
+    "tip_fr": "Une cymbale ride qui tinte à chaque contretemps : elle arrive au Drop et le fait briller."
+   },
+   {
+    "role": "perc2",
+    "pattern": "...x..x....x..x.",
+    "voice": "conga",
+    "tip_fr": "Une conga glissée entre les coups : elle répond au shaker et arrive avec le Drop."
    }
   ],
   "progressions": {
@@ -114,7 +125,7 @@
   "defaults": {
    "bass": true,
    "chords": true,
-   "lead": false
+   "lead": true
   },
   "bass_tip": "Elle saute entre la note grave et la même note plus haut, dans le même rythme que le piano.",
   "pad_tip": "Des accords de piano joués en petits coups : c'est le refrain qu'on retient en house.",
@@ -127,9 +138,29 @@
    {
     "on": "chords",
     "reverb": 0.15
+   },
+   {
+    "on": "chords",
+    "insert": "PUMP",
+    "params": [
+     0.45,
+     0.4,
+     0
+    ]
    }
   ],
-  "notes": "Roland TR-909 drums (707 percussion) with a light shuffle (MPC ~57%). The piano riff (Korg M1 / real piano, played in the middle register) is the hook of piano/anthem house (Move Your Body, Promised Land), in rhythmic unison with a bouncy root-octave bass. Optional 16th-note Juno arpeggio as in Frankie Knuckles/Jamie Principle 'Your Love'. A soft ghost kick on the last 16th adds 'jack' (left out: the beginner's rule is one kick per beat). Happy major I-IV-vi-V first."
+  "notes": "Roland TR-909 drums (707 percussion) with a light shuffle (MPC ~57%). The piano riff (Korg M1 / real piano, played in the middle register) is the hook of piano/anthem house (Move Your Body, Promised Land), in rhythmic unison with a bouncy root-octave bass. Optional 16th-note Juno arpeggio as in Frankie Knuckles/Jamie Principle 'Your Love'. A soft ghost kick on the last 16th adds 'jack' (left out: the beginner's rule is one kick per beat). Happy major I-IV-vi-V first.",
+  "drop": [
+   "ride",
+   "perc2"
+  ],
+  "riser": true,
+  "break": [
+   "chords",
+   "lead",
+   "hat",
+   "perc"
+  ]
  },
  {
   "id": "deep_house",
@@ -175,6 +206,12 @@
     "source": "tr909",
     "pattern": "..x.....x.x.....",
     "tip_fr": "Un tom 909 qui roule doucement entre les kicks : le groove « rolling » de la deep house."
+   },
+   {
+    "role": "perc2",
+    "pattern": "oxooxoxooxooxoxo",
+    "voice": "shaker",
+    "tip_fr": "Un shaker doux qui roule à la double croche : il arrive au Drop et remplit le haut sans rien durcir."
    }
   ],
   "progressions": {
@@ -245,7 +282,7 @@
   "defaults": {
    "bass": true,
    "chords": true,
-   "lead": false
+   "lead": true
   },
   "signature": "chords",
   "bass_tip": "Une basse ronde et liée qui se glisse entre les coups de grosse caisse, et se baisse à chaque coup (l'effet « pompe »).",
@@ -257,12 +294,13 @@
     "preset": "pump"
    },
    {
-    "on": "chords",
-    "reverb": 0.3
-   },
-   {
     "on": "lead",
     "delay": 0.35
+   },
+   {
+    "on": "chords",
+    "preset": "wide_alive",
+    "reverb": 0.3
    }
   ],
   "notes": "Lazy MPC swing (~60%) that only shows on 16th ghost hats. Harmony is the soul: minor 7th / 9th chords (Rhodes) as syncopated stabs off the kick, Larry Heard's dorian i-IV-VII-v first; they are the signature and play throughout. Round, legato bass between the kicks, sidechained to them. Single-word vocal chops with delay as the top line. Tempo 118-124.",
@@ -273,7 +311,8 @@
    "clap",
    "hat",
    "perc",
-   "tom"
+   "tom",
+   "perc2"
   ],
   "sweeps": [
    {
@@ -283,7 +322,11 @@
      0.8
     ]
    }
-  ]
+  ],
+  "drop": [
+   "perc2"
+  ],
+  "riser": true
  },
  {
   "id": "tech_house",
@@ -390,7 +433,8 @@
    "pattern": "..Rr..Rr..Rr..RO..Rr..Rr..Rr.5/O",
    "octave": 2,
    "sound": "pack:tech_house:bass|Basse ronde",
-   "glide": true
+   "glide": true,
+   "sub": true
   },
   "lead": {
    "type": "riff",
@@ -407,7 +451,7 @@
   },
   "defaults": {
    "bass": true,
-   "chords": false,
+   "chords": true,
    "lead": true
   },
   "signature": "bass",
@@ -584,6 +628,10 @@
   "fx": [
    {
     "on": "chords",
+    "preset": "wide_alive"
+   },
+   {
+    "on": "chords",
     "reverb": 0.2
    },
    {
@@ -595,7 +643,8 @@
     "reverb": 0.15
    }
   ],
-  "notes": "2-step: kick on beat 1 and the 'and' of beat 3 (never on 2 and 4), snare + clap on 2 and 4, 16th hats pushed late (heavy MPC shuffle, ~65%). The bass answers the kick in its gaps (jungle heritage), played an octave up so its sub stays audible. M1-style organ stabs or jazzy 7th/9th chords; chopped and pitched R&B vocal fragments (Todd Edwards) are the signature top line, on by default. A song form (Intro/Couplet/Refrain): garage is song music."
+  "notes": "2-step: kick on beat 1 and the 'and' of beat 3 (never on 2 and 4), snare + clap on 2 and 4, 16th hats pushed late (heavy MPC shuffle, ~65%). The bass answers the kick in its gaps (jungle heritage), played an octave up so its sub stays audible. M1-style organ stabs or jazzy 7th/9th chords; chopped and pitched R&B vocal fragments (Todd Edwards) are the signature top line, on by default. A song form (Intro/Couplet/Refrain): garage is song music.",
+  "riser": true
  },
  {
   "id": "speed_garage",
@@ -640,6 +689,12 @@
     "pattern": ".......x..x...x.",
     "source": "speed_garage",
     "tip_fr": "Quelques petits coups décalés pour ajouter du nerf."
+   },
+   {
+    "role": "perc2",
+    "pattern": "ooxoooxoooxoooxo",
+    "voice": "shaker",
+    "tip_fr": "Un shaker qui roule à la double croche : il arrive avec la basse au Drop."
    }
   ],
   "progressions": {
@@ -684,14 +739,15 @@
    "type": "stab",
    "rhythm": "...X......X.....",
    "voicing": "seventh",
-   "octave": 4,
+   "octave": 3,
    "sound": "Orgue"
   },
   "bass": {
    "pattern": "R-----.R--/O-.R-R-----.R--/5-.O-",
    "octave": 2,
    "sound": "Basse qui parle",
-   "glide": true
+   "glide": true,
+   "sub": true
   },
   "lead": {
    "type": "riff",
@@ -731,8 +787,10 @@
   ],
   "notes": "NY garage four-on-the-floor sped up to 130-136 BPM, shuffled hats and jungle-style ghost snares. The star is the huge warped bass: long reese notes with a tempo-locked filter sweep ('Basse qui parle', half-note sweep) sliding between notes and jumping octaves, as in Armand Van Helden's remixes and Double 99 'RipGroove'; played an octave up so its sub stays above 45 Hz. Sparse organ stabs; vocal shouts with echo. Club form with a break. Heartbroken (bassline, 2007) is its best-known descendant.",
   "drop": [
-   "bass"
-  ]
+   "bass",
+   "perc2"
+  ],
+  "riser": true
  },
  {
   "id": "acid_house",
@@ -770,6 +828,12 @@
     "source": "tr707",
     "voice": "cowbell",
     "tip_fr": "Une cloche (cowbell) entre chaque temps, typique des premiers disques acid."
+   },
+   {
+    "role": "open_hat",
+    "pattern": "..X...X...X...X.",
+    "source": "tr909",
+    "tip_fr": "Le charley ouvert de la 909 entre chaque kick : il arrive au Drop et pousse le groove."
    }
   ],
   "progressions": {
@@ -877,9 +941,22 @@
     "on": "acid",
     "preset": "crunch",
     "delay": 0.2
+   },
+   {
+    "on": "acid",
+    "insert": "PUMP",
+    "params": [
+     0.5,
+     0.35,
+     0
+    ]
    }
   ],
-  "notes": "The TB-303 is the whole track: one 16-step pattern with octave jumps, accents and slides, looped while cutoff and resonance are slowly turned. A little grit and echo on it. Raw TR-707 drums: continuous hats, cowbell on the offbeats. No chords in Acid Tracks; a held string-machine pad (Voodoo Ray) is optional, as are the bass and the lead. Cutoff and resonance now move slowly along the song (song automation of the 303 knobs): opening a little through each section, a slow sweep in the Break."
+  "notes": "The TB-303 is the whole track: one 16-step pattern with octave jumps, accents and slides, looped while cutoff and resonance are slowly turned. A little grit and echo on it. Raw TR-707 drums: continuous hats, cowbell on the offbeats. No chords in Acid Tracks; a held string-machine pad (Voodoo Ray) is optional, as are the bass and the lead. Cutoff and resonance now move slowly along the song (song automation of the 303 knobs): opening a little through each section, a slow sweep in the Break.",
+  "drop": [
+   "open_hat"
+  ],
+  "riser": true
  },
  {
   "id": "afro_house",
@@ -982,7 +1059,7 @@
    "type": "pad",
    "rhythm": "X---------------",
    "voicing": "ninth",
-   "octave": 4,
+   "octave": 3,
    "sound": "Nappe chaude"
   },
   "bass": {
@@ -1019,13 +1096,14 @@
     "preset": "pump"
    },
    {
-    "on": "chords",
-    "reverb": 0.35
-   },
-   {
     "on": "lead",
     "reverb": 0.25,
     "delay": 0.2
+   },
+   {
+    "on": "chords",
+    "preset": "wide_alive",
+    "reverb": 0.35
    }
   ],
   "notes": "Built from the percussion: a continuous shaker (built-in shaker voice), congas in 3-3-2 over two bars (built-in conga), soft clap; no open hat (that is house). Warm four-on-the-floor kick. Minor 9th pads that move slowly; a subby bass between the kicks, sidechained. The marimba motif every three 16ths (3 against 4) is the signature and plays throughout. 120-124 BPM.",
@@ -1039,7 +1117,12 @@
    "open_hat",
    "perc2",
    "tom"
-  ]
+  ],
+  "drop": [
+   "chords",
+   "lead"
+  ],
+  "riser": true
  },
  {
   "id": "disco",
@@ -1086,6 +1169,12 @@
     "source": "disco",
     "voice": "conga",
     "tip_fr": "Des congas jouées à la main pour la chaleur."
+   },
+   {
+    "role": "perc2",
+    "pattern": "x.x.x.x.x.x.x.x.",
+    "voice": "shaker",
+    "tip_fr": "Le tambourin à la croche, comme sur les disques de disco : il arrive au Drop et fait briller le haut."
    }
   ],
   "progressions": {
@@ -1131,7 +1220,7 @@
    "type": "keys",
    "rhythm": "..X.X..X..X.X..X",
    "voicing": "seventh",
-   "octave": 4,
+   "octave": 3,
    "sound": "gm:Electric Guitar (muted)"
   },
   "bass": {
@@ -1169,9 +1258,17 @@
    {
     "on": "snare",
     "reverb": 0.15
+   },
+   {
+    "on": "chords",
+    "preset": "wide_alive"
    }
   ],
-  "notes": "A live band groove: four-on-the-floor kick, a real snare on 2 and 4 with ghost notes, the open-hat 'tsss' on every offbeat closed right after ('tsss-chick'), congas, nearly straight. Root-octave eighth-note bass with a 16th pickup every other bar. Nile Rodgers-style 16th chops (no guitar sound yet: a pluck stands in) on a two-chord dorian vamp (Good Times: Am7-D7), happy first. Strings for the hook, on by default."
+  "notes": "A live band groove: four-on-the-floor kick, a real snare on 2 and 4 with ghost notes, the open-hat 'tsss' on every offbeat closed right after ('tsss-chick'), congas, nearly straight. Root-octave eighth-note bass with a 16th pickup every other bar. Nile Rodgers-style 16th chops (no guitar sound yet: a pluck stands in) on a two-chord dorian vamp (Good Times: Am7-D7), happy first. Strings for the hook, on by default.",
+  "drop": [
+   "perc2"
+  ],
+  "riser": true
  },
  {
   "id": "amapiano",
@@ -1210,6 +1307,12 @@
     "source": "amapiano",
     "voice": "rim",
     "tip_fr": "Des petits « toc » de bois qui répondent au log drum, comme une conversation."
+   },
+   {
+    "role": "perc2",
+    "pattern": "...x..x....x..x.",
+    "voice": "conga",
+    "tip_fr": "Une conga qui répond au log drum : elle arrive au Drop."
    }
   ],
   "progressions": {
@@ -1280,7 +1383,7 @@
   "defaults": {
    "bass": true,
    "chords": true,
-   "lead": false
+   "lead": true
   },
   "signature": "bass",
   "bass_tip": "Le log drum : un tambour grave qui joue les notes de la basse, toujours entre les coups de grosse caisse, en question-réponse sur deux mesures.",
@@ -1288,14 +1391,18 @@
   "lead_tip": "Une petite phrase de piano qui répond au log drum.",
   "fx": [
    {
-    "on": "chords",
-    "reverb": 0.3
-   },
-   {
     "on": "lead",
     "delay": 0.25
+   },
+   {
+    "on": "chords",
+    "preset": "wide_alive",
+    "reverb": 0.3
    }
   ],
-  "notes": "The log drum is both bass and hook: a woody pitched drum ('Log drum' = Plaits bass drum played on the notes; it cannot glide), landing BETWEEN the soft kicks, following the roots with octave/fifth jumps, as a two-bar call and response. Constant 16th shaker (built-in shaker voice) with velocity variation and light swing; rim/woodblock 'toc' answering over two bars. Jazzy 9th chords entering after the 1 with gaps (Cm9-F9-Bbmaj9-Gm9, happy first). The log drum leaves in the break and comes back on the drop. 108-115 BPM."
+  "notes": "The log drum is both bass and hook: a woody pitched drum ('Log drum' = Plaits bass drum played on the notes; it cannot glide), landing BETWEEN the soft kicks, following the roots with octave/fifth jumps, as a two-bar call and response. Constant 16th shaker (built-in shaker voice) with velocity variation and light swing; rim/woodblock 'toc' answering over two bars. Jazzy 9th chords entering after the 1 with gaps (Cm9-F9-Bbmaj9-Gm9, happy first). The log drum leaves in the break and comes back on the drop. 108-115 BPM.",
+  "drop": [
+   "perc2"
+  ]
  }
 ]

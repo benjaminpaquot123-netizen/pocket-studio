@@ -21,6 +21,28 @@ object SoundLibrary {
     private fun synth(vararg values: Pair<Int, Float>): SynthPatch =
         values.fold(SynthPatch(SynthPatch.DEFAULTS)) { p, (i, v) -> p.with(i, v) }
 
+    /**
+     * The loudness calibration of each sound, in dB ([SynthPatch.GAIN], [PlaitsPatch.gain]): each one
+     * alone (a bass on Do2, a held chord, a lead on Do4, one note a beat) measured by the engine and
+     * brought to about the same loudness as the others of its use, -16 LUFS for basses, leads and
+     * plucks, -14 for pads and keys, its peak kept under -1 dBFS (scratchpad p29corps/levels.sh).
+     * Without it the library spread over 33 dB (a pluck 20 dB under a pad). The two subs stay as they
+     * are: a sine reads quiet but weighs a lot.
+     */
+    val SYNTH_GAIN_DB: Map<String, Float> = mapOf(
+        "Basse ronde" to 5f, "Basse reese" to 4.5f, "Reese moderne" to 5f, "Basse wobble" to 2f, "Basse qui parle" to 4.5f,
+        "Basse growl" to 3f, "Lead" to 2.5f, "Lead carré" to 1f, "Lead acide" to 6.5f, "Supersaw" to -2f, "Lead trance" to 1.5f,
+        "Hoover" to 2.5f, "Nappe" to -3f, "Nappe chaude" to -4f, "Accords future bass" to -5f, "Cordes" to -4f, "Pluck" to 7f,
+        "Pluck future" to 6f, "Arpège" to 7.5f, "Cloche" to 8.5f, "Orgue" to -2.5f, "Piano électrique" to 1.5f,
+    )
+
+    /** [SYNTH_GAIN_DB] of the Plaits sounds. */
+    val PLAITS_GAIN_DB: Map<String, Float> = mapOf(
+        "Basse analogique" to 5f, "Basse pincée" to 26f, "Log drum" to 8.5f, "Lead filtré" to -2f, "Lead chiptune" to -5.5f,
+        "Voix robot" to 3.5f, "Nappe d'accords" to -5.5f, "Machine à cordes" to 2f, "Essaim" to 0.5f, "Piano FM" to 10.5f,
+        "Marimba" to 7f, "Cloche" to 5f,
+    )
+
     val SYNTH: List<NamedSound<SynthPatch>> = with(SynthPatch) {
         listOf(
             NamedSound("Basse ronde", "Basses", SynthPatch.PRESETS[0].second),
@@ -31,6 +53,11 @@ object SoundLibrary {
             NamedSound("Basse wobble", "Basses", synth(OSC2_WAVE to 0.5f, OSC2_DETUNE to 0.55f, OSC_MIX to 0.45f, SUB to 0.7f, CUTOFF to 0.37f, RESONANCE to 0.45f, FILTER_ENV to 0f, SWEEP to 0.9f, LFO2_RATE to 0.64f, LFO2_SYNC to syncValue(SYNC_EIGHTH), A_ATTACK to 0f, A_SUSTAIN to 1f, A_RELEASE to 0.15f)),
             // The speed garage bass that "talks": a reese whose filter opens and closes every half note, sliding between notes.
             NamedSound("Basse qui parle", "Basses", synth(OSC2_DETUNE to 0.7f, OSC_MIX to 0.5f, SUB to 0.6f, CUTOFF to 0.33f, RESONANCE to 0.45f, FILTER_ENV to 0.2f, SWEEP to 0.75f, LFO2_RATE to 0.45f, LFO2_SYNC to syncValue(SYNC_HALF), GLIDE to 0.4f, A_RELEASE to 0.2f)),
+            // The jump up growl: a gritty mid bass (saw and square, three copies) whose resonant filter
+            // opens and closes every sixteenth, restarted on each note; no sub of its own (« Sub pur » plays it).
+            NamedSound("Basse growl", "Basses", synth(OSC2_WAVE to 0.5f, OSC2_DETUNE to 0.6f, OSC_MIX to 0.5f, UNISON to 0.33f, UNISON_DETUNE to 0.2f, SUB to 0f, CUTOFF to 0.42f, RESONANCE to 0.6f, FILTER_ENV to 0.3f, F_DECAY to 0.2f, F_SUSTAIN to 0.2f, SWEEP to 0.8f, LFO2_RATE to 0.7f, LFO2_SYNC to syncValue(SYNC_SIXTEENTH), A_ATTACK to 0f, A_SUSTAIN to 1f, A_RELEASE to 0.12f)),
+            // A clean sub under a growl: a triangle filtered into an almost pure sine, no movement.
+            NamedSound("Sub pur", "Basses", synth(OSC1_WAVE to 1f, OSC_MIX to 0f, SUB to 0f, CUTOFF to 0.27f, RESONANCE to 0f, FILTER_ENV to 0f, A_ATTACK to 0f, A_SUSTAIN to 1f, A_RELEASE to 0.1f)),
             NamedSound("Lead", "Leads", SynthPatch.PRESETS[1].second),
             NamedSound("Lead carré", "Leads", synth(OSC1_WAVE to 0.5f, OSC2_WAVE to 0.5f, OSC2_DETUNE to 0.52f, CUTOFF to 0.75f, RESONANCE to 0.2f, VIBRATO to 0.1f, LFO1_RATE to 0.5f)),
             NamedSound("Lead acide", "Leads", synth(CUTOFF to 0.28f, RESONANCE to 0.8f, FILTER_ENV to 0.8f, F_DECAY to 0.2f, F_SUSTAIN to 0f, A_RELEASE to 0.15f)),
@@ -42,14 +69,14 @@ object SoundLibrary {
             NamedSound("Accords future bass", "Nappes", synth(UNISON to 1f, UNISON_DETUNE to 0.55f, OSC_MIX to 0f, CUTOFF to 0.62f, FILTER_ENV to 0.3f, F_DECAY to 0.35f, A_ATTACK to 0.2f, A_SUSTAIN to 0.85f, A_RELEASE to 0.55f)),
             NamedSound("Cordes", "Nappes", synth(OSC2_DETUNE to 0.85f, CUTOFF to 0.6f, A_ATTACK to 0.5f, A_SUSTAIN to 1f, A_RELEASE to 0.6f, VIBRATO to 0.05f, LFO1_RATE to 0.45f)),
             NamedSound("Pluck", "Pluck", SynthPatch.PRESETS[3].second),
-            NamedSound("Pluck future", "Pluck", synth(UNISON to 0.5f, UNISON_DETUNE to 0.4f, OSC_MIX to 0f, CUTOFF to 0.35f, RESONANCE to 0.3f, FILTER_ENV to 0.7f, F_DECAY to 0.2f, F_SUSTAIN to 0f, A_DECAY to 0.3f, A_SUSTAIN to 0f, A_RELEASE to 0.2f)),
-            NamedSound("Arpège", "Pluck", synth(OSC1_WAVE to 0.5f, CUTOFF to 0.45f, RESONANCE to 0.4f, FILTER_ENV to 0.6f, F_DECAY to 0.15f, F_SUSTAIN to 0f, A_DECAY to 0.2f, A_SUSTAIN to 0f, A_RELEASE to 0.2f)),
+            NamedSound("Pluck future", "Pluck", synth(UNISON to 0.5f, UNISON_DETUNE to 0.4f, OSC_MIX to 0f, CUTOFF to 0.35f, RESONANCE to 0.3f, FILTER_ENV to 0.7f, F_DECAY to 0.45f, F_SUSTAIN to 0f, A_DECAY to 0.56f, A_SUSTAIN to 0f, A_RELEASE to 0.2f)),
+            NamedSound("Arpège", "Pluck", synth(OSC1_WAVE to 0.5f, CUTOFF to 0.45f, RESONANCE to 0.4f, FILTER_ENV to 0.6f, F_DECAY to 0.4f, F_SUSTAIN to 0f, A_DECAY to 0.5f, A_SUSTAIN to 0f, A_RELEASE to 0.2f)),
             NamedSound("Cloche", "Pluck", synth(OSC1_WAVE to 1f, OSC2_WAVE to 1f, OSC2_OCTAVE to 0.9f, OSC_MIX to 0.4f, CUTOFF to 0.8f, A_DECAY to 0.5f, A_SUSTAIN to 0f, A_RELEASE to 0.5f)),
             NamedSound("Orgue", "Claviers", synth(OSC1_WAVE to 0.5f, OSC2_WAVE to 0.5f, OSC2_OCTAVE to 0.9f, OSC2_DETUNE to 0.5f, SUB to 0.3f, CUTOFF to 0.7f, A_ATTACK to 0f, A_SUSTAIN to 1f, A_RELEASE to 0.1f)),
             NamedSound("Piano électrique", "Claviers", synth(OSC1_WAVE to 1f, OSC2_OCTAVE to 0.9f, OSC_MIX to 0.3f, CUTOFF to 0.55f, A_DECAY to 0.55f, A_SUSTAIN to 0.2f, A_RELEASE to 0.35f, VIBRATO to 0.05f, LFO1_RATE to 0.6f)),
             NamedSound("Sirène", "Effets", synth(SWEEP to 0.9f, LFO2_RATE to 0.5f, RESONANCE to 0.7f, CUTOFF to 0.5f, A_SUSTAIN to 1f)),
             NamedSound("Souffle", "Effets", synth(NOISE to 0.9f, OSC_MIX to 0.5f, CUTOFF to 0.6f, A_ATTACK to 0.3f, A_SUSTAIN to 1f, A_RELEASE to 0.6f, SWEEP to 0.4f, LFO2_RATE to 0.1f)),
-        )
+        ).map { it.copy(sound = it.sound.with(GAIN, gainValue(SYNTH_GAIN_DB[it.name] ?: 0f))) }
     }
 
     val PLAITS: List<NamedSound<PlaitsPatch>> = listOf(
@@ -72,7 +99,7 @@ object SoundLibrary {
         NamedSound("Charley", "Batterie", PlaitsPatch(model = 23, harmonics = 0.5f, timbre = 0.6f, morph = 0.3f, decay = 0.2f)),
         NamedSound("Pluie", "Effets", PlaitsPatch(model = 18, harmonics = 0.5f, timbre = 0.6f, morph = 0.5f, decay = 0.8f)),
         NamedSound("Vent", "Effets", PlaitsPatch(model = 17, harmonics = 0.3f, timbre = 0.4f, morph = 0.6f, decay = 0.9f, release = 0.8f)),
-    )
+    ).map { it.copy(sound = it.sound.copy(gain = SynthPatch.gainValue(PLAITS_GAIN_DB[it.name] ?: 0f))) }
 
     val ACID: List<NamedSound<AcidSound>> = listOf(
         NamedSound("Acide de base", "Classiques", AcidSound()),

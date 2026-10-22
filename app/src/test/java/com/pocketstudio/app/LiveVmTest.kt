@@ -445,6 +445,8 @@ class LiveVmTest {
         val again = RhythmViewModel(app)
         assertEquals(song, again.project.value.song)
         assertNull(again.notice.value)
+        // The opening drops it on the journal writer (its own thread): checked once that is done.
+        assertTrue(again.journalsForTest.awaitIdle(5000))
         assertFalse(again.journalsForTest.file(again.projectId).exists())
         // Recovered once at an opening, then found again (killed before it went): once too.
         val recovered = recording()
@@ -454,10 +456,15 @@ class LiveVmTest {
         val first = RhythmViewModel(app)
         val firstSong = first.project.value.song
         assertTrue(first.notice.value!!.contains("gardée"))
+        // Its drop done first (else it could delete the journal written back below).
+        assertTrue(first.journalsForTest.awaitIdle(5000))
+        assertFalse(first.journalsForTest.file(first.projectId).exists())
         first.journalsForTest.file(first.projectId).writeText(text)
         val second = RhythmViewModel(app)
         assertEquals(firstSong, second.project.value.song)
         assertNull(second.notice.value)
+        assertTrue(second.journalsForTest.awaitIdle(5000))
+        assertFalse(second.journalsForTest.file(second.projectId).exists())
     }
 
     /** m9: the screen closed (the app swiped away) while a take records: its journal is written, and the next opening has it. */

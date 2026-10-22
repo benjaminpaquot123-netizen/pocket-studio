@@ -353,6 +353,13 @@ data class Mixer(
         const val MASTER = 4
         const val MASTER_MIN_DB = -24f
         const val MASTER_MAX_DB = 6f
+        /**
+         * A new project's master gain: the default kit, acid line and synth then leave the limiter
+         * under 3 dB of work (about 8 dB at 0 dB, which pumped). Projects saved before keep theirs.
+         */
+        const val NEW_PROJECT_DB = -6f
+        /** The Mixer's one-tap hint when the limiter works hard: the master this much lower. */
+        const val HINT_STEP_DB = 6f
 
         /** The strip of drum pad [lane] (its own effects, before the drums' strip). */
         fun padChannel(lane: Int) = FIRST_PAD + lane
@@ -361,6 +368,13 @@ data class Mixer(
             (inserts + List((INSERTS - inserts.size).coerceAtLeast(0)) { Insert() }).take(INSERTS).map { it.sanitized() }
     }
 }
+
+/**
+ * [this] as a new project starts (blank, demo, starter, wizard): its master at
+ * [Mixer.NEW_PROJECT_DB] unless it chose a gain of its own. Never applied to a project loaded.
+ */
+fun Project.asNewProject(): Project =
+    if (mixer.masterDb == 0f) copy(mixer = mixer.copy(masterDb = Mixer.NEW_PROJECT_DB)) else this
 
 /** Something on the strip changes the sound (a pad's strip is only used then). */
 fun Channel.hasOwnFx(): Boolean =

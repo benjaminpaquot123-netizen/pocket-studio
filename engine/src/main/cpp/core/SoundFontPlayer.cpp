@@ -1,6 +1,7 @@
 #include "SoundFontPlayer.h"
 
 #include <algorithm>
+#include <cmath>
 #include <iterator>
 
 #define TSF_IMPLEMENTATION
@@ -22,7 +23,8 @@ tsf* SoundFontPlayer::makeInstance(tsf* master, int sampleRate) {
     if (!f) return nullptr;
     tsf_set_output(f, TSF_MONO, sampleRate, -4.0f);
     // Preallocated voices: from now on note_on steals a releasing voice instead of allocating.
-    if (!tsf_set_max_voices(f, kMaxVoices)) {
+    // Channel 0 made here too (it allocates): every note then follows its pitch wheel.
+    if (!tsf_set_max_voices(f, kMaxVoices) || !tsf_channel_set_pitchrange(f, 0, kBendRange)) {
         tsf_close(f);
         return nullptr;
     }
@@ -66,6 +68,20 @@ void SoundFontPlayer::install(tsf* instance, int preset) {
     instance_ = instance;
     preset_ = instance ? std::clamp(preset, 0, std::max(0, tsf_get_presetcount(instance) - 1)) : 0;
     eventCount_ = 0;
+    applyBend();
+}
+
+void SoundFontPlayer::setBend(float semitones) {
+    if (!std::isfinite(semitones)) return;
+    bend_ = std::clamp(semitones, -kBendRange, kBendRange);
+    applyBend();
+}
+
+void SoundFontPlayer::applyBend() {
+    // Only on an instance from makeInstance: its channel exists, so nothing is allocated here.
+    if (!instance_ || !instance_->channels || instance_->channels->channelNum < 1) return;
+    const int wheel = static_cast<int>(std::lround(8192.0f + bend_ / kBendRange * 8192.0f));
+    tsf_channel_set_pitchwheel(instance_, 0, std::clamp(wheel, 0, 16383));
 }
 
 void SoundFontPlayer::queue(const Event& e) {

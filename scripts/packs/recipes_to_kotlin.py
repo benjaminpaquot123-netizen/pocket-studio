@@ -20,7 +20,9 @@ Recipe syntax (one JSON object per style; one character per sixteenth, 16 = a ba
     steps, 'O' octave up (lower case 'r' 'o' softer), '-' holds the note, '.' silence, '/' holds the note and
     slides into the next one (808 slide: the notes overlap a little and a gliding sound glides there).
   bass: {"pattern", "octave" (the root's octave, 1 = sub, 2 = usual), "sound", "glide": true (the bass sound
-    glides: synth portamento, pack sample slide)}; lead: "glide" too (a riff with '/': the rave hoover's dive)
+    glides: synth portamento, pack sample slide), "sub": true (a clean sub layer: a « Sub » track plays the bass's
+    notes an octave down with « Sub pur » wherever the bass plays: the jump up growl over its sine)};
+    lead: "glide" too (a riff with '/': the rave hoover's dive)
   chords: {"type": pad|stab|keys|none, "rhythm": "X-------x-------" ('X'/'x' hit, '-' held, '.' rest),
     "voicing", "octave", "sound"}; lead: {"type": riff|arp|none, "pattern", "arp_rate", "octave", "sound"}
   sounds: a preset of PRESETS, "pack:<pack>:<kind>" (falls back to a preset without the pack: FALLBACK),
@@ -36,8 +38,11 @@ Recipe syntax (one JSON object per style; one character per sixteenth, 16 = a ba
     rolls faster and faster, before each Drop (Intro, Montée, Drop, Break, Montée, Drop, Intro).
   "drop": [layers] (club music): held back until the Drop, e.g. ["bass", "open_hat"]; "break": [layers]: what the
     Break plays (default: the chords and the lead; never the kick). Layers: bass, chords, lead or a drum role.
-  "riser": true (club, build or rave form): a « Montée » track whose noise rises over the 4 bars before each Drop
-    (all the Montée) and hits on the Drop's first beat (a song curve opens and shuts its filter).
+  "riser": true: a « Montée » track whose noise rises over the 4 bars before each Drop (all the Montée) and hits on
+    the Drop's first beat (a song curve opens and shuts its filter); in the song form, the impact alone on the Refrain.
+  "counter": {"sound": <preset>, "rhythm": "x..." (default: the chords' rhythm when they are stabs, else 3-3-2 stabs)}:
+    a counter-melody track that answers the chords an octave above them in the Drop (or the Refrain), from the
+    second half of the first one (the second Drop is fuller).
   "sweeps": [{"on": bass|chords|lead|acid|master, "intro"|"groove"|"drop"|"break": [start, end], "resonance": 0..1}]:
     a low-pass filter on that layer whose cutoff (0..1: 40 Hz to 18 kHz) moves along the song (each section from its
     start to its end value; "groove" is the Montée of the build form; a section left out plays it open; the outro
@@ -101,7 +106,8 @@ NAMES = {
     "acid_techno": ("Acid techno", "Techno"),
     "gabber": ("Gabber", "Techno"), "acidcore": ("Acidcore", "Techno"), "minimal": ("Minimal", "Techno"), "trance": ("Trance", "Techno"),
     "dnb": ("Drum & bass", "Bass music"), "liquid_dnb": ("Liquid DnB", "Bass music"), "neurofunk": ("Neurofunk", "Bass music"),
-    "jungle": ("Jungle", "Bass music"), "dubstep": ("Dubstep", "Bass music"), "riddim": ("Riddim", "Bass music"),
+    "jungle": ("Jungle", "Bass music"), "jump_up": ("Jump up DnB", "Bass music"), "dubstep": ("Dubstep", "Bass music"),
+    "riddim": ("Riddim", "Bass music"),
     "reggaeton": ("Reggaeton", "Autres"), "afrobeats": ("Afrobeats", "Autres"), "synthwave": ("Synthwave", "Autres"),
     "pop": ("Pop", "Autres"),
 }
@@ -264,6 +270,13 @@ def style(r):
     glide = bool(b.get("glide", False))
     if glide and "/" not in bass_pat:
         print(f"note: {gid}: the bass glides but its pattern has no '/' (nothing slides)", file=sys.stderr)
+    sub = bool(b.get("sub", False))
+    ctr = r.get("counter") or {}
+    counter = ctr.get("sound")
+    check(counter is None or counter in PRESETS, f"{gid} counter: unknown sound {counter}")
+    counter_rhythm = line(ctr["rhythm"], set("Xx-."), gid, "counter") if ctr.get("rhythm") else ""
+    check(not sub or "Sub pur" in PRESETS, f"{gid} bass: no « Sub pur » sound for the sub layer")
+    check(not sub or int(b.get("octave", 2)) >= 2, f"{gid} bass: a sub layer an octave under a bass in octave 1 is inaudible")
     lead_glide = bool(l.get("glide", False))
     check(not lead_glide or "/" in lead_pat, f"{gid}: the lead glides but its riff has no '/' (nothing slides)")
     sig = r.get("signature")
@@ -297,7 +310,7 @@ def style(r):
         return f"Layers(setOf({', '.join('Role.' + x for x in lines)}), setOf({', '.join('Part.' + x for x in parts)}))"
     drop, brk = layers("drop"), layers("break")
     riser = bool(r.get("riser", False))
-    check(not riser or form in ("club", "build", "rave") or club, f"{gid}: a riser needs a Drop (club, build or rave form)")
+    # A song (Intro, Couplet, Refrain) gets the impact alone, on the Refrain's first beat.
     sweeps = []
     for sw in r.get("sweeps", []):
         on = sw.get("on", "")
@@ -388,6 +401,12 @@ def style(r):
         out.append("                bassGlide = true,")
     if lead_glide:
         out.append("                leadGlide = true,")
+    if sub:
+        out.append("                subBass = true,")
+    if counter:
+        out.append(f"                counter = {kstr(counter)},")
+        if counter_rhythm:
+            out.append(f"                counterRhythm = {kstr(counter_rhythm)},")
     out += [
         "            ),",
         f"            references = listOf({', '.join(kstr(x) for x in r['references'])}),",

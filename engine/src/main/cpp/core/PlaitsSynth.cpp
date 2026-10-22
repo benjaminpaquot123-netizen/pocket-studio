@@ -1,5 +1,6 @@
 #include "PlaitsSynth.h"
 #include "Params.h"
+#include "Synth.h"
 
 #include <algorithm>
 #include <atomic>
@@ -52,7 +53,7 @@ struct PlaitsSynth::Impl {
     };
     std::array<Voice, kVoices> voices;
     plaits::Patch patch{};
-    std::array<float, ParamCount> params{0.0f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.3f, 0.8f};
+    std::array<float, ParamCount> params{0.0f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.3f, 0.8f, 0.5f};
     std::array<Event, 256> events{};
     int eventCount = 0;
     float out[kBlock] = {};
@@ -126,7 +127,7 @@ struct PlaitsSynth::Impl {
         std::fill(out, out + kBlock, 0.0f);
         plaits::Voice::Frame frames[kBlock];
         // A Plaits voice is full scale: about -6 dB each keeps six notes from piling up too high.
-        const float gain = params[Level] * 0.5f / 32768.0f;
+        const float gain = params[Level] * Synth::gainOf(params[Gain]) * 0.5f / 32768.0f;
         for (auto& v : voices) {
             if (!v.gate && v.level < 1e-4f) {
                 v.level = 0.0f;

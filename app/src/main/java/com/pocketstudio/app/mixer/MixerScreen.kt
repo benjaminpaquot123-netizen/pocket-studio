@@ -77,7 +77,10 @@ const val MASTER_CHANNEL = 4
 val BASIC_STRIPS = listOf(StripInfo(0, "Batterie"), StripInfo(1, "Basse acide"), StripInfo(2, "Synthé"), StripInfo(3, "Remix"))
 
 /** Index of the limiter gain in the meters (after one peak per mixer channel). */
-const val LIMITER_METER = com.pocketstudio.engine.NativeEngine.MIXER_CHANNELS
+const val LIMITER_METER = com.pocketstudio.engine.NativeEngine.METER_LIMITER
+
+/** Index of the master's peak going into the limiter in the meters. */
+const val MASTER_IN_METER = com.pocketstudio.engine.NativeEngine.METER_MASTER_IN
 
 data class MixerActions(
     val setVolume: (Int, Float) -> Unit = { _, _ -> },
@@ -170,9 +173,11 @@ fun MixerScreen(
     }, second = {
         NeonCard(accent = Neon.Cyan) {
             SectionLabel(tr("Sortie générale"), help = Glossary.MASTER)
-            LevelMeter({ meters().getOrElse(MASTER_CHANNEL) { 0f } / 0.89f })
+            // What goes into the limiter (red above −1 dBFS, where it starts to work), not what is left after it.
+            MasterMeter { meters().getOrElse(MASTER_IN_METER) { 0f } }
             MasterGain(masterDb, actions.setMasterDb)
             LimiterLine { meters().getOrElse(LIMITER_METER) { 1f } }
+            LimiterHint({ meters().getOrElse(LIMITER_METER) { 1f } }, masterDb, actions.setMasterDb)
             var open by rememberSaveable { mutableStateOf(false) }
             EffectsToggle(effectsSummary(master), open, Modifier.testTag("master_effects")) { open = !open }
             if (open) InsertChain(MASTER_CHANNEL, master, actions)
@@ -204,6 +209,130 @@ private fun LimiterLine(gain: () -> Float) {
         color = if (hard) Neon.Amber else Neon.TextSecondary,
         modifier = Modifier.testTag("limiter_line"),
     )
+}
+
+/**
+ * The master's level going into the limiter, in dB (−40..+6 dBFS): red from −1 dBFS, the
+ * limiter's ceiling, where it takes the peaks down. Read only when drawn.
+ */
+@Composable
+private fun MasterMeter(peak: () -> Float) {
+    val off = Neon.SurfaceHigh
+    val low = Neon.Acid
+    val mid = Neon.Amber
+    val high = Neon.Red
+    androidx.compose.foundation.Canvas(Modifier.fillMaxWidth().height(12.dp).testTag("master_meter")) {
+        val segments = 32
+        val gap = 2.dp.toPx()
+        val w = (size.width - gap * (segments - 1)) / segments
+        val lit = masterMeterFraction(peak()) * segments
+        val radius = androidx.compose.ui.geometry.CornerRadius(2.dp.toPx())
+        for (i in 0 until segments) {
+            val x = i * (w + gap)
+            val db = METER_MIN_DB + (METER_MAX_DB - METER_MIN_DB) * i / segments
+            val color = when {
+                db >= METER_RED_DB -> high
+                db >= METER_RED_DB - 9f -> mid
+                else -> low
+            }
+            val on = (lit - i).coerceIn(0f, 1f)
+            // The red zone is always shown dimly: where the level must not stay.
+            drawRoundRect(color = if (db >= METER_RED_DB) high.copy(alpha = 0.18f) else off,
+                topLeft = androidx.compose.ui.geometry.Offset(x, 0f), size = androidx.compose.ui.geometry.Size(w, size.height), cornerRadius = radius)
+            if (on > 0f) drawRoundRect(color = color.copy(alpha = 0.35f + 0.65f * on),
+                topLeft = androidx.compose.ui.geometry.Offset(x, 0f), size = androidx.compose.ui.geometry.Size(w, size.height), cornerRadius = radius)
+        }
+    }
+}
+
+/** The master meter's scale: from silence (−40 dBFS) to +6 dBFS; red from the limiter's ceiling. */
+private const val METER_MIN_DB = -40f
+private const val METER_MAX_DB = 6f
+internal const val METER_RED_DB = -1f
+
+/** How much of the master meter a peak (linear, 1 = 0 dBFS) lights, 0..1. */
+fun masterMeterFraction(peak: Float): Float {
+    if (!(peak > 0f)) return 0f
+    val db = 20f * log10(peak)
+    return ((db - METER_MIN_DB) / (METER_MAX_DB - METER_MIN_DB)).coerceIn(0f, 1f)
+}
+
+/**
+ * « Le limiteur travaille fort » : after two seconds of the limiter taking more than 6 dB off,
+ * one touch lowers the master by 6 dB (one undo step). Polled from the meters, not composed with them.
+ */
+@Composable
+private fun LimiterHint(gain: () -> Float, masterDb: Float, setDb: (Float) -> Unit) {
+    val watch = androidx.compose.runtime.remember { HardLimiting() }
+    var shown by androidx.compose.runtime.remember { mutableStateOf(false) }
+    androidx.compose.runtime.LaunchedEffect(watch) {
+        var now = 0L
+        while (true) {
+            shown = watch.update(gain(), now)
+            kotlinx.coroutines.delay(HardLimiting.READ_MS)
+            now += HardLimiting.READ_MS
+        }
+    }
+    val lowered = masterDb - com.pocketstudio.model.Mixer.HINT_STEP_DB
+    if (!shown || lowered < com.pocketstudio.model.Mixer.MASTER_MIN_DB) return
+    Row(
+        Modifier.fillMaxWidth()
+            .background(Neon.Amber.copy(alpha = 0.12f), androidx.compose.foundation.shape.RoundedCornerShape(8.dp))
+            .padding(start = 10.dp)
+            .testTag("limiter_hint"),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            tr("Le limiteur travaille fort : baisser le volume général de 6 dB ?"),
+            style = MaterialTheme.typography.bodySmall, color = Neon.Amber, modifier = Modifier.weight(1f),
+        )
+        TextButton(
+            onClick = {
+                setDb(lowered)
+                watch.reset()
+                shown = false
+            },
+            modifier = Modifier.heightIn(min = 48.dp).testTag("limiter_hint_lower"),
+        ) { Text(tr("Baisser de 6 dB"), color = Neon.Amber) }
+    }
+}
+
+/**
+ * Whether the limiter works hard: readings of its gain (one every [READ_MS]) under [HARD_GAIN]
+ * (more than 6 dB off) for [HOLD_MS], a gap of at most [GAP_MS] between two (between the beats).
+ * Once true, it stays so until [CALM_MS] without one.
+ */
+class HardLimiting {
+    private var runStart = -1L
+    private var lastHard = -1L
+    private var shown = false
+
+    fun update(gain: Float, nowMs: Long): Boolean {
+        if (gain < HARD_GAIN) {
+            if (runStart < 0 || nowMs - lastHard > GAP_MS) runStart = nowMs
+            lastHard = nowMs
+        }
+        val running = runStart >= 0 && nowMs - lastHard <= GAP_MS
+        if (!running) runStart = -1
+        shown = (shown && lastHard >= 0 && nowMs - lastHard <= CALM_MS) || (running && nowMs - runStart >= HOLD_MS)
+        return shown
+    }
+
+    /** The master just went down: watched again from scratch. */
+    fun reset() {
+        runStart = -1
+        lastHard = -1
+        shown = false
+    }
+
+    companion object {
+        /** −6 dB. */
+        const val HARD_GAIN = 0.5f
+        const val HOLD_MS = 2000L
+        const val GAP_MS = 1000L
+        const val CALM_MS = 4000L
+        const val READ_MS = 100L
+    }
 }
 
 /** The master's fader: a gain before the limiter, −24..+6 dB (one move gives the limiter less work). */
@@ -536,15 +665,14 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
 internal var stripCompositions = 0
 
 /**
- * One meter reading: each channel's peak held with a gentle fall (readable bars), the last value
- * (the limiter's gain) taken as is. A fallen peak under [METER_FLOOR] is silence. True when
+ * One meter reading: each peak held with a gentle fall (readable bars), the limiter's gain (at
+ * [LIMITER_METER]) taken as is. A fallen peak under [METER_FLOOR] is silence. True when
  * something moved, so a silent, stopped mixer publishes nothing.
  */
 fun holdMeterPeaks(peaks: FloatArray, fresh: FloatArray): Boolean {
     var changed = false
-    val last = peaks.size - 1
-    for (i in 0..last) {
-        val v = if (i == last) fresh[i] else maxOf(fresh[i], peaks[i] * 0.85f).let { if (it < METER_FLOOR) 0f else it }
+    for (i in peaks.indices) {
+        val v = if (i == LIMITER_METER) fresh[i] else maxOf(fresh[i], peaks[i] * 0.85f).let { if (it < METER_FLOOR) 0f else it }
         if (v != peaks[i]) {
             peaks[i] = v
             changed = true

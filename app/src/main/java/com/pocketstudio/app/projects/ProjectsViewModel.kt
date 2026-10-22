@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.pocketstudio.app.report.AppLog
 import com.pocketstudio.model.Project
+import com.pocketstudio.model.asNewProject
 import com.pocketstudio.model.ProjectCatalog
 import com.pocketstudio.model.ProjectInfo
 import com.pocketstudio.model.TrashedProject
@@ -78,14 +79,14 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
     /** Creates [project] (a blank or a demo) named after the next free number unless it has a name; returns its id. */
     fun create(project: Project, then: (String) -> Unit) = io(tr("Nouveau projet")) {
         val named = if (project.name.isBlank() || project.name == Project().name) project.copy(name = catalog.nextName()) else project
-        val id = catalog.create(named)
+        val id = catalog.create(named.asNewProject())
         refreshNow()
         withContext(Dispatchers.Main) { then(id) }
     }
 
     /** A new project with its own sounds ([sounds]: file name in its samples folder → audio). */
     fun create(project: Project, sounds: Map<String, com.pocketstudio.app.audio.Pcm>, failed: (String) -> Unit = {}, then: (String) -> Unit) = io(tr("Nouveau morceau"), failed) {
-        val id = catalog.create(project) { dir ->
+        val id = catalog.create(project.asNewProject()) { dir ->
             dir.mkdirs()
             sounds.forEach { (name, pcm) -> com.pocketstudio.app.audio.FloatWav.write(java.io.File(dir, name), pcm) }
         }

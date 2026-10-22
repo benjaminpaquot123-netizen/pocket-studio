@@ -6,7 +6,6 @@ import com.pocketstudio.app.rhythm.ExportUi
 import com.pocketstudio.app.rhythm.ExportWhat
 import com.pocketstudio.app.rhythm.RhythmViewModel
 import com.pocketstudio.model.Demos
-import com.pocketstudio.model.Genres
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.ProjectCatalog
 import com.pocketstudio.model.StarterWizard
@@ -49,12 +48,16 @@ object ShareSong {
         Regex("(" + names.joinToString("|") { Regex.escape(it) } + ")( \\d+)?")
     }
 
+    /** Names of the genre templates « Nouveau projet » offered before the assistant's styles took their place. */
+    private val OLD_TEMPLATE_NAMES = listOf("House", "Techno", "Drum & bass", "Trap", "Lo-fi", "Synthwave")
+
     /** Names the app gives by itself: a song shared under one of them is asked for a real name first. */
     private val TEMPLATE_NAMES: Set<String> by lazy {
         buildList {
             add(Project().name)
             add("Mon premier rythme")
-            Genres.ALL.forEach { add(it.first) }
+            // The one-scene genre templates of earlier versions named their projects so.
+            addAll(OLD_TEMPLATE_NAMES)
             Demos.ALL.forEach { add(it.first) }
             StarterWizard.STYLES.forEach { add(it.name) }
         }.flatMap(::everyLanguage).toSet()

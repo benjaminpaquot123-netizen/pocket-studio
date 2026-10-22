@@ -308,7 +308,7 @@ open class ScreenshotTest {
         val p = withTracks()
         com.pocketstudio.app.mixer.MixerScreen(
             channels = p.mixer.channels,
-            meters = { FloatArray(17) { if (it in listOf(0, 2, 5, 6, 4, 12)) 0.5f + it * 0.02f else 0f }.also { it[16] = 1f } },
+            meters = { FloatArray(com.pocketstudio.engine.NativeEngine.METERS) { if (it in listOf(0, 2, 5, 6, 4, 12)) 0.5f + it * 0.02f else 0f }.also { it[com.pocketstudio.engine.NativeEngine.METER_LIMITER] = 1f; it[com.pocketstudio.engine.NativeEngine.METER_MASTER_IN] = 0.58f } },
             actions = com.pocketstudio.app.mixer.MixerActions(),
             strips = com.pocketstudio.app.ui.mixerStrips(p),
         )
@@ -321,7 +321,7 @@ open class ScreenshotTest {
         channels[2] = channels[2].copy(mute = true, volume = 0.5f)
         com.pocketstudio.app.mixer.MixerScreen(
             channels = channels,
-            meters = { FloatArray(17).also { m -> listOf(0.62f, 0.81f, 0f, 0.4f, 0.88f).forEachIndexed { i, v -> m[i] = v }; m[16] = 0.8f } },
+            meters = { FloatArray(com.pocketstudio.engine.NativeEngine.METERS).also { m -> listOf(0.62f, 0.81f, 0f, 0.4f, 0.88f).forEachIndexed { i, v -> m[i] = v }; m[com.pocketstudio.engine.NativeEngine.METER_LIMITER] = 0.8f; m[com.pocketstudio.engine.NativeEngine.METER_MASTER_IN] = 1.1f } },
             actions = com.pocketstudio.app.mixer.MixerActions(),
             export = com.pocketstudio.app.rhythm.ExportUi(bars = 4, files = listOf(java.io.File("Mon-premier-rythme-20261018-221500.wav")), savedInMusic = true, loudness = -13.24)
                 .forProject(sceneBars = 4, hasSong = true),
@@ -1193,6 +1193,27 @@ open class ScreenshotTest {
                 now = now,
             )
         }
+    }
+
+    /** « Nouveau projet »: the guided song, then the assistant's styles, each made whole in one touch. */
+    @Test
+    fun projectsNew() = shoot("projects_new", prepare = { tap("project_new") }) {
+        com.pocketstudio.app.projects.ProjectsScreen(
+            com.pocketstudio.app.projects.ProjectsUi(loading = false), currentId = "a",
+            starters = com.pocketstudio.app.ui.PROJECT_STARTERS.map { it.first },
+            actions = com.pocketstudio.app.projects.ProjectsActions(),
+        )
+    }
+
+    /** A style's song being prepared after its touch: a wheel in its card, the other choices waiting. */
+    @Test
+    fun projectsNewPreparing() = shoot("projects_new_preparing", prepare = { tap("project_new") }) {
+        com.pocketstudio.app.projects.ProjectsScreen(
+            com.pocketstudio.app.projects.ProjectsUi(loading = false), currentId = "a",
+            starters = com.pocketstudio.app.ui.PROJECT_STARTERS.map { it.first },
+            actions = com.pocketstudio.app.projects.ProjectsActions(),
+            quick = com.pocketstudio.app.library.QuickUi(creating = "trap"),
+        )
     }
 
     /** The trash unfolded: restore, delete for good, empty the bin. */

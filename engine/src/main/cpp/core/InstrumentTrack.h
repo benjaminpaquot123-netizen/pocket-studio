@@ -57,14 +57,17 @@ struct InstrumentTrack {
         }
         soundOff(n, at);
     }
-    void allNotesOff() {
+    // Silence. `keepArpKeys` (transport stop): the keys still held stay in the arpeggiator, which
+    // goes on with them (their own key-up takes them out); a panic or a track switched off forgets them.
+    void allNotesOff(bool keepArpKeys = false) {
         synth.allNotesOff();
         instrument.allNotesOff();
         plaits.allNotesOff();
         sampled.allNotesOff();
         sustained.fill(false);
-        arp.count = 0;
+        if (!keepArpKeys) arp.count = 0;
         arp.sounding = -1;
+        arp.offIn = -1.0;
     }
     void setSource(int s) {
         s = std::clamp(s, 0, 2);
@@ -115,7 +118,7 @@ struct InstrumentTrack {
     }
     void setExpression(int kind, float value) {
         switch (kind) {
-            case Bend: synth.setBend(value); plaits.setBend(value); sampled.setBend(value); break;
+            case Bend: synth.setBend(value); plaits.setBend(value); sampled.setBend(value); instrument.setBend(value); break;
             case Mod: synth.setMod(value); plaits.setMod(value); break;
             case Sustain:
                 sustain = value > 0.5f;

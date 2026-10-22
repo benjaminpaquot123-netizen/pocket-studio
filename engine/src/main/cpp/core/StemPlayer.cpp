@@ -77,6 +77,12 @@ bool loadStem(const std::string& path, int targetRate, std::vector<int16_t>& out
 
 }  // namespace
 
+namespace {
+std::atomic<uint64_t> g_nextSong{1};
+}
+
+StemBundle::StemBundle() : song_(g_nextSong.fetch_add(1, std::memory_order_relaxed)) {}
+
 StemBundle* StemBundle::load(const std::vector<std::string>& wavPaths, int targetRate) {
     if (wavPaths.size() != kStems || targetRate <= 0) return nullptr;
     try {
@@ -96,9 +102,10 @@ StemBundle* StemBundle::load(const std::vector<std::string>& wavPaths, int targe
     }
 }
 
-StemBundle* StemBundle::fromFloat(const std::vector<std::vector<float>>& stereo) {
+StemBundle* StemBundle::fromFloat(const std::vector<std::vector<float>>& stereo, const StemBundle* sameSongAs) {
     if (stereo.size() != kStems) return nullptr;
     auto* b = new StemBundle();
+    if (sameSongAs) b->song_ = sameSongAs->song_;
     for (int i = 0; i < kStems; ++i) {
         const auto& src = stereo[static_cast<size_t>(i)];
         auto& dst = b->data_[static_cast<size_t>(i)];
@@ -124,6 +131,7 @@ StemBundle* StemBundle::stretched(double ratio, int sampleRate) const {
     const auto outFrames = static_cast<int64_t>(std::llround(static_cast<double>(frames_) * ratio));
     std::unique_ptr<StemBundle> b(new StemBundle());  // freed if an allocation below throws
     b->frames_ = outFrames;
+    b->song_ = song_;  // the same song, at another tempo
     for (int i = 0; i < kStems; ++i) {
         // One stem at a time: only its float copy and its stretched copy are alive together.
         const std::vector<float> in = extract(i, 0, frames_);
@@ -152,12 +160,14 @@ std::vector<float> StemBundle::peaks(int stem, int buckets) const {
 
 StemPlayer::~StemPlayer() {
     if (bundle_ && bundle_->release()) delete bundle_;
+    if (out_.bundle && out_.bundle->release()) delete out_.bundle;
     collectGarbage();
 }
 
 void StemPlayer::prepare(int sampleRate) {
     for (auto& s : smooth_) s.configure(static_cast<float>(sampleRate), 20.0f);
     fadeLength_ = std::max(1, sampleRate / 200);  // 5 ms
+    crossfade_ = std::max(1, sampleRate / 100);   // 10 ms
     updateTargets();
     for (auto& s : smooth_) s.snap(s.target());
 }
@@ -169,12 +179,59 @@ void StemPlayer::retire(StemBundle* b) {
 }
 
 void StemPlayer::install(StemBundle* bundle) {
-    retire(bundle_);
-    bundle_ = bundle;
+    // The same bundle again (every push of the app): it keeps playing, the extra reference goes.
+    if (bundle && bundle == bundle_) {
+        retire(bundle);
+        return;
+    }
+    StemBundle* old = bundle_;
+    // Same song at another tempo: the same musical position in the new copy (applied once the old
+    // one has taken its own position away to fade out there).
+    int64_t pos = pos_;
+    if (old && bundle && old->song() == bundle->song() && old->frames() > 0) {
+        const double ratio = static_cast<double>(bundle->frames()) / static_cast<double>(old->frames());
+        startFrame_ = static_cast<int64_t>(std::llround(static_cast<double>(startFrame_) * ratio));
+        pos = static_cast<int64_t>(std::llround(static_cast<double>(pos_) * ratio));
+    }
+    if (playing_ && old) {
+        const bool stopping = fadeLeft_ > 0;
+        // The old one fades out at its own position while the new one fades in (no jump, no cut).
+        fadeAway(crossfade_);
+        bundle_ = bundle;
+        if (bundle_ && !stopping) {
+            playing_ = true;
+            fadeIn_ = fadeInLength_ = crossfade_;
+        }
+    } else {
+        retire(old);
+        bundle_ = bundle;
+    }
+    pos_ = pos;
     if (!bundle_) {
         playing_ = false;
+        pendingStart_ = -1;
         position_.store(-1, std::memory_order_relaxed);
     }
+}
+
+void StemPlayer::fadeAway(int frames) {
+    // Only one bundle fades out at a time: an older one still fading goes now.
+    retire(out_.bundle);
+    out_.bundle = bundle_;  // its reference moves over
+    out_.pos = pos_;
+    // From the level it is at: a bundle already fading (stop, start) goes on from there.
+    float level = fadeLeft_ > 0 ? static_cast<float>(fadeLeft_) / static_cast<float>(fadeLength_) : 1.0f;
+    if (fadeIn_ > 0) level *= 1.0f - static_cast<float>(fadeIn_) / static_cast<float>(fadeInLength_);
+    out_.length = std::max(1, frames);
+    out_.left = std::max(0, static_cast<int>(std::lround(level * static_cast<float>(out_.length))));
+    if (out_.left == 0) {
+        retire(out_.bundle);
+        out_.bundle = nullptr;
+    }
+    bundle_ = nullptr;
+    playing_ = false;
+    fadeLeft_ = 0;
+    fadeIn_ = 0;
 }
 
 void StemPlayer::collectGarbage() {
@@ -209,7 +266,6 @@ void StemPlayer::updateTargets() {
 void StemPlayer::start(int offset) {
     if (!bundle_) return;
     pendingStart_ = std::max(0, offset);
-    fadeLeft_ = 0;
 }
 
 void StemPlayer::stop() {
@@ -228,59 +284,97 @@ void StemPlayer::render(float* left, float* right, int numFrames) {
     // it simply is where it should be by the next start.
     const int wait = liveAt_;
     liveAt_ = liveAt_ >= numFrames ? liveAt_ - numFrames : -1;
-    const float liveTarget = live_ ? 1.0f : 0.0f;
-    if (!bundle_) {
-        if (wait < numFrames) liveGain_ = liveTarget;
-        return;
-    }
-    int from = 0;
+    int at = -1;
     if (pendingStart_ >= 0 && pendingStart_ < numFrames) {
-        from = pendingStart_;
+        at = pendingStart_;
         pendingStart_ = -1;
-        pos_ = startFrame_;
-        playing_ = true;
     } else if (pendingStart_ >= numFrames) {
         pendingStart_ -= numFrames;
     }
-    if (!playing_) {
-        if (wait < numFrames) liveGain_ = liveTarget;
+    if (at < 0 || !bundle_) {
+        renderFrames(left, right, 0, numFrames, wait);
+    } else {
+        renderFrames(left, right, 0, at, wait);
+        // What was playing fades out where it was; the song starts again from its start frame.
+        StemBundle* b = bundle_;
+        if (playing_) {
+            b->retain();  // the fading copy holds its own reference
+            fadeAway(fadeLength_);
+            bundle_ = b;
+        }
+        pos_ = startFrame_;
+        playing_ = true;
+        fadeLeft_ = 0;
+        fadeIn_ = fadeInLength_ = fadeLength_;
+        renderFrames(left, right, at, numFrames, wait);
+    }
+    position_.store(playing_ ? pos_ : -1, std::memory_order_relaxed);
+}
+
+void StemPlayer::renderFrames(float* left, float* right, int from, int to, int wait) {
+    const float liveTarget = live_ ? 1.0f : 0.0f;
+    if (from >= to) return;
+    if (!playing_ && !out_.bundle) {
+        if (wait < to) liveGain_ = liveTarget;
         return;
     }
-    const int64_t total = bundle_->frames();
     const float liveStep = 1.0f / static_cast<float>(fadeLength_);
-    const int16_t* stems[StemBundle::kStems];
-    for (int s = 0; s < StemBundle::kStems; ++s) stems[s] = bundle_->stem(s);
     constexpr float kScale = kHeadroom / 32768.0f;
-    for (int i = from; i < numFrames; ++i) {
-        if (pos_ >= total) {
-            playing_ = false;
-            break;
-        }
-        float fade = 1.0f;
-        if (fadeLeft_ > 0) {
-            fade = static_cast<float>(fadeLeft_) / static_cast<float>(fadeLength_);
-            if (--fadeLeft_ == 0) {
+    for (int i = from; i < to; ++i) {
+        float g[StemBundle::kStems];
+        for (int s = 0; s < StemBundle::kStems; ++s) g[s] = smooth_[static_cast<size_t>(s)].next() * kScale;
+        float l = 0.0f, r = 0.0f;
+        if (playing_ && pos_ >= bundle_->frames()) playing_ = false;
+        if (playing_) {
+            float fade = 1.0f;
+            bool last = false;
+            if (fadeLeft_ > 0) {
+                fade = static_cast<float>(fadeLeft_) / static_cast<float>(fadeLength_);
+                last = --fadeLeft_ == 0;
+            }
+            if (fadeIn_ > 0) {
+                fade *= 1.0f - static_cast<float>(fadeIn_) / static_cast<float>(fadeInLength_);
+                --fadeIn_;
+            }
+            if (last) {
                 playing_ = false;
-                break;
+            } else {
+                const auto at = static_cast<size_t>(pos_) * 2;
+                for (int s = 0; s < StemBundle::kStems; ++s) {
+                    const int16_t* d = bundle_->stem(s);
+                    l += d[at] * g[s] * fade;
+                    r += d[at + 1] * g[s] * fade;
+                }
+                ++pos_;
             }
         }
-        float l = 0.0f, r = 0.0f;
-        const auto at = static_cast<size_t>(pos_) * 2;
-        for (int s = 0; s < StemBundle::kStems; ++s) {
-            const float g = smooth_[static_cast<size_t>(s)].next() * kScale;
-            l += stems[s][at] * g;
-            r += stems[s][at + 1] * g;
+        if (out_.bundle) {
+            const float fade = static_cast<float>(out_.left) / static_cast<float>(out_.length);
+            if (out_.pos < out_.bundle->frames()) {
+                const auto at = static_cast<size_t>(out_.pos) * 2;
+                for (int s = 0; s < StemBundle::kStems; ++s) {
+                    const int16_t* d = out_.bundle->stem(s);
+                    l += d[at] * g[s] * fade;
+                    r += d[at + 1] * g[s] * fade;
+                }
+            }
+            ++out_.pos;
+            if (--out_.left <= 0) {
+                retire(out_.bundle);
+                out_.bundle = nullptr;
+            }
         }
         // The remix slot stopped or launched: a short ramp from its frame (exactly 1 when heard).
         if (liveGain_ != liveTarget && i >= wait) {
             liveGain_ = live_ ? std::min(1.0f, liveGain_ + liveStep) : std::max(0.0f, liveGain_ - liveStep);
         }
-        fade *= liveGain_;
-        left[i] += l * fade;
-        right[i] += r * fade;
-        ++pos_;
+        left[i] += l * liveGain_;
+        right[i] += r * liveGain_;
+        if (!playing_ && !out_.bundle) {
+            if (wait < to) liveGain_ = liveTarget;
+            return;
+        }
     }
-    position_.store(playing_ ? pos_ : -1, std::memory_order_relaxed);
 }
 
 }  // namespace ps

@@ -15,6 +15,7 @@ namespace ps {
 class SoundFontPlayer {
 public:
     static constexpr int kMaxVoices = 48;
+    static constexpr float kBendRange = 12.0f;  // semitones of a full pitch wheel
 
     ~SoundFontPlayer();
     SoundFontPlayer() = default;
@@ -42,6 +43,8 @@ public:
     void noteOn(int note, float velocity, int frameOffset);
     void noteOff(int note, int frameOffset);
     void allNotesOff();
+    // Pitch bend in semitones (-12..12), on the notes playing and the next ones; kept across installs.
+    void setBend(float semitones);
     // Adds the instrument (mono) into `out`.
     void render(float* out, int numFrames);
 
@@ -54,9 +57,11 @@ private:
         float velocity = 0.0f;  // 0 = off
     };
     void queue(const Event& e);
+    void applyBend();
 
     tsf* instance_ = nullptr;
     int preset_ = 0;
+    float bend_ = 0.0f;
     Event events_[256];  // room to release all 128 notes at once (sustain pedal let go)
     int eventCount_ = 0;
     SpscQueue<tsf*, 16> retired_;

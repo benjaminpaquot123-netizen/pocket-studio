@@ -3,6 +3,7 @@ package com.pocketstudio.model
 import com.pocketstudio.model.i18n.tr
 import java.io.ByteArrayOutputStream
 import java.io.IOException
+import kotlin.math.pow
 import kotlin.math.roundToInt
 
 /** A note of a MIDI file: [start] and [length] in sixteenths × [NoteClip.TICKS_PER_STEP] ticks. */
@@ -54,7 +55,7 @@ object MidiFile {
             }
             if (plays(SongPart.inst(0))) synth.addFrom(SongPart.inst(0)) { steps, off -> loopNotes(sceneOf(SongPart.inst(0)).synthNotes, steps * NoteClip.TICKS_PER_STEP, off) }
             if (plays(SongPart.ACID)) acid.addFrom(SongPart.ACID) { steps, off -> acidNotes(sceneOf(SongPart.ACID).acid, project.acid.root, steps, off) }
-            if (plays(SongPart.DRUMS)) drums.addFrom(SongPart.DRUMS) { steps, off -> drumNotes(sceneOf(SongPart.DRUMS).drums, steps, off) }
+            if (plays(SongPart.DRUMS)) drums.addFrom(SongPart.DRUMS) { steps, off -> drumNotes(sceneOf(SongPart.DRUMS).drums, steps, off, project.swing) }
             project.tracks.forEach { t ->
                 val key = SongPart.inst(t.id)
                 if (plays(key)) sceneOf(key).trackNotes[t.id]?.let { clip -> added.getValue(t.id).addFrom(key) { steps, off -> loopNotes(clip, steps * NoteClip.TICKS_PER_STEP, off) } }
@@ -101,9 +102,11 @@ object MidiFile {
         val out = ArrayList<MidiNote>()
         // A clip of no length (a damaged file) would loop forever.
         if (clip.ticks <= 0 || clip.notes.isEmpty()) return out
+        // As heard: an arpeggio or a strum played out, as the engine is sent them.
+        val played = clip.performance.expand(clip)
         var loop = 0
         while (loop < sceneTicks) {
-            clip.notes.forEach { n ->
+            played.forEach { n ->
                 val start = loop + n.start
                 if (start < sceneTicks) out += MidiNote(0, n.pitch, offset + start, minOf(n.length, sceneTicks - start), velocity(n.velocity))
             }
@@ -129,13 +132,27 @@ object MidiFile {
         return out
     }
 
-    private fun drumNotes(drums: DrumPattern, sceneSteps: Int, offset: Int): List<MidiNote> {
+    /**
+     * The drum hits, rolls as their hits: the step split evenly, each hit 0.85 times softer than the
+     * one before, a swung (odd) step shorter by the swing so its roll stays inside it (as the engine
+     * plays them). The swing's delay itself is added later, with every other note's.
+     */
+    private fun drumNotes(drums: DrumPattern, sceneSteps: Int, offset: Int, swing: Double): List<MidiNote> {
         val out = ArrayList<MidiNote>()
         if (drums.steps <= 0) return out  // a damaged file
+        val step = NoteClip.TICKS_PER_STEP
         for (s in 0 until sceneSteps) {
             drums.lanes.take(PAD_NOTES.size).forEachIndexed { lane, l ->
                 l.hits[s % drums.steps]?.let { hit ->
-                    out += MidiNote(DRUM_CHANNEL, PAD_NOTES[lane], offset + s * NoteClip.TICKS_PER_STEP, NoteClip.TICKS_PER_STEP / 2, velocity(hit.velocity))
+                    val n = hit.repeats.coerceIn(1, DrumPattern.MAX_REPEATS)
+                    val length = step * (if (s % 2 == 1) 1.0 - swing else 1.0)
+                    val every = length / n
+                    for (k in 0 until n) {
+                        val at = (k * every).toInt()
+                        val next = if (k + 1 < n) ((k + 1) * every).toInt() else step
+                        val v = hit.velocity * 0.85.pow(k).toFloat()
+                        out += MidiNote(DRUM_CHANNEL, PAD_NOTES[lane], offset + s * step + at, minOf(step / 2, next - at).coerceAtLeast(1), velocity(v))
+                    }
                 }
             }
         }
@@ -147,8 +164,10 @@ object MidiFile {
     private fun noteTrack(name: String, channel: Int, program: Int?, notes: List<MidiNote>): Track = Track().apply {
         name(name)
         if (program != null) event(0, byteArrayOf((0xC0 or channel).toByte(), program.toByte()))
-        // Note-offs before note-ons at the same tick, so repeated notes are never cut short.
-        val events = notes.flatMap { n ->
+        // Note-offs before note-ons at the same tick, so repeated notes are never cut short. Two
+        // notes of one pitch overlapping (a long note under an arpeggio, a note held past the
+        // loop's end): the first ends where the next starts, else its note-off would cut the next.
+        val events = separated(notes).flatMap { n ->
             listOf(
                 Triple(n.start, 1, byteArrayOf((0x90 or channel).toByte(), n.pitch.toByte(), n.velocity.toByte())),
                 Triple(n.start + n.length, 0, byteArrayOf((0x80 or channel).toByte(), n.pitch.toByte(), 0)),
@@ -156,6 +175,16 @@ object MidiFile {
         }.sortedWith(compareBy({ it.first }, { it.second }))
         events.forEach { (tick, _, bytes) -> event(tick, bytes) }
     }
+
+    /** [notes] with each note of a pitch ending by the time the next one of that pitch starts (one at the same start: the longer kept). */
+    private fun separated(notes: List<MidiNote>): List<MidiNote> =
+        notes.groupBy { it.pitch }.values.flatMap { same ->
+            val sorted = same.sortedWith(compareBy({ it.start }, { -it.length })).distinctBy { it.start }
+            sorted.mapIndexed { i, n ->
+                val next = sorted.getOrNull(i + 1) ?: return@mapIndexed n
+                if (n.start + n.length > next.start) n.copy(length = next.start - n.start) else n
+            }
+        }
 
     private class Track {
         private val bytes = ByteArrayOutputStream()

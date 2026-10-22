@@ -631,14 +631,18 @@ JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportDestroy(J
     delete renderer(handle);
 }
 
-// Fills `out` (5 floats): channel peaks (drums, acid, synth), master peak, limiter gain.
+// Fills `out` (NativeEngine.METERS floats): each channel's peak (index kMaster: the master's
+// output), the limiter's lowest gain since the last reading, then the master's peak going into
+// the limiter. Layout must match NativeEngine.METER_LIMITER / METER_MASTER_IN.
 JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_mixerMeters(JNIEnv* env, jobject, jfloatArray out) {
     auto& m = host().engine().mixer();
-    // Channel peaks (index kMaster: the master), then the limiter gain.
-    jfloat values[ps::Mixer::kChannels + 1];
+    constexpr int kMeters = ps::Mixer::kChannels + 2;
+    jfloat values[kMeters];
     for (int ch = 0; ch < ps::Mixer::kChannels; ++ch) values[ch] = ch == ps::Mixer::kMaster ? m.takeMasterPeak() : m.takeChannelPeak(ch);
-    values[ps::Mixer::kChannels] = m.limiterGain();
-    if (env->GetArrayLength(out) >= ps::Mixer::kChannels + 1) env->SetFloatArrayRegion(out, 0, ps::Mixer::kChannels + 1, values);
+    values[ps::Mixer::kChannels] = m.takeLimiterGain();
+    values[ps::Mixer::kChannels + 1] = m.takeMasterInputPeak();
+    const int n = std::min(kMeters, static_cast<int>(env->GetArrayLength(out)));
+    if (n > 0) env->SetFloatArrayRegion(out, 0, n, values);
 }
 
 // Fills `out` (16 ints) with how many times each drum lane has fired, for pad lights.

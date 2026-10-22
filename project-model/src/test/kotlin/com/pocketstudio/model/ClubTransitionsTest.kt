@@ -68,10 +68,10 @@ class ClubTransitionsTest {
             assertTrue(id, StarterWizard.ScenePlan.IMPACT_TITLE in plan.contents(2))
             assertFalse(id, StarterWizard.ScenePlan.RISER_TITLE in plan.contents(0))
         }
-        // Without a part the riser takes the first track; styles without a riser (house, a song) get none.
+        // Without a part the riser takes the first track; styles without a riser (amapiano, a song without an impact) get none.
         val drums = StarterWizard.build(style("techno"), style("techno").lines.associate { it.role to null as PadSample? })
         assertEquals(listOf(StarterWizard.RISER_TRACK), drums.instrumentTracks.map { it.name })
-        for (id in listOf("house", "boom_bap", "uk_garage")) {
+        for (id in listOf("amapiano", "boom_bap", "lofi")) {
             assertTrue(id, full(style(id)).instrumentTracks.none { it.name == StarterWizard.RISER_TRACK })
         }
     }
@@ -159,13 +159,20 @@ class ClubTransitionsTest {
         val dnbCurve = dnbLane.songCurve(dnb.songBars)
         assertEquals(0.25f, dnbCurve[montee.second], 1e-6f)
         assertEquals(1f, dnbCurve[montee.second + montee.third - 1], 1e-6f)
-        // A style without a sweep has none; without the part it sweeps, no filter either.
-        assertFalse(StarterWizard.hasSweeps(full(style("house"))))
+        // A style without a sweep of its own sweeps its chords in the Break only (shut at its start, open at its end);
+        // without the part it sweeps, no filter either.
+        val house = full(style("house"))
+        val housePad = InstrumentTrack.mixerChannel(house.instrumentTracks.first { it.name in StarterWizard.CHORD_TRACK_NAMES }.id)
+        val houseCurve = house.automation.single { it.target.kind == AutoTarget.INSERT_PARAM && it.target.ch == housePad }.songCurve(house.songBars)
+        val houseBreak = house.sections().first { it.first == 3 }
+        assertEquals(0.35f, houseCurve[houseBreak.second], 1e-6f)
+        assertEquals(0.85f, houseCurve[houseBreak.second + houseBreak.third - 1], 1e-6f)
+        assertFalse(StarterWizard.hasSweeps(full(style("house"), parts = setOf(StarterWizard.Part.Bass, StarterWizard.Part.Lead))))
         assertFalse(StarterWizard.hasSweeps(full(style("techno"), parts = setOf(StarterWizard.Part.Bass))))
         // The lanes never go past the engine's limit, the 303's knobs first (acid techno: moves, riser).
         val acid = full(style("acid_techno"))
         assertTrue(acid.automation.size <= AutomationLane.MAX_LANES)
         assertNotNull(acid.automation.firstOrNull { it.target.kind == AutoTarget.ACID })
-        assertNull(full(style("house")).automation.firstOrNull { it.mode == AutomationLane.SONG && it.target.kind == AutoTarget.INSERT_PARAM })
+        assertNull(full(style("amapiano"), parts = setOf(StarterWizard.Part.Bass)).automation.firstOrNull { it.mode == AutomationLane.SONG && it.target.kind == AutoTarget.INSERT_PARAM })
     }
 }

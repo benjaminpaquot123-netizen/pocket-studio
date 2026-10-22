@@ -110,9 +110,16 @@ class StarterWizardTest {
                 val p = StarterWizard.build(style, mapOf(StarterWizard.Role.Kick to null), mood, parts)
                 assertTrue(p.harmony.lock)
                 assertEquals(StarterWizard.progressionOf(style, mood).first, p.harmony.scale)
-                // Club music with a riser gets its « Montée » track after the parts.
-                val riser = style.riser && style.form != StarterWizard.SongForm.Song
-                assertEquals(listOf("Basse", StarterWizard.trackName(P.Pad, parts[P.Pad], style), "Lead") + listOfNotNull(StarterWizard.RISER_TRACK.takeIf { riser }), p.instrumentTracks.map { it.name })
+                // A style with a riser gets its « Montée » track after the parts (the sub layer and the counter-melody before it); a song, its impact alone.
+                val riser = style.riser
+                assertEquals(
+                    listOf("Basse", StarterWizard.trackName(P.Pad, parts[P.Pad], style), "Lead") +
+                        listOfNotNull(
+                            StarterWizard.SUB_TRACK.takeIf { style.melody.subBass }, StarterWizard.COUNTER_TRACK.takeIf { style.melody.counter != null },
+                            StarterWizard.RISER_TRACK.takeIf { riser },
+                        ),
+                    p.instrumentTracks.map { it.name },
+                )
                 for (t in p.instrumentTracks.take(3)) {
                     val notes = p.notesOf(t.id)
                     assertTrue("${style.name} $mood ${t.name}", notes.notes.isNotEmpty())
@@ -213,7 +220,8 @@ class StarterWizardTest {
         for (line in style.lines) {
             val expected = when (line.role) {
                 R.Kick, R.Hat -> listOf(true, true, true)
-                R.OpenHat, R.Perc -> listOf(false, false, true)
+                // The tambourine (the second percussion) waits for the Refrain too.
+                R.OpenHat, R.Perc, R.Perc2 -> listOf(false, false, true)
                 else -> listOf(false, true, true)
             }
             assertEquals(line.role.title, expected, p.drumsIn(line.role))
@@ -320,8 +328,11 @@ class StarterWizardTest {
         for (line in style.lines) {
             val expected = when (line.role) {
                 R.Kick -> listOf(true, true, true, false)
+                // House has its own Break: the hats and the shaker under the chords (here alone).
                 R.Hat -> listOf(true, true, true, true)
-                R.OpenHat, R.Perc -> listOf(false, false, true, true)
+                R.Perc -> listOf(false, false, true, true)
+                // The open hat, the ride and the conga wait for the Drop.
+                R.OpenHat, R.Ride, R.Perc2 -> listOf(false, false, true, false)
                 else -> listOf(false, true, true, false)
             }
             assertEquals(line.role.title, expected, p.drumsIn(line.role))
@@ -499,8 +510,11 @@ class StarterWizardTest {
         assertEquals(EffectType.VINYL.ordinal, channels[InstrumentTrack.mixerChannel(pad.id)].inserts[0].type)
         assertEquals(FxPresets.byId("pump")!!.inserts, channels[InstrumentTrack.mixerChannel(bass.id)].inserts.filter { it.type != 0 })
         assertEquals(0.4f, channels[Mixer.padChannel(R.Snare.lane)].sends[0])
+        // The default mix: the beat glued (its strip), the kit's loud kick brought down (its pad's strip).
+        assertEquals(EffectType.COMPRESSOR.ordinal, channels[0].inserts[0].type)
+        assertTrue(channels[Mixer.padChannel(R.Kick.lane)].volume < 0.8f)
         // No lead, no acid line: their effects go nowhere; the rest of the mixer is untouched.
-        val touched = setOf(InstrumentTrack.mixerChannel(pad.id), InstrumentTrack.mixerChannel(bass.id), Mixer.padChannel(R.Snare.lane))
+        val touched = setOf(0, Mixer.padChannel(R.Kick.lane), InstrumentTrack.mixerChannel(pad.id), InstrumentTrack.mixerChannel(bass.id), Mixer.padChannel(R.Snare.lane))
         channels.forEachIndexed { i, c -> if (i !in touched) assertEquals("channel $i", Channel().sanitized(), c) }
     }
 

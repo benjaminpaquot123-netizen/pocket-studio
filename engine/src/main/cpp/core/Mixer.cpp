@@ -39,7 +39,18 @@ void Mixer::prepare(int sampleRate) {
         for (auto& g : strip) g.mix = g.on ? 1.0f : 0.0f;
     }
     gateCount_ = 0;
+    // Stream closed: an effect still waiting for its swap goes in at once.
+    for (int ch = 0; ch < kChannels; ++ch) finishSwaps(ch);
+    stripLevel_.fill(0.0f);
     release_ = std::exp(-1.0f / (0.12f * rate));  // 120 ms release
+    lookAhead_ = std::clamp(static_cast<int>(std::lround(kLookAheadMs * 0.001f * rate)), 1, kLookAheadMax);
+    delayL_.fill(0.0f);
+    delayR_.fill(0.0f);
+    gainRing_.fill(1.0f);
+    gainSum_ = lookAhead_;
+    releasedGain_ = 1.0f;
+    minHead_ = minTail_ = 0;
+    limFrame_ = 0;
     masterGain_.configure(rate, 15.0f);
     masterGain_.snap(masterGain_.target());
     updateTargets();
@@ -76,20 +87,84 @@ void Mixer::setSolo(int ch, bool on) {
 
 void Mixer::setInsertType(int ch, int slot, int type) {
     if (ch < 0 || ch >= kChannels || slot < 0 || slot >= kInserts) return;
-    auto& strip = inserts_[static_cast<size_t>(ch)];
-    auto& s = strip[static_cast<size_t>(slot)];
-    const int before = s.type();
-    s.setType(type);
-    // Another effect in the slot plays in every scene until a SetInsertOn says otherwise (the
-    // gate of the one before must not keep it silent).
-    if (s.type() != before) gates_[static_cast<size_t>(ch)][static_cast<size_t>(slot)] = Gate{};
-    afterInsertChange(ch);
+    requestType(ch, slot, type);
 }
 
 void Mixer::clearInserts(int ch) {
     if (ch < 0 || ch >= kChannels) return;
-    for (auto& slot : inserts_[static_cast<size_t>(ch)]) slot.setType(InsertSlot::None);
-    for (auto& g : gates_[static_cast<size_t>(ch)]) g = Gate{};
+    for (int slot = 0; slot < kInserts; ++slot) {
+        requestType(ch, slot, InsertSlot::None);
+        // An empty slot plays in every scene again.
+        if (inserts_[static_cast<size_t>(ch)][static_cast<size_t>(slot)].type() == InsertSlot::None &&
+            swaps_[static_cast<size_t>(ch)][static_cast<size_t>(slot)].type < 0) {
+            gates_[static_cast<size_t>(ch)][static_cast<size_t>(slot)] = Gate{};
+        }
+    }
+}
+
+void Mixer::finishSwaps(int ch) {
+    for (int slot = 0; slot < kInserts; ++slot) {
+        auto& sw = swaps_[static_cast<size_t>(ch)][static_cast<size_t>(slot)];
+        if (sw.type >= 0) swapNow(ch, slot, sw.type, false);
+        sw.fade = 1.0f;
+    }
+}
+
+bool Mixer::slotHeard(int ch, int slot) const {
+    if (ch == kMaster && !masterFxOn_) return false;
+    if (inserts_[static_cast<size_t>(ch)][static_cast<size_t>(slot)].type() == InsertSlot::None) return false;
+    const auto& g = gates_[static_cast<size_t>(ch)][static_cast<size_t>(slot)];
+    if (!g.on && g.mix <= 0.0f) return false;
+    return stripLevel_[static_cast<size_t>(ch)] >= kSilentLevel;
+}
+
+void Mixer::requestType(int ch, int slot, int type) {
+    if (type < 0 || type >= InsertSlot::kTypes) return;
+    auto& sw = swaps_[static_cast<size_t>(ch)][static_cast<size_t>(slot)];
+    const int current = inserts_[static_cast<size_t>(ch)][static_cast<size_t>(slot)].type();
+    if (sw.type >= 0) {
+        // Still fading out: back to the effect in place (it fades in again), or another one waits.
+        if (type == current) {
+            sw.type = -1;
+            sw.mask = 0;
+            afterInsertChange(ch);
+            return;
+        }
+        if (type != sw.type) sw.mask = 0;
+        sw.type = type;
+        sw.gateOn = true;
+        return;
+    }
+    if (type == current) {
+        afterInsertChange(ch);  // a slot still waiting for a long effect's unit tries again
+        return;
+    }
+    if (!slotHeard(ch, slot)) {
+        // Nothing of the old effect heard: in at once (from silence when the strip sounds).
+        swapNow(ch, slot, type, stripLevel_[static_cast<size_t>(ch)] >= kSilentLevel && !(ch == kMaster && !masterFxOn_));
+        return;
+    }
+    sw.type = type;
+    sw.gateOn = true;
+    sw.mask = 0;
+}
+
+void Mixer::swapNow(int ch, int slot, int type, bool fadeIn) {
+    auto& s = inserts_[static_cast<size_t>(ch)][static_cast<size_t>(slot)];
+    auto& sw = swaps_[static_cast<size_t>(ch)][static_cast<size_t>(slot)];
+    const bool on = sw.type >= 0 ? sw.gateOn : true;
+    s.setType(type);
+    // Another effect in the slot plays in every scene until a SetInsertOn says otherwise (the
+    // gate of the one before must not keep it silent); put in while the strip sounds, it glides in.
+    auto& g = gates_[static_cast<size_t>(ch)][static_cast<size_t>(slot)];
+    g.on = on;
+    g.mix = fadeIn ? 0.0f : (on ? 1.0f : 0.0f);
+    for (int p = 0; p < InsertSlot::kParams; ++p) {
+        if (sw.mask & (1u << p)) s.setParam(p, sw.params[static_cast<size_t>(p)]);
+    }
+    sw.type = -1;
+    sw.mask = 0;
+    sw.fade = 1.0f;
     afterInsertChange(ch);
 }
 
@@ -107,6 +182,15 @@ void Mixer::afterInsertChange(int ch) {
 
 void Mixer::setInsertParam(int ch, int slot, int param, float v) {
     if (ch < 0 || ch >= kChannels || slot < 0 || slot >= kInserts) return;
+    auto& sw = swaps_[static_cast<size_t>(ch)][static_cast<size_t>(slot)];
+    if (sw.type >= 0) {
+        // For the effect waiting to go in, not the one fading out.
+        if (param >= 0 && param < InsertSlot::kParams) {
+            sw.params[static_cast<size_t>(param)] = v;
+            sw.mask |= 1u << param;
+        }
+        return;
+    }
     inserts_[static_cast<size_t>(ch)][static_cast<size_t>(slot)].setParam(param, v);
 }
 
@@ -126,6 +210,8 @@ void Mixer::scheduleInsertOn(int ch, int slot, bool on, int offset) {
 
 void Mixer::applyGate(int ch, int slot, bool on) {
     auto& g = gates_[static_cast<size_t>(ch)][static_cast<size_t>(slot)];
+    auto& sw = swaps_[static_cast<size_t>(ch)][static_cast<size_t>(slot)];
+    if (sw.type >= 0) sw.gateOn = on;  // for the effect waiting to go in
     // Back from silence: no tail or LFO left from the scene it last played in.
     if (on && !g.on && g.mix <= 0.0f) inserts_[static_cast<size_t>(ch)][static_cast<size_t>(slot)].reset();
     g.on = on;
@@ -134,27 +220,55 @@ void Mixer::applyGate(int ch, int slot, bool on) {
 void Mixer::processInserts(int ch, float* l, float* r, int n) {
     auto& strip = inserts_[static_cast<size_t>(ch)];
     auto& gates = gates_[static_cast<size_t>(ch)];
+    auto& swaps = swaps_[static_cast<size_t>(ch)];
     for (size_t k = 0; k < strip.size(); ++k) {
         auto& slot = strip[k];
         auto& g = gates[k];
-        if (g.on && g.mix >= 1.0f) {
+        auto& sw = swaps[k];
+        const bool swapping = sw.type >= 0 || sw.fade < 1.0f;
+        if (!swapping && g.on && g.mix >= 1.0f) {
             slot.process(l, r, n);
             continue;
         }
-        if (!g.on && g.mix <= 0.0f) continue;  // not in this scene: the sound goes through untouched
-        // Gliding in or out: the dry sound and the effect's, crossfaded.
-        std::copy(l, l + n, dryL_.begin());
-        std::copy(r, r + n, dryR_.begin());
-        slot.process(l, r, n);
-        const float step = g.on ? gateStep_ : -gateStep_;
-        float m = g.mix;
-        for (int i = 0; i < n; ++i) {
-            m = std::clamp(m + step, 0.0f, 1.0f);
-            const auto j = static_cast<size_t>(i);
-            l[i] = dryL_[j] + m * (l[i] - dryL_[j]);
-            r[i] = dryR_[j] + m * (r[i] - dryR_[j]);
+        if (!g.on && g.mix <= 0.0f) {
+            // Not in this scene: the sound goes through untouched (an effect waiting goes in now).
+            if (sw.type >= 0) swapNow(ch, static_cast<int>(k), sw.type, true);
+            sw.fade = 1.0f;
+            continue;
         }
-        g.mix = m;
+        // Gliding in or out (a scene's « Joue dans », an effect swapped): the dry sound and the
+        // effect's, crossfaded. An effect fading out for another one is swapped on the frame its
+        // share reaches 0, and the new one glides in from there (the same whatever the blocks).
+        for (int from = 0; from < n;) {
+            int to = n;
+            bool ends = false;  // the old effect's share reaches 0 at `to`
+            if (sw.type >= 0) {
+                const int left = std::max(1, static_cast<int>(std::ceil(sw.fade / gateStep_ - 1e-3f)));
+                if (from + left <= n) {
+                    to = from + left;
+                    ends = true;
+                }
+            }
+            const int m = to - from;
+            std::copy(l + from, l + to, dryL_.begin());
+            std::copy(r + from, r + to, dryR_.begin());
+            slot.process(l + from, r + from, m);
+            const float step = g.on ? gateStep_ : -gateStep_;
+            const float fadeStep = sw.type >= 0 ? -gateStep_ : gateStep_;
+            float mix = g.mix, fade = sw.fade;
+            for (int i = 0; i < m; ++i) {
+                mix = std::clamp(mix + step, 0.0f, 1.0f);
+                fade = std::clamp(fade + fadeStep, 0.0f, 1.0f);
+                const float wet = mix * fade;
+                const auto j = static_cast<size_t>(i);
+                l[from + i] = dryL_[j] + wet * (l[from + i] - dryL_[j]);
+                r[from + i] = dryR_[j] + wet * (r[from + i] - dryR_[j]);
+            }
+            g.mix = mix;
+            sw.fade = fade;
+            if (ends) swapNow(ch, static_cast<int>(k), sw.type, true);
+            from = to;
+        }
     }
 }
 
@@ -230,6 +344,12 @@ void Mixer::updateTargets() {
 void Mixer::storeMax(std::atomic<float>& a, float v) {
     float prev = a.load(std::memory_order_relaxed);
     while (v > prev && !a.compare_exchange_weak(prev, v, std::memory_order_acq_rel)) {
+    }
+}
+
+void Mixer::storeMin(std::atomic<float>& a, float v) {
+    float prev = a.load(std::memory_order_relaxed);
+    while (v < prev && !a.compare_exchange_weak(prev, v, std::memory_order_acq_rel)) {
     }
 }
 
@@ -356,7 +476,12 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
         const int ch = (k + kFirstPad) % kChannels;
         const bool pad = ch >= kFirstPad;
         auto& s = strips_[static_cast<size_t>(ch)];
-        if (ch == kMaster || !channels[ch]) continue;  // the master's slot, or an unused track or pad
+        if (ch == kMaster) continue;  // the master's slot
+        if (!channels[ch]) {  // an unused track or pad
+            stripLevel_[static_cast<size_t>(ch)] = 0.0f;
+            finishSwaps(ch);  // not heard: an effect waiting goes in now
+            continue;
+        }
         const float* inL = channels[ch] + offset;
         const float* inR = rights && rights[ch] ? rights[ch] + offset : inL;
         // A stray NaN must not get into the effects' state (it would stay there for good).
@@ -370,7 +495,13 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
                 chR_[static_cast<size_t>(i)] += padsR_[static_cast<size_t>(i)];
             }
         }
-        if (activeInserts_[static_cast<size_t>(ch)] > 0) processInserts(ch, chL_.data(), chR_.data(), n);
+        // What goes into the inserts and what comes out (an effect's tail): a swap fades if heard.
+        float level = blockPeak(chL_.data(), chR_.data(), n);
+        if (activeInserts_[static_cast<size_t>(ch)] > 0) {
+            processInserts(ch, chL_.data(), chR_.data(), n);
+            level = std::max(level, blockPeak(chL_.data(), chR_.data(), n));
+        }
+        stripLevel_[static_cast<size_t>(ch)] = level;
         macros_[static_cast<size_t>(ch)].process(chL_.data(), chR_.data(), n);
         if (chopActive(ch)) chops_[static_cast<size_t>(ch)].process(chL_.data(), chR_.data(), n);
         auto& iso = (*isolators_)[static_cast<size_t>(ch)];
@@ -417,7 +548,8 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
             busR_[b][static_cast<size_t>(i)] += mR_[static_cast<size_t>(i)] * k;
         }
     }
-    // Send returns, then the metronome / test tone, then the master inserts.
+    // Send returns, then the master inserts and the Live effects; the metronome / test tone after
+    // them (a tape stop or the DJ filter must not take the click along), before the limiter.
     for (size_t b = 0; b < kBuses; ++b) {
         auto& ret = busReturn_[b];
         const bool plain = ret.target() == 1.0f && ret.current() == 1.0f;
@@ -439,13 +571,14 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
         // Back at rest: the plain path again from the next block.
         if (std::fabs(ret.current() - ret.target()) < 1e-5f) ret.snap(ret.target());
     }
-    if (direct) {
-        for (int i = 0; i < n; ++i) {
-            mL_[static_cast<size_t>(i)] += direct[offset + i];
-            mR_[static_cast<size_t>(i)] += direct[offset + i];
-        }
+    float masterLevel = blockPeak(mL_.data(), mR_.data(), n);
+    if (activeInserts_[kMaster] > 0 && masterFxOn_) {
+        processInserts(kMaster, mL_.data(), mR_.data(), n);
+        masterLevel = std::max(masterLevel, blockPeak(mL_.data(), mR_.data(), n));
+    } else {
+        finishSwaps(kMaster);
     }
-    if (activeInserts_[kMaster] > 0 && masterFxOn_) processInserts(kMaster, mL_.data(), mR_.data(), n);
+    stripLevel_[kMaster] = masterLevel;
     // The same guard as the strips', on the send effects and the master's own effects: one NaN
     // left there would keep the whole output silent for good. Checked before the Live effects,
     // which write what they hear into their memory with every NaN made 0 (the NaN's source would
@@ -472,23 +605,30 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
         blewUp_.store(true, std::memory_order_relaxed);
     }
 
-    float masterPeak = 0.0f;
+    float masterPeak = 0.0f, inPeak = 0.0f;
     float minGain = 1.0f;
+    bool directBlewUp = false;
     for (int i = 0; i < n; ++i) {
         float l = mL_[static_cast<size_t>(i)], r = mR_[static_cast<size_t>(i)];
         if (!std::isfinite(l)) l = 0.0f;
         if (!std::isfinite(r)) r = 0.0f;
-        // The master's gain, then the peak limiter: instant attack, smooth release, ceiling at
-        // -1 dBFS. Without the limiter (a pre-master export) the peaks above 0 dBFS stay as they are.
+        // The master's gain, the click, then the look-ahead limiter (ceiling -1 dBFS). Without the
+        // limiter (a pre-master export) the peaks above 0 dBFS stay as they are (delayed the same).
         const float master = masterGain_.next();
         l *= master;
         r *= master;
-        const float peak = std::max(std::fabs(l), std::fabs(r));
-        envelope_ = peak > envelope_ ? peak : envelope_ * release_ + peak * (1.0f - release_);
-        const float gain = limiterOn_ && envelope_ > kCeiling ? kCeiling / envelope_ : 1.0f;
+        if (direct) {
+            float d = direct[offset + i];
+            if (!std::isfinite(d)) {
+                d = 0.0f;
+                directBlewUp = true;
+            }
+            l += d;
+            r += d;
+        }
+        inPeak = std::max(inPeak, std::max(std::fabs(l), std::fabs(r)));
+        const float gain = limit(l, r);
         minGain = std::min(minGain, gain);
-        l *= gain;
-        r *= gain;
         masterPeak = std::max(masterPeak, std::max(std::fabs(l), std::fabs(r)));
         if (outChannels == 1) {
             out[i] = 0.5f * (l + r);
@@ -500,7 +640,53 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
     }
     for (int ch = 0; ch < kChannels; ++ch) storeMax(peaks_[static_cast<size_t>(ch)], blockPeaks[static_cast<size_t>(ch)]);
     storeMax(masterPeak_, masterPeak);
+    storeMax(masterInPeak_, inPeak);
+    if (directBlewUp) blewUp_.store(true, std::memory_order_relaxed);
     limiterGainOut_.store(minGain, std::memory_order_relaxed);
+    storeMin(limiterMin_, minGain);
+}
+
+float Mixer::limit(float& l, float& r) {
+    // The gain each frame needs to stay under the ceiling, its lowest over the look-ahead window
+    // (a monotonic queue), released over 120 ms, then averaged over the window: the gain glides
+    // down along the window and is at most the peak's own when the peak comes out, delayed by
+    // lookAhead - 1 frames. A pure gain on a delayed signal: no distortion, no overshoot.
+    const int window = lookAhead_;
+    const int64_t t = limFrame_++;
+    // A non-finite or absurd sample (only from a broken source) would make inf * 0 = NaN below.
+    if (!(std::fabs(l) < 1.0e6f)) l = 0.0f;
+    if (!(std::fabs(r) < 1.0e6f)) r = 0.0f;
+    const float peak = std::max(std::fabs(l), std::fabs(r));
+    const float need = peak > kCeiling ? kCeiling / peak : 1.0f;
+    while (minTail_ != minHead_ && minGain_[static_cast<size_t>((minTail_ - 1) & (kQueue - 1))] >= need) minTail_ = (minTail_ - 1) & (kQueue - 1);
+    minFrame_[static_cast<size_t>(minTail_)] = t;
+    minGain_[static_cast<size_t>(minTail_)] = need;
+    minTail_ = (minTail_ + 1) & (kQueue - 1);
+    while (minFrame_[static_cast<size_t>(minHead_)] <= t - window) minHead_ = (minHead_ + 1) & (kQueue - 1);
+    const float held = minGain_[static_cast<size_t>(minHead_)];
+    releasedGain_ = held <= releasedGain_ ? held : held + (releasedGain_ - held) * release_;
+    const auto at = static_cast<size_t>(t % window);
+    gainSum_ += static_cast<double>(releasedGain_) - static_cast<double>(gainRing_[at]);
+    gainRing_[at] = releasedGain_;
+    const float smooth = std::min(1.0f, static_cast<float>(gainSum_ / window));
+    delayL_[at] = l;
+    delayR_[at] = r;
+    const auto out = static_cast<size_t>((t + 1) % window);  // lookAhead - 1 frames ago
+    l = delayL_[out];
+    r = delayR_[out];
+    if (!limiterOn_) return 1.0f;
+    l *= smooth;
+    r *= smooth;
+    // Rounding in the running sum: never a hair over the ceiling.
+    l = std::clamp(l, -kCeiling, kCeiling);
+    r = std::clamp(r, -kCeiling, kCeiling);
+    return smooth;
+}
+
+float Mixer::blockPeak(const float* l, const float* r, int n) {
+    float peak = 0.0f;
+    for (int i = 0; i < n; ++i) peak = std::max(peak, std::max(std::fabs(l[i]), std::fabs(r[i])));
+    return peak;
 }
 
 // --- The Live page's switches --------------------------------------------------------------

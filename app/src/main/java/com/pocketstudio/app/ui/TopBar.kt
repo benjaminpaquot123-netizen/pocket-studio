@@ -93,6 +93,8 @@ class TopBarUi(
     val scene: SceneChipUi? = null,
     /** The project is saved (on its own, after each change): a small "✓ Enregistré" under its name. */
     val saved: Boolean = false,
+    /** Recording into a scene that is not the one shown (staying on a scene during the song): its name, said under the project's. */
+    val recordInto: String? = null,
 )
 
 class TopBarActions(
@@ -189,8 +191,13 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
             }
             androidx.compose.foundation.layout.Column {
                 Text(ui.projectName, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                // Nothing to save by hand: said where the project is named, quietly.
-                if (ui.saved) {
+                if (ui.recordInto != null) {
+                    Text(
+                        tr("REC dans %s", ui.recordInto), style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.sp), color = Neon.RedText,
+                        maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.testTag("top_record_into"),
+                    )
+                } else if (ui.saved) {
+                    // Nothing to save by hand: said where the project is named, quietly.
                     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.testTag("top_saved")) {
                         Icon(Icons.Filled.Check, contentDescription = null, tint = Neon.Acid, modifier = Modifier.size(12.dp))
                         // Too narrow for the word (a small phone): the tick alone, never "E…".

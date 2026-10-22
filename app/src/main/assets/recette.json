@@ -1,56 +1,46 @@
 {
-  "id": "phase28-bugs",
-  "milestone": "Phase 28 : la chasse aux bugs des 5 pros",
+  "id": "phase29-corps",
+  "milestone": "Phase 29 : du corps, un style en un toucher, Jump up DnB",
   "items": [
     {
-      "id": "live_press",
-      "title": "Cases au doigt",
-      "hint": "Live : appuie sur une case sans lever le doigt : elle est déjà prise en compte. Glisse pour faire défiler : rien ne part."
+      "id": "quick_style",
+      "title": "Un style, un morceau",
+      "hint": "Mes projets › Nouveau projet › Partir d'un style › Trap : un toucher, le morceau complet (plusieurs scènes, ~3 min)."
     },
     {
-      "id": "live_recover",
-      "title": "Prise sauvée",
-      "hint": "● pendant 1 minute, puis ferme l'appli depuis les applis récentes. Rouvre le projet : la prise est dans le morceau."
+      "id": "jump_up",
+      "title": "Jump up DnB",
+      "hint": "Partir d'un style › Jump up DnB : basse qui grogne, sous-basse, réponse au Drop. Ça ressemble à Chase & Status ?"
     },
     {
-      "id": "live_drop_edit",
-      "title": "Drop après retouche",
-      "hint": "Après une prise avec Montée + Drop, insère une partie au début du morceau : le Drop tombe toujours pile."
+      "id": "body",
+      "title": "Du corps",
+      "hint": "Crée Disco puis Minimal : la basse s'entend enfin ; écoute le roulement toutes les 4 mesures et le 2e Drop plus plein."
     },
     {
-      "id": "data_trash",
-      "title": "Corbeille",
-      "hint": "Mes projets › supprime un projet, puis « Vider la corbeille » : la place est libérée."
+      "id": "level",
+      "title": "Niveau",
+      "hint": "Mixeur : le vumètre du master a une zone rouge ; un vieux projet qui sature propose « Baisser de 6 dB »."
     },
     {
-      "id": "data_autosave",
-      "title": "Sauvegarde en jouant",
-      "hint": "Joue des notes sans t'arrêter 10 secondes, puis ferme l'appli de force : tout est là à la réouverture."
+      "id": "fx_click",
+      "title": "Sans clic",
+      "hint": "Pendant la lecture, change un effet sur une piste, puis le son d'un pad qui joue : pas de clic, fondu court."
     },
     {
-      "id": "music_chords",
-      "title": "Accords justes",
-      "hint": "Nouveau projet › Synthé › Notes › Gamme et accords en La penta mineure : les accords sonnent mineurs, juste."
+      "id": "remix_tempo",
+      "title": "Tempo du Remix",
+      "hint": "Remix qui suit le tempo : glisse le tempo pendant la lecture, la chanson garde sa place dans la mesure."
     },
     {
-      "id": "music_acid",
-      "title": "Acide dans la tonalité",
-      "hint": "Acide › Générer dans un morceau en Ré mineur : toutes les notes sont dans la gamme."
+      "id": "export_bg",
+      "title": "Export en arrière-plan",
+      "hint": "Partage un morceau puis quitte l'appli : une notification montre l'export, qui va au bout."
     },
     {
-      "id": "ui_scale",
-      "title": "Interface 130 %",
-      "hint": "Réglages › Taille de l'interface 130 % : le Live garde ▶, le compteur et le bouton REC ; rien n'est coupé au milieu d'un mot."
-    },
-    {
-      "id": "sound_echo",
-      "title": "Écho à tempo lent",
-      "hint": "Tempo 60 › un Écho en 1/2 sur une piste : il tombe pile sur le temps."
-    },
-    {
-      "id": "export_stems",
-      "title": "Export piste par piste",
-      "hint": "Après une prise avec Montée : Mixeur › export « Piste par piste » : une piste « Effets live » en plus, les autres sans souffle."
+      "id": "song_rec",
+      "title": "Jouer dans le morceau",
+      "hint": "▶ Écouter le morceau, joue des pads : les coups vont dans la scène entendue."
     }
   ]
 }

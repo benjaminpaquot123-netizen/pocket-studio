@@ -117,6 +117,10 @@ data class MixerActions(
     val setInsertScenes: (ch: Int, slot: Int, scenes: Set<Int>?) -> Unit = { _, _, _ -> },
     /** The project's scenes, by index: each one's section name ("" for its letter alone). */
     val scenes: kotlinx.coroutines.flow.StateFlow<List<String>> = kotlinx.coroutines.flow.MutableStateFlow(emptyList()),
+    /** Each strip's peak level (the mixer's meters, by channel): each effect's light and mini view, read when drawn. */
+    val meters: kotlinx.coroutines.flow.StateFlow<FloatArray> = kotlinx.coroutines.flow.MutableStateFlow(FloatArray(0)),
+    /** Keeps [meters] fresh while an effects box is shown (null: someone else does, or no engine). */
+    val watchMeters: (suspend () -> Unit)? = null,
 )
 
 val EXPORT_BARS = listOf(1, 2, 4, 8, 16)

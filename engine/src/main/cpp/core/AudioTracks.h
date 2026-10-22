@@ -41,7 +41,12 @@ public:
     // `samplesPerStep` and `swing` (fraction of a step that odd sequencer steps are late; song step
     // 0 is sequencer step `songOrigin`) place a song clip picked up in its middle exactly where it
     // would be had it played from its start.
-    void onStep(int offset, int local, int songStep, double samplesPerStep = 0.0, double swing = 0.0, int songOrigin = 0);
+    void onStep(int offset, int local, int songStep, double samplesPerStep = 0.0, double swing = 0.0, int songOrigin = 0) {
+        const std::array<int, kTracks> locals{local, local, local, local};
+        onStep(offset, locals, songStep, samplesPerStep, swing, songOrigin);
+    }
+    // The same with each track's own `local` (the live grid: each track counts from its own launch).
+    void onStep(int offset, const std::array<int, kTracks>& locals, int songStep, double samplesPerStep, double swing, int songOrigin);
     // The song position jumped (transport start, the song started over or from another part):
     // song clips stop and pick up where the song is at the next step.
     void songJump();

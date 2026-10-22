@@ -13,6 +13,7 @@
 #include <filesystem>
 #include <fstream>
 #include <functional>
+#include <limits>
 #include <memory>
 #include <random>
 #include <string>
@@ -655,6 +656,20 @@ void testEveryDrumVoiceSoundsAndDecays() {
         if (!ok) std::fprintf(stderr, "  voice %d: silentBefore=%d finite=%d peak=%.3f tail=%.4f\n", voice, silentBefore, finite, peak, tail);
         CHECK(ok);
     }
+}
+
+// A kit built on memory full of garbage (all bytes 0xFF: NaN floats) still renders clean kicks:
+// DaisySP's SyntheticBassDrum::Init leaves its transient envelope unset.
+void testKitOnDirtyMemoryStaysFinite() {
+    alignas(ps::DrumKit) static unsigned char storage[sizeof(ps::DrumKit)];
+    std::memset(storage, 0xFF, sizeof storage);
+    auto* kit = new (storage) ps::DrumKit;  // default-init, as a member of Engine: no zeroing
+    kit->prepare(kRate);
+    const auto out = renderKit(*kit, kRate, 256, {{100, ps::DrumKit::Kick2, 1.0f}, {12000, ps::DrumKit::Zap, 1.0f}});
+    bool finite = true;
+    for (float v : out) finite &= std::isfinite(v);
+    CHECK(finite);
+    kit->~DrumKit();
 }
 
 void testVelocityChangesLoudness() {
@@ -2894,7 +2909,12 @@ void testProcessNeverAllocates() {
             if (i % 45 == 0) {
                 for (int m = 0; m < ps::TrackMacros::kCount; ++m) engine.post({ps::CommandType::SetMacro, (i % 90) / 90.0f, (i / 45) % 4, m});
             }
-            if (i % 30 == 0) engine.post({ps::CommandType::SetPerformance, (i % 60) ? 1.0f : 0.0f, (i / 30) % 6});
+            // Every live effect and setting, on and off (the grid on: they wait for its lines).
+            if (i == 1) engine.post({ps::CommandType::SetPerformance, 0.5f, ps::PerformanceFx::Grid});
+            if (i % 6 == 0 && (i / 6) % ps::PerformanceFx::kParams != ps::PerformanceFx::Grid) {
+                engine.post({ps::CommandType::SetPerformance, (i % 12) ? 0.0f : 0.9f, (i / 6) % ps::PerformanceFx::kParams});
+            }
+            if (i % 15 == 0) engine.post({ps::CommandType::SetMacro, (i % 30) ? 0.0f : 1.0f, 2, ps::Mixer::kKillMacro + (i / 15) % 5});
             if (i % 25 == 0) engine.post({ps::CommandType::ToggleClip, 0.0f, (i / 25) % 4});
             if (i % 45 == 0) engine.post({ps::CommandType::SetPreviewParam, (i / 45) % 2 ? 1.0f : 0.0f, 1, ps::StemPlayer::Mute});
             if (i % 90 == 0) {  // same bundle again: the old reference goes through the retire queue
@@ -5401,6 +5421,1344 @@ void testStemPreviewPlaysWithoutTheTransport() {
     engine.collectGarbage();
 }
 
+
+// --- Live grid: one slot per track, launched on a global quantum ------------------------------
+
+constexpr int kLiveStep = 6000;  // 120 BPM: frames in a sixteenth
+
+// Fills the waiting scene's drums with `hits` (lane, step) only, in a loop of `steps`.
+void stageDrums(ps::Engine& engine, std::initializer_list<std::pair<int, int>> hits, int steps) {
+    engine.post({ps::CommandType::SetStaging, 1.0f});
+    for (int lane = 0; lane < ps::Engine::kLanes; ++lane)
+        for (int st = 0; st < ps::Engine::kMaxSteps; ++st) engine.post({ps::CommandType::SetDrumHit, 0.0f, lane, st});
+    for (const auto& [lane, st] : hits) engine.post({ps::CommandType::SetDrumHit, 1.0f, lane, st});
+    engine.post({ps::CommandType::SetPatternSteps, 0.0f, steps});
+    engine.post({ps::CommandType::SetStaging, 0.0f});
+}
+
+// Renders up to (not including) the frame of transport step `step` (the engine's clock at `now` frames).
+void renderToStep(ps::Engine& engine, int64_t& now, int step, int extra = 0) {
+    const int64_t to = static_cast<int64_t>(step) * kLiveStep + extra;
+    if (to > now) render(engine, static_cast<int>(to - now), 256);
+    now = std::max(now, to);
+}
+
+void testLiveSlotLaunchesOnTheBar() {
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SetDrumHit, 1.0f, 0, 0});  // the scene: pad 1 on step 0
+    stageDrums(engine, {{2, 0}, {2, 8}}, 16);                // waiting for the drums: pad 3 on 0 and 8
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    int64_t now = 0;
+    renderToStep(engine, now, 6);
+    engine.post({ps::CommandType::ArmLaunch, 1.0f, 1 << ps::kSlotDrums, 16});
+    renderToStep(engine, now, 16);
+    ps::LaunchEvent e;
+    CHECK(engine.laneTriggerCount(0) == 1 && engine.laneTriggerCount(2) == 0);
+    CHECK(engine.slotPending(ps::kSlotDrums) == 1 && engine.slotTag(ps::kSlotDrums) == ps::Engine::kRowTag);
+    CHECK(!engine.popLaunchEvent(e));
+    renderToStep(engine, now, 16, 10);  // the bar line: the drums take over before its step sounds
+    CHECK(engine.laneTriggerCount(0) == 1 && engine.laneTriggerCount(2) == 1);
+    CHECK(engine.slotTag(ps::kSlotDrums) == 1 && engine.slotStart(ps::kSlotDrums) == 16);
+    CHECK(engine.slotPending(ps::kSlotDrums) == ps::Engine::kNoLaunch && engine.transportStep() == 16);
+    CHECK(engine.popLaunchEvent(e) && e.slot == ps::kSlotDrums && e.tag == 1 && e.step == 16);
+    CHECK(!engine.popLaunchEvent(e));
+    CHECK(engine.sceneSwaps() == 0);  // one track, not the scene
+    CHECK(engine.slotTag(ps::kSlotAcid) == ps::Engine::kRowTag && engine.slotStart(ps::kSlotAcid) == 0);
+    renderToStep(engine, now, 32);
+    CHECK(engine.laneTriggerCount(2) == 2 && engine.laneTriggerCount(0) == 1);
+    // A two-bar quantum armed in bar 3 (step 36): it waits for step 64, not the next bar (48).
+    stageDrums(engine, {{5, 0}}, 16);
+    renderToStep(engine, now, 36);
+    engine.post({ps::CommandType::ArmLaunch, 2.0f, 1 << ps::kSlotDrums, 32});
+    renderToStep(engine, now, 64);
+    CHECK(engine.laneTriggerCount(5) == 0 && engine.slotTag(ps::kSlotDrums) == 1);
+    renderToStep(engine, now, 64, 10);
+    CHECK(engine.laneTriggerCount(5) == 1 && engine.slotTag(ps::kSlotDrums) == 2 && engine.slotStart(ps::kSlotDrums) == 64);
+    std::printf("  live launch: pad3 %u, pad6 %u, drums from step %d\n", engine.laneTriggerCount(2), engine.laneTriggerCount(5), engine.slotStart(ps::kSlotDrums));
+}
+
+// Each slot counts from its own launch: patterns of different lengths launched at different bars
+// play their steps from there (not from the scene's start).
+void testLiveSlotsKeepTheirOwnLoops() {
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SetDrumHit, 1.0f, 0, 0});
+    engine.post({ps::CommandType::SetAcidStep, 0.0f, 0, ps::AcidStep{0, 0, false, false, true}.pack()});
+    // Waiting: drums of 32 steps with pad 4 on step 16; acid of 32 with a note on step 8 only; a
+    // piano-roll note on step 8 of a 32-step clip.
+    stageDrums(engine, {{3, 16}}, 32);
+    engine.post({ps::CommandType::SetStaging, 1.0f});
+    for (int i = 0; i < ps::AcidTrack::kMaxSteps; ++i) engine.post({ps::CommandType::SetAcidStep, 0.0f, i, ps::AcidStep{}.pack()});
+    engine.post({ps::CommandType::SetAcidStep, 0.0f, 8, ps::AcidStep{0, 0, false, false, true}.pack()});
+    engine.post({ps::CommandType::SetAcidLength, 0.0f, 32});
+    engine.post({ps::CommandType::SetSynthNote, 0.9f, 0, ps::NoteTrack::pack(8 * ps::NoteTrack::kTicksPerStep, 12, 60)});
+    engine.post({ps::CommandType::SetSynthNoteCount, 0.0f, 1});
+    engine.post({ps::CommandType::SetSynthSteps, 0.0f, 32});
+    engine.post({ps::CommandType::SetStaging, 0.0f});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    int64_t now = 0;
+    renderToStep(engine, now, 4);
+    engine.post({ps::CommandType::ArmLaunch, 1.0f, (1 << ps::kSlotDrums) | (1 << ps::kSlotAcid) | (1 << ps::kSlotInst), 16});
+    renderToStep(engine, now, 16, 10);
+    const uint32_t acidAt16 = engine.acidNotesPlayed();
+    CHECK(engine.laneTriggerCount(3) == 0);  // counted from the scene, step 16 would hit here
+    renderToStep(engine, now, 24);
+    CHECK(engine.acidNotesPlayed() == acidAt16 && engine.synthActiveVoices() == 0);
+    renderToStep(engine, now, 24, 200);  // the acid's and the piano roll's step 8, from their launch
+    CHECK(engine.acidNotesPlayed() == acidAt16 + 1);
+    CHECK(engine.synthActiveVoices() == 1);
+    renderToStep(engine, now, 32, 10);  // the drums' step 16, from their launch
+    CHECK(engine.laneTriggerCount(3) == 1);
+    renderToStep(engine, now, 64, 10);
+    CHECK(engine.laneTriggerCount(3) == 2 && engine.acidNotesPlayed() == acidAt16 + 2);
+    CHECK(engine.laneTriggerCount(0) == 1);  // the scene's kick, never again
+}
+
+// Stopping a slot sounds exactly like launching an empty part on it, sample for sample, for each
+// kind of track; an acid note sliding into the stop lets go.
+void testLiveStopIsEmptiedContent() {
+    std::vector<float> clip(6000 * 6, 0.2f);
+    for (int i = 0; i < 6000 * 6; ++i) clip[size_t(i)] = 0.3f * std::sin(i * 0.01f);
+    auto make = [&](int slot, bool viaStop) {
+        auto engine = std::make_unique<ps::Engine>(kRate);
+        for (int st = 0; st < 16; st += 4) engine->post({ps::CommandType::SetDrumHit, 1.0f, 0, st});
+        for (int st = 0; st < 16; st += 2) engine->post({ps::CommandType::SetAcidStep, 0.0f, st, ps::AcidStep{st % 12, 0, false, false, true}.pack()});
+        // The last step slides into the first.
+        engine->post({ps::CommandType::SetAcidStep, 0.0f, 15, ps::AcidStep{3, 0, false, true, true}.pack()});
+        engine->post({ps::CommandType::SetSynthNote, 0.9f, 0, ps::NoteTrack::pack(0, 6 * 24, 64)});
+        engine->post({ps::CommandType::SetSynthNote, 0.9f, 1, ps::NoteTrack::pack(12 * 24, 8 * 24, 67)});  // rings over the bar line
+        engine->post({ps::CommandType::SetSynthNoteCount, 0.0f, 2});
+        ps::Command c{ps::CommandType::InstallAudioClip, 0.0f, 0};
+        c.sample = ps::Sample::create(clip.data(), int(clip.size()), 1, kRate, kRate);
+        engine->post(c);
+        engine->post({ps::CommandType::SetAudioClipParam, 16.0f, 0, ps::AudioTracks::LoopSteps});
+        engine->post({ps::CommandType::SetTransport, 1.0f, 0});
+        auto first = render(*engine, kLiveStep * 8, 256);
+        if (viaStop) {
+            engine->post({ps::CommandType::ArmLaunch, -1.0f, 1 << slot, 16});
+        } else {
+            engine->post({ps::CommandType::SetStaging, 1.0f});
+            if (slot == ps::kSlotDrums) {
+                for (int lane = 0; lane < ps::Engine::kLanes; ++lane)
+                    for (int st = 0; st < ps::Engine::kMaxSteps; ++st) engine->post({ps::CommandType::SetDrumHit, 0.0f, lane, st});
+                engine->post({ps::CommandType::SetPatternSteps, 0.0f, 16});
+            } else if (slot == ps::kSlotAcid) {
+                for (int i = 0; i < ps::AcidTrack::kMaxSteps; ++i) engine->post({ps::CommandType::SetAcidStep, 0.0f, i, ps::AcidStep{}.pack()});
+                engine->post({ps::CommandType::SetAcidLength, 0.0f, 16});
+            } else if (slot == ps::kSlotInst) {
+                engine->post({ps::CommandType::SetSynthNoteCount, 0.0f, 0});
+                engine->post({ps::CommandType::SetSynthSteps, 0.0f, 16});
+            } else {
+                engine->post({ps::CommandType::SetAudioOn, 0.0f, 0});
+            }
+            engine->post({ps::CommandType::SetStaging, 0.0f});
+            engine->post({ps::CommandType::ArmLaunch, 7.0f, 1 << slot, 16});
+        }
+        auto rest = render(*engine, kLiveStep * 40, 256);
+        first.insert(first.end(), rest.begin(), rest.end());
+        // The track's own strip, over the last bar.
+        const int ch = slot == ps::kSlotDrums ? 0 : slot == ps::kSlotAcid ? 1 : slot == ps::kSlotInst ? 2 : ps::audioChannel(0);
+        engine->mixer().takeChannelPeak(ch);
+        render(*engine, kLiveStep * 16, 256);
+        const float tail = engine->mixer().takeChannelPeak(ch);
+        engine->post({ps::CommandType::SetTransport, 0.0f});
+        engine->post({ps::CommandType::InstallAudioClip, 0.0f, 0});
+        render(*engine, 512, 256);
+        engine->collectGarbage();
+        return std::make_pair(first, tail);
+    };
+    for (const int slot : {ps::kSlotDrums, ps::kSlotAcid, ps::kSlotInst, ps::kSlotAudio}) {
+        const auto [stopped, tail] = make(slot, true);
+        const auto [emptied, tail2] = make(slot, false);
+        bool same = stopped.size() == emptied.size();
+        for (size_t i = 0; same && i < stopped.size(); ++i) same = stopped[i] == emptied[i];
+        bool finite = true;
+        for (float v : stopped) finite &= std::isfinite(v) && std::fabs(v) <= 1.0f;
+        std::printf("  live stop, slot %d: identical %d, strip after %.6f\n", slot, same ? 1 : 0, tail);
+        CHECK(same && finite);
+        CHECK(tail < 1e-3f && tail2 < 1e-3f);  // silent after: the sliding acid note let go too
+    }
+}
+
+void testLiveLastCommandWins() {
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    int64_t now = 0;
+    renderToStep(engine, now, 2);
+    const int32_t drums = 1 << ps::kSlotDrums;
+    engine.post({ps::CommandType::ArmLaunch, 1.0f, drums, 16});
+    engine.post({ps::CommandType::ArmLaunch, 2.0f, drums, 16});
+    renderToStep(engine, now, 16, 10);
+    CHECK(engine.slotTag(ps::kSlotDrums) == 2);
+    // A stop armed then cancelled: nothing happens.
+    engine.post({ps::CommandType::ArmLaunch, -1.0f, drums, 16});
+    engine.post({ps::CommandType::CancelLaunch, 0.0f, drums});
+    renderToStep(engine, now, 32, 10);
+    CHECK(engine.slotTag(ps::kSlotDrums) == 2 && engine.slotPending(ps::kSlotDrums) == ps::Engine::kNoLaunch);
+    // A scene armed, then a stop for the same slot: the stop.
+    engine.post({ps::CommandType::ArmLaunch, 3.0f, drums, 16});
+    engine.post({ps::CommandType::ArmLaunch, -1.0f, drums, 16});
+    renderToStep(engine, now, 48, 10);
+    CHECK(engine.slotTag(ps::kSlotDrums) == -1);
+    ps::LaunchEvent e;
+    int events = 0;
+    while (engine.popLaunchEvent(e)) ++events;
+    CHECK(events == 2);  // one per launch that happened
+}
+
+void testSceneSwapCancelsLaunches() {
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    int64_t now = 0;
+    renderToStep(engine, now, 2);
+    engine.post({ps::CommandType::ArmLaunch, 1.0f, (1 << ps::kSlotDrums) | (1 << ps::kSlotRemix), 16});
+    engine.post({ps::CommandType::ArmSceneSwap, 0.0f, 0});
+    renderToStep(engine, now, 16, 10);
+    ps::LaunchEvent e;
+    CHECK(engine.sceneSwaps() == 1 && !engine.popLaunchEvent(e));
+    CHECK(engine.slotTag(ps::kSlotDrums) == ps::Engine::kRowTag && engine.slotStart(ps::kSlotDrums) == 16);
+    CHECK(engine.slotPending(ps::kSlotDrums) == ps::Engine::kNoLaunch);
+    // A whole row armed after a scene swap wins over it (both due on step 32: one change only); it
+    // changes the scene (sceneSwaps).
+    renderToStep(engine, now, 20);
+    engine.post({ps::CommandType::ArmSceneSwap, 0.0f, 0});
+    engine.post({ps::CommandType::ArmLaunch, 4.0f, ps::kAllSlots, 32});
+    renderToStep(engine, now, 32);
+    CHECK(engine.sceneSwaps() == 1);
+    renderToStep(engine, now, 32, 10);
+    std::printf("  row launch: swaps %u, absolute step %d\n", engine.sceneSwaps(), engine.absoluteStep());
+    CHECK(engine.sceneSwaps() == 2);
+    bool all = true;
+    for (int k = 0; k < ps::kSlots; ++k) all &= engine.slotTag(k) == 4 && engine.slotStart(k) == 32;
+    CHECK(all);
+    CHECK(engine.absoluteStep() == 0);  // the scene counts from the row's launch
+    // Stop: nothing armed survives, every slot back to the row.
+    engine.post({ps::CommandType::ArmLaunch, 5.0f, 1 << ps::kSlotAcid, 16});
+    engine.post({ps::CommandType::SetTransport, 0.0f});
+    render(engine, 256, 256);
+    CHECK(engine.slotPending(ps::kSlotAcid) == ps::Engine::kNoLaunch && engine.slotTag(ps::kSlotAcid) == ps::Engine::kRowTag);
+    CHECK(engine.transportStep() == -1);
+}
+
+// Armed while stopped: it fires on the very first step. A slot can start part-way into its part.
+void testLiveLaunchFromStopAndOffset() {
+    ps::Engine engine(kRate);
+    stageDrums(engine, {{1, 0}, {4, 16}}, 32);
+    // As the app sends it: with the part staged (a launch takes the staged offset).
+    engine.post({ps::CommandType::SetStaging, 1.0f});
+    engine.post({ps::CommandType::SetSlotOffset, 0.0f, ps::kSlotDrums, 16});
+    engine.post({ps::CommandType::SetStaging, 0.0f});
+    engine.post({ps::CommandType::ArmLaunch, 1.0f, 1 << ps::kSlotDrums, 16});
+    engine.post({ps::CommandType::ArmLaunch, -1.0f, 1 << ps::kSlotAcid, 16});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    int64_t now = 0;
+    renderToStep(engine, now, 0, 10);
+    CHECK(engine.slotTag(ps::kSlotDrums) == 1 && engine.slotTag(ps::kSlotAcid) == -1);
+    CHECK(engine.slotStart(ps::kSlotDrums) == -16);  // it had played 16 steps already
+    CHECK(engine.laneTriggerCount(4) == 1 && engine.laneTriggerCount(1) == 0);  // its step 16 on the first step
+    renderToStep(engine, now, 16, 10);
+    CHECK(engine.laneTriggerCount(1) == 1);  // then its step 0
+}
+
+// The remix slot: stopped, the song goes quiet but keeps its place; launched, it is back in time.
+void testLiveRemixSlot() {
+    const float levels[4] = {0.1f, 0.1f, 0.1f, 0.1f};
+    std::vector<std::vector<float>> stems(4);
+    for (int st = 0; st < 4; ++st) stems[st].assign(static_cast<size_t>(kRate) * 20 * 2, levels[st]);
+    auto* bundle = ps::StemBundle::fromFloat(stems);
+    ps::Engine engine(kRate);
+    ps::Command install{ps::CommandType::InstallStems};
+    install.stems = bundle;
+    engine.post(install);
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    int64_t now = 0;
+    renderToStep(engine, now, 4);
+    CHECK(engine.mixer().takeChannelPeak(3) > 0.05f);
+    engine.post({ps::CommandType::ArmLaunch, -1.0f, 1 << ps::kSlotRemix, 16});
+    renderToStep(engine, now, 16);
+    CHECK(engine.mixer().takeChannelPeak(3) > 0.05f);
+    renderToStep(engine, now, 18);
+    engine.mixer().takeChannelPeak(3);
+    renderToStep(engine, now, 30);
+    CHECK(engine.mixer().takeChannelPeak(3) < 1e-6f);
+    const int64_t at = engine.stemPosition();
+    CHECK(at > kLiveStep * 29);  // still running with the transport
+    engine.post({ps::CommandType::ArmLaunch, 0.0f, 1 << ps::kSlotRemix, 16});
+    renderToStep(engine, now, 34);
+    CHECK(engine.mixer().takeChannelPeak(3) > 0.05f && engine.slotTag(ps::kSlotRemix) == 0);
+    engine.post({ps::CommandType::SetTransport, 0.0f});
+    engine.post({ps::CommandType::InstallStems});
+    render(engine, 512, 256);
+    engine.collectGarbage();
+}
+
+// Launching, stopping and whole rows allocate nothing on the audio thread; a full event queue
+// (the app not reading) loses events, never the state.
+void testLiveLaunchesAllocateNothing() {
+    ps::Engine engine(kRate);
+    for (int st = 0; st < 16; st += 4) engine.post({ps::CommandType::SetDrumHit, 1.0f, 0, st});
+    // A recorded performance's curves: the DJ filter and a strip's chopper, a point per beat.
+    engine.post({ps::CommandType::SetAutomationTarget, 0.0f, 0, ps::Automation::pack(ps::Automation::Live, ps::Mixer::kMaster, 0, ps::PerformanceFx::Filter)});
+    engine.post({ps::CommandType::SetAutomationTarget, 0.0f, 1, ps::Automation::pack(ps::Automation::Macro, 0, 0, ps::Mixer::kChopMacro)});
+    for (int b = 0; b < 600; ++b) {
+        engine.post({ps::CommandType::SetAutomationSong, 0.5f + 0.4f * std::sin(b * 0.3f), 0, b});
+        engine.post({ps::CommandType::SetAutomationSong, (b / 3) % 2 ? 1.0f : 0.0f, 1, b});
+    }
+    engine.post({ps::CommandType::SetAutomationMode, 600.0f, 0, ps::Automation::Song | ps::Automation::kPerBeat});
+    engine.post({ps::CommandType::SetAutomationMode, 600.0f, 1, ps::Automation::Song | ps::Automation::kPerBeat | ps::Automation::kHeld});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0, 0});
+    std::vector<float> out(2048 * 2);
+    for (int i = 0; i < 20; ++i) engine.process(nullptr, 0, 0, out.data(), 2048, 2);
+#if defined(PS_COUNT_ALLOCATIONS)
+    g_allocations = 0;
+    g_countAllocations = true;
+#endif
+    // 1600 blocks of 2048 frames: 34 bars at 120 BPM; each bar something new is armed (over 300 launches).
+    for (int i = 0; i < 1600; ++i) {
+        if (i % 47 == 0) {
+            const int what = (i / 47) % 4;
+            if (what == 0) engine.post({ps::CommandType::ArmLaunch, 1.0f, ps::kAllSlots, 16});
+            else if (what == 1) engine.post({ps::CommandType::ArmLaunch, -1.0f, ps::kAllSlots, 16});
+            else if (what == 2) engine.post({ps::CommandType::ArmLaunch, 2.0f, (1 << ps::kSlotAcid) | (1 << ps::kSlotRemix), 16});
+            else engine.post({ps::CommandType::ArmLaunch, 3.0f, ps::kAllSlots, 16});
+            if (what == 1) engine.post({ps::CommandType::MarkSong, float(i), 16});
+        }
+        engine.process(nullptr, 0, 0, out.data(), 2048, 2);
+    }
+#if defined(PS_COUNT_ALLOCATIONS)
+    g_countAllocations = false;
+    std::printf("  allocations during live launches: %d\n", g_allocations.load());
+    CHECK(g_allocations.load() == 0);
+#endif
+    // Never read: the queue is full (more than 256 slot launches happened), the rest dropped.
+    ps::LaunchEvent e;
+    int events = 0;
+    while (engine.popLaunchEvent(e)) ++events;
+    std::printf("  launch events kept: %d of more\n", events);
+    CHECK(events == ps::Engine::kLaunchEvents);
+    // The state is still right, and new events come in again.
+    const int tag = engine.slotTag(ps::kSlotDrums);
+    CHECK(tag == 1 || tag == -1 || tag == 3);
+    engine.post({ps::CommandType::ArmLaunch, 6.0f, 1 << ps::kSlotDrums, 16});
+    render(engine, kLiveStep * 17, 256);
+    CHECK(engine.popLaunchEvent(e) && e.tag == 6 && engine.slotTag(ps::kSlotDrums) == 6);
+    CHECK(!engine.hasNonFinite());
+}
+
+
+// The live grid's reverb and echo returns: untouched (1), the mix is the plain one sample for
+// sample; at 0 the effect's sound is gone (the dry mix as with no send), at 2 it is louder.
+void testLiveBusReturn() {
+    auto make = [](float send, float ret) {
+        auto engine = std::make_unique<ps::Engine>(kRate);
+        for (int st = 0; st < 16; st += 4) engine->post({ps::CommandType::SetDrumHit, 1.0f, 0, st});
+        engine->post({ps::CommandType::SetSend, send, 0, 0});
+        engine->post({ps::CommandType::SetMaster, 0.0f, 1});           // no limiter: the sums stay linear
+        engine->post({ps::CommandType::SetChannelVolume, 0.3f, 0});
+        if (ret >= 0.0f) engine->post({ps::CommandType::SetBusReturn, ret, 0});
+        engine->post({ps::CommandType::SetTransport, 1.0f, 0});
+        return render(*engine, kRate, 256);
+    };
+    const auto plain = make(0.8f, -1.0f);
+    const auto same = make(0.8f, 1.0f);
+    CHECK(plain == same);
+    const auto dry = make(0.0f, -1.0f);
+    const auto off = make(0.8f, 0.0f);
+    const auto loud = make(0.8f, 2.0f);
+    float diffOff = 0.0f, wetPlain = 0.0f, wetLoud = 0.0f;
+    for (size_t i = size_t(kRate / 2) * kChannels; i < plain.size(); ++i) {
+        diffOff = std::max(diffOff, std::fabs(off[i] - dry[i]));
+        wetPlain = std::max(wetPlain, std::fabs(plain[i] - dry[i]));
+        wetLoud = std::max(wetLoud, std::fabs(loud[i] - dry[i]));
+        CHECK(std::isfinite(loud[i]));
+    }
+    std::printf("  bus return: off %.6f, plain wet %.4f, loud wet %.4f\n", diffOff, wetPlain, wetLoud);
+    CHECK(diffOff < 1e-4f && wetPlain > 0.01f && wetLoud > 1.5f * wetPlain);
+}
+
+// --- Recorded performance (« Enregistrer la performance ») -----------------------------------
+
+// The waiting scene's acid line: a note every 3 steps over `length` steps.
+void stageAcid(ps::Engine& engine, int length, int note) {
+    engine.post({ps::CommandType::SetStaging, 1.0f});
+    for (int i = 0; i < ps::AcidTrack::kMaxSteps; ++i) {
+        const bool gate = i < length && i % 3 == 0;
+        engine.post({ps::CommandType::SetAcidStep, 0.0f, i, ps::AcidStep{(note + i) % 12, 0, i % 6 == 0, false, gate}.pack()});
+    }
+    engine.post({ps::CommandType::SetAcidLength, 0.0f, length});
+    engine.post({ps::CommandType::SetStaging, 0.0f});
+}
+
+// Scene A: four kicks in 16 steps and a 16-step acid line.
+void sceneA(ps::Engine& engine) {
+    for (int st = 0; st < 16; st += 4) engine.post({ps::CommandType::SetDrumHit, 1.0f, 0, st});
+    engine.post({ps::CommandType::SetPatternSteps, 0.0f, 16});
+    for (int i = 0; i < 16; i += 2) engine.post({ps::CommandType::SetAcidStep, 0.0f, i, ps::AcidStep{i % 7, 0, false, false, true}.pack()});
+    engine.post({ps::CommandType::SetAcidLength, 0.0f, 16});
+}
+
+// The song written from a live take sounds like the take, sample for sample (tonal drums only:
+// the noise generators are shared by every engine of the process): the acid launched
+// alone on B (a 48-step line) at bar 2, the drums on C at bar 4 while the acid is two bars into
+// its line, and the whole-mix chopper held from beat 10 to beat 14. Played as song parts (each
+// track's scene, the acid carrying on with SetSlotOffset, the chopper as a held per-beat song
+// curve) and rendered offline, it is the same audio.
+void testPerformanceSongMatchesTheTake() {
+    const int32_t chop = ps::Automation::pack(ps::Automation::Live, ps::Mixer::kMaster, 0, ps::PerformanceFx::Chop);
+    // The take (launches on the grid, a held button) or the song written from it.
+    auto record = [&](bool asSong) {
+        auto e = std::make_unique<ps::Engine>(kRate);
+        sceneA(*e);
+        std::vector<float> out;
+        int64_t at = 0;
+        auto to = [&](int step) {
+            const int64_t end = static_cast<int64_t>(step) * kLiveStep;
+            if (end > at) {
+                auto part = render(*e, static_cast<int>(end - at), 256);
+                out.insert(out.end(), part.begin(), part.end());
+                at = end;
+            }
+        };
+        if (!asSong) {
+            e->post({ps::CommandType::MarkSong, 0.0f, 16});
+            e->post({ps::CommandType::SetTransport, 1.0f, 0});
+            to(5);
+            stageAcid(*e, 48, 3);
+            e->post({ps::CommandType::ArmLaunch, 1.0f, 1 << ps::kSlotAcid, 16});
+            to(37);
+            stageDrums(*e, {{7, 0}, {7, 6}, {8, 20}}, 32);
+            e->post({ps::CommandType::ArmLaunch, 2.0f, 1 << ps::kSlotDrums, 16});
+            to(40);
+            e->post({ps::CommandType::SetPerformance, 1.0f, ps::PerformanceFx::Chop});
+            to(56);
+            e->post({ps::CommandType::SetPerformance, 0.0f, ps::PerformanceFx::Chop});
+            to(96);
+            return out;
+        }
+        // The written song: part 1 = A (16 steps); part 2 = A with the acid on B (32 steps);
+        // part 3 = A with the drums on C and the acid on B two bars in (48 steps).
+        e->post({ps::CommandType::SetAutomationTarget, 0.0f, 0, chop});
+        // As the app sends it: runs of equal values (beats 0-9 off, 10-13 on, 14-23 off).
+        e->post({ps::CommandType::SetAutomationSongRun, 0.0f, 0, 0 | (10 << 16)});
+        e->post({ps::CommandType::SetAutomationSongRun, 1.0f, 0, 10 | (4 << 16)});
+        e->post({ps::CommandType::SetAutomationSongRun, 0.0f, 0, 14 | (10 << 16)});
+        e->post({ps::CommandType::SetAutomationMode, 24.0f, 0, ps::Automation::Song | ps::Automation::kPerBeat | ps::Automation::kHeld});
+        e->post({ps::CommandType::SetTransport, 1.0f, 0, 0});
+        to(5);
+        // Part 2 staged: the drums of A again, the acid of B.
+        stageDrums(*e, {{0, 0}, {0, 4}, {0, 8}, {0, 12}}, 16);
+        stageAcid(*e, 48, 3);
+        e->post({ps::CommandType::SetStaging, 1.0f});  // the offsets go with the staged part
+        for (int k = 0; k < ps::kSlots; ++k) e->post({ps::CommandType::SetSlotOffset, 0.0f, k, 0});
+        e->post({ps::CommandType::SetStaging, 0.0f});
+        e->post({ps::CommandType::ArmSceneSwap, 16.0f, 16, 1});  // after 16 steps; the song is at step 16 there
+        to(20);
+        // Part 3: the drums of C, the acid of B carrying on (32 steps played).
+        stageDrums(*e, {{7, 0}, {7, 6}, {8, 20}}, 32);
+        stageAcid(*e, 48, 3);
+        e->post({ps::CommandType::SetStaging, 1.0f});
+        for (int k = 0; k < ps::kSlots; ++k) e->post({ps::CommandType::SetSlotOffset, 0.0f, k, k == ps::kSlotAcid ? 32 : 0});
+        e->post({ps::CommandType::SetStaging, 0.0f});
+        // The part playing sent again meanwhile (the app's syncEngine): its offsets never reach the swap staged.
+        for (int k = 0; k < ps::kSlots; ++k) e->post({ps::CommandType::SetSlotOffset, 0.0f, k, 0});
+        e->post({ps::CommandType::ArmSceneSwap, 48.0f, 32, 1});
+        to(96);
+        return out;
+    };
+    const auto takeOut = record(false);
+    const auto songOut = record(true);
+    bool same = takeOut.size() == songOut.size();
+    float diff = 0.0f, peak = 0.0f;
+    for (size_t i = 0; same && i < takeOut.size(); ++i) {
+        diff = std::max(diff, std::fabs(takeOut[i] - songOut[i]));
+        peak = std::max(peak, std::fabs(takeOut[i]));
+    }
+    size_t first = 0;
+    while (first < std::min(takeOut.size(), songOut.size()) && takeOut[first] == songOut[first]) ++first;
+    std::printf("  performance written as a song: max difference %.3g (peak %.3f), first at step %.2f\n", diff, peak,
+                double(first / kChannels) / kLiveStep);
+    CHECK(same && diff == 0.0f && peak > 0.05f);
+}
+
+// A recorded performance's start: the song position becomes the one given on the quantum.
+void testMarkSongSetsTheSongPosition() {
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0, -1});  // a scene on its own: no song position
+    int64_t now = 0;
+    renderToStep(engine, now, 5, 10);
+    CHECK(engine.songStep() == -1 && engine.songMarkStep() == -1);
+    engine.post({ps::CommandType::MarkSong, 64.0f, 16});
+    renderToStep(engine, now, 16);
+    CHECK(engine.songStep() == -1);
+    renderToStep(engine, now, 16, 10);
+    CHECK(engine.songMarkStep() == 16 && engine.songStep() == 64);
+    renderToStep(engine, now, 20, 10);
+    CHECK(engine.songStep() == 68);
+    const double pos = engine.transportPosition();
+    std::printf("  mark: song step %d at transport %d (position %.2f)\n", engine.songStep(), engine.transportStep(), pos);
+    CHECK(pos >= 20.0 && pos < 21.0);
+    // Cancelled before it is made: nothing changes.
+    engine.post({ps::CommandType::MarkSong, 0.0f, 16});
+    engine.post({ps::CommandType::MarkSong, 0.0f, 0});
+    renderToStep(engine, now, 32, 10);
+    CHECK(engine.songMarkStep() == 16 && engine.songStep() == 80);
+    engine.post({ps::CommandType::SetTransport, 0.0f});
+    render(engine, 256, 256);
+    CHECK(engine.songMarkStep() == 16 && engine.transportPosition() < 0.0);
+}
+
+// Song curves with a point per beat: they slide beat by beat, or hold each point (on/off).
+void testPerBeatSongCurves() {
+    auto level = [](bool held) {
+        ps::Engine engine(kRate);
+        engine.post({ps::CommandType::SetSynthNote, 0.9f, 0, ps::NoteTrack::pack(0, 64 * 24, 60)});
+        engine.post({ps::CommandType::SetSynthNoteCount, 0.0f, 1});
+        engine.post({ps::CommandType::SetSynthSteps, 0.0f, 64});
+        engine.post({ps::CommandType::SetMaster, 0.0f, 1});
+        engine.post({ps::CommandType::SetAutomationTarget, 0.0f, 3, ps::Automation::pack(ps::Automation::Volume, 2, 0, 0)});
+        // Beat 0: 0.8, beat 1: 0 (a point a beat).
+        engine.post({ps::CommandType::SetAutomationSong, 0.8f, 3, 0});
+        engine.post({ps::CommandType::SetAutomationSong, 0.0f, 3, 1});
+        engine.post({ps::CommandType::SetAutomationMode, 2.0f, 3, ps::Automation::Song | ps::Automation::kPerBeat | (held ? ps::Automation::kHeld : 0)});
+        engine.post({ps::CommandType::SetTransport, 1.0f, 0, 0});
+        int64_t now = 0;
+        renderToStep(engine, now, 2, 2000);  // half-way through the first beat
+        engine.mixer().takeChannelPeak(2);
+        render(engine, 3000, 250);
+        return engine.mixer().takeChannelPeak(2);
+    };
+    const float slid = level(false), held = level(true);
+    std::printf("  per-beat curve, half a beat in: sliding %.4f, held %.4f\n", slid, held);
+    CHECK(held > 1.3f * slid && slid > 0.0f);
+}
+
+// The Live page's « Hachoir de voie »: a strip chopped in sixteenths, then plain again.
+void testTrackChopper() {
+    auto run = [](bool chopped) {
+        auto engine = std::make_unique<ps::Engine>(kRate);
+        engine->post({ps::CommandType::SetSynthNote, 0.9f, 0, ps::NoteTrack::pack(0, 64 * 24, 57)});
+        engine->post({ps::CommandType::SetSynthNoteCount, 0.0f, 1});
+        engine->post({ps::CommandType::SetSynthSteps, 0.0f, 64});
+        if (chopped) engine->post({ps::CommandType::SetMacro, 1.0f, 2, ps::Mixer::kChopMacro});
+        engine->post({ps::CommandType::SetTransport, 1.0f, 0});
+        auto out = render(*engine, kLiveStep * 8, 256);
+        CHECK(engine->mixer().chopOn(2) == chopped);
+        engine->post({ps::CommandType::SetMacro, 0.0f, 2, ps::Mixer::kChopMacro});
+        auto after = render(*engine, kLiveStep * 8, 256);
+        out.insert(out.end(), after.begin(), after.end());
+        return out;
+    };
+    const auto plain = run(false), chopped = run(true);
+    // In each sixteenth the chopper lets every other one through: the quiet ones are much lower.
+    auto rms = [](const std::vector<float>& v, size_t from, size_t to) {
+        double sum = 0;
+        for (size_t i = from; i < to; ++i) sum += double(v[i]) * v[i];
+        return std::sqrt(sum / double(to - from));
+    };
+    const size_t step = size_t(kLiveStep) * kChannels;
+    const double on = rms(chopped, 4 * step + step / 4, 5 * step - step / 4);
+    const double off = rms(chopped, 5 * step + step / 4, 6 * step - step / 4);
+    const double ref = rms(plain, 5 * step + step / 4, 6 * step - step / 4);
+    const double back = rms(chopped, 14 * step, 15 * step), backRef = rms(plain, 14 * step, 15 * step);
+    std::printf("  track chopper: on %.4f, off %.4f (plain %.4f), let go %.4f / %.4f\n", on, off, ref, back, backRef);
+    CHECK(off < 0.05 * ref && on > 0.5 * ref);
+    CHECK(std::fabs(back - backRef) < 0.02 * backRef);
+}
+
+
+// --- Phase 27 review fixes ----------------------------------------------------------------------
+
+// SetSlotOffset follows SetStaging: the part playing sent again (non-staged) never replaces the
+// offsets staged for the next song part; a non-staged offset is the transport's start. ArmLaunch
+// ends a staging burst (its "off" may be lost). Huge values are bounded.
+void testSlotOffsetFollowsStaging() {
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    int64_t now = 0;
+    renderToStep(engine, now, 5);
+    engine.post({ps::CommandType::SetStaging, 1.0f});
+    engine.post({ps::CommandType::SetSlotOffset, 0.0f, ps::kSlotAcid, 32});  // the next part carries the acid on
+    engine.post({ps::CommandType::SetStaging, 0.0f});
+    engine.post({ps::CommandType::SetSlotOffset, 0.0f, ps::kSlotAcid, 0});   // the part playing, sent again
+    engine.post({ps::CommandType::ArmSceneSwap, 16.0f, 16, 1});
+    renderToStep(engine, now, 16, 10);
+    std::printf("  staged offset: acid starts at %d after the swap on 16\n", engine.slotStart(ps::kSlotAcid));
+    CHECK(engine.sceneSwaps() == 1 && engine.slotStart(ps::kSlotAcid) == 16 - 32);
+    // A launch armed while staging, its "staging off" dropped: what follows is no longer staged.
+    engine.post({ps::CommandType::SetStaging, 1.0f});
+    engine.post({ps::CommandType::ArmLaunch, 1.0f, 1 << ps::kSlotDrums, 16});
+    engine.post({ps::CommandType::SetSlotOffset, 0.0f, ps::kSlotDrums, 32});
+    renderToStep(engine, now, 32, 10);
+    CHECK(engine.slotTag(ps::kSlotDrums) == 1 && engine.slotStart(ps::kSlotDrums) == 32);
+    // Not staged, stopped: the transport's start takes it (a song played from a part that carries on).
+    engine.post({ps::CommandType::SetTransport, 0.0f});
+    engine.post({ps::CommandType::SetSlotOffset, 0.0f, ps::kSlotDrums, 16});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    now = 0;
+    renderToStep(engine, now, 0, 10);
+    CHECK(engine.slotStart(ps::kSlotDrums) == -16 && engine.slotStart(ps::kSlotAcid) == 0);
+    // Bounded: an absurd offset or song step neither overflows nor converts out of range.
+    engine.post({ps::CommandType::SetStaging, 1.0f});
+    engine.post({ps::CommandType::SetSlotOffset, 0.0f, ps::kSlotAcid, std::numeric_limits<int32_t>::max()});
+    engine.post({ps::CommandType::SetStaging, 0.0f});
+    engine.post({ps::CommandType::ArmLaunch, 2.0f, 1 << ps::kSlotAcid, 16});
+    engine.post({ps::CommandType::MarkSong, 1e30f, 16});
+    engine.post({ps::CommandType::SetAutomationMode, 1e30f, 0, ps::Automation::Song});
+    engine.post({ps::CommandType::SetAutomationSong, std::numeric_limits<float>::quiet_NaN(), 0, 3});
+    engine.post({ps::CommandType::SetAutomationPoint, std::numeric_limits<float>::quiet_NaN(), 0, 3});
+    renderToStep(engine, now, 20, 10);
+    std::printf("  bounded: acid start %d, song step %d\n", engine.slotStart(ps::kSlotAcid), engine.songStep());
+    CHECK(engine.slotStart(ps::kSlotAcid) == 16 - ps::Engine::kMaxSongStep);
+    CHECK(engine.songStep() == ps::Engine::kMaxSongStep + 4);
+    CHECK(!engine.hasNonFinite());
+}
+
+// A song part that mutes the remix: silent from its swap on (keeping its place), heard again with
+// the next part; sent at once (a song played from that part), silent from the first step.
+void testSongPartMutesTheRemix() {
+    static_assert(static_cast<int>(ps::CommandType::SetRemixOn) == 77 && static_cast<int>(ps::CommandType::SetAutomationSongRamp) == 78 &&
+                      static_cast<int>(ps::CommandType::SetAutomationSongFlat) == 79,
+                  "NativeEngine.kt's CMD_REMIX_ON and CMD_AUTOMATION_SONG_RAMP");
+    std::vector<std::vector<float>> stems(4);
+    for (int st = 0; st < 4; ++st) stems[st].assign(static_cast<size_t>(kRate) * 20 * 2, 0.1f);
+    auto* bundle = ps::StemBundle::fromFloat(stems);
+    ps::Engine engine(kRate);
+    ps::Command install{ps::CommandType::InstallStems};
+    install.stems = bundle;
+    engine.post(install);
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0, 0});
+    int64_t now = 0;
+    renderToStep(engine, now, 4);
+    CHECK(engine.mixer().takeChannelPeak(3) > 0.05f);
+    engine.post({ps::CommandType::SetStaging, 1.0f});
+    engine.post({ps::CommandType::SetRemixOn, 0.0f});
+    engine.post({ps::CommandType::SetStaging, 0.0f});
+    engine.post({ps::CommandType::ArmSceneSwap, 16.0f, 16, 1});
+    renderToStep(engine, now, 18);
+    engine.mixer().takeChannelPeak(3);
+    renderToStep(engine, now, 30);
+    const float muted = engine.mixer().takeChannelPeak(3);
+    CHECK(engine.stemPosition() > kLiveStep * 29);  // still running with the transport
+    // The next part does not mute it: back in time.
+    engine.post({ps::CommandType::ArmSceneSwap, 32.0f, 16, 1});
+    renderToStep(engine, now, 36);
+    const float back = engine.mixer().takeChannelPeak(3);
+    std::printf("  remix muted by a song part: %.6f, next part %.4f\n", muted, back);
+    CHECK(muted < 1e-6f && back > 0.05f);
+    // Played from a part that mutes it: silent from the first step; Stop brings it back.
+    engine.post({ps::CommandType::SetTransport, 0.0f});
+    render(engine, 512, 256);
+    engine.post({ps::CommandType::SetRemixOn, 0.0f});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0, 0});
+    now = 0;
+    renderToStep(engine, now, 2);
+    engine.mixer().takeChannelPeak(3);
+    renderToStep(engine, now, 8);
+    CHECK(engine.mixer().takeChannelPeak(3) < 1e-6f);
+    engine.post({ps::CommandType::SetTransport, 0.0f});
+    engine.post({ps::CommandType::InstallStems});
+    render(engine, 512, 256);
+    engine.collectGarbage();
+}
+
+// A slide of a song curve in one command plays exactly as its points sent one by one.
+void testSongCurveRamp() {
+    auto run = [](bool ramp) {
+        ps::Engine engine(kRate);
+        engine.post({ps::CommandType::SetSynthNote, 0.9f, 0, ps::NoteTrack::pack(0, 64 * 24, 60)});
+        engine.post({ps::CommandType::SetSynthNoteCount, 0.0f, 1});
+        engine.post({ps::CommandType::SetSynthSteps, 0.0f, 64});
+        engine.post({ps::CommandType::SetAutomationTarget, 0.0f, 2, ps::Automation::pack(ps::Automation::Volume, 2, 0, 0)});
+        const float from = 0.8f, to = 0.2f;  // both exact in sixteen bits (52428 and 13107 / 65535)
+        if (ramp) {
+            const int32_t end = static_cast<int32_t>(std::lround(to * 65535.0f));
+            engine.post({ps::CommandType::SetAutomationSongRamp, from, 2 | (end << 8), 0 | (8 << 16)});
+        } else {
+            for (int i = 0; i < 8; ++i) engine.post({ps::CommandType::SetAutomationSong, from + (to - from) * static_cast<float>(i) / 8.0f, 2, i});
+        }
+        engine.post({ps::CommandType::SetAutomationSongRun, to, 2, 8 | (4 << 16)});
+        engine.post({ps::CommandType::SetAutomationMode, 12.0f, 2, ps::Automation::Song | ps::Automation::kPerBeat});
+        engine.post({ps::CommandType::SetTransport, 1.0f, 0, 0});
+        return render(engine, kLiveStep * 48, 256);
+    };
+    const auto points = run(false), ramp = run(true);
+    float peak = 0.0f;
+    for (float v : points) peak = std::max(peak, std::fabs(v));
+    std::printf("  song ramp: same as its points %s (peak %.3f)\n", points == ramp ? "yes" : "no", peak);
+    CHECK(points == ramp && peak > 0.01f);
+}
+
+// « Hachoir de voie » switched on between two beats starts in phase with the beat (as it does
+// from a song curve on a beat): on step 5 (a beat's second sixteenth) it cuts, as "x.x." says.
+void testTrackChopperStartsInPhase() {
+    auto run = [](int onAt) {
+        auto engine = std::make_unique<ps::Engine>(kRate);
+        engine->post({ps::CommandType::SetSynthNote, 0.9f, 0, ps::NoteTrack::pack(0, 64 * 24, 57)});
+        engine->post({ps::CommandType::SetSynthNoteCount, 0.0f, 1});
+        engine->post({ps::CommandType::SetSynthSteps, 0.0f, 64});
+        engine->post({ps::CommandType::SetTransport, 1.0f, 0});
+        int64_t now = 0;
+        renderToStep(*engine, now, onAt);
+        engine->post({ps::CommandType::SetMacro, 1.0f, 2, ps::Mixer::kChopMacro});
+        return render(*engine, kLiveStep * (8 - onAt), 256);
+    };
+    auto rms = [](const std::vector<float>& v, size_t from, size_t to) {
+        double sum = 0;
+        for (size_t i = from; i < to; ++i) sum += double(v[i]) * v[i];
+        return std::sqrt(sum / double(to - from));
+    };
+    const size_t step = size_t(kLiveStep) * kChannels;
+    const auto late = run(5);  // starts on step 5
+    const double cut = rms(late, step / 4, step - step / 4);           // step 5: '.'
+    const double open = rms(late, step + step / 4, 2 * step - step / 4);  // step 6: 'x'
+    std::printf("  chopper on mid-beat: step 5 %.4f (cut), step 6 %.4f (open)\n", cut, open);
+    CHECK(cut < 0.1 * open && open > 0.01);
+    ps::Automation a;
+    for (int i = 0; i < 24; ++i) a.hold(ps::Automation::pack(ps::Automation::Macro, i % 16, 0, i / 16), true);
+    bool all = true;
+    for (int i = 0; i < 24; ++i) all &= a.isHeld(ps::Automation::pack(ps::Automation::Macro, i % 16, 0, i / 16));
+    CHECK(all);  // the Live page's controls and a take's settings held at once
+}
+
+// --- Live performance effects (phase 27 effects research: the sound side) ---------------------
+
+// The Live page's PerformanceFx with a transport: a step every kLiveStep frames from frame 0 (step
+// 0), a block ending on every step and on every frame of `commands` (run before the block that
+// starts there), at most `block` frames. Mono in, both sides; returns the left side.
+std::vector<float> runLive(ps::PerformanceFx& fx, const std::vector<float>& in, const std::vector<std::pair<int, std::function<void()>>>& commands,
+                           int block = 256, bool clock = true, int stepsPerBar = 16) {
+    std::vector<float> l(in), r(in);
+    fx.setStepFrames(kLiveStep);
+    fx.setClock(clock);
+    size_t next = 0;
+    for (int pos = 0; pos < static_cast<int>(in.size());) {
+        while (next < commands.size() && commands[next].first <= pos) commands[next++].second();
+        int end = std::min<int>(static_cast<int>(in.size()), pos + block);
+        const int nextStep = (pos / kLiveStep + 1) * kLiveStep;
+        end = std::min(end, nextStep);
+        if (next < commands.size()) end = std::min(end, commands[next].first);
+        if (clock && pos % kLiveStep == 0) fx.onStep(0, pos / kLiveStep, stepsPerBar);
+        fx.process(l.data() + pos, r.data() + pos, end - pos);
+        pos = end;
+    }
+    return l;
+}
+
+// A rising ramp (each frame its own value): easy to see which frame is played.
+std::vector<float> rampInput(int frames) {
+    std::vector<float> v(static_cast<size_t>(frames));
+    for (int i = 0; i < frames; ++i) v[static_cast<size_t>(i)] = 0.5f * static_cast<float>(i % 100000) / 100000.0f;
+    return v;
+}
+
+std::vector<float> sineInput(int frames, double hz, float amp = 0.5f) {
+    std::vector<float> v(static_cast<size_t>(frames));
+    for (int i = 0; i < frames; ++i) v[static_cast<size_t>(i)] = amp * static_cast<float>(std::sin(2 * M_PI * hz * i / kRate));
+    return v;
+}
+
+double rmsOf(const std::vector<float>& v, int from, int to) {
+    double s = 0.0;
+    for (int i = from; i < to; ++i) s += double(v[size_t(i)]) * v[size_t(i)];
+    return std::sqrt(s / std::max(1, to - from));
+}
+
+bool finiteAndUnclipped(const std::vector<float>& v, float limit = 1.0f) {
+    for (float x : v) {
+        if (!std::isfinite(x) || std::fabs(x) > limit) return false;
+    }
+    return true;
+}
+
+int firstDifference(const std::vector<float>& a, const std::vector<float>& b, int from = 0) {
+    for (int i = from; i < static_cast<int>(std::min(a.size(), b.size())); ++i) {
+        if (a[size_t(i)] != b[size_t(i)]) return i;
+    }
+    return -1;
+}
+
+constexpr float kGridSixteenth = 0.5f, kGridBeat = 0.9f, kGridOff = 0.0f;
+
+// A held effect starts on the next line of the grid, sample-exact: a reverse pressed in the middle
+// of step 2 starts on step 3 (1/16 grid) or on step 4 (beat grid); without a transport, at once.
+void testLiveFxStartOnTheGrid() {
+    const auto in = rampInput(kLiveStep * 8);
+    for (const auto& [grid, line] : {std::pair<float, int>{kGridSixteenth, 3}, {kGridBeat, 4}}) {
+        ps::PerformanceFx fx;
+        fx.prepare(kRate);
+        fx.setParam(ps::PerformanceFx::Grid, grid);
+        const auto out = runLive(fx, in, {{kLiveStep * 2 + 2500, [&] { fx.setParam(ps::PerformanceFx::Reverse, 1.0f); }}});
+        const int first = firstDifference(in, out);
+        std::printf("  reverse pressed at step 2.4, grid %s: starts at frame %d (line %d)\n", grid < 0.7f ? "1/16" : "beat", first, line * kLiveStep);
+        CHECK(first == line * kLiveStep);
+        CHECK(finiteAndUnclipped(out));
+    }
+    ps::PerformanceFx fx;
+    fx.prepare(kRate);
+    fx.setParam(ps::PerformanceFx::Grid, kGridBeat);
+    const auto out = runLive(fx, in, {{kLiveStep * 2 + 2500, [&] { fx.setParam(ps::PerformanceFx::Reverse, 1.0f); }}}, 256, false);
+    CHECK(firstDifference(in, out) == kLiveStep * 2 + 2500);  // stopped: at once
+}
+
+// Repeat locked to the grid: the slice starts on its division's line, not where the finger landed.
+void testLiveRepeatOnTheGrid() {
+    const auto in = rampInput(kLiveStep * 12);
+    auto run = [&](float division, int pressAt, float grid) {
+        ps::PerformanceFx fx;
+        fx.prepare(kRate);
+        fx.setParam(ps::PerformanceFx::Grid, grid);
+        return runLive(fx, in, {{pressAt, [&fx, division] {
+                                     fx.setParam(ps::PerformanceFx::RepeatDivision, division);
+                                     fx.setParam(ps::PerformanceFx::Repeat, 1.0f);
+                                 }}});
+    };
+    // 1/8 (two steps) pressed in step 2 with the 1/16 grid: on from step 3, the slice is steps 2-3,
+    // heard live up to step 4, then again and again.
+    auto out = run(0.4375f, kLiveStep * 2 + 3000, kGridSixteenth);
+    const int s = kLiveStep;
+    CHECK(out[size_t(3 * s + 500)] == in[size_t(3 * s + 500)]);  // the slice's first pass: live
+    CHECK(std::fabs(out[size_t(4 * s + 500)] - in[size_t(2 * s + 500)]) < 1e-6f);
+    CHECK(std::fabs(out[size_t(7 * s + 500)] - in[size_t(3 * s + 500)]) < 1e-6f);
+    CHECK(std::fabs(out[size_t(10 * s + 500)] - in[size_t(2 * s + 500)]) < 1e-6f);
+    // 1/8 triplet (8000 frames, three to a beat) pressed in step 5: on from step 6; its last line
+    // is 32000 (a beat at 24000, then every 8000), so the slice is 32000-40000.
+    out = run(0.3f, kLiveStep * 5 + 1000, kGridSixteenth);
+    CHECK(out[size_t(38000)] == in[size_t(38000)]);
+    CHECK(std::fabs(out[size_t(40500)] - in[size_t(32500)]) < 1e-6f);
+    CHECK(std::fabs(out[size_t(52500)] - in[size_t(36500)]) < 1e-6f);
+    // 1/32: half a step.
+    out = run(0.95f, kLiveStep * 2 + 1000, kGridSixteenth);
+    CHECK(std::fabs(out[size_t(3 * s + 3500)] - in[size_t(3 * s + 500)]) < 1e-6f);
+    // Without the grid: the division that just played, from the press (as before).
+    out = run(0.4375f, kLiveStep * 2 + 3000, kGridOff);
+    CHECK(std::fabs(out[size_t(2 * s + 3000 + 1000)] - in[size_t(3000 + 1000)]) < 1e-6f);
+    std::printf("  grid-locked repeat: 1/8, 1/8T and 1/32 slices on their lines\n");
+    CHECK(finiteAndUnclipped(out));
+    CHECK(ps::PerformanceFx::divisionSteps(0.125f) == 4.0 && ps::PerformanceFx::divisionSteps(0.375f) == 2.0 &&
+          ps::PerformanceFx::divisionSteps(0.5f) == 1.0 && ps::PerformanceFx::divisionSteps(0.875f) == 0.5);  // older values
+}
+
+// The brake lasts its length (a beat here), stays silent, and restarts like a tape: back on the
+// live sound exactly, without a jump.
+void testLiveBrakeAndRestart() {
+    const auto in = sineInput(kLiveStep * 18, 220.0);
+    ps::PerformanceFx fx;
+    fx.prepare(kRate);
+    fx.setParam(ps::PerformanceFx::BrakeLength, 2.5f / 6.0f);   // 1 beat = 24000 frames
+    fx.setParam(ps::PerformanceFx::BrakeRestart, 3.5f / 4.0f);  // restart over a beat
+    fx.setParam(ps::PerformanceFx::Grid, kGridBeat);
+    const int s = kLiveStep;
+    const auto out = runLive(fx, in, {{s * 1 + 100, [&] { fx.setParam(ps::PerformanceFx::TapeStop, 1.0f); }},
+                                      {s * 9 + 100, [&] { fx.setParam(ps::PerformanceFx::TapeStop, 0.0f); }}});
+    const int brakeFrom = firstDifference(in, out);  // on the next beat (its first frame is still the live one)
+    CHECK(brakeFrom >= 4 * s && brakeFrom < 4 * s + 50);
+    CHECK(rmsOf(out, 8 * s + 200, 9 * s) < 1e-4);     // stopped after its beat
+    CHECK(rmsOf(out, 9 * s + 200, 12 * s) < 1e-4);    // let go: silent until the next beat line
+    CHECK(rmsOf(out, 12 * s + 6000, 16 * s) > 0.2);   // restarting from step 12
+    CHECK(firstDifference(in, out, 16 * s + 10) < 0);  // and on the music exactly a beat later
+    float jump = 0.0f;
+    for (int i = 12 * s; i < 16 * s + 100; ++i) jump = std::max(jump, std::fabs(out[size_t(i)] - out[size_t(i - 1)]));
+    std::printf("  brake: largest step during the restart %.4f (the tone's own %.4f)\n", jump, 0.5f * naturalStep(220.0f));
+    CHECK(jump < 4.0f * 0.5f * naturalStep(220.0f));
+    CHECK(finiteAndUnclipped(out));
+}
+
+// Backspin, reverse and half time read the last seconds the right way.
+void testLiveBackspinReverseHalfTime() {
+    const int s = kLiveStep;
+    const auto ramp = rampInput(s * 16);
+    {
+        // Reverse by the beat (grid beat), pressed in step 3: from step 4, each beat plays the beat
+        // before backwards.
+        ps::PerformanceFx fx;
+        fx.prepare(kRate);
+        fx.setParam(ps::PerformanceFx::Grid, kGridBeat);
+        fx.setParam(ps::PerformanceFx::ReverseLength, 0.9f);  // a beat
+        const auto out = runLive(fx, ramp, {{3 * s + 10, [&] { fx.setParam(ps::PerformanceFx::Reverse, 1.0f); }}});
+        CHECK(std::fabs(out[size_t(4 * s + 3000)] - ramp[size_t(4 * s - 1 - 3000)]) < 1e-6f);
+        CHECK(std::fabs(out[size_t(8 * s + 5000)] - ramp[size_t(8 * s - 1 - 5000)]) < 1e-6f);
+    }
+    {
+        // Half time by the bar, pressed before the first bar line: each bar plays its first half.
+        ps::PerformanceFx fx;
+        fx.prepare(kRate);
+        fx.setParam(ps::PerformanceFx::Grid, kGridSixteenth);
+        fx.setParam(ps::PerformanceFx::HalfTimeLength, 1.0f);
+        const auto out = runLive(fx, ramp, {{0, [&] { fx.setParam(ps::PerformanceFx::HalfTime, 1.0f); }}});
+        CHECK(std::fabs(out[size_t(5000)] - ramp[size_t(2500)]) < 1e-6f);
+        CHECK(std::fabs(out[size_t(10 * s)] - ramp[size_t(5 * s)]) < 1e-6f);
+    }
+    {
+        // Backspin of a beat: sound while it spins back, then silence while held; let go: the music.
+        const auto tone = sineInput(s * 16, 330.0);
+        ps::PerformanceFx fx;
+        fx.prepare(kRate);
+        fx.setParam(ps::PerformanceFx::BackspinLength, 0.3f);  // 1 beat
+        fx.setParam(ps::PerformanceFx::Grid, kGridSixteenth);
+        const auto out = runLive(fx, tone, {{2 * s + 100, [&] { fx.setParam(ps::PerformanceFx::Backspin, 1.0f); }},
+                                            {10 * s, [&] { fx.setParam(ps::PerformanceFx::Backspin, 0.0f); }}});
+        const int spinFrom = firstDifference(tone, out);
+        CHECK(spinFrom >= 3 * s && spinFrom < 3 * s + 50);
+        CHECK(rmsOf(out, 3 * s + 2000, 5 * s) > 0.1);
+        CHECK(rmsOf(out, 8 * s, 10 * s) < 1e-4);
+        CHECK(firstDifference(tone, out, 10 * s + 600) < 0);  // back on the music after its 10 ms fade
+        CHECK(finiteAndUnclipped(out));
+    }
+}
+
+// Echo out: the dry sound fades out over a beat into the echo, the tail rings on and dies;
+// let go, the music comes back.
+void testLiveEchoOut() {
+    const int s = kLiveStep;
+    const auto tone = sineInput(s * 48, 440.0, 0.4f);
+    ps::PerformanceFx fx;
+    fx.prepare(kRate);
+    fx.setParam(ps::PerformanceFx::Grid, kGridBeat);
+    std::vector<float> in(tone);
+    for (size_t i = size_t(8 * s); i < size_t(40 * s); ++i) in[i] = 0.0f;  // the music stops after the echo starts
+    const auto out = runLive(fx, in, {{3 * s, [&] { fx.setParam(ps::PerformanceFx::EchoOut, 1.0f); }},
+                                      {40 * s, [&] { fx.setParam(ps::PerformanceFx::EchoOut, 0.0f); }}});
+    CHECK(firstDifference(in, out) == 4 * s);
+    const double early = rmsOf(out, 9 * s, 13 * s), late = rmsOf(out, 30 * s, 34 * s);
+    std::printf("  echo out: tail %.4f a beat after, %.5f five beats later\n", early, late);
+    CHECK(early > 0.02 && late < 0.25 * early);
+    CHECK(rmsOf(out, 44 * s, 48 * s) > 0.25);  // the music is back
+    CHECK(finiteAndUnclipped(out));
+}
+
+// Kills: each band cut deeply, the others untouched; let go, the dry sound sample for sample.
+void testLiveKills() {
+    const int s = kLiveStep;
+    auto mixOf = [&](double a, double b) {
+        auto x = sineInput(s * 16, a, 0.3f);
+        auto y = sineInput(s * 16, b, 0.3f);
+        for (size_t i = 0; i < x.size(); ++i) x[i] += y[i];
+        return x;
+    };
+    const auto in = mixOf(60.0, 6000.0);
+    ps::PerformanceFx fx;
+    fx.prepare(kRate);
+    fx.setParam(ps::PerformanceFx::Grid, kGridBeat);
+    const auto out = runLive(fx, in, {{1 * s, [&] { fx.setParam(ps::PerformanceFx::KillLow, 1.0f); }},
+                                      {5 * s + 10, [&] { fx.setParam(ps::PerformanceFx::KillLow, 0.0f); }}});
+    CHECK(firstDifference(in, out) == 4 * s);  // on the beat
+    const double low = toneAmplitude(out, 6 * s, 6000, 60.0), high = toneAmplitude(out, 6 * s, 6000, 6000.0);
+    std::printf("  bass kill: 60 Hz at %.4f, 6 kHz at %.4f (both 0.3 dry)\n", low, high);
+    CHECK(low < 0.02 && high > 0.27);
+    CHECK(firstDifference(in, out, 8 * s + 1500) < 0);  // back at rest from the next beat line on
+    // The high kill on a strip of the mixer (a track), from its macro.
+    ps::Mixer mixer;
+    mixer.prepare(kRate);
+    mixer.setMacro(2, ps::Mixer::kKillMacro + 2, 1.0f);
+    CHECK(mixer.isolator(2).kill(2) && !mixer.isolator(2).kill(0));
+    CHECK(finiteAndUnclipped(out));
+}
+
+// Riser and downlifter: noise starting on the next bar line, rising for its bars, gone on the bar
+// line it ends on; the downlifter falls.
+void testLiveRiser() {
+    const int s = kLiveStep;
+    std::vector<float> silence(size_t(s) * 64, 0.0f);
+    for (bool down : {false, true}) {
+        ps::PerformanceFx fx;
+        fx.prepare(kRate);
+        fx.setParam(ps::PerformanceFx::RiserLength, 0.3f);  // 2 bars
+        const int param = down ? ps::PerformanceFx::Downlifter : ps::PerformanceFx::Riser;
+        const auto out = runLive(fx, silence, {{5 * s + 77, [&] { fx.setParam(param, 1.0f); }}, {6 * s, [&] { fx.setParam(param, 0.0f); }}});
+        const int first = firstDifference(silence, out);
+        int last = -1;
+        for (int i = 0; i < static_cast<int>(out.size()); ++i) if (out[size_t(i)] != 0.0f) last = i;
+        const double a = rmsOf(out, 16 * s, 24 * s), b = rmsOf(out, 40 * s, 48 * s);
+        std::printf("  %s: from frame %d to %d (bars 16-48 steps), first half %.4f, second %.4f\n", down ? "downlifter" : "riser", first, last, a, b);
+        CHECK(down ? first == 16 * s : first >= 16 * s && first < 16 * s + 2000);
+        CHECK(last < 48 * s && last > 48 * s - 200);
+        CHECK(down ? a > 3 * b : b > 3 * a);
+        CHECK(finiteAndUnclipped(out, 0.6f));
+    }
+}
+
+// The build-up knob: a rising high-pass, sends, and rolls; « Drop » on the next bar line puts
+// everything back at once; « Tout remettre » at once.
+void testLiveBuildUpAndDrop() {
+    const int s = kLiveStep;
+    const auto bass = sineInput(s * 48, 50.0, 0.4f);
+    ps::PerformanceFx fx;
+    fx.prepare(kRate);
+    fx.setParam(ps::PerformanceFx::Grid, kGridSixteenth);
+    const auto out = runLive(fx, bass, {{2 * s, [&] { fx.setParam(ps::PerformanceFx::BuildUp, 0.5f); }},
+                                        {8 * s, [&] { fx.setParam(ps::PerformanceFx::BuildUp, 0.95f); }},
+                                        {18 * s + 300, [&] {
+                                             CHECK(fx.repeating());
+                                             CHECK(fx.buildSend(0) > 0.5f);
+                                             fx.setParam(ps::PerformanceFx::Drop, 1.0f);
+                                             fx.setParam(ps::PerformanceFx::Drop, 0.0f);
+                                         }}});
+    const double hp = toneAmplitude(out, 6 * s, 6000, 50.0);
+    std::printf("  build-up at half: 50 Hz at %.3f (0.4 dry)\n", hp);
+    CHECK(hp < 0.25);
+    CHECK(out[size_t(32 * s - 1)] != bass[size_t(32 * s - 1)]);   // up to the bar line: built up
+    CHECK(firstDifference(bass, out, 32 * s + 600) < 0);           // from it: the plain music (after the roll's fade)
+    CHECK(fx.buildUp() == 0.0f && !fx.repeating());
+    // « Tout remettre »: at once.
+    ps::PerformanceFx fx2;
+    fx2.prepare(kRate);
+    const auto out2 = runLive(fx2, bass, {{s, [&] { fx2.setParam(ps::PerformanceFx::KillLow, 1.0f); fx2.setParam(ps::PerformanceFx::Chop, 1.0f); }},
+                                          {5 * s + 123, [&] { fx2.setParam(ps::PerformanceFx::ResetAll, 1.0f); }}});
+    CHECK(firstDifference(bass, out2, 5 * s + 123 + 1500) < 0);
+    CHECK(!fx2.active());
+}
+
+// The mixer's part: reverb freeze holds the tail without taking more in; throws open a send for
+// one beat from the next beat line; the build-up sends the mix; the drop resets them on the bar.
+void testLiveFreezeAndThrows() {
+    {
+        ps::Reverb rv;
+        rv.prepare(kRate);
+        std::vector<float> in(kRate, 0.0f), outL(kRate, 0.0f), outR(kRate, 0.0f);
+        for (int i = 0; i < 2400; ++i) in[size_t(i)] = 0.5f * std::sin(0.1f * i);
+        rv.process(in.data(), in.data(), outL.data(), outR.data(), kRate / 2);
+        rv.setFreeze(true);
+        std::vector<float> loud(kRate, 0.8f);
+        std::vector<float> a(kRate, 0.0f), b(kRate, 0.0f), c(kRate, 0.0f), d(kRate, 0.0f);
+        rv.process(loud.data(), loud.data(), a.data(), b.data(), kRate);  // ignored while frozen
+        std::fill(c.begin(), c.end(), 0.0f);
+        for (int k = 0; k < 5; ++k) {
+            std::fill(c.begin(), c.end(), 0.0f);
+            rv.process(in.data() + kRate / 2, in.data() + kRate / 2, c.data(), d.data(), kRate / 2);
+        }
+        const double held = rmsOf(a, kRate / 2, kRate), later = rmsOf(c, 0, kRate / 2);
+        std::printf("  reverb freeze: tail %.4f, 3 s later %.4f\n", held, later);
+        CHECK(held > 0.005 && later > 0.8 * held && later < 1.2 * held);
+        rv.setFreeze(false);
+        for (int k = 0; k < 8; ++k) {
+            std::fill(c.begin(), c.end(), 0.0f);
+            rv.process(in.data() + kRate / 2, in.data() + kRate / 2, c.data(), d.data(), kRate / 2);
+        }
+        CHECK(rmsOf(c, 0, kRate / 2) < 0.1 * held);  // unfrozen: it dies away
+    }
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SetPerformance, kGridSixteenth, ps::PerformanceFx::Grid});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    int64_t now = 0;
+    renderToStep(engine, now, 5, 100);
+    engine.post({ps::CommandType::SetMacro, 1.0f, 2, ps::Mixer::kThrowMacro + 1});  // the synth's echo throw
+    engine.post({ps::CommandType::SetMacro, 0.0f, 2, ps::Mixer::kThrowMacro + 1});
+    engine.post({ps::CommandType::SetPerformance, 1.0f, ps::PerformanceFx::ThrowReverb});  // the whole mix's
+    renderToStep(engine, now, 7, 100);
+    CHECK(!engine.mixer().throwing(2, 1) && !engine.mixer().throwing(ps::Mixer::kMaster, 0));  // waiting for the beat
+    renderToStep(engine, now, 8, 100);
+    CHECK(engine.mixer().throwing(2, 1) && engine.mixer().throwing(ps::Mixer::kMaster, 0));
+    CHECK(engine.mixer().masterSend(0) == 1.0f);
+    renderToStep(engine, now, 11, 100);
+    CHECK(engine.mixer().throwing(2, 1));
+    renderToStep(engine, now, 12, 100);
+    CHECK(!engine.mixer().throwing(2, 1) && !engine.mixer().throwing(ps::Mixer::kMaster, 0));  // one beat
+    engine.post({ps::CommandType::SetPerformance, 1.0f, ps::PerformanceFx::ReverbFreeze});
+    engine.post({ps::CommandType::SetPerformance, 0.8f, ps::PerformanceFx::BuildUp});
+    renderToStep(engine, now, 13, 100);
+    CHECK(engine.mixer().reverb().frozen() && engine.mixer().masterSend(0) > 0.4f);
+    engine.post({ps::CommandType::SetPerformance, 1.0f, ps::PerformanceFx::Drop});
+    renderToStep(engine, now, 15, 100);
+    CHECK(engine.mixer().reverb().frozen());  // until the bar line
+    renderToStep(engine, now, 16, 100);
+    CHECK(!engine.mixer().reverb().frozen() && engine.mixer().masterSend(0) == 0.0f && engine.mixer().performance().buildUp() == 0.0f);
+}
+
+// The wobble insert: its LFO follows the transport (the same phase whatever the blocks), the
+// cutoff swings over its range, nothing blows up at full resonance.
+void testWobbleFollowsTheSong() {
+    auto run = [](int block) {
+        ps::Engine engine(kRate);
+        sceneA(engine);  // the acid line through a wobble
+        engine.post({ps::CommandType::SetInsertType, 0.0f, 1 * ps::Mixer::kInserts, ps::InsertSlot::WobbleFx});
+        engine.post({ps::CommandType::SetInsertParam, 0.5f, 1 * ps::Mixer::kInserts, 0});  // 1/8
+        engine.post({ps::CommandType::SetInsertParam, 0.9f, 1 * ps::Mixer::kInserts, 2});  // resonance
+        engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+        return render(engine, kLiveStep * 32, block);
+    };
+    const auto a = run(256), b = run(97);
+    CHECK(a == b);
+    CHECK(finiteAndUnclipped(a));
+    CHECK(rmsOf(a, 0, int(a.size())) > 0.01);
+    ps::Wobble w;
+    w.prepare(kRate);
+    w.setStepFrames(kLiveStep);
+    w.setParam(0, 0.5f);  // 1/8: a cycle every two steps
+    w.setParam(1, 0.75f);
+    std::vector<float> l(kLiveStep * 8, 0.1f), r(l);
+    float lo = 1e9f, hi = 0.0f;
+    for (int pos = 0; pos < static_cast<int>(l.size()); pos += 64) {
+        if (pos % (4 * kLiveStep) == 0) w.beat(0, pos / kLiveStep + 6);  // a beat at step 6, 10..: in phase
+        w.process(l.data() + pos, r.data() + pos, 64);
+        lo = std::min(lo, w.cutoff());
+        hi = std::max(hi, w.cutoff());
+    }
+    std::printf("  wobble 1/8: cutoff from %.0f to %.0f Hz\n", lo, hi);
+    CHECK(lo < 150.0f && hi > 3000.0f);
+    CHECK(ps::Wobble::stepsOf(0.0f) == 16.0 && ps::Wobble::stepsOf(0.99f) == 0.5);
+    CHECK(ps::Wobble::shape(0, 0.0) == 0.0f && ps::Wobble::shape(2, 0.0) == 1.0f && ps::Wobble::shape(3, 0.75) == 0.0f);
+}
+
+// The take and the song written from it sound the same, sample for sample: each new live effect
+// pressed a little before a beat (it waits for the beat line) and let go on a beat, against its
+// song curve (a point per beat, held). Throws, freeze, kills and risers included.
+void testLiveFxSongMatchesTheTake() {
+    struct Gesture {
+        int param;
+        int onBeat, offBeat;
+        float value;
+    };
+    const std::vector<Gesture> gestures = {
+        {ps::PerformanceFx::Reverse, 2, 4, 1.0f},   {ps::PerformanceFx::HalfTime, 5, 7, 1.0f},
+        {ps::PerformanceFx::Backspin, 8, 9, 1.0f},  {ps::PerformanceFx::TapeStop, 10, 11, 1.0f},
+        {ps::PerformanceFx::EchoOut, 12, 13, 1.0f}, {ps::PerformanceFx::KillLow, 14, 16, 1.0f},
+        {ps::PerformanceFx::Riser, 16, 17, 1.0f},   {ps::PerformanceFx::ThrowEcho, 19, 20, 1.0f},
+        {ps::PerformanceFx::ReverbFreeze, 21, 23, 1.0f}, {ps::PerformanceFx::BuildUp, 24, 27, 0.7f},
+        {ps::PerformanceFx::Repeat, 28, 30, 1.0f},
+    };
+    constexpr int kBeats = 34;
+    auto record = [&](bool asSong, int block) {
+        auto e = std::make_unique<ps::Engine>(kRate);
+        sceneA(*e);
+        e->post({ps::CommandType::SetSend, 0.4f, 1, 0});
+        e->post({ps::CommandType::SetSend, 0.3f, 1, 1});
+        e->post({ps::CommandType::SetPerformance, kGridBeat, ps::PerformanceFx::Grid});
+        e->post({ps::CommandType::SetPerformance, 0.1f, ps::PerformanceFx::RiserLength});  // 1 bar
+        e->post({ps::CommandType::SetPerformance, 0.3f, ps::PerformanceFx::RepeatDivision});  // 1/8T
+        std::vector<float> out;
+        int64_t at = 0;
+        auto to = [&](int64_t frame) {
+            if (frame > at) {
+                auto part = render(*e, static_cast<int>(frame - at), block);
+                out.insert(out.end(), part.begin(), part.end());
+                at = frame;
+            }
+        };
+        if (asSong) {
+            for (size_t k = 0; k < gestures.size(); ++k) {
+                const auto& g = gestures[k];
+                const int lane = static_cast<int>(k);
+                e->post({ps::CommandType::SetAutomationTarget, 0.0f, lane, ps::Automation::pack(ps::Automation::Live, ps::Mixer::kMaster, 0, g.param)});
+                for (int beat = 0; beat < kBeats; ++beat) {
+                    e->post({ps::CommandType::SetAutomationSong, beat >= g.onBeat && beat < g.offBeat ? g.value : 0.0f, lane, beat});
+                }
+                e->post({ps::CommandType::SetAutomationMode, float(kBeats), lane, ps::Automation::Song | ps::Automation::kPerBeat | ps::Automation::kHeld});
+            }
+            e->post({ps::CommandType::SetTransport, 1.0f, 0, 0});
+            to(int64_t(kBeats) * 4 * kLiveStep);
+            return out;
+        }
+        e->post({ps::CommandType::SetTransport, 1.0f, 0, 0});
+        // Every event in time order: a press 1.5 steps before its beat (the build-up's knob, not a
+        // held effect, on it), a release on its beat.
+        std::vector<std::pair<int64_t, std::pair<int, float>>> events;
+        for (const auto& g : gestures) {
+            const int64_t early = g.param == ps::PerformanceFx::BuildUp ? 0 : kLiveStep + kLiveStep / 2;
+            events.push_back({int64_t(g.onBeat * 4) * kLiveStep - early, {g.param, g.value}});
+            events.push_back({int64_t(g.offBeat * 4) * kLiveStep, {g.param, 0.0f}});
+        }
+        std::stable_sort(events.begin(), events.end(), [](const auto& a, const auto& b) { return a.first < b.first; });
+        for (const auto& [frame, ev] : events) {
+            to(frame);
+            e->post({ps::CommandType::SetPerformance, ev.second, ev.first});
+        }
+        to(int64_t(kBeats) * 4 * kLiveStep);
+        return out;
+    };
+    const auto take = record(false, 256);
+    const auto song = record(true, 256);
+    const auto songOdd = record(true, 113);
+    float diff = 0.0f, peak = 0.0f;
+    for (size_t i = 0; i < std::min(take.size(), song.size()); ++i) {
+        diff = std::max(diff, std::fabs(take[i] - song[i]));
+        peak = std::max(peak, std::fabs(take[i]));
+    }
+    const int first = firstDifference(take, song);
+    std::printf("  live effects written as a song: max difference %.3g (peak %.3f), first at step %.2f\n", diff, peak,
+                first < 0 ? -1.0 : double(first / kChannels) / kLiveStep);
+    CHECK(take.size() == song.size() && first < 0 && peak > 0.05f);
+    CHECK(song == songOdd);  // and whatever the size of the blocks
+    CHECK(finiteAndUnclipped(take));
+}
+
+
+// Drop pressed, then Stop before its bar line: nothing waits any more, everything is at rest at
+// once (a kill or a held effect would otherwise stay on while stopped, under the pads).
+void testLiveDropThenStop() {
+    const int s = kLiveStep;
+    ps::PerformanceFx fx;
+    fx.prepare(kRate);
+    fx.setParam(ps::PerformanceFx::Grid, kGridSixteenth);
+    const auto bass = sineInput(s * 12, 50.0, 0.4f);
+    runLive(fx, bass, {{s, [&] { fx.setParam(ps::PerformanceFx::KillLow, 1.0f); fx.setParam(ps::PerformanceFx::Chop, 1.0f); }},
+                       {5 * s + 100, [&] { fx.setParam(ps::PerformanceFx::Drop, 1.0f); fx.setParam(ps::PerformanceFx::Drop, 0.0f); }}});
+    CHECK(fx.killOn(0) && fx.active());  // the drop waits for step 16
+    fx.setClock(false);                  // Stop
+    std::vector<float> l(4800, 0.1f), r(l);
+    fx.process(l.data(), r.data(), 4800);
+    std::printf("  drop then stop: active %d, bass kill %d\n", fx.active() ? 1 : 0, fx.killOn(0) ? 1 : 0);
+    CHECK(!fx.killOn(0) && !fx.active() && l[4799] == 0.1f);
+    // Through the engine: the transport stopped, the mixer's part too (a strip's kill, the returns).
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SetPerformance, 1.0f, ps::PerformanceFx::KillMid});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    int64_t now = 0;
+    renderToStep(engine, now, 3, 100);
+    engine.post({ps::CommandType::SetMacro, 1.0f, 2, ps::Mixer::kKillMacro});
+    engine.post({ps::CommandType::SetPerformance, 1.0f, ps::PerformanceFx::Drop});
+    engine.post({ps::CommandType::SetPerformance, 0.0f, ps::PerformanceFx::Drop});
+    renderToStep(engine, now, 6, 100);
+    CHECK(engine.mixer().performance().killOn(1));
+    engine.post({ps::CommandType::SetTransport, 0.0f, 0});
+    render(engine, 9600, 256);
+    CHECK(!engine.mixer().performance().killOn(1) && !engine.mixer().isolator(2).kill(0));
+}
+
+// A release effect (here the echo) playing when another effect starts: the release ends there, so
+// the new roll is heard at once, not under a dry sound fading out until the bar line.
+void testLiveGestureAfterARelease() {
+    const int s = kLiveStep;
+    const auto tone = sineInput(s * 20, 330.0, 0.4f);
+    auto run = [&](float release) {
+        ps::PerformanceFx fx;
+        fx.prepare(kRate);
+        fx.setParam(ps::PerformanceFx::Grid, kGridSixteenth);
+        fx.setParam(ps::PerformanceFx::ReleaseMode, release);
+        fx.setParam(ps::PerformanceFx::RepeatDivision, 0.4375f);  // 1/8
+        return runLive(fx, tone, {{2 * s + 100, [&] { fx.setParam(ps::PerformanceFx::Repeat, 1.0f); }},
+                                  {6 * s + 300, [&] { fx.setParam(ps::PerformanceFx::Repeat, 0.0f); }},  // let go: the echo
+                                  {6 * s + 2000, [&] { fx.setParam(ps::PerformanceFx::Repeat, 1.0f); }},  // and again at once
+                                  {14 * s + 10, [&] { fx.setParam(ps::PerformanceFx::Repeat, 0.0f); }}});
+    };
+    const auto cut = run(0.0f), echo = run(0.3f);  // ReleaseCut, ReleaseEcho
+    const double a = rmsOf(cut, 8 * s, 14 * s), b = rmsOf(echo, 8 * s, 14 * s);
+    std::printf("  a roll right after its echo release: %.4f (%.4f without the release)\n", b, a);
+    CHECK(a > 0.2 && b > 0.8 * a);
+    CHECK(finiteAndUnclipped(echo));
+}
+
+// The drop: no click where the build-up vanishes (a short fade, not a jump), at a mid Montée where
+// the noise does not hide it.
+void testLiveDropHasNoClick() {
+    const int s = kLiveStep;
+    const auto bass = sineInput(s * 24, 50.0, 0.4f);
+    ps::PerformanceFx fx;
+    fx.prepare(kRate);
+    const auto out = runLive(fx, bass, {{s, [&] { fx.setParam(ps::PerformanceFx::BuildUp, 0.4f); }},
+                                        {10 * s, [&] { fx.setParam(ps::PerformanceFx::Drop, 1.0f); fx.setParam(ps::PerformanceFx::Drop, 0.0f); }}});
+    auto largestStep = [&](int from, int to) {
+        float m = 0.0f;
+        for (int i = from; i < to; ++i) m = std::max(m, std::fabs(out[size_t(i)] - out[size_t(i - 1)]));
+        return m;
+    };
+    const float before = largestStep(12 * s, 16 * s - 50), at = largestStep(16 * s - 50, 16 * s + 400);
+    std::printf("  drop at Montée 0.4: largest step %.4f at the bar line, %.4f in the beat before\n", at, before);
+    CHECK(at < 1.2f * before);
+    CHECK(fx.buildUp() == 0.0f);
+}
+
+// « Montée » then « Drop » written into the song (a point per beat, jumps held: SetAutomationSongFlat)
+// sounds like the take: built up through the last beat, gone on the drop's bar line, the rolls
+// there to the end. Gestures off the beat (the Montée raised mid-beat, a reverse let go mid-beat)
+// are written on the nearest beat, as the app's take does. The effects really change the sound.
+void testLiveBuildUpAndDropSongMatchesTheTake() {
+    const int s = kLiveStep;
+    constexpr int kSteps = 56;
+    const int32_t build = ps::Automation::pack(ps::Automation::Live, ps::Mixer::kMaster, 0, ps::PerformanceFx::BuildUp);
+    const int32_t drop = ps::Automation::pack(ps::Automation::Live, ps::Mixer::kMaster, 0, ps::PerformanceFx::Drop);
+    const int32_t reverse = ps::Automation::pack(ps::Automation::Live, ps::Mixer::kMaster, 0, ps::PerformanceFx::Reverse);
+    struct State { float build; bool repeating; };
+    // mode 0: the take (gestures live), 1: the song, 2: dry (nothing touched).
+    auto record = [&](int mode, int block, std::vector<State>* states) {
+        auto e = std::make_unique<ps::Engine>(kRate);
+        sceneA(*e);
+        e->post({ps::CommandType::SetSend, 0.3f, 1, 0});
+        e->post({ps::CommandType::SetPerformance, kGridSixteenth, ps::PerformanceFx::Grid});
+        if (mode == 1) {
+            auto lane = [&](int k, int32_t target, const std::vector<float>& beats, bool held, const std::vector<int>& flats) {
+                e->post({ps::CommandType::SetAutomationTarget, 0.0f, k, target});
+                const int n = static_cast<int>(beats.size());
+                e->post({ps::CommandType::SetAutomationMode, float(n), k, ps::Automation::Song | ps::Automation::kPerBeat | (held ? ps::Automation::kHeld : 0)});
+                for (int b = 0; b < n; ++b) e->post({ps::CommandType::SetAutomationSong, beats[size_t(b)], k, b});
+                for (int f : flats) e->post({ps::CommandType::SetAutomationSongFlat, 1.0f, k, f | (1 << 16)});
+            };
+            // Montée: 0.3 (step 5.5 -> beat 1), 0.6 (9.3 -> 2), 0.8 (13.7 -> 3), each after staying
+            // still: jumps; the Drop's 0 on beat 8, a jump (flat until there).
+            lane(0, build, {0, 0.3f, 0.6f, 0.8f, 0.8f, 0.8f, 0.8f, 0.8f, 0, 0, 0, 0, 0, 0}, false, {0, 1, 2, 7});
+            lane(1, drop, {0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0}, true, {});
+            // Reverse: pressed at 34.5 (starts on 35 -> beat 9), let go at 41.3 (-> beat 10).
+            lane(2, reverse, {0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0}, true, {});
+        }
+        e->post({ps::CommandType::SetTransport, 1.0f, 0, 0});
+        std::vector<std::pair<double, std::pair<int, float>>> events;
+        if (mode == 0) {
+            events = {{5.5, {ps::PerformanceFx::BuildUp, 0.3f}}, {9.3, {ps::PerformanceFx::BuildUp, 0.6f}},
+                      {13.7, {ps::PerformanceFx::BuildUp, 0.8f}}, {25.3, {ps::PerformanceFx::Drop, 1.0f}},
+                      {25.3, {ps::PerformanceFx::Drop, 0.0f}}, {34.5, {ps::PerformanceFx::Reverse, 1.0f}},
+                      {41.3, {ps::PerformanceFx::Reverse, 0.0f}}};
+        }
+        std::vector<float> out;
+        int64_t at = 0;
+        auto to = [&](int64_t frame) {
+            while (frame > at) {
+                // Step by step: the state on each step's first frames.
+                const int64_t next = std::min(frame, (at / s + 1) * s);
+                auto part = render(*e, static_cast<int>(next - at), std::min<int>(block, static_cast<int>(next - at)));
+                out.insert(out.end(), part.begin(), part.end());
+                at = next;
+                if (states != nullptr && at % s == 0) {
+                    auto& p = e->mixer().performance();
+                    states->push_back({p.buildUp(), p.repeating()});
+                }
+            }
+        };
+        for (const auto& [step, ev] : events) {
+            to(static_cast<int64_t>(step * s));
+            e->post({ps::CommandType::SetPerformance, ev.second, ev.first});
+        }
+        to(int64_t(kSteps) * s);
+        return out;
+    };
+    std::vector<State> takeStates, songStates;
+    const auto take = record(0, 256, &takeStates);
+    const auto song = record(1, 256, &songStates);
+    const auto songOdd = record(1, 113, nullptr);
+    const auto dry = record(2, 256, nullptr);
+    // takeStates[k]: the state at the end of step k (k + 1 steps rendered).
+    for (int k = 28; k < 31; ++k) {
+        std::printf("  step %d: take build %.3f%s, song build %.3f%s\n", k + 1, takeStates[size_t(k)].build, takeStates[size_t(k)].repeating ? " rolling" : "",
+                    songStates[size_t(k)].build, songStates[size_t(k)].repeating ? " rolling" : "");
+        // The last beat before the drop: built up and rolling, in the song as in the take.
+        CHECK(std::fabs(songStates[size_t(k)].build - 0.8f) < 0.01f && songStates[size_t(k)].repeating);
+        CHECK(std::fabs(takeStates[size_t(k)].build - 0.8f) < 0.01f && takeStates[size_t(k)].repeating);
+    }
+    // From the drop's bar line: nothing built up in either.
+    CHECK(songStates[32].build == 0.0f && takeStates[32].build == 0.0f);
+    // Beat by beat, the song sounds like the take (left side); the effects changed the sound.
+    auto rmsL = [&](const std::vector<float>& v, int fromStep, int toStep) {
+        double sum = 0.0;
+        for (int64_t i = int64_t(fromStep) * s; i < int64_t(toStep) * s; ++i) sum += double(v[size_t(i * kChannels)]) * v[size_t(i * kChannels)];
+        return std::sqrt(sum / double(int64_t(toStep - fromStep) * s));
+    };
+    auto diffL = [&](const std::vector<float>& a, const std::vector<float>& b, int fromStep, int toStep) {
+        double sum = 0.0;
+        for (int64_t i = int64_t(fromStep) * s; i < int64_t(toStep) * s; ++i) {
+            const double d = double(a[size_t(i * kChannels)]) - b[size_t(i * kChannels)];
+            sum += d * d;
+        }
+        return std::sqrt(sum / double(int64_t(toStep - fromStep) * s));
+    };
+    for (int beat : {4, 5, 6, 7, 11, 12}) {
+        const double t = rmsL(take, beat * 4, beat * 4 + 4), g = rmsL(song, beat * 4, beat * 4 + 4);
+        std::printf("  beat %d: take %.4f, song %.4f, dry %.4f\n", beat, t, g, rmsL(dry, beat * 4, beat * 4 + 4));
+        CHECK(std::fabs(t - g) < 0.15 * t);
+    }
+    const double changed = diffL(song, dry, 16, 32), level = rmsL(dry, 16, 32);
+    std::printf("  the Montée changes the sound: %.4f from the dry render (dry %.4f)\n", changed, level);
+    CHECK(changed > 0.3 * level);
+    CHECK(song == songOdd);
+    CHECK(finiteAndUnclipped(take) && finiteAndUnclipped(song));
+}
+
 int main(int argc, char** argv) {
     const char* only = nullptr;  // a test's name: run that one alone
     for (int i = 1; i < argc; ++i) {
@@ -5430,6 +6788,7 @@ int main(int argc, char** argv) {
         {"sustain_releases_every_note", testSustainPedalReleasesEveryNote},
         {"metronome_sample_accurate", testMetronomeIsSampleAccurate},
         {"every_drum_voice", testEveryDrumVoiceSoundsAndDecays},
+        {"kit_on_dirty_memory", testKitOnDirtyMemoryStaysFinite},
         {"drum_velocity", testVelocityChangesLoudness},
         {"hat_choke", testClosedHatChokesOpenHat},
         {"pattern_drives_drums", testPatternDrivesDrums},
@@ -5499,6 +6858,38 @@ int main(int argc, char** argv) {
         {"audio_tracks", testAudioTracks},
         {"song_audio_clip", testSongAudioClip},
         {"once_audio_clip", testOnceAudioClip},
+        {"live_slot_launches_on_the_bar", testLiveSlotLaunchesOnTheBar},
+        {"live_slots_keep_their_own_loops", testLiveSlotsKeepTheirOwnLoops},
+        {"live_stop_is_emptied_content", testLiveStopIsEmptiedContent},
+        {"live_last_command_wins", testLiveLastCommandWins},
+        {"scene_swap_cancels_launches", testSceneSwapCancelsLaunches},
+        {"live_launch_from_stop_and_offset", testLiveLaunchFromStopAndOffset},
+        {"live_remix_slot", testLiveRemixSlot},
+        {"live_launches_allocate_nothing", testLiveLaunchesAllocateNothing},
+        {"live_bus_return", testLiveBusReturn},
+        {"performance_song_matches_the_take", testPerformanceSongMatchesTheTake},
+        {"mark_song_sets_the_song_position", testMarkSongSetsTheSongPosition},
+        {"per_beat_song_curves", testPerBeatSongCurves},
+        {"track_chopper", testTrackChopper},
+        {"slot_offset_follows_staging", testSlotOffsetFollowsStaging},
+        {"song_part_mutes_the_remix", testSongPartMutesTheRemix},
+        {"song_curve_ramp", testSongCurveRamp},
+        {"track_chopper_starts_in_phase", testTrackChopperStartsInPhase},
+        {"live_fx_start_on_the_grid", testLiveFxStartOnTheGrid},
+        {"live_repeat_on_the_grid", testLiveRepeatOnTheGrid},
+        {"live_brake_and_restart", testLiveBrakeAndRestart},
+        {"live_backspin_reverse_half_time", testLiveBackspinReverseHalfTime},
+        {"live_echo_out", testLiveEchoOut},
+        {"live_kills", testLiveKills},
+        {"live_riser", testLiveRiser},
+        {"live_build_up_and_drop", testLiveBuildUpAndDrop},
+        {"live_freeze_and_throws", testLiveFreezeAndThrows},
+        {"wobble_follows_the_song", testWobbleFollowsTheSong},
+        {"live_fx_song_matches_the_take", testLiveFxSongMatchesTheTake},
+        {"live_drop_then_stop", testLiveDropThenStop},
+        {"live_gesture_after_a_release", testLiveGestureAfterARelease},
+        {"live_drop_has_no_click", testLiveDropHasNoClick},
+        {"live_build_up_and_drop_song_matches_the_take", testLiveBuildUpAndDropSongMatchesTheTake},
         {"insert_plays_in_some_scenes", testInsertPlaysInSomeScenes},
         {"song_from_a_later_part", testSongStartsFromALaterPart},
         {"scene_alone_outside_song", testSceneAloneIsOutsideTheSong},

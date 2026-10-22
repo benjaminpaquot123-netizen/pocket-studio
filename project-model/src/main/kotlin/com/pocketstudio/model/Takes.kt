@@ -100,7 +100,7 @@ fun Project.partAt(step: Int): Int {
     if (song.isEmpty()) return -1
     var at = 0
     song.forEachIndexed { i, part ->
-        at += sceneSteps(part.scene) * part.repeats
+        at += partSteps(part)
         if (step < at) return i
     }
     return song.lastIndex

@@ -2,12 +2,20 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstring>
 
 #include "Pan.h"
 
 namespace ps {
 
 namespace {
+
+// DaisySP's SyntheticBassDrum::Init leaves its transient envelope unset: garbage (now and then NaN,
+// which its low-pass never forgets). Start the voice from zeros before Init.
+template <class T>
+void zeroed(T& voice) {
+    std::memset(static_cast<void*>(&voice), 0, sizeof(T));
+}
 // Per-voice output level, balanced by ear against the kick.
 constexpr float kLevels[DrumKit::kVoices] = {
     1.0f, 1.0f, 0.7f, 0.6f, 0.7f, 0.45f, 0.4f, 0.7f,
@@ -67,6 +75,7 @@ void DrumKit::prepare(int sampleRate) {
     // Kicks: low, long and punchy (Benjamin: "pas assez puissants"); see kKickDrive below.
     kick_.configure(sampleRate, 47.0f, 3.2f, 0.035f, 0.42f, 0.35f);
 
+    zeroed(kick2_);
     kick2_.Init(sr);
     kick2_.SetFreq(50.0f);
     kick2_.SetTone(0.45f);
@@ -110,6 +119,7 @@ void DrumKit::prepare(int sampleRate) {
     cymbal_.SetDecay(0.9f);
     cymbal_.SetNoisiness(0.6f);
 
+    zeroed(zap_);
     zap_.Init(sr);
     zap_.SetFreq(110.0f);
     zap_.SetTone(0.8f);

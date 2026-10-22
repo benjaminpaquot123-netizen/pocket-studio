@@ -156,13 +156,13 @@ private const val PACK_PREFIX = "pack:"
  * the other packs that have that kind of sound.
  */
 fun soundCategories(role: Role, styleId: String?, installed: List<PackManifest>): List<SoundCategory> {
-    val label = tr(SoundPacks.KIND_LABELS[role.id] ?: role.title)
+    val label = tr(SoundPacks.KIND_LABELS[role.packKind] ?: role.title)
     // The kit voice the style asks for this line (a shaker, a cowbell) is offered first.
     val voice = styleId?.let(StarterWizard::style)?.lines?.firstOrNull { it.role == role }?.voice
     val voices = (listOfNotNull(voice) + role.builtIn).distinct()
     val kit = SoundCategory(KIT_CATEGORY, tr("Sons intégrés"), voices.map { SoundOption(SoundRef.Kit(it), DrumKitInfo.names[it]) })
     val packs = installed.mapNotNull { m ->
-        val sounds = m.ofKind(role.id)
+        val sounds = m.ofKind(role.packKind)
         if (sounds.isEmpty()) null
         else SoundCategory(PACK_PREFIX + m.id, "$label · ${m.name}", sounds.map { SoundOption(SoundRef.Pack(m.id, it), "${it.name} · ${m.name}") })
     }
@@ -454,7 +454,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
     private suspend fun styleDemo(id: String): Pcm? {
         val style = StarterWizard.style(id) ?: return null
         val installed = _packs.value.installed
-        val beat = style.lines.mapNotNull { line -> defaultRow(line.role, id, installed).sound?.let { line to it.ref } }
+        val beat = style.lines.filter { !it.off }.mapNotNull { line -> defaultRow(line.role, id, installed).sound?.let { line to it.ref } }
         val parts = demoParts(style).map { it to StarterWizard.soundsFor(it, style, installed).first() }
         return groove(style, beat, parts, style.melody.mood, bars = STYLE_DEMO_BARS, acid = WizardAcid.recipe(style, style.melody.mood))
     }
@@ -504,7 +504,9 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
     ): Pcm? {
         if (!NativeEngine.isAvailable) return null
         // Audio first: the kit voice already on its pad needs nothing, the others are decoded or rendered.
-        val padAudio = beat.map { (line, ref) -> if (ref is SoundRef.Kit && ref.voice == line.role.lane) null else (load(ref) ?: return null) }
+        val padAudio = beat.map { (line, ref) ->
+            if (ref is SoundRef.Kit && ref.voice == line.role.lane && !StarterWizard.shapesKit(line.role)) null else (load(ref) ?: return null)
+        }
         val partAudio = parts.map { (_, sound) -> if (sound.sampled != null) (packPartSound(sound) ?: return null) else null }
         val harmony = StarterWizard.harmonyOf(style, mood).copy(lock = false)
         val steps = StarterWizard.drumSteps(style)
@@ -525,6 +527,10 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                 beat.forEachIndexed { i, (line, _) ->
                     val lane = line.role.lane
                     natives[i]?.let { NativeEngine.setPadSample(lane, it) }
+                    // Heard as the song will have it: a kit voice shaped for its line (the short ride).
+                    if (natives[i] != null && beat[i].second is SoundRef.Kit && StarterWizard.shapesKit(line.role)) {
+                        NativeEngine.setPadParams(lane, StarterWizard.kitShaped(line.role, PadSample("", "")).engineParams())
+                    }
                     StarterWizard.hits(line, steps).forEach { (step, hit) -> NativeEngine.setDrumHit(lane, step, hit.velocity, hit.repeats) }
                 }
                 // The 303 line under the chords (acid house, rave techno).
@@ -538,12 +544,12 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                 parts.forEachIndexed { track, (part, sound) ->
                     NativeEngine.setTrackOn(track, true)  // a fresh engine only plays track 0
                     // As the song will have it: a gliding bass gets its portamento.
-                    val synth = if (part == StarterWizard.Part.Bass && style.melody.bassGlide) sound.synth.with(com.pocketstudio.model.SynthPatch.GLIDE, StarterWizard.BASS_GLIDE) else sound.synth
+                    val synth = if (StarterWizard.glides(part, style)) sound.synth.with(com.pocketstudio.model.SynthPatch.GLIDE, StarterWizard.BASS_GLIDE) else sound.synth
                     synth.sanitized().values.forEachIndexed { i, v -> NativeEngine.setSynthParam(i, v, track) }
                     sound.plaits?.let { p -> p.sanitized().engineValues().forEachIndexed { i, v -> NativeEngine.setPlaitsParam(i, v, track) } }
                     val sample = natives[beat.size + track]
                     if (sample != null) {
-                        val heard = StarterWizard.startingNotes(part, style, mood, harmony).notes
+                        val heard = StarterWizard.startingNotes(part, style, mood, harmony, sound).notes
                         val patch = sound.sampled!!.copy(
                             root = com.pocketstudio.model.SampledPatch.fitRoot(partAudio[track]?.second, heard),
                             glide = if (StarterWizard.isLine(heard)) sound.sampled!!.glide else 0f,
@@ -552,16 +558,26 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                         NativeEngine.setTrackSample(track, sample)  // the export engine keeps its own reference
                     }
                     NativeEngine.setSynthEngine(if (sample != null) 2 else if (sound.plaits != null) 1 else 0, track)
-                    val clip = StarterWizard.startingNotes(part, style, mood, harmony)
+                    val clip = StarterWizard.startingNotes(part, style, mood, harmony, sound)
                     val notes = clip.performance.expand(clip).filter { it.start < ticks }
                     NativeEngine.setSynthSteps(16 * bars, track)
                     notes.forEachIndexed { i, n -> NativeEngine.setSynthNote(i, n.start, n.length, n.pitch, n.velocity, track) }
                     NativeEngine.setSynthNoteCount(notes.size, track)
                 }
+                // Each line through the style's effects on its pad, as in the song (the rumble is
+                // only its preset: a kick copy without it is just a second kick).
+                val fx = StarterWizard.effectsMixer(style, beat.map { it.first.role }.toSet(), acid = acid != null)
+                for ((line, _) in beat) {
+                    val ch = com.pocketstudio.model.Mixer.padChannel(line.role.lane)
+                    val strip = fx.channels[ch]
+                    com.pocketstudio.app.rhythm.RhythmViewModel.insertCommands(strip.inserts, { slot, type -> NativeEngine.setInsertType(ch, slot, type) }) { slot, k, v ->
+                        NativeEngine.setInsertParam(ch, slot, k, v)
+                    }
+                    strip.sends.forEachIndexed { bus, v -> NativeEngine.setSend(ch, bus, v) }
+                }
                 // The 303 heard with the beat sounds as in the song: through the style's effects on
                 // the acid line, the drums and the master (Acidcore's saturation and OTT).
                 if (acid != null) {
-                    val fx = StarterWizard.effectsMixer(style, beat.map { it.first.role }.toSet(), acid = true)
                     for (ch in listOf(0, 1)) {
                         val strip = fx.channels[ch]
                         com.pocketstudio.app.rhythm.RhythmViewModel.insertCommands(strip.inserts, { slot, type -> NativeEngine.setInsertType(ch, slot, type) }) { slot, k, v ->
@@ -626,7 +642,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         val installed = _packs.value.installed
         _wizard.update { w ->
             w.copy(
-                styleId = id, step = 1, rows = style.lines.associate { it.role to defaultRow(it.role, id, installed) },
+                styleId = id, step = 1, rows = style.lines.associate { it.role to defaultRow(it.role, id, installed).copy(enabled = !it.off) },
                 mood = style.melody.mood,
                 acidNotes = null, acidSound = null, acidSoundName = null, acidDensity = AcidPattern().density,
                 // The recipe's parts on (the riddim's bass alone, no bass under the gabber's kick, the
@@ -728,7 +744,12 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         _wizard.update { it.copy(step = (it.step - 1).coerceAtLeast(0), error = null) }
     }
 
-    fun setRowEnabled(role: Role, enabled: Boolean) = editRow(role) { it.copy(enabled = enabled) }
+    fun setRowEnabled(role: Role, enabled: Boolean) {
+        editRow(role) { it.copy(enabled = enabled) }
+        // The rumble rolls in the low end in the bass line's place (its tip says so): ticked, the
+        // bass part goes off, or two low ends would play at once (it can be ticked back).
+        if (role == Role.Rumble && enabled) setPartEnabled(StarterWizard.Part.Bass, false)
+    }
 
     fun setCategory(role: Role, categoryId: String) {
         val category = soundCategories(role, _wizard.value.styleId, _packs.value.installed).firstOrNull { it.id == categoryId } ?: return
@@ -798,15 +819,16 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                     val option = row.sound ?: continue
                     if (!row.enabled) continue
                     val ref = option.ref
-                    // The kit voice the pad already has needs no file.
-                    if (ref is SoundRef.Kit && ref.voice == line.role.lane) {
+                    // The kit voice the pad already has needs no file (unless the line shapes it: the ride).
+                    if (ref is SoundRef.Kit && ref.voice == line.role.lane && !StarterWizard.shapesKit(line.role)) {
                         sounds[line.role] = null
                         continue
                     }
                     val pcm = load(ref) ?: throw IllegalStateException(tr("son illisible : %s", option.name))
                     val file = "${UUID.randomUUID().toString().take(12)}.wav"
                     files[file] = pcm
-                    sounds[line.role] = PadSample(file, option.name.substringBefore(" · ").take(40))
+                    val sample = PadSample(file, option.name.substringBefore(" · ").take(40))
+                    sounds[line.role] = if (ref is SoundRef.Kit) StarterWizard.kitShaped(line.role, sample) else sample
                 }
                 if (sounds.isEmpty() && (w.mood == null || w.parts.values.none { it.enabled })) {
                     _wizard.update { it.copy(creating = false, error = tr("Garde au moins une ligne pour commencer.")) }
@@ -828,6 +850,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                 val guide = songGuide(
                     style.name, w.plan, inKey = w.mood != null, song = songSummary(style, w.plan), acid = w.acidPlays,
                     acidMoves = 0 in project.automatedAcidKnobs,
+                    sweeps = StarterWizard.hasSweeps(project),
                 )
                 then(project, files, guide)
             } catch (e: Exception) {

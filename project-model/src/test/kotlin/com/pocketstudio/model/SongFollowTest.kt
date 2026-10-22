@@ -77,6 +77,19 @@ class SongFollowTest {
     }
 
     @Test
+    fun aPartWithItsOwnLengthPlacesWhatFollows() {
+        // The middle part lasts three bars of its own (written from the live grid), not B's two.
+        val p = song().let { it.copy(song = it.song.mapIndexed { i, part -> if (i == 1) part.copy(bars = 3, from = mapOf(SongPart.DRUMS to 1)) else part }).sanitized() }
+        assertEquals(listOf(0, 16, 64), p.song.indices.map { p.songStepOf(it) })
+        assertEquals(5, p.songBars)
+        // Moved first: its three bars of points come with it, the clip keeps its place in it.
+        val q = p.moveSongPart(1, 0)
+        assertEquals(listOf(0.2f, 0.3f, 0.4f, 0.1f, 0.4f), q.points())
+        assertEquals(36, q.clipStart())
+        assertEquals(mapOf(SongPart.DRUMS to 1), q.song[0].from)
+    }
+
+    @Test
     fun moreRepeatsHoldTheLastValueAndPushTheRest() {
         val p = song()
         val q = p.withSongRepeats(1, 2)

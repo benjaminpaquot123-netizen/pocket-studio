@@ -22,6 +22,7 @@ import com.pocketstudio.model.NoteClip
 import com.pocketstudio.app.report.AppLog
 import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.collectLatest
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.fillMaxSize
 import android.Manifest
@@ -677,9 +678,19 @@ fun AppRoot() {
     }
 
     val landscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
+    // The Live page (opened from Morceau) takes the whole screen: no top bar, no tabs.
+    var showLive by rememberSaveable { mutableStateOf(false) }
+    // The live pad being set up (Morceau and the Live page's Pads share it).
+    var liveEditing by rememberSaveable { mutableStateOf<Int?>(null) }
+    // Leaving the Live page: the « Morceau écrit » line goes with it (its Annuler would come back
+    // later, after other changes), and nothing set there stays on unseen (the Montée, what the
+    // lock kept). During a take the page asks first (LiveScreen's own Back). A rotation keeps all.
+    val closeLive = { rhythmVm.leaveLive(); rhythmVm.dismissPerformance(); showLive = false }
+    androidx.activity.compose.BackHandler(enabled = showLive) { closeLive() }
     Scaffold(
         containerColor = Neon.Background,
         topBar = {
+            if (!showLive) {
             val topProject by rhythmVm.project.collectAsStateWithLifecycle()
             val topTransport by rhythmVm.transport.collectAsStateWithLifecycle()
             val topUndo by rhythmVm.session.canUndo.collectAsStateWithLifecycle()
@@ -687,8 +698,10 @@ fun AppRoot() {
             val topRecording by rhythmVm.recording.collectAsStateWithLifecycle()
             val topTake by rhythmVm.audioRecording.collectAsStateWithLifecycle()
             val topSaving by rhythmVm.takeSaving.collectAsStateWithLifecycle()
-            // No undo during a take (or while it is written): it could remove the track it goes to.
-            val undoable = !topRecording && topTake == null && !topSaving
+            val topPerformance by rhythmVm.take.collectAsStateWithLifecycle()
+            // No undo during a take (or while it is written): it could remove the track it goes to;
+            // a performance on the Live page undoes in one step once written.
+            val undoable = !topRecording && topTake == null && !topSaving && !topPerformance.running
             // "✓ Enregistré" only once nothing waits to be written.
             val topUnsaved by rhythmVm.session.unsaved.collectAsStateWithLifecycle()
             // On the Audio tracks screen (or during a take) the ● is the microphone's.
@@ -747,9 +760,10 @@ fun AppRoot() {
                     TextButton(onClick = rhythmVm::dismissTakeLoop) { Text(tr("Compris")) }
                 }
             }
+            }
         },
         bottomBar = {
-            if (!landscape) androidx.compose.foundation.layout.BoxWithConstraints {
+            if (!landscape && !showLive) androidx.compose.foundation.layout.BoxWithConstraints {
                 // Seven tabs: below ~58 dp each (small phone, big text) the labels shrink, so none is cut.
                 val tight = maxWidth / AppTab.entries.size < 58.dp
                 NavigationBar(
@@ -782,6 +796,35 @@ fun AppRoot() {
             }
         },
     ) { padding ->
+        if (showLive) {
+            Box(Modifier.padding(padding).fillMaxSize()) {
+                LiveRoute(
+                    rhythmVm, lifecycleOwner, close = closeLive,
+                    openEffects = { fxChannel = it },
+                    padsActions = com.pocketstudio.app.session.LivePadsActions(
+                        tap = rhythmVm::toggleLive,
+                        stopAll = rhythmVm::stopLive,
+                        setSize = rhythmVm::setLiveSize,
+                        edit = { liveEditing = it },
+                        import = { pad -> liveImportPad = pad; rhythmVm.dismissSampleError(); pickLiveAudio.launch(arrayOf("audio/*")) },
+                        library = { pad -> rhythmVm.dismissSampleError(); libraryLive = pad; showLibrary = true },
+                        generate = {
+                            // A take never goes on unseen behind another page: it ends here (armed: dropped).
+                            if (rhythmVm.performanceTaking) rhythmVm.togglePerformance()
+                            liveEditing = null; closeLive(); tab = AppTab.Audio; audioPage = 3
+                        },
+                        fromDrumPad = rhythmVm::liveFromDrumPad,
+                        setBeats = rhythmVm::setLiveBeats,
+                        setOneShot = rhythmVm::setLiveOneShot,
+                        setGain = rhythmVm::setLiveGain,
+                        clear = rhythmVm::clearLive,
+                        effects = { fxChannel = 3 },
+                    ),
+                    liveEditing = liveEditing,
+                )
+            }
+            return@Scaffold
+        }
         // The background darkens a little towards the bottom: the panels seem to float above it.
         val bg = Neon.Background
         Row(Modifier.padding(padding).background(Brush.verticalGradient(listOf(lerp(bg, Color.White, 0.03f), bg, lerp(bg, Color.Black, 0.18f))))) {
@@ -821,6 +864,7 @@ fun AppRoot() {
                             val canUndo by rhythmVm.session.canUndo.collectAsStateWithLifecycle()
                             val canRedo by rhythmVm.session.canRedo.collectAsStateWithLifecycle()
                             val take by rhythmVm.audioRecording.collectAsStateWithLifecycle()
+                            val performance by rhythmVm.take.collectAsStateWithLifecycle()
                             val sampleInfo by rhythmVm.sampleInfo.collectAsStateWithLifecycle()
                             val sampleTask by rhythmVm.sampleTask.collectAsStateWithLifecycle()
                             val slicer by rhythmVm.slicer.collectAsStateWithLifecycle()
@@ -832,8 +876,8 @@ fun AppRoot() {
                                 project = project,
                                 transport = transport,
                                 live = live,
-                                canUndo = canUndo && take == null,
-                                canRedo = canRedo && take == null,
+                                canUndo = canUndo && take == null && !performance.running,
+                                canRedo = canRedo && take == null && !performance.running,
                                 actions = RhythmActions(
                                     togglePlay = rhythmVm::togglePlay,
                                     toggleMetronome = rhythmVm::toggleMetronome,
@@ -1117,7 +1161,7 @@ fun AppRoot() {
                                     setInsertParam = rhythmVm::setInsertParam,
                                     setSend = rhythmVm::setSend,
                                     setBusParam = rhythmVm::setBusParam,
-                                    quick = com.pocketstudio.app.mixer.QuickFxActions(rhythmVm::setMacro, rhythmVm::setMacroPair, rhythmVm::applyFx),
+                                    quick = quickFxActions(rhythmVm),
                                     setInsertBypass = rhythmVm::setInsertBypass,
                                     moveInsert = rhythmVm::moveInsert,
                                     kindOf = effectsActions(rhythmVm).kindOf,
@@ -1125,6 +1169,8 @@ fun AppRoot() {
                                     cpuBusy = rhythmVm.cpuBusy,
                                     setInsertScenes = rhythmVm::setInsertScenes,
                                     scenes = rhythmVm.sceneLabels,
+                                    // Polled by the mixer itself (above).
+                                    meters = rhythmVm.meters,
                                 ),
                                 master = project.mixer.master,
                                 masterDb = project.mixer.masterDb,
@@ -1161,7 +1207,6 @@ fun AppRoot() {
                             val sampleTask by rhythmVm.sampleTask.collectAsStateWithLifecycle()
                             val listenSong by rhythmVm.listenSong.collectAsStateWithLifecycle()
                             val followSong by rhythmVm.followSong.collectAsStateWithLifecycle()
-                            var liveEditing by rememberSaveable { mutableStateOf<Int?>(null) }
                             LaunchedEffect(Unit) {
                                 lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollLiveStates() }
                             }
@@ -1205,7 +1250,9 @@ fun AppRoot() {
                                     setFollowSong = rhythmVm::setFollowSong,
                                     performance = { param, v -> if (NativeEngine.isAvailable) NativeEngine.setPerformance(param, v) },
                                     togglePartTrack = rhythmVm::togglePartTrack,
+                                    setPartScene = rhythmVm::setPartScene,
                                     setBeatsPerBar = rhythmVm::setBeatsPerBar,
+                                    openLive = { showLive = true },
                                 ),
                                 live = LivePadsUi(
                                     pads = project.live,
@@ -1660,7 +1707,7 @@ fun effectsActions(vm: RhythmViewModel): MixerActions = MixerActions(
     setInsertType = vm::setInsertType,
     setInsertParam = vm::setInsertParam,
     setSend = vm::setSend,
-    quick = com.pocketstudio.app.mixer.QuickFxActions(vm::setMacro, vm::setMacroPair, vm::applyFx),
+    quick = quickFxActions(vm),
     setInsertBypass = vm::setInsertBypass,
     moveInsert = vm::moveInsert,
     kindOf = { ch -> vm.project.value.soundKindOf(ch) },
@@ -1668,12 +1715,22 @@ fun effectsActions(vm: RhythmViewModel): MixerActions = MixerActions(
     cpuBusy = vm.cpuBusy,
     setInsertScenes = vm::setInsertScenes,
     scenes = vm.sceneLabels,
+    meters = vm.meters,
+    watchMeters = vm::pollMeters,
+)
+
+/** A strip's quick controls and ready-made effects (hold to listen, starred ones kept on the phone). */
+fun quickFxActions(vm: RhythmViewModel): com.pocketstudio.app.mixer.QuickFxActions = com.pocketstudio.app.mixer.QuickFxActions(
+    vm::setMacro, vm::setMacroPair, vm::applyFx,
+    audition = vm::auditionFx,
+    favourites = SettingsStore.favouriteFx,
+    toggleFavourite = { id -> SettingsStore.toggleFavouriteFx(vm.getApplication(), id) },
 )
 
 /** The timeline rows: drums, acid, then each instrument and audio track in its colour. */
 fun timelineRows(p: Project): List<com.pocketstudio.app.session.TimelineRow> =
     listOf(
-        com.pocketstudio.app.session.TimelineRow(com.pocketstudio.model.SongPart.DRUMS, "Batterie", androidx.compose.ui.graphics.Color(0xFFFF8A65)),
+        com.pocketstudio.app.session.TimelineRow(com.pocketstudio.model.SongPart.DRUMS, "Batterie", com.pocketstudio.app.live.DRUMS_COLOR),
         com.pocketstudio.app.session.TimelineRow(com.pocketstudio.model.SongPart.ACID, "Basse acide", androidx.compose.ui.graphics.Color(0xFF81C784)),
     ) + p.instrumentTracks.map { t ->
         com.pocketstudio.app.session.TimelineRow(com.pocketstudio.model.SongPart.inst(t.id), t.name, com.pocketstudio.ui.trackColor(t.color))
@@ -1712,4 +1769,121 @@ private fun padKind(lane: Int) = when (lane) {
     5, 13 -> "hat"
     6, 12 -> "open_hat"
     else -> "perc"
+}
+
+
+/** Every gesture of the Live page, to the ViewModel (a take records them). */
+fun liveActionsOf(
+    vm: RhythmViewModel,
+    back: () -> Unit = {},
+    openEffects: (Int) -> Unit = {},
+    togglePlay: () -> Unit = vm::togglePlay,
+): com.pocketstudio.app.live.LiveActions = com.pocketstudio.app.live.LiveActions(
+    back = back,
+    togglePlay = togglePlay,
+    setQuantum = vm::setLiveQuantum,
+    launchPad = vm::launchPad,
+    launchRow = vm::launchRow,
+    stopTrack = vm::stopLiveTrack,
+    stopAll = vm::stopLiveAll,
+    toggleMute = vm::toggleLiveMute,
+    performance = vm::livePerformance,
+    setReturn = vm::setLiveReturn,
+    fx = quickFxActions(vm),
+    setSend = vm::setSend,
+    openEffects = openEffects,
+    setAcid = vm::setLiveAcid,
+    holdAcid = vm::holdAcidKnob,
+    resetAcid = vm::resetLiveAcid,
+    record = vm::togglePerformance,
+    setTakeAppend = vm::setTakeAppend,
+    undoTake = vm::undoPerformance,
+    listenTake = vm::listenPerformance,
+    dismissTake = vm::dismissPerformance,
+    trackChop = vm::liveTrackChop,
+    resetAll = vm::liveResetAll,
+    hold = vm::liveHold,
+    roll = vm::liveRoll,
+    kill = vm::liveKill,
+    throwFx = vm::liveThrow,
+    riser = vm::liveRiser,
+    buildUp = vm::setLiveBuildUp,
+    drop = vm::liveDrop,
+    setLock = vm::setLiveLock,
+    setFxSettings = vm::setLiveFxSettings,
+    setInsertParam = vm::setInsertParam,
+)
+
+/** The Live page with its state from the ViewModel; every gesture goes back to it. */
+@Composable
+internal fun LiveRoute(
+    vm: RhythmViewModel,
+    lifecycleOwner: androidx.lifecycle.LifecycleOwner,
+    close: () -> Unit,
+    openEffects: (Int) -> Unit,
+    padsActions: com.pocketstudio.app.session.LivePadsActions,
+    liveEditing: Int?,
+) {
+    val project by vm.project.collectAsStateWithLifecycle()
+    val transport by vm.transport.collectAsStateWithLifecycle()
+    val grid by vm.liveGrid.collectAsStateWithLifecycle()
+    // The clock (30 times a second) is read only where it is shown: this page does not recompose with it.
+    val clock = vm.liveClock.collectAsStateWithLifecycle()
+    val clockOf = remember(clock) { { clock.value } }
+    val muted by vm.liveMuted.collectAsStateWithLifecycle()
+    val acid by vm.liveAcid.collectAsStateWithLifecycle()
+    val returns by vm.liveReturns.collectAsStateWithLifecycle()
+    val take by vm.take.collectAsStateWithLifecycle()
+    val takeAppend by vm.takeAppend.collectAsStateWithLifecycle()
+    val chops by vm.liveChops.collectAsStateWithLifecycle()
+    // The effects (moved at finger speed by the DJ filter and the Montée): read only where shown.
+    val liveFx = vm.liveFx.collectAsStateWithLifecycle()
+    val liveFxOf = remember(liveFx) { { liveFx.value } }
+    val liveStates by vm.liveStates.collectAsStateWithLifecycle()
+    val sampleTask by vm.sampleTask.collectAsStateWithLifecycle()
+    // The output spectrum behind the pads XY: read only where drawn (the page does not recompose with it).
+    val spectrum = vm.spectrum.collectAsStateWithLifecycle()
+    val spectrumOf = remember(spectrum) { { spectrum.value } }
+    // Measured only while a pad XY shows it (not on Tenus, Montée, the settings...).
+    val spectrumUsers = remember { androidx.compose.runtime.mutableIntStateOf(0) }
+    val settings by SettingsStore.state.collectAsStateWithLifecycle()
+    LaunchedEffect(Unit) {
+        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            kotlinx.coroutines.coroutineScope {
+                launch { vm.pollLiveGrid() }
+                launch { vm.pollLiveStates() }
+                launch {
+                    androidx.compose.runtime.snapshotFlow { spectrumUsers.intValue > 0 }.collectLatest { shown -> if (shown) vm.pollSpectrum() }
+                }
+            }
+        }
+    }
+    androidx.compose.runtime.CompositionLocalProvider(com.pocketstudio.app.live.LocalSpectrumUsers provides spectrumUsers) {
+    com.pocketstudio.app.live.LiveScreen(
+        com.pocketstudio.app.live.LiveScreenUi(
+            project, grid, playing = transport.playing, muted = muted, acid = acid, returns = returns, take = take, takeAppend = takeAppend,
+            chops = chops, takeUndoable = vm.canUndoPerformance(), clockOf = clockOf,
+            spectrum = spectrumOf, beatHaptics = settings.liveBeatHaptics, fxOf = liveFxOf,
+        ),
+        liveActionsOf(
+            vm, back = close, openEffects = openEffects,
+            togglePlay = {
+                // ▶ here plays what the grid shows: the scene, not the song.
+                if (transport.playing) vm.togglePlay() else vm.launchRow(project.scene)
+            },
+        ),
+        pads = com.pocketstudio.app.session.LivePadsUi(
+            pads = project.live,
+            states = liveStates,
+            editing = liveEditing,
+            drumSounds = project.drums.lanes.mapIndexedNotNull { i, l -> l.sample?.let { i to it.name } },
+            busy = when (val t = sampleTask) {
+                is SampleTask.Busy -> t.message
+                is SampleTask.Failed -> t.message
+                else -> null
+            },
+        ),
+        padsActions = padsActions,
+    )
+    }
 }

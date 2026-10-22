@@ -103,8 +103,10 @@ void AudioTracks::startVoice(Track& t, int offset, int64_t pos) {
     t.voice = at >= 0 ? Voice{t.sample, at, offset, 0} : Voice{t.sample, 0, offset - at, 0};
 }
 
-void AudioTracks::onStep(int offset, int local, int songStep, double samplesPerStep, double swing, int songOrigin) {
-    for (auto& t : tracks_) {
+void AudioTracks::onStep(int offset, const std::array<int, kTracks>& locals, int songStep, double samplesPerStep, double swing, int songOrigin) {
+    for (size_t k = 0; k < tracks_.size(); ++k) {
+        auto& t = tracks_[k];
+        const int local = locals[k];
         if (!t.sample) continue;
         if (t.song) {
             if (songStep < 0) continue;

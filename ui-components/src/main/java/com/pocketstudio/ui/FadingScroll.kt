@@ -42,3 +42,20 @@ fun Modifier.fadingHorizontalScroll(): Modifier {
     val state = rememberScrollState()
     return fadingEdges(state).horizontalScroll(state)
 }
+
+/** [fadingEdges] for a column: the top or the bottom fades where more waits (a cut row, cut knobs). */
+fun Modifier.fadingVerticalEdges(state: ScrollableState, fade: Dp = 24.dp): Modifier = this
+    .graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen }
+    .drawWithContent {
+        drawContent()
+        val f = fade.toPx().coerceAtMost(size.height / 3)
+        if (state.canScrollBackward) {
+            drawRect(Brush.verticalGradient(listOf(Color.Transparent, Color.Black), startY = 0f, endY = f), size = Size(size.width, f), blendMode = BlendMode.DstIn)
+        }
+        if (state.canScrollForward) {
+            drawRect(
+                Brush.verticalGradient(listOf(Color.Black, Color.Transparent), startY = size.height - f, endY = size.height),
+                topLeft = Offset(0f, size.height - f), size = Size(size.width, f), blendMode = BlendMode.DstIn,
+            )
+        }
+    }

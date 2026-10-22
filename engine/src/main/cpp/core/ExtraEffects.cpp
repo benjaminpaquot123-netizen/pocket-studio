@@ -406,4 +406,85 @@ void TapeStop::process(float* l, float* r, int n) {
     }
 }
 
+// --- Wobble ----------------------------------------------------------------------------------
+
+namespace {
+// Sixteenths per LFO cycle, slowest first: 1/1, 1/2, 1/4, 1/4T, 1/8, 1/8T, 1/16, 1/16T, 1/32.
+constexpr double kWobbleSteps[Wobble::kRates] = {16.0, 8.0, 4.0, 8.0 / 3.0, 2.0, 4.0 / 3.0, 1.0, 2.0 / 3.0, 0.5};
+// Every cycle above divides 48 sixteenths (three bars of 4/4): the phase a transport step gives.
+constexpr int kWobbleSpan = 48;
+}  // namespace
+
+double Wobble::stepsOf(float v) { return kWobbleSteps[std::clamp(static_cast<int>(v * kRates), 0, kRates - 1)]; }
+
+float Wobble::shape(int s, double phase) {
+    const double p = phase - std::floor(phase);
+    switch (s) {
+        case 1: return static_cast<float>(1.0 - std::fabs(2.0 * p - 1.0));      // triangle, from the bottom
+        case 2: return static_cast<float>(1.0 - p);                             // saw down: opens, then closes
+        case 3: return p < 0.5 ? 1.0f : 0.0f;                                   // square
+        default: return static_cast<float>(0.5 - 0.5 * std::cos(kTwoPi * p));  // sine, from the bottom
+    }
+}
+
+void Wobble::prepare(float rate) {
+    rate_ = rate;
+    reset();
+}
+
+void Wobble::reset() {
+    left_.Init(rate_);
+    right_.Init(rate_);
+    left_.SetDrive(0.0f);  // see SweepFilter::prepare
+    right_.SetDrive(0.0f);
+    phase_ = 0.0;
+    pending_ = -1;
+    pendingStep_ = -1;
+    countdown_ = 0;
+    cutoffNow_ = 80.0f;
+}
+
+void Wobble::setParam(int p, float v) { setClamped(p_, p, v); }
+
+void Wobble::process(float* l, float* r, int n) {
+    const double steps = stepsOf(p_[0]);
+    const double inc = 1.0 / std::max(1.0, steps * stepFrames_);
+    const int shapeIndex = std::min(kShapes - 1, static_cast<int>(p_[3] * kShapes));
+    const float octaves = 8.0f * p_[1];
+    const float res = 0.92f * p_[2];
+    const float gain = resonanceCompensation(res);
+    const float top = 0.45f * rate_;
+    // The cutoff glides (about 1.5 ms): the square shape opens and shuts without a click.
+    const float glide = 1.0f - std::exp(-4.0f / (0.0015f * rate_));
+    left_.SetRes(res);
+    right_.SetRes(res);
+    for (int i = 0; i < n; ++i) {
+        if (i == pending_) {
+            if (pendingStep_ >= 0) {
+                // The transport's step: the phase the song is at, whatever happened before.
+                const double pos = static_cast<double>(pendingStep_ % kWobbleSpan) / steps;
+                phase_ = pos - std::floor(pos);
+            } else if (steps <= 4.0 && std::fmod(4.0, steps) == 0.0) {
+                phase_ = 0.0;  // whole cycles in a beat: back to the start
+            }
+        }
+        if (countdown_ <= 0) {
+            // Every 4 frames: the filter's coefficients cost a sine.
+            const float target = std::min(top, 80.0f * std::exp2(octaves * shape(shapeIndex, phase_)));
+            cutoffNow_ += glide * (target - cutoffNow_);
+            left_.SetFreq(cutoffNow_);
+            right_.SetFreq(cutoffNow_);
+            countdown_ = 4;
+        }
+        --countdown_;
+        left_.Process(finiteOr0(l[i]));
+        right_.Process(finiteOr0(r[i]));
+        l[i] = gain * left_.Low();
+        r[i] = gain * right_.Low();
+        phase_ += inc;
+        if (phase_ >= 1.0) phase_ -= 1.0;
+    }
+    pending_ = -1;
+}
+
 }  // namespace ps

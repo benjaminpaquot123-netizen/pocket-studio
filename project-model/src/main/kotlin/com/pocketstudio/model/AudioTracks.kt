@@ -194,7 +194,7 @@ fun Project.audioEndBars(): Int = audioTracks.maxOfOrNull { t ->
  */
 fun Project.audioPlays(id: Int, part: SongPart?, scene: Int = this.scene): Boolean {
     val clip = audioTracks.firstOrNull { it.id == id }?.clip
-    if (part != null) return part.plays(SongPart.audio(id)) && clip?.belongsTo(part.scene) != false
+    if (part != null) return part.plays(SongPart.audio(id)) && clip?.belongsTo(part.sceneFor(SongPart.audio(id))) != false
     return clip?.song != true && clip?.belongsTo(scene) != false
 }
 
@@ -217,7 +217,7 @@ fun Project.audioSpans(id: Int): List<List<ClosedFloatingPointRange<Float>>> {
     val length = clip.steps(tempoBpm) + Math.round(clip.offsetMs / 1000.0 * tempoBpm / 15.0).toInt()
     var at = 0
     return song.map { part ->
-        val steps = sceneSteps(part.scene) * part.repeats
+        val steps = partSteps(part)
         val partStart = at
         at += steps
         if (steps <= 0 || !audioPlays(id, part)) return@map emptyList()

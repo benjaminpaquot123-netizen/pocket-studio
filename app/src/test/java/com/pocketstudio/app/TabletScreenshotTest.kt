@@ -55,15 +55,18 @@ class TabletLandscapeScreenshotTest : ScreenshotTest() {
 @Config(qualifiers = "w600dp-h1006dp-tvdpi")
 class SmallTabletScreenshotTest : ScreenshotTest() {
     override val prefix = "tablet8/"
-    override fun wanted(name: String) = name in TabletScreenshotTest.SCREENS || name in EFFECTS || name in PHASE26
+    override fun wanted(name: String) = name in TabletScreenshotTest.SCREENS || name in EFFECTS || name in PHASE26 || name in LIVE
 
     companion object {
+        /** The Live page (phase 27), full screen: only the status bar and the system navigation around it. */
+        val LIVE = setOf("live_grid", "live_fx", "live_acid", "live_rec", "live_rec_done", "live_fx_lock", "live_fx_build", "live_fx_rolls", "live_fx_settings")
         /** The effects box where each sound is chosen (phase 25), on Benjamin's tablet too. */
-        val EFFECTS = setOf("effects_box", "effects_picker", "effects_full", "synth_effects", "acid_effects", "effects_scenes", "effects_vibe")
+        val EFFECTS = setOf("effects_box", "effects_picker", "effects_full", "synth_effects", "acid_effects", "effects_scenes", "effects_vibe", "effects_styles")
         /** The 303 made in the assistant and « + Piste »'s choices, on Benjamin's tablet too. */
         val PHASE26 = setOf("wizard_acid_sound", "track_add")
     }
     override val chrome = androidx.compose.foundation.layout.PaddingValues(top = 80.dp, bottom = 128.dp)
+    override val fullScreenChrome = androidx.compose.foundation.layout.PaddingValues(top = 24.dp, bottom = 48.dp)
 
     // « Joue dans » and an ambience's settings at the tablet's own size.
     @Test override fun effectsScenes() = super.effectsScenes()
@@ -82,8 +85,9 @@ class SmallTabletScreenshotTest : ScreenshotTest() {
 @Config(qualifiers = "w1006dp-h600dp-land-tvdpi")
 class SmallTabletLandscapeScreenshotTest : ScreenshotTest() {
     override val prefix = "tablet8/land_"
-    override fun wanted(name: String) = name in TabletScreenshotTest.SCREENS
+    override fun wanted(name: String) = name in TabletScreenshotTest.SCREENS || name in SmallTabletScreenshotTest.LIVE
     override val chrome = androidx.compose.foundation.layout.PaddingValues(start = 80.dp, top = 80.dp, bottom = 48.dp)
+    override val fullScreenChrome = androidx.compose.foundation.layout.PaddingValues(top = 24.dp, bottom = 48.dp)
 
     @Test override fun session() = super.session()
     @Test override fun settings() = super.settings()

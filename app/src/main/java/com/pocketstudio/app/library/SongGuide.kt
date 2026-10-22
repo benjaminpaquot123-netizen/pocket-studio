@@ -23,7 +23,7 @@ private val GuidePagesSaver = Saver<List<GuidePage>?, ArrayList<String>>(
 /** "Intro → Couplet → Refrain → Couplet → Refrain → Intro pour finir : environ 2 min 40." */
 fun songSummary(style: StarterWizard.Style, plan: StarterWizard.ScenePlan): String {
     val song = StarterWizard.songOf(style, plan)
-    val seconds = StarterWizard.seconds(song, StarterWizard.loopBars(style, plan), style.bpm)
+    val seconds = StarterWizard.songSeconds(style, plan)
     return tr("%s pour finir : environ %s.", song.joinToString(" → ") { plan.title(it.scene) }, duration(seconds))
 }
 
@@ -45,16 +45,27 @@ fun duration(seconds: Double): String {
  * It ends on "▶ Écouter mon morceau". [song]: the song's summary ([songSummary]). [inKey]: a mood
  * was chosen, so the song's key is locked and the keyboard plays no wrong note. [acid]: the song
  * has the style's 303 line; [acidMoves]: its cutoff follows a song curve (acid styles), so the
- * guide says it moves on its own and how to take it over.
+ * guide says it moves on its own and how to take it over. [sweeps]: some sounds' filters open and
+ * shut along the song (techno stabs, the pad of a Montée). The riser track ([StarterWizard.ScenePlan.riser])
+ * gets a line too: it is only heard when the whole song plays.
  */
-fun songGuide(styleName: String, plan: StarterWizard.ScenePlan, inKey: Boolean, song: String = "", acid: Boolean = false, acidMoves: Boolean = false): List<GuidePage> {
+fun songGuide(
+    styleName: String, plan: StarterWizard.ScenePlan, inKey: Boolean, song: String = "", acid: Boolean = false, acidMoves: Boolean = false,
+    sweeps: Boolean = false,
+): List<GuidePage> {
     fun scene(index: Int): String {
         val what = plan.contents(index).joinToString(", ") { it.substringBefore(" (").substringBefore(" / ") }
         return tr("%s · %s, %s : %s.", StarterWizard.ScenePlan.NAMES[index], plan.title(index), plan.role(index), what.ifEmpty { tr("rien pour l'instant") })
     }
     val scenes = (0 until plan.count).map(::scene)
-    val intro = if (plan.hasBreak) tr("Il a quatre sections, comme un vrai morceau de club : les sons s'empilent, puis le Break fait une pause avant le dernier Drop :")
-    else tr("Il a trois sections, comme une vraie chanson. Chacune ajoute des sons à celle d'avant :")
+    val intro = when {
+        plan.form == StarterWizard.SongForm.Build && plan.hasBreak ->
+            tr("Il a quatre sections, comme un vrai morceau de club : la Montée fait monter la tension sans kick, tout tombe au Drop, puis le Break fait une pause avant la dernière Montée :")
+        plan.form == StarterWizard.SongForm.Build ->
+            tr("Il a trois sections, comme un vrai morceau de club : la Montée fait monter la tension sans kick, puis tout tombe au Drop :")
+        plan.hasBreak -> tr("Il a quatre sections, comme un vrai morceau de club : les sons s'empilent, puis le Break fait une pause avant le dernier Drop :")
+        else -> tr("Il a trois sections, comme une vraie chanson. Chacune ajoute des sons à celle d'avant :")
+    }
     return listOf(
         GuidePage(
             tr("Ton morceau %s est prêt", tr(styleName)),
@@ -73,6 +84,8 @@ fun songGuide(styleName: String, plan: StarterWizard.ScenePlan, inKey: Boolean, 
                 if (!acid || plan.acid.isEmpty()) null
                 else if (acidMoves) tr("Acide : ta ligne 303 joue dans %s. Dans l'onglet Acide, touche un pas pour la changer. La coupure s'ouvre toute seule le long du morceau : pour la tourner toi-même, garde le doigt sur « Coupure ».", plan.sections(plan.acid))
                 else tr("Acide : ta ligne 303 joue dans %s. Dans l'onglet Acide, touche un pas pour la changer et tourne « Coupure » pour la faire crier.", plan.sections(plan.acid)),
+                tr("Souffle montant : il monte avant chaque Drop et claque sur son premier temps. On ne l'entend qu'en jouant tout le morceau ; baisse la piste « Souffle montant » dans le Mixeur s'il te gêne.").takeIf { plan.riser },
+                tr("Filtres : certains sons s'ouvrent et se ferment tout seuls le long du morceau (Mixeur, Automation).").takeIf { sweeps },
                 tr("Audio : enregistre ta voix par-dessus le morceau (mets des écouteurs, sinon le micro entend la musique)."),
                 tr("Onglet Morceau : touche une section (Intro, Couplet ou Refrain) pour l'afficher, la renommer ou la dupliquer pour en faire un Pont ou une Fin."),
             ),

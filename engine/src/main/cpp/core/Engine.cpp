@@ -14,6 +14,8 @@ constexpr double kTwoPi = 6.28318530717958647692;
 
 Engine::Engine(int sampleRate) {
     frequency_.snap(440.0f);
+    resetSlots(0);
+    for (int k = 0; k < kSlots; ++k) publishSlot(k);
     prepare(sampleRate);
 }
 
@@ -84,6 +86,20 @@ void Engine::applyCommand(const Command& command) {
                 inSong_ = command.b >= 0;
                 songStart_ = -std::max(0, command.b);
                 songRestart_ = false;
+                // Every slot counts from the first step (a song part carrying on: from where it was,
+                // SetSlotOffset); launches armed while stopped fire on it.
+                resetSlots(0);
+                for (int k = 0; k < kSlots; ++k) {
+                    auto& sl = slots_[static_cast<size_t>(k)];
+                    const int offset = sl.transportOffset;
+                    sl.transportOffset = 0;
+                    if (sl.pending != kNoLaunch) continue;  // its launch on the first step takes its staged offset
+                    sl.start = -offset;
+                    publishSlot(k);
+                }
+                songMarkStep_.store(-1, std::memory_order_relaxed);
+                transportPosition_.store(-1.0, std::memory_order_relaxed);
+                lastTransport_ = -1;
                 audio_.songJump();
                 lastLocal_ = -1;
                 countInStep_ = 0;
@@ -210,14 +226,18 @@ void Engine::applyCommand(const Command& command) {
             staging_ = command.value > 0.5f;
             break;
         case CommandType::ArmSceneSwap:
+            // The whole scene (the song, a scene chosen): what the live grid armed is dropped.
+            cancelLaunches(kAllSlots, false);  // (its staging was just sent: kept)
             swapAt_ = command.a < 0 ? -1 : command.a;
             if (command.a < 0) {
                 // The cancelled scene's loops and effects never apply later.
                 staged_.audioLoop.fill(-1);
                 staged_.insertOn.fill(-1);
+                staged_.remixOn = true;
             }
             songRestart_ = command.b == 1;  // the waiting scene starts the song over (it loops)
-            songRestartAt_ = command.b == 1 && std::isfinite(command.value) ? std::max(0, static_cast<int>(std::lround(command.value))) : 0;
+            songRestartAt_ = command.b == 1 && std::isfinite(command.value)
+                ? static_cast<int>(std::lround(std::clamp(command.value, 0.0f, static_cast<float>(kMaxSongStep)))) : 0;
             stopAtSwap_ = command.b == 2;   // the song ends there: the transport stops instead
             leaveSong_ = command.b == 3;    // the waiting scene plays on its own, outside the song
             if (command.a < 0 && command.b == 3) leaveSongNow();
@@ -332,13 +352,16 @@ void Engine::applyCommand(const Command& command) {
                 lane.mode = Automation::Loop;
                 lane.values.fill(-1.0f);
                 lane.hasStaged = false;
-                lane.songBars = 0;
+                lane.songPoints = 0;
+                lane.perBeat = false;
+                lane.held = false;
+                lane.flat.fill(0);
             }
             break;
         case CommandType::SetAutomationPoint:
             if (command.a >= 0 && command.a < Automation::kLanes && command.b >= 0 && command.b < Automation::kSteps) {
                 auto& lane = automation_.lanes[command.a];
-                const float v = command.value < 0.0f ? -1.0f : std::min(command.value, 1.0f);
+                const float v = !std::isfinite(command.value) || command.value < 0.0f ? -1.0f : std::min(command.value, 1.0f);
                 if (staging_) {
                     // A per-scene lane: the waiting scene's values, taken over at the swap.
                     if (!lane.hasStaged) lane.staged.fill(-1.0f);
@@ -352,15 +375,96 @@ void Engine::applyCommand(const Command& command) {
         case CommandType::SetAutomationHold:
             automation_.hold(command.a, command.value > 0.5f);
             break;
-        case CommandType::SetAutomationMode:
-            if (command.a >= 0 && command.a < Automation::kLanes) {
-                auto& lane = automation_.lanes[command.a];
-                lane.mode = std::clamp(command.b, 0, 2);
-                lane.songBars = std::clamp(static_cast<int>(command.value), 0, Automation::kSongBars);
+        case CommandType::ArmLaunch: {
+            const int32_t mask = command.a & kAllSlots;
+            if (mask == 0) break;
+            const int tag = std::isfinite(command.value) && command.value >= 0.0f ? std::min(32767, static_cast<int>(std::lround(command.value))) : -1;
+            const int quantum = std::clamp(command.b, 1, 1 << 16);
+            for (int k = 0; k < kSlots; ++k) {
+                if ((mask & (1 << k)) == 0) continue;
+                auto& sl = slots_[static_cast<size_t>(k)];
+                sl.pending = tag;
+                sl.quantum = quantum;
+                publishSlot(k);
+            }
+            anyPending_ = true;
+            staging_ = false;  // arming ends a staging burst even if its "off" was dropped (as ArmSceneSwap)
+            if (mask == kAllSlots) {
+                // A whole row: it replaces a scene swap armed before (the last command wins).
+                swapAt_ = -1;
+                stopAtSwap_ = false;
+                leaveSong_ = false;
+                songRestart_ = false;
             }
             break;
+        }
+        case CommandType::CancelLaunch:
+            cancelLaunches(command.a, true);
+            break;
+        case CommandType::SetBusReturn:
+            mixer_.setBusReturn(command.a, command.value);
+            break;
+        case CommandType::SetAutomationSongRun: {
+            const int first = command.b & 0xFFFF;
+            const int count = (command.b >> 16) & 0xFFFF;
+            if (command.a >= 0 && command.a < Automation::kLanes && first < Automation::kSongPoints && std::isfinite(command.value)) {
+                auto& song = automation_.lanes[static_cast<size_t>(command.a)].song;
+                const float v = std::clamp(command.value, 0.0f, 1.0f);
+                std::fill(song.begin() + first, song.begin() + std::min(first + count, Automation::kSongPoints), v);
+            }
+            break;
+        }
+        case CommandType::MarkSong:
+            markQuantum_ = std::clamp(command.a, 0, 1 << 16);
+            // Bounded before the conversion (a huge float to int is undefined): far past any song.
+            markSongStep_ = std::isfinite(command.value) ? static_cast<int>(std::lround(std::clamp(command.value, 0.0f, static_cast<float>(kMaxSongStep)))) : 0;
+            break;
+        case CommandType::SetSlotOffset:
+            if (command.a >= 0 && command.a < kSlots) {
+                // Bounded: `step - start` must never overflow (a negative local would index before a pattern).
+                auto& sl = slots_[static_cast<size_t>(command.a)];
+                (staging_ ? sl.stagedOffset : sl.transportOffset) = std::clamp(command.b, 0, kMaxSongStep);
+            }
+            break;
+        case CommandType::SetRemixOn:
+            if (staging_) staged_.remixOn = command.value > 0.5f;
+            else stems_.setLive(command.value > 0.5f);
+            break;
+        case CommandType::SetAutomationSongRamp: {
+            const int lane = command.a & 0xFF;
+            const int first = command.b & 0xFFFF;
+            const int count = (command.b >> 16) & 0xFFFF;
+            if (lane < Automation::kLanes && first < Automation::kSongPoints && count > 0 && std::isfinite(command.value)) {
+                auto& song = automation_.lanes[static_cast<size_t>(lane)].song;
+                const float from = std::clamp(command.value, 0.0f, 1.0f);
+                const float to = static_cast<float>((command.a >> 8) & 0xFFFF) / 65535.0f;
+                const int last = std::min(first + count, Automation::kSongPoints);
+                for (int i = first; i < last; ++i) song[static_cast<size_t>(i)] = from + (to - from) * static_cast<float>(i - first) / static_cast<float>(count);
+            }
+            break;
+        }
+        case CommandType::SetAutomationMode:
+            if (command.a >= 0 && command.a < Automation::kLanes) {
+                auto& lane = automation_.lanes[static_cast<size_t>(command.a)];
+                lane.mode = std::clamp(command.b & 0xF, 0, 2);
+                lane.perBeat = (command.b & Automation::kPerBeat) != 0;
+                lane.held = (command.b & Automation::kHeld) != 0;
+                const int most = lane.perBeat ? Automation::kSongPoints : Automation::kSongBars;
+                lane.songPoints = std::isfinite(command.value) ? static_cast<int>(std::clamp(command.value, 0.0f, static_cast<float>(most))) : 0;
+                lane.flat.fill(0);  // the curve's jumps follow it (SetAutomationSongFlat)
+            }
+            break;
+        case CommandType::SetAutomationSongFlat: {
+            const int first = command.b & 0xFFFF;
+            const int count = (command.b >> 16) & 0xFFFF;
+            if (command.a >= 0 && command.a < Automation::kLanes && first < Automation::kSongPoints) {
+                auto& flat = automation_.lanes[static_cast<size_t>(command.a)].flat;
+                std::fill(flat.begin() + first, flat.begin() + std::min(first + count, Automation::kSongPoints), command.value > 0.5f ? uint8_t{1} : uint8_t{0});
+            }
+            break;
+        }
         case CommandType::SetAutomationSong:
-            if (command.a >= 0 && command.a < Automation::kLanes && command.b >= 0 && command.b < Automation::kSongBars) {
+            if (command.a >= 0 && command.a < Automation::kLanes && command.b >= 0 && command.b < Automation::kSongPoints && std::isfinite(command.value)) {
                 automation_.lanes[command.a].song[static_cast<size_t>(command.b)] = std::clamp(command.value, 0.0f, 1.0f);
             }
             break;
@@ -429,6 +533,20 @@ void Engine::stopTransport() {
     sequencer_.stop();
     rollCount_ = 0;
     stems_.stop();
+    // The live grid starts again from its rows: nothing armed, every slot heard (the app sends the
+    // patterns of the scene shown again).
+    cancelLaunches(kAllSlots, true);
+    resetSlots(0);
+    for (auto& sl : slots_) {
+        sl.stagedOffset = 0;
+        sl.transportOffset = 0;  // a part sent while playing never moves the next start
+    }
+    staged_.remixOn = true;
+    stems_.setLive(true);
+    transportStep_.store(-1, std::memory_order_relaxed);
+    transportPosition_.store(-1.0, std::memory_order_relaxed);
+    lastTransport_ = -1;
+    markQuantum_ = 0;
     acid_.stop();
     audio_.stop();
     if (record_ && !recordOnStart_) finishRecording();
@@ -480,6 +598,17 @@ void Engine::onStep(int offset, int step) {
         }
     }
     if (onBeat) clips_.syncBeat(offset, step / Sequencer::kStepsPerBeat);
+    transportStep_.store(step, std::memory_order_relaxed);
+    lastTransport_ = step;
+    // A recorded performance starts here: the song position is the one it will have in the song.
+    if (markQuantum_ > 0 && step % markQuantum_ == 0) {
+        const int start = step - markSongStep_;
+        if (start != songStart_ || !inSong_) audio_.songJump();
+        songStart_ = start;
+        inSong_ = true;
+        markQuantum_ = 0;
+        songMarkStep_.store(step, std::memory_order_relaxed);
+    }
     // A waiting scene takes over on its step (or the next bar), before anything of this step plays.
     if (swapAt_ >= 0) {
         const int local = step - sceneStart_;
@@ -487,21 +616,31 @@ void Engine::onStep(int offset, int step) {
         const bool onBar = local > 0 && local % bar == 0;
         if (onBar && !stopAtSwap_ && (swapAt_ == 0 || local >= swapAt_)) swapScene(step, offset);
     }
-    // Patterns count from the start of their scene; the remix stems follow the transport.
+    // Live launches due on this step, after the scene swap (armed later, they win).
+    if (anyPending_) launchSlots(step, offset);
+    // Patterns count from the start of their slot (the scene's start unless the live grid launched
+    // it on its own); the remix stems follow the transport.
     const int local = step - sceneStart_;
-    acid_.onStep(offset, local, sequencer_.samplesPerStep());
+    acid_.onStep(offset, localOf(kSlotAcid, step), sequencer_.samplesPerStep());
     // Outside the song, no song position: song clips and song curves wait for the song.
     const int songStep = inSong_ ? step - songStart_ : -1;
-    audio_.onStep(offset, local, songStep, sequencer_.samplesPerStep(), sequencer_.swing(), songStart_);
-    for (auto& t : tracks_) {
-        if (t.on) t.notes.onStep(offset, local, sequencer_.samplesPerStep(), sequencer_.swing());
+    std::array<int, AudioTracks::kTracks> audioLocals{};
+    for (int k = 0; k < AudioTracks::kTracks; ++k) audioLocals[static_cast<size_t>(k)] = localOf(kSlotAudio + k, step);
+    audio_.onStep(offset, audioLocals, songStep, sequencer_.samplesPerStep(), sequencer_.swing(), songStart_);
+    for (int k = 0; k < kTracks; ++k) {
+        auto& t = tracks_[static_cast<size_t>(k)];
+        if (t.on) t.notes.onStep(offset, localOf(kSlotInst + k, step), sequencer_.samplesPerStep(), sequencer_.swing());
         t.arpSync(offset, step, sequencer_.samplesPerStep());
     }
-    const int patternStep = local % patternSteps_;
+    // The drums' own step; loop curves follow the scene's.
+    const int drumsLocal = localOf(kSlotDrums, step);
+    const int patternStep = ((drumsLocal % patternSteps_) + patternSteps_) % patternSteps_;
     songStep_.store(songStep, std::memory_order_relaxed);
+    // Loop and per-scene curves run with the drum loop (they carry on with it in a song part that
+    // carries on, as during the live take it was written from).
     applyAutomation(patternStep, songStep, offset);
     // Sidechain pumps follow the kick lane (pad 1) or every quarter note.
-    mixer_.sidechainEvent(offset, pattern_[0][patternStep] > 0.0f, onBeat);
+    mixer_.sidechainEvent(offset, pattern_[0][patternStep] > 0.0f, onBeat, step, bar);
     currentStep_.store(patternStep, std::memory_order_relaxed);
     absoluteStep_.store(local, std::memory_order_relaxed);
     lastLocal_ = local;
@@ -570,6 +709,17 @@ void Engine::swapScene(int step, int offset) {
         lane.hasStaged = false;
     }
     sceneStart_ = step;
+    // Every slot takes the new scene from here (a part started later in: from its place in it).
+    for (int k = 0; k < kSlots; ++k) {
+        auto& sl = slots_[static_cast<size_t>(k)];
+        sl.start = step - sl.stagedOffset;
+        sl.stagedOffset = 0;
+        sl.tag = kRowTag;
+        publishSlot(k);
+    }
+    // The remix plays unless the part taking over mutes it (then for the next swap: played again).
+    stems_.setLive(staged_.remixOn, offset);
+    staged_.remixOn = true;
     if (songRestart_) {
         // A part that simply follows keeps the song running; a jump (back to the start, or to
         // another part, or into the song from a scene played on its own) moves it, and song
@@ -588,6 +738,157 @@ void Engine::swapScene(int step, int offset) {
     sceneSwaps_.fetch_add(1, std::memory_order_relaxed);
 }
 
+// --- Live grid ------------------------------------------------------------------------------
+
+void Engine::resetSlots(int start) {
+    for (int k = 0; k < kSlots; ++k) {
+        auto& sl = slots_[static_cast<size_t>(k)];
+        sl.start = start;
+        sl.tag = kRowTag;
+        publishSlot(k);
+    }
+}
+
+void Engine::publishSlot(int k) {
+    const auto& sl = slots_[static_cast<size_t>(k)];
+    slotTag_[static_cast<size_t>(k)].store(sl.tag, std::memory_order_relaxed);
+    slotPending_[static_cast<size_t>(k)].store(sl.pending, std::memory_order_relaxed);
+    slotStart_[static_cast<size_t>(k)].store(sl.start, std::memory_order_relaxed);
+}
+
+void Engine::cancelLaunches(int32_t mask, bool dropStaged) {
+    bool any = false;
+    for (int k = 0; k < kSlots; ++k) {
+        auto& sl = slots_[static_cast<size_t>(k)];
+        if ((mask & (1 << k)) != 0 && sl.pending != kNoLaunch) {
+            sl.pending = kNoLaunch;
+            // What it staged never applies later: its clip's loop and effects.
+            if (!dropStaged) {
+                publishSlot(k);
+                continue;
+            }
+            if (k >= kSlotAudio && k < kSlotAudio + AudioTracks::kTracks) staged_.audioLoop[static_cast<size_t>(k - kSlotAudio)] = -1;
+            for (int ch = 0; ch < Mixer::kChannels; ++ch) {
+                if (slotOfChannel(ch) != k) continue;
+                for (int i = 0; i < Mixer::kInserts; ++i) staged_.insertOn[static_cast<size_t>(ch * Mixer::kInserts + i)] = -1;
+            }
+            publishSlot(k);
+        }
+        any |= sl.pending != kNoLaunch;
+    }
+    anyPending_ = any;
+}
+
+int Engine::slotOfChannel(int ch) {
+    if (ch == 0 || ch >= Mixer::kFirstPad) return kSlotDrums;
+    if (ch == 1) return kSlotAcid;
+    if (ch == 2) return kSlotInst;
+    if (ch == 3) return kSlotRemix;
+    if (ch > Mixer::kMaster && ch < 12) return kSlotInst + (ch - Mixer::kMaster);
+    if (ch >= 12 && ch < 12 + AudioTracks::kTracks) return kSlotAudio + (ch - 12);
+    return -1;  // the master: it changes with a whole row only
+}
+
+int Engine::slotOfTarget(int32_t target) {
+    if (target < 0) return -1;
+    const int kind = target >> 16;
+    if (kind == Automation::Acid) return kSlotAcid;
+    if (kind == Automation::BusParam || kind == Automation::Live) return -1;
+    return slotOfChannel((target >> 12) & 0xF);
+}
+
+void Engine::launchSlots(int step, int offset) {
+    int32_t fired = 0;
+    bool waiting = false;
+    for (int k = 0; k < kSlots; ++k) {
+        const auto& sl = slots_[static_cast<size_t>(k)];
+        if (sl.pending == kNoLaunch) continue;
+        if (step % sl.quantum == 0) fired |= 1 << k;
+        else waiting = true;
+    }
+    anyPending_ = waiting;
+    if (fired == 0) return;
+    // A whole row launched on one scene: the scene changes as with a swap (master curves and effects too).
+    const int rowTag = slots_[0].pending;
+    bool row = fired == kAllSlots && rowTag >= 0;
+    for (int k = 1; row && k < kSlots; ++k) row = slots_[static_cast<size_t>(k)].pending == rowTag;
+    for (int k = 0; k < kSlots; ++k) {
+        if ((fired & (1 << k)) == 0) continue;
+        const int tag = slots_[static_cast<size_t>(k)].pending;
+        swapSlot(k, step, offset, tag < 0);
+        auto& sl = slots_[static_cast<size_t>(k)];
+        sl.tag = tag < 0 ? -1 : tag;
+        sl.pending = kNoLaunch;
+        publishSlot(k);
+        // A full queue (the app not reading): the app finds the state in slotTag() anyway.
+        launchEvents_.push(LaunchEvent{static_cast<int16_t>(k), static_cast<int16_t>(sl.tag), step});
+    }
+    if (row) {
+        for (auto& lane : automation_.lanes) {
+            if (!lane.hasStaged || slotOfTarget(lane.target) >= 0) continue;
+            lane.values = lane.staged;
+            lane.hasStaged = false;
+        }
+        for (int i = 0; i < Mixer::kInserts; ++i) {
+            auto& on = staged_.insertOn[static_cast<size_t>(Mixer::kMaster * Mixer::kInserts + i)];
+            if (on >= 0) mixer_.scheduleInsertOn(Mixer::kMaster, i, on == 1, offset);
+            on = -1;
+        }
+        sceneStart_ = step;
+        sceneSwaps_.fetch_add(1, std::memory_order_relaxed);
+    }
+}
+
+void Engine::swapSlot(int k, int step, int offset, bool empty) {
+    if (k == kSlotDrums) {
+        if (empty) {
+            std::fill(&pattern_[0][0], &pattern_[0][0] + kLanes * kMaxSteps, 0.0f);
+            std::fill(&repeats_[0][0], &repeats_[0][0] + kLanes * kMaxSteps, uint8_t{0});
+            std::fill(&stepPan_[0][0], &stepPan_[0][0] + kLanes * kMaxSteps, int8_t{0});
+            std::fill(&stepPitch_[0][0], &stepPitch_[0][0] + kLanes * kMaxSteps, int8_t{0});
+        } else {
+            std::copy(&staged_.drums[0][0], &staged_.drums[0][0] + kLanes * kMaxSteps, &pattern_[0][0]);
+            std::copy(&staged_.repeats[0][0], &staged_.repeats[0][0] + kLanes * kMaxSteps, &repeats_[0][0]);
+            std::copy(&staged_.pan[0][0], &staged_.pan[0][0] + kLanes * kMaxSteps, &stepPan_[0][0]);
+            std::copy(&staged_.pitch[0][0], &staged_.pitch[0][0] + kLanes * kMaxSteps, &stepPitch_[0][0]);
+            patternSteps_ = staged_.drumSteps;
+        }
+    } else if (k == kSlotAcid) {
+        for (int i = 0; i < AcidTrack::kMaxSteps; ++i) acid_.setStep(i, empty ? AcidStep{} : staged_.acid[static_cast<size_t>(i)]);
+        if (!empty) acid_.setLength(staged_.acidLength);
+    } else if (k >= kSlotInst && k < kSlotInst + kTracks) {
+        auto& t = tracks_[static_cast<size_t>(k - kSlotInst)];
+        if (empty) t.notes.setCount(0);  // notes sounding still get their note-off
+        else t.swapIn();
+    } else if (k >= kSlotAudio && k < kSlotAudio + AudioTracks::kTracks) {
+        const int a = k - kSlotAudio;
+        audio_.setOn(a, !empty && staged_.audioOn[static_cast<size_t>(a)]);
+        auto& loop = staged_.audioLoop[static_cast<size_t>(a)];
+        if (!empty && loop >= 0) audio_.setParam(a, AudioTracks::LoopSteps, static_cast<float>(loop));
+        if (!empty) loop = -1;
+    } else if (k == kSlotRemix) {
+        stems_.setLive(!empty, offset);
+    }
+    auto& sl = slots_[static_cast<size_t>(k)];
+    sl.start = step - sl.stagedOffset;
+    sl.stagedOffset = 0;
+    if (empty) return;
+    // The slot's own effects that play in some scenes only, and its per-scene curves.
+    for (int ch = 0; ch < Mixer::kChannels; ++ch) {
+        if (slotOfChannel(ch) != k) continue;
+        for (int i = 0; i < Mixer::kInserts; ++i) {
+            auto& on = staged_.insertOn[static_cast<size_t>(ch * Mixer::kInserts + i)];
+            if (on >= 0) mixer_.scheduleInsertOn(ch, i, on == 1, offset);
+            on = -1;
+        }
+    }
+    for (auto& lane : automation_.lanes) {
+        if (!lane.hasStaged || slotOfTarget(lane.target) != k) continue;
+        lane.values = lane.staged;
+        lane.hasStaged = false;
+    }
+}
+
 // The scene playing goes on by itself, outside the song: song clips fade, song curves hold.
 void Engine::leaveSongNow() {
     if (inSong_) audio_.songJump();
@@ -600,12 +901,15 @@ void Engine::applyAutomation(int patternStep, int songStep, int offset) {
     for (const auto& lane : automation_.lanes) {
         float v = -1.0f;
         if (lane.mode == Automation::Song) {
-            // From the transport start: bar by bar, sliding from one bar's value to the next.
-            if (lane.songBars <= 0 || songStep < 0) continue;
-            const int b = std::min(songStep / bar, lane.songBars - 1);
+            // From the transport start: bar by bar (or beat by beat), sliding from one point's value
+            // to the next (or holding it: on/off controls).
+            if (lane.songPoints <= 0 || songStep < 0) continue;
+            const int unit = lane.perBeat ? Sequencer::kStepsPerBeat : bar;
+            const int b = std::min(songStep / unit, lane.songPoints - 1);
             const float a = lane.song[static_cast<size_t>(b)];
-            const float c = lane.song[static_cast<size_t>(std::min(b + 1, lane.songBars - 1))];
-            const float t = songStep / bar >= lane.songBars - 1 ? 0.0f : static_cast<float>(songStep % bar) / static_cast<float>(bar);
+            const float c = lane.song[static_cast<size_t>(std::min(b + 1, lane.songPoints - 1))];
+            const bool flat = lane.held || lane.flat[static_cast<size_t>(b)] != 0 || songStep / unit >= lane.songPoints - 1;
+            const float t = flat ? 0.0f : static_cast<float>(songStep % unit) / static_cast<float>(unit);
             v = a + t * (c - a);
         } else {
             v = lane.values[static_cast<size_t>(patternStep)];
@@ -622,6 +926,15 @@ void Engine::applyAutomation(int patternStep, int songStep, int offset) {
             case Automation::BusParam: mixer_.setBusParam(slot, param, v); break;
             case Automation::Acid:
                 if (param < AcidTrack::ParamCount) acid_.automate(static_cast<AcidTrack::Param>(param), v, offset);
+                break;
+            // The Live page's gestures, on their step's frame.
+            case Automation::Macro: mixer_.scheduleSetting(Mixer::MacroSetting, ch, param, v, offset); break;
+            case Automation::Live:
+                if (param == PerformanceFx::kReverbReturn || param == PerformanceFx::kEchoReturn) {
+                    mixer_.scheduleSetting(Mixer::ReturnSetting, param - PerformanceFx::kReverbReturn, 0, v * 2.0f, offset);
+                } else if (param < PerformanceFx::kParams) {
+                    mixer_.scheduleSetting(Mixer::PerformanceSetting, param, 0, v, offset);
+                }
                 break;
             default: break;
         }
@@ -649,6 +962,7 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
         sinceStep_ = stepOffset_ >= 0 ? static_cast<double>(numFrames - stepOffset_) : sinceStep_ + numFrames;
         const int from = lastLocal_ >= 0 ? lastLocal_ : countInStep_;
         playPosition_.store(from + sinceStep_ / sequencer_.samplesPerStep(), std::memory_order_relaxed);
+        if (lastTransport_ >= 0) transportPosition_.store(lastTransport_ + sinceStep_ / sequencer_.samplesPerStep(), std::memory_order_relaxed);
     }
     for (auto& t : tracks_) {
         if (!t.on) continue;
@@ -703,6 +1017,8 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
     }
 
     mixer_.setStepFrames(sequencer_.samplesPerStep());
+    // Steps arrive (the count-in's do not count): the live effects wait for the grid's lines.
+    mixer_.setClockRunning(sequencer_.running() && lastTransport_ >= 0);
     {
         float* lefts[AudioTracks::kTracks];
         float* rs[AudioTracks::kTracks];

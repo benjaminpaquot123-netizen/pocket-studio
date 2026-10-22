@@ -7,19 +7,24 @@ Every value is checked (patterns, scales, sounds, packs) so that a typo fails he
 A test (StyleRecipesUpToDateTest) fails when StyleRecipes.kt is not what this script makes.
 
 Recipe syntax (one JSON object per style; one character per sixteenth, 16 = a bar, 32 = two bars):
-  drums[]: {"role": kick|snare|clap|hat|open_hat|perc|808, "pattern": "X...x...o...2...", "tip_fr": "...",
+  drums[]: {"role": kick|snare|clap|hat|open_hat|perc|808|tom|ride|perc2|rumble, "pattern": "X...x...o...2...", "tip_fr": "...",
             "source": <pack the line's sound comes from, default the style's own>,
             "voice": <built-in kit voice when no pack is there, default the pad's own: see VOICES>,
-            "build": <the line in the second section (Groove/Couplet), where it builds up: hats that come in>}
+            "build": <the line in the second section (Groove/Couplet), where it builds up: hats that come in>,
+            "off": true (offered switched off: an alternative, such as the techno rumble next to its bass line)}
+    roles: tom (lane 8, kit toms), ride (lane 12, the kit cymbal: no pack has a ride), perc2 (lane 13, a second
+    percussion: shaker by default), rumble (lane 3: the kick again, played wherever the kick plays, meant for the
+    "rumble" fx preset: reverb, distortion, low-pass, pump).
     pattern: 'X' strong, 'x' medium, 'o' soft, '.' nothing, '2' '3' '4' a medium roll of that many hits in the step.
   bass/lead "pattern" (and acid "pattern"): one token per step on the bar's chord: 'R' root, '2'..'7' scale
     steps, 'O' octave up (lower case 'r' 'o' softer), '-' holds the note, '.' silence, '/' holds the note and
     slides into the next one (808 slide: the notes overlap a little and a gliding sound glides there).
   bass: {"pattern", "octave" (the root's octave, 1 = sub, 2 = usual), "sound", "glide": true (the bass sound
-    glides: synth portamento, pack sample slide)}
+    glides: synth portamento, pack sample slide)}; lead: "glide" too (a riff with '/': the rave hoover's dive)
   chords: {"type": pad|stab|keys|none, "rhythm": "X-------x-------" ('X'/'x' hit, '-' held, '.' rest),
     "voicing", "octave", "sound"}; lead: {"type": riff|arp|none, "pattern", "arp_rate", "octave", "sound"}
-  sounds: a preset of PRESETS, "pack:<pack>:<kind>" (falls back to a preset without the pack),
+  sounds: a preset of PRESETS, "pack:<pack>:<kind>" (falls back to a preset without the pack: FALLBACK),
+    "pack:<pack>:<kind>|<preset>" (the pack's sound first when it is on the phone, else that preset),
     "gm:<General MIDI name>" (a built-in stand-in), "kit:<voice>" (a kit voice played across the keys,
     e.g. "kit:cowbell" for the 808 cowbell melody; falls back to "Cloche").
   "defaults": {"bass": bool, "chords": bool, "lead": bool}: the parts switched on in the assistant.
@@ -27,6 +32,16 @@ Recipe syntax (one JSON object per style; one character per sixteenth, 16 = a ba
   "signature": bass|chords|lead: the part that makes the style; it plays in every section of the song.
   "form": song|club|rave: Intro/Couplet/Refrain, or Intro/Groove/Drop with a Break (default from the family:
     club for House, Techno and Bass music); rave: the 303 alone in the Intro, two Breaks, an outro.
+  "build": true (club music): the Groove becomes a Montée without kick nor bass where the snare (or the clap)
+    rolls faster and faster, before each Drop (Intro, Montée, Drop, Break, Montée, Drop, Intro).
+  "drop": [layers] (club music): held back until the Drop, e.g. ["bass", "open_hat"]; "break": [layers]: what the
+    Break plays (default: the chords and the lead; never the kick). Layers: bass, chords, lead or a drum role.
+  "riser": true (club, build or rave form): a « Montée » track whose noise rises over the 4 bars before each Drop
+    (all the Montée) and hits on the Drop's first beat (a song curve opens and shuts its filter).
+  "sweeps": [{"on": bass|chords|lead|acid|master, "intro"|"groove"|"drop"|"break": [start, end], "resonance": 0..1}]:
+    a low-pass filter on that layer whose cutoff (0..1: 40 Hz to 18 kHz) moves along the song (each section from its
+    start to its end value; "groove" is the Montée of the build form; a section left out plays it open; the outro
+    runs the intro backwards).
   "bass_tip" / "pad_tip" / "lead_tip": what that part does in this style (French), shown on its step.
   "fx": [{"on": bass|chords|lead|<drum role>|acid|drums|master, "preset": <FX_PRESETS id>, "insert": <EFFECTS name>,
           "params": [up to 4 values 0..1 of the insert, the others its defaults], "reverb": 0..1, "delay": 0..1}]:
@@ -61,7 +76,10 @@ def _between(text, start, end):
 def code_lists():
     """The names the app knows, read from its code: a sound, preset or effect added there is accepted here."""
     library = _source("SoundLibrary.kt")
-    sounds = set(re.findall(r'NamedSound\("([^"]+)"', _between(library, "val SYNTH:", "val ACID:")))
+    synth = _between(library, "val SYNTH:", "val ACID:")
+    sounds = set(re.findall(r'NamedSound\("([^"]+)"', synth))
+    global SOUND_FAMILY
+    SOUND_FAMILY = dict(re.findall(r'NamedSound\("([^"]+)", "([^"]+)"', synth))
     acid = set(re.findall(r'NamedSound\("([^"]+)"', _between(library, "val ACID:", "\n    )\n")))
     presets = set(re.findall(r'FxPreset\("([a-z0-9_]+)"', _between(_source("FxPresets.kt"), "val ALL:", "fun byId")))
     enum = _between(_source("Effects.kt"), "enum class EffectType", "\n    ;\n")
@@ -89,7 +107,8 @@ NAMES = {
 }
 ORDER = list(NAMES)
 
-ROLES = {"kick": "Kick", "snare": "Snare", "clap": "Clap", "hat": "Hat", "open_hat": "OpenHat", "perc": "Perc", "808": "Bass808"}
+ROLES = {"kick": "Kick", "snare": "Snare", "clap": "Clap", "hat": "Hat", "open_hat": "OpenHat", "perc": "Perc", "808": "Bass808",
+         "tom": "Tom", "ride": "Ride", "perc2": "Perc2", "rumble": "Rumble"}
 SCALES = {
     "minor": "Minor", "major": "Major", "dorian": "Dorian", "phrygian": "Phrygian", "minor_pentatonic": "MinorPentatonic",
     "major_pentatonic": "MajorPentatonic", "blues": "Blues", "harmonic_minor": "HarmonicMinor",
@@ -104,7 +123,7 @@ PACKS = set(NAMES) | {"tr808", "tr909", "tr707", "tr606", "cr78", "linndrum", "s
 KINDS = {"kick", "snare", "clap", "hat", "open_hat", "perc", "808", "bass", "stab", "tom", "pad", "lead", "pluck", "keys", "vocal", "fx"}
 # Synth fallback when the pack sound is not on the phone.
 FALLBACK = {
-    "bass": {"808": "Basse sub", "bass": "Basse analogique"},
+    "bass": {"808": "Basse sub", "bass": "Basse ronde"},
     "chords": {"stab": "Hoover", "pad": "Nappe chaude", "keys": "Piano électrique", "pluck": "Pluck", "lead": "Lead"},
     "lead": {"stab": "Hoover", "lead": "Lead", "pluck": "Pluck", "keys": "Piano FM", "vocal": "Voix robot", "pad": "Nappe"},
 }
@@ -113,7 +132,7 @@ GM_FALLBACK = {
     "Acoustic Grand Piano": "Piano FM", "Acoustic Guitar (nylon)": "Pluck", "Electric Bass (finger)": "Basse pincée",
     "Electric Guitar (muted)": "Pluck", "String Ensemble 1": "Cordes", "Vibraphone": "Marimba",
 }
-DEFAULT_PRESET = {"bass": "Basse analogique", "chords": "Nappe chaude", "lead": "Lead"}
+DEFAULT_PRESET = {"bass": "Basse ronde", "chords": "Nappe chaude", "lead": "Lead"}
 PART = {"bass": "Bass", "chords": "Pad", "lead": "Lead"}
 DRUM_CHARS = set("Xxo.234")
 LINE_CHARS = set("R23457Oro.-6/")
@@ -125,7 +144,8 @@ KIT_MELODIC = {"cowbell": "Cloche"}
 FX_PRESETS = PRESETS_IN_CODE  # FxPresets.ALL ids
 EFFECTS = EFFECTS_IN_CODE  # EffectType names (NONE apart)
 FX_TARGETS = {"bass": "bass", "chords": "pad", "lead": "lead", "acid": "acid", "drums": "drums", "master": "master"}
-FORMS = {"song": "Song", "club": "Club", "rave": "Rave"}
+FORMS = {"song": "Song", "club": "Club", "rave": "Rave", "build": "Build"}
+CLUB_FAMILIES = {"House", "Techno", "Bass music"}
 # The 303's knobs (AcidSound.values order) and those a song curve can turn (AutoTarget.ACID_PARAMS).
 ACID_KNOBS = {"cutoff": 0, "resonance": 1, "env_mod": 2, "decay": 3, "accent": 4, "tuning": 5, "waveform": 6, "drive": 7, "level": 8}
 ACID_MOVES = {"cutoff", "resonance", "env_mod", "decay", "accent", "drive"}
@@ -141,6 +161,21 @@ def check(cond, msg):
         raise SystemExit("recipe error: " + msg)
 
 
+def num(v):
+    """[v] as a number, or None (a typo such as "0.5x" gets a recipe error, not a raw ValueError)."""
+    if isinstance(v, bool):
+        return None
+    try:
+        return float(v)
+    except (TypeError, ValueError):
+        return None
+
+
+def unit_pair(ends):
+    """[start, end], both 0..1."""
+    return isinstance(ends, list) and len(ends) == 2 and all(num(v) is not None and 0 <= num(v) <= 1 for v in ends)
+
+
 def sound_of(gid, part, spec):
     """(synth preset, "pack:kind" / "kit:<voice>" or None)."""
     spec = (spec or "").strip()
@@ -149,10 +184,15 @@ def sound_of(gid, part, spec):
         check(voice in KIT_MELODIC, f"{gid} {part}: kit voice {voice} cannot play a melody ({sorted(KIT_MELODIC)})")
         return KIT_MELODIC[voice], f"kit:{VOICES[voice]}"
     if spec.startswith("pack:"):
+        spec, _, preset = spec.partition("|")
         _, pack, kind = spec.split(":")
         check(pack in PACKS, f"{gid} {part}: unknown pack {pack}")
         check(kind in KINDS, f"{gid} {part}: unknown kind {kind}")
-        return FALLBACK[part].get(kind, DEFAULT_PRESET[part]), f"{pack}:{kind}"
+        check(not preset or preset in PRESETS, f"{gid} {part}: unknown fallback sound {preset}")
+        # A bass falls back on a bass (a pad sound would not hold the low end); chords and leads may
+        # borrow from another family (a hoover as stabs).
+        check(not preset or part != "bass" or SOUND_FAMILY.get(preset) == "Basses", f"{gid} bass: fallback {preset} is not a bass")
+        return preset or FALLBACK[part].get(kind, DEFAULT_PRESET[part]), f"{pack}:{kind}"
     if spec.startswith("gm:"):
         check(spec[3:] in GM_FALLBACK, f"{gid} {part}: no stand-in for {spec}")
         return GM_FALLBACK[spec[3:]], None
@@ -184,12 +224,17 @@ def style(r):
         if d.get("build"):
             line(d["build"], DRUM_CHARS, gid, d["role"] + " build")
             extra += f", build = {kstr(d['build'])}"
+        if d.get("off"):
+            extra += ", off = true"
         lines.append(f'                Line(Role.{role}, {kstr(pat)}, {kstr(d["tip_fr"])}{extra}),')
         src = d.get("source", gid)
         check(src in PACKS, f"{gid} {d['role']}: unknown source {src}")
         if src != gid:
             kit[role] = src
     check(lines and r["drums"][0]["role"] in ("kick", "808"), f"{gid}: the kick first")
+    roles_used = [d["role"] for d in r["drums"]]
+    check(len(set(roles_used)) == len(roles_used), f"{gid}: one line per role")
+    check("rumble" not in roles_used or "808" not in roles_used, f"{gid}: the rumble and the 808 are both the low end")
     progs = []
     for mood, p in r["progressions"].items():
         check(mood in MOODS, f"{gid}: mood {mood}")
@@ -219,6 +264,8 @@ def style(r):
     glide = bool(b.get("glide", False))
     if glide and "/" not in bass_pat:
         print(f"note: {gid}: the bass glides but its pattern has no '/' (nothing slides)", file=sys.stderr)
+    lead_glide = bool(l.get("glide", False))
+    check(not lead_glide or "/" in lead_pat, f"{gid}: the lead glides but its riff has no '/' (nothing slides)")
     sig = r.get("signature")
     check(sig is None or sig in PART, f"{gid}: signature {sig} ({sorted(PART)})")
     tips = {}
@@ -226,7 +273,49 @@ def style(r):
         if r.get(key):
             tips[part] = r[key]
     form = r.get("form")
-    check(form is None or form in FORMS, f"{gid}: form {form} ({sorted(FORMS)})")
+    check(form is None or form in ("song", "club", "rave"), f"{gid}: form {form} (song, club, rave)")
+    club = (form or ("club" if family in CLUB_FAMILIES else "song")) == "club"
+    if r.get("build"):
+        check(club, f"{gid}: a Montée (build) needs the club form")
+        form = "build"
+
+    def layers(key):
+        keys = r.get(key)
+        if keys is None:
+            return None
+        check(club or form == "build", f"{gid}: '{key}' needs the club form")
+        check(isinstance(keys, list) and keys, f"{gid}: '{key}' is a list of layers")
+        roles = [d["role"] for d in r["drums"]]
+        lines, parts = [], []
+        for k in keys:
+            if k in PART:
+                parts.append(PART[k])
+            else:
+                check(k in roles, f"{gid} {key}: {k} is neither a part ({sorted(PART)}) nor a drum line ({roles})")
+                check(key != "break" or k != "kick", f"{gid} break: never the kick")
+                lines.append(ROLES[k])
+        return f"Layers(setOf({', '.join('Role.' + x for x in lines)}), setOf({', '.join('Part.' + x for x in parts)}))"
+    drop, brk = layers("drop"), layers("break")
+    riser = bool(r.get("riser", False))
+    check(not riser or form in ("club", "build", "rave") or club, f"{gid}: a riser needs a Drop (club, build or rave form)")
+    sweeps = []
+    for sw in r.get("sweeps", []):
+        on = sw.get("on", "")
+        target = {"bass": "bass", "chords": "pad", "lead": "lead", "acid": "acid", "master": "master"}.get(on)
+        check(target, f"{gid} sweep: unknown target {on} (bass, chords, lead, acid, master)")
+        check(on != "acid" or (r.get("acid") or {}).get("use"), f"{gid} sweep: no acid line")
+        pairs = []
+        for sec, ends in sw.items():
+            if sec in ("on", "resonance"):
+                continue
+            check(sec in SECTIONS and unit_pair(ends), f"{gid} sweep {on} {sec}: [start, end] 0..1")
+            pairs.append(f"{SECTIONS[sec]} to ({float(ends[0])}f to {float(ends[1])}f)")
+        check(pairs, f"{gid} sweep {on}: no section")
+        res = num(sw.get("resonance", 0.25))
+        check(res is not None and 0 <= res <= 1, f"{gid} sweep {on}: resonance 0..1")
+        sweeps.append(f"Sweep({kstr(target)}, mapOf({', '.join(pairs)})" + (f", resonance = {res}f" if res != 0.25 else "") + ")")
+    check(len(sweeps) == len({sw.get("on") for sw in r.get("sweeps", [])}), f"{gid}: one sweep per layer")
+    check(drop is None or form != "build", f"{gid}: the Montée already holds the kick and the bass back for the Drop")
     fxs = []
     for fx in r.get("fx", []):
         on = fx.get("on", "")
@@ -237,7 +326,7 @@ def style(r):
         check(not preset or preset in FX_PRESETS, f"{gid} fx: unknown preset {preset} ({sorted(FX_PRESETS)})")
         check(not insert or insert in EFFECTS, f"{gid} fx: unknown insert {insert} ({sorted(EFFECTS)})")
         params = fx.get("params", [])
-        check(not params or (insert and len(params) <= 4 and all(0 <= float(v) <= 1 for v in params)), f"{gid} fx: params 0..1 of an insert")
+        check(not params or (insert and len(params) <= 4 and all(num(v) is not None and 0 <= num(v) <= 1 for v in params)), f"{gid} fx: params 0..1 of an insert")
         check(on != "master" or not (fx.get("reverb") or fx.get("delay")), f"{gid} fx: no sends on the master")
         rev, dly = float(fx.get("reverb", 0)), float(fx.get("delay", 0))
         check(0 <= rev <= 1 and 0 <= dly <= 1, f"{gid} fx: sends 0..1")
@@ -277,7 +366,7 @@ def style(r):
             args.append(f"sound = {kstr(sound)}")
         knobs = acid.get("knobs", {})
         for k, v in knobs.items():
-            check(k in ACID_KNOBS and 0 <= float(v) <= 1, f"{gid} acid knob {k}: one of {sorted(ACID_KNOBS)}, 0..1")
+            check(k in ACID_KNOBS and num(v) is not None and 0 <= num(v) <= 1, f"{gid} acid knob {k}: one of {sorted(ACID_KNOBS)}, 0..1")
         if knobs:
             args.append(f"knobs = mapOf({', '.join(f'{ACID_KNOBS[k]} to {float(v)}f' for k, v in knobs.items())})")
         moves = []
@@ -285,7 +374,7 @@ def style(r):
             check(k in ACID_MOVES, f"{gid} acid move {k}: one of {sorted(ACID_MOVES)}")
             pairs = []
             for sec, ends in sections.items():
-                check(sec in SECTIONS and len(ends) == 2 and all(0 <= float(v) <= 1 for v in ends), f"{gid} acid move {k} {sec}: [start, end] 0..1")
+                check(sec in SECTIONS and unit_pair(ends), f"{gid} acid move {k} {sec}: [start, end] 0..1")
                 pairs.append(f"{SECTIONS[sec]} to ({float(ends[0])}f to {float(ends[1])}f)")
             moves.append(f"AcidMove({ACID_KNOBS[k]}, mapOf({', '.join(pairs)}))")
         if moves:
@@ -297,6 +386,8 @@ def style(r):
         out.append(f"                tips = mapOf({', '.join(f'Part.{k} to {kstr(v)}' for k, v in tips.items())}),")
     if glide:
         out.append("                bassGlide = true,")
+    if lead_glide:
+        out.append("                leadGlide = true,")
     out += [
         "            ),",
         f"            references = listOf({', '.join(kstr(x) for x in r['references'])}),",
@@ -306,6 +397,14 @@ def style(r):
         out.append(f"            form = SongForm.{FORMS[form]},")
     if fxs:
         out.append(f"            effects = listOf({', '.join(fxs)}),")
+    if drop:
+        out.append(f"            drop = {drop},")
+    if brk:
+        out.append(f"            breakWith = {brk},")
+    if riser:
+        out.append("            riser = true,")
+    if sweeps:
+        out.append(f"            sweeps = listOf({', '.join(sweeps)}),")
     out.append("        ),")
     return "\n".join(l[4:] if l.startswith("    ") else l for l in out)
 
@@ -322,6 +421,7 @@ def main(out, *paths):
         "",
         "import com.pocketstudio.model.StarterWizard.AcidMove",
         "import com.pocketstudio.model.StarterWizard.AcidRecipe",
+        "import com.pocketstudio.model.StarterWizard.Layers",
         "import com.pocketstudio.model.StarterWizard.Line",
         "import com.pocketstudio.model.StarterWizard.Melody",
         "import com.pocketstudio.model.StarterWizard.Mood",
@@ -330,6 +430,7 @@ def main(out, *paths):
         "import com.pocketstudio.model.StarterWizard.SongForm",
         "import com.pocketstudio.model.StarterWizard.Style",
         "import com.pocketstudio.model.StarterWizard.StyleFx",
+        "import com.pocketstudio.model.StarterWizard.Sweep",
         "",
         "/**",
         " * The assistant's styles, as producers of each genre make them (researched: landmark tracks,",

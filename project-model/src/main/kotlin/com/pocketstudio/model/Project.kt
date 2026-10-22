@@ -61,6 +61,10 @@ data class Project(
      * the editing tabs, the song on the Morceau tab.
      */
     val listenSong: Boolean? = null,
+    /** The live grid's launch quantum in bars (1, 2 or 4): a pad starts on the next one. */
+    val liveQuantum: Int = 1,
+    /** The Live page's effect settings (grid, release effect, lengths): see [LiveFxSettings]. */
+    val liveFx: LiveFxSettings = LiveFxSettings(),
 ) {
     /** Sixteenths in a bar. */
     val stepsPerBar: Int get() = beatsPerBar * 4
@@ -88,6 +92,8 @@ data class Project(
         beatsPerBar = beatsPerBar.coerceIn(MIN_BEATS, MAX_BEATS),
         midiMap = MidiMapping.sanitize(midiMap),
         audioTracks = audioTracks.filter { it.id in 0 until AudioTrack.MAX }.distinctBy { it.id }.sortedBy { it.id }.map { it.sanitized() },
+        liveQuantum = liveQuantum.takeIf { it in LiveSlots.QUANTA } ?: 1,
+        liveFx = liveFx.sanitized(),
     ).syncScenes().withFittedSampleRoots()
 
     companion object {

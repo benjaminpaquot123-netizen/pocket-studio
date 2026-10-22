@@ -22,6 +22,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -122,6 +124,15 @@ fun InsertChain(ch: Int, inserts: List<Insert>, actions: MixerActions, alsoSet: 
     val used = inserts.indices.filter { inserts[it].effect != EffectType.NONE }
     val busy by actions.cpuBusy.collectAsState()
     val scenes by actions.scenes.collectAsState()
+    // The strip's level, read only where the lights are drawn (it redraws them, 20 times a second).
+    val meters = actions.meters.collectAsState()
+    val level = remember(ch, meters) { { meterLevel(meters.value.getOrElse(ch) { 0f }) } }
+    actions.watchMeters?.let { watch ->
+        val owner = androidx.lifecycle.compose.LocalLifecycleOwner.current
+        androidx.compose.runtime.LaunchedEffect(watch, owner) {
+            owner.repeatOnLifecycle(androidx.lifecycle.Lifecycle.State.STARTED) { watch() }
+        }
+    }
     Column(Modifier.fillMaxWidth().testTag("fx_chain_$ch"), verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Text(tr("Effets en place : %1\$d sur %2\$d", used.size, inserts.size), style = MaterialTheme.typography.labelLarge, color = Neon.Magenta)
         if (busy) {
@@ -141,7 +152,7 @@ fun InsertChain(ch: Int, inserts: List<Insert>, actions: MixerActions, alsoSet: 
                 ch, i, pos, ins, open == i,
                 before = used.getOrNull(pos - 1), after = used.getOrNull(pos + 1),
                 toggle = { open = if (open == i) -1 else i }, actions = actions,
-                removed = { if (open == i) open = -1 },
+                removed = { if (open == i) open = -1 }, level = level,
             )
             // « Joue dans »: only worth it with several scenes (song sections), or to say it plays nowhere.
             if (scenes.size > 1 || ins.scenes?.isEmpty() == true) PlaysIn(ch, i, ins, scenes, actions)
@@ -165,8 +176,9 @@ fun InsertChain(ch: Int, inserts: List<Insert>, actions: MixerActions, alsoSet: 
 @Composable
 private fun InsertRow(
     ch: Int, slot: Int, pos: Int, ins: Insert, selected: Boolean, before: Int?, after: Int?,
-    toggle: () -> Unit, actions: MixerActions, removed: () -> Unit,
+    toggle: () -> Unit, actions: MixerActions, removed: () -> Unit, level: () -> Float,
 ) {
+    SideEffect { insertRowCompositions++ }
     val type = ins.effect
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         FilterChip(
@@ -179,6 +191,9 @@ private fun InsertRow(
                     color = if (ins.bypass) Neon.TextSecondary else Color.Unspecified,
                 )
             },
+            // Its light and mini view: what it does, lit by the sound going through it.
+            // (On the chip filled with its colour when open: drawn in the dark ink of its label.)
+            leadingIcon = { FxActivity(ins, if (selected) Neon.OnAccent else groupColour(type.group), level, "fx_activity_${ch}_$slot") },
             colors = pillColors(groupColour(type.group)),
             modifier = Modifier.weight(1f).testTag("fx_chip_${ch}_$slot"),
         )
@@ -338,3 +353,11 @@ private fun EffectPicker(ch: Int, inserts: List<Insert>, actions: MixerActions, 
         notice?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = Neon.Amber) }
     }
 }
+
+/** A meter's peak (linear) as a light's brightness: -48 dB dark, 0 dB full. */
+internal fun meterLevel(peak: Float): Float =
+    if (peak <= 0f || !peak.isFinite()) 0f else ((20f * kotlin.math.log10(peak) + 48f) / 48f).coerceIn(0f, 1f)
+
+/** Tests: how many times an effect's row was composed (the meters must only redraw it). */
+@androidx.annotation.VisibleForTesting
+internal var insertRowCompositions = 0

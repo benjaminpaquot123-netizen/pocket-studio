@@ -295,6 +295,18 @@ enum class EffectType(val label: String, val params: List<Param>, val defaults: 
         "Le son ralentit jusqu'à s'arrêter, comme une cassette qu'on coupe. Pousse « Arrêt » au-delà du milieu (ou dessine-le en automation) pour le déclencher.",
         EffectGroup.CREATIVE,
     ),
+    WOBBLE(
+        "Wobble",
+        listOf(
+            Param("Vitesse", ::wobbleRate),
+            Param("Profondeur") { hz(80f * 2f.pow(8f * it)) },
+            Param("Résonance", ::percentOf),
+            Param("Forme") { listOf(tr("Douce"), tr("Triangle"), tr("Scie"), tr("Carrée"))[(it * 4).toInt().coerceIn(0, 3)] },
+        ),
+        listOf(0.5f, 0.7f, 0.5f, 0f),
+        "Un filtre qui s'ouvre et se ferme en rythme avec le morceau : le « wob » du dubstep, la reese qui bouge en drum & bass.",
+        EffectGroup.MOTION,
+    ),
     ;
 
     /** Seconds of memory: the engine holds only a few of these (see [LONG_LIMITS]). */
@@ -380,6 +392,9 @@ private fun eqDb(v: Float): String {
 }
 private fun percentOf(v: Float) = percent((v * 100).roundToInt())
 private fun shiftHz(v: Float) = EffectType.shiftHz(v)
+/** The wobble's speeds (the engine's Wobble::stepsOf, slowest first). */
+private fun wobbleRate(v: Float) = listOf("1/1", "1/2", "1/4", tr("1/4 triolet"), "1/8", tr("1/8 triolet"), "1/16", tr("1/16 triolet"), "1/32")[(v * 9).toInt().coerceIn(0, 8)]
+
 /** The echo's note values (the engine's 1, 2, 3, 4, 6, 8 sixteenths). */
 private fun noteValue(v: Float) = listOf("1/16", "1/8", tr("1/8 pointée"), "1/4", tr("1/4 pointée"), "1/2")[(v * 6).toInt().coerceIn(0, 5)]
 private fun ms(v: Float) = if (v < 10) num("%.1f ms", v) else "${v.roundToInt()} ms"

@@ -56,6 +56,10 @@ data class AppSettings(
     val keyLayout: KeyLayout = KeyLayout.TwoOctaves,
     /** Language of the interface (French unless chosen). */
     val language: Lang = Lang.FR,
+    /** A light vibration on each beat while the Live page plays (off: it can annoy). */
+    val liveBeatHaptics: Boolean = false,
+    /** The ready-made effects starred in the effects box (their ids). */
+    val favouriteFx: Set<String> = emptySet(),
 ) {
     companion object {
         val UI_SCALES = listOf(0.85f, 1f, 1.15f, 1.3f)
@@ -68,6 +72,9 @@ object SettingsStore {
     private const val PREFS = "settings"
     private val _state = MutableStateFlow(AppSettings())
     val state: StateFlow<AppSettings> = _state.asStateFlow()
+    private val _favouriteFx = MutableStateFlow<Set<String>>(emptySet())
+    /** The starred ready-made effects alone (the effects box follows them). */
+    val favouriteFx: StateFlow<Set<String>> = _favouriteFx.asStateFlow()
     private var loaded = false
 
     fun load(context: Context): AppSettings {
@@ -88,8 +95,11 @@ object SettingsStore {
             guideSeen = p.getBoolean("guideSeen", d.guideSeen),
             keyLayout = runCatching { KeyLayout.valueOf(p.getString("keyLayout", d.keyLayout.name)!!) }.getOrDefault(d.keyLayout),
             language = Lang.of(p.getString("language", d.language.code)),
+            liveBeatHaptics = p.getBoolean("liveBeatHaptics", d.liveBeatHaptics),
+            favouriteFx = p.getStringSet("favouriteFx", d.favouriteFx)?.toSet() ?: d.favouriteFx,
         )
         I18n.lang = _state.value.language
+        _favouriteFx.value = _state.value.favouriteFx
         loaded = true
         return _state.value
     }
@@ -98,6 +108,7 @@ object SettingsStore {
         val s = transform(load(context))
         I18n.lang = s.language
         _state.value = s
+        _favouriteFx.value = s.favouriteFx
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
             .putString("theme", s.theme.name)
             .putFloat("uiScale", s.uiScale)
@@ -110,9 +121,24 @@ object SettingsStore {
             .putBoolean("guideSeen", s.guideSeen)
             .putString("keyLayout", s.keyLayout.name)
             .putString("language", s.language.code)
+            .putBoolean("liveBeatHaptics", s.liveBeatHaptics)
+            // A copy: SharedPreferences must not keep the set it is given.
+            .putStringSet("favouriteFx", HashSet(s.favouriteFx))
             .apply()
     }
 
+    /** Ready-made effect [id] starred, or no longer. */
+    fun toggleFavouriteFx(context: Context, id: String) =
+        update(context) { s -> s.copy(favouriteFx = if (id in s.favouriteFx) s.favouriteFx - id else s.favouriteFx + id) }
+
+    /** Tests: read the preferences again at the next [load], as a new start of the app would. */
+    @androidx.annotation.VisibleForTesting
+    internal fun forgetForTests() {
+        loaded = false
+        _state.value = AppSettings()
+        _favouriteFx.value = emptySet()
+    }
+
     /** Back to the defaults (the guide is not shown again). */
-    fun reset(context: Context) = update(context) { AppSettings(guideSeen = true, language = it.language) }
+    fun reset(context: Context) = update(context) { AppSettings(guideSeen = true, language = it.language, favouriteFx = it.favouriteFx) }
 }

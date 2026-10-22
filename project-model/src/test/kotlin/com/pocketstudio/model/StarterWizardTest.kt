@@ -55,10 +55,11 @@ class StarterWizardTest {
         assertEquals(house.bpm, p.tempoBpm, 0.0)
         assertEquals(house.swing, p.swing, 0.0)
         assertEquals("House", p.name)
-        assertEquals(setOf(0, 4, 8, 12), p.drums.lanes[0].hits.keys)
+        // Four on the floor over two bars, and the soft push at the end of the second ("jack").
+        assertEquals(setOf(0, 4, 8, 12, 16, 20, 24, 28, 30), p.drums.lanes[0].hits.keys)
         assertNull(p.drums.lanes[0].sample)  // the kit's own kick
         assertEquals(clap, p.drums.lanes[4].sample)
-        assertEquals(setOf(4, 12), p.drums.lanes[4].hits.keys)
+        assertEquals(setOf(4, 12, 20, 28), p.drums.lanes[4].hits.keys)
         // Lines that were skipped stay empty.
         assertTrue(p.drums.lanes[6].hits.isEmpty() && p.drums.lanes[5].hits.isEmpty())
         // Strong, medium and soft marks.
@@ -84,12 +85,12 @@ class StarterWizardTest {
 
     @Test
     fun aOneBarLineRepeatsUnderATwoBarOne() {
-        // UK garage: the kick spans two bars, the snare one.
+        // UK garage: the kick spans two bars, the clap one.
         val garage = StarterWizard.style("uk_garage")!!
         assertEquals(32, StarterWizard.drumSteps(garage))
-        val p = StarterWizard.build(garage, mapOf(StarterWizard.Role.Kick to null, StarterWizard.Role.Snare to null)).switchScene(2)
+        val p = StarterWizard.build(garage, mapOf(StarterWizard.Role.Kick to null, StarterWizard.Role.Clap to null)).switchScene(2)
         assertEquals(32, p.drums.steps)
-        assertEquals(setOf(4, 12, 20, 28), p.drums.lanes[StarterWizard.Role.Snare.lane].hits.keys)
+        assertEquals(setOf(4, 12, 20, 28), p.drums.lanes[StarterWizard.Role.Clap.lane].hits.keys)
         assertEquals(StarterWizard.hits(garage.lines.first { it.role == StarterWizard.Role.Kick }.pattern).keys, p.drums.lanes[0].hits.keys)
     }
 
@@ -109,9 +110,10 @@ class StarterWizardTest {
                 val p = StarterWizard.build(style, mapOf(StarterWizard.Role.Kick to null), mood, parts)
                 assertTrue(p.harmony.lock)
                 assertEquals(StarterWizard.progressionOf(style, mood).first, p.harmony.scale)
-                assertEquals(3, p.instrumentTracks.size)
-                assertEquals(listOf("Basse", "Nappe", "Lead"), p.instrumentTracks.map { it.name })
-                for (t in p.instrumentTracks) {
+                // Club music with a riser gets its « Montée » track after the parts.
+                val riser = style.riser && style.form != StarterWizard.SongForm.Song
+                assertEquals(listOf("Basse", "Nappe", "Lead") + listOfNotNull(StarterWizard.RISER_TRACK.takeIf { riser }), p.instrumentTracks.map { it.name })
+                for (t in p.instrumentTracks.take(3)) {
                     val notes = p.notesOf(t.id)
                     assertTrue("${style.name} $mood ${t.name}", notes.notes.isNotEmpty())
                     assertTrue("${style.name} $mood ${t.name}", notes.notes.all { p.harmony.inScale(it.pitch) })
@@ -239,11 +241,16 @@ class StarterWizardTest {
         // Intro, Groove, Drop, Break, Drop, the Intro again: the Break 8 bars, the others 16 (scenes of 4 bars).
         assertEquals(listOf(0, 1, 2, 3, 2, 0), p.song.map { it.scene })
         assertEquals(listOf(4, 4, 4, 2, 4, 4), p.song.map { it.repeats })
-        // The DJ's intro is the beat (kick, hats, percussion), no note; the Break has no kick nor bass.
+        // The DJ's intro is the beat (kick, hats, percussion), no note; the 909 open hat waits for the Drop;
+        // the Break keeps the hats and the percussion under the chords, without kick nor bass.
         val (bass, pad, lead) = p.instrumentTracks
         for (line in style.lines) {
             val expected = when (line.role) {
-                R.Kick, R.Hat, R.Perc -> listOf(true, true, true, false)
+                // The rumble is the kick's tail: it plays wherever the kick plays.
+                R.Kick, R.Rumble -> listOf(true, true, true, false)
+                R.Hat, R.Perc -> listOf(true, true, true, true)
+                // The open hat and the ride wait for the Drop.
+                R.OpenHat, R.Ride -> listOf(false, false, true, false)
                 else -> listOf(false, true, true, false)
             }
             assertEquals(line.role.title, expected, p.drumsIn(line.role))
@@ -346,10 +353,11 @@ class StarterWizardTest {
             // What the assistant's summary announces is what it builds.
             val plan = StarterWizard.planFor(style, lines.keys, parts.keys, acid = melody && style.melody.acid != null)
             assertEquals(style.name, p.song, StarterWizard.songOf(style, plan))
-            assertEquals(style.name, p.songBars * 16, p.song.sumOf { it.repeats } * StarterWizard.loopBars(style, plan) * 16)
-            // Couplets and Refrains (Grooves and Drops) of 16 bars at least, whatever the tempo.
+            assertEquals(style.name, seconds, StarterWizard.songSeconds(style, plan), 0.01)
+            // Couplets and Refrains (Grooves and Drops) of 16 bars at least, whatever the tempo; a Montée of 8.
             val sections = StarterWizard.sectionsOf(style.bpm, plan.form, plan.hasBreak)
-            assertTrue(style.name, sections.filter { it.second in 1..2 }.all { it.first >= 16 })
+            val montee = plan.form == StarterWizard.SongForm.Build
+            assertTrue(style.name, sections.filter { it.second in 1..2 }.all { it.first >= if (montee && it.second == 1) StarterWizard.BUILD_BARS else 16 })
         }
         // A song: 16-bar Couplets and Refrains, an 8-bar Intro, 4 bars when that would last over 3 min 30.
         assertEquals(listOf(2, 4, 4, 4, 4, 2), StarterWizard.songOf(4, 128.0).map { it.repeats })
@@ -385,23 +393,29 @@ class StarterWizardTest {
             val p = StarterWizard.build(style, lines, mood, parts)
             val plan = StarterWizard.planFor(style, lines.keys, parts.keys, acid = mood != null && style.melody.acid != null)
             assertEquals(plan.count, p.allScenes.size)
+            // Cumulative over the first three (a line in a section is in every section after it); with a
+            // Montée, what the Intro and the Montée play is in the Drop, and the Montée has no kick.
+            val montee = plan.form == StarterWizard.SongForm.Build
+            fun builds(list: List<Boolean>) = if (montee) list[2] || !(list[0] || list[1]) else list.take(3).dropWhile { !it }.all { it }
             for (line in style.lines) {
                 val expected = List(plan.count) { it in plan.lines.getValue(line.role) }
                 assertEquals("${style.name} $mood ${line.role}", expected, p.drumsIn(line.role))
-                // Cumulative over the first three: a line in a section is in every section after it.
-                assertTrue("${style.name} $mood ${line.role}", expected.take(3).dropWhile { !it }.all { it })
+                assertTrue("${style.name} $mood ${line.role}", builds(expected))
             }
+            if (montee) assertFalse(style.name, p.drumsIn(R.Kick)[1])
             if (parts.isNotEmpty()) P.entries.forEachIndexed { i, part ->
                 val id = p.instrumentTracks[i].id
                 assertEquals("${style.name} $mood $part", List(plan.count) { it in plan.parts.getValue(part) }, p.notesIn(id))
                 assertTrue(p.notesIn(id)[2])  // the Refrain (Drop) plays everything
-                assertTrue(p.notesIn(id).take(3).dropWhile { !it }.all { it })
+                assertTrue(builds(p.notesIn(id)))
             }
-            // The intro never has the bass; the Break has neither the kick nor the bass.
+            // The intro never has the bass (nor the Montée); the Break never the kick, the bass only where the style keeps it.
             if (parts.isNotEmpty()) assertFalse(p.notesIn(p.instrumentTracks[0].id)[0])
+            if (parts.isNotEmpty() && montee) assertFalse(p.notesIn(p.instrumentTracks[0].id)[1])
             if (plan.hasBreak) {
                 assertFalse(style.name, p.drumsIn(R.Kick)[3])
-                if (parts.isNotEmpty()) assertFalse(style.name, p.notesIn(p.instrumentTracks[0].id)[3])
+                val keepsBass = style.breakWith?.parts.orEmpty().contains(P.Bass)
+                if (parts.isNotEmpty()) assertEquals(style.name, keepsBass, p.notesIn(p.instrumentTracks[0].id)[3])
             }
             assertTrue("${style.name} $mood", p.allScenes.none { it.isEmpty })
             assertEquals(p, ProjectJson.decode(ProjectJson.encode(p)))

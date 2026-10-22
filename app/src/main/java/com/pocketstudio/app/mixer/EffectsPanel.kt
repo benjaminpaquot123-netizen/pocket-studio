@@ -61,6 +61,7 @@ private fun shortName(type: EffectType): String = when (type) {
     EffectType.OTT -> "OTT"
     EffectType.FREQ_SHIFT -> tr("Décalage")
     EffectType.TAPE_STOP -> tr("Arrêt")
+    EffectType.WOBBLE -> "Wobble"
 }
 
 /** One-line summary of a channel's effects, e.g. "EQ · Comp · Réverbe". */

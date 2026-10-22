@@ -720,10 +720,17 @@ internal fun acidSummary(ui: WizardUi): String {
     ).joinToString(" · ")
 }
 
-/** How the sections build up: one after the other, then (club music) a Break before the last Drop. */
-internal fun sectionsIntro(plan: StarterWizard.ScenePlan): String =
-    if (plan.hasBreak) tr("Comme un vrai morceau de club : les sons s'empilent, puis le Break fait une pause sans kick ni basse avant le dernier Drop.")
-    else tr("Comme une vraie chanson : chaque section ajoute des sons à celle d'avant.")
+/** How the sections build up: one after the other, then (club music) a Break before the last Drop; or a Montée before each Drop. */
+internal fun sectionsIntro(plan: StarterWizard.ScenePlan): String = when {
+    plan.form == StarterWizard.SongForm.Build && plan.hasBreak ->
+        tr("Comme un vrai morceau de club : la Montée retire le kick et fait rouler la caisse claire, puis tout tombe d'un coup au Drop. Le Break fait une pause avant la dernière Montée.")
+    plan.form == StarterWizard.SongForm.Build ->
+        tr("Comme un vrai morceau de club : la Montée retire le kick et fait rouler la caisse claire, puis tout tombe d'un coup au Drop.")
+    plan.hasBreak && 3 in plan.parts[StarterWizard.Part.Bass].orEmpty() ->
+        tr("Comme un vrai morceau de club : les sons s'empilent, puis le Break fait une pause sans kick avant le dernier Drop.")
+    plan.hasBreak -> tr("Comme un vrai morceau de club : les sons s'empilent, puis le Break fait une pause sans kick ni basse avant le dernier Drop.")
+    else -> tr("Comme une vraie chanson : chaque section ajoute des sons à celle d'avant.")
+}
 
 /** "Joue dans Couplet et Refrain", after the letters of those sections. */
 @Composable

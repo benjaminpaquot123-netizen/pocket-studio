@@ -3,11 +3,13 @@ package com.pocketstudio.app
 import android.app.Application
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.longClick
+import androidx.compose.ui.test.performSemanticsAction
 import androidx.test.core.app.ApplicationProvider
 import com.pocketstudio.app.rhythm.RhythmViewModel
 import com.pocketstudio.app.rhythm.SessionUi
@@ -250,6 +252,66 @@ class SongArrangementTest {
                 )
             }
         }
+    }
+
+    @Test
+    fun aTrackOnAnotherSceneIsChosenByALongPressAndUndoesInOneStep() {
+        val vm = vmWithSong()
+        val depth = vm.session.undoDepth
+        vm.setPartScene(0, SongPart.DRUMS, 2)
+        assertEquals(mapOf(SongPart.DRUMS to 2), vm.project.value.song[0].play)
+        assertTrue(vm.project.value.song[0].mixed)
+        assertEquals(depth + 1, vm.session.undoDepth)
+        vm.setPartScene(0, SongPart.DRUMS, 0)  // its own scene again: a plain part
+        assertFalse(vm.project.value.song[0].mixed)
+        vm.undo()
+        assertEquals(mapOf(SongPart.DRUMS to 2), vm.project.value.song[0].play)
+        vm.undo()
+        assertFalse(vm.project.value.song[0].mixed)
+    }
+
+    @Test
+    fun theTimelineShowsMixedPartsAndALongPressChoosesTheScene() {
+        val chosen = mutableListOf<String>()
+        val toggled = mutableListOf<String>()
+        val drums = DrumPattern().toggle(0, 0)
+        compose.setContent {
+            PocketStudioTheme {
+                SessionScreen(
+                    SessionScreenUi(
+                        scenes = listOf(Scene("A", drums), Scene("B", drums), Scene("C", drums)) + List(21) { null },
+                        current = 0, pending = null, songIndex = -1, playing = false, tempoBpm = 120.0,
+                        song = listOf(
+                            SongPart(0, 2),
+                            SongPart(0, 1, play = mapOf(SongPart.ACID to 1), from = mapOf(SongPart.DRUMS to 1), bars = 3),
+                        ),
+                        rows = listOf(
+                            com.pocketstudio.app.session.TimelineRow(SongPart.DRUMS, "Batterie", androidx.compose.ui.graphics.Color.Blue),
+                            com.pocketstudio.app.session.TimelineRow(SongPart.ACID, "Basse acide", androidx.compose.ui.graphics.Color.Green),
+                        ),
+                    ),
+                    SessionActions(
+                        setPartScene = { i, key, scene -> chosen += "$i $key $scene" },
+                        togglePartTrack = { i, key -> toggled += "$i $key" },
+                    ),
+                )
+            }
+        }
+        // The mixed part: its badge, the acid's scene letter, the drums carrying on.
+        compose.onNodeWithTag("timeline_1_acid").performScrollTo()
+        compose.onNodeWithTag("timeline_mixed_1", useUnmergedTree = true).assertExists()
+        compose.onNodeWithTag("timeline_scene_1_acid", useUnmergedTree = true).assertTextContains("B")
+        compose.onNodeWithTag("timeline_scene_1_drums", useUnmergedTree = true).assertTextContains("↪")
+        assertTrue(compose.onAllNodesWithTag("timeline_mixed_0", useUnmergedTree = true).fetchSemanticsNodes().isEmpty())
+        assertTrue(compose.onAllNodesWithTag("timeline_scene_0_acid", useUnmergedTree = true).fetchSemanticsNodes().isEmpty())
+        // A touch mutes; a long press asks for the scene.
+        // (Far down the phone's page: its actions, as a screen reader does them.)
+        compose.onNodeWithTag("timeline_0_drums").performSemanticsAction(androidx.compose.ui.semantics.SemanticsActions.OnClick)
+        assertEquals(listOf("0 drums"), toggled)
+        compose.onNodeWithTag("timeline_0_drums").performSemanticsAction(androidx.compose.ui.semantics.SemanticsActions.OnLongClick)
+        compose.onNodeWithTag("pick_scene_2").performClick()
+        assertEquals(listOf("0 drums 2"), chosen)
+        assertEquals(listOf("0 drums"), toggled)
     }
 
     @Test

@@ -27,6 +27,12 @@ import com.pocketstudio.engine.NativeStems
 import com.pocketstudio.app.remix.StemSet
 import com.pocketstudio.app.remix.StemStore
 import com.pocketstudio.model.Remix
+import com.pocketstudio.model.LiveSlots
+import com.pocketstudio.model.LiveState
+import com.pocketstudio.model.LiveDivision
+import com.pocketstudio.app.live.LiveFxUi
+import com.pocketstudio.model.liveQuantumSteps
+import com.pocketstudio.model.nextLaunchStep
 import com.pocketstudio.model.Mixer
 import com.pocketstudio.model.Macros
 import com.pocketstudio.model.insertsOf
@@ -87,6 +93,14 @@ import com.pocketstudio.model.hasOwnFx
 import com.pocketstudio.model.InstrumentTrack
 import com.pocketstudio.model.MidiMapping
 import com.pocketstudio.model.partView
+import com.pocketstudio.model.partSteps
+import com.pocketstudio.model.writeTake
+import com.pocketstudio.model.takeParts
+import com.pocketstudio.model.liveStateOf
+import com.pocketstudio.model.songCurveCommands
+import com.pocketstudio.model.CurveCommand
+import com.pocketstudio.model.hasPoints
+import com.pocketstudio.model.withPartScene
 import com.pocketstudio.model.sceneSteps
 import com.pocketstudio.model.togglePartTrack
 import com.pocketstudio.model.songBars
@@ -421,6 +435,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** Sends the whole project to the engine, e.g. after the audio stream (re)started. */
     fun syncEngine(p: Project = project.value) {
         if (!NativeEngine.isAvailable) return
+        val dropped = NativeEngine.droppedCommands
         NativeEngine.setStaging(false)  // whatever happened before, edits go to the playing scene
         NativeEngine.setTempo(p.tempoBpm)
         NativeEngine.setSwing(p.swing)
@@ -435,9 +450,36 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         pushRemix(p)
         pushAutomation(p)
         pushLive(p)
+        pushLiveFxSettings(p)
         // Playing the song: the part on now keeps its muted tracks (live only: an export renders
         // the scene or the song as written, whatever plays at that moment).
         if (p === project.value && !NativeEngine.isCapturing) playingPart()?.let { pushPart(p, it.scene, it) }
+        sendAgainIfDropped(dropped)
+    }
+
+    private var dropRetry: kotlinx.coroutines.Job? = null
+    private var dropRetries = 0
+
+    /**
+     * The engine's queue stayed full (the stream stalled 100 ms) since [dropped]: some commands of
+     * that burst were lost (stale notes or curve points). Everything is sent again a moment later
+     * (three times at most in a row: a stream that stays stopped resends on its restart).
+     */
+    private fun sendAgainIfDropped(dropped: Int) {
+        if (NativeEngine.isCapturing) return
+        if (NativeEngine.droppedCommands == dropped) {
+            if (dropRetry?.isActive != true) dropRetries = 0
+            return
+        }
+        if (dropRetries >= 3 || dropRetry?.isActive == true) return
+        dropRetries++
+        AppLog.add("Moteur : ${NativeEngine.droppedCommands - dropped} commandes perdues, tout est renvoyé")
+        dropRetry = viewModelScope.launch {
+            kotlinx.coroutines.delay(300)
+            syncEngine()
+            val ui = _sessionUi.value
+            if (_transport.value.playing && ui.songIndex >= 0 && ui.pending != null && !ui.ending) stageSongPart()
+        }
     }
 
     /** The song part playing now, or null outside song playback. */
@@ -651,7 +693,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         // The scene the engine plays on its own (another one while staying on this one).
         val alone = if (NativeEngine.isCapturing) p.scene else heardScene ?: p.scene
         for (id in 0 until AudioTrack.MAX) {
-            NativeEngine.setAudioOn(id, audioPlays(p, id, part, alone))
+            // On the live grid, a track playing another scene (or stopped) keeps what it plays.
+            if (!waitsFor(LiveSlots.AUDIO + id) || _liveGrid.value?.diverged != true) NativeEngine.setAudioOn(id, audioPlays(p, id, part, alone))
             val clip = p.audioTracks.firstOrNull { it.id == id }?.clip
             val native = clip?.let { padSamples.native(it.file) }
             if (clip != null && native != null) {
@@ -1397,7 +1440,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     private fun pushDrumPattern(drums: DrumPattern) {
-        if (editsWait) return  // another scene plays: this one goes to the engine on its turn
+        if (waitsFor(LiveSlots.DRUMS)) return  // another scene plays: this one goes to the engine on its turn
         NativeEngine.setPatternSteps(drums.steps)
         drums.lanes.forEachIndexed { lane, l ->
             for (step in 0 until DrumPattern.MAX_STEPS) pushHit(lane, step, l.hits[step])
@@ -1601,6 +1644,18 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun setBeatsPerBar(beats: Int) {
         session.edit { it.withBeatsPerBar(beats) }
         syncEngine()
+    }
+
+    /** The timeline's long press: track [key] plays scene [scene] in song part [index] (one undo step). */
+    fun setPartScene(index: Int, key: String, scene: Int) {
+        val before = project.value
+        session.edit { it.withPartScene(index, key, scene) }
+        if (project.value == before) return
+        val ui = _sessionUi.value
+        val song = project.value.song
+        if (!NativeEngine.isAvailable || !_transport.value.playing || ui.songIndex < 0 || song.isEmpty()) return
+        // The part on now waits for its next turn (its tracks carry on); the next one is sent again.
+        stageSongPart()
     }
 
     /** The timeline: track [key] plays or stays silent in song part [index]. */
@@ -1833,6 +1888,13 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 AutoTarget.INSERT_PARAM -> NativeEngine.setInsertParam(t.ch, t.slot, t.param, v)
                 AutoTarget.BUS_PARAM -> NativeEngine.setBusParam(t.slot, t.param, v)
                 AutoTarget.ACID -> NativeEngine.setAcidParam(t.param, v)
+                AutoTarget.MACRO -> NativeEngine.setMacro(t.ch, t.param, v)
+                AutoTarget.LIVE ->
+                    if (t.param == AutoTarget.LIVE_REVERB_RETURN || t.param == AutoTarget.LIVE_ECHO_RETURN) {
+                        NativeEngine.setBusReturn(t.param - AutoTarget.LIVE_REVERB_RETURN, v * 2f)
+                    } else {
+                        NativeEngine.setPerformance(t.param, v)
+                    }
             }
         }
     }
@@ -1845,19 +1907,33 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             pushDrumPattern(view.drums)
             // The 303 knobs that lanes move in this scene stay where the automation has them;
             // the others (a lane without points here) go back to the project's setting.
-            pushAcid(view.acid, keep = p.acidKnobsDriven(index, inSong = part != null))
+            pushAcid(view.acid, keep = p.acidKnobsDriven(part?.sceneFor(SongPart.ACID) ?: index, inSong = part != null))
             view.instrumentTracks.forEach { pushNotes(it.notes, it.id) }
             for (id in 0 until AudioTrack.MAX) NativeEngine.setAudioOn(id, audioPlays(p, id, part, index))
             // "Once" clips: once per song part, or once per pass of the scene played alone.
             val sceneSteps = if (part != null) null else p.sceneSteps(index)
             // Every clip's loop goes with its part (a stale one can never be left waiting).
             p.audioTracks.forEach { t -> t.clip?.let { NativeEngine.setAudioLoop(t.id, it.engineLoopSteps(sceneSteps, p.tempoBpm)) } }
+            // A part written from the live grid: each track carries on where it was (else from its start).
+            for (slot in 0 until LiveSlots.COUNT) NativeEngine.setSlotOffset(slot, (part?.fromBars(LiveSlots.key(slot)) ?: 0) * p.stepsPerBar)
+            // The remix: silent in a part that mutes it (it keeps its place), else heard.
+            NativeEngine.setRemixOn(part?.plays(SongPart.REMIX) ?: true)
+            // The scene a strip's track plays in this part (the master and the buses: the part's).
+            fun sceneOf(ch: Int?): Int = ch?.let(::liveSlotOfChannel)?.let { part?.sceneFor(LiveSlots.key(it)) } ?: index
             // Per-scene automation clips: the scene's own steps (all of them, empty ones included).
             p.automation.forEachIndexed { i, lane ->
-                if (lane.mode == AutomationLane.PER_SCENE) lane.valuesFor(index).forEachIndexed { step, v -> NativeEngine.setAutomationPoint(i, step, v) }
+                if (lane.mode != AutomationLane.PER_SCENE) return@forEachIndexed
+                val scene = when (lane.target.kind) {
+                    AutoTarget.ACID -> part?.sceneFor(SongPart.ACID) ?: index
+                    AutoTarget.BUS_PARAM, AutoTarget.LIVE -> index
+                    else -> sceneOf(lane.target.ch)
+                }
+                lane.valuesFor(scene).forEachIndexed { step, v -> NativeEngine.setAutomationPoint(i, step, v) }
             }
             // « Joue dans »: each effect heard plays in this scene or lets the sound through.
-            (usedStrips(p) + MASTER).forEach { ch -> insertOnCommands(p.insertsOf(ch), index) { slot, on -> NativeEngine.setInsertOn(ch, slot, on) } }
+            (usedStrips(p) + MASTER).forEach { ch ->
+                insertOnCommands(p.insertsOf(ch), if (ch == MASTER) index else sceneOf(ch)) { slot, on -> NativeEngine.setInsertOn(ch, slot, on) }
+            }
         } finally {
             pushingPart = false
         }
@@ -1882,7 +1958,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val song = p.song
         if (song.isEmpty() || ui.songIndex < 0) return
         val playing = ui.removed ?: song.getOrNull(ui.songIndex) ?: return
-        val steps = p.sceneSteps(playing.scene) * playing.repeats
+        val steps = p.partSteps(playing)
         // Recording a take over the whole song: it ends with the song, never starts it over.
         val next = songNextIndex(ui.songIndex, ui.queued, song.size, p.songLoops && !recordingSong)
         if (next < 0) {
@@ -1923,14 +1999,18 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
         val now = ui.pending ?: return
         heardScene = now
-        // The engine already plays it: only the screens follow (no undo step).
-        if (screensFollow(ui)) session.editQuietly { it.switchScene(now) }
         val song = project.value.song
         val index = when {
             song.isEmpty() -> -1
             ui.songIndex >= 0 -> songNextIndex(ui.songIndex, ui.queued, song.size, loops = true)
             else -> ui.queued.takeIf { it in song.indices } ?: -1  // the song starts from the part chosen
         }
+        // A whole scene (a song part) took over: the live grid plays it as the engine does, each
+        // track on its scene of the part (a muted one stopped), from the step it really started on.
+        _liveGrid.value = gridOfPart(song.getOrNull(index)?.takeIf { it.scene == now }, now, liveTransportStep(), slotStatesNow())
+        stagedFrom.fill(null)
+        // The engine already plays it: only the screens follow (no undo step).
+        if (screensFollow(ui)) session.editQuietly { it.switchScene(now) }
         // Edits held for this scene ("rester sur ma scène") that the waiting copy missed: it plays now.
         if (restageJob?.isActive == true && now == project.value.scene) {
             restageJob?.cancel()
@@ -1951,6 +2031,1039 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         else if (_transport.value.playing) toggleTransport()
     }
 
+    // --- Live grid (« Live » page): each track launches its own scene on a global quantum -------
+
+    private val _liveGrid = MutableStateFlow<LiveState?>(null)
+    /** What each column of the live grid plays and waits for while the transport runs (null: stopped). */
+    val liveGrid: StateFlow<LiveState?> = _liveGrid.asStateFlow()
+
+    private val _liveClock = MutableStateFlow(-1)
+    /** Transport steps since play (-1: stopped or counting in), polled while the Live page is shown. */
+    val liveClock: StateFlow<Int> = _liveClock.asStateFlow()
+
+    private val _liveMuted = MutableStateFlow<Set<String>>(emptySet())
+    /** Tracks muted on the Live page (M): instant, never written in the project, gone at Stop. */
+    val liveMuted: StateFlow<Set<String>> = _liveMuted.asStateFlow()
+
+    private val _liveAcid = MutableStateFlow<Map<Int, Float>>(emptyMap())
+    /** The 303 settings moved on the Live page (param to 0..1): heard until Stop or a double tap, not written. */
+    val liveAcid: StateFlow<Map<Int, Float>> = _liveAcid.asStateFlow()
+
+    private val _liveReturns = MutableStateFlow(listOf(0.5f, 0.5f))
+    /** The reverb and echo returns on the Live page (0.5 = as mixed, 0 = none, 1 = twice): until Stop. */
+    val liveReturns: StateFlow<List<Float>> = _liveReturns.asStateFlow()
+
+    /** The project each slot's part was staged from: launched on the scene edited since, it is sent again. */
+    private val stagedFrom = arrayOfNulls<Project>(LiveSlots.COUNT)
+
+    /** The grid as it plays now: every column on the scene heard when nothing was launched apart. */
+    private fun liveNow(): LiveState = _liveGrid.value ?: LiveState.on(heardScene ?: project.value.scene)
+
+    /** The grid as song part [part] plays (null: scene [scene] alone), from [start] or the engine's [states]. */
+    private fun gridOfPart(part: SongPart?, scene: Int, start: Int, states: IntArray?): LiveState =
+        project.value.liveStateOf(part, scene, start, states)
+
+    /** Tests (no engine): the slot states the engine would give (see [NativeEngine.slotStates]). */
+    internal var slotStatesForTest: IntArray? = null
+
+    /** The engine's slots now (tag playing, tag waiting, start step each), or null without an engine. */
+    private fun slotStatesNow(): IntArray? {
+        if (!NativeEngine.isAvailable) return slotStatesForTest
+        return IntArray(NativeEngine.SLOTS * 3).also(NativeEngine::slotStates)
+    }
+
+    private fun liveTransportStep(): Int = if (NativeEngine.isAvailable) NativeEngine.transportStep().coerceAtLeast(0) else takeClockForTest.coerceAtLeast(0)
+
+    /** Tests: the engine swapped song part [index] in (its slots as [states] say), seen by the 40 ms watch. */
+    internal fun songPartSwappedForTest(index: Int, states: IntArray) {
+        val part = project.value.song.getOrNull(index) ?: return
+        slotStatesForTest = states
+        heardScene = part.scene
+        _sessionUi.value = SessionUi(songIndex = index)
+        _liveGrid.value = gridOfPart(part, part.scene, liveTransportStep(), slotStatesNow())
+    }
+
+    /**
+     * The scene whose per-scene curves and « Joue dans » effects [slot]'s track hears now: on a
+     * grid where tracks play different scenes, its own (null: stopped, left alone); else the
+     * scene the engine plays ([engineScene]). Null [slot]: the master, the buses, the whole mix.
+     */
+    private fun sceneOfSlot(p: Project, slot: Int?): Int? {
+        val g = _liveGrid.value
+        if (slot == null || g == null || !g.diverged || pushingPart || NativeEngine.isCapturing || !_transport.value.playing) return engineScene(p)
+        return g.slot(slot).playing.takeIf { it >= 0 }
+    }
+
+    /** The grid slot whose track automation lane target [t] belongs to (null: the master, buses, whole mix). */
+    private fun laneSlot(t: AutoTarget): Int? = when (t.kind) {
+        AutoTarget.ACID -> LiveSlots.ACID
+        AutoTarget.BUS_PARAM, AutoTarget.LIVE -> null
+        else -> liveSlotOfChannel(t.ch)
+    }
+
+    internal fun laneSceneForTest(t: AutoTarget): Int? = sceneOfSlot(project.value, laneSlot(t))
+
+    /**
+     * Edits of [slot]'s track wait for their scene's turn: on the live grid it plays another scene
+     * than the one edited, or is stopped (else as [editsWait]).
+     */
+    private fun waitsFor(slot: Int): Boolean {
+        val g = _liveGrid.value
+        if (g == null || !g.diverged || pushingPart || NativeEngine.isCapturing || !_transport.value.playing) return editsWait
+        return g.slot(slot).playing != project.value.scene
+    }
+
+    internal fun waitsForTest(slot: Int): Boolean = waitsFor(slot)
+
+    /** « Lancer à » 1, 2 or 4 bars (kept with the project, no undo step). */
+    fun setLiveQuantum(bars: Int) {
+        if (bars !in LiveSlots.QUANTA || bars == project.value.liveQuantum) return
+        session.editQuietly { it.copy(liveQuantum = bars) }
+    }
+
+    /**
+     * A pad: track [key] plays its part of scene [scene] from the next launch line (each track
+     * counts from its own launch). Stopped, the transport starts with that track alone. During the
+     * song, the first touch leaves it (the scene playing goes on by itself).
+     */
+    fun launchPad(key: String, scene: Int) {
+        val slot = LiveSlots.of(key) ?: return
+        if (scene !in project.value.allScenes.indices) return
+        if (!_transport.value.playing) {
+            startLive(scene, LiveSlots.mask(slot))
+            return
+        }
+        leaveSongForLive()
+        armSlots(LiveSlots.mask(slot), scene)
+    }
+
+    /** « ▶ A · Refrain »: the whole scene from the next launch line (stopped: it starts now). */
+    fun launchRow(scene: Int) {
+        if (scene !in project.value.allScenes.indices) return
+        if (!_transport.value.playing) {
+            startLive(scene, LiveSlots.ALL)
+            return
+        }
+        leaveSongForLive()
+        armSlots(LiveSlots.ALL, scene)
+    }
+
+    /** ■ under a column: that track stops on the next launch line. */
+    fun stopLiveTrack(key: String) {
+        val slot = LiveSlots.of(key) ?: return
+        if (!_transport.value.playing) return
+        leaveSongForLive()
+        armSlots(LiveSlots.mask(slot), -1)
+    }
+
+    /** « ■ Tout »: every track stops on the next launch line (the transport goes on). */
+    fun stopLiveAll() {
+        if (!_transport.value.playing) return
+        leaveSongForLive()
+        armSlots(LiveSlots.ALL, -1)
+    }
+
+    /** M: track [key] silent at once, or heard again (not written in the project). */
+    fun toggleLiveMute(key: String) {
+        val ch = liveChannel(key) ?: return
+        val muted = _liveMuted.value.let { if (key in it) it - key else it + key }
+        _liveMuted.value = muted
+        if (NativeEngine.isAvailable) NativeEngine.setChannelMute(ch, key in muted || project.value.mixer.channels.getOrNull(ch)?.mute == true)
+    }
+
+    /** The mixer channel of a grid column. */
+    private fun liveChannel(key: String): Int? = when (val slot = LiveSlots.of(key)) {
+        null -> null
+        LiveSlots.DRUMS -> 0
+        LiveSlots.ACID -> 1
+        LiveSlots.REMIX -> 3
+        in LiveSlots.AUDIO until LiveSlots.AUDIO + AudioTrack.MAX -> AudioTrack.mixerChannel(slot - LiveSlots.AUDIO)
+        else -> InstrumentTrack.mixerChannel(slot - LiveSlots.INST)
+    }
+
+    private fun liveMutedChannels(): Set<Int> = _liveMuted.value.mapNotNull(::liveChannel).toSet()
+
+    /** A 303 setting moved on the Live page: heard at once, not written (Stop or a double tap brings back the saved one). */
+    fun setLiveAcid(param: Int, value: Float) {
+        if (param !in AutoTarget.ACID_PARAMS) return
+        val v = value.coerceIn(0f, 1f)
+        takeGesture(AutoTarget.acid(param), v, _liveAcid.value[param] ?: project.value.acid.sound.values()[param])
+        _liveAcid.value = _liveAcid.value + (param to v)
+        if (NativeEngine.isAvailable) NativeEngine.setAcidParam(param, v)
+    }
+
+    /** Double tap: the 303 setting [param] back to the one saved in the project. */
+    fun resetLiveAcid(param: Int) {
+        if (param !in _liveAcid.value) return
+        takeGesture(AutoTarget.acid(param), project.value.acid.sound.values()[param], _liveAcid.value[param] ?: 0f)
+        _liveAcid.value = _liveAcid.value - param
+        if (NativeEngine.isAvailable) NativeEngine.setAcidParam(param, project.value.acid.sound.values()[param])
+    }
+
+    /** The reverb (0) or echo (1) return on the Live page: 0..1, 0.5 = as mixed. */
+    fun setLiveReturn(bus: Int, value: Float) {
+        if (bus !in 0..1) return
+        val v = value.coerceIn(0f, 1f)
+        settleDropIfPassed()
+        // Back to as mixed: at once (a double touch, leaving the page), written as a jump.
+        takeGesture(AutoTarget.live(AutoTarget.LIVE_REVERB_RETURN + bus), v, _liveReturns.value[bus], jump = v == 0.5f)
+        _liveReturns.value = _liveReturns.value.toMutableList().also { it[bus] = v }
+        engineBusReturn(bus, v * 2f)
+    }
+
+    /**
+     * Tests only: the Live page's commands to the engine, in words (« perf 31 1.0 », « hold … »,
+     * « macro … », « return … »), kept when set (unit tests run without the engine).
+     */
+    @androidx.annotation.VisibleForTesting
+    internal var liveCommandsForTest: MutableList<String>? = null
+
+    /** The Live page's effects talk to an engine (or a test listens). */
+    private val liveEngine: Boolean get() = NativeEngine.isAvailable || liveCommandsForTest != null
+
+    private fun enginePerformance(param: Int, v: Float) {
+        liveCommandsForTest?.add("perf $param $v")
+        if (NativeEngine.isAvailable) NativeEngine.setPerformance(param, v)
+    }
+
+    private fun engineHold(packed: Int, on: Boolean) {
+        liveCommandsForTest?.add("hold $packed $on")
+        if (NativeEngine.isAvailable) NativeEngine.setAutomationHold(packed, on)
+    }
+
+    private fun engineMacro(ch: Int, macro: Int, v: Float) {
+        liveCommandsForTest?.add("macro $ch $macro $v")
+        if (NativeEngine.isAvailable) NativeEngine.setMacro(ch, macro, v)
+    }
+
+    private fun engineBusReturn(bus: Int, gain: Float) {
+        liveCommandsForTest?.add("return $bus $gain")
+        if (NativeEngine.isAvailable) NativeEngine.setBusReturn(bus, gain)
+    }
+
+    /** Where the Live page's whole-mix effects are, by [AutoTarget.LIVE] number (the returns apart: [liveReturns]). */
+    private val livePerf = FloatArray(AutoTarget.LIVE_RESET_ALL + 1) { AutoTarget.liveRest(it) }
+
+    /** Song curves of the Live page's effects a finger holds (touch take-over), packed targets. */
+    private val liveHeld = HashSet<Int>()
+
+    private val _liveFx = MutableStateFlow(LiveFxUi())
+    /**
+     * What the Live page's effects are doing (until Stop, not saved): each whole-mix effect away
+     * from its rest (held effects at 1, the build-up knob, the DJ filter), the locked ones, the
+     * tracks' kills, a Drop armed for the next bar. Their settings are the project's
+     * ([com.pocketstudio.model.Project.liveFx], [setLiveFxSettings]).
+     */
+    val liveFx: StateFlow<LiveFxUi> = _liveFx.asStateFlow()
+
+    private fun publishLiveFx(dropArmed: Boolean = _liveFx.value.dropArmed) {
+        val values = AutoTarget.LIVE_GESTURES.filter { livePerf[it] != AutoTarget.liveRest(it) }.associateWith { livePerf[it] }
+        _liveFx.value = _liveFx.value.copy(values = values, dropArmed = dropArmed)
+    }
+
+    /**
+     * Where the engine starts a gesture of the whole-mix effects (sixteenths since play): the next
+     * line of [gridSteps] after what it has rendered, as it waits for it (a take writes the gesture
+     * there, so the song plays it where it was heard); with no grid, where it was heard.
+     */
+    private fun gesturePosition(gridSteps: Int): Double {
+        if (gridSteps <= 0 || !_transport.value.playing) return takePosition()
+        val rendered = if (NativeEngine.isAvailable) NativeEngine.transportPosition() else takeClockForTest.toDouble()
+        return com.pocketstudio.model.nextGridLine(rendered, gridSteps)
+    }
+
+    /** The grid of the held effects (the project's « Départ des effets »), in sixteenths. */
+    private val liveGridSteps: Int get() = project.value.liveFx.gridSteps
+
+    /**
+     * The whole-mix effects of the Live page ([AutoTarget.LIVE_GESTURES]: DJ filter, Répéter,
+     * Freinage, Hachoir, Rembobinage, À l'envers, Demi-tempo, Sortie en écho, the kills, Réverbe
+     * figée, the throws, the risers, the Montée): heard at once (a held effect from the next line of
+     * the grid), written into the song during a take. Away from its rest, a song curve leaves it
+     * alone. A locked effect ([setLiveLock]) ignores being let go (its rest value).
+     */
+    fun livePerformance(param: Int, value: Float) {
+        if (param !in AutoTarget.LIVE_GESTURES) return
+        val v = value.coerceIn(0f, 1f)
+        val rest = AutoTarget.liveRest(param)
+        if (v == rest && param in _liveFx.value.locks) return
+        settleDropIfPassed()
+        // Already at rest (a press refused while a Drop waited, let go): nothing to do.
+        if (v == rest && livePerf[param] == rest) return
+        // On/off effects start on the grid's next line (the kills and the freeze stop there too, the
+        // brake restarts there): written there, so the song plays them where they were heard.
+        val quantised = param in AutoTarget.LIVE_ON_OFF && param != AutoTarget.LIVE_DIVISION &&
+            (v != rest || param in AutoTarget.LIVE_KILL_LOW..AutoTarget.LIVE_KILL_HIGH || param == AutoTarget.LIVE_FREEZE ||
+                (param == AutoTarget.LIVE_TAPE_STOP && project.value.liveFx.restart > 0))
+        val at = when (param) {
+            AutoTarget.LIVE_RISER, AutoTarget.LIVE_DOWNLIFTER, AutoTarget.LIVE_DROP -> gesturePosition(project.value.stepsPerBar)
+            AutoTarget.LIVE_THROW_REVERB, AutoTarget.LIVE_THROW_ECHO -> gesturePosition(if (liveGridSteps > 0) 4 else 0)
+            AutoTarget.LIVE_RESET_ALL -> null
+            else -> if (quantised) gesturePosition(liveGridSteps) else null
+        }
+        // A Drop waits for its bar line: a press that would start in the last half beat before it
+        // (written on that bar's beat, where the Drop clears it) is not played, nor written: the
+        // engine and the song agree. The next press after the bar line plays.
+        if (v != rest && cutByDrop(at ?: takePositionNow())) return
+        // Back to rest: at once (a let-go, unlocked), written as a jump rather than a slide.
+        takeGesture(AutoTarget.live(param), v, livePerf[param], at, jump = v == rest)
+        livePerf[param] = v
+        publishLiveFx()
+        if (!liveEngine) return
+        val target = AutoTarget.live(param).pack()
+        val away = v != rest
+        if (away && liveHeld.add(target)) engineHold(target, true)
+        enginePerformance(param, v)
+        if (!away && liveHeld.remove(target)) releaseHold(target)
+    }
+
+    /** A held button of the whole mix ([AutoTarget.LIVE_ON_OFF]: Freinage, Hachoir, Rembobinage…): on while held. */
+    fun liveHold(param: Int, on: Boolean) {
+        if (param !in AutoTarget.LIVE_ON_OFF || param == AutoTarget.LIVE_DIVISION || AutoTarget.isTrigger(param)) return
+        if (param == AutoTarget.LIVE_REPEAT) {
+            if (on) liveRoll(project.value.liveFx.repeat) else liveRoll(null)
+            return
+        }
+        livePerformance(param, if (on) 1f else 0f)
+    }
+
+    /**
+     * The roll pads: the whole mix repeats [division] (a slice from its own line of the grid) while
+     * held; another pad slid to takes over at the end of the slice playing; null: let go (the
+     * division back at rest too, else its song curve would stay « held »).
+     */
+    fun liveRoll(division: LiveDivision?) {
+        if (division == null) {
+            livePerformance(AutoTarget.LIVE_REPEAT, 0f)
+            if (AutoTarget.LIVE_REPEAT !in _liveFx.value.locks) livePerformance(AutoTarget.LIVE_DIVISION, AutoTarget.liveRest(AutoTarget.LIVE_DIVISION))
+            return
+        }
+        livePerformance(AutoTarget.LIVE_DIVISION, division.engineValue)
+        livePerformance(AutoTarget.LIVE_REPEAT, 1f)
+    }
+
+    /** The division the roll plays (null: none held). */
+    fun liveRollDivision(): LiveDivision? =
+        if (livePerf[AutoTarget.LIVE_REPEAT] > 0.5f) LiveDivision.ofValue(livePerf[AutoTarget.LIVE_DIVISION]) else null
+
+    /**
+     * A kill: [band] (0 bass, 1 mids, 2 highs) of the whole mix ([ch] = [MASTER]) or of track strip
+     * [ch] cut while [on], switching on the grid's lines both ways.
+     */
+    fun liveKill(band: Int, on: Boolean, ch: Int = MASTER) {
+        if (band !in 0..2) return
+        if (ch == MASTER) {
+            livePerformance(AutoTarget.liveKill(band), if (on) 1f else 0f)
+            return
+        }
+        if (ch !in 0 until Mixer.FIRST_PAD) return
+        settleDropIfPassed()
+        val kills = _liveFx.value.trackKills
+        val now = kills[ch].orEmpty()
+        if ((band in now) == on) return
+        val target = AutoTarget.macro(ch, AutoTarget.MACRO_KILL_LOW + band)
+        val at = gesturePosition(liveGridSteps)
+        // Starting where a waiting Drop clears it: not played (see livePerformance).
+        if (on && cutByDrop(at)) return
+        takeGesture(target, if (on) 1f else 0f, if (on) 0f else 1f, at)
+        val next = if (on) now + band else now - band
+        _liveFx.value = _liveFx.value.copy(trackKills = if (next.isEmpty()) kills - ch else kills + (ch to next))
+        if (!liveEngine) return
+        val packed = target.pack()
+        if (on && liveHeld.add(packed)) engineHold(packed, true)
+        engineMacro(ch, AutoTarget.MACRO_KILL_LOW + band, if (on) 1f else 0f)
+        if (!on && liveHeld.remove(packed)) releaseHold(packed)
+    }
+
+    /**
+     * A dub « throw »: the whole mix ([ch] = [MASTER]) or track [ch] sent into the reverb ([bus] 0)
+     * or the echo (1) for one beat, from the next beat line (written there during a take).
+     */
+    fun liveThrow(bus: Int, ch: Int = MASTER) {
+        if (bus !in 0..1) return
+        if (ch == MASTER) {
+            livePerformance(AutoTarget.LIVE_THROW_REVERB + bus, 1f)
+            livePerformance(AutoTarget.LIVE_THROW_REVERB + bus, 0f)
+            return
+        }
+        if (ch !in 0 until Mixer.FIRST_PAD) return
+        val target = AutoTarget.macro(ch, AutoTarget.MACRO_THROW_REVERB + bus)
+        val at = gesturePosition(if (liveGridSteps > 0) 4 else 0)
+        // Pressed and let go at once: the take writes one beat (an on/off lasts at least a beat).
+        if (cutByDrop(at)) return  // the waiting Drop would clear it on its line
+        takeGesture(target, 1f, 0f, at)
+        takeGesture(target, 0f, 1f, at)
+        if (!liveEngine) return
+        engineMacro(ch, AutoTarget.MACRO_THROW_REVERB + bus, 1f)
+        engineMacro(ch, AutoTarget.MACRO_THROW_REVERB + bus, 0f)
+    }
+
+    /** A noise riser ([down]: a downlifter) over the project's [com.pocketstudio.model.LiveFxSettings.riserBars], from the next bar line. */
+    fun liveRiser(down: Boolean = false) {
+        val param = if (down) AutoTarget.LIVE_DOWNLIFTER else AutoTarget.LIVE_RISER
+        livePerformance(param, 1f)
+        livePerformance(param, 0f)
+    }
+
+    /**
+     * The one-knob « Montée » (0 rest .. 1): a high-pass rising over the whole mix, more reverb and
+     * echo, noise rising under it and, past the middle, rolls getting faster (1/4 to 1/32). Written
+     * as one song curve during a take.
+     */
+    fun setLiveBuildUp(value: Float) = livePerformance(AutoTarget.LIVE_BUILD_UP, value)
+
+    /**
+     * « Drop »: on the next bar line, every whole-mix effect back at rest at once (the Montée, held
+     * effects, kills, freeze, throws, returns, the tracks' kills); locks are let go. A take writes
+     * each of them at rest on that bar.
+     */
+    fun liveDrop() {
+        settleDropIfPassed()
+        if (dropAt != null) return  // already armed: it drops on that bar line
+        val bar = project.value.stepsPerBar
+        val at = gesturePosition(bar)
+        val playing = _transport.value.playing
+        // Playing, the engine keeps what it holds until the bar line (a song curve does not take
+        // over before the drop); stopped, everything is at rest at once.
+        liveBackToRest(at, releaseHolds = !playing)
+        // One press to the engine (written into a take too: the song drops on the same bar line).
+        livePerformance(AutoTarget.LIVE_DROP, 1f)
+        livePerformance(AutoTarget.LIVE_DROP, 0f)
+        publishLiveFx(dropArmed = playing)
+        if (playing) {
+            dropAt = at
+            // The armed Drop lights until its bar line has passed; then what was pressed meanwhile
+            // shows as the engine cut it.
+            dropWatch?.cancel()
+            dropWatch = viewModelScope.launch {
+                while (_transport.value.playing && takePositionNow() < at) kotlinx.coroutines.delay(50)
+                settleDrop()
+            }
+        }
+    }
+
+    private var dropWatch: kotlinx.coroutines.Job? = null
+
+    /** The bar line a Drop waits for (sixteenths since play), null: none waiting. */
+    private var dropAt: Double? = null
+
+    /**
+     * A press starting at [at] (sixteenths) is cleared by the Drop waiting: it would be written on
+     * the Drop's beat or later (the nearest beat), where everything is at rest.
+     */
+    private fun cutByDrop(at: Double): Boolean = dropAt?.let { at >= it - 2.0 } == true
+
+    /** A gesture comes after the Drop's bar line, before the watch saw it pass: settled first. */
+    private fun settleDropIfPassed() {
+        val at = dropAt ?: return
+        if (takePositionNow() >= at) settleDrop()
+    }
+
+    /**
+     * The Drop's bar line has passed: the engine cleared everything there, what was pressed
+     * between the Drop and that line too. The page shows it so, a take writes it at rest on that
+     * line (as heard), and the engine's holds are let go (song curves drive them again).
+     */
+    private fun settleDrop() {
+        val at = dropAt ?: return
+        dropAt = null
+        dropWatch?.cancel()
+        dropWatch = null
+        liveBackToRest(at, releaseHolds = true)
+        publishLiveFx(dropArmed = false)
+    }
+
+    private fun takePositionNow(): Double = if (NativeEngine.isAvailable) NativeEngine.transportPosition() else takeClockForTest.toDouble()
+
+    /**
+     * « Tout remettre »: every live effect back at rest now (one command to the engine: the whole
+     * mix's, the returns, the tracks' kills and choppers, the 303 back to its saved settings),
+     * locks let go; written into a take as it is heard.
+     */
+    fun liveResetAll() {
+        settleDropIfPassed()
+        liveBackToRest(null, releaseHolds = true)
+        livePerformance(AutoTarget.LIVE_RESET_ALL, 1f)
+        livePerformance(AutoTarget.LIVE_RESET_ALL, 0f)
+        _liveChops.value.toList().forEach { liveTrackChop(it, false) }
+        _liveAcid.value.keys.toList().forEach { resetLiveAcid(it) }
+        publishLiveFx(dropArmed = false)
+    }
+
+    /**
+     * The whole mix's effects, returns and tracks' kills at rest in the ViewModel (the engine resets
+     * its own with one command), each written into a take at [at] (null: as heard now); holds let go.
+     */
+    private fun liveBackToRest(at: Double?, releaseHolds: Boolean) {
+        val position = at ?: takePosition()
+        // Each at rest at once: written as a jump (the Montée stays up to the Drop's bar line).
+        for (param in AutoTarget.LIVE_GESTURES) {
+            val rest = AutoTarget.liveRest(param)
+            if (livePerf[param] == rest) continue
+            takeGesture(AutoTarget.live(param), rest, livePerf[param], position, jump = true)
+            livePerf[param] = rest
+        }
+        _liveReturns.value.forEachIndexed { bus, v ->
+            if (v != 0.5f) takeGesture(AutoTarget.live(AutoTarget.LIVE_REVERB_RETURN + bus), 0.5f, v, position, jump = true)
+        }
+        _liveReturns.value = listOf(0.5f, 0.5f)
+        _liveFx.value.trackKills.forEach { (ch, bands) ->
+            bands.forEach { b -> takeGesture(AutoTarget.macro(ch, AutoTarget.MACRO_KILL_LOW + b), 0f, 1f, position) }
+        }
+        _liveFx.value = _liveFx.value.copy(locks = emptySet(), trackKills = emptyMap())
+        if (releaseHolds && liveEngine) {
+            val held = liveHeld.filter { (it shr 16) == AutoTarget.LIVE || ((it shr 16) == AutoTarget.MACRO && (it and 0xFF) in AutoTarget.MACRO_KILL_LOW..AutoTarget.MACRO_KILL_HIGH) }
+            liveHeld.removeAll(held.toSet())
+            held.forEach(::releaseHold)
+        }
+        publishLiveFx()
+    }
+
+    /**
+     * Leaving the Live page: nothing it set stays on unseen. The whole-mix effects (the Montée, the
+     * DJ filter, what the lock kept), the returns, the tracks' kills and choppers go back to rest
+     * (written into a take as heard, at once); a Drop already waiting still drops on its bar line.
+     */
+    fun leaveLive() {
+        _liveFx.value.locks.toList().forEach { setLiveLock(it, false) }
+        for (param in AutoTarget.LIVE_GESTURES) {
+            if (AutoTarget.isTrigger(param)) continue
+            val rest = AutoTarget.liveRest(param)
+            if (livePerf[param] != rest) livePerformance(param, rest)
+        }
+        for (bus in 0..1) if (_liveReturns.value[bus] != 0.5f) setLiveReturn(bus, 0.5f)
+        _liveFx.value.trackKills.forEach { (ch, bands) -> bands.forEach { liveKill(it, false, ch) } }
+        _liveChops.value.toList().forEach { liveTrackChop(it, false) }
+    }
+
+    /**
+     * « Verrou »: a locked whole-mix effect stays as it is when let go (the DJ filter where the
+     * finger left it, a held effect on) until unlocked; unlocked, it goes back to its rest.
+     */
+    fun setLiveLock(param: Int, locked: Boolean) {
+        if (param !in AutoTarget.LIVE_GESTURES || AutoTarget.isTrigger(param)) return
+        settleDropIfPassed()
+        val locks = _liveFx.value.locks
+        if ((param in locks) == locked) return
+        _liveFx.value = _liveFx.value.copy(locks = if (locked) locks + param else locks - param)
+        if (!locked) {
+            when (param) {
+                AutoTarget.LIVE_REPEAT -> liveRoll(null)
+                AutoTarget.LIVE_FILTER, AutoTarget.LIVE_RESONANCE -> {
+                    livePerformance(AutoTarget.LIVE_FILTER, AutoTarget.liveRest(AutoTarget.LIVE_FILTER))
+                    livePerformance(AutoTarget.LIVE_RESONANCE, AutoTarget.liveRest(AutoTarget.LIVE_RESONANCE))
+                }
+                else -> livePerformance(param, AutoTarget.liveRest(param))
+            }
+        }
+    }
+
+    /** The Live page's effect settings (grid, release effect, lengths), kept with the project (no undo step). */
+    fun setLiveFxSettings(settings: com.pocketstudio.model.LiveFxSettings) {
+        val s = settings.sanitized()
+        if (s == project.value.liveFx) return
+        session.editQuietly { it.copy(liveFx = s) }
+        pushLiveFxSettings(project.value)
+    }
+
+    /** The settings to the engine (an export's too: it is part of the project's description). */
+    private fun pushLiveFxSettings(p: Project) {
+        if (!NativeEngine.isAvailable) return
+        p.liveFx.engineParams().forEach { (param, v) -> NativeEngine.setPerformance(param, v) }
+    }
+
+    private val _liveChops = MutableStateFlow<Set<Int>>(emptySet())
+    /** Mixer channels whose « Hachoir de voie » is held on the Live page (until let go or Stop, not saved). */
+    val liveChops: StateFlow<Set<Int>> = _liveChops.asStateFlow()
+
+    /** « Hachoir de voie »: track strip [ch] chopped in sixteenths while held (written during a take). */
+    fun liveTrackChop(ch: Int, on: Boolean) {
+        if (ch !in 0 until Mixer.FIRST_PAD || ch == MASTER || (ch in _liveChops.value) == on) return
+        takeGesture(AutoTarget.macro(ch, AutoTarget.MACRO_CHOP), if (on) 1f else 0f, if (on) 0f else 1f)
+        _liveChops.value = if (on) _liveChops.value + ch else _liveChops.value - ch
+        if (!liveEngine) return
+        val target = AutoTarget.macro(ch, AutoTarget.MACRO_CHOP).pack()
+        if (on && liveHeld.add(target)) engineHold(target, true)
+        engineMacro(ch, AutoTarget.MACRO_CHOP, if (on) 1f else 0f)
+        if (!on && liveHeld.remove(target)) releaseHold(target)
+    }
+
+    /** Settings a take moved (packed targets): held in the engine to the take's end, as written. */
+    private val takeHeld = HashSet<Int>()
+    internal val takeHeldForTest: Set<Int> get() = takeHeld
+
+    /** Let go of [packed] in the engine unless something else still holds it (a finger, the Live page, a take). */
+    private fun releaseHold(packed: Int) {
+        if (!liveEngine || packed in liveHeld || packed in takeHeld || heldSettings.any { it.pack() == packed }) return
+        engineHold(packed, false)
+    }
+
+    /** The take ended: what it held goes back to its lanes. */
+    private fun releaseTakeHolds() {
+        val held = takeHeld.toList()
+        takeHeld.clear()
+        held.forEach(::releaseHold)
+    }
+
+    /** Stop: the grid, the mutes and the gestures of the Live page end; the project's sound comes back. */
+    private fun endLiveGestures() {
+        endPerformanceOnStop()
+        _liveGrid.value = null
+        _liveClock.value = -1
+        stagedFrom.fill(null)
+        _liveMuted.value = emptySet()
+        _liveAcid.value = emptyMap()
+        // The whole-mix effects and the track choppers at rest (also where song curves left them).
+        val curves = project.value.automation.filter { it.hasPoints }.map { it.target.kind }.toSet()
+        if (liveEngine) {
+            val held = liveHeld.toList()
+            liveHeld.clear()
+            held.forEach(::releaseHold)
+            // Always (it is cheap): one command, every live effect at rest, the kills, freeze and
+            // throws of the buses too, and a Drop still waiting (the engine also settles it on Stop).
+            enginePerformance(com.pocketstudio.model.LiveFxSettings.ENGINE_RESET_ALL, 1f)
+            enginePerformance(com.pocketstudio.model.LiveFxSettings.ENGINE_RESET_ALL, 0f)
+            AutoTarget.LIVE_GESTURES.forEach { enginePerformance(it, AutoTarget.liveRest(it)) }
+            for (bus in 0..1) engineBusReturn(bus, 1f)
+            if (AutoTarget.MACRO in curves || _liveChops.value.isNotEmpty()) {
+                for (ch in 0 until Mixer.FIRST_PAD) if (ch != MASTER) engineMacro(ch, AutoTarget.MACRO_CHOP, 0f)
+            }
+        }
+        liveHeld.clear()
+        livePerf.indices.forEach { livePerf[it] = AutoTarget.liveRest(it) }
+        dropWatch?.cancel()
+        dropAt = null
+        _liveFx.value = LiveFxUi()
+        _liveChops.value = emptySet()
+        if (_liveReturns.value.any { it != 0.5f }) _liveReturns.value = listOf(0.5f, 0.5f)
+    }
+
+    /** Stopped: the transport starts on [scene] (shown), the tracks outside [mask] silent from the first step. */
+    private fun startLive(scene: Int, mask: Int) {
+        if (scene != project.value.scene) session.editQuietly { it.switchScene(scene) }
+        _sessionUi.value = SessionUi()
+        syncEngine()
+        heardScene = project.value.scene
+        val others = LiveSlots.ALL and mask.inv()
+        // Armed before ▶: they take effect on the very first step.
+        if (others != 0 && NativeEngine.isAvailable) NativeEngine.armLaunch(others, project.value.liveQuantumSteps, -1)
+        toggleTransport(songStep = aloneSongStep())
+        if (others != 0) _liveGrid.value = liveNow().armed(others, -1)
+        watchLaunches()
+    }
+
+    /** During the song (or a scene waiting to take over): the grid takes over, what was armed is dropped. */
+    private fun leaveSongForLive() {
+        var ui = _sessionUi.value
+        if (ui.songIndex < 0 && ui.pending == null && !ui.ending) return
+        // A swap the 40 ms watch has not seen yet: the part it brought in is what plays.
+        if (NativeEngine.isAvailable && (ui.pending != null || ui.ending) && NativeEngine.sceneSwaps() != swapsSeen) {
+            swapsSeen = NativeEngine.sceneSwaps()
+            onSceneSwapped()
+            if (!_transport.value.playing) return  // the song just ended
+            ui = _sessionUi.value
+        }
+        if (NativeEngine.isAvailable) NativeEngine.leaveSong()
+        _sessionUi.value = SessionUi()
+        // The part playing as the engine plays it (exact starts): what the grid and a take go on from.
+        val part = project.value.song.getOrNull(ui.songIndex)
+        val g = if (part != null && NativeEngine.isAvailable) gridOfPart(part, part.scene, liveTransportStep(), slotStatesNow()) else liveNow()
+        _liveGrid.value = g.cancelled(LiveSlots.ALL)
+        AppLog.add("Live : le morceau ne suit plus ses parties")
+    }
+
+    /** [mask]'s slots take [scene]'s part (staged now) or stop (-1) on the next launch line. */
+    private fun armSlots(mask: Int, scene: Int) {
+        val p = project.value
+        if (NativeEngine.isAvailable) {
+            if (scene >= 0) {
+                NativeEngine.setStaging(true)
+                if (mask == LiveSlots.ALL) pushPart(p, scene, null)
+                else for (k in 0 until LiveSlots.COUNT) if (mask and (1 shl k) != 0) pushSlot(p, k, scene)
+                NativeEngine.setStaging(false)
+            }
+            NativeEngine.armLaunch(mask, p.liveQuantumSteps, scene)
+        }
+        for (k in 0 until LiveSlots.COUNT) if (mask and (1 shl k) != 0) stagedFrom[k] = p.takeIf { scene >= 0 }
+        _liveGrid.value = liveNow().armed(mask, scene)
+        watchLaunches()
+    }
+
+    /**
+     * Slot [slot]'s part of [scene] to the engine (the waiting slot while staging, else the playing
+     * one): its notes or clip, its per-scene curves and effects that play in some scenes only.
+     */
+    private fun pushSlot(p: Project, slot: Int, scene: Int) {
+        if (!NativeEngine.isAvailable) return
+        pushingPart = true
+        try {
+            val view = p.sceneView(scene)
+            NativeEngine.setSlotOffset(slot, 0)  // a pad starts its part from the start
+            when (slot) {
+                LiveSlots.DRUMS -> pushDrumPattern(view.drums)
+                LiveSlots.ACID -> {
+                    NativeEngine.setAcidLength(view.acid.length)
+                    view.acid.steps.forEachIndexed { i, st -> NativeEngine.setAcidStep(i, st.pack()) }
+                }
+                LiveSlots.REMIX -> Unit
+                in LiveSlots.AUDIO until LiveSlots.AUDIO + AudioTrack.MAX -> {
+                    val id = slot - LiveSlots.AUDIO
+                    NativeEngine.setAudioOn(id, audioPlays(p, id, null, scene))
+                    p.audioTracks.firstOrNull { it.id == id }?.clip?.let { NativeEngine.setAudioLoop(id, it.engineLoopSteps(p.sceneSteps(scene), p.tempoBpm)) }
+                }
+                else -> view.instrumentTracks.firstOrNull { it.id == slot - LiveSlots.INST }?.let { pushNotes(it.notes, it.id) }
+            }
+            val channel = liveChannel(LiveSlots.key(slot))
+            p.automation.forEachIndexed { i, lane ->
+                val owner = if (lane.target.kind == AutoTarget.ACID) LiveSlots.ACID else liveSlotOfChannel(lane.target.ch)
+                if (lane.mode == AutomationLane.PER_SCENE && owner == slot && lane.target.kind != AutoTarget.BUS_PARAM) {
+                    lane.valuesFor(scene).forEachIndexed { step, v -> NativeEngine.setAutomationPoint(i, step, v) }
+                }
+            }
+            if (channel != null && channel in usedStrips(p)) {
+                insertOnCommands(p.insertsOf(channel), scene) { s, on -> NativeEngine.setInsertOn(channel, s, on) }
+            }
+        } finally {
+            pushingPart = false
+        }
+    }
+
+    private fun liveSlotOfChannel(ch: Int): Int? = when {
+        ch == 0 || ch >= Mixer.FIRST_PAD -> LiveSlots.DRUMS
+        ch == 1 -> LiveSlots.ACID
+        ch == 2 -> LiveSlots.INST
+        ch == 3 -> LiveSlots.REMIX
+        ch in 5..11 -> LiveSlots.INST + ch - 4
+        ch in 12..15 -> LiveSlots.AUDIO + ch - 12
+        else -> null
+    }
+
+    /**
+     * The engine launched [slot] on [scene] (-1: stopped) at transport [step]. A part staged before
+     * its scene was edited gets the edits now; every column on one scene again makes it the scene
+     * heard, and the screens show it.
+     */
+    private fun onLaunched(slot: Int, scene: Int, step: Int) {
+        if (!_transport.value.playing || slot !in 0 until LiveSlots.COUNT) return
+        val g = liveNow().launched(slot, scene, step)
+        _liveGrid.value = g
+        if (_take.value.running) performance?.launched(slot, scene, step)
+        val p = project.value
+        val from = stagedFrom[slot]
+        stagedFrom[slot] = null
+        if (scene >= 0 && scene == p.scene && from != null && from !== p) pushSlot(p, slot, scene)
+        if (!g.diverged && !g.hasPending) {
+            heardScene = g.row
+            if (g.row != project.value.scene && g.row in project.value.allScenes.indices) session.editQuietly { it.switchScene(g.row) }
+            if (NativeEngine.isAvailable) swapsSeen = NativeEngine.sceneSwaps()
+        }
+    }
+
+    internal fun liveLaunchedForTest(slot: Int, scene: Int, step: Int) = onLaunched(slot, scene, step)
+
+    private val launchBuf = IntArray(LiveSlots.COUNT * 3 * 4)
+
+    /** Reads the launches the engine made since the last look ([apply] false: forgets them). */
+    private fun drainLaunches(apply: Boolean = true) {
+        if (!NativeEngine.isAvailable) return
+        var total = 0
+        while (true) {
+            val n = NativeEngine.drainLaunchEvents(launchBuf)
+            if (apply) for (i in 0 until n) onLaunched(launchBuf[i * 3], launchBuf[i * 3 + 1], launchBuf[i * 3 + 2])
+            total += n
+            if (n < launchBuf.size / 3) break
+        }
+        // Its queue full (the app asleep), some were lost: the engine's own state says where each slot is.
+        if (apply && total >= 256) resyncLiveFromEngine()
+    }
+
+    private fun resyncLiveFromEngine() {
+        val buf = IntArray(NativeEngine.SLOTS * 3)
+        NativeEngine.slotStates(buf)
+        val g = liveNow()
+        _liveGrid.value = g.copy(slots = List(LiveSlots.COUNT) { k ->
+            val tag = buf[k * 3]
+            val pending = buf[k * 3 + 1]
+            com.pocketstudio.model.LiveSlot(
+                playing = if (tag == NativeEngine.ROW_TAG) g.row else tag,
+                pending = pending.takeIf { it != NativeEngine.NO_LAUNCH },
+                start = buf[k * 3 + 2],
+            )
+        })
+    }
+
+    private var launchWatch: kotlinx.coroutines.Job? = null
+
+    /** Follows the engine's launches while some wait (also with the screen off). */
+    private fun watchLaunches() {
+        if (!NativeEngine.isAvailable || launchWatch?.isActive == true) return
+        launchWatch = viewModelScope.launch {
+            while (_transport.value.playing && _liveGrid.value?.hasPending == true) {
+                drainLaunches()
+                kotlinx.coroutines.delay(30)
+            }
+        }
+    }
+
+    /** Polls the grid's clock and launches about 30 times a second while the Live page is shown. */
+    suspend fun pollLiveGrid() {
+        if (!NativeEngine.isAvailable) return
+        while (true) {
+            val step = if (_transport.value.playing) NativeEngine.transportStep() else -1
+            if (step != _liveClock.value) _liveClock.value = step
+            if (_transport.value.playing) drainLaunches()
+            kotlinx.coroutines.delay(33)
+        }
+    }
+
+    // --- « Enregistrer la performance »: the Live page's play written into the song ------------
+
+    private val _take = MutableStateFlow<com.pocketstudio.app.live.TakeUi>(com.pocketstudio.app.live.TakeUi.Ready)
+    /** The ● of the Live page: ready, armed, recording, writing, done. */
+    val take: StateFlow<com.pocketstudio.app.live.TakeUi> = _take.asStateFlow()
+
+    private val _takeAppend = MutableStateFlow(false)
+    /** The take replaces the song (false, the default) or comes after it (« Ajouter à la suite »). */
+    val takeAppend: StateFlow<Boolean> = _takeAppend.asStateFlow()
+
+    fun setTakeAppend(append: Boolean) {
+        _takeAppend.value = append
+        // Armed: the take's song position moves with the choice (the song's end, or its start).
+        if (_take.value !is com.pocketstudio.app.live.TakeUi.Armed || performance == null) return
+        val p = project.value
+        performanceAppend = append && p.song.isNotEmpty()
+        val start = performance?.start ?: return
+        if (NativeEngine.isAvailable && NativeEngine.songMarkStep() < start) NativeEngine.markSong(p.liveQuantumSteps, if (performanceAppend) p.song.sumOf { p.partSteps(it) } else 0)
+    }
+
+    /** True while a take is armed or recording: Annuler waits for its end. */
+    val performanceTaking: Boolean get() = _take.value.running
+
+    private var performance: com.pocketstudio.model.PerformanceTake? = null
+    private var performanceBefore: Project? = null
+    private var performanceDepth = 0
+    private var performanceAppend = false
+    /** Launches of the take counted for its parts (the song holds 128). */
+    private var performanceParts = 0
+    private var performanceJob: kotlinx.coroutines.Job? = null
+
+    /** Tests (no engine): the transport step the take's clock reads. */
+    internal var takeClockForTest = -1
+
+    /** Transport steps since play (-1 stopped or counting in). */
+    private fun takeClock(): Int = if (NativeEngine.isAvailable) NativeEngine.transportStep() else takeClockForTest
+
+    /** Where a gesture lands in the take: what is heard lags what is rendered by the output latency. */
+    private fun takePosition(): Double {
+        if (!NativeEngine.isAvailable) return takeClockForTest.toDouble()
+        val latencyMs = Metrics.streamInfo.value.outputLatencyMs.takeIf { it > 0 } ?: 0.0
+        return NativeEngine.transportPosition() - latencyMs / 1000.0 * project.value.tempoBpm / 15.0
+    }
+
+    /** ●: armed for the next launch line (stopped: the scene shown starts now); ■ Fin during the take; armed: cancelled. */
+    fun togglePerformance() {
+        when (_take.value) {
+            is com.pocketstudio.app.live.TakeUi.Armed -> cancelPerformance()
+            is com.pocketstudio.app.live.TakeUi.Recording -> finishPerformance(performanceEnd(takeClock()))
+            is com.pocketstudio.app.live.TakeUi.Writing -> Unit
+            else -> armPerformance()
+        }
+    }
+
+    private fun armPerformance() {
+        if (_recording.value || _audioRecording.value != null) return
+        val p = project.value
+        val append = _takeAppend.value && p.song.isNotEmpty()
+        val base = if (append) p.song.sumOf { p.partSteps(it) } else 0
+        if (append && (p.song.size >= SongPart.MAX_PARTS || base / 4 >= AutomationLane.MAX_SONG_BEATS - p.beatsPerBar)) {
+            _notice.value = tr("Le morceau est plein : choisis « Remplacer le morceau » pour enregistrer.")
+            return
+        }
+        performanceBefore = p
+        performanceDepth = session.undoDepth
+        performanceAppend = append
+        performanceParts = 0
+        val q = p.liveQuantumSteps
+        val start = if (!_transport.value.playing) {
+            // Marked before ▶ (the transport's start keeps it): the take's song position is there from step 0.
+            if (NativeEngine.isAvailable) NativeEngine.markSong(q, base)
+            launchRow(p.scene)  // the scene shown starts now; the take with it
+            0
+        } else {
+            leaveSongForLive()
+            if (NativeEngine.isAvailable) NativeEngine.markSong(q, base)
+            nextLaunchStep(takeClock(), q)
+        }
+        performance = com.pocketstudio.model.PerformanceTake(start, liveNow())
+        _take.value = com.pocketstudio.app.live.TakeUi.Armed(start, (start - takeClock().coerceAtLeast(0)).coerceAtLeast(0))
+        AppLog.add("Live : prise armée (mesure ${start / p.stepsPerBar + 1}${if (append) ", à la suite" else ""})")
+        watchPerformance()
+    }
+
+    /** Armed, not started: nothing is written. */
+    private fun cancelPerformance() {
+        if (NativeEngine.isAvailable) NativeEngine.markSong(0, 0)
+        releaseTakeHolds()
+        performance = null
+        performanceBefore = null
+        _take.value = com.pocketstudio.app.live.TakeUi.Ready
+    }
+
+    /** The bar line a take stopped at [step] ends on (the bar being played is kept). */
+    private fun performanceEnd(step: Int): Int {
+        val bar = project.value.stepsPerBar
+        return (step.coerceAtLeast(0) / bar + 1) * bar
+    }
+
+    /** The take ends on [end]: written into the song in one undo step. */
+    private fun finishPerformance(end: Int) {
+        // A Drop's bar line passed before the watch saw it: what it cleared is written first.
+        settleDropIfPassed()
+        val t = performance ?: return
+        performance = null
+        performanceJob?.cancel()
+        if (_transport.value.playing) drainLaunches()
+        releaseTakeHolds()
+        _take.value = com.pocketstudio.app.live.TakeUi.Writing
+        val before = performanceBefore ?: project.value
+        performanceBefore = null
+        var written = com.pocketstudio.model.TakeWritten(project.value, 0, 0)
+        session.editQuietly { p -> p.writeTake(t, end, performanceAppend).also { written = it }.project }
+        if (written.parts == 0) {
+            _take.value = com.pocketstudio.app.live.TakeUi.Ready
+            _notice.value = if (written.cut) tr("Le morceau est plein : choisis « Remplacer le morceau » pour enregistrer.") else tr("Prise trop courte : rien n'a été écrit.")
+            return
+        }
+        session.commitQuietEdits(before, performanceDepth)
+        performanceDoneDepth = session.undoDepth
+        // Never silently: the song full (128 parts) or no lane left for a setting moved.
+        val lost = listOfNotNull(
+            tr("Le morceau est plein (%d parties) : la fin de la prise n'a pas été écrite.", SongPart.MAX_PARTS).takeIf { written.cut },
+            tr("Plus de place pour d'autres réglages (16 au plus) : %d n'ont pas été écrits.", written.skipped).takeIf { written.skipped > 0 },
+        )
+        if (lost.isNotEmpty()) _notice.value = lost.joinToString(" ")
+        if (NativeEngine.isAvailable) {
+            // The song is written: from here the grid plays on its own again (its curves wait for the song).
+            if (_transport.value.playing) NativeEngine.leaveSong()
+            pushAutomation()
+        }
+        val first = if (performanceAppend) before.song.size else 0
+        _take.value = com.pocketstudio.app.live.TakeUi.Done(written.parts, written.settings, first.coerceAtMost(project.value.song.lastIndex))
+        AppLog.add("Live : morceau écrit (${written.parts} parties, ${written.settings} réglages)")
+    }
+
+    /** The clock of the ●: armed until the take starts, then its time and bar; launches go to the take. */
+    private fun watchPerformance() {
+        performanceJob?.cancel()
+        performanceJob = viewModelScope.launch {
+            while (_take.value.running) {
+                tickPerformance()
+                kotlinx.coroutines.delay(100)
+            }
+        }
+    }
+
+    /** One look at the transport for the take (tests call it after moving [takeClockForTest]). */
+    internal fun tickPerformance() {
+        settleDropIfPassed()
+        val t = performance ?: return
+        if (!_transport.value.playing) return
+        drainLaunches()
+        val step = takeClock()
+        val p = project.value
+        when (val ui = _take.value) {
+            is com.pocketstudio.app.live.TakeUi.Armed -> {
+                // The engine marks the song on the launch line after its command came: a quantum
+                // late when it came past the line planned. The take starts where it marked.
+                val mark = if (NativeEngine.isAvailable) NativeEngine.songMarkStep() else t.start.takeIf { step >= it } ?: -1
+                if (mark > t.start) t.startsAt(mark)
+                val marked = mark >= t.start
+                _take.value = if (marked && step >= t.start) com.pocketstudio.app.live.TakeUi.Recording(t.start, 0, songBarOf(p, 0))
+                else ui.copy(start = t.start, stepsLeft = (t.start - step).coerceAtLeast(0))
+            }
+            is com.pocketstudio.app.live.TakeUi.Recording -> {
+                val elapsed = (step - t.start).coerceAtLeast(0)
+                val base = if (performanceAppend) p.song.sumOf { p.partSteps(it) } else 0
+                // The song is full (1024 beats): the take ends there.
+                if (base + elapsed >= AutomationLane.MAX_SONG_BEATS * 4 - p.stepsPerBar) {
+                    finishPerformance(performanceEnd(step))
+                    return
+                }
+                // Or 128 parts: it ends there too (the parts that fit are written, and it is said).
+                if (t.launchCount != performanceParts) {
+                    performanceParts = t.launchCount
+                    val before = if (performanceAppend) p.song.size else 0
+                    if (before + p.takeParts(t, performanceEnd(step)).size > SongPart.MAX_PARTS) {
+                        finishPerformance(performanceEnd(step))
+                        return
+                    }
+                }
+                _take.value = ui.copy(seconds = (elapsed * 15.0 / p.tempoBpm).toInt(), bar = songBarOf(p, elapsed))
+            }
+            else -> Unit
+        }
+    }
+
+    /** The song's bar (from 1) a take is on after [elapsed] steps (after the song when appending). */
+    private fun songBarOf(p: Project, elapsed: Int): Int {
+        val base = if (performanceAppend) p.song.sumOf { p.partSteps(it) } else 0
+        return (base + elapsed) / p.stepsPerBar + 1
+    }
+
+    /**
+     * A gesture on [target] during a take (armed or recording): written into the song at [at]
+     * (sixteenths since play; null: where it was heard).
+     */
+    private fun takeGesture(target: AutoTarget, value: Float, before: Float, at: Double? = null, jump: Boolean = false) {
+        val t = performance ?: return
+        if (!_take.value.running) return
+        t.gesture(target, value, at ?: takePosition(), before, jump)
+        // Held to the take's end: no lane pulls it back between two gestures, so what is heard is
+        // what the take writes (the setting stays where the finger left it).
+        val packed = target.pack()
+        if (takeHeld.add(packed) && liveEngine) engineHold(packed, true)
+    }
+
+    /** [session.undoDepth] just after the last take was written (its undo step on top). */
+    private var performanceDoneDepth = -1
+
+    /**
+     * « Annuler » of the « Morceau écrit » line still undoes the take alone: nothing was done
+     * since (a macro, a send, a pattern edited after it would be what ↶ takes back instead).
+     */
+    fun canUndoPerformance(): Boolean =
+        _take.value is com.pocketstudio.app.live.TakeUi.Done && session.undoDepth == performanceDoneDepth && session.canUndo.value
+
+    /** « Annuler » on the written take: the song as it was (only while the take is the last change). */
+    fun undoPerformance() {
+        if (_take.value !is com.pocketstudio.app.live.TakeUi.Done) return
+        val alone = canUndoPerformance()
+        _take.value = com.pocketstudio.app.live.TakeUi.Ready
+        if (alone) undo() else _notice.value = tr("D'autres changements ont suivi la prise : utilise ↶ en haut pour revenir en arrière pas à pas.")
+    }
+
+    /** « Écouter »: the song from the take's first part. */
+    fun listenPerformance() {
+        val done = _take.value as? com.pocketstudio.app.live.TakeUi.Done ?: return
+        _take.value = com.pocketstudio.app.live.TakeUi.Ready
+        if (_transport.value.playing) toggleTransport()
+        playSongFrom(done.firstPart.coerceIn(0, (project.value.song.size - 1).coerceAtLeast(0)))
+    }
+
+    /** The « Morceau écrit » line goes. */
+    fun dismissPerformance() {
+        if (_take.value is com.pocketstudio.app.live.TakeUi.Done) _take.value = com.pocketstudio.app.live.TakeUi.Ready
+    }
+
+    /** Stop during a take: it ends at the bar being played (armed: dropped). */
+    private fun endPerformanceOnStop() {
+        when (_take.value) {
+            is com.pocketstudio.app.live.TakeUi.Armed -> cancelPerformance()
+            is com.pocketstudio.app.live.TakeUi.Recording -> finishPerformance(performanceEnd(takeClock()))
+            else -> Unit
+        }
+    }
+
     // --- Automation (mixer settings that move with the loop) ----------------------------------
 
     private val _automationRecord = MutableStateFlow(false)
@@ -1963,22 +3076,49 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     private fun pushAutomation(p: Project = project.value) {
         if (!NativeEngine.isAvailable) return
+        val dropped = NativeEngine.droppedCommands
         for (i in 0 until AutomationLane.MAX_LANES) {
             val lane = p.automation.getOrNull(i)
             NativeEngine.setAutomationTarget(i, lane?.target?.pack() ?: -1)
             if (lane == null) continue
             pushSongCurve(p, i, lane)
-            // Per-scene clips: those of the scene the engine plays (another one while staying on this one).
-            val scene = engineScene(p)
+            // Per-scene clips: those of the scene the lane's track plays (another one while staying
+            // on this one, or on the live grid; a track stopped there keeps what it had).
+            val scene = sceneOfSlot(p, laneSlot(lane.target)) ?: continue
             lane.valuesFor(scene).forEachIndexed { step, v -> if (v != null) NativeEngine.setAutomationPoint(i, step, v) }
         }
+        sendAgainIfDropped(dropped)
     }
 
     /** A song lane's curve over the bars the screen shows (the song, at least 8 bars). */
     private fun pushSongCurve(p: Project, i: Int, lane: AutomationLane) {
-        val curve = if (lane.mode == AutomationLane.SONG) lane.songCurve(maxOf(SONG_LANE_MIN_BARS, p.songBars)) else emptyList()
-        NativeEngine.setAutomationMode(i, lane.mode, curve.size)
-        curve.forEachIndexed { bar, v -> NativeEngine.setAutomationSong(i, bar, v) }
+        val points = maxOf(SONG_LANE_MIN_BARS, p.songBars) * lane.pointsPerBar(p.beatsPerBar)
+        val curve = if (lane.mode == AutomationLane.SONG) lane.songCurve(points) else emptyList()
+        NativeEngine.setAutomationMode(i, lane.mode, curve.size, lane.songPerBeat, lane.hold)
+        // Runs of equal values and straight slides in one command each: the curves of a whole song
+        // fit in the engine's queue (a full queue waits for the audio thread; see sendAgainIfDropped).
+        for (c in songCurveCommands(curve)) when (c) {
+            is CurveCommand.Run ->
+                if (c.count == 1) NativeEngine.setAutomationSong(i, c.first, c.value) else NativeEngine.setAutomationSongRun(i, c.first, c.count, c.value)
+            is CurveCommand.Ramp -> NativeEngine.setAutomationSongRamp(i, c.first, c.count, c.from, c.to)
+        }
+        // The points before a jump hold (a take's Drop, a let-go): runs of them, one command each.
+        for (run in flatRuns(lane.songFlatPoints(curve.size))) NativeEngine.setAutomationSongFlat(i, run.first, run.last - run.first + 1)
+    }
+
+    private fun flatRuns(points: List<Int>): List<IntRange> {
+        val out = ArrayList<IntRange>()
+        var start = -1
+        var last = -2
+        for (p in points) {
+            if (p != last + 1) {
+                if (start >= 0) out += start..last
+                start = p
+            }
+            last = p
+        }
+        if (start >= 0) out += start..last
+        return out
     }
 
     /** Clip kind of lane [index]: loop, per scene or the whole song. */
@@ -1996,10 +3136,12 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         pushMixer()
     }
 
-    /** The song curve: [value] on bar [bar] (null erases). */
+    /** The song curve: [value] on bar [bar] (null erases; a curve with a point per beat: its bar's first beat). */
     fun setAutomationSongPoint(index: Int, bar: Int, value: Float?) {
         if (index !in project.value.automation.indices) return
-        session.edit("auto-song-$index") { p -> p.copy(automation = p.automation.mapIndexed { i, l -> if (i == index) l.withSongPoint(bar, value) else l }) }
+        session.edit("auto-song-$index") { p ->
+            p.copy(automation = p.automation.mapIndexed { i, l -> if (i == index) l.withSongPoint(bar * l.pointsPerBar(p.beatsPerBar), value) else l })
+        }
         // Only this lane (a finger drag sends many points).
         if (NativeEngine.isAvailable) pushSongCurve(project.value, index, project.value.automation[index])
     }
@@ -2054,7 +3196,13 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             // The bar the engine's song curve is reading now (it restarts when the song loops);
             // none while a scene plays on its own: its bars are not the song's.
             if (songStep >= 0 && (songPlaying() || project.value.song.isEmpty())) {
-                setAutomationSongPoint(index, songStep / project.value.stepsPerBar, value)
+                val lane = project.value.automation[index]
+                if (lane.songPerBeat) {
+                    session.edit("auto-song-$index") { p -> p.copy(automation = p.automation.mapIndexed { i, l -> if (i == index) l.withSongPoint(songStep / 4, value) else l }) }
+                    if (NativeEngine.isAvailable) pushSongCurve(project.value, index, project.value.automation[index])
+                } else {
+                    setAutomationSongPoint(index, songStep / project.value.stepsPerBar, value)
+                }
             } else {
                 val refused = tr("Écoute tout le morceau pour enregistrer sur la ligne du morceau.")
                 if (_notice.value != refused) _notice.value = refused
@@ -2512,7 +3660,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** The engine plays the clip as performed: arpeggios and strums expanded here. */
     private fun pushNotes(clip: NoteClip, id: Int = track) {
-        if (!NativeEngine.isAvailable || editsWait) return
+        if (!NativeEngine.isAvailable || waitsFor(LiveSlots.INST + id)) return
         val played = clip.performance.expand(clip)
         NativeEngine.setSynthSteps(clip.steps, id)
         played.forEachIndexed { i, n -> NativeEngine.setSynthNote(i, n.start, n.length, n.pitch, n.velocity, id) }
@@ -3070,19 +4218,34 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     val sceneLabels: StateFlow<List<String>> = project.map { p -> p.allScenes.map { it.label } }.distinctUntilChanged()
         .stateIn(viewModelScope, SharingStarted.Eagerly, project.value.allScenes.map { it.label })
 
-    /** Polls meter peaks about 20 times a second while the mixer is visible. */
+    /** Who reads the meters now: of the screens watching them (the mixer, an effects box), one polls. */
+    private var meterPoller: Any? = null
+    private val meterPeaks = FloatArray(NativeEngine.MIXER_CHANNELS + 1)
+
+    /**
+     * Polls meter peaks about 20 times a second while the mixer or an effects box is visible.
+     * Several watchers at once (a box inside the mixer): one of them reads, the others wait and
+     * take over when it goes (all on the main thread).
+     */
     suspend fun pollMeters() {
         if (!NativeEngine.isAvailable) return
         val n = NativeEngine.MIXER_CHANNELS
-        val decayed = FloatArray(n + 1)
-        while (true) {
-            val fresh = FloatArray(n + 1)
-            NativeEngine.mixerMeters(fresh)
-            // Peak hold with a gentle fall so the bars are readable.
-            for (i in 0 until n) decayed[i] = maxOf(fresh[i], decayed[i] * 0.85f)
-            decayed[n] = fresh[n]
-            _meters.value = decayed.copyOf()
-            kotlinx.coroutines.delay(50)
+        val me = Any()
+        try {
+            while (true) {
+                if (meterPoller == null) meterPoller = me
+                if (meterPoller === me) {
+                    val fresh = FloatArray(n + 1)
+                    NativeEngine.mixerMeters(fresh)
+                    // Peak hold with a gentle fall so the bars are readable.
+                    for (i in 0 until n) meterPeaks[i] = maxOf(fresh[i], meterPeaks[i] * 0.85f)
+                    meterPeaks[n] = fresh[n]
+                    _meters.value = meterPeaks.copyOf()
+                }
+                kotlinx.coroutines.delay(50)
+            }
+        } finally {
+            if (meterPoller === me) meterPoller = null
         }
     }
 
@@ -3186,7 +4349,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             if (i == MASTER || i !in used) return@forEachIndexed
             NativeEngine.setChannelVolume(i, c.volume)
             NativeEngine.setChannelPan(i, c.pan)
-            NativeEngine.setChannelMute(i, c.mute)
+            NativeEngine.setChannelMute(i, c.mute || (!NativeEngine.isCapturing && i in liveMutedChannels()))
             NativeEngine.setChannelSolo(i, c.solo)
             pushInserts(i, c.inserts)
             c.sends.forEachIndexed { bus, level -> NativeEngine.setSend(i, bus, level) }
@@ -3224,7 +4387,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * the scene waiting to take over (its copy in the engine was sent before this change).
      */
     private fun pushInsertScenes(ch: Int, inserts: List<Insert>) {
-        insertOnCommands(inserts, engineScene(project.value)) { slot, on -> NativeEngine.setInsertOn(ch, slot, on) }
+        // The scene this strip's track plays (on the live grid, its own; stopped: left as it is).
+        sceneOfSlot(project.value, if (ch == MASTER) null else liveSlotOfChannel(ch))?.let { scene ->
+            insertOnCommands(inserts, scene) { slot, on -> NativeEngine.setInsertOn(ch, slot, on) }
+        }
         val waiting = _sessionUi.value.pending
         if (waiting != null && _transport.value.playing && !NativeEngine.isCapturing && inserts.any { it.heardType != 0 }) {
             NativeEngine.setStaging(true)
@@ -3281,6 +4447,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     private fun setMacros(ch: Int, values: Map<Int, Float>, key: String) {
         if (ch !in 0 until Mixer.CHANNELS || ch == MASTER) return
+        project.value.mixer.channels.getOrNull(ch)?.let { c ->
+            values.forEach { (m, v) -> takeGesture(AutoTarget.macro(ch, m), v.coerceIn(0f, 1f), c.macros.getOrElse(m) { 0f }) }
+        }
         session.edit(key) { p ->
             val channels = p.mixer.channels.toMutableList()
             channels[ch] = channels[ch].let { c -> c.copy(macros = Macros.sanitized(c.macros.mapIndexed { m, old -> values[m] ?: old })) }
@@ -3313,8 +4482,48 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         routePad(ch)
     }
 
+    private val _auditioning = MutableStateFlow<Pair<Int, String>?>(null)
+    /** The ready-made effect heard on a strip while a finger holds its chip (strip, preset id). */
+    val auditioning: StateFlow<Pair<Int, String>?> = _auditioning.asStateFlow()
+
+    /**
+     * Hold-to-listen: ready-made effect [presetId] heard on strip [ch] as if chosen, nothing
+     * written (no undo step, the project unchanged); null: the strip back to what is saved. Refused
+     * (said) when it would need more long effects than the engine holds.
+     */
+    fun auditionFx(ch: Int, presetId: String?) {
+        if (ch !in 0 until Mixer.CHANNELS || ch == MASTER) return
+        val saved = project.value.mixer.channels.getOrNull(ch) ?: return
+        val preset = presetId?.let { FxPresets.byId(it) ?: return }
+        val heard = if (preset == null) saved else saved.withFx(preset)
+        if (preset != null) {
+            val channels = project.value.mixer.channels.toMutableList().also { it[ch] = heard }
+            project.value.mixer.copy(channels = channels).longFxOverLimit(project.value.mixer)?.let {
+                _notice.value = longFxLimitNotice(it)
+                return
+            }
+        } else if (_auditioning.value?.first != ch) {
+            return
+        }
+        _auditioning.value = preset?.let { ch to it.id }
+        if (!NativeEngine.isAvailable) return
+        if (ch >= Mixer.FIRST_PAD && !heard.hasOwnFx()) {
+            NativeEngine.setPadStrip(ch - Mixer.FIRST_PAD, false)
+            return
+        }
+        pushInserts(ch, heard.inserts)
+        heard.sends.forEachIndexed { bus, level -> NativeEngine.setSend(ch, bus, level) }
+        heard.macros.forEachIndexed { m, v -> NativeEngine.setMacro(ch, m, v) }
+        if (ch >= Mixer.FIRST_PAD) {
+            NativeEngine.setChannelVolume(ch, heard.volume)
+            NativeEngine.setChannelPan(ch, heard.pan)
+            NativeEngine.setPadStrip(ch - Mixer.FIRST_PAD, true)
+        }
+    }
+
     fun setSend(ch: Int, bus: Int, level: Float) {
         val v = level.coerceIn(0f, 1f)
+        takeGesture(AutoTarget(AutoTarget.SEND, ch, bus), v, project.value.mixer.channels.getOrNull(ch)?.sends?.getOrNull(bus) ?: 0f)
         session.edit("mix-$ch-send-$bus") { p ->
             val channels = p.mixer.channels.toMutableList()
             channels[ch] = channels[ch].let { c -> c.copy(sends = c.sends.mapIndexed { b, old -> if (b == bus) v else old }) }
@@ -3658,7 +4867,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun editAcidStep(transform: (AcidStep) -> AcidStep) {
         val index = _selectedAcidStep.value
         session.edit { p -> p.copy(acid = p.acid.withStep(index, transform(p.acid.steps[index]))) }
-        if (NativeEngine.isAvailable && !editsWait) NativeEngine.setAcidStep(index, project.value.acid.steps[index].pack())
+        if (NativeEngine.isAvailable && !waitsFor(LiveSlots.ACID)) NativeEngine.setAcidStep(index, project.value.acid.steps[index].pack())
     }
 
     fun toggleAcidLock() {
@@ -3690,7 +4899,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun holdSetting(target: AutoTarget, held: Boolean) {
         if (!target.isValid) return
         val changed = if (held) heldSettings.add(target) else heldSettings.remove(target)
-        if (changed && NativeEngine.isAvailable) NativeEngine.setAutomationHold(target.pack(), held)
+        if (!changed || !NativeEngine.isAvailable) return
+        if (held) NativeEngine.setAutomationHold(target.pack(), true) else releaseHold(target.pack())
     }
 
     /** The settings a finger holds now (touch take-over). */
@@ -3710,11 +4920,13 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     private fun pushAcid(acid: AcidPattern, keep: Set<Int> = emptySet()) {
         if (!NativeEngine.isAvailable) return
         // Another scene plays (staying on this one during the song): only the sound goes now.
-        val notes = !editsWait
+        val notes = !waitsFor(LiveSlots.ACID)
         if (notes) NativeEngine.setAcidLength(acid.length)
         NativeEngine.setAcidRoot(acid.root)
         if (notes) acid.steps.forEachIndexed { i, s -> NativeEngine.setAcidStep(i, s.pack()) }
-        acid.sound.values().forEachIndexed { i, v -> if (i !in keep) NativeEngine.setAcidParam(i, v) }
+        // The knobs moved on the Live page stay where the fingers left them (until Stop).
+        val moved = if (NativeEngine.isCapturing) emptyMap() else _liveAcid.value
+        acid.sound.values().forEachIndexed { i, v -> if (i !in keep) NativeEngine.setAcidParam(i, moved[i] ?: v) }
     }
 
     /** ▶ / ■: plays the song from its first part when listening to the song ([listensToSong]), else the scene shown. */
@@ -3748,10 +4960,23 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     private fun toggleTransport(countInBars: Int? = null, songStep: Int = NativeEngine.OUTSIDE_SONG) {
         val t = _transport.value
         val playing = !t.playing
+        // A take ends before the transport does: its last launches are read while they still count.
+        if (!playing) endPerformanceOnStop()
         _transport.value = t.copy(playing = playing)
+        // The live grid starts from the scene heard (a song part: as it plays it, each track from
+        // where it carries on); Stop ends what the Live page did.
+        if (playing) {
+            val part = _sessionUi.value.songIndex.takeIf { it >= 0 }?.let { project.value.song.getOrNull(it) }
+            _liveGrid.value = gridOfPart(part, heardScene ?: project.value.scene, 0, null)
+        } else {
+            endLiveGestures()
+        }
         if (!NativeEngine.isAvailable) return
         if (!playing && _recording.value) stopRecordingTake()
-        if (playing) NativeEngine.play(countInBars ?: if (t.countIn) 1 else 0, songStep) else {
+        if (playing) {
+            drainLaunches(apply = false)  // what an earlier run left
+            NativeEngine.play(countInBars ?: if (t.countIn) 1 else 0, songStep)
+        } else {
             NativeEngine.stopTransport()
             NativeEngine.toggleClip(-1)  // live pads too: Stop means silence
             catchUpMissedSwap()
@@ -3942,7 +5167,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     fun undo() {
         // A take ends first: a live one then undoes in one step; a mic take keeps its track.
-        if (_recording.value || _audioRecording.value != null || _takeSaving.value) return
+        if (_recording.value || _audioRecording.value != null || _takeSaving.value || performanceTaking) return
         val heard = sceneHeard()
         val before = project.value
         // A scene move undone: the scene playing goes on from its old place (not the one now there).
@@ -3956,7 +5181,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun redo() {
-        if (_recording.value || _audioRecording.value != null || _takeSaving.value) return
+        if (_recording.value || _audioRecording.value != null || _takeSaving.value || performanceTaking) return
         val heard = sceneHeard()
         val before = project.value
         val move = session.redo() as? SceneMove
@@ -4030,7 +5255,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** A hit and its roll (rolls only travel with hits: an empty step needs nothing more). */
     private fun pushHit(lane: Int, step: Int, hit: Hit?) {
-        if (editsWait) return
+        if (waitsFor(LiveSlots.DRUMS)) return
         NativeEngine.setDrumHit(lane, step, hit?.velocity ?: 0f, hit?.repeats ?: 1)
         // Only hits with their own pan or pitch need more (the hit command resets both).
         if (hit != null && !hit.isPlain) NativeEngine.setDrumStepDetail(lane, step, hit.pan, hit.pitch)
@@ -4139,8 +5364,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** Frames of the whole song (each part: its scene's length × its repeats). */
     private fun songFrames(p: Project): Long {
-        val scenes = p.allScenes
-        val steps = p.song.sumOf { (scenes.getOrNull(it.scene)?.stepsFor(p.stepsPerBar) ?: p.stepsPerBar).toLong() * it.repeats }
+        val steps = p.song.sumOf { p.partSteps(it).toLong() }
         return Math.round(steps * 15.0 / p.tempoBpm * OfflineExport.SAMPLE_RATE)  // a sixteenth = 15/bpm s
     }
 
@@ -4168,7 +5392,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 val sixteenth = 15.0 / p.tempoBpm * OfflineExport.SAMPLE_RATE
                 var stepsSoFar = 0L
                 p.song.forEachIndexed { i, part ->
-                    val steps = p.sceneSteps(part.scene) * part.repeats
+                    val steps = p.partSteps(part)
                     val next = p.song.getOrNull(i + 1)
                     if (next != null) {
                         NativeEngine.captureAt(Math.round((stepsSoFar + 0.5) * sixteenth))

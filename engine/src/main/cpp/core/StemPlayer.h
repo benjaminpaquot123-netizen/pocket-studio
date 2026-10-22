@@ -63,6 +63,10 @@ public:
     void start(int offset);
     // Short fade then silence.
     void stop();
+    // The live grid's remix slot: on, it is heard; off, it goes quiet in a few milliseconds from
+    // `offset` frames into the next render() while the song keeps its place (back in time when on).
+    void setLive(bool on, int offset = 0);
+    bool live() const { return live_; }
     void render(float* left, float* right, int numFrames);
 
     bool loaded() const { return bundle_ != nullptr; }
@@ -89,6 +93,9 @@ private:
     bool playing_ = false;
     int fadeLeft_ = 0;
     int fadeLength_ = 240;
+    bool live_ = true;
+    int liveAt_ = -1;       // frame of the next render() where the live gain starts to move, -1 none
+    float liveGain_ = 1.0f; // 1 = heard: the plain mix, sample for sample
     std::atomic<int64_t> position_{-1};
 };
 

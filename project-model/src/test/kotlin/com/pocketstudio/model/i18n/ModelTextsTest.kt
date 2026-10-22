@@ -51,7 +51,8 @@ class ModelTextsTest {
         StarterWizard.Part.entries.forEach { add(it.title, it.explanation); addAll(it.categories) }
         StarterWizard.SongForm.entries.forEach { addAll(it.labels); addAll(it.roles) }
         add(StarterWizard.SongForm.BREAK_LABEL, StarterWizard.SongForm.BREAK_ROLE)
-        add(StarterWizard.ScenePlan.ACID_TITLE)
+        add(StarterWizard.SongForm.BREAK_ROLE_WITH_BASS, StarterWizard.SongForm.GROOVE_ROLE_NO_BASS)
+        add(StarterWizard.ScenePlan.ACID_TITLE, StarterWizard.ScenePlan.RISER_TITLE, StarterWizard.ScenePlan.IMPACT_TITLE, StarterWizard.RISER_TRACK)
         addAll(StarterWizard.KIT_MELODIC.values)
         // The assistant's quick 303 sounds, and the kinds of track "+ Piste" offers (with their names).
         addAll(com.pocketstudio.model.WizardAcid.SOUNDS.map { it.first })

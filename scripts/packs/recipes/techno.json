@@ -9,7 +9,7 @@
   ],
   "description_fr": "La techno des clubs de Berlin : un gros kick sur chaque temps, une basse qui roule entre les coups, des boucles hypnotiques.",
   "bpm": 132,
-  "swing": 0.0,
+  "swing": 0.05,
   "root": "F",
   "drums": [
    {
@@ -26,13 +26,13 @@
    },
    {
     "role": "clap",
-    "pattern": "....X.......X...",
+    "pattern": "....X.......X..o",
     "source": "techno",
-    "tip_fr": "Le clap sur les temps 2 et 4, sec, avec un peu d'écho de salle."
+    "tip_fr": "Le clap sur les temps 2 et 4, sec, avec un petit coup fantôme juste avant la mesure suivante pour relancer."
    },
    {
     "role": "hat",
-    "pattern": "ox.oox.oox.oox.o",
+    "pattern": "ox.oxx.oox.oxx.o",
     "source": "techno",
     "tip_fr": "Les petits charleys fermés remplissent tous les trous entre les coups pour que le rythme roule."
    },
@@ -41,6 +41,17 @@
     "pattern": "...x..o...x..o..",
     "source": "techno",
     "tip_fr": "Un petit « toc » décalé revient en boucle : c'est lui qui rend le groove hypnotique."
+   },
+   {
+    "role": "ride",
+    "pattern": "..o...o...o...o.",
+    "tip_fr": "Une cymbale ride sur chaque contretemps, plus douce que le charley ouvert : elle arrive au Drop et le fait briller."
+   },
+   {
+    "role": "rumble",
+    "pattern": "X...X...X...X...",
+    "off": true,
+    "tip_fr": "Le grondement de la techno de Berlin : le kick rejoué dans une grande réverbe, saturé et gardé dans le grave. Coché, il remplace bien la basse."
    }
   ],
   "progressions": {
@@ -91,7 +102,7 @@
   "bass": {
    "pattern": ".rRr.rRr.rRr.rRr",
    "octave": 2,
-   "sound": "Basse analogique",
+   "sound": "pack:techno:bass|Basse analogique",
    "glide": false
   },
   "lead": {
@@ -128,9 +139,49 @@
    {
     "on": "clap",
     "reverb": 0.25
+   },
+   {
+    "on": "perc",
+    "reverb": 0.15
+   },
+   {
+    "on": "lead",
+    "delay": 0.25
+   },
+   {
+    "on": "rumble",
+    "preset": "rumble"
    }
   ],
-  "notes": "Berlin / peak-time techno. Harmony almost static (phrygian i-bII at most). The rolling bass sits on the three 16ths between kicks and is ducked by the kick (pump). The chord is a short dub stab (minor 7th) through the dub echo preset; keep it sparse. Berghain 128-135 BPM, peak-time 130-138. Optional lead = one-note hypnotic 3-3-3-3-2-2 loop. No signature: the beat is the star, the DJ intro is drums only."
+  "notes": "Berlin / peak-time techno. Harmony almost static (phrygian i-bII at most). The rolling bass sits on the three 16ths between kicks and is ducked by the kick (pump). The chord is a short dub stab (minor 7th) through the dub echo preset; keep it sparse. Berghain 128-135 BPM, peak-time 130-138. Optional lead = one-note hypnotic 3-3-3-3-2-2 loop. No signature: the beat is the star, the DJ intro is drums only.",
+  "drop": [
+   "open_hat",
+   "ride"
+  ],
+  "break": [
+   "chords",
+   "lead",
+   "hat",
+   "perc"
+  ],
+  "riser": true,
+  "sweeps": [
+   {
+    "on": "chords",
+    "groove": [
+     0.3,
+     0.55
+    ],
+    "drop": [
+     0.55,
+     0.9
+    ],
+    "break": [
+     0.3,
+     0.75
+    ]
+   }
+  ]
  },
  {
   "id": "retro_techno",
@@ -236,10 +287,11 @@
   },
   "lead": {
    "type": "riff",
-   "pattern": "R..R..O.R..R..3.",
+   "pattern": "R..R..O/R..R..3.",
    "arp_rate": 24,
    "octave": 4,
-   "sound": "pack:retro_techno:stab"
+   "sound": "pack:retro_techno:stab",
+   "glide": true
   },
   "acid": {
    "use": false,
@@ -260,14 +312,40 @@
   "fx": [
    {
     "on": "lead",
+    "insert": "CHORUS",
     "reverb": 0.2
+   },
+   {
+    "on": "chords",
+    "insert": "CHORUS"
    },
    {
     "on": "snare",
     "reverb": 0.3
+   },
+   {
+    "on": "perc",
+    "delay": 0.2
    }
   ],
-  "notes": "The hook is ONE riff (signature: it plays in every section), never pop chords: 1990-92 tracks used 2-3 elements around one motif. A stab was a one-shot chord sample (choir, orchestra hit) or a hoover played across the keys, so the chord moves in parallel: the lead riff uses the retro_techno stab one note per hit (falls back to the Hoover synth). Optional chords part (off): a Mentasm/Dominator hoover holding long notes, instead of the riff. Plain TR-909 drums, accelerating snare roll (x234) every 2 bars, a rave laser zap. Tempo 125-135 (Mentasm ~127, Anasthasia ~128). 2 Unlimited dropped (eurodance), replaced by L.A. Style (Dutch, 1991)."
+  "notes": "The hook is ONE riff (signature: it plays in every section), never pop chords: 1990-92 tracks used 2-3 elements around one motif. A stab was a one-shot chord sample (choir, orchestra hit) or a hoover played across the keys, so the chord moves in parallel: the lead riff uses the retro_techno stab one note per hit (falls back to the Hoover synth). Optional chords part (off): a Mentasm/Dominator hoover holding long notes, instead of the riff. Plain TR-909 drums, accelerating snare roll (x234) every 2 bars, a rave laser zap. Tempo 125-135 (Mentasm ~127, Anasthasia ~128). 2 Unlimited dropped (eurodance), replaced by L.A. Style (Dutch, 1991).",
+  "sweeps": [
+   {
+    "on": "lead",
+    "intro": [
+     0.25,
+     0.6
+    ],
+    "groove": [
+     0.6,
+     0.85
+    ],
+    "break": [
+     0.35,
+     0.9
+    ]
+   }
+  ]
  },
  {
   "id": "acid_techno",
@@ -278,7 +356,7 @@
    "Plastikman – Krakpot (1993)"
   ],
   "description_fr": "La techno acide : une ligne qui couine et se tord (la fameuse TB-303 de Roland) tourne en boucle sur un kick 909 qui cogne.",
-  "bpm": 136,
+  "bpm": 138,
   "swing": 0.0,
   "root": "A",
   "drums": [
@@ -407,7 +485,8 @@
     "preset": "crunch"
    }
   ],
-  "notes": "The TB-303 line IS the track and the bass: nothing else is on by default (no bass, chords nor lead), no percussion line either, so the 303 is alone between the 909 hits; it carries the Break too. The acid track stays on the key's root for its one bar, so no progression puts a bass note a semitone from its notes (dark: i alone, future i-VII, dreamy i-III; the classic bII move would clash with the 303 until the acid line follows the chords). 303: mostly roots, octave jumps, b3 and b7, slides into the octave jumps, 4 sparse accents; crunch preset + a little delay. Crunchy 909 kick. Tempo: Plastikman/Hardfloor ~130, London acid techno 135-145. Optional lead: a second, higher 303-like riff. The 303's cutoff moves gently along the song (song automation): a little brighter in each Drop, a slow sweep up through the Break."
+  "notes": "The TB-303 line IS the track and the bass: nothing else is on by default (no bass, chords nor lead), no percussion line either, so the 303 is alone between the 909 hits; it carries the Break too. The acid track stays on the key's root for its one bar, so no progression puts a bass note a semitone from its notes (dark: i alone, future i-VII, dreamy i-III; the classic bII move would clash with the 303 until the acid line follows the chords). 303: mostly roots, octave jumps, b3 and b7, slides into the octave jumps, 4 sparse accents; crunch preset + a little delay. Crunchy 909 kick. Tempo: Plastikman/Hardfloor ~130, London acid techno 135-145. Optional lead: a second, higher 303-like riff. The 303's cutoff moves gently along the song (song automation): a little brighter in each Drop, a slow sweep up through the Break.",
+  "riser": true
  },
  {
   "id": "detroit",
@@ -419,8 +498,8 @@
    "Galaxy 2 Galaxy – Hi-Tech Jazz (1993)"
   ],
   "description_fr": "La toute première techno, née à Detroit : des cordes mélancoliques et funky sur une boîte à rythmes qui roule.",
-  "bpm": 130,
-  "swing": 0.1,
+  "bpm": 126,
+  "swing": 0.15,
   "root": "A",
   "drums": [
    {
@@ -452,6 +531,11 @@
     "pattern": "..x..x.o..x..x.o",
     "source": "detroit",
     "tip_fr": "Un petit « toc » sec (le bord de la caisse claire) qui ne tombe jamais avec le kick : il lui répond et rend le groove funky."
+   },
+   {
+    "role": "ride",
+    "pattern": "o.......o.......",
+    "tip_fr": "Une cymbale ride douce qui suit le kick par moments, sur les temps 1 et 3 : elle arrive au Drop, comme dans les morceaux de Derrick May."
    }
   ],
   "progressions": {
@@ -536,8 +620,28 @@
    {
     "on": "lead",
     "delay": 0.2
+   },
+   {
+    "on": "perc",
+    "reverb": 0.15
+   },
+   {
+    "on": "drums",
+    "insert": "SATURATION"
    }
   ],
-  "notes": "Detroit harmony = minor 7th chords moved in parallel, string sounds; the dorian i7-IV7 vamp is the default mood (happy). The strings are the signature: they play in every section, from the intro (Strings of Life opens on them). Chords hit in a syncopated 3-3-4-3-3 pattern with short holds. Drums: 808/909, light MPC swing, rimshot never on the kick, rolling hats (no closed hat under the open one). Bass one octave down (A1 55 Hz to D3 147 Hz instead of up to D4 294 Hz), octave jumps kept. Jeff Mills variant: 135-140 BPM, one hypnotic bell loop (the optional arpeggio lead)."
+  "notes": "Detroit harmony = minor 7th chords moved in parallel, string sounds; the dorian i7-IV7 vamp is the default mood (happy). The strings are the signature: they play in every section, from the intro (Strings of Life opens on them). Chords hit in a syncopated 3-3-4-3-3 pattern with short holds. Drums: 808/909, light MPC swing, rimshot never on the kick, rolling hats (no closed hat under the open one). Bass one octave down (A1 55 Hz to D3 147 Hz instead of up to D4 294 Hz), octave jumps kept. Jeff Mills variant: 135-140 BPM, one hypnotic bell loop (the optional arpeggio lead).",
+  "drop": [
+   "ride"
+  ],
+  "sweeps": [
+   {
+    "on": "chords",
+    "intro": [
+     0.3,
+     0.75
+    ]
+   }
+  ]
  }
 ]

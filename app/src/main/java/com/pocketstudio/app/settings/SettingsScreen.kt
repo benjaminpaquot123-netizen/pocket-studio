@@ -73,6 +73,9 @@ fun SettingsScreen(s: AppSettings, version: String, actions: SettingsActions) {
         NeonCard {
             SectionLabel(tr("Toucher"))
             Toggle(tr("Vibrations"), tr("Une petite vibration sur les pads et les appuis longs."), s.haptics, "haptics") { v -> actions.update { it.copy(haptics = v) } }
+            Toggle(tr("Battre la mesure en Live"), tr("Une petite vibration à chaque temps pendant que la page Live joue."), s.liveBeatHaptics, "live_beat_haptics") { v ->
+                actions.update { it.copy(liveBeatHaptics = v) }
+            }
             Toggle(tr("Écran toujours allumé pendant la lecture"), tr("L'écran ne s'éteint pas tant que la musique joue."), s.keepScreenOn, "keep_screen") { v ->
                 actions.update { it.copy(keepScreenOn = v) }
             }

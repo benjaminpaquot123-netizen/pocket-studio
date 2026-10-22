@@ -99,6 +99,18 @@ object FxPresets {
             listOf(fx(EffectType.DISTORTION, 0.4f, 0.35f, 0.3f, 0.6f), fx(EffectType.OTT, 0.5f, 0.5f, 0.6f, 0.6f))),
         FxPreset("pluck_pingpong", "Pluck ping-pong", "Chaque note rebondit à gauche et à droite dans une petite réverbe.", "Ambiance",
             listOf(fx(EffectType.PING_PONG, 0.25f, 0.45f, 0.6f, 0.35f), fx(EffectType.REVERB, 0.5f, 0.5f, 0.1f, 0.2f))),
+        // The Berlin rumble (phase 27): on a copy of the kick, only the reverb's tail, dirtied, kept
+        // under 150 Hz, ducked by the kick and in mono, so it rolls between the kicks.
+        FxPreset("rumble", "Grondement", "Pour un kick rejoué : seule sa longue réverbe, saturée, gardée dans le grave et creusée par le kick. Elle gronde entre les coups.", "Saleté",
+            listOf(
+                fx(EffectType.REVERB, 0.85f, 0.4f, 0f, 1f), fx(EffectType.DISTORTION, 0.55f, 0.3f, 0f, 1f),
+                fx(EffectType.FILTER, 0.22f, 0.15f, 0f, 1f), fx(EffectType.PUMP, 0.9f, 0.35f, 0f), fx(EffectType.WIDENER, 0f, 0f),
+            )),
+        // The bass music movements (phase 27): a filter opening and closing in time.
+        FxPreset("wob_dubstep", "Wob dubstep", "La basse qui parle : un filtre résonant s'ouvre et se ferme à la croche, sur un son un peu sale.", "Mouvement",
+            listOf(fx(EffectType.DISTORTION, 0.35f, 0.75f, 0f, 0.7f), fx(EffectType.WOBBLE, 0.5f, 0.78f, 0.62f, 0f), fx(EffectType.OTT, 0.35f, 0.5f, 0.5f, 0.6f))),
+        FxPreset("reese_dnb", "Reese DnB", "Une basse épaisse qui bouge lentement : doublée, elle respire sur une demi-mesure, comme en drum & bass.", "Mouvement",
+            listOf(fx(EffectType.CHORUS, 0.15f, 0.7f, 0.5f, 0.55f), fx(EffectType.WOBBLE, 0.12f, 0.5f, 0.3f, 0.3f), fx(EffectType.DISTORTION, 0.2f, 0.6f, 0f, 0.5f))),
     )
 
     fun byId(id: String) = (ALL + NONE).firstOrNull { it.id == id }
@@ -107,13 +119,24 @@ object FxPresets {
     fun suggestedFor(kind: SoundKind): List<FxPreset> = when (kind) {
         SoundKind.LEAD -> listOf("scream_lead", "wide_alive", "dub_deep", "dream", "distortion", "far_away")
         SoundKind.PLUCK -> listOf("pluck_pingpong", "dub_deep", "wide_alive", "small_room", "lofi_tape")
-        SoundKind.BASS -> listOf("fat_bass", "edm_pump", "pump", "crunch", "distortion")
+        SoundKind.BASS -> listOf("fat_bass", "wob_dubstep", "reese_dnb", "edm_pump", "pump", "crunch", "distortion")
         SoundKind.PAD -> listOf("wide_alive", "space", "cathedral", "edm_pump", "underwater", "dream")
         SoundKind.KEYS -> listOf("small_room", "warm_vinyl", "lofi_tape", "wide_alive", "dub_deep")
-        SoundKind.DRUMS -> listOf("punch", "edm_pump", "crunch", "lofi_tape", "small_room")
-        SoundKind.ACID -> listOf("dub_deep", "fat_bass", "crunch", "jet", "pump")
+        SoundKind.DRUMS -> listOf("punch", "edm_pump", "crunch", "lofi_tape", "small_room", "rumble")
+        SoundKind.ACID -> listOf("dub_deep", "fat_bass", "wob_dubstep", "crunch", "jet", "pump")
         SoundKind.AUDIO -> listOf("small_room", "dub_deep", "radio", "phone", "cathedral")
     }.mapNotNull { byId(it) }
+
+    /**
+     * The suggestions for mixer strip [ch] holding [kind]: on the whole drum strip, « Grondement »
+     * is left out (its reverb at full mix would turn the whole kit into a rumble); it stays on
+     * a pad's own strip (a kick played again).
+     */
+    fun suggestedFor(kind: SoundKind, ch: Int): List<FxPreset> =
+        suggestedFor(kind).filter { it.id != RUMBLE || ch >= Mixer.FIRST_PAD }
+
+    /** The rumble's preset (see [suggestedFor]). */
+    const val RUMBLE = "rumble"
 }
 
 /** What a sound is for, to offer the right ready-made effects first. */

@@ -119,7 +119,11 @@ fun ProjectsScreen(
     // Kept when the screen turns: by id (a project's info is not saveable), then looked up.
     var renamingId by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf<String?>(null) }
     val renaming = renamingId?.let { id -> ui.projects.firstOrNull { it.id == id } }
-    var choosingStart by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(false) }
+    // « Nouveau projet » is open for the project that was open when it was asked: once another one is
+    // created or opened (the screens are rebuilt on it) the page is closed, back on the list.
+    var startedFor by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf<String?>(null) }
+    val choosingStart = startedFor == currentId
+    val setChoosingStart = { open: Boolean -> startedFor = if (open) currentId else null }
     var showTrash by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(false) }
     // A deletion for good is asked first: the trash entry (or EMPTY_ALL for the whole trash).
     var confirmingDelete by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf<String?>(null) }
@@ -127,8 +131,8 @@ fun ProjectsScreen(
     com.pocketstudio.ui.ReadingWidth {
         // « Nouveau projet » takes the screen (a song being prepared keeps it there).
         if (choosingStart) {
-            androidx.activity.compose.BackHandler { if (quick.creating == null) choosingStart = false }
-            NewProjectPage(starters, quick, actions, close = { choosingStart = false })
+            androidx.activity.compose.BackHandler { if (quick.creating == null) setChoosingStart(false) }
+            NewProjectPage(starters, quick, actions, close = { setChoosingStart(false) })
             return@ReadingWidth
         }
         Column(Modifier.fillMaxSize().padding(12.dp).testTag("projects"), verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -143,7 +147,7 @@ fun ProjectsScreen(
                 Icon(Icons.Filled.AutoAwesome, contentDescription = null)
                 Text("  " + tr("Nouveau morceau guidé"), style = MaterialTheme.typography.titleMedium)
             }
-            OutlinedButton(onClick = { choosingStart = true }, modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp).testTag("project_new")) {
+            OutlinedButton(onClick = { setChoosingStart(true) }, modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp).testTag("project_new")) {
                 Icon(Icons.Filled.Add, contentDescription = null)
                 Text("  " + tr("Nouveau projet : style, démo ou vide"), style = MaterialTheme.typography.titleSmall)
             }

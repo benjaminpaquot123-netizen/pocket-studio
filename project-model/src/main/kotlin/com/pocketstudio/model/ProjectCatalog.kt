@@ -310,8 +310,8 @@ class ProjectCatalog(private val root: File, private val trash: File, private va
     }
 
     /** "Mon projet 3" (saved in French, see [DefaultNames]): the first free number among the existing names, in any language. */
-    fun nextName(prefix: String = "Mon projet"): String {
-        val names = list().map { DefaultNames.shown(it.name) }.toSet()
+    fun nextName(prefix: String = "Mon projet", ignoring: String? = null): String {
+        val names = list().filter { it.id != ignoring }.map { DefaultNames.shown(it.name) }.toSet()
         return generateSequence(1) { it + 1 }.map { "$prefix $it" }.first { DefaultNames.shown(it) !in names }
     }
 
@@ -321,6 +321,17 @@ class ProjectCatalog(private val root: File, private val trash: File, private va
         if (DefaultNames.shown(name) !in names) return name
         val base = name.take(MAX_NAME - 4)
         return generateSequence(2) { it + 1 }.map { "$base $it" }.first { DefaultNames.shown(it) !in names }
+    }
+
+    /**
+     * True when [id] is a blank project nobody edited (only its name may differ from a fresh one) and
+     * has no sounds of its own: nothing to keep, so it needs no trash.
+     */
+    fun isUntouched(id: String): Boolean {
+        val p = runCatching { store.load(id) }.getOrNull() ?: return false
+        val fresh = Project(name = "").asNewProject().sanitized()
+        if (p.copy(name = "") != fresh.copy(name = "")) return false
+        return File(store.folder(id), SAMPLES).let { !it.exists() || it.list().isNullOrEmpty() }
     }
 
     private fun newId() = "p-" + UUID.randomUUID().toString().take(8)

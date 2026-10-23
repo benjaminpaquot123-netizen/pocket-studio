@@ -365,9 +365,14 @@ internal fun HideSystemBars(hidden: Boolean) {
         val controller = WindowCompat.getInsetsController(window, view)
         controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         controller.hide(WindowInsetsCompat.Type.systemBars())
-        onDispose { controller.show(WindowInsetsCompat.Type.systemBars()) }
+        hiddenBars++
+        // Screens can stack (full-screen pads over the Live page): the bars come back with the last one.
+        onDispose { if (--hiddenBars == 0) controller.show(WindowInsetsCompat.Type.systemBars()) }
     }
 }
+
+/** How many open screens want the system bars hidden (main thread only). */
+private var hiddenBars = 0
 
 private tailrec fun android.content.Context.findWindow(): android.view.Window? = when (this) {
     is android.app.Activity -> window

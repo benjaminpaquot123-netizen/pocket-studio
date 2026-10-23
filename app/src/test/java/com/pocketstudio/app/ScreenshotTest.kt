@@ -1656,6 +1656,39 @@ open class ScreenshotTest {
         }
     }
 
+    /** The live pads on the whole screen, as the assistant fills them (Jump up DnB): two playing, one queued. */
+    @Composable
+    private fun LivePadsStage() {
+        val clip = { n: String, b: Int -> com.pocketstudio.model.LiveClip("x.wav", n, b) }
+        val pads = com.pocketstudio.model.LivePads(8).with(0, clip("Batterie", 8)).with(1, clip("Basse", 16)).with(2, clip("Nappe", 16))
+            .with(3, clip("Sub", 8)).with(4, clip("Impact", 4).copy(oneShot = true)).with(5, clip("Morceau 4", 32))
+        val ui = liveUi()
+        val columns = com.pocketstudio.app.live.liveColumnsOf(ui.project)
+        com.pocketstudio.app.session.LivePadsFullScreen(
+            com.pocketstudio.app.session.LivePadsUi(pads, listOf(2, 2, 1, 0, 0, 0, 0, 0), editing = null),
+            com.pocketstudio.app.session.LivePadsActions(), close = {},
+            tempoBpm = 174.0, beatsPerBar = 4, playing = true, clockOf = { 45 }, togglePlay = {},
+            effects = { m -> com.pocketstudio.app.live.LiveFx(ui, columns, com.pocketstudio.app.live.LiveActions(), m) },
+        )
+    }
+
+    @Test
+    fun livePadsFull() = shoot("live_pads_full", fullScreen = true, prepare = {
+        // A moment into the loops: the beat lit, the rings going round.
+        compose.mainClock.advanceTimeBy(700)
+    }) { LivePadsStage() }
+
+    @Test
+    fun livePadsFullFx() = shoot("live_pads_full_fx", fullScreen = true, prepare = {
+        compose.onNodeWithTag("live_pads_fx_toggle").performClick()
+    }) { LivePadsStage() }
+
+    @Test
+    @Config(qualifiers = "w860dp-h400dp-land-xxhdpi")
+    fun livePadsFullLandscape() = shoot("live_pads_full_landscape", fullScreen = true, prepare = {
+        compose.onNodeWithTag("live_pads_fx_toggle").performClick()
+    }) { LivePadsStage() }
+
     @Test
     @Config(qualifiers = "w400dp-h1500dp-xxhdpi")
     fun plaits() = shoot("plaits") {

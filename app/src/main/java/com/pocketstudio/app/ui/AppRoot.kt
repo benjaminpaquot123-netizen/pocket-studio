@@ -86,9 +86,11 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.zIndex
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
@@ -560,8 +562,22 @@ fun AppRoot() {
                             else {
                                 rhythmVm.stop()
                                 val next = projectsUi.projects.firstOrNull { it.id != p.id }
-                                if (next != null) switchProject(next.id, p.id)
-                                else projectsVm.create(Project(name = "")) { id -> switchProject(id, p.id) }
+                                openScope.launch {
+                                    // So « untouched » is judged on what is really saved; a save that fails (phone full)
+                                    // keeps the project where it is rather than risk deleting unsaved work.
+                                    if (!rhythmVm.flushNow()) {
+                                        projectsVm.say(tr("Le projet n'a pas pu être enregistré : il reste là (stockage plein ?)."))
+                                        return@launch
+                                    }
+                                    projectsVm.checkUntouched(p.id) { untouched ->
+                                        when {
+                                            next != null -> switchProject(next.id, p.id)
+                                            // The only project, blank and never edited: nothing to delete, nothing to replace it with.
+                                            untouched -> projectsVm.say(tr("Ce projet est vide et neuf : il reste là, prêt pour ton prochain morceau."), ok = true)
+                                            else -> projectsVm.create(Project(name = ""), replacing = p.id) { id -> switchProject(id, p.id) }
+                                        }
+                                    }
+                                }
                             }
                         },
                         undoDelete = projectsVm::undoDelete,
@@ -782,15 +798,27 @@ fun AppRoot() {
     // lock kept). During a take the page asks first (LiveScreen's own Back). A rotation keeps all.
     val closeLive = { rhythmVm.leaveLive(); rhythmVm.dismissPerformance(); showLive = false }
     androidx.activity.compose.BackHandler(enabled = showLive) { closeLive() }
+    // The live pads on the whole screen (from Morceau or the Live page), above everything. Leaving
+    // them from Morceau, nothing set in their effects stays on unseen; above the Live page, its
+    // effects stay as that page shows them.
+    var showLivePads by rememberSaveable { mutableStateOf(false) }
+    val closeLivePads = {
+        if (!showLive) rhythmVm.leaveLive()
+        showLivePads = false
+    }
     // The « Ligne du temps » (opened from Morceau) takes the whole screen too.
     var showTimeline by rememberSaveable { mutableStateOf(false) }
     androidx.activity.compose.BackHandler(enabled = showTimeline && !showLive) { showTimeline = false }
     // Raised by the timeline's « Ouvrir dans Notes »: the Synthé tab shows its piano roll.
     var notesRequest by rememberSaveable { mutableIntStateOf(0) }
+    val studioBackground = Neon.Background
     Scaffold(
+        // « Mes projets » is a dialog above: behind it, a plain background, so the studio never flashes
+        // through while the screens are rebuilt on another project.
+        modifier = if (showProjects) Modifier.drawWithContent { drawRect(studioBackground) } else Modifier,
         containerColor = Neon.Background,
         topBar = {
-            if (!showLive && !showTimeline) {
+            if (!showLive && !showTimeline && !showLivePads) {
             val topProject by rhythmVm.project.collectAsStateWithLifecycle()
             val topTransport by rhythmVm.transport.collectAsStateWithLifecycle()
             val topUndo by rhythmVm.session.canUndo.collectAsStateWithLifecycle()
@@ -865,7 +893,7 @@ fun AppRoot() {
             }
         },
         bottomBar = {
-            if (!landscape && !showLive && !showTimeline) androidx.compose.foundation.layout.BoxWithConstraints {
+            if (!landscape && !showLive && !showTimeline && !showLivePads) androidx.compose.foundation.layout.BoxWithConstraints {
                 // Seven tabs: below ~58 dp each (small phone, big text) the labels shrink, so none is cut.
                 val tight = maxWidth / AppTab.entries.size < 58.dp
                 NavigationBar(
@@ -898,6 +926,20 @@ fun AppRoot() {
             }
         },
     ) { padding ->
+        if (showLivePads) {
+            // Drawn above the page it was opened from, which stays as it was (its scroll, its tab).
+            Box(Modifier.fillMaxSize().zIndex(1f)) {
+                LivePadsRoute(
+                    rhythmVm, lifecycleOwner, close = closeLivePads,
+                    openEffects = { fxChannel = it },
+                    padsActions = com.pocketstudio.app.session.LivePadsActions(
+                        tap = rhythmVm::toggleLive,
+                        stopAll = rhythmVm::stopLive,
+                        edit = { liveEditing = it },
+                    ),
+                )
+            }
+        }
         if (showLive) {
             Box(Modifier.padding(padding).fillMaxSize()) {
                 LiveRoute(
@@ -921,6 +963,7 @@ fun AppRoot() {
                         setGain = rhythmVm::setLiveGain,
                         clear = rhythmVm::clearLive,
                         effects = { fxChannel = 3 },
+                        fullScreen = { showLivePads = true },
                     ),
                     liveEditing = liveEditing,
                 )
@@ -1456,6 +1499,7 @@ fun AppRoot() {
                                     clear = rhythmVm::clearLive,
                                     // The live pads play through the remix's strip: its effects.
                                     effects = { fxChannel = 3 },
+                                    fullScreen = { showLivePads = true },
                                 ),
                             )
                         }
@@ -1909,8 +1953,11 @@ fun quickFxActions(vm: RhythmViewModel): com.pocketstudio.app.mixer.QuickFxActio
     toggleFavourite = { id -> SettingsStore.toggleFavouriteFx(vm.getApplication(), id) },
 )
 
-/** The timeline rows: drums, acid, then each instrument and audio track in its colour. */
-fun timelineRows(p: Project): List<com.pocketstudio.app.session.TimelineRow> =
+/**
+ * The timeline rows: drums, acid, then each instrument and audio track in its colour; an audio
+ * take's waveform from [info] (the loaded sounds' peaks) when it is there.
+ */
+fun timelineRows(p: Project, info: Map<String, com.pocketstudio.app.rhythm.SampleInfo> = emptyMap()): List<com.pocketstudio.app.session.TimelineRow> =
     listOf(
         com.pocketstudio.app.session.TimelineRow(com.pocketstudio.model.SongPart.DRUMS, "Batterie", com.pocketstudio.app.live.DRUMS_COLOR),
         com.pocketstudio.app.session.TimelineRow(com.pocketstudio.model.SongPart.ACID, "Basse acide", androidx.compose.ui.graphics.Color(0xFF81C784)),
@@ -1918,7 +1965,13 @@ fun timelineRows(p: Project): List<com.pocketstudio.app.session.TimelineRow> =
         com.pocketstudio.app.session.TimelineRow(com.pocketstudio.model.SongPart.inst(t.id), t.name, com.pocketstudio.ui.trackColor(t.color))
     } + p.audioTracks.map { t ->
         // Where its take is really heard in each part (its scene's parts, its place in the song).
-        com.pocketstudio.app.session.TimelineRow(com.pocketstudio.model.SongPart.audio(t.id), t.name, com.pocketstudio.ui.trackColor(t.color), spans = p.audioSpans(t.id))
+        val clip = t.clip
+        com.pocketstudio.app.session.TimelineRow(
+            com.pocketstudio.model.SongPart.audio(t.id), t.name, com.pocketstudio.ui.trackColor(t.color), spans = p.audioSpans(t.id),
+            peaks = clip?.let { info[it.file]?.peaks },
+            takeSteps = clip?.steps(p.tempoBpm) ?: 0,
+            takeStart = if (clip?.song == true) clip.start else -1,
+        )
     }
 
 /** Settings a MIDI knob can move: the instrument's sound, live effects, tempo, then the mixer. */
@@ -2007,6 +2060,56 @@ internal fun LiveRoute(
     openEffects: (Int) -> Unit,
     padsActions: com.pocketstudio.app.session.LivePadsActions,
     liveEditing: Int?,
+) = LiveStateHost(vm, lifecycleOwner, liveEditing) { ui, pads ->
+    com.pocketstudio.app.live.LiveScreen(
+        ui,
+        liveActionsOf(
+            vm, back = close, openEffects = openEffects,
+            togglePlay = {
+                // ▶ here plays what the grid shows: the scene, not the song.
+                if (ui.playing) vm.togglePlay() else vm.launchRow(ui.project.scene)
+            },
+        ),
+        pads = pads,
+        padsActions = padsActions,
+    )
+}
+
+/**
+ * The live pads on the whole screen (from Morceau or the Live page's Pads), with the Live page's
+ * effects sliding in: the same state, the same gestures as there.
+ */
+@Composable
+internal fun LivePadsRoute(
+    vm: RhythmViewModel,
+    lifecycleOwner: androidx.lifecycle.LifecycleOwner,
+    close: () -> Unit,
+    openEffects: (Int) -> Unit,
+    padsActions: com.pocketstudio.app.session.LivePadsActions,
+) = LiveStateHost(vm, lifecycleOwner, liveEditing = null) { ui, pads ->
+    val columns = com.pocketstudio.app.live.liveColumnsOf(ui.project)
+    val tracks = columns.map { it.name to it.color }
+    val actions = liveActionsOf(vm, back = close, openEffects = openEffects)
+    val fx = rememberSaveable(saver = com.pocketstudio.app.live.LiveFxState.Saver) { com.pocketstudio.app.live.LiveFxState() }
+    com.pocketstudio.app.session.LivePadsFullScreen(
+        pads, padsActions, close,
+        tempoBpm = ui.project.tempoBpm, beatsPerBar = ui.project.beatsPerBar, playing = ui.playing, clockOf = ui.clockOf,
+        colorOf = { i, clip -> com.pocketstudio.app.session.livePadColor(clip.name, i, tracks) },
+        togglePlay = vm::togglePlay,
+        effects = { m -> com.pocketstudio.app.live.LiveFx(ui, columns, actions, m, fx) },
+    )
+}
+
+/**
+ * The Live page's state from the ViewModel, polled while shown (the grid's clock, the pads'
+ * lights, the spectrum while a pad XY shows it), for the Live page and the full-screen pads.
+ */
+@Composable
+private fun LiveStateHost(
+    vm: RhythmViewModel,
+    lifecycleOwner: androidx.lifecycle.LifecycleOwner,
+    liveEditing: Int?,
+    content: @Composable (com.pocketstudio.app.live.LiveScreenUi, com.pocketstudio.app.session.LivePadsUi) -> Unit,
 ) {
     val project by vm.project.collectAsStateWithLifecycle()
     val transport by vm.transport.collectAsStateWithLifecycle()
@@ -2043,32 +2146,24 @@ internal fun LiveRoute(
         }
     }
     androidx.compose.runtime.CompositionLocalProvider(com.pocketstudio.app.live.LocalSpectrumUsers provides spectrumUsers) {
-    com.pocketstudio.app.live.LiveScreen(
-        com.pocketstudio.app.live.LiveScreenUi(
-            project, grid, playing = transport.playing, muted = muted, acid = acid, returns = returns, take = take, takeAppend = takeAppend,
-            chops = chops, takeUndoable = vm.canUndoPerformance(), clockOf = clockOf,
-            spectrum = spectrumOf, beatHaptics = settings.liveBeatHaptics, fxOf = liveFxOf,
-        ),
-        liveActionsOf(
-            vm, back = close, openEffects = openEffects,
-            togglePlay = {
-                // ▶ here plays what the grid shows: the scene, not the song.
-                if (transport.playing) vm.togglePlay() else vm.launchRow(project.scene)
-            },
-        ),
-        pads = com.pocketstudio.app.session.LivePadsUi(
-            pads = project.live,
-            states = liveStates,
-            editing = liveEditing,
-            drumSounds = project.drums.lanes.mapIndexedNotNull { i, l -> l.sample?.let { i to it.name } },
-            busy = when (val t = sampleTask) {
-                is SampleTask.Busy -> t.message
-                is SampleTask.Failed -> t.message
-                else -> null
-            },
-        ),
-        padsActions = padsActions,
-    )
+        content(
+            com.pocketstudio.app.live.LiveScreenUi(
+                project, grid, playing = transport.playing, muted = muted, acid = acid, returns = returns, take = take, takeAppend = takeAppend,
+                chops = chops, takeUndoable = vm.canUndoPerformance(), clockOf = clockOf,
+                spectrum = spectrumOf, beatHaptics = settings.liveBeatHaptics, fxOf = liveFxOf,
+            ),
+            com.pocketstudio.app.session.LivePadsUi(
+                pads = project.live,
+                states = liveStates,
+                editing = liveEditing,
+                drumSounds = project.drums.lanes.mapIndexedNotNull { i, l -> l.sample?.let { i to it.name } },
+                busy = when (val t = sampleTask) {
+                    is SampleTask.Busy -> t.message
+                    is SampleTask.Failed -> t.message
+                    else -> null
+                },
+            ),
+        )
     }
 }
 
@@ -2109,7 +2204,8 @@ internal fun TimelineRoute(
     LaunchedEffect(Unit) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { vm.pollLive() }
     }
-    val rows = remember(project) { timelineRows(project) }
+    val sampleInfo by vm.sampleInfo.collectAsStateWithLifecycle()
+    val rows = remember(project, sampleInfo) { timelineRows(project, sampleInfo) }
     val lanes = remember(project) { timelineLanes(project) }
     // No undo during a take: it could remove the track it goes to.
     val undoable = take == null && !recording && !performance.running

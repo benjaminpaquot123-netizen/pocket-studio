@@ -14,6 +14,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
@@ -111,15 +114,17 @@ fun SoundBrowser(ui: SoundBrowserUi) {
                 }
             }
         }
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+        // A narrow pane (a tablet's side, a big interface size): the words go on two lines and the
+        // buttons grow together, never « Garder ce » cut.
+        Row(Modifier.fillMaxWidth().height(androidx.compose.foundation.layout.IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
             val tight = PaddingValues(horizontal = 10.dp, vertical = 8.dp)
-            OutlinedButton(onClick = ui.random, contentPadding = tight, modifier = Modifier.weight(1f).testTag("${ui.tag}_random")) {
+            OutlinedButton(onClick = ui.random, contentPadding = tight, modifier = Modifier.weight(1f).fillMaxHeight().testTag("${ui.tag}_random")) {
                 Icon(Icons.Filled.Casino, contentDescription = null)
-                Text(tr("  Au hasard"), maxLines = 1)
+                com.pocketstudio.ui.WholeWordsText(tr("Au hasard"), Modifier.padding(start = 6.dp), textAlign = androidx.compose.ui.text.style.TextAlign.Center)
             }
-            OutlinedButton(onClick = ui.save, contentPadding = tight, modifier = Modifier.weight(1f).testTag("${ui.tag}_save")) {
+            OutlinedButton(onClick = ui.save, contentPadding = tight, modifier = Modifier.weight(1f).fillMaxHeight().testTag("${ui.tag}_save")) {
                 Icon(Icons.Filled.Star, contentDescription = null)
-                Text(tr("  Garder ce son"), maxLines = 1)
+                com.pocketstudio.ui.WholeWordsText(tr("Garder ce son"), Modifier.padding(start = 6.dp), textAlign = androidx.compose.ui.text.style.TextAlign.Center)
             }
         }
         if (ui.favorites.isEmpty()) {

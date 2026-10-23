@@ -169,4 +169,26 @@ class ProjectCatalogTest {
         assertEquals("fichier illisible ou abîmé", e?.message)
         dir.deleteRecursively()
     }
+
+    @Test
+    fun aBlankProjectNobodyEditedIsUntouched() {
+        val fresh = catalog.create(Project(name = catalog.nextName()).asNewProject())
+        assertTrue(catalog.isUntouched(fresh))
+        // One edit (tempo), a sound of its own, or a real song: kept.
+        val tempo = catalog.create(Project(name = "Mon projet 2", tempoBpm = 128.0).asNewProject())
+        assertFalse(catalog.isUntouched(tempo))
+        val sound = catalog.create(Project(name = "Mon projet 3").asNewProject())
+        File(catalog.store.folder(sound), "samples").apply { mkdirs() }.resolve("k.wav").writeText("kick")
+        assertFalse(catalog.isUntouched(sound))
+        assertFalse(catalog.isUntouched("p-missing"))
+        dir.deleteRecursively()
+    }
+
+    @Test
+    fun theNameOfAProjectGoingToTheTrashIsFreeAgain() {
+        val a = catalog.create(Project(name = catalog.nextName()))
+        assertEquals("Mon projet 2", catalog.nextName())
+        assertEquals("Mon projet 1", catalog.nextName(ignoring = a))  // stable, no 1 / 2 seesaw
+        dir.deleteRecursively()
+    }
 }

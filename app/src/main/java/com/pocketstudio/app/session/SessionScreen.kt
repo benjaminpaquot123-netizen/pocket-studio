@@ -144,16 +144,21 @@ class SessionScreenUi(
     fun title(i: Int): String = Scene.NAMES.getOrElse(i) { "?" } + label(i).takeIf { it.isNotBlank() }?.let { " · ${Scene.shownLabel(it)}" }.orEmpty()
 }
 
-/** A timeline row: a track key (SongPart.DRUMS…), its name and colour. */
 /**
- * A timeline row. [spans]: an audio track's, for each song part where its clip is really heard
- * (fractions of the part); null for the other tracks (a lit block plays all along).
+ * A timeline row: a track key (SongPart.DRUMS…), its name and colour. [spans]: an audio track's,
+ * for each song part where its clip is really heard (fractions of the part); null for the other
+ * tracks (a lit block plays all along). [peaks]: an audio take's waveform (0..1) when loaded, over
+ * its [takeSteps]; [takeStart] the song step a song take starts at (-1: it starts again with each
+ * stretch it is heard).
  */
 class TimelineRow(
     val key: String,
     val name: String,
     val color: androidx.compose.ui.graphics.Color,
     val spans: List<List<ClosedFloatingPointRange<Float>>>? = null,
+    val peaks: FloatArray? = null,
+    val takeSteps: Int = 0,
+    val takeStart: Int = -1,
 )
 
 class SessionActions(

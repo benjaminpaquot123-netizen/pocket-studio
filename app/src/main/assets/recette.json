@@ -1,46 +1,36 @@
 {
-  "id": "phase31-timeline",
-  "milestone": "Phase 31 : ligne du temps, Live plein écran, automation claire",
+  "id": "phase32-timeline-pads",
+  "milestone": "Phase 32 : ligne du temps refaite, pads en plein écran",
   "items": [
     {
-      "id": "timeline",
-      "title": "Ligne du temps",
-      "hint": "Morceau › « Ligne du temps » : toutes les pistes ; pince pour zoomer, appui long sur un clip pour ses actions."
+      "id": "tl_follow",
+      "title": "La ligne suit",
+      "hint": "Ligne du temps › lecture : la vue avance page par page avec la musique ; un glissé du doigt arrête « Suivre », ▶ le relance."
     },
     {
-      "id": "timeline_loop",
-      "title": "Boucle et règle",
-      "hint": "Ligne du temps : touche la règle pour jouer depuis une partie ; appui long et glisse sur les mesures pour boucler."
+      "id": "tl_look",
+      "title": "Noms fixes, belles pistes",
+      "hint": "Ligne du temps : fais défiler, les noms et M/S restent à gauche ; les pistes remplissent l'écran, en portrait et en paysage."
     },
     {
-      "id": "live_full",
-      "title": "Live plein écran",
-      "hint": "Live › bouton plein écran : la grille prend tout l'écran, en portrait et en paysage ; les cases brillent sur le temps."
+      "id": "pads_full",
+      "title": "Pads plein écran",
+      "hint": "Morceau › Pads live › « Plein écran » : grands pads qui brillent sur le temps ; « Effets live » ouvre la boîte à effets."
     },
     {
-      "id": "live_pads",
-      "title": "Pads live remplis",
-      "hint": "Crée un morceau avec l'assistant, attends un peu : Morceau › Pads live contient les boucles du morceau."
+      "id": "delete_project",
+      "title": "Supprimer un projet",
+      "hint": "Mes projets : supprime le projet ouvert : pas de saut d'écran ; un projet vide jamais touché ne va pas à la corbeille."
     },
     {
-      "id": "auto_scale",
-      "title": "Échelle et potard",
-      "hint": "Mixeur › Automation : valeurs à gauche, mesures en bas ; « Voir le potard » t'emmène au bon bouton de la 303."
+      "id": "back_projects",
+      "title": "Retour sur Mes projets",
+      "hint": "Crée un morceau par « Partir d'un style », puis touche le dossier : tu arrives sur Mes projets."
     },
     {
-      "id": "auto_zone",
-      "title": "Outil Zone",
-      "hint": "Automation (Morceau) › Zone : glisse sur les mesures 1 à 8 et lâche à la hauteur voulue : le volume du début change."
-    },
-    {
-      "id": "new_project",
-      "title": "Nouveau projet",
-      "hint": "Nouveau projet : familles repliées, couleurs ; ▶ à gauche d'une démo l'écoute sans créer de projet."
-    },
-    {
-      "id": "landing",
-      "title": "Arrivée sur Morceau",
-      "hint": "Après un morceau de l'assistant, tu arrives sur Morceau ; le guide se lit en pages, sans défiler."
+      "id": "tablet_text",
+      "title": "Textes en entier",
+      "hint": "Tablette › Acide : « Génère-moi un pattern », « Garder ce son », « Accordage » s'affichent en entier."
     }
   ]
 }

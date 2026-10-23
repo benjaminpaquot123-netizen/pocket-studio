@@ -11,6 +11,7 @@ import com.pocketstudio.app.help.Glossary
 import android.content.Context
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.remember
@@ -138,10 +139,12 @@ fun AcidScreen(
     // On a tablet the line (generator and steps) on the left; the chosen step and the sound on the right.
     com.pocketstudio.ui.AdaptivePanes(modifier.testTag("acid"), first = {
         NeonCard {
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            // At least 56 dp, taller when the words need two lines (a tablet pane, a big interface
+            // size): never « pattern » cut under the button. Both buttons keep the same height.
+            Row(Modifier.height(androidx.compose.foundation.layout.IntrinsicSize.Min), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Button(
                     onClick = actions.togglePlay,
-                    modifier = Modifier.height(56.dp).testTag("acid_play"),
+                    modifier = Modifier.fillMaxHeight().heightIn(min = 56.dp).testTag("acid_play"),
                     colors = ButtonDefaults.buttonColors(containerColor = if (playing) Neon.Magenta else Neon.Cyan),
                     shape = RoundedCornerShape(10.dp),
                 ) {
@@ -149,11 +152,14 @@ fun AcidScreen(
                 }
                 Button(
                     onClick = actions.generate,
-                    modifier = Modifier.weight(1f).height(56.dp).testTag("acid_generate"),
+                    modifier = Modifier.weight(1f).fillMaxHeight().heightIn(min = 56.dp).testTag("acid_generate"),
                     shape = RoundedCornerShape(10.dp),
                 ) {
                     Icon(Icons.Filled.AutoAwesome, contentDescription = null)
-                    Text(tr("  Génère-moi un pattern"), style = MaterialTheme.typography.titleSmall)
+                    com.pocketstudio.ui.WholeWordsText(
+                        tr("Génère-moi un pattern"), Modifier.padding(start = 8.dp),
+                        style = MaterialTheme.typography.titleSmall, textAlign = androidx.compose.ui.text.style.TextAlign.Center, maxLines = 2,
+                    )
                 }
             }
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {

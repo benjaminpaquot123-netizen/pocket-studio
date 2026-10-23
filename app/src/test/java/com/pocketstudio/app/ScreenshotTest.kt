@@ -21,6 +21,8 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.onNodeWithTag
 import com.github.takahirom.roborazzi.captureRoboImage
+import com.pocketstudio.model.copySceneTo
+import com.pocketstudio.model.renameScene
 import com.pocketstudio.model.withFx
 import com.pocketstudio.model.withAudioTrack
 import com.pocketstudio.app.latency.LatencyScreen
@@ -1584,6 +1586,56 @@ open class ScreenshotTest {
             ),
             com.pocketstudio.app.session.SessionActions(),
         )
+    }
+
+    /** A song of four sections over every kind of track, a filter curve on the 303, playing in the Drop. */
+    private fun timelineUi(): com.pocketstudio.app.session.TimelineUi {
+        var drums = com.pocketstudio.model.DrumPattern()
+        listOf(0, 4, 8, 12).forEach { drums = drums.toggle(0, it) }
+        listOf(4, 12).forEach { drums = drums.toggle(2, it) }
+        (0 until 16 step 2).forEach { drums = drums.toggle(5, it, 0.6f) }
+        val acid = com.pocketstudio.model.AcidPattern().let { a ->
+            a.copy(steps = a.steps.mapIndexed { i, st -> if (i % 3 != 1) st.copy(gate = true, note = (i * 5) % 12, accent = i % 4 == 0, slide = i % 7 == 0) else st })
+        }
+        val chords = com.pocketstudio.model.NoteClip(32, listOf(60, 63, 67, 58, 62, 65).mapIndexed { i, n -> com.pocketstudio.model.Note(if (i < 3) 0 else 16, 16, n) })
+        val lead = com.pocketstudio.model.NoteClip(16, listOf(72, 75, 79, 77, 75, 72).mapIndexed { i, n -> com.pocketstudio.model.Note(i * 2 + (i / 3) * 4, 2, n) })
+        var p = withTracks().copy(drums = drums, acid = acid, synthNotes = chords).sanitized()
+        val leadId = p.tracks.last().id
+        p = p.withTrack(p.track(leadId).copy(notes = lead)).sanitized()
+        p = p.renameScene(0, "Intro").copySceneTo(1).copySceneTo(2).renameScene(1, "Montée").renameScene(2, "Drop")
+        p = p.copy(
+            song = listOf(
+                com.pocketstudio.model.SongPart(0, 2, muted = setOf("acid", "inst:$leadId", "audio:0")),
+                com.pocketstudio.model.SongPart(1, 2, muted = setOf("drums")),
+                com.pocketstudio.model.SongPart(2, 4),
+                com.pocketstudio.model.SongPart(0, 1, play = mapOf("acid" to 2), from = mapOf("drums" to 1), bars = 2),
+                com.pocketstudio.model.SongPart(2, 2, muted = setOf("inst:0")),
+            ),
+            automation = listOf(
+                com.pocketstudio.model.AutomationLane(
+                    com.pocketstudio.model.AutoTarget(com.pocketstudio.model.AutoTarget.ACID, ch = com.pocketstudio.model.AutoTarget.ACID_CHANNEL),
+                    mode = com.pocketstudio.model.AutomationLane.SONG, songValues = listOf(0.1f, null, null, 0.6f, null, 0.3f, null, null, 0.9f, null, null, 0.4f),
+                ),
+            ),
+        ).sanitized()
+        p = p.withAudioTrack(p.audioTracks[0].copy(clip = com.pocketstudio.model.AudioClip("v.wav", "Prise", 9.0, start = 64, song = true)))
+        val rows = com.pocketstudio.app.ui.timelineRows(p)
+        return com.pocketstudio.app.session.TimelineUi(
+            p, rows, listOf(com.pocketstudio.app.session.TimelineLane(0, "acid", "303 Coupure · Basse acide")),
+            playing = true, songIndex = 2, upcoming = 3, songStep = { 100 }, loop = 2..3, canUndo = true,
+        )
+    }
+
+    @Test
+    @Config(qualifiers = "w400dp-h860dp-xxhdpi")
+    fun timelineScreen() = shoot("timeline_screen", fullScreen = true) {
+        com.pocketstudio.app.session.TimelineScreen(timelineUi(), com.pocketstudio.app.session.TimelineActions(), barDp = androidx.compose.ui.unit.Dp(22f))
+    }
+
+    @Test
+    @Config(qualifiers = "w860dp-h400dp-xxhdpi")
+    fun timelineLandscape() = shoot("timeline_landscape", fullScreen = true) {
+        com.pocketstudio.app.session.TimelineScreen(timelineUi(), com.pocketstudio.app.session.TimelineActions(), barDp = androidx.compose.ui.unit.Dp(36f))
     }
 
     @Test

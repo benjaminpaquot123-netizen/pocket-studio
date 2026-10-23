@@ -57,6 +57,8 @@ sealed interface SoundRef {
     data class StyleDemo(val styleId: String) : SoundRef
     /** The style's 303 line over the beat chosen so far, in the chosen mood. */
     data object AcidDemo : SoundRef
+    /** One of the demos of « Nouveau projet » ([com.pocketstudio.model.Demos.ALL] index): its first scene, heard without opening a project. */
+    data class Demo(val index: Int) : SoundRef
 }
 
 data class SoundOption(val ref: SoundRef, val name: String)
@@ -162,7 +164,11 @@ data class WizardUi(
  * « Nouveau projet › Partir d'un style »: the whole song made in one touch with the assistant's
  * advised choices. [creating]: the style whose song is being prepared; [error]: what went wrong.
  */
-data class QuickUi(val creating: String? = null, val error: String? = null)
+data class QuickUi(
+    val creating: String? = null, val error: String? = null,
+    /** The demo (index in [com.pocketstudio.model.Demos.ALL]) playing, and the one being rendered before it plays. */
+    val demoPlaying: Int? = null, val demoPreparing: Int? = null,
+)
 
 /** Fader of the sound being tried in an assistant excerpt (+3 dB) and of the song around it (−9 dB). */
 private const val FOCUS_VOLUME = 0.95f
@@ -480,6 +486,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         is SoundRef.LineDemo -> lineDemo(ref)
         is SoundRef.StyleDemo -> styleDemo(ref.styleId)
         SoundRef.AcidDemo -> acidDemo()
+        is SoundRef.Demo -> demoPreview(ref.index)
         is SoundRef.Pack -> withContext(Dispatchers.IO) {
             val file = PackStore.file(getApplication(), ref.packId, ref.sound)
             runCatching { AudioDecoder.decode(getApplication(), Uri.fromFile(file)) }
@@ -563,6 +570,44 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         val beat = style.lines.filter { !it.off }.mapNotNull { line -> defaultRow(line.role, id, installed).sound?.let { line to it.ref } }
         val parts = demoParts(style).map { it to StarterWizard.soundsFor(it, style, installed).first() }
         return groove(style, beat, parts, style.melody.mood, bars = STYLE_DEMO_BARS, acid = WizardAcid.recipe(style, style.melody.mood))
+    }
+
+    /**
+     * Describes a project to the engine under [captureInto][NativeEngine.captureInto] (main thread):
+     * set by the screen that owns the open project's engine sync, so a demo can be rendered on a
+     * private engine without touching the open project.
+     */
+    var demoSync: ((Project) -> Unit)? = null
+
+    /** Stops the demo preview if it is the one playing or being rendered (other previews are left alone). */
+    fun stopDemoPreview() {
+        if (_playing.value is SoundRef.Demo || _preparing.value is SoundRef.Demo) stopPreview()
+    }
+
+    /** The first scene of a demo (drums, 303, synth) over [DEMO_BARS] bars, rendered offline: the open project is untouched. */
+    private suspend fun demoPreview(index: Int): Pcm? {
+        if (!NativeEngine.isAvailable) return null
+        val sync = demoSync ?: return null
+        val demo = com.pocketstudio.model.Demos.ALL.getOrNull(index)?.third?.invoke() ?: return null
+        val job = finishOrRelease(Dispatchers.Default, OfflineExport::close) { OfflineExport() }!!
+        val data = try {
+            NativeEngine.captureInto(job) {
+                sync(demo)
+                NativeEngine.setMetronome(false)
+            }
+            coroutineScope {
+                // A preview dropped for another one stops rendering at once.
+                var rendered = false
+                val stopper = launch { try { awaitCancellation() } finally { if (!rendered) job.cancel() } }
+                withContext(Dispatchers.Default) {
+                    job.renderToArray(OfflineExport.framesFor(DEMO_BARS, demo.tempoBpm, demo.beatsPerBar), OfflineExport.SAMPLE_RATE / 2L)
+                }.also { rendered = true; stopper.cancel() }
+            }
+        } finally {
+            withContext(NonCancellable + Dispatchers.Main) { job.close() }
+        }
+        if (data.isEmpty()) return null
+        return Pcm(trimSilence(data), 2, OfflineExport.SAMPLE_RATE)
     }
 
     /** The 303 line as written on its step, with its sound, over the beat chosen so far: one loop of it. */
@@ -1020,7 +1065,8 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
             sound.copy(sampled = sound.sampled!!.copy(file = file, root = root ?: 60f))
         }
         AppLog.add("Assistant : morceau ${style.name}, ${sounds.size} lignes, ${parts.size} pistes mélodiques")
-        val project = StarterWizard.build(style, sounds, w.mood, parts, acid = w.acidPlays, chosenAcid = w.acidPattern)
+        // Its live pads are prepared once it is open and its sounds loaded (RhythmViewModel.fillLivePads).
+        val project = StarterWizard.build(style, sounds, w.mood, parts, acid = w.acidPlays, chosenAcid = w.acidPattern).copy(livePadsPending = true)
         // The song's 303 cutoff follows a curve (acid styles): the guide says how to take it over.
         val guide = songGuide(
             style.name, w.plan, inKey = w.mood != null, song = songSummary(style, w.plan), acid = w.acidPlays,
@@ -1039,6 +1085,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         private const val KIT_FRAMES = OfflineExport.SAMPLE_RATE * 3L / 2
         /** Bars of a style heard on its card (a few seconds). */
         private const val STYLE_DEMO_BARS = 4
+        private const val DEMO_BARS = 8
 
         /** Edits of the 303 in a row (a knob turned) wait this long before the loop is rendered again. */
         private const val EDIT_SETTLE_MS = 250L

@@ -86,6 +86,10 @@ class ProjectsActions(
     /** The assistant opened on that style (« Personnaliser pas à pas »). */
     val customStyle: (String) -> Unit = {},
     val dismissQuickError: () -> Unit = {},
+    /** Plays (or stops) a demo as a preview, without creating or opening a project (index in [com.pocketstudio.model.Demos.ALL]). */
+    val previewDemo: (Int) -> Unit = {},
+    /** The page closed: a demo still playing stops. */
+    val stopDemo: () -> Unit = {},
     val rename: (ProjectInfo, String) -> Unit = { _, _ -> },
     val duplicate: (ProjectInfo) -> Unit = {},
     /** Share the project and its sounds as a .zip. */

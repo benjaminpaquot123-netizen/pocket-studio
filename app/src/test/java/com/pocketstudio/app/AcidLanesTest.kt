@@ -98,7 +98,7 @@ class AcidLanesTest {
         val holds = ArrayList<Pair<Int, Boolean>>()
         compose.setContent {
             com.pocketstudio.ui.PocketStudioTheme {
-                com.pocketstudio.app.acid.Panel303(com.pocketstudio.model.AcidSound().values(), { _, _ -> }) { i, held -> holds += i to held }
+                com.pocketstudio.app.acid.Panel303(com.pocketstudio.model.AcidSound().values(), { _, _ -> }, hold = { i, held -> holds += i to held })
             }
         }
         compose.onNodeWithTag("acid_knob_0").performTouchInput { down(center); moveBy(androidx.compose.ui.geometry.Offset(0f, -40f)) }

@@ -94,6 +94,7 @@ import com.pocketstudio.model.hasOwnFx
 import com.pocketstudio.model.InstrumentTrack
 import com.pocketstudio.model.MidiMapping
 import com.pocketstudio.model.partView
+import com.pocketstudio.model.stemView
 import com.pocketstudio.model.partSteps
 import com.pocketstudio.model.writeTake
 import com.pocketstudio.model.takeParts
@@ -109,7 +110,8 @@ import com.pocketstudio.model.withBeatsPerBar
 import com.pocketstudio.model.followSongIndex
 import com.pocketstudio.model.songIndexAfterRemoval
 import com.pocketstudio.model.songIndexAfterMove
-import com.pocketstudio.model.songNextIndex
+import com.pocketstudio.model.songNextIndexLooped
+import com.pocketstudio.model.splitSongPart
 import com.pocketstudio.model.renameScene
 import com.pocketstudio.model.moveScene
 import com.pocketstudio.model.SceneMove
@@ -313,11 +315,14 @@ data class SessionUi(
     /** The part to light up in the song: none while a removed one finishes. */
     val shownSongIndex: Int get() = if (removed == null) songIndex else -1
 
-    /** The part that comes next in a song of [size] parts, or -1 (not playing the song, or it ends). */
-    fun upcoming(size: Int, loops: Boolean): Int = when {
+    /**
+     * The part that comes next in a song of [size] parts, or -1 (not playing the song, or it ends);
+     * [loop]: the parts the timeline loops over (its last one leads back to its first).
+     */
+    fun upcoming(size: Int, loops: Boolean, loop: IntRange? = null): Int = when {
         songIndex < 0 -> queued.takeIf { pending != null && it in 0 until size } ?: -1
         ending -> -1
-        else -> songNextIndex(songIndex, queued, size, loops)
+        else -> songNextIndexLooped(songIndex, queued, size, loops, loop)
     }
 }
 
@@ -1843,6 +1848,55 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (songPlaying() && index == _sessionUi.value.songIndex && removedPlaying == null) stageSongPart()
     }
 
+    /**
+     * The timeline's « Couper ici »: song part [index] cut in two at [atBar] bars from its start
+     * (see [splitSongPart]; one undo step). The song plays the same; playing it, the part on now
+     * and the one chosen to come next keep their place.
+     */
+    fun splitSongPart(index: Int, atBar: Int) {
+        val before = project.value.song
+        if (index !in before.indices) return
+        if (before.size >= SongPart.MAX_PARTS) {
+            _notice.value = tr("Le morceau a déjà %d parties : retires-en une pour en ajouter une autre.", SongPart.MAX_PARTS)
+            return
+        }
+        val following = songPlaying()
+        session.edit { it.splitSongPart(index, atBar) }
+        if (project.value.song == before) return
+        if (following) followSongEdit { i, _ -> if (i > index) i + 1 else i }
+    }
+
+    private val _songLoop = MutableStateFlow<IntRange?>(null)
+    /**
+     * The song parts the timeline loops over (« Boucle »), null: none. Not saved: a way of
+     * listening, like « suivre le morceau ». By place in the song (moving parts moves what it covers).
+     */
+    val songLoop: StateFlow<IntRange?> = _songLoop.asStateFlow()
+
+    /** The loop if it still fits the song (parts removed since: none). */
+    private fun loopNow(): IntRange? = _songLoop.value?.takeIf { !it.isEmpty() && it.first >= 0 && it.last < project.value.song.size }
+
+    /** Loops the song over parts [range] (null: plays on to the end again); the part that comes next follows at once. */
+    fun setSongLoop(range: IntRange?) {
+        val r = range?.takeIf { !it.isEmpty() && it.first >= 0 && it.last < project.value.song.size }
+        if (r == _songLoop.value) return
+        _songLoop.value = r
+        if (songPlaying() && removedPlaying == null) stageSongPart()
+    }
+
+    /**
+     * The timeline's « Ouvrir dans … »: shows scene [index] to edit it. The song playing goes on
+     * (its edits wait for that scene's turn, as when staying on a scene); else as [selectScene].
+     */
+    fun showSceneToEdit(index: Int) {
+        if (index !in project.value.allScenes.indices) return
+        if (songPlaying()) {
+            if (index != project.value.scene) session.editQuietly { it.switchScene(index) }
+            return
+        }
+        selectScene(index)
+    }
+
     /** True while the song plays in the engine (song mode). */
     private fun songPlaying(): Boolean =
         NativeEngine.isAvailable && _transport.value.playing && _sessionUi.value.songIndex >= 0 && project.value.song.isNotEmpty()
@@ -2050,7 +2104,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val playing = ui.removed ?: song.getOrNull(ui.songIndex) ?: return
         val steps = p.partSteps(playing)
         // Recording a take over the whole song: it ends with the song, never starts it over.
-        val next = songNextIndex(ui.songIndex, ui.queued, song.size, p.songLoops && !recordingSong)
+        // Recording a take over the whole song: no loop either (the take follows the song).
+        val next = songNextIndexLooped(ui.songIndex, ui.queued, song.size, p.songLoops && !recordingSong, if (recordingSong) null else loopNow())
         if (next < 0) {
             // The song ends: the engine stops on the last part's last bar line.
             _sessionUi.value = ui.copy(pending = null, ending = true)
@@ -2093,7 +2148,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val song = project.value.song
         val index = when {
             song.isEmpty() -> -1
-            ui.songIndex >= 0 -> songNextIndex(ui.songIndex, ui.queued, song.size, loops = true)
+            ui.songIndex >= 0 -> songNextIndexLooped(ui.songIndex, ui.queued, song.size, loops = true, loop = if (recordingSong) null else loopNow())
             else -> ui.queued.takeIf { it in song.indices } ?: -1  // the song starts from the part chosen
         }
         // A whole scene (a song part) took over: the live grid plays it as the engine does, each
@@ -3428,7 +3483,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     fun addAutomation(target: AutoTarget) {
         if (!target.isValid || project.value.automation.size >= AutomationLane.MAX_LANES || project.value.automation.any { it.target == target }) return
-        session.edit { p -> p.copy(automation = p.automation + AutomationLane(target)) }
+        // A volume is moved along the song (louder at the start, a fade at the end), not every loop.
+        val song = target.kind == AutoTarget.VOLUME && project.value.song.isNotEmpty()
+        val lane = if (song) AutomationLane(target, mode = AutomationLane.SONG) else AutomationLane(target)
+        session.edit { p -> p.copy(automation = p.automation + lane) }
         pushAutomation()
     }
 
@@ -4208,6 +4266,80 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             pushLive()
             pushAudio()
             project.value.instrumentTracks.forEach { pushSampled(id = it.id) }
+            // A song the assistant just made: its live pads are prepared now that its sounds are in.
+            if (project.value.livePadsPending) fillLivePads()
+        }
+    }
+
+    /** The live pads being prepared from the song ([fillLivePads]). */
+    private var liveFill: kotlinx.coroutines.Job? = null
+
+    /**
+     * A song the assistant made ([Project.livePadsPending]): each track's loop of the scene where it
+     * plays fullest, the riser's impact and the whole scene go onto the free live pads
+     * ([com.pocketstudio.model.LivePadPlan]), rendered offline from the song as written, one by one
+     * on a private engine (as « Rééchantillonner » records the song). One quiet step at the end (an
+     * « Annuler » of the user's own edits never meets it); pads already set stay. Interrupted (the
+     * project closed), it starts over next time; failed, the pads stay empty and it is not tried again.
+     */
+    private fun fillLivePads() {
+        if (!NativeEngine.isAvailable || liveFill?.isActive == true) return
+        liveFill = viewModelScope.launch {
+            // Banks of instruments still opening: waited for a moment (else their track renders silent).
+            var waited = 0
+            while (loadingBanks.isNotEmpty() && waited++ < 100) kotlinx.coroutines.delay(100)
+            // The song as it is once the sounds are in (edits made while waiting included).
+            val p = project.value
+            val plan = com.pocketstudio.model.LivePadPlan.of(p)
+            val made = ArrayList<LiveClip>()
+            try {
+                for (spec in plan) {
+                    val view = p.stemView(spec.key, spec.scene)
+                    val frames = OfflineExport.framesFor(spec.bars, p.tempoBpm, p.beatsPerBar)
+                    val tail = if (spec.oneShot) OfflineExport.SAMPLE_RATE * 2L else OfflineExport.SAMPLE_RATE / 2L
+                    // A private engine costs tens of milliseconds to build: off the main thread.
+                    val job = finishOrRelease(Dispatchers.IO, OfflineExport::close) { OfflineExport() }!!
+                    val data = try {
+                        NativeEngine.captureInto(job) {
+                            syncEngine(view)
+                            NativeEngine.setMetronome(false)
+                        }
+                        withContext(Dispatchers.Default) { job.renderToArray(frames, tail) }
+                    } finally {
+                        // Native instruments share reference counts: freed on the main thread only.
+                        withContext(NonCancellable + Dispatchers.Main) { job.close() }
+                    }
+                    if (data.isEmpty()) continue
+                    val audio = withContext(Dispatchers.Default) {
+                        if (spec.oneShot) com.pocketstudio.app.library.SoundLibraryViewModel.trimSilence(data)
+                        else com.pocketstudio.app.library.SoundLibraryViewModel.loopOf(data, frames)
+                    }
+                    // A track the scene leaves silent (a riser held shut): no pad for it.
+                    if (audio.none { kotlin.math.abs(it) > SILENT }) continue
+                    val (sample, prepared) = withContext(Dispatchers.IO) { padSamples.add(Pcm(audio, 2, OfflineExport.SAMPLE_RATE), spec.name) }
+                    padSamples.register(prepared)
+                    made += LiveClip(sample.file, sample.name, (spec.bars * p.beatsPerBar).coerceAtMost(LivePads.MAX_BEATS), spec.oneShot)
+                }
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                AppLog.add("Pads live du morceau : échec (${e.message ?: e.javaClass.simpleName})")
+            } catch (e: OutOfMemoryError) {
+                AppLog.add("Pads live du morceau : mémoire insuffisante")
+            }
+            session.editQuietly { q ->
+                var live = q.live
+                var next = 0
+                for (clip in made) {
+                    while (next < LivePads.MAX && live.clips.getOrNull(next) != null) next++
+                    if (next >= LivePads.MAX) break
+                    live = live.with(next, clip.sanitized())
+                    next++
+                }
+                q.copy(live = live, livePadsPending = false)
+            }
+            pushLive()
+            AppLog.add("Pads live du morceau : ${made.size} sons préparés")
         }
     }
 
@@ -6118,6 +6250,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         const val BUSY_TRACK_SOUND = "Préparation du son…"
         /** How early (sixteenths) a note played ahead of the first step still lands on it. */
         private const val EARLY_STEPS = 1.0
+
+        /** Below this a rendered pad is silence (about -80 dBFS): no pad for it. */
+        private const val SILENT = 1e-4f
 
         /** The first project of a new install, and the "Rythme de départ" choice: a beat and an acid line. */
         fun starterProject(name: String = "Mon premier rythme"): Project {

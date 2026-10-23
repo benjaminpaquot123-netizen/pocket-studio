@@ -150,9 +150,19 @@ fun SynthScreen(
     playActions: PlayActions = PlayActions(),
     /** The selected track's effects, in a card under its sound (null: none shown). */
     effects: com.pocketstudio.app.mixer.EffectsUi? = null,
+    /** Raised (a new value) to show the Notes view: the timeline's « Ouvrir dans Notes ». */
+    notesRequest: Int = 0,
 ) {
     var advanced by rememberSaveable { mutableStateOf(false) }
     var showNotes by rememberSaveable { mutableStateOf(startWithNotes) }
+    // Each request once (coming back to the tab later keeps the view chosen since).
+    var notesSeen by rememberSaveable { mutableStateOf(0) }
+    LaunchedEffect(notesRequest) {
+        if (notesRequest > notesSeen) {
+            showNotes = true
+            notesSeen = notesRequest
+        }
+    }
     var chordKeys by rememberSaveable { mutableStateOf(false) }
     var chordPads by rememberSaveable { mutableStateOf(false) }
     // The keyboard layout and the note names are the user's, for every project.

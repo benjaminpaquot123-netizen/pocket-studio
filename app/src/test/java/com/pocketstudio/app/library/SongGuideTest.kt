@@ -71,8 +71,11 @@ class SongGuideTest {
         assertTrue(first.lines.single { it.startsWith("B · Couplet") }.let { it.contains("Basse") && !it.contains("Lead") })
         assertTrue(first.lines.single { it.startsWith("C · Refrain") }.let { it.contains("Basse") && it.contains("Lead") && it.contains("Kick") })
         val all = pages.flatMap { it.lines }.joinToString("\n")
-        // Two short pages: what the song holds, then how to hear it (all of it, or one section in a loop).
-        assertEquals(2, pages.size)
+        // Short pages: what the song holds, then how to hear it (all of it, or one section in a loop), then
+        // what to change; after the first, never more than three lines a page so that none of them scrolls.
+        assertTrue(pages.size >= 3)
+        pages.drop(1).forEach { assertTrue(it.title, it.lines.size in 1..3) }
+        assertTrue(pages.all { it.lines.isNotEmpty() })
         assertTrue(all.contains("tout le morceau") && all.contains("« Écouter » à côté de Jouer") && all.contains("« cette section »"))
         assertTrue(all.contains("Intro → Couplet → Refrain → Couplet → Refrain → Intro pour finir : environ "))
         // Nothing to save by hand.

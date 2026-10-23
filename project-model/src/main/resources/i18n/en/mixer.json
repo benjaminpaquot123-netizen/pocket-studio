@@ -335,5 +335,18 @@
   "réverbe %d %%": "reverb %d %%",
   "écho %d %%": "echo %d %%",
   "volume %s dB": "volume %s dB",
-  "Voir 1 autre réglage": "See 1 other setting"
+  "Voir 1 autre réglage": "See 1 other setting",
+  "marche": "on",
+  "arrêt": "off",
+  "centre": "centre",
+  "Page Live": "Live page",
+  "Voir le potard": "Show the knob",
+  "Voir le réglage": "Show the setting",
+  "Pour changer ce réglage sur une partie du morceau (plus fort au début…), choisis « Morceau ».": "To change this setting over part of the song (louder at the start…), choose “Song”.",
+  "mesure": "bar",
+  "temps": "beat",
+  "Zone": "Zone",
+  "Zone : glisse sur les mesures à régler (ou touche la première puis la dernière) ; la hauteur où tu lâches donne le niveau. Avant et après, rien ne change.": "Zone: slide over the bars to set (or touch the first then the last); the height where you let go gives the level. Before and after, nothing changes.",
+  "1. Choisis la piste :": "1. Choose the track:",
+  "2. Ce qui bouge sur « %s » :": "2. What moves on “%s”:"
 }

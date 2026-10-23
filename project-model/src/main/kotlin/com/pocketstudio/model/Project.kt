@@ -1,6 +1,8 @@
 package com.pocketstudio.model
 
 import com.pocketstudio.model.i18n.tr
+import kotlinx.serialization.EncodeDefault
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 
 /**
@@ -11,6 +13,7 @@ import kotlinx.serialization.Serializable
  * breaks old files; renaming or changing a field's meaning requires bumping [FORMAT_VERSION]
  * and a migration in [ProjectJson].
  */
+@OptIn(ExperimentalSerializationApi::class)
 @Serializable
 data class Project(
     val formatVersion: Int = FORMAT_VERSION,
@@ -70,6 +73,12 @@ data class Project(
      * disk while it recorded ([TakeJournal]) is never written into the song a second time.
      */
     val liveTake: String = "",
+    /**
+     * A song the assistant just made: its live pads are still to be prepared (loops of its tracks,
+     * rendered once its sounds are loaded; see [LivePadPlan]). Left out of the file when false:
+     * every other project is saved as before.
+     */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val livePadsPending: Boolean = false,
 ) {
     /** Sixteenths in a bar. */
     val stepsPerBar: Int get() = beatsPerBar * 4

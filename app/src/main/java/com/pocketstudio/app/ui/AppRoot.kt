@@ -137,6 +137,8 @@ import com.pocketstudio.app.projects.ProjectsActions
 import com.pocketstudio.app.projects.ProjectsScreen
 import com.pocketstudio.app.projects.ProjectsViewModel
 import com.pocketstudio.model.Project
+import com.pocketstudio.model.partKeys
+import com.pocketstudio.model.songLanesOf
 import com.pocketstudio.app.synth.TranscribeUi
 import com.pocketstudio.app.midi.MidiActions
 import com.pocketstudio.app.midi.MidiCommand
@@ -246,6 +248,11 @@ fun AppRoot() {
     val remixVm: RemixViewModel = viewModel()
     val generateVm: com.pocketstudio.app.generate.GenerateViewModel = viewModel()
     val libraryVm: com.pocketstudio.app.library.SoundLibraryViewModel = viewModel()
+    // The demos of « Nouveau projet » are rendered on a private engine described by the open project's own sync.
+    DisposableEffect(libraryVm, rhythmVm) {
+        libraryVm.demoSync = { p -> rhythmVm.syncEngine(p) }
+        onDispose { libraryVm.demoSync = null }
+    }
     val tabStates = androidx.compose.runtime.saveable.rememberSaveableStateHolder()
     var tab by rememberSaveable { mutableStateOf(AppTab.Rythme) }
     // « Ce qui joue »: -2 closed, -1 the whole song, else a scene; [overviewCh]: one track's (-1: all).
@@ -253,6 +260,19 @@ fun AppRoot() {
     var overviewCh by rememberSaveable { mutableStateOf(-1) }
     // Where « Ce qui joue » sent the user in the mixer (a lane, the master, the buses).
     var mixerFocus by remember { mutableStateOf<com.pocketstudio.app.mixer.Where?>(null) }
+    // « Voir le potard » from an automation lane: the 303 knob to show on the Acide tab.
+    var acidFocus by remember { mutableStateOf<Int?>(null) }
+    // The track being worked on (the last of Rythme, Acide, Synthé visited): « Automatiser un
+    // réglage » starts on it.
+    var workChannel by rememberSaveable { mutableStateOf(-1) }
+    LaunchedEffect(tab) {
+        when (tab) {
+            AppTab.Rythme -> workChannel = 0
+            AppTab.Acide -> workChannel = com.pocketstudio.model.AutoTarget.ACID_CHANNEL
+            AppTab.Synthe -> workChannel = com.pocketstudio.model.InstrumentTrack.mixerChannel(rhythmVm.selectedTrack.value)
+            else -> {}
+        }
+    }
     var showProjects by rememberSaveable { mutableStateOf(false) }
     // « Partager mon morceau » (Mixeur, Mes projets): name, export in M4A, share sheet.
     val shareSong = com.pocketstudio.app.export.rememberShareSong(rhythmVm)
@@ -464,6 +484,7 @@ fun AppRoot() {
                                 projectsVm.create(project, sounds, failed = libraryVm::createFailed) { id ->
                                     songGuide = guide
                                     libraryVm.closeWizard()
+                                    tab = AppTab.Morceau  // the song is ready to hear: land on it (kept across the rebuild)
                                     openProject(id)
                                 }
                             }
@@ -477,6 +498,8 @@ fun AppRoot() {
     if (showProjects) {
         val projectsUi by projectsVm.state.collectAsStateWithLifecycle()
         val quickUi by libraryVm.quick.collectAsStateWithLifecycle()
+        val previewingDemo by libraryVm.playing.collectAsStateWithLifecycle()
+        val preparingDemo by libraryVm.preparing.collectAsStateWithLifecycle()
         LaunchedEffect(Unit) { projectsVm.refresh() }
         androidx.activity.compose.BackHandler { showProjects = false }
         androidx.compose.ui.window.Dialog(
@@ -486,8 +509,13 @@ fun AppRoot() {
             androidx.compose.material3.Surface(color = Neon.Background, modifier = Modifier.fillMaxSize()) {
                 ProjectsScreen(
                     projectsUi, rhythmVm.projectId, PROJECT_STARTERS.map { it.first },
-                    quick = quickUi,
+                    quick = quickUi.copy(
+                        demoPlaying = (previewingDemo as? com.pocketstudio.app.library.SoundRef.Demo)?.index,
+                        demoPreparing = (preparingDemo as? com.pocketstudio.app.library.SoundRef.Demo)?.index,
+                    ),
                     actions = ProjectsActions(
+                        previewDemo = { libraryVm.preview(com.pocketstudio.app.library.SoundRef.Demo(it)) },
+                        stopDemo = libraryVm::stopDemoPreview,
                         back = { showProjects = false },
                         open = { openProject(it.id) },
                         create = { i -> projectsVm.create(PROJECT_STARTERS[i].second()) { id -> openProject(id) } },
@@ -502,6 +530,7 @@ fun AppRoot() {
                                 projectsVm.create(project, sounds, failed = libraryVm::quickFailed) { newId ->
                                     songGuide = guide
                                     libraryVm.quickDone()
+                                    tab = AppTab.Morceau  // the song is ready to hear: land on it (kept across the rebuild)
                                     openProject(newId)
                                 }
                             }
@@ -753,10 +782,15 @@ fun AppRoot() {
     // lock kept). During a take the page asks first (LiveScreen's own Back). A rotation keeps all.
     val closeLive = { rhythmVm.leaveLive(); rhythmVm.dismissPerformance(); showLive = false }
     androidx.activity.compose.BackHandler(enabled = showLive) { closeLive() }
+    // The « Ligne du temps » (opened from Morceau) takes the whole screen too.
+    var showTimeline by rememberSaveable { mutableStateOf(false) }
+    androidx.activity.compose.BackHandler(enabled = showTimeline && !showLive) { showTimeline = false }
+    // Raised by the timeline's « Ouvrir dans Notes »: the Synthé tab shows its piano roll.
+    var notesRequest by rememberSaveable { mutableIntStateOf(0) }
     Scaffold(
         containerColor = Neon.Background,
         topBar = {
-            if (!showLive) {
+            if (!showLive && !showTimeline) {
             val topProject by rhythmVm.project.collectAsStateWithLifecycle()
             val topTransport by rhythmVm.transport.collectAsStateWithLifecycle()
             val topUndo by rhythmVm.session.canUndo.collectAsStateWithLifecycle()
@@ -831,7 +865,7 @@ fun AppRoot() {
             }
         },
         bottomBar = {
-            if (!landscape && !showLive) androidx.compose.foundation.layout.BoxWithConstraints {
+            if (!landscape && !showLive && !showTimeline) androidx.compose.foundation.layout.BoxWithConstraints {
                 // Seven tabs: below ~58 dp each (small phone, big text) the labels shrink, so none is cut.
                 val tight = maxWidth / AppTab.entries.size < 58.dp
                 NavigationBar(
@@ -893,6 +927,39 @@ fun AppRoot() {
             }
             return@Scaffold
         }
+        if (showTimeline) {
+            // The timeline's loop is a tool of that screen: leaving it plays the whole song again.
+            DisposableEffect(Unit) { onDispose { rhythmVm.setSongLoop(null) } }
+            Box(Modifier.padding(padding).fillMaxSize()) {
+                TimelineRoute(
+                    rhythmVm, lifecycleOwner, close = { showTimeline = false },
+                    openEditor = { i, key ->
+                        val part = rhythmVm.project.value.song.getOrNull(i)
+                        if (part != null) {
+                            // The track's scene in that part, in its own editor.
+                            rhythmVm.showSceneToEdit(part.sceneFor(key))
+                            showTimeline = false
+                            when {
+                                key == com.pocketstudio.model.SongPart.DRUMS -> tab = AppTab.Rythme
+                                key == com.pocketstudio.model.SongPart.ACID -> tab = AppTab.Acide
+                                key.startsWith("inst:") -> {
+                                    key.removePrefix("inst:").toIntOrNull()?.let(rhythmVm::selectTrack)
+                                    notesRequest++
+                                    tab = AppTab.Synthe
+                                }
+                                key.startsWith("audio:") -> { tab = AppTab.Audio; audioPage = 0 }
+                            }
+                        }
+                    },
+                    openLane = { lane ->
+                        showTimeline = false
+                        tab = AppTab.Mixeur
+                        mixerFocus = com.pocketstudio.app.mixer.Where.Lane(lane)
+                    },
+                )
+            }
+            return@Scaffold
+        }
         // The background darkens a little towards the bottom: the panels seem to float above it.
         val bg = Neon.Background
         Row(Modifier.padding(padding).background(Brush.verticalGradient(listOf(lerp(bg, Color.White, 0.03f), bg, lerp(bg, Color.Black, 0.18f))))) {
@@ -921,6 +988,14 @@ fun AppRoot() {
                 }
             }
             Box(Modifier.weight(1f)) {
+                // Coming back to the Mixeur tab starts it again at the top: a new key drops its old scroll position
+                // (saved across rotations, so a rebuild keeps the count).
+                var mixerVisit by rememberSaveable { mutableIntStateOf(0) }
+                val shownTab = remember { arrayOf(tab) }
+                if (shownTab[0] != tab) {
+                    if (tab == AppTab.Mixeur) mixerVisit++
+                    shownTab[0] = tab
+                }
                 // Each tab keeps its own screen state (Notes or Clavier, folded cards, chosen tools)
                 // while another tab is shown, as long as the app lives.
                 tabStates.SaveableStateProvider(tab.name) {
@@ -1037,6 +1112,8 @@ fun AppRoot() {
                                 ),
                                 recording = automationRecording,
                                 automated = project.automatedAcidKnobs,
+                                focusKnob = acidFocus,
+                                onFocused = { acidFocus = null },
                                 browser = SoundBrowserUi(
                                     SoundCategories.ACID, SoundLibrary.ACID, favorites.acid,
                                     current = (SoundLibrary.ACID + favorites.acid).firstOrNull {
@@ -1073,6 +1150,7 @@ fun AppRoot() {
                             val transcription by rhythmVm.transcription.collectAsStateWithLifecycle()
                             val trackFx = com.pocketstudio.model.InstrumentTrack.mixerChannel(shownTrack)
                             SynthScreen(
+                                notesRequest = notesRequest,
                                 effects = fullProject.mixer.channels.getOrNull(trackFx)?.let { c ->
                                     com.pocketstudio.app.mixer.EffectsUi(trackFx, c, effectsActions(rhythmVm)) { fxChannel = trackFx }
                                 },
@@ -1188,7 +1266,7 @@ fun AppRoot() {
                                 },
                             )
                         }
-                        AppTab.Mixeur -> {
+                        AppTab.Mixeur -> androidx.compose.runtime.key(mixerVisit) {
                             val project by rhythmVm.project.collectAsStateWithLifecycle()
                             val sessionUi by rhythmVm.sessionUi.collectAsStateWithLifecycle()
                             val spectrum by rhythmVm.spectrum.collectAsStateWithLifecycle()
@@ -1258,6 +1336,7 @@ fun AppRoot() {
                                     stepsPerBar = project.stepsPerBar,
                                     playStep = { if (playing) live.value.currentStep else -1 },
                                     playSongStep = { if (playing) live.value.songStep else -1 },
+                                    preferredCh = workChannel,
                                 ),
                                 overview = { ch -> overviewCh = ch ?: -1; overviewScene = -1 },
                                 focus = mixerFocus,
@@ -1272,6 +1351,15 @@ fun AppRoot() {
                                     setSongPoint = rhythmVm::setAutomationSongPoint,
                                     edit = rhythmVm::editAutomationLane,
                                     addFilter = rhythmVm::addFilterAutomation,
+                                    // « Voir le potard »: the 303 knob on the Acide tab, an effect in its track's box.
+                                    showControl = { t ->
+                                        when {
+                                            t.kind == com.pocketstudio.model.AutoTarget.ACID -> { acidFocus = t.param; tab = AppTab.Acide }
+                                            t.kind == com.pocketstudio.model.AutoTarget.BUS_PARAM -> mixerFocus = com.pocketstudio.app.mixer.Where.Buses
+                                            t.ch == com.pocketstudio.model.Mixer.MASTER -> mixerFocus = com.pocketstudio.app.mixer.Where.Master
+                                            else -> fxChannel = t.ch
+                                        }
+                                    },
                                 ),
                                 export = export,
                                 hasSong = project.song.isNotEmpty(),
@@ -1285,6 +1373,7 @@ fun AppRoot() {
                             val sampleTask by rhythmVm.sampleTask.collectAsStateWithLifecycle()
                             val listenSong by rhythmVm.listenSong.collectAsStateWithLifecycle()
                             val followSong by rhythmVm.followSong.collectAsStateWithLifecycle()
+                            val songLoop by rhythmVm.songLoop.collectAsStateWithLifecycle()
                             LaunchedEffect(Unit) {
                                 lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollLiveStates() }
                             }
@@ -1307,7 +1396,7 @@ fun AppRoot() {
                                     beatsPerBar = project.beatsPerBar,
                                     sceneInfo = sceneInfo(project),
                                     rows = timelineRows(project),
-                                    upcoming = if (transport.playing) sessionUi.upcoming(project.song.size, project.songLoops) else -1,
+                                    upcoming = if (transport.playing) sessionUi.upcoming(project.song.size, project.songLoops, songLoop) else -1,
                                     listenSong = project.song.isNotEmpty() && listenSong != false,
                                     songLoops = project.songLoops,
                                     followSong = followSong,
@@ -1339,6 +1428,7 @@ fun AppRoot() {
                                     setBeatsPerBar = rhythmVm::setBeatsPerBar,
                                     openLive = { showLive = true },
                                     whatPlays = { scene -> overviewCh = -1; overviewScene = scene ?: -1 },
+                                    openTimeline = { showTimeline = true },
                                 ),
                                 live = LivePadsUi(
                                     pads = project.live,
@@ -1980,4 +2070,83 @@ internal fun LiveRoute(
         padsActions = padsActions,
     )
     }
+}
+
+/** The song's curves shown on the timeline (« Morceau » mode, with points), each under its track or with the whole mix. */
+fun timelineLanes(p: Project): List<com.pocketstudio.app.session.TimelineLane> {
+    val strips = mixerStrips(p)
+    val keys = p.partKeys
+    return (keys + listOf<String?>(null)).flatMap { key ->
+        p.songLanesOf(key).map { i ->
+            com.pocketstudio.app.session.TimelineLane(
+                i, key, com.pocketstudio.app.mixer.automationLabel(p.automation[i].target, p.mixer.channels, p.mixer.master, strips),
+            )
+        }
+    }
+}
+
+/** The « Ligne du temps » with its state from the ViewModel; every gesture goes back to it. */
+@Composable
+internal fun TimelineRoute(
+    vm: RhythmViewModel,
+    lifecycleOwner: androidx.lifecycle.LifecycleOwner,
+    close: () -> Unit,
+    openEditor: (Int, String) -> Unit,
+    openLane: (Int) -> Unit,
+) {
+    val project by vm.project.collectAsStateWithLifecycle()
+    val transport by vm.transport.collectAsStateWithLifecycle()
+    val sessionUi by vm.sessionUi.collectAsStateWithLifecycle()
+    val loop by vm.songLoop.collectAsStateWithLifecycle()
+    val canUndo by vm.session.canUndo.collectAsStateWithLifecycle()
+    val canRedo by vm.session.canRedo.collectAsStateWithLifecycle()
+    val take by vm.audioRecording.collectAsStateWithLifecycle()
+    val recording by vm.recording.collectAsStateWithLifecycle()
+    val performance by vm.take.collectAsStateWithLifecycle()
+    // The song's place: read only when drawn (the playhead), the screen never recomposes with it.
+    val live = vm.live.collectAsStateWithLifecycle()
+    val songStep = remember(live, transport.playing) { { if (transport.playing) live.value.songStep else -1 } }
+    LaunchedEffect(Unit) {
+        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { vm.pollLive() }
+    }
+    val rows = remember(project) { timelineRows(project) }
+    val lanes = remember(project) { timelineLanes(project) }
+    // No undo during a take: it could remove the track it goes to.
+    val undoable = take == null && !recording && !performance.running
+    com.pocketstudio.app.session.TimelineScreen(
+        com.pocketstudio.app.session.TimelineUi(
+            project, rows, lanes,
+            playing = transport.playing,
+            songIndex = if (transport.playing) sessionUi.shownSongIndex else -1,
+            upcoming = if (transport.playing) sessionUi.upcoming(project.song.size, project.songLoops, loop) else -1,
+            songStep = songStep,
+            loop = loop,
+            canUndo = canUndo && undoable,
+            canRedo = canRedo && undoable,
+        ),
+        com.pocketstudio.app.session.TimelineActions(
+            back = close,
+            togglePlay = {
+                // Looping: ▶ starts on the loop's first part.
+                val l = vm.songLoop.value
+                if (!vm.transport.value.playing && l != null) vm.playSongPart(l.first) else vm.toggleSong()
+            },
+            playPart = vm::playSongPart,
+            togglePartTrack = vm::togglePartTrack,
+            setPartScene = vm::setPartScene,
+            duplicatePart = vm::duplicateSongPart,
+            removePart = vm::removeSongPart,
+            movePart = vm::moveSongPart,
+            setRepeats = vm::setSongRepeats,
+            splitPart = vm::splitSongPart,
+            insertPart = vm::insertSongPart,
+            openEditor = openEditor,
+            toggleMute = vm::toggleMute,
+            toggleSolo = vm::toggleSolo,
+            setLoop = vm::setSongLoop,
+            openLane = openLane,
+            undo = vm::undo,
+            redo = vm::redo,
+        ),
+    )
 }

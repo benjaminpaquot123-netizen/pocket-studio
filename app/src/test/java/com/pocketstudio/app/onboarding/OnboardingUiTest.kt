@@ -107,6 +107,7 @@ class OnboardingUiTest {
         val created = mutableListOf<Int>()
         val quick = mutableListOf<String>()
         val custom = mutableListOf<String>()
+        val previewed = mutableListOf<Int>()
         val starters = listOf(
             ProjectStarter("Rythme de départ", "Un rythme", "starter", StarterGroup.Style),
             ProjectStarter("Acid house", "Démo", "demo_0", StarterGroup.Demo),
@@ -116,7 +117,7 @@ class OnboardingUiTest {
             PocketStudioTheme {
                 ProjectsScreen(
                     ProjectsUi(loading = false), "p-0", starters,
-                    ProjectsActions(wizard = { wizard++ }, create = { created += it }, quickStyle = { quick += it }, customStyle = { custom += it }),
+                    ProjectsActions(wizard = { wizard++ }, create = { created += it }, quickStyle = { quick += it }, customStyle = { custom += it }, previewDemo = { previewed += it }),
                 )
             }
         }
@@ -124,10 +125,15 @@ class OnboardingUiTest {
         compose.onNodeWithTag("project_wizard").performClick()
         assertEquals(1, wizard)
         compose.onNodeWithTag("project_new").performClick()
-        for (heading in listOf("GUIDÉ", "PARTIR D'UN STYLE", "ÉCOUTER UNE DÉMO", "VIDE")) compose.onNodeWithText(heading).assertExists()
-        // The assistant's styles by family, Benjamin's families open: one touch makes the whole song.
-        StarterWizard.STYLES.filter { it.family in StarterWizard.OPEN_FAMILIES }.forEach { compose.onNodeWithTag("quick_style_${it.id}").assertExists() }
-        compose.onNodeWithTag("quick_style_trap").assertDoesNotExist()  // Hip-hop folded at first
+        for (heading in listOf("PARTIR D'UN STYLE", "ÉCOUTER UNE DÉMO", "VIDE")) compose.onNodeWithText(heading).assertExists()
+        // Every family is folded at first (no style on screen); one touch opens one.
+        StarterWizard.STYLES.forEach { compose.onNodeWithTag("quick_style_${it.id}").assertDoesNotExist() }
+        StarterWizard.FAMILIES.forEach { compose.onNodeWithTag("quick_family_$it").assertExists() }
+        compose.onNodeWithTag("quick_family_Techno").performScrollTo().performClick()
+        compose.onNodeWithTag("quick_family_House").performScrollTo().performClick()
+        compose.waitForIdle()
+        StarterWizard.STYLES.filter { it.family == "Techno" || it.family == "House" }.forEach { compose.onNodeWithTag("quick_style_${it.id}").assertExists() }
+        compose.onNodeWithTag("quick_style_trap").assertDoesNotExist()  // Hip-hop still folded
         compose.onNodeWithTag("quick_style_techno").performScrollTo().performClick()
         compose.onNodeWithTag("quick_style_house").performScrollTo().performClick()
         assertEquals(listOf("techno", "house"), quick)
@@ -136,15 +142,22 @@ class OnboardingUiTest {
         compose.onNodeWithTag("quick_custom_trap").performScrollTo().performClick()
         assertEquals(listOf("trap"), custom)
         // An open family closes the same way.
-        compose.onNodeWithTag("quick_family_Bass music").performScrollTo().performClick()
+        compose.onNodeWithTag("quick_family_Techno").performScrollTo().performClick()
         compose.waitForIdle()
-        compose.onNodeWithTag("quick_style_dnb").assertDoesNotExist()
+        compose.onNodeWithTag("quick_style_techno").assertDoesNotExist()
         compose.onNodeWithTag("quick_style_house").assertExists()
         // The other starters still there; the old one-scene genres are gone.
         compose.onNodeWithTag("starter_starter").assertExists()
         compose.onNodeWithTag("starter_genre_0").assertDoesNotExist()
+        // A demo only plays: its play button previews it, no project is created, the card itself does nothing.
         compose.onNodeWithTag("starter_demo_0").performScrollTo().performClick()
-        assertEquals(listOf(1), created)
+        assertTrue(created.isEmpty())
+        compose.onNodeWithTag("demo_play_0").performScrollTo().performClick()
+        assertEquals(listOf(0), previewed)
+        assertTrue(created.isEmpty())
+        // Empty project and starting beat still create.
+        compose.onNodeWithTag("starter_empty").performScrollTo().performClick()
+        assertEquals(listOf(2), created)
     }
 
     @Test
@@ -163,6 +176,8 @@ class OnboardingUiTest {
         compose.onNodeWithTag("project_new").performClick()
         compose.onNodeWithTag("quick_preparing", useUnmergedTree = true).assertExists()
         compose.onNodeWithText("Préparation du morceau…", substring = true).assertExists()
+        compose.onNodeWithTag("quick_family_Techno").performScrollTo().performClick()
+        compose.waitForIdle()
         compose.onNodeWithTag("quick_style_techno").performScrollTo().performClick()
         assertTrue(quick.isEmpty())
         // A failure is said in plain words, and the styles can be touched again.
@@ -335,6 +350,8 @@ class OnboardingUiTest {
                 WizardScreen(WizardUi(open = true), PacksUi(IndexState.Unavailable), null, WizardActions(preview = { heard += it }, chooseStyle = { chosen += it }))
             }
         }
+        compose.onNodeWithTag("wizard_family_House").performScrollTo().performClick()
+        compose.waitForIdle()
         compose.onNodeWithTag("wizard_style_listen_house").performScrollTo().performClick()
         assertEquals(listOf<com.pocketstudio.app.library.SoundRef>(com.pocketstudio.app.library.SoundRef.StyleDemo("house")), heard)
         // Listening does not choose, nor does a touch on the card: it opens it to be read.
@@ -353,11 +370,12 @@ class OnboardingUiTest {
         compose.setContent {
             PocketStudioTheme { WizardScreen(WizardUi(open = true), PacksUi(IndexState.Unavailable), null, WizardActions()) }
         }
-        // Techno, House, Bass music open; Hip-hop and Autres folded until touched.
-        StarterWizard.STYLES.forEach { s ->
-            if (s.family in StarterWizard.OPEN_FAMILIES) compose.onNodeWithTag("wizard_style_${s.id}").assertExists()
-            else compose.onNodeWithTag("wizard_style_${s.id}").assertDoesNotExist()
-        }
+        // Every family is folded until touched.
+        StarterWizard.STYLES.forEach { s -> compose.onNodeWithTag("wizard_style_${s.id}").assertDoesNotExist() }
+        compose.onNodeWithTag("wizard_family_Techno").performScrollTo().performClick()
+        compose.onNodeWithTag("wizard_family_House").performScrollTo().performClick()
+        compose.waitForIdle()
+        StarterWizard.STYLES.filter { it.family == "Techno" || it.family == "House" }.forEach { compose.onNodeWithTag("wizard_style_${it.id}").assertExists() }
         compose.onNodeWithTag("wizard_family_Hip-hop").performScrollTo().performClick()
         compose.waitForIdle()
         StarterWizard.stylesOf("Hip-hop").forEach { compose.onNodeWithTag("wizard_style_${it.id}").assertExists() }

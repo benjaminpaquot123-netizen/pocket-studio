@@ -17,6 +17,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
@@ -32,6 +35,8 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Brush
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.FiberManualRecord
+import androidx.compose.material.icons.filled.SelectAll
+import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material.icons.automirrored.filled.ShowChart
 import androidx.compose.material.icons.filled.Waves
 import androidx.compose.material.icons.filled.ZoomIn
@@ -58,6 +63,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.drawText
+import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -78,7 +90,11 @@ import com.pocketstudio.model.EffectType
 import com.pocketstudio.model.Insert
 import com.pocketstudio.model.Macros
 import com.pocketstudio.model.Project
+import com.pocketstudio.model.hasPoints
+import com.pocketstudio.model.i18n.percent
 import com.pocketstudio.model.i18n.tr
+import com.pocketstudio.model.settingOf
+import com.pocketstudio.model.withSongZone
 import com.pocketstudio.model.withSongLine
 import com.pocketstudio.model.withSongSmoothed
 import com.pocketstudio.model.withStepLine
@@ -87,6 +103,9 @@ import com.pocketstudio.ui.NeonCard
 import com.pocketstudio.ui.Neon
 import com.pocketstudio.ui.SectionLabel
 import com.pocketstudio.ui.pillColors
+import kotlin.math.cos
+import kotlin.math.roundToInt
+import kotlin.math.sin
 
 data class AutomationUi(
     val lanes: List<AutomationLane> = emptyList(),
@@ -107,6 +126,8 @@ data class AutomationUi(
     val playSongStep: (() -> Int)? = null,
     /** The lane to show and light up (opened from « Ce qui joue »), -1: none. */
     val focusLane: Int = -1,
+    /** The strip « Automatiser un réglage » starts on (the track being worked on), -1: the first. */
+    val preferredCh: Int = -1,
 )
 
 data class AutomationActions(
@@ -123,6 +144,8 @@ data class AutomationActions(
     val addFilter: (ch: Int) -> Unit = {},
     /** « Ce qui joue »: everything acting on the sound. */
     val overview: () -> Unit = {},
+    /** « Voir le potard »: the control a lane moves, where it is set (null: no way there). */
+    val showControl: ((AutoTarget) -> Unit)? = null,
 )
 
 /** The lane modes and their names (read when drawn, in the interface's language). */
@@ -264,10 +287,93 @@ fun targetRank(t: AutoTarget, channels: List<Channel>, master: List<Insert>): In
 fun targetShortName(t: AutoTarget, channels: List<Channel>, master: List<Insert>, strips: List<StripInfo>): String =
     automationLabel(t, channels, master, strips).let { if (t.kind == AutoTarget.BUS_PARAM || t.kind == AutoTarget.LIVE) it else it.substringBeforeLast(" · ") }
 
+/**
+ * A lane's value as its setting shows it, [v] 0..1 as the lane writes it: dB for a volume, left /
+ * right for a pan, the effect's own unit (Hz, ms, dB, %) for an effect, % for the 303's knobs (as
+ * their 0..100), on / off for a held control.
+ */
+fun automationValueText(t: AutoTarget, v: Float, channels: List<Channel>, master: List<Insert>): String {
+    val x = v.coerceIn(0f, 1f)
+    val pct = percent((x * 100).roundToInt())
+    return when {
+        t.isOnOff -> if (x >= 0.5f) tr("marche") else tr("arrêt")
+        t.kind == AutoTarget.VOLUME -> faderDb(x)
+        t.kind == AutoTarget.PAN -> {
+            val pan = ((x * 2f - 1f) * 100).roundToInt()
+            when {
+                pan == 0 -> tr("centre")
+                pan < 0 -> tr("G %d", -pan)
+                else -> tr("D %d", pan)
+            }
+        }
+        t.kind == AutoTarget.INSERT_PARAM -> effectOf(t, channels, master).params.getOrNull(t.param)?.format?.invoke(x) ?: pct
+        t.kind == AutoTarget.BUS_PARAM -> Buses.PARAMS.getOrNull(t.slot)?.getOrNull(t.param)?.format?.invoke(x) ?: pct
+        t.kind == AutoTarget.LIVE && t.param == AutoTarget.LIVE_FILTER -> when {
+            x < 0.48f -> tr("Passe-bas")
+            x > 0.52f -> tr("Passe-haut")
+            else -> tr("ouvert")
+        }
+        else -> pct
+    }
+}
+
+/** Who a lane belongs to, as its chip says it: the track (its name and colour), the master, the buses, the Live page. */
+private fun laneOwner(t: AutoTarget, strips: List<StripInfo>): Pair<String, Color?> = when {
+    t.kind == AutoTarget.BUS_PARAM -> tr("Réverbe et écho communs") to null
+    t.kind == AutoTarget.LIVE -> tr("Page Live") to null
+    t.ch == MASTER_CHANNEL -> tr("Sortie générale") to null
+    else -> strips.firstOrNull { it.ch == t.ch }?.let { com.pocketstudio.model.DefaultNames.shown(it.name) to it.color } ?: (tr("Sortie") to null)
+}
+
+/** A control a lane moves can be shown where it is set (« Voir le potard »). */
+fun hasControl(t: AutoTarget): Boolean = when (t.kind) {
+    AutoTarget.ACID, AutoTarget.INSERT_PARAM, AutoTarget.SEND, AutoTarget.BUS_PARAM -> true
+    AutoTarget.MACRO -> t.param < Macros.COUNT
+    else -> false
+}
+
+/**
+ * The lane's value at [pos] (in its points: loop steps, or song points; below 0, stopped: its
+ * start): a song curve's point, or a loop's step (a step without a point keeps the last one written,
+ * the loop wrapping). Null when the lane has no point.
+ */
+internal fun laneValueAt(song: Boolean, values: List<Float?>, curve: List<Float>, count: Int, pos: Float): Float? {
+    val at = pos.coerceAtLeast(0f).toInt()
+    if (song) return curve.getOrNull(at.coerceAtMost(curve.lastIndex))
+    val n = count.coerceIn(1, AutomationLane.STEPS)
+    val s = at % n
+    for (k in 0 until n) values.getOrNull(Math.floorMod(s - k, n))?.let { return it }
+    return null
+}
+
+/**
+ * Where the time scale under a curve has its numbers: (point, label), about eight at most. A song
+ * curve counts bars ([perBar] points each), a loop counts beats (4 steps each), from 1.
+ */
+internal fun timeTicks(song: Boolean, first: Int, visible: Int, perBar: Int): List<Pair<Int, String>> {
+    val unit = if (song) perBar.coerceAtLeast(1) else 4
+    val shown = (visible + unit - 1) / unit
+    val stride = listOf(1, 2, 4, 8, 16, 32, 64, 128).firstOrNull { shown / it <= 8 } ?: 256
+    val out = ArrayList<Pair<Int, String>>()
+    var k = (first + unit - 1) / unit
+    k = (k + stride - 1) / stride * stride
+    while (k * unit < first + visible) {
+        out += k * unit to "${k + 1}"
+        k += stride
+    }
+    return out
+}
+
 /** Drawing tools of a lane. */
 private const val TOOL_DRAW = 0
 private const val TOOL_LINE = 1
+/** A zone of the song set to one level (song curves). */
+private const val TOOL_ZONE = 2
 private val ZOOMS = listOf(1, 2, 4, 8)
+
+/** The curve's height, and the width of its value scale. */
+private val CURVE_HEIGHT = 136.dp
+private val AXIS_WIDTH = 56.dp
 
 @Composable
 fun AutomationCard(
@@ -317,11 +423,16 @@ fun AutomationCard(
             pick = { picking = false; actions.add(it) },
             addFilter = { picking = false; actions.addFilter(it) },
             dismiss = { picking = false },
+            preferred = ui.preferredCh,
         )
     }
 }
 
-/** One lane: its name and what it does, its kind (loop, scene, song), its tools and its curve. */
+/**
+ * One lane: whose it is (the track's coloured chip first, then the setting), its value now (a small
+ * dial that follows the playhead), a way to the control it moves, its kind (loop, scene, song), its
+ * tools and its curve with a value scale on the side and bars (or beats) under it.
+ */
 @Composable
 private fun LaneBlock(
     i: Int, lane: AutomationLane, ui: AutomationUi, channels: List<Channel>, master: List<Insert>,
@@ -331,19 +442,56 @@ private fun LaneBlock(
     LaunchedEffect(ui.focusLane) { if (ui.focusLane == i) focus.bringIntoView() }
     val lit = ui.focusLane == i
     val shape = RoundedCornerShape(12.dp)
+    val song = lane.mode == AutomationLane.SONG
+    val perBar = lane.pointsPerBar(ui.stepsPerBar / 4)
+    val bars = maxOf(ui.songBars, 8)
+    val count = if (song) bars * perBar else ui.steps.coerceIn(1, AutomationLane.STEPS)
+    val values = if (song) lane.songValues else lane.valuesFor(ui.scene)
+    val curve = if (song) remember(lane, count) { lane.songCurve(count) } else emptyList()
+    // Where the playhead is, in points of this curve (bars, beats or steps); read when drawn.
+    val unitSteps = if (song) (if (lane.songPerBeat) 4 else ui.stepsPerBar.coerceAtLeast(1)) else 1
+    val playhead: () -> Float = remember(ui.playStep, ui.playSongStep, ui.currentStep, ui.songBar, song, unitSteps, ui.stepsPerBar) {
+        if (song) {
+            val f = ui.playSongStep
+            if (f != null) { { f().let { s -> if (s < 0) -1f else s.toFloat() / unitSteps } } }
+            else { { if (ui.songBar < 0) -1f else ui.songBar * ui.stepsPerBar.toFloat() / unitSteps } }
+        } else {
+            val f = ui.playStep
+            if (f != null) { { f().toFloat() } } else { { ui.currentStep.toFloat() } }
+        }
+    }
+    val (owner, ownerColor) = laneOwner(lane.target, strips)
+    val tint = ownerColor ?: if (lane.target.kind == AutoTarget.BUS_PARAM) Neon.Magenta else Neon.Cyan
     Column(
         Modifier.fillMaxWidth().bringIntoViewRequester(focus)
             .then(if (lit) Modifier.border(2.dp, Neon.Amber, shape).background(Neon.Amber.copy(alpha = 0.06f), shape).padding(8.dp) else Modifier.padding(top = 4.dp))
             .testTag("auto_lane_$i"),
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Column(Modifier.weight(1f)) {
-                Text(automationLabel(lane.target, channels, master, strips), style = MaterialTheme.typography.titleSmall, maxLines = 2, overflow = TextOverflow.Ellipsis)
-                Text(targetHint(lane.target, channels, master), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, maxLines = 2)
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                // The track first, in its colour: which track this curve moves is never a guess.
+                TrackChip(owner, tint, "auto_track_$i")
+                Text(targetShortName(lane.target, channels, master, strips), style = MaterialTheme.typography.titleSmall, maxLines = 2, overflow = TextOverflow.Ellipsis)
             }
             TextButton(onClick = { actions.clear(i) }, modifier = Modifier.heightIn(min = 48.dp)) { Text(tr("Vider")) }
             IconButton(onClick = { actions.remove(i) }) { Icon(Icons.Filled.Delete, contentDescription = tr("Supprimer")) }
+        }
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            // Its value as it plays (stopped: at the start), the way its knob would show it.
+            LaneDial(
+                value = { laneValueAt(song, values, curve, count, playhead()) },
+                text = { automationValueText(lane.target, it, channels, master) },
+                color = tint, tag = "auto_dial_$i",
+            )
+            Text(targetHint(lane.target, channels, master), Modifier.weight(1f), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, maxLines = 3)
+        }
+        val show = actions.showControl
+        if (show != null && hasControl(lane.target)) {
+            OutlinedButton(onClick = { show(lane.target) }, modifier = Modifier.heightIn(min = 48.dp).testTag("auto_show_$i")) {
+                Icon(Icons.Filled.Tune, contentDescription = null, modifier = Modifier.size(18.dp))
+                Text(" " + if (lane.target.kind == AutoTarget.ACID) tr("Voir le potard") else tr("Voir le réglage"))
+            }
         }
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             MODES.forEach { (mode, label) ->
@@ -353,10 +501,6 @@ private fun LaneBlock(
                 )
             }
         }
-        val song = lane.mode == AutomationLane.SONG
-        val perBar = lane.pointsPerBar(ui.stepsPerBar / 4)
-        val bars = maxOf(ui.songBars, 8)
-        val count = if (song) bars * perBar else ui.steps.coerceIn(1, AutomationLane.STEPS)
         Text(
             when {
                 !song && lane.mode == AutomationLane.PER_SCENE -> tr("Pas de la scène %s (chaque scène a les siens).", com.pocketstudio.model.Scene.NAMES.getOrElse(ui.scene) { "?" })
@@ -367,23 +511,19 @@ private fun LaneBlock(
             },
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
         )
-        var tool by rememberSaveable(i) { mutableIntStateOf(TOOL_DRAW) }
+        // A loop repeats every bar or so: a change over a part of the song is the song's curve.
+        if (!song && ui.songBars > 0 && !lane.hasPoints) {
+            Text(
+                tr("Pour changer ce réglage sur une partie du morceau (plus fort au début…), choisis « Morceau »."),
+                style = MaterialTheme.typography.bodySmall, color = Neon.Amber, modifier = Modifier.testTag("auto_song_tip_$i"),
+            )
+        }
+        var chosenTool by rememberSaveable(i) { mutableIntStateOf(TOOL_DRAW) }
+        val tool = if (!song && chosenTool == TOOL_ZONE) TOOL_DRAW else chosenTool
         var zoom by rememberSaveable(i, song) { mutableIntStateOf(if (song && count > 32) 2 else 1) }
         var start by rememberSaveable(i, song) { mutableIntStateOf(0) }
         val visible = (count + zoom - 1) / zoom
         val first = start.coerceIn(0, (count - visible).coerceAtLeast(0))
-        // Where the playhead is, in points of this curve (bars, beats or steps); read when drawn.
-        val unitSteps = if (song) (if (lane.songPerBeat) 4 else ui.stepsPerBar.coerceAtLeast(1)) else 1
-        val playhead: () -> Float = remember(ui.playStep, ui.playSongStep, ui.currentStep, ui.songBar, song, unitSteps, ui.stepsPerBar) {
-            if (song) {
-                val f = ui.playSongStep
-                if (f != null) { { f().let { s -> if (s < 0) -1f else s.toFloat() / unitSteps } } }
-                else { { if (ui.songBar < 0) -1f else ui.songBar * ui.stepsPerBar.toFloat() / unitSteps } }
-            } else {
-                val f = ui.playStep
-                if (f != null) { { f().toFloat() } } else { { ui.currentStep.toFloat() } }
-            }
-        }
         // Zoomed in while playing: the window follows the playhead.
         LaunchedEffect(zoom, count, visible) {
             if (zoom > 1) snapshotFlow { playhead() }.collect { pos ->
@@ -391,7 +531,7 @@ private fun LaneBlock(
             }
         }
         LaneTools(
-            i, tool, { tool = it }, zoom,
+            i, tool, { chosenTool = it }, zoom,
             zoomBy = { up ->
                 val z = ZOOMS[(ZOOMS.indexOf(zoom) + if (up) 1 else -1).coerceIn(0, ZOOMS.lastIndex)]
                 zoom = z
@@ -402,28 +542,114 @@ private fun LaneBlock(
                 actions.edit(i, null) { l, p -> if (l.mode == AutomationLane.SONG) l.withSongSmoothed() else l.withStepsSmoothed(p.scene) }
             },
         )
-        val values = if (song) lane.songValues else lane.valuesFor(ui.scene)
-        val curve = if (song) remember(lane, count) { lane.songCurve(count) } else emptyList()
-        CurveEditor(
-            tag = if (song) "song_lane_${lane.target.pack()}" else "lane_${lane.target.pack()}",
-            count = count, first = first, visible = visible, song = song, values = values, curve = curve,
-            beat = if (song) perBar else 4, bar = if (song) perBar * 4 else ui.stepsPerBar,
-            playhead = playhead, line = tool == TOOL_LINE,
-            onPoint = { u, v ->
-                when {
-                    !song -> actions.setPoint(i, u, v)
-                    perBar == 1 -> actions.setSongPoint(i, u, v)
-                    else -> actions.edit(i, "auto-song-$i") { l, _ -> l.withSongPoint(u, v) }
-                }
-            },
-            onLine = { a, va, b, vb ->
-                actions.edit(i, null) { l, p -> if (l.mode == AutomationLane.SONG) l.withSongLine(a, va, b, vb) else l.withStepLine(a, va, b, vb, p.scene) }
-            },
-        )
+        Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            Row {
+                ValueAxis(lane.target, channels, master)
+                CurveEditor(
+                    tag = if (song) "song_lane_${lane.target.pack()}" else "lane_${lane.target.pack()}",
+                    count = count, first = first, visible = visible, song = song, values = values, curve = curve,
+                    beat = if (song) perBar else 4, bar = if (song) perBar * 4 else ui.stepsPerBar,
+                    playhead = playhead, tool = tool,
+                    onPoint = { u, v ->
+                        when {
+                            !song -> actions.setPoint(i, u, v)
+                            perBar == 1 -> actions.setSongPoint(i, u, v)
+                            else -> actions.edit(i, "auto-song-$i") { l, _ -> l.withSongPoint(u, v) }
+                        }
+                    },
+                    onLine = { a, va, b, vb ->
+                        actions.edit(i, null) { l, p -> if (l.mode == AutomationLane.SONG) l.withSongLine(a, va, b, vb) else l.withStepLine(a, va, b, vb, p.scene) }
+                    },
+                    onZone = { a, b, v ->
+                        // Around the zone the curve keeps what it was (the setting itself where it had none).
+                        actions.edit(i, null) { l, p -> if (l.mode == AutomationLane.SONG) l.withSongZone(a, b, v, p.settingOf(l.target), count) else l }
+                    },
+                    modifier = Modifier.weight(1f),
+                )
+            }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    if (song) tr("mesure") else tr("temps"), Modifier.width(AXIS_WIDTH).padding(end = 4.dp),
+                    style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, maxLines = 1, textAlign = TextAlign.End,
+                )
+                TimeAxis(song, first, visible, perBar, Modifier.weight(1f))
+            }
+        }
     }
 }
 
-/** Draw or line, smooth, zoom and the window's place. */
+/** The track a lane moves: a dot of its colour and its name, on a tint of it. */
+@Composable
+private fun TrackChip(name: String, color: Color, tag: String) {
+    Row(
+        Modifier.clip(RoundedCornerShape(12.dp)).background(color.copy(alpha = 0.22f)).padding(horizontal = 8.dp, vertical = 3.dp).testTag(tag),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Box(Modifier.size(8.dp).clip(CircleShape).background(color))
+        Text(name, Modifier.padding(start = 6.dp), style = MaterialTheme.typography.labelMedium, color = Neon.TextPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis)
+    }
+}
+
+/**
+ * A small knob showing [value] (null: nothing written: an empty ring and « – ») and its words
+ * ([text]: dB, Hz, %…). Read when drawn: the playhead moving redraws it, never recomposes it.
+ */
+@Composable
+private fun LaneDial(value: () -> Float?, text: (Float) -> String, color: Color, tag: String) {
+    val measurer = rememberTextMeasurer()
+    val style = com.pocketstudio.ui.MonoStyle.copy(color = Neon.TextPrimary)
+    val track = Neon.SurfaceHigh
+    val needle = Neon.TextPrimary
+    Canvas(Modifier.size(width = 136.dp, height = 44.dp).testTag(tag)) {
+        val v = value()
+        val d = size.height
+        val stroke = 4.dp.toPx()
+        val topLeft = Offset(stroke / 2, stroke / 2)
+        val arc = Size(d - stroke, d - stroke)
+        drawArc(track, 135f, 270f, false, topLeft = topLeft, size = arc, style = Stroke(stroke, cap = StrokeCap.Round))
+        if (v != null) {
+            val x = v.coerceIn(0f, 1f)
+            drawArc(color, 135f, 270f * x, false, topLeft = topLeft, size = arc, style = Stroke(stroke, cap = StrokeCap.Round))
+            val angle = Math.toRadians((135f + 270f * x).toDouble())
+            val c = Offset(d / 2, d / 2)
+            val r = d / 2 - stroke * 2f
+            drawLine(needle, c, Offset(c.x + r * cos(angle).toFloat(), c.y + r * sin(angle).toFloat()), strokeWidth = 2.5.dp.toPx(), cap = StrokeCap.Round)
+        }
+        val layout = measurer.measure(if (v != null) text(v) else "–", style)
+        drawText(layout, topLeft = Offset(d + 8.dp.toPx(), (size.height - layout.size.height) / 2f))
+    }
+}
+
+/** The value scale left of a curve: its top, middle and bottom as the setting shows them. */
+@Composable
+private fun ValueAxis(t: AutoTarget, channels: List<Channel>, master: List<Insert>) {
+    val style = MaterialTheme.typography.labelSmall
+    val ink = Neon.TextSecondary
+    Column(
+        Modifier.width(AXIS_WIDTH).height(CURVE_HEIGHT).padding(end = 4.dp).testTag("auto_scale_${t.pack()}"),
+        verticalArrangement = Arrangement.SpaceBetween, horizontalAlignment = Alignment.End,
+    ) {
+        Text(automationValueText(t, 1f, channels, master), style = style, color = ink, maxLines = 1, softWrap = false)
+        Text(if (t.isOnOff) "" else automationValueText(t, 0.5f, channels, master), style = style, color = ink, maxLines = 1, softWrap = false)
+        Text(automationValueText(t, 0f, channels, master), style = style, color = ink, maxLines = 1, softWrap = false)
+    }
+}
+
+/** The numbers under a curve: its bars (a song) or beats (a loop), where they begin. */
+@Composable
+private fun TimeAxis(song: Boolean, first: Int, visible: Int, perBar: Int, modifier: Modifier) {
+    androidx.compose.foundation.layout.BoxWithConstraints(modifier.height(18.dp)) {
+        val ticks = timeTicks(song, first, visible, perBar)
+        ticks.forEach { (unit, label) ->
+            Text(
+                label, Modifier.offset(x = maxWidth * ((unit - first).toFloat() / visible.coerceAtLeast(1)) + 2.dp),
+                style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, maxLines = 1, softWrap = false,
+            )
+        }
+    }
+}
+
+/** Draw, line or zone, smooth, zoom and the window's place. */
 @Composable
 private fun LaneTools(
     i: Int, tool: Int, setTool: (Int) -> Unit, zoom: Int, zoomBy: (Boolean) -> Unit, canMove: Boolean,
@@ -442,6 +668,12 @@ private fun LaneTools(
             selected = tool == TOOL_LINE, onClick = { setTool(TOOL_LINE) }, label = { Text(tr("Ligne")) },
             leadingIcon = { Icon(Icons.AutoMirrored.Filled.ShowChart, contentDescription = null, modifier = Modifier.size(16.dp)) },
             colors = pillColors(Neon.Amber), modifier = Modifier.testTag("auto_tool_line_$i"),
+        )
+        // A zone of the song at one level (« plus fort au début »): song curves only.
+        if (song) FilterChip(
+            selected = tool == TOOL_ZONE, onClick = { setTool(TOOL_ZONE) }, label = { Text(tr("Zone")) },
+            leadingIcon = { Icon(Icons.Filled.SelectAll, contentDescription = null, modifier = Modifier.size(16.dp)) },
+            colors = pillColors(Neon.Amber), modifier = Modifier.testTag("auto_tool_zone_$i"),
         )
         TextButton(onClick = smooth, modifier = Modifier.heightIn(min = 48.dp).testTag("auto_smooth_$i")) { Text(tr("Lisser")) }
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -467,10 +699,13 @@ private fun LaneTools(
             }
         }
     }
-    // The way to draw said once (the first lane), and whenever the ramp tool is on.
-    if (tool == TOOL_LINE || i == 0) Text(
-        if (tool == TOOL_LINE) tr("Ligne : touche le début puis la fin (ou glisse de l'un à l'autre) ; une rampe bien droite les relie.")
-        else tr("Dessine au doigt ; deux touches rapides effacent un point. « Lisser » adoucit un trait tremblé, « Annuler » le défait."),
+    // The way to draw said once (the first lane), and whenever the ramp or zone tool is on.
+    if (tool != TOOL_DRAW || i == 0) Text(
+        when (tool) {
+            TOOL_LINE -> tr("Ligne : touche le début puis la fin (ou glisse de l'un à l'autre) ; une rampe bien droite les relie.")
+            TOOL_ZONE -> tr("Zone : glisse sur les mesures à régler (ou touche la première puis la dernière) ; la hauteur où tu lâches donne le niveau. Avant et après, rien ne change.")
+            else -> tr("Dessine au doigt ; deux touches rapides effacent un point. « Lisser » adoucit un trait tremblé, « Annuler » le défait.")
+        },
         style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
     )
 }
@@ -478,16 +713,19 @@ private fun LaneTools(
 /**
  * A curve to draw on: [count] points ([visible] of them shown from [first]), a bar each for a
  * loop's steps or a line through a song's points, big handles, the playhead read only when drawn.
- * [line]: two touches (or a slide) draw a straight ramp.
+ * [tool]: drawing; a line (two touches or a slide draw a straight ramp); a zone (two touches or a
+ * slide pick the points, the last touch's height their level).
  */
 @Composable
 private fun CurveEditor(
     tag: String, count: Int, first: Int, visible: Int, song: Boolean, values: List<Float?>, curve: List<Float>,
-    beat: Int, bar: Int, playhead: () -> Float, line: Boolean,
-    onPoint: (Int, Float?) -> Unit, onLine: (Int, Float, Int, Float) -> Unit,
+    beat: Int, bar: Int, playhead: () -> Float, tool: Int,
+    onPoint: (Int, Float?) -> Unit, onLine: (Int, Float, Int, Float) -> Unit, onZone: (Int, Int, Float) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val point by rememberUpdatedState(onPoint)
     val ramp by rememberUpdatedState(onLine)
+    val zone by rememberUpdatedState(onZone)
     val from by rememberUpdatedState(first)
     val shown by rememberUpdatedState(visible)
     val total by rememberUpdatedState(count)
@@ -499,20 +737,25 @@ private fun CurveEditor(
     val head = Neon.Acid
     val back = Neon.SurfaceHigh.copy(alpha = 0.5f)
     val ramping = Neon.Cyan
+    val twoTouch = tool == TOOL_LINE || tool == TOOL_ZONE
+    val zoning = tool == TOOL_ZONE
     fun unitAt(x: Float, w: Float) = (from + (x / w * shown).toInt()).coerceIn(0, total - 1)
     fun valueAt(y: Float, h: Float) = (1f - y / h).coerceIn(0f, 1f)
+    fun finish(a: Pair<Int, Float>, b: Pair<Int, Float>) {
+        if (zoning) zone(minOf(a.first, b.first), maxOf(a.first, b.first), b.second) else ramp(a.first, a.second, b.first, b.second)
+    }
     Canvas(
-        Modifier
+        modifier
             .fillMaxWidth()
-            .height(136.dp)
+            .height(CURVE_HEIGHT)
             .background(back, RoundedCornerShape(8.dp))
             .testTag(tag)
-            .pointerInput(line) {
-                if (line) {
+            .pointerInput(tool) {
+                if (twoTouch) {
                     detectTapGestures { o ->
                         val u = unitAt(o.x, size.width.toFloat()) to valueAt(o.y, size.height.toFloat())
                         val a = anchor
-                        if (a == null) anchor = u else { anchor = null; ramp(a.first, a.second, u.first, u.second) }
+                        if (a == null) { anchor = u; dragTo = null } else { anchor = null; dragTo = null; finish(a, u) }
                     }
                 } else {
                     detectTapGestures(
@@ -521,24 +764,24 @@ private fun CurveEditor(
                     )
                 }
             }
-            .pointerInput(line) {
+            .pointerInput(tool) {
                 var last: Pair<Int, Float>? = null
                 detectDragGestures(
                     onDragStart = { o ->
                         val u = unitAt(o.x, size.width.toFloat()) to valueAt(o.y, size.height.toFloat())
-                        if (line) { anchor = u; dragTo = u } else { point(u.first, u.second); last = u }
+                        if (twoTouch) { anchor = u; dragTo = u } else { point(u.first, u.second); last = u }
                     },
                     onDragEnd = {
                         val a = anchor
                         val b = dragTo
-                        if (line && a != null && b != null) ramp(a.first, a.second, b.first, b.second)
-                        if (line) { anchor = null; dragTo = null }
+                        if (twoTouch && a != null && b != null) finish(a, b)
+                        if (twoTouch) { anchor = null; dragTo = null }
                         last = null
                     },
                     onDragCancel = { anchor = null; dragTo = null; last = null },
                 ) { change, _ ->
                     val u = unitAt(change.position.x, size.width.toFloat()) to valueAt(change.position.y, size.height.toFloat())
-                    if (line) { dragTo = u; return@detectDragGestures }
+                    if (twoTouch) { dragTo = u; return@detectDragGestures }
                     // A fast finger skips points: the ones in between follow the line it drew.
                     val l = last
                     if (l != null && kotlin.math.abs(u.first - l.first) > 1) {
@@ -608,12 +851,22 @@ private fun CurveEditor(
                 if (v != null) drawRoundRect(Color.White.copy(alpha = 0.85f), Offset(x + w * 0.12f, size.height - h - 1.5.dp.toPx()), Size(w * 0.76f, 3.dp.toPx()))
             }
         }
-        // The ramp being drawn: its start, and the line to the finger.
         anchor?.let { (u, v) ->
-            val a = Offset(xOf(u.toFloat()), size.height - v * size.height)
-            drawCircle(ramping, radius = handle + 2.dp.toPx(), center = a, style = Stroke(2.dp.toPx()))
-            dragTo?.let { (u2, v2) ->
-                drawLine(ramping, a, Offset(xOf(u2.toFloat()), size.height - v2 * size.height), 3.dp.toPx(), pathEffect = PathEffect.dashPathEffect(floatArrayOf(14f, 8f)))
+            if (zoning) {
+                // The zone being picked, and the level it gets (the finger's height).
+                val end = dragTo ?: (u to v)
+                val lo = minOf(u, end.first)
+                val hi = maxOf(u, end.first)
+                drawRect(ramping.copy(alpha = 0.18f), Offset(xOf(lo.toFloat()), 0f), Size((hi - lo + 1) * w, size.height))
+                val y = size.height - end.second * size.height
+                drawLine(ramping, Offset(xOf(lo.toFloat()), y), Offset(xOf((hi + 1).toFloat()), y), 3.dp.toPx())
+            } else {
+                // The ramp being drawn: its start, and the line to the finger.
+                val a = Offset(xOf(u.toFloat()), size.height - v * size.height)
+                drawCircle(ramping, radius = handle + 2.dp.toPx(), center = a, style = Stroke(2.dp.toPx()))
+                dragTo?.let { (u2, v2) ->
+                    drawLine(ramping, a, Offset(xOf(u2.toFloat()), size.height - v2 * size.height), 3.dp.toPx(), pathEffect = PathEffect.dashPathEffect(floatArrayOf(14f, 8f)))
+                }
             }
         }
         drawPlayhead(playhead(), first, visible, w, head, column = !song)
@@ -636,11 +889,11 @@ private fun DrawScope.drawPlayhead(pos: Float, first: Int, visible: Int, w: Floa
     drawPath(tab, color)
 }
 
-/** « Que veux-tu faire bouger ? »: by track, the most useful settings first, each with what it does. */
+/** « Que veux-tu faire bouger ? »: the track first, then its most useful settings, each with what it does. */
 @Composable
 private fun TargetPicker(
     used: Set<AutoTarget>, channels: List<Channel>, master: List<Insert>, strips: List<StripInfo>,
-    pick: (AutoTarget) -> Unit, addFilter: (Int) -> Unit, dismiss: () -> Unit,
+    pick: (AutoTarget) -> Unit, addFilter: (Int) -> Unit, dismiss: () -> Unit, preferred: Int = -1,
 ) {
     AlertDialog(
         onDismissRequest = dismiss,
@@ -648,33 +901,82 @@ private fun TargetPicker(
         modifier = Modifier.widthIn(max = 640.dp).fillMaxWidth().padding(horizontal = 10.dp).testTag("automation_picker"),
         title = { Text(tr("Que veux-tu faire bouger ?")) },
         text = {
-            Column(Modifier.verticalScroll(rememberScrollState())) { TargetPickerContent(used, channels, master, strips, pick, addFilter) }
+            Column(Modifier.verticalScroll(rememberScrollState())) { TargetPickerContent(used, channels, master, strips, pick, addFilter, preferred) }
         },
         confirmButton = { TextButton(onClick = dismiss, modifier = Modifier.testTag("automation_picker_close")) { Text(tr("Fermer")) } },
     )
 }
 
-/** The picker's list: each track's settings, the master's, the shared buses'. */
+/** One choice of the picker's first step: a track, the master or the shared buses, with what can move there. */
+private class PickGroup(val key: Int, val name: String, val color: Color, val targets: List<AutoTarget>, val filterOffer: Boolean)
+
+/** The picker's first step for the shared reverb and echo (not a strip). */
+private const val GROUP_BUSES = -2
+
+/**
+ * The picker: 1. the track (a chip each, in its colour; [preferred] chosen first, else the first),
+ * 2. what moves on it, the most useful first (filter, volume, reverb). The master and the shared
+ * buses are chosen the same way.
+ */
 @Composable
 fun TargetPickerContent(
     used: Set<AutoTarget>, channels: List<Channel>, master: List<Insert>, strips: List<StripInfo>,
-    pick: (AutoTarget) -> Unit, addFilter: (Int) -> Unit,
+    pick: (AutoTarget) -> Unit, addFilter: (Int) -> Unit, preferred: Int = -1,
 ) {
     val all = remember(channels, master, strips, used) { automationTargets(channels, master, strips).filter { it !in used } }
-    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        Text(tr("Choisis la piste, puis le réglage : les plus utiles d'abord (filtre, volume, réverbe)."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+    val groups = buildList<PickGroup> {
         strips.forEach { st ->
             val targets = all.filter { it.kind != AutoTarget.BUS_PARAM && it.kind != AutoTarget.LIVE && it.ch == st.ch }
             val c = channels.getOrNull(st.ch)
             val canAddFilter = st.ch <= AutoTarget.MAX_CH && c != null &&
                 c.inserts.none { it.effect == EffectType.FILTER } && c.inserts.any { it.effect == EffectType.NONE }
-            PickerGroup(com.pocketstudio.model.DefaultNames.shown(st.name), st.color ?: Neon.Cyan, "pick_group_${st.ch}", targets, channels, master, strips, pick,
-                filterOffer = if (canAddFilter) ({ addFilter(st.ch) }) else null, filterTag = "pick_filter_${st.ch}")
+            if (targets.isNotEmpty() || canAddFilter) add(PickGroup(st.ch, com.pocketstudio.model.DefaultNames.shown(st.name), st.color ?: Neon.Cyan, targets, canAddFilter))
         }
-        PickerGroup(tr("Sortie générale"), Neon.Cyan, "pick_group_master", all.filter { it.kind == AutoTarget.INSERT_PARAM && it.ch == MASTER_CHANNEL }, channels, master, strips, pick)
-        PickerGroup(tr("Réverbe et écho communs"), Neon.Magenta, "pick_group_buses", all.filter { it.kind == AutoTarget.BUS_PARAM }, channels, master, strips, pick)
+        all.filter { it.kind == AutoTarget.INSERT_PARAM && it.ch == MASTER_CHANNEL }.takeIf { it.isNotEmpty() }?.let {
+            add(PickGroup(MASTER_CHANNEL, tr("Sortie générale"), Neon.Cyan, it, false))
+        }
+        all.filter { it.kind == AutoTarget.BUS_PARAM }.takeIf { it.isNotEmpty() }?.let {
+            add(PickGroup(GROUP_BUSES, tr("Réverbe et écho communs"), Neon.Magenta, it, false))
+        }
+    }
+    var chosen by rememberSaveable { mutableIntStateOf(preferred) }
+    val group = groups.firstOrNull { it.key == chosen } ?: groups.firstOrNull()
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Text(tr("1. Choisis la piste :"), style = MaterialTheme.typography.titleSmall, color = Neon.TextPrimary)
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            groups.forEach { g -> TrackChoice(g.name, g.color, g === group, "pick_track_${g.key}") { chosen = g.key } }
+        }
+        if (group == null) return@Column
+        Text(tr("2. Ce qui bouge sur « %s » :", group.name), style = MaterialTheme.typography.titleSmall, color = Neon.TextPrimary)
+        val tag = when (group.key) {
+            MASTER_CHANNEL -> "pick_group_master"
+            GROUP_BUSES -> "pick_group_buses"
+            else -> "pick_group_${group.key}"
+        }
+        PickerGroup(
+            group.name, group.color, tag, group.targets, channels, master, strips, pick,
+            filterOffer = if (group.filterOffer) ({ addFilter(group.key) }) else null, filterTag = "pick_filter_${group.key}",
+        )
     }
 }
+
+/** A track to choose in the picker: a dot of its colour and its name; the chosen one filled and outlined. */
+@Composable
+private fun TrackChoice(name: String, color: Color, selected: Boolean, tag: String, onClick: () -> Unit) {
+    val shape = RoundedCornerShape(24.dp)
+    Row(
+        Modifier.heightIn(min = 48.dp).clip(shape)
+            .background(if (selected) color.copy(alpha = 0.28f) else Neon.SurfaceHigh.copy(alpha = 0.6f))
+            .border(if (selected) 2.dp else 1.dp, if (selected) color else color.copy(alpha = 0.35f), shape)
+            .clickable(onClick = onClick).padding(horizontal = 12.dp).testTag(tag)
+            .semantics { this.selected = selected },
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Box(Modifier.size(10.dp).clip(CircleShape).background(color))
+        Text(name, Modifier.padding(start = 8.dp), style = MaterialTheme.typography.labelLarge, color = Neon.TextPrimary, maxLines = 1)
+    }
+}
+
 
 @Composable
 private fun PickerGroup(

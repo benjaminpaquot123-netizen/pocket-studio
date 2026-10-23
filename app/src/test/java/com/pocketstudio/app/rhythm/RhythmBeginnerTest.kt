@@ -1,13 +1,12 @@
 package com.pocketstudio.app.rhythm
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.getBoundsInRoot
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
@@ -35,9 +34,9 @@ class RhythmBeginnerTest {
     @get:Rule
     val compose = createComposeRule()
 
-    private fun screen(project: Project, actions: RhythmActions = RhythmActions(), listenSong: Boolean? = null) = compose.setContent {
+    private fun screen(project: Project, actions: RhythmActions = RhythmActions()) = compose.setContent {
         PocketStudioTheme {
-            RhythmScreen(project, TransportUi(), LiveUi(), canUndo = false, canRedo = false, actions = actions, listenSong = listenSong)
+            RhythmScreen(project, TransportUi(), LiveUi(), canUndo = false, canRedo = false, actions = actions)
         }
     }
 
@@ -53,7 +52,7 @@ class RhythmBeginnerTest {
         compose.setContent {
             PocketStudioTheme {
                 RhythmScreen(
-                    project, TransportUi(), LiveUi(), canUndo = false, canRedo = false, actions = RhythmActions(), listenSong = true,
+                    project, TransportUi(), LiveUi(), canUndo = false, canRedo = false, actions = RhythmActions(),
                     header = { com.pocketstudio.app.onboarding.NextStepCard(steps) },
                 )
             }
@@ -72,22 +71,14 @@ class RhythmBeginnerTest {
     fun theFirstRowOfStepsIsOnASmallPhoneScreenToo() = firstRowBottomAfterTheAssistant(800.dp - 184.dp)
 
     @Test
-    fun playChoosesTheSectionOrTheWholeSong() {
-        val asked = mutableListOf<Boolean>()
-        var song by mutableStateOf<Boolean?>(null)
-        compose.setContent {
-            PocketStudioTheme {
-                RhythmScreen(Project(), TransportUi(), LiveUi(), false, false, RhythmActions(setListenSong = { asked += it; song = it }), listenSong = song)
-            }
-        }
-        // No song: ▶ plays the section, nothing to choose.
+    fun whatPlayIsChosenOncePlaceNotHereAndTheTempoOpensItsSheet() {
+        var opened = 0
+        screen(Project(song = listOf(com.pocketstudio.model.SongPart(0))).sanitized(), RhythmActions(openTempo = { opened++ }))
+        // « ⟳ Partie » is under the top bar, for every tab: no second switch here.
         compose.onNodeWithTag("rhythm_listen").assertDoesNotExist()
-        song = true
-        compose.onNodeWithText("tout le morceau").assertExists()
-        compose.onNodeWithTag("rhythm_listen").performClick()
-        compose.onNodeWithText("cette section").assertExists()
-        compose.onNodeWithTag("rhythm_listen").performClick()
-        assertEquals(listOf(false, true), asked)
+        compose.onAllNodesWithText("tout le morceau").assertCountEquals(0)
+        compose.onNodeWithTag("tempo").performClick()
+        assertEquals(1, opened)
     }
 
     @Test

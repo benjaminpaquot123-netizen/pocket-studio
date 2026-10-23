@@ -56,6 +56,8 @@ AcidTrack::AcidTrack() : voice_(std::make_unique<AcidVoice>()) {
 AcidTrack::~AcidTrack() = default;
 
 void AcidTrack::prepare(int sampleRate) {
+    if (sampleRate > 0) dcCoef_ = std::exp(-2.0f * 3.14159265f * 5.0f / static_cast<float>(sampleRate));  // 5 Hz: -0.1 dB at 32 Hz
+    dcIn_ = dcOut_ = 0.0f;
     // Keeps the sound settings; only rebuilds what depends on the sample rate.
     if (sampleRate != sampleRate_) {
         voice_->setSampleRate(sampleRate);
@@ -158,7 +160,11 @@ void AcidTrack::render(float* mono, int numFrames) {
             sounding_ = false;
         }
         const float dry = static_cast<float>(voice_->getSample());
-        mono[i] += level_ * makeup_ * std::tanh(driveGain_ * dry);
+        const float sat = level_ * makeup_ * std::tanh(driveGain_ * dry);
+        const float y = sat - dcIn_ + dcCoef_ * dcOut_;
+        dcIn_ = sat;
+        dcOut_ = y;
+        mono[i] += y;
     }
     if (pending_.offset >= numFrames) pending_.offset -= numFrames;
     if (automatedAt_ >= numFrames) automatedAt_ -= numFrames;

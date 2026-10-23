@@ -1,36 +1,46 @@
 {
-  "id": "phase32-timeline-pads",
-  "milestone": "Phase 32 : ligne du temps refaite, pads en plein écran",
+  "id": "phase33-finir-son-morceau",
+  "milestone": "Phase 33 : finir son morceau, et qu'il sonne",
   "items": [
     {
-      "id": "tl_follow",
-      "title": "La ligne suit",
-      "hint": "Ligne du temps › lecture : la vue avance page par page avec la musique ; un glissé du doigt arrête « Suivre », ▶ le relance."
+      "id": "play_song",
+      "title": "▶ joue le morceau",
+      "hint": "Ouvre un projet qui a un morceau, va sur Rythme puis Synthé, touche ▶ : tout le morceau joue et la position avance sous la barre (« mes. 14/60 »)."
     },
     {
-      "id": "tl_look",
-      "title": "Noms fixes, belles pistes",
-      "hint": "Ligne du temps : fais défiler, les noms et M/S restent à gauche ; les pistes remplissent l'écran, en portrait et en paysage."
+      "id": "loop_part",
+      "title": "⟳ Partie",
+      "hint": "Touche « ⟳ Partie » sous ▶, puis ▶ : seule la partie affichée boucle. Recoupe la puce pendant la lecture : le morceau repart à la mesure suivante."
     },
     {
-      "id": "pads_full",
-      "title": "Pads plein écran",
-      "hint": "Morceau › Pads live › « Plein écran » : grands pads qui brillent sur le temps ; « Effets live » ouvre la boîte à effets."
+      "id": "tempo_touch",
+      "title": "Tempo au doigt",
+      "hint": "Touche le tempo sous la barre : choisis 140 (la feuille se ferme). Rouvre, tape 1 2 8 puis OK. Annuler ramène d'un coup au tempo d'avant."
     },
     {
-      "id": "delete_project",
-      "title": "Supprimer un projet",
-      "hint": "Mes projets : supprime le projet ouvert : pas de saut d'écran ; un projet vide jamais touché ne va pas à la corbeille."
+      "id": "rename_hold",
+      "title": "Renommer par appui long",
+      "hint": "Appui long sur le nom du projet en haut : tape un nouveau nom, OK. Il apparaît aussi dans Mes projets."
     },
     {
-      "id": "back_projects",
-      "title": "Retour sur Mes projets",
-      "hint": "Crée un morceau par « Partir d'un style », puis touche le dossier : tu arrives sur Mes projets."
+      "id": "solo_banner",
+      "title": "Bandeau solo",
+      "hint": "Mixeur : mets une piste en solo. Un bandeau ambre apparaît sur tous les onglets ; « Tout désactiver » le fait partir et tout se réentend."
     },
     {
-      "id": "tablet_text",
-      "title": "Textes en entier",
-      "hint": "Tablette › Acide : « Génère-moi un pattern », « Garder ce son », « Accordage » s'affichent en entier."
+      "id": "share_check",
+      "title": "⤴ Partager avec check-up",
+      "hint": "Touche ⤴ en haut à droite : durée, vérifications (laisse un solo : il est signalé, « Tout réactiver » le règle), puis « Partager ». Choisis WAV une fois : il est retenu la fois d'après."
+    },
+    {
+      "id": "song_ready",
+      "title": "Ton morceau est prêt",
+      "hint": "Nouveau projet › Partir d'un style : la carte « Ton morceau est prêt » apparaît sur Morceau. Écouter, puis Partager. Elle ne revient pas pour ce projet."
+    },
+    {
+      "id": "master_target",
+      "title": "Sortie qui ne sature pas",
+      "hint": "Mixeur › Sortie générale, pendant la lecture : le volume s'affiche en direct. Choisis « Club » : le son monte doucement sans jamais saturer. Exporte le morceau : le fichier annonce son volume et une crête sous −1."
     }
   ]
 }

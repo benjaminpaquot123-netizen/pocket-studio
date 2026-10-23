@@ -73,6 +73,10 @@ android {
                     "--add-exports=java.base/jdk.internal.access=ALL-UNNAMED",
                     "--add-opens=java.base/java.io=ALL-UNNAMED",
                 )
+                // The song bench (scripts/song-bench.sh): SongBenchExport records only when given -Pbench.out.
+                for (key in listOf("bench.out", "bench.render", "bench.styles")) {
+                    providers.gradleProperty(key).orNull?.let { value -> it.systemProperty("ps.$key", value) }
+                }
             }
         }
     }

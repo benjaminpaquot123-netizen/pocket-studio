@@ -18,10 +18,21 @@ template <class T>
 void zeroed(T& voice) {
     std::memset(static_cast<void*>(&voice), 0, sizeof(T));
 }
-// Per-voice output level, balanced by ear against the kick.
+// Per-voice output level, balanced by ear against the kick (kit v1: the projects saved before
+// phase 33 keep it).
 constexpr float kLevels[DrumKit::kVoices] = {
     1.0f, 1.0f, 0.7f, 0.6f, 0.7f, 0.45f, 0.4f, 0.7f,
     0.7f, 0.65f, 0.6f, 0.45f, 0.35f, 0.35f, 0.6f, 0.5f,
+};
+// Kit v2 (phase 33, docs/plan/son.md step 1): each voice alone, 4 hits a bar at 128 BPM, near the
+// loudness its role has in a mix (WizardMix.ROLE_LUFS): kick -11.5 LUFS, snares and clap -16, hats
+// -27, toms -18, ride -28, percussion -22, without raising a voice's peak over -1 dBFS (or over its
+// kit v1 peak, when that was already higher): the rim, a click, stays under its target. The hats
+// are brighter and the closed one rings longer (applyVersion). The assistant's mix no longer
+// leans on extreme faders nor on a 9 dB shelf to lift the hats (measured: WizardMix.KIT_LUFS_V2).
+constexpr float kLevelsV2[DrumKit::kVoices] = {
+    0.501f, 1.0f, 0.7f, 0.462f, 0.561f, 0.359f, 0.181f, 0.275f,
+    0.282f, 0.304f, 0.666f, 0.566f, 0.266f, 0.222f, 0.243f, 0.465f,
 };
 // Longest a hit may ring (seconds). Past it the voice fades out over kFadeSeconds and sleeps:
 // saves CPU, and stops DaisySP's analog snare, whose noise never fully dies away.
@@ -159,6 +170,17 @@ void DrumKit::prepare(int sampleRate) {
     shakerEnv_.decay = decayFor(0.06f, sampleRate);
 
     chokeDecay_ = decayFor(0.004f, sampleRate);
+    applyVersion();
+}
+
+void DrumKit::applyVersion() {
+    // Kit v1's closed hat is a 3 ms tick (most of its energy in its first samples): brought to its
+    // place in a mix it would be a loud click. Kit v2's rings like a closed hat (~40 ms).
+    closedHat_.SetDecay(version_ >= 2 ? 0.55f : 0.25f);
+    // Kit v1's hats are band-passed around 1.8 kHz: most of their energy under 6 kHz, where a real
+    // hat has little. Kit v2's are bright (band around 6 kHz): the song gets its « air » from them.
+    closedHat_.SetTone(version_ >= 2 ? 0.9f : 0.6f);
+    openHat_.SetTone(version_ >= 2 ? 0.9f : 0.6f);
 }
 
 void DrumKit::resetNoise() {
@@ -278,7 +300,7 @@ void DrumKit::renderTo(int numFrames, Sink&& sink) {
         const int pending = pending_[idx] < numFrames ? pending_[idx] : -1;
         if (activeFrames_[idx] <= 0 && pending < 0) continue;
         const int maxLength = static_cast<int>(kMaxSeconds[voice] * sampleRate_);
-        const float level = kLevels[voice];
+        const float level = (version_ >= 2 ? kLevelsV2 : kLevels)[voice];
         const float velocity = velocity_[idx];
         // The ringing hit keeps its own loudness up to the new hit's frame.
         float gain = hitGain_[idx];

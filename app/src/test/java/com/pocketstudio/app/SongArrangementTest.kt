@@ -217,19 +217,63 @@ class SongArrangementTest {
     }
 
     @Test
-    fun playGoesToTheSongOnceThereIsOne() {
+    fun playGoesToTheSongOnceThereIsOneOnEveryTab() {
         File(app.filesDir, "projects").deleteRecursively()
         val vm = RhythmViewModel(app)
+        vm.playStartsForTest = mutableListOf()
         assertFalse(vm.listensToSong)  // no song yet: ▶ plays the scene
+        vm.togglePlay()
+        vm.togglePlay()
         vm.addSongPart(0)
-        // Until chosen: the section being edited on the editing tabs, the song on the Morceau tab.
-        assertFalse(vm.listensToSong)
-        vm.onSongTab = true
+        // A song: ▶ plays it (the same ▶ on every tab), from its start.
         assertTrue(vm.listensToSong)
-        vm.setListenSong(false)
+        vm.togglePlay()
+        vm.togglePlay()
+        // « ⟳ Partie »: the scene shown loops instead; off again, the song.
+        vm.setLoopPart(true)
         assertFalse(vm.listensToSong)
-        vm.setListenSong(true)
+        vm.togglePlay()
+        vm.togglePlay()
+        vm.setLoopPart(false)
         assertTrue(vm.listensToSong)
+        assertEquals(listOf("part 0", "song 0", "part 0"), vm.playStartsForTest)
+    }
+
+    @Test
+    fun playStartsWhereTheSongIsAndAPartAskedForTurnsTheLoopOff() {
+        val vm = vmWithSong()  // A, B, C
+        vm.playStartsForTest = mutableListOf()
+        assertEquals(0, vm.playFrom.value)
+        // Picking B to edit: ▶ plays the song from B's part.
+        vm.selectScene(1)
+        assertEquals(1, vm.playFrom.value)
+        vm.togglePlay()
+        vm.togglePlay()
+        // Picking the scene of the start point again keeps it; A, played from its first part.
+        vm.selectScene(1)
+        assertEquals(1, vm.playFrom.value)
+        vm.selectScene(0)
+        assertEquals(0, vm.playFrom.value)
+        // « Jouer depuis… » the third part: the start point, and « ⟳ Partie » off (the song was asked for).
+        vm.setLoopPart(true)
+        vm.playSongPart(2)
+        assertEquals(2, vm.playFrom.value)
+        assertFalse(vm.loopPart.value)
+        vm.togglePlay()
+        vm.togglePlay()
+        // « Jouer le morceau » on Morceau: from the top (without the engine nothing plays here).
+        vm.setLoopPart(true)
+        vm.toggleSong()
+        assertFalse(vm.loopPart.value)
+        assertEquals(0, vm.playFrom.value)
+        assertEquals(listOf("song 1", "song 2", "song 0"), vm.playStartsForTest)
+        // Parts removed under the start point: from the start.
+        vm.playSongPart(2)
+        vm.removeSongPart(2)
+        vm.removeSongPart(1)
+        vm.playStartsForTest = mutableListOf()
+        vm.togglePlay()
+        assertEquals(listOf("song 0"), vm.playStartsForTest)
     }
 
     @Test
@@ -452,18 +496,15 @@ class SongArrangementTest {
         val set = mutableListOf<String>()
         showScreen(
             SessionActions(
-                setListenSong = { set += "listen $it" },
                 setSongLoops = { set += "loops $it" },
                 setFollowSong = { set += "follow $it" },
             ),
         )
-        // The same words as the switch next to Play in the Rhythm tab: one setting, one label.
-        compose.onNode(androidx.compose.ui.test.hasTestTag("listen_0") and androidx.compose.ui.test.hasText("cette section")).assertExists()
-        compose.onNode(androidx.compose.ui.test.hasTestTag("listen_1") and androidx.compose.ui.test.hasText("tout le morceau")).assertExists()
-        compose.onNodeWithTag("listen_0").performClick()
+        // What ▶ plays is no longer chosen here: « ⟳ Partie », under the top bar, is the one place.
+        compose.onNodeWithTag("listen_0").assertDoesNotExist()
         compose.onNodeWithTag("song_end_1").performScrollTo().performClick()
         compose.onNodeWithTag("follow_1").performScrollTo().performClick()
         compose.onNodeWithTag("follow_0").performScrollTo().performClick()
-        assertEquals(listOf("listen false", "loops true", "follow false", "follow true"), set)
+        assertEquals(listOf("loops true", "follow false", "follow true"), set)
     }
 }

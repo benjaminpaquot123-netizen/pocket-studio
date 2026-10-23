@@ -34,6 +34,7 @@ class SoundFont private constructor(internal val handle: Long) : AutoCloseable {
     companion object {
         /** Blocking (worker thread). Only for verified files: a corrupt bank is not safe to parse. */
         fun load(file: File): SoundFont? {
+            if (NativeEngine.sink != null) return null  // banks are not recorded by a sink
             val h = NativeEngine.soundFontLoad(file.absolutePath)
             return if (h == 0L) null else SoundFont(h)
         }

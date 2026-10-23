@@ -32,7 +32,7 @@ Réutiliser l'open source éprouvé (GPL/AGPL acceptées, usage personnel). Vér
 ## Vérifier avant de livrer
 - `./scripts/host-tests.sh` : tests du moteur sur Linux (rendu hors-ligne, timing, ni NaN ni saturation).
 - `./gradlew :app:testDebugUnitTest` (logique) et `./gradlew :app:verifyRoborazziDebug` / `recordRoborazziDebug` (captures d'écran, à regarder soi-même).
-- `./gradlew :app:assembleRelease` doit passer. La CI ajoute un test de fumée sur émulateur x86_64.
+- `./gradlew :app:assembleRelease` : ne JAMAIS le lancer à chaque chantier ni à chaque phase (ça coûte du quota). Benjamin (2026-10-23) : l'APK ne se construit et ne s'envoie qu'une fois tout le plan terminé. La CI de GitHub fait ses propres constructions toute seule. La CI ajoute un test de fumée sur émulateur x86_64.
 - CI rouge : lire les journaux, corriger, relancer. N'en parler que si réglé ou vraiment bloqué.
 
 ## Revue de fin de phase (obligatoire)

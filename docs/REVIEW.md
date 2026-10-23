@@ -751,3 +751,33 @@ Relecture neuve : 0 grave, 3 moyens, 8 mineurs. Aucun changement du moteur ni du
 Relecture neuve : 0 grave, 3 moyens, 7 mineurs. Pas de changement du moteur.
 - Corrigé : un projet avec une prise Live en cours n'est jamais supprimé sans corbeille ; si la sauvegarde échoue avant la suppression du projet ouvert, il reste en place ; barres du téléphone comptées (pads plein écran par-dessus le Live ne les font plus réapparaître).
 - Restant : un projet vide seulement renommé part sans corbeille ; tests de `isUntouched` légers ; deux sondages d'état quand les pads plein écran s'ouvrent depuis le Live ; `PadClock` sans test dédié ; toucher un pad vide en plein écran relâche les effets ; `drawPreview` reparcourt les boucles depuis 0 ; état de la vue écrit pendant la composition.
+
+## Phase 33 (relecture neuve, complète)
+Relecture neuve de toute la phase (« Finir son morceau » + son mesuré et honnête) : 1 grave, 8 moyens, 22 mineurs. Le cœur DSP est propre (aucune allocation, verrou, journal ni JNI dans `process()` ; tout préalloué dans `prepare()` ; paramètres qui glissent) ; les chiffres tiennent (cible −8 à l'export : −8,04 LUFS, TP −1,16 dBTP ; en direct −8,99 après 60 s ; repliement ≤ −70 dB ; 44,1 kHz / 16 bits : TP −1,10). Les problèmes étaient aux coutures entre les quatre chantiers.
+- Corrigé (interface, modèle) :
+  - G1 : les pads live d'un morceau de l'assistant étaient masterisés un par un à la cible du morceau (chaque boucle de piste seule aussi forte que le mix, écrasée, puis remasterisée en direct) : `stemView` retire la cible, `fillLivePads` la redit au moteur privé ; tests modèle et appli (faux moteur qui enregistre les commandes).
+  - M1 : « Prêt à partager ? » lit enfin la mesure du master (LUFS sous la durée, true peak > −1 dBTP = saturation) ; avec une cible, l'alerte « limiteur » se tait et « Baisser le volume général » n'est plus proposé.
+  - M5 : vocabulaire (« Partie », onglet « Structure ») reporté à la phase 36 avec la nouvelle navigation (DECISIONS) ; en attendant « Modifier la structure » devient « Modifier le morceau » (le bouton nomme l'onglet qui existe).
+  - M6 : bandeau de lecture à 48 dp, chaque commande touchable sur 48 × 48 dp au moins (test `PlayStripTouchTargetsTest`).
+  - M7 : en paysage, « Prochaine étape » n'est plus empilé (il revient sur Rythme à la demande d'Outils › Aide) et le bandeau Solo se replie en pastille dans le bandeau de lecture ; capture `rhythm_landscape`.
+  - Mineurs : m7 (crête récente affichée : la puce LUFS s'allume en ambre une seconde après un dépassement de −1 dBTP), m18 (position verte en lecture, comme ▶), m20 (le champ dit « Nom du morceau (et du projet) » : partager renomme le projet), m21 (test de l'ancienne clé `listenSong`).
+- Corrigé côté moteur (agent du banc) : M2 (budget CPU de la chaîne master et des effets de drive), M3 (gain auto du compresseur qui gonflait 1,5 s après un silence), M4 (rapport du banc après l'étape 2, CI qui échoue sur TP > −1 dBTP ou LUFS hors cible).
+- M8 : changelog, recette, PROGRESS livrés dans le commit de livraison.
+- Restant (mineurs, à reprendre quand on retouche ces fichiers) :
+  - m1, m2 : `Saturator::update()` recalcule 64 sinus à chaque `setParam` ; `wetGain_` saute pendant que `drive_` glisse (≤ 1 dB à drive fort avec « Volume constant »).
+  - m3 : pendant le fondu de porte d'un insert (`processInserts`), le sec n'est pas retardé des 4 trames de Saturation/Distorsion : peigne à 6 kHz le temps du fondu.
+  - m4, m5, m6 : latence de la chaîne master = 68 trames (les docs disent 64) ; commentaire « 24 taps » pour 32 dans `TruePeak.h` et `static_assert(kClipDelay < 8)` ; `static_assert` sur la numérotation à part de `SetKitVersion`.
+  - m8 : défaut moteur du compresseur (Auto à 0) différent du défaut de l'appli (Auto à 1), sans effet puisque tout est envoyé.
+  - m9, m10 : garde-fou `saved.size <= 4` d'`upgraded()` à tester sur toutes les recettes et préréglages ; préréglage « Punch » qui perd son +8 dB fixe (cohérent avec la décision, à écrire).
+  - m11 : le `.pscmd` du banc ne porte ni fréquence ni bits (un export 44,1 kHz / 16 bits n'est pas rejouable).
+  - m12 : la CI n'installe pas ffmpeg pour les tests moteur (`loudness_matches_ffmpeg` passe en silence s'il manque).
+  - m13 : pendant la montée du gain vers la cible (jusqu'à ~7 s), le panneau ne dit rien tant que le drive est à 0.
+  - m14 : seules deux voix du kit v2 sont contrôlées par un test hôte, pas la table entière.
+  - m15, m16 : fichier `.premaster` laissé à côté du WAV si l'appli meurt pendant l'export (`WavExporter` ne l'efface pas) ; trois allocations d'une `MasterChain` par export.
+  - m17 : regarder une scène à l'arrêt déplace le départ de ▶ sur sa première partie (voulu, testé, dit sous ▶) : à surveiller en recette.
+  - m19 : sur l'onglet de l'étape, la carte « Prochaine étape » se déplie dans la colonne du haut et fait descendre tout l'écran.
+  - m22 : `read16` (arrondi + dither + écrêtage avec gain) sans test.
+## Phase 33 (son : chaîne master, banc)
+Relecture neuve de la phase (M2, M3, M4 côté moteur et banc) appliquée ; les chiffres sont dans `docs/son/banc/apres-etape2.md`.
+- Corrigé : lecteurs true peak portés (chaîne master 2,0 → 1,6 % d'un cœur hôte) ; « Gain auto » du compresseur qui gonflait après chaque silence ; continu de la 303 (bloqueur après sa saturation) et continu laissé par l'écrêteur et le limiteur (bloqueur sub-sonique 0,05 Hz, avec cible) ; le banc fait échouer la CI sur TP > −1, continu > 1e-3, NaN et sonie hors cible sans plafond ; format d'export noté dans le `.pscmd` ; `.premaster` orphelins nettoyés.
+- Restant : les effets de drive (Saturation 0,4 %, Distorsion 0,8 % d'un cœur hôte par insert, soit 1,5 à 3 % d'un cœur de téléphone contre 1 % visé) : l'antidérivée en double avec un logarithme par point suréchantillonné est le coût ; pistes : ×2 au lieu de ×4 sous drive 0,5, courbe tabulée, ou chemin direct quand le drive est au plancher ; à mesurer sur le téléphone d'abord. La basse du synthé laisse −0,01 de continu et des oscillations sub-soniques (sub à 20 Hz) : à régler avec les sources de l'étape 7 (bloqueur à la sortie des voix). 8 styles restent 1 à 2 LU sous leur cible, plafonnés par la perte de 6 LU : c'est le kick (étape 3). Drop − Break passe de +1,4 à −0,2 LU médian : le limiteur écrase plus le Drop ; la courbe d'énergie est l'étape 6. Le HIIR de l'écrêteur monte toujours même quand il ne peut pas écrêter (continuité de ses filtres) : un réchauffement sur les 8 dernières trames permettrait de le sauter. PLR < 6 sur acid_techno, acidcore et gabber : mécanique (cible −7/−6 avec un plafond à −1,2 dBTP visé), le tableau PLR de son.md § 2.4 est à relire pour ces familles.

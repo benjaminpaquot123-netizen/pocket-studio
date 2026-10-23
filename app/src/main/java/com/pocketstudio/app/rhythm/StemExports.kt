@@ -14,9 +14,21 @@ import com.pocketstudio.model.partView
  * launched by hand, so they never play in an export.
  */
 internal fun stemExports(p: Project, song: Boolean): List<Pair<String, Int>> {
+    val tracks = stripSounds(p, song).filter { (stem, sounds) -> sounds && p.mixer.channels.getOrNull(stem.second)?.mute != true }.map { it.first }
+    // The Live page's own sounds (riser, downlifter, the build-up's noise) come from no track: each
+    // track's file leaves them out, and they get a file of their own, so the files add up to the mix.
+    return if (tracks.isNotEmpty() && hasLiveNoises(p, song)) tracks + (LIVE_FX_STEM_LABEL to LIVE_FX_STEM) else tracks
+}
+
+/**
+ * Each track's strip as (file label, mixer channel), and whether it has something to play in the
+ * scene (or in any part of the song when [song]), whatever the mixer does with it. Also read by
+ * « Prêt à partager ? »: a track muted in the mixer although it has notes.
+ */
+internal fun stripSounds(p: Project, song: Boolean): List<Pair<Pair<String, Int>, Boolean>> {
     val views = if (song && p.song.isNotEmpty()) p.song.map { p.partView(it) } else listOf(p)
     fun slug(name: String) = name.lowercase().replace(Regex("[^a-z0-9]+"), "-").trim('-').take(16)
-    val all = listOf(
+    return listOf(
         "batterie" to 0 to views.any { v -> v.drums.lanes.any { lane -> lane.hits.keys.any { it < v.drums.steps } } },
         "acide" to 1 to views.any { v -> v.acid.steps.take(v.acid.length).any { it.gate } },
         "synthe" to 2 to views.any { v -> v.synthNotes.notes.isNotEmpty() },
@@ -29,10 +41,6 @@ internal fun stemExports(p: Project, song: Boolean): List<Pair<String, Int>> {
         "audio${t.id + 1}-${slug(t.name)}" to AudioTrack.mixerChannel(t.id) to
             (t.clip != null && (!song || p.song.isEmpty() || p.song.any { it.plays(SongPart.audio(t.id)) }))
     }
-    val tracks = all.filter { (stem, sounds) -> sounds && p.mixer.channels.getOrNull(stem.second)?.mute != true }.map { it.first }
-    // The Live page's own sounds (riser, downlifter, the build-up's noise) come from no track: each
-    // track's file leaves them out, and they get a file of their own, so the files add up to the mix.
-    return if (tracks.isNotEmpty() && hasLiveNoises(p, song)) tracks + (LIVE_FX_STEM_LABEL to LIVE_FX_STEM) else tracks
 }
 
 /** The « Effets live » file's channel in [stemExports]: no strip, the Live page's own sounds alone. */

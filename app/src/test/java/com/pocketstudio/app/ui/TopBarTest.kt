@@ -10,6 +10,8 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.longClick
 import com.pocketstudio.model.renameScene
 import androidx.compose.ui.unit.dp
 import com.pocketstudio.app.report.forUser
@@ -34,14 +36,14 @@ class TopBarTest {
         PocketStudioTheme {
             Box(Modifier.width(width.dp)) {
                 TopBar(
-                    TopBarUi(projectName = "Mon morceau de dubstep", tempoBpm = 140.0, playing = false, canUndo = true, canRedo = true, scene = scene),
+                    TopBarUi(projectName = "Mon morceau de dubstep", playing = false, canUndo = true, canRedo = true, scene = scene),
                     actions,
                 )
             }
         }
     }
 
-    /** The essentials are there and fit: projects (touchable), undo, record, a round play inside the bar. */
+    /** The essentials are there and fit: projects (touchable), undo, record, a round play and share inside the bar. */
     private fun assertEssentials(width: Int) {
         val projects = compose.onNodeWithTag("top_projects").getBoundsInRoot()
         assertTrue("projects ${projects.right - projects.left}", projects.right - projects.left >= 48.dp)
@@ -50,6 +52,9 @@ class TopBarTest {
         val play = compose.onNodeWithTag("top_play").getBoundsInRoot()
         assertEquals((play.right - play.left).value, (play.bottom - play.top).value, 0.5f)
         assertTrue("play ends at ${play.right}", play.right <= width.dp + 0.5.dp)
+        compose.onNodeWithTag("top_share").assertIsDisplayed()
+        val share = compose.onNodeWithTag("top_share").getBoundsInRoot()
+        assertTrue("share ends at ${share.right}", share.right <= width.dp + 0.5.dp && share.left >= play.right - 0.5.dp)
         val scene = compose.onNodeWithTag("top_scene").getBoundsInRoot()
         assertTrue("the chip stays left of undo", scene.right <= compose.onNodeWithTag("top_undo").getBoundsInRoot().left + 0.5.dp)
         assertTrue("the chip is touchable", scene.bottom - scene.top >= 36.dp && scene.right - scene.left >= 48.dp)
@@ -57,25 +62,27 @@ class TopBarTest {
 
     @Test
     fun aVeryNarrowPhoneShowsTheSceneLetterOnly() {
-        show(300, scenes)
-        assertEssentials(300)
+        show(304, scenes)
+        assertEssentials(304)
         compose.onNodeWithTag("top_scene_text", useUnmergedTree = true).assertTextEquals("B")
         compose.onNodeWithTag("top_redo").assertDoesNotExist()
     }
 
     @Test
-    fun aUsualPhoneShowsTheSceneNameAndKeepsTheProjectNameReadable() {
-        show(412, scenes)
-        assertEssentials(412)
+    fun aLargePhoneShowsTheSceneNameAndKeepsTheProjectNameReadable() {
+        // ⤴ Partager took 48 dp of the bar: the section's name shows from about 444 dp.
+        show(448, scenes)
+        assertEssentials(448)
         compose.onNodeWithTag("top_scene_text", useUnmergedTree = true).assertTextEquals("B · Refrain")
         val projects = compose.onNodeWithTag("top_projects").getBoundsInRoot()
         assertTrue("projects ${projects.right - projects.left}", projects.right - projects.left >= 120.dp)
     }
 
     @Test
-    fun aBigPhoneAlsoGetsRedo() {
-        show(480, scenes)
-        assertEssentials(480)
+    @Config(qualifiers = "w600dp-h900dp")
+    fun aSmallTabletAlsoGetsRedo() {
+        show(528, scenes)
+        assertEssentials(528)
         compose.onNodeWithTag("top_scene_text", useUnmergedTree = true).assertTextEquals("B · Refrain")
         compose.onNodeWithTag("top_redo").assertIsDisplayed()
     }
@@ -86,7 +93,20 @@ class TopBarTest {
         show(700, scenes)
         assertEssentials(700)
         compose.onNodeWithTag("top_scene_text", useUnmergedTree = true).assertTextEquals("B · Refrain")
-        compose.onNodeWithText("140").assertIsDisplayed()
+        compose.onNodeWithTag("top_redo").assertIsDisplayed()
+        // The tempo is in the play strip under the bar, on every width.
+        compose.onNodeWithText("140").assertDoesNotExist()
+    }
+
+    @Test
+    fun aTouchOnTheNameOpensTheProjectsAndAHoldRenamesIt() {
+        var opened = 0
+        var renamed = 0
+        show(412, scenes, TopBarActions(projects = { opened++ }, rename = { renamed++ }))
+        compose.onNodeWithTag("top_projects").performClick()
+        compose.onNodeWithTag("top_projects").performTouchInput { longClick() }
+        assertEquals(1, opened)
+        assertEquals(1, renamed)
     }
 
     @Test
@@ -94,24 +114,27 @@ class TopBarTest {
         // Every width from a tiny phone to a tablet: what is shown never overflows the bar.
         for (w in 280..900 step 4) {
             val l = topBarLayout(w.dp, hasScene = true)
-            var used = 48.dp * 3 + 12.dp + 92.dp
-            if (l.showRedo || l.showTempo || l.scene == SceneChipMode.Full) used += 36.dp  // the name's reserve
-            // Without the scene, the old widths: 340 dp for redo, 400 dp for the tempo.
+            // Undo, record, play, share; the projects button keeps a bit of the name (only its folder below 348 dp).
+            var used = 48.dp * 4 + 12.dp + if (w >= 348) 92.dp else 48.dp
+            if (l.showRedo || l.scene == SceneChipMode.Full) used += 36.dp  // the name's reserve
+            // Without the scene: 388 dp for redo (the tempo is in the play strip below).
             val plain = topBarLayout(w.dp, hasScene = false)
-            assertEquals(w >= 340, plain.showRedo)
-            assertEquals(w >= 400, plain.showTempo)
+            assertEquals(w >= 388, plain.showRedo)
             if (l.showRedo) used += 48.dp
-            if (l.showTempo) used += 84.dp
             if (l.scene != SceneChipMode.Hidden) used += l.sceneMaxWidth
             assertTrue("$w dp: $l", used <= w.dp)
-            if (w >= 300) assertTrue("$w dp: the scene letter at least", l.scene != SceneChipMode.Hidden)
+            // The name goes only where the folder alone makes room for the scene's letter (never a clipped "…").
+            assertEquals("$w dp: $l", w !in 304 until 348, l.projectName)
+            assertTrue("$w dp: $l", plain.projectName)
+            if (w >= 304) assertTrue("$w dp: the scene letter at least", l.scene != SceneChipMode.Hidden)
         }
-        assertEquals(SceneChipMode.Letter, topBarLayout(300.dp, true).scene)
-        assertEquals(SceneChipMode.Full, topBarLayout(412.dp, true).scene)
-        assertTrue(topBarLayout(700.dp, true).showTempo)
-        // Without a scene (Morceau, Outils), the bar is as before: redo and the tempo come back sooner.
+        assertEquals(SceneChipMode.Letter, topBarLayout(304.dp, true).scene)
+        assertEquals(SceneChipMode.Letter, topBarLayout(412.dp, true).scene)
+        assertEquals(SceneChipMode.Full, topBarLayout(448.dp, true).scene)
+        assertTrue(topBarLayout(700.dp, true).showRedo)
+        // Without a scene (Morceau, Outils): redo comes back sooner.
         assertEquals(SceneChipMode.Hidden, topBarLayout(412.dp, false).scene)
-        assertTrue(topBarLayout(412.dp, false).showTempo)
+        assertTrue(topBarLayout(412.dp, false).showRedo)
         assertTrue(!topBarLayout(300.dp, false).showRedo)
     }
 

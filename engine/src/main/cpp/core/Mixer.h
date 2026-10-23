@@ -7,13 +7,15 @@
 #include <memory>
 
 #include "Effects.h"
+#include "MasterChain.h"
 #include "Smoother.h"
 
 namespace ps {
 
 // Channel strips (inserts, volume, pan, mute, solo, two sends, meter), two send buses
-// (0 = reverb, 1 = tempo delay), master inserts and a peak limiter. Mono or stereo sources in,
-// interleaved stereo out. prepare() may allocate (stream closed); everything else is real-time safe.
+// (0 = reverb, 1 = tempo delay), master inserts and the master chain (loudness target, clipper,
+// true-peak limiter, loudness meter: MasterChain.h). Mono or stereo sources in, interleaved
+// stereo out. prepare() may allocate (stream closed); everything else is real-time safe.
 class Mixer {
 public:
     // 0 = drums, 1 = acid bass, 2 = synth (instrument track 1), 3 = remix stems (stereo),
@@ -31,13 +33,10 @@ public:
     static constexpr int kInserts = 8;
     static constexpr int kMaster = 4;    // insert "channel" index of the master
     static constexpr int kBuses = 2;
-    static constexpr float kCeiling = 0.89f;  // -1 dBFS
-    // The limiter looks this far ahead (1 ms, at most kLookAheadMax frames): its gain glides down
-    // over that time and reaches the peak's on the peak's frame, instead of jumping on it. The
-    // output is that many frames minus one late (the same live and in an export).
-    static constexpr float kLookAheadMs = 1.0f;
-    static constexpr int kLookAheadMax = 96;
-    int lookAhead() const { return lookAhead_; }  // frames
+    static constexpr float kCeiling = 0.891251f;  // -1 dBTP, the master chain's default ceiling
+    // The master chain's delay: the output is this many frames late (the same live and in an
+    // export, which drops them). MasterChain::latencyFor(rate) before prepare().
+    int latency() const { return chain_->latency(); }
 
     void prepare(int sampleRate);
     void setVolume(int ch, float v);   // 0..1 (0.8 = unity, up to +2 dB)
@@ -77,7 +76,23 @@ public:
     // export keeps its headroom), and its inserts on or off (stems: each strip without the master's
     // processing, so the stems add back up to the mix).
     void setMasterGain(float gain) { masterGain_.setTarget(std::clamp(std::isfinite(gain) ? gain : 1.0f, 0.0f, 4.0f)); }
-    void setLimiter(bool on) { limiterOn_ = on; }
+    void setLimiter(bool on) {
+        limiterOn_ = on;
+        chain_->setLimiter(on);
+    }
+    // The master chain (MasterChain.h): its ceiling (dBTP), its loudness target (LUFS, NaN: none),
+    // a fixed drive (an offline render's mastering pass) and the estimate's memory.
+    void setCeiling(float db) { chain_->setCeilingDb(db); }
+    void setLoudnessTarget(float lufs) { chain_->setTarget(lufs); }
+    void resetLoudnessEstimate() { chain_->resetEstimate(); }
+    // An offline render's first pass: the output is the music before the master chain (its gain
+    // and the click included), not delayed; the renderer masters it in a second pass.
+    void setMasterChainBypass(bool on) { chainBypass_ = on; }
+    int outputLatency() const { return chainBypass_ ? 0 : chain_->latency(); }
+    MasterChain& masterChain() { return *chain_; }
+    const MasterChain& masterChain() const { return *chain_; }
+    // Momentary, short-term and integrated (since ▶) loudness of the output, its true peak.
+    LoudnessMeter& loudness() { return chain_->meter(); }
     // Every fader, pan and send gain at its target at once (an offline render, before its first
     // beat: a muted or not-soloed strip must not bleed in while its gain glides down).
     void settle() {
@@ -88,7 +103,10 @@ public:
         }
         masterGain_.snap(masterGain_.target());
     }
-    void setMasterFx(bool on) { masterFxOn_ = on; }
+    void setMasterFx(bool on) {
+        masterFxOn_ = on;
+        chain_->setDriveAllowed(on);  // separate tracks add back up to the mix: no drive
+    }
     void setLiveNoises(int mode) { perf_.setNoises(mode); }  // PerformanceFx::Noises
     // The transport starts: the effects' free LFOs from their start (InsertSlot::restartLfo).
     void restartLfos() {
@@ -175,6 +193,12 @@ public:
     // The limiter's lowest gain since last read (the meters).
     float takeLimiterGain() { return limiterMin_.exchange(1.0f, std::memory_order_acq_rel); }
     const InsertSlot& insert(int ch, int slot) const { return inserts_[static_cast<size_t>(ch)][static_cast<size_t>(slot)]; }
+    // The deepest gain reduction (dB, <= 0) of the compressor in insert `slot` of strip `ch` since
+    // the last read (0: none, or not a compressor): its meter in the effect's box.
+    float takeInsertReduction(int ch, int slot) {
+        if (ch < 0 || ch >= kChannels || slot < 0 || slot >= kInserts) return 0.0f;
+        return reductions_[static_cast<size_t>(ch * kInserts + slot)].exchange(0.0f, std::memory_order_acq_rel);
+    }
     // Tests.
     const PerformanceFx& performance() const { return perf_; }
     const Reverb& reverb() const { return reverb_; }
@@ -244,19 +268,10 @@ private:
     void requestType(int ch, int slot, int type);
     void swapNow(int ch, int slot, int type, bool fadeIn);
     void finishSwaps(int ch);  // the strip is not heard: every effect waiting goes in now
-    // --- The limiter (look-ahead, see kLookAheadMs).
-    float limit(float& l, float& r);
-    int lookAhead_ = 48;
-    int64_t limFrame_ = 0;
-    std::array<float, kLookAheadMax> delayL_{}, delayR_{}, gainRing_{};
-    double gainSum_ = kLookAheadMax;
-    float releasedGain_ = 1.0f;
-    // The lowest gain the frames still in the window need: a monotonic queue (frame, gain).
-    static constexpr int kQueue = 128;
-    static_assert(kQueue > kLookAheadMax, "the queue holds a window");
-    std::array<int64_t, kQueue> minFrame_{};
-    std::array<float, kQueue> minGain_{};
-    int minHead_ = 0, minTail_ = 0;
+    // --- The master chain (drive, clipper, limiter, meter): on the heap, about 100 kB.
+    std::unique_ptr<MasterChain> chain_ = std::make_unique<MasterChain>();
+    std::array<float, kChunk> outL_{}, outR_{}, click_{};
+    bool chainBypass_ = false;
 
     std::array<Strip, kChannels> strips_{};
     // Large (each chorus holds its delay lines, about 20 kB): on the heap, allocated once with the
@@ -293,6 +308,10 @@ private:
     std::atomic<float> masterInPeak_{0.0f};
     std::atomic<float> limiterGainOut_{1.0f};
     std::atomic<float> limiterMin_{1.0f};
+    std::array<std::atomic<float>, kChannels * kInserts> reductions_{};  // takeInsertReduction
+    void meterReduction(int ch, size_t slot, const InsertSlot& s) {
+        if (s.type() == InsertSlot::Comp) storeMin(reductions_[static_cast<size_t>(ch) * kInserts + slot], s.compressor().gainReductionDb());
+    }
     std::array<int, 32> eventOffset_{}, eventStep_{}, eventBar_{};
     std::array<bool, 32> eventKick_{}, eventBeat_{};
     int events_ = 0;
@@ -320,7 +339,6 @@ private:
     std::unique_ptr<std::array<Isolator, kChannels>> isolators_ = std::make_unique<std::array<Isolator, kChannels>>();
     // The whole mix into the send buses (the build-up's sends, the whole-mix throws).
     std::array<Smoother, kBuses> masterSend_{Smoother(0.0f), Smoother(0.0f)};
-    float release_ = 0.999f;
     Smoother masterGain_{1.0f};
     bool limiterOn_ = true;
     bool masterFxOn_ = true;

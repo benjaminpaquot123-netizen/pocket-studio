@@ -14,6 +14,12 @@ namespace ps {
 // Renders a private Engine (not the live one) faster than real time into a WAV file.
 // Commands are posted to engine() exactly as the UI posts them to the live engine.
 // Runs on a worker thread; progress() and cancel() may be called from any thread.
+//
+// With a loudness target on the master (MasterChain::targetActive), the song is rendered in two
+// passes: first the music before the master chain (kept in a file next to the WAV, or in the
+// buffer) and its loudness; then the master chain over it at the drive that brings the whole
+// song to the target (found with at most two quick passes of the chain alone). The file is at
+// the target from its first second, whatever its form (the live engine can only estimate).
 class OfflineRenderer {
 public:
     enum class Result { Ok, IoError, Cancelled };
@@ -35,14 +41,33 @@ public:
     // use, so a gap between two repeats does not end it); only a tail that reaches the cap fades out.
     void setAutoTail(bool on) { autoTail_ = on; }
     // renderToWav writes 32-bit float samples (no clipping above 0 dBFS: a mix without limiter).
-    void setFloatWav(bool on) { floatWav_ = on; }
+    void setFloatWav(bool on) { bits_ = on ? 32 : 24; }
+    // renderToWav's format: 44100 Hz (resampled with libsamplerate's best sinc) or the engine's
+    // rate; 16 or 24 bits (TPDF dither) or 32 (float). Frame counts given to renders stay at the
+    // engine's rate.
+    void setOutputFormat(int sampleRate, int bits) {
+        outRate_ = sampleRate == 44100 ? 44100 : sampleRate_;
+        bits_ = bits == 16 || bits == 32 ? bits : 24;
+    }
     static constexpr float kSilence = 3.1623e-5f;  // -90 dBFS
 
     // Plays the transport for `frames`, then renders `tailFrames` stopped so
-    // releases ring out. Output is 24-bit stereo.
+    // releases ring out. Output is 24-bit stereo unless setOutputFormat says otherwise.
     Result renderToWav(const char* path, int64_t frames, int64_t tailFrames);
-    // Same, into memory (interleaved stereo). Empty when cancelled.
+    // Same, into memory (interleaved stereo at the engine's rate). Empty when cancelled.
     std::vector<float> renderToBuffer(int64_t frames, int64_t tailFrames);
+
+    // What the last render delivered, measured on what was written (fades and resampling
+    // included): integrated loudness (LUFS; -1000: silence), true peak (linear), length.
+    struct Report {
+        double lufs = -1000.0;
+        float truePeak = 0.0f;
+        int64_t frames = 0;
+        int sampleRate = 48000;
+        float driveDb = 0.0f;  // the loudness target's drive (0 without one)
+        double musicLufs = -1000.0;  // the music before the master chain (two-pass render only)
+    };
+    const Report& report() const { return report_; }
 
     float progress() const { return progress_.load(std::memory_order_relaxed); }
     void cancel() { cancelled_.store(true, std::memory_order_relaxed); }
@@ -50,9 +75,20 @@ public:
     static constexpr int kBlock = 512;  // frames per engine call (tests drive a live engine alike)
 
 private:
+    // Frames on their way to the file (interleaved stereo); false stops with an I/O error.
+    using Sink = std::function<bool(float*, int)>;
+    class Store;
+    class FileStore;
+    class MemoryStore;
+    class Output;
     void renderSilent(int frames);
-    // Plays the song through `sink` block by block; the sink returns false to stop with an I/O error.
-    Result render(int64_t frames, int64_t tailFrames, const std::function<bool(const float*, int)>& sink);
+    // Plays the song through `sink` block by block (the master chain's latency dropped);
+    // progress goes up to `progressTo`.
+    Result renderEngine(int64_t frames, int64_t tailFrames, const Sink& sink, float progressTo);
+    // The whole render: one pass, or two (into `makeStore()`) with a loudness target.
+    Result render(int64_t frames, int64_t tailFrames, const std::function<std::unique_ptr<Store>()>& makeStore, Output& output);
+    // The master chain at a held drive over the stored music, its latency dropped, into `sink`.
+    Result masterPass(Store& store, float driveDb, const Sink& sink, float progressFrom, float progressTo, double* lufs);
 
     void postNow(const Command& command);
     void postDue(int64_t frame);
@@ -63,7 +99,9 @@ private:
     int64_t scheduleAt_ = -1;
     int64_t fadeOut_ = 0;
     bool autoTail_ = false;
-    bool floatWav_ = false;
+    int outRate_;
+    int bits_ = 24;
+    Report report_;
     std::vector<std::pair<int64_t, Command>> scheduled_;  // in posting order
     size_t nextScheduled_ = 0;
     std::atomic<float> progress_{0.0f};

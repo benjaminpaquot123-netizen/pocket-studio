@@ -69,6 +69,11 @@ private:
     float drive_ = 0.3f;
     float driveGain_ = 1.0f;  // from drive_: input gain of the saturation and its loudness makeup
     float makeup_ = 1.0f;
+    // A DC blocker (5 Hz) after the saturation: the voice's wave is lopsided (the ladder's
+    // resonance rings on one side), so the tanh squashes its taller side more and leaves an offset
+    // of a few hundredths at full drive, which a Saturation insert after it made 0.07 on the
+    // bench's acidcore. Taken out here; the harmonics stay.
+    float dcCoef_ = 0.99935f, dcIn_ = 0.0f, dcOut_ = 0.0f;
     // Automated settings waiting for their frame (negative = none).
     std::array<float, ParamCount> automated_{};
     int automatedAt_ = -1;

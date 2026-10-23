@@ -42,3 +42,7 @@ enable_testing()
 add_test(NAME engine_tests COMMAND engine_tests)
 
 set_source_files_properties(${CORE_DIR}/PlaitsSynth.cpp PROPERTIES COMPILE_OPTIONS "${PLAITS_SYSTEM_INCLUDE_FLAGS}" COMPILE_DEFINITIONS "${PLAITS_DEFINITIONS}")
+
+# HIIR (WTFPL, header-only): oversampling in the master chain and the drive effects.
+include(${CMAKE_CURRENT_SOURCE_DIR}/../third_party/hiir.cmake)
+target_include_directories(ps_core SYSTEM PUBLIC ${HIIR_INCLUDES})

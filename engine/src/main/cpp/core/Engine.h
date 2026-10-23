@@ -143,7 +143,10 @@ enum class CommandType : uint8_t {
     SetAutomationSongFlat,// a: lane, b: first point | count << 16, value 1: the curve holds over those points instead
                           // of sliding toward the next one (the point after is a jump: a take's Drop, a let-go);
                           // 0: slides again. SetAutomationMode clears them (sent first with each curve)
+    // Numbered apart (phase 33), so that commands appended above in the meantime never take its number.
+    SetKitVersion = 100,  // value: the built-in kit's levels, 1 (projects saved before) or 2 (kit v2: DrumKit::setVersion)
 };
+static_assert(static_cast<int>(CommandType::SetAutomationSongFlat) < 100, "the commands in order must stay under SetKitVersion");
 
 // The live grid's slots: one per track, each playing its own scene's part from its own start.
 enum Slot : int {

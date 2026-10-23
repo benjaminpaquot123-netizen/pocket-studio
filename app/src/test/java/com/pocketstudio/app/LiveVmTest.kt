@@ -10,6 +10,12 @@ import com.pocketstudio.model.LiveSlots
 import com.pocketstudio.model.SongPart
 import com.pocketstudio.model.LiveSlot
 import com.pocketstudio.model.liveColumns
+import com.pocketstudio.engine.CommandSink
+import com.pocketstudio.engine.ExportResult
+import com.pocketstudio.engine.NativeEngine
+import com.pocketstudio.model.LoudnessTarget
+import com.pocketstudio.model.ProjectStore
+import com.pocketstudio.model.StarterWizard
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
@@ -533,5 +539,66 @@ class LiveVmTest {
         assertEquals(SongPart.MAX_PARTS, vm.project.value.song.size)
         assertTrue(b < 140)  // it ended there, not 70 bars later
         assertTrue(vm.notice.value!!.contains("128"))
+    }
+
+    /**
+     * A sink in the engine's place that keeps the loudness targets sent (CMD_MASTER, b = 4): to the
+     * live engine (target 0) and to each private render engine. Renders give nothing back.
+     */
+    private class TargetSink : CommandSink {
+        val live = ArrayList<Float>()
+        val renders = ArrayList<Float>()
+        private var next = 1L
+
+        @Synchronized
+        override fun post(target: Long, type: Int, value: Float, a: Int, b: Int) {
+            if (type == 67 && a == 4) (if (target == 0L) live else renders) += value  // NativeEngine.CMD_MASTER, setLoudnessTarget
+        }
+
+        override fun scheduleFrom(target: Long, frame: Long) = Unit
+        override fun install(target: Long, kind: CommandSink.Install, index: Int, sample: Long) = Unit
+        @Synchronized override fun sampleCreate(data: FloatArray, channels: Int, sampleRate: Int): Long = next++
+        override fun sampleFrames(handle: Long): Long = 0L
+        override fun sampleRelease(handle: Long) = Unit
+        @Synchronized override fun exportCreate(): Long = next++
+        override fun exportRender(target: Long, path: String, frames: Long, tailFrames: Long, fadeOutFrames: Long, autoTail: Boolean, floatWav: Boolean, sampleRate: Int, bits: Int) = ExportResult.Ok
+        override fun exportRenderFloat(target: Long, frames: Long, tailFrames: Long): FloatArray = FloatArray(0)
+        override fun exportDestroy(target: Long) = Unit
+    }
+
+    /**
+     * The pads of a song the assistant made are rendered one by one on a private engine: none of
+     * those renders carries the song's loudness target (the pad is brought to it once, live, in
+     * the master chain), while the live engine does get it.
+     */
+    @Test
+    fun padRendersCarryNoLoudnessTarget() {
+        File(app.filesDir, "projects").deleteRecursively()
+        val style = StarterWizard.style("techno")!!
+        val parts = StarterWizard.defaultParts(style).associateWith { StarterWizard.soundsFor(it, style).first() }
+        val song = StarterWizard.build(style, style.lines.associate { it.role to null }, style.melody.mood, parts).copy(livePadsPending = true)
+        assertEquals(LoudnessTarget.AUTO, song.mixer.target)
+        ProjectStore(File(app.filesDir, "projects")).save("p33", song)
+        com.pocketstudio.app.projects.CurrentProject.set(app, "p33")
+        val sink = TargetSink()
+        NativeEngine.sink = sink
+        try {
+            val vm = RhythmViewModel(app)
+            assertTrue(vm.project.value.livePadsPending)
+            vm.engineStarted()  // as the audio stream's start does: the whole project goes to the live engine
+            val until = System.currentTimeMillis() + 60_000
+            while (vm.project.value.livePadsPending) {
+                assertTrue("the pads were never prepared", System.currentTimeMillis() < until)
+                org.robolectric.Shadows.shadowOf(android.os.Looper.getMainLooper()).idleFor(java.time.Duration.ofMillis(50))
+                Thread.sleep(5)
+            }
+        } finally {
+            NativeEngine.sink = null
+            com.pocketstudio.app.projects.CurrentProject.set(app, RhythmViewModel.PROJECT_ID)
+        }
+        // One render per pad, each told « no target »; the live engine was told the style's.
+        assertTrue("${sink.renders.size} renders", sink.renders.size >= 2)
+        assertTrue("render targets ${sink.renders}", sink.renders.all { it == 0f })
+        assertTrue("live targets ${sink.live}", sink.live.any { it != 0f })
     }
 }

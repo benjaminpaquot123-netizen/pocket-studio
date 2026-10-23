@@ -803,5 +803,13 @@
   "Bruitages : eau, feu et ambiances": "Foley: water, fire and ambiences",
   "Clics, bips et jeux vidéo": "Clicks, beeps and video games",
   "Percussions acoustiques": "Acoustic percussion",
-  "Bruitages : doigts, balles et bouche": "Foley: fingers, balls and mouth"
+  "Bruitages : doigts, balles et bouche": "Foley: fingers, balls and mouth",
+  "Gain auto": "Auto gain",
+  "Détection": "Detection",
+  "Moyenne (RMS)": "Average (RMS)",
+  "Crêtes": "Peaks",
+  "Filtre des graves": "Bass filter",
+  "Oui": "Yes",
+  "Ouverte": "Open",
+  "Volume constant": "Constant volume"
 }

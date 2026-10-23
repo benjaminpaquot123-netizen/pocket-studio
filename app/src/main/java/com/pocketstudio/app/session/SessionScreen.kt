@@ -119,8 +119,6 @@ class SessionScreenUi(
     val shownSongIndex: Int = songIndex,
     /** The part that comes next while the song plays (-1: none, or the song ends). */
     val upcoming: Int = -1,
-    /** ▶ plays the song (true) or the scene shown (false). */
-    val listenSong: Boolean = song.isNotEmpty(),
     /** At the song's end: start over (true) or stop (false). */
     val songLoops: Boolean = false,
     /** While the song plays, the screens follow it (true) or stay on the scene picked (false). */
@@ -184,7 +182,6 @@ class SessionActions(
     val playPart: (Int) -> Unit = {},
     val toggleSong: () -> Unit = {},
     val togglePlay: () -> Unit = {},
-    val setListenSong: (Boolean) -> Unit = {},
     val setSongLoops: (Boolean) -> Unit = {},
     val setFollowSong: (Boolean) -> Unit = {},
     /** Live master effects (PerformanceFx parameter, value). */
@@ -336,9 +333,6 @@ private fun SongCard(ui: SessionScreenUi, actions: SessionActions) {
             },
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
         )
-        if (ui.song.isNotEmpty()) {
-            ChoiceRow(tr("Écouter :"), tr("cette section"), tr("tout le morceau"), ui.listenSong, actions.setListenSong, "listen")
-        }
         // Where the song is (time, bar, a line over the parts), right above them.
         val totalBars = ui.song.sumOf { ui.barsOf(it) }
         if (totalBars > 0) SongClock(ui, totalBars)

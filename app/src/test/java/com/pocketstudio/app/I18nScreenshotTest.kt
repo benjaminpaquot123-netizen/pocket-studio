@@ -36,6 +36,7 @@ open class I18nScreenshotTest : ScreenshotTest() {
     companion object {
         val SCREENS = setOf(
             "session", "top_bar", "welcome", "rhythm", "chord_pads", "piano_roll", "live_pads", "projects", "sampled_instrument", "synth_landscape",
+            "play_strip", "tempo_sheet",
         )
     }
 }

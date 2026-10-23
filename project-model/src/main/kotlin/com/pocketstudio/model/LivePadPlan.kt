@@ -88,7 +88,10 @@ object LivePadPlan {
  * scene): the other tracks' notes and hits taken out, the audio clips of the others left out, no
  * live pad. The song's curves are held where the song first plays that scene (a riser's filter
  * open on the Drop's first beat: its impact), set as the settings themselves, since a scene
- * rendered on its own does not follow the song. Rendered offline, it is that track's loop.
+ * rendered on its own does not follow the song. Rendered offline, it is that track's loop, with
+ * no loudness target: a pad then plays through the engine's master chain, where the song's
+ * target is applied once (brought to the song's loudness alone, a hi-hat loop would be as loud as
+ * the whole mix, then mastered again live).
  */
 fun Project.stemView(key: String?, scene: Int): Project {
     val muted = if (key == null) emptySet() else partKeys.filter { it != key }.toSet()
@@ -100,5 +103,6 @@ fun Project.stemView(key: String?, scene: Int): Project {
         audioTracks = v.audioTracks.map { t -> if (key == null || SongPart.audio(t.id) == key) t else t.copy(clip = null) },
         live = LivePads(size = live.size),
         livePadsPending = false,
+        mixer = v.mixer.copy(target = LoudnessTarget.OFF),
     )
 }

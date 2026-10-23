@@ -71,6 +71,21 @@ class LivePadPlanTest {
         assertTrue(all.live.clips.all { it == null } && !all.livePadsPending)
     }
 
+    /** A pad plays through the engine's master chain, where the song's target is applied once: its render has none. */
+    @Test
+    fun aStemViewHasNoLoudnessTarget() {
+        val p = song("techno")
+        assertEquals(LoudnessTarget.AUTO, p.mixer.target)
+        val plan = LivePadPlan.of(p)
+        for (spec in plan) assertEquals("$spec", LoudnessTarget.OFF, p.stemView(spec.key, spec.scene).mixer.target)
+        // The whole scene too (else: a clip mastered at the target, then mastered again live).
+        assertEquals(LoudnessTarget.OFF, p.stemView(null, plan.first().scene).mixer.target)
+        // The rest of the master (its gain, its effects) stays the song's: only the target goes.
+        val view = p.stemView(null, plan.first().scene).mixer
+        assertEquals(p.mixer.masterDb, view.masterDb, 0f)
+        assertEquals(p.mixer.master.map { it.type }, view.master.map { it.type })
+    }
+
     @Test
     fun anOldOrEmptyProjectHasNothingToPrepareAndTheFlagIsNotSaved() {
         assertTrue(LivePadPlan.of(Project()).isEmpty())

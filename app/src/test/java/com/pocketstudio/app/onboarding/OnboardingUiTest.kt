@@ -246,7 +246,7 @@ class OnboardingUiTest {
         compose.setContent { PocketStudioTheme { NextStepCard(steps, mark = { marked += it }, share = { shared++ }, compact = false) } }
         compose.onNodeWithText("8. Partager").assertExists()
         compose.onNodeWithTag("next_step_go").performClick()
-        // The export and the share sheet tick it (rememberShareSong), not the touch: cancelling leaves it to do.
+        // The export and the share sheet tick it (ShareSongProgress), not the touch: cancelling leaves it to do.
         assertEquals(1, shared)
         assertEquals(emptyList<StepGoal>(), marked)
     }

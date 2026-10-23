@@ -50,7 +50,7 @@ val GUIDE_PAGES: List<GuidePage> get() = listOf(
             tr("↶ ↷ Annuler et rétablir : on peut toujours revenir en arrière."),
             tr("● Enregistrer : ce que tu joues (clavier, pads, clavier MIDI) s'écrit en rythme."),
             tr("▶ Jouer et arrêter, sur tous les écrans."),
-            tr("Quand il y a un morceau, « Écouter » à côté de Jouer (onglet Rythme) choisit ce que ▶ fait entendre : cette section en boucle, ou tout le morceau."),
+            tr("▶ joue tout le morceau ; « ⟳ Partie », juste dessous, boucle la partie affichée. Touche le tempo pour le changer, garde le doigt sur le nom pour le renommer."),
         ),
     ),
     GuidePage(
@@ -78,7 +78,7 @@ val GUIDE_PAGES: List<GuidePage> get() = listOf(
         tr("Et ensuite ?"),
         listOf(
             tr("Pour commencer : touche ▶, puis les pads de l'onglet Rythme."),
-            tr("Pour partager : le bouton « Partager mon morceau » (carte Prochaine étape, Mixeur ou Mes projets)."),
+            tr("Pour partager : ⤴ tout en haut à droite, sur chaque onglet."),
             tr("Ce guide se retrouve dans Outils › Aide."),
         ),
     ),

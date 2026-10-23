@@ -17,8 +17,19 @@ import com.pocketstudio.model.i18n.tr
  */
 object AacEncoder {
     const val BIT_RATE = 256_000
+    /**
+     * The true peak an M4A's source is kept under (dBTP): AAC rebuilds the wave up to about 1 dB
+     * over its source (+0.4 to +1.1 dB measured at 256 kbps on loud songs, phase 33), so −2 keeps
+     * the decoded file under −1 dBTP.
+     */
+    const val CEILING_DBTP = -2f
 
-    fun encode(wav: File, out: File, isCancelled: () -> Boolean = { false }) {
+    /** The gain that brings a source with this true peak (dBTP) under [CEILING_DBTP]; 1 when it already is. */
+    fun headroomGain(truePeakDb: Double?): Float =
+        if (truePeakDb == null || truePeakDb <= CEILING_DBTP) 1f else Math.pow(10.0, (CEILING_DBTP - truePeakDb) / 20.0).toFloat()
+
+    /** [gain]: applied to every sample on the way in (see [headroomGain]). */
+    fun encode(wav: File, out: File, gain: Float = 1f, isCancelled: () -> Boolean = { false }) {
         val pcm = WavPcm.open(wav)
         val format = MediaFormat.createAudioFormat(MediaFormat.MIMETYPE_AUDIO_AAC, pcm.sampleRate, pcm.channels).apply {
             setInteger(MediaFormat.KEY_AAC_PROFILE, MediaCodecInfo.CodecProfileLevel.AACObjectLC)
@@ -43,7 +54,7 @@ object AacEncoder {
                     if (i >= 0) {
                         val buf = codec.getInputBuffer(i)!!.order(ByteOrder.LITTLE_ENDIAN)
                         buf.clear()
-                        val frames = pcm.read16(buf, buf.capacity() / frameBytes)
+                        val frames = pcm.read16(buf, buf.capacity() / frameBytes, gain, dithered = true)
                         val timeUs = framesIn * 1_000_000L / pcm.sampleRate
                         if (frames == 0) {
                             codec.queueInputBuffer(i, 0, 0, timeUs, MediaCodec.BUFFER_FLAG_END_OF_STREAM)
@@ -121,8 +132,12 @@ class WavPcm private constructor(private val file: RandomAccessFile, val channel
         else -> src.int / 2147483648f
     }
 
-    /** Writes up to [maxFrames] frames into [out] as 16-bit little-endian; returns the frames written (0 at the end). */
-    fun read16(out: ByteBuffer, maxFrames: Int): Int {
+    /**
+     * Writes up to [maxFrames] frames into [out] as 16-bit little-endian, times [gain]; [dithered]:
+     * with a triangular dither of one step (no truncation grain in fades). Returns the frames
+     * written (0 at the end).
+     */
+    fun read16(out: ByteBuffer, maxFrames: Int, gain: Float = 1f, dithered: Boolean = false): Int {
         val frameBytes = bytesPerSample * channels
         val frames = minOf(maxFrames.toLong(), remaining / frameBytes, (chunk.size / frameBytes).toLong()).toInt()
         if (frames <= 0) return 0
@@ -131,10 +146,23 @@ class WavPcm private constructor(private val file: RandomAccessFile, val channel
         remaining -= n
         val src = ByteBuffer.wrap(chunk, 0, n).order(ByteOrder.LITTLE_ENDIAN)
         repeat(frames * channels) {
-            out.putShort((sample(src).coerceIn(-1f, 1f) * 32767f).toInt().toShort())
+            if (dithered) {
+                out.putShort(Math.round(sample(src) * gain * 32767f + dither()).coerceIn(-32768, 32767).toShort())
+            } else {
+                out.putShort(((sample(src) * gain).coerceIn(-1f, 1f) * 32767f).toInt().toShort())
+            }
         }
         return frames
     }
+
+    private var seed = 0x9E3779B9.toInt()
+    private fun uniform(): Float {
+        seed = seed xor (seed shl 13)
+        seed = seed xor (seed ushr 17)
+        seed = seed xor (seed shl 5)
+        return (seed.toLong() and 0xFFFFFFFFL).toFloat() / 4294967296f
+    }
+    private fun dither(): Float = uniform() - uniform()
 
     override fun close() = file.close()
 

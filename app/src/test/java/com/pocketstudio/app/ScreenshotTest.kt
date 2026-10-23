@@ -202,8 +202,6 @@ open class ScreenshotTest {
             canRedo = false,
             actions = RhythmActions(),
             padSound = com.pocketstudio.app.rhythm.PadSoundUi(mapOf("k.wav" to info)),
-            // A project with a song: next to Play, what it plays (here the section, in a loop).
-            listenSong = false,
         )
     }
 
@@ -326,14 +324,38 @@ open class ScreenshotTest {
             channels = channels,
             meters = { FloatArray(com.pocketstudio.engine.NativeEngine.METERS).also { m -> listOf(0.62f, 0.81f, 0f, 0.4f, 0.88f).forEachIndexed { i, v -> m[i] = v }; m[com.pocketstudio.engine.NativeEngine.METER_LIMITER] = 0.8f; m[com.pocketstudio.engine.NativeEngine.METER_MASTER_IN] = 1.1f } },
             actions = com.pocketstudio.app.mixer.MixerActions(),
-            export = com.pocketstudio.app.rhythm.ExportUi(bars = 4, files = listOf(java.io.File("Mon-premier-rythme-20261018-221500.wav")), savedInMusic = true, loudness = -13.24)
+            export = com.pocketstudio.app.rhythm.ExportUi(bars = 4, files = listOf(java.io.File("Mon-premier-rythme-20261018-221500.wav")), savedInMusic = true, loudness = -13.24,
+                truePeakDb = -1.21, seconds = 192.4)
                 .forProject(sceneBars = 4, hasSong = true),
             hasSong = true,
+            // The master's loudness while it plays, its target following the style (house: −8 LUFS).
+            loudness = { floatArrayOf(-7.9f, -8.1f, -8.4f, -1.2f, -1.3f, 3.2f) },
+            target = com.pocketstudio.model.LoudnessTarget.AUTO,
+            styleLufs = -8f,
+        )
+    }
+
+    /**
+     * Phase 33, the master section scrolled into view on a phone: loudness and true peak at a
+     * glance, the meter, the readings, « Volume visé » (the style's, a club's, streaming's or none)
+     * and the gain added to get there.
+     */
+    @Test
+    fun mixerMaster() = shoot("mixer_master", prepare = { compose.onNodeWithTag("master_effects").performScrollTo(); compose.waitForIdle() }) {
+        com.pocketstudio.app.mixer.MixerScreen(
+            channels = com.pocketstudio.model.Project().mixer.channels,
+            meters = { FloatArray(com.pocketstudio.engine.NativeEngine.METERS).also { m -> listOf(0.62f, 0.81f, 0f, 0.4f, 0.88f).forEachIndexed { i, v -> m[i] = v }; m[com.pocketstudio.engine.NativeEngine.METER_LIMITER] = 0.8f; m[com.pocketstudio.engine.NativeEngine.METER_MASTER_IN] = 1.1f } },
+            actions = com.pocketstudio.app.mixer.MixerActions(),
+            export = com.pocketstudio.app.rhythm.ExportUi(bars = 4).forProject(sceneBars = 4, hasSong = true),
+            hasSong = true,
+            loudness = { floatArrayOf(-7.9f, -8.1f, -8.4f, -1.2f, -1.3f, 3.2f) },
+            target = com.pocketstudio.model.LoudnessTarget.AUTO,
+            styleLufs = -8f,
         )
     }
 
     @Test
-    @Config(qualifiers = "w400dp-h1250dp-xxhdpi")
+    @Config(qualifiers = "w400dp-h1650dp-xxhdpi")
     fun mixerExporting() = shoot("mixer_export") {
         androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
             com.pocketstudio.app.mixer.ExportCard(
@@ -344,6 +366,7 @@ open class ScreenshotTest {
                 com.pocketstudio.app.rhythm.ExportUi(
                     bars = 4, what = com.pocketstudio.app.rhythm.ExportWhat.Song, format = com.pocketstudio.app.rhythm.ExportFormat.Flac,
                     files = listOf(java.io.File("Da-Funk-morceau-20261020-101500.flac")), savedInMusic = true, loudness = -8.43,
+                    truePeakDb = -1.18, seconds = 214.0,
                 ).forProject(sceneBars = 4, hasSong = true),
                 com.pocketstudio.app.mixer.MixerActions(),
             )
@@ -364,11 +387,97 @@ open class ScreenshotTest {
             listOf(300, 360, 400).forEach { w ->
                 Box(Modifier.width(w.dp)) {
                     com.pocketstudio.app.ui.TopBar(
-                        com.pocketstudio.app.ui.TopBarUi("Da Funk (remix)", 111.0, playing = false, canUndo = true, canRedo = true, scene = scenes, saved = true),
+                        com.pocketstudio.app.ui.TopBarUi("Da Funk (remix)", playing = false, canUndo = true, canRedo = true, scene = scenes, saved = true),
                         com.pocketstudio.app.ui.TopBarActions(),
                     )
                 }
             }
+        }
+    }
+
+    /**
+     * Under the top bar on every tab (phase 33): the tempo, where the song is (or where ▶ starts),
+     * « ⟳ Partie » under ▶; the solo banner; renaming the project in place.
+     */
+    @Test
+    fun playStrip() = shoot("play_strip") {
+        val labels = listOf("Intro", "Couplet", "Refrain", "Fin")
+        val project = com.pocketstudio.model.Project(
+            scenes = labels.mapIndexed { i, l -> com.pocketstudio.model.Scene(com.pocketstudio.model.Scene.NAMES[i], com.pocketstudio.model.DrumPattern().toggle(0, 0), label = l) },
+            scene = 2,
+        )
+        androidx.compose.foundation.layout.Column(verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(12.dp)) {
+            // A small phone and a usual one, stopped: where ▶ starts the song.
+            listOf(360, 400).forEach { w ->
+                Box(Modifier.width(w.dp)) {
+                    androidx.compose.foundation.layout.Column {
+                        com.pocketstudio.app.ui.TopBar(
+                            com.pocketstudio.app.ui.TopBarUi("Da Funk (remix)", playing = false, canUndo = true, canRedo = true, scene = com.pocketstudio.app.ui.sceneChip(project), saved = true),
+                            com.pocketstudio.app.ui.TopBarActions(),
+                        )
+                        StripShot(124.0, song = true, loop = false, playing = false, com.pocketstudio.app.ui.PlayPosition("Couplet", 9, 60))
+                    }
+                }
+            }
+            // Playing the song; looping the part; no song yet; at 360 dp a long part name.
+            StripShot(124.0, song = true, loop = false, playing = true, com.pocketstudio.app.ui.PlayPosition("Refrain", 14, 60))
+            StripShot(124.0, song = true, loop = true, playing = true, com.pocketstudio.app.ui.PlayPosition("Refrain", 2, 4, loop = true))
+            StripShot(120.0, song = false, loop = false, playing = false, null)
+            Box(Modifier.width(360.dp)) {
+                StripShot(174.0, song = true, loop = true, playing = false, com.pocketstudio.app.ui.PlayPosition(com.pocketstudio.model.Scene.shownLabel("Pré-refrain 2"), 1, 8, loop = true))
+            }
+            // Lying down, the solo banner folds into a chip of the strip.
+            StripShot(124.0, song = true, loop = false, playing = true, com.pocketstudio.app.ui.PlayPosition("Refrain", 14, 60), soloed = listOf("Batterie"))
+            com.pocketstudio.app.ui.SoloBanner(listOf("Batterie", "Basse acide"), {})
+            com.pocketstudio.app.ui.SoloBanner(listOf("Batterie", "Basse acide", "Lead", "Voix"), {})
+            com.pocketstudio.app.ui.RenameProjectBar("Da Funk (remix)", {}, {})
+        }
+    }
+
+    @Composable
+    private fun StripShot(bpm: Double, song: Boolean, loop: Boolean, playing: Boolean, pos: com.pocketstudio.app.ui.PlayPosition?, soloed: List<String> = emptyList()) =
+        com.pocketstudio.app.ui.PlayStrip(
+            com.pocketstudio.app.ui.PlayStripUi(
+                bpm, hasSong = song, loopPart = loop, playing = playing, position = { pos }, parts = if (song) listOf("Intro", "Couplet") else emptyList(), soloed = soloed,
+            ),
+            com.pocketstudio.app.ui.PlayStripActions(),
+        )
+
+    /**
+     * A phone lying down, with everything over the content: the top bar, the play strip with its
+     * « Solo » chip (no banner, no « Prochaine étape » strip there), then Rythme.
+     */
+    @Test
+    @Config(qualifiers = "w860dp-h380dp-land-xxhdpi")
+    fun rhythmLandscapeWithStrips() = shoot("rhythm_landscape") {
+        var drums = DrumPattern()
+        DrumKitInfo.starterHits.forEach { (lane, steps) -> steps.forEach { drums = drums.toggle(lane, it) } }
+        val labels = listOf("Intro", "Couplet", "Refrain", "Fin")
+        val project = Project(
+            tempoBpm = 124.0, drums = drums, scene = 2,
+            scenes = labels.mapIndexed { i, l -> com.pocketstudio.model.Scene(com.pocketstudio.model.Scene.NAMES[i], drums, label = l) },
+        )
+        androidx.compose.foundation.layout.Column {
+            com.pocketstudio.app.ui.TopBar(
+                com.pocketstudio.app.ui.TopBarUi("Da Funk (remix)", playing = true, canUndo = true, canRedo = true, scene = com.pocketstudio.app.ui.sceneChip(project), saved = true),
+                com.pocketstudio.app.ui.TopBarActions(),
+            )
+            StripShot(124.0, song = true, loop = false, playing = true, com.pocketstudio.app.ui.PlayPosition("Refrain", 14, 60), soloed = listOf("Batterie"))
+            RhythmScreen(
+                project = project,
+                transport = TransportUi(playing = true, selectedPad = 0),
+                live = LiveUi(currentStep = 5, litPads = setOf(5)),
+                canUndo = true, canRedo = true,
+                actions = RhythmActions(),
+            )
+        }
+    }
+
+    /** The tempo sheet's content: what is typed, the ready-made tempos, ½ ×2, the keypad, tap tempo. */
+    @Test
+    fun tempoSheet() = shoot("tempo_sheet") {
+        Box(Modifier.background(Neon.Surface).padding(top = 12.dp)) {
+            com.pocketstudio.app.ui.TempoPad(124.0, com.pocketstudio.app.ui.TempoActions(), {})
         }
     }
 
@@ -995,6 +1104,28 @@ open class ScreenshotTest {
         }
     }
 
+    /**
+     * Phase 33: the compressor open, its new settings (gain, « Gain auto », detector, bass filter,
+     * mix) and its reduction meter (here 6.5 dB, as the engine's atomics report it).
+     */
+    @Test
+    @Config(qualifiers = "w400dp-h1300dp-xxhdpi")
+    fun compressorEditor() = shoot("compressor_editor", prepare = { tap("fx_chip_0_0") }) {
+        // The assistant's drum bus glue (WizardMix.BUS_GLUE).
+        val inserts = com.pocketstudio.model.Mixer.sanitizeInserts(listOf(
+            com.pocketstudio.model.Insert(com.pocketstudio.model.EffectType.COMPRESSOR.ordinal, listOf(0.6f, 0.25f, 0.45f, 0.3f, 0f, 0f, 0f, 0.5f, 1f)),
+            com.pocketstudio.model.Insert(com.pocketstudio.model.EffectType.SATURATION.ordinal, listOf(0.15f, 1f, 1f, 0.7f, 1f)),
+        ))
+        val reductions = FloatArray(com.pocketstudio.engine.NativeEngine.INSERT_METERS).also { it[0] = -6.5f }
+        val actions = com.pocketstudio.app.mixer.MixerActions(reductions = kotlinx.coroutines.flow.MutableStateFlow(reductions))
+        androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(androidx.compose.ui.unit.Dp(12f))) {
+            com.pocketstudio.ui.NeonCard {
+                com.pocketstudio.ui.SectionLabel("Batterie · effets")
+                com.pocketstudio.app.mixer.InsertChain(0, inserts, actions)
+            }
+        }
+    }
+
     private fun tap(tag: String) {
         compose.onNode(androidx.compose.ui.test.hasTestTag(tag)).performClick()
         compose.waitForIdle()
@@ -1234,7 +1365,7 @@ open class ScreenshotTest {
         }
         androidx.compose.foundation.layout.Column {
             com.pocketstudio.app.ui.TopBar(
-                com.pocketstudio.app.ui.TopBarUi("Da Funk (remix)", 111.0, playing = true, canUndo = true, canRedo = false),
+                com.pocketstudio.app.ui.TopBarUi("Da Funk (remix)", playing = true, canUndo = true, canRedo = false),
                 com.pocketstudio.app.ui.TopBarActions(),
             )
             com.pocketstudio.app.projects.ProjectsScreen(
@@ -1329,23 +1460,72 @@ open class ScreenshotTest {
         )
     }
 
-    /** Right after the assistant on a small phone (360 x 800 dp): the next step on one line, the first cells on screen. */
+    /**
+     * Right after the assistant on a small phone (360 x 800 dp): the top bar with ⤴, the next step
+     * on one thin line under it (as on every creation tab), the first cells on screen.
+     */
     @Test
     @Config(qualifiers = "w360dp-h616dp-xxhdpi")
     fun rhythmAfterWizard() = shoot("rhythm_after_wizard") {
         val project = com.pocketstudio.app.rhythm.RhythmViewModel.starterProject()
         val steps = com.pocketstudio.app.onboarding.nextSteps(project)
             .map { it.copy(done = it.goal < com.pocketstudio.app.onboarding.StepGoal.Volumes) }
-        RhythmScreen(
-            project = project,
-            transport = TransportUi(selectedPad = 0),
-            live = LiveUi(),
-            canUndo = false,
-            canRedo = false,
-            actions = RhythmActions(),
-            listenSong = false,
-            header = { com.pocketstudio.app.onboarding.NextStepCard(steps) },
+        androidx.compose.foundation.layout.Column {
+            com.pocketstudio.app.ui.TopBar(
+                com.pocketstudio.app.ui.TopBarUi("House du soir", playing = false, canUndo = true, canRedo = false, scene = com.pocketstudio.app.ui.sceneChip(project), saved = true),
+                com.pocketstudio.app.ui.TopBarActions(),
+            )
+            com.pocketstudio.app.onboarding.NextStepStrip(steps, com.pocketstudio.app.ui.AppTab.Rythme)
+            Box(Modifier.weight(1f)) {
+                RhythmScreen(
+                    project = project,
+                    transport = TransportUi(selectedPad = 0),
+                    live = LiveUi(),
+                    canUndo = false,
+                    canRedo = false,
+                    actions = RhythmActions(),
+                )
+            }
+        }
+    }
+
+    /** ⤴ « Prêt à partager ? »: a solo left on, a muted track that plays, the limiter working hard, each with its fix. */
+    @Test
+    fun shareSheet() = shoot("share_sheet") {
+        com.pocketstudio.app.export.ShareSheetContent(
+            com.pocketstudio.app.export.ShareSheetUi(
+                "Nuit sur la ville", seconds = 178, parts = 6,
+                checks = listOf(
+                    com.pocketstudio.app.export.ShareCheck.Solo(listOf("Basse acide")),
+                    com.pocketstudio.app.export.ShareCheck.Muted(listOf("Voix 1")),
+                    com.pocketstudio.app.export.ShareCheck.Saturation,
+                ),
+                playing = true,
+            ),
+            com.pocketstudio.app.export.ShareSheetActions(),
+            Modifier.background(Neon.Surface).padding(top = 16.dp),
         )
+    }
+
+    /** Nothing to fix: « Tout est prêt », WAV chosen (kept for next time), one big « Partager ». */
+    @Test
+    fun shareSheetAllClear() = shoot("share_sheet_ok") {
+        com.pocketstudio.app.export.ShareSheetContent(
+            com.pocketstudio.app.export.ShareSheetUi("Nuit sur la ville", seconds = 178, parts = 6, checks = emptyList(), format = com.pocketstudio.app.rhythm.ExportFormat.Wav),
+            com.pocketstudio.app.export.ShareSheetActions(),
+            Modifier.background(Neon.Surface).padding(top = 16.dp),
+        )
+    }
+
+    /** « Ton morceau est prêt », once after the assistant: four big choices over the Morceau tab. */
+    @Test
+    fun songReady() = shoot("song_ready") {
+        Box(Modifier.fillMaxSize().background(androidx.compose.ui.graphics.Color.Black.copy(alpha = 0.55f)).padding(12.dp), contentAlignment = androidx.compose.ui.Alignment.Center) {
+            com.pocketstudio.app.onboarding.SongReadyCard(
+                com.pocketstudio.app.onboarding.SongReadyUi("House du soir", seconds = 160, parts = 6),
+                com.pocketstudio.app.onboarding.SongReadyActions(guide = {}),
+            )
+        }
     }
 
     @Test

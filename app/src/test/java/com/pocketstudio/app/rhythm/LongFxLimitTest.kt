@@ -161,7 +161,7 @@ class LongFxLimitTest {
         RhythmViewModel.insertCommands(inserts, { slot, type -> types += slot to type }) { slot, _, _ -> params += slot }
         // Every slot gets its type (a switched-off effect: an empty slot)...
         assertEquals((0 until Mixer.INSERTS).map { it to (if (it == 0) EffectType.ECHO.ordinal else if (it == 3) EffectType.EQ.ordinal else 0) }, types)
-        // ... and only the effects heard their settings (4 each), not the 6 empty or switched-off slots.
-        assertEquals(List(EffectType.PARAMS) { 0 } + List(EffectType.PARAMS) { 3 }, params)
+        // ... and only the effects heard their settings (each its own: 4 here), not the 6 empty or switched-off slots.
+        assertEquals(List(EffectType.ECHO.defaults.size) { 0 } + List(EffectType.EQ.defaults.size) { 3 }, params)
     }
 }

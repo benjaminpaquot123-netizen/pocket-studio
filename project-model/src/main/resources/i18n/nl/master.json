@@ -1,0 +1,19 @@
+{
+  "Désactivée": "Uit",
+  "Auto (style)": "Auto (stijl)",
+  "Club": "Club",
+  "Streaming": "Streaming",
+  "%s LUFS · TP %s": "%s LUFS · TP %s",
+  "Maintenant %s · sur 3 s %s · depuis ▶ %s LUFS": "Nu %s · over 3 s %s · sinds ▶ %s LUFS",
+  "Volume visé": "Doelvolume",
+  "Le volume des morceaux de ce style (%s LUFS). La sortie monte ou baisse doucement pour y arriver ; l'export y est exactement.": "Het volume van nummers in deze stijl (%s LUFS). De uitgang gaat langzaam omhoog of omlaag om daar te komen; de export zit er precies op.",
+  "Fort, comme en club (%s LUFS). La sortie monte doucement pour y arriver ; l'export y est exactement.": "Luid, zoals in een club (%s LUFS). De uitgang gaat langzaam omhoog om daar te komen; de export zit er precies op.",
+  "%s LUFS : le volume où Spotify et YouTube ramènent tous les morceaux.": "%s LUFS: het volume waarop Spotify en YouTube alle nummers zetten.",
+  "Le volume reste celui que tu règles ; la sortie est seulement protégée (crête à −1 dBTP).": "Het volume blijft zoals je het instelt; de uitgang wordt alleen beschermd (pieken op −1 dBTP).",
+  "Gain ajouté pour la cible : %s dB": "Versterking toegevoegd voor het doel: %s dB",
+  "%d min %d s": "%d min %d s",
+  "%d s": "%d s",
+  "Crête vraie %s dBTP · durée %s": "Echte piek %s dBTP · duur %s",
+  "44,1 kHz": "44,1 kHz",
+  "16 bits": "16 bits"
+}

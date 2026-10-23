@@ -309,9 +309,11 @@ class SongFollowTest {
     }
 
     @Test
-    fun theListeningChoiceIsSavedAndOldProjectsHaveNone() {
-        assertNull(ProjectJson.decode(ProjectJson.encode(Project())).listenSong)
-        assertEquals(false, ProjectJson.decode(ProjectJson.encode(Project(listenSong = false))).listenSong)
-        assertNull(ProjectJson.decode("""{"name":"Vieux"}""").listenSong)
+    fun theLoopPartChoiceIsSavedAndOldProjectsPlayTheSong() {
+        assertFalse(ProjectJson.decode(ProjectJson.encode(Project())).loopPart)
+        assertTrue(ProjectJson.decode(ProjectJson.encode(Project(loopPart = true))).loopPart)
+        assertFalse(ProjectJson.decode("""{"name":"Vieux"}""").loopPart)
+        // The old « Écouter : cette section » choice is dropped: ▶ plays the song again.
+        assertFalse(ProjectJson.decode("""{"name":"Vieux","listenSong":false}""").loopPart)
     }
 }

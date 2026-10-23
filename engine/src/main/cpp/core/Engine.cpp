@@ -121,6 +121,9 @@ void Engine::applyCommand(const Command& command) {
         case CommandType::SetTempo:
             sequencer_.setTempo(command.value);
             break;
+        case CommandType::SetKitVersion:
+            if (std::isfinite(command.value)) drums_.setVersion(static_cast<int>(std::lround(command.value)));
+            break;
         case CommandType::SetSwing:
             sequencer_.setSwing(command.value);
             break;
@@ -355,6 +358,9 @@ void Engine::applyCommand(const Command& command) {
             else if (command.a == 1) mixer_.setLimiter(command.value > 0.5f);
             else if (command.a == 2) mixer_.setMasterFx(command.value > 0.5f);
             else if (command.a == 3 && std::isfinite(command.value)) mixer_.setLiveNoises(static_cast<int>(std::lround(std::clamp(command.value, 0.0f, 2.0f))));
+            else if (command.a == 4) mixer_.setLoudnessTarget(command.value);  // LUFS; 0 or NaN: no target
+            else if (command.a == 5) mixer_.setCeiling(command.value);         // dBTP
+            else if (command.a == 6) mixer_.resetLoudnessEstimate();           // another project
             break;
         case CommandType::SetSend:
             mixer_.setSend(command.a, command.b, command.value);

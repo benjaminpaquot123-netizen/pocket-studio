@@ -15,13 +15,15 @@ WavWriter::~WavWriter() {
     if (file_) std::fclose(file_);
 }
 
-bool WavWriter::open(const char* path, int sampleRate, int channels, bool floatSamples) {
+bool WavWriter::openBits(const char* path, int sampleRate, int channels, int bits) {
     if (file_) return false;
+    if (bits != 16 && bits != 24 && bits != 32) return false;
     file_ = std::fopen(path, "wb");
     if (!file_) return false;
     sampleRate_ = sampleRate;
     channels_ = channels;
-    float_ = floatSamples;
+    bits_ = bits;
+    float_ = bits == 32;
     frames_ = 0;
     ok_ = writeHeader(0);
     return ok_;
@@ -79,7 +81,9 @@ float WavWriter::dither() {
 
 bool WavWriter::write(const float* interleaved, int numFrames) {
     if (!file_ || !ok_) return false;
-    constexpr float kScale = 8388607.0f;
+    // Full scale of the integer formats; the dither is one least significant bit at either size.
+    const float scale = bits_ == 16 ? 32767.0f : 8388607.0f;
+    const float lowest = bits_ == 16 ? -32768.0f : -8388608.0f;
     const int bytes = bytesPerSample();
     const int total = numFrames * channels_;
     const int perChunk = static_cast<int>(sizeof buffer_) / bytes;
@@ -95,11 +99,11 @@ bool WavWriter::write(const float* interleaved, int numFrames) {
                 put32(p, bits);
                 continue;
             }
-            const float s = std::clamp(v * kScale + dither(), -8388608.0f, 8388607.0f);
+            const float s = std::clamp(v * scale + dither(), lowest, scale);
             const int32_t q = static_cast<int32_t>(std::lrint(s));
             p[0] = q & 0xFF;
             p[1] = (q >> 8) & 0xFF;
-            p[2] = (q >> 16) & 0xFF;
+            if (bytes == 3) p[2] = (q >> 16) & 0xFF;
         }
         if (std::fwrite(buffer_, bytes, n, file_) != static_cast<size_t>(n)) {
             ok_ = false;

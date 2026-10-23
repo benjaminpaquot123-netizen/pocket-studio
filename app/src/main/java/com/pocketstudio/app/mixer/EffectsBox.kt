@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -188,10 +190,11 @@ private fun InsertRow(
         FilterChip(
             selected = selected, onClick = toggle,
             label = {
-                Text(
+                // A long name (« Compresseur ») shrinks a little rather than ending in « Compres… ».
+                com.pocketstudio.ui.WholeWordsText(
                     "${pos + 1}. ${tr(type.label)}" + if (ins.bypass) " · " + tr("coupé") else "",
-                    maxLines = 2, overflow = TextOverflow.Ellipsis,
-                    textDecoration = if (ins.bypass) TextDecoration.LineThrough else null,
+                    maxLines = 2, minScale = 0.8f,
+                    style = androidx.compose.ui.text.TextStyle(textDecoration = if (ins.bypass) TextDecoration.LineThrough else null),
                     color = if (ins.bypass) Neon.TextSecondary else Color.Unspecified,
                 )
             },
@@ -323,6 +326,7 @@ private fun InsertEditor(ch: Int, slot: Int, ins: Insert, actions: MixerActions)
             Text(tr(ins.effect.blurb), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         }
         if (ins.effect == EffectType.EQ || ins.effect == EffectType.PARAM_EQ) EqCurve(ins)
+        if (ins.effect == EffectType.COMPRESSOR && !ins.bypass) ReductionMeter(ch, slot, actions)
         ins.effect.params.forEachIndexed { k, param ->
             LabeledSlider(tr(param.label), tr(param.format(ins.params[k])), ins.params[k], "fxp_${ch}_${slot}_$k") {
                 actions.setInsertParam(ch, slot, k, it)
@@ -374,6 +378,39 @@ private fun EffectPicker(ch: Int, inserts: List<Insert>, actions: MixerActions, 
         notice?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = Neon.Amber) }
     }
 }
+
+/**
+ * How much the compressor in [slot] of strip [ch] turns the sound down right now (its gain
+ * reduction, from the engine's meters), as a bar growing to the left from 0 dB and its value.
+ */
+@Composable
+private fun ReductionMeter(ch: Int, slot: Int, actions: MixerActions) {
+    val reductions = actions.reductions.collectAsState()
+    val index = ch * com.pocketstudio.model.Mixer.INSERTS + slot
+    // Read only when drawn: the bar and its number redraw, not the whole box (20 times a second).
+    val db = { reductions.value.getOrElse(index) { 0f }.coerceIn(-REDUCTION_RANGE_DB, 0f) }
+    val bar = Neon.Amber
+    val track = Neon.SurfaceHigh
+    Row(Modifier.fillMaxWidth().padding(vertical = 6.dp).testTag("fx_gr_${ch}_$slot"), verticalAlignment = Alignment.CenterVertically) {
+        Text(tr("Réduction"), style = MaterialTheme.typography.bodyMedium)
+        androidx.compose.foundation.Canvas(Modifier.weight(1f).padding(horizontal = 10.dp).height(8.dp)) {
+            drawRect(track)
+            val w = size.width * -db() / REDUCTION_RANGE_DB
+            drawRect(bar, topLeft = androidx.compose.ui.geometry.Offset(size.width - w, 0f), size = androidx.compose.ui.geometry.Size(w, size.height))
+        }
+        ReductionValue(db)
+    }
+}
+
+@Composable
+private fun ReductionValue(db: () -> Float) {
+    val v = db()
+    Text(if (v > -0.05f) "0 dB" else String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "−%.1f dB", -v),
+        style = com.pocketstudio.ui.MonoStyle, color = Neon.Cyan)
+}
+
+/** The reduction meter's span: a bar full at -24 dB. */
+private const val REDUCTION_RANGE_DB = 24f
 
 /** A meter's peak (linear) as a light's brightness: -48 dB dark, 0 dB full. */
 internal fun meterLevel(peak: Float): Float =

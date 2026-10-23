@@ -34,7 +34,6 @@ import com.pocketstudio.app.rhythm.ExportUi
 import com.pocketstudio.app.rhythm.ExportWhat
 import com.pocketstudio.app.rhythm.ExportFormat
 import com.pocketstudio.app.rhythm.ExportFade
-import com.pocketstudio.app.export.Loudness
 import com.pocketstudio.model.Buses
 import com.pocketstudio.model.Channel
 import com.pocketstudio.model.EffectType
@@ -45,7 +44,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.AutoAwesome
-import androidx.compose.material.icons.filled.Share
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.relocation.bringIntoViewRequester
@@ -103,8 +101,11 @@ data class MixerActions(
     val setStemsWithMaster: (Boolean) -> Unit = {},
     /** The master's gain before the limiter, in dB. */
     val setMasterDb: (Float) -> Unit = {},
-    /** « Partager mon morceau »: the whole song in M4A, then the share sheet. */
-    val shareSong: () -> Unit = {},
+    /** The master's « Cible » (loudness target). */
+    val setLoudnessTarget: (com.pocketstudio.model.LoudnessTarget) -> Unit = {},
+    /** Exports at 44.1 kHz (true) or 48 kHz; in 16 bits (true) or 24. */
+    val setExportCdRate: (Boolean) -> Unit = {},
+    val setExportBits16: (Boolean) -> Unit = {},
     val setInsertType: (ch: Int, slot: Int, type: EffectType) -> Unit = { _, _, _ -> },
     val setInsertParam: (ch: Int, slot: Int, param: Int, value: Float) -> Unit = { _, _, _, _ -> },
     val setSend: (ch: Int, bus: Int, level: Float) -> Unit = { _, _, _ -> },
@@ -128,6 +129,8 @@ data class MixerActions(
     val meters: kotlinx.coroutines.flow.StateFlow<FloatArray> = kotlinx.coroutines.flow.MutableStateFlow(FloatArray(0)),
     /** Keeps [meters] fresh while an effects box is shown (null: someone else does, or no engine). */
     val watchMeters: (suspend () -> Unit)? = null,
+    /** Each insert's compressor gain reduction in dB (channel * 8 + slot, ≤ 0), kept fresh with [meters]. */
+    val reductions: kotlinx.coroutines.flow.StateFlow<FloatArray> = kotlinx.coroutines.flow.MutableStateFlow(FloatArray(0)),
 )
 
 val EXPORT_BARS = listOf(1, 2, 4, 8, 16)
@@ -165,6 +168,11 @@ fun MixerScreen(
     /** Where « Ce qui joue » sent the user (shown, then [onFocused]). */
     focus: Where? = null,
     onFocused: () -> Unit = {},
+    /** The master's loudness and true peak (NativeEngine.LOUDNESS_*): read only when shown. */
+    loudness: () -> FloatArray = { FloatArray(0) },
+    /** The master's « Cible », and the loudness « Auto » aims at for this project's style. */
+    target: com.pocketstudio.model.LoudnessTarget = com.pocketstudio.model.LoudnessTarget.OFF,
+    styleLufs: Float = com.pocketstudio.model.LoudnessTargets.DEFAULT_LUFS,
 ) {
     val exportCard = androidx.compose.runtime.remember { androidx.compose.foundation.relocation.BringIntoViewRequester() }
     val automationCard = androidx.compose.runtime.remember { androidx.compose.foundation.relocation.BringIntoViewRequester() }
@@ -175,6 +183,7 @@ fun MixerScreen(
         when (focus) {
             Where.Master -> masterCard.bringIntoView()
             Where.Buses -> busesCard.bringIntoView()
+            Where.Export -> exportCard.bringIntoView()
             // The lane itself is brought into view by the automation card.
             is Where.Lane -> automationCard.bringIntoView()
             else -> return@LaunchedEffect
@@ -187,8 +196,6 @@ fun MixerScreen(
     }
     // On a tablet the channel strips stay on the left; the master, buses, automation and export on the right.
     com.pocketstudio.ui.AdaptivePanes(modifier.testTag("mixer"), first = {
-        // Sharing first: one touch, nothing to scroll for; the export card's choices are a touch away.
-        ShareSongCard(export, hasSong, actions.shareSong) { scope.launch { exportCard.bringIntoView() } }
         // Automation and everything that acts on the sound, near the top: no scrolling to find them.
         AutomationEntry(automation.lanes.size, show = { scope.launch { automationCard.bringIntoView() } }, overview = { overview(null) })
         // Many tracks: each strip shows its volume on one line; ▾ opens pan and effects.
@@ -204,11 +211,15 @@ fun MixerScreen(
         )
         NeonCard(Modifier.bringIntoViewRequester(masterCard), accent = if (focus == Where.Master) Neon.Amber else Neon.Cyan) {
             SectionLabel(tr("Sortie générale"), help = Glossary.MASTER)
+            // How loud it is, as streaming services measure it, and its true peak: one glance.
+            LoudnessChip(loudness)
             // What goes into the limiter (red above −1 dBFS, where it starts to work), not what is left after it.
             MasterMeter { meters().getOrElse(MASTER_IN_METER) { 0f } }
             MasterGain(masterDb, actions.setMasterDb)
             LimiterLine { meters().getOrElse(LIMITER_METER) { 1f } }
-            LimiterHint({ meters().getOrElse(LIMITER_METER) { 1f } }, masterDb, actions.setMasterDb)
+            // With a target the limiter works on purpose: lowering the master would only raise its gain.
+            if (target == com.pocketstudio.model.LoudnessTarget.OFF) LimiterHint({ meters().getOrElse(LIMITER_METER) { 1f } }, masterDb, actions.setMasterDb)
+            MasterLoudnessPanel(loudness, target, styleLufs, actions.setLoudnessTarget)
             var open by rememberSaveable { mutableStateOf(false) }
             EffectsToggle(effectsSummary(master), open, Modifier.testTag("master_effects")) { open = !open }
             if (open) InsertChain(MASTER_CHANNEL, master, actions)
@@ -415,35 +426,6 @@ private fun MasterGain(db: Float, setDb: (Float) -> Unit) {
 fun masterDbLabel(db: Float): String =
     (if (db > 0f) "+" else "") + String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f dB", db).replace('-', '−')
 
-/** « Partager mon morceau » at the top of the mixer, and a way down to every export choice. */
-@Composable
-internal fun ShareSongCard(export: ExportUi, hasSong: Boolean, share: () -> Unit, toExport: () -> Unit) {
-    // One compact row: the share button and, beside it, the way down to every export choice.
-    androidx.compose.foundation.layout.Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        Button(
-            onClick = share,
-            enabled = !export.running,
-            modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("share_song"),
-            contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 12.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Neon.Acid, contentColor = Color.Black),
-        ) {
-            Icon(Icons.Filled.Share, contentDescription = null, modifier = Modifier.size(18.dp))
-            com.pocketstudio.ui.WholeWordsText("  " + tr("Partager mon morceau"), style = MaterialTheme.typography.labelLarge, maxLines = 2, minScale = 0.85f)
-        }
-        TextButton(onClick = toExport, modifier = Modifier.testTag("to_export")) {
-            Text(tr("Autres exports"), color = Neon.Cyan, maxLines = 1)
-            Icon(Icons.Filled.ExpandMore, contentDescription = tr("Autres choix d'export (WAV, pistes séparées…)"), tint = Neon.Cyan)
-        }
-    }
-    Text(
-        if (hasSong) tr("Tout le morceau, avec un fondu à la fin, en M4A léger : prêt à envoyer.")
-        else tr("Pas encore de morceau : la scène en boucle (%d mesures), en M4A léger.", com.pocketstudio.app.export.ShareSong.loopBars(export.sceneBars, export.audioBars)),
-        style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, maxLines = 2,
-    )
-    }
-}
-
 @Composable
 private fun Strip(info: StripInfo, c: Channel, meter: () -> Float, actions: MixerActions, compact: Boolean = false, moves: Int = 0, openMoves: () -> Unit = {}) {
     SideEffect { stripCompositions++ }
@@ -632,6 +614,17 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
                     enabled = !export.running, label = { Text(tr("FLAC (sans perte, léger)")) }, colors = chipColors,
                     modifier = Modifier.testTag("export_format_Flac"),
                 )
+                // For a CD or a distributor that asks for it: 44.1 kHz, 16 bits (dithered).
+                FilterChip(
+                    selected = export.cdRate, onClick = { actions.setExportCdRate(!export.cdRate) }, enabled = !export.running,
+                    label = { Text(tr("44,1 kHz")) }, colors = chipColors, modifier = Modifier.testTag("export_cd_rate"),
+                )
+                if (export.format != ExportFormat.M4a && !(export.limiterOff && export.format == ExportFormat.Wav)) {
+                    FilterChip(
+                        selected = export.bits16, onClick = { actions.setExportBits16(!export.bits16) }, enabled = !export.running,
+                        label = { Text(tr("16 bits")) }, colors = chipColors, modifier = Modifier.testTag("export_bits16"),
+                    )
+                }
                 // For a mixing or mastering engineer: no limiter on the mix, stems that add back up to it.
                 if (export.what == ExportWhat.Stems) {
                     FilterChip(
@@ -713,15 +706,7 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
                 style = MaterialTheme.typography.bodySmall,
                 color = Neon.TextSecondary,
             )
-            export.loudness?.let { lufs ->
-                WithHelp(Glossary.LUFS) {
-                    Text(
-                        tr("Volume perçu : %s LUFS, %s", String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f", lufs).replace('-', '−'), Loudness.describe(lufs)),
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.weight(1f, fill = false).testTag("export_loudness"),
-                    )
-                }
-            }
+            ExportReportLine(export)
             OutlinedButton(onClick = actions.share, modifier = Modifier.fillMaxWidth().testTag("share")) {
                 Text(if (export.files.size > 1) tr("Partager les %d fichiers", export.files.size) else tr("Partager"))
 

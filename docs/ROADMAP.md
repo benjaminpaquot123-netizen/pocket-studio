@@ -179,3 +179,14 @@ Trois audits neufs (débutant, musicien moyen, producteur confirmé) ont lu le c
 
 ### Phase 24 : écrire plus vite et plus fin
 - Piano roll pour téléphone (zoom à deux doigts, lignes plus hautes, clavier à gauche, presse-papier entre scènes, coller à l'endroit touché, notes fantômes de n'importe quelle piste, durée de la sélection) ; batterie : vélocité, copier/vider une mesure, boucles de 8 à 16 mesures, fills et transitions par partie, triolets, swing par piste ; bus de groupe, EQ 4 bandes, sidechain au choix ; automation plus fine ; glide et LFO calé au tempo.
+
+## Phases 33 à 39 : plan d'amélioration (audit du 2026-10-23)
+
+Détail, objectifs chiffrés et critères : `docs/PLAN-AMELIORATION.md` (sources : `docs/AUDIT-33.md`, `docs/plan/clics.md`, `docs/plan/ailleurs.md`, `docs/plan/son.md`).
+- Phase 33 : finir son morceau (▶ morceau partout, ⤴ Partager en haut avec vérification, écran « Ton morceau est prêt », tempo au toucher, vocabulaire Partie/Morceau/Projet) + banc de mesure du son, gain staging honnête, chaîne master true peak et LUFS par genre.
+- Phase 34 : une intention, un bouton (Variation, Fill, Break, Montée, Fondu, Fin, Énergie, Kit, Changer le son, peindre les pas, roulements) + batterie de studio (kits échantillonnés par genre, kick refait, couches).
+- Phase 35 : enregistrer sans peur (● partout avec décompte, Remettre en rythme, mémoire des 8 dernières mesures, voix avec punch-in, Live en versions) + stéréo, réverbe plate, vrai sidechain.
+- Phase 36 : navigation Structure / Sons / Mix / Live / Plus et Mode simple.
+- Phase 37 : accords du morceau, piano roll et batterie pro, automation des potards du synthé, geler une piste + production de l'assistant (humanisation, fills, impacts, courbe d'énergie).
+- Phase 38 : son présentable (synthé suréchantillonné, voix 808, instruments échantillonnés, Équilibrer et Masteriser, export propre).
+- Phase 39 : apprendre (missions, aide contextuelle), export vidéo, potards MIDI automatiques.

@@ -61,6 +61,9 @@ sealed class Where {
 
     /** The shared reverb and echo (Mixeur). */
     data object Buses : Where()
+
+    /** Every export choice (Mixeur › Exporter), from « Prêt à partager ? » › « Autres exports ». */
+    data object Export : Where()
 }
 
 /** One thing acting on the sound, said in plain words, and where it is edited. */

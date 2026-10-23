@@ -803,5 +803,13 @@
   "Bruitages : eau, feu et ambiances": "Geluidseffecten: water, vuur en sferen",
   "Clics, bips et jeux vidéo": "Klikjes, piepjes en videogames",
   "Percussions acoustiques": "Akoestische percussie",
-  "Bruitages : doigts, balles et bouche": "Geluidseffecten: vingers, ballen en mond"
+  "Bruitages : doigts, balles et bouche": "Geluidseffecten: vingers, ballen en mond",
+  "Gain auto": "Auto-gain",
+  "Détection": "Detectie",
+  "Moyenne (RMS)": "Gemiddeld (RMS)",
+  "Crêtes": "Pieken",
+  "Filtre des graves": "Basfilter",
+  "Oui": "Ja",
+  "Ouverte": "Open",
+  "Volume constant": "Constant volume"
 }

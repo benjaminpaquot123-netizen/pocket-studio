@@ -12,7 +12,6 @@ import com.pocketstudio.model.songStepOf
 import com.pocketstudio.model.withAudioTrack
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -125,22 +124,23 @@ class SongTakesTest {
     }
 
     @Test
-    fun theListeningChoiceIsKeptWithTheProject() {
+    fun theLoopPartChoiceIsKeptWithTheProject() {
         val vm = vmWithSong()
-        assertFalse(vm.listensToSong)  // the Rhythm tab, never chosen: the section
-        assertNull(vm.project.value.listenSong)
-        vm.setListenSong(true)
-        assertEquals(true, vm.project.value.listenSong)
-        assertTrue(vm.listensToSong)
+        assertTrue(vm.listensToSong)  // a song: ▶ plays it, on every tab
+        assertFalse(vm.project.value.loopPart)
+        vm.setLoopPart(true)
+        assertTrue(vm.project.value.loopPart)
+        assertFalse(vm.listensToSong)
         // Not an undo step: Annuler undoes the last edit, not the choice.
         val before = vm.project.value.automation
         vm.setAutomationSongPoint(0, 5, 0.9f)
         vm.undo()
         assertEquals(before, vm.project.value.automation)
-        assertEquals(true, vm.project.value.listenSong)
+        assertTrue(vm.project.value.loopPart)
+        assertTrue(vm.loopPart.value)
         // Read back with the project.
         vm.flush()
         shadowOf(Looper.getMainLooper()).idle()
-        assertTrue(vm.session.project.value.listenSong == true)
+        assertTrue(vm.session.project.value.loopPart)
     }
 }

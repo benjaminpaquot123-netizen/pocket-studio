@@ -6,9 +6,11 @@ package com.pocketstudio.engine
  */
 class NativeSample private constructor(internal val handle: Long) : AutoCloseable {
     @Volatile private var closed = false
+    // Tests and the song bench: a sink stands in for the native engine (see CommandSink).
+    private val sink = NativeEngine.sink
 
     /** Length in frames at 48 kHz. */
-    val frames: Long = NativeEngine.sampleFrames(handle)
+    val frames: Long = sink?.sampleFrames(handle) ?: NativeEngine.sampleFrames(handle)
 
     /**
      * Where the attacks are, as fractions 0..1 of the sound (the first is 0). Blocking: worker
@@ -17,6 +19,7 @@ class NativeSample private constructor(internal val handle: Long) : AutoCloseabl
     @Synchronized  // close() waits: the native data is never freed mid-analysis
     fun onsets(sensitivity: Float, maxSlices: Int = 16): FloatArray {
         check(!closed)
+        if (sink != null) return floatArrayOf(0f)
         return NativeEngine.sampleOnsets(handle, sensitivity, maxSlices)
     }
 
@@ -27,6 +30,7 @@ class NativeSample private constructor(internal val handle: Long) : AutoCloseabl
     @Synchronized
     fun stretched(start: Float, end: Float, outFrames: Long, semitones: Float): NativeSample? {
         check(!closed)
+        if (sink != null) return null  // not recorded: the sound plays unstretched
         val h = NativeEngine.sampleStretched(handle, start, end, outFrames, semitones)
         return if (h == 0L) null else NativeSample(h)
     }
@@ -35,13 +39,14 @@ class NativeSample private constructor(internal val handle: Long) : AutoCloseabl
     override fun close() {
         if (closed) return
         closed = true
+        sink?.let { it.sampleRelease(handle); return }
         NativeEngine.sampleRelease(handle)
     }
 
     companion object {
         /** Resamples to 48 kHz off the main thread (it can take a moment). Null if the data is unusable. */
         fun create(interleaved: FloatArray, channels: Int, sampleRate: Int): NativeSample? {
-            val handle = NativeEngine.sampleCreate(interleaved, channels, sampleRate)
+            val handle = NativeEngine.sink?.sampleCreate(interleaved, channels, sampleRate) ?: NativeEngine.sampleCreate(interleaved, channels, sampleRate)
             return if (handle == 0L) null else NativeSample(handle)
         }
     }

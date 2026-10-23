@@ -59,11 +59,11 @@ data class Project(
     /** At the song's end: false = playback stops (the default, older projects too), true = it starts over. */
     val songLoops: Boolean = false,
     /**
-     * What ▶ plays once the project has a song, as last chosen (« Écouter : cette section / tout
-     * le morceau »): true the song, false the section shown; null (never chosen): the section on
-     * the editing tabs, the song on the Morceau tab.
+     * « ⟳ Partie »: ▶ loops the part being edited (the scene shown) instead of playing the song.
+     * Off by default: once there is a song, ▶ plays it on every tab. (Replaces the old
+     * « Écouter : cette section / tout le morceau » choice, whose saved value is ignored.)
      */
-    val listenSong: Boolean? = null,
+    val loopPart: Boolean = false,
     /** The live grid's launch quantum in bars (1, 2 or 4): a pad starts on the next one. */
     val liveQuantum: Int = 1,
     /** The Live page's effect settings (grid, release effect, lengths): see [LiveFxSettings]. */
@@ -79,6 +79,18 @@ data class Project(
      * every other project is saved as before.
      */
     @EncodeDefault(EncodeDefault.Mode.NEVER) val livePadsPending: Boolean = false,
+    /**
+     * The built-in kit's levels ([KIT_V1] or [KIT_V2], the engine's DrumKit::setVersion): kit v2
+     * (phase 33) puts each voice near its loudness in a mix; the projects saved before keep kit v1.
+     * Left out of the file at v1: those are saved as before.
+     */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val kitVersion: Int = KIT_V1,
+    /**
+     * The assistant's style the song was made with ([StarterWizard.Style.id]), null for a project
+     * made by hand: the master's automatic loudness target follows it ([LoudnessTargets]). Left
+     * out of the file when null: every other project is saved as before.
+     */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val style: String? = null,
 ) {
     /** Sixteenths in a bar. */
     val stepsPerBar: Int get() = beatsPerBar * 4
@@ -110,10 +122,15 @@ data class Project(
         liveQuantum = liveQuantum.takeIf { it in LiveSlots.QUANTA } ?: 1,
         liveFx = liveFx.sanitized(),
         liveTake = liveTake.take(64),
+        kitVersion = kitVersion.coerceIn(KIT_V1, KIT_V2),
+        style = style?.take(64)?.ifBlank { null },
     ).syncScenes().withFittedSampleRoots()
 
     companion object {
         const val FORMAT_VERSION = 1
+        /** [kitVersion]: the kit as it always was, and kit v2 (the assistant's songs since phase 33). */
+        const val KIT_V1 = 1
+        const val KIT_V2 = 2
         const val MIN_TEMPO = 40.0
         const val MAX_TEMPO = 300.0
         const val MAX_SWING = 0.75
@@ -331,6 +348,7 @@ data class Hit(
     }
 }
 
+@OptIn(ExperimentalSerializationApi::class)
 @Serializable
 data class Mixer(
     val channels: List<Channel> = List(CHANNELS) { Channel() },
@@ -340,6 +358,11 @@ data class Mixer(
     val buses: List<List<Float>> = Buses.DEFAULTS,
     /** The master's gain in dB, before the limiter ([MASTER_MIN_DB]..[MASTER_MAX_DB]). */
     val masterDb: Float = 0f,
+    /**
+     * The master's loudness target (« Cible »). Projects saved before phase 33 have none ([LoudnessTarget.OFF]:
+     * their master as it was); the assistant's songs start on [LoudnessTarget.AUTO]. Left out of the file when off.
+     */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val target: LoudnessTarget = LoudnessTarget.OFF,
 ) {
     /** [masterDb] as a linear gain, for the engine. */
     val masterGain: Float get() = Math.pow(10.0, masterDb / 20.0).toFloat()

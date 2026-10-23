@@ -601,6 +601,27 @@ JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportSetOption
     renderer(handle)->setFloatWav(floatWav);
 }
 
+// The next WAV's format: 44100 or 48000 Hz, 16 or 24 bits (dithered) or 32 (float).
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportSetFormat(JNIEnv*, jobject, jlong handle, jint rate, jint bits) {
+    renderer(handle)->setOutputFormat(rate, bits);
+}
+
+// What the last render wrote (layout: NativeEngine.REPORT_*): integrated loudness (LUFS, -1000
+// for silence), true peak (dBTP), length (seconds), sample rate, the loudness target's drive (dB).
+JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_exportReport(JNIEnv* env, jobject, jlong handle) {
+    const auto& r = renderer(handle)->report();
+    const jfloat values[5] = {
+        static_cast<jfloat>(r.lufs),
+        r.truePeak > 0.0f ? 20.0f * std::log10(r.truePeak) : -1000.0f,
+        r.sampleRate > 0 ? static_cast<jfloat>(static_cast<double>(r.frames) / r.sampleRate) : 0.0f,
+        static_cast<jfloat>(r.sampleRate),
+        r.driveDb,
+    };
+    jfloatArray result = env->NewFloatArray(5);
+    if (result) env->SetFloatArrayRegion(result, 0, 5, values);
+    return result;
+}
+
 JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_exportRender(JNIEnv* env, jobject, jlong handle,
                                                                             jstring path, jlong frames, jlong tail) {
     const char* p = env->GetStringUTFChars(path, nullptr);
@@ -642,6 +663,30 @@ JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_mixerMeters(JNI
     values[ps::Mixer::kChannels] = m.takeLimiterGain();
     values[ps::Mixer::kChannels + 1] = m.takeMasterInputPeak();
     const int n = std::min(kMeters, static_cast<int>(env->GetArrayLength(out)));
+    if (n > 0) env->SetFloatArrayRegion(out, 0, n, values);
+}
+
+// Fills `out` (NativeEngine.INSERT_METERS floats): for each strip and insert slot (index
+// channel * 8 + slot), the deepest gain reduction of its compressor since the last reading, in dB (<= 0).
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_insertReductions(JNIEnv* env, jobject, jfloatArray out) {
+    auto& m = host().engine().mixer();
+    constexpr int kMeters = ps::Mixer::kChannels * ps::Mixer::kInserts;
+    jfloat values[kMeters];
+    for (int i = 0; i < kMeters; ++i) values[i] = m.takeInsertReduction(i / ps::Mixer::kInserts, i % ps::Mixer::kInserts);
+    const int n = std::min(kMeters, static_cast<int>(env->GetArrayLength(out)));
+    if (n > 0) env->SetFloatArrayRegion(out, 0, n, values);
+}
+
+// Fills `out` (NativeEngine.LOUDNESS floats): the master's momentary, short-term and integrated
+// (since ▶) loudness in LUFS (-100: none yet), its true peak since ▶ and since the last reading
+// (dBTP, -100 for silence), the loudness target's drive (dB). Layout: NativeEngine.LOUDNESS_*.
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_loudnessMeters(JNIEnv* env, jobject, jfloatArray out) {
+    auto& m = host().engine().mixer();
+    auto& meter = m.loudness();
+    auto db = [](float peak) { return peak > 1e-5f ? 20.0f * std::log10(peak) : -100.0f; };
+    jfloat values[6] = {meter.momentary(), meter.shortTerm(), meter.integrated(), db(meter.truePeak()), db(meter.takeRecentPeak()),
+                        m.masterChain().driveDb()};
+    const int n = std::min(6, static_cast<int>(env->GetArrayLength(out)));
     if (n > 0) env->SetFloatArrayRegion(out, 0, n, values);
 }
 

@@ -46,6 +46,14 @@ class ProjectJsonTest {
         assertEquals(Mixer.MASTER_MIN_DB, ProjectJson.decode("""{"mixer":{"masterDb":-400}}""").mixer.masterDb, 0f)
     }
 
+    /** Phase 33 replaced « écouter le morceau » (listenSong) by « ⟳ Partie »: an old file's key is dropped, not read as the loop. */
+    @Test
+    fun theOldListenSongKeyIsIgnored() {
+        val decoded = ProjectJson.decode("""{"name":"Vieux","listenSong":true}""")
+        assertFalse(decoded.loopPart)
+        assertFalse(ProjectJson.encode(decoded).contains("listenSong"))
+    }
+
     @Test
     fun newerFileWithUnknownFieldsStillLoads() {
         val decoded = ProjectJson.decode("""{"name":"Futur","tempoBpm":128,"stems":[1,2,3],"drums":{"steps":16,"groove":"x"}}""")

@@ -33,7 +33,7 @@ data class Insert(
 
     fun sanitized(): Insert {
         val t = EffectType.of(type)
-        val p = (params + t.defaults.drop(params.size)).take(EffectType.PARAMS)
+        val p = t.upgraded(params).take(EffectType.PARAMS)
             .map { v -> v.takeIf { it.isFinite() }?.coerceIn(0f, 1f) ?: 0.5f }
         val s = if (t == EffectType.NONE) null else scenes?.filter { it in 0 until Scene.MAX }?.sorted()?.toSet()
         return Insert(t.ordinal, p, bypass && t != EffectType.NONE, s)
@@ -68,6 +68,12 @@ enum class EffectType(val label: String, val params: List<Param>, val defaults: 
         listOf(0.5f, 0.5f, 0.5f, 0f),
         group = EffectGroup.COLOUR,
     ),
+    /**
+     * Engine's Compressor: under the threshold it changes nothing; [COMP_GAIN] is its make-up
+     * (0 to +24 dB), [COMP_AUTO] gives back the reduction it makes on average, [COMP_DETECTOR] reads
+     * the peaks or the RMS, [COMP_HIGH_PASS] keeps the bass from driving it, [COMP_MIX] blends the
+     * dry sound back (parallel compression).
+     */
     COMPRESSOR(
         "Compresseur",
         listOf(
@@ -75,14 +81,30 @@ enum class EffectType(val label: String, val params: List<Param>, val defaults: 
             Param("Ratio") { num("%.1f:1", expMap(it, 1f, 20f)) },
             Param("Attaque") { ms(expMap(it, 0.1f, 80f)) },
             Param("Relâche") { ms(expMap(it, 20f, 800f)) },
+            Param("Gain") { num("+%.1f dB", 24f * it) },
+            Param("Gain auto") { if (it >= 0.5f) tr("Oui") else tr("Non") },
+            Param("Détection") { if (it >= 0.5f) tr("Moyenne (RMS)") else tr("Crêtes") },
+            Param("Filtre des graves") { if (it < 0.01f) tr("Aucun") else hz(expMap(it, 20f, 400f)) },
+            Param("Mélange", ::percentOf),
         ),
-        listOf(0.6f, 0.2f, 0.2f, 0.3f),
+        listOf(0.6f, 0.2f, 0.2f, 0.3f, 0f, 1f, 0f, 0f, 1f),
         group = EffectGroup.DYNAMICS,
     ),
+    /**
+     * Engine's Saturator: [SAT_TONE] at its top ([TONE_OPEN], the default since phase 33) is open
+     * (no low-pass); with [SAT_COMPENSATION] (off by default, as before) the drive no longer
+     * changes the level of a sound at a usual level.
+     */
     SATURATION(
         "Saturation",
-        listOf(Param("Drive", ::percentOf), Param("Tonalité") { hz(expMap(it, 1500f, 18000f)) }, Param("Mélange", ::percentOf), Param("Volume", ::percentOf)),
-        listOf(0.3f, 0.7f, 1f, 0.7f),
+        listOf(
+            Param("Drive", ::percentOf),
+            Param("Tonalité") { if (it >= 1f) tr("Ouverte") else hz(expMap(it, 1500f, 18000f)) },  // 1: TONE_OPEN
+            Param("Mélange", ::percentOf),
+            Param("Volume", ::percentOf),
+            Param("Volume constant") { if (it >= 0.5f) tr("Oui") else tr("Non") },
+        ),
+        listOf(0.3f, 1f, 1f, 0.7f, 0f),  // the tone open (TONE_OPEN), no compensation
         group = EffectGroup.COLOUR,
     ),
     CHORUS(
@@ -312,9 +334,54 @@ enum class EffectType(val label: String, val params: List<Param>, val defaults: 
     /** Seconds of memory: the engine holds only a few of these (see [LONG_LIMITS]). */
     val long: Boolean get() = this == ECHO || this == PING_PONG || this == REVERB || this == TAPE_STOP
 
+    /**
+     * A saved insert's settings brought to today's: those it lacks take their defaults, except on a
+     * compressor or a saturation saved before phase 33 (4 settings), which keep their sound: the
+     * compressor's fixed make-up (half the reduction of a full-scale sound) becomes its [COMP_GAIN],
+     * nothing auto, peaks, no filter; the saturation keeps its level (no [SAT_COMPENSATION]) and
+     * its tone's 18 kHz top (the top is now open).
+     */
+    internal fun upgraded(saved: List<Float>): List<Float> {
+        val legacy = when (this) {
+            COMPRESSOR -> LEGACY_COMPRESSOR
+            SATURATION -> LEGACY_SATURATION
+            else -> null
+        }
+        if (legacy == null || saved.size > LEGACY_PARAMS) return saved + defaults.drop(saved.size)
+        val old = (saved + legacy.drop(saved.size)).take(LEGACY_PARAMS)
+        return if (this == COMPRESSOR) {
+            val threshold = -40f + 40f * old[0].clean(0.6f)
+            val ratio = expMap(old[1].clean(0.2f), 1f, 20f)
+            val makeupDb = -threshold * (1f - 1f / ratio) * 0.5f
+            old + listOf(makeupDb / COMP_GAIN_MAX_DB, 0f, 0f, 0f, 1f)
+        } else {
+            old.mapIndexed { i, v -> if (i == SAT_TONE && v >= TONE_OPEN) LEGACY_TOP_TONE else v } + 0f
+        }
+    }
+
     companion object {
-        const val PARAMS = 4
+        /** Settings per insert at most (the engine's InsertSlot::kParams; most effects use 4). */
+        const val PARAMS = 12
         fun of(type: Int) = entries.getOrElse(type) { NONE }
+
+        /** Settings an insert had before phase 33. */
+        const val LEGACY_PARAMS = 4
+        /** [COMPRESSOR]'s make-up (0..1 = 0..+24 dB), « Gain auto », detector, side-chain filter, mix. */
+        const val COMP_GAIN = 4
+        const val COMP_AUTO = 5
+        const val COMP_DETECTOR = 6
+        const val COMP_HIGH_PASS = 7
+        const val COMP_MIX = 8
+        const val COMP_GAIN_MAX_DB = 24f
+        /** [SATURATION]'s tone ([TONE_OPEN]: no low-pass) and its level compensation. */
+        const val SAT_TONE = 1
+        const val SAT_COMPENSATION = 4
+        const val TONE_OPEN = 1f
+        /** A tone saved at its top before phase 33 (an 18 kHz low-pass): just under the open top. */
+        const val LEGACY_TOP_TONE = 0.99999f
+        private val LEGACY_COMPRESSOR = listOf(0.6f, 0.2f, 0.2f, 0.3f)
+        private val LEGACY_SATURATION = listOf(0.3f, 0.7f, 1f, 0.7f)
+        private fun Float.clean(fallback: Float) = takeIf { it.isFinite() }?.coerceIn(0f, 1f) ?: fallback
 
         /**
          * How many of each long effect can play at once in a project (the engine's LongFxPool):

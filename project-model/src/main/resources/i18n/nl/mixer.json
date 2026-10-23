@@ -335,5 +335,18 @@
   "réverbe %d %%": "galm %d %%",
   "écho %d %%": "echo %d %%",
   "volume %s dB": "volume %s dB",
-  "Voir 1 autre réglage": "Bekijk 1 andere instelling"
+  "Voir 1 autre réglage": "Bekijk 1 andere instelling",
+  "marche": "aan",
+  "arrêt": "uit",
+  "centre": "midden",
+  "Page Live": "Live-pagina",
+  "Voir le potard": "Toon de knop",
+  "Voir le réglage": "Toon de instelling",
+  "Pour changer ce réglage sur une partie du morceau (plus fort au début…), choisis « Morceau ».": "Om deze instelling over een deel van het nummer te veranderen (luider aan het begin…), kies „Nummer”.",
+  "mesure": "maat",
+  "temps": "tel",
+  "Zone": "Zone",
+  "Zone : glisse sur les mesures à régler (ou touche la première puis la dernière) ; la hauteur où tu lâches donne le niveau. Avant et après, rien ne change.": "Zone: schuif over de maten die je wilt instellen (of tik de eerste en dan de laatste); de hoogte waar je loslaat geeft het niveau. Ervoor en erna verandert er niets.",
+  "1. Choisis la piste :": "1. Kies het spoor:",
+  "2. Ce qui bouge sur « %s » :": "2. Wat beweegt er op „%s”:"
 }

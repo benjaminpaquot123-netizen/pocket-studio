@@ -1,6 +1,9 @@
 package com.pocketstudio.app
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.getBoundsInRoot
+import androidx.compose.ui.unit.dp
+import com.pocketstudio.model.addTrack
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
@@ -167,5 +170,46 @@ class LiveScreenTest {
         compose.onNodeWithTag("live_fx_acid").performClick()
         compose.onNodeWithTag("live_track_chop_acid").performScrollTo().performTouchInput { down(center); up() }
         assertEquals(listOf("1 true", "1 false"), ch)
+    }
+
+    @Test
+    fun manyTracksUprightTurnTheGridSoEveryTrackIsInView() {
+        // Seven columns (drums, 303, five instrument tracks) do not fit across 400 dp: a row per track.
+        var many: Project = project
+        repeat(4) { many = many.addTrack("Piste ${it + 2}")!! }
+        val columns = com.pocketstudio.app.live.liveColumnsOf(many)
+        assertEquals(7, columns.size)
+        val calls = mutableListOf<String>()
+        compose.setContent {
+            PocketStudioTheme {
+                LiveScreen(
+                    LiveScreenUi(many, LiveState.on(0), clock = 5, playing = true),
+                    LiveActions(toggleMute = { calls += "mute $it" }, stopTrack = { calls += "stop $it" }, launchPad = { k, s -> calls += "pad $k $s" }),
+                )
+            }
+        }
+        val screen = compose.onNodeWithTag("live_screen").getBoundsInRoot()
+        columns.forEach { c ->
+            val m = compose.onNodeWithTag("live_mute_${c.key}").performScrollTo().getBoundsInRoot()
+            org.junit.Assert.assertTrue("${c.key} M within the width", m.right <= screen.right + 0.5.dp)
+        }
+        val last = columns.last().key
+        compose.onNodeWithTag("live_mute_$last").performScrollTo().performClick()
+        compose.onNodeWithTag("live_stop_$last").performScrollTo().performClick()
+        compose.onNodeWithTag("live_pad_${last}_1").performScrollTo().performClick()
+        assertEquals(listOf("mute $last", "stop $last", "pad $last 1"), calls)
+    }
+
+    @Test
+    fun fullScreenFoldsThePanelAndATabOpensItAgain() {
+        compose.setContent { PocketStudioTheme { LiveScreen(LiveScreenUi(project, LiveState.on(0), clock = 5, playing = true), LiveActions()) } }
+        compose.onNodeWithTag("live_fx_acid").assertIsDisplayed()
+        compose.onNodeWithTag("live_fullscreen").performClick()
+        compose.onNodeWithTag("live_fx_acid").assertDoesNotExist()
+        compose.onNodeWithTag("live_tab_Effets").performClick()
+        compose.onNodeWithTag("live_fx_acid").assertIsDisplayed()
+        // Back out of full screen: nothing else changes.
+        compose.onNodeWithTag("live_fullscreen").performClick()
+        compose.onNodeWithTag("live_fx_acid").assertIsDisplayed()
     }
 }

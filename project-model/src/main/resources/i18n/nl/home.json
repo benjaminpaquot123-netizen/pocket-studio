@@ -357,5 +357,11 @@
   "%1$d packs installés ; %2$d n'ont pas pu venir (%3$s) : touche « Tout compléter » pour réessayer.": "%1$d packs geïnstalleerd; %2$d lukten niet (%3$s): tik op „Alles aanvullen” om het opnieuw te proberen.",
   "Nouveaux packs à découvrir : %1$d (%2$s).": "Nieuwe packs om te ontdekken: %1$d (%2$s).",
   "Packs enrichis de nouveaux sons : %1$d (%2$s).": "Packs met nieuwe geluiden: %1$d (%2$s).",
-  "Nouveaux packs : %1$d · mises à jour : %2$d (%3$s).": "Nieuwe packs: %1$d · updates: %2$d (%3$s)."
+  "Nouveaux packs : %1$d · mises à jour : %2$d (%3$s).": "Nieuwe packs: %1$d · updates: %2$d (%3$s).",
+  "Pas à pas": "Stap voor stap",
+  "Une touche, un morceau complet (environ 3 minutes), prêt à écouter.": "Eén tik, een compleet nummer (ongeveer 3 minuten), klaar om te beluisteren.",
+  "Idéal pour débuter : je t'explique chaque son.": "Ideaal om te beginnen: ik leg elk geluid uit.",
+  "Changer les sons": "De geluiden aanpassen",
+  "Les petits plus": "De kleine extra's",
+  "Pour aller plus loin": "Verder gaan"
 }

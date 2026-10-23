@@ -8,6 +8,8 @@ import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.click
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.test.longClick
 import androidx.compose.ui.test.performSemanticsAction
 import androidx.test.core.app.ApplicationProvider
@@ -18,6 +20,8 @@ import com.pocketstudio.app.session.SessionScreen
 import com.pocketstudio.app.session.SessionScreenUi
 import com.pocketstudio.app.session.RenameSceneDialog
 import androidx.compose.ui.test.onNodeWithText
+import com.pocketstudio.model.copySceneTo
+import com.pocketstudio.model.renameScene
 import com.pocketstudio.model.DrumPattern
 import com.pocketstudio.model.Scene
 import com.pocketstudio.model.SongPart
@@ -271,47 +275,98 @@ class SongArrangementTest {
     }
 
     @Test
-    fun theTimelineShowsMixedPartsAndALongPressChoosesTheScene() {
+    fun theTimelineTogglesAClipAndALongPressChoosesItsScene() {
         val chosen = mutableListOf<String>()
         val toggled = mutableListOf<String>()
-        val drums = DrumPattern().toggle(0, 0)
+        val played = mutableListOf<Int>()
+        val muted = mutableListOf<Int>()
+        var p = com.pocketstudio.model.Project(drums = DrumPattern().toggle(0, 0)).sanitized()
+            .copySceneTo(1).copySceneTo(2)
+        p = p.copy(
+            song = listOf(
+                SongPart(0, 2),
+                SongPart(0, 1, play = mapOf(SongPart.ACID to 1), from = mapOf(SongPart.DRUMS to 1), bars = 3),
+            ),
+        ).sanitized()
         compose.setContent {
             PocketStudioTheme {
-                SessionScreen(
-                    SessionScreenUi(
-                        scenes = listOf(Scene("A", drums), Scene("B", drums), Scene("C", drums)) + List(21) { null },
-                        current = 0, pending = null, songIndex = -1, playing = false, tempoBpm = 120.0,
-                        song = listOf(
-                            SongPart(0, 2),
-                            SongPart(0, 1, play = mapOf(SongPart.ACID to 1), from = mapOf(SongPart.DRUMS to 1), bars = 3),
-                        ),
+                com.pocketstudio.app.session.TimelineScreen(
+                    com.pocketstudio.app.session.TimelineUi(
+                        p,
                         rows = listOf(
                             com.pocketstudio.app.session.TimelineRow(SongPart.DRUMS, "Batterie", androidx.compose.ui.graphics.Color.Blue),
                             com.pocketstudio.app.session.TimelineRow(SongPart.ACID, "Basse acide", androidx.compose.ui.graphics.Color.Green),
                         ),
                     ),
-                    SessionActions(
+                    com.pocketstudio.app.session.TimelineActions(
                         setPartScene = { i, key, scene -> chosen += "$i $key $scene" },
                         togglePartTrack = { i, key -> toggled += "$i $key" },
+                        playPart = { played += it },
+                        toggleMute = { muted += it },
                     ),
+                    barDp = androidx.compose.ui.unit.Dp(32f),
                 )
             }
         }
-        // The mixed part: its badge, the acid's scene letter, the drums carrying on.
-        compose.onNodeWithTag("timeline_1_acid").performScrollTo()
-        compose.onNodeWithTag("timeline_mixed_1", useUnmergedTree = true).assertExists()
-        compose.onNodeWithTag("timeline_scene_1_acid", useUnmergedTree = true).assertTextContains("B")
-        compose.onNodeWithTag("timeline_scene_1_drums", useUnmergedTree = true).assertTextContains("↪")
-        assertTrue(compose.onAllNodesWithTag("timeline_mixed_0", useUnmergedTree = true).fetchSemanticsNodes().isEmpty())
-        assertTrue(compose.onAllNodesWithTag("timeline_scene_0_acid", useUnmergedTree = true).fetchSemanticsNodes().isEmpty())
-        // A touch mutes; a long press asks for the scene.
-        // (Far down the phone's page: its actions, as a screen reader does them.)
-        compose.onNodeWithTag("timeline_0_drums").performSemanticsAction(androidx.compose.ui.semantics.SemanticsActions.OnClick)
+        // Part 1 (two bars) is 64 dp wide; the drums' row is the first, 64 dp high.
+        val inDrums = with(compose.density) { androidx.compose.ui.geometry.Offset(16.dp.toPx(), 32.dp.toPx()) }
+        compose.onNodeWithTag("timeline_grid").performTouchInput { click(inDrums) }
         assertEquals(listOf("0 drums"), toggled)
-        compose.onNodeWithTag("timeline_0_drums").performSemanticsAction(androidx.compose.ui.semantics.SemanticsActions.OnLongClick)
-        compose.onNodeWithTag("pick_scene_2").performClick()
+        // A long press: the clip's actions, then « Changer de scène… ».
+        compose.onNodeWithTag("timeline_grid").performTouchInput { longClick(inDrums) }
+        compose.onNodeWithTag("tl_scene").performClick()
+        compose.onNodeWithTag("tl_pick_2").performClick()
         assertEquals(listOf("0 drums 2"), chosen)
         assertEquals(listOf("0 drums"), toggled)
+        // The ruler plays from the part touched (the second starts at 64 dp).
+        val onPart2 = with(compose.density) { androidx.compose.ui.geometry.Offset(80.dp.toPx(), 34.dp.toPx()) }
+        compose.onNodeWithTag("timeline_ruler").performTouchInput { click(onPart2) }
+        assertEquals(listOf(1), played)
+        // M mutes the drums' mixer channel.
+        compose.onNodeWithTag("timeline_mute_drums").performClick()
+        assertEquals(listOf(0), muted)
+    }
+
+    @Test
+    fun theSongScreenOpensTheTimeline() {
+        var opened = false
+        val drums = DrumPattern().toggle(0, 0)
+        compose.setContent {
+            PocketStudioTheme {
+                SessionScreen(
+                    SessionScreenUi(
+                        scenes = listOf(Scene("A", drums)) + List(23) { null },
+                        current = 0, pending = null, songIndex = -1, playing = false, tempoBpm = 120.0,
+                        song = listOf(SongPart(0, 2)),
+                        rows = listOf(com.pocketstudio.app.session.TimelineRow(SongPart.DRUMS, "Batterie", androidx.compose.ui.graphics.Color.Blue)),
+                    ),
+                    SessionActions(openTimeline = { opened = true }),
+                )
+            }
+        }
+        compose.onNodeWithTag("open_timeline").performClick()
+        assertTrue(opened)
+    }
+
+    @Test
+    fun aPartIsCutInTwoAndTheLoopStaysInTheSong() {
+        val vm = vmWithSong()
+        vm.setSongRepeats(0, 3)
+        vm.splitSongPart(0, 1)
+        assertEquals(listOf(0, 0, 1, 2), vm.songScenes())
+        assertEquals(listOf(1, 2), vm.project.value.song.take(2).map { it.repeats })
+        vm.undo()
+        assertEquals(listOf(0, 1, 2), vm.songScenes())
+        assertEquals(3, vm.project.value.song[0].repeats)
+        // A loop over parts 2 and 3; one past the song's end is no loop.
+        vm.setSongLoop(1..2)
+        assertEquals(1..2, vm.songLoop.value)
+        assertEquals(1, SessionUi(songIndex = 2).upcoming(3, loops = false, loop = vm.songLoop.value))
+        vm.setSongLoop(0..5)
+        assertEquals(null, vm.songLoop.value)
+        // « Ouvrir dans … », stopped: the scene is shown to be edited.
+        vm.showSceneToEdit(2)
+        assertEquals(2, vm.project.value.scene)
     }
 
     @Test

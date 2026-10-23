@@ -1,5 +1,5 @@
-Phase 30 : « Tout ce qui joue, sous tes yeux » (tes retours)
-- « Ce qui joue » : par scène, morceau ou piste, tous les effets et courbes en clair, avec « Modifier » qui t'y emmène ; Automation en haut du Mixeur.
-- Courbes plus faciles : outil Ligne, Lisser, zoom ; tête de lecture verte qui avance ; Morceau affiche le temps écoulé.
-- Sons : grande bibliothèque libre (bruitages, doigts, ping-pong…), « Tout télécharger » et « Tout compléter », recherche.
-- Styles rangés en familles ; projet ouvert supprimable, nouveaux morceaux numérotés ; acide au bon volume ; son choisi en surbrillance.
+Phase 31 : « Ligne du temps et plein écran » (tes retours de la nuit)
+- Ligne du temps pro : toutes les pistes du morceau, zoom, boucle, clips à couper, dupliquer, ouvrir ; courbes sous les pistes.
+- Live en plein écran, grille qui tient à l'écran, cases qui brillent sur le temps ; pads live remplis par l'assistant.
+- Automation : échelle des valeurs et des mesures, « Voir le potard », outil Zone, piste en couleur.
+- Nouveau projet plus beau, démos à écouter d'un toucher ; on arrive sur Morceau ; guide en pages. « C'est pas faux. »

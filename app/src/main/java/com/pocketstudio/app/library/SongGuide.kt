@@ -39,7 +39,7 @@ fun duration(seconds: Double): String {
 }
 
 /**
- * The guide that opens once the assistant has made the song, two short pages: its sections
+ * The guide that opens once the assistant has made the song, short pages: its sections
  * (Intro, Couplet, Refrain; or Intro, Groove, Drop and Break) and what each adds; then how to hear
  * it (the whole song, or one section in a loop) and what to try next, the voice on top included.
  * It ends on "▶ Écouter mon morceau". [song]: the song's summary ([songSummary]). [inKey]: a mood
@@ -72,11 +72,18 @@ fun songGuide(
             listOf(intro) + scenes +
                 tr("Pas besoin de sauvegarder : tout est gardé tout seul."),
         ),
+        // Never more than three or four short lines a page, so that none of them scrolls on a small phone.
         GuidePage(
             tr("Écouter et changer"),
             listOfNotNull(
                 tr("▶ Jouer fait entendre tout le morceau, de l'Intro à la fin. Pour écouter en boucle la section affichée, touche « Écouter » à côté de Jouer (onglet Rythme) : « cette section »."),
                 song.takeIf { it.isNotBlank() },
+                tr("Onglet Morceau : touche une section (Intro, Couplet ou Refrain) pour l'afficher, la renommer ou la dupliquer pour en faire un Pont ou une Fin."),
+            ),
+        ),
+        GuidePage(
+            tr("Changer les sons"),
+            listOfNotNull(
                 tr("Rythme : touche les cases pour ajouter ou enlever des coups."),
                 if (inKey) tr("Synthé : joue au clavier, il reste dans la gamme du morceau : aucune fausse note possible.")
                 else tr("Synthé : joue au clavier pour essayer des notes par-dessus le rythme."),
@@ -84,15 +91,25 @@ fun songGuide(
                 if (!acid || plan.acid.isEmpty()) null
                 else if (acidMoves) tr("Acide : ta ligne 303 joue dans %s. Dans l'onglet Acide, touche un pas pour la changer. La coupure s'ouvre toute seule le long du morceau : pour la tourner toi-même, garde le doigt sur « Coupure ».", plan.sections(plan.acid))
                 else tr("Acide : ta ligne 303 joue dans %s. Dans l'onglet Acide, touche un pas pour la changer et tourne « Coupure » pour la faire crier.", plan.sections(plan.acid)),
+            ),
+        ),
+        GuidePage(
+            tr("Les petits plus"),
+            listOfNotNull(
                 tr("Rythme : chaque section finit ses 4 mesures par un petit roulement, qui annonce la suite.").takeIf { plan.parts.isNotEmpty() },
                 if (!plan.riser) null
                 else if (plan.form == StarterWizard.SongForm.Song) tr("Impact : un souffle claque sur le premier temps de chaque Refrain. On ne l'entend qu'en jouant tout le morceau ; baisse la piste « Souffle montant » dans le Mixeur s'il te gêne.")
                 else tr("Souffle montant : il monte avant chaque Drop et claque sur son premier temps. On ne l'entend qu'en jouant tout le morceau ; baisse la piste « Souffle montant » dans le Mixeur s'il te gêne."),
                 tr("Contre-chant : une petite réponse aux accords arrive au milieu du premier %s, puis joue dans tout le suivant : le deuxième sonne plus plein.", plan.title(2)).takeIf { plan.counter },
-                tr("Filtres : certains sons s'ouvrent et se ferment tout seuls le long du morceau (Mixeur, Automation).").takeIf { sweeps },
-                tr("Audio : enregistre ta voix par-dessus le morceau (mets des écouteurs, sinon le micro entend la musique)."),
-                tr("Onglet Morceau : touche une section (Intro, Couplet ou Refrain) pour l'afficher, la renommer ou la dupliquer pour en faire un Pont ou une Fin."),
             ),
         ),
-    )
+        GuidePage(
+            tr("Pour aller plus loin"),
+            listOfNotNull(
+                tr("Filtres : certains sons s'ouvrent et se ferment tout seuls le long du morceau (Mixeur, Automation).").takeIf { sweeps },
+                tr("Audio : enregistre ta voix par-dessus le morceau (mets des écouteurs, sinon le micro entend la musique)."),
+            ),
+        ),
+    // A page left empty by this song (no roll, riser or counter-melody) is dropped.
+    ).filter { it.lines.isNotEmpty() }
 }

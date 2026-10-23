@@ -402,3 +402,75 @@ fun songCurveCommands(curve: List<Float>): List<CurveCommand> {
     }
     return out
 }
+
+/**
+ * Setting [t] as the project holds it when no curve moves it, 0..1 as a lane writes it (the pan's
+ * centre is 0.5). A Live page effect: where it rests.
+ */
+fun Project.settingOf(t: AutoTarget): Float {
+    val c = mixer.channels.getOrNull(t.ch)
+    return when (t.kind) {
+        AutoTarget.VOLUME -> c?.volume ?: 0.8f
+        AutoTarget.PAN -> ((c?.pan ?: 0f) + 1f) / 2f
+        AutoTarget.SEND -> c?.sends?.getOrNull(t.slot) ?: 0f
+        AutoTarget.INSERT_PARAM -> mixer.insertAt(t.ch, t.slot)?.params?.getOrNull(t.param) ?: 0.5f
+        AutoTarget.BUS_PARAM -> mixer.buses.getOrNull(t.slot)?.getOrNull(t.param) ?: 0.5f
+        AutoTarget.ACID -> acid.sound.values().getOrNull(t.param) ?: 0.5f
+        AutoTarget.MACRO -> if (t.param < Macros.COUNT) c?.macros?.getOrNull(t.param) ?: 0f else 0f
+        AutoTarget.LIVE -> AutoTarget.liveRest(t.param)
+        else -> 0.5f
+    }.coerceIn(0f, 1f)
+}
+
+/**
+ * The project with setting [t] held at [v] (0..1, as a lane writes it): what the mixer, the 303 or
+ * an effect is set to. The Live page's effects and the momentary controls are not settings: unchanged.
+ */
+fun Project.withSetting(t: AutoTarget, v: Float): Project {
+    val x = v.coerceIn(0f, 1f)
+    fun channel(edit: (Channel) -> Channel): Project =
+        if (t.ch !in mixer.channels.indices) this
+        else copy(mixer = mixer.copy(channels = mixer.channels.mapIndexed { i, c -> if (i == t.ch) edit(c) else c }))
+    fun List<Float>.with(i: Int, value: Float) = mapIndexed { k, old -> if (k == i) value else old }
+    return when (t.kind) {
+        AutoTarget.VOLUME -> channel { it.copy(volume = x) }
+        AutoTarget.PAN -> channel { it.copy(pan = x * 2f - 1f) }
+        AutoTarget.SEND -> channel { it.copy(sends = it.sends.with(t.slot, x)) }
+        AutoTarget.INSERT_PARAM -> {
+            fun List<Insert>.edited() = mapIndexed { i, ins -> if (i == t.slot) ins.copy(params = ins.params.with(t.param, x)) else ins }
+            if (t.ch == Mixer.MASTER) copy(mixer = mixer.copy(master = mixer.master.edited()))
+            else channel { it.copy(inserts = it.inserts.edited()) }
+        }
+        AutoTarget.BUS_PARAM -> copy(mixer = mixer.copy(buses = mixer.buses.mapIndexed { b, ps -> if (b == t.slot) ps.with(t.param, x) else ps }))
+        AutoTarget.ACID -> copy(acid = acid.copy(sound = acid.sound.with(t.param, x)))
+        AutoTarget.MACRO -> if (t.param < Macros.COUNT) channel { it.copy(macros = it.macros.with(t.param, x)) } else this
+        else -> this
+    }
+}
+
+/**
+ * The song curve at [value] over its points [from]..[to] (a zone of the song: « plus fort au
+ * début »), and as before around it: the point just before and just after the zone keep the old
+ * curve's values there ([rest], the setting itself, where the lane had none), and the curve jumps
+ * into and out of the zone instead of sliding, so the level holds over the zone and only there.
+ * Points drawn inside the zone give way to it. [points]: the points the curve spans (the song).
+ */
+fun AutomationLane.withSongZone(from: Int, to: Int, value: Float, rest: Float, points: Int): AutomationLane {
+    val last = maxSongPoints - 1
+    val a = minOf(from, to).coerceIn(0, last)
+    val b = maxOf(from, to).coerceIn(0, last)
+    val v = value.coerceIn(0f, 1f)
+    val old = songCurve(maxOf(points, b + 2).coerceAtMost(maxSongPoints))
+    fun was(i: Int): Float = old.getOrNull(i) ?: old.lastOrNull() ?: rest.coerceIn(0f, 1f)
+    val before = if (a > 0) was(a - 1) else null
+    val after = if (b < last) was(b + 1) else null
+    val size = maxOf(songValues.size, minOf(b + 2, maxSongPoints))
+    val list = (songValues + List(size - songValues.size) { null }).toMutableList()
+    for (i in a..b) list[i] = null
+    if (before != null && list[a - 1] == null) list[a - 1] = before
+    list[a] = v
+    list[b] = v
+    if (after != null && list[b + 1] == null) list[b + 1] = after
+    val jumps = songJumps.filter { it !in a..b } + listOfNotNull(a.takeIf { before != null }, (b + 1).takeIf { after != null })
+    return copy(songValues = list.dropLastWhile { it == null }, songJumps = jumps.distinct().sorted())
+}

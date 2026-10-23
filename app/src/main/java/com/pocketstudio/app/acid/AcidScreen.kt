@@ -25,7 +25,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.material3.TextButton
 import androidx.compose.foundation.background
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.foundation.border
+import androidx.compose.foundation.relocation.bringIntoViewRequester
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -123,6 +127,9 @@ fun AcidScreen(
     recording: Boolean = false,
     /** The knobs ([AcidSound.values] indices) an automation lane moves: a line under them says so. */
     automated: Set<Int> = emptySet(),
+    /** « Voir le potard » from an automation lane: this knob is shown and lit for a moment, then [onFocused]. */
+    focusKnob: Int? = null,
+    onFocused: () -> Unit = {},
 ) {
     val context = LocalContext.current
     val settings by com.pocketstudio.app.settings.SettingsStore.state.collectAsState()
@@ -158,7 +165,7 @@ fun AcidScreen(
         StepGrid(acid, playing, currentStep, selected, actions, english, setEnglish)
     }, second = {
         StepEditor(acid, selected, actions, english)
-        SoundCard(acid, actions, browser, recording, automated)
+        SoundCard(acid, actions, browser, recording, automated, focusKnob, onFocused)
         effects?.let { com.pocketstudio.app.mixer.EffectsCard(it) }
     })
 }
@@ -343,13 +350,30 @@ private fun StepEditor(acid: AcidPattern, index: Int, actions: AcidActions, engl
 }
 
 @Composable
-private fun SoundCard(acid: AcidPattern, actions: AcidActions, browser: SoundBrowserUi?, recording: Boolean = false, automated: Set<Int> = emptySet()) {
+private fun SoundCard(
+    acid: AcidPattern, actions: AcidActions, browser: SoundBrowserUi?, recording: Boolean = false, automated: Set<Int> = emptySet(),
+    focus: Int? = null, onFocused: () -> Unit = {},
+) {
     val values = acid.sound.values()
     val context = LocalContext.current
     var sliders by remember { mutableStateOf(SoundView.sliders(context)) }
-    NeonCard {
+    // Sent here to see a knob: the card opens, comes into view, the knob lights up for a while.
+    val glow = rememberFocusPulse(focus != null)
+    val amber = Neon.Amber
+    val bring = remember { androidx.compose.foundation.relocation.BringIntoViewRequester() }
+    val folds = com.pocketstudio.ui.LocalFoldStore.current
+    val done by androidx.compose.runtime.rememberUpdatedState(onFocused)
+    androidx.compose.runtime.LaunchedEffect(focus) {
+        if (focus == null) return@LaunchedEffect
+        folds.setFolded(SOUND_FOLD, false)
+        kotlinx.coroutines.delay(150)
+        bring.bringIntoView()
+        kotlinx.coroutines.delay(FOCUS_MS)
+        done()
+    }
+    NeonCard(Modifier.bringIntoViewRequester(bring)) {
         FlowRow(itemVerticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            SectionLabel(tr("Son"), Modifier.weight(1f), help = Glossary.FILTER, foldKey = "Son acide")
+            SectionLabel(tr("Son"), Modifier.weight(1f), help = Glossary.FILTER, foldKey = SOUND_FOLD)
             listOf(false to tr("Panneau"), true to tr("Curseurs")).forEach { (mode, label) ->
                 FilterChip(
                     selected = sliders == mode,
@@ -376,15 +400,15 @@ private fun SoundCard(acid: AcidPattern, actions: AcidActions, browser: SoundBro
             )
         }
         if (!sliders) {
-            Panel303(values, actions.setSound, actions.holdSound)
+            Panel303(values, actions.setSound, actions.holdSound, focus)
             AutomatedHint(automated)
             return@NeonCard
         }
         // Two columns of sliders when the card is wide (tablet).
         com.pocketstudio.ui.AdaptiveColumns(SOUND_LABELS.mapIndexed { i, label ->
             @Composable {
-                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                    Text(label, Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
+                Row(Modifier.fillMaxWidth().then(if (i == focus) Modifier.focusGlow(glow, amber) else Modifier), verticalAlignment = Alignment.CenterVertically) {
+                    Text(label, Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium, color = if (i == focus) Neon.Amber else Neon.TextPrimary)
                     Text("${(values[i] * 100).roundToInt()}", style = MonoStyle, color = Neon.Cyan)
                 }
                 ProSlider(
@@ -425,9 +449,39 @@ private val PANEL_ROWS = listOf(listOf(0, 1, 2, 3, 4), listOf(5, 6, 7, 8))
 private val PANEL_LABELS: List<String>
     get() = listOf(tr("Coupure"), tr("Réso."), tr("Env."), tr("Déclin"), tr("Accent"), tr("Accordage"), tr("Onde"), tr("Satur."), tr("Volume"))
 
-/** The 303's sound as two compact rows of knobs. */
+/** The Acide tab's sound card, folded and opened by its title. */
+private const val SOUND_FOLD = "Son acide"
+
+/** How long a knob shown from an automation lane stays lit. */
+private const val FOCUS_MS = 4000L
+
+/** The breathing of a knob shown from an automation lane (read when drawn); nothing runs unless [active]. */
 @Composable
-internal fun Panel303(values: List<Float>, setSound: (Int, Float) -> Unit, hold: (Int, Boolean) -> Unit = { _, _ -> }) {
+private fun rememberFocusPulse(active: Boolean): androidx.compose.runtime.State<Float> {
+    if (!active) return remember { androidx.compose.runtime.mutableFloatStateOf(1f) }
+    return rememberInfiniteTransition(label = "focus").animateFloat(
+        0.35f, 1f, androidx.compose.animation.core.infiniteRepeatable(androidx.compose.animation.core.tween(600), androidx.compose.animation.core.RepeatMode.Reverse),
+        label = "focus",
+    )
+}
+
+/** A knob (or slider) shown from an automation lane: an amber ring that breathes ([pulse]) around it. */
+private fun Modifier.focusGlow(pulse: androidx.compose.runtime.State<Float>, amber: androidx.compose.ui.graphics.Color): Modifier =
+    drawWithContent {
+        drawContent()
+        val w = 2.5.dp.toPx()
+        drawRoundRect(
+            amber.copy(alpha = pulse.value), topLeft = androidx.compose.ui.geometry.Offset(w / 2, w / 2),
+            size = androidx.compose.ui.geometry.Size(size.width - w, size.height - w),
+            cornerRadius = androidx.compose.ui.geometry.CornerRadius(10.dp.toPx()), style = androidx.compose.ui.graphics.drawscope.Stroke(w),
+        )
+    }
+
+/** The 303's sound as two compact rows of knobs; [focus]: the one shown from an automation lane, lit. */
+@Composable
+internal fun Panel303(values: List<Float>, setSound: (Int, Float) -> Unit, hold: (Int, Boolean) -> Unit = { _, _ -> }, focus: Int? = null) {
+    val glow = rememberFocusPulse(focus != null)
+    val amber = Neon.Amber
     val defaults = AcidSound().values()
     val knobColors = KnobColors(
         cap = Neon.SurfaceHigh, capEdge = Neon.Outline, pointer = Neon.TextPrimary,
@@ -446,7 +500,7 @@ internal fun Panel303(values: List<Float>, setSound: (Int, Float) -> Unit, hold:
                         colors = knobColors,
                         valueText = knobText(i, values[i]),
                         onHold = { hold(i, it) },
-                        modifier = Modifier.weight(1f).testTag("acid_knob_$i"),
+                        modifier = Modifier.weight(1f).then(if (i == focus) Modifier.focusGlow(glow, amber) else Modifier).testTag("acid_knob_$i"),
                     )
                 }
                 // Same knob width on both rows.

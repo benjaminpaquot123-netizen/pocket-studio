@@ -357,5 +357,11 @@
   "%1$d packs installés ; %2$d n'ont pas pu venir (%3$s) : touche « Tout compléter » pour réessayer.": "%1$d packs installed; %2$d could not come (%3$s): tap “Complete everything” to try again.",
   "Nouveaux packs à découvrir : %1$d (%2$s).": "New packs to discover: %1$d (%2$s).",
   "Packs enrichis de nouveaux sons : %1$d (%2$s).": "Packs with new sounds: %1$d (%2$s).",
-  "Nouveaux packs : %1$d · mises à jour : %2$d (%3$s).": "New packs: %1$d · updates: %2$d (%3$s)."
+  "Nouveaux packs : %1$d · mises à jour : %2$d (%3$s).": "New packs: %1$d · updates: %2$d (%3$s).",
+  "Pas à pas": "Step by step",
+  "Une touche, un morceau complet (environ 3 minutes), prêt à écouter.": "One tap, a whole song (about 3 minutes), ready to hear.",
+  "Idéal pour débuter : je t'explique chaque son.": "Ideal to start: I explain every sound.",
+  "Changer les sons": "Change the sounds",
+  "Les petits plus": "The little extras",
+  "Pour aller plus loin": "Going further"
 }

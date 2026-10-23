@@ -246,7 +246,7 @@ private fun StyleStep(chosen: String?, packs: PacksUi, actions: WizardActions) {
     var open by rememberSaveable { mutableStateOf(chosen) }
     StyleFamilies("wizard", style = { s ->
         StyleCard(s, s.id == chosen, s.id == open, packs.installed.any { it.id == s.id }, { open = if (open == s.id) null else s.id }, actions)
-    }, open = StarterWizard.OPEN_FAMILIES + listOfNotNull(chosen?.let { StarterWizard.style(it) }?.family))
+    }, open = listOfNotNull(chosen?.let { StarterWizard.style(it) }?.family).toSet())
     InstalledPacks(packs, actions)
 }
 

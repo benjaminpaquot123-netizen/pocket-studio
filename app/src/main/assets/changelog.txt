@@ -1,5 +1,5 @@
-Phase 31 : « Ligne du temps et plein écran » (tes retours de la nuit)
-- Ligne du temps pro : toutes les pistes du morceau, zoom, boucle, clips à couper, dupliquer, ouvrir ; courbes sous les pistes.
-- Live en plein écran, grille qui tient à l'écran, cases qui brillent sur le temps ; pads live remplis par l'assistant.
-- Automation : échelle des valeurs et des mesures, « Voir le potard », outil Zone, piste en couleur.
-- Nouveau projet plus beau, démos à écouter d'un toucher ; on arrive sur Morceau ; guide en pages. « C'est pas faux. »
+Phase 32 : « Ligne du temps refaite, pads en plein écran »
+- Ligne du temps : suit enfin la musique, noms des pistes fixes, pistes qui remplissent l'écran, couleurs distinctes, clips lisibles.
+- Pads live en plein écran : grands, vivants sur le temps, boîte à effets qui s'ouvre (filtre, écho, répéter, montée…).
+- Supprimer un projet : plus de saut d'écran ni de projets vides dans la corbeille ; retour direct sur Mes projets.
+- Tablette : textes des boutons en entier. « C'est pas faux. »

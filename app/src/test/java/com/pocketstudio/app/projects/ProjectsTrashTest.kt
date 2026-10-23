@@ -80,4 +80,27 @@ class ProjectsTrashTest {
         compose.onNodeWithTag("project_delete_${open.id}").performClick()
         assertEquals(listOf(open), deleted)
     }
+
+    @Test
+    fun theNewProjectPageClosesOnceAnotherProjectIsOpen() {
+        // « Partir d'un style » makes a song and opens it: back on Projets, the list shows, not the style choice.
+        val a = com.pocketstudio.model.ProjectInfo("p-a", "A", 1_800_000_000_000L, 120.0, 16, 1, false)
+        val b = com.pocketstudio.model.ProjectInfo("p-b", "B", 1_800_000_000_000L, 120.0, 16, 1, false)
+        val current = androidx.compose.runtime.mutableStateOf("p-a")
+        compose.setContent {
+            PocketStudioTheme {
+                ProjectsScreen(ProjectsUi(loading = false, projects = listOf(a, b)), current.value, emptyList(), ProjectsActions())
+            }
+        }
+        compose.onNodeWithTag("project_new").performClick()
+        compose.onNodeWithTag("new_project").assertExists()
+        compose.runOnIdle { current.value = "p-b" }
+        compose.onNodeWithTag("new_project").assertDoesNotExist()
+        compose.onNodeWithTag("projects").assertExists()
+        // Asked again for the new open project: it shows, and closes with its back button.
+        compose.onNodeWithTag("project_new").performClick()
+        compose.onNodeWithTag("new_project").assertExists()
+        compose.onNodeWithTag("new_project_back").performClick()
+        compose.onNodeWithTag("projects").assertExists()
+    }
 }

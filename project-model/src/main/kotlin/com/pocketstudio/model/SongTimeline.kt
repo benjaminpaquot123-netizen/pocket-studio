@@ -10,11 +10,19 @@ package com.pocketstudio.model
 /** One mark of a clip's preview: [start] and [length] in steps of its loop, at height [y] (0 top, 1 bottom), [strength] 0..1. */
 data class PreviewMark(val start: Int, val length: Int, val y: Float, val strength: Float = 1f)
 
-/** What a track holds in a scene, drawn small: its own loop of [steps] steps and its [marks]. */
-data class ClipPreview(val steps: Int, val marks: List<PreviewMark>) {
+/**
+ * What a track holds in a scene, drawn small: its own loop of [steps] steps and its [marks].
+ * [kind] says how to draw them (drum hits as ticks, notes as bars, the 303 as a line); [rows]: the
+ * drum rows used (one per pad that plays), 0 for the others.
+ */
+data class ClipPreview(val steps: Int, val marks: List<PreviewMark>, val kind: Int = NOTES, val rows: Int = 0) {
     val isEmpty: Boolean get() = marks.isEmpty()
 
     companion object {
+        const val NOTES = 0
+        const val DRUMS = 1
+        const val ACID = 2
+
         val EMPTY = ClipPreview(16, emptyList())
 
         /** Marks kept at most (a busy hi-hat line over 64 steps and 16 pads stays well under). */
@@ -48,7 +56,7 @@ fun Project.clipPreview(sceneIndex: Int, key: String): ClipPreview {
 internal fun drumPreview(d: DrumPattern): ClipPreview {
     val steps = d.steps.coerceAtLeast(1)
     val used = d.lanes.indices.filter { lane -> d.lanes[lane].hits.keys.any { it < steps } }
-    if (used.isEmpty()) return ClipPreview(steps, emptyList())
+    if (used.isEmpty()) return ClipPreview(steps, emptyList(), ClipPreview.DRUMS)
     val marks = ArrayList<PreviewMark>()
     // The kick (pad 1) at the bottom, as drum lanes read in most apps.
     used.forEachIndexed { row, lane ->
@@ -57,13 +65,13 @@ internal fun drumPreview(d: DrumPattern): ClipPreview {
             if (step < steps && marks.size < ClipPreview.MAX_MARKS) marks += PreviewMark(step, 1, y, hit.velocity.coerceIn(0.2f, 1f))
         }
     }
-    return ClipPreview(steps, marks)
+    return ClipPreview(steps, marks, ClipPreview.DRUMS, used.size)
 }
 
 internal fun acidPreview(a: AcidPattern): ClipPreview {
     val steps = a.length.coerceIn(1, a.steps.size.coerceAtLeast(1))
     val gated = (0 until minOf(steps, a.steps.size)).filter { a.steps[it].gate }
-    if (gated.isEmpty()) return ClipPreview(steps, emptyList())
+    if (gated.isEmpty()) return ClipPreview(steps, emptyList(), ClipPreview.ACID)
     fun pitch(i: Int) = a.steps[i].note + 12 * a.steps[i].octave
     val low = gated.minOf(::pitch)
     val high = gated.maxOf(::pitch)
@@ -72,7 +80,7 @@ internal fun acidPreview(a: AcidPattern): ClipPreview {
         val length = if (a.steps[i].slide && i + 1 < steps) 2 else 1
         PreviewMark(i, length, heightOf(pitch(i), low, high), if (a.steps[i].accent) 1f else 0.7f)
     }
-    return ClipPreview(steps, marks)
+    return ClipPreview(steps, marks, ClipPreview.ACID)
 }
 
 internal fun notesPreview(c: NoteClip): ClipPreview {

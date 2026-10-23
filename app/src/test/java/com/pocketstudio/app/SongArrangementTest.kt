@@ -9,6 +9,9 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.click
+import androidx.compose.ui.test.swipeRight
+import androidx.compose.ui.test.assertIsSelected
+import androidx.compose.ui.test.assertIsNotSelected
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.test.longClick
 import androidx.compose.ui.test.performSemanticsAction
@@ -325,6 +328,52 @@ class SongArrangementTest {
         // M mutes the drums' mixer channel.
         compose.onNodeWithTag("timeline_mute_drums").performClick()
         assertEquals(listOf(0), muted)
+    }
+
+    @Test
+    fun theTimelineFollowsThePlayheadUntilAFingerScrollsAndPlayBringsItBack() {
+        // Ten parts of four bars (40 bars), 40 dp a bar: about seven bars on the screen.
+        val p = com.pocketstudio.model.Project(drums = DrumPattern().toggle(0, 0)).sanitized()
+            .let { it.copy(song = List(10) { SongPart(0, 4) }).sanitized() }
+        val playing = androidx.compose.runtime.mutableStateOf(true)
+        val step = androidx.compose.runtime.mutableIntStateOf(0)
+        val played = mutableListOf<Int>()
+        compose.setContent {
+            PocketStudioTheme {
+                com.pocketstudio.app.session.TimelineScreen(
+                    com.pocketstudio.app.session.TimelineUi(
+                        p, rows = listOf(com.pocketstudio.app.session.TimelineRow(SongPart.DRUMS, "Batterie", androidx.compose.ui.graphics.Color.Blue)),
+                        playing = playing.value, songIndex = if (playing.value) step.intValue / 64 else -1,
+                        songStep = { if (playing.value) step.intValue else -1 },
+                    ),
+                    com.pocketstudio.app.session.TimelineActions(playPart = { played += it }),
+                    barDp = androidx.compose.ui.unit.Dp(40f),
+                )
+            }
+        }
+        val nearLeft = with(compose.density) { androidx.compose.ui.geometry.Offset(60.dp.toPx(), 40.dp.toPx()) }
+        compose.onNodeWithTag("timeline_follow").assertIsSelected()
+        // The playhead reaches bar 29 (part 8): the page turns, part 8 is now at the screen's left.
+        step.intValue = 28 * 16
+        compose.waitForIdle()
+        compose.onNodeWithTag("timeline_ruler").performTouchInput { click(nearLeft) }
+        assertEquals(listOf(7), played)
+        // A finger scrolls back: « Suivre » goes off and the follow no longer pulls the view.
+        compose.onNodeWithTag("timeline_grid").performTouchInput { swipeRight() }
+        compose.onNodeWithTag("timeline_follow").assertIsNotSelected()
+        step.intValue = 36 * 16
+        compose.waitForIdle()
+        compose.onNodeWithTag("timeline_ruler").performTouchInput { click(nearLeft) }
+        assertTrue(played.last() < 7)
+        // Stop, then Lecture from the start: « Suivre » is back on and the view returns to bar 1.
+        playing.value = false
+        compose.waitForIdle()
+        step.intValue = 0
+        playing.value = true
+        compose.waitForIdle()
+        compose.onNodeWithTag("timeline_follow").assertIsSelected()
+        compose.onNodeWithTag("timeline_ruler").performTouchInput { click(nearLeft) }
+        assertEquals(0, played.last())
     }
 
     @Test

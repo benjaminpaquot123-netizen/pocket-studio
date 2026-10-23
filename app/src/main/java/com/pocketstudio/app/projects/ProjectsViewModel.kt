@@ -79,8 +79,9 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /** Creates [project] (a blank or a demo) named after the next free number unless it has a name; returns its id. */
-    fun create(project: Project, then: (String) -> Unit) = io(tr("Nouveau projet")) {
-        val named = if (project.name.isBlank() || project.name == Project().name) project.copy(name = catalog.nextName()) else project
+    fun create(project: Project, replacing: String? = null, then: (String) -> Unit) = io(tr("Nouveau projet")) {
+        // [replacing]: a project about to go to the trash; its name is free again (no « Mon projet 1 » / « 2 » seesaw).
+        val named = if (project.name.isBlank() || project.name == Project().name) project.copy(name = catalog.nextName(ignoring = replacing)) else project
         val id = catalog.create(named.asNewProject())
         refreshNow()
         withContext(Dispatchers.Main) { then(id) }
@@ -139,10 +140,34 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
         // after the move would bring its folder back, in the list and in the trash at once.
         com.pocketstudio.app.rhythm.ClosingSaves.awaitIdle(CLOSING_WAIT_MS)
         com.pocketstudio.app.rhythm.TakeVault.app.awaitIdle(CLOSING_WAIT_MS)
+        // A blank project nobody touched is deleted outright: no trash entry, no « Annuler » for nothing.
+        if (untouched(info.id)) {
+            val entry = catalog.delete(info.id)
+            catalog.deleteForever(entry)
+            forgetGoneJournals()
+            AppLog.add("Projet vide supprimé : « ${info.name} »")
+            refreshNow()
+            return@io
+        }
         val entry = catalog.delete(info.id)
         AppLog.add("Projet mis à la corbeille : « ${info.name} »")
         _state.value = _state.value.copy(deleted = entry to com.pocketstudio.model.DefaultNames.shown(info.name))
         refreshNow()
+    }
+
+    /** [then] (main thread) gets whether project [id], as saved, is a blank one nobody edited. */
+    fun checkUntouched(id: String, then: (Boolean) -> Unit) = io(tr("Liste des projets"), counts = false) {
+        val untouched = untouched(id)
+        withContext(Dispatchers.Main) { then(untouched) }
+    }
+
+    /** Blank and never edited, without a Live take in progress (its journal lives outside the project). */
+    private fun untouched(id: String): Boolean =
+        catalog.isUntouched(id) && !com.pocketstudio.app.rhythm.LiveTakeJournals.of(getApplication()).file(id).exists()
+
+    /** A line under the buttons of « Mes projets ». */
+    fun say(message: String, ok: Boolean = false) {
+        _state.value = _state.value.copy(message = message, messageOk = ok)
     }
 
     /** The project and its sounds as a .zip in the export folder; [then] gets the file (to share it). [saveFirst]: see [duplicate]. */

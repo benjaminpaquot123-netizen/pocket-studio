@@ -34,6 +34,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.FileOpen
 import androidx.compose.material.icons.filled.Stop
+import androidx.compose.material.icons.filled.Fullscreen
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.height
+import com.pocketstudio.ui.WholeWordsText
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -90,6 +94,8 @@ class LivePadsActions(
     val clear: (Int) -> Unit = {},
     /** The effects box of the live pads' strip (shared with the remix), null: no button. */
     val effects: (() -> Unit)? = null,
+    /** The pads on the whole screen, to play them live (null: no button). */
+    val fullScreen: (() -> Unit)? = null,
 )
 
 private fun beatsLabel(beats: Int) = when {
@@ -147,7 +153,18 @@ fun LivePadsCard(ui: LivePadsUi, actions: LivePadsActions) {
         }
         ui.busy?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = Neon.Amber) }
         if (ui.editing == null) {
-            OutlinedButton(onClick = { actions.edit(0) }, modifier = Modifier.fillMaxWidth().testTag("live_edit")) { Text(tr("Régler les pads")) }
+            Row(Modifier.fillMaxWidth().height(androidx.compose.foundation.layout.IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedButton(onClick = { actions.edit(0) }, modifier = Modifier.weight(1f).fillMaxHeight().testTag("live_edit")) {
+                    WholeWordsText(tr("Régler les pads"), textAlign = TextAlign.Center)
+                }
+                // On stage: the pads big, on the whole screen, with the effects a touch away.
+                actions.fullScreen?.let { open ->
+                    Button(onClick = open, modifier = Modifier.weight(1f).fillMaxHeight().testTag("live_pads_fullscreen")) {
+                        Icon(Icons.Filled.Fullscreen, contentDescription = null)
+                        WholeWordsText(tr("Plein écran"), Modifier.padding(start = 6.dp), textAlign = TextAlign.Center)
+                    }
+                }
+            }
         } else {
             PadEditor(ui.editing, ui.pads.clips.getOrNull(ui.editing), ui.drumSounds, actions)
         }

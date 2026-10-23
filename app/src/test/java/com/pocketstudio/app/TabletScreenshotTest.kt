@@ -62,7 +62,10 @@ class SmallTabletScreenshotTest : ScreenshotTest() {
 
     companion object {
         /** The Live page (phase 27), full screen: only the status bar and the system navigation around it. */
-        val LIVE = setOf("live_grid", "live_fx", "live_acid", "live_rec", "live_rec_done", "live_fx_lock", "live_fx_build", "live_fx_rolls", "live_fx_settings")
+        val LIVE = setOf(
+            "live_grid", "live_fx", "live_acid", "live_rec", "live_rec_done", "live_fx_lock", "live_fx_build", "live_fx_rolls", "live_fx_settings",
+            "live_pads_full", "live_pads_full_fx",
+        )
         /** The effects box where each sound is chosen (phase 25), on Benjamin's tablet too. */
         val EFFECTS = setOf("effects_box", "effects_picker", "effects_full", "synth_effects", "acid_effects", "effects_scenes", "effects_vibe", "effects_styles")
         /** The 303 made in the assistant and « + Piste »'s choices, on Benjamin's tablet too. */

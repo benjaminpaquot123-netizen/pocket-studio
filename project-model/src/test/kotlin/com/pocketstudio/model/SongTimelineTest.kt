@@ -29,6 +29,8 @@ class SongTimelineTest {
         val kickY = drums.marks.first { it.start == 0 }.y
         val snareY = drums.marks.first { it.start == 4 }.y
         assertTrue(kickY > snareY)
+        assertEquals(ClipPreview.DRUMS, drums.kind)
+        assertEquals(2, drums.rows)
         val notes = p.clipPreview(0, SongPart.inst(0))
         assertEquals(listOf(0, 8), notes.marks.map { it.start })
         assertEquals(4, notes.marks[0].length)
@@ -36,6 +38,8 @@ class SongTimelineTest {
         assertTrue(notes.marks[1].y < notes.marks[0].y)
         val acid = p.clipPreview(0, SongPart.ACID)
         assertEquals(listOf(0, 2), acid.marks.map { it.start })
+        assertEquals(ClipPreview.ACID, acid.kind)
+        assertEquals(ClipPreview.NOTES, notes.kind)
         // Scene B: an empty 2-bar beat.
         assertTrue(p.clipPreview(1, SongPart.DRUMS).isEmpty)
         assertEquals(32, p.clipPreview(1, SongPart.DRUMS).steps)

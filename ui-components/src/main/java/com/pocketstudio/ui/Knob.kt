@@ -106,7 +106,12 @@ fun Knob(
             val dir = Offset(cos(angle).toFloat(), sin(angle).toFloat())
             drawLine(colors.pointer, c + dir * (capR * 0.25f), c + dir * (capR * 0.8f), strokeWidth = r * 0.1f, cap = StrokeCap.Round)
         }
-        Text(label, color = colors.label, fontSize = 11.sp, fontWeight = FontWeight.Medium, textAlign = TextAlign.Center, maxLines = 1)
+        // A narrow knob (a tablet pane, a big interface size): the label shrinks a little rather
+        // than lose its last letters (« Accordag »).
+        WholeWordsText(
+            label, color = colors.label, style = androidx.compose.ui.text.TextStyle(fontSize = 11.sp), fontWeight = FontWeight.Medium,
+            textAlign = TextAlign.Center, maxLines = 1, minScale = 0.75f,
+        )
         if (valueText != null) Text(valueText, color = colors.value, fontSize = 11.sp, textAlign = TextAlign.Center, maxLines = 1)
     }
 }

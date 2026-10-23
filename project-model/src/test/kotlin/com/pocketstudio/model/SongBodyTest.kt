@@ -65,12 +65,13 @@ class SongBodyTest {
         for (style in StarterWizard.STYLES) {
             val p = song(style)
             val roles = style.lines.filter { !it.off }.map { it.role }.toSet()
-            // The kit's kick (as loud as a mastered song alone) comes down; the hats go to the side.
+            // Kit v2's voices are near their place already: the kick and the hats need hardly any
+            // fader (kit v1's kick came down 6 dB, its hats went to the top); the hats go to the side.
             if (Role.Kick in roles && style.lines.first { it.role == Role.Kick }.voice == null) {
-                assertTrue(style.id, p.mixer.channels[Mixer.padChannel(Role.Kick.lane)].volume < 0.6f)
+                assertEquals(style.id, 0.8f, p.mixer.channels[Mixer.padChannel(Role.Kick.lane)].volume, 0.03f)
             }
             if (Role.Hat in roles) assertTrue(style.id, p.drums.lanes[Role.Hat.lane].pan < 0f)
-            if (Role.Hat in roles && style.lines.first { it.role == Role.Hat }.voice == null) assertEquals(style.id, 1f, p.mixer.channels[Mixer.padChannel(Role.Hat.lane)].volume)
+            if (Role.Hat in roles && style.lines.first { it.role == Role.Hat }.voice == null) assertEquals(style.id, 0.8f, p.mixer.channels[Mixer.padChannel(Role.Hat.lane)].volume, 0.03f)
             // Something glues the master (a compressor or a saturation, the style's or the assistant's), under the limiter.
             assertTrue(style.id, p.mixer.master.any { it.type == EffectType.COMPRESSOR.ordinal || it.type == EffectType.SATURATION.ordinal })
             assertEquals(style.id, WizardMix.MASTER_DB, p.mixer.masterDb)

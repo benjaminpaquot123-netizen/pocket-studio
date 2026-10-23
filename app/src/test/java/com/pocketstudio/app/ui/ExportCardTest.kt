@@ -9,7 +9,6 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import com.pocketstudio.app.mixer.ExportCard
 import com.pocketstudio.app.mixer.MixerActions
-import com.pocketstudio.app.mixer.ShareSongCard
 import com.pocketstudio.app.rhythm.ExportFade
 import com.pocketstudio.app.rhythm.ExportUi
 import com.pocketstudio.app.rhythm.ExportWhat
@@ -57,19 +56,6 @@ class ExportCardTest {
         assertEquals(ExportWhat.Stems, what)
         compose.onNodeWithTag("export_fade_Long").performClick()
         assertEquals(ExportFade.Long, fade)
-    }
-
-    @Test
-    fun theShareCardSharesInOneTouch() {
-        var shared = 0
-        var scrolled = 0
-        compose.setContent {
-            PocketStudioTheme { ShareSongCard(ExportUi(), hasSong = true, share = { shared++ }) { scrolled++ } }
-        }
-        compose.onNodeWithTag("share_song").performClick()
-        assertEquals(1, shared)
-        compose.onNodeWithTag("to_export").performClick()
-        assertEquals(1, scrolled)
     }
 
     @Test

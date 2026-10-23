@@ -29,12 +29,25 @@ enum class StepGoal {
         Volumes -> tr("Volumes")
         Share -> tr("Partager")
     }
+
+    /** What to do, in a few words: the one-line « Prochaine étape » strip says it (« 3/8 · Ajoute une mélodie »). */
+    val action: String get() = when (this) {
+        Rhythm -> tr("Pose un rythme")
+        Bass -> tr("Ajoute une basse")
+        Melody -> tr("Ajoute une mélodie")
+        Sections -> tr("Fais une deuxième section")
+        Song -> tr("Enchaîne tes sections")
+        Voice -> tr("Pose ta voix")
+        Volumes -> tr("Règle les volumes")
+        Share -> tr("Partage ton morceau")
+    }
 }
 
 /**
  * One step of the "Prochaine étape" card: [done] when the project shows it, [hint] what to do in
  * plain words, [tab] where to do it and [button] the words on the button that goes there.
- * [manual]: the project cannot show it, the user ticks it ("C'est fait").
+ * [manual]: the project cannot show it, the user ticks it ("C'est fait"). [action]: the hint in
+ * a few words, for the one-line strip.
  */
 data class NextStep(
     val goal: StepGoal,
@@ -43,6 +56,7 @@ data class NextStep(
     val tab: AppTab,
     val button: String,
     val manual: Boolean = false,
+    val action: String = goal.action,
 ) {
     val number: Int get() = goal.ordinal + 1
 }
@@ -93,6 +107,7 @@ fun nextSteps(project: Project, marks: Set<StepGoal> = emptySet()): List<NextSte
             if (filled.size < 2) tr("Fais une deuxième section : duplique ta scène dans l'onglet Morceau, puis change-la (un couplet, un refrain).")
             else tr("Donne un nom à chaque section (Intro, Couplet, Refrain…) dans l'onglet Morceau pour t'y retrouver."),
             AppTab.Morceau, tr("Aller à Morceau"),
+            action = if (filled.size < 2) StepGoal.Sections.action else tr("Nomme tes sections"),
         ),
         NextStep(StepGoal.Song, song, tr("Enchaîne tes sections dans le morceau : au moins trois parties, avec un début et une fin."), AppTab.Morceau, tr("Aller à Morceau")),
         NextStep(

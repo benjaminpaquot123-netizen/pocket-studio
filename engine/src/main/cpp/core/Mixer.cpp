@@ -42,15 +42,7 @@ void Mixer::prepare(int sampleRate) {
     // Stream closed: an effect still waiting for its swap goes in at once.
     for (int ch = 0; ch < kChannels; ++ch) finishSwaps(ch);
     stripLevel_.fill(0.0f);
-    release_ = std::exp(-1.0f / (0.12f * rate));  // 120 ms release
-    lookAhead_ = std::clamp(static_cast<int>(std::lround(kLookAheadMs * 0.001f * rate)), 1, kLookAheadMax);
-    delayL_.fill(0.0f);
-    delayR_.fill(0.0f);
-    gainRing_.fill(1.0f);
-    gainSum_ = lookAhead_;
-    releasedGain_ = 1.0f;
-    minHead_ = minTail_ = 0;
-    limFrame_ = 0;
+    chain_->prepare(sampleRate);
     masterGain_.configure(rate, 15.0f);
     masterGain_.snap(masterGain_.target());
     updateTargets();
@@ -228,6 +220,7 @@ void Mixer::processInserts(int ch, float* l, float* r, int n) {
         const bool swapping = sw.type >= 0 || sw.fade < 1.0f;
         if (!swapping && g.on && g.mix >= 1.0f) {
             slot.process(l, r, n);
+            meterReduction(ch, k, slot);
             continue;
         }
         if (!g.on && g.mix <= 0.0f) {
@@ -269,6 +262,7 @@ void Mixer::processInserts(int ch, float* l, float* r, int n) {
             if (ends) swapNow(ch, static_cast<int>(k), sw.type, true);
             from = to;
         }
+        meterReduction(ch, k, slot);
     }
 }
 
@@ -605,30 +599,40 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
         blewUp_.store(true, std::memory_order_relaxed);
     }
 
-    float masterPeak = 0.0f, inPeak = 0.0f;
-    float minGain = 1.0f;
+    // The master's gain, then the master chain (drive, clipper, true-peak limiter, meter), the
+    // click / test tone added after the drive. Without the limiter (a pre-master export) the peaks
+    // over 0 dBFS stay as they are, delayed the same.
     bool directBlewUp = false;
     for (int i = 0; i < n; ++i) {
         float l = mL_[static_cast<size_t>(i)], r = mR_[static_cast<size_t>(i)];
         if (!std::isfinite(l)) l = 0.0f;
         if (!std::isfinite(r)) r = 0.0f;
-        // The master's gain, the click, then the look-ahead limiter (ceiling -1 dBFS). Without the
-        // limiter (a pre-master export) the peaks above 0 dBFS stay as they are (delayed the same).
         const float master = masterGain_.next();
-        l *= master;
-        r *= master;
+        outL_[static_cast<size_t>(i)] = l * master;
+        outR_[static_cast<size_t>(i)] = r * master;
         if (direct) {
             float d = direct[offset + i];
             if (!std::isfinite(d)) {
                 d = 0.0f;
                 directBlewUp = true;
             }
-            l += d;
-            r += d;
+            click_[static_cast<size_t>(i)] = d;
         }
-        inPeak = std::max(inPeak, std::max(std::fabs(l), std::fabs(r)));
-        const float gain = limit(l, r);
-        minGain = std::min(minGain, gain);
+    }
+    MasterChain::Stats stats;
+    if (chainBypass_) {
+        for (int i = 0; i < n; ++i) {
+            const float d = direct ? click_[static_cast<size_t>(i)] : 0.0f;
+            outL_[static_cast<size_t>(i)] += d;
+            outR_[static_cast<size_t>(i)] += d;
+            stats.inPeak = std::max(stats.inPeak, std::max(std::fabs(outL_[static_cast<size_t>(i)]), std::fabs(outR_[static_cast<size_t>(i)])));
+        }
+    } else {
+        stats = chain_->process(outL_.data(), outR_.data(), direct ? click_.data() : nullptr, n);
+    }
+    float masterPeak = 0.0f;
+    for (int i = 0; i < n; ++i) {
+        const float l = outL_[static_cast<size_t>(i)], r = outR_[static_cast<size_t>(i)];
         masterPeak = std::max(masterPeak, std::max(std::fabs(l), std::fabs(r)));
         if (outChannels == 1) {
             out[i] = 0.5f * (l + r);
@@ -640,47 +644,10 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
     }
     for (int ch = 0; ch < kChannels; ++ch) storeMax(peaks_[static_cast<size_t>(ch)], blockPeaks[static_cast<size_t>(ch)]);
     storeMax(masterPeak_, masterPeak);
-    storeMax(masterInPeak_, inPeak);
+    storeMax(masterInPeak_, stats.inPeak);
     if (directBlewUp) blewUp_.store(true, std::memory_order_relaxed);
-    limiterGainOut_.store(minGain, std::memory_order_relaxed);
-    storeMin(limiterMin_, minGain);
-}
-
-float Mixer::limit(float& l, float& r) {
-    // The gain each frame needs to stay under the ceiling, its lowest over the look-ahead window
-    // (a monotonic queue), released over 120 ms, then averaged over the window: the gain glides
-    // down along the window and is at most the peak's own when the peak comes out, delayed by
-    // lookAhead - 1 frames. A pure gain on a delayed signal: no distortion, no overshoot.
-    const int window = lookAhead_;
-    const int64_t t = limFrame_++;
-    // A non-finite or absurd sample (only from a broken source) would make inf * 0 = NaN below.
-    if (!(std::fabs(l) < 1.0e6f)) l = 0.0f;
-    if (!(std::fabs(r) < 1.0e6f)) r = 0.0f;
-    const float peak = std::max(std::fabs(l), std::fabs(r));
-    const float need = peak > kCeiling ? kCeiling / peak : 1.0f;
-    while (minTail_ != minHead_ && minGain_[static_cast<size_t>((minTail_ - 1) & (kQueue - 1))] >= need) minTail_ = (minTail_ - 1) & (kQueue - 1);
-    minFrame_[static_cast<size_t>(minTail_)] = t;
-    minGain_[static_cast<size_t>(minTail_)] = need;
-    minTail_ = (minTail_ + 1) & (kQueue - 1);
-    while (minFrame_[static_cast<size_t>(minHead_)] <= t - window) minHead_ = (minHead_ + 1) & (kQueue - 1);
-    const float held = minGain_[static_cast<size_t>(minHead_)];
-    releasedGain_ = held <= releasedGain_ ? held : held + (releasedGain_ - held) * release_;
-    const auto at = static_cast<size_t>(t % window);
-    gainSum_ += static_cast<double>(releasedGain_) - static_cast<double>(gainRing_[at]);
-    gainRing_[at] = releasedGain_;
-    const float smooth = std::min(1.0f, static_cast<float>(gainSum_ / window));
-    delayL_[at] = l;
-    delayR_[at] = r;
-    const auto out = static_cast<size_t>((t + 1) % window);  // lookAhead - 1 frames ago
-    l = delayL_[out];
-    r = delayR_[out];
-    if (!limiterOn_) return 1.0f;
-    l *= smooth;
-    r *= smooth;
-    // Rounding in the running sum: never a hair over the ceiling.
-    l = std::clamp(l, -kCeiling, kCeiling);
-    r = std::clamp(r, -kCeiling, kCeiling);
-    return smooth;
+    limiterGainOut_.store(stats.minGain, std::memory_order_relaxed);
+    storeMin(limiterMin_, stats.minGain);
 }
 
 float Mixer::blockPeak(const float* l, const float* r, int n) {
@@ -725,6 +692,8 @@ void Mixer::setClockRunning(bool on) {
     if (on == clock_) return;
     clock_ = on;
     perf_.setClock(on);
+    // ▶: the integrated loudness and the true peak count from here.
+    if (on) chain_->meter().reset();
     if (on) return;
     // Stopped: what waited for a line happens now; a throw counting steps ends.
     reverb_.setFreeze(freezeWant_);

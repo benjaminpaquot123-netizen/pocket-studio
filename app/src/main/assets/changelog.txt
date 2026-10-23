@@ -1,5 +1,5 @@
-Phase 32 : « Ligne du temps refaite, pads en plein écran »
-- Ligne du temps : suit enfin la musique, noms des pistes fixes, pistes qui remplissent l'écran, couleurs distinctes, clips lisibles.
-- Pads live en plein écran : grands, vivants sur le temps, boîte à effets qui s'ouvre (filtre, écho, répéter, montée…).
-- Supprimer un projet : plus de saut d'écran ni de projets vides dans la corbeille ; retour direct sur Mes projets.
-- Tablette : textes des boutons en entier. « C'est pas faux. »
+Phase 33 : « Finis ton morceau, et qu'il sonne »
+- ▶ joue tout le morceau depuis n'importe quel onglet ; « ⟳ Partie » pour boucler ; la position (mes. 14/60) reste sous la barre.
+- ⤴ Partager en haut, partout : un petit check-up avant d'envoyer (solo oublié, saturation, morceau trop court), M4A ou WAV. Après l'assistant : « Ton morceau est prêt ».
+- Toucher le tempo pour le changer, appui long sur le nom pour renommer, bandeau « Solo actif : tout désactiver ».
+- Son : compresseur honnête, nouvelle sortie générale qui ne sature jamais et vise le bon volume selon le style (affiché en direct), Saturation et Distorsion plus propres, export 44,1 kHz / 16 bits. « Le gras, c'est la vie. »

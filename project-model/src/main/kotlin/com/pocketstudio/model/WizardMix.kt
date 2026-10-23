@@ -15,12 +15,14 @@ import kotlin.math.pow
  */
 internal object WizardMix {
     /**
-     * Loudness (LUFS) of each built-in kit voice played alone, 4 hits a bar at 128 BPM, through the
-     * engine (audit « corps », kitlvl): the kick as loud as a mastered song, the closed hat 40 dB under it.
+     * Loudness (LUFS) of each voice of kit v2 ([Project.KIT_V2], the assistant's songs) played
+     * alone, 4 hits a bar at 128 BPM, through the engine without its limiter (phase 33): each near
+     * its role's place in [ROLE_LUFS], the rim (a click) under it. Kit v1 had the kick at -5.5 and
+     * the closed hat at -45: the mix lifted the hats with full faders and a 9 dB shelf.
      */
-    val KIT_LUFS = floatArrayOf(
-        -5.5f, -11.9f, -17.2f, -14.0f, -15.9f, -45.0f, -30.5f, -9.9f,
-        -10.1f, -11.4f, -32.4f, -24.0f, -25.9f, -18.1f, -14.2f, -21.7f,
+    val KIT_LUFS_V2 = floatArrayOf(
+        -11.5f, -11.9f, -17.0f, -16.0f, -16.0f, -27.0f, -27.0f, -18.0f,
+        -18.0f, -18.0f, -30.9f, -22.0f, -28.0f, -22.0f, -22.0f, -22.0f,
     )
 
     /** Where each line of the beat sits in the same figure: the kick the reference, the hats far under it. */
@@ -32,17 +34,11 @@ internal object WizardMix {
     /** The stereo place of each line (the kick, the snare, the clap and the low end stay in the centre). */
     val PANS = mapOf(Role.Hat to -0.2f, Role.OpenHat to 0.2f, Role.Perc to 0.35f, Role.Perc2 to -0.35f, Role.Ride to 0.25f, Role.Tom to 0.3f)
 
-    /** Lines whose sound is all high frequencies: what their fader cannot add, an 8 kHz shelf adds. */
-    private val BRIGHT = setOf(Role.Hat, Role.OpenHat, Role.Ride, Role.Perc, Role.Perc2)
-
     /** The most a fader adds (1.0 = (1 / 0.8)² ≈ +3.9 dB, engine Mixer). */
     val FADER_MAX_DB = (40 * log10(1 / 0.8)).toFloat()
 
     /** The fader position of [db] decibels (0.8 = 0 dB, the engine's (v / 0.8)² law). */
     fun fader(db: Float): Float = (0.8f * 10f.pow(db / 40f)).coerceIn(0f, 1f)
-
-    /** The most the 8 kHz shelf of the pad's equaliser adds for a quiet bright line. */
-    private const val SHELF_MAX_DB = 9f
 
     /** Fader of each melodic part (its sound already calibrated, [SoundLibrary.SYNTH_GAIN_DB]), in dB. */
     private fun partDb(part: Part, held: Boolean): Float = when (part) {
@@ -62,9 +58,9 @@ internal object WizardMix {
     fun isShort(rhythm: String): Boolean = StepLine.parse(rhythm).let { e -> e.isNotEmpty() && e.all { it.length <= 2 } }
 
     /**
-     * The beat balanced: each built-in kit voice brought to its line's place ([ROLE_LUFS]) by its
-     * pad's strip (a bright line short of it also gets the 8 kHz shelf), a kit voice rendered as a
-     * sample by its gain; every line panned to its place. A pack's sound keeps its level.
+     * The beat balanced: each built-in kit voice (kit v2) brought to its line's place ([ROLE_LUFS])
+     * by its pad's fader (a few dB: the kit is near it already), a kit voice rendered as a sample
+     * by its gain; every line panned to its place. A pack's sound keeps its level.
      */
     fun withDrumMix(project: Project, style: Style, sounds: Map<Role, PadSample?>): Project {
         var p = project
@@ -82,7 +78,7 @@ internal object WizardMix {
                 line.voice != null -> line.voice to 0f
                 else -> continue
             }
-            var db = target - (KIT_LUFS[voice] + base)
+            var db = target - (KIT_LUFS_V2[voice] + base)
             if (sample != null) {
                 // A rendered kit voice: its own gain first (up to x2), the strip for the rest.
                 val gain = (sample.gain * 10f.pow(db / 20f)).coerceIn(0f, 2f)
@@ -91,13 +87,7 @@ internal object WizardMix {
             }
             if (kotlin.math.abs(db) < 0.5f) continue
             val ch = Mixer.padChannel(lane)
-            var c = channels[ch].copy(volume = fader(db.coerceAtMost(FADER_MAX_DB)))
-            val rest = db - FADER_MAX_DB
-            if (rest > 1f && line.role in BRIGHT) {
-                val slot = c.inserts.indexOfFirst { it.type == 0 }
-                val shelf = 0.5f + rest.coerceAtMost(SHELF_MAX_DB) / 24f
-                if (slot >= 0) c = c.copy(inserts = c.inserts.toMutableList().also { it[slot] = Insert(EffectType.EQ.ordinal, listOf(0.5f, 0.5f, shelf, 0f)) })
-            }
+            val c = channels[ch].copy(volume = fader(db.coerceAtMost(FADER_MAX_DB)))
             channels = channels.toMutableList().also { it[ch] = c.sanitized() }
         }
         p = p.copy(drums = p.drums.copy(lanes = lanes), mixer = p.mixer.copy(channels = channels))
@@ -159,6 +149,24 @@ internal object WizardMix {
     private val OWN_PUMP = setOf("gabber", "acidcore", "industrial_techno", "hard_techno")
 
     /**
+     * The drum bus's glue: a light compressor whose detector skips the kick's low end (~90 Hz),
+     * then a touch of saturation. Under the threshold both leave the sound as it is (0 dB, flat to
+     * 18 kHz: the engine test glue_chains_flat_under_threshold holds the same numbers). Before phase
+     * 33 the compressor added a fixed +4.2 dB, the saturation hid a 12 kHz low-pass, an EQ added
+     * +2 dB of air for the quiet hats of kit v1.
+     */
+    val BUS_GLUE = listOf(
+        Insert(EffectType.COMPRESSOR.ordinal, listOf(0.6f, 0.25f, 0.45f, 0.3f, 0f, 0f, 0f, 0.5f, 1f)),
+        Insert(EffectType.SATURATION.ordinal, listOf(0.15f, EffectType.TONE_OPEN, 1f, 0.7f, 1f)),
+    )
+
+    /** The master's glue, the same way (before phase 33: +3.7 dB, and -3.1 dB at 18 kHz). */
+    val MASTER_GLUE = listOf(
+        Insert(EffectType.COMPRESSOR.ordinal, listOf(0.6f, 0.2f, 0.7f, 0.45f, 0f, 0f, 0f, 0.5f, 1f)),
+        Insert(EffectType.SATURATION.ordinal, listOf(0.2f, EffectType.TONE_OPEN, 1f, 0.7f, 1f)),
+    )
+
+    /**
      * What glues the song when the style does not: the beat through a light compressor and some
      * saturation, the master through a gentle compressor and saturation (a light OTT first in bass
      * music), and in house and techno the bass ducked by the kick (the pump).
@@ -176,12 +184,7 @@ internal object WizardMix {
         }
         if (hasDrums && channels[0].inserts.all { it.type == 0 }) {
             channels = channels.toMutableList().also {
-                it[0] = it[0].copy(inserts = free(it[0].inserts, listOf(
-                    Insert(EffectType.COMPRESSOR.ordinal, listOf(0.6f, 0.25f, 0.45f, 0.3f)),
-                    Insert(EffectType.SATURATION.ordinal, listOf(0.15f, 0.85f, 1f, 0.7f)),
-                    // A touch of air (+2 dB over 8 kHz): the kit's hats are far under its kick.
-                    Insert(EffectType.EQ.ordinal, listOf(0.5f, 0.5f, 0.5f + 2f / 24f, 0f)),
-                ))).sanitized()
+                it[0] = it[0].copy(inserts = free(it[0].inserts, BUS_GLUE)).sanitized()
             }
         }
         // The style's own master (an OTT) keeps it, the glue goes after it; a master already squashed and saturated (acidcore) stays.
@@ -189,10 +192,7 @@ internal object WizardMix {
             val ott = if (style.family == "Bass music" && master.none { it.type == EffectType.OTT.ordinal }) {
                 listOf(Insert(EffectType.OTT.ordinal, listOf(0.25f, 0.5f, 0.5f, 0.5f)))
             } else emptyList()
-            master = free(master, ott + listOf(
-                Insert(EffectType.COMPRESSOR.ordinal, listOf(0.6f, 0.2f, 0.7f, 0.45f)),
-                Insert(EffectType.SATURATION.ordinal, listOf(0.2f, 0.85f, 1f, 0.8f)),
-            ))
+            master = free(master, ott + MASTER_GLUE)
         }
         if (style.family in setOf("House", "Techno") && style.id !in OWN_PUMP) {
             val bass = partOfTrack.entries.firstOrNull { it.value == Part.Bass }?.key?.let { InstrumentTrack.mixerChannel(it) }

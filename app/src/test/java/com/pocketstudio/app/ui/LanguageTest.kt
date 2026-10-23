@@ -62,7 +62,7 @@ class LanguageTest {
     private fun topBar() = compose.setContent {
         PocketStudioTheme {
             Box(Modifier.width(400.dp)) {
-                TopBar(TopBarUi("Mon morceau", 120.0, playing = false, canUndo = true, canRedo = true), TopBarActions())
+                TopBar(TopBarUi("Mon morceau", playing = false, canUndo = true, canRedo = true), TopBarActions())
             }
         }
     }

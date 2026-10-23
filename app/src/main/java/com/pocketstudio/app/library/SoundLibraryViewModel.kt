@@ -502,6 +502,8 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         val job = finishOrRelease(Dispatchers.Default, OfflineExport::close) { OfflineExport() }!!
         val data = try {
             NativeEngine.captureInto(job) {
+                // The kit of the assistant's songs (kit v2): WizardMix places these sounds by its levels.
+                NativeEngine.setKitVersion(com.pocketstudio.model.Project.KIT_V2)
                 NativeEngine.setTempo(120.0)
                 NativeEngine.setPatternSteps(16)
                 NativeEngine.setDrumHit(voice, 0, 1f)
@@ -672,6 +674,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                 partAudio.forEach { a -> natives += a?.let { (pcm, _) -> com.pocketstudio.engine.NativeSample.create(pcm.data, pcm.channels, pcm.sampleRate) } }
             }
             NativeEngine.captureInto(job) {
+                NativeEngine.setKitVersion(com.pocketstudio.model.Project.KIT_V2)  // as the song will have it
                 NativeEngine.setTempo(style.bpm)
                 NativeEngine.setSwing(style.swing)
                 NativeEngine.setPatternSteps(steps)

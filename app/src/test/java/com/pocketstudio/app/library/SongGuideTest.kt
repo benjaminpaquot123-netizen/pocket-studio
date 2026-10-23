@@ -76,7 +76,7 @@ class SongGuideTest {
         assertTrue(pages.size >= 3)
         pages.drop(1).forEach { assertTrue(it.title, it.lines.size in 1..3) }
         assertTrue(pages.all { it.lines.isNotEmpty() })
-        assertTrue(all.contains("tout le morceau") && all.contains("« Écouter » à côté de Jouer") && all.contains("« cette section »"))
+        assertTrue(all.contains("tout le morceau") && all.contains("« ⟳ Partie », juste sous ▶"))
         assertTrue(all.contains("Intro → Couplet → Refrain → Couplet → Refrain → Intro pour finir : environ "))
         // Nothing to save by hand.
         assertTrue(all.contains("Pas besoin de sauvegarder"))

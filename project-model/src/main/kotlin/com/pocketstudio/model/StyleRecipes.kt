@@ -701,7 +701,7 @@ internal val STYLE_RECIPES: List<Style> = listOf(
         references = listOf("Confusion A – Out of World (1997)", "Hardfloor – Acperience 1 (1992)", "Mescalinum United – We Have Arrived (1990)"),
         kit = mapOf(Role.Kick to "gabber", Role.OpenHat to "tr909", Role.Hat to "tr909"),
         form = SongForm.Rave,
-        effects = listOf(StyleFx("kick", preset = "distortion"), StyleFx("acid", insert = "SATURATION", delay = 0.12f, params = listOf(0.45f, 0.75f, 1.0f, 0.7f)), StyleFx("master", insert = "OTT", params = listOf(0.3f, 0.5f, 0.5f, 0.5f)), StyleFx("master", insert = "SATURATION", params = listOf(0.2f, 0.85f, 1.0f, 0.8f))),
+        effects = listOf(StyleFx("kick", preset = "distortion"), StyleFx("acid", insert = "SATURATION", delay = 0.12f, params = listOf(0.45f, 0.75f, 1.0f, 0.7f)), StyleFx("master", insert = "OTT", params = listOf(0.3f, 0.5f, 0.5f, 0.5f)), StyleFx("master", insert = "SATURATION", params = listOf(0.2f, 1.0f, 1.0f, 0.7f))),
         riser = true,
     ),
     Style(

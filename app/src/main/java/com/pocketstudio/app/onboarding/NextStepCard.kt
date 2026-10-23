@@ -29,13 +29,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -43,7 +41,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.pocketstudio.app.ui.AppTab
-import com.pocketstudio.model.Project
 import com.pocketstudio.ui.Neon
 import com.pocketstudio.ui.NeonCard
 import com.pocketstudio.ui.SectionLabel
@@ -89,25 +86,11 @@ class NextStepPrefs(context: Context, private val projectId: String) {
 }
 
 /**
- * The "Prochaine étape" card of the open project ([projectId]), at the top of the Rythme tab:
- * shown until every step is done or the user closes it. [go] opens a tab.
- */
-@Composable
-fun ProjectNextSteps(project: Project, projectId: String, share: () -> Unit = {}, showHere: (() -> Unit)? = null, go: (AppTab) -> Unit) {
-    val context = LocalContext.current
-    val prefs = remember(projectId, NextStepPrefs.changes) { NextStepPrefs(context, projectId) }
-    if (prefs.closed) return
-    val steps = nextSteps(project, prefs.marks)
-    if (steps.all { it.done }) return
-    NextStepCard(steps, go = go, mark = prefs::mark, close = prefs::close, share = share, showHere = showHere)
-}
-
-/**
  * The checklist from a first beat to a shared song: seven numbered steps (ticked when done), and
  * the one chosen (the first left to do at first) with its hint and a button to the right tab.
  * [here]: the tab the card is on (no button to it, but [showHere] when given: "Voir la grille").
  * [share] exports and opens the share sheet; the step is ticked once the sheet opens (see
- * [rememberShareSong][com.pocketstudio.app.export.rememberShareSong]), not when touched.
+ * [ShareSongProgress][com.pocketstudio.app.export.ShareSongProgress]), not when touched.
  * Folds by its title; the cross closes it (Outils › Aide shows it again).
  */
 @Composable
@@ -121,6 +104,8 @@ fun NextStepCard(
     showHere: (() -> Unit)? = null,
     /** One line that opens on a touch (a phone: the grid stays on screen under it); null: a phone's width decides. */
     compact: Boolean? = null,
+    /** The card opened from the one-line strip ([NextStepStrip]): its « Replier » folds it back into the strip. */
+    shrink: (() -> Unit)? = null,
 ) {
     val next = steps.next() ?: return
     var chosenGoal by rememberSaveable { mutableStateOf<StepGoal?>(null) }
@@ -138,8 +123,8 @@ fun NextStepCard(
                 tr("Prochaine étape · %d/%d", steps.count { it.done }, steps.size),
                 Modifier.weight(1f), foldKey = "next_steps",
             )
-            if (small) {
-                IconButton(onClick = { opened = false }, modifier = Modifier.size(48.dp).testTag("next_steps_shrink")) {
+            if (small || shrink != null) {
+                IconButton(onClick = { shrink?.invoke() ?: run { opened = false } }, modifier = Modifier.size(48.dp).testTag("next_steps_shrink")) {
                     Icon(Icons.Filled.ExpandLess, contentDescription = tr("Replier"), tint = Neon.TextSecondary)
                 }
             }

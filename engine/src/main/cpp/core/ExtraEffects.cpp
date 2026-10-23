@@ -50,21 +50,66 @@ float Distortion::shape(int type, float x) {
     }
 }
 
+double Distortion::antiderivative(int type, double x) {
+    // The large parts in double (their differences are divided by small steps); the small,
+    // smooth exponential parts in float (faster, and their rounding stays under 1e-7).
+    switch (type) {
+        case 1: {
+            if (x >= 0.0) return x + 0.5 * (static_cast<double>(std::exp(static_cast<float>(-2.0 * x))) - 1.0);
+            return -0.8 * (x - (static_cast<double>(std::exp(static_cast<float>(3.0 * x))) - 1.0) / 3.0);
+        }
+        case 2: return std::fabs(x) <= 1.0 ? 0.5 * x * x : std::fabs(x) - 0.5;
+        case 3: {
+            // The fold is a triangle of period 4 and zero mean: its integral is periodic too.
+            double m = std::fmod(x - 1.0, 4.0);
+            if (m < 0.0) m += 4.0;
+            return (m <= 2.0 ? m - 0.5 * m * m : 0.5 * (m - 3.0) * (m - 3.0) - 0.5) + 0.5;
+        }
+        default: {
+            // ln cosh x = |x| - ln 2 + ln(1 + e^-2|x|), without overflow; past 9 the last term is
+            // under 1e-8. ln(1 + e) for e in [0, 1]: a degree-8 polynomial (error 1e-7, its slope's
+            // 1e-5: the anti-aliased output is the slope's mean, -100 dB off).
+            const double a = std::fabs(x);
+            if (a >= 9.0) return a - 0.69314718055994531;
+            const float e = std::exp(static_cast<float>(-2.0 * a));
+            const float l = e * (0.9999914545712962f + e * (-0.4998011631988066f + e * (0.33133400570038224f + e * (-0.239190717256982f +
+                            e * (0.1647834972080014f + e * (-0.09231376860434833f + e * (0.0344185935012013f + e * -0.006074877643463143f)))))));
+            return a + static_cast<double>(l) - 0.69314718055994531;
+        }
+    }
+}
+
 void Distortion::process(float* l, float* r, int n) {
-    const float drive = expMap(p_[0], 1.0f, 60.0f);
+    const float target = expMap(p_[0], 1.0f, 60.0f);
     const float tone = onePoleCoef(rate_, expMap(p_[1], 800.0f, 18000.0f));
     const int type = std::min(kTypes - 1, static_cast<int>(p_[2] * kTypes));
     const float mix = p_[3];
-    // Levelled: a half-scale input comes out about half scale whatever the drive.
-    const float level = 0.5f / std::tanh(0.5f * drive);
     const float dc = 1.0f - static_cast<float>(kTwoPi) * 10.0f / rate_;  // 10 Hz DC blocker
-    // The fuzz is biased: its wave spends longer on one side (even harmonics, the "fuzz" grit);
-    // silence still gives silence.
-    const float bias = type == 1 ? 0.15f * drive : 0.0f;
-    const float rest = shape(type, bias);
+    // The drive glides to a turned knob over about 10 ms, block by block (one step per block).
+    if (drive_ < 0.0f) drive_ = target;
+    const float from = drive_;
+    drive_ += (target - drive_) * (1.0f - std::exp(-static_cast<float>(n) / (0.010f * rate_)));
+    struct Curve {
+        int type;
+        double f(double x) const { return Distortion::shape(type, static_cast<float>(x)); }
+        double F(double x) const { return Distortion::antiderivative(type, x); }
+    } const curve{type};
+    // Levelled: a half-scale input comes out about half scale whatever the drive. The fuzz is
+    // biased: its wave spends longer on one side (even harmonics, the "fuzz" grit); silence still
+    // gives silence.
+    const bool gliding = from != drive_;
+    float drive = drive_, level = 0.5f / std::tanh(0.5f * drive), bias = type == 1 ? 0.15f * drive : 0.0f;
+    float rest = type == 1 ? shape(type, bias) : 0.0f;
     for (int i = 0; i < n; ++i) {
-        const float xl = finiteOr0(l[i]), xr = finiteOr0(r[i]);
-        const float yl = (shape(type, xl * drive + bias) - rest) * level, yr = (shape(type, xr * drive + bias) - rest) * level;
+        if (gliding) {
+            drive = from + (drive_ - from) * static_cast<float>(i + 1) / static_cast<float>(n);
+            level = 0.5f / std::tanh(0.5f * drive);
+            bias = type == 1 ? 0.15f * drive : 0.0f;
+            rest = type == 1 ? shape(type, bias) : 0.0f;
+        }
+        const float yl = (shL_.process(finiteOr0(l[i]), drive, bias, curve) - rest) * level;
+        const float yr = (shR_.process(finiteOr0(r[i]), drive, bias, curve) - rest) * level;
+        const float xl = shL_.dry(), xr = shR_.dry();
         const float bl = yl - dcInL_ + dc * dcOutL_;
         dcInL_ = yl;
         dcOutL_ = bl;

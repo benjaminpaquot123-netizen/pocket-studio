@@ -24,7 +24,7 @@ enum class Lang(val code: String, val nativeName: String) {
  */
 object I18n {
     /** One translation file per area and language (they are merged). */
-    val AREAS = listOf("common", "home", "rhythm", "song", "synth", "audio", "mixer", "tools", "model")
+    val AREAS = listOf("common", "home", "rhythm", "song", "synth", "audio", "mixer", "tools", "model", "finish", "master")
 
     @Volatile
     var lang: Lang = Lang.FR

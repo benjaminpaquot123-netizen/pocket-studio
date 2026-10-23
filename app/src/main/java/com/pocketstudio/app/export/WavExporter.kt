@@ -14,11 +14,14 @@ import com.pocketstudio.model.i18n.tr
 object WavExporter {
     const val MUSIC_FOLDER = "Music/Pocket Studio"
 
-    /** A fresh file in the private export folder; exports older than an hour are removed (they live on in Music). */
+    /**
+     * A fresh file in the private export folder; exports older than an hour are removed (they live
+     * on in Music), and so is any `.premaster` a mastered export left when the process died.
+     */
     fun newFile(context: Context, projectName: String): File {
         val dir = File(context.cacheDir, "exports").apply { mkdirs() }
         val cutoff = System.currentTimeMillis() - 3_600_000
-        dir.listFiles()?.filter { it.lastModified() < cutoff }?.forEach { it.delete() }
+        dir.listFiles()?.filter { it.lastModified() < cutoff || it.name.endsWith(".premaster") }?.forEach { it.delete() }
         return File(dir, fileName(projectName, LocalDateTime.now()))
     }
 

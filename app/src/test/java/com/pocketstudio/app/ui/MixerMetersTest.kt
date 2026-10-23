@@ -10,6 +10,7 @@ import com.pocketstudio.app.mixer.HardLimiting
 import com.pocketstudio.app.mixer.LIMITER_METER
 import com.pocketstudio.app.mixer.MASTER_IN_METER
 import com.pocketstudio.app.mixer.masterMeterFraction
+import com.pocketstudio.app.mixer.PeakHold
 import com.pocketstudio.engine.NativeEngine
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.semantics.SemanticsActions
@@ -134,5 +135,17 @@ class MixerMetersTest {
         compose.mainClock.advanceTimeBy(5000)
         compose.onNodeWithTag("limiter_hint").assertDoesNotExist()
         compose.onNodeWithTag("master_meter").assertExists()
+    }
+
+    /** The last 50 ms' true peak is held for a second (20 readings): a clip light the eye can catch. */
+    @Test
+    fun theRecentPeakIsHeldForASecond() {
+        val hold = PeakHold(readings = 3)
+        assertEquals(-0.5f, hold.update(-0.5f), 0f)
+        assertEquals(-0.5f, hold.update(-20f), 0f)
+        assertEquals(-0.5f, hold.update(-20f), 0f)
+        assertEquals(-20f, hold.update(-20f), 0f)
+        // A higher peak takes over at once.
+        assertEquals(-0.2f, hold.update(-0.2f), 0f)
     }
 }

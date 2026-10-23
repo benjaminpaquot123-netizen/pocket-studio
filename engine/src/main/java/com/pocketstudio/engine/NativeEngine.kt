@@ -84,6 +84,8 @@ object NativeEngine {
     private const val CMD_REMIX_ON = 77
     private const val CMD_AUTOMATION_SONG_RAMP = 78
     private const val CMD_AUTOMATION_SONG_FLAT = 79
+    // Numbered apart in Engine.h (phase 33): commands appended after 79 never take its number.
+    private const val CMD_KIT_VERSION = 100
 
     // Live grid slots (Engine.h Slot): one per track.
     const val SLOT_DRUMS = 0
@@ -127,6 +129,30 @@ object NativeEngine {
     /** Size of the array [mixerMeters] fills. */
     const val METERS = MIXER_CHANNELS + 2
 
+    /** Size of the array [insertReductions] fills: one value per strip and insert slot (channel * [INSERTS] + slot). */
+    const val INSERT_METERS = MIXER_CHANNELS * INSERTS
+
+    /** [loudnessMeters]: the master's momentary, short-term and integrated (since ▶) loudness in LUFS ([LOUDNESS_NONE]: none yet)… */
+    const val LOUDNESS_MOMENTARY = 0
+    const val LOUDNESS_SHORT_TERM = 1
+    const val LOUDNESS_INTEGRATED = 2
+    /** …its true peak since ▶ and since the last reading (dBTP)… */
+    const val LOUDNESS_TRUE_PEAK = 3
+    const val LOUDNESS_RECENT_PEAK = 4
+    /** …and the gain the loudness target adds before the clipper and the limiter (dB). */
+    const val LOUDNESS_DRIVE = 5
+    /** Size of the array [loudnessMeters] fills. */
+    const val LOUDNESS = 6
+    /** No value yet (silence, or under 400 ms of sound). */
+    const val LOUDNESS_NONE = -100f
+
+    /** [OfflineExport.report]: integrated loudness (LUFS), true peak (dBTP), length (s), sample rate, target's drive (dB). */
+    const val REPORT_LUFS = 0
+    const val REPORT_TRUE_PEAK = 1
+    const val REPORT_SECONDS = 2
+    const val REPORT_RATE = 3
+    const val REPORT_DRIVE = 4
+
     /** [setLiveNoises] modes (the engine's PerformanceFx::Noises). */
     const val LIVE_NOISES_MIXED = 0
     const val LIVE_NOISES_OFF = 1
@@ -148,12 +174,21 @@ object NativeEngine {
 
     const val LANES = 16
 
-    val isAvailable: Boolean = try {
+    private val loaded: Boolean = try {
         System.loadLibrary("pocketstudio_engine")
         true
     } catch (_: UnsatisfiedLinkError) {
         false
     }
+
+    /**
+     * Tests and the song bench only (null in the app): the calls go to this sink instead of the
+     * native library, which then need not be loaded (see [CommandSink]).
+     */
+    @Volatile var sink: CommandSink? = null
+
+    /** The engine can be used: the native library is loaded (or a test's [sink] stands in for it). */
+    val isAvailable: Boolean get() = loaded || sink != null
 
     fun setPlaying(playing: Boolean) = post(CMD_SET_PLAYING, if (playing) 1f else 0f)
     fun setFrequency(hz: Float) = post(CMD_SET_FREQUENCY, hz)
@@ -166,6 +201,8 @@ object NativeEngine {
     fun play(countInBars: Int = 0, songStep: Int = 0) = post(CMD_SET_TRANSPORT, 1f, countInBars, songStep.coerceAtLeast(OUTSIDE_SONG))
     fun stopTransport() = post(CMD_SET_TRANSPORT, 0f)
     fun setTempo(bpm: Double) = post(CMD_SET_TEMPO, bpm.toFloat())
+    /** The built-in kit's levels: 1 (the kit as it was, projects saved before phase 33) or 2 (kit v2). */
+    fun setKitVersion(version: Int) = post(CMD_KIT_VERSION, version.toFloat())
     fun setSwing(swing: Double) = post(CMD_SET_SWING, swing.toFloat())
     fun setMetronome(on: Boolean) = post(CMD_SET_METRONOME, if (on) 1f else 0f)
     fun setPatternSteps(steps: Int) = post(CMD_SET_PATTERN_STEPS, 0f, steps)
@@ -252,6 +289,14 @@ object NativeEngine {
     external fun sceneSwaps(): Int
     /** Writes into [out] (size [METERS]): channel peaks (the master's output at [MASTER]), the limiter gain, the master's level into the limiter. */
     external fun mixerMeters(out: FloatArray)
+    /**
+     * For each strip and insert slot ([INSERT_METERS] values, channel * [INSERTS] + slot): the deepest
+     * gain reduction of its compressor since the last call, in dB (≤ 0; 0: none or not a compressor).
+     */
+    external fun insertReductions(out: FloatArray)
+
+    /** Writes into [out] (size [LOUDNESS]) the master's loudness and true peak (see [LOUDNESS_MOMENTARY]). */
+    external fun loudnessMeters(out: FloatArray)
 
     /** Plays a pad right now (live). */
     fun triggerPad(lane: Int, velocity: Float) = post(CMD_TRIGGER_PAD, velocity, lane)
@@ -260,11 +305,16 @@ object NativeEngine {
     // The native side serialises producers, so any thread may call these.
     /** The instrument track a MIDI keyboard plays (the one shown in the synth screen). */
     @Volatile var liveTrack = 0
-    fun liveNoteOn(note: Int, velocity: Float, track: Int = liveTrack) = nativePost(CMD_SYNTH_NOTE_ON, velocity, onTrack(track, note), 0)
-    fun liveNoteOff(note: Int, track: Int = liveTrack) = nativePost(CMD_SYNTH_NOTE_OFF, 0f, onTrack(track, note), 0)
-    fun liveTriggerPad(lane: Int, velocity: Float) = nativePost(CMD_TRIGGER_PAD, velocity, lane, 0)
+    fun liveNoteOn(note: Int, velocity: Float, track: Int = liveTrack) = livePost(CMD_SYNTH_NOTE_ON, velocity, onTrack(track, note), 0)
+    fun liveNoteOff(note: Int, track: Int = liveTrack) = livePost(CMD_SYNTH_NOTE_OFF, 0f, onTrack(track, note), 0)
+    fun liveTriggerPad(lane: Int, velocity: Float) = livePost(CMD_TRIGGER_PAD, velocity, lane, 0)
     /** Pitch bend (semitones), mod wheel (0..1), sustain (0/1) or arpeggiator setting of a track. */
-    fun liveExpression(kind: Int, value: Float, track: Int = liveTrack) = nativePost(CMD_EXPRESSION, value, onTrack(track, kind), 0)
+    fun liveExpression(kind: Int, value: Float, track: Int = liveTrack) = livePost(CMD_EXPRESSION, value, onTrack(track, kind), 0)
+
+    private fun livePost(type: Int, value: Float, a: Int, b: Int): Boolean {
+        sink?.let { it.post(0L, type, value, a, b); return true }
+        return nativePost(type, value, a, b)
+    }
 
     /** Current pattern step, or -1 when stopped or counting in. */
     external fun currentStep(): Int
@@ -325,6 +375,7 @@ object NativeEngine {
 
     private fun post(type: Int, value: Float, a: Int = 0, b: Int = 0): Boolean {
         val target = captureTarget
+        sink?.let { it.post(target, type, value, a, b); return true }
         if (target != 0L) {
             exportPost(target, type, value, a, b)
             return true
@@ -364,12 +415,14 @@ object NativeEngine {
     fun captureAt(frame: Long) {
         val target = captureTarget
         check(target != 0L) { "captureAt outside captureInto" }
+        sink?.let { it.scheduleFrom(target, frame); return }
         exportScheduleFrom(target, frame)
     }
 
     /** Gives pad [pad] the sample (or back to its drum sound with null). Main thread, like every command. */
     fun setPadSample(pad: Int, sample: NativeSample?) {
         val target = captureTarget
+        sink?.let { it.install(target, CommandSink.Install.PadSample, pad, sample?.handle ?: 0L); return }
         if (target != 0L) exportInstallSample(target, pad, sample?.handle ?: 0L)
         else nativeInstallSample(pad, sample?.handle ?: 0L)
     }
@@ -377,6 +430,7 @@ object NativeEngine {
     /** The remix track plays [stems] from step 0 (null: no song). Main thread, like every command. */
     fun setStems(stems: NativeStems?) {
         val target = captureTarget
+        sink?.let { it.install(target, CommandSink.Install.Stems, 0, stems?.handle ?: 0L); return }
         if (target != 0L) exportInstallStems(target, stems?.handle ?: 0L)
         else nativeInstallStems(stems?.handle ?: 0L)
     }
@@ -391,7 +445,10 @@ object NativeEngine {
     external fun stemPosition(): Long
 
     /** The remix screen's own listening: [stems] play apart from the transport (null: none). Main thread. */
-    fun setPreviewStems(stems: NativeStems?) = nativeInstallPreviewStems(stems?.handle ?: 0L)
+    fun setPreviewStems(stems: NativeStems?): Boolean {
+        sink?.let { it.install(0L, CommandSink.Install.PreviewStems, 0, stems?.handle ?: 0L); return true }
+        return nativeInstallPreviewStems(stems?.handle ?: 0L)
+    }
     fun playPreview(on: Boolean) = post(CMD_PLAY_PREVIEW, if (on) 1f else 0f)
     /** As [setStemParam], for the preview. */
     fun setPreviewParam(stem: Int, param: Int, value: Float) = post(CMD_PREVIEW_PARAM, value, stem, param)
@@ -399,7 +456,10 @@ object NativeEngine {
     external fun previewPosition(): Long
 
     /** Live pad [pad] plays [sample] (null: empty). Main thread, like every command. */
-    fun setClip(pad: Int, sample: NativeSample?) = nativeInstallClip(pad, sample?.handle ?: 0L)
+    fun setClip(pad: Int, sample: NativeSample?): Boolean {
+        sink?.let { it.install(0L, CommandSink.Install.LiveClip, pad, sample?.handle ?: 0L); return true }
+        return nativeInstallClip(pad, sample?.handle ?: 0L)
+    }
 
     /** Frames [readScope] fills (Engine::kScopeFrames). */
     const val SCOPE_FRAMES = 4096
@@ -445,6 +505,7 @@ object NativeEngine {
     /** Audio track [track] plays [sample] (null: nothing). */
     fun setAudioClip(track: Int, sample: NativeSample?) {
         val target = captureTarget
+        sink?.let { it.install(target, CommandSink.Install.AudioClip, track, sample?.handle ?: 0L); return }
         if (target != 0L) exportInstallAudioClip(target, track, sample?.handle ?: 0L)
         else nativeInstallAudioClip(track, sample?.handle ?: 0L)
     }
@@ -484,6 +545,7 @@ object NativeEngine {
     /** Instrument track [track]'s sampled voice plays [sample] across the keys (null: none). */
     fun setTrackSample(track: Int, sample: NativeSample?) {
         val target = captureTarget
+        sink?.let { it.install(target, CommandSink.Install.TrackSample, track, sample?.handle ?: 0L); return }
         if (target != 0L) exportInstallTrackSample(target, track, sample?.handle ?: 0L)
         else nativeInstallTrackSample(track, sample?.handle ?: 0L)
     }
@@ -505,6 +567,16 @@ object NativeEngine {
      * the mix, [LIVE_NOISES_OFF] left out (a track's stem), [LIVE_NOISES_ONLY] alone (the stem « Effets live »).
      */
     fun setLiveNoises(mode: Int) = post(CMD_MASTER, mode.toFloat(), 3)
+    /**
+     * The master's loudness target in LUFS (« Cible »), or null for none: the engine moves a gain
+     * before the clipper and the limiter to bring the music there (slowly, from what it hears; an
+     * export masters the whole song at once).
+     */
+    fun setLoudnessTarget(lufs: Float?) = post(CMD_MASTER, lufs ?: 0f, 4)
+    /** The master limiter's ceiling in dBTP (−1 by default; −2 for an M4A). */
+    fun setMasterCeiling(dbtp: Float) = post(CMD_MASTER, dbtp, 5)
+    /** Another project: the target's estimate of the music's loudness starts over. */
+    fun resetLoudnessEstimate() = post(CMD_MASTER, 0f, 6)
     private external fun nativeInstallTrackSample(track: Int, handle: Long): Boolean
     private external fun exportInstallTrackSample(exportHandle: Long, track: Int, handle: Long)
     private external fun exportInstallAudioClip(exportHandle: Long, track: Int, handle: Long)
@@ -556,6 +628,12 @@ object NativeEngine {
     fun setInstrument(font: SoundFont?, presetIndex: Int, track: Int = 0): Boolean {
         val target = captureTarget
         val a = onTrack(track, presetIndex)
+        sink?.let { s ->
+            // Banks are not recorded: a sink only ever hears the track back to its synth.
+            if (font != null) return false
+            s.install(target, CommandSink.Install.Instrument, a, 0L)
+            return true
+        }
         if (target != 0L) {
             exportSetInstrument(target, font?.handle ?: 0L, a)
             return true
@@ -601,6 +679,8 @@ object NativeEngine {
     external fun exportRender(handle: Long, path: String, frames: Long, tail: Long): Int
     external fun exportSetFadeOut(handle: Long, frames: Long)
     external fun exportSetOptions(handle: Long, autoTail: Boolean, floatWav: Boolean)
+    external fun exportSetFormat(handle: Long, sampleRate: Int, bits: Int)
+    external fun exportReport(handle: Long): FloatArray
     external fun exportProgress(handle: Long): Float
     external fun exportRenderFloat(handle: Long, frames: Long, tail: Long): FloatArray
     external fun exportCancel(handle: Long)

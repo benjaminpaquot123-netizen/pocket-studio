@@ -51,7 +51,6 @@ import androidx.compose.material.icons.filled.Piano
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material.icons.filled.LibraryMusic
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.material.icons.filled.SwapVert
 import androidx.compose.foundation.relocation.bringIntoViewRequester
 import kotlinx.coroutines.launch
 import androidx.compose.material.icons.automirrored.filled.Redo
@@ -140,6 +139,8 @@ data class RhythmActions(
     val clearPad: () -> Unit = {},
     val nudgeTempo: (Int) -> Unit = {},
     val tapTempo: () -> Unit = {},
+    /** A touch on the tempo: the tempo sheet (keypad, ready-made tempos), as from the top. */
+    val openTempo: () -> Unit = {},
     val setSwing: (Double) -> Unit = {},
     val undo: () -> Unit = {},
     val redo: () -> Unit = {},
@@ -161,8 +162,6 @@ data class RhythmActions(
     val importFolder: () -> Unit = {},
     /** A sample pack as a .zip file. */
     val importZip: () -> Unit = {},
-    /** What ▶ plays: the whole song (true) or the section shown, in a loop (false). */
-    val setListenSong: (Boolean) -> Unit = {},
 )
 
 /** The selected pad's own sound, if any, and what the sampler is busy with. */
@@ -183,11 +182,6 @@ fun RhythmScreen(
     actions: RhythmActions,
     modifier: Modifier = Modifier,
     padSound: PadSoundUi = PadSoundUi(),
-    /**
-     * What ▶ plays when the project has a song: the whole song (true) or the section shown (false);
-     * null hides the choice (no song yet: ▶ plays the section anyway).
-     */
-    listenSong: Boolean? = null,
     /** Shown above everything (the "Prochaine étape" card); [showGrid] scrolls the steps into view. */
     header: @Composable (showGrid: () -> Unit) -> Unit = {},
 ) {
@@ -206,7 +200,7 @@ fun RhythmScreen(
         spacing = 8.dp,
         first = {
             header(showGrid)
-            TransportBar(project, transport, canUndo, canRedo, actions, listenSong)
+            TransportBar(project, transport, canUndo, canRedo, actions)
             PadGrid(project, transport.selectedPad, live.litPads, actions.hitPad)
             GrooveCard(project, transport, actions)
         },
@@ -217,7 +211,7 @@ fun RhythmScreen(
         // The phone keeps its order: the steps right under lower pads, the first row of cells on screen.
         phone = {
             header(showGrid)
-            TransportBar(project, transport, canUndo, canRedo, actions, listenSong)
+            TransportBar(project, transport, canUndo, canRedo, actions)
             PadGrid(project, transport.selectedPad, live.litPads, actions.hitPad, compact = true)
             steps()
             PadSoundCard(project, transport.selectedPad, padSound, actions)
@@ -227,9 +221,8 @@ fun RhythmScreen(
 }
 
 @Composable
-private fun TransportBar(project: Project, transport: TransportUi, canUndo: Boolean, canRedo: Boolean, actions: RhythmActions, listenSong: Boolean?) {
-    // A small phone (360 dp): a slimmer Play, and redo left to the top bar, so the listening
-    // choice and « Taper » keep their words.
+private fun TransportBar(project: Project, transport: TransportUi, canUndo: Boolean, canRedo: Boolean, actions: RhythmActions) {
+    // A small phone (360 dp): a slimmer Play, and redo left to the top bar, so « Taper » keeps its word.
     val narrow = androidx.compose.ui.platform.LocalConfiguration.current.screenWidthDp < 380
     NeonCard {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(if (narrow) 6.dp else 8.dp)) {
@@ -248,9 +241,8 @@ private fun TransportBar(project: Project, transport: TransportUi, canUndo: Bool
                 Icon(if (transport.playing) Icons.Filled.Stop else Icons.Filled.PlayArrow, contentDescription = null, tint = Neon.OnAccent)
                 Text(if (transport.playing) tr(" Stop") else tr(" Jouer"), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = Neon.OnAccent)
             }
-            // What ▶ plays, where it is played (the same choice as Morceau › Écouter).
-            if (listenSong != null) ListenChoice(listenSong, actions.setListenSong, Modifier.weight(1f))
-            else Box(Modifier.weight(1f))
+            // What it plays (the song, or the part in a loop) is said once, under the top bar (« ⟳ Partie »).
+            Box(Modifier.weight(1f))
             IconButton(onClick = actions.undo, enabled = canUndo, modifier = Modifier.size(44.dp)) {
                 Icon(Icons.AutoMirrored.Filled.Undo, contentDescription = tr("Annuler la dernière action"))
             }
@@ -266,10 +258,11 @@ private fun TransportBar(project: Project, transport: TransportUi, canUndo: Bool
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             RepeatingIconButton({ actions.nudgeTempo(-1) }) { Icon(Icons.Filled.Remove, contentDescription = tr("Tempo moins")) }
-            // The tempo on a small dark display, as on a drum machine.
+            // The tempo on a small dark display, as on a drum machine; a touch to type it or pick one.
             Row(
                 Modifier.clip(RoundedCornerShape(10.dp)).background(Color.Black.copy(alpha = 0.35f))
                     .border(1.dp, Color.White.copy(alpha = 0.06f), RoundedCornerShape(10.dp))
+                    .clickable(role = Role.Button, onClickLabel = tr("Changer le tempo"), onClick = actions.openTempo)
                     .padding(horizontal = if (narrow) 8.dp else 12.dp, vertical = 4.dp).testTag("tempo"),
                 verticalAlignment = Alignment.Bottom,
             ) {
@@ -286,34 +279,6 @@ private fun TransportBar(project: Project, transport: TransportUi, canUndo: Bool
                 modifier = Modifier.testTag("tap"),
             ) { Text(tr("Taper"), maxLines = 1, softWrap = false) }
         }
-    }
-}
-
-/**
- * "Écouter : cette section / tout le morceau", next to Play: a touch switches. The section loops
- * (what is edited is what is heard); the song starts from its first part.
- */
-@Composable
-private fun ListenChoice(song: Boolean, set: (Boolean) -> Unit, modifier: Modifier = Modifier) {
-    val shape = RoundedCornerShape(14.dp)
-    Column(
-        modifier.height(56.dp).clip(shape)
-            .border(1.dp, Neon.Outline, shape)
-            .clickable(role = Role.Switch, onClickLabel = tr("Changer ce que Jouer fait entendre")) { set(!song) }
-            .padding(horizontal = 8.dp)
-            .testTag("rhythm_listen"),
-        verticalArrangement = Arrangement.Center,
-    ) {
-        // The swap mark on the small line: the value keeps the whole width (a phone row is tight).
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(tr("Écouter :"), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, maxLines = 1)
-            Icon(Icons.Filled.SwapVert, contentDescription = null, tint = Neon.TextSecondary, modifier = Modifier.padding(start = 2.dp).size(14.dp))
-        }
-        Text(
-            if (song) tr("tout le morceau") else tr("cette section"),
-            style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold), color = Neon.Cyan, maxLines = 1,
-            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
-        )
     }
 }
 

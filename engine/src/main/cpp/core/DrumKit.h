@@ -24,6 +24,14 @@ public:
     };
 
     void prepare(int sampleRate);
+    // The voices' levels: 1, the kit as it always was (the projects saved before phase 33); 2,
+    // « kit v2 » (the assistant's songs since): each voice near the loudness of its role in a mix
+    // (the kick 6 dB down, the hats bright and 17 dB up: WizardMix.KIT_LUFS_V2). From the next hits on.
+    void setVersion(int version) {
+        version_ = version >= 2 ? 2 : 1;
+        applyVersion();
+    }
+    int version() const { return version_; }
     // Schedules a hit `frameOffset` frames into the next render() call, panned -1..1.
     void trigger(int voice, float velocity, int frameOffset, float pan = 0.0f);
     // Every voice's noise from its first value again (the transport starts: an export, which
@@ -67,10 +75,12 @@ private:
     };
 
     float renderVoice(int voice, bool trig, float velocity);
+    void applyVersion();  // the voices' settings that differ in kit v2 (real-time safe)
     // Calls sink(voice, frame, value, gainLeft, gainRight) for every sample a voice adds.
     template <typename Sink> void renderTo(int numFrames, Sink&& sink);
 
     int sampleRate_ = 48000;
+    int version_ = 1;
     // Noise: each voice its own generators (ours, and DaisySP's rand() swapped in while it
     // renders), so what one voice draws never depends on the others nor on the block size.
     float noise(int voice);

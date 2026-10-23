@@ -10,6 +10,8 @@
 #include "Effects/overdrive.h"
 #include "Filters/svf.h"
 
+#include "DriveShaper.h"
+
 namespace ps {
 
 // Mixer effects. Every class: prepare() on a non-audio thread (it may allocate), then
@@ -53,39 +55,65 @@ private:
     std::array<Biquad, 3> left_{}, right_{};
 };
 
-// Feed-forward compressor, stereo-linked, soft knee, automatic make-up gain.
-// Params: threshold (-40..0 dB), ratio (1..20), attack (0.1..80 ms), release (20..800 ms).
+// Feed-forward compressor, stereo-linked, soft knee. Below the threshold it leaves the sound as
+// it is (0 dB): the make-up gain is the user's, or « Auto » (the reduction it makes on average).
+// Params: threshold (-40..0 dB), ratio (1..20), attack (0.1..80 ms), release (20..800 ms),
+// make-up (0..+24 dB), auto make-up (on above 0.5), detector (peak below 0.5, else RMS over 10 ms),
+// detector high-pass (0: none, else 20..400 Hz, 0.5 ≈ 90 Hz: the kick stops driving a bus), mix
+// (0 dry .. 1 compressed: parallel compression).
 class Compressor {
 public:
+    static constexpr int kParams = 9;
     void prepare(float rate);
     void setParam(int p, float v);
-    void reset() { envDb_ = -120.0f; reduction_ = 0.0f; }
+    void reset();
     void process(float* l, float* r, int n);
-    float gainReductionDb() const { return reduction_; }  // tests, meters (≤ 0)
+    float gainReductionDb() const { return reduction_; }  // its deepest over the last block (≤ 0): tests, meters
+    float autoMakeupDb() const { return autoMakeup_ ? -averageDb_ : 0.0f; }  // tests
 
 private:
     void update();
     float rate_ = 48000;
-    std::array<float, 4> p_{0.6f, 0.2f, 0.2f, 0.3f};
-    float threshold_ = -16, ratio_ = 4, attack_ = 0, release_ = 0, makeup_ = 1;
+    std::array<float, kParams> p_{0.6f, 0.2f, 0.2f, 0.3f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
+    float threshold_ = -16, ratio_ = 4, attack_ = 0, release_ = 0, makeup_ = 1, mix_ = 1;
+    bool autoMakeup_ = false, rms_ = false, highPass_ = false;
+    float rmsCoef_ = 0, averageCoef_ = 0;
     float envDb_ = -120.0f;
+    float meanSquare_ = 0.0f;
+    float averageDb_ = 0.0f;  // the reduction made, averaged over seconds (auto make-up)
     float reduction_ = 0.0f;
+    Biquad detL_, detR_;
 };
 
-// Drive (DaisySP Overdrive), tone low-pass, dry/wet, output level.
+// Drive (DaisySP Overdrive), tone low-pass (open at its top: no filter), dry/wet, output level,
+// and compensation (on above 0.5; off by default, as before): the drive no longer changes the
+// level of a sound at a usual level (-15 dBFS RMS), nor of quieter ones while the drive is light.
+// A tone saved at its top before phase 33 stays an 18 kHz low-pass (Effects.kt).
 class Saturator {
 public:
+    static constexpr int kParams = 5;
+    static constexpr float kOpenTone = 1.0f;  // the tone at its top: no low-pass (Effects.kt TONE_OPEN)
     void prepare(float rate);
     void setParam(int p, float v);
-    void reset() { lpL_ = lpR_ = 0.0f; }
+    void reset() {
+        lpL_ = lpR_ = 0.0f;
+        shL_.reset();
+        shR_.reset();
+        setDrive(driveTarget_);
+    }
     void process(float* l, float* r, int n);
 
 private:
     void update();
+    void setDrive(float drive);
     float rate_ = 48000;
-    std::array<float, 4> p_{0.3f, 0.7f, 1.0f, 0.7f};
-    daisysp::Overdrive odL_, odR_;
-    float toneCoef_ = 1.0f, mix_ = 1.0f, level_ = 1.0f;
+    std::array<float, kParams> p_{0.3f, 0.7f, 1.0f, 0.7f, 0.0f};
+    // DaisySP Overdrive's curve and gains, run at 4x with antiderivative anti-aliasing
+    // (DriveShaper.h): the dry signal is DriveShaper::kDelay frames late with it. The drive glides
+    // (its two gains move together: the level holds).
+    DriveShaper<Oversampler4x> shL_, shR_;
+    float driveTarget_ = 0.0f, drive_ = 0.0f, pre_ = 1.0f, post_ = 1.0f, glide_ = 0.01f;
+    float toneCoef_ = 1.0f, mix_ = 1.0f, level_ = 1.0f, wetGain_ = 1.0f;
     float lpL_ = 0.0f, lpR_ = 0.0f;
 };
 
@@ -417,15 +445,24 @@ public:
     static constexpr int kTypes = 4;
     void prepare(float rate) { rate_ = rate; reset(); }
     void setParam(int p, float v);
-    void reset() { lp1L_ = lp2L_ = lp1R_ = lp2R_ = dcInL_ = dcOutL_ = dcInR_ = dcOutR_ = 0.0f; }
+    void reset() {
+        lp1L_ = lp2L_ = lp1R_ = lp2R_ = dcInL_ = dcOutL_ = dcInR_ = dcOutR_ = 0.0f;
+        shL_.reset();
+        shR_.reset();
+        drive_ = -1.0f;  // the next block starts at its drive (no glide from a stale one)
+    }
     void process(float* l, float* r, int n);
     static float shape(int type, float x);  // tests
+    static double antiderivative(int type, double x);  // of shape(): DriveShaper's anti-aliasing
 
 private:
     float rate_ = 48000;
     std::array<float, 4> p_{0.45f, 0.6f, 0.0f, 1.0f};
     float lp1L_ = 0, lp2L_ = 0, lp1R_ = 0, lp2R_ = 0;
     float dcInL_ = 0, dcOutL_ = 0, dcInR_ = 0, dcOutR_ = 0;
+    // The curve at 4x with antiderivative anti-aliasing; the drive glides (no click on a turn).
+    DriveShaper<Oversampler4x> shL_, shR_;
+    float drive_ = -1.0f;
 };
 
 // Auto-pan in time with the song: the sound travels left and right once per 2 bars, bar, 1/2,
@@ -559,7 +596,8 @@ public:
     };
     // Whether `type` needs a unit of the pool (seconds of memory).
     static bool isLong(int type) { return type == EchoFx || type == PingPongFx || type == ReverbFx || type == TapeStopFx; }
-    static constexpr int kParams = 4;
+    // Settings per effect (most use 4; the compressor 9, the saturation 5).
+    static constexpr int kParams = 12;
 
     void prepare(float rate);
     void setType(int type);

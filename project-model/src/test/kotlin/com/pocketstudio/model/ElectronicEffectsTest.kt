@@ -40,8 +40,10 @@ class ElectronicEffectsTest {
     @Test
     fun everyEffectIsComplete() {
         for (t in EffectType.entries.drop(1)) {
-            assertEquals(t.name, EffectType.PARAMS, t.defaults.size)
-            assertTrue(t.name, t.params.size in 2..4)
+            // 4 settings each (the compressor 9 and the saturation 5 since phase 33), a default for each.
+            assertTrue(t.name, t.defaults.size in EffectType.LEGACY_PARAMS..EffectType.PARAMS)
+            assertTrue(t.name, t.params.size in 2..t.defaults.size)
+            if (t != EffectType.COMPRESSOR && t != EffectType.SATURATION) assertEquals(t.name, EffectType.LEGACY_PARAMS, t.defaults.size)
             t.params.forEachIndexed { k, p -> assertTrue(t.name, p.format(t.defaults[k]).isNotBlank() && p.format(0f).isNotBlank() && p.format(1f).isNotBlank()) }
         }
         val new = listOf(EffectType.DISTORTION, EffectType.ECHO, EffectType.PING_PONG, EffectType.REVERB, EffectType.AUTO_PAN, EffectType.OTT, EffectType.FREQ_SHIFT, EffectType.TAPE_STOP)

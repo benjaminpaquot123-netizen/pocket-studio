@@ -253,6 +253,13 @@ data class ExportUi(
     val savedInMusic: Boolean = false,
     /** Integrated loudness of the exported mix in LUFS (null for stems or silence). */
     val loudness: Double? = null,
+    /** The exported mix's true peak (dBTP) and length (seconds), measured on the file; null for stems. */
+    val truePeakDb: Double? = null,
+    val seconds: Double? = null,
+    /** « 44,1 kHz » (the CD's rate, resampled after the master) instead of 48 kHz. */
+    val cdRate: Boolean = false,
+    /** « 16 bits » (dithered) instead of 24 for WAV and FLAC. */
+    val bits16: Boolean = false,
     val error: String? = null,
 ) {
     val file: File? get() = files.firstOrNull()
@@ -518,6 +525,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         NativeEngine.setTempo(p.tempoBpm)
         NativeEngine.setSwing(p.swing)
         NativeEngine.setBeatsPerBar(p.beatsPerBar)
+        NativeEngine.setKitVersion(p.kitVersion)
         pushDrumPattern(p.drums)
         NativeEngine.setMetronome(_transport.value.metronome)
         pushAcid(p.acid)
@@ -1541,17 +1549,70 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** The song part still playing after it was taken out of the song (see [SessionUi.removed]). */
     private val removedPlaying: SongPart? get() = _sessionUi.value.removed
 
-    private val _listenSong = MutableStateFlow(project.value.listenSong)
+    private val _loopPart = MutableStateFlow(project.value.loopPart)
     /**
-     * What ▶ plays: the song (true) or the scene shown (false), as last chosen in this project
-     * (saved with it); null: never chosen, see [onSongTab].
+     * « ⟳ Partie »: ▶ loops the part being edited (the scene shown) rather than playing the song.
+     * Off: once there is a song, ▶ plays it on every tab, from [playFrom]. Kept with the project.
      */
-    val listenSong: StateFlow<Boolean?> = _listenSong.asStateFlow()
+    val loopPart: StateFlow<Boolean> = _loopPart.asStateFlow()
 
-    /** ▶ plays the song (from its first part) rather than the scene shown; kept with the project (no undo step). */
-    fun setListenSong(song: Boolean) {
-        _listenSong.value = song
+    /**
+     * Turns « ⟳ Partie » on or off (kept with the project, no undo step). While the music plays it
+     * takes effect at once: the song part playing goes on as a loop (staying on another scene: that
+     * one takes over at the next bar), or the song takes over at the next bar from the part of the
+     * scene heard.
+     */
+    fun setLoopPart(on: Boolean) {
+        if (_loopPart.value == on) return
+        _loopPart.value = on
         keepListenChoice()
+        if (!NativeEngine.isAvailable || !_transport.value.playing) return
+        val song = project.value.song
+        if (on && songPlaying()) {
+            endSongFollow()
+        } else if (!on && song.isNotEmpty() && _sessionUi.value.songIndex < 0) {
+            val heard = heardScene ?: project.value.scene
+            playSongPart(song.indexOfFirst { it.scene == heard }.takeIf { it >= 0 } ?: playFromNow())
+        }
+    }
+
+    private val _playFrom = MutableStateFlow(0)
+    /**
+     * Where ▶ starts the song (a part): where it was stopped, the part chosen to play from or the
+     * part of the scene picked to edit; back to the start once the song played to its end.
+     */
+    val playFrom: StateFlow<Int> = _playFrom.asStateFlow()
+
+    /** [playFrom] if it is still a part of the song (parts removed since: the start). */
+    private fun playFromNow(): Int = _playFrom.value.takeIf { it in project.value.song.indices } ?: 0
+
+    /** Tests: what ▶ started ("song <part>" or "part <scene>"), engine or not. */
+    internal var playStartsForTest: MutableList<String>? = null
+
+    private val _playBar = MutableStateFlow(-1)
+    /**
+     * The bar playing (from 0): of the song while it plays, else of the scene's loop; -1 stopped.
+     * Changes once a bar at most; up to date while a screen polls it ([pollPosition]).
+     */
+    val playBar: StateFlow<Int> = _playBar.asStateFlow()
+
+    /** Keeps [playBar] up to date a few times a second, while the caller runs (a screen showing it). */
+    suspend fun pollPosition() {
+        if (!NativeEngine.isAvailable) return
+        while (true) {
+            _playBar.value = barNow()
+            kotlinx.coroutines.delay(120)
+        }
+    }
+
+    private fun barNow(): Int {
+        if (!_transport.value.playing) return -1
+        val p = project.value
+        val spb = p.stepsPerBar.coerceAtLeast(1)
+        if (_sessionUi.value.songIndex >= 0) return NativeEngine.songStep().let { if (it < 0) -1 else it / spb }
+        val steps = NativeEngine.absoluteStep()
+        if (steps < 0) return -1
+        return steps % p.sceneSteps(heardScene ?: p.scene).coerceAtLeast(1) / spb
     }
 
     /**
@@ -1565,20 +1626,14 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         pushLiveFxSettings(project.value)
     }
 
-    /** The project keeps the listening choice (also after Annuler / Rétablir, which do not change it). */
+    /** The project keeps « ⟳ Partie » as set (also after Annuler / Rétablir, which do not change it). */
     private fun keepListenChoice() {
-        val choice = _listenSong.value
-        if (project.value.listenSong != choice) session.editQuietly { it.copy(listenSong = choice) }
+        val loop = _loopPart.value
+        if (project.value.loopPart != loop) session.editQuietly { it.copy(loopPart = loop) }
     }
 
-    /**
-     * True while the Morceau tab is shown (set by the screen): there, ▶ plays the song until the
-     * user chooses; on the editing tabs, the section shown (what is being edited is heard).
-     */
-    var onSongTab = false
-
-    /** True when ▶ plays the song. */
-    val listensToSong: Boolean get() = project.value.song.isNotEmpty() && (_listenSong.value ?: onSongTab)
+    /** True when ▶ plays the song: there is one, and « ⟳ Partie » is off. */
+    val listensToSong: Boolean get() = project.value.song.isNotEmpty() && !_loopPart.value
 
     private val _followSong = MutableStateFlow(true)
     /** While the song plays: the screens follow the part playing (true) or stay on the scene picked (false). */
@@ -1629,6 +1684,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun selectScene(index: Int) {
         if (index !in 0 until Scene.MAX) return
         if (!_transport.value.playing || !NativeEngine.isAvailable) {
+            // ▶ then plays the song from where this scene first plays in it (the start point said
+            // under the top bar), unless the start point already is one of its parts.
+            val song = project.value.song
+            if (song.getOrNull(playFromNow())?.scene != index) song.indexOfFirst { it.scene == index }.takeIf { it >= 0 }?.let { _playFrom.value = it }
             _sessionUi.value = SessionUi()
             session.edit { it.switchScene(index) }
             syncEngine()
@@ -1640,6 +1699,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             return
         }
         if (index == project.value.scene && _sessionUi.value.pending == null) return
+        // Following the song, the scene picked loops from the next bar: « ⟳ Partie » says so.
+        if (songPlaying() && !_loopPart.value) {
+            _loopPart.value = true
+            keepListenChoice()
+        }
         _sessionUi.value = SessionUi(pending = index)
         stageScene(index, 0)
     }
@@ -1918,23 +1982,37 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (NativeEngine.isAvailable) NativeEngine.leaveSong()
     }
 
-    /** Plays the song from its first part (or stops it). */
+    /** Plays the song from its first part (or stops it); « ⟳ Partie » goes off (the song was asked for). */
     fun toggleSong() {
         if (_transport.value.playing) {
             toggleTransport()
             return
         }
+        loopPartOff()
+        _playFrom.value = 0
+        playStartsForTest?.add("song 0")
         playSongFrom(0)
     }
 
+    /** The song was asked for (« Jouer le morceau », a part touched): « ⟳ Partie » goes off. */
+    private fun loopPartOff() {
+        if (!_loopPart.value) return
+        _loopPart.value = false
+        keepListenChoice()
+    }
+
     /**
-     * A touch on song part [index]: stopped, the song plays from there; playing the song, that
-     * part comes next (a touch on the part already chosen goes back to the usual order);
-     * playing a scene, the song starts from that part at the next bar.
+     * A touch on song part [index] (Morceau, « Jouer depuis… »): stopped, the song plays from there;
+     * playing the song, that part comes next (a touch on the part already chosen goes back to the
+     * usual order); playing a scene, the song starts from that part at the next bar. « ⟳ Partie »
+     * goes off, and ▶ starts from there next time.
      */
     fun playSongPart(index: Int) {
         val song = project.value.song
-        if (index !in song.indices || !NativeEngine.isAvailable) return
+        if (index !in song.indices) return
+        loopPartOff()
+        _playFrom.value = index
+        if (!NativeEngine.isAvailable) return
         val ui = _sessionUi.value
         when {
             !_transport.value.playing -> playSongFrom(index)
@@ -2175,6 +2253,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         AppLog.add("Fin du morceau")
         if (_audioRecording.value != null) stopAudioRecording()
         else if (_transport.value.playing) toggleTransport()
+        // Played to its end: ▶ starts it from the top again.
+        _playFrom.value = 0
     }
 
     // --- Live grid (« Live » page): each track launches its own scene on a global quantum -------
@@ -4303,6 +4383,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                         NativeEngine.captureInto(job) {
                             syncEngine(view)
                             NativeEngine.setMetronome(false)
+                            // The view has no target (stemView); said again here: the pad is
+                            // brought to the song's loudness once, live, in the master chain.
+                            NativeEngine.setLoudnessTarget(null)
                         }
                         withContext(Dispatchers.Default) { job.renderToArray(frames, tail) }
                     } finally {
@@ -4697,6 +4780,19 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     private var meterPoller: Any? = null
     private val meterPeaks = FloatArray(NativeEngine.METERS)
     private val meterFresh = FloatArray(NativeEngine.METERS)
+    private val reductionShown = FloatArray(NativeEngine.INSERT_METERS)
+    private val reductionFresh = FloatArray(NativeEngine.INSERT_METERS)
+    private val _reductions = MutableStateFlow(FloatArray(NativeEngine.INSERT_METERS))
+    /** Each insert's compressor gain reduction in dB (channel * 8 + slot), polled with the meters. */
+    val reductions: StateFlow<FloatArray> = _reductions.asStateFlow()
+    private val loudnessFresh = FloatArray(NativeEngine.LOUDNESS)
+    private val _loudness = MutableStateFlow(FloatArray(NativeEngine.LOUDNESS) { NativeEngine.LOUDNESS_NONE })
+    /**
+     * The master's loudness and true peak ([NativeEngine.LOUDNESS_MOMENTARY]…), polled with [meters];
+     * the peak since the last reading ([NativeEngine.LOUDNESS_RECENT_PEAK]) is held a second (a clip light).
+     */
+    val loudness: StateFlow<FloatArray> = _loudness.asStateFlow()
+    private val recentPeak = com.pocketstudio.app.mixer.PeakHold()
 
     /**
      * Polls meter peaks about 20 times a second while the mixer or an effects box is visible.
@@ -4714,6 +4810,20 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     NativeEngine.mixerMeters(meterFresh)
                     // Published only when a bar moves: stopped, the mixer is left alone.
                     if (com.pocketstudio.app.mixer.holdMeterPeaks(meterPeaks, meterFresh)) _meters.value = meterPeaks.copyOf()
+                    // The compressors' reduction: at once when it deepens, back up by 1 dB a reading (20 dB/s).
+                    NativeEngine.insertReductions(reductionFresh)
+                    var moved = false
+                    for (i in reductionShown.indices) {
+                        val next = if (reductionFresh[i] < reductionShown[i]) reductionFresh[i] else minOf(0f, reductionShown[i] + 1f)
+                        if (next != reductionShown[i]) {
+                            reductionShown[i] = next
+                            moved = true
+                        }
+                    }
+                    if (moved) _reductions.value = reductionShown.copyOf()
+                    NativeEngine.loudnessMeters(loudnessFresh)
+                    loudnessFresh[NativeEngine.LOUDNESS_RECENT_PEAK] = recentPeak.update(loudnessFresh[NativeEngine.LOUDNESS_RECENT_PEAK])
+                    if (!loudnessFresh.contentEquals(_loudness.value)) _loudness.value = loudnessFresh.copyOf()
                 }
                 kotlinx.coroutines.delay(50)
             }
@@ -4794,6 +4904,17 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun toggleMute(ch: Int) = editChannel(ch, null) { it.copy(mute = !it.mute) }
     fun toggleSolo(ch: Int) = editChannel(ch, null) { it.copy(solo = !it.solo) }
 
+    /** « Solo actif : tout désactiver »: every track heard again, in one undo step. */
+    fun clearSolos() {
+        val soloed = project.value.mixer.channels.indices.filter { project.value.mixer.channels[it].solo }
+        if (soloed.isEmpty()) return
+        session.edit { p -> p.copy(mixer = p.mixer.copy(channels = p.mixer.channels.map { if (it.solo) it.copy(solo = false) else it })) }
+        soloed.forEach { ch ->
+            mixerPushesForTest?.add("strip $ch")
+            if (NativeEngine.isAvailable && ch < NativeEngine.MIXER_CHANNELS) NativeEngine.setChannelSolo(ch, false)
+        }
+    }
+
     private fun editChannel(ch: Int, key: String?, transform: (com.pocketstudio.model.Channel) -> com.pocketstudio.model.Channel) {
         val before = project.value.mixer.channels.getOrNull(ch)
         session.edit(key?.let { "mix-$ch-$it" }) { p ->
@@ -4861,6 +4982,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
         pushInserts(MASTER, p.mixer.master)
         NativeEngine.setMasterGain(p.mixer.masterGain)
+        NativeEngine.setLoudnessTarget(loudnessLufs(p))
         p.mixer.buses.forEachIndexed { bus, params -> params.forEachIndexed { k, v -> NativeEngine.setBusParam(bus, k, v) } }
         // Pads with effects of their own go through their strip, the others straight into the drums.
         (0 until DrumPattern.PAD_COUNT).forEach { NativeEngine.setPadStrip(it, it in pads) }
@@ -5509,13 +5631,21 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         acid.sound.values().forEachIndexed { i, v -> if (i !in keep) NativeEngine.setAcidParam(i, moved[i] ?: v) }
     }
 
-    /** ▶ / ■: plays the song from its first part when listening to the song ([listensToSong]), else the scene shown. */
+    /**
+     * ▶ / ■, the same on every tab: plays the song from [playFrom] once there is one, unless
+     * « ⟳ Partie » loops the scene shown ([listensToSong]); without a song, the scene shown.
+     */
     fun togglePlay() {
-        if (!_transport.value.playing && NativeEngine.isAvailable && listensToSong) {
-            playSongFrom(0)
-            return
+        if (!_transport.value.playing && listensToSong) {
+            val from = playFromNow()
+            playStartsForTest?.add("song $from")
+            if (NativeEngine.isAvailable) {
+                playSongFrom(from)
+                return
+            }
         }
         if (!_transport.value.playing) {
+            if (!listensToSong) playStartsForTest?.add("part ${project.value.scene}")
             heardScene = project.value.scene
             // The scene on its own: song curves hold the value they have where it first plays.
             if (NativeEngine.isAvailable) applySongCurves(project.value, project.value.scene)
@@ -5540,8 +5670,13 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     private fun toggleTransport(countInBars: Int? = null, songStep: Int = NativeEngine.OUTSIDE_SONG) {
         val t = _transport.value
         val playing = !t.playing
-        // A take ends before the transport does: its last launches are read while they still count.
-        if (!playing) endPerformanceOnStop()
+        if (!playing) {
+            // A take ends before the transport does: its last launches are read while they still count.
+            endPerformanceOnStop()
+            // Stopped during the song: ▶ goes on from the part it stopped in (the song's end sets the start again).
+            _sessionUi.value.songIndex.takeIf { it >= 0 && _sessionUi.value.removed == null }?.let { _playFrom.value = it }
+            _playBar.value = -1
+        }
         _transport.value = t.copy(playing = playing)
         beforeSwap = null
         // The live grid starts from the scene heard (a song part: as it plays it, each track from
@@ -5590,6 +5725,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (project.value.instrument != null) openLibrary()
         loadTrackFonts()
         if (NativeEngine.isAvailable) NativeEngine.liveTrack = 0
+        // The engine outlives a project: its loudness target forgets the last one's music.
+        if (NativeEngine.isAvailable) NativeEngine.resetLoudnessEstimate()
         // The engine outlives a project: the keyboard's sustain, wheel and arpeggio of the last
         // one must not hold or arpeggiate this one's notes while its buttons show them off.
         for (id in 0 until InstrumentTrack.MAX) {
@@ -5720,25 +5857,57 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     fun nudgeTempo(delta: Int) {
         session.edit("tempo") { it.copy(tempoBpm = Math.round(it.tempoBpm).toDouble() + delta) }
-        if (NativeEngine.isAvailable) NativeEngine.setTempo(project.value.tempoBpm)
-        if (project.value.remix.followTempo) pushRemix()
-        if (project.value.drums.lanes.any { (it.sample?.fitBeats ?: 0) > 0 }) pushPads()
+        pushTempo()
     }
 
     /** An exact tempo from outside (MIDI clock): one undo step while it keeps moving. */
     fun setTempo(bpm: Double) {
         session.edit("tempo") { it.copy(tempoBpm = bpm) }
-        if (NativeEngine.isAvailable) NativeEngine.setTempo(project.value.tempoBpm)
-        if (project.value.remix.followTempo) pushRemix()
-        if (project.value.drums.lanes.any { (it.sample?.fitBeats ?: 0) > 0 }) pushPads()
+        pushTempo()
     }
 
     fun tapTempo() {
         val bpm = tapTempo.tap(System.currentTimeMillis()) ?: return
         session.edit("tempo") { it.copy(tempoBpm = Math.round(bpm).toDouble()) }
+        pushTempo()
+    }
+
+    /** The project's tempo to the engine, and to what follows it (the remix, pads fitted to beats). */
+    private fun pushTempo() {
         if (NativeEngine.isAvailable) NativeEngine.setTempo(project.value.tempoBpm)
         if (project.value.remix.followTempo) pushRemix()
         if (project.value.drums.lanes.any { (it.sample?.fitBeats ?: 0) > 0 }) pushPads()
+    }
+
+    /** The undo depth right after the tempo sheet's first change (-1: none yet): its next changes join that step. */
+    private var tempoSheetDepth = -1
+
+    /** The tempo sheet opens: whatever it changes until it closes is one undo step. */
+    fun beginTempoSheet() {
+        tempoSheetDepth = -1
+    }
+
+    /**
+     * A tempo chosen in the tempo sheet (typed, ready-made, ½, ×2, tapped), heard at once: a whole
+     * BPM within the tempos the app plays. The sheet's first change makes the undo step, the next
+     * ones join it (unless something else made a step in between).
+     */
+    fun setSheetTempo(bpm: Double) {
+        if (!bpm.isFinite()) return
+        val clean = Math.round(bpm).toDouble().coerceIn(Project.MIN_TEMPO, Project.MAX_TEMPO)
+        if (clean == project.value.tempoBpm) return
+        if (tempoSheetDepth >= 0 && tempoSheetDepth == session.undoDepth && !session.canRedo.value) {
+            session.editQuietly { it.copy(tempoBpm = clean) }
+        } else {
+            session.edit { it.copy(tempoBpm = clean) }
+            tempoSheetDepth = session.undoDepth
+        }
+        pushTempo()
+    }
+
+    /** « Taper » in the tempo sheet: the tempo of the taps so far (from the second), in the sheet's undo step. */
+    fun tapSheetTempo() {
+        tapTempo.tap(System.currentTimeMillis())?.let(::setSheetTempo)
     }
 
     fun setSwing(swing: Double) {
@@ -5914,6 +6083,24 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         _export.value = _export.value.copy(noLimiter = on)
     }
 
+    /** « 44,1 kHz » for the next exports (48 kHz otherwise). */
+    fun setExportCdRate(on: Boolean) {
+        _export.value = _export.value.copy(cdRate = on)
+    }
+
+    /** « 16 bits » for the next WAV and FLAC exports (24 otherwise). */
+    fun setExportBits16(on: Boolean) {
+        _export.value = _export.value.copy(bits16 = on)
+    }
+
+    /** The master's « Cible » (saved with the project): the engine brings the mix to its loudness. */
+    fun setLoudnessTarget(target: com.pocketstudio.model.LoudnessTarget) {
+        session.edit("mix-loudness-target") { p -> p.copy(mixer = p.mixer.copy(target = target)) }
+        if (NativeEngine.isAvailable) NativeEngine.setLoudnessTarget(loudnessLufs(project.value))
+    }
+
+    private fun loudnessLufs(p: Project): Float? = com.pocketstudio.model.LoudnessTargets.lufs(p.mixer.target, p.style)
+
     fun setStemsWithMaster(on: Boolean) {
         _export.value = _export.value.copy(stemsWithMaster = on)
     }
@@ -5929,10 +6116,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     val shareRequests: kotlinx.coroutines.flow.Flow<List<File>> = _shareRequests.receiveAsFlow()
 
     /**
-     * « Partager mon morceau »: the whole song (or the scene looped when there is none) in M4A,
-     * with a short fade, then the share sheet. The export card's own choices stay as they were.
+     * « Partager mon morceau »: the whole song (or the scene looped when there is none) in M4A
+     * (or WAV, as « Prêt à partager ? » chose), with a short fade, then the share sheet. The
+     * export card's own choices stay as they were.
      */
-    fun shareSong() {
+    fun shareSong(format: ExportFormat = ExportFormat.M4a) {
         val p = project.value
         if (!NativeEngine.isAvailable) {
             _export.value = _export.value.copy(sharing = true, error = tr("Le moteur audio n'est pas prêt : réessaie dans un instant."))
@@ -5946,7 +6134,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 _export.value = _export.value.copy(running = false, stage = null)
             }
             val now = project.value
-            startExport(com.pocketstudio.app.export.ShareSong.settings(now.song.isNotEmpty(), sceneBars(now), now.audioEndBars()), share = true)
+            startExport(com.pocketstudio.app.export.ShareSong.settings(now.song.isNotEmpty(), sceneBars(now), now.audioEndBars(), format), share = true)
         }
     }
 
@@ -5975,6 +6163,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             // effects, so that together they give back the mix.
             if (!limited) NativeEngine.setLimiter(false)
             if (soloChannel != null && !masterFx) NativeEngine.setMasterFx(false)
+            // A track alone is not brought to the song's loudness (it would be as loud as the mix).
+            if (soloChannel != null) NativeEngine.setLoudnessTarget(null)
             // The Live page's own sounds (riser, build-up noise): only in the « Effets live » file.
             if (soloChannel != null) NativeEngine.setLiveNoises(if (soloChannel == LIVE_FX_STEM) NativeEngine.LIVE_NOISES_ONLY else NativeEngine.LIVE_NOISES_OFF)
             if (soloChannel != null && soloChannel != LIVE_FX_STEM) {
@@ -6008,6 +6198,26 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 NativeEngine.captureAt(-1)
             }
         }
+    }
+
+    /**
+     * The song bench (app test `SongBenchExport`, with a recording [NativeEngine.sink]): the song
+     * as « Exporter › Morceau » renders it with the card's first settings, once the sounds are in
+     * (same waits, lengths and calls as [startExport]) into [file].
+     */
+    internal suspend fun renderSongForBench(job: OfflineExport, file: File): ExportResult {
+        samplesLoad?.join()
+        var waited = 0
+        while ((loadingBanks.isNotEmpty() || stemsJob?.isActive == true || remixStretchJob?.isActive == true || stretchJob?.isActive == true) &&
+            waited++ < 300
+        ) kotlinx.coroutines.delay(50)
+        val p = project.value
+        val settings = ExportUi().forProject(sceneBars(p), p.song.isNotEmpty()).copy(what = ExportWhat.Song)
+        val frames = songFrames(p)
+        val fadeFrames = settings.fadeFrames(frames)
+        val tailFrames = if (fadeFrames > 0) 0L else MAX_TAIL_FRAMES
+        describe(job, p, song = true, soloChannel = null, limited = settings.limited, masterFx = settings.masterFx)
+        return job.render(file, frames, tailFrames, fadeFrames, autoTail = true, floatWav = !settings.limited)
     }
 
     /**
@@ -6047,7 +6257,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             _export.value = shown.copy(error = tr("Rien à exporter : chaque piste est vide ou coupée dans le mixeur."), files = emptyList())
             return
         }
-        _export.value = shown.copy(running = true, progress = 0f, files = emptyList(), error = null, stage = null, loudness = null)
+        _export.value = shown.copy(running = true, progress = 0f, files = emptyList(), error = null, stage = null, loudness = null,
+            truePeakDb = null, seconds = null)
         // A foreground service keeps a long export going while the screen is elsewhere (notification, « Annuler »).
         com.pocketstudio.app.export.ExportRun.begin(app, tr("Export de « %s »", com.pocketstudio.model.DefaultNames.shown(p.name)), ::cancelExport)
         exportJob = viewModelScope.launch {
@@ -6056,6 +6267,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             val done = ArrayList<File>()
             var musicOk = true
             var loudness: Double? = null
+            var truePeak: Double? = null
+            var seconds: Double? = null
             try {
                 // Just after the project opened, its sounds, banks and song may still be loading: the
                 // file would have the kit and the synth in their place.
@@ -6068,6 +6281,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     // A private engine costs tens of milliseconds to build: not on the main thread (never lost if cancelled).
                     val job = finishOrRelease(Dispatchers.Default, OfflineExport::close) { OfflineExport() }!!
                     describe(job, p, song, solo, settings.limited, settings.masterFx)
+                    // An M4A's limiter holds −2 dBTP: decoded, the AAC stays under −1 dBTP.
+                    if (settings.format == ExportFormat.M4a) NativeEngine.captureInto(job) { NativeEngine.setMasterCeiling(AacEncoder.CEILING_DBTP) }
                     running = job
                     val wav = runCatching { WavExporter.newFile(app, "${com.pocketstudio.model.DefaultNames.shown(p.name).take(28)}-$label") }.getOrElse { throw UserMessage(tr("Impossible de préparer le fichier d'export.")) }
                     _export.value = _export.value.copy(stage = if (renders.size > 1) "${stageName(label)} (${index + 1}/${renders.size})" else null)
@@ -6078,8 +6293,16 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                             kotlinx.coroutines.delay(100)
                         }
                     }
+                    var report: com.pocketstudio.engine.ExportReport? = null
                     val result = try {
-                        withContext(Dispatchers.IO) { job.render(wav, frames, tailFrames, fadeFrames, autoTail = true, floatWav = !settings.limited) }
+                        withContext(Dispatchers.IO) {
+                            job.render(
+                                wav, frames, tailFrames, fadeFrames, autoTail = true, floatWav = !settings.limited,
+                                sampleRate = if (settings.cdRate) OfflineExport.CD_RATE else OfflineExport.SAMPLE_RATE,
+                                // M4A is encoded from 16 bits, dithered there: its WAV stays 24-bit.
+                                bits = if (settings.bits16 && settings.format != ExportFormat.M4a) 16 else 24,
+                            ).also { report = job.report() }
+                        }
                     } finally {
                         poll.cancel()
                         // Closed on the main thread, after the render returned.
@@ -6091,8 +6314,13 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                         ExportResult.IoError -> { wav.delete(); throw UserMessage(tr("L'écriture du fichier a échoué (stockage plein ?).")) }
                         ExportResult.Ok -> Unit
                     }
-                    // Measured on the full-quality mix, before any compression.
-                    if (solo == null) loudness = withContext(Dispatchers.IO) { runCatching { Loudness.integrated(wav) }.getOrNull() }
+                    // Measured on the full-quality mix, before any compression (the engine's own report,
+                    // as written; read again here only if it is missing).
+                    if (solo == null) {
+                        loudness = report?.lufs ?: withContext(Dispatchers.IO) { runCatching { Loudness.integrated(wav) }.getOrNull() }
+                        truePeak = report?.truePeakDb
+                        seconds = report?.seconds
+                    }
                     if (exportCancelled) {
                         wav.delete()
                         throw kotlinx.coroutines.CancellationException("annulé")
@@ -6108,7 +6336,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                         withContext(Dispatchers.IO) {
                             try {
                                 if (settings.format == ExportFormat.M4a) {
-                                    AacEncoder.encode(wav, packed) { exportCancelled || !isActive }
+                                    // Over −2 dBTP (a mix without the limiter): turned down first, no clipped AAC.
+                                    AacEncoder.encode(wav, packed, AacEncoder.headroomGain(report?.truePeakDb)) { exportCancelled || !isActive }
                                 } else {
                                     FlacEncoder.encode(wav, packed, { exportCancelled || !isActive }) { p ->
                                         _export.value = _export.value.copy(stage = "$name ${com.pocketstudio.model.i18n.percent((p * 100).roundToInt())}$part")
@@ -6125,7 +6354,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     if (exportCancelled) throw kotlinx.coroutines.CancellationException("annulé")
                     musicOk = withContext(Dispatchers.IO) { WavExporter.copyToMusic(app, out, settings.format.mime) } && musicOk
                 }
-                _export.value = _export.value.copy(running = false, files = done, savedInMusic = musicOk, stage = null, loudness = loudness, sharing = false)
+                _export.value = _export.value.copy(running = false, files = done, savedInMusic = musicOk, stage = null, loudness = loudness,
+                    truePeakDb = truePeak, seconds = seconds, sharing = false)
                 ending = tr("Export terminé : %s", done.joinToString(", ") { it.name })
                 AppLog.add("Export ${settings.what} ${settings.format} : ${done.size} fichier(s), ${frames / OfflineExport.SAMPLE_RATE} s" +
                     if (share) " (partage)" else "")
@@ -6161,7 +6391,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     mid
                 }
                 val music = withContext(Dispatchers.IO) { WavExporter.copyToMusic(app, file, "audio/midi") }
-                _export.value = _export.value.copy(files = listOf(file), savedInMusic = music, error = null, loudness = null)
+                _export.value = _export.value.copy(files = listOf(file), savedInMusic = music, error = null, loudness = null, truePeakDb = null, seconds = null)
                 AppLog.add("Export MIDI : ${file.length()} octets")
             } catch (e: Exception) {
                 _export.value = _export.value.copy(error = tr("L'export MIDI a échoué : %s", e.message))

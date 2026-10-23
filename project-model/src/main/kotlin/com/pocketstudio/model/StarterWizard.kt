@@ -514,6 +514,11 @@ object StarterWizard {
             tempoBpm = style.bpm,
             swing = style.swing,
             drums = DrumPattern(steps = steps, lanes = lanes),
+            // Its mix (WizardMix) is made for kit v2's levels.
+            kitVersion = Project.KIT_V2,
+            // The master brings the song to its style's loudness (club, streaming…: the « Cible »).
+            mixer = Mixer(target = LoudnessTarget.AUTO),
+            style = style.id,
         )
         val withAcid = mood != null && acid && style.melody.acid != null && chosenAcid?.let(WizardAcid::plays) != false
         if (mood != null) {

@@ -141,8 +141,17 @@ void Compressor::prepare(float rate) {
 }
 
 void Compressor::setParam(int p, float v) {
-    if (p < 0 || p >= 4 || !clampSetting(p_[static_cast<size_t>(p)], v, 0.0f, 1.0f)) return;
+    if (p < 0 || p >= kParams || !clampSetting(p_[static_cast<size_t>(p)], v, 0.0f, 1.0f)) return;
     update();
+}
+
+void Compressor::reset() {
+    envDb_ = -120.0f;
+    meanSquare_ = 0.0f;
+    averageDb_ = 0.0f;
+    reduction_ = 0.0f;
+    detL_.reset();
+    detR_.reset();
 }
 
 void Compressor::update() {
@@ -151,16 +160,37 @@ void Compressor::update() {
     const float attackMs = expMap(p_[2], 0.1f, 80.0f), releaseMs = expMap(p_[3], 20.0f, 800.0f);
     attack_ = std::exp(-1.0f / (0.001f * attackMs * rate_));
     release_ = std::exp(-1.0f / (0.001f * releaseMs * rate_));
-    // Half of the reduction a full-scale signal would get, given back.
-    makeup_ = dbToGain(-threshold_ * (1.0f - 1.0f / ratio_) * 0.5f);
+    // The user's make-up only: nothing is added below the threshold (before phase 33 a fixed half
+    // of the full-scale reduction was; Effects.kt writes it here for the projects saved then).
+    makeup_ = dbToGain(24.0f * p_[4]);
+    autoMakeup_ = p_[5] >= 0.5f;
+    rms_ = p_[6] >= 0.5f;
+    highPass_ = p_[7] >= 0.01f;
+    if (highPass_) {
+        const float hz = expMap(p_[7], 20.0f, 400.0f);
+        detL_.highPass(rate_, hz);
+        detR_.highPass(rate_, hz);
+    }
+    mix_ = p_[8];
+    rmsCoef_ = 1.0f - std::exp(-1.0f / (0.010f * rate_));     // RMS over ~10 ms
+    averageCoef_ = 1.0f - std::exp(-1.0f / (1.5f * rate_));  // auto make-up follows over ~1.5 s
 }
 
 void Compressor::process(float* l, float* r, int n) {
     constexpr float kKnee = 6.0f;
     float reduction = 0.0f;
     for (int i = 0; i < n; ++i) {
-        const float level = std::max(std::fabs(l[i]), std::fabs(r[i]));
-        const float inDb = level > 1e-6f ? 20.0f * std::log10(level) : -120.0f;
+        // The detector hears the sound (high-passed: the kick no longer drives a bus).
+        const float dl = highPass_ ? detL_.process(l[i]) : l[i];
+        const float dr = highPass_ ? detR_.process(r[i]) : r[i];
+        float inDb;
+        if (rms_) {
+            meanSquare_ += rmsCoef_ * (0.5f * (dl * dl + dr * dr) - meanSquare_);
+            inDb = meanSquare_ > 1e-12f ? 10.0f * std::log10(meanSquare_) : -120.0f;
+        } else {
+            const float level = std::max(std::fabs(dl), std::fabs(dr));
+            inDb = level > 1e-6f ? 20.0f * std::log10(level) : -120.0f;
+        }
         envDb_ = inDb > envDb_ ? attack_ * envDb_ + (1.0f - attack_) * inDb : release_ * envDb_ + (1.0f - release_) * inDb;
         const float over = envDb_ - threshold_;
         float gr = 0.0f;  // dB, ≤ 0
@@ -171,9 +201,15 @@ void Compressor::process(float* l, float* r, int n) {
             gr = (1.0f / ratio_ - 1.0f) * x * x / (2.0f * kKnee);
         }
         reduction = std::min(reduction, gr);
-        const float g = dbToGain(gr) * makeup_;
-        l[i] *= g;
-        r[i] *= g;
+        // « Auto »: the reduction made on average is given back (nothing when nothing is squeezed).
+        // The average only follows while the compressor works: through a silence or a break it
+        // holds, so the music comes back at the level it left (it used to fall to 0 in 1.5 s and
+        // the sound swelled back over 1.5 s at every restart).
+        if (gr < -0.05f) averageDb_ += averageCoef_ * (gr - averageDb_);
+        const float g = dbToGain(autoMakeup_ ? gr - averageDb_ : gr) * makeup_;
+        const float k = mix_ >= 1.0f ? g : 1.0f + mix_ * (g - 1.0f);  // parallel: the dry sound under it
+        l[i] *= k;
+        r[i] *= k;
     }
     reduction_ = reduction;
 }
@@ -182,32 +218,93 @@ void Compressor::process(float* l, float* r, int n) {
 
 void Saturator::prepare(float rate) {
     rate_ = rate;
-    odL_.Init();
-    odR_.Init();
+    glide_ = 1.0f - std::exp(-1.0f / (0.010f * rate));  // 10 ms
     update();
     reset();
 }
 
 void Saturator::setParam(int p, float v) {
-    if (p < 0 || p >= 4 || !clampSetting(p_[static_cast<size_t>(p)], v, 0.0f, 1.0f)) return;
+    if (p < 0 || p >= kParams || !clampSetting(p_[static_cast<size_t>(p)], v, 0.0f, 1.0f)) return;
     update();
+}
+
+namespace {
+
+// DaisySP's SoftClip (MIT, Utility/dsp.h): x (27 + x^2) / (27 + 9 x^2), +-1 past +-3; and its
+// antiderivative x^2/18 + 4/3 ln((x^2 + 3) / 3), then a straight line past +-3.
+struct SoftClipShape {
+    double f(double x) const { return x <= -3.0 ? -1.0 : x >= 3.0 ? 1.0 : x * (27.0 + x * x) / (27.0 + 9.0 * x * x); }
+    double F(double x) const {
+        const double a = std::fabs(x);
+        if (a >= 3.0) return 2.348392481493110 + (a - 3.0);  // F(3) = 1/2 + 4/3 ln 4
+        return x * x / 18.0 + (4.0 / 3.0) * std::log((x * x + 3.0) / 3.0);
+    }
+};
+
+}  // namespace
+
+namespace {
+
+// DaisySP Overdrive::SetDrive's gains (MIT) for [drive].
+void overdriveGains(float drive, float& pre, float& post) {
+    const float d = drive * 2.0f, d2 = d * d;
+    const float preA = d * 0.5f, preB = d2 * d2 * d * 24.0f;
+    pre = preA + (preB - preA) * d2;
+    const float squashed = d * (2.0f - d);
+    post = 1.0f / static_cast<float>(SoftClipShape{}.f(0.33 + squashed * (pre - 0.33)));
+}
+
+}  // namespace
+
+void Saturator::setDrive(float drive) {
+    drive_ = drive;
+    overdriveGains(drive, pre_, post_);
 }
 
 void Saturator::update() {
     // DaisySP's drive above ~0.9 is a hard square: keep the useful range.
-    odL_.SetDrive(0.05f + 0.8f * p_[0]);
-    odR_.SetDrive(0.05f + 0.8f * p_[0]);
-    toneCoef_ = onePoleCoef(rate_, expMap(p_[1], 1500.0f, 18000.0f));
+    driveTarget_ = std::clamp(0.05f + 0.8f * p_[0], 0.0f, 1.0f);
+    // The tone at its top: open, no low-pass (below, 1.5 to 18 kHz, one pole, as always).
+    toneCoef_ = p_[1] >= kOpenTone ? 1.0f : onePoleCoef(rate_, expMap(p_[1], 1500.0f, 18000.0f));
     mix_ = p_[2];
     level_ = p_[3] / 0.7f;
+    // Compensation: the overdrive's gain (at the drive it glides to) on a sine at -15 dBFS RMS (a sound at a usual level; the
+    // overdrive is memoryless, one period tells it) divided out. A light drive is linear there:
+    // quieter sounds keep their level too.
+    wetGain_ = 1.0f;
+    if (p_[4] >= 0.5f) {
+        constexpr int kPoints = 64;
+        constexpr float kAmp = 0.25f;
+        float in = 0.0f, out = 0.0f, pre = 1.0f, post = 1.0f;
+        overdriveGains(driveTarget_, pre, post);
+        const SoftClipShape curve;
+        for (int k = 0; k < kPoints; ++k) {
+            const float x = kAmp * std::sin(2.0f * static_cast<float>(kPi) * (static_cast<float>(k) + 0.5f) / kPoints);
+            const float y = static_cast<float>(curve.f(static_cast<double>(x) * pre)) * post;
+            in += x * x;
+            out += y * y;
+        }
+        if (out > 1e-12f) wetGain_ = std::sqrt(in / out);
+    }
 }
 
 void Saturator::process(float* l, float* r, int n) {
+    const SoftClipShape curve;
+    const bool open = toneCoef_ >= 1.0f;
     for (int i = 0; i < n; ++i) {
-        lpL_ += toneCoef_ * (odL_.Process(l[i]) - lpL_);
-        lpR_ += toneCoef_ * (odR_.Process(r[i]) - lpR_);
-        l[i] = (l[i] + mix_ * (lpL_ - l[i])) * level_;
-        r[i] = (r[i] + mix_ * (lpR_ - r[i])) * level_;
+        if (drive_ != driveTarget_) setDrive(std::fabs(driveTarget_ - drive_) < 1e-5f ? driveTarget_ : drive_ + (driveTarget_ - drive_) * glide_);
+        const float wetL = shL_.process(l[i], pre_, 0.0f, curve) * post_ * wetGain_;
+        const float wetR = shR_.process(r[i], pre_, 0.0f, curve) * post_ * wetGain_;
+        const float dryL = shL_.dry(), dryR = shR_.dry();
+        if (open) {
+            lpL_ = wetL;
+            lpR_ = wetR;
+        } else {
+            lpL_ += toneCoef_ * (wetL - lpL_);
+            lpR_ += toneCoef_ * (wetR - lpR_);
+        }
+        l[i] = (dryL + mix_ * (lpL_ - dryL)) * level_;
+        r[i] = (dryR + mix_ * (lpR_ - dryR)) * level_;
     }
 }
 
@@ -825,7 +922,7 @@ void InsertSlot::prepare(float rate) {
 namespace {
 // The engine's defaults of the long effects (the same as the app's), for a unit borrowed before
 // any parameter came.
-std::array<float, 4> longDefaults(int type) {
+std::array<float, InsertSlot::kParams> longDefaults(int type) {
     switch (type) {
         case InsertSlot::EchoFx: return {0.42f, 0.4f, 0.55f, 0.35f};
         case InsertSlot::PingPongFx: return {0.25f, 0.45f, 0.55f, 0.35f};

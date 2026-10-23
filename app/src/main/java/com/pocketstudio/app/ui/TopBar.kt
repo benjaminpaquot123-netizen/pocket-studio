@@ -2,6 +2,7 @@ package com.pocketstudio.app.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,6 +18,7 @@ import androidx.compose.material.icons.automirrored.filled.Redo
 import androidx.compose.material.icons.automirrored.filled.Undo
 import androidx.compose.material.icons.filled.FiberManualRecord
 import androidx.compose.material.icons.filled.FolderOpen
+import androidx.compose.material.icons.filled.IosShare
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.Icon
@@ -69,7 +71,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import com.pocketstudio.model.Scene
-import com.pocketstudio.ui.MonoStyle
 import com.pocketstudio.ui.Neon
 import com.pocketstudio.model.i18n.tr
 
@@ -81,7 +82,6 @@ class SceneChipUi(val current: Int, val titles: List<String>, val empty: Set<Int
 
 class TopBarUi(
     val projectName: String,
-    val tempoBpm: Double,
     val playing: Boolean,
     val canUndo: Boolean,
     val canRedo: Boolean,
@@ -99,30 +99,42 @@ class TopBarUi(
 
 class TopBarActions(
     val projects: () -> Unit = {},
+    /** A long press on the project's name: rename it there. */
+    val rename: () -> Unit = {},
     val undo: () -> Unit = {},
     val redo: () -> Unit = {},
     val togglePlay: () -> Unit = {},
     val toggleRecord: () -> Unit = {},
     val selectScene: (Int) -> Unit = {},
     val newScene: () -> Unit = {},
+    /** ⤴ « Prêt à partager ? »: the song checked, then shared (on every tab). */
+    val share: () -> Unit = {},
 )
 
 /** How the scene chip shows: not at all, its letter alone, or its letter and section name. */
 enum class SceneChipMode { Hidden, Letter, Full }
 
-/** What fits in the top bar: [sceneMaxWidth] caps a full scene chip (its name is cut with "…" beyond). */
-data class TopBarLayout(val showTempo: Boolean, val showRedo: Boolean, val scene: SceneChipMode, val sceneMaxWidth: Dp = 0.dp)
+/**
+ * What fits in the top bar: [sceneMaxWidth] caps a full scene chip (its name is cut with "…" beyond);
+ * [projectName] says whether the project's name shows next to its folder (not on a very narrow bar
+ * with a scene, where the folder alone leaves room for the scene's letter: a few dp of name would
+ * only show a clipped "…"). (The tempo lives in the play strip under the bar, see PlayStrip.)
+ */
+data class TopBarLayout(val showRedo: Boolean, val scene: SceneChipMode, val sceneMaxWidth: Dp = 0.dp, val projectName: Boolean = true)
 
 /**
  * Fits the top bar into [width]. Never removed: the projects button (with room for a bit of the
- * name), undo, record and play. Then, while there is room, by priority: the scene's letter, the
- * scene's section name, redo, the tempo window.
+ * name), undo, record, play and share. Then, while there is room, by priority: the scene's letter, the
+ * scene's section name, redo.
  */
 fun topBarLayout(width: Dp, hasScene: Boolean): TopBarLayout {
-    // No scene shown (Morceau, Outils…): the tempo window, then redo, give way below these widths.
-    if (!hasScene) return TopBarLayout(showTempo = width >= 400.dp, showRedo = width >= 340.dp, scene = SceneChipMode.Hidden)
+    // No scene shown (Morceau, Outils…): redo gives way below this width (48 dp more since ⤴ joined the bar).
+    if (!hasScene) return TopBarLayout(showRedo = width >= 388.dp, scene = SceneChipMode.Hidden)
     var budget = width - ALWAYS_SHOWN - PROJECT_MIN
-    val letter = budget >= SCENE_LETTER
+    // A small phone with big text: the project's name gives its room to the scene's letter (the
+    // projects button keeps its folder, 48 dp, and shows no name at all).
+    val squeezed = budget < SCENE_LETTER && width - ALWAYS_SHOWN - PROJECT_ICON >= SCENE_LETTER
+    val letter = budget >= SCENE_LETTER || squeezed
     if (letter) budget -= SCENE_LETTER
     // The extras leave the project name a readable width, not just its first letters.
     budget -= EXTRAS_RESERVE
@@ -137,27 +149,31 @@ fun topBarLayout(width: Dp, hasScene: Boolean): TopBarLayout {
         budget -= extra
     }
     val redo = take(BUTTON)
-    val tempo = take(TEMPO)
     val mode = when {
         full -> SceneChipMode.Full
         letter -> SceneChipMode.Letter
         else -> SceneChipMode.Hidden
     }
-    return TopBarLayout(showTempo = tempo, showRedo = redo, scene = mode, sceneMaxWidth = if (mode == SceneChipMode.Hidden) 0.dp else sceneMax)
+    return TopBarLayout(showRedo = redo, scene = mode, sceneMaxWidth = if (mode == SceneChipMode.Hidden) 0.dp else sceneMax, projectName = !squeezed)
 }
 
 private val BUTTON = 48.dp
-/** Undo, record, play (48 dp each) and the bar's side padding. */
-private val ALWAYS_SHOWN = BUTTON * 3 + 12.dp
+/** Undo, record, play, share (48 dp each) and the bar's side padding. */
+private val ALWAYS_SHOWN = BUTTON * 4 + 12.dp
 /** The projects button keeps its icon and a few letters of the name. */
 private val PROJECT_MIN = 92.dp
+/** The projects button reduced to its folder icon. */
+private val PROJECT_ICON = 48.dp
 private val EXTRAS_RESERVE = 36.dp
 private val SCENE_LETTER = 52.dp
 private val SCENE_NAME_MIN = 60.dp
 private val SCENE_FULL_MAX = 140.dp
-private val TEMPO = 84.dp
 
-/** Always on top: the open project (tap for "Mes projets"), the scene edited, undo/redo, tempo and play, on every screen. */
+/**
+ * Always on top: the open project (tap for "Mes projets", hold to rename it), the scene edited,
+ * undo/redo, record, play and share, on every screen. The tempo and the song's position are in the
+ * play strip right under it.
+ */
 @Composable
 fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.layout.BoxWithConstraints(
     Modifier.fillMaxWidth()
@@ -167,17 +183,18 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
         // sides: the bar's own buttons stay clear of them (the background goes under).
         .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)),
 ) {
-    // Narrow (a small phone, a big text size): the tempo window, redo, then the scene's name give
-    // their room to the project name; the projects button, the scene's letter and play never go.
+    // Narrow (a small phone, a big text size): redo, then the scene's name give their room to the
+    // project name; the projects button, the scene's letter and play never go.
     val layout = topBarLayout(maxWidth, ui.scene != null)
-    val showTempo = layout.showTempo
     val showRedo = layout.showRedo
     Row(
         Modifier.fillMaxWidth().height(56.dp).padding(horizontal = 6.dp).testTag("top_bar"),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Row(
-            Modifier.weight(1f).widthIn(min = 48.dp).clip(RoundedCornerShape(12.dp)).clickable(onClick = actions.projects).padding(vertical = 6.dp, horizontal = 4.dp)
+            Modifier.weight(1f).widthIn(min = 48.dp).clip(RoundedCornerShape(12.dp))
+                .combinedClickable(onClick = actions.projects, onLongClick = actions.rename, onLongClickLabel = tr("Renommer le projet"))
+                .padding(vertical = 6.dp, horizontal = 4.dp)
                 .testTag("top_projects"),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -189,7 +206,7 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
             ) {
                 Icon(Icons.Filled.FolderOpen, contentDescription = tr("Mes projets"), tint = Neon.OnAccent, modifier = Modifier.size(18.dp))
             }
-            androidx.compose.foundation.layout.Column {
+            if (layout.projectName) androidx.compose.foundation.layout.Column {
                 Text(ui.projectName, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 if (ui.recordInto != null) {
                     Text(
@@ -245,15 +262,6 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
                 )
             }
         }
-        // The tempo in a small dark window, like a hardware display.
-        if (showTempo) Row(
-            Modifier.padding(horizontal = 4.dp).clip(RoundedCornerShape(8.dp)).background(Color.Black.copy(alpha = 0.35f))
-                .border(1.dp, Color.White.copy(alpha = 0.06f), RoundedCornerShape(8.dp)).padding(horizontal = 8.dp, vertical = 4.dp),
-            verticalAlignment = Alignment.Bottom,
-        ) {
-            Text("${ui.tempoBpm.toInt()}", style = MonoStyle.copy(fontSize = 16.sp, fontWeight = FontWeight.Bold), color = Neon.Cyan)
-            Text(" BPM", style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary)
-        }
         val playColor = if (ui.playing) Neon.Acid else Neon.Cyan
         // A 42 dp disc inside a 48 dp touch target.
         Box(
@@ -275,6 +283,10 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
                     tint = Neon.OnAccent,
                 )
             }
+        }
+        // ⤴ Partager, the last thing done to a song, always one touch away (« Prêt à partager ? »).
+        IconButton(onClick = actions.share, modifier = Modifier.testTag("top_share")) {
+            Icon(Icons.Filled.IosShare, contentDescription = tr("Partager mon morceau"), tint = Neon.TextPrimary)
         }
     }
 }

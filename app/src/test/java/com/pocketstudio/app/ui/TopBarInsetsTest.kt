@@ -42,7 +42,7 @@ class TopBarInsetsTest {
             PocketStudioTheme(Palettes.Studio) {
                 Scaffold(topBar = {
                     TopBar(
-                        TopBarUi("Mon premier rythme", 120.0, false, true, true, scene = SceneChipUi(0, listOf("A · Intro"))),
+                        TopBarUi("Mon premier rythme", false, true, true, scene = SceneChipUi(0, listOf("A · Intro"))),
                         TopBarActions(),
                     )
                 }) { padding -> Box(Modifier.padding(padding).fillMaxSize().testTag("content")) }

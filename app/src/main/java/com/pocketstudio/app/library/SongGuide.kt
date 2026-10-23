@@ -76,7 +76,7 @@ fun songGuide(
         GuidePage(
             tr("Écouter et changer"),
             listOfNotNull(
-                tr("▶ Jouer fait entendre tout le morceau, de l'Intro à la fin. Pour écouter en boucle la section affichée, touche « Écouter » à côté de Jouer (onglet Rythme) : « cette section »."),
+                tr("▶ joue tout le morceau, de l'Intro à la fin, sur tous les onglets. Pour écouter en boucle la partie affichée, touche « ⟳ Partie », juste sous ▶."),
                 song.takeIf { it.isNotBlank() },
                 tr("Onglet Morceau : touche une section (Intro, Couplet ou Refrain) pour l'afficher, la renommer ou la dupliquer pour en faire un Pont ou une Fin."),
             ),

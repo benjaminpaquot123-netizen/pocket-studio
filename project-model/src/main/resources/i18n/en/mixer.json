@@ -136,7 +136,6 @@
   "Mémoire insuffisante : essaie un morceau plus court.": "Not enough memory: try a shorter song.",
   "Ne joue dans aucune scène : touche une lettre ou « Tout ».": "Plays in no scene: tap a letter or “All”.",
   "Neutre": "Neutral",
-  "Nom du morceau": "Song name",
   "Nomme ton morceau": "Name your song",
   "Pad XY, haut-bas :": "XY pad, up-down:",
   "Panoramique": "Pan",
@@ -348,5 +347,6 @@
   "Zone": "Zone",
   "Zone : glisse sur les mesures à régler (ou touche la première puis la dernière) ; la hauteur où tu lâches donne le niveau. Avant et après, rien ne change.": "Zone: slide over the bars to set (or touch the first then the last); the height where you let go gives the level. Before and after, nothing changes.",
   "1. Choisis la piste :": "1. Choose the track:",
-  "2. Ce qui bouge sur « %s » :": "2. What moves on “%s”:"
+  "2. Ce qui bouge sur « %s » :": "2. What moves on “%s”:",
+  "Réduction": "Reduction"
 }

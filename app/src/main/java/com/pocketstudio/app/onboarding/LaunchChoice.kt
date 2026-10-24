@@ -153,6 +153,8 @@ data class LaunchUi(
     val edited: String? = null,
     val simple: Boolean = false,
     val missionsActive: Boolean = false,
+    /** Lot 1: false with no project at all (the last one deleted): no « Continuer ». */
+    val hasProject: Boolean = true,
 )
 
 /** [p] as « Continuer » shows it; [info]: its entry in the projects' list (its last save), when read. */
@@ -184,6 +186,7 @@ private fun clock(seconds: Int) = "%d:%02d".format(seconds / 60, seconds % 60)
 internal fun LaunchChooser(
     gate: LaunchGate, vm: com.pocketstudio.app.rhythm.RhythmViewModel, projectsVm: com.pocketstudio.app.projects.ProjectsViewModel,
     missions: com.pocketstudio.app.learn.MissionPrefs, show: Boolean, simple: Boolean, actions: LaunchActions,
+    hasProject: Boolean = true,
 ) {
     val context = androidx.compose.ui.platform.LocalContext.current
     val prefs = androidx.compose.runtime.remember { LaunchPrefs(context) }
@@ -198,7 +201,7 @@ internal fun LaunchChooser(
     // Its last save, for « modifié il y a 2 h ».
     androidx.compose.runtime.LaunchedEffect(Unit) { projectsVm.refresh() }
     val now = androidx.compose.runtime.remember { System.currentTimeMillis() }
-    LaunchChoice(true, launchUi(project, list.projects.firstOrNull { it.id == vm.projectId }, now, simple, missions.active), actions)
+    LaunchChoice(true, launchUi(project, list.projects.firstOrNull { it.id == vm.projectId }, now, simple, missions.active).copy(hasProject = hasProject), actions)
 }
 
 /** The choices; nothing in the project changes nor plays until one is made. */
@@ -248,7 +251,12 @@ fun LaunchScreen(ui: LaunchUi, actions: LaunchActions) {
                     Text("Pocket Studio", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = Neon.Cyan)
                     Text(tr("Que veux-tu faire ?"), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
                 }
-                if (wide) {
+                if (!ui.hasProject) {
+                    // No project left (lot 1): nothing to continue, a new song first.
+                    Text(tr("Aucun projet pour l'instant : commence un nouveau morceau."), style = MaterialTheme.typography.bodyLarge,
+                        color = Neon.TextSecondary, modifier = Modifier.testTag("launch_no_project"))
+                    OtherChoices(actions)
+                } else if (wide) {
                     Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(14.dp)) {
                         ContinueCard(ui, actions.resume, Modifier.weight(1.15f).fillMaxHeight())
                         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(12.dp)) { OtherChoices(actions) }

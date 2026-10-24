@@ -34,6 +34,8 @@ fun UnderTopBar(
     /** Phase 36: the « ? » that labels the screen (null: none), and what it does. */
     helpOn: Boolean? = null,
     toggleHelp: () -> Unit = {},
+    /** A long press on the « ? »: « Signaler un bug » (null: no shortcut). */
+    reportBug: (() -> Unit)? = null,
 ) {
     val project by vm.project.collectAsStateWithLifecycle()
     val transport by vm.transport.collectAsStateWithLifecycle()
@@ -70,7 +72,7 @@ fun UnderTopBar(
                 project.tempoBpm, hasSong = controls && project.song.isNotEmpty(), loopPart = loopPart, playing = playing, position = position, parts = parts,
                 soloed = if (landscape || !controls) soloed else emptyList(), helpOn = helpOn,
             ),
-            PlayStripActions(openTempo = { setTempoOpen(true) }, setLoopPart = vm::setLoopPart, playFrom = vm::playSongPart, clearSolos = vm::clearSolos, toggleHelp = toggleHelp),
+            PlayStripActions(openTempo = { setTempoOpen(true) }, setLoopPart = vm::setLoopPart, playFrom = vm::playSongPart, clearSolos = vm::clearSolos, toggleHelp = toggleHelp, reportBug = reportBug),
         )
         if (!landscape && controls) SoloBanner(soloed, vm::clearSolos)
     }

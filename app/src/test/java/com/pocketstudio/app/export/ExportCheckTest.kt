@@ -6,6 +6,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
+import org.junit.Assert.fail
 import org.junit.Test
 import java.io.File
 import java.nio.ByteBuffer
@@ -139,5 +140,124 @@ class ExportCheckTest {
         } finally {
             I18n.lang = Lang.FR
         }
+    }
+
+    /**
+     * Lot 1: the check names each step for the bar (« Compression M4A », « Vérification »,
+     * « Nouvel essai 2/3 »…) and renders the whole song again only while the export's budget
+     * allows: past it, the mix is encoded a little lower instead (one more encoding, never three
+     * renders and five encodings).
+     */
+    @Test
+    fun theCheckNamesEachStepAndRendersAgainOnlyWithinItsBudget() = kotlinx.coroutines.runBlocking {
+        I18n.lang = Lang.FR
+        var g2 = 1f
+        var source = -2.0
+        // An encoder 1.5 dB over its source.
+        val decoded = { source + 1.5 + 20 * log10(g2.toDouble()) }
+        val steps = mutableListOf<String>()
+        val late = M4aGuard.run(source, render = { error("no new render past the budget") }, encode = { g -> g2 = g }, decodedPeak = { decoded() },
+            step = { steps += it.label() }, mayGoOn = { false })
+        assertEquals(1, late.renders)
+        assertEquals(2, late.encodings)
+        assertTrue("${late.decodedPeakDb}", late.decodedPeakDb!! <= M4aGuard.MAX_DECODED_DBTP)
+        assertEquals(listOf("Compression M4A", "Vérification", "Réglage du volume : compression", "Réglage du volume : vérification"), steps)
+        // Within the budget: rendered again with the limiter lower, each step named.
+        steps.clear()
+        g2 = 1f
+        val asked = mutableListOf<M4aGuard.Step>()
+        val inTime = M4aGuard.run(source, render = { c -> source = c.toDouble(); source }, encode = { g -> g2 = g }, decodedPeak = { decoded() },
+            step = { steps += it.label() }, mayGoOn = { asked += it; true })
+        assertEquals(2, inTime.renders)
+        assertEquals(listOf(M4aGuard.Step(M4aGuard.Step.Kind.Render, 2, 3)), asked)
+        assertEquals(
+            listOf("Compression M4A", "Vérification", "Nouvel essai 2/3 : fabrication", "Nouvel essai 2/3 : compression", "Nouvel essai 2/3 : vérification"),
+            steps,
+        )
+        // A further lowering past the budget: not tried, the gain actually encoded is the one told.
+        source = -2.0
+        g2 = 1f
+        var encodes = 0
+        val stubborn = M4aGuard.run(source, render = { error("no") }, encode = { g -> encodes++; g2 = g }, decodedPeak = { if (encodes < 3) 3.0 else -2.0 },
+            mayGoOn = { false })
+        assertEquals(2, encodes)
+        assertEquals(g2, stubborn.gain, 0f)
+    }
+
+    @Test
+    fun theBudgetKeepsTheExportShort() = kotlinx.coroutines.runBlocking {
+        var now = 0L
+        val budget = ExportBudget(60_000L) { now }
+        // A 5-minute song renders in about a minute on a phone: no second render after it.
+        budget.took(M4aGuard.Step.Kind.Render) { now += 50_000 }
+        budget.took(M4aGuard.Step.Kind.Encode) { now += 4_000 }
+        budget.took(M4aGuard.Step.Kind.Check) { now += 3_000 }
+        assertFalse(budget.allows(M4aGuard.Step(M4aGuard.Step.Kind.Render, 2, 3)))
+        assertFalse(budget.allows(M4aGuard.Step(M4aGuard.Step.Kind.Encode, 3, 0)))
+        // A short song: a second render still fits.
+        now = 0L
+        val short = ExportBudget(60_000L) { now }
+        short.took(M4aGuard.Step.Kind.Render) { now += 12_000 }
+        short.took(M4aGuard.Step.Kind.Encode) { now += 1_000 }
+        short.took(M4aGuard.Step.Kind.Check) { now += 1_000 }
+        assertTrue(short.allows(M4aGuard.Step(M4aGuard.Step.Kind.Render, 2, 3)))
+    }
+
+    @Test
+    fun aRenderThatStopsMovingIsSeenAsStuck() {
+        var now = 0L
+        val watch = StallWatch(60_000L) { now }
+        assertFalse(watch.stalled(0f))
+        now += 59_000
+        assertFalse(watch.stalled(0f))
+        now += 2_000
+        assertTrue(watch.stalled(0f))
+        // Moving again: not stuck.
+        assertFalse(watch.stalled(0.1f))
+        now += 30_000
+        assertFalse(watch.stalled(0.2f))
+    }
+
+    /**
+     * Review M1: a verification that cannot read the M4A back (a decoder that stops answering
+     * included) keeps the file as encoded; only a cancel stops the export.
+     */
+    @Test
+    fun aStuckVerificationKeepsTheFileEncoded() = kotlinx.coroutines.runBlocking {
+        val logged = mutableListOf<String>()
+        assertNull(M4aGuard.checkOrKeep({ logged += it }) { throw CodecStalledException("le codec du téléphone ne répond plus") })
+        assertEquals(listOf("le codec du téléphone ne répond plus"), logged)
+        assertNull(M4aGuard.checkOrKeep({ logged += it }) { throw java.io.IOException("pas de piste audio") })
+        assertEquals(-3.0, M4aGuard.checkOrKeep({ logged += it }) { -3.0 }!!, 0.0)
+        // Through the guard: encoded once, the file kept, no further try.
+        var encodes = 0
+        val r = M4aGuard.run(-2.0, render = { error("no") }, encode = { encodes++ },
+            decodedPeak = { M4aGuard.checkOrKeep({}) { throw CodecStalledException("bloqué") } })
+        assertEquals(1, encodes)
+        assertEquals(1, r.encodings)
+        assertNull(r.decodedPeakDb)
+        // A cancel is not swallowed.
+        try {
+            M4aGuard.checkOrKeep({}) { throw kotlinx.coroutines.CancellationException("annulé") }
+            fail("cancel")
+        } catch (e: kotlinx.coroutines.CancellationException) {
+            // expected
+        }
+    }
+
+    /** Review M2: the video's watch starts with the render, not with the wait for the sounds before it. */
+    @Test
+    fun aWatchNotYetArmedNeverFlagsTheWaitBeforeTheRender() {
+        var now = 0L
+        val watch = StallWatch(stallMs = 60_000L, now = { now }, armed = false)
+        // Two minutes waiting for the sounds at a progress of 0: not a stuck render.
+        now += 120_000
+        assertFalse(watch.stalled(0f))
+        // Armed when the render starts: the minute counts from there.
+        watch.arm()
+        now += 59_000
+        assertFalse(watch.stalled(0f))
+        now += 2_000
+        assertTrue(watch.stalled(0f))
     }
 }

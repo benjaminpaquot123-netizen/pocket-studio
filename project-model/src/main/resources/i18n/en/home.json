@@ -368,5 +368,11 @@
   "Souffle montant : il monte juste avant chaque Refrain et claque sur son premier temps. On ne l'entend qu'en jouant tout le morceau ; baisse la piste « Souffle montant » dans le Mixeur s'il te gêne.": "Riser: a whoosh rises just before each Chorus and hits on its first beat. You only hear it when the whole song plays; turn the “Riser” track down in the Mixer if it bothers you.",
   "Avant chaque Refrain, le kick et la basse se coupent un instant, puis un temps de silence : le Refrain tombe d'un coup.": "Before each Chorus, the kick and the bass stop for a moment, then a beat of silence: the Chorus lands all at once.",
   "Montée : avant chaque Drop, le kick et la basse se coupent 2 mesures, la caisse claire roule, puis un temps de silence : tout tombe d'un coup.": "Build-up: before each Drop, the kick and the bass stop for 2 bars, the snare rolls, then a beat of silence: everything lands at once.",
-  "Comme une vraie chanson : chaque partie ajoute des sons à celle d'avant, puis le Pont fait une pause sans kick ni basse avant le dernier Refrain.": "Like a real song: each part adds sounds to the one before, then the Bridge takes a break without kick or bass before the last Chorus."
+  "Comme une vraie chanson : chaque partie ajoute des sons à celle d'avant, puis le Pont fait une pause sans kick ni basse avant le dernier Refrain.": "Like a real song: each part adds sounds to the one before, then the Bridge takes a break without kick or bass before the last Chorus.",
+  "Aucun projet pour l'instant": "No projects yet",
+  "Commence un morceau, ou ramène un projet envoyé depuis un autre téléphone.": "Start a song, or bring in a project sent from another phone.",
+  "Importer un projet": "Import a project",
+  "Aucun projet pour l'instant : commence un nouveau morceau.": "No projects yet: start a new song.",
+  "Corbeille (%d)": "Bin (%d)",
+  "gardés %d jours": "kept %d days"
 }

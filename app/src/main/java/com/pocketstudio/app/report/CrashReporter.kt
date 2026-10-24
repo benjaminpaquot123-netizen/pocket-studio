@@ -26,9 +26,12 @@ object CrashReporter {
         appContext = context.applicationContext
         crashFile = File(context.filesDir, FILE_NAME)
         AppLog.persistTo(context.filesDir)
+        JournalFiles.startSession(context.filesDir)
         val previous = Thread.getDefaultUncaughtExceptionHandler()
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
             runCatching { crashFile.writeText(format(thread, throwable)) }
+            // The bug report offered at the next launch: what led there, with the stack.
+            runCatching { JournalFiles.saveCrash(context.filesDir, thread.name, throwable) }
             previous?.uncaughtException(thread, throwable)
         }
     }
@@ -39,9 +42,13 @@ object CrashReporter {
         return runCatching { systemExit() }.getOrNull()
     }
 
+    /** The journal of the session that crashed (journal.json), null if none was kept. */
+    fun crashJournal(): String? = if (!::appContext.isInitialized) null else JournalFiles.crashJournal(appContext.filesDir)
+
     fun clear() {
         if (!::crashFile.isInitialized) return
         crashFile.delete()
+        JournalFiles.clearCrash(appContext.filesDir)
         prefs().edit().putLong(KEY_SEEN, System.currentTimeMillis()).apply()
     }
 

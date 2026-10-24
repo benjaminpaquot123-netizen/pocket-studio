@@ -40,7 +40,6 @@ class MuxerSink(file: File) : MuxSink {
 object VideoEncoder {
     const val VIDEO_BIT_RATE = 6_000_000
     const val AUDIO_BIT_RATE = 192_000
-    private const val TIMEOUT_US = 10_000L
 
     /** One encoded AAC frame, kept until the pictures catch up with it. */
     class AudioSample(val data: ByteArray, val ptsUs: Long, val flags: Int)
@@ -73,46 +72,35 @@ object VideoEncoder {
         try {
             codec.configure(format, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE)
             codec.start()
-            val info = MediaCodec.BufferInfo()
             val frames = pcm.size / 2
             var at = 0
-            var inputDone = false
             val dither = Dither()
-            while (true) {
-                if (isCancelled()) throw kotlinx.coroutines.CancellationException("annulé")
-                if (!inputDone) {
-                    val i = codec.dequeueInputBuffer(TIMEOUT_US)
-                    if (i >= 0) {
-                        val buf = codec.getInputBuffer(i)!!.order(ByteOrder.LITTLE_ENDIAN)
-                        buf.clear()
-                        val n = minOf(buf.capacity() / 4, frames - at)
-                        val timeUs = at.toLong() * 1_000_000L / sampleRate
-                        if (n <= 0) {
-                            codec.queueInputBuffer(i, 0, 0, timeUs, MediaCodec.BUFFER_FLAG_END_OF_STREAM)
-                            inputDone = true
-                        } else {
-                            for (s in 2 * at until 2 * (at + n)) buf.putShort(dither.to16(pcm[s]))
-                            codec.queueInputBuffer(i, 0, n * 4, timeUs, 0)
-                            at += n
-                        }
+            // Never stuck (CodecPump): every output taken each round, a codec that stops answering fails.
+            com.pocketstudio.app.export.CodecPump.run(
+                com.pocketstudio.app.export.CodecPort.of(codec),
+                feed = { i ->
+                    val buf = codec.getInputBuffer(i)!!.order(ByteOrder.LITTLE_ENDIAN)
+                    buf.clear()
+                    val n = minOf(buf.capacity() / 4, frames - at)
+                    val timeUs = at.toLong() * 1_000_000L / sampleRate
+                    if (n <= 0) {
+                        com.pocketstudio.app.export.CodecPump.Fed(0, timeUs, end = true)
+                    } else {
+                        for (s in 2 * at until 2 * (at + n)) buf.putShort(dither.to16(pcm[s]))
+                        at += n
+                        com.pocketstudio.app.export.CodecPump.Fed(n * 4, timeUs, end = false)
                     }
-                }
-                val o = codec.dequeueOutputBuffer(info, TIMEOUT_US)
-                when {
-                    o == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED -> outFormat = codec.outputFormat
-                    o >= 0 -> {
-                        val data = codec.getOutputBuffer(o)!!
-                        if (info.flags and MediaCodec.BUFFER_FLAG_CODEC_CONFIG == 0 && info.size > 0) {
-                            data.position(info.offset)
-                            data.limit(info.offset + info.size)
-                            val bytes = ByteArray(info.size).also { data.get(it) }
-                            out += AudioSample(bytes, info.presentationTimeUs, info.flags and MediaCodec.BUFFER_FLAG_END_OF_STREAM.inv())
-                        }
-                        codec.releaseOutputBuffer(o, false)
-                        if (info.flags and MediaCodec.BUFFER_FLAG_END_OF_STREAM != 0) break
+                },
+                format = { outFormat = it },
+                output = { data, info ->
+                    if (info.flags and MediaCodec.BUFFER_FLAG_CODEC_CONFIG == 0 && info.size > 0) {
+                        val bytes = ByteArray(info.size).also { data.get(it) }
+                        out += AudioSample(bytes, info.presentationTimeUs, info.flags and MediaCodec.BUFFER_FLAG_END_OF_STREAM.inv())
                     }
-                }
-            }
+                    false
+                },
+                isCancelled = isCancelled,
+            )
         } finally {
             runCatching { codec.stop() }
             codec.release()
@@ -152,7 +140,6 @@ object VideoEncoder {
         var audioTrack = -1
         var muxing = false
         var nextAudio = 0
-        val info = MediaCodec.BufferInfo()
         val audioInfo = MediaCodec.BufferInfo()
         fun writeAudioUpTo(ptsUs: Long) {
             while (muxing && nextAudio < audio.size && audio[nextAudio].ptsUs <= ptsUs) {
@@ -165,64 +152,54 @@ object VideoEncoder {
             codec.configure(format, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE)
             codec.start()
             var frame = 0
-            var inputDone = false
-            while (true) {
-                if (isCancelled()) throw kotlinx.coroutines.CancellationException("annulé")
-                if (!inputDone) {
-                    val i = codec.dequeueInputBuffer(TIMEOUT_US)
-                    if (i >= 0) {
-                        if (frame >= total) {
-                            codec.queueInputBuffer(i, 0, 0, plan.ptsUs(frame), MediaCodec.BUFFER_FLAG_END_OF_STREAM)
-                            inputDone = true
+            // Never stuck (CodecPump): every output taken each round, a codec that stops answering fails.
+            com.pocketstudio.app.export.CodecPump.run(
+                com.pocketstudio.app.export.CodecPort.of(codec),
+                feed = { i ->
+                    if (frame >= total) {
+                        com.pocketstudio.app.export.CodecPump.Fed(0, plan.ptsUs(frame), end = true)
+                    } else {
+                        draw(canvas, frame)
+                        bitmap.getPixels(pixels, 0, width, 0, 0, width, height)
+                        yuv.fill(pixels)
+                        // The buffer's own size first (an Image's rows can be wider than the picture:
+                        // its data then runs past width × height × 1.5); asked before the Image, which it hands over to.
+                        val capacity = runCatching { codec.getInputBuffer(i)?.capacity() }.getOrNull() ?: 0
+                        val image = runCatching { codec.getInputImage(i) }.getOrNull()
+                        val size = if (image != null) maxOf(width * height * 3 / 2, capacity) else width * height * 3 / 2
+                        if (image != null) {
+                            yuv.putImage(image)
                         } else {
-                            draw(canvas, frame)
-                            bitmap.getPixels(pixels, 0, width, 0, 0, width, height)
-                            yuv.fill(pixels)
-                            // The buffer's own size first (an Image's rows can be wider than the picture:
-                            // its data then runs past width × height × 1.5); asked before the Image, which it hands over to.
-                            val capacity = runCatching { codec.getInputBuffer(i)?.capacity() }.getOrNull() ?: 0
-                            val image = runCatching { codec.getInputImage(i) }.getOrNull()
-                            val size = if (image != null) maxOf(width * height * 3 / 2, capacity) else width * height * 3 / 2
-                            if (image != null) {
-                                yuv.putImage(image)
-                            } else {
-                                val buf = codec.getInputBuffer(i)!!
-                                buf.clear()
-                                if (color == MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420SemiPlanar) yuv.putSemiPlanar(buf) else yuv.putPlanar(buf)
-                            }
-                            codec.queueInputBuffer(i, 0, size, plan.ptsUs(frame), 0)
-                            frame++
-                            progress(frame.toFloat() / total)
+                            val buf = codec.getInputBuffer(i)!!
+                            buf.clear()
+                            if (color == MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420SemiPlanar) yuv.putSemiPlanar(buf) else yuv.putPlanar(buf)
                         }
+                        val pts = plan.ptsUs(frame)
+                        frame++
+                        progress(frame.toFloat() / total)
+                        com.pocketstudio.app.export.CodecPump.Fed(size, pts, end = false)
                     }
-                }
-                val o = codec.dequeueOutputBuffer(info, TIMEOUT_US)
-                when {
-                    o == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED -> {
-                        if (!muxing) {
-                            videoTrack = sink.addTrack(codec.outputFormat)
-                            audioTrack = sink.addTrack(audioFormat)
-                            sink.start()
-                            muxing = true
-                        }
+                },
+                format = { f ->
+                    if (!muxing) {
+                        videoTrack = sink.addTrack(f)
+                        audioTrack = sink.addTrack(audioFormat)
+                        sink.start()
+                        muxing = true
                     }
-                    o >= 0 -> {
-                        val data = codec.getOutputBuffer(o)!!
-                        val eos = info.flags and MediaCodec.BUFFER_FLAG_END_OF_STREAM != 0
-                        if (info.flags and MediaCodec.BUFFER_FLAG_CODEC_CONFIG != 0) info.size = 0  // already in the format
-                        if (info.size > 0) {
-                            if (!muxing) throw IOException("H.264 sans format")
-                            writeAudioUpTo(info.presentationTimeUs)
-                            data.position(info.offset)
-                            data.limit(info.offset + info.size)
-                            info.flags = info.flags and MediaCodec.BUFFER_FLAG_END_OF_STREAM.inv()
-                            sink.write(videoTrack, data, info)
-                        }
-                        codec.releaseOutputBuffer(o, false)
-                        if (eos) break
+                },
+                output = { data, info ->
+                    if (info.flags and MediaCodec.BUFFER_FLAG_CODEC_CONFIG != 0) info.size = 0  // already in the format
+                    if (info.size > 0) {
+                        if (!muxing) throw IOException("H.264 sans format")
+                        writeAudioUpTo(info.presentationTimeUs)
+                        info.flags = info.flags and MediaCodec.BUFFER_FLAG_END_OF_STREAM.inv()
+                        sink.write(videoTrack, data, info)
                     }
-                }
-            }
+                    false
+                },
+                isCancelled = isCancelled,
+            )
             writeAudioUpTo(Long.MAX_VALUE)
             if (!muxing) throw IOException("H.264 sans image")
             sink.stop()

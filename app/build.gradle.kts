@@ -78,8 +78,8 @@ android {
                 for (key in listOf("bench.out", "bench.render", "bench.styles", "bench.live", "bench.seconds")) {
                     providers.gradleProperty(key).orNull?.let { value -> it.systemProperty("ps.$key", value) }
                 }
-                // Every style's song in one run: more room than the tests need.
-                if (providers.gradleProperty("bench.live").isPresent || providers.gradleProperty("bench.out").isPresent) it.maxHeapSize = "3g"
+                // Every style's song in one run (or every preview, PreviewLevelBench): more room than the tests need.
+                if (listOf("bench.live", "bench.out", "bench.render").any { k -> providers.gradleProperty(k).isPresent }) it.maxHeapSize = "3g"
             }
         }
     }

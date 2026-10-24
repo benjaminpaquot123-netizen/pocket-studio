@@ -59,12 +59,13 @@ import com.pocketstudio.ui.Neon
 @Composable
 fun StyleFamilies(
     tag: String, style: @Composable (StarterWizard.Style) -> Unit, open: Set<String> = emptySet(),
-    /** Phase 36, Mode simple: « Calme (Chill, Lo-fi) » first, open. */
+    /** Phase 36, Mode simple: « Calme (Chill, Lo-fi) » first (folded like the others: lot 1, one touch opens one). */
     calm: Boolean = false,
 ) {
     val families = (if (calm) listOf(StarterWizard.CALM_FAMILY) else emptyList()) + StarterWizard.FAMILIES
-    // Saved as a list (a set is not saveable as is).
-    var opened by rememberSaveable { mutableStateOf(families.filter { it in open || (calm && it == StarterWizard.CALM_FAMILY) }) }
+    // Saved as a list (a set is not saveable as is). Every family folded at first (APK 181 opened
+    // « Calme » in the Mode simple): only [open], the family of a style already chosen.
+    var opened by rememberSaveable { mutableStateOf(families.filter { it in open }) }
     Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         families.forEach { family ->
             val styles = if (family == StarterWizard.CALM_FAMILY) StarterWizard.calmStyles() else StarterWizard.stylesOf(family)

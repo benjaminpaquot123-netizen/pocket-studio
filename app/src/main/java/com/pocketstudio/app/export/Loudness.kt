@@ -33,6 +33,9 @@ object Loudness {
         else -> tr("très doux : monte un peu le volume")
     }
 
+    /** 3 s of 100 ms segments: EBU R 128's short-term window. */
+    private const val SHORT_TERM_SEGMENTS = 30
+
     class Meter(private val rate: Int, private val channels: Int) {
         private val shelf = Array(channels) { Biquad.highShelf(rate) }
         private val highPass = Array(channels) { Biquad.highPass(rate) }
@@ -55,6 +58,26 @@ object Loudness {
                     inSegment = 0
                 }
             }
+        }
+
+        /**
+         * The loudest short-term loudness (LUFS): the K-weighted energy over 3 s windows, every
+         * 100 ms; a sound shorter than 3 s is measured over its whole length. Null when silent.
+         * The level previews are brought to (lot 1, [com.pocketstudio.app.library.PreviewLevel]).
+         */
+        fun shortTermMax(): Double? {
+            val parts = if (inSegment > 0) segments + energy / inSegment else segments
+            if (parts.isEmpty()) return null
+            val window = minOf(SHORT_TERM_SEGMENTS, parts.size)
+            var sum = 0.0
+            for (i in 0 until window) sum += parts[i]
+            var best = sum
+            for (i in window until parts.size) {
+                sum += parts[i] - parts[i - window]
+                if (sum > best) best = sum
+            }
+            val z = best / window
+            return if (z <= 0.0) null else -0.691 + 10 * log10(z)
         }
 
         fun integrated(): Double? {

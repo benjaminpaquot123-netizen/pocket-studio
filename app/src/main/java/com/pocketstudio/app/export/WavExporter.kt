@@ -59,12 +59,14 @@ object WavExporter {
     fun share(context: Context, file: File) = share(context, listOf(file))
 
     /**
-     * One file or several (the tracks of a stems export) through Android's share menu. False when
+     * One file or several (the tracks of a stems export) through Android's share menu, with a mail's
+     * [subject] and [text] if given. False when
      * it could not open (no file, no app to share with).
      */
-    fun share(context: Context, files: List<File>, title: String = tr("Partager le morceau")): Boolean {
+    fun share(context: Context, files: List<File>, title: String = tr("Partager le morceau"), subject: String? = null, text: String? = null): Boolean {
         if (files.isEmpty()) return false
-        val uris = ArrayList(files.map { FileProvider.getUriForFile(context, context.packageName + ".files", it) })
+        // A file outside the shared folders throws here: « could not open », never a crash.
+        val uris = runCatching { ArrayList(files.map { FileProvider.getUriForFile(context, context.packageName + ".files", it) }) }.getOrNull() ?: return false
         val mime = when {
             files.all { it.extension == "m4a" } -> "audio/mp4"
             files.all { it.extension == "flac" } -> "audio/flac"
@@ -81,6 +83,8 @@ object WavExporter {
         }.apply {
             type = mime
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            subject?.let { putExtra(Intent.EXTRA_SUBJECT, it) }
+            text?.let { putExtra(Intent.EXTRA_TEXT, it) }
         }
         return runCatching { context.startActivity(Intent.createChooser(send, title).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) }.isSuccess
     }

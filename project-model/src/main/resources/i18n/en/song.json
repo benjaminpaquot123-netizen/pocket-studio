@@ -383,5 +383,16 @@
   "↘ Bruit qui descend": "↘ Falling noise",
   "■ Fin": "■ End",
   "■ Tout": "■ All",
-  "Huit prises gardées : la plus ancienne (« %s ») est oubliée. Annuler la ramène.": "Eight takes kept: the oldest (“%s”) is forgotten. Undo brings it back."
+  "Huit prises gardées : la plus ancienne (« %s ») est oubliée. Annuler la ramène.": "Eight takes kept: the oldest (“%s”) is forgotten. Undo brings it back.",
+  "le codec du téléphone ne répond plus": "the phone's codec is not responding",
+  "le codec du téléphone ne finit pas": "the phone's codec does not finish",
+  "Vérification": "Checking",
+  "Réglage du volume : compression": "Adjusting the volume: compression",
+  "Réglage du volume : vérification": "Adjusting the volume: checking",
+  "Nouvel essai %1$d/%2$d : fabrication": "New try %1$d/%2$d: making the sound",
+  "Nouvel essai %1$d/%2$d : compression": "New try %1$d/%2$d: compression",
+  "Nouvel essai %1$d/%2$d : vérification": "New try %1$d/%2$d: checking",
+  "La fabrication du son s'est bloquée : réessaie dans un instant.": "Making the sound got stuck: try again in a moment.",
+  "La compression ne répond pas sur ce téléphone : réessaie, ou partage en WAV.": "Compression is not responding on this phone: try again, or share as WAV.",
+  "la fabrication du son s'est bloquée, réessaie dans un instant": "making the sound got stuck, try again in a moment"
 }

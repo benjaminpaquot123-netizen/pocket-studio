@@ -6,6 +6,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -130,7 +131,7 @@ private class SpotNode(var id: String, var label: String?) : Modifier.Node(),
  * les étiquettes » and the « ? » itself hide them.
  */
 @Composable
-fun HelpLabelsOverlay(registry: SpotRegistry, hide: () -> Unit) {
+fun HelpLabelsOverlay(registry: SpotRegistry, hide: () -> Unit, reportBug: (() -> Unit)? = null) {
     DisposableEffect(registry) {
         registry.watching = true
         onDispose { registry.watching = false }
@@ -153,6 +154,8 @@ fun HelpLabelsOverlay(registry: SpotRegistry, hide: () -> Unit) {
         // The hide chip in the middle of the screen, where no main control's label goes.
         val chipW = with(LocalDensity.current) { 220.dp.toPx() }
         val chipH = with(LocalDensity.current) { 56.dp.toPx() }
+        // « Signaler un bug » under it, where help is looked for (also a long press on « ? »).
+        val bugDrop = if (reportBug != null) with(LocalDensity.current) { BUG_CHIP_DROP.toPx() } else 0f
         // The labels, top to bottom: under their control, else above, beside it; a label with no
         // free place is left out rather than drawn over another one.
         val sorted = remember(items) { items.sortedWith(compareBy({ it.first.top }, { it.first.left })) }
@@ -172,7 +175,7 @@ fun HelpLabelsOverlay(registry: SpotRegistry, hide: () -> Unit) {
             val width = constraints.maxWidth.toFloat()
             val height = constraints.maxHeight.toFloat()
             val placed = ArrayList<Rect>()
-            placed += Rect(width / 2f - chipW / 2f, height / 2f - chipH / 2f, width / 2f + chipW / 2f, height / 2f + chipH / 2f)
+            placed += Rect(width / 2f - chipW / 2f, height / 2f - chipH / 2f, width / 2f + chipW / 2f, height / 2f + chipH / 2f + bugDrop)
             val gap = 2.dp.toPx()
             val positions = placeables.mapIndexed { i, pl ->
                 val r = sorted[i].first.translate(-origin.x, -origin.y)
@@ -202,6 +205,14 @@ fun HelpLabelsOverlay(registry: SpotRegistry, hide: () -> Unit) {
                 .background(Neon.Cyan, RoundedCornerShape(20.dp)).clickable(onClick = hide)
                 .padding(horizontal = 16.dp, vertical = 12.dp).testTag("help_labels_hide"),
         )
+        if (reportBug != null) {
+            Text(
+                "🐞 " + tr("Signaler un bug"), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = Neon.TextPrimary,
+                modifier = Modifier.align(androidx.compose.ui.Alignment.Center).offset(y = BUG_CHIP_DROP)
+                    .background(Neon.Surface, RoundedCornerShape(20.dp)).border(1.dp, Neon.Amber, RoundedCornerShape(20.dp))
+                    .clickable(onClick = { hide(); reportBug() }).padding(horizontal = 16.dp, vertical = 12.dp).testTag("help_labels_bug"),
+            )
+        }
         if (items.isEmpty()) {
             Text(
                 tr("Rien à étiqueter sur cet écran."), color = Neon.TextPrimary,
@@ -248,3 +259,6 @@ private fun androidx.compose.foundation.layout.BoxScope.BoxLayoutHalf(target: Re
         content(top)
     }
 }
+
+/** How far under « Masquer les étiquettes » the « Signaler un bug » chip sits. */
+private val BUG_CHIP_DROP = 64.dp

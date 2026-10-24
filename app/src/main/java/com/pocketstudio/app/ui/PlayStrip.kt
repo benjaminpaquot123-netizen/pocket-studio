@@ -49,6 +49,8 @@ import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.toggleableState
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
@@ -131,6 +133,8 @@ class PlayStripActions(
     val clearSolos: () -> Unit = {},
     /** « ? »: the screen's labels shown, or hidden again. */
     val toggleHelp: () -> Unit = {},
+    /** A long press on « ? »: « Signaler un bug » (null: none). */
+    val reportBug: (() -> Unit)? = null,
 )
 
 /**
@@ -163,7 +167,7 @@ fun PlayStrip(ui: PlayStripUi, actions: PlayStripActions) = BoxWithConstraints(
         PositionLabel(ui, actions, Modifier.weight(1f))
         if (ui.soloed.isNotEmpty()) SoloChip(ui.soloed, actions.clearSolos, iconOnly = soloIconOnly)
         if (ui.hasSong) LoopPartChip(ui.loopPart, actions.setLoopPart, iconOnly = loopIconOnly)
-        ui.helpOn?.let { on -> HelpLabelsButton(on, actions.toggleHelp) }
+        ui.helpOn?.let { on -> HelpLabelsButton(on, actions.toggleHelp, actions.reportBug) }
     }
 }
 
@@ -388,10 +392,15 @@ fun SoloBanner(names: List<String>, clearAll: () -> Unit) {
  * screen, one more hides them. Lit in amber while they show.
  */
 @Composable
-private fun HelpLabelsButton(on: Boolean, toggle: () -> Unit) {
+private fun HelpLabelsButton(on: Boolean, toggle: () -> Unit, reportBug: (() -> Unit)? = null) {
     Box(
         Modifier.control().clip(CircleShape)
-            .toggleable(value = on, role = Role.Switch, onValueChange = { toggle() })
+            .then(
+                // A long press: « Signaler un bug », where help is looked for (the toggle stays one touch).
+                if (reportBug == null) Modifier.toggleable(value = on, role = Role.Switch, onValueChange = { toggle() })
+                else Modifier.combinedClickable(role = Role.Switch, onClick = toggle, onLongClick = reportBug, onLongClickLabel = tr("Signaler un bug"))
+                    .semantics { toggleableState = androidx.compose.ui.state.ToggleableState(on) },
+            )
             .semantics { contentDescription = tr("Étiqueter l'écran") }
             .testTag("help_labels_button"),
         contentAlignment = Alignment.Center,

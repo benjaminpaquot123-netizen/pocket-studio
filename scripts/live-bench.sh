@@ -5,7 +5,9 @@
 # swap; `ps_live` replays those commands through the engine driven like the phone's stream (live
 # command budget, 96-frame callbacks) and logs each second: song step, swaps, the whole mix's
 # song curve and its fade as heard, the live loudness gain and its loss, the limiter, the output's
-# level (second, short-term), peak and steps. Fails when ps_live flags a song (docs/son/BANC.md,
+# level (second, short-term), peak and steps. The same run checks that every sound the assistant
+# offers is previewed at one level (PreviewLevelBench: tools/previews/previews.md).
+# Fails when ps_live flags a song (docs/son/BANC.md,
 # « Écoute en direct »): an unplanned fade, silence while the transport runs, a click, a NaN, the
 # live gain out of its range. Report: OUT/report.md; per style: OUT/log/<style>.txt and .csv.
 #
@@ -41,7 +43,7 @@ if [ "$RECORD" = 1 ]; then
     echo "== Recording live playback (app test LiveSongRecorder)"
     rm -rf "$OUT/cmds"
     (cd "$ROOT" && ./gradlew ${GRADLE_ARGS:---max-workers=1} :app:testDebugUnitTest \
-        --tests 'com.pocketstudio.app.bench.LiveSongRecorder' --rerun \
+        --tests 'com.pocketstudio.app.bench.LiveSongRecorder' --tests 'com.pocketstudio.app.bench.PreviewLevelBench' --rerun \
         -Pbench.live="$OUT/cmds" -Pbench.render="$TOOLS/ps_render" -Pbench.seconds="$SECONDS_LIVE" ${STYLES:+-Pbench.styles="$STYLES"}) > "$OUT/gradle.log" 2>&1 \
         || { tail -60 "$OUT/gradle.log"; exit 1; }
 fi

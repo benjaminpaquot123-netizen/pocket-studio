@@ -55,7 +55,6 @@ import com.pocketstudio.model.ProjectCatalog
 import com.pocketstudio.model.ProjectInfo
 import com.pocketstudio.model.TrashedProject
 import com.pocketstudio.ui.Neon
-import com.pocketstudio.ui.SectionLabel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -175,31 +174,33 @@ fun ProjectsScreen(
                 Text(it, color = if (ui.messageOk) Neon.Acid else Neon.Amber, style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.clickable(onClick = actions.dismissMessage))
             }
-            if (!ui.loading && ui.projects.isEmpty()) {
-                Text(tr("Aucun projet sauvegardé pour l'instant."), color = Neon.TextSecondary)
-            }
+            // Lot 1: no project at all (the last one deleted, or none saved yet): what to do next, big.
+            if (!ui.loading && ui.projects.isEmpty()) EmptyProjects(newSong = { setChoosingStart(true) }, importZip = actions.importZip)
             LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.weight(1f)) {
                 items(ui.projects, key = { it.id }) { p ->
                     ProjectCard(p, p.id == currentId, now, actions, busy = ui.busy, onRename = { renamingId = p.id })
                 }
                 if (ui.trash.isNotEmpty()) {
                     item(key = "trash") {
-                        TextButton(onClick = { showTrash = !showTrash }, modifier = Modifier.fillMaxWidth().testTag("project_trash")) {
-                            Text(
-                                (if (showTrash) "▾ " else "▸ ") + tr("Corbeille (%d) · gardés %d jours", ui.trash.size, ProjectCatalog.TRASH_DAYS),
-                                color = Neon.TextSecondary, modifier = Modifier.weight(1f),
-                            )
+                        // « Vider la corbeille » beside its heading (lot 1): there without unfolding it, asked first.
+                        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                            TextButton(onClick = { showTrash = !showTrash }, modifier = Modifier.weight(1f).testTag("project_trash")) {
+                                // Its name on one line, how long it keeps them under it (room for « Vider la corbeille »).
+                                Column(Modifier.weight(1f)) {
+                                    Text((if (showTrash) "▾ " else "▸ ") + tr("Corbeille (%d)", ui.trash.size), color = Neon.TextSecondary, maxLines = 1)
+                                    Text(tr("gardés %d jours", ProjectCatalog.TRASH_DAYS), color = Neon.TextSecondary, style = MaterialTheme.typography.bodySmall,
+                                        maxLines = 1, modifier = Modifier.padding(start = 14.dp))
+                                }
+                            }
+                            TextButton(onClick = { confirmingDelete = EMPTY_ALL }, enabled = !ui.busy, modifier = Modifier.testTag("project_empty_trash")) {
+                                Icon(Icons.Filled.DeleteSweep, contentDescription = null, tint = Neon.Amber, modifier = Modifier.padding(end = 6.dp))
+                                Text(tr("Vider la corbeille"), color = Neon.Amber, maxLines = 1)
+                            }
                         }
                     }
                     if (showTrash) {
                         // While a deletion or a restore runs, the trash waits (its buttons off).
                         items(ui.trash, key = { "trash_${it.entry}" }) { t -> TrashedCard(t, now, actions, busy = ui.busy, onDelete = { confirmingDelete = t.entry }) }
-                        item(key = "trash_empty") {
-                            TextButton(onClick = { confirmingDelete = EMPTY_ALL }, enabled = !ui.busy, modifier = Modifier.fillMaxWidth().testTag("project_empty_trash")) {
-                                Icon(Icons.Filled.DeleteSweep, contentDescription = null, tint = Neon.Amber, modifier = Modifier.padding(end = 6.dp))
-                                Text(tr("Vider la corbeille"), color = Neon.Amber)
-                            }
-                        }
                     }
                 }
             }
@@ -262,7 +263,11 @@ private fun ProjectCard(p: ProjectInfo, open: Boolean, now: Long, actions: Proje
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(com.pocketstudio.model.DefaultNames.shown(p.name), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, maxLines = 1,
                         overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f, fill = false))
-                    if (open) SectionLabel("  " + tr("ouvert"), color = Neon.Acid)
+                    // A plain badge: a section heading's accent bar drew a stray « ▌ » after the name (APK 181).
+                    if (open) {
+                        Text(tr("ouvert").uppercase(), style = MaterialTheme.typography.labelSmall, color = Neon.Acid, maxLines = 1,
+                            modifier = Modifier.padding(start = 10.dp).testTag("project_open_badge"))
+                    }
                 }
                 Text(
                     listOfNotNull(
@@ -296,6 +301,29 @@ private fun ProjectCard(p: ProjectInfo, open: Boolean, now: Long, actions: Proje
                         modifier = Modifier.testTag("project_delete_${p.id}"),
                     )
                 }
+            }
+        }
+    }
+}
+
+/** Lot 1: no project on the phone: a new song or a project brought in, nothing else to read. */
+@Composable
+private fun EmptyProjects(newSong: () -> Unit, importZip: () -> Unit) {
+    Card(
+        shape = RoundedCornerShape(14.dp),
+        colors = CardDefaults.cardColors(containerColor = Neon.Surface),
+        border = BorderStroke(1.dp, Neon.Outline),
+        modifier = Modifier.fillMaxWidth().testTag("projects_empty"),
+    ) {
+        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            Text(tr("Aucun projet pour l'instant"), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            Text(tr("Commence un morceau, ou ramène un projet envoyé depuis un autre téléphone."), style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary)
+            Button(onClick = newSong, modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp).testTag("projects_empty_new")) {
+                Icon(Icons.Filled.Add, contentDescription = null)
+                Text("  " + tr("Nouveau morceau"), style = MaterialTheme.typography.titleSmall)
+            }
+            OutlinedButton(onClick = importZip, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("projects_empty_import")) {
+                Text(tr("Importer un projet"))
             }
         }
     }

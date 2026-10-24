@@ -13,6 +13,8 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
+import com.pocketstudio.app.export.CodecPort
+import com.pocketstudio.app.export.CodecPump
 import com.pocketstudio.model.i18n.tr
 
 /**
@@ -29,7 +31,7 @@ object AudioDecoder {
     /** The file's first [MAX_SECONDS] seconds at most (a longer file is cut, never refused). */
     fun decode(context: Context, uri: Uri): Pcm {
         val out = FloatBuilder()
-        val (channels, rate) = decodeInto(context, uri, out, MAX_SECONDS.toDouble(), cut = true) { false }
+        val (channels, rate) = decodeInto(context, uri, out, MAX_SECONDS.toDouble(), cut = true, isCancelled = { false })
         if (out.size < channels) throw IOException(tr("fichier vide"))
         val keep = minOf(out.size, MAX_SECONDS.toLong() * rate * channels).toInt() / channels * channels
         return Pcm(out.toArray(keep), channels, rate)
@@ -106,8 +108,27 @@ object AudioDecoder {
         return RawAudio(target, channels, rate, sink.size / channels)
     }
 
+    /**
+     * Decodes [uri] (at most [maxSeconds]) and hands every sample to [sample], folded to stereo, as
+     * it comes: nothing kept in memory nor on disk (the M4A check reads its true peak this way).
+     * [progress] goes from 0 to 1 over the file. Returns (channels, sample rate).
+     */
+    fun scan(
+        context: Context, uri: Uri, maxSeconds: Double, isCancelled: () -> Boolean,
+        progress: (Float) -> Unit = {}, sample: (channels: Int, v: Float) -> Unit,
+    ): Pair<Int, Int> {
+        val sink = object : FoldingSink() {
+            override fun add(v: Float) {
+                sample(outChannels, v)
+                size++
+            }
+        }
+        return decodeInto(context, uri, sink, maxSeconds, cut = true, isCancelled = isCancelled, progress = progress)
+    }
+
     private fun decodeInto(
         context: Context, uri: Uri, out: FoldingSink, maxSeconds: Double, cut: Boolean = false, isCancelled: () -> Boolean,
+        progress: (Float) -> Unit = {},
     ): Pair<Int, Int> {
         val extractor = MediaExtractor()
         try {
@@ -121,7 +142,7 @@ object AudioDecoder {
             try {
                 codec.configure(format, null, null, 0)
                 codec.start()
-                return drain(extractor, codec, format, out, maxSeconds, cut, isCancelled)
+                return drain(extractor, codec, format, out, maxSeconds, cut, isCancelled, progress)
             } finally {
                 runCatching { codec.stop() }
                 codec.release()
@@ -133,66 +154,76 @@ object AudioDecoder {
 
     private fun drain(
         extractor: MediaExtractor, codec: MediaCodec, input: MediaFormat,
-        out: FoldingSink, maxSeconds: Double, cut: Boolean, isCancelled: () -> Boolean,
+        out: FoldingSink, maxSeconds: Double, cut: Boolean, isCancelled: () -> Boolean, progress: (Float) -> Unit,
+    ): Pair<Int, Int> {
+        val durationUs = if (input.containsKey(MediaFormat.KEY_DURATION)) input.getLong(MediaFormat.KEY_DURATION) else 0L
+        return drain(CodecPort.of(codec), input, out, maxSeconds, cut, isCancelled, progress, durationUs, read = { i ->
+            val n = extractor.readSampleData(codec.getInputBuffer(i)!!, 0)
+            if (n < 0) {
+                CodecPump.Fed(0, 0, end = true)
+            } else {
+                CodecPump.Fed(n, extractor.sampleTime, end = false).also { extractor.advance() }
+            }
+        })
+    }
+
+    /**
+     * The decoding loop on any codec ([CodecPump]: never stuck): [read] fills input buffer `i`
+     * from the file. Tests run it on a stand-in codec.
+     */
+    internal fun drain(
+        codec: CodecPort, input: MediaFormat, out: FoldingSink, maxSeconds: Double, cut: Boolean, isCancelled: () -> Boolean,
+        progress: (Float) -> Unit, durationUs: Long, read: (Int) -> CodecPump.Fed, now: () -> Long = CodecPump::clockMs,
     ): Pair<Int, Int> {
         var rate = input.getInteger(MediaFormat.KEY_SAMPLE_RATE)
         var srcChannels = input.getInteger(MediaFormat.KEY_CHANNEL_COUNT)
         // Raw WAVs can pass straight through at 8, 24 or 32 bits: never assume 16.
         var encoding = if (input.containsKey(MediaFormat.KEY_PCM_ENCODING)) input.getInteger(MediaFormat.KEY_PCM_ENCODING)
         else AudioFormat.ENCODING_PCM_16BIT
-        val info = MediaCodec.BufferInfo()
-        var inputDone = false
-        while (true) {
-            if (isCancelled()) throw CancelledException()
-            if (!inputDone) {
-                val i = codec.dequeueInputBuffer(10_000)
-                if (i >= 0) {
-                    val buf = codec.getInputBuffer(i)!!
-                    val n = extractor.readSampleData(buf, 0)
-                    if (n < 0) {
-                        codec.queueInputBuffer(i, 0, 0, 0, MediaCodec.BUFFER_FLAG_END_OF_STREAM)
-                        inputDone = true
-                    } else {
-                        codec.queueInputBuffer(i, 0, n, extractor.sampleTime, 0)
-                        extractor.advance()
-                    }
-                }
-            }
-            val o = codec.dequeueOutputBuffer(info, 10_000)
-            when {
-                o == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED -> {
-                    val f = codec.outputFormat
+        var shown = -1
+        try {
+            CodecPump.run(
+                codec,
+                feed = read,
+                format = { f ->
                     rate = f.getInteger(MediaFormat.KEY_SAMPLE_RATE)
                     srcChannels = f.getInteger(MediaFormat.KEY_CHANNEL_COUNT)
                     if (f.containsKey(MediaFormat.KEY_PCM_ENCODING)) encoding = f.getInteger(MediaFormat.KEY_PCM_ENCODING)
-                }
-                o >= 0 -> {
-                    val buf = codec.getOutputBuffer(o)!!.order(ByteOrder.LITTLE_ENDIAN)
-                    buf.position(info.offset)
-                    buf.limit(info.offset + info.size)
+                },
+                output = { buf, info ->
+                    buf.order(ByteOrder.LITTLE_ENDIAN)
                     out.appendFolded(buf, encoding, srcChannels)
-                    codec.releaseOutputBuffer(o, false)
                     val seconds = out.size.toDouble() / minOf(srcChannels, 2) / rate
-                    if (seconds > maxSeconds) {
-                        if (cut) break
-                        throw TooLongException(seconds)
+                    if (durationUs > 0) {
+                        val p = (seconds * 1_000_000 / durationUs * 100).toInt().coerceIn(0, 100)
+                        if (p != shown) { shown = p; progress(p / 100f) }
                     }
-                    if (info.flags and MediaCodec.BUFFER_FLAG_END_OF_STREAM != 0) break
-                }
-            }
+                    if (seconds > maxSeconds && !cut) throw TooLongException(seconds)
+                    seconds > maxSeconds
+                },
+                isCancelled = isCancelled,
+                now = now,
+            )
+        } catch (e: kotlinx.coroutines.CancellationException) {
+            throw CancelledException()
         }
         return minOf(srcChannels, 2) to rate
     }
 
     /** Receives decoded samples; folds more than two channels into stereo (odd ones left, even ones right). */
-    private abstract class FoldingSink {
+    internal abstract class FoldingSink {
         /** Samples received (all channels). */
         var size = 0L
             protected set
 
+        /** The channels of what [add] receives (1 or 2). */
+        var outChannels = 2
+            private set
+
         protected abstract fun add(v: Float)
 
         fun appendFolded(buf: java.nio.ByteBuffer, encoding: Int, channels: Int) {
+            outChannels = minOf(channels, 2)
             val frame = FloatArray(channels)
             while (true) {
                 for (c in 0 until channels) {

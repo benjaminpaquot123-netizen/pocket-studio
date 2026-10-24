@@ -274,6 +274,9 @@ fun AppRoot() {
     val remixVm: RemixViewModel = viewModel()
     val generateVm: com.pocketstudio.app.generate.GenerateViewModel = viewModel()
     val libraryVm: com.pocketstudio.app.library.SoundLibraryViewModel = viewModel()
+    // « Signaler un bug »: opened from Plus, the Mode simple's ⋯, a long press on « ? » and the crash banner.
+    val bugVm: com.pocketstudio.app.report.BugReportViewModel = viewModel()
+    val reportBug: (String) -> Unit = { from -> bugVm.request(from) }
     // The demos of « Nouveau projet » are rendered on a private engine described by the open project's own sync.
     DisposableEffect(libraryVm, rhythmVm) {
         libraryVm.demoSync = { p -> rhythmVm.syncEngine(p) }
@@ -568,21 +571,33 @@ fun AppRoot() {
             }
         }
     }
-    if (showProjects) {
+    // Lot 1: no project open (the last one deleted): « Mes projets » and its empty state stay on screen.
+    val noProject = CurrentProject.isNone(rhythmVm.projectId)
+    // Leaving the app's screens with no project: back to the phone (nothing to go back to here).
+    val leaveApp = { context.findActivity()?.moveTaskToBack(true); Unit }
+    if (showProjects || noProject) {
         val projectsUi by projectsVm.state.collectAsStateWithLifecycle()
         val quickUi by libraryVm.quick.collectAsStateWithLifecycle()
         val previewingDemo by libraryVm.playing.collectAsStateWithLifecycle()
         val preparingDemo by libraryVm.preparing.collectAsStateWithLifecycle()
         LaunchedEffect(Unit) { projectsVm.refresh() }
         // Retour: back where it was opened from (« Que veux-tu faire ? » or the project).
-        val closeProjects = { showProjects = false; projectsNewOnly = false; launch.returned(); Unit }
+        val closeProjects = {
+            showProjects = false
+            projectsNewOnly = false
+            // With no project there is nothing under it: « Que veux-tu faire ? » when it came from there, else out of the app.
+            if (!launch.returned() && noProject) leaveApp()
+            Unit
+        }
         androidx.activity.compose.BackHandler { closeProjects() }
         androidx.compose.ui.window.Dialog(
             onDismissRequest = closeProjects,
             properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false),
         ) {
             androidx.compose.material3.Surface(color = Neon.Background, modifier = Modifier.fillMaxSize()) {
-                ProjectsScreen(
+                // Built afresh when it opens on « Nouveau projet » alone or not: with no project (lot 1) the
+                // list stays on screen under « Que veux-tu faire ? », and its page must follow that choice.
+                androidx.compose.runtime.key(projectsNewOnly) { ProjectsScreen(
                     projectsUi, rhythmVm.projectId, PROJECT_STARTERS.map { it.first },
                     quick = quickUi.copy(
                         demoPlaying = (previewingDemo as? com.pocketstudio.app.library.SoundRef.Demo)?.index,
@@ -647,14 +662,10 @@ fun AppRoot() {
                                         projectsVm.say(tr("Le projet n'a pas pu être enregistré : il reste là (stockage plein ?)."))
                                         return@launch
                                     }
-                                    projectsVm.checkUntouched(p.id) { untouched ->
-                                        when {
-                                            next != null -> switchProject(next.id, p.id)
-                                            // The only project, blank and never edited: nothing to delete, nothing to replace it with.
-                                            untouched -> projectsVm.say(tr("Ce projet est vide et neuf : il reste là, prêt pour ton prochain morceau."), ok = true)
-                                            else -> projectsVm.create(Project(name = ""), replacing = p.id) { id -> switchProject(id, p.id) }
-                                        }
-                                    }
+                                    // The latest other project opens; the last one closes (lot 1: zero projects is
+                                    // allowed, « Mes projets » then shows its empty state). A blank one nobody touched
+                                    // is deleted outright, never trashed (ProjectsViewModel.delete).
+                                    switchProject(next?.id ?: CurrentProject.NONE, p.id)
                                 }
                             }
                         },
@@ -666,15 +677,15 @@ fun AppRoot() {
                         dismissMessage = projectsVm::dismissMessage,
                         shareSong = { showProjects = false; launch.settled(); shareSong() },
                     ),
-                )
+                ) }
             }
         }
     }
     val settings by SettingsStore.state.collectAsStateWithLifecycle()
     var showGuide by rememberSaveable { mutableStateOf(false) }
-    // After the crash report's question (never both dialogs on top of each other).
+    // A crash of the last session only shows a banner under the bar: it holds nothing back.
     val pendingCrash by mainVm.crash.collectAsStateWithLifecycle()
-    if (showGuide && pendingCrash == null) {
+    if (showGuide) {
         GuideDialog(onClose = {
             showGuide = false
             SettingsStore.update(context) { it.copy(guideSeen = true) }
@@ -685,7 +696,7 @@ fun AppRoot() {
     // Phase 36: a first launch starts in the Mode simple (the welcome says so, one touch changes it).
     LaunchedEffect(Unit) { if (!SettingsStore.state.value.guideSeen && !SettingsStore.state.value.simpleMode) SettingsStore.update(context) { it.copy(simpleMode = true) } }
     com.pocketstudio.app.onboarding.FirstLaunch(
-        show = !settings.guideSeen && pendingCrash == null,
+        show = !settings.guideSeen,
         simple = settings.simpleMode,
         actions = com.pocketstudio.app.onboarding.WelcomeActions(
             chooseMode = { v -> SettingsStore.update(context) { it.copy(simpleMode = v) } },
@@ -760,8 +771,18 @@ fun AppRoot() {
     LaunchedEffect(engineAvailable) {
         if (!engineAvailable) return@LaunchedEffect
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            val liveCopy = com.pocketstudio.app.report.LiveCopyClock()
             while (true) {
-                Metrics.updateStream(NativeEngine.streamInfo())
+                val info = NativeEngine.streamInfo()
+                Metrics.updateStream(info)
+                // The bug report's health journal (4 readings a second, atomics only).
+                val now = android.os.SystemClock.elapsedRealtime()
+                com.pocketstudio.app.report.HealthMonitor.feed(info, now, System.currentTimeMillis())
+                // A copy of the journal on disk every 10 s while it or the sound moves: a native crash
+                // leaves no time to write one. Built and written off the main thread (a few hundred KB).
+                if (liveCopy.due(now)) {
+                    launch(kotlinx.coroutines.Dispatchers.IO) { com.pocketstudio.app.report.JournalFiles.saveLive(context.filesDir) }
+                }
                 delay(100)
             }
         }
@@ -950,6 +971,27 @@ fun AppRoot() {
     // drums, the acid's sounds, the instrument's sheet; an audio track opens in Sons.
     var kitSheetOpen by rememberSaveable { mutableStateOf(false) }
     var acidSheetOpen by rememberSaveable { mutableStateOf(false) }
+    // The bug report's journal: each screen, space or sheet shown is a line (and the transport, takes, exports).
+    com.pocketstudio.app.report.JournalWatch(rhythmVm, bugVm) {
+        buildList {
+            add((if (simple) "Mode simple" else tab.space.name) + " › " + tab.name + (if (tab == AppTab.Outils) toolPage?.let { " › " + it.name } ?: "" else ""))
+            if (tab.space == Space.Structure && !simple) add(if (partsView) "vue Parties" else "vue Ligne du temps")
+            if (showProjects) add("Mes projets")
+            if (showTimeline) add("Ligne du temps plein écran")
+            if (showLivePads) add("Pads live plein écran")
+            if (tempoSheetOpen) add("fiche Tempo")
+            if (showShare) add("Prêt à partager ?")
+            if (showVideo) add("fiche Vidéo")
+            soundChooserTrack?.let { add("Changer le son (piste $it)") }
+            if (songChordsOpen) add("Accords du morceau")
+            if (showLibrary) add("Bibliothèque de sons")
+            if (fxChannel >= 0) add("Effets (tranche $fxChannel)")
+            if (songVersionsOpen) add("Versions du morceau")
+            if (kitSheetOpen) add("fiche Kits")
+            if (acidSheetOpen) add("fiche Sons de l'acide")
+            if (helpLabels) add("étiquettes « ? »")
+        }.joinToString(" · ")
+    }
     val trackSound: (String) -> Unit = { key ->
         when {
             key == com.pocketstudio.model.SongPart.DRUMS -> { rhythmVm.refreshPacks(); kitSheetOpen = true }
@@ -976,14 +1018,21 @@ fun AppRoot() {
         helpLabels = false
         go(AppTab.Morceau)
     }
-    com.pocketstudio.app.onboarding.LaunchChooser(launch, rhythmVm, projectsVm, missions, show = launch.open && settings.guideSeen && pendingCrash == null, simple = simple,
+    com.pocketstudio.app.onboarding.LaunchChooser(launch, rhythmVm, projectsVm, missions, show = launch.open && settings.guideSeen, simple = simple,
+        hasProject = !noProject,
         actions = com.pocketstudio.app.onboarding.LaunchActions(
-            resume = { launch.choose() },
+            // No project to continue: Retour leaves the app (« Mes projets » would only lead back here).
+            resume = { if (noProject) leaveApp() else launch.choose() },
             newSong = { launch.choose(comeBack = true); projectsNewOnly = true; showProjects = true },
             projects = { launch.choose(comeBack = true); projectsNewOnly = false; showProjects = true },
             missions = {
                 launch.choose()
-                if (missions.active) { helpLabels = false; go(AppTab.Morceau) } else startMissions()
+                when {
+                    // No project (lot 1): the missions start on a new one (the blank stand-in is never saved).
+                    noProject -> projectsVm.create(Project(name = "")) { id -> if (!missions.active) missions.begin(); openProject(id) }
+                    missions.active -> { helpLabels = false; go(AppTab.Morceau) }
+                    else -> startMissions()
+                }
             },
             chooseMode = { v -> SettingsStore.update(context) { it.copy(simpleMode = v) } },
         ),
@@ -1137,7 +1186,9 @@ fun AppRoot() {
                     recordInto = topRecordInto?.let { topProject.sceneTitle(it) },
                 ),
                 TopBarActions(
-                    projects = { showProjects = true }, rename = { renamingProject = true }, undo = rhythmVm::undo, redo = rhythmVm::redo,
+                    projects = { showProjects = true }, rename = { renamingProject = true },
+                    undo = { com.pocketstudio.app.report.Journal.action("↶ Annuler"); rhythmVm.undo() },
+                    redo = { com.pocketstudio.app.report.Journal.action("↷ Rétablir"); rhythmVm.redo() },
                     togglePlay = rhythmVm::togglePlay,
                     toggleRecord = {
                         when {
@@ -1164,6 +1215,7 @@ fun AppRoot() {
                         TopMenuItem(tr("Réglages"), "more_settings") { toolPage = ToolPage.Reglages; go(AppTab.Outils) },
                         TopMenuItem(tr("Aide et missions"), "more_help") { toolPage = ToolPage.Aide; go(AppTab.Outils) },
                         TopMenuItem(tr("Passer en mode complet"), "more_full") { SettingsStore.update(context) { it.copy(simpleMode = false) } },
+                        TopMenuItem(tr("Signaler un bug"), "more_bug") { reportBug("menu ⋯") },
                     ),
                 ),
             )
@@ -1173,7 +1225,20 @@ fun AppRoot() {
                 renaming = renamingProject, closeRename = { renamingProject = false },
                 rename = { name -> openScope.launch { rhythmVm.renameProject(name); rhythmVm.flushNow(); projectsVm.refresh() } },
                 helpOn = helpLabels, toggleHelp = { helpLabels = !helpLabels },
+                reportBug = { reportBug("appui long sur « ? »") },
             )
+            // After a crash, a discreet line rather than a window: the report opens with the crash in it.
+            val crashText = pendingCrash
+            if (crashText != null) {
+                com.pocketstudio.app.report.CrashBanner(
+                    send = {
+                        bugVm.request("plantage", crash = crashText, crashJournal = com.pocketstudio.app.report.CrashReporter.crashJournal())
+                        mainVm.dismissCrash()
+                    },
+                    dismiss = mainVm::dismissCrash,
+                    modifier = Modifier.windowInsetsPadding(SIDE_INSETS),
+                )
+            }
             if (saveError != null) {
                 Text(
                     tr("Sauvegarde impossible (mémoire pleine ?). Tes dernières modifications ne sont pas encore sauvegardées. Pour faire de la place : Mes projets › Corbeille › Vider la corbeille."),
@@ -2080,6 +2145,7 @@ WithPartHeader(rhythmVm) { partModifier ->
                                 projects = { showProjects = true },
                                 glossary = { learn.open("") },
                                 missions = startMissions,
+                                bugReport = { reportBug("Plus") },
                                 simple = simple,
                                 setSimple = { v -> SettingsStore.update(context) { it.copy(simpleMode = v) } },
                             ),
@@ -2206,7 +2272,7 @@ WithPartHeader(rhythmVm) { partModifier ->
     }
     // Phase 36: « ? qui étiquette l'écran » over the screen, and the missions pointing at a control.
     if (helpLabels && !showProjects) {
-        com.pocketstudio.app.learn.HelpLabelsOverlay(spots, hide = { helpLabels = false })
+        com.pocketstudio.app.learn.HelpLabelsOverlay(spots, hide = { helpLabels = false }, reportBug = { reportBug("étiquettes « ? »") })
     } else if (missions.active && !showProjects && !wizardUi.open) {
         val m = missions.current
         com.pocketstudio.app.learn.SpotlightOverlay(spots, m?.targets(simple).orEmpty()) { modifier, _ ->
@@ -2218,31 +2284,17 @@ WithPartHeader(rhythmVm) { partModifier ->
     }
 
     LaunchPrompts(mainVm)
+    val bugProject by rhythmVm.project.collectAsStateWithLifecycle()
+    com.pocketstudio.app.report.BugReportHost(bugVm, com.pocketstudio.model.DefaultNames.shown(bugProject.name))
 }
 
 @Composable
 private fun LaunchPrompts(vm: MainViewModel) {
     val context = LocalContext.current
-    val crash by vm.crash.collectAsStateWithLifecycle()
     val update by vm.update.collectAsStateWithLifecycle()
 
-    if (crash != null) {
-        AlertDialog(
-            onDismissRequest = vm::dismissCrash,
-            title = { Text(tr("Aïe, l'appli est tombée")) },
-            text = { Text(tr("Elle s'est fermée brutalement la dernière fois. Envoyer le rapport ? Il est déjà rédigé, tu n'as qu'à appuyer sur Envoyer.")) },
-            confirmButton = {
-                TextButton(onClick = {
-                    val uri = vm.crashReportUri()
-                    vm.dismissCrash()
-                    uri?.let { openUri(context, it) }
-                }) { Text(tr("Envoyer le rapport")) }
-            },
-            dismissButton = { TextButton(onClick = vm::dismissCrash) { Text(tr("Ignorer")) } },
-        )
-        return
-    }
-
+    // A crash of the last session is offered by the banner under the top bar (« Signaler un bug »),
+    // which holds nothing back: the update prompt still shows.
     when (val u = update) {
         is UpdateState.Available, is UpdateState.Failed -> {
             val info = if (u is UpdateState.Available) u.info else (u as UpdateState.Failed).info

@@ -53,7 +53,16 @@ class SmokeTest {
         compose.waitForIdle()
         assertTrue("no « Que veux-tu faire ? » left over the project", compose.onAllNodesWithTag("launch").fetchSemanticsNodes().isEmpty())
 
-        // Rhythm screen: the starter groove plays and makes sound.
+        // Rhythm screen: the starter groove plays and makes sound. « Continuer » reopens the last space
+        // used (another test may have left Structure open): go to Sons › Rythme explicitly.
+        if (compose.onAllNodesWithTag("rhythm").fetchSemanticsNodes().isEmpty()) {
+            compose.onNodeWithTag("tab_Sons").performClick()
+            compose.waitForIdle()
+            if (compose.onAllNodesWithTag("rhythm").fetchSemanticsNodes().isEmpty()) {
+                compose.onNodeWithTag("sons_Rythme").performClick()
+                compose.waitForIdle()
+            }
+        }
         compose.onNodeWithTag("rhythm").assertIsDisplayed()
         compose.onNodeWithTag("top_play").performClick()
         compose.waitUntil(5_000) { NativeEngine.currentStep() >= 0 }

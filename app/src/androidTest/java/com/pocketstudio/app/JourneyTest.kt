@@ -223,7 +223,9 @@ class JourneyTest {
         j.await("record_start")
         val track = rhythm.selectedTrack.value
         val before = rhythm.project.value.viewOfTrack(track).synthNotes.notes.toSet()
-        val keys = j.tagsMatching(Journey.KEY).distinct().take(4)
+        // Keys in the song's scale: with the scale locked (jump up: F phrygian), the others are silent.
+        val harmony = rhythm.project.value.harmony
+        val keys = j.tagsMatching(Journey.KEY).distinct().filter { harmony.inScale(it.removePrefix("key_").toInt()) }.take(4)
         assertTrue("the keyboard's keys: $keys", keys.size >= 3)
         runCatching { compose.onNodeWithTag(keys.first()).performScrollTo() }
         val p = rhythm.project.value
@@ -240,15 +242,17 @@ class JourneyTest {
         val countIn = (System.currentTimeMillis() - started) / 1000.0
         log("count-in: %.2f s for a bar of %.2f s".format(countIn, bar))
         assertTrue("a count-in before the take", counted && countIn >= 0.5 * bar)
+        // A beat into the take: a note heard before the « 1 » (output latency taken off) is dropped.
+        Thread.sleep((60_000.0 / p.tempoBpm).toLong())
         for (key in keys) {
             // A key out of sight (a small screen, the keyboard below the track's settings) is scrolled to first.
             runCatching { if (!compose.onNodeWithTag(key).isDisplayed()) compose.onNodeWithTag(key).performScrollTo() }
+            log("key $key at position %.3f, output latency %.0f ms".format(NativeEngine.playPosition(), Metrics.streamInfo.value.outputLatencyMs))
             compose.onNodeWithTag(key).performTouchInput { down(center) }
             Thread.sleep(220)
             compose.onNodeWithTag(key).performTouchInput { up() }
             Thread.sleep(180)
         }
-        log("recording: phase=${rhythm.noteTake.value?.phase}, notes so far=${rhythm.noteTake.value?.notes}")
         j.tap("record_stop")
         if (runCatching { j.await("take_summary") }.isFailure) {
             log("no take summary: phase=${rhythm.noteTake.value?.phase}, notes=${rhythm.noteTake.value?.notes}, record_start=${j.exists("record_start")}, keys shown=${keys.map { k -> runCatching { compose.onNodeWithTag(k).isDisplayed() }.getOrDefault(false) }}")

@@ -113,7 +113,7 @@ Le même Guide, avec moins de cartes (les étapes 1, 4, 6 et 7, les autres repli
 | G2 | **Le panneau et la carte** | `GuidePanel`, `GuideCard`, « où on en est », le plan replié, « Voir le réglage », écoute avec / sans à volume égal, Sauter / Plus tard / refus mémorisés, Mode simple. Captures phone / 130 % / tablette. | L |
 | G3 | **La fiche de piste et les couches** | `TrackSheet` à cinq colonnes, `LayersEditor`, historique par piste et retour en arrière, « ailleurs » (réutiliser un motif, copier une chaîne, favoris). | L |
 | G4 | **Les étapes 3 à 6 en cartes** | « Voilà ce que j'ai mis » effet par effet, arrangement par soustraction, mouvement, niveaux et vérifications (mono, téléphone, référence à volume égal). | M |
-| G5 | **Fusion des anciennes surfaces** | Missions, prochaines étapes, guide du morceau et « Ton morceau est prêt » absorbés par le Guide ; lexique relié aux cartes (pré-entraînement). | M |
+| G5 | **Fusion des anciennes surfaces** | Missions, prochaines étapes, guide du morceau et « Ton morceau est prêt » absorbés par le Guide ; lexique relié aux cartes (pré-entraînement) ; le **Remix** (séparateur de pistes, très apprécié) mis en avant : une entrée dans « Que veux-tu faire ? », une carte « Remixer un morceau » et une place visible dans Sons et en Mode simple. | M |
 | G6 | **Vérification** | Parcours complet sur émulateur, test de reprise à 3 jours, métrique « variation entre Drops » au banc, revue neuve, 8 testeurs. | M |
 
 Durée estimée : G0 une demi-journée ; G1 à G3 en parallèle, une journée ; G4 à G6 une journée. Soit deux à trois jours d'agents, hors audits.
@@ -123,6 +123,7 @@ Durée estimée : G0 une demi-journée ; G1 à G3 en parallèle, une journée ; 
 - **L'audit d'abord** (demande de Benjamin) : le gros audit (pros + 8 testeurs, écoute en direct) tourne sur l'appli telle qu'elle est (APK 181 + lot de bugs), avant toute modification du son. Les chantiers son (basses qui tapent, leads pros) restent sur leurs branches et se fusionnent après, pour comparer.
 - **Le Guide n'attend pas l'audit** : G0 et G1 commencent tout de suite ; G0 corrige des bugs, G1 ne change pas le son. G2 à G5 arrivent après l'audit avec les basses et les leads, pour que la deuxième écoute compare tout d'un coup.
 - Pas d'APK sans la demande de Benjamin ; la règle « écoute en direct » s'applique à toutes les écoutes du Guide.
+- **Le Remix en avant** (demande du 2026-10-24) : le séparateur de pistes est une des fonctions les plus appréciées ; il n'apparaît aujourd'hui ni dans « Que veux-tu faire ? » ni dans les espaces. Dès le lot de bugs fusionné : entrée au lancement et dans Sons, puis la carte du Guide (G5). L'audit vérifie qu'on le trouve en deux gestes.
 
 ## 7. Ce que Benjamin aura à faire
 

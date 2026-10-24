@@ -110,7 +110,8 @@ void testSoftClipperAfterSilence() {
     c.setParam(1, 0.5f);
     c.setParam(2, 1.0f);
     const size_t note = size_t(kRate) / 5, gap = size_t(kRate);
-    std::vector<float> x(3 * (note + gap), 0.0f);
+    // A tail of silence after the last note: the check below reads the output kDelay samples late.
+    std::vector<float> x(3 * (note + gap) + gap, 0.0f);
     for (size_t k = 0; k < 3; ++k)
         for (size_t i = 0; i < note; ++i) x[k * (note + gap) + gap + i] = 0.5f * float(std::sin(2 * M_PI * 55.0 * double(i) / kRate));
     std::vector<float> l = x, r = x;

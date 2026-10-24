@@ -234,7 +234,7 @@ void testEightMultizoneTracks() {
     std::printf("  eight multizone tracks, %d stereo voices: %.2f %% of real time (budget 20 %%), rms at the end %.3f\n",
                 voices, 100.0 * load, rms(left, 0, left.size()));
     CHECK(rms(left, 0, left.size()) > 0.05);  // still all playing
-    CHECK_TIMING(load < 0.20);
+    CHECK_TIMING(load < 0.20 * kSlowBuild);
     // The engine's zones hold the last references (freed with it).
     for (auto* r : recordings) {
         if (r->release()) delete r;

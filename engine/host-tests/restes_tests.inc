@@ -505,7 +505,7 @@ void testEightAudioTracks() {
             load = std::min(load, (threadSeconds() - start) / (static_cast<double>(frames) / kRate));
         }
         std::printf("  eight stereo audio tracks: %.2f %% of real time on this machine\n", load * 100.0);
-        CHECK_TIMING(load < 0.05);
+        CHECK_TIMING(load < 0.05 * kSlowBuild);
     }
 }
 

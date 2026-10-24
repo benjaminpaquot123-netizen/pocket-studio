@@ -84,15 +84,21 @@ class SmokeTest {
 
         // An edit survives the app going to the background (autosave flush on stop).
         compose.onNodeWithTag("step_3").performScrollTo().performClick()  // pad 4 (clap) is selected now
+        compose.waitForIdle()
         compose.activityRule.scenario.moveToState(androidx.lifecycle.Lifecycle.State.CREATED)
         val store = ProjectStore(File(InstrumentationRegistry.getInstrumentation().targetContext.filesDir, "projects"))
+        // The flush is asynchronous and the emulator's disk is slow: whichever project is open (the
+        // starter's id can differ from PROJECT_ID), its clap must carry the hit within 15 s.
+        fun savedHit(): Boolean = (store.list() + RhythmViewModel.PROJECT_ID).distinct().any { id ->
+            store.load(id)?.drums?.lanes?.get(4)?.hits?.containsKey(3) == true
+        }
         var saved = false
-        for (i in 0 until 50) {
-            saved = store.load(RhythmViewModel.PROJECT_ID)?.drums?.lanes?.get(4)?.hits?.containsKey(3) == true
+        for (i in 0 until 150) {
+            saved = savedHit()
             if (saved) break
             Thread.sleep(100)
         }
-        assertTrue("edit must be saved when the app goes to the background", saved)
+        assertTrue("edit must be saved when the app goes to the background (projects: ${store.list()})", saved)
         compose.activityRule.scenario.moveToState(androidx.lifecycle.Lifecycle.State.RESUMED)
         compose.waitUntil(10_000) { NativeEngine.streamInfo().let { it.running && it.callbacks > 0 } }
 

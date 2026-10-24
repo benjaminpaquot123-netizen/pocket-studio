@@ -1,7 +1,7 @@
 # Pocket Studio : règles permanentes
 
 Référence complète : `docs/SPEC.md` (le prompt d'origine ; ne le modifier que sur demande de Benjamin).
-Au début de chaque session : lire ce fichier, `docs/PROGRESS.md` et les issues GitHub ouvertes (rapports de recette et bugs).
+Au début de chaque session : lire ce fichier, `docs/PROGRESS.md` et les issues GitHub ouvertes (rapports de recette et bugs) ; regarder aussi le dernier passage de « Nightly real use » (`docs/TESTS-REELS.md`) et traiter un échec.
 À la fin de chaque session : commit poussé (même en plein travail) et `docs/PROGRESS.md` à jour.
 « continue » = reprendre la prochaine étape notée dans `docs/PROGRESS.md`, sans rien demander.
 

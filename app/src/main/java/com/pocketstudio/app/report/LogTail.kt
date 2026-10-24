@@ -20,8 +20,24 @@ object LogTail {
         redact(text.trim())
     }.getOrDefault("")
 
-    /** Strips anything that looks like a URL query or an e-mail before it leaves the phone. */
+    private val email = Regex("[\\w.+-]+@[\\w-]+\\.[\\w.]+")
+    private val query = Regex("\\?[^\\s]+")
+    /**
+     * A file on the phone (its folders and name say whose it is): /storage/…, /data/…, /sdcard/…,
+     * /mnt/…, up to the end of the line or a separator (names often hold spaces and apostrophes: « Nuit d'été.wav »).
+     * The app's own code (/data/app/…/libpocketstudio.so) stays: a native crash needs it.
+     */
+    private val path = Regex("/(storage|sdcard|mnt|data(?!/app/))/[^\\n,;:()\\[\\]«»\"]*")
+    /** A shared document (content://…): its address can carry the file's name. */
+    private val contentUri = Regex("content://[^\\s,;)»\"']+")
+
+    /**
+     * Strips what could say who the user is before it leaves the phone: e-mails, URL queries, file
+     * paths (as <chemin>) and document addresses (as <document>).
+     */
     fun redact(text: String): String = text
-        .replace(Regex("[\\w.+-]+@[\\w-]+\\.[\\w.]+"), "<email>")
-        .replace(Regex("\\?[^\\s]+"), "?…")
+        .replace(email, "<email>")
+        .replace(contentUri, "<document>")
+        .replace(path, "<chemin>")
+        .replace(query, "?…")
 }

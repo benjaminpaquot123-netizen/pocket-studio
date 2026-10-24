@@ -182,6 +182,8 @@ object NativeEngine {
     const val LOUDNESS_LOSS = 6
     /** Size of the array [loudnessMeters] fills. */
     const val LOUDNESS = 7
+    /** Size of [healthMeters]' output. */
+    const val HEALTH = 4
     /** No value yet (silence, or under 400 ms of sound). */
     const val LOUDNESS_NONE = -100f
 
@@ -459,6 +461,13 @@ object NativeEngine {
 
     /** Writes into [out] (size [LOUDNESS]) the master's loudness and true peak (see [LOUDNESS_MOMENTARY]). */
     external fun loudnessMeters(out: FloatArray)
+
+    /**
+     * Writes into [out] (size [HEALTH]) what the bug report's health journal samples, taking nothing
+     * from the other meters: momentary and short-term loudness (LUFS, [LOUDNESS_NONE] none yet), the
+     * limiter's gain now (linear, 1 = untouched) and the audio thread's load ([cpuLoad]).
+     */
+    external fun healthMeters(out: FloatArray)
 
     /** Plays a pad right now (live). */
     fun triggerPad(lane: Int, velocity: Float) = post(CMD_TRIGGER_PAD, velocity, lane)
@@ -946,6 +955,8 @@ data class StreamInfo(
     val callbacks: Long = 0,
     val peak: Float = 0f,
     val nonFinite: Boolean = false,
+    /** Times the output stream was reopened after Android closed it (headphones, Bluetooth, reroute). */
+    val restarts: Int = 0,
 ) {
     companion object {
         fun fromArray(v: DoubleArray) = StreamInfo(
@@ -963,6 +974,7 @@ data class StreamInfo(
             callbacks = v[11].toLong(),
             peak = v[12].toFloat(),
             nonFinite = v[13] > 0.5,
+            restarts = v.getOrElse(14) { 0.0 }.toInt(),
         )
     }
 }

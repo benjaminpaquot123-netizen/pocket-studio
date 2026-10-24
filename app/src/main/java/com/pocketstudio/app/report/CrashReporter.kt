@@ -26,11 +26,25 @@ object CrashReporter {
         appContext = context.applicationContext
         crashFile = File(context.filesDir, FILE_NAME)
         AppLog.persistTo(context.filesDir)
-        val previous = Thread.getDefaultUncaughtExceptionHandler()
-        Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
-            runCatching { crashFile.writeText(format(thread, throwable)) }
-            previous?.uncaughtException(thread, throwable)
-        }
+        val filesDir = context.filesDir
+        JournalFiles.startSession(filesDir)
+        // Installed once per process: a second Application (Robolectric gives each test its own)
+        // only points the handler at its files. The handler keeps no Context: a chain of handlers
+        // each holding an Application would keep every test's app in memory.
+        crashDir = filesDir
+        val current = Thread.getDefaultUncaughtExceptionHandler()
+        if (current === handler) return
+        previous = current
+        Thread.setDefaultUncaughtExceptionHandler(handler)
+    }
+
+    @Volatile private var crashDir: File? = null
+    @Volatile private var previous: Thread.UncaughtExceptionHandler? = null
+    private val handler = Thread.UncaughtExceptionHandler { thread, throwable ->
+        runCatching { crashFile.writeText(format(thread, throwable)) }
+        // The bug report offered at the next launch: what led there, with the stack.
+        crashDir?.let { dir -> runCatching { JournalFiles.saveCrash(dir, thread.name, throwable) } }
+        previous?.uncaughtException(thread, throwable)
     }
 
     fun pendingCrash(): String? {
@@ -39,9 +53,13 @@ object CrashReporter {
         return runCatching { systemExit() }.getOrNull()
     }
 
+    /** The journal of the session that crashed (journal.json), null if none was kept. */
+    fun crashJournal(): String? = if (!::appContext.isInitialized) null else JournalFiles.crashJournal(appContext.filesDir)
+
     fun clear() {
         if (!::crashFile.isInitialized) return
         crashFile.delete()
+        JournalFiles.clearCrash(appContext.filesDir)
         prefs().edit().putLong(KEY_SEEN, System.currentTimeMillis()).apply()
     }
 

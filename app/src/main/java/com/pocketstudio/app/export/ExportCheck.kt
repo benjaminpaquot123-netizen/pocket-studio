@@ -19,7 +19,9 @@ import kotlin.math.sin
  * music (the test's half-band sine reads its own amplitude).
  */
 class TruePeakMeter(private val channels: Int) {
-    private val history = Array(channels) { FloatArray(TAPS) }
+    // Each sample written twice (at and at + TAPS): the last TAPS ones always lie in a row, read
+    // without a modulo per tap (a 5-minute song is 29 million samples, each read 36 times).
+    private val history = Array(channels) { FloatArray(2 * TAPS) }
     private var at = 0
     private var channel = 0
     var peak = 0.0
@@ -29,17 +31,19 @@ class TruePeakMeter(private val channels: Int) {
     fun add(v: Float) {
         val h = history[channel]
         h[at] = v
+        h[at + TAPS] = v
+        val newest = at + TAPS
         var best = abs(v.toDouble())
         for (phase in 1 until PHASES) {
             var y = 0.0
             val c = COEFFS[phase]
-            for (k in 0 until TAPS) y += c[k] * h[(at - k + TAPS) % TAPS]
+            for (k in 0 until TAPS) y += c[k] * h[newest - k]
             best = max(best, abs(y))
         }
         if (best > peak) peak = best
         if (++channel == channels) {
             channel = 0
-            at = (at + 1) % TAPS
+            at = if (at + 1 == TAPS) 0 else at + 1
         }
     }
 
@@ -109,6 +113,26 @@ object M4aGuard {
 
     data class Run(val decodedPeakDb: Double?, val ceiling: Float, val gain: Float, val renders: Int, val encodings: Int)
 
+    /** What the guard is doing, for an honest progress line (« Compression M4A », « Vérification », « Nouvel essai 2/3 »…). */
+    data class Step(val kind: Kind, val attempt: Int, val of: Int) {
+        enum class Kind { Encode, Check, Render }
+
+        /** The line shown under « Je prépare ton morceau… ». */
+        fun label(): String = when {
+            attempt <= 1 -> if (kind == Kind.Check) tr("Vérification") else tr("Compression M4A")
+            of == 0 -> when (kind) {
+                // The last resort: the same mix, encoded a little lower.
+                Kind.Check -> tr("Réglage du volume : vérification")
+                else -> tr("Réglage du volume : compression")
+            }
+            else -> when (kind) {
+                Kind.Render -> tr("Nouvel essai %1\$d/%2\$d : fabrication", attempt, of)
+                Kind.Encode -> tr("Nouvel essai %1\$d/%2\$d : compression", attempt, of)
+                Kind.Check -> tr("Nouvel essai %1\$d/%2\$d : vérification", attempt, of)
+            }
+        }
+    }
+
     /**
      * The M4A of a mix already rendered with its limiter at [AacEncoder.CEILING_DBTP] (true peak
      * [sourcePeakDb]): encoded, decoded again; over [MAX_DECODED_DBTP], the mix is rendered again
@@ -116,12 +140,19 @@ object M4aGuard {
      * what the decoded file went over plus [MARGIN_LIMIT_DB]: the limiter takes the peaks down and
      * the loudness stays (plain lowering lost up to 6 dB on today's mixes). Still over after
      * [MAX_RENDERS] renders, or with the ceiling under [MIN_CEILING_DBTP]: [encodeWithin] lowers it.
+     *
+     * Lot 1: [step] is told each step before it starts (the screen names it); a new render, and
+     * any lowering after the first, happen only while [mayGoOn] allows that step (the export's
+     * time budget: a whole 5-minute song renders in a minute or two on a phone, three renders and
+     * five encodings were the « Compression M4A » that never ended).
      */
     suspend fun run(
         sourcePeakDb: Double?,
         render: suspend (ceiling: Float) -> Double?,
         encode: suspend (gain: Float) -> Unit,
         decodedPeak: suspend () -> Double?,
+        step: (Step) -> Unit = {},
+        mayGoOn: (Step) -> Boolean = { true },
     ): Run {
         var ceiling = AacEncoder.CEILING_DBTP
         var source = sourcePeakDb
@@ -129,28 +160,56 @@ object M4aGuard {
         var encodings = 0
         while (true) {
             val gain = AacEncoder.headroomGain(source, ceiling)
+            step(Step(Step.Kind.Encode, renders, MAX_RENDERS))
             encode(gain)
             encodings++
+            step(Step(Step.Kind.Check, renders, MAX_RENDERS))
             val peak = decodedPeak() ?: return Run(null, ceiling, gain, renders, encodings)
             if (peak <= MAX_DECODED_DBTP) return Run(peak, ceiling, gain, renders, encodings)
             val next = (ceiling - (peak - MAX_DECODED_DBTP + MARGIN_LIMIT_DB)).toFloat()
-            if (renders >= MAX_RENDERS || next < MIN_CEILING_DBTP) {
-                // The last resort: this mix, encoded lower (as [encodeWithin]).
+            val again = Step(Step.Kind.Render, renders + 1, MAX_RENDERS)
+            if (renders >= MAX_RENDERS || next < MIN_CEILING_DBTP || !mayGoOn(again)) {
+                // The last resort: this mix, encoded lower (as [encodeWithin]); the first try always
+                // (the file must not saturate), the next ones only within the budget.
                 var g = gain * 10.0.pow((MAX_DECODED_DBTP - MARGIN_DB - peak) / 20.0).toFloat()
+                var encoded = gain
                 var last: Double = peak
                 for (tries in 1..MAX_TRIES) {
+                    val e = Step(Step.Kind.Encode, tries + 1, 0)
+                    if (tries > 1 && !mayGoOn(e)) break
+                    step(e)
                     encode(g)
+                    encoded = g
                     encodings++
+                    step(Step(Step.Kind.Check, tries + 1, 0))
                     last = decodedPeak() ?: return Run(null, ceiling, g, renders, encodings)
                     if (last <= MAX_DECODED_DBTP || tries == MAX_TRIES) break
                     g *= 10.0.pow((MAX_DECODED_DBTP - MARGIN_DB - last) / 20.0).toFloat()
                 }
-                return Run(last, ceiling, g, renders, encodings)
+                return Run(last, ceiling, encoded, renders, encodings)
             }
             ceiling = next
+            step(again)
             source = render(ceiling)
             renders++
         }
+    }
+
+    /**
+     * Lot 1 review (M1): the check of an M4A already encoded never fails the export. A file that
+     * cannot be read back (an unreadable M4A, a decoder that stops answering:
+     * [CodecStalledException]) is kept as encoded: null, [log]ged. A cancel still stops the export.
+     */
+    fun checkOrKeep(log: (String) -> Unit, read: () -> Double?): Double? = try {
+        read()
+    } catch (e: kotlinx.coroutines.CancellationException) {
+        throw e
+    } catch (e: CodecStalledException) {
+        log(e.message ?: "codec")
+        null
+    } catch (e: Exception) {
+        log(e.message ?: e.javaClass.simpleName)
+        null
     }
 
     fun encodeWithin(gain: Float, encode: (Float) -> Unit, decodedPeak: () -> Double?): Result {
@@ -214,5 +273,75 @@ data class ExportSummary(
             val total = seconds.roundToInt()
             return if (total >= 60) tr("%d min %d s", total / 60, total % 60) else tr("%d s", total)
         }
+    }
+}
+
+/**
+ * Lot 1: an export always ends. [allows] says whether an optional step of the M4A check (a new
+ * render of the whole song, a further lowering) still fits in [budgetMs] from the start of the
+ * export, from what the last render, encoding and check took ([took]).
+ */
+class ExportBudget(private val budgetMs: Long = BUDGET_MS, private val now: () -> Long = { System.nanoTime() / 1_000_000 }) {
+    private val start = now()
+    private val last = HashMap<M4aGuard.Step.Kind, Long>()
+
+    val elapsedMs: Long get() = now() - start
+
+    /** Runs [block] and keeps how long it took as the cost of the next [kind]. */
+    suspend fun <T> took(kind: M4aGuard.Step.Kind, block: suspend () -> T): T {
+        val t0 = now()
+        try {
+            return block()
+        } finally {
+            last[kind] = now() - t0
+        }
+    }
+
+    /** [step] (and what follows it: a render is then encoded and checked) still fits in the budget. */
+    fun allows(step: M4aGuard.Step): Boolean {
+        val cost = when (step.kind) {
+            M4aGuard.Step.Kind.Render -> cost(M4aGuard.Step.Kind.Render) + cost(M4aGuard.Step.Kind.Encode) + cost(M4aGuard.Step.Kind.Check)
+            else -> cost(M4aGuard.Step.Kind.Encode) + cost(M4aGuard.Step.Kind.Check)
+        }
+        return elapsedMs + cost <= budgetMs
+    }
+
+    private fun cost(kind: M4aGuard.Step.Kind) = last[kind] ?: 0L
+
+    companion object {
+        /** A shared song: about a minute of work at most beyond its first render and its first check. */
+        const val BUDGET_MS = 60_000L
+    }
+}
+
+/**
+ * Lot 1: a render whose progress stays still for [stallMs] is stuck (it is cancelled, the export
+ * says so). [armed] false: it watches nothing until [arm] (review M2: the video's render first
+ * waits for the project's sounds, up to 15 s and more, at a progress of 0).
+ */
+class StallWatch(private val stallMs: Long = RENDER_STALL_MS, armed: Boolean = true, private val now: () -> Long = { System.nanoTime() / 1_000_000 }) {
+    private var last = Float.NaN
+    private var since = now()
+    private var armed = armed
+
+    /** The render is really under way: from now on, a still progress counts. */
+    fun arm() {
+        armed = true
+        since = now()
+    }
+
+    /** True once [progress] has not moved for [stallMs] (never before [arm]; the progress is followed all the same). */
+    fun stalled(progress: Float): Boolean {
+        val t = now()
+        if (progress != last) {
+            last = progress
+            since = t
+        }
+        return armed && t - since > stallMs
+    }
+
+    companion object {
+        /** A render moves on every few milliseconds: a whole minute still is a stuck one. */
+        const val RENDER_STALL_MS = 60_000L
     }
 }

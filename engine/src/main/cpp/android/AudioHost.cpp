@@ -333,6 +333,7 @@ void AudioHost::onErrorAfterClose(oboe::AudioStream* stream, oboe::Result error)
         if (!openOutputLocked()) continue;
         engine_.prepare(output_->getSampleRate());
         if (output_->requestStart() == oboe::Result::OK) {
+            ++restarts_;
             // Opening the microphone rerouted the audio (some phones): a take keeps its microphone.
             if (recordingInput_) reopenRecordingInputLocked();
             return;
@@ -415,6 +416,7 @@ StreamInfo AudioHost::info() {
     std::unique_lock<std::mutex> guard(lock_, std::try_to_lock);
     if (!guard.owns_lock()) return lastInfo_;
     StreamInfo info;
+    info.restarts = restarts_;
     if (!output_) {
         info.xruns = lastXruns_;
         lastInfo_ = info;

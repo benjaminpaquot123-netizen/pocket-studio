@@ -25,6 +25,8 @@ struct StreamInfo {
     int xruns = 0;
     double outputLatencyMs = -1.0;
     bool running = false;
+    // Times the output stream was reopened after Oboe closed it (headphones, Bluetooth, reroute).
+    int restarts = 0;
 };
 
 // Input-stream callback: pushes microphone samples (first channel) into a lock-free ring
@@ -137,6 +139,7 @@ private:
     int bufferBursts_ = 2;
     int xrunBase_ = 0;
     int lastXruns_ = 0;
+    int restarts_ = 0;  // guarded by lock_; see StreamInfo::restarts
     StreamInfo lastInfo_;
 };
 

@@ -28,8 +28,11 @@ object AacEncoder {
     fun headroomGain(truePeakDb: Double?, ceiling: Float = CEILING_DBTP): Float =
         if (truePeakDb == null || truePeakDb <= ceiling) 1f else Math.pow(10.0, (ceiling - truePeakDb) / 20.0).toFloat()
 
-    /** [gain]: applied to every sample on the way in (see [headroomGain]). */
-    fun encode(wav: File, out: File, gain: Float = 1f, isCancelled: () -> Boolean = { false }) {
+    /**
+     * [gain]: applied to every sample on the way in (see [headroomGain]). [progress] goes from 0
+     * to 1 over the file. Never stuck ([CodecPump]): a codec that stops answering fails the step.
+     */
+    fun encode(wav: File, out: File, gain: Float = 1f, isCancelled: () -> Boolean = { false }, progress: (Float) -> Unit = {}) {
         val pcm = WavPcm.open(wav)
         val format = MediaFormat.createAudioFormat(MediaFormat.MIMETYPE_AUDIO_AAC, pcm.sampleRate, pcm.channels).apply {
             setInteger(MediaFormat.KEY_AAC_PROFILE, MediaCodecInfo.CodecProfileLevel.AACObjectLC)
@@ -50,53 +53,22 @@ object AacEncoder {
             codec.release()
             throw e
         }
-        var track = -1
-        var muxing = false
+        // Started or not, whatever the loop threw: the finally stops the writer only when it started.
+        val mux = object : MuxSink {
+            var track = -1
+            var started = false
+            override fun addTrack(format: MediaFormat) = muxer.addTrack(format).also { track = it }
+            override fun start() {
+                muxer.start()
+                started = true
+            }
+            override fun write(data: ByteBuffer, info: MediaCodec.BufferInfo) = muxer.writeSampleData(track, data, info)
+        }
         try {
             codec.configure(format, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE)
             codec.start()
-            val info = MediaCodec.BufferInfo()
-            val frameBytes = 2 * pcm.channels  // 16-bit PCM in
-            var framesIn = 0L
-            var inputDone = false
-            while (true) {
-                if (isCancelled()) throw kotlinx.coroutines.CancellationException("annulé")
-                if (!inputDone) {
-                    val i = codec.dequeueInputBuffer(10_000)
-                    if (i >= 0) {
-                        val buf = codec.getInputBuffer(i)!!.order(ByteOrder.LITTLE_ENDIAN)
-                        buf.clear()
-                        val frames = pcm.read16(buf, buf.capacity() / frameBytes, gain, dithered = true)
-                        val timeUs = framesIn * 1_000_000L / pcm.sampleRate
-                        if (frames == 0) {
-                            codec.queueInputBuffer(i, 0, 0, timeUs, MediaCodec.BUFFER_FLAG_END_OF_STREAM)
-                            inputDone = true
-                        } else {
-                            codec.queueInputBuffer(i, 0, frames * frameBytes, timeUs, 0)
-                            framesIn += frames
-                        }
-                    }
-                }
-                val o = codec.dequeueOutputBuffer(info, 10_000)
-                when {
-                    o == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED -> {
-                        track = muxer.addTrack(codec.outputFormat)
-                        muxer.start()
-                        muxing = true
-                    }
-                    o >= 0 -> {
-                        val data = codec.getOutputBuffer(o)!!
-                        if (info.flags and MediaCodec.BUFFER_FLAG_CODEC_CONFIG != 0) info.size = 0  // already in the format
-                        if (info.size > 0 && muxing) {
-                            data.position(info.offset)
-                            data.limit(info.offset + info.size)
-                            muxer.writeSampleData(track, data, info)
-                        }
-                        codec.releaseOutputBuffer(o, false)
-                        if (info.flags and MediaCodec.BUFFER_FLAG_END_OF_STREAM != 0) break
-                    }
-                }
-            }
+            // A codec that ended without ever giving its format wrote nothing: an error, not an empty success.
+            if (!pump(CodecPort.of(codec), pcm, gain, isCancelled, progress, { i -> codec.getInputBuffer(i)!! }, mux)) throw IOException(tr("fichier M4A incomplet"))
         } catch (e: Exception) {
             out.delete()
             throw e
@@ -105,13 +77,63 @@ object AacEncoder {
             runCatching { codec.stop() }
             codec.release()
             // A failed stop leaves an unreadable file: that is an error, not a success.
-            val stopped = runCatching { if (muxing) muxer.stop() }
-            muxer.release()
+            val stopped = runCatching { if (mux.started) muxer.stop() }
+            runCatching { muxer.release() }
             if (stopped.isFailure && out.exists()) {
                 out.delete()
                 throw IOException(tr("fichier M4A incomplet"))
             }
         }
+    }
+
+    /** Where the encoded frames go: the MP4 writer, or a recorder in the tests. */
+    internal interface MuxSink {
+        fun addTrack(format: MediaFormat): Int
+        fun start()
+        fun write(data: ByteBuffer, info: MediaCodec.BufferInfo)
+    }
+
+    /**
+     * The encoding loop on any codec ([CodecPump]): [pcm] in (times [gain], dithered to 16 bits),
+     * the AAC frames out to [sink]. [input] gives input buffer `i`. True once the sink started.
+     */
+    internal fun pump(
+        codec: CodecPort, pcm: WavPcm, gain: Float, isCancelled: () -> Boolean, progress: (Float) -> Unit,
+        input: (Int) -> ByteBuffer, sink: MuxSink, now: () -> Long = CodecPump::clockMs,
+    ): Boolean {
+        val frameBytes = 2 * pcm.channels  // 16-bit PCM in
+        val total = pcm.framesLeft.coerceAtLeast(1)
+        var framesIn = 0L
+        var muxing = false
+        var shown = -1
+        CodecPump.run(
+            codec,
+            feed = { i ->
+                val buf = input(i).order(ByteOrder.LITTLE_ENDIAN)
+                buf.clear()
+                val frames = pcm.read16(buf, buf.capacity() / frameBytes, gain, dithered = true)
+                val timeUs = framesIn * 1_000_000L / pcm.sampleRate
+                framesIn += frames
+                val p = (framesIn * 100 / total).toInt().coerceIn(0, 100)
+                if (p != shown) { shown = p; progress(p / 100f) }
+                CodecPump.Fed(frames * frameBytes, timeUs, end = frames == 0)
+            },
+            format = { f ->
+                if (!muxing) {
+                    sink.addTrack(f)
+                    sink.start()
+                    muxing = true
+                }
+            },
+            output = { data, info ->
+                if (info.flags and MediaCodec.BUFFER_FLAG_CODEC_CONFIG != 0) info.size = 0  // already in the format
+                if (info.size > 0 && muxing) sink.write(data, info)
+                false
+            },
+            isCancelled = isCancelled,
+            now = now,
+        )
+        return muxing
     }
 }
 

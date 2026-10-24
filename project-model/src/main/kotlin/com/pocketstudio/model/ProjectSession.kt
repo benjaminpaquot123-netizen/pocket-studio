@@ -31,6 +31,8 @@ class ProjectSession(
     private val autosaveDelayMs: Long = 400,
     private val maxSaveDelayMs: Long = 2500,
     private val clock: () -> Long = System::currentTimeMillis,
+    /** False: nothing is ever written (no project open, lot 1: the blank stand-in of the empty state). */
+    private val persist: Boolean = true,
 ) {
     private val history = History(initial.sanitized())
     private val _project = MutableStateFlow(history.current)
@@ -162,6 +164,10 @@ class ProjectSession(
     /** True when everything up to now is on disk. */
     private suspend fun saveNow(): Boolean = saveLock.withLock {
         if (!dirty) return@withLock true
+        if (!persist) {
+            dirty = false
+            return@withLock true
+        }
         val snapshot = history.current.let { p -> saveAs?.invoke(p) ?: p }
         dirty = false
         try {

@@ -138,21 +138,35 @@ class VideoExportViewModel(app: Application) : AndroidViewModel(app) {
                 // 1. The sound: the song from its start to the end of the window (about 40 % of the time).
                 val engine = finishOrRelease(Dispatchers.Default, OfflineExport::close) { OfflineExport() }!!
                 render = engine
+                // Lot 1: a render that stops moving is stopped, and the video says so (never a bar
+                // stuck for good). Armed once the render really starts (review M2): before it, the
+                // project's sounds are waited for at a progress of 0.
+                var stalled = false
+                val watch = com.pocketstudio.app.export.StallWatch(armed = false)
                 val poll = launch {
                     while (isActive) {
-                        _state.value = _state.value.copy(progress = SOUND_SHARE * engine.progress)
+                        val done = engine.progress
+                        _state.value = _state.value.copy(progress = SOUND_SHARE * done)
+                        if (!stalled && watch.stalled(done)) {
+                            stalled = true
+                            AppLog.add("Vidéo : rendu bloqué")
+                            engine.cancel()
+                        }
                         kotlinx.coroutines.delay(100)
                     }
                 }
                 val result = try {
-                    rhythmVm.renderForVideo(engine, w, plan.renderFrames)
+                    rhythmVm.renderForVideo(engine, w, plan.renderFrames, onRenderStart = watch::arm)
                 } finally {
                     poll.cancel()
                     render = null
                     engine.close()
                 }
                 when (result) {
-                    ExportResult.Cancelled -> throw kotlinx.coroutines.CancellationException("annulé")
+                    ExportResult.Cancelled -> {
+                        if (stalled && !cancelled) throw IOException(tr("la fabrication du son s'est bloquée, réessaie dans un instant"))
+                        throw kotlinx.coroutines.CancellationException("annulé")
+                    }
                     ExportResult.IoError -> throw IOException(tr("L'écriture du fichier a échoué (stockage plein ?)."))
                     ExportResult.Ok -> Unit
                 }

@@ -772,6 +772,17 @@ JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_loudnessMeters(
     if (n > 0) env->SetFloatArrayRegion(out, 0, n, values);
 }
 
+// Fills `out` (NativeEngine.HEALTH floats) for the bug report's health journal, without taking
+// anything another meter reads: the master's momentary and short-term loudness (LUFS), the
+// limiter's gain now (linear) and the audio thread's load. Atomics only, from the UI thread.
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_healthMeters(JNIEnv* env, jobject, jfloatArray out) {
+    auto& e = host().engine();
+    auto& m = e.mixer();
+    jfloat values[4] = {m.loudness().momentary(), m.loudness().shortTerm(), m.limiterGain(), e.cpuLoad()};
+    const int n = std::min(4, static_cast<int>(env->GetArrayLength(out)));
+    if (n > 0) env->SetFloatArrayRegion(out, 0, n, values);
+}
+
 // Fills `out` (16 ints) with how many times each drum lane has fired, for pad lights.
 JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_laneTriggers(JNIEnv* env, jobject, jintArray out) {
     jint values[ps::Engine::kLanes];
@@ -798,6 +809,7 @@ JNIEXPORT jdoubleArray JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeS
         static_cast<double>(h.engine().callbackCount()),
         static_cast<double>(h.engine().takePeak()),
         h.engine().hasNonFinite() ? 1.0 : 0.0,
+        static_cast<double>(info.restarts),
     };
     const jsize count = sizeof(values) / sizeof(values[0]);
     jdoubleArray array = env->NewDoubleArray(count);

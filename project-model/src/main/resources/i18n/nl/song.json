@@ -383,5 +383,16 @@
   "↘ Bruit qui descend": "↘ Dalende ruis",
   "■ Fin": "■ Einde",
   "■ Tout": "■ Alles",
-  "Huit prises gardées : la plus ancienne (« %s ») est oubliée. Annuler la ramène.": "Acht opnames bewaard: de oudste (“%s”) wordt vergeten. Ongedaan maken haalt hem terug."
+  "Huit prises gardées : la plus ancienne (« %s ») est oubliée. Annuler la ramène.": "Acht opnames bewaard: de oudste (“%s”) wordt vergeten. Ongedaan maken haalt hem terug.",
+  "le codec du téléphone ne répond plus": "de codec van de telefoon reageert niet",
+  "le codec du téléphone ne finit pas": "de codec van de telefoon wordt niet klaar",
+  "Vérification": "Controle",
+  "Réglage du volume : compression": "Volume bijstellen: compressie",
+  "Réglage du volume : vérification": "Volume bijstellen: controle",
+  "Nouvel essai %1$d/%2$d : fabrication": "Nieuwe poging %1$d/%2$d: geluid maken",
+  "Nouvel essai %1$d/%2$d : compression": "Nieuwe poging %1$d/%2$d: compressie",
+  "Nouvel essai %1$d/%2$d : vérification": "Nieuwe poging %1$d/%2$d: controle",
+  "La fabrication du son s'est bloquée : réessaie dans un instant.": "Het geluid maken liep vast: probeer het zo opnieuw.",
+  "La compression ne répond pas sur ce téléphone : réessaie, ou partage en WAV.": "Compressie reageert niet op deze telefoon: probeer opnieuw, of deel als WAV.",
+  "la fabrication du son s'est bloquée, réessaie dans un instant": "het geluid maken liep vast, probeer het zo opnieuw"
 }

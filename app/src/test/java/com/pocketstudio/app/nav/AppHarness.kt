@@ -45,6 +45,8 @@ internal class AppHarness(val compose: AndroidComposeTestRule<ActivityScenarioRu
         restore: androidx.compose.ui.test.junit4.StateRestorationTester? = null,
         /** « Que veux-tu faire ? » shown as the app opens; otherwise the app opens straight on the project, as before it. */
         launchChoice: Boolean = false,
+        /** Lot 1: no project at all (the last one deleted): the app on its blank stand-in. */
+        noProject: Boolean = false,
         build: RhythmViewModel.() -> Unit = { songWithTracks() },
     ) {
         File(app.filesDir, "projects").deleteRecursively()
@@ -52,7 +54,7 @@ internal class AppHarness(val compose: AndroidComposeTestRule<ActivityScenarioRu
             app.getSharedPreferences(it, 0).edit().clear().commit()
         }
         // A project of its own: a save still running from an earlier test lands in another file.
-        com.pocketstudio.app.projects.CurrentProject.set(app, "nav-test-" + System.nanoTime())
+        com.pocketstudio.app.projects.CurrentProject.set(app, if (noProject) com.pocketstudio.app.projects.CurrentProject.NONE else "nav-test-" + System.nanoTime())
         SettingsStore.forgetForTests()
         SettingsStore.update(app) {
             it.copy(guideSeen = !firstLaunch, simpleMode = simple, uiScale = scale, language = lang, englishNotes = lang != com.pocketstudio.model.i18n.Lang.FR)
@@ -65,7 +67,7 @@ internal class AppHarness(val compose: AndroidComposeTestRule<ActivityScenarioRu
         }
         vm = ViewModelProvider(compose.activity, factory)[RhythmViewModel::class.java]
         // The projects' list too (« Que veux-tu faire ? » reads the open project's last save there).
-        if (launchChoice) ViewModelProvider(compose.activity, factory)[com.pocketstudio.app.projects.ProjectsViewModel::class.java]
+        if (launchChoice || noProject) ViewModelProvider(compose.activity, factory)[com.pocketstudio.app.projects.ProjectsViewModel::class.java]
         com.pocketstudio.app.onboarding.LaunchRule.askAtStartForTest = launchChoice
         vm.build()
         // On disk before « Que veux-tu faire ? » reads its last save (« modifié à l'instant »).

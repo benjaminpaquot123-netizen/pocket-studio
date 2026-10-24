@@ -17,6 +17,14 @@ object CurrentProject {
     private const val PREFS = "projects"
     private const val KEY = "current"
 
+    /**
+     * Lot 1: no project open (the last one deleted). The screens still run on a blank project in
+     * memory under this id, never saved ([isNone]); « Mes projets » shows its empty state.
+     */
+    const val NONE = "no-project"
+
+    fun isNone(id: String) = id == NONE
+
     fun get(context: Context): String =
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getString(KEY, null) ?: RhythmViewModel.PROJECT_ID
 

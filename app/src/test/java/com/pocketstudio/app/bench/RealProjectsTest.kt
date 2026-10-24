@@ -19,6 +19,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
+import org.junit.Assume.assumeFalse
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -49,7 +50,8 @@ import java.util.zip.ZipOutputStream
  * `-Preal.render=<ps_render>` the export is rendered and checked (no NaN, true peak at most
  * −1 dBTP, its length, no 4 s of silence inside the song). `scripts/real-projects.sh` gives both.
  * Without them (the plain unit tests) steps 1 to 3 still run: the project imports, opens, plays
- * and exports without a crash. An empty folder passes.
+ * and exports without a crash. The repository's folder holds at least one project; an empty
+ * folder given with -Preal.projects passes.
  */
 @RunWith(RobolectricTestRunner::class)
 class RealProjectsTest {
@@ -69,8 +71,14 @@ class RealProjectsTest {
 
     @Test
     fun everyRealProjectImportsPlaysLiveAndExports() {
-        val dirs = listOfNotNull(fixtures(), System.getProperty("ps.real.projects")?.takeIf { it.isNotBlank() }?.let(::File))
-        val projects = dirs.flatMap { realProjects(it) }
+        // The screenshots' recording runs the whole suite again: the real projects once is enough
+        // (the build job also runs them with ps_live and ps_render, scripts/real-projects.sh).
+        assumeFalse("not in the screenshots' recording", System.getProperty("roborazzi.test.record") == "true")
+        val repository = checkNotNull(fixtures()) { "src/test/resources/real-projects is missing" }
+        val own = realProjects(repository)
+        assertTrue("the repository's real projects are there (${repository.path})", own.isNotEmpty())
+        val dirs = listOfNotNull(repository, System.getProperty("ps.real.projects")?.takeIf { it.isNotBlank() }?.let(::File))
+        val projects = own + dirs.drop(1).flatMap { realProjects(it) }
         println("real projects: ${projects.size} (${projects.joinToString { it.name }}) in ${dirs.joinToString()}")
         check(projects)
     }

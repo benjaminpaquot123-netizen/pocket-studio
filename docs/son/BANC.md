@@ -36,7 +36,7 @@ Le banc ci-dessus mesure l'export. Il n'entend pas ce que joue le téléphone : 
    - `SILENCE` : deux secondes de suite sous −50 dBFS pendant la lecture, la courbe ne le prévoyant pas ;
    - `CLICK` : un saut de plus de 0,3 qui sort 20 fois des 16 sauts avant et après lui (une cassure), deux fois plus grand que tout autre des 4 s autour (une attaque qui revient à chaque temps est le son lui-même) ; au mieux, une cassure noyée dans du bruit passe ;
    - `NAN` : un échantillon non fini ; `GAIN` : le gain live hors de sa plage (−24..+18 dB).
-   - `ALLOC` : un appel au tas (`new`, `delete`) pendant le rappel audio, la règle du temps réel ; `DRIFT` : le morceau bouclé (l'endurance, `scripts/soak.sh`), un tour 1 dB loin du 2ᵉ (ou son gain live à 1,5 dB).
+   - `ALLOC` : un appel au tas du fil audio (`malloc`, `free`, donc `new`, `delete`) pendant le rappel, la règle du temps réel ; `DRIFT` : le morceau bouclé (l'endurance, `scripts/soak.sh`), un tour 1 dB loin du 2ᵉ (ou son gain live à 1,5 dB).
 4. **Rapport** : `build/live-bench/report.md` (un tableau par style), `log/<style>.txt` et `.csv`.
 
 Lancer : `scripts/live-bench.sh` (37 styles, 90 s chacun, environ 3 min). Options : `--styles jump_up,techno`, `--seconds 60`, `--out <dossier>`, `--no-record` (rejouer les mêmes `.pslive` après un changement du moteur seul). Un seul morceau : `build/live-bench/tools/ps_live --seconds 90 build/live-bench/cmds/jump_up.pslive` (`--wav f.wav` pour l'écouter).

@@ -33,10 +33,25 @@ object RealUse {
 
     fun log(line: String) = Log.i(TAG, line)
 
+    /**
+     * What the tests grant up front, as a user would at the first ask: the microphone, and on
+     * Android 13+ the notifications (asked at the first recording: its dialog would stay over the app).
+     */
+    val PERMISSIONS: Array<String> = listOfNotNull(
+        android.Manifest.permission.RECORD_AUDIO,
+        android.Manifest.permission.POST_NOTIFICATIONS.takeIf { android.os.Build.VERSION.SDK_INT >= 33 },
+    ).toTypedArray()
+
+    /** The CI's x86_64 emulator (« ranchu »): its audio is not a phone's. */
+    val onEmulator: Boolean get() = android.os.Build.HARDWARE == "ranchu" || android.os.Build.HARDWARE == "goldfish"
+
     /** The app as on a phone where it was just installed: no project, no setting, no screen seen. */
     fun freshInstall() {
         instrumentation.runOnMainSync { if (NativeEngine.isAvailable) NativeEngine.stop() }
-        File(app.filesDir, "projects").deleteRecursively()
+        // A save still running from the screen just closed would bring a project folder back.
+        com.pocketstudio.app.rhythm.ClosingSaves.awaitIdleBlocking(15_000)
+        for (dir in listOf("projects", "projects-trash", "stems")) File(app.filesDir, dir).deleteRecursively()
+        File(app.cacheDir, "exports").deleteRecursively()
         File(app.filesDir, "../shared_prefs").listFiles()?.forEach { f ->
             val name = f.name.removeSuffix(".xml")
             app.getSharedPreferences(name, 0).edit().clear().commit()
@@ -82,6 +97,27 @@ object RealUse {
         Handler(Looper.getMainLooper()).post { done.countDown() }
         check(done.await(timeoutSeconds, TimeUnit.SECONDS)) { "the main thread did not answer in $timeoutSeconds s (ANR)" }
         return (System.nanoTime() - start) / 1_000_000
+    }
+
+    /**
+     * The main thread watched for a whole round: a task posted every 500 ms, the longest it took
+     * to run (an ANR is 5 s of this), so a block between two looks is seen too.
+     */
+    class MainWatchdog : AutoCloseable {
+        @Volatile var worstMs = 0L
+            private set
+        @Volatile private var running = true
+        private val thread = Thread {
+            while (running) {
+                runCatching { worstMs = maxOf(worstMs, mainThreadDelayMs(timeoutSeconds = 30)) }.onFailure { worstMs = maxOf(worstMs, 30_000) }
+                Thread.sleep(500)
+            }
+        }.apply { isDaemon = true; name = "main-watchdog"; start() }
+
+        override fun close() {
+            running = false
+            thread.join(35_000)
+        }
     }
 
     /**

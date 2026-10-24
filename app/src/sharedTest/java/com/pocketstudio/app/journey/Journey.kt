@@ -125,7 +125,8 @@ class Journey(private val compose: ComposeTestRule, private val log: (String) ->
     fun openPartSheet(part: Int) {
         if (!exists("part_menu_$part")) {
             tap("structure_parts")
-            idle(800)  // the switch's crossfade: a touch during it can land on the view that leaves
+            // The switch's crossfade: a touch during it can land on the view that leaves.
+            awaitGone("timeline_screen")
         }
         tap("part_menu_$part")
         if (runCatching { await("part_sheet", 4_000) }.isFailure) {

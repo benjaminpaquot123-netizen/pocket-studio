@@ -9,7 +9,8 @@
 #
 # --fetch: also the full projects listed in real-projects/complets.txt (name, release asset,
 #   sha256), downloaded once into build/real-projects/complets/ (gh when it is there, else curl);
-#   a project not hosted yet is said and skipped, never a failure.
+#   a project not hosted is said and skipped, never a failure. The repository is public: a full
+#   project is listed there only with Benjamin's OK and hosted privately (none is, today).
 # --dir: another folder of projects (folders with project.json and samples/, or .zip files).
 # Environment: GRADLE_ARGS (default --max-workers=1), CMAKE_EXTRA_ARGS, TOOLS (ps_live and
 # ps_render already built, e.g. by scripts/live-bench.sh: build/live-bench/tools).
@@ -41,7 +42,7 @@ if [ "$FETCH" = 1 ] && [ -f "$FIXTURES/complets.txt" ]; then
     FULL="$OUT/complets"
     mkdir -p "$FULL"
     REPO="$(cd "$ROOT" && git remote get-url origin 2>/dev/null | sed -E 's#(git@github.com:|https://github.com/)##; s#\.git$##')"
-    grep -v '^#' "$FIXTURES/complets.txt" | while read -r name tag file sha; do
+    { grep -v '^#' "$FIXTURES/complets.txt" || true; } | while read -r name tag file sha; do
         [ -n "${sha:-}" ] || continue
         target="$FULL/$name.zip"
         if [ -f "$target" ] && echo "$sha  $target" | sha256sum -c - > /dev/null 2>&1; then echo "$name: already here"; continue; fi
@@ -51,7 +52,17 @@ if [ "$FETCH" = 1 ] && [ -f "$FIXTURES/complets.txt" ]; then
         if [ -f "$target" ] && echo "$sha  $target" | sha256sum -c - > /dev/null 2>&1; then echo "$name: fetched"
         else rm -f "$target"; echo "$name: not hosted yet (release $tag, $file): skipped"; fi
     done
-    if ls "$FULL"/*.zip > /dev/null 2>&1; then DIRS="${DIRS:-$FULL}"; fi
+    if ls "$FULL"/*.zip > /dev/null 2>&1; then
+        # With --dir too: its projects and the downloaded ones, side by side in one folder of links.
+        if [ -n "$DIRS" ]; then
+            BOTH="$OUT/both"
+            rm -rf "$BOTH" && mkdir -p "$BOTH"
+            for f in "$DIRS"/* "$FULL"/*.zip; do [ -e "$f" ] && ln -s "$f" "$BOTH/$(basename "$f")"; done
+            DIRS="$BOTH"
+        else
+            DIRS="$FULL"
+        fi
+    fi
 fi
 
 echo "== Importing, playing live 60 s and exporting each project (RealProjectsTest)"

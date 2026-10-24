@@ -87,6 +87,8 @@ jobs:
     name: Build, unit tests, screenshots
     runs-on: ubuntu-latest
     needs: engine
+    # Unit tests, the song and live benches, the real projects, a 10-minute soak, the release APK.
+    timeout-minutes: 75
     env:
       VERSION_CODE: ${{ github.run_number }}
       RELEASE_CHANNEL: ${{ github.event_name == 'push' && 'stable' || 'preview' }}

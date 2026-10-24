@@ -74,7 +74,10 @@ def main():
         failures.append(f"{len(flags)} flag(s): {flags[:5]}")
     if loops < 3:
         failures.append(f"the song looped {loops} whole time(s): at least 3 are needed to compare them")
-    if alloc and "not counted" not in alloc and not alloc.startswith("ALLOC news=0 deletes=0"):
+    # The heap calls must have been counted (a sanitizer build of ps_live cannot: not a soak).
+    if not alloc.startswith("ALLOC news="):
+        failures.append(f"the audio callback's heap calls were not counted: {alloc or 'no ALLOC line'}")
+    elif not alloc.startswith("ALLOC news=0 deletes=0"):
         failures.append(alloc)
     if blocks < want_blocks:
         failures.append(f"{blocks} callbacks for {want_blocks} expected")

@@ -32,6 +32,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import kotlinx.coroutines.runBlocking
 import java.io.File
 
 /**
@@ -44,7 +45,7 @@ import java.io.File
 @RunWith(AndroidJUnit4::class)
 class JourneyTest {
     @get:Rule(order = 0)
-    val mic: GrantPermissionRule = GrantPermissionRule.grant(android.Manifest.permission.RECORD_AUDIO)
+    val permissions: GrantPermissionRule = GrantPermissionRule.grant(*RealUse.PERMISSIONS)
 
     @get:Rule(order = 1)
     val compose = createEmptyComposeRule()
@@ -90,14 +91,14 @@ class JourneyTest {
             j.chooseStyle("jump_up", "Bass music")
             j.createNow()
             // Made (its kit voices rendered on the phone), saved, then opened: the screen is rebuilt.
-            j.awaitAny("song_ready", "song_ready_bar", timeoutMs = 300_000)
+            j.await("song_ready", timeoutMs = 300_000)
             val rhythm = rhythmOf(scenario)
             waitFor("the song opened", 30) { rhythm.project.value.song.isNotEmpty() }
             val song = rhythm.project.value
             log("song: ${song.name}, ${song.song.size} parts, ${"%.0f".format(songSeconds(song))} s at ${song.tempoBpm} BPM")
-            Thread.sleep(3000)  // its sounds loading, as when the card shows
+            runBlocking { rhythm.awaitSoundsLoadedForTest() }  // its sounds in, as when the card shows
 
-            listen(rhythm, if (j.exists("song_ready_listen")) "song_ready_listen" else "song_ready_bar_listen", seconds = 60)
+            listen(rhythm, "song_ready_listen", seconds = 60)
             if (j.exists("song_ready_close")) j.tap("song_ready_close")
             if (j.exists("song_ready_bar_close")) j.tap("song_ready_bar_close")
 
@@ -156,17 +157,13 @@ class JourneyTest {
             assertTrue(SettingsStore.state.value.simpleMode)
             j.chooseStyle("lofi", "calm")
             j.createNow()
-            j.awaitAny("song_ready", "song_ready_bar", "mission_card", timeoutMs = 300_000)
-            j.idle(1000)
+            // « Ton morceau est prêt ! » (the missions' card may show under it: stopped).
+            j.await("song_ready", timeoutMs = 300_000)
             j.stopMissionsIfShown()
             val rhythm = rhythmOf(scenario)
             waitFor("the song opened", 30) { rhythm.project.value.song.isNotEmpty() }
-            Thread.sleep(3000)
-            listen(rhythm, when {
-                j.exists("song_ready_listen") -> "song_ready_listen"
-                j.exists("song_ready_bar_listen") -> "song_ready_bar_listen"
-                else -> "top_play"
-            }, seconds = 20)
+            runBlocking { rhythm.awaitSoundsLoadedForTest() }
+            listen(rhythm, "song_ready_listen", seconds = 20)
             j.stopMissionsIfShown()
             if (j.exists("song_ready_close")) j.tap("song_ready_close")
             if (j.exists("song_ready_bar_close")) j.tap("song_ready_bar_close")
@@ -267,7 +264,7 @@ class JourneyTest {
             !e.running && e.files.any { it.extension == extension && it.lastModified() >= started - 2000 }
         }
         assertEquals(null, rhythm.export.value.error)
-        val file = rhythm.export.value.files.first { it.extension == extension }
+        val file = rhythm.export.value.files.filter { it.extension == extension }.maxBy { it.lastModified() }
         assertTrue("${file.name} exists", file.isFile && file.length() > 10_000)
         j.await("share")
         return file

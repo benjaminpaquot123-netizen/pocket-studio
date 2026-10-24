@@ -55,12 +55,18 @@ jobs:
         with:
           key: nightly-host
       - uses: gradle/actions/setup-gradle@v6
-      # A 6-minute song looped for 30 minutes (10 on the schedule's nights too: see soak_minutes).
+      # A 6-minute song looped for 30 minutes each night (soak_minutes by hand: whole minutes, at
+      # least 20, so that 3 whole loops are compared).
       - name: Soak (a 6-minute song looped)
         env:
           CMAKE_EXTRA_ARGS: -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
           GRADLE_ARGS: --console=plain
-        run: ./scripts/soak.sh --minutes "${{ github.event.inputs.soak_minutes || '30' }}" --song 360 --out build/soak
+          SOAK_MINUTES: ${{ github.event.inputs.soak_minutes || '30' }}
+        run: |
+          if ! [[ "$SOAK_MINUTES" =~ ^[0-9]+$ ]] || [ "$SOAK_MINUTES" -lt 20 ]; then
+            echo "::error::soak_minutes must be a whole number of minutes, at least 20 (got '$SOAK_MINUTES')"; exit 1
+          fi
+          ./scripts/soak.sh --minutes "$SOAK_MINUTES" --song 360 --out build/soak
       # « Petit téléphone »: the audio thread's time per callback for the 37 styles, 96 and 192
       # frames, and a phone 3 times slower (this runner is not a phone: the verdicts are relative).
       - name: Small phone (37 styles)
@@ -69,7 +75,7 @@ jobs:
           CMAKE_EXTRA_ARGS: -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
           GRADLE_ARGS: --console=plain
         run: ./scripts/cpu-bench.sh --runs 3 --out build/cpu-bench
-      # The real projects, the full ones too when they are hosted (release « projets-reels »).
+      # The real projects; full versions only if complets.txt lists one (Benjamin's OK, private hosting: none today).
       - name: Real projects (full versions)
         if: always()
         env:
@@ -137,7 +143,7 @@ jobs:
             sleep $((attempt * 20))
           done
           exit 1
-      # 10 minutes on the schedule's nights, 30 (or what was asked) by hand; the users' paths too.
+      # 10 minutes on the schedule's nights, 30 (or what was asked, whole minutes) by hand; the users' paths too.
       - name: Endurance and journeys on the emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:

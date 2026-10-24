@@ -1,3 +1,5 @@
 # Les projets complets, trop lourds pour le dépôt (docs/TESTS-REELS.md, « Projet complet »).
-# nom  release  fichier  sha256 ; scripts/real-projects.sh --fetch les télécharge.
-jumpup-dnb-20261024-complet  projets-reels  jumpup-dnb-20261024.zip  d3b232826c39939ef60f2d50ae9603f4478afc1c692deb552a366e5cbc2a38c7
+# Format : nom  release  fichier  sha256 ; scripts/real-projects.sh --fetch les télécharge.
+# Le dépôt est PUBLIC : un projet complet (ses clips, peut-être la voix de Benjamin) ne s'ajoute
+# ici qu'avec l'accord de Benjamin et sur un hébergement privé. Désactivé tant qu'il n'a pas dit oui :
+# jumpup-dnb-20261024-complet  projets-reels  jumpup-dnb-20261024.zip  d3b232826c39939ef60f2d50ae9603f4478afc1c692deb552a366e5cbc2a38c7

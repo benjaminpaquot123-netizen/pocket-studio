@@ -17,7 +17,7 @@
 // the 10 s before while the live gain fell 3 dB, the song curve not planning it), CLICK (a step
 // over 0.3, 20x the RMS of the 16 steps before and after it, twice any such step of the 4 s around
 // it: a discontinuity; best effort, a hit's attack or a 303's edge is not one), ALLOC (the audio
-// callback allocated or freed C++ memory: the real-time rule; not counted under AddressSanitizer;
+// callback allocated or freed heap memory: the real-time rule; not counted under AddressSanitizer;
 // --alloc-probe makes one such call itself, for the self-test),
 // DRIFT (a loop of the song, when it starts over, 1 dB louder or softer than its first time round,
 // or its live gain 1.5 dB away: a soak over many loops). Exit 4 when something is flagged.
@@ -57,30 +57,60 @@
 #include "Sample.h"
 #include "WavWriter.h"
 
-// C++ heap calls made inside Engine::process (the audio callback), counted while g_inCallback is
-// set: the real-time rule says none. Not under AddressSanitizer, which owns operator new.
-#if !defined(__SANITIZE_ADDRESS__)
-#include <new>
-#pragma GCC diagnostic ignored "-Wmismatched-new-delete"
-static std::atomic<bool> g_inCallback{false};
+// Heap calls made inside Engine::process (the audio callback) by the thread running it, counted
+// while g_inCallback is set: the real-time rule says none. Counted where every allocation goes
+// through on glibc: malloc, calloc, realloc, aligned_alloc, posix_memalign, memalign and free,
+// interposed here and handed to glibc's own (__libc_*). operator new and delete (plain, array,
+// sized, nothrow, aligned) come down to those in libstdc++. Not counted: valloc and pvalloc (never
+// used by the engine), and under AddressSanitizer (it owns the allocator) or without glibc.
+static thread_local bool g_inCallback = false;
 static std::atomic<long> g_callbackNews{0}, g_callbackDeletes{0};
-void* operator new(std::size_t n) {
-    if (g_inCallback.load(std::memory_order_relaxed)) g_callbackNews.fetch_add(1, std::memory_order_relaxed);
-    if (void* p = std::malloc(n ? n : 1)) return p;
-    throw std::bad_alloc();
+#if !defined(__SANITIZE_ADDRESS__) && defined(__GLIBC__)
+extern "C" {
+void* __libc_malloc(size_t);
+void* __libc_calloc(size_t, size_t);
+void* __libc_realloc(void*, size_t);
+void* __libc_memalign(size_t, size_t);
+void __libc_free(void*);
+
+static inline void countNew() {
+    if (g_inCallback) g_callbackNews.fetch_add(1, std::memory_order_relaxed);
 }
-void operator delete(void* p) noexcept {
-    if (p && g_inCallback.load(std::memory_order_relaxed)) g_callbackDeletes.fetch_add(1, std::memory_order_relaxed);
-    std::free(p);
+void* malloc(size_t n) {
+    countNew();
+    return __libc_malloc(n);
 }
-void operator delete(void* p, std::size_t) noexcept {
-    if (p && g_inCallback.load(std::memory_order_relaxed)) g_callbackDeletes.fetch_add(1, std::memory_order_relaxed);
-    std::free(p);
+void* calloc(size_t n, size_t size) {
+    countNew();
+    return __libc_calloc(n, size);
+}
+void* realloc(void* p, size_t n) {
+    countNew();
+    return __libc_realloc(p, n);
+}
+void* memalign(size_t alignment, size_t n) {
+    countNew();
+    return __libc_memalign(alignment, n);
+}
+void* aligned_alloc(size_t alignment, size_t n) {
+    countNew();
+    return __libc_memalign(alignment, n);
+}
+int posix_memalign(void** out, size_t alignment, size_t n) {
+    countNew();
+    if (alignment < sizeof(void*) || (alignment & (alignment - 1)) != 0) return 22;  // EINVAL
+    void* p = __libc_memalign(alignment, n);
+    if (!p && n) return 12;  // ENOMEM
+    *out = p;
+    return 0;
+}
+void free(void* p) {
+    if (p && g_inCallback) g_callbackDeletes.fetch_add(1, std::memory_order_relaxed);
+    __libc_free(p);
+}
 }
 #define PS_LIVE_COUNTS_ALLOCATIONS 1
 #else
-static std::atomic<bool> g_inCallback{false};
-static std::atomic<long> g_callbackNews{0}, g_callbackDeletes{0};
 #define PS_LIVE_COUNTS_ALLOCATIONS 0
 #endif
 
@@ -175,7 +205,7 @@ struct Player {
     void tick() {
         if (done()) return;
         block.assign(static_cast<size_t>(burst) * 2, 0.0f);
-        g_inCallback.store(true, std::memory_order_relaxed);
+        g_inCallback = true;
         const double t0 = threadSeconds();
         engine.process(nullptr, 0, 0, block.data(), burst, 2);
         if (allocProbe && cpu.size() == 100) {
@@ -183,7 +213,7 @@ struct Player {
             ::operator delete(g_probe);
         }
         const double t1 = threadSeconds();
-        g_inCallback.store(false, std::memory_order_relaxed);
+        g_inCallback = false;
         cpu.push_back(static_cast<float>(t1 - t0));
         for (int i = 0; i < burst; ++i) {
             const float l = block[static_cast<size_t>(i) * 2], r = block[static_cast<size_t>(i) * 2 + 1];

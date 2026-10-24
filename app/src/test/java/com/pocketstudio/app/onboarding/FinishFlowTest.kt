@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
 import com.pocketstudio.app.ui.AppTab
@@ -135,6 +136,81 @@ class FinishFlowTest {
         project = "p2"
         compose.waitForIdle()
         compose.onNodeWithTag("song_ready").assertExists()
+    }
+
+    /**
+     * Benjamin's report on the preview: the card stayed over the screen while the song played. ▶
+     * folds it into its bar (one line over the bottom bar): ■ there stops the song, a touch opens
+     * the card again (it does not fold back while the song still plays), ✕ closes it for good, and
+     * the first edit (an undo step) makes it go for good too.
+     */
+    @Test
+    fun theCardFoldsIntoItsBarWhileTheSongPlaysAndGoesAtTheFirstEdit() {
+        val done = mutableListOf<String>()
+        var playing by mutableStateOf(false)
+        var folded by mutableStateOf(false)
+        var pending by mutableStateOf(true)
+        var edits by mutableStateOf(3)
+        var project by mutableStateOf("fold1")
+        compose.setContent {
+            PocketStudioTheme {
+                val ui = SongReadyUi("Mon tube", seconds = 160, parts = 6, playing = playing)
+                val actions = SongReadyActions(
+                    listen = { done += "listen"; playing = !playing },
+                    share = { done += "share"; pending = false },
+                    close = { done += "close"; pending = false },
+                )
+                androidx.compose.foundation.layout.Column {
+                    SongReady(pending, project, ui, actions, folded = folded, fold = { folded = true })
+                    if (pending && folded) SongReadyBar(pending, project, ui, actions, edits = edits, open = { folded = false })
+                }
+            }
+        }
+        compose.onNodeWithTag("song_ready").assertExists()
+        compose.onNodeWithTag("song_ready_bar").assertDoesNotExist()
+        // ▶: the song plays, the card gets out of the way.
+        compose.onNodeWithTag("song_ready_listen").performClick()
+        compose.waitForIdle()
+        assertTrue(folded)
+        compose.onNodeWithTag("song_ready").assertDoesNotExist()
+        compose.onNodeWithTag("song_ready_bar").assertExists()
+        compose.onNodeWithText("Arrêter").assertExists()
+        // A touch on it: the card again, and it stays while the song plays on.
+        compose.onNodeWithTag("song_ready_bar_open").performClick()
+        compose.waitForIdle()
+        compose.onNodeWithTag("song_ready").assertExists()
+        compose.onNodeWithTag("song_ready_bar").assertDoesNotExist()
+        // Playback started from elsewhere (the top bar's ▶) while the card shows: it folds too.
+        playing = false
+        compose.waitForIdle()
+        compose.onNodeWithTag("song_ready").assertExists()
+        playing = true
+        compose.waitForIdle()
+        compose.onNodeWithTag("song_ready_bar").assertExists()
+        // ■ in the bar stops the song; the bar stays (▶ Écouter), nothing seen yet.
+        compose.onNodeWithTag("song_ready_bar_listen").performClick()
+        compose.waitForIdle()
+        assertFalse(playing)
+        compose.onNodeWithText("Écouter").assertExists()
+        assertFalse(SongReadyPrefs(app).seen("fold1"))
+        // The first edit: gone for good.
+        edits = 4
+        compose.waitForIdle()
+        compose.onNodeWithTag("song_ready_bar").assertDoesNotExist()
+        assertEquals("close", done.last())
+        assertTrue(SongReadyPrefs(app).seen("fold1"))
+        // Another song: its bar's ✕ and Partager close it for good as the card's would.
+        for ((tag, what) in listOf("song_ready_bar_close" to "close", "song_ready_bar_share" to "share")) {
+            project = "fold_$what"
+            pending = true
+            folded = true
+            compose.waitForIdle()
+            compose.onNodeWithTag(tag).performClick()
+            compose.waitForIdle()
+            compose.onNodeWithTag("song_ready_bar").assertDoesNotExist()
+            assertEquals(what, done.last())
+            assertTrue(SongReadyPrefs(app).seen("fold_$what"))
+        }
     }
 
     @Test

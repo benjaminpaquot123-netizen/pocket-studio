@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performTouchInput
@@ -42,10 +43,12 @@ internal class AppHarness(val compose: AndroidComposeTestRule<ActivityScenarioRu
         simple: Boolean = false, firstLaunch: Boolean = false, scale: Float = 1f, lang: com.pocketstudio.model.i18n.Lang = com.pocketstudio.model.i18n.Lang.FR,
         /** Shown through it (to save and restore the screens' state) rather than straight. */
         restore: androidx.compose.ui.test.junit4.StateRestorationTester? = null,
+        /** « Que veux-tu faire ? » shown as the app opens; otherwise the app opens straight on the project, as before it. */
+        launchChoice: Boolean = false,
         build: RhythmViewModel.() -> Unit = { songWithTracks() },
     ) {
         File(app.filesDir, "projects").deleteRecursively()
-        listOf("nav", "missions", "settings", "next_steps", "song_ready", "share", "tools").forEach {
+        listOf("nav", "missions", "settings", "next_steps", "song_ready", "share", "tools", "launch").forEach {
             app.getSharedPreferences(it, 0).edit().clear().commit()
         }
         // A project of its own: a save still running from an earlier test lands in another file.
@@ -58,10 +61,15 @@ internal class AppHarness(val compose: AndroidComposeTestRule<ActivityScenarioRu
         // Made here with this test's application (the default factory keeps the first test's one).
         val factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
-            override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T = RhythmViewModel(app) as T
+            override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T = modelClass.getConstructor(Application::class.java).newInstance(app)
         }
         vm = ViewModelProvider(compose.activity, factory)[RhythmViewModel::class.java]
+        // The projects' list too (« Que veux-tu faire ? » reads the open project's last save there).
+        if (launchChoice) ViewModelProvider(compose.activity, factory)[com.pocketstudio.app.projects.ProjectsViewModel::class.java]
+        com.pocketstudio.app.onboarding.LaunchRule.askAtStartForTest = launchChoice
         vm.build()
+        // On disk before « Que veux-tu faire ? » reads its last save (« modifié à l'instant »).
+        if (launchChoice) kotlinx.coroutines.runBlocking { vm.flushNow() }
 
         val content: @androidx.compose.runtime.Composable () -> Unit = {
             com.pocketstudio.app.ui.UiScaled(scale) { PocketStudioTheme { com.pocketstudio.app.learn.LearnLayer { AppRoot() } } }
@@ -70,8 +78,22 @@ internal class AppHarness(val compose: AndroidComposeTestRule<ActivityScenarioRu
         compose.waitForIdle()
     }
 
+    /**
+     * Waits for a node tagged [tag] that work off the main thread brings (the projects' list):
+     * the main looper is let run between looks, which waitUntil alone does not do here.
+     */
+    fun awaitTag(tag: String, timeoutMs: Long = 10_000) {
+        val end = System.currentTimeMillis() + timeoutMs
+        while (compose.onAllNodesWithTag(tag, useUnmergedTree = true).fetchSemanticsNodes().isEmpty()) {
+            check(System.currentTimeMillis() < end) { "nothing tagged $tag after $timeoutMs ms" }
+            Thread.sleep(50)
+            compose.waitForIdle()
+        }
+    }
+
     /** The settings back as a test that does not use them expects (the Mode simple's words off). */
     fun finish() {
+        com.pocketstudio.app.onboarding.LaunchRule.askAtStartForTest = true
         SettingsStore.forgetForTests()
         com.pocketstudio.model.i18n.I18n.everyday = false
         com.pocketstudio.model.i18n.I18n.lang = com.pocketstudio.model.i18n.Lang.FR

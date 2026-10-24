@@ -7965,6 +7965,7 @@ void testCommandBudgetPerCallback() {
 #include "multizone_tests.inc"
 #include "restes_tests.inc"
 #include "review3539_tests.inc"
+#include "livefade_tests.inc"
 
 int main(int argc, char** argv) {
     const char* only = nullptr;  // a test's name: run that one alone
@@ -8160,6 +8161,7 @@ int main(int argc, char** argv) {
         PS_MULTIZONE_TESTS
         PS_RESTES_TESTS
         PS_REVIEW3539_TESTS
+        PS_LIVEFADE_TESTS
     };
     for (const auto& t : tests) {
         if (only && std::strcmp(only, t.name) != 0) continue;

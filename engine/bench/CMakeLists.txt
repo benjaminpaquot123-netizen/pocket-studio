@@ -23,6 +23,11 @@ add_executable(ps_render ps_render.cpp)
 target_link_libraries(ps_render PRIVATE ps_core)
 target_compile_options(ps_render PRIVATE -Wall -Wextra -Werror -O2)
 
+# The live engine as the phone's stream drives it (a .pslive recording of LiveSongRecorder).
+add_executable(ps_live ps_live.cpp)
+target_link_libraries(ps_live PRIVATE ps_core)
+target_compile_options(ps_live PRIVATE -Wall -Wextra -Werror -O2)
+
 # Measurement code: plain IEEE maths (no -ffast-math), Signalsmith Linear's FFT (MIT, vendored).
 add_executable(ps_measure ps_measure.cpp)
 target_include_directories(ps_measure SYSTEM PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/signalsmith-linear/include)

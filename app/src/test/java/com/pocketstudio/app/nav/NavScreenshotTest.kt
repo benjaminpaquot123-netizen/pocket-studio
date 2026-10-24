@@ -47,9 +47,11 @@ open class NavScreenshotTest {
     }
 
     @OptIn(ExperimentalRoborazziApi::class)
-    protected fun shot(name: String, simple: Boolean = false, firstLaunch: Boolean = false, prepare: () -> Unit = {}) {
+    protected fun shot(name: String, simple: Boolean = false, firstLaunch: Boolean = false, launchChoice: Boolean = false, prepare: () -> Unit = {}) {
         org.junit.Assume.assumeTrue(wanted(name))
-        h.start(simple = simple, firstLaunch = firstLaunch, scale = uiScale, lang = lang)
+        h.start(simple = simple, firstLaunch = firstLaunch, scale = uiScale, lang = lang, launchChoice = launchChoice)
+        // « Que veux-tu faire ? » once it has read the project's last save (« modifié à l'instant »).
+        if (launchChoice) h.awaitTag("launch_edited")
         prepare()
         compose.mainClock.advanceTimeBy(800)
         compose.waitForIdle()
@@ -72,6 +74,8 @@ open class NavScreenshotTest {
     @Test fun simpleSend() = shot("simple_send", simple = true) { tap("tab_simple_Envoyer") }
     @Test fun simpleMore() = shot("simple_more", simple = true) { tap("top_more") }
     @Test fun welcomeMode() = shot("welcome_mode", firstLaunch = true)
+    @Test fun launch() = shot("launch", launchChoice = true)
+    @Test fun launchSimple() = shot("launch_simple", simple = true, launchChoice = true)
     @Test fun missionListen() = shot("mission_listen") { tap("tab_Plus"); compose.onNodeWithTag("plus_missions").performScrollTo(); tap("plus_missions") }
     @Test fun missionSound() = shot("mission_sound") {
         tap("tab_Plus"); compose.onNodeWithTag("plus_missions").performScrollTo(); tap("plus_missions"); tap("top_play"); h.vm.togglePlay()
@@ -92,7 +96,7 @@ open class NavScale130ScreenshotTest : NavScreenshotTest() {
     companion object {
         val SCALED = setOf(
             "structure", "structure_parts", "sons", "sons_synth", "mix", "live", "plus", "simple_song", "simple_rhythm", "simple_keys",
-            "simple_send", "welcome_mode", "mission_listen", "help_labels", "help_labels_simple",
+            "simple_send", "welcome_mode", "mission_listen", "help_labels", "help_labels_simple", "launch", "launch_simple",
         )
     }
 }
@@ -112,7 +116,7 @@ open class NavTabletScreenshotTest : NavScreenshotTest() {
     companion object {
         val TABLET = setOf(
             "structure", "structure_parts", "sons", "sons_synth", "mix", "live", "plus", "plus_settings", "simple_song", "simple_keys",
-            "simple_send", "welcome_mode", "mission_listen", "help_labels",
+            "simple_send", "welcome_mode", "mission_listen", "help_labels", "launch",
         )
     }
 }
@@ -127,5 +131,5 @@ class NavTabletLandscapeScreenshotTest : NavTabletScreenshotTest() {
 @Config(qualifiers = "w860dp-h400dp-land-xxhdpi")
 class NavPhoneLandscapeScreenshotTest : NavScreenshotTest() {
     override val prefix = "nav/land_"
-    override fun wanted(name: String) = name in setOf("structure", "sons", "sons_synth", "mix", "live", "plus", "simple_song", "simple_keys", "help_labels")
+    override fun wanted(name: String) = name in setOf("structure", "sons", "sons_synth", "mix", "live", "plus", "simple_song", "simple_keys", "help_labels", "launch")
 }

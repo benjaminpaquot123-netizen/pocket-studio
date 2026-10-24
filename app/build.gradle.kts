@@ -73,10 +73,13 @@ android {
                     "--add-exports=java.base/jdk.internal.access=ALL-UNNAMED",
                     "--add-opens=java.base/java.io=ALL-UNNAMED",
                 )
-                // The song bench (scripts/song-bench.sh): SongBenchExport records only when given -Pbench.out.
-                for (key in listOf("bench.out", "bench.render", "bench.styles")) {
+                // The song bench (scripts/song-bench.sh): SongBenchExport records only when given -Pbench.out
+                // (LiveSongRecorder, scripts/live-bench.sh: with -Pbench.live).
+                for (key in listOf("bench.out", "bench.render", "bench.styles", "bench.live", "bench.seconds")) {
                     providers.gradleProperty(key).orNull?.let { value -> it.systemProperty("ps.$key", value) }
                 }
+                // Every style's song in one run: more room than the tests need.
+                if (providers.gradleProperty("bench.live").isPresent || providers.gradleProperty("bench.out").isPresent) it.maxHeapSize = "3g"
             }
         }
     }

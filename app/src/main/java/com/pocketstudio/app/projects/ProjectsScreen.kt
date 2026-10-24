@@ -107,6 +107,8 @@ class ProjectsActions(
     val dismissMessage: () -> Unit = {},
     /** « Partager mon morceau »: the open project's song in M4A, then the share sheet. */
     val shareSong: () -> Unit = {},
+    /** The open project touched in the list: back on it (null: as [back]). */
+    val resume: (() -> Unit)? = null,
 )
 
 /** "Mes projets": every project on the phone, the open one first in mind; open, create, rename, copy, delete. */
@@ -115,13 +117,18 @@ fun ProjectsScreen(
     ui: ProjectsUi, currentId: String, starters: List<ProjectStarter>, actions: ProjectsActions, now: Long = System.currentTimeMillis(),
     /** The song made in one touch from a style (« Nouveau projet »). */
     quick: com.pocketstudio.app.library.QuickUi = com.pocketstudio.app.library.QuickUi(),
+    /**
+     * Opened on « Nouveau projet » alone (« Nouveau morceau » of « Que veux-tu faire ? »): its
+     * Retour closes the whole screen ([ProjectsActions.back]), and it stays under the assistant.
+     */
+    newOnly: Boolean = false,
 ) {
     // Kept when the screen turns: by id (a project's info is not saveable), then looked up.
     var renamingId by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf<String?>(null) }
     val renaming = renamingId?.let { id -> ui.projects.firstOrNull { it.id == id } }
     // « Nouveau projet » is open for the project that was open when it was asked: once another one is
     // created or opened (the screens are rebuilt on it) the page is closed, back on the list.
-    var startedFor by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf<String?>(null) }
+    var startedFor by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf<String?>(if (newOnly) currentId else null) }
     val choosingStart = startedFor == currentId
     val setChoosingStart = { open: Boolean -> startedFor = if (open) currentId else null }
     var showTrash by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(false) }
@@ -131,8 +138,9 @@ fun ProjectsScreen(
     com.pocketstudio.ui.ReadingWidth {
         // « Nouveau projet » takes the screen (a song being prepared keeps it there).
         if (choosingStart) {
-            androidx.activity.compose.BackHandler { if (quick.creating == null) setChoosingStart(false) }
-            NewProjectPage(starters, quick, actions, close = { setChoosingStart(false) })
+            val closePage = { if (newOnly) actions.back() else setChoosingStart(false) }
+            androidx.activity.compose.BackHandler { if (quick.creating == null) closePage() }
+            NewProjectPage(starters, quick, actions, close = closePage, leave = { if (!newOnly) setChoosingStart(false) })
             return@ReadingWidth
         }
         Column(Modifier.fillMaxSize().padding(12.dp).testTag("projects"), verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -247,7 +255,7 @@ private fun ProjectCard(p: ProjectInfo, open: Boolean, now: Long, actions: Proje
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(containerColor = Neon.Surface),
         border = BorderStroke(if (open) 2.dp else 1.dp, if (open) Neon.Acid else Neon.Outline),
-        modifier = Modifier.fillMaxWidth().clickable { if (!open) actions.open(p) else actions.back() }.testTag("project_${p.id}"),
+        modifier = Modifier.fillMaxWidth().clickable { if (!open) actions.open(p) else (actions.resume ?: actions.back)() }.testTag("project_${p.id}"),
     ) {
         Row(Modifier.padding(start = 14.dp, top = 10.dp, bottom = 10.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {

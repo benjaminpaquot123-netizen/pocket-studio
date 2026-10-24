@@ -107,6 +107,8 @@ public:
     // export keeps its headroom), and its inserts on or off (stems: each strip without the master's
     // processing, so the stems add back up to the mix).
     float masterFader() const { return masterFader_.target(); }  // tests
+    float masterFaderNow() const { return masterFader_.current(); }  // tests, the live bench (the fade as heard)
+    float masterGain() const { return masterGain_.target(); }  // tests, the live bench
     void setMasterGain(float gain) { masterGain_.setTarget(std::clamp(std::isfinite(gain) ? gain : 1.0f, 0.0f, 4.0f)); }
     void setLimiter(bool on) {
         limiterOn_ = on;

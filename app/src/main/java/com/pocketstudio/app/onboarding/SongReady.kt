@@ -6,6 +6,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,6 +20,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Celebration
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.IosShare
 import androidx.compose.material.icons.filled.LibraryMusic
 import androidx.compose.material.icons.filled.PlayArrow
@@ -30,6 +32,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,6 +49,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -72,7 +76,7 @@ class SongReadyPrefs(context: Context) {
 data class SongReadyUi(val name: String, val seconds: Int, val parts: Int, val playing: Boolean = false)
 
 class SongReadyActions(
-    /** ▶ the whole song (or stop it): the card stays, for the next choice. */
+    /** ▶ the whole song (or stop it): the card folds into its bar while the song plays, for the next choice. */
     val listen: () -> Unit = {},
     /** « Changer un son »: the tune's track, its sounds in a sheet (one touch picks one). */
     val changeSound: () -> Unit = {},
@@ -90,19 +94,42 @@ class SongReadyActions(
  * « Ton morceau est prêt », once, after the assistant or « Partir d'un style » made a song for
  * project [projectId] ([pending]: just made). Any choice but ▶ closes it for good (so does
  * « Plus tard »): it never shows again for that project, even if the screen is rebuilt.
+ *
+ * While the song plays it gets out of the way: as soon as playback starts ([SongReadyUi.playing]
+ * turning true, from its ▶ or the top bar's), [fold] is called and the card gives way to its bar
+ * ([SongReadyBar], drawn by the screen above the bottom bar), which opens it again. [folded]: the
+ * bar shows instead of the card.
  */
 @Composable
-fun SongReady(pending: Boolean, projectId: String, ui: SongReadyUi, actions: SongReadyActions) {
+fun SongReady(
+    pending: Boolean, projectId: String, ui: SongReadyUi, actions: SongReadyActions,
+    folded: Boolean = false, fold: () -> Unit = {},
+) {
     val context = LocalContext.current
     val prefs = remember { SongReadyPrefs(context) }
     var seen by remember(projectId) { mutableStateOf(prefs.seen(projectId)) }
     if (!pending || seen) return
+    // Playback started while the card shows: it folds into its bar (opened again while the song
+    // plays, it stays: the key does not change).
+    LaunchedEffect(ui.playing) { if (ui.playing) fold() }
+    if (folded) return
+    val done = songReadyDone(prefs, projectId, actions) { seen = true }
+    // A touch outside is not a choice: only the cross, « Plus tard », Back or a big choice closes it.
+    Dialog(onDismissRequest = done.close, properties = DialogProperties(usePlatformDefaultWidth = false, dismissOnClickOutside = false)) {
+        Box(Modifier.fillMaxWidth().padding(horizontal = 12.dp), contentAlignment = Alignment.Center) {
+            SongReadyCard(ui, done, Modifier.widthIn(max = 560.dp))
+        }
+    }
+}
+
+/** [actions] as the card and its bar run them: every choice but ▶ marks the card seen for good. */
+private fun songReadyDone(prefs: SongReadyPrefs, projectId: String, actions: SongReadyActions, seen: () -> Unit): SongReadyActions {
     fun then(action: () -> Unit): () -> Unit = {
         prefs.markSeen(projectId)
-        seen = true
+        seen()
         action()
     }
-    val done = SongReadyActions(
+    return SongReadyActions(
         listen = actions.listen,
         changeSound = then(actions.changeSound),
         structure = then(actions.structure),
@@ -110,10 +137,85 @@ fun SongReady(pending: Boolean, projectId: String, ui: SongReadyUi, actions: Son
         guide = actions.guide?.let { then(it) },
         close = then(actions.close),
     )
-    // A touch outside is not a choice: only the cross, « Plus tard », Back or a big choice closes it.
-    Dialog(onDismissRequest = done.close, properties = DialogProperties(usePlatformDefaultWidth = false, dismissOnClickOutside = false)) {
-        Box(Modifier.fillMaxWidth().padding(horizontal = 12.dp), contentAlignment = Alignment.Center) {
-            SongReadyCard(ui, done, Modifier.widthIn(max = 560.dp))
+}
+
+/**
+ * The card folded while the song plays (see [SongReady]): one line above the bottom bar,
+ * « Ton morceau est prêt » (a touch opens the card again), ■ Arrêter / ▶ Écouter, Partager and ✕.
+ * It goes for good, as the card would, when the user starts editing: [edits] (the project's undo
+ * depth) moves from the value it had when the bar appeared.
+ */
+@Composable
+fun SongReadyBar(
+    pending: Boolean, projectId: String, ui: SongReadyUi, actions: SongReadyActions, edits: Int, open: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val context = LocalContext.current
+    val prefs = remember { SongReadyPrefs(context) }
+    var seen by remember(projectId) { mutableStateOf(prefs.seen(projectId)) }
+    val editsAtStart = remember(projectId) { edits }
+    if (!pending || seen) return
+    val done = songReadyDone(prefs, projectId, actions) { seen = true }
+    // An edit (anything that makes an undo step): the user is making it theirs, the bar goes.
+    LaunchedEffect(edits) { if (edits != editsAtStart) done.close() }
+    val shape = RoundedCornerShape(16.dp)
+    BoxWithConstraints(modifier.fillMaxWidth()) {
+        // A narrow bar (a phone at a big text size): ■ without its word, the title alone on two lines.
+        val narrow = maxWidth < 360.dp
+        Row(
+            Modifier.fillMaxWidth().clip(shape)
+                .background(Neon.Surface)
+                .border(1.dp, Neon.Cyan.copy(alpha = 0.5f), shape)
+                .padding(start = 4.dp, end = 2.dp)
+                .heightIn(min = 56.dp)
+                .testTag("song_ready_bar"),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Row(
+                Modifier.weight(1f).heightIn(min = 48.dp).clip(RoundedCornerShape(12.dp))
+                    .clickable(role = Role.Button, onClickLabel = tr("Rouvrir"), onClick = open)
+                    .padding(horizontal = 6.dp)
+                    .testTag("song_ready_bar_open"),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                // Narrow: the words first (the confetti and the chevron leave them room).
+                if (!narrow) {
+                    Box(Modifier.size(32.dp).clip(RoundedCornerShape(16.dp)).background(Neon.Cyan.copy(alpha = 0.2f)), contentAlignment = Alignment.Center) {
+                        Icon(Icons.Filled.Celebration, contentDescription = null, tint = Neon.Cyan, modifier = Modifier.size(18.dp))
+                    }
+                }
+                Text(
+                    tr("Ton morceau est prêt"), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold,
+                    maxLines = 2, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f, fill = false).padding(start = if (narrow) 4.dp else 8.dp),
+                )
+                if (!narrow) Icon(Icons.Filled.ExpandLess, contentDescription = tr("Rouvrir"), tint = Neon.TextSecondary, modifier = Modifier.size(20.dp))
+            }
+            // ■ Arrêter (or ▶ Écouter): the song's own button, where the thumb is; its word when there is room.
+            val listenLabel = if (ui.playing) tr("Arrêter") else tr("Écouter")
+            Row(
+                Modifier.heightIn(min = 44.dp).widthIn(min = 44.dp).clip(RoundedCornerShape(22.dp))
+                    .background(Neon.Cyan.copy(alpha = 0.2f))
+                    .border(1.dp, Neon.Cyan, RoundedCornerShape(22.dp))
+                    .clickable(role = Role.Button, onClickLabel = listenLabel, onClick = done.listen)
+                    .padding(horizontal = if (narrow) 12.dp else 10.dp)
+                    .testTag("song_ready_bar_listen"),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+            ) {
+                Icon(
+                    if (ui.playing) Icons.Filled.Stop else Icons.Filled.PlayArrow, contentDescription = if (narrow) listenLabel else null,
+                    tint = Neon.Cyan, modifier = Modifier.size(20.dp),
+                )
+                if (!narrow) {
+                    Text(listenLabel, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, maxLines = 1, modifier = Modifier.padding(start = 4.dp))
+                }
+            }
+            IconButton(onClick = done.share, modifier = Modifier.testTag("song_ready_bar_share")) {
+                Icon(Icons.Filled.IosShare, contentDescription = tr("Partager"), tint = Neon.Cyan)
+            }
+            IconButton(onClick = done.close, modifier = Modifier.testTag("song_ready_bar_close")) {
+                Icon(Icons.Filled.Close, contentDescription = tr("Fermer"), tint = Neon.TextSecondary)
+            }
         }
     }
 }

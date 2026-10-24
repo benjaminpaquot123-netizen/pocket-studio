@@ -37,5 +37,24 @@ interface CommandSink {
     fun exportRenderFloat(target: Long, frames: Long, tailFrames: Long): FloatArray
     fun exportDestroy(target: Long)
 
+    // The live engine's state, as the app polls it while playing (a test moves it on by hand).
+    fun sceneSwaps(): Int = 0
+    fun songStep(): Int = -1
+    fun currentStep(): Int = -1
+    fun absoluteStep(): Int = -1
+    fun playPosition(): Double = -1.0
+    fun transportStep(): Int = -1
+    fun transportPosition(): Double = -1.0
+    fun songMarkStep(): Int = -1
+    /** Per slot: tag playing, tag waiting, start step (here: each playing the whole row, nothing waiting). */
+    fun slotStates(out: IntArray) {
+        for (k in 0 until out.size / 3) {
+            out[k * 3] = NativeEngine.ROW_TAG
+            out[k * 3 + 1] = NativeEngine.NO_LAUNCH
+            out[k * 3 + 2] = 0
+        }
+    }
+    fun drainLaunchEvents(out: IntArray): Int = 0
+
     enum class Install { PadSample, TrackSample, AudioClip, Stems, Instrument, LiveClip, PreviewStems }
 }

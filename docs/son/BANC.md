@@ -25,6 +25,25 @@ Depuis S5b, `ps_measure` lit pour chaque Drop qui suit une Montée la sonie de s
 Les rendus restent dans `build/` : jamais dans git.
 La CI le fait tourner sur 5 styles (job « Build », étape « Song bench ») et publie le rapport en artefact `song-bench`.
 
+## Écoute en direct
+
+Le banc ci-dessus mesure l'export. Il n'entend pas ce que joue le téléphone : en direct, le moteur reçoit les commandes au fil de la lecture (chaque partie envoyée pendant la précédente), les applique par lots (budget par rappel audio) et n'a pas la sonie mesurée de l'export, seulement une estimation. Le fondu de la préversion (rapport de Benjamin, octobre 2026 : « la musique se coupe progressivement après 15 s environ », puis silence) n'existait qu'en direct ; l'export l'ignorait. Toute vérification du son « écoute comme le téléphone » avec cet outil.
+
+1. **Enregistrer** : le test `LiveSongRecorder` (app, Robolectric) fait le morceau de « Partir d'un style » de chaque style, l'ouvre comme l'appli (`RhythmViewModel`, ses sons chargés), appuie sur ▶ comme « Ton morceau est prêt ! » (`toggleSong`), puis à chaque bascule de partie du moteur laisse l'appli envoyer la suivante (sa veille de 40 ms). Tout ce que reçoit le moteur en direct va dans `<style>.pslive` (format `.pscmd`), avec les attentes de l'appli : `WAIT ms <n>` et `WAIT swaps <n>`.
+2. **Jouer** : `engine/bench/ps_live` passe ces commandes au vrai `Engine` réglé comme sur le téléphone (budget de commandes du direct, rappels de 96 trames, file de 4096 commandes vidée par les rappels), pas à l'`OfflineRenderer`. Il écrit une ligne par seconde : position, bascules, courbe du morceau sur la sortie générale (`lane`), fondu entendu (`fade`), gain live de la cible de sonie (`drive`) et la perte qu'il lit, limiteur, niveau de la seconde et court terme (3 s), crête, plus grand saut d'un échantillon au suivant (`--csv` pour le tableau).
+3. **Alertes** (code de sortie 4) :
+   - `FADE` : le niveau court terme 6 dB sous le meilleur des 10 s précédentes alors que le gain live a baissé de plus de 3 dB, la courbe du morceau ne le prévoyant pas (un temps de silence, le creux d'une Montée, un Break plus bas ou un fondu dessiné ne sont pas des alertes ; une partie plus calme à gain constant non plus : c'est la musique) ;
+   - `SILENCE` : deux secondes de suite sous −50 dBFS pendant la lecture, la courbe ne le prévoyant pas ;
+   - `CLICK` : un saut de plus de 0,3 qui sort 20 fois des 16 sauts avant et après lui (une cassure), deux fois plus grand que tout autre des 4 s autour (une attaque qui revient à chaque temps est le son lui-même) ; au mieux, une cassure noyée dans du bruit passe ;
+   - `NAN` : un échantillon non fini ; `GAIN` : le gain live hors de sa plage (−24..+18 dB).
+4. **Rapport** : `build/live-bench/report.md` (un tableau par style), `log/<style>.txt` et `.csv`.
+
+Lancer : `scripts/live-bench.sh` (37 styles, 90 s chacun, environ 3 min). Options : `--styles jump_up,techno`, `--seconds 60`, `--out <dossier>`, `--no-record` (rejouer les mêmes `.pslive` après un changement du moteur seul). Un seul morceau : `build/live-bench/tools/ps_live --seconds 90 build/live-bench/cmds/jump_up.pslive` (`--wav f.wav` pour l'écouter).
+L'outil se vérifie d'abord (`scripts/bench/live_selftest.py`) : un son régulier passe, une cassure et un silence sont signalés.
+La CI le fait tourner sur les 37 styles à chaque PR (job « Build », étape « Live listening bench », bloquante ; rapport en artefact `live-bench`) : c'est assez rapide pour tout couvrir.
+Sur émulateur, `LivePlaybackTest` (androidTest, job « Emulator smoke test ») joue le morceau jump up 60 s par le vrai flux audio et vérifie que la crête de chaque seconde reste au-dessus de −40 dBFS.
+Côté moteur, `live_playback_keeps_its_level` et `drop_drive_stays_in_range` (`scripts/host-tests.sh`) rejouent la même situation de façon synthétique : tempos 60 à 200, mesures 3/4, 6/4, 7/4, morceau ou partie en boucle seule, mode Drop et ancien mode « morceau », un morceau de club de 6 minutes.
+
 ## Vérifié
 
 - Deux passages complets (enregistrement et rendu) donnent les mêmes `.pscmd` et les mêmes WAV, octet pour octet (empreintes SHA-256 dans les rapports).

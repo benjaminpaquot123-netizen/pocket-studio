@@ -40,6 +40,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -320,6 +321,12 @@ fun AppRoot() {
         }
     }
     var showProjects by rememberSaveable { mutableStateOf(false) }
+    // « Mes projets » opened on « Nouveau projet » alone (« Nouveau morceau » of « Que veux-tu faire ? »).
+    var projectsNewOnly by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(showProjects) { if (!showProjects) projectsNewOnly = false }
+    // « Que veux-tu faire ? » at each start of the app (not at the first: the welcome asks), kept
+    // through rotations and the rebuild that opening a project does (see LaunchRule).
+    val launch = com.pocketstudio.app.onboarding.rememberLaunchGate(firstLaunch = !SettingsStore.state.value.guideSeen)
     // A long press on the project's name in the top bar: rename it there.
     var renamingProject by rememberSaveable { mutableStateOf(false) }
     // A touch on the tempo (under the top bar, or on Rythme): the tempo sheet.
@@ -352,6 +359,8 @@ fun AppRoot() {
                 return@launch
             }
             showProjects = deleteAfter != null  // remembered across the rebuild
+            projectsNewOnly = false
+            launch.settled()  // the project opened is the choice: its screens never go back to « Que veux-tu faire ? »
             CurrentProject.set(context, id)
             deleteAfter?.let { CurrentProject.deleteLater(context, it) }
             AppLog.add("Ouverture d'un autre projet")
@@ -488,6 +497,8 @@ fun AppRoot() {
     // new project does (the activity is recreated).
     var songGuide by com.pocketstudio.app.library.rememberSongGuide()
     var songReadyFor by rememberSaveable(key = "song_ready_for") { mutableStateOf<String?>(null) }
+    // The card folded into its bar above the bottom bar while the song plays (see SongReady).
+    var songReadyFolded by rememberSaveable(key = "song_ready_folded") { mutableStateOf(false) }
     var songGuideOpen by rememberSaveable(key = "song_guide_open") { mutableStateOf(false) }
     if (songGuideOpen) songGuide?.let { pages ->
         com.pocketstudio.app.settings.GuideDialog(
@@ -544,6 +555,7 @@ fun AppRoot() {
                                 projectsVm.create(project, sounds, failed = libraryVm::createFailed) { id ->
                                     songGuide = guide
                                     songReadyFor = id
+                                    songReadyFolded = false
                                     libraryVm.closeWizard()
                                     tab = AppTab.Morceau  // the song is ready to hear: land on it (kept across the rebuild)
                                     openProject(id)
@@ -562,9 +574,11 @@ fun AppRoot() {
         val previewingDemo by libraryVm.playing.collectAsStateWithLifecycle()
         val preparingDemo by libraryVm.preparing.collectAsStateWithLifecycle()
         LaunchedEffect(Unit) { projectsVm.refresh() }
-        androidx.activity.compose.BackHandler { showProjects = false }
+        // Retour: back where it was opened from (« Que veux-tu faire ? » or the project).
+        val closeProjects = { showProjects = false; projectsNewOnly = false; launch.returned(); Unit }
+        androidx.activity.compose.BackHandler { closeProjects() }
         androidx.compose.ui.window.Dialog(
-            onDismissRequest = { showProjects = false },
+            onDismissRequest = closeProjects,
             properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false),
         ) {
             androidx.compose.material3.Surface(color = Neon.Background, modifier = Modifier.fillMaxSize()) {
@@ -574,10 +588,13 @@ fun AppRoot() {
                         demoPlaying = (previewingDemo as? com.pocketstudio.app.library.SoundRef.Demo)?.index,
                         demoPreparing = (preparingDemo as? com.pocketstudio.app.library.SoundRef.Demo)?.index,
                     ),
+                    newOnly = projectsNewOnly,
                     actions = ProjectsActions(
                         previewDemo = { libraryVm.preview(com.pocketstudio.app.library.SoundRef.Demo(it)) },
                         stopDemo = libraryVm::stopDemoPreview,
-                        back = { showProjects = false },
+                        back = closeProjects,
+                        // The open project touched: on it, as « Continuer » does.
+                        resume = { showProjects = false; projectsNewOnly = false; launch.settled() },
                         open = { openProject(it.id) },
                         create = { i -> projectsVm.create(PROJECT_STARTERS[i].second()) { id -> openProject(id) } },
                         wizard = {
@@ -591,6 +608,7 @@ fun AppRoot() {
                                 projectsVm.create(project, sounds, failed = libraryVm::quickFailed) { newId ->
                                     songGuide = guide
                                     songReadyFor = newId
+                                    songReadyFolded = false
                                     libraryVm.quickDone()
                                     tab = AppTab.Morceau  // the song is ready to hear: land on it (kept across the rebuild)
                                     openProject(newId)
@@ -646,7 +664,7 @@ fun AppRoot() {
                         emptyTrash = projectsVm::emptyTrash,
                         dismissDeleted = projectsVm::dismissDeleted,
                         dismissMessage = projectsVm::dismissMessage,
-                        shareSong = { showProjects = false; shareSong() },
+                        shareSong = { showProjects = false; launch.settled(); shareSong() },
                     ),
                 )
             }
@@ -958,6 +976,18 @@ fun AppRoot() {
         helpLabels = false
         go(AppTab.Morceau)
     }
+    com.pocketstudio.app.onboarding.LaunchChooser(launch, rhythmVm, projectsVm, missions, show = launch.open && settings.guideSeen && pendingCrash == null, simple = simple,
+        actions = com.pocketstudio.app.onboarding.LaunchActions(
+            resume = { launch.choose() },
+            newSong = { launch.choose(comeBack = true); projectsNewOnly = true; showProjects = true },
+            projects = { launch.choose(comeBack = true); projectsNewOnly = false; showProjects = true },
+            missions = {
+                launch.choose()
+                if (missions.active) { helpLabels = false; go(AppTab.Morceau) } else startMissions()
+            },
+            chooseMode = { v -> SettingsStore.update(context) { it.copy(simpleMode = v) } },
+        ),
+    )
     soundChooserTrack?.let { track ->
         SoundChooserSheet(rhythmVm, track, close = { soundChooserTrack = null }, real = realInstrumentsUi(rhythmVm, libraryVm, track) { soundChooserTrack = null })
     }
@@ -980,33 +1010,40 @@ fun AppRoot() {
     // « Vidéo pour les réseaux » (from « Prêt à partager ? »): 30 s of the song in 9:16.
     if (showVideo) com.pocketstudio.app.export.video.VideoExportRoute(rhythmVm, close = { showVideo = false })
     // Once, after the assistant or a style made the song (we land on Morceau): four big choices.
-    if (songReadyFor == rhythmVm.projectId && !songGuideOpen) {
+    // The card's words and choices, for the card and for its bar (folded while the song plays).
+    val songReadyShown = songReadyFor == rhythmVm.projectId && !songGuideOpen
+    val readyDone = { songReadyFor = null; songGuide = null; songReadyFolded = false }
+    @Composable
+    fun songReadyUi(): com.pocketstudio.app.onboarding.SongReadyUi {
         val readyProject by rhythmVm.project.collectAsStateWithLifecycle()
         val readyTransport by rhythmVm.transport.collectAsStateWithLifecycle()
-        val readyDone = { songReadyFor = null; songGuide = null }
+        return com.pocketstudio.app.onboarding.SongReadyUi(
+            com.pocketstudio.model.DefaultNames.shown(readyProject.name),
+            com.pocketstudio.app.export.shareSeconds(readyProject, com.pocketstudio.app.export.ShareSong.MIN_LOOP_BARS),
+            readyProject.song.size, readyTransport.playing,
+        )
+    }
+    val songReadyActions = com.pocketstudio.app.onboarding.SongReadyActions(
+        listen = { if (rhythmVm.project.value.song.isNotEmpty()) rhythmVm.toggleSong() else rhythmVm.togglePlay() },
+        changeSound = {
+            readyDone()
+            // The tune's track, and the sounds of its kind to pick from (one touch): the Synthé tab shows it behind.
+            val track = com.pocketstudio.app.onboarding.mainTrackOf(rhythmVm.project.value) ?: 0
+            rhythmVm.selectTrack(track)
+            tab = AppTab.Synthe
+            soundChooserTrack = track
+        },
+        // The Morceau tab's list of parts (the timeline stays one touch away from it).
+        structure = { readyDone(); tab = AppTab.Morceau },
+        share = { readyDone(); showShare = true },
+        guide = if (songGuide == null) null else ({ songReadyFor = null; songReadyFolded = false; songGuideOpen = true }),
+        close = readyDone,
+    )
+    // Once, after the assistant or a style made the song (we land on Morceau): four big choices.
+    if (songReadyShown) {
         com.pocketstudio.app.onboarding.SongReady(
-            pending = true, projectId = rhythmVm.projectId,
-            ui = com.pocketstudio.app.onboarding.SongReadyUi(
-                com.pocketstudio.model.DefaultNames.shown(readyProject.name),
-                com.pocketstudio.app.export.shareSeconds(readyProject, com.pocketstudio.app.export.ShareSong.MIN_LOOP_BARS),
-                readyProject.song.size, readyTransport.playing,
-            ),
-            actions = com.pocketstudio.app.onboarding.SongReadyActions(
-                listen = { if (readyProject.song.isNotEmpty()) rhythmVm.toggleSong() else rhythmVm.togglePlay() },
-                changeSound = {
-                    readyDone()
-                    // The tune's track, and the sounds of its kind to pick from (one touch): the Synthé tab shows it behind.
-                    val track = com.pocketstudio.app.onboarding.mainTrackOf(readyProject) ?: 0
-                    rhythmVm.selectTrack(track)
-                    tab = AppTab.Synthe
-                    soundChooserTrack = track
-                },
-                // The Morceau tab's list of parts (the timeline stays one touch away from it).
-                structure = { readyDone(); tab = AppTab.Morceau },
-                share = { readyDone(); showShare = true },
-                guide = if (songGuide == null) null else ({ songReadyFor = null; songGuideOpen = true }),
-                close = readyDone,
-            ),
+            pending = true, projectId = rhythmVm.projectId, ui = songReadyUi(), actions = songReadyActions,
+            folded = songReadyFolded, fold = { songReadyFolded = true },
         )
     }
     // The timeline (in Structure or on the whole screen): two touches on a clip open its editor on
@@ -1187,8 +1224,22 @@ fun AppRoot() {
             DoneBar(done, undo = rhythmVm::undoDone, dismiss = rhythmVm::dismissDone)
         },
         bottomBar = {
-            // Phase 36: the five spaces (or the Mode simple's four tabs); lying down, the rail on the side.
-            if (!landscape && !liveImmersive && !showTimeline && !showLivePads) SpaceBar(navEntries)
+            Column {
+                // « Ton morceau est prêt » folded while the song plays: one line over the spaces.
+                if (songReadyShown && songReadyFolded && !liveImmersive && !showLivePads) {
+                    // The project's undo depth: the first edit makes the bar go (the song is being made theirs).
+                    val barProject by rhythmVm.project.collectAsStateWithLifecycle()
+                    val edits = remember(barProject) { rhythmVm.session.undoDepth }
+                    com.pocketstudio.app.onboarding.SongReadyBar(
+                        pending = true, projectId = rhythmVm.projectId, ui = songReadyUi(), actions = songReadyActions, edits = edits,
+                        open = { songReadyFolded = false },
+                        modifier = Modifier.windowInsetsPadding(SIDE_INSETS).padding(horizontal = 8.dp, vertical = 4.dp)
+                            .then(if (landscape || showTimeline) Modifier.navigationBarsPadding() else Modifier),
+                    )
+                }
+                // Phase 36: the five spaces (or the Mode simple's four tabs); lying down, the rail on the side.
+                if (!landscape && !liveImmersive && !showTimeline && !showLivePads) SpaceBar(navEntries)
+            }
         },
     ) { padding ->
         if (showLivePads) {

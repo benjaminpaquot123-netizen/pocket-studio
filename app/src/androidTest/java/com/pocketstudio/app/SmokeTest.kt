@@ -45,6 +45,13 @@ class SmokeTest {
             compose.onNodeWithTag("welcome_later").performScrollTo().performClick()
         }
         compose.waitForIdle()
+        // Any later start: « Que veux-tu faire ? », where « Continuer » opens the last project (one touch).
+        if (compose.onAllNodesWithTag("launch_continue").fetchSemanticsNodes().isNotEmpty()) {
+            compose.onNodeWithTag("launch_mode_full").performScrollTo().performClick()
+            compose.onNodeWithTag("launch_continue").performScrollTo().performClick()
+        }
+        compose.waitForIdle()
+        assertTrue("no « Que veux-tu faire ? » left over the project", compose.onAllNodesWithTag("launch").fetchSemanticsNodes().isEmpty())
 
         // Rhythm screen: the starter groove plays and makes sound.
         compose.onNodeWithTag("rhythm").assertIsDisplayed()

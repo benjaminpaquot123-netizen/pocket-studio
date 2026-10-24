@@ -142,6 +142,25 @@ jobs:
             build/bench/m4a.txt
             build/bench/gradle.log
           if-no-files-found: ignore
+      # « Écoute en direct » (docs/son/BANC.md): every style's song as the PHONE plays it, not as an
+      # export renders it: the app's own live commands (load, ▶, each part staged after its swap)
+      # through the engine driven like the phone's stream, 90 s each. Blocking: an unplanned fade,
+      # silence while playing, a click or a NaN fails the build (about 3 minutes for the 37 styles).
+      - name: Live listening bench (37 styles, 90 s)
+        env:
+          CMAKE_EXTRA_ARGS: -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+          GRADLE_ARGS: --console=plain
+          JOBS: 4
+        run: ./scripts/live-bench.sh
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: live-bench
+          path: |
+            build/live-bench/report.md
+            build/live-bench/log/
+            build/live-bench/gradle.log
+          if-no-files-found: ignore
       - name: Build release APK
         run: |
           ./gradlew :app:assembleRelease

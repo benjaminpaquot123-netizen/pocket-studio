@@ -160,10 +160,14 @@ private:
     double sumDriven_ = 0.0, sumOut_ = 0.0, forget_ = 1.0;
     std::atomic<float> lossPublished_{0.0f};
     std::atomic<float> loudPublished_{-1000.0f};
-    // --- Drop mode (S5): the loud part of the music before the drive, of the driven music and of
-    // the output, from the same 3 s windows; the drive's mean square over the last 30 pieces.
+    // --- Drop mode (S5): the loud part of the music before the drive, from 3 s windows; the
+    // drive's mean square over the last 30 pieces (a window's own).
     Mode mode_ = Mode::Song;
-    LoudPart loudIn_, loudDriven_, loudOut_;
+    LoudPart loudIn_;
+    // What the clipper and the limiter take off the loud part now (LU), smoothed over its last
+    // windows, and the drive (dB) those windows were heard with.
+    double lossNow_ = 0.0, lossDriveDb_ = 0.0;
+    int64_t lossWindows_ = 0;
     std::array<double, BlockLoudness::kRing> driveRing_{};
     int driveRingHead_ = 0;
     bool settled_ = false;

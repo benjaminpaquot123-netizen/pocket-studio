@@ -435,7 +435,8 @@ object NativeEngine {
     /** The song ends after [steps] steps of the playing scene: the transport stops on that bar line (counted in [sceneSwaps]). */
     fun armSongEnd(steps: Int) = post(CMD_ARM_SCENE_SWAP, 0f, steps, 2)
     /** Steps since the song (re)started, as song automation reads them; -1 when stopped. */
-    external fun songStep(): Int
+    fun songStep(): Int = sink?.songStep() ?: nativeSongStep()
+    private external fun nativeSongStep(): Int
     /** Live effects on the master: [param] 0 filter (0.5 = off), 1 resonance, 2 repeat on, 3 repeat division, 4 tape stop, 5 chop. */
     fun setPerformance(param: Int, value: Float) = post(CMD_PERFORMANCE, value, param)
     /**
@@ -446,7 +447,8 @@ object NativeEngine {
     /** [param] in PlaitsSynth::Param order (0 model, 1 harmonics … 7 level), [value] 0..1. */
     fun setPlaitsParam(param: Int, value: Float, track: Int = 0) = post(CMD_PLAITS_PARAM, value, onTrack(track, param))
     /** How many times a waiting scene took over since the engine started. */
-    external fun sceneSwaps(): Int
+    fun sceneSwaps(): Int = sink?.sceneSwaps() ?: nativeSceneSwaps()
+    private external fun nativeSceneSwaps(): Int
     /** Writes into [out] (size [METERS]): channel peaks (the master's output at [MASTER]), the limiter gain, the master's level into the limiter. */
     external fun mixerMeters(out: FloatArray)
     /**
@@ -477,7 +479,8 @@ object NativeEngine {
     }
 
     /** Current pattern step, or -1 when stopped or counting in. */
-    external fun currentStep(): Int
+    fun currentStep(): Int = sink?.currentStep() ?: nativeCurrentStep()
+    private external fun nativeCurrentStep(): Int
 
     /**
      * How busy the audio thread is: its render time over the time its sound lasts, smoothed over
@@ -485,13 +488,15 @@ object NativeEngine {
      */
     external fun cpuLoad(): Float
     /** Steps since play without wrapping (-1 stopped): the piano roll loops on its own length. */
-    external fun absoluteStep(): Int
+    fun absoluteStep(): Int = sink?.absoluteStep() ?: nativeAbsoluteStep()
+    private external fun nativeAbsoluteStep(): Int
 
     /**
      * Position in the playing scene in sixteenths, with the fraction (live recording). While the
      * count-in clicks, negative: the sixteenths left before the first step. -1 when stopped.
      */
-    external fun playPosition(): Double
+    fun playPosition(): Double = sink?.playPosition() ?: nativePlayPosition()
+    private external fun nativePlayPosition(): Double
 
     /** Click volume 0..1 (0.5 = default). */
     fun setMetronomeLevel(level: Float) = post(CMD_METRONOME_LEVEL, level.coerceIn(0f, 1f))
@@ -809,20 +814,28 @@ object NativeEngine {
     /** The return of send bus [bus] (0 reverb, 1 echo) times [gain] (0..2, 1 = as mixed): a live gesture, not saved. */
     fun setBusReturn(bus: Int, gain: Float) = post(CMD_BUS_RETURN, gain.coerceIn(0f, 2f), bus)
     /** Transport steps since play (-1 stopped or counting in): the live grid's clock. */
-    external fun transportStep(): Int
+    fun transportStep(): Int = sink?.transportStep() ?: nativeTransportStep()
+    private external fun nativeTransportStep(): Int
     /** The transport's place in sixteenths since play, with the fraction (-1 stopped or counting in). */
-    external fun transportPosition(): Double
+    fun transportPosition(): Double = sink?.transportPosition() ?: nativeTransportPosition()
+    private external fun nativeTransportPosition(): Double
     /**
      * A recorded performance starts on the next transport step that is a multiple of [quantumSteps]:
      * the song position there becomes [songStep] ([quantumSteps] 0: cancelled).
      */
     fun markSong(quantumSteps: Int, songStep: Int) = post(CMD_MARK_SONG, songStep.toFloat(), quantumSteps.coerceAtLeast(0))
     /** The transport step the last [markSong] took effect on (-1: not yet). */
-    external fun songMarkStep(): Int
+    fun songMarkStep(): Int = sink?.songMarkStep() ?: nativeSongMarkStep()
+    private external fun nativeSongMarkStep(): Int
     /** Per slot, 3 values: tag playing (scene, -1 stopped, [ROW_TAG]), tag waiting ([NO_LAUNCH], -1 stop, scene), start step. */
-    external fun slotStates(out: IntArray)
+    fun slotStates(out: IntArray) {
+        sink?.let { it.slotStates(out); return }
+        nativeSlotStates(out)
+    }
+    private external fun nativeSlotStates(out: IntArray)
     /** The launches that happened since the last call into [out] (slot, tag, step each); returns how many. */
-    external fun drainLaunchEvents(out: IntArray): Int
+    fun drainLaunchEvents(out: IntArray): Int = sink?.drainLaunchEvents(out) ?: nativeDrainLaunchEvents(out)
+    private external fun nativeDrainLaunchEvents(out: IntArray): Int
 
     /** [values] in Sampler::Param order (see PadSample.engineParams). */
     fun setPadParams(pad: Int, values: FloatArray) {

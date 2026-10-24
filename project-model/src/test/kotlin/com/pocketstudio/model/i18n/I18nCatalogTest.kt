@@ -256,6 +256,7 @@ class I18nCatalogTest {
             "WizardScreen.kt: s.name",
             "WizardScreen.kt: sound.name",
             "WizardScreen.kt: style.name",
+            "LaunchChoice.kt: it.name",  // « Que veux-tu faire ? »: the project's style (StarterWizard.STYLES, checked by ModelTextsTest)
         )
     }
 

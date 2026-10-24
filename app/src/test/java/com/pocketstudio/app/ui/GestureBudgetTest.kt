@@ -95,6 +95,28 @@ class GestureBudgetTest {
     }
 
     @Test
+    fun continuingTheLastProjectAfterLaunchIsOneTouch() {
+        // « Que veux-tu faire ? » as the app opens on it, wired as AppRoot wires it (the whole app: LaunchFlowTest).
+        val vm = vmWithSong()
+        val before = vm.project.value
+        var open by mutableStateOf(true)
+        compose.setContent {
+            PocketStudioTheme {
+                val project by vm.project.collectAsState()
+                com.pocketstudio.app.onboarding.LaunchChoice(
+                    open, com.pocketstudio.app.onboarding.launchUi(project, null, System.currentTimeMillis(), simple = false, missionsActive = false),
+                    com.pocketstudio.app.onboarding.LaunchActions(resume = { open = false }),
+                )
+            }
+        }
+        compose.onNodeWithTag("launch").assertIsDisplayed()
+        compose.withinGestures("Continuer après l'ouverture", 1) { tap("launch_continue") }
+        compose.onNodeWithTag("launch").assertDoesNotExist()
+        assertTrue(before === vm.project.value)
+        assertTrue(!vm.transport.value.playing)
+    }
+
+    @Test
     fun changingTheTempoIsTwoTouchesAndOneUndoStep() {
         val vm = vmWithSong()
         show(vm)

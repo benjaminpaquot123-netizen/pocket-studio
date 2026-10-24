@@ -7682,6 +7682,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         ) kotlinx.coroutines.delay(50)
     }
 
+    /** Tests and the live bench: waits as an export does until the project's sounds are in. */
+    @androidx.annotation.VisibleForTesting
+    internal suspend fun awaitSoundsLoadedForTest() = awaitSoundsLoaded()
+
     /** Tests: [pack] counts as an instrument still being read into memory (null: none any more). */
     @androidx.annotation.VisibleForTesting
     internal fun holdMultiLoading(pack: String?) {

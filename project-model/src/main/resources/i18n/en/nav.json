@@ -191,5 +191,11 @@
   "Changer le kit": "Change the kit",
   "Jouer · appui long : Fill": "Play · hold: Fill",
   "2 touches : ouvrir": "2 taps: open",
-  "Enregistrer ici": "Record here"
+  "Enregistrer ici": "Record here",
+  "Que veux-tu faire ?": "What do you want to do?",
+  "Boucle de %s": "Loop of %s",
+  "modifié %s": "edited %s",
+  "Reprendre les missions": "Resume the missions",
+  "Un style en une touche, ou pas à pas avec l'assistant.": "A style in one tap, or step by step with the assistant.",
+  "Ouvrir un autre morceau, le copier ou le renommer.": "Open another song, copy or rename it."
 }

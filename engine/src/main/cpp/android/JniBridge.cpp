@@ -47,7 +47,7 @@ JNIEXPORT jboolean JNICALL Java_com_pocketstudio_engine_NativeEngine_nativePost(
     return host().post({static_cast<ps::CommandType>(type), value, a, b}) ? JNI_TRUE : JNI_FALSE;
 }
 
-JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_currentStep(JNIEnv*, jobject) {
+JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeCurrentStep(JNIEnv*, jobject) {
     return host().engine().currentStep();
 }
 
@@ -60,11 +60,11 @@ JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_setBufferBursts
     host().setBufferBursts(bursts);
 }
 
-JNIEXPORT jdouble JNICALL Java_com_pocketstudio_engine_NativeEngine_playPosition(JNIEnv*, jobject) {
+JNIEXPORT jdouble JNICALL Java_com_pocketstudio_engine_NativeEngine_nativePlayPosition(JNIEnv*, jobject) {
     return host().engine().playPosition();
 }
 
-JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_absoluteStep(JNIEnv*, jobject) {
+JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeAbsoluteStep(JNIEnv*, jobject) {
     return host().engine().absoluteStep();
 }
 
@@ -470,7 +470,7 @@ JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_recordFi
 }
 
 // Steps since the song (re)started (song automation), -1 when stopped.
-JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_songStep(JNIEnv*, jobject) {
+JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeSongStep(JNIEnv*, jobject) {
     return static_cast<jint>(host().engine().songStep());
 }
 
@@ -515,26 +515,26 @@ JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_clipStates(JNIE
     env->SetIntArrayRegion(out, 0, n, states);
 }
 
-JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_sceneSwaps(JNIEnv*, jobject) {
+JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeSceneSwaps(JNIEnv*, jobject) {
     return static_cast<jint>(host().engine().sceneSwaps());
 }
 
 // --- Live grid ---
 
-JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_transportStep(JNIEnv*, jobject) {
+JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeTransportStep(JNIEnv*, jobject) {
     return static_cast<jint>(host().engine().transportStep());
 }
 
-JNIEXPORT jdouble JNICALL Java_com_pocketstudio_engine_NativeEngine_transportPosition(JNIEnv*, jobject) {
+JNIEXPORT jdouble JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeTransportPosition(JNIEnv*, jobject) {
     return host().engine().transportPosition();
 }
 
-JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_songMarkStep(JNIEnv*, jobject) {
+JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeSongMarkStep(JNIEnv*, jobject) {
     return static_cast<jint>(host().engine().songMarkStep());
 }
 
 // Per slot: tag playing, tag waiting, start step (3 * Engine::kSlots values).
-JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_slotStates(JNIEnv* env, jobject, jintArray out) {
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeSlotStates(JNIEnv* env, jobject, jintArray out) {
     jint values[ps::kSlots * 3];
     auto& engine = host().engine();
     for (int k = 0; k < ps::kSlots; ++k) {
@@ -547,7 +547,7 @@ JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_slotStates(JNIE
 }
 
 // The launches that happened since the last call (slot, tag, step each), at most out.length / 3.
-JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_drainLaunchEvents(JNIEnv* env, jobject, jintArray out) {
+JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeDrainLaunchEvents(JNIEnv* env, jobject, jintArray out) {
     const jsize room = env->GetArrayLength(out) / 3;
     jint values[ps::Engine::kLaunchEvents * 3];
     jsize n = 0;

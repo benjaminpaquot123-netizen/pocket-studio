@@ -68,7 +68,11 @@ import kotlin.math.roundToInt
  */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-internal fun NewProjectPage(starters: List<ProjectStarter>, quick: QuickUi, actions: ProjectsActions, close: () -> Unit) {
+internal fun NewProjectPage(
+    starters: List<ProjectStarter>, quick: QuickUi, actions: ProjectsActions, close: () -> Unit,
+    /** Before a starter or the assistant: the page closes (back on the list), or stays under it when it is the whole screen. */
+    leave: () -> Unit = close,
+) {
     // While a song is being prepared, every other choice waits.
     val busy = quick.creating != null
     // Leaving the page ends a demo still playing.
@@ -84,7 +88,7 @@ internal fun NewProjectPage(starters: List<ProjectStarter>, quick: QuickUi, acti
             Modifier.weight(1f).verticalScroll(rememberScrollState()).testTag("new_project_list"),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            GuidedCard(busy) { close(); actions.wizard() }
+            GuidedCard(busy) { leave(); actions.wizard() }
             SectionLabel(StarterGroup.Style.title, Modifier.padding(top = 12.dp))
             Text(
                 tr("Une touche, un morceau complet (environ 3 minutes), prêt à écouter."),
@@ -110,7 +114,7 @@ internal fun NewProjectPage(starters: List<ProjectStarter>, quick: QuickUi, acti
                         DemoRow(s, demo, quick, actions)
                         demo++
                     } else {
-                        StarterRow(s, if (group == StarterGroup.Empty) Icons.Filled.Add else Icons.Filled.GraphicEq, !busy) { close(); actions.create(i) }
+                        StarterRow(s, if (group == StarterGroup.Empty) Icons.Filled.Add else Icons.Filled.GraphicEq, !busy) { leave(); actions.create(i) }
                     }
                 }
             }

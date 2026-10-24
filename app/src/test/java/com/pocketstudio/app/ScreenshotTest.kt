@@ -1634,6 +1634,28 @@ open class ScreenshotTest {
         }
     }
 
+    /**
+     * The card folded while the song plays (Benjamin's report: it stayed over the screen): one line
+     * over the bottom bar, « Ton morceau est prêt » (a touch opens the card again), ■ Arrêter,
+     * Partager, ✕.
+     */
+    @Test
+    fun songReadyBar() = shoot("song_ready_bar") {
+        androidx.compose.foundation.layout.Column(Modifier.fillMaxSize()) {
+            Box(Modifier.weight(1f))
+            com.pocketstudio.app.onboarding.SongReadyBar(
+                pending = true, projectId = "shot", ui = com.pocketstudio.app.onboarding.SongReadyUi("Jump up DnB", seconds = 298, parts = 46, playing = true),
+                actions = com.pocketstudio.app.onboarding.SongReadyActions(), edits = 0, open = {},
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+            )
+            com.pocketstudio.app.ui.SpaceBar(
+                com.pocketstudio.app.ui.Space.entries.map { sp ->
+                    com.pocketstudio.app.ui.NavEntry(sp.name, sp.label, sp.hint, sp.icon, sp == com.pocketstudio.app.ui.Space.Structure) {}
+                },
+            )
+        }
+    }
+
     @Test
     fun guide() = shoot("guide") {
         com.pocketstudio.app.settings.GuideDialog(onClose = {})

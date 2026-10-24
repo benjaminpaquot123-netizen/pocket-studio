@@ -45,6 +45,8 @@ open class UiScaleScreenshotTest : ScreenshotTest() {
             "play_strip", "tempo_sheet", "mixer_master",
             // Phase 38.
             "real_instruments", "export_report", "track_add",
+            // « Ton morceau est prêt » folded while the song plays.
+            "song_ready_bar",
         )
     }
 }

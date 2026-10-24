@@ -2,6 +2,7 @@ package com.pocketstudio.app
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performScrollTo
@@ -240,13 +241,19 @@ class JourneyTest {
         log("count-in: %.2f s for a bar of %.2f s".format(countIn, bar))
         assertTrue("a count-in before the take", counted && countIn >= 0.5 * bar)
         for (key in keys) {
+            // A key out of sight (a small screen, the keyboard below the track's settings) is scrolled to first.
+            runCatching { if (!compose.onNodeWithTag(key).isDisplayed()) compose.onNodeWithTag(key).performScrollTo() }
             compose.onNodeWithTag(key).performTouchInput { down(center) }
             Thread.sleep(220)
             compose.onNodeWithTag(key).performTouchInput { up() }
             Thread.sleep(180)
         }
+        log("recording: phase=${rhythm.noteTake.value?.phase}, notes so far=${rhythm.noteTake.value?.notes}")
         j.tap("record_stop")
-        j.await("take_summary")
+        if (runCatching { j.await("take_summary") }.isFailure) {
+            log("no take summary: phase=${rhythm.noteTake.value?.phase}, notes=${rhythm.noteTake.value?.notes}, record_start=${j.exists("record_start")}, keys shown=${keys.map { k -> runCatching { compose.onNodeWithTag(k).isDisplayed() }.getOrDefault(false) }}")
+            throw IllegalStateException("no take summary after the take")
+        }
         val take = rhythm.noteTake.value
         log("take: ${take?.notes} notes")
         assertTrue("the take kept the keys played: ${take?.notes}", (take?.notes ?: 0) >= keys.size - 1)

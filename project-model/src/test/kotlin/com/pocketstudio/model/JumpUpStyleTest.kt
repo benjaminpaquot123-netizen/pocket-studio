@@ -48,7 +48,10 @@ class JumpUpStyleTest {
         val p = build()
         val bass = p.instrumentTracks.first { it.name == "Basse" }
         val sub = p.instrumentTracks.first { it.name == StarterWizard.SUB_TRACK }
-        assertEquals(StarterWizard.SUB_SOUND.with(SynthPatch.GLIDE, StarterWizard.BASS_GLIDE), sub.synth)
+        // S4 (WideMix): the bass music sub a little saturated, still mono.
+        // S5 (WizardMix.honest): 2 dB lower, the bass's body lifted instead.
+        val subSound = StarterWizard.SUB_SOUND.with(SynthPatch.GLIDE, StarterWizard.BASS_GLIDE).with(SynthPatch.DRIVE, WideMix.SUB_DRIVE)
+        assertEquals(subSound.with(SynthPatch.GAIN, SynthPatch.gainValue(SynthPatch.gainDb(subSound.get(SynthPatch.GAIN)) + WizardMix.BASS_MUSIC_SUB_DB)), sub.synth)
         // In every section, the sub plays the bass's notes an octave down (nothing where the bass rests).
         for (scene in p.allScenes.indices) {
             assertEquals("scene $scene", p.notes(scene, bass.id).map { it.copy(pitch = it.pitch - 12) }, p.notes(scene, sub.id))
@@ -59,10 +62,16 @@ class JumpUpStyleTest {
         assertTrue(drop.minOf { it.pitch } >= 28 && p.notes(2, bass.id).minOf { it.pitch } >= 40)
         // The growl slides up an octave somewhere (notes that overlap), the sub with it.
         assertFalse(drop.sortedBy { it.start }.zipWithNext().all { (a, b) -> b.start >= a.end })
-        // Effects: the growl preset and the pump on the growl, the pump on the sub.
+        // Effects: the growl preset with a soft clipper before its OTT. S5: no pump of their own on the
+        // growl nor the sub: both go through the Musique bus, which ducks once (their lows deeper) under the kick.
         val types = { id: Int -> p.mixer.channels[InstrumentTrack.mixerChannel(id)].inserts.map { it.effect } }
-        assertTrue(types(bass.id).containsAll(listOf(EffectType.DISTORTION, EffectType.OTT, EffectType.PUMP)))
-        assertEquals(EffectType.PUMP, types(sub.id).first())
+        assertTrue(types(bass.id).containsAll(listOf(EffectType.DISTORTION, EffectType.CLIPPER, EffectType.OTT)))
+        assertTrue(types(bass.id).indexOf(EffectType.CLIPPER) < types(bass.id).indexOf(EffectType.OTT))
+        assertTrue(EffectType.PUMP !in types(bass.id) && EffectType.PUMP !in types(sub.id))
+        val bus = p.mixer.musicBus!!
+        assertTrue(InstrumentTrack.mixerChannel(bass.id) in bus.members && InstrumentTrack.mixerChannel(sub.id) in bus.members)
+        assertTrue(bus.lowDepth > bus.depth)
+        assertEquals(Mixer.padChannel(StarterWizard.Role.Kick.lane), p.mixer.sidechainKey)
     }
 
     @Test
@@ -86,7 +95,7 @@ class JumpUpStyleTest {
     @Test
     fun noSubWithoutTheBassNorInTheOtherStyles() {
         assertNull(build(setOf(Part.Pad, Part.Lead)).instrumentTracks.firstOrNull { it.name == StarterWizard.SUB_TRACK })
-        val dnb = StarterWizard.style("liquid_dnb")!!
+        val dnb = StarterWizard.style("house")!!
         val p = StarterWizard.build(dnb, dnb.lines.associate { it.role to null as PadSample? }, dnb.melody.mood,
             mapOf(Part.Bass to StarterWizard.soundsFor(Part.Bass, dnb).first()))
         assertNull(p.instrumentTracks.firstOrNull { it.name == StarterWizard.SUB_TRACK })
@@ -96,9 +105,11 @@ class JumpUpStyleTest {
     @Test
     fun theSongBuildsUpDropsBreaksAndDropsAgainInAboutThreeMinutes() {
         val p = build()
-        assertEquals(listOf("Intro", "Montée", "Drop", "Break"), p.allScenes.map { it.label })
+        assertEquals(listOf("Intro", "Montée", "Drop", "Break"), p.allScenes.take(4).map { it.label })
+        // Bass music lasts 5 minutes (Benjamin, 2026-10-23): three Drops at 174 BPM.
         val seconds = p.songBars * 4 * 60.0 / p.tempoBpm
-        assertTrue("$seconds", seconds in 150.0..StarterWizard.MAX_SONG_SECONDS)
+        assertTrue("$seconds", seconds in 270.0..SongShape.LONG_SECONDS)
+        assertEquals(3, StarterWizard.songSections(p).count { it.scene == 2 })
         // The Break: the pad and the hats, no kick, no bass, no sub.
         val sub = p.instrumentTracks.first { it.name == StarterWizard.SUB_TRACK }.id
         assertTrue(p.allScenes[3].drums.lanes[Role.Kick.lane].hits.isEmpty() && p.notes(3, sub).isEmpty())

@@ -19,10 +19,13 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Backspace
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.TouchApp
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
@@ -30,7 +33,12 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -103,13 +111,21 @@ fun TempoPad(tempoBpm: Double, actions: TempoActions, close: () -> Unit, modifie
             Text(tr("Tempo"), style = MaterialTheme.typography.titleLarge, color = Neon.TextPrimary, modifier = Modifier.weight(1f))
             TextButton(onClick = close, modifier = Modifier.testTag("tempo_close")) { Text(tr("Fermer")) }
         }
-        // The tempo as typed (accent) or as it is now.
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.Bottom) {
-            Text(
-                if (typing) draft.digits else "$current", style = MonoStyle.copy(fontSize = 44.sp, fontWeight = FontWeight.ExtraBold),
-                color = if (typing) Neon.Cyan else Neon.TextPrimary, modifier = Modifier.testTag("tempo_display"),
-            )
-            Text(" BPM", style = MaterialTheme.typography.titleMedium, color = Neon.TextSecondary, modifier = Modifier.padding(bottom = 8.dp))
+        // The tempo as typed (accent) or as it is now, between − and + (held: they repeat).
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+            RepeatingIconButton({ actions.set((current - 1).toDouble().coerceAtLeast(Project.MIN_TEMPO)); draft = TempoDraft() }, Modifier.testTag("tempo_minus")) {
+                Icon(Icons.Filled.Remove, contentDescription = tr("Tempo moins"))
+            }
+            Row(Modifier.weight(1f), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.Bottom) {
+                Text(
+                    if (typing) draft.digits else "$current", style = MonoStyle.copy(fontSize = 44.sp, fontWeight = FontWeight.ExtraBold),
+                    color = if (typing) Neon.Cyan else Neon.TextPrimary, modifier = Modifier.testTag("tempo_display"),
+                )
+                Text(" BPM", style = MaterialTheme.typography.titleMedium, color = Neon.TextSecondary, modifier = Modifier.padding(bottom = 8.dp))
+            }
+            RepeatingIconButton({ actions.set((current + 1).toDouble().coerceAtMost(Project.MAX_TEMPO)); draft = TempoDraft() }, Modifier.testTag("tempo_plus")) {
+                Icon(Icons.Filled.Add, contentDescription = tr("Tempo plus"))
+            }
         }
         if (typing && draft.bpm == null) {
             Text(
@@ -200,3 +216,30 @@ private fun Key(label: String?, tag: String, modifier: Modifier, enabled: Boolea
 }
 
 private val TempoDraftSaver = androidx.compose.runtime.saveable.Saver<TempoDraft, String>(save = { it.digits }, restore = { TempoDraft(it) })
+
+/** An icon button that repeats while held (after a short wait, faster and faster): tempo − and +. */
+@Composable
+internal fun RepeatingIconButton(onStep: () -> Unit, modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+    val interaction = remember { MutableInteractionSource() }
+    val pressed by interaction.collectIsPressedAsState()
+    val step by rememberUpdatedState(onStep)
+    // Set once the hold has started repeating: the release then adds no extra step.
+    var repeated by remember { mutableStateOf(false) }
+    LaunchedEffect(pressed) {
+        if (!pressed) return@LaunchedEffect
+        repeated = false
+        kotlinx.coroutines.delay(REPEAT_AFTER_MS)
+        repeated = true
+        var wait = REPEAT_FIRST_MS
+        while (true) {
+            step()
+            kotlinx.coroutines.delay(wait)
+            wait = (wait - 15).coerceAtLeast(REPEAT_FASTEST_MS)
+        }
+    }
+    IconButton(onClick = { if (!repeated) step(); repeated = false }, interactionSource = interaction, modifier = modifier) { content() }
+}
+
+private const val REPEAT_AFTER_MS = 450L
+private const val REPEAT_FIRST_MS = 140L
+private const val REPEAT_FASTEST_MS = 50L

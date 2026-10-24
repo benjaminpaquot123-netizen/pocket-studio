@@ -50,8 +50,7 @@
    {
     "role": "rumble",
     "pattern": "X...X...X...X...",
-    "off": true,
-    "tip_fr": "Le grondement de la techno de Berlin : le kick rejoué dans une grande réverbe, saturé et gardé dans le grave. Coché, il remplace bien la basse."
+    "tip_fr": "Le grondement de la techno de Berlin : un grave sale et accordé qui roule entre les coups de kick, sous la basse."
    }
   ],
   "progressions": {
@@ -94,22 +93,22 @@
   },
   "chords": {
    "type": "stab",
-   "rhythm": "...X......X.....",
+   "rhythm": "...X......X........X......X...x.",
    "voicing": "seventh",
    "octave": 3,
    "sound": "Pluck"
   },
   "bass": {
-   "pattern": ".rRr.rRr.rRr.rRr",
+   "pattern": ".rR-.rRr.rR-.rRr.rR-.rRr.rR-.rR.",
    "octave": 2,
    "sound": "pack:techno:bass|Basse analogique",
    "glide": false
   },
   "lead": {
    "type": "riff",
-   "pattern": "R..O..R..O..R.O.",
+   "pattern": "R-..O-..R-......r-..o-..R-..3-..",
    "arp_rate": 24,
-   "octave": 4,
+   "octave": 3,
    "sound": "Lead filtré"
   },
   "acid": {
@@ -121,12 +120,12 @@
   "defaults": {
    "bass": true,
    "chords": true,
-   "lead": false
+   "lead": true
   },
   "default_mood": "dark",
   "bass_tip": "Une basse sourde qui roule entre les coups de kick, jamais en même temps : le grave reste propre et ça tourne. Elle se baisse à chaque kick (la pompe).",
   "pad_tip": "Pas de vraie nappe : un petit accord court avec un écho qui se répète, presque toujours le même. C'est ce qui hypnotise.",
-  "lead_tip": "Un petit motif filtré sur une seule note, qui tourne en boucle plutôt qu'une vraie mélodie.",
+  "lead_tip": "Un petit riff filtré de deux mesures qui respire : une note, son octave, un silence. Il arrive au Drop et tourne en boucle.",
   "fx": [
    {
     "on": "bass",
@@ -280,16 +279,16 @@
    "sound": "Hoover"
   },
   "bass": {
-   "pattern": "R..r..R.R..r..R.",
+   "pattern": "R..r..R-R..r..R.R..r..R-R..r.5R.",
    "octave": 2,
    "sound": "Basse analogique",
    "glide": false
   },
   "lead": {
    "type": "riff",
-   "pattern": "R..R..O/R..R..3.",
+   "pattern": "R---..R---..O/R-R---..R---..3---",
    "arp_rate": 24,
-   "octave": 4,
+   "octave": 3,
    "sound": "pack:retro_techno:stab",
    "glide": true
   },
@@ -437,14 +436,14 @@
    "sound": "pack:acid_techno:stab"
   },
   "bass": {
-   "pattern": "..R...R...R...R.",
+   "pattern": "..R-..R...R-..R.",
    "octave": 1,
    "sound": "Basse sub",
    "glide": false
   },
   "lead": {
    "type": "riff",
-   "pattern": "O..O..O..O..O.5.",
+   "pattern": "....5-......O-......5-....3.O-..",
    "arp_rate": 24,
    "octave": 4,
    "sound": "Lead acide"
@@ -596,22 +595,23 @@
   },
   "chords": {
    "type": "stab",
-   "rhythm": "X-.X-.X-..X-.X-.",
+   "rhythm": "X-----------x---X---------------",
    "voicing": "seventh",
    "octave": 3,
-   "sound": "Machine à cordes"
+   "sound": "Machine à cordes",
+   "voice_lead": true
   },
   "bass": {
-   "pattern": "R..O..R.r..O..R.",
+   "pattern": "R-.O..R.r-.O..R.R-.O..R.r-.5..R.",
    "octave": 1,
    "sound": "Basse ronde",
    "glide": false
   },
   "lead": {
-   "type": "arp",
-   "pattern": "",
+   "type": "riff",
+   "pattern": "R.3.R...5.3.R...R.3.R...5-------",
    "arp_rate": 24,
-   "octave": 5,
+   "octave": 4,
    "sound": "Cloche"
   },
   "acid": {
@@ -661,6 +661,10 @@
     ]
    }
   ],
-  "riser": true
+  "riser": true,
+  "counter": {
+   "sound": "Piano électrique",
+   "rhythm": "..x..x....x...x."
+  }
  }
 ]

@@ -1,5 +1,6 @@
 #include "Sample.h"
 
+#include <algorithm>
 #include <cmath>
 
 #include <samplerate.h>
@@ -32,6 +33,23 @@ Sample* Sample::create(const float* interleaved, int64_t frames, int channels, i
     }
     for (float& v : s->data_) {
         if (!std::isfinite(v)) v = 0.0f;
+    }
+    return s;
+}
+
+Sample* Sample::createCompact(const float* interleaved, int64_t frames, int channels, int sourceRate, int targetRate) {
+    Sample* s = create(interleaved, frames, channels, sourceRate, targetRate);
+    if (!s) return nullptr;
+    // Rounded to the nearest step: a 16-bit recording comes back exactly as it was.
+    s->pcm16_.resize(s->data_.size());
+    for (size_t i = 0; i < s->data_.size(); ++i) {
+        const float v = std::clamp(s->data_[i], -1.0f, 32767.0f / 32768.0f) * 32768.0f;
+        s->pcm16_[i] = static_cast<int16_t>(std::lrint(v));
+    }
+    std::vector<float>().swap(s->data_);
+    if (s->pcm16_.empty()) {
+        delete s;
+        return nullptr;
     }
     return s;
 }

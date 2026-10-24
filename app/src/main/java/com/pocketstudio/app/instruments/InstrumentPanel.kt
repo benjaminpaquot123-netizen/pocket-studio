@@ -74,6 +74,10 @@ class InstrumentUi(
     /** [key]: slider drags with the same key merge into one undo step (null = a step of its own). */
     val editSampled: (String?, (SampledPatch) -> SampledPatch) -> Unit = { _, _ -> },
     val sampledMessage: String? = null,
+    /** Phase 37: « Automatiser » on a Plaits knob (param) by a long press on its name (null: not offered). */
+    val automatePlaits: ((Int) -> Unit)? = null,
+    /** Phase 38: the downloadable multizone instruments and the 808 (null: not offered). */
+    val real: RealInstrumentsUi? = null,
 )
 
 /** Where the synth track's sound comes from: our synth, or one of 128 General MIDI instruments. */
@@ -95,11 +99,17 @@ fun InstrumentPanel(ui: InstrumentUi) {
                 tr("Sample"), Icons.Filled.GraphicEq, Neon.Cyan, selected = ui.current == null && showLibrary == 0 && ui.synthEngine == 2,
                 onClick = { showLibrary = 0; ui.selectEngine(2) }, modifier = Modifier.testTag("source_sampled"),
             )
+            if (ui.real != null) FamilyChip(
+                tr("Instruments réels"), Icons.Filled.Piano, Neon.Cyan,
+                selected = ui.current == null && (showLibrary == 2 || (showLibrary == 0 && ui.synthEngine >= 3)),
+                onClick = { showLibrary = 2 }, modifier = Modifier.testTag("source_real"),
+            )
             FamilyChip(
-                tr("Instruments"), Icons.Filled.Piano, Neon.Cyan, selected = ui.current != null || showLibrary == 1,
+                tr("Instruments"), Icons.Filled.LibraryMusic, Neon.Cyan, selected = ui.current != null || showLibrary == 1,
                 onClick = { showLibrary = 1; ui.open() }, modifier = Modifier.testTag("source_instruments"),
             )
         }
+        if (ui.real != null && ui.current == null && (showLibrary == 2 || (showLibrary == 0 && ui.synthEngine >= 3))) RealInstruments(ui.real)
         if (showLibrary == 0 && ui.current == null && ui.synthEngine == 1) PlaitsPanel(ui)
         if (showLibrary == 0 && ui.current == null && ui.synthEngine == 2) SampledPanel(ui)
         if (showLibrary == 1 || ui.current != null) {

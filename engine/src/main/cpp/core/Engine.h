@@ -40,7 +40,8 @@ enum class CommandType : uint8_t {
     SetSwing,         // value: 0..0.75 of a 16th
     SetMetronome,     // value: 1 = on
     SetPatternSteps,  // a: 16..64
-    SetDrumHit,       // a: lane, b: step | hits in the step << 16 (0/1 plain, 2..4 roll), value: velocity (0 = remove)
+    SetDrumHit,       // a: lane, b: step | hits in the step << 16 (0/1 plain, 2..8 roll) | ramp << 24 (0 each hit 0.85 x the
+                      // one before, as always; 1 rising, 2 falling: from / to half the velocity; 3 even), value: velocity (0 = remove)
     TriggerPad,       // a: lane, value: velocity (live play, sounds immediately)
     SetAcidStep,      // a: step index, b: AcidStep::pack()
     SetAcidLength,    // a: 1..64
@@ -54,11 +55,13 @@ enum class CommandType : uint8_t {
     SetChannelPan,     // a: channel, value: -1..1
     SetChannelMute,    // a: channel, value: 1 = muted
     SetChannelSolo,    // a: channel, value: 1 = solo
-    InstallSample,     // a: pad, sample: owned reference (nullptr = back to the drum sound)
+    InstallSample,     // a: pad, sample: owned reference (nullptr = back to the drum sound); a: Sampler::layerArg (pad | layer + 1 << 8
+                       // | velocity low << 16 | high << 24, 0..127): a layer of a sampled kit (nullptr = that layer removed)
     SetPadParam,       // a: pad, b: Sampler::Param, value in that parameter's unit
-    SetSynthNote,      // a: index, b: NoteTrack::pack(start, length, pitch), value: velocity
+    SetSynthNote,      // a: NoteTrack::packIndex(index, start, length) (the index alone up to 4095 ticks), b: NoteTrack::pack(start,
+                       // length, pitch), value: velocity
     SetSynthNoteCount, // a: number of notes in use
-    SetSynthSteps,     // a: piano-roll pattern length in steps (1..128)
+    SetSynthSteps,     // a: piano-roll pattern length in steps (1..256: 16 bars)
     SetInstrument,     // font: owned instance (nullptr = back to the synth), a: preset index
     InstallStems,      // stems: owned reference (nullptr = no song); a = 1: the preview player
     SetStemParam,      // a: stem, b: StemPlayer::Param, value
@@ -81,7 +84,7 @@ enum class CommandType : uint8_t {
                           // waiting are kept when no scene swap was armed: a take's end)
     SetPerformance,       // a: PerformanceFx::Param, value 0..1 (the Live page's effects and their settings; 6, 7: the
                           // reverb and echo returns, 0.5 = as mixed)
-    SetSynthEngine,       // a: 0 = subtractive synth, 1 = Plaits (a General MIDI instrument still wins)
+    SetSynthEngine,       // a: 0 = subtractive synth, 1 = Plaits, 2 = sampled, 3 = multizone, 4 = the 808 (a General MIDI instrument still wins)
     SetPlaitsParam,       // a: PlaitsSynth::Param, value 0..1
     InstallClip,          // a: live pad, sample: owned reference (nullptr = empty pad)
     SetClipParam,         // a: live pad, b: ClipLauncher::Param, value
@@ -107,7 +110,8 @@ enum class CommandType : uint8_t {
     SetMacro,             // a: mixer channel, b: TrackMacros::Macro (colour, dirt, motion, space; 4 = the strip's
                           // chopper, on above 0.5; 5..7 its bass / mid / high kill; 8, 9 a throw into the reverb /
                           // echo on a rise: Mixer::setMacro), value 0..1
-    InstallTrackSample,   // a: track << 16, sample: owned reference (nullptr = none): the sampled source's sound
+    InstallTrackSample,   // a: track << 16, sample: owned reference (nullptr = none): the sampled source's sound;
+                          // a: track << 16 | zone + 1 (phase 38): zone `zone` of the track's multizone instrument (MultiSampler)
     SetTrackSampleParam,  // a: SampleInstrument::Param | track << 16, value in that parameter's unit
     SetPadStrip,          // a: pad 0..15, value > 0.5: the pad plays through its own mixer strip (its effects)
     SetMaster,            // a: 0 = gain before the limiter (value: linear 0..4), 1 = limiter (value 1 = on),
@@ -143,10 +147,48 @@ enum class CommandType : uint8_t {
     SetAutomationSongFlat,// a: lane, b: first point | count << 16, value 1: the curve holds over those points instead
                           // of sliding toward the next one (the point after is a jump: a take's Drop, a let-go);
                           // 0: slides again. SetAutomationMode clears them (sent first with each curve)
+    // Phase 34 (S3): the drums' micro-timing, rolls, glides and studio voices.
+    SetDrumStepOffset,    // a: pad, b: step, value: milliseconds -50..50 this step's hit (and its roll) plays early (< 0) or
+                          // late. An early hit is scheduled from the step before it (its pattern as known then); on the
+                          // first step after play it lands on the grid. After the step's SetDrumHit, which resets it
+    SetDrumStepRoll,      // a: pad, b: step | span << 8 | ramp << 12 | triplet << 15 | hits << 16: the step's roll: `hits`
+                          // (1..16, at most 8 a step) spread evenly over `span` steps (1..4), ramp 0 = as before (each
+                          // hit 0.85 x the one before), 1 = flat, 2 = up (the first hit at velocity x (1 - value), the
+                          // last at the velocity), 3 = down (the reverse); triplet = 1: a shuffle (every second gap
+                          // longer, 2:1). value: the ramp's amount 0..1. After the step's SetDrumHit, which resets it
+    SetDrumStepGlide,     // a: pad, b: step, value: milliseconds 0..500 the 808 slides to this hit's pitch from the one it
+                          // plays (a legato hit; 0: a new note). After the step's SetDrumHit, which resets it
+    SetPadVoice,          // a: pad, value: DrumKit::Kind (0 = the kit's own voice, 1 = the 808 bass, 2 = the studio kick,
+                          // 3 = the hard kick, 4 = the rumble); the voice's settings go back to its defaults
+    SetPadVoiceParam,     // a: pad, b: DrumKit::VoiceParam, value in that parameter's unit (after SetPadVoice)
     // Numbered apart (phase 33), so that commands appended above in the meantime never take its number.
-    SetKitVersion = 100,  // value: the built-in kit's levels, 1 (projects saved before) or 2 (kit v2: DrumKit::setVersion)
+    SetKitVersion = 100,  // value: the built-in kit's levels, 1 (projects saved before), 2 (kit v2) or 3 (kit v3: DrumKit::setVersion)
+    SetSoundVersion = 101,  // value: 1 (projects saved before S4: every instrument track mono, as always), 2 (S4: General MIDI
+                            // instruments and stereo samples play in stereo on the instrument tracks)
+    // Phase 34 (S5): the real sidechain and the « Musique » bus (Mixer.h).
+    SetSidechain = 102,     // a = 0: the key, value = a mixer channel (a pad's own strip: Mixer::kFirstPad + pad), < 0 none;
+                            // a = 1, 2, 3: the Musique bus's duck: depth, low depth (under 150 Hz), release (0..1: 50..600 ms);
+                            // a = 4: channel b in the Musique bus (value 1) or not; a = 5: send return b (0 reverb, 1 echo) in it
+    SetMixVersion = 103,    // value: 1 (projects saved before S5: the loudness target aims at the whole song, the chain may take
+                            // 6 LU), 2 (S5: it aims at the loudest part, the Drop, and takes 3 LU at most: MasterChain::Mode)
+    // Phase 37, numbered apart (other branches append from 102): polyrhythm and chance on the drums.
+    SetDrumLaneSteps = 120,   // a: pad, value: steps its lane loops over on its own (1..64; 0 = the pattern's length,
+                              // as always): a polyrhythm. Follows SetStaging (a scene's own); counted from the drums' start
+    SetDrumStepChance = 121,  // a: pad, b: step, value 0..1: the chance its hit (and its roll) plays on each pass (1 = always).
+                              // Drawn from the seed (SetDrumSeed), the pad and the step's place in the song (outside the
+                              // song: in the drums' loop since they started): the same passes every time, an export
+                              // included. After the step's SetDrumHit, which resets it to 1
+    SetDrumSeed = 122,        // value: the chances' seed (a whole number 0..2^24): another draw of the same chances
+    // Phase 38, numbered apart (130 on: 102 and 103 are the S5 commands above): multizone instruments and
+    // the 808 on instrument tracks.
+    SetTrackZone = 130,     // a: MultiSampler::ZoneParam | track << 16, b: zone (0..kZones-1), value in that parameter's
+                            // unit; b = -1: a = MultiSampler::Param | track << 16, the instrument's own settings
+    SetTrack808Param = 131, // a: Track808::Param (DrumKit::VoiceParam) | track << 16, value in that parameter's unit
 };
-static_assert(static_cast<int>(CommandType::SetAutomationSongFlat) < 100, "the commands in order must stay under SetKitVersion");
+static_assert(static_cast<int>(CommandType::SetPadVoiceParam) < 100, "the commands in order must stay under SetKitVersion");
+static_assert(static_cast<int>(CommandType::SetDrumStepOffset) == 80, "NativeEngine.kt numbers the phase 34 commands from 80");
+static_assert(static_cast<int>(CommandType::SetDrumLaneSteps) == 120, "NativeEngine.kt numbers the phase 37 commands from 120");
+static_assert(static_cast<int>(CommandType::SetTrackZone) == 130, "NativeEngine.kt numbers the phase 38 commands from 130");
 
 // The live grid's slots: one per track, each playing its own scene's part from its own start.
 enum Slot : int {
@@ -155,8 +197,14 @@ enum Slot : int {
     kSlotInst = 2,    // + instrument track 0..kTracks-1
     kSlotAudio = 10,  // + audio track 0..3
     kSlotRemix = 14,
-    kSlots = 15,
+    kSlotAudio2 = 15,  // + audio track 4..7 - 4 (after the remix: the numbers of saved takes stay)
+    kSlots = 19,
 };
+// The live slot of audio track `track` (0..AudioTracks::kTracks-1), and the reverse (-1: not one).
+constexpr int audioSlot(int track) { return track < 4 ? kSlotAudio + track : kSlotAudio2 + track - 4; }
+constexpr int audioOfSlot(int k) {
+    return k >= kSlotAudio && k < kSlotAudio + 4 ? k - kSlotAudio : k >= kSlotAudio2 && k < kSlotAudio2 + AudioTracks::kTracks - 4 ? k - kSlotAudio2 + 4 : -1;
+}
 constexpr int32_t kAllSlots = (1 << kSlots) - 1;
 
 // A launch that happened (audio thread -> UI): the slot, its new tag (-1: stopped) and the
@@ -172,20 +220,29 @@ struct LaunchEvent {
 // InstallTrackSample, SetTrackSampleParam) name their track in bits 16..23 of
 // `a` (0 = the first track, as before tracks existed); the low 16 bits keep their old meaning.
 constexpr int kTracks = 8;
+// The multizone instruments' voices together (8 tracks of 32 stereo voices would take a phone's
+// core): the tracks playing one share them, 32 each at most, 16 each with all eight.
+constexpr int kMultiVoices = 128;
 inline int trackOf(int32_t a) { return std::clamp((a >> 16) & 0xFF, 0, kTracks - 1); }
 inline int32_t trackArg(int32_t a) { return a & 0xFFFF; }
 // The mixer channel of each instrument track: track 0 on channel 2, the others after the master's
 // index (Mixer::kMaster = 4).
 inline int trackChannel(int track) { return track == 0 ? 2 : 4 + track; }
-// Audio tracks come after the instrument tracks.
-inline int audioChannel(int track) { return 12 + track; }
+// Audio tracks come after the instrument tracks (1..4) and after the pads' strips (5..8).
+constexpr int audioChannel(int track) { return track < 4 ? 12 + track : Mixer::kFirstAudio2 + track - 4; }
+// The audio track on mixer channel `ch` (audioChannel's inverse), -1: none.
+constexpr int audioOfChannel(int ch) {
+    return ch >= 12 && ch < 16 ? ch - 12 : ch >= Mixer::kFirstAudio2 && ch < Mixer::kFirstAudio2 + AudioTracks::kTracks - 4 ? ch - Mixer::kFirstAudio2 + 4 : -1;
+}
 
 // Step automation of mixer settings, played on the audio thread at each sequencer step.
 struct Automation {
     // Acid: a knob of the 303 (param: AcidTrack::Param), taking effect on the step's frame. Macro: a strip's
     // macro (param 0..3), its chopper (4), its kills (5..7) or throws (8, 9) (Mixer::setMacro). Live: the
     // master's PerformanceFx (PerformanceFx::Param), except 6 and 7: the reverb and echo returns (0.5 = as mixed).
-    enum Kind { Volume = 0, Pan = 1, Send = 2, InsertParam = 3, BusParam = 4, Acid = 5, Macro = 6, Live = 7 };
+    // Synth (S4): a knob of an instrument track's synth (param: Synth::Param) on the step's frame; Plaits:
+    // one of its Plaits' (PlaitsSynth::Param). For both, ch is the track's mixer channel (trackChannel).
+    enum Kind { Volume = 0, Pan = 1, Send = 2, InsertParam = 3, BusParam = 4, Acid = 5, Macro = 6, Live = 7, Synth = 8, Plaits = 9 };
     static constexpr int kLanes = 16;
     static constexpr int kSteps = 64;
     static constexpr int kSongBars = 256;
@@ -193,7 +250,11 @@ struct Automation {
     enum Mode { Loop = 0, PerScene = 1, Song = 2 };
     static constexpr int kPerBeat = 16;  // SetAutomationMode flags
     static constexpr int kHeld = 32;
-    static int32_t pack(int kind, int ch, int slot, int param) { return (kind << 16) | (ch << 12) | (slot << 8) | param; }
+    // The channel's low 4 bits at 12, its bits 4..5 at 24 (channels past 15: the audio tracks 5..8;
+    // 0 there for every target saved before them).
+    static int32_t pack(int kind, int ch, int slot, int param) { return ((ch >> 4) << 24) | (kind << 16) | ((ch & 0xF) << 12) | (slot << 8) | param; }
+    static int kindOf(int32_t target) { return (target >> 16) & 0xFF; }
+    static int channelOf(int32_t target) { return ((target >> 12) & 0xF) | (((target >> 24) & 0x3) << 4); }
     struct Lane {
         int32_t target = -1;
         int mode = Loop;
@@ -297,6 +358,7 @@ public:
         for (auto& t : tracks_) {
             t.instrument.collectGarbage();
             t.sampled.collectGarbage();
+            t.multi.collectGarbage();
         }
         stems_.collectGarbage();
         preview_.collectGarbage();
@@ -363,11 +425,31 @@ public:
     uint32_t laneTriggerCount(int lane) const { return laneTriggers_[lane].load(std::memory_order_relaxed); }
     // Number of metronome clicks triggered since startup (tests).
     Mixer& mixer() { return mixer_; }
+    const DrumKit& drums() const { return drums_; }  // tests
     int synthActiveVoices(int track = 0) const { return tracks_[static_cast<size_t>(track)].synth.activeVoices(); }
     int sampledActiveVoices(int track) const { return tracks_[static_cast<size_t>(track)].sampled.activeVoices(); }  // tests
+    int multiActiveVoices(int track) const { return tracks_[static_cast<size_t>(track)].multi.activeVoices(); }  // tests
     int notesPending(int track = 0) const { return tracks_[static_cast<size_t>(track)].notes.pendingCount(); }  // tests
     uint32_t acidNotesPlayed() const { return acid_.notesPlayed(); }
     uint64_t metronomeClicks() const { return metronomeClicks_.load(std::memory_order_relaxed); }
+    // Phase 37: whether a hit of chance `skip` (100 - %) plays on pad `lane` at place `key` with `seed`.
+    // The app draws the same (DrumChance.kt, the MIDI export), so keep both in step.
+    static bool chancePlays(uint32_t seed, int lane, int key, int skip) {
+        if (skip <= 0) return true;
+        if (skip >= 100) return false;
+        const uint32_t h = chanceHash(seed ^ chanceHash(static_cast<uint32_t>(key) * 16u + static_cast<uint32_t>(lane)));
+        return static_cast<int>(h % 100u) >= skip;
+    }
+    // lowbias32 (Chris Wellons, public domain): a well-mixed 32-bit integer hash.
+    static uint32_t chanceHash(uint32_t x) {
+        x ^= x >> 16;
+        x *= 0x7feb352du;
+        x ^= x >> 15;
+        x *= 0x846ca68bu;
+        x ^= x >> 16;
+        return x;
+    }
+    int drumLaneSteps(int lane) const { return laneSteps_[lane]; }  // tests
 
 private:
     // Rendered in slices of at most this: a voice takes one new hit per slice, and two hits of a
@@ -418,21 +500,42 @@ private:
         at.store((i + 1) % kScopeFrames, std::memory_order_release);
     }
 
+    // A step's micro-timing, roll shape and glide (SetDrumStepOffset, SetDrumStepRoll, SetDrumStepGlide).
+    struct DrumStepExtra {
+        int16_t offset = 0;   // tenths of a millisecond, -500..500
+        uint8_t span = 1;     // steps the roll covers, 1..4
+        uint8_t ramp = 0;     // 0 as before (0.85^k), 1 flat, 2 up, 3 down
+        uint8_t amount = 0;   // the ramp's amount, 0..100
+        uint8_t triplet = 0;  // 1: shuffled sub-hits
+        uint8_t glide = 0;    // milliseconds / 2, 0..250 (0..500 ms)
+    };
+    static constexpr int kMaxRollHits = 16, kMaxRollHitsPerStep = 8, kMaxRollSpan = 4;
+    // A rising or falling roll sent with its hit (SetDrumHit): the first (last) hit at half the velocity.
+    static constexpr uint8_t kHitRampAmount = 50;
     // The waiting scene (filled while staging_), copied over the playing patterns at the swap.
     struct StagedScene {
         float drums[kLanes][kMaxSteps] = {};
         uint8_t repeats[kLanes][kMaxSteps] = {};
         int8_t pan[kLanes][kMaxSteps] = {};    // -100..100 = -1..1
         int8_t pitch[kLanes][kMaxSteps] = {};  // semitones
+        DrumStepExtra extra[kLanes][kMaxSteps] = {};
+        uint8_t skip[kLanes][kMaxSteps] = {};  // 100 - the hit's chance in %, 0 = always plays
+        uint8_t laneSteps[kLanes] = {};        // 0: the pattern's length
         int drumSteps = 16;
-        std::array<bool, AudioTracks::kTracks> audioOn{true, true, true, true};
-        std::array<int, AudioTracks::kTracks> audioLoop{-1, -1, -1, -1};  // -1: unchanged
+        std::array<bool, AudioTracks::kTracks> audioOn = filled<bool, AudioTracks::kTracks>(true);
+        std::array<int, AudioTracks::kTracks> audioLoop = filled<int, AudioTracks::kTracks>(-1);  // -1: unchanged
         std::array<AcidStep, AcidTrack::kMaxSteps> acid{};
         int acidLength = 16;
         // Per insert slot: 1 plays, 0 passed by in the waiting scene, -1 unchanged.
         std::array<int8_t, Mixer::kChannels * Mixer::kInserts> insertOn = unchangedInserts();
         bool remixOn = true;  // SetRemixOn while staging: false when the waiting song part mutes the remix
     };
+    template <typename T, size_t N>
+    static std::array<T, N> filled(T v) {
+        std::array<T, N> a{};
+        a.fill(v);
+        return a;
+    }
     static std::array<int8_t, Mixer::kChannels * Mixer::kInserts> unchangedInserts() {
         std::array<int8_t, Mixer::kChannels * Mixer::kInserts> a{};
         a.fill(-1);
@@ -491,30 +594,78 @@ private:
     std::array<float, kMaxBlock> drumsRBuf_{};
     std::array<float, kMaxBlock> acidBuf_{};
     std::array<std::array<float, kMaxBlock>, kTracks> trackBuf_{};
+    std::array<std::array<float, kMaxBlock>, kTracks> trackBufR_{};  // a stereo track's right channel
+    // The instrument track of mixer channel `ch` (trackChannel's inverse), -1: none.
+    static int trackOfChannel(int ch) { return ch == 2 ? 0 : (ch >= 5 && ch < 4 + kTracks ? ch - 4 : -1); }
     bool metronomeOn_ = false;
     int patternSteps_ = 16;
     float pattern_[kLanes][kMaxSteps] = {};
     uint8_t repeats_[kLanes][kMaxSteps] = {};  // 0 or 1 = one hit
     int8_t stepPan_[kLanes][kMaxSteps] = {};    // -100..100 = -1..1, added to the pad's pan
-    int8_t stepPitch_[kLanes][kMaxSteps] = {};  // semitones (sampled sounds)
+    int8_t stepPitch_[kLanes][kMaxSteps] = {};  // semitones (sampled sounds, the 808)
+    DrumStepExtra stepExtra_[kLanes][kMaxSteps] = {};
+    // Phase 37: each hit's chance (stored as 100 - %, so the zeroed arrays mean « always ») and each
+    // lane's own loop (0: the pattern's), with the draw's seed.
+    uint8_t skip_[kLanes][kMaxSteps] = {};
+    uint8_t laneSteps_[kLanes] = {};
+    uint32_t chanceSeed_ = 0;
+    // The pattern step lane `lane` plays at drums step `local` (its own loop, or the pattern's of `steps`).
+    static int laneStepOf(const uint8_t* laneSteps, int lane, int local, int steps) {
+        const int n = laneSteps[lane] > 0 ? laneSteps[lane] : steps;
+        return ((local % n) + n) % n;
+    }
+    // Where the draws of the step after `step` are taken from: its place in the song (or in the drums' loop).
+    int chanceKeyAfter(int step, bool swapNext, int nextDrumsLocal) const;
     std::array<float, kLanes> padPan_{};
     // Pads with their own strip (Mixer::kFirstPad + pad) and their buffers (on the heap: 128 kB).
     std::array<bool, kLanes> padStrip_{};
+    int keyPad_ = -1;  // S5: the drum pad the sidechain key listens to (-1: none, or not a pad)
     using PadBuffers = std::array<std::array<float, kMaxBlock>, kLanes>;
     std::unique_ptr<PadBuffers> padL_ = std::make_unique<PadBuffers>();
     std::unique_ptr<PadBuffers> padR_ = std::make_unique<PadBuffers>();
-    // Extra hits of rolls still to come: frames from the start of the next block.
+    // Hits still to come (a step's hit with its offset, a roll's hits, an early hit of the next
+    // step): frames from the start of the current block (negative: before it, played at once).
     struct PendingHit {
         int lane;
         float velocity;
         int64_t at;
         float pan;
         float pitch;
+        int glide;  // frames
     };
-    std::array<PendingHit, 64> rolls_{};
+    // Every lane on a 16-hit roll over 4 steps, overlapping, and the next step's early hits.
+    std::array<PendingHit, 512> rolls_{};
     int rollCount_ = 0;
-    void hitLane(int lane, float velocity, int offset, float pan = 0.0f, float pitch = 0.0f);
+    void hitLane(int lane, float velocity, int offset, float pan = 0.0f, float pitch = 0.0f, int glideFrames = 0);
+    // A pad's voice takes one hit per render; a second hit of the same pad in the same slice (a late
+    // hit followed by the next step's early one, a roll over a hit: review m4) waits in deferred_
+    // and the drums are rendered in pieces, each hit on its own frame. `pan` includes the pad's.
+    struct LaneHit {
+        int lane = 0;
+        int at = -1;  // frame in the slice, -1: none
+        float velocity = 0.0f, pan = 0.0f, pitch = 0.0f;
+        int glide = 0;
+    };
+    void triggerPad(int lane, float velocity, int offset, float pan, float pitch, int glideFrames);
+    void startHit(const LaneHit& h, int offset);
+    std::array<LaneHit, kLanes> laneHit_{};  // the hit each pad's voice holds for this slice
+    static constexpr int kDeferred = 64;
+    std::array<LaneHit, kDeferred> deferred_{};
+    int deferredCount_ = 0;
+    // Drums and samples of the slice, in pieces split at the deferred hits.
+    void renderPads(float* const* lefts, float* const* rights, int numFrames);
     void playRolls(int numFrames);
+    // Queues the hits of `lane` on pattern step `patternStep` (the hit with its offset, then its
+    // roll), the step's grid frame at `base` frames from the block's start, `step` the transport step
+    // (its swing); `fromStaged`: the waiting scene's pattern (a swap on that step).
+    // `key`: the step's place for its chance (SetDrumStepChance).
+    void queueStepHits(int lane, int patternStep, int64_t base, int step, bool fromStaged, int key);
+    // The grid frames from transport step `step` to the next one (the swing's share included).
+    double stepFrames(int step) const;
+    // Early hits (a negative offset) of the next transport step are queued from this one: that
+    // step then skips those lanes (the mask), -1: none.
+    int lookaheadStep_ = -1;
+    uint32_t lookaheadLanes_ = 0;
     std::array<float, kMaxBlock> mix_{};
     std::atomic<int> currentStep_{-1};
     std::atomic<int> absoluteStep_{-1};

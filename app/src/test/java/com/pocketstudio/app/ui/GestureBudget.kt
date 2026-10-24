@@ -61,6 +61,11 @@ class GestureBudget(private val compose: ComposeTestRule, val action: String) {
         return node
     }
 
+    /** A gesture made some other way (a touch on a canvas at a point, a slide), named [what]. */
+    fun count(what: String) {
+        path += what
+    }
+
     /** The path so far: "top_tempo › tempo_preset_140". */
     fun describe(): String = if (path.isEmpty()) "nothing" else path.joinToString(" › ")
 

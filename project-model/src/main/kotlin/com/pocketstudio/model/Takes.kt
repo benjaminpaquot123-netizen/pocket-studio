@@ -72,8 +72,22 @@ fun Project.withTake(take: PendingTake): Project {
         bpm = take.bpm,
         scene = if (take.song) null else take.scene,
     )
-    // The take it replaces stays one touch away (« Prise précédente »).
-    return p.withAudioTrack(track.copy(clip = clip, previous = previous ?: track.previous))
+    // The take it replaces stays one touch away (« Prise précédente »), the older ones in the take picker.
+    val kept = if (previous != null) listOf(previous) + track.otherTakes else track.otherTakes
+    // A take on a frozen track's audio is a take: no longer the frozen sound (the notes play again).
+    return p.withAudioTrack(track.copy(clip = clip, previous = kept.firstOrNull(), older = kept.drop(1), frozenFrom = null, frozenSignature = 0))
+}
+
+/**
+ * The take [take] would push out of its track's takes ([AudioTrack.MAX_TAKES] are kept, the one
+ * playing included): the oldest, or null when there is room (or the take would not go on).
+ */
+fun Project.takeForgets(take: PendingTake): AudioClip? {
+    val track = audioTracks.firstOrNull { it.id == take.track } ?: return null
+    val previous = track.clip ?: return null
+    if (previous.file == take.file || previous.file != take.replaces) return null
+    val kept = listOf(previous) + track.otherTakes
+    return kept.getOrNull(AudioTrack.MAX_TAKES - 1)
 }
 
 /** The name of an audio track made for a voice: « Voix », then « Voix 2 »… (saved in French). */

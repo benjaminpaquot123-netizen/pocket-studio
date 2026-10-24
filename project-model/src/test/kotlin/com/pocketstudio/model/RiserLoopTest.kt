@@ -34,10 +34,12 @@ class RiserLoopTest {
             }
             assertEquals(s.id, 0f, p.mixer.channels[ch].inserts[0].params[0], 0f)
             // The song itself still rises and hits: open on each Drop's first bar.
-            val curve = lane.songCurve(p.songBars)
+            // A point per beat (the beat of silence before each Drop).
+            val unit = if (lane.songPerBeat) p.beatsPerBar else 1
+            val curve = lane.songCurve(p.songBars * unit)
             val drops = StarterWizard.songSections(p).filter { it.scene == 2 }
             assertTrue(s.id, drops.isNotEmpty())
-            drops.forEach { assertTrue("${s.id} ${it.start}", curve[it.start] > 0.5f) }
+            drops.forEach { assertTrue("${s.id} ${it.start}", curve[it.start * unit] > 0.5f) }
         }
     }
 

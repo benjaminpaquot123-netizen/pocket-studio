@@ -1,6 +1,5 @@
 package com.pocketstudio.model
 
-import kotlin.math.roundToInt
 import kotlin.random.Random
 
 /**
@@ -31,7 +30,7 @@ object NoteEdits {
 
     /** Earlier or later by [ticks], inside the loop. */
     fun shift(clip: NoteClip, selection: Set<Note>, ticks: Int): Result =
-        replace(clip, selection) { n -> n.copy(start = (n.start + ticks).coerceIn(0, clip.ticks - 1)) }
+        replace(clip, selection) { n -> n.copy(start = (n.start + ticks).coerceIn(0, clip.ticks - 1), played = null) }
 
     fun setVelocity(clip: NoteClip, selection: Set<Note>, velocity: Float): Result =
         replace(clip, selection) { it.copy(velocity = velocity.coerceIn(0.05f, 1f)) }
@@ -39,12 +38,16 @@ object NoteEdits {
     fun setLength(clip: NoteClip, selection: Set<Note>, ticks: Int): Result =
         replace(clip, selection) { it.copy(length = ticks.coerceIn(1, NoteClip.MAX_TICKS)) }
 
-    /** Starts onto the [grid] (ticks) by [strength] 0..1. */
+    /**
+     * « Remettre en rythme »: starts onto the [grid] (ticks) by [strength] 0..1, from where they
+     * were played ([Note.played] keeps it: [asPlayed] undoes it, another strength does not pile up).
+     */
     fun quantize(clip: NoteClip, selection: Set<Note>, grid: Int, strength: Float = 1f): Result =
-        replace(clip, selection) { n ->
-            val target = (n.start.toFloat() / grid).roundToInt() * grid
-            n.copy(start = clip.wrap((n.start + (target - n.start) * strength.coerceIn(0f, 1f)).roundToInt()))
-        }
+        replace(clip, selection) { n -> n.inTime(grid.coerceAtLeast(1), strength.coerceIn(0f, 1f), clip.ticks) }
+
+    /** « Comme joué »: the selection back where it was played. */
+    fun asPlayed(clip: NoteClip, selection: Set<Note>): Result =
+        replace(clip, selection) { n -> if (n.played != null) n.copy(start = n.played, played = null) else n }
 
     /** Each note lasts until the next note starts (chords: notes starting together end together). */
     fun legato(clip: NoteClip, selection: Set<Note>): Result {
@@ -60,6 +63,7 @@ object NoteEdits {
         replace(clip, selection) { n ->
             n.copy(
                 start = (n.start + random.nextInt(-ticks, ticks + 1)).coerceIn(0, clip.ticks - 1),
+                played = null,
                 velocity = (n.velocity + (random.nextFloat() * 2 - 1) * velocity).coerceIn(0.05f, 1f),
             )
         }
@@ -70,7 +74,9 @@ object NoteEdits {
         val first = selection.minOf { it.start }
         val end = selection.maxOf { it.end }
         val span = roundUp(end - first, NoteClip.TICKS_PER_STEP)
-        val copies = selection.map { it.copy(start = it.start + span) }.filter { it.start < clip.ticks }
+        // Never more than the clip can take: past it the clean-up would drop other notes, not these.
+        val copies = selection.map { it.copy(start = it.start + span, played = null) }.filter { it.start < clip.ticks }
+            .sortedWith(compareBy({ it.start }, { it.pitch })).take(clip.room)
         val next = clip.copy(notes = clip.notes + copies).sanitized()
         val kept = copies.filter { it in next.notes }.toSet()
         return Result(next, kept, selection.size - kept.size)
@@ -79,7 +85,7 @@ object NoteEdits {
     /** The selection as a clipboard: notes relative to the first start. */
     fun copy(selection: Set<Note>): List<Note> {
         val first = selection.minOfOrNull { it.start } ?: return emptyList()
-        return selection.map { it.copy(start = it.start - first) }.sortedWith(compareBy({ it.start }, { it.pitch }))
+        return selection.map { it.copy(start = it.start - first, played = null) }.sortedWith(compareBy({ it.start }, { it.pitch }))
     }
 
     /**
@@ -87,7 +93,9 @@ object NoteEdits {
      * loop's end is not pasted: [Result.dropped] counts it (the screen asks for a longer loop).
      */
     fun paste(clip: NoteClip, clipboard: List<Note>, at: Int): Result {
+        // Never more than the clip can take: past it the clean-up would drop other notes, not these.
         val pasted = clipboard.map { it.copy(start = at.coerceAtLeast(0) + it.start) }.filter { it.start < clip.ticks }
+            .sortedWith(compareBy({ it.start }, { it.pitch })).take(clip.room)
         if (pasted.isEmpty()) return Result(clip, emptySet(), clipboard.size)
         val next = clip.copy(notes = clip.notes + pasted).sanitized()
         val kept = pasted.filter { it in next.notes }.toSet()
@@ -95,6 +103,39 @@ object NoteEdits {
     }
 
     fun delete(clip: NoteClip, selection: Set<Note>): Result = Result(clip.copy(notes = clip.notes - selection), emptySet())
+
+    /**
+     * Phase 37: [selection] as a [NoteClipboard] shared by every track and part: each note's place
+     * from the start of the first bar it touches ([barTicks] long), so a paste on a bar keeps where
+     * the notes fall in it.
+     */
+    fun toClipboard(selection: Set<Note>, barTicks: Int, from: String = ""): NoteClipboard? {
+        if (selection.isEmpty() || barTicks <= 0) return null
+        val firstBar = selection.minOf { it.start } / barTicks
+        val origin = firstBar * barTicks
+        val end = selection.maxOf { it.end }
+        val notes = selection.map { it.copy(start = it.start - origin, played = null) }.sortedWith(compareBy({ it.start }, { it.pitch }))
+        return NoteClipboard(notes, ((end - origin + barTicks - 1) / barTicks).coerceAtLeast(1), firstBar, from)
+    }
+
+    /** The notes starting in bar [bar] ([barTicks] long) of [clip]. */
+    fun inBar(clip: NoteClip, bar: Int, barTicks: Int): Set<Note> =
+        clip.notes.filter { it.start / barTicks.coerceAtLeast(1) == bar }.toSet()
+
+    /**
+     * Phase 37: [board] pasted on bar [bar] of [clip] ([barTicks] long), the notes where they were
+     * in their bars; the loop grows (whole bars, up to its longest) when they reach past its end.
+     * The pasted notes become the selection; [Result.dropped] counts those that still did not fit.
+     */
+    fun pasteOnBar(clip: NoteClip, board: NoteClipboard, bar: Int, barTicks: Int): Result {
+        val at = bar.coerceAtLeast(0) * barTicks
+        val needed = at + board.bars * barTicks
+        val grown = if (needed > clip.ticks) {
+            val steps = ((needed / NoteClip.TICKS_PER_STEP + 15) / 16 * 16).coerceAtMost(NoteClip.MAX_STEPS)
+            clip.withSteps(maxOf(clip.steps, steps))
+        } else clip
+        return paste(grown, board.notes, at)
+    }
 
     /** Notes whose start is in [fromTick, toTick) and pitch in [low, high]: a rectangle drawn on the grid. */
     fun inBox(clip: NoteClip, fromTick: Int, toTick: Int, low: Int, high: Int): Set<Note> =
@@ -141,3 +182,10 @@ object NoteEdits {
 
     private fun roundUp(v: Int, step: Int) = (v + step - 1) / step * step
 }
+
+/**
+ * Phase 37: notes copied in a piano roll, kept by the app (not the screen) so they can be pasted in
+ * another track or part: their places from the start of the bar they came from ([fromBar]), the
+ * [bars] they span, and where they came from ([from], said on the paste button).
+ */
+data class NoteClipboard(val notes: List<Note>, val bars: Int = 1, val fromBar: Int = 0, val from: String = "")

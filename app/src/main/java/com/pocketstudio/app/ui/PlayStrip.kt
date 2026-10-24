@@ -2,9 +2,12 @@ package com.pocketstudio.app.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.shape.CircleShape
+import com.pocketstudio.app.learn.spot
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,7 +20,8 @@ import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -42,6 +46,7 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -112,6 +117,8 @@ class PlayStripUi(
     val parts: List<String> = emptyList(),
     /** The tracks soloed, when the strip says it itself (landscape: no room for [SoloBanner] under it). */
     val soloed: List<String> = emptyList(),
+    /** Phase 36: the « ? » that labels the screen, lit while the labels show (null: no « ? » here). */
+    val helpOn: Boolean? = null,
 )
 
 class PlayStripActions(
@@ -122,6 +129,8 @@ class PlayStripActions(
     val playFrom: (Int) -> Unit = {},
     /** The « Solo » chip: every solo off. */
     val clearSolos: () -> Unit = {},
+    /** « ? »: the screen's labels shown, or hidden again. */
+    val toggleHelp: () -> Unit = {},
 )
 
 /**
@@ -131,30 +140,54 @@ class PlayStripActions(
  * instead of playing the song. Every control is touchable over the strip's whole height (48 dp).
  */
 @Composable
-fun PlayStrip(ui: PlayStripUi, actions: PlayStripActions) {
+fun PlayStrip(ui: PlayStripUi, actions: PlayStripActions) = BoxWithConstraints(
+    Modifier.fillMaxWidth()
+        .background(lerp(Neon.Background, Color.Black, 0.1f))
+        .drawBehind { drawLine(Color.White.copy(alpha = 0.07f), Offset(0f, size.height - 1f), Offset(size.width, size.height - 1f), 1f) }
+        .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)),
+) {
+    // Taller with a big text size (the position is two lines), never shorter than STRIP_HEIGHT.
+    val height = STRIP_HEIGHT * maxOf(1f, LocalDensity.current.fontScale)
+    // A narrow strip (a small phone, a big text size): the chips keep their icon alone, so the
+    // position keeps its words (never « … / me »). The Solo chip gives way first.
+    // The « ? » (phase 36) takes a chip's room too.
+    val chips = (if (ui.soloed.isNotEmpty()) 1 else 0) + (if (ui.hasSong) 1 else 0) + (if (ui.helpOn != null) 1 else 0)
+    val soloIconOnly = ui.soloed.isNotEmpty() && maxWidth < COMPACT_BELOW
+    val loopIconOnly = ui.hasSong && (maxWidth < (if (chips >= 2) COMPACT_BELOW else 300.dp))
     Row(
-        Modifier.fillMaxWidth()
-            .background(lerp(Neon.Background, Color.Black, 0.1f))
-            .drawBehind { drawLine(Color.White.copy(alpha = 0.07f), Offset(0f, size.height - 1f), Offset(size.width, size.height - 1f), 1f) }
-            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
-            .heightIn(min = STRIP_HEIGHT)
-            .padding(horizontal = 6.dp)
-            .testTag("play_strip"),
+        Modifier.fillMaxWidth().height(height).padding(horizontal = 6.dp).testTag("play_strip"),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         TempoButton(ui.tempoBpm, actions.openTempo)
         PositionLabel(ui, actions, Modifier.weight(1f))
-        if (ui.soloed.isNotEmpty()) SoloChip(ui.soloed, actions.clearSolos)
-        if (ui.hasSong) LoopPartChip(ui.loopPart, actions.setLoopPart)
+        if (ui.soloed.isNotEmpty()) SoloChip(ui.soloed, actions.clearSolos, iconOnly = soloIconOnly)
+        if (ui.hasSong) LoopPartChip(ui.loopPart, actions.setLoopPart, iconOnly = loopIconOnly)
+        ui.helpOn?.let { on -> HelpLabelsButton(on, actions.toggleHelp) }
     }
 }
 
-/** The strip's height (more with a big text size): 48 dp, the least touch target of each of its controls, both ways (DESIGN.md, rule 4). */
-val STRIP_HEIGHT = 48.dp
+/**
+ * The strip's height: 40 dp (the top bar, this strip and the « Prochaine étape » line cost 120 dp
+ * together on a phone). Each control is still touchable over [TOUCH_HEIGHT], both ways (DESIGN.md,
+ * rule 4): its touch target overflows the strip by 4 dp above and below, into the bars' margins.
+ */
+val STRIP_HEIGHT = 40.dp
+
+/** The least touch target of each control of the strip. */
+val TOUCH_HEIGHT = 48.dp
+
+/** Under this width, the strip's chips show their icon alone. */
+private val COMPACT_BELOW = 400.dp
 
 /** The height of a chip's drawn pill, inside its 48 dp touch target. */
 private val CHIP_HEIGHT = 32.dp
+
+/** The least width of the position: its part's name and « mes. 9/60 » stay readable whatever the chips. */
+private val POSITION_MIN = 96.dp
+
+/** A control of the strip: 48 dp of touch target both ways, centred on the strip's height. */
+private fun Modifier.control(): Modifier = widthIn(min = TOUCH_HEIGHT).requiredHeight(TOUCH_HEIGHT)
 
 /** The tempo in a small dark window, like a hardware display; a touch opens the tempo sheet. */
 @Composable
@@ -163,9 +196,10 @@ private fun TempoButton(bpm: Double, open: () -> Unit) {
     val said = tr("Tempo : %d BPM", Math.round(bpm).toInt())
     // Touched over the strip's whole height; the window drawn smaller inside.
     Box(
-        Modifier.sizeIn(minWidth = STRIP_HEIGHT, minHeight = STRIP_HEIGHT).clip(shape)
+        Modifier.control().clip(shape)
             .clickable(role = Role.Button, onClickLabel = tr("Changer le tempo"), onClick = open)
             .semantics(mergeDescendants = true) { contentDescription = said }
+            .spot("top_tempo", tr("Tempo"))
             .testTag("top_tempo"),
         contentAlignment = Alignment.Center,
     ) {
@@ -197,9 +231,10 @@ private fun PositionLabel(ui: PlayStripUi, actions: PlayStripActions, modifier: 
             }
             // The part's name over the bar: both stay readable on a narrow phone or a big text size.
             Row(
-                Modifier.sizeIn(minWidth = STRIP_HEIGHT, minHeight = STRIP_HEIGHT).clip(RoundedCornerShape(8.dp))
+                Modifier.control().widthIn(min = POSITION_MIN).clip(RoundedCornerShape(8.dp))
                     .clickable(enabled = pickable, role = Role.Button, onClickLabel = tr("Jouer depuis une partie")) { open = true }
                     .padding(horizontal = 6.dp, vertical = 2.dp)
+                    .spot("top_position", tr("Jouer d'une partie"))
                     .testTag("top_position"),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -245,18 +280,19 @@ private fun PositionLabel(ui: PlayStripUi, actions: PlayStripActions, modifier: 
 
 /** « ⟳ Partie »: lit in the accent while on (▶ then loops the part being edited). */
 @Composable
-private fun LoopPartChip(on: Boolean, set: (Boolean) -> Unit) {
+private fun LoopPartChip(on: Boolean, set: (Boolean) -> Unit, iconOnly: Boolean = false) {
     val shape = RoundedCornerShape(16.dp)
     val state = if (on) tr("activé") else tr("désactivé")
     val content = if (on) Neon.OnAccent else Neon.TextSecondary
     // A plain Row, not a Material component: its touch target is made 48 dp here.
     Box(
-        Modifier.sizeIn(minWidth = STRIP_HEIGHT, minHeight = STRIP_HEIGHT).clip(shape)
+        Modifier.control().clip(shape)
             .toggleable(value = on, role = Role.Switch, onValueChange = set)
             .semantics {
                 contentDescription = tr("Boucler la partie au lieu de jouer le morceau")
                 stateDescription = state
             }
+            .spot("top_loop_part", tr("Boucler la partie"))
             .testTag("top_loop_part"),
         contentAlignment = Alignment.Center,
     ) {
@@ -264,11 +300,13 @@ private fun LoopPartChip(on: Boolean, set: (Boolean) -> Unit) {
             Modifier.height(CHIP_HEIGHT).clip(shape)
                 .background(if (on) Neon.Cyan else Color.Transparent)
                 .border(1.dp, if (on) Neon.Cyan else Neon.Outline, shape)
-                .padding(start = 8.dp, end = 12.dp),
+                .padding(start = 8.dp, end = if (iconOnly) 8.dp else 12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(Icons.Filled.Repeat, contentDescription = null, tint = content, modifier = Modifier.size(18.dp))
-            Text(tr("Partie"), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = content, maxLines = 1, modifier = Modifier.padding(start = 4.dp))
+            if (!iconOnly) {
+                Text(tr("Partie"), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = content, maxLines = 1, modifier = Modifier.padding(start = 4.dp))
+            }
         }
     }
 }
@@ -278,22 +316,24 @@ private fun LoopPartChip(on: Boolean, set: (Boolean) -> Unit) {
  * every track again. Says which tracks, for a screen reader.
  */
 @Composable
-private fun SoloChip(names: List<String>, clearAll: () -> Unit) {
+private fun SoloChip(names: List<String>, clearAll: () -> Unit, iconOnly: Boolean = false) {
     val shape = RoundedCornerShape(16.dp)
     val said = tr("Solo actif sur %s", shortList(names))
     Box(
-        Modifier.sizeIn(minWidth = STRIP_HEIGHT, minHeight = STRIP_HEIGHT).clip(shape)
+        Modifier.control().clip(shape)
             .clickable(role = Role.Button, onClickLabel = tr("Désactiver tous les solos"), onClick = clearAll)
             .semantics(mergeDescendants = true) { contentDescription = said }
             .testTag("solo_chip"),
         contentAlignment = Alignment.Center,
     ) {
         Row(
-            Modifier.height(CHIP_HEIGHT).clip(shape).background(Neon.Amber).padding(start = 8.dp, end = 12.dp),
+            Modifier.height(CHIP_HEIGHT).clip(shape).background(Neon.Amber).padding(start = 8.dp, end = if (iconOnly) 8.dp else 12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(Icons.Filled.Headphones, contentDescription = null, tint = Color.Black, modifier = Modifier.size(18.dp))
-            Text(tr("Solo"), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = Color.Black, maxLines = 1, modifier = Modifier.padding(start = 4.dp))
+            if (!iconOnly) {
+                Text(tr("Solo"), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = Color.Black, maxLines = 1, modifier = Modifier.padding(start = 4.dp))
+            }
         }
     }
 }
@@ -305,7 +345,7 @@ private fun SoloChip(names: List<String>, clearAll: () -> Unit) {
 fun soloedTracks(p: Project): List<String> {
     val strips = mixerStrips(p)
     return RhythmViewModel.usedStrips(p).filter { p.mixer.channels.getOrNull(it)?.solo == true }.sorted().map { ch ->
-        if (ch >= Mixer.FIRST_PAD) tr("Pad %d", ch - Mixer.FIRST_PAD + 1)
+        if (Mixer.isPad(ch)) tr("Pad %d", ch - Mixer.FIRST_PAD + 1)
         else strips.firstOrNull { it.ch == ch }?.name?.let { com.pocketstudio.model.DefaultNames.shown(it) } ?: "?"
     }
 }
@@ -340,5 +380,27 @@ fun SoloBanner(names: List<String>, clearAll: () -> Unit) {
             tr("Tout désactiver"), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = Color.Black, maxLines = 1,
             modifier = Modifier.clip(RoundedCornerShape(14.dp)).border(1.5.dp, Color.Black, RoundedCornerShape(14.dp)).padding(horizontal = 10.dp, vertical = 4.dp),
         )
+    }
+}
+
+/**
+ * Phase 36, « ? qui étiquette l'écran »: one touch shows a label on each main control of the
+ * screen, one more hides them. Lit in amber while they show.
+ */
+@Composable
+private fun HelpLabelsButton(on: Boolean, toggle: () -> Unit) {
+    Box(
+        Modifier.control().clip(CircleShape)
+            .toggleable(value = on, role = Role.Switch, onValueChange = { toggle() })
+            .semantics { contentDescription = tr("Étiqueter l'écran") }
+            .testTag("help_labels_button"),
+        contentAlignment = Alignment.Center,
+    ) {
+        Box(
+            Modifier.size(32.dp).clip(CircleShape).background(if (on) Neon.Amber else Color.Transparent).border(1.dp, if (on) Neon.Amber else Neon.Outline, CircleShape),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text("?", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = if (on) Color.Black else Neon.TextSecondary)
+        }
     }
 }

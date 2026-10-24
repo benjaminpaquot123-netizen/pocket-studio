@@ -96,7 +96,8 @@ internal fun NewProjectPage(starters: List<ProjectStarter>, quick: QuickUi, acti
             }
             // The assistant's families, all folded at first (but the one of a song being prepared): one touch on a style makes its song.
             com.pocketstudio.app.library.StyleFamilies("quick", style = { QuickStyleCard(it, quick, actions) },
-                open = setOfNotNull(StarterWizard.STYLES.find { it.id == quick.creating }?.family))
+                open = setOfNotNull(StarterWizard.STYLES.find { it.id == quick.creating }?.family),
+                calm = com.pocketstudio.app.settings.SettingsStore.state.value.simpleMode)
             // The other starters under their headings (the starting beat closes the styles' group).
             StarterGroup.entries.forEach { group ->
                 val inGroup = starters.withIndex().filter { it.value.group == group }

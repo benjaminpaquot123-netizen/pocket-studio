@@ -9,6 +9,7 @@ import kotlinx.serialization.Serializable
  * One scene of the session: the drum pattern, the acid line's notes and the piano roll.
  * Pad sounds and the acid sound and root stay global (the same kit and 303 play every scene).
  */
+@OptIn(ExperimentalSerializationApi::class)
 @Serializable
 data class Scene(
     val name: String = "A",
@@ -19,6 +20,12 @@ data class Scene(
     val trackNotes: Map<Int, NoteClip> = emptyMap(),
     /** The song section this scene stands for, named by the user ("Refrain"); empty: just its letter. */
     val label: String = "",
+    /**
+     * Phase 37, « Accords du morceau »: the scene's chords, one per bar, as degrees (0 = I .. 6 =
+     * VII) of the project's key ([Project.harmony], [ChordTrack]). Empty: none written (they are
+     * guessed from the notes when shown). Left out of the file when empty.
+     */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val chords: List<Int> = emptyList(),
 ) {
     /** Steps the scene lasts before it loops in 4/4: its longest part, rounded up to whole bars. */
     val steps: Int get() = stepsFor(16)
@@ -30,7 +37,8 @@ data class Scene(
     }
 
     val isEmpty: Boolean get() = drums.lanes.all { lane -> lane.hits.keys.none { it < drums.steps } } &&
-        acid.steps.take(acid.length.coerceAtLeast(0)).none { it.gate } && synthNotes.notes.isEmpty() && trackNotes.values.all { it.notes.isEmpty() }
+        acid.steps.take(acid.length.coerceAtLeast(0)).none { it.gate } && synthNotes.notes.isEmpty() && trackNotes.values.all { it.notes.isEmpty() } &&
+        chords.isEmpty()
 
     companion object {
         const val MAX = 24
@@ -40,15 +48,22 @@ data class Scene(
         val GRID_SIZES = listOf(8, 16, 24)
 
         /** Section names offered when naming a scene. */
-        val SECTIONS = listOf("Intro", "Couplet", "Pré-refrain", "Refrain", "Pont", "Groove", "Montée", "Break", "Drop", "Fin")
+        val SECTIONS = listOf("Intro", "Couplet", "Pré-refrain", "Refrain", "Post-refrain", "Pont", "Groove", "Montée", "Faux drop", "Break", "Drop", "Fin", "Fill")
+
+        /** Names the assistant gives its one-bar drum scenes besides « Fill » (translated, not offered as sections). */
+        val DRUM_LABELS = listOf("Crash")
+
+        /** The suffix of a scene the part sheet's « Énergie 4 » makes: the part's drums with an extra layer ("Drop +"). */
+        const val ENERGY_SUFFIX = " +"
 
         /**
-         * A scene label as shown: a section name ("Refrain", or a copy's "Refrain 2") in the
-         * interface's language; any other name the user typed stays as it is. The label is
-         * saved in French so a project reads the same in every language.
+         * A scene label as shown: a section name ("Refrain", or a copy's "Refrain 2", or the fuller
+         * "Refrain +" of Énergie 4) in the interface's language; any other name the user typed
+         * stays as it is. The label is saved in French so a project reads the same in every language.
          */
         fun shownLabel(label: String): String {
-            if (label in SECTIONS) return tr(label)
+            if (label in SECTIONS || label in DRUM_LABELS) return tr(label)
+            if (label.endsWith(ENERGY_SUFFIX)) return shownLabel(label.removeSuffix(ENERGY_SUFFIX)) + ENERGY_SUFFIX
             val numbered = Regex("""^(.+) (\d+)$""").matchEntire(label) ?: return label
             val (section, n) = numbered.destructured
             return if (section in SECTIONS) "${tr(section)} $n" else label
@@ -138,7 +153,7 @@ data class SongPart(
 
 /** The scene being edited and played is mirrored in the project's own drums / acid / notes. */
 fun Project.currentSceneContent(): Scene =
-    Scene(Scene.NAMES.getOrElse(scene) { "?" }, drums, acid, synthNotes, tracks.associate { it.id to it.notes })
+    Scene(Scene.NAMES.getOrElse(scene) { "?" }, drums, acid, synthNotes, tracks.associate { it.id to it.notes }, chords = ChordTrack.clean(scenes.getOrNull(scene)?.chords.orEmpty()))
 
 /** All scenes, the current one included (a project that never used scenes has just one). */
 val Project.allScenes: List<Scene> get() = scenes.ifEmpty { listOf(currentSceneContent()) }
@@ -176,13 +191,19 @@ internal fun Project.syncScenes(): Project {
  * itself when nothing needed it (each clean part returns itself: an edit stays cheap).
  */
 private fun Scene.cleaned(trackIds: Set<Int>): Scene {
+    return cleanedFor(trackIds)
+}
+
+/** [cleaned], for a song version's scenes ([SongVersion.sanitized]). */
+internal fun Scene.cleanedFor(trackIds: Set<Int>): Scene {
     val d = drums.sanitized()
     val a = acid.sanitized()
     val n = synthNotes.sanitized()
     val t = if (trackNotes.all { (id, clip) -> id in trackIds && clip.sanitized() === clip }) trackNotes
     else trackNotes.filterKeys { it in trackIds }.mapValues { it.value.sanitized() }
-    return if (d === drums && a === acid && n === synthNotes && t === trackNotes) this
-    else copy(drums = d, acid = a, synthNotes = n, trackNotes = t)
+    val c = ChordTrack.clean(chords)
+    return if (d === drums && a === acid && n === synthNotes && t === trackNotes && c === chords) this
+    else copy(drums = d, acid = a, synthNotes = n, trackNotes = t, chords = c)
 }
 
 /** Makes [index] the current scene (adding empty scenes up to it if needed). */
@@ -197,7 +218,7 @@ fun Project.switchScene(index: Int): Project {
  * The project with the scenes [list] (already in step: no current content to save first),
  * scene [index] shown and mirrored in drums / acid / notes.
  */
-private fun Project.showing(list: List<Scene>, index: Int): Project {
+internal fun Project.showing(list: List<Scene>, index: Int): Project {
     val target = list[index]
     return copy(
         scenes = list,
@@ -263,7 +284,7 @@ fun Project.moveScene(from: Int, to: Int, replace: Boolean = false): Project {
         automation = synced.automation.map { lane ->
             lane.copy(sceneValues = lane.sceneValues.filterKeys { !(replace && it == to) }.mapKeys { map(it.key) })
         },
-        audioTracks = synced.audioTracks.map { t -> t.copy(clip = t.clip.kept(), previous = t.previous.kept()) },
+        audioTracks = synced.audioTracks.map { t -> t.copy(clip = t.clip.kept(), previous = t.previous.kept(), older = t.older.mapNotNull { it.kept() }) },
         // With replace, slot [to] now is scene [from]: an effect plays there exactly when it played in
         // [from]. One that played only in the scene replaced plays nowhere (kept, and the box says so).
         mixer = synced.mixer.mapInserts { ins ->
@@ -295,10 +316,11 @@ fun Project.copySceneTo(index: Int): Project {
 
 /**
  * Empties the scene shown (its drum hits, its acid line, the notes of every instrument track and
- * its own automation values); sounds, lengths and the other scenes stay.
+ * its own automation values); sounds, loop lengths and the other scenes stay. A pad's own loop
+ * (a polyrhythm, [DrumLane.length]) goes back to the pattern's: an empty scene starts square.
  */
 fun Project.clearCurrentScene(): Project = copy(
-    drums = drums.copy(lanes = drums.lanes.map { it.copy(hits = emptyMap()) }),
+    drums = drums.copy(lanes = drums.lanes.map { it.copy(hits = emptyMap(), length = 0) }),
     acid = acid.copy(steps = acid.steps.map { it.copy(gate = false) }),
     synthNotes = synthNotes.cleared(),
     tracks = tracks.map { it.copy(notes = it.notes.cleared()) },
@@ -321,7 +343,7 @@ fun Project.firstEmptyScene(): Int? {
 
 /** Scenes an audio take belongs to (its clip, or the previous take kept to bring back). */
 internal fun Project.scenesWithTakes(): Set<Int> =
-    audioTracks.flatMap { t -> listOfNotNull(t.clip, t.previous) }.filter { !it.song }.mapNotNull { it.scene }.toSet()
+    audioTracks.flatMap { t -> listOfNotNull(t.clip) + t.otherTakes }.filter { !it.song }.mapNotNull { it.scene }.toSet()
 
 /** A project shaped as if [index] were current, for sending a scene to the engine ahead of time. */
 fun Project.sceneView(index: Int): Project = if (index == scene) this else switchScene(index)
@@ -513,3 +535,25 @@ fun Project.withPartScene(index: Int, key: String, scene: Int): Project {
     if (after == before) return this
     return copy(song = song.mapIndexed { i, p -> if (i == index) after else p }).followArrangement(this, song.indices.toList())
 }
+
+/**
+ * True when the scene shown in [after] (the same one as in [before]) changed in content between
+ * the two: a hit, an acid step, a note of any track. Showing another scene, renaming one, or a
+ * change to anything else (mixer, song, tempo) is not an edit of the shown scene. (Editing must
+ * not move under the finger: while the song plays, such an edit makes the part shown loop.)
+ */
+fun editedShownScene(before: Project, after: Project): Boolean {
+    if (before.scene != after.scene) return false
+    return before.patternShown() != after.patternShown()
+}
+
+/**
+ * What the editors write into the scene shown, and nothing shared by every scene (pad sounds and
+ * pans, the 303's sound and root, a part's name): the drum hits and their rolls, the loop length,
+ * the acid steps, the notes of every instrument track.
+ */
+private fun Project.patternShown(): List<Any> = listOf(
+    drums.steps, drums.lanes.map { it.hits },
+    acid.length, acid.steps, acid.locked,
+    synthNotes, tracks.map { it.id to it.notes },
+)

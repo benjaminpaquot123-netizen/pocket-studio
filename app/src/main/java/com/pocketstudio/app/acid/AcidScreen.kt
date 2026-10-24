@@ -2,6 +2,7 @@
 
 package com.pocketstudio.app.acid
 
+import com.pocketstudio.app.learn.spot
 import com.pocketstudio.model.i18n.tr
 
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -131,6 +132,8 @@ fun AcidScreen(
     /** « Voir le potard » from an automation lane: this knob is shown and lit for a moment, then [onFocused]. */
     focusKnob: Int? = null,
     onFocused: () -> Unit = {},
+    /** « ● Enregistrer » the knobs' moves, right above them (the record bar, given by the app). */
+    record: (@Composable () -> Unit)? = null,
 ) {
     val context = LocalContext.current
     val settings by com.pocketstudio.app.settings.SettingsStore.state.collectAsState()
@@ -141,18 +144,11 @@ fun AcidScreen(
         NeonCard {
             // At least 56 dp, taller when the words need two lines (a tablet pane, a big interface
             // size): never « pattern » cut under the button. Both buttons keep the same height.
+            // ▶ is the top bar's (one transport for the whole app): here, the generator alone.
             Row(Modifier.height(androidx.compose.foundation.layout.IntrinsicSize.Min), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Button(
-                    onClick = actions.togglePlay,
-                    modifier = Modifier.fillMaxHeight().heightIn(min = 56.dp).testTag("acid_play"),
-                    colors = ButtonDefaults.buttonColors(containerColor = if (playing) Neon.Magenta else Neon.Cyan),
-                    shape = RoundedCornerShape(10.dp),
-                ) {
-                    Icon(if (playing) Icons.Filled.Stop else Icons.Filled.PlayArrow, contentDescription = null)
-                }
-                Button(
                     onClick = actions.generate,
-                    modifier = Modifier.weight(1f).fillMaxHeight().heightIn(min = 56.dp).testTag("acid_generate"),
+                    modifier = Modifier.weight(1f).fillMaxHeight().heightIn(min = 56.dp).spot("acid_generate", tr("Nouvelle ligne")).testTag("acid_generate"),
                     shape = RoundedCornerShape(10.dp),
                 ) {
                     Icon(Icons.Filled.AutoAwesome, contentDescription = null)
@@ -171,6 +167,7 @@ fun AcidScreen(
         StepGrid(acid, playing, currentStep, selected, actions, english, setEnglish)
     }, second = {
         StepEditor(acid, selected, actions, english)
+        record?.invoke()
         SoundCard(acid, actions, browser, recording, automated, focusKnob, onFocused)
         effects?.let { com.pocketstudio.app.mixer.EffectsCard(it) }
     })
@@ -400,7 +397,7 @@ private fun SoundCard(
                 modifier = Modifier.testTag("acid_record"),
             )
             Text(
-                if (recording) tr("Lance la lecture et tourne un bouton : son mouvement s'enregistre (Mixeur › Automation).")
+                if (recording) tr("Lance la lecture et tourne un bouton : son mouvement s'enregistre (Mix › Automation).")
                 else tr("Enregistre tes mouvements de bouton pendant la lecture."),
                 Modifier.weight(1f), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
             )

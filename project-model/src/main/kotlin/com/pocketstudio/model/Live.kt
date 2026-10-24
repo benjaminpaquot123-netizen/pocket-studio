@@ -13,12 +13,25 @@ object LiveSlots {
     /** + audio track id (0..3). */
     const val AUDIO = 10
     const val REMIX = 14
-    const val COUNT = 15
+    /** + audio track id - 4 (4..7): after the remix, so the slots of takes saved before stay. */
+    const val AUDIO2 = 15
+    const val COUNT = 19
+
+    /** The slot of audio track [id] (NativeEngine.audioSlot). */
+    fun audio(id: Int): Int = if (id < 4) AUDIO + id else AUDIO2 + id - 4
+
+    /** The audio track of [slot], or null. */
+    fun audioOf(slot: Int): Int? = (0 until AudioTrack.MAX).firstOrNull { audio(it) == slot }
     /** Every slot: a whole row. */
     const val ALL = (1 shl COUNT) - 1
 
     /** Launch quantum choices, in bars. */
     val QUANTA = listOf(1, 2, 4)
+
+    /** [Project.liveQuantumFine]: launches on the next beat, or the next half bar. */
+    const val QUANTUM_BEAT = 1
+    const val QUANTUM_HALF_BAR = 2
+    val FINE_QUANTA = listOf(QUANTUM_BEAT, QUANTUM_HALF_BAR)
 
     /** The slot of a track key (see [SongPart]), or null. */
     fun of(key: String): Int? = when {
@@ -26,7 +39,7 @@ object LiveSlots {
         key == SongPart.ACID -> ACID
         key == SongPart.REMIX -> REMIX
         key.startsWith("inst:") -> key.removePrefix("inst:").toIntOrNull()?.takeIf { it in 0 until InstrumentTrack.MAX }?.let { INST + it }
-        key.startsWith("audio:") -> key.removePrefix("audio:").toIntOrNull()?.takeIf { it in 0 until AudioTrack.MAX }?.let { AUDIO + it }
+        key.startsWith("audio:") -> key.removePrefix("audio:").toIntOrNull()?.takeIf { it in 0 until AudioTrack.MAX }?.let { audio(it) }
         else -> null
     }
 
@@ -36,7 +49,7 @@ object LiveSlots {
         slot == ACID -> SongPart.ACID
         slot == REMIX -> SongPart.REMIX
         slot in INST until INST + InstrumentTrack.MAX -> SongPart.inst(slot - INST)
-        slot in AUDIO until AUDIO + AudioTrack.MAX -> SongPart.audio(slot - AUDIO)
+        audioOf(slot) != null -> SongPart.audio(audioOf(slot)!!)
         else -> ""
     }
 
@@ -142,7 +155,28 @@ val Project.liveColumns: List<String> get() = partKeys + if (remix.setId != null
 val Project.liveColumnsMask: Int get() = liveColumns.mapNotNull { LiveSlots.of(it) }.fold(0) { m, k -> m or (1 shl k) }
 
 /** The launch quantum in steps. */
-val Project.liveQuantumSteps: Int get() = liveQuantum.coerceIn(1, 4) * stepsPerBar
+val Project.liveQuantumSteps: Int get() = when (liveQuantumFine) {
+    LiveSlots.QUANTUM_BEAT -> 4
+    // Half a bar: two beats in 4/4, a beat and a half in 3/4 (whole sixteenths).
+    LiveSlots.QUANTUM_HALF_BAR -> (stepsPerBar / 2).coerceAtLeast(4)
+    else -> liveQuantum.coerceIn(1, 4) * stepsPerBar
+}
+
+/**
+ * The steps a launch waits for: [liveQuantumSteps], but whole bars while a take records ([taking]):
+ * a take writes whole-bar parts into the song, so a launch on a beat would land off its bar.
+ */
+fun Project.liveLaunchSteps(taking: Boolean): Int {
+    val q = liveQuantumSteps
+    val bar = stepsPerBar.coerceAtLeast(1)
+    return if (taking && q % bar != 0) (q + bar - 1) / bar * bar else q
+}
+
+/** The Live page's « Lancer à » choices in order: a beat, half a bar, then 1, 2 and 4 bars (fine, bars). */
+val LIVE_QUANTUM_CHOICES: List<Pair<Int, Int>> = LiveSlots.FINE_QUANTA.map { it to 1 } + LiveSlots.QUANTA.map { 0 to it }
+
+/** The project's « Lancer à » as one of [LIVE_QUANTUM_CHOICES]. */
+val Project.liveQuantumChoice: Pair<Int, Int> get() = if (liveQuantumFine != 0) liveQuantumFine to 1 else 0 to liveQuantum
 
 /** Track [key] has something to play in scene [scene] (the pad shows it). */
 fun Project.cellHasContent(key: String, scene: Int): Boolean {

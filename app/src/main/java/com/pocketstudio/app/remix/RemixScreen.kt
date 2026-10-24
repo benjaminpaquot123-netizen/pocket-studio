@@ -288,7 +288,7 @@ private fun InProject(ui: RemixUi, actions: RemixActions) {
         }
         Text(
             tr("Les pistes démarrent avec le Rythme, à partir de la mesure choisie (trait vert). Touche une forme d'onde pour partir de là.") + " " +
-                tr("« → Pad » copie les mesures choisies sur le pad sélectionné, « → Live » sur un pad live libre (onglet Morceau) pour lancer et couper chaque partie en rythme."),
+                tr("« → Pad » copie les mesures choisies sur le pad sélectionné, « → Live » sur un pad live libre (Live › Pads) pour lancer et couper chaque partie en rythme."),
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
         )
         TextButton(onClick = actions.clearRemix, modifier = Modifier.testTag("remix_clear")) { Text(tr("Retirer du projet")) }

@@ -27,6 +27,8 @@ import com.pocketstudio.model.Project
 import com.pocketstudio.model.SoundPacks
 import com.pocketstudio.model.StarterWizard
 import com.pocketstudio.model.StarterWizard.Role
+import com.pocketstudio.model.StudioDrums
+import com.pocketstudio.model.Harmony
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -59,6 +61,8 @@ sealed interface SoundRef {
     data object AcidDemo : SoundRef
     /** One of the demos of « Nouveau projet » ([com.pocketstudio.model.Demos.ALL] index): its first scene, heard without opening a project. */
     data class Demo(val index: Int) : SoundRef
+    /** A multizone instrument's preview (phase 38): from its pack when downloaded, else fetched from the catalogue. */
+    data class Instrument(val packId: String) : SoundRef
 }
 
 data class SoundOption(val ref: SoundRef, val name: String)
@@ -481,12 +485,23 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
     /** The sound as audio: the kit voice rendered once by the engine, or the pack file decoded. */
     private suspend fun load(ref: SoundRef): Pcm? = when (ref) {
         is SoundRef.Kit -> kitVoice(ref.voice)
-        is SoundRef.Melodic -> partInContext(ref)
+        // A multizone instrument (phase 38): its own preview (the downloaded pack's, else the
+        // catalogue's), not the synth sound that stands in for it in a private engine.
+        is SoundRef.Melodic -> previewSource(ref).let { if (it is SoundRef.Instrument) load(it) else partInContext(ref) }
         is SoundRef.MoodDemo -> moodDemo(ref.mood)
         is SoundRef.LineDemo -> lineDemo(ref)
         is SoundRef.StyleDemo -> styleDemo(ref.styleId)
         SoundRef.AcidDemo -> acidDemo()
         is SoundRef.Demo -> demoPreview(ref.index)
+        is SoundRef.Instrument -> withContext(Dispatchers.IO) {
+            val app = getApplication<Application>()
+            val installed = _packs.value.installed.firstOrNull { it.id == ref.packId }
+            val file = installed?.sounds?.firstOrNull()?.let { PackStore.file(app, installed.id, it) }
+                ?: (_packs.value.index as? IndexState.Ready)?.index?.packs?.firstOrNull { it.id == ref.packId }?.let { PackStore.preview(app, it) }
+            file?.let { f ->
+                runCatching { AudioDecoder.decode(app, Uri.fromFile(f)) }.onFailure { AppLog.add("Aperçu illisible ${ref.packId} : ${it.message}") }.getOrNull()
+            }
+        }
         is SoundRef.Pack -> withContext(Dispatchers.IO) {
             val file = PackStore.file(getApplication(), ref.packId, ref.sound)
             runCatching { AudioDecoder.decode(getApplication(), Uri.fromFile(file)) }
@@ -502,8 +517,8 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         val job = finishOrRelease(Dispatchers.Default, OfflineExport::close) { OfflineExport() }!!
         val data = try {
             NativeEngine.captureInto(job) {
-                // The kit of the assistant's songs (kit v2): WizardMix places these sounds by its levels.
-                NativeEngine.setKitVersion(com.pocketstudio.model.Project.KIT_V2)
+                // The kit of the assistant's songs (kit v3, each voice at kit v2's level for its role): WizardMix places these sounds by those levels.
+                NativeEngine.setKitVersion(com.pocketstudio.model.Project.KIT_V3)
                 NativeEngine.setTempo(120.0)
                 NativeEngine.setPatternSteps(16)
                 NativeEngine.setDrumHit(voice, 0, 1f)
@@ -657,8 +672,11 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
     ): Pcm? {
         if (!NativeEngine.isAvailable) return null
         // Audio first: the kit voice already on its pad needs nothing, the others are decoded or rendered.
-        val padAudio = beat.map { (line, ref) ->
-            if (ref is SoundRef.Kit && ref.voice == line.role.lane && !StarterWizard.shapesKit(line.role)) null else (load(ref) ?: return null)
+        val harmonyKey = StarterWizard.harmonyOf(style, mood)
+        // The studio voices the song gives its kit lines (the tuned kick, the rumble: S3), heard as they will be.
+        val voices = beat.map { (line, ref) -> if (ref is SoundRef.Kit) StudioDrums.voiceFor(style, line.role, harmonyKey) else null }
+        val padAudio = beat.mapIndexed { i, (line, ref) ->
+            if (ref is SoundRef.Kit && ((ref.voice == line.role.lane && !StarterWizard.shapesKit(line.role)) || voices[i] != null)) null else (load(ref) ?: return null)
         }
         val partAudio = parts.map { (_, sound) -> if (sound.sampled != null) (packPartSound(sound) ?: return null) else null }
         val harmony = StarterWizard.harmonyOf(style, mood).copy(lock = false)
@@ -674,18 +692,22 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                 partAudio.forEach { a -> natives += a?.let { (pcm, _) -> com.pocketstudio.engine.NativeSample.create(pcm.data, pcm.channels, pcm.sampleRate) } }
             }
             NativeEngine.captureInto(job) {
-                NativeEngine.setKitVersion(com.pocketstudio.model.Project.KIT_V2)  // as the song will have it
+                NativeEngine.setKitVersion(com.pocketstudio.model.Project.KIT_V3)  // as the song will have it
                 NativeEngine.setTempo(style.bpm)
                 NativeEngine.setSwing(style.swing)
                 NativeEngine.setPatternSteps(steps)
                 beat.forEachIndexed { i, (line, _) ->
                     val lane = line.role.lane
                     natives[i]?.let { NativeEngine.setPadSample(lane, it) }
+                    voices[i]?.let { v ->
+                        NativeEngine.setPadVoice(lane, v.kind)
+                        v.params.toSortedMap().forEach { (param, value) -> NativeEngine.setPadVoiceParam(lane, param, value) }
+                    }
                     // Heard as the song will have it: a kit voice shaped for its line (the short ride).
                     if (natives[i] != null && beat[i].second is SoundRef.Kit && StarterWizard.shapesKit(line.role)) {
                         NativeEngine.setPadParams(lane, StarterWizard.kitShaped(line.role, PadSample("", "")).engineParams())
                     }
-                    StarterWizard.hits(line, steps).forEach { (step, hit) -> NativeEngine.setDrumHit(lane, step, hit.velocity, hit.repeats) }
+                    StarterWizard.hits(line, steps).forEach { (step, hit) -> NativeEngine.setDrumHit(lane, step, hit.velocity, hit.repeats, hit.ramp) }
                 }
                 // The 303 line under the chords (acid house, rave techno).
                 if (acid != null) {
@@ -748,7 +770,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                 // it is the one to judge, the rest is only there to place it.
                 if (focusPart != null) {
                     val focus = com.pocketstudio.model.InstrumentTrack.mixerChannel(focusPart)
-                    for (ch in 0 until com.pocketstudio.model.Mixer.FIRST_PAD) {
+                    for (ch in com.pocketstudio.model.Mixer.TRACK_STRIPS) {
                         if (ch != NativeEngine.MASTER) NativeEngine.setChannelVolume(ch, if (ch == focus) FOCUS_VOLUME else BACKGROUND_VOLUME)
                     }
                 } else if (focusLane != null) {
@@ -1046,8 +1068,9 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
             val option = row.sound ?: continue
             if (!row.enabled) continue
             val ref = option.ref
-            // The kit voice the pad already has needs no file (unless the line shapes it: the ride).
-            if (ref is SoundRef.Kit && ref.voice == line.role.lane && !StarterWizard.shapesKit(line.role)) {
+            // The kit voice the pad already has needs no file (unless the line shapes it: the ride); nor does a
+            // line the style gives a studio voice of the engine (its tuned kick, the rumble: S3).
+            if (ref is SoundRef.Kit && ((ref.voice == line.role.lane && !StarterWizard.shapesKit(line.role)) || StudioDrums.voiceFor(style, line.role, Harmony(style.melody.root)) != null)) {
                 sounds[line.role] = null
                 continue
             }
@@ -1122,6 +1145,14 @@ internal fun soundOnChoose(current: SoundRef?, role: Role, option: SoundOption):
     if (current is SoundRef.LineDemo && current.role == role) SoundRef.LineDemo(role, option) else option.ref
 
 /** Excerpts that go round until stopped: a drum line with the beat, the 303 with the beat. */
+/**
+ * What ▶ really plays for [ref]: a part of the assistant on a multizone instrument (phase 38)
+ * plays that instrument's own preview (the downloaded pack's, else the catalogue's), not the synth
+ * sound that stands in for it in a private engine; anything else plays itself.
+ */
+internal fun previewSource(ref: SoundRef): SoundRef =
+    (ref as? SoundRef.Melodic)?.sound?.multi?.pack?.let { SoundRef.Instrument(it) } ?: ref
+
 internal fun loops(ref: SoundRef): Boolean = ref is SoundRef.LineDemo || ref == SoundRef.AcidDemo
 
 /** An edit of the 303 restarts what is heard when it is the 303 with the beat ([playing] or being [preparing]). */

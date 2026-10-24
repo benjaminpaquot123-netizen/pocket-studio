@@ -82,6 +82,13 @@ class ProjectSession(
         publish()
     }
 
+    /**
+     * What a save writes in place of the project (null: the project itself): a trial heard but not
+     * chosen yet (the chords tried before « Appliquer ») never reaches the disk on its own. Read on
+     * the session's scope, like the edits.
+     */
+    @Volatile var saveAs: ((Project) -> Project)? = null
+
     /** How many undo steps there are (to note when a live recording starts). */
     val undoDepth: Int get() = history.undoDepth
 
@@ -155,7 +162,7 @@ class ProjectSession(
     /** True when everything up to now is on disk. */
     private suspend fun saveNow(): Boolean = saveLock.withLock {
         if (!dirty) return@withLock true
-        val snapshot = history.current
+        val snapshot = history.current.let { p -> saveAs?.invoke(p) ?: p }
         dirty = false
         try {
             withContext(io) { store.save(id, snapshot) }

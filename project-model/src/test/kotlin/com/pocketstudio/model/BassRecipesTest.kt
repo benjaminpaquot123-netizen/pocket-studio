@@ -61,9 +61,11 @@ class BassRecipesTest {
         assertEquals(Scale.Major to listOf(0, 4, 5, 3), pop.melody.progressions[Mood.Happy])
         assertEquals(StarterWizard.SongForm.Song, pop.form)
         assertEquals(setOf(Part.Bass, Part.Pad, Part.Lead), StarterWizard.defaultParts(pop))
-        // The hook comes in at the Refrain, the snare doubles the clap from the Couplet on.
+        // The hook is previewed in the Intro, thinned out in the Couplet, whole in the Refrain (which the piano lifts); the snare doubles the clap from the Couplet on.
         val plan = StarterWizard.planFor(pop, pop.lines.map { it.role }.toSet(), StarterWizard.defaultParts(pop), acid = false)
-        assertEquals(setOf(2), plan.parts[Part.Lead])
+        // The Pont (scene D) keeps the hook and the piano, without kick nor bass.
+        assertEquals(setOf(0, 1, 2, 3), plan.parts[Part.Lead])
+        assertEquals(setOf(2, 3), plan.parts[Part.Pad])
         assertEquals(setOf(1, 2), plan.lines[StarterWizard.Role.Snare])
     }
 }

@@ -525,7 +525,9 @@ class AcidPagesTest {
         assertEquals(4, bad.channels[0].inserts[0].params.size)
         assertEquals(1f, bad.channels[0].sends[0], 0f)
         assertEquals(Mixer.INSERTS, bad.master.size)
-        assertEquals(listOf(1f, 0.5f, 1f, 0.1f), bad.buses[0])
+        assertEquals(listOf(1f, 0.5f, 1f, 0.1f), bad.buses[0].take(4))
+        // S4's settings after them (the reverb's type, its return's equaliser) at rest: the hall, no equaliser.
+        assertEquals(Buses.DEFAULTS[0].drop(4), bad.buses[0].drop(4))
         assertEquals(Buses.DEFAULTS[1], bad.buses[1])
         // Older files without effects load with empty slots.
         val old = ProjectJson.decode("""{"mixer":{"channels":[{"volume":0.5}]}}""").mixer
@@ -680,12 +682,16 @@ class TranscriptionTest {
     }
 
     @Test
-    fun longRecordingsGrowTheClipUpTo8Bars() {
-        val heard = (0 until 40).map { HeardNote(it * 0.5, it * 0.5 + 0.4, 60 + it % 12, 0.7f) }  // 20 s at 120 BPM = 10 bars
+    fun longRecordingsGrowTheClipUpTo16Bars() {
+        val heard = (0 until 80).map { HeardNote(it * 0.5, it * 0.5 + 0.4, 60 + it % 12, 0.7f) }  // 40 s at 120 BPM = 20 bars
         val clip = Transcription.toClip(heard, 120.0)
         assertEquals(NoteClip.MAX_STEPS, clip.steps)
         assertTrue(clip.notes.all { it.end <= clip.ticks })
-        assertEquals(32, clip.notes.size)  // 8 bars of half-second notes
+        assertEquals(64, clip.notes.size)  // 16 bars of half-second notes
+        // 10 bars: a loop of 16 (the next length), every note kept.
+        val ten = Transcription.toClip(heard.take(40), 120.0)
+        assertEquals(256, ten.steps)
+        assertEquals(40, ten.notes.size)
         assertEquals(NoteClip(), Transcription.toClip(emptyList(), 120.0))
     }
 }
@@ -787,8 +793,9 @@ class DrumToolsTest {
         assertEquals(4, r.lanes[5].hits[4]!!.repeats)
         assertEquals(1, r.cycleRepeats(5, 4).lanes[5].hits[4]!!.repeats)
         assertEquals(r, r.cycleRepeats(5, 3))  // no hit there
+        // Rolls go up to ×8 (phase 34); more is brought back to it.
         val messy = DrumPattern(lanes = List(16) { DrumLane(hits = mapOf(0 to Hit(1f, 9))) }).sanitized()
-        assertEquals(4, messy.lanes[0].hits[0]!!.repeats)
+        assertEquals(8, messy.lanes[0].hits[0]!!.repeats)
     }
 
     @Test

@@ -4,7 +4,7 @@ package com.pocketstudio.engine
  * Audio held by the native engine (float, 48 kHz after resampling). The engine keeps its own
  * reference while a pad uses it, so [close] is safe at any time; the memory goes when nobody uses it.
  */
-class NativeSample private constructor(internal val handle: Long) : AutoCloseable {
+class NativeSample private constructor(internal val handle: Long, val compact: Boolean = false) : AutoCloseable {
     @Volatile private var closed = false
     // Tests and the song bench: a sink stands in for the native engine (see CommandSink).
     private val sink = NativeEngine.sink
@@ -19,6 +19,7 @@ class NativeSample private constructor(internal val handle: Long) : AutoCloseabl
     @Synchronized  // close() waits: the native data is never freed mid-analysis
     fun onsets(sensitivity: Float, maxSlices: Int = 16): FloatArray {
         check(!closed)
+        if (compact) return floatArrayOf(0f)
         if (sink != null) return floatArrayOf(0f)
         return NativeEngine.sampleOnsets(handle, sensitivity, maxSlices)
     }
@@ -30,6 +31,7 @@ class NativeSample private constructor(internal val handle: Long) : AutoCloseabl
     @Synchronized
     fun stretched(start: Float, end: Float, outFrames: Long, semitones: Float): NativeSample? {
         check(!closed)
+        if (compact) return null
         if (sink != null) return null  // not recorded: the sound plays unstretched
         val h = NativeEngine.sampleStretched(handle, start, end, outFrames, semitones)
         return if (h == 0L) null else NativeSample(h)
@@ -48,6 +50,15 @@ class NativeSample private constructor(internal val handle: Long) : AutoCloseabl
         fun create(interleaved: FloatArray, channels: Int, sampleRate: Int): NativeSample? {
             val handle = NativeEngine.sink?.sampleCreate(interleaved, channels, sampleRate) ?: NativeEngine.sampleCreate(interleaved, channels, sampleRate)
             return if (handle == 0L) null else NativeSample(handle)
+        }
+
+        /**
+         * The same kept as 16-bit integers (half the memory): a zone of a multizone instrument
+         * ([NativeEngine.setTrackZone] only; pads, clips and the sampled source refuse it).
+         */
+        fun createCompact(interleaved: FloatArray, channels: Int, sampleRate: Int): NativeSample? {
+            val handle = NativeEngine.sink?.sampleCreate(interleaved, channels, sampleRate) ?: NativeEngine.sampleCreateCompact(interleaved, channels, sampleRate)
+            return if (handle == 0L) null else NativeSample(handle, compact = true)
         }
     }
 }

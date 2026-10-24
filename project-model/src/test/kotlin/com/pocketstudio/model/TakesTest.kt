@@ -125,7 +125,8 @@ class TakesTest {
         val q = p.withTake(PendingTake(2, "a.wav", "Prise", 4.0, 120.0))
         assertEquals(listOf(2), q.audioTracks.map { it.id })
         assertEquals("a.wav", q.audioTracks[0].clip?.file)
-        assertEquals(p, p.withTake(PendingTake(7, "a.wav", "Prise", 4.0, 120.0)))
+        assertEquals(listOf(7), p.withTake(PendingTake(7, "a.wav", "Prise", 4.0, 120.0)).audioTracks.map { it.id })
+        assertEquals(p, p.withTake(PendingTake(8, "a.wav", "Prise", 4.0, 120.0)))
     }
 
     @Test

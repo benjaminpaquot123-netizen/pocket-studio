@@ -6,6 +6,7 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import com.pocketstudio.model.SongBars.isDrumBar
 
 
 /** The club transitions of the styles: the riser and its impact, the rumble, the ride, the toms, the filter sweeps. */
@@ -40,28 +41,37 @@ class ClubTransitionsTest {
             val hit = p.notes(2, riser.id).single()
             assertEquals(id, 0, hit.start)
             assertTrue(id, hit.length <= 2 * NoteClip.TICKS_PER_STEP)
-            // Its filter curve: shut, opening over the bars before each Drop, open on the Drop's first bar, shut on the next.
+            // Its filter curve, a point per beat: shut, opening all through the Montée before each Drop (held under the
+            // Drop), shut on the silent beat before it, open on the Drop's first beat, shut again by the next bar.
             val lane = p.automation.single { it.target == AutoTarget(AutoTarget.INSERT_PARAM, ch, 0, 0) }
             assertEquals(AutomationLane.SONG, lane.mode)
-            val curve = lane.songCurve(p.songBars)
+            assertTrue(id, lane.songPerBeat)
+            val curve = lane.songCurve(p.songBars * 4)
             val sections = p.sections()
             var drops = 0
             sections.zipWithNext().forEach { (sec, next) ->
                 if (next.first != 2 || sec.first == 2) return@forEach
                 drops++
-                val end = sec.second + sec.third - 1
-                assertTrue("$id $sec", curve[end] >= 0.85f && curve[end - 1] < curve[end])
-                assertEquals("$id $next", 1f, curve[next.second], 0f)
-                assertEquals("$id $next", 0f, curve[next.second + 1], 0f)
-                // Before the rise, nothing: in a Montée it rises all along, else over its last 4 bars.
-                val rise = if (p.allScenes[1].label == "Montée" && sec.first == 1) sec.third else StarterWizard.RISER_BARS
-                assertEquals("$id $sec", 0f, curve[end - rise], 0f)
+                val end = (sec.second + sec.third) * 4
+                assertEquals("$id $sec", StarterWizard.RISER_TOP, curve[end - 2], 1e-6f)
+                assertEquals("$id $sec", 0f, curve[end - 1], 0f)
+                assertEquals("$id $next", 1f, curve[next.second * 4], 0f)
+                assertEquals("$id $next", 0f, curve[next.second * 4 + 4], 0f)
+                // Before the Montée (8 bars) nothing; it rises all along it.
+                assertEquals("$id $sec", 8, sec.third)
+                assertEquals("$id $sec", StarterWizard.RISER_LOW, curve[sec.second * 4], 1e-6f)
+                assertEquals("$id $sec", 0f, curve[sec.second * 4 - 1], 0f)
+                assertEquals("$id", listOf("Montée"), listOf(p.allScenes[sec.first].label))
             }
             assertEquals(id, sections.count { it.first == 2 && sections.getOrNull(sections.indexOf(it) - 1)?.first != 2 }, drops)
             assertTrue(id, drops >= 2)
-            // In the middle of a Drop the riser is silent.
+            // In the middle of a Drop the riser is silent; it falls at the Break's start (a downlifter).
             val drop = sections.first { it.first == 2 }
-            assertEquals(id, 0f, curve[drop.second + drop.third / 2], 0f)
+            assertEquals(id, 0f, curve[(drop.second + drop.third / 2) * 4], 0f)
+            sections.firstOrNull { it.first == 3 }?.let { brk ->
+                assertEquals(id, StarterWizard.DOWNLIFTER, curve[brk.second * 4], 1e-6f)
+                assertEquals(id, 0f, curve[brk.second * 4 + 8], 0f)
+            }
             // The plan says so on the sections the riser plays in.
             val plan = StarterWizard.planFor(style(id), style(id).lines.map { it.role }.toSet(), StarterWizard.Part.entries.toSet(), style(id).melody.acid != null)
             assertTrue(id, StarterWizard.ScenePlan.RISER_TITLE in plan.contents(1))
@@ -94,16 +104,30 @@ class ClubTransitionsTest {
             val kick = s.lines.single { it.role == StarterWizard.Role.Kick }
             assertEquals(id, kick.pattern, line.pattern)
             val p = full(s)
-            assertEquals(id, preset.inserts, p.mixer.channels[Mixer.padChannel(StarterWizard.Role.Rumble.lane)].inserts.take(preset.inserts.size))
+            // S3: the rumble pad plays the engine's rumble voice (the kick's tail already, tuned with the kick):
+            // its strip keeps only the duck under the kick and the mono, no reverb. S5: that duck listens to
+            // the kick's sound (the mixer's sidechain key), not to the kick lane's steps.
+            val voice = p.padVoices.getValue(StarterWizard.Role.Rumble.lane)
+            assertEquals(id, PadVoice.RUMBLE, voice.kind)
+            assertEquals(id, p.padVoices[StarterWizard.Role.Kick.lane]?.param(PadVoice.TUNE), voice.param(PadVoice.TUNE))
+            val strip = p.mixer.channels[Mixer.padChannel(StarterWizard.Role.Rumble.lane)].inserts
+            val keyed = StudioDrums.RUMBLE_STRIP.map {
+                if (it.effect == EffectType.PUMP && it.params[2] < 0.5f) it.copy(params = it.params.toMutableList().also { v -> v[EffectType.PUMP_AUDIO_KEY] = 1f }) else it
+            }
+            assertEquals(id, keyed, strip.take(StudioDrums.RUMBLE_STRIP.size))
+            assertTrue(id, strip.none { it.type == EffectType.REVERB.ordinal })
+            assertEquals(id, Mixer.padChannel(StarterWizard.Role.Kick.lane), p.mixer.sidechainKey)
             // It plays wherever the kick plays; in the Break only in industrial techno (its breaks drop the kick, keep the rumble).
-            val kickIn = p.allScenes.mapIndexed { i, sc -> sc.drums.lanes[StarterWizard.Role.Kick.lane].hits.isNotEmpty() || (id == "industrial_techno" && i == 3) }
-            assertEquals(id, kickIn, p.allScenes.map { it.drums.lanes[StarterWizard.Role.Rumble.lane].hits.isNotEmpty() })
+            // (The song's one-bar fills and crashes aside: a fill stops the kick for its last beats.)
+            val scenes = p.allScenes.filter { !it.isDrumBar() }
+            val kickIn = scenes.mapIndexed { i, sc -> sc.drums.lanes[StarterWizard.Role.Kick.lane].hits.isNotEmpty() || (id == "industrial_techno" && i == 3) }
+            assertEquals(id, kickIn, scenes.map { it.drums.lanes[StarterWizard.Role.Rumble.lane].hits.isNotEmpty() })
         }
         // Hard and industrial techno: the rumble is their low end, the bass waits to be ticked; techno keeps its
-        // rolling bass and offers the rumble switched off.
+        // rolling bass with the rumble under it (docs/hits/techno.md: « rumble coché par défaut en plus de la basse »).
         for (id in listOf("industrial_techno", "hard_techno")) assertFalse(id, StarterWizard.Part.Bass in StarterWizard.defaultParts(style(id)))
         assertTrue(StarterWizard.Part.Bass in StarterWizard.defaultParts(style("techno")))
-        assertTrue(style("techno").lines.single { it.role == StarterWizard.Role.Rumble }.off)
+        assertFalse(style("techno").lines.single { it.role == StarterWizard.Role.Rumble }.off)
         assertTrue(style("hard_techno").lines.none { it.off })
     }
 
@@ -117,7 +141,7 @@ class ClubTransitionsTest {
             assertEquals(id, listOf(false, false, true), p.allScenes.take(3).map { it.drums.lanes[StarterWizard.Role.Ride.lane].hits.isNotEmpty() })
         }
         val th = full(style("tech_house"))
-        assertTrue(th.allScenes.all { it.drums.lanes[StarterWizard.Role.Perc2.lane].hits.isNotEmpty() })
+        assertTrue(th.allScenes.take(4).all { it.drums.lanes[StarterWizard.Role.Perc2.lane].hits.isNotEmpty() })
         val deep = full(style("deep_house"))
         assertTrue(deep.allScenes[0].drums.lanes[StarterWizard.Role.Tom.lane].hits.isNotEmpty())
         // Afro house: three percussion lines, kept in its Break.
@@ -167,8 +191,20 @@ class ClubTransitionsTest {
         val houseBreak = house.sections().first { it.first == 3 }
         assertEquals(0.35f, houseCurve[houseBreak.second], 1e-6f)
         assertEquals(0.85f, houseCurve[houseBreak.second + houseBreak.third - 1], 1e-6f)
-        assertFalse(StarterWizard.hasSweeps(full(style("house"), parts = setOf(StarterWizard.Part.Bass, StarterWizard.Part.Lead))))
-        assertFalse(StarterWizard.hasSweeps(full(style("techno"), parts = setOf(StarterWizard.Part.Bass))))
+        // The bass of club music opens through the Groove (dark at its start) and is open in the Drop; without the chords,
+        // that is the only filter that moves.
+        for ((id, parts) in listOf("house" to setOf(StarterWizard.Part.Bass, StarterWizard.Part.Lead), "techno" to setOf(StarterWizard.Part.Bass))) {
+            val p = full(style(id), parts = parts)
+            val bassCh = InstrumentTrack.mixerChannel(p.instrumentTracks.first { it.name == "Basse" }.id)
+            val lanes = p.automation.filter { it.mode == AutomationLane.SONG && it.target.kind == AutoTarget.INSERT_PARAM && !it.songOnly }
+            assertEquals(id, listOf(bassCh), lanes.map { it.target.ch })
+            val curve = lanes.single().songCurve(p.songBars)
+            val groove = p.sections().first { it.first == 1 }
+            val drop = p.sections().first { it.first == 2 }
+            assertEquals(id, WizardMix.GROOVE_BASS_FROM, curve[groove.second], 1e-6f)
+            assertEquals(id, WizardMix.GROOVE_BASS_TO, curve[groove.second + groove.third - 1], 1e-6f)
+            assertEquals(id, 1f, curve[drop.second], 1e-6f)
+        }
         // The lanes never go past the engine's limit, the 303's knobs first (acid techno: moves, riser).
         val acid = full(style("acid_techno"))
         assertTrue(acid.automation.size <= AutomationLane.MAX_LANES)

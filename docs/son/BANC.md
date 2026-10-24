@@ -12,13 +12,16 @@ Le banc rend sur Linux, sans téléphone, les vrais morceaux de l'assistant et l
    - PLR, facteur de crête ;
    - bandes (sub, grave, bas-médium, médium, haut-médium, air) et pente spectrale ;
    - côté/centre, corrélation, corrélation et côté/centre sous 120 Hz, perte en mono ;
+   - (S4) le mouvement du lead : sa piste rendue seule (`ps_render --solo`, la voie que l'enregistrement nomme par `META lead`), le centroïde spectral de chaque mesure où il joue, l'écart entre les 10e et 90e centiles en ±% (`ps_measure --lead`) ;
    - sonie de chaque section, Drop − Groove (ou Couplet, ou Montée) et Drop − Break ;
    - NaN, échantillons écrêtés, DC, niveau de fin.
 4. **Rapport** : `scripts/bench/report.py` fait le tableau Markdown et `bench.json`. Avec `--before`, il ajoute l'écart à un passage précédent ; avec `--renders`, le gain de la cible de sonie et la perte dans la chaîne (écrêteur et limiteur) de chaque morceau, lus dans le rapport de fin d'export que `ps_render --report` écrit. Il sort en erreur sur un critère bloquant (voir plus bas).
 5. **Pister un son** : `ps_render --no-limiter` rend avant la chaîne master, `--solo <voie>` une seule voie du mixeur (c'est ainsi que les sources du continu ont été trouvées), `--as-app` écrit le fichier au format demandé par l'appli (ligne `FORMAT`).
 
 Lancer : `scripts/song-bench.sh` (tous les styles, environ 5 min, dans `build/bench/`).
-Options : `--styles techno,house`, `--ffmpeg` (contre-vérification), `--before docs/son/banc/<fichier>.json`, `--no-record` (rejouer les mêmes `.pscmd` après un changement du moteur seul).
+Options : `--styles techno,house`, `--ffmpeg` (contre-vérification), `--before docs/son/banc/<fichier>.json`, `--no-record` (rejouer les mêmes `.pscmd` après un changement du moteur seul) ; depuis S5 : `--premaster` (chaque morceau rendu aussi avant la chaîne master, `ps_render --no-limiter`), `--m4a` (rendu comme l'export M4A de l'appli, plafond −2 dBTP, encodé en AAC 256 kbit/s par FFmpeg, décodé, relu, et encodé à nouveau plus bas au-dessus de −1 dBTP comme le fait l'appli), `--kit3` (les enregistrements rejoués avec le kit v3), `--keep-wav` (sans elle chaque WAV est effacé une fois mesuré : 37 longs morceaux font 4 Go).
+`ps_measure` lit aussi depuis S5 la sonie de la partie la plus forte (`loud_lufs`, la mesure de la cible en version de mix 2) et la montée de chaque Montée sur ses 4 dernières mesures (`montee_rise`) ; `ps_render --report` écrit le mode de la cible, sa valeur, la perte et la sonie de la partie la plus forte avant et après la chaîne ; `ps_render --ceiling` règle le plafond.
+Depuis S5b, `ps_measure` lit pour chaque Drop qui suit une Montée la sonie de ses 4 premières mesures moins celle des 2 dernières de la Montée, sans son temps de silence (`drop_minus_montee_end`, avec `montee_end_lufs` et `drop_start_lufs` ; un faux drop entre les deux est sauté), et l'Intro du début contre le Drop ou le Refrain (`intro_lufs`, `intro_minus_main`).
 Les rendus restent dans `build/` : jamais dans git.
 La CI le fait tourner sur 5 styles (job « Build », étape « Song bench ») et publie le rapport en artefact `song-bench`.
 
@@ -34,10 +37,20 @@ La CI le fait tourner sur 5 styles (job « Build », étape « Song bench ») et
 - [Référence avant l'étape 1](banc/avant-etape1.md) (`banc/avant-etape1.json`).
 - [Après l'étape 1 : gain staging honnête, kit v2](banc/apres-etape1.md) (`banc/apres-etape1.json`).
 - [Après l'étape 2 : chaîne master true peak, cibles par genre](banc/apres-etape2.md) (`banc/apres-etape2.json`). C'est la référence de la CI.
+- [Après S2 : un arrangement qui tombe](banc/apres-S2.md) (`banc/apres-S2.json`), avec le contraste des sections avant master (`ps_render --no-limiter`) et exporté.
+- [Après S3, partie moteur : kit v3 contre kit v2 sur les mêmes morceaux](banc/apres-S3-moteur.md) (`banc/apres-S3-moteur.json`, kit v3). La référence de la CI reste celle de l'étape 2 tant que l'assistant envoie le kit v2.
+- [Après S4 : synthés larges et vivants](banc/apres-S4.md) (`banc/apres-S4.json`, kit v2 ; `banc/apres-S4-kit3.json`, kit v3) : largeur, corrélation, mouvement du lead (sa piste seule, `META lead`, `ps_measure --lead`), grave 60–250 Hz.
+- [Après S3, partie générateur : kit v3, 808, kicks accordés, batterie jouée à la main](banc/apres-S3-generateur.md) (`banc/apres-S3-generateur.json`), avec le contraste avant master et la montée de la Montée.
+- [Après S5 : mixage et master honnêtes](banc/apres-S5.md) (`banc/apres-S5.json`) : cible sur le Drop, perte plafonnée à 3 LU, vrai sidechain et bus « Musique », écrêteurs doux au mixage, sections à leur niveau, M4A décodé.
+- [Après S5b : le Drop tombe plus fort que la fin de sa Montée](banc/apres-S5b.md) (`banc/apres-S5b.json`) : Montée sous le Drop (souffle, roulement, volume général) et qui remonte (kick et basse sortis de sa seconde moitié), Intro des morceaux de rap sur leur boucle. C'est la référence de la CI depuis S5b.
 
 ## Critères bloquants
 
 `scripts/bench/report.py` fait échouer le banc (donc la CI) sur un true peak au-dessus de −1 dBTP, un continu au-dessus de 0,001, un NaN, ou une sonie à plus de 1 LU de la cible du style alors que la chaîne avait encore de la marge. Un morceau « plafonné » (la chaîne lui retirait déjà 6 LU, `MasterChain::kMaxLossDb`) est listé, pas en échec : pousser plus écraserait sans gagner de sonie, c'est à la batterie de l'étape 3 de le rendre plus dense. `scripts/bench/test_report.py` vérifie ces sorties sur deux mesures minuscules.
+
+Depuis S5, pour un morceau en version de mix 2 (le mode 1 du rapport de `ps_render`) : la sonie jugée est celle de la partie la plus forte (`loud_lufs`, relue sur le fichier) contre la cible du style au Drop, le plafond est de 3 LU (`MasterChain::kMaxLossDropDb`), et une perte au-dessus du plafond (+0,2) fait échouer le banc ; avec `--m4a`, un M4A décodé au-dessus de −1 dBTP aussi. Listés sans bloquer : Drop − Break ≥ +4, Drop − Groove ≥ +2, chaque Montée à +3 LU sur ses 4 dernières mesures, PLR ≥ 6.
+
+Depuis S5b (le test d'écoute A/B de Benjamin : des Montées qui finissaient plus fort que leur Drop) : chaque Drop doit tomber au moins 1 LU au-dessus de la fin de la Montée qui le précède, après master (`drop_minus_montee_end`, bloquant, +1,5 visé). Listés sans bloquer : l'Intro à moins de 8 LU sous le Drop ou le Refrain, et chaque Montée à +2 LU sur ses 4 dernières mesures (au lieu de +3 : la mesure manque à 170 BPM et plus, et varie de 2 à 3 LU entre styles d'une famille).
 
 ## Étapes 1 et 2 en bref (médianes sur 37 styles, sons intégrés)
 

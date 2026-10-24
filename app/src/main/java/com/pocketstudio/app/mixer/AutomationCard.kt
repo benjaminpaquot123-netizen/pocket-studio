@@ -128,6 +128,8 @@ data class AutomationUi(
     val focusLane: Int = -1,
     /** The strip « Automatiser un réglage » starts on (the track being worked on), -1: the first. */
     val preferredCh: Int = -1,
+    /** Phase 37: where each part of the song starts (bar) and its name, drawn along the song's curves. */
+    val parts: List<Pair<Int, String>> = emptyList(),
 )
 
 data class AutomationActions(
@@ -146,10 +148,12 @@ data class AutomationActions(
     val overview: () -> Unit = {},
     /** « Voir le potard »: the control a lane moves, where it is set (null: no way there). */
     val showControl: ((AutoTarget) -> Unit)? = null,
+    /** Phase 37: a song lane's points, one a bar (false) or one a beat, a quarter of a bar (true). */
+    val setResolution: ((lane: Int, perBeat: Boolean) -> Unit)? = null,
 )
 
 /** The lane modes and their names (read when drawn, in the interface's language). */
-private val MODES get() = listOf(AutomationLane.LOOP to tr("Boucle"), AutomationLane.PER_SCENE to tr("Par scène"), AutomationLane.SONG to tr("Morceau"))
+private val MODES get() = listOf(AutomationLane.LOOP to tr("Boucle"), AutomationLane.PER_SCENE to tr("Par partie"), AutomationLane.SONG to tr("Morceau"))
 
 private fun List<StripInfo>.nameOf(ch: Int) = firstOrNull { it.ch == ch }?.name?.let { com.pocketstudio.model.DefaultNames.shown(it) } ?: tr("Sortie")
 
@@ -157,7 +161,7 @@ private fun List<StripInfo>.nameOf(ch: Int) = firstOrNull { it.ch == ch }?.name?
 fun automationLabel(t: AutoTarget, channels: List<Channel>, master: List<Insert>, strips: List<StripInfo> = BASIC_STRIPS): String {
     fun channelName(ch: Int) = strips.nameOf(ch)
     return when (t.kind) {
-    AutoTarget.VOLUME -> tr("Volume · %s", channelName(t.ch))
+    AutoTarget.VOLUME -> tr("Volume · %s", if (t.isMasterVolume) tr("Sortie générale") else channelName(t.ch))
     AutoTarget.PAN -> tr("Panoramique · %s", channelName(t.ch))
     AutoTarget.SEND -> tr("Envoi %s · %s", tr(Buses.NAMES.getOrElse(t.slot) { "?" }).lowercase(), channelName(t.ch))
     AutoTarget.INSERT_PARAM -> {
@@ -181,6 +185,8 @@ fun automationLabel(t: AutoTarget, channels: List<Channel>, master: List<Insert>
         "$name · ${channelName(t.ch)}"
     }
     AutoTarget.LIVE -> tr("Live : %s", liveSettingName(t.param))
+    AutoTarget.SYNTH -> "${com.pocketstudio.app.synth.synthKnobName(t.param)} · ${channelName(t.ch)}"
+    AutoTarget.PLAITS -> "${com.pocketstudio.model.PlaitsPatch.PARAMS.getOrNull(t.param - 1)?.let { tr(it) } ?: "?"} · ${channelName(t.ch)}"
     else -> "?"
     }
 }
@@ -434,7 +440,7 @@ fun AutomationCard(
  * tools and its curve with a value scale on the side and bars (or beats) under it.
  */
 @Composable
-private fun LaneBlock(
+internal fun LaneBlock(
     i: Int, lane: AutomationLane, ui: AutomationUi, channels: List<Channel>, master: List<Insert>,
     strips: List<StripInfo>, actions: AutomationActions,
 ) {
@@ -501,12 +507,22 @@ private fun LaneBlock(
                 )
             }
         }
+        // Phase 37: along the song, a point a bar or a point a beat (a quarter of a bar in 4/4).
+        val resolution = actions.setResolution
+        if (song && resolution != null) {
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                FilterChip(selected = !lane.songPerBeat, onClick = { resolution(i, false) }, label = { Text(tr("1 point par mesure")) },
+                    modifier = Modifier.testTag("auto_res_bar_$i"))
+                FilterChip(selected = lane.songPerBeat, onClick = { resolution(i, true) }, label = { Text(tr("1 point par temps (¼ de mesure)")) },
+                    modifier = Modifier.testTag("auto_res_beat_$i"))
+            }
+        }
         Text(
             when {
-                !song && lane.mode == AutomationLane.PER_SCENE -> tr("Pas de la scène %s (chaque scène a les siens).", com.pocketstudio.model.Scene.NAMES.getOrElse(ui.scene) { "?" })
+                !song && lane.mode == AutomationLane.PER_SCENE -> tr("Pas de la partie %s (chaque partie a les siens).", com.pocketstudio.model.Scene.NAMES.getOrElse(ui.scene) { "?" })
                 !song -> tr("La même courbe à chaque tour de boucle (%d pas).", count)
                 ui.songBars == 0 -> tr("Morceau vide : la courbe suit les mesures depuis le début de la lecture.")
-                lane.songPerBeat -> tr("Une valeur par temps sur tout le morceau (%d mesures), écrite depuis la page Live.", bars)
+                lane.songPerBeat -> tr("Une valeur par temps (¼ de mesure) sur tout le morceau (%d mesures) ; elle glisse d'un point à l'autre.", bars)
                 else -> tr("Une valeur par mesure sur tout le morceau (%d mesures) ; elle glisse d'un point à l'autre.", bars)
             },
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
@@ -573,6 +589,14 @@ private fun LaneBlock(
                     style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, maxLines = 1, textAlign = TextAlign.End,
                 )
                 TimeAxis(song, first, visible, perBar, Modifier.weight(1f))
+            }
+            // Phase 37: the parts' names under the song's curve, where each starts (« B · Drop »).
+            if (song && ui.parts.isNotEmpty()) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(tr("partie"), Modifier.width(AXIS_WIDTH).padding(end = 4.dp),
+                        style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, maxLines = 1, textAlign = TextAlign.End)
+                    PartAxis(ui.parts, first, visible, perBar, Modifier.weight(1f).testTag("auto_parts_$i"))
+                }
             }
         }
     }
@@ -645,6 +669,31 @@ private fun TimeAxis(song: Boolean, first: Int, visible: Int, perBar: Int, modif
                 label, Modifier.offset(x = maxWidth * ((unit - first).toFloat() / visible.coerceAtLeast(1)) + 2.dp),
                 style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, maxLines = 1, softWrap = false,
             )
+        }
+    }
+}
+
+/**
+ * Phase 37: the song's parts along a curve's window ([first], [visible] points of [perBar] a bar):
+ * a line where each starts and its name, cut where the next one begins.
+ */
+@Composable
+private fun PartAxis(parts: List<Pair<Int, String>>, first: Int, visible: Int, perBar: Int, modifier: Modifier) {
+    val lineColor = Neon.Magenta
+    androidx.compose.foundation.layout.BoxWithConstraints(modifier.height(20.dp)) {
+        val shown = visible.coerceAtLeast(1)
+        val per = perBar.coerceAtLeast(1)
+        parts.forEachIndexed { k, (bar, name) ->
+            val from = bar * per
+            val until = parts.getOrNull(k + 1)?.first?.times(per) ?: Int.MAX_VALUE
+            if (until <= first || from >= first + shown) return@forEachIndexed
+            val x = ((from - first).coerceAtLeast(0).toFloat() / shown)
+            val w = ((minOf(until, first + shown) - maxOf(from, first)).toFloat() / shown).coerceAtLeast(0f)
+            Row(Modifier.offset(x = maxWidth * x).width(maxWidth * w).height(20.dp), verticalAlignment = Alignment.CenterVertically) {
+                Box(Modifier.width(2.dp).height(16.dp).background(lineColor))
+                Text(name, Modifier.padding(start = 2.dp), style = MaterialTheme.typography.labelSmall, color = Neon.TextPrimary,
+                    maxLines = 1, overflow = TextOverflow.Ellipsis)
+            }
         }
     }
 }

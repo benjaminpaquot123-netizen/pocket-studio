@@ -138,7 +138,7 @@ class AcidcoreTest {
 
         val p = defaultSong(s)
         assertEquals(32, p.acid.length)
-        assertEquals(listOf("Intro", "Groove", "Drop", "Break"), p.allScenes.map { it.label })
+        assertEquals(listOf("Intro", "Groove", "Drop", "Break"), p.allScenes.take(4).map { it.label })
         // Intro: the 303 alone; Groove: kick and offbeat hats; Drop: everything; Break: no kick.
         val (intro, groove, drop, brk) = p.allScenes
         assertTrue(intro.drums.lanes.all { it.hits.isEmpty() } && intro.acid.steps.any { it.gate })
@@ -148,11 +148,12 @@ class AcidcoreTest {
         assertEquals(12, drop.drums.lanes[AR.Hat.lane].hits.size)
         assertTrue(drop.drums.lanes[AR.OpenHat.lane].hits.isNotEmpty())
         assertTrue(brk.drums.lanes.all { it.hits.isEmpty() } && brk.acid.steps.any { it.gate })
-        // Intro, Groove, Drop, Break, Drop, Break, Drop, outro: 3 to 3 min 30.
-        val order = p.song.map { it.scene }.fold(listOf<Int>()) { acc, sc -> if (acc.lastOrNull() == sc) acc else acc + sc }
-        assertEquals(listOf(0, 1, 2, 3, 2, 3, 2, 0), order)
+        // Intro, Groove, Montée, Drop, Break, Montée, Drop, Break, Montée, Drop, outro: 4 min 40 (a techno style: 5 to 6 minutes
+        // at a slower tempo).
+        val order = StarterWizard.songSections(p).map { p.allScenes[it.scene].label }
+        assertEquals(listOf("Intro", "Groove", "Montée", "Drop", "Break", "Montée", "Drop", "Break", "Montée", "Drop", "Intro"), order)
         val seconds = p.songBars * 4 * 60.0 / p.tempoBpm
-        assertTrue("$seconds s", seconds in 180.0..210.0)
+        assertTrue("$seconds s", seconds in 270.0..SongShape.LONG_SECONDS)
         // The 303's sound: Hurleur, saturated; the kick distorted; the master compressed and saturated.
         assertTrue(p.acid.sound.drive >= 0.6f && p.acid.sound.resonance >= 0.7f)
         assertTrue(p.mixer.channels[1].inserts.any { it.effect == EffectType.SATURATION })
@@ -168,16 +169,20 @@ class AcidcoreTest {
         assertEquals(AutomationLane.SONG, cutoff.mode)
         assertTrue(p.automation.any { it.target == AutoTarget.acid(2) })
         val curve = cutoff.songCurve(p.songBars)
-        // Intro (16 bars): closed, opening.
+        val sections = StarterWizard.songSections(p)
+        // Intro (32 bars): closed, opening.
+        val intro = sections.first()
         assertEquals(0.08f, curve[0], 1e-4f)
-        assertEquals(0.45f, curve[15], 1e-4f)
-        assertTrue((1 until 16).all { curve[it] > curve[it - 1] })
-        // First Break (after Intro 16, Groove 16, Drop 32): from dark to wide open.
-        assertEquals(0.2f, curve[64], 1e-4f)
-        assertEquals(0.85f, curve[79], 1e-4f)
+        assertEquals(0.45f, curve[intro.bars - 1], 1e-4f)
+        assertTrue((1 until intro.bars).all { curve[it] > curve[it - 1] })
+        // First Break: from dark to wide open.
+        val brk = sections.first { it.scene == 3 }
+        assertEquals(0.2f, curve[brk.start], 1e-4f)
+        assertEquals(0.85f, curve[brk.start + brk.bars - 1], 1e-4f)
         // The outro closes it again, the last bar the darkest of the song's end.
+        val outro = sections.last()
         assertEquals(0.08f, curve.last(), 1e-4f)
-        assertEquals(0.45f, curve[curve.size - 16], 1e-4f)
+        assertEquals(0.45f, curve[outro.start], 1e-4f)
         // Played alone, a scene holds the curve where it first plays in the song.
         assertEquals(0.2f, p.songCurvesAt(3)[p.automation.indexOf(cutoff)]!!, 1e-4f)
     }

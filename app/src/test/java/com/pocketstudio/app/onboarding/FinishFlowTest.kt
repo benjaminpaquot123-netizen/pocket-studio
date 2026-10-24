@@ -164,6 +164,16 @@ class FinishFlowTest {
         assertEquals(4, chosen.size)
     }
 
+    /** The assistant's song: « Changer un son » opens the Lead (named for it), never the chords' track with its many notes. */
+    @Test
+    fun changerUnSonOpensTheAssistantsLead() {
+        val style = com.pocketstudio.model.StarterWizard.style("house")!!
+        val parts = com.pocketstudio.model.StarterWizard.Part.entries.associateWith { com.pocketstudio.model.StarterWizard.soundsFor(it, style).first() }
+        val song = com.pocketstudio.model.StarterWizard.build(style, style.lines.associate { it.role to null as com.pocketstudio.model.PadSample? }, com.pocketstudio.model.StarterWizard.Mood.Happy, parts)
+        val lead = song.tracks.first { it.name == "Lead" }
+        assertEquals(lead.id, mainTrackOf(song))
+    }
+
     @Test
     fun changerUnSonPicksTheTrackThatCarriesTheTune() {
         assertNull(mainTrackOf(Project()))

@@ -80,7 +80,7 @@ fun Project.withoutSounds(files: Set<String>): Project {
         scenes = scenes.map { it.copy(drums = it.drums.cleaned()) },
         live = live.copy(clips = live.clips.map { c -> c?.takeIf { it.file !in files } }),
         audioTracks = audioTracks.map { t ->
-            t.copy(clip = t.clip?.takeIf { it.file !in files }, previous = t.previous?.takeIf { it.file !in files })
+            t.mapTakes { c -> c.takeIf { it.file !in files } }
         },
         sampled = sampled.cleaned(),
         tracks = tracks.map { it.copy(sampled = it.sampled.cleaned()) },

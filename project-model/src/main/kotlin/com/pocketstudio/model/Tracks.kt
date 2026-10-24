@@ -1,6 +1,8 @@
 package com.pocketstudio.model
 
 import com.pocketstudio.model.i18n.tr
+import kotlinx.serialization.EncodeDefault
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 
 /**
@@ -8,6 +10,7 @@ import kotlinx.serialization.Serializable
  * (its sound and notes stay in the project's own fields, so older files load unchanged); tracks
  * 1..7 are added at will and live in [Project.tracks].
  */
+@OptIn(ExperimentalSerializationApi::class)
 @Serializable
 data class InstrumentTrack(
     /** 1..[MAX]-1 for an added track: its engine track and mixer channel (see [mixerChannel]). */
@@ -15,7 +18,7 @@ data class InstrumentTrack(
     val name: String,
     /** Index in the track colour palette. */
     val color: Int = 0,
-    /** 0 = subtractive synth, 1 = Plaits, 2 = [sampled] (an [instrument] still wins). */
+    /** 0 = subtractive synth, 1 = Plaits, 2 = [sampled], 3 = [multi], 4 = the 808 ([voice808]) (an [instrument] still wins). */
     val engine: Int = 0,
     val synth: SynthPatch = SynthPatch(),
     val plaits: PlaitsPatch = PlaitsPatch(),
@@ -23,22 +26,36 @@ data class InstrumentTrack(
     /** The current scene's notes (each scene keeps its own, see [Scene.trackNotes]). */
     val notes: NoteClip = NoteClip(),
     val sampled: SampledPatch = SampledPatch(),
+    /**
+     * Phase 37: its notes follow « Accords du morceau » (true), stay as written (false), or as the
+     * project says (null: the assistant's tracks follow, the user's own stay; [ChordTrack.follows]).
+     * Left out of the file when null.
+     */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val followChords: Boolean? = null,
+    /** A downloaded multizone instrument (engine 3, phase 38); left out of the file when none. */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val multi: MultiPatch = MultiPatch(),
+    /** The 808's settings when the track plays it (engine 4, phase 38); left out of the file at its defaults. */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val voice808: PadVoice = PadVoice(PadVoice.BASS_808),
 ) {
     fun sanitized(): InstrumentTrack = copy(
         name = name.take(MAX_NAME).ifBlank { "Piste ${id + 1}" },
         color = color.coerceIn(0, COLORS - 1),
-        engine = engine.coerceIn(0, 2),
+        engine = engine.coerceIn(0, ENGINE_808),
         synth = synth.sanitized(),
         plaits = plaits.sanitized(),
         instrument = instrument?.takeIf { it.bank in 0..128 && it.program in 0..127 },
         notes = notes.sanitized(),
         sampled = sampled.sanitized(),
+        multi = multi.sanitized(),
+        voice808 = voice808.copy(kind = PadVoice.BASS_808).sanitized(),
     )
 
     /** What the track's sound is, in a few words. */
     val soundLabel: String get() = instrument?.name ?: when (engine) {
         1 -> "Plaits"
         2 -> sampled.name.ifBlank { tr("Sample") }
+        ENGINE_MULTI -> tr(multi.name.ifBlank { "Instrument" })
+        ENGINE_808 -> "808"
         else -> tr("Synthé")
     }
 
@@ -47,6 +64,13 @@ data class InstrumentTrack(
         const val MAX = 8
         const val MAX_NAME = 24
         const val COLORS = 8
+
+        // [engine]: the engine's InstrumentTrack::Source.
+        const val ENGINE_SYNTH = 0
+        const val ENGINE_PLAITS = 1
+        const val ENGINE_SAMPLED = 2
+        const val ENGINE_MULTI = 3
+        const val ENGINE_808 = 4
 
         /** The mixer channel of track [id] (NativeEngine.trackChannel): 2 for the first, then 5..11. */
         fun mixerChannel(id: Int) = if (id == 0) 2 else 4 + id
@@ -58,14 +82,18 @@ val Project.instrumentTracks: List<InstrumentTrack> get() = listOf(track(0)) + t
 
 /** Track [id]; the first track when there is no such track. */
 fun Project.track(id: Int): InstrumentTrack =
-    if (id == 0) InstrumentTrack(0, synthTrackName, synthTrackColor, synthEngine, synth, plaits, instrument, synthNotes, sampled)
+    if (id == 0) InstrumentTrack(
+        0, synthTrackName, synthTrackColor, synthEngine, synth, plaits, instrument, synthNotes, sampled,
+        followChords = synthFollowChords, multi = multi, voice808 = voice808,
+    )
     else tracks.firstOrNull { it.id == id } ?: track(0)
 
 /** Puts [t] back where it belongs (the project's own fields for the first track). */
 fun Project.withTrack(t: InstrumentTrack): Project =
     if (t.id == 0) copy(
         synthTrackName = t.name, synthTrackColor = t.color, synthEngine = t.engine, synth = t.synth,
-        plaits = t.plaits, instrument = t.instrument, synthNotes = t.notes, sampled = t.sampled,
+        plaits = t.plaits, instrument = t.instrument, synthNotes = t.notes, sampled = t.sampled, synthFollowChords = t.followChords,
+        multi = t.multi, voice808 = t.voice808,
     )
     else copy(tracks = tracks.map { if (it.id == t.id) t else it })
 
@@ -76,7 +104,10 @@ fun Project.withTrack(t: InstrumentTrack): Project =
 fun Project.viewOfTrack(id: Int): Project {
     if (id == 0) return this
     val t = tracks.firstOrNull { it.id == id } ?: return this
-    return copy(synthEngine = t.engine, synth = t.synth, plaits = t.plaits, instrument = t.instrument, synthNotes = t.notes, sampled = t.sampled)
+    return copy(
+        synthEngine = t.engine, synth = t.synth, plaits = t.plaits, instrument = t.instrument, synthNotes = t.notes, sampled = t.sampled,
+        multi = t.multi, voice808 = t.voice808, synthFollowChords = t.followChords,
+    )
 }
 
 /** A new track (or null when all eight exist), with a free id, a fresh mixer channel and the next colour. */
@@ -96,6 +127,12 @@ fun Project.addTrack(name: String? = null, engine: Int = 0): Project? {
 fun Project.removeTrack(id: Int): Project {
     if (id == 0) return this
     val ch = InstrumentTrack.mixerChannel(id)
+    // Its frozen sound goes with it (a new track given its id later must not pass for frozen).
+    val unfrozen = audioTracks.filter { it.frozenFrom == id }.fold(this) { p, a -> p.removeAudioTrack(a.id) }
+    return unfrozen.removeInstrumentTrack(id, ch)
+}
+
+private fun Project.removeInstrumentTrack(id: Int, ch: Int): Project {
     return copy(
         tracks = tracks.filterNot { it.id == id },
         scenes = scenes.map { it.copy(trackNotes = it.trackNotes - id) },

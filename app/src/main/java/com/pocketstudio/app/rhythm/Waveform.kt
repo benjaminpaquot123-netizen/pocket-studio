@@ -13,6 +13,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.drawText
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
@@ -42,7 +43,11 @@ fun Waveform(
     markers: List<Float> = emptyList(),
     markerColor: Color = Color.White,
     onTap: ((Float) -> Unit)? = null,
+    /** Bar lines over the sound: (fraction of it, bar number), numbered where there is room. */
+    bars: List<Pair<Float, Int>> = emptyList(),
 ) {
+    val barText = androidx.compose.ui.text.rememberTextMeasurer()
+    val barStyle = androidx.compose.ui.text.TextStyle(color = Color.White.copy(alpha = 0.6f), fontSize = androidx.compose.ui.unit.TextUnit(10f, androidx.compose.ui.unit.TextUnitType.Sp))
     var start by remember(peaks) { mutableFloatStateOf(0f) }
     var width by remember(peaks) { mutableFloatStateOf(1f) }
     Canvas(
@@ -82,6 +87,17 @@ fun Waveform(
                 Offset(x.toFloat(), mid - lo.coerceIn(-1f, 1f) * mid + 1f),
                 strokeWidth = 1f,
             )
+        }
+        var lastLabel = -1000f
+        bars.forEach { (at, bar) ->
+            val x = (at - start) / width * size.width
+            if (x !in 0f..size.width) return@forEach
+            drawLine(Color.White.copy(alpha = 0.22f), Offset(x, 0f), Offset(x, size.height), strokeWidth = 1f)
+            // A number where it does not run into the one before.
+            if (x - lastLabel >= 28f * density) {
+                drawText(barText, "$bar", Offset(x + 2f * density, 1f * density), barStyle)
+                lastLabel = x
+            }
         }
         markers.forEach { m ->
             val x = (m - start) / width * size.width

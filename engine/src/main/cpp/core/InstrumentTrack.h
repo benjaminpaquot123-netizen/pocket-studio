@@ -4,23 +4,27 @@
 #include <array>
 #include <cstdint>
 
+#include "MultiSampler.h"
 #include "NoteTrack.h"
 #include "PlaitsSynth.h"
 #include "SampleInstrument.h"
 #include "SoundFontPlayer.h"
 #include "Synth.h"
+#include "Track808.h"
 
 namespace ps {
 
 // One instrument track: its piano-roll pattern and its sound (a General MIDI instrument when one
-// is loaded, else Plaits, a sample played across the keys or the subtractive synth). Everything is
-// preallocated: real-time safe.
+// is loaded, else Plaits, a sample played across the keys, a multizone instrument (phase 38), the
+// studio 808 or the subtractive synth). Everything is preallocated: real-time safe.
 struct InstrumentTrack {
-    enum Source { SynthSource = 0, PlaitsSource = 1, SampledSource = 2 };
+    enum Source { SynthSource = 0, PlaitsSource = 1, SampledSource = 2, MultiSource = 3, Bass808Source = 4 };
     Synth synth;
     SoundFontPlayer instrument;
     PlaitsSynth plaits;
     SampleInstrument sampled;
+    MultiSampler multi;
+    Track808 bass808;
     NoteTrack notes;
     int source = SynthSource;
     // Switched off tracks are neither rendered nor mixed (track 0 is always on).
@@ -30,6 +34,7 @@ struct InstrumentTrack {
     struct Staged {
         std::array<int32_t, NoteTrack::kMaxNotes> packed{};
         std::array<float, NoteTrack::kMaxNotes> velocity{};
+        std::array<uint8_t, NoteTrack::kMaxNotes> high{};  // NoteTrack::highOf
         int count = 0;
         int steps = 16;
     } staged;
@@ -38,15 +43,20 @@ struct InstrumentTrack {
         synth.prepare(sampleRate);
         plaits.prepare(sampleRate);
         sampled.prepare(sampleRate);
+        multi.prepare(sampleRate);
+        bass808.prepare(sampleRate);
     }
 
     // Sequenced or live, the note sounds (a General MIDI instrument wins, then the chosen source;
-    // a sampled source without its sound yet falls back to the synth).
+    // a sampled or multizone source without its sound yet falls back to the synth: a song never
+    // waits for a download).
     void noteOn(int n, float v, int at) {
         if (n >= 0 && n < 128) sustained[static_cast<size_t>(n)] = false;
         if (instrument.active()) instrument.noteOn(n, v, at);
         else if (source == PlaitsSource) plaits.noteOn(n, v, at);
         else if (source == SampledSource && sampled.active()) sampled.noteOn(n, v, at);
+        else if (source == MultiSource && multi.active()) multi.noteOn(n, v, at);
+        else if (source == Bass808Source) bass808.noteOn(n, v, at);
         else synth.noteOn(n, v, at);
     }
     // Held by the sustain pedal until it is released.
@@ -64,17 +74,21 @@ struct InstrumentTrack {
         instrument.allNotesOff();
         plaits.allNotesOff();
         sampled.allNotesOff();
+        multi.allNotesOff();
+        bass808.allNotesOff();
         sustained.fill(false);
         if (!keepArpKeys) arp.count = 0;
         arp.sounding = -1;
         arp.offIn = -1.0;
     }
     void setSource(int s) {
-        s = std::clamp(s, 0, 2);
+        s = std::clamp(s, 0, 4);
         if (s == source) return;
         synth.allNotesOff();
         plaits.allNotesOff();
         sampled.allNotesOff();
+        multi.allNotesOff();
+        bass808.allNotesOff();
         source = s;
     }
 
@@ -118,7 +132,10 @@ struct InstrumentTrack {
     }
     void setExpression(int kind, float value) {
         switch (kind) {
-            case Bend: synth.setBend(value); plaits.setBend(value); sampled.setBend(value); instrument.setBend(value); break;
+            case Bend:
+                synth.setBend(value); plaits.setBend(value); sampled.setBend(value); instrument.setBend(value);
+                multi.setBend(value); bass808.setBend(value);
+                break;
             case Mod: synth.setMod(value); plaits.setMod(value); break;
             case Sustain:
                 sustain = value > 0.5f;
@@ -188,7 +205,10 @@ struct InstrumentTrack {
     }
 
     void swapIn() {
-        for (int i = 0; i < staged.count; ++i) notes.setNote(i, staged.packed[static_cast<size_t>(i)], staged.velocity[static_cast<size_t>(i)]);
+        for (int i = 0; i < staged.count; ++i) {
+            const auto k = static_cast<size_t>(i);
+            notes.setNote(i, staged.packed[k], staged.velocity[k], staged.high[k]);
+        }
         notes.setCount(staged.count);
         notes.setSteps(staged.steps);
     }
@@ -205,12 +225,47 @@ struct InstrumentTrack {
     bool sustain = false;
     std::array<bool, 128> sustained{};
 
-    void render(float* out, int numFrames) {
-        synth.render(out, numFrames);
-        instrument.render(out, numFrames);
-        plaits.render(out, numFrames);
-        sampled.render(out, numFrames);
+    // S4 (sound version 2): General MIDI instruments and stereo samples play in stereo (before,
+    // both were folded to mono). The synth is stereo whenever its own settings make it so.
+    void setStereoSounds(bool on) { stereoSounds = on; }
+    bool stereoSounds = false;
+    // A multizone instrument is new with phase 38: its stereo recordings play in stereo whatever the version.
+    bool stereo() const {
+        return synth.stereo() || (stereoSounds && (instrument.active() || sampled.stereoSample())) || multiWide();
     }
+    bool multiWide() const { return source == MultiSource && multi.active() && multi.stereo(); }
+
+    // Adds the track's sound into `left` and, when it is stereo (returns true), `right` (the same
+    // length, cleared by the caller). Mono: `left` only, exactly as before.
+    bool render(float* left, float* right, int numFrames) {
+        if (right == nullptr || !stereo()) {
+            synth.render(left, numFrames);
+            instrument.render(left, numFrames);
+            plaits.render(left, numFrames);
+            sampled.render(left, numFrames);
+            multi.render(left, nullptr, numFrames);
+            bass808.render(left, numFrames);
+            return false;
+        }
+        // The mono parts first, copied to the right, then the stereo ones into both.
+        const bool synthWide = synth.stereo();
+        const bool fontWide = stereoSounds && instrument.active();
+        const bool sampleWide = stereoSounds && sampled.stereoSample();
+        if (!synthWide) synth.render(left, numFrames);
+        if (!fontWide) instrument.render(left, numFrames);
+        const bool multiWideNow = multiWide();
+        plaits.render(left, numFrames);
+        if (!sampleWide) sampled.render(left, numFrames);
+        if (!multiWideNow) multi.render(left, nullptr, numFrames);
+        bass808.render(left, numFrames);
+        std::copy(left, left + numFrames, right);
+        if (synthWide) synth.render(left, right, numFrames);
+        if (fontWide) instrument.render(left, right, numFrames);
+        if (sampleWide) sampled.render(left, right, numFrames);
+        if (multiWideNow) multi.render(left, right, numFrames);
+        return true;
+    }
+    void render(float* out, int numFrames) { render(out, nullptr, numFrames); }
 
 private:
     void soundOff(int n, int at) {
@@ -218,6 +273,8 @@ private:
         instrument.noteOff(n, at);
         plaits.noteOff(n, at);
         sampled.noteOff(n, at);
+        multi.noteOff(n, at);
+        bass808.noteOff(n, at);
         synth.noteOff(n, at);
     }
     int arpNote() {

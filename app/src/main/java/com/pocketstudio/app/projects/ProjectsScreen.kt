@@ -261,7 +261,7 @@ private fun ProjectCard(p: ProjectInfo, open: Boolean, now: Long, actions: Proje
                         whenText(p.modified, now),
                         if (p.tempoBpm > 0) "${p.tempoBpm.toInt()} BPM" else null,
                         if (p.bars > 0) com.pocketstudio.app.ui.barsShort(p.bars) else null,
-                        if (p.scenes > 1) tr("%d scènes", p.scenes) else null,
+                        if (p.scenes > 1) tr("%d parties", p.scenes) else null,
                         if (p.hasRemix) "remix" else null,
                     ).joinToString(" · "),
                     style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,

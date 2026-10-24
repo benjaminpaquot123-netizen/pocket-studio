@@ -74,9 +74,9 @@ data class SongReadyUi(val name: String, val seconds: Int, val parts: Int, val p
 class SongReadyActions(
     /** ▶ the whole song (or stop it): the card stays, for the next choice. */
     val listen: () -> Unit = {},
-    /** « Changer un son »: the main track's sounds (Synthé). */
+    /** « Changer un son »: the tune's track, its sounds in a sheet (one touch picks one). */
     val changeSound: () -> Unit = {},
-    /** « Modifier le morceau »: the song's parts on the timeline (named after the Morceau tab, until phase 36 renames it). */
+    /** « Modifier le morceau »: the Morceau tab's list of parts (the timeline stays one touch away there). */
     val structure: () -> Unit = {},
     /** « Partager »: « Prêt à partager ? ». */
     val share: () -> Unit = {},
@@ -110,7 +110,8 @@ fun SongReady(pending: Boolean, projectId: String, ui: SongReadyUi, actions: Son
         guide = actions.guide?.let { then(it) },
         close = then(actions.close),
     )
-    Dialog(onDismissRequest = done.close, properties = DialogProperties(usePlatformDefaultWidth = false)) {
+    // A touch outside is not a choice: only the cross, « Plus tard », Back or a big choice closes it.
+    Dialog(onDismissRequest = done.close, properties = DialogProperties(usePlatformDefaultWidth = false, dismissOnClickOutside = false)) {
         Box(Modifier.fillMaxWidth().padding(horizontal = 12.dp), contentAlignment = Alignment.Center) {
             SongReadyCard(ui, done, Modifier.widthIn(max = 560.dp))
         }
@@ -199,18 +200,26 @@ private fun clock(seconds: Int) = "%d:%02d".format(seconds / 60, seconds % 60)
 /** Notes below this pitch (C3) make a track a bass line. */
 private const val BASS_BELOW = 48
 
+/** The default names of the tracks that carry the tune (the assistant's lead, its counter-melody). */
+private val TUNE_NAMES = setOf("Lead", "Mélodie", "Contre-chant")
+
 /**
- * The track « Changer un son » opens: the instrument track that carries the tune (the most
- * notes over the song, a bass line only if nothing else plays), or null when none has notes.
+ * The track « Changer un son » opens: the instrument track that carries the tune. The one named
+ * for it (« Lead », « Mélodie »…) first; else, among the tracks that are not a bass line, the one
+ * playing highest (the chords' track has more notes, but the melody sits above them); a bass
+ * line only if nothing else plays; null when no track has notes.
  */
 fun mainTrackOf(project: Project): Int? {
     val scenes = project.allScenes
     val tracks = project.instrumentTracks.map { t ->
         val notes = scenes.flatMap { s -> (if (t.id == 0) s.synthNotes else s.trackNotes[t.id])?.notes.orEmpty() }
-        t.id to notes
-    }.filter { it.second.isNotEmpty() }
+        Triple(t.id, t.name, notes)
+    }.filter { it.third.isNotEmpty() }
     if (tracks.isEmpty()) return null
-    val tunes = tracks.filter { (_, notes) -> notes.map { it.pitch }.sorted()[notes.size / 2] >= BASS_BELOW }
-    return (tunes.ifEmpty { tracks }).maxByOrNull { it.second.size }?.first
+    tracks.firstOrNull { (_, name, _) -> (com.pocketstudio.model.DefaultNames.french(name) ?: name) in TUNE_NAMES }?.let { return it.first }
+    fun median(notes: List<com.pocketstudio.model.Note>) = notes.map { it.pitch }.sorted()[notes.size / 2]
+    val tunes = tracks.filter { (_, _, notes) -> median(notes) >= BASS_BELOW }
+    if (tunes.isEmpty()) return tracks.maxByOrNull { it.third.size }?.first
+    return tunes.maxByOrNull { (_, _, notes) -> median(notes) }?.first
 }
 

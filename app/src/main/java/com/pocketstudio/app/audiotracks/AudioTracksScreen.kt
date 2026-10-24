@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -134,6 +135,12 @@ class AudioTracksActions(
     val playFrom: (Int) -> Unit = {},
     /** « Prise précédente »: the take the last one replaced comes back. */
     val restorePrevious: (Int) -> Unit = {},
+    /** The take picker: take (second) of the track's other takes, newest first, plays. */
+    val chooseTake: (Int, Int) -> Unit = { _, _ -> },
+    /** « Recaler sur le tempo »: a take recorded at another tempo stretched to the song's. */
+    val realign: (Int) -> Unit = {},
+    /** « Refaire mes. A-B »: track, first bar, last bar (of the song for a song clip, else of the part). */
+    val punch: (Int, Int, Int) -> Unit = { _, _, _ -> },
 )
 
 private val LOOP_BARS = listOf(1, 2, 4, 8, 16)
@@ -152,7 +159,7 @@ fun AudioTracksScreen(ui: AudioTracksUi, actions: AudioTracksActions, modifier: 
                 SectionLabel(tr("Pistes audio"), help = Glossary.AUDIO_TRACK)
                 Text(
                     tr("Enregistre ta voix, une guitare, des claquements de mains… par-dessus ta musique, ou ajoute un fichier son.") + " " +
-                        tr("Une prise sur une scène joue une fois à chaque passage de cette scène ; une prise sur tout le morceau joue d'un bout à l'autre."),
+                        tr("Une prise sur une partie joue une fois à chaque passage de cette partie ; une prise sur tout le morceau joue d'un bout à l'autre."),
                     style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary,
                 )
                 ListeningAdvice(ui.listening)
@@ -175,7 +182,7 @@ fun AudioTracksScreen(ui: AudioTracksUi, actions: AudioTracksActions, modifier: 
         com.pocketstudio.ui.AdaptiveColumns(cards, minCellWidth = 360.dp, spacing = 10.dp, columnSpacing = 10.dp, masonry = true)
         if (!ui.latencyMeasured && ui.tracks.isNotEmpty()) {
             Text(
-                tr("Astuce : mesure la latence une fois (Outils › Latence) pour que tes prises tombent pile sur le temps."),
+                tr("Astuce : mesure la latence une fois (Plus › Latence) pour que tes prises tombent pile sur le temps."),
                 style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
             )
         }
@@ -208,7 +215,7 @@ private fun TargetCard(ui: AudioTracksUi, actions: AudioTracksActions) {
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.fadingHorizontalScroll()) {
             FilterChip(
                 selected = !song, onClick = { actions.setTarget(ui.target.copy(song = false)) },
-                label = { Text(tr("La scène %s", ui.sceneTitle)) }, colors = chip, modifier = Modifier.testTag("audio_target_scene"),
+                label = { Text(tr("La partie %s", ui.sceneTitle)) }, colors = chip, modifier = Modifier.testTag("audio_target_scene"),
             )
             FilterChip(
                 selected = song, enabled = ui.songParts.isNotEmpty(), onClick = { actions.setTarget(ui.target.copy(song = true)) },
@@ -216,7 +223,7 @@ private fun TargetCard(ui: AudioTracksUi, actions: AudioTracksActions) {
             )
         }
         if (ui.songParts.isEmpty()) {
-            Text(tr("Pour enregistrer sur tout le morceau, crée d'abord un morceau (onglet Morceau)."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+            Text(tr("Pour enregistrer sur tout le morceau, crée d'abord un morceau (Structure)."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         } else if (song) {
             Text(tr("À partir de la partie"), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.fadingHorizontalScroll()) {
@@ -226,7 +233,7 @@ private fun TargetCard(ui: AudioTracksUi, actions: AudioTracksActions) {
             }
             Text(tr("Le morceau démarre après le décompte ; ta prise se pose à sa place dans le morceau et joue une seule fois."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         } else {
-            Text(tr("La scène %s tourne en boucle ; ta prise joue une fois à chaque passage de cette scène.", ui.sceneTitle), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+            Text(tr("La partie %s tourne en boucle ; ta prise joue une fois à chaque passage de cette partie.", ui.sceneTitle), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         }
         ListeningAdvice(ui.listening)
     }
@@ -243,7 +250,7 @@ private fun RecordingCard(rec: AudioRecordingUi, track: AudioTrack?, ui: AudioTr
                 style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f),
             )
         }
-        val where = if (rec.song) tr("tout le morceau") else tr("la scène %s", ui.sceneTitle)
+        val where = if (rec.song) tr("tout le morceau") else tr("la partie %s", ui.sceneTitle)
         Text(listOfNotNull(track?.name?.let { com.pocketstudio.model.DefaultNames.shown(it) }, tr("sur %s", where)).joinToString(" · "), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         LevelMeter(rec.level)
         ListeningAdvice(ui.listening)
@@ -312,6 +319,7 @@ private fun TrackCard(t: AudioTrack, ui: AudioTracksUi, actions: AudioTracksActi
                 TextButton(onClick = { actions.restorePrevious(t.id) }, enabled = !busy, modifier = Modifier.testTag("audio_previous_${t.id}")) { Text(tr("Prise précédente")) }
             }
         }
+        if (t.clip != null && t.otherTakes.isNotEmpty()) TakePicker(t, busy, actions)
         val clip = t.clip ?: return@NeonCard
         ClipEditor(t.id, clip, ui.info[clip.file], color, actions, ui)
     }
@@ -345,6 +353,50 @@ private fun TrackCard(t: AudioTrack, ui: AudioTracksUi, actions: AudioTracksActi
     }
 }
 
+/**
+ * « Prises » : every take the track keeps, the one playing first (lit), the others newest first;
+ * a touch plays that one instead (one undo step, the one it replaces stays in the list).
+ */
+@Composable
+private fun TakePicker(t: AudioTrack, busy: Boolean, actions: AudioTracksActions) {
+    val chip = pillColors()
+    Text(tr("Prises (%d)", t.otherTakes.size + 1), style = MaterialTheme.typography.bodyMedium)
+    Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.fadingHorizontalScroll().testTag("audio_takes_${t.id}")) {
+        t.clip?.let { now ->
+            FilterChip(selected = true, onClick = {}, label = { Text(takeLabel(now)) }, colors = chip, modifier = Modifier.testTag("audio_take_now_${t.id}"))
+        }
+        t.otherTakes.forEachIndexed { i, take ->
+            FilterChip(
+                selected = false, enabled = !busy, onClick = { actions.chooseTake(t.id, i) }, label = { Text(takeLabel(take)) }, colors = chip,
+                modifier = Modifier.testTag("audio_take_${t.id}_$i"),
+            )
+        }
+    }
+}
+
+/** A take as the picker names it: its name (« Prise 21:14 ») and its length. */
+private fun takeLabel(c: AudioClip): String =
+    "${com.pocketstudio.model.DefaultNames.shownSample(c.name)} · ${String.format(I18n.lang.locale, "%.0f", c.seconds)} s"
+
+/**
+ * Where each bar line falls in [clip]'s sound, as (fraction of the sound, bar number from 1): of
+ * the song for a song clip, of the part otherwise, at [tempoBpm]. 64 at most.
+ */
+fun clipBarMarks(clip: AudioClip, tempoBpm: Double, stepsPerBar: Int): List<Pair<Float, Int>> {
+    val steps = clip.seconds * tempoBpm / 15.0
+    if (steps <= 0.0 || stepsPerBar <= 0) return emptyList()
+    val first = clip.start + clip.offsetMs / 1000.0 * tempoBpm / 15.0
+    val out = ArrayList<Pair<Float, Int>>()
+    var bar = kotlin.math.ceil(first / stepsPerBar).toInt().coerceAtLeast(0)
+    while (out.size < 64) {
+        val at = (bar * stepsPerBar - first) / steps
+        if (at > 1.0) break
+        if (at >= 0.0) out += at.toFloat() to bar + 1
+        bar++
+    }
+    return out
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ClipEditor(id: Int, clip: AudioClip, info: SampleInfo?, color: androidx.compose.ui.graphics.Color, actions: AudioTracksActions, ui: AudioTracksUi) {
@@ -360,8 +412,13 @@ private fun ClipEditor(id: Int, clip: AudioClip, info: SampleInfo?, color: andro
             tr("Enregistrée à %1\$d BPM, le morceau est à %2\$d BPM : elle ne tombe plus pile sur le temps.", clip.bpm.roundToInt(), ui.tempoBpm.roundToInt()),
             style = MaterialTheme.typography.bodySmall, color = Neon.Amber, modifier = Modifier.testTag("audio_tempo_$id"),
         )
+        // Stretched to the song's tempo, its pitch kept (Annuler brings it back as it was).
+        OutlinedButton(onClick = { actions.realign(id) }, enabled = ui.recording == null && !ui.saving, modifier = Modifier.testTag("audio_realign_$id")) {
+            Text(tr("Recaler sur le tempo (%d BPM)", ui.tempoBpm.roundToInt()))
+        }
     }
-    info?.let { Waveform(it.peaks, color, region = range.start to range.endInclusive) }
+    // The bar lines over the sound: where each bar of the song (or the part) falls in the take.
+    info?.let { Waveform(it.peaks, color, region = range.start to range.endInclusive, bars = clipBarMarks(clip, ui.tempoBpm, per)) }
     // Cut: keep the part between the two handles.
     RangeSlider(value = range, onValueChange = { rangeStart = it.start; rangeEnd = it.endInclusive }, modifier = Modifier.testTag("audio_trim_$id"))
     Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.fadingHorizontalScroll()) {
@@ -379,9 +436,9 @@ private fun ClipEditor(id: Int, clip: AudioClip, info: SampleInfo?, color: andro
             FilterChip(selected = clip.song, onClick = { actions.setSong(id, true) }, label = { Text(tr("Tout le morceau")) }, colors = chip, modifier = Modifier.testTag("audio_song_$id"))
             FilterChip(
                 selected = !clip.song && clip.scene != null, onClick = { actions.setScene(id, ownScene) },
-                label = { Text(tr("La scène %s", ui.sceneTitles.getOrElse(ownScene) { "?" })) }, colors = chip, modifier = Modifier.testTag("audio_scene_$id"),
+                label = { Text(tr("La partie %s", ui.sceneTitles.getOrElse(ownScene) { "?" })) }, colors = chip, modifier = Modifier.testTag("audio_scene_$id"),
             )
-            FilterChip(selected = !clip.song && clip.scene == null, onClick = { actions.setScene(id, null) }, label = { Text(tr("Toutes les scènes")) }, colors = chip,
+            FilterChip(selected = !clip.song && clip.scene == null, onClick = { actions.setScene(id, null) }, label = { Text(tr("Toutes les parties")) }, colors = chip,
                 modifier = Modifier.testTag("audio_every_$id"))
         }
     }
@@ -431,6 +488,7 @@ private fun ClipEditor(id: Int, clip: AudioClip, info: SampleInfo?, color: andro
     if (ui.songParts.isNotEmpty() && ui.recording == null) {
         OutlinedButton(onClick = { actions.playFrom(id) }, modifier = Modifier.testTag("audio_play_from_$id")) { Text(tr("▶ Depuis ma prise")) }
     }
+    PunchRow(id, clip, ui, actions)
     LabeledSlider(tr("Volume"), percent((clip.gain * 100).roundToInt()), clip.gain / 2f) { actions.setGain(id, it * 2f) }
     LabeledSlider(tr("Fondu au début"), "${String.format(I18n.lang.locale, "%.2f", clip.fadeIn)} s", clip.fadeIn / 2f) { actions.setFadeIn(id, it * 2f) }
     LabeledSlider(tr("Fondu à la fin"), "${String.format(I18n.lang.locale, "%.2f", clip.fadeOut)} s", clip.fadeOut / 2f) { actions.setFadeOut(id, it * 2f) }
@@ -456,6 +514,49 @@ private fun ClipEditor(id: Int, clip: AudioClip, info: SampleInfo?, color: andro
             modifier = Modifier.weight(1f).testTag("audio_much_later_$id")) { Text("+50") }
     }
     Text(tr("« − » : plus tôt, « + » : plus tard (en millisecondes)."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+}
+
+/**
+ * « Refaire un passage »: the bars to sing again (of the song for a song clip, of the part
+ * otherwise), then « ● Refaire mes. 5-8 »: the take starts a bar before and stops by itself.
+ */
+@Composable
+private fun PunchRow(id: Int, clip: AudioClip, ui: AudioTracksUi, actions: AudioTracksActions) {
+    val per = ui.stepsPerBar
+    val firstBar = clip.startBar(per)
+    val lastBar = (firstBar + kotlin.math.ceil(clip.steps(ui.tempoBpm) / per.toDouble()).toInt() - 1).coerceAtLeast(firstBar)
+    var from by rememberSaveable(clip.file) { mutableStateOf(firstBar) }
+    var to by rememberSaveable(clip.file) { mutableStateOf(minOf(firstBar + 3, lastBar)) }
+    val busy = ui.recording != null || ui.saving
+    Text(tr("Refaire un passage"), style = MaterialTheme.typography.bodyMedium)
+    // One line per end, so the numbers keep their room at any text size.
+    BarStepper(tr("de la mesure"), from, down = { from-- }, up = { from++; if (to < from) to = from }, canDown = from > firstBar, canUp = from < lastBar, tag = "audio_punch_from_$id")
+    BarStepper(tr("à la mesure"), to, down = { to-- }, up = { to++ }, canDown = to > from, canUp = to < lastBar, tag = "audio_punch_to_$id")
+    val canPunch = !busy && !clip.tempoDiffers(ui.tempoBpm)
+    Button(
+        onClick = { actions.punch(id, from, to) }, enabled = canPunch,
+        colors = ButtonDefaults.buttonColors(containerColor = Neon.Red),
+        modifier = Modifier.fillMaxWidth().height(48.dp).testTag("audio_punch_$id"),
+    ) {
+        Icon(Icons.Filled.FiberManualRecord, contentDescription = null, Modifier.size(16.dp))
+        Text(" " + if (from == to) tr("Refaire la mes. %d", from) else tr("Refaire mes. %1\$d-%2\$d", from, to))
+    }
+    Text(
+        if (clip.tempoDiffers(ui.tempoBpm)) tr("Recale d'abord la prise sur le tempo pour refaire un passage.")
+        else tr("La musique part une mesure avant ; seul ce passage est remplacé, la prise entière reste dans les prises."),
+        style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
+    )
+}
+
+/** « de la mesure  − 17 + »: a bar chosen one up or down. */
+@Composable
+private fun BarStepper(label: String, value: Int, down: () -> Unit, up: () -> Unit, canDown: Boolean, canUp: Boolean, tag: String) {
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        Text(label, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.weight(1f))
+        OutlinedButton(onClick = down, enabled = canDown, modifier = Modifier.testTag("${tag}_less")) { Text("−") }
+        Text("$value", style = MonoStyle, color = Neon.Cyan, modifier = Modifier.widthIn(min = 32.dp).testTag(tag), textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+        OutlinedButton(onClick = up, enabled = canUp, modifier = Modifier.testTag("${tag}_more")) { Text("+") }
+    }
 }
 
 @Composable

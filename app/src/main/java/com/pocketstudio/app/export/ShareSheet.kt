@@ -20,6 +20,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Movie
 import androidx.compose.material.icons.filled.IosShare
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
@@ -69,7 +70,11 @@ import com.pocketstudio.model.Mixer
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.ProjectCatalog
 import com.pocketstudio.model.i18n.tr
+import com.pocketstudio.app.learn.spot
 import com.pocketstudio.model.partSteps
+import androidx.compose.foundation.clickable
+import androidx.compose.ui.semantics.Role
+import com.pocketstudio.model.LoudnessTargets
 import com.pocketstudio.ui.MonoStyle
 import com.pocketstudio.ui.Neon
 import com.pocketstudio.ui.pillColors
@@ -117,6 +122,8 @@ data class ShareLevels(
     val lufs: Double? = null,
     val truePeakDb: Double? = null,
     val canLowerMaster: Boolean = true,
+    /** S5: what the master chain takes off for the loudness target (dB), as its estimate reads it; null without a target. */
+    val lossDb: Double? = null,
 ) {
     val saturates: Boolean get() = limiterHard || (truePeakDb ?: Double.NEGATIVE_INFINITY) > TRUE_PEAK_MAX_DB
 
@@ -143,6 +150,7 @@ fun shareLevels(p: Project, loudness: FloatArray, limiterHard: Boolean): ShareLe
         limiterHard = limiterHard && noTarget, masterDb = p.mixer.masterDb,
         lufs = reading(NativeEngine.LOUDNESS_INTEGRATED), truePeakDb = reading(NativeEngine.LOUDNESS_TRUE_PEAK),
         canLowerMaster = noTarget,
+        lossDb = if (noTarget) null else loudness.getOrNull(NativeEngine.LOUDNESS_LOSS)?.toDouble()?.takeIf { it.isFinite() && it >= 0.1 },
     )
 }
 
@@ -227,6 +235,10 @@ data class ShareSheetUi(
     val canLower: Boolean = true,
     /** The song's loudness, once the master's meter gives it (see [ShareLevels.lufs]). */
     val lufs: Double? = null,
+    /** Its true peak, in dBTP (under « détails »). */
+    val truePeakDb: Double? = null,
+    /** S5: how much the loudest moments are tassés for the volume ([ShareLevels.lossDb]). */
+    val lossDb: Double? = null,
 )
 
 class ShareSheetActions(
@@ -245,6 +257,8 @@ class ShareSheetActions(
     val toStructure: () -> Unit = {},
     /** « Autres exports »: separate tracks, MIDI, FLAC… (Mixeur › Exporter). */
     val otherExports: () -> Unit = {},
+    /** « Vidéo pour les réseaux »: 30 s of the song in 9:16 (phase 39). */
+    val video: () -> Unit = {},
     val close: () -> Unit = {},
 )
 
@@ -264,15 +278,16 @@ fun ShareSheet(ui: ShareSheetUi, actions: ShareSheetActions) {
  * their one-touch fixes, M4A or WAV, and one big « Partager ». The rarer exports are a link away.
  */
 @Composable
-fun ShareSheetContent(ui: ShareSheetUi, actions: ShareSheetActions, modifier: Modifier = Modifier) {
+fun ShareSheetContent(ui: ShareSheetUi, actions: ShareSheetActions, modifier: Modifier = Modifier, page: Boolean = false) {
     Column(
-        modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 20.dp).padding(bottom = 12.dp)
-            .navigationBarsPadding().testTag("share_sheet"),
+        modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 20.dp).padding(top = if (page) 12.dp else 0.dp, bottom = 12.dp)
+            .then(if (page) Modifier else Modifier.navigationBarsPadding()).testTag("share_sheet"),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(tr("Prêt à partager ?"), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
-            IconButton(onClick = actions.close, modifier = Modifier.testTag("share_close")) {
+            Text(if (page) tr("Fini ? Envoie ton morceau") else tr("Prêt à partager ?"), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
+            // Phase 36: the Mode simple's « Envoyer » tab is this page: nothing to close.
+            if (!page) IconButton(onClick = actions.close, modifier = Modifier.testTag("share_close")) {
                 Icon(Icons.Filled.Close, contentDescription = tr("Fermer"), tint = Neon.TextSecondary)
             }
         }
@@ -289,15 +304,30 @@ fun ShareSheetContent(ui: ShareSheetUi, actions: ShareSheetActions, modifier: Mo
                     Text(shareClock(ui.seconds), style = MonoStyle.copy(fontSize = 22.sp, fontWeight = FontWeight.Bold), color = Neon.Cyan,
                         modifier = Modifier.testTag("share_duration"))
                     Text(
-                        "  " + if (ui.parts == 0) tr("une scène en boucle") else if (ui.parts == 1) tr("1 partie") else tr("%d parties", ui.parts),
+                        "  " + if (ui.parts == 0) tr("une partie en boucle") else if (ui.parts == 1) tr("1 partie") else tr("%d parties", ui.parts),
                         style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary,
                     )
                 }
                 ui.lufs?.let { lufs ->
-                    Text(
-                        tr("Volume perçu : %s LUFS, %s", String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f", lufs).replace('-', '−'), Loudness.describe(lufs)),
-                        style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.testTag("share_loudness"),
-                    )
+                    // Plain words first; the units (LUFS, dBTP) under « détails », for whoever knows them.
+                    var details by rememberSaveable { mutableStateOf(false) }
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            tr("Volume : %s, %s", String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f", lufs).replace('-', '−'), Loudness.describe(lufs)),
+                            style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.weight(1f).testTag("share_loudness"),
+                        )
+                        Text(
+                            if (details) tr("masquer") else tr("détails"), style = MaterialTheme.typography.labelSmall, color = Neon.Cyan,
+                            modifier = Modifier.clickable(role = Role.Button) { details = !details }.padding(6.dp).testTag("share_details"),
+                        )
+                    }
+                    if (details) {
+                        Text(
+                            tr("%s LUFS · crête %s dBTP", LoudnessTargets.format(lufs), ui.truePeakDb?.let { LoudnessTargets.format(it) } ?: "—"),
+                            style = MonoStyle.copy(fontSize = 12.sp), color = Neon.TextSecondary, modifier = Modifier.testTag("share_loudness_details"),
+                        )
+                    }
+                    ui.lossDb?.let { com.pocketstudio.app.mixer.LossLine(it, Modifier.testTag("share_loss")) }
                 }
             }
             OutlinedButton(onClick = actions.listen, modifier = Modifier.heightIn(min = 48.dp).testTag("share_listen")) {
@@ -322,15 +352,19 @@ fun ShareSheetContent(ui: ShareSheetUi, actions: ShareSheetActions, modifier: Mo
         }
         Button(
             onClick = actions.share, enabled = ui.name.isNotBlank() && !ui.running,
-            modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("share_go"),
+            modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).spot("share_go", tr("Partager")).testTag("share_go"),
         ) {
             Icon(Icons.Filled.IosShare, contentDescription = null, modifier = Modifier.size(20.dp))
             Text("  " + tr("Partager"), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
         }
+        OutlinedButton(onClick = actions.video, enabled = !ui.running, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("share_video")) {
+            Icon(Icons.Filled.Movie, contentDescription = null, modifier = Modifier.size(18.dp))
+            Text("  " + tr("Vidéo pour les réseaux · 30 s"), maxLines = 2, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+        }
         TextButton(onClick = actions.otherExports, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("share_other")) {
             Column(Modifier.weight(1f)) {
                 Text(tr("Autres exports"), color = Neon.Cyan)
-                Text(tr("Piste par piste, MIDI, FLAC… dans le Mixeur"), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                Text(tr("Piste par piste, MIDI, FLAC… dans Mix"), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
             }
             Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = Neon.Cyan)
         }
@@ -352,7 +386,7 @@ private fun CheckRow(check: ShareCheck, ui: ShareSheetUi, actions: ShareSheetAct
         ShareCheck.Empty ->
             CheckLine(icon, color, tr("Rien à entendre pour l'instant : pose un rythme ou quelques notes d'abord."), "share_check_empty")
         is ShareCheck.NoSong -> {
-            CheckLine(icon, color, tr("Pas encore de morceau : ta scène part en boucle (%d mesures).", check.bars), "share_check_no_song")
+            CheckLine(icon, color, tr("Pas encore de morceau : ta partie part en boucle (%d mesures).", check.bars), "share_check_no_song")
             Fixes { FixButton(tr("Modifier le morceau"), "share_fix_structure", actions.toStructure) }
         }
         is ShareCheck.Short -> {
@@ -360,10 +394,10 @@ private fun CheckRow(check: ShareCheck, ui: ShareSheetUi, actions: ShareSheetAct
             Fixes { FixButton(tr("Modifier le morceau"), "share_fix_structure", actions.toStructure) }
         }
         ShareCheck.Saturation -> {
-            CheckLine(icon, color, tr("Le limiteur travaille fort : le son risque de saturer."), "share_check_saturation")
+            CheckLine(icon, color, tr("Le son risque de saturer : il est trop fort pour le fichier."), "share_check_saturation")
             Fixes {
                 if (ui.canLower) FixButton(tr("Baisser le volume général"), "share_fix_master", actions.lowerMaster)
-                FixButton(tr("Voir le Mixeur"), "share_fix_mixer", actions.toMixer, outlined = true)
+                FixButton(tr("Voir dans Mix"), "share_fix_mixer", actions.toMixer, outlined = true)
             }
         }
     }
@@ -408,6 +442,9 @@ fun ShareSheetRoute(
     toStructure: () -> Unit,
     toMixer: () -> Unit,
     otherExports: () -> Unit,
+    video: () -> Unit = {},
+    /** Phase 36: the Mode simple's « Envoyer » tab, a page rather than a sheet ([close] is not called). */
+    page: Boolean = false,
 ) {
     val context = LocalContext.current
     val project by rhythmVm.project.collectAsStateWithLifecycle()
@@ -432,11 +469,14 @@ fun ShareSheetRoute(
     val loopBars = ShareSong.loopBars(export.sceneBars, export.audioBars)
     val levels = shareLevels(project, loudness, hard)
     val checks = remember(project, levels, loopBars) { shareChecks(project, com.pocketstudio.app.ui.mixerStrips(project), levels, loopBars) }
-    ShareSheet(
+    val ui = (
         ShareSheetUi(
             name = name, seconds = shareSeconds(project, loopBars), parts = project.song.size, checks = checks,
             format = prefs.format, playing = transport.playing, running = export.running, canLower = levels.canLower, lufs = levels.lufs,
-        ),
+            truePeakDb = levels.truePeakDb, lossDb = levels.lossDb,
+        )
+    )
+    val actions = (
         ShareSheetActions(
             setName = { name = it.take(ProjectCatalog.MAX_NAME) },
             setFormat = prefs::choose,
@@ -446,7 +486,7 @@ fun ShareSheetRoute(
                 } else {
                     val clean = name.trim()
                     if (clean != project.name.trim()) rhythmVm.renameProject(clean)
-                    close()
+                    if (!page) close()
                     rhythmVm.shareSong(prefs.format)
                 }
             },
@@ -457,10 +497,17 @@ fun ShareSheetRoute(
                 watch.reset()
                 hard = false
             },
-            toMixer = { close(); toMixer() },
-            toStructure = { close(); toStructure() },
-            otherExports = { close(); otherExports() },
+            toMixer = { if (!page) close(); toMixer() },
+            toStructure = { if (!page) close(); toStructure() },
+            otherExports = { if (!page) close(); otherExports() },
+            video = {
+                val clean = name.trim()
+                if (clean.isNotEmpty() && clean != project.name.trim()) rhythmVm.renameProject(clean)
+                if (!page) close()
+                video()
+            },
             close = close,
-        ),
+        )
     )
+    if (page) ShareSheetContent(ui, actions, page = true) else ShareSheet(ui, actions)
 }

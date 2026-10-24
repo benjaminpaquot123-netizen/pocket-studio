@@ -59,14 +59,43 @@ def main():
     code, err, _ = run([measure("house", non_finite=3)])
     check("a NaN fails", code == 1 and "NaN" in err)
     code, err, _ = run([measure("house", lufs_i=-10.0)])
-    check("2 LU under the target fails", code == 1 and "LUFS" in err and "house" in err)
+    check("2 LU under the target fails", code == 1 and "Sonie" in err and "house" in err)
     # Under the target but the chain already took 6 LU off: capped, not broken.
     code, err, md = run([measure("riddim", lufs_i=-9.2)], {"riddim": {"lufs": -9.2, "drive_db": 12.0, "music_lufs": -15.0, "true_peak_db": -1.2}})
     check("capped by the chain's loss: exit 0, listed as capped", code == 0 and "plafonné" in md)
     code, err, _ = run([measure("riddim", lufs_i=-9.2)], {"riddim": {"lufs": -9.2, "drive_db": 8.0, "music_lufs": -15.0, "true_peak_db": -1.2}})
-    check("under the target with room left fails", code == 1 and "LUFS" in err)
+    check("under the target with room left fails", code == 1 and "Sonie" in err)
     code, _, md = run([measure("house", lufs_i=-7.2)], {"house": {"lufs": -7.2, "drive_db": 3.0, "music_lufs": -9.0, "true_peak_db": -1.2}})
     check("the drive and the loss are in the table", "| +3,0 | 1,2 |" in md)
+
+    # S5: the Drop mode (mix version 2): the Drop's loudness against the target, a 3 LU cap.
+    drop = {"lufs": -9.0, "drive_db": 4.0, "music_lufs": -13.0, "true_peak_db": -1.2, "mode": 1, "target_lufs": -8.0, "loss_db": 1.5}
+    code, err, md = run([measure("house", lufs_i=-9.0, main_lufs=-8.6, loud_lufs=-8.1)], {"house": drop})
+    check("Drop mode: the loudest part at the target passes (the song under it)", code == 0 and "(Drop)" in md)
+    code, err, _ = run([measure("house", lufs_i=-9.0, main_lufs=-9.9, loud_lufs=-9.6)], {"house": drop})
+    check("Drop mode: the Drop 1.6 LU under with room left fails", code == 1 and "Sonie" in err)
+    code, err, md = run([measure("house", lufs_i=-9.0, main_lufs=-9.9, loud_lufs=-9.6)], {"house": {**drop, "loss_db": 2.95}})
+    check("Drop mode: capped at 3 LU passes, listed", code == 0 and "plafonné" in md)
+    code, err, _ = run([measure("house", lufs_i=-9.0, main_lufs=-8.0)], {"house": {**drop, "loss_db": 3.6}})
+    check("Drop mode: a loss over 3 LU fails", code == 1 and "Perte" in err)
+    code, err, _ = run([measure("house", m4a_true_peak=-0.7)])
+    check("a decoded M4A over -1 dBTP fails", code == 1 and "M4A" in err)
+
+    # S5b: each Drop lands at least 1 LU over the end of its Montée (blocking); the Intro's distance is listed only.
+    code, err, md = run([measure("techno", drop_minus_montee_end=[1.6, 1.2], montee_end_lufs=[-10.0, -9.7], drop_start_lufs=[-8.4, -8.5])])
+    check("Drops over their Montée's end: exit 0, in the table", code == 0 and "+1,6 / +1,2" in md and "−10,0 / −9,7" in md)
+    code, err, md = run([measure("techno", drop_minus_montee_end=[1.6, 0.4])])
+    check("a Drop only 0.4 LU over its Montée's end fails", code == 1 and "fin de sa Montée" in err and "techno" in err and "+0,4" in md)
+    code, err, md = run([measure("jump_up", drop_minus_montee_end=[-2.5])])
+    check("a Montée louder than its Drop fails", code == 1 and "jump_up" in err)
+    code, err, md = run([measure("trap", intro_minus_main=-10.2)])
+    check("an Intro 10 LU under the Refrain is listed, not blocking", code == 0 and "trap (−10,2)" in md)
+    code, err, md = run([measure("pop", intro_minus_main=-5.0)])
+    check("an Intro 5 LU under passes", code == 0 and "Intro à moins de 8 LU sous le Drop ou le Refrain (exporté) | 1 sur 1" in md)
+
+    # S5b: a Montée rising less than +2 LU over its last 4 bars is listed, not blocking.
+    code, err, md = run([measure("house", montee_rise=[0.8, 2.6])])
+    check("a Montée rising only +0.8 LU is listed, not blocking", code == 0 and "house (+0,8 / +2,6)" in md and "au moins +2 LU" in md)
 
     print("ALL PASSED" if not failures else f"{failures} FAILURE(S)")
     sys.exit(1 if failures else 0)

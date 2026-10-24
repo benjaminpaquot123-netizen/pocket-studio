@@ -56,7 +56,10 @@ public:
     void noteOff(int note, int offset);
     void allNotesOff();
     // Adds the voices into `mono` (a stereo sound is folded to mono, like the other track sources).
-    void render(float* mono, int numFrames);
+    void render(float* mono, int numFrames) { render(mono, nullptr, numFrames); }
+    // With `right`: a stereo sound plays in stereo (sound version 2), a mono one into `left` only.
+    void render(float* left, float* right, int numFrames);
+    bool stereoSample() const { return sample_ != nullptr && sample_->channels() == 2; }
     int activeVoices() const;
 
     // Not the audio thread: frees samples released by the audio thread.
@@ -94,7 +97,8 @@ private:
     void start(Voice& v, int note, float velocity);
     void release(Voice& v);
     Voice* freeSlot();
-    float renderVoice(Voice& v, double lo, double hi);
+    // One frame of a voice: its (mono) value, or with `right` the left channel's, the right's there.
+    float renderVoice(Voice& v, double lo, double hi, float* right = nullptr);
 
     int sampleRate_ = 48000;
     Sample* sample_ = nullptr;

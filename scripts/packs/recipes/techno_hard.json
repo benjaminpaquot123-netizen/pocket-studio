@@ -42,7 +42,7 @@
    {
     "role": "rumble",
     "pattern": "X..oX...X..oX...",
-    "tip_fr": "Le grondement : le kick rejoué dans une grande réverbe, saturé et gardé dans le grave. Il roule entre les coups et se tait quand le kick tape."
+    "tip_fr": "Le grondement : un grave sale et accordé au kick. Il roule entre les coups et se tait quand le kick tape."
    },
    {
     "role": "perc",
@@ -97,16 +97,16 @@
    "sound": "Essaim"
   },
   "bass": {
-   "pattern": "..rR..rR..rR..rR",
+   "pattern": "..rR..rR..rR..R-",
    "octave": 1,
    "sound": "Basse sub",
    "glide": false
   },
   "lead": {
    "type": "riff",
-   "pattern": "R..2..R...R..2..",
+   "pattern": "R-............................2.",
    "arp_rate": 24,
-   "octave": 4,
+   "octave": 3,
    "sound": "Cloche"
   },
   "acid": {
@@ -214,7 +214,7 @@
    {
     "role": "rumble",
     "pattern": "X...X...X...X...",
-    "tip_fr": "Le grondement : le kick rejoué dans une grande réverbe, saturé et gardé dans le grave. Il roule entre les coups et se tait quand le kick tape."
+    "tip_fr": "Le grondement : un grave sale et accordé au kick. Il roule entre les coups et se tait quand le kick tape."
    }
   ],
   "progressions": {
@@ -257,22 +257,22 @@
   },
   "chords": {
    "type": "stab",
-   "rhythm": "X..X..X...X..X..",
+   "rhythm": "X-------................X---..x.",
    "voicing": "octave",
    "octave": 3,
    "sound": "Hoover"
   },
   "bass": {
-   "pattern": ".rRr.rRr.rRr.rRr",
+   "pattern": ".rR-.rRr.rR-.rRr",
    "octave": 1,
    "sound": "Basse sub",
    "glide": false
   },
   "lead": {
    "type": "riff",
-   "pattern": "R..R..R.O..O..5.",
+   "pattern": "R-------R---..O-R-------R---5---",
    "arp_rate": 24,
-   "octave": 5,
+   "octave": 4,
    "sound": "Supersaw"
   },
   "acid": {
@@ -423,22 +423,22 @@
   },
   "chords": {
    "type": "stab",
-   "rhythm": "X-------........",
+   "rhythm": "X-------................X-------",
    "voicing": "octave",
    "octave": 3,
    "sound": "pack:gabber:stab"
   },
   "bass": {
-   "pattern": "R...R...R...R...",
+   "pattern": "R-..R...R-..R...",
    "octave": 1,
    "sound": "Basse analogique",
    "glide": false
   },
   "lead": {
    "type": "riff",
-   "pattern": "R.O.R.5.R.3.R.2.",
+   "pattern": "R-R-O-R-5-R-3-R-R-R-O-R-7-------",
    "arp_rate": 24,
-   "octave": 5,
+   "octave": 4,
    "sound": "Lead carré"
   },
   "acid": {
@@ -576,14 +576,14 @@
    "sound": "Hoover"
   },
   "bass": {
-   "pattern": "R...R...R...R...",
+   "pattern": "R-..R...R-..R...",
    "octave": 1,
    "sound": "Basse analogique",
    "glide": false
   },
   "lead": {
    "type": "riff",
-   "pattern": "O.O.5.O.O.3.O.7.",
+   "pattern": "....O-......5-......O-......3-..",
    "arp_rate": 24,
    "octave": 4,
    "sound": "Lead acide"
@@ -781,16 +781,16 @@
    "sound": "Pluck"
   },
   "bass": {
-   "pattern": "..R...r...R..r..",
+   "pattern": "..R-..r...R-.r..",
    "octave": 2,
-   "sound": "Basse pincée",
+   "sound": "Basse ronde",
    "glide": false
   },
   "lead": {
    "type": "riff",
-   "pattern": "R..R..R..R..R..R",
+   "pattern": "R..R..R..R..5..RR..R..R-.R..5-..",
    "arp_rate": 24,
-   "octave": 5,
+   "octave": 3,
    "sound": "Cloche"
   },
   "acid": {
@@ -816,6 +816,10 @@
    {
     "on": "lead",
     "delay": 0.3
+   },
+   {
+    "on": "bass",
+    "preset": "pump"
    }
   ],
   "notes": "Build by subtraction (Robert Hood): one-bar motifs, silence matters. 125-130 BPM, Hawtin's 128, light swing for the Villalobos/Perlon shuffle. Short, dry, plucked mid-range bass. Static harmony; the chord part is a single dub minor-7th stab through the dub echo preset (Basic Channel). The percussion is two bars long with a micro-variation in the second. Optional lead: a single-note bleep every 3 sixteenths (3 against 4), with a delay. 'Dexter' replaced by Fizheuer Zieheuer (Playhouse, 2006, verified).",
@@ -921,20 +925,22 @@
    "rhythm": "X-.X-.X.X-.X-.X.",
    "voicing": "triad",
    "octave": 3,
-   "sound": "Supersaw"
+   "sound": "Supersaw",
+   "voice_lead": true
   },
   "bass": {
-   "pattern": "..R...R...R...R.",
+   "pattern": "..R-..R-..R-..R-..R-..R-..R-.rR-",
    "octave": 2,
    "sound": "Basse ronde",
    "glide": false
   },
   "lead": {
-   "type": "riff",
-   "pattern": "O..5..3.O..5..3.",
+   "type": "hook",
+   "pattern": "5---3-2-R-------2---3---R-----..",
    "arp_rate": 24,
    "octave": 4,
-   "sound": "Lead trance"
+   "sound": "Lead trance",
+   "on_key": true
   },
   "acid": {
    "use": false,

@@ -136,7 +136,7 @@ object FxPresets {
      * a pad's own strip (a kick played again).
      */
     fun suggestedFor(kind: SoundKind, ch: Int): List<FxPreset> =
-        suggestedFor(kind).filter { it.id != RUMBLE || ch >= Mixer.FIRST_PAD }
+        suggestedFor(kind).filter { it.id != RUMBLE || Mixer.isPad(ch) }
 
     /** The rumble's preset (see [suggestedFor]). */
     const val RUMBLE = "rumble"
@@ -195,7 +195,7 @@ fun InstrumentTrack.soundKind(): SoundKind {
 
 /** The kind of sound on mixer channel [ch], for the effects offered first. */
 fun Project.soundKindOf(ch: Int): SoundKind = when {
-    ch == 0 || ch >= Mixer.FIRST_PAD -> SoundKind.DRUMS
+    ch == 0 || Mixer.isPad(ch) -> SoundKind.DRUMS
     ch == 1 -> SoundKind.ACID
     else -> instrumentTracks.firstOrNull { InstrumentTrack.mixerChannel(it.id) == ch }?.soundKind() ?: SoundKind.AUDIO
 }

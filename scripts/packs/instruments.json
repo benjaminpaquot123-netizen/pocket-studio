@@ -1,0 +1,172 @@
+{
+ "_comment": "Multizone instruments built by instrument_pack.py (phase 38), hosted with the sound packs. Licences checked on each repository (2026-10-24): Splendid Grand Piano public domain (Akai, 2000), Salamander Grand Piano V3 CC BY 3.0 (Alexander Holm: credit shown in the app), VSCO 2 Community Edition CC0. Commits pinned. Bump an instrument's version when its recipe changes: the app offers the update. max_ram_mb: what its zones take on the phone (16-bit, 48 kHz).",
+ "sources": [
+  {
+   "id": "splendid",
+   "type": "git",
+   "title": "Splendid Grand Piano",
+   "author": "Akai (SFZ : kinwie, Peter Eastman)",
+   "licence": "Public domain",
+   "page": "https://github.com/sfzinstruments/SplendidGrandPiano",
+   "repo": "https://github.com/sfzinstruments/SplendidGrandPiano",
+   "commit": "1c595d827b7fd7f0be3134aaed0f90b3662a09cf"
+  },
+  {
+   "id": "salamander",
+   "type": "git",
+   "title": "Salamander Grand Piano V3",
+   "author": "Alexander Holm (SFZ : kinwie)",
+   "licence": "CC-BY-3.0",
+   "attribution": "Salamander Grand Piano V3, Alexander Holm, CC BY 3.0",
+   "page": "https://github.com/sfzinstruments/SalamanderGrandPiano",
+   "repo": "https://github.com/sfzinstruments/SalamanderGrandPiano",
+   "commit": "3382bf9496bba2486f5ab0de55a264d1dfc38404"
+  },
+  {
+   "id": "vsco2",
+   "type": "git",
+   "title": "VS Chamber Orchestra: Community Edition (VSCO 2 CE)",
+   "author": "Versilian Studios (Sam Gossner, Simon Dalzell, Elan Hickler)",
+   "licence": "CC0-1.0",
+   "page": "https://github.com/sgossner/VSCO-2-CE",
+   "repo": "https://github.com/sgossner/VSCO-2-CE",
+   "commit": "6dd651d55dde97fd4028699be9d4481f26917891"
+  }
+ ],
+ "instruments": [
+  {
+   "id": "instrument_piano_salamander",
+   "name": "Piano à queue",
+   "category": "piano",
+   "fallback": "Piano électrique",
+   "tags": ["piano", "queue", "yamaha", "acoustique"],
+   "version": 1,
+   "source": "salamander",
+   "paths": ["/*.sfz", "/Data/", "/Samples/*v4.flac", "/Samples/*v10.flac", "/Samples/*v16.flac"],
+   "max_ram_mb": 64,
+   "veltrack": 0.45,
+   "release": 0.6,
+   "seconds": [[21, 7.0], [48, 5.0], [72, 3.2], [96, 1.8], [108, 1.2]],
+   "parts": [
+    {"sfz": "Salamander Grand Piano V3.sfz", "keys": [21, 108], "key_step": 3, "layers": 3}
+   ]
+  },
+  {
+   "id": "instrument_piano_splendid",
+   "name": "Piano de concert",
+   "category": "piano",
+   "fallback": "Piano électrique",
+   "tags": ["piano", "concert", "steinway", "acoustique"],
+   "version": 1,
+   "source": "splendid",
+   "paths": ["/*.sfz", "/Data/", "/Samples/PP *", "/Samples/MF *", "/Samples/Mf *", "/Samples/FF *"],
+   "max_ram_mb": 64,
+   "veltrack": 0.45,
+   "release": 0.6,
+   "seconds": [[21, 7.0], [48, 5.0], [72, 3.2], [96, 1.8], [108, 1.2]],
+   "parts": [
+    {"sfz": "Splendid Grand Piano.sfz", "keys": [21, 108], "key_step": 3, "layers": 3, "skip_soft_layers": 1}
+   ]
+  },
+  {
+   "id": "instrument_cordes",
+   "name": "Cordes",
+   "category": "strings",
+   "kind": "pad",
+   "fallback": "Cordes",
+   "tags": ["cordes", "violons", "altos", "violoncelles", "orchestre"],
+   "version": 1,
+   "source": "vsco2",
+   "paths": ["/CelloEnsSusVib.sfz", "/ViolaEnsSusVib.sfz", "/ViolinEnsSusVib.sfz", "/Strings/Cello Section/susvib/", "/Strings/Viola Section/susvib/", "/Strings/Violin Section/susVib/"],
+   "max_ram_mb": 40,
+   "veltrack": 0.4,
+   "attack": 0.12,
+   "release": 0.8,
+   "seconds": [[0, 3.2], [127, 3.2]],
+   "parts": [
+    {"sfz": "CelloEnsSusVib.sfz", "keys": [24, 52], "layers": 2, "loop": true},
+    {"sfz": "ViolaEnsSusVib.sfz", "keys": [53, 64], "layers": 2, "loop": true},
+    {"sfz": "ViolinEnsSusVib.sfz", "keys": [65, 100], "layers": 2, "loop": true}
+   ]
+  },
+  {
+   "id": "instrument_cordes_pizz",
+   "name": "Cordes pizzicato",
+   "category": "strings",
+   "kind": "pluck",
+   "fallback": "Pluck",
+   "tags": ["cordes", "pizzicato", "pincé", "orchestre"],
+   "version": 1,
+   "source": "vsco2",
+   "paths": ["/CelloEnsPizz.sfz", "/ViolaEnsPizz.sfz", "/ViolinEnsPizz.sfz", "/Strings/Cello Section/pizzT/", "/Strings/Viola Section/pizz/", "/Strings/Violin Section/Pizz/"],
+   "max_ram_mb": 24,
+   "veltrack": 0.5,
+   "release": 0.4,
+   "seconds": [[0, 1.4], [127, 1.0]],
+   "parts": [
+    {"sfz": "CelloEnsPizz.sfz", "keys": [24, 52], "layers": 2, "round_robins": 2},
+    {"sfz": "ViolaEnsPizz.sfz", "keys": [53, 64], "layers": 2, "round_robins": 2},
+    {"sfz": "ViolinEnsPizz.sfz", "keys": [65, 100], "layers": 2, "round_robins": 2}
+   ]
+  },
+  {
+   "id": "instrument_cuivres",
+   "name": "Cuivres",
+   "category": "brass",
+   "kind": "stab",
+   "fallback": "Nappe chaude",
+   "tags": ["cuivres", "cors", "trompette", "orchestre"],
+   "version": 1,
+   "source": "vsco2",
+   "paths": ["/FHornSus.sfz", "/TrumpetSus.sfz", "/Brass/F Horn/sus/", "/Brass/Trumpet/sus/"],
+   "max_ram_mb": 32,
+   "veltrack": 0.4,
+   "attack": 0.03,
+   "release": 0.5,
+   "seconds": [[0, 3.0], [127, 3.0]],
+   "parts": [
+    {"sfz": "FHornSus.sfz", "keys": [24, 61], "layers": 2, "loop": true},
+    {"sfz": "TrumpetSus.sfz", "keys": [62, 96], "layers": 2, "loop": true}
+   ]
+  },
+  {
+   "id": "instrument_bois",
+   "name": "Bois",
+   "category": "woodwinds",
+   "kind": "lead",
+   "fallback": "Lead",
+   "tags": ["bois", "flûte", "clarinette", "basson", "orchestre"],
+   "version": 1,
+   "source": "vsco2",
+   "paths": ["/BassoonSus.sfz", "/ClarinetSus.sfz", "/FluteSusVib.sfz", "/Woodwinds/Bassoon/sus/", "/Woodwinds/Clarinet/susLong/", "/Woodwinds/Flute/susvib/"],
+   "max_ram_mb": 32,
+   "veltrack": 0.4,
+   "attack": 0.02,
+   "release": 0.4,
+   "seconds": [[0, 3.0], [127, 3.0]],
+   "parts": [
+    {"sfz": "BassoonSus.sfz", "keys": [24, 51], "layers": 2, "loop": true},
+    {"sfz": "ClarinetSus.sfz", "keys": [52, 66], "layers": 2, "loop": true},
+    {"sfz": "FluteSusVib.sfz", "keys": [67, 100], "layers": 2, "loop": true}
+   ]
+  },
+  {
+   "id": "instrument_harpe",
+   "name": "Harpe",
+   "category": "harp",
+   "kind": "pluck",
+   "fallback": "Pluck",
+   "tags": ["harpe", "pincé", "orchestre"],
+   "version": 1,
+   "source": "vsco2",
+   "paths": ["/Harp.sfz", "/Strings/Harp/"],
+   "max_ram_mb": 24,
+   "veltrack": 0.6,
+   "release": 1.5,
+   "seconds": [[24, 5.0], [60, 3.5], [100, 2.0]],
+   "parts": [
+    {"sfz": "Harp.sfz", "keys": [24, 103], "layers": 1}
+   ]
+  }
+ ]
+}

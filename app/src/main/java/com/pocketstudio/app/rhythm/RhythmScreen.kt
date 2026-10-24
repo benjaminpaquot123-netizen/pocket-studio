@@ -2,10 +2,18 @@
 
 package com.pocketstudio.app.rhythm
 
+import com.pocketstudio.app.learn.spot
 import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.model.i18n.percent
 
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.awaitHorizontalTouchSlopOrCancellation
+import androidx.compose.foundation.gestures.horizontalDrag
+import androidx.compose.ui.draw.alpha
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -162,6 +170,31 @@ data class RhythmActions(
     val importFolder: () -> Unit = {},
     /** A sample pack as a .zip file. */
     val importZip: () -> Unit = {},
+    /** A pad held: chosen without sounding (its sheet opens on it). */
+    val selectPad: (Int) -> Unit = {},
+    /** Pad (lane)'s own volume (0.8 = the kit's level), pan (-1..1), cut. */
+    val setPadVolume: (Int, Float) -> Unit = { _, _ -> },
+    val setPadPanOf: (Int, Float) -> Unit = { _, _ -> },
+    val togglePadMute: (Int) -> Unit = {},
+    /** Pad (lane) back to the kit's own voice. */
+    val removeSampleOf: (Int) -> Unit = {},
+    /** Sounds of the pad's kind its sheet offers (names), and one of them put on pad (lane). */
+    val padSounds: (Int) -> List<String> = { emptyList() },
+    val pickPadSound: (Int, Int) -> Unit = { _, _ -> },
+    /** « Kit ▾ »: the list is about to show (packs read again), and a kit chosen (whole kit, one undo step). */
+    val openKits: () -> Unit = {},
+    val chooseKit: (String) -> Unit = {},
+    /** A finger drawn across the steps: a cell set ([on]) or emptied; [paintEnd] when lifted (one undo step). */
+    val paintStep: (step: Int, on: Boolean) -> Unit = { _, _ -> },
+    val paintEnd: () -> Unit = {},
+    /** A hit held: its roll (×1..×8, [ramp] 1 rising, -1 falling), or 32nds over its beat. */
+    val setRoll: (step: Int, repeats: Int, ramp: Int) -> Unit = { _, _, _ -> },
+    val burst: (step: Int, ramp: Int) -> Unit = { _, _ -> },
+    /** Phase 37: the selected pad's own loop in steps (0 = the pattern's), a polyrhythm. */
+    val setPadLength: (Int) -> Unit = {},
+    /** Phase 37: a hit's chance to play on each pass (5..100 %), and « Autre tirage » (the chances drawn again). */
+    val setHitChance: (step: Int, chance: Int) -> Unit = { _, _ -> },
+    val rerollChances: () -> Unit = {},
 )
 
 /** The selected pad's own sound, if any, and what the sampler is busy with. */
@@ -184,14 +217,48 @@ fun RhythmScreen(
     padSound: PadSoundUi = PadSoundUi(),
     /** Shown above everything (the "Prochaine étape" card); [showGrid] scrolls the steps into view. */
     header: @Composable (showGrid: () -> Unit) -> Unit = {},
+    /** The kits « Kit ▾ » offers. */
+    kits: List<KitChoice> = emptyList(),
+    /**
+     * Under the pads: a take of the pads (its count-in, its card) or « Garder ce que je viens de
+     * jouer » once pads were played (the record bar, given by the app; it shows nothing otherwise).
+     */
+    record: (@Composable () -> Unit)? = null,
 ) {
+    // A pad held (its sheet) and the kit list.
+    var padSheet by rememberSaveable { mutableStateOf<Int?>(null) }
+    var kitSheet by rememberSaveable { mutableStateOf(false) }
+    val hold: (Int) -> Unit = { lane -> actions.selectPad(lane); padSheet = lane }
+    val kit = kitName(project)
+    val kitBar: @Composable () -> Unit = {
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            KitChip(kit, onClick = { actions.openKits(); kitSheet = true })
+            // A pad only sounds: what stays in the beat is in the cells (beginners tap pads and wait).
+            Text(
+                tr("Les pads sonnent, les cases gardent les coups. Appui long : son, volume."),
+                style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, maxLines = 2,
+                modifier = Modifier.weight(1f).testTag("pads_hint"),
+            )
+        }
+    }
+    padSheet?.let { lane ->
+        PadSheet(
+            padSheetUi(project, lane, remember(lane, project.drums.lanes[lane].sample) { actions.padSounds(lane) }),
+            PadSheetActions(
+                pickSound = { actions.pickPadSound(lane, it) }, origin = { actions.removeSampleOf(lane) }, more = actions.openLibrary,
+                setVolume = { actions.setPadVolume(lane, it) }, setPan = { actions.setPadPanOf(lane, it) }, toggleMute = { actions.togglePadMute(lane) },
+            ),
+            close = { padSheet = null },
+        )
+    }
+    if (kitSheet) KitSheet(kit, kits, actions.chooseKit, close = { kitSheet = false })
     // The steps' card brought into view on demand (the next-step card's "Voir la grille").
     val gridRequester = remember { androidx.compose.foundation.relocation.BringIntoViewRequester() }
     val scope = androidx.compose.runtime.rememberCoroutineScope()
     val showGrid: () -> Unit = { scope.launch { gridRequester.bringIntoView() } }
     val steps: @Composable () -> Unit = {
         Box(Modifier.bringIntoViewRequester(gridRequester)) {
-            StepGrid(project, transport.selectedPad, live.currentStep, transport.playing, actions)
+            StepGrid(project, transport.selectedPad, live.currentStep, transport.playing, actions, live.absoluteStep)
         }
     }
     // On a tablet the pads stay on the left and the steps of the chosen pad on the right.
@@ -200,8 +267,8 @@ fun RhythmScreen(
         spacing = 8.dp,
         first = {
             header(showGrid)
-            TransportBar(project, transport, canUndo, canRedo, actions)
-            PadGrid(project, transport.selectedPad, live.litPads, actions.hitPad)
+            PadGrid(project, transport.selectedPad, live.litPads, actions.hitPad, onHold = hold, kitBar = kitBar)
+            record?.invoke()
             GrooveCard(project, transport, actions)
         },
         second = {
@@ -211,8 +278,8 @@ fun RhythmScreen(
         // The phone keeps its order: the steps right under lower pads, the first row of cells on screen.
         phone = {
             header(showGrid)
-            TransportBar(project, transport, canUndo, canRedo, actions)
-            PadGrid(project, transport.selectedPad, live.litPads, actions.hitPad, compact = true)
+            PadGrid(project, transport.selectedPad, live.litPads, actions.hitPad, compact = true, onHold = hold, kitBar = kitBar)
+            record?.invoke()
             steps()
             PadSoundCard(project, transport.selectedPad, padSound, actions)
             GrooveCard(project, transport, actions)
@@ -220,98 +287,9 @@ fun RhythmScreen(
     )
 }
 
-@Composable
-private fun TransportBar(project: Project, transport: TransportUi, canUndo: Boolean, canRedo: Boolean, actions: RhythmActions) {
-    // A small phone (360 dp): a slimmer Play, and redo left to the top bar, so « Taper » keeps its word.
-    val narrow = androidx.compose.ui.platform.LocalConfiguration.current.screenWidthDp < 380
-    NeonCard {
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(if (narrow) 6.dp else 8.dp)) {
-            val playColor = if (transport.playing) Neon.Magenta else Neon.Cyan
-            val shape = RoundedCornerShape(18.dp)
-            Row(
-                Modifier.height(56.dp)
-                    .shadow(if (transport.playing) 16.dp else 8.dp, shape, ambientColor = playColor, spotColor = playColor)
-                    .clip(shape)
-                    .background(Brush.verticalGradient(listOf(lerp(playColor, Color.White, 0.18f), playColor, lerp(playColor, Color.Black, 0.12f))))
-                    .clickable(role = Role.Button, onClick = actions.togglePlay)
-                    .padding(horizontal = if (narrow) 14.dp else 22.dp)
-                    .testTag("transport_play"),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Icon(if (transport.playing) Icons.Filled.Stop else Icons.Filled.PlayArrow, contentDescription = null, tint = Neon.OnAccent)
-                Text(if (transport.playing) tr(" Stop") else tr(" Jouer"), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = Neon.OnAccent)
-            }
-            // What it plays (the song, or the part in a loop) is said once, under the top bar (« ⟳ Partie »).
-            Box(Modifier.weight(1f))
-            IconButton(onClick = actions.undo, enabled = canUndo, modifier = Modifier.size(44.dp)) {
-                Icon(Icons.AutoMirrored.Filled.Undo, contentDescription = tr("Annuler la dernière action"))
-            }
-            if (!narrow) {
-                IconButton(onClick = actions.redo, enabled = canRedo, modifier = Modifier.size(44.dp)) {
-                    Icon(Icons.AutoMirrored.Filled.Redo, contentDescription = tr("Rétablir"))
-                }
-            }
-        }
-        // Too narrow for « Taper » beside the tempo (a big interface size): it goes under, whole.
-        androidx.compose.foundation.layout.FlowRow(
-            itemVerticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp),
-        ) {
-            RepeatingIconButton({ actions.nudgeTempo(-1) }) { Icon(Icons.Filled.Remove, contentDescription = tr("Tempo moins")) }
-            // The tempo on a small dark display, as on a drum machine; a touch to type it or pick one.
-            Row(
-                Modifier.clip(RoundedCornerShape(10.dp)).background(Color.Black.copy(alpha = 0.35f))
-                    .border(1.dp, Color.White.copy(alpha = 0.06f), RoundedCornerShape(10.dp))
-                    .clickable(role = Role.Button, onClickLabel = tr("Changer le tempo"), onClick = actions.openTempo)
-                    .padding(horizontal = if (narrow) 8.dp else 12.dp, vertical = 4.dp).testTag("tempo"),
-                verticalAlignment = Alignment.Bottom,
-            ) {
-                Text("${project.tempoBpm.roundToInt()}", style = MonoStyle.copy(fontSize = 26.sp, fontWeight = FontWeight.ExtraBold), color = Neon.Cyan)
-                Text(" BPM", style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary, modifier = Modifier.padding(bottom = 4.dp))
-            }
-            RepeatingIconButton({ actions.nudgeTempo(1) }) { Icon(Icons.Filled.Add, contentDescription = tr("Tempo plus")) }
-            HelpDot(Glossary.TEMPO)
-            Box(Modifier.weight(1f))
-            OutlinedButton(
-                onClick = actions.tapTempo,
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = Neon.TextPrimary),
-                contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = if (narrow) 12.dp else 24.dp),
-                modifier = Modifier.testTag("tap"),
-            ) { Text(tr("Taper"), maxLines = 1, softWrap = false) }
-        }
-    }
-}
-
-/** An icon button that repeats while held (after a short wait, faster and faster): tempo − and +. */
-@Composable
-private fun RepeatingIconButton(onStep: () -> Unit, content: @Composable () -> Unit) {
-    val interaction = remember { MutableInteractionSource() }
-    val pressed by interaction.collectIsPressedAsState()
-    val step by androidx.compose.runtime.rememberUpdatedState(onStep)
-    // Set once the hold has started repeating: the release then adds no extra step.
-    var repeated by remember { mutableStateOf(false) }
-    androidx.compose.runtime.LaunchedEffect(pressed) {
-        if (!pressed) return@LaunchedEffect
-        repeated = false
-        kotlinx.coroutines.delay(REPEAT_AFTER_MS)
-        repeated = true
-        var wait = REPEAT_FIRST_MS
-        while (true) {
-            step()
-            kotlinx.coroutines.delay(wait)
-            wait = (wait - 15).coerceAtLeast(REPEAT_FASTEST_MS)
-        }
-    }
-    IconButton(onClick = { if (!repeated) step(); repeated = false }, interactionSource = interaction) { content() }
-}
-
-private const val REPEAT_AFTER_MS = 450L
-private const val REPEAT_FIRST_MS = 140L
-private const val REPEAT_FASTEST_MS = 50L
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun PadGrid(project: Project, selected: Int, lit: Set<Int>, onHit: (Int) -> Unit, compact: Boolean = false) {
+private fun PadGrid(project: Project, selected: Int, lit: Set<Int>, onHit: (Int) -> Unit, compact: Boolean = false, onHold: (Int) -> Unit = {}, kitBar: @Composable () -> Unit = {}) {
     val haptics = LocalHapticFeedback.current
     // A tablet held upright gets the one column too (600 dp wide): taller pads, not a phone's flat ones.
     val padHeight = if (androidx.compose.ui.platform.LocalConfiguration.current.smallestScreenWidthDp >= 600) TABLET_COLUMN_PAD_HEIGHT else PHONE_PAD_HEIGHT
@@ -323,12 +301,18 @@ private fun PadGrid(project: Project, selected: Int, lit: Set<Int>, onHit: (Int)
                     val lane = row * 4 + col
                     val color = DrumKitInfo.colors[lane]
                     val hasHits = project.drums.lanes[lane].hits.keys.any { it < project.drums.steps }  // past the loop: unheard
-                    val hasFx = project.mixer.channels.getOrNull(com.pocketstudio.model.Mixer.padChannel(lane))?.hasOwnFx() == true
+                    val strip = project.mixer.channels.getOrNull(com.pocketstudio.model.Mixer.padChannel(lane))
+                    val hasFx = strip?.hasOwnFx() == true
                     DrumPad(
                         name = padName(project, lane), color = color, selected = lane == selected, lit = lane in lit, hasHits = hasHits, hasFx = hasFx,
+                        muted = strip?.mute == true,
                         onHit = {
                             haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                             onHit(lane)
+                        },
+                        onHold = {
+                            haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                            onHold(lane)
                         },
                         // On a phone, lower pads leave the first row of steps on screen.
                         modifier = Modifier.weight(1f).then(if (compact) Modifier.height(padHeight) else Modifier).testTag("pad_$lane"),
@@ -337,13 +321,9 @@ private fun PadGrid(project: Project, selected: Int, lit: Set<Int>, onHit: (Int)
                 }
             }
         }
-        // A pad only sounds: what stays in the beat is in the cells (beginners tap pads and wait).
-        // One short line: on a 360 dp phone the cells must start on screen.
-        Text(
-            tr("Les pads sonnent, les cases gardent les coups."),
-            style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth().testTag("pads_hint"),
-        )
+        // « Kit ▾ » and the one line that says what pads and cells do (on a 360 dp phone the cells
+        // must start on screen).
+        kitBar()
     }
 }
 
@@ -353,16 +333,26 @@ private val PHONE_PAD_HEIGHT = 56.dp
 /** A pad on an upright 8.7" tablet (one column, 600 dp wide): the first cells still show under them. */
 private val TABLET_COLUMN_PAD_HEIGHT = 80.dp
 
-/** The pad's name: the sound placed on it (a sample, a library sound), else the kit voice's name. */
+/** The pad's name: the sound placed on it (a sample, a library sound), else its studio voice's (the 808), else the kit voice's name. */
 internal fun padName(project: Project, lane: Int): String =
-    project.drums.lanes.getOrNull(lane)?.sample?.name?.takeIf { it.isNotBlank() }?.let { com.pocketstudio.model.DefaultNames.shownSample(it) } ?: DrumKitInfo.names[lane]
+    project.drums.lanes.getOrNull(lane)?.sample?.name?.takeIf { it.isNotBlank() }?.let { com.pocketstudio.model.DefaultNames.shownSample(it) }
+        ?: project.padVoices[lane]?.let { padVoiceName(it.kind) } ?: DrumKitInfo.names[lane]
+
+/** A studio voice's name on its pad ([com.pocketstudio.model.PadVoice.NAMES], translated). */
+internal fun padVoiceName(kind: Int): String = when (kind) {
+    com.pocketstudio.model.PadVoice.BASS_808 -> "808"
+    com.pocketstudio.model.PadVoice.KICK_STUDIO -> tr("Kick studio")
+    com.pocketstudio.model.PadVoice.KICK_HARD -> tr("Kick dur")
+    com.pocketstudio.model.PadVoice.RUMBLE -> tr("Rumble")
+    else -> ""
+}
 
 /**
  * One pad, as on a drum machine: its colour in relief, a glow when it sounds (fading out), a
  * coloured edge when chosen, a small press.
  */
 @Composable
-private fun DrumPad(name: String, color: Color, selected: Boolean, lit: Boolean, hasHits: Boolean, hasFx: Boolean, onHit: () -> Unit, modifier: Modifier, ratio: Boolean = true) {
+private fun DrumPad(name: String, color: Color, selected: Boolean, lit: Boolean, hasHits: Boolean, hasFx: Boolean, onHit: () -> Unit, modifier: Modifier, ratio: Boolean = true, muted: Boolean = false, onHold: () -> Unit = {}) {
     val shape = RoundedCornerShape(14.dp)
     val interaction = remember { MutableInteractionSource() }
     val pressed by interaction.collectIsPressedAsState()
@@ -386,7 +376,9 @@ private fun DrumPad(name: String, color: Color, selected: Boolean, lit: Boolean,
                 else Brush.verticalGradient(listOf(Color.White.copy(alpha = 0.14f), color.copy(alpha = 0.25f))),
                 shape,
             )
-            .clickable(interactionSource = interaction, indication = null, onClick = onHit),
+            .combinedClickable(interactionSource = interaction, indication = null, onLongClickLabel = tr("Son, volume, pan"), onLongClick = onHold, onClick = onHit)
+            // A pad cut (its sheet): dimmed, its hits stay.
+            .then(if (muted) Modifier.alpha(0.4f) else Modifier),
         contentAlignment = Alignment.Center,
     ) {
         // A phone's pads are narrow (75 dp at a big interface size): « Cymbale » shrinks a little
@@ -422,9 +414,13 @@ private fun DrumPad(name: String, color: Color, selected: Boolean, lit: Boolean,
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun StepGrid(project: Project, lane: Int, currentStep: Int, playing: Boolean, actions: RhythmActions) {
+private fun StepGrid(project: Project, lane: Int, currentStep: Int, playing: Boolean, actions: RhythmActions, absoluteStep: Int = -1) {
     val haptics = LocalHapticFeedback.current
     val hits = project.drums.lanes[lane].hits
+    // Phase 37: the pad's own loop (a polyrhythm); the cells past it are kept but not played.
+    val padLoop = project.drums.lanes[lane].loopSteps(project.drums.steps)
+    val ownLoop = padLoop != project.drums.steps
+    val padPlayStep = if (!ownLoop) currentStep else if (playing && absoluteStep >= 0) absoluteStep % padLoop else -1
     val color = DrumKitInfo.colors[lane]
     // One page per bar of the time signature (12 steps in 3/4, 16 in 4/4…).
     val per = project.stepsPerBar
@@ -434,6 +430,8 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, playing: Boo
     // 0 hits, 1 rolls, 2 pan, 3 pitch.
     var tool by rememberSaveable { mutableIntStateOf(0) }
     var picked by rememberSaveable { mutableIntStateOf(-1) }
+    // A hit held: its force and roll menu.
+    var rollStep by rememberSaveable { mutableIntStateOf(-1) }
     val ownSound = project.drums.lanes[lane].sample != null
     var allPads by rememberSaveable { mutableStateOf(false) }
     // Playing and following: the page turns with the playhead.
@@ -471,20 +469,75 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, playing: Boo
                     FilterChip(selected = follow, onClick = { follow = !follow; chosenBar = bar }, label = { Text(tr("Suivre")) }, colors = chipColors)
                 }
             }
+            if (!allPads) PadLoopRow(padLoop, project.drums.steps, ownLoop, actions.setPadLength)
+            if (project.drums.lanes.any { l -> l.hits.values.any { it.chance < 100 } }) {
+                TextButton(onClick = actions.rerollChances, modifier = Modifier.heightIn(min = 48.dp).testTag("chance_reroll")) {
+                    Text(tr("Autre tirage des coups au hasard"))
+                }
+            }
         }
         if (allPads) {
             AllPadsGrid(project, bar, currentStep, actions)
             lengths()
             return@NeonCard
         }
+        // A finger drawn across the cells paints hits (or erases them, when the first cell had one).
+        val latestHits by rememberUpdatedState(hits)
+        val latestActions by rememberUpdatedState(actions)
+        val loopSteps = project.drums.steps
+        Column(
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+            modifier = Modifier.spot("step_cells", tr("Glisse pour poser")).testTag("step_cells").then(
+                if (tool != 0) Modifier
+                else Modifier.pointerInput(bar, per, loopSteps) {
+                    val cols = (per / 2).coerceAtLeast(1)
+                    fun cellAt(at: androidx.compose.ui.geometry.Offset): Int? {
+                        if (size.width <= 0 || size.height <= 0) return null
+                        val col = (at.x / size.width * cols).toInt().coerceIn(0, cols - 1)
+                        val row = (at.y / size.height * 2).toInt().coerceIn(0, 1)
+                        return (bar * per + row * cols + col).takeIf { it < loopSteps }
+                    }
+                    // From the cell first touched (the drag is known only past the touch slop).
+                    awaitEachGesture {
+                        val down = awaitFirstDown(requireUnconsumed = false)
+                        val drag = awaitHorizontalTouchSlopOrCancellation(down.id) { change, _ -> change.consume() }
+                            ?: return@awaitEachGesture
+                        val first = cellAt(down.position)
+                        val on = first == null || first !in latestHits
+                        var last = first
+                        // The stroke always ends as one undo step, even cut short (the screen left
+                        // mid-stroke cancels this gesture: review m9).
+                        try {
+                            first?.let { latestActions.paintStep(it, on) }
+                            fun paint(at: androidx.compose.ui.geometry.Offset) {
+                                val step = cellAt(at)
+                                if (step != null && step != last) {
+                                    last = step
+                                    latestActions.paintStep(step, on)
+                                }
+                            }
+                            paint(drag.position)
+                            horizontalDrag(drag.id) { change ->
+                                paint(change.position)
+                                change.consume()
+                            }
+                        } finally {
+                            latestActions.paintEnd()
+                        }
+                    }
+                },
+            ),
+        ) {
         for (row in 0 until 2) {
             Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 for (col in 0 until per / 2) {
                     val step = bar * per + row * (per / 2) + col
                     val velocity = hits[step]?.velocity
                     val isBeat = step % 4 == 0
-                    val playing = step == currentStep
+                    val playing = step == padPlayStep
                     val hit = hits[step]
+                    // Past the pad's own loop: kept, unheard (dimmed).
+                    val pastLoop = ownLoop && step >= padLoop
                     val isPicked = tool >= 2 && step == picked && hit != null
                     // Empty cells are hollowed into the panel; the beats a little lighter.
                     val fill = Color.Black.copy(alpha = if (isBeat) 0.16f else 0.28f)
@@ -493,6 +546,7 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, playing: Boo
                         modifier = Modifier
                             .weight(1f)
                             .aspectRatioAtMost(0.8f, 110.dp)
+                            .alpha(if (pastLoop) 0.3f else 1f)
                             .then(if (playing && velocity != null) Modifier.shadow(10.dp, cell, ambientColor = color, spotColor = color) else Modifier)
                             .clip(cell)
                             .background(fill)
@@ -531,7 +585,8 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, playing: Boo
                                         },
                                         onLongClick = {
                                             haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-                                            actions.cycleVelocity(step)
+                                            // A hit: its force and its roll; an empty cell: a strong hit.
+                                            if (hit != null && step < project.drums.steps) rollStep = step else actions.cycleVelocity(step)
                                         },
                                     )
                                 },
@@ -547,13 +602,15 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, playing: Boo
                             )
                             val repeats = hits[step]?.repeats ?: 1
                             if (repeats > 1) {
-                                Text("×$repeats", style = MaterialTheme.typography.labelLarge, color = Color(0xFF1E2023),
+                                val ramp = when (hits[step]?.ramp) { 1 -> "↗"; -1 -> "↘"; else -> "" }
+                                Text("×$repeats$ramp", style = MaterialTheme.typography.labelLarge, color = Color(0xFF1E2023),
                                     modifier = Modifier.align(Alignment.Center))
                             }
                             // Own pan or pitch: a small mark at the top of the cell.
                             val mark = listOfNotNull(
                                 hit?.pan?.takeIf { it != 0f }?.let { panShort(it) },
                                 hit?.pitch?.takeIf { it != 0 }?.let { if (it > 0) "+$it" else "$it" },
+                                hit?.chance?.takeIf { it < 100 }?.let { percent(it) },
                             ).joinToString(" ")
                             if (mark.isNotEmpty()) {
                                 Text(mark, style = MaterialTheme.typography.labelSmall, color = Color(0xFF1E2023),
@@ -568,9 +625,15 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, playing: Boo
                                 modifier = Modifier.padding(bottom = 2.dp),
                             )
                         }
+                        if (rollStep == step && hit != null) {
+                            RollMenu(hit, step % per + 1, close = { rollStep = -1 },
+                                force = { actions.setHitVelocity(step, it) }, roll = { n, r -> actions.setRoll(step, n, r) }, burst = { actions.burst(step, it) },
+                                chance = { actions.setHitChance(step, it) })
+                        }
                     }
                 }
             }
+        }
         }
         Row(Modifier.fadingHorizontalScroll(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             FilterChip(selected = tool == 0, onClick = { tool = 0 }, label = { Text(tr("Coups")) }, colors = chipColors)
@@ -617,12 +680,34 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, playing: Boo
                 3 -> if (ownSound) tr("Hauteur : touche un coup, puis glisse pour le monter ou le descendre (en demi-tons).")
                 else tr("Hauteur : seulement pour un son importé, enregistré ou généré (pas pour les sons synthétisés).")
                 4 -> tr("Force : touche un coup, plus haut pour plus fort, plus bas pour plus doux, puis règle-le avec le curseur.")
-                else -> tr("Touche une case pour ajouter un coup. Appui long sur un coup : fort → moyen → doux (la case se vide à moitié).")
+                else -> tr("Touche une case pour ajouter un coup, glisse le doigt pour en peindre plusieurs. Appui long sur un coup : force et roulements (×2 à ×8).")
             },
             style = MaterialTheme.typography.bodySmall,
             color = Neon.TextSecondary,
         )
         lengths()
+    }
+}
+
+/**
+ * Phase 37: the selected pad's own loop, « − 5 pas + » (a polyrhythm: a pad of 3 steps against the
+ * 4 of the others), and « Comme la boucle » to give it the pattern's loop back.
+ */
+@Composable
+private fun PadLoopRow(padLoop: Int, patternSteps: Int, ownLoop: Boolean, set: (Int) -> Unit) {
+    FlowRow(itemVerticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(2.dp),
+        modifier = Modifier.testTag("pad_loop")) {
+        Text(tr("Ce pad boucle sur"), style = MaterialTheme.typography.bodyMedium)
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            TextButton(onClick = { set((padLoop - 1).coerceAtLeast(1)) }, enabled = padLoop > 1, modifier = Modifier.testTag("pad_len_minus")) { Text("−") }
+            Text(tr("%d pas", padLoop), style = MonoStyle, color = if (ownLoop) Neon.Cyan else Neon.TextSecondary, modifier = Modifier.testTag("pad_len_value"))
+            TextButton(onClick = { set((padLoop + 1).coerceAtMost(patternSteps)) }, enabled = padLoop < patternSteps, modifier = Modifier.testTag("pad_len_plus")) { Text("+") }
+        }
+        if (ownLoop) TextButton(onClick = { set(0) }, modifier = Modifier.testTag("pad_len_reset")) { Text(tr("Comme la boucle")) }
+    }
+    if (ownLoop) {
+        Text(tr("Polyrythme : ce pad repart tous les %d pas, les autres tous les %d.", padLoop, patternSteps),
+            style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
     }
 }
 
@@ -650,6 +735,51 @@ private fun GrooveCard(project: Project, transport: TransportUi, actions: Rhythm
             value = (project.swing / Project.MAX_SWING).toFloat(),
             onValueChange = { actions.setSwing(it * Project.MAX_SWING) },
         )
+    }
+}
+
+/**
+ * A hit held: its force (fort, moyen, doux), its roll (×1 to ×8, rising or falling) and a burst
+ * of 32nds over its beat. Each choice is one undo step; the menu stays open to combine them.
+ */
+@Composable
+private fun RollMenu(
+    hit: com.pocketstudio.model.Hit, beatStep: Int, close: () -> Unit, force: (Float) -> Unit, roll: (Int, Int) -> Unit, burst: (Int) -> Unit,
+    chance: (Int) -> Unit = {},
+) {
+    val chips = pillColors()
+    DropdownMenu(expanded = true, onDismissRequest = close, modifier = Modifier.testTag("roll_menu")) {
+        Column(Modifier.padding(horizontal = 12.dp, vertical = 4.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            Text(tr("Coup %d", beatStep), style = MaterialTheme.typography.titleSmall)
+            Text(tr("Force"), style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary)
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                listOf(1f to tr("Fort"), 0.5f to tr("Moyen"), 0.2f to tr("Doux")).forEach { (v, label) ->
+                    FilterChip(selected = kotlin.math.abs(hit.velocity - v) < 0.05f, onClick = { force(v) }, label = { Text(label) }, colors = chips,
+                        modifier = Modifier.testTag("roll_force_${(v * 10).roundToInt()}"))
+                }
+            }
+            Text(tr("Roulement"), style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary)
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                com.pocketstudio.model.DrumPattern.ROLLS.forEach { n ->
+                    FilterChip(selected = hit.repeats == n, onClick = { roll(n, hit.ramp) }, label = { Text("×$n") }, colors = chips, modifier = Modifier.testTag("roll_$n"))
+                }
+            }
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                listOf(1 to tr("↗ Montant"), 0 to tr("Égal"), -1 to tr("↘ Descendant")).forEach { (r, label) ->
+                    FilterChip(selected = hit.ramp == r, enabled = hit.repeats > 1, onClick = { roll(hit.repeats, r) }, label = { Text(label) }, colors = chips,
+                        modifier = Modifier.testTag("roll_ramp_$r"))
+                }
+            }
+            TextButton(onClick = { burst(1); close() }, modifier = Modifier.testTag("roll_burst")) { Text(tr("Rafale de 1/32 sur le temps")) }
+            // Phase 37: a hit that plays only now and then (the same draw each time, the export too).
+            Text(tr("Chance de jouer"), style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary)
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                com.pocketstudio.model.DrumPattern.CHANCES.forEach { c ->
+                    FilterChip(selected = hit.chance == c, onClick = { chance(c) }, label = { Text(percent(c)) }, colors = chips,
+                        modifier = Modifier.testTag("roll_chance_$c"))
+                }
+            }
+        }
     }
 }
 
@@ -690,6 +820,8 @@ internal fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: 
                 com.pocketstudio.ui.WholeWordsText(tr("Toute la batterie"), textAlign = TextAlign.Center)
             }
         }
+        val volume = project.mixer.channels.getOrNull(com.pocketstudio.model.Mixer.padChannel(lane))?.volume ?: 0.8f
+        LabeledSlider(tr("Volume du pad"), percent((volume / 0.8f * 100).roundToInt()), volume, 0f..1f) { actions.setPadVolume(lane, it) }
         val pan = project.drums.lanes[lane].pan
         LabeledSlider(tr("Pan du pad"), panLabel(pan), pan, -1f..1f, steps = 19) { actions.setPadPan((it * 10).roundToInt() / 10f) }
         val info = sample?.let { ui.info[it.file] }

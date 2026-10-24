@@ -21,6 +21,8 @@ std::vector<float> timeStretch(const float* in, int64_t inFrames, int channels, 
     }
     std::vector<std::vector<float>> output(static_cast<size_t>(channels), std::vector<float>(static_cast<size_t>(outFrames)));
     if (!stretch.exact(input, static_cast<int>(inFrames), output, static_cast<int>(outFrames))) return {};
+    // The planar input is not needed any more: freed before the interleaved copy (a long take's peak).
+    std::vector<std::vector<float>>().swap(input);
 
     std::vector<float> out(static_cast<size_t>(outFrames * channels));
     for (int64_t i = 0; i < outFrames; ++i) {

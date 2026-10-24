@@ -204,7 +204,7 @@ class OnboardingUiTest {
         compose.onNodeWithText("Intro · le début, en douceur").assertExists()
         compose.onNodeWithText("Couplet · le groove, avec la basse").assertExists()
         compose.onNodeWithText("Refrain · tout le monde joue").assertExists()
-        compose.onNodeWithText("Intro → Couplet → Refrain → Couplet → Refrain → Intro pour finir", substring = true).assertExists()
+        compose.onNodeWithText("Intro → Couplet → Pré-refrain → Refrain → Post-refrain → Couplet → Pré-refrain → Refrain → Pont → Refrain → Intro pour finir", substring = true).assertExists()
     }
 
     @Test
@@ -219,10 +219,10 @@ class OnboardingUiTest {
         compose.setContent {
             PocketStudioTheme { WizardScreen(ui.copy(step = ui.lastStep), PacksUi(IndexState.Unavailable), null, WizardActions()) }
         }
-        compose.onNodeWithText("Quatre sections", substring = true, ignoreCase = true).assertExists()
+        compose.onNodeWithText("Quatre parties", substring = true, ignoreCase = true).assertExists()
         compose.onNodeWithText("Intro · la batterie pour démarrer").assertExists()
         compose.onNodeWithText("Break · une pause sans kick ni basse").assertExists()
-        compose.onNodeWithText("Intro → Groove → Drop → Break → Drop → Intro pour finir", substring = true).assertExists()
+        compose.onNodeWithText("Intro → Groove → Montée → Drop → Break → Montée → Drop → Intro pour finir", substring = true).assertExists()
     }
 
     @Test
@@ -262,7 +262,7 @@ class OnboardingUiTest {
         compose.onNodeWithText("Volumes").assertExists()
         compose.onNodeWithTag("next_step_go").assertDoesNotExist()
         compose.onNodeWithTag("next_steps_compact").performClick()
-        compose.onNodeWithText("7. Volumes").assertExists()
+        compose.onNodeWithText("6. Volumes").assertExists()
         compose.onNodeWithTag("next_step_go").performClick()
         assertEquals(listOf(AppTab.Mixeur), tabs)
         // And it folds back to its line.
@@ -396,7 +396,7 @@ class OnboardingUiTest {
         assertTrue(com.pocketstudio.app.library.partNotes(riddim, StarterWizard.Part.Lead).joinToString().contains("arpégiateur"))
         // A recipe's own word and its signature are said.
         val signed = trap.copy(melody = trap.melody.copy(signature = StarterWizard.Part.Lead, tips = mapOf(StarterWizard.Part.Lead to "La cloche qui tourne.")))
-        assertEquals(listOf("En Trap : la cloche qui tourne.", "C'est le son qui fait le style : il joue dans toutes les sections."),
+        assertEquals(listOf("En Trap : la cloche qui tourne.", "C'est le son qui fait le style : il joue dans toutes les parties."),
             com.pocketstudio.app.library.partNotes(signed, StarterWizard.Part.Lead))
     }
 }

@@ -147,6 +147,7 @@ class I18nCatalogTest {
             "AutomationCard.kt: effect.label",
             "AutomationCard.kt: it",
             "ChordPads.kt: key.scale.label",
+            "SongChords.kt: base.harmony.chordKey.scale.label",  // a scale name (Scale, checked by ModelTextsTest)
             "WhatPlays.kt: it",  // an effect's blurb (EffectType, checked by ModelTextsTest)
             "WhatPlays.kt: e.label",
             "WhatPlays.kt: Macros.NAMES[a.macro]",
@@ -170,6 +171,10 @@ class I18nCatalogTest {
             "EffectsPanel.kt: p.format(params[k])",
             "EffectsPanel.kt: p.label",
             "InstrumentPanel.kt: name",
+            // Phase 38: the instruments' names and blurbs (MultiInstruments.KNOWN, checked by ModelTextsTest).
+            "RealInstruments.kt: e.description",
+            "RealInstruments.kt: e.name",
+            "Tracks.kt: multi.name.ifBlank { \"Instrument\" }",
             "LibraryScreen.kt: label",
             "LibraryScreen.kt: option.name.substringBefore(\" · \")",
             // The style's name, as in the assistant (checked by ModelTextsTest).
@@ -218,7 +223,7 @@ class I18nCatalogTest {
             "StarterWizard.kt: COUNTER_TITLE",
             "StarterWizard.kt: IMPACT_TITLE",
             "StarterWizard.kt: RISER_TITLE",
-            "StarterWizard.kt: labels[index]",
+            "StarterWizard.kt: label",
             "StarterWizard.kt: roleKey(index)",
             "StarterWizard.kt: it.title",
             "SynthScreen.kt: name",

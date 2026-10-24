@@ -24,7 +24,10 @@ enum class Lang(val code: String, val nativeName: String) {
  */
 object I18n {
     /** One translation file per area and language (they are merged). */
-    val AREAS = listOf("common", "home", "rhythm", "song", "synth", "audio", "mixer", "tools", "model", "finish", "master")
+    val AREAS = listOf(
+        "common", "home", "rhythm", "song", "synth", "audio", "mixer", "tools", "model", "finish", "master", "parts", "record",
+        "write", "instruments", "learn", "nav",
+    )
 
     @Volatile
     var lang: Lang = Lang.FR
@@ -42,13 +45,42 @@ object I18n {
         return stream.bufferedReader(Charsets.UTF_8).use { json.decodeFromString<Map<String, String>>(it.readText()) }
     }
 
-    fun t(fr: String): String = if (lang == Lang.FR) fr else table(lang)[fr]?.takeIf { it.isNotEmpty() } ?: fr
+    /**
+     * Phase 36, Mode simple: the app's jargon (« Lead », « Pluck », « Quantifier »…) said in
+     * everyday words, in every language, while it is on (the settings set it, as [lang]). Only what
+     * is shown changes: names are saved as they are.
+     */
+    @Volatile
+    var everyday: Boolean = false
+
+    /** The French texts [everyday] replaces, with their everyday French (each one has its translations). */
+    val EVERYDAY: Map<String, String> = mapOf(
+        "Lead" to "Mélodie", "Leads" to "Mélodies", "Lead carré" to "Mélodie carrée", "Lead acide" to "Mélodie acide",
+        "Lead trance" to "Mélodie trance", "Mélodie (lead)" to "Mélodie", "Pluck" to "Son court", "Pluck future" to "Son court futur",
+        "Pluck / percussif" to "Son court / percussif", "Stabs" to "Accords courts", "Accords (nappe)" to "Accords",
+        "Sub" to "Basse profonde", "Sub drop" to "Chute grave", "Quantifier" to "Remettre en rythme", "Acide" to "Basse acide",
+        "Lead qui crie" to "Mélodie qui crie", "Lead chiptune" to "Mélodie chiptune", "Lead filtré" to "Mélodie filtrée",
+        "Lead hyperpop" to "Mélodie hyperpop", "Lead / mélodie" to "Mélodie", "Lead 2 (sawtooth)" to "Mélodie 2 (dents de scie)",
+    )
+
+    fun t(fr: String): String {
+        val text = if (everyday) EVERYDAY[fr] ?: fr else fr
+        return if (lang == Lang.FR) text else table(lang)[text]?.takeIf { it.isNotEmpty() } ?: text
+    }
 
     private val reverse = ConcurrentHashMap<Lang, Map<String, String>>()
 
-    /** The French text a shown text was translated from (itself when unknown): a key that stays the same in every language. */
-    fun frenchOf(shown: String): String =
-        if (lang == Lang.FR) shown else reverse.getOrPut(lang) { table(lang).entries.associate { it.value to it.key } }[shown] ?: shown
+    /** The app's own word of each everyday one (the first when several give it). */
+    private val everydayReverse: Map<String, String> by lazy { EVERYDAY.entries.reversed().associate { it.value to it.key } }
+
+    /**
+     * The French text a shown text was translated from (itself when unknown): a key that stays the
+     * same in every language, and with the Mode simple's words on (« Mélodie » is shown for « Lead »).
+     */
+    fun frenchOf(shown: String): String {
+        val fr = if (lang == Lang.FR) shown else reverse.getOrPut(lang) { table(lang).entries.associate { it.value to it.key } }[shown] ?: shown
+        return if (everyday) everydayReverse[fr] ?: fr else fr
+    }
 }
 
 /** [fr] in the interface's language. */

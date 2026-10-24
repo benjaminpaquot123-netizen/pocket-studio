@@ -24,15 +24,24 @@ def main():
             continue
         zip_path = out / f"{manifest['id']}.zip"
         with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_STORED) as z:  # FLAC is already compressed
-            for f in ['pack.json'] + [s['file'] for s in manifest['sounds']]:
+            # A multizone instrument (instrument_pack.py) also carries its zones' recordings.
+            zones = [z['file'] for z in manifest.get('instrument', {}).get('zones', [])]
+            for f in dict.fromkeys(['pack.json'] + [s['file'] for s in manifest['sounds']] + zones):
                 info = zipfile.ZipInfo(f, date_time=(2026, 1, 1, 0, 0, 0))
                 z.writestr(info, (d / f).read_bytes())
         data = zip_path.read_bytes()
+        # An instrument's preview is also published on its own: heard before the pack is downloaded.
+        preview = {}
+        if manifest.get('instrument') and (d / 'apercu.flac').is_file():
+            name = f"{manifest['id']}-apercu.flac"
+            bytes_ = (d / 'apercu.flac').read_bytes()
+            (out / name).write_bytes(bytes_)
+            preview = {'preview': name, 'previewSha256': hashlib.sha256(bytes_).hexdigest(), 'previewBytes': len(bytes_)}
         entries.append({
             'id': manifest['id'], 'name': manifest['name'], 'file': zip_path.name,
             'sha256': hashlib.sha256(data).hexdigest(), 'sizeBytes': len(data), 'sounds': len(manifest['sounds']),
             'version': manifest.get('version', 1), 'family': manifest.get('family', ''),
-            **({'release': release} if release else {}),
+            **({'release': release} if release else {}), **preview,
         })
         print(f"{manifest['id']}: {len(manifest['sounds'])} sounds, {len(data) / 1e6:.1f} MB")
     (out / 'index.json').write_text(json.dumps({'packs': entries}, ensure_ascii=False, indent=1))

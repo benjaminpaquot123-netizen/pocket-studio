@@ -128,7 +128,7 @@ jobs:
         run: |
           command -v ffmpeg > /dev/null || { sudo apt-get update -qq && sudo apt-get install -y -qq --no-install-recommends ffmpeg > /dev/null; }
           python3 -I scripts/bench/test_report.py
-          ./scripts/song-bench.sh --styles techno,house,trap,dnb,pop --ffmpeg --before docs/son/banc/apres-etape2.json \
+          ./scripts/song-bench.sh --styles techno,house,trap,dnb,pop --ffmpeg --m4a --before docs/son/banc/apres-S5b.json \
             --title "Banc de mesure du son (CI, 5 styles)"
       - uses: actions/upload-artifact@v7
         if: always()
@@ -139,6 +139,7 @@ jobs:
             build/bench/bench.json
             build/bench/sha256.txt
             build/bench/ffmpeg.txt
+            build/bench/m4a.txt
             build/bench/gradle.log
           if-no-files-found: ignore
       - name: Build release APK

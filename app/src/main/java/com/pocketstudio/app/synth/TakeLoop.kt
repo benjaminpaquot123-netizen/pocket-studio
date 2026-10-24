@@ -17,7 +17,7 @@ object TakeLoop {
         if (clip.steps > 16) return null
         val steps = TAKE_BARS * 16
         if (clip.hidden.isNotEmpty() || clip.notes.isEmpty()) return clip.copy(steps = steps).sanitized()
-        val repeated = (0 until TAKE_BARS).flatMap { bar -> clip.notes.map { it.copy(start = it.start + bar * clip.ticks) } }
+        val repeated = (0 until TAKE_BARS).flatMap { bar -> clip.notes.map { it.copy(start = it.start + bar * clip.ticks, played = it.played?.plus(bar * clip.ticks)) } }
         return clip.copy(steps = steps, notes = repeated).sanitized()
     }
 }

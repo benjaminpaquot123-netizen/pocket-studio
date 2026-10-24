@@ -24,7 +24,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-/** Emulator smoke test run by CI: the app starts, plays, and every tab opens without crashing. */
+/** Emulator smoke test run by CI: the app starts, plays, and every space opens without crashing. */
 @RunWith(AndroidJUnit4::class)
 class SmokeTest {
     @get:Rule(order = 0)
@@ -37,9 +37,13 @@ class SmokeTest {
     fun appStartsPlaysAndNavigates() {
         assertTrue("native engine must load", NativeEngine.isAvailable)
         compose.waitUntil(10_000) { NativeEngine.streamInfo().let { it.running && it.callbacks > 0 } }
-        // First launch: the welcome choices open; "later" keeps the starter beat.
+        // First launch: the welcome choices open; the five spaces (not the Mode simple, phase 36), then
+        // "later" keeps the starter beat.
         compose.waitForIdle()
-        if (compose.onAllNodesWithTag("welcome_later").fetchSemanticsNodes().isNotEmpty()) compose.onNodeWithTag("welcome_later").performScrollTo().performClick()
+        if (compose.onAllNodesWithTag("welcome_later").fetchSemanticsNodes().isNotEmpty()) {
+            compose.onNodeWithTag("welcome_mode_full").performScrollTo().performClick()
+            compose.onNodeWithTag("welcome_later").performScrollTo().performClick()
+        }
         compose.waitForIdle()
 
         // Rhythm screen: the starter groove plays and makes sound.
@@ -95,19 +99,21 @@ class SmokeTest {
         }
         assertTrue("meter must run: $diagnostic", !diagnostic.contains("NoInput") && !diagnostic.contains("Interrupted"))
 
-        // Tools: test tone, then latency page; then the checklist (the tabs scroll: bring each into view).
-        compose.onNodeWithTag("tab_Outils").performClick()
+        // Plus (phase 36: a list, each page with « ‹ Plus »): test tone, then latency page; then the checklist.
+        compose.onNodeWithTag("tab_Plus").performClick()
         compose.onNodeWithTag("tool_Son").performScrollTo().performClick()
         compose.onNodeWithTag("play").performClick()
         compose.onNodeWithText("Arrêter").assertIsDisplayed()
         compose.onNodeWithTag("play").performClick()
+        compose.onNodeWithTag("plus_back").performClick()
         compose.onNodeWithTag("tool_Latence").performScrollTo().performClick()
         compose.onNodeWithTag("latency").assertIsDisplayed()
+        compose.onNodeWithTag("plus_back").performClick()
 
         compose.onNodeWithTag("tool_Recette").performScrollTo().performClick()
         compose.onNodeWithTag("recette").assertIsDisplayed()
 
-        compose.onNodeWithTag("tab_Mixeur").performClick()
+        compose.onNodeWithTag("tab_Mix").performClick()
         compose.onNodeWithTag("mixer").assertIsDisplayed()
         compose.onNodeWithTag("mute_0").performClick()
         compose.onNodeWithTag("mute_0").performClick()
@@ -167,7 +173,9 @@ class SmokeTest {
         assertEquals(1, rhythm.project.value.drums.lanes[9].sample!!.fitBeats)
 
         // Piano roll: the Notes view opens and a note added through the screen's path is kept.
-        compose.onNodeWithTag("tab_Synthe").performClick()
+        // Sons (phase 36): the synth track's chip opens its editor.
+        compose.onNodeWithTag("tab_Sons").performClick()
+        compose.onNodeWithTag("track_0").performClick()
         compose.onNodeWithTag("mode_notes").performClick()
         compose.onNodeWithTag("piano_roll").assertExists()
         InstrumentationRegistry.getInstrumentation().runOnMainSync {

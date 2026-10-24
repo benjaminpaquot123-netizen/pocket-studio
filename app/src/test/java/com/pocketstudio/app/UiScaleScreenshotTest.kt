@@ -43,6 +43,8 @@ open class UiScaleScreenshotTest : ScreenshotTest() {
             "live_grid", "live_fx", "live_rec", "live_pads", "rhythm", "top_bar", "mixer", "synth", "session", "library",
             "pad_sound", "effects_box", "welcome", "projects", "acid", "audio_tracks", "next_steps", "settings",
             "play_strip", "tempo_sheet", "mixer_master",
+            // Phase 38.
+            "real_instruments", "export_report", "track_add",
         )
     }
 }

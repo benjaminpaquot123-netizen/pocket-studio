@@ -8,6 +8,7 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import com.pocketstudio.model.SongBars.isDrumBar
 
 /**
  * The body of the assistant's songs (audit « corps », docs/CORPS.md): what can be read in the
@@ -26,7 +27,9 @@ class SongBodyTest {
     private fun Project.layers(index: Int): Int {
         val sc = allScenes[index]
         val tracks = instrumentTracks.count { t -> t.name != StarterWizard.RISER_TRACK && (if (t.id == 0) sc.synthNotes else sc.trackNotes[t.id] ?: NoteClip()).notes.isNotEmpty() }
-        return sc.drums.lanes.count { it.hits.isNotEmpty() } + tracks + (if (sc.acid.steps.any { it.gate }) 1 else 0)
+        // A pad heard only in the phrase's fill (the kit's toms) is not a layer of the section.
+        val end = sc.drums.steps - 4
+        return sc.drums.lanes.count { l -> l.hits.keys.any { it < end } } + tracks + (if (sc.acid.steps.any { it.gate }) 1 else 0)
     }
 
     @Test
@@ -87,9 +90,12 @@ class SongBodyTest {
             if (pad != null && pad.engine == 0 && padSound.sampled == null && padSound.plaits == null) {
                 assertTrue(style.id, SynthPatch.gainDb(pad.synth.get(SynthPatch.GAIN)) < SynthPatch.gainDb(padSound.synth.get(SynthPatch.GAIN)))
             }
-            // House and techno pump their bass on the kick.
+            // House and techno pump their bass on the kick: since S5 once, in the Musique bus keyed by the kick's sound.
             if (bass != null && style.family in setOf("House", "Techno") && style.id !in setOf("gabber", "acidcore", "industrial_techno", "hard_techno")) {
-                assertTrue(style.id, p.mixer.channels[InstrumentTrack.mixerChannel(bass.id)].inserts.any { it.type == EffectType.PUMP.ordinal })
+                val bus = p.mixer.musicBus
+                assertTrue(style.id, bus != null && InstrumentTrack.mixerChannel(bass.id) in bus.members && bus.depth >= 0.2f && bus.lowDepth >= bus.depth)
+                assertTrue(style.id, p.mixer.channels[InstrumentTrack.mixerChannel(bass.id)].inserts.none { it.type == EffectType.PUMP.ordinal })
+                assertEquals(style.id, Mixer.padChannel(Role.Kick.lane), p.mixer.sidechainKey)
             }
         }
     }
@@ -101,15 +107,21 @@ class SongBodyTest {
             if (StarterWizard.defaultParts(style).isEmpty()) continue
             val plan = StarterWizard.planFor(style, style.lines.filter { !it.off }.map { it.role }.toSet(), StarterWizard.defaultParts(style), style.melody.acid != null)
             for ((i, sc) in p.allScenes.withIndex()) {
+                if (sc.isDrumBar()) continue  // the song's one-bar fills and crashes (S3)
                 if (plan.form == SongForm.Build && i == 1) continue  // the Montée rolls on its own
+                if (sc.label.startsWith("Montée")) continue  // so does a Montée before a Drop
+                // The bars before a Drop or a Refrain end on a beat of silence instead of a fill.
+                if (sc.drums.lanes.all { l -> l.hits.keys.none { it >= sc.drums.steps - 4 } }) continue
                 // A beat without snare, clap nor hats (the industrial Break's rumble alone) has nothing to roll.
                 if (listOf(Role.Snare, Role.Clap, Role.Hat, Role.OpenHat).all { sc.drums.lanes[it.lane].hits.isEmpty() }) continue
                 assertEquals("${style.id} $i", WizardMix.PHRASE_STEPS, sc.drums.steps)
                 val lanes = sc.drums.lanes
                 val last = WizardMix.PHRASE_STEPS - 4
-                // The last beat is a fill: a roll (snare, clap or hats) or the open hat, and the kick stops there.
-                val fill = listOf(Role.Snare, Role.Clap, Role.Hat).any { r -> lanes[r.lane].hits.filterKeys { it >= last }.values.any { it.repeats > 1 } } ||
-                    lanes[Role.OpenHat.lane].hits.containsKey(last + 2)
+                // The last beat is a fill (S3: one of the style's 3 or 4 endings): the snare, the clap, the hats, the open
+                // hat or the toms play something else there than on the first bar's last beat; and the kick stops there.
+                val fillLanes = listOf(Role.Snare, Role.Clap, Role.Hat, Role.OpenHat).map { it.lane } + DrumHumanizer.TOM_LANES
+                fun beat(lane: Int, from: Int) = lanes[lane].hits.filterKeys { it in from until from + 4 }.map { (st, h) -> Triple(st - from, h.repeats, Math.round(h.velocity * 10)) }.toSet()
+                val fill = fillLanes.any { l -> beat(l, last) != beat(l, 12) }
                 assertTrue("${style.id} $i", fill)
                 val kick = lanes[Role.Kick.lane].hits
                 if (kick.keys.any { it < last }) assertTrue("${style.id} $i", kick.keys.none { it >= last })
@@ -156,11 +168,12 @@ class SongBodyTest {
             // The mid bass leaves the low end to the sub: a high-pass on its strip.
             assertTrue(id, p.mixer.channels[InstrumentTrack.mixerChannel(bass.id)].inserts.any { it.type == EffectType.FILTER.ordinal && it.params[2] > 0.66f })
         }
-        // A song with an impact: one short hit on the Refrain's first beat, no rise before it.
+        // A song with a riser: the noise held through its Pré-refrain (until its silent last beat), one short hit on the Refrain's first beat.
         val pop = song(StarterWizard.style("pop")!!)
         val riser = pop.instrumentTracks.single { it.name == StarterWizard.RISER_TRACK }
         fun notes(scene: Int) = pop.allScenes[scene].let { if (riser.id == 0) it.synthNotes else it.trackNotes[riser.id] ?: NoteClip() }.notes
-        assertTrue(notes(1).isEmpty())
+        val pre = pop.allScenes.indexOfFirst { it.label == "${SongShape.PRE_CHORUS} 2" }
+        assertEquals((64 - 4) * NoteClip.TICKS_PER_STEP, notes(pre).single().end)
         assertEquals(1, notes(2).size)
     }
 }

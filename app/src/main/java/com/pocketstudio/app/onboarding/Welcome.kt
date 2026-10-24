@@ -11,6 +11,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -53,6 +56,8 @@ class WelcomeActions(
     val demo: () -> Unit = {},
     val empty: () -> Unit = {},
     val later: () -> Unit = {},
+    /** Phase 36: the Mode simple (true) or every tool (false), chosen before starting. */
+    val chooseMode: (Boolean) -> Unit = {},
 )
 
 /**
@@ -61,7 +66,7 @@ class WelcomeActions(
  * opened (the activity rebuilds), a short dialog offers to play it ([playDemo]).
  */
 @Composable
-fun FirstLaunch(show: Boolean, actions: WelcomeActions, playDemo: () -> Unit) {
+fun FirstLaunch(show: Boolean, actions: WelcomeActions, playDemo: () -> Unit, simple: Boolean = false) {
     // Kept through the rebuild that opening the demo does.
     var demoReady by rememberSaveable(key = "demo_ready") { mutableStateOf(false) }
     // A project is being opened (the activity rebuilds then): the choices stay until it is.
@@ -76,7 +81,9 @@ fun FirstLaunch(show: Boolean, actions: WelcomeActions, playDemo: () -> Unit) {
                         demo = { if (!leaving) { demoReady = true; leaving = true; actions.demo() } },
                         empty = { if (!leaving) { leaving = true; actions.empty() } },
                         later = { leaving = false; demoReady = false; actions.later() },
+                        chooseMode = actions.chooseMode,
                     ),
+                    simple = simple,
                 )
             }
         }
@@ -85,7 +92,7 @@ fun FirstLaunch(show: Boolean, actions: WelcomeActions, playDemo: () -> Unit) {
             onDismissRequest = { demoReady = false },
             title = { Text(tr("Ta démo est prête")) },
             text = {
-                Text(tr("Écoute-la en entier, puis va voir dans l'onglet Morceau comment elle est construite : tu peux tout changer."))
+                Text(tr("Écoute-la en entier, puis va voir dans Structure comment elle est construite : tu peux tout changer."))
             },
             confirmButton = {
                 Button(onClick = { demoReady = false; playDemo() }, modifier = Modifier.testTag("demo_play")) {
@@ -101,7 +108,7 @@ fun FirstLaunch(show: Boolean, actions: WelcomeActions, playDemo: () -> Unit) {
 
 /** The choice screen itself: the guided song first and biggest, then the demo, then the empty project. */
 @Composable
-fun WelcomeScreen(actions: WelcomeActions) {
+fun WelcomeScreen(actions: WelcomeActions, simple: Boolean = true) {
     // Steps to read: centred at a comfortable width on a tablet.
     com.pocketstudio.ui.ReadingWidth(maxWidth = 600.dp) {
         Column(
@@ -111,6 +118,8 @@ fun WelcomeScreen(actions: WelcomeActions) {
             Text("Pocket Studio", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold, color = Neon.Cyan)
             // The language first: French is ticked, the other ones are one tap away.
             com.pocketstudio.app.settings.LanguagePicker()
+            // Phase 36: how the app is laid out, before anything (Réglages changes it later, nothing is lost).
+            ModeChoice(simple, actions.chooseMode)
             Text(tr("Bienvenue ! Fais ta musique sur ton appareil. Par quoi on commence ?"), style = MaterialTheme.typography.bodyLarge)
             Choice(
                 Icons.Filled.AutoAwesome, tr("Créer mon premier morceau (guidé)"),
@@ -132,7 +141,7 @@ fun WelcomeScreen(actions: WelcomeActions) {
                     Text(tr("Plus tard : voir le rythme de départ"), color = Neon.TextSecondary)
                 }
             }
-            Text(tr("Le guide des premiers pas reste dans Outils › Aide."), style = MaterialTheme.typography.bodySmall,
+            Text(tr("Le guide des premiers pas reste dans Plus › Aide."), style = MaterialTheme.typography.bodySmall,
                 color = Neon.TextSecondary, modifier = Modifier.align(Alignment.CenterHorizontally))
         }
     }
@@ -159,5 +168,37 @@ private fun Choice(icon: ImageVector, title: String, line: String, color: Color,
             Text(title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = if (primary) color else Neon.TextPrimary)
             Text(line, style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary)
         }
+    }
+}
+
+/**
+ * « Comment veux-tu travailler ? »: the Mode simple (four tabs, everyday words) or every tool
+ * (the five spaces). Two cards side by side, the chosen one lit; Réglages changes it later.
+ */
+@Composable
+private fun ModeChoice(simple: Boolean, choose: (Boolean) -> Unit) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.testTag("welcome_mode")) {
+        Text(tr("Comment veux-tu travailler ?"), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+        Row(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth().height(androidx.compose.foundation.layout.IntrinsicSize.Min)) {
+            ModeCard(tr("Simple"), tr("4 onglets et des mots de tous les jours : idéal pour commencer."), simple, "welcome_mode_simple", Modifier.weight(1f)) { choose(true) }
+            ModeCard(tr("Complet"), tr("Tous les outils : structure, sons, mix et live."), !simple, "welcome_mode_full", Modifier.weight(1f)) { choose(false) }
+        }
+    }
+}
+
+@Composable
+private fun ModeCard(title: String, line: String, chosen: Boolean, tag: String, modifier: Modifier, onClick: () -> Unit) {
+    val shape = RoundedCornerShape(14.dp)
+    Column(
+        modifier.fillMaxHeight().clip(shape)
+            .background(if (chosen) Neon.Cyan.copy(alpha = 0.18f) else Neon.Surface)
+            .border(if (chosen) 2.dp else 1.dp, if (chosen) Neon.Cyan else Neon.Outline, shape)
+            .selectable(selected = chosen, role = Role.RadioButton, onClick = onClick)
+            .padding(12.dp)
+            .testTag(tag),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        Text(title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = if (chosen) Neon.Cyan else Neon.TextPrimary)
+        Text(line, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
     }
 }

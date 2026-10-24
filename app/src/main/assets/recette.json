@@ -1,46 +1,116 @@
 {
-  "id": "phase33-finir-son-morceau",
-  "milestone": "Phase 33 : finir son morceau, et qu'il sonne",
+  "id": "phases34-39-son-studio-deux-gestes",
+  "milestone": "Phases 34 à 39 : un son de studio, et tout en deux gestes",
   "items": [
     {
-      "id": "play_song",
-      "title": "▶ joue le morceau",
-      "hint": "Ouvre un projet qui a un morceau, va sur Rythme puis Synthé, touche ▶ : tout le morceau joue et la position avance sous la barre (« mes. 14/60 »)."
+      "id": "mode",
+      "title": "Premier lancement",
+      "hint": "Désinstalle puis réinstalle (ou Plus › Réglages › Mode) : choisis Mode complet puis essaie le Mode simple (Mon morceau · Rythme · Clavier · Envoyer). Rien ne se perd en changeant."
     },
     {
-      "id": "loop_part",
-      "title": "⟳ Partie",
-      "hint": "Touche « ⟳ Partie » sous ▶, puis ▶ : seule la partie affichée boucle. Recoupe la puce pendant la lecture : le morceau repart à la mesure suivante."
+      "id": "spaces",
+      "title": "Les 5 espaces",
+      "hint": "Parcours Structure, Sons, Mix, Live, Plus. Dans Structure, double-toucher un bloc ouvre son éditeur ; toucher la règle joue depuis là."
     },
     {
-      "id": "tempo_touch",
-      "title": "Tempo au doigt",
-      "hint": "Touche le tempo sous la barre : choisis 140 (la feuille se ferme). Rouvre, tape 1 2 8 puis OK. Annuler ramène d'un coup au tempo d'avant."
+      "id": "missions",
+      "title": "Missions et « ? »",
+      "hint": "Plus › Missions : fais « Mon premier morceau ». Puis touche « ? » en haut : des étiquettes nomment les boutons ; un toucher les cache."
     },
     {
-      "id": "rename_hold",
-      "title": "Renommer par appui long",
-      "hint": "Appui long sur le nom du projet en haut : tape un nouveau nom, OK. Il apparaît aussi dans Mes projets."
+      "id": "song_sound",
+      "title": "Le son de l'assistant",
+      "hint": "Crée un morceau Techno puis Trap. Écoute : vraie mélodie qui revient, Montée qui monte, un temps de silence, Drop qui frappe plus fort ; la 808 glisse en Trap."
     },
     {
-      "id": "solo_banner",
-      "title": "Bandeau solo",
-      "hint": "Mixeur : mets une piste en solo. Un bandeau ambre apparaît sur tous les onglets ; « Tout désactiver » le fait partir et tout se réentend."
+      "id": "long_club",
+      "title": "Morceaux club longs",
+      "hint": "Un morceau Techno dure 5 à 6 minutes ; un morceau House environ 3 minutes."
     },
     {
-      "id": "share_check",
-      "title": "⤴ Partager avec check-up",
-      "hint": "Touche ⤴ en haut à droite : durée, vérifications (laisse un solo : il est signalé, « Tout réactiver » le règle), puis « Partager ». Choisis WAV une fois : il est retenu la fois d'après."
+      "id": "part_sheet",
+      "title": "Feuille de partie",
+      "hint": "Structure : appui long sur une partie : Fill, Montée avant, Fondu de sortie, Fin, Énergie. Chaque action s'annule d'un coup."
     },
     {
-      "id": "song_ready",
-      "title": "Ton morceau est prêt",
-      "hint": "Nouveau projet › Partir d'un style : la carte « Ton morceau est prêt » apparaît sur Morceau. Écouter, puis Partager. Elle ne revient pas pour ce projet."
+      "id": "kit_pad",
+      "title": "Kit et pads",
+      "hint": "Sons › Batterie : « Kit ▾ » change tout le kit ; appui long sur un pad pour son, volume, pan ; glisse le doigt pour peindre ; appui long sur un coup pour un roulement ×8 montant."
     },
     {
-      "id": "master_target",
-      "title": "Sortie qui ne sature pas",
-      "hint": "Mixeur › Sortie générale, pendant la lecture : le volume s'affiche en direct. Choisis « Club » : le son monte doucement sans jamais saturer. Exporte le morceau : le fichier annonce son volume et une crête sous −1."
+      "id": "record",
+      "title": "Enregistrer une mélodie",
+      "hint": "Sons › Synthé : ● Enregistrer, décompte 4-3-2-1, joue, ■, puis « Remettre en rythme » (et « Comme joué » pour revenir)."
+    },
+    {
+      "id": "keep_played",
+      "title": "Garder ce que je viens de jouer",
+      "hint": "Joue quelques notes sans enregistrer, puis « Garder ce que je viens de jouer » : elles arrivent dans la piste."
+    },
+    {
+      "id": "voice",
+      "title": "Voix et prises",
+      "hint": "Sons › Voix : enregistre deux fois, choisis ta prise dans « Prises », essaie « Refaire mes. 5-8 » et « Recaler sur le tempo »."
+    },
+    {
+      "id": "live_versions",
+      "title": "Versions du morceau",
+      "hint": "Live : enregistre une prise, puis « Versions du morceau » › Ramener : l'ancien morceau revient."
+    },
+    {
+      "id": "chords",
+      "title": "Accords du morceau",
+      "hint": "Structure : bande des accords › choisis une grille, écoute, Appliquer. Annuler revient d'un coup. La 303 suit aussi."
+    },
+    {
+      "id": "clipboard",
+      "title": "Copier-coller",
+      "hint": "Piano roll : touche un numéro de mesure › Copier › va sur une autre piste › Coller."
+    },
+    {
+      "id": "poly",
+      "title": "Polyrythme et hasard",
+      "hint": "Batterie : « Ce pad boucle sur » 3 pas ; appui long sur un coup › 50 % : il ne joue pas à chaque fois, mais pareil à l'export."
+    },
+    {
+      "id": "freeze",
+      "title": "Geler la piste",
+      "hint": "Appui long sur une piste › Geler : elle devient de l'audio ; Dégeler la remet."
+    },
+    {
+      "id": "instruments",
+      "title": "Instruments réels",
+      "hint": "Changer le son d'une piste › Instruments réels : télécharge le Piano à queue, écoute ▶, joue au clavier."
+    },
+    {
+      "id": "track808",
+      "title": "Piste 808",
+      "hint": "Ajouter une piste › Basse 808 : joue deux notes liées, ça glisse."
+    },
+    {
+      "id": "export",
+      "title": "Export propre",
+      "hint": "⤴ › M4A : le rapport dit « ✓ Prêt à partager », la crête et combien les crêtes sont tassées."
+    },
+    {
+      "id": "video",
+      "title": "Vidéo 9:16",
+      "hint": "⤴ › Vidéo pour les réseaux · 30 s : regarde la vidéo dans ta galerie (temps d'export ?)."
+    },
+    {
+      "id": "glossary",
+      "title": "Glossaire",
+      "hint": "Plus › Les mots de la musique : écoute Sidechain et Réverbe (« Sans / Avec »)."
+    },
+    {
+      "id": "midi",
+      "title": "Potards MIDI",
+      "hint": "Si tu as un clavier MIDI à potards : sur Acide, tourne-les ; le petit rappel montre qui fait quoi."
+    },
+    {
+      "id": "headphones",
+      "title": "Casque",
+      "hint": "Pendant la lecture d'une piste 808, débranche puis rebranche le casque : le son ne change pas."
     }
   ]
 }

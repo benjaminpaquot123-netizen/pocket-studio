@@ -296,7 +296,7 @@ class LiveVmTest {
         assertTrue(vm.take.value is TakeUi.Armed)
         vm.setTakeAppend(true)
         assertFalse(vm.takeAppend.value)
-        assertTrue(vm.notice.value!!.contains("Remplacer"))
+        assertTrue(vm.notice.value!!.contains("Nouvelle version"))
         vm.takeClockForTest = 16
         vm.tickPerformance()
         vm.takeClockForTest = 40

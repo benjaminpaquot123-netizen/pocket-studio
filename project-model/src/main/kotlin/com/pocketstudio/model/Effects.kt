@@ -130,6 +130,8 @@ enum class EffectType(val label: String, val params: List<Param>, val defaults: 
             Param("Profondeur", ::percentOf),
             Param("Relâche") { ms(expMap(it, 50f, 600f)) },
             Param("Déclenche") { if (it < 0.5f) tr("Grosse caisse") else tr("Chaque temps") },
+            // S5: the kick's own sound (the mixer's sidechain key) instead of its lane's steps.
+            Param("Réagit à") { if (it >= 0.5f) tr("Le son du kick") else tr("Les coups de la grille") },
         ),
         listOf(0.7f, 0.4f, 0f, 0f),
         group = EffectGroup.DYNAMICS,
@@ -329,6 +331,18 @@ enum class EffectType(val label: String, val params: List<Param>, val defaults: 
         "Un filtre qui s'ouvre et se ferme en rythme avec le morceau : le « wob » du dubstep, la reese qui bouge en drum & bass.",
         EffectGroup.MOTION,
     ),
+    /** Phase 34 (S5): the engine's SoftClipper (a margin over the sound's own level, 3..15 dB). */
+    CLIPPER(
+        "Écrêteur doux",
+        listOf(
+            Param("Marge") { num("%.0f dB", 3f + 12f * it) },
+            Param("Douceur", ::percentOf),
+            Param("Mélange", ::percentOf),
+        ),
+        listOf(0.25f, 0.5f, 1f, 0f),
+        "Arrondit les crêtes qui dépassent le niveau du son : plus dense, sans pomper. Parfait sur une basse, avant l'OTT.",
+        EffectGroup.DYNAMICS,
+    ),
     ;
 
     /** Seconds of memory: the engine holds only a few of these (see [LONG_LIMITS]). */
@@ -377,6 +391,8 @@ enum class EffectType(val label: String, val params: List<Param>, val defaults: 
         const val SAT_TONE = 1
         const val SAT_COMPENSATION = 4
         const val TONE_OPEN = 1f
+        /** [PUMP]'s key: at 1 it listens to the kick's sound (the mixer's sidechain key), at 0 to its lane's steps. */
+        const val PUMP_AUDIO_KEY = 3
         /** A tone saved at its top before phase 33 (an 18 kHz low-pass): just under the open top. */
         const val LEGACY_TOP_TONE = 0.99999f
         private val LEGACY_COMPRESSOR = listOf(0.6f, 0.2f, 0.2f, 0.3f)
@@ -441,11 +457,29 @@ object Buses {
             Param("Tonalité") { hz(expMap(it, 800f, 16000f)) },
         ),
     )
-    val DEFAULTS: List<List<Float>> = listOf(listOf(0.6f, 0.5f, 1f, 0.1f), listOf(0.33f, 0.4f, 1f, 0.6f))
+    /**
+     * Phase 34 (S4): after the 4 settings each bus shows, the reverb's type ([REVERB_TYPE]: the hall,
+     * as always, the plate or the room; nothing on the echo), 3 unused, then the return's equaliser
+     * ([LOW_CUT] 0 = off, [HIGH_CUT] 1 = off). Projects saved before take these defaults: as they sounded.
+     */
+    const val REVERB_TYPE = 4
+    const val LOW_CUT = 8
+    const val HIGH_CUT = 9
+    const val PARAM_COUNT = 10
+    const val HALL = 0f
+    const val PLATE = 0.5f
+    const val ROOM = 1f
+    private val REST = listOf(0f, 0f, 0f, 0f, 0f, 1f)
+    val DEFAULTS: List<List<Float>> = listOf(listOf(0.6f, 0.5f, 1f, 0.1f) + REST, listOf(0.33f, 0.4f, 1f, 0.6f) + REST)
+
+    /** [LOW_CUT] for a high-pass at [hz] (40..1000 Hz, the engine's 40 x 25^v). */
+    fun lowCutValue(hz: Float): Float = (kotlin.math.ln(hz.coerceIn(40f, 1000f) / 40f) / kotlin.math.ln(25f))
+    /** [HIGH_CUT] for a low-pass at [hz] (1..20 kHz, the engine's 1 kHz x 20^v). */
+    fun highCutValue(hz: Float): Float = (kotlin.math.ln(hz.coerceIn(1000f, 20000f) / 1000f) / kotlin.math.ln(20f))
 
     fun sanitized(buses: List<List<Float>>): List<List<Float>> = List(COUNT) { b ->
         val given = buses.getOrNull(b).orEmpty()
-        (given + DEFAULTS[b].drop(given.size)).take(EffectType.PARAMS).map { v -> v.takeIf { it.isFinite() }?.coerceIn(0f, 1f) ?: 0.5f }
+        (given + DEFAULTS[b].drop(given.size)).take(PARAM_COUNT).map { v -> v.takeIf { it.isFinite() }?.coerceIn(0f, 1f) ?: 0.5f }
     }
 }
 

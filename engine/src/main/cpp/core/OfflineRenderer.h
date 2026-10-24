@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <array>
 #include <atomic>
 #include <cstdint>
 #include <functional>
@@ -54,8 +55,10 @@ public:
     // Plays the transport for `frames`, then renders `tailFrames` stopped so
     // releases ring out. Output is 24-bit stereo unless setOutputFormat says otherwise.
     Result renderToWav(const char* path, int64_t frames, int64_t tailFrames);
-    // Same, into memory (interleaved stereo at the engine's rate). Empty when cancelled.
-    std::vector<float> renderToBuffer(int64_t frames, int64_t tailFrames);
+    // Same, into memory (interleaved stereo at the engine's rate). Empty when cancelled. `mono`: one
+    // channel, the mean of left and right (a long frozen track: half the memory, and the stereo is
+    // never held in full when the render has a single pass, i.e. without a loudness target).
+    std::vector<float> renderToBuffer(int64_t frames, int64_t tailFrames, bool mono = false);
 
     // What the last render delivered, measured on what was written (fades and resampling
     // included): integrated loudness (LUFS; -1000: silence), true peak (linear), length.
@@ -66,6 +69,14 @@ public:
         int sampleRate = 48000;
         float driveDb = 0.0f;  // the loudness target's drive (0 without one)
         double musicLufs = -1000.0;  // the music before the master chain (two-pass render only)
+        // S5 (two-pass render only): the loudness of the loudest part (LoudPart, the Drop) of the
+        // music before the chain and of the master, and what the clipper and the limiter took off
+        // (LU: in Drop mode over the loud part, else over the whole song); the target's mode.
+        double musicLoudLufs = -1000.0;
+        double loudLufs = -1000.0;
+        float lossDb = 0.0f;
+        int mode = 0;  // 0 Song, 1 Drop (MasterChain::Mode)
+        float targetLufs = 0.0f;  // 0: none
     };
     const Report& report() const { return report_; }
 
@@ -88,7 +99,12 @@ private:
     // The whole render: one pass, or two (into `makeStore()`) with a loudness target.
     Result render(int64_t frames, int64_t tailFrames, const std::function<std::unique_ptr<Store>()>& makeStore, Output& output);
     // The master chain at a held drive over the stored music, its latency dropped, into `sink`.
-    Result masterPass(Store& store, float driveDb, const Sink& sink, float progressFrom, float progressTo, double* lufs);
+    Result masterPass(Store& store, float driveDb, const Sink& sink, float progressFrom, float progressTo, double* lufs,
+                      double* loud = nullptr);
+
+    // S5, Drop mode: the drive bringing the loud part (`preLoud` before the chain) to `target`
+    // within MasterChain::kMaxLossDropDb, from measured passes of the chain over the stored music.
+    Result dropDrive(Store& store, double preLoud, double target, float& drive);
 
     void postNow(const Command& command);
     void postDue(int64_t frame);

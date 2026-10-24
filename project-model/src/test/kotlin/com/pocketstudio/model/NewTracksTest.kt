@@ -50,7 +50,7 @@ class NewTracksTest {
         val next = NewTracks.add(inKey, TrackKind.Melody, house, write = true)!!
         val t = added(inKey, next)
         assertEquals("Mélodie", t.name)
-        assertEquals(64, t.notes.steps)
+        assertEquals(StarterWizard.PHRASE_STEPS, t.notes.steps)
         assertTrue(t.notes.notes.size >= 8)
         t.notes.notes.forEach { assertTrue("${it.pitch}", inKey.harmony.inScale(it.pitch)) }
         assertEquals(inKey.harmony, next.harmony)

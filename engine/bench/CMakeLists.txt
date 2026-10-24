@@ -27,4 +27,6 @@ target_compile_options(ps_render PRIVATE -Wall -Wextra -Werror -O2)
 add_executable(ps_measure ps_measure.cpp)
 target_include_directories(ps_measure SYSTEM PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/signalsmith-linear/include)
 target_link_libraries(ps_measure PRIVATE ebur128)
+# The engine's own loudness pieces (header-only, real-time code): the Drop-mode target's LoudPart.
+target_include_directories(ps_measure PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../src/main/cpp/core)
 target_compile_options(ps_measure PRIVATE -Wall -Wextra -Werror -O2)

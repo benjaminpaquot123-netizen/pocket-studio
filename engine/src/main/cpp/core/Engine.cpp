@@ -81,6 +81,9 @@ void Engine::applyCommand(const Command& command) {
         case CommandType::SetTransport:
             if (command.value > 0.5f) {
                 sequencer_.start(std::clamp(command.a, 0, 4));
+                rollCount_ = 0;
+                lookaheadStep_ = -1;
+                lookaheadLanes_ = 0;
                 sceneStart_ = 0;
                 // Started from a later song part: the song position counts from that part's place.
                 // b < 0: a scene played on its own, outside the song (song automation and song
@@ -109,10 +112,12 @@ void Engine::applyCommand(const Command& command) {
                 // Free LFOs and noise from their start: an export, which starts here, sounds like
                 // the take (otherwise their phase is the time since the effect was put on).
                 drums_.resetNoise();
+                sampler_.resetRoundRobin();
                 mixer_.restartLfos();
                 for (auto& t : tracks_) {
                     t.synth.restartLfos();
                     t.plaits.restartNoise();
+                    t.multi.resetRoundRobin();
                 }
             } else {
                 stopTransport();
@@ -123,6 +128,45 @@ void Engine::applyCommand(const Command& command) {
             break;
         case CommandType::SetKitVersion:
             if (std::isfinite(command.value)) drums_.setVersion(static_cast<int>(std::lround(command.value)));
+            break;
+        case CommandType::SetSoundVersion:
+            if (std::isfinite(command.value)) {
+                for (auto& t : tracks_) t.setStereoSounds(command.value >= 1.5f);
+            }
+            break;
+        case CommandType::SetSidechain:
+            if (!std::isfinite(command.value)) break;
+            if (command.a == 0) {
+                const int ch = static_cast<int>(std::lround(command.value));
+                mixer_.setSidechainKey(ch);
+                keyPad_ = Mixer::isPad(mixer_.sidechainKey()) ? mixer_.sidechainKey() - Mixer::kFirstPad : -1;
+            } else if (command.a >= 1 && command.a <= 3) {
+                mixer_.setGroupDuck(command.a - 1, command.value);
+            } else if (command.a == 4) {
+                mixer_.setGroupMember(command.b, command.value > 0.5f);
+            } else if (command.a == 5) {
+                mixer_.setGroupReturn(command.b, command.value > 0.5f);
+            }
+            break;
+        case CommandType::SetMixVersion:
+            if (std::isfinite(command.value)) {
+                mixer_.masterChain().setMode(command.value >= 1.5f ? MasterChain::Mode::Drop : MasterChain::Mode::Song);
+            }
+            break;
+        case CommandType::SetDrumLaneSteps:
+            if (command.a >= 0 && command.a < kLanes && std::isfinite(command.value)) {
+                const int n = std::clamp(static_cast<int>(std::lround(command.value)), 0, kMaxSteps);
+                (staging_ ? staged_.laneSteps : laneSteps_)[command.a] = static_cast<uint8_t>(n);
+            }
+            break;
+        case CommandType::SetDrumStepChance:
+            if (command.a >= 0 && command.a < kLanes && command.b >= 0 && command.b < kMaxSteps && std::isfinite(command.value)) {
+                const int chance = static_cast<int>(std::lround(std::clamp(command.value, 0.0f, 1.0f) * 100.0f));
+                (staging_ ? staged_.skip : skip_)[command.a][command.b] = static_cast<uint8_t>(100 - chance);
+            }
+            break;
+        case CommandType::SetDrumSeed:
+            if (std::isfinite(command.value)) chanceSeed_ = static_cast<uint32_t>(std::clamp(std::lround(command.value), 0L, 1L << 24));
             break;
         case CommandType::SetSwing:
             sequencer_.setSwing(command.value);
@@ -151,8 +195,21 @@ void Engine::applyCommand(const Command& command) {
         case CommandType::SetSynthEngine:
             tracks_[static_cast<size_t>(trackOf(command.a))].setSource(trackArg(command.a));
             break;
-        case CommandType::InstallTrackSample:
-            tracks_[static_cast<size_t>(trackOf(command.a))].sampled.install(command.sample);  // takes the reference
+        case CommandType::InstallTrackSample: {
+            auto& t = tracks_[static_cast<size_t>(trackOf(command.a))];
+            const int zone = trackArg(command.a) - 1;
+            if (zone >= 0) t.multi.installZone(zone, command.sample);  // takes the reference
+            else t.sampled.install(command.sample);
+            break;
+        }
+        case CommandType::SetTrackZone: {
+            auto& t = tracks_[static_cast<size_t>(trackOf(command.a))];
+            if (command.b < 0) t.multi.setParam(trackArg(command.a), command.value);
+            else t.multi.setZoneParam(command.b, trackArg(command.a), command.value);
+            break;
+        }
+        case CommandType::SetTrack808Param:
+            tracks_[static_cast<size_t>(trackOf(command.a))].bass808.setParam(trackArg(command.a), command.value);
             break;
         case CommandType::SetTrackSampleParam:
             tracks_[static_cast<size_t>(trackOf(command.a))].sampled.setParam(trackArg(command.a), command.value);
@@ -300,19 +357,27 @@ void Engine::applyCommand(const Command& command) {
             mixer_.setSolo(command.a, command.value > 0.5f);
             break;
         case CommandType::InstallSample:
-            sampler_.install(command.a, command.sample);  // takes the command's reference
+            // a: the pad, or Sampler::layerArg (a layer of a sampled kit). Takes the command's reference.
+            if (((command.a >> 8) & 0xFF) != 0) {
+                sampler_.installLayer(command.a & 0xFF, ((command.a >> 8) & 0xFF) - 1, (command.a >> 16) & 0xFF, (command.a >> 24) & 0xFF,
+                                      command.sample);
+            } else {
+                sampler_.install(command.a, command.sample);
+            }
             break;
         case CommandType::SetPadParam:
             sampler_.setParam(command.a, command.b, command.value);
             break;
         case CommandType::SetSynthNote: {
             auto& t = tracks_[static_cast<size_t>(trackOf(command.a))];
-            const int index = trackArg(command.a);
+            const int index = NoteTrack::indexOf(trackArg(command.a));
+            const int high = NoteTrack::highOf(trackArg(command.a));
             if (!staging_) {
-                t.notes.setNote(index, command.b, command.value);
+                t.notes.setNote(index, command.b, command.value, high);
             } else if (index < NoteTrack::kMaxNotes) {
                 t.staged.packed[static_cast<size_t>(index)] = command.b;
                 t.staged.velocity[static_cast<size_t>(index)] = command.value;
+                t.staged.high[static_cast<size_t>(index)] = static_cast<uint8_t>(high);
             }
             break;
         }
@@ -361,6 +426,8 @@ void Engine::applyCommand(const Command& command) {
             else if (command.a == 4) mixer_.setLoudnessTarget(command.value);  // LUFS; 0 or NaN: no target
             else if (command.a == 5) mixer_.setCeiling(command.value);         // dBTP
             else if (command.a == 6) mixer_.resetLoudnessEstimate();           // another project
+            else if (command.a == 7) mixer_.setMonoBass(command.value);        // Hz, 0: off (S4)
+            else if (command.a == 8) mixer_.masterChain().setKnownDrive(command.value);  // dB, an export's (S5)
             break;
         case CommandType::SetSend:
             mixer_.setSend(command.a, command.b, command.value);
@@ -371,6 +438,10 @@ void Engine::applyCommand(const Command& command) {
         case CommandType::SetAutomationTarget:
             if (command.a >= 0 && command.a < Automation::kLanes) {
                 auto& lane = automation_.lanes[command.a];
+                // The master's fade curve gone (or moved elsewhere): the master back at unity.
+                if (lane.target == Automation::pack(Automation::Volume, Mixer::kMaster, 0, 0) && command.b != lane.target) {
+                    mixer_.setVolume(Mixer::kMaster, 0.8f);
+                }
                 lane.target = command.b;
                 lane.mode = Automation::Loop;
                 lane.values.fill(-1.0f);
@@ -518,30 +589,70 @@ void Engine::applyCommand(const Command& command) {
         }
         case CommandType::TriggerPad:
             if (command.a >= 0 && command.a < kLanes) {
-                const float pan = padPan_[static_cast<size_t>(command.a)];
-                if (sampler_.has(command.a)) sampler_.trigger(command.a, command.value, 0, pan);
-                else drums_.trigger(command.a, command.value, 0, pan);
+                triggerPad(command.a, command.value, 0, padPan_[static_cast<size_t>(command.a)], 0.0f, 0);
                 laneTriggers_[static_cast<size_t>(command.a)].fetch_add(1, std::memory_order_relaxed);
             }
             break;
         case CommandType::SetDrumRepeat:
-            if (command.a >= 0 && command.a < kLanes && command.b >= 0 && command.b < kMaxSteps) {
-                (staging_ ? staged_.repeats : repeats_)[command.a][command.b] = static_cast<uint8_t>(std::clamp(static_cast<int>(command.value), 1, 4));
+            if (command.a >= 0 && command.a < kLanes && command.b >= 0 && command.b < kMaxSteps && std::isfinite(command.value)) {
+                (staging_ ? staged_.repeats : repeats_)[command.a][command.b] = static_cast<uint8_t>(std::clamp(static_cast<int>(command.value), 1, kMaxRollHits));
             }
             break;
         case CommandType::SetDrumHit: {
-            // b: step in the low 16 bits, hits in the step (0 or 1 = plain, up to 4 = a roll) above.
+            // b: step in the low 16 bits, hits in the step (0 or 1 = plain, up to 16 = a roll) above.
             const int step = command.b & 0xFFFF;
-            const int repeats = std::clamp((command.b >> 16) & 0xFF, 1, 4);
+            const int repeats = std::clamp((command.b >> 16) & 0xFF, 1, kMaxRollHitsPerStep);
             if (command.a >= 0 && command.a < kLanes && step < kMaxSteps) {
                 (staging_ ? staged_.drums : pattern_)[command.a][step] = std::clamp(command.value, 0.0f, 1.0f);
                 (staging_ ? staged_.repeats : repeats_)[command.a][step] = static_cast<uint8_t>(repeats);
-                // Pan and pitch go back to plain: a SetDrumStepDetail follows when the hit has any.
+                // Pan, pitch, timing and glide go back to plain: a SetDrumStepDetail, SetDrumStepOffset
+                // or SetDrumStepGlide follows when the hit has any. The roll's ramp comes with the hit
+                // (bits 24..25: Hit.ramp); a SetDrumStepRoll after it may reshape the roll.
                 (staging_ ? staged_.pan : stepPan_)[command.a][step] = 0;
                 (staging_ ? staged_.pitch : stepPitch_)[command.a][step] = 0;
+                (staging_ ? staged_.skip : skip_)[command.a][step] = 0;  // always plays, until a SetDrumStepChance
+                DrumStepExtra x;
+                switch ((command.b >> 24) & 0x3) {
+                    case 1: x.ramp = 2; x.amount = kHitRampAmount; break;  // rising
+                    case 2: x.ramp = 3; x.amount = kHitRampAmount; break;  // falling
+                    case 3: x.ramp = 1; break;                              // even
+                    default: break;                                         // as before (0.85 x each)
+                }
+                (staging_ ? staged_.extra : stepExtra_)[command.a][step] = x;
             }
             break;
         }
+        case CommandType::SetDrumStepOffset:
+            if (command.a >= 0 && command.a < kLanes && command.b >= 0 && command.b < kMaxSteps && std::isfinite(command.value)) {
+                (staging_ ? staged_.extra : stepExtra_)[command.a][command.b].offset =
+                    static_cast<int16_t>(std::lround(std::clamp(command.value, -50.0f, 50.0f) * 10.0f));
+            }
+            break;
+        case CommandType::SetDrumStepRoll: {
+            const int step = command.b & 0xFF;
+            if (command.a >= 0 && command.a < kLanes && step < kMaxSteps && std::isfinite(command.value)) {
+                DrumStepExtra& x = (staging_ ? staged_.extra : stepExtra_)[command.a][step];
+                x.span = static_cast<uint8_t>(std::clamp((command.b >> 8) & 0xF, 1, kMaxRollSpan));
+                x.ramp = static_cast<uint8_t>(std::clamp((command.b >> 12) & 0x7, 0, 3));
+                x.triplet = static_cast<uint8_t>((command.b >> 15) & 1);
+                x.amount = static_cast<uint8_t>(std::lround(std::clamp(command.value, 0.0f, 1.0f) * 100.0f));
+                const int hits = std::clamp((command.b >> 16) & 0xFF, 1, std::min(kMaxRollHits, kMaxRollHitsPerStep * x.span));
+                (staging_ ? staged_.repeats : repeats_)[command.a][step] = static_cast<uint8_t>(hits);
+            }
+            break;
+        }
+        case CommandType::SetDrumStepGlide:
+            if (command.a >= 0 && command.a < kLanes && command.b >= 0 && command.b < kMaxSteps && std::isfinite(command.value)) {
+                (staging_ ? staged_.extra : stepExtra_)[command.a][command.b].glide =
+                    static_cast<uint8_t>(std::lround(std::clamp(command.value, 0.0f, 500.0f) * 0.5f));
+            }
+            break;
+        case CommandType::SetPadVoice:
+            if (std::isfinite(command.value)) drums_.setKind(command.a, static_cast<int>(std::lround(command.value)));
+            break;
+        case CommandType::SetPadVoiceParam:
+            drums_.setVoiceParam(command.a, command.b, command.value);
+            break;
     }
 }
 
@@ -554,7 +665,11 @@ void Engine::stopTransport() {
     staged_.audioLoop.fill(-1);  // a part that never came must not change a clip's loop at a later swap
     staged_.insertOn.fill(-1);   // nor its effects
     sequencer_.stop();
+    // A song that faded out leaves the pads played live audible.
+    mixer_.setVolume(Mixer::kMaster, 0.8f);
     rollCount_ = 0;
+    lookaheadStep_ = -1;
+    lookaheadLanes_ = 0;
     stems_.stop();
     // The live grid starts again from its rows: nothing armed, every slot heard (the app sends the
     // patterns of the scene shown again).
@@ -649,49 +764,183 @@ void Engine::onStep(int offset, int step) {
     // Outside the song, no song position: song clips and song curves wait for the song.
     const int songStep = inSong_ ? step - songStart_ : -1;
     std::array<int, AudioTracks::kTracks> audioLocals{};
-    for (int k = 0; k < AudioTracks::kTracks; ++k) audioLocals[static_cast<size_t>(k)] = localOf(kSlotAudio + k, step);
+    for (int k = 0; k < AudioTracks::kTracks; ++k) audioLocals[static_cast<size_t>(k)] = localOf(audioSlot(k), step);
     audio_.onStep(offset, audioLocals, songStep, sequencer_.samplesPerStep(), sequencer_.swing(), songStart_);
     for (int k = 0; k < kTracks; ++k) {
         auto& t = tracks_[static_cast<size_t>(k)];
         if (t.on) t.notes.onStep(offset, localOf(kSlotInst + k, step), sequencer_.samplesPerStep(), sequencer_.swing());
         t.arpSync(offset, step, sequencer_.samplesPerStep());
+        // The synth's slow cycle (CycleBars) counts the song's bars (the transport's outside the song).
+        if (t.on) t.synth.syncCycle(songStep >= 0 ? songStep : step, offset, bar);
     }
     // The drums' own step; loop curves follow the scene's.
     const int drumsLocal = localOf(kSlotDrums, step);
     const int patternStep = ((drumsLocal % patternSteps_) + patternSteps_) % patternSteps_;
+    // The step's place for the hits' chances: in the song, else in the drums' loop since they started.
+    const int chanceKey = inSong_ ? songStep : drumsLocal;
     songStep_.store(songStep, std::memory_order_relaxed);
     // Loop and per-scene curves run with the drum loop (they carry on with it in a song part that
     // carries on, as during the live take it was written from).
     applyAutomation(patternStep, songStep, offset);
     // Sidechain pumps follow the kick lane (pad 1) or every quarter note.
-    mixer_.sidechainEvent(offset, pattern_[0][patternStep] > 0.0f, onBeat, step, bar);
+    // (the kick lane on its own loop when it has one, and only a hit that plays this pass).
+    const int kickStep = laneStepOf(laneSteps_, 0, drumsLocal, patternSteps_);
+    const bool kick = pattern_[0][kickStep] > 0.0f && chancePlays(chanceSeed_, 0, chanceKey, skip_[0][kickStep]);
+    mixer_.sidechainEvent(offset, kick, onBeat, step, bar);
     currentStep_.store(patternStep, std::memory_order_relaxed);
     absoluteStep_.store(local, std::memory_order_relaxed);
     lastLocal_ = local;
     stepOffset_ = offset;
+    // This step's hits (the lanes whose early hit the step before already queued excepted), then
+    // the early hits (a negative offset) of the next step, from the pattern it will play: the
+    // waiting scene's when a swap lands on it, else this one's (the live grid's launches and edits
+    // in between are not foreseen: that hit plays what was known).
+    const uint32_t skip = lookaheadStep_ == step ? lookaheadLanes_ : 0u;
     for (int lane = 0; lane < kLanes; ++lane) {
-        const float v = pattern_[lane][patternStep];
-        if (v > 0.0f) {
-            const float pan = stepPan_[lane][patternStep] * 0.01f;
-            const float pitch = stepPitch_[lane][patternStep];
-            hitLane(lane, v, offset, pan, pitch);
-            // A roll: the other hits share the step evenly, each a little softer. A swung (odd)
-            // step is shorter by the swing: its roll stays inside it, before the next step's hit.
-            const int n = repeats_[lane][patternStep];
-            const double length = sequencer_.samplesPerStep() * ((step & 1) != 0 ? 1.0 - sequencer_.swing() : 1.0);
-            const double every = length / std::max(1, n);
-            for (int k = 1; k < n && rollCount_ < static_cast<int>(rolls_.size()); ++k) {
-                rolls_[static_cast<size_t>(rollCount_++)] = {lane, v * std::pow(0.85f, static_cast<float>(k)), offset + static_cast<int64_t>(k * every), pan, pitch};
-            }
+        if ((skip >> lane) & 1u) continue;
+        queueStepHits(lane, laneStepOf(laneSteps_, lane, drumsLocal, patternSteps_), offset, step, false, chanceKey);
+    }
+    lookaheadStep_ = step + 1;
+    lookaheadLanes_ = 0;
+    {
+        const int nextLocal = step + 1 - sceneStart_;
+        const bool swapNext = swapAt_ >= 0 && !stopAtSwap_ && nextLocal > 0 && nextLocal % bar == 0 && (swapAt_ == 0 || nextLocal >= swapAt_);
+        // The song ends on that bar line (onStep then stops the transport): no early hit of a step
+        // that never plays rings past the end.
+        const bool stopNext = swapAt_ >= 0 && stopAtSwap_ && nextLocal > 0 && nextLocal % bar == 0 && (swapAt_ == 0 || nextLocal >= swapAt_);
+        const int steps = swapNext ? staged_.drumSteps : patternSteps_;
+        const int nextDrumsLocal = drumsLocal + 1;
+        // After a swap the drums count from the swap, or from their place in a part started later in.
+        const int swapLocal = slots_[kSlotDrums].stagedOffset;
+        const int nextDrums = swapNext ? swapLocal : nextDrumsLocal;
+        const int nextKey = chanceKeyAfter(step, swapNext, nextDrums);
+        const int64_t nextBase = offset + static_cast<int64_t>(std::llround(stepFrames(step)));
+        for (int lane = 0; lane < kLanes && !stopNext; ++lane) {
+            // Each lane on its own loop (a polyrhythm), the waiting scene's when it takes over.
+            const int nextStep = laneStepOf(swapNext ? staged_.laneSteps : laneSteps_, lane, nextDrums, std::max(1, steps));
+            const float v = (swapNext ? staged_.drums : pattern_)[lane][nextStep];
+            const DrumStepExtra& x = (swapNext ? staged_.extra : stepExtra_)[lane][nextStep];
+            if (v <= 0.0f || x.offset >= 0) continue;
+            queueStepHits(lane, nextStep, nextBase, step + 1, swapNext, nextKey);
+            lookaheadLanes_ |= 1u << lane;
         }
     }
 }
 
-void Engine::hitLane(int lane, float velocity, int offset, float pan, float pitch) {
+double Engine::stepFrames(int step) const {
+    const double swing = sequencer_.swing();
+    const double thisSwing = (step & 1) != 0 ? swing : 0.0;
+    const double nextSwing = ((step + 1) & 1) != 0 ? swing : 0.0;
+    return sequencer_.samplesPerStep() * (1.0 + nextSwing - thisSwing);
+}
+
+int Engine::chanceKeyAfter(int step, bool swapNext, int nextDrumsLocal) const {
+    const int next = step + 1;
+    if (swapNext) {
+        // The swap that lands on it may (re)start the song, or leave it.
+        if (songRestart_) return songRestartAt_;
+        if (leaveSong_) return nextDrumsLocal;
+    }
+    return inSong_ ? next - songStart_ : nextDrumsLocal;
+}
+
+void Engine::queueStepHits(int lane, int patternStep, int64_t base, int step, bool fromStaged, int key) {
+    const float v = (fromStaged ? staged_.drums : pattern_)[lane][patternStep];
+    if (v <= 0.0f) return;
+    // A hit with a chance: drawn once for the hit and its roll, the same for this place every time.
+    if (!chancePlays(chanceSeed_, lane, key, (fromStaged ? staged_.skip : skip_)[lane][patternStep])) return;
+    const float pan = (fromStaged ? staged_.pan : stepPan_)[lane][patternStep] * 0.01f;
+    const float pitch = (fromStaged ? staged_.pitch : stepPitch_)[lane][patternStep];
+    const DrumStepExtra& x = (fromStaged ? staged_.extra : stepExtra_)[lane][patternStep];
+    const int glide = static_cast<int>(std::lround(x.glide * 2.0 * 0.001 * sampleRate_));
+    const double offsetFrames = x.offset * 0.0001 * sampleRate_;
+    // A roll: `n` hits share the span evenly, from this step's frame; a swung (odd) step is
+    // shorter by the swing, so a roll inside it stays before the next step's hit.
+    const int span = std::clamp(static_cast<int>(x.span), 1, kMaxRollSpan);
+    // At most 8 a step: two hits of a pad stay more than a block (256 frames) apart up to 300 BPM.
+    const int n = std::clamp(static_cast<int>((fromStaged ? staged_.repeats : repeats_)[lane][patternStep]), 1, kMaxRollHitsPerStep * span);
+    // Over one step: the plain step's length (a roll on an even step leaves the swing's gap, as
+    // before phase 34); over several: their true length.
+    double spanFrames = sequencer_.samplesPerStep() * ((step & 1) != 0 ? 1.0 - sequencer_.swing() : 1.0);
+    if (span > 1) {
+        spanFrames = 0.0;
+        for (int j = 0; j < span; ++j) spanFrames += stepFrames(step + j);
+    }
+    const double every = spanFrames / n;
+    // The shuffle: every second hit later by a third of the gap, as long as two hits of the pad
+    // stay a block apart (DrumKit takes one hit per block).
+    const double shuffle = x.triplet != 0 && n > 1 ? std::min(every / 3.0, std::max(0.0, every - (kMaxBlock + 4))) : 0.0;
+    const float amount = x.amount * 0.01f;
+    for (int k = 0; k < n && rollCount_ < static_cast<int>(rolls_.size()); ++k) {
+        float velocity = v;
+        const float t = n > 1 ? static_cast<float>(k) / static_cast<float>(n - 1) : 1.0f;
+        switch (x.ramp) {
+            case 1: break;
+            case 2: velocity = v * (1.0f - amount * (1.0f - t)); break;
+            case 3: velocity = v * (1.0f - amount * t); break;
+            default: velocity = v * std::pow(0.85f, static_cast<float>(k)); break;
+        }
+        const double at = base + offsetFrames + k * every + ((k & 1) != 0 ? shuffle : 0.0);
+        rolls_[static_cast<size_t>(rollCount_++)] = {lane, std::max(velocity, 0.01f), static_cast<int64_t>(std::llround(at)), pan, pitch, glide};
+    }
+}
+
+void Engine::hitLane(int lane, float velocity, int offset, float pan, float pitch, int glideFrames) {
     laneTriggers_[static_cast<size_t>(lane)].fetch_add(1, std::memory_order_relaxed);
-    pan += padPan_[static_cast<size_t>(lane)];
-    if (sampler_.has(lane)) sampler_.trigger(lane, velocity, offset, pan, pitch);
-    else drums_.trigger(lane, velocity, offset, pan);
+    triggerPad(lane, velocity, offset, pan + padPan_[static_cast<size_t>(lane)], pitch, glideFrames);
+}
+
+void Engine::startHit(const LaneHit& h, int offset) {
+    if (sampler_.has(h.lane)) sampler_.trigger(h.lane, h.velocity, offset, h.pan, h.pitch);
+    else drums_.trigger(h.lane, h.velocity, offset, h.pan, h.pitch, h.glide);
+}
+
+void Engine::triggerPad(int lane, float velocity, int offset, float pan, float pitch, int glideFrames) {
+    if (lane < 0 || lane >= kLanes) return;
+    LaneHit hit{lane, std::max(0, offset), velocity, pan, pitch, glideFrames};
+    LaneHit& held = laneHit_[static_cast<size_t>(lane)];
+    if (held.at >= 0 && held.at != hit.at && deferredCount_ < kDeferred) {
+        // Both play: the earlier one now, the later one waits for its piece of the slice.
+        if (hit.at < held.at) std::swap(hit, held);
+        deferred_[static_cast<size_t>(deferredCount_++)] = hit;
+        startHit(held, held.at);
+        return;
+    }
+    held = hit;  // the same frame: the last one wins, as one hit
+    startHit(hit, hit.at);
+}
+
+void Engine::renderPads(float* const* lefts, float* const* rights, int numFrames) {
+    if (deferredCount_ == 0) {
+        drums_.render(lefts, rights, numFrames);
+        sampler_.render(lefts, rights, numFrames);
+    } else {
+        // In time order (insertion sort: a handful at most).
+        for (int i = 1; i < deferredCount_; ++i) {
+            for (int j = i; j > 0 && deferred_[static_cast<size_t>(j)].at < deferred_[static_cast<size_t>(j - 1)].at; --j)
+                std::swap(deferred_[static_cast<size_t>(j)], deferred_[static_cast<size_t>(j - 1)]);
+        }
+        float* segL[kLanes];
+        float* segR[kLanes];
+        int from = 0, k = 0;
+        while (from < numFrames) {
+            const int to = k < deferredCount_ ? std::min(numFrames, deferred_[static_cast<size_t>(k)].at) : numFrames;
+            if (to > from) {
+                for (int lane = 0; lane < kLanes; ++lane) {
+                    segL[lane] = lefts[lane] + from;
+                    segR[lane] = rights[lane] + from;
+                }
+                drums_.render(segL, segR, to - from);
+                sampler_.render(segL, segR, to - from);
+                from = to;
+            }
+            // The hits due here start the next piece (on its first frame).
+            while (k < deferredCount_ && deferred_[static_cast<size_t>(k)].at <= from) startHit(deferred_[static_cast<size_t>(k++)], 0);
+            if (k >= deferredCount_ && from >= numFrames) break;
+        }
+    }
+    deferredCount_ = 0;
+    for (auto& h : laneHit_) h.at = -1;
 }
 
 void Engine::playRolls(int numFrames) {
@@ -699,7 +948,8 @@ void Engine::playRolls(int numFrames) {
     for (int i = 0; i < rollCount_; ++i) {
         PendingHit h = rolls_[static_cast<size_t>(i)];
         if (h.at < numFrames) {
-            hitLane(h.lane, h.velocity, static_cast<int>(h.at), h.pan, h.pitch);
+            // A hit due before this block (an early hit the start could not foresee): at once.
+            hitLane(h.lane, h.velocity, static_cast<int>(std::max<int64_t>(0, h.at)), h.pan, h.pitch, h.glide);
         } else {
             h.at -= numFrames;
             rolls_[static_cast<size_t>(kept++)] = h;
@@ -713,6 +963,9 @@ void Engine::swapScene(int step, int offset) {
     std::copy(&staged_.repeats[0][0], &staged_.repeats[0][0] + kLanes * kMaxSteps, &repeats_[0][0]);
     std::copy(&staged_.pan[0][0], &staged_.pan[0][0] + kLanes * kMaxSteps, &stepPan_[0][0]);
     std::copy(&staged_.pitch[0][0], &staged_.pitch[0][0] + kLanes * kMaxSteps, &stepPitch_[0][0]);
+    std::copy(&staged_.extra[0][0], &staged_.extra[0][0] + kLanes * kMaxSteps, &stepExtra_[0][0]);
+    std::copy(&staged_.skip[0][0], &staged_.skip[0][0] + kLanes * kMaxSteps, &skip_[0][0]);
+    std::copy(staged_.laneSteps, staged_.laneSteps + kLanes, laneSteps_);
     patternSteps_ = staged_.drumSteps;
     for (int i = 0; i < AcidTrack::kMaxSteps; ++i) acid_.setStep(i, staged_.acid[static_cast<size_t>(i)]);
     acid_.setLength(staged_.acidLength);
@@ -793,7 +1046,7 @@ void Engine::cancelLaunches(int32_t mask, bool dropStaged) {
                 publishSlot(k);
                 continue;
             }
-            if (k >= kSlotAudio && k < kSlotAudio + AudioTracks::kTracks) staged_.audioLoop[static_cast<size_t>(k - kSlotAudio)] = -1;
+            if (audioOfSlot(k) >= 0) staged_.audioLoop[static_cast<size_t>(audioOfSlot(k))] = -1;
             for (int ch = 0; ch < Mixer::kChannels; ++ch) {
                 if (slotOfChannel(ch) != k) continue;
                 for (int i = 0; i < Mixer::kInserts; ++i) staged_.insertOn[static_cast<size_t>(ch * Mixer::kInserts + i)] = -1;
@@ -806,21 +1059,21 @@ void Engine::cancelLaunches(int32_t mask, bool dropStaged) {
 }
 
 int Engine::slotOfChannel(int ch) {
-    if (ch == 0 || ch >= Mixer::kFirstPad) return kSlotDrums;
+    if (ch == 0 || Mixer::isPad(ch)) return kSlotDrums;
     if (ch == 1) return kSlotAcid;
     if (ch == 2) return kSlotInst;
     if (ch == 3) return kSlotRemix;
     if (ch > Mixer::kMaster && ch < 12) return kSlotInst + (ch - Mixer::kMaster);
-    if (ch >= 12 && ch < 12 + AudioTracks::kTracks) return kSlotAudio + (ch - 12);
+    if (audioOfChannel(ch) >= 0) return audioSlot(audioOfChannel(ch));
     return -1;  // the master: it changes with a whole row only
 }
 
 int Engine::slotOfTarget(int32_t target) {
     if (target < 0) return -1;
-    const int kind = target >> 16;
+    const int kind = Automation::kindOf(target);
     if (kind == Automation::Acid) return kSlotAcid;
     if (kind == Automation::BusParam || kind == Automation::Live) return -1;
-    return slotOfChannel((target >> 12) & 0xF);
+    return slotOfChannel(Automation::channelOf(target));
 }
 
 void Engine::launchSlots(int step, int offset) {
@@ -872,11 +1125,16 @@ void Engine::swapSlot(int k, int step, int offset, bool empty) {
             std::fill(&repeats_[0][0], &repeats_[0][0] + kLanes * kMaxSteps, uint8_t{0});
             std::fill(&stepPan_[0][0], &stepPan_[0][0] + kLanes * kMaxSteps, int8_t{0});
             std::fill(&stepPitch_[0][0], &stepPitch_[0][0] + kLanes * kMaxSteps, int8_t{0});
+            std::fill(&stepExtra_[0][0], &stepExtra_[0][0] + kLanes * kMaxSteps, DrumStepExtra{});
+            std::fill(&skip_[0][0], &skip_[0][0] + kLanes * kMaxSteps, uint8_t{0});
         } else {
             std::copy(&staged_.drums[0][0], &staged_.drums[0][0] + kLanes * kMaxSteps, &pattern_[0][0]);
             std::copy(&staged_.repeats[0][0], &staged_.repeats[0][0] + kLanes * kMaxSteps, &repeats_[0][0]);
             std::copy(&staged_.pan[0][0], &staged_.pan[0][0] + kLanes * kMaxSteps, &stepPan_[0][0]);
             std::copy(&staged_.pitch[0][0], &staged_.pitch[0][0] + kLanes * kMaxSteps, &stepPitch_[0][0]);
+            std::copy(&staged_.extra[0][0], &staged_.extra[0][0] + kLanes * kMaxSteps, &stepExtra_[0][0]);
+            std::copy(&staged_.skip[0][0], &staged_.skip[0][0] + kLanes * kMaxSteps, &skip_[0][0]);
+            std::copy(staged_.laneSteps, staged_.laneSteps + kLanes, laneSteps_);
             patternSteps_ = staged_.drumSteps;
         }
     } else if (k == kSlotAcid) {
@@ -886,8 +1144,8 @@ void Engine::swapSlot(int k, int step, int offset, bool empty) {
         auto& t = tracks_[static_cast<size_t>(k - kSlotInst)];
         if (empty) t.notes.setCount(0);  // notes sounding still get their note-off
         else t.swapIn();
-    } else if (k >= kSlotAudio && k < kSlotAudio + AudioTracks::kTracks) {
-        const int a = k - kSlotAudio;
+    } else if (audioOfSlot(k) >= 0) {
+        const int a = audioOfSlot(k);
         audio_.setOn(a, !empty && staged_.audioOn[static_cast<size_t>(a)]);
         auto& loop = staged_.audioLoop[static_cast<size_t>(a)];
         if (!empty && loop >= 0) audio_.setParam(a, AudioTracks::LoopSteps, static_cast<float>(loop));
@@ -919,6 +1177,10 @@ void Engine::swapSlot(int k, int step, int offset, bool empty) {
 void Engine::leaveSongNow() {
     if (inSong_) audio_.songJump();
     inSong_ = false;
+    // Except the whole mix's fades (AutoTarget.masterVolume, a song curve only): the scene going
+    // on by itself plays at its level, not held where a fade or the silent beat before a Drop left
+    // it (« ⟳ Partie » armed by an edit while the song plays would loop in silence).
+    mixer_.setVolume(Mixer::kMaster, 0.8f);
 }
 
 void Engine::applyAutomation(int patternStep, int songStep, int offset) {
@@ -943,7 +1205,7 @@ void Engine::applyAutomation(int patternStep, int songStep, int offset) {
         if (lane.target < 0 || v < 0.0f) continue;
         // Touch take-over: the finger on it wins until let go.
         if (automation_.isHeld(lane.target)) continue;
-        const int kind = lane.target >> 16, ch = (lane.target >> 12) & 0xF, slot = (lane.target >> 8) & 0xF, param = lane.target & 0xFF;
+        const int kind = Automation::kindOf(lane.target), ch = Automation::channelOf(lane.target), slot = (lane.target >> 8) & 0xF, param = lane.target & 0xFF;
         switch (kind) {
             case Automation::Volume: mixer_.setVolume(ch, v); break;
             case Automation::Pan: mixer_.setPan(ch, v * 2.0f - 1.0f); break;
@@ -955,6 +1217,18 @@ void Engine::applyAutomation(int patternStep, int songStep, int offset) {
                 break;
             // The Live page's gestures, on their step's frame.
             case Automation::Macro: mixer_.scheduleSetting(Mixer::MacroSetting, ch, param, v, offset); break;
+            case Automation::Synth:
+            case Automation::Plaits: {
+                const int track = trackOfChannel(ch);
+                if (track < 0) break;
+                auto& t = tracks_[static_cast<size_t>(track)];
+                if (kind == Automation::Synth && param < Synth::ParamCount) t.synth.automate(static_cast<Synth::Param>(param), v, offset);
+                // Plaits renders in 12-frame blocks: its knobs move from this block on (at most 5 ms early).
+                if (kind == Automation::Plaits && param < PlaitsSynth::ParamCount && param != PlaitsSynth::Model) {
+                    t.plaits.setParam(static_cast<PlaitsSynth::Param>(param), v);
+                }
+                break;
+            }
             case Automation::Live:
                 if (param == PerformanceFx::kReverbReturn || param == PerformanceFx::kEchoReturn) {
                     mixer_.scheduleSetting(Mixer::ReturnSetting, param - PerformanceFx::kReverbReturn, 0, v * 2.0f, offset);
@@ -1018,16 +1292,40 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
             padRight[lane] = drumsR;
         }
     }
-    drums_.render(padLeft, padRight, numFrames);
-    sampler_.render(padLeft, padRight, numFrames);
+    // S5: the sidechain's key pad, without a strip of its own: rendered apart (into its strip's
+    // buffer), given to the mixer as the key, then added to the drums as before.
+    const bool keyApart = keyPad_ >= 0 && !padStrip_[static_cast<size_t>(keyPad_)];
+    if (keyApart) {
+        padLeft[keyPad_] = (*padL_)[static_cast<size_t>(keyPad_)].data();
+        padRight[keyPad_] = (*padR_)[static_cast<size_t>(keyPad_)].data();
+        std::fill(padLeft[keyPad_], padLeft[keyPad_] + numFrames, 0.0f);
+        std::fill(padRight[keyPad_], padRight[keyPad_] + numFrames, 0.0f);
+    }
+    renderPads(padLeft, padRight, numFrames);
+    if (keyApart) {
+        for (int i = 0; i < numFrames; ++i) {
+            drums[i] += padLeft[keyPad_][i];
+            drumsR[i] += padRight[keyPad_][i];
+        }
+        mixer_.setKeyInput(padLeft[keyPad_], padRight[keyPad_]);
+    } else {
+        mixer_.setKeyInput(nullptr, nullptr);
+    }
     acid_.render(acid, numFrames);
+    int multiTracks = 0;
+    for (const auto& t : tracks_) multiTracks += t.on && t.source == InstrumentTrack::MultiSource && t.multi.active() ? 1 : 0;
+    const int multiLimit = std::min(MultiSampler::kVoices, kMultiVoices / std::max(1, multiTracks));
+    for (auto& t : tracks_) t.multi.setVoiceLimit(multiLimit);
     for (int k = 0; k < kTracks; ++k) {
         auto& t = tracks_[static_cast<size_t>(k)];
         if (!t.on) continue;
         float* buf = trackBuf_[static_cast<size_t>(k)].data();
+        float* bufR = trackBufR_[static_cast<size_t>(k)].data();
         std::fill(buf, buf + numFrames, 0.0f);
-        t.render(buf, numFrames);
+        // A stereo sound (a wide synth, an instrument in stereo) fills the right channel too.
+        const bool stereo = t.render(buf, bufR, numFrames);
         channels[trackChannel(k)] = buf;
+        rights[trackChannel(k)] = stereo ? bufR : nullptr;
     }
     stems_.render(stemsL, stemsR, numFrames);
     preview_.render(stemsL, stemsR, numFrames);

@@ -201,7 +201,8 @@ class ProjectCatalog(private val root: File, private val trash: File, private va
     @Throws(IOException::class)
     fun exportZip(id: String, out: java.io.OutputStream): Int {
         val project = store.load(id) ?: throw IOException(tr("projet introuvable"))
-        val used = project.sampleFiles + project.previousTakeFiles
+        // The takes kept and the versions' pads go too: « Ramener » a version on the other phone keeps its sounds.
+        val used = project.sampleFiles + project.previousTakeFiles + project.versionSampleFiles
         val files = File(store.folder(id), SAMPLES).listFiles()?.filter { it.isFile && it.name in used }?.sortedBy { it.name }.orEmpty()
         java.util.zip.ZipOutputStream(out.buffered()).use { zip ->
             zip.putNextEntry(java.util.zip.ZipEntry(ProjectStore.MAIN))

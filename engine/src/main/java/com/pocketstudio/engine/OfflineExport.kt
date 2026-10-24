@@ -43,6 +43,16 @@ class OfflineExport : AutoCloseable {
     fun renderToArray(frames: Long, tailFrames: Long): FloatArray =
         sink?.exportRenderFloat(handle, frames, tailFrames) ?: NativeEngine.exportRenderFloat(handle, frames, tailFrames)
 
+    /**
+     * Mono at 48 kHz (the mean of both channels); empty if cancelled. Worker thread. Half the memory
+     * of [renderToArray], and the stereo is never held in full (a long frozen track).
+     */
+    fun renderToArrayMono(frames: Long, tailFrames: Long): FloatArray {
+        val s = sink ?: return NativeEngine.exportRenderFloatMono(handle, frames, tailFrames)
+        val stereo = s.exportRenderFloat(handle, frames, tailFrames)
+        return FloatArray(stereo.size / 2) { 0.5f * (stereo[2 * it] + stereo[2 * it + 1]) }
+    }
+
     val progress: Float get() = if (closed || sink != null) 1f else NativeEngine.exportProgress(handle)
 
     fun cancel() {
@@ -70,7 +80,17 @@ class OfflineExport : AutoCloseable {
  * The end-of-export report: integrated loudness in LUFS (null for silence), true peak in dBTP,
  * length in seconds, sample rate, and the gain the loudness target added (dB, 0 without one).
  */
-data class ExportReport(val lufs: Double?, val truePeakDb: Double, val seconds: Double, val sampleRate: Int, val driveDb: Double) {
+data class ExportReport(
+    val lufs: Double?,
+    val truePeakDb: Double,
+    val seconds: Double,
+    val sampleRate: Int,
+    val driveDb: Double,
+    /** S5: what the clipper and the limiter took off (LU; 0 without a target). */
+    val lossDb: Double = 0.0,
+    /** S5: the loudness of the loudest part (the Drop), in LUFS; null without a Drop-aimed target. */
+    val loudLufs: Double? = null,
+) {
     companion object {
         fun of(values: FloatArray): ExportReport? = if (values.size < 5) null else ExportReport(
             lufs = values[NativeEngine.REPORT_LUFS].toDouble().takeIf { it > -100.0 },
@@ -78,6 +98,8 @@ data class ExportReport(val lufs: Double?, val truePeakDb: Double, val seconds: 
             seconds = values[NativeEngine.REPORT_SECONDS].toDouble(),
             sampleRate = values[NativeEngine.REPORT_RATE].toInt(),
             driveDb = values[NativeEngine.REPORT_DRIVE].toDouble(),
+            lossDb = values.getOrElse(NativeEngine.REPORT_LOSS) { 0f }.toDouble(),
+            loudLufs = values.getOrNull(NativeEngine.REPORT_LOUD)?.toDouble()?.takeIf { it > -100.0 },
         )
     }
 }

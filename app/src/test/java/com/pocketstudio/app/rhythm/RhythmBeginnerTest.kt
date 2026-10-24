@@ -12,6 +12,8 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.down
 import androidx.compose.ui.test.up
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.dp
 import com.pocketstudio.model.DrumPattern
 import com.pocketstudio.model.PadSample
@@ -70,33 +72,43 @@ class RhythmBeginnerTest {
     @Config(qualifiers = "w360dp-h800dp-xxhdpi")
     fun theFirstRowOfStepsIsOnASmallPhoneScreenToo() = firstRowBottomAfterTheAssistant(800.dp - 184.dp)
 
+    /** One transport for the whole app (the top bar and the strip under it): Rythme has no ▶, no tempo, no ↶ of its own. */
     @Test
-    fun whatPlayIsChosenOncePlaceNotHereAndTheTempoOpensItsSheet() {
-        var opened = 0
-        screen(Project(song = listOf(com.pocketstudio.model.SongPart(0))).sanitized(), RhythmActions(openTempo = { opened++ }))
-        // « ⟳ Partie » is under the top bar, for every tab: no second switch here.
+    fun theTransportIsNotRepeatedOnTheRhythmTab() {
+        screen(Project(song = listOf(com.pocketstudio.model.SongPart(0))).sanitized())
         compose.onNodeWithTag("rhythm_listen").assertDoesNotExist()
         compose.onAllNodesWithText("tout le morceau").assertCountEquals(0)
-        compose.onNodeWithTag("tempo").performClick()
-        assertEquals(1, opened)
+        compose.onNodeWithTag("transport_play").assertDoesNotExist()
+        compose.onNodeWithTag("tempo").assertDoesNotExist()
+        compose.onNodeWithTag("tap").assertDoesNotExist()
+        compose.onAllNodesWithText("Jouer", substring = true).assertCountEquals(0)
     }
 
+    /** The tempo sheet's − and + (the only ones left) repeat while held. */
     @Test
-    fun holdingTempoPlusRepeats() {
-        var steps = 0
-        screen(Project(), RhythmActions(nudgeTempo = { steps += it }))
+    fun holdingTempoPlusInTheSheetRepeats() {
+        // The tempo as the app feeds it back: a state, so that each step counts from the last.
+        var tempo by androidx.compose.runtime.mutableStateOf(120.0)
+        compose.setContent {
+            PocketStudioTheme {
+                com.pocketstudio.app.ui.TempoPad(tempo, com.pocketstudio.app.ui.TempoActions(set = { tempo = it }), close = {})
+            }
+        }
         compose.mainClock.autoAdvance = false
         val plus = compose.onNodeWithContentDescription("Tempo plus")
         plus.performTouchInput { down(center) }
         compose.mainClock.advanceTimeBy(1500)
         plus.performTouchInput { up() }
         compose.mainClock.advanceTimeBy(100)
-        assertTrue("held 1.5 s: $steps steps", steps >= 5)
+        assertTrue("held 1.5 s: $tempo", tempo >= 125.0)
         // A short touch is one step.
-        val before = steps
+        val before = tempo
         plus.performClick()
         compose.mainClock.advanceTimeBy(100)
-        assertEquals(before + 1, steps)
+        assertEquals(before + 1, tempo, 0.0)
+        compose.onNodeWithContentDescription("Tempo moins").performClick()
+        compose.mainClock.advanceTimeBy(100)
+        assertEquals(before, tempo, 0.0)
     }
 
     @Test

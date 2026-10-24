@@ -20,11 +20,10 @@ private val GuidePagesSaver = Saver<List<GuidePage>?, ArrayList<String>>(
     restore = { saved -> saved.chunked(2).filter { it.size == 2 }.map { (title, lines) -> GuidePage(title, lines.split("\n")) }.ifEmpty { null } },
 )
 
-/** "Intro → Couplet → Refrain → Couplet → Refrain → Intro pour finir : environ 2 min 40." */
+/** "Intro → Couplet → Pré-refrain → Refrain → … → Intro pour finir : environ 3 min 10." (a variant of a section counts as it). */
 fun songSummary(style: StarterWizard.Style, plan: StarterWizard.ScenePlan): String {
-    val song = StarterWizard.songOf(style, plan)
     val seconds = StarterWizard.songSeconds(style, plan)
-    return tr("%s pour finir : environ %s.", song.joinToString(" → ") { plan.title(it.scene) }, duration(seconds))
+    return tr("%s pour finir : environ %s.", StarterWizard.songSectionTitles(style, plan).joinToString(" → "), duration(seconds))
 }
 
 /** "2 min 40", "1 min", "45 s": rounded to ten seconds. */
@@ -60,11 +59,13 @@ fun songGuide(
     val scenes = (0 until plan.count).map(::scene)
     val intro = when {
         plan.form == StarterWizard.SongForm.Build && plan.hasBreak ->
-            tr("Il a quatre sections, comme un vrai morceau de club : la Montée fait monter la tension sans kick, tout tombe au Drop, puis le Break fait une pause avant la dernière Montée :")
+            tr("Il a quatre parties, comme un vrai morceau de club : la Montée fait monter la tension sans kick, tout tombe au Drop, puis le Break fait une pause avant la dernière Montée :")
         plan.form == StarterWizard.SongForm.Build ->
-            tr("Il a trois sections, comme un vrai morceau de club : la Montée fait monter la tension sans kick, puis tout tombe au Drop :")
-        plan.hasBreak -> tr("Il a quatre sections, comme un vrai morceau de club : les sons s'empilent, puis le Break fait une pause avant le dernier Drop :")
-        else -> tr("Il a trois sections, comme une vraie chanson. Chacune ajoute des sons à celle d'avant :")
+            tr("Il a trois parties, comme un vrai morceau de club : la Montée fait monter la tension sans kick, puis tout tombe au Drop :")
+        plan.form.sung && plan.hasBreak ->
+            tr("Il a quatre parties, comme une vraie chanson : chacune ajoute des sons à celle d'avant, puis le Pont fait une pause sans kick ni basse avant le dernier Refrain :")
+        plan.hasBreak -> tr("Il a quatre parties, comme un vrai morceau de club : les sons s'empilent, puis le Break fait une pause avant le dernier Drop :")
+        else -> tr("Il a trois parties, comme une vraie chanson. Chacune ajoute des sons à celle d'avant :")
     }
     return listOf(
         GuidePage(
@@ -76,9 +77,9 @@ fun songGuide(
         GuidePage(
             tr("Écouter et changer"),
             listOfNotNull(
-                tr("▶ joue tout le morceau, de l'Intro à la fin, sur tous les onglets. Pour écouter en boucle la partie affichée, touche « ⟳ Partie », juste sous ▶."),
+                tr("▶ joue tout le morceau, de l'Intro à la fin, sur tous les écrans. Pour écouter en boucle la partie affichée, touche « ⟳ Partie », juste sous ▶."),
                 song.takeIf { it.isNotBlank() },
-                tr("Onglet Morceau : touche une section (Intro, Couplet ou Refrain) pour l'afficher, la renommer ou la dupliquer pour en faire un Pont ou une Fin."),
+                tr("Onglet Morceau : touche une partie (Intro, Couplet ou Refrain) pour l'afficher, la renommer ou la dupliquer pour en faire un Pont ou une Fin."),
             ),
         ),
         GuidePage(
@@ -89,18 +90,21 @@ fun songGuide(
                 else tr("Synthé : joue au clavier pour essayer des notes par-dessus le rythme."),
                 // The 303 line made on its step: where it plays, and where to change it.
                 if (!acid || plan.acid.isEmpty()) null
-                else if (acidMoves) tr("Acide : ta ligne 303 joue dans %s. Dans l'onglet Acide, touche un pas pour la changer. La coupure s'ouvre toute seule le long du morceau : pour la tourner toi-même, garde le doigt sur « Coupure ».", plan.sections(plan.acid))
-                else tr("Acide : ta ligne 303 joue dans %s. Dans l'onglet Acide, touche un pas pour la changer et tourne « Coupure » pour la faire crier.", plan.sections(plan.acid)),
+                else if (acidMoves) tr("Acide : ta ligne 303 joue dans %s. Dans Sons › Basse acide, touche un pas pour la changer. La coupure s'ouvre toute seule le long du morceau : pour la tourner toi-même, garde le doigt sur « Coupure ».", plan.sections(plan.acid))
+                else tr("Acide : ta ligne 303 joue dans %s. Dans Sons › Basse acide, touche un pas pour la changer et tourne « Coupure » pour la faire crier.", plan.sections(plan.acid)),
             ),
         ),
         GuidePage(
             tr("Les petits plus"),
             listOfNotNull(
-                tr("Rythme : chaque section finit ses 4 mesures par un petit roulement, qui annonce la suite.").takeIf { plan.parts.isNotEmpty() },
+                tr("Rythme : chaque partie finit ses 4 mesures par un petit roulement, qui annonce la suite.").takeIf { plan.parts.isNotEmpty() },
                 if (!plan.riser) null
-                else if (plan.form == StarterWizard.SongForm.Song) tr("Impact : un souffle claque sur le premier temps de chaque Refrain. On ne l'entend qu'en jouant tout le morceau ; baisse la piste « Souffle montant » dans le Mixeur s'il te gêne.")
-                else tr("Souffle montant : il monte avant chaque Drop et claque sur son premier temps. On ne l'entend qu'en jouant tout le morceau ; baisse la piste « Souffle montant » dans le Mixeur s'il te gêne."),
+                else if (plan.form.sung) tr("Souffle montant : il monte juste avant chaque Refrain et claque sur son premier temps. On ne l'entend qu'en jouant tout le morceau ; baisse la piste « Souffle montant » dans Mix s'il te gêne.")
+                else tr("Souffle montant : il monte avant chaque Drop et claque sur son premier temps. On ne l'entend qu'en jouant tout le morceau ; baisse la piste « Souffle montant » dans Mix s'il te gêne."),
                 tr("Contre-chant : une petite réponse aux accords arrive au milieu du premier %s, puis joue dans tout le suivant : le deuxième sonne plus plein.", plan.title(2)).takeIf { plan.counter },
+                // The arrangement's drop (S2): the kick and the bass stop before it, a beat of silence, then everything lands.
+                (if (plan.form.sung) tr("Avant chaque Refrain, le kick et la basse se coupent un instant, puis un temps de silence : le Refrain tombe d'un coup.")
+                else tr("Montée : avant chaque Drop, le kick et la basse se coupent 2 mesures, la caisse claire roule, puis un temps de silence : tout tombe d'un coup.")).takeIf { plan.variants.isNotEmpty() },
             ),
         ),
         GuidePage(

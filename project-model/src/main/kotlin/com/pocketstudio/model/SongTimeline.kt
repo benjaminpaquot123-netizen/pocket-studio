@@ -135,13 +135,13 @@ fun channelOfKey(key: String): Int? = when {
     else -> null
 }
 
-/** The track key of mixer channel [ch] (0..15), or null: the remix, the master, a pad's own strip. */
+/** The track key of mixer channel [ch], or null: the remix, the master, a pad's own strip. */
 fun keyOfChannel(ch: Int): String? = when {
     ch == 0 -> SongPart.DRUMS
     ch == 1 -> SongPart.ACID
     ch == 2 -> SongPart.inst(0)
     ch in 5..11 -> SongPart.inst(ch - 4)
-    ch in 12..15 -> SongPart.audio(ch - 12)
+    AudioTrack.ofChannel(ch) != null -> SongPart.audio(AudioTrack.ofChannel(ch)!!)
     else -> null
 }
 

@@ -1,5 +1,5 @@
-Phase 33 : « Finis ton morceau, et qu'il sonne »
-- ▶ joue tout le morceau depuis n'importe quel onglet ; « ⟳ Partie » pour boucler ; la position (mes. 14/60) reste sous la barre.
-- ⤴ Partager en haut, partout : un petit check-up avant d'envoyer (solo oublié, saturation, morceau trop court), M4A ou WAV. Après l'assistant : « Ton morceau est prêt ».
-- Toucher le tempo pour le changer, appui long sur le nom pour renommer, bandeau « Solo actif : tout désactiver ».
-- Son : compresseur honnête, nouvelle sortie générale qui ne sature jamais et vise le bon volume selon le style (affiché en direct), Saturation et Distorsion plus propres, export 44,1 kHz / 16 bits. « Le gras, c'est la vie. »
+Phases 34 à 39 : « Un son de studio, et tout en deux gestes »
+- Nouvelle appli : 5 espaces (Structure, Sons, Mix, Live, Plus) ou le Mode simple ; Missions et « ? » pour apprendre ; 26 gestes au lieu de 76 pour l'essentiel.
+- Son de pro : vraies mélodies, Drop qui tombe, 808 et kick de studio, synthés larges, mix honnête ; piano, cordes et cuivres réels à télécharger.
+- Enregistrer sans peur (décompte, Remettre en rythme, prises, versions du morceau), accords du morceau, copier-coller, Geler, 8 pistes audio.
+- Vidéo 9:16 pour les réseaux, glossaire qui s'écoute, potards MIDI automatiques. « Le gras, c'est la vie. »

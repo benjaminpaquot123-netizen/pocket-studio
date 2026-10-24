@@ -27,6 +27,28 @@ class SongFollowTest {
     private fun Project.points() = automation[0].songValues
     private fun Project.clipStart() = audioTracks[0].clip!!.start
 
+    /**
+     * Editing must not move under the finger (audit 34): a hit, a note or an acid step of the part
+     * shown is an edit of it; showing another part, naming one, or a change elsewhere is not.
+     */
+    @Test
+    fun anEditOfThePartShownIsTold() {
+        val p = song()
+        assertFalse(editedShownScene(p, p))
+        assertTrue(editedShownScene(p, p.copy(drums = p.drums.toggle(0, 4))))
+        assertTrue(editedShownScene(p, p.copy(synthNotes = NoteClip(notes = listOf(Note(0, 4, 60))))))
+        assertTrue(editedShownScene(p, p.copy(acid = p.acid.copy(steps = p.acid.steps.mapIndexed { i, s -> if (i == 0) s.copy(gate = !s.gate) else s }))))
+        // The screens went to another part (the song followed): not an edit.
+        assertFalse(editedShownScene(p, p.switchScene(1)))
+        // A part named, the tempo or the mixer changed, a part added to the song: not an edit of the part shown.
+        assertFalse(editedShownScene(p, p.renameScene(0, "Refrain")))
+        assertFalse(editedShownScene(p, p.copy(tempoBpm = 130.0)))
+        assertFalse(editedShownScene(p, p.copy(song = p.song + SongPart(1))))
+        // Another part edited than the one shown (a take written into the part heard): not an edit of the part shown.
+        val other = p.switchScene(1).let { it.copy(drums = it.drums.toggle(0, 4)) }.switchScene(0)
+        assertFalse(editedShownScene(p, other))
+    }
+
     @Test
     fun anInsertedPartPushesWhatFollowsAndHoldsTheValueBeforeIt() {
         val p = song()

@@ -1,4 +1,5 @@
 #include "Effects.h"
+#include "PlateReverb.h"
 #include "Params.h"
 
 #include <algorithm>
@@ -481,9 +482,83 @@ void SweepFilter::process(float* l, float* r, int n) {
 
 // --- Sidechain pump --------------------------------------------------------------------------
 
+// --- Keyed sidechain (S5) ---------------------------------------------------------------------
+
+void KeyedDucker::prepare(float rate) {
+    rate_ = rate > 0.0f ? rate : 48000.0f;
+    refFall_ = std::exp(-1.0f / (4.0f * rate_));             // the key's peak reference: about 4 s
+    down_ = 1.0f - std::exp(-1.0f / (0.001f * rate_));        // 1 ms down
+    up_ = 1.0f - std::exp(-1.0f / (0.010f * rate_));          // 10 ms up
+    for (auto* f : {&lpL_, &lpR_}) for (auto& b : *f) b.lowPass(rate_, kLowHz);
+    for (auto* f : {&hpL_, &hpR_}) for (auto& b : *f) b.highPass(rate_, kLowHz);
+    xfadeLen_ = std::max(1, static_cast<int>(0.010f * rate_));  // 10 ms
+    set(depth_, lowDepth_, 150.0f);
+    reset();
+}
+
+void KeyedDucker::reset() {
+    env_ = ref_ = 0.0f;
+    gHi_ = gLo_ = 1.0f;
+    split_ = false;
+    xfade_ = 0;
+    for (auto* f : {&lpL_, &lpR_, &hpL_, &hpR_}) for (auto& b : *f) b.reset();
+}
+
+void KeyedDucker::set(float depth, float lowDepth, float releaseMs) {
+    depth_ = std::isfinite(depth) ? std::clamp(depth, 0.0f, 1.0f) : 0.0f;
+    lowDepth_ = std::isfinite(lowDepth) ? std::clamp(lowDepth, 0.0f, 1.0f) : depth_;
+    const float ms = std::isfinite(releaseMs) ? std::clamp(releaseMs, 10.0f, 2000.0f) : 150.0f;
+    release_ = std::exp(-1.0f / (0.001f * ms * rate_));
+}
+
+void KeyedDucker::process(float* l, float* r, const float* key, int n) {
+    // Under this the key is silence (-80 dBFS): nothing ducks.
+    constexpr float kFloor = 1e-4f;
+    constexpr float kFull = 0.5f;  // -6 dB
+    // Split for good once the two depths differ (switching the all-pass in and out would click):
+    // until reset(), even when they are equal again; the split fades in from the direct path.
+    if (!split_ && lowDepth_ != depth_) {
+        split_ = true;
+        xfade_ = xfadeLen_;
+    }
+    const bool split = split_;
+    for (int i = 0; i < n; ++i) {
+        const float k = key ? std::fabs(key[i]) : 0.0f;
+        const float a = std::isfinite(k) ? k : 0.0f;
+        ref_ = a > ref_ ? a : ref_ * refFall_;
+        env_ = a > env_ ? a : env_ * release_;
+        // Full duck while the key is within kFull of its peak (a kick's body, not only its click).
+        const float x = ref_ > kFloor ? std::min(1.0f, env_ / (kFull * ref_)) : 0.0f;
+        const float tHi = 1.0f - depth_ * x, tLo = 1.0f - lowDepth_ * x;
+        gHi_ += (tHi - gHi_) * (tHi < gHi_ ? down_ : up_);
+        gLo_ += (tLo - gLo_) * (tLo < gLo_ ? down_ : up_);
+        // Back at rest: exactly unity (the sound comes out as it went in).
+        if (tHi == 1.0f && gHi_ > 0.999999f) gHi_ = 1.0f;
+        if (tLo == 1.0f && gLo_ > 0.999999f) gLo_ = 1.0f;
+        if (split) {
+            const float ll = lpL_[1].process(lpL_[0].process(l[i])), lr = lpR_[1].process(lpR_[0].process(r[i]));
+            const float hl = hpL_[1].process(hpL_[0].process(l[i])), hr = hpR_[1].process(hpR_[0].process(r[i]));
+            const float sl = gHi_ * hl + gLo_ * ll, sr = gHi_ * hr + gLo_ * lr;
+            if (xfade_ > 0) {
+                // From the direct path (the high band's gain) to the split one.
+                const float w = 1.0f - static_cast<float>(xfade_--) / static_cast<float>(xfadeLen_);
+                l[i] = gHi_ * l[i] + w * (sl - gHi_ * l[i]);
+                r[i] = gHi_ * r[i] + w * (sr - gHi_ * r[i]);
+            } else {
+                l[i] = sl;
+                r[i] = sr;
+            }
+        } else if (gHi_ != 1.0f) {
+            l[i] *= gHi_;
+            r[i] *= gHi_;
+        }
+    }
+}
+
 void Ducker::prepare(float rate) {
     rate_ = rate;
     attack_ = 1.0f - std::exp(-1.0f / (0.002f * rate));  // 2 ms down, no click
+    keyed_.prepare(rate);
     update();
     reset();
 }
@@ -495,10 +570,17 @@ void Ducker::setParam(int p, float v) {
 
 void Ducker::update() {
     depth_ = p_[0];
-    release_ = std::exp(-1.0f / (0.001f * expMap(p_[1], 50.0f, 600.0f) * rate_));
+    const float releaseMs = expMap(p_[1], 50.0f, 600.0f);
+    release_ = std::exp(-1.0f / (0.001f * releaseMs * rate_));
+    keyed_.set(depth_, depth_, releaseMs);
 }
 
-void Ducker::process(float* l, float* r, int n) {
+void Ducker::process(float* l, float* r, int n, const float* key) {
+    if (audioKey()) {
+        keyed_.process(l, r, key, n);
+        pending_ = -1;
+        return;
+    }
     for (int i = 0; i < n; ++i) {
         if (i == pending_) {
             target_ = 1.0f;
@@ -516,6 +598,72 @@ void Ducker::process(float* l, float* r, int n) {
         r[i] *= g;
     }
     if (pending_ >= n) pending_ -= n;
+}
+
+// --- Soft clipper (S5) ------------------------------------------------------------------------
+
+float SoftClipper::shape(float knee, float u) {
+    const float a = std::fabs(u);
+    if (a <= knee) return u;
+    const float w = 1.0f - knee;
+    const float y = knee + w * std::tanh((a - knee) / w);
+    return u < 0.0f ? -y : y;
+}
+
+double SoftClipper::antiderivative(float knee, double u) {
+    const double a = std::fabs(u), k = knee;
+    if (a <= k) return 0.5 * u * u;
+    const double w = 1.0 - k;
+    // The integral of the straight part, then of k + w tanh((x - k) / w): k x + w^2 ln cosh(...).
+    return 0.5 * k * k + k * (a - k) + w * w * Distortion::antiderivative(0, (a - k) / w);
+}
+
+void SoftClipper::prepare(float rate) {
+    rate_ = rate > 0.0f ? rate : 48000.0f;
+    msCoef_ = 1.0f - std::exp(-1.0f / (0.200f * rate_));
+    reset();
+}
+
+void SoftClipper::setParam(int p, float v) {
+    if (p >= 0 && p < 4) clampSetting(p_[static_cast<size_t>(p)], v, 0.0f, 1.0f);
+}
+
+void SoftClipper::reset() {
+    ms_ = 0.0f;
+    w_ = 0.0f;
+    ceiling_ = 1.0f;
+    shL_.reset();
+    shR_.reset();
+}
+
+void SoftClipper::process(float* l, float* r, int n) {
+    const float margin = dbToGain(3.0f + 12.0f * p_[0]);
+    const float knee = 0.95f - 0.75f * p_[1];  // never 1: the curve's round part keeps a width
+    const float mix = p_[2];
+    struct Curve {
+        float knee;
+        double f(double x) const { return SoftClipper::shape(knee, static_cast<float>(x)); }
+        double F(double x) const { return SoftClipper::antiderivative(knee, x); }
+    } const curve{knee};
+    for (int i = 0; i < n; ++i) {
+        const float xl = std::isfinite(l[i]) ? l[i] : 0.0f, xr = std::isfinite(r[i]) ? r[i] : 0.0f;
+        // The running level (both sides, the louder): the ceiling sits `margin` over it, never
+        // under -60 dBFS (silence is not clipped up).
+        const float power = 0.5f * (xl * xl + xr * xr);
+        ms_ += (power - ms_) * msCoef_;
+        // Under -80 dBFS: silence, the weight fades with the energy gathered (the level stays the
+        // one before until a sound comes, then that sound's own takes over at once).
+        if (power < 1e-8f) w_ -= w_ * msCoef_;
+        else w_ += (1.0f - w_) * msCoef_;
+        const float level = w_ > 1e-12f ? ms_ / w_ : 0.0f;
+        ceiling_ = std::max(1e-3f, std::sqrt(level) * margin);
+        const float inv = 1.0f / ceiling_;
+        const float yl = shL_.process(xl, inv, 0.0f, curve) * ceiling_;
+        const float yr = shR_.process(xr, inv, 0.0f, curve) * ceiling_;
+        const float dl = shL_.dry(), dr = shR_.dry();
+        l[i] = dl + mix * (yl - dl);
+        r[i] = dr + mix * (yr - dr);
+    }
 }
 
 // The live performance effects (PerformanceFx, Isolator) are in LiveEffects.cpp.
@@ -917,6 +1065,7 @@ void InsertSlot::prepare(float rate) {
     ott_.prepare(rate);
     shifter_.prepare(rate);
     wobble_.prepare(rate);
+    clipper_.prepare(rate);
 }
 
 namespace {
@@ -1002,6 +1151,7 @@ void InsertSlot::resetState() {
         case OttFx: ott_.reset(); break;
         case FreqShiftFx: shifter_.reset(); break;
         case WobbleFx: wobble_.reset(); break;
+        case ClipperFx: clipper_.reset(); break;
         default: break;
     }
 }
@@ -1055,6 +1205,7 @@ void InsertSlot::setParam(int p, float v) {
         case OttFx: ott_.setParam(p, v); break;
         case FreqShiftFx: shifter_.setParam(p, v); break;
         case WobbleFx: wobble_.setParam(p, v); break;
+        case ClipperFx: clipper_.setParam(p, v); break;
         case EchoFx:
         case PingPongFx: if (echo_) echo_->setParam(p, v); break;
         case ReverbFx: if (reverb_) reverb_->setParam(p, v); break;
@@ -1070,7 +1221,7 @@ void InsertSlot::process(float* l, float* r, int n) {
         case Saturation: sat_.process(l, r, n); break;
         case Chorus: chorus_.process(l, r, n); break;
         case Filter: filter_.process(l, r, n); break;
-        case Pump: pump_.process(l, r, n); break;
+        case Pump: pump_.process(l, r, n, key_); break;
         case FlangerFx: flanger_.process(l, r, n); break;
         case PhaserFx: phaser_.process(l, r, n); break;
         case GateFx: gate_.process(l, r, n); break;
@@ -1088,6 +1239,7 @@ void InsertSlot::process(float* l, float* r, int n) {
         case OttFx: ott_.process(l, r, n); break;
         case FreqShiftFx: shifter_.process(l, r, n); break;
         case WobbleFx: wobble_.process(l, r, n); break;
+        case ClipperFx: clipper_.process(l, r, n); break;
         case EchoFx:
         case PingPongFx: if (echo_) echo_->process(l, r, n); break;
         case ReverbFx: if (reverb_) reverb_->process(l, r, n); break;
@@ -1118,18 +1270,33 @@ void Reverb::prepare(float rate) {
     }
     pre_.assign(static_cast<size_t>(0.2f * rate) + 1, 0.0f);
     freezeStep_ = 1.0f / std::max(1.0f, 0.01f * rate);
+    typeStep_ = 1.0f / std::max(1.0f, 0.02f * rate);
+    glide_ = 1.0f - std::exp(-1.0f / (0.01f * rate));  // 10 ms
     update();
     reset();
 }
 
 void Reverb::setParam(int p, float v) {
-    if (p < 0 || p >= 4 || !clampSetting(p_[static_cast<size_t>(p)], v, 0.0f, 1.0f)) return;
+    if (p < 0 || p >= kParams || !clampSetting(p_[static_cast<size_t>(p)], v, 0.0f, 1.0f)) return;
     update();
 }
 
+namespace {
+// The room's early reflections: taps on the pre-delay line (ms, gain), alternately left and right.
+constexpr float kRoomTaps[6][2] = {{4.3f, 0.84f}, {7.9f, 0.73f}, {11.6f, 0.62f}, {15.2f, 0.52f}, {21.1f, 0.42f}, {27.7f, 0.33f}};
+constexpr float kRoomTapsGain = 0.9f;
+}  // namespace
+
 void Reverb::update() {
-    feedback_ = 0.7f + 0.28f * p_[0];
-    damp1_ = 0.4f * p_[1];
+    const int type = std::clamp(static_cast<int>(std::lround(p_[4] * 2.0f)), 0, 2);
+    // The index of the setting: 0 hall, 0.5 plate, 1 room.
+    type_ = type == 1 ? Plate : (type == 2 ? Room : Hall);
+    if (type_ == Plate && plate_ != nullptr) {
+        // Clouds' own mapping, a little longer: 1.4 to 7 s; the damping darkens its loop.
+        plateSet(p_[0], p_[1], freezeMix_);
+    }
+    feedback_ = type_ == Room ? 0.6f + 0.2f * p_[0] : 0.7f + 0.28f * p_[0];
+    damp1_ = type_ == Room ? 0.25f + 0.45f * p_[1] : 0.4f * p_[1];
     damp2_ = 1.0f - damp1_;
     const float width = p_[2];
     wet1_ = 3.0f * (width / 2 + 0.5f);  // Freeverb's scalewet
@@ -1137,7 +1304,14 @@ void Reverb::update() {
     preLen_ = std::clamp<size_t>(static_cast<size_t>(p_[3] * 0.2f * rate_), 1, pre_.empty() ? 1 : pre_.size());
 }
 
+void Reverb::plateSet(float size, float damping, float freeze) {
+    // Frozen: the loop keeps everything (no decay, no damping), as the hall's freeze.
+    const float time = 0.25f + 0.45f * size, lp = 0.85f - 0.55f * damping;
+    plate_->set(time + freeze * (1.0f - time), lp + freeze * (1.0f - lp), 0.65f);
+}
+
 void Reverb::reset() {
+    if (plate_ != nullptr) plate_->reset();
     for (auto* set : {&combL_, &combR_}) {
         for (auto& c : *set) { std::fill(c.buf.begin(), c.buf.end(), 0.0f); c.idx = 0; c.store = 0; }
     }
@@ -1146,43 +1320,146 @@ void Reverb::reset() {
     }
     std::fill(pre_.begin(), pre_.end(), 0.0f);
     preIdx_ = 0;
+    weightsSet_ = false;  // the next block starts on its type, no crossfade
+    feedbackNow_ = feedback_;
+    damp1Now_ = damp1_;
+}
+
+void Reverb::tankFrame(float in, float room, float& l, float& r) {
+    // Frozen (Freeverb's freeze): no more input, the combs keep everything (feedback 1, no
+    // damping); the switch glides over about 10 ms (freezeMix_, moved by the caller).
+    if (feedbackNow_ != feedback_ || damp1Now_ != damp1_) {
+        feedbackNow_ += (feedback_ - feedbackNow_) * glide_;
+        damp1Now_ += (damp1_ - damp1Now_) * glide_;
+        if (std::fabs(feedback_ - feedbackNow_) < 1e-6f) feedbackNow_ = feedback_;
+        if (std::fabs(damp1_ - damp1Now_) < 1e-6f) damp1Now_ = damp1_;
+    }
+    const float feedback = feedbackNow_ + freezeMix_ * (1.0f - feedbackNow_);
+    const float damp1 = damp1Now_ * (1.0f - freezeMix_), damp2 = 1.0f - damp1;
+    const float input = in * kFixedGain * (1.0f - freezeMix_);
+    l = 0.0f;
+    r = 0.0f;
+    for (size_t k = 0; k < 8; ++k) {
+        for (int side = 0; side < 2; ++side) {
+            Comb& c = side == 0 ? combL_[k] : combR_[k];
+            const float out = c.buf[c.idx];
+            c.store = out * damp2 + c.store * damp1;
+            c.buf[c.idx] = input + c.store * feedback;
+            if (++c.idx >= c.buf.size()) c.idx = 0;
+            (side == 0 ? l : r) += out;
+        }
+    }
+    for (size_t k = 0; k < 4; ++k) {
+        for (int side = 0; side < 2; ++side) {
+            Allpass& a = side == 0 ? apL_[k] : apR_[k];
+            float& v = side == 0 ? l : r;
+            const float bufOut = a.buf[a.idx];
+            a.buf[a.idx] = v + bufOut * 0.5f;
+            v = bufOut - v;
+            if (++a.idx >= a.buf.size()) a.idx = 0;
+        }
+    }
+    if (room > 0.0f) {
+        // Early reflections from the walls, read back from the pre-delay line (the frame was just written).
+        const size_t now = (preIdx_ + pre_.size() - 1) % pre_.size();
+        for (int k = 0; k < 6; ++k) {
+            const size_t back = static_cast<size_t>(kRoomTaps[k][0] * 0.001f * rate_);
+            const float tap = pre_[(now + pre_.size() - std::min(back, pre_.size() - 1)) % pre_.size()] * kRoomTaps[k][1] * kRoomTapsGain * 0.05f;
+            (k % 2 == 0 ? l : r) += room * tap;
+        }
+    }
+}
+
+void Reverb::processBlend(const float* inL, const float* inR, float* outL, float* outR, int n, float plateTarget, float roomTarget) {
+    for (int from = 0; from < n; from += static_cast<int>(plateIn_.size())) {
+        const int m = std::min(n - from, static_cast<int>(plateIn_.size()));
+        std::array<float, 256> share{};
+        const float frozenBefore = freezeMix_;
+        bool plateHeard = false;
+        for (int i = 0; i < m; ++i) {
+            const auto glide = [this](float& w, float target) { w = w < target ? std::min(target, w + typeStep_) : std::max(target, w - typeStep_); };
+            glide(plateW_, plateTarget);
+            glide(roomW_, roomTarget);
+            freezeMix_ = std::clamp(freezeMix_ + (freeze_ ? freezeStep_ : -freezeStep_), 0.0f, 1.0f);
+            const float x = inL[from + i] + inR[from + i];
+            const size_t readIdx = (preIdx_ + pre_.size() - preLen_) % pre_.size();
+            const float in = preLen_ <= 1 ? x : pre_[readIdx];
+            pre_[preIdx_] = x;
+            preIdx_ = (preIdx_ + 1) % pre_.size();
+            plateIn_[static_cast<size_t>(i)] = in * (1.0f - freezeMix_);
+            share[static_cast<size_t>(i)] = plateW_;
+            plateHeard |= plateW_ > 0.0f;
+            float l = 0.0f, r = 0.0f;
+            tankFrame(in, roomW_, l, r);
+            const float t = 1.0f - plateW_;
+            outL[from + i] += t * (l * wet1_ + r * wet2_);
+            outR[from + i] += t * (r * wet1_ + l * wet2_);
+        }
+        if (!plateHeard || plate_ == nullptr) continue;
+        if (freezeMix_ != frozenBefore || freezeMix_ > 0.0f) plateSet(p_[0], p_[1], freezeMix_);
+        std::array<float, 256> wl{}, wr{};
+        plate_->process(plateIn_.data(), wl.data(), wr.data(), m);
+        const float w1 = wet1_ / 3.0f, w2 = wet2_ / 3.0f;
+        for (int i = 0; i < m; ++i) {
+            const auto k = static_cast<size_t>(i);
+            outL[from + i] += share[k] * (wl[k] * w1 + wr[k] * w2);
+            outR[from + i] += share[k] * (wr[k] * w1 + wl[k] * w2);
+        }
+    }
 }
 
 void Reverb::process(const float* inL, const float* inR, float* outL, float* outR, int n) {
     if (pre_.empty()) return;
+    const float plateTarget = type_ == Plate && plate_ != nullptr ? 1.0f : 0.0f;
+    const float roomTarget = type_ == Room ? 1.0f : 0.0f;
+    if (!weightsSet_) {
+        plateW_ = plateTarget;
+        roomW_ = roomTarget;
+        weightsSet_ = true;
+    }
+    if (plateW_ != plateTarget || roomW_ != roomTarget) {
+        processBlend(inL, inR, outL, outR, n, plateTarget, roomTarget);
+        return;
+    }
+    if (plateTarget > 0.0f) {
+        // The plate: the same pre-delay on the mono sum, then Clouds' tank (no freeze: the hall's).
+        for (int from = 0; from < n; from += static_cast<int>(plateIn_.size())) {
+            const int m = std::min(n - from, static_cast<int>(plateIn_.size()));
+            // The freeze (the Live page's « Réverbe figée »): the input fades out and the loop holds,
+            // gliding over about 10 ms (the loop's settings follow it a chunk at a time).
+            const float frozenBefore = freezeMix_;
+            for (int i = 0; i < m; ++i) {
+                freezeMix_ = std::clamp(freezeMix_ + (freeze_ ? freezeStep_ : -freezeStep_), 0.0f, 1.0f);
+                const float x = inL[from + i] + inR[from + i];
+                const size_t readIdx = (preIdx_ + pre_.size() - preLen_) % pre_.size();
+                plateIn_[static_cast<size_t>(i)] = (preLen_ <= 1 ? x : pre_[readIdx]) * (1.0f - freezeMix_);
+                pre_[preIdx_] = x;
+                preIdx_ = (preIdx_ + 1) % pre_.size();
+            }
+            if (freezeMix_ != frozenBefore || freezeMix_ > 0.0f) plateSet(p_[0], p_[1], freezeMix_);
+            // The width as the hall's: each side with some of the other.
+            float* l = outL + from;
+            float* r = outR + from;
+            std::array<float, 256> wl{}, wr{};
+            plate_->process(plateIn_.data(), wl.data(), wr.data(), m);
+            const float w1 = wet1_ / 3.0f, w2 = wet2_ / 3.0f;
+            for (int i = 0; i < m; ++i) {
+                l[i] += wl[static_cast<size_t>(i)] * w1 + wr[static_cast<size_t>(i)] * w2;
+                r[i] += wr[static_cast<size_t>(i)] * w1 + wl[static_cast<size_t>(i)] * w2;
+            }
+        }
+        return;
+    }
     for (int i = 0; i < n; ++i) {
-        // Frozen (Freeverb's freeze): no more input, the combs keep everything (feedback 1, no
-        // damping); the switch glides over about 10 ms.
         freezeMix_ = std::clamp(freezeMix_ + (freeze_ ? freezeStep_ : -freezeStep_), 0.0f, 1.0f);
-        const float feedback = feedback_ + freezeMix_ * (1.0f - feedback_);
-        const float damp1 = damp1_ * (1.0f - freezeMix_), damp2 = 1.0f - damp1;
-        // Pre-delay on the mono sum, then the tank.
-        const float x = (inL[i] + inR[i]) * kFixedGain;
+        // Pre-delay on the mono sum (kept unscaled: the plate reads the same line), then the tank.
+        const float x = inL[i] + inR[i];
         const size_t readIdx = (preIdx_ + pre_.size() - preLen_) % pre_.size();
-        const float input = (preLen_ <= 1 ? x : pre_[readIdx]) * (1.0f - freezeMix_);
+        const float in = preLen_ <= 1 ? x : pre_[readIdx];
         pre_[preIdx_] = x;
         preIdx_ = (preIdx_ + 1) % pre_.size();
         float l = 0.0f, r = 0.0f;
-        for (size_t k = 0; k < 8; ++k) {
-            for (int side = 0; side < 2; ++side) {
-                Comb& c = side == 0 ? combL_[k] : combR_[k];
-                const float out = c.buf[c.idx];
-                c.store = out * damp2 + c.store * damp1;
-                c.buf[c.idx] = input + c.store * feedback;
-                if (++c.idx >= c.buf.size()) c.idx = 0;
-                (side == 0 ? l : r) += out;
-            }
-        }
-        for (size_t k = 0; k < 4; ++k) {
-            for (int side = 0; side < 2; ++side) {
-                Allpass& a = side == 0 ? apL_[k] : apR_[k];
-                float& v = side == 0 ? l : r;
-                const float bufOut = a.buf[a.idx];
-                a.buf[a.idx] = v + bufOut * 0.5f;
-                v = bufOut - v;
-                if (++a.idx >= a.buf.size()) a.idx = 0;
-            }
-        }
+        tankFrame(in, roomTarget, l, r);
         outL[i] += l * wet1_ + r * wet2_;
         outR[i] += r * wet1_ + l * wet2_;
     }

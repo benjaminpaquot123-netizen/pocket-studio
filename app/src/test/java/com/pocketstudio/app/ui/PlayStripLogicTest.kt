@@ -6,7 +6,9 @@ import com.pocketstudio.model.Scene
 import com.pocketstudio.model.SongPart
 import com.pocketstudio.model.switchScene
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /** What the play strip says (the position) and the tempo keypad's typing, without a screen. */
@@ -42,6 +44,28 @@ class PlayStripLogicTest {
         val p = Project()
         assertNull(playPosition(p, false, -1, -1, 0, false))
         assertEquals(PlayPosition("A", 1, 1, loop = true), playPosition(p, true, -1, 0, 0, false))
+    }
+
+    /** Above the grids: the part edited, and what the music does with it. */
+    @Test
+    fun theEditorsSayWhichPartIsEditedAndWhenItLoops() {
+        // Stopped, nothing to add.
+        assertEquals(PartHeaderUi("Partie : B · Refrain"), partHeader(song, playing = false, songPlaying = false, loopPart = false, armedBySelf = false))
+        // The song plays and the screens follow it: a touch keeps the part.
+        val following = partHeader(song, playing = true, songPlaying = true, loopPart = false, armedBySelf = false)
+        assertEquals("Partie : B · Refrain", following.title)
+        assertTrue(following.note!!.contains("touche la grille"))
+        assertFalse(following.loop)
+        // « ⟳ Partie » went on by itself (a hit touched): said, with the way back to the song.
+        val armed = partHeader(song, playing = true, songPlaying = false, loopPart = true, armedBySelf = true)
+        assertTrue(armed.loop)
+        assertTrue(armed.note!!.contains("reprendre le morceau"))
+        // « ⟳ Partie » on by hand, stopped: the part loops, ▶ plays it alone.
+        val loop = partHeader(song, playing = false, songPlaying = false, loopPart = true, armedBySelf = false)
+        assertTrue(loop.loop)
+        assertTrue(loop.note!!.contains("⟳ Partie"))
+        // Without a song, « ⟳ Partie » means nothing: nothing said.
+        assertEquals(PartHeaderUi("Partie : A"), partHeader(Project(), playing = false, songPlaying = false, loopPart = true, armedBySelf = false))
     }
 
     @Test

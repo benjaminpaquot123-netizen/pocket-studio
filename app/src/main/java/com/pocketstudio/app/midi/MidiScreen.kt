@@ -60,7 +60,7 @@ class LearnUi(
 
 /** MIDI keyboards and controllers: connect, see what arrives, follow another machine's clock. */
 @Composable
-fun MidiScreen(ui: MidiUi, actions: MidiActions, learn: LearnUi = LearnUi()) {
+fun MidiScreen(ui: MidiUi, actions: MidiActions, learn: LearnUi = LearnUi(), autoKnobs: (@Composable () -> Unit)? = null) {
     // A page to read: centred at a comfortable width on a tablet.
     com.pocketstudio.ui.ReadingWidth {
         Column(
@@ -120,6 +120,8 @@ fun MidiScreen(ui: MidiUi, actions: MidiActions, learn: LearnUi = LearnUi()) {
                     Switch(checked = ui.sendClock, onCheckedChange = actions.setSendClock, modifier = Modifier.testTag("midi_send_clock"))
                 }
             }
+            // The automatic knobs first (phase 39): MIDI learn is for whoever wants more.
+            autoKnobs?.invoke()
             LearnCard(learn)
         }
     }

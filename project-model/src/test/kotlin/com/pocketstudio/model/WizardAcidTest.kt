@@ -5,6 +5,7 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import com.pocketstudio.model.SongBars.isDrumBar
 import kotlin.random.Random
 
 /** The assistant's 303 editor: touches on the steps, the generator on the scale, the line reaching the song. */
@@ -82,10 +83,16 @@ class WizardAcidTest {
         val project = StarterWizard.build(acidHouse, sounds, mood, emptyMap(), acid = true, chosenAcid = mine)
         val plan = StarterWizard.planFor(acidHouse, sounds.keys, emptySet(), true)
         assertEquals(setOf(1, 2, 3), plan.acid)
-        project.allScenes.forEachIndexed { i, scene ->
+        project.allScenes.take(plan.count).forEachIndexed { i, scene ->
             assertEquals(32, scene.acid.length)
             if (i in plan.acid) assertEquals("scene $i", mine.steps, scene.acid.steps)
             else assertTrue("scene $i silent", scene.acid.steps.none { it.gate })
+        }
+        // The Montée's two halves play it written out over their 4 bars (its last bars cut, its last beat silent).
+        for (scene in project.allScenes.drop(plan.count).filter { !it.isDrumBar() }) {
+            val a = scene.acid
+            assertTrue(scene.label, a.length == 32 || a.length == 64)
+            a.steps.take(a.length).forEachIndexed { j, st -> if (st.gate) assertEquals(scene.label, mine.steps[j % 32], st) }
         }
         assertEquals(mine.sound, project.acid.sound)
         // Each scene's loop is the 303's two bars.

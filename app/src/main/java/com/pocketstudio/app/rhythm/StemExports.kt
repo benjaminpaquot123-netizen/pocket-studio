@@ -26,17 +26,20 @@ internal fun stemExports(p: Project, song: Boolean): List<Pair<String, Int>> {
  * « Prêt à partager ? »: a track muted in the mixer although it has notes.
  */
 internal fun stripSounds(p: Project, song: Boolean): List<Pair<Pair<String, Int>, Boolean>> {
-    val views = if (song && p.song.isNotEmpty()) p.song.map { p.partView(it) } else listOf(p)
+    val inSong = song && p.song.isNotEmpty()
+    val views = if (inSong) p.song.map { p.partView(it) } else listOf(p)
+    // Phase 37: a frozen track is silent in the song (its sound is its audio track's file).
+    val frozen = if (inSong) com.pocketstudio.model.Freeze.frozenIds(p) else emptySet()
     fun slug(name: String) = name.lowercase().replace(Regex("[^a-z0-9]+"), "-").trim('-').take(16)
     return listOf(
         "batterie" to 0 to views.any { v -> v.drums.lanes.any { lane -> lane.hits.keys.any { it < v.drums.steps } } },
         "acide" to 1 to views.any { v -> v.acid.steps.take(v.acid.length).any { it.gate } },
-        "synthe" to 2 to views.any { v -> v.synthNotes.notes.isNotEmpty() },
+        "synthe" to 2 to (0 !in frozen && views.any { v -> v.synthNotes.notes.isNotEmpty() }),
         "remix" to 3 to (p.remix.setId != null),
     ) + p.tracks.map { t ->
         // One file per added instrument track, named after it.
         "piste${t.id + 1}-${slug(t.name)}" to InstrumentTrack.mixerChannel(t.id) to
-            views.any { v -> v.tracks.firstOrNull { it.id == t.id }?.notes?.notes?.isNotEmpty() == true }
+            (t.id !in frozen && views.any { v -> v.tracks.firstOrNull { it.id == t.id }?.notes?.notes?.isNotEmpty() == true })
     } + p.audioTracks.map { t ->
         "audio${t.id + 1}-${slug(t.name)}" to AudioTrack.mixerChannel(t.id) to
             (t.clip != null && (!song || p.song.isEmpty() || p.song.any { it.plays(SongPart.audio(t.id)) }))

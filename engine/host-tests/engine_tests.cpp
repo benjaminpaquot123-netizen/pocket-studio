@@ -2,6 +2,7 @@
 // Run with scripts/host-tests.sh; pass --update-references to regenerate golden renders.
 
 #include <cmath>
+#include <complex>
 #include <cstdio>
 #include <algorithm>
 #include <array>
@@ -27,12 +28,15 @@
 #include "Effects.h"
 #include "Mixer.h"
 #include "PlaitsSynth.h"
+#include "PlateReverb.h"
 #include "OfflineRenderer.h"
 #include "OnsetDetector.h"
 #include "TimeStretch.h"
 #include "SoundFontPlayer.h"
 #include "Sample.h"
 #include "Sampler.h"
+#include "MultiSampler.h"
+#include "Track808.h"
 #include "WavWriter.h"
 #include "Engine.h"
 #include "RoundTripMeter.h"
@@ -3065,6 +3069,24 @@ void testProcessNeverAllocates() {
         engine.post({ps::CommandType::SetTrackSampleParam, 1.0f, ps::SampleInstrument::Loop | (3 << 16)});
         for (int n = 0; n < 16; ++n) engine.post({ps::CommandType::SetSynthNote, 0.8f, n | (3 << 16), ps::NoteTrack::pack(n * 24, 30, 36 + n % 7)});
         engine.post({ps::CommandType::SetSynthNoteCount, 0.0f, 16 | (3 << 16)});
+        // Phase 38: track 4 a multizone instrument (two 16-bit zones, a round robin), track 5 the 808.
+        engine.post({ps::CommandType::SetTrackOn, 1.0f, 4});
+        engine.post({ps::CommandType::SetSynthEngine, 0.0f, 3 | (4 << 16)});
+        for (int z = 0; z < 2; ++z) {
+            ps::Command zone{ps::CommandType::InstallTrackSample, 0.0f, (4 << 16) | (z + 1)};
+            zone.sample = ps::Sample::createCompact(wave.data(), 4800, 1, kRate, kRate);
+            engine.post(zone);
+            engine.post({ps::CommandType::SetTrackZone, 127.0f, ps::MultiSampler::HiKey | (4 << 16), z});
+            engine.post({ps::CommandType::SetTrackZone, 2.0f, ps::MultiSampler::SeqLength | (4 << 16), z});
+            engine.post({ps::CommandType::SetTrackZone, float(z + 1), ps::MultiSampler::SeqPosition | (4 << 16), z});
+        }
+        engine.post({ps::CommandType::SetTrackZone, 2.0f, ps::MultiSampler::Count | (4 << 16), -1});
+        engine.post({ps::CommandType::SetTrackOn, 1.0f, 5});
+        engine.post({ps::CommandType::SetSynthEngine, 0.0f, 4 | (5 << 16)});
+        for (int t = 4; t <= 5; ++t) {
+            for (int n = 0; n < 16; ++n) engine.post({ps::CommandType::SetSynthNote, 0.8f, n | (t << 16), ps::NoteTrack::pack(n * 24, 30, 36 + n % 7)});
+            engine.post({ps::CommandType::SetSynthNoteCount, 0.0f, 16 | (t << 16)});
+        }
         // Live playing on track 2: arpeggio with sustain, bend and modulation.
         engine.post({ps::CommandType::SetExpression, 1.0f, ps::InstrumentTrack::ArpOn | (2 << 16)});
         engine.post({ps::CommandType::SetExpression, 0.5f, ps::InstrumentTrack::ArpRate | (2 << 16)});
@@ -7936,6 +7958,13 @@ void testCommandBudgetPerCallback() {
 }
 
 #include "gain_staging_tests.inc"
+#include "studio_tests.inc"
+#include "wide_tests.inc"
+#include "mix_tests.inc"
+#include "phase37_tests.inc"
+#include "multizone_tests.inc"
+#include "restes_tests.inc"
+#include "review3539_tests.inc"
 
 int main(int argc, char** argv) {
     const char* only = nullptr;  // a test's name: run that one alone
@@ -8116,6 +8145,21 @@ int main(int argc, char** argv) {
         {"compressor_reduction_meter", gain_staging::testCompressorReductionMeter},
         {"saturation_tone_and_compensation", gain_staging::testSaturationToneAndCompensation},
         {"kit_version_levels", gain_staging::testKitVersionLevels},
+        {"step_offsets_and_rolls", studio_tests::testStepOffsetsAndRolls},
+        {"bass_808", studio_tests::testBass808},
+        {"bass_808_in_the_engine", studio_tests::testBass808ThroughTheEngine},
+        {"studio_kicks", studio_tests::testStudioKicks},
+        {"kit_v3", studio_tests::testKitV3},
+        {"pad_layers", studio_tests::testPadLayers},
+        {"kit_v3_cpu", studio_tests::testKitV3CpuBudget},
+        {"master_volume_automation", studio_tests::testMasterVolumeAutomation},
+        {"pad_solo", studio_tests::testPadSolo},
+        PS_WIDE_TESTS
+        PS_MIX_TESTS
+        PS_PHASE37_TESTS
+        PS_MULTIZONE_TESTS
+        PS_RESTES_TESTS
+        PS_REVIEW3539_TESTS
     };
     for (const auto& t : tests) {
         if (only && std::strcmp(only, t.name) != 0) continue;

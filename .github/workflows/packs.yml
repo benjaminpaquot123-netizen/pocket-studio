@@ -5,7 +5,9 @@ name: Packs
 # - one pack per style of scripts/packs/styles.json, generated with Stable Audio Open Small (the
 #   model the app already uses); a pack of the previous release is reused, and extended with new
 #   takes when styles.json's version is higher than the pack's;
-# - one pack per entry of scripts/packs/libraries.json, made from free sound libraries (CC0).
+# - one pack per entry of scripts/packs/libraries.json, made from free sound libraries (CC0);
+# - one pack per entry of scripts/packs/instruments.json: multizone instruments (pianos, strings,
+#   brass, woodwinds, harp) made from free SFZ libraries (public domain, CC BY 3.0, CC0).
 # Then index.json (versions, sizes, SHA-256) goes on the release and on the fixed `sons-packs`
 # catalogue release the app reads: new packs and updates reach phones without a new app.
 on:
@@ -24,9 +26,9 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  TAG: sons-packs-5
+  TAG: sons-packs-6
   # Packs already built there are reused (and extended when styles.json asks for more).
-  PREVIOUS: sons-packs-4
+  PREVIOUS: sons-packs-5
   # Fixed release whose index.json the app reads first (PackStore.CATALOGUE).
   CATALOGUE: sons-packs
   MODEL: https://github.com/benjaminpaquot123-netizen/pocket-studio/releases/download/modele-stable-audio-open-small-1
@@ -38,6 +40,7 @@ jobs:
       hosted: ${{ steps.check.outputs.hosted }}
       styles: ${{ steps.styles.outputs.ids }}
       libraries: ${{ steps.styles.outputs.libraries }}
+      instruments: ${{ steps.styles.outputs.instruments }}
     steps:
       - uses: actions/checkout@v7
       - id: check
@@ -49,6 +52,7 @@ jobs:
         run: |
           echo "ids=$(python3 -c 'import json;print(json.dumps([s["id"] for s in json.load(open("scripts/packs/styles.json"))["styles"]]))')" >> "$GITHUB_OUTPUT"
           echo "libraries=$(python3 -c 'import json;print(json.dumps([p["id"] for p in json.load(open("scripts/packs/libraries.json"))["packs"]]))')" >> "$GITHUB_OUTPUT"
+          echo "instruments=$(python3 -c 'import json;print(json.dumps([p["id"] for p in json.load(open("scripts/packs/instruments.json"))["instruments"]]))')" >> "$GITHUB_OUTPUT"
 
   # One download of the model (858 MB), shared through the cache: thirty jobs fetching it at once
   # from the release get HTTP 500s.
@@ -160,9 +164,36 @@ jobs:
           name: pack-${{ matrix.pack }}
           path: out/${{ matrix.pack }}
 
+  # Multizone instruments (phase 38): a sparse checkout of the SFZ library at a pinned commit (only
+  # the recordings kept), reduced to a phone's memory budget, 16-bit FLAC at 48 kHz.
+  instrument:
+    needs: plan
+    if: needs.plan.outputs.hosted == 'false'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        instrument: ${{ fromJSON(needs.plan.outputs.instruments) }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+      - run: pip install -q -r scripts/packs/requirements.txt
+      - name: Build
+        env:
+          GIT_LFS_SKIP_SMUDGE: '1'
+        run: python scripts/packs/instrument_pack.py scripts/packs/instruments.json ${{ matrix.instrument }} out/${{ matrix.instrument }} --cache "$RUNNER_TEMP/sources"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: pack-${{ matrix.instrument }}
+          path: out/${{ matrix.instrument }}
+
   # Published even if a few packs failed (they are simply not offered), never after a cancel.
   publish:
-    needs: [plan, build, library]
+    needs: [plan, build, library, instrument]
     if: ${{ !cancelled() && needs.plan.outputs.hosted == 'false' }}
     runs-on: ubuntu-latest
     steps:
@@ -186,7 +217,7 @@ jobs:
         run: |
           gh release create "$TAG" dist/* --latest=false --target main \
             --title "Packs de sons par style" \
-            --notes "Sons générés avec Stable Audio Open Small (Powered by Stability AI, voir LICENSE-stable-audio et NOTICE-stable-audio) par scripts/packs, et sons libres (CC0 : Kenney, OpenGameArt, VCSL ; auteurs dans le pack.json de chaque pack et THIRD_PARTY.md). Un .zip par pack ; index.json liste les versions, tailles et empreintes vérifiées par l'appli."
+            --notes "Sons générés avec Stable Audio Open Small (Powered by Stability AI, voir LICENSE-stable-audio et NOTICE-stable-audio) par scripts/packs, et sons libres (CC0 : Kenney, OpenGameArt, VCSL ; auteurs dans le pack.json de chaque pack et THIRD_PARTY.md). Instruments échantillonnés : Splendid Grand Piano (Akai, domaine public), Salamander Grand Piano V3 (Alexander Holm, CC BY 3.0), VS Chamber Orchestra Community Edition (Versilian Studios, CC0). Un .zip par pack ; index.json liste les versions, tailles et empreintes vérifiées par l'appli."
       - name: Catalogue the app reads
         env:
           GH_TOKEN: ${{ github.token }}

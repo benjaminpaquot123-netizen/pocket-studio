@@ -46,7 +46,9 @@ class HouseStylesTest {
         val notes = p.allScenes.map { it.synthNotes.notes }.first { it.isNotEmpty() }
         assertTrue(notes.size >= 16)
         assertTrue(notes.none { (it.start / NoteClip.TICKS_PER_STEP) % 16 in kicks })
-        assertEquals(StarterWizard.Part.Bass, s.melody.signature)
+        // The log drum drops after the piano (the signature), never from the Intro.
+        assertEquals(StarterWizard.Part.Pad, s.melody.signature)
+        assertTrue(StarterWizard.Part.Bass in s.drop.parts)
     }
 
     @Test

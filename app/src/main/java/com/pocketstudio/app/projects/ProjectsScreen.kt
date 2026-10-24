@@ -185,10 +185,12 @@ fun ProjectsScreen(
                         // « Vider la corbeille » beside its heading (lot 1): there without unfolding it, asked first.
                         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                             TextButton(onClick = { showTrash = !showTrash }, modifier = Modifier.weight(1f).testTag("project_trash")) {
-                                Text(
-                                    (if (showTrash) "▾ " else "▸ ") + tr("Corbeille (%d) · gardés %d jours", ui.trash.size, ProjectCatalog.TRASH_DAYS),
-                                    color = Neon.TextSecondary, modifier = Modifier.weight(1f),
-                                )
+                                // Its name on one line, how long it keeps them under it (room for « Vider la corbeille »).
+                                Column(Modifier.weight(1f)) {
+                                    Text((if (showTrash) "▾ " else "▸ ") + tr("Corbeille (%d)", ui.trash.size), color = Neon.TextSecondary, maxLines = 1)
+                                    Text(tr("gardés %d jours", ProjectCatalog.TRASH_DAYS), color = Neon.TextSecondary, style = MaterialTheme.typography.bodySmall,
+                                        maxLines = 1, modifier = Modifier.padding(start = 14.dp))
+                                }
                             }
                             TextButton(onClick = { confirmingDelete = EMPTY_ALL }, enabled = !ui.busy, modifier = Modifier.testTag("project_empty_trash")) {
                                 Icon(Icons.Filled.DeleteSweep, contentDescription = null, tint = Neon.Amber, modifier = Modifier.padding(end = 6.dp))

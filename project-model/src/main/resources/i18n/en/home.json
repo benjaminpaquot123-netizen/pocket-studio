@@ -372,5 +372,7 @@
   "Aucun projet pour l'instant": "No projects yet",
   "Commence un morceau, ou ramène un projet envoyé depuis un autre téléphone.": "Start a song, or bring in a project sent from another phone.",
   "Importer un projet": "Import a project",
-  "Aucun projet pour l'instant : commence un nouveau morceau.": "No projects yet: start a new song."
+  "Aucun projet pour l'instant : commence un nouveau morceau.": "No projects yet: start a new song.",
+  "Corbeille (%d)": "Bin (%d)",
+  "gardés %d jours": "kept %d days"
 }

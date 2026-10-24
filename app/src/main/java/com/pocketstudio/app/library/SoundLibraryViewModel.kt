@@ -425,7 +425,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
             _preparing.value = ref
             if (waitMs > 0) kotlinx.coroutines.delay(waitMs)
             val pcm = try {
-                load(ref)
+                previewOf(ref)
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
@@ -481,6 +481,26 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         openings++
         stopPreview()
     }
+
+    /**
+     * What ▶ plays for [ref]: the sound as audio, at the one preview level (lot 1, [PreviewLevel]:
+     * a held chord as loud as a bass line or a pack's sample). Only what is heard: a sound put on a
+     * pad or a track keeps its own level ([use]).
+     */
+    private suspend fun previewOf(ref: SoundRef): Pcm? {
+        val pcm = load(ref) ?: return null
+        // A short sound (a kit voice already rendered) right here, as it was played at once before;
+        // a longer excerpt off the main thread.
+        return if (pcm.data.size <= SHORT_PREVIEW_SAMPLES) PreviewLevel.normalize(pcm) else withContext(Dispatchers.Default) { PreviewLevel.normalize(pcm) }
+    }
+
+    /** Tests and the preview bench: what ▶ would play for [ref]. */
+    @androidx.annotation.VisibleForTesting
+    internal suspend fun previewForTest(ref: SoundRef): Pcm? = previewOf(ref)
+
+    /** Tests and the preview bench: the sound as audio before the preview level. */
+    @androidx.annotation.VisibleForTesting
+    internal suspend fun loadForTest(ref: SoundRef): Pcm? = load(ref)
 
     /** The sound as audio: the kit voice rendered once by the engine, or the pack file decoded. */
     private suspend fun load(ref: SoundRef): Pcm? = when (ref) {
@@ -1108,6 +1128,8 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     companion object {
+        /** A preview this short (2 s of stereo) is brought to its level on the spot. */
+        private const val SHORT_PREVIEW_SAMPLES = 2 * 2 * OfflineExport.SAMPLE_RATE
         private const val KIT_FRAMES = OfflineExport.SAMPLE_RATE * 3L / 2
         /** Bars of a style heard on its card (a few seconds). */
         private const val STYLE_DEMO_BARS = 4

@@ -3,6 +3,8 @@ package com.pocketstudio.app
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
+import androidx.compose.ui.test.onRoot
+import androidx.compose.ui.test.printToLog
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTouchInput
@@ -109,7 +111,16 @@ class JourneyTest {
             val fillPart = (1..minOf(4, p0.song.size - 1)).first { partSheetUi(p0, it)?.endsOnFill == false }
             j.partIntent(fillPart, "part_fill")
             // The intent lands through the ViewModel a moment after the tap on a device.
-            waitFor("the Fill applied", 10) { rhythm().project.value.song[fillPart].play[SongPart.DRUMS] != null }
+            val applied = runCatching { waitFor("the Fill applied", 10) { rhythm().project.value.song[fillPart].play[SongPart.DRUMS] != null } }
+            if (applied.isFailure) {
+                // What the device shows when the Fill does not land (read in the CI's RealUse log).
+                val p = rhythm().project.value
+                log("fill not applied on part $fillPart: done=${rhythm().done.value}, play=${p.song[fillPart].play}, " +
+                    "parts=${p.song.mapIndexed { i, s -> "$i:${s.play[SongPart.DRUMS]?.let(p::sceneLabel)}" }}, " +
+                    "sheet=${j.exists("part_sheet")}, menu=${j.exists("part_menu_$fillPart")}, parts list=${j.exists("structure_parts")}")
+                runCatching { compose.onRoot(useUnmergedTree = true).printToLog("RealUse") }
+                throw applied.exceptionOrNull()!!
+            }
             val p1 = rhythm().project.value
             assertEquals("a Fill at the end of part ${fillPart + 1}", "Fill", p1.sceneLabel(p1.song[fillPart].play.getValue(SongPart.DRUMS)))
             assertTrue("« Fait : … » said", rhythm().done.value.orEmpty().startsWith("Fait"))

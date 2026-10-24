@@ -133,13 +133,13 @@ class EnduranceTest {
                 // The app in the background, the music going on; then back.
                 val home = RealUse.instrumentation.uiAutomation.performGlobalAction(AccessibilityService.GLOBAL_ACTION_HOME)
                 if (!home) scenario.moveToState(Lifecycle.State.CREATED)
-                waitFor("the app in the background", 10) { scenario.state != Lifecycle.State.RESUMED }
+                waitFor("the app in the background", 10) { runCatching { scenario.state }.getOrNull() != Lifecycle.State.RESUMED }
                 val inBackground = NativeEngine.streamInfo().callbacks
                 Thread.sleep(4000)
                 assertTrue("the audio callbacks run on in the background", NativeEngine.streamInfo().callbacks > inBackground)
                 // Back as from the launcher (singleTask: the same screen comes back to the front).
                 app.startActivity(Intent(app, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
-                waitFor("the app back in front", 20) { scenario.state == Lifecycle.State.RESUMED }
+                waitFor("the app back in front", 20) { runCatching { scenario.state }.getOrNull() == Lifecycle.State.RESUMED }
                 j.awaitAny("space_bar", "space_rail", timeoutMs = 20_000)
                 // Turned sideways and back (the screen rebuilt twice).
                 for ((orientation, wanted) in listOf(
@@ -148,7 +148,7 @@ class EnduranceTest {
                 )) {
                     scenario.onActivity { it.requestedOrientation = orientation }
                     waitFor("the screen turned", 20) {
-                        scenario.state == Lifecycle.State.RESUMED && activityOf(scenario).resources.configuration.orientation == wanted
+                        runCatching { scenario.state }.getOrNull() == Lifecycle.State.RESUMED && activityOf(scenario).resources.configuration.orientation == wanted
                     }
                     j.awaitAny("space_bar", "space_rail", timeoutMs = 20_000)
                     if (orientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) peak = maxOf(peak, listen(2))

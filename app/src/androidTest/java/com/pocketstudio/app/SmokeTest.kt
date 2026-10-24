@@ -140,7 +140,10 @@ class SmokeTest {
         compose.onNodeWithTag("mute_0").performClick()
         compose.onNodeWithTag("mute_0").performClick()
 
-        // Export: 4 bars rendered offline into a real 24-bit WAV with sound in it.
+        // Export: 4 bars rendered offline into a real 24-bit WAV with sound in it. The part in a
+        // loop, chosen explicitly: a project with a song exports the whole song by default, and a
+        // 3-minute render then takes longer than this test waits on the emulator.
+        compose.onNodeWithTag("export_what_Loop").performScrollTo().performClick()
         compose.onNodeWithTag("export").performScrollTo().performClick()
         compose.waitUntil(60_000) { compose.onAllNodesWithTag("share").fetchSemanticsNodes().isNotEmpty() }
         val context = InstrumentationRegistry.getInstrumentation().targetContext

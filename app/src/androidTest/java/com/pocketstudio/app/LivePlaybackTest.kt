@@ -61,8 +61,18 @@ class LivePlaybackTest {
             ProjectsViewModel(app).create(song, sounds) { id = it }
         }
         waitFor("the project", 60) { id != null }
+        // The project open before stays the current one afterwards: the next test (SmokeTest opens
+        // « Continuer ») must find its small starter beat, not a 3-minute song to export.
+        val previous = CurrentProject.get(app)
         CurrentProject.set(app, id!!)
+        try {
+            playFor60Seconds(song)
+        } finally {
+            CurrentProject.set(app, previous)
+        }
+    }
 
+    private fun playFor60Seconds(song: Project) {
         ActivityScenario.launch(MainActivity::class.java).use { scenario ->
             waitFor("the audio stream", 15) { NativeEngine.streamInfo().let { it.running && it.callbacks > 0 } }
             lateinit var rhythm: RhythmViewModel

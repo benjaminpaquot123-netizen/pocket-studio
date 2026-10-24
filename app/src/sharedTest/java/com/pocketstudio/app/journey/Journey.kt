@@ -66,11 +66,27 @@ class Journey(private val compose: ComposeTestRule, private val log: (String) ->
             check(System.currentTimeMillis() < end) { "$tag is not there once after $timeoutMs ms" }
             idle(50)
         }
+        settled(tag, end)
         log("tap $tag")
         val node = compose.onNodeWithTag(tag)
         if (!node.isDisplayed()) runCatching { node.performScrollTo() }
         node.performClick()
         runCatching { compose.waitForIdle() }
+    }
+
+    /**
+     * Waits until [tag] stops moving: a sheet still sliding in puts the button somewhere else
+     * than where the touch lands (on a device the touch then hits the scrim and only closes the
+     * sheet). Two reads 100 ms apart at the same place, with a real size.
+     */
+    private fun settled(tag: String, end: Long) {
+        var last: androidx.compose.ui.geometry.Rect? = null
+        while (System.currentTimeMillis() < end) {
+            val now = runCatching { compose.onNodeWithTag(tag).fetchSemanticsNode().boundsInWindow }.getOrNull()
+            if (now != null && now == last && now.width > 0f && now.height > 0f) return
+            last = now
+            idle(100)
+        }
     }
 
     /** The tags on screen that match [pattern] (the keys of a keyboard, the cells of a grid). */

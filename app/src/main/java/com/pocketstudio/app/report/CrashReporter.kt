@@ -26,14 +26,25 @@ object CrashReporter {
         appContext = context.applicationContext
         crashFile = File(context.filesDir, FILE_NAME)
         AppLog.persistTo(context.filesDir)
-        JournalFiles.startSession(context.filesDir)
-        val previous = Thread.getDefaultUncaughtExceptionHandler()
-        Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
-            runCatching { crashFile.writeText(format(thread, throwable)) }
-            // The bug report offered at the next launch: what led there, with the stack.
-            runCatching { JournalFiles.saveCrash(context.filesDir, thread.name, throwable) }
-            previous?.uncaughtException(thread, throwable)
-        }
+        val filesDir = context.filesDir
+        JournalFiles.startSession(filesDir)
+        // Installed once per process: a second Application (Robolectric gives each test its own)
+        // only points the handler at its files. The handler keeps no Context: a chain of handlers
+        // each holding an Application would keep every test's app in memory.
+        crashDir = filesDir
+        val current = Thread.getDefaultUncaughtExceptionHandler()
+        if (current === handler) return
+        previous = current
+        Thread.setDefaultUncaughtExceptionHandler(handler)
+    }
+
+    @Volatile private var crashDir: File? = null
+    @Volatile private var previous: Thread.UncaughtExceptionHandler? = null
+    private val handler = Thread.UncaughtExceptionHandler { thread, throwable ->
+        runCatching { crashFile.writeText(format(thread, throwable)) }
+        // The bug report offered at the next launch: what led there, with the stack.
+        crashDir?.let { dir -> runCatching { JournalFiles.saveCrash(dir, thread.name, throwable) } }
+        previous?.uncaughtException(thread, throwable)
     }
 
     fun pendingCrash(): String? {

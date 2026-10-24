@@ -26,6 +26,49 @@ class JournalLogicTest {
     }
 
     @Test
+    fun theLiveCopyFollowsTheSoundEvenWithoutAGesture() {
+        val clock = LiveCopyClock(intervalMs = 10_000)
+        assertTrue("the first copy", clock.due(0))
+        assertFalse("nothing moved", clock.due(20_000))
+        // Stopped and silent: nothing new to keep.
+        HealthMonitor.add(HealthSample(1, peak = 0f, playing = false))
+        assertFalse(clock.due(30_000))
+        // Music playing, no touch at all: the copy follows the sound…
+        HealthMonitor.add(HealthSample(2, peak = 0.3f, playing = true))
+        assertTrue(clock.due(31_000))
+        // …at most every 10 s.
+        HealthMonitor.add(HealthSample(3, peak = 0.3f, playing = true))
+        assertFalse(clock.due(35_000))
+        assertTrue(clock.due(41_000))
+        // A gesture moves it too.
+        Journal.action("■ Arrêt")
+        assertTrue(clock.due(52_000))
+    }
+
+    @Test
+    fun pathsDocumentsAndAddressesNeverLeaveThePhone() {
+        val line = "Son illisible /storage/emulated/0/Music/Nuit d'été v2.wav: open failed (ENOENT), " +
+            "copie /data/user/0/com.pocketstudio/files/projects/abc.json; content://com.android.providers.media/document/audio%3A12 " +
+            "par benjamin@example.com depuis https://x.org/a?token=123"
+        val clean = LogTail.redact(line)
+        listOf("emulated", "Nuit", "com.pocketstudio/files", "audio%3A12", "benjamin", "token").forEach {
+            assertFalse("« $it » left in: $clean", clean.contains(it))
+        }
+        assertTrue(clean.contains("Son illisible <chemin>: open failed (ENOENT)"))
+        assertTrue(clean.contains("<document>"))
+        assertTrue(clean.contains("<email>"))
+        // The app's own libraries stay readable in a native crash's trace.
+        val trace = "#01 pc 0004 /data/app/~~a==/com.pocketstudio-b==/lib/arm64/libpocketstudio.so (ps::Engine::process+124)"
+        assertEquals(trace, LogTail.redact(trace))
+        // An error is cleaned and cut like any other line.
+        Journal.error("import", "pas lu : /sdcard/Download/Mes sons/kick.wav; " + "x".repeat(2000))
+        val e = Journal.errors.lastOrNull()!!
+        assertFalse(e.text.contains("Mes sons"))
+        assertTrue(e.text.startsWith("import : pas lu : <chemin>"))
+        assertEquals(Journal.MAX_TEXT, e.text.length)
+    }
+
+    @Test
     fun ringKeepsTheNewestInOrderAndNeverGrows() {
         val r = Ring<Int>(5)
         assertEquals(emptyList<Int>(), r.snapshot())

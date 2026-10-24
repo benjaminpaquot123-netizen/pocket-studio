@@ -46,8 +46,14 @@ object HealthMonitor {
     const val PERIOD_MS = 250L
     /** 60 s at 4 readings a second. */
     const val KEEP = 240
+    /** Under this peak (-80 dBFS) and stopped, nothing is going out: no need to rewrite the copy. */
+    const val SOUND_FLOOR = 1e-4f
 
     val samples = Ring<HealthSample>(KEEP)
+
+    /** Moves with each reading while sound goes out (playing, or any level): the live copy follows it. */
+    val version: Long get() = counter.get()
+    private val counter = java.util.concurrent.atomic.AtomicLong()
 
     /** Set by the screen that knows the transport and the project (null: neither known). */
     @Volatile var probe: (() -> HealthProbe)? = null
@@ -90,6 +96,7 @@ object HealthMonitor {
         lastRestarts = sample.restarts
         lastNonFinite = sample.nonFinite
         samples.add(sample)
+        if (sample.playing || sample.peak > SOUND_FLOOR) counter.incrementAndGet()
     }
 
     internal fun reset() = synchronized(this) {

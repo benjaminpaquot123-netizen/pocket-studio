@@ -188,8 +188,14 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
         out.connect(object : MidiReceiver() {
             override fun onSend(msg: ByteArray, offset: Int, count: Int, timestamp: Long) = parser.feed(msg, offset, count)
         })
-        val name = _state.value.sources.firstOrNull { it.id == id }?.name ?: d.info.properties.getString(MidiDeviceInfo.PROPERTY_NAME)
-        AppLog.add("MIDI connecté : $name")
+        // The kind only: a device's name can be its owner's (« Clavier de Benjamin »).
+        val kind = when (d.info.type) {
+            MidiDeviceInfo.TYPE_USB -> "USB"
+            MidiDeviceInfo.TYPE_BLUETOOTH -> "Bluetooth"
+            MidiDeviceInfo.TYPE_VIRTUAL -> "virtuel"
+            else -> "autre"
+        }
+        AppLog.add("MIDI connecté : appareil $kind")
         _state.update { it.copy(connected = id, last = null, clockBpm = null) }
         refresh(autoConnect = false)
     }

@@ -37,5 +37,7 @@
   "Copie impossible.": "Copy failed.",
   "Le rapport n'a pas pu être préparé.": "The report could not be prepared.",
   "Voir le rapport tel qu'il partira": "See the report as it will be sent",
-  "Masquer le rapport": "Hide the report"
+  "Masquer le rapport": "Hide the report",
+  "Le nom et les réglages du projet ouvert (style, tempo, position)": "The open project's name and settings (style, tempo, position)",
+  "%d images au plus : les autres ne sont pas ajoutées.": "%d pictures at most: the others are not added."
 }

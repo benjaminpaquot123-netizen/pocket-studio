@@ -72,6 +72,12 @@ class BugReportViewModel(private val app: Application) : AndroidViewModel(app) {
     private val shotsDir get() = File(app.cacheDir, "bugreport")
     private var nextId = 1L
 
+    init {
+        // Pictures of an earlier report the app was closed on: nothing points at them any more.
+        val startedAt = System.currentTimeMillis() - 1_000
+        viewModelScope.launch(Dispatchers.IO) { runCatching { shotsDir.listFiles { f -> f.lastModified() < startedAt }?.forEach { it.delete() } } }
+    }
+
     /** Opens the sheet from [from] (a word for the journal): the screen is captured first. */
     fun request(from: String, crash: String? = null, crashJournal: String? = null) {
         Journal.action("Signaler un bug ($from)")
@@ -124,6 +130,8 @@ class BugReportViewModel(private val app: Application) : AndroidViewModel(app) {
     /** Pictures chosen on the phone (Android's photo picker): copied into the cache, at most what is left. */
     fun picked(uris: List<Uri>) {
         val take = uris.take(roomLeft.coerceAtLeast(0))
+        // More chosen than there is room for: said, not silently dropped.
+        if (uris.size > take.size) _state.update { it.copy(message = tr("%d images au plus : les autres ne sont pas ajoutées.", MAX_ADDED)) }
         if (take.isEmpty()) return
         viewModelScope.launch {
             var failed = 0
@@ -247,7 +255,8 @@ class BugReportViewModel(private val app: Application) : AndroidViewModel(app) {
 
     private fun copyPicked(uri: Uri): BugShot? = runCatching {
         shotsDir.mkdirs()
-        val ext = when (app.contentResolver.getType(uri)) {
+        // Some providers throw rather than answer: the picture is still worth trying.
+        val ext = when (runCatching { app.contentResolver.getType(uri) }.getOrNull()) {
             "image/png" -> "png"
             "image/webp" -> "webp"
             "image/gif" -> "gif"

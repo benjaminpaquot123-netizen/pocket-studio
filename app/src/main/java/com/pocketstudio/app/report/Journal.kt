@@ -3,9 +3,11 @@ package com.pocketstudio.app.report
 import java.io.File
 import java.io.PrintWriter
 import java.io.StringWriter
-import java.text.SimpleDateFormat
-import java.util.Date
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.Locale
+import java.util.concurrent.atomic.AtomicLong
 
 /** One line of the [Journal]: when ([atMs], wall clock), what kind, and what. */
 data class JournalEvent(val atMs: Long, val kind: Kind, val text: String) {
@@ -35,8 +37,8 @@ object Journal {
     val errors = Ring<JournalEvent>(ERRORS)
 
     /** Changes with every event: a saver writes only when it moved. */
-    @Volatile var version = 0L
-        private set
+    val version: Long get() = counter.get()
+    private val counter = AtomicLong()
 
     /** Wall clock, replaced by tests. */
     @Volatile var clock: () -> Long = System::currentTimeMillis
@@ -55,14 +57,14 @@ object Journal {
     /** A line of [AppLog]; its failures (« impossible », « échec »…) also count as errors. */
     fun app(line: String) {
         add(JournalEvent.Kind.APP, line)
-        if (looksLikeError(line)) errors.add(JournalEvent(clock(), JournalEvent.Kind.ERROR, line))
+        if (looksLikeError(line)) errors.add(JournalEvent(clock(), JournalEvent.Kind.ERROR, LogTail.redact(line).take(MAX_TEXT)))
     }
 
     fun error(where: String, message: String) {
-        val e = JournalEvent(clock(), JournalEvent.Kind.ERROR, "$where : $message")
+        val e = JournalEvent(clock(), JournalEvent.Kind.ERROR, LogTail.redact("$where : $message").take(MAX_TEXT))
         events.add(e)
         errors.add(e)
-        version++
+        counter.incrementAndGet()
     }
 
     /** An exception caught: its type, message and the first lines of its stack. */
@@ -70,14 +72,14 @@ object Journal {
 
     private fun add(kind: JournalEvent.Kind, text: String) {
         events.add(JournalEvent(clock(), kind, LogTail.redact(text).take(MAX_TEXT)))
-        version++
+        counter.incrementAndGet()
     }
 
     internal fun clear() {
         events.clear()
         errors.clear()
         lastScreen = null
-        version++
+        counter.incrementAndGet()
     }
 
     private val failure = Regex("impossible|échec|échoué|illisible|refusé|erreur|plantage|exception|introuvable|NaN", RegexOption.IGNORE_CASE)
@@ -119,7 +121,9 @@ object JsonText {
  * the last minute; [extra] fields first (the app, the device, the crash).
  */
 object JournalJson {
-    private fun time(ms: Long) = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.ROOT).format(Date(ms))
+    /** One formatter for every line (thread-safe, unlike SimpleDateFormat). */
+    private val stamp = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.ROOT).withZone(ZoneId.systemDefault())
+    private fun time(ms: Long) = stamp.format(Instant.ofEpochMilli(ms))
 
     fun event(e: JournalEvent): String = JsonText.obj("t" to JsonText.string(time(e.atMs)), "kind" to JsonText.string(e.kind.name.lowercase()), "text" to JsonText.string(e.text))
 
@@ -186,6 +190,9 @@ object JournalFiles {
 
     fun saveLive(dir: File) = write(dir, LIVE, JournalJson.current())
 
+    /** How often at most the live copy is rewritten. */
+    const val LIVE_INTERVAL_MS = 10_000L
+
     /** In the crash handler: the journal with the crash in it. */
     fun saveCrash(dir: File, thread: String, t: Throwable): Boolean {
         Journal.error("plantage (thread $thread)", Journal.describe(t, lines = 30))
@@ -200,5 +207,23 @@ object JournalFiles {
     fun clearCrash(dir: File) {
         File(dir, CRASH).delete()
         File(dir, PREVIOUS).delete()
+    }
+}
+
+/**
+ * When the live copy ([JournalFiles.LIVE]) is due: at most every [intervalMs], and only when the
+ * journal or the sound ([HealthMonitor.version]: readings with sound going out) moved since the
+ * last one, so a crash during gesture-free playback still finds the last seconds of sound.
+ */
+class LiveCopyClock(private val intervalMs: Long = JournalFiles.LIVE_INTERVAL_MS) {
+    private var saved = -1L
+    private var savedAt = Long.MIN_VALUE / 2
+
+    fun due(nowMs: Long): Boolean {
+        val v = Journal.version + HealthMonitor.version
+        if (nowMs - savedAt < intervalMs || v == saved) return false
+        saved = v
+        savedAt = nowMs
+        return true
     }
 }

@@ -37,5 +37,7 @@
   "Copie impossible.": "Kopiëren mislukt.",
   "Le rapport n'a pas pu être préparé.": "Het rapport kon niet worden voorbereid.",
   "Voir le rapport tel qu'il partira": "Het rapport bekijken zoals het vertrekt",
-  "Masquer le rapport": "Rapport verbergen"
+  "Masquer le rapport": "Rapport verbergen",
+  "Le nom et les réglages du projet ouvert (style, tempo, position)": "De naam en instellingen van het open project (stijl, tempo, positie)",
+  "%d images au plus : les autres ne sont pas ajoutées.": "Hoogstens %d afbeeldingen: de andere worden niet toegevoegd."
 }

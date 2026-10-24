@@ -65,7 +65,8 @@ object WavExporter {
      */
     fun share(context: Context, files: List<File>, title: String = tr("Partager le morceau"), subject: String? = null, text: String? = null): Boolean {
         if (files.isEmpty()) return false
-        val uris = ArrayList(files.map { FileProvider.getUriForFile(context, context.packageName + ".files", it) })
+        // A file outside the shared folders throws here: « could not open », never a crash.
+        val uris = runCatching { ArrayList(files.map { FileProvider.getUriForFile(context, context.packageName + ".files", it) }) }.getOrNull() ?: return false
         val mime = when {
             files.all { it.extension == "m4a" } -> "audio/mp4"
             files.all { it.extension == "flac" } -> "audio/flac"

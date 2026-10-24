@@ -38,6 +38,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.IosShare
 import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material.icons.filled.Warning
@@ -264,7 +265,9 @@ private fun Thumb(shot: ShotUi, remove: (Long) -> Unit) {
                 Image(shot.thumb, contentDescription = if (shot.auto) tr("Capture de l'écran") else tr("Image ajoutée"), contentScale = ContentScale.Fit,
                     modifier = Modifier.height(132.dp).aspectRatio(shot.thumb.width.toFloat() / shot.thumb.height.coerceAtLeast(1)))
             } else {
-                CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
+                // Kept, but no small copy could be made (an image Android cannot draw): a plain sign.
+                Icon(Icons.Filled.Image, contentDescription = if (shot.auto) tr("Capture de l'écran") else tr("Image ajoutée"), tint = Neon.TextSecondary,
+                    modifier = Modifier.padding(horizontal = 22.dp).size(28.dp))
             }
             if (shot.auto) {
                 Text(
@@ -361,7 +364,10 @@ fun bugSummary(s: BugReportState, projectName: String?): List<String> = buildLis
     add(tr("La version de l'appli, le modèle du téléphone, sa version d'Android et la sortie du son"))
     val stream = Metrics.streamInfo.value
     add(tr("Le son de la dernière minute : niveau, décrochages (%1\$d), son rouvert (%2\$d)", stream.xruns, stream.restarts))
-    add(tr("Les %1\$d derniers écrans et gestes, et %2\$d erreurs", minOf(Journal.events.size, BugReportText.EVENTS), Journal.errors.size))
+    // journal.json holds them all (up to Journal.EVENTS); report.md shows the last BugReportText.EVENTS.
+    add(tr("Les %1\$d derniers écrans et gestes, et %2\$d erreurs", Journal.events.size, Journal.errors.size))
+    // Always in report.md, ticked or not: said plainly.
+    if (projectName != null) add(tr("Le nom et les réglages du projet ouvert (style, tempo, position)"))
     if (s.crash != null) add(tr("Le rapport du plantage de la dernière fois"))
     val shots = (if (s.attachAuto && s.autoShot != null) 1 else 0) + s.shots.size
     if (shots > 0) add(tr("Captures d'écran : %d", shots))

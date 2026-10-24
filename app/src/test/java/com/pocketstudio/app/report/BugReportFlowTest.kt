@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsOff
 import androidx.compose.ui.test.assertIsOn
 import androidx.compose.ui.test.isDisplayed
@@ -54,7 +55,7 @@ class BugReportFlowTest {
         HealthMonitor.reset()
     }
 
-    private fun start(simple: Boolean = false) {
+    private fun start(simple: Boolean = false, launchChoice: Boolean = false) {
         Journal.clear()
         // Made with this test's application (the default factory would keep the first test's one).
         val factory = object : ViewModelProvider.Factory {
@@ -62,7 +63,7 @@ class BugReportFlowTest {
             override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T = BugReportViewModel(h.app) as T
         }
         bug = ViewModelProvider(compose.activity, factory)[BugReportViewModel::class.java]
-        h.start(simple = simple)
+        h.start(simple = simple, launchChoice = launchChoice)
     }
 
     private fun tap(tag: String) {
@@ -77,7 +78,7 @@ class BugReportFlowTest {
     private fun waitFor(what: String, timeout: Long = 10_000, ok: () -> Boolean) {
         val until = System.currentTimeMillis() + timeout
         while (!ok()) {
-            check(System.currentTimeMillis() < until) { "timed out waiting for $what" }
+            check(System.currentTimeMillis() < until) { "timed out waiting for $what: ${if (::bug.isInitialized) bug.state.value else null}, errors ${Journal.errors.snapshot()}" }
             Thread.sleep(20)
             compose.mainClock.advanceTimeBy(50)
             compose.waitForIdle()
@@ -224,6 +225,30 @@ class BugReportFlowTest {
         val clip = h.app.getSystemService(android.content.ClipboardManager::class.java).primaryClip!!
         assertTrue(clip.getItemAt(0).text.toString().contains("Ça grésille"))
         assertTrue(exists("bug_message"))
+    }
+
+    /** « Que veux-tu faire ? » after a crash: shown at once, and never again on top of the work. */
+    @Test
+    fun aCrashBannerHoldsNothingBackAndNothingPopsUpLater() {
+        File(h.app.filesDir, "last_crash.txt").writeText("Version 0.22 · 2026-10-24 · thread main\njava.lang.IllegalStateException: boum")
+        start(launchChoice = true)
+        // The choice shows at once, the banner waits under the bar.
+        compose.onNodeWithTag("launch").assertIsDisplayed()
+        assertTrue(exists("crash_banner"))
+        tap("launch_continue")
+        assertFalse(exists("launch"))
+        compose.onNodeWithTag("crash_banner").assertIsDisplayed()
+        // « Envoyer »: the report, and never « Que veux-tu faire ? » again on top of the work.
+        tap("crash_send")
+        assertFalse(exists("crash_banner"))
+        waitFor("the sheet") { exists("bug_sheet") }
+        assertFalse(exists("launch"))
+        tap("bug_close")
+        compose.mainClock.advanceTimeBy(2_000)
+        compose.waitForIdle()
+        assertFalse(exists("launch"))
+        assertFalse(exists("welcome"))
+        compose.onNodeWithTag("timeline_screen").assertIsDisplayed()
     }
 
     @Test

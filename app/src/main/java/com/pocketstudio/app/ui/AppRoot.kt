@@ -683,9 +683,9 @@ fun AppRoot() {
     }
     val settings by SettingsStore.state.collectAsStateWithLifecycle()
     var showGuide by rememberSaveable { mutableStateOf(false) }
-    // After the crash report's question (never both dialogs on top of each other).
+    // A crash of the last session only shows a banner under the bar: it holds nothing back.
     val pendingCrash by mainVm.crash.collectAsStateWithLifecycle()
-    if (showGuide && pendingCrash == null) {
+    if (showGuide) {
         GuideDialog(onClose = {
             showGuide = false
             SettingsStore.update(context) { it.copy(guideSeen = true) }
@@ -696,7 +696,7 @@ fun AppRoot() {
     // Phase 36: a first launch starts in the Mode simple (the welcome says so, one touch changes it).
     LaunchedEffect(Unit) { if (!SettingsStore.state.value.guideSeen && !SettingsStore.state.value.simpleMode) SettingsStore.update(context) { it.copy(simpleMode = true) } }
     com.pocketstudio.app.onboarding.FirstLaunch(
-        show = !settings.guideSeen && pendingCrash == null,
+        show = !settings.guideSeen,
         simple = settings.simpleMode,
         actions = com.pocketstudio.app.onboarding.WelcomeActions(
             chooseMode = { v -> SettingsStore.update(context) { it.copy(simpleMode = v) } },
@@ -771,20 +771,17 @@ fun AppRoot() {
     LaunchedEffect(engineAvailable) {
         if (!engineAvailable) return@LaunchedEffect
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-            var saved = -1L
-            var savedAt = 0L
+            val liveCopy = com.pocketstudio.app.report.LiveCopyClock()
             while (true) {
                 val info = NativeEngine.streamInfo()
                 Metrics.updateStream(info)
                 // The bug report's health journal (4 readings a second, atomics only).
                 val now = android.os.SystemClock.elapsedRealtime()
                 com.pocketstudio.app.report.HealthMonitor.feed(info, now, System.currentTimeMillis())
-                // A copy of the journal on disk every 10 s while it changes: a native crash leaves no time to write one.
-                if (now - savedAt >= 10_000 && com.pocketstudio.app.report.Journal.version != saved) {
-                    saved = com.pocketstudio.app.report.Journal.version
-                    savedAt = now
-                    val json = com.pocketstudio.app.report.JournalJson.current()
-                    launch(kotlinx.coroutines.Dispatchers.IO) { com.pocketstudio.app.report.JournalFiles.write(context.filesDir, com.pocketstudio.app.report.JournalFiles.LIVE, json) }
+                // A copy of the journal on disk every 10 s while it or the sound moves: a native crash
+                // leaves no time to write one. Built and written off the main thread (a few hundred KB).
+                if (liveCopy.due(now)) {
+                    launch(kotlinx.coroutines.Dispatchers.IO) { com.pocketstudio.app.report.JournalFiles.saveLive(context.filesDir) }
                 }
                 delay(100)
             }
@@ -1021,7 +1018,7 @@ fun AppRoot() {
         helpLabels = false
         go(AppTab.Morceau)
     }
-    com.pocketstudio.app.onboarding.LaunchChooser(launch, rhythmVm, projectsVm, missions, show = launch.open && settings.guideSeen && pendingCrash == null, simple = simple,
+    com.pocketstudio.app.onboarding.LaunchChooser(launch, rhythmVm, projectsVm, missions, show = launch.open && settings.guideSeen, simple = simple,
         hasProject = !noProject,
         actions = com.pocketstudio.app.onboarding.LaunchActions(
             // No project to continue: Retour leaves the app (« Mes projets » would only lead back here).
@@ -1231,7 +1228,7 @@ fun AppRoot() {
                 reportBug = { reportBug("appui long sur « ? »") },
             )
             // After a crash, a discreet line rather than a window: the report opens with the crash in it.
-            val crashText by mainVm.crash.collectAsStateWithLifecycle()
+            val crashText = pendingCrash
             if (crashText != null) {
                 com.pocketstudio.app.report.CrashBanner(
                     send = {
@@ -2294,12 +2291,10 @@ WithPartHeader(rhythmVm) { partModifier ->
 @Composable
 private fun LaunchPrompts(vm: MainViewModel) {
     val context = LocalContext.current
-    val crash by vm.crash.collectAsStateWithLifecycle()
     val update by vm.update.collectAsStateWithLifecycle()
 
-    // A crash of the last session: the banner under the top bar offers the report (« Signaler un bug »).
-    if (crash != null) return
-
+    // A crash of the last session is offered by the banner under the top bar (« Signaler un bug »),
+    // which holds nothing back: the update prompt still shows.
     when (val u = update) {
         is UpdateState.Available, is UpdateState.Failed -> {
             val info = if (u is UpdateState.Available) u.info else (u as UpdateState.Failed).info

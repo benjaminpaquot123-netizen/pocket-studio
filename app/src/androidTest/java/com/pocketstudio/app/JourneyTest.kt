@@ -92,53 +92,54 @@ class JourneyTest {
             j.createNow()
             // Made (its kit voices rendered on the phone), saved, then opened: the screen is rebuilt.
             j.await("song_ready", timeoutMs = 300_000)
-            val rhythm = rhythmOf(scenario)
-            waitFor("the song opened", 30) { rhythm.project.value.song.isNotEmpty() }
-            val song = rhythm.project.value
+            // Fetched at each use: the app clears the ViewModel store and rebuilds the activity when it opens the song.
+            fun rhythm() = rhythmOf(scenario)
+            waitFor("the song opened", 30) { rhythm().project.value.song.isNotEmpty() }
+            val song = rhythm().project.value
             log("song: ${song.name}, ${song.song.size} parts, ${"%.0f".format(songSeconds(song))} s at ${song.tempoBpm} BPM")
-            runBlocking { rhythm.awaitSoundsLoadedForTest() }  // its sounds in, as when the card shows
+            runBlocking { rhythm().awaitSoundsLoadedForTest() }  // its sounds in, as when the card shows
 
-            listen(rhythm, "song_ready_listen", seconds = 60)
+            listen(rhythm(), "song_ready_listen", seconds = 60)
             if (j.exists("song_ready_close")) j.tap("song_ready_close")
             if (j.exists("song_ready_bar_close")) j.tap("song_ready_bar_close")
 
             // Structure › Parties › ⋮: « Fill à la fin » on a part, « Montée avant » on another.
             j.tap("tab_Structure")
-            val p0 = rhythm.project.value
+            val p0 = rhythm().project.value
             val fillPart = (1..minOf(4, p0.song.size - 1)).first { partSheetUi(p0, it)?.endsOnFill == false }
             j.partIntent(fillPart, "part_fill")
             // The intent lands through the ViewModel a moment after the tap on a device.
-            waitFor("the Fill applied", 10) { rhythm.project.value.song[fillPart].play[SongPart.DRUMS] != null }
-            val p1 = rhythm.project.value
+            waitFor("the Fill applied", 10) { rhythm().project.value.song[fillPart].play[SongPart.DRUMS] != null }
+            val p1 = rhythm().project.value
             assertEquals("a Fill at the end of part ${fillPart + 1}", "Fill", p1.sceneLabel(p1.song[fillPart].play.getValue(SongPart.DRUMS)))
-            assertTrue("« Fait : … » said", rhythm.done.value.orEmpty().startsWith("Fait"))
+            assertTrue("« Fait : … » said", rhythm().done.value.orEmpty().startsWith("Fait"))
             val buildUpPart = (1..minOf(4, p1.song.size - 1)).first { it != fillPart }
             j.partIntent(buildUpPart, "part_buildup_4")
-            waitFor("the build-up applied", 10) { rhythm.project.value != p1 }
-            val p2 = rhythm.project.value
+            waitFor("the build-up applied", 10) { rhythm().project.value != p1 }
+            val p2 = rhythm().project.value
             assertTrue("the Montée changed the song", p2 != p1)
-            assertTrue("« Fait : montée … » said", rhythm.done.value.orEmpty().startsWith("Fait"))
+            assertTrue("« Fait : montée … » said", rhythm().done.value.orEmpty().startsWith("Fait"))
 
             // Sons › the melody's track › ● Enregistrer ma mélodie (count-in), four keys, ■, « Remettre en rythme ».
             j.tap("tab_Sons")
             val lead = p2.tracks.firstOrNull { it.name.contains("Lead", ignoreCase = true) || it.name.contains("Mélodie", ignoreCase = true) } ?: p2.tracks.first()
             j.tap("track_${lead.id}")
-            recordATakeInTime(rhythm)
+            recordATakeInTime(rhythm())
 
             // Mix › Exporter: the whole song as M4A, then as WAV.
             j.tap("tab_Mix")
             j.await("mixer")
-            val seconds = songSeconds(rhythm.project.value)
+            val seconds = songSeconds(rhythm().project.value)
             j.tap("export_what_Song")
             j.tap("export_format_M4a")
-            val m4a = export(rhythm, "m4a")
+            val m4a = export(rhythm(), "m4a")
             val decoded = RealUse.decode(m4a)
-            log("M4A: ${m4a.length() / 1024} KB, ${"%.2f".format(decoded.seconds)} s decoded for a song of ${"%.2f".format(seconds)} s, true peak ${"%.2f".format(decoded.truePeakDb)} dBTP (app: ${rhythm.export.value.truePeakDb})")
+            log("M4A: ${m4a.length() / 1024} KB, ${"%.2f".format(decoded.seconds)} s decoded for a song of ${"%.2f".format(seconds)} s, true peak ${"%.2f".format(decoded.truePeakDb)} dBTP (app: ${rhythm().export.value.truePeakDb})")
             assertTrue("M4A lasts ${decoded.seconds} s for a song of $seconds s", decoded.seconds >= seconds - 0.5 && decoded.seconds <= seconds + 10.5)
             assertTrue("decoded M4A true peak ${decoded.truePeakDb} dBTP (at most -1)", decoded.truePeakDb <= -1.0)
             assertTrue("the M4A is not silent", decoded.truePeakDb > -30.0)
             j.tap("export_format_Wav")
-            val wav = export(rhythm, "wav")
+            val wav = export(rhythm(), "wav")
             val (frames, rate) = RealUse.wavFrames(wav)
             log("WAV: ${wav.length() / 1024} KB, $frames frames at $rate Hz")
             assertTrue("WAV lasts ${frames.toDouble() / rate} s for a song of $seconds s", frames.toDouble() / rate in (seconds - 0.05)..(seconds + 10.05))
@@ -163,16 +164,17 @@ class JourneyTest {
             // « Ton morceau est prêt ! » (the missions' card may show under it: stopped).
             j.await("song_ready", timeoutMs = 300_000)
             j.stopMissionsIfShown()
-            val rhythm = rhythmOf(scenario)
-            waitFor("the song opened", 30) { rhythm.project.value.song.isNotEmpty() }
-            runBlocking { rhythm.awaitSoundsLoadedForTest() }
-            listen(rhythm, "song_ready_listen", seconds = 20)
+            // Fetched at each use: the app clears the ViewModel store and rebuilds the activity when it opens the song.
+            fun rhythm() = rhythmOf(scenario)
+            waitFor("the song opened", 30) { rhythm().project.value.song.isNotEmpty() }
+            runBlocking { rhythm().awaitSoundsLoadedForTest() }
+            listen(rhythm(), "song_ready_listen", seconds = 20)
             j.stopMissionsIfShown()
             if (j.exists("song_ready_close")) j.tap("song_ready_close")
             if (j.exists("song_ready_bar_close")) j.tap("song_ready_bar_close")
 
             j.tap("tab_simple_Clavier")
-            recordATakeInTime(rhythm)
+            recordATakeInTime(rhythm())
 
             j.tap("tab_simple_Envoyer")
             j.tap("share_format_Wav")

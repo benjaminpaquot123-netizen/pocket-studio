@@ -48,7 +48,7 @@ class SmokeTest {
 
         // Rhythm screen: the starter groove plays and makes sound.
         compose.onNodeWithTag("rhythm").assertIsDisplayed()
-        compose.onNodeWithTag("transport_play").performClick()
+        compose.onNodeWithTag("top_play").performClick()
         compose.waitUntil(5_000) { NativeEngine.currentStep() >= 0 }
         var heard = false
         compose.waitUntil(5_000) {
@@ -56,7 +56,7 @@ class SmokeTest {
             heard
         }
         assertTrue("drums must sound", heard)
-        compose.onNodeWithTag("transport_play").performClick()
+        compose.onNodeWithTag("top_play").performClick()
         compose.waitUntil(2_000) { NativeEngine.currentStep() == -1 }
 
         // A live pad fires its lane.

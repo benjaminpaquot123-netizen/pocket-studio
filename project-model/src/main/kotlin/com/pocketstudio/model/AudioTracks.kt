@@ -1,5 +1,7 @@
 package com.pocketstudio.model
 
+import kotlinx.serialization.EncodeDefault
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 
 /**
@@ -7,6 +9,7 @@ import kotlinx.serialization.Serializable
  * starts on step [AudioClip.start] of the scene and comes back every [AudioClip.loopSteps] (or
  * once per part); a song clip ([AudioClip.song]) starts on a step of the song and plays once.
  */
+@OptIn(ExperimentalSerializationApi::class)
 @Serializable
 data class AudioTrack(
     /** 0..[MAX]-1: its engine track and mixer channel (see [mixerChannel]). */
@@ -19,19 +22,56 @@ data class AudioTrack(
      * so it can be brought back ([restorePreviousTake]).
      */
     val previous: AudioClip? = null,
+    /**
+     * The takes before [previous], newest first (« Prises » : the take picker), kept on disk like it.
+     * Left out of the file when empty.
+     */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val older: List<AudioClip> = emptyList(),
+    /**
+     * Phase 37, « Geler la piste »: the instrument track this audio track is the frozen sound of
+     * (its notes then stay silent in the song, « Dégeler » brings them back, see [Freeze]); null:
+     * an ordinary audio track. Left out of the file when null.
+     */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val frozenFrom: Int? = null,
+    /** What the frozen track was when it was rendered ([Freeze.signature]): the song changed since when it differs. */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val frozenSignature: Int = 0,
 ) {
-    fun sanitized(): AudioTrack = copy(
-        name = name.take(InstrumentTrack.MAX_NAME).ifBlank { "Audio ${id + 1}" },
-        color = color.coerceIn(0, InstrumentTrack.COLORS - 1),
-        clip = clip?.takeIf { PadSample(it.file, "").isSafe }?.sanitized(),
-        previous = previous?.takeIf { PadSample(it.file, "").isSafe && it.file != clip?.file }?.sanitized(),
-    )
+    /** Every take kept besides the one playing, newest first ([previous], then [older]). */
+    val otherTakes: List<AudioClip> get() = listOfNotNull(previous) + older
+
+    fun sanitized(): AudioTrack {
+        val c = clip?.takeIf { PadSample(it.file, "").isSafe }?.sanitized()
+        // Each sound file once, never the one playing; MAX_TAKES in all with it.
+        val others = (listOfNotNull(previous) + older)
+            .filter { PadSample(it.file, "").isSafe && it.file != c?.file }
+            .distinctBy { it.file }
+            .take(MAX_TAKES - 1)
+            .map { it.sanitized() }
+        return copy(
+            name = name.take(InstrumentTrack.MAX_NAME).ifBlank { "Audio ${id + 1}" },
+            color = color.coerceIn(0, InstrumentTrack.COLORS - 1),
+            clip = c,
+            previous = others.firstOrNull(),
+            older = others.drop(1),
+            frozenFrom = frozenFrom?.takeIf { it in 0 until InstrumentTrack.MAX },
+        )
+    }
+
+    /** [transform] on the clip and every take kept. */
+    fun mapTakes(transform: (AudioClip) -> AudioClip?): AudioTrack =
+        copy(clip = clip?.let(transform), previous = previous?.let(transform), older = older.mapNotNull(transform))
 
     companion object {
-        const val MAX = 4
+        /** Eight (AudioTracks::kTracks): voice, doubles, ad-libs and frozen tracks. */
+        const val MAX = 8
+        /** Takes a track keeps (the one playing included): the take picker shows them all. */
+        const val MAX_TAKES = 8
 
-        /** The mixer channel of audio track [id] (NativeEngine.audioChannel). */
-        fun mixerChannel(id: Int) = 12 + id
+        /** The mixer channel of audio track [id] (NativeEngine.audioChannel): 12..15, then 32..35. */
+        fun mixerChannel(id: Int) = if (id < 4) 12 + id else Mixer.FIRST_AUDIO2 + id - 4
+
+        /** The audio track on mixer channel [ch], or null. */
+        fun ofChannel(ch: Int): Int? = (0 until MAX).firstOrNull { mixerChannel(it) == ch }
     }
 }
 
@@ -150,7 +190,7 @@ data class AudioClip(
     }
 }
 
-/** A new audio track (or null when all four exist), with a free id, a fresh mixer channel and a colour. */
+/** A new audio track (or null when all eight exist), with a free id, a fresh mixer channel and a colour. */
 fun Project.addAudioTrack(name: String? = null): Project? {
     val id = (0 until AudioTrack.MAX).firstOrNull { free -> audioTracks.none { it.id == free } } ?: return null
     val used = instrumentTracks.map { it.color } + audioTracks.map { it.color }
@@ -198,14 +238,24 @@ fun Project.audioPlays(id: Int, part: SongPart?, scene: Int = this.scene): Boole
     return clip?.song != true && clip?.belongsTo(scene) != false
 }
 
-/** Sound files kept for « Prise précédente » only: on disk and in backups, not loaded. */
-val Project.previousTakeFiles: Set<String> get() = audioTracks.mapNotNull { it.previous?.file }.toSet()
+/** Sound files kept for « Prise précédente » and the take picker only: on disk and in backups, not loaded. */
+val Project.previousTakeFiles: Set<String> get() = audioTracks.flatMap { t -> t.otherTakes.map { it.file } }.toSet()
 
 /** Audio track [id] gets back the take a new one replaced (and keeps that one as the previous). */
-fun Project.restorePreviousTake(id: Int): Project {
+fun Project.restorePreviousTake(id: Int): Project = chooseTake(id, 0)
+
+/**
+ * Take [index] of [AudioTrack.otherTakes] plays on audio track [id]; the one it replaces becomes
+ * the newest kept (« Prise précédente » : a second touch on it swaps them back). Unchanged when
+ * there is no such take.
+ */
+fun Project.chooseTake(id: Int, index: Int): Project {
     val t = audioTracks.firstOrNull { it.id == id } ?: return this
-    val previous = t.previous ?: return this
-    return withAudioTrack(t.copy(clip = previous, previous = t.clip))
+    val others = t.otherTakes
+    val chosen = others.getOrNull(index) ?: return this
+    val kept = listOfNotNull(t.clip) + others.filterIndexed { i, _ -> i != index }
+    // Another take on a frozen track's audio: no longer the frozen sound (the notes play again).
+    return withAudioTrack(t.copy(clip = chosen, previous = kept.firstOrNull(), older = kept.drop(1), frozenFrom = null, frozenSignature = 0))
 }
 
 /**

@@ -34,6 +34,12 @@ import com.pocketstudio.model.i18n.tr
 data class Help(val term: String, val text: String)
 
 /**
+ * For a help, what « Écouter un exemple » does (null: the word has no sound example). Given by the
+ * app around its screens (the glossary's sound examples, phase 39); nothing by default.
+ */
+val LocalHelpListen = androidx.compose.runtime.staticCompositionLocalOf<(Help) -> (() -> Unit)?> { { null } }
+
+/**
  * A small faded "?" in a circle next to a term; a tap explains it. Discreet on purpose: it is
  * there for whoever wonders, not to draw the eye.
  */
@@ -61,9 +67,13 @@ fun HelpDot(help: Help, modifier: Modifier = Modifier, color: Color = Neon.TextS
 
 @Composable
 fun HelpDialog(help: Help, onDismiss: () -> Unit) {
+    val listen = LocalHelpListen.current(help)
     AlertDialog(
         onDismissRequest = onDismiss,
         confirmButton = { TextButton(onClick = onDismiss) { Text(tr("Compris")) } },
+        dismissButton = listen?.let { play ->
+            { TextButton(onClick = { onDismiss(); play() }, modifier = Modifier.testTag("help_listen")) { Text(tr("▶ Écouter un exemple")) } }
+        },
         title = { Text(help.term) },
         text = { Text(help.text, style = MaterialTheme.typography.bodyMedium) },
         containerColor = Neon.Surface,

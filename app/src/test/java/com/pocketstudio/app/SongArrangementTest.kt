@@ -358,6 +358,9 @@ class SongArrangementTest {
         // Part 1 (two bars) is 64 dp wide; the drums' row is the first, 64 dp high.
         val inDrums = with(compose.density) { androidx.compose.ui.geometry.Offset(16.dp.toPx(), 32.dp.toPx()) }
         compose.onNodeWithTag("timeline_grid").performTouchInput { click(inDrums) }
+        // Phase 36: two touches on a clip open it, so one touch waits to know it is alone.
+        compose.mainClock.advanceTimeBy(600)
+        compose.waitForIdle()
         assertEquals(listOf("0 drums"), toggled)
         // A long press: the clip's actions, then « Changer de scène… ».
         compose.onNodeWithTag("timeline_grid").performTouchInput { longClick(inDrums) }

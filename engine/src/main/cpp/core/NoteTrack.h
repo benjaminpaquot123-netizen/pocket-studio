@@ -12,7 +12,7 @@ class NoteTrack {
 public:
     static constexpr int kTicksPerStep = 24;
     static constexpr int kMaxNotes = 512;
-    static constexpr int kMaxSteps = 128;  // 8 bars
+    static constexpr int kMaxSteps = 256;  // 16 bars
 
     struct Note {
         int start = 0;   // ticks
@@ -25,7 +25,16 @@ public:
     static int32_t pack(int start, int length, int pitch) {
         return (start & 0xFFF) | ((length & 0xFFF) << 12) | ((pitch & 0x7F) << 24);
     }
-    void setNote(int index, int32_t packed, float velocity);
+    // Past 4095 ticks (a 16-bar loop is 6144), SetSynthNote's `a` (its low 16 bits) carries the
+    // index in 10 bits, then the start's bits 12..14 and the length's bits 12..14: senders from
+    // before (index < 512, nothing above) mean the same as ever.
+    static int32_t packIndex(int index, int start, int length) {
+        return (index & 0x3FF) | (((start >> 12) & 0x7) << 10) | (((length >> 12) & 0x7) << 13);
+    }
+    static int indexOf(int arg) { return arg & 0x3FF; }
+    static int highOf(int arg) { return (arg >> 10) & 0x3F; }
+    // `high`: highOf() of the command's `a` (0: start and length fit in b).
+    void setNote(int index, int32_t packed, float velocity, int high = 0);
     void setCount(int count);
     void setSteps(int steps);
     int steps() const { return steps_; }

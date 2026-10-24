@@ -2,6 +2,7 @@
 
 package com.pocketstudio.app.synth
 
+import com.pocketstudio.app.learn.spot
 import androidx.compose.material.icons.filled.DeleteSweep
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -100,6 +101,8 @@ data class SynthActions(
     val applyPreset: (SynthPatch) -> Unit = {},
     val chordOn: (Int) -> Unit = {},
     val chordOff: (Int) -> Unit = {},
+    /** Phase 37: « Automatiser » on knob (param) by a long press on its name (null: not offered). */
+    val automate: ((Int) -> Unit)? = null,
 )
 
 private val EASY: List<Pair<Int, String>> get() = listOf(
@@ -111,6 +114,21 @@ private val EASY: List<Pair<Int, String>> get() = listOf(
 
 /** Every synth parameter a knob can move, with its name (MIDI learn). */
 internal val SYNTH_LABELS: List<Pair<Int, String>> get() = EASY + ADVANCED
+
+/**
+ * The width and movement settings (phase 34, S4) the assistant sets and its curves move: named for
+ * the automation lanes (no knob of their own yet).
+ */
+internal val S4_LABELS: List<Pair<Int, String>> get() = listOf(
+    SynthPatch.WIDTH to tr("Largeur stéréo"), SynthPatch.OCTAVE_DOWN to tr("Doublure à l'octave basse"),
+    SynthPatch.DRIVE to tr("Saturation du synthé"), SynthPatch.MONO_BELOW to tr("Graves en mono"),
+    SynthPatch.LFO2_SHAPE to tr("Forme du balayage"), SynthPatch.CYCLE_BARS to tr("Cycle lent du filtre"),
+    SynthPatch.CYCLE_DEPTH to tr("Profondeur du cycle"), SynthPatch.FORMANT to tr("Formant"), SynthPatch.VOWEL to tr("Voyelle"),
+    SynthPatch.MID_LAYER to tr("Couche médium"), SynthPatch.OVERSAMPLE to tr("Suréchantillonnage"),
+)
+
+/** A synth knob's name (an automation lane's). */
+internal fun synthKnobName(param: Int): String = (SYNTH_LABELS + S4_LABELS).firstOrNull { it.first == param }?.second ?: "?"
 
 private val ADVANCED: List<Pair<Int, String>> get() = listOf(
     SynthPatch.OSC_MIX to tr("Mélange oscillateurs"), SynthPatch.NOISE to tr("Bruit"),
@@ -132,6 +150,14 @@ class NotesUi(
     val playStep: Int,
     val actions: PianoRollActions,
     val harmony: Harmony = Harmony(),
+    /** Phase 37: the notes copied in any track or part (null: none). */
+    val clipboard: com.pocketstudio.model.NoteClipboard? = null,
+    /** Phase 37: the track is frozen (its notes wait for « Dégeler »). */
+    val frozen: Boolean = false,
+    /** Phase 37: « Accords du morceau » (null: not offered here). */
+    val songChords: (() -> Unit)? = null,
+    /** Sixteenths in a bar of the time signature: the bars a copy, a paste and the ruler count in. */
+    val stepsPerBar: Int = 16,
 )
 
 @Composable
@@ -152,6 +178,11 @@ fun SynthScreen(
     effects: com.pocketstudio.app.mixer.EffectsUi? = null,
     /** Raised (a new value) to show the Notes view: the timeline's « Ouvrir dans Notes ». */
     notesRequest: Int = 0,
+    /**
+     * « ● Enregistrer » right above the keys (or the notes): the record bar, given by the app;
+     * its argument is true lying down, where a line counts.
+     */
+    record: (@Composable (compact: Boolean) -> Unit)? = null,
 ) {
     var advanced by rememberSaveable { mutableStateOf(false) }
     var showNotes by rememberSaveable { mutableStateOf(startWithNotes) }
@@ -212,14 +243,17 @@ fun SynthScreen(
                 Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(if (landscape) 8.dp else 12.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
-                tracks?.let { TrackBar(it) }
+                tracks?.takeIf { it.showBar }?.let { TrackBar(it) }
                 ModeSwitch(showNotes, tracks) { showNotes = it }
+                record?.invoke(false)
                 NeonCard {
                     PianoRoll(
                         notes.clip, notes.ghosts, notes.playStep, notes.actions,
                         gridHeight = rollHeight,
                         harmony = notes.harmony,
                         keyOn = keyOn, keyOff = keyOff,
+                        clipboard = notes.clipboard, frozen = notes.frozen,
+                        stepsPerBar = notes.stepsPerBar,
                     )
                 }
                 if (tabletUpright) {
@@ -237,6 +271,12 @@ fun SynthScreen(
                 transcribe?.let { TranscribeCard(it) }
                 NeonCard {
                     SectionLabel(tr("Gamme et accords"), help = Glossary.HARMONY, foldKey = "Gamme et accords")
+                    notes.songChords?.let { open ->
+                        // Phase 37: the song's chords, for every part and track at once.
+                        androidx.compose.material3.OutlinedButton(onClick = open, modifier = Modifier.fillMaxWidth().testTag("synth_song_chords")) {
+                            Text(tr("Accords du morceau (toutes les parties)"))
+                        }
+                    }
                     HarmonyPanel(notes.harmony, notes.clip, notes.actions, toSound = { scope.launch { soundRequester.bringIntoView() } })
                 }
                 // The same sound sections, in the same order, as in Clavier mode.
@@ -251,7 +291,7 @@ fun SynthScreen(
             // thumbs. A tablet lying down also has the room for the keyboard's layouts.
             val tall = maxHeight >= TALL_LANDSCAPE
             Column(Modifier.fillMaxSize().padding(8.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                tracks?.let { TrackBar(it) }
+                tracks?.takeIf { it.showBar }?.let { TrackBar(it) }
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     if (notes != null) ModeSwitch(showNotes, tracks) { showNotes = it }
                     if (tall && !chordPads) KeyLayoutChips(keyLayout, setKeyLayout, wideOctaves = 3)
@@ -264,6 +304,7 @@ fun SynthScreen(
                     play?.let { PlayPanel(it, playActions) }
                     SoundArea(Modifier) { SoundSections(patch, actions, instrument, browser, advanced, effects) { advanced = it } }
                 }
+                record?.invoke(true)
                 if (chordPads) {
                     ChordPads(harmony, 12 * (octave + 1), actions.noteOn, actions.noteOff, height = keyboardHeight)
                 } else {
@@ -275,8 +316,9 @@ fun SynthScreen(
                 Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
-                tracks?.let { TrackBar(it) }
+                tracks?.takeIf { it.showBar }?.let { TrackBar(it) }
                 if (notes != null) ModeSwitch(showNotes, tracks) { showNotes = it }
+                record?.invoke(false)
                 KeyboardCard(octave, octaves = uprightOctaves, height = if (tabletUpright) 190.dp else 150.dp, actions = actions, harmony = harmony, chordKeys = chordKeys,
                     onChordKeys = { chordKeys = it }, keyOn = keyOn, keyOff = keyOff, play = play, playActions = playActions,
                     chordPads = chordPads, onChordPads = { chordPads = it }, modifier = trackKeyboard,
@@ -425,7 +467,7 @@ private fun PresetsCard(patch: SynthPatch, actions: SynthActions, browser: Sound
 }
 
 @Composable
-private fun SoundCard(patch: SynthPatch, actions: SynthActions, advanced: Boolean, setAdvanced: (Boolean) -> Unit) {
+internal fun SoundCard(patch: SynthPatch, actions: SynthActions, advanced: Boolean, setAdvanced: (Boolean) -> Unit) {
     NeonCard {
         SectionLabel(tr("Réglages du son"), foldKey = "Réglages du son")
         Text(tr("Forme d'onde"), style = MaterialTheme.typography.bodyMedium)
@@ -437,9 +479,9 @@ private fun SoundCard(patch: SynthPatch, actions: SynthActions, advanced: Boolea
         com.pocketstudio.ui.AdaptiveColumns(EASY.map { (index, label) ->
             @Composable {
                 if (index == SynthPatch.UNISON) {
-                    ParamSlider(label, patch.get(index), Glossary.UNISON, com.pocketstudio.app.ui.voicesLabel(1 + (patch.get(index) * 6).roundToInt())) { actions.setParam(index, it) }
+                    ParamSlider(label, patch.get(index), Glossary.UNISON, com.pocketstudio.app.ui.voicesLabel(1 + (patch.get(index) * 6).roundToInt()), knob(actions, index)) { actions.setParam(index, it) }
                 } else {
-                    ParamSlider(label, patch.get(index)) { actions.setParam(index, it) }
+                    ParamSlider(label, patch.get(index), automate = knob(actions, index)) { actions.setParam(index, it) }
                 }
             }
         }, minCellWidth = 260.dp, maxColumns = 3)
@@ -457,7 +499,7 @@ private fun SoundCard(patch: SynthPatch, actions: SynthActions, advanced: Boolea
                 Text(tr("Type de filtre"), style = MaterialTheme.typography.bodyMedium)
                 ChoiceRow(FILTERS, patch.get(SynthPatch.FILTER_TYPE)) { actions.setParam(SynthPatch.FILTER_TYPE, it) }
                 com.pocketstudio.ui.AdaptiveColumns(
-                    ADVANCED.map { (index, label) -> @Composable { ParamSlider(label, patch.get(index)) { actions.setParam(index, it) } } },
+                    ADVANCED.map { (index, label) -> @Composable { ParamSlider(label, patch.get(index), automate = knob(actions, index)) { actions.setParam(index, it) } } },
                     minCellWidth = 260.dp, maxColumns = 3, spacing = 4.dp,
                 )
             }
@@ -471,7 +513,7 @@ private fun ModeSwitch(showNotes: Boolean, tracks: TracksUi?, onChange: (Boolean
         FilterChip(selected = !showNotes, onClick = { onChange(false) }, label = { Text(tr("Clavier")) }, colors = chipColors(),
             modifier = Modifier.testTag("mode_keyboard"))
         FilterChip(selected = showNotes, onClick = { onChange(true) }, label = { Text(tr("Notes")) }, colors = chipColors(),
-            modifier = Modifier.testTag("mode_notes"))
+            modifier = Modifier.spot("mode_notes", tr("Les notes")).testTag("mode_notes"))
         // Empties this track in the scene shown, in one touch (Annuler brings it back): to take the
         // synth out of a copied scene, or start again after trying sounds.
         val clear = tracks?.clear
@@ -480,7 +522,7 @@ private fun ModeSwitch(showNotes: Boolean, tracks: TracksUi?, onChange: (Boolean
             TextButton(
                 onClick = { clear(tracks.selected) }, enabled = tracks.hasNotes(tracks.selected),
                 modifier = Modifier.testTag("track_clear_button")
-                    .semantics { contentDescription = tr("Vider cette piste dans la scène %s", tracks.scene) },
+                    .semantics { contentDescription = tr("Vider cette piste dans la partie %s", tracks.scene) },
             ) {
                 Icon(Icons.Filled.DeleteSweep, contentDescription = null, modifier = Modifier.size(18.dp))
                 Text(" " + tr("Vider"))
@@ -535,13 +577,20 @@ private fun ChoiceRow(options: List<Pair<Float, String>>, current: Float, onPick
     }
 }
 
+/** Phase 37: knob [index]'s « Automatiser », when the synth's knobs can be automated ([AutoTarget.SYNTH_PARAMS]). */
+private fun knob(actions: SynthActions, index: Int): Pair<Int, () -> Unit>? =
+    actions.automate?.takeIf { index in com.pocketstudio.model.AutoTarget.SYNTH_PARAMS }?.let { a -> index to { a(index) } }
+
 @Composable
-private fun ParamSlider(label: String, value: Float, help: Help? = null, shown: String? = null, onChange: (Float) -> Unit) {
-    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        Text(label, style = MaterialTheme.typography.bodyMedium)
-        if (help != null) HelpDot(help)
-        Box(Modifier.weight(1f))
-        Text(shown ?: "${(value * 100).roundToInt()}", style = MonoStyle, color = Neon.Cyan)
+private fun ParamSlider(label: String, value: Float, help: Help? = null, shown: String? = null, automate: Pair<Int, () -> Unit>? = null, onChange: (Float) -> Unit) {
+    // A long press on the name: « Automatiser » (phase 37).
+    AutomatableKnob(automate?.second, "knob_${automate?.first ?: label}", Modifier.fillMaxWidth()) {
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Text(label, style = MaterialTheme.typography.bodyMedium)
+            if (help != null) HelpDot(help)
+            Box(Modifier.weight(1f))
+            Text(shown ?: "${(value * 100).roundToInt()}", style = MonoStyle, color = Neon.Cyan)
+        }
     }
     ProSlider(value = value, onValueChange = onChange)
 }

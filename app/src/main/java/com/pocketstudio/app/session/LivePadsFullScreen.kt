@@ -127,6 +127,10 @@ fun LivePadsFullScreen(
     colorOf: (Int, LiveClip) -> Color = { i, clip -> livePadColor(clip.name, i) },
     togglePlay: (() -> Unit)? = null,
     effects: @Composable (Modifier) -> Unit,
+    /** ● in the bar: the Live take, the pads recorded with it (null: none). */
+    record: (@Composable () -> Unit)? = null,
+    /** Under the bar: the take's line (REC, then « Morceau écrit »), given by the app. */
+    banner: (@Composable () -> Unit)? = null,
 ) {
     HideSystemBars(true)
     if (androidx.activity.compose.LocalOnBackPressedDispatcherOwner.current != null) {
@@ -168,7 +172,8 @@ fun LivePadsFullScreen(
             PadGrid(ui, actions, clock, colorOf, beatsPerBar, close, m)
         }
         Column(Modifier.fillMaxSize()) {
-            StageBar(tempoBpm, beatsPerBar, playing, clock, fxOpen, close, togglePlay, actions.stopAll, if (landscape) ({ fxOpen = !fxOpen }) else null)
+            StageBar(tempoBpm, beatsPerBar, playing, clock, fxOpen, close, togglePlay, actions.stopAll, if (landscape) ({ fxOpen = !fxOpen }) else null, record)
+            banner?.invoke()
             if (landscape) {
                 val panelWidth = if (wholeWidth >= 900.dp) 420.dp else minOf(380.dp, wholeWidth * 0.5f)
                 Row(Modifier.fillMaxWidth().weight(1f)) {
@@ -228,6 +233,7 @@ private fun StageBar(
     stopAll: () -> Unit,
     /** Lying down: « Effets » here (upright: the handle under the pads). */
     toggleFx: (() -> Unit)?,
+    record: (@Composable () -> Unit)? = null,
 ) = BoxWithConstraints(Modifier.fillMaxWidth()) {
     val wide = maxWidth >= 600.dp
     Row(
@@ -248,6 +254,7 @@ private fun StageBar(
                 if (playing) tr("Arrêter") else tr("Lecture"), lit = playing, accent = Neon.Acid, tag = "live_pads_full_play", onClick = togglePlay,
             )
         }
+        record?.invoke()
         StageButton(Icons.Filled.StopCircle, if (wide) tr("Tout couper") else null, tr("Tout couper"), lit = false, accent = Neon.Red, tag = "live_pads_full_stop", tint = Neon.Red, onClick = stopAll)
         if (toggleFx != null) StageButton(Icons.Filled.Tune, tr("Effets"), tr("Effets"), lit = fxOpen, accent = Neon.Cyan, tag = "live_pads_fx_toggle", onClick = toggleFx)
     }

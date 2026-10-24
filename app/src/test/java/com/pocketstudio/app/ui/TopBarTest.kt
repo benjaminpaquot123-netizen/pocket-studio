@@ -184,6 +184,24 @@ class TopBarTest {
         compose.onNodeWithTag("top_redo").assertDoesNotExist()
     }
 
+    /** 316 dp (a 411 dp phone at 130 %): the scene chip takes the folder's name room, the name gets a line of its own. */
+    @Test
+    fun aSqueezedBarKeepsTheProjectNameOnItsOwnLine() {
+        show(316, scene = SceneChipUi(2, listOf("A · Intro", "B · Couplet", "C · Refrain")))
+        compose.onNodeWithTag("top_project_line").assertIsDisplayed()
+        compose.onNodeWithText("Mon morceau de dubstep").assertIsDisplayed()
+        compose.onNodeWithTag("top_scene").assertIsDisplayed()
+        compose.onNodeWithTag("top_play").assertIsDisplayed()
+    }
+
+    /** The usual width: the name next to its folder, no extra line. */
+    @Test
+    fun aUsualPhoneShowsTheNameNextToItsFolder() {
+        show(360, scene = SceneChipUi(2, listOf("A · Intro", "B · Couplet", "C · Refrain")))
+        compose.onNodeWithTag("top_project_line").assertDoesNotExist()
+        compose.onNodeWithText("Mon morceau de dubstep").assertIsDisplayed()
+    }
+
     @Test
     fun aWidePhoneShowsEverything() {
         show(420)

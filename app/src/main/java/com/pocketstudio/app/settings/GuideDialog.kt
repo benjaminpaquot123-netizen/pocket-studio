@@ -54,16 +54,15 @@ val GUIDE_PAGES: List<GuidePage> get() = listOf(
         ),
     ),
     GuidePage(
-        tr("Les onglets"),
+        tr("Les espaces"),
         listOf(
             tr("En bas de l'écran, ou à gauche quand l'écran est couché :"),
-            tr("Rythme : les 16 pads et leurs pas."),
-            tr("Acide : la ligne de basse façon 303, avec « Génère-moi un pattern »."),
-            tr("Synthé : le clavier, les notes (piano roll) et les sons."),
-            tr("Mixeur : volumes, effets, et l'export de ta musique."),
-            tr("Audio : le micro, les sons importés, le Remix (sépare un morceau en batterie, basse, voix et le reste), l'Accordeur et Générer."),
-            tr("Morceau : les scènes, les pads live et les effets en direct."),
-            tr("Outils : l'aide et le lexique, les réglages, le clavier MIDI, la recette."),
+            tr("Structure : les parties du morceau sur la ligne du temps ; deux touches sur un bloc l'ouvrent."),
+            tr("Sons : la batterie, la basse acide, la voix et chaque piste d'instrument, en puces en haut."),
+            tr("Mix : la console (les volumes côte à côte), les effets, l'automation et l'export."),
+            tr("Live : jouer les parties en direct, avec les pads et les effets."),
+            tr("Plus : tes projets, l'aide, les missions, les réglages, le clavier MIDI."),
+            tr("Le Mode simple (Réglages) n'en garde que quatre : Mon morceau, Rythme, Clavier, Envoyer."),
         ),
     ),
     GuidePage(
@@ -77,9 +76,9 @@ val GUIDE_PAGES: List<GuidePage> get() = listOf(
     GuidePage(
         tr("Et ensuite ?"),
         listOf(
-            tr("Pour commencer : touche ▶, puis les pads de l'onglet Rythme."),
-            tr("Pour partager : ⤴ tout en haut à droite, sur chaque onglet."),
-            tr("Ce guide se retrouve dans Outils › Aide."),
+            tr("Pour commencer : touche ▶, puis les pads dans Sons › Batterie."),
+            tr("Pour partager : ⤴ tout en haut à droite, sur chaque écran."),
+            tr("Ce guide se retrouve dans Plus › Aide."),
         ),
     ),
 )

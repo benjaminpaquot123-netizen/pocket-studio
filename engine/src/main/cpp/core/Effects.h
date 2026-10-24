@@ -154,18 +154,61 @@ private:
     float gain_ = 1.0f;  // resonance compensation (see resonanceCompensation)
 };
 
+// Phase 34 (S5): a sidechain keyed by a sound's audio (the kick's, wherever it plays: Mixer's
+// key). The key's envelope (instant attack, `release` back down) over its own recent peak (held,
+// falling over about 4 s: a soft kick ducks less, the depth does not depend on the kick's level)
+// sets how far the sound goes down: while the key is within 6 dB of that peak (a kick's body), by
+// `depth` of its level (1 - depth), less as it fades; its lows
+// (under ~150 Hz) by `lowDepth` (one duck for a whole bus: the bass cleared deeper than the pads
+// pump). The gain glides down in about 1 ms and up in 10 ms (no click). Without a key the sound
+// comes out as it went in. Real-time safe; prepare() sets everything.
+class KeyedDucker {
+public:
+    static constexpr float kLowHz = 150.0f;
+    void prepare(float rate);
+    void reset();
+    // depth, lowDepth 0..1 (1 = silent at a full key); release in ms (envelope back down).
+    void set(float depth, float lowDepth, float releaseMs);
+    // `key`: n frames of the key, mono (null: silence).
+    void process(float* l, float* r, const float* key, int n);
+    float gain() const { return gHi_; }     // tests
+    float lowGain() const { return gLo_; }  // tests
+    bool active() const { return split_ || depth_ > 0.0f || lowDepth_ > 0.0f || gHi_ != 1.0f || gLo_ != 1.0f; }
+
+private:
+    float rate_ = 48000.0f;
+    float depth_ = 0.0f, lowDepth_ = 0.0f;
+    float release_ = 0.999f, refFall_ = 0.99999f, down_ = 0.02f, up_ = 0.002f;
+    float env_ = 0.0f, ref_ = 0.0f, gHi_ = 1.0f, gLo_ = 1.0f;
+    // A low depth of its own: the sound split at kLowHz (Linkwitz-Riley, 24 dB / octave: the bands
+    // add back up to the sound, all-passed), each band its gain.
+    std::array<Biquad, 2> lpL_, lpR_, hpL_, hpR_;
+    // Split for good (until reset) once the depths differed: going back to the direct path would
+    // jump in phase (review m2). Entering it, the split fades in over xfadeLen_ frames.
+    bool split_ = false;
+    int xfade_ = 0, xfadeLen_ = 480;
+};
+
 // Sidechain "pump": the signal ducks on every kick (or every beat) and swells back.
-// Params: depth (0..1), release (50..600 ms), source (< 0.5 kick hits, else every beat).
+// Params: depth (0..1), release (50..600 ms), source (< 0.5 kick hits, else every beat), then
+// (S5) key (>= 0.5: the kick's audio, the mixer's key, instead of the kick lane's steps: a
+// KeyedDucker; the source setting is then not used).
 class Ducker {
 public:
     void prepare(float rate);
     void setParam(int p, float v);
-    void reset() { env_ = 0.0f; pending_ = -1; }
+    void reset() {
+        env_ = 0.0f;
+        pending_ = -1;
+        keyed_.reset();
+    }
     // A kick lands `offset` frames into the next process() call.
     void trigger(int offset) { pending_ = offset; }
     bool everyBeat() const { return p_[2] >= 0.5f; }
-    void process(float* l, float* r, int n);
-    float gain() const { return 1.0f - depth_ * env_; }  // tests
+    bool audioKey() const { return p_[3] >= 0.5f; }
+    // `key` (audio key mode only): n frames of the mixer's key, mono (null: none).
+    void process(float* l, float* r, int n, const float* key = nullptr);
+    float gain() const { return audioKey() ? keyed_.gain() : 1.0f - depth_ * env_; }  // tests
 
 private:
     void update();
@@ -173,6 +216,33 @@ private:
     std::array<float, 4> p_{0.7f, 0.4f, 0.0f, 0.0f};
     float depth_ = 0.7f, release_ = 0.999f, attack_ = 0.1f, env_ = 0.0f, target_ = 0.0f;
     int pending_ = -1;
+    KeyedDucker keyed_;
+};
+
+// Phase 34 (S5): a soft clipper that follows the sound's level: what goes further than `margin`
+// over its running level (RMS over ~200 ms, 3..15 dB) is rounded off toward that ceiling (straight
+// up to `knee` of it, then a tanh curve), at 4x with antiderivative anti-aliasing (DriveShaper):
+// the peaks of a bass come down before the master's limiter, which then takes less. Params:
+// margin (0..1: 3..15 dB), softness (0..1: the knee from 95 % to 20 % of the ceiling), mix.
+// The output is DriveShaper::kDelay frames late (the dry sound too).
+class SoftClipper {
+public:
+    void prepare(float rate);
+    void setParam(int p, float v);
+    void reset();
+    void process(float* l, float* r, int n);
+    float lastCeiling() const { return ceiling_; }  // tests: linear
+    static float shape(float knee, float u);
+    static double antiderivative(float knee, double u);
+
+private:
+    float rate_ = 48000;
+    std::array<float, 4> p_{0.5f, 0.5f, 1.0f, 0.0f};
+    // The running level is a bias-corrected mean: ms_ over the weight w_ it has gathered. In silence
+    // the weight fades with the energy, so a sound after a blank is measured on its own first
+    // samples instead of against the silence (review m1: its attack was clipped hard).
+    float ms_ = 0.0f, w_ = 0.0f, msCoef_ = 0.0f, ceiling_ = 1.0f;
+    DriveShaper<Oversampler4x> shL_, shR_;
 };
 
 // The live performance effects of the master (PerformanceFx) are at the end of this file: they
@@ -592,7 +662,7 @@ public:
         FlangerFx = 7, PhaserFx = 8, GateFx = 9, TremoloFx = 10, WidenerFx = 11, Crusher = 12, ParamEqFx = 13,
         RobotFx = 14, WahFx = 15, VinylFx = 16, RadioFx = 17, ChopperFx = 18,
         DistortionFx = 19, EchoFx = 20, PingPongFx = 21, ReverbFx = 22, AutoPanFx = 23, OttFx = 24,
-        FreqShiftFx = 25, TapeStopFx = 26, WobbleFx = 27, kTypes = 28
+        FreqShiftFx = 25, TapeStopFx = 26, WobbleFx = 27, ClipperFx = 28, kTypes = 29
     };
     // Whether `type` needs a unit of the pool (seconds of memory).
     static bool isLong(int type) { return type == EchoFx || type == PingPongFx || type == ReverbFx || type == TapeStopFx; }
@@ -615,12 +685,17 @@ public:
     void setStepFrames(double framesPerSixteenth);
     // `step`: the transport step it is (-1: unknown), for the wobble's phase.
     void sidechain(int offset, bool kick, bool beat, int step = -1) {
-        if (type_ == Pump && (pump_.everyBeat() ? beat : kick)) pump_.trigger(offset);
+        if (type_ == Pump && !pump_.audioKey() && (pump_.everyBeat() ? beat : kick)) pump_.trigger(offset);
         if (type_ == ChopperFx && beat) chopper_.beat(offset);
         if (type_ == AutoPanFx && beat) autoPan_.beat(offset);
         if (type_ == WobbleFx && beat) wobble_.beat(offset, step);
     }
     const Wobble& wobble() const { return wobble_; }  // tests
+    const SoftClipper& clipper() const { return clipper_; }  // tests
+    // S5: the mixer's sidechain key for the next process() call (n frames, mono; null: none). Only
+    // a Pump on the audio key listens.
+    void setKey(const float* key) { key_ = key; }
+    bool listensToKey() const { return type_ == Pump && pump_.audioKey(); }
     // The pool the long effects borrow from (none: those types let the sound through untouched).
     void attachPool(LongFxPool* pool) { pool_ = pool; }
     // A long type still waiting for a free unit (they were all taken): try again (audio thread, no allocation).
@@ -663,13 +738,27 @@ private:
     Radio radio_;
     Chopper chopper_;
     Wobble wobble_;
+    SoftClipper clipper_;
+    const float* key_ = nullptr;
 };
 
 // Freeverb (Jezar at Dreampoint, public domain): 8 parallel combs + 4 allpasses per side.
 // 100 % wet (it sits on a send bus). Params: size, damping, width, pre-delay (0..200 ms).
+class PlateReverb;
+
+// The send reverb (and the insert one's engine). Params: size, damping, width, pre-delay, then (S4)
+// the type: 0 the hall (Freeverb, as always), 0.5 the plate (PlateReverb, on the send bus only:
+// attachPlate), 1 the room (a shorter, darker Freeverb with early reflections).
 class Reverb {
 public:
+    static constexpr int kParams = 5;
+    enum Type { Hall = 0, Plate = 1, Room = 2 };
     void prepare(float rate);
+    void attachPlate(PlateReverb* plate) {
+        plate_ = plate;
+        update();
+    }
+    int type() const { return type_; }
     void setParam(int p, float v);
     void reset();
     // Freeze (Freeverb's own): the input fades out and the tank rings on for ever (feedback 1, no
@@ -691,7 +780,11 @@ private:
         size_t idx = 0;
     };
     void update();
-    std::array<float, 4> p_{0.6f, 0.5f, 1.0f, 0.1f};
+    void plateSet(float size, float damping, float freeze = 0.0f);
+    std::array<float, kParams> p_{0.6f, 0.5f, 1.0f, 0.1f, 0.0f};
+    int type_ = Hall;
+    PlateReverb* plate_ = nullptr;
+    std::array<float, 256> plateIn_{};  // the plate's (pre-delayed) mono input, a chunk at a time
     std::array<Comb, 8> combL_, combR_;
     std::array<Allpass, 4> apL_, apR_;
     std::vector<float> pre_;
@@ -700,6 +793,18 @@ private:
     float rate_ = 48000;
     bool freeze_ = false;
     float freezeMix_ = 0.0f, freezeStep_ = 1.0f / 480.0f;
+    // A change of type (hall, plate, room) crossfades over ~20 ms (review m3): the plate's share
+    // and the room's early reflections' share glide to their new values; at rest each type plays
+    // alone, as before.
+    float plateW_ = 0.0f, roomW_ = 0.0f, typeStep_ = 1.0f / 960.0f;
+    // The tank's feedback and damping as played, gliding to feedback_ and damp1_ (a type or size
+    // change written at once into the combs would come back as a step a comb's length later).
+    float feedbackNow_ = 0.84f, damp1Now_ = 0.2f, glide_ = 0.001f;
+    bool weightsSet_ = false;
+    void processBlend(const float* inL, const float* inR, float* outL, float* outR, int n, float plateTarget, float roomTarget);
+    // One frame of the Freeverb tank (and the room's taps, by `room`) from the pre-delayed input `in`
+    // (the sum of both sides, unscaled), added into l, r before the width.
+    void tankFrame(float in, float room, float& l, float& r);
 };
 
 // Tempo-synced stereo delay with ping-pong, feedback tone and smooth time changes.

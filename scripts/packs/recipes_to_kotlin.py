@@ -17,14 +17,25 @@ Recipe syntax (one JSON object per style; one character per sixteenth, 16 = a ba
     "rumble" fx preset: reverb, distortion, low-pass, pump).
     pattern: 'X' strong, 'x' medium, 'o' soft, '.' nothing, '2' '3' '4' a medium roll of that many hits in the step.
   bass/lead "pattern" (and acid "pattern"): one token per step on the bar's chord: 'R' root, '2'..'7' scale
-    steps, 'O' octave up (lower case 'r' 'o' softer), '-' holds the note, '.' silence, '/' holds the note and
-    slides into the next one (808 slide: the notes overlap a little and a gliding sound glides there).
-  bass: {"pattern", "octave" (the root's octave, 1 = sub, 2 = usual), "sound", "glide": true (the bass sound
-    glides: synth portamento, pack sample slide), "sub": true (a clean sub layer: a « Sub » track plays the bass's
-    notes an octave down with « Sub pur » wherever the bass plays: the jump up growl over its sine)};
+    steps, 'O' octave up (lower case 'r' 'o' softer), '=' the previous pitch again (a common tone held across
+    the chord change), '-' holds the note, '.' silence, '/' holds the note and slides into the next one (808
+    slide: the notes overlap a little and a gliding sound glides there). 16, 32 or 64 steps (1, 2 or 4 bars).
+  bass: {"pattern", "variation" (bars 5-8, 64 steps; default: the line again, varied, resting before the turn),
+    "switch" (a library sound the second Drop switches the bass to, on a « Basse 2 » track), "octave" (the
+    root's octave, 1 = sub, 2 = usual), "sound", "glide": true (the bass sound glides: synth portamento, pack
+    sample slide), "sub": true (a clean sub layer: a « Sub » track plays the bass's notes an octave down with
+    « Sub pur » wherever the bass plays: the jump up growl over its sine)};
     lead: "glide" too (a riff with '/': the rave hoover's dive)
-  chords: {"type": pad|stab|keys|none, "rhythm": "X-------x-------" ('X'/'x' hit, '-' held, '.' rest),
-    "voicing", "octave", "sound"}; lead: {"type": riff|arp|none, "pattern", "arp_rate", "octave", "sound"}
+  chords: {"type": pad|stab|keys|none, "rhythm": "X-------x-------" ('X'/'x'/'o' hit strong/softer/soft, '-' held,
+    '.' rest; 16, 32 or 64 steps), "voicing" (triad, seventh, ninth, sus2, sus4, power, octave, single, rootless7,
+    rootless9), "voice_lead": true (each chord inverted to move as little as possible from the one before),
+    "arp": {"pattern": [indices into the chord's notes over two octaves], "gate": 0.25..1, "accent": every n
+    notes, "rate": 24|48} (the chords arpeggiated on that fixed pattern: synthwave, trance), "octave", "sound"};
+  lead: {"type": riff|hook|chops|arp|none ("hook": a singable line judged by every melody rule, "riff": a short
+    loop that may leap and repeat, "chops": vocal chops), "pattern" (the cell: 1, 2 or 4 bars, developed into
+    an 8-bar phrase by the app), "answer" (the cell's answer, bars 3-4; default: written by the app), "on_key":
+    true (the tokens are degrees of the key, not of each bar's chord: the riff stays put), "arp": {pattern, gate,
+    accent, rate} for an arpeggio lead, "arp_rate", "octave", "sound"}
   sounds: a preset of PRESETS, "pack:<pack>:<kind>" (falls back to a preset without the pack: FALLBACK),
     "pack:<pack>:<kind>|<preset>" (the pack's sound first when it is on the phone, else that preset),
     "gm:<General MIDI name>" (a built-in stand-in), "kit:<voice>" (a kit voice played across the keys,
@@ -32,8 +43,16 @@ Recipe syntax (one JSON object per style; one character per sixteenth, 16 = a ba
   "defaults": {"bass": bool, "chords": bool, "lead": bool}: the parts switched on in the assistant.
   "default_mood": dark|happy|future|dreamy: the mood proposed first (default dark).
   "signature": bass|chords|lead: the part that makes the style; it plays in every section of the song.
-  "form": song|club|rave: Intro/Couplet/Refrain, or Intro/Groove/Drop with a Break (default from the family:
-    club for House, Techno and Bass music); rave: the 303 alone in the Intro, two Breaks, an outro.
+  "form": song|rap|club|rave: Intro/Couplet/Pré-refrain/Refrain with a Pont, the rap song (its Refrain first, its
+    Couplet without chords, the kick and the 808 out 2 bars before each Refrain), or Intro/Groove/Montée/Drop with a
+    Break (default from the family: club for House, Techno and Bass music, rap for Hip-hop, else song); rave: the
+    303 alone in the Intro, two Breaks, an outro. Techno and bass music last 5 to 6 minutes, the rest about 3.
+  "fake_drop": true (club music): a fake drop before the first Drop (riddim): the Drop's beat without its bass,
+    a beat of silence, then the real one.
+  "rewind": true (club music): the record pulled back (a tape stop on the master) before the second Drop (jungle).
+  "vocal": answer|stab|shout|crush: a « Voix » track sung by the built-in voice (« Voix robot »): chops that
+    answer the hook in its rests (house, garage, jersey), a stab every 4 bars (trap), an MC's shout in each
+    Drop's second half (drum & bass), a crushed hit every 2 bars (phonk).
   "build": true (club music): the Groove becomes a Montée without kick nor bass where the snare (or the clap)
     rolls faster and faster, before each Drop (Intro, Montée, Drop, Break, Montée, Drop, Intro).
   "drop": [layers] (club music): held back until the Drop, e.g. ["bass", "open_hat"]; "break": [layers]: what the
@@ -120,7 +139,9 @@ SCALES = {
     "major_pentatonic": "MajorPentatonic", "blues": "Blues", "harmonic_minor": "HarmonicMinor",
 }
 MOODS = {"dark": "Dark", "happy": "Happy", "future": "Future", "dreamy": "Dreamy"}
-VOICINGS = {"triad": "Triad", "seventh": "Seventh", "ninth": "Ninth", "sus2": "Sus2", "sus4": "Sus4", "power": "Power", "octave": "Octave", "single": "Single"}
+VOICINGS = {"triad": "Triad", "seventh": "Seventh", "ninth": "Ninth", "sus2": "Sus2", "sus4": "Sus4", "power": "Power", "octave": "Octave", "single": "Single",
+            "rootless7": "Rootless7", "rootless9": "Rootless9"}
+LEAD_KINDS = {"riff": "Riff", "hook": "Hook", "chops": "Chops", "arp": "Arp"}
 ROOTS = {"C": 0, "C#": 1, "Db": 1, "D": 2, "D#": 3, "Eb": 3, "E": 4, "F": 5, "F#": 6, "Gb": 6, "G": 7, "G#": 8, "Ab": 8, "A": 9, "A#": 10, "Bb": 10, "B": 11}
 # Synth and Plaits sounds of SoundLibrary.kt (every one, the effects "Sirène" and "Souffle" too).
 PRESETS = SOUNDS_IN_CODE
@@ -141,7 +162,8 @@ GM_FALLBACK = {
 DEFAULT_PRESET = {"bass": "Basse ronde", "chords": "Nappe chaude", "lead": "Lead"}
 PART = {"bass": "Bass", "chords": "Pad", "lead": "Lead"}
 DRUM_CHARS = set("Xxo.234")
-LINE_CHARS = set("R23457Oro.-6/")
+LINE_CHARS = set("R23457Oro.-6/=")
+CHORD_CHARS = set("Xxo-.")
 # Built-in kit voices (DrumKit order), for a line's "voice" and a "kit:" sound.
 VOICES = {"kick": 0, "kick2": 1, "snare": 2, "snare2": 3, "clap": 4, "hat": 5, "open_hat": 6, "tom_low": 7,
           "tom_mid": 8, "tom_high": 9, "rim": 10, "cowbell": 11, "cymbal": 12, "shaker": 13, "conga": 14, "zap": 15}
@@ -150,7 +172,8 @@ KIT_MELODIC = {"cowbell": "Cloche"}
 FX_PRESETS = PRESETS_IN_CODE  # FxPresets.ALL ids
 EFFECTS = EFFECTS_IN_CODE  # EffectType names (NONE apart)
 FX_TARGETS = {"bass": "bass", "chords": "pad", "lead": "lead", "acid": "acid", "drums": "drums", "master": "master"}
-FORMS = {"song": "Song", "club": "Club", "rave": "Rave", "build": "Build"}
+FORMS = {"song": "Song", "rap": "Rap", "club": "Club", "rave": "Rave", "build": "Build"}
+VOCALS = {"answer": "Answer", "stab": "Stab", "shout": "Shout", "crush": "Crush"}
 CLUB_FAMILIES = {"House", "Techno", "Bass music"}
 # The 303's knobs (AcidSound.values order) and those a song curve can turn (AutoTarget.ACID_PARAMS).
 ACID_KNOBS = {"cutoff": 0, "resonance": 1, "env_mod": 2, "decay": 3, "accent": 4, "tuning": 5, "waveform": 6, "drive": 7, "level": 8}
@@ -208,10 +231,25 @@ def sound_of(gid, part, spec):
     return DEFAULT_PRESET[part], None
 
 
-def line(pattern, chars, gid, what):
-    check(len(pattern) in (16, 32), f"{gid} {what}: {len(pattern)} steps")
+def line(pattern, chars, gid, what, lengths=(16, 32, 64)):
+    check(len(pattern) in lengths, f"{gid} {what}: {len(pattern)} steps")
     check(set(pattern) <= chars, f"{gid} {what}: bad characters in {pattern}")
     return pattern
+
+
+def arp_spec(spec, gid, what):
+    """An "arp" object as an ArpSpec(...) literal, or None."""
+    if not spec:
+        return None
+    pat = spec.get("pattern")
+    check(isinstance(pat, list) and 1 <= len(pat) <= 16 and all(isinstance(v, int) and 0 <= v < 32 for v in pat), f"{gid} {what} arp: pattern = up to 16 indices")
+    gate = num(spec.get("gate", 0.6))
+    check(gate is not None and 0.25 <= gate <= 1, f"{gid} {what} arp: gate 0.25..1")
+    accent = spec.get("accent", 4)
+    check(isinstance(accent, int) and 0 <= accent <= 16, f"{gid} {what} arp: accent = every n notes (0: none)")
+    rate = spec.get("rate", 24)
+    check(rate in (12, 24, 48), f"{gid} {what} arp: rate 12, 24 or 48")
+    return f"ArpSpec(listOf({', '.join(map(str, pat))}), gate = {float(gate)}f, accentEvery = {accent}, rate = {rate})"
 
 
 def style(r):
@@ -222,13 +260,13 @@ def style(r):
     for d in r["drums"]:
         role = ROLES.get(d["role"])
         check(role is not None, f"{gid}: role {d['role']}")
-        pat = line(d["pattern"], DRUM_CHARS, gid, d["role"])
+        pat = line(d["pattern"], DRUM_CHARS, gid, d["role"], lengths=(16, 32))
         check(any(c not in "." for c in pat), f"{gid} {d['role']}: no hit")
         voice = d.get("voice")
         check(voice is None or voice in VOICES, f"{gid} {d['role']}: unknown voice {voice} ({sorted(VOICES)})")
         extra = f", voice = {VOICES[voice]}" if voice is not None else ""
         if d.get("build"):
-            line(d["build"], DRUM_CHARS, gid, d["role"] + " build")
+            line(d["build"], DRUM_CHARS, gid, d["role"] + " build", lengths=(16, 32))
             extra += f", build = {kstr(d['build'])}"
         if d.get("off"):
             extra += ", off = true"
@@ -251,10 +289,21 @@ def style(r):
     pad, pad_pack = sound_of(gid, "chords", c.get("sound"))
     bass, bass_pack = sound_of(gid, "bass", b.get("sound"))
     lead, lead_pack = sound_of(gid, "lead", l.get("sound"))
-    rhythm = line(c.get("rhythm") or "X---------------", set("Xx-."), gid, "chords")
+    rhythm = line(c.get("rhythm") or "X---------------", CHORD_CHARS, gid, "chords")
     check(c.get("voicing", "triad") in VOICINGS, f"{gid}: voicing {c.get('voicing')}")
+    chord_arp = arp_spec(c.get("arp"), gid, "chords")
     bass_pat = line(b["pattern"], LINE_CHARS, gid, "bass")
-    lead_pat = line(l["pattern"], LINE_CHARS, gid, "lead") if l.get("type") == "riff" and l.get("pattern") else ""
+    bass_var = line(b["variation"], LINE_CHARS, gid, "bass variation", lengths=(64,)) if b.get("variation") else ""
+    bass_switch = (b.get("switch") or "").strip()
+    check(not bass_switch or bass_switch in PRESETS and SOUND_FAMILY.get(bass_switch) == "Basses", f"{gid} bass: switch {bass_switch} is not a bass of the library")
+    lead_type = l.get("type", "none")
+    check(lead_type in ("none",) + tuple(LEAD_KINDS), f"{gid} lead: type {lead_type} (riff, hook, chops, arp, none)")
+    lead_pat = line(l["pattern"], LINE_CHARS, gid, "lead") if lead_type in ("riff", "hook", "chops") else ""
+    check(lead_type == "none" or lead_type == "arp" or lead_pat, f"{gid} lead: a {lead_type} needs a pattern")
+    lead_answer = line(l["answer"], LINE_CHARS, gid, "lead answer", lengths=(16, 32)) if l.get("answer") else ""
+    lead_arp = arp_spec(l.get("arp"), gid, "lead") if lead_type == "arp" else None
+    check(lead_type != "arp" or lead_arp, f"{gid} lead: an arp needs its \"arp\" pattern")
+    lead_on_key = bool(l.get("on_key", False))
     parts = [PART[k] for k, on in r.get("defaults", {}).items() if on and k in PART]
     if c.get("type") == "none" and "Pad" in parts:
         parts.remove("Pad")
@@ -274,7 +323,7 @@ def style(r):
     ctr = r.get("counter") or {}
     counter = ctr.get("sound")
     check(counter is None or counter in PRESETS, f"{gid} counter: unknown sound {counter}")
-    counter_rhythm = line(ctr["rhythm"], set("Xx-."), gid, "counter") if ctr.get("rhythm") else ""
+    counter_rhythm = line(ctr["rhythm"], CHORD_CHARS, gid, "counter") if ctr.get("rhythm") else ""
     check(not sub or "Sub pur" in PRESETS, f"{gid} bass: no « Sub pur » sound for the sub layer")
     check(not sub or int(b.get("octave", 2)) >= 2, f"{gid} bass: a sub layer an octave under a bass in octave 1 is inaudible")
     lead_glide = bool(l.get("glide", False))
@@ -286,7 +335,7 @@ def style(r):
         if r.get(key):
             tips[part] = r[key]
     form = r.get("form")
-    check(form is None or form in ("song", "club", "rave"), f"{gid}: form {form} (song, club, rave)")
+    check(form is None or form in ("song", "rap", "club", "rave"), f"{gid}: form {form} (song, rap, club, rave)")
     club = (form or ("club" if family in CLUB_FAMILIES else "song")) == "club"
     if r.get("build"):
         check(club, f"{gid}: a Montée (build) needs the club form")
@@ -329,6 +378,11 @@ def style(r):
         sweeps.append(f"Sweep({kstr(target)}, mapOf({', '.join(pairs)})" + (f", resonance = {res}f" if res != 0.25 else "") + ")")
     check(len(sweeps) == len({sw.get("on") for sw in r.get("sweeps", [])}), f"{gid}: one sweep per layer")
     check(drop is None or form != "build", f"{gid}: the Montée already holds the kick and the bass back for the Drop")
+    fake_drop = bool(r.get("fake_drop", False))
+    rewind = bool(r.get("rewind", False))
+    check(not (fake_drop or rewind) or club or form == "build", f"{gid}: a fake drop or a rewind needs the club form")
+    vocal = r.get("vocal")
+    check(vocal is None or vocal in VOCALS, f"{gid}: vocal {vocal} ({sorted(VOCALS)})")
     fxs = []
     for fx in r.get("fx", []):
         on = fx.get("on", "")
@@ -407,6 +461,22 @@ def style(r):
         out.append(f"                counter = {kstr(counter)},")
         if counter_rhythm:
             out.append(f"                counterRhythm = {kstr(counter_rhythm)},")
+    if lead_type in LEAD_KINDS and lead_type != "hook":
+        out.append(f"                leadKind = LeadKind.{LEAD_KINDS[lead_type]},")
+    if lead_on_key:
+        out.append("                leadOnKey = true,")
+    if lead_answer:
+        out.append(f"                leadAnswer = {kstr(lead_answer)},")
+    if lead_arp:
+        out.append(f"                leadArp = {lead_arp},")
+    if bass_var:
+        out.append(f"                bassVariation = {kstr(bass_var)},")
+    if bass_switch:
+        out.append(f"                bassSwitch = {kstr(bass_switch)},")
+    if chord_arp:
+        out.append(f"                chordArp = {chord_arp},")
+    if c.get("voice_lead"):
+        out.append("                chordVoiceLead = true,")
     out += [
         "            ),",
         f"            references = listOf({', '.join(kstr(x) for x in r['references'])}),",
@@ -424,6 +494,12 @@ def style(r):
         out.append("            riser = true,")
     if sweeps:
         out.append(f"            sweeps = listOf({', '.join(sweeps)}),")
+    if fake_drop:
+        out.append("            fakeDrop = true,")
+    if rewind:
+        out.append("            rewind = true,")
+    if vocal:
+        out.append(f"            vocal = Vocal.{VOCALS[vocal]},")
     out.append("        ),")
     return "\n".join(l[4:] if l.startswith("    ") else l for l in out)
 
@@ -440,7 +516,9 @@ def main(out, *paths):
         "",
         "import com.pocketstudio.model.StarterWizard.AcidMove",
         "import com.pocketstudio.model.StarterWizard.AcidRecipe",
+        "import com.pocketstudio.model.StarterWizard.ArpSpec",
         "import com.pocketstudio.model.StarterWizard.Layers",
+        "import com.pocketstudio.model.StarterWizard.LeadKind",
         "import com.pocketstudio.model.StarterWizard.Line",
         "import com.pocketstudio.model.StarterWizard.Melody",
         "import com.pocketstudio.model.StarterWizard.Mood",
@@ -450,6 +528,7 @@ def main(out, *paths):
         "import com.pocketstudio.model.StarterWizard.Style",
         "import com.pocketstudio.model.StarterWizard.StyleFx",
         "import com.pocketstudio.model.StarterWizard.Sweep",
+        "import com.pocketstudio.model.StarterWizard.Vocal",
         "",
         "/**",
         " * The assistant's styles, as producers of each genre make them (researched: landmark tracks,",

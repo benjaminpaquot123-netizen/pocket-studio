@@ -7,7 +7,7 @@ import org.junit.Test
 
 /** The wizard's word on a style's signature part says where it really plays (phase 28 music audit, m3). */
 class SignatureNoteTest {
-    private val everywhere = "C'est le son qui fait le style : il joue dans toutes les sections."
+    private val everywhere = "C'est le son qui fait le style : il joue dans toutes les parties."
     private val short = "C'est le son qui fait le style."
 
     @Test

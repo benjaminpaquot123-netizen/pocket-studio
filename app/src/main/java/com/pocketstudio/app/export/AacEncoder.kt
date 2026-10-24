@@ -25,8 +25,8 @@ object AacEncoder {
     const val CEILING_DBTP = -2f
 
     /** The gain that brings a source with this true peak (dBTP) under [CEILING_DBTP]; 1 when it already is. */
-    fun headroomGain(truePeakDb: Double?): Float =
-        if (truePeakDb == null || truePeakDb <= CEILING_DBTP) 1f else Math.pow(10.0, (CEILING_DBTP - truePeakDb) / 20.0).toFloat()
+    fun headroomGain(truePeakDb: Double?, ceiling: Float = CEILING_DBTP): Float =
+        if (truePeakDb == null || truePeakDb <= ceiling) 1f else Math.pow(10.0, (ceiling - truePeakDb) / 20.0).toFloat()
 
     /** [gain]: applied to every sample on the way in (see [headroomGain]). */
     fun encode(wav: File, out: File, gain: Float = 1f, isCancelled: () -> Boolean = { false }) {
@@ -36,8 +36,20 @@ object AacEncoder {
             setInteger(MediaFormat.KEY_BIT_RATE, BIT_RATE)
             setInteger(MediaFormat.KEY_MAX_INPUT_SIZE, 16 * 1024)
         }
-        val codec = MediaCodec.createEncoderByType(MediaFormat.MIMETYPE_AUDIO_AAC)
-        val muxer = MediaMuxer(out.path, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4)
+        // Each one let go when the next fails to start (review m8: nothing left open before the try).
+        val codec = try {
+            MediaCodec.createEncoderByType(MediaFormat.MIMETYPE_AUDIO_AAC)
+        } catch (e: Exception) {
+            pcm.close()
+            throw e
+        }
+        val muxer = try {
+            MediaMuxer(out.path, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4)
+        } catch (e: Exception) {
+            pcm.close()
+            codec.release()
+            throw e
+        }
         var track = -1
         var muxing = false
         try {

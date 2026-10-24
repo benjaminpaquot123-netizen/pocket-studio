@@ -76,7 +76,7 @@ fun LiveAcid(ui: LiveScreenUi, actions: LiveActions, modifier: Modifier) {
         if (!ui.hasAcid) {
             // No 303 line yet: nothing to play here, say where it is written.
             Text(
-                tr("Pas encore de ligne 303 dans ce morceau : écris-en une dans l'onglet Acide, elle se jouera ici."),
+                tr("Pas encore de ligne 303 dans ce morceau : écris-en une dans Sons › Basse acide, elle se jouera ici."),
                 Modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp)).background(Neon.SurfaceHigh).padding(12.dp).testTag("live_acid_none"),
                 style = MaterialTheme.typography.bodyMedium,
             )

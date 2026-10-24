@@ -93,7 +93,7 @@ fun shapeText(s: CurveShape): String {
 fun laneModeText(lane: AutomationLane): String {
     val mode = when (lane.mode) {
         AutomationLane.LOOP -> tr("À chaque tour de boucle.")
-        AutomationLane.PER_SCENE -> tr("Une courbe par scène.")
+        AutomationLane.PER_SCENE -> tr("Une courbe par partie.")
         else -> tr("Sur tout le morceau.")
     }
     val extra = listOfNotNull(
@@ -114,10 +114,10 @@ fun whatPlaysGroups(p: Project, scene: Int?, strips: List<StripInfo>, onlyCh: In
     fun nameOf(ch: Int): String? = when {
         ch == Mixer.MASTER -> tr("Sortie générale")
         ch == Acting.BUSES -> tr("Réverbe et écho communs")
-        ch >= Mixer.FIRST_PAD -> tr("Pad %d", ch - Mixer.FIRST_PAD + 1)
+        Mixer.isPad(ch) -> tr("Pad %d", ch - Mixer.FIRST_PAD + 1)
         else -> strips.firstOrNull { it.ch == ch }?.name?.let { com.pocketstudio.model.DefaultNames.shown(it) }
     }
-    val order = strips.map { it.ch } + (Mixer.FIRST_PAD until Mixer.CHANNELS) + Mixer.MASTER + Acting.BUSES
+    val order = strips.map { it.ch } + (Mixer.FIRST_PAD until Mixer.FIRST_PAD + Mixer.PADS) + Mixer.MASTER + Acting.BUSES
     return acts.groupBy { it.ch }.mapNotNull { (ch, list) ->
         val name = nameOf(ch) ?: return@mapNotNull null
         val rows = list.map { describe(it, channels, master, strips) }
@@ -161,7 +161,7 @@ private fun describe(a: Acting, channels: List<com.pocketstudio.model.Channel>, 
     }
     is Acting.MasterTrim -> ActRow(
         tr("Volume général"),
-        tr("%s dB avant le limiteur.", String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%+.1f", a.db)),
+        tr("%s dB sur la sortie générale.", String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%+.1f", a.db)),
         Where.Master, false, "act_trim",
         short = tr("volume %s dB", String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%+.1f", a.db)),
     )

@@ -73,6 +73,8 @@ import androidx.compose.ui.semantics.semantics
 import com.pocketstudio.model.Scene
 import com.pocketstudio.ui.Neon
 import com.pocketstudio.model.i18n.tr
+import com.pocketstudio.app.learn.spot
+import androidx.compose.material.icons.filled.MoreVert
 
 /**
  * The scene being edited, shown as a chip in the top bar: [current] is its index, [titles] every
@@ -109,7 +111,15 @@ class TopBarActions(
     val newScene: () -> Unit = {},
     /** ⤴ « Prêt à partager ? »: the song checked, then shared (on every tab). */
     val share: () -> Unit = {},
+    /**
+     * Phase 36, Mode simple: « ⋯ » in place of ⤴ (the « Envoyer » tab shares there), with what is
+     * not in its four tabs (Live, Mes projets, Réglages, Aide, Mode complet). Null: ⤴ as usual.
+     */
+    val more: List<TopMenuItem>? = null,
 )
+
+/** One line of the top bar's « ⋯ » menu (Mode simple). */
+class TopMenuItem(val label: String, val tag: String, val onClick: () -> Unit)
 
 /** How the scene chip shows: not at all, its letter alone, or its letter and section name. */
 enum class SceneChipMode { Hidden, Letter, Full }
@@ -117,8 +127,8 @@ enum class SceneChipMode { Hidden, Letter, Full }
 /**
  * What fits in the top bar: [sceneMaxWidth] caps a full scene chip (its name is cut with "…" beyond);
  * [projectName] says whether the project's name shows next to its folder (not on a very narrow bar
- * with a scene, where the folder alone leaves room for the scene's letter: a few dp of name would
- * only show a clipped "…"). (The tempo lives in the play strip under the bar, see PlayStrip.)
+ * with a scene, where the folder alone leaves room for the scene's letter: the name then gets a
+ * line of its own above the buttons). (The tempo lives in the play strip under the bar, see PlayStrip.)
  */
 data class TopBarLayout(val showRedo: Boolean, val scene: SceneChipMode, val sceneMaxWidth: Dp = 0.dp, val projectName: Boolean = true)
 
@@ -187,6 +197,27 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
     // project name; the projects button, the scene's letter and play never go.
     val layout = topBarLayout(maxWidth, ui.scene != null)
     val showRedo = layout.showRedo
+    androidx.compose.foundation.layout.Column {
+    // Squeezed (a small phone with a big text size): the project's name gets a line of its own
+    // above the buttons (never gone), the folder alone stays in the row.
+    if (!layout.projectName) {
+        Row(
+            Modifier.fillMaxWidth().height(24.dp).padding(horizontal = 12.dp)
+                .combinedClickable(onClick = actions.projects, onLongClick = actions.rename, onLongClickLabel = tr("Renommer le projet"))
+                .testTag("top_project_line"),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                ui.projectName, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.weight(1f),
+            )
+            if (ui.recordInto != null) {
+                Text(tr("REC dans %s", ui.recordInto), style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.sp), color = Neon.RedText, maxLines = 1, modifier = Modifier.testTag("top_record_into"))
+            } else if (ui.saved) {
+                Icon(Icons.Filled.Check, contentDescription = tr("Sauvegardé"), tint = Neon.Acid, modifier = Modifier.size(12.dp).testTag("top_saved"))
+            }
+        }
+    }
     Row(
         Modifier.fillMaxWidth().height(56.dp).padding(horizontal = 6.dp).testTag("top_bar"),
         verticalAlignment = Alignment.CenterVertically,
@@ -195,6 +226,7 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
             Modifier.weight(1f).widthIn(min = 48.dp).clip(RoundedCornerShape(12.dp))
                 .combinedClickable(onClick = actions.projects, onLongClick = actions.rename, onLongClickLabel = tr("Renommer le projet"))
                 .padding(vertical = 6.dp, horizontal = 4.dp)
+                .spot("top_projects", tr("Mes projets"))
                 .testTag("top_projects"),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -231,7 +263,7 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
         if (ui.scene != null && layout.scene != SceneChipMode.Hidden) {
             SceneChip(ui.scene, layout.scene == SceneChipMode.Full, layout.sceneMaxWidth, actions)
         }
-        IconButton(onClick = actions.undo, enabled = ui.canUndo, modifier = Modifier.testTag("top_undo")) {
+        IconButton(onClick = actions.undo, enabled = ui.canUndo, modifier = Modifier.spot("top_undo", tr("Annuler")).testTag("top_undo")) {
             Icon(Icons.AutoMirrored.Filled.Undo, contentDescription = tr("Annuler la dernière action"))
         }
         if (showRedo) {
@@ -242,7 +274,7 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
         // Record: a red dot, pulsing and glowing while armed.
         val blink = rememberInfiniteTransition(label = "rec")
         val alpha by blink.animateFloat(1f, 0.35f, infiniteRepeatable(tween(500), RepeatMode.Reverse), label = "recAlpha")
-        IconButton(onClick = actions.toggleRecord, modifier = Modifier.testTag("top_record")) {
+        IconButton(onClick = actions.toggleRecord, modifier = Modifier.spot("top_record", tr("Enregistrer")).testTag("top_record")) {
             Box(
                 Modifier.size(30.dp).clip(CircleShape)
                     .background(if (ui.recording) Neon.Red.copy(alpha = 0.18f) else Color.Transparent)
@@ -267,6 +299,7 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
         Box(
             Modifier.requiredSize(48.dp).clip(CircleShape)
                 .clickable(role = Role.Button, onClickLabel = if (ui.playing) tr("Arrêter") else tr("Jouer"), onClick = actions.togglePlay)
+                .spot("top_play", tr("Écouter"))
                 .testTag("top_play"),
             contentAlignment = Alignment.Center,
         ) {
@@ -284,10 +317,27 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
                 )
             }
         }
-        // ⤴ Partager, the last thing done to a song, always one touch away (« Prêt à partager ? »).
-        IconButton(onClick = actions.share, modifier = Modifier.testTag("top_share")) {
-            Icon(Icons.Filled.IosShare, contentDescription = tr("Partager mon morceau"), tint = Neon.TextPrimary)
+        val more = actions.more
+        if (more != null) {
+            // Mode simple: « Envoyer » is a tab; the rest of the app is here.
+            Box {
+                var open by remember { mutableStateOf(false) }
+                IconButton(onClick = { open = true }, modifier = Modifier.spot("top_more", tr("Plus de choix")).testTag("top_more")) {
+                    Icon(Icons.Filled.MoreVert, contentDescription = tr("Plus de choix"), tint = Neon.TextPrimary)
+                }
+                DropdownMenu(expanded = open, onDismissRequest = { open = false }, modifier = Modifier.testTag("top_more_menu")) {
+                    more.forEach { item ->
+                        DropdownMenuItem(text = { Text(item.label) }, onClick = { open = false; item.onClick() }, modifier = Modifier.testTag(item.tag))
+                    }
+                }
+            }
+        } else {
+            // ⤴ Partager, the last thing done to a song, always one touch away (« Prêt à partager ? »).
+            IconButton(onClick = actions.share, modifier = Modifier.spot("top_share", tr("Partager")).testTag("top_share")) {
+                Icon(Icons.Filled.IosShare, contentDescription = tr("Partager mon morceau"), tint = Neon.TextPrimary)
+            }
         }
+    }
     }
 }
 
@@ -304,9 +354,10 @@ private fun SceneChip(scene: SceneChipUi, full: Boolean, maxWidth: Dp, actions: 
                 .clip(RoundedCornerShape(18.dp))
                 .background(Neon.Cyan.copy(alpha = 0.14f))
                 .border(1.dp, Neon.Cyan.copy(alpha = 0.45f), RoundedCornerShape(18.dp))
-                .clickable(role = Role.Button, onClickLabel = tr("Changer de scène")) { open = true }
-                .semantics { contentDescription = tr("Scène en cours : %s. Toucher pour changer de scène.", title) }
+                .clickable(role = Role.Button, onClickLabel = tr("Changer de partie")) { open = true }
+                .semantics { contentDescription = tr("Partie en cours : %s. Toucher pour changer de partie.", title) }
                 .padding(start = 10.dp, end = 4.dp)
+                .spot("top_scene", tr("Partie modifiée"))
                 .testTag("top_scene"),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -319,7 +370,7 @@ private fun SceneChip(scene: SceneChipUi, full: Boolean, maxWidth: Dp, actions: 
         }
         DropdownMenu(expanded = open, onDismissRequest = { open = false }, modifier = Modifier.testTag("scene_menu")) {
             Text(
-                tr("Scène à modifier"), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary,
+                tr("Partie à modifier"), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
             )
             scene.titles.forEachIndexed { i, t ->
@@ -333,7 +384,7 @@ private fun SceneChip(scene: SceneChipUi, full: Boolean, maxWidth: Dp, actions: 
                         )
                     },
                     leadingIcon = {
-                        if (current) Icon(Icons.Filled.Check, contentDescription = tr("Scène en cours"), tint = Neon.Cyan)
+                        if (current) Icon(Icons.Filled.Check, contentDescription = tr("Partie en cours"), tint = Neon.Cyan)
                         else Spacer(Modifier.size(24.dp))
                     },
                     onClick = {
@@ -345,7 +396,7 @@ private fun SceneChip(scene: SceneChipUi, full: Boolean, maxWidth: Dp, actions: 
             }
             HorizontalDivider(color = Neon.Outline)
             DropdownMenuItem(
-                text = { Text(tr("Nouvelle scène vide")) },
+                text = { Text(tr("Nouvelle partie vide")) },
 
                 leadingIcon = { Icon(Icons.Filled.Add, contentDescription = null, tint = Neon.Acid) },
                 onClick = {

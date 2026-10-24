@@ -9,6 +9,8 @@ enum class TrackKind(val id: String, val trackName: String, val title: String, v
     Melody("melody", "Mélodie", "Mélodie (lead)", "Un son aigu pour une petite mélodie", "Leads"),
     Chords("chords", "Accords", "Accords (nappe)", "Des accords tenus pour l'ambiance", "Nappes"),
     Bass("bass", "Basse", "Basse", "Les notes graves sous la batterie", "Basses"),
+    /** Phase 38: the studio 808 on a track of its own, gliding between held notes, nothing to download. */
+    Bass808("808", "808", "Basse 808", "La basse du trap qui glisse d'une note à l'autre", "Basses"),
     Arp("arp", "Arpège", "Arpège", "Tiens un accord : ses notes une à une", "Pluck"),
     Pluck("pluck", "Pluck", "Pluck / percussif", "Un son court qui claque", "Pluck"),
 }
@@ -17,12 +19,15 @@ object NewTracks {
     /** A melody written when the style plays an arpeggio rather than a riff: up from the octave, back to the root. */
     const val FALLBACK_RIFF = "O..5..3.5..3..R."
 
+    /** The 808 track's slide between held notes, in seconds (the pads' default). */
+    const val GLIDE_808 = 0.08f
+
     /** The style a project without one borrows its melody's shape from. */
     private const val FALLBACK_STYLE = "pop"
 
     /** The assistant's part a kind stands for, for its sound and its notes. */
     private fun part(kind: TrackKind) = when (kind) {
-        TrackKind.Bass -> StarterWizard.Part.Bass
+        TrackKind.Bass, TrackKind.Bass808 -> StarterWizard.Part.Bass
         TrackKind.Chords -> StarterWizard.Part.Pad
         else -> StarterWizard.Part.Lead
     }
@@ -46,6 +51,8 @@ object NewTracks {
             TrackKind.Melody -> styleSounds.firstOrNull() ?: family("Leads").firstOrNull()
             TrackKind.Chords -> styleSounds.firstOrNull() ?: family("Nappes").firstOrNull()
             TrackKind.Bass -> styleSounds.firstOrNull() ?: family("Basses").firstOrNull()
+            // The 808 plays the engine's own voice; its synth sound is a sub, should the track go back to the synth.
+            TrackKind.Bass808 -> family("Basses").firstOrNull { it.name == "Basse sub" }
         } ?: StarterWizard.PartSound("Synthé")
     }
 
@@ -85,8 +92,10 @@ object NewTracks {
         val made = track.copy(
             notes = notes,
             synth = if (glides) sound.synth.with(SynthPatch.GLIDE, StarterWizard.BASS_GLIDE) else sound.synth,
-            engine = if (sound.plaits != null) 1 else 0,
+            engine = if (kind == TrackKind.Bass808) InstrumentTrack.ENGINE_808 else if (sound.plaits != null) 1 else 0,
             plaits = sound.plaits ?: track.plaits,
+            // The 808 glides from the start: a key pressed while another is held slides to it.
+            voice808 = if (kind == TrackKind.Bass808) PadVoice(PadVoice.BASS_808).with(PadVoice.GLIDE, GLIDE_808) else track.voice808,
         ).sanitized()
         // At the level the assistant gives that part (its sound already calibrated): the bass up
         // front, a held pad behind; not louder than the song it joins.

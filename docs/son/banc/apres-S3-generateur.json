@@ -1,0 +1,1901 @@
+{
+ "styles": {
+  "acid_house": {
+   "air": -17.93,
+   "air_before": -20.92,
+   "air_s4kit3": -17.18,
+   "drop_minus_break": 0.07,
+   "drop_minus_break_before": 0.93,
+   "drop_minus_break_s4kit3": -0.86,
+   "drop_minus_groove": -0.15,
+   "drop_minus_groove_before": -0.1,
+   "drop_minus_groove_s4kit3": -0.53,
+   "drop_minus_montee": 0.02,
+   "drop_minus_montee_before": 0.27,
+   "kick_length_s": 0.323,
+   "kick_length_s_before": 1.485,
+   "kick_voice": 2,
+   "loss_db": 3.04,
+   "loss_db_before": 1.29,
+   "low_60_250": -3.4,
+   "low_60_250_before": -6.74,
+   "low_60_250_s4kit3": -3.71,
+   "lra": 4.05,
+   "lra_before": 1.02,
+   "lufs_i": -8.24,
+   "lufs_i_before": -8.06,
+   "montee_rise_lu": [
+    -0.2,
+    -0.6
+   ],
+   "montee_rise_lu_premaster": [
+    -1.5,
+    -1.9
+   ],
+   "premaster": {
+    "drop_minus_break": 1.22,
+    "drop_minus_groove": 0.22,
+    "drop_minus_montee": 0.29,
+    "labels": {
+     "Break": -14.13,
+     "Drop": -12.91,
+     "Groove": -13.14,
+     "Intro": -16.25,
+     "Montée": -13.2
+    },
+    "low_60_250": -3.2,
+    "lra": 3.54
+   },
+   "premaster_before": {
+    "drop_minus_break": 2.1,
+    "drop_minus_groove": 0.19,
+    "drop_minus_montee": 0.5,
+    "lra": 2.25
+   }
+  },
+  "acid_techno": {
+   "air": -17.38,
+   "air_before": -20.55,
+   "air_s4kit3": -16.74,
+   "drop_minus_break": -0.11,
+   "drop_minus_break_before": 0.19,
+   "drop_minus_break_s4kit3": -0.86,
+   "drop_minus_groove": 0.44,
+   "drop_minus_groove_before": -0.17,
+   "drop_minus_groove_s4kit3": -0.49,
+   "drop_minus_montee": 0.13,
+   "drop_minus_montee_before": 0.32,
+   "kick_length_s": 0.323,
+   "kick_length_s_before": 1.485,
+   "kick_voice": 2,
+   "loss_db": 4.4,
+   "loss_db_before": 2.51,
+   "low_60_250": -3.24,
+   "low_60_250_before": -6.59,
+   "low_60_250_s4kit3": -3.59,
+   "lra": 2.34,
+   "lra_before": 1.98,
+   "lufs_i": -7.55,
+   "lufs_i_before": -7.08,
+   "montee_rise_lu": [
+    0.0,
+    0.0
+   ],
+   "montee_rise_lu_premaster": [
+    -1.5,
+    -1.5
+   ],
+   "premaster": {
+    "drop_minus_break": 1.59,
+    "drop_minus_groove": 0.79,
+    "drop_minus_montee": 0.34,
+    "labels": {
+     "Break": -14.49,
+     "Drop": -12.9,
+     "Groove": -13.69,
+     "Intro": -15.63,
+     "Montée": -13.24
+    },
+    "low_60_250": -3.09,
+    "lra": 2.82
+   },
+   "premaster_before": {
+    "drop_minus_break": 2.4,
+    "drop_minus_groove": 0.49,
+    "drop_minus_montee": 0.5,
+    "lra": 1.96
+   }
+  },
+  "acidcore": {
+   "air": -15.71,
+   "air_before": -15.88,
+   "air_s4kit3": -15.69,
+   "drop_minus_break": -0.55,
+   "drop_minus_break_before": -0.46,
+   "drop_minus_break_s4kit3": -0.64,
+   "drop_minus_groove": -0.83,
+   "drop_minus_groove_before": -0.76,
+   "drop_minus_groove_s4kit3": -0.83,
+   "drop_minus_montee": 0.84,
+   "drop_minus_montee_before": 0.87,
+   "kick_length_s": 0.254,
+   "kick_length_s_before": 1.485,
+   "kick_voice": 3,
+   "loss_db": 1.25,
+   "loss_db_before": 1.3,
+   "low_60_250": -1.34,
+   "low_60_250_before": -1.59,
+   "low_60_250_s4kit3": -1.44,
+   "lra": 1.66,
+   "lra_before": 1.62,
+   "lufs_i": -7.07,
+   "lufs_i_before": -7.06,
+   "montee_rise_lu": [
+    -3.9,
+    -3.5,
+    -3.4
+   ],
+   "montee_rise_lu_premaster": [
+    -4.2,
+    -3.8,
+    -3.8
+   ],
+   "premaster": {
+    "drop_minus_break": 0.34,
+    "drop_minus_groove": -0.01,
+    "drop_minus_montee": 1.0,
+    "labels": {
+     "Break": -7.57,
+     "Drop": -7.23,
+     "Groove": -7.22,
+     "Intro": -7.52,
+     "Montée": -8.23
+    },
+    "low_60_250": -1.39,
+    "lra": 0.51
+   },
+   "premaster_before": {
+    "drop_minus_break": 0.49,
+    "drop_minus_groove": -0.01,
+    "drop_minus_montee": 1.04,
+    "lra": 0.66
+   }
+  },
+  "afro_house": {
+   "air": -18.45,
+   "air_before": -21.9,
+   "air_s4kit3": -17.86,
+   "drop_minus_break": 0.43,
+   "drop_minus_break_before": 1.63,
+   "drop_minus_break_s4kit3": -0.9,
+   "drop_minus_groove": 0.21,
+   "drop_minus_groove_before": -0.32,
+   "drop_minus_groove_s4kit3": -0.51,
+   "drop_minus_montee": -0.26,
+   "drop_minus_montee_before": -0.15,
+   "kick_length_s": 0.272,
+   "kick_length_s_before": 1.485,
+   "kick_voice": 2,
+   "loss_db": 6.5,
+   "loss_db_before": 2.95,
+   "low_60_250": -2.07,
+   "low_60_250_before": -6.42,
+   "low_60_250_s4kit3": -3.71,
+   "lra": 1.98,
+   "lra_before": 2.05,
+   "lufs_i": -8.83,
+   "lufs_i_before": -8.29,
+   "montee_rise_lu": [
+    0.9,
+    0.9
+   ],
+   "montee_rise_lu_premaster": [
+    0.0,
+    0.1
+   ],
+   "premaster": {
+    "drop_minus_break": 1.79,
+    "drop_minus_groove": 1.06,
+    "drop_minus_montee": 0.29,
+    "labels": {
+     "Break": -16.39,
+     "Drop": -14.6,
+     "Groove": -15.66,
+     "Intro": -17.52,
+     "Montée": -14.89
+    },
+    "low_60_250": -2.24,
+    "lra": 3.32
+   },
+   "premaster_before": {
+    "drop_minus_break": 3.41,
+    "drop_minus_groove": 0.59,
+    "drop_minus_montee": 0.62,
+    "lra": 2.1
+   }
+  },
+  "afrobeats": {
+   "air": -24.27,
+   "air_before": -24.56,
+   "air_s4kit3": -23.75,
+   "drop_minus_break": null,
+   "drop_minus_break_before": null,
+   "drop_minus_break_s4kit3": null,
+   "drop_minus_groove": 0.2,
+   "drop_minus_groove_before": -0.06,
+   "drop_minus_groove_s4kit3": 0.03,
+   "drop_minus_montee": null,
+   "drop_minus_montee_before": null,
+   "kick_length_s": 0.333,
+   "kick_length_s_before": 1.485,
+   "kick_voice": 0,
+   "loss_db": 6.3,
+   "loss_db_before": 6.45,
+   "low_60_250": -4.99,
+   "low_60_250_before": -6.09,
+   "low_60_250_s4kit3": -4.97,
+   "lra": 2.88,
+   "lra_before": 2.9,
+   "lufs_i": -9.83,
+   "lufs_i_before": -9.52,
+   "montee_rise_lu": [],
+   "montee_rise_lu_premaster": [],
+   "premaster": {
+    "drop_minus_break": null,
+    "drop_minus_groove": 0.7,
+    "drop_minus_montee": null,
+    "labels": {
+     "Couplet": -12.99,
+     "Intro": -20.64,
+     "Pont": -15.55,
+     "Post-refrain": -12.05,
+     "Pré-refrain": -13.85,
+     "Refrain": -12.29
+    },
+    "low_60_250": -5.16,
+    "lra": 4.59
+   },
+   "premaster_before": {
+    "drop_minus_break": null,
+    "drop_minus_groove": 0.85,
+    "drop_minus_montee": null,
+    "lra": 4.92
+   }
+  },
+  "amapiano": {
+   "air": -18.94,
+   "air_before": -21.32,
+   "air_s4kit3": -18.4,
+   "drop_minus_break": 3.98,
+   "drop_minus_break_before": 4.53,
+   "drop_minus_break_s4kit3": 4.71,
+   "drop_minus_groove": 2.68,
+   "drop_minus_groove_before": 0.58,
+   "drop_minus_groove_s4kit3": 2.79,
+   "drop_minus_montee": 1.82,
+   "drop_minus_montee_before": 0.55,
+   "kick_length_s": 0.313,
+   "kick_length_s_before": 1.485,
+   "kick_voice": 2,
+   "loss_db": 6.07,
+   "loss_db_before": 5.43,
+   "low_60_250": -1.05,
+   "low_60_250_before": -3.36,
+   "low_60_250_s4kit3": -1.46,
+   "lra": 5.33,
+   "lra_before": 2.27,
+   "lufs_i": -9.82,
+   "lufs_i_before": -8.5,
+   "montee_rise_lu": [
+    1.3,
+    1.2
+   ],
+   "montee_rise_lu_premaster": [
+    0.8,
+    1.2
+   ],
+   "premaster": {
+    "drop_minus_break": 7.95,
+    "drop_minus_groove": 4.41,
+    "drop_minus_montee": 4.06,
+    "labels": {
+     "Break": -22.02,
+     "Drop": -14.07,
+     "Groove": -18.48,
+     "Intro": -19.65,
+     "Montée": -18.13
+    },
+    "low_60_250": -1.0,
+    "lra": 7.44
+   },
+   "premaster_before": {
+    "drop_minus_break": 9.04,
+    "drop_minus_groove": 3.4,
+    "drop_minus_montee": 3.51,
+    "lra": 6.32
+   }
+  },
+  "boom_bap": {
+   "air": -20.74,
+   "air_before": -22.47,
+   "air_s4kit3": -21.22,
+   "drop_minus_break": null,
+   "drop_minus_break_before": null,
+   "drop_minus_break_s4kit3": null,
+   "drop_minus_groove": 0.31,
+   "drop_minus_groove_before": 0.37,
+   "drop_minus_groove_s4kit3": 0.04,
+   "drop_minus_montee": null,
+   "drop_minus_montee_before": null,
+   "kick_length_s": 0.333,
+   "kick_length_s_before": 1.485,
+   "kick_voice": 0,
+   "loss_db": 2.65,
+   "loss_db_before": 2.36,
+   "low_60_250": -4.08,
+   "low_60_250_before": -5.11,
+   "low_60_250_s4kit3": -4.07,
+   "lra": 4.58,
+   "lra_before": 4.67,
+   "lufs_i": -10.17,
+   "lufs_i_before": -10.12,
+   "montee_rise_lu": [],
+   "montee_rise_lu_premaster": [],
+   "premaster": {
+    "drop_minus_break": null,
+    "drop_minus_groove": 0.81,
+    "drop_minus_montee": null,
+    "labels": {
+     "Couplet": -13.4,
+     "Intro": -19.17,
+     "Refrain": -12.6
+    },
+    "low_60_250": -4.12,
+    "lra": 5.54
+   },
+   "premaster_before": {
+    "drop_minus_break": null,
+    "drop_minus_groove": 0.77,
+    "drop_minus_montee": null,
+    "lra": 5.84
+   }
+  },
+  "deep_house": {
+   "air": -18.57,
+   "air_before": -21.2,
+   "air_s4kit3": -18.53,
+   "drop_minus_break": 0.89,
+   "drop_minus_break_before": 1.65,
+   "drop_minus_break_s4kit3": -0.24,
+   "drop_minus_groove": 0.41,
+   "drop_minus_groove_before": 0.16,
+   "drop_minus_groove_s4kit3": -0.38,
+   "drop_minus_montee": 0.15,
+   "drop_minus_montee_before": 0.31,
+   "kick_length_s": 0.271,
+   "kick_length_s_before": 1.485,
+   "kick_voice": 2,
+   "loss_db": 3.42,
+   "loss_db_before": 1.59,
+   "low_60_250": -4.29,
+   "low_60_250_before": -6.16,
+   "low_60_250_s4kit3": -3.87,
+   "lra": 3.34,
+   "lra_before": 1.04,
+   "lufs_i": -9.33,
+   "lufs_i_before": -9.06,
+   "montee_rise_lu": [
+    0.9,
+    0.9
+   ],
+   "montee_rise_lu_premaster": [
+    -0.9,
+    -0.9
+   ],
+   "premaster": {
+    "drop_minus_break": 1.53,
+    "drop_minus_groove": 1.01,
+    "drop_minus_montee": 0.66,
+    "labels": {
+     "Break": -14.93,
+     "Drop": -13.4,
+     "Groove": -14.41,
+     "Intro": -17.06,
+     "Montée": -14.06
+    },
+    "low_60_250": -4.16,
+    "lra": 4.55
+   },
+   "premaster_before": {
+    "drop_minus_break": 2.48,
+    "drop_minus_groove": 0.62,
+    "drop_minus_montee": 0.77,
+    "lra": 2.81
+   }
+  },
+  "detroit": {
+   "air": -16.77,
+   "air_before": -19.34,
+   "air_s4kit3": -16.25,
+   "drop_minus_break": -0.47,
+   "drop_minus_break_before": 2.04,
+   "drop_minus_break_s4kit3": -1.41,
+   "drop_minus_groove": -0.62,
+   "drop_minus_groove_before": -0.63,
+   "drop_minus_groove_s4kit3": -0.38,
+   "drop_minus_montee": -0.79,
+   "drop_minus_montee_before": -0.42,
+   "kick_length_s": 0.323,
+   "kick_length_s_before": 1.485,
+   "kick_voice": 2,
+   "loss_db": 5.68,
+   "loss_db_before": 2.19,
+   "low_60_250": -4.87,
+   "low_60_250_before": -7.86,
+   "low_60_250_s4kit3": -5.06,
+   "lra": 3.38,
+   "lra_before": 2.0,
+   "lufs_i": -8.42,
+   "lufs_i_before": -8.11,
+   "montee_rise_lu": [
+    1.1,
+    1.0
+   ],
+   "montee_rise_lu_premaster": [
+    -0.1,
+    -0.1
+   ],
+   "premaster": {
+    "drop_minus_break": 4.16,
+    "drop_minus_groove": 0.44,
+    "drop_minus_montee": -0.38,
+    "labels": {
+     "Break": -15.39,
+     "Drop": -11.22,
+     "Groove": -11.66,
+     "Intro": -12.38,
+     "Montée": -10.84
+    },
+    "low_60_250": -4.01,
+    "lra": 2.73
+   },
+   "premaster_before": {
+    "drop_minus_break": 4.67,
+    "drop_minus_groove": 0.44,
+    "drop_minus_montee": 0.04,
+    "lra": 2.49
+   }
+  },
+  "disco": {
+   "air": -18.88,
+   "air_before": -20.1,
+   "air_s4kit3": -18.47,
+   "drop_minus_break": 0.47,
+   "drop_minus_break_before": 1.03,
+   "drop_minus_break_s4kit3": -0.73,
+   "drop_minus_groove": 0.24,
+   "drop_minus_groove_before": 0.09,
+   "drop_minus_groove_s4kit3": -0.25,
+   "drop_minus_montee": -0.17,
+   "drop_minus_montee_before": -0.17,
+   "kick_length_s": 0.323,
+   "kick_length_s_before": 1.485,
+   "kick_voice": 2,
+   "loss_db": 6.6,
+   "loss_db_before": 3.73,
+   "low_60_250": -4.29,
+   "low_60_250_before": -5.85,
+   "low_60_250_s4kit3": -4.04,
+   "lra": 2.19,
+   "lra_before": 2.6,
+   "lufs_i": -9.16,
+   "lufs_i_before": -8.21,
+   "montee_rise_lu": [
+    1.4,
+    1.2
+   ],
+   "montee_rise_lu_premaster": [
+    -0.1,
+    -0.4
+   ],
+   "premaster": {
+    "drop_minus_break": 2.61,
+    "drop_minus_groove": 0.35,
+    "drop_minus_montee": 0.48,
+    "labels": {
+     "Break": -14.64,
+     "Drop": -12.03,
+     "Groove": -12.38,
+     "Intro": -16.82,
+     "Montée": -12.51
+    },
+    "low_60_250": -4.36,
+    "lra": 5.19
+   },
+   "premaster_before": {
+    "drop_minus_break": 3.17,
+    "drop_minus_groove": 0.27,
+    "drop_minus_montee": 0.55,
+    "lra": 3.57
+   }
+  },
+  "dnb": {
+   "air": -15.81,
+   "air_before": -18.1,
+   "air_s4kit3": -16.02,
+   "drop_minus_break": -1.12,
+   "drop_minus_break_before": -1.35,
+   "drop_minus_break_s4kit3": -1.1,
+   "drop_minus_groove": -1.09,
+   "drop_minus_groove_before": -1.05,
+   "drop_minus_groove_s4kit3": -2.14,
+   "drop_minus_montee": -1.1,
+   "drop_minus_montee_before": -1.05,
+   "kick_length_s": 0.333,
+   "kick_length_s_before": 1.485,
+   "kick_voice": 0,
+   "loss_db": 6.21,
+   "loss_db_before": 6.84,
+   "low_60_250": -5.46,
+   "low_60_250_before": -6.7,
+   "low_60_250_s4kit3": -5.51,
+   "lra": 5.17,
+   "lra_before": 2.0,
+   "lufs_i": -8.85,
+   "lufs_i_before": -7.93,
+   "montee_rise_lu": [
+    0.5,
+    0.4,
+    0.5
+   ],
+   "montee_rise_lu_premaster": [
+    0.8,
+    0.6,
+    0.7
+   ],
+   "premaster": {
+    "drop_minus_break": 3.57,
+    "drop_minus_groove": 1.67,
+    "drop_minus_montee": 1.67,
+    "labels": {
+     "Break": -17.47,
+     "Drop": -13.9,
+     "Intro": -18.53,
+     "Montée": -15.57
+    },
+    "low_60_250": -5.34,
+    "lra": 6.67
+   },
+   "premaster_before": {
+    "drop_minus_break": 3.83,
+    "drop_minus_groove": 2.39,
+    "drop_minus_montee": 2.39,
+    "lra": 4.51
+   }
+  },
+  "drill": {
+   "air": -20.98,
+   "air_before": -21.37,
+   "air_s4kit3": -19.83,
+   "drop_minus_break": null,
+   "drop_minus_break_before": null,
+   "drop_minus_break_s4kit3": null,
+   "drop_minus_groove": 0.04,
+   "drop_minus_groove_before": -0.34,
+   "drop_minus_groove_s4kit3": -0.37,
+   "drop_minus_montee": null,
+   "drop_minus_montee_before": null,
+   "kick_length_s": 0.333,
+   "kick_length_s_before": 1.485,
+   "kick_voice": 0,
+   "loss_db": 1.51,
+   "loss_db_before": 6.28,
+   "low_60_250": -3.52,
+   "low_60_250_before": -7.01,
+   "low_60_250_s4kit3": -5.51,
+   "lra": 9.27,
+   "lra_before": 5.71,
+   "lufs_i": -8.53,
+   "lufs_i_before": -9.43,
+   "montee_rise_lu": [],
+   "montee_rise_lu_premaster": [],
+   "premaster": {
+    "drop_minus_break": null,
+    "drop_minus_groove": 0.22,
+    "drop_minus_montee": null,
+    "labels": {
+     "Couplet": -13.96,
+     "Intro": -25.77,
+     "Pont": -19.94,
+     "Refrain": -13.74
+    },
+    "low_60_250": -3.69,
+    "lra": 10.21
+   },
+   "premaster_before": {
+    "drop_minus_break": null,
+    "drop_minus_groove": 0.65,
+    "drop_minus_montee": null,
+    "lra": 9.91
+   }
+  },
+  "dubstep": {
+   "air": -17.37,
+   "air_before": -18.77,
+   "air_s4kit3": -17.26,
+   "drop_minus_break": -1.24,
+   "drop_minus_break_before": -0.94,
+   "drop_minus_break_s4kit3": -1.29,
+   "drop_minus_groove": -1.53,
+   "drop_minus_groove_before": -1.28,
+   "drop_minus_groove_s4kit3": -2.54,
+   "drop_minus_montee": -1.53,
+   "drop_minus_montee_before": -1.28,
+   "kick_length_s": 0.333,
+   "kick_length_s_before": 1.485,
+   "kick_voice": 0,
+   "loss_db": 6.13,
+   "loss_db_before": 6.28,
+   "low_60_250": -7.67,
+   "low_60_250_before": -8.92,
+   "low_60_250_s4kit3": -7.94,
+   "lra": 5.78,
+   "lra_before": 1.69,
+   "lufs_i": -8.99,
+   "lufs_i_before": -8.49,
+   "montee_rise_lu": [
+    0.4,
+    0.4,
+    0.6
+   ],
+   "montee_rise_lu_premaster": [
+    1.1,
+    1.1,
+    1.1
+   ],
+   "premaster": {
+    "drop_minus_break": 2.73,
+    "drop_minus_groove": 0.83,
+    "drop_minus_montee": 0.83,
+    "labels": {
+     "Break": -17.72,
+     "Drop": -14.99,
+     "Intro": -19.53,
+     "Montée": -15.82
+    },
+    "low_60_250": -7.5,
+    "lra": 7.12
+   },
+   "premaster_before": {
+    "drop_minus_break": 3.38,
+    "drop_minus_groove": 1.52,
+    "drop_minus_montee": 1.52,
+    "lra": 5.21
+   }
+  },
+  "gabber": {
+   "air": -16.6,
+   "air_before": -19.36,
+   "air_s4kit3": -16.41,
+   "drop_minus_break": -0.59,
+   "drop_minus_break_before": -0.8,
+   "drop_minus_break_s4kit3": -0.58,
+   "drop_minus_groove": 0.01,
+   "drop_minus_groove_before": 0.65,
+   "drop_minus_groove_s4kit3": -1.13,
+   "drop_minus_montee": 0.01,
+   "drop_minus_montee_before": 0.66,
+   "kick_length_s": 0.254,
+   "kick_length_s_before": 1.485,
+   "kick_voice": 3,
+   "loss_db": 6.62,
+   "loss_db_before": 5.01,
+   "low_60_250": -5.69,
+   "low_60_250_before": -7.03,
+   "low_60_250_s4kit3": -6.54,
+   "lra": 1.55,
+   "lra_before": 2.19,
+   "lufs_i": -7.4,
+   "lufs_i_before": -6.65,
+   "montee_rise_lu": [
+    0.4,
+    0.3,
+    0.4
+   ],
+   "montee_rise_lu_premaster": [
+    0.7,
+    0.7,
+    0.7
+   ],
+   "premaster": {
+    "drop_minus_break": 1.76,
+    "drop_minus_groove": 0.76,
+    "drop_minus_montee": 0.76,
+    "labels": {
+     "Break": -16.76,
+     "Drop": -14.99,
+     "Intro": -18.32,
+     "Montée": -15.75
+    },
+    "low_60_250": -5.55,
+    "lra": 3.89
+   },
+   "premaster_before": {
+    "drop_minus_break": 2.32,
+    "drop_minus_groove": 1.88,
+    "drop_minus_montee": 1.88,
+    "lra": 2.89
+   }
+  },
+  "grime": {
+   "air": -13.97,
+   "air_before": -14.72,
+   "air_s4kit3": -14.32,
+   "drop_minus_break": null,
+   "drop_minus_break_before": null,
+   "drop_minus_break_s4kit3": null,
+   "drop_minus_groove": 0.58,
+   "drop_minus_groove_before": 0.43,
+   "drop_minus_groove_s4kit3": 0.09,
+   "drop_minus_montee": null,
+   "drop_minus_montee_before": null,
+   "kick_length_s": 0.333,
+   "kick_length_s_before": 1.485,
+   "kick_voice": 0,
+   "loss_db": 2.23,
+   "loss_db_before": 1.48,
+   "low_60_250": -3.19,
+   "low_60_250_before": -5.68,
+   "low_60_250_s4kit3": -2.91,
+   "lra": 2.77,
+   "lra_before": 2.19,
+   "lufs_i": -8.59,
+   "lufs_i_before": -8.56,
+   "montee_rise_lu": [],
+   "montee_rise_lu_premaster": [],
+   "premaster": {
+    "drop_minus_break": null,
+    "drop_minus_groove": 0.97,
+    "drop_minus_montee": null,
+    "labels": {
+     "Couplet": -13.61,
+     "Intro": -17.61,
+     "Pont": -16.58,
+     "Refrain": -12.64
+    },
+    "low_60_250": -3.32,
+    "lra": 4.7
+   },
+   "premaster_before": {
+    "drop_minus_break": null,
+    "drop_minus_groove": 0.89,
+    "drop_minus_montee": null,
+    "lra": 3.86
+   }
+  },
+  "hard_techno": {
+   "air": -14.48,
+   "air_before": -18.96,
+   "air_s4kit3": -16.13,
+   "drop_minus_break": -0.47,
+   "drop_minus_break_before": -0.77,
+   "drop_minus_break_s4kit3": -1.66,
+   "drop_minus_groove": 1.89,
+   "drop_minus_groove_before": 0.53,
+   "drop_minus_groove_s4kit3": -0.25,
+   "drop_minus_montee": 0.26,
+   "drop_minus_montee_before": 0.31,
+   "kick_length_s": 0.244,
+   "kick_length_s_before": 1.485,
+   "kick_voice": 3,
+   "loss_db": 5.95,
+   "loss_db_before": 6.28,
+   "low_60_250": -5.83,
+   "low_60_250_before": -6.03,
+   "low_60_250_s4kit3": -4.79,
+   "lra": 4.56,
+   "lra_before": 1.28,
+   "lufs_i": -9.82,
+   "lufs_i_before": -8.5,
+   "montee_rise_lu": [
+    1.2,
+    1.3,
+    1.1
+   ],
+   "montee_rise_lu_premaster": [
+    -0.3,
+    -0.2,
+    -0.2
+   ],
+   "premaster": {
+    "drop_minus_break": 2.06,
+    "drop_minus_groove": 1.67,
+    "drop_minus_montee": 0.5,
+    "labels": {
+     "Break": -16.96,
+     "Drop": -14.9,
+     "Groove": -16.57,
+     "Intro": -17.7,
+     "Montée": -15.4
+    },
+    "low_60_250": -5.0,
+    "lra": 3.09
+   },
+   "premaster_before": {
+    "drop_minus_break": 2.28,
+    "drop_minus_groove": 1.75,
+    "drop_minus_montee": 1.07,
+    "lra": 3.09
+   }
+  },
+  "house": {
+   "air": -17.78,
+   "air_before": -20.83,
+   "air_s4kit3": -17.48,
+   "drop_minus_break": 0.96,
+   "drop_minus_break_before": 1.6,
+   "drop_minus_break_s4kit3": -0.88,
+   "drop_minus_groove": -0.04,
+   "drop_minus_groove_before": -0.04,
+   "drop_minus_groove_s4kit3": -0.46,
+   "drop_minus_montee": -0.25,
+   "drop_minus_montee_before": -0.01,
+   "kick_length_s": 0.323,
+   "kick_length_s_before": 1.485,
+   "kick_voice": 2,
+   "loss_db": 6.68,
+   "loss_db_before": 3.23,
+   "low_60_250": -3.9,
+   "low_60_250_before": -6.04,
+   "low_60_250_s4kit3": -3.94,
+   "lra": 2.08,
+   "lra_before": 1.91,
+   "lufs_i": -8.84,
+   "lufs_i_before": -8.18,
+   "montee_rise_lu": [
+    0.9,
+    0.7
+   ],
+   "montee_rise_lu_premaster": [
+    -1.0,
+    -0.9
+   ],
+   "premaster": {
+    "drop_minus_break": 2.66,
+    "drop_minus_groove": 0.33,
+    "drop_minus_montee": 0.46,
+    "labels": {
+     "Break": -15.06,
+     "Drop": -12.41,
+     "Groove": -12.73,
+     "Intro": -16.16,
+     "Montée": -12.87
+    },
+    "low_60_250": -3.61,
+    "lra": 4.15
+   },
+   "premaster_before": {
+    "drop_minus_break": 3.15,
+    "drop_minus_groove": 0.51,
+    "drop_minus_montee": 0.76,
+    "lra": 3.17
+   }
+  },
+  "industrial_techno": {
+   "air": -17.87,
+   "air_before": -18.7,
+   "air_s4kit3": -18.51,
+   "drop_minus_break": 2.19,
+   "drop_minus_break_before": 0.26,
+   "drop_minus_break_s4kit3": -0.02,
+   "drop_minus_groove": -0.27,
+   "drop_minus_groove_before": -0.07,
+   "drop_minus_groove_s4kit3": -0.15,
+   "drop_minus_montee": -0.02,
+   "drop_minus_montee_before": 0.05,
+   "kick_length_s": 0.272,
+   "kick_length_s_before": 1.485,
+   "kick_voice": 3,
+   "loss_db": 1.88,
+   "loss_db_before": 4.17,
+   "low_60_250": -3.49,
+   "low_60_250_before": -3.85,
+   "low_60_250_s4kit3": -3.99,
+   "lra": 1.43,
+   "lra_before": 0.9,
+   "lufs_i": -7.15,
+   "lufs_i_before": -7.56,
+   "montee_rise_lu": [
+    -0.2,
+    -0.3
+   ],
+   "montee_rise_lu_premaster": [
+    -0.9,
+    -0.8
+   ],
+   "premaster": {
+    "drop_minus_break": 3.49,
+    "drop_minus_groove": 0.07,
+    "drop_minus_montee": -0.17,
+    "labels": {
+     "Break": -15.35,
+     "Drop": -11.86,
+     "Groove": -11.93,
+     "Intro": -12.39,
+     "Montée": -11.69
+    },
+    "low_60_250": -3.37,
+    "lra": 1.31
+   },
+   "premaster_before": {
+    "drop_minus_break": 1.17,
+    "drop_minus_groove": 0.03,
+    "drop_minus_montee": -0.01,
+    "lra": 0.72
+   }
+  },
+  "jersey_club": {
+   "air": -19.27,
+   "air_before": -23.8,
+   "air_s4kit3": -17.87,
+   "drop_minus_break": null,
+   "drop_minus_break_before": null,
+   "drop_minus_break_s4kit3": null,
+   "drop_minus_groove": 0.12,
+   "drop_minus_groove_before": -0.25,
+   "drop_minus_groove_s4kit3": 0.59,
+   "drop_minus_montee": null,
+   "drop_minus_montee_before": null,
+   "kick_length_s": 0.333,
+   "kick_length_s_before": 1.485,
+   "kick_voice": 0,
+   "loss_db": 4.39,
+   "loss_db_before": 3.59,
+   "low_60_250": -7.31,
+   "low_60_250_before": -10.17,
+   "low_60_250_s4kit3": -8.54,
+   "lra": 2.95,
+   "lra_before": 2.67,
+   "lufs_i": -8.87,
+   "lufs_i_before": -8.87,
+   "montee_rise_lu": [],
+   "montee_rise_lu_premaster": [],
+   "premaster": {
+    "drop_minus_break": null,
+    "drop_minus_groove": 0.47,
+    "drop_minus_montee": null,
+    "labels": {
+     "Couplet": -14.18,
+     "Intro": -19.31,
+     "Pont": -19.46,
+     "Refrain": -13.71
+    },
+    "low_60_250": -6.38,
+    "lra": 6.71
+   },
+   "premaster_before": {
+    "drop_minus_break": null,
+    "drop_minus_groove": 0.45,
+    "drop_minus_montee": null,
+    "lra": 5.86
+   }
+  },
+  "jump_up": {
+   "air": -14.49,
+   "air_before": -19.16,
+   "air_s4kit3": -14.97,
+   "drop_minus_break": -0.76,
+   "drop_minus_break_before": -0.75,
+   "drop_minus_break_s4kit3": -0.24,
+   "drop_minus_groove": -1.04,
+   "drop_minus_groove_before": -1.02,
+   "drop_minus_groove_s4kit3": -2.21,
+   "drop_minus_montee": -1.04,
+   "drop_minus_montee_before": -1.01,
+   "kick_length_s": 0.333,
+   "kick_length_s_before": 1.485,
+   "kick_voice": 0,
+   "loss_db": 6.1,
+   "loss_db_before": 6.63,
+   "low_60_250": -8.96,
+   "low_60_250_before": -10.02,
+   "low_60_250_s4kit3": -9.38,
+   "lra": 4.56,
+   "lra_before": 2.61,
+   "lufs_i": -9.12,
+   "lufs_i_before": -7.9,
+   "montee_rise_lu": [
+    0.6,
+    0.5,
+    0.6
+   ],
+   "montee_rise_lu_premaster": [
+    0.8,
+    0.6,
+    0.7
+   ],
+   "premaster": {
+    "drop_minus_break": 3.9,
+    "drop_minus_groove": 1.27,
+    "drop_minus_montee": 1.27,
+    "labels": {
+     "Break": -18.68,
+     "Drop": -14.78,
+     "Intro": -17.65,
+     "Montée": -16.05
+    },
+    "low_60_250": -7.49,
+    "lra": 4.35
+   },
+   "premaster_before": {
+    "drop_minus_break": 4.72,
+    "drop_minus_groove": 1.74,
+    "drop_minus_montee": 1.73,
+    "lra": 5.01
+   }
+  },
+  "jungle": {
+   "air": -15.01,
+   "air_before": -17.48,
+   "air_s4kit3": -14.75,
+   "drop_minus_break": 0.92,
+   "drop_minus_break_before": 1.0,
+   "drop_minus_break_s4kit3": -0.88,
+   "drop_minus_groove": 0.09,
+   "drop_minus_groove_before": -0.53,
+   "drop_minus_groove_s4kit3": -0.43,
+   "drop_minus_montee": -0.37,
+   "drop_minus_montee_before": -0.17,
+   "kick_length_s": 0.333,
+   "kick_length_s_before": 1.485,
+   "kick_voice": 0,
+   "loss_db": 6.01,
+   "loss_db_before": 6.45,
+   "low_60_250": -3.91,
+   "low_60_250_before": -4.99,
+   "low_60_250_s4kit3": -4.21,
+   "lra": 3.08,
+   "lra_before": 2.96,
+   "lufs_i": -9.57,
+   "lufs_i_before": -7.89,
+   "montee_rise_lu": [
+    1.5,
+    0.3,
+    1.5
+   ],
+   "montee_rise_lu_premaster": [
+    -0.2,
+    -1.0,
+    0.1
+   ],
+   "premaster": {
+    "drop_minus_break": 5.11,
+    "drop_minus_groove": 0.85,
+    "drop_minus_montee": 0.31,
+    "labels": {
+     "Break": -18.69,
+     "Drop": -13.59,
+     "Groove": -14.44,
+     "Intro": -16.34,
+     "Montée": -13.9
+    },
+    "low_60_250": -3.97,
+    "lra": 4.88
+   },
+   "premaster_before": {
+    "drop_minus_break": 4.82,
+    "drop_minus_groove": 1.01,
+    "drop_minus_montee": 0.51,
+    "lra": 4.58
+   }
+  },
+  "liquid_dnb": {
+   "air": -15.37,
+   "air_before": -16.92,
+   "air_s4kit3": -15.4,
+   "drop_minus_break": 0.51,
+   "drop_minus_break_before": 1.28,
+   "drop_minus_break_s4kit3": 0.59,
+   "drop_minus_groove": -0.97,
+   "drop_minus_groove_before": -0.43,
+   "drop_minus_groove_s4kit3": -2.41,
+   "drop_minus_montee": -0.97,
+   "drop_minus_montee_before": -0.43,
+   "kick_length_s": 0.333,
+   "kick_length_s_before": 1.485,
+   "kick_voice": 0,
+   "loss_db": 6.24,
+   "loss_db_before": 6.66,
+   "low_60_250": -4.77,
+   "low_60_250_before": -5.39,
+   "low_60_250_s4kit3": -4.61,
+   "lra": 3.7,
+   "lra_before": 2.91,
+   "lufs_i": -9.73,
+   "lufs_i_before": -8.77,
+   "montee_rise_lu": [
+    0.6,
+    0.5,
+    0.6
+   ],
+   "montee_rise_lu_premaster": [
+    0.8,
+    0.7,
+    0.9
+   ],
+   "premaster": {
+    "drop_minus_break": 4.06,
+    "drop_minus_groove": 1.92,
+    "drop_minus_montee": 1.92,
+    "labels": {
+     "Break": -17.84,
+     "Drop": -13.78,
+     "Intro": -18.62,
+     "Montée": -15.7
+    },
+    "low_60_250": -4.8,
+    "lra": 6.17
+   },
+   "premaster_before": {
+    "drop_minus_break": 4.46,
+    "drop_minus_groove": 2.43,
+    "drop_minus_montee": 2.43,
+    "lra": 4.76
+   }
+  },
+  "lofi": {
+   "air": -23.25,
+   "air_before": -25.51,
+   "air_s4kit3": -23.73,
+   "drop_minus_break": null,
+   "drop_minus_break_before": null,
+   "drop_minus_break_s4kit3": null,
+   "drop_minus_groove": 0.83,
+   "drop_minus_groove_before": 0.73,
+   "drop_minus_groove_s4kit3": 0.01,
+   "drop_minus_montee": null,
+   "drop_minus_montee_before": null,
+   "kick_length_s": 0.333,
+   "kick_length_s_before": 1.485,
+   "kick_voice": 0,
+   "loss_db": 0.1,
+   "loss_db_before": 0.05,
+   "low_60_250": -3.24,
+   "low_60_250_before": -4.44,
+   "low_60_250_s4kit3": -3.22,
+   "lra": 8.2,
+   "lra_before": 8.49,
+   "lufs_i": -11.98,
+   "lufs_i_before": -12.05,
+   "montee_rise_lu": [],
+   "montee_rise_lu_premaster": [],
+   "premaster": {
+    "drop_minus_break": null,
+    "drop_minus_groove": 0.85,
+    "drop_minus_montee": null,
+    "labels": {
+     "Couplet": -12.1,
+     "Intro": -21.7,
+     "Refrain": -11.25
+    },
+    "low_60_250": -3.23,
+    "lra": 8.28
+   },
+   "premaster_before": {
+    "drop_minus_break": null,
+    "drop_minus_groove": 0.75,
+    "drop_minus_montee": null,
+    "lra": 8.54
+   }
+  },
+  "minimal": {
+   "air": -22.52,
+   "air_before": -26.69,
+   "air_s4kit3": -21.57,
+   "drop_minus_break": 0.14,
+   "drop_minus_break_before": 1.43,
+   "drop_minus_break_s4kit3": -1.06,
+   "drop_minus_groove": 0.71,
+   "drop_minus_groove_before": -0.96,
+   "drop_minus_groove_s4kit3": -0.78,
+   "drop_minus_montee": -0.43,
+   "drop_minus_montee_before": -0.35,
+   "kick_length_s": 0.316,
+   "kick_length_s_before": 1.485,
+   "kick_voice": 2,
+   "loss_db": 6.17,
+   "loss_db_before": 2.15,
+   "low_60_250": -4.14,
+   "low_60_250_before": -5.87,
+   "low_60_250_s4kit3": -4.23,
+   "lra": 3.41,
+   "lra_before": 1.93,
+   "lufs_i": -9.79,
+   "lufs_i_before": -8.05,
+   "montee_rise_lu": [
+    1.5,
+    1.3
+   ],
+   "montee_rise_lu_premaster": [
+    -0.8,
+    -0.2
+   ],
+   "premaster": {
+    "drop_minus_break": 1.37,
+    "drop_minus_groove": 2.59,
+    "drop_minus_montee": 1.42,
+    "labels": {
+     "Break": -14.54,
+     "Drop": -13.17,
+     "Groove": -15.75,
+     "Intro": -17.33,
+     "Montée": -14.59
+    },
+    "low_60_250": -3.95,
+    "lra": 4.58
+   },
+   "premaster_before": {
+    "drop_minus_break": 2.23,
+    "drop_minus_groove": 1.29,
+    "drop_minus_montee": 1.12,
+    "lra": 2.72
+   }
+  },
+  "neurofunk": {
+   "air": -14.26,
+   "air_before": -18.22,
+   "air_s4kit3": -14.5,
+   "drop_minus_break": 1.56,
+   "drop_minus_break_before": 2.13,
+   "drop_minus_break_s4kit3": 2.63,
+   "drop_minus_groove": -1.06,
+   "drop_minus_groove_before": -0.12,
+   "drop_minus_groove_s4kit3": -2.97,
+   "drop_minus_montee": -1.06,
+   "drop_minus_montee_before": -0.12,
+   "kick_length_s": 0.333,
+   "kick_length_s_before": 1.485,
+   "kick_voice": 0,
+   "loss_db": 5.98,
+   "loss_db_before": 6.74,
+   "low_60_250": -7.23,
+   "low_60_250_before": -8.55,
+   "low_60_250_s4kit3": -7.58,
+   "lra": 4.95,
+   "lra_before": 4.38,
+   "lufs_i": -9.85,
+   "lufs_i_before": -8.07,
+   "montee_rise_lu": [
+    0.6,
+    0.6,
+    0.6
+   ],
+   "montee_rise_lu_premaster": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "premaster": {
+    "drop_minus_break": 5.68,
+    "drop_minus_groove": 0.69,
+    "drop_minus_montee": 0.69,
+    "labels": {
+     "Break": -21.44,
+     "Drop": -15.75,
+     "Intro": -19.31,
+     "Montée": -16.44
+    },
+    "low_60_250": -6.57,
+    "lra": 6.62
+   },
+   "premaster_before": {
+    "drop_minus_break": 7.18,
+    "drop_minus_groove": 1.75,
+    "drop_minus_montee": 1.74,
+    "lra": 7.48
+   }
+  },
+  "phonk": {
+   "air": -19.77,
+   "air_before": -22.98,
+   "air_s4kit3": -20.76,
+   "drop_minus_break": null,
+   "drop_minus_break_before": null,
+   "drop_minus_break_s4kit3": null,
+   "drop_minus_groove": -0.05,
+   "drop_minus_groove_before": -0.04,
+   "drop_minus_groove_s4kit3": -0.18,
+   "drop_minus_montee": null,
+   "drop_minus_montee_before": null,
+   "kick_length_s": 0.333,
+   "kick_length_s_before": 1.485,
+   "kick_voice": 0,
+   "loss_db": 1.47,
+   "loss_db_before": 1.84,
+   "low_60_250": -5.46,
+   "low_60_250_before": -5.98,
+   "low_60_250_s4kit3": -4.53,
+   "lra": 12.1,
+   "lra_before": 13.2,
+   "lufs_i": -8.55,
+   "lufs_i_before": -8.65,
+   "montee_rise_lu": [],
+   "montee_rise_lu_premaster": [],
+   "premaster": {
+    "drop_minus_break": null,
+    "drop_minus_groove": 0.14,
+    "drop_minus_montee": null,
+    "labels": {
+     "Couplet": -13.47,
+     "Intro": -27.32,
+     "Pont": -20.9,
+     "Refrain": -13.33
+    },
+    "low_60_250": -5.37,
+    "lra": 13.68
+   },
+   "premaster_before": {
+    "drop_minus_break": null,
+    "drop_minus_groove": 0.45,
+    "drop_minus_montee": null,
+    "lra": 14.93
+   }
+  },
+  "pop": {
+   "air": -20.5,
+   "air_before": -22.56,
+   "air_s4kit3": -21.43,
+   "drop_minus_break": null,
+   "drop_minus_break_before": null,
+   "drop_minus_break_s4kit3": null,
+   "drop_minus_groove": 0.07,
+   "drop_minus_groove_before": -0.21,
+   "drop_minus_groove_s4kit3": -0.06,
+   "drop_minus_montee": null,
+   "drop_minus_montee_before": null,
+   "kick_length_s": 0.333,
+   "kick_length_s_before": 1.485,
+   "kick_voice": 0,
+   "loss_db": 4.17,
+   "loss_db_before": 4.53,
+   "low_60_250": -3.3,
+   "low_60_250_before": -4.6,
+   "low_60_250_s4kit3": -3.24,
+   "lra": 1.39,
+   "lra_before": 1.2,
+   "lufs_i": -8.93,
+   "lufs_i_before": -8.96,
+   "montee_rise_lu": [],
+   "montee_rise_lu_premaster": [],
+   "premaster": {
+    "drop_minus_break": null,
+    "drop_minus_groove": 0.9,
+    "drop_minus_montee": null,
+    "labels": {
+     "Couplet": -12.54,
+     "Intro": -16.17,
+     "Pont": -15.14,
+     "Post-refrain": -11.65,
+     "Pré-refrain": -12.37,
+     "Refrain": -11.63
+    },
+    "low_60_250": -3.5,
+    "lra": 3.79
+   },
+   "premaster_before": {
+    "drop_minus_break": null,
+    "drop_minus_groove": 0.87,
+    "drop_minus_montee": null,
+    "lra": 2.93
+   }
+  },
+  "reggaeton": {
+   "air": -18.56,
+   "air_before": -20.55,
+   "air_s4kit3": -19.16,
+   "drop_minus_break": null,
+   "drop_minus_break_before": null,
+   "drop_minus_break_s4kit3": null,
+   "drop_minus_groove": -0.09,
+   "drop_minus_groove_before": -0.03,
+   "drop_minus_groove_s4kit3": -0.06,
+   "drop_minus_montee": null,
+   "drop_minus_montee_before": null,
+   "kick_length_s": 0.333,
+   "kick_length_s_before": 1.485,
+   "kick_voice": 0,
+   "loss_db": 4.8,
+   "loss_db_before": 5.57,
+   "low_60_250": -5.54,
+   "low_60_250_before": -6.74,
+   "low_60_250_s4kit3": -5.53,
+   "lra": 0.96,
+   "lra_before": 0.78,
+   "lufs_i": -8.99,
+   "lufs_i_before": -9.04,
+   "montee_rise_lu": [],
+   "montee_rise_lu_premaster": [],
+   "premaster": {
+    "drop_minus_break": null,
+    "drop_minus_groove": 0.54,
+    "drop_minus_montee": null,
+    "labels": {
+     "Couplet": -13.13,
+     "Intro": -16.67,
+     "Pont": -15.51,
+     "Post-refrain": -12.6,
+     "Pré-refrain": -12.91,
+     "Refrain": -12.58
+    },
+    "low_60_250": -5.42,
+    "lra": 3.59
+   },
+   "premaster_before": {
+    "drop_minus_break": null,
+    "drop_minus_groove": 0.43,
+    "drop_minus_montee": null,
+    "lra": 4.22
+   }
+  },
+  "retro_techno": {
+   "air": -17.43,
+   "air_before": -20.64,
+   "air_s4kit3": -17.02,
+   "drop_minus_break": 1.38,
+   "drop_minus_break_before": 5.21,
+   "drop_minus_break_s4kit3": -0.78,
+   "drop_minus_groove": 0.42,
+   "drop_minus_groove_before": -0.49,
+   "drop_minus_groove_s4kit3": -0.44,
+   "drop_minus_montee": -0.44,
+   "drop_minus_montee_before": -0.09,
+   "kick_length_s": 0.323,
+   "kick_length_s_before": 1.485,
+   "kick_voice": 2,
+   "loss_db": 6.44,
+   "loss_db_before": 3.07,
+   "low_60_250": -3.69,
+   "low_60_250_before": -6.11,
+   "low_60_250_s4kit3": -3.65,
+   "lra": 2.56,
+   "lra_before": 2.03,
+   "lufs_i": -9.22,
+   "lufs_i_before": -8.18,
+   "montee_rise_lu": [
+    1.4,
+    1.4
+   ],
+   "montee_rise_lu_premaster": [
+    0.0,
+    -0.1
+   ],
+   "premaster": {
+    "drop_minus_break": 6.87,
+    "drop_minus_groove": 1.57,
+    "drop_minus_montee": -0.25,
+    "labels": {
+     "Break": -20.03,
+     "Drop": -13.15,
+     "Groove": -14.72,
+     "Intro": -16.0,
+     "Montée": -12.9
+    },
+    "low_60_250": -3.71,
+    "lra": 4.19
+   },
+   "premaster_before": {
+    "drop_minus_break": 9.27,
+    "drop_minus_groove": 1.09,
+    "drop_minus_montee": 0.16,
+    "lra": 2.92
+   }
+  },
+  "riddim": {
+   "air": -13.39,
+   "air_before": -16.82,
+   "air_s4kit3": -13.97,
+   "drop_minus_break": 1.1,
+   "drop_minus_break_before": 1.7,
+   "drop_minus_break_s4kit3": 1.19,
+   "drop_minus_groove": -1.74,
+   "drop_minus_groove_before": -1.14,
+   "drop_minus_groove_s4kit3": -3.84,
+   "drop_minus_montee": -1.74,
+   "drop_minus_montee_before": -1.14,
+   "kick_length_s": 0.333,
+   "kick_length_s_before": 1.485,
+   "kick_voice": 0,
+   "loss_db": 5.95,
+   "loss_db_before": 6.03,
+   "low_60_250": -7.8,
+   "low_60_250_before": -8.84,
+   "low_60_250_s4kit3": -8.38,
+   "lra": 8.03,
+   "lra_before": 4.02,
+   "lufs_i": -10.32,
+   "lufs_i_before": -9.45,
+   "montee_rise_lu": [
+    0.6,
+    0.6
+   ],
+   "montee_rise_lu_premaster": [
+    1.4,
+    1.4
+   ],
+   "premaster": {
+    "drop_minus_break": 3.71,
+    "drop_minus_groove": -0.82,
+    "drop_minus_montee": -0.83,
+    "labels": {
+     "Break": -21.63,
+     "Drop": -17.92,
+     "Faux drop": -18.12,
+     "Intro": -22.37,
+     "Montée": -17.09
+    },
+    "low_60_250": -7.42,
+    "lra": 8.1
+   },
+   "premaster_before": {
+    "drop_minus_break": 5.1,
+    "drop_minus_groove": -0.08,
+    "drop_minus_montee": -0.08,
+    "lra": 7.27
+   }
+  },
+  "speed_garage": {
+   "air": -16.18,
+   "air_before": -19.08,
+   "air_s4kit3": -16.32,
+   "drop_minus_break": 1.86,
+   "drop_minus_break_before": 2.32,
+   "drop_minus_break_s4kit3": -0.25,
+   "drop_minus_groove": 1.45,
+   "drop_minus_groove_before": -0.52,
+   "drop_minus_groove_s4kit3": 0.11,
+   "drop_minus_montee": -0.16,
+   "drop_minus_montee_before": -0.5,
+   "kick_length_s": 0.316,
+   "kick_length_s_before": 1.485,
+   "kick_voice": 2,
+   "loss_db": 6.22,
+   "loss_db_before": 2.62,
+   "low_60_250": -3.38,
+   "low_60_250_before": -5.96,
+   "low_60_250_s4kit3": -3.49,
+   "lra": 4.06,
+   "lra_before": 2.09,
+   "lufs_i": -9.56,
+   "lufs_i_before": -8.07,
+   "montee_rise_lu": [
+    1.5,
+    1.3
+   ],
+   "montee_rise_lu_premaster": [
+    1.0,
+    1.0
+   ],
+   "premaster": {
+    "drop_minus_break": 4.93,
+    "drop_minus_groove": 2.39,
+    "drop_minus_montee": 0.89,
+    "labels": {
+     "Break": -18.02,
+     "Drop": -13.09,
+     "Groove": -15.48,
+     "Intro": -17.31,
+     "Montée": -13.98
+    },
+    "low_60_250": -3.41,
+    "lra": 4.96
+   },
+   "premaster_before": {
+    "drop_minus_break": 5.16,
+    "drop_minus_groove": 1.34,
+    "drop_minus_montee": 0.97,
+    "lra": 2.96
+   }
+  },
+  "synthwave": {
+   "air": -19.36,
+   "air_before": -20.98,
+   "air_s4kit3": -20.2,
+   "drop_minus_break": null,
+   "drop_minus_break_before": null,
+   "drop_minus_break_s4kit3": null,
+   "drop_minus_groove": 0.25,
+   "drop_minus_groove_before": 0.17,
+   "drop_minus_groove_s4kit3": 0.08,
+   "drop_minus_montee": null,
+   "drop_minus_montee_before": null,
+   "kick_length_s": 0.333,
+   "kick_length_s_before": 1.485,
+   "kick_voice": 0,
+   "loss_db": 3.72,
+   "loss_db_before": 3.98,
+   "low_60_250": -3.87,
+   "low_60_250_before": -5.55,
+   "low_60_250_s4kit3": -3.63,
+   "lra": 0.86,
+   "lra_before": 0.71,
+   "lufs_i": -8.37,
+   "lufs_i_before": -8.36,
+   "montee_rise_lu": [],
+   "montee_rise_lu_premaster": [],
+   "premaster": {
+    "drop_minus_break": null,
+    "drop_minus_groove": 0.61,
+    "drop_minus_montee": null,
+    "labels": {
+     "Couplet": -13.2,
+     "Intro": -15.94,
+     "Pont": -16.0,
+     "Post-refrain": -12.6,
+     "Pré-refrain": -12.91,
+     "Refrain": -12.59
+    },
+    "low_60_250": -4.02,
+    "lra": 3.42
+   },
+   "premaster_before": {
+    "drop_minus_break": null,
+    "drop_minus_groove": 0.54,
+    "drop_minus_montee": null,
+    "lra": 3.65
+   }
+  },
+  "tech_house": {
+   "air": -15.93,
+   "air_before": -19.88,
+   "air_s4kit3": -16.03,
+   "drop_minus_break": 1.17,
+   "drop_minus_break_before": 2.07,
+   "drop_minus_break_s4kit3": -0.65,
+   "drop_minus_groove": 0.21,
+   "drop_minus_groove_before": -0.07,
+   "drop_minus_groove_s4kit3": -0.4,
+   "drop_minus_montee": -0.26,
+   "drop_minus_montee_before": -0.05,
+   "kick_length_s": 0.316,
+   "kick_length_s_before": 1.485,
+   "kick_voice": 2,
+   "loss_db": 6.06,
+   "loss_db_before": 3.2,
+   "low_60_250": -5.34,
+   "low_60_250_before": -7.33,
+   "low_60_250_s4kit3": -5.06,
+   "lra": 3.6,
+   "lra_before": 2.48,
+   "lufs_i": -9.96,
+   "lufs_i_before": -8.2,
+   "montee_rise_lu": [
+    1.4,
+    1.3
+   ],
+   "montee_rise_lu_premaster": [
+    -0.5,
+    -0.3
+   ],
+   "premaster": {
+    "drop_minus_break": 2.97,
+    "drop_minus_groove": 0.74,
+    "drop_minus_montee": 0.62,
+    "labels": {
+     "Break": -16.24,
+     "Drop": -13.26,
+     "Groove": -14.0,
+     "Intro": -16.57,
+     "Montée": -13.88
+    },
+    "low_60_250": -4.55,
+    "lra": 3.68
+   },
+   "premaster_before": {
+    "drop_minus_break": 3.82,
+    "drop_minus_groove": 0.47,
+    "drop_minus_montee": 0.78,
+    "lra": 2.89
+   }
+  },
+  "techno": {
+   "air": -19.86,
+   "air_before": -22.44,
+   "air_s4kit3": -19.28,
+   "drop_minus_break": 0.97,
+   "drop_minus_break_before": 0.47,
+   "drop_minus_break_s4kit3": -0.38,
+   "drop_minus_groove": 0.53,
+   "drop_minus_groove_before": -0.57,
+   "drop_minus_groove_s4kit3": -0.44,
+   "drop_minus_montee": -0.02,
+   "drop_minus_montee_before": 0.03,
+   "kick_length_s": 0.271,
+   "kick_length_s_before": 1.485,
+   "kick_voice": 2,
+   "loss_db": 6.02,
+   "loss_db_before": 5.06,
+   "low_60_250": -3.89,
+   "low_60_250_before": -4.9,
+   "low_60_250_s4kit3": -3.68,
+   "lra": 3.7,
+   "lra_before": 3.0,
+   "lufs_i": -9.56,
+   "lufs_i_before": -7.57,
+   "montee_rise_lu": [
+    0.4,
+    1.0
+   ],
+   "montee_rise_lu_premaster": [
+    -0.5,
+    -0.6
+   ],
+   "premaster": {
+    "drop_minus_break": 2.13,
+    "drop_minus_groove": 1.67,
+    "drop_minus_montee": 0.71,
+    "labels": {
+     "Break": -14.57,
+     "Drop": -12.44,
+     "Groove": -14.11,
+     "Intro": -16.91,
+     "Montée": -13.15
+    },
+    "low_60_250": -4.26,
+    "lra": 4.8
+   },
+   "premaster_before": {
+    "drop_minus_break": 2.55,
+    "drop_minus_groove": 1.18,
+    "drop_minus_montee": 0.77,
+    "lra": 3.25
+   }
+  },
+  "trance": {
+   "air": -17.02,
+   "air_before": -18.92,
+   "air_s4kit3": -16.0,
+   "drop_minus_break": -0.34,
+   "drop_minus_break_before": -0.65,
+   "drop_minus_break_s4kit3": -0.93,
+   "drop_minus_groove": 0.58,
+   "drop_minus_groove_before": -0.18,
+   "drop_minus_groove_s4kit3": -0.23,
+   "drop_minus_montee": 0.09,
+   "drop_minus_montee_before": 0.0,
+   "kick_length_s": 0.323,
+   "kick_length_s_before": 1.485,
+   "kick_voice": 2,
+   "loss_db": 6.5,
+   "loss_db_before": 3.61,
+   "low_60_250": -5.06,
+   "low_60_250_before": -6.78,
+   "low_60_250_s4kit3": -5.0,
+   "lra": 3.1,
+   "lra_before": 2.02,
+   "lufs_i": -9.26,
+   "lufs_i_before": -8.12,
+   "montee_rise_lu": [
+    0.5,
+    0.4
+   ],
+   "montee_rise_lu_premaster": [
+    -0.4,
+    -0.7
+   ],
+   "premaster": {
+    "drop_minus_break": 1.07,
+    "drop_minus_groove": 1.91,
+    "drop_minus_montee": 0.87,
+    "labels": {
+     "Break": -14.74,
+     "Drop": -13.67,
+     "Groove": -15.58,
+     "Intro": -18.17,
+     "Montée": -14.54
+    },
+    "low_60_250": -5.01,
+    "lra": 4.94
+   },
+   "premaster_before": {
+    "drop_minus_break": 1.66,
+    "drop_minus_groove": 1.57,
+    "drop_minus_montee": 1.01,
+    "lra": 3.76
+   }
+  },
+  "trap": {
+   "air": -20.22,
+   "air_before": -22.79,
+   "air_s4kit3": -20.97,
+   "drop_minus_break": null,
+   "drop_minus_break_before": null,
+   "drop_minus_break_s4kit3": null,
+   "drop_minus_groove": -0.18,
+   "drop_minus_groove_before": -0.39,
+   "drop_minus_groove_s4kit3": -0.24,
+   "drop_minus_montee": null,
+   "drop_minus_montee_before": null,
+   "kick_length_s": 0.333,
+   "kick_length_s_before": 1.485,
+   "kick_voice": 0,
+   "loss_db": 3.09,
+   "loss_db_before": 6.19,
+   "low_60_250": -6.02,
+   "low_60_250_before": -8.5,
+   "low_60_250_s4kit3": -7.57,
+   "lra": 4.74,
+   "lra_before": 2.62,
+   "lufs_i": -8.73,
+   "lufs_i_before": -9.64,
+   "montee_rise_lu": [],
+   "montee_rise_lu_premaster": [],
+   "premaster": {
+    "drop_minus_break": null,
+    "drop_minus_groove": 0.43,
+    "drop_minus_montee": null,
+    "labels": {
+     "Couplet": -13.87,
+     "Intro": -21.69,
+     "Pont": -18.4,
+     "Refrain": -13.44
+    },
+    "low_60_250": -5.88,
+    "lra": 6.3
+   },
+   "premaster_before": {
+    "drop_minus_break": null,
+    "drop_minus_groove": 0.68,
+    "drop_minus_montee": null,
+    "lra": 6.11
+   }
+  },
+  "uk_garage": {
+   "air": -13.9,
+   "air_before": -17.26,
+   "air_s4kit3": -13.89,
+   "drop_minus_break": null,
+   "drop_minus_break_before": null,
+   "drop_minus_break_s4kit3": null,
+   "drop_minus_groove": 0.22,
+   "drop_minus_groove_before": -0.33,
+   "drop_minus_groove_s4kit3": 0.08,
+   "drop_minus_montee": null,
+   "drop_minus_montee_before": null,
+   "kick_length_s": 0.323,
+   "kick_length_s_before": 1.485,
+   "kick_voice": 2,
+   "loss_db": 6.43,
+   "loss_db_before": 6.25,
+   "low_60_250": -3.61,
+   "low_60_250_before": -5.42,
+   "low_60_250_s4kit3": -3.24,
+   "lra": 2.73,
+   "lra_before": 1.93,
+   "lufs_i": -8.93,
+   "lufs_i_before": -8.64,
+   "montee_rise_lu": [],
+   "montee_rise_lu_premaster": [],
+   "premaster": {
+    "drop_minus_break": null,
+    "drop_minus_groove": 1.02,
+    "drop_minus_montee": null,
+    "labels": {
+     "Couplet": -14.45,
+     "Intro": -17.06,
+     "Pont": -18.93,
+     "Post-refrain": -13.42,
+     "Pré-refrain": -13.8,
+     "Refrain": -13.43
+    },
+    "low_60_250": -3.08,
+    "lra": 5.37
+   },
+   "premaster_before": {
+    "drop_minus_break": null,
+    "drop_minus_groove": 0.79,
+    "drop_minus_montee": null,
+    "lra": 3.84
+   }
+  }
+ }
+}

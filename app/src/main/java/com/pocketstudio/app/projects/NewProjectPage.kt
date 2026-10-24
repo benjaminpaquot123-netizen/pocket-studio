@@ -68,7 +68,11 @@ import kotlin.math.roundToInt
  */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-internal fun NewProjectPage(starters: List<ProjectStarter>, quick: QuickUi, actions: ProjectsActions, close: () -> Unit) {
+internal fun NewProjectPage(
+    starters: List<ProjectStarter>, quick: QuickUi, actions: ProjectsActions, close: () -> Unit,
+    /** Before a starter or the assistant: the page closes (back on the list), or stays under it when it is the whole screen. */
+    leave: () -> Unit = close,
+) {
     // While a song is being prepared, every other choice waits.
     val busy = quick.creating != null
     // Leaving the page ends a demo still playing.
@@ -84,7 +88,7 @@ internal fun NewProjectPage(starters: List<ProjectStarter>, quick: QuickUi, acti
             Modifier.weight(1f).verticalScroll(rememberScrollState()).testTag("new_project_list"),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            GuidedCard(busy) { close(); actions.wizard() }
+            GuidedCard(busy) { leave(); actions.wizard() }
             SectionLabel(StarterGroup.Style.title, Modifier.padding(top = 12.dp))
             Text(
                 tr("Une touche, un morceau complet (environ 3 minutes), prêt à écouter."),
@@ -96,7 +100,8 @@ internal fun NewProjectPage(starters: List<ProjectStarter>, quick: QuickUi, acti
             }
             // The assistant's families, all folded at first (but the one of a song being prepared): one touch on a style makes its song.
             com.pocketstudio.app.library.StyleFamilies("quick", style = { QuickStyleCard(it, quick, actions) },
-                open = setOfNotNull(StarterWizard.STYLES.find { it.id == quick.creating }?.family))
+                open = setOfNotNull(StarterWizard.STYLES.find { it.id == quick.creating }?.family),
+                calm = com.pocketstudio.app.settings.SettingsStore.state.value.simpleMode)
             // The other starters under their headings (the starting beat closes the styles' group).
             StarterGroup.entries.forEach { group ->
                 val inGroup = starters.withIndex().filter { it.value.group == group }
@@ -109,7 +114,7 @@ internal fun NewProjectPage(starters: List<ProjectStarter>, quick: QuickUi, acti
                         DemoRow(s, demo, quick, actions)
                         demo++
                     } else {
-                        StarterRow(s, if (group == StarterGroup.Empty) Icons.Filled.Add else Icons.Filled.GraphicEq, !busy) { close(); actions.create(i) }
+                        StarterRow(s, if (group == StarterGroup.Empty) Icons.Filled.Add else Icons.Filled.GraphicEq, !busy) { leave(); actions.create(i) }
                     }
                 }
             }

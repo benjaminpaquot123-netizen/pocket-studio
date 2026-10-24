@@ -10,7 +10,7 @@
    "Pete Rock & CL Smooth – They Reminisce Over You (T.R.O.Y.) (1992)"
   ],
   "description_fr": "Le rap à l'ancienne de New York : une boucle de piano jazz, un kick rond, une caisse claire qui claque et un groove qui balance.",
-  "bpm": 90,
+  "bpm": 92,
   "swing": 0.2,
   "root": "D",
   "default_mood": "dark",
@@ -51,9 +51,9 @@
     "scale": "minor",
     "degrees": [
      0,
-     0,
      5,
-     5
+     4,
+     4
     ]
    },
    "happy": {
@@ -77,19 +77,19 @@
    "dreamy": {
     "scale": "major",
     "degrees": [
-     1,
-     4,
-     0,
-     0
+     3,
+     2,
+     5,
+     1
     ]
    }
   },
   "chords": {
    "type": "keys",
-   "rhythm": "X------.X---.X-.",
+   "rhythm": "X------.X---.X-.X--.X---..X---..",
    "voicing": "seventh",
    "octave": 3,
-   "sound": "gm:Acoustic Grand Piano"
+   "sound": "Piano électrique"
   },
   "bass": {
    "pattern": "R-----R-..R---..",
@@ -99,10 +99,11 @@
   },
   "lead": {
    "type": "riff",
-   "pattern": "O.......5.....3.",
+   "pattern": "O.......5...3...R-----..............................5...3...R---",
    "arp_rate": 24,
    "octave": 5,
-   "sound": "gm:Vibraphone"
+   "sound": "Piano électrique",
+   "on_key": true
   },
   "acid": {
    "use": false,
@@ -113,12 +114,12 @@
   "defaults": {
    "bass": true,
    "chords": true,
-   "lead": false
+   "lead": true
   },
   "signature": "chords",
   "bass_tip": "Une basse courte et ronde qui tape avec le kick, comme une contrebasse : pas de 808 ici.",
   "pad_tip": "La boucle de piano jazz, comme un vieux disque samplé : elle tourne du début à la fin du morceau.",
-  "lead_tip": "Une petite phrase de vibraphone de temps en temps : laisse de la place au rappeur.",
+  "lead_tip": "La mélodie de la boucle : une phrase de deux mesures au piano électrique, un vide, une courte réponse. Elle est là dès le début, comme un sample.",
   "fx": [
    {
     "on": "chords",
@@ -127,12 +128,18 @@
    {
     "on": "chords",
     "reverb": 0.15
+   },
+   {
+    "on": "lead",
+    "reverb": 0.2,
+    "delay": 0.15
    }
   ],
   "notes": "Swing is the genre: MPC 60% on 16ths. The chords stand in for a looped jazz/soul sample (minor 7ths, 'Vinyle chaud' on them) and are the signature: they play in every section. No 808: a short round bass that follows the kick (1, 2-and, 3-and). Two-bar kick with a ghost kick in bar 2, two ghost snares, open hat only at the end of bar 2. Snare from the SP-1200 pack for 12-bit crunch, hats from the MPC60 pack."
  },
  {
   "id": "trap",
+  "vocal": "stab",
   "references": [
    "Travis Scott – FE!N (2023)",
    "Future – Mask Off (2017)",
@@ -218,17 +225,18 @@
    "sound": "Cordes"
   },
   "bass": {
-   "pattern": "R------R-/O----.",
+   "pattern": "R-----------/O--R-----..R---/5--",
    "octave": 1,
    "sound": "pack:trap:808",
    "glide": true
   },
   "lead": {
    "type": "riff",
-   "pattern": "O..5..3.R..3..5.",
+   "pattern": "O---..5-..3-....R---..3-..5-..7-",
    "arp_rate": 24,
    "octave": 5,
-   "sound": "Cloche"
+   "sound": "Cloche",
+   "on_key": true
   },
   "acid": {
    "use": false,
@@ -265,10 +273,17 @@
    {
     "on": "lead",
     "delay": 0.2
+   },
+   {
+    "on": "lead",
+    "preset": "pluck_pingpong"
    }
   ],
   "notes": "Half-time: 140 BPM but one clap per bar on beat 3, so it feels like 70. The 808 is the bass, hits with the kick and slides up an octave into its 3rd note ('/', glide); 'Croustillant' saturates it a little. Hat rolls: a 1/32 triplet on 3-e of bar 2, then the whole 4th beat in 1/32. The bell melody is the signature (it plays from the intro on); the pad stays dark and quiet (strings) and only joins in the chorus. For a darker modern 808 use pack:modern_808:808.",
-  "riser": true
+  "riser": true,
+  "counter": {
+   "sound": "Nappe"
+  }
  },
  {
   "id": "drill",
@@ -281,7 +296,7 @@
   ],
   "description_fr": "La trap version sombre, de Londres à Paris : une 808 qui glisse, une caisse claire décalée et des hi-hats qui sautillent.",
   "bpm": 142,
-  "swing": 0.0,
+  "swing": 0.12,
   "root": "G",
   "default_mood": "dark",
   "drums": [
@@ -357,17 +372,18 @@
    "sound": "Cordes"
   },
   "bass": {
-   "pattern": "R-------..R--/O-..R---/5----....",
+   "pattern": "R-------..R--/O-..R---/5----..R/",
    "octave": 1,
    "sound": "pack:drill:808",
    "glide": true
   },
   "lead": {
    "type": "riff",
-   "pattern": "R..3..2.R..5..3.",
+   "pattern": "R---..3-........5---..3-..2-....R---..3-........5-..7-..O-------",
    "arp_rate": 24,
    "octave": 5,
-   "sound": "gm:Acoustic Grand Piano"
+   "sound": "Piano électrique",
+   "on_key": true
   },
   "acid": {
    "use": false,
@@ -391,7 +407,8 @@
    },
    {
     "on": "lead",
-    "reverb": 0.35
+    "reverb": 0.4,
+    "delay": 0.25
    },
    {
     "on": "chords",
@@ -410,10 +427,10 @@
    "J Dilla – Don't Cry (2006)"
   ],
   "description_fr": "Le hip-hop tout doux des vidéos « Lofi Girl », parfait pour réviser : des accords jazz au piano électrique, une batterie feutrée et le craquement d'un vieux vinyle.",
-  "bpm": 80,
+  "bpm": 84,
   "swing": 0.25,
   "root": "F",
-  "default_mood": "dark",
+  "default_mood": "dreamy",
   "drums": [
    {
     "role": "kick",
@@ -443,13 +460,13 @@
    }
   ],
   "progressions": {
-   "dark": {
-    "scale": "minor",
+   "dreamy": {
+    "scale": "major",
     "degrees": [
-     0,
      3,
-     6,
-     2
+     0,
+     5,
+     1
     ]
    },
    "happy": {
@@ -458,31 +475,31 @@
      1,
      4,
      0,
-     0
+     5
     ]
    },
-   "future": {
+   "dark": {
     "scale": "dorian",
     "degrees": [
      0,
-     0,
      3,
+     0,
      3
     ]
    },
-   "dreamy": {
-    "scale": "major",
+   "future": {
+    "scale": "minor",
     "degrees": [
-     3,
+     0,
      5,
-     1,
-     4
+     3,
+     6
     ]
    }
   },
   "chords": {
    "type": "keys",
-   "rhythm": "X-------X----X--",
+   "rhythm": "X-------x-----X-------X---x...X-",
    "voicing": "ninth",
    "octave": 3,
    "sound": "Piano électrique"
@@ -494,11 +511,12 @@
    "glide": false
   },
   "lead": {
-   "type": "riff",
-   "pattern": "........5.3.2.R.",
+   "type": "hook",
+   "pattern": "....5---3-----------------------....5---3---2---R---------------",
    "arp_rate": 24,
-   "octave": 5,
-   "sound": "gm:Vibraphone"
+   "octave": 4,
+   "sound": "Piano électrique",
+   "on_key": true
   },
   "acid": {
    "use": false,
@@ -509,12 +527,12 @@
   "defaults": {
    "bass": true,
    "chords": true,
-   "lead": false
+   "lead": true
   },
   "signature": "chords",
   "bass_tip": "Une basse douce et chaude, calée sur le kick : elle reste discrète.",
   "pad_tip": "Des accords jazz au piano électrique, avec le craquement du vinyle : ils tournent du début à la fin.",
-  "lead_tip": "Une petite phrase paresseuse au vibraphone, à la fin de la mesure, de temps en temps.",
+  "lead_tip": "Une phrase de piano électrique sur quatre mesures : deux notes, un silence, la réponse qui finit sur une note longue. Au refrain, la même une octave plus haut.",
   "fx": [
    {
     "on": "chords",
@@ -531,13 +549,15 @@
    },
    {
     "on": "lead",
-    "reverb": 0.3
+    "reverb": 0.35,
+    "delay": 0.2
    }
   ],
   "notes": "Jazz harmony is the point: ii-V-I and IVmaj7-vi-ii-V loops in 9th voicings on a soft Rhodes (dreamy avoids the iii, whose 9th would be minor). The Rhodes is the signature, with 'Vieux vinyle' crackle on it and 'Vinyle chaud' on the drums. Heavy lazy swing (62%): the app's swing only delays odd 16ths, so the hats and the shaker have hits there. Soft snare. Bass soft and warm, on the kicks, no 808. The lead is only a lazy fill at the end of the bar."
  },
  {
   "id": "phonk",
+  "vocal": "crush",
   "references": [
    "Kordhell – Murder in My Mind (2022)",
    "DVRST – Close Eyes (2021)",
@@ -632,10 +652,12 @@
   },
   "lead": {
    "type": "riff",
-   "pattern": "R..R..R.3..3..2.",
+   "pattern": "R..R..R.3..3..2.R..R..R.2..2..R-",
    "arp_rate": 24,
-   "octave": 5,
-   "sound": "kit:cowbell"
+   "octave": 4,
+   "sound": "kit:cowbell",
+   "answer": "R..R.3..R..2..R-R..R.3..6-..5-..",
+   "on_key": true
   },
   "acid": {
    "use": false,
@@ -645,12 +667,12 @@
   },
   "defaults": {
    "bass": true,
-   "chords": false,
+   "chords": true,
    "lead": true
   },
   "signature": "lead",
   "bass_tip": "C'est la 808, saturée pour qu'elle gronde : elle tape avec le kick et glisse à la fin de la mesure.",
-  "pad_tip": "Une nappe sombre, en option : le phonk s'en passe souvent, la cowbell suffit.",
+  "pad_tip": "Une nappe discrète qui n'arrive qu'au refrain, sous la cloche : elle élargit le son sans prendre la place.",
   "lead_tip": "La cowbell, une petite cloche de boîte à rythmes, joue la mélodie en boucle : c'est elle qui fait le phonk.",
   "fx": [
    {
@@ -661,6 +683,19 @@
     "on": "lead",
     "preset": "crunch",
     "reverb": 0.2
+   },
+   {
+    "on": "lead",
+    "insert": "CHORUS",
+    "params": [
+     0.2
+    ],
+    "reverb": 0.3,
+    "delay": 0.25
+   },
+   {
+    "on": "chords",
+    "preset": "wide_alive"
    }
   ],
   "notes": "Drift phonk (the sound most beginners mean): the hook is a pitched TR-808 cowbell melody (the kit's cowbell played across the keys, 'kit:cowbell'; 'Cloche' stands in), short motif in Phrygian, 3-3-2 rhythm, repeated and crunched; it is the signature. The 808 is distorted and slides into the octave ('/'). Chords off by default (a drone harmony). Tempo: 130 as the phonk pack (sources quote 120-140 with a backbeat, à vérifier on Murder in My Mind). Memphis variant: same grid half-time, swing 0.2, chopped pitched-down vocal (vocal_chops pack). 'Kaito Shoma – Scary Garry (2016)' was dropped: its year could not be checked.",
@@ -746,23 +781,23 @@
   },
   "chords": {
    "type": "stab",
-   "rhythm": "X.....X.........",
-   "voicing": "triad",
+   "rhythm": "X.....X.............X.....X...X.",
+   "voicing": "octave",
    "octave": 3,
-   "sound": "Orgue"
+   "sound": "Lead carré"
   },
   "bass": {
-   "pattern": "R-.R-.R---5---3-",
+   "pattern": "R-.R-.R---5---3-R-.R-.R---2---R.",
    "octave": 2,
    "sound": "Lead carré",
    "glide": false
   },
   "lead": {
    "type": "riff",
-   "pattern": ".O..5..O..3..5..",
+   "pattern": "R-.R-.R---5---3-R-.R-.R---2---R.",
    "arp_rate": 24,
    "octave": 5,
-   "sound": "Marimba"
+   "sound": "Lead chiptune"
   },
   "acid": {
    "use": false,
@@ -773,12 +808,12 @@
   "defaults": {
    "bass": true,
    "chords": true,
-   "lead": false
+   "lead": true
   },
   "signature": "chords",
   "bass_tip": "Une onde carrée brute, sans arrondi : la basse qui grogne du grime.",
   "pad_tip": "Des petits accords secs et glacés, avec beaucoup de vide autour : c'est la place du MC.",
-  "lead_tip": "Une petite mélodie de marimba, comme sur les claviers des années 2000.",
+  "lead_tip": "Un lead chiptune qui reprend le riff de la basse une octave plus haut : il n'arrive qu'au refrain, glacé et carré.",
   "notes": "Eskibeat template: one raw square wave as bass ('Lead carré' in octave 2), short cold stabs (the signature: the intro is the stabs alone), lots of empty space; the MC carries the melody. No hats: the off-beat click (rim) replaces them. Clap on 2 and 4 at 140; a half-time grime variant puts it on beat 3 only. Bass notes held a little ('R-.R-.R---5---3-'). Minor/modal riffs; marimba lead (Korg Triton era).",
   "fx": [
    {
@@ -788,11 +823,24 @@
    {
     "on": "lead",
     "delay": 0.2
+   },
+   {
+    "on": "chords",
+    "insert": "CHORUS",
+    "params": [
+     0.3
+    ],
+    "reverb": 0.15
+   },
+   {
+    "on": "lead",
+    "preset": "pluck_pingpong"
    }
   ]
  },
  {
   "id": "jersey_club",
+  "vocal": "answer",
   "references": [
    "Lil Uzi Vert – Just Wanna Rock (2022)",
    "Drake – Sticky (2022)",
@@ -877,18 +925,18 @@
    "type": "pad",
    "rhythm": "X-------X-------",
    "voicing": "seventh",
-   "octave": 4,
+   "octave": 3,
    "sound": "Nappe chaude"
   },
   "bass": {
-   "pattern": "R...R...R..R..O.",
+   "pattern": "R-..R...R..R..O.",
    "octave": 1,
    "sound": "pack:tr808:808",
    "glide": false
   },
   "lead": {
-   "type": "riff",
-   "pattern": "..R...R..R..O...",
+   "type": "chops",
+   "pattern": "..R...R..R..O.....R.r.R..5..O.3.",
    "arp_rate": 24,
    "octave": 4,
    "sound": "pack:vocal_chops:vocal"
@@ -917,6 +965,10 @@
    {
     "on": "lead",
     "delay": 0.2
+   },
+   {
+    "on": "lead",
+    "preset": "pluck_pingpong"
    }
   ],
   "riser": true
@@ -930,8 +982,8 @@
    "Daddy Yankee – Gasolina (2004)"
   ],
   "description_fr": "Le rythme latino qui fait danser partout : le « boum-tchi-boum-tchi » du dembow, une basse ronde et des accords qui chaloupent.",
-  "bpm": 95,
-  "swing": 0.0,
+  "bpm": 96,
+  "swing": 0.08,
   "root": "B",
   "default_mood": "dark",
   "drums": [
@@ -985,50 +1037,50 @@
    "happy": {
     "scale": "major",
     "degrees": [
-     5,
-     3,
      0,
-     4
+     4,
+     5,
+     3
     ]
    },
    "future": {
     "scale": "minor",
     "degrees": [
      0,
-     0,
+     6,
      5,
-     5
+     4
     ]
    },
    "dreamy": {
-    "scale": "dorian",
+    "scale": "major",
     "degrees": [
      0,
+     5,
      3,
-     0,
-     3
+     4
     ]
    }
   },
   "chords": {
    "type": "stab",
-   "rhythm": "...X..X....X..X.",
-   "voicing": "triad",
+   "rhythm": "X--x--X-X--x--X-",
+   "voicing": "seventh",
    "octave": 3,
    "sound": "Orgue"
   },
   "bass": {
-   "pattern": "R-----R-R----/5-",
+   "pattern": "R---..R-R---..5-R---..R-R--/O---",
    "octave": 1,
    "sound": "pack:reggaeton:808",
    "glide": true
   },
   "lead": {
    "type": "riff",
-   "pattern": "R..3..5.O..5..3.",
+   "pattern": "R--3--5-R--3--5.3--2--R---......",
    "arp_rate": 24,
    "octave": 5,
-   "sound": "Marimba"
+   "sound": "Pluck"
   },
   "acid": {
    "use": false,
@@ -1039,12 +1091,12 @@
   "defaults": {
    "bass": true,
    "chords": true,
-   "lead": false
+   "lead": true
   },
   "signature": "chords",
   "bass_tip": "Une 808 ronde qui suit le dembow, avec une petite glissade à la fin de la mesure.",
   "pad_tip": "Des petits accords calés sur la caisse claire. En ambiance sombre, ce sont ceux de « Despacito » : Si m, Sol, Ré, La.",
-  "lead_tip": "Une petite mélodie au marimba qui répond au chant ; dans les vrais morceaux, c'est souvent une guitare.",
+  "lead_tip": "Le riff de cuatro : deux mesures en 3-3-2, la question puis la réponse qui finit sur la quinte, et un silence. Il ouvre le morceau et revient à chaque refrain.",
   "fx": [
    {
     "on": "chords",
@@ -1129,10 +1181,10 @@
    "dreamy": {
     "scale": "major",
     "degrees": [
-     1,
-     4,
+     3,
      0,
-     5
+     3,
+     0
     ]
    }
   },
@@ -1144,17 +1196,18 @@
    "sound": "Piano électrique"
   },
   "bass": {
-   "pattern": "R-----R-R-.5-O-.",
+   "pattern": "R-----R-R---5-6-R-----R-R-..R5-6",
    "octave": 1,
    "sound": "pack:afrobeats:bass",
    "glide": false
   },
   "lead": {
-   "type": "riff",
-   "pattern": "5.O.5.3...5.3.R.",
+   "type": "hook",
+   "pattern": "R.2-3.5---3-2...3.5-6.5-----3.R-",
    "arp_rate": 24,
    "octave": 5,
-   "sound": "Marimba"
+   "sound": "Marimba",
+   "on_key": true
   },
   "acid": {
    "use": false,
@@ -1167,10 +1220,10 @@
    "chords": true,
    "lead": true
   },
-  "signature": "chords",
+  "signature": "lead",
   "bass_tip": "Une basse ronde et liée qui suit le kick et rebondit vers l'aigu.",
   "pad_tip": "Le piano électrique joue des petits coups qui sautillent (3-3-4-3-3) : c'est lui qui fait danser.",
-  "lead_tip": "Une petite mélodie ensoleillée au marimba : elle arrive au refrain.",
+  "lead_tip": "La guitare : une phrase de deux mesures en question-réponse sur la pentatonique, dès l'intro. Le pluck lui répond dans ses silences.",
   "notes": "Groove before everything: continuous 16th shaker (kit shaker; the pack only has closed hats) with light swing (57%), uneven kick (1, 2-and, 3), soft rim backbeat, congas answering; never a hard trap snare nor four-on-the-floor. Happy by default (I-V-vi-IV). Rhodes comping in 3-3-4-3-3 with longer notes, the signature; round tied bass; marimba hook in the chorus. Recent tracks borrow the amapiano log drum as bass ('Log drum').",
   "fx": [
    {
@@ -1185,7 +1238,19 @@
    {
     "on": "perc",
     "reverb": 0.15
+   },
+   {
+    "on": "bass",
+    "insert": "PUMP",
+    "params": [
+     0.3,
+     0.35,
+     0.0
+    ]
    }
-  ]
+  ],
+  "counter": {
+   "sound": "Pluck"
+  }
  }
 ]

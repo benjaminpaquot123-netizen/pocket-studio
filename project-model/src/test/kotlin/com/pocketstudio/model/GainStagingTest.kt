@@ -85,15 +85,18 @@ class GainStagingTest {
     }
 
     @Test
-    fun theAssistantsSongsUseKitTwoAndOldProjectsKitOne() {
+    fun theAssistantsSongsUseKitThreeAndOldProjectsKitOne() {
         assertEquals(Project.KIT_V1, ProjectJson.decode("""{"name":"Ancien"}""").kitVersion)
         assertFalse(ProjectJson.encode(Project()).contains("kitVersion"))
         for (style in StarterWizard.STYLES) {
             val lines = style.lines.filter { !it.off }.associate { it.role to null as PadSample? }
             val parts = StarterWizard.defaultParts(style).associateWith { StarterWizard.soundsFor(it, style).first() }
             val p = StarterWizard.build(style, lines, style.melody.mood, parts)
-            assertEquals(style.id, Project.KIT_V2, p.kitVersion)
-            assertEquals(style.id, Project.KIT_V2, ProjectJson.decode(ProjectJson.encode(p)).kitVersion)
+            // Kit v3 since chantier S3 (its voices at kit v2's levels for their roles), with its studio voices.
+            assertEquals(style.id, Project.KIT_V3, p.kitVersion)
+            val back = ProjectJson.decode(ProjectJson.encode(p))
+            assertEquals(style.id, Project.KIT_V3, back.kitVersion)
+            assertEquals(style.id, p.padVoices, back.padVoices)
             // No 8 kHz shelf on a pad to lift the hats, no glue compressor with a hidden boost.
             for (lane in 0 until DrumPattern.PAD_COUNT) {
                 assertTrue(style.id, p.mixer.channels[Mixer.padChannel(lane)].inserts.none { it.type == EffectType.EQ.ordinal })

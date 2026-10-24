@@ -84,8 +84,44 @@ object NativeEngine {
     private const val CMD_REMIX_ON = 77
     private const val CMD_AUTOMATION_SONG_RAMP = 78
     private const val CMD_AUTOMATION_SONG_FLAT = 79
+    // Phase 34 (S3): the drums' micro-timing, rolls, glides and studio voices (Engine.h, numbered from 80).
+    private const val CMD_DRUM_STEP_OFFSET = 80
+    private const val CMD_DRUM_STEP_ROLL = 81
+    private const val CMD_DRUM_STEP_GLIDE = 82
+    private const val CMD_PAD_VOICE = 83
+    private const val CMD_PAD_VOICE_PARAM = 84
     // Numbered apart in Engine.h (phase 33): commands appended after 79 never take its number.
     private const val CMD_KIT_VERSION = 100
+    private const val CMD_SOUND_VERSION = 101
+    private const val CMD_SIDECHAIN = 102
+    private const val CMD_MIX_VERSION = 103
+    // Phase 37 (Engine.h, numbered from 120): the drums' polyrhythm and chances.
+    private const val CMD_DRUM_LANE_STEPS = 120
+    private const val CMD_DRUM_STEP_CHANCE = 121
+    private const val CMD_DRUM_SEED = 122
+    // Phase 38: multizone instruments and the 808 on instrument tracks (Engine.h, numbered from 130).
+    private const val CMD_TRACK_ZONE = 130
+    private const val CMD_TRACK_808 = 131
+
+    // Rolls' velocity ramps (Engine.h SetDrumStepRoll).
+    const val ROLL_RAMP_LEGACY = 0
+    const val ROLL_RAMP_FLAT = 1
+    const val ROLL_RAMP_UP = 2
+    const val ROLL_RAMP_DOWN = 3
+    // A pad's studio voice (DrumKit::Kind).
+    const val PAD_VOICE_KIT = 0
+    const val PAD_VOICE_808 = 1
+    const val PAD_VOICE_KICK_STUDIO = 2
+    const val PAD_VOICE_KICK_HARD = 3
+    const val PAD_VOICE_RUMBLE = 4
+    // A studio voice's settings (DrumKit::VoiceParam), with their units.
+    const val VOICE_TUNE = 0   // 808: MIDI note 12..72 (36 = C1); kicks and rumble: Hz 30..120
+    const val VOICE_DECAY = 1  // seconds to -40 dB (808 up to 2.5, kicks up to 1.2, rumble up to 2)
+    const val VOICE_DRIVE = 2  // 0..1
+    const val VOICE_CLICK = 3  // 0..1
+    const val VOICE_GLIDE = 4  // seconds 0..0.5 (the 808's default slide; a step's setDrumStepGlide wins)
+    const val VOICE_SUB = 5    // 0..1, the kicks' sub layer
+    const val VOICE_TONE = 6   // 0..1: 808 sine -> triangle; rumble low-pass 60 -> 240 Hz
 
     // Live grid slots (Engine.h Slot): one per track.
     const val SLOT_DRUMS = 0
@@ -93,7 +129,8 @@ object NativeEngine {
     const val SLOT_INST = 2  // + instrument track 0..7
     const val SLOT_AUDIO = 10  // + audio track 0..3
     const val SLOT_REMIX = 14
-    const val SLOTS = 15
+    const val SLOT_AUDIO2 = 15  // + audio track 4..7 - 4
+    const val SLOTS = 19
     const val ALL_SLOTS = (1 shl SLOTS) - 1
     /** [slotStates]: the tag of a slot playing the row's scene (a scene swap), and of no launch waiting. */
     const val ROW_TAG = -2
@@ -117,10 +154,10 @@ object NativeEngine {
 
     /**
      * Mixer channels: 0 drums, 1 acid bass, 2 synth (instrument track 0), 3 remix stems, 5..11
-     * instrument tracks 1..7, 12..15 audio tracks 0..3. Index 4 is the master (inserts, automation, meters).
+     * instrument tracks 1..7, 12..15 audio tracks 0..3, 16..31 the drum pads' own strips, 32..35
+     * audio tracks 4..7. Index 4 is the master (inserts, automation, meters).
      */
-    /** 16 track strips (4 = the master's index) and the 16 drum pads' own strips. */
-    const val MIXER_CHANNELS = 32
+    const val MIXER_CHANNELS = 36
     const val MASTER = 4
     /** [mixerMeters]: after one peak per channel, the limiter's lowest gain since the last reading… */
     const val METER_LIMITER = MIXER_CHANNELS
@@ -139,10 +176,12 @@ object NativeEngine {
     /** …its true peak since ▶ and since the last reading (dBTP)… */
     const val LOUDNESS_TRUE_PEAK = 3
     const val LOUDNESS_RECENT_PEAK = 4
-    /** …and the gain the loudness target adds before the clipper and the limiter (dB). */
+    /** …and the gain the loudness target adds before the clipper and the limiter (dB)… */
     const val LOUDNESS_DRIVE = 5
+    /** …and (S5) what the clipper and the limiter take off for it (LU; with mix version 2, at the loudest part). */
+    const val LOUDNESS_LOSS = 6
     /** Size of the array [loudnessMeters] fills. */
-    const val LOUDNESS = 6
+    const val LOUDNESS = 7
     /** No value yet (silence, or under 400 ms of sound). */
     const val LOUDNESS_NONE = -100f
 
@@ -152,6 +191,10 @@ object NativeEngine {
     const val REPORT_SECONDS = 2
     const val REPORT_RATE = 3
     const val REPORT_DRIVE = 4
+    /** S5: what the clipper and the limiter took off (LU), the loudest part's loudness (LUFS, -1000: none), the target's mode. */
+    const val REPORT_LOSS = 5
+    const val REPORT_LOUD = 6
+    const val REPORT_MODE = 7
 
     /** [setLiveNoises] modes (the engine's PerformanceFx::Noises). */
     const val LIVE_NOISES_MIXED = 0
@@ -162,9 +205,13 @@ object NativeEngine {
     const val TRACKS = 8
 
     /** Audio tracks (AudioTracks::kTracks). */
-    const val AUDIO_TRACKS = 4
+    const val AUDIO_TRACKS = 8
 
-    fun audioChannel(track: Int) = 12 + track
+    /** The mixer channel of audio track [track] (Engine.h audioChannel): 12..15, then 32..35. */
+    fun audioChannel(track: Int) = if (track < 4) 12 + track else 32 + track - 4
+
+    /** The live slot of audio track [track] (Engine.h audioSlot): 10..13, then 15..18. */
+    fun audioSlot(track: Int) = if (track < 4) SLOT_AUDIO + track else SLOT_AUDIO2 + track - 4
 
     /** The mixer channel of instrument track [track]. */
     fun trackChannel(track: Int) = if (track == 0) 2 else 4 + track
@@ -173,6 +220,8 @@ object NativeEngine {
     private fun onTrack(track: Int, a: Int) = (a and 0xFFFF) or (track.coerceIn(0, TRACKS - 1) shl 16)
 
     const val LANES = 16
+    /** MultiSampler::kZones: the zones of one multizone instrument. */
+    const val MULTI_ZONES = 512
 
     private val loaded: Boolean = try {
         System.loadLibrary("pocketstudio_engine")
@@ -190,6 +239,19 @@ object NativeEngine {
     /** The engine can be used: the native library is loaded (or a test's [sink] stands in for it). */
     val isAvailable: Boolean get() = loaded || sink != null
 
+    /** The live engine is the native one (not a test's [sink]): [collectGarbage] has something to free. */
+    val isNative: Boolean get() = loaded && sink == null
+
+    /**
+     * Main thread (the one that installs sounds): frees the sounds the audio thread let go of. The
+     * installs do it before each new sound; an instrument's zones cleared (a track back to its
+     * synth) would otherwise wait for the next install with their memory.
+     */
+    fun collectGarbage() {
+        if (isNative) nativeCollectGarbage()
+    }
+    private external fun nativeCollectGarbage()
+
     fun setPlaying(playing: Boolean) = post(CMD_SET_PLAYING, if (playing) 1f else 0f)
     fun setFrequency(hz: Float) = post(CMD_SET_FREQUENCY, hz)
     fun setGain(gain: Float) = post(CMD_SET_GAIN, gain)
@@ -201,15 +263,70 @@ object NativeEngine {
     fun play(countInBars: Int = 0, songStep: Int = 0) = post(CMD_SET_TRANSPORT, 1f, countInBars, songStep.coerceAtLeast(OUTSIDE_SONG))
     fun stopTransport() = post(CMD_SET_TRANSPORT, 0f)
     fun setTempo(bpm: Double) = post(CMD_SET_TEMPO, bpm.toFloat())
-    /** The built-in kit's levels: 1 (the kit as it was, projects saved before phase 33) or 2 (kit v2). */
+    /**
+     * The built-in kit's levels: 1 (the kit as it was, projects saved before phase 33), 2 (kit v2) or 3
+     * (kit v3, phase 34: the short studio kick, the hard kick on pad 2, bright hats, a four-burst clap).
+     */
     fun setKitVersion(version: Int) = post(CMD_KIT_VERSION, version.toFloat())
+    /**
+     * The instrument tracks' sound version: 1 (projects saved before phase 34 S4: every track mono, as
+     * always) or 2 (S4: General MIDI instruments and stereo samples play in stereo).
+     */
+    fun setSoundVersion(version: Int) = post(CMD_SOUND_VERSION, version.toFloat())
+    /**
+     * The mix version: 1 (projects saved before phase 34 S5: the loudness target aims at the whole
+     * song, the master chain may take 6 LU) or 2 (S5: it aims at the loudest part, the Drop, and
+     * takes 3 LU at most there).
+     */
+    fun setMixVersion(version: Int) = post(CMD_MIX_VERSION, version.toFloat())
+    /**
+     * S5: the sound the sidechain listens to (the audio-keyed pumps, the « Musique » bus): mixer
+     * channel [channel] ([padChannel] for a drum pad, the kick's), or -1 for none.
+     */
+    fun setSidechainKey(channel: Int) = post(CMD_SIDECHAIN, channel.toFloat(), 0)
+    /** S5: the « Musique » bus's duck under the key: [depth], [lowDepth] (under 150 Hz), [release] (0..1 = 50..600 ms). */
+    fun setMusicBusDuck(depth: Float, lowDepth: Float, release: Float) {
+        post(CMD_SIDECHAIN, depth, 1)
+        post(CMD_SIDECHAIN, lowDepth, 2)
+        post(CMD_SIDECHAIN, release, 3)
+    }
+    /** S5: mixer channel [channel] plays through the « Musique » bus (or straight into the mix). */
+    fun setMusicBusMember(channel: Int, on: Boolean) = post(CMD_SIDECHAIN, if (on) 1f else 0f, 4, channel)
+    /** S5: send bus [bus]'s return (0 reverb, 1 echo) through the « Musique » bus. */
+    fun setMusicBusReturn(bus: Int, on: Boolean) = post(CMD_SIDECHAIN, if (on) 1f else 0f, 5, bus)
+    /** The mixer channel of drum pad [pad]'s own strip (the sidechain key of a kick). */
+    fun padChannel(pad: Int) = 16 + pad
     fun setSwing(swing: Double) = post(CMD_SET_SWING, swing.toFloat())
     fun setMetronome(on: Boolean) = post(CMD_SET_METRONOME, if (on) 1f else 0f)
     fun setPatternSteps(steps: Int) = post(CMD_SET_PATTERN_STEPS, 0f, steps)
     /** velocity 0 removes the hit. */
-    /** [repeats]: hits in the step (1 = plain, 2..4 = a roll), carried in one command with the hit. */
-    fun setDrumHit(lane: Int, step: Int, velocity: Float, repeats: Int = 1) =
-        post(CMD_SET_DRUM_HIT, velocity, lane, step or (repeats.coerceIn(1, 4) shl 16))
+    /**
+     * [repeats]: hits in the step (1 = plain, 2..8 = a roll), carried in one command with the hit, and the
+     * roll's [ramp] (Hit.ramp: 0 each hit a little softer, as always; 1 rising from half the velocity, a
+     * snare build; -1 falling to half, a bounce). [setDrumStepRoll] after it reshapes the roll further.
+     */
+    fun setDrumHit(lane: Int, step: Int, velocity: Float, repeats: Int = 1, ramp: Int = 0) =
+        post(CMD_SET_DRUM_HIT, velocity, lane, step or (repeats.coerceIn(1, 8) shl 16) or (hitRampBits(ramp) shl 24))
+
+    /** Engine.h SetDrumHit bits 24..25: 0 as before, 1 rising, 2 falling (3 even is [setDrumStepRoll]'s flat). */
+    private fun hitRampBits(ramp: Int) = when {
+        ramp > 0 -> 1
+        ramp < 0 -> 2
+        else -> 0
+    }
+    /**
+     * Phase 37: the steps pad [lane]'s lane loops over on its own (1..64, a polyrhythm); 0 = the
+     * pattern's length, as always. Follows [setStaging] (a scene's own).
+     */
+    fun setDrumLaneSteps(lane: Int, steps: Int) = post(CMD_DRUM_LANE_STEPS, steps.coerceIn(0, 64).toFloat(), lane)
+    /**
+     * After [setDrumHit] (which resets it to always): the chance (0..1) the hit and its roll play on
+     * each pass, drawn from the seed ([setDrumSeed]), the pad and the step's place in the song, the
+     * same way every time (DrumChance).
+     */
+    fun setDrumStepChance(lane: Int, step: Int, chance: Float) = post(CMD_DRUM_STEP_CHANCE, chance.coerceIn(0f, 1f), lane, step)
+    /** The chances' seed (0..2^24): another seed, another draw of the same chances. */
+    fun setDrumSeed(seed: Int) = post(CMD_DRUM_SEED, seed.coerceIn(0, 1 shl 24).toFloat())
     /** A pad's place in the stereo field, -1 (left) .. 1 (right). */
     fun setPadPan(lane: Int, pan: Float) = post(CMD_PAD_PAN, pan, lane)
     /**
@@ -218,8 +335,39 @@ object NativeEngine {
      */
     fun setDrumStepDetail(lane: Int, step: Int, pan: Float, pitch: Int) =
         post(CMD_DRUM_STEP_DETAIL, pan, lane, step or ((pitch.coerceIn(-24, 24) + 64) shl 16))
-    /** Hits in the step: 1 = plain, 2..4 = a roll. */
-    fun setDrumRepeat(lane: Int, step: Int, repeats: Int) = post(CMD_DRUM_REPEAT, repeats.toFloat(), lane, step)
+    /** Hits in the step: 1 = plain, 2..16 = a roll (at most 8 a step; more over a [setDrumStepRoll] span). */
+    fun setDrumRepeat(lane: Int, step: Int, repeats: Int) = post(CMD_DRUM_REPEAT, repeats.coerceIn(1, 16).toFloat(), lane, step)
+    /**
+     * After [setDrumHit] (which resets it): this hit, and its roll, plays [ms] milliseconds early (< 0,
+     * -50..) or late (..50). An early hit is queued from the step before it; the first step after play
+     * lands on the grid.
+     */
+    fun setDrumStepOffset(lane: Int, step: Int, ms: Float) = post(CMD_DRUM_STEP_OFFSET, ms.coerceIn(-50f, 50f), lane, step)
+    /**
+     * After [setDrumHit] (which resets it): the step's roll. [hits] (1..16, at most 8 a step) spread
+     * evenly over [span] steps (1..4: 8 hits over 4 steps = a 1/32 burst over a beat), their velocity
+     * shaped by [ramp] ([ROLL_RAMP_LEGACY]: each hit 0.85 x the one before, as before phase 34;
+     * [ROLL_RAMP_FLAT]; [ROLL_RAMP_UP]: the first hit at velocity x (1 - [amount]), the last at the
+     * velocity; [ROLL_RAMP_DOWN]: the reverse), [triplet] = a shuffle (every second gap longer, 2:1).
+     */
+    fun setDrumStepRoll(lane: Int, step: Int, hits: Int, span: Int = 1, ramp: Int = ROLL_RAMP_FLAT, amount: Float = 0f, triplet: Boolean = false) =
+        post(
+            CMD_DRUM_STEP_ROLL, amount.coerceIn(0f, 1f), lane,
+            step or (span.coerceIn(1, 4) shl 8) or (ramp.coerceIn(0, 3) shl 12) or ((if (triplet) 1 else 0) shl 15) or (hits.coerceIn(1, 16) shl 16),
+        )
+    /**
+     * After [setDrumHit] (which resets it): the 808 ([PAD_VOICE_808]) slides from the pitch it plays to
+     * this hit's over [ms] milliseconds (0..500; 0: a new note). The hit's pitch: [setDrumStepDetail].
+     */
+    fun setDrumStepGlide(lane: Int, step: Int, ms: Float) = post(CMD_DRUM_STEP_GLIDE, ms.coerceIn(0f, 500f), lane, step)
+    /**
+     * What the pad plays instead of its own voice of the kit: [PAD_VOICE_KIT] (its own), [PAD_VOICE_808],
+     * [PAD_VOICE_KICK_STUDIO], [PAD_VOICE_KICK_HARD] or [PAD_VOICE_RUMBLE]. The voice's settings go back
+     * to its defaults: send [setPadVoiceParam] after it.
+     */
+    fun setPadVoice(lane: Int, kind: Int) = post(CMD_PAD_VOICE, kind.coerceIn(0, 4).toFloat(), lane)
+    /** A studio voice's setting ([VOICE_TUNE] .. [VOICE_TONE]), in its unit (see the constants). */
+    fun setPadVoiceParam(lane: Int, param: Int, value: Float) = post(CMD_PAD_VOICE_PARAM, value, lane, param)
     /** [packed] = AcidStep.pack() from project-model (same layout as the engine). */
     fun setAcidStep(index: Int, packed: Int) = post(CMD_SET_ACID_STEP, 0f, index, packed)
     fun setAcidLength(steps: Int) = post(CMD_SET_ACID_LENGTH, 0f, steps)
@@ -254,6 +402,15 @@ object NativeEngine {
     /** A track's quick control (Macros: colour, dirt, motion, space), 0..1. */
     fun setMacro(ch: Int, macro: Int, value: Float) = post(CMD_MACRO, value, ch, macro)
     fun setBusParam(bus: Int, param: Int, value: Float) = post(CMD_BUS_PARAM, value, bus, param)
+
+    /** The send reverb's type ([setBusParam] on bus 0): [REVERB_HALL] (as always), [REVERB_PLATE] or [REVERB_ROOM]. */
+    const val BUS_REVERB_TYPE = 4
+    const val REVERB_HALL = 0f
+    const val REVERB_PLATE = 0.5f
+    const val REVERB_ROOM = 1f
+    /** A send bus's return equaliser: low cut (0 = off, else 40 x 25^v Hz) and high cut (1 = off, else 1 x 20^v kHz). */
+    const val BUS_LOW_CUT = 8
+    const val BUS_HIGH_CUT = 9
     /** Lane 0..7 follows [packedTarget] (AutoTarget.pack(), -1 = off); clears its points. */
     fun setAutomationTarget(lane: Int, packedTarget: Int) = post(CMD_AUTOMATION_TARGET, 0f, lane, packedTarget)
     /**
@@ -278,15 +435,20 @@ object NativeEngine {
     /** The song ends after [steps] steps of the playing scene: the transport stops on that bar line (counted in [sceneSwaps]). */
     fun armSongEnd(steps: Int) = post(CMD_ARM_SCENE_SWAP, 0f, steps, 2)
     /** Steps since the song (re)started, as song automation reads them; -1 when stopped. */
-    external fun songStep(): Int
+    fun songStep(): Int = sink?.songStep() ?: nativeSongStep()
+    private external fun nativeSongStep(): Int
     /** Live effects on the master: [param] 0 filter (0.5 = off), 1 resonance, 2 repeat on, 3 repeat division, 4 tape stop, 5 chop. */
     fun setPerformance(param: Int, value: Float) = post(CMD_PERFORMANCE, value, param)
-    /** The synth track's own voice: 0 subtractive, 1 Plaits, 2 a sample played across the keys ([setTrackSample]). */
+    /**
+     * The synth track's own voice: 0 subtractive, 1 Plaits, 2 a sample played across the keys ([setTrackSample]),
+     * 3 a multizone instrument ([setTrackZone]; the synth while it has none), 4 the 808 ([setTrack808Param]).
+     */
     fun setSynthEngine(engine: Int, track: Int = 0) = post(CMD_SYNTH_ENGINE, 0f, onTrack(track, engine))
     /** [param] in PlaitsSynth::Param order (0 model, 1 harmonics … 7 level), [value] 0..1. */
     fun setPlaitsParam(param: Int, value: Float, track: Int = 0) = post(CMD_PLAITS_PARAM, value, onTrack(track, param))
     /** How many times a waiting scene took over since the engine started. */
-    external fun sceneSwaps(): Int
+    fun sceneSwaps(): Int = sink?.sceneSwaps() ?: nativeSceneSwaps()
+    private external fun nativeSceneSwaps(): Int
     /** Writes into [out] (size [METERS]): channel peaks (the master's output at [MASTER]), the limiter gain, the master's level into the limiter. */
     external fun mixerMeters(out: FloatArray)
     /**
@@ -317,7 +479,8 @@ object NativeEngine {
     }
 
     /** Current pattern step, or -1 when stopped or counting in. */
-    external fun currentStep(): Int
+    fun currentStep(): Int = sink?.currentStep() ?: nativeCurrentStep()
+    private external fun nativeCurrentStep(): Int
 
     /**
      * How busy the audio thread is: its render time over the time its sound lasts, smoothed over
@@ -325,13 +488,15 @@ object NativeEngine {
      */
     external fun cpuLoad(): Float
     /** Steps since play without wrapping (-1 stopped): the piano roll loops on its own length. */
-    external fun absoluteStep(): Int
+    fun absoluteStep(): Int = sink?.absoluteStep() ?: nativeAbsoluteStep()
+    private external fun nativeAbsoluteStep(): Int
 
     /**
      * Position in the playing scene in sixteenths, with the fraction (live recording). While the
      * count-in clicks, negative: the sixteenths left before the first step. -1 when stopped.
      */
-    external fun playPosition(): Double
+    fun playPosition(): Double = sink?.playPosition() ?: nativePlayPosition()
+    private external fun nativePlayPosition(): Double
 
     /** Click volume 0..1 (0.5 = default). */
     fun setMetronomeLevel(level: Float) = post(CMD_METRONOME_LEVEL, level.coerceIn(0f, 1f))
@@ -339,9 +504,16 @@ object NativeEngine {
     /** Output buffer in bursts: 2 = fast (lowest latency), 4 = safe, 6 = very safe. Applies at once. */
     external fun setBufferBursts(bursts: Int)
 
-    /** Piano-roll note [index] (ticks: 24 per sixteenth). Packing matches NoteTrack::pack. */
+    /**
+     * Piano-roll note [index] (ticks: 24 per sixteenth). Packing matches NoteTrack::pack and, past
+     * 4095 ticks (16-bar loops), NoteTrack::packIndex.
+     */
     fun setSynthNote(index: Int, start: Int, length: Int, pitch: Int, velocity: Float, track: Int = 0) =
-        post(CMD_SYNTH_NOTE, velocity, onTrack(track, index), (start and 0xFFF) or ((length and 0xFFF) shl 12) or ((pitch and 0x7F) shl 24))
+        post(CMD_SYNTH_NOTE, velocity, onTrack(track, synthNoteIndex(index, start, length)), (start and 0xFFF) or ((length and 0xFFF) shl 12) or ((pitch and 0x7F) shl 24))
+
+    /** NoteTrack::packIndex: the index (10 bits), then the start's and the length's bits 12..14. */
+    fun synthNoteIndex(index: Int, start: Int, length: Int): Int =
+        (index and 0x3FF) or (((start shr 12) and 0x7) shl 10) or (((length shr 12) and 0x7) shl 13)
     fun setSynthNoteCount(count: Int, track: Int = 0) = post(CMD_SYNTH_NOTE_COUNT, 0f, onTrack(track, count))
     fun setSynthSteps(steps: Int, track: Int = 0) = post(CMD_SYNTH_STEPS, 0f, onTrack(track, steps))
     /** Writes into [out] (size [LANES]) how many times each lane has fired. */
@@ -425,6 +597,19 @@ object NativeEngine {
         sink?.let { it.install(target, CommandSink.Install.PadSample, pad, sample?.handle ?: 0L); return }
         if (target != 0L) exportInstallSample(target, pad, sample?.handle ?: 0L)
         else nativeInstallSample(pad, sample?.handle ?: 0L)
+    }
+
+    /**
+     * Sampled kits: pad [pad]'s layer [layer] (0..7) plays [sample] for hit velocities [velocityLow]..[velocityHigh]
+     * (0..127); layers sharing a range take turns (round robin, from the start of the transport). Null removes
+     * the layer. A pad with layers plays them instead of its sample; [setPadSample] removes them, so a kit's pad
+     * is sent as [setPadSample] (its base sound) then its layers. Main thread, like every command.
+     */
+    fun setPadLayer(pad: Int, layer: Int, velocityLow: Int, velocityHigh: Int, sample: NativeSample?) {
+        // Sampler::layerArg: the pad index carries the layer and its range (the engine reads them from it).
+        val packed = (pad and 0xFF) or ((layer.coerceIn(0, 7) + 1) shl 8) or (velocityLow.coerceIn(0, 127) shl 16) or
+            (velocityHigh.coerceIn(0, 127) shl 24)
+        setPadSample(packed, sample)
     }
 
     /** The remix track plays [stems] from step 0 (null: no song). Main thread, like every command. */
@@ -553,6 +738,28 @@ object NativeEngine {
     /** [param] in SampleInstrument::Param order (0 root note … 9 gain), in that parameter's unit. */
     fun setTrackSampleParam(param: Int, value: Float, track: Int = 0) = post(CMD_TRACK_SAMPLE_PARAM, value, onTrack(track, param))
 
+    /**
+     * Zone [zone] (0..511) of instrument track [track]'s multizone instrument plays [sample] (a
+     * [NativeSample.createCompact] one; null: none). The zone's keys and the rest: [setTrackZoneParam].
+     */
+    fun setTrackZone(track: Int, zone: Int, sample: NativeSample?) {
+        val target = captureTarget
+        // The JNI's track argument: the track, and the zone + 1 above it (0 would be the sampled source).
+        val packed = track.coerceIn(0, TRACKS - 1) or ((zone.coerceIn(0, MULTI_ZONES - 1) + 1) shl 8)
+        sink?.let { it.install(target, CommandSink.Install.TrackSample, packed, sample?.handle ?: 0L); return }
+        if (target != 0L) exportInstallTrackSample(target, packed, sample?.handle ?: 0L)
+        else nativeInstallTrackSample(packed, sample?.handle ?: 0L)
+    }
+
+    /** A zone's setting in MultiSampler::ZoneParam order (keys, velocities, root, gain, round robin, trigger, loop), in its unit. */
+    fun setTrackZoneParam(track: Int, zone: Int, param: Int, value: Float) = post(CMD_TRACK_ZONE, value, onTrack(track, param), zone.coerceIn(0, MULTI_ZONES - 1))
+
+    /** The multizone instrument's own settings, in MultiSampler::Param order (0 the zones in use … 5 release samples' decay). */
+    fun setTrackMultiParam(track: Int, param: Int, value: Float) = post(CMD_TRACK_ZONE, value, onTrack(track, param), -1)
+
+    /** The track's 808 ([setSynthEngine] 4): a setting in DrumKit::VoiceParam order ([VOICE_DECAY] … [VOICE_TONE]; the tune is its notes'). */
+    fun setTrack808Param(track: Int, param: Int, value: Float) = post(CMD_TRACK_808, value, onTrack(track, param))
+
     /** Drum pad [pad] plays through its own mixer strip (its own effects) or straight into the drums'. */
     fun setPadStrip(pad: Int, on: Boolean) = post(CMD_PAD_STRIP, if (on) 1f else 0f, pad)
 
@@ -577,6 +784,10 @@ object NativeEngine {
     fun setMasterCeiling(dbtp: Float) = post(CMD_MASTER, dbtp, 5)
     /** Another project: the target's estimate of the music's loudness starts over. */
     fun resetLoudnessEstimate() = post(CMD_MASTER, 0f, 6)
+    /** S4: the whole mix's lows in mono under [hz] (its side high-passed, 24 dB / octave); 0 = off, as before. */
+    fun setMonoBass(hz: Float) = post(CMD_MASTER, hz, 7)
+    /** S5 (mix version 2): the drive an export of this song found (dB): the live target settles there. */
+    fun setKnownDrive(db: Float) = post(CMD_MASTER, db, 8)
     private external fun nativeInstallTrackSample(track: Int, handle: Long): Boolean
     private external fun exportInstallTrackSample(exportHandle: Long, track: Int, handle: Long)
     private external fun exportInstallAudioClip(exportHandle: Long, track: Int, handle: Long)
@@ -603,20 +814,28 @@ object NativeEngine {
     /** The return of send bus [bus] (0 reverb, 1 echo) times [gain] (0..2, 1 = as mixed): a live gesture, not saved. */
     fun setBusReturn(bus: Int, gain: Float) = post(CMD_BUS_RETURN, gain.coerceIn(0f, 2f), bus)
     /** Transport steps since play (-1 stopped or counting in): the live grid's clock. */
-    external fun transportStep(): Int
+    fun transportStep(): Int = sink?.transportStep() ?: nativeTransportStep()
+    private external fun nativeTransportStep(): Int
     /** The transport's place in sixteenths since play, with the fraction (-1 stopped or counting in). */
-    external fun transportPosition(): Double
+    fun transportPosition(): Double = sink?.transportPosition() ?: nativeTransportPosition()
+    private external fun nativeTransportPosition(): Double
     /**
      * A recorded performance starts on the next transport step that is a multiple of [quantumSteps]:
      * the song position there becomes [songStep] ([quantumSteps] 0: cancelled).
      */
     fun markSong(quantumSteps: Int, songStep: Int) = post(CMD_MARK_SONG, songStep.toFloat(), quantumSteps.coerceAtLeast(0))
     /** The transport step the last [markSong] took effect on (-1: not yet). */
-    external fun songMarkStep(): Int
+    fun songMarkStep(): Int = sink?.songMarkStep() ?: nativeSongMarkStep()
+    private external fun nativeSongMarkStep(): Int
     /** Per slot, 3 values: tag playing (scene, -1 stopped, [ROW_TAG]), tag waiting ([NO_LAUNCH], -1 stop, scene), start step. */
-    external fun slotStates(out: IntArray)
+    fun slotStates(out: IntArray) {
+        sink?.let { it.slotStates(out); return }
+        nativeSlotStates(out)
+    }
+    private external fun nativeSlotStates(out: IntArray)
     /** The launches that happened since the last call into [out] (slot, tag, step each); returns how many. */
-    external fun drainLaunchEvents(out: IntArray): Int
+    fun drainLaunchEvents(out: IntArray): Int = sink?.drainLaunchEvents(out) ?: nativeDrainLaunchEvents(out)
+    private external fun nativeDrainLaunchEvents(out: IntArray): Int
 
     /** [values] in Sampler::Param order (see PadSample.engineParams). */
     fun setPadParams(pad: Int, values: FloatArray) {
@@ -655,10 +874,13 @@ object NativeEngine {
     private external fun exportSetInstrument(exportHandle: Long, font: Long, preset: Int)
 
     external fun sampleCreate(data: FloatArray, channels: Int, sampleRate: Int): Long
+    external fun sampleCreateCompact(data: FloatArray, channels: Int, sampleRate: Int): Long
     external fun sampleRelease(handle: Long)
     external fun sampleFrames(handle: Long): Long
     external fun sampleOnsets(handle: Long, sensitivity: Float, maxSlices: Int): FloatArray
     external fun sampleStretched(handle: Long, start: Float, end: Float, outFrames: Long, semitones: Float): Long
+    /** Worker thread: [data] (interleaved, [channels]) lasting [outFrames], pitch kept; null when it cannot be made. */
+    external fun stretchPcm(data: FloatArray, channels: Int, outFrames: Long, sampleRate: Int): FloatArray?
     private external fun nativeInstallSample(pad: Int, handle: Long): Boolean
     external fun stemsLoad(paths: Array<String>): Long
     external fun stemsRelease(handle: Long)
@@ -683,6 +905,7 @@ object NativeEngine {
     external fun exportReport(handle: Long): FloatArray
     external fun exportProgress(handle: Long): Float
     external fun exportRenderFloat(handle: Long, frames: Long, tail: Long): FloatArray
+    external fun exportRenderFloatMono(handle: Long, frames: Long, tail: Long): FloatArray
     external fun exportCancel(handle: Long)
     external fun exportDestroy(handle: Long)
     private external fun nativePost(type: Int, value: Float, a: Int, b: Int): Boolean

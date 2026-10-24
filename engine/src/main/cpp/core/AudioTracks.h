@@ -21,7 +21,7 @@ namespace ps {
 // except where noted: never allocates or frees.
 class AudioTracks {
 public:
-    static constexpr int kTracks = 4;
+    static constexpr int kTracks = 8;
     // Fades and offset in frames.
     enum Param { Start = 0, LoopSteps = 1, Gain = 2, FadeIn = 3, FadeOut = 4, Song = 5, Offset = 6 };
     static constexpr int kMaxOffset = 14400;  // 300 ms at 48 kHz
@@ -42,7 +42,8 @@ public:
     // 0 is sequencer step `songOrigin`) place a song clip picked up in its middle exactly where it
     // would be had it played from its start.
     void onStep(int offset, int local, int songStep, double samplesPerStep = 0.0, double swing = 0.0, int songOrigin = 0) {
-        const std::array<int, kTracks> locals{local, local, local, local};
+        std::array<int, kTracks> locals{};
+        locals.fill(local);
         onStep(offset, locals, songStep, samplesPerStep, swing, songOrigin);
     }
     // The same with each track's own `local` (the live grid: each track counts from its own launch).

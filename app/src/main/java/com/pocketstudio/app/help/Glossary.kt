@@ -10,16 +10,16 @@ import com.pocketstudio.ui.Help
 object Glossary {
     // --- Building a song ---
     val SCENE: Help get() = Help(
-        tr("Scène"),
-        tr("Un petit bout de morceau (souvent 4 mesures) : la batterie, la basse et les notes que tu as écrites. On passe d'une scène à l'autre en touchant son carré ; la suivante démarre à la fin de la mesure en cours."),
+        tr("Partie"),
+        tr("Un petit bout de morceau (souvent 4 mesures) : la batterie, la basse et les notes que tu as écrites. Le morceau enchaîne les parties ; on passe de l'une à l'autre en touchant son carré, la suivante démarre à la fin de la mesure en cours."),
     )
     val SONG: Help get() = Help(
         tr("Morceau"),
-        tr("Les scènes mises bout à bout, chacune répétée autant de fois que tu veux. Dans la ligne de temps, chaque carré allume ou coupe une piste dans une partie du morceau."),
+        tr("Les parties mises bout à bout, chacune répétée autant de fois que tu veux. Dans la ligne du temps, chaque carré allume ou coupe une piste dans une partie."),
     )
     val LIVE_PADS: Help get() = Help(
         tr("Pads live"),
-        tr("Des sons déjà enregistrés (boucles, voix, bouts de morceau) que tu lances et arrêtes d'un toucher, par-dessus ta scène. Ils restent calés sur le tempo, comme chez un DJ."),
+        tr("Des sons déjà enregistrés (boucles, voix, bouts de morceau) que tu lances et arrêtes d'un toucher, par-dessus ta partie. Ils restent calés sur le tempo, comme chez un DJ."),
     )
     val LOOP: Help get() = Help(
         tr("Boucle"),
@@ -54,7 +54,7 @@ object Glossary {
         tr("4 temps par mesure pour presque toute la musique actuelle ; 3 pour une valse ; 5 ou 7 pour des rythmes boiteux."),
     )
     val TIMELINE: Help get() = Help(
-        tr("Ligne de temps"),
+        tr("Ligne du temps"),
         tr("Une colonne par partie du morceau, une ligne par piste : un carré allumé, la piste joue dans cette partie ; éteint, elle se tait."),
     )
 
@@ -307,7 +307,7 @@ object Glossary {
     )
     val AUDIO_TRACK: Help get() = Help(
         tr("Piste audio"),
-        tr("Une piste qui joue un enregistrement (micro ou fichier) : une fois dans chaque partie de sa scène, ou d'un bout à l'autre du morceau. Enregistre avec des écouteurs."),
+        tr("Une piste qui joue un enregistrement (micro ou fichier) : une fois à chaque passage de sa partie, ou d'un bout à l'autre du morceau. Enregistre avec des écouteurs."),
     )
     val GENERATE: Help get() = Help(
         tr("Générer un son"),

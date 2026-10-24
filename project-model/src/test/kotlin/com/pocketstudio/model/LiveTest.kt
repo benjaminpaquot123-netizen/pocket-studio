@@ -10,14 +10,18 @@ import org.junit.Test
 class LiveTest {
     @Test
     fun slotsAndKeysGoBothWays() {
-        val keys = listOf(SongPart.DRUMS, SongPart.ACID, SongPart.inst(0), SongPart.inst(7), SongPart.audio(0), SongPart.audio(3), SongPart.REMIX)
+        val keys = listOf(
+            SongPart.DRUMS, SongPart.ACID, SongPart.inst(0), SongPart.inst(7), SongPart.audio(0), SongPart.audio(3), SongPart.REMIX,
+            SongPart.audio(4), SongPart.audio(7),
+        )
         val slots = keys.map { LiveSlots.of(it) }
-        assertEquals(listOf(0, 1, 2, 9, 10, 13, 14), slots)
+        // Audio tracks 5..8 after the remix: the slots saved in takes before keep their meaning.
+        assertEquals(listOf(0, 1, 2, 9, 10, 13, 14, 15, 18), slots)
         keys.forEach { assertEquals(it, LiveSlots.key(LiveSlots.of(it)!!)) }
         assertNull(LiveSlots.of("inst:8"))
-        assertNull(LiveSlots.of("audio:4"))
+        assertNull(LiveSlots.of("audio:8"))
         assertNull(LiveSlots.of("nope"))
-        assertEquals((1 shl 15) - 1, LiveSlots.ALL)
+        assertEquals((1 shl 19) - 1, LiveSlots.ALL)
     }
 
     /** A: drums of 16 steps; B: an acid line of 48 steps. */

@@ -2,6 +2,7 @@
 
 package com.pocketstudio.app.session
 
+import com.pocketstudio.app.learn.spot
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animate
 import androidx.compose.animation.core.tween
@@ -15,7 +16,10 @@ import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.calculateCentroid
 import androidx.compose.foundation.gestures.calculateZoom
-import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
+import androidx.compose.ui.input.pointer.positionChange
+import androidx.compose.ui.input.pointer.changedToUp
+import androidx.compose.foundation.gestures.drag
+import androidx.compose.foundation.gestures.awaitLongPressOrCancellation
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.gestures.stopScroll
@@ -32,6 +36,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -68,6 +73,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -203,6 +209,12 @@ class TimelineActions(
     val openLane: (Int) -> Unit = {},
     val undo: () -> Unit = {},
     val redo: () -> Unit = {},
+    /** The part sheet's intentions (Variation, Fill, Break…) on part (index): one undo step each. */
+    val partIntent: (Int, PartIntent) -> Unit = { _, _ -> },
+    /** Phase 36: a touch on a track's name, « Changer le son » of that track (key); null: the name is not a button. */
+    val trackSound: ((String) -> Unit)? = null,
+    /** Phase 36: « Ce qui joue » in scene (index), from the part sheet a long press on a flag opens. */
+    val whatPlays: (Int) -> Unit = {},
 )
 
 private val BAND_H = 30.dp
@@ -474,7 +486,19 @@ private fun editorName(key: String): String = when {
  * bars a long press then a slide loops over parts (the engine moves on at part boundaries).
  */
 @Composable
-fun TimelineScreen(ui: TimelineUi, actions: TimelineActions, barDp: Dp? = null) {
+fun TimelineScreen(
+    ui: TimelineUi, actions: TimelineActions, barDp: Dp? = null,
+    /** Under the timeline's bar: the position strip (tempo, « mes. x/y »), given by the app. */
+    under: (@Composable () -> Unit)? = null,
+    /**
+     * Phase 36: inside the Structure space, under the app's own top bar and play strip: no bar of
+     * its own (▶, undo and the position are the app's), only its tools, [lead] first (the
+     * « Ligne du temps / Parties » switch), and [expand] to see it on the whole screen.
+     */
+    embedded: Boolean = false,
+    lead: (@Composable () -> Unit)? = null,
+    expand: (() -> Unit)? = null,
+) {
     val p = ui.project
     var immersive by rememberSaveable { mutableStateOf(false) }
     com.pocketstudio.app.live.HideSystemBars(immersive)
@@ -540,7 +564,21 @@ fun TimelineScreen(ui: TimelineUi, actions: TimelineActions, barDp: Dp? = null) 
         }
         Column(Modifier.fillMaxSize()) {
             val zoom: @Composable () -> Unit = { ZoomIcons(view, scroller, p.songBars, minPx, maxPx, zoomAnchor) }
-            if (landscape) {
+            if (embedded) {
+                // One line: the switch, the tools (Suivre, Boucle, courbes, hauteur), the zoom when wide, ⛶.
+                Row(
+                    Modifier.fillMaxWidth().background(lerp(Neon.Surface, Color.Black, 0.18f)).padding(start = 4.dp).testTag("timeline_tools_bar"),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    lead?.invoke()
+                    tools(Modifier.weight(1f), !landscape)
+                    if (landscape) {
+                        zoom()
+                        HelpIcon { help = true }
+                    }
+                    if (expand != null) ToolIcon(Icons.Filled.Fullscreen, tr("Plein écran"), "timeline_expand", onClick = expand)
+                }
+            } else if (landscape) {
                 // Wide: one bar, the zoom with the tools.
                 TimelineTopBar(ui, actions, immersive, toggleFull = { immersive = !immersive }) {
                     tools(Modifier.weight(1f), false)
@@ -551,10 +589,12 @@ fun TimelineScreen(ui: TimelineUi, actions: TimelineActions, barDp: Dp? = null) 
                 TimelineTopBar(ui, actions, immersive, toggleFull = { immersive = !immersive }, middle = null)
                 tools(Modifier.fillMaxWidth().background(lerp(Neon.Surface, Color.Black, 0.18f)), true)
             }
+            // Full screen is for the clips: the strip gives way there.
+            if (under != null && !immersive && !embedded) under()
             if (p.song.isEmpty()) {
                 Column(Modifier.fillMaxWidth().padding(24.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Text(tr("Le morceau est vide : ajoute des parties dans Morceau pour les voir ici, piste par piste."), color = Neon.TextSecondary)
-                    OutlinedButton(onClick = actions.back) { Text(tr("Revenir au morceau")) }
+                    Text(tr("Le morceau est vide : ajoute des parties (Structure › Parties) pour les voir ici, piste par piste."), color = Neon.TextSecondary)
+                    OutlinedButton(onClick = actions.back, modifier = Modifier.testTag("timeline_empty_back")) { Text(if (embedded) tr("Voir les parties") else tr("Revenir au morceau")) }
                 }
                 return@Column
             }
@@ -736,7 +776,10 @@ private fun TimelineHelp(close: () -> Unit) {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.testTag("timeline_help_text")) {
                 listOf(
                     tr("Toucher un clip : couper ou remettre la piste dans cette partie."),
-                    tr("Appui long sur un clip : l'ouvrir, changer de scène, répéter, couper, dupliquer."),
+                    tr("Deux touches sur un clip : l'ouvrir dans son éditeur, sur cette partie."),
+                    tr("Toucher le nom d'une piste : changer son son (le kit pour la batterie)."),
+                    tr("Appui long sur un drapeau de partie : sa feuille (Fill, Break, Montée…)."),
+                    tr("Appui long sur un clip : l'ouvrir, changer de partie, répéter, couper, dupliquer."),
                     tr("Toucher la règle : jouer depuis cette partie."),
                     tr("Appui long puis glisser : sur un drapeau, déplacer la partie ; sur les mesures, boucler."),
                     tr("Deux doigts : zoomer. Un doigt qui fait défiler arrête « Suivre », Lecture le remet."),
@@ -881,10 +924,17 @@ private fun TrackHeader(p: Project, row: TimelineRow, color: Color, height: Dp, 
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(Modifier.padding(start = 5.dp, top = 6.dp, bottom = 6.dp).width(4.dp).fillMaxHeight().clip(RoundedCornerShape(2.dp)).background(color))
+        val sound = actions.trackSound
         val title: @Composable (Modifier) -> Unit = { m ->
             Text(
                 name, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.SemiBold,
-                maxLines = 1, overflow = TextOverflow.Ellipsis, color = Neon.TextPrimary, modifier = m,
+                maxLines = 1, overflow = TextOverflow.Ellipsis, color = Neon.TextPrimary,
+                // Phase 36: the track's name opens « Changer le son » (the kit for the drums).
+                modifier = if (sound == null) m else m.clip(RoundedCornerShape(6.dp))
+                    .clickable(role = androidx.compose.ui.semantics.Role.Button, onClickLabel = tr("Changer le son de %s", name)) { sound(row.key) }
+                    .heightIn(min = 32.dp).wrapContentHeight(Alignment.CenterVertically)
+                    .spot("timeline_name_${row.key}", if (row.key == com.pocketstudio.model.SongPart.DRUMS) tr("Changer le son") else null)
+                    .testTag("timeline_name_${row.key}"),
             )
         }
         val buttons: @Composable () -> Unit = {
@@ -929,7 +979,7 @@ private fun LaneHeader(lane: TimelineLane, color: Color, colors: TimelinePalette
     Row(
         Modifier.fillMaxWidth().height(LANE_H).background(lerp(colors.header, Color.Black, 0.22f))
             .drawBehind { drawLine(colors.separator, Offset(0f, size.height - 0.5f), Offset(size.width, size.height - 0.5f), 1.dp.toPx()) }
-            .clickable(onClickLabel = tr("Modifier la courbe dans le Mixeur")) { actions.openLane(lane.index) }
+            .clickable(onClickLabel = tr("Modifier la courbe dans Mix")) { actions.openLane(lane.index) }
             .padding(start = 14.dp, end = 4.dp).testTag("timeline_lane_${lane.index}"),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(6.dp),
@@ -974,7 +1024,10 @@ private fun TimelineRuler(
     var dragFrom by remember { mutableIntStateOf(-1) }
     var loopFrom by remember { mutableIntStateOf(-1) }
     var dragX by remember { mutableFloatStateOf(0f) }
-    var longPressed by remember { mutableStateOf(false) }
+    var dragStartX by remember { mutableFloatStateOf(0f) }
+    // Phase 36: a long press on a part's flag, released without sliding, opens its sheet.
+    var sheetFor by remember { mutableStateOf<Int?>(null) }
+    val slop = with(LocalDensity.current) { 12.dp.toPx() }
     val bandPx = with(LocalDensity.current) { BAND_H.toPx() }
     fun partAt(x: Float): Int {
         val stepPx = view.barPx / view.stepsPerBar
@@ -988,40 +1041,46 @@ private fun TimelineRuler(
     }
     Canvas(
         modifier
+            // One detector for the three gestures, so they never race: a touch plays from the part
+            // there; a long press then a slide moves a part (on the flags) or loops over parts (on
+            // the bars); a long press let go where it was opens the part's sheet (on the flags).
             .pointerInput(Unit) {
-                detectTapGestures(
-                    onPress = { longPressed = false },
-                    onTap = { at ->
-                        if (longPressed) return@detectTapGestures
-                        // A touch on the ruler plays from the part there (the song moves on at part boundaries).
-                        val stepPx = view.barPx / view.stepsPerBar
-                        val i = latestUi.project.partAtStep(((view.scrollX + at.x) / stepPx).toInt())
-                        if (i >= 0) latestActions.playPart(i)
-                    },
-                )
-            }
-            .pointerInput(Unit) {
-                detectDragGesturesAfterLongPress(
-                    onDragStart = { at ->
-                        longPressed = true
-                        val i = partAt(at.x)
-                        if (i < 0) return@detectDragGesturesAfterLongPress
-                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                        dragX = at.x
-                        if (at.y < bandPx) dragFrom = i else loopFrom = i
-                    },
-                    onDrag = { change, amount -> change.consume(); dragX += amount.x },
-                    onDragEnd = {
+                awaitEachGesture {
+                    val down = awaitFirstDown(requireUnconsumed = false)
+                    val long = awaitLongPressOrCancellation(down.id)
+                    if (long == null) {
+                        val up = currentEvent.changes.firstOrNull { it.id == down.id }
+                        if (up != null && up.changedToUp() && !up.isConsumed) {
+                            // A touch on the ruler plays from the part there (the song moves on at part boundaries).
+                            val stepPx = view.barPx / view.stepsPerBar
+                            val i = latestUi.project.partAtStep(((view.scrollX + down.position.x) / stepPx).toInt())
+                            if (i >= 0) latestActions.playPart(i)
+                        }
+                        return@awaitEachGesture
+                    }
+                    val at = long.position
+                    val i = partAt(at.x)
+                    if (i < 0) return@awaitEachGesture
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    dragX = at.x
+                    dragStartX = at.x
+                    if (at.y < bandPx) dragFrom = i else loopFrom = i
+                    val ended = drag(long.id) { change ->
+                        dragX += change.positionChange().x
+                        change.consume()
+                    }
+                    if (ended) {
                         val to = partAt(dragX)
-                        if (dragFrom >= 0 && to >= 0 && to != dragFrom) latestActions.movePart(dragFrom, to)
+                        if (dragFrom >= 0 && abs(dragX - dragStartX) < slop) sheetFor = dragFrom
+                        else if (dragFrom >= 0 && to >= 0 && to != dragFrom) latestActions.movePart(dragFrom, to)
                         if (loopFrom >= 0 && to >= 0) latestActions.setLoop(songLoopOf(loopFrom, to, latestUi.project.song.size))
-                        dragFrom = -1
-                        loopFrom = -1
-                    },
-                    onDragCancel = { dragFrom = -1; loopFrom = -1 },
-                )
+                    }
+                    dragFrom = -1
+                    loopFrom = -1
+                }
             }
             .then(pinch)
+            .spot("timeline_ruler", tr("Jouer · appui long : Fill"))
             .testTag("timeline_ruler")
             .semantics { contentDescription = tr("Règle des mesures : touche pour jouer à partir d'une partie") },
     ) {
@@ -1124,6 +1183,24 @@ private fun TimelineRuler(
             drawPath(head, colors.head)
         }
     }
+    sheetFor?.let { i ->
+        val sheet = partSheetUi(p, i)
+        if (sheet == null) {
+            LaunchedEffect(Unit) { sheetFor = null }
+        } else {
+            val full = p.song.size >= SongPart.MAX_PARTS
+            PartSheet(
+                sheet, onIntent = { actions.partIntent(i, it) }, close = { sheetFor = null },
+                more = PartMoreActions(
+                    whatPlays = { p.song.getOrNull(i)?.let { actions.whatPlays(it.scene) } },
+                    moveUp = if (i > 0) ({ actions.movePart(i, i - 1) }) else null,
+                    moveDown = if (i < p.song.lastIndex) ({ actions.movePart(i, i + 1) }) else null,
+                    duplicate = if (!full) ({ actions.duplicatePart(i) }) else null,
+                    remove = { actions.removePart(i) },
+                ),
+            )
+        }
+    }
 }
 
 /**
@@ -1176,6 +1253,11 @@ private fun TimelineGrid(
                                 h.lane != null -> latestActions.openLane(h.lane)
                             }
                         },
+                        // Phase 36 (FL Studio Mobile's gesture): two touches on a clip open it in its editor, on that part.
+                        onDoubleTap = { at ->
+                            val h = hit(at) ?: return@detectTapGestures
+                            if (h.key != null) latestActions.openEditor(h.part, h.key)
+                        },
                         onLongPress = { at ->
                             val h = hit(at) ?: return@detectTapGestures
                             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -1184,6 +1266,7 @@ private fun TimelineGrid(
                     )
                 }
                 .then(pinch)
+                .spot("timeline_grid", tr("2 touches : ouvrir"))
                 .testTag("timeline_grid")
                 .semantics { contentDescription = tr("Ligne du temps : %1\$d parties, %2\$d pistes", p.song.size, ui.rows.size) },
         ) {
@@ -1484,12 +1567,14 @@ private fun ClipMenuAt(m: ClipMenu, ui: TimelineUi, actions: TimelineActions, cl
     }
     var picking by remember { mutableStateOf<String?>(null) }
     var inserting by remember { mutableStateOf(false) }
+    var sheet by remember { mutableStateOf(false) }
+    val sheetUi = partSheetUi(p, m.part)
     val key = m.key
     val full = p.song.size >= SongPart.MAX_PARTS
     val songBar = (p.partSpans.getOrNull(m.part)?.start ?: 0) / p.stepsPerBar
     val cutAt = p.splitBar(m.part, m.bar.coerceAtLeast(1))
     Box(Modifier.offset { IntOffset(m.x.roundToInt(), m.y.roundToInt()) }.size(1.dp)) {
-        DropdownMenu(expanded = picking == null && !inserting, onDismissRequest = close) {
+        DropdownMenu(expanded = picking == null && !inserting && !sheet, onDismissRequest = close) {
             val trackName = ui.rows.firstOrNull { it.key == key }?.name?.let(DefaultNames::shown)
             Text(
                 tr("Partie %d", m.part + 1) + " · " + p.sceneTitle(part.scene) + (trackName?.let { " · $it" } ?: ""),
@@ -1509,7 +1594,7 @@ private fun ClipMenuAt(m: ClipMenu, ui: TimelineUi, actions: TimelineActions, cl
                 )
                 if (!key.startsWith("audio:")) {
                     DropdownMenuItem(
-                        text = { Text(tr("Changer de scène…")) }, leadingIcon = { Icon(Icons.Filled.SwapVert, null) },
+                        text = { Text(tr("Changer de partie…")) }, leadingIcon = { Icon(Icons.Filled.SwapVert, null) },
                         onClick = { picking = key }, modifier = Modifier.testTag("tl_scene"),
                     )
                 }
@@ -1537,16 +1622,35 @@ private fun ClipMenuAt(m: ClipMenu, ui: TimelineUi, actions: TimelineActions, cl
                 onClick = { close(); actions.duplicatePart(m.part) }, modifier = Modifier.testTag("tl_duplicate"),
             )
             DropdownMenuItem(
-                text = { Text(tr("Insérer une scène après…")) }, leadingIcon = { Icon(Icons.Filled.Add, null) }, enabled = !full,
+                text = { Text(tr("Insérer une partie après…")) }, leadingIcon = { Icon(Icons.Filled.Add, null) }, enabled = !full,
                 onClick = { inserting = true }, modifier = Modifier.testTag("tl_insert"),
             )
+            // The part sheet's intentions, the same list as in the Morceau tab's sheet.
+            if (sheetUi != null) {
+                HorizontalDivider()
+                Text(
+                    tr("Transformer la partie"), style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                )
+                partChoices(sheetUi).filter { it.inMenu }.forEach { c ->
+                    DropdownMenuItem(
+                        text = { Text(c.label) }, leadingIcon = { Icon(c.icon, null) }, enabled = c.enabled,
+                        onClick = { close(); actions.partIntent(m.part, c.intent) }, modifier = Modifier.testTag("tl_${c.tag}"),
+                    )
+                }
+                DropdownMenuItem(
+                    text = { Text(tr("Énergie, longueur, plus…")) }, leadingIcon = { Icon(Icons.Filled.Tune, null) },
+                    onClick = { sheet = true }, modifier = Modifier.testTag("tl_part_sheet"),
+                )
+                HorizontalDivider()
+            }
             DropdownMenuItem(
                 text = { Text(tr("Boucler sur cette partie")) }, leadingIcon = { Icon(Icons.Filled.Repeat, null) },
                 onClick = { close(); actions.setLoop(m.part..m.part) }, modifier = Modifier.testTag("tl_loop"),
             )
             if (m.lane != null) {
                 DropdownMenuItem(
-                    text = { Text(tr("Modifier la courbe dans le Mixeur")) }, leadingIcon = { Icon(Icons.AutoMirrored.Filled.ShowChart, null) },
+                    text = { Text(tr("Modifier la courbe dans Mix")) }, leadingIcon = { Icon(Icons.AutoMirrored.Filled.ShowChart, null) },
                     onClick = { close(); actions.openLane(m.lane) }, modifier = Modifier.testTag("tl_lane"),
                 )
             }
@@ -1558,12 +1662,15 @@ private fun ClipMenuAt(m: ClipMenu, ui: TimelineUi, actions: TimelineActions, cl
     }
     picking?.let { k ->
         TimelineScenePicker(
-            title = tr("Partie %1\$d : la scène de %2\$s", m.part + 1, ui.rows.firstOrNull { it.key == k }?.name?.let(DefaultNames::shown) ?: k),
+            title = tr("Partie %1\$d : ce que joue %2\$s", m.part + 1, ui.rows.firstOrNull { it.key == k }?.name?.let(DefaultNames::shown) ?: k),
             p = p,
             current = part.sceneFor(k),
             onPick = { scene -> actions.setPartScene(m.part, k, scene); close() },
             onDismiss = close,
         )
+    }
+    if (sheet && sheetUi != null) {
+        PartSheet(sheetUi, onIntent = { actions.partIntent(m.part, it) }, close = close)
     }
     if (inserting) {
         TimelineScenePicker(

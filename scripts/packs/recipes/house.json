@@ -1,6 +1,7 @@
 [
  {
   "id": "house",
+  "vocal": "answer",
   "references": [
    "Robin S – Show Me Love (1992)",
    "Marshall Jefferson – Move Your Body (1986)",
@@ -11,7 +12,7 @@
   ],
   "description_fr": "La house classique, née à Chicago : un piano joyeux, un kick sur chaque temps et un « tchi » entre les coups.",
   "bpm": 122,
-  "swing": 0.15,
+  "swing": 0.25,
   "root": "A",
   "drums": [
    {
@@ -98,20 +99,20 @@
   "default_mood": "happy",
   "chords": {
    "type": "keys",
-   "rhythm": "X..X..X...X..X..",
-   "voicing": "seventh",
+   "rhythm": "..X-..x...X.x.....X-..x...X.x.....X-..x...X.x.....X-..x.X-..x.o.",
+   "voicing": "rootless7",
    "octave": 3,
    "sound": "gm:Acoustic Grand Piano"
   },
   "bass": {
-   "pattern": "R..R..O.R..R..O.",
+   "pattern": "R-.R..O.R-.R..O.R-.R..O.R-.7..5.",
    "octave": 2,
    "sound": "pack:juno:bass|Basse ronde",
    "glide": false
   },
   "lead": {
-   "type": "arp",
-   "pattern": "",
+   "type": "riff",
+   "pattern": "R.O.5.O.R.O.3.O.R-O.5.O.7-O.5.3.",
    "arp_rate": 24,
    "octave": 4,
    "sound": "Arpège"
@@ -164,6 +165,7 @@
  },
  {
   "id": "deep_house",
+  "vocal": "answer",
   "references": [
    "Mr. Fingers – Can You Feel It (1986)",
    "Kerri Chandler – Bar A Thym (2005)",
@@ -172,7 +174,7 @@
   ],
   "description_fr": "La house douce et chaude : piano électrique feutré, basse ronde, ambiance coucher de soleil.",
   "bpm": 120,
-  "swing": 0.2,
+  "swing": 0.3,
   "root": "F",
   "drums": [
    {
@@ -246,29 +248,30 @@
     "scale": "dorian",
     "degrees": [
      0,
+     0,
      3,
-     6,
-     4
+     3
     ]
    }
   },
   "default_mood": "dreamy",
   "chords": {
    "type": "keys",
-   "rhythm": "..X..X....X..X..",
-   "voicing": "ninth",
-   "octave": 4,
-   "sound": "Piano électrique"
+   "rhythm": "..X..X....X..x....X..X....X-..x.",
+   "voicing": "rootless9",
+   "octave": 3,
+   "sound": "Piano électrique",
+   "voice_lead": true
   },
   "bass": {
-   "pattern": "..R-..R-..R-.rO-",
+   "pattern": "..R-..R-..R-.rO-..5-..R-..R-.r3-",
    "octave": 2,
    "sound": "Basse ronde",
    "glide": false
   },
   "lead": {
-   "type": "riff",
-   "pattern": "..R.....5..3....",
+   "type": "chops",
+   "pattern": "..R-----........................................5--3----........",
    "arp_rate": 24,
    "octave": 5,
    "sound": "pack:vocal_chops:vocal"
@@ -295,7 +298,8 @@
    },
    {
     "on": "lead",
-    "delay": 0.35
+    "delay": 0.35,
+    "reverb": 0.3
    },
    {
     "on": "chords",
@@ -330,6 +334,7 @@
  },
  {
   "id": "tech_house",
+  "vocal": "answer",
   "references": [
    "Mau P – Drugs From Amsterdam (2022)",
    "Fisher – Losing It (2018)",
@@ -338,7 +343,7 @@
   ],
   "description_fr": "La house des gros clubs d'aujourd'hui : un rythme sec qui roule, une basse accrocheuse, presque pas d'accords.",
   "bpm": 126,
-  "swing": 0.15,
+  "swing": 0.25,
   "root": "G",
   "drums": [
    {
@@ -430,15 +435,15 @@
    "sound": "Orgue"
   },
   "bass": {
-   "pattern": "..Rr..Rr..Rr..RO..Rr..Rr..Rr.5/O",
+   "pattern": "..Rr..Rr..Rr..RO..Rr..Rr..7r..5/..Rr..Rr..Rr..RO..Rr..3r..5r.O/R",
    "octave": 2,
    "sound": "pack:tech_house:bass|Basse ronde",
    "glide": true,
    "sub": true
   },
   "lead": {
-   "type": "riff",
-   "pattern": "R..R......R.....",
+   "type": "chops",
+   "pattern": "R..R......R.....................R..R......R...........r..r......",
    "arp_rate": 24,
    "octave": 4,
    "sound": "pack:vocal_chops:vocal"
@@ -501,6 +506,7 @@
  },
  {
   "id": "uk_garage",
+  "vocal": "answer",
   "references": [
    "Artful Dodger feat. Craig David – Re-Rewind (1999)",
    "Sweet Female Attitude – Flowers (Sunship Edit) (2000)",
@@ -593,20 +599,22 @@
   "form": "song",
   "chords": {
    "type": "stab",
-   "rhythm": "...X..X....X..X.",
-   "voicing": "seventh",
+   "rhythm": "...X..X....X..X....X--....X-..x.",
+   "voicing": "rootless7",
    "octave": 4,
-   "sound": "Orgue"
+   "sound": "Piano électrique",
+   "voice_lead": true
   },
   "bass": {
    "pattern": "R--....R..R--.O-",
    "octave": 2,
    "sound": "pack:uk_garage:bass|Basse ronde",
-   "glide": false
+   "glide": false,
+   "sub": true
   },
   "lead": {
-   "type": "riff",
-   "pattern": "..R..5....R.3...",
+   "type": "chops",
+   "pattern": "..R..5..................r..3......R..5..................r..3.R..",
    "arp_rate": 24,
    "octave": 4,
    "sound": "pack:vocal_chops:vocal"
@@ -648,6 +656,7 @@
  },
  {
   "id": "speed_garage",
+  "vocal": "answer",
   "references": [
    "Double 99 – RipGroove (1997)",
    "Sneaker Pimps – Spin Spin Sugar (Armand's Dark Garage Mix) (1997)",
@@ -743,15 +752,15 @@
    "sound": "Orgue"
   },
   "bass": {
-   "pattern": "R-----.R--/O-.R-R-----.R--/5-.O-",
+   "pattern": "R-----.R--/O-.R-R-----.R--/5-.O-R-----.R--/O-.R-O-----.O--/5-.R-",
    "octave": 2,
    "sound": "Basse qui parle",
    "glide": true,
    "sub": true
   },
   "lead": {
-   "type": "riff",
-   "pattern": "R.......R..R....",
+   "type": "chops",
+   "pattern": "R.......R..R..........r.......r.",
    "arp_rate": 24,
    "octave": 4,
    "sound": "pack:vocal_chops:vocal"
@@ -790,7 +799,24 @@
    "bass",
    "perc2"
   ],
-  "riser": true
+  "riser": true,
+  "sweeps": [
+   {
+    "on": "bass",
+    "groove": [
+     0.25,
+     0.6
+    ],
+    "drop": [
+     0.6,
+     0.9
+    ],
+    "break": [
+     0.3,
+     0.7
+    ]
+   }
+  ]
  },
  {
   "id": "acid_house",
@@ -882,7 +908,7 @@
    "sound": "Machine à cordes"
   },
   "bass": {
-   "pattern": "R.......R.......",
+   "pattern": "R-......r.......",
    "octave": 2,
    "sound": "Basse sub",
    "glide": false
@@ -969,7 +995,7 @@
   ],
   "description_fr": "La house d'Afrique du Sud portée par les percussions : congas, shaker, marimba et nappes chaudes.",
   "bpm": 122,
-  "swing": 0.2,
+  "swing": 0.25,
   "root": "E",
   "drums": [
    {
@@ -1022,8 +1048,8 @@
     "scale": "minor",
     "degrees": [
      0,
-     6,
-     5,
+     0,
+     0,
      3
     ]
    },
@@ -1070,7 +1096,7 @@
   },
   "lead": {
    "type": "riff",
-   "pattern": "..O..5..3..5..R.",
+   "pattern": "..O-------........................5---..3-------................",
    "arp_rate": 24,
    "octave": 5,
    "sound": "Marimba"
@@ -1086,7 +1112,7 @@
    "chords": true,
    "lead": true
   },
-  "signature": "lead",
+  "signature": "chords",
   "bass_tip": "Une basse ronde et grave, entre les coups de grosse caisse, qui se baisse à chaque coup (l'effet « pompe ») ; à la fin de la deuxième mesure elle monte d'une note pour relancer.",
   "pad_tip": "Des nappes chaudes et lentes qui laissent toute la place aux percussions.",
   "lead_tip": "Un petit air de marimba qui revient toutes les trois cases : il tourne à côté des temps et fait danser.",
@@ -1122,7 +1148,35 @@
    "chords",
    "lead"
   ],
-  "riser": true
+  "riser": true,
+  "sweeps": [
+   {
+    "on": "lead",
+    "groove": [
+     0.3,
+     0.7
+    ],
+    "drop": [
+     0.7,
+     1.0
+    ]
+   },
+   {
+    "on": "chords",
+    "intro": [
+     0.25,
+     0.5
+    ],
+    "groove": [
+     0.5,
+     0.8
+    ],
+    "drop": [
+     0.8,
+     1.0
+    ]
+   }
+  ]
  },
  {
   "id": "disco",
@@ -1135,7 +1189,7 @@
    "Bee Gees – Stayin' Alive (1977)"
   ],
   "description_fr": "Les boîtes de nuit des années 70 : un kick sur chaque temps, un « tsss » entre les coups, une basse qui saute d'octave et des cordes.",
-  "bpm": 120,
+  "bpm": 116,
   "swing": 0.05,
   "root": "A",
   "drums": [
@@ -1218,20 +1272,20 @@
   "default_mood": "happy",
   "chords": {
    "type": "keys",
-   "rhythm": "..X.X..X..X.X..X",
-   "voicing": "seventh",
+   "rhythm": "oXoxoxXoxoXoxoXx",
+   "voicing": "rootless7",
    "octave": 3,
    "sound": "gm:Electric Guitar (muted)"
   },
   "bass": {
-   "pattern": "R.O.R.O.R.O.R.O.R.O.R.O.R.O.RrOo",
-   "octave": 1,
+   "pattern": "R-..R.O.R.3.5.7O...R.O-R.6.7.O.RR-..R.O.R.3.5.7O..6.7.O-R.7.6.5.",
+   "octave": 2,
    "sound": "gm:Electric Bass (finger)",
    "glide": false
   },
   "lead": {
    "type": "riff",
-   "pattern": "O.......5-3-O---",
+   "pattern": "O---------------5-------3-------O-------7-------5---------------",
    "arp_rate": 24,
    "octave": 4,
    "sound": "gm:String Ensemble 1"
@@ -1279,7 +1333,7 @@
   ],
   "description_fr": "La house sud-africaine plus lente : une basse qui rebondit comme un tambour de bois (le « log drum ») et un piano jazzy.",
   "bpm": 112,
-  "swing": 0.15,
+  "swing": 0.2,
   "root": "C",
   "drums": [
    {
@@ -1330,8 +1384,8 @@
     "degrees": [
      0,
      3,
-     6,
-     4
+     0,
+     3
     ]
    },
    "future": {
@@ -1356,20 +1410,21 @@
   "default_mood": "happy",
   "chords": {
    "type": "keys",
-   "rhythm": "...X..X...X.....",
-   "voicing": "ninth",
-   "octave": 4,
-   "sound": "Piano électrique"
+   "rhythm": "...X--..X...X......X--------....",
+   "voicing": "rootless9",
+   "octave": 3,
+   "sound": "Piano électrique",
+   "voice_lead": true
   },
   "bass": {
-   "pattern": "..R-.R-O-.R-.5-...R-.R-..O-..R5-",
+   "pattern": "..R-.R-O-.R-.5-...R-.R-..O-..R5-..R-.R-O-.R-.5-......5-..R--.3-.",
    "octave": 2,
    "sound": "Log drum",
    "glide": false
   },
   "lead": {
    "type": "riff",
-   "pattern": "..O..5...3..R...",
+   "pattern": "..O..5....................................3..R..................",
    "arp_rate": 24,
    "octave": 5,
    "sound": "Piano FM"
@@ -1385,7 +1440,7 @@
    "chords": true,
    "lead": true
   },
-  "signature": "bass",
+  "signature": "chords",
   "bass_tip": "Le log drum : un tambour grave qui joue les notes de la basse, toujours entre les coups de grosse caisse, en question-réponse sur deux mesures.",
   "pad_tip": "Des accords jazzy de piano électrique qui arrivent juste après le temps, avec des silences.",
   "lead_tip": "Une petite phrase de piano qui répond au log drum.",
@@ -1402,7 +1457,13 @@
   ],
   "notes": "The log drum is both bass and hook: a woody pitched drum ('Log drum' = Plaits bass drum played on the notes; it cannot glide), landing BETWEEN the soft kicks, following the roots with octave/fifth jumps, as a two-bar call and response. Constant 16th shaker (built-in shaker voice) with velocity variation and light swing; rim/woodblock 'toc' answering over two bars. Jazzy 9th chords entering after the 1 with gaps (Cm9-F9-Bbmaj9-Gm9, happy first). The log drum leaves in the break and comes back on the drop. 108-115 BPM.",
   "drop": [
+   "bass",
    "perc2"
+  ],
+  "break": [
+   "chords",
+   "perc",
+   "hat"
   ]
  }
 ]

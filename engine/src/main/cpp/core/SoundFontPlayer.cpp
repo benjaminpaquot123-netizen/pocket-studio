@@ -105,7 +105,27 @@ void SoundFontPlayer::allNotesOff() {
     if (instance_) tsf_note_off_all(instance_);
 }
 
-void SoundFontPlayer::render(float* out, int numFrames) {
+void SoundFontPlayer::renderSpan(float* left, float* right, int frames) {
+    const TSFOutputMode mode = right ? TSF_STEREO_INTERLEAVED : TSF_MONO;
+    // The mode is a plain field (no allocation): a voice's pan was set at its note-on either way.
+    if (instance_->outputmode != mode) tsf_set_output(instance_, mode, static_cast<int>(instance_->outSampleRate), instance_->globalGainDB);
+    if (!right) {
+        tsf_render_float(instance_, left, frames, 1);  // 1: mixes into out
+        return;
+    }
+    // A centred sound is sqrt(1/2) on each side in stereo: sqrt(2) makes it the mono's level.
+    constexpr float kCentre = 1.41421356f;
+    for (int pos = 0; pos < frames; pos += kStereoChunk) {
+        const int n = std::min(kStereoChunk, frames - pos);
+        tsf_render_float(instance_, stereoBuf_, n, 0);
+        for (int i = 0; i < n; ++i) {
+            left[pos + i] += kCentre * stereoBuf_[2 * i];
+            right[pos + i] += kCentre * stereoBuf_[2 * i + 1];
+        }
+    }
+}
+
+void SoundFontPlayer::render(float* out, float* right, int numFrames) {
     if (!instance_) {
         eventCount_ = 0;
         return;
@@ -119,7 +139,7 @@ void SoundFontPlayer::render(float* out, int numFrames) {
             else tsf_note_off(instance_, preset_, e.note);
         }
         const int until = next < eventCount_ ? std::min(numFrames, events_[next].offset) : numFrames;
-        tsf_render_float(instance_, out + pos, until - pos, 1);  // 1: mixes into out
+        renderSpan(out + pos, right ? right + pos : nullptr, until - pos);
         pos = until;
     }
     // Events for later blocks.

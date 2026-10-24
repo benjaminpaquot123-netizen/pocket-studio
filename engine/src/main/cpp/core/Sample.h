@@ -14,10 +14,19 @@ public:
     // Not real-time safe (allocates, resamples). Returns nullptr on bad input.
     // Starts with one reference, owned by the caller.
     static Sample* create(const float* interleaved, int64_t frames, int channels, int sourceRate, int targetRate);
+    // The same, kept as 16-bit integers (half the memory): the multizone instruments' zones
+    // (MultiSampler), recorded at 16 bits anyway. Such a sample has no float data(): only
+    // MultiSampler reads it (the JNI refuses it anywhere else).
+    static Sample* createCompact(const float* interleaved, int64_t frames, int channels, int sourceRate, int targetRate);
 
     int64_t frames() const { return frames_; }
     int channels() const { return channels_; }
-    const float* data() const { return data_.data(); }
+    // nullptr for a compact sample (pcm16()).
+    const float* data() const { return compact() ? nullptr : data_.data(); }
+    bool compact() const { return !pcm16_.empty(); }
+    const int16_t* pcm16() const { return pcm16_.empty() ? nullptr : pcm16_.data(); }
+    // Bytes of audio held (the instruments' memory budget).
+    int64_t bytes() const { return static_cast<int64_t>(data_.size() * sizeof(float) + pcm16_.size() * sizeof(int16_t)); }
 
     void retain() { refs_.fetch_add(1, std::memory_order_relaxed); }
     // Returns true when this was the last reference: the caller must then delete it
@@ -28,6 +37,7 @@ public:
 private:
     Sample() = default;
     std::vector<float> data_;
+    std::vector<int16_t> pcm16_;
     int64_t frames_ = 0;
     int channels_ = 1;
     std::atomic<int> refs_{1};

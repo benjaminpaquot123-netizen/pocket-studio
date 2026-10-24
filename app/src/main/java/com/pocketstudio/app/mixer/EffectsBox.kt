@@ -161,7 +161,7 @@ fun InsertChain(ch: Int, inserts: List<Insert>, actions: MixerActions, alsoSet: 
             if (open == i) InsertEditor(ch, i, ins, actions)
         }
         if (scenes.size > 1 && used.isNotEmpty()) {
-            Text(tr("Un effet peut ne jouer que dans certaines sections : touche ses lettres."),
+            Text(tr("Un effet peut ne jouer que dans certaines parties : touche ses lettres."),
                 style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.testTag("fx_scenes_help_$ch"))
         }
         OutlinedButton(
@@ -251,7 +251,7 @@ private fun PlaysIn(ch: Int, slot: Int, ins: Insert, labels: List<String>, actio
     // No scene left (its only scene was replaced by another one): it is silent, and says so.
     if (ins.scenes?.isEmpty() == true) {
         Text(
-            tr("Ne joue dans aucune scène : touche une lettre ou « Tout »."),
+            tr("Ne joue dans aucune partie : touche une lettre ou « Tout »."),
             style = MaterialTheme.typography.bodySmall, color = Neon.Amber, modifier = Modifier.testTag("fx_scenes_none_${ch}_$slot"),
         )
     }

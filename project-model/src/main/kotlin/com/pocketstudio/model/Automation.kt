@@ -17,16 +17,22 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class AutoTarget(val kind: Int, val ch: Int = 0, val slot: Int = 0, val param: Int = 0) {
-    fun pack(): Int = (kind shl 16) or (ch shl 12) or (slot shl 8) or param
+    /** Engine.h Automation::pack: the channel's low 4 bits at 12, its bits 4..5 at 24 (audio tracks 5..8). */
+    fun pack(): Int = ((ch shr 4) shl 24) or (kind shl 16) or ((ch and 0xF) shl 12) or (slot shl 8) or param
 
     /**
-     * The engine reads 4 bits of channel: the pads' own strips (16..31) cannot be automated. An
+     * The pads' own strips (16..31) cannot be automated; the audio tracks 5..8 (32..35) can. An
      * effect's knob: one of the strip's [Mixer.INSERTS] slots (4 bits of slot in the engine too).
      */
-    val isValid: Boolean get() = kind in VOLUME..LIVE && ch in 0..MAX_CH && (kind != INSERT_PARAM || slot in 0 until Mixer.INSERTS) &&
+    val isValid: Boolean get() = kind in VOLUME..PLAITS && ch in 0..MAX_CH && !Mixer.isPad(ch) && (kind != INSERT_PARAM || slot in 0 until Mixer.INSERTS) &&
         (kind != ACID || (ch == ACID_CHANNEL && slot == 0 && param in ACID_PARAMS)) &&
         (kind != MACRO || (ch != Mixer.MASTER && slot == 0 && param in 0..MACRO_THROW_ECHO)) &&
-        (kind != LIVE || (ch == Mixer.MASTER && slot == 0 && param in LIVE_PARAMS))
+        (kind != LIVE || (ch == Mixer.MASTER && slot == 0 && param in LIVE_PARAMS)) &&
+        (kind != SYNTH || (trackOfChannel(ch) != null && slot == 0 && param in SYNTH_PARAMS)) &&
+        (kind != PLAITS || (trackOfChannel(ch) != null && slot == 0 && param in PLAITS_PARAMS))
+
+    /** [SYNTH], [PLAITS]: the instrument track whose knob it is (its mixer channel is [ch]). */
+    val track: Int? get() = if (kind == SYNTH || kind == PLAITS) trackOfChannel(ch) else null
 
     /** An on/off control (held buttons, the choppers): its song curve steps rather than slides. */
     val isOnOff: Boolean get() = (kind == LIVE && param in LIVE_ON_OFF) || (kind == MACRO && param in MACRO_CHOP..MACRO_THROW_ECHO)
@@ -34,8 +40,20 @@ data class AutoTarget(val kind: Int, val ch: Int = 0, val slot: Int = 0, val par
     /** A 303 knob: its index in [AcidSound.values], else null. */
     val acidParam: Int? get() = param.takeIf { kind == ACID && isValid }
 
+    /**
+     * The whole mix's volume (« Sortie générale »), 0..1 on top of the master's gain: what the
+     * part sheet's fades write, only ever as a song curve. A scene played alone keeps its level
+     * (see [songCurvesAt]). The engine applies it on the master fader (Mixer::setVolume on the
+     * master's index, kMaster: after the master chain, at most unity), back at unity when the lane
+     * goes or the song is left.
+     */
+    val isMasterVolume: Boolean get() = kind == VOLUME && ch == Mixer.MASTER
+
     companion object {
-        const val MAX_CH = 15
+        const val MAX_CH = Mixer.CHANNELS - 1
+
+        /** The whole mix's volume ([isMasterVolume]). */
+        fun masterVolume() = AutoTarget(VOLUME, Mixer.MASTER)
         const val VOLUME = 0
         const val PAN = 1
         const val SEND = 2
@@ -44,6 +62,28 @@ data class AutoTarget(val kind: Int, val ch: Int = 0, val slot: Int = 0, val par
         const val ACID = 5
         const val MACRO = 6
         const val LIVE = 7
+        /**
+         * Phase 34 (S4, the « phase 37 » automation targets): a knob of an instrument track's synth
+         * ([param] in [SynthPatch] order, one of [SYNTH_PARAMS]) or of its Plaits ([param] in
+         * [PlaitsPatch.engineValues] order, one of [PLAITS_PARAMS]); [ch] is the track's mixer channel.
+         */
+        const val SYNTH = 8
+        const val PLAITS = 9
+
+        /** The synth knobs a lane can move: every one but the loudness calibration ([SynthPatch.GAIN]). */
+        val SYNTH_PARAMS: Set<Int> = (0 until SynthPatch.PARAM_COUNT).toSet() - SynthPatch.GAIN
+        /** Plaits' knobs a lane can move: harmonics, timbre, morph, decay, colour, release, level (not the model nor the calibration). */
+        val PLAITS_PARAMS: Set<Int> = (1..7).toSet()
+
+        /** The instrument track on mixer channel [ch] (0 on 2, 1..7 on 5..11), or null. */
+        fun trackOfChannel(ch: Int): Int? = when (ch) {
+            2 -> 0
+            in 5 until 4 + InstrumentTrack.MAX -> ch - 4
+            else -> null
+        }
+
+        fun synth(track: Int, param: Int) = AutoTarget(SYNTH, InstrumentTrack.mixerChannel(track), 0, param)
+        fun plaits(track: Int, param: Int) = AutoTarget(PLAITS, InstrumentTrack.mixerChannel(track), 0, param)
 
         /** [MACRO]: the strip's chopper (« Hachoir de voie »), on above one half. */
         const val MACRO_CHOP = 4
@@ -339,6 +379,9 @@ fun Project.songCurvesAt(scene: Int): Map<Int, Float> {
     val out = HashMap<Int, Float>()
     automation.forEachIndexed { i, lane ->
         if (lane.mode != AutomationLane.SONG) return@forEachIndexed
+        // The whole mix's fades are the song's: a part looped on its own plays at its level (an
+        // Intro that fades in would otherwise loop in silence).
+        if (lane.target.isMasterVolume) return@forEachIndexed
         val at = if (lane.songOnly) 0 else if (lane.songPerBeat) step / 4 else step / stepsPerBar
         lane.songCurve(at + 1).getOrNull(at)?.let { out[i] = it }
     }
@@ -410,7 +453,8 @@ fun songCurveCommands(curve: List<Float>): List<CurveCommand> {
 fun Project.settingOf(t: AutoTarget): Float {
     val c = mixer.channels.getOrNull(t.ch)
     return when (t.kind) {
-        AutoTarget.VOLUME -> c?.volume ?: 0.8f
+        // The whole mix: at its full level (the master's gain itself is in dB, not a lane's 0..1).
+        AutoTarget.VOLUME -> if (t.isMasterVolume) 1f else c?.volume ?: 0.8f
         AutoTarget.PAN -> ((c?.pan ?: 0f) + 1f) / 2f
         AutoTarget.SEND -> c?.sends?.getOrNull(t.slot) ?: 0f
         AutoTarget.INSERT_PARAM -> mixer.insertAt(t.ch, t.slot)?.params?.getOrNull(t.param) ?: 0.5f
@@ -418,6 +462,8 @@ fun Project.settingOf(t: AutoTarget): Float {
         AutoTarget.ACID -> acid.sound.values().getOrNull(t.param) ?: 0.5f
         AutoTarget.MACRO -> if (t.param < Macros.COUNT) c?.macros?.getOrNull(t.param) ?: 0f else 0f
         AutoTarget.LIVE -> AutoTarget.liveRest(t.param)
+        AutoTarget.SYNTH -> t.track?.let { track(it).synth.get(t.param.coerceIn(0, SynthPatch.PARAM_COUNT - 1)) } ?: 0.5f
+        AutoTarget.PLAITS -> t.track?.let { track(it).plaits.engineValues().getOrNull(t.param) } ?: 0.5f
         else -> 0.5f
     }.coerceIn(0f, 1f)
 }
@@ -433,7 +479,8 @@ fun Project.withSetting(t: AutoTarget, v: Float): Project {
         else copy(mixer = mixer.copy(channels = mixer.channels.mapIndexed { i, c -> if (i == t.ch) edit(c) else c }))
     fun List<Float>.with(i: Int, value: Float) = mapIndexed { k, old -> if (k == i) value else old }
     return when (t.kind) {
-        AutoTarget.VOLUME -> channel { it.copy(volume = x) }
+        // The whole mix's volume is no fader: a lane on it only moves the song.
+        AutoTarget.VOLUME -> if (t.isMasterVolume) this else channel { it.copy(volume = x) }
         AutoTarget.PAN -> channel { it.copy(pan = x * 2f - 1f) }
         AutoTarget.SEND -> channel { it.copy(sends = it.sends.with(t.slot, x)) }
         AutoTarget.INSERT_PARAM -> {
@@ -444,6 +491,8 @@ fun Project.withSetting(t: AutoTarget, v: Float): Project {
         AutoTarget.BUS_PARAM -> copy(mixer = mixer.copy(buses = mixer.buses.mapIndexed { b, ps -> if (b == t.slot) ps.with(t.param, x) else ps }))
         AutoTarget.ACID -> copy(acid = acid.copy(sound = acid.sound.with(t.param, x)))
         AutoTarget.MACRO -> if (t.param < Macros.COUNT) channel { it.copy(macros = it.macros.with(t.param, x)) } else this
+        AutoTarget.SYNTH -> t.track?.takeIf { t.param in AutoTarget.SYNTH_PARAMS }?.let { id -> withTrack(track(id).let { it.copy(synth = it.synth.with(t.param, x)) }) } ?: this
+        AutoTarget.PLAITS -> t.track?.takeIf { t.param in AutoTarget.PLAITS_PARAMS }?.let { id -> withTrack(track(id).let { it.copy(plaits = it.plaits.with(t.param, x)) }) } ?: this
         else -> this
     }
 }

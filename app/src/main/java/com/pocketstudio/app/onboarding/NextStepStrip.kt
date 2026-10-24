@@ -7,7 +7,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -17,7 +18,6 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,6 +32,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -44,8 +45,8 @@ import com.pocketstudio.model.Project
 import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.ui.Neon
 
-/** The tabs where the song is made: the strip shows on each of them (not on Outils). */
-val STRIP_TABS: Set<AppTab> = AppTab.entries.toSet() - AppTab.Outils
+/** The screens where the song is made: the strip shows on each of them (not on Plus, Live, Envoyer). */
+val STRIP_TABS: Set<AppTab> = AppTab.entries.toSet() - AppTab.Outils - AppTab.Live - AppTab.Envoyer
 
 /**
  * The « Prochaine étape » strip of the open project ([projectId]) under the top bar, on [here]
@@ -91,8 +92,11 @@ fun NextStepStrip(
     // Another tab, or the share sheet: the arrow says the touch goes somewhere; here, it unfolds.
     val elsewhere = next != null && (next.goal == StepGoal.Share || next.tab != here)
     val line = Neon.Cyan.copy(alpha = 0.35f)
+    // One thin line (24 dp; the top bar, the play strip and this line cost 120 dp together on a
+    // phone): touched over its whole width, taller only with a big text size.
+    val height = NEXT_STEP_LINE_HEIGHT * maxOf(1f, LocalDensity.current.fontScale)
     Row(
-        Modifier.fillMaxWidth().heightIn(min = 48.dp)
+        Modifier.fillMaxWidth().height(height)
             .background(Neon.Cyan.copy(alpha = 0.08f))
             .drawBehind { drawLine(line, Offset(0f, size.height - 1f), Offset(size.width, size.height - 1f), 1f) }
             .then(
@@ -112,19 +116,19 @@ fun NextStepStrip(
                 contentDescription = if (next == null) tr("Ton morceau est fini, bravo !")
                 else tr("Prochaine étape %1\$d sur %2\$d : %3\$s", next.number, steps.size, next.action)
             }
-            .padding(start = 12.dp)
+            .padding(start = 10.dp)
             .testTag("next_step_strip"),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Box(
-            Modifier.size(24.dp).clip(CircleShape)
+            Modifier.size(18.dp).clip(CircleShape)
                 .background(if (next == null) Neon.Acid.copy(alpha = 0.25f) else Neon.Cyan.copy(alpha = 0.2f))
                 .border(1.dp, if (next == null) Neon.Acid else Neon.Cyan, CircleShape),
             contentAlignment = Alignment.Center,
         ) {
             if (next == null) Icon(Icons.Filled.Check, contentDescription = null, tint = Neon.Acid, modifier = Modifier.size(14.dp))
-            else Text("${next.number}", style = MaterialTheme.typography.labelMedium, color = Neon.Cyan)
+            else Text("${next.number}", style = MaterialTheme.typography.labelSmall, color = Neon.Cyan)
         }
         Text(
             if (next == null) "${steps.size}/${steps.size} · " + tr("Ton morceau est fini, bravo !")
@@ -140,8 +144,17 @@ fun NextStepStrip(
                 contentDescription = null, tint = Neon.Cyan, modifier = Modifier.size(20.dp),
             )
         }
-        IconButton(onClick = close, modifier = Modifier.testTag("next_step_strip_close")) {
+        // The cross: a 40 dp touch target around a small icon, overflowing the line a little (never the ▶ above).
+        Box(
+            Modifier.requiredSize(40.dp).clip(CircleShape)
+                .clickable(role = Role.Button, onClickLabel = tr("Fermer les étapes"), onClick = close)
+                .testTag("next_step_strip_close"),
+            contentAlignment = Alignment.Center,
+        ) {
             Icon(Icons.Filled.Close, contentDescription = tr("Fermer les étapes"), tint = Neon.TextSecondary, modifier = Modifier.size(16.dp))
         }
     }
 }
+
+/** The « Prochaine étape » line's height at the usual text size. */
+val NEXT_STEP_LINE_HEIGHT = 24.dp

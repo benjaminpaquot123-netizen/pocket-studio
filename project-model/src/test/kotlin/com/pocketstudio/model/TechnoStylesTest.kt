@@ -114,7 +114,13 @@ class TechnoStylesTest {
         assertEquals(listOf("Basse", "Stabs", "Lead"), listOf(bass.name, pad.name, lead.name))
         assertTrue(breakScene.synthNotes.notes.isEmpty())
         assertTrue(breakScene.trackNotes.getValue(pad.id).notes.isNotEmpty() && breakScene.trackNotes.getValue(lead.id).notes.isNotEmpty())
+        // S5: the bass and the stabs pump once, together, in the Musique bus under the kick's sound (no pump of their own).
         val pump = EffectType.PUMP.ordinal
-        for (t in listOf(bass, pad)) assertTrue(t.name, p.mixer.channels[InstrumentTrack.mixerChannel(t.id)].inserts.any { it.type == pump })
+        val bus = p.mixer.musicBus!!
+        for (t in listOf(bass, pad)) {
+            val ch = InstrumentTrack.mixerChannel(t.id)
+            assertTrue(t.name, ch in bus.members && p.mixer.channels[ch].inserts.none { it.type == pump })
+        }
+        assertTrue(bus.depth >= 0.2f && bus.lowDepth >= bus.depth)
     }
 }

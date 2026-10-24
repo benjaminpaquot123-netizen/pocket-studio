@@ -8,6 +8,7 @@
 
 #include "Effects.h"
 #include "MasterChain.h"
+#include "PlateReverb.h"
 #include "Smoother.h"
 
 namespace ps {
@@ -19,16 +20,18 @@ namespace ps {
 class Mixer {
 public:
     // 0 = drums, 1 = acid bass, 2 = synth (instrument track 1), 3 = remix stems (stereo),
-    // 5..11 = instrument tracks 2..8, 12..15 = audio tracks (stereo). Index 4 is the master (insert
-    // commands, saved automation): its strip is never fed. 16..31 = the 16 drum pads' own strips
-    // (their effects on one pad): they feed the drums' strip, not the master, and follow its mute
-    // and solo.
-    static constexpr int kChannels = 32;
+    // 5..11 = instrument tracks 2..8, 12..15 = audio tracks 1..4 (stereo). Index 4 is the master
+    // (insert commands, saved automation): its strip is never fed. 16..31 = the 16 drum pads' own
+    // strips (their effects on one pad): they feed the drums' strip, not the master, and follow its
+    // mute and solo. 32..35 = audio tracks 5..8 (stereo), after the pads (their numbers are saved).
+    static constexpr int kChannels = 36;
     static constexpr int kFirstPad = 16;
     static constexpr int kPads = 16;
+    static constexpr int kFirstAudio2 = kFirstPad + kPads;
+    static constexpr bool isPad(int ch) { return ch >= kFirstPad && ch < kFirstPad + kPads; }
     static constexpr int kDrums = 0;
     // Effects per channel, and on the master. Every slot is built and prepared with the mixer,
-    // never in the callback: about 38 kB each, 32 x 8 = 9.7 MB per engine on the heap. The long
+    // never in the callback: about 38 kB each, 36 x 8 = 10.9 MB per engine on the heap. The long
     // effects' seconds of memory are the pool's (LongFxPool, 18.4 MB): about 32 MB per mixer.
     static constexpr int kInserts = 8;
     static constexpr int kMaster = 4;    // insert "channel" index of the master
@@ -39,10 +42,11 @@ public:
     int latency() const { return chain_->latency(); }
 
     void prepare(int sampleRate);
-    void setVolume(int ch, float v);   // 0..1 (0.8 = unity, up to +2 dB)
+    void setVolume(int ch, float v);   // 0..1 (0.8 = unity, up to +2 dB); kMaster: the master fader (after the
+                                       // master chain, at most unity: the song's fades)
     void setPan(int ch, float pan);    // -1..1
     void setMute(int ch, bool on);
-    void setSolo(int ch, bool on);
+    void setSolo(int ch, bool on);     // a strip, or a pad's (kFirstPad..): heard alone through the drums' strip
     // ch 0..kMaster. While the strip sounds, the slot's effect fades out over kGateMs first, the new
     // one is put in from silence and fades in (no click); parameters sent meanwhile wait for it.
     void setInsertType(int ch, int slot, int type);
@@ -71,10 +75,40 @@ public:
     static constexpr int kMacroParams = 10;
     void setMacro(int ch, int macro, float v);
     bool chopOn(int ch) const { return chopOn_[static_cast<size_t>(ch)]; }  // tests
+    // A send bus's settings: its effect's (0..3, the reverb's type 4: Reverb), then (S4) its return's
+    // equaliser: kBusLowCut (0 = off, else a high-pass at 40 x 25^v Hz: 0.5 = 200 Hz) and kBusHighCut
+    // (1 = off, else a low-pass at 1 x 20^v kHz: 0.7 = 8 kHz). At rest the return is the plain one.
+    static constexpr int kBusLowCut = 8;
+    static constexpr int kBusHighCut = 9;
     void setBusParam(int bus, int param, float v);
+    // S4: the whole mix's lows in mono under `hz` (its side high-passed twice, 24 dB / octave), before
+    // the master chain; 0 = off (the mix untouched, as before).
+    void setMonoBass(float hz);
+    // S5: the sidechain's key, the sound the audio-keyed pumps and the Musique bus duck under: a
+    // strip's input (0..kChannels-1, a pad's own strip kFirstPad + pad), or -1: none (no key: they
+    // let the sound through). A pad without a strip of its own comes through setKeyInput.
+    void setSidechainKey(int ch) { keyCh_ = ch >= 0 && ch < kChannels && ch != kMaster ? ch : -1; }
+    int sidechainKey() const { return keyCh_; }
+    // The key pad's sound when it has no strip of its own (the engine renders it apart for the
+    // next process() call; null: none). Not kept past that call.
+    void setKeyInput(const float* l, const float* r) {
+        keyInL_ = l;
+        keyInR_ = r;
+    }
+    // S5: the « Musique » group bus: the strips in it (and the send returns asked) are summed apart
+    // and ducked once under the key (KeyedDucker: `depth` broadband, `lowDepth` under 150 Hz,
+    // `release` 0..1 = 50..600 ms), then join the mix. Nothing in it: the mix as before.
+    void setGroupMember(int ch, bool on);
+    void setGroupReturn(int bus, bool on);
+    void setGroupDuck(int param, float v);  // 0 depth, 1 low depth, 2 release (all 0..1)
+    bool inGroup(int ch) const { return ch >= 0 && ch < kChannels && group_[static_cast<size_t>(ch)]; }
+    const KeyedDucker& groupDucker() const { return groupDuck_; }  // tests
     // The master: a gain before the limiter (linear, 0..4), the limiter on or off (a pre-master
     // export keeps its headroom), and its inserts on or off (stems: each strip without the master's
     // processing, so the stems add back up to the mix).
+    float masterFader() const { return masterFader_.target(); }  // tests
+    float masterFaderNow() const { return masterFader_.current(); }  // tests, the live bench (the fade as heard)
+    float masterGain() const { return masterGain_.target(); }  // tests, the live bench
     void setMasterGain(float gain) { masterGain_.setTarget(std::clamp(std::isfinite(gain) ? gain : 1.0f, 0.0f, 4.0f)); }
     void setLimiter(bool on) {
         limiterOn_ = on;
@@ -294,7 +328,32 @@ private:
     std::array<int, kChannels> activeInserts_{};  // count of non-empty slots
     MacroBank& macros_ = *macroBank_;
     Reverb reverb_;
+    std::unique_ptr<PlateReverb> plate_ = std::make_unique<PlateReverb>();
     TempoDelay delay_;
+    // The returns' equalisers (S4), per bus: off at rest.
+    struct ReturnEq {
+        float lowCut = 0.0f, highCut = 1.0f;
+        Biquad hpL, hpR, lpL, lpR;
+        bool active() const { return lowCut > 0.0f || highCut < 1.0f; }
+    };
+    std::array<ReturnEq, kBuses> returnEq_{};
+    void updateReturnEq(int bus);
+    float rate_ = 48000.0f;
+    float monoBassHz_ = 0.0f;
+    // --- S5: the sidechain key and the « Musique » bus.
+    int keyCh_ = -1;
+    const float* keyInL_ = nullptr;
+    const float* keyInR_ = nullptr;
+    std::array<float, kChunk> keyBuf_{};
+    const float* chunkKey_ = nullptr;  // keyBuf_ while a key sounds in this chunk, else null
+    std::array<bool, kChannels> group_{};
+    std::array<bool, kBuses> groupReturn_{};
+    int groupCount_ = 0;
+    std::array<float, 3> groupParams_{0.0f, 0.0f, 0.4f};
+    KeyedDucker groupDuck_;
+    std::array<float, kChunk> grpL_{}, grpR_{};
+    void updateGroupDuck();
+    std::array<Biquad, 2> monoBass_{};
     std::atomic<bool> blewUp_{false};  // a NaN was caught (a strip or the master) since the last look
     PerformanceFx perf_;
     std::array<float, kChunk> chL_{}, chR_{}, mL_{}, mR_{};
@@ -340,6 +399,9 @@ private:
     // The whole mix into the send buses (the build-up's sends, the whole-mix throws).
     std::array<Smoother, kBuses> masterSend_{Smoother(0.0f), Smoother(0.0f)};
     Smoother masterGain_{1.0f};
+    Smoother masterFader_{1.0f};  // setVolume(kMaster): after the master chain, at most unity
+    Smoother drumsOwn_{1.0f};     // the drums' own sound, 0 while a pad is soloed
+
     bool limiterOn_ = true;
     bool masterFxOn_ = true;
 };

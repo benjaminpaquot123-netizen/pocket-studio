@@ -1,12 +1,15 @@
 [
  {
   "id": "dnb",
+  "vocal": "shout",
   "references": [
    "Chase & Status x Bou – Baddadan (2023)",
    "Sub Focus – Rock It (2009)",
    "Pendulum – Tarantula (2005)",
    "Shimon & Andy C – Body Rock (2001)",
-   "Roni Size & Reprazent – Brown Paper Bag (1997)"
+   "Roni Size & Reprazent – Brown Paper Bag (1997)",
+   "Pendulum – Hold Your Colour (2005)",
+   "Wilkinson – Afterglow (2013)"
   ],
   "description_fr": "Une batterie très rapide qui roule, sur une basse énorme qui gronde : la musique des clubs londoniens, à 174 BPM.",
   "bpm": 174,
@@ -95,17 +98,18 @@
    "sound": "Nappe"
   },
   "bass": {
-   "pattern": "R-------..R-----R-------..R--/O-",
+   "pattern": "R-------..R-----R-------..R--/O-R-------..R-----R---5---..R-3-..",
    "octave": 2,
    "sound": "Basse reese",
    "glide": true,
-   "sub": true
+   "sub": true,
+   "variation": "R-------..R-----R-------..R--/O-R---R---..R-----O-------..5-R-.."
   },
   "lead": {
    "type": "riff",
-   "pattern": "R..R..5..R..O.5.",
+   "pattern": "R---..5---..O---..5-..3-R-------....O-..7-..5---..3-R-----------",
    "arp_rate": 0,
-   "octave": 5,
+   "octave": 4,
    "sound": "Supersaw"
   },
   "acid": {
@@ -218,10 +222,10 @@
    "dark": {
     "scale": "minor",
     "degrees": [
-     0,
      5,
-     2,
-     6
+     4,
+     0,
+     0
     ]
    },
    "happy": {
@@ -248,29 +252,33 @@
      0,
      2,
      5,
-     3
+     2
     ]
    }
   },
   "chords": {
    "type": "keys",
    "rhythm": "X-----X-----X---",
-   "voicing": "ninth",
+   "voicing": "rootless9",
    "octave": 3,
-   "sound": "Piano électrique"
+   "sound": "Piano électrique",
+   "voice_lead": true
   },
   "bass": {
    "pattern": "R-------..R---5-R-------.5..R-3-",
    "octave": 2,
    "sound": "Basse ronde",
-   "glide": false
+   "glide": false,
+   "sub": true,
+   "variation": "R-------..R---5-R-------.5..R-3-R-------..R---5-O-----7-..5-3-.."
   },
   "lead": {
-   "type": "arp",
-   "pattern": "",
+   "type": "hook",
+   "pattern": "R-2-3---2-R-....5-6-5---3-2-....",
    "arp_rate": 48,
    "octave": 5,
-   "sound": "Pluck"
+   "sound": "Pluck",
+   "on_key": true
   },
   "acid": {
    "use": false,
@@ -322,15 +330,19 @@
      1.0
     ]
    }
-  ]
+  ],
+  "counter": {
+   "sound": "Cloche",
+   "rhythm": "..X.....X...X..."
+  }
  },
  {
   "id": "neurofunk",
   "references": [
-   "Noisia – Machine Gun (2010)",
+   "Noisia – Stigma (2010)",
+   "Noisia – Diplodocus (2012)",
    "Mefjus – Emulation (2014)",
-   "Phace & Misanthrop – Desert Orgy (2009)",
-   "Ed Rush & Optical – Funktion (1997)"
+   "Phace & Misanthrop – Desert Orgy (2009)"
   ],
   "description_fr": "La drum & bass la plus sombre, façon science-fiction : une batterie sèche comme une machine et une basse qui rugit et se tord sans arrêt.",
   "bpm": 174,
@@ -412,14 +424,16 @@
    "octave": 2,
    "sound": "pack:neurofunk:bass|Basse qui parle",
    "glide": false,
-   "sub": true
+   "sub": true,
+   "variation": "R-.R--.R-.......R-.R--.R-...R-O-R-.R--.R-.......R-.R--.R-.5.R-..",
+   "switch": "Basse growl"
   },
   "lead": {
    "type": "riff",
-   "pattern": "..........O-.5-..........O-.....",
+   "pattern": "..........O-.5............O---..",
    "arp_rate": 0,
    "octave": 3,
-   "sound": "Voix robot"
+   "sound": "Basse growl"
   },
   "acid": {
    "use": false,
@@ -467,6 +481,7 @@
  },
  {
   "id": "jungle",
+  "rewind": true,
   "references": [
    "M-Beat feat. General Levy – Incredible (1994)",
    "Shy FX & UK Apachi – Original Nuttah (1994)",
@@ -557,12 +572,13 @@
   "bass": {
    "pattern": "R-------..R---5-R-----3-..5---7-",
    "octave": 2,
-   "sound": "Basse sub",
-   "glide": false
+   "sound": "Basse ronde",
+   "glide": false,
+   "sub": true
   },
   "lead": {
    "type": "riff",
-   "pattern": "O---------------................",
+   "pattern": "O-------................O---3-..",
    "arp_rate": 0,
    "octave": 3,
    "sound": "Hoover"
@@ -601,7 +617,6 @@
    }
   ],
   "drop": [
-   "bass",
    "ride"
   ],
   "riser": true,
@@ -613,6 +628,7 @@
  },
  {
   "id": "jump_up",
+  "vocal": "shout",
   "references": [
    "Chase & Status x Bou – Baddadan (2023)",
    "Chase & Status, Hedex & ArrDee – Liquor & Cigarettes (2023)",
@@ -703,15 +719,16 @@
    "sound": "Nappe"
   },
   "bass": {
-   "pattern": "R-.R..R-..R-....R-.R..R-..R--/O-",
+   "pattern": "R-.R..R-..R-....R-.R..R-..R--/O-R-.R..5-..3-....R-..............",
    "octave": 2,
    "sound": "Basse growl",
    "glide": true,
-   "sub": true
+   "sub": true,
+   "switch": "Basse wobble"
   },
   "lead": {
    "type": "riff",
-   "pattern": "............O-7-........5-......",
+   "pattern": "............O-7-............................5---................",
    "arp_rate": 0,
    "octave": 3,
    "sound": "Basse wobble"
@@ -767,7 +784,6 @@
     ]
    }
   ],
-  "signature": "chords",
   "build": true,
   "riser": true,
   "break": [
@@ -845,10 +861,10 @@
    "future": {
     "scale": "minor",
     "degrees": [
+     5,
+     6,
      0,
-     0,
-     0,
-     0
+     6
     ]
    },
    "dreamy": {
@@ -869,7 +885,7 @@
    "sound": "Nappe"
   },
   "bass": {
-   "pattern": "R-------..R---O-R-----------2-..",
+   "pattern": "R-------..R---O-R-----------2-..R---R---..R-5---R-------....3-O-",
    "octave": 2,
    "sound": "Basse wobble",
    "glide": false,
@@ -877,7 +893,7 @@
   },
   "lead": {
    "type": "riff",
-   "pattern": "R.......3.....2.................",
+   "pattern": "R-......3-....2.................",
    "arp_rate": 0,
    "octave": 5,
    "sound": "Cloche"
@@ -947,6 +963,7 @@
  },
  {
   "id": "riddim",
+  "fake_drop": true,
   "references": [
    "Marshmello & Svdden Death – Sell Out (2019)",
    "GRiZ & Subtronics – Griztronics (2019)",
@@ -1035,10 +1052,12 @@
    "sound": "Nappe"
   },
   "bass": {
-   "pattern": "R-------....O-..",
+   "pattern": "R--.R--.....O-..R--.R--...3-O-..",
    "octave": 2,
    "sound": "Basse wobble",
-   "glide": false
+   "glide": false,
+   "variation": "R--.R--.....O-..R--.R--...3-O-..R--.R--.....O-..R--.R--.....O-5-",
+   "switch": "Basse growl"
   },
   "lead": {
    "type": "none",
@@ -1161,58 +1180,74 @@
     "scale": "minor",
     "degrees": [
      0,
+     6,
      5,
-     2,
-     6
+     3
     ]
    },
    "happy": {
     "scale": "major",
     "degrees": [
      0,
-     0,
-     4,
-     3
+     5,
+     3,
+     4
     ]
    },
    "future": {
     "scale": "minor",
     "degrees": [
      0,
+     4,
      6,
-     5,
-     6
+     3
     ]
    },
    "dreamy": {
-    "scale": "major",
+    "scale": "minor",
     "degrees": [
-     3,
-     4,
-     2,
-     5
+     5,
+     0,
+     6,
+     3
     ]
    }
   },
   "chords": {
    "type": "pad",
    "rhythm": "X---------------",
-   "voicing": "triad",
+   "voicing": "seventh",
    "octave": 3,
-   "sound": "Nappe chaude"
+   "sound": "Arpège",
+   "arp": {
+    "pattern": [
+     0,
+     2,
+     3,
+     5,
+     4,
+     3,
+     2,
+     1
+    ],
+    "gate": 0.6,
+    "accent": 4,
+    "rate": 24
+   }
   },
   "bass": {
-   "pattern": "R.R.R.R.R.R.R.R.",
+   "pattern": "R-R.R-R.R-R.R-R.R-R.R-R.R-R.R.O.",
    "octave": 2,
    "sound": "Basse analogique",
    "glide": false
   },
   "lead": {
-   "type": "arp",
-   "pattern": "",
+   "type": "hook",
+   "pattern": "R-2-3---5---....R-2-3---5---6-..6-5-3---2---....3-2-R-----------",
    "arp_rate": 24,
    "octave": 5,
-   "sound": "Arpège"
+   "sound": "Lead carré",
+   "on_key": true
   },
   "acid": {
    "use": false,
@@ -1226,9 +1261,9 @@
    "lead": true
   },
   "notes": "Synthwave/outrun: 80-118 BPM (most around 100-110), straight grid, 80s drum-machine kit (LinnDrum-style) with a big gated-reverb snare on 2 and 4; keep hats simple so the gated tail reads. Harmony is a few looping minor chords (Am - F - C - G is the archetype) so the arpeggio and lead carry the song. Bass pulses on steady 8ths following each chord root (16ths for faster outrun), lightly sidechained to the kick like the pads. The 16th-note arpeggio of the chord on a plucky analog sound is the signature, so it defaults on; a brassy or saw lead with glide plays the hook later.",
-  "signature": "lead",
-  "lead_tip": "Les notes des accords jouées une par une, très vite et en boucle (un arpège) : c'est le son qui fait la synthwave.",
-  "pad_tip": "Une nappe analogique qui monte doucement : elle arrive au refrain pour l'élargir.",
+  "signature": "chords",
+  "lead_tip": "La mélodie chantable au-dessus de l'arpège : deux phrases qui montent, deux qui redescendent, et un silence à la fin de chaque quatre mesures.",
+  "pad_tip": "L'arpège : les accords joués note à note sur un motif fixe qui monte et descend sur deux octaves, avec un accent toutes les quatre notes. C'est le moteur du morceau.",
   "bass_tip": "Une basse qui pulse deux fois par temps sur la note de l'accord, comme un moteur qui tourne.",
   "fx": [
    {
@@ -1253,7 +1288,24 @@
     "delay": 0.25
    }
   ],
-  "riser": true
+  "riser": true,
+  "sweeps": [
+   {
+    "on": "chords",
+    "intro": [
+     0.3,
+     0.45
+    ],
+    "groove": [
+     0.45,
+     0.8
+    ],
+    "drop": [
+     1.0,
+     1.0
+    ]
+   }
+  ]
  },
  {
   "id": "pop",
@@ -1272,9 +1324,10 @@
   "drums": [
    {
     "role": "kick",
-    "pattern": "X.....x.X.......",
+    "pattern": "X...X...X...X...",
     "source": "pop",
-    "tip_fr": "Grosse caisse sur le 1 et le 3, avec un petit coup juste avant le 3 pour faire rebondir."
+    "tip_fr": "Grosse caisse sur le 1 et le 3, avec un petit coup juste avant le 3 pour faire rebondir.",
+    "build": "X.....x.X......."
    },
    {
     "role": "snare",
@@ -1355,22 +1408,24 @@
   "chords": {
    "type": "keys",
    "rhythm": "X-.X-.X--.X-.X-.",
-   "voicing": "triad",
-   "octave": 4,
-   "sound": "gm:Acoustic Grand Piano"
+   "voicing": "seventh",
+   "octave": 3,
+   "sound": "gm:Acoustic Grand Piano",
+   "voice_lead": true
   },
   "bass": {
-   "pattern": "R-----r-R-----5-",
+   "pattern": "R---r-O-R---r-5-",
    "octave": 2,
    "sound": "Basse ronde",
    "glide": false
   },
   "lead": {
-   "type": "riff",
-   "pattern": "5-3-R-3-5---O-5-",
+   "type": "hook",
+   "pattern": "R-R-2-3---3-2---R-R-2-3---5-----3-3-5-6---5-3---2-3-2-R---------",
    "arp_rate": 0,
    "octave": 5,
-   "sound": "Pluck"
+   "sound": "Pluck",
+   "on_key": true
   },
   "acid": {
    "use": false,

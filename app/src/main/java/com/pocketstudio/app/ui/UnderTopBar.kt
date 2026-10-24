@@ -29,6 +29,11 @@ fun UnderTopBar(
     renaming: Boolean,
     closeRename: () -> Unit,
     rename: (String) -> Unit = vm::renameProject,
+    /** False on the Live page and the timeline: the tempo and the position only (their ▶ has its own meaning there). */
+    controls: Boolean = true,
+    /** Phase 36: the « ? » that labels the screen (null: none), and what it does. */
+    helpOn: Boolean? = null,
+    toggleHelp: () -> Unit = {},
 ) {
     val project by vm.project.collectAsStateWithLifecycle()
     val transport by vm.transport.collectAsStateWithLifecycle()
@@ -62,12 +67,12 @@ fun UnderTopBar(
         }
         PlayStrip(
             PlayStripUi(
-                project.tempoBpm, hasSong = project.song.isNotEmpty(), loopPart = loopPart, playing = playing, position = position, parts = parts,
-                soloed = if (landscape) soloed else emptyList(),
+                project.tempoBpm, hasSong = controls && project.song.isNotEmpty(), loopPart = loopPart, playing = playing, position = position, parts = parts,
+                soloed = if (landscape || !controls) soloed else emptyList(), helpOn = helpOn,
             ),
-            PlayStripActions(openTempo = { setTempoOpen(true) }, setLoopPart = vm::setLoopPart, playFrom = vm::playSongPart, clearSolos = vm::clearSolos),
+            PlayStripActions(openTempo = { setTempoOpen(true) }, setLoopPart = vm::setLoopPart, playFrom = vm::playSongPart, clearSolos = vm::clearSolos, toggleHelp = toggleHelp),
         )
-        if (!landscape) SoloBanner(soloed, vm::clearSolos)
+        if (!landscape && controls) SoloBanner(soloed, vm::clearSolos)
     }
     if (tempoOpen) {
         // Whatever the sheet changes until it closes is one undo step.
@@ -75,3 +80,13 @@ fun UnderTopBar(
         TempoSheet(project.tempoBpm, TempoActions(set = vm::setSheetTempo, tap = vm::tapSheetTempo), onClose = { setTempoOpen(false) })
     }
 }
+
+/**
+ * The strip on the Live page and the timeline, under their own bar: the tempo (a touch opens its
+ * sheet) and where the music is (« C · Drop · mes. 9/60 », or the scene looping): no « ⟳ Partie »
+ * nor « Jouer depuis… » there, since ▶ on those pages has its own meaning (the Live page plays the
+ * scene shown; the timeline the song).
+ */
+@Composable
+fun PositionStrip(vm: RhythmViewModel, tempoOpen: Boolean, setTempoOpen: (Boolean) -> Unit) =
+    UnderTopBar(vm, tempoOpen, setTempoOpen, renaming = false, closeRename = {}, controls = false)

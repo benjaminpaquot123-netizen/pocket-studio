@@ -89,7 +89,8 @@ class LanguageTest {
         session()
         // Section titles are shown in capitals.
         compose.onNodeWithText("Song settings", ignoreCase = true).assertExists()
-        compose.onNodeWithText("  Play the song").assertExists()
+        // ▶ is the top bar's alone: no « Play the song » button on the page.
+        compose.onAllNodesWithText("Play the song", substring = true).assertCountEquals(0)
         // Section names follow the language (a copy's number too); a name typed by the user stays.
         compose.onAllNodesWithText("A · Chorus").assertCountEquals(1)
         compose.onAllNodesWithText("Chorus").assertCountEquals(1)
@@ -124,11 +125,15 @@ class LanguageTest {
     @Test
     fun tabsAndSceneTitlesFollowTheLanguage() {
         I18n.lang = Lang.NL
-        assertEquals(listOf("Ritme", "Acid", "Synth", "Mixer", "Audio", "Nummer", "Tools"), AppTab.entries.map { it.label })
+        // Phase 36: the bottom bar shows the five spaces (or the Mode simple's four tabs), no longer the seven tabs.
+        assertEquals(listOf("Structuur", "Klanken", "Mix", "Live", "Meer"), Space.entries.map { it.label })
+        assertEquals(listOf("Mijn nummer", "Ritme", "Klavier", "Versturen"), SimpleTab.entries.map { it.label })
+        assertEquals(listOf("Ritme", "Acid", "Synth", "Mixer", "Audio", "Nummer", "Tools", "Live", "Versturen"), AppTab.entries.map { it.label })
         val p = Project().renameScene(0, "Pont")
         assertEquals("A · Brug", p.sceneTitle(0))
         I18n.lang = Lang.EN
         assertEquals("Song", AppTab.Morceau.label)
+        assertEquals(listOf("Structure", "Sounds", "Mix", "Live", "More"), Space.entries.map { it.label })
         assertEquals("A · Bridge", p.sceneTitle(0))
         assertEquals("Verse 3", Scene.shownLabel("Couplet 3"))
         assertEquals("Ma fin", Scene.shownLabel("Ma fin"))

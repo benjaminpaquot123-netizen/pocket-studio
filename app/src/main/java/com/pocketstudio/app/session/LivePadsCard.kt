@@ -219,7 +219,7 @@ private fun PadEditor(pad: Int, clip: LiveClip?, drumSounds: List<Pair<Int, Stri
                 Text(" " + tr("De l'appareil"))
             }
         }
-        Text(tr("« Générer » fabrique une boucle à partir d'une phrase (Audio › Générer), puis la pose sur un pad live libre."),
+        Text(tr("« Générer » fabrique une boucle à partir d'une phrase (Sons › Voix › Générer), puis la pose sur un pad live libre."),
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         if (drumSounds.isNotEmpty()) {
             Text(tr("Ou le son d'un pad de batterie :"), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)

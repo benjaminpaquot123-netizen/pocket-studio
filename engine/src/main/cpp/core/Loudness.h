@@ -169,6 +169,98 @@ private:
     double forget_ = 1.0;
 };
 
+// Phase 34 (S5): the loudness of a song's loudest part (its Drop, its Refrain). The short-term
+// loudness (3 s windows, every 100 ms) kept as a histogram like GatedLoudness's (0.1 LU bins, the
+// energy of each summed exactly); the power mean of its loudest kTopShare, over the absolute gate
+// and 20 LU under the gated mean (as the loudness range, EBU Tech 3342, gates its short-term
+// values). A song's Drops last a third of it or more: this reads the Drop's own loudness to a few
+// tenths, without knowing where it is. `forget` < 1: a running estimate.
+class LoudPart {
+public:
+    static constexpr double kGateAbs = -70.0;
+    static constexpr double kGateRel = -20.0;
+    static constexpr double kTopShare = 0.2;
+    static constexpr double kStep = 0.1;
+    static constexpr int kBins = 800;
+    void reset() {
+        energy_.fill(0.0);
+        weight_.fill(0.0);
+        total_ = 0.0;
+        threshold_ = -1000.0;
+    }
+    void setForget(double forget) { forget_ = std::clamp(forget, 0.5, 1.0); }
+    // A short-term window's mean square (K-weighted, the channels summed).
+    void add(double meanSquare) {
+        const double l = lufsOf(meanSquare);
+        if (!(l > kGateAbs)) return;
+        if (forget_ < 1.0) {
+            for (int i = 0; i < kBins; ++i) {
+                energy_[static_cast<size_t>(i)] *= forget_;
+                weight_[static_cast<size_t>(i)] *= forget_;
+            }
+            total_ *= forget_;
+        }
+        const int bin = std::clamp(static_cast<int>((l - kGateAbs) / kStep), 0, kBins - 1);
+        energy_[static_cast<size_t>(bin)] += meanSquare;
+        weight_[static_cast<size_t>(bin)] += 1.0;
+        total_ += 1.0;
+    }
+    double windows() const { return total_; }
+    // The loud part's loudness in LUFS (-1000: nothing yet); also sets threshold().
+    double lufs() {
+        double e = 0.0, w = 0.0;
+        for (int i = 0; i < kBins; ++i) {
+            e += energy_[static_cast<size_t>(i)];
+            w += weight_[static_cast<size_t>(i)];
+        }
+        threshold_ = -1000.0;
+        if (w <= 0.0) return -1000.0;
+        const double gate = lufsOf(e / w) + kGateRel;
+        const int first = std::clamp(static_cast<int>(std::floor((gate - kGateAbs) / kStep - 0.5)) + 1, 0, kBins);
+        double gw = 0.0;
+        for (int i = first; i < kBins; ++i) gw += weight_[static_cast<size_t>(i)];
+        if (gw <= 0.0) return -1000.0;
+        // From the top down to kTopShare of the gated windows (the last bin taken in part).
+        const double want = kTopShare * gw;
+        double te = 0.0, tw = 0.0;
+        for (int i = kBins - 1; i >= first && tw < want; --i) {
+            const double bw = weight_[static_cast<size_t>(i)];
+            if (bw <= 0.0) continue;
+            const double take = std::min(bw, want - tw);
+            te += energy_[static_cast<size_t>(i)] * (take / bw);
+            tw += take;
+            threshold_ = kGateAbs + kStep * i;
+        }
+        return tw > 0.0 ? lufsOf(te / tw) : -1000.0;
+    }
+    // The short-term loudness from which a window counts in the loud part (at the last lufs()).
+    double threshold() const { return threshold_; }
+
+private:
+    std::array<double, kBins> energy_{}, weight_{};
+    double total_ = 0.0;
+    double forget_ = 1.0;
+    double threshold_ = -1000.0;
+};
+
+// LoudPart fed with a signal (an offline render's): K-weighted 100 ms pieces, a window per piece
+// once 3 s are there.
+class LoudPartMeter {
+public:
+    void prepare(int rate) {
+        blocks_.prepare(rate);
+        part_.reset();
+    }
+    void add(float l, float r) {
+        if (blocks_.add(l, r) && blocks_.pieces() >= BlockLoudness::kRing) part_.add(blocks_.meanOfLast(BlockLoudness::kRing));
+    }
+    double lufs() { return part_.lufs(); }
+
+private:
+    BlockLoudness blocks_;
+    LoudPart part_;
+};
+
 // The master's meter: momentary, short-term and integrated (since reset: since ▶) loudness, and
 // the true peak (4x). The audio thread calls add() per frame and publish() per block; any thread
 // reads the published values.

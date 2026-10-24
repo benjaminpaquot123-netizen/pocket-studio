@@ -33,6 +33,8 @@ Réutiliser l'open source éprouvé (GPL/AGPL acceptées, usage personnel). Vér
 - `./scripts/host-tests.sh` : tests du moteur sur Linux (rendu hors-ligne, timing, ni NaN ni saturation).
 - `./gradlew :app:testDebugUnitTest` (logique) et `./gradlew :app:verifyRoborazziDebug` / `recordRoborazziDebug` (captures d'écran, à regarder soi-même).
 - `./gradlew :app:assembleRelease` : ne JAMAIS le lancer à chaque chantier ni à chaque phase (ça coûte du quota). Benjamin (2026-10-23) : l'APK ne se construit et ne s'envoie qu'une fois tout le plan terminé. La CI de GitHub fait ses propres constructions toute seule. La CI ajoute un test de fumée sur émulateur x86_64.
+- `./scripts/live-bench.sh` : « écoute en direct », les morceaux joués comme sur le téléphone (moteur temps réel, mêmes commandes que l'appli), niveau seconde par seconde, alerte fondu / silence / saut. Benjamin (2026-10-24) : chaque audit et chaque écoute de vérification passent aussi par ce chemin, jamais seulement par l'export.
+- APK : Benjamin (2026-10-24) : n'en construire et n'en envoyer que sur sa demande explicite.
 - CI rouge : lire les journaux, corriger, relancer. N'en parler que si réglé ou vraiment bloqué.
 
 ## Revue de fin de phase (obligatoire)

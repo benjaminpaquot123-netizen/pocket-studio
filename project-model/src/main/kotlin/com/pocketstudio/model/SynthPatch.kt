@@ -40,7 +40,49 @@ data class SynthPatch(val values: List<Float> = DEFAULTS) {
          * the library so that every sound plays about as loud as the others; not a knob.
          */
         const val GAIN = 28
-        const val PARAM_COUNT = 29
+
+        // Phase 34, S4 (engine Synth.h): width and movement. At their defaults the sound is as before
+        // them (every project saved earlier keeps its sound: its shorter list takes these defaults).
+        /** The unison copies (without copies, oscillators 1 and 2) spread left and right; the mono sum unchanged. */
+        const val WIDTH = 29
+        /** Level of a copy of oscillator 1's wave an octave below the note (the automatic octave doubling). */
+        const val OCTAVE_DOWN = 30
+        /** Saturation after the filter (4x oversampled), its level kept. */
+        const val DRIVE = 31
+        /** The stereo folded to mono under 60 x 5^v Hz ([monoBelowValue]): 120 Hz by default, 250 Hz for a bass. */
+        const val MONO_BELOW = 32
+        /** The sweep's shape: [SHAPE_TRIANGLE] (as before), [SHAPE_SQUARE] (a riddim gate), [SHAPE_SAW], [SHAPE_SINE]. */
+        const val LFO2_SHAPE = 33
+        /** A slow filter sweep locked to the song's bars: 0 off, then 1, 2, 4, 8, 16 bars ([cycleValue]). */
+        const val CYCLE_BARS = 34
+        /** Its depth: 0..1 = 0..+-2 octaves (closed at the cycle's start, open half-way). */
+        const val CYCLE_DEPTH = 35
+        /** The vowel filter's share (0 = off) and its vowel (A, E, I, O, U over 0..1; the sweep moves it). */
+        const val FORMANT = 36
+        const val VOWEL = 37
+        /** A layer of the sound above 250 Hz, driven and wide (the bass music « mid » over a mono sub). */
+        const val MID_LAYER = 38
+        /** Above 0.5: the oscillators oversampled (aliasing under -60 dB). */
+        const val OVERSAMPLE = 39
+        const val PARAM_COUNT = 40
+
+        /** The parameters S4 added ([WIDTH]..[OVERSAMPLE]): production settings, not a sound's identity. */
+        val S4_PARAMS: IntRange = WIDTH..OVERSAMPLE
+
+        const val SHAPE_TRIANGLE = 0f
+        const val SHAPE_SQUARE = 1f / 3f
+        const val SHAPE_SAW = 2f / 3f
+        const val SHAPE_SINE = 1f
+
+        /** [MONO_BELOW] for [hz] (60..300 Hz). */
+        fun monoBelowValue(hz: Float): Float = (kotlin.math.ln(hz.coerceIn(60f, 300f) / 60f) / kotlin.math.ln(5f))
+        const val MONO_BELOW_DEFAULT = 0.43f
+
+        /** [CYCLE_BARS] for a cycle of [bars] (1, 2, 4, 8 or 16; 0 = off). */
+        fun cycleValue(bars: Int): Float = when (bars) {
+            1 -> 0.2f; 2 -> 0.4f; 4 -> 0.6f; 8 -> 0.8f; 16 -> 1f
+            else -> 0f
+        }
 
         /** Decibels of [GAIN] at 0 and 1 (engine Synth::kGainRangeDb). */
         const val GAIN_RANGE_DB = 30f
@@ -69,6 +111,10 @@ data class SynthPatch(val values: List<Float> = DEFAULTS) {
             0f, 0.3f,
             0f, 0f,
             0.5f,
+            // S4: width, octave down, drive, mono below (120 Hz), sweep shape, cycle and depth,
+            // formant and vowel, mid layer, oversampling: all off.
+            0f, 0f, 0f, MONO_BELOW_DEFAULT, 0f, 0f, 0f,
+            0f, 0f, 0f, 0f,
         )
 
         /** Ready-made sounds: name -> patch. Waves: 0 = saw, 0.5 = square, 1 = triangle. */

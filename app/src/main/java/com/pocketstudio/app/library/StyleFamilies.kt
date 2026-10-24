@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.NightsStay
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.Speaker
 import androidx.compose.material3.Icon
@@ -56,16 +57,21 @@ import com.pocketstudio.ui.Neon
  * (`<tag>_family_<family>`), [style]: one style's card.
  */
 @Composable
-fun StyleFamilies(tag: String, style: @Composable (StarterWizard.Style) -> Unit, open: Set<String> = emptySet()) {
+fun StyleFamilies(
+    tag: String, style: @Composable (StarterWizard.Style) -> Unit, open: Set<String> = emptySet(),
+    /** Phase 36, Mode simple: « Calme (Chill, Lo-fi) » first, open. */
+    calm: Boolean = false,
+) {
+    val families = (if (calm) listOf(StarterWizard.CALM_FAMILY) else emptyList()) + StarterWizard.FAMILIES
     // Saved as a list (a set is not saveable as is).
-    var opened by rememberSaveable { mutableStateOf(StarterWizard.FAMILIES.filter { it in open }) }
+    var opened by rememberSaveable { mutableStateOf(families.filter { it in open || (calm && it == StarterWizard.CALM_FAMILY) }) }
     Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        StarterWizard.FAMILIES.forEach { family ->
-            val styles = StarterWizard.stylesOf(family)
+        families.forEach { family ->
+            val styles = if (family == StarterWizard.CALM_FAMILY) StarterWizard.calmStyles() else StarterWizard.stylesOf(family)
             if (styles.isEmpty()) return@forEach
             val isOpen = family in opened
-            FamilyHeader(family, styles.size, isOpen, Modifier.testTag("${tag}_family_$family")) {
-                opened = if (isOpen) opened - family else StarterWizard.FAMILIES.filter { it in opened || it == family }
+            FamilyHeader(family, styles.size, isOpen, Modifier.testTag(if (family == StarterWizard.CALM_FAMILY) "${tag}_family_calm" else "${tag}_family_$family")) {
+                opened = if (isOpen) opened - family else families.filter { it in opened || it == family }
             }
             AnimatedVisibility(isOpen, enter = expandVertically() + fadeIn(), exit = shrinkVertically() + fadeOut()) {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) { styles.forEach { style(it) } }
@@ -80,6 +86,7 @@ internal fun familyLook(family: String): Pair<ImageVector, Color> = when (family
     "House" -> Icons.Filled.Album to Color(0xFFFFB74D)
     "Bass music" -> Icons.Filled.Speaker to Color(0xFFB388FF)
     "Hip-hop" -> Icons.Filled.Mic to Color(0xFFF06292)
+    StarterWizard.CALM_FAMILY -> Icons.Filled.NightsStay to Color(0xFFB39DDB)
     else -> Icons.Filled.MusicNote to Color(0xFF80CBC4)
 }
 
@@ -100,7 +107,7 @@ private fun FamilyHeader(family: String, count: Int, open: Boolean, modifier: Mo
         Box(Modifier.size(36.dp).clip(RoundedCornerShape(10.dp)).background(color.copy(alpha = if (open) 0.35f else 0.22f)), contentAlignment = Alignment.Center) {
             Icon(icon, contentDescription = null, tint = color, modifier = Modifier.size(22.dp))
         }
-        Text(tr(family), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = Neon.TextPrimary,
+        Text(if (family == StarterWizard.CALM_FAMILY) tr("Calme (Chill, Lo-fi)") else tr(family), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = Neon.TextPrimary,
             maxLines = 2, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f).padding(start = 12.dp))
         Text(tr("%d styles", count), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, maxLines = 1, modifier = Modifier.padding(start = 8.dp, end = 4.dp))
         Icon(if (open) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore, contentDescription = null, tint = if (open) color else Neon.TextSecondary)

@@ -24,7 +24,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-/** Emulator smoke test run by CI: the app starts, plays, and every tab opens without crashing. */
+/** Emulator smoke test run by CI: the app starts, plays, and every space opens without crashing. */
 @RunWith(AndroidJUnit4::class)
 class SmokeTest {
     @get:Rule(order = 0)
@@ -37,14 +37,34 @@ class SmokeTest {
     fun appStartsPlaysAndNavigates() {
         assertTrue("native engine must load", NativeEngine.isAvailable)
         compose.waitUntil(10_000) { NativeEngine.streamInfo().let { it.running && it.callbacks > 0 } }
-        // First launch: the welcome choices open; "later" keeps the starter beat.
+        // First launch: the welcome choices open; the five spaces (not the Mode simple, phase 36), then
+        // "later" keeps the starter beat.
         compose.waitForIdle()
-        if (compose.onAllNodesWithTag("welcome_later").fetchSemanticsNodes().isNotEmpty()) compose.onNodeWithTag("welcome_later").performScrollTo().performClick()
+        if (compose.onAllNodesWithTag("welcome_later").fetchSemanticsNodes().isNotEmpty()) {
+            compose.onNodeWithTag("welcome_mode_full").performScrollTo().performClick()
+            compose.onNodeWithTag("welcome_later").performScrollTo().performClick()
+        }
         compose.waitForIdle()
+        // Any later start: « Que veux-tu faire ? », where « Continuer » opens the last project (one touch).
+        if (compose.onAllNodesWithTag("launch_continue").fetchSemanticsNodes().isNotEmpty()) {
+            compose.onNodeWithTag("launch_mode_full").performScrollTo().performClick()
+            compose.onNodeWithTag("launch_continue").performScrollTo().performClick()
+        }
+        compose.waitForIdle()
+        assertTrue("no « Que veux-tu faire ? » left over the project", compose.onAllNodesWithTag("launch").fetchSemanticsNodes().isEmpty())
 
-        // Rhythm screen: the starter groove plays and makes sound.
+        // Rhythm screen: the starter groove plays and makes sound. « Continuer » reopens the last space
+        // used (another test may have left Structure open): go to Sons › Rythme explicitly.
+        if (compose.onAllNodesWithTag("rhythm").fetchSemanticsNodes().isEmpty()) {
+            compose.onNodeWithTag("tab_Sons").performClick()
+            compose.waitForIdle()
+            if (compose.onAllNodesWithTag("rhythm").fetchSemanticsNodes().isEmpty()) {
+                compose.onNodeWithTag("sons_Rythme").performClick()
+                compose.waitForIdle()
+            }
+        }
         compose.onNodeWithTag("rhythm").assertIsDisplayed()
-        compose.onNodeWithTag("transport_play").performClick()
+        compose.onNodeWithTag("top_play").performClick()
         compose.waitUntil(5_000) { NativeEngine.currentStep() >= 0 }
         var heard = false
         compose.waitUntil(5_000) {
@@ -52,7 +72,7 @@ class SmokeTest {
             heard
         }
         assertTrue("drums must sound", heard)
-        compose.onNodeWithTag("transport_play").performClick()
+        compose.onNodeWithTag("top_play").performClick()
         compose.waitUntil(2_000) { NativeEngine.currentStep() == -1 }
 
         // A live pad fires its lane.
@@ -64,15 +84,21 @@ class SmokeTest {
 
         // An edit survives the app going to the background (autosave flush on stop).
         compose.onNodeWithTag("step_3").performScrollTo().performClick()  // pad 4 (clap) is selected now
+        compose.waitForIdle()
         compose.activityRule.scenario.moveToState(androidx.lifecycle.Lifecycle.State.CREATED)
         val store = ProjectStore(File(InstrumentationRegistry.getInstrumentation().targetContext.filesDir, "projects"))
+        // The flush is asynchronous and the emulator's disk is slow: whichever project is open (the
+        // starter's id can differ from PROJECT_ID), its clap must carry the hit within 15 s.
+        fun savedHit(): Boolean = (store.list() + RhythmViewModel.PROJECT_ID).distinct().any { id ->
+            store.load(id)?.drums?.lanes?.get(4)?.hits?.containsKey(3) == true
+        }
         var saved = false
-        for (i in 0 until 50) {
-            saved = store.load(RhythmViewModel.PROJECT_ID)?.drums?.lanes?.get(4)?.hits?.containsKey(3) == true
+        for (i in 0 until 150) {
+            saved = savedHit()
             if (saved) break
             Thread.sleep(100)
         }
-        assertTrue("edit must be saved when the app goes to the background", saved)
+        assertTrue("edit must be saved when the app goes to the background (projects: ${store.list()})", saved)
         compose.activityRule.scenario.moveToState(androidx.lifecycle.Lifecycle.State.RESUMED)
         compose.waitUntil(10_000) { NativeEngine.streamInfo().let { it.running && it.callbacks > 0 } }
 
@@ -95,24 +121,29 @@ class SmokeTest {
         }
         assertTrue("meter must run: $diagnostic", !diagnostic.contains("NoInput") && !diagnostic.contains("Interrupted"))
 
-        // Tools: test tone, then latency page; then the checklist (the tabs scroll: bring each into view).
-        compose.onNodeWithTag("tab_Outils").performClick()
+        // Plus (phase 36: a list, each page with « ‹ Plus »): test tone, then latency page; then the checklist.
+        compose.onNodeWithTag("tab_Plus").performClick()
         compose.onNodeWithTag("tool_Son").performScrollTo().performClick()
         compose.onNodeWithTag("play").performClick()
         compose.onNodeWithText("Arrêter").assertIsDisplayed()
         compose.onNodeWithTag("play").performClick()
+        compose.onNodeWithTag("plus_back").performClick()
         compose.onNodeWithTag("tool_Latence").performScrollTo().performClick()
         compose.onNodeWithTag("latency").assertIsDisplayed()
+        compose.onNodeWithTag("plus_back").performClick()
 
         compose.onNodeWithTag("tool_Recette").performScrollTo().performClick()
         compose.onNodeWithTag("recette").assertIsDisplayed()
 
-        compose.onNodeWithTag("tab_Mixeur").performClick()
+        compose.onNodeWithTag("tab_Mix").performClick()
         compose.onNodeWithTag("mixer").assertIsDisplayed()
         compose.onNodeWithTag("mute_0").performClick()
         compose.onNodeWithTag("mute_0").performClick()
 
-        // Export: 4 bars rendered offline into a real 24-bit WAV with sound in it.
+        // Export: 4 bars rendered offline into a real 24-bit WAV with sound in it. The part in a
+        // loop, chosen explicitly: a project with a song exports the whole song by default, and a
+        // 3-minute render then takes longer than this test waits on the emulator.
+        compose.onNodeWithTag("export_what_Loop").performScrollTo().performClick()
         compose.onNodeWithTag("export").performScrollTo().performClick()
         compose.waitUntil(60_000) { compose.onAllNodesWithTag("share").fetchSemanticsNodes().isNotEmpty() }
         val context = InstrumentationRegistry.getInstrumentation().targetContext
@@ -167,7 +198,9 @@ class SmokeTest {
         assertEquals(1, rhythm.project.value.drums.lanes[9].sample!!.fitBeats)
 
         // Piano roll: the Notes view opens and a note added through the screen's path is kept.
-        compose.onNodeWithTag("tab_Synthe").performClick()
+        // Sons (phase 36): the synth track's chip opens its editor.
+        compose.onNodeWithTag("tab_Sons").performClick()
+        compose.onNodeWithTag("track_0").performClick()
         compose.onNodeWithTag("mode_notes").performClick()
         compose.onNodeWithTag("piano_roll").assertExists()
         InstrumentationRegistry.getInstrumentation().runOnMainSync {

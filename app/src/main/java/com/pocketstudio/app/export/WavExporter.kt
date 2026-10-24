@@ -71,6 +71,7 @@ object WavExporter {
             files.all { it.extension == "wav" } -> "audio/wav"
             files.all { it.extension == "mid" } -> "audio/midi"
             files.all { it.extension == "zip" } -> "application/zip"
+            files.all { it.extension == "mp4" } -> "video/mp4"
             else -> "*/*"
         }
         val send = if (uris.size == 1) {

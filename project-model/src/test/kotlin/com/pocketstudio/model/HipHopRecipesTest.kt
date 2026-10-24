@@ -25,7 +25,16 @@ class HipHopRecipesTest {
         for (id in listOf("trap", "drill", "phonk", "reggaeton")) {
             val s = style(id)
             assertTrue(id, s.melody.bassGlide && '/' in s.melody.bassPattern)
-            val bass = tracks(id).instrumentTracks.first { it.name == "Basse" }
+            val p = tracks(id)
+            if (id in StudioDrums.BASS_808) {
+                // S3: the 808 voice on its pad plays the line, on the chords' notes, sliding 60 to 200 ms where it slides.
+                assertEquals(id, PadVoice.BASS_808, p.padVoices.getValue(StudioDrums.LANE_808).kind)
+                assertTrue(id, p.instrumentTracks.none { it.name == "Basse" })
+                val hits = p.drums.lanes[StudioDrums.LANE_808].hits.values
+                assertTrue(id, hits.any { it.glide in 60..200 } && hits.map { it.pitch }.distinct().size >= 2)
+                continue
+            }
+            val bass = p.instrumentTracks.first { it.name == "Basse" }
             assertTrue(id, StarterWizard.isLine(bass.notes.notes))
             assertFalse(id, SampledPatch.isMonophonic(bass.notes.notes))
             assertEquals(id, StarterWizard.BASS_GLIDE, bass.synth.get(SynthPatch.GLIDE))
@@ -43,9 +52,9 @@ class HipHopRecipesTest {
             val plan = StarterWizard.planFor(s, s.lines.map { it.role }.toSet(), s.melody.parts, acid = false)
             assertEquals(id, (0 until plan.count).toSet(), plan.parts[sig])
         }
-        // Only what the genre wants: no chords in phonk and jersey club, no lead in boom bap, lo-fi, grime, reggaeton.
-        for (id in listOf("phonk", "jersey_club")) assertFalse(id, HP.Pad in style(id).melody.parts)
-        for (id in listOf("boom_bap", "lofi", "grime", "reggaeton")) assertFalse(id, HP.Lead in style(id).melody.parts)
+        // Only what the genre wants: no chords in jersey club; the hits' hooks on by default everywhere (the phonk's pad waits for the Refrain).
+        assertFalse(HP.Pad in style("jersey_club").melody.parts)
+        for (id in ids) assertTrue(id, HP.Lead in style(id).melody.parts)
     }
 
     @Test

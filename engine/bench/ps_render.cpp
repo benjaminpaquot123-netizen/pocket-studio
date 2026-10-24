@@ -2,16 +2,20 @@
 // RecordingSink during SongBenchExport) through the engine core's OfflineRenderer, exactly as the
 // JNI export bridge (engine/src/main/cpp/android/JniBridge.cpp) does, and writes the result.
 //
-//   ps_render [--no-limiter] [--as-app] [--solo <channel>] [--report <file.json>] <in.pscmd> <out>
+//   ps_render [--no-limiter] [--as-app] [--solo <channel>] [--ceiling <dBTP>] [--report <file.json>] <in.pscmd> <out>
 //
 // RENDER wav: <out> is a WAV file, 32-bit float at 48 kHz by default (no dither: byte-identical
 //   runs); --as-app writes what the app writes (the FORMAT line: 44.1 kHz, 16 or 24 bits dithered).
 // RENDER float: <out> is raw interleaved stereo float32 (what OfflineExport.renderToArray returns).
 // --no-limiter: the master's limiter off (a pre-master render).
 // --solo: one mixer channel alone (what the app's separate tracks do), to find where a sound comes from.
+// --ceiling: the master limiter's ceiling (what the app sets for an M4A: -2).
 // --report: the renderer's end-of-export report (what the app shows) as a small JSON: integrated
 //   loudness, true peak, length, the gain the loudness target added (drive_db, 0 without one) and
-//   the loudness of the music before the master chain (music_lufs, -1000 in a one-pass render).
+//   the loudness of the music before the master chain (music_lufs, -1000 in a one-pass render);
+//   (S5) what the clipper and the limiter took off (loss_db: over the loud part in Drop mode), the
+//   loud part's loudness after and before the chain (loud_lufs, music_loud_lufs: -1000 outside the
+//   Drop mode), the target's mode (0 the whole song, 1 the Drop) and its LUFS (target_lufs, 0: none).
 //
 // File format (text, one call per line; see docs/plan/son.md § 2.2):
 //   PSCMD 1 / RATE 48000
@@ -65,6 +69,7 @@ bool readFloats(const std::string& path, std::vector<float>& out) {
 int main(int argc, char** argv) {
     bool noLimiter = false, asApp = false;
     int solo = -1;
+    float ceiling = NAN;
     std::string reportPath;
     std::vector<std::string> files;
     for (int i = 1; i < argc; ++i) {
@@ -72,10 +77,11 @@ int main(int argc, char** argv) {
         else if (!std::strcmp(argv[i], "--as-app")) asApp = true;
         else if (!std::strcmp(argv[i], "--solo") && i + 1 < argc) solo = std::atoi(argv[++i]);
         else if (!std::strcmp(argv[i], "--report") && i + 1 < argc) reportPath = argv[++i];
+        else if (!std::strcmp(argv[i], "--ceiling") && i + 1 < argc) ceiling = std::strtof(argv[++i], nullptr);
         else files.emplace_back(argv[i]);
     }
     if (files.size() != 2) {
-        std::fprintf(stderr, "usage: ps_render [--no-limiter] [--as-app] [--solo <channel>] [--report <file.json>] <in.pscmd> <out>\n");
+        std::fprintf(stderr, "usage: ps_render [--no-limiter] [--as-app] [--solo <channel>] [--ceiling <dBTP>] [--report <file.json>] <in.pscmd> <out>\n");
         return 1;
     }
     std::ifstream in(files[0]);
@@ -140,7 +146,7 @@ int main(int argc, char** argv) {
             ps::Sample* s = sampleOf(id, line);
             if (op == "PAD") install(ps::CommandType::InstallSample, index, s);
             else if (op == "AUDIOCLIP") install(ps::CommandType::InstallAudioClip, index, s);
-            else install(ps::CommandType::InstallTrackSample, std::clamp(index, 0, ps::kTracks - 1) << 16, s);
+            else install(ps::CommandType::InstallTrackSample, (std::clamp(index & 0xFF, 0, ps::kTracks - 1) << 16) | ((index >> 8) & 0xFFFF), s);  // | zone + 1 << 8: a multizone zone
         } else if (op == "STEMS") {
             long id = 0;
             ls >> id;
@@ -188,6 +194,10 @@ int main(int argc, char** argv) {
         renderer.scheduleFrom(-1);
         renderer.post({ps::CommandType::SetChannelSolo, 1.0f, solo, 0});
     }
+    if (std::isfinite(ceiling)) {
+        renderer.scheduleFrom(-1);
+        renderer.post({ps::CommandType::SetMaster, ceiling, 5, 0});
+    }
     int status = 0;
     if (kind == "float") {
         const std::vector<float> out = renderer.renderToBuffer(frames, tail);
@@ -209,9 +219,11 @@ int main(int argc, char** argv) {
             status = 3;
         } else {
             const double tpDb = r.truePeak > 0.0f ? 20.0 * std::log10(static_cast<double>(r.truePeak)) : -200.0;
-            std::fprintf(f, "{\"lufs\": %.3f, \"true_peak_db\": %.3f, \"seconds\": %.3f, \"sample_rate\": %d, \"drive_db\": %.3f, \"music_lufs\": %.3f}\n",
+            std::fprintf(f, "{\"lufs\": %.3f, \"true_peak_db\": %.3f, \"seconds\": %.3f, \"sample_rate\": %d, \"drive_db\": %.3f, \"music_lufs\": %.3f, "
+                            "\"loss_db\": %.3f, \"loud_lufs\": %.3f, \"music_loud_lufs\": %.3f, \"mode\": %d, \"target_lufs\": %.2f}\n",
                          r.lufs, tpDb, static_cast<double>(r.frames) / static_cast<double>(r.sampleRate > 0 ? r.sampleRate : 48000), r.sampleRate,
-                         static_cast<double>(r.driveDb), r.musicLufs);
+                         static_cast<double>(r.driveDb), r.musicLufs, static_cast<double>(r.lossDb), r.loudLufs, r.musicLoudLufs, r.mode,
+                         std::isfinite(r.targetLufs) ? static_cast<double>(r.targetLufs) : 0.0);
             std::fclose(f);
         }
     }

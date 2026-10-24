@@ -48,7 +48,7 @@ class AddTrackKindTest {
         assertEquals(before + 1, p.tracks.size)
         val t = p.tracks.last()
         assertEquals("Mélodie", t.name)
-        assertEquals(64, t.notes.steps)
+        assertEquals(StarterWizard.PHRASE_STEPS, t.notes.steps)
         assertTrue(t.notes.notes.isNotEmpty())
         // The style's key, its lead sound.
         assertEquals(acidHouse.melody.root, p.harmony.root)

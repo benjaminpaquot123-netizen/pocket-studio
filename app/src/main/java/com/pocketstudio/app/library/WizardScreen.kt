@@ -238,7 +238,7 @@ private fun StepProgress(step: Int, total: Int) {
 @Composable
 private fun StyleStep(chosen: String?, packs: PacksUi, actions: WizardActions) {
     Text(
-        tr("Choisis un style : je prépare la batterie, puis les sections du morceau. Tu pourras tout changer.") + " " +
+        tr("Choisis un style : je prépare la batterie, puis les parties du morceau. Tu pourras tout changer.") + " " +
             tr("Touche une carte pour lire sa description, ▶ pour l'écouter."),
         style = MaterialTheme.typography.bodyMedium,
     )
@@ -246,7 +246,7 @@ private fun StyleStep(chosen: String?, packs: PacksUi, actions: WizardActions) {
     var open by rememberSaveable { mutableStateOf(chosen) }
     StyleFamilies("wizard", style = { s ->
         StyleCard(s, s.id == chosen, s.id == open, packs.installed.any { it.id == s.id }, { open = if (open == s.id) null else s.id }, actions)
-    }, open = listOfNotNull(chosen?.let { StarterWizard.style(it) }?.family).toSet())
+    }, open = listOfNotNull(chosen?.let { StarterWizard.style(it) }?.family).toSet(), calm = com.pocketstudio.app.settings.SettingsStore.state.value.simpleMode)
     InstalledPacks(packs, actions)
 }
 
@@ -505,7 +505,7 @@ private fun AcidStep(style: StarterWizard.Style, ui: WizardUi, actions: WizardAc
             Switch(checked = ui.acid, onCheckedChange = actions.setAcidEnabled, modifier = Modifier.testTag("wizard_acid_enabled"))
         }
         if (!ui.acid) {
-            Text(tr("Pas de ligne acide : l'onglet Acide restera libre pour la tienne."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+            Text(tr("Pas de ligne acide : la basse acide restera libre pour la tienne."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
             return@NeonCard
         }
         if (ui.acidPlays) SceneBadge(ui.plan.acid, ui.plan)
@@ -607,7 +607,7 @@ private fun AcidSoundCard(line: com.pocketstudio.model.AcidPattern, ui: WizardUi
                 )
             }
         }
-        Text(tr("Tourne « Coupure » vers le haut pour la faire crier ; « Résonance » la fait siffler. Le reste se règle dans l'onglet Acide."),
+        Text(tr("Tourne « Coupure » vers le haut pour la faire crier ; « Résonance » la fait siffler. Le reste se règle dans Sons › Basse acide."),
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
     }
 }
@@ -657,7 +657,7 @@ private fun SummaryStep(ui: WizardUi, style: StarterWizard.Style) {
     }
     Text(
         tr("« Créer le morceau » ouvre un nouveau projet : chaque son est sur son pad et le rythme est dans la grille.") + " " +
-            tr("Un petit guide te montre ensuite comment jouer tout le morceau et écouter chaque section."),
+            tr("Un petit guide te montre ensuite comment jouer tout le morceau et écouter chaque partie."),
         style = MaterialTheme.typography.bodyMedium,
     )
 }
@@ -666,7 +666,7 @@ private fun SummaryStep(ui: WizardUi, style: StarterWizard.Style) {
 @Composable
 private fun ScenesCard(plan: StarterWizard.ScenePlan, style: StarterWizard.Style) {
     NeonCard(accent = Neon.Magenta, modifier = Modifier.testTag("wizard_scenes")) {
-        SectionLabel(if (plan.count == 4) tr("Quatre sections") else tr("Trois sections"), color = Neon.Magenta, help = Glossary.SCENE)
+        SectionLabel(if (plan.count == 4) tr("Quatre parties") else tr("Trois parties"), color = Neon.Magenta, help = Glossary.SCENE)
         Text(sectionsIntro(plan), style = MaterialTheme.typography.bodyMedium)
         (0 until plan.count).forEach { index ->
             Row(verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -701,10 +701,11 @@ internal fun sectionsIntro(plan: StarterWizard.ScenePlan): String = when {
         tr("Comme un vrai morceau de club : la Montée retire le kick et fait rouler la caisse claire, puis tout tombe d'un coup au Drop. Le Break fait une pause avant la dernière Montée.")
     plan.form == StarterWizard.SongForm.Build ->
         tr("Comme un vrai morceau de club : la Montée retire le kick et fait rouler la caisse claire, puis tout tombe d'un coup au Drop.")
+    plan.form.sung && plan.hasBreak -> tr("Comme une vraie chanson : chaque partie ajoute des sons à celle d'avant, puis le Pont fait une pause sans kick ni basse avant le dernier Refrain.")
     plan.hasBreak && 3 in plan.parts[StarterWizard.Part.Bass].orEmpty() ->
         tr("Comme un vrai morceau de club : les sons s'empilent, puis le Break fait une pause sans kick avant le dernier Drop.")
     plan.hasBreak -> tr("Comme un vrai morceau de club : les sons s'empilent, puis le Break fait une pause sans kick ni basse avant le dernier Drop.")
-    else -> tr("Comme une vraie chanson : chaque section ajoute des sons à celle d'avant.")
+    else -> tr("Comme une vraie chanson : chaque partie ajoute des sons à celle d'avant.")
 }
 
 /** "Joue dans Couplet et Refrain", after the letters of those sections. */
@@ -714,7 +715,7 @@ private fun SceneBadge(scenes: Set<Int>, plan: StarterWizard.ScenePlan) {
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.testTag("wizard_scene_badge")) {
         scenes.sorted().forEach { SceneLetter(it) }
         Text(
-            if (scenes.size == plan.count) tr("Joue dans toutes les sections") else tr("Joue dans %s", plan.sections(scenes)),
+            if (scenes.size == plan.count) tr("Joue dans toutes les parties") else tr("Joue dans %s", plan.sections(scenes)),
             style = MaterialTheme.typography.bodyMedium, color = sceneColor(scenes.min()), modifier = Modifier.padding(start = 4.dp),
         )
     }
@@ -857,7 +858,7 @@ internal fun partNotes(style: StarterWizard.Style, part: StarterWizard.Part, pla
         ?: (part != StarterWizard.Part.Bass && part !in style.drop.parts)
     val signature = when {
         style.melody.signature != part -> null
-        everywhere -> tr("C'est le son qui fait le style : il joue dans toutes les sections.")
+        everywhere -> tr("C'est le son qui fait le style : il joue dans toutes les parties.")
         else -> tr("C'est le son qui fait le style.")
     }
     return listOfNotNull(general, signature)

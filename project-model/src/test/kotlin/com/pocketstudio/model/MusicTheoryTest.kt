@@ -137,7 +137,7 @@ class MusicTheoryTest {
     @Test
     fun aLeadRecordedAsAChordIsNotArpeggiated() {
         val stab = StarterWizard.PartSound("Stab 8 · Detroit", sampled = SampledPatch(file = "pack:detroit/stab8.wav"), chord = true, family = "stab")
-        for (id in listOf("house", "synthwave", "liquid_dnb", "detroit")) {
+        for (id in listOf("riddim", "acid_house")) {
             val s = style(id)
             assertTrue(s.melody.leadPattern.isBlank())
             val clip = StarterWizard.startingNotes(Part.Lead, s, s.melody.mood, StarterWizard.harmonyOf(s, s.melody.mood), stab)
@@ -145,6 +145,14 @@ class MusicTheoryTest {
             // One stab per hit: a chord of recorded chords never plays.
             assertTrue(id, clip.notes.groupBy { it.start }.values.all { it.size == 1 })
             assertTrue(id, clip.notes.size > 4)
+        }
+        // A written hook on a chord sample: one stab per note, in the second Refrain too (no octave doubling).
+        for (id in listOf("house", "synthwave", "detroit")) {
+            val s = style(id)
+            for (v in StarterWizard.Version.entries) {
+                val clip = StarterWizard.startingNotes(Part.Lead, s, s.melody.mood, StarterWizard.harmonyOf(s, s.melody.mood), stab, v)
+                assertTrue("$id $v", clip.notes.groupBy { it.start }.values.all { it.size == 1 })
+            }
         }
     }
 
@@ -218,7 +226,7 @@ class MusicTheoryTest {
                     val plays = plan.lines.values.any { i in it } || plan.parts.values.any { i in it } || i in plan.acid
                     assertTrue("${s.id} $lines $parts $withAcid: section $i silent", plays)
                 }
-                assertTrue("${s.id} $lines $parts", StarterWizard.songSeconds(s, plan) <= StarterWizard.MAX_SONG_SECONDS)
+                assertTrue("${s.id} $lines $parts", StarterWizard.songSeconds(s, plan) <= StarterWizard.maxSongSeconds(s))
             }
         }
     }
@@ -227,7 +235,8 @@ class MusicTheoryTest {
     fun theChordsTrackIsNamedAfterItsSound() {
         fun name(id: String) = style(id).let { s -> StarterWizard.trackName(Part.Pad, StarterWizard.soundsFor(Part.Pad, s).first(), s) }
         assertEquals("Piano", name("house"))
-        assertEquals("Orgue", name("uk_garage"))
+        assertEquals("Orgue", name("tech_house"))
+        assertEquals("Piano", name("uk_garage"))
         assertEquals("Stabs", name("techno"))
         assertEquals("Nappe", name("dnb"))
         val pack = StarterWizard.PartSound("Pad 2 · Detroit", chord = true, family = "pad")
@@ -265,9 +274,11 @@ class MusicTheoryTest {
                     assertTrue("$what ${t.name} out of the key", notes.all { h.inScale(it.pitch) })
                     val range = when (t.name) {
                         // The trap 808 goes down to Do♯1 (35 Hz), as the genre does.
-                        "Basse" -> 24..72
+                        "Basse", StarterWizard.BASS_SWITCH_TRACK -> 24..72
                         // The jump up's clean sub, an octave under its growl (Fa1, 44 Hz).
                         StarterWizard.SUB_TRACK -> 24..60
+                        // The sub drop slides from two octaves over the key's root down to it (Do1 to Si1).
+                        StarterWizard.SUB_DROP_TRACK -> 24..72
                         "Lead" -> 36..StarterWizard.LEAD_TOP
                         else -> 36..96
                     }
@@ -282,7 +293,7 @@ class MusicTheoryTest {
                     p.allScenes.any { sc -> sc.drums.lanes[role.lane].hits.isNotEmpty() })
                 p.allScenes.forEachIndexed { i, sc -> assertFalse("$what scene $i silent", sc.isEmpty) }
                 val seconds = p.songBars * p.beatsPerBar * 60.0 / p.tempoBpm
-                assertTrue("$what $seconds s", seconds <= StarterWizard.MAX_SONG_SECONDS)
+                assertTrue("$what $seconds s", seconds <= StarterWizard.maxSongSeconds(s))
             }
             // Fewer drum lines (one alone, all but the kick, none), in the style's own mood: every chosen layer heard, no silent scene.
             val roles = s.lines.map { it.role }
@@ -296,7 +307,10 @@ class MusicTheoryTest {
                 p.allScenes.forEachIndexed { i, sc -> assertFalse("$what scene $i silent", sc.isEmpty) }
                 for (role in chosen) assertTrue("$what ${role.id} never plays", p.allScenes.any { sc -> sc.drums.lanes[role.lane].hits.isNotEmpty() })
                 val partTracks = p.instrumentTracks.filter { it.name in listOf("Basse", "Lead") + StarterWizard.CHORD_TRACK_NAMES }
-                assertEquals(what, parts.size, partTracks.size)
+                // The 808 styles' bass plays on its pad (S3), heard there.
+                val on808 = StudioDrums.bassOn808(s, parts[Part.Bass])
+                assertEquals(what, parts.size - (if (on808) 1 else 0), partTracks.size)
+                if (on808) assertTrue("$what 808 never plays", p.allScenes.any { sc -> sc.drums.lanes[StudioDrums.LANE_808].hits.isNotEmpty() })
                 for (t in partTracks) assertTrue("$what ${t.name} never plays",
                     p.allScenes.any { sc -> (if (t.id == 0) sc.synthNotes else sc.trackNotes[t.id] ?: NoteClip()).notes.isNotEmpty() })
             }

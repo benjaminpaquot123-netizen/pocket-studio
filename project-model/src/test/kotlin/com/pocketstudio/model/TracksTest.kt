@@ -51,6 +51,18 @@ class TracksTest {
     }
 
     @Test
+    fun theViewOfAnyTrackCarriesItsChordFollowing() {
+        var p = Project(synthFollowChords = false).addTrack("Basse")!!.addTrack("Nappe")!!
+        val (a, b) = p.tracks.map { it.id }
+        p = p.withTrack(p.track(a).copy(followChords = true)).withTrack(p.track(b).copy(followChords = null))
+        assertEquals(true, p.viewOfTrack(a).synthFollowChords)
+        assertEquals(true, p.viewOfTrack(a).track(0).followChords)
+        // Not the first track's choice leaking through: the second track's own (none).
+        assertEquals(null, p.viewOfTrack(b).synthFollowChords)
+        assertEquals(false, p.viewOfTrack(0).synthFollowChords)
+    }
+
+    @Test
     fun scenesKeepEachTracksNotes() {
         var p = Project().addTrack()!!
         val id = p.tracks.single().id

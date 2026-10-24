@@ -5,11 +5,11 @@
 
 namespace ps {
 
-void NoteTrack::setNote(int index, int32_t packed, float velocity) {
+void NoteTrack::setNote(int index, int32_t packed, float velocity, int high) {
     if (index < 0 || index >= kMaxNotes || !std::isfinite(velocity)) return;
     Note n;
-    n.start = packed & 0xFFF;
-    n.length = std::max(1, (packed >> 12) & 0xFFF);
+    n.start = (packed & 0xFFF) | ((high & 0x7) << 12);
+    n.length = std::max(1, ((packed >> 12) & 0xFFF) | (((high >> 3) & 0x7) << 12));
     n.pitch = (packed >> 24) & 0x7F;
     n.velocity = std::clamp(velocity, 0.0f, 1.0f);
     notes_[static_cast<size_t>(index)] = n;

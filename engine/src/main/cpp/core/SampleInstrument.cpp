@@ -224,7 +224,7 @@ void SampleInstrument::apply(const Event& e) {
     }
 }
 
-float SampleInstrument::renderVoice(Voice& v, double lo, double hi) {
+float SampleInstrument::renderVoice(Voice& v, double lo, double hi, float* right) {
     const Params& p = params_;
     const float sr = static_cast<float>(sampleRate_);
     // Envelope.
@@ -286,11 +286,23 @@ float SampleInstrument::renderVoice(Voice& v, double lo, double hi) {
     // 4-point Hermite interpolation: clean pitch shifts.
     const int64_t i1 = static_cast<int64_t>(std::floor(v.pos));
     const float t = static_cast<float>(v.pos - static_cast<double>(i1));
-    const float y0 = at(i1 - 1), y1 = at(i1), y2 = at(i1 + 1), y3 = at(i1 + 2);
-    const float c1 = 0.5f * (y2 - y0);
-    const float c2 = y0 - 2.5f * y1 + 2.0f * y2 - 0.5f * y3;
-    const float c3 = 0.5f * (y3 - y0) + 1.5f * (y1 - y2);
-    const float x = ((c3 * t + c2) * t + c1) * t + y1;
+    auto hermite = [t](float y0, float y1, float y2, float y3) {
+        const float c1 = 0.5f * (y2 - y0);
+        const float c2 = y0 - 2.5f * y1 + 2.0f * y2 - 0.5f * y3;
+        const float c3 = 0.5f * (y3 - y0) + 1.5f * (y1 - y2);
+        return ((c3 * t + c2) * t + c1) * t + y1;
+    };
+    float x;
+    float xr = 0.0f;
+    if (right != nullptr && ch == 2) {
+        // Stereo: each channel on its own.
+        auto side = [&](int64_t i, int c) { return d[std::clamp<int64_t>(i, 0, last) * 2 + c]; };
+        x = hermite(side(i1 - 1, 0), side(i1, 0), side(i1 + 1, 0), side(i1 + 2, 0));
+        xr = hermite(side(i1 - 1, 1), side(i1, 1), side(i1 + 1, 1), side(i1 + 2, 1));
+    } else {
+        x = hermite(at(i1 - 1), at(i1), at(i1 + 1), at(i1 + 2));
+        xr = x;
+    }
 
     float g = v.env * p.gain * (0.3f + 0.7f * v.velocity);
     if (!p.loop) {
@@ -302,14 +314,16 @@ float SampleInstrument::renderVoice(Voice& v, double lo, double hi) {
         g *= static_cast<float>(v.fade) / kFadeFrames;
         if (--v.fade == 0) {
             v = Voice{};
+            if (right != nullptr) *right = xr * g;
             return x * g;
         }
     }
     v.pos += rate;
+    if (right != nullptr) *right = xr * g;
     return x * g;
 }
 
-void SampleInstrument::render(float* mono, int numFrames) {
+void SampleInstrument::render(float* mono, float* right, int numFrames) {
     if (!sample_) {
         eventCount_ = 0;
         return;
@@ -323,8 +337,19 @@ void SampleInstrument::render(float* mono, int numFrames) {
             apply(events_[static_cast<size_t>(nextEvent++)]);
         }
         float out = 0.0f;
-        for (auto& v : voices_) {
-            if (v.stage != Off) out += renderVoice(v, lo, hi);
+        if (right != nullptr) {
+            float outR = 0.0f;
+            for (auto& v : voices_) {
+                if (v.stage == Off) continue;
+                float r = 0.0f;
+                out += renderVoice(v, lo, hi, &r);
+                outR += r;
+            }
+            right[i] += outR;
+        } else {
+            for (auto& v : voices_) {
+                if (v.stage != Off) out += renderVoice(v, lo, hi);
+            }
         }
         mono[i] += out;
     }

@@ -15,6 +15,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.LibraryMusic
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -50,6 +53,15 @@ fun SettingsScreen(s: AppSettings, version: String, actions: SettingsActions) {
     com.pocketstudio.ui.AdaptivePanes(Modifier.testTag("settings"), spacing = 12.dp, first = {
         NeonCard {
             SectionLabel(tr("Affichage"))
+            // Phase 36: the Mode simple or every tool; the project stays the same either way.
+            Text(tr("Façon de travailler"), style = MaterialTheme.typography.bodyMedium)
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                FilterChip(selected = s.simpleMode, onClick = { actions.update { it.copy(simpleMode = true) } }, label = { Text(tr("Simple : 4 onglets")) },
+                    colors = chip, modifier = Modifier.testTag("mode_simple"))
+                FilterChip(selected = !s.simpleMode, onClick = { actions.update { it.copy(simpleMode = false) } }, label = { Text(tr("Complet : tous les outils")) },
+                    colors = chip, modifier = Modifier.testTag("mode_full"))
+            }
+            Text(tr("Changer de façon de travailler ne change rien à tes morceaux."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
             Text(tr("Langue"), style = MaterialTheme.typography.bodyMedium)
             LanguagePicker()
             Text(tr("Thème"), style = MaterialTheme.typography.bodyMedium)
@@ -91,6 +103,10 @@ fun SettingsScreen(s: AppSettings, version: String, actions: SettingsActions) {
                     FilterChip(selected = s.recordCountIn == bars, onClick = { actions.update { it.copy(recordCountIn = bars) } }, label = { Text(label) }, colors = chip)
                 }
             }
+            FilterChip(
+                selected = s.metronomeInTakes, onClick = { actions.update { it.copy(metronomeInTakes = !it.metronomeInTakes) } },
+                label = { Text(tr("Métronome pendant les prises")) }, colors = chip, modifier = Modifier.testTag("metronome_in_takes"),
+            )
             Text(tr("Mode du son"), style = MaterialTheme.typography.bodyMedium)
             FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 AppSettings.BUFFERS.forEach { (bursts, label) ->
@@ -106,6 +122,7 @@ fun SettingsScreen(s: AppSettings, version: String, actions: SettingsActions) {
         NeonCard {
             SectionLabel(tr("Aide"))
             OutlinedButton(onClick = actions.openGuide, modifier = Modifier.fillMaxWidth().testTag("open_guide")) { Text(tr("Revoir le guide des premiers pas")) }
+            GlossaryButton("settings_glossary")
             var lexicon by rememberSaveable { mutableStateOf(false) }
             OutlinedButton(onClick = { lexicon = !lexicon }, modifier = Modifier.fillMaxWidth().testTag("open_lexicon")) {
                 Text(if (lexicon) tr("Fermer le lexique") else tr("Lexique : les mots de la musique expliqués"))
@@ -126,6 +143,16 @@ fun SettingsScreen(s: AppSettings, version: String, actions: SettingsActions) {
     })
 }
 
+/** « Les mots de la musique, à écouter »: the glossary with a sound for each word (phase 39). */
+@Composable
+private fun GlossaryButton(tag: String) {
+    val learn = com.pocketstudio.app.learn.LocalLearn.current
+    androidx.compose.material3.Button(onClick = { learn.open("") }, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag(tag)) {
+        androidx.compose.material3.Icon(Icons.Filled.LibraryMusic, contentDescription = null)
+        Text("  " + tr("Les mots de la musique, à écouter"))
+    }
+}
+
 @Composable
 private fun Toggle(title: String, hint: String, checked: Boolean, tag: String, onChange: (Boolean) -> Unit) {
     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -141,6 +168,8 @@ class HelpActions(
     val openGuide: () -> Unit = {},
     /** Shows the open project's "Prochaine étape" card again and goes to it. */
     val showSteps: () -> Unit = {},
+    /** Phase 36: the missions « Mon premier morceau » from their first step (null: not offered). */
+    val missions: (() -> Unit)? = null,
 )
 
 /** Outils › Aide, the first page of Outils: the guide, the song's steps, and every word explained. */
@@ -153,8 +182,16 @@ fun HelpPage(actions: HelpActions) {
         ) {
             NeonCard {
                 SectionLabel(tr("Aide"))
+                actions.missions?.let { start ->
+                    androidx.compose.material3.Button(onClick = start, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("help_missions")) {
+                        Text(tr("Missions : Mon premier morceau, pas à pas"))
+                    }
+                }
                 OutlinedButton(onClick = actions.openGuide, modifier = Modifier.fillMaxWidth().testTag("help_guide")) { Text(tr("Revoir le guide des premiers pas")) }
                 OutlinedButton(onClick = actions.showSteps, modifier = Modifier.fillMaxWidth().testTag("help_steps")) { Text(tr("Revoir la carte « Prochaine étape »")) }
+                GlossaryButton("help_glossary")
+                Text(tr("Le « ? » au bout du bandeau sous la barre du haut étiquette l'écran : un toucher pour voir, un autre pour cacher."),
+                    style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
                 Text(tr("Partout dans l'appli, le petit « ? » à côté d'un mot l'explique aussi."),
                     style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
             }

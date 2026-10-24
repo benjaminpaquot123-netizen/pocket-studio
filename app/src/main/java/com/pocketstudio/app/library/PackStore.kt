@@ -104,6 +104,18 @@ object PackStore {
     fun url(entry: PackEntry) = RELEASES + entry.release.ifEmpty { RELEASE } + "/" + entry.file
 
     /**
+     * An instrument's preview, heard before its pack is downloaded (checked by SHA-256, kept in
+     * the cache); null when the catalogue has none for it. Blocking: a worker thread.
+     */
+    fun preview(context: Context, entry: PackEntry, isCancelled: () -> Boolean = { false }): File? {
+        if (entry.preview.isEmpty()) return null
+        val spec = VerifiedFile(RELEASES + entry.release.ifEmpty { RELEASE } + "/" + entry.preview, entry.preview, entry.previewSha256, entry.previewBytes)
+        val target = File(context.cacheDir, "apercu-${entry.previewSha256.take(12)}.flac")
+        if (!VerifiedDownload.verify(spec, target)) VerifiedDownload.fetch(spec, target, {}, isCancelled)
+        return target
+    }
+
+    /**
      * Downloads, checks and unpacks [entry]; a pack already there is replaced only when complete.
      * A cut download resumes where it stopped on the next try (the same file only: its SHA-256 is in the name).
      */
@@ -124,9 +136,12 @@ object PackStore {
                 val manifest = SoundPacks.parseManifest(File(part, MANIFEST).readText())
                 if (manifest.id != entry.id) throw IOException(tr("pack inattendu"))
                 // Only the sounds the manifest lists are kept; it must list at least one that is there.
+                // An instrument's zones must all be there (a missing one would leave a hole in the keyboard).
                 val kept = manifest.copy(sounds = manifest.sounds.filter { File(part, it.file).isFile })
                 if (kept.sounds.isEmpty()) throw IOException(tr("pack vide"))
-                part.listFiles()?.filter { f -> f.name != MANIFEST && kept.sounds.none { it.file == f.name } }?.forEach { it.delete() }
+                if (kept.instrument?.zones?.any { !File(part, it.file).isFile } == true) throw IOException(tr("pack incomplet"))
+                val files = kept.files
+                part.listFiles()?.filter { f -> f.name != MANIFEST && f.name !in files }?.forEach { it.delete() }
                 // The version the index announced is the one installed: no update offered again for it.
                 File(part, MANIFEST).writeText(json.encodeToString(PackManifest.serializer(), kept.copy(version = maxOf(kept.version, entry.version))))
                 // The pack already there stays until the new one is in place.

@@ -25,8 +25,15 @@ void Mixer::prepare(int sampleRate) {
         chops_[ch].prepare(rate);
         chops_[ch].setParam(1, chopOn_[ch] ? 1.0f : 0.0f);  // depth: off lets the sound through
     }
+    rate_ = rate;
+    plate_->prepare(rate);
     reverb_.prepare(rate);
+    reverb_.attachPlate(plate_.get());
     delay_.prepare(rate);
+    for (int b = 0; b < kBuses; ++b) updateReturnEq(b);
+    setMonoBass(monoBassHz_);
+    groupDuck_.prepare(rate);
+    updateGroupDuck();
     for (auto& r : busReturn_) r.configure(rate, 20.0f);
     perf_.prepare(rate);
     for (auto& iso : *isolators_) iso.prepare(rate);
@@ -45,6 +52,9 @@ void Mixer::prepare(int sampleRate) {
     chain_->prepare(sampleRate);
     masterGain_.configure(rate, 15.0f);
     masterGain_.snap(masterGain_.target());
+    masterFader_.configure(rate, 10.0f);
+    masterFader_.snap(masterFader_.target());
+    drumsOwn_.configure(rate, 5.0f);
     updateTargets();
     for (auto& s : strips_) {
         s.gainL.snap(s.gainL.target());
@@ -54,7 +64,14 @@ void Mixer::prepare(int sampleRate) {
 }
 
 void Mixer::setVolume(int ch, float v) {
-    if (ch < 0 || ch >= kChannels || ch == kMaster) return;
+    if (ch == kMaster) {
+        // The master's fader (the song curve's « Fondu d'entrée / de sortie »): after the master
+        // chain, the strips' law (0.8 = unity) capped at unity, so the ceiling of the true-peak
+        // limiter still holds.
+        if (std::isfinite(v)) masterFader_.setTarget(std::min(1.0f, (std::clamp(v, 0.0f, 1.0f) / 0.8f) * (std::clamp(v, 0.0f, 1.0f) / 0.8f)));
+        return;
+    }
+    if (ch < 0 || ch >= kChannels) return;
     if (!clampSetting(strips_[static_cast<size_t>(ch)].volume, v, 0.0f, 1.0f)) return;
     updateTargets();
 }
@@ -219,6 +236,7 @@ void Mixer::processInserts(int ch, float* l, float* r, int n) {
         auto& sw = swaps[k];
         const bool swapping = sw.type >= 0 || sw.fade < 1.0f;
         if (!swapping && g.on && g.mix >= 1.0f) {
+            slot.setKey(chunkKey_);
             slot.process(l, r, n);
             meterReduction(ch, k, slot);
             continue;
@@ -245,6 +263,7 @@ void Mixer::processInserts(int ch, float* l, float* r, int n) {
             const int m = to - from;
             std::copy(l + from, l + to, dryL_.begin());
             std::copy(r + from, r + to, dryR_.begin());
+            slot.setKey(chunkKey_ ? chunkKey_ + from : nullptr);
             slot.process(l + from, r + from, m);
             const float step = g.on ? gateStep_ : -gateStep_;
             const float fadeStep = sw.type >= 0 ? -gateStep_ : gateStep_;
@@ -301,22 +320,79 @@ void Mixer::setMacro(int ch, int macro, float v) {
 }
 
 void Mixer::setBusParam(int bus, int param, float v) {
+    if (bus < 0 || bus >= kBuses) return;
+    if (param == kBusLowCut || param == kBusHighCut) {
+        auto& eq = returnEq_[static_cast<size_t>(bus)];
+        if (!clampSetting(param == kBusLowCut ? eq.lowCut : eq.highCut, v, 0.0f, 1.0f)) return;
+        updateReturnEq(bus);
+        return;
+    }
     if (bus == 0) reverb_.setParam(param, v);
-    else if (bus == 1) delay_.setParam(param, v);
+    else delay_.setParam(param, v);
+}
+
+void Mixer::updateReturnEq(int bus) {
+    auto& eq = returnEq_[static_cast<size_t>(bus)];
+    const float low = 40.0f * std::pow(25.0f, eq.lowCut);
+    const float high = 1000.0f * std::pow(20.0f, eq.highCut);
+    eq.hpL.highPass(rate_, low);
+    eq.hpR.highPass(rate_, low);
+    eq.lpL.lowPass(rate_, std::min(high, 0.45f * rate_));
+    eq.lpR.lowPass(rate_, std::min(high, 0.45f * rate_));
+}
+
+void Mixer::setMonoBass(float hz) {
+    if (std::isnan(hz)) return;
+    monoBassHz_ = std::clamp(hz, 0.0f, 400.0f);
+    if (monoBassHz_ < 20.0f) {
+        monoBassHz_ = 0.0f;
+        for (auto& f : monoBass_) f.reset();
+        return;
+    }
+    for (auto& f : monoBass_) f.highPass(rate_, monoBassHz_);
+}
+
+void Mixer::setGroupMember(int ch, bool on) {
+    if (ch < 0 || ch >= kChannels || ch == kMaster || isPad(ch)) return;  // pads go through the drums
+    if (group_[static_cast<size_t>(ch)] == on) return;
+    group_[static_cast<size_t>(ch)] = on;
+    groupCount_ += on ? 1 : -1;
+}
+
+void Mixer::setGroupReturn(int bus, bool on) {
+    if (bus < 0 || bus >= kBuses || groupReturn_[static_cast<size_t>(bus)] == on) return;
+    groupReturn_[static_cast<size_t>(bus)] = on;
+    groupCount_ += on ? 1 : -1;
+}
+
+void Mixer::setGroupDuck(int param, float v) {
+    if (param < 0 || param >= static_cast<int>(groupParams_.size()) || !std::isfinite(v)) return;
+    groupParams_[static_cast<size_t>(param)] = std::clamp(v, 0.0f, 1.0f);
+    updateGroupDuck();
+}
+
+void Mixer::updateGroupDuck() {
+    const float releaseMs = 50.0f * std::pow(12.0f, groupParams_[2]);  // 50..600 ms, the Pump's
+    groupDuck_.set(groupParams_[0], groupParams_[1], releaseMs);
 }
 
 void Mixer::updateTargets() {
-    bool anySolo = false;
-    for (size_t ch = 0; ch < kFirstPad; ++ch) anySolo |= strips_[ch].solo;
+    // Solo: a track's strip, or a pad's (16..31). A soloed pad is heard through the drums' strip,
+    // whose own sound (the pads without a strip of their own) then goes quiet, as do the other pads.
+    bool anyTrackSolo = false, anyPadSolo = false;
+    for (size_t ch = 0; ch < strips_.size(); ++ch) (isPad(static_cast<int>(ch)) ? anyPadSolo : anyTrackSolo) |= strips_[ch].solo;
+    const bool anySolo = anyTrackSolo || anyPadSolo;
     const auto& drums = strips_[kDrums];
-    const bool drumsAudible = !drums.mute && (!anySolo || drums.solo);
+    const bool drumsAudible = !drums.mute && (!anySolo || drums.solo || anyPadSolo);
+    drumsOwn_.setTarget(!anyPadSolo || drums.solo ? 1.0f : 0.0f);
     // A pad's dry sound goes through the drums' fader; its sends must follow that fader too.
     const float drumsFader = (drums.volume / 0.8f) * (drums.volume / 0.8f);
     for (size_t ch = 0; ch < strips_.size(); ++ch) {
         auto& s = strips_[ch];
         // A pad's strip goes through the drums' one: heard when the drums are (its reverb too).
-        const bool pad = ch >= static_cast<size_t>(kFirstPad);
-        const bool audible = !s.mute && (pad ? drumsAudible : (!anySolo || s.solo));
+        const bool pad = isPad(static_cast<int>(ch));
+        const bool padAudible = anyPadSolo ? (s.solo || drums.solo) : (!anySolo || drums.solo);
+        const bool audible = !s.mute && (pad ? !drums.mute && padAudible : ch == kDrums ? drumsAudible : (!anySolo || s.solo));
         // Fader: 0.8 = unity gain, 1.0 = +2 dB, quadratic below for a natural feel.
         const float gain = audible ? (s.volume / 0.8f) * (s.volume / 0.8f) : 0.0f;
         // Equal-power pan; centre = -3 dB per side, compensated so centre stays at unity.
@@ -463,12 +539,30 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
 
     std::fill(padsL_.begin(), padsL_.begin() + n, 0.0f);
     std::fill(padsR_.begin(), padsR_.begin() + n, 0.0f);
+    const bool grouped = groupCount_ > 0;
+    if (grouped) {
+        std::fill(grpL_.begin(), grpL_.begin() + n, 0.0f);
+        std::fill(grpR_.begin(), grpR_.begin() + n, 0.0f);
+    }
+    // S5: the sidechain key for this chunk, before any strip (mono; a NaN is silence).
+    chunkKey_ = nullptr;
+    if (keyCh_ >= 0) {
+        const float* kl = channels[keyCh_] ? channels[keyCh_] + offset : (keyInL_ ? keyInL_ + offset : nullptr);
+        const float* kr = channels[keyCh_] ? (rights && rights[keyCh_] ? rights[keyCh_] + offset : kl) : (keyInR_ ? keyInR_ + offset : kl);
+        if (kl) {
+            for (int i = 0; i < n; ++i) {
+                const float k = 0.5f * (kl[i] + kr[i]);
+                keyBuf_[static_cast<size_t>(i)] = std::isfinite(k) ? k : 0.0f;
+            }
+            chunkKey_ = keyBuf_.data();
+        }
+    }
 
     std::array<float, kChannels> blockPeaks{};
     // The pads' strips first: the drums' strip then takes their sum along with the other pads.
     for (int k = 0; k < kChannels; ++k) {
         const int ch = (k + kFirstPad) % kChannels;
-        const bool pad = ch >= kFirstPad;
+        const bool pad = isPad(ch);
         auto& s = strips_[static_cast<size_t>(ch)];
         if (ch == kMaster) continue;  // the master's slot
         if (!channels[ch]) {  // an unused track or pad
@@ -484,9 +578,12 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
             chR_[static_cast<size_t>(i)] = std::isfinite(inR[i]) ? inR[i] : 0.0f;
         }
         if (ch == kDrums) {
+            const bool own = drumsOwn_.target() >= 1.0f && drumsOwn_.current() >= 1.0f;
             for (int i = 0; i < n; ++i) {
-                chL_[static_cast<size_t>(i)] += padsL_[static_cast<size_t>(i)];
-                chR_[static_cast<size_t>(i)] += padsR_[static_cast<size_t>(i)];
+                // A soloed pad: the drums' own sound (pads without a strip) goes quiet.
+                const float g = own ? 1.0f : drumsOwn_.next();
+                chL_[static_cast<size_t>(i)] = chL_[static_cast<size_t>(i)] * g + padsL_[static_cast<size_t>(i)];
+                chR_[static_cast<size_t>(i)] = chR_[static_cast<size_t>(i)] * g + padsR_[static_cast<size_t>(i)];
             }
         }
         // What goes into the inserts and what comes out (an effect's tail): a swap fades if heard.
@@ -514,8 +611,9 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
             blewUp_.store(true, std::memory_order_relaxed);
         }
         float peak = 0.0f;
-        float* toL = pad ? padsL_.data() : mL_.data();
-        float* toR = pad ? padsR_.data() : mR_.data();
+        const bool toGroup = grouped && group_[static_cast<size_t>(ch)];
+        float* toL = pad ? padsL_.data() : toGroup ? grpL_.data() : mL_.data();
+        float* toR = pad ? padsR_.data() : toGroup ? grpR_.data() : mR_.data();
         for (int i = 0; i < n; ++i) {
             const float l = chL_[static_cast<size_t>(i)] * s.gainL.next();
             const float r = chR_[static_cast<size_t>(i)] * s.gainR.next();
@@ -538,18 +636,26 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
             // Back at rest on a frame of its own (not a block's): the same whatever the blocks.
             if (g.target() <= 0.0f && g.current() < 1e-5f) g.snap(0.0f);
             const float k = g.next();
-            busL_[b][static_cast<size_t>(i)] += mL_[static_cast<size_t>(i)] * k;
-            busR_[b][static_cast<size_t>(i)] += mR_[static_cast<size_t>(i)] * k;
+            // The Musique bus is part of the whole mix.
+            const float wl = grouped ? mL_[static_cast<size_t>(i)] + grpL_[static_cast<size_t>(i)] : mL_[static_cast<size_t>(i)];
+            const float wr = grouped ? mR_[static_cast<size_t>(i)] + grpR_[static_cast<size_t>(i)] : mR_[static_cast<size_t>(i)];
+            busL_[b][static_cast<size_t>(i)] += wl * k;
+            busR_[b][static_cast<size_t>(i)] += wr * k;
         }
     }
     // Send returns, then the master inserts and the Live effects; the metronome / test tone after
     // them (a tape stop or the DJ filter must not take the click along), before the limiter.
     for (size_t b = 0; b < kBuses; ++b) {
         auto& ret = busReturn_[b];
-        const bool plain = ret.target() == 1.0f && ret.current() == 1.0f;
-        // Turned by the live grid: the effect plays into its own buffer, then into the mix scaled.
-        float* outL = plain ? mL_.data() : retL_.data();
-        float* outR = plain ? mR_.data() : retR_.data();
+        // Turned by the live grid, or equalised (S4): into its own buffer first.
+        const bool plain = ret.target() == 1.0f && ret.current() == 1.0f && !returnEq_[b].active();
+        // Turned by the live grid: the effect plays into its own buffer, then into the mix scaled
+        // (S5: or into the Musique bus).
+        const bool retGroup = grouped && groupReturn_[b];
+        float* mixL = retGroup ? grpL_.data() : mL_.data();
+        float* mixR = retGroup ? grpR_.data() : mR_.data();
+        float* outL = plain ? mixL : retL_.data();
+        float* outR = plain ? mixR : retR_.data();
         if (!plain) {
             std::fill(retL_.begin(), retL_.begin() + n, 0.0f);
             std::fill(retR_.begin(), retR_.begin() + n, 0.0f);
@@ -557,13 +663,37 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
         if (b == 0) reverb_.process(busL_[b].data(), busR_[b].data(), outL, outR, n);
         else delay_.process(busL_[b].data(), busR_[b].data(), outL, outR, n);
         if (plain) continue;
+        auto& eq = returnEq_[b];
+        if (eq.active()) {
+            for (int i = 0; i < n; ++i) {
+                float l = retL_[static_cast<size_t>(i)], r = retR_[static_cast<size_t>(i)];
+                if (eq.lowCut > 0.0f) {
+                    l = eq.hpL.process(l);
+                    r = eq.hpR.process(r);
+                }
+                if (eq.highCut < 1.0f) {
+                    l = eq.lpL.process(l);
+                    r = eq.lpR.process(r);
+                }
+                retL_[static_cast<size_t>(i)] = l;
+                retR_[static_cast<size_t>(i)] = r;
+            }
+        }
         for (int i = 0; i < n; ++i) {
             const float g = ret.next();
-            mL_[static_cast<size_t>(i)] += retL_[static_cast<size_t>(i)] * g;
-            mR_[static_cast<size_t>(i)] += retR_[static_cast<size_t>(i)] * g;
+            mixL[i] += retL_[static_cast<size_t>(i)] * g;
+            mixR[i] += retR_[static_cast<size_t>(i)] * g;
         }
         // Back at rest: the plain path again from the next block.
         if (std::fabs(ret.current() - ret.target()) < 1e-5f) ret.snap(ret.target());
+    }
+    // S5: the Musique bus, ducked once under the key, joins the mix.
+    if (grouped) {
+        if (groupDuck_.active()) groupDuck_.process(grpL_.data(), grpR_.data(), chunkKey_, n);
+        for (int i = 0; i < n; ++i) {
+            mL_[static_cast<size_t>(i)] += grpL_[static_cast<size_t>(i)];
+            mR_[static_cast<size_t>(i)] += grpR_[static_cast<size_t>(i)];
+        }
     }
     float masterLevel = blockPeak(mL_.data(), mR_.data(), n);
     if (activeInserts_[kMaster] > 0 && masterFxOn_) {
@@ -599,6 +729,16 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
         blewUp_.store(true, std::memory_order_relaxed);
     }
 
+    // S4: the lows in mono (the side high-passed), before the master's gain and chain.
+    if (monoBassHz_ > 0.0f) {
+        for (int i = 0; i < n; ++i) {
+            const float l = mL_[static_cast<size_t>(i)], r = mR_[static_cast<size_t>(i)];
+            const float mid = 0.5f * (l + r);
+            const float side = monoBass_[1].process(monoBass_[0].process(0.5f * (l - r)));
+            mL_[static_cast<size_t>(i)] = mid + side;
+            mR_[static_cast<size_t>(i)] = mid - side;
+        }
+    }
     // The master's gain, then the master chain (drive, clipper, true-peak limiter, meter), the
     // click / test tone added after the drive. Without the limiter (a pre-master export) the peaks
     // over 0 dBFS stay as they are, delayed the same.
@@ -631,8 +771,10 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
         stats = chain_->process(outL_.data(), outR_.data(), direct ? click_.data() : nullptr, n);
     }
     float masterPeak = 0.0f;
+    const bool faderAtUnity = masterFader_.target() == 1.0f && masterFader_.current() == 1.0f;
     for (int i = 0; i < n; ++i) {
-        const float l = outL_[static_cast<size_t>(i)], r = outR_[static_cast<size_t>(i)];
+        const float fader = faderAtUnity ? 1.0f : masterFader_.next();
+        const float l = outL_[static_cast<size_t>(i)] * fader, r = outR_[static_cast<size_t>(i)] * fader;
         masterPeak = std::max(masterPeak, std::max(std::fabs(l), std::fabs(r)));
         if (outChannels == 1) {
             out[i] = 0.5f * (l + r);

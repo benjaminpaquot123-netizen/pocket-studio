@@ -46,7 +46,7 @@ class MainActivity : ComponentActivity() {
                     LocalFoldStore provides folds,
                 ) {
                     PocketStudioTheme(palette) {
-                        AppRoot()
+                        com.pocketstudio.app.learn.LearnLayer { AppRoot() }
                         // A new language rebuilds the screen (texts are read when drawn); recreating the
                         // activity keeps the open tab and the other saved screen state.
                         val startLanguage = remember { settings.language }

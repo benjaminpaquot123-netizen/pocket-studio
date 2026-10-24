@@ -263,7 +263,7 @@ OfflineRenderer::Result OfflineRenderer::renderEngine(int64_t frames, int64_t ta
 }
 
 OfflineRenderer::Result OfflineRenderer::masterPass(Store& store, float driveDb, const Sink& sink, float progressFrom, float progressTo,
-                                                    double* lufs) {
+                                                    double* lufs, double* loud) {
     if (!store.rewind()) return Result::IoError;
     // A chain like the engine's (its ceiling), fresh, at a held drive.
     auto chain = std::make_unique<MasterChain>();
@@ -272,6 +272,11 @@ OfflineRenderer::Result OfflineRenderer::masterPass(Store& store, float driveDb,
     chain->holdDrive(driveDb);
     const int latency = chain->latency();
     std::vector<float> buf(2 * kBlock), l(kBlock), r(kBlock);
+    std::unique_ptr<LoudPartMeter> loudMeter;
+    if (loud) {
+        loudMeter = std::make_unique<LoudPartMeter>();
+        loudMeter->prepare(sampleRate_);
+    }
     int64_t read = 0, skipped = 0, flushed = 0;
     // Progress: the frames read, against the stored length (known to the caller through `read`).
     for (;;) {
@@ -297,12 +302,14 @@ OfflineRenderer::Result OfflineRenderer::masterPass(Store& store, float driveDb,
         for (int i = first; i < n; ++i) {
             buf[static_cast<size_t>(2 * (i - first))] = l[static_cast<size_t>(i)];
             buf[static_cast<size_t>(2 * (i - first) + 1)] = r[static_cast<size_t>(i)];
+            if (loudMeter) loudMeter->add(l[static_cast<size_t>(i)], r[static_cast<size_t>(i)]);
         }
         if (n > first && !sink(buf.data(), n - first)) return Result::IoError;
         const float done = std::min(1.0f, static_cast<float>(read) / static_cast<float>(std::max<int64_t>(1, report_.frames)));
         progress_.store(progressFrom + (progressTo - progressFrom) * done, std::memory_order_relaxed);
     }
     if (lufs) *lufs = chain->meter().integratedLufs();
+    if (loud) *loud = loudMeter->lufs();
     return Result::Ok;
 }
 
@@ -320,21 +327,49 @@ OfflineRenderer::Result OfflineRenderer::render(int64_t frames, int64_t tailFram
         result = renderEngine(frames, tailFrames, [&output](float* p, int n) { return output.write(p, n); }, 1.0f);
         report_.driveDb = 0.0f;
     } else {
-        // 1. The music, before the master chain, and its loudness.
+        // 1. The music, before the master chain, and its loudness (S5: its loud part's too).
         auto store = makeStore();
         if (!store) return Result::IoError;
+        const bool drop = live.mode() == MasterChain::Mode::Drop;
         LoudnessMeter music;
         music.prepare(sampleRate_);
+        std::unique_ptr<LoudPartMeter> musicLoud;
+        if (drop) {
+            musicLoud = std::make_unique<LoudPartMeter>();
+            musicLoud->prepare(sampleRate_);
+        }
         int64_t stored = 0;
         mixer.setMasterChainBypass(true);
         result = renderEngine(frames, tailFrames, [&](float* p, int n) {
             for (int i = 0; i < n; ++i) music.add(p[2 * i], p[2 * i + 1]);
+            if (musicLoud) {
+                for (int i = 0; i < n; ++i) musicLoud->add(p[2 * i], p[2 * i + 1]);
+            }
             stored += n;
             return store->write(p, n);
         }, 0.8f);
         mixer.setMasterChainBypass(false);
         if (result != Result::Ok) return result;
         report_.frames = stored;  // the passes' progress counts against it
+        report_.targetLufs = live.target();
+        if (drop) {
+            report_.mode = 1;
+            report_.musicLufs = music.integratedLufs();
+            report_.musicLoudLufs = musicLoud->lufs();
+            float drive = 0.0f;
+            if ((result = dropDrive(*store, report_.musicLoudLufs, live.target(), drive)) != Result::Ok) return result;
+            double lufs = 0.0, loud = 0.0;
+            result = masterPass(*store, drive, [&output](float* p, int n) { return output.write(p, n); }, 0.95f, 1.0f, &lufs, &loud);
+            if (result != Result::Ok) return result;
+            report_.driveDb = drive;
+            report_.loudLufs = loud;
+            report_.lossDb = report_.musicLoudLufs > -999.0 && loud > -999.0
+                                 ? static_cast<float>(std::max(0.0, report_.musicLoudLufs + drive - loud)) : 0.0f;
+            if (!output.finish()) return Result::IoError;
+            output.report(report_);
+            progress_.store(1.0f, std::memory_order_relaxed);
+            return Result::Ok;
+        }
         // 2. The drive: from the music's loudness, corrected by what the chain takes off (its
         // loudness bends as it is pushed): two measured tries at most, then the secant.
         const double target = live.target(), pre = music.integratedLufs();
@@ -366,13 +401,80 @@ OfflineRenderer::Result OfflineRenderer::render(int64_t frames, int64_t tailFram
             }
         }
         // 3. The master chain at that drive, into the file.
-        result = masterPass(*store, static_cast<float>(drive), [&output](float* p, int n) { return output.write(p, n); }, 0.95f, 1.0f, nullptr);
+        double finalLufs = 0.0;
+        result = masterPass(*store, static_cast<float>(drive), [&output](float* p, int n) { return output.write(p, n); }, 0.95f, 1.0f, &finalLufs);
         report_.driveDb = static_cast<float>(drive);
+        if (pre > GatedLoudness::kGateAbs && finalLufs > GatedLoudness::kGateAbs) report_.lossDb = static_cast<float>(std::max(0.0, pre + drive - finalLufs));
     }
     if (result != Result::Ok) return result;
     if (!output.finish()) return Result::IoError;
     output.report(report_);
     progress_.store(1.0f, std::memory_order_relaxed);
+    return Result::Ok;
+}
+
+OfflineRenderer::Result OfflineRenderer::dropDrive(Store& store, double preLoud, double target, float& drive) {
+    // S5: the drive that brings the loud part (the Drop) to the target, the clipper and the limiter
+    // taking at most kMaxLossDropDb off it there: measured passes of the chain alone (at most four),
+    // each next try by the secant of what the last two gave. Kept: the measured try nearest the
+    // target within the cap (a song whose sounds cannot be that loud stays under its target).
+    drive = 0.0f;
+    if (!(preLoud > LoudPart::kGateAbs)) return Result::Ok;
+    constexpr double kMax = MasterChain::kMaxLossDropDb;
+    constexpr double kSlack = 0.05;  // the cap's tolerance (LU)
+    auto clampDrive = [](double d) { return std::clamp(d, double(MasterChain::kMinDriveDb), double(MasterChain::kMaxDriveDb)); };
+    struct Try {
+        double d, loud, loss;
+    };
+    std::array<Try, 4> tries{};
+    int count = 0;
+    double d = clampDrive(target - preLoud);
+    for (int k = 0; k < 4; ++k) {
+        double lufs = 0.0, loud = 0.0;
+        const float from = 0.8f + 0.0375f * k, to = from + 0.0375f;
+        const Result r = masterPass(store, static_cast<float>(d), [](float*, int) { return true; }, from, to, &lufs, &loud);
+        if (r != Result::Ok) return r;
+        const Try t{d, loud, preLoud + d - loud};
+        tries[static_cast<size_t>(count++)] = t;
+        const bool met = std::fabs(t.loud - target) <= 0.1;
+        if (met && t.loss <= kMax + kSlack) break;
+        double next;
+        if (t.loss > kMax + kSlack || (t.loud < target && t.loss >= kMax - kSlack)) {
+            // At the cap: the drive whose loss is just under it.
+            double lossSlope = 0.7;  // LU of loss per dB of drive, past the knee (a first guess)
+            if (count >= 2) {
+                const Try& a = tries[static_cast<size_t>(count - 2)];
+                if (std::fabs(t.d - a.d) > 1e-3) lossSlope = std::clamp((t.loss - a.loss) / (t.d - a.d), 0.2, 1.0);
+            }
+            next = t.d + (kMax - 0.5 * kSlack - t.loss) / lossSlope;
+            if (t.loud < target) next = std::min(next, t.d + (target - t.loud));
+        } else {
+            double slope = 1.0;  // LU of output per dB of drive
+            if (count >= 2) {
+                const Try& a = tries[static_cast<size_t>(count - 2)];
+                if (std::fabs(t.d - a.d) > 1e-3) slope = std::clamp((t.loud - a.loud) / (t.d - a.d), 0.05, 1.0);
+            }
+            next = t.d + (target - t.loud) / slope;
+            // Louder only as far as the cap allows (the loss grows by 1 - slope per dB).
+            if (next > t.d && 1.0 - slope > 0.05) next = std::min(next, t.d + (kMax - 0.5 * kSlack - t.loss) / (1.0 - slope));
+        }
+        next = clampDrive(next);
+        if (std::fabs(next - t.d) < 0.02) break;
+        d = next;
+    }
+    // The measured try nearest the target within the cap; none (a mix far too dense): the last
+    // secant's guess under the cap.
+    int best = -1;
+    for (int k = 0; k < count; ++k) {
+        const Try& t = tries[static_cast<size_t>(k)];
+        if (t.loss > kMax + kSlack) continue;
+        if (best < 0 || std::fabs(t.loud - target) < std::fabs(tries[static_cast<size_t>(best)].loud - target) - 1e-6) best = k;
+    }
+    drive = static_cast<float>(best >= 0 ? tries[static_cast<size_t>(best)].d : d);
+    if (best < 0) {
+        const Try& t = tries[static_cast<size_t>(count - 1)];
+        drive = static_cast<float>(clampDrive(t.d - (t.loss - kMax) / 0.7));
+    }
     return Result::Ok;
 }
 
@@ -393,20 +495,25 @@ OfflineRenderer::Result OfflineRenderer::renderToWav(const char* path, int64_t f
     return closed ? Result::Ok : Result::IoError;
 }
 
-std::vector<float> OfflineRenderer::renderToBuffer(int64_t frames, int64_t tailFrames) {
+std::vector<float> OfflineRenderer::renderToBuffer(int64_t frames, int64_t tailFrames, bool mono) {
     std::vector<float> out;
-    out.reserve(static_cast<size_t>((frames + tailFrames) * 2));
-    // Two passes: the music is kept in `out`, and the mastered frames are written back over it
-    // (never ahead of what the chain has read).
+    out.reserve(static_cast<size_t>((frames + tailFrames) * (mono ? 1 : 2)));
+    // Two passes: the music is kept in `out` (stereo, the chain reads it again), and the mastered
+    // frames are written back over it (never ahead of what the chain has read); mono, it is folded
+    // down at the end. One pass, mono: each frame folded as it comes.
     bool stored = false;
     size_t written = 0;
-    Output output(sampleRate_, sampleRate_, frames, tailFrames, fadeOut_, [&out, &stored, &written](float* b, int n) {
+    Output output(sampleRate_, sampleRate_, frames, tailFrames, fadeOut_, [&out, &stored, &written, mono](float* b, int n) {
         if (stored) {
             std::copy(b, b + 2 * n, out.begin() + static_cast<std::ptrdiff_t>(written));
+            written += static_cast<size_t>(2 * n);
+        } else if (mono) {
+            for (int i = 0; i < n; ++i) out.push_back(0.5f * (b[2 * i] + b[2 * i + 1]));
+            written += static_cast<size_t>(n);
         } else {
             out.insert(out.end(), b, b + n * 2);
+            written += static_cast<size_t>(2 * n);
         }
-        written += static_cast<size_t>(2 * n);
         return true;
     });
     const Result r = render(frames, tailFrames, [&out, &stored]() -> std::unique_ptr<Store> {
@@ -414,8 +521,17 @@ std::vector<float> OfflineRenderer::renderToBuffer(int64_t frames, int64_t tailF
         return std::make_unique<MemoryStore>(out);
     }, output);
     report_.sampleRate = sampleRate_;
-    if (r != Result::Ok) out.clear();
-    else out.resize(written);
+    if (r != Result::Ok) {
+        out.clear();
+        return out;
+    }
+    out.resize(written);
+    if (mono && stored) {
+        const size_t n = written / 2;
+        for (size_t i = 0; i < n; ++i) out[i] = 0.5f * (out[2 * i] + out[2 * i + 1]);
+        out.resize(n);
+        out.shrink_to_fit();
+    }
     return out;
 }
 

@@ -47,7 +47,7 @@ JNIEXPORT jboolean JNICALL Java_com_pocketstudio_engine_NativeEngine_nativePost(
     return host().post({static_cast<ps::CommandType>(type), value, a, b}) ? JNI_TRUE : JNI_FALSE;
 }
 
-JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_currentStep(JNIEnv*, jobject) {
+JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeCurrentStep(JNIEnv*, jobject) {
     return host().engine().currentStep();
 }
 
@@ -60,11 +60,11 @@ JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_setBufferBursts
     host().setBufferBursts(bursts);
 }
 
-JNIEXPORT jdouble JNICALL Java_com_pocketstudio_engine_NativeEngine_playPosition(JNIEnv*, jobject) {
+JNIEXPORT jdouble JNICALL Java_com_pocketstudio_engine_NativeEngine_nativePlayPosition(JNIEnv*, jobject) {
     return host().engine().playPosition();
 }
 
-JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_absoluteStep(JNIEnv*, jobject) {
+JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeAbsoluteStep(JNIEnv*, jobject) {
     return host().engine().absoluteStep();
 }
 
@@ -76,9 +76,35 @@ JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_sampleCreate(J
     if (channels < 1 || length < channels) return 0;
     jfloat* in = env->GetFloatArrayElements(data, nullptr);
     if (!in) return 0;
-    ps::Sample* s = ps::Sample::create(in, length / channels, channels, sampleRate, 48000);
+    ps::Sample* s = nullptr;
+    try {
+        s = ps::Sample::create(in, length / channels, channels, sampleRate, 48000);
+    } catch (...) {  // out of memory (a long sound resampled): no sample rather than a crash through JNI
+        s = nullptr;
+    }
     env->ReleaseFloatArrayElements(data, in, JNI_ABORT);
     return reinterpret_cast<jlong>(s);
+}
+
+// The same, kept as 16-bit integers (half the memory): a zone of a multizone instrument (phase 38).
+JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_sampleCreateCompact(JNIEnv* env, jobject, jfloatArray data,
+                                                                                    jint channels, jint sampleRate) {
+    const jsize length = env->GetArrayLength(data);
+    if (channels < 1 || length < channels) return 0;
+    jfloat* in = env->GetFloatArrayElements(data, nullptr);
+    if (!in) return 0;
+    ps::Sample* s = nullptr;
+    try {
+        s = ps::Sample::createCompact(in, length / channels, channels, sampleRate, 48000);
+    } catch (...) {  // out of memory (an instrument's zones): the zone is refused, no crash through JNI
+        s = nullptr;
+    }
+    env->ReleaseFloatArrayElements(data, in, JNI_ABORT);
+    return reinterpret_cast<jlong>(s);
+}
+
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeCollectGarbage(JNIEnv*, jobject) {
+    host().engine().collectGarbage();
 }
 
 JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_sampleRelease(JNIEnv*, jobject, jlong handle) {
@@ -94,6 +120,7 @@ JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_sampleFrames(J
 JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_sampleOnsets(JNIEnv* env, jobject, jlong handle,
                                                                                    jfloat sensitivity, jint maxSlices) {
     auto* s = reinterpret_cast<ps::Sample*>(handle);
+    if (s && s->compact()) return env->NewFloatArray(0);  // a multizone zone: only MultiSampler reads 16-bit samples
     std::vector<float> mono(static_cast<size_t>(s->frames()));
     const int ch = s->channels();
     for (int64_t i = 0; i < s->frames(); ++i) {
@@ -150,9 +177,35 @@ JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_analyzeK
 }
 
 // A new sample: the region [start, end) of `handle` stretched to `outFrames`, transposed. Worker thread.
+// « Recaler sur le tempo » (phase 35): a copy of `data` (interleaved, `channels`) lasting
+// `outFrames`, pitch kept. Worker thread (seconds for a long take); null when it cannot be made.
+JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_stretchPcm(JNIEnv* env, jobject, jfloatArray data,
+                                                                               jint channels, jlong outFrames, jint sampleRate) {
+    if (data == nullptr || channels < 1 || channels > 2) return nullptr;
+    const int rate = std::clamp<jint>(sampleRate, 8000, 192000);
+    const int64_t frames = env->GetArrayLength(data) / channels;
+    // An audio track holds five minutes at most: room for a slower tempo, never the whole heap.
+    if (frames < 2 || outFrames < 2 || outFrames > static_cast<int64_t>(rate) * 420) return nullptr;
+    std::vector<float> out;
+    // The take itself (no copy when the runtime lends it): one copy less at the peak.
+    jfloat* in = env->GetFloatArrayElements(data, nullptr);
+    if (!in) return nullptr;
+    try {
+        out = ps::timeStretch(in, frames, channels, outFrames, 0.0f, rate);
+    } catch (...) {
+        out.clear();
+    }
+    env->ReleaseFloatArrayElements(data, in, JNI_ABORT);
+    if (out.empty()) return nullptr;
+    jfloatArray result = env->NewFloatArray(static_cast<jsize>(out.size()));
+    if (result) env->SetFloatArrayRegion(result, 0, static_cast<jsize>(out.size()), out.data());
+    return result;
+}
+
 JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_sampleStretched(JNIEnv*, jobject, jlong handle, jfloat start,
                                                                                 jfloat end, jlong outFrames, jfloat semitones) {
     auto* s = reinterpret_cast<ps::Sample*>(handle);
+    if (s && s->compact()) return 0;  // a multizone zone: only MultiSampler reads 16-bit samples
     const int64_t from = std::clamp<int64_t>(static_cast<int64_t>(start * s->frames()), 0, s->frames());
     const int64_t to = std::clamp<int64_t>(static_cast<int64_t>(end * s->frames()), from, s->frames());
     if (to - from < 2 || outFrames < 2 || outFrames > 48000LL * 120) return 0;
@@ -167,6 +220,7 @@ JNIEXPORT jboolean JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeInsta
     auto& engine = host().engine();
     engine.collectGarbage();
     auto* s = reinterpret_cast<ps::Sample*>(handle);
+    if (s && s->compact()) return JNI_FALSE;  // a multizone zone: only MultiSampler reads 16-bit samples
     if (s) s->retain();
     ps::Command command{ps::CommandType::InstallSample, 0.0f, pad, 0};
     command.sample = s;
@@ -178,6 +232,7 @@ JNIEXPORT jboolean JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeInsta
 JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportInstallSample(JNIEnv*, jobject, jlong exportHandle,
                                                                                    jint pad, jlong handle) {
     auto* s = reinterpret_cast<ps::Sample*>(handle);
+    if (s && s->compact()) return;  // a multizone zone: only MultiSampler reads 16-bit samples
     if (s) s->retain();
     ps::Command command{ps::CommandType::InstallSample, 0.0f, pad, 0};
     command.sample = s;
@@ -290,6 +345,7 @@ JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_previewPositio
 JNIEXPORT jboolean JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeInstallAudioClip(JNIEnv*, jobject, jint track, jlong handle) {
     host().engine().collectGarbage();
     auto* s = reinterpret_cast<ps::Sample*>(handle);
+    if (s && s->compact()) return JNI_FALSE;  // a multizone zone: only MultiSampler reads 16-bit samples
     if (s) s->retain();
     ps::Command command{ps::CommandType::InstallAudioClip, 0.0f, track, 0};
     command.sample = s;
@@ -301,6 +357,7 @@ JNIEXPORT jboolean JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeInsta
 JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportInstallAudioClip(JNIEnv*, jobject, jlong exportHandle, jint track,
                                                                                     jlong handle) {
     auto* s = reinterpret_cast<ps::Sample*>(handle);
+    if (s && s->compact()) return;  // a multizone zone: only MultiSampler reads 16-bit samples
     if (s) s->retain();
     ps::Command command{ps::CommandType::InstallAudioClip, 0.0f, track, 0};
     command.sample = s;
@@ -309,11 +366,19 @@ JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportInstallAu
 
 // --- Instrument tracks: the sample played across the keys ---
 
+// `track` | (zone + 1) << 8: a zone of the track's multizone instrument (phase 38); the plain
+// track index: its sampled source. A 16-bit (compact) sample may only go to a zone.
+static int32_t trackSampleArg(jint track) {
+    return (std::clamp<jint>(track & 0xFF, 0, ps::kTracks - 1) << 16) | ((track >> 8) & 0xFFFF);
+}
+static bool refusedOnTrack(jint track, ps::Sample* s) { return s && s->compact() && ((track >> 8) & 0xFFFF) == 0; }
+
 JNIEXPORT jboolean JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeInstallTrackSample(JNIEnv*, jobject, jint track, jlong handle) {
     host().engine().collectGarbage();
     auto* s = reinterpret_cast<ps::Sample*>(handle);
+    if (refusedOnTrack(track, s)) return JNI_FALSE;
     if (s) s->retain();
-    ps::Command command{ps::CommandType::InstallTrackSample, 0.0f, std::clamp<jint>(track, 0, ps::kTracks - 1) << 16, 0};
+    ps::Command command{ps::CommandType::InstallTrackSample, 0.0f, trackSampleArg(track), 0};
     command.sample = s;
     if (host().post(command)) return JNI_TRUE;
     if (s && s->release()) delete s;
@@ -323,8 +388,9 @@ JNIEXPORT jboolean JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeInsta
 JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportInstallTrackSample(JNIEnv*, jobject, jlong exportHandle, jint track,
                                                                                       jlong handle) {
     auto* s = reinterpret_cast<ps::Sample*>(handle);
+    if (refusedOnTrack(track, s)) return;
     if (s) s->retain();
-    ps::Command command{ps::CommandType::InstallTrackSample, 0.0f, std::clamp<jint>(track, 0, ps::kTracks - 1) << 16, 0};
+    ps::Command command{ps::CommandType::InstallTrackSample, 0.0f, trackSampleArg(track), 0};
     command.sample = s;
     reinterpret_cast<ps::OfflineRenderer*>(exportHandle)->post(command);
 }
@@ -404,7 +470,7 @@ JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_recordFi
 }
 
 // Steps since the song (re)started (song automation), -1 when stopped.
-JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_songStep(JNIEnv*, jobject) {
+JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeSongStep(JNIEnv*, jobject) {
     return static_cast<jint>(host().engine().songStep());
 }
 
@@ -433,6 +499,7 @@ JNIEXPORT jboolean JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeInsta
     auto& engine = host().engine();
     engine.collectGarbage();
     auto* s = reinterpret_cast<ps::Sample*>(handle);
+    if (s && s->compact()) return JNI_FALSE;  // a multizone zone: only MultiSampler reads 16-bit samples
     if (s) s->retain();
     ps::Command command{ps::CommandType::InstallClip, 0.0f, pad, 0};
     command.sample = s;
@@ -448,26 +515,26 @@ JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_clipStates(JNIE
     env->SetIntArrayRegion(out, 0, n, states);
 }
 
-JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_sceneSwaps(JNIEnv*, jobject) {
+JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeSceneSwaps(JNIEnv*, jobject) {
     return static_cast<jint>(host().engine().sceneSwaps());
 }
 
 // --- Live grid ---
 
-JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_transportStep(JNIEnv*, jobject) {
+JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeTransportStep(JNIEnv*, jobject) {
     return static_cast<jint>(host().engine().transportStep());
 }
 
-JNIEXPORT jdouble JNICALL Java_com_pocketstudio_engine_NativeEngine_transportPosition(JNIEnv*, jobject) {
+JNIEXPORT jdouble JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeTransportPosition(JNIEnv*, jobject) {
     return host().engine().transportPosition();
 }
 
-JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_songMarkStep(JNIEnv*, jobject) {
+JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeSongMarkStep(JNIEnv*, jobject) {
     return static_cast<jint>(host().engine().songMarkStep());
 }
 
 // Per slot: tag playing, tag waiting, start step (3 * Engine::kSlots values).
-JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_slotStates(JNIEnv* env, jobject, jintArray out) {
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeSlotStates(JNIEnv* env, jobject, jintArray out) {
     jint values[ps::kSlots * 3];
     auto& engine = host().engine();
     for (int k = 0; k < ps::kSlots; ++k) {
@@ -480,7 +547,7 @@ JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_slotStates(JNIE
 }
 
 // The launches that happened since the last call (slot, tag, step each), at most out.length / 3.
-JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_drainLaunchEvents(JNIEnv* env, jobject, jintArray out) {
+JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeDrainLaunchEvents(JNIEnv* env, jobject, jintArray out) {
     const jsize room = env->GetArrayLength(out) / 3;
     jint values[ps::Engine::kLaunchEvents * 3];
     jsize n = 0;
@@ -610,15 +677,20 @@ JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportSetFormat
 // for silence), true peak (dBTP), length (seconds), sample rate, the loudness target's drive (dB).
 JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_exportReport(JNIEnv* env, jobject, jlong handle) {
     const auto& r = renderer(handle)->report();
-    const jfloat values[5] = {
+    // S5: then what the clipper and the limiter took off (LU), the loud part's loudness (LUFS, the
+    // Drop; -1000 without a two-pass Drop render) and the target's mode (0 song, 1 Drop).
+    const jfloat values[8] = {
         static_cast<jfloat>(r.lufs),
         r.truePeak > 0.0f ? 20.0f * std::log10(r.truePeak) : -1000.0f,
         r.sampleRate > 0 ? static_cast<jfloat>(static_cast<double>(r.frames) / r.sampleRate) : 0.0f,
         static_cast<jfloat>(r.sampleRate),
         r.driveDb,
+        r.lossDb,
+        static_cast<jfloat>(r.loudLufs),
+        static_cast<jfloat>(r.mode),
     };
-    jfloatArray result = env->NewFloatArray(5);
-    if (result) env->SetFloatArrayRegion(result, 0, 5, values);
+    jfloatArray result = env->NewFloatArray(8);
+    if (result) env->SetFloatArrayRegion(result, 0, 8, values);
     return result;
 }
 
@@ -635,6 +707,15 @@ JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_exportRender(JN
 JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_exportRenderFloat(JNIEnv* env, jobject, jlong handle,
                                                                                         jlong frames, jlong tail) {
     const auto out = renderer(handle)->renderToBuffer(frames, tail);
+    jfloatArray result = env->NewFloatArray(static_cast<jsize>(out.size()));
+    if (result && !out.empty()) env->SetFloatArrayRegion(result, 0, static_cast<jsize>(out.size()), out.data());
+    return result;
+}
+
+// The same in mono (the mean of both channels): a long frozen track, half the memory.
+JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_exportRenderFloatMono(JNIEnv* env, jobject, jlong handle,
+                                                                                            jlong frames, jlong tail) {
+    auto out = renderer(handle)->renderToBuffer(frames, tail, true);
     jfloatArray result = env->NewFloatArray(static_cast<jsize>(out.size()));
     if (result && !out.empty()) env->SetFloatArrayRegion(result, 0, static_cast<jsize>(out.size()), out.data());
     return result;
@@ -684,9 +765,10 @@ JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_loudnessMeters(
     auto& m = host().engine().mixer();
     auto& meter = m.loudness();
     auto db = [](float peak) { return peak > 1e-5f ? 20.0f * std::log10(peak) : -100.0f; };
-    jfloat values[6] = {meter.momentary(), meter.shortTerm(), meter.integrated(), db(meter.truePeak()), db(meter.takeRecentPeak()),
-                        m.masterChain().driveDb()};
-    const int n = std::min(6, static_cast<int>(env->GetArrayLength(out)));
+    // S5: then what the clipper and the limiter take off (LU), as the target's estimate reads it.
+    jfloat values[7] = {meter.momentary(), meter.shortTerm(), meter.integrated(), db(meter.truePeak()), db(meter.takeRecentPeak()),
+                        m.masterChain().driveDb(), m.masterChain().lossDb()};
+    const int n = std::min(7, static_cast<int>(env->GetArrayLength(out)));
     if (n > 0) env->SetFloatArrayRegion(out, 0, n, values);
 }
 

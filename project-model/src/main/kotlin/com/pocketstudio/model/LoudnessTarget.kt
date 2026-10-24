@@ -41,13 +41,33 @@ object LoudnessTargets {
         put("lofi", -12f)
     }
 
-    /** The style's loudness ([DEFAULT_LUFS] without one, or for a style not in the table). */
-    fun forStyle(style: String?): Float = style?.let { BY_STYLE[it] } ?: DEFAULT_LUFS
+    /**
+     * Phase 34 (S5, [Project.MIX_V2]): the loudness of each style's Drop (its loudest part, which
+     * the target aims at since then), from the study of 10 hits a style (docs/hits): the softer house
+     * (deep, afro, amapiano, disco) at −9, hard techno at −6, phonk at −7, trap and drill at −8.5;
+     * pop, afrobeats and reggaeton's choruses at −9 (their songs at −10 to −12 integrated); techno and
+     * bass music at −7.5 and gabber at −7, where their mixes get with the chain taking 3 LU at most
+     * (S5 bench; the hits' −4 to −6 come from far denser, clipped productions).
+     */
+    val BY_STYLE_V2: Map<String, Float> = BY_STYLE + buildMap {
+        for (s in listOf("techno", "acid_techno", "industrial_techno", "acidcore")) put(s, -7.5f)
+        for (s in listOf("dnb", "jump_up", "jungle", "neurofunk", "dubstep", "riddim")) put(s, -7.5f)
+        put("gabber", -7f)
+        for (s in listOf("deep_house", "afro_house", "amapiano", "disco")) put(s, -9f)
+        put("hard_techno", -6f)
+        put("phonk", -7f)
+        for (s in listOf("trap", "drill")) put(s, -8.5f)
+        for (s in listOf("pop", "afrobeats", "reggaeton")) put(s, -9f)
+    }
+
+    /** The style's loudness ([DEFAULT_LUFS] without one, or for a style not in the table), by mix version. */
+    fun forStyle(style: String?, mixVersion: Int = Project.MIX_V1): Float =
+        style?.let { (if (mixVersion >= Project.MIX_V2) BY_STYLE_V2 else BY_STYLE)[it] } ?: DEFAULT_LUFS
 
     /** The LUFS the engine aims at for [target] in a project of [style]; null: no target. */
-    fun lufs(target: LoudnessTarget, style: String?): Float? = when (target) {
+    fun lufs(target: LoudnessTarget, style: String?, mixVersion: Int = Project.MIX_V1): Float? = when (target) {
         LoudnessTarget.OFF -> null
-        LoudnessTarget.AUTO -> forStyle(style)
+        LoudnessTarget.AUTO -> forStyle(style, mixVersion)
         LoudnessTarget.CLUB -> CLUB_LUFS
         LoudnessTarget.STREAMING -> STREAMING_LUFS
     }

@@ -66,6 +66,9 @@ void MasterChain::prepare(int rate) {
     // The estimate forgets the music it heard over about a minute of sound (one piece = 100 ms).
     forget_ = std::exp(-0.1 / 60.0);
     estHist_.setForget(forget_);
+    // Drop mode: the loud part over about three minutes of music.
+    const double loudForget = std::exp(-0.1 / 180.0);
+    loudIn_.setForget(loudForget);
     estIn_.prepare(rate_);
     estOut_.prepare(rate_);
     meter_.prepare(rate_);
@@ -115,7 +118,12 @@ void MasterChain::setTarget(float lufs) {
     if (was && now) {
         // The estimate does not depend on the target: the drive moves by the difference at once.
         rampDrive(std::clamp(driveDb_ + (t - target_), kMinDriveDb, kMaxDriveDb), glide);
-    } else if (now && estHist_.blocks() >= 30 && !driveHeld_) {
+    } else if (now && mode_ == Mode::Drop && loudIn_.windows() >= 30 && !driveHeld_) {
+        target_ = t;
+        const double level = loudIn_.lufs();
+        const double loss = std::clamp(static_cast<double>(lossPublished_.load(std::memory_order_relaxed)), 0.0, 24.0);
+        if (level > -999.0) rampDrive(static_cast<float>(std::clamp(t - level + loss, double(kMinDriveDb), double(kMaxDriveDb))), glide);
+    } else if (now && mode_ == Mode::Song && estHist_.blocks() >= 30 && !driveHeld_) {
         target_ = t;
         const double loss = sumDriven_ > 0.0 && sumOut_ > 0.0 ? std::clamp(10.0 * std::log10(sumDriven_ / sumOut_), 0.0, 24.0) : 0.0;
         rampDrive(static_cast<float>(std::clamp(t - estHist_.lufs() + loss, double(kMinDriveDb), double(kMaxDriveDb))), glide);
@@ -139,9 +147,28 @@ void MasterChain::resetEstimate() {
     pieceDrive_.fill(1.0);
     pieceHead_ = 0;
     sumDriven_ = sumOut_ = 0.0;
+    loudIn_.reset();
+    lossNow_ = lossDriveDb_ = 0.0;
+    lossWindows_ = 0;
+    driveRing_.fill(1.0);
+    driveRingHead_ = 0;
+    settled_ = false;
+    settledLevel_ = 1000.0;
+    lossPublished_.store(0.0f, std::memory_order_relaxed);
+    loudPublished_.store(-1000.0f, std::memory_order_relaxed);
+}
+
+void MasterChain::setKnownDrive(float db) {
+    if (!std::isfinite(db) || driveHeld_) return;
+    rampDrive(std::clamp(db, kMinDriveDb, kMaxDriveDb), rate_ * 3 / 10);
+    // The export heard the whole song: only a loss past the cap (a louder mix since) moves it.
+    settled_ = true;
+    settledLevel_ = 1000.0;
 }
 
 void MasterChain::rampDrive(float db, int frames) {
+    // Never past its range, whoever asks (a drive of -77 dB is a song faded out).
+    db = std::clamp(std::isfinite(db) ? db : 0.0f, kMinDriveDb, kMaxDriveDb);
     driveDb_ = db;
     rampTarget_ = dbToGain(db);
     rampLeft_ = std::max(1, frames);
@@ -388,7 +415,13 @@ void MasterChain::estimate() {
     const int piece = std::max(1, rate_ / 10);
     pieceDrive_[static_cast<size_t>(pieceHead_)] = driveSq_ / piece;
     pieceHead_ = (pieceHead_ + 1) & 3;
+    driveRing_[static_cast<size_t>(driveRingHead_)] = driveSq_ / piece;
+    driveRingHead_ = (driveRingHead_ + 1) % BlockLoudness::kRing;
     driveSq_ = 0.0;
+    if (mode_ == Mode::Drop) {
+        estimateDrop();
+        return;
+    }
     if (estIn_.pieces() < 4) return;
     const double in = estIn_.meanOfLast(4), out = estOut_.meanOfLast(4);
     const double drive2 = 0.25 * (pieceDrive_[0] + pieceDrive_[1] + pieceDrive_[2] + pieceDrive_[3]);
@@ -401,6 +434,7 @@ void MasterChain::estimate() {
     }
     if (driveHeld_ || !targetActive() || estHist_.blocks() < 30) return;  // 3 s of music at least
     const double loss = sumDriven_ > 0.0 && sumOut_ > 0.0 ? std::clamp(10.0 * std::log10(sumDriven_ / sumOut_), 0.0, 24.0) : 0.0;
+    lossPublished_.store(static_cast<float>(loss), std::memory_order_relaxed);
     double want = std::clamp(target_ - level + loss, double(kMinDriveDb), double(kMaxDriveDb));
     // Squashing already: no more drive (it would only add reduction, not loudness).
     if (loss >= kMaxLossDb && want > driveDb_) want = driveDb_;
@@ -408,6 +442,62 @@ void MasterChain::estimate() {
     const double step = estHist_.blocks() < 300 ? 0.1 : 0.05;
     const float next = static_cast<float>(driveDb_ + std::clamp(want - driveDb_, -step, step));
     if (next != driveDb_) rampDrive(next, piece);
+}
+
+void MasterChain::estimateDrop() {
+    // 3 s windows (the short-term loudness) of the music before the drive, and the loud part of
+    // them (LoudPart: the level the target is about, remembered over minutes).
+    constexpr int kWindow = BlockLoudness::kRing;
+    if (estIn_.pieces() < kWindow) return;
+    double drive2 = 0.0;
+    for (double d : driveRing_) drive2 += d;
+    drive2 /= kWindow;
+    const double in = estIn_.meanOfLast(kWindow), out = estOut_.meanOfLast(kWindow);
+    loudIn_.add(in);
+    const double level = loudIn_.lufs();  // also sets the loud part's threshold
+    loudPublished_.store(static_cast<float>(level), std::memory_order_relaxed);
+    if (level < -999.0) return;
+    // What the clipper and the limiter take off now: a window of the loud part, its driven music
+    // against its own output, at the drive it was heard with. Never two loud parts remembered over
+    // minutes (they kept the loss of a drive long gone: the drive then fell 2 dB/s without end,
+    // the song faded out live after its first loud seconds).
+    if (in > 0.0 && out > 0.0 && drive2 > 0.0 && lufsOf(in) >= loudIn_.threshold()) {
+        const double now = std::clamp(10.0 * std::log10(in * drive2 / out), 0.0, 24.0);
+        const double heardWith = 10.0 * std::log10(drive2);
+        constexpr double kFollow = 0.2;  // about half a second of windows (they overlap over 3 s)
+        if (lossWindows_ == 0) {
+            lossNow_ = now;
+            lossDriveDb_ = heardWith;
+        } else {
+            lossNow_ += kFollow * (now - lossNow_);
+            lossDriveDb_ += kFollow * (heardWith - lossDriveDb_);
+        }
+        ++lossWindows_;
+    }
+    const double loss = lossWindows_ > 0 ? lossNow_ : 0.0;
+    lossPublished_.store(static_cast<float>(loss), std::memory_order_relaxed);
+    if (driveHeld_ || !targetActive() || loudIn_.windows() < 30) return;  // 3 s of windows at least
+    double want = std::clamp(target_ - level + loss, double(kMinDriveDb), double(kMaxDriveDb));
+    // Over the cap: down to the drive that takes the cap off, from the drive the loss was heard
+    // with (not from the drive now: a loss that lags would push it down again and again).
+    const bool over = loss > kMaxLossDropDb;
+    if (over) want = std::min(want, lossDriveDb_ - (loss - kMaxLossDropDb));
+    else if (loss >= kMaxLossDropDb - 0.2 && want > driveDb_) want = driveDb_;
+    // Settled (30 s of music heard, or the drive of an export): it no longer rises, so the mix
+    // one is making is heard as it is; a louder part than the one it settled on (a Drop not heard
+    // yet, a louder mix) still brings it down, as does a loss past the cap.
+    if (!settled_ && loudIn_.windows() >= 300) {
+        settled_ = true;
+        settledLevel_ = level;
+    }
+    if (settled_) {
+        if (want > driveDb_) want = driveDb_;
+        else if (!over && level <= settledLevel_ + 0.3) want = driveDb_;
+    }
+    // 2 dB/s down (a Drop arrives), 1 dB/s up while it is young: a glide, never a pump.
+    const double step = want < driveDb_ ? 0.2 : 0.1;
+    const float next = static_cast<float>(std::clamp(driveDb_ + std::clamp(want - driveDb_, -step, step), double(kMinDriveDb), double(kMaxDriveDb)));
+    if (next != driveDb_) rampDrive(next, std::max(1, rate_ / 10));
 }
 
 }  // namespace ps

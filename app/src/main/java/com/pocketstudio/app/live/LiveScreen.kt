@@ -218,6 +218,12 @@ class LiveActions(
     /** ● / ■ Fin. */
     val record: () -> Unit = {},
     val setTakeAppend: (Boolean) -> Unit = {},
+    /** « Versions du morceau »: what each take put aside, one touch to bring it back. */
+    val restoreVersion: (Int) -> Unit = {},
+    val dropVersion: (Int) -> Unit = {},
+    /** « Notes »: a key down (track, pitch, velocity) and up (track, pitch); written into a take while it records. */
+    val noteOn: (Int, Int, Float) -> Unit = { _, _, _ -> },
+    val noteOff: (Int, Int) -> Unit = { _, _ -> },
     val undoTake: () -> Unit = {},
     val listenTake: () -> Unit = {},
     val dismissTake: () -> Unit = {},
@@ -250,7 +256,7 @@ class LiveActions(
 )
 
 /** The bottom panel's pages. */
-enum class LivePanelTab { Effets, Acide, Pads }
+enum class LivePanelTab { Effets, Acide, Pads, Notes }
 
 /**
  * The Live page, full screen: a bar (back to Morceau, ▶/■, launch quantum, bar.beat counter),
@@ -267,6 +273,10 @@ fun LiveScreen(
     pads: LivePadsUi? = null,
     padsActions: LivePadsActions = LivePadsActions(),
     initialTab: LivePanelTab = LivePanelTab.Effets,
+    /** Under the page's bar: the position strip (tempo, « mes. x/y »), given by the app. */
+    under: (@Composable () -> Unit)? = null,
+    /** Phase 36: « Plein écran » on or off (the app hides its bottom bar with the phone's). */
+    onImmersive: (Boolean) -> Unit = {},
 ) {
     val columns = liveColumnsOf(ui.project)
     var tab by rememberSaveable { mutableStateOf(initialTab) }
@@ -278,6 +288,7 @@ fun LiveScreen(
         if (immersive) panelOpen = false
     }
     HideSystemBars(immersive)
+    androidx.compose.runtime.LaunchedEffect(immersive) { onImmersive(immersive) }
     // Leaving during a take: said first (the take would go on unseen, then overwrite what was
     // done elsewhere); « Quitter » ends it (written, or dropped while only armed).
     var confirmLeave by rememberSaveable { mutableStateOf(false) }
@@ -300,6 +311,15 @@ fun LiveScreen(
     // through a rotation. Leaving the page lets go of what the lock kept (nothing stays on unseen):
     // the ViewModel does it as the page closes (RhythmViewModel.leaveLive), not a rotation.
     val fx = rememberSaveable(saver = LiveFxState.Saver) { LiveFxState() }
+    var versionsOpen by rememberSaveable { mutableStateOf(false) }
+    if (versionsOpen) {
+        com.pocketstudio.app.record.SongVersionsSheet(
+            ui.project,
+            com.pocketstudio.app.record.SongVersionsActions(
+                restore = { versionsOpen = false; actions.restoreVersion(it) }, drop = actions.dropVersion, close = { versionsOpen = false },
+            ),
+        )
+    }
     if (ui.beatHaptics && ui.playing) BeatTicks(ui.clockOf)
     BoxWithConstraints(Modifier.fillMaxSize().background(Neon.Background).testTag("live_screen")) {
         // Lying down (or full screen) every row of height counts: a slimmer bar, and the take's
@@ -307,7 +327,9 @@ fun LiveScreen(
         val short = immersive || maxWidth > maxHeight
         Column(Modifier.fillMaxSize()) {
             LiveTopBar(ui, actions, leave, slim = short)
-            TakeBanner(ui, actions, showReady = !short)
+            // Full screen is for the grid: the strip gives way there.
+            if (under != null && !immersive) under()
+            TakeBanner(ui, actions, showReady = !short, openVersions = { versionsOpen = true })
             BoxWithConstraints(Modifier.fillMaxWidth().weight(1f)) {
                 val landscape = maxWidth > maxHeight
                 val wide = maxWidth >= 560.dp
@@ -402,7 +424,7 @@ private fun PanelRail(ui: LiveScreenUi, tab: LivePanelTab, onTab: (LivePanelTab)
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         FullScreenButton(immersive, toggleFull)
-        listOf(LivePanelTab.Effets to tr("Effets"), LivePanelTab.Acide to "303", LivePanelTab.Pads to tr("Pads")).forEach { (t, label) ->
+        listOf(LivePanelTab.Effets to tr("Effets"), LivePanelTab.Acide to "303", LivePanelTab.Pads to tr("Pads"), LivePanelTab.Notes to tr("Notes")).forEach { (t, label) ->
             val idle = t == LivePanelTab.Acide && !ui.hasAcid
             Box(
                 Modifier.size(48.dp).clip(RoundedCornerShape(12.dp))
@@ -463,12 +485,12 @@ private fun LiveTopBar(ui: LiveScreenUi, actions: LiveActions, leave: () -> Unit
     ) {
         if (compact) {
             IconButton(onClick = leave, modifier = Modifier.size(48.dp).testTag("live_back")) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = tr("Revenir au morceau"))
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = tr("Retour"))
             }
         } else {
             TextButton(onClick = leave, modifier = Modifier.testTag("live_back")) {
                 Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
-                Text(tr("Morceau"), maxLines = 1)
+                Text(tr("Retour"), maxLines = 1)
             }
         }
         Box(
@@ -480,9 +502,9 @@ private fun LiveTopBar(ui: LiveScreenUi, actions: LiveActions, leave: () -> Unit
                 Icon(if (ui.playing) Icons.Filled.Stop else Icons.Filled.PlayArrow, contentDescription = null, tint = Neon.OnAccent)
             }
         }
-        // « Lancer à » : touching it goes 1 → 2 → 4 bars. It takes what is left, cut with « … ».
-        val bars = p.liveQuantum
-        val next = LiveSlots.QUANTA[(LiveSlots.QUANTA.indexOf(bars) + 1).mod(LiveSlots.QUANTA.size)]
+        // « Lancer à » : touching it goes 1 → 2 → 4 bars → a beat → half a bar. It takes what is left, cut with « … ».
+        val code = liveQuantumCode(p)
+        val next = LIVE_QUANTUM_CYCLE[(LIVE_QUANTUM_CYCLE.indexOf(code) + 1).mod(LIVE_QUANTUM_CYCLE.size)]
         Box(Modifier.weight(1f)) {
             Column(
                 Modifier.heightIn(min = 48.dp).clip(RoundedCornerShape(12.dp)).background(Neon.SurfaceHigh)
@@ -491,7 +513,7 @@ private fun LiveTopBar(ui: LiveScreenUi, actions: LiveActions, leave: () -> Unit
             ) {
                 Text(tr("Lancer à"), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Text(
-                    if (bars == 1) tr("1 mesure") else tr("%d mesures", bars), style = MaterialTheme.typography.labelLarge,
+                    liveQuantumLabel(code), style = MaterialTheme.typography.labelLarge,
                     maxLines = 1, overflow = TextOverflow.Ellipsis,
                 )
             }
@@ -499,6 +521,23 @@ private fun LiveTopBar(ui: LiveScreenUi, actions: LiveActions, leave: () -> Unit
         Counter(ui)
         RecordButton(ui.take, actions.record)
     }
+}
+
+/** « Lancer à » as [LiveActions.setQuantum] codes it: 1, 2, 4 bars; -1 a beat; -2 half a bar. */
+fun liveQuantumCode(p: Project): Int = when (p.liveQuantumFine) {
+    LiveSlots.QUANTUM_BEAT -> -1
+    LiveSlots.QUANTUM_HALF_BAR -> -2
+    else -> p.liveQuantum
+}
+
+/** The order a touch on « Lancer à » goes through. */
+val LIVE_QUANTUM_CYCLE = listOf(1, 2, 4, -1, -2)
+
+fun liveQuantumLabel(code: Int): String = when (code) {
+    -1 -> tr("1 temps")
+    -2 -> tr("½ mesure")
+    1 -> tr("1 mesure")
+    else -> tr("%d mesures", code)
 }
 
 /** Below this width the Live bar's ← loses its word. */
@@ -509,7 +548,7 @@ private val LIVE_BAR_FULL = 380.dp
  * recording (■ Fin), writing.
  */
 @Composable
-private fun RecordButton(take: TakeUi, record: () -> Unit) {
+internal fun RecordButton(take: TakeUi, record: () -> Unit) {
     val blink = rememberBlink(take is TakeUi.Armed, low = 0.25f, periodMs = 400)
     val label = when (take) {
         is TakeUi.Armed -> tr("Armé")
@@ -550,7 +589,7 @@ private fun RecordButton(take: TakeUi, record: () -> Unit) {
  * [showReady] (lying down, full screen) the line waits for ●: armed, it offers the same choice.
  */
 @Composable
-private fun TakeBanner(ui: LiveScreenUi, actions: LiveActions, showReady: Boolean = true) {
+internal fun TakeBanner(ui: LiveScreenUi, actions: LiveActions, showReady: Boolean = true, openVersions: () -> Unit = {}) {
     val take = ui.take
     val parts = ui.project.song.size
     if (take is TakeUi.Ready && (parts == 0 || !showReady)) return
@@ -572,7 +611,7 @@ private fun TakeBanner(ui: LiveScreenUi, actions: LiveActions, showReady: Boolea
                     )
                     // A limit coming is said before it bites; else what the take leaves out.
                     Text(
-                        take.warning ?: tr("M et les pads de l'onglet Pads ne sont pas enregistrés."),
+                        take.warning ?: tr("Les pads sont enregistrés, pas M."),
                         Modifier.testTag("live_take_note"), style = MaterialTheme.typography.labelSmall,
                         color = if (take.warning != null) Neon.Amber else Neon.TextSecondary, maxLines = 2,
                     )
@@ -590,6 +629,9 @@ private fun TakeBanner(ui: LiveScreenUi, actions: LiveActions, showReady: Boolea
                     TextButton(onClick = actions.undoTake, modifier = Modifier.heightIn(min = 48.dp).testTag("live_take_undo")) { Text(tr("Annuler"), maxLines = 1) }
                 }
                 TextButton(onClick = actions.listenTake, modifier = Modifier.heightIn(min = 48.dp).testTag("live_take_listen")) { Text(tr("Écouter"), maxLines = 1) }
+                if (ui.project.songVersions.isNotEmpty()) {
+                    TextButton(onClick = openVersions, modifier = Modifier.heightIn(min = 48.dp).testTag("live_take_versions")) { Text(tr("Versions"), maxLines = 1) }
+                }
                 IconButton(onClick = actions.dismissTake, modifier = Modifier.testTag("live_take_dismiss")) {
                     Icon(Icons.Filled.Close, contentDescription = tr("Fermer"))
                 }
@@ -603,8 +645,15 @@ private fun TakeBanner(ui: LiveScreenUi, actions: LiveActions, showReady: Boolea
                 )
                 if (parts > 0) {
                     Row(Modifier.weight(1f, fill = false).fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                        TakeChoice(tr("Remplacer le morceau"), !ui.takeAppend, "live_take_replace") { actions.setTakeAppend(false) }
+                        TakeChoice(tr("Nouvelle version"), !ui.takeAppend, "live_take_replace") { actions.setTakeAppend(false) }
                         TakeChoice(tr("Ajouter à la suite"), ui.takeAppend, "live_take_append") { actions.setTakeAppend(true) }
+                        // The songs earlier takes put aside: one touch away (the song is never lost).
+                        val versions = ui.project.songVersions.size
+                        if (versions > 0 && !armed) {
+                            TextButton(onClick = openVersions, modifier = Modifier.heightIn(min = 48.dp).testTag("live_versions")) {
+                                Text(tr("Versions (%d)", versions), maxLines = 1)
+                            }
+                        }
                     }
                 }
             }
@@ -717,7 +766,7 @@ private fun LiveGrid(ui: LiveScreenUi, columns: List<LiveColumn>, actions: LiveA
             Column(Modifier.padding(horizontal = GRID_PAD_H, vertical = GRID_PAD_V).testTag("live_grid"), verticalArrangement = Arrangement.spacedBy(gap)) {
                 Row(horizontalArrangement = Arrangement.spacedBy(gap)) {
                     Box(Modifier.width(sceneWidth).height(header), contentAlignment = Alignment.BottomStart) {
-                        Text(tr("Scènes"), style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary)
+                        Text(tr("Parties"), style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary)
                     }
                     ScrolledRow(h, gap) { columns.forEach { c -> ColumnHeader(c, c.key in ui.muted, cellW, header) { actions.toggleMute(c.key) } } }
                 }
@@ -1007,8 +1056,8 @@ private fun LivePanel(
     val shape = if (sideways) RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp) else RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
     Column(modifier.clip(shape).background(Neon.Surface).testTag("live_panel")) {
         Row(Modifier.fillMaxWidth().height(56.dp).padding(horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            val tabs = if (sideBySide) listOf(LivePanelTab.Effets to tr("Effets et 303"), LivePanelTab.Pads to tr("Pads"))
-            else listOf(LivePanelTab.Effets to tr("Effets"), LivePanelTab.Acide to "303", LivePanelTab.Pads to tr("Pads"))
+            val tabs = if (sideBySide) listOf(LivePanelTab.Effets to tr("Effets et 303"), LivePanelTab.Pads to tr("Pads"), LivePanelTab.Notes to tr("Notes"))
+            else listOf(LivePanelTab.Effets to tr("Effets"), LivePanelTab.Acide to "303", LivePanelTab.Pads to tr("Pads"), LivePanelTab.Notes to tr("Notes"))
             Row(Modifier.weight(1f).fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 tabs.forEach { (t, label) ->
                     val selected = open && shown == t
@@ -1044,6 +1093,7 @@ private fun LivePanel(
                 shown == LivePanelTab.Pads -> Column(Modifier.verticalScroll(rememberScrollState())) {
                     if (pads != null) LivePadsCard(pads, padsActions)
                 }
+                shown == LivePanelTab.Notes -> LiveNotes(ui, actions, Modifier.fillMaxSize())
                 sideBySide -> Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                     LiveFx(ui, columns, actions, Modifier.weight(1f).fillMaxHeight(), fx)
                     LiveAcid(ui, actions, Modifier.weight(1f).fillMaxHeight())

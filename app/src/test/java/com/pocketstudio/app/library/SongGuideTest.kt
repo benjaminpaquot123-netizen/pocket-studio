@@ -30,20 +30,23 @@ class SongGuideTest {
 
     @Test
     fun theAssistantSaysWhichSectionsEachLineAndPartPlaysIn() {
-        // A song (pop): Intro, Couplet, Refrain, cumulative.
+        // A song (pop): Intro, Couplet, Refrain, cumulative, and a Pont (the chords over the hats, without kick nor bass).
         val plan = popUi(StarterWizard.Mood.Happy, setOf(StarterWizard.Part.Bass, StarterWizard.Part.Pad)).plan
-        assertEquals(3, plan.count)
+        assertEquals(4, plan.count)
+        assertEquals("Pont", plan.title(3))
         pop.lines.forEach {
             val expected = when (it.role) {
-                StarterWizard.Role.Kick, StarterWizard.Role.Hat -> setOf(0, 1, 2)
-                // The tambourine (second percussion) waits for the Refrain too.
-                StarterWizard.Role.OpenHat, StarterWizard.Role.Perc, StarterWizard.Role.Perc2 -> setOf(2)
+                StarterWizard.Role.Kick -> setOf(0, 1, 2)
+                StarterWizard.Role.Hat -> setOf(0, 1, 2, 3)
+                // The tambourine (second percussion) waits for the Refrain too, and stays in the Pont.
+                StarterWizard.Role.Perc, StarterWizard.Role.Perc2 -> setOf(2, 3)
+                StarterWizard.Role.OpenHat -> setOf(2)
                 else -> setOf(1, 2)
             }
             assertEquals(it.role.title, expected, plan.lines[it.role])
         }
         // Without a lead the chords make the Refrain: they do not open the Intro to vanish in the Couplet.
-        assertEquals(mapOf(StarterWizard.Part.Bass to setOf(1, 2), StarterWizard.Part.Pad to setOf(2)), plan.parts)
+        assertEquals(mapOf(StarterWizard.Part.Bass to setOf(1, 2), StarterWizard.Part.Pad to setOf(2, 3)), plan.parts)
         // Club music (house): Intro, Groove, Drop, and a Break with the chords, without kick nor bass.
         val club = ui(StarterWizard.Mood.Happy, setOf(StarterWizard.Part.Bass, StarterWizard.Part.Pad)).plan
         assertEquals(listOf("Intro", "Groove", "Drop", "Break"), (0 until club.count).map { club.title(it) })
@@ -67,9 +70,10 @@ class SongGuideTest {
         val first = pages.first()
         assertEquals("Ton morceau Pop est prêt", first.title)
         val intro = first.lines.single { it.startsWith("A · Intro") }
-        assertTrue(intro, intro.contains("Kick") && intro.contains("Nappe") && !intro.contains("Basse") && !intro.contains("Lead"))
-        assertTrue(first.lines.single { it.startsWith("B · Couplet") }.let { it.contains("Basse") && !it.contains("Lead") })
-        assertTrue(first.lines.single { it.startsWith("C · Refrain") }.let { it.contains("Basse") && it.contains("Lead") && it.contains("Kick") })
+        // The hook is previewed in the Intro and thinned out in the Couplet; the chords lift the Refrain.
+        assertTrue(intro, intro.contains("Kick") && intro.contains("Lead") && !intro.contains("Basse") && !intro.contains("Nappe"))
+        assertTrue(first.lines.single { it.startsWith("B · Couplet") }.let { it.contains("Basse") && it.contains("Lead") && !it.contains("Nappe") })
+        assertTrue(first.lines.single { it.startsWith("C · Refrain") }.let { it.contains("Basse") && it.contains("Lead") && it.contains("Kick") && it.contains("Nappe") })
         val all = pages.flatMap { it.lines }.joinToString("\n")
         // Short pages: what the song holds, then how to hear it (all of it, or one section in a loop), then
         // what to change; after the first, never more than three lines a page so that none of them scrolls.
@@ -77,7 +81,10 @@ class SongGuideTest {
         pages.drop(1).forEach { assertTrue(it.title, it.lines.size in 1..3) }
         assertTrue(pages.all { it.lines.isNotEmpty() })
         assertTrue(all.contains("tout le morceau") && all.contains("« ⟳ Partie », juste sous ▶"))
-        assertTrue(all.contains("Intro → Couplet → Refrain → Couplet → Refrain → Intro pour finir : environ "))
+        assertTrue(all.contains("Intro → Couplet → Pré-refrain → Refrain → Post-refrain → Couplet → Pré-refrain → Refrain → Pont → Refrain → Intro pour finir : environ "))
+        // The Pont is the song's fourth part, and the drop before each Refrain is told.
+        assertTrue(first.lines.any { it.startsWith("D · Pont") })
+        assertTrue(all.contains("Avant chaque Refrain, le kick et la basse se coupent"))
         // Nothing to save by hand.
         assertTrue(all.contains("Pas besoin de sauvegarder"))
         // The sections can be renamed, and copied for a bridge or an ending.
@@ -90,12 +97,12 @@ class SongGuideTest {
         val club = ui(StarterWizard.Mood.Happy, setOf(StarterWizard.Part.Bass, StarterWizard.Part.Pad)).plan
         val clubPages = songGuide("House", club, inKey = true, song = songSummary(house, club), acid = true)
         assertTrue(clubPages.first().lines.any { it.startsWith("D · Break") })
-        assertTrue(clubPages.first().lines.first().contains("quatre sections"))
+        assertTrue(clubPages.first().lines.first().contains("quatre parties"))
         // The 303 is named only when the plan plays it, with the sections it plays in.
         assertTrue(clubPages.flatMap { it.lines }.none { it.contains("ligne 303") })
         val withAcid = StarterWizard.planFor(house, house.lines.map { it.role }.toSet(), setOf(StarterWizard.Part.Bass, StarterWizard.Part.Pad), true)
         assertTrue(songGuide("House", withAcid, inKey = true, acid = true).flatMap { it.lines }.any { it.startsWith("Acide : ta ligne 303 joue dans Groove et Drop.") })
-        assertTrue(songSummary(house, club).startsWith("Intro → Groove → Drop → Break → Drop → Intro pour finir"))
+        assertTrue(songSummary(house, club).startsWith("Intro → Groove → Montée → Drop → Break → Montée → Drop → Intro pour finir"))
     }
 
     @Test
@@ -104,14 +111,15 @@ class SongGuideTest {
         assertEquals("2 min", duration(118.0))
         assertEquals("1 min 50", duration(113.0))
         assertEquals("50 s", duration(47.0))
-        // Pop at 116 BPM, chords on four bars: 8 + 4 × 16 + 8 = 80 bars, about 2 min 45.
+        // Pop at 116 BPM: Intro 4, Couplet 8, Pré-refrain 8, Refrain 16, Post-refrain 4, Couplet 8, Pré-refrain 8, Refrain 16,
+        // Pont 8, Refrain 16, Intro 4 = 100 bars, about 3 min 30.
         val plan = popUi(StarterWizard.Mood.Happy, setOf(StarterWizard.Part.Bass, StarterWizard.Part.Pad)).plan
-        val bars = StarterWizard.songOf(pop, plan).sumOf { it.repeats } * StarterWizard.loopBars(pop, plan)
-        assertEquals(80, bars)
-        assertTrue(songSummary(pop, plan).endsWith("environ ${duration(80 * 4 * 60 / pop.bpm)}."))
-        // House at 122 BPM: Intro 16, Groove 16, Drop 16, Break 8, Drop 16, Intro 16 = 88 bars.
+        val bars = StarterWizard.songOf(pop, plan).sumOf { it.repeats * StarterWizard.sceneBars(pop, plan, it.scene) }
+        assertEquals(100, bars)
+        assertTrue(songSummary(pop, plan).endsWith("environ ${duration(100 * 4 * 60 / pop.bpm)}."))
+        // House at 122 BPM: Intro 16, Groove 8, Montée 8, Drop 16, Break 8, Montée 8, Drop 16, Intro 16 = 96 bars.
         val club = ui(StarterWizard.Mood.Happy, setOf(StarterWizard.Part.Bass, StarterWizard.Part.Pad)).plan
-        assertEquals(88, StarterWizard.songOf(house, club).sumOf { it.repeats } * StarterWizard.loopBars(house, club))
+        assertEquals(96, StarterWizard.songOf(house, club).sumOf { it.repeats * StarterWizard.sceneBars(house, club, it.scene) })
     }
 
     @Test

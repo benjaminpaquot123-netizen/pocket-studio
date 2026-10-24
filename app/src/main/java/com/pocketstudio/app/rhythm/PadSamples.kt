@@ -39,14 +39,43 @@ class PadSamples(private val dir: File) {
     }
 
     /**
-     * Blocking (background): reads the files the project uses; others are leftovers and removed (but
-     * those in [keep]). A .tmp is a sound being written: spared, unless it is over an hour old (the
-     * app killed while writing it), when it is only lost room.
+     * The sounds the project stopped using, kept [RETIRED_MS] before they go for good (as the
+     * projects' trash): a take pushed out by the ninth, a sound a version still needed. Next to
+     * `samples/` (never listed with them, never in a .zip).
+     */
+    private val retired = File(dir.parentFile ?: dir, RETIRED_DIR)
+
+    /**
+     * Blocking (background): reads the files the project uses; others are leftovers, put aside
+     * (removed [RETIRED_MS] later), but those in [keep]. A .tmp is a sound being written: spared,
+     * unless it is over an hour old (the app killed while writing it), when it is only lost room.
+     * A sound the project names again that was put aside comes back first.
      */
     fun loadAll(files: Set<String>, cleanUp: Boolean = true, keep: Set<String> = emptySet(), now: Long = System.currentTimeMillis()): List<Prepared> {
-        if (cleanUp) dir.listFiles()?.filter {
-            it.name !in files && it.name !in keep && (!it.name.endsWith(".tmp") || it.lastModified() < now - STALE_TMP_MS)
-        }?.forEach { it.delete() }
+        files.forEach { name ->
+            val there = File(dir, name)
+            val aside = File(retired, name)
+            if (!there.exists() && aside.isFile && PadSample(name, "").isSafe) {
+                dir.mkdirs()
+                if (aside.renameTo(there)) AppLog.add("Son $name : ramené des sons mis de côté")
+            }
+        }
+        if (cleanUp) {
+            dir.listFiles()?.filter {
+                it.isFile && it.name !in files && it.name !in keep && (!it.name.endsWith(".tmp") || it.lastModified() < now - STALE_TMP_MS)
+            }?.forEach { f ->
+                if (f.name.endsWith(".tmp")) {
+                    f.delete()
+                } else {
+                    retired.mkdirs()
+                    val to = File(retired, f.name)
+                    if (to.exists()) to.delete()
+                    // Its time aside starts now (the file's own date is when it was recorded).
+                    if (f.renameTo(to)) to.setLastModified(now)
+                }
+            }
+            retired.listFiles()?.filter { it.isFile && it.lastModified() < now - RETIRED_MS }?.forEach { it.delete() }
+        }
         return files.mapNotNull { file ->
             runCatching { prepare(file, FloatWav.read(File(dir, file))) }
                 .onFailure { AppLog.add("Son illisible $file : ${it.message}") }
@@ -143,6 +172,10 @@ class PadSamples(private val dir: File) {
         const val PEAK_BUCKETS = 2048
         /** A .tmp untouched this long is a write the app never finished (see [loadAll]). */
         const val STALE_TMP_MS = 3_600_000L
+        /** The folder next to `samples/` the sounds no longer used wait in. */
+        const val RETIRED_DIR = "samples-retired"
+        /** How long a sound no longer used is kept: a week. */
+        const val RETIRED_MS = 7L * 24 * 3_600_000L
 
         /** Min and max of each bucket, interleaved; channels mixed. */
         fun peaks(pcm: Pcm, buckets: Int = PEAK_BUCKETS): FloatArray {

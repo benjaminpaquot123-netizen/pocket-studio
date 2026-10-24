@@ -2,6 +2,7 @@
 
 package com.pocketstudio.app.session
 
+import com.pocketstudio.app.learn.spot
 import com.pocketstudio.model.i18n.tr
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -127,7 +128,21 @@ class SessionScreenUi(
     val songStep: () -> Int = { -1 },
     /** Each part's length in steps (null: from [barsOf]). */
     val partSteps: List<Int>? = null,
+    /** The part sheet of part (index), from the project (null: built from what this screen knows). */
+    val sheetOf: (Int) -> PartSheetUi? = { null },
+    /** Versions of the song Live takes put aside (« Versions du morceau »). */
+    val versions: Int = 0,
+    /** Phase 37: each scene of the song with its chords' names (« Accords du morceau »); empty: not shown. */
+    val chords: List<Pair<String, List<String>>> = emptyList(),
 ) {
+    /** The part sheet of part [i]: from the project when given, else from the song and the scenes. */
+    fun sheet(i: Int): PartSheetUi? = sheetOf(i) ?: song.getOrNull(i)?.let { part ->
+        PartSheetUi(
+            index = i, title = title(part.scene), bars = barsOf(part), played = song.count { it.scene == part.scene }, first = i == 0,
+            repeats = if (part.bars == null) part.repeats else null, songSize = song.size,
+        )
+    }
+
     /** Each part's length in steps, and where it starts. */
     val partLengths: List<Int> get() = partSteps ?: song.map { barsOf(it) * stepsPerBar }
     val partStarts: List<Int> get() = partLengths.runningFold(0) { a, b -> a + b }
@@ -197,33 +212,62 @@ class SessionActions(
     val whatPlays: (Int?) -> Unit = {},
     /** « Ligne du temps »: the whole song, every track, full screen. */
     val openTimeline: () -> Unit = {},
+    /** The part sheet: an intention done on part (index), one undo step. */
+    val partIntent: (Int, PartIntent) -> Unit = { _, _ -> },
+    /** « Versions du morceau »: the songs Live takes put aside. */
+    val openVersions: () -> Unit = {},
+    /** Phase 37: « Accords du morceau ». */
+    val openChords: () -> Unit = {},
 )
 
-/** The song first (the arrangement), then the scenes it is made of, the timeline, and the live tools. */
+/**
+ * The song first (the arrangement), then the scenes it is made of, the timeline, and the live tools.
+ * Phase 36: [arrangeOnly] in the Structure space (no way to Live nor to the timeline: Live is a
+ * space of its own and the timeline is this view's other half); [simple] in the Mode simple (the
+ * song and [tracks], the tracks' card, without the scenes nor the song's rare settings).
+ */
 @Composable
-fun SessionScreen(ui: SessionScreenUi, actions: SessionActions, live: LivePadsUi? = null, liveActions: LivePadsActions = LivePadsActions()) {
+fun SessionScreen(
+    ui: SessionScreenUi, actions: SessionActions, live: LivePadsUi? = null, liveActions: LivePadsActions = LivePadsActions(),
+    arrangeOnly: Boolean = false,
+    simple: Boolean = false,
+    tracks: (@Composable () -> Unit)? = null,
+    /** Above everything, in the first pane (the « Ligne du temps / Parties » switch). */
+    top: (@Composable () -> Unit)? = null,
+) {
     var renaming by rememberSaveable { mutableStateOf<Int?>(null) }
+    val entries = !arrangeOnly && !simple
     // On a tablet the song stays on the left; the scenes, the timeline and the live tools on the right.
     com.pocketstudio.ui.AdaptivePanes(
         Modifier.testTag("session"),
         spacing = 12.dp,
         first = {
-            LiveEntry(actions.openLive)
-            TimelineEntry(ui, actions)
-            SongCard(ui, actions)
+            top?.invoke()
+            if (entries) LiveEntry(actions.openLive)
+            if (entries) TimelineEntry(ui, actions)
+            SongCard(ui, actions, simple)
         },
         // A wide screen: the live pads right under the scenes, in reach without scrolling.
         second = {
-            ScenesCard(ui, actions, rename = { renaming = it })
-            LiveSection(live, liveActions, actions)
+            if (simple) {
+                tracks?.invoke()
+            } else {
+                ScenesCard(ui, actions, rename = { renaming = it })
+                if (entries) LiveSection(live, liveActions, actions)
+            }
         },
         // A phone keeps its order: the ways to Live and to the timeline, the song, the scenes, then the live tools.
         phone = {
-            LiveEntry(actions.openLive)
-            TimelineEntry(ui, actions)
-            SongCard(ui, actions)
-            ScenesCard(ui, actions, rename = { renaming = it })
-            LiveSection(live, liveActions, actions)
+            top?.invoke()
+            if (entries) LiveEntry(actions.openLive)
+            if (entries) TimelineEntry(ui, actions)
+            // The Mode simple: the tracks first (their sounds and volumes, what a beginner changes), then the parts.
+            if (simple) tracks?.invoke()
+            SongCard(ui, actions, simple)
+            if (!simple) {
+                ScenesCard(ui, actions, rename = { renaming = it })
+                if (entries) LiveSection(live, liveActions, actions)
+            }
         },
     )
     renaming?.let { i -> RenameSceneDialog(i, ui.label(i), onDone = { label -> actions.rename(i, label); renaming = null }, onDismiss = { renaming = null }) }
@@ -239,7 +283,7 @@ private fun LiveEntry(open: () -> Unit) {
     ) {
         Icon(Icons.Filled.PlayArrow, contentDescription = null)
         Column(Modifier.padding(start = 8.dp)) {
-            Text(tr("Live : jouer les sections piste par piste"), style = MaterialTheme.typography.titleSmall)
+            Text(tr("Live : jouer les parties piste par piste"), style = MaterialTheme.typography.titleSmall)
             Text(tr("Pads de toutes les pistes, effets et 303 sous les doigts"), style = MaterialTheme.typography.bodySmall)
         }
     }
@@ -321,21 +365,29 @@ private fun LiveSection(live: LivePadsUi?, liveActions: LivePadsActions, actions
 }
 
 @Composable
-private fun SongCard(ui: SessionScreenUi, actions: SessionActions) {
+private fun SongCard(ui: SessionScreenUi, actions: SessionActions, simple: Boolean = false) {
     var inserting by rememberSaveable { mutableStateOf<Int?>(null) }
     NeonCard(accent = Neon.Magenta) {
         SectionLabel(tr("Le morceau"), color = Neon.Magenta, help = Glossary.SONG)
         Text(
             when {
-                ui.song.isEmpty() -> tr("Ton morceau est vide : ajoute tes scènes dans l'ordre où elles jouent (Intro, Couplet, Refrain…).")
+                ui.song.isEmpty() -> tr("Ton morceau est vide : ajoute tes parties dans l'ordre où elles jouent (Intro, Couplet, Refrain…).")
                 ui.songIndex >= 0 -> tr("Touche une partie : elle joue juste après celle en cours.")
                 else -> tr("Touche une partie pour écouter le morceau à partir d'elle.")
             },
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
         )
+        // What Live takes put aside: one touch to see and bring back an earlier song.
+        if (ui.versions > 0) {
+            TextButton(onClick = actions.openVersions, modifier = Modifier.heightIn(min = 48.dp).testTag("song_versions")) {
+                Text(tr("Versions du morceau (%d)", ui.versions))
+            }
+        }
         // Where the song is (time, bar, a line over the parts), right above them.
         val totalBars = ui.song.sumOf { ui.barsOf(it) }
         if (totalBars > 0) SongClock(ui, totalBars)
+        // Phase 37: the song's chords, every part, a touch from changing them all.
+        if (ui.song.isNotEmpty() && ui.chords.isNotEmpty()) SongChordsStrip(ui.chords, actions.openChords)
         ui.song.forEachIndexed { i, part -> PartRow(i, part, ui, actions, insertAfter = { inserting = it }) }
         Text(if (ui.song.isEmpty()) tr("Ajouter :") else tr("Ajouter à la fin :"), style = MaterialTheme.typography.bodyMedium)
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -345,15 +397,7 @@ private fun SongCard(ui: SessionScreenUi, actions: SessionActions) {
                 }
             }
         }
-        Button(
-            onClick = actions.toggleSong,
-            enabled = ui.song.isNotEmpty() || ui.playing,
-            colors = ButtonDefaults.buttonColors(containerColor = if (ui.songIndex >= 0) Neon.Magenta else Neon.Cyan),
-            modifier = Modifier.fillMaxWidth().height(52.dp).testTag("song_play"),
-        ) {
-            Icon(if (ui.playing) Icons.Filled.Stop else Icons.Filled.PlayArrow, contentDescription = null)
-            Text("  " + if (ui.playing) tr("Arrêter") else tr("Jouer le morceau"))
-        }
+        // ▶ in the top bar plays the song (a part touched above plays from it): no second button here.
         // Everything acting on the sound (effects, sends, curves), each with a way to where it is set.
         val playingScene = ui.song.getOrNull(ui.shownSongIndex)?.scene
         OutlinedButton(
@@ -363,12 +407,12 @@ private fun SongCard(ui: SessionScreenUi, actions: SessionActions) {
             Icon(Icons.Filled.GraphicEq, contentDescription = null, modifier = Modifier.size(18.dp))
             Text("  " + if (playingScene != null) tr("Ce qui joue dans %s", ui.title(playingScene)) else tr("Ce qui joue dans le morceau"), maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
-        FoldSection(tr("Réglages du morceau"), subtle = true, spacing = 8.dp) {
+        if (!simple) FoldSection(tr("Réglages du morceau"), subtle = true, spacing = 8.dp) {
             ChoiceRow(tr("À la fin :"), tr("s'arrêter"), tr("recommencer"), ui.songLoops, actions.setSongLoops, "song_end")
-            ChoiceRow(tr("Pendant la lecture :"), tr("suivre le morceau"), tr("rester sur ma scène"), !ui.followSong, { actions.setFollowSong(!it) }, "follow")
+            ChoiceRow(tr("Pendant la lecture :"), tr("suivre le morceau"), tr("rester sur ma partie"), !ui.followSong, { actions.setFollowSong(!it) }, "follow")
             Text(
                 if (ui.followSong) tr("Les écrans montrent la partie qui joue.")
-                else tr("Les écrans restent sur la scène choisie : tu la modifies pendant que le morceau continue."),
+                else tr("Les écrans restent sur la partie choisie : tu la modifies pendant que le morceau continue."),
                 style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
             )
             WithHelp(Glossary.TIME_SIGNATURE) {
@@ -461,7 +505,7 @@ private fun ChoiceRow(label: String, first: String, second: String, secondOn: Bo
     }
 }
 
-/** One line of the song: a touch plays from it; repeats; a menu to move, copy, insert or remove. */
+/** One line of the song: a touch plays from it; repeats; a long press or ⋮ opens its sheet (intentions, move, copy, remove). */
 @Composable
 private fun PartRow(i: Int, part: SongPart, ui: SessionScreenUi, actions: SessionActions, insertAfter: (Int) -> Unit) {
     val active = i == ui.shownSongIndex
@@ -470,6 +514,7 @@ private fun PartRow(i: Int, part: SongPart, ui: SessionScreenUi, actions: Sessio
     val fill = Neon.Magenta.copy(alpha = 0.22f)
     val start = ui.partStarts.getOrElse(i) { 0 }
     val length = ui.partLengths.getOrElse(i) { 1 }.coerceAtLeast(1)
+    var sheetOpen by rememberSaveable { mutableStateOf(false) }
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxWidth().clip(shape)
@@ -487,14 +532,19 @@ private fun PartRow(i: Int, part: SongPart, ui: SessionScreenUi, actions: Sessio
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.weight(1f).heightIn(min = 56.dp).clip(shape)
-                .clickable(role = Role.Button, onClickLabel = tr("Jouer à partir de cette partie")) { actions.playPart(i) }
+                .combinedClickable(
+                    role = Role.Button, onClickLabel = tr("Jouer à partir de cette partie"),
+                    onLongClickLabel = tr("Variation, fill, break…"), onLongClick = { sheetOpen = true },
+                ) { actions.playPart(i) }
                 .padding(horizontal = 6.dp)
+                .spot("part_play_$i", if (i == 0) tr("Jouer · appui long : Fill") else null)
                 .testTag("part_play_$i"),
         ) {
             Icon(Icons.Filled.PlayArrow, contentDescription = null, tint = if (active) Neon.Magenta else Neon.TextSecondary, modifier = Modifier.size(20.dp))
             Column(Modifier.padding(start = 6.dp)) {
+                // A narrow row (a big text size): the name goes on a second line, never « B · Co… ».
                 Text(
-                    ui.title(part.scene), fontSize = 18.sp, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis,
+                    ui.title(part.scene), fontSize = 18.sp, fontWeight = FontWeight.Bold, maxLines = 2, overflow = TextOverflow.Ellipsis,
                     color = if (active) Neon.Magenta else Neon.TextPrimary,
                 )
                 Text(
@@ -516,36 +566,25 @@ private fun PartRow(i: Int, part: SongPart, ui: SessionScreenUi, actions: Sessio
         // A part written from the live grid has its own length: no repeats.
         IconButton(onClick = { actions.setRepeats(i, part.repeats - 1) }, enabled = part.bars == null && part.repeats > 1) { Icon(Icons.Filled.Remove, contentDescription = tr("Une fois de moins")) }
         IconButton(onClick = { actions.setRepeats(i, part.repeats + 1) }, enabled = part.bars == null && part.repeats < SongPart.MAX_REPEATS) { Icon(Icons.Filled.Add, contentDescription = tr("Une fois de plus")) }
-        Box {
-            var menu by remember { mutableStateOf(false) }
-            IconButton(onClick = { menu = true }, modifier = Modifier.testTag("part_menu_$i")) { Icon(Icons.Filled.MoreVert, contentDescription = tr("Plus d'actions")) }
-            DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
-                val full = ui.song.size >= SongPart.MAX_PARTS
-                DropdownMenuItem(
-                    text = { Text(tr("Ce qui joue dans cette partie")) }, leadingIcon = { Icon(Icons.Filled.GraphicEq, null) },
-                    onClick = { menu = false; actions.whatPlays(part.scene) }, modifier = Modifier.testTag("part_what_plays_$i"),
-                )
-                DropdownMenuItem(
-                    text = { Text(tr("Monter")) }, leadingIcon = { Icon(Icons.Filled.ArrowUpward, null) }, enabled = i > 0,
-                    onClick = { menu = false; actions.movePart(i, i - 1) }, modifier = Modifier.testTag("part_up_$i"),
-                )
-                DropdownMenuItem(
-                    text = { Text(tr("Descendre")) }, leadingIcon = { Icon(Icons.Filled.ArrowDownward, null) }, enabled = i < ui.song.lastIndex,
-                    onClick = { menu = false; actions.movePart(i, i + 1) }, modifier = Modifier.testTag("part_down_$i"),
-                )
-                DropdownMenuItem(
-                    text = { Text(tr("Dupliquer")) }, leadingIcon = { Icon(Icons.Filled.ContentCopy, null) }, enabled = !full,
-                    onClick = { menu = false; actions.duplicatePart(i) }, modifier = Modifier.testTag("part_duplicate_$i"),
-                )
-                DropdownMenuItem(
-                    text = { Text(tr("Insérer une scène après")) }, leadingIcon = { Icon(Icons.Filled.Add, null) }, enabled = !full,
-                    onClick = { menu = false; insertAfter(i) }, modifier = Modifier.testTag("part_insert_$i"),
-                )
-                DropdownMenuItem(
-                    text = { Text(tr("Retirer du morceau")) }, leadingIcon = { Icon(Icons.Filled.Delete, null) },
-                    onClick = { menu = false; actions.removePart(i) }, modifier = Modifier.testTag("part_remove_$i"),
-                )
-            }
+        IconButton(onClick = { sheetOpen = true }, modifier = Modifier.testTag("part_menu_$i")) { Icon(Icons.Filled.MoreVert, contentDescription = tr("Plus d'actions")) }
+    }
+    if (sheetOpen) {
+        val sheet = ui.sheet(i)
+        if (sheet == null) {
+            sheetOpen = false
+        } else {
+            val full = ui.song.size >= SongPart.MAX_PARTS
+            PartSheet(
+                sheet, onIntent = { actions.partIntent(i, it) }, close = { sheetOpen = false },
+                more = PartMoreActions(
+                    whatPlays = { actions.whatPlays(part.scene) },
+                    moveUp = if (i > 0) ({ actions.movePart(i, i - 1) }) else null,
+                    moveDown = if (i < ui.song.lastIndex) ({ actions.movePart(i, i + 1) }) else null,
+                    duplicate = if (!full) ({ actions.duplicatePart(i) }) else null,
+                    insertAfter = if (!full) ({ insertAfter(i) }) else null,
+                    remove = { actions.removePart(i) },
+                ),
+            )
         }
     }
 }
@@ -553,17 +592,12 @@ private fun PartRow(i: Int, part: SongPart, ui: SessionScreenUi, actions: Sessio
 @Composable
 private fun ScenesCard(ui: SessionScreenUi, actions: SessionActions, rename: (Int) -> Unit) {
     NeonCard {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            SectionLabel(tr("Scènes"), Modifier.weight(1f), help = Glossary.SCENE)
-            IconButton(onClick = actions.togglePlay, modifier = Modifier.testTag("session_play")) {
-                Icon(if (ui.playing) Icons.Filled.Stop else Icons.Filled.PlayArrow, contentDescription = if (ui.playing) tr("Arrêter") else tr("Jouer"), tint = Neon.Cyan)
-            }
-        }
+        SectionLabel(tr("Parties"), help = Glossary.SCENE)
         Text(
             when {
-                ui.playing && ui.songIndex >= 0 && !ui.followSong -> tr("Touche une scène pour la modifier : le morceau continue de jouer.")
-                ui.playing -> tr("Touche une scène : elle prend le relais à la mesure suivante.")
-                else -> tr("Une scène = la batterie, l'acide et le piano roll. Touche-en une pour la modifier, maintiens et glisse pour la déplacer.")
+                ui.playing && ui.songIndex >= 0 && !ui.followSong -> tr("Touche une partie pour la modifier : le morceau continue de jouer.")
+                ui.playing -> tr("Touche une partie : elle prend le relais à la mesure suivante.")
+                else -> tr("Une partie = la batterie, l'acide et les notes. Touche-en une pour la modifier, maintiens et glisse pour la déplacer.")
             },
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
         )
@@ -595,10 +629,10 @@ private fun ScenesCard(ui: SessionScreenUi, actions: SessionActions, rename: (In
         // sentence kept for TalkBack.
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             SceneAction(Icons.Filled.Edit, if (named) tr("Renommer") else tr("Nommer"),
-                if (named) tr("Renommer la scène %s", letter) else tr("Nommer la scène %s", letter), true, { rename(ui.current) }, "scene_rename", Modifier.weight(1f))
-            SceneAction(Icons.Filled.Add, tr("Nouvelle"), tr("Nouvelle scène vide"), true, actions.newScene, "scene_new", Modifier.weight(1f))
-            SceneAction(Icons.Filled.ContentCopy, tr("Dupliquer"), tr("Dupliquer la scène %s", letter), true, actions.duplicate, "scene_duplicate", Modifier.weight(1f))
-            SceneAction(Icons.Filled.DeleteSweep, tr("Vider"), tr("Vider la scène %s", letter), !empty, actions.clear, "scene_clear", Modifier.weight(1f))
+                if (named) tr("Renommer la partie %s", letter) else tr("Nommer la partie %s", letter), true, { rename(ui.current) }, "scene_rename", Modifier.weight(1f))
+            SceneAction(Icons.Filled.Add, tr("Nouvelle"), tr("Nouvelle partie vide"), true, actions.newScene, "scene_new", Modifier.weight(1f))
+            SceneAction(Icons.Filled.ContentCopy, tr("Dupliquer"), tr("Dupliquer la partie %s", letter), true, actions.duplicate, "scene_duplicate", Modifier.weight(1f))
+            SceneAction(Icons.Filled.DeleteSweep, tr("Vider"), tr("Vider la partie %s", letter), !empty, actions.clear, "scene_clear", Modifier.weight(1f))
         }
     }
 }
@@ -688,15 +722,15 @@ private fun MoveSceneDialog(from: Int, to: Int, ui: SessionScreenUi, onChoose: (
         title = { Text(tr("Déplacer %s sur %s", ui.title(from), ui.title(to))) },
         text = {
             Text(
-                tr("La scène %s n'est pas vide.", Scene.NAMES[to]) + " " + tr("La remplacer efface aussi son automation et ses prises audio (Annuler les rend)."),
+                tr("La partie %s n'est pas vide.", Scene.NAMES[to]) + " " + tr("La remplacer efface aussi son automation et ses prises audio (Annuler les rend)."),
                 style = MaterialTheme.typography.bodyMedium,
             )
         },
         confirmButton = {
             Column(horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                TextButton(onClick = { onChoose(false) }, modifier = Modifier.heightIn(min = 48.dp).testTag("scene_move_swap")) { Text(tr("Échanger les scènes")) }
+                TextButton(onClick = { onChoose(false) }, modifier = Modifier.heightIn(min = 48.dp).testTag("scene_move_swap")) { Text(tr("Échanger les parties")) }
                 TextButton(onClick = { onChoose(true) }, modifier = Modifier.heightIn(min = 48.dp).testTag("scene_move_replace")) {
-                    Text(tr("Remplacer la scène %s", Scene.NAMES[to]))
+                    Text(tr("Remplacer la partie %s", Scene.NAMES[to]))
                 }
                 TextButton(onClick = onDismiss, modifier = Modifier.heightIn(min = 48.dp).testTag("scene_move_cancel")) { Text(tr("Annuler")) }
             }
@@ -767,7 +801,7 @@ private fun SceneButton(i: Int, ui: SessionScreenUi, actions: SessionActions, dr
             )
             // A touch shows (or launches) the scene; held, it follows the finger to another slot
             // (inside the clickable: a drop consumes the touch, so it is not also a tap).
-            .clickable(role = Role.Button, onClickLabel = tr("Choisir la scène"), onClick = { actions.select(i) })
+            .clickable(role = Role.Button, onClickLabel = tr("Choisir la partie"), onClick = { actions.select(i) })
             .then(
                 // Only a scene with something in it (or a name) can be carried.
                 if (scene == null || (empty && label.isBlank())) Modifier
@@ -810,7 +844,7 @@ internal fun RenameSceneDialog(index: Int, current: String, onDone: (String) -> 
     var name by remember(index) { mutableStateOf(current) }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(tr("Nommer la scène %s", Scene.NAMES.getOrElse(index) { "?" })) },
+        title = { Text(tr("Nommer la partie %s", Scene.NAMES.getOrElse(index) { "?" })) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(tr("Quel moment du morceau est-ce ?"), style = MaterialTheme.typography.bodyMedium)

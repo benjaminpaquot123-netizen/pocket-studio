@@ -16,10 +16,10 @@ class SceneClearTest {
 
     @Test
     fun aNewSceneIsTheFirstFreeSlotAndStartsEmpty() {
-        val p = filled()  // A, B, C filled by the assistant
-        assertEquals(3, p.firstEmptyScene())
+        val p = filled()  // the sections and their variants filled by the assistant
+        assertEquals(p.allScenes.size, p.firstEmptyScene())
         val d = p.switchScene(p.firstEmptyScene()!!)
-        assertTrue(d.allScenes[3].isEmpty)
+        assertTrue(d.allScenes[p.allScenes.size].isEmpty)
         // The sounds stay (pads, tracks), only the notes are new.
         assertEquals(p.drums.lanes.map { it.sample }, d.drums.lanes.map { it.sample })
         assertEquals(p.tracks.map { it.sampled }, d.tracks.map { it.sampled })

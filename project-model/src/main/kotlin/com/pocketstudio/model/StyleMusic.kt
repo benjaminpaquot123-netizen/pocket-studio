@@ -11,6 +11,14 @@ enum class Voicing(val scaleSteps: List<Int>, val octaveUp: Boolean = false) {
     Power(listOf(0, 4), octaveUp = true),
     Octave(listOf(0), octaveUp = true),
     Single(listOf(0)),
+    /** Third, fifth and seventh without the root (the bass has it): the house and deep house stab. */
+    Rootless7(listOf(2, 4, 6)),
+    /** Third, fifth, seventh and ninth without the root: the Kerri Chandler and lo-fi keys voicing. */
+    Rootless9(listOf(2, 4, 6, 8)),
+    ;
+
+    /** The chord lacks its root (the bass line carries it). */
+    val rootless: Boolean get() = this == Rootless7 || this == Rootless9
 }
 
 /**
@@ -69,6 +77,9 @@ object StepLine {
         return pattern.padEnd(16 * bars, '.').substring(16 * b, 16 * b + 16)
     }
 
+    /** The token that repeats the previous pitch (a common tone held across the chord change). */
+    const val HOLD = '='
+
     /** Scale steps above the chord's root for a melodic token: R root, 2…7, O the root an octave up. */
     fun stepOf(token: Char): Int? = when (token.uppercaseChar()) {
         'R' -> 0
@@ -85,15 +96,31 @@ object StepLine {
 
 /**
  * Chords on a rhythm: one chord per bar on the scale [degrees], hit where [rhythm] says ('X'
- * strong, 'x' softer), stacked as [voicing]. A pad held all bar is "X---------------"; offbeat
- * stabs are "..X...X...X...X.".
+ * strong, 'x' softer, 'o' soft), stacked as [voicing]. A pad held all bar is "X---------------";
+ * offbeat stabs are "..X...X...X...X."; a rhythm of 32 or 64 characters alternates over the bars.
+ * With [voiceLead], each chord after the first is inverted (its notes moved by octaves) so that
+ * it moves as little as possible from the one before: close voicings with common tones, as a
+ * keyboard player voices them. With a [seed], each hit's velocity is nudged by up to ±8 % (the
+ * same way every time): no two hits exactly alike.
  */
-fun NoteClip.withChordRhythm(degrees: List<Int>, harmony: Harmony, rhythm: String, voicing: Voicing, octaveRoot: Int, velocity: Float = 0.8f): NoteClip {
+fun NoteClip.withChordRhythm(
+    degrees: List<Int>, harmony: Harmony, rhythm: String, voicing: Voicing, octaveRoot: Int, velocity: Float = 0.8f,
+    voiceLead: Boolean = false, seed: Int = 0,
+): NoteClip {
+    var previous: List<Int>? = null
+    var hitIndex = 0
     val notes = degrees.flatMapIndexed { bar, degree ->
         val shift = harmony.nearShift(degree, octaveRoot)
-        val chord = harmony.voiced(degree, octaveRoot, voicing).map { it + shift }
+        val stacked = harmony.voiced(degree, octaveRoot, voicing).map { it + shift }
+        val chord = if (voiceLead && previous != null) closestInversion(stacked, previous!!, octaveRoot) else stacked
+        previous = chord
         StepLine.parse(StepLine.barOf(rhythm, bar)).flatMap { e ->
-            val v = if (e.token.isLowerCase()) velocity * 0.75f else velocity
+            val base = when {
+                e.token == 'o' -> velocity * 0.5f
+                e.token.isLowerCase() -> velocity * 0.75f
+                else -> velocity
+            }
+            val v = if (seed == 0) base else (base * (1f + 0.08f * Seeded.unit(seed, hitIndex++))).coerceIn(0.05f, 1f)
             chord.map { Note((bar * 16 + e.step) * NoteClip.TICKS_PER_STEP, e.length * NoteClip.TICKS_PER_STEP, it, v) }
         }
     }
@@ -101,23 +128,78 @@ fun NoteClip.withChordRhythm(degrees: List<Int>, harmony: Harmony, rhythm: Strin
 }
 
 /**
+ * [chord] inverted (its notes moved by octaves, one at a time from the bottom or the top) so that
+ * it sits closest to [previous]: the smallest total movement, with the lowest note kept within an
+ * octave of [octaveRoot] and the chord within an octave and a fifth.
+ */
+internal fun closestInversion(chord: List<Int>, previous: List<Int>, octaveRoot: Int): List<Int> {
+    val sorted = chord.sorted()
+    val candidates = ArrayList<List<Int>>()
+    var up = sorted
+    var down = sorted
+    repeat(sorted.size) {
+        candidates += up
+        candidates += down
+        up = (up.drop(1) + (up.first() + 12)).sorted()
+        down = ((down.last() - 12).let { listOf(it) } + down.dropLast(1)).sorted()
+    }
+    fun cost(c: List<Int>): Int {
+        val span = c.last() - c.first()
+        val low = c.first()
+        val grinds = c.zipWithNext().any { (a, b) -> b - a == 1 }
+        val penalty = (if (span > 19) 100 else 0) + (if (low < octaveRoot - 7 || low > octaveRoot + 19) 100 else 0) + (if (grinds) 100 else 0)
+        // Each note to the closest note of the previous chord, plus the top note's move (the melody line).
+        val move = c.sumOf { n -> previous.minOf { kotlin.math.abs(n - it) } } + kotlin.math.abs(c.last() - previous.last())
+        return penalty + move
+    }
+    return candidates.distinct().minBy { cost(it) }
+}
+
+/** Deterministic pseudo-random values: the same sequence for the same seed, on every phone. */
+object Seeded {
+    /** A value in -1..1 for [seed] and [index], spread evenly, never the same for neighbours. */
+    fun unit(seed: Int, index: Int): Float {
+        var x = seed * 0x9E3779B1.toInt() + index * 0x85EBCA77.toInt()
+        x = x xor (x ushr 15)
+        x *= 0x2C1B3C6D
+        x = x xor (x ushr 12)
+        x *= 0x297A2D39.toInt()
+        x = x xor (x ushr 15)
+        return (x and 0xFFFF).toFloat() / 32767.5f - 1f
+    }
+
+    /** A seed from text (a style, a mood, a part): the same on every run. */
+    fun of(vararg keys: String): Int = keys.joinToString("/").fold(17) { acc, c -> acc * 31 + c.code }
+}
+
+/**
  * A line on the chords: each token of [pattern] is a note of the current bar's chord ('R' root,
  * '3' third, '5' fifth, '7' seventh, '2' '4' '6' the scale's other notes, 'O' the root an octave
- * up; lower case is softer), from [octaveRoot]. Bass lines, riffs, hooks. A note followed by '/'
- * lasts [StarterWizard.SLIDE_OVERLAP] ticks into the next one: a gliding sound slides there.
- * A [bass] line keeps its chord roots within a fourth above the key's root ([nearShift]).
+ * up; lower case is softer; '=' the previous pitch again, held across the chord change), from
+ * [octaveRoot]. Bass lines, riffs, hooks. A note followed by '/' lasts
+ * [StarterWizard.SLIDE_OVERLAP] ticks into the next one: a gliding sound slides there. A [bass]
+ * line keeps its chord roots within a fourth above the key's root ([nearShift]). With [onKey] the
+ * tokens are degrees of the key itself (R = the tonic) whatever the bar's chord: a riff that stays
+ * put while the chords move, as a 303 line does.
  */
-fun NoteClip.withLine(degrees: List<Int>, harmony: Harmony, pattern: String, octaveRoot: Int, velocity: Float = 0.9f, bass: Boolean = false): NoteClip {
+fun NoteClip.withLine(degrees: List<Int>, harmony: Harmony, pattern: String, octaveRoot: Int, velocity: Float = 0.9f, bass: Boolean = false, onKey: Boolean = false): NoteClip {
     val total = 16 * degrees.size.coerceAtLeast(1) * NoteClip.TICKS_PER_STEP
+    var previousPitch: Int? = null
     val notes = degrees.flatMapIndexed { bar, degree ->
         // A bass on the V goes down a fourth rather than up a fifth: it stays under the chords.
-        val shift = if (bass) harmony.nearShift(degree, octaveRoot, maxAbove = 5, lowest = LOWEST_BASS) else harmony.nearShift(degree, octaveRoot)
+        val shift = if (onKey) 0 else if (bass) harmony.nearShift(degree, octaveRoot, maxAbove = 5, lowest = LOWEST_BASS) else harmony.nearShift(degree, octaveRoot)
         StepLine.parse(StepLine.barOf(pattern, bar)).mapNotNull { e ->
-            val step = StepLine.stepOf(e.token) ?: return@mapNotNull null
-            val v = if (e.token.isLowerCase()) velocity * 0.7f else velocity
             val start = (bar * 16 + e.step) * NoteClip.TICKS_PER_STEP
             val length = e.length * NoteClip.TICKS_PER_STEP + if (e.slide) StarterWizard.SLIDE_OVERLAP else 0
-            Note(start, length.coerceAtMost(total - start), harmony.degreeRoot(degree + step, octaveRoot) + shift, v)
+            // '=' holds on to the previous pitch across the chord change (a common tone).
+            val pitch = if (e.token == StepLine.HOLD) previousPitch ?: return@mapNotNull null
+            else {
+                val step = StepLine.stepOf(e.token) ?: return@mapNotNull null
+                harmony.degreeRoot((if (onKey) 0 else degree) + step, octaveRoot) + shift
+            }
+            previousPitch = pitch
+            val v = if (e.token.isLowerCase()) velocity * 0.7f else velocity
+            Note(start, length.coerceAtMost(total - start), pitch, v)
         }
     }
     return copy(steps = 16 * degrees.size.coerceAtLeast(1), notes = notes).sanitized()

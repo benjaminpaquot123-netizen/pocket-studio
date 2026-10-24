@@ -15,16 +15,23 @@ enum class StepGoal {
     Melody,
     Sections,
     Song,
-    Voice,
+    /** A song made for the user (the assistant, a style): hear it whole first. */
+    Listen,
+    /** …then make it theirs: one sound changed. */
+    Sound,
     Volumes,
+    /** An option, after the mix: not everyone sings. */
+    Voice,
     Share;
 
     val title: String get() = when (this) {
         Rhythm -> tr("Rythme")
         Bass -> tr("Basse")
         Melody -> tr("Mélodie")
-        Sections -> tr("Sections")
+        Sections -> tr("Parties")
         Song -> tr("Morceau")
+        Listen -> tr("Écoute")
+        Sound -> tr("Un son")
         Voice -> tr("Voix")
         Volumes -> tr("Volumes")
         Share -> tr("Partager")
@@ -35,9 +42,11 @@ enum class StepGoal {
         Rhythm -> tr("Pose un rythme")
         Bass -> tr("Ajoute une basse")
         Melody -> tr("Ajoute une mélodie")
-        Sections -> tr("Fais une deuxième section")
-        Song -> tr("Enchaîne tes sections")
-        Voice -> tr("Pose ta voix")
+        Sections -> tr("Fais une deuxième partie")
+        Song -> tr("Enchaîne tes parties")
+        Listen -> tr("Écoute ton morceau en entier")
+        Sound -> tr("Change un son")
+        Voice -> tr("Pose ta voix (si tu veux)")
         Volumes -> tr("Règle les volumes")
         Share -> tr("Partage ton morceau")
     }
@@ -57,9 +66,9 @@ data class NextStep(
     val button: String,
     val manual: Boolean = false,
     val action: String = goal.action,
-) {
-    val number: Int get() = goal.ordinal + 1
-}
+    /** Its place in the list (from 1): [nextSteps] sets it. */
+    val number: Int = goal.ordinal + 1,
+)
 
 /** Notes below this pitch (C3) make a track a bass line. */
 private const val BASS_BELOW = 48
@@ -67,8 +76,12 @@ private const val BASS_BELOW = 48
 /**
  * Where [project] stands on the way to a finished song, computed from what it holds: drum hits,
  * a bass line (the acid line, an 808 or a low instrument track), a melody (a higher instrument
- * track or a recording), two named sections, a song of three parts or more, a voice recorded on
+ * track or a recording), two named parts, a song of three parts or more, a voice recorded on
  * top, the mixer touched. [marks]: the steps the user ticked by hand (the voice, the volumes, the sharing).
+ *
+ * The steps come in the order the project takes them: what it already has first. A song made
+ * whole (the assistant, a style: rhythm, bass, melody and a song at once) goes on with « Écoute
+ * ton morceau en entier », « Change un son », the volumes, then the voice as an option, and the sharing.
  */
 fun nextSteps(project: Project, marks: Set<StepGoal> = emptySet()): List<NextStep> {
     val scenes = project.allScenes
@@ -97,26 +110,34 @@ fun nextSteps(project: Project, marks: Set<StepGoal> = emptySet()): List<NextSte
     val voice = project.audioTracks.any { it.clip != null }
     val default = Channel()
     // The tracks' faders (the pads' own strips hold the assistant's balance of the kit, not the user's mix).
-    val mixed = project.mixer.channels.take(Mixer.FIRST_PAD).any { it.volume != default.volume || it.pan != default.pan }
-    return listOf(
+    val mixed = Mixer.TRACK_STRIPS.mapNotNull { project.mixer.channels.getOrNull(it) }.any { it.volume != default.volume || it.pan != default.pan }
+    // Made whole in one go (the assistant, a style): the way on is to listen, make it one's own, then share.
+    val madeWhole = rhythm && (bass || melody) && song
+    val steps = listOf(
         NextStep(StepGoal.Rhythm, rhythm, tr("Touche les cases de la grille pour poser un rythme (le kick sur chaque temps, pour commencer)."), AppTab.Rythme, tr("Rythme")),
-        NextStep(StepGoal.Bass, bass, tr("Ajoute une basse : génère une ligne dans l'onglet Acide, ou joue des notes graves dans Synthé."), AppTab.Acide, tr("Aller à Acide")),
-        NextStep(StepGoal.Melody, melody, tr("Ajoute une mélodie : joue quelques notes au clavier de Synthé, il reste dans la gamme."), AppTab.Synthe, tr("Aller à Synthé")),
+        NextStep(StepGoal.Bass, bass, tr("Ajoute une basse : génère une ligne dans Sons › Basse acide, ou joue des notes graves sur une piste de Sons."), AppTab.Acide, tr("Aller à la basse acide")),
+        NextStep(StepGoal.Melody, melody, tr("Ajoute une mélodie : joue quelques notes au clavier d'une piste de Sons, il reste dans la gamme."), AppTab.Synthe, tr("Aller au clavier")),
         NextStep(
             StepGoal.Sections, sections,
-            if (filled.size < 2) tr("Fais une deuxième section : duplique ta scène dans l'onglet Morceau, puis change-la (un couplet, un refrain).")
-            else tr("Donne un nom à chaque section (Intro, Couplet, Refrain…) dans l'onglet Morceau pour t'y retrouver."),
-            AppTab.Morceau, tr("Aller à Morceau"),
-            action = if (filled.size < 2) StepGoal.Sections.action else tr("Nomme tes sections"),
+            if (filled.size < 2) tr("Fais une deuxième partie : duplique ta partie dans Structure › Parties, puis change-la (un couplet, un refrain).")
+            else tr("Donne un nom à chaque partie (Intro, Couplet, Refrain…) dans Structure › Parties pour t'y retrouver."),
+            AppTab.Morceau, tr("Aller à Structure"),
+            action = if (filled.size < 2) StepGoal.Sections.action else tr("Nomme tes parties"),
         ),
-        NextStep(StepGoal.Song, song, tr("Enchaîne tes sections dans le morceau : au moins trois parties, avec un début et une fin."), AppTab.Morceau, tr("Aller à Morceau")),
+        NextStep(StepGoal.Song, song, tr("Enchaîne tes parties dans le morceau : au moins trois, avec un début et une fin."), AppTab.Morceau, tr("Aller à Structure")),
+    ) + listOfNotNull(
+        if (madeWhole) NextStep(StepGoal.Listen, StepGoal.Listen in marks, tr("Écoute ton morceau en entier : ▶ en haut. Touche une partie dans Structure pour l'écouter à partir d'elle."), AppTab.Morceau, tr("Aller à Structure"), manual = true) else null,
+        if (madeWhole) NextStep(StepGoal.Sound, StepGoal.Sound in marks, tr("Fais-le tien : dans Structure, touche le nom d'une piste pour changer son son, ou change un pad dans Sons › Batterie."), AppTab.Synthe, tr("Aller au clavier"), manual = true) else null,
+    ) + listOf(
+        NextStep(StepGoal.Volumes, mixed || StepGoal.Volumes in marks, tr("Écoute le morceau en entier et règle le volume de chaque piste dans Mix."), AppTab.Mixeur, tr("Aller à Mix"), manual = true),
         NextStep(
             StepGoal.Voice, voice || StepGoal.Voice in marks,
-            tr("Pose ta voix : onglet Audio, touche ● pour chanter ou rapper sur le morceau (avec des écouteurs)."), AppTab.Audio, tr("Aller à Audio"), manual = true,
+            tr("Si tu veux, pose ta voix : Sons › Voix, touche ● pour chanter ou rapper sur le morceau (avec des écouteurs)."), AppTab.Audio, tr("Aller à la voix"), manual = true,
         ),
-        NextStep(StepGoal.Volumes, mixed || StepGoal.Volumes in marks, tr("Écoute le morceau en entier et règle le volume de chaque piste dans le Mixeur."), AppTab.Mixeur, tr("Aller au Mixeur"), manual = true),
         NextStep(StepGoal.Share, StepGoal.Share in marks, tr("Exporte ton morceau et fais-le écouter à tes amis !"), AppTab.Mixeur, tr("Partager"), manual = true),
     )
+    // Done first, in order; what is left after, in order: the numbers follow.
+    return steps.sortedBy { if (it.done) 0 else 1 }.mapIndexed { i, s -> s.copy(number = i + 1) }
 }
 
 /** The first step still to do, or null when the song is done. */

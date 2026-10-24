@@ -14,6 +14,8 @@ import com.pocketstudio.model.Progression
 import com.pocketstudio.model.labelIn
 import com.pocketstudio.model.Scale
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
@@ -70,6 +72,8 @@ data class PianoRollActions(
     val remove: (Note) -> Unit = {},
     val change: (old: Note, new: Note) -> Unit = { _, _ -> },
     val quantize: (gridTicks: Int, strength: Float) -> Unit = { _, _ -> },
+    /** « Comme joué »: every note put in time goes back where it was played. */
+    val asPlayed: () -> Unit = {},
     val setSteps: (Int) -> Unit = {},
     val clear: () -> Unit = {},
     val addChord: (start: Int, length: Int, pitch: Int) -> Unit = { _, _, _ -> },
@@ -80,7 +84,11 @@ data class PianoRollActions(
     val setPerformance: (Performance) -> Unit = {},
     /** A whole-clip edit (selection tools); [key] merges a quick burst into one undo step. */
     val replaceClip: (NoteClip, key: String?) -> Unit = { _, _ -> },
+    /** Phase 37: notes copied, kept by the app for every track and part (see [PianoRoll]'s clipboard). */
+    val copyNotes: (com.pocketstudio.model.NoteClipboard) -> Unit = {},
 )
+
+/** A bar of the piano roll (its lines are drawn every 16 sixteenths). */
 
 private const val LOW = 24   // C1
 private const val HIGH = 108 // C8: the top of a piano, where the keyboard's highest octaves still write
@@ -124,7 +132,18 @@ fun PianoRoll(
     /** The keys on the left play their note (heard, and recorded while ● records); null: silent names. */
     keyOn: ((Int, Float) -> Unit)? = null,
     keyOff: ((Int) -> Unit)? = null,
+    /**
+     * Phase 37: the notes copied in any track or part (kept by the app); null: none. A local copy is
+     * used when the screen is shown without the app (previews).
+     */
+    clipboard: com.pocketstudio.model.NoteClipboard? = null,
+    /** Phase 37: a frozen track's notes cannot be changed (« Dégeler »): said, not drawn on. */
+    frozen: Boolean = false,
+    /** Sixteenths in a bar of the time signature (12 in 3/4): copies, pastes and the ruler count in its bars. */
+    stepsPerBar: Int = 16,
 ) {
+    val barSteps = stepsPerBar.coerceIn(1, NoteClip.MAX_STEPS)
+    val barTicks = barSteps * NoteClip.TICKS_PER_STEP
     var newSteps by rememberSaveable { mutableIntStateOf(2) }
     var chordMode by rememberSaveable { mutableStateOf(false) }
     var showGhosts by rememberSaveable { mutableStateOf(true) }
@@ -132,7 +151,15 @@ fun PianoRoll(
     var zoom by rememberSaveable { mutableIntStateOf(1) }
     var grid by rememberSaveable { mutableIntStateOf(TICK) }
     var selection by remember { mutableStateOf(initialSelection) }
-    var clipboard by remember { mutableStateOf<List<Note>>(emptyList()) }
+    // The bar a paste goes on (« Coller sur la mes. N »): the one chosen above the grid, or the one after a copy.
+    var targetBar by rememberSaveable { mutableIntStateOf(0) }
+    var localBoard by remember { mutableStateOf<com.pocketstudio.model.NoteClipboard?>(null) }
+    val board = clipboard ?: localBoard
+    val copyNotes: (com.pocketstudio.model.NoteClipboard) -> Unit = { b ->
+        localBoard = b
+        actions.copyNotes(b)
+        targetBar = b.fromBar + b.bars
+    }
     // Notes edited elsewhere (undo, another tool) leave the selection.
     val live = selection.filter { it in clip.notes }.toSet()
     if (live != selection) selection = live
@@ -160,10 +187,13 @@ fun PianoRoll(
                 }
             }
             val loop: @Composable () -> Unit = {
+                // Phase 37: any number of whole bars, 1 to 16.
                 Text(tr("Boucle"), style = MaterialTheme.typography.bodySmall)
-                NoteClip.LENGTHS_IN_STEPS.forEach { steps ->
-                    FilterChip(selected = clip.steps == steps, onClick = { actions.setSteps(steps) },
-                        label = { Text(com.pocketstudio.app.ui.barsShort(steps / 16)) }, colors = chipColors)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    TextButton(onClick = { actions.setSteps(clip.steps - 16) }, enabled = clip.steps > NoteClip.MIN_STEPS, modifier = Modifier.testTag("loop_minus")) { Text("−") }
+                    Text(com.pocketstudio.app.ui.barsShort(clip.steps / 16), style = MaterialTheme.typography.labelLarge, color = Neon.Cyan, maxLines = 1, softWrap = false,
+                        modifier = Modifier.testTag("loop_bars"))
+                    TextButton(onClick = { actions.setSteps(clip.steps + 16) }, enabled = clip.steps < NoteClip.MAX_STEPS, modifier = Modifier.testTag("loop_plus")) { Text("+") }
                 }
             }
             val noteLengths: @Composable () -> Unit = {
@@ -189,28 +219,52 @@ fun PianoRoll(
             } else {
                 ToolRow(false) { loop(); noteLengths(); grids() }
             }
-            if (selectMode) {
-                SelectionBar(clip, selection, clipboard, playStep, grid, chipColors, tablet,
-                    select = { selection = it }, copy = { clipboard = NoteEdits.copy(selection) }, apply = apply)
+            if (frozen) {
+                Text(tr("Piste gelée : elle joue son rendu audio dans le morceau. « Dégeler » (menu de la piste) pour modifier ses notes."),
+                    style = MaterialTheme.typography.bodySmall, color = Neon.Amber, modifier = Modifier.testTag("roll_frozen"))
+            }
+            val pasteBar = if (playStep >= 0) (playStep % clip.steps) / barSteps else targetBar.coerceIn(0, NoteClip.MAX_STEPS / barSteps - 1)
+            val paste: () -> NoteEdits.Result? = {
+                board?.let { b ->
+                    NoteEdits.pasteOnBar(clip, b, pasteBar, barTicks).also { r ->
+                        if (r.selection.isNotEmpty()) apply(r, null)
+                        targetBar = pasteBar + b.bars
+                    }
+                }
+            }
+            if (selectMode || selection.isNotEmpty()) {
+                SelectionBar(clip, selection, board, pasteBar, grid, chipColors, tablet,
+                    select = { selection = it }, copy = { NoteEdits.toClipboard(selection, barTicks)?.let(copyNotes) }, paste = paste, apply = apply)
             } else {
+                if (board != null) PasteRow(board, pasteBar, paste)
                 ToolRow(tablet, spacing = 2.dp) {
-                    TextButton(onClick = { actions.quantize(grid, 0.5f) }, modifier = Modifier.testTag("quantize_50")) { Text(tr("Quantifier 50 %")) }
-                    TextButton(onClick = { actions.quantize(grid, 1f) }) { Text(com.pocketstudio.model.i18n.percent(100)) }
+                    // « Remettre en rythme » from where the notes were played: « Comme joué » undoes it any time.
+                    TextButton(onClick = { actions.quantize(grid, 0.5f) }, modifier = Modifier.testTag("quantize_50")) { Text(tr("En rythme 50 %")) }
+                    TextButton(onClick = { actions.quantize(grid, 1f) }, modifier = Modifier.testTag("quantize_100")) { Text(com.pocketstudio.model.i18n.percent(100)) }
+                    if (clip.anyMovedInTime) {
+                        TextButton(onClick = actions.asPlayed, modifier = Modifier.testTag("notes_as_played")) { Text(tr("Comme joué")) }
+                    }
                     FilterChip(selected = showGhosts, onClick = { showGhosts = !showGhosts }, label = { Text(tr("Basse en fantôme")) }, colors = chipColors)
                     FilterChip(selected = chordMode, onClick = { chordMode = !chordMode }, label = { Text(tr("Accords")) }, colors = chipColors,
                         modifier = Modifier.testTag("chord_mode"))
                     TextButton(onClick = actions.clear, enabled = clip.notes.isNotEmpty()) { Text(tr("Effacer")) }
                 }
             }
+            BarRuler(clip, hScroll, stepWidth, keysWidth, if (selection.isNotEmpty() || selectMode) targetBar else -1, barSteps) { bar ->
+                // A bar touched: its notes chosen (Copier, Supprimer…), and the bar a paste goes on.
+                targetBar = bar
+                selection = NoteEdits.inBar(clip, bar, barTicks)
+            }
             Grid(
                 clip, if (showGhosts) ghosts else emptyList(), playStep, newSteps * TICK, actions, gridHeight, harmony, chordMode,
                 hScroll, stepWidth, grid, selectMode, selection, select = { selection = it }, apply = apply,
                 rowHeight = if (tablet) TABLET_ROW else ROW, keysWidth = keysWidth, allNames = tablet, keyOn = keyOn, keyOff = keyOff,
+                locked = frozen,
             )
             VelocityLane(clip, selection, hScroll, stepWidth, apply, keysWidth)
             Text(
                 if (selectMode) tr("Touche des notes ou trace un cadre pour les choisir ; glisse une note choisie pour tout déplacer. Couloir du bas : la force de chaque note.")
-                else tr("Touche une case : ajoute une note. Touche une note : l'enlève. Glisse : déplace. Glisse le bout : allonge. Couloir du bas : glisse pour régler la force."),
+                else tr("Touche une case : ajoute une note. Touche une note : la choisit. Appui long : l'enlève. Glisse : déplace, le bout : allonge. Numéros en haut : toute une mesure. Couloir du bas : glisse pour régler la force."),
                 style = MaterialTheme.typography.bodySmall,
                 color = Neon.TextSecondary,
             )
@@ -223,13 +277,14 @@ fun PianoRoll(
 private fun SelectionBar(
     clip: NoteClip,
     selection: Set<Note>,
-    clipboard: List<Note>,
-    playStep: Int,
+    clipboard: com.pocketstudio.model.NoteClipboard?,
+    pasteBar: Int,
     grid: Int,
     chipColors: androidx.compose.material3.SelectableChipColors,
     wrap: Boolean,
     select: (Set<Note>) -> Unit,
     copy: () -> Unit,
+    paste: () -> NoteEdits.Result?,
     apply: (NoteEdits.Result, String?) -> Unit,
 ) {
     val any = selection.isNotEmpty()
@@ -261,16 +316,16 @@ private fun SelectionBar(
             TextButton(onClick = copy, enabled = any, modifier = Modifier.testTag("sel_copy")) { Text(tr("Copier")) }
             TextButton(
                 onClick = {
-                    // At the playhead while it plays, else just after the last note.
-                    val at = if (playStep >= 0) (playStep % clip.steps) * TICK / grid * grid
-                    else ((clip.notes.maxOfOrNull { it.end } ?: 0) + grid - 1) / grid * grid
-                    val pasted = NoteEdits.paste(clip, clipboard, at)
-                    noRoom = pasted.dropped > 0
-                    if (pasted.selection.isNotEmpty()) apply(pasted, null)
+                    // On the bar playing while it plays, else on the bar chosen (the one after a copy).
+                    val pasted = paste()
+                    noRoom = (pasted?.dropped ?: 0) > 0
                 },
-                enabled = clipboard.isNotEmpty(), modifier = Modifier.testTag("sel_paste"),
-            ) { Text(tr("Coller")) }
-            TextButton(onClick = { apply(NoteEdits.quantize(clip, selection, grid), null) }, enabled = any) { Text(tr("Quantifier")) }
+                enabled = clipboard != null, modifier = Modifier.testTag("sel_paste"),
+            ) { Text(tr("Coller mes. %d", pasteBar + 1)) }
+            TextButton(onClick = { apply(NoteEdits.quantize(clip, selection, grid), null) }, enabled = any) { Text(tr("Remettre en rythme")) }
+            if (selection.any { it.played != null }) {
+                TextButton(onClick = { apply(NoteEdits.asPlayed(clip, selection), null) }) { Text(tr("Comme joué")) }
+            }
             TextButton(onClick = { apply(NoteEdits.legato(clip, selection), null) }, enabled = any) { Text(tr("Legato")) }
             TextButton(onClick = { apply(NoteEdits.humanize(clip, selection), null) }, enabled = any) { Text(tr("Humaniser")) }
             TextButton(onClick = { apply(NoteEdits.delete(clip, selection), null) }, enabled = any, modifier = Modifier.testTag("sel_delete")) {
@@ -280,6 +335,62 @@ private fun SelectionBar(
         if (noRoom) {
             Text(tr("Plus de place : allonge la boucle pour que tout y tienne."), style = MaterialTheme.typography.bodySmall, color = Neon.Amber,
                 modifier = Modifier.testTag("paste_no_room"))
+        }
+    }
+}
+
+/**
+ * Phase 37: the notes copied (in this track or another, this part or another) and « Coller sur la
+ * mes. N » when nothing is chosen.
+ */
+@Composable
+private fun PasteRow(board: com.pocketstudio.model.NoteClipboard, pasteBar: Int, paste: () -> NoteEdits.Result?) {
+    var noRoom by rememberSaveable { mutableStateOf(false) }
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.testTag("paste_row")) {
+        val what = if (board.notes.size > 1) tr("%d notes", board.notes.size) else tr("%d note", board.notes.size)
+        Text(
+            if (board.from.isNotBlank()) tr("Copié : %1\$s (%2\$s)", what, board.from) else tr("Copié : %s", what),
+            Modifier.weight(1f), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, maxLines = 2,
+        )
+        TextButton(onClick = { noRoom = (paste()?.dropped ?: 0) > 0 }, modifier = Modifier.testTag("sel_paste")) { Text(tr("Coller mes. %d", pasteBar + 1)) }
+    }
+    if (noRoom) {
+        Text(tr("Plus de place : allonge la boucle pour que tout y tienne."), style = MaterialTheme.typography.bodySmall, color = Neon.Amber)
+    }
+}
+
+/** Phase 37: the bars' numbers over the grid; a touch picks a bar's notes and where a paste goes. */
+@Composable
+private fun BarRuler(
+    clip: NoteClip,
+    hScroll: androidx.compose.foundation.ScrollState,
+    stepWidth: androidx.compose.ui.unit.Dp,
+    keysWidth: androidx.compose.ui.unit.Dp,
+    chosen: Int,
+    barSteps: Int,
+    pick: (Int) -> Unit,
+) {
+    Row(Modifier.fillMaxWidth().height(32.dp)) {
+        Box(Modifier.width(keysWidth), contentAlignment = Alignment.Center) {
+            Text(tr("mes."), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, maxLines = 1, softWrap = false)
+        }
+        Box(Modifier.weight(1f).horizontalScroll(hScroll)) {
+            Row {
+                // The time signature's bars (the last one cut where the loop ends in 3/4).
+                for (b in 0 until ((clip.steps + barSteps - 1) / barSteps).coerceAtLeast(1)) {
+                    val on = b == chosen
+                    Box(
+                        Modifier.width(stepWidth * minOf(barSteps, clip.steps - b * barSteps).coerceAtLeast(1)).height(32.dp).padding(horizontal = 1.dp)
+                            .background(if (on) Neon.Acid.copy(alpha = 0.25f) else Neon.SurfaceHigh, androidx.compose.foundation.shape.RoundedCornerShape(6.dp))
+                            .clickable { pick(b) }
+                            .testTag("roll_bar_$b"),
+                        contentAlignment = Alignment.CenterStart,
+                    ) {
+                        Text("${b + 1}", style = MaterialTheme.typography.labelLarge, color = if (on) Neon.Acid else Neon.TextSecondary,
+                            modifier = Modifier.padding(start = 6.dp))
+                    }
+                }
+            }
         }
     }
 }
@@ -365,8 +476,10 @@ private fun Grid(
     allNames: Boolean,
     keyOn: ((Int, Float) -> Unit)?,
     keyOff: ((Int) -> Unit)?,
+    locked: Boolean = false,
 ) {
     val vScroll = rememberScrollState()
+    val haptics = androidx.compose.ui.platform.LocalHapticFeedback.current
     val english = com.pocketstudio.app.settings.englishNotes()
     val density = LocalDensity.current
     val rowPx = with(density) { rowHeight.toPx() }
@@ -395,13 +508,15 @@ private fun Grid(
                 Modifier
                     .size(stepWidth * clip.steps, rowHeight * rows)
                     .testTag("piano_roll")
-                    .pointerInput(clip, newLength, harmony, chordMode, selectMode, selection, grid, stepPx) {
+                    .pointerInput(clip, newLength, harmony, chordMode, selectMode, selection, grid, stepPx, locked) {
                         fun pitchAt(y: Float) = (HIGH - (y / rowPx).toInt()).coerceIn(LOW, HIGH)
                         fun tickAt(x: Float) = (x / stepPx * TICK).toInt().coerceIn(0, clip.ticks - 1)
                         awaitEachGesture {
                             val down = awaitFirstDown(requireUnconsumed = false)
+                            if (locked) return@awaitEachGesture  // a frozen track: scrolls only
                             val found = clip.noteAt(tickAt(down.position.x), pitchAt(down.position.y))
-                            if (selectMode) {
+                            // Phase 37: a note of the selection dragged moves the whole selection (in both modes).
+                            if (selectMode || (found != null && found in selection && selection.size > 1)) {
                                 if (found == null) {
                                     // A box: the first move decides between a box and a scroll (long press first = box).
                                     var moved = false
@@ -446,7 +561,15 @@ private fun Grid(
                                 }
                                 groupMove = null
                                 if (!moved) {
-                                    select(if (found in selection) selection - found else selection + found)
+                                    val held = currentEvent.changes.firstOrNull()?.uptimeMillis?.minus(down.uptimeMillis) ?: 0L
+                                    if (!selectMode && held > 450) {
+                                        // Draw mode: a long press deletes, as everywhere in the roll.
+                                        haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                                        actions.remove(found)
+                                        select(selection - found)
+                                    } else {
+                                        select(if (found in selection) selection - found else selection + found)
+                                    }
                                 } else {
                                     val moving = if (found in selection) selection else setOf(found)
                                     val shifted = NoteEdits.shift(clip, moving, delta.first)
@@ -456,7 +579,10 @@ private fun Grid(
                             }
                             if (found == null) {
                                 val up = waitForUpOrCancellation() ?: return@awaitEachGesture  // a scroll took it
-                                if ((up.position - down.position).getDistance() < slop) {
+                                if ((up.position - down.position).getDistance() < slop && selection.isNotEmpty()) {
+                                    // Something chosen: a touch on nothing lets it go (FL Studio Mobile's way).
+                                    select(emptySet())
+                                } else if ((up.position - down.position).getDistance() < slop) {
                                     val start = tickAt(down.position.x) / grid * grid
                                     val pitch = harmony.snap(pitchAt(down.position.y))
                                     if (chordMode) actions.addChord(start, newLength, pitch) else actions.add(Note(start, newLength, pitch))
@@ -492,10 +618,18 @@ private fun Grid(
                             }
                             drag = null
                             val held = currentEvent.changes.firstOrNull()?.uptimeMillis?.minus(down.uptimeMillis) ?: 0L
+                            // Phase 37 (FL Studio Mobile): a touch chooses the note, a long press deletes it.
                             when {
-                                moved -> if (result != note) actions.change(note, result)
-                                held > 450 -> actions.change(note, note.copy(velocity = nextVelocity(note.velocity)))
-                                else -> actions.remove(note)
+                                moved -> {
+                                    if (result != note) actions.change(note, result)
+                                    if (note in selection) select(selection - note + result)
+                                }
+                                held > 450 -> {
+                                    haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                                    actions.remove(note)
+                                    select(selection - note)
+                                }
+                                else -> select(if (note in selection) selection - note else selection + note)
                             }
                         }
                     },

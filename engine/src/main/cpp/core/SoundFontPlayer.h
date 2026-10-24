@@ -46,7 +46,9 @@ public:
     // Pitch bend in semitones (-12..12), on the notes playing and the next ones; kept across installs.
     void setBend(float semitones);
     // Adds the instrument (mono) into `out`.
-    void render(float* out, int numFrames);
+    void render(float* out, int numFrames) { render(out, nullptr, numFrames); }
+    // With `right`: in stereo (each sound's pan in the SoundFont), its middle as loud as the mono.
+    void render(float* left, float* right, int numFrames);
 
     void collectGarbage();
 
@@ -59,7 +61,10 @@ private:
     void queue(const Event& e);
     void applyBend();
 
+    void renderSpan(float* left, float* right, int frames);
     tsf* instance_ = nullptr;
+    static constexpr int kStereoChunk = 256;
+    float stereoBuf_[kStereoChunk * 2] = {};
     int preset_ = 0;
     float bend_ = 0.0f;
     Event events_[256];  // room to release all 128 notes at once (sustain pedal let go)

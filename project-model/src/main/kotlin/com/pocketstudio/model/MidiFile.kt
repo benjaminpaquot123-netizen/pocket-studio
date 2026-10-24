@@ -55,7 +55,7 @@ object MidiFile {
             }
             if (plays(SongPart.inst(0))) synth.addFrom(SongPart.inst(0)) { steps, off -> loopNotes(sceneOf(SongPart.inst(0)).synthNotes, steps * NoteClip.TICKS_PER_STEP, off) }
             if (plays(SongPart.ACID)) acid.addFrom(SongPart.ACID) { steps, off -> acidNotes(sceneOf(SongPart.ACID).acid, project.acid.root, steps, off) }
-            if (plays(SongPart.DRUMS)) drums.addFrom(SongPart.DRUMS) { steps, off -> drumNotes(sceneOf(SongPart.DRUMS).drums, steps, off, project.swing) }
+            if (plays(SongPart.DRUMS)) drums.addFrom(SongPart.DRUMS) { steps, off -> drumNotes(sceneOf(SongPart.DRUMS).drums, steps, off, project.swing, project.drumSeed) }
             project.tracks.forEach { t ->
                 val key = SongPart.inst(t.id)
                 if (plays(key)) sceneOf(key).trackNotes[t.id]?.let { clip -> added.getValue(t.id).addFrom(key) { steps, off -> loopNotes(clip, steps * NoteClip.TICKS_PER_STEP, off) } }
@@ -137,13 +137,15 @@ object MidiFile {
      * one before, a swung (odd) step shorter by the swing so its roll stays inside it (as the engine
      * plays them). The swing's delay itself is added later, with every other note's.
      */
-    private fun drumNotes(drums: DrumPattern, sceneSteps: Int, offset: Int, swing: Double): List<MidiNote> {
+    private fun drumNotes(drums: DrumPattern, sceneSteps: Int, offset: Int, swing: Double, seed: Int = 0): List<MidiNote> {
         val out = ArrayList<MidiNote>()
         if (drums.steps <= 0) return out  // a damaged file
         val step = NoteClip.TICKS_PER_STEP
         for (s in 0 until sceneSteps) {
             drums.lanes.take(PAD_NOTES.size).forEachIndexed { lane, l ->
-                l.hits[s % drums.steps]?.let { hit ->
+                // Phase 37: each pad on its own loop, and a hit with a chance drawn as the engine
+                // draws it, at its place in the song (the file is the song heard).
+                l.hits[drums.laneStep(lane, s)]?.takeIf { DrumChance.plays(seed, lane, offset / step + s, it.chance) }?.let { hit ->
                     val n = hit.repeats.coerceIn(1, DrumPattern.MAX_REPEATS)
                     val length = step * (if (s % 2 == 1) 1.0 - swing else 1.0)
                     val every = length / n

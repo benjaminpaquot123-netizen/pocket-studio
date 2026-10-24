@@ -49,6 +49,8 @@ data class AppSettings(
     val metronomeLevel: Float = 0.5f,
     /** Bars of count-in before a recording started while stopped (0 = none). */
     val recordCountIn: Int = 1,
+    /** The metronome clicks during a take recorded from an editor (« ● Enregistrer »), even when it is off. */
+    val metronomeInTakes: Boolean = true,
     /** Output buffer in bursts: 2 fast, 4 safe, 6 very safe. */
     val bufferBursts: Int = 2,
     /** The first-steps guide was seen (it opens at the first launch). */
@@ -60,6 +62,11 @@ data class AppSettings(
     val liveBeatHaptics: Boolean = false,
     /** The ready-made effects starred in the effects box (their ids). */
     val favouriteFx: Set<String> = emptySet(),
+    /**
+     * Phase 36, « Mode simple »: four tabs (Mon morceau, Rythme, Clavier, Envoyer) in everyday
+     * words, instead of the five spaces. Only how the project is shown: switching never changes it.
+     */
+    val simpleMode: Boolean = false,
 ) {
     companion object {
         val UI_SCALES = listOf(0.85f, 1f, 1.15f, 1.3f)
@@ -91,14 +98,17 @@ object SettingsStore {
             keepScreenOn = p.getBoolean("keepScreenOn", d.keepScreenOn),
             metronomeLevel = p.getFloat("metronomeLevel", d.metronomeLevel).coerceIn(0f, 1f),
             recordCountIn = p.getInt("recordCountIn", d.recordCountIn).coerceIn(0, 2),
+            metronomeInTakes = p.getBoolean("metronomeInTakes", d.metronomeInTakes),
             bufferBursts = p.getInt("bufferBursts", d.bufferBursts).takeIf { b -> AppSettings.BUFFERS.any { it.first == b } } ?: d.bufferBursts,
             guideSeen = p.getBoolean("guideSeen", d.guideSeen),
             keyLayout = runCatching { KeyLayout.valueOf(p.getString("keyLayout", d.keyLayout.name)!!) }.getOrDefault(d.keyLayout),
             language = Lang.of(p.getString("language", d.language.code)),
             liveBeatHaptics = p.getBoolean("liveBeatHaptics", d.liveBeatHaptics),
             favouriteFx = p.getStringSet("favouriteFx", d.favouriteFx)?.toSet() ?: d.favouriteFx,
+            simpleMode = p.getBoolean("simpleMode", d.simpleMode),
         )
         I18n.lang = _state.value.language
+        I18n.everyday = _state.value.simpleMode
         _favouriteFx.value = _state.value.favouriteFx
         loaded = true
         return _state.value
@@ -107,6 +117,7 @@ object SettingsStore {
     fun update(context: Context, transform: (AppSettings) -> AppSettings) {
         val s = transform(load(context))
         I18n.lang = s.language
+        I18n.everyday = s.simpleMode
         _state.value = s
         _favouriteFx.value = s.favouriteFx
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
@@ -117,6 +128,7 @@ object SettingsStore {
             .putBoolean("keepScreenOn", s.keepScreenOn)
             .putFloat("metronomeLevel", s.metronomeLevel)
             .putInt("recordCountIn", s.recordCountIn)
+            .putBoolean("metronomeInTakes", s.metronomeInTakes)
             .putInt("bufferBursts", s.bufferBursts)
             .putBoolean("guideSeen", s.guideSeen)
             .putString("keyLayout", s.keyLayout.name)
@@ -124,6 +136,7 @@ object SettingsStore {
             .putBoolean("liveBeatHaptics", s.liveBeatHaptics)
             // A copy: SharedPreferences must not keep the set it is given.
             .putStringSet("favouriteFx", HashSet(s.favouriteFx))
+            .putBoolean("simpleMode", s.simpleMode)
             .apply()
     }
 
@@ -136,6 +149,7 @@ object SettingsStore {
     internal fun forgetForTests() {
         loaded = false
         _state.value = AppSettings()
+        I18n.everyday = false
         _favouriteFx.value = emptySet()
     }
 
@@ -144,6 +158,10 @@ object SettingsStore {
      * as the language picker sets it (C D E in English and Dutch).
      */
     fun reset(context: Context) = update(context) {
-        AppSettings(guideSeen = true, language = it.language, favouriteFx = it.favouriteFx, englishNotes = it.language != com.pocketstudio.model.i18n.Lang.FR)
+        AppSettings(
+            guideSeen = true, language = it.language, favouriteFx = it.favouriteFx, englishNotes = it.language != com.pocketstudio.model.i18n.Lang.FR,
+            // How the app is laid out is not a « setting » to lose by resetting the others.
+            simpleMode = it.simpleMode,
+        )
     }
 }

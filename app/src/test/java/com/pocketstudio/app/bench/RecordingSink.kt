@@ -31,12 +31,33 @@ class RecordingSink(private val samplesDir: File, private val renderer: File?) :
     var liveCommands = 0
         private set
 
+    /**
+     * While set, the live engine's commands (target 0) are also written there in the same format
+     * (with `WAIT` lines the test adds): what the app sends the phone's engine, replayed by `ps_live`.
+     */
+    var live: StringBuilder? = null
+
+    /** The scene swaps the live engine reports ([NativeEngine.sceneSwaps]): the test moves it on. */
+    @Volatile var swaps = 0
+
+    override fun sceneSwaps(): Int = swaps
+
+    /** A line in the live recording (a `WAIT` the replay honours, a comment). */
+    @Synchronized
+    fun mark(line: String) {
+        live?.append(line)?.append('\n')
+    }
+
     /** Lines written after the header of the next [exportRender] (META, SONG, SECTION), then cleared. */
     var nextHeader: List<String> = emptyList()
 
     @Synchronized
     override fun post(target: Long, type: Int, value: Float, a: Int, b: Int) {
-        val out = exports[target] ?: run { liveCommands++; return }
+        val out = exports[target] ?: run {
+            liveCommands++
+            live?.append("C ")?.append(type)?.append(' ')?.append(value.toString())?.append(' ')?.append(a)?.append(' ')?.append(b)?.append('\n')
+            return
+        }
         out.append("C ").append(type).append(' ').append(value.toString()).append(' ').append(a).append(' ').append(b).append('\n')
     }
 
@@ -47,7 +68,10 @@ class RecordingSink(private val samplesDir: File, private val renderer: File?) :
 
     @Synchronized
     override fun install(target: Long, kind: CommandSink.Install, index: Int, sample: Long) {
-        val out = exports[target] ?: run { liveCommands++; return }
+        val out = exports[target] ?: run {
+            liveCommands++
+            live ?: return
+        }
         var local = 0
         if (sample != 0L) {
             val numbers = declared.getOrPut(target) { HashMap() }

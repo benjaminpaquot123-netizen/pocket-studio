@@ -1,6 +1,7 @@
 package com.pocketstudio.model
 
 import com.pocketstudio.model.i18n.tr
+import kotlin.math.pow
 
 /**
  * The beginner's assistant for a new song: a style, then one step per drum line (what it does,
@@ -66,7 +67,7 @@ object StarterWizard {
         ),
         Rumble(
             "rumble", 3, "Rumble (grondement)",
-            "Le kick rejoué dans une grande réverbe, saturé et filtré : un grondement grave qui roule entre les coups, la basse de la techno dure.",
+            "Un grondement grave, saturé et accordé au kick, qui roule entre les coups : la basse de la techno dure.",
             listOf(1, 0), packKind = "kick",
         ),
     }
@@ -93,6 +94,14 @@ object StarterWizard {
      */
     enum class SongForm(val labels: List<String>, val roles: List<String>) {
         Song(listOf("Intro", "Couplet", "Refrain"), listOf("le début, en douceur", "le groove, avec la basse", "tout le monde joue")),
+        /**
+         * A rap song (hits/hiphop.md G4): the Refrain comes early, the Couplet leaves room for the voice
+         * (no chords), its kick and its 808 stop 2 bars before each Refrain.
+         */
+        Rap(
+            listOf("Intro", "Couplet", "Refrain"),
+            listOf("le début, en douceur", "la place de la voix : kick, basse et mélodie, sans accords", "tout le monde joue"),
+        ),
         Club(listOf("Intro", "Groove", "Drop"), listOf("la batterie pour démarrer", "le groove, avec la basse", "tout le monde joue")),
         Rave(listOf("Intro", "Groove", "Drop"), listOf("la 303 seule, son filtre s'ouvre", "le kick arrive, les charleys montent", "tout le monde joue")),
         Build(
@@ -107,9 +116,19 @@ object StarterWizard {
             const val BREAK_ROLE_WITH_BASS = "une pause sans kick, la basse continue"
             const val GROOVE_ROLE_NO_BASS = "le groove, la basse attend le Drop"
 
-            /** The layout of a family's songs: club music for House, Techno and Bass music. */
-            fun of(family: String): SongForm = if (family in setOf("House", "Techno", "Bass music")) Club else Song
+            /** The section a song (not club music) has in place of the Break: the Pont, without kick nor bass. */
+            const val BRIDGE_LABEL = "Pont"
+
+            /** The layout of a family's songs: club music for House, Techno and Bass music, rap for hip-hop. */
+            fun of(family: String): SongForm = when (family) {
+                in setOf("House", "Techno", "Bass music") -> Club
+                "Hip-hop" -> Rap
+                else -> Song
+            }
         }
+
+        /** A song with Couplets and Refrains (a pop or a rap song), not club music. */
+        val sung: Boolean get() = this == Song || this == Rap
     }
 
     /**
@@ -166,11 +185,36 @@ object StarterWizard {
         val riser: Boolean = false,
         /** Filters that open and close along the song on some layers (the techno stab, the pad of a Montée). */
         val sweeps: List<Sweep> = emptyList(),
+        /** Club music: a fake drop before the first Drop (riddim): the Drop's beat without its bass, a beat of silence, then the real one. */
+        val fakeDrop: Boolean = false,
+        /** Club music: the record pulled back (a tape stop) on the last beat before the second Drop (jungle's rewind). */
+        val rewind: Boolean = false,
+        /** A vocal layer of the built-in voice ([VOCAL_SOUND]): chops that answer the hook, stabs, shouts, a crushed hit. */
+        val vocal: Vocal? = null,
     ) {
         /** Packs that make this style sound right: its machines, its melodic sources, its own pack. */
         val packs: List<String> get() =
             (kit.values + melody.packSounds.values.filter { !it.startsWith(KIT_SOUND) }.map { it.substringBefore(':') } + id).distinct()
     }
+
+    /**
+     * The vocal layer of a style ([Style.vocal]), sung by the built-in voice [VOCAL_SOUND] on a
+     * [VOCAL_TRACK] of its own (no vocal sample is built in: the packs' chops replace it later).
+     */
+    enum class Vocal {
+        /** Chops that answer the hook in its rests, pitched down (house, UK garage, jersey club). */
+        Answer,
+        /** A short vocal stab on the 4th beat of the first bar of every 4 (trap). */
+        Stab,
+        /** An MC's shout at the start of the Drop's second half (drum & bass). */
+        Shout,
+        /** A vocal hit through a bitcrusher, every 2 bars (phonk's Memphis voice). */
+        Crush,
+    }
+
+    /** The vocal track's name (saved in French) and its sound, a Plaits speech voice of the library. */
+    const val VOCAL_TRACK = "Voix"
+    const val VOCAL_SOUND = "Voix robot"
 
     /** A melodic part played by a voice of the built-in kit across the keys: "kit:<voice>" in [Melody.packSounds]. */
     const val KIT_SOUND = "kit:"
@@ -223,12 +267,30 @@ object StarterWizard {
          */
         val subBass: Boolean = false,
         /**
-         * A counter-melody in the Drop (or the Refrain): the chords answered in short hits an octave
-         * above them with this sound of the library ([COUNTER_TRACK]), on [counterRhythm] ("" = the
-         * chords' own rhythm when they are stabs, else [LEAD_STABS]). Null: the style wants none.
+         * A counter-melody in the Drop (or the Refrain) with this sound of the library ([COUNTER_TRACK]):
+         * the lead's motif answered in the lead's own rests (a hocket, [MelodyBuilder.counter]) when
+         * the song has a written lead, else the chords in short hits an octave above them on
+         * [counterRhythm] ("" = the chords' own rhythm when they are stabs, else [LEAD_STABS]).
+         * Null: the style wants none.
          */
         val counter: String? = null,
         val counterRhythm: String = "",
+        /** What the lead is: a singable hook, a riff, vocal chops or an arpeggio ([MelodyRules] judges each its own way). */
+        val leadKind: LeadKind = LeadKind.Hook,
+        /** The lead's tokens are degrees of the key, not of each bar's chord: the riff stays put while the chords move. */
+        val leadOnKey: Boolean = false,
+        /** The answer to [leadPattern]'s call (16 or 32 steps), played in bars 3–4 of the phrase ("" = the builder writes one). */
+        val leadAnswer: String = "",
+        /** A lead arpeggio ([LeadKind.Arp]): its fixed pattern over the chord's two octaves, gate and accents. */
+        val leadArp: ArpSpec? = null,
+        /** Bars 5–8 of the bass (64 steps; "" = bars 1–4 again with their last bar varied and a rest on its last two beats). */
+        val bassVariation: String = "",
+        /** A second bass sound for the second Drop (a library sound; "" = none): see [MelodyBuilder]. */
+        val bassSwitch: String = "",
+        /** The chords arpeggiated (synthwave, trance): the pad plays them one note at a time on this pattern. */
+        val chordArp: ArpSpec? = null,
+        /** The chords inverted so that each moves as little as possible from the one before ([withChordRhythm]). */
+        val chordVoiceLead: Boolean = false,
     ) {
         fun sound(part: Part) = when (part) {
             Part.Bass -> bass
@@ -236,6 +298,36 @@ object StarterWizard {
             Part.Lead -> lead
         }
     }
+
+    /** What a style's lead is, which sets the rules it is judged by ([MelodyRules]). */
+    enum class LeadKind {
+        /** A singable hook: phrases, a motif that comes back, one peak, mostly stepwise. */
+        Hook,
+        /** A short riff that loops (techno, minimal, acid): repetition is the point, leaps and a single note allowed. */
+        Riff,
+        /** Vocal chops: a call, a pitched answer, long echoes between. */
+        Chops,
+        /** An arpeggio of the chords on a fixed pattern over two octaves. */
+        Arp,
+    }
+
+    /**
+     * A fixed arpeggio: [pattern] indices into the chord's notes stacked over two octaves (0 = its
+     * lowest note, n = that note an octave up for n notes), [gate] the part of each step the note
+     * sounds (a pluck), the first of every [accentEvery] notes louder, [rate] the step in ticks
+     * (24 = a sixteenth, 48 = an eighth).
+     */
+    data class ArpSpec(val pattern: List<Int>, val gate: Float = 0.6f, val accentEvery: Int = 4, val rate: Int = NoteClip.TICKS_PER_STEP) {
+        fun performance(): Performance = Performance(arp = ArpMode.Pattern, arpRate = rate, pattern = pattern, gate = gate, accentEvery = accentEvery).sanitized()
+    }
+
+    /**
+     * The version of the hook a section plays ([MelodyBuilder]): the Intro hears its first phrase
+     * alone (a preview), the Couplet a thinned-out version (at most 60 % of its notes), the
+     * Refrain all of it, the second Refrain all of it doubled an octave up (or an octave up when
+     * the sound glides and must stay a single line).
+     */
+    enum class Version { Intro, Verse, Chorus, Chorus2 }
 
     /**
      * A 303 riff: [pattern] as in [withLine] (one bar, or a two-bar riff of 32 steps), [accents] and
@@ -320,6 +412,8 @@ object StarterWizard {
         val sampled: SampledPatch? = null,
         val chord: Boolean = false,
         val family: String = "",
+        /** A downloaded multizone instrument (phase 38): the track plays it, [synth] while it is not on the phone. */
+        val multi: MultiPatch? = null,
     ) {
         /** The pack and file of a pack sound, or null. */
         val packFile: Pair<String, String>? get() = sampled?.file?.takeIf { it.startsWith(PACK_FILE) }
@@ -392,7 +486,12 @@ object StarterWizard {
                 SoundLibrary.PLAITS.filter { it.name == wanted }.map { PartSound(it.name, plaits = it.sound, family = it.category) }
         }.take(1)
         val kinds = packKinds(part)
-        val packs = installed.sortedBy { if (it.id == chosenPack?.id) 0 else if (it.id == style.id) 1 else 2 }.flatMap { m ->
+        // The multizone instruments on the phone (phase 38): the style's own first when it has one
+        // for this part (a lo-fi's piano), the others offered after the library's sounds.
+        val instruments = installed.filter { it.instrument != null && MultiInstruments.suits(it.instrument.category, part) }
+            .mapNotNull { MultiInstruments.partSound(it) }
+        val styleInstrument = MultiInstruments.forStyle(style.id, part)?.let { id -> instruments.firstOrNull { it.multi?.pack == id } }
+        val packs = installed.filter { it.instrument == null }.sortedBy { if (it.id == chosenPack?.id) 0 else if (it.id == style.id) 1 else 2 }.flatMap { m ->
             val own = m.id == style.id || m.id == chosenPack?.id
             // The chosen kind first in the chosen pack (its stabs for a rave lead).
             val packKinds = if (m.id == chosenPack?.id) listOf(packChoice[1]) + (kinds - packChoice[1]) else kinds
@@ -415,8 +514,9 @@ object StarterWizard {
             }
         }
         val preferredPack = if (chosenPack != null) packs.take(1) else emptyList()
-        val preferred = listOfNotNull(kit).ifEmpty { preferredPack.ifEmpty { preferredSynth } }
-        return preferred + (all - preferred.toSet()) + (packs - preferred.toSet()) + (preferredSynth - preferred.toSet() - all.toSet())
+        val preferred = listOfNotNull(kit).ifEmpty { listOfNotNull(styleInstrument).ifEmpty { preferredPack.ifEmpty { preferredSynth } } }
+        return preferred + (all - preferred.toSet()) + (instruments - preferred.toSet()) + (packs - preferred.toSet()) +
+            (preferredSynth - preferred.toSet() - all.toSet())
     }
 
     /**
@@ -444,6 +544,17 @@ object StarterWizard {
 
     /** The families open at first (those of Benjamin's favourite styles); the others wait folded. */
     val OPEN_FAMILIES = setOf("Techno", "House", "Bass music")
+
+    /**
+     * Phase 36, Mode simple: « Calme (Chill, Lo-fi) », the softer styles gathered first in the
+     * assistant (each one stays in its own family too): lo-fi and boom bap, the chill house of deep
+     * house and amapiano, synthwave, liquid drum & bass.
+     */
+    const val CALM_FAMILY = "Calme (Chill, Lo-fi)"
+    val CALM_STYLES = listOf("lofi", "deep_house", "amapiano", "synthwave", "boom_bap", "liquid_dnb")
+
+    /** The calm family's styles, in its order. */
+    fun calmStyles(): List<Style> = CALM_STYLES.mapNotNull(::style)
 
     /**
      * The styles in Benjamin's order (2026-10-22): his favourites first, family by family, then the
@@ -509,18 +620,25 @@ object StarterWizard {
             lanes[line.role.lane] = DrumLane(hits = hits(line, steps), sample = sounds[line.role])
         }
         val partOfTrack = HashMap<Int, Part>()
+        val feel = DrumHumanizer.feel(style)
+        // The 808 plays the bass of trap, drill, phonk and jersey club: on its pad, not on a track (S3).
+        val on808 = mood != null && StudioDrums.bassOn808(style, parts[Part.Bass])
+        var bass808: NoteClip? = null
         var project = Project(
             name = style.name,
             tempoBpm = style.bpm,
-            swing = style.swing,
+            // Drill swings its hats alone (their off 16ths later, DrumHumanizer): the rest plays straight.
+            swing = if (feel.hatsOnlySwing) 0.0 else style.swing,
             drums = DrumPattern(steps = steps, lanes = lanes),
-            // Its mix (WizardMix) is made for kit v2's levels.
-            kitVersion = Project.KIT_V2,
+            // Kit v3 (S3): the short studio kick, bright hats, the four-burst clap; each voice kept at
+            // kit v2's level for its role, which the mix (WizardMix) is made for.
+            kitVersion = Project.KIT_V3,
             // The master brings the song to its style's loudness (club, streaming…: the « Cible »).
             mixer = Mixer(target = LoudnessTarget.AUTO),
             style = style.id,
         )
         val withAcid = mood != null && acid && style.melody.acid != null && chosenAcid?.let(WizardAcid::plays) != false
+        var leadVersions: Map<Version, NoteClip> = emptyMap()
         if (mood != null) {
             val harmony = harmonyOf(style, mood)
             project = project.copy(harmony = harmony)
@@ -532,12 +650,20 @@ object StarterWizard {
             for (part in Part.entries) {
                 val sound = parts[part] ?: continue
                 val notes = startingNotes(part, style, mood, harmony, sound)
+                // The hook in three versions: a preview in the Intro, thinned out in the Couplet, whole in the Refrain.
+                if (part == Part.Lead) leadVersions = Version.entries.associateWith { startingNotes(part, style, mood, harmony, sound, it) }
+                // The 808's line: the bass's notes, played by the pad (no track of its own).
+                if (part == Part.Bass && on808) {
+                    bass808 = notes
+                    continue
+                }
                 // The bass (or the lead) glides where its line says '/' (its notes overlap there): the synth's portamento.
                 val glides = glides(part, style)
                 val name = trackName(part, sound, style)
                 fun InstrumentTrack.withSound() = copy(
                     name = name, notes = notes, synth = if (glides) sound.synth.with(SynthPatch.GLIDE, BASS_GLIDE) else sound.synth,
                     engine = when {
+                        sound.multi != null -> InstrumentTrack.ENGINE_MULTI
                         sound.sampled != null -> 2
                         sound.plaits != null -> 1
                         else -> 0
@@ -547,6 +673,7 @@ object StarterWizard {
                     sampled = sound.sampled?.let { s ->
                         s.copy(root = SampledPatch.fitRoot(s.root, notes.notes), glide = if (isLine(notes.notes)) s.glide else 0f)
                     } ?: sampled,
+                    multi = sound.multi ?: multi,
                 )
                 if (first) {
                     project = project.withTrack(project.track(0).withSound())
@@ -559,53 +686,131 @@ object StarterWizard {
                 }
             }
         }
+        val mainBass = partOfTrack.entries.firstOrNull { it.value == Part.Bass }?.key
         // The sub layer: the bass's notes an octave down, clean, on their own track (played where the bass plays).
-        val subTrack = if (!style.melody.subBass) null else partOfTrack.entries.firstOrNull { it.value == Part.Bass }?.key
+        val subTrack = if (!style.melody.subBass) null else mainBass
             ?.let { bass -> withSubTrack(project, bass, glides(Part.Bass, style)) }?.let { (p, id) -> project = p; id }
-        val plan = planFor(style, style.lines.map { it.role }.filter { it in sounds }.toSet(), partOfTrack.values.toSet(), withAcid)
-        // The counter-melody: the chords answered in short hits, in the Drop (or the Refrain).
+        // The second bass sound of the second Drop: the same line on its own track, faded in there while the first fades out.
+        val switchTrack = if (style.melody.bassSwitch.isBlank() || mainBass == null) null
+        else withBassSwitchTrack(project, mainBass, style.melody.bassSwitch, glides(Part.Bass, style))?.let { (p, id) -> project = p; id }
+        val plan = planFor(style, style.lines.map { it.role }.filter { it in sounds }.toSet(), partOfTrack.values.toSet() + listOfNotNull(Part.Bass.takeIf { bass808 != null }), withAcid)
+        // The counter-melody: the lead's motif answered in its rests (or the chords in short hits), in the Drop (or the Refrain).
         val counterTrack = if (!plan.counter || mood == null) null
-        else withCounterTrack(project, style, mood)?.let { (p, id) -> project = p; id }
-        project = withEffects(project, style, sounds.keys, partOfTrack, withAcid)
-        if (subTrack != null) partOfTrack.entries.firstOrNull { it.value == Part.Bass }?.let { project = withBassOverSub(project, it.key) }
+        else withCounterTrack(project, style, mood, leadVersions[Version.Chorus])?.let { (p, id) -> project = p; id }
+        project = withEffects(project, style, sounds.keys, partOfTrack, withAcid, bass808 = bass808 != null)
+        if (switchTrack != null && mainBass != null) project = withSameStrip(project, mainBass, switchTrack)
+        if (subTrack != null) for (bass in listOfNotNull(mainBass, switchTrack)) project = withBassOverSub(project, bass)
         // The default mix (each line and part at its place), then what glues it (audit « corps »).
         project = WizardMix.withDrumMix(project, style, sounds)
+        // The studio voices on their pads (the 808, the tuned kicks, the rumble), with their levels.
+        project = withStudioVoices(project, style, sounds, bass808 != null)
         project = WizardMix.withPartMix(project, style, parts, partOfTrack, counterTrack)
         project = WizardMix.withGlue(project, style, partOfTrack, sounds.isNotEmpty())
         // The « Montée » track: the noise that rises before each Drop and hits on its first beat.
         val riserTrack = if (!plan.riser) null else withRiserTrack(project, partOfTrack.isEmpty())?.let { (p, id) -> project = p; id }
+        val shape = SongShape.shape(style, plan)
+        // The vocal (chops that answer the hook, stabs, shouts), then the sub drop under each Drop's first beat.
+        val vocal = if (mood == null || partOfTrack.isEmpty()) null else style.vocal?.let { kind ->
+            vocalNotes(style, mood, project.harmony, leadVersions[Version.Chorus], PHRASE_STEPS)?.let { notes ->
+                withVocalTrack(project, kind)?.let { (p, id) -> project = p; id to notes }
+            }
+        }
+        val subDropTrack = if (partOfTrack.isEmpty() || shape.scenes.none { it.accent && it.subDrop } || plan.form.sung) null
+        else withSubDropTrack(project)?.let { (p, id) -> project = p; id }
+        // The crash on each Drop's first beat (the kit's cymbal pad, when no line takes it).
+        val crash = withCrash(project, sounds.keys)
+        project = crash.first
         // The lines that build up in the second section play their build pattern there.
         val builds = style.lines.filter { it.build.isNotEmpty() && it.role in sounds }.associate { it.role to hits(it.copy(pattern = it.build), steps) }
         // A Montée: its own 4 bars, the lines over them and the snare rolling faster and faster.
         val montee = if (plan.form != SongForm.Build) null else style.lines.filter { it.role in sounds }.associate { line ->
-            line.role to if (line.role == plan.rollLine) rollHits(BUILD_STEPS) else hits(line.copy(pattern = line.build.ifEmpty { line.pattern }), BUILD_STEPS)
+            line.role to if (line.role == plan.rollLine) rollHalf(0, rollTop(hits(line, steps), steps)) else hits(line.copy(pattern = line.build.ifEmpty { line.pattern }), BUILD_STEPS)
         }
-        val withSub = if (subTrack == null) partOfTrack else partOfTrack + (subTrack to Part.Bass)
-        project = inScenes(project, plan, withSub, style.bpm, builds, montee, riserTrack, counterTrack)
+        val withSub = partOfTrack + listOfNotNull(subTrack, switchTrack).associateWith { Part.Bass }
+        val leadTrack = partOfTrack.entries.firstOrNull { it.value == Part.Lead }?.key
+        val tracks = SongTracks(
+            withSub, riser = riserTrack, counter = counterTrack, subDrop = subDropTrack, vocal = vocal?.first, vocalNotes = vocal?.second,
+            lead = leadTrack?.let { it to leadVersions }, crashLane = crash.second,
+            bass808 = bass808, feel = feel, seed = DrumHumanizer.seed(style, mood), acid = withAcid,
+        )
+        project = inScenes(project, plan, shape, style, tracks, builds, montee)
         // The style's filters, and the chords' own in the Break (it breathes, then opens into the Drop).
-        val sweeps = withSweepFilters(project, style.sweeps + WizardMix.breakSweeps(style, plan, partOfTrack), partOfTrack, withAcid)
+        val sweeps = withSweepFilters(project, style.sweeps + WizardMix.breakSweeps(style, plan, partOfTrack) + WizardMix.grooveSweeps(style, plan, partOfTrack), partOfTrack, withAcid)
         project = sweeps.first
         val sections = songSections(project)
-        // The song's curves: the 303's knobs first, then the riser, then the filters that sweep.
+        // The variants that are stretches of their own (the Montée, the Pré-refrain…) ramp from what is before them to what is after.
+        fun own(scene: Int) = scene >= plan.count
+        // The Drop and what plays at its level: its variants, a song's Post-refrain.
+        val dropKeys = sections.map { it.scene }.filter { it == 2 || (own(it) && shape.scenes.getOrNull(it)?.base == 2 && shape.scenes[it].bass) }.toSet()
+        val rewind = if (style.rewind) withRewind(project, shape, project.beatsPerBar).also { project = it.first }.second else null
+        // The song's curves: the 303's knobs first, then the riser, then the bass, then the filters that sweep.
         val curves = (if (withAcid) acidLanes(sections, style.melody.acid?.moves.orEmpty()) else emptyList()) +
-            listOfNotNull(riserTrack?.let { riserLane(sections, it, plan.form) }, dropTwoTrack(plan, partOfTrack, counterTrack)?.let { dropTwoLane(sections, it, project) }) +
-            sweeps.second.mapNotNull { (target, sweep) -> sectionLane(target, sections) { sweep.sections[it] ?: (OPEN to OPEN) } }
+            listOfNotNull(riserTrack?.let { riserLane(shape, it, project.beatsPerBar) }, dropTwoTrack(plan, partOfTrack, counterTrack)?.let { dropTwoLane(sections, it, project) }, rewind, silenceLane(shape, project.beatsPerBar)) +
+            bassLanes(sections, dropKeys, listOfNotNull(mainBass, subTrack, switchTrack), mainBass, switchTrack, project) +
+            sweeps.second.mapNotNull { (target, sweep) -> sectionLane(target, sections) { if (own(it)) null else sweep.sections[it] ?: (OPEN to OPEN) } }
         project = withSongLanes(project, curves)
+        // The drummer's fills at the 8 and the 16, the crash on the 1 of each 16 (S3): one-bar drum parts.
+        project = DrumArrangement.withFillsAndCrashes(project, shape, style, feel, DrumHumanizer.seed(style, mood), crash.second)
+        // S5: an honest mix and master (WizardMix.honest).
+        project = WizardMix.honest(project, style, partOfTrack)
+        // S4: wide and moving synths, their effects and curves (WideMix).
+        project = WideMix.apply(project, style, partOfTrack)
         return project.sanitized()
+    }
+
+    /**
+     * The pads that play a studio voice of the engine (S3, [StudioDrums]): the 808 on its pad when it
+     * plays the bass ([bass808]: its level, the style's bass effects already on its strip), the kick
+     * and the rumble of the styles that tune them, when their line plays the kit's voice (a sound of
+     * a pack keeps its pad); the rumble's strip without the reverb a kick played again needed.
+     */
+    private fun withStudioVoices(project: Project, style: Style, sounds: Map<Role, PadSample?>, bass808: Boolean): Project {
+        val harmony = project.harmony.takeIf { it.scale != Scale.Off } ?: Harmony(style.melody.root)
+        val voices = HashMap<Int, PadVoice>()
+        var channels = project.mixer.channels
+        fun strip(lane: Int, f: (Channel) -> Channel) {
+            val ch = Mixer.padChannel(lane)
+            channels = channels.toMutableList().also { it[ch] = f(it[ch]).sanitized() }
+        }
+        for (role in listOf(Role.Kick, Role.Rumble)) {
+            if (role !in sounds || sounds[role] != null) continue
+            val voice = StudioDrums.voiceFor(style, role, harmony) ?: continue
+            voices[role.lane] = voice
+            if (role == Role.Rumble) strip(role.lane) { c ->
+                c.copy(inserts = Mixer.sanitizeInserts(StudioDrums.RUMBLE_STRIP), volume = WizardMix.fader(StudioDrums.RUMBLE_DB))
+            }
+        }
+        if (bass808) {
+            voices[StudioDrums.LANE_808] = StudioDrums.voice808(style, harmony)
+            strip(StudioDrums.LANE_808) { c -> c.copy(volume = WizardMix.fader(StudioDrums.level808Db(style))) }
+        }
+        return project.copy(padVoices = voices, mixer = project.mixer.copy(channels = channels))
     }
 
     /** A song section: consecutive parts of one scene, with its first bar and its length in bars. */
     data class Section(val scene: Int, val start: Int, val bars: Int)
 
-    /** The sections of [project]'s song, in order. */
+    /**
+     * The sections of [project]'s song, in order: consecutive parts of one section, a variant
+     * counted with its section ("Drop 2", "Montée 2", "Intro 3" with the scene of "Drop", "Montée",
+     * "Intro"; [Section.scene] that section's first scene).
+     */
     fun songSections(project: Project): List<Section> {
+        val labels = project.allScenes.map { it.label }
+        val stem = Regex("""^(.+) \d+$""")
+        fun key(scene: Int): Int {
+            val label = labels.getOrNull(scene)?.takeIf { it.isNotBlank() } ?: return scene
+            val section = stem.matchEntire(label)?.groupValues?.get(1) ?: return scene
+            return labels.indexOf(section).takeIf { it in 0 until scene } ?: scene
+        }
         val sections = ArrayList<Section>()
         var bar = 0
         for (part in project.song) {
-            val bars = project.sceneSteps(part.scene) * part.repeats / project.stepsPerBar
+            val bars = project.partSteps(part) / project.stepsPerBar
+            val scene = key(part.scene)
             val last = sections.lastOrNull()
-            if (last != null && last.scene == part.scene) sections[sections.size - 1] = last.copy(bars = last.bars + bars)
-            else sections += Section(part.scene, bar, bars)
+            if (last != null && last.scene == scene) sections[sections.size - 1] = last.copy(bars = last.bars + bars)
+            else sections += Section(scene, bar, bars)
             bar += bars
         }
         return sections
@@ -725,40 +930,230 @@ object StarterWizard {
         return p to id
     }
 
-    /** The riser's notes in scene [scene] of [steps] steps: held all along before a Drop, a short hit on the Drop's first step. */
-    private fun riserNotes(plan: ScenePlan, scene: Int, steps: Int): NoteClip = NoteClip(
+    /**
+     * The riser's notes in a scene of [steps] steps ([SongShape.SceneSpec.riser]): held all along
+     * (its filter opens it before a Drop, and it falls at the Break's start), ending before the
+     * last beat when that beat is silent; or a short hit on a Drop's first step (the impact).
+     */
+    private fun riserNotes(spec: SongShape.SceneSpec, steps: Int): NoteClip = NoteClip(
         steps = steps,
-        notes = when {
-            scene in plan.riserScenes -> listOf(Note(0, (steps * NoteClip.TICKS_PER_STEP).coerceAtMost(NoteClip.MAX_TICKS), RISER_PITCH, 0.9f))
-            scene == 2 -> listOf(Note(0, 2 * NoteClip.TICKS_PER_STEP, RISER_PITCH, 1f))
-            else -> emptyList()
+        notes = when (spec.riser) {
+            SongShape.Riser.Held -> listOf(Note(0, ((if (spec.silence) steps - 4 else steps) * NoteClip.TICKS_PER_STEP).coerceAtMost(NoteClip.MAX_TICKS), RISER_PITCH, if (spec.capped) RISER_HELD_CAPPED else 0.9f))
+            SongShape.Riser.Hit -> listOf(Note(0, 2 * NoteClip.TICKS_PER_STEP, RISER_PITCH, 1f))
+            SongShape.Riser.None -> emptyList()
         },
     )
 
     /**
-     * The riser's filter along the song: shut, then opening over the last [RISER_BARS] bars before
-     * each Drop (all the Montée), wide open on the Drop's first bar (the impact) and shut again
-     * through that bar (its tail darkens and dies away).
+     * The riser's filter at the top of a Montée (about 1.6 kHz): it rises, but under the Drop's impact
+     * (the bench found Montées louder than their Drop; S5b: 2.1 kHz before, the bright noise the
+     * limiter leaves whole carried the Montée's end over the Drop).
      */
-    private fun riserLane(sections: List<Section>, track: Int, form: SongForm): AutomationLane? {
+    const val RISER_TOP = 0.6f
+
+    /** The riser's note in a Montée: softer than its impact (the bench found the noise made Montées louder than their Drop; S5b: 0.6 before). */
+    const val RISER_HELD_CAPPED = 0.5f
+
+    /** Its filter at the start of a rise, and where the downlifter starts at a Break. */
+    const val RISER_LOW = 0.25f
+    const val DOWNLIFTER = 0.6f
+
+    /**
+     * The riser's filter along the song, a point per beat ([shape]'s blocks, bars of [beatsPerBar]
+     * beats): shut; opening all through each Montée (or Pré-refrain, or the end of a rap Couplet)
+     * up to [RISER_TOP], shut on the silent beat before the Drop; wide open on the Drop's first beat
+     * (the impact), shut again through its bar (the tail darkens and dies away). A Drop without a
+     * Montée before it (a song's Refrain after the Intro, the real drop after a fake one): the impact
+     * alone. At a Break's start the noise falls from [DOWNLIFTER] over 2 bars (a downlifter).
+     */
+    private fun riserLane(shape: SongShape.Shape, track: Int, beatsPerBar: Int): AutomationLane? {
+        val b = beatsPerBar.coerceAtLeast(1)
         // Song only: a section played in a loop keeps the riser shut (its value at the song's start).
-        var lane = AutomationLane(AutoTarget(AutoTarget.INSERT_PARAM, InstrumentTrack.mixerChannel(track), 0, 0), mode = AutomationLane.SONG, songOnly = true)
+        var lane = AutomationLane(AutoTarget(AutoTarget.INSERT_PARAM, InstrumentTrack.mixerChannel(track), 0, 0), mode = AutomationLane.SONG, songOnly = true, songPerBeat = true)
             .withSongPoint(0, 0f)
-        sections.zipWithNext().forEach { (sec, next) ->
-            if (sec.scene == 2 || next.scene != 2) return@forEach
-            if (form == SongForm.Song) {
-                // A song: no rise, only the impact on the Refrain's first beat.
-                lane = lane.withSongPoint(next.start - 1, 0f).withSongPoint(next.start, 1f).withSongJump(next.start, true).withSongPoint(next.start + 1, 0f)
-                return@forEach
+        val starts = shape.blocks.runningFold(0) { acc, blk -> acc + blk.bars }
+        fun dropLike(i: Int) = shape.blocks.getOrNull(i)?.sec.let { it == SongShape.Sec.Drop || it == SongShape.Sec.Fake }
+        for (i in shape.blocks.indices) {
+            val blk = shape.blocks[i]
+            val at = starts[i] * b
+            val prev = shape.blocks.getOrNull(i - 1)
+            if (dropLike(i) && prev != null && !dropLike(i - 1) || (dropLike(i) && prev?.sec == SongShape.Sec.Fake && blk.sec == SongShape.Sec.Drop)) {
+                // The stretch of lead-in blocks right before it.
+                var first = i
+                while (first > 0 && shape.blocks[first - 1].sec == SongShape.Sec.Lead) first--
+                if (first < i) {
+                    val from = starts[first] * b
+                    if (from > 0) lane = lane.withSongPoint(from - 1, 0f)
+                    lane = lane.withSongPoint(from, RISER_LOW).withSongPoint(at - 2, RISER_TOP)
+                        .withSongPoint(at - 1, 0f).withSongJump(at - 1, true)
+                } else {
+                    lane = lane.withSongPoint(at - 1, 0f)
+                }
+                lane = lane.withSongPoint(at, 1f).withSongJump(at, true).withSongPoint(at + b, 0f)
+            } else if (blk.sec == SongShape.Sec.Break && prev?.sec != SongShape.Sec.Break && at > 0) {
+                lane = lane.withSongPoint(at - 1, 0f).withSongPoint(at, DOWNLIFTER).withSongJump(at, true).withSongPoint(at + 2 * b, 0f)
             }
-            val rise = if (form == SongForm.Build && sec.scene == 1) sec.bars else minOf(RISER_BARS, sec.bars)
-            val from = sec.start + sec.bars - rise
-            if (from > 0) lane = lane.withSongPoint(from - 1, 0f)
-            lane = lane.withSongPoint(from, 0.3f).withSongPoint(sec.start + sec.bars - 1, 0.9f)
-                .withSongPoint(next.start, 1f).withSongPoint(next.start + 1, 0f)
         }
         return lane.takeIf { it.songValues.count { v -> v != null } > 1 }
     }
+
+    /**
+     * The beat of silence before each Drop (or Refrain, or fake drop) made total: the whole mix's
+     * volume ([AutoTarget.masterVolume], song only, a point per beat) at 0 on that beat, so that no
+     * reverb or echo tail sounds there; full everywhere else. Null without such a beat.
+     */
+    private fun silenceLane(shape: SongShape.Shape, beatsPerBar: Int): AutomationLane? {
+        val b = beatsPerBar.coerceAtLeast(1)
+        val starts = shape.blocks.runningFold(0) { acc, blk -> acc + blk.bars }
+        var lane = AutomationLane(AutoTarget.masterVolume(), mode = AutomationLane.SONG, songOnly = true, songPerBeat = true).withSongPoint(0, 1f)
+        var any = false
+        for (i in shape.blocks.indices) {
+            if (!shape.scenes[shape.blocks[i].scene].silence) continue
+            val end = starts[i + 1] * b
+            lane = lane.withSongPoint(end - 2, 1f).withSongPoint(end - 1, 0f).withSongJump(end - 1, true).withSongPoint(end, 1f).withSongJump(end, true)
+            any = true
+        }
+        return lane.takeIf { any }
+    }
+
+    /** The sub drop's track (saved in French): a sine that falls under each Drop's first beat. */
+    const val SUB_DROP_TRACK = "Sub drop"
+
+    /**
+     * The sub drop's sound: « Sub pur » held, its portamento at its longest (half a second), a
+     * long release: a key pressed under a held one slides down to it.
+     */
+    val SUB_DROP_SOUND: SynthPatch get() = SUB_SOUND.with(SynthPatch.GLIDE, 1f).with(SynthPatch.A_RELEASE, 0.6f)
+
+    /**
+     * A sub drop on the first beat of a Drop ([SongShape.SceneSpec.subDrop]): the key's root two
+     * octaves up for a tick, then held two octaves lower, so that the synth slides down between them.
+     */
+    private fun subDropNotes(spec: SongShape.SceneSpec, steps: Int, harmony: Harmony): NoteClip {
+        if (!spec.accent || !spec.subDrop) return NoteClip(steps = steps)
+        val low = 24 + Math.floorMod(harmony.root, 12)
+        val t = NoteClip.TICKS_PER_STEP
+        return NoteClip(steps = steps, notes = listOf(Note(0, t, low + 24, 1f), Note(t / 2, 8 * t, low, 1f)))
+    }
+
+    /** A new track [SUB_DROP_TRACK] with [SUB_DROP_SOUND], a little under the bass. Null when every track is taken. */
+    private fun withSubDropTrack(project: Project): Pair<Project, Int>? {
+        val added = project.addTrack(SUB_DROP_TRACK) ?: return null
+        val id = added.tracks.last().id
+        return added.withTrack(added.track(id).copy(name = SUB_DROP_TRACK, engine = 0, instrument = null, notes = NoteClip(), synth = SUB_DROP_SOUND)) to id
+    }
+
+    /**
+     * The crash of the Drop's first beat: the kit's own cymbal (a long washy crash) on its pad when
+     * no line of the style takes that pad (the ride shapes it short), a little louder, with an echo
+     * and some reverb. Null: the style plays a ride there.
+     */
+    private fun withCrash(project: Project, lines: Set<Role>): Pair<Project, Int?> {
+        if (Role.Ride in lines || lines.isEmpty()) return project to null
+        val lane = Role.Ride.lane
+        val ch = Mixer.padChannel(lane)
+        val c = project.mixer.channels[ch].copy(volume = WizardMix.fader(CRASH_DB), sends = listOf(0.2f, 0.25f)).sanitized()
+        return project.copy(mixer = project.mixer.copy(channels = project.mixer.channels.toMutableList().also { it[ch] = c })) to lane
+    }
+
+    /** The crash pad's fader: the kit's cymbal is about 6 dB under where a crash sits. */
+    private const val CRASH_DB = 3f
+
+    /** The bass under the Drop's level outside it (the Drop lifts it by as much): the research's +1.5 dB at the Drop. */
+    const val BASS_LIFT_DB = 1.5f
+
+    /**
+     * The bass tracks along the song (song only: a section played in a loop hears them at their
+     * fader): [BASS_LIFT_DB] under their fader outside the Drops, at it in the Drops; with a second
+     * bass ([second], [Melody.bassSwitch]) the first plays up to the second Drop and the second from there on.
+     */
+    private fun bassLanes(sections: List<Section>, dropKeys: Set<Int>, tracks: List<Int>, first: Int?, second: Int?, project: Project): List<AutomationLane> {
+        val switchAt = sections.filter { it.scene == 2 }.getOrNull(1)?.start?.takeIf { second != null && first != null }
+        val under = 10f.pow(-BASS_LIFT_DB / 40f)
+        return tracks.distinct().map { track ->
+            val ch = InstrumentTrack.mixerChannel(track)
+            val level = project.mixer.channels[ch].volume
+            var lane = AutomationLane(AutoTarget(AutoTarget.VOLUME, ch), mode = AutomationLane.SONG, songOnly = true)
+            for (sec in sections) {
+                fun value(bar: Int): Float {
+                    val on = when {
+                        switchAt == null -> 1f
+                        track == first -> if (bar < switchAt) 1f else 0f
+                        track == second -> if (bar < switchAt) 0f else 1f
+                        else -> 1f
+                    }
+                    return level * on * (if (sec.scene in dropKeys) 1f else under)
+                }
+                lane = lane.withSongPoint(sec.start, value(sec.start)).withSongJump(sec.start, true)
+                if (switchAt != null && switchAt in sec.start + 1 until sec.start + sec.bars) {
+                    lane = lane.withSongPoint(switchAt - 1, value(switchAt - 1)).withSongPoint(switchAt, value(switchAt)).withSongJump(switchAt, true)
+                }
+                lane = lane.withSongPoint(sec.start + sec.bars - 1, value(sec.start + sec.bars - 1))
+            }
+            lane
+        }
+    }
+
+    /**
+     * The jungle's rewind: a tape stop on the master over the two beats before the silent beat that
+     * opens the second Drop (the record pulled back), a song curve of its « Arrêt » knob. Null
+     * without a free slot on the master or a second Drop.
+     */
+    private fun withRewind(project: Project, shape: SongShape.Shape, beatsPerBar: Int): Pair<Project, AutomationLane?> {
+        val starts = shape.blocks.runningFold(0) { acc, blk -> acc + blk.bars }
+        val drops = shape.blocks.indices.filter { i -> shape.blocks[i].sec == SongShape.Sec.Drop && shape.blocks.getOrNull(i - 1)?.sec == SongShape.Sec.Lead }
+        val at = drops.getOrNull(1)?.let { starts[it] * beatsPerBar } ?: return project to null
+        val master = project.mixer.master
+        // In the last free slot before the limiter (the master's last).
+        val slot = master.indices.lastOrNull { it < master.size - 1 && master[it].type == 0 } ?: return project to null
+        val insert = Insert(EffectType.TAPE_STOP.ordinal, listOf(0f, 0.35f, 0.1f, 0f))
+        val p = project.copy(mixer = project.mixer.copy(master = master.toMutableList().also { it[slot] = insert }))
+        val lane = AutomationLane(AutoTarget(AutoTarget.INSERT_PARAM, Mixer.MASTER, slot, 0), mode = AutomationLane.SONG, songOnly = true, songPerBeat = true)
+            .withSongPoint(0, 0f).withSongPoint(at - 4, 0f).withSongPoint(at - 3, 1f).withSongJump(at - 3, true).withSongPoint(at - 1, 1f)
+            .withSongPoint(at, 0f).withSongJump(at, true)
+        return p to lane
+    }
+
+    /**
+     * The vocal of [style] ([Style.vocal]) over the song's phrase of [steps] steps, in the key of
+     * [harmony]: the chops' answer in the hook's rests ([lead], an octave under its middle), a stab
+     * on the 4th beat of the first bar of every 4, an MC's shout, a crushed hit every 2 bars.
+     */
+    private fun vocalNotes(style: Style, mood: Mood, harmony: Harmony, lead: NoteClip?, steps: Int): NoteClip? {
+        val kind = style.vocal ?: return null
+        val t = NoteClip.TICKS_PER_STEP
+        val root = 12 * 5 + Math.floorMod(harmony.root, 12)
+        val fifth = harmony.degreeRoot(4, root).let { if (it - root > 12) it - 12 else it }
+        val bars = steps / 16
+        val notes = when (kind) {
+            Vocal.Answer -> return lead?.takeIf { it.notes.isNotEmpty() }?.let { MelodyBuilder.counter(it, MelodyBuilder.keyOf(style, mood, harmony), MelodyBuilder.seed(style, mood, "vocal")) }
+            Vocal.Stab -> (0 until bars step 4).map { bar -> Note((bar * 16 + 12) * t, 2 * t, root, 0.9f) }
+            Vocal.Shout -> listOf(Note(0, 3 * t, fifth, 1f), Note(4 * t, 4 * t, root, 0.9f))
+            Vocal.Crush -> (0 until bars step 2).map { bar -> Note((bar * 16 + 6) * t, 2 * t, fifth, 0.85f) }
+        }
+        return NoteClip(steps = steps, notes = notes)
+    }
+
+    /**
+     * A new track [VOCAL_TRACK] with [VOCAL_SOUND] (a Plaits speech voice): a little echo and
+     * reverb, under the lead; through a bitcrusher for the phonk's hit. Null when every track is
+     * taken or the sound is not in the library.
+     */
+    private fun withVocalTrack(project: Project, kind: Vocal): Pair<Project, Int>? {
+        val sound = SoundLibrary.PLAITS.firstOrNull { it.name == VOCAL_SOUND }?.sound ?: return null
+        val added = project.addTrack(VOCAL_TRACK) ?: return null
+        val id = added.tracks.last().id
+        var p = added.withTrack(added.track(id).copy(name = VOCAL_TRACK, engine = 1, instrument = null, notes = NoteClip(), plaits = sound.copy(gain = SynthPatch.gainValue(SynthPatch.gainDb(sound.gain) + VOCAL_DB))))
+        val ch = InstrumentTrack.mixerChannel(id)
+        val inserts = if (kind == Vocal.Crush) listOf(Insert(EffectType.BITCRUSHER.ordinal, listOf(0.6f, 0.45f, 1f, 0.7f))) else emptyList()
+        p = p.copy(mixer = p.mixer.copy(channels = p.mixer.channels.mapIndexed { i, c ->
+            if (i == ch) c.copy(inserts = (inserts + List(Mixer.INSERTS) { Insert() }).take(Mixer.INSERTS), sends = listOf(0.2f, if (kind == Vocal.Crush) 0.1f else 0.3f)).sanitized() else c
+        }))
+        return p to id
+    }
+
+    /** The vocal's level against its calibrated sound: under the lead, it answers. */
+    private const val VOCAL_DB = -4f
 
     /** The sub layer's track (saved in French; [Melody.subBass]). */
     const val SUB_TRACK = "Sub"
@@ -801,15 +1196,46 @@ object StarterWizard {
         return project.copy(mixer = project.mixer.copy(channels = project.mixer.channels.toMutableList().also { it[ch] = edited }))
     }
 
+    /** The second bass's track (saved in French; [Melody.bassSwitch]): the sound the second Drop switches to. */
+    const val BASS_SWITCH_TRACK = "Basse 2"
+
+    /**
+     * A new track [BASS_SWITCH_TRACK] playing the bass track [bass]'s notes with the library sound
+     * [name] (gliding where the bass glides): silent until the second Drop, where it takes over
+     * from the first bass ([bassLanes]). Null when every track is taken or the sound is unknown.
+     */
+    private fun withBassSwitchTrack(project: Project, bass: Int, name: String, glide: Boolean): Pair<Project, Int>? {
+        val synth = SoundLibrary.SYNTH.firstOrNull { it.name == name }?.sound
+        val plaits = SoundLibrary.PLAITS.firstOrNull { it.name == name }?.sound
+        if (synth == null && plaits == null) return null
+        val added = project.addTrack(BASS_SWITCH_TRACK) ?: return null
+        val id = added.tracks.last().id
+        val p = added.withTrack(added.track(id).copy(
+            name = BASS_SWITCH_TRACK, engine = if (synth != null) 0 else 1, instrument = null, notes = added.track(bass).notes,
+            synth = (synth ?: added.track(id).synth).let { if (glide && synth != null) it.with(SynthPatch.GLIDE, BASS_GLIDE) else it },
+            plaits = plaits ?: added.track(id).plaits,
+        ))
+        return p to id
+    }
+
+    /** Track [to]'s strip as track [from]'s (its effects and sends: the second bass goes through the first's chain). */
+    private fun withSameStrip(project: Project, from: Int, to: Int): Project {
+        val src = project.mixer.channels[InstrumentTrack.mixerChannel(from)]
+        val ch = InstrumentTrack.mixerChannel(to)
+        return project.copy(mixer = project.mixer.copy(channels = project.mixer.channels.mapIndexed { i, c -> if (i == ch) c.copy(inserts = src.inserts, sends = src.sends).sanitized() else c }))
+    }
+
     /** The counter-melody's track (saved in French; [Melody.counter]). */
     const val COUNTER_TRACK = "Contre-chant"
 
     /**
-     * A new track [COUNTER_TRACK]: the style's chords answered in short hits an octave above them
-     * ([Melody.counterRhythm], the chords' rhythm when they are stabs, else [LEAD_STABS]) with the
-     * sound [Melody.counter] of the library. Null when every track is taken or the sound is unknown.
+     * A new track [COUNTER_TRACK] with the sound [Melody.counter] of the library: the lead's motif
+     * answered in the lead's rests ([MelodyBuilder.counter]) when the song has a written lead
+     * ([lead]), else the style's chords in short hits an octave above them ([Melody.counterRhythm],
+     * the chords' rhythm when they are stabs, else [LEAD_STABS]). Null when every track is taken or
+     * the sound is unknown.
      */
-    private fun withCounterTrack(project: Project, style: Style, mood: Mood): Pair<Project, Int>? {
+    private fun withCounterTrack(project: Project, style: Style, mood: Mood, lead: NoteClip?): Pair<Project, Int>? {
         val m = style.melody
         val name = m.counter ?: return null
         val synth = SoundLibrary.SYNTH.firstOrNull { it.name == name }?.sound
@@ -820,7 +1246,9 @@ object StarterWizard {
         val rhythm = m.counterRhythm.ifEmpty { if (WizardMix.isShort(m.chordRhythm)) m.chordRhythm else LEAD_STABS }
         val harmony = project.harmony
         val degrees = progressionOf(style, mood).second
-        val notes = inLeadRange(NoteClip().withChordRhythm(degrees, harmony, rhythm, Voicing.Triad, 12 * (m.chordOctave + 2), velocity = 0.7f))
+        val melodic = lead != null && m.leadPattern.isNotBlank() && m.leadKind != LeadKind.Arp && lead.notes.isNotEmpty()
+        val notes = if (melodic) MelodyBuilder.counter(lead!!, MelodyBuilder.keyOf(style, mood, harmony), MelodyBuilder.seed(style, mood, "counter"))
+        else inLeadRange(NoteClip().withChordRhythm(degrees + degrees, harmony, rhythm, Voicing.Triad, 12 * (m.chordOctave + 2), velocity = 0.7f))
         val p = added.withTrack(added.track(id).copy(
             name = COUNTER_TRACK, engine = if (synth != null) 0 else 1, instrument = null, notes = notes,
             synth = synth ?: added.track(id).synth, plaits = plaits ?: added.track(id).plaits,
@@ -835,7 +1263,7 @@ object StarterWizard {
     private fun dropTwoTrack(plan: ScenePlan, partOfTrack: Map<Int, Part>, counter: Int?): Int? = counter
         ?: partOfTrack.entries.firstOrNull { it.value == Part.Lead }?.key?.takeIf {
             val scenes = plan.parts[Part.Lead].orEmpty()
-            plan.form != SongForm.Song && 2 in scenes && 1 !in scenes && 0 !in scenes
+            !plan.form.sung && 2 in scenes && 1 !in scenes && 0 !in scenes
         }
 
     /**
@@ -876,7 +1304,7 @@ object StarterWizard {
      * acid line, the whole beat. A preset replaces the strip's effects; an insert goes in the first
      * free slot; the sends only go up.
      */
-    internal fun withEffects(project: Project, style: Style, lines: Set<Role>, partOfTrack: Map<Int, Part>, acid: Boolean): Project {
+    internal fun withEffects(project: Project, style: Style, lines: Set<Role>, partOfTrack: Map<Int, Part>, acid: Boolean, bass808: Boolean = false): Project {
         if (style.effects.isEmpty()) return project
         var channels = project.mixer.channels
         var master = project.mixer.master
@@ -893,6 +1321,8 @@ object StarterWizard {
             val channel = Part.entries.firstOrNull { it.id == fx.target }?.let { part ->
                 partOfTrack.entries.firstOrNull { it.value == part }?.key?.let { InstrumentTrack.mixerChannel(it) }
             } ?: Role.entries.firstOrNull { it.id == fx.target && it in lines }?.let { Mixer.padChannel(it.lane) }
+                // The 808 playing the bass takes the bass's treatment on its pad.
+                ?: Mixer.padChannel(StudioDrums.LANE_808).takeIf { bass808 && fx.target == Part.Bass.id }
                 ?: when (fx.target) {
                     "acid" -> 1.takeIf { acid }
                     "drums" -> 0.takeIf { lines.isNotEmpty() }
@@ -944,24 +1374,36 @@ object StarterWizard {
         val riser: Boolean = false,
         /** The counter-melody ([Melody.counter]) plays in the Drop (or the Refrain), from the second half of the first one. */
         val counter: Boolean = false,
+        /**
+         * The scenes the song adds to these ([SongShape]): the Montée before each Drop, the Drop's
+         * second scene, the layers coming in every 8 bars, a song's Pré-refrain… (after the [count] first).
+         */
+        val variants: List<SongShape.SceneSpec> = emptyList(),
     ) {
-        /** How many sections: three, or four with the Break. */
+        /** How many sections: three, or four with the Break (or a song's Pont). */
         val count: Int get() = if (hasBreak) 4 else 3
 
+        /** How many scenes the song has: the sections and their [variants]. */
+        val sceneCount: Int get() = count + variants.size
+
         /** The sections a Drop follows, where the riser rises: the Groove (or the Montée) and the Break. */
-        val riserScenes: Set<Int> get() = if (!riser || form == SongForm.Song) emptySet() else setOfNotNull(1, 3.takeIf { hasBreak })
+        val riserScenes: Set<Int> get() = if (!riser || form.sung) emptySet() else setOfNotNull(1, 3.takeIf { hasBreak })
 
         /** The sections' names, saved in French ("Intro", "Couplet", "Refrain" or "Intro", "Groove", "Drop", "Break"). */
-        val labels: List<String> get() = form.labels + listOfNotNull(SongForm.BREAK_LABEL.takeIf { hasBreak })
+        val labels: List<String> get() = form.labels + listOfNotNull((if (form.sung) SongForm.BRIDGE_LABEL else SongForm.BREAK_LABEL).takeIf { hasBreak })
 
-        /** The section scene [index] stands for, in the interface's language. */
-        fun title(index: Int): String = tr(labels[index])
+        /** Every scene's name, saved in French: the sections', then the variants' ("Drop 2", "Montée"…). */
+        val sceneLabels: List<String> get() = labels + variants.map { it.label }
+
+        /** The section scene [index] stands for, in the interface's language ("Drop 2" for a variant). */
+        fun title(index: Int): String = sceneLabels.getOrNull(index)?.let { label -> Scene.shownLabel(label).takeIf { it != label } ?: tr(label) } ?: NAMES.getOrElse(index) { "?" }
 
         /** What the section is for, in a few words (translated): whether the bass plays there tells the Groove and the Break apart. */
         fun role(index: Int): String = tr(roleKey(index))
 
-        /** [role] in French: one of the form's roles, [SongForm.BREAK_ROLE] or the variants with or without the bass. */
+        /** [role] in French: one of the form's roles, [SongForm.BREAK_ROLE] or the variants with or without the bass (a variant: its section's). */
         fun roleKey(index: Int): String {
+            if (index >= count) return variants.getOrNull(index - count)?.let { roleKey(it.base.coerceIn(0, count - 1)) } ?: form.roles[0]
             fun bassIn(i: Int) = i in parts[Part.Bass].orEmpty() || i in lines[Role.Bass808].orEmpty()
             val bass = Part.Bass in parts || Role.Bass808 in lines
             return when {
@@ -972,8 +1414,10 @@ object StarterWizard {
         }
 
         /** The names of what scene [index] plays, in the order of the assistant (translated). */
-        fun contents(index: Int): List<String> =
-            lines.filterValues { index in it }.keys.sortedBy { it.ordinal }.map { tr(it.title) } +
+        fun contents(index: Int): List<String> = variants.getOrNull(index - count)?.takeIf { index >= count }?.let { v ->
+            v.content.lines.sortedBy { it.ordinal }.map { tr(it.title) } + v.content.parts.sortedBy { it.ordinal }.map { tr(it.title) } +
+                listOfNotNull(tr(ACID_TITLE).takeIf { v.content.acid }, tr(RISER_TITLE).takeIf { riser && v.riser == SongShape.Riser.Held && v.half >= 0 })
+        } ?: lines.filterValues { index in it }.keys.sortedBy { it.ordinal }.map { tr(it.title) } +
                 parts.filterValues { index in it }.keys.sortedBy { it.ordinal }.map { tr(it.title) } +
                 listOfNotNull(
                     tr(ACID_TITLE).takeIf { index in acid },
@@ -1020,9 +1464,10 @@ object StarterWizard {
 
     /** The plan of [style]'s song with these lines, parts and acid line. */
     fun planFor(style: Style, lines: Set<Role>, parts: Set<Part>, acid: Boolean): ScenePlan =
-        scenePlan(lines, parts, acid, style.melody.signature, style.form, style.drop, style.breakWith, acidInBreak = acidBreaks(style))
+        scenePlan(lines, parts, acid, style.melody.signature, style.form, style.drop, style.breakWith, acidInBreak = acidBreaks(style), bridge = style.form.sung)
             .let { if (style.riser && (lines.isNotEmpty() || parts.isNotEmpty() || acid)) it.copy(riser = true) else it }
             .let { if (style.melody.counter != null && parts.isNotEmpty()) it.copy(counter = true) else it }
+            .let { plan -> plan.copy(variants = SongShape.shape(style, plan).scenes.drop(plan.count)) }
 
     /** [style]'s 303 turns its knobs in the Break (the acid house filter opening): it keeps playing there, chords or not. */
     fun acidBreaks(style: Style): Boolean = style.melody.acid?.moves?.any { 3 in it.sections } == true
@@ -1042,12 +1487,12 @@ object StarterWizard {
      */
     fun scenePlan(
         lines: Set<Role>, parts: Set<Part>, acid: Boolean, signature: Part? = null, form: SongForm = SongForm.Song,
-        drop: Layers = Layers(), breakWith: Layers? = null, acidInBreak: Boolean = false,
+        drop: Layers = Layers(), breakWith: Layers? = null, acidInBreak: Boolean = false, bridge: Boolean = false,
     ): ScenePlan {
         val plan = when (form) {
             SongForm.Rave -> ravePlan(lines, parts, acid, signature)
             SongForm.Build -> buildPlan(lines, parts, acid, signature, breakWith)
-            else -> layeredPlan(lines, parts, acid, signature, form, drop, breakWith, acidInBreak)
+            else -> layeredPlan(lines, parts, acid, signature, form, drop, breakWith, acidInBreak, bridge)
         }
         // The rumble is the kick's own tail: it plays wherever the kick plays (else in the last section, like a bass),
         // and in the Break when the style keeps it there without the kick (industrial techno).
@@ -1071,13 +1516,15 @@ object StarterWizard {
     /** [scenePlan] of a song or of club music: the layers pile up, section after section. */
     private fun layeredPlan(
         lines: Set<Role>, parts: Set<Part>, acid: Boolean, signature: Part?, form: SongForm, drop: Layers, breakWith: Layers?,
-        acidInBreak: Boolean = false,
+        acidInBreak: Boolean = false, bridge: Boolean = false,
     ): ScenePlan {
         val bassLines = setOf(Role.Bass808, Role.Rumble)
         val sig = signature?.takeIf { it in parts }
-        val chorusParts = listOf(Part.Lead, Part.Pad).firstOrNull { it in parts && it != sig }?.let { setOf(it) }.orEmpty()
+        // A song's hook is heard everywhere (previewed in the Intro, thinned out in the Couplet): the chords lift its Refrain,
+        // or the open hat and the percussion when the chords are the signature.
+        val chorusParts = (if (form.sung) listOf(Part.Pad) else listOf(Part.Lead, Part.Pad)).firstOrNull { it in parts && it != sig }?.let { setOf(it) }.orEmpty()
         val chorusLines = when {
-            form == SongForm.Song -> (lines intersect CHORUS_LINES).takeIf { (lines - it).isNotEmpty() }.orEmpty()
+            form.sung -> (lines intersect CHORUS_LINES).takeIf { (lines - it).isNotEmpty() }.orEmpty()
             chorusParts.isEmpty() -> lines intersect CHORUS_LINES
             else -> emptySet()
         }
@@ -1088,8 +1535,11 @@ object StarterWizard {
             sig != null && sig != Part.Bass -> (lines intersect setOf(Role.Hat))
             else -> (lines intersect INTRO_LINES).ifEmpty { verseLines - bassLines }
         } intersect verseLines
-        // Never a layer the next section drops (the chords of a song without a lead stay for the Refrain).
-        val introParts = (if (form == SongForm.Song) setOf(Part.Pad) else emptySet<Part>()).plus(listOfNotNull(sig)).minus(Part.Bass) intersect verseParts
+        // Never a layer the next section drops (the chords of a song without a lead stay for the Refrain); a song's hook is previewed.
+        // A rap song's Intro leads straight into its Refrain: it opens on the loop, the hook and its chords over the hats (S5b:
+        // the hook alone left those intros 10 to 15 LU under their Refrain).
+        val introParts = (if (form.sung) setOf(Part.Pad, Part.Lead) else emptySet<Part>()).plus(listOfNotNull(sig)).minus(Part.Bass) intersect
+            (if (form == SongForm.Rap) parts else verseParts)
         // A silent section plays what the next one plays (the acid line counts in the couplet).
         val verseSilent = verseLines.isEmpty() && verseParts.isEmpty() && !acid
         val couplet = if (verseSilent) lines to parts else verseLines to verseParts
@@ -1117,6 +1567,10 @@ object StarterWizard {
                 scenes += breakLines to breakParts
                 if (breakAcid) acidScenes = acidScenes + 3
             }
+        } else if (bridge) {
+            // A song's Pont: the chords and the hook (or the signature) over the hats, without kick nor bass.
+            val bridgeParts = parts intersect (setOf(Part.Pad, Part.Lead) + listOfNotNull(sig) - Part.Bass)
+            if (bridgeParts.isNotEmpty()) scenes += (lines intersect BREAK_KEEPS) to bridgeParts
         }
         return ScenePlan(
             lines = lines.associateWith { r -> scenes.indices.filter { r in scenes[it].first }.toSet() },
@@ -1204,45 +1658,32 @@ object StarterWizard {
     const val MAX_SONG_SECONDS = 210.0
 
     /**
-     * The song of [form]'s sections, each one (bars, scene):
-     * a song is Intro, Couplet, Refrain, Couplet, Refrain and the Intro again as the ending, the
-     * Couplets and Refrains 16 bars, the Intro 8 (4 when that would last over [MAX_SONG_SECONDS], and
-     * then the second Couplet 8);
-     * club music is Intro, Groove, Drop, Break (8 bars; a Groove without one), Drop and the Intro
-     * again, the Intro 16 bars (8 when too long) and the Drops 32 when a fast tempo leaves room.
+     * The song of [form]'s sections, each one (bars, scene), as [SongShape.layout] lays them out
+     * (consecutive stretches of one scene, such as a Groove and the Montée built on it, make one):
+     * a song is Intro, Couplet, Pré-refrain, Refrain, Post-refrain, Couplet, Refrain, Pont, Refrain
+     * and the Intro again; a rap song puts its Refrain first; club music is Intro, Groove, Montée,
+     * Drop, Break, Montée, Drop and the Intro again; [long] songs (techno, bass music) last 5 to 6
+     * minutes, the others at most [MAX_SONG_SECONDS].
      */
-    fun sectionsOf(bpm: Double, form: SongForm = SongForm.Song, hasBreak: Boolean = false, beatsPerBar: Int = 4): List<Pair<Int, Int>> {
-        fun seconds(list: List<Pair<Int, Int>>) = list.sumOf { it.first } * beatsPerBar * 60.0 / bpm
-        val s = SECTION_BARS
-        // The rave's second Break (8 bars), or a Groove when there is no Break.
-        val brk = if (hasBreak) 3 else 1
-        val candidates = if (form == SongForm.Song) listOf(8, 4).map { intro -> listOf(intro to 0, s to 1, s to 2, s to 1, s to 2, intro to 0) } +
-            // A slow song (lo-fi): the second Couplet half as long.
-            listOf(listOf(4 to 0, s to 1, s to 2, s / 2 to 1, s to 2, 4 to 0))
-        else if (form == SongForm.Rave) listOf(
-            // 303 alone, kick and hats, Drop, Break with its filter sweep, Drop, a short Break, Drop, outro.
-            listOf(s to 0, s to 1, 2 * s to 2, s to brk, 2 * s to 2, BREAK_BARS to brk, 3 * s / 2 to 2, s to 0),
-            listOf(BREAK_BARS to 0, s to 1, s to 2, BREAK_BARS to brk, s to 2, BREAK_BARS to brk, s to 2, BREAK_BARS to 0),
-        )
-        else if (form == SongForm.Build) listOf(2 * s to s, s to s, s to s / 2).map { (drop, intro) ->
-            // Intro, Montée, Drop, Break, Montée again, the last Drop, the Intro to end.
-            listOf(intro to 0, BUILD_BARS to 1, drop to 2) + (if (hasBreak) listOf(BREAK_BARS to 3) else emptyList()) +
-                listOf(BUILD_BARS to 1, drop to 2, intro to 0)
+    fun sectionsOf(bpm: Double, form: SongForm = SongForm.Song, hasBreak: Boolean = false, beatsPerBar: Int = 4, long: Boolean = false): List<Pair<Int, Int>> {
+        val out = ArrayList<Pair<Int, Int>>()
+        for (span in SongShape.layout(form, bpm, hasBreak, long, beatsPerBar = beatsPerBar)) {
+            val last = out.lastOrNull()
+            if (last != null && last.second == span.sec.base) out[out.size - 1] = (last.first + span.bars) to last.second
+            else out += span.bars to span.sec.base
         }
-        else listOf(2 * s to s, s to s, s to s / 2).map { (drop, intro) ->
-            listOf(intro to 0, s to 1, drop to 2, (if (hasBreak) BREAK_BARS to 3 else s to 1), drop to 2, intro to 0)
-        }
-        return candidates.firstOrNull { seconds(it) <= MAX_SONG_SECONDS } ?: candidates.last()
+        return out
     }
 
     /**
-     * The song as parts of the scenes, each scene of [loopBars] bars repeated to fill its section
-     * (a section longer than [SongPart.MAX_REPEATS] loops is cut in two parts of the same scene).
+     * The song as parts of the plan's scenes only (no variant), each scene of [loopBars] bars
+     * repeated to fill its section (a section longer than [SongPart.MAX_REPEATS] loops is cut in
+     * two parts of the same scene).
      */
-    fun songOf(loopBars: Int, bpm: Double, beatsPerBar: Int = 4, form: SongForm = SongForm.Song, hasBreak: Boolean = false, buildBars: Int = loopBars): List<SongPart> {
-        return sectionsOf(bpm, form, hasBreak, beatsPerBar).flatMap { (length, scene) ->
-            // The Montée's scene has its own length (a 4-bar roll).
-            val bars = (if (form == SongForm.Build && scene == 1) buildBars else loopBars).coerceAtLeast(1)
+    fun songOf(loopBars: Int, bpm: Double, beatsPerBar: Int = 4, form: SongForm = SongForm.Song, hasBreak: Boolean = false, buildBars: Int = loopBars, introBars: Int = loopBars, long: Boolean = false): List<SongPart> {
+        return sectionsOf(bpm, form, hasBreak, beatsPerBar, long).flatMap { (length, scene) ->
+            // The Montée's scene has its own length (a 4-bar roll); a song's Intro may be cut short.
+            val bars = (if (form == SongForm.Build && scene == 1) buildBars else if (scene == 0) introBars else loopBars).coerceAtLeast(1)
             var left = (length / bars).coerceAtLeast(1)
             val parts = ArrayList<SongPart>()
             while (left > 0) {
@@ -1254,97 +1695,342 @@ object StarterWizard {
         }
     }
 
-    /** Bars each scene of [style]'s song lasts with [plan]: the beat, or the four bars of the melodic parts. */
+    /** Bars each scene of [style]'s song lasts with [plan]: the beat, or the eight bars of the melodic parts. */
     fun loopBars(style: Style, plan: ScenePlan): Int {
         val acidSteps = if ((style.melody.acid?.pattern?.length ?: 0) > 16) 32 else 16
-        val steps = maxOf(drumSteps(style), if (plan.parts.isNotEmpty()) 64 else 0, if (plan.acid.isNotEmpty()) acidSteps else 0)
+        val steps = maxOf(drumSteps(style), if (plan.parts.isNotEmpty()) PHRASE_STEPS else 0, if (plan.acid.isNotEmpty()) acidSteps else 0)
         return (steps + 15) / 16
     }
 
-    /** Bars scene [scene] of [style]'s song lasts with [plan] (the Montée: its 4-bar roll). */
-    fun sceneBars(style: Style, plan: ScenePlan, scene: Int): Int =
-        if (plan.form == SongForm.Build && scene == 1) maxOf(BUILD_STEPS / 16, loopBars(style, plan)) else loopBars(style, plan)
+    /** Steps of the melodic parts' clips: an eight-bar phrase. */
+    const val PHRASE_STEPS = 128
 
-    /** The song the assistant makes for [style] with [plan]. */
-    fun songOf(style: Style, plan: ScenePlan): List<SongPart> =
-        songOf(loopBars(style, plan), style.bpm, form = plan.form, hasBreak = plan.hasBreak, buildBars = sceneBars(style, plan, 1))
+    /**
+     * Bars scene [scene] of [style]'s song lasts with [plan]: the Montée its 4-bar roll; a song's
+     * Intro the bars [sectionsOf] gives it when that is shorter than the loop (its clips are cut);
+     * a variant ([ScenePlan.variants]) 4 bars when it is half a phrase, else as its section.
+     */
+    fun sceneBars(style: Style, plan: ScenePlan, scene: Int): Int {
+        val variant = plan.variants.getOrNull(scene - plan.count)?.takeIf { scene >= plan.count }
+        if (variant != null) return if (variant.half >= 0) SongShape.HALF_BARS else sceneBars(style, plan, variant.base)
+        return when {
+            plan.form == SongForm.Build && scene == 1 -> BUILD_STEPS / 16
+            plan.form.sung && scene == 0 -> minOf(loopBars(style, plan), introBarsOf(style, plan))
+            else -> loopBars(style, plan)
+        }
+    }
+
+    /** The bars of the first section of [style]'s song with [plan] (a song's Intro: 4 or 8). */
+    private fun introBarsOf(style: Style, plan: ScenePlan): Int =
+        SongShape.layout(plan.form, style.bpm, plan.hasBreak, SongShape.isLong(style), style.fakeDrop).first().bars
+
+    /** [plan] with the variants of [style]'s song (a plan made without its style has none). */
+    private fun withVariants(style: Style, plan: ScenePlan): ScenePlan =
+        if (plan.variants.isNotEmpty() || plan.isEmpty) plan else plan.copy(variants = SongShape.shape(style, plan).scenes.drop(plan.count))
+
+    /** The song the assistant makes for [style] with [plan]: its sections and their variants ([SongShape]). */
+    fun songOf(style: Style, plan: ScenePlan): List<SongPart> {
+        val full = withVariants(style, plan)
+        return SongShape.shape(style, full).parts { sceneBars(style, full, it) }
+    }
 
     /** How long [style]'s song with [plan] lasts, in seconds. */
-    fun songSeconds(style: Style, plan: ScenePlan, beatsPerBar: Int = 4): Double =
-        songOf(style, plan).sumOf { it.repeats * sceneBars(style, plan, it.scene) } * beatsPerBar * 60.0 / style.bpm
+    fun songSeconds(style: Style, plan: ScenePlan, beatsPerBar: Int = 4): Double {
+        val full = withVariants(style, plan)
+        return songOf(style, full).sumOf { it.repeats * sceneBars(style, full, it.scene) } * beatsPerBar * 60.0 / style.bpm
+    }
+
+    /** The longest song the assistant makes for [style]: 6 minutes in techno and bass music, else [MAX_SONG_SECONDS]. */
+    fun maxSongSeconds(style: Style): Double = SongShape.maxSeconds(SongShape.isLong(style))
+
+    /** The names of the song's sections in order ("Intro", "Groove", "Montée", "Drop"…), translated: a variant shows as its section. */
+    fun songSectionTitles(style: Style, plan: ScenePlan): List<String> {
+        val full = withVariants(style, plan)
+        val stem = Regex("""^(.+) \d+$""")
+        val labels = full.sceneLabels
+        val out = ArrayList<String>()
+        var last: String? = null
+        for (part in songOf(style, full)) {
+            val label = labels.getOrNull(part.scene) ?: continue
+            val section = stem.matchEntire(label)?.groupValues?.get(1)?.takeIf { it in labels } ?: label
+            if (section != last) out += full.title(labels.indexOf(section))
+            last = section
+        }
+        return out
+    }
 
     /** How long [song] lasts, in seconds, with scenes of [loopBars] bars. */
     fun seconds(song: List<SongPart>, loopBars: Int, bpm: Double, beatsPerBar: Int = 4): Double =
         song.sumOf { it.repeats } * loopBars * beatsPerBar * 60.0 / bpm
 
-    /** [full] cut in the sections of [plan] (Intro current), named, and a song that chains them. */
-    private fun inScenes(
-        full: Project, plan: ScenePlan, partOfTrack: Map<Int, Part>, bpm: Double, builds: Map<Role, Map<Int, Hit>> = emptyMap(),
-        montee: Map<Role, Map<Int, Hit>>? = null, riserTrack: Int? = null, counterTrack: Int? = null,
-    ): Project {
-        // A scene's length when nothing else sets it: the beat, or the four bars of the melodic parts.
-        val loopSteps = maxOf(full.drums.steps, partOfTrack.keys.maxOfOrNull { full.track(it).notes.steps } ?: 0)
-        // The beat is written out over 4 bars (a fill at the end of each phrase) where the melody already lasts them.
-        val phrases = loopSteps >= WizardMix.PHRASE_STEPS && full.drums.lanes.any { it.hits.isNotEmpty() }
-        fun only(index: Int): Project {
-            // The Montée has its own length: its lines over its 4 bars, the roll included.
-            val built = montee?.takeIf { index == 1 }
-            val drums = full.drums.copy(steps = if (built != null) BUILD_STEPS else full.drums.steps, lanes = full.drums.lanes.mapIndexed { lane, l ->
-                val role = Role.entries.firstOrNull { it.lane == lane }
-                when {
-                    role == null || index !in plan.lines[role].orEmpty() -> l.copy(hits = emptyMap())
-                    built != null -> l.copy(hits = built[role].orEmpty())
-                    // The second section: a line that builds up plays its build pattern there.
-                    index == 1 && role in builds -> l.copy(hits = builds.getValue(role))
-                    else -> l
-                }
-            })
-            val acid = if (index in plan.acid) full.acid else full.acid.copy(steps = full.acid.steps.map { it.copy(gate = false) })
-            // A section of a song with a melody: its beat written out over the 4-bar phrase, ending on a fill.
-            val phrased = if (built == null && phrases) drums.copy(steps = WizardMix.PHRASE_STEPS, lanes = WizardMix.phrase(drums.lanes, drums.steps, plan.form)) else drums
-            var p = full.copy(drums = phrased, acid = acid)
-            for ((id, part) in partOfTrack) {
-                if (index in plan.parts[part].orEmpty()) continue
-                val t = p.track(id)
-                p = p.withTrack(t.copy(notes = t.notes.copy(notes = emptyList())))
-            }
-            if (riserTrack != null) p = p.withTrack(p.track(riserTrack).copy(notes = riserNotes(plan, index, if (built != null) BUILD_STEPS else loopSteps)))
-            if (counterTrack != null && index != 2) p = p.withTrack(p.track(counterTrack).let { it.copy(notes = it.notes.copy(notes = emptyList())) })
-            return p
+    /** Steps of half a phrase: a Montée scene, a fake drop, a Post-refrain. */
+    private const val HALF_STEPS = SongShape.HALF_BARS * 16
+
+    /** The tracks a scene's content is shared out to: each part's, and the song's own layers. */
+    private class SongTracks(
+        val partOfTrack: Map<Int, Part>,
+        val riser: Int? = null,
+        val counter: Int? = null,
+        val subDrop: Int? = null,
+        val vocal: Int? = null,
+        val vocalNotes: NoteClip? = null,
+        val lead: Pair<Int, Map<Version, NoteClip>>? = null,
+        /** The crash on the Drop's first beat: the kit's cymbal pad, when no line takes it (null: none). */
+        val crashLane: Int? = null,
+        /** The bass line the 808 plays on its pad (S3), null when the bass has a track of its own. */
+        val bass808: NoteClip? = null,
+        /** How the style's drummer plays ([DrumHumanizer]), from [seed]. */
+        val feel: DrumHumanizer.Feel = DrumHumanizer.Feel(),
+        val seed: Long = 0L,
+        /** The 303 plays: its beat is written out over the 4-bar phrase too (a fill at its end). */
+        val acid: Boolean = false,
+    )
+
+    /**
+     * [clip] as scene [spec] plays it: half of its phrase (written out over 4 bars), the bass out of
+     * its last [SongShape.SceneSpec.cutBars] bars ([bass]), nothing past its last beat
+     * ([SongShape.SceneSpec.silence]), the chords softer in a Montée ([chords]).
+     */
+    private fun windowed(clip: NoteClip, spec: SongShape.SceneSpec, bass: Boolean, chords: Boolean): NoteClip {
+        val t = NoteClip.TICKS_PER_STEP
+        var notes = clip.notes
+        var steps = clip.steps
+        if (spec.half >= 0) {
+            // Written out over the phrase, then its first or second half.
+            val loop = clip.steps.coerceAtLeast(1) * t
+            val tiled = if (clip.steps >= PHRASE_STEPS) notes
+            else (0 until PHRASE_STEPS * t step loop).flatMap { off -> notes.map { it.copy(start = it.start + off) } }
+            val from = spec.half * HALF_STEPS * t
+            notes = tiled.filter { it.start in from until from + HALF_STEPS * t }.map { it.copy(start = it.start - from) }
+            steps = HALF_STEPS
         }
-        val views = (0 until plan.count).map { only(it) }
-        var project = views[0].copy(
-            scenes = views.mapIndexed { i, v -> v.currentSceneContent().copy(name = ScenePlan.NAMES[i]) },
-            scene = 0,
-        )
-        val bars = project.allScenes.map { it.stepsFor(project.stepsPerBar) / project.stepsPerBar }
-        val loopBars = bars.filterIndexed { i, _ -> plan.form != SongForm.Build || i != 1 }.maxOrNull() ?: bars.max()
-        project = project.copy(song = songOf(loopBars, bpm, project.beatsPerBar, plan.form, plan.hasBreak, buildBars = bars.getOrElse(1) { loopBars }))
-        // Section names are saved in French and shown in the interface's language.
-        plan.labels.forEachIndexed { i, label -> project = project.renameScene(i, label) }
-        return project
+        val end = steps * t
+        fun cutAt(list: List<Note>, at: Int) = list.filter { it.start < at }.map { if (it.end > at) it.copy(length = (at - it.start).coerceAtLeast(1)) else it }
+        if (bass && spec.cutBars > 0) notes = cutAt(notes, end - spec.cutBars * 16 * t)
+        if (spec.silence) notes = cutAt(notes, end - 4 * t)
+        if (chords && spec.capped) notes = notes.map { it.copy(velocity = (it.velocity * MONTEE_CHORDS).coerceAtLeast(0.05f)) }
+        return clip.copy(steps = steps, notes = notes, hidden = emptyList())
     }
 
     /**
-     * The Montée's roll over [steps] (4 bars): quarter notes, then eighths, sixteenths, and rolls of
-     * 2, 3 and 4 hits in the last bar, louder and louder, the very last step left silent before the Drop.
+     * The hook's version a scene plays: its own ([SongShape.SceneSpec.version]), except a rap song's
+     * Intro without its kick (trap, drill, phonk): the whole hook there, as the hits open on their loop
+     * (Mask Off, FE!N), not its first phrase then 4 bars of hats alone (S5b: the bench found those
+     * intros 10 to 15 LU under their Refrain).
      */
-    fun rollHits(steps: Int = BUILD_STEPS): Map<Int, Hit> = (0 until steps - 1).mapNotNull { i ->
-        val bar = i * 4 / steps
-        val pos = i % (steps / 4)
-        val every = when (bar) {
-            0 -> 4
-            1 -> 2
-            else -> 1
+    private fun leadVersion(spec: SongShape.SceneSpec, form: SongForm): Version =
+        if (spec.version == Version.Intro && form == SongForm.Rap && Role.Kick !in spec.content.lines) Version.Chorus else spec.version
+
+    /** The chords' velocity in a Montée: held under the Drop (the bench found Montées louder than their Drop). */
+    private const val MONTEE_CHORDS = 0.75f
+
+    /** [a] as scene [spec] plays it: half of it written out over 4 bars, its last bars cut with the bass, its last beat silent. */
+    private fun acidWindowed(a: AcidPattern, spec: SongShape.SceneSpec): AcidPattern {
+        if (spec.half < 0 && spec.cutBars == 0 && !spec.silence) return a
+        val len = a.length.coerceAtLeast(1)
+        val steps = if (spec.half >= 0) HALF_STEPS else maxOf(len, HALF_STEPS).coerceAtMost(AcidPattern.MAX_STEPS)
+        val from = spec.half.coerceAtLeast(0) * HALF_STEPS
+        // The 303 carries an acid build: it plays on with the kick and the bass out (SongShape.ACID_CUT_BARS).
+        val cut = steps - minOf(spec.cutBars, SongShape.ACID_CUT_BARS) * 16
+        val out = List(AcidPattern.MAX_STEPS) { i ->
+            if (i >= steps) AcidStep()
+            else a.steps[(from + i) % len].let { st -> if (i >= cut || (spec.silence && i >= steps - 4)) st.copy(gate = false) else st }
         }
-        if (pos % every != 0) return@mapNotNull null
-        val repeats = if (bar < 3) 1 else when {
-            pos < steps / 8 -> 2
-            pos < steps * 3 / 16 -> 3
-            else -> 4
+        return a.copy(length = steps, steps = out)
+    }
+
+    /**
+     * The 8-bar roll of a Montée, in two halves of 4 bars ([half] 0 or 1): quarter notes for 2 bars,
+     * eighths for 2, sixteenths for 2, rolls of 2 hits for a bar, then 3 and 4 hits; louder and
+     * louder but held under the Drop (at most [ROLL_TOP]); the last beat silent before the Drop.
+     * A step of several hits is played lighter, so that it weighs what a single hit of its strength
+     * would ([rollPower]): the roll's last bars get faster, not louder (S5b: its 3 and 4 hits a step
+     * at full strength made the Montée's end louder than the Drop, the limiter leaving them whole).
+     * [top]: its loudest hit ([rollTop] of the style's backbeat), the rest scaled with it.
+     */
+    fun rollHalf(half: Int, top: Float = ROLL_TOP): Map<Int, Hit> {
+        val scale = (top / ROLL_TOP).coerceIn(0f, 1f)
+        val out = LinkedHashMap<Int, Hit>()
+        for (i in 0 until HALF_STEPS) {
+            val bar = half * 4 + i / 16
+            val every = when {
+                bar < 2 -> 4
+                bar < 4 -> 2
+                else -> 1
+            }
+            if (i % every != 0 || (half == 1 && i >= HALF_STEPS - 4)) continue
+            val repeats = when {
+                bar < 6 -> 1
+                bar == 6 -> 2
+                i % 16 < 8 -> 3
+                else -> 4
+            }
+            val at = (bar * 16 + i % 16) / (2f * HALF_STEPS - 1)
+            // A roll of several hits rises inside its step too (the engine's ramp).
+            val velocity = (ROLL_LOW + (ROLL_TOP - ROLL_LOW) * at) * scale / kotlin.math.sqrt(rollPower(repeats))
+            out[i] = Hit(velocity, repeats = repeats, ramp = if (repeats > 1) 1 else 0)
         }
-        i to Hit((0.3f + 0.7f * i / (steps - 1)).coerceAtMost(1f), repeats = repeats)
-    }.toMap()
+        return out
+    }
+
+    /**
+     * The roll's loudest hit for a roll line playing [hits] over [steps] in the Drop (its backbeat):
+     * at its top a bar of the roll (sixteenths) weighs [ROLL_WEIGHT] times a bar of that backbeat, at
+     * most [ROLL_TOP], at least [ROLL_TOP_MIN]. A half-time snare (riddim: one a bar) gets a lighter
+     * roll than a clap on 2 and 4: S5b, the roll is the Montée's tension, not louder than the Drop.
+     */
+    fun rollTop(hits: Map<Int, Hit>, steps: Int): Float {
+        if (hits.isEmpty() || steps <= 0) return ROLL_TOP
+        val perBar = hits.values.sumOf { (it.velocity * it.velocity * rollPower(it.repeats)).toDouble() } * 16.0 / steps
+        return kotlin.math.sqrt(ROLL_WEIGHT * perBar / 16.0).toFloat().coerceIn(ROLL_TOP_MIN, ROLL_TOP)
+    }
+
+    /** A bar of the roll at its top against a bar of the Drop's backbeat (power): +3 dB. */
+    const val ROLL_WEIGHT = 2.0
+    const val ROLL_TOP_MIN = 0.3f
+
+    /**
+     * The power of a step of [repeats] hits against a single one of the same velocity: the engine
+     * plays them rising from half the velocity to all of it (its ramp, Hit.ramp 1).
+     */
+    fun rollPower(repeats: Int): Float {
+        if (repeats <= 1) return 1f
+        var sum = 0.0
+        for (k in 0 until repeats) {
+            val v = 1.0 - 0.5 * (1.0 - k.toDouble() / (repeats - 1))
+            sum += v * v
+        }
+        return sum.toFloat()
+    }
+
+    /**
+     * The roll's first and loudest hits: it builds (faster and faster), but the Drop's backbeat
+     * stays louder (S5b: 0.7 before; its 3 and 4 hits a step at that strength made the Montée's end
+     * louder than the Drop).
+     */
+    const val ROLL_LOW = 0.25f
+    const val ROLL_TOP = 0.6f
+
+    /** A song's one-bar roll before its Refrain (on [steps] of 4 bars): sixteenths, then rolls of 2, crescendo, the last beat silent. */
+    private fun lastBarRoll(steps: Int): Map<Int, Hit> = (steps - 16 until steps - 4).associateWith { i ->
+        val k = i - (steps - 16)
+        Hit(0.4f + 0.3f * k / 11f, repeats = if (k >= 8) 2 else 1, ramp = if (k >= 8) 1 else 0)
+    }
+
+    /** [full] cut in the scenes of [shape] (the plan's sections, then their variants; Intro current), named, and a song that chains them. */
+    private fun inScenes(
+        full: Project, plan: ScenePlan, shape: SongShape.Shape, style: Style, tracks: SongTracks,
+        builds: Map<Role, Map<Int, Hit>> = emptyMap(), montee: Map<Role, Map<Int, Hit>>? = null,
+    ): Project {
+        val partOfTrack = tracks.partOfTrack
+        // A scene's length when nothing else sets it: the beat, or the eight bars of the melodic parts.
+        val loopSteps = maxOf(full.drums.steps, partOfTrack.keys.maxOfOrNull { full.track(it).notes.steps } ?: 0)
+        // The beat is written out over 4 bars (a fill at the end of each phrase) where the melody already lasts them.
+        val phrases = (loopSteps >= WizardMix.PHRASE_STEPS || tracks.bass808 != null) && full.drums.lanes.any { it.hits.isNotEmpty() }
+        val introBars = if (plan.form.sung) minOf(loopSteps / 16, introBarsOf(style, plan)) else loopSteps / 16
+        val bassTracks = partOfTrack.filterValues { it == Part.Bass }.keys
+        val club = !plan.form.sung
+        fun view(index: Int, spec: SongShape.SceneSpec): Project {
+            val c = spec.content
+            // The Montée of a Build song has its own lines over its 4 bars, the roll included.
+            val built = montee?.takeIf { plan.form == SongForm.Build && spec.base == 1 }
+            var steps = if (built != null) BUILD_STEPS else full.drums.steps
+            var lanes = full.drums.lanes.mapIndexed { lane, l ->
+                val role = Role.entries.firstOrNull { it.lane == lane }
+                when {
+                    role == null || role !in c.lines -> l.copy(hits = emptyMap())
+                    built != null -> l.copy(hits = built[role].orEmpty())
+                    // The second section: a line that builds up plays its build pattern there.
+                    spec.base == 1 && role in builds -> l.copy(hits = builds.getValue(role))
+                    else -> l
+                }
+            }
+            // A section of a song with a melody (and every half scene): its beat written out over the 4-bar phrase, ending on a fill.
+            val with808 = tracks.bass808 != null && Part.Bass in c.parts
+            if (built == null && (phrases || spec.half >= 0 || with808) && (lanes.any { it.hits.isNotEmpty() } || with808)) {
+                lanes = WizardMix.phrase(lanes, steps, plan.form)
+                steps = WizardMix.PHRASE_STEPS
+            }
+            fun set(role: Role, hits: Map<Int, Hit>) {
+                lanes = lanes.toMutableList().also { it[role.lane] = it[role.lane].copy(hits = hits) }
+            }
+            // The 808 plays the bass line of the section on its pad (cut and silenced with the bass), lifted in the Drop.
+            if (with808) tracks.bass808?.let { clip ->
+                val voice = full.padVoices[StudioDrums.LANE_808]
+                val tune = voice?.param(PadVoice.TUNE)?.toInt() ?: StudioDrums.tune808(full.harmony.root)
+                val glide = voice?.param(PadVoice.GLIDE)?.let { Math.round(it * 1000f) } ?: StudioDrums.glideMs(style)
+                val level = if (spec.base == 2) 1f else StudioDrums.OUTSIDE_DROP
+                set(Role.Bass808, StudioDrums.hits808(windowed(clip, spec, bass = true, chords = false), steps, tune, glide, level))
+            }
+            // The roll: the snare (or the clap) over the Montée's 8 bars; a song's on its last bar.
+            val rollRole = listOf(Role.Snare, Role.Clap).firstOrNull { it in c.lines } ?: Role.Hat.takeIf { it in c.lines && !club }
+            // Its top follows the style's backbeat (the line as the Drop plays it).
+            val top by lazy { rollRole?.let { rollTop(full.drums.lanes[it.lane].hits, full.drums.steps) } ?: ROLL_TOP }
+            if (rollRole != null) when (spec.roll) {
+                1 -> if (built == null) set(rollRole, rollHalf(0, top))
+                2 -> set(rollRole, rollHalf(1, top))
+                3 -> set(rollRole, lanes[rollRole.lane].hits.filterKeys { it < steps - 16 } + lastBarRoll(steps))
+            }
+            // The kick and the bass of the beat out of the last bars before a Drop; the last beat silent.
+            if (spec.cutBars > 0) for (r in SongShape.BASS_LINES) set(r, lanes[r.lane].hits.filterKeys { it < steps - spec.cutBars * 16 })
+            if (spec.silence) lanes = lanes.map { l -> l.copy(hits = l.hits.filterKeys { it < steps - 4 }) }
+            // The drummer: a « B » beat in the Drop's second scene, the phrase's own ending (3 or 4 of them
+            // turn through the scenes), each hit played by hand. A Montée's roll and its silence stay as written.
+            val seed = tracks.seed + 7919L * (index + 1)
+            if (built == null && steps >= WizardMix.PHRASE_STEPS && lanes.any { it.hits.isNotEmpty() }) {
+                if (spec.version == Version.Chorus2) lanes = DrumHumanizer.variantB(lanes, steps, seed)
+                if (spec.roll == 0 && !spec.silence && spec.cutBars == 0) {
+                    lanes = DrumHumanizer.ending(lanes, steps, DrumHumanizer.endingOf(tracks.feel, tracks.seed, index), sung = plan.form.sung)
+                }
+            }
+            val rolling = setOfNotNull(rollRole?.lane?.takeIf { spec.roll != 0 })
+            lanes = DrumHumanizer.humanize(lanes, steps, tracks.feel, seed, full.tempoBpm, style.swing, keep = rolling, until = if (spec.silence) steps - 4 else steps)
+            // The crash on the 1 of each 16 is the song's (DrumArrangement): one bar of its own, never every loop.
+            val drums = full.drums.copy(steps = steps, lanes = lanes)
+            val acid = if (c.acid) acidWindowed(full.acid, spec) else full.acid.copy(steps = full.acid.steps.map { it.copy(gate = false) })
+            var p = full.copy(drums = drums, acid = acid)
+            for ((id, part) in partOfTrack) {
+                var clip = p.track(id).notes
+                if (part !in c.parts) clip = clip.copy(notes = emptyList())
+                // The hook's version for the section: a preview, a thinned-out line, the whole thing, doubled in the second Drop.
+                else if (tracks.lead != null && id == tracks.lead.first) tracks.lead.second[leadVersion(spec, plan.form)]?.let { clip = it }
+                clip = windowed(clip, spec, bass = id in bassTracks, chords = part == Part.Pad)
+                p = p.withTrack(p.track(id).copy(notes = clip))
+            }
+            val sceneSteps = if (built != null || spec.half >= 0) HALF_STEPS else loopSteps
+            tracks.counter?.let { id ->
+                val clip = windowed(p.track(id).notes, spec, false, false).let { if (spec.counter) it else it.copy(notes = emptyList()) }
+                p = p.withTrack(p.track(id).copy(notes = clip))
+            }
+            tracks.vocal?.let { id ->
+                val clip = tracks.vocalNotes?.takeIf { spec.vocal }?.let { windowed(it, spec, false, false) } ?: NoteClip(steps = minOf(sceneSteps, PHRASE_STEPS))
+                p = p.withTrack(p.track(id).copy(notes = if (spec.vocal) clip else clip.copy(notes = emptyList())))
+            }
+            tracks.riser?.let { id -> p = p.withTrack(p.track(id).copy(notes = riserNotes(spec, sceneSteps))) }
+            tracks.subDrop?.let { id -> p = p.withTrack(p.track(id).copy(notes = subDropNotes(spec, sceneSteps, full.harmony))) }
+            // A song's short Intro (4 bars when the song would run long) and the Montée (its 4-bar roll): their clips cut to them.
+            val bars = if (spec.base == 0 && spec.half < 0) introBars else if (built != null) BUILD_STEPS / 16 else sceneSteps / 16
+            if (bars * 16 < loopSteps && spec.half < 0) for (id in partOfTrack.keys + listOfNotNull(tracks.counter, tracks.vocal, tracks.riser, tracks.subDrop)) {
+                val t = p.track(id)
+                val ticks = bars * 16 * NoteClip.TICKS_PER_STEP
+                p = p.withTrack(t.copy(notes = t.notes.copy(steps = bars * 16, notes = t.notes.notes.filter { it.start < ticks }, hidden = emptyList())))
+            }
+            return p
+        }
+        val views = shape.scenes.mapIndexed { i, spec -> view(i, spec) }
+        var project = views[0].copy(
+            scenes = views.mapIndexed { i, v -> v.currentSceneContent().copy(name = Scene.NAMES[i]) },
+            scene = 0,
+        )
+        val bars = project.allScenes.map { (it.stepsFor(project.stepsPerBar) / project.stepsPerBar).coerceAtLeast(1) }
+        project = project.copy(song = shape.parts { bars.getOrElse(it) { 1 } })
+        // Section names are saved in French and shown in the interface's language.
+        shape.scenes.forEachIndexed { i, spec -> project = project.renameScene(i, spec.label) }
+        return project
+    }
+
+    /** The crash's strength on the Drop's first beat. */
+    internal const val CRASH_VELOCITY = 0.9f
 
     /**
      * The name of [part]'s track playing [sound] in [style] (saved in French, translated at
@@ -1394,28 +2080,37 @@ object StarterWizard {
      * (or an arpeggio of the chords an octave up). A [sound] recorded as a chord ([PartSound.chord])
      * plays the chords as their root alone.
      */
-    fun startingNotes(part: Part, style: Style, mood: Mood, harmony: Harmony, sound: PartSound? = null): NoteClip {
+    fun startingNotes(part: Part, style: Style, mood: Mood, harmony: Harmony, sound: PartSound? = null, version: Version = Version.Chorus): NoteClip {
         val m = style.melody
-        val degrees = progressionOf(style, mood).second
+        val degrees = progressionOf(style, mood).second.let { it + it }
         return when (part) {
             Part.Pad -> {
-                val voicing = if (sound?.chord == true) Voicing.Single else m.voicing
-                NoteClip().withChordRhythm(degrees, harmony, m.chordRhythm, voicing, 12 * (m.chordOctave + 1), velocity = 0.75f)
+                val chord = sound?.chord == true
+                val voicing = if (chord) Voicing.Single else m.voicing
+                val arp = m.chordArp?.takeIf { !chord }
+                NoteClip(performance = arp?.performance() ?: Performance()).withChordRhythm(
+                    degrees, harmony, if (arp != null) "X---------------" else m.chordRhythm, if (arp != null && voicing == Voicing.Triad) Voicing.Seventh else voicing,
+                    12 * (m.chordOctave + 1), velocity = 0.75f, voiceLead = m.chordVoiceLead && !chord, seed = MelodyBuilder.seed(style, mood, "pad"),
+                )
             }
-            Part.Lead -> inLeadRange(
+            // A written lead: the builder's phrase, already in range (its versions are cut from the same notes).
+            Part.Lead -> if (m.leadPattern.isNotBlank() && m.leadKind != LeadKind.Arp) MelodyBuilder.lead(style, mood, harmony, version, mono = sound?.chord == true) else inLeadRange(
                 when {
-                    m.leadPattern.isNotBlank() -> NoteClip().withLine(degrees, harmony, m.leadPattern, 12 * (m.leadOctave + 1), velocity = 0.8f)
                     // A sound recorded as a chord (a stab) arpeggiated would play chords of chords: it hits the chords' roots instead.
                     sound?.chord == true -> NoteClip().withChordRhythm(
                         degrees, harmony, if (isStabs(m.chordRhythm)) m.chordRhythm else LEAD_STABS, Voicing.Single, 12 * (m.leadOctave + 1), velocity = 0.7f,
                     )
-                    else -> NoteClip(performance = Performance(arp = ArpMode.UpDown, arpRate = m.arpRate))
-                        .withChordRhythm(degrees, harmony, "X---------------", Voicing.Triad, 12 * (m.leadOctave + 1), velocity = 0.65f)
+                    // An arpeggio: a fixed pattern over two octaves with accents and a gate, never a triad going up and down.
+                    else -> NoteClip(performance = (m.leadArp ?: ArpSpec(DEFAULT_ARP, rate = m.arpRate.coerceIn(12, 48))).performance())
+                        .withChordRhythm(degrees, harmony, "X---------------", Voicing.Seventh, 12 * (m.leadOctave + 1), velocity = 0.65f)
                 },
             )
-            Part.Bass -> NoteClip().withLine(degrees, harmony, m.bassPattern, 12 * (m.bassOctave + 1), bass = true)
+            Part.Bass -> MelodyBuilder.bass(style, mood, harmony)
         }
     }
+
+    /** The arpeggio a style without a written lead gets when its lead is ticked: root, fifth, octave, third, up and back. */
+    val DEFAULT_ARP = listOf(0, 2, 4, 5, 6, 5, 4, 2)
 
     /** The stabs a lead recorded as a chord plays when the style's chords are held: 3-3-2, twice a bar. */
     const val LEAD_STABS = "X..x..X.X..x..X."

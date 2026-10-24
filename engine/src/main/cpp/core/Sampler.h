@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <array>
 #include <cstdint>
 
@@ -53,7 +54,30 @@ public:
     // the previous sample's reference is released once nothing plays it any more, and if it was
     // the last one the sample is queued for collectGarbage().
     void install(int slot, Sample* sample);
-    bool has(int slot) const { return slot >= 0 && slot < kSlots && slots_[slot] != nullptr; }
+    bool has(int slot) const { return slot >= 0 && slot < kSlots && (slots_[slot] != nullptr || layerCount_[slot] > 0); }
+
+    // Sampled kits (phase 34, S3): a pad may hold up to kLayers sounds, each for a velocity range
+    // (0..127). A hit plays one of the layers whose range holds its velocity (none: those of the
+    // nearest range), taking them in turn (round robin) when several share it. A pad with layers
+    // plays them instead of its base sound; install() of a base sound removes them (a kit's pad
+    // is installed as: its base sound, then its layers). Audio thread; takes over the reference
+    // (nullptr: removes that layer).
+    static constexpr int kLayers = 8;
+    void installLayer(int slot, int layer, int velocityLow, int velocityHigh, Sample* sample);
+    int layerCount(int slot) const { return slot >= 0 && slot < kSlots ? layerCount_[slot] : 0; }
+    // Sounds let go while the retire queue was full (never freed): tests.
+    int leaked() const { return leaked_; }
+    // InstallSample's `a` for a layer (the plain pad index installs the base sound).
+    static int32_t layerArg(int pad, int layer, int velocityLow, int velocityHigh) {
+        return (pad & 0xFF) | ((std::clamp(layer, 0, kLayers - 1) + 1) << 8) | (std::clamp(velocityLow, 0, 127) << 16) |
+               (std::clamp(velocityHigh, 0, 127) << 24);
+    }
+    // The round robin starts over (the transport starts: an export plays the take's layers).
+    void resetRoundRobin() {
+        for (auto& pad : roundRobin_) pad.fill(0);
+    }
+    // The sound the pad's last hit played (tests).
+    const Sample* lastPlayed(int slot) const { return voices_[slot].sample; }
     void setParam(int slot, int param, float value);
     const PadParams& params(int slot) const { return params_[slot]; }
     // Schedules a hit `frameOffset` frames into the next render() call, panned -1..1, `pitch`
@@ -91,6 +115,10 @@ private:
     static constexpr int kFadeFrames = 96;  // 2 ms: no click when a hit is cut
 
     void retire(Sample* s);
+    // Lets `s` go once neither the pad's voice nor its tail plays it any more.
+    void releaseWhenSilent(int slot, Sample* s);
+    void releaseSilentHeld(int slot);
+    const Sample* pick(int slot, float velocity);
     // Region, speed and envelope of the slot's settings on `s` for a hit (position left alone).
     void shape(Voice& v, const Sample* s, const PadParams& p, float velocity, float pitch) const;
     void start(int slot, float velocity, float pan, float pitch);
@@ -109,7 +137,21 @@ private:
     std::array<float, kSlots> pendingVelocity_{};
     std::array<float, kSlots> pendingPan_{};
     std::array<float, kSlots> pendingPitch_{};
-    SpscQueue<Sample*, 64> retired_;
+    // Every sound the sampler can hold at once (16 pads x (a base, 8 layers, a held tail)) fits:
+    // a whole layered kit replaced twice before a collection is never leaked (review m5).
+    SpscQueue<Sample*, 512> retired_;
+    int leaked_ = 0;
+    struct Layer {
+        Sample* sample = nullptr;
+        int low = 0, high = 127;
+    };
+    std::array<std::array<Layer, kLayers>, kSlots> layers_{};
+    std::array<int, kSlots> layerCount_{};
+    // Per pad, one turn counter per group of layers a hit chooses from (by its first layer).
+    std::array<std::array<uint32_t, kLayers>, kSlots> roundRobin_{};
+    // Replaced layers still sounding (released by render() once silent).
+    static constexpr int kLayerHeld = 4;
+    std::array<std::array<Sample*, kLayerHeld>, kSlots> layerHeld_{};
 };
 
 }  // namespace ps

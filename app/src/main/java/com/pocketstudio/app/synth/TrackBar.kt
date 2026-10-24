@@ -24,6 +24,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.MusicNote
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -68,6 +70,21 @@ class TracksUi(
     val clear: ((Int) -> Unit)? = null,
     /** The scene shown, as its chip names it (« B », « Refrain »). */
     val scene: String = "",
+    /** « Changer le son » of track (id): its sounds in a sheet (null: not offered). */
+    val changeSound: ((Int) -> Unit)? = null,
+    /** Phase 37: « Geler la piste » / « Dégeler » (null: not offered), the frozen tracks and the one being frozen. */
+    val freeze: ((Int) -> Unit)? = null,
+    val unfreeze: ((Int) -> Unit)? = null,
+    val frozen: Set<Int> = emptySet(),
+    val freezing: Int? = null,
+    /** Phase 37: frozen tracks whose song changed since (« regèle-la »). */
+    val stale: Set<Int> = emptySet(),
+    /** Phase 36: false when the Sons space shows the tracks above every editor (the synth screen then shows none of its own). */
+    val showBar: Boolean = true,
+    /** Phase 36, Mode simple: « + Piste » offers the everyday kinds only, in everyday words. */
+    val simple: Boolean = false,
+    /** Phase 36: « + Piste » › « Voix (micro) », an audio track to sing on (null: not offered). */
+    val addVoice: (() -> Unit)? = null,
 ) {
     /** Whether track [id] plays notes in the scene shown. */
     fun hasNotes(id: Int) = tracks.firstOrNull { it.id == id }?.notes?.notes?.isNotEmpty() == true
@@ -79,7 +96,12 @@ class TracksUi(
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun TrackBar(ui: TracksUi, modifier: Modifier = Modifier) {
+fun TrackBar(
+    ui: TracksUi, modifier: Modifier = Modifier,
+    /** Phase 36, the Sons space: the drums and the acid before the tracks, the audio tracks after them. */
+    leading: @Composable androidx.compose.foundation.layout.RowScope.() -> Unit = {},
+    trailing: @Composable androidx.compose.foundation.layout.RowScope.() -> Unit = {},
+) {
     var menuFor by remember { mutableStateOf<InstrumentTrack?>(null) }
     // The dialogs stay open when the screen turns: kept by track id, then looked up.
     var renamingId by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf<Int?>(null) }
@@ -92,6 +114,7 @@ fun TrackBar(ui: TracksUi, modifier: Modifier = Modifier) {
         horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        leading()
         ui.tracks.forEach { t ->
             val selected = t.id == ui.selected
             val color = trackColor(t.color)
@@ -113,11 +136,22 @@ fun TrackBar(ui: TracksUi, modifier: Modifier = Modifier) {
                     Column(Modifier.weight(1f, fill = false)) {
                         Text(com.pocketstudio.model.DefaultNames.shown(t.name), style = MaterialTheme.typography.labelLarge, fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
                             maxLines = 1, overflow = TextOverflow.Ellipsis)
-                        Text(tr(t.soundLabel), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        Text(
+                            when {
+                                ui.freezing == t.id -> tr("Gel en cours…")
+                                t.id in ui.frozen -> "❄ " + tr("Gelée")
+                                else -> tr(t.soundLabel)
+                            },
+                            style = MaterialTheme.typography.labelSmall, color = if (t.id in ui.frozen) Neon.Cyan else Neon.TextSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis,
+                            modifier = if (t.id in ui.frozen) Modifier.testTag("track_frozen_${t.id}") else Modifier,
+                        )
                     }
                     if (selected) Icon(Icons.Filled.MoreVert, contentDescription = tr("Options de %s", com.pocketstudio.model.DefaultNames.shown(t.name)), Modifier.size(18.dp), tint = Neon.TextSecondary)
                 }
                 DropdownMenu(expanded = menuFor?.id == t.id, onDismissRequest = { menuFor = null }) {
+                    ui.changeSound?.let { change ->
+                        DropdownMenuItem(text = { Text(tr("Changer le son")) }, onClick = { menuFor = null; change(t.id) }, modifier = Modifier.testTag("track_menu_sound"))
+                    }
                     DropdownMenuItem(text = { Text(tr("Renommer")) }, onClick = { menuFor = null; renamingId = t.id })
                     DropdownMenuItem(text = { Text(tr("Couleur")) }, onClick = { menuFor = null; colouringId = t.id })
                     DropdownMenuItem(
@@ -126,9 +160,25 @@ fun TrackBar(ui: TracksUi, modifier: Modifier = Modifier) {
                     )
                     ui.clear?.let { clear ->
                         DropdownMenuItem(
-                            text = { Text(tr("Vider dans la scène %s", ui.scene)) }, enabled = ui.hasNotes(t.id),
+                            text = { Text(tr("Vider dans la partie %s", ui.scene)) }, enabled = ui.hasNotes(t.id),
                             onClick = { menuFor = null; clear(t.id) }, modifier = Modifier.testTag("track_clear"),
                         )
+                    }
+                    // Phase 37: the track rendered to audio (CPU saved), or back to its notes.
+                    if (t.id in ui.frozen) {
+                        ui.unfreeze?.let { unfreeze ->
+                            DropdownMenuItem(
+                                text = { Text(if (t.id in ui.stale) tr("Dégeler (le morceau a changé depuis le gel)") else tr("Dégeler")) },
+                                onClick = { menuFor = null; unfreeze(t.id) }, modifier = Modifier.testTag("track_unfreeze"),
+                            )
+                        }
+                    } else {
+                        ui.freeze?.let { freeze ->
+                            DropdownMenuItem(
+                                text = { Text(tr("Geler la piste (rendu audio, moins de calcul)")) }, enabled = ui.freezing == null,
+                                onClick = { menuFor = null; freeze(t.id) }, modifier = Modifier.testTag("track_freeze"),
+                            )
+                        }
                     }
                     if (t.id != 0) {
                         DropdownMenuItem(text = { Text(tr("Supprimer (Annuler possible)")) }, onClick = { menuFor = null; ui.remove(t.id) },
@@ -136,8 +186,15 @@ fun TrackBar(ui: TracksUi, modifier: Modifier = Modifier) {
                     }
                 }
             }
+            // The chosen track's sound, one touch away (« Changer le son »).
+            if (selected) ui.changeSound?.let { change ->
+                IconButton(onClick = { change(t.id) }, modifier = Modifier.testTag("track_sound_${t.id}")) {
+                    Icon(Icons.Filled.MusicNote, contentDescription = tr("Changer le son de %s", com.pocketstudio.model.DefaultNames.shown(t.name)), tint = color)
+                }
+            }
         }
-        ui.effects?.let { open ->
+        trailing()
+        if (ui.tracks.any { it.id == ui.selected }) ui.effects?.let { open ->
             OutlinedButton(onClick = { open(ui.selected) }, modifier = Modifier.height(44.dp).testTag("track_effects")) { Text(tr("Effets")) }
         }
         if (ui.tracks.size < InstrumentTrack.MAX) {
@@ -148,7 +205,7 @@ fun TrackBar(ui: TracksUi, modifier: Modifier = Modifier) {
         }
     }
     if (choosing) {
-        TrackAddDialog(onDismiss = { choosing = false }) { kind, write ->
+        TrackAddDialog(onDismiss = { choosing = false }, voice = ui.addVoice?.let { v -> { choosing = false; v() } }, simple = ui.simple) { kind, write ->
             choosing = false
             if (kind == null) ui.add() else ui.addKind?.invoke(kind, write)
         }

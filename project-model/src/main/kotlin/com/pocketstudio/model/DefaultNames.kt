@@ -20,7 +20,7 @@ object DefaultNames {
             listOf(
                 "Nouveau projet", "Mon premier rythme", "Mon projet", "Mon morceau", "Mon son",
                 "Synthé", "Basse", "Nappe", "Lead", "Batterie", "Basse acide", "Remix", "Piste", "Sample",
-                "Son importé", "Morceau 1 mesure", "Voix", StarterWizard.RISER_TRACK, StarterWizard.OLD_RISER_TRACK, StarterWizard.SUB_TRACK,
+                "Son importé", "Morceau 1 mesure", "Voix", StarterWizard.RISER_TRACK, StarterWizard.OLD_RISER_TRACK, StarterWizard.SUB_TRACK, StarterWizard.SUB_DROP_TRACK,
             ) + TrackKind.entries.map { it.trackName } + StarterWizard.CHORD_TRACK_NAMES + Demos.ALL.map { it.first } + StarterWizard.STYLES.map { it.name }
             ).toSet()
     }
@@ -49,7 +49,7 @@ object DefaultNames {
     private const val COPY = "%s (copie)"
 
     /** Every French text these names are made of (each one needs its translations). */
-    val TEXTS: List<String> get() = EXACT.toList() + NUMBERED + TIMED + STEMS + KIT_PADS + COPY
+    val TEXTS: List<String> get() = EXACT.toList() + NUMBERED + TIMED + STEMS + KIT_PADS + COPY + com.pocketstudio.model.i18n.I18n.EVERYDAY.values
 
     /** The pad's sound cut from the [stem] part (one of "Batterie", "Basse", "Autres", "Voix") of the separated song [song]. */
     fun stemPad(stem: String, song: String): String = "$stem$JOIN$song".take(40)

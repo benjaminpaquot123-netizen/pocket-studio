@@ -12,7 +12,9 @@ import com.pocketstudio.engine.ExportResult
 import com.pocketstudio.engine.NativeEngine
 import com.pocketstudio.engine.OfflineExport
 import com.pocketstudio.model.Project
+import com.pocketstudio.model.InstrumentTrack
 import com.pocketstudio.model.StarterWizard
+import com.pocketstudio.model.leadTrackId
 import com.pocketstudio.model.allScenes
 import com.pocketstudio.model.partSteps
 import kotlinx.coroutines.CoroutineScope
@@ -95,20 +97,28 @@ class SongBenchExport {
         }
     }
 
-    /** What ps_measure needs: the style, the song's length and tempo, each part's first frame. */
+    /**
+     * What ps_measure needs: the style, the song's length and tempo, each part's first frame and its
+     * section (a variant measured with its section: "Drop 2" with the Drop, "Montée 2" with the Montée).
+     */
     private fun header(style: StarterWizard.Style, p: Project): List<String> {
         val sixteenth = 15.0 / p.tempoBpm * OfflineExport.SAMPLE_RATE
         var steps = 0L
+        val numbered = Regex("""^(.+) \d+$""")
         val sections = p.song.mapIndexed { i, part ->
             val start = Math.round(steps * sixteenth)
             steps += p.partSteps(part)
-            "SECTION $i $start ${p.allScenes.getOrNull(part.scene)?.label?.ifBlank { null } ?: "Partie ${part.scene + 1}"}"
+            val label = p.allScenes.getOrNull(part.scene)?.label?.ifBlank { null }?.let { numbered.matchEntire(it)?.groupValues?.get(1) ?: it }
+            "SECTION $i $start ${label ?: "Partie ${part.scene + 1}"}"
         }
         return listOf(
             "META style ${style.id}",
             "META name ${style.name}",
             "META family ${style.family}",
             "SONG frames=${Math.round(steps * sixteenth)} bpm=${p.tempoBpm}",
+        ) + listOfNotNull(
+            // S4: the lead's mixer channel, rendered alone by the bench (how its sound moves along the song).
+            p.leadTrackId()?.let { "META lead ${InstrumentTrack.mixerChannel(it)}" },
         ) + sections
     }
 }

@@ -61,15 +61,21 @@ data class PackEntry(
     val version: Int = 1,
     val release: String = "",
     val family: String = "",
+    /** An instrument's few seconds heard before it is downloaded: a .flac next to [file] (empty: none). */
+    val preview: String = "",
+    val previewSha256: String = "",
+    val previewBytes: Long = 0,
 ) {
     val isSafe: Boolean get() = PackManifest.safeName(id) && PackManifest.safeName(file) && file.endsWith(".zip") &&
         sha256.matches(Regex("[0-9a-f]{64}")) && sizeBytes in 1..MAX_BYTES && version >= 1 &&
-        (release.isEmpty() || release.matches(Regex("sons-packs(-[0-9]{1,4})?")))
+        (release.isEmpty() || release.matches(Regex("sons-packs(-[0-9]{1,4})?"))) &&
+        (preview.isEmpty() || (PackManifest.safeName(preview) && preview.endsWith(".flac") && previewSha256.matches(Regex("[0-9a-f]{64}")) && previewBytes in 1..MAX_PREVIEW_BYTES))
 
     val sizeLabel: String get() = tr("%d Mo", ((sizeBytes + 500_000) / 1_000_000).coerceAtLeast(1))
 
     companion object {
         const val MAX_BYTES = 200_000_000L
+        const val MAX_PREVIEW_BYTES = 5_000_000L
     }
 }
 
@@ -82,12 +88,18 @@ data class PackManifest(
     val sounds: List<PackSound> = emptyList(),
     /** The [PackEntry.version] installed (packs built before versions are 1). */
     val version: Int = 1,
+    /** A multizone instrument's zones (phase 38: [MultiInstruments]); null for a pack of sounds. */
+    val instrument: MultiInstrument? = null,
 ) {
     fun sanitized() = copy(
         name = name.take(40),
         sounds = sounds.filter { safeName(it.file) && it.kind in SoundPacks.KIND_LABELS }
             .map { it.copy(name = it.name.take(40), tags = it.tags.take(8).map { t -> t.take(30) }) },
+        instrument = instrument?.sanitized()?.takeIf { it.zones.isNotEmpty() },
     )
+
+    /** Every file the pack keeps: its sounds and its instrument's zones. */
+    val files: Set<String> get() = sounds.map { it.file }.toSet() + instrument?.zones?.map { it.file }.orEmpty()
 
     /** The pack's sounds of [kind], best first (see [PackPicks]). */
     fun ofKind(kind: String) = PackPicks.sorted(id, kind, sounds.filter { it.kind == kind }) { it.file }

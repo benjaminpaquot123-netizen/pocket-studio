@@ -29,13 +29,14 @@ class NextStepsTest {
     @Test
     fun anEmptyProjectStartsWithTheRhythm() {
         val steps = nextSteps(Project(name = ""))
-        assertEquals(StepGoal.entries, steps.map { it.goal })
+        // No song yet: no « Écoute » nor « Un son » (they belong to a song made whole); the volumes before the voice (an option).
+        assertEquals(StepGoal.entries - setOf(StepGoal.Listen, StepGoal.Sound), steps.map { it.goal })
         assertEquals(emptySet<StepGoal>(), steps.done())
         assertEquals(StepGoal.Rhythm, steps.next()!!.goal)
         // Each step says what to do in one line and where.
         assertTrue(steps.all { it.hint.isNotBlank() && it.button.isNotBlank() && '\n' !in it.hint })
         assertEquals(
-            listOf(AppTab.Rythme, AppTab.Acide, AppTab.Synthe, AppTab.Morceau, AppTab.Morceau, AppTab.Audio, AppTab.Mixeur, AppTab.Mixeur),
+            listOf(AppTab.Rythme, AppTab.Acide, AppTab.Synthe, AppTab.Morceau, AppTab.Morceau, AppTab.Mixeur, AppTab.Audio, AppTab.Mixeur),
             steps.map { it.tab },
         )
         assertEquals((1..8).toList(), steps.map { it.number })
@@ -69,7 +70,7 @@ class NextStepsTest {
         assertFalse(unnamed.done)
         assertTrue(unnamed.hint, unnamed.hint.contains("nom"))
         // One scene only: the hint asks for a second one first.
-        assertTrue(nextSteps(beat).first { it.goal == StepGoal.Sections }.hint.contains("deuxième section"))
+        assertTrue(nextSteps(beat).first { it.goal == StepGoal.Sections }.hint.contains("deuxième partie"))
         val named = two.renameScene(0, "Couplet").renameScene(1, "Refrain")
         assertTrue(nextSteps(named).first { it.goal == StepGoal.Sections }.done)
         // The song: three parts or more.
@@ -100,17 +101,41 @@ class NextStepsTest {
     }
 
     @Test
-    fun theGuidedSongLeavesTheVoiceTheMixAndTheSharing() {
+    fun theGuidedSongGoesOnWithListeningASoundTheMixTheVoiceAsAnOptionAndTheSharing() {
         val style = StarterWizard.style("house")!!
         val parts = StarterWizard.Part.entries.associateWith { StarterWizard.soundsFor(it, style).first() }
         val song = StarterWizard.build(style, style.lines.associate { it.role to null as PadSample? }, StarterWizard.Mood.Happy, parts)
         val steps = nextSteps(song)
         assertEquals(setOf(StepGoal.Rhythm, StepGoal.Bass, StepGoal.Melody, StepGoal.Sections, StepGoal.Song), steps.done())
-        // Next: the voice on top (rap, song), then the mix.
-        assertEquals(StepGoal.Voice, steps.next()!!.goal)
+        // A song made whole: hear it, make it one's own, the mix, the voice if wanted, share. Never « Pose ta voix » first.
+        assertEquals(
+            listOf(StepGoal.Rhythm, StepGoal.Bass, StepGoal.Melody, StepGoal.Sections, StepGoal.Song, StepGoal.Listen, StepGoal.Sound, StepGoal.Volumes, StepGoal.Voice, StepGoal.Share),
+            steps.map { it.goal },
+        )
+        assertEquals((1..10).toList(), steps.map { it.number })
+        assertEquals(StepGoal.Listen, steps.next()!!.goal)
+        assertEquals("6/10", "${steps.next()!!.number}/${steps.size}")
+        assertTrue(steps.first { it.goal == StepGoal.Voice }.action.contains("si tu veux"))
         // Everything done: no next step (the card hides).
-        assertNull(nextSteps(song, setOf(StepGoal.Voice, StepGoal.Volumes, StepGoal.Share)).next())
+        assertNull(nextSteps(song, setOf(StepGoal.Listen, StepGoal.Sound, StepGoal.Voice, StepGoal.Volumes, StepGoal.Share)).next())
         // Still true on another scene shown.
         assertEquals(steps.done(), nextSteps(song.switchScene(2)).done())
+    }
+
+    /** A beat alone keeps the eight steps in their order; what is done comes first, numbered from 1. */
+    @Test
+    fun whatTheProjectAlreadyHasComesFirst() {
+        val steps = nextSteps(Project(drums = com.pocketstudio.model.DrumPattern().toggle(0, 0)))
+        assertEquals(8, steps.size)
+        assertEquals(listOf(StepGoal.Rhythm), steps.filter { it.done }.map { it.goal })
+        assertEquals((1..8).toList(), steps.map { it.number })
+        assertEquals(StepGoal.Bass, steps.next()!!.goal)
+        // A melody without a rhythm yet: the melody is done and comes first, the rhythm is next.
+        val tune = Project().withNotes(0, 72, 74, 76)
+        val reordered = nextSteps(tune)
+        assertEquals(StepGoal.Melody, reordered[0].goal)
+        assertEquals(1, reordered[0].number)
+        assertEquals(StepGoal.Rhythm, reordered.next()!!.goal)
+        assertEquals(2, reordered.next()!!.number)
     }
 }

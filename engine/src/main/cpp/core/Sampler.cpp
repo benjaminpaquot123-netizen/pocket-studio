@@ -16,7 +16,103 @@ Sampler::~Sampler() {
         if (s && s->release()) delete s;
         s = nullptr;
     }
+    for (auto& pad : layers_) {
+        for (auto& l : pad) {
+            if (l.sample && l.sample->release()) delete l.sample;
+            l.sample = nullptr;
+        }
+    }
+    for (auto& pad : layerHeld_) {
+        for (auto*& s : pad) {
+            if (s && s->release()) delete s;
+            s = nullptr;
+        }
+    }
     collectGarbage();
+}
+
+void Sampler::releaseWhenSilent(int slot, Sample* s) {
+    if (!s) return;
+    if (voices_[slot].sample != s && tails_[slot].sample != s) {
+        retire(s);
+        return;
+    }
+    for (auto*& h : layerHeld_[slot]) {
+        if (!h) {
+            h = s;
+            return;
+        }
+    }
+    // More replaced sounds still ringing than room to hold them (sounds swapped faster than they
+    // fade): the pad goes quiet at once, and they all go.
+    voices_[slot] = Voice{};
+    tails_[slot] = Voice{};
+    if (held_[slot]) {
+        retire(held_[slot]);
+        held_[slot] = nullptr;
+    }
+    releaseSilentHeld(slot);
+    retire(s);
+}
+
+void Sampler::releaseSilentHeld(int slot) {
+    for (auto*& h : layerHeld_[slot]) {
+        if (h && voices_[slot].sample != h && tails_[slot].sample != h) {
+            retire(h);
+            h = nullptr;
+        }
+    }
+}
+
+void Sampler::installLayer(int slot, int layer, int velocityLow, int velocityHigh, Sample* sample) {
+    if (slot < 0 || slot >= kSlots || layer < 0 || layer >= kLayers) {
+        retire(sample);
+        return;
+    }
+    Layer& l = layers_[static_cast<size_t>(slot)][static_cast<size_t>(layer)];
+    const int low = std::clamp(std::min(velocityLow, velocityHigh), 0, 127);
+    const int high = std::clamp(std::max(velocityLow, velocityHigh), 0, 127);
+    if (sample == l.sample) {  // the same sound again: only its range may change
+        retire(sample);
+        if (l.sample) {
+            l.low = low;
+            l.high = high;
+        }
+        return;
+    }
+    Sample* old = l.sample;
+    if (old && !sample) --layerCount_[slot];
+    if (!old && sample) ++layerCount_[slot];
+    l = Layer{sample, low, high};
+    if (!has(slot)) pendingOffset_[slot] = -1;
+    releaseWhenSilent(slot, old);
+}
+
+const Sample* Sampler::pick(int slot, float velocity) {
+    if (layerCount_[slot] == 0) return slots_[slot];
+    const int v = static_cast<int>(std::lround(std::clamp(velocity, 0.0f, 1.0f) * 127.0f));
+    const auto& pad = layers_[static_cast<size_t>(slot)];
+    auto distance = [v](const Layer& l) { return v < l.low ? l.low - v : v > l.high ? v - l.high : 0; };
+    int best = 1 << 30, count = 0, first = 0;
+    for (int i = 0; i < kLayers; ++i) {
+        const Layer& l = pad[static_cast<size_t>(i)];
+        if (!l.sample) continue;
+        const int d = distance(l);
+        if (d < best) {
+            best = d;
+            count = 1;
+            first = i;
+        } else if (d == best) {
+            ++count;
+        }
+    }
+    uint32_t& turn = roundRobin_[static_cast<size_t>(slot)][static_cast<size_t>(first)];
+    const int k = static_cast<int>(turn++ % static_cast<uint32_t>(std::max(1, count)));
+    int seen = 0;
+    for (const Layer& l : pad) {
+        if (l.sample && distance(l) == best && seen++ == k) return l.sample;
+    }
+    return slots_[slot];
 }
 
 void Sampler::prepare(int sampleRate) {
@@ -27,7 +123,8 @@ void Sampler::prepare(int sampleRate) {
 
 void Sampler::retire(Sample* s) {
     if (s && s->release() && !retired_.push(s)) {
-        // Queue full (64 releases without a collection): leak rather than free here.
+        // Queue full (512 releases without a collection): leak rather than free here.
+        ++leaked_;
     }
 }
 
@@ -37,7 +134,7 @@ void Sampler::install(int slot, Sample* sample) {
         return;
     }
     // Same sound again (undo, back to the app, resync): keep playing, drop the extra reference.
-    if (sample == slots_[slot]) {
+    if (sample == slots_[slot] && layerCount_[slot] == 0) {
         retire(sample);
         return;
     }
@@ -72,11 +169,18 @@ void Sampler::install(int slot, Sample* sample) {
             voice = v;
         }
     }
-    if (!sample) pendingOffset_[slot] = -1;  // a hit waiting for this frame plays the new sound
     slots_[slot] = sample;
     // The old sound is let go once its tail no longer plays it (end of render()).
     if (old && tail.sample == old) held_[slot] = old;
     else retire(old);
+    // A base sound replaces the pad's layers.
+    for (Layer& l : layers_[static_cast<size_t>(slot)]) {
+        Sample* s = l.sample;
+        l = Layer{};
+        releaseWhenSilent(slot, s);
+    }
+    layerCount_[slot] = 0;
+    if (!sample) pendingOffset_[slot] = -1;  // a hit waiting for this frame plays the new sound
 }
 
 void Sampler::setParam(int slot, int param, float v) {
@@ -139,8 +243,10 @@ void Sampler::shape(Voice& v, const Sample* s, const PadParams& p, float velocit
 void Sampler::start(int slot, float velocity, float pan, float pitch) {
     const PadParams& p = params_[slot];
     fadeOut(slot);  // the other pads of a choke group were cut at this frame by render()
+    const Sample* sound = pick(slot, velocity);
+    if (!sound) return;
     Voice v;
-    shape(v, slots_[slot], p, velocity, pitch);
+    shape(v, sound, p, velocity, pitch);
     v.pos = p.reverse ? v.hi - 1.0 : v.lo;
     panGains(pan, v.gainL, v.gainR);
     voices_[slot] = v;
@@ -160,6 +266,7 @@ void Sampler::stopAll() {
         retire(s);
         s = nullptr;
     }
+    for (int slot = 0; slot < kSlots; ++slot) releaseSilentHeld(slot);
 }
 
 void Sampler::renderVoice(Voice& v, float* left, float* right, int from, int to) {
@@ -280,6 +387,7 @@ void Sampler::render(float* const* lefts, float* const* rights, int numFrames) {
             retire(held_[slot]);
             held_[slot] = nullptr;
         }
+        releaseSilentHeld(slot);
     }
 }
 

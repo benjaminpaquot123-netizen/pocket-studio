@@ -31,7 +31,7 @@ object SoundLibrary {
      */
     val SYNTH_GAIN_DB: Map<String, Float> = mapOf(
         "Basse ronde" to 5f, "Basse reese" to 4.5f, "Reese moderne" to 5f, "Basse wobble" to 2f, "Basse qui parle" to 4.5f,
-        "Basse growl" to 3f, "Lead" to 2.5f, "Lead carré" to 1f, "Lead acide" to 6.5f, "Supersaw" to -2f, "Lead trance" to 1.5f,
+        "Basse growl" to 3f, "Reese DnB" to 3f, "Basse riddim" to 1.5f, "Basse neuro" to 5f, "Lead" to 2.5f, "Lead carré" to 1f, "Lead acide" to 6.5f, "Supersaw" to -2f, "Lead trance" to 1.5f,
         "Hoover" to 2.5f, "Nappe" to -3f, "Nappe chaude" to -4f, "Accords future bass" to -5f, "Cordes" to -4f, "Pluck" to 7f,
         "Pluck future" to 6f, "Arpège" to 7.5f, "Cloche" to 8.5f, "Orgue" to -2.5f, "Piano électrique" to 1.5f,
     )
@@ -56,6 +56,12 @@ object SoundLibrary {
             // The jump up growl: a gritty mid bass (saw and square, three copies) whose resonant filter
             // opens and closes every sixteenth, restarted on each note; no sub of its own (« Sub pur » plays it).
             NamedSound("Basse growl", "Basses", synth(OSC2_WAVE to 0.5f, OSC2_DETUNE to 0.6f, OSC_MIX to 0.5f, UNISON to 0.33f, UNISON_DETUNE to 0.2f, SUB to 0f, CUTOFF to 0.42f, RESONANCE to 0.6f, FILTER_ENV to 0.3f, F_DECAY to 0.2f, F_SUSTAIN to 0.2f, SWEEP to 0.8f, LFO2_RATE to 0.7f, LFO2_SYNC to syncValue(SYNC_SIXTEENTH), A_ATTACK to 0f, A_SUSTAIN to 1f, A_RELEASE to 0.12f)),
+            // S4, the bass music voices (each one a sub mono under 250 Hz and a wide, driven mid layer):
+            // the drum and bass reese (two saws +-27 cents, Saunderson's), the riddim's square wobble
+            // (a gate on 1/8 triplets) and the neurofunk bass that talks (a vowel filter on the sweep).
+            NamedSound("Reese DnB", "Basses", WideMix.reese(synth(OSC2_DETUNE to 0.75f, OSC_MIX to 0.35f, CUTOFF to 0.42f, RESONANCE to 0.25f, SUB to 0.45f, SWEEP to 0.2f, LFO2_RATE to 0.15f, A_RELEASE to 0.2f))),
+            NamedSound("Basse riddim", "Basses", WideMix.riddim(synth(OSC1_WAVE to 0.5f, OSC2_WAVE to 0.5f, OSC2_DETUNE to 0.55f, OSC_MIX to 0.45f, SUB to 0.7f, CUTOFF to 0.35f, RESONANCE to 0.55f, FILTER_ENV to 0f, SWEEP to 0.9f, LFO2_RATE to 0.64f, LFO2_SYNC to syncValue(SYNC_EIGHTH_TRIPLET), A_ATTACK to 0f, A_SUSTAIN to 1f, A_RELEASE to 0.12f))),
+            NamedSound("Basse neuro", "Basses", WideMix.neuro(synth(OSC2_WAVE to 0.5f, OSC2_DETUNE to 0.7f, OSC_MIX to 0.5f, UNISON to 0.33f, UNISON_DETUNE to 0.25f, SUB to 0.4f, CUTOFF to 0.48f, RESONANCE to 0.5f, FILTER_ENV to 0.25f, F_DECAY to 0.25f, F_SUSTAIN to 0.3f, SWEEP to 0.6f, LFO2_RATE to 0.6f, LFO2_SYNC to syncValue(SYNC_EIGHTH), A_ATTACK to 0f, A_SUSTAIN to 1f, A_RELEASE to 0.12f))),
             // A clean sub under a growl: a triangle filtered into an almost pure sine, no movement.
             NamedSound("Sub pur", "Basses", synth(OSC1_WAVE to 1f, OSC_MIX to 0f, SUB to 0f, CUTOFF to 0.27f, RESONANCE to 0f, FILTER_ENV to 0f, A_ATTACK to 0f, A_SUSTAIN to 1f, A_RELEASE to 0.1f)),
             NamedSound("Lead", "Leads", SynthPatch.PRESETS[1].second),
@@ -123,7 +129,10 @@ object SoundLibrary {
      * the same sound, shown as chosen in « Sons prêts à jouer ».
      */
     fun synthNameOf(patch: SynthPatch, among: List<NamedSound<SynthPatch>> = SYNTH): String? {
-        fun SynthPatch.identity() = sanitized().with(SynthPatch.GAIN, 0.5f).with(SynthPatch.GLIDE, 0f)
+        // The assistant's width and movement (S4: [SynthPatch.S4_PARAMS]) are its production, not the sound.
+        fun SynthPatch.identity() = SynthPatch.S4_PARAMS.fold(sanitized().with(SynthPatch.GAIN, 0.5f).with(SynthPatch.GLIDE, 0f)) { p, i ->
+            p.with(i, SynthPatch.DEFAULTS[i])
+        }
         val wanted = patch.identity()
         return among.firstOrNull { it.sound.identity() == wanted }?.name
     }

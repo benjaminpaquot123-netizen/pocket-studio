@@ -12,6 +12,7 @@ import com.pocketstudio.model.Scale
 import com.pocketstudio.model.Scene
 import com.pocketstudio.model.SoundCategories
 import com.pocketstudio.model.SoundLibrary
+import com.pocketstudio.model.SongShape
 import com.pocketstudio.model.SoundPacks
 import com.pocketstudio.model.StarterWizard
 import com.pocketstudio.model.SynthPatch
@@ -53,10 +54,16 @@ class ModelTextsTest {
         add(StarterWizard.SongForm.BREAK_ROLE_WITH_BASS, StarterWizard.SongForm.GROOVE_ROLE_NO_BASS)
         add(StarterWizard.ScenePlan.ACID_TITLE, StarterWizard.ScenePlan.RISER_TITLE, StarterWizard.ScenePlan.IMPACT_TITLE, StarterWizard.RISER_TRACK)
         add(StarterWizard.ScenePlan.COUNTER_TITLE, StarterWizard.COUNTER_TRACK)
+        // The song's variants (S2) and its own tracks.
+        add(SongShape.MONTEE, SongShape.PRE_CHORUS, SongShape.POST_CHORUS, SongShape.FAKE_DROP, StarterWizard.SongForm.BRIDGE_LABEL)
+        add(StarterWizard.SUB_DROP_TRACK, StarterWizard.VOCAL_TRACK)
         addAll(StarterWizard.KIT_MELODIC.values)
         // The assistant's quick 303 sounds, and the kinds of track "+ Piste" offers (with their names).
         addAll(com.pocketstudio.model.WizardAcid.SOUNDS.map { it.first })
         com.pocketstudio.model.TrackKind.entries.forEach { add(it.trackName, it.title, it.description) }
+        // Phase 38: the multizone instruments of the chooser and their families.
+        com.pocketstudio.model.MultiInstruments.KNOWN.forEach { add(it.name, it.description) }
+        addAll(com.pocketstudio.model.MultiInstruments.CATEGORY_LABELS.values)
         // The sounds the assistant proposes ("Cloche (Plaits)"…).
         StarterWizard.STYLES.forEach { style -> StarterWizard.Part.entries.forEach { p -> addAll(StarterWizard.soundsFor(p, style).map { it.name }) } }
 
@@ -89,6 +96,7 @@ class ModelTextsTest {
         // Names the app gives (saved in French, shown translated) and song sections.
         addAll(DefaultNames.TEXTS)
         addAll(Scene.SECTIONS)
+        addAll(Scene.DRUM_LABELS)
 
         // Harmony.
         Scale.entries.forEach { add(it.label) }

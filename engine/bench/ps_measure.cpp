@@ -21,6 +21,8 @@
 #include <string>
 #include <vector>
 
+#include "Loudness.h"
+
 #include "ebur128.h"
 #include "signalsmith-linear/fft.h"
 
@@ -346,9 +348,60 @@ std::string quoted(const std::string& s) {
 
 }  // namespace
 
+// S4: how much the lead's brightness moves along the song. Its track alone (ps_render --solo), the
+// spectral centroid (60 Hz..16 kHz) of each bar where it plays (within 30 dB of its loudest bar):
+// the spread between the 10th and the 90th percentile, as +-% around their middle. Bar by bar, the
+// notes of a phrase average out: what is left is the filter's movement (the 8-bar cycle, the curves).
+struct Centroid {
+    double median = 0, variation = 0;
+    int bars = 0;
+};
+
+Centroid barCentroids(const Audio& a, int64_t songFrames, double bpm, int beatsPerBar = 4) {
+    Centroid c;
+    if (!(bpm > 0)) return c;
+    const int64_t bar = static_cast<int64_t>(std::llround(beatsPerBar * 60.0 / bpm * a.rate));
+    std::vector<std::pair<double, double>> perBar;  // centroid, energy
+    double loudest = 0;
+    for (int64_t s = 0; s + bar <= songFrames; s += bar) {
+        const auto p = spectrum(a, {{s, s + bar}});
+        double num = 0, den = 0;
+        for (size_t k = 1; k < p.size(); ++k) {
+            const double f = static_cast<double>(k) * a.rate / kFft;
+            if (f < 60 || f > 16000) continue;
+            num += f * p[k];
+            den += p[k];
+        }
+        if (den <= 0) continue;
+        perBar.emplace_back(num / den, den);
+        loudest = std::max(loudest, den);
+    }
+    std::vector<double> kept;
+    for (auto [hz, e] : perBar) {
+        if (e >= loudest * 1e-3) kept.push_back(hz);
+    }
+    if (kept.size() < 4) return c;
+    std::sort(kept.begin(), kept.end());
+    auto pct = [&](double q) { return kept[static_cast<size_t>(std::lround(q * static_cast<double>(kept.size() - 1)))]; };
+    const double lo = pct(0.1), hi = pct(0.9);
+    c.median = pct(0.5);
+    c.variation = 100.0 * (hi - lo) / (hi + lo);
+    c.bars = static_cast<int>(kept.size());
+    return c;
+}
+
 int main(int argc, char** argv) {
+    // ps_measure <song.wav> [<song.pscmd>] [--lead <lead.wav>]: --lead adds the lead's centroid movement.
+    std::string leadPath;
+    std::vector<char*> args{argv[0]};
+    for (int i = 1; i < argc; ++i) {
+        if (!std::strcmp(argv[i], "--lead") && i + 1 < argc) leadPath = argv[++i];
+        else args.push_back(argv[i]);
+    }
+    argc = static_cast<int>(args.size());
+    argv = args.data();
     if (argc < 2 || argc > 3) {
-        std::fprintf(stderr, "usage: ps_measure <song.wav> [<song.pscmd>]\n");
+        std::fprintf(stderr, "usage: ps_measure <song.wav> [<song.pscmd>] [--lead <lead.wav>]\n");
         return 1;
     }
     Audio a;
@@ -361,6 +414,7 @@ int main(int argc, char** argv) {
     // Sections from the .pscmd: SONG frames=<n> ..., SECTION <index> <frame> <label>.
     std::vector<Section> sections;
     int64_t songFrames = total;
+    double bpm = 0;
     std::string style;
     if (argc == 3) {
         std::ifstream in(argv[2]);
@@ -373,6 +427,7 @@ int main(int argc, char** argv) {
                 std::string kv;
                 while (ls >> kv) {
                     if (kv.rfind("frames=", 0) == 0) songFrames = std::stoll(kv.substr(7));
+                    if (kv.rfind("bpm=", 0) == 0) bpm = std::stod(kv.substr(4));
                 }
             } else if (op == "SECTION") {
                 int index = 0;
@@ -483,6 +538,13 @@ int main(int argc, char** argv) {
     std::printf("  \"end_dbfs\": %s,\n", num(dbAmp(endPeak)).c_str());
     std::printf("  \"main\": %s,\n", quoted(main.empty() ? "song" : main).c_str());
     std::printf("  \"main_lufs\": %s,\n", num(mainLoud.lufs).c_str());
+    // S5: the loudness of the song's loudest part as the engine's Drop-mode target reads it (LoudPart).
+    {
+        ps::LoudPartMeter loudPart;
+        loudPart.prepare(a.rate);
+        for (int64_t i = 0; i < songFrames; ++i) loudPart.add(a.l[static_cast<size_t>(i)], a.r[static_cast<size_t>(i)]);
+        std::printf("  \"loud_lufs\": %s,\n", num(loudPart.lufs()).c_str());
+    }
     std::printf("  \"main_true_peak\": %s,\n", num(dbAmp(mainTruePeak)).c_str());
     std::printf("  \"main_crest\": %s,\n", num(crest).c_str());
     std::printf("  \"mono_loss_lu\": %s,\n", num(mainMono.lufs - mainLoud.lufs).c_str());
@@ -493,8 +555,85 @@ int main(int argc, char** argv) {
     std::printf("  \"bands\": {\"sub\": %s, \"low\": %s, \"low_mid\": %s, \"mid\": %s, \"high_mid\": %s, \"air\": %s},\n",
                 num(b.sub).c_str(), num(b.low).c_str(), num(b.lowMid).c_str(), num(b.mid).c_str(), num(b.highMid).c_str(), num(b.air).c_str());
     std::printf("  \"slope_db_oct\": %s,\n", num(b.slope).c_str());
+    if (!leadPath.empty()) {
+        Audio lead;
+        Centroid c;
+        if (readWav(leadPath.c_str(), lead) && lead.frames() > 0) c = barCentroids(lead, std::min<int64_t>(songFrames, static_cast<int64_t>(lead.frames())), bpm);
+        std::printf("  \"lead_centroid_hz\": %s,\n", c.bars ? num(c.median, 0).c_str() : "null");
+        std::printf("  \"lead_centroid_var\": %s,\n", c.bars ? num(c.variation).c_str() : "null");
+    }
     std::printf("  \"drop_minus_groove\": %s,\n", contrast({"Groove", "Couplet", "Montée"}).c_str());
     std::printf("  \"drop_minus_break\": %s,\n", contrast({"Break"}).c_str());
+    // S5: how much each Montée rises over its last 4 bars: the short-term loudness (3 s) just before
+    // its last beat (its silence) minus the one 3 s into those 4 bars (4/4; the last section of each
+    // run of sections named « Montée »).
+    {
+        std::vector<double> rises;
+        const double beat = bpm > 0 ? 60.0 / bpm * a.rate : 0.0;
+        const auto st3 = static_cast<int64_t>(3 * a.rate);
+        // The drummer's one-bar fills and crashes (S3) belong to the section they are in.
+        std::vector<std::string> owner(sections.size());
+        for (size_t i = 0; i < sections.size(); ++i) {
+            const bool bar = sections[i].label == "Fill" || sections[i].label == "Crash";
+            owner[i] = bar && i > 0 ? owner[i - 1] : sections[i].label;
+        }
+        for (size_t i = 0; i < sections.size() && beat > 0; ++i) {
+            const auto& s = sections[i];
+            const bool last = i + 1 == sections.size() || owner[i + 1] != owner[i];
+            if (owner[i] != "Montée" || !last) continue;
+            const auto end = static_cast<int64_t>(static_cast<double>(s.end) - beat);
+            const auto from = static_cast<int64_t>(static_cast<double>(s.end) - 16 * beat) + st3;
+            if (from - st3 < 0 || end - st3 <= from) continue;
+            const double hi = loudness(a, {{end - st3, end}}).lufs, lo = loudness(a, {{from - st3, from}}).lufs;
+            if (std::isfinite(hi) && std::isfinite(lo) && hi > -70 && lo > -70) rises.push_back(hi - lo);
+        }
+        auto list = [](const char* key, const std::vector<double>& v) {
+            std::printf("  \"%s\": [", key);
+            for (size_t i = 0; i < v.size(); ++i) std::printf("%s%s", i ? ", " : "", num(v[i]).c_str());
+            std::printf("],\n");
+        };
+        list("montee_rise", rises);
+        // S5b: each Drop against the end of the Montée before it: the loudness of the Drop's first 4
+        // bars minus that of the Montée's last 2 (its silent last beat left out); a fake drop between
+        // them is skipped (the real Drop is the one that must land). About 3 s each, the short-term
+        // window. Benjamin's A/B test found Montées that ended louder than their Drop.
+        std::vector<double> landings, ends, starts;
+        for (size_t i = 0; i < sections.size() && beat > 0; ++i) {
+            const auto& s = sections[i];
+            const bool last = i + 1 == sections.size() || owner[i + 1] != owner[i];
+            if (owner[i] != "Montée" || !last) continue;
+            size_t d = i + 1;
+            while (d < sections.size() && owner[d] == "Faux drop") ++d;
+            if (d >= sections.size() || (owner[d] != "Drop" && owner[d] != "Refrain")) continue;
+            const auto endFrom = static_cast<int64_t>(static_cast<double>(s.end) - 9 * beat);
+            const auto endTo = static_cast<int64_t>(static_cast<double>(s.end) - beat);
+            const int64_t dropFrom = sections[d].start;
+            const auto dropTo = std::min<int64_t>(songFrames, static_cast<int64_t>(static_cast<double>(dropFrom) + 16 * beat));
+            if (endFrom < 0 || dropTo <= dropFrom) continue;
+            const double hi = loudness(a, {{dropFrom, dropTo}}).lufs, lo = loudness(a, {{endFrom, endTo}}).lufs;
+            if (std::isfinite(hi) && std::isfinite(lo) && hi > -70 && lo > -70) {
+                landings.push_back(hi - lo);
+                ends.push_back(lo);
+                starts.push_back(hi);
+            }
+        }
+        list("drop_minus_montee_end", landings);
+        list("montee_end_lufs", ends);
+        list("drop_start_lufs", starts);
+    }
+    // S5b: the song's Intro (its first sections named « Intro »; the outro, the same scene, left out)
+    // against the Drop (or the Refrain): an intro may be sparse, not far under it.
+    {
+        int64_t introEnd = 0;
+        for (const auto& s : sections) {
+            if (s.label != "Intro") break;
+            introEnd = s.end;
+        }
+        const double intro = introEnd > 0 ? loudness(a, {{0, introEnd}}).lufs : -HUGE_VAL;
+        const bool ok = std::isfinite(intro) && labelLufs.count(main) && std::isfinite(labelLufs[main]);
+        std::printf("  \"intro_lufs\": %s,\n", ok ? num(intro).c_str() : "null");
+        std::printf("  \"intro_minus_main\": %s,\n", ok ? num(intro - labelLufs[main]).c_str() : "null");
+    }
     std::printf("  \"sections\": [");
     for (size_t i = 0; i < sections.size(); ++i) {
         const auto& s = sections[i];

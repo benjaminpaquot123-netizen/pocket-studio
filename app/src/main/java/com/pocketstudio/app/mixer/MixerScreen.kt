@@ -173,6 +173,8 @@ fun MixerScreen(
     /** The master's « Cible », and the loudness « Auto » aims at for this project's style. */
     target: com.pocketstudio.model.LoudnessTarget = com.pocketstudio.model.LoudnessTarget.OFF,
     styleLufs: Float = com.pocketstudio.model.LoudnessTargets.DEFAULT_LUFS,
+    /** Phase 36: a strip's sheet › « Courbes »: that strip first in « Automatiser un réglage ». */
+    preferChannel: (Int) -> Unit = {},
 ) {
     val exportCard = androidx.compose.runtime.remember { androidx.compose.foundation.relocation.BringIntoViewRequester() }
     val automationCard = androidx.compose.runtime.remember { androidx.compose.foundation.relocation.BringIntoViewRequester() }
@@ -196,13 +198,13 @@ fun MixerScreen(
     }
     // On a tablet the channel strips stay on the left; the master, buses, automation and export on the right.
     com.pocketstudio.ui.AdaptivePanes(modifier.testTag("mixer"), first = {
-        // Automation and everything that acts on the sound, near the top: no scrolling to find them.
+        // Phase 36: the console first, every fader in sight; automation and « Ce qui joue » right under it.
+        Console(
+            strips, channels, meters, actions, lanesOn,
+            openMoves = { ch -> overview(ch) },
+            openCurves = { ch -> preferChannel(ch); scope.launch { automationCard.bringIntoView() } },
+        )
         AutomationEntry(automation.lanes.size, show = { scope.launch { automationCard.bringIntoView() } }, overview = { overview(null) })
-        // Many tracks: each strip shows its volume on one line; ▾ opens pan and effects.
-        val compact = strips.size > BASIC_STRIPS.size
-        strips.forEach { st ->
-            Strip(st, channels.getOrElse(st.ch) { Channel() }, { meters().getOrElse(st.ch) { 0f } }, actions, compact, lanesOn[st.ch] ?: 0) { overview(st.ch) }
-        }
     }, second = {
         AutomationCard(
             automation.copy(focusLane = (focus as? Where.Lane)?.lane ?: -1), channels, master,
@@ -211,7 +213,7 @@ fun MixerScreen(
         )
         NeonCard(Modifier.bringIntoViewRequester(masterCard), accent = if (focus == Where.Master) Neon.Amber else Neon.Cyan) {
             SectionLabel(tr("Sortie générale"), help = Glossary.MASTER)
-            // How loud it is, as streaming services measure it, and its true peak: one glance.
+            // How loud it is, in a word and a number; the units are under « Détails » (MasterLoudnessPanel).
             LoudnessChip(loudness)
             // What goes into the limiter (red above −1 dBFS, where it starts to work), not what is left after it.
             MasterMeter { meters().getOrElse(MASTER_IN_METER) { 0f } }
@@ -274,7 +276,7 @@ private fun LimiterLine(gain: () -> Float) {
     }
     val (tenths, hard) = shown
     Text(
-        if (tenths > 0) tr("Le limiteur protège la sortie (−%.1f dB)", tenths / 10f)
+        if (tenths > 0) tr("La sortie est protégée : le son est retenu de %.1f dB.", tenths / 10f)
         else tr("Pas de saturation : tout va bien."),
         style = MaterialTheme.typography.bodySmall,
         color = if (hard) Neon.Amber else Neon.TextSecondary,
@@ -354,7 +356,7 @@ private fun LimiterHint(gain: () -> Float, masterDb: Float, setDb: (Float) -> Un
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
-            tr("Le limiteur travaille fort : baisser le volume général de 6 dB ?"),
+            tr("Le son risque de saturer : baisser le volume général de 6 dB ?"),
             style = MaterialTheme.typography.bodySmall, color = Neon.Amber, modifier = Modifier.weight(1f),
         )
         TextButton(
@@ -427,111 +429,6 @@ fun masterDbLabel(db: Float): String =
     (if (db > 0f) "+" else "") + String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f dB", db).replace('-', '−')
 
 @Composable
-private fun Strip(info: StripInfo, c: Channel, meter: () -> Float, actions: MixerActions, compact: Boolean = false, moves: Int = 0, openMoves: () -> Unit = {}) {
-    SideEffect { stripCompositions++ }
-    val name = com.pocketstudio.model.DefaultNames.shown(info.name)
-    val index = info.ch
-    var expanded by rememberSaveable(index) { mutableStateOf(false) }
-    var open by rememberSaveable(index) { mutableStateOf(false) }
-    val chipColors = pillColors()
-    NeonCard {
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            // The strip's colour as a lit bar, like a channel of a mixing desk.
-            val tint = info.color ?: Neon.Cyan
-            androidx.compose.foundation.layout.Box(
-                Modifier.size(width = 4.dp, height = 22.dp)
-                    .background(tint, androidx.compose.foundation.shape.RoundedCornerShape(2.dp)),
-            )
-            Text(name, style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f), maxLines = 1,
-                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
-            // « Ce qui bouge sur cette piste »: lit (with how many curves) when automation moves it.
-            IconButton(onClick = openMoves, modifier = Modifier.testTag("strip_moves_$index")) {
-                androidx.compose.material3.BadgedBox(badge = {
-                    if (moves > 0) androidx.compose.material3.Badge(containerColor = Neon.Amber, contentColor = Neon.OnAccent) { Text("$moves") }
-                }) {
-                    Icon(
-                        Icons.AutoMirrored.Filled.ShowChart, contentDescription = tr("Ce qui bouge sur cette piste"),
-                        tint = if (moves > 0) Neon.Amber else Neon.TextSecondary,
-                    )
-                }
-            }
-            FilterChip(
-                selected = c.mute,
-                onClick = { actions.toggleMute(index) },
-                label = { Text(tr("Muet")) },
-                colors = pillColors(Neon.Red),
-                modifier = Modifier.testTag("mute_$index"),
-            )
-            FilterChip(selected = c.solo, onClick = { actions.toggleSolo(index) }, label = { Text(tr("Solo")) }, colors = chipColors,
-                modifier = Modifier.testTag("solo_$index"))
-            if (index == 0) HelpDot(Glossary.MUTE_SOLO)
-        }
-        LevelMeter({ meter() / 0.89f })
-        if (compact) {
-            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                ProSlider(value = c.volume, onValueChange = { actions.setVolume(index, it) }, modifier = Modifier.weight(1f).testTag("volume_$index"))
-                Text(faderDb(c.volume), style = MonoStyle, color = Neon.Cyan, modifier = Modifier.padding(start = 6.dp))
-                // The effects in one touch, right on the strip (they used to hide two levels down).
-                val active = c.inserts.count { it.effect != com.pocketstudio.model.EffectType.NONE }
-                FilterChip(
-                    selected = expanded && open,
-                    onClick = {
-                        // Lit while the effects show; a touch shows them (or folds the strip back).
-                        val show = !(expanded && open)
-                        expanded = show
-                        open = show
-                    },
-                    leadingIcon = { Icon(Icons.Filled.AutoAwesome, contentDescription = null, modifier = Modifier.size(16.dp)) },
-                    label = { Text(if (active > 0) tr("Effets · %d", active) else tr("Effets"), maxLines = 1, softWrap = false) },
-                    colors = pillColors(Neon.Magenta),
-                    modifier = Modifier.padding(start = 6.dp).testTag("strip_more_$index"),
-                )
-            }
-            if (!expanded) {
-                val fx = androidx.compose.runtime.remember(c) { quickFxSummary(c) }
-                if (c.pan != 0f || fx != tr("Aucun")) {
-                    Text(tr("Effets : %s", fx), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
-                }
-                return@NeonCard
-            }
-        }
-        val panSlider: @Composable () -> Unit = {
-            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Text(tr("Panoramique"))
-                HelpDot(Glossary.PAN)
-                androidx.compose.foundation.layout.Spacer(Modifier.weight(1f))
-                val pan = (c.pan * 100).roundToInt()
-                Text(
-                    when {
-                        pan < -2 -> tr("Gauche %d", -pan)
-                        pan > 2 -> tr("Droite %d", pan)
-                        else -> tr("Centre")
-                    },
-                    style = MonoStyle, color = Neon.Cyan,
-                )
-            }
-            ProSlider(value = c.pan, onValueChange = { v -> actions.setPan(index, if (kotlin.math.abs(v) < 0.04f) 0f else v) }, valueRange = -1f..1f)
-        }
-        if (compact) {
-            panSlider()
-        } else {
-            // Volume and pan side by side when the strip is wide (tablet), one under the other on a phone.
-            val volumeSlider: @Composable () -> Unit = {
-                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                    Text(tr("Volume"), Modifier.weight(1f))
-                    Text(faderDb(c.volume), style = MonoStyle, color = Neon.Cyan)
-                }
-                ProSlider(value = c.volume, onValueChange = { actions.setVolume(index, it) }, modifier = Modifier.testTag("volume_$index"))
-            }
-            com.pocketstudio.ui.AdaptiveColumns(listOf(volumeSlider, panSlider), minCellWidth = 240.dp)
-        }
-        val summary = androidx.compose.runtime.remember(c) { quickFxSummary(c) }
-        EffectsToggle(summary, open, Modifier.testTag("effects_$index")) { open = !open }
-        if (open) EffectsBox(index, c, actions)
-    }
-}
-
-@Composable
 private fun EffectsToggle(summary: String, open: Boolean, modifier: Modifier = Modifier, toggle: () -> Unit) {
     TextButton(onClick = toggle, modifier = modifier.fillMaxWidth()) {
         Text(tr("Effets : %s", summary), Modifier.weight(1f), color = Neon.Cyan)
@@ -547,7 +444,7 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
         // The plain choices first: what, in which format, how it ends. The rest under « Avancé ».
         Text(tr("Quoi"), style = MaterialTheme.typography.bodyMedium)
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            listOf(ExportWhat.Song to tr("Le morceau entier"), ExportWhat.Loop to tr("La scène en boucle")).forEach { (what, label) ->
+            listOf(ExportWhat.Song to tr("Le morceau entier"), ExportWhat.Loop to tr("La partie en boucle")).forEach { (what, label) ->
                 FilterChip(
                     selected = export.what == what, onClick = { actions.setExportWhat(what) }, enabled = !export.running,
                     label = { Text(label) }, colors = chipColors, modifier = Modifier.testTag("export_what_${what.name}"),
@@ -557,8 +454,8 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
         val bars = if (export.bars > 1) tr("%d mesures", export.bars) else tr("%d mesure", export.bars)
         Text(
             when (export.what) {
-                ExportWhat.Loop -> tr("La scène en cours, jouée sur %s (la longueur se règle dans « Avancé »).", bars)
-                ExportWhat.Song -> if (hasSong) tr("Toutes les parties de l'onglet Morceau, dans l'ordre.") else tr("Le morceau est vide : ajoute des scènes dans l'onglet Morceau.")
+                ExportWhat.Loop -> tr("La partie en cours, jouée sur %s (la longueur se règle dans « Avancé »).", bars)
+                ExportWhat.Song -> if (hasSong) tr("Toutes les parties de Structure, dans l'ordre.") else tr("Le morceau est vide : ajoute des parties dans Structure.")
                 ExportWhat.Stems ->
                     if (hasSong) tr("Un fichier par piste (batterie, acide, synthé, remix) pour les reprendre ailleurs. Les pistes vides ou coupées sont sautées. Sur tout le morceau.")
                     else tr("Un fichier par piste (batterie, acide, synthé, remix) pour les reprendre ailleurs. Les pistes vides ou coupées sont sautées. Sur %s.", bars)

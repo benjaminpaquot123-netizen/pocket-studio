@@ -188,9 +188,15 @@ enum class Progression(val label: String, val degrees: List<Int>) {
     House("i–iv–v–i", listOf(0, 3, 4, 0)),
 }
 
-enum class ArpMode(val label: String) { Off("Non"), Up("↑"), Down("↓"), UpDown("↑↓"), Random("Hasard") }
+/** [Pattern]: a fixed, asymmetric order of the chord's notes over two octaves ([Performance.pattern]). */
+enum class ArpMode(val label: String) { Off("Non"), Up("↑"), Down("↓"), UpDown("↑↓"), Random("Hasard"), Pattern("Motif") }
 
-/** How chords are played: broken into an arpeggio and/or strummed. */
+/**
+ * How chords are played: broken into an arpeggio and/or strummed. A [ArpMode.Pattern] arpeggio
+ * plays [pattern], indices into the chord's notes stacked over two octaves (0 = the lowest note,
+ * n = the lowest an octave up for a chord of n notes), each note cut to [gate] of the step (a
+ * pluck), the first of every [accentEvery] notes louder (0: no accent).
+ */
 @Serializable
 data class Performance(
     val arp: ArpMode = ArpMode.Off,
@@ -198,8 +204,15 @@ data class Performance(
     val arpRate: Int = 24,
     /** Delay between the notes of a strummed chord, in ticks (0 = together). */
     val strum: Int = 0,
+    val pattern: List<Int> = emptyList(),
+    val gate: Float = 1f,
+    val accentEvery: Int = 0,
 ) {
-    fun sanitized() = copy(arpRate = arpRate.coerceIn(6, 96), strum = strum.coerceIn(0, 24))
+    fun sanitized() = copy(
+        arpRate = arpRate.coerceIn(6, 96), strum = strum.coerceIn(0, 24),
+        pattern = pattern.take(MAX_PATTERN).map { it.coerceIn(0, 2 * MAX_PATTERN) }, gate = if (gate.isFinite()) gate.coerceIn(0.25f, 1f) else 1f,
+        accentEvery = accentEvery.coerceIn(0, 16),
+    )
 
     /**
      * The notes the engine actually plays: notes starting together form a chord; with an
@@ -220,22 +233,35 @@ data class Performance(
                 continue
             }
             val length = sorted.maxOf { it.length }
+            // A pattern walks the chord over two octaves: an empty one goes up and down.
+            val stack = if (arp == ArpMode.Pattern) sorted + sorted.map { it.copy(pitch = (it.pitch + 12).coerceAtMost(127)) } else sorted
             val order = when (arp) {
                 ArpMode.Up -> sorted
                 ArpMode.Down -> sorted.reversed()
                 ArpMode.UpDown -> sorted + sorted.drop(1).dropLast(1).reversed()
+                ArpMode.Pattern -> if (pattern.isEmpty()) stack + stack.drop(1).dropLast(1).reversed() else pattern.map { stack[it % stack.size] }
                 else -> sorted
             }
+            val noteLength = if (arp == ArpMode.Pattern) (arpRate * gate).toInt().coerceAtLeast(6) else arpRate
             var t = 0
             var i = 0
             while (t < length) {
                 val n = if (arp == ArpMode.Random) sorted[random.nextInt(sorted.size)] else order[i % order.size]
-                out += Note(start + t, minOf(arpRate, length - t), n.pitch, n.velocity)
+                val accent = if (arp == ArpMode.Pattern && accentEvery > 0 && i % accentEvery == 0) ACCENT else 0f
+                out += Note(start + t, minOf(noteLength, length - t), n.pitch, (n.velocity + accent).coerceAtMost(1f))
                 t += arpRate
                 i++
             }
         }
         return out.filter { it.start < clip.ticks }.sortedBy { it.start }.take(NoteClip.MAX_NOTES)
+    }
+
+    companion object {
+        /** Longest pattern of a [ArpMode.Pattern] arpeggio. */
+        const val MAX_PATTERN = 16
+
+        /** How much louder the accented notes of a pattern arpeggio are. */
+        const val ACCENT = 0.15f
     }
 }
 

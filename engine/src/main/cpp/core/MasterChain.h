@@ -48,6 +48,14 @@ public:
     // driven music: past it they only squash it (a dense loop's loudness stops growing), and a
     // target that loud is not met (a gabber's -6 LUFS on a dense loop ends near -7).
     static constexpr float kMaxLossDb = 6.0f;
+    // Phase 34 (S5): what the target aims at. Song (projects saved before): the whole song's
+    // integrated loudness, the clipper and the limiter allowed kMaxLossDb. Drop (the assistant's
+    // songs since S5): the loudness of the song's loudest part (LoudPart: its Drop), the clipper and
+    // the limiter allowed kMaxLossDropDb there, the drive capped so: never loudness by squashing.
+    // Live, the drive settles once 30 s of music were heard and then only comes down (a louder
+    // part, a louder mix): it no longer drifts while one mixes.
+    enum class Mode { Song, Drop };
+    static constexpr float kMaxLossDropDb = 3.0f;
     // ClipOnly2 runs as at 44.1 kHz (its `spacing` 1: `lastSample` is the previous sample), its
     // output then delayed to a whole frame (kFactor samples at the 4x rate).
     static constexpr int kSpacing = 1;
@@ -79,8 +87,19 @@ public:
     void holdDrive(float db);
     // The drive the estimate has reached (dB): the UI reads it.
     float driveDb() const { return drivePublished_.load(std::memory_order_relaxed); }
+    // What the clipper and the limiter take off the driven music (LU; Drop mode: its loud part),
+    // as the estimate reads it: the UI shows it.
+    float lossDb() const { return lossPublished_.load(std::memory_order_relaxed); }
+    // Drop mode: the loud part of the music before the drive (LUFS, -1000: none yet). Tests.
+    float loudLevel() const { return loudPublished_.load(std::memory_order_relaxed); }
     // What the estimate knows of the music's loudness is forgotten (another project).
     void resetEstimate();
+    void setMode(Mode m) { mode_ = m; }
+    Mode mode() const { return mode_; }
+    float maxLossDb() const { return mode_ == Mode::Drop ? kMaxLossDropDb : kMaxLossDb; }
+    // Drop mode, live: the drive an export of this song found (dB). It glides there and is settled
+    // (it only comes down from there, on a louder part than the estimate has heard).
+    void setKnownDrive(float db);
 
     struct Stats {
         float inPeak = 0.0f;   // into the clipper (drive and click included)
@@ -113,6 +132,7 @@ private:
     float clip(ClipChannel& c, float x, float level, bool armed, float& ratio);
     void limit(float& l, float& r, float clipRatio, float& gain);
     void estimate();
+    void estimateDrop();
     void rampDrive(float db, int frames);
 
     int rate_ = 48000;
@@ -138,6 +158,20 @@ private:
     std::array<double, 4> pieceDrive_{1.0, 1.0, 1.0, 1.0};
     int pieceHead_ = 0;
     double sumDriven_ = 0.0, sumOut_ = 0.0, forget_ = 1.0;
+    std::atomic<float> lossPublished_{0.0f};
+    std::atomic<float> loudPublished_{-1000.0f};
+    // --- Drop mode (S5): the loud part of the music before the drive, from 3 s windows; the
+    // drive's mean square over the last 30 pieces (a window's own).
+    Mode mode_ = Mode::Song;
+    LoudPart loudIn_;
+    // What the clipper and the limiter take off the loud part now (LU), smoothed over its last
+    // windows, and the drive (dB) those windows were heard with.
+    double lossNow_ = 0.0, lossDriveDb_ = 0.0;
+    int64_t lossWindows_ = 0;
+    std::array<double, BlockLoudness::kRing> driveRing_{};
+    int driveRingHead_ = 0;
+    bool settled_ = false;
+    double settledLevel_ = 1000.0;  // the loud part's level when it settled (an export's drive: never)
 
     // --- DC blocker ahead of the drive (3 Hz) and sub-sonic blocker after the limiter (0.05 Hz):
     // always running, heard with a target (dcMix_ glides 0..1 over 50 ms).

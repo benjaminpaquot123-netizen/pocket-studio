@@ -431,6 +431,12 @@ open class ScreenshotTest {
             com.pocketstudio.app.ui.SoloBanner(listOf("Batterie", "Basse acide"), {})
             com.pocketstudio.app.ui.SoloBanner(listOf("Batterie", "Basse acide", "Lead", "Voix"), {})
             com.pocketstudio.app.ui.RenameProjectBar("Da Funk (remix)", {}, {})
+            // The « Prochaine étape » line (24 dp) and the editors' header: stopped, the song
+            // playing and followed, « ⟳ Partie » gone on by itself after a touch on the grid.
+            com.pocketstudio.app.onboarding.NextStepStrip(com.pocketstudio.app.onboarding.nextSteps(project), com.pocketstudio.app.ui.AppTab.Rythme)
+            com.pocketstudio.app.ui.PartHeader(com.pocketstudio.app.ui.partHeader(project, playing = false, songPlaying = false, loopPart = false, armedBySelf = false))
+            com.pocketstudio.app.ui.PartHeader(com.pocketstudio.app.ui.partHeader(project, playing = true, songPlaying = true, loopPart = false, armedBySelf = false))
+            com.pocketstudio.app.ui.PartHeader(com.pocketstudio.app.ui.partHeader(project, playing = true, songPlaying = false, loopPart = true, armedBySelf = true))
         }
     }
 
@@ -474,6 +480,53 @@ open class ScreenshotTest {
     }
 
     /** The tempo sheet's content: what is typed, the ready-made tempos, ½ ×2, the keypad, tap tempo. */
+    /** Phase 34: a part's sheet (appui long or ⋮), a Drop played 3 times. */
+    @Test
+    fun partSheet() = shoot("part_sheet") {
+        Box(Modifier.background(Neon.Surface).padding(top = 12.dp)) {
+            com.pocketstudio.app.session.PartSheetContent(
+                com.pocketstudio.app.session.PartSheetUi(index = 2, title = "C · Drop", bars = 8, played = 3, first = false, energy = 3, repeats = 2, songSize = 6),
+                onIntent = {}, close = {},
+                more = com.pocketstudio.app.session.PartMoreActions(moveUp = {}, moveDown = {}, duplicate = {}, insertAfter = {}),
+            )
+        }
+    }
+
+    /** Phase 34: « Kit ▾ » open, Studio on the pads, two packs and the General MIDI kits there. */
+    @Test
+    fun kitSheet() = shoot("kit_sheet") {
+        Box(Modifier.background(Neon.Surface).padding(top = 12.dp)) {
+            com.pocketstudio.app.rhythm.KitSheetContent(
+                "Studio",
+                listOf(
+                    com.pocketstudio.app.rhythm.KitChoice("builtin:2", "Studio", com.pocketstudio.app.rhythm.KitChoice.BUILT_IN),
+                    com.pocketstudio.app.rhythm.KitChoice("builtin:1", "Classique", com.pocketstudio.app.rhythm.KitChoice.BUILT_IN),
+                    com.pocketstudio.app.rhythm.KitChoice("pack:house", "House", com.pocketstudio.app.rhythm.KitChoice.PACK),
+                    com.pocketstudio.app.rhythm.KitChoice("pack:tr909", "TR-909", com.pocketstudio.app.rhythm.KitChoice.PACK),
+                    com.pocketstudio.app.rhythm.KitChoice("gm:0", "Standard", com.pocketstudio.app.rhythm.KitChoice.GM),
+                    com.pocketstudio.app.rhythm.KitChoice("gm:8", "Room", com.pocketstudio.app.rhythm.KitChoice.GM),
+                    com.pocketstudio.app.rhythm.KitChoice("gm:16", "Power", com.pocketstudio.app.rhythm.KitChoice.GM),
+                    com.pocketstudio.app.rhythm.KitChoice("gm:25", "Electronic", com.pocketstudio.app.rhythm.KitChoice.GM),
+                ),
+                choose = {}, close = {},
+            )
+        }
+    }
+
+    /** Phase 34: a pad held, its sheet (a sound in one touch, its volume and pan, cut it). */
+    @Test
+    fun padSheet() = shoot("pad_sheet") {
+        Box(Modifier.background(Neon.Surface).padding(top = 12.dp)) {
+            com.pocketstudio.app.rhythm.PadSheetContent(
+                com.pocketstudio.app.rhythm.PadSheetUi(
+                    0, "Kick de ma voix", volume = 0.7f, pan = -0.2f, muted = false, hasSample = true,
+                    sounds = listOf("Kick", "Kick 2", "Kick rond", "Kick sec", "Kick 808"),
+                ),
+                com.pocketstudio.app.rhythm.PadSheetActions(), close = {},
+            )
+        }
+    }
+
     @Test
     fun tempoSheet() = shoot("tempo_sheet") {
         Box(Modifier.background(Neon.Surface).padding(top = 12.dp)) {
@@ -506,7 +559,7 @@ open class ScreenshotTest {
 
 
     /** The Live page's example: four named scenes, drums, acid, two instrument tracks, a voice and a remix. */
-    private fun liveUi(acidStopped: Boolean = false, spectrum: Boolean = false, fx: com.pocketstudio.app.live.LiveFxUi = com.pocketstudio.app.live.LiveFxUi()): com.pocketstudio.app.live.LiveScreenUi {
+    protected fun liveUi(acidStopped: Boolean = false, spectrum: Boolean = false, fx: com.pocketstudio.app.live.LiveFxUi = com.pocketstudio.app.live.LiveFxUi()): com.pocketstudio.app.live.LiveScreenUi {
         val drums = DrumPattern().toggle(0, 0).toggle(0, 8).toggle(2, 4).toggle(2, 12)
         val acid = com.pocketstudio.model.AcidPattern(steps = List(com.pocketstudio.model.AcidPattern.MAX_STEPS) { i -> com.pocketstudio.model.AcidStep(gate = i % 3 == 0) })
         val notes = com.pocketstudio.model.NoteClip(16, listOf(com.pocketstudio.model.Note(0, 48, 60), com.pocketstudio.model.Note(96, 48, 63)))
@@ -743,6 +796,59 @@ open class ScreenshotTest {
                 com.pocketstudio.model.InstrumentChoice(0, 4, "Tine Electric Piano"),
             ),
         )
+    }
+
+    /**
+     * Phase 38: the real instruments in the sound chooser: one on the phone and chosen, one being
+     * downloaded, others to download (their size) or not published yet, the 808, the credits.
+     */
+    @Test
+    fun realInstruments() = shoot("real_instruments") {
+        val known = com.pocketstudio.model.MultiInstruments.KNOWN
+        val states = listOf(
+            com.pocketstudio.app.instruments.RealState.Ready(),
+            com.pocketstudio.app.instruments.RealState.Missing("16 Mo"),
+            com.pocketstudio.app.instruments.RealState.Downloading(0.42f),
+            com.pocketstudio.app.instruments.RealState.Missing("2 Mo"),
+            com.pocketstudio.app.instruments.RealState.Ready(loading = true),
+            com.pocketstudio.app.instruments.RealState.Missing("7 Mo"),
+            com.pocketstudio.app.instruments.RealState.Unavailable,
+        )
+        androidx.compose.foundation.layout.Column(
+            Modifier.verticalScroll(androidx.compose.foundation.rememberScrollState()).padding(12.dp),
+        ) {
+            com.pocketstudio.ui.NeonCard {
+                com.pocketstudio.app.instruments.RealInstruments(
+                    com.pocketstudio.app.instruments.RealInstrumentsUi(
+                        known.mapIndexed { i, e -> com.pocketstudio.app.instruments.RealInstrumentItem(e, states[i], selected = i == 0, previewing = i == 1) },
+                        use808 = {},
+                    ),
+                )
+            }
+        }
+    }
+
+    /** Phase 38: the end of an export in plain words (ready to share; its length, level, peak checked after the M4A's compression). */
+    @Test
+    fun exportReport() = shoot("export_report") {
+        androidx.compose.foundation.layout.Column(Modifier.padding(16.dp), verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(16.dp)) {
+            com.pocketstudio.ui.NeonCard {
+                com.pocketstudio.app.mixer.ExportReportLine(
+                    com.pocketstudio.app.rhythm.ExportUi(
+                        format = com.pocketstudio.app.rhythm.ExportFormat.M4a, files = listOf(java.io.File("Mon-tube.m4a")), loudness = -9.4,
+                        truePeakDb = -2.1, decodedPeakDb = -1.3, seconds = 192.4,
+                    ),
+                )
+            }
+            com.pocketstudio.ui.NeonCard {
+                com.pocketstudio.app.mixer.ExportReportLine(
+                    com.pocketstudio.app.rhythm.ExportUi(
+                        format = com.pocketstudio.app.rhythm.ExportFormat.Wav, files = listOf(java.io.File("Mon-tube.wav")), loudness = -7.2,
+                        truePeakDb = -0.3, seconds = 48.0, writtenRate = 44100, writtenBits = 16,
+                    ),
+                )
+            }
+        }
     }
 
     @Test
@@ -1528,6 +1634,28 @@ open class ScreenshotTest {
         }
     }
 
+    /**
+     * The card folded while the song plays (Benjamin's report: it stayed over the screen): one line
+     * over the bottom bar, « Ton morceau est prêt » (a touch opens the card again), ■ Arrêter,
+     * Partager, ✕.
+     */
+    @Test
+    fun songReadyBar() = shoot("song_ready_bar") {
+        androidx.compose.foundation.layout.Column(Modifier.fillMaxSize()) {
+            Box(Modifier.weight(1f))
+            com.pocketstudio.app.onboarding.SongReadyBar(
+                pending = true, projectId = "shot", ui = com.pocketstudio.app.onboarding.SongReadyUi("Jump up DnB", seconds = 298, parts = 46, playing = true),
+                actions = com.pocketstudio.app.onboarding.SongReadyActions(), edits = 0, open = {},
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+            )
+            com.pocketstudio.app.ui.SpaceBar(
+                com.pocketstudio.app.ui.Space.entries.map { sp ->
+                    com.pocketstudio.app.ui.NavEntry(sp.name, sp.label, sp.hint, sp.icon, sp == com.pocketstudio.app.ui.Space.Structure) {}
+                },
+            )
+        }
+    }
+
     @Test
     fun guide() = shoot("guide") {
         com.pocketstudio.app.settings.GuideDialog(onClose = {})
@@ -1701,9 +1829,9 @@ open class ScreenshotTest {
 
     @Test
     fun foldedCards() = shoot("folded_cards") {
-        // "Scènes" folded: only its title stays, with the small chevron turned.
+        // "Parties" folded: only its title stays, with the small chevron turned.
         androidx.compose.runtime.CompositionLocalProvider(
-            com.pocketstudio.ui.LocalFoldStore provides com.pocketstudio.ui.MemoryFoldStore(mapOf("Scènes" to true)),
+            com.pocketstudio.ui.LocalFoldStore provides com.pocketstudio.ui.MemoryFoldStore(mapOf("Parties" to true)),
         ) {
             val drums = com.pocketstudio.model.DrumPattern().toggle(0, 0).toggle(2, 4)
             com.pocketstudio.app.session.SessionScreen(

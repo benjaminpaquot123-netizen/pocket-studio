@@ -194,11 +194,12 @@ data class TakeJournal(
  * Take [journal] written into this project's song (see [writeTake]) when it was this project's
  * (else unchanged, with 0 parts).
  */
-fun Project.writeJournal(journal: TakeJournal, projectId: String): TakeWritten = when {
+fun Project.writeJournal(journal: TakeJournal, projectId: String, at: Long = System.currentTimeMillis()): TakeWritten = when {
     journal.projectId != projectId -> TakeWritten(this, 0, 0)
     // Already in the song (written at ■ Fin, or at an opening the app was killed after): never twice.
     journal.takeId.isNotEmpty() && journal.takeId == liveTake -> TakeWritten(this, 0, 0, already = true)
-    else -> writeTake(journal.take(), journal.end, journal.append && song.isNotEmpty()).let { w ->
+    // The song it replaces is kept as a version (Versions du morceau).
+    else -> keepingVersion(writeTake(journal.take(), journal.end, journal.append && song.isNotEmpty()), at).let { w ->
         if (w.parts > 0 && journal.takeId.isNotEmpty()) w.copy(project = w.project.copy(liveTake = journal.takeId)) else w
     }
 }
@@ -477,8 +478,7 @@ private fun laneKey(target: AutoTarget): String? = when (target.kind) {
         1 -> SongPart.ACID
         2 -> SongPart.inst(0)
         in 5..11 -> SongPart.inst(ch - 4)
-        in 12..15 -> SongPart.audio(ch - 12)
-        else -> null
+        else -> AudioTrack.ofChannel(ch)?.let(SongPart::audio)
     }
 }
 

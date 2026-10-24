@@ -45,9 +45,13 @@ internal fun PlaitsPanel(ui: InstrumentUi) {
     val values = p.engineValues()
     PlaitsPatch.PARAMS.forEachIndexed { i, label ->
         val param = i + 1
-        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Text(tr(label), Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
-            Text("${(values[param] * 100).roundToInt()}", style = MonoStyle, color = Neon.Cyan)
+        // A long press on the name: « Automatiser » (phase 37).
+        val automate = ui.automatePlaits?.takeIf { param in com.pocketstudio.model.AutoTarget.PLAITS_PARAMS }
+        com.pocketstudio.app.synth.AutomatableKnob(automate?.let { a -> { a(param) } }, "plaits_knob_$param", Modifier.fillMaxWidth()) {
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                Text(tr(label), Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
+                Text("${(values[param] * 100).roundToInt()}", style = MonoStyle, color = Neon.Cyan)
+            }
         }
         ProSlider(value = values[param], onValueChange = { ui.setPlaitsParam(param, it) }, modifier = Modifier.testTag("plaits_param_$param"))
     }

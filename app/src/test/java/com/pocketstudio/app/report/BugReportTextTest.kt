@@ -1,5 +1,6 @@
 package com.pocketstudio.app.report
 
+import android.media.AudioDeviceInfo
 import com.pocketstudio.engine.StreamInfo
 import com.pocketstudio.model.AutoTarget
 import com.pocketstudio.model.AutomationLane
@@ -42,10 +43,11 @@ class BugReportTextTest {
         health: List<HealthSample> = (0 until 240).map { i -> HealthSample(now - 60_000 + i * 250L + 1, peak = 0.5f, shortTermLufs = -11f, cpu = 0.4f, xruns = if (i > 200) 2 else 0, playing = true) },
         crash: String? = null,
         stream: StreamInfo? = StreamInfo(sampleRate = 48_000, framesPerBurst = 96, bufferSize = 192, bufferCapacity = 3072, exclusive = true, aaudio = true, mmap = true, xruns = 2, restarts = 1, outputLatencyMs = 10.2, running = true),
+        route: String? = AudioRoute.describe(listOf(AudioDeviceInfo.TYPE_BLUETOOTH_A2DP), listOf(AudioDeviceInfo.TYPE_BUILTIN_SPEAKER, AudioDeviceInfo.TYPE_BLUETOOTH_A2DP)),
         project: ProjectSummary? = ProjectSummary("Nuit d'été", "acid-techno", 128.0, "Drop · mes. 14/60", true, 6, 60, 5, -1.5f, "AUTO", masterLane = true),
     ) = BugReportInput(
         createdAtMs = now, userText = text, versionName = "0.22.345", versionCode = 345, channel = "preview",
-        device = "HONOR Magic 8 Pro", android = "16 (API 36)", stream = stream, roundTripMs = 44.5, project = project,
+        device = "HONOR Magic 8 Pro", android = "16 (API 36)", stream = stream, roundTripMs = 44.5, route = route, project = project,
         health = health, events = events, errors = listOf(JournalEvent(now - 5000, JournalEvent.Kind.ERROR, "export : disque plein")),
         crash = crash, attachments = listOf(Attachment("screenshot-1.png", "capture automatique")),
     )
@@ -56,6 +58,7 @@ class BugReportTextTest {
         listOf(
             "# Rapport de bug : Pocket Studio", "## Ce qui s'est passé", "Le son a coupé dans Live", "## Appli et téléphone",
             "Version : 0.22.345 (code 345, canal preview)", "Téléphone : HONOR Magic 8 Pro", "Android : 16 (API 36)",
+            "Sortie du son : Bluetooth (A2DP) (branchés : haut-parleur du téléphone, Bluetooth (A2DP))",
             "AAudio, exclusif, MMAP, 48000 Hz, burst 96", "Latence de sortie : 10,2 ms", "Décrochages audio depuis le démarrage : 2",
             "son rouvert par Android : 1 fois", "## Projet", "« Nuit d'été »", "acid-techno", "128,0 BPM", "Drop · mes. 14/60 (en lecture)",
             "automation du volume master : oui", "## Son des 60 dernières secondes", "crête   |", "repères |", "Crête (dBFS), une valeur par seconde",
@@ -76,13 +79,26 @@ class BugReportTextTest {
 
     @Test
     fun anEmptyStateStillMakesAReport() {
-        val md = BugReportText.markdown(input(text = "  ", events = emptyList(), health = emptyList(), stream = null, project = null).copy(errors = emptyList(), attachments = emptyList()))
+        val md = BugReportText.markdown(input(text = "  ", events = emptyList(), health = emptyList(), stream = null, project = null, route = null).copy(errors = emptyList(), attachments = emptyList()))
         assertTrue(md.contains("(rien d'écrit)"))
         assertTrue(md.contains("Audio : moteur absent"))
+        assertTrue(md.contains("Sortie du son : inconnue"))
         assertTrue(md.contains("Aucun projet ouvert."))
         assertTrue(md.contains("Aucune mesure"))
         assertTrue(md.contains("Aucune erreur relevée."))
         assertTrue(md.contains("Journal vide."))
+    }
+
+    @Test
+    fun theSoundsOutputIsSaidByKindNeverByName() {
+        val speaker = AudioDeviceInfo.TYPE_BUILTIN_SPEAKER
+        val wired = AudioDeviceInfo.TYPE_WIRED_HEADPHONES
+        assertNull(AudioRoute.describe(emptyList(), emptyList()))
+        assertEquals("haut-parleur du téléphone", AudioRoute.describe(listOf(speaker), listOf(speaker)))
+        assertEquals("casque filaire (branchés : haut-parleur du téléphone, casque filaire)", AudioRoute.describe(listOf(wired), listOf(speaker, wired, wired)))
+        // Before Android 13 the routed output is not known: the connected ones are said.
+        assertEquals("inconnue (branchés : haut-parleur du téléphone, Bluetooth LE (casque))", AudioRoute.describe(emptyList(), listOf(speaker, AudioDeviceInfo.TYPE_BLE_HEADSET)))
+        assertEquals("appareil de type 9999", AudioRoute.typeName(9999))
     }
 
     @Test

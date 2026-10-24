@@ -1,6 +1,6 @@
 {
   "Signaler un bug": "Een bug melden",
-  "Ce qui s'est passé, avec des captures : c'est toi qui l'envoies": "Wat er gebeurde, met schermafbeeldingen: je stuurt het zelf",
+  "Avec des captures ; c'est toi qui l'envoies. Raccourci : appui long sur « ? »": "Met schermafbeeldingen; je stuurt het zelf. Snelkoppeling: lang drukken op „?”",
   "L'appli s'est fermée d'un coup la dernière fois : ce qui s'est passé avant est joint.": "De app sloot de vorige keer plots af: wat er daarvoor gebeurde, zit erbij.",
   "Qu'est-ce qui s'est passé ?": "Wat is er gebeurd?",
   "Ex. : le son a coupé quand j'ai touché ▶ dans Live": "Bv.: het geluid viel weg toen ik ▶ aanraakte in Live",
@@ -24,7 +24,7 @@
   "L'appli s'est fermée d'un coup : envoyer le rapport ?": "De app sloot plots af: het rapport versturen?",
   "Ton texte : rien d'écrit pour l'instant (dis ce que tu faisais et ce qui a cloché).": "Je tekst: nog niets geschreven (zeg wat je deed en wat er misging).",
   "Ton texte (%d caractères)": "Je tekst (%d tekens)",
-  "La version de l'appli, le modèle du téléphone et sa version d'Android": "De versie van de app, het model van de telefoon en de Android-versie",
+  "La version de l'appli, le modèle du téléphone, sa version d'Android et la sortie du son": "De versie van de app, het model van de telefoon, de Android-versie en de geluidsuitgang",
   "Le son de la dernière minute : niveau, décrochages (%1$d), son rouvert (%2$d)": "Het geluid van de laatste minuut: niveau, haperingen (%1$d), geluid heropend (%2$d)",
   "Les %1$d derniers écrans et gestes, et %2$d erreurs": "De laatste %1$d schermen en gebaren, en %2$d fouten",
   "Le rapport du plantage de la dernière fois": "Het rapport van de crash van de vorige keer",
@@ -35,5 +35,7 @@
   "Rapport de bug": "Bugrapport",
   "Texte copié : colle-le dans un message.": "Tekst gekopieerd: plak hem in een bericht.",
   "Copie impossible.": "Kopiëren mislukt.",
-  "Le rapport n'a pas pu être préparé.": "Het rapport kon niet worden voorbereid."
+  "Le rapport n'a pas pu être préparé.": "Het rapport kon niet worden voorbereid.",
+  "Voir le rapport tel qu'il partira": "Het rapport bekijken zoals het vertrekt",
+  "Masquer le rapport": "Rapport verbergen"
 }

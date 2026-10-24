@@ -15,7 +15,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onRoot
+import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.unit.dp
 import androidx.test.core.app.ApplicationProvider
 import com.github.takahirom.roborazzi.captureRoboImage
@@ -58,7 +60,7 @@ open class BugReportScreenshotTest {
         SettingsStore.update(ApplicationProvider.getApplicationContext()) { it.copy(language = Lang.FR, englishNotes = false) }
     }
 
-    private fun shoot(name: String, content: @Composable () -> Unit) {
+    private fun shoot(name: String, before: () -> Unit = {}, content: @Composable () -> Unit) {
         compose.setContent {
             com.pocketstudio.app.ui.UiScaled(uiScale) {
                 PocketStudioTheme(Palettes.Studio) {
@@ -66,6 +68,7 @@ open class BugReportScreenshotTest {
                 }
             }
         }
+        before()
         compose.onRoot().captureRoboImage("screenshots/${prefix}bug_$name.png")
     }
 
@@ -88,7 +91,7 @@ open class BugReportScreenshotTest {
     private val summary
         get() = listOf(
             com.pocketstudio.model.i18n.tr("Ton texte (%d caractères)", 64),
-            com.pocketstudio.model.i18n.tr("La version de l'appli, le modèle du téléphone et sa version d'Android"),
+            com.pocketstudio.model.i18n.tr("La version de l'appli, le modèle du téléphone, sa version d'Android et la sortie du son"),
             com.pocketstudio.model.i18n.tr("Le son de la dernière minute : niveau, décrochages (%1\$d), son rouvert (%2\$d)", 3, 1),
             com.pocketstudio.model.i18n.tr("Les %1\$d derniers écrans et gestes, et %2\$d erreurs", 50, 2),
             com.pocketstudio.model.i18n.tr("Captures d'écran : %d", 3),
@@ -103,6 +106,24 @@ open class BugReportScreenshotTest {
                 autoShot = ShotUi(1, fakeScreen(0), auto = true),
                 shots = listOf(ShotUi(2, fakeScreen(1)), ShotUi(3, fakeScreen(2))),
                 attachProject = true, projectName = "Nuit d'été", summary = summary,
+            ),
+            BugReportActions(), Modifier.background(Neon.Surface),
+        )
+    }
+
+    /** « Voir le rapport »: report.md as it will leave, scrolled into view. */
+    @Test
+    fun sheetPreview() = shoot("sheet_preview", before = { compose.onNodeWithTag("bug_preview_text").performScrollTo() }) {
+        BugReportContent(
+            BugReportUi(
+                text = "Ça grésille au Drop.", autoShot = ShotUi(1, fakeScreen(0), auto = true), projectName = "Nuit d'été", summary = summary,
+                preview = BugReportText.markdown(
+                    BugReportInput(
+                        createdAtMs = 1_790_000_000_000L, userText = "Ça grésille au Drop.", versionName = "0.22.345", versionCode = 345, channel = "preview",
+                        device = "HONOR Magic 8 Pro", android = "16 (API 36)", stream = null, route = "casque filaire", project = null,
+                        attachments = listOf(Attachment("screenshot-1.png", "capture de l'écran derrière la fiche, prise à son ouverture")),
+                    ),
+                ),
             ),
             BugReportActions(), Modifier.background(Neon.Surface),
         )

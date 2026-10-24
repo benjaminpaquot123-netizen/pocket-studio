@@ -6,6 +6,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.snapshotFlow
+import com.pocketstudio.app.audio.Headphones
 import com.pocketstudio.app.rhythm.RhythmViewModel
 import com.pocketstudio.engine.NativeEngine
 import com.pocketstudio.model.AutoTarget
@@ -91,6 +92,8 @@ fun JournalWatch(vm: RhythmViewModel, report: BugReportViewModel, screen: () -> 
         launch { vm.recording.drop(1).collect { Journal.action(if (it) "● Enregistrement armé" else "Enregistrement fini") } }
         launch { vm.audioRecording.map { it != null }.distinctUntilChanged().drop(1).collect { Journal.action(if (it) "● Prise micro" else "Prise micro finie") } }
         launch { vm.noteTake.map { it != null }.distinctUntilChanged().drop(1).collect { Journal.action(if (it) "● Prise jouée" else "Prise jouée finie") } }
+        // Headphones plugged or pulled, Bluetooth paired: often what changed when the sound went wrong.
+        launch { Headphones.state.drop(1).collect { Journal.app("Sortie du son : ${AudioRoute.listeningName(it)}") } }
         launch { vm.done.collect { text -> if (text != null) Journal.action("Fait : $text") } }
         launch {
             vm.export.map { Triple(it.running, it.error, it.files.size) }.distinctUntilChanged().drop(1).collect { (running, error, files) ->

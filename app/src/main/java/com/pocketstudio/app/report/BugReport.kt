@@ -41,6 +41,8 @@ data class BugReportInput(
     /** Null: no audio engine on this device (or not started). */
     val stream: StreamInfo?,
     val roundTripMs: Double? = null,
+    /** Where the sound goes (« Bluetooth (A2DP) (branchés : …) », [AudioRoute]), null: unknown. */
+    val route: String? = null,
     val project: ProjectSummary?,
     val health: List<HealthSample> = emptyList(),
     val events: List<JournalEvent> = emptyList(),
@@ -86,6 +88,7 @@ object BugReportText {
         appendLine("- Téléphone : ${r.device}")
         appendLine("- Android : ${r.android}")
         appendLine("- Langue : ${r.language} · mode ${if (r.simpleMode) "simple" else "complet"}")
+        appendLine("- Sortie du son : ${r.route ?: "inconnue"}")
         val s = r.stream
         if (s == null) {
             appendLine("- Audio : moteur absent")

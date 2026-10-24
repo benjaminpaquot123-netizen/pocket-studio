@@ -2260,7 +2260,7 @@ WithPartHeader(rhythmVm) { partModifier ->
     }
     // Phase 36: « ? qui étiquette l'écran » over the screen, and the missions pointing at a control.
     if (helpLabels && !showProjects) {
-        com.pocketstudio.app.learn.HelpLabelsOverlay(spots, hide = { helpLabels = false })
+        com.pocketstudio.app.learn.HelpLabelsOverlay(spots, hide = { helpLabels = false }, reportBug = { reportBug("étiquettes « ? »") })
     } else if (missions.active && !showProjects && !wizardUi.open) {
         val m = missions.current
         com.pocketstudio.app.learn.SpotlightOverlay(spots, m?.targets(simple).orEmpty()) { modifier, _ ->

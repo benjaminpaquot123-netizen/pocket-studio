@@ -36,6 +36,8 @@ import androidx.compose.material.icons.filled.AddPhotoAlternate
 import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ContentCopy
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.IosShare
 import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material.icons.filled.Warning
@@ -56,6 +58,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -67,11 +70,13 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import androidx.core.view.drawToBitmap
@@ -99,6 +104,8 @@ class BugReportUi(
     val crash: Boolean = false,
     /** « Ce qui sera envoyé », in plain words. */
     val summary: List<String> = emptyList(),
+    /** report.md as it would leave now, shown under « Voir le rapport » (null: folded). */
+    val preview: String? = null,
     val busy: Boolean = false,
     val message: String? = null,
 )
@@ -112,6 +119,8 @@ class BugReportActions(
     /** « Prendre une capture »: the sheet hides, the 📸 chip waits. */
     val takePicture: () -> Unit = {},
     val remove: (Long) -> Unit = {},
+    /** « Voir le rapport » / « Masquer le rapport ». */
+    val togglePreview: () -> Unit = {},
     val share: () -> Unit = {},
     val copy: () -> Unit = {},
     val close: () -> Unit = {},
@@ -198,6 +207,18 @@ fun BugReportContent(ui: BugReportUi, actions: BugReportActions, modifier: Modif
         ) {
             Text(tr("Ce qui sera envoyé"), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = Neon.Cyan)
             ui.summary.forEach { line -> Text("• $line", style = MaterialTheme.typography.bodySmall) }
+            TextButton(onClick = actions.togglePreview, modifier = Modifier.heightIn(min = 48.dp).testTag("bug_preview_toggle")) {
+                Icon(if (ui.preview == null) Icons.Filled.ExpandMore else Icons.Filled.ExpandLess, contentDescription = null, modifier = Modifier.size(18.dp))
+                Text("  " + if (ui.preview == null) tr("Voir le rapport tel qu'il partira") else tr("Masquer le rapport"))
+            }
+            ui.preview?.let { text ->
+                // The very text that leaves (report.md, in French for the developer), in its own small scroll.
+                Text(
+                    text, style = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace, fontSize = 11.sp, lineHeight = 15.sp),
+                    modifier = Modifier.fillMaxWidth().heightIn(max = 360.dp).clip(RoundedCornerShape(8.dp)).background(Neon.Background)
+                        .verticalScroll(rememberScrollState()).padding(8.dp).testTag("bug_preview_text"),
+                )
+            }
             Text(
                 tr("Rien ne part tout seul : « Partager » ouvre le menu d'Android et tu choisis à qui l'envoyer."),
                 style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.padding(top = 4.dp),
@@ -289,7 +310,7 @@ fun CaptureChip(capture: () -> Unit, cancel: () -> Unit) {
 @Composable
 fun CaptureChipContent(capture: () -> Unit, cancel: () -> Unit) {
         Row(
-            Modifier.clip(RoundedCornerShape(28.dp)).background(Color.Black.copy(alpha = 0.82f)).border(1.5.dp, Neon.Amber, RoundedCornerShape(28.dp))
+            Modifier.padding(horizontal = 12.dp).clip(RoundedCornerShape(28.dp)).background(Color.Black.copy(alpha = 0.82f)).border(1.5.dp, Neon.Amber, RoundedCornerShape(28.dp))
                 .padding(start = 6.dp, end = 4.dp, top = 4.dp, bottom = 4.dp).testTag("bug_capture_chip"),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -337,7 +358,7 @@ fun captureScreen(view: View): Bitmap? = runCatching {
 /** « Ce qui sera envoyé », in the interface's language. */
 fun bugSummary(s: BugReportState, projectName: String?): List<String> = buildList {
     add(if (s.text.isBlank()) tr("Ton texte : rien d'écrit pour l'instant (dis ce que tu faisais et ce qui a cloché).") else tr("Ton texte (%d caractères)", s.text.length))
-    add(tr("La version de l'appli, le modèle du téléphone et sa version d'Android"))
+    add(tr("La version de l'appli, le modèle du téléphone, sa version d'Android et la sortie du son"))
     val stream = Metrics.streamInfo.value
     add(tr("Le son de la dernière minute : niveau, décrochages (%1\$d), son rouvert (%2\$d)", stream.xruns, stream.restarts))
     add(tr("Les %1\$d derniers écrans et gestes, et %2\$d erreurs", minOf(Journal.events.size, BugReportText.EVENTS), Journal.errors.size))
@@ -376,6 +397,7 @@ fun BugReportHost(vm: BugReportViewModel, projectName: String?) {
         projectName = projectName,
         crash = s.crash != null,
         summary = bugSummary(s, projectName),
+        preview = if (s.previewOpen) remember(s) { vm.reportText() } else null,
         busy = s.busy,
         message = s.message,
     )
@@ -387,7 +409,7 @@ fun BugReportHost(vm: BugReportViewModel, projectName: String?) {
                 runCatching { picker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) }
                     .onFailure { Journal.error("sélecteur de photos", it) }
             },
-            takePicture = vm::startCapture, remove = vm::remove, share = vm::share, copy = vm::copyText, close = vm::close,
+            takePicture = vm::startCapture, remove = vm::remove, togglePreview = vm::togglePreview, share = vm::share, copy = vm::copyText, close = vm::close,
         ),
     )
 }

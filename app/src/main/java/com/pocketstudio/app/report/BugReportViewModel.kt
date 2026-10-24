@@ -50,6 +50,8 @@ data class BugReportState(
     /** Reporting the previous session's crash: its text, and its journal (journal.json of then). */
     val crash: String? = null,
     val crashJournal: String? = null,
+    /** « Voir le rapport »: report.md shown in the sheet. */
+    val previewOpen: Boolean = false,
     val busy: Boolean = false,
     /** A word for the user (« Copié », « Image illisible »…), in the interface's language. */
     val message: String? = null,
@@ -92,6 +94,7 @@ class BugReportViewModel(private val app: Application) : AndroidViewModel(app) {
     fun setText(text: String) = _state.update { it.copy(text = text.take(MAX_TEXT)) }
     fun setAttachAuto(on: Boolean) = _state.update { it.copy(attachAuto = on) }
     fun setAttachProject(on: Boolean) = _state.update { it.copy(attachProject = on) }
+    fun togglePreview() = _state.update { it.copy(previewOpen = !it.previewOpen) }
     fun dismissMessage() = _state.update { it.copy(message = null) }
 
     val roomLeft: Int get() = MAX_ADDED - _state.value.shots.size
@@ -176,6 +179,7 @@ class BugReportViewModel(private val app: Application) : AndroidViewModel(app) {
             android = "${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})",
             stream = Metrics.streamInfo.value.takeIf { NativeEngine.isAvailable },
             roundTripMs = Metrics.roundTripMs.value,
+            route = AudioRoute.current(app),
             project = project?.summary,
             health = HealthMonitor.samples.snapshot(),
             events = Journal.events.snapshot(),
@@ -225,6 +229,7 @@ class BugReportViewModel(private val app: Application) : AndroidViewModel(app) {
                 Journal.action("Rapport partagé")
                 // Sent: the next report starts afresh.
                 s.shots.forEach { it.file.delete() }
+                s.autoShot?.file?.delete()
                 _state.value = BugReportState()
             } else {
                 _state.update { it.copy(busy = false, message = tr("Le rapport n'a pas pu être préparé.")) }

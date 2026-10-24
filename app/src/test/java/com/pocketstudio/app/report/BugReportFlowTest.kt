@@ -127,6 +127,33 @@ class BugReportFlowTest {
     }
 
     @Test
+    fun theHelpLabelsOfferIt() {
+        start()
+        tap("help_labels_button")
+        assertTrue(exists("help_labels"))
+        tap("help_labels_bug")
+        waitFor("the sheet") { exists("bug_sheet") }
+        // The labels go first, so the screen captured behind is the plain one.
+        assertFalse(exists("help_labels"))
+        assertTrue(Journal.events.snapshot().any { it.text == "Signaler un bug (étiquettes « ? »)" })
+    }
+
+    @Test
+    fun thePreviewShowsTheReportAsItWillLeave() {
+        start()
+        openFromPlus()
+        compose.onNodeWithTag("bug_text").performTextInput("Pas de son au casque")
+        assertFalse(exists("bug_preview_text"))
+        tap("bug_preview_toggle")
+        val shown = compose.onNodeWithTag("bug_preview_text").fetchSemanticsNode().config[SemanticsProperties.Text].joinToString { it.text }
+        listOf("# Rapport de bug : Pocket Studio", "Pas de son au casque", "- Sortie du son :", "## Journal", "screenshot-1.png").forEach {
+            assertTrue("missing « $it »:\n$shown", shown.contains(it))
+        }
+        tap("bug_preview_toggle")
+        assertFalse(exists("bug_preview_text"))
+    }
+
+    @Test
     fun theSimpleModesMenuHasIt() {
         start(simple = true)
         tap("top_more")

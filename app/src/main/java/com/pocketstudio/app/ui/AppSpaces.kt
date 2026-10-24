@@ -188,7 +188,7 @@ internal fun plusEntries(
     PlusEntry("Latence", Icons.Filled.Timer, tr("Latence"), tr("Mesurer le retard du micro pour des prises calées"), page = ToolPage.Latence),
     PlusEntry("Fond", Icons.Filled.Headphones, tr("Lecture en arrière-plan"), tr("La musique continue écran éteint"), page = ToolPage.Fond),
     PlusEntry("Son", Icons.Filled.VolumeUp, tr("Son de test"), tr("Un la à 440 Hz pour vérifier la sortie"), page = ToolPage.Son),
-    bugReport?.let { PlusEntry("bug", Icons.Filled.BugReport, tr("Signaler un bug"), tr("Ce qui s'est passé, avec des captures : c'est toi qui l'envoies"), open = it) },
+    bugReport?.let { PlusEntry("bug", Icons.Filled.BugReport, tr("Signaler un bug"), tr("Avec des captures ; c'est toi qui l'envoies. Raccourci : appui long sur « ? »"), open = it) },
     PlusEntry("Recette", Icons.Filled.Checklist, tr("Recette"), tr("La liste de tests de la version, et signaler un problème"), page = ToolPage.Recette),
 )
 

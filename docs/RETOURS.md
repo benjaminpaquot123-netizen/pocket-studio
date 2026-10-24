@@ -57,3 +57,4 @@ Format : `- [ ] AAAA-MM-JJ · écran / capture · ce que dit Benjamin` ; `- [x]`
 - 2026-10-24 : « Applique tout. » → les 6 idées de réalisme sont retenues (5 : attendre ses projets exportés). Il enverra un exemple de « basse qui tape » qu'il ne retrouve nulle part dans l'appli. Statut : en cours.
 - 2026-10-24 : exemples de « basse qui tape » : Matt Tinkler « The Main Bass Sounds of Electronic Music », Echo Sound Works « 10 Rolling Basslines (Techno, House, Trance) », deux vidéos « Subwoofer bass test » → analyse lancée (docs/hits/basses-qui-tapent.md), puis nouveaux sons et motifs de basse après le correctif du volume. Statut : en cours.
 - 2026-10-24 : APK 181, capture « Nouveau projet » : « Menu déplié. Ajoute au chantier » → la famille « Calme (Chill, Lo-fi) » s'ouvre dépliée ; les familles doivent arriver repliées. Statut : noté (lot de corrections).
+- 2026-10-24 : APK 181 : « Oui le volume tient » → fondu en direct confirmé corrigé sur téléphone. Statut : fait.

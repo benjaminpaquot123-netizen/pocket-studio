@@ -4,7 +4,8 @@
 // budget, callbacks of 96 frames, the queue (4096 commands) drained by those callbacks only. Not
 // the OfflineRenderer: what is heard on the phone, not what an export writes.
 //
-//   ps_live [--seconds S (90)] [--burst N (96)] [--wav out.wav] [--csv out.csv] [--quiet] <in.pslive>
+//   ps_live [--seconds S (90)] [--burst N (96)] [--wav out.wav] [--csv out.csv] [--quiet]
+//           [--cpu-scale X (3)] [--buffer-bursts B (2)] [--cpu-out times.f32] [--alloc-probe] <in.pslive>
 //
 // Prints one line per second (--quiet: none): song step, scene swaps, transport, the whole mix's
 // song curve (the master fader's target, « lane ») and the fade as heard (its smoothed gain), the
@@ -15,7 +16,20 @@
 // -50 dBFS while playing, not planned by the song curve), FADE (the short-term level 6 dB under
 // the 10 s before while the live gain fell 3 dB, the song curve not planning it), CLICK (a step
 // over 0.3, 20x the RMS of the 16 steps before and after it, twice any such step of the 4 s around
-// it: a discontinuity; best effort, a hit's attack or a 303's edge is not one). Exit 4 when something is flagged.
+// it: a discontinuity; best effort, a hit's attack or a 303's edge is not one), ALLOC (the audio
+// callback allocated or freed C++ memory: the real-time rule; not counted under AddressSanitizer;
+// --alloc-probe makes one such call itself, for the self-test),
+// DRIFT (a loop of the song, when it starts over, 1 dB louder or softer than its first time round,
+// or its live gain 1.5 dB away: a soak over many loops). Exit 4 when something is flagged.
+//
+// The audio thread's work (docs/TESTS-REELS.md, « Petit téléphone »): each callback's CPU time on
+// this thread (not wall time: other processes do not count) against its real-time budget (burst /
+// 48 kHz), printed as one CPU line: mean, 99th and 99.9th percentiles and worst block, in % of the
+// budget. A slower phone is modelled by --cpu-scale (each block's time x X): the blocks that would
+// then miss their deadline, and the glitches heard with a buffer of B bursts (the backlog of late
+// blocks eating the buffer's margin). Never a flag: one run on a shared machine is noisy;
+// --cpu-out writes each block's time (float32 seconds) for scripts/cpu-bench.sh, which keeps the
+// fastest of several runs block by block (the replay is the same each time).
 //
 // File format: the .pscmd lines (C, SAMPLE, PAD, TRACKSAMPLE, AUDIOCLIP, STEMS 0, INSTRUMENT a 0;
 // see ps_render.cpp), plus
@@ -23,6 +37,7 @@
 //   WAIT swaps <n>  the app reacts to the engine's n-th scene swap (its 40 ms watch): the stream
 //                   plays until the engine has made it
 #include <algorithm>
+#include <atomic>
 #include <cmath>
 #include <cstdint>
 #include <cstdio>
@@ -35,12 +50,50 @@
 #include <string>
 #include <vector>
 
+#include <time.h>
+
 #include "Engine.h"
 #include "MasterChain.h"
 #include "Sample.h"
 #include "WavWriter.h"
 
+// C++ heap calls made inside Engine::process (the audio callback), counted while g_inCallback is
+// set: the real-time rule says none. Not under AddressSanitizer, which owns operator new.
+#if !defined(__SANITIZE_ADDRESS__)
+#include <new>
+#pragma GCC diagnostic ignored "-Wmismatched-new-delete"
+static std::atomic<bool> g_inCallback{false};
+static std::atomic<long> g_callbackNews{0}, g_callbackDeletes{0};
+void* operator new(std::size_t n) {
+    if (g_inCallback.load(std::memory_order_relaxed)) g_callbackNews.fetch_add(1, std::memory_order_relaxed);
+    if (void* p = std::malloc(n ? n : 1)) return p;
+    throw std::bad_alloc();
+}
+void operator delete(void* p) noexcept {
+    if (p && g_inCallback.load(std::memory_order_relaxed)) g_callbackDeletes.fetch_add(1, std::memory_order_relaxed);
+    std::free(p);
+}
+void operator delete(void* p, std::size_t) noexcept {
+    if (p && g_inCallback.load(std::memory_order_relaxed)) g_callbackDeletes.fetch_add(1, std::memory_order_relaxed);
+    std::free(p);
+}
+#define PS_LIVE_COUNTS_ALLOCATIONS 1
+#else
+static std::atomic<bool> g_inCallback{false};
+static std::atomic<long> g_callbackNews{0}, g_callbackDeletes{0};
+#define PS_LIVE_COUNTS_ALLOCATIONS 0
+#endif
+
 namespace {
+
+void* volatile g_probe = nullptr;
+
+// CPU time of this thread (not wall time: other processes taking the cores do not count).
+double threadSeconds() {
+    timespec ts{};
+    clock_gettime(CLOCK_THREAD_CPUTIME_ID, &ts);
+    return static_cast<double>(ts.tv_sec) + static_cast<double>(ts.tv_nsec) * 1e-9;
+}
 
 std::string dirOf(const std::string& path) {
     const auto slash = path.find_last_of('/');
@@ -84,6 +137,13 @@ struct Second {
     bool nonFinite = false;
 };
 
+// A click: a step over 0.3 that stands kClickAlone x out of the 16 steps before it AND the 16
+// after it (a discontinuity: smooth on both sides). A sine of 100 Hz cut at half scale stands 70x
+// out; a hit's attack or a 303's band-limited edge rings on after its step (measured over the 37
+// styles: under 4x).
+constexpr double kClickAlone = 20.0;
+constexpr int kClickSide = 16;
+
 struct Player {
     ps::Engine engine{48000};
     int burst = 96;
@@ -92,20 +152,39 @@ struct Player {
     std::vector<float> wav;  // interleaved stereo, when asked
     bool keepWav = false;
     bool quiet = false;
+    // The self-test's probe (--alloc-probe): one heap call inside the callback's window, which the
+    // ALLOC check must see (scripts/bench/live_selftest.py).
+    bool allocProbe = false;
     // This second.
     double sumSq = 0.0;
     float peak = 0.0f, jump = 0.0f, lowestFade = 1.0f, lastL = 0.0f, lastR = 0.0f;
-    std::vector<float> steps;  // every frame-to-frame step (the larger channel's): the clicks are read from them at the end
     int64_t inSecond = 0;
     std::vector<Second> seconds;
     std::vector<double> lastSums;  // the mean squares of the seconds so far
     std::FILE* csv = nullptr;
+    // Each callback's CPU time (s) on this thread.
+    std::vector<float> cpu;
+    // Clicks, read as the steps come (a soak of 30 minutes keeps a few thousand steps, not all of
+    // them): the steps not looked at yet with the kClickSide before them, from frame stepsBase.
+    std::vector<float> steps;
+    int64_t stepsBase = 0, nextLook = kClickSide;
+    std::vector<double> isolationOf;  // per second: the step most alone among its neighbours, how much
+    std::vector<float> clickStepOf;   // and its size
     bool done() const { return frames >= limit; }
 
     void tick() {
         if (done()) return;
         block.assign(static_cast<size_t>(burst) * 2, 0.0f);
+        g_inCallback.store(true, std::memory_order_relaxed);
+        const double t0 = threadSeconds();
         engine.process(nullptr, 0, 0, block.data(), burst, 2);
+        if (allocProbe && cpu.size() == 100) {
+            g_probe = ::operator new(16);  // a direct call: never elided, as a new-expression may be
+            ::operator delete(g_probe);
+        }
+        const double t1 = threadSeconds();
+        g_inCallback.store(false, std::memory_order_relaxed);
+        cpu.push_back(static_cast<float>(t1 - t0));
         for (int i = 0; i < burst; ++i) {
             const float l = block[static_cast<size_t>(i) * 2], r = block[static_cast<size_t>(i) * 2 + 1];
             sumSq += 0.5 * (double(l) * l + double(r) * r);
@@ -116,11 +195,44 @@ struct Player {
             lastL = l;
             lastR = r;
         }
+        lookForClicks();
         lowestFade = std::min(lowestFade, engine.mixer().masterFaderNow());
         if (keepWav) wav.insert(wav.end(), block.begin(), block.end());
         frames += burst;
         inSecond += burst;
         if (inSecond >= 48000) report();
+    }
+    // Every step with kClickSide + 1 after it is looked at once (as the whole run's steps were).
+    void lookForClicks() {
+        constexpr int kRate = 48000;
+        const int64_t end = stepsBase + static_cast<int64_t>(steps.size());
+        for (; nextLook + kClickSide + 1 < end; ++nextLook) {
+            const size_t j = static_cast<size_t>(nextLook - stepsBase);
+            const float d = steps[j];
+            if (d <= 0.3f) continue;
+            double before = 0.0, after = 0.0;
+            for (int k = 1; k <= kClickSide; ++k) {
+                before += double(steps[j - size_t(k)]) * steps[j - size_t(k)];
+                after += double(steps[j + 1 + size_t(k)]) * steps[j + 1 + size_t(k)];  // the frame after the step may still be on its edge
+            }
+            const double around = std::sqrt(std::max(before, after) / kClickSide);
+            const double alone = around > 1e-9 ? double(d) / around : 1e9;
+            const size_t t = static_cast<size_t>(nextLook / kRate);
+            if (t >= isolationOf.size()) {
+                isolationOf.resize(t + 1, 0.0);
+                clickStepOf.resize(t + 1, 0.0f);
+            }
+            if (alone > isolationOf[t]) {
+                isolationOf[t] = alone;
+                clickStepOf[t] = d;
+            }
+        }
+        // The steps looked at go, but the kClickSide the next look needs before it.
+        const int64_t keepFrom = nextLook - kClickSide;
+        if (keepFrom - stepsBase > 8192) {
+            steps.erase(steps.begin(), steps.begin() + (keepFrom - stepsBase));
+            stepsBase = keepFrom;
+        }
     }
     static double db(double meanSquare) { return meanSquare > 1e-20 ? 10.0 * std::log10(meanSquare) : -200.0; }
     void report() {
@@ -163,6 +275,13 @@ struct Player {
         lowestFade = 1.0f;
         inSecond = 0;
     }
+    // The clicks found, into their seconds (the steps of the last partial second are left, as before).
+    void clicksIntoSeconds() {
+        for (size_t t = 0; t < seconds.size() && t < isolationOf.size(); ++t) {
+            seconds[t].isolation = isolationOf[t];
+            seconds[t].clickStep = clickStepOf[t];
+        }
+    }
     // As AudioHost::post: a full queue waits for the audio thread.
     void post(const ps::Command& c) {
         while (!engine.post(c)) {
@@ -176,35 +295,49 @@ struct Player {
     }
 };
 
-// What a listener would call a fault, from the seconds played. The plan (the whole mix's song
-// curve: a silent beat, a Montée's dip, a Break down, a fade the user drew) is not one.
-// A click: a step over 0.3 that stands kClickAlone x out of the 16 steps before it AND the 16
-// after it (a discontinuity: smooth on both sides). A sine of 100 Hz cut at half scale stands 70x
-// out; a hit's attack or a 303's band-limited edge rings on after its step (measured over the 37
-// styles: under 4x).
-constexpr double kClickAlone = 20.0;
+// The audio thread's time against its budget, a slower phone modelled by [scale].
+struct CpuReport {
+    double budget = 0.0, mean = 0.0, p99 = 0.0, p999 = 0.0, max = 0.0, maxAt = 0.0;
+    long blocks = 0, over = 0, glitches = 0;
+};
 
-void findClicks(const std::vector<float>& steps, std::vector<Second>& sec) {
-    constexpr int kSide = 16, kRate = 48000;
-    for (size_t j = kSide; j + kSide + 1 < steps.size(); ++j) {
-        const float d = steps[j];
-        if (d <= 0.3f) continue;
-        const size_t t = j / kRate;
-        if (t >= sec.size()) break;
-        double before = 0.0, after = 0.0;
-        for (int k = 1; k <= kSide; ++k) {
-            before += double(steps[j - size_t(k)]) * steps[j - size_t(k)];
-            after += double(steps[j + 1 + size_t(k)]) * steps[j + 1 + size_t(k)];  // the frame after the step may still be on its edge
+CpuReport cpuReport(const std::vector<float>& cpu, int burst, double scale, int bufferBursts) {
+    CpuReport r;
+    r.budget = burst / 48000.0;
+    r.blocks = static_cast<long>(cpu.size());
+    if (cpu.empty()) return r;
+    double sum = 0.0, backlog = 0.0;
+    const double margin = std::max(0, bufferBursts - 1) * r.budget;
+    for (size_t i = 0; i < cpu.size(); ++i) {
+        const double t = cpu[i];
+        sum += t;
+        if (t > r.max) {
+            r.max = t;
+            r.maxAt = double(i) * burst / 48000.0;
         }
-        const double around = std::sqrt(std::max(before, after) / kSide);
-        const double alone = around > 1e-9 ? double(d) / around : 1e9;
-        if (alone > sec[t].isolation) {
-            sec[t].isolation = alone;
-            sec[t].clickStep = d;
+        const double slow = t * scale;
+        if (slow > r.budget) ++r.over;
+        // The late blocks eat the buffer's margin; once it is gone, the next late one is heard.
+        backlog = std::max(0.0, backlog + slow - r.budget);
+        if (backlog > margin) {
+            ++r.glitches;
+            backlog = 0.0;
         }
     }
+    r.mean = sum / double(cpu.size());
+    std::vector<float> sorted(cpu);
+    auto at = [&](double q) {
+        const size_t k = std::min(sorted.size() - 1, static_cast<size_t>(q * double(sorted.size() - 1)));
+        std::nth_element(sorted.begin(), sorted.begin() + long(k), sorted.end());
+        return double(sorted[k]);
+    };
+    r.p99 = at(0.99);
+    r.p999 = at(0.999);
+    return r;
 }
 
+// What a listener would call a fault, from the seconds played. The plan (the whole mix's song
+// curve: a silent beat, a Montée's dip, a Break down, a fade the user drew) is not one.
 std::vector<std::string> flags(const std::vector<Second>& sec) {
     std::vector<std::string> out;
     char buf[256];
@@ -260,7 +393,7 @@ std::vector<std::string> flags(const std::vector<Second>& sec) {
                 add("FADE", s.t, detail);
             }
         }
-        // A click (findClicks), twice as large as any other of the 4 s around it (a sound that
+        // A click (Player::lookForClicks), twice as large as any other of the 4 s around it (a sound that
         // starts hard on every beat is the sound itself).
         if (s.isolation > kClickAlone) {
             float around = 0.0f;
@@ -277,6 +410,57 @@ std::vector<std::string> flags(const std::vector<Second>& sec) {
     return out;
 }
 
+// The song looped (a soak): each time round, its level and live gain against its second time
+// round (the first one is where the live gain learns the song). The song starting over is its
+// position going back. Only whole loops count (the last one, cut by the time asked, does not).
+struct Loop {
+    int from = 0, to = 0;  // seconds [from, to)
+    double levelDb = -200.0;
+    double driveDb = 0.0;
+};
+
+std::vector<Loop> loopsOf(const std::vector<Second>& sec) {
+    std::vector<Loop> out;
+    int start = -1;
+    for (size_t i = 0; i < sec.size(); ++i) {
+        if (start < 0) {
+            if (sec[i].running && sec[i].songStep >= 0) start = static_cast<int>(i);
+            continue;
+        }
+        if (sec[i].songStep >= 0 && sec[i - 1].songStep >= 0 && sec[i].songStep + 16 < sec[i - 1].songStep) {
+            out.push_back({start, static_cast<int>(i)});
+            start = static_cast<int>(i);
+        }
+    }
+    for (auto& l : out) {
+        double sum = 0.0, drive = 0.0;
+        int n = 0;
+        for (int i = l.from; i < l.to; ++i) {
+            sum += std::pow(10.0, sec[size_t(i)].rmsDb / 10.0);
+            drive += sec[size_t(i)].drive;
+            ++n;
+        }
+        if (n > 0) {
+            l.levelDb = sum > 1e-20 * n ? 10.0 * std::log10(sum / n) : -200.0;
+            l.driveDb = drive / n;
+        }
+    }
+    return out;
+}
+
+void driftFlags(const std::vector<Loop>& loops, std::vector<std::string>& out) {
+    if (loops.size() < 3) return;
+    const Loop& ref = loops[1];
+    char buf[256];
+    for (size_t k = 2; k < loops.size(); ++k) {
+        const double level = loops[k].levelDb - ref.levelDb, drive = loops[k].driveDb - ref.driveDb;
+        if (std::fabs(level) > 1.0 || std::fabs(drive) > 1.5) {
+            std::snprintf(buf, sizeof buf, "DRIFT at %d s: loop %zu is %+.2f dB (live gain %+.2f dB) from loop 2", loops[k].from + 1, k + 1, level, drive);
+            out.emplace_back(buf);
+        }
+    }
+}
+
 }  // namespace
 
 int main(int argc, char** argv) {
@@ -284,17 +468,25 @@ int main(int argc, char** argv) {
     bool quiet = false;
     std::string wavPath, csvPath;
     std::vector<std::string> files;
-    int burst = 96;
+    int burst = 96, bufferBursts = 2;
+    double cpuScale = 3.0;
+    std::string cpuPath;
+    bool allocProbe = false;
     for (int i = 1; i < argc; ++i) {
         if (!std::strcmp(argv[i], "--seconds") && i + 1 < argc) seconds = std::atof(argv[++i]);
         else if (!std::strcmp(argv[i], "--burst") && i + 1 < argc) burst = std::max(16, std::atoi(argv[++i]));
         else if (!std::strcmp(argv[i], "--wav") && i + 1 < argc) wavPath = argv[++i];
         else if (!std::strcmp(argv[i], "--csv") && i + 1 < argc) csvPath = argv[++i];
         else if (!std::strcmp(argv[i], "--quiet")) quiet = true;
+        else if (!std::strcmp(argv[i], "--cpu-scale") && i + 1 < argc) cpuScale = std::max(0.01, std::atof(argv[++i]));
+        else if (!std::strcmp(argv[i], "--buffer-bursts") && i + 1 < argc) bufferBursts = std::max(1, std::atoi(argv[++i]));
+        else if (!std::strcmp(argv[i], "--cpu-out") && i + 1 < argc) cpuPath = argv[++i];
+        else if (!std::strcmp(argv[i], "--alloc-probe")) allocProbe = true;
         else files.emplace_back(argv[i]);
     }
     if (files.size() != 1) {
-        std::fprintf(stderr, "usage: ps_live [--seconds S] [--burst N] [--wav out.wav] [--csv out.csv] [--quiet] <in.pslive>\n");
+        std::fprintf(stderr, "usage: ps_live [--seconds S] [--burst N] [--wav out.wav] [--csv out.csv] [--quiet] "
+                             "[--cpu-scale X] [--buffer-bursts B] [--cpu-out times.f32] <in.pslive>\n");
         return 1;
     }
     std::ifstream in(files[0]);
@@ -308,6 +500,7 @@ int main(int argc, char** argv) {
     player->limit = static_cast<int64_t>(seconds * 48000.0);
     player->keepWav = !wavPath.empty();
     player->quiet = quiet;
+    player->allocProbe = allocProbe;
     player->engine.prepare(48000);
     player->engine.setCommandBudget(ps::Engine::kLiveCommandBudget);
     if (!csvPath.empty()) {
@@ -393,8 +586,39 @@ int main(int argc, char** argv) {
         ps::WavWriter w;
         if (!w.open(wavPath.c_str(), 48000, 2, true) || !w.write(player->wav.data(), static_cast<int>(player->wav.size() / 2)) || !w.close()) status = 3;
     }
-    findClicks(player->steps, player->seconds);
-    const auto found = flags(player->seconds);
+    player->clicksIntoSeconds();
+    auto found = flags(player->seconds);
+    // Many loops of the song (a soak): none drifts away from the others.
+    const auto loops = loopsOf(player->seconds);
+    if (loops.size() >= 2) {
+        std::printf("LOOPS %zu:", loops.size());
+        for (const auto& l : loops) std::printf(" %d-%ds %.2fdB/%+.2fdB", l.from + 1, l.to, l.levelDb, l.driveDb);
+        std::printf("\n");
+    }
+    driftFlags(loops, found);
+    // The real-time rule: the callback neither allocates nor frees.
+    const long news = g_callbackNews.load(), deletes = g_callbackDeletes.load();
+    if (PS_LIVE_COUNTS_ALLOCATIONS) {
+        std::printf("ALLOC news=%ld deletes=%ld in %zu callbacks\n", news, deletes, player->cpu.size());
+        if (news > 0 || deletes > 0) {
+            char buf[160];
+            std::snprintf(buf, sizeof buf, "ALLOC: the audio callback allocated %ld and freed %ld times", news, deletes);
+            found.emplace_back(buf);
+        }
+    } else {
+        std::printf("ALLOC not counted (sanitizer build)\n");
+    }
+    // The audio thread's time against its budget, and on a phone cpuScale times slower.
+    const CpuReport cpu = cpuReport(player->cpu, burst, cpuScale, bufferBursts);
+    const double pct = cpu.budget > 0.0 ? 100.0 / cpu.budget : 0.0;
+    std::printf("CPU burst=%d budget_ms=%.3f blocks=%ld mean=%.2f%% p99=%.2f%% p999=%.2f%% max=%.2f%% max_at=%.1fs scale=%.2f buffer=%d over=%ld glitches=%ld\n",
+                burst, cpu.budget * 1000.0, cpu.blocks, cpu.mean * pct, cpu.p99 * pct, cpu.p999 * pct, cpu.max * pct, cpu.maxAt, cpuScale, bufferBursts,
+                cpu.over, cpu.glitches);
+    if (!cpuPath.empty()) {
+        std::FILE* f = std::fopen(cpuPath.c_str(), "wb");
+        if (!f || std::fwrite(player->cpu.data(), sizeof(float), player->cpu.size(), f) != player->cpu.size()) status = 3;
+        if (f) std::fclose(f);
+    }
     for (const auto& f : found) std::printf("FLAG %s\n", f.c_str());
     std::printf("%s: %zu flag%s over %zu s\n", found.empty() ? "OK" : "FLAGGED", found.size(), found.size() == 1 ? "" : "s", player->seconds.size());
     if (status == 0 && !found.empty()) status = 4;

@@ -1,0 +1,157 @@
+name: Nightly real use
+
+# « Tests d'usage réel », the long ones (docs/TESTS-REELS.md): too long for each pull request.
+# Every night on main, or by hand (Actions › Nightly real use › Run workflow) with longer runs.
+on:
+  schedule:
+    - cron: "17 2 * * *"
+  workflow_dispatch:
+    inputs:
+      endurance_minutes:
+        description: "Endurance sur émulateur (minutes)"
+        default: "30"
+      soak_minutes:
+        description: "Endurance sur Linux (minutes)"
+        default: "30"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nightly-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  NDK_VERSION: "30.0.16248370"
+  CMAKE_VERSION: "4.1.2"
+  ANDROID_PLATFORM: "platforms;android-37.0"
+  BUILD_TOOLS: "build-tools;37.0.0"
+
+jobs:
+  linux:
+    name: Soak, small phone, real projects (Linux)
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: false
+      - name: Fetch submodules with retries (GitLab is sometimes overloaded)
+        run: |
+          git submodule update --init --depth=1 --force -- $(git config -f .gitmodules --get-regexp '\.path$' | awk '{print $2}' | grep -v eigen)
+          for i in 1 2 3 4 5 6 7 8 9 10; do
+            git submodule update --init --depth=1 --force -- separation/third_party/eigen && break
+            echo "eigen: attempt $i failed, waiting"; sleep 30
+          done
+          if git submodule status | grep -q '^-'; then git submodule status; exit 1; fi
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: android-actions/setup-android@v4
+        with:
+          packages: ${{ env.ANDROID_PLATFORM }} ${{ env.BUILD_TOOLS }} ndk;${{ env.NDK_VERSION }} cmake;${{ env.CMAKE_VERSION }}
+      - uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: nightly-host
+      - uses: gradle/actions/setup-gradle@v6
+      # A 6-minute song looped for 30 minutes (10 on the schedule's nights too: see soak_minutes).
+      - name: Soak (a 6-minute song looped)
+        env:
+          CMAKE_EXTRA_ARGS: -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+          GRADLE_ARGS: --console=plain
+        run: ./scripts/soak.sh --minutes "${{ github.event.inputs.soak_minutes || '30' }}" --song 360 --out build/soak
+      # « Petit téléphone »: the audio thread's time per callback for the 37 styles, 96 and 192
+      # frames, and a phone 3 times slower (this runner is not a phone: the verdicts are relative).
+      - name: Small phone (37 styles)
+        if: always()
+        env:
+          CMAKE_EXTRA_ARGS: -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+          GRADLE_ARGS: --console=plain
+        run: ./scripts/cpu-bench.sh --runs 3 --out build/cpu-bench
+      # The real projects, the full ones too when they are hosted (release « projets-reels »).
+      - name: Real projects (full versions)
+        if: always()
+        env:
+          GRADLE_ARGS: --console=plain
+          GH_TOKEN: ${{ github.token }}
+        run: ./scripts/real-projects.sh --fetch
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: nightly-linux
+          path: |
+            build/soak/soak.md
+            build/soak/log/
+            build/cpu-bench/report.md
+            build/cpu-bench/cpu.json
+            build/cpu-bench/live/report.md
+            build/real-projects/run/*.txt
+            build/real-projects/run/*.json
+          if-no-files-found: ignore
+
+  emulator:
+    name: Endurance on the emulator
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: false
+      - name: Fetch submodules with retries (GitLab is sometimes overloaded)
+        run: |
+          git submodule update --init --depth=1 --force -- $(git config -f .gitmodules --get-regexp '\.path$' | awk '{print $2}' | grep -v eigen)
+          for i in 1 2 3 4 5 6 7 8 9 10; do
+            git submodule update --init --depth=1 --force -- separation/third_party/eigen && break
+            echo "eigen: attempt $i failed, waiting"; sleep 30
+          done
+          if git submodule status | grep -q '^-'; then git submodule status; exit 1; fi
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: android-actions/setup-android@v4
+        with:
+          packages: ${{ env.ANDROID_PLATFORM }} ${{ env.BUILD_TOOLS }} ndk;${{ env.NDK_VERSION }} cmake;${{ env.CMAKE_VERSION }}
+      - uses: gradle/actions/setup-gradle@v6
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Build test APKs
+        run: ./gradlew -PemulatorAbi :app:assembleDebug :app:assembleDebugAndroidTest
+      - name: Cache the emulator and its system image
+        uses: actions/cache@v6
+        with:
+          path: |
+            ${{ env.ANDROID_HOME }}/emulator
+            ${{ env.ANDROID_HOME }}/system-images/android-35/google_apis/x86_64
+          key: emulator-35-google_apis-x86_64-v1
+      - name: Download the emulator and its system image
+        run: |
+          for attempt in 1 2 3 4; do
+            sdkmanager --install emulator 'system-images;android-35;google_apis;x86_64' --channel=0 > /dev/null || true
+            if [ -x "$ANDROID_HOME/emulator/emulator" ] && [ -f "$ANDROID_HOME/system-images/android-35/google_apis/x86_64/system.img" ]; then exit 0; fi
+            echo "Download incomplete (attempt $attempt), retrying"
+            sleep $((attempt * 20))
+          done
+          exit 1
+      # 10 minutes on the schedule's nights, 30 (or what was asked) by hand; the users' paths too.
+      - name: Endurance and journeys on the emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          arch: x86_64
+          target: google_apis
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -no-boot-anim -camera-back none
+          script: ./scripts/emulator-tests.sh --endurance ${{ github.event.inputs.endurance_minutes || '10' }} --class com.pocketstudio.app.EnduranceTest,com.pocketstudio.app.JourneyTest
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: nightly-emulator
+          path: |
+            app/build/reports/androidTests/
+            app/build/realuse-logcat.txt
+          if-no-files-found: ignore

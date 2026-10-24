@@ -78,12 +78,12 @@ class JourneyTest {
             RealUse.describeStream()
             j.firstLaunch(simple = false, guided = false)
             assertFalse("the mode chosen is kept", SettingsStore.state.value.simpleMode)
-            j.await("space_bar")
+            j.awaitAny("space_bar", "space_rail")
         }
         // A later start: « Que veux-tu faire ? » › Continuer.
         launch().use {
             j.continueLastProject()
-            j.await("space_bar")
+            j.awaitAny("space_bar", "space_rail")
         }
         // Another one: « Nouveau morceau » › the assistant › jump up › Créer maintenant.
         launch().use { scenario ->
@@ -107,11 +107,14 @@ class JourneyTest {
             val p0 = rhythm.project.value
             val fillPart = (1..minOf(4, p0.song.size - 1)).first { partSheetUi(p0, it)?.endsOnFill == false }
             j.partIntent(fillPart, "part_fill")
+            // The intent lands through the ViewModel a moment after the tap on a device.
+            waitFor("the Fill applied", 10) { rhythm.project.value.song[fillPart].play[SongPart.DRUMS] != null }
             val p1 = rhythm.project.value
             assertEquals("a Fill at the end of part ${fillPart + 1}", "Fill", p1.sceneLabel(p1.song[fillPart].play.getValue(SongPart.DRUMS)))
             assertTrue("« Fait : … » said", rhythm.done.value.orEmpty().startsWith("Fait"))
             val buildUpPart = (1..minOf(4, p1.song.size - 1)).first { it != fillPart }
             j.partIntent(buildUpPart, "part_buildup_4")
+            waitFor("the build-up applied", 10) { rhythm.project.value != p1 }
             val p2 = rhythm.project.value
             assertTrue("the Montée changed the song", p2 != p1)
             assertTrue("« Fait : montée … » said", rhythm.done.value.orEmpty().startsWith("Fait"))

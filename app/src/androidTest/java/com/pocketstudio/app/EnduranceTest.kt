@@ -108,7 +108,7 @@ class EnduranceTest {
                     j.await("projects")
                     j.tap("project_$id")
                     waitFor("project $id opened", 30) { CurrentProject.get(app) == id && activityOf(scenario) !== old }
-                    j.await("space_bar", 20_000)
+                    j.awaitAny("space_bar", "space_rail", timeoutMs = 20_000)
                 }
                 val opened = rhythmOf(scenario)
                 runBlocking { opened.awaitSoundsLoadedForTest() }
@@ -140,7 +140,7 @@ class EnduranceTest {
                 // Back as from the launcher (singleTask: the same screen comes back to the front).
                 app.startActivity(Intent(app, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
                 waitFor("the app back in front", 20) { scenario.state == Lifecycle.State.RESUMED }
-                j.await("space_bar", 20_000)
+                j.awaitAny("space_bar", "space_rail", timeoutMs = 20_000)
                 // Turned sideways and back (the screen rebuilt twice).
                 for ((orientation, wanted) in listOf(
                     ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE to Configuration.ORIENTATION_LANDSCAPE,
@@ -150,7 +150,7 @@ class EnduranceTest {
                     waitFor("the screen turned", 20) {
                         scenario.state == Lifecycle.State.RESUMED && activityOf(scenario).resources.configuration.orientation == wanted
                     }
-                    j.await("space_bar", 20_000)
+                    j.awaitAny("space_bar", "space_rail", timeoutMs = 20_000)
                     if (orientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) peak = maxOf(peak, listen(2))
                 }
                 peak = maxOf(peak, listen(2))

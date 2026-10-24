@@ -7585,6 +7585,12 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 _export.value = _export.value.copy(sharing = true, running = true, progress = 0f, stage = tr("Écriture de la prise…"), error = null, files = emptyList())
                 takeJob?.join()
                 _export.value = _export.value.copy(running = false, stage = null)
+                // « Annuler » touched while the take was written (lot 1: it always works).
+                if (exportCancelled) {
+                    exportCancelled = false
+                    _export.value = _export.value.copy(sharing = false)
+                    return@launch
+                }
             }
             val now = project.value
             startExport(com.pocketstudio.app.export.ShareSong.settings(now.song.isNotEmpty(), sceneBars(now), now.audioEndBars(), format), share = true)
@@ -7769,6 +7775,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             var seconds: Double? = null
             var loss: Double? = null
             var decodedPeak: Double? = null
+            // Lot 1: what the export may still spend on the M4A check (a new render of the song, a further lowering).
+            val budget = com.pocketstudio.app.export.ExportBudget()
             val writtenRate = if (settings.cdRate) OfflineExport.CD_RATE else OfflineExport.SAMPLE_RATE
             val writtenBits = if (!settings.limited && settings.format == ExportFormat.Wav) 32 else if (settings.bits16 || settings.format == ExportFormat.M4a) 16 else 24
             try {
@@ -7785,15 +7793,26 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                         val job = finishOrRelease(Dispatchers.Default, OfflineExport::close) { OfflineExport() }!!
                         var poll: kotlinx.coroutines.Job? = null
                         var rendered: com.pocketstudio.engine.ExportReport? = null
+                        // Lot 1: a render that stops moving is stopped, and the export says so (never a bar stuck for good).
+                        var stalled = false
                         val result = try {
                             // In the try: a describe that fails (a sound gone) still closes the private engine.
                             describe(job, p, song, solo, settings.limited, settings.masterFx)
                             if (ceiling != null) NativeEngine.captureInto(job) { NativeEngine.setMasterCeiling(ceiling) }
                             running = job
+                            val watch = com.pocketstudio.app.export.StallWatch()
                             poll = launch {
                                 while (true) {
-                                    _export.value = _export.value.copy(progress = (index + job.progress) / renders.size)
+                                    val done = job.progress
+                                    _export.value = _export.value.copy(progress = (index + done) / renders.size)
                                     com.pocketstudio.app.export.ExportRun.progress(_export.value.progress, _export.value.stage)
+                                    // « Annuler » touched before this render began: it stops at once.
+                                    if (exportCancelled) job.cancel()
+                                    if (!stalled && watch.stalled(done)) {
+                                        stalled = true
+                                        AppLog.add("Export : rendu bloqué à ${(done * 100).roundToInt()} %")
+                                        job.cancel()
+                                    }
                                     kotlinx.coroutines.delay(100)
                                 }
                             }
@@ -7812,14 +7831,20 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                             running = null
                         }
                         when (result) {
-                            ExportResult.Cancelled -> { wav.delete(); throw kotlinx.coroutines.CancellationException("annulé") }
+                            ExportResult.Cancelled -> {
+                                wav.delete()
+                                if (stalled && !exportCancelled) throw UserMessage(tr("La fabrication du son s'est bloquée : réessaie dans un instant."))
+                                throw kotlinx.coroutines.CancellationException("annulé")
+                            }
                             ExportResult.IoError -> { wav.delete(); throw UserMessage(tr("L'écriture du fichier a échoué (stockage plein ?).")) }
                             ExportResult.Ok -> Unit
                         }
                         return rendered
                     }
                     // An M4A's limiter holds −2 dBTP: decoded, the AAC stays under −1 dBTP (checked below).
-                    var report = renderMix(if (settings.format == ExportFormat.M4a) AacEncoder.CEILING_DBTP else null)
+                    var report = budget.took(com.pocketstudio.app.export.M4aGuard.Step.Kind.Render) {
+                        renderMix(if (settings.format == ExportFormat.M4a) AacEncoder.CEILING_DBTP else null)
+                    }
                     // Measured on the full-quality mix, before any compression (the engine's own report,
                     // as written; read again here only if it is missing).
                     if (solo == null) {
@@ -7856,14 +7881,19 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                         }
                         if (settings.format == ExportFormat.M4a) {
                             try {
+                                // Each step named and its own bar (lot 1): « Compression M4A », « Vérification »,
+                                // « Nouvel essai 2/3 »… never a full bar while minutes of work go on.
+                                fun stepDone(fraction: Float) {
+                                    _export.value = _export.value.copy(progress = (index + fraction.coerceIn(0f, 1f)) / renders.size)
+                                }
+                                val cancelled = { exportCancelled || !isActive }
                                 // Encoded, decoded again as a player would: over −1 dBTP, the mix is rendered again
-                                // with its limiter lower by what it went over (the loudness stays), as a last
-                                // resort encoded lower (M4aGuard).
+                                // with its limiter lower by what it went over (the loudness stays) while that fits
+                                // in the export's time budget, else encoded lower (M4aGuard).
                                 val checked = com.pocketstudio.app.export.M4aGuard.run(
                                     report?.truePeakDb,
                                     render = { ceiling ->
-                                        _export.value = _export.value.copy(stage = tr("Compression M4A : crêtes reprises") + part)
-                                        renderMix(ceiling).also { r ->
+                                        budget.took(com.pocketstudio.app.export.M4aGuard.Step.Kind.Render) { renderMix(ceiling) }.also { r ->
                                             report = r
                                             if (solo == null) {
                                                 loudness = r?.lufs ?: loudness
@@ -7873,14 +7903,32 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                                             }
                                         }?.truePeakDb
                                     },
-                                    encode = { g -> withContext(Dispatchers.IO) { AacEncoder.encode(wav, packed, g) { exportCancelled || !isActive } } },
-                                    decodedPeak = { withContext(Dispatchers.IO) { decodedTruePeak(app, packed) { exportCancelled || !isActive } } },
+                                    encode = { g ->
+                                        budget.took(com.pocketstudio.app.export.M4aGuard.Step.Kind.Encode) {
+                                            withContext(Dispatchers.IO) { AacEncoder.encode(wav, packed, g, cancelled, ::stepDone) }
+                                        }
+                                    },
+                                    decodedPeak = {
+                                        budget.took(com.pocketstudio.app.export.M4aGuard.Step.Kind.Check) {
+                                            withContext(Dispatchers.IO) { decodedTruePeak(app, packed, cancelled, ::stepDone) }
+                                        }
+                                    },
+                                    step = { s ->
+                                        _export.value = _export.value.copy(stage = s.label() + part, progress = index.toFloat() / renders.size)
+                                        com.pocketstudio.app.export.ExportRun.progress(_export.value.progress, s.label() + part)
+                                    },
+                                    mayGoOn = budget::allows,
                                 )
+                                if (exportCancelled) throw kotlinx.coroutines.CancellationException("annulé")
                                 if (checked.encodings > 1) {
                                     AppLog.add("M4A : crête décodée trop haute, ${checked.renders} rendu(s), ${checked.encodings} encodage(s), limiteur à " +
                                         "${"%.1f".format(checked.ceiling)} dBTP, gain ${"%.2f".format(checked.gain)}")
                                 }
                                 if (solo == null) decodedPeak = checked.decodedPeakDb
+                            } catch (e: Exception) {
+                                // A file half written is never shared.
+                                packed.delete()
+                                throw e
                             } finally {
                                 wav.delete()
                             }
@@ -7907,7 +7955,12 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 AppLog.add("Export : échec (${e.message})")
                 // « Partager mon morceau » keeps its window open to show what went wrong.
                 _export.value = _export.value.copy(running = false, files = emptyList(), stage = null,
-                    error = if (e is UserMessage) e.message else tr("L'export a échoué : %s", e.message ?: e.javaClass.simpleName))
+                    error = when (e) {
+                        is UserMessage -> e.message
+                        // Lot 1: the phone's codec stopped answering; the WAV needs none.
+                        is com.pocketstudio.app.export.CodecStalledException -> tr("La compression ne répond pas sur ce téléphone : réessaie, ou partage en WAV.")
+                        else -> tr("L'export a échoué : %s", e.message ?: e.javaClass.simpleName)
+                    })
                 ending = _export.value.error
             } finally {
                 exportCancelled = false
@@ -7917,17 +7970,24 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    /** The true peak (dBTP) of [file] decoded as a player would (null when it cannot be read). Blocking. */
-    private fun decodedTruePeak(app: Application, file: File, isCancelled: () -> Boolean): Double? {
-        val raw = File(app.cacheDir, "decoded-check-${System.nanoTime()}.raw")
+    /**
+     * The true peak (dBTP) of [file] decoded as a player would (null when it cannot be read; a
+     * cancel or a stuck codec throws). Read as it is decoded: nothing written to disk. Blocking.
+     */
+    private fun decodedTruePeak(app: Application, file: File, isCancelled: () -> Boolean, progress: (Float) -> Unit = {}): Double? {
+        var meter: com.pocketstudio.app.export.TruePeakMeter? = null
         return try {
-            val audio = AudioDecoder.decodeToFile(app, Uri.fromFile(file), raw, MAX_CHECK_SECONDS, isCancelled)
-            com.pocketstudio.app.export.TruePeakMeter.ofRawFloats(audio.file, audio.channels)
+            AudioDecoder.scan(app, Uri.fromFile(file), MAX_CHECK_SECONDS, isCancelled, progress) { channels, v ->
+                (meter ?: com.pocketstudio.app.export.TruePeakMeter(channels).also { meter = it }).add(v)
+            }
+            meter?.peakDb
+        } catch (e: AudioDecoder.CancelledException) {
+            throw kotlinx.coroutines.CancellationException("annulé")
+        } catch (e: com.pocketstudio.app.export.CodecStalledException) {
+            throw e
         } catch (e: Exception) {
             AppLog.add("M4A : vérification impossible (${e.message})")
             null
-        } finally {
-            raw.delete()
         }
     }
 
@@ -7988,6 +8048,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun cancelExport() {
         exportCancelled = true
         running?.cancel()
+        // Lot 1: whatever step it is in (waiting for the sounds, between two steps), the export stops now.
+        exportJob?.cancel()
     }
 
     override fun onCleared() {

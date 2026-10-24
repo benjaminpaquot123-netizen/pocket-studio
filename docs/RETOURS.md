@@ -51,3 +51,4 @@ Format : `- [ ] AAAA-MM-JJ · écran / capture · ce que dit Benjamin` ; `- [x]`
 - 2026-10-24 : « À l'ouverture du programme ajoute chaque fois une fenêtre pour savoir ce qu'on veut faire. Car on arrive directement dans le projet. » → à chaque ouverture : une fenêtre « Que veux-tu faire ? » (continuer le dernier projet, nouveau morceau, mes projets…). Statut : noté.
 - 2026-10-24 : « Ne compile pas sans que je te le dise. Je vais te donner les bugs et tu les notes. » → plus aucun APK construit ni envoyé sans son feu vert ; les bugs sont notés ici puis corrigés en lot. Statut : règle en vigueur.
 - 2026-10-24 : « Vas-y compile toi-même dès que c'est corrigé car le volume se réduit tellement que je ne sais plus bosser » → feu vert pour construire et envoyer l'APK dès que le fondu est corrigé. Statut : en cours.
+- 2026-10-24 : précision : « ça diminue bien puis ça coupe » (sans rien toucher) → fondu confirmé jusqu'au silence complet. Statut : en cours (priorité 1).

@@ -274,6 +274,9 @@ fun AppRoot() {
     val remixVm: RemixViewModel = viewModel()
     val generateVm: com.pocketstudio.app.generate.GenerateViewModel = viewModel()
     val libraryVm: com.pocketstudio.app.library.SoundLibraryViewModel = viewModel()
+    // « Signaler un bug »: opened from Plus, the Mode simple's ⋯, a long press on « ? » and the crash banner.
+    val bugVm: com.pocketstudio.app.report.BugReportViewModel = viewModel()
+    val reportBug: (String) -> Unit = { from -> bugVm.request(from) }
     // The demos of « Nouveau projet » are rendered on a private engine described by the open project's own sync.
     DisposableEffect(libraryVm, rhythmVm) {
         libraryVm.demoSync = { p -> rhythmVm.syncEngine(p) }
@@ -760,8 +763,21 @@ fun AppRoot() {
     LaunchedEffect(engineAvailable) {
         if (!engineAvailable) return@LaunchedEffect
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            var saved = -1L
+            var savedAt = 0L
             while (true) {
-                Metrics.updateStream(NativeEngine.streamInfo())
+                val info = NativeEngine.streamInfo()
+                Metrics.updateStream(info)
+                // The bug report's health journal (4 readings a second, atomics only).
+                val now = android.os.SystemClock.elapsedRealtime()
+                com.pocketstudio.app.report.HealthMonitor.feed(info, now, System.currentTimeMillis())
+                // A copy of the journal on disk every 10 s while it changes: a native crash leaves no time to write one.
+                if (now - savedAt >= 10_000 && com.pocketstudio.app.report.Journal.version != saved) {
+                    saved = com.pocketstudio.app.report.Journal.version
+                    savedAt = now
+                    val json = com.pocketstudio.app.report.JournalJson.current()
+                    launch(kotlinx.coroutines.Dispatchers.IO) { com.pocketstudio.app.report.JournalFiles.write(context.filesDir, com.pocketstudio.app.report.JournalFiles.LIVE, json) }
+                }
                 delay(100)
             }
         }
@@ -950,6 +966,27 @@ fun AppRoot() {
     // drums, the acid's sounds, the instrument's sheet; an audio track opens in Sons.
     var kitSheetOpen by rememberSaveable { mutableStateOf(false) }
     var acidSheetOpen by rememberSaveable { mutableStateOf(false) }
+    // The bug report's journal: each screen, space or sheet shown is a line (and the transport, takes, exports).
+    com.pocketstudio.app.report.JournalWatch(rhythmVm, bugVm) {
+        buildList {
+            add((if (simple) "Mode simple" else tab.space.name) + " › " + tab.name + (if (tab == AppTab.Outils) toolPage?.let { " › " + it.name } ?: "" else ""))
+            if (tab.space == Space.Structure && !simple) add(if (partsView) "vue Parties" else "vue Ligne du temps")
+            if (showProjects) add("Mes projets")
+            if (showTimeline) add("Ligne du temps plein écran")
+            if (showLivePads) add("Pads live plein écran")
+            if (tempoSheetOpen) add("fiche Tempo")
+            if (showShare) add("Prêt à partager ?")
+            if (showVideo) add("fiche Vidéo")
+            soundChooserTrack?.let { add("Changer le son (piste $it)") }
+            if (songChordsOpen) add("Accords du morceau")
+            if (showLibrary) add("Bibliothèque de sons")
+            if (fxChannel >= 0) add("Effets (tranche $fxChannel)")
+            if (songVersionsOpen) add("Versions du morceau")
+            if (kitSheetOpen) add("fiche Kits")
+            if (acidSheetOpen) add("fiche Sons de l'acide")
+            if (helpLabels) add("étiquettes « ? »")
+        }.joinToString(" · ")
+    }
     val trackSound: (String) -> Unit = { key ->
         when {
             key == com.pocketstudio.model.SongPart.DRUMS -> { rhythmVm.refreshPacks(); kitSheetOpen = true }
@@ -1137,7 +1174,9 @@ fun AppRoot() {
                     recordInto = topRecordInto?.let { topProject.sceneTitle(it) },
                 ),
                 TopBarActions(
-                    projects = { showProjects = true }, rename = { renamingProject = true }, undo = rhythmVm::undo, redo = rhythmVm::redo,
+                    projects = { showProjects = true }, rename = { renamingProject = true },
+                    undo = { com.pocketstudio.app.report.Journal.action("↶ Annuler"); rhythmVm.undo() },
+                    redo = { com.pocketstudio.app.report.Journal.action("↷ Rétablir"); rhythmVm.redo() },
                     togglePlay = rhythmVm::togglePlay,
                     toggleRecord = {
                         when {
@@ -1164,6 +1203,7 @@ fun AppRoot() {
                         TopMenuItem(tr("Réglages"), "more_settings") { toolPage = ToolPage.Reglages; go(AppTab.Outils) },
                         TopMenuItem(tr("Aide et missions"), "more_help") { toolPage = ToolPage.Aide; go(AppTab.Outils) },
                         TopMenuItem(tr("Passer en mode complet"), "more_full") { SettingsStore.update(context) { it.copy(simpleMode = false) } },
+                        TopMenuItem(tr("Signaler un bug"), "more_bug") { reportBug("menu ⋯") },
                     ),
                 ),
             )
@@ -1173,7 +1213,20 @@ fun AppRoot() {
                 renaming = renamingProject, closeRename = { renamingProject = false },
                 rename = { name -> openScope.launch { rhythmVm.renameProject(name); rhythmVm.flushNow(); projectsVm.refresh() } },
                 helpOn = helpLabels, toggleHelp = { helpLabels = !helpLabels },
+                reportBug = { reportBug("appui long sur « ? »") },
             )
+            // After a crash, a discreet line rather than a window: the report opens with the crash in it.
+            val crashText by mainVm.crash.collectAsStateWithLifecycle()
+            if (crashText != null) {
+                com.pocketstudio.app.report.CrashBanner(
+                    send = {
+                        bugVm.request("plantage", crash = crashText, crashJournal = com.pocketstudio.app.report.CrashReporter.crashJournal())
+                        mainVm.dismissCrash()
+                    },
+                    dismiss = mainVm::dismissCrash,
+                    modifier = Modifier.windowInsetsPadding(SIDE_INSETS),
+                )
+            }
             if (saveError != null) {
                 Text(
                     tr("Sauvegarde impossible (mémoire pleine ?). Tes dernières modifications ne sont pas encore sauvegardées. Pour faire de la place : Mes projets › Corbeille › Vider la corbeille."),
@@ -2080,6 +2133,7 @@ WithPartHeader(rhythmVm) { partModifier ->
                                 projects = { showProjects = true },
                                 glossary = { learn.open("") },
                                 missions = startMissions,
+                                bugReport = { reportBug("Plus") },
                                 simple = simple,
                                 setSimple = { v -> SettingsStore.update(context) { it.copy(simpleMode = v) } },
                             ),
@@ -2218,6 +2272,8 @@ WithPartHeader(rhythmVm) { partModifier ->
     }
 
     LaunchPrompts(mainVm)
+    val bugProject by rhythmVm.project.collectAsStateWithLifecycle()
+    com.pocketstudio.app.report.BugReportHost(bugVm, com.pocketstudio.model.DefaultNames.shown(bugProject.name))
 }
 
 @Composable
@@ -2226,22 +2282,8 @@ private fun LaunchPrompts(vm: MainViewModel) {
     val crash by vm.crash.collectAsStateWithLifecycle()
     val update by vm.update.collectAsStateWithLifecycle()
 
-    if (crash != null) {
-        AlertDialog(
-            onDismissRequest = vm::dismissCrash,
-            title = { Text(tr("Aïe, l'appli est tombée")) },
-            text = { Text(tr("Elle s'est fermée brutalement la dernière fois. Envoyer le rapport ? Il est déjà rédigé, tu n'as qu'à appuyer sur Envoyer.")) },
-            confirmButton = {
-                TextButton(onClick = {
-                    val uri = vm.crashReportUri()
-                    vm.dismissCrash()
-                    uri?.let { openUri(context, it) }
-                }) { Text(tr("Envoyer le rapport")) }
-            },
-            dismissButton = { TextButton(onClick = vm::dismissCrash) { Text(tr("Ignorer")) } },
-        )
-        return
-    }
+    // A crash of the last session: the banner under the top bar offers the report (« Signaler un bug »).
+    if (crash != null) return
 
     when (val u = update) {
         is UpdateState.Available, is UpdateState.Failed -> {

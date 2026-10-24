@@ -37,7 +37,10 @@ object AppLog {
         }.getOrDefault("")
 
     fun add(message: String) {
-        val line = "${LocalTime.now().format(time)} ${LogTail.redact(message)}"
+        val clean = LogTail.redact(message)
+        // The bug report's journal sees it too (with its own time stamps).
+        Journal.app(clean)
+        val line = "${LocalTime.now().format(time)} $clean"
         synchronized(lines) {
             if (lines.size == CAPACITY) lines.removeFirst()
             lines.addLast(line)

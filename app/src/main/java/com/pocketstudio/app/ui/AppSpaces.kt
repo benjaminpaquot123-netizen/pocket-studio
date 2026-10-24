@@ -29,6 +29,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.HelpOutline
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.filled.MenuBook
+import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.Flag
 import androidx.compose.material.icons.filled.FolderOpen
 import androidx.compose.material.icons.filled.GraphicEq
@@ -168,7 +169,11 @@ internal fun StructureSwitch(parts: Boolean, timelineEnabled: Boolean = true, se
 internal class PlusEntry(val key: String, val icon: ImageVector, val title: String, val line: String, val page: ToolPage? = null, val open: (() -> Unit)? = null)
 
 /** The Plus page's entries, in the order a lost beginner looks for them. */
-internal fun plusEntries(projects: () -> Unit, glossary: () -> Unit, missions: () -> Unit, simple: Boolean, setSimple: (Boolean) -> Unit): List<PlusEntry> = listOf(
+internal fun plusEntries(
+    projects: () -> Unit, glossary: () -> Unit, missions: () -> Unit, simple: Boolean, setSimple: (Boolean) -> Unit,
+    /** « Signaler un bug » (null: not offered). */
+    bugReport: (() -> Unit)? = null,
+): List<PlusEntry> = listOfNotNull(
     PlusEntry("projects", Icons.Filled.FolderOpen, tr("Mes projets"), tr("Ouvrir, créer, dupliquer, envoyer un projet"), open = projects),
     PlusEntry("Aide", Icons.AutoMirrored.Filled.HelpOutline, tr("Aide"), tr("Le guide, la carte « Prochaine étape », le lexique"), page = ToolPage.Aide),
     PlusEntry("missions", Icons.Filled.Flag, tr("Missions : Mon premier morceau"), tr("Six petites étapes guidées, du style au partage"), open = missions),
@@ -183,6 +188,7 @@ internal fun plusEntries(projects: () -> Unit, glossary: () -> Unit, missions: (
     PlusEntry("Latence", Icons.Filled.Timer, tr("Latence"), tr("Mesurer le retard du micro pour des prises calées"), page = ToolPage.Latence),
     PlusEntry("Fond", Icons.Filled.Headphones, tr("Lecture en arrière-plan"), tr("La musique continue écran éteint"), page = ToolPage.Fond),
     PlusEntry("Son", Icons.Filled.VolumeUp, tr("Son de test"), tr("Un la à 440 Hz pour vérifier la sortie"), page = ToolPage.Son),
+    bugReport?.let { PlusEntry("bug", Icons.Filled.BugReport, tr("Signaler un bug"), tr("Ce qui s'est passé, avec des captures : c'est toi qui l'envoies"), open = it) },
     PlusEntry("Recette", Icons.Filled.Checklist, tr("Recette"), tr("La liste de tests de la version, et signaler un problème"), page = ToolPage.Recette),
 )
 

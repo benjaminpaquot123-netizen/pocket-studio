@@ -188,4 +188,35 @@ class LaunchFlowTest {
         compose.onNodeWithTag("tab_simple_Morceau").assertIsDisplayed()
         assertSame(before, h.vm.project.value)
     }
+
+    /**
+     * Lot 1: no project at all (the last one deleted). « Que veux-tu faire ? » has no « Continuer »,
+     * « Mes projets » shows its empty state, and its Retour comes back here, never to a studio
+     * on nothing.
+     */
+    @Test
+    fun withNoProjectThereIsNothingToContinueAndTheListOffersANewSong() {
+        h.start(launchChoice = true, noProject = true, build = {})
+        compose.onNodeWithTag("launch").assertIsDisplayed()
+        assertFalse(exists("launch_continue"))
+        compose.onNodeWithTag("launch_no_project").assertExists()
+        tap("launch_projects")
+        h.awaitTag("projects_empty")
+        compose.onNodeWithTag("projects_empty_new").assertExists()
+        tap("projects_back")
+        compose.onNodeWithTag("launch").assertIsDisplayed()
+        // « Nouveau morceau »: the page of styles; its Retour back here too.
+        tap("launch_new")
+        compose.onNodeWithTag("new_project").assertIsDisplayed()
+        tap("new_project_back")
+        compose.onNodeWithTag("launch").assertIsDisplayed()
+    }
+
+    @Test
+    fun withNoProjectTheAppOpensOnTheEmptyList() {
+        h.start(noProject = true, build = {})
+        assertFalse(exists("launch"))
+        h.awaitTag("projects_empty")
+        compose.onNodeWithTag("projects").assertIsDisplayed()
+    }
 }

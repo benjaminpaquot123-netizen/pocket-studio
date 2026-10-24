@@ -402,6 +402,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         store = store,
         scope = viewModelScope,
         io = Dispatchers.IO,
+        // Lot 1: no project open (the last one deleted): a blank one in memory, never written.
+        persist = !com.pocketstudio.app.projects.CurrentProject.isNone(projectId),
     )
     val project: StateFlow<Project> = session.project
 
@@ -434,6 +436,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     private fun loadOrCreate(): Project {
+        if (com.pocketstudio.app.projects.CurrentProject.isNone(projectId)) return starterProject()
         try {
             // A take of the app closed a moment ago may still be being written, its last edits saved.
             TakeVault.app.awaitIdleBlocking(3000)

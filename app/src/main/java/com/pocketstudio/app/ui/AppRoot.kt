@@ -571,21 +571,33 @@ fun AppRoot() {
             }
         }
     }
-    if (showProjects) {
+    // Lot 1: no project open (the last one deleted): « Mes projets » and its empty state stay on screen.
+    val noProject = CurrentProject.isNone(rhythmVm.projectId)
+    // Leaving the app's screens with no project: back to the phone (nothing to go back to here).
+    val leaveApp = { context.findActivity()?.moveTaskToBack(true); Unit }
+    if (showProjects || noProject) {
         val projectsUi by projectsVm.state.collectAsStateWithLifecycle()
         val quickUi by libraryVm.quick.collectAsStateWithLifecycle()
         val previewingDemo by libraryVm.playing.collectAsStateWithLifecycle()
         val preparingDemo by libraryVm.preparing.collectAsStateWithLifecycle()
         LaunchedEffect(Unit) { projectsVm.refresh() }
         // Retour: back where it was opened from (« Que veux-tu faire ? » or the project).
-        val closeProjects = { showProjects = false; projectsNewOnly = false; launch.returned(); Unit }
+        val closeProjects = {
+            showProjects = false
+            projectsNewOnly = false
+            // With no project there is nothing under it: « Que veux-tu faire ? » when it came from there, else out of the app.
+            if (!launch.returned() && noProject) leaveApp()
+            Unit
+        }
         androidx.activity.compose.BackHandler { closeProjects() }
         androidx.compose.ui.window.Dialog(
             onDismissRequest = closeProjects,
             properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false),
         ) {
             androidx.compose.material3.Surface(color = Neon.Background, modifier = Modifier.fillMaxSize()) {
-                ProjectsScreen(
+                // Built afresh when it opens on « Nouveau projet » alone or not: with no project (lot 1) the
+                // list stays on screen under « Que veux-tu faire ? », and its page must follow that choice.
+                androidx.compose.runtime.key(projectsNewOnly) { ProjectsScreen(
                     projectsUi, rhythmVm.projectId, PROJECT_STARTERS.map { it.first },
                     quick = quickUi.copy(
                         demoPlaying = (previewingDemo as? com.pocketstudio.app.library.SoundRef.Demo)?.index,
@@ -650,14 +662,10 @@ fun AppRoot() {
                                         projectsVm.say(tr("Le projet n'a pas pu être enregistré : il reste là (stockage plein ?)."))
                                         return@launch
                                     }
-                                    projectsVm.checkUntouched(p.id) { untouched ->
-                                        when {
-                                            next != null -> switchProject(next.id, p.id)
-                                            // The only project, blank and never edited: nothing to delete, nothing to replace it with.
-                                            untouched -> projectsVm.say(tr("Ce projet est vide et neuf : il reste là, prêt pour ton prochain morceau."), ok = true)
-                                            else -> projectsVm.create(Project(name = ""), replacing = p.id) { id -> switchProject(id, p.id) }
-                                        }
-                                    }
+                                    // The latest other project opens; the last one closes (lot 1: zero projects is
+                                    // allowed, « Mes projets » then shows its empty state). A blank one nobody touched
+                                    // is deleted outright, never trashed (ProjectsViewModel.delete).
+                                    switchProject(next?.id ?: CurrentProject.NONE, p.id)
                                 }
                             }
                         },
@@ -669,7 +677,7 @@ fun AppRoot() {
                         dismissMessage = projectsVm::dismissMessage,
                         shareSong = { showProjects = false; launch.settled(); shareSong() },
                     ),
-                )
+                ) }
             }
         }
     }
@@ -1014,13 +1022,20 @@ fun AppRoot() {
         go(AppTab.Morceau)
     }
     com.pocketstudio.app.onboarding.LaunchChooser(launch, rhythmVm, projectsVm, missions, show = launch.open && settings.guideSeen && pendingCrash == null, simple = simple,
+        hasProject = !noProject,
         actions = com.pocketstudio.app.onboarding.LaunchActions(
-            resume = { launch.choose() },
+            // No project to continue: Retour leaves the app (« Mes projets » would only lead back here).
+            resume = { if (noProject) leaveApp() else launch.choose() },
             newSong = { launch.choose(comeBack = true); projectsNewOnly = true; showProjects = true },
             projects = { launch.choose(comeBack = true); projectsNewOnly = false; showProjects = true },
             missions = {
                 launch.choose()
-                if (missions.active) { helpLabels = false; go(AppTab.Morceau) } else startMissions()
+                when {
+                    // No project (lot 1): the missions start on a new one (the blank stand-in is never saved).
+                    noProject -> projectsVm.create(Project(name = "")) { id -> if (!missions.active) missions.begin(); openProject(id) }
+                    missions.active -> { helpLabels = false; go(AppTab.Morceau) }
+                    else -> startMissions()
+                }
             },
             chooseMode = { v -> SettingsStore.update(context) { it.copy(simpleMode = v) } },
         ),

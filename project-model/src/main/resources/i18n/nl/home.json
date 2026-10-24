@@ -368,5 +368,9 @@
   "Souffle montant : il monte juste avant chaque Refrain et claque sur son premier temps. On ne l'entend qu'en jouant tout le morceau ; baisse la piste « Souffle montant » dans le Mixeur s'il te gêne.": "Riser: een ruis zwelt aan vlak voor elk Refrein en knalt op de eerste tel. Je hoort hem alleen als het hele nummer speelt; zet het spoor ‘Riser’ zachter in de Mixer als hij stoort.",
   "Avant chaque Refrain, le kick et la basse se coupent un instant, puis un temps de silence : le Refrain tombe d'un coup.": "Voor elk Refrein vallen de kick en de bas even weg, dan een tel stilte: het Refrein valt in één keer binnen.",
   "Montée : avant chaque Drop, le kick et la basse se coupent 2 mesures, la caisse claire roule, puis un temps de silence : tout tombe d'un coup.": "Opbouw: voor elke Drop vallen de kick en de bas 2 maten weg, de snare rolt, dan een tel stilte: alles valt in één keer binnen.",
-  "Comme une vraie chanson : chaque partie ajoute des sons à celle d'avant, puis le Pont fait une pause sans kick ni basse avant le dernier Refrain.": "Zoals een echt lied: elk deel voegt klanken toe aan het vorige, daarna neemt de Brug een pauze zonder kick of bas voor het laatste Refrein."
+  "Comme une vraie chanson : chaque partie ajoute des sons à celle d'avant, puis le Pont fait une pause sans kick ni basse avant le dernier Refrain.": "Zoals een echt lied: elk deel voegt klanken toe aan het vorige, daarna neemt de Brug een pauze zonder kick of bas voor het laatste Refrein.",
+  "Aucun projet pour l'instant": "Nog geen projecten",
+  "Commence un morceau, ou ramène un projet envoyé depuis un autre téléphone.": "Begin een nummer, of haal een project binnen dat van een andere telefoon is gestuurd.",
+  "Importer un projet": "Project importeren",
+  "Aucun projet pour l'instant : commence un nouveau morceau.": "Nog geen projecten: begin een nieuw nummer."
 }

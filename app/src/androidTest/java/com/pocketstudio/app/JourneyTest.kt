@@ -248,13 +248,15 @@ class JourneyTest {
             // A key out of sight (a small screen, the keyboard below the track's settings) is scrolled to first.
             runCatching { if (!compose.onNodeWithTag(key).isDisplayed()) compose.onNodeWithTag(key).performScrollTo() }
             log("key $key at position %.3f, output latency %.0f ms".format(NativeEngine.playPosition(), Metrics.streamInfo.value.outputLatencyMs))
-            compose.onNodeWithTag(key).performTouchInput { down(center) }
+            // Low on the key: during a take the record bar's banner can lie over the top of the keys.
+            compose.onNodeWithTag(key).performTouchInput { down(androidx.compose.ui.geometry.Offset(centerX, height * 0.85f)) }
             Thread.sleep(220)
             compose.onNodeWithTag(key).performTouchInput { up() }
             Thread.sleep(180)
         }
         j.tap("record_stop")
         if (runCatching { j.await("take_summary") }.isFailure) {
+            log("notice: ${rhythm.notice.value}")
             log("no take summary: phase=${rhythm.noteTake.value?.phase}, notes=${rhythm.noteTake.value?.notes}, record_start=${j.exists("record_start")}, keys shown=${keys.map { k -> runCatching { compose.onNodeWithTag(k).isDisplayed() }.getOrDefault(false) }}")
             throw IllegalStateException("no take summary after the take")
         }

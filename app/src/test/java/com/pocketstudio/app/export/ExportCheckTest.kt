@@ -6,6 +6,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
+import org.junit.Assert.fail
 import org.junit.Test
 import java.io.File
 import java.nio.ByteBuffer
@@ -215,5 +216,48 @@ class ExportCheckTest {
         assertFalse(watch.stalled(0.1f))
         now += 30_000
         assertFalse(watch.stalled(0.2f))
+    }
+
+    /**
+     * Review M1: a verification that cannot read the M4A back (a decoder that stops answering
+     * included) keeps the file as encoded; only a cancel stops the export.
+     */
+    @Test
+    fun aStuckVerificationKeepsTheFileEncoded() = kotlinx.coroutines.runBlocking {
+        val logged = mutableListOf<String>()
+        assertNull(M4aGuard.checkOrKeep({ logged += it }) { throw CodecStalledException("le codec du téléphone ne répond plus") })
+        assertEquals(listOf("le codec du téléphone ne répond plus"), logged)
+        assertNull(M4aGuard.checkOrKeep({ logged += it }) { throw java.io.IOException("pas de piste audio") })
+        assertEquals(-3.0, M4aGuard.checkOrKeep({ logged += it }) { -3.0 }!!, 0.0)
+        // Through the guard: encoded once, the file kept, no further try.
+        var encodes = 0
+        val r = M4aGuard.run(-2.0, render = { error("no") }, encode = { encodes++ },
+            decodedPeak = { M4aGuard.checkOrKeep({}) { throw CodecStalledException("bloqué") } })
+        assertEquals(1, encodes)
+        assertEquals(1, r.encodings)
+        assertNull(r.decodedPeakDb)
+        // A cancel is not swallowed.
+        try {
+            M4aGuard.checkOrKeep({}) { throw kotlinx.coroutines.CancellationException("annulé") }
+            fail("cancel")
+        } catch (e: kotlinx.coroutines.CancellationException) {
+            // expected
+        }
+    }
+
+    /** Review M2: the video's watch starts with the render, not with the wait for the sounds before it. */
+    @Test
+    fun aWatchNotYetArmedNeverFlagsTheWaitBeforeTheRender() {
+        var now = 0L
+        val watch = StallWatch(stallMs = 60_000L, now = { now }, armed = false)
+        // Two minutes waiting for the sounds at a progress of 0: not a stuck render.
+        now += 120_000
+        assertFalse(watch.stalled(0f))
+        // Armed when the render starts: the minute counts from there.
+        watch.arm()
+        now += 59_000
+        assertFalse(watch.stalled(0f))
+        now += 2_000
+        assertTrue(watch.stalled(0f))
     }
 }

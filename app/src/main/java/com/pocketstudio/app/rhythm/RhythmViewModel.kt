@@ -175,6 +175,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -7715,11 +7716,13 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * (same waits as [startExport]); the export itself is not changed. Worker side: call from a
      * coroutine, [job] is cancelled through [OfflineExport.cancel].
      */
-    internal suspend fun renderForVideo(job: OfflineExport, file: File, frames: Long): ExportResult {
+    internal suspend fun renderForVideo(job: OfflineExport, file: File, frames: Long, onRenderStart: () -> Unit = {}): ExportResult {
         awaitSoundsLoaded()
         val p = project.value
         describe(job, p, song = p.song.isNotEmpty(), soloChannel = null)
         NativeEngine.captureInto(job) { NativeEngine.setMasterCeiling(AacEncoder.CEILING_DBTP) }
+        // The sounds are in and the song described: the render itself starts (the stall watch arms here).
+        onRenderStart()
         return withContext(Dispatchers.IO) { job.render(file, frames, 0L) }
     }
 
@@ -7778,8 +7781,6 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             var seconds: Double? = null
             var loss: Double? = null
             var decodedPeak: Double? = null
-            // Lot 1: what the export may still spend on the M4A check (a new render of the song, a further lowering).
-            val budget = com.pocketstudio.app.export.ExportBudget()
             val writtenRate = if (settings.cdRate) OfflineExport.CD_RATE else OfflineExport.SAMPLE_RATE
             val writtenBits = if (!settings.limited && settings.format == ExportFormat.Wav) 32 else if (settings.bits16 || settings.format == ExportFormat.M4a) 16 else 24
             try {
@@ -7787,6 +7788,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 // file would have the kit and the synth in their place.
                 awaitSoundsLoaded()
                 renders.forEachIndexed { index, (label, solo) ->
+                    // Lot 1: what this render may still spend on its M4A check (a new render of the
+                    // song, a further lowering); each stem its own, counted once the sounds are in.
+                    val budget = com.pocketstudio.app.export.ExportBudget()
                     val wav = runCatching { WavExporter.newFile(app, "${com.pocketstudio.model.DefaultNames.shown(p.name).take(28)}-$label") }.getOrElse { throw UserMessage(tr("Impossible de préparer le fichier d'export.")) }
                     _export.value = _export.value.copy(stage = if (renders.size > 1) "${stageName(label)} (${index + 1}/${renders.size})" else null)
                     // The mix into [wav], its limiter at [ceiling] dBTP (an M4A's; null: the default −1). Again
@@ -7887,7 +7891,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                                 // Each step named and its own bar (lot 1): « Compression M4A », « Vérification »,
                                 // « Nouvel essai 2/3 »… never a full bar while minutes of work go on.
                                 fun stepDone(fraction: Float) {
-                                    _export.value = _export.value.copy(progress = (index + fraction.coerceIn(0f, 1f)) / renders.size)
+                                    // From the encoder's thread: an atomic update, never a lost write against the main thread.
+                                    _export.update { it.copy(progress = (index + fraction.coerceIn(0f, 1f)) / renders.size) }
                                 }
                                 val cancelled = { exportCancelled || !isActive }
                                 // Encoded, decoded again as a player would: over −1 dBTP, the mix is rendered again
@@ -7974,25 +7979,22 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /**
-     * The true peak (dBTP) of [file] decoded as a player would (null when it cannot be read; a
-     * cancel or a stuck codec throws). Read as it is decoded: nothing written to disk. Blocking.
+     * The true peak (dBTP) of [file] decoded as a player would (null when it cannot be read: the
+     * file, already encoded, is kept as it is; a stuck decoder too, review M1). Read as it is
+     * decoded: nothing written to disk. A cancel throws. Blocking.
      */
-    private fun decodedTruePeak(app: Application, file: File, isCancelled: () -> Boolean, progress: (Float) -> Unit = {}): Double? {
-        var meter: com.pocketstudio.app.export.TruePeakMeter? = null
-        return try {
-            AudioDecoder.scan(app, Uri.fromFile(file), MAX_CHECK_SECONDS, isCancelled, progress) { channels, v ->
-                (meter ?: com.pocketstudio.app.export.TruePeakMeter(channels).also { meter = it }).add(v)
+    private fun decodedTruePeak(app: Application, file: File, isCancelled: () -> Boolean, progress: (Float) -> Unit = {}): Double? =
+        com.pocketstudio.app.export.M4aGuard.checkOrKeep({ AppLog.add("M4A : vérification impossible ($it), fichier gardé") }) {
+            var meter: com.pocketstudio.app.export.TruePeakMeter? = null
+            try {
+                AudioDecoder.scan(app, Uri.fromFile(file), MAX_CHECK_SECONDS, isCancelled, progress) { channels, v ->
+                    (meter ?: com.pocketstudio.app.export.TruePeakMeter(channels).also { meter = it }).add(v)
+                }
+            } catch (e: AudioDecoder.CancelledException) {
+                throw kotlinx.coroutines.CancellationException("annulé")
             }
             meter?.peakDb
-        } catch (e: AudioDecoder.CancelledException) {
-            throw kotlinx.coroutines.CancellationException("annulé")
-        } catch (e: com.pocketstudio.app.export.CodecStalledException) {
-            throw e
-        } catch (e: Exception) {
-            AppLog.add("M4A : vérification impossible (${e.message})")
-            null
         }
-    }
 
     /** The project's notes as a MIDI file (the whole song when there is one), copied to Music. */
     fun exportMidi() {

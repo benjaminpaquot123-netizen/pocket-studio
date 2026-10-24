@@ -195,6 +195,23 @@ object M4aGuard {
         }
     }
 
+    /**
+     * Lot 1 review (M1): the check of an M4A already encoded never fails the export. A file that
+     * cannot be read back (an unreadable M4A, a decoder that stops answering:
+     * [CodecStalledException]) is kept as encoded: null, [log]ged. A cancel still stops the export.
+     */
+    fun checkOrKeep(log: (String) -> Unit, read: () -> Double?): Double? = try {
+        read()
+    } catch (e: kotlinx.coroutines.CancellationException) {
+        throw e
+    } catch (e: CodecStalledException) {
+        log(e.message ?: "codec")
+        null
+    } catch (e: Exception) {
+        log(e.message ?: e.javaClass.simpleName)
+        null
+    }
+
     fun encodeWithin(gain: Float, encode: (Float) -> Unit, decodedPeak: () -> Double?): Result {
         var g = gain
         var tries = 0
@@ -297,19 +314,30 @@ class ExportBudget(private val budgetMs: Long = BUDGET_MS, private val now: () -
     }
 }
 
-/** Lot 1: a render whose progress stays still for [stallMs] is stuck (it is cancelled, the export says so). */
-class StallWatch(private val stallMs: Long = RENDER_STALL_MS, private val now: () -> Long = { System.nanoTime() / 1_000_000 }) {
+/**
+ * Lot 1: a render whose progress stays still for [stallMs] is stuck (it is cancelled, the export
+ * says so). [armed] false: it watches nothing until [arm] (review M2: the video's render first
+ * waits for the project's sounds, up to 15 s and more, at a progress of 0).
+ */
+class StallWatch(private val stallMs: Long = RENDER_STALL_MS, armed: Boolean = true, private val now: () -> Long = { System.nanoTime() / 1_000_000 }) {
     private var last = Float.NaN
     private var since = now()
+    private var armed = armed
 
-    /** True once [progress] has not moved for [stallMs]. */
+    /** The render is really under way: from now on, a still progress counts. */
+    fun arm() {
+        armed = true
+        since = now()
+    }
+
+    /** True once [progress] has not moved for [stallMs] (never before [arm]; the progress is followed all the same). */
     fun stalled(progress: Float): Boolean {
         val t = now()
         if (progress != last) {
             last = progress
             since = t
         }
-        return t - since > stallMs
+        return armed && t - since > stallMs
     }
 
     companion object {

@@ -67,7 +67,8 @@ object AacEncoder {
         try {
             codec.configure(format, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE)
             codec.start()
-            pump(CodecPort.of(codec), pcm, gain, isCancelled, progress, { i -> codec.getInputBuffer(i)!! }, mux)
+            // A codec that ended without ever giving its format wrote nothing: an error, not an empty success.
+            if (!pump(CodecPort.of(codec), pcm, gain, isCancelled, progress, { i -> codec.getInputBuffer(i)!! }, mux)) throw IOException(tr("fichier M4A incomplet"))
         } catch (e: Exception) {
             out.delete()
             throw e

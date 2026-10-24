@@ -489,10 +489,17 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
      */
     private suspend fun previewOf(ref: SoundRef): Pcm? {
         val pcm = load(ref) ?: return null
-        // A short sound (a kit voice already rendered) right here, as it was played at once before;
-        // a longer excerpt off the main thread.
-        return if (pcm.data.size <= SHORT_PREVIEW_SAMPLES) PreviewLevel.normalize(pcm) else withContext(Dispatchers.Default) { PreviewLevel.normalize(pcm) }
+        // Measured once per sound as loaded (a kit voice, an instrument's preview come from a cache: the same object).
+        levelled[pcm]?.let { return it }
+        // Off the main thread; a short sound (a kit voice, under 2 s: a few ms) right here, as it was
+        // played at once before (a cached voice shows no spinner, WizardAcidStepTest).
+        val heard = if (pcm.data.size <= SHORT_PREVIEW_SAMPLES) PreviewLevel.normalize(pcm) else withContext(Dispatchers.Default) { PreviewLevel.normalize(pcm) }
+        levelled[pcm] = heard
+        return heard
     }
+
+    /** Each sound at the preview level, by the sound as loaded (identity: a sound let go is forgotten with it). */
+    private val levelled = java.util.WeakHashMap<Pcm, Pcm>()
 
     /** Tests and the preview bench: what ▶ would play for [ref]. */
     @androidx.annotation.VisibleForTesting

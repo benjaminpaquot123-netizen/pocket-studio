@@ -83,7 +83,9 @@ class PreviewLevelBench {
                         val after = PreviewLevel.loudness(heard) ?: continue
                         val peak = peakDb(heard)
                         rows += "| ${style.id} | ${part.id} | ${sound.name} | ${"%.1f".format(before)} | ${"%.1f".format(after)} | ${"%.1f".format(peak)} |"
-                        if (abs(after - PreviewLevel.REFERENCE_LUFS) > PreviewLevel.TOLERANCE_LU) off += "${style.id} ${part.id} ${sound.name}: ${"%.1f".format(after)} LUFS"
+                        // A sound held under the level by its own peak (a 303 lead at -17.4) is as loud as it can be without clipping.
+                        val peakHeld = peak >= PreviewLevel.CEILING_DBFS - 0.05
+                        if (abs(after - PreviewLevel.REFERENCE_LUFS) > PreviewLevel.TOLERANCE_LU && !peakHeld) off += "${style.id} ${part.id} ${sound.name}: ${"%.1f".format(after)} LUFS"
                     }
                 }
             }

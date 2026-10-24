@@ -43,6 +43,7 @@ object PreviewLevel {
         var g = (REFERENCE_LUFS - l).coerceIn(-MAX_CUT_DB, MAX_BOOST_DB)
         val peak = pcm.data.maxOfOrNull { abs(it) }?.toDouble() ?: 0.0
         if (peak > 0.0) g = minOf(g, CEILING_DBFS - 20 * log10(peak))
+        if (!g.isFinite()) return 0.0
         return g
     }
 

@@ -138,9 +138,11 @@ class VideoExportViewModel(app: Application) : AndroidViewModel(app) {
                 // 1. The sound: the song from its start to the end of the window (about 40 % of the time).
                 val engine = finishOrRelease(Dispatchers.Default, OfflineExport::close) { OfflineExport() }!!
                 render = engine
-                // Lot 1: a render that stops moving is stopped, and the video says so (never a bar stuck for good).
+                // Lot 1: a render that stops moving is stopped, and the video says so (never a bar
+                // stuck for good). Armed once the render really starts (review M2): before it, the
+                // project's sounds are waited for at a progress of 0.
                 var stalled = false
-                val watch = com.pocketstudio.app.export.StallWatch()
+                val watch = com.pocketstudio.app.export.StallWatch(armed = false)
                 val poll = launch {
                     while (isActive) {
                         val done = engine.progress
@@ -154,7 +156,7 @@ class VideoExportViewModel(app: Application) : AndroidViewModel(app) {
                     }
                 }
                 val result = try {
-                    rhythmVm.renderForVideo(engine, w, plan.renderFrames)
+                    rhythmVm.renderForVideo(engine, w, plan.renderFrames, onRenderStart = watch::arm)
                 } finally {
                     poll.cancel()
                     render = null

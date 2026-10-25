@@ -63,6 +63,12 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
+    // The users' paths (docs/TESTS-REELS.md): one copy for the emulator's tests and Robolectric's.
+    sourceSets {
+        getByName("test").kotlin.srcDir("src/sharedTest/java")
+        getByName("androidTest").kotlin.srcDir("src/sharedTest/java")
+    }
+
     testOptions {
         unitTests {
             isIncludeAndroidResources = true
@@ -74,8 +80,9 @@ android {
                     "--add-opens=java.base/java.io=ALL-UNNAMED",
                 )
                 // The song bench (scripts/song-bench.sh): SongBenchExport records only when given -Pbench.out
-                // (LiveSongRecorder, scripts/live-bench.sh: with -Pbench.live).
-                for (key in listOf("bench.out", "bench.render", "bench.styles", "bench.live", "bench.seconds")) {
+                // (LiveSongRecorder, scripts/live-bench.sh: with -Pbench.live; -Pbench.loop for the soak).
+                // RealProjectsTest (docs/TESTS-REELS.md): -Preal.projects, -Preal.out, -Preal.live, -Preal.render.
+                for (key in listOf("bench.out", "bench.render", "bench.styles", "bench.live", "bench.seconds", "bench.loop", "real.projects", "real.out", "real.live", "real.render")) {
                     providers.gradleProperty(key).orNull?.let { value -> it.systemProperty("ps.$key", value) }
                 }
                 // Every style's song in one run (or every preview, PreviewLevelBench): more room than the tests need.

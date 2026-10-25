@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """ps_live's own check (scripts/live-bench.sh runs it first): a sound that plays on is not flagged,
-an isolated discontinuity is a CLICK, a mix turned off while the transport runs is SILENCE.
+an isolated discontinuity is a CLICK, a mix turned off while the transport runs is SILENCE, a heap
+call inside the audio callback is ALLOC (ps_live's own probe; not counted in a sanitizer build).
 
     python3 -I scripts/bench/live_selftest.py <ps_live> <work dir>
 """
@@ -19,13 +20,15 @@ def sample(path, cut):
         f.write(struct.pack("<%df" % n, *x))
 
 
-def run(ps_live, work, name, lines, seconds):
+def run(ps_live, work, name, lines, seconds, extra_args=(), stdout=None):
     path = os.path.join(work, name + ".pslive")
     with open(path, "w") as f:
         f.write("PSCMD 1\n" + "\n".join(lines) + "\n")
-    out = subprocess.run([ps_live, "--quiet", "--seconds", str(seconds), path], capture_output=True, text=True)
+    out = subprocess.run([ps_live, "--quiet", "--seconds", str(seconds), *extra_args, path], capture_output=True, text=True)
     if out.returncode not in (0, 4):
         sys.exit(f"ps_live failed on {name}: {out.stderr}")
+    if stdout is not None:
+        stdout.extend(out.stdout.splitlines())
     return [l[5:] for l in out.stdout.splitlines() if l.startswith("FLAG ")]
 
 
@@ -49,13 +52,20 @@ def main():
     click = run(ps_live, work, "click", song([21]), 7)
     if not any(f.startswith("CLICK") for f in click):
         failures.append(f"an isolated discontinuity was not flagged: {click}")
+    # The steady sound passed with no heap call in its callbacks; one heap call is seen.
+    clean_out = []
+    run(ps_live, work, "clean-alloc", song(), 3, stdout=clean_out)
+    if any(l.startswith("ALLOC news=") for l in clean_out):
+        probe = run(ps_live, work, "alloc", song(), 3, ["--alloc-probe"])
+        if not any(f.startswith("ALLOC") for f in probe):
+            failures.append(f"a heap call in the audio callback was not flagged: {probe}")
     silence = run(ps_live, work, "silence", song(extra=["WAIT ms 6000", "C 20 0.0 0 0"]), 12)
     if not any(f.startswith("SILENCE") for f in silence):
         failures.append(f"the mix turned off while playing was not flagged: {silence}")
     if failures:
         print("ps_live self-test FAILED:\n  " + "\n  ".join(failures))
         sys.exit(1)
-    print("ps_live self-test: a steady sound passes, a click and a silence are flagged")
+    print("ps_live self-test: a steady sound passes, a click, a silence and a heap call in the callback are flagged")
 
 
 if __name__ == "__main__":

@@ -34,6 +34,9 @@ import java.time.Duration
  * engine as the phone's stream does.
  *
  * Off by default; `-Pbench.live=<dir>` turns it on (`-Pbench.render=<ps_render>`, `-Pbench.styles`).
+ * `-Pbench.loop=<seconds>` (the soak, docs/TESTS-REELS.md): the song made about that long (cut
+ * after the part that reaches it, or its parts played again after it) and looped (« le morceau reboucle »), staged as the app stages it
+ * each time round, for the whole `-Pbench.seconds`.
  */
 @RunWith(RobolectricTestRunner::class)
 class LiveSongRecorder {
@@ -58,6 +61,8 @@ class LiveSongRecorder {
         val styles = StarterWizard.STYLES.filter { only.isEmpty() || it.id in only }
         // How long ps_live will play each song: the parts staged up to there.
         val seconds = System.getProperty("ps.bench.seconds")?.toIntOrNull() ?: 90
+        // The soak: songs this long at least, looped.
+        val loopSeconds = System.getProperty("ps.bench.loop")?.toIntOrNull()
         assumeTrue("no style matches ${only.joinToString()}", styles.isNotEmpty())
 
         val sink = RecordingSink(File(out, "samples"), renderer)
@@ -69,7 +74,8 @@ class LiveSongRecorder {
                 var made: Pair<Project, Map<String, Pcm>>? = null
                 library.quickCreate(style.id) { project, sounds, _ -> made = project to sounds }
                 waitFor("the song of ${style.id}", 120) { made != null || library.quick.value.error != null }
-                val (song, sounds) = checkNotNull(made) { "${style.id}: ${library.quick.value.error}" }
+                val (made1, sounds) = checkNotNull(made) { "${style.id}: ${library.quick.value.error}" }
+                val song = if (loopSeconds == null) made1 else longAndLooped(made1, loopSeconds)
                 library.quickDone()
                 var id: String? = null
                 projects.create(song, sounds) { id = it }
@@ -98,9 +104,11 @@ class LiveSongRecorder {
                 // Each swap the engine makes: the 40 ms watch sees it and stages the part after.
                 val sixteenth = 15.0 / p.tempoBpm
                 var steps = 0L
-                for ((i, part) in p.song.withIndex()) {
+                // Looped: round and round the song (the part after the last is the first).
+                val parts = if (p.songLoops) generateSequence(0) { it + 1 }.map { p.song[it % p.song.size] } else p.song.asSequence()
+                for ((i, part) in parts.withIndex()) {
                     steps += p.partSteps(part)
-                    if (steps * sixteenth > seconds + 5 || i == p.song.size - 1) break
+                    if (steps * sixteenth > seconds + 5 || (!p.songLoops && i == p.song.size - 1)) break
                     sink.mark("WAIT swaps ${i + 1}")
                     sink.mark("WAIT ms 40")
                     sink.swaps = i + 1
@@ -116,5 +124,24 @@ class LiveSongRecorder {
         } finally {
             NativeEngine.sink = null
         }
+    }
+
+    /**
+     * [p]'s song about [seconds] long, looped: its first parts up to there when it is longer (a
+     * short loop for the PR's soak), else played again after itself, part by part, until it lasts
+     * that long (a long song, as a user's: at most [SongPart.MAX_PARTS][com.pocketstudio.model.SongPart.MAX_PARTS] parts).
+     */
+    private fun longAndLooped(p: Project, seconds: Int): Project {
+        val sixteenth = 15.0 / p.tempoBpm
+        val song = ArrayList<com.pocketstudio.model.SongPart>()
+        var steps = 0L
+        var next = 0
+        while (steps * sixteenth < seconds && song.size < com.pocketstudio.model.SongPart.MAX_PARTS) {
+            val part = p.song[next++ % p.song.size]
+            song += part
+            steps += p.partSteps(part)
+        }
+        println("live bench: ${p.name} made ${"%.0f".format(steps * sixteenth)} s long (${song.size} parts of ${p.song.size}), looped")
+        return p.copy(song = song, songLoops = true)
     }
 }

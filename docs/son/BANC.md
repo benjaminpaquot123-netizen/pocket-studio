@@ -36,12 +36,14 @@ Le banc ci-dessus mesure l'export. Il n'entend pas ce que joue le téléphone : 
    - `SILENCE` : deux secondes de suite sous −50 dBFS pendant la lecture, la courbe ne le prévoyant pas ;
    - `CLICK` : un saut de plus de 0,3 qui sort 20 fois des 16 sauts avant et après lui (une cassure), deux fois plus grand que tout autre des 4 s autour (une attaque qui revient à chaque temps est le son lui-même) ; au mieux, une cassure noyée dans du bruit passe ;
    - `NAN` : un échantillon non fini ; `GAIN` : le gain live hors de sa plage (−24..+18 dB).
+   - `ALLOC` : un appel au tas du fil audio (`malloc`, `free`, donc `new`, `delete`) pendant le rappel, la règle du temps réel ; `DRIFT` : le morceau bouclé (l'endurance, `scripts/soak.sh`), un tour 1 dB loin du 2ᵉ (ou son gain live à 1,5 dB).
 4. **Rapport** : `build/live-bench/report.md` (un tableau par style), `log/<style>.txt` et `.csv`.
 
 Lancer : `scripts/live-bench.sh` (37 styles, 90 s chacun, environ 3 min). Options : `--styles jump_up,techno`, `--seconds 60`, `--out <dossier>`, `--no-record` (rejouer les mêmes `.pslive` après un changement du moteur seul). Un seul morceau : `build/live-bench/tools/ps_live --seconds 90 build/live-bench/cmds/jump_up.pslive` (`--wav f.wav` pour l'écouter).
 L'outil se vérifie d'abord (`scripts/bench/live_selftest.py`) : un son régulier passe, une cassure et un silence sont signalés.
 Le même passage vérifie le niveau des écoutes (lot 1) : `PreviewLevelBench` rend, comme ▶ les joue, chaque son que l'assistant propose pour la basse, la nappe et le lead (6 styles), les mesure en sonie court terme max sur 3 s et échoue hors de −16 ± 1,5 LUFS (`build/live-bench/tools/previews/previews.md`, avant et après le niveau d'écoute).
 La CI le fait tourner sur les 37 styles à chaque PR (job « Build », étape « Live listening bench », bloquante ; rapport en artefact `live-bench`) : c'est assez rapide pour tout couvrir.
+Chaque passage écrit aussi le temps CPU du fil audio par rappel (ligne `CPU`, voir « Petit téléphone » dans [TESTS-REELS.md](../TESTS-REELS.md)).
 Sur émulateur, `LivePlaybackTest` (androidTest, job « Emulator smoke test ») joue le morceau jump up 60 s par le vrai flux audio et vérifie que la crête de chaque seconde reste au-dessus de −40 dBFS.
 Côté moteur, `live_playback_keeps_its_level` et `drop_drive_stays_in_range` (`scripts/host-tests.sh`) rejouent la même situation de façon synthétique : tempos 60 à 200, mesures 3/4, 6/4, 7/4, morceau ou partie en boucle seule, mode Drop et ancien mode « morceau », un morceau de club de 6 minutes.
 

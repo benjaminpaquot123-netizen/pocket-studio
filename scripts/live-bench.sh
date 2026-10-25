@@ -11,7 +11,10 @@
 # « Écoute en direct »): an unplanned fade, silence while the transport runs, a click, a NaN, the
 # live gain out of its range. Report: OUT/report.md; per style: OUT/log/<style>.txt and .csv.
 #
-#   scripts/live-bench.sh [--styles a,b,c] [--out DIR] [--seconds S (90)] [--no-record]
+#   scripts/live-bench.sh [--styles a,b,c] [--out DIR] [--seconds S (90)] [--no-record] [--loop L]
+#
+# --loop L: the soak (docs/TESTS-REELS.md): each song made about L seconds long (cut, or its parts again
+# after it) and looped for the S seconds; ps_live also flags a loop drifting from the others.
 #
 # Environment: GRADLE_ARGS (default --max-workers=1), CMAKE_EXTRA_ARGS, JOBS.
 set -euo pipefail
@@ -20,6 +23,7 @@ OUT="$ROOT/build/live-bench"
 STYLES=""
 SECONDS_LIVE=90
 RECORD=1
+LOOP=""
 JOBS="${JOBS:-$(nproc 2>/dev/null || echo 2)}"
 while [ $# -gt 0 ]; do
     case "$1" in
@@ -27,6 +31,7 @@ while [ $# -gt 0 ]; do
         --out) OUT="$(mkdir -p "$2" && cd "$2" && pwd)"; shift 2 ;;
         --seconds) SECONDS_LIVE="$2"; shift 2 ;;
         --no-record) RECORD=0; shift ;;
+        --loop) LOOP="$2"; shift 2 ;;
         *) echo "unknown option $1" >&2; exit 1 ;;
     esac
 done
@@ -44,7 +49,7 @@ if [ "$RECORD" = 1 ]; then
     rm -rf "$OUT/cmds"
     (cd "$ROOT" && ./gradlew ${GRADLE_ARGS:---max-workers=1} :app:testDebugUnitTest \
         --tests 'com.pocketstudio.app.bench.LiveSongRecorder' --tests 'com.pocketstudio.app.bench.PreviewLevelBench' --rerun \
-        -Pbench.live="$OUT/cmds" -Pbench.render="$TOOLS/ps_render" -Pbench.seconds="$SECONDS_LIVE" ${STYLES:+-Pbench.styles="$STYLES"}) > "$OUT/gradle.log" 2>&1 \
+        -Pbench.live="$OUT/cmds" -Pbench.render="$TOOLS/ps_render" -Pbench.seconds="$SECONDS_LIVE" ${STYLES:+-Pbench.styles="$STYLES"} ${LOOP:+-Pbench.loop="$LOOP"}) > "$OUT/gradle.log" 2>&1 \
         || { tail -60 "$OUT/gradle.log"; exit 1; }
 fi
 ls "$OUT"/cmds/*.pslive > /dev/null 2>&1 || { echo "no .pslive recorded in $OUT/cmds" >&2; exit 1; }

@@ -1,0 +1,9 @@
+# Sons du projet laissés hors du dépôt (trop lourds : 12,8 Mo à eux six).
+# Ce sont les clips de la page Live ; le morceau (46 parties) ne les joue pas.
+# Le projet complet (le .zip de Benjamin, 13 Mo) : voir docs/TESTS-REELS.md, « Projet complet ».
+6591e993-89c.wav  clip Live « Batterie »
+7da0ce5d-78c.wav  clip Live « Basse »
+f3758e48-118.wav  clip Live « Nappe »
+ccb45a50-d6b.wav  clip Live « Sub »
+c8314434-20c.wav  clip Live « Impact »
+44a48218-8ad.wav  clip Live « Voix »

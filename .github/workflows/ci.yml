@@ -87,6 +87,8 @@ jobs:
     name: Build, unit tests, screenshots
     runs-on: ubuntu-latest
     needs: engine
+    # Unit tests, the song and live benches, the real projects, a 10-minute soak, the release APK.
+    timeout-minutes: 75
     env:
       VERSION_CODE: ${{ github.run_number }}
       RELEASE_CHANNEL: ${{ github.event_name == 'push' && 'stable' || 'preview' }}
@@ -161,6 +163,35 @@ jobs:
             build/live-bench/log/
             build/live-bench/gradle.log
           if-no-files-found: ignore
+      # « Tests d'usage réel » (docs/TESTS-REELS.md). Benjamin's real projects: imported as the app
+      # imports a .zip, played live 60 s (the live bench's ps_live, just built) and exported, then
+      # checked (no fade, silence, click, NaN, heap call in the audio callback; true peak, length).
+      - name: Real projects (import, 60 s live, export)
+        env:
+          GRADLE_ARGS: --console=plain
+          TOOLS: ${{ github.workspace }}/build/live-bench/tools
+        run: |
+          python3 -I scripts/bench/test_cpu_report.py
+          ./scripts/real-projects.sh
+      # Endurance on Linux, short: a 2-minute song looped for 10 minutes (parts staged by the app
+      # each time round), no flag, no heap call, no loop drifting from another; the drift alert's
+      # own check. The 30-minute soak of a 6-minute song runs in the nightly (nightly.yml).
+      - name: Soak (10 min of a looped song)
+        env:
+          CMAKE_EXTRA_ARGS: -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+          GRADLE_ARGS: --console=plain
+        run: ./scripts/soak.sh --minutes 10 --song 120 --out build/soak
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: real-use
+          path: |
+            build/real-projects/run/*.txt
+            build/real-projects/run/*.json
+            build/real-projects/gradle.log
+            build/soak/soak.md
+            build/soak/log/
+          if-no-files-found: ignore
       - name: Build release APK
         run: |
           ./gradlew :app:assembleRelease
@@ -181,7 +212,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: engine
     # A stuck emulator otherwise holds the release (and every later run on main) for six hours.
-    timeout-minutes: 25
+    # SmokeTest, LivePlaybackTest, JourneyTest (two users' paths) and a 2-minute EnduranceTest.
+    timeout-minutes: 50
     steps:
       - uses: actions/checkout@v7
         with:
@@ -236,13 +268,17 @@ jobs:
           target: google_apis
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -no-boot-anim -camera-back none
-          # On failure, print the failing assertion and the app's errors right in the log.
-          script: ./gradlew -PemulatorAbi :app:connectedDebugAndroidTest || { find app/build/outputs/androidTest-results -name '*.xml' -exec grep -A25 '<failure' {} \; ; adb logcat -d -t 300 '*:E' | tail -150 ; exit 1; }
+          # Every androidTest (docs/TESTS-REELS.md), the endurance for 2 minutes; on failure, the
+          # failing assertion and the app's errors right in the log.
+          script: ./scripts/emulator-tests.sh --endurance 2
       - uses: actions/upload-artifact@v7
-        if: failure()
+        if: always()
         with:
           name: smoke-test-report
-          path: app/build/reports/androidTests/
+          path: |
+            app/build/reports/androidTests/
+            app/build/realuse-logcat.txt
+          if-no-files-found: ignore
 
   publish:
     name: Publish APK

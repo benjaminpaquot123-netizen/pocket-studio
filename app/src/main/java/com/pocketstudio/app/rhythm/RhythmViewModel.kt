@@ -116,6 +116,7 @@ import com.pocketstudio.model.songCurveCommands
 import com.pocketstudio.model.CurveCommand
 import com.pocketstudio.model.Layers
 import com.pocketstudio.model.addLayer
+import com.pocketstudio.model.allLayers
 import com.pocketstudio.model.allTrackSounds
 import com.pocketstudio.model.editLayer
 import com.pocketstudio.model.layersOf
@@ -458,6 +459,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         guideSyncs++
         followPlaybackAfterHistory(sceneHeard(), before.song)
         warnLongFxOverLimit(before)
+        // G3: a layer brought back from a track's sheet: its instrument and its General MIDI sound come back too.
+        if (now.allLayers != before.allLayers) {
+            loadTrackFonts()
+            loadMultiBanks()
+        }
     }
 
     private val _transport = MutableStateFlow(TransportUi())
@@ -1010,9 +1016,50 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (!hasTrack(id)) return false
         val before = project.value.layersOf(id)
         var done = false
-        session.edit(key) { p -> edit(p)?.also { done = true } ?: p }
+        // G3: kept in the track's history too (its sheet's « Historique », « Ramener »), in the same undo step.
+        val at = System.currentTimeMillis()
+        session.edit(key) { p -> edit(p)?.also { done = true }?.let { com.pocketstudio.model.guide.GuideActions.withTrackEdit(p, it, at, merge = key != null) } ?: p }
         if (done) pushLayersChange(id, before)
         return done
+    }
+
+    // --- G3: a track's sheet, « Ailleurs ? » -------------------------------------------------------
+
+    /**
+     * « Copier cette chaîne sur… »: the effects and sends of track [from] on track [to] (Guide track
+     * keys: "inst:3", "pad:0"…), one undo step, kept in [to]'s history; refused and said when it is
+     * already the same or past the engine's long effects.
+     */
+    fun copyChain(from: String, to: String) {
+        val out = com.pocketstudio.model.guide.GuideActions.tryCopyChain(project.value, from, to, System.currentTimeMillis())
+        out.problem?.let { _notice.value = it }
+        if (out.project === project.value) return
+        session.edit { out.project }
+        pushMixer()
+        pushAutomation()
+        _notice.value = tr("Chaîne copiée. Annuler, ou « Ramener » dans la fiche, la retire.")
+    }
+
+    /** « Garder ce son dans mes favoris » for track [id]: a synth's or a Plaits sound (the others cannot be kept), said. */
+    fun saveFavoriteOf(id: Int) {
+        if (!hasTrack(id)) return
+        val t = project.value.track(id)
+        val f = _favorites.value
+        when (t.engine) {
+            InstrumentTrack.ENGINE_SYNTH -> if (t.instrument == null) {
+                val name = Favorites.nextName(f.synth.map { it.name })
+                addFavorite(f.synth) { f.copy(synth = f.synth + NamedSound(name, SoundCategories.FAVORITES, t.synth.sanitized())) }
+                if (_favorites.value.synth.size > f.synth.size) _notice.value = tr("Son gardé dans tes favoris : « %s ».", name)
+                return
+            }
+            InstrumentTrack.ENGINE_PLAITS -> {
+                val name = Favorites.nextName(f.plaits.map { it.name })
+                addFavorite(f.plaits) { f.copy(plaits = f.plaits + NamedSound(name, SoundCategories.FAVORITES, t.plaits)) }
+                if (_favorites.value.plaits.size > f.plaits.size) _notice.value = tr("Son gardé dans tes favoris : « %s ».", name)
+                return
+            }
+        }
+        _notice.value = tr("Seuls les sons du synthé et de Plaits se gardent en favori.")
     }
 
     /** A new layer of [sound] on track [id] for [role] ([com.pocketstudio.model.LayerRole]): one undo step. False when it has three. */

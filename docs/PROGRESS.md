@@ -2,11 +2,12 @@
 
 ## Où on en est (2026-10-25)
 - `main` = PR #51 (basses + leads lot 1 + S6) ; APK 220 envoyé à Benjamin avec les extraits avant / après (« C'est parfait »).
-- En cours : une PR qui réunit S7 son (largeur, téléphone, direct = export en version de mix 4) et le Guide G2 (barre et panneau, une carte à la fois), chacun relu à neuf.
+- `main` = PR #52 (Guide G2 + S7 son), APK 222 compilé par l'agent et envoyé à Benjamin (consigne : compiler soi-même dès qu'un bloc est prêt, sans attendre GitHub).
+- En cours : PR Guide G3 (fiche de piste, éditeur de couches, historique), relue à neuf.
 
 ## Prochaine étape exacte
-1. CI verte de la PR S7 + G2, fusion, un seul APK pour Benjamin.
-2. Guide G3 (fiche de piste à cinq colonnes, éditeur de couches), puis G4 (étapes 3 à 6 en cartes), G5 (fusion des anciennes surfaces), G6 (vérification).
+1. CI verte de la PR G3, fusion ; APK compilé ici et envoyé à Benjamin.
+2. Guide G4 (étapes 3 à 6 en cartes), G5 (fusion des anciennes surfaces), G6 (vérification).
 3. Restes son : largeur de deep house, dubstep, neurofunk, phonk ; intros en direct de riddim et jersey club ; restes de relecture S6/S7 (REVIEW.md).
 4. Leads lots B à D, puis le chantier Play Store en dernier.
 

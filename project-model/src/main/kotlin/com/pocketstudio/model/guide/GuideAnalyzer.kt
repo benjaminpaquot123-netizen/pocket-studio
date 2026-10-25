@@ -18,6 +18,7 @@ import com.pocketstudio.model.allScenes
 import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.model.sceneSteps
 import com.pocketstudio.model.songBars
+import com.pocketstudio.model.track
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
@@ -234,7 +235,9 @@ class GuideFacts private constructor(val project: Project, val song: GuideSong) 
     }
 
     private fun layered(role: String): Boolean = when (role) {
-        GuideRoles.BASS -> playing(GuideRoles.SUB).isNotEmpty()
+        // A sub track, or a bass that stacks layers (G3: its sheet's « Couches »).
+        GuideRoles.BASS -> playing(GuideRoles.SUB).isNotEmpty() ||
+            playing(GuideRoles.BASS).any { t -> t.key.removePrefix("inst:").toIntOrNull()?.let { project.track(it).layers.isNotEmpty() } == true }
         "808" -> playing(GuideRoles.KICK).flatMap { k -> playing(GuideRoles.BASS).map { k to it } }.any { (k, b) -> (0 until song.bars).any { song.sounds(k.key, it) && song.sounds(b.key, it) } }
         GuideRoles.SNARE -> project.allScenes.any { s -> s.drums.lanes.getOrNull(StarterWizard.Role.Snare.lane)?.hits?.isNotEmpty() == true } &&
             project.allScenes.any { s -> s.drums.lanes.getOrNull(StarterWizard.Role.Clap.lane)?.hits?.isNotEmpty() == true }

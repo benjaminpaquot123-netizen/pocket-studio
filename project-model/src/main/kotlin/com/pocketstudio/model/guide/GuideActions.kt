@@ -12,11 +12,16 @@ import com.pocketstudio.model.MusicBus
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.SongPart
 import com.pocketstudio.model.StarterWizard
+import com.pocketstudio.model.TrackLayer
+import com.pocketstudio.model.Layers
+import com.pocketstudio.model.track
+import com.pocketstudio.model.withTrack
 import com.pocketstudio.model.freeInsertSlot
 import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.model.longFxLimitNotice
 import com.pocketstudio.model.longFxOverLimit
 import com.pocketstudio.model.withoutStaleInsertLanes
+import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
@@ -72,7 +77,7 @@ object GuideActions {
         edited.mixer.longFxOverLimit(p.mixer)?.let { return GuideOutcome(p, longFxLimitNotice(it)) }
         val base = p.guide.withBase(p, parcours)
         val id = "c${base.nextChange}"
-        val changes = changesBetween(p, edited, card, at, id)
+        val changes = changesBetween(p, edited, card.id, card.target, at, id)
         var state = base.withChanges(changes).copy(nextChange = base.nextChange + 1, step = card.id, lastUsed = maxOf(base.lastUsed, at))
         // An alert is not ticked for good: it comes back when its fact does.
         if (!isAlert(card.id)) state = state.withStatus(card.id, GuideStatus.DONE, at, option.id)
@@ -344,15 +349,86 @@ object GuideActions {
         }
     }
 
+    // --- G3: edits made by hand from a track's sheet ------------------------------------------------
+
+    /**
+     * An edit made by hand on a track (its layers from its sheet, a chain copied: [before] → [after])
+     * kept in the per-track history like the Guide's own, setting by setting with the value before,
+     * origin [GuideChange.USER], card [SHEET], one group: « Ramener » brings it back. [merge]: a drag
+     * of a slider (one undo step per drag in the app), folded into the last line when that line is
+     * the same track's layers settled the same way (no layer added or removed) and still what it left.
+     * [after] unchanged when nothing the history keeps changed.
+     */
+    fun withTrackEdit(before: Project, after: Project, at: Long, merge: Boolean = false): Project {
+        val state = after.guide
+        val id = "c${state.nextChange}"
+        val changes = changesBetween(before, after, SHEET, "", at, id, GuideChange.USER)
+        if (changes.isEmpty()) return after
+        val last = state.history.lastOrNull()
+        val c = changes.singleOrNull()
+        if (merge && c != null && last != null && c.field == LAYERS && last.field == LAYERS && last.track == c.track && last.origin == GuideChange.USER &&
+            last.card == SHEET && !last.reverted && last.after == c.before && sameStack(last.before, last.after) && sameStack(c.before, c.after) &&
+            state.history.count { it.id == last.id } == 1
+        ) {
+            return after.copy(guide = state.copy(history = state.history.dropLast(1) + last.copy(after = c.after, at = at)))
+        }
+        return after.copy(guide = state.withChanges(changes).copy(nextChange = state.nextChange + 1))
+    }
+
+    /** Two layer lists (as JSON) with the same sounds in the same order: one was only set, not added to or taken from. */
+    private fun sameStack(a: JsonElement?, b: JsonElement?): Boolean = runCatching {
+        val x = layersOf(a)
+        val y = layersOf(b)
+        x.size == y.size && x.indices.all { x[it].sound == y[it].sound && x[it].role == y[it].role }
+    }.getOrDefault(false)
+
+    /**
+     * « Copier cette chaîne sur… » (the sheet's « Ailleurs ? »): the effects and sends of track [from]
+     * ([GuideTrack.key]) on track [to], its curves on effects no longer in their slot gone (as the
+     * mixer does), in the history ([withTrackEdit]). Unchanged with a [GuideOutcome.problem] when the
+     * chain is already the same or the engine's long effects would be past their limit.
+     */
+    fun tryCopyChain(p: Project, from: String, to: String, at: Long): GuideOutcome {
+        val tracks = p.guideTracks()
+        val source = tracks.firstOrNull { it.key == from }?.let { strip(p, it) } ?: return GuideOutcome(p)
+        val target = tracks.firstOrNull { it.key == to }?.takeIf { it.key != from } ?: return GuideOutcome(p)
+        val c = strip(p, target) ?: return GuideOutcome(p)
+        val edited = withStrip(p, target.channel, c.copy(inserts = source.inserts, sends = source.sends)).withoutStaleInsertLanes(p)
+        if (edited == p) return GuideOutcome(p, tr("Cette piste a déjà la même chaîne."))
+        edited.mixer.longFxOverLimit(p.mixer)?.let { return GuideOutcome(p, longFxLimitNotice(it)) }
+        return GuideOutcome(withTrackEdit(p, edited, at))
+    }
+
+    private val layerList = ListSerializer(TrackLayer.serializer())
+
+    /** Layers as the history keeps them: their defaults left out (a synth patch in full is ~1 kB). */
+    private val compact = Json { ignoreUnknownKeys = true; encodeDefaults = false; coerceInputValues = true }
+
+    /** A [LAYERS] value of the history as layers (none for null or what does not read). */
+    fun layersOf(value: JsonElement?): List<TrackLayer> =
+        runCatching { compact.decodeFromJsonElement(layerList, value ?: JsonArray(emptyList())) }.getOrDefault(emptyList())
+
+    /** An effect slot's value of the history ([SLOT]) as its effect, or null. */
+    fun insertOf(value: JsonElement?): Insert? = value?.let { runCatching { json.decodeFromJsonElement(Insert.serializer(), it) }.getOrNull() }
+
+    /** The layers of instrument track [key] ("inst:3"), or null when there is no such track. */
+    private fun Project.layersAt(key: String): List<TrackLayer>? {
+        val id = key.takeIf { it.startsWith("inst:") }?.removePrefix("inst:")?.toIntOrNull() ?: return null
+        if (id != 0 && tracks.none { it.id == id }) return null
+        return track(id).layers
+    }
+
     // --- the history: one entry per setting touched -------------------------------------------------
 
     /** What [card] changed between [before] and [after], setting by setting, with both values: group [id]. */
-    private fun changesBetween(before: Project, after: Project, card: GuideCard, at: Long, id: String): List<GuideChange> {
+    private fun changesBetween(
+        before: Project, after: Project, cardId: String, target: String, at: Long, id: String, origin: String = GuideChange.GUIDE,
+    ): List<GuideChange> {
         val out = ArrayList<GuideChange>()
         fun add(track: String, kind: String, field: String) {
             val a = fieldValue(before, track, field)
             val b = fieldValue(after, track, field)
-            if (a != b) out += GuideChange(track, kind, field, a, b, at, GuideChange.GUIDE, card.id, id = id)
+            if (a != b) out += GuideChange(track, kind, field, a, b, at, origin, cardId, id = id)
         }
         val tracks = (before.guideTracks() + after.guideTracks()).distinctBy { it.key }
         for (t in tracks) {
@@ -366,6 +442,8 @@ object GuideActions {
                 add(t.key, GuideChange.VALUE, SOLO)
             }
             if (t.key.startsWith("pad:")) add(t.key, GuideChange.VALUE, PAD_PAN)
+            // G3: an instrument track's layers, as one setting (its stack, brought back whole).
+            if (t.key.startsWith("inst:") && before.layersAt(t.key) != after.layersAt(t.key)) add(t.key, GuideChange.LAYER, LAYERS)
         }
         for (i in 0 until Mixer.INSERTS) if (before.mixer.master.getOrNull(i) != after.mixer.master.getOrNull(i)) add(GuideTrack.MASTER, GuideChange.INSERT, "$SLOT$i")
         add(GuideTrack.MASTER, GuideChange.VALUE, TARGET)
@@ -374,7 +452,7 @@ object GuideActions {
             if (before.mixer.buses.getOrNull(b)?.getOrNull(k) != after.mixer.buses.getOrNull(b)?.getOrNull(k)) add(GuideTrack.bus(b), GuideChange.VALUE, "$PARAM$k")
         }
         if (before.song != after.song && before.song.size == after.song.size) {
-            val track = tracksOf(before, card.target).firstOrNull()?.key ?: GuideTrack.MASTER
+            val track = tracksOf(before, target).firstOrNull()?.key ?: GuideTrack.MASTER
             for (i in before.song.indices) if (before.song[i].muted != after.song[i].muted) add(track, GuideChange.PART, "$MUTED$i:${before.song[i].scene}")
         }
         if (before.automation != after.automation) {
@@ -382,12 +460,12 @@ object GuideActions {
                 for (i in before.automation.indices) {
                     val ta = before.automation[i].target
                     val tb = after.automation[i].target
-                    if (ta != tb) out += GuideChange(GuideTrack.MASTER, GuideChange.LANE, LANE_TARGET, enc(ta), enc(tb), at, GuideChange.GUIDE, card.id, id = id)
+                    if (ta != tb) out += GuideChange(GuideTrack.MASTER, GuideChange.LANE, LANE_TARGET, enc(ta), enc(tb), at, origin, cardId, id = id)
                 }
             } else {
                 val kept = after.automation.map { it.target }.toSet()
                 for (l in before.automation) if (l.target !in kept) {
-                    out += GuideChange(GuideTrack.MASTER, GuideChange.LANE, LANE, json.encodeToJsonElement(AutomationLane.serializer(), l), null, at, GuideChange.GUIDE, card.id, id = id)
+                    out += GuideChange(GuideTrack.MASTER, GuideChange.LANE, LANE, json.encodeToJsonElement(AutomationLane.serializer(), l), null, at, origin, cardId, id = id)
                 }
             }
         }
@@ -422,6 +500,7 @@ object GuideActions {
             }
             field == LANE_TARGET || field == LANE -> return null  // the curves: see [stillAfter]
             field == PAD_PAN -> return p.drums.lanes.getOrNull(track.removePrefix("pad:").toInt())?.pan?.let(::JsonPrimitive)
+            field == LAYERS -> return p.layersAt(track)?.let { compact.encodeToJsonElement(layerList, it) }
         }
         if (track.startsWith("inst:") && p.guideTracks().none { it.key == track }) return null
         val c = m.channels.getOrNull(GuideTrack.channelOf(track) ?: return null) ?: return null
@@ -457,6 +536,11 @@ object GuideActions {
                 p.copy(song = p.song.mapIndexed { j, part -> if (j == i) part.copy(muted = muted) else part })
             }
             field == PAD_PAN -> p.copy(drums = p.drums.withPadPan(track.removePrefix("pad:").toInt(), float()))
+            field == LAYERS -> {
+                p.layersAt(track) ?: return null
+                val t = p.track(track.removePrefix("inst:").toInt())
+                p.withTrack(t.copy(layers = Layers.sanitize(compact.decodeFromJsonElement(layerList, value ?: JsonArray(emptyList())))))
+            }
             else -> {
                 val ch = GuideTrack.channelOf(track) ?: return null
                 if (track.startsWith("inst:") && p.guideTracks().none { it.key == track }) return null
@@ -490,6 +574,10 @@ object GuideActions {
     const val MUTED = "muted:"
     const val LANE_TARGET = "laneTarget"
     const val LANE = "lane"
+    /** G3: an instrument track's layers ([com.pocketstudio.model.InstrumentTrack.layers]), as one setting. */
+    const val LAYERS = "layers"
+    /** The « card » of the changes made by hand from a track's sheet ([withTrackEdit]): no card of the parcours. */
+    const val SHEET = "sheet"
 }
 
 /** What an action did: the project after it, or the same project and why not ([problem], shown to the user). */

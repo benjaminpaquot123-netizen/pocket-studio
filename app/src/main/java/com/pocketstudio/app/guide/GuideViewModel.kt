@@ -14,6 +14,7 @@ import com.pocketstudio.model.guide.GuideSheet
 import com.pocketstudio.model.guide.GuideStages
 import com.pocketstudio.model.guide.GuideStatus
 import com.pocketstudio.model.guide.guideText
+import com.pocketstudio.model.guide.guideTracks
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -53,6 +54,9 @@ data class GuideCardUi(
     val alert: Boolean,
     /** Its choice can be undone (« Annuler mon choix »): it changed the song and that change is still there. */
     val undoable: Boolean,
+    /** G3: the track it is about ([com.pocketstudio.model.guide.GuideTrack.key]) and its name, for « La fiche de la piste » (null: the song). */
+    val sheet: String? = null,
+    val sheetName: String = "",
 )
 
 /** A line of the plan: a card, its status (faite ✓, sautée ⟶, à revoir ↺), ticked by the analysis or decided. */
@@ -233,11 +237,16 @@ class GuideViewModel(
             o.action.spot.takeIf { o.action.type == com.pocketstudio.model.guide.GuideAction.OPEN }, p.guide.refusals.any { it.card == card.id && it.option == o.id },
             edits = o.action.edits,
         )
-        fun cardUi(s: GuideCardStatus) = GuideCardUi(
-            s.card.id, s.card.stage, s.card.target, s.card.kind, s.card.titleFor(r.simple), s.card.whyFor(r.simple),
-            s.card.proposals.map { option(s.card, it) }.filter { !it.refused }, s.card.elsewhere.map { option(s.card, it) }, s.card.lexicon,
-            s.status, s.alert, s.card.id in undoable,
-        )
+        // The first track of each role (« Voir le réglage » › its sheet).
+        val byRole = p.guideTracks().groupBy { it.role }.mapValues { it.value.first() }
+        fun cardUi(s: GuideCardStatus): GuideCardUi {
+            val track = byRole[s.card.target]?.takeIf { it.channel != com.pocketstudio.model.Mixer.MASTER }
+            return GuideCardUi(
+                s.card.id, s.card.stage, s.card.target, s.card.kind, s.card.titleFor(r.simple), s.card.whyFor(r.simple),
+                s.card.proposals.map { option(s.card, it) }.filter { !it.refused }, s.card.elsewhere.map { option(s.card, it) }, s.card.lexicon,
+                s.status, s.alert, s.card.id in undoable, track?.key, track?.name?.let(com.pocketstudio.model.DefaultNames::shown).orEmpty(),
+            )
+        }
         fun planOf(cards: List<GuideCardStatus>, simple: Boolean) = cards.groupBy { it.card.stage }.toSortedMap().map { (stage, cs) ->
             GuideStageUi(stage, GuideStages.title(stage), cs.map { GuidePlanItem(it.card.id, it.card.titleFor(simple), it.status, it.auto) })
         }

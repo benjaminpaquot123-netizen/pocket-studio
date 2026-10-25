@@ -141,6 +141,7 @@ class JourneyTest {
             // a whole song).
             j.tap("tab_Mix")
             j.await("mixer")
+            log("before the export: transport=${rhythm().transport.value}, notice=${rhythm().notice.value}")
             j.tap("export_what_Loop")
             val loop = rhythm().project.value
             val seconds = rhythm().export.value.bars * loop.beatsPerBar * 60.0 / loop.tempoBpm

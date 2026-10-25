@@ -81,12 +81,17 @@ class Journey(private val compose: ComposeTestRule, private val log: (String) ->
      */
     private fun settled(tag: String, end: Long) {
         var last: androidx.compose.ui.geometry.Rect? = null
+        val seen = ArrayList<String>()
         while (System.currentTimeMillis() < end) {
-            val now = runCatching { compose.onNodeWithTag(tag).fetchSemanticsNode().boundsInWindow }.getOrNull()
+            val read = runCatching { compose.onNodeWithTag(tag).fetchSemanticsNode().boundsInWindow }
+            val now = read.getOrNull()
             if (now != null && now == last && now.width > 0f && now.height > 0f) return
+            if (seen.size < 6) seen += read.fold({ "$it" }, { "${it.javaClass.simpleName}: ${it.message?.take(80)}" })
             last = now
             idle(100)
         }
+        // Never still: say what moved (or why the node could not be read) in the device's log.
+        log("$tag never settled: $seen")
     }
 
     /** The tags on screen that match [pattern] (the keys of a keyboard, the cells of a grid). */

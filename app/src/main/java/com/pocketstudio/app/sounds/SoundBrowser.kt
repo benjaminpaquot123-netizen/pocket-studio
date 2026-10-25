@@ -60,6 +60,8 @@ class SoundBrowserUi(
     val tag: String = "sounds",
     /** A few words under a sound's name. */
     val describe: (NamedSound<*>) -> String? = { null },
+    /** « Au hasard » and « Garder ce son » under the tiles (false: a sound only picked, a layer's). */
+    val extras: Boolean = true,
 )
 
 /** Families of ready-made sounds as coloured tabs, their sounds as tiles, "Au hasard" and "Garder ce son". */
@@ -116,7 +118,7 @@ fun SoundBrowser(ui: SoundBrowserUi) {
         }
         // A narrow pane (a tablet's side, a big interface size): the words go on two lines and the
         // buttons grow together, never « Garder ce » cut.
-        Row(Modifier.fillMaxWidth().height(androidx.compose.foundation.layout.IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+        if (ui.extras) Row(Modifier.fillMaxWidth().height(androidx.compose.foundation.layout.IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
             val tight = PaddingValues(horizontal = 10.dp, vertical = 8.dp)
             OutlinedButton(onClick = ui.random, contentPadding = tight, modifier = Modifier.weight(1f).fillMaxHeight().testTag("${ui.tag}_random")) {
                 Icon(Icons.Filled.Casino, contentDescription = null)
@@ -127,7 +129,7 @@ fun SoundBrowser(ui: SoundBrowserUi) {
                 com.pocketstudio.ui.WholeWordsText(tr("Garder ce son"), Modifier.padding(start = 6.dp), textAlign = androidx.compose.ui.text.style.TextAlign.Center)
             }
         }
-        if (ui.favorites.isEmpty()) {
+        if (ui.extras && ui.favorites.isEmpty()) {
             Text(tr("« Garder ce son » le range dans tes favoris, pour tous tes projets."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         }
     }

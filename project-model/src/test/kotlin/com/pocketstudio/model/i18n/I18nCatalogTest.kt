@@ -230,6 +230,16 @@ class I18nCatalogTest {
             "StarterWizard.kt: it.title",
             "SynthScreen.kt: name",
             "TrackBar.kt: t.soundLabel",
+            // G3: a layer's name, a library sound's (SoundLibrary, checked by ModelTextsTest); an effect's name (EffectType, same).
+            "Layers.kt: name",
+            "GuideSheets.kt: libraryName",
+            "GuideHistory.kt: effect.label",
+            // The track sheet: an effect's and its first setting's names, a ready-made chain's (EffectType, FxPresets:
+            // ModelTextsTest), what a curve moves (GuideSheets.laneWhat: those, Buses.NAMES, or a fallback below).
+            "TrackSheet.kt: e.type.label",
+            "TrackSheet.kt: e.valueLabel",
+            "TrackSheet.kt: o.preset!!",
+            "TrackSheet.kt: l.what",
             "WizardScreen.kt: StarterWizard.progressionOf(style, m).first.label",
             "WizardScreen.kt: StarterWizard.progressionOf(style, mood).first.label",
             "WizardScreen.kt: it",

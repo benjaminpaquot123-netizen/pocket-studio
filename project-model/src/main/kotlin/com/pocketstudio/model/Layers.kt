@@ -164,6 +164,12 @@ object Layers {
     /** Its decibels, the other way ([MIN_GAIN_DB] for silence). */
     fun db(linear: Float): Float = if (linear <= 0f) MIN_GAIN_DB else (20f * kotlin.math.log10(linear)).coerceIn(MIN_GAIN_DB, MAX_GAIN_DB)
 
+    /**
+     * Layer [l]'s name in the interface's language: its own (the app gives it a library sound's
+     * French name), its role's, or its sound's.
+     */
+    fun shownTitle(l: TrackLayer): String = l.label.takeIf { it.isNotBlank() }?.let { name -> tr(name) } ?: LayerRole.title(l.role) ?: l.sound.label
+
     /** A number with its sign, for a transposition (« +12 », « −5 », « 0 »). */
     fun signedSemitones(v: Int): String = when {
         v > 0 -> "+$v"

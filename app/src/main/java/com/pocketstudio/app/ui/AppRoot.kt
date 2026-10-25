@@ -350,6 +350,9 @@ fun AppRoot() {
     var showVideo by rememberSaveable { mutableStateOf(false) }
     // « Changer un son »: the sounds of an instrument track in a sheet (null: closed).
     var soundChooserTrack by rememberSaveable { mutableStateOf<Int?>(null) }
+    // G3: a track's sheet (its Guide key) and an instrument track's layers editor.
+    var trackSheetKey by rememberSaveable { mutableStateOf<String?>(null) }
+    var layersTrack by rememberSaveable { mutableStateOf<Int?>(null) }
     var songChordsOpen by rememberSaveable { mutableStateOf(false) }
     val shareSong: () -> Unit = { showShare = true }
     com.pocketstudio.app.export.ShareSongProgress(rhythmVm, wav = sharePrefs.format == com.pocketstudio.app.rhythm.ExportFormat.Wav)
@@ -1006,6 +1009,8 @@ fun AppRoot() {
             if (showShare) add("Prêt à partager ?")
             if (showVideo) add("fiche Vidéo")
             soundChooserTrack?.let { add("Changer le son (piste $it)") }
+            trackSheetKey?.let { add("Fiche de la piste ($it)") }
+            layersTrack?.let { add("Couches (piste $it)") }
             if (songChordsOpen) add("Accords du morceau")
             if (showLibrary) add("Bibliothèque de sons")
             if (fxChannel >= 0) add("Effets (tranche $fxChannel)")
@@ -1061,6 +1066,17 @@ fun AppRoot() {
             chooseMode = { v -> SettingsStore.update(context) { it.copy(simpleMode = v) } },
         ),
     )
+    // G3: a track's sheet; its layers and its sound open over it (the sheet waits underneath).
+    trackSheetKey?.let { key ->
+        com.pocketstudio.app.guide.TrackSheetRoute(
+            rhythmVm, key, close = { trackSheetKey = null },
+            changeSound = { id -> rhythmVm.selectTrack(id); soundChooserTrack = id },
+            layers = { id -> rhythmVm.selectTrack(id); layersTrack = id },
+            effects = { ch -> fxChannel = ch },
+            reuse = { trackSheetKey = null; partsView = true; navPrefs.partsView = true; go(AppTab.Morceau) },
+        )
+    }
+    layersTrack?.let { track -> com.pocketstudio.app.guide.LayersEditorRoute(rhythmVm, track, close = { layersTrack = null }) }
     soundChooserTrack?.let { track ->
         SoundChooserSheet(rhythmVm, track, close = { soundChooserTrack = null }, real = realInstrumentsUi(rhythmVm, libraryVm, track) { soundChooserTrack = null })
     }
@@ -1159,6 +1175,7 @@ fun AppRoot() {
             clear = rhythmVm::clearTrackNotes,
             scene = fp.sceneTitle(fp.scene),
             changeSound = { id -> rhythmVm.selectTrack(id); soundChooserTrack = id },
+            sheet = { id -> trackSheetKey = com.pocketstudio.app.guide.sheetKeyOf(id) },
             freeze = rhythmVm::freezeTrack,
             unfreeze = rhythmVm::unfreezeTrack,
             frozen = frozen,
@@ -1215,6 +1232,7 @@ fun AppRoot() {
             com.pocketstudio.app.guide.GuideGo.Tempo -> tempoSheetOpen = true
             com.pocketstudio.app.guide.GuideGo.Chords -> songChordsOpen = true
             is com.pocketstudio.app.guide.GuideGo.Sound -> { rhythmVm.selectTrack(g.track); soundChooserTrack = g.track }
+            is com.pocketstudio.app.guide.GuideGo.Layers -> { rhythmVm.selectTrack(g.track); layersTrack = g.track }
             com.pocketstudio.app.guide.GuideGo.Kit -> kitSheetOpen = true
             com.pocketstudio.app.guide.GuideGo.AcidSound -> acidSheetOpen = true
             is com.pocketstudio.app.guide.GuideGo.Notes -> { rhythmVm.selectTrack(g.track); notesRequest++; go(AppTab.Synthe); guideOpen = false }
@@ -1240,6 +1258,7 @@ fun AppRoot() {
         undo = { card -> guideListen.stop(); guideVm.undoChoice(card) },
         select = { card -> guideListen.stop(); guideSelected = card },
         dismissNotice = { guideNotice = null },
+        sheet = { key -> guideListen.stop(); trackSheetKey = key },
     )
     val studioBackground = Neon.Background
     androidx.compose.runtime.CompositionLocalProvider(com.pocketstudio.app.learn.LocalSpots provides spots) {

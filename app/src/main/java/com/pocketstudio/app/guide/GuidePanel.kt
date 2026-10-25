@@ -86,6 +86,8 @@ class GuidePanelActions(
     /** A card of the plan shown (null: back to the next one). */
     val select: (card: String?) -> Unit = {},
     val dismissNotice: () -> Unit = {},
+    /** G3: « La fiche de la piste » of track (its Guide key). */
+    val sheet: (track: String) -> Unit = {},
 )
 
 /** The symbol of a card's status in the plan (« faite ✓, sautée ⟶, à revoir ↺ »). */
@@ -302,8 +304,21 @@ fun GuideCard(card: GuideCardUi, listen: GuideListenUi?, actions: GuidePanelActi
             Text(tr("Ailleurs ?").uppercase(), style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = Neon.TextSecondary, modifier = Modifier.padding(top = 4.dp))
             elsewhere.forEach { o -> OptionRow(card.id, o, primary = false, listen, actions) }
         }
-        if (opens.isNotEmpty()) {
+        if (opens.isNotEmpty() || card.sheet != null) {
             Text(tr("Voir le réglage").uppercase(), style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = Neon.TextSecondary, modifier = Modifier.padding(top = 4.dp))
+            // G3: the track's whole sheet (its sound and layers, when, effects, history), one touch away.
+            card.sheet?.let { key ->
+                Row(
+                    Modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp))
+                        .clickable(role = Role.Button, onClickLabel = tr("Voir le réglage")) { actions.sheet(key) }
+                        .heightIn(min = 48.dp).padding(horizontal = 4.dp)
+                        .testTag("guide_sheet"),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text("↗", color = Neon.Cyan, style = MaterialTheme.typography.titleMedium, modifier = Modifier.width(24.dp))
+                    Text(tr("La fiche de la piste « %s »", card.sheetName), style = MaterialTheme.typography.bodyLarge, color = Neon.Cyan, fontWeight = FontWeight.SemiBold, modifier = Modifier.weight(1f))
+                }
+            }
             opens.forEach { o ->
                 Row(
                     Modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp))

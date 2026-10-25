@@ -32,9 +32,11 @@ data class GuideSheet(
     val facts: List<GuideFact>,
     /** The cards about it, in order. */
     val cards: List<String>,
+    /** G3: [history] as lines, one per group (an option, a gesture), newest first. */
+    val lines: List<GuideHistoryLine> = emptyList(),
 )
 
-/** « Son »: what plays ([label], already in the interface's language), its layers (empty until a track has some). */
+/** « Son »: what plays ([label], already in the interface's language), its layers' names (an instrument track's: [com.pocketstudio.model.Layers.shownTitle]). */
 data class SheetSound(val label: String, val layers: List<String> = emptyList())
 
 /** « Quand »: a section of the song and the bars the track plays in it. */
@@ -92,20 +94,36 @@ object GuideSheets {
         val cards = parcours.cardsFor(simple).filter { it.target == t.role }
         val advice = cards.firstOrNull { it.stage == 1 }?.why
         val elsewhere = cards.flatMap { it.elsewhere }.distinctBy { it.id }
+        val layers = t.key.removePrefix("inst:").toIntOrNull()?.takeIf { t.key.startsWith("inst:") }?.let { p.track(it).layers.map(com.pocketstudio.model.Layers::shownTitle) }.orEmpty()
+        val history = p.guide.historyOf(t.key)
         return GuideSheet(
-            t, SheetSound(soundOf(p, t)), sections, parts, advice, chain, strip?.sends.orEmpty(),
+            t, SheetSound(soundOf(p, t), layers), sections, parts, advice, chain, strip?.sends.orEmpty(),
             SheetOften(strip?.matchingFx()?.takeIf { it.id != "none" }?.name, inserts.all { it.effect == EffectType.NONE || it.scenes == null }, lanes),
-            elsewhere, p.guide.historyOf(t.key), facts.list.filter { t.key in it.tracks }, cards.map { it.id },
+            elsewhere, history, facts.list.filter { t.key in it.tracks }, cards.map { it.id },
+            GuideHistory.lines(history) { id -> parcours.card(id)?.titleFor(simple) },
         )
     }
 
     private fun soundOf(p: Project, t: GuideTrack): String = when {
-        t.key.startsWith("inst:") -> p.track(t.key.removePrefix("inst:").toInt()).soundLabel
+        // A library sound by its name (« Basse ronde »), else what kind of sound it is.
+        t.key.startsWith("inst:") -> soundName(p.track(t.key.removePrefix("inst:").toInt()))
         t.key.startsWith("pad:") -> t.key.removePrefix("pad:").toInt().let { lane ->
             p.drums.lanes.getOrNull(lane)?.sample?.name?.let(com.pocketstudio.model.DefaultNames::shownSample) ?: com.pocketstudio.model.DefaultNames.shown(t.name)
         }
         t.key == GuideTrack.ACID -> "TB-303"
         else -> com.pocketstudio.model.DefaultNames.shown(t.name)
+    }
+
+    /** Instrument track [t]'s sound by its library name (« Basse growl »), else what kind of sound it is; in the interface's language. */
+    fun soundName(t: com.pocketstudio.model.InstrumentTrack): String {
+        val name = when {
+            t.instrument != null -> null
+            t.engine == com.pocketstudio.model.InstrumentTrack.ENGINE_SYNTH -> com.pocketstudio.model.SoundLibrary.synthNameOf(t.synth)
+            t.engine == com.pocketstudio.model.InstrumentTrack.ENGINE_PLAITS ->
+                com.pocketstudio.model.SoundLibrary.PLAITS.firstOrNull { it.sound == t.plaits.copy(level = it.sound.level, gain = it.sound.gain) }?.name
+            else -> null
+        }
+        return name?.let { libraryName -> com.pocketstudio.model.i18n.tr(libraryName) } ?: t.soundLabel
     }
 
     /** What a lane moves, as a French key. */

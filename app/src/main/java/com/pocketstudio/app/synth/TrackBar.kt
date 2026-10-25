@@ -75,6 +75,8 @@ class TracksUi(
     val scene: String = "",
     /** « Changer le son » of track (id): its sounds in a sheet (null: not offered). */
     val changeSound: ((Int) -> Unit)? = null,
+    /** G3: « Fiche de la piste » of track (id): its five columns, its layers, its history (null: not offered). */
+    val sheet: ((Int) -> Unit)? = null,
     /** Phase 37: « Geler la piste » / « Dégeler » (null: not offered), the frozen tracks and the one being frozen. */
     val freeze: ((Int) -> Unit)? = null,
     val unfreeze: ((Int) -> Unit)? = null,
@@ -152,6 +154,9 @@ fun TrackBar(
                     if (selected) Icon(Icons.Filled.MoreVert, contentDescription = tr("Options de %s", com.pocketstudio.model.DefaultNames.shown(t.name)), Modifier.size(18.dp), tint = Neon.TextSecondary)
                 }
                 ScaledDropdownMenu(expanded = menuFor?.id == t.id, onDismissRequest = { menuFor = null }) {
+                    ui.sheet?.let { open ->
+                        DropdownMenuItem(text = { Text(tr("Fiche de la piste (couches, historique)")) }, onClick = { menuFor = null; open(t.id) }, modifier = Modifier.testTag("track_menu_sheet"))
+                    }
                     ui.changeSound?.let { change ->
                         DropdownMenuItem(text = { Text(tr("Changer le son")) }, onClick = { menuFor = null; change(t.id) }, modifier = Modifier.testTag("track_menu_sound"))
                     }

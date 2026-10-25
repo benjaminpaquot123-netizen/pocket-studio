@@ -840,6 +840,7 @@ void Widener::process(float* l, float* r, int n) {
     const float coef = monoBass ? onePoleCoef(rate_, expMap(p_[1], 40.0f, 300.0f)) : 0.0f;
     const float spread = std::clamp(p_[2], 0.0f, 1.0f);
     if (spread < 0.005f) {
+        spreading_ = false;
         for (int i = 0; i < n; ++i) {
             const float m = 0.5f * (l[i] + r[i]);
             float s = 0.5f * (l[i] - r[i]);
@@ -855,6 +856,13 @@ void Widener::process(float* l, float* r, int n) {
     }
     // The taps' delays in frames, read once a block (they sway at 0.23 and 0.31 Hz: a block of 96 to
     // 1024 frames moves them by a fraction of a frame), interpolated linearly in between.
+    // Turned on again (knob, automation): from silence, not the audio of when it was turned off.
+    if (!spreading_) {
+        line_.fill(0.0f);
+        write_ = 0;
+        hp1_ = hp2_ = 0.0f;
+        spreading_ = true;
+    }
     const float ms = rate_ / 1000.0f;
     const float hpCoef = onePoleCoef(rate_, 250.0f);
     const double inc1 = 0.23 * n / rate_, inc2 = 0.31 * n / rate_;
@@ -1232,6 +1240,8 @@ void InsertSlot::setType(int type) {
         longParams_ = longDefaults(type_);
         takeUnit();
     }
+    // A widener pushed with its two first params only does not inherit the spread of the last one here.
+    if (type_ == WidenerFx) widener_.setParam(2, 0.0f);
     resetState();
 }
 

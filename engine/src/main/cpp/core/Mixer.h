@@ -153,7 +153,8 @@ public:
     // S7 son (mix version 4): the master's fader (the song curve's section levels and fades) before the
     // master chain, as an export has it (its first pass renders with the chain bypassed, the fader on,
     // and its own chain masters that): live = export, an Intro or a Groove brought lower is limited as
-    // the export limits it. Off (versions 1 to 3): after the chain, as always. Exports are the same either way.
+    // the export limits it. Off (versions 1 to 3): after the chain, as always. An export with a loudness
+    // target renders the same either way (fader on, chain bypassed, then mastered); a single-pass one follows it.
     void setFaderBeforeChain(bool on) { faderBeforeChain_ = on; }
     bool faderBeforeChain() const { return faderBeforeChain_; }
     int outputLatency() const { return chainBypass_ ? 0 : chain_->latency(); }

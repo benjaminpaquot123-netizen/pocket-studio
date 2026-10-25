@@ -986,3 +986,7 @@ Relecture neuve de la branche `basses` (rebasée sur `guide`) : 0 grave, 5 moyen
 - Les morceaux faits avant S7 (version de mix 2) gardent l'ordre fader puis chaîne en direct : leurs Intro restent à −1 à −2 LU de l'export (house, acidcore, uk garage…) tant qu'ils ne sont pas refaits.
 - La deuxième Montée de l'acid techno monte de +1,7 LU (+1,9 en S6, déjà sous +2) ; acidcore Drop − Groove +1,84 (+1,96).
 
+
+## S7 son : relecture neuve (2026-10-25)
+- Rien de grave. Corrigé : l'étalement rallumé (potard, automation) repart du silence, sans le bout d'audio d'avant ni de « tic » ; sa ligne tient en 4 Ko au lieu de 8 dans chaque emplacement d'effet (la plus longue prise, 912 échantillons, y tient à 48 kHz) ; un élargisseur posé avec deux réglages n'hérite plus de l'étalement du précédent ; commentaire faux sur les exports corrigé.
+- Reste (mineur) : l'étalement change sans lissage quand on tourne le potard (léger grésillement possible) ; en version 4 le clic du métronome n'est plus atténué par le fader du master ; la phase du chorus n'est pas remise à zéro au départ du transport (direct et export diffèrent un peu) ; pas de test qui éteint puis rallume l'étalement ni qui compare un rendu direct v3 bit à bit avec le fader sous l'unité.

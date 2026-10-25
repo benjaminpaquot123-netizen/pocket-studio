@@ -356,7 +356,8 @@ public:
     void setParam(int p, float v);
     void reset();
     void process(float* l, float* r, int n);
-    static constexpr int kSpreadLen = 2048;  // 42 ms at 48 kHz: the longest tap (19 ms) at up to 96 kHz
+    // 21 ms at 48 kHz, the engine's rate: the longest tap (19 ms, 912 frames) fits; 4 kB in every insert slot.
+    static constexpr int kSpreadLen = 1024;
 
 private:
     float rate_ = 48000;
@@ -366,6 +367,7 @@ private:
     int write_ = 0;
     float hp1_ = 0.0f, hp2_ = 0.0f;  // the spread's high-pass (two one-pole low-passes taken off)
     double lfo1_ = 0.0, lfo2_ = 0.25;
+    bool spreading_ = false;  // the spread ran last block: else its line and filters start from silence
 };
 
 // Bitcrusher: fewer bits and a lower sample rate. Params: bits (16..2), downsample (1..32x), mix, volume.

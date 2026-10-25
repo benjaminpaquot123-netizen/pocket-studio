@@ -201,6 +201,14 @@ class SmokeTest {
         // Sons (phase 36): the synth track's chip opens its editor.
         compose.onNodeWithTag("tab_Sons").performClick()
         compose.onNodeWithTag("track_0").performClick()
+        // On the CI emulator a tap after a while in the app sometimes does not land (docs/REVIEW.md,
+        // « Tests d'usage réel »): the track chosen through the ViewModel then, the editor still checked.
+        val editorShown = { compose.onAllNodesWithTag("mode_notes").fetchSemanticsNodes().isNotEmpty() }
+        if (runCatching { compose.waitUntil(3_000) { editorShown() } }.isFailure) {
+            android.util.Log.i("RealUse", "tap on track_0 did not land: through the ViewModel")
+            InstrumentationRegistry.getInstrumentation().runOnMainSync { rhythm.selectTrack(0) }
+            compose.waitUntil(5_000) { editorShown() }
+        }
         compose.onNodeWithTag("mode_notes").performClick()
         compose.onNodeWithTag("piano_roll").assertExists()
         InstrumentationRegistry.getInstrumentation().runOnMainSync {

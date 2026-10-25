@@ -978,3 +978,11 @@ Relecture neuve de la branche `basses` (rebasée sur `guide`) : 0 grave, 5 moyen
 ## S6 son : relecture neuve (2026-10-25)
 - Rien de grave. Corrigé : une estimation du gain du direct qui échoue n'est plus relancée à chaque ▶ ; un nouvel essai du M4A à un plafond plus bas ne tasse plus davantage la partie forte (1 dB de plus au plus) ; « Écouter » ne démarre jamais sur le Drop lui-même (une partie longue avant lui) ; la CI ne casse plus si `fdkaac` n'est pas installable (le banc passe par ffmpeg).
 - Reste (mineur) : l'estimation rend 8 à 16 mesures dans un tableau jeté (jusqu'à ~21 Mo à 70 BPM) ; elle ne se refait pas après un changement de son ou de mix (le gain du direct reste un peu haut si le nouveau son est plus doux) ; pas de test d'appli qui vérifie qu'un projet en version de mix 1 n'est pas estimé.
+
+## S7 son : points restants (2026-10-25)
+- **M10 atteint** (côté/centre du Drop −17,9 → −11,7 dB, 33/37 dans −15 à −9). Hors cible par le bas : deep house (−15,5), dubstep (−16,0), neurofunk (−16,8), phonk (−16,9) : leur Drop est surtout kick, basse et 808, qu'on garde au centre. La perte en mono passe de −0,15 à −0,54 LU en médiane (pire −0,96) : à écouter sur le Honor en mono (un seul haut-parleur).
+- **M11 atteint** (perte au téléphone 4,1 → 3,8 LU, 23/37 ≤ 4) par le haut du spectre, pas par les basses : lo-fi 6,6, boom bap 6,2, afro house 6,1, deep house 5,6 restent loin ; la suite reste le chantier basses (B2).
+- **G5** : deux Intro du direct encore à plus de 1 LU de l'export. Riddim (−1,6) : le gain estimé (Drop rendu seul) est 1,2 dB au-dessus de celui de l'export et l'Intro perd 5,5 à 6,4 LU en direct contre ≈ 3,7 dans l'export : la musique qui entre dans la chaîne n'a pas les mêmes crêtes, à chercher (la Montée, le faux drop, la 808 ?). Jersey club (−1,3) : le gain estimé sur le Refrain seul est 1,1 dB sous celui de l'export du morceau entier. Une estimation sur plus d'une partie (le Refrain et ce qui le précède) rapprocherait les deux.
+- Les morceaux faits avant S7 (version de mix 2) gardent l'ordre fader puis chaîne en direct : leurs Intro restent à −1 à −2 LU de l'export (house, acidcore, uk garage…) tant qu'ils ne sont pas refaits.
+- La deuxième Montée de l'acid techno monte de +1,7 LU (+1,9 en S6, déjà sous +2) ; acidcore Drop − Groove +1,84 (+1,96).
+

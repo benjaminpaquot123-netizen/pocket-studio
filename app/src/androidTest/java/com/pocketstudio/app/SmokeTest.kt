@@ -209,7 +209,8 @@ class SmokeTest {
         while (!editorShown() && touches < 3) {
             if (touches > 0) android.util.Log.i("RealUse", "tap on track_0 did not land: again")
             // Lot 2 put « Remix » in the bar: on a narrow screen the track's chip is past its right edge.
-            compose.onNodeWithTag("track_0").performScrollTo().performClick()
+            runCatching { compose.onNodeWithTag("track_0").performScrollTo() }
+            compose.onNodeWithTag("track_0").performClick()
             touches++
             runCatching { compose.waitUntil(3_000) { editorShown() } }
         }
@@ -219,7 +220,8 @@ class SmokeTest {
                 .fetchSemanticsNodes().mapNotNull { it.config.getOrNull(androidx.compose.ui.semantics.SemanticsProperties.TestTag) }
             throw AssertionError("no synth editor after $touches touches on track_0: selected=${rhythm.selectedTrack.value}, shown=${shown.joinToString(" ").take(3000)}")
         }
-        compose.onNodeWithTag("mode_notes").performScrollTo().performClick()
+        runCatching { compose.onNodeWithTag("mode_notes").performScrollTo() }  // in a scrolling page or not, by layout
+        compose.onNodeWithTag("mode_notes").performClick()
         compose.waitUntil(5_000) { compose.onAllNodesWithTag("piano_roll").fetchSemanticsNodes().isNotEmpty() }
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             rhythm.addNote(com.pocketstudio.model.Note(start = 0, length = 48, pitch = 60))

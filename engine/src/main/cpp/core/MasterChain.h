@@ -114,6 +114,12 @@ public:
     // (it only comes down from there, on a louder part than the estimate has heard). S6: given while
     // there is no target yet (before ▶), it waits and is taken the moment the target comes on.
     void setKnownDrive(float db);
+    // S7 son (mix version 4): the level of the loud part, before the drive, that the known drive was
+    // found on (LUFS, the export's: its loud part's level minus the drive plus the loss; NaN: none).
+    // A loss past the cap heard on a part more than 1 LU quieter than that (an Intro the export also
+    // limits harder than its Drop) leaves the known drive where it is, as the export does.
+    void setKnownLevel(float lufs) { knownLevel_ = std::isfinite(lufs) ? lufs : NAN; }
+    float knownLevel() const { return knownLevel_; }
 
     struct Stats {
         float inPeak = 0.0f;   // into the clipper (drive and click included)
@@ -187,6 +193,7 @@ private:
     int driveRingHead_ = 0;
     bool settled_ = false;
     float pendingKnown_ = NAN;  // S6: a known drive waiting for the target (dB; NaN: none)
+    float knownLevel_ = NAN;    // S7: the known drive's loud part before the drive (LUFS; NaN: none)
     double settledLevel_ = 1000.0;  // the loud part's level when it settled (an export's drive: never)
 
     // --- DC blocker ahead of the drive (3 Hz) and sub-sonic blocker after the limiter (0.05 Hz):

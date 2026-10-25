@@ -169,6 +169,7 @@ void MasterChain::resetEstimate() {
     settled_ = false;
     settledLevel_ = 1000.0;
     pendingKnown_ = NAN;
+    knownLevel_ = NAN;
     lossPublished_.store(0.0f, std::memory_order_relaxed);
     loudPublished_.store(-1000.0f, std::memory_order_relaxed);
 }
@@ -523,7 +524,9 @@ void MasterChain::estimateDrop() {
     double want = std::clamp(target_ - level + loss, double(kMinDriveDb), double(kMaxDriveDb));
     // Over the cap: down to the drive that takes the cap off, from the drive the loss was heard
     // with (not from the drive now: a loss that lags would push it down again and again).
-    const bool over = loss > kMaxLossDropDb;
+    // S7 (a known level, mix version 4): not on a part quieter than the one the drive was found on.
+    const bool quieter = settled_ && std::isfinite(knownLevel_) && level < knownLevel_ - 1.0;
+    const bool over = loss > kMaxLossDropDb && !quieter;
     if (over) want = std::min(want, lossDriveDb_ - (loss - kMaxLossDropDb));
     else if (loss >= kMaxLossDropDb - 0.2 && want > driveDb_) want = driveDb_;
     // Settled (30 s of music heard, or the drive of an export): it no longer rises, so the mix

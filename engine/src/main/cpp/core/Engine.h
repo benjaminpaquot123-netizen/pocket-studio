@@ -118,6 +118,7 @@ enum class CommandType : uint8_t {
                           // 2 = master inserts (value 1 = on; off for stems, which then add up to the mix)
                           // 3 = the Live page's own sounds (riser, downlifter, build-up noise; value 0 = in the mix,
                           // 1 = left out: a track's stem, 2 = alone: the stem « Effets live », PerformanceFx::Noises)
+                          // ... 10 (S7) = the known drive's loud part before the drive (LUFS, MasterChain::setKnownLevel)
     ClearInserts,         // a: mixer channel: every insert slot emptied (a strip no longer used gives its pool units back)
     SetInsertOn,          // a: channel * Mixer::kInserts + slot, value 1: the effect plays in this scene, 0: the sound goes
                           // through it untouched (« Joue dans »). Follows SetStaging: the waiting scene's, switched at the swap
@@ -173,6 +174,7 @@ enum class CommandType : uint8_t {
     SetMixVersion = 103,    // value: 1 (projects saved before S5: the loudness target aims at the whole song, the chain may take
                             // 6 LU), 2 (S5: it aims at the loudest part, the Drop, and takes 3 LU at most: MasterChain::Mode)
                             // 3 (« des basses qui tapent »: version 2 with the master's low cut at 25 Hz, MasterChain::setLowCut)
+                            // 4 (S7 son: as 2, and live the master's fader before the chain as in an export, Mixer::setFaderBeforeChain)
     // Phase 37, numbered apart (other branches append from 102): polyrhythm and chance on the drums.
     SetDrumLaneSteps = 120,   // a: pad, value: steps its lane loops over on its own (1..64; 0 = the pattern's length,
                               // as always): a polyrhythm. Follows SetStaging (a scene's own); counted from the drums' start

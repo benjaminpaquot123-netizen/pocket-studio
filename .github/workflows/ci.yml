@@ -131,7 +131,7 @@ jobs:
           # fdkaac (S6): the M4A encoded by FDK AAC, the family of the phone's own encoder (ffmpeg's overshoots far more).
           { command -v ffmpeg && command -v fdkaac; } > /dev/null || { sudo apt-get update -qq && sudo apt-get install -y -qq --no-install-recommends ffmpeg > /dev/null && { sudo apt-get install -y -qq --no-install-recommends fdkaac > /dev/null || echo "fdkaac unavailable: the bench encodes with ffmpeg"; }; }
           python3 -I scripts/bench/test_report.py
-          ./scripts/song-bench.sh --styles techno,house,trap,dnb,pop --ffmpeg --m4a --before docs/son/banc/apres-S6.json \
+          ./scripts/song-bench.sh --styles techno,house,trap,dnb,pop --ffmpeg --m4a --before docs/son/banc/apres-S7.json \
             --title "Banc de mesure du son (CI, 5 styles)"
       - uses: actions/upload-artifact@v7
         if: always()

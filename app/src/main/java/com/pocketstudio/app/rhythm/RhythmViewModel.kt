@@ -107,6 +107,7 @@ import com.pocketstudio.model.InstrumentTrack
 import com.pocketstudio.model.MidiMapping
 import com.pocketstudio.model.partView
 import com.pocketstudio.model.stemView
+import com.pocketstudio.model.partHeard
 import com.pocketstudio.model.partSteps
 import com.pocketstudio.model.writeTake
 import com.pocketstudio.model.takeParts
@@ -416,6 +417,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     private var liveDriveFromExport = false
     /** The estimated drive (dB), for tests and the bug report's journal. */
     @Volatile internal var liveDriveDb: Float? = null
+        private set
+    /** S7 (mix version 4): the loud part's level before the drive that [liveDriveDb] was found on (LUFS; NaN: none). */
+    @Volatile internal var liveDriveLevel: Float = Float.NaN
         private set
 
     val session: ProjectSession = ProjectSession(
@@ -1071,22 +1075,47 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val p = project.value
         if (p.layersOf(id).size != count) return null
         val frames = OfflineExport.framesFor(bars, p.tempoBpm, p.beatsPerBar)
-        suspend fun render(mask: Int): FloatArray? {
-            val job = finishOrRelease(Dispatchers.IO, OfflineExport::close) { OfflineExport() } ?: return null
-            try {
-                NativeEngine.captureInto(job) {
-                    syncEngine(p)
-                    NativeEngine.setMetronome(false)
-                    NativeEngine.setLayerListen(id, mask)
-                }
-                return withContext(Dispatchers.Default) { job.renderToArray(frames, 0) }.takeIf { it.isNotEmpty() }
-            } finally {
-                withContext(kotlinx.coroutines.NonCancellable + Dispatchers.Main) { job.close() }
-            }
-        }
-        val with = render(NativeEngine.LISTEN_ALL) ?: return null
-        val without = render(Layers.without(index)) ?: return null
+        val with = renderOffline(p, frames) { NativeEngine.setLayerListen(id, NativeEngine.LISTEN_ALL) } ?: return null
+        val without = renderOffline(p, frames) { NativeEngine.setLayerListen(id, Layers.without(index)) } ?: return null
         return matchLoudness(with, without)
+    }
+
+    /**
+     * The Guide's « écouter avec / sans » (docs/PLAN-GUIDE.md §4.3): the song's first Drop (else
+     * Refrain; else its first part, else the scene shown) as [with] and as [without] play it, up to
+     * [maxBars] bars each, rendered offline as an export renders it, the louder brought down to the
+     * other's loudness. (with, without), interleaved stereo at [OfflineExport.SAMPLE_RATE]; null
+     * when it cannot (no engine). Main thread (the descriptions), the renders on a worker.
+     */
+    suspend fun renderGuideAB(with: Project, without: Project, maxBars: Int = 8): Pair<FloatArray, FloatArray>? {
+        if (!NativeEngine.isAvailable) return null
+        awaitSoundsLoaded()
+        fun heard(p: Project): Pair<Project, Long> {
+            val part = com.pocketstudio.model.FirstListen.firstMain(p).coerceAtLeast(0)
+            val steps = p.song.getOrNull(part)?.let { p.partSteps(it) } ?: p.sceneSteps(p.scene)
+            val bars = (steps / p.stepsPerBar.coerceAtLeast(1)).coerceIn(1, maxBars)
+            return p.partHeard(part) to OfflineExport.framesFor(bars, p.tempoBpm, p.beatsPerBar)
+        }
+        val (w, wFrames) = heard(with)
+        val (wo, woFrames) = heard(without)
+        val a = renderOffline(w, wFrames) {} ?: return null
+        val b = renderOffline(wo, woFrames) {} ?: return null
+        return matchLoudness(a, b)
+    }
+
+    /** [p] rendered offline for [frames] frames by a private engine, no metronome, [setup] said after it; null when it cannot. */
+    private suspend fun renderOffline(p: Project, frames: Long, setup: () -> Unit): FloatArray? {
+        val job = finishOrRelease(Dispatchers.IO, OfflineExport::close) { OfflineExport() } ?: return null
+        try {
+            NativeEngine.captureInto(job) {
+                syncEngine(p)
+                NativeEngine.setMetronome(false)
+                setup()
+            }
+            return withContext(Dispatchers.Default) { job.renderToArray(frames, 0) }.takeIf { it.isNotEmpty() }
+        } finally {
+            withContext(kotlinx.coroutines.NonCancellable + Dispatchers.Main) { job.close() }
+        }
     }
 
     /** The bass music sub folded into its bass as its « Sub » layer (SubLayers): one undo step. False when it stays apart. */
@@ -2773,7 +2802,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         // project would have moved it).
         estimateLiveDrive()
         if (!liveDriveFromExport && liveDriveKey != null && liveDrivePlayedKey != liveDriveKey) {
-            liveDriveDb?.let { NativeEngine.setKnownDrive(it) }
+            liveDriveDb?.let { giveKnownDrive(project.value, it, liveDriveLevel) }
             liveDrivePlayedKey = liveDriveKey
         }
         toggleTransport(countInBars, project.value.songStepOf(index))
@@ -8152,8 +8181,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     NativeEngine.captureAt(-1)
                 }
                 withContext(Dispatchers.Default) {
-                    job.renderToArray(frames, 0)
-                    job.report()
+                    // Its report only: no multi-MB array of samples thrown away (S6 review).
+                    if (job.renderForReport(frames, 0)) job.report() else null
                 }
             } catch (e: kotlinx.coroutines.CancellationException) {
                 throw e
@@ -8164,15 +8193,36 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 withContext(kotlinx.coroutines.NonCancellable + Dispatchers.Main) { job.close() }
             }
             // Only a Drop-aimed render knows the loud part; an export that came in meanwhile wins.
-            val drive = report?.takeIf { it.loudLufs != null }?.driveDb?.toFloat() ?: return@launch
+            val found = report?.takeIf { it.loudLufs != null } ?: return@launch
+            val drive = found.driveDb.toFloat()
             if (liveDriveFromExport) return@launch
             liveDriveDb = drive
+            liveDriveLevel = knownLevelOf(p, found)
             liveDriveKey = key
             // Taken at once while the song plays; before ▶ the engine keeps it until the target comes on.
-            NativeEngine.setKnownDrive(drive)
+            giveKnownDrive(p, drive, liveDriveLevel)
             if (_transport.value.playing) liveDrivePlayedKey = key
             AppLog.add("Gain du direct : ${"%+.1f".format(drive)} dB (estimé sur « ${com.pocketstudio.model.video.VideoPlanner.partLabel(p, part.scene)} »)")
         }
+    }
+
+    /**
+     * S7 son (mix version 4): the level, before the drive, of the loud part [report]'s drive was found
+     * on (its loud part's loudness, minus the drive, plus what the chain took off); NaN before.
+     */
+    private fun knownLevelOf(p: Project, report: com.pocketstudio.engine.ExportReport): Float {
+        val loud = report.loudLufs ?: return Float.NaN
+        return if (p.mixVersion >= Project.MIX_V4) (loud - report.driveDb + report.lossDb).toFloat() else Float.NaN
+    }
+
+    /**
+     * The known drive to the live engine; with mix version 4 its level first (MasterChain::setKnownLevel:
+     * an Intro quieter than that, limited harder, leaves the drive where the export has it). The
+     * projects made before send the drive alone, as in S6.
+     */
+    private fun giveKnownDrive(p: Project, drive: Float, level: Float) {
+        if (p.mixVersion >= Project.MIX_V4) NativeEngine.setKnownLevel(level)
+        NativeEngine.setKnownDrive(drive)
     }
 
     /** The live bench and tests: the estimate started (if any) is done. */
@@ -8357,10 +8407,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                         // S5: the live target settles on the drive the whole song needed.
                         report?.takeIf { p.mixVersion >= Project.MIX_V2 && it.loudLufs != null && settings.what == ExportWhat.Song }
                             ?.let {
-                                NativeEngine.setKnownDrive(it.driveDb.toFloat())
+                                giveKnownDrive(p, it.driveDb.toFloat(), knownLevelOf(p, it))
                                 // S6 (G5): the export's own drive, better than any estimate.
                                 liveDriveFromExport = true
                                 liveDriveDb = it.driveDb.toFloat()
+                                liveDriveLevel = knownLevelOf(p, it)
                             }
                     }
                     if (exportCancelled) {

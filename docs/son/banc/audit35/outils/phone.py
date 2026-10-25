@@ -7,6 +7,7 @@ For the first Drop (or Refrain), its first 8 bars (or the whole section if short
   - pres: share of 1-4 kHz in what is left after the HP300 (dB);
   - lowphone: share of 300-800 Hz after HP300 (dB): what « taps » of the kick and bass on a phone;
   - sm: side/mid energy ratio over the section (dB);
+  - corr_low (S7): L/R correlation of the section under 120 Hz (1.0 = the low end in mono);
   - corr_d12: waveform correlation (mid signal) between the first 8 bars of Drop 1 and of Drop 2 (1.0 = identical);
   - band_d12: largest band-energy difference (dB, 8 bands) between those two windows.
 usage: phone.py <style.pscmd> <style.wav>  -> one JSON line on stdout
@@ -109,6 +110,8 @@ def main():
     out.update(main=main_name, drops=len(starts), drop1_s=round(s0 / SR, 1), lufs=round(full, 2), tel300=round(full - tel, 1),
                pres=round(band_db(hp, 1000, 4000), 1), lowphone=round(band_db(hp, 300, 800), 1),
                sm=round(float(10 * np.log10(np.sum(side ** 2) / (np.sum(mid ** 2) + 1e-20) + 1e-20)), 1))
+    lp = signal.sosfilt(signal.butter(4, 120, "lowpass", fs=SR, output="sos"), seg, axis=0)
+    out["corr_low"] = round(float(np.dot(lp[:, 0], lp[:, 1]) / (np.linalg.norm(lp[:, 0]) * np.linalg.norm(lp[:, 1]) + 1e-20)), 3)
     if len(starts) >= 2:
         n = min(end - s0, len(x) - starts[1])
         a = x[s0:s0 + n].mean(axis=1).astype(np.float64)

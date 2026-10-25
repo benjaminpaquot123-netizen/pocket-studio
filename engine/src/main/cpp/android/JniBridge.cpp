@@ -713,6 +713,12 @@ JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_exportRe
     return result;
 }
 
+// S7: a render for its report only (the live gain's estimate): no samples handed to Kotlin.
+JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_exportRenderReport(JNIEnv*, jobject, jlong handle,
+                                                                                  jlong frames, jlong tail) {
+    return static_cast<jint>(renderer(handle)->renderForReport(frames, tail));
+}
+
 // The same in mono (the mean of both channels): a long frozen track, half the memory.
 JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_exportRenderFloatMono(JNIEnv* env, jobject, jlong handle,
                                                                                             jlong frames, jlong tail) {

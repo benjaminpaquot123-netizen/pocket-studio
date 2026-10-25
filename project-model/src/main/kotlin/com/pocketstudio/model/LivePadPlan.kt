@@ -95,7 +95,22 @@ object LivePadPlan {
  */
 fun Project.stemView(key: String?, scene: Int): Project {
     val muted = if (key == null) emptySet() else partKeys.filter { it != key }.toSet()
-    var v = partView(SongPart(scene = scene, muted = muted))
+    return heldView(SongPart(scene = scene, muted = muted), scene, key)
+}
+
+/**
+ * Song part [index] as heard on its own, rendered offline (the Guide's « écouter avec / sans »):
+ * as [stemView] of every track, with the part's own muted tracks and the scenes its tracks play
+ * there. Without a song (or [index] out of it): the scene shown.
+ */
+fun Project.partHeard(index: Int): Project {
+    val part = song.getOrNull(index) ?: return stemView(null, scene)
+    return heldView(part, part.scene, null)
+}
+
+/** [part] as played, the song's curves held where the song first plays [scene], no live pad, no loudness target; [key]: the only audio track kept (null: all). */
+private fun Project.heldView(part: SongPart, scene: Int, key: String?): Project {
+    var v = partView(part)
     val held = v.copy(automation = v.automation.map { if (it.songOnly) it.copy(songOnly = false) else it }).songCurvesAt(scene)
     held.forEach { (lane, value) -> v.automation.getOrNull(lane)?.let { v = v.withSetting(it.target, value) } }
     v = v.copy(automation = v.automation.filter { it.mode != AutomationLane.SONG })

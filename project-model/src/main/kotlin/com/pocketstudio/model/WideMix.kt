@@ -197,6 +197,8 @@ object WideMix {
         }
         // G0: each track's low cut, sends and place (after the chorus and the echo took their slots).
         p = RoleMix.apply(p, style, partOfTrack)
+        // S7 son (M10): the pads, chords, leads and 303 spread wide (the widener's « Étalement »).
+        p = withSpread(p, style, leads, pads)
         // The curves: the lead's reverb at each phrase's end, the wobble's speed every 8 bars, the vowel.
         val sections = StarterWizard.songSections(p)
         if (sections.isEmpty()) return p
@@ -299,6 +301,66 @@ object WideMix {
         }
         if (p.allScenes.any { sc -> sc.acid.steps.take(sc.acid.length.coerceAtLeast(0)).any { it.gate } }) add(ACID_CHANNEL, ACID_PING_PONG)
         if (style.family !in NO_CHORDS_ECHO_FAMILIES) for (id in pads) add(InstrumentTrack.mixerChannel(id), CHORDS_PING_PONG)
+        return p
+    }
+
+    // --- S7 son (M10): the Drop wide ----------------------------------------------------------
+
+    /**
+     * The widener's « Étalement » (its param 2, a stereo chorus made from the sound above 250 Hz,
+     * mono-compatible) by role: the pads and chords the widest, the leads and the 303 less (they
+     * stay in the middle, their copies go out). Bass music's pads are wide already (their Breaks
+     * are mostly pads). The basses and the sub never get it.
+     */
+    const val PAD_SPREAD = 1f
+    const val LEAD_SPREAD = 0.75f
+    const val ACID_SPREAD = 0.7f
+    const val BASS_MUSIC_PAD_SPREAD = 0.7f
+
+    /** The clap's and the snare's (their pads' strips): their body in the centre, their crack a little out. */
+    const val CLAP_SPREAD = 0.4f
+
+    /**
+     * The styles wide already (S6 bench: side/centre of the Drop −9.8 to −13.6 dB, the target −15 to
+     * −9): their spread scaled down, or none (trance and hard techno, in range without it; at full
+     * spread they went to −6.6 and −7.4 dB, and lost 1.2 to 1.5 LU in mono). Detroit (−18.6) went to
+     * −7.1 at full spread (its pads and 303 are its Drop).
+     */
+    private val SPREAD_SCALE = mapOf("trance" to 0f, "hard_techno" to 0f, "reggaeton" to 0.55f, "jump_up" to 0.5f, "minimal" to 0.7f, "detroit" to 0.5f)
+
+    fun spreadScale(style: Style): Float = SPREAD_SCALE[style.id] ?: 1f
+
+    /** [WIDENER][EffectType.WIDENER] as it is (width 0.5: x1), only its spread. */
+    fun spreadWidener(spread: Float) = Insert(EffectType.WIDENER.ordinal, listOf(0.5f, 0f, spread, 0f))
+
+    /**
+     * Each lead, pad and the 303 (when it plays) with [spreadWidener]: a widener on the strip already
+     * (the chords', RoleMix's) gets the spread, else one in a free slot. Mix version 4: the projects
+     * saved before keep theirs ([Project.MIX_V4]).
+     */
+    internal fun withSpread(project: Project, style: Style, leads: Collection<Int>, pads: Collection<Int>): Project {
+        var p = project
+        fun spread(ch: Int, amount: Float) {
+            if (ch !in p.mixer.channels.indices || amount <= 0f) return
+            val c = p.mixer.channels[ch]
+            val inserts = c.inserts.toMutableList()
+            val at = inserts.indexOfFirst { it.effect == EffectType.WIDENER && !it.bypass }
+            if (at >= 0) {
+                inserts[at] = inserts[at].copy(params = inserts[at].params.toMutableList().also { while (it.size < 3) it += 0f; it[2] = amount })
+            } else {
+                val slot = inserts.indexOfFirst { it.type == 0 }.takeIf { it >= 0 } ?: return
+                inserts[slot] = spreadWidener(amount)
+            }
+            p = p.copy(mixer = p.mixer.copy(channels = p.mixer.channels.toMutableList().also { it[ch] = c.copy(inserts = inserts).sanitized() }))
+        }
+        val scale = spreadScale(style)
+        val padSpread = scale * if (style.family == "Bass music") BASS_MUSIC_PAD_SPREAD else PAD_SPREAD
+        for (id in pads) if (p.instrumentTracks.any { it.id == id }) spread(InstrumentTrack.mixerChannel(id), padSpread)
+        for (id in leads) if (p.instrumentTracks.any { it.id == id }) spread(InstrumentTrack.mixerChannel(id), scale * LEAD_SPREAD)
+        if (p.allScenes.any { sc -> sc.acid.steps.take(sc.acid.length.coerceAtLeast(0)).any { it.gate } }) spread(ACID_CHANNEL, scale * ACID_SPREAD)
+        for (role in listOf(StarterWizard.Role.Clap, StarterWizard.Role.Snare)) {
+            if (p.allScenes.any { sc -> sc.drums.lanes.getOrNull(role.lane)?.hits?.isNotEmpty() == true }) spread(Mixer.padChannel(role.lane), scale * CLAP_SPREAD)
+        }
         return p
     }
 

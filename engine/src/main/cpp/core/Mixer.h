@@ -150,6 +150,13 @@ public:
     // An offline render's first pass: the output is the music before the master chain (its gain
     // and the click included), not delayed; the renderer masters it in a second pass.
     void setMasterChainBypass(bool on) { chainBypass_ = on; }
+    // S7 son (mix version 4): the master's fader (the song curve's section levels and fades) before the
+    // master chain, as an export has it (its first pass renders with the chain bypassed, the fader on,
+    // and its own chain masters that): live = export, an Intro or a Groove brought lower is limited as
+    // the export limits it. Off (versions 1 to 3): after the chain, as always. An export with a loudness
+    // target renders the same either way (fader on, chain bypassed, then mastered); a single-pass one follows it.
+    void setFaderBeforeChain(bool on) { faderBeforeChain_ = on; }
+    bool faderBeforeChain() const { return faderBeforeChain_; }
     int outputLatency() const { return chainBypass_ ? 0 : chain_->latency(); }
     MasterChain& masterChain() { return *chain_; }
     const MasterChain& masterChain() const { return *chain_; }
@@ -336,6 +343,7 @@ private:
     std::unique_ptr<MasterChain> chain_ = std::make_unique<MasterChain>();
     std::array<float, kChunk> outL_{}, outR_{}, click_{};
     bool chainBypass_ = false;
+    bool faderBeforeChain_ = false;
 
     std::array<Strip, kChannels> strips_{};
     // Large (each chorus holds its delay lines, about 20 kB): on the heap, allocated once with the

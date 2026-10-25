@@ -163,7 +163,10 @@ void Engine::applyCommand(const Command& command) {
             if (std::isfinite(command.value)) {
                 mixer_.masterChain().setMode(command.value >= 1.5f ? MasterChain::Mode::Drop : MasterChain::Mode::Song);
                 // Version 3 (« des basses qui tapent »): the Drop mode with the master's low cut at 25 Hz.
-                mixer_.masterChain().setLowCut(command.value >= 2.5f);
+                // Version 4 (S7 son: the assistant's songs since, wider) is the Drop mode without it.
+                mixer_.masterChain().setLowCut(command.value >= 2.5f && command.value < 3.5f);
+                // Version 4: the master's fader before the chain live, as an export has it (Mixer::setFaderBeforeChain).
+                mixer_.setFaderBeforeChain(command.value >= 3.5f);
             }
             break;
         case CommandType::SetDrumLaneSteps:
@@ -460,6 +463,7 @@ void Engine::applyCommand(const Command& command) {
             else if (command.a == 7) mixer_.setMonoBass(command.value);        // Hz, 0: off (S4)
             else if (command.a == 8) mixer_.masterChain().setKnownDrive(command.value);  // dB, an export's (S5)
             else if (command.a == 9) mixer_.masterChain().setDriveCeilingDb(command.value);  // dBTP, offline (S6); NaN: none
+            else if (command.a == 10) mixer_.masterChain().setKnownLevel(command.value);  // LUFS, the known drive's loud part (S7)
             break;
         case CommandType::SetSend:
             mixer_.setSend(command.a, command.b, command.value);

@@ -35,6 +35,9 @@ interface CommandSink {
 
     /** [OfflineExport.renderToArray]: interleaved stereo at 48 kHz (empty: cannot render). */
     fun exportRenderFloat(target: Long, frames: Long, tailFrames: Long): FloatArray
+
+    /** [OfflineExport.renderForReport]: rendered for its [exportReport] only (true: done). */
+    fun exportRenderReportOnly(target: Long, frames: Long, tailFrames: Long): Boolean = exportRenderFloat(target, frames, tailFrames).isNotEmpty()
     fun exportDestroy(target: Long)
 
     /** [OfflineExport.report] of [target]'s last render, as the JNI lays it out (null: none). */

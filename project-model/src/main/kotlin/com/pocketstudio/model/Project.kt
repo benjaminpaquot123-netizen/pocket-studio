@@ -102,7 +102,7 @@ data class Project(
      */
     @EncodeDefault(EncodeDefault.Mode.NEVER) val soundVersion: Int = SOUND_V1,
     /**
-     * The mix ([MIX_V1] or [MIX_V2], the engine's SetMixVersion): since phase 34 (S5) the
+     * The mix ([MIX_V1] to [MIX_V4], the engine's SetMixVersion): since phase 34 (S5) the
      * assistant's songs aim their loudness target at their loudest part (the Drop), the master
      * chain taking 3 LU at most there, with a real sidechain and a « Musique » bus; the projects
      * saved before keep theirs (the target on the whole song). Left out of the file at v1.
@@ -187,7 +187,7 @@ data class Project(
         kitVersion = kitVersion.coerceIn(KIT_V1, KIT_V3),
         padVoices = PadVoice.sanitize(padVoices),
         soundVersion = soundVersion.coerceIn(SOUND_V1, SOUND_V3),
-        mixVersion = mixVersion.coerceIn(MIX_V1, MIX_V3),
+        mixVersion = mixVersion.coerceIn(MIX_V1, MIX_V4),
         style = style?.take(64)?.ifBlank { null },
         songVersions = songVersions.take(SongVersion.MAX).map { it.sanitized(this) },
         liveQuantumFine = liveQuantumFine.takeIf { it in LiveSlots.FINE_QUANTA } ?: 0,
@@ -218,6 +218,12 @@ data class Project(
          * on the bench it made the limiter take more off the Drop (docs/son/banc/apres-basses.md).
          */
         const val MIX_V3 = 3
+        /**
+         * S7 son (docs/son/banc/S7.md): [MIX_V2] (no master low cut), the assistant's songs since: their
+         * pads, chords and leads spread wide (the widener's « Étalement »), bass and sub mono. What
+         * sounds different is in the songs' own inserts; the number tells a song made since.
+         */
+        const val MIX_V4 = 4
         const val MIN_TEMPO = 40.0
         const val MAX_TEMPO = 300.0
         const val MAX_SWING = 0.75

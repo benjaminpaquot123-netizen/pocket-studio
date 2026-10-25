@@ -59,6 +59,10 @@ public:
     // channel, the mean of left and right (a long frozen track: half the memory, and the stereo is
     // never held in full when the render has a single pass, i.e. without a loudness target).
     std::vector<float> renderToBuffer(int64_t frames, int64_t tailFrames, bool mono = false);
+    // S7: the same render for its report only (the live gain's estimate, G5): nothing is handed back,
+    // the mastered frames go nowhere; only the music before the chain is held (a two-pass render
+    // reads it again), and freed on return.
+    Result renderForReport(int64_t frames, int64_t tailFrames);
 
     // What the last render delivered, measured on what was written (fades and resampling
     // included): integrated loudness (LUFS; -1000: silence), true peak (linear), length.

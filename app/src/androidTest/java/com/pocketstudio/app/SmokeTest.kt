@@ -1,6 +1,7 @@
 package com.pocketstudio.app
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
@@ -207,7 +208,13 @@ class SmokeTest {
         if (runCatching { compose.waitUntil(3_000) { editorShown() } }.isFailure) {
             android.util.Log.i("RealUse", "tap on track_0 did not land: through the ViewModel")
             InstrumentationRegistry.getInstrumentation().runOnMainSync { rhythm.selectTrack(0) }
-            compose.waitUntil(5_000) { editorShown() }
+            if (runCatching { compose.waitUntil(5_000) { editorShown() } }.isFailure) {
+                // What the screen holds instead (every root: a window left open shows here too).
+                val shown = compose.onAllNodes(androidx.compose.ui.test.SemanticsMatcher("any") { true }, useUnmergedTree = true)
+                    .fetchSemanticsNodes().mapNotNull { it.config.getOrNull(androidx.compose.ui.semantics.SemanticsProperties.TestTag) }
+                android.util.Log.i("RealUse", "no synth editor: selected=${rhythm.selectedTrack.value}, tracks=${rhythm.project.value.tracks.map { it.id to it.name }}, shown=$shown")
+                throw AssertionError("no synth editor after choosing track 0: selected=${rhythm.selectedTrack.value}, shown=${shown.joinToString(" ").take(3000)}")
+            }
         }
         compose.onNodeWithTag("mode_notes").performClick()
         compose.onNodeWithTag("piano_roll").assertExists()

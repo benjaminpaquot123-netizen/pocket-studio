@@ -1,5 +1,6 @@
 package com.pocketstudio.model.i18n
 
+import com.pocketstudio.model.BassPatterns
 import com.pocketstudio.model.ArpMode
 import com.pocketstudio.model.Buses
 import com.pocketstudio.model.DefaultNames
@@ -82,6 +83,8 @@ class ModelTextsTest {
         add(SoundCategories.FAVORITES)
         addAll(SoundCategories.SYNTH + SoundCategories.PLAITS + SoundCategories.ACID)
         SoundLibrary.SYNTH.forEach { add(it.name, it.category) }
+        // « Motifs de basse »: the rolling basslines' names.
+        BassPatterns.ALL.forEach { add(it.name, it.description) }
         SoundLibrary.PLAITS.forEach { add(it.name, it.category) }
         SoundLibrary.ACID.forEach { add(it.name, it.category) }
         addAll(SynthPatch.PRESETS.map { it.first })

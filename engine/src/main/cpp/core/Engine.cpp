@@ -139,7 +139,10 @@ void Engine::applyCommand(const Command& command) {
             break;
         case CommandType::SetSoundVersion:
             if (std::isfinite(command.value)) {
-                for (int k = 0; k < kSounds; ++k) sound(k).setStereoSounds(command.value >= 1.5f);
+                for (int k = 0; k < kSounds; ++k) {
+                    sound(k).setStereoSounds(command.value >= 1.5f);
+                    sound(k).plaits.setVelocityLevel(command.value >= 2.5f);
+                }
             }
             break;
         case CommandType::SetSidechain:
@@ -159,6 +162,8 @@ void Engine::applyCommand(const Command& command) {
         case CommandType::SetMixVersion:
             if (std::isfinite(command.value)) {
                 mixer_.masterChain().setMode(command.value >= 1.5f ? MasterChain::Mode::Drop : MasterChain::Mode::Song);
+                // Version 3 (« des basses qui tapent »): the Drop mode with the master's low cut at 25 Hz.
+                mixer_.masterChain().setLowCut(command.value >= 2.5f);
             }
             break;
         case CommandType::SetDrumLaneSteps:
@@ -454,6 +459,7 @@ void Engine::applyCommand(const Command& command) {
             else if (command.a == 6) mixer_.resetLoudnessEstimate();           // another project
             else if (command.a == 7) mixer_.setMonoBass(command.value);        // Hz, 0: off (S4)
             else if (command.a == 8) mixer_.masterChain().setKnownDrive(command.value);  // dB, an export's (S5)
+            else if (command.a == 9) mixer_.masterChain().setDriveCeilingDb(command.value);  // dBTP, offline (S6); NaN: none
             break;
         case CommandType::SetSend:
             mixer_.setSend(command.a, command.b, command.value);

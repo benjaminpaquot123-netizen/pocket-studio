@@ -35,6 +35,12 @@ public:
     int activeVoices() const;
     // The transport starts: Plaits' noise from its first value (an export starts there too).
     void restartNoise();
+    // Leads chantier (sound version 3): the six-operator FM models (2, 3, 4: the DX7 banks) play
+    // louder the harder a note is struck, 0.3 + 0.7 x velocity as the subtractive synth does. Those
+    // models carry their own envelopes, so the velocity otherwise reaches them only as accent
+    // (0.2 dB between 0.4 and 1.0). Off (as before, sample for sample) by default.
+    void setVelocityLevel(bool on);
+    static bool velocityShapesLevel(int model) { return model >= 2 && model <= 4; }
 
 private:
     struct Impl;

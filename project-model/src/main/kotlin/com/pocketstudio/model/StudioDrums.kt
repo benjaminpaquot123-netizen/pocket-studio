@@ -14,8 +14,11 @@ import kotlin.math.pow
  * gabber and acidcore, the rumble under the techno kick.
  */
 object StudioDrums {
-    /** Styles whose bass is an 808 (docs/hits/hiphop.md: « la 808 n'est pas une 808 »). */
-    val BASS_808 = setOf("trap", "drill", "phonk", "jersey_club")
+    /**
+     * Styles whose bass is an 808 (docs/hits/hiphop.md: « la 808 n'est pas une 808 »); reggaeton's
+     * dembow since « des basses qui tapent » (docs/hits/basses-qui-tapent.md § 9).
+     */
+    val BASS_808 = setOf("trap", "drill", "phonk", "jersey_club", "reggaeton")
 
     /** Styles whose kick is the hard (gabber) one: soft-clipped, a deeper sweep. */
     val HARD_KICK = setOf("hard_techno", "gabber", "acidcore", "industrial_techno")
@@ -55,19 +58,29 @@ object StudioDrums {
         else -> 150
     }
 
-    /** [style]'s 808 in [harmony]'s key: long and round in trap, longer in drill, dirtier in phonk, short in jersey club. */
+    /**
+     * [style]'s 808 in [harmony]'s key: long and round in trap, longer in drill, dirtier in phonk,
+     * short in jersey club, a dembow's in reggaeton. Since « des basses qui tapent »
+     * (docs/hits/basses-qui-tapent.md § 5.3, P2) the 808's version 1, the one heard on a phone: it
+     * drops from +18 to +24 semitones over 20 to 35 ms (the « boum »), its drive squares it off (0.7;
+     * phonk 0.9 with its second clip, reggaeton 0.5), « tone » is its 4th to 8th harmonics. A project
+     * saved before keeps its 808 (no version: version 0).
+     */
     fun voice808(style: Style, harmony: Harmony): PadVoice {
-        val (decay, drive, click, tone) = when (style.id) {
-            "drill" -> listOf(1.5f, 0.3f, 0.3f, 0.45f)
-            "phonk" -> listOf(1.1f, 0.5f, 0.4f, 0.5f)
-            "jersey_club" -> listOf(0.6f, 0.25f, 0.5f, 0.4f)
-            else -> listOf(1.3f, 0.3f, 0.35f, 0.4f)
+        data class V(val decay: Float, val drive: Float, val click: Float, val tone: Float, val drop: Float, val dropMs: Float)
+        val v = when (style.id) {
+            "drill" -> V(1.5f, 0.7f, 0.4f, 0.5f, 24f, 35f)
+            "phonk" -> V(1.1f, 0.9f, 0.5f, 0.55f, 24f, 25f)
+            "jersey_club" -> V(0.6f, 0.6f, 0.5f, 0.5f, 18f, 20f)
+            "reggaeton" -> V(0.9f, 0.5f, 0.45f, 0.5f, 18f, 30f)
+            else -> V(1.3f, 0.7f, 0.5f, 0.5f, 24f, 25f)
         }
         return PadVoice(
             PadVoice.BASS_808,
             mapOf(
-                PadVoice.TUNE to tune808(harmony.root).toFloat(), PadVoice.DECAY to decay, PadVoice.DRIVE to drive,
-                PadVoice.CLICK to click, PadVoice.TONE to tone, PadVoice.GLIDE to glideMs(style) / 1000f,
+                PadVoice.TUNE to tune808(harmony.root).toFloat(), PadVoice.DECAY to v.decay, PadVoice.DRIVE to v.drive,
+                PadVoice.CLICK to v.click, PadVoice.TONE to v.tone, PadVoice.GLIDE to glideMs(style) / 1000f,
+                PadVoice.VERSION to 1f, PadVoice.PITCH_DROP to v.drop, PadVoice.DROP_TIME to v.dropMs / 1000f,
             ),
         ).sanitized()
     }
@@ -108,9 +121,11 @@ object StudioDrums {
      * The 808's hits from the bass line [clip] over [steps] drum steps: one hit where each note
      * starts, on the note's pitch from the voice's [tune] (folded into ±2 octaves), sliding for
      * [glideMs] where the note starts under the one before (the line's '/'); [level] scales the
-     * strengths (the Drop's +1.5 dB is the bass's lift).
+     * strengths (the Drop's +1.5 dB is the bass's lift). A note off the sixteenths (« Motifs de
+     * basse »'s triplets) keeps its place: its step's micro-timing ([Hit.offset], at [bpm]) moves the
+     * hit there, up to [Hit.MAX_OFFSET_MS].
      */
-    fun hits808(clip: NoteClip, steps: Int, tune: Int, glideMs: Int, level: Float = 1f): Map<Int, Hit> {
+    fun hits808(clip: NoteClip, steps: Int, tune: Int, glideMs: Int, level: Float = 1f, bpm: Float = 0f): Map<Int, Hit> {
         val t = NoteClip.TICKS_PER_STEP
         val out = LinkedHashMap<Int, Hit>()
         var prev: Note? = null
@@ -121,7 +136,13 @@ object StudioDrums {
             while (pitch > Hit.MAX_PITCH) pitch -= 12
             while (pitch < -Hit.MAX_PITCH) pitch += 12
             val slides = glideMs > 0 && prev != null && n.start < prev.end && abs(n.pitch - prev.pitch) > 0
-            out[step] = Hit((n.velocity / NOTE_VELOCITY * level).coerceIn(DrumPattern.MIN_VELOCITY, 1f), pitch = pitch, glide = if (slides) glideMs else 0).sanitized()
+            // Ticks off the step, in ms (a step is a sixteenth: a quarter of a beat).
+            val off = n.start - step * t
+            val offsetMs = if (bpm > 0f && off != 0) off.toFloat() / (4 * t) * 60000f / bpm else 0f
+            out[step] = Hit(
+                (n.velocity / NOTE_VELOCITY * level).coerceIn(DrumPattern.MIN_VELOCITY, 1f), pitch = pitch,
+                glide = if (slides) glideMs else 0, offset = offsetMs.coerceIn(-Hit.MAX_OFFSET_MS, Hit.MAX_OFFSET_MS),
+            ).sanitized()
             prev = n
         }
         return out

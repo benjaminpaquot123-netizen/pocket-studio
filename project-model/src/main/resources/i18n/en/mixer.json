@@ -353,5 +353,6 @@
   "Joue les notes de la piste avec un autre son : %s.": "Plays the track's notes with another sound: %s.",
   "Transposée de %s demi-tons.": "Transposed by %s semitones.",
   "Coupée pour l'instant.": "Muted for now.",
-  "Ses effets : %s.": "Its effects: %s."
+  "Ses effets : %s.": "Its effects: %s.",
+  "Basse+": "Bass+"
 }

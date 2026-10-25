@@ -164,13 +164,15 @@ enum class CommandType : uint8_t {
     // Numbered apart (phase 33), so that commands appended above in the meantime never take its number.
     SetKitVersion = 100,  // value: the built-in kit's levels, 1 (projects saved before), 2 (kit v2) or 3 (kit v3: DrumKit::setVersion)
     SetSoundVersion = 101,  // value: 1 (projects saved before S4: every instrument track mono, as always), 2 (S4: General MIDI
-                            // instruments and stereo samples play in stereo on the instrument tracks)
+                            // instruments and stereo samples play in stereo on the instrument tracks), 3 (leads chantier:
+                            // as 2, and Plaits' six-operator FM voices louder the harder they are struck)
     // Phase 34 (S5): the real sidechain and the « Musique » bus (Mixer.h).
     SetSidechain = 102,     // a = 0: the key, value = a mixer channel (a pad's own strip: Mixer::kFirstPad + pad), < 0 none;
                             // a = 1, 2, 3: the Musique bus's duck: depth, low depth (under 150 Hz), release (0..1: 50..600 ms);
                             // a = 4: channel b in the Musique bus (value 1) or not; a = 5: send return b (0 reverb, 1 echo) in it
     SetMixVersion = 103,    // value: 1 (projects saved before S5: the loudness target aims at the whole song, the chain may take
                             // 6 LU), 2 (S5: it aims at the loudest part, the Drop, and takes 3 LU at most: MasterChain::Mode)
+                            // 3 (« des basses qui tapent »: version 2 with the master's low cut at 25 Hz, MasterChain::setLowCut)
     // Phase 37, numbered apart (other branches append from 102): polyrhythm and chance on the drums.
     SetDrumLaneSteps = 120,   // a: pad, value: steps its lane loops over on its own (1..64; 0 = the pattern's length,
                               // as always): a polyrhythm. Follows SetStaging (a scene's own); counted from the drums' start

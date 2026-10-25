@@ -4,8 +4,13 @@
 // budget, callbacks of 96 frames, the queue (4096 commands) drained by those callbacks only. Not
 // the OfflineRenderer: what is heard on the phone, not what an export writes.
 //
-//   ps_live [--seconds S (90)] [--burst N (96)] [--wav out.wav] [--csv out.csv] [--quiet]
+//   ps_live [--seconds S (90)] [--burst N (96)] [--wav out.wav] [--csv out.csv] [--solo ch[,ch...]] [--quiet]
 //           [--cpu-scale X (3)] [--buffer-bursts B (2)] [--cpu-out times.f32] [--alloc-probe] <in.pslive>
+//
+// --solo: those mixer channels alone (posted with the app's first pause, after the project is loaded:
+// the song's basses, META bass, for the « basse au téléphone » column). The recording's own solo
+// commands are then left out: the app sends every strip's solo (off) when it syncs its mixer after
+// loading, which undid the bench's solo (the column read the whole mix until 2026-10-24).
 //
 // Prints one line per second (--quiet: none): song step, scene swaps, transport, the whole mix's
 // song curve (the master fader's target, « lane ») and the fade as heard (its smoothed gain), the
@@ -162,6 +167,9 @@ struct Second {
     double shortDb = -200.0;  // the last 3 s (short-term level)
     float peak = 0.0f;
     float jump = 0.0f;      // largest frame-to-frame step
+    // K-weighted level of the second (BS.1770's filter, both channels), plain and through a phone's
+    // 4th-order high-pass at 200 and 300 Hz (« basse au téléphone », docs/hits/basses-qui-tapent.md § 8).
+    double kDb = -200.0, k200Db = -200.0, k300Db = -200.0;
     float clickStep = 0.0f;  // the step (over 0.3) most alone among its neighbours, and how much (x their RMS)
     double isolation = 0.0;
     bool nonFinite = false;
@@ -173,9 +181,50 @@ struct Second {
 // styles: under 4x).
 constexpr double kClickAlone = 20.0;
 constexpr int kClickSide = 16;
+// A biquad in double (the phone model and the K-weighting of the per-second levels).
+struct Bq {
+    double b0 = 1, b1 = 0, b2 = 0, a1 = 0, a2 = 0, x1 = 0, x2 = 0, y1 = 0, y2 = 0;
+    double operator()(double x) {
+        const double y = b0 * x + b1 * x1 + b2 * x2 - a1 * y1 - a2 * y2;
+        x2 = x1;
+        x1 = x;
+        y2 = y1;
+        y1 = y;
+        return y;
+    }
+    static Bq highPass(double hz, double q) {
+        Bq f;
+        const double w = 2 * M_PI * hz / 48000.0, alpha = std::sin(w) / (2 * q), c = std::cos(w), a0 = 1 + alpha;
+        f.b0 = (1 + c) / 2 / a0;
+        f.b1 = -(1 + c) / a0;
+        f.b2 = f.b0;
+        f.a1 = -2 * c / a0;
+        f.a2 = (1 - alpha) / a0;
+        return f;
+    }
+};
+// One channel's K-weighting (BS.1770-4 at 48 kHz) and the phone models in front of copies of it.
+struct KChain {
+    Bq shelf{1.53512485958697, -2.69169618940638, 1.19839281085285, -1.69065929318241, 0.73248077421585};
+    Bq rlb{1.0, -2.0, 1.0, -1.99004745483398, 0.99007225036621};
+    double sq = 0;
+    double run(double x) {
+        const double y = rlb(shelf(x));
+        sq += y * y;
+        return y;
+    }
+};
+struct Phone {
+    Bq a, b;
+    KChain k;
+    explicit Phone(double hz) : a(Bq::highPass(hz, 0.54119610)), b(Bq::highPass(hz, 1.30656296)) {}
+    void run(double x) { k.run(b(a(x))); }
+};
 
 struct Player {
     ps::Engine engine{48000};
+    KChain kL, kR;
+    Phone p200L{200}, p200R{200}, p300L{300}, p300R{300};
     int burst = 96;
     int64_t frames = 0, limit = 0;
     std::vector<float> block;
@@ -218,6 +267,12 @@ struct Player {
         for (int i = 0; i < burst; ++i) {
             const float l = block[static_cast<size_t>(i) * 2], r = block[static_cast<size_t>(i) * 2 + 1];
             sumSq += 0.5 * (double(l) * l + double(r) * r);
+            kL.run(l);
+            kR.run(r);
+            p200L.run(l);
+            p200R.run(r);
+            p300L.run(l);
+            p300R.run(r);
             const float d = std::max(std::fabs(l - lastL), std::fabs(r - lastR));
             steps.push_back(d);
             jump = std::max(jump, d);
@@ -287,6 +342,14 @@ struct Player {
         s.shortDb = db(three / static_cast<double>(n));
         s.peak = peak;
         s.jump = jump;
+        auto kdb = [&](KChain& a, KChain& b) {
+            const double v = (a.sq + b.sq) / static_cast<double>(inSecond);
+            a.sq = b.sq = 0;
+            return v > 1e-20 ? -0.691 + 10.0 * std::log10(v) : -200.0;
+        };
+        s.kDb = kdb(kL, kR);
+        s.k200Db = kdb(p200L.k, p200R.k);
+        s.k300Db = kdb(p300L.k, p300R.k);
         s.nonFinite = engine.hasNonFinite();
         seconds.push_back(s);
         if (!quiet) {
@@ -296,9 +359,9 @@ struct Player {
                         double(s.loud), double(s.limiter), s.rmsDb, s.shortDb, double(s.peak), double(s.jump), s.nonFinite ? " NaN" : "");
         }
         if (csv) {
-            std::fprintf(csv, "%d,%d,%u,%d,%.5f,%.5f,%.3f,%.3f,%.3f,%.4f,%.3f,%.3f,%.4f,%.4f,%d\n", s.t, s.songStep, s.swaps, s.running ? 1 : 0,
+            std::fprintf(csv, "%d,%d,%u,%d,%.5f,%.5f,%.3f,%.3f,%.3f,%.4f,%.3f,%.3f,%.4f,%.4f,%d,%.3f,%.3f,%.3f\n", s.t, s.songStep, s.swaps, s.running ? 1 : 0,
                          double(s.lane), double(s.fade), double(s.drive), double(s.loss), double(s.loud), double(s.limiter), s.rmsDb, s.shortDb,
-                         double(s.peak), double(s.jump), s.nonFinite ? 1 : 0);
+                         double(s.peak), double(s.jump), s.nonFinite ? 1 : 0, s.kDb, s.k200Db, s.k300Db);
         }
         sumSq = 0.0;
         peak = jump = 0.0f;
@@ -502,6 +565,8 @@ int main(int argc, char** argv) {
     double cpuScale = 3.0;
     std::string cpuPath;
     bool allocProbe = false;
+    std::vector<int> solo;
+    bool soloing = false;  // --solo given: the recording's own solo commands are left out
     for (int i = 1; i < argc; ++i) {
         if (!std::strcmp(argv[i], "--seconds") && i + 1 < argc) seconds = std::atof(argv[++i]);
         else if (!std::strcmp(argv[i], "--burst") && i + 1 < argc) burst = std::max(16, std::atoi(argv[++i]));
@@ -512,10 +577,16 @@ int main(int argc, char** argv) {
         else if (!std::strcmp(argv[i], "--buffer-bursts") && i + 1 < argc) bufferBursts = std::max(1, std::atoi(argv[++i]));
         else if (!std::strcmp(argv[i], "--cpu-out") && i + 1 < argc) cpuPath = argv[++i];
         else if (!std::strcmp(argv[i], "--alloc-probe")) allocProbe = true;
+        else if (!std::strcmp(argv[i], "--solo") && i + 1 < argc) {
+            std::istringstream list(argv[++i]);
+            std::string ch;
+            while (std::getline(list, ch, ',')) if (!ch.empty()) solo.push_back(std::atoi(ch.c_str()));
+            soloing = !solo.empty();
+        }
         else files.emplace_back(argv[i]);
     }
     if (files.size() != 1) {
-        std::fprintf(stderr, "usage: ps_live [--seconds S] [--burst N] [--wav out.wav] [--csv out.csv] [--quiet] "
+        std::fprintf(stderr, "usage: ps_live [--seconds S] [--burst N] [--wav out.wav] [--csv out.csv] [--solo ch[,ch]] [--quiet] "
                              "[--cpu-scale X] [--buffer-bursts B] [--cpu-out times.f32] <in.pslive>\n");
         return 1;
     }
@@ -535,7 +606,7 @@ int main(int argc, char** argv) {
     player->engine.setCommandBudget(ps::Engine::kLiveCommandBudget);
     if (!csvPath.empty()) {
         player->csv = std::fopen(csvPath.c_str(), "w");
-        if (player->csv) std::fprintf(player->csv, "second,song_step,swaps,running,lane,fade,drive_db,loss_db,loud_lufs,limiter,rms_db,short_db,peak,jump,non_finite\n");
+        if (player->csv) std::fprintf(player->csv, "second,song_step,swaps,running,lane,fade,drive_db,loss_db,loud_lufs,limiter,rms_db,short_db,peak,jump,non_finite,k_db,k200_db,k300_db\n");
     }
 
     std::map<long, ps::Sample*> samples;
@@ -564,11 +635,15 @@ int main(int argc, char** argv) {
             std::string value;
             int32_t a = 0, b = 0;
             if (!(ls >> type >> value >> a >> b)) fail(line, "bad command");
+            if (soloing && type == static_cast<int>(ps::CommandType::SetChannelSolo)) continue;
             player->post({static_cast<ps::CommandType>(type), std::strtof(value.c_str(), nullptr), a, b});
         } else if (op == "WAIT") {
             std::string what;
             long long n = 0;
             if (!(ls >> what >> n)) fail(line, "bad WAIT");
+            // --solo: with the app's first pause (the project loaded, before ▶).
+            for (int ch : solo) player->post({ps::CommandType::SetChannelSolo, 1.0f, ch, 0});
+            solo.clear();
             if (what == "ms") {
                 player->playFor(n * 48);
             } else if (what == "swaps") {

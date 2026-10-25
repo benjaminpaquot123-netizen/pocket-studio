@@ -542,9 +542,9 @@ def stage3(s):
         out.append(fx_card(
             "fx.sub", "sub",
             T("Le sub : propre, au centre, un peu saturé", "The sub: clean, centred, a little saturated", "De sub: zuiver, in het midden, licht verzadigd"),
-            T("Le sub n'a aucun effet : une saturation légère entre 60 et 250 Hz le fait entendre sur un téléphone, sans le salir.",
-              "The sub has no effect: a light saturation between 60 and 250 Hz makes it heard on a phone without dirtying it.",
-              "De sub heeft geen effect: een lichte saturatie tussen 60 en 250 Hz maakt hem hoorbaar op een telefoon, zonder hem vuil te maken."),
+            T("Le sub n'a que « Basse audible » (ses harmoniques pour un téléphone) : une saturation légère entre 60 et 250 Hz le rend plus présent, sans le salir.",
+              "The sub only has « Audible bass » (its harmonics for a phone): a light saturation between 60 and 250 Hz brings it forward without dirtying it.",
+              "De sub heeft alleen « Hoorbare bas » (zijn boventonen voor een telefoon): een lichte saturatie tussen 60 en 250 Hz brengt hem naar voren, zonder hem vuil te maken."),
             [prop("light", T("Saturation légère", "Light saturation", "Lichte saturatie"), T("Juste assez pour qu'un petit haut-parleur le devine.", "Just enough for a small speaker to hint at it.", "Net genoeg zodat een kleine luidspreker hem laat vermoeden."),
                   {"type": "insert", "effect": "SATURATION", "params": [0.2, 1.0, 1.0, 0.7, 1.0]}, T("Drive 20 %", "Drive 20%", "Drive 20%")),
              keep(T("Le laisser pur", "Leave it pure", "Puur laten"), T("Un sinus pur, senti plus qu'entendu.", "A pure sine, felt more than heard.", "Een zuivere sinus, meer gevoeld dan gehoord."))],
@@ -914,6 +914,9 @@ WHYS = {
         "FREQ_SHIFT": T("Décale toutes les fréquences : un son étrange, métallique.", "Shifts every frequency: a strange, metallic sound.", "Verschuift alle frequenties: een vreemde, metalen klank."),
         "TAPE_STOP": T("Le disque qui ralentit jusqu'à l'arrêt.", "The record slowing down to a stop.", "De plaat die vertraagt tot stilstand."),
         "WOBBLE": T("Un filtre qui s'ouvre et se ferme en rythme : le « wob ».", "A filter opening and closing in time: the « wob ».", "Een filter dat in de maat open- en dichtgaat: de « wob »."),
+        "BASS_EXCITER": T("Ajoute les harmoniques du grave : la basse s'entend aussi sur un téléphone, qui ne joue pas sous 150 Hz.",
+                          "Adds the low end's harmonics: the bass is heard on a phone too, which plays nothing under 150 Hz.",
+                          "Voegt de boventonen van het laag toe: de bas is ook op een telefoon te horen, die niets onder 150 Hz speelt."),
         "CLIPPER": "Arrondit les crêtes qui dépassent le niveau du son : plus dense, sans pomper. Parfait sur une basse, avant l'OTT.",
     },
     "bass": {

@@ -74,6 +74,12 @@ public:
     // -6..0 dBTP (-1 by default).
     void setCeilingDb(float db);
     float ceilingDb() const { return ceilingDb_; }
+    // S6 (G6), an offline render only: the ceiling of the file this one stands for (dBTP, -6..0;
+    // NaN: none). An M4A's (ceiling -2, or lower once decoded too high) says -1, the WAV's: its loud
+    // part may then lose that much more than kMaxLossDropDb in the clipper and the limiter, the
+    // codec's headroom taken off the peaks instead of off the loudness. Read by OfflineRenderer alone.
+    void setDriveCeilingDb(float db) { driveCeilingDb_ = std::isfinite(db) ? std::clamp(db, -6.0f, 0.0f) : NAN; }
+    float driveCeilingDb() const { return driveCeilingDb_; }
     // The loudness the drive aims at, in LUFS (-30..-3); NaN or >= 0: no target (drive 0 dB).
     void setTarget(float lufs);
     float target() const { return target_; }
@@ -96,9 +102,17 @@ public:
     void resetEstimate();
     void setMode(Mode m) { mode_ = m; }
     Mode mode() const { return mode_; }
+    // « Des basses qui tapent » (mix version 3, the assistant's songs since): with a target, a 4th-order
+    // Butterworth high-pass at kLowCutHz after the DC blocker. Under 25-30 Hz no phone nor most
+    // speakers play anything, but the clipper and the limiter hear it and take loudness off the whole
+    // song for it (a square sub an octave under an octave-1 bass: 23 Hz). Off (versions 1 and 2): as before.
+    static constexpr double kLowCutHz = 25.0;
+    void setLowCut(bool on) { lowCut_ = on; }
+    bool lowCut() const { return lowCut_; }
     float maxLossDb() const { return mode_ == Mode::Drop ? kMaxLossDropDb : kMaxLossDb; }
     // Drop mode, live: the drive an export of this song found (dB). It glides there and is settled
-    // (it only comes down from there, on a louder part than the estimate has heard).
+    // (it only comes down from there, on a louder part than the estimate has heard). S6: given while
+    // there is no target yet (before ▶), it waits and is taken the moment the target comes on.
     void setKnownDrive(float db);
 
     struct Stats {
@@ -143,6 +157,7 @@ private:
     float tpFloor_ = 0.352f;     // under it the true-peak filter is skipped (0.4 of the aim)
     float clipFloor_ = 0.988f;   // the clipper's lowest level, kClipAboveDb over the aim
     float target_ = NAN;
+    float driveCeilingDb_ = NAN;
     bool limiterOn_ = true;
     bool driveAllowed_ = true;
     bool driveHeld_ = false;
@@ -171,6 +186,7 @@ private:
     std::array<double, BlockLoudness::kRing> driveRing_{};
     int driveRingHead_ = 0;
     bool settled_ = false;
+    float pendingKnown_ = NAN;  // S6: a known drive waiting for the target (dB; NaN: none)
     double settledLevel_ = 1000.0;  // the loud part's level when it settled (an export's drive: never)
 
     // --- DC blocker ahead of the drive (3 Hz) and sub-sonic blocker after the limiter (0.05 Hz):
@@ -179,6 +195,26 @@ private:
     double dcInL_ = 0.0, dcInR_ = 0.0, dcOutL_ = 0.0, dcOutR_ = 0.0;
     double dcPostInL_ = 0.0, dcPostInR_ = 0.0, dcPostOutL_ = 0.0, dcPostOutR_ = 0.0;
     float dcMix_ = 0.0f, dcStep_ = 1.0f / 2400.0f;
+    // --- Low cut (mix version 3): two 2nd-order sections in double (the poles sit near 1 at 25 Hz),
+    // always running, heard with a target and the low cut on (lowMix_ glides 0..1 over 50 ms).
+    struct LowCutSection {
+        double b0 = 1, b1 = 0, b2 = 0, a1 = 0, a2 = 0;
+        double z1L = 0, z2L = 0, z1R = 0, z2R = 0;
+        void set(double rate, double hz, double q);
+        void reset() { z1L = z2L = z1R = z2R = 0; }
+        void process(double& l, double& r) {
+            const double yl = b0 * l + z1L, yr = b0 * r + z1R;
+            z1L = b1 * l - a1 * yl + z2L;
+            z2L = b2 * l - a2 * yl;
+            z1R = b1 * r - a1 * yr + z2R;
+            z2R = b2 * r - a2 * yr;
+            l = yl;
+            r = yr;
+        }
+    };
+    std::array<LowCutSection, 2> lowCutFilter_{};
+    bool lowCut_ = false;
+    float lowMix_ = 0.0f;
 
     // --- Clipper.
     ClipChannel clipL_, clipR_;

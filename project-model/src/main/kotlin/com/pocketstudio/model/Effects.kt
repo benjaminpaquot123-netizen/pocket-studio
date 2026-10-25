@@ -343,6 +343,23 @@ enum class EffectType(val label: String, val params: List<Param>, val defaults: 
         "Arrondit les crêtes qui dépassent le niveau du son : plus dense, sans pomper. Parfait sur une basse, avant l'OTT.",
         EffectGroup.DYNAMICS,
     ),
+    /**
+     * « Des basses qui tapent » (docs/hits/basses-qui-tapent.md): the engine's BassExciter. The bass's
+     * harmonics made from its low band (the missing fundamental: a phone, which plays nothing under
+     * 200-300 Hz, lets the ear hear the note), added in mono; the sound itself left as it is.
+     */
+    BASS_EXCITER(
+        "Basse audible",
+        listOf(
+            Param("Quantité", ::percentOf),
+            Param("Fréquence") { hz(expMap(it, 60f, 200f)) },
+            Param("Couleur") { if (it < 0.34f) tr("Impaire") else if (it > 0.66f) tr("Paire") else tr("Mélangée") },
+            Param("Haut") { hz(expMap(it, 250f, 1200f)) },
+        ),
+        listOf(0.35f, 0.5f, 0.7f, 0.55f),
+        "Fait entendre la basse sur un téléphone ou une petite enceinte : ajoute ses harmoniques, que l'oreille transforme en grave. Presque rien de plus sur une grosse sono.",
+        EffectGroup.COLOUR,
+    ),
     ;
 
     /** Seconds of memory: the engine holds only a few of these (see [LONG_LIMITS]). */

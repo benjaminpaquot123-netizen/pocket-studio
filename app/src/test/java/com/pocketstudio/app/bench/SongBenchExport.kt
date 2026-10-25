@@ -13,9 +13,8 @@ import com.pocketstudio.engine.NativeEngine
 import com.pocketstudio.engine.OfflineExport
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.DropVariation
-import com.pocketstudio.model.InstrumentTrack
 import com.pocketstudio.model.StarterWizard
-import com.pocketstudio.model.leadTrackId
+import com.pocketstudio.model.bassChannels
 import com.pocketstudio.model.allScenes
 import com.pocketstudio.model.partSteps
 import kotlinx.coroutines.CoroutineScope
@@ -117,11 +116,15 @@ class SongBenchExport {
             "META name ${style.name}",
             "META family ${style.family}",
             "SONG frames=${Math.round(steps * sixteenth)} bpm=${p.tempoBpm}",
-        ) + listOfNotNull(
-            // S4: the lead's mixer channel, rendered alone by the bench (how its sound moves along the song).
-            p.leadTrackId()?.let { "META lead ${InstrumentTrack.mixerChannel(it)}" },
+            // S4: the lead's mixer channel, rendered alone by the bench (how its sound moves along the
+            // song); the leads chantier: the pad's and the counter-melody's too.
+        ) + benchVoiceMeta(p) + listOfNotNull(
             // G0: how much the Drops differ (the model's, read by report.py: « Variation entre Drops »).
             DropVariation.of(p)?.let { "META drop_variation ${"%.4f".format(java.util.Locale.ROOT, it)}" },
+            // The basses' strips (tracks, sub drop, the 808's pad), rendered alone: what a phone keeps of them.
+            p.bassChannels().takeIf { it.isNotEmpty() }?.let { "META bass ${it.joinToString(",")}" },
+            // The kick's strip (the sidechain key), rendered alone: where the bass makes room for it.
+            p.mixer.sidechainKey.takeIf { it >= 0 }?.let { "META kick $it" },
         ) + sections
     }
 }

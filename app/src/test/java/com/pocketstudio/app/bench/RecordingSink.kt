@@ -25,6 +25,9 @@ class RecordingSink(private val samplesDir: File, private val renderer: File?) :
     // not depend on the order sounds were loaded in).
     private val declared = HashMap<Long, MutableMap<Long, Int>>()
     private val renders = HashMap<String, FloatArray>()  // offline renders already run, by their commands
+    // Their end-of-render report (ps_render --report), by their commands, and the last one per export.
+    private val renderReports = HashMap<String, FloatArray>()
+    private val reports = HashMap<Long, FloatArray>()
     private var next = 1L
 
     /** Commands sent to the live engine (not recorded). */
@@ -129,6 +132,7 @@ class RecordingSink(private val samplesDir: File, private val renderer: File?) :
     override fun exportDestroy(target: Long) {
         exports.remove(target)
         declared.remove(target)
+        reports.remove(target)
     }
 
     private fun document(
@@ -162,24 +166,50 @@ class RecordingSink(private val samplesDir: File, private val renderer: File?) :
 
     override fun exportRenderFloat(target: Long, frames: Long, tailFrames: Long): FloatArray {
         val text = synchronized(this) { document(target, emptyList(), 0, false, false, "float", frames, tailFrames) }
-        synchronized(renders) { renders[text]?.let { return it.copyOf() } }
+        synchronized(renders) {
+            renders[text]?.let { out ->
+                renderReports[text]?.let { synchronized(this) { reports[target] = it } }
+                return out.copyOf()
+            }
+        }
         val program = checkNotNull(renderer) { "an offline render needs ps_render (-Pbench.render)" }
         val dir = samplesDir.parentFile
-        val cmd = File.createTempFile("render-", ".pscmd", dir)
-        val raw = File(dir, cmd.name.removeSuffix(".pscmd") + ".f32")
+        // Not « .pscmd »: a render still running when the test ends (the live gain's estimate, S6)
+        // must not leave a file the bench would take for a song.
+        val cmd = File.createTempFile("render-", ".cmdtmp", dir)
+        val raw = File(dir, cmd.name.removeSuffix(".cmdtmp") + ".f32tmp")
+        val json = File(dir, cmd.name.removeSuffix(".cmdtmp") + ".jsontmp")
         try {
             cmd.writeText(text)
-            val process = ProcessBuilder(program.absolutePath, cmd.absolutePath, raw.absolutePath).redirectErrorStream(true).start()
+            val process = ProcessBuilder(program.absolutePath, "--report", json.absolutePath, cmd.absolutePath, raw.absolutePath)
+                .redirectErrorStream(true).start()
             val log = process.inputStream.bufferedReader().readText()
             check(process.waitFor() == 0) { "ps_render failed: $log" }
             val bytes = raw.readBytes()
             val out = FloatArray(bytes.size / 4)
             ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).asFloatBuffer().get(out)
-            synchronized(renders) { renders[text] = out.copyOf() }
+            val report = if (json.exists()) reportOf(json.readText()) else null
+            synchronized(renders) {
+                renders[text] = out.copyOf()
+                report?.let { renderReports[text] = it }
+            }
+            report?.let { synchronized(this) { reports[target] = it } }
             return out
         } finally {
             cmd.delete()
             raw.delete()
+            json.delete()
         }
+    }
+
+    @Synchronized
+    override fun exportReport(target: Long): FloatArray? = reports[target]?.copyOf()
+
+    /** ps_render's report (JSON) laid out as the JNI's exportReport ([NativeEngine.REPORT_LUFS]…). */
+    private fun reportOf(text: String): FloatArray {
+        fun num(key: String) = Regex("\"$key\": (-?[0-9.]+)").find(text)?.groupValues?.get(1)?.toFloat() ?: 0f
+        return floatArrayOf(
+            num("lufs"), num("true_peak_db"), num("seconds"), num("sample_rate"), num("drive_db"), num("loss_db"), num("loud_lufs"), num("mode"),
+        )
     }
 }

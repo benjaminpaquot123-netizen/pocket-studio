@@ -80,13 +80,15 @@ class JumpUpStyleTest {
             val p = build(mood = mood)
             val bass = p.instrumentTracks.first { it.name == "Basse" }.id
             val lead = p.instrumentTracks.first { it.name == "Lead" }
-            assertEquals("Basse wobble", StarterWizard.soundsFor(Part.Lead, style).first().name)
+            // The leads chantier: the answer is a hoover an octave up (it was a second wobble bass at
+            // 177 Hz, -17.9 dB of presence on a phone), still in the growl's silences.
+            assertEquals("Hoover", StarterWizard.soundsFor(Part.Lead, style).first().name)
             val calls = p.notes(2, bass)
             val answers = p.notes(2, lead.id)
             assertTrue(answers.isNotEmpty())
             for (a in answers) assertTrue("$mood ${a.start}", calls.none { it.start <= a.start && a.start < it.end })
-            // A bass in the middle (Fa3 to Fa4), not a squealing lead.
-            assertTrue(answers.all { it.pitch in 48..72 })
+            // In the middle, where a phone hears it (Fa4 to Fa5), not a squealing lead.
+            assertTrue(answers.map { it.pitch }.toString(), answers.all { it.pitch in 60..StarterWizard.LEAD_TOP })
             // Only in the Drop: the Montée and the Break leave it out.
             assertTrue(p.notes(1, lead.id).isEmpty() && p.notes(3, lead.id).isEmpty())
         }

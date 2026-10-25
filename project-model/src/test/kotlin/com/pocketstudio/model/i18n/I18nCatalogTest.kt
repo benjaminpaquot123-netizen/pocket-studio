@@ -235,6 +235,8 @@ class I18nCatalogTest {
             "WizardScreen.kt: it",
             // The assistant's quick 303 sounds (WizardAcid.SOUNDS, in ModelTextsTest).
             "WizardScreen.kt: acidSoundLabel",
+            "WizardScreen.kt: grid.name",
+            "WizardScreen.kt: grid.description",
             // "+ Piste": the kinds of track (TrackKind, in ModelTextsTest).
             "TrackAdd.kt: kind.title",
             "TrackAdd.kt: kind.description",

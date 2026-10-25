@@ -37,7 +37,12 @@ class OfflineExport : AutoCloseable {
     }
 
     /** What the last [render] wrote, measured on the file's own samples (fades and resampling included). */
-    fun report(): ExportReport? = if (closed) null else ExportReport.of(NativeEngine.exportReport(handle))
+    fun report(): ExportReport? {
+        if (closed) return null
+        // A sink: its own report when it renders (the bench's ps_render), else none.
+        sink?.let { return it.exportReport(handle)?.let(ExportReport::of) }
+        return ExportReport.of(NativeEngine.exportReport(handle))
+    }
 
     /** Interleaved stereo at 48 kHz; empty if cancelled. Worker thread. */
     fun renderToArray(frames: Long, tailFrames: Long): FloatArray =

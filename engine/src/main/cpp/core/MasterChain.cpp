@@ -43,6 +43,16 @@ void MasterChain::ClipChannel::reset() {
     downIdle = true;
 }
 
+void MasterChain::LowCutSection::set(double rate, double hz, double q) {
+    const double w = 2.0 * 3.14159265358979 * hz / rate, cs = std::cos(w), alpha = std::sin(w) / (2.0 * q);
+    const double a0 = 1.0 + alpha;
+    b0 = (1.0 + cs) / 2.0 / a0;
+    b1 = -(1.0 + cs) / a0;
+    b2 = b0;
+    a1 = -2.0 * cs / a0;
+    a2 = (1.0 - alpha) / a0;
+}
+
 void MasterChain::prepare(int rate) {
     rate_ = rate > 0 ? rate : 48000;
     const float fs = static_cast<float>(rate_);
@@ -63,6 +73,10 @@ void MasterChain::prepare(int rate) {
     dcInL_ = dcInR_ = dcOutL_ = dcOutR_ = 0.0;
     dcPostInL_ = dcPostInR_ = dcPostOutL_ = dcPostOutR_ = 0.0;
     dcMix_ = driveHeld_ || targetActive() ? 1.0f : 0.0f;
+    lowCutFilter_[0].set(fs, kLowCutHz, 0.54119610);
+    lowCutFilter_[1].set(fs, kLowCutHz, 1.30656296);
+    for (auto& f : lowCutFilter_) f.reset();
+    lowMix_ = lowCut_ && dcMix_ > 0.0f ? 1.0f : 0.0f;
     // The estimate forgets the music it heard over about a minute of sound (one piece = 100 ms).
     forget_ = std::exp(-0.1 / 60.0);
     estHist_.setForget(forget_);
@@ -154,13 +168,23 @@ void MasterChain::resetEstimate() {
     driveRingHead_ = 0;
     settled_ = false;
     settledLevel_ = 1000.0;
+    pendingKnown_ = NAN;
     lossPublished_.store(0.0f, std::memory_order_relaxed);
     loudPublished_.store(-1000.0f, std::memory_order_relaxed);
 }
 
 void MasterChain::setKnownDrive(float db) {
     if (!std::isfinite(db) || driveHeld_) return;
-    rampDrive(std::clamp(db, kMinDriveDb, kMaxDriveDb), rate_ * 3 / 10);
+    // S6 (G5): known before ▶, while the target is not on yet (the app sends it with ▶): kept, and
+    // taken the moment the target is (process()), instead of gliding back to 0 dB for want of one.
+    if (!targetActive()) {
+        pendingKnown_ = std::clamp(db, kMinDriveDb, kMaxDriveDb);
+        return;
+    }
+    // One was waiting for the target that just came on (the same ▶): taken as fast as it would have been.
+    const bool waited = std::isfinite(pendingKnown_);
+    pendingKnown_ = NAN;
+    rampDrive(std::clamp(db, kMinDriveDb, kMaxDriveDb), waited ? std::max(1, rate_ / 50) : rate_ * 3 / 10);
     // The export heard the whole song: only a loss past the cap (a louder mix since) moves it.
     settled_ = true;
     settledLevel_ = 1000.0;
@@ -178,6 +202,13 @@ void MasterChain::rampDrive(float db, int frames) {
 
 MasterChain::Stats MasterChain::process(float* l, float* r, const float* direct, int n) {
     Stats stats;
+    // A drive known before the target came on (S6): taken at once (20 ms), settled.
+    if (std::isfinite(pendingKnown_) && targetActive() && !driveHeld_) {
+        rampDrive(pendingKnown_, std::max(1, rate_ / 50));
+        pendingKnown_ = NAN;
+        settled_ = true;
+        settledLevel_ = 1000.0;
+    }
     // No target (any more): back to 0 dB, gliding.
     if (!driveHeld_ && !targetActive() && driveDb_ != 0.0f && rampLeft_ == 0) rampDrive(0.0f, rate_ * 3 / 10);
     for (int i = 0; i < n; ++i) {
@@ -197,6 +228,18 @@ MasterChain::Stats MasterChain::process(float* l, float* r, const float* direct,
             if (dcMix_ > 0.0f) {
                 xl += dcMix_ * (static_cast<float>(yl) - xl);
                 xr += dcMix_ * (static_cast<float>(yr) - xr);
+            }
+        }
+        // The low cut (mix version 3): always running, heard with a target and the low cut on.
+        {
+            double hl = xl, hr = xr;
+            lowCutFilter_[0].process(hl, hr);
+            lowCutFilter_[1].process(hl, hr);
+            const float want = lowCut_ && (driveHeld_ || targetActive()) ? 1.0f : 0.0f;
+            if (lowMix_ != want) lowMix_ = want > lowMix_ ? std::min(want, lowMix_ + dcStep_) : std::max(want, lowMix_ - dcStep_);
+            if (lowMix_ > 0.0f) {
+                xl += lowMix_ * (static_cast<float>(hl) - xl);
+                xr += lowMix_ * (static_cast<float>(hr) - xr);
             }
         }
         // The estimate hears the music before the drive (K-weighted: deaf to DC).

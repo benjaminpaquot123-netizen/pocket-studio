@@ -261,8 +261,9 @@
    "rhythm": "X-----X-----X---",
    "voicing": "rootless9",
    "octave": 3,
-   "sound": "Piano électrique",
-   "voice_lead": true
+   "sound": "Rhodes FM",
+   "voice_lead": true,
+   "layer": "Nappe"
   },
   "bass": {
    "pattern": "R-------..R---5-R-------.5..R-3-",
@@ -298,11 +299,6 @@
   "lead_tip": "Des petites notes de pluck qui égrènent les accords : elles arrivent au drop, comme des gouttes de lumière.",
   "fx": [
    {
-    "on": "chords",
-    "reverb": 0.35,
-    "preset": "wide_alive"
-   },
-   {
     "on": "lead",
     "delay": 0.3
    },
@@ -318,6 +314,26 @@
      0.4,
      0
     ]
+   },
+   {
+    "on": "chords",
+    "reverb": 0.35,
+    "insert": "AUTO_PAN",
+    "params": [
+     0.72,
+     0.3,
+     0.0
+    ]
+   },
+   {
+    "on": "chords",
+    "insert": "CHORUS",
+    "params": [
+     0.3,
+     0.4,
+     0.4,
+     0.35
+    ]
    }
   ],
   "build": true,
@@ -332,7 +348,7 @@
    }
   ],
   "counter": {
-   "sound": "Cloche",
+   "sound": "Cloche FM",
    "rhythm": "..X.....X...X..."
   }
  },
@@ -432,8 +448,8 @@
    "type": "riff",
    "pattern": "..........O-.5............O---..",
    "arp_rate": 0,
-   "octave": 3,
-   "sound": "Basse growl"
+   "octave": 4,
+   "sound": "Stab métallique"
   },
   "acid": {
    "use": false,
@@ -730,8 +746,8 @@
    "type": "riff",
    "pattern": "............O-7-............................5---................",
    "arp_rate": 0,
-   "octave": 3,
-   "sound": "Basse wobble"
+   "octave": 4,
+   "sound": "Hoover"
   },
   "acid": {
    "use": false,
@@ -756,11 +772,6 @@
     "insert": "PUMP"
    },
    {
-    "on": "lead",
-    "preset": "fat_bass",
-    "insert": "PUMP"
-   },
-   {
     "on": "chords",
     "reverb": 0.35
    },
@@ -782,6 +793,10 @@
      0.5,
      0.5
     ]
+   },
+   {
+    "on": "lead",
+    "insert": "PUMP"
    }
   ],
   "build": true,
@@ -896,7 +911,7 @@
    "pattern": "R-......3-....2.................",
    "arp_rate": 0,
    "octave": 5,
-   "sound": "Cloche"
+   "sound": "Cloche FM"
   },
   "acid": {
    "use": false,

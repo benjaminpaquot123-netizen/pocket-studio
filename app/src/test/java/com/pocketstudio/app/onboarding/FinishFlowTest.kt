@@ -106,6 +106,31 @@ class FinishFlowTest {
         compose.onNodeWithTag("next_step_strip").assertExists()
     }
 
+    /** Decision 2A (S6): « Écouter » starts before the first Drop, « Depuis le début » next to it; neither closes the card. */
+    @Test
+    fun fromTheStartSitsNextToListenWhenListenStartsLater() {
+        val done = mutableListOf<String>()
+        var later by mutableStateOf(true)
+        compose.setContent {
+            PocketStudioTheme {
+                SongReady(
+                    true, "later1", SongReadyUi("Mon tube", seconds = 320, parts = 12, startsLater = later),
+                    SongReadyActions(listen = { done += "listen" }, fromStart = { done += "start" }),
+                )
+            }
+        }
+        compose.onNodeWithTag("song_ready_from_start").assertTextEquals("Depuis le début")
+        compose.onNodeWithTag("song_ready_listen").performClick()
+        compose.onNodeWithTag("song_ready_from_start").performClick()
+        compose.onNodeWithTag("song_ready").assertExists()
+        assertEquals(listOf("listen", "start"), done)
+        assertFalse(SongReadyPrefs(app).seen("later1"))
+        // A song whose « Écouter » starts at its first bar: no second button.
+        later = false
+        compose.waitForIdle()
+        compose.onNodeWithTag("song_ready_from_start").assertDoesNotExist()
+    }
+
     @Test
     fun theSongReadyCardShowsOnceForItsProject() {
         val done = mutableListOf<String>()

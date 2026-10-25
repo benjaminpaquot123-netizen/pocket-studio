@@ -263,8 +263,10 @@ fun Project.moveLayer(track: Int, index: Int, to: Int): Project {
  * as the layer's gain), its effects (the pump), transposed an octave down and past the bass's own
  * effects (its drive and its high-pass leave the sub clean, as on its own strip). The sub track
  * goes (its frozen sound too). Null when [sub] is not a sub of [bass] (other notes than the bass's
- * an octave down in some scene), its strip has what a layer cannot hold (a long effect, a mute or
- * a solo), or the bass's layers are full: the two tracks then stay as they are.
+ * sub notes, [StarterWizard.subNotes], in some scene), when those are not every bass note an octave
+ * down (a power chord, a note under Do2 folded back up: the layer's one transposition, -12, could not
+ * play them), its strip has what a layer cannot hold (a long effect, a mute or a solo), or the bass's
+ * layers are full: the two tracks then stay as they are.
  */
 fun Project.subAsLayer(bass: Int, sub: Int): Project? {
     if (subLayerProblem(bass, sub) != null) return null
@@ -294,13 +296,15 @@ fun Project.subLayerProblem(bass: Int, sub: Int): String? {
     val s = track(sub)
     if (b.layers.size >= Layers.MAX) return "the bass's layers are full"
     if (s.layers.isNotEmpty()) return "the sub has layers"
-    // The sub plays the bass's notes an octave down, in every scene.
-    fun sameOctaveDown(bassClip: NoteClip?, subClip: NoteClip?): Boolean {
-        val want = bassClip?.notes.orEmpty().map { it.copy(pitch = it.pitch - 12) }
-        return want == subClip?.notes.orEmpty() && want.all { it.pitch >= 0 }
-    }
-    if (!sameOctaveDown(b.notes, s.notes)) return "other notes"
-    if (allScenes.any { sc -> !sameOctaveDown(if (bass == 0) sc.synthNotes else sc.trackNotes[bass], sc.trackNotes[sub]) }) return "other notes in a scene"
+    // The sub plays the bass's sub notes (StarterWizard.subNotes: the lowest note of each onset an
+    // octave down, never under Do1), in every scene; a layer (one transposition, every note) folds it
+    // only where that is the bass an octave down: no chord on the bass, no note folded back up.
+    fun bassClips(): List<NoteClip?> = listOf(b.notes) + allScenes.map { sc -> if (bass == 0) sc.synthNotes else sc.trackNotes[bass] }
+    fun subClips(): List<NoteClip?> = listOf(s.notes) + allScenes.map { sc -> sc.trackNotes[sub] }
+    val differ = bassClips().zip(subClips()).map { (bc, sc) -> SubLayers.subOf(bc) != SubLayers.sorted(sc) }
+    if (differ.first()) return "other notes"
+    if (differ.any { it }) return "other notes in a scene"
+    if (bassClips().any { bc -> SubLayers.subOf(bc) != SubLayers.sorted(bc).map { it.copy(pitch = it.pitch - 12) } }) return "not one octave down (a chord, or notes under Do2)"
     val ch = mixer.channels.getOrNull(InstrumentTrack.mixerChannel(sub)) ?: return "no strip"
     val heard = ch.inserts.filter { it.effect != EffectType.NONE }
     if (ch.mute || ch.solo) return "the sub is muted or soloed"
@@ -357,13 +361,20 @@ object SubLayers {
         return p
     }
 
-    /** The track [sub] doubles an octave down (its first such track), or null. */
+    /** The track [sub] doubles (its first such track: the sub notes the assistant writes for it, [StarterWizard.subNotes]), or null. */
     fun bassOf(p: Project, sub: Int): Int? {
         fun clip(sc: Scene?, id: Int): List<Note> = if (sc == null) p.track(id).notes.notes else (if (id == 0) sc.synthNotes else sc.trackNotes[id])?.notes.orEmpty()
         val places = listOf<Scene?>(null) + p.allScenes
         if (places.all { clip(it, sub).isEmpty() }) return null
         return p.instrumentTracks.firstOrNull { t ->
-            t.id != sub && places.all { sc -> clip(sc, t.id).map { it.copy(pitch = (it.pitch - 12).coerceAtLeast(0)) } == clip(sc, sub) }
+            t.id != sub && places.all { sc -> StarterWizard.subNotes(clip(sc, t.id)) == sortedNotes(clip(sc, sub)) }
         }?.id
     }
+
+    /** [clip]'s notes in order of their starts (then pitches), as [StarterWizard.subNotes] gives them. */
+    internal fun sorted(clip: NoteClip?): List<Note> = sortedNotes(clip?.notes.orEmpty())
+    private fun sortedNotes(notes: List<Note>): List<Note> = notes.sortedWith(compareBy({ it.start }, { it.pitch }))
+
+    /** The sub notes of [clip] ([StarterWizard.subNotes]; none without a clip). */
+    internal fun subOf(clip: NoteClip?): List<Note> = StarterWizard.subNotes(clip?.notes.orEmpty())
 }

@@ -103,8 +103,9 @@ private:
                       double* loud = nullptr);
 
     // S5, Drop mode: the drive bringing the loud part (`preLoud` before the chain) to `target`
-    // within MasterChain::kMaxLossDropDb, from measured passes of the chain over the stored music.
-    Result dropDrive(Store& store, double preLoud, double target, float& drive);
+    // within MasterChain::kMaxLossDropDb (plus `extraLoss`: an M4A's, S6), from measured passes of the
+    // chain over the stored music.
+    Result dropDrive(Store& store, double preLoud, double target, float& drive, double extraLoss = 0.0);
 
     void postNow(const Command& command);
     void postDue(int64_t frame);

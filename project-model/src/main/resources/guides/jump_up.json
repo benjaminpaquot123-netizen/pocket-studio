@@ -429,7 +429,7 @@
    "target": "lead",
    "kind": "decide",
    "simple": true,
-   "title": "La 2e basse : la réponse",
+   "title": "Le lead : le motif qu'on retient",
    "why": "Ici, pas de mélodie : le lead est une deuxième basse qui fait « wob wob » et répond à la première dans ses silences. C'est le jeu « question, réponse » du jump up.",
    "simpleTitle": "La mélodie",
    "simpleWhy": "Le bout qu'on retient et qu'on chante.",
@@ -820,7 +820,7 @@
    "target": "sub",
    "kind": "decide",
    "title": "Le sub : propre, au centre, un peu saturé",
-   "why": "Le sub n'a aucun effet : une saturation légère entre 60 et 250 Hz le fait entendre sur un téléphone, sans le salir.",
+   "why": "Le sub n'a que « Basse audible » (ses harmoniques pour un téléphone) : une saturation légère entre 60 et 250 Hz le rend plus présent, sans le salir.",
    "when": "Une fois le son et le motif posés.",
    "howMuch": "Saturation 15 à 25 %, mono strict.",
    "howOften": "Une chaîne pour tout le morceau.",
@@ -972,8 +972,8 @@
    "stage": 3,
    "target": "lead",
    "kind": "review",
-   "title": "La 2e basse : Basse grasse",
-   "why": "Une basse fuzz épaisse, compressée en trois bandes : elle remplit tout.",
+   "title": "Le lead : écho et réverbe",
+   "why": "Un écho à la croche et une réverbe moyenne : il chante devant sans prendre toute la place.",
    "when": "Une fois le son et le motif posés.",
    "howMuch": "Envoi écho −9 dB, réverbe −12 dB.",
    "howOften": "Une chaîne pour tout le morceau.",
@@ -993,20 +993,19 @@
      }
     },
     {
-     "id": "cleaner",
-     "label": "Moins de grain",
-     "why": "Plus ronde, elle laisse la place à la première basse.",
+     "id": "echo",
+     "label": "Plus d'écho",
+     "why": "Chaque note rebondit plus longtemps.",
      "action": {
-      "type": "nudge",
-      "effect": "DISTORTION",
-      "param": 0,
-      "delta": -0.15
+      "type": "send",
+      "bus": 1,
+      "delta": 0.1
      }
     },
     {
      "id": "dry",
-     "label": "Plus sèche",
-     "why": "Moins d'écho : elle répond net, sans traîner.",
+     "label": "Plus sec",
+     "why": "Il reste net et proche.",
      "action": {
       "type": "send",
       "bus": 1,
@@ -1223,8 +1222,8 @@
    "proposals": [
     {
      "id": "lead_waits",
-     "label": "Au 1er, la 2e basse attend la 2e moitié",
-     "why": "Le 1er Drop commence plus nu, la 2e basse répond ensuite.",
+     "label": "Au 1er, le lead attend la 2e moitié",
+     "why": "Le 1er Drop commence plus nu, le lead arrive ensuite.",
      "action": {
       "type": "mute",
       "target": "lead",
@@ -1778,6 +1777,7 @@
    "FREQ_SHIFT": "Décale toutes les fréquences : un son étrange, métallique.",
    "TAPE_STOP": "Le disque qui ralentit jusqu'à l'arrêt.",
    "WOBBLE": "Un filtre qui s'ouvre et se ferme en rythme : le « wob ».",
+   "BASS_EXCITER": "Ajoute les harmoniques du grave : la basse s'entend aussi sur un téléphone, qui ne joue pas sous 150 Hz.",
    "CLIPPER": "Arrondit les crêtes qui dépassent le niveau du son : plus dense, sans pomper. Parfait sur une basse, avant l'OTT."
   },
   "bass": {

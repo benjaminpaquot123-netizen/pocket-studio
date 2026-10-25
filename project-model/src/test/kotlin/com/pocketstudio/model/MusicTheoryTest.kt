@@ -309,7 +309,9 @@ class MusicTheoryTest {
                 val partTracks = p.instrumentTracks.filter { it.name in listOf("Basse", "Lead") + StarterWizard.CHORD_TRACK_NAMES }
                 // The 808 styles' bass plays on its pad (S3), heard there.
                 val on808 = StudioDrums.bassOn808(s, parts[Part.Bass])
-                assertEquals(what, parts.size - (if (on808) 1 else 0), partTracks.size)
+                // The pad behind the chords (liquid, the leads chantier) is named as a pad too.
+                val layer = if (s.melody.padLayer != null && Part.Pad in parts) 1 else 0
+                assertEquals(what, parts.size - (if (on808) 1 else 0) + layer, partTracks.size)
                 if (on808) assertTrue("$what 808 never plays", p.allScenes.any { sc -> sc.drums.lanes[StudioDrums.LANE_808].hits.isNotEmpty() })
                 for (t in partTracks) assertTrue("$what ${t.name} never plays",
                     p.allScenes.any { sc -> (if (t.id == 0) sc.synthNotes else sc.trackNotes[t.id] ?: NoteClip()).notes.isNotEmpty() })

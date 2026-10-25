@@ -268,6 +268,8 @@ OfflineRenderer::Result OfflineRenderer::masterPass(Store& store, float driveDb,
     // A chain like the engine's (its ceiling), fresh, at a held drive.
     auto chain = std::make_unique<MasterChain>();
     chain->setCeilingDb(engine_->mixer().masterChain().ceilingDb());
+    // Mix version 3: its low cut at 25 Hz (an export sounds as the song plays).
+    chain->setLowCut(engine_->mixer().masterChain().lowCut());
     chain->prepare(sampleRate_);
     chain->holdDrive(driveDb);
     const int latency = chain->latency();
@@ -357,7 +359,12 @@ OfflineRenderer::Result OfflineRenderer::render(int64_t frames, int64_t tailFram
             report_.musicLufs = music.integratedLufs();
             report_.musicLoudLufs = musicLoud->lufs();
             float drive = 0.0f;
-            if ((result = dropDrive(*store, report_.musicLoudLufs, live.target(), drive)) != Result::Ok) return result;
+            // S6 (G6): an M4A (its ceiling under the WAV's, SetMaster 9) may take that much more off its
+            // loud part: what the codec's headroom costs comes off the peaks, not off its loudness.
+            // At most 1 dB (the WAV's -1 dBTP over the codec's -2): a retry at a lower ceiling (M4aGuard)
+            // must not crush the loud part harder.
+            const double extra = std::isfinite(live.driveCeilingDb()) ? std::clamp(double(live.driveCeilingDb()) - live.ceilingDb(), 0.0, 1.0) : 0.0;
+            if ((result = dropDrive(*store, report_.musicLoudLufs, live.target(), drive, extra)) != Result::Ok) return result;
             double lufs = 0.0, loud = 0.0;
             result = masterPass(*store, drive, [&output](float* p, int n) { return output.write(p, n); }, 0.95f, 1.0f, &lufs, &loud);
             if (result != Result::Ok) return result;
@@ -365,6 +372,8 @@ OfflineRenderer::Result OfflineRenderer::render(int64_t frames, int64_t tailFram
             report_.loudLufs = loud;
             report_.lossDb = report_.musicLoudLufs > -999.0 && loud > -999.0
                                  ? static_cast<float>(std::max(0.0, report_.musicLoudLufs + drive - loud)) : 0.0f;
+            // An M4A's: the loss as its WAV would have it (the codec's own headroom is not the mix's).
+            if (extra > 0.0) report_.lossDb = static_cast<float>(std::max(0.0, double(report_.lossDb) - extra));
             if (!output.finish()) return Result::IoError;
             output.report(report_);
             progress_.store(1.0f, std::memory_order_relaxed);
@@ -413,14 +422,14 @@ OfflineRenderer::Result OfflineRenderer::render(int64_t frames, int64_t tailFram
     return Result::Ok;
 }
 
-OfflineRenderer::Result OfflineRenderer::dropDrive(Store& store, double preLoud, double target, float& drive) {
+OfflineRenderer::Result OfflineRenderer::dropDrive(Store& store, double preLoud, double target, float& drive, double extraLoss) {
     // S5: the drive that brings the loud part (the Drop) to the target, the clipper and the limiter
     // taking at most kMaxLossDropDb off it there: measured passes of the chain alone (at most four),
     // each next try by the secant of what the last two gave. Kept: the measured try nearest the
     // target within the cap (a song whose sounds cannot be that loud stays under its target).
     drive = 0.0f;
     if (!(preLoud > LoudPart::kGateAbs)) return Result::Ok;
-    constexpr double kMax = MasterChain::kMaxLossDropDb;
+    const double kMax = MasterChain::kMaxLossDropDb + std::max(0.0, extraLoss);
     constexpr double kSlack = 0.05;  // the cap's tolerance (LU)
     auto clampDrive = [](double d) { return std::clamp(d, double(MasterChain::kMinDriveDb), double(MasterChain::kMaxDriveDb)); };
     struct Try {

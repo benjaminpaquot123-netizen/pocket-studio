@@ -245,6 +245,9 @@ void DrumKit::setVoiceParam(int voice, int param, float value) {
         case Glide: s.glide = std::clamp(value, 0.0f, 0.5f); break;
         case Sub: s.sub = std::clamp(value, 0.0f, 1.0f); break;
         case Tone: s.tone = std::clamp(value, 0.0f, 1.0f); break;
+        case Version: s.version = value >= 0.5f ? 1.0f : 0.0f; break;
+        case PitchDrop: s.drop = std::clamp(value, 0.0f, 36.0f); break;
+        case DropTime: s.dropTime = std::clamp(value, 0.005f, 0.15f); break;
         default: break;
     }
 }
@@ -260,6 +263,9 @@ float DrumKit::voiceParam(int voice, int param) const {
         case Glide: return s.glide;
         case Sub: return s.sub;
         case Tone: return s.tone;
+        case Version: return s.version;
+        case PitchDrop: return s.drop;
+        case DropTime: return s.dropTime;
         default: return 0.0f;
     }
 }

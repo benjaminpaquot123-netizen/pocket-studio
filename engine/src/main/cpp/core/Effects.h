@@ -26,6 +26,9 @@ public:
     void peak(float rate, float freq, float q, float gainDb);
     void highPass(float rate, float freq);  // 2nd order, Q 0.707
     void lowPass(float rate, float freq);   // 2nd order, Q 0.707
+    // 2nd order with a Q of its own (two in a row with Q 0.5412 and 1.3066: a 4th-order Butterworth).
+    void highPassQ(float rate, float freq, float q);
+    void lowPassQ(float rate, float freq, float q);
     void bypass() { b0_ = 1; b1_ = b2_ = a1_ = a2_ = 0; }
     void reset() { z1_ = z2_ = 0.0f; }
     float process(float x) {
@@ -655,6 +658,50 @@ private:
     int countdown_ = 0;
 };
 
+// « Basse audible » (phase 40, docs/hits/basses-qui-tapent.md): a psychoacoustic bass exciter,
+// the principle of Waves' MaxxBass. A phone's speaker plays almost nothing under 200-300 Hz, where
+// the basses put their weight; the ear hears a low note that is not there when three or more of its
+// harmonics are (the missing fundamental). The sound's low band (mono: L + R, a 4th-order
+// Butterworth low-pass at the frequency) is divided by its own envelope (a peak follower, 2 ms up,
+// 60 ms down) into a wave of steady size, shaped by tanh (odd harmonics) and tanh² (even ones; the
+// colour mixes them), band-passed (a 4th-order high-pass at 1.25 x the frequency, at least 100 Hz:
+// the low band's own fundamental out; a 2nd-order low-pass at the top), multiplied by the envelope
+// again (the harmonics hit and fade with the note) and added to both sides, the dry sound left as it
+// is. The shapes are smooth (their harmonics fall exponentially) and the low band is under a few
+// hundred hertz: nothing folds back at 48 kHz (host test: inharmonic content under -60 dB), no
+// oversampling, no latency. Params: amount (0..1), frequency (60..200 Hz, 0.5 = 110 Hz), colour
+// (0 odd .. 1 even, 0.7 by default), top (250..1200 Hz, 0.55 = 600 Hz). The amount glides (10 ms).
+class BassExciter {
+public:
+    static constexpr int kParams = 4;
+    // Harmonics at amount 1 against the low band's envelope (tuned on the bench: an 808 at 0.5 goes
+    // from -22 to about -13 dB through a 300 Hz phone model, for about +1 LU on its own full band).
+    static constexpr float kGain = 3.5f;
+    void prepare(float rate);
+    void setParam(int p, float v);
+    void reset();
+    void process(float* l, float* r, int n);
+    static float frequencyHz(float v);
+    static float topHz(float v);
+
+private:
+    // The filters set for the band at `freqHz` and the harmonics' top at `topHz`.
+    void update(float freqHz, float topHz);
+    // Glides the band and the top towards their settings (every kStep samples, in the audio thread).
+    void glideFilters();
+    static constexpr int kStep = 16;
+    float rate_ = 48000;
+    std::array<float, kParams> p_{0.35f, 0.5f, 0.7f, 0.55f};
+    Biquad lowA_, lowB_, hpA_, hpB_, top_;
+    float env_ = 0.0f, attack_ = 0.0f, release_ = 0.0f;
+    float amount_ = 0.0f, amountGlide_ = 0.002f;
+    // « Fréquence » and « Haut » as the filters play them: a knob turned or a curve on them glides
+    // (about 20 ms) instead of jumping the filters' coefficients (a click on a loud bass).
+    float freqNow_ = 0.0f, topNow_ = 0.0f, filterGlide_ = 0.5f;
+    int countdown_ = 0;
+    bool fresh_ = true;  // the amount and the filters start at their settings (no glide after a reset)
+};
+
 class InsertSlot {
 public:
     enum Type {
@@ -662,7 +709,7 @@ public:
         FlangerFx = 7, PhaserFx = 8, GateFx = 9, TremoloFx = 10, WidenerFx = 11, Crusher = 12, ParamEqFx = 13,
         RobotFx = 14, WahFx = 15, VinylFx = 16, RadioFx = 17, ChopperFx = 18,
         DistortionFx = 19, EchoFx = 20, PingPongFx = 21, ReverbFx = 22, AutoPanFx = 23, OttFx = 24,
-        FreqShiftFx = 25, TapeStopFx = 26, WobbleFx = 27, ClipperFx = 28, kTypes = 29
+        FreqShiftFx = 25, TapeStopFx = 26, WobbleFx = 27, ClipperFx = 28, BassExciterFx = 29, kTypes = 30
     };
     // Whether `type` needs a unit of the pool (seconds of memory).
     static bool isLong(int type) { return type == EchoFx || type == PingPongFx || type == ReverbFx || type == TapeStopFx; }
@@ -739,6 +786,7 @@ private:
     Chopper chopper_;
     Wobble wobble_;
     SoftClipper clipper_;
+    BassExciter exciter_;
     const float* key_ = nullptr;
 };
 

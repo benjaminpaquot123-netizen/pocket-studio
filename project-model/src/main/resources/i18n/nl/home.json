@@ -374,5 +374,10 @@
   "Importer un projet": "Project importeren",
   "Aucun projet pour l'instant : commence un nouveau morceau.": "Nog geen projecten: begin een nieuw nummer.",
   "Corbeille (%d)": "Prullenbak (%d)",
-  "gardés %d jours": "%d dagen bewaard"
+  "gardés %d jours": "%d dagen bewaard",
+  "Motifs de basse": "Baspatronen",
+  "Celui du style": "Die van de stijl",
+  "La recette": "Het recept",
+  "Conseillés pour ce style : %s.": "Aangeraden voor deze stijl: %s.",
+  "Des lignes de basse « roulantes » : des notes courtes entre les coups de kick, qui galopent. Touche un motif pour l'entendre.": "Rollende baslijnen: korte noten tussen de kicks die galopperen. Tik op een patroon om het te horen."
 }

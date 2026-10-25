@@ -11,7 +11,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -26,6 +29,7 @@ import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.IosShare
 import androidx.compose.material.icons.filled.LibraryMusic
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.SkipPrevious
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material.icons.filled.ViewTimeline
 import androidx.compose.material3.Icon
@@ -74,12 +78,20 @@ class SongReadyPrefs(context: Context) {
     }
 }
 
-/** What « Ton morceau est prêt » says: the song's name, how long it lasts, its parts; [playing]: ▶ became ■. */
-data class SongReadyUi(val name: String, val seconds: Int, val parts: Int, val playing: Boolean = false)
+/**
+ * What « Ton morceau est prêt » says: the song's name, how long it lasts, its parts; [playing]: ▶ became ■;
+ * [startsLater]: « Écouter » starts just before the first Drop (decision 2A), so « Depuis le début » is offered next to it.
+ */
+data class SongReadyUi(val name: String, val seconds: Int, val parts: Int, val playing: Boolean = false, val startsLater: Boolean = false)
 
 class SongReadyActions(
-    /** ▶ the whole song (or stop it): the card folds into its bar while the song plays, for the next choice. */
+    /**
+     * ▶ the song from about 8 bars before its first Drop (or stop it): the card folds into its bar
+     * while the song plays, for the next choice.
+     */
     val listen: () -> Unit = {},
+    /** « Depuis le début »: the whole song from its first bar (the card folds the same way). */
+    val fromStart: () -> Unit = {},
     /** « Changer un son »: the tune's track, its sounds in a sheet (one touch picks one). */
     val changeSound: () -> Unit = {},
     /** « Modifier le morceau »: the Morceau tab's list of parts (the timeline stays one touch away there). */
@@ -133,6 +145,7 @@ private fun songReadyDone(prefs: SongReadyPrefs, projectId: String, actions: Son
     }
     return SongReadyActions(
         listen = actions.listen,
+        fromStart = actions.fromStart,
         changeSound = then(actions.changeSound),
         structure = then(actions.structure),
         share = then(actions.share),
@@ -251,12 +264,19 @@ fun SongReadyCard(ui: SongReadyUi, actions: SongReadyActions, modifier: Modifier
             }
         }
         Text(tr("Écoute-le, puis fais-le tien : un son, la structure, et partage-le."), style = MaterialTheme.typography.bodyMedium)
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+        Row(Modifier.height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                BigChoice(
+                    if (ui.playing) Icons.Filled.Stop else Icons.Filled.PlayArrow, if (ui.playing) tr("Arrêter") else tr("Écouter"),
+                    primary = true, tag = "song_ready_listen", onClick = actions.listen, modifier = Modifier.fillMaxWidth(),
+                )
+                // Decision 2A: « Écouter » starts just before the first Drop; the whole song is one touch away.
+                if (ui.startsLater) FromStartButton(actions.fromStart, Modifier.fillMaxWidth())
+            }
             BigChoice(
-                if (ui.playing) Icons.Filled.Stop else Icons.Filled.PlayArrow, if (ui.playing) tr("Arrêter") else tr("Écouter"),
-                primary = true, tag = "song_ready_listen", onClick = actions.listen, modifier = Modifier.weight(1f),
+                Icons.Filled.LibraryMusic, tr("Changer un son"), tag = "song_ready_sound", onClick = actions.changeSound,
+                modifier = Modifier.weight(1f).fillMaxHeight(),
             )
-            BigChoice(Icons.Filled.LibraryMusic, tr("Changer un son"), tag = "song_ready_sound", onClick = actions.changeSound, modifier = Modifier.weight(1f))
         }
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             BigChoice(Icons.Filled.ViewTimeline, tr("Modifier le morceau"), tag = "song_ready_structure", onClick = actions.structure, modifier = Modifier.weight(1f))
@@ -273,6 +293,27 @@ fun SongReadyCard(ui: SongReadyUi, actions: SongReadyActions, modifier: Modifier
                 Text(tr("Plus tard"), color = Neon.TextSecondary)
             }
         }
+    }
+}
+
+/** « Depuis le début » under « Écouter »: a slim outlined button, ⏮ and its words. */
+@Composable
+private fun FromStartButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
+    val shape = RoundedCornerShape(14.dp)
+    Row(
+        modifier.heightIn(min = 48.dp).clip(shape)
+            .border(1.dp, Neon.Cyan.copy(alpha = 0.6f), shape)
+            .clickable(role = Role.Button, onClick = onClick)
+            .padding(horizontal = 10.dp, vertical = 6.dp)
+            .testTag("song_ready_from_start"),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center,
+    ) {
+        Icon(Icons.Filled.SkipPrevious, contentDescription = null, tint = Neon.Cyan, modifier = Modifier.size(20.dp))
+        Text(
+            tr("Depuis le début"), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = Neon.Cyan,
+            maxLines = 2, textAlign = TextAlign.Center, modifier = Modifier.padding(start = 6.dp),
+        )
     }
 }
 

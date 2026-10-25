@@ -979,6 +979,16 @@ open class ScreenshotTest {
             com.pocketstudio.app.library.SoundRef.Kit(0), com.pocketstudio.app.library.WizardActions())
     }
 
+    /** The bass's step scrolled to « Motifs de basse »: each grid with a few plain words, one chosen. */
+    @Test
+    fun wizardBassGrids() = shoot("wizard_bass_grids", prepare = {
+        compose.onNodeWithTag("wizard_bass_grids").performScrollTo()
+    }) {
+        val ui = wizardUi(2 + com.pocketstudio.model.StarterWizard.style("house")!!.lines.size)
+        com.pocketstudio.app.library.WizardScreen(ui.copy(bassGrid = "octave_bounce"), com.pocketstudio.app.library.PacksUi(com.pocketstudio.app.library.IndexState.Unavailable),
+            null, com.pocketstudio.app.library.WizardActions())
+    }
+
     @Test
     fun wizardPad() = shoot("wizard_pad") {
         val ui = wizardUi(2 + com.pocketstudio.model.StarterWizard.style("house")!!.lines.size + 1)
@@ -1623,12 +1633,15 @@ open class ScreenshotTest {
         )
     }
 
-    /** « Ton morceau est prêt », once after the assistant: four big choices over the Morceau tab. */
+    /**
+     * « Ton morceau est prêt », once after the assistant: four big choices over the Morceau tab;
+     * « Écouter » starts just before the first Drop, « Depuis le début » under it (decision 2A, S6).
+     */
     @Test
     fun songReady() = shoot("song_ready") {
         Box(Modifier.fillMaxSize().background(androidx.compose.ui.graphics.Color.Black.copy(alpha = 0.55f)).padding(12.dp), contentAlignment = androidx.compose.ui.Alignment.Center) {
             com.pocketstudio.app.onboarding.SongReadyCard(
-                com.pocketstudio.app.onboarding.SongReadyUi("House du soir", seconds = 160, parts = 6),
+                com.pocketstudio.app.onboarding.SongReadyUi("House du soir", seconds = 160, parts = 6, startsLater = true),
                 com.pocketstudio.app.onboarding.SongReadyActions(guide = {}),
             )
         }

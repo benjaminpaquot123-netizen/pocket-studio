@@ -102,7 +102,7 @@
    "pattern": "O.......5...3...R-----..............................5...3...R---",
    "arp_rate": 24,
    "octave": 5,
-   "sound": "Piano électrique",
+   "sound": "Piano FM",
    "on_key": true
   },
   "acid": {
@@ -235,7 +235,7 @@
    "pattern": "O---..5-..3-....R---..3-..5-..7-",
    "arp_rate": 24,
    "octave": 5,
-   "sound": "Cloche",
+   "sound": "Cloche FM",
    "on_key": true
   },
   "acid": {
@@ -382,7 +382,7 @@
    "pattern": "R---..3-........5---..3-..2-....R---..3-........5-..7-..O-------",
    "arp_rate": 24,
    "octave": 5,
-   "sound": "Piano électrique",
+   "sound": "Piano FM",
    "on_key": true
   },
   "acid": {
@@ -502,7 +502,7 @@
    "rhythm": "X-------x-----X-------X---x...X-",
    "voicing": "ninth",
    "octave": 3,
-   "sound": "Piano électrique"
+   "sound": "Rhodes FM"
   },
   "bass": {
    "pattern": "R---------R-5---",
@@ -515,7 +515,7 @@
    "pattern": "....5---3-----------------------....5---3---2---R---------------",
    "arp_rate": 24,
    "octave": 4,
-   "sound": "Piano électrique",
+   "sound": "Piano FM",
    "on_key": true
   },
   "acid": {
@@ -790,7 +790,7 @@
    "pattern": "R-.R-.R---5---3-R-.R-.R---2---R.",
    "octave": 2,
    "sound": "Lead carré",
-   "glide": false
+   "glide": false, "sub": true
   },
   "lead": {
    "type": "riff",

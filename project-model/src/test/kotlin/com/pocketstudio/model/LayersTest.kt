@@ -239,6 +239,26 @@ class LayersTest {
         assertTrue("at least one style's sub folds into its bass", folded > 0)
     }
 
+    /**
+     * The Sub the assistant writes (StarterWizard.subNotes: the lowest note of each onset, never under
+     * Do1) is still found under its bass when the bass plays a power chord or notes under Do2 (grime);
+     * a layer (one transposition of every note) cannot play it, so the two stay tracks.
+     */
+    @Test
+    fun aSubUnderAPowerChordOrNotesFoldedUpStaysATrack() {
+        val style = BassPatterns.styled(StarterWizard.style("tech_house")!!, BassPatterns.byId("power")!!)
+        val power = StarterWizard.build(style, style.lines.associate { it.role to null as PadSample? }, style.melody.mood,
+            StarterWizard.Part.entries.associateWith { StarterWizard.soundsFor(it, style).first() })
+        for (p in listOf(power, bassMusic("grime"))) {
+            val sub = p.instrumentTracks.first { it.name == StarterWizard.SUB_TRACK }
+            val bass = SubLayers.bassOf(p, sub.id)
+            assertEquals(p.instrumentTracks.first { it.name == "Basse" }.id, bass)
+            assertEquals("not one octave down (a chord, or notes under Do2)", p.subLayerProblem(bass!!, sub.id))
+            assertNull(p.subAsLayer(bass, sub.id))
+            assertEquals(p, SubLayers.apply(p))
+        }
+    }
+
     @Test
     fun aSubThatPlaysOtherNotesStaysATrack() {
         val p = bassMusic("tech_house")

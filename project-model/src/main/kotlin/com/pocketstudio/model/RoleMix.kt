@@ -88,6 +88,10 @@ object RoleMix {
     /** The EQ's « Coupe-bas » value for [hz]. */
     fun lowCutValue(hz: Float): Float = (ln(hz.coerceIn(FLOOR_HZ, 500f) / 20f) / ln(25f)).coerceIn(0.01f, 1f)
 
+    /** [wanted] (Hz), or lower so as never to cut track [id]'s lowest note (the leads' voice EQ). */
+    fun cutUnderLowest(p: Project, id: Int, wanted: Float): Float =
+        lowestPitch(p, id)?.let { minOf(wanted, hzOf(it) * UNDER_LOWEST) } ?: wanted
+
     /**
      * The lowest pitch track [id] plays anywhere in [p] (its synth's octave-down copy counted), or
      * null when it plays nothing. Known limit: the synth's sub oscillator ([SynthPatch.SUB]) and a

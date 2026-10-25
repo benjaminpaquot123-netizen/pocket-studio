@@ -390,18 +390,130 @@ Centroid barCentroids(const Audio& a, int64_t songFrames, double bpm, int beatsP
     return c;
 }
 
+// --- « Des basses qui tapent » (docs/hits/basses-qui-tapent.md § 8): the basses rendered alone
+// (ps_render --solo <META bass>) heard through a phone-speaker model: a 4th-order Butterworth
+// high-pass at 200 Hz (a good phone) or 300 Hz (an average one), then the K-weighting of BS.1770;
+// power over the main section, ungated (the analysis' own measure).
+struct Biquad2 {
+    double b0 = 1, b1 = 0, b2 = 0, a1 = 0, a2 = 0, x1 = 0, x2 = 0, y1 = 0, y2 = 0;
+    double operator()(double x) {
+        const double y = b0 * x + b1 * x1 + b2 * x2 - a1 * y1 - a2 * y2;
+        x2 = x1;
+        x1 = x;
+        y2 = y1;
+        y1 = y;
+        return y;
+    }
+    static Biquad2 highPass(double rate, double hz, double q) {
+        Biquad2 f;
+        const double w = 2 * M_PI * hz / rate, alpha = std::sin(w) / (2 * q), c = std::cos(w), a0 = 1 + alpha;
+        f.b0 = (1 + c) / 2 / a0;
+        f.b1 = -(1 + c) / a0;
+        f.b2 = f.b0;
+        f.a1 = -2 * c / a0;
+        f.a2 = (1 - alpha) / a0;
+        return f;
+    }
+    static Biquad2 of(double b0, double b1, double b2, double a1, double a2) {
+        Biquad2 f;
+        f.b0 = b0;
+        f.b1 = b1;
+        f.b2 = b2;
+        f.a1 = a1;
+        f.a2 = a2;
+        return f;
+    }
+};
+
+// K-weighted power (both channels summed, as BS.1770 sums them) over `ranges`, through a phone's
+// 4th-order high-pass at `phoneHz` first (0: none). The filters run from each range's start.
+double phonePower(const Audio& a, const std::vector<std::pair<int64_t, int64_t>>& ranges, double phoneHz) {
+    double sum = 0, n = 0;
+    for (auto [s, e] : ranges) {
+        for (int c = 0; c < 2; ++c) {
+            const auto& x = c == 0 ? a.l : a.r;
+            Biquad2 h1 = Biquad2::highPass(a.rate, phoneHz > 0 ? phoneHz : 10, 0.54119610), h2 = Biquad2::highPass(a.rate, phoneHz > 0 ? phoneHz : 10, 1.30656296);
+            // BS.1770-4 at 48 kHz: the shelf, then the RLB high-pass.
+            Biquad2 k1 = Biquad2::of(1.53512485958697, -2.69169618940638, 1.19839281085285, -1.69065929318241, 0.73248077421585);
+            Biquad2 k2 = Biquad2::of(1.0, -2.0, 1.0, -1.99004745483398, 0.99007225036621);
+            for (int64_t i = s; i < e && i < static_cast<int64_t>(x.size()); ++i) {
+                double v = x[static_cast<size_t>(i)];
+                if (phoneHz > 0) v = h2(h1(v));
+                v = k2(k1(v));
+                sum += v * v;
+                if (c == 0) n += 1;
+            }
+        }
+    }
+    return n > 0 ? sum / n : 0;
+}
+
+// The RMS over 5 ms, every millisecond, of the mono sum over [from, to).
+std::vector<double> rmsEnvelope(const Audio& a, int64_t from, int64_t to) {
+    const int hop = a.rate / 1000, win = 5 * a.rate / 1000;
+    std::vector<double> out;
+    for (int64_t i = from; i + win <= to && i + win <= static_cast<int64_t>(a.frames()); i += hop) {
+        double s = 0;
+        for (int k = 0; k < win; ++k) {
+            const double m = 0.5 * (a.l[static_cast<size_t>(i + k)] + a.r[static_cast<size_t>(i + k)]);
+            s += m * m;
+        }
+        out.push_back(std::sqrt(s / win));
+    }
+    return out;
+}
+
+// Note starts in an RMS envelope (one value a millisecond): a rise of 12 dB or more over the lowest
+// of the 30 ms before, at least 26 dB under the loudest, 80 ms after the start before at least.
+std::vector<int64_t> onsets(const std::vector<double>& r) {
+    std::vector<int64_t> out;
+    double top = 0;
+    for (double v : r) top = std::max(top, v);
+    int64_t last = -1000;
+    for (size_t k = 30; k < r.size(); ++k) {
+        if (r[k] < 0.05 * top || static_cast<int64_t>(k) - last < 80) continue;
+        double low = r[k];
+        for (size_t j = k - 30; j < k; ++j) low = std::min(low, r[j]);
+        if (r[k] > 4.0 * low) {
+            out.push_back(static_cast<int64_t>(k));
+            last = static_cast<int64_t>(k);
+        }
+    }
+    return out;
+}
+
+double median(std::vector<double> v) {
+    if (v.empty()) return NAN;
+    std::sort(v.begin(), v.end());
+    return v.size() % 2 ? v[v.size() / 2] : 0.5 * (v[v.size() / 2 - 1] + v[v.size() / 2]);
+}
+
+struct BassMeasures {
+    double phone200 = NAN, phone300 = NAN, place300 = NAN, harmonics = NAN, attack = NAN, attackSpread = NAN, kickDip = NAN, lufs = NAN;
+    int notes = 0, kicks = 0;
+};
+
 int main(int argc, char** argv) {
-    // ps_measure <song.wav> [<song.pscmd>] [--lead <lead.wav>]: --lead adds the lead's centroid movement.
-    std::string leadPath;
+    // ps_measure <song.wav> [<song.pscmd>] [--lead <lead.wav>] [--bass <bass.wav>] [--kick <kick.wav>]
+    //            [--pre <premaster.wav>] [--dry <premaster-without-exciter.wav>]: --lead adds the lead's
+    // centroid movement; --bass the basses alone (ps_render --no-limiter --solo <META bass>) through
+    // a phone model (B1-B6), with --pre (the whole song before the master chain) their place in it
+    // through the phone (B3), with --kick (the kick alone) the bass's dip under it (B9), with --dry
+    // (the song before the master without the bass exciter) what the exciter adds (B12).
+    std::string leadPath, bassPath, kickPath, prePath, dryPath;
     std::vector<char*> args{argv[0]};
     for (int i = 1; i < argc; ++i) {
         if (!std::strcmp(argv[i], "--lead") && i + 1 < argc) leadPath = argv[++i];
+        else if (!std::strcmp(argv[i], "--bass") && i + 1 < argc) bassPath = argv[++i];
+        else if (!std::strcmp(argv[i], "--kick") && i + 1 < argc) kickPath = argv[++i];
+        else if (!std::strcmp(argv[i], "--pre") && i + 1 < argc) prePath = argv[++i];
+        else if (!std::strcmp(argv[i], "--dry") && i + 1 < argc) dryPath = argv[++i];
         else args.push_back(argv[i]);
     }
     argc = static_cast<int>(args.size());
     argv = args.data();
     if (argc < 2 || argc > 3) {
-        std::fprintf(stderr, "usage: ps_measure <song.wav> [<song.pscmd>] [--lead <lead.wav>]\n");
+        std::fprintf(stderr, "usage: ps_measure <song.wav> [<song.pscmd>] [--lead <lead.wav>] [--bass <bass.wav>] [--kick <kick.wav>] [--pre <pre.wav>] [--dry <dry.wav>]\n");
         return 1;
     }
     Audio a;
@@ -561,6 +673,101 @@ int main(int argc, char** argv) {
         if (readWav(leadPath.c_str(), lead) && lead.frames() > 0) c = barCentroids(lead, std::min<int64_t>(songFrames, static_cast<int64_t>(lead.frames())), bpm);
         std::printf("  \"lead_centroid_hz\": %s,\n", c.bars ? num(c.median, 0).c_str() : "null");
         std::printf("  \"lead_centroid_var\": %s,\n", c.bars ? num(c.variation).c_str() : "null");
+    }
+    // The mix's lows (B7, B8): 40-60 Hz and under 30 Hz of the main section, against its whole.
+    {
+        const auto p = spectrum(a, mainRanges);
+        double total = 0, sub = 0, infra = 0;
+        for (size_t k = 1; k < p.size(); ++k) {
+            const double f = static_cast<double>(k) * a.rate / kFft;
+            total += p[k];
+            if (f >= 40 && f < 60) sub += p[k];
+            if (f < 30) infra += p[k];
+        }
+        std::printf("  \"sub_40_60\": %s,\n", total > 0 ? num(db(sub / total)).c_str() : "null");
+        std::printf("  \"infra_below_30\": %s,\n", total > 0 ? num(db(infra / total)).c_str() : "null");
+    }
+    if (!bassPath.empty()) {
+        Audio bass;
+        BassMeasures m;
+        if (readWav(bassPath.c_str(), bass) && bass.frames() > 0) {
+            const double full = phonePower(bass, mainRanges, 0);
+            if (full > 1e-12) {
+                m.lufs = -0.691 + db(full);
+                m.phone200 = db(phonePower(bass, mainRanges, 200) / full);
+                m.phone300 = db(phonePower(bass, mainRanges, 300) / full);
+                if (!prePath.empty()) {
+                    Audio pre;
+                    if (readWav(prePath.c_str(), pre) && pre.frames() > 0) {
+                        const double mix300 = phonePower(pre, mainRanges, 300);
+                        if (mix300 > 1e-12) m.place300 = db(phonePower(bass, mainRanges, 300) / mix300);
+                    }
+                }
+                const auto p = spectrum(bass, mainRanges);
+                double high = 0, low = 0;
+                for (size_t k = 1; k < p.size(); ++k) {
+                    const double f = static_cast<double>(k) * bass.rate / kFft;
+                    if (f >= 200 && f < 800) high += p[k];
+                    if (f >= 30 && f < 100) low += p[k];
+                }
+                if (high > 0 && low > 0) m.harmonics = db(high / low);
+                // Attack (B5) and its spread (B6): each note heard alone for 250 ms at least.
+                std::vector<double> attacks;
+                std::vector<double> envelopes;
+                for (auto [s0, e0] : mainRanges) {
+                    const auto r = rmsEnvelope(bass, s0, e0);
+                    const auto on = onsets(r);
+                    for (size_t j = 0; j < on.size(); ++j) {
+                        const int64_t k = on[j], next = j + 1 < on.size() ? on[j + 1] : static_cast<int64_t>(r.size());
+                        if (next - k < 250 || k + 250 > static_cast<int64_t>(r.size())) continue;
+                        double top = 0;
+                        for (int64_t q = k; q < k + 40; ++q) top = std::max(top, r[static_cast<size_t>(q)]);
+                        const double body = median(std::vector<double>(r.begin() + k + 80, r.begin() + k + 250));
+                        if (body > 1e-9) attacks.push_back(dbAmp(top / body));
+                    }
+                }
+                m.notes = static_cast<int>(attacks.size());
+                if (!attacks.empty()) {
+                    m.attack = median(attacks);
+                    double mean = 0, var = 0;
+                    for (double v : attacks) mean += v;
+                    mean /= static_cast<double>(attacks.size());
+                    for (double v : attacks) var += (v - mean) * (v - mean);
+                    m.attackSpread = std::sqrt(var / static_cast<double>(attacks.size()));
+                }
+                // The bass's dip under the kick (B9): its RMS 0-50 ms after each kick against 100-200 ms after.
+                if (!kickPath.empty()) {
+                    Audio kick;
+                    if (readWav(kickPath.c_str(), kick) && kick.frames() > 0) {
+                        std::vector<double> dips;
+                        for (auto [s0, e0] : mainRanges) {
+                            const auto kr = rmsEnvelope(kick, s0, e0);
+                            const auto br = rmsEnvelope(bass, s0, e0);
+                            for (int64_t k : onsets(kr)) {
+                                if (k + 200 > static_cast<int64_t>(br.size())) continue;
+                                double nearSq = 0, farSq = 0;
+                                for (int64_t q = k; q < k + 50; ++q) nearSq += br[static_cast<size_t>(q)] * br[static_cast<size_t>(q)];
+                                for (int64_t q = k + 100; q < k + 200; ++q) farSq += br[static_cast<size_t>(q)] * br[static_cast<size_t>(q)];
+                                if (farSq > 1e-12 && nearSq > 1e-14) dips.push_back(db((nearSq / 50) / (farSq / 100)));
+                            }
+                        }
+                        m.kicks = static_cast<int>(dips.size());
+                        if (!dips.empty()) m.kickDip = median(dips);
+                    }
+                }
+            }
+        }
+        auto opt = [&](double v) { return std::isfinite(v) ? num(v) : std::string("null"); };
+        std::printf("  \"bass\": {\"lufs\": %s, \"phone_200\": %s, \"phone_300\": %s, \"place_300\": %s, \"harmonics\": %s, \"attack\": %s, "
+                    "\"attack_spread\": %s, \"notes\": %d, \"kick_dip\": %s, \"kicks\": %d},\n",
+                    opt(m.lufs).c_str(), opt(m.phone200).c_str(), opt(m.phone300).c_str(), opt(m.place300).c_str(), opt(m.harmonics).c_str(),
+                    opt(m.attack).c_str(), opt(m.attackSpread).c_str(), m.notes, opt(m.kickDip).c_str(), m.kicks);
+    }
+    if (!prePath.empty() && !dryPath.empty()) {
+        Audio pre, dry;
+        if (readWav(prePath.c_str(), pre) && readWav(dryPath.c_str(), dry) && pre.frames() > 0 && dry.frames() > 0) {
+            std::printf("  \"exciter_lu\": %s,\n", num(loudness(pre, mainRanges).lufs - loudness(dry, mainRanges).lufs).c_str());
+        }
     }
     std::printf("  \"drop_minus_groove\": %s,\n", contrast({"Groove", "Couplet", "Montée"}).c_str());
     std::printf("  \"drop_minus_break\": %s,\n", contrast({"Break"}).c_str());

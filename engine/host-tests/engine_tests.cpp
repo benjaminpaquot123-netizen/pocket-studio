@@ -3863,7 +3863,10 @@ void testNewEffects() {
         CHECK(run(fx, l, r));
         double diff = 0;
         for (size_t i = n / 2; i < n; ++i) diff += std::fabs(double(l[i]) - dryL[i]) + std::fabs(double(r[i]) - dryL[i]);
-        if (type != ps::InsertSlot::WidenerFx && type != ps::InsertSlot::GateFx && type != ps::InsertSlot::ParamEqFx) CHECK(diff / double(n) > 1e-3);  // it changes the sound
+        // The bass exciter adds nothing to a 440 Hz sine (no low band): its job is checked on a bass (bass_exciter).
+        if (type != ps::InsertSlot::WidenerFx && type != ps::InsertSlot::GateFx && type != ps::InsertSlot::ParamEqFx && type != ps::InsertSlot::BassExciterFx) {
+            CHECK(diff / double(n) > 1e-3);  // it changes the sound
+        }
     }
     // Gate: a quiet signal (-50 dB) is shut, a loud one passes.
     ps::InsertSlot gate;
@@ -7965,8 +7968,10 @@ void testCommandBudgetPerCallback() {
 #include "multizone_tests.inc"
 #include "restes_tests.inc"
 #include "review3539_tests.inc"
+#include "leads_tests.inc"
 #include "livefade_tests.inc"
 #include "layers_tests.inc"
+#include "basses_tests.inc"
 
 int main(int argc, char** argv) {
     const char* only = nullptr;  // a test's name: run that one alone
@@ -8162,8 +8167,10 @@ int main(int argc, char** argv) {
         PS_MULTIZONE_TESTS
         PS_RESTES_TESTS
         PS_REVIEW3539_TESTS
+        PS_LEADS_TESTS
         PS_LIVEFADE_TESTS
         PS_LAYERS_TESTS
+        PS_BASSES_TESTS
     };
     for (const auto& t : tests) {
         if (only && std::strcmp(only, t.name) != 0) continue;

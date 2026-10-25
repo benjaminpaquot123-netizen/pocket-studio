@@ -532,4 +532,106 @@ void Wobble::process(float* l, float* r, int n) {
     pending_ = -1;
 }
 
+// --- Bass exciter (« Basse audible ») -------------------------------------------------------
+
+float BassExciter::frequencyHz(float v) { return expMap(v, 60.0f, 200.0f); }
+float BassExciter::topHz(float v) { return expMap(v, 250.0f, 1200.0f); }
+
+void BassExciter::prepare(float rate) {
+    rate_ = rate;
+    attack_ = timeCoef(rate, 2.0f);
+    release_ = timeCoef(rate, 60.0f);
+    amountGlide_ = timeCoef(rate, 10.0f);
+    filterGlide_ = 1.0f - std::exp(-static_cast<float>(kStep) / (0.02f * rate));
+    freqNow_ = frequencyHz(p_[1]);
+    topNow_ = topHz(p_[3]);
+    update(freqNow_, topNow_);
+    reset();
+}
+
+void BassExciter::setParam(int p, float v) {
+    if (p < 0 || p >= kParams || !std::isfinite(v)) return;
+    // Stored only: the audio thread glides the filters to it (glideFilters).
+    p_[static_cast<size_t>(p)] = std::clamp(v, 0.0f, 1.0f);
+}
+
+void BassExciter::update(float f, float topHz) {
+    lowA_.lowPassQ(rate_, f, 0.5412f);
+    lowB_.lowPassQ(rate_, f, 1.3066f);
+    const float hp = std::max(100.0f, 1.25f * f);
+    hpA_.highPassQ(rate_, hp, 0.5412f);
+    hpB_.highPassQ(rate_, hp, 1.3066f);
+    top_.lowPass(rate_, std::min(topHz, 0.45f * rate_));
+}
+
+void BassExciter::glideFilters() {
+    const float f = frequencyHz(p_[1]), top = topHz(p_[3]);
+    if (f == freqNow_ && top == topNow_) return;
+    freqNow_ += (f - freqNow_) * filterGlide_;
+    topNow_ += (top - topNow_) * filterGlide_;
+    // Close enough (0.1 %): there, so that the coefficients stop being worked out.
+    if (std::fabs(f - freqNow_) < 1e-3f * f) freqNow_ = f;
+    if (std::fabs(top - topNow_) < 1e-3f * top) topNow_ = top;
+    update(freqNow_, topNow_);
+}
+
+void BassExciter::reset() {
+    lowA_.reset();
+    lowB_.reset();
+    hpA_.reset();
+    hpB_.reset();
+    top_.reset();
+    env_ = 0.0f;
+    countdown_ = 0;
+    fresh_ = true;
+}
+
+void BassExciter::process(float* l, float* r, int n) {
+    const float target = p_[0];
+    if (fresh_) {
+        amount_ = target;
+        if (freqNow_ != frequencyHz(p_[1]) || topNow_ != topHz(p_[3])) {
+            freqNow_ = frequencyHz(p_[1]);
+            topNow_ = topHz(p_[3]);
+            update(freqNow_, topNow_);
+        }
+        fresh_ = false;
+    }
+    if (target <= 0.0f && amount_ < 1e-5f) {
+        amount_ = 0.0f;
+        return;  // nothing to add (the filters wait at their last state)
+    }
+    const float colour = p_[2];
+    constexpr float kShape = 4.0f;
+    constexpr float kFloor = 1e-5f;  // under it the low band is silence: its noise is not blown up
+    for (int i = 0; i < n; ++i) {
+        if (--countdown_ < 0) {
+            glideFilters();
+            countdown_ = kStep - 1;
+        }
+        const float in = 0.5f * (l[i] + r[i]);
+        if (!std::isfinite(in)) {
+            // A NaN or an infinity in: the filters and the envelope start again from silence
+            // (left as they were, they would stay NaN and silence the exciter for good).
+            lowA_.reset();
+            lowB_.reset();
+            hpA_.reset();
+            hpB_.reset();
+            top_.reset();
+            env_ = 0.0f;
+            continue;
+        }
+        const float low = lowB_.process(lowA_.process(in));
+        const float a = std::fabs(low);
+        env_ += (a > env_ ? attack_ : release_) * (a - env_);
+        const float t = std::tanh(kShape * low / (env_ + kFloor));
+        const float shaped = (1.0f - colour) * t + colour * t * t;
+        const float harmonics = top_.process(hpB_.process(hpA_.process(shaped)));
+        amount_ += (target - amount_) * amountGlide_;
+        const float add = finiteOr0(amount_ * kGain * env_ * harmonics);
+        l[i] += add;
+        r[i] += add;
+    }
+}
+
 }  // namespace ps

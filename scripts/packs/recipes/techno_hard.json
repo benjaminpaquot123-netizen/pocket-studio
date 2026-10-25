@@ -99,7 +99,7 @@
   "bass": {
    "pattern": "..rR..rR..rR..R-",
    "octave": 1,
-   "sound": "Basse sub",
+   "sound": "Basse roulante",
    "glide": false
   },
   "lead": {
@@ -265,7 +265,7 @@
   "bass": {
    "pattern": ".rR-.rRr.rR-.rRr",
    "octave": 1,
-   "sound": "Basse sub",
+   "sound": "Basse roulante",
    "glide": false
   },
   "lead": {
@@ -783,15 +783,15 @@
   "bass": {
    "pattern": "..R-..r...R-.r..",
    "octave": 2,
-   "sound": "Basse ronde",
+   "sound": "Basse pluck",
    "glide": false
   },
   "lead": {
    "type": "riff",
    "pattern": "R..R..R..R..5..RR..R..R-.R..5-..",
    "arp_rate": 24,
-   "octave": 3,
-   "sound": "Cloche"
+   "octave": 4,
+   "sound": "Cloche FM"
   },
   "acid": {
    "use": false,
@@ -931,7 +931,7 @@
   "bass": {
    "pattern": "..R-..R-..R-..R-..R-..R-..R-.rR-",
    "octave": 2,
-   "sound": "Basse ronde",
+   "sound": "Basse roulante",
    "glide": false
   },
   "lead": {

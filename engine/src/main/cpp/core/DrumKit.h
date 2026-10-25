@@ -42,7 +42,12 @@ public:
         Click,  // 0..1 the attack layer
         Glide,  // seconds 0..0.5: the 808 slides to a new pitched hit over this time (0: no glide)
         Sub,    // 0..1 the kicks' sub layer
-        Tone,   // 0..1: the 808's octave and twelfth layer (heard on a phone); rumble low-pass 60 -> 240 Hz
+        Tone,   // 0..1: the 808's octave and twelfth layer (version 1: its 4th to 8th harmonics); rumble low-pass 60 -> 240 Hz
+        // « L'808 qui tape » (docs/hits/basses-qui-tapent.md, P2): the 808's version (0 as before, 1 the
+        // punchy one), its attack's drop in semitones (0..36) and its time constant in seconds (0.005..0.15).
+        Version,
+        PitchDrop,
+        DropTime,
         kVoiceParams
     };
 

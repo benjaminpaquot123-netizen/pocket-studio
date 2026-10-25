@@ -52,11 +52,27 @@ public:
         Vowel,       // 0..1: A, E, I, O, U; the sweep (Lfo2ToCutoff) moves it too
         MidLayer,    // 0..1: a layer of the sound above 250 Hz, driven and wide (the bass music « mid » over a mono sub)
         Oversample,  // > 0.5: the oscillators run at twice the rate and are filtered down (aliasing under -60 dB)
+        // « Des basses qui tapent » (docs/hits/basses-qui-tapent.md, P3), appended: each one at its
+        // default leaves the sound exactly as it was (plain() then holds: the same path as before).
+        PitchEnv,      // 0..1: the attack starts 0..48 semitones over the note and falls to it (the 808, the donk, the « wub »)
+        PitchDecay,    // 0..1: that fall's time constant, 1..500 ms (500^v ms; 0.5: 22 ms)
+        PhaseReset,    // > 0.5: each new note starts its oscillators at phase 0 (a voice that was silent): every hit attacks alike
+        VelocityCutoff,// 0..1: the velocity opens the filter: +-2 octaves x this at velocity 1 / 0.4, none at 0.7
+        SubShape,      // the sub's wave: 0 square (as before), 0.5 triangle, 1 sine
+        SubFloor,      // > 0.5: the sub, the octave-down copy and oscillator 2 an octave down never under 30 Hz: an octave up there
+        MidLayerHz,    // the mid layer's high-pass: 250 x 1.6^(2v - 1) Hz (0.5: 250 Hz, as before; 156..400)
+        MidLayerDrive, // the mid layer's drive: 3 x 3^(2v - 1) (0.5: 3, as before; 1..9)
         ParamCount
     };
     // The MonoBelow value of 120 Hz (its default) and its frequency.
     static constexpr float kMonoBelowDefault = 0.43f;
     static float monoBelowHz(float v) { return 60.0f * std::pow(5.0f, v); }
+    // PitchDecay's time constant (seconds), MidLayerHz's frequency, MidLayerDrive's gain; the sub's floor.
+    static float pitchDecaySeconds(float v) { return 0.001f * std::pow(500.0f, v); }
+    static float midLayerHz(float v) { return 250.0f * std::pow(1.6f, 2.0f * v - 1.0f); }
+    static float midLayerDrive(float v) { return 3.0f * std::pow(3.0f, 2.0f * v - 1.0f); }
+    static constexpr float kSubFloorHz = 30.0f;
+    static constexpr float kPitchEnvSemitones = 48.0f;
     // CycleBars' cycle lengths in bars (index 0: off).
     static constexpr int kCycleChoices = 6;
     static int cycleBarsOf(float v);
@@ -127,6 +143,7 @@ private:
         float glideStep = 0.0f;  // semitones per control tick, 0 = not gliding
         bool fresh = false;      // a new note: its pitch and cutoff are set on its first frame (not the next tick)
         float cycle = 0.0f;      // CycleBars' octaves at the last control tick
+        float pitchEnv = 0.0f;   // PitchEnv: 1 at the attack, falling to 0
     };
 
     struct Event {

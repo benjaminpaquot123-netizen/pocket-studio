@@ -50,6 +50,7 @@ struct PlaitsSynth::Impl {
         bool fastRelease = false;  // beyond a new model's voice limit: fade out within a few ms
         uint32_t age = 0;
         uint32_t onBlock = 0;  // block in which the current note started
+        float velocityGain = 1.0f;  // sound version 3: this note's level from its velocity, glided per block
     };
     std::array<Voice, kVoices> voices;
     plaits::Patch patch{};
@@ -67,6 +68,7 @@ struct PlaitsSynth::Impl {
     float bend = 0.0f, mod = 0.0f;  // live pitch bend (semitones) and mod wheel
     float attackStep = 0.0f, releaseCoef = 0.0f;
     float rate = 48000.0f;  // the stream's (prepare)
+    bool velocityLevel = false;  // sound version 3 (setVelocityLevel)
     float tuning = tuningFor(48000.0f);
 
     void updatePatch() {
@@ -112,6 +114,8 @@ struct PlaitsSynth::Impl {
             v->note = e.note;
             v->gate = true;
             v->velocity = std::clamp(e.velocity, 0.0f, 1.0f);
+            // A silent voice starts at its note's level at once; a sounding one glides there.
+            if (!v->retrigger) v->velocityGain = 0.3f + 0.7f * v->velocity;
             v->fastRelease = false;
             v->age = ++clock;
             v->onBlock = block;
@@ -145,7 +149,16 @@ struct PlaitsSynth::Impl {
             p.note = static_cast<float>(v.note) + tuning + bend;
             p.timbre = std::min(1.0f, p.timbre + 0.5f * mod);
             v.dsp.Render(p, m, frames, kBlock);
-            for (int i = 0; i < kBlock; ++i) out[i] += frames[i].out * gain;
+            if (velocityLevel && velocityShapesLevel(patch.engine)) {
+                // Towards the note's level within a few blocks (a voice taken by a softer note: no step).
+                // Ramped within the block: a 30 % jump at a block's edge could click.
+                const float g0 = gain * v.velocityGain;
+                v.velocityGain += (0.3f + 0.7f * v.velocity - v.velocityGain) * 0.5f;
+                const float step = (gain * v.velocityGain - g0) / kBlock;
+                for (int i = 0; i < kBlock; ++i) out[i] += frames[i].out * (g0 + step * static_cast<float>(i + 1));
+            } else {
+                for (int i = 0; i < kBlock; ++i) out[i] += frames[i].out * gain;
+            }
         }
     }
 };
@@ -247,6 +260,8 @@ void PlaitsSynth::render(float* mono, int numFrames) {
 }
 
 void PlaitsSynth::restartNoise() { impl_->random = Impl::kRandomSeed; }
+
+void PlaitsSynth::setVelocityLevel(bool on) { impl_->velocityLevel = on; }
 
 int PlaitsSynth::activeVoices() const {
     int n = 0;

@@ -101,9 +101,10 @@ class GuideParcoursTest {
         // The why of each effect on a track, for the sheet.
         assertTrue(EffectType.entries.filter { it != EffectType.NONE }.all { jump.why("lead", it).isNotEmpty() })
         assertTrue(jump.why("bass", EffectType.FILTER) != jump.why("lead", EffectType.FILTER))
-        // A second bass is not offered « more echo », and the first Drop's sparser start names it (review texts).
-        assertTrue(jump.card("fx.lead")!!.proposals.none { it.label == "Plus d'écho" })
-        assertTrue(jump.card("arr.differ")!!.proposals.first().label.contains("2e basse"))
+        // Since the leads chantier the jump up's lead is a Hoover, not a second bass: a lead's proposals,
+        // and the first Drop's sparser start names it.
+        assertTrue(jump.card("fx.lead")!!.proposals.any { it.label == "Plus d'écho" })
+        assertTrue(jump.card("arr.differ")!!.proposals.first().label.contains("lead"))
         assertTrue(trap.card("mix.contrast")!!.proposals.first().label.contains("pont"))
         // The sidechain: kept as it is when the song already ducks.
         assertEquals(listOf("sidechain|changed:sidechain"), jump.card("fx.sidechain")!!.done)

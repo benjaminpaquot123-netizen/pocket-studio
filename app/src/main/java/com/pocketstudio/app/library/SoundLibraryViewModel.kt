@@ -127,8 +127,13 @@ data class WizardUi(
     val acidSoundName: String? = null,
     /** How busy a generated 303 line is (0..1), as on the Acide tab. */
     val acidDensity: Float = AcidPattern().density,
+    /** « Motifs de basse »: the grid the bass plays ([com.pocketstudio.model.BassPatterns] id; null: the style's own line). */
+    val bassGrid: String? = null,
 ) {
-    val style: StarterWizard.Style? get() = styleId?.let(StarterWizard::style)
+    /** The chosen style, its bass on the chosen grid (the previews and the song hear it). */
+    val style: StarterWizard.Style? get() = styleId?.let(StarterWizard::style)?.let {
+        com.pocketstudio.model.BassPatterns.styled(it, com.pocketstudio.model.BassPatterns.byId(bassGrid))
+    }
     /** Without a melody ([mood] null) the melodic parts' steps are left out; the mood is chosen before them, so [step] stays put. */
     val steps: List<StarterWizard.Step> get() = StarterWizard.steps(style, melody = mood != null)
     val lastStep: Int get() = steps.size - 1
@@ -920,6 +925,17 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
     fun setPartEnabled(part: StarterWizard.Part, enabled: Boolean) =
         _wizard.update { w -> w.parts[part]?.let { w.copy(parts = w.parts + (part to it.copy(enabled = enabled))) } ?: w }
 
+    /** « Motifs de basse »: the bass plays [id]'s grid (null: the style's own line), heard with its sound at once. */
+    fun chooseBassGrid(id: String?) {
+        _wizard.update { it.copy(bassGrid = id) }
+        val sound = _wizard.value.parts[StarterWizard.Part.Bass]?.sound ?: return
+        val ref = gridPreview(sound)
+        if (_preparing.value != ref) {
+            stopPreview()
+            preview(ref)
+        }
+    }
+
     /** Picks the part's sound and lets its first bar be heard. */
     fun choosePartSound(part: StarterWizard.Part, sound: StarterWizard.PartSound) {
         _wizard.update { w -> w.parts[part]?.let { w.copy(parts = w.parts + (part to it.copy(sound = sound, enabled = true, chosen = true))) } ?: w }
@@ -1080,6 +1096,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         parts = StarterWizard.Part.entries.associateWith { PartRow(it in StarterWizard.defaultParts(style), StarterWizard.soundsFor(it, style, installed).first()) },
         acid = true,
         error = null,
+        bassGrid = null,
     )
 
     /** A song built by the assistant: the project, the sounds to store in its folder, its guide. */
@@ -1179,6 +1196,15 @@ internal fun soundOnChoose(current: SoundRef?, role: Role, option: SoundOption):
  * plays that instrument's own preview (the downloaded pack's, else the catalogue's), not the synth
  * sound that stands in for it in a private engine; anything else plays itself.
  */
+/**
+ * What « Motifs de basse » plays when a grid is touched: the bass on its grid with the beat. A
+ * multizone instrument's own preview is one sample, not a line: the grid is heard on the sound that
+ * stands in for it in a private engine (its [StarterWizard.PartSound.synth]); a pack sound (sampled)
+ * plays the grid itself.
+ */
+internal fun gridPreview(sound: StarterWizard.PartSound): SoundRef.Melodic =
+    SoundRef.Melodic(StarterWizard.Part.Bass, if (sound.multi != null) sound.copy(multi = null) else sound)
+
 internal fun previewSource(ref: SoundRef): SoundRef =
     (ref as? SoundRef.Melodic)?.sound?.multi?.pack?.let { SoundRef.Instrument(it) } ?: ref
 

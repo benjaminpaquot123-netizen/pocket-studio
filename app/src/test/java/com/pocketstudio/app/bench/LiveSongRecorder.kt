@@ -14,6 +14,7 @@ import com.pocketstudio.engine.NativeEngine
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.StarterWizard
 import com.pocketstudio.model.partSteps
+import com.pocketstudio.model.bassChannels
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -60,7 +61,7 @@ class LiveSongRecorder {
         val only = System.getProperty("ps.bench.styles")?.split(',')?.map { it.trim() }?.filter { it.isNotEmpty() }?.toSet().orEmpty()
         val styles = StarterWizard.STYLES.filter { only.isEmpty() || it.id in only }
         // How long ps_live will play each song: the parts staged up to there.
-        val seconds = System.getProperty("ps.bench.seconds")?.toIntOrNull() ?: 90
+        val seconds = System.getProperty("ps.bench.seconds")?.toIntOrNull() ?: 150
         // The soak: songs this long at least, looped.
         val loopSeconds = System.getProperty("ps.bench.loop")?.toIntOrNull()
         assumeTrue("no style matches ${only.joinToString()}", styles.isNotEmpty())
@@ -97,7 +98,17 @@ class LiveSongRecorder {
                 waitFor("the sounds of ${style.id}") { loaded }
                 val p = vm.project.value
                 sink.mark("SONG bpm=${p.tempoBpm} parts=${p.song.size}")
-                // The sheet shows, a moment passes, then ▶.
+                // The voices a measure renders alone (the mixer channel soloed in ps_live).
+                benchVoiceMeta(p).forEach(sink::mark)
+                // The basses' strips: the live bench plays them alone too (« basse au téléphone »).
+                p.bassChannels().takeIf { it.isNotEmpty() }?.let { sink.mark("META bass ${it.joinToString(",")}") }
+                // S6 (G5): the live gain the export will use, found offline before ▶ (posted when found).
+                var drive = false
+                CoroutineScope(Dispatchers.Main).launch { vm.awaitLiveDriveForTest(); drive = true }
+                waitFor("the live gain of ${style.id}", 120) { drive }
+                vm.liveDriveDb?.let { sink.mark("# live drive ${"%.2f".format(java.util.Locale.ROOT, it)} dB") }
+                // The sheet shows, a moment passes, then ▶ « Depuis le début » (the whole song: the bench
+                // hears the Intro too; « Écouter » itself starts 8 bars before the first Drop).
                 sink.mark("WAIT ms 1000")
                 vm.toggleSong()
                 // The app's own pause before it stages the second part.

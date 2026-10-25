@@ -38,7 +38,7 @@ object TrackRoles {
 }
 
 /** The median pitch of track [t]'s notes over every scene, or null without notes. */
-private fun Project.medianPitch(t: InstrumentTrack): Int? {
+internal fun Project.medianPitch(t: InstrumentTrack): Int? {
     val notes = allScenes.flatMap { s -> (if (t.id == 0) s.synthNotes else s.trackNotes[t.id])?.notes.orEmpty() }.ifEmpty { t.notes.notes }
     if (notes.isEmpty()) return null
     return notes.map { it.pitch }.sorted()[notes.size / 2]
@@ -57,3 +57,14 @@ fun Project.riserTrackId(): Int? = instrumentTracks.firstOrNull { TrackRoles.isR
 
 /** The part keys of everything that plays a bass: the 303 and the bass tracks (what a Break takes out). */
 fun Project.bassKeys(): Set<String> = setOf(SongPart.ACID) + bassTrackIds().map { SongPart.inst(it) }
+
+/**
+ * Every mixer strip that plays a bass (« des basses qui tapent », docs/hits/basses-qui-tapent.md):
+ * the bass tracks ([bassTrackIds]: the sub and the second bass included), the sub drop, and the pad
+ * that plays the 808 voice. The song bench renders them alone to hear what a phone keeps of the bass.
+ */
+fun Project.bassChannels(): List<Int> {
+    val tracks = bassTrackIds() + instrumentTracks.filter { (DefaultNames.french(it.name) ?: it.name) == StarterWizard.SUB_DROP_TRACK }.map { it.id }
+    val pads = padVoices.filterValues { it.kind == PadVoice.BASS_808 }.keys.map { Mixer.padChannel(it) }
+    return (tracks.distinct().map { InstrumentTrack.mixerChannel(it) } + pads).distinct().sorted()
+}

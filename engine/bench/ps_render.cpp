@@ -2,14 +2,19 @@
 // RecordingSink during SongBenchExport) through the engine core's OfflineRenderer, exactly as the
 // JNI export bridge (engine/src/main/cpp/android/JniBridge.cpp) does, and writes the result.
 //
-//   ps_render [--no-limiter] [--as-app] [--solo <channel>] [--ceiling <dBTP>] [--report <file.json>] <in.pscmd> <out>
+//   ps_render [--no-limiter] [--as-app] [--solo <channel>[,<channel>...]] [--no-exciter] [--ceiling <dBTP>] [--drive-ceiling <dBTP>] [--report <file.json>] <in.pscmd> <out>
 //
 // RENDER wav: <out> is a WAV file, 32-bit float at 48 kHz by default (no dither: byte-identical
 //   runs); --as-app writes what the app writes (the FORMAT line: 44.1 kHz, 16 or 24 bits dithered).
 // RENDER float: <out> is raw interleaved stereo float32 (what OfflineExport.renderToArray returns).
 // --no-limiter: the master's limiter off (a pre-master render).
-// --solo: one mixer channel alone (what the app's separate tracks do), to find where a sound comes from.
+// --solo: one mixer channel alone (what the app's separate tracks do), to find where a sound comes from;
+// several (comma-separated): those together (the song's basses: META bass).
+// --no-exciter: every « Basse audible » (the bass exciter, InsertSlot::BassExciterFx) left out, the rest
+// as recorded: what the exciter adds to the song (the bench's B12).
 // --ceiling: the master limiter's ceiling (what the app sets for an M4A: -2).
+// --drive-ceiling: (S6) the drive searched as at this ceiling, the music then limited at --ceiling
+//   (what the app sets for an M4A of a Drop-aimed song: -1, the WAV's).
 // --report: the renderer's end-of-export report (what the app shows) as a small JSON: integrated
 //   loudness, true peak, length, the gain the loudness target added (drive_db, 0 without one) and
 //   the loudness of the music before the master chain (music_lufs, -1000 in a one-pass render);
@@ -37,6 +42,7 @@
 #include <string>
 #include <vector>
 
+#include "Effects.h"
 #include "OfflineRenderer.h"
 #include "Sample.h"
 
@@ -68,20 +74,27 @@ bool readFloats(const std::string& path, std::vector<float>& out) {
 
 int main(int argc, char** argv) {
     bool noLimiter = false, asApp = false;
-    int solo = -1;
-    float ceiling = NAN;
+    std::vector<int> solo;
+    bool noExciter = false;
+    float ceiling = NAN, driveCeiling = NAN;
     std::string reportPath;
     std::vector<std::string> files;
     for (int i = 1; i < argc; ++i) {
         if (!std::strcmp(argv[i], "--no-limiter")) noLimiter = true;
         else if (!std::strcmp(argv[i], "--as-app")) asApp = true;
-        else if (!std::strcmp(argv[i], "--solo") && i + 1 < argc) solo = std::atoi(argv[++i]);
+        else if (!std::strcmp(argv[i], "--solo") && i + 1 < argc) {
+            std::istringstream list(argv[++i]);
+            std::string ch;
+            while (std::getline(list, ch, ',')) if (!ch.empty()) solo.push_back(std::atoi(ch.c_str()));
+        }
+        else if (!std::strcmp(argv[i], "--no-exciter")) noExciter = true;
         else if (!std::strcmp(argv[i], "--report") && i + 1 < argc) reportPath = argv[++i];
         else if (!std::strcmp(argv[i], "--ceiling") && i + 1 < argc) ceiling = std::strtof(argv[++i], nullptr);
+        else if (!std::strcmp(argv[i], "--drive-ceiling") && i + 1 < argc) driveCeiling = std::strtof(argv[++i], nullptr);
         else files.emplace_back(argv[i]);
     }
     if (files.size() != 2) {
-        std::fprintf(stderr, "usage: ps_render [--no-limiter] [--as-app] [--solo <channel>] [--ceiling <dBTP>] [--report <file.json>] <in.pscmd> <out>\n");
+        std::fprintf(stderr, "usage: ps_render [--no-limiter] [--as-app] [--solo <channel>[,...]] [--no-exciter] [--ceiling <dBTP>] [--drive-ceiling <dBTP>] [--report <file.json>] <in.pscmd> <out>\n");
         return 1;
     }
     std::ifstream in(files[0]);
@@ -122,6 +135,7 @@ int main(int argc, char** argv) {
             std::string value;
             int32_t a = 0, b = 0;
             if (!(ls >> type >> value >> a >> b)) fail(line, "bad command");
+            if (noExciter && type == static_cast<int>(ps::CommandType::SetInsertType) && b == ps::InsertSlot::BassExciterFx) b = ps::InsertSlot::None;
             renderer.post({static_cast<ps::CommandType>(type), std::strtof(value.c_str(), nullptr), a, b});
         } else if (op == "AT") {
             long long frame = -1;
@@ -190,13 +204,17 @@ int main(int argc, char** argv) {
         renderer.scheduleFrom(-1);
         renderer.post({ps::CommandType::SetMaster, 0.0f, 1, 0});
     }
-    if (solo >= 0) {
+    for (int ch : solo) {
         renderer.scheduleFrom(-1);
-        renderer.post({ps::CommandType::SetChannelSolo, 1.0f, solo, 0});
+        renderer.post({ps::CommandType::SetChannelSolo, 1.0f, ch, 0});
     }
     if (std::isfinite(ceiling)) {
         renderer.scheduleFrom(-1);
         renderer.post({ps::CommandType::SetMaster, ceiling, 5, 0});
+    }
+    if (std::isfinite(driveCeiling)) {
+        renderer.scheduleFrom(-1);
+        renderer.post({ps::CommandType::SetMaster, driveCeiling, 9, 0});
     }
     int status = 0;
     if (kind == "float") {

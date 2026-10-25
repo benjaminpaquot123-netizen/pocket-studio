@@ -51,7 +51,8 @@ class WideMixTest {
     fun everySongIsWideWithAPlateAndMonoLows() {
         for (style in StarterWizard.STYLES) {
             val p = song(style)
-            assertEquals(style.id, Project.SOUND_V2, p.soundVersion)
+            // The leads chantier (lot 1): version 3, Plaits' FM voices following the velocity.
+            assertEquals(style.id, Project.SOUND_V3, p.soundVersion)
             assertEquals(style.id, WideMix.MONO_BASS_HZ, p.mixer.monoBassHz, 0f)
             val reverb = p.mixer.buses[0]
             assertEquals(style.id, if (style.family == "Hip-hop") Buses.ROOM else Buses.PLATE, reverb[Buses.REVERB_TYPE], 0f)
@@ -80,14 +81,25 @@ class WideMixTest {
             if (lead.engine == 0 && lead.instrument == null) {
                 assertTrue(style.id, lead.synth.get(SynthPatch.WIDTH) > 0f)
                 assertEquals(style.id, 1f, lead.synth.get(SynthPatch.OVERSAMPLE), 0f)
-                assertEquals(style.id, SynthPatch.cycleValue(8), lead.synth.get(SynthPatch.CYCLE_BARS), 0f)
-                assertTrue(style.id, lead.synth.get(SynthPatch.CYCLE_DEPTH) > 0f)
-                assertEquals(style.id, style.family in setOf("Techno", "House", "Bass music", "Autres"), lead.synth.get(SynthPatch.OCTAVE_DOWN) > 0f)
+                // The leads chantier: the 8-bar filter curve is a song lane open on each phrase's
+                // first bar (the engine's cycle, closed there, off), and the octave-down double only
+                // in club music without a sub track, never under a pluck or a key, at 0.15 (0.3 before).
+                val curve = p.automation.firstOrNull { it.target == AutoTarget.synth(lead.id, SynthPatch.CUTOFF) }
+                if (curve != null) assertEquals(style.id, 0f, lead.synth.get(SynthPatch.CYCLE_DEPTH), 0f)
+                else assertTrue(style.id, lead.synth.get(SynthPatch.CYCLE_DEPTH) in 0.01f..0.25f)
+                val sub = p.instrumentTracks.any { it.name == StarterWizard.SUB_TRACK }
+                val category = SoundLibrary.synthCategoryOf(lead.synth)
+                val doubled = style.family in setOf("Techno", "House", "Bass music", "Autres") && !sub && category !in setOf("Pluck", "Claviers")
+                assertEquals(style.id, if (doubled) WideMix.OCTAVE_DOWN_V3 else 0f, lead.synth.get(SynthPatch.OCTAVE_DOWN), 0f)
+                // No square sub under a lead any more.
+                assertEquals(style.id, 0f, lead.synth.get(SynthPatch.SUB), 0f)
             }
             val types = ch.inserts.map { it.effect }
-            assertTrue(style.id, types.any { it in setOf(EffectType.CHORUS, EffectType.FLANGER, EffectType.WIDENER) })
+            // A unison lead is wide by itself: no chorus folding it to mono first.
+            val unison = lead.engine == 0 && lead.instrument == null && lead.synth.get(SynthPatch.UNISON) > 0f
+            assertTrue(style.id, unison || types.any { it in setOf(EffectType.CHORUS, EffectType.FLANGER, EffectType.WIDENER) })
             assertTrue(style.id, types.any { it == EffectType.ECHO || it == EffectType.PING_PONG } || p.mixer.longFxCount(EffectType.PING_PONG) >= EffectType.longLimit(EffectType.PING_PONG))
-            assertTrue(style.id, ch.sends[0] >= WideMix.LEAD_SEND)
+            assertTrue(style.id, ch.sends[0] >= WideMix.LEAD_SEND_V3)
             // The reverb send's curve: raised on the last bar of each 8-bar phrase, jumping on the bar lines.
             val lane = p.automation.firstOrNull { it.target == AutoTarget(AutoTarget.SEND, InstrumentTrack.mixerChannel(lead.id), 0) }
             assertNotNull(style.id, lane)
@@ -115,7 +127,11 @@ class WideMixTest {
             val pad = trackOf(p, Part.Pad) ?: continue
             if (pad.engine != 0 || pad.instrument != null) continue
             assertEquals(style.id, WideMix.PAD_WIDTH, pad.synth.get(SynthPatch.WIDTH), 0f)
-            assertEquals(style.id, SynthPatch.cycleValue(8), pad.synth.get(SynthPatch.CYCLE_BARS), 0f)
+            // It breathes over 8 bars: on a song lane of its cut-off open on each phrase's first bar,
+            // or (no lane left) on the engine's cycle.
+            val curve = p.automation.firstOrNull { it.target == AutoTarget.synth(pad.id, SynthPatch.CUTOFF) }
+            assertTrue(style.id, curve != null || pad.synth.get(SynthPatch.CYCLE_BARS) == SynthPatch.cycleValue(8))
+            assertEquals(style.id, 0f, pad.synth.get(SynthPatch.SUB), 0f)
             checked++
         }
         assertTrue(checked > 10)
@@ -209,8 +225,101 @@ class WideMixTest {
         }
         assertEquals(SynthPatch.SHAPE_SQUARE, SoundLibrary.SYNTH.first { it.name == "Basse riddim" }.sound.get(SynthPatch.LFO2_SHAPE), 0f)
         assertTrue(SoundLibrary.SYNTH.first { it.name == "Basse neuro" }.sound.get(SynthPatch.FORMANT) > 0f)
-        // The library's other sounds keep their S4 settings at rest (a user's pick sounds as before).
-        assertNull(SoundLibrary.SYNTH.filter { it.name !in setOf("Reese DnB", "Basse riddim", "Basse neuro") }
+        // The library's other sounds keep their S4 settings at rest (a user's pick sounds as before); the
+        // basses that hit (« des basses qui tapent », new) are driven by their own design.
+        val hitting = setOf("Basse roulante", "Basse pluck", "808 synthé", "Donk", "Sub chaud")
+        assertNull(SoundLibrary.SYNTH.filter { it.name !in setOf("Reese DnB", "Basse riddim", "Basse neuro") + hitting }
             .firstOrNull { s -> SynthPatch.S4_PARAMS.any { s.sound.get(it) != SynthPatch.DEFAULTS[it] } })
+    }
+
+    /** The leads chantier, lot 1: the filter's 8-bar curve opens each phrase (the hook comes in bright). */
+    @Test
+    fun theFilterCurveIsOpenOnEachPhrasesFirstBar() {
+        var checked = 0
+        for (style in StarterWizard.STYLES) {
+            val p = song(style)
+            val sections = StarterWizard.songSections(p)
+            for (lane in p.automation.filter { it.target.kind == AutoTarget.SYNTH && it.target.param == SynthPatch.CUTOFF }) {
+                val values = lane.songValues.map { it!! }
+                for (sec in sections.filter { it.bars >= 8 }) {
+                    val phrase = values.subList(sec.start, sec.start + 8)
+                    // Its most open bar is the first, its darkest the fifth, at most about an octave apart.
+                    assertEquals("${style.id} ${sec.start}", phrase.max(), phrase[0], 1e-6f)
+                    assertEquals("${style.id} ${sec.start}", phrase.min(), phrase[4], 1e-6f)
+                    assertTrue(style.id, ProVoices.cutoffUnits(1.05f) >= phrase[0] - phrase[4])
+                }
+                checked++
+            }
+        }
+        assertTrue(checked > 30)
+    }
+
+    /** The leads chantier: no sub under the leads, pads, plucks and keys; the SVF under every unison. */
+    @Test
+    fun theLibraryVoicesAreSetAsProducersSetThem() {
+        for (s in SoundLibrary.SYNTH.filter { it.category in setOf("Leads", "Nappes", "Pluck", "Claviers") }) {
+            assertEquals(s.name, 0f, s.sound.get(SynthPatch.SUB), 0f)
+            if (s.sound.get(SynthPatch.UNISON) > 0f) assertEquals(s.name, 1, (s.sound.get(SynthPatch.FILTER_TYPE) * 3.999f).toInt())
+            // Released over 100 ms at least (envelope time 0.001 x 5000^v s): no note cut dead.
+            assertTrue(s.name, s.sound.get(SynthPatch.A_RELEASE) >= 0.54f)
+            // A vibrato is at 4 Hz or more (0.05 x 400^v Hz), within +-15 cents.
+            if (s.sound.get(SynthPatch.VIBRATO) > 0f) {
+                assertTrue(s.name, 0.05 * Math.pow(400.0, s.sound.get(SynthPatch.LFO1_RATE).toDouble()) >= 4.0)
+                assertTrue(s.name, s.sound.get(SynthPatch.VIBRATO) * 200f <= 15f)
+            }
+        }
+        // The basses keep their sub; « Piano FM » is the DX7 « E.PIANO 1 » (it played « BASS 1 »).
+        assertTrue(SoundLibrary.SYNTH.first { it.name == "Basse ronde" }.sound.get(SynthPatch.SUB) > 0f)
+        val piano = SoundLibrary.PLAITS.first { it.name == "Piano FM" }.sound
+        assertEquals(3, piano.model)
+        assertEquals(0, (piano.harmonics * 32f * 1.02f).toInt())
+        // Liquid: its chords on the DX « WINTRHODES » over a pad, its counter-melody on « BELL C ».
+        val liquid = song(style("liquid_dnb"))
+        val chords = trackOf(liquid, Part.Pad)!!
+        assertEquals(1, chords.engine)
+        assertEquals(SoundLibrary.PLAITS.first { it.name == "Rhodes FM" }.sound.harmonics, chords.plaits.harmonics, 0f)
+        assertNotNull(liquid.instrumentTracks.firstOrNull { it.name == StarterWizard.PAD_LAYER_TRACK && it.id != chords.id })
+        assertEquals("Cloche FM", style("liquid_dnb").melody.counter)
+        // A project saved before the chantier still names its sounds (its own patches, the old library's).
+        for (old in SoundLibrary.SYNTH_V2) assertEquals(old.name, SoundLibrary.synthNameOf(old.sound))
+    }
+
+    /** The leads chantier: a sound's cut-off follows its part's octave (key tracking, done once by the recipe). */
+    @Test
+    fun theCutOffFollowsThePartsNotes() {
+        val pluck = SoundLibrary.SYNTH.first { it.name == "Pluck" }.sound
+        val c4 = ProVoices.keyTracked(pluck, 60, 0.8f)
+        val c6 = ProVoices.keyTracked(pluck, 84, 0.8f)
+        assertEquals(pluck.get(SynthPatch.CUTOFF), c4.get(SynthPatch.CUTOFF), 0f)
+        // Two octaves up: 1.6 octave more open.
+        assertEquals(ProVoices.cutoffUnits(1.6f), c6.get(SynthPatch.CUTOFF) - pluck.get(SynthPatch.CUTOFF), 1e-4f)
+        assertEquals("Pluck", SoundLibrary.synthNameOf(c6))
+    }
+
+    /**
+     * The leads chantier: a song the assistant made before it (sound version 2, the old library's
+     * Supersaw with its square sub, its octave-down double and its 8-bar cycle, « Piano FM » on the
+     * DX « BASS 1 ») opens as it was saved, every setting the engine gets unchanged; the engine
+     * renders versions 1 and 2 sample for sample as before (host test leads_sound_version_fm_velocity).
+     */
+    @Test
+    fun aSongSavedBeforeTheLeadsChantierKeepsItsSound() {
+        val supersaw = WideMix.lead(SoundLibrary.SYNTH_V2.first { it.name == "Supersaw" }.sound, style("dnb"))
+        val piano = PlaitsPatch(model = 2, harmonics = 0.2f, timbre = 0.5f, morph = 0.5f, decay = 0.5f, gain = SynthPatch.gainValue(10.5f))
+        val saved = Project(soundVersion = Project.SOUND_V2).let { p ->
+            val added = p.addTrack("Lead")!!
+            added.withTrack(added.track(0).copy(engine = 1, plaits = piano)).withTrack(added.tracks.last().copy(synth = supersaw))
+        }
+        val opened = ProjectJson.decode(ProjectJson.encode(saved))
+        assertEquals(Project.SOUND_V2, opened.soundVersion)
+        assertEquals(piano, opened.track(0).plaits)
+        assertEquals(supersaw.sanitized().values, opened.tracks.last().synth.sanitized().values)
+        assertEquals(0.1f, opened.tracks.last().synth.get(SynthPatch.SUB), 0f)
+        assertEquals(0.3f, opened.tracks.last().synth.get(SynthPatch.OCTAVE_DOWN), 0f)
+        // Still named as chosen, though the library's « Supersaw » is set otherwise now.
+        assertEquals("Supersaw", SoundLibrary.synthNameOf(opened.tracks.last().synth))
+        assertTrue(SoundLibrary.SYNTH.first { it.name == "Supersaw" }.sound != SoundLibrary.SYNTH_V2.first { it.name == "Supersaw" }.sound)
+        // A version this code does not know is read as the newest it knows, never beyond.
+        assertEquals(Project.SOUND_V3, Project(soundVersion = 9).sanitized().soundVersion)
     }
 }

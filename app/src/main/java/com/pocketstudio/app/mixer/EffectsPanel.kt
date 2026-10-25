@@ -63,6 +63,7 @@ private fun shortName(type: EffectType): String = when (type) {
     EffectType.TAPE_STOP -> tr("Arrêt")
     EffectType.WOBBLE -> "Wobble"
     EffectType.CLIPPER -> "Clip"
+    EffectType.BASS_EXCITER -> tr("Basse+")
 }
 
 /** One-line summary of a channel's effects, e.g. "EQ · Comp · Réverbe". */

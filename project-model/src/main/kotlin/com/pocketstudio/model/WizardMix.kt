@@ -284,7 +284,7 @@ internal object WizardMix {
 
     /**
      * S5, in [StarterWizard.build] just before [WideMix.apply] (then [withAudibleBass], last): the assistant's song gets an
-     * honest mix ([Project.MIX_V2]: its loudness target aims at the Drop, the master chain takes
+     * honest mix ([Project.MIX_V2], since S7 [Project.MIX_V4]: its loudness target aims at the Drop, the master chain takes
      * 3 LU at most there). One stage on the kick's transient (the drum bus and the master glue
      * slow and in RMS, the Punch at 10 ms); a soft clipper on the bass before its OTT; a real
      * sidechain: the kick's sound (its pad) is the key, the melodic tracks and the returns go
@@ -293,7 +293,7 @@ internal object WizardMix {
      * The projects saved before keep their mix.
      */
     fun honest(project: Project, style: Style, partOfTrack: Map<Int, Part>): Project {
-        var p = project.copy(mixVersion = Project.MIX_V2)
+        var p = project.copy(mixVersion = Project.MIX_V4)
         var channels = p.mixer.channels.toMutableList()
         fun replaced(list: List<Insert>, from: Insert, to: Insert) = list.map { if (it.type == from.type && it.params == from.sanitized().params) to else it }
         channels[0] = channels[0].copy(inserts = replaced(channels[0].inserts, BUS_GLUE[0].sanitized(), BUS_GLUE_V2[0])).sanitized()
@@ -400,7 +400,7 @@ internal object WizardMix {
         p = withRisingMontees(p)
         p = withSectionLevels(
             p, build = style.form == SongForm.Build, monteeTop = monteeTopDb(style), monteeFloor = monteeFloorDb(style),
-            groove = grooveDb(style), intro = introDb(style),
+            groove = grooveDb(style), intro = introDb(style), breakTrim = BREAK_SPREAD_TRIM_DB,
         )
         p = p.copy(
             drums = p.drums.copy(lanes = lanes),
@@ -608,6 +608,13 @@ internal object WizardMix {
     const val BREAK_DB = -3f
 
     /**
+     * S7 son ([Project.MIX_V4]): the Break (or Pont) this much lower again. The pads and leads spread
+     * wide (WideMix.withSpread) read 0.4 to 0.6 LU louder, and a Break is mostly them: without it,
+     * Drop − Break fell under +4 LU (dubstep 3.75, acid techno 3.85) on the bench.
+     */
+    const val BREAK_SPREAD_TRIM_DB = 0.6f
+
+    /**
      * S5b: the top of a Montée (a Pré-refrain) on the master fader, and the floor a club Montée eases
      * down to before it climbs over its last 4 bars. A Montée's end has no kick nor bass for the
      * limiter to hold: at 0 dB it came out louder than the Drop it leads into (Benjamin's A/B test,
@@ -679,10 +686,10 @@ internal object WizardMix {
 
     private val INTRO_WITH_GROOVE = setOf("Techno", "House")
 
-    private fun sectionDb(stem: String, groove: Float = GROOVE_DB, intro: Float = 0f): Float? = when (stem) {
+    private fun sectionDb(stem: String, groove: Float = GROOVE_DB, intro: Float = 0f, breakTrim: Float = 0f): Float? = when (stem) {
         "Groove", "Couplet" -> groove
         // Never over the Groove's level (a Groove brought lower takes its Break down with it).
-        "Break", "Pont" -> minOf(BREAK_DB, groove - 1f)
+        "Break", "Pont" -> minOf(BREAK_DB, groove - 1f) - breakTrim
         "Intro" -> intro.takeIf { it != 0f }
         else -> null
     }
@@ -702,8 +709,9 @@ internal object WizardMix {
         monteeFloor: Float = monteeTop + if (build) BUILD_FROM_DB - BUILD_TOP_DB else MONTEE_FROM_DB - MONTEE_TOP_DB,
         groove: Float = GROOVE_DB,
         intro: Float = 0f,
+        breakTrim: Float = 0f,
     ): Project {
-        fun sectionDb(stem: String) = sectionDb(stem, groove, intro)
+        fun sectionDb(stem: String) = sectionDb(stem, groove, intro, breakTrim)
         val p = project
         if (p.song.isEmpty()) return p
         val b = p.beatsPerBar.coerceAtLeast(1)

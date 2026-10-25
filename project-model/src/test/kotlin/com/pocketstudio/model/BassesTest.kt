@@ -20,8 +20,8 @@ class BassesTest {
     @Test
     fun everyBassIsHeardOnAPhoneAndNothingPlaysUnder28Hz() {
         for ((style, p) in songs) {
-            // The master keeps no low cut of its own (MIX_V3 cost the Drop loudness on the bench).
-            assertEquals(style.id, Project.MIX_V2, p.mixVersion)
+            // The master keeps no low cut of its own (MIX_V3 cost the Drop loudness on the bench): S7's MIX_V4.
+            assertEquals(style.id, Project.MIX_V4, p.mixVersion)
             val amount = WizardMix.exciterAmount(style)
             val subs = p.instrumentTracks.filter { it.name in setOf(StarterWizard.SUB_TRACK, StarterWizard.SUB_DROP_TRACK) }.map { InstrumentTrack.mixerChannel(it.id) }
             val pads = p.padVoices.filterValues { it.kind == PadVoice.BASS_808 }.keys.map { Mixer.padChannel(it) }
@@ -80,7 +80,7 @@ class BassesTest {
         assertEquals(0.25f, WizardMix.exciterAmount(StarterWizard.style("dnb")!!), 1e-6f)
         // A project saved before keeps its mix (no exciter, mix version 1 unless it says so).
         assertEquals(Project.MIX_V1, ProjectJson.decode(ProjectJson.encode(Project())).mixVersion)
-        assertEquals(Project.MIX_V3, Project(mixVersion = 9).sanitized().mixVersion)
+        assertEquals(Project.MIX_V4, Project(mixVersion = 9).sanitized().mixVersion)
     }
 
     @Test

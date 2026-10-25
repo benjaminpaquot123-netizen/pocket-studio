@@ -175,6 +175,8 @@ enum class EffectType(val label: String, val params: List<Param>, val defaults: 
         listOf(
             Param("Largeur") { if (it < 0.01f) tr("Mono") else percent((it * 200).roundToInt()) },
             Param("Basses au centre") { if (it < 0.01f) tr("Non") else tr("sous %s", hz(expMap(it, 40f, 300f))) },
+            // S7 son: a side made from the sound itself (a stereo chorus above 250 Hz, mono-compatible).
+            Param("Étalement") { if (it < 0.005f) tr("Non") else percentOf(it) },
         ),
         listOf(0.75f, 0f, 0f, 0f),
         group = EffectGroup.SPACE,

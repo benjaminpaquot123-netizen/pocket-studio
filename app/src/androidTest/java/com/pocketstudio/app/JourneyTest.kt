@@ -135,6 +135,11 @@ class JourneyTest {
             // (docs/REVIEW.md, « Tests d'usage réel »). The Mode simple journey asserts the take on the device.
             runCatching { recordATakeInTime(rhythm()) }.onFailure { log("full-mode take not asserted: ${it.message}") }
             if (j.exists("take_keep")) j.tap("take_keep")
+            // An empty take leaves the app's notice (a dialog) open: « Compris », as a user would.
+            if (rhythm().notice.value != null) {
+                androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().runOnMainSync { rhythm().dismissNotice() }
+                waitFor("the notice closed", 5) { rhythm().notice.value == null }
+            }
 
             // Mix › Exporter: the part in a loop as M4A, then as WAV (the whole 5-minute jump up song takes
             // longer than 5 minutes to render on the CI's software emulator; the Mode simple journey exports

@@ -86,6 +86,8 @@ class Journey(private val compose: ComposeTestRule, private val log: (String) ->
             val read = runCatching { compose.onNodeWithTag(tag).fetchSemanticsNode().boundsInWindow }
             val now = read.getOrNull()
             if (now != null && now == last && now.width > 0f && now.height > 0f) return
+            // Some devices report no bounds at all for these nodes (the CI emulator: all zero): nothing to wait for.
+            if (now != null && now == last && now.width == 0f && now.height == 0f) return
             if (seen.size < 6) seen += read.fold({ "$it" }, { "${it.javaClass.simpleName}: ${it.message?.take(80)}" })
             last = now
             idle(100)

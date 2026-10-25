@@ -289,9 +289,20 @@ class JourneyTest {
     private fun export(rhythm: RhythmViewModel, extension: String): File {
         val started = System.currentTimeMillis()
         j.tap("export")
-        waitFor("the $extension export", 300) {
-            val e = rhythm.export.value
-            !e.running && e.files.any { it.extension == extension && it.lastModified() >= started - 2000 }
+        var lastLog = 0L
+        val finished = runCatching {
+            waitFor("the $extension export", 300) {
+                val e = rhythm.export.value
+                if (System.currentTimeMillis() - lastLog > 20_000) {
+                    lastLog = System.currentTimeMillis()
+                    log("export $extension: $e")
+                }
+                !e.running && e.files.any { it.extension == extension && it.lastModified() >= started - 2000 }
+            }
+        }
+        if (finished.isFailure) {
+            log("export $extension never finished: ${rhythm.export.value}, take=${rhythm.noteTake.value}, transport=${rhythm.transport.value}")
+            throw finished.exceptionOrNull()!!
         }
         assertEquals(null, rhythm.export.value.error)
         val file = rhythm.export.value.files.filter { it.extension == extension }.maxBy { it.lastModified() }

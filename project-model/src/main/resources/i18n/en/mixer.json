@@ -348,5 +348,10 @@
   "Zone : glisse sur les mesures à régler (ou touche la première puis la dernière) ; la hauteur où tu lâches donne le niveau. Avant et après, rien ne change.": "Zone: slide over the bars to set (or touch the first then the last); the height where you let go gives the level. Before and after, nothing changes.",
   "1. Choisis la piste :": "1. Choose the track:",
   "2. Ce qui bouge sur « %s » :": "2. What moves on “%s”:",
-  "Réduction": "Reduction"
+  "Réduction": "Reduction",
+  "Couche : %s": "Layer: %s",
+  "Joue les notes de la piste avec un autre son : %s.": "Plays the track's notes with another sound: %s.",
+  "Transposée de %s demi-tons.": "Transposed by %s semitones.",
+  "Coupée pour l'instant.": "Muted for now.",
+  "Ses effets : %s.": "Its effects: %s."
 }

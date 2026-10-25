@@ -134,6 +134,8 @@ object WideMix {
                 p = p.withTrack(sub.copy(synth = sub.synth.with(SynthPatch.DRIVE, SUB_DRIVE)))
             }
         }
+        // G0: each track's low cut, sends and place (after the chorus and the echo took their slots).
+        p = RoleMix.apply(p, style, partOfTrack)
         // The curves: the lead's reverb at each phrase's end, the wobble's speed every 8 bars, the vowel.
         val sections = StarterWizard.songSections(p)
         if (sections.isEmpty()) return p

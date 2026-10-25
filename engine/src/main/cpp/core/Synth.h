@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <array>
 #include <cmath>
 #include <cstdint>
@@ -68,6 +69,10 @@ public:
     void noteOff(int midiNote, int frameOffset = 0);
     void allNotesOff();
     // Live expression: pitch bend in semitones, mod wheel 0..1 (more vibrato).
+    // The most voices played at once (1..kVoices; G1b: a track's layer plays kLayerVoices). A voice
+    // past the limit still sounding (the limit just lowered) finishes its note.
+    void setVoiceLimit(int voices) { voiceLimit_ = std::clamp(voices, 1, kVoices); }
+    int voiceLimit() const { return voiceLimit_; }
     void setBend(float semitones) { bend_ = semitones; }
     void setMod(float amount) { mod_ = amount; }
     // The length of a beat in frames, from the sequencer, every block: the tempo-locked sweep follows it.
@@ -163,6 +168,7 @@ private:
     int sampleRate_ = 48000;
     bool prepared_ = false;
     std::array<Voice, kVoices> voices_{};
+    int voiceLimit_ = kVoices;
     std::array<float, ParamCount> params_{};
     std::array<Event, 256> events_{};  // room to release all 128 notes at once (sustain pedal let go)
     int eventCount_ = 0;

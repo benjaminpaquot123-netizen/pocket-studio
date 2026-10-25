@@ -159,6 +159,16 @@ private fun describe(a: Acting, channels: List<com.pocketstudio.model.Channel>, 
         val side = if (centred && a.value < 0.5f) low else high
         ActRow(tr(Macros.NAMES[a.macro]), tr("Réglage rapide : %1\$s à %2\$d %%.", tr(side).lowercase(), amount), Where.Effects(a.ch), false, "act_macro_${a.ch}_${a.macro}", short = tr(Macros.NAMES[a.macro]).lowercase() + " " + amount + " %")
     }
+    is Acting.Layered -> {
+        val l = a.layer
+        val notes = listOfNotNull(
+            tr("Joue les notes de la piste avec un autre son : %s.", l.sound.label),
+            tr("Transposée de %s demi-tons.", com.pocketstudio.model.Layers.signedSemitones(l.transpose)).takeIf { l.transpose != 0 },
+            tr("Ses effets : %s.", l.inserts.joinToString(", ") { ins -> val e = ins.effect; tr(e.label) }).takeIf { l.inserts.isNotEmpty() },
+            tr("Coupée pour l'instant.").takeIf { l.mute },
+        )
+        ActRow(tr("Couche : %s", l.title), notes.joinToString(" "), Where.Effects(a.ch), false, "act_layer_${a.track}_${a.index}", short = l.title)
+    }
     is Acting.MasterTrim -> ActRow(
         tr("Volume général"),
         tr("%s dB sur la sortie générale.", String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%+.1f", a.db)),

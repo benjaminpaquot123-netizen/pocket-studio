@@ -75,8 +75,10 @@ class LiveSongRecorder {
                 library.quickCreate(style.id) { project, sounds, _ -> made = project to sounds }
                 waitFor("the song of ${style.id}", 120) { made != null || library.quick.value.error != null }
                 val (made1, sounds) = checkNotNull(made) { "${style.id}: ${library.quick.value.error}" }
-                val song = if (loopSeconds == null) made1 else longAndLooped(made1, loopSeconds)
                 library.quickDone()
+                // G1b (-Pbench.sublayers=1): the bass music subs as layers of their bass (where they fold).
+                val layered = if (System.getProperty("ps.bench.sublayers") == "1") com.pocketstudio.model.SubLayers.apply(made1) else made1
+                val song = if (loopSeconds == null) layered else longAndLooped(layered, loopSeconds)
                 var id: String? = null
                 projects.create(song, sounds) { id = it }
                 waitFor("the project of ${style.id}") { id != null }

@@ -24,14 +24,42 @@ public:
     // (insert commands, saved automation): its strip is never fed. 16..31 = the 16 drum pads' own
     // strips (their effects on one pad): they feed the drums' strip, not the master, and follow its
     // mute and solo. 32..35 = audio tracks 5..8 (stereo), after the pads (their numbers are saved).
-    static constexpr int kChannels = 36;
+    // G1b: 36..59 = the instrument tracks' layers' own strips (InstrumentTrack::Layer), three per
+    // track (track t's layer k: kFirstLayer + t * kLayersPerTrack + k). Like a pad's, a layer's strip
+    // feeds its track's strip (before its inserts, or after them: setLayerThrough), not the master,
+    // and follows its mute, solo and fader; its sends follow the track's fader. setLayerListen
+    // hears some of a track's sounds only (« écouter cette couche seule »). Never in the app's
+    // saved channel numbers (kProjectChannels: the meters, the project's strips).
+    static constexpr int kProjectChannels = 36;
+    static constexpr int kFirstLayer = 36;
+    static constexpr int kLayersPerTrack = 3;
+    static constexpr int kLayerTracks = 8;
+    static constexpr int kChannels = kFirstLayer + kLayerTracks * kLayersPerTrack;
     static constexpr int kFirstPad = 16;
     static constexpr int kPads = 16;
     static constexpr int kFirstAudio2 = kFirstPad + kPads;
     static constexpr bool isPad(int ch) { return ch >= kFirstPad && ch < kFirstPad + kPads; }
+    static constexpr bool isLayer(int ch) { return ch >= kFirstLayer && ch < kChannels; }
+    static constexpr int layerChannel(int track, int layer) { return kFirstLayer + track * kLayersPerTrack + layer; }
+    // The track (0..kLayerTracks-1) of a layer's strip, and that track's strip (Engine.h trackChannel).
+    static constexpr int layerTrack(int ch) { return (ch - kFirstLayer) / kLayersPerTrack; }
+    static constexpr int trackStrip(int track) { return track == 0 ? 2 : 4 + track; }
+    static constexpr int layerParent(int ch) { return trackStrip(layerTrack(ch)); }
+    // A layer's gain (linear 0..4, +12 dB), on top of its fader (left at 0.8, unity).
+    void setLayerGain(int ch, float gain);
+    // A layer's sound goes through its track's inserts (true, the default) or joins the track's
+    // strip right after them (a clean sub under a driven bass: none of the track's effects). « After »
+    // means after the inserts only: the track's quick controls, chopper and kills, fader, pan and
+    // sends still act on the sum (the whole track, its sub included).
+    void setLayerThrough(int ch, bool through);
+    // Which of track `track`'s sounds are heard: bit 0 its own sound, bit 1 + k its layer k (all set:
+    // as mixed). Each glides in or out over a few milliseconds (no click).
+    void setLayerListen(int track, int mask);
+    int layerListen(int track) const { return track >= 0 && track < kLayerTracks ? listen_[static_cast<size_t>(track)] : 0xF; }
     static constexpr int kDrums = 0;
     // Effects per channel, and on the master. Every slot is built and prepared with the mixer,
-    // never in the callback: about 38 kB each, 36 x 8 = 10.9 MB per engine on the heap. The long
+    // never in the callback: 24 to 38 kB each, 60 x 8 slots (G1b: the layers' 24 strips included)
+    // = 12 to 18 MB per engine on the heap. The long
     // effects' seconds of memory are the pool's (LongFxPool, 18.4 MB): about 32 MB per mixer.
     static constexpr int kInserts = 8;
     static constexpr int kMaster = 4;    // insert "channel" index of the master
@@ -136,6 +164,7 @@ public:
             for (auto& g : s.sendGain) g.snap(g.target());
         }
         masterGain_.snap(masterGain_.target());
+        for (auto& own : trackOwn_) own.snap(own.target());  // a layer heard alone from the first frame
     }
     void setMasterFx(bool on) {
         masterFxOn_ = on;
@@ -248,6 +277,7 @@ private:
     void afterInsertChange(int ch);
     struct Strip {
         float volume = 0.8f;
+        float linear = 1.0f;  // a layer's gain (setLayerGain)
         float pan = 0.0f;
         bool mute = false;
         bool solo = false;
@@ -401,6 +431,31 @@ private:
     Smoother masterGain_{1.0f};
     Smoother masterFader_{1.0f};  // setVolume(kMaster): after the master chain, at most unity
     Smoother drumsOwn_{1.0f};     // the drums' own sound, 0 while a pad is soloed
+    // --- G1b: the layers' strips, summed into their track's strip (before its inserts: pre_; after: post_).
+    using LayerSums = std::array<std::array<float, kChunk>, kLayerTracks>;
+    std::unique_ptr<LayerSums> preL_ = std::make_unique<LayerSums>(), preR_ = std::make_unique<LayerSums>();
+    std::unique_ptr<LayerSums> postL_ = std::make_unique<LayerSums>(), postR_ = std::make_unique<LayerSums>();
+    std::array<bool, kChannels> through_ = filledTrue();
+    std::array<int, kLayerTracks> listen_ = filledListen();
+    std::array<Smoother, kLayerTracks> trackOwn_ = filledOwn();  // a track's own sound, 0 while only some of its layers are heard
+    std::array<bool, kLayerTracks> fedPre_{}, fedPost_{};
+    static std::array<Smoother, kLayerTracks> filledOwn() {
+        std::array<Smoother, kLayerTracks> a{};
+        a.fill(Smoother(1.0f));
+        return a;
+    }
+    // The track whose strip `ch` is (trackStrip's inverse), -1: none.
+    static constexpr int stripTrack(int ch) { return ch == 2 ? 0 : (ch >= 5 && ch < 4 + kLayerTracks ? ch - 4 : -1); }
+    static std::array<bool, kChannels> filledTrue() {
+        std::array<bool, kChannels> a{};
+        a.fill(true);
+        return a;
+    }
+    static std::array<int, kLayerTracks> filledListen() {
+        std::array<int, kLayerTracks> a{};
+        a.fill(0xF);
+        return a;
+    }
 
     bool limiterOn_ = true;
     bool masterFxOn_ = true;

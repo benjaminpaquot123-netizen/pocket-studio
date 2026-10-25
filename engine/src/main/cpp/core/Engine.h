@@ -184,11 +184,21 @@ enum class CommandType : uint8_t {
     SetTrackZone = 130,     // a: MultiSampler::ZoneParam | track << 16, b: zone (0..kZones-1), value in that parameter's
                             // unit; b = -1: a = MultiSampler::Param | track << 16, the instrument's own settings
     SetTrack808Param = 131, // a: Track808::Param (DrumKit::VoiceParam) | track << 16, value in that parameter's unit
+    // G1b, numbered apart (140 on): a track's layers (InstrumentTrack::Layer). A layer's sound takes the
+    // sound commands above (SetSynthEngine, SynthParam, SetPlaitsParam, SetInstrument,
+    // InstallTrackSample, SetTrackSampleParam, SetTrackZone, SetTrack808Param) with its sound index
+    // layerSound(track, layer) in place of the track; its strip (Mixer::layerChannel) takes the mixer
+    // commands (SetChannelPan, SetChannelMute, SetSend, SetInsertType, SetInsertParam, ClearInserts).
+    SetLayer = 140,        // a: LayerParam | layer << 8 | track << 16, value: on (1 plays the track's notes), low / high
+                           // note (MIDI), transpose (semitones), fine (-1..1 semitone), gain (linear 0..4, after its
+                           // effects), through (1: into the track's inserts, 0: after them)
+    SetLayerListen = 141,  // a: track, value: mask of its sounds heard (bit 0 its own, bit 1 + k layer k; 15 = all, as mixed)
 };
 static_assert(static_cast<int>(CommandType::SetPadVoiceParam) < 100, "the commands in order must stay under SetKitVersion");
 static_assert(static_cast<int>(CommandType::SetDrumStepOffset) == 80, "NativeEngine.kt numbers the phase 34 commands from 80");
 static_assert(static_cast<int>(CommandType::SetDrumLaneSteps) == 120, "NativeEngine.kt numbers the phase 37 commands from 120");
 static_assert(static_cast<int>(CommandType::SetTrackZone) == 130, "NativeEngine.kt numbers the phase 38 commands from 130");
+static_assert(static_cast<int>(CommandType::SetLayer) == 140, "NativeEngine.kt numbers the G1b commands from 140");
 
 // The live grid's slots: one per track, each playing its own scene's part from its own start.
 enum Slot : int {
@@ -225,9 +235,21 @@ constexpr int kTracks = 8;
 constexpr int kMultiVoices = 128;
 inline int trackOf(int32_t a) { return std::clamp((a >> 16) & 0xFF, 0, kTracks - 1); }
 inline int32_t trackArg(int32_t a) { return a & 0xFFFF; }
+// G1b: the sounds the sound commands address, the tracks' own (0..kTracks-1) then their layers'.
+constexpr int kLayers = InstrumentTrack::kLayers;
+constexpr int kSounds = kTracks + kTracks * kLayers;
+constexpr int layerSound(int track, int layer) { return kTracks + track * kLayers + layer; }
+inline int soundOf(int32_t a) { return std::clamp((a >> 16) & 0xFF, 0, kSounds - 1); }
+// A layer's synth plays at most this many notes at once (the CPU budget: layers_cpu_budget): a
+// six-note chord whole, the seventh note steals (NativeEngine.LAYER_VOICES, Layers.MAX_VOICES).
+constexpr int kLayerVoices = 6;
+// SetLayer's last value of LayerParam (after InstrumentTrack's own): the gain and the routing.
+enum LayerMix { LayerGain = 5, LayerThrough = 6 };
+static_assert(Mixer::kLayersPerTrack == kLayers && Mixer::kLayerTracks == kTracks, "one strip per layer");
 // The mixer channel of each instrument track: track 0 on channel 2, the others after the master's
 // index (Mixer::kMaster = 4).
 inline int trackChannel(int track) { return track == 0 ? 2 : 4 + track; }
+static_assert(Mixer::trackStrip(3) == 7 && Mixer::trackStrip(0) == 2, "Mixer::trackStrip is trackChannel");
 // Audio tracks come after the instrument tracks (1..4) and after the pads' strips (5..8).
 constexpr int audioChannel(int track) { return track < 4 ? 12 + track : Mixer::kFirstAudio2 + track - 4; }
 // The audio track on mixer channel `ch` (audioChannel's inverse), -1: none.
@@ -355,7 +377,8 @@ public:
     // Not the audio thread (one caller at a time): frees samples the audio thread let go of.
     void collectGarbage() {
         sampler_.collectGarbage();
-        for (auto& t : tracks_) {
+        for (int k = 0; k < kSounds; ++k) {
+            auto& t = sound(k);
             t.instrument.collectGarbage();
             t.sampled.collectGarbage();
             t.multi.collectGarbage();
@@ -382,6 +405,13 @@ public:
     ClipLauncher::State clipState(int pad) const { return clips_.state(pad); }
     double clipBeat() const { return clips_.beat(); }  // tests
     bool instrumentActive(int track = 0) const { return tracks_[static_cast<size_t>(track)].instrument.active(); }  // tests
+    // G1b: sound `s` (a track's own, 0..kTracks-1, or a layer's, layerSound()). Tests, and the engine.
+    InstrumentTrack& sound(int s) {
+        return s < kTracks ? tracks_[static_cast<size_t>(s)] : (*layers_)[static_cast<size_t>(std::clamp(s - kTracks, 0, kTracks * kLayers - 1))];
+    }
+    const InstrumentTrack& track(int t) const { return tracks_[static_cast<size_t>(t)]; }  // tests
+    // Whether layer `layer` of track `track` is rendered (on, or its release still ringing). Tests.
+    bool layerRendered(int track, int layer) const { return layerTail_[static_cast<size_t>(track * kLayers + layer)] > 0; }
     bool padHasSample(int pad) const { return sampler_.has(pad); }  // tests
     const Sampler::PadParams& padParams(int pad) const { return sampler_.params(pad); }  // tests
 
@@ -476,6 +506,17 @@ private:
     AcidTrack acid_;
     // Instrument tracks (piano roll + sound); each has its own mixer channel (trackChannel).
     std::array<InstrumentTrack, kTracks> tracks_{};
+    // G1b: the tracks' layers' sounds (track t's layer k at t * kLayers + k), on the heap (2.6 MB),
+    // with their buffers, and how long each still renders once switched off (its release).
+    using LayerSounds = std::array<InstrumentTrack, kTracks * kLayers>;
+    std::unique_ptr<LayerSounds> layers_ = std::make_unique<LayerSounds>();
+    using LayerBuffers = std::array<std::array<float, kMaxBlock>, kTracks * kLayers>;
+    std::unique_ptr<LayerBuffers> layerL_ = std::make_unique<LayerBuffers>(), layerR_ = std::make_unique<LayerBuffers>();
+    std::array<int, kTracks * kLayers> layerTail_{};
+    // A layer switched off still renders this long (its notes' release), fading out over the last kLayerFadeMs.
+    static constexpr float kLayerTailSeconds = 4.0f;
+    static constexpr float kLayerFadeMs = 20.0f;
+    void renderLayers(const float** channels, const float** rights, int numFrames);
     Sampler sampler_;
     StemPlayer stems_;
     // The remix screen's own listening of a song's stems, free of the transport.

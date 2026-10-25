@@ -12,28 +12,28 @@ Demande de Benjamin : « chaque étape de chaque piste scrutée et guidée : cha
 - Style `jump_up`, 174 BPM, swing 0, tonalité Fa (`harmony.root` 5) **mineur** verrouillée (`scale: Minor`, `lock: true`). La recette demande phrygien pour l'ambiance Sombre (`StyleRecipes.kt:965`) : Benjamin a donc choisi une autre ambiance (Future → Minor, degrés 0-0-5-6) ou la gamme a été réécrite ; aucun écran ne le lui a dit.
 - 8 voix : batterie (canal 0, 16 pads) + 7 pistes d'instrument : **Basse** (piste 0, canal 2), **Nappe** (5), **Lead** (6), **Sub** (7), **Basse 2** (8), **Souffle montant** (9), **Voix** (10), **Sub drop** (11). Correspondance canaux : `Tracks.kt:76`, `Project.kt:565-581`.
 - 21 scènes : 8 sections (Intro, Montée, Drop, Break, Intro 2, Intro 3, Montée 2, Drop 2) + 2 « Crash » + 11 « Fill » d'une mesure (`DrumArrangement.withFillsAndCrashes`, `StarterWizard.kt:752`).
-- 46 parties, **184 mesures ≈ 4 min 14** : I16 · L8 · D32 · B16 · L8 · D32 · B16 · L8 · D32 · O16. Les courbes d'automation font **216 points (= 216 mesures, un point par mesure, `Automation.kt:169-181`)** : le morceau généré faisait 216 mesures (`SongShape.kt:65`, `BUILD_LONG[0]` = I32…O32) et a été raccourci de 32 mesures (Intro et outro 32 → 16, sans doute via la fiche de partie). **À vérifier : les courbes n'ont pas suivi** (ex. le passage Basse → Basse 2 est écrit à la mesure 96, le Drop 2 commence maintenant à la 80 ; la coupure du Lead aux mesures 40-55 visait la première moitié du Drop 1, qui commence désormais à la 24).
+- 46 parties, **216 mesures ≈ 4 min 58** : I32 · L8 · D32 · B16 · L8 · D32 · B16 · L8 · D32 · O32 (`SongShape.kt`, `BUILD_LONG[0]`). Les scènes d'Intro (A, E, F) durent 8 mesures : leurs notes font 128 pas, seul leur rythme en fait 64. Les courbes d'automation font 216 points (un par mesure) et tombent juste : le passage Basse → Basse 2 est à la mesure 96, début du Drop 2 ; la coupure du Lead (mesures 40-55) est la première moitié du Drop 1. *Correction G0 (2026-10-24) : une première lecture comptait 184 mesures et des courbes décalées de 16 ; c'était une erreur de lecture, vérifiée par test (`SongLanesFollowPartsTest`).*
 
 ### 1.2 Structure (parties → scènes)
 | Mesures | Section | Scènes | Ce qui joue |
 |---|---|---|---|
-| 0-16 | Intro (3 paliers) | E, F, A | kick + toms (E) ; + perc (F) ; kick, charley, perc (A). Aucune piste mélodique. |
-| 16-24 | Montée | B, G | caisse claire qui roule (B 24 coups → G 60), charley, Nappe (4 notes tenues), Souffle montant. Pas de kick. |
-| 24-56 | Drop 1 | C (8) H (8) C (8) H (8) | tout : kick, caisse, clap, charley, perc, Basse, Sub, Basse 2 (muette par courbe), Nappe, Lead (6 notes sur 8 mesures), Sub drop (C) / Voix (H, 2 notes). Entre chaque bloc : 1 mesure Fill ou Crash. |
-| 56-72 | Break | D | charley, Nappe, Souffle. |
-| 72-80 | Montée | B, G | idem. |
-| 80-112 | Drop 2 | C/H ×2 | idem Drop 1 ; Basse 2 remplace Basse à partir de la courbe (mesure 96). |
-| 112-128 | Break | D | idem. |
-| 128-136 | Montée | B, G | idem. |
-| 136-168 | Drop 3 | C/H ×2 | idem. |
-| 168-184 | Outro | A, F, E | l'intro à l'envers. |
+| 0-32 | Intro (3 paliers) | E, F, A | kick + toms (E) ; + perc (F) ; kick, charley, perc (A). Aucune piste mélodique. |
+| 32-40 | Montée | B, G | caisse claire qui roule (B 24 coups → G 60), charley, Nappe (4 notes tenues), Souffle montant. Pas de kick. |
+| 40-72 | Drop 1 | C (8) H (8) C (8) H (8) | tout : kick, caisse, clap, charley, perc, Basse, Sub, Basse 2 (muette par courbe), Nappe, Lead (6 notes sur 8 mesures), Sub drop (C) / Voix (H, 2 notes). Entre chaque bloc : 1 mesure Fill ou Crash. |
+| 72-88 | Break | D | charley, Nappe, Souffle. |
+| 88-96 | Montée | B, G | idem. |
+| 96-128 | Drop 2 | C/H ×2 | idem Drop 1 ; Basse 2 remplace Basse à partir de la courbe (mesure 96). |
+| 128-144 | Break | D | idem. |
+| 144-152 | Montée | B, G | idem. |
+| 152-184 | Drop 3 | C/H ×2 | idem. |
+| 184-216 | Outro | A, F, E | l'intro à l'envers. |
 
-Le Drop est joué 3 fois **à l'identique** (mêmes 16 mesures C+H ×2) : 96 mesures sur 184 sont la même boucle de 8 mesures, seule la basse change de son au Drop 2.
+Le Drop est joué 3 fois **à l'identique** (mêmes 16 mesures C+H ×2) : 96 mesures sur 216 sont la même boucle de 8 mesures, seule la basse change de son au Drop 2.
 
 ### 1.3 Piste par piste (effets : numéro = `EffectType.ordinal`, `Effects.kt:63-380`)
 | Piste (canal) | Son | Notes | Chaîne d'inserts dans l'ordre (réglages 0..1) | Sends R/É | Automation | Joue dans |
 |---|---|---|---|---|---|---|
-| **Batterie** bus (0) | kit `dnb` : Kick 13, Caisse claire 7, Clap 7, Charley 4, Percu 8 ; pans charley −0,3, perc +0,5, (kick lane pan −1 : à vérifier) | 2 mes. (64 pas) + 11 fills + 2 crashs | 2 Compresseur (seuil .6, ratio .23, att .83, rel .44, RMS) · 3 Saturation (.15, ton ouvert) · 28 Écrêteur doux (.125) = `BUS_GLUE_V2` + clip (`WizardMix.kt:292-300`) | 0 / 0 | volume .8 → .85 sur les 4 dernières mesures de chaque Montée (`DRUMS_PEAK`) | partout sauf Break (charley seul) |
+| **Batterie** bus (0) | kit `dnb` : Kick 13, Caisse claire 7, Clap 7, Charley 4, Percu 8 ; pans charley −0,3, perc +0,5, **kick panoramiqué à fond à gauche (−1) dans tout le morceau** (pas un réglage voulu : le geste « retour » d'Android depuis le bord gauche tombe sur le curseur « Pan du pad », voir docs/AUDIT-35.md ; le pan d'un pad vaut pour tout le morceau) | 2 mes. (64 pas) + 11 fills + 2 crashs | 2 Compresseur (seuil .6, ratio .23, att .83, rel .44, RMS) · 3 Saturation (.15, ton ouvert) · 28 Écrêteur doux (.125) = `BUS_GLUE_V2` + clip (`WizardMix.kt:292-300`) | 0 / 0 | volume .8 → .85 sur les 4 dernières mesures de chaque Montée (`DRUMS_PEAK`) | partout sauf Break (charley seul) |
 | pad Kick (16) | Kick 13 | | 2 Compresseur (.45,.45,.69,.3) · 3 Saturation (.25) = preset `punch` (`FxPresets.kt:87`) ; **clé du sidechain** | 0 | — | |
 | pad Caisse (18) | Caisse claire 7 | | idem `punch` | **R .15** | — | |
 | pad Crash (28, lane 12) | cymbale | 1 coup au 1 de chaque bloc | aucun | R .2 / É .25 ; vol .95 | — | |
@@ -59,7 +59,7 @@ Légende : ✅ présent · ⚠️ partiel · ❌ absent · 🔇 = jamais dit ni 
 |---|---|---|---|---|---|---|---|---|
 | Basse | ✅ growl choisi parmi la liste ; ⚠️ une seule couche médium (pro : 2 à 7 couches, womp + reese + sub) | ⚠️ question/réponse écrite (`bassPattern` 64 pas) mais **8 fois la même boucle de 4 mes. par Drop**, aucune variation 5-8, aucun « switch-up » toutes les 8-16 sauf Drop 2 | ✅ growl + OTT + clip + passe-haut 80 Hz ; ❌ distorsion 2 bandes, ❌ pas de PUMP visible (remplacé par le bus Musique, invisible dans sa tranche) | ✅ aucun send (juste) | ⚠️ volume seul ; ❌ aucune automation de synthé (coupure, LFO) ; ❌ wobble qui change de vitesse | ⚠️ coupée avant le Drop (Montée) ; ❌ 2 temps coupés fin de 16, ❌ Drop 1A basse+batterie seules (la Nappe joue partout) | ✅ 0 dB, centre | 🔇 tout : pourquoi growl, pourquoi OTT, ce qu'est un écrêteur, qu'il y a un sidechain, qu'une 2e basse existe et quand elle entre |
 | Sub | ✅ sinus −12 | ✅ même MIDI −12 | ❌ **aucun insert** (pro : saturation légère 60-250 Hz, mono strict ; `WideMix.SUB_DRIVE` .4 annoncé mais absent de la tranche) | ✅ | ⚠️ volume | ✅ suit la basse | ✅ | 🔇 qu'une piste « Sub » existe et pourquoi |
-| Basse 2 | ✅ wobble | ❌ mêmes notes exactement (pro : autre patch **et** réponse différente) | ✅ même chaîne | ✅ | ✅ fondu croisé Drop 2 (mais **décalé de 16 mes.** après le raccourcissement, §1.1) | ⚠️ | ✅ | 🔇 son existence (Benjamin voit 2 basses sans savoir pourquoi) |
+| Basse 2 | ✅ wobble | ❌ mêmes notes exactement (pro : autre patch **et** réponse différente) | ✅ même chaîne | ✅ | ✅ fondu croisé au début du Drop 2 (mesure 96) | ⚠️ | ✅ | 🔇 son existence (Benjamin voit 2 basses sans savoir pourquoi) |
 | Lead (= 2e basse wobble) | ✅ | ⚠️ 6 notes / 8 mes. : la réponse est trop courte pour un dialogue (`bass.md:427-431`) | ✅ fat_bass + chorus + ping-pong + clip ; ⚠️ un chorus sur une basse wobble (mono < 250 Hz non garanti) | ✅ R/É .15 | ✅ throw de réverbe fin de phrase ; ✅ coupé Drop 1A | ⚠️ identique à chaque Drop | ✅ | 🔇 qu'il s'appelle « Lead » mais est une basse ; que la réverbe monte toute seule |
 | Nappe | ✅ sample Future bass | ⚠️ triades tenues, 1 accord/mesure, 3 fois le même cycle | ✅ élargisseur + filtre + clip | ✅ R .35 | ✅ filtre qui s'ouvre dans la Montée | ❌ joue aussi dans tout le Drop (pro : absente du Drop 1A) ; ❌ aucune variation Break | ✅ | 🔇 le balayage de filtre, la réverbe à 35 % |
 | Souffle | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | 🔇 (le SongGuide le mentionne seulement si on ouvre le guide) |
@@ -111,7 +111,7 @@ Conclusion §1 : la **chaîne de production est quasi complète côté machine**
 - La fiche de partie dit « Fait : … » (bon réflexe) mais pas « écoute la différence ».
 
 **(d) Adaptativité : regarder le projet ou suivre un script**
-- `nextSteps()` lit le projet mais avec des critères binaires (il y a des coups, une piste grave, ≥ 3 parties, un fader bougé). Il ne détecte **aucun** des manques du §1.4 : Nappe partout, basse sans variation, Sub sans saturation, Voix sans effet, courbes décalées, 3 Drops identiques, aucune piste pannée, faders tous égaux.
+- `nextSteps()` lit le projet mais avec des critères binaires (il y a des coups, une piste grave, ≥ 3 parties, un fader bougé). Il ne détecte **aucun** des manques du §1.4 : Nappe partout, basse sans variation, Sub sans saturation, Voix sans effet, 3 Drops identiques, aucune piste pannée, faders tous égaux.
 - `missionDone` ne regarde que « quelque chose a changé » (hash).
 - `shareChecks` : 6 règles techniques, aucune musicale.
 - `WhatActs` est le seul analyseur exhaustif, et il ne dit jamais « il manque ».

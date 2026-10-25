@@ -22,6 +22,12 @@ sealed class Acting {
     /** Automation lane [lane] of the project and the shape it draws in the scope asked. */
     data class Moves(override val ch: Int, val lane: Int, val automation: AutomationLane, val shape: CurveShape) : Acting()
 
+    /**
+     * G1b: layer [index] of instrument track [track] (on its strip [ch]): one more sound playing the
+     * track's notes, with its own effects and sends ([layer]).
+     */
+    data class Layered(override val ch: Int, val track: Int, val index: Int, val layer: TrackLayer) : Acting()
+
     /** The master's gain before the limiter, away from 0 dB. */
     data class MasterTrim(val db: Float) : Acting() {
         override val ch: Int get() = Mixer.MASTER
@@ -83,6 +89,10 @@ fun Project.whatActs(scene: Int? = null): List<Acting> = buildList {
         }
         c.macros.forEachIndexed { m, v -> if (kotlin.math.abs(v - Macros.DEFAULTS.getOrElse(m) { 0f }) > 0.005f) add(Acting.Macro(ch, m, v)) }
         c.sends.forEachIndexed { bus, level -> if (level > 0.01f) add(Acting.Send(ch, bus, level)) }
+        // A track's layers, after its own chain (each with its own effects and sends).
+        instrumentTracks.firstOrNull { InstrumentTrack.mixerChannel(it.id) == ch }?.let { t ->
+            t.layers.forEachIndexed { k, l -> add(Acting.Layered(ch, t.id, k, l)) }
+        }
         addAll(lanes.filter { it.ch == ch })
     }
     mixer.master.forEachIndexed { slot, ins -> if (ins.effect != EffectType.NONE && (scene == null || ins.playsIn(scene))) add(Acting.Effect(Mixer.MASTER, slot, ins)) }

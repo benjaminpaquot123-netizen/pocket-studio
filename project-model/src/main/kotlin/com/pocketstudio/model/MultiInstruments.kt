@@ -201,4 +201,4 @@ object MultiInstruments {
 }
 
 /** The packs the project's tracks play as multizone instruments (to load). */
-val Project.multiPacks: Set<String> get() = instrumentTracks.filter { it.engine == InstrumentTrack.ENGINE_MULTI }.mapNotNull { it.multi.pack }.toSet()
+val Project.multiPacks: Set<String> get() = allTrackSounds.filter { it.engine == InstrumentTrack.ENGINE_MULTI }.mapNotNull { it.multi.pack }.toSet()

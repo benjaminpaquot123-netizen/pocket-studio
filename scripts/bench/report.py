@@ -76,6 +76,9 @@ INTRO_UNDER_MAIN_MAX = 8.0
 # swings 2 to 3 LU between styles of one family).
 MONTEE_RISE_MIN = 2.0
 
+# G0: the smallest share of bars that differ between two Drops (Refrains) of a song (DropVariation.MIN).
+DROP_VARIATION_MIN = 0.25
+
 # (key, label, how to read it from a style's JSON, target text, decimals)
 METRICS = [
     ("lufs_i", "LUFS-I (morceau)", lambda m: m["lufs_i"], "cible du genre ±1 (avant S5)", 1),
@@ -105,6 +108,8 @@ METRICS = [
     ("drop_minus_montee_end", "Drop − fin de Montée (LU, le plus petit du morceau)", lambda m: lowest(m.get("drop_minus_montee_end")), "≥ +1 (+1,5 visé)", 1),
     ("pre_drop_minus_montee_end", "Drop − fin de Montée avant master (LU)", lambda m: lowest(m.get("pre_drop_minus_montee_end")), "–", 1),
     ("intro_minus_main", "Intro − Drop / Refrain (LU)", lambda m: m.get("intro_minus_main"), "≥ −8", 1),
+    # G0: how much the Drops (Refrains) differ, read from the model (META drop_variation of the .pscmd).
+    ("drop_variation", "Variation entre Drops (part des mesures qui diffèrent, paire la plus proche)", lambda m: m.get("drop_variation"), "≥ 0,25", 2),
     ("dc", "Continu (moyenne absolue)", lambda m: m["dc"], "≤ 0,001", 4),
     ("drive_db", "Gain de la cible (dB)", lambda m: m.get("drive_db"), "–", 1),
     ("loss_db", "Perte dans la chaîne (LU)", lambda m: m.get("loss_db"), "≤ 3 (S5, au Drop ; 6 avant)", 1),
@@ -205,6 +210,10 @@ def criteria(styles):
         lambda s, m: all(d >= DROP_OVER_MONTEE_MIN for d in (m.get("drop_minus_montee_end") or [])), hard=True)
     add(f"Intro à moins de {fr(INTRO_UNDER_MAIN_MAX, 0)} LU sous le Drop ou le Refrain (exporté)",
         lambda s, m: m.get("intro_minus_main") is None or m["intro_minus_main"] >= -INTRO_UNDER_MAIN_MAX)
+    # G0: no two Drops alike (listed, not blocking; measured on the song's model, not on its sound).
+    if any(m.get("drop_variation") is not None for m in styles.values()):
+        add(f"Variation entre Drops ≥ {fr(DROP_VARIATION_MIN, 2)} (modèle : aucune paire de Drops identique)",
+            lambda s, m: m.get("drop_variation") is None or m["drop_variation"] >= DROP_VARIATION_MIN)
     return out
 
 
@@ -233,6 +242,7 @@ def main():
     ap.add_argument("--renders", help="folder of ps_render --report JSONs (<style>.json): the target's drive")
     ap.add_argument("--premaster", help="folder of ps_measure JSONs of the songs rendered before the master chain")
     ap.add_argument("--m4a", help="folder of ps_measure JSONs of the songs as decoded M4A (ceiling -2 dBTP, AAC 256 kbit/s)")
+    ap.add_argument("--cmds", help="folder of the recorded .pscmd files: their META lines (the model's drop_variation, G0)")
     ap.add_argument("--title", default="Banc de mesure du son")
     a = ap.parse_args()
 
@@ -262,6 +272,14 @@ def main():
                     m["loss_db"] = round(music + m["drive_db"] - r["lufs"], 2)
     for s, m in styles.items():
         m["target_gap"] = None if lufs_gap(s, m) is None else round(lufs_gap(s, m), 2)
+    if a.cmds and os.path.isdir(a.cmds):
+        for s, m in styles.items():
+            meta = read_meta(os.path.join(a.cmds, s + ".pscmd"))
+            if "drop_variation" in meta:
+                try:
+                    m["drop_variation"] = round(float(meta["drop_variation"]), 3)
+                except ValueError:
+                    pass
     if a.premaster and os.path.isdir(a.premaster):
         for s, pre in load(a.premaster).items():
             if s in styles:
@@ -322,6 +340,8 @@ def main():
                 detail = ", ".join(f"{s} ({' / '.join(fr(r, 1, True) for r in styles[s].get('montee_rise') or [])})" for s in failed)
             elif label.startswith("Chaque Drop"):
                 detail = ", ".join(f"{s} ({' / '.join(fr(r, 1, True) for r in styles[s].get('drop_minus_montee_end') or [])})" for s in failed)
+            elif label.startswith("Variation entre Drops"):
+                detail = ", ".join(f"{s} ({fr(styles[s].get('drop_variation'), 2)})" for s in failed)
             elif label.startswith("Intro"):
                 detail = ", ".join(f"{s} ({fr(styles[s].get('intro_minus_main'), 1, True)})" for s in failed)
             elif label.startswith("True peak du M4A"):
@@ -441,6 +461,22 @@ def main():
     broken = [f"{label}: {', '.join(failed)}" for label, _, failed, hard in crit if hard and failed]
     if broken:
         sys.exit("hard limit broken: " + "; ".join(broken))
+
+
+def read_meta(path, limit=200):
+    """The META lines at the head of a .pscmd recording (key → value), {} when there is none."""
+    out = {}
+    if not os.path.exists(path):
+        return out
+    with open(path, errors="replace") as f:
+        for i, row in enumerate(f):
+            if i >= limit:
+                break
+            if row.startswith("META "):
+                parts = row.rstrip("\n").split(" ", 2)
+                if len(parts) == 3:
+                    out[parts[1]] = parts[2]
+    return out
 
 
 def write(path, lines):

@@ -258,27 +258,29 @@ void Synth::applyEvent(const Event& e) {
     }
     // Same note already sounding: retrigger it. Otherwise a free voice, else the quietest one
     // already let go, else the oldest held one (a held chord outlives quick notes fading out).
+    // (Within the voice limit: a layer's synth plays fewer at once, setVoiceLimit.)
     Voice* target = nullptr;
-    for (auto& v : voices_) {
-        if (v.note == e.note) target = &v;
+    const auto first = voices_.begin(), last = voices_.begin() + voiceLimit_;
+    for (auto it = first; it != last; ++it) {
+        if (it->note == e.note) target = &*it;
     }
     if (target == nullptr) {
-        for (auto& v : voices_) {
-            if (!v.gate && !v.ampEnv.IsRunning()) {
-                target = &v;
+        for (auto it = first; it != last; ++it) {
+            if (!it->gate && !it->ampEnv.IsRunning()) {
+                target = &*it;
                 break;
             }
         }
     }
     if (target == nullptr) {
-        for (auto& v : voices_) {
-            if (!v.gate && (target == nullptr || v.level < target->level)) target = &v;
+        for (auto it = first; it != last; ++it) {
+            if (!it->gate && (target == nullptr || it->level < target->level)) target = &*it;
         }
     }
     if (target == nullptr) {
         target = &voices_[0];
-        for (auto& v : voices_) {
-            if (v.age < target->age) target = &v;
+        for (auto it = first; it != last; ++it) {
+            if (it->age < target->age) target = &*it;
         }
     }
     // A voice still sounding (same key again, stolen) keeps its phases: a jump there would click.

@@ -459,9 +459,10 @@ class StarterWizardTest {
         com.pocketstudio.model.i18n.I18n.lang = com.pocketstudio.model.i18n.Lang.EN
         try {
             val house = StarterWizard.build(StarterWizard.style("house")!!, StarterWizard.style("house")!!.lines.associate { it.role to null })
-            assertEquals(listOf("Intro", "Groove", "Drop", "Break", "Intro 2", "Montée", "Montée 2", "Drop 2"), house.allScenes.filter { !it.isDrumBar() }.map { it.label })
+            // G0: the last Drop's own scene (« Drop 3 ») after the others.
+            assertEquals(listOf("Intro", "Groove", "Drop", "Break", "Intro 2", "Montée", "Montée 2", "Drop 2", "Drop 3"), house.allScenes.filter { !it.isDrumBar() }.map { it.label })
             // Then the one-bar drum scenes (fills, crashes), named too.
-            assertTrue(house.allScenes.drop(8).all { it.isDrumBar() })
+            assertTrue(house.allScenes.drop(9).all { it.isDrumBar() })
             assertEquals("D · Break", house.sceneTitle(3))
             assertEquals(listOf("F · Build-up", "G · Build-up 2", "H · Drop 2"), (5..7).map { house.sceneTitle(it) })
             val pop = StarterWizard.build(StarterWizard.style("pop")!!, emptyMap())
@@ -487,7 +488,9 @@ class StarterWizardTest {
                 val spec = plan.variants[i - plan.count]
                 assertEquals("${style.name} $mood ${sc.label}", sc.label, spec.label)
                 val roles = sc.drums.lanes.indices.filter { sc.drums.lanes[it].hits.isNotEmpty() }.mapNotNull { lane -> R.entries.firstOrNull { it.lane == lane } }
-                assertTrue("${style.name} $mood ${sc.label} $roles", roles.all { it in lines.keys || it == R.Ride || (on808 && it == R.Bass808) })
+                // G0: the last Drop's scene adds a layer of its own (an open hat, a percussion, claps).
+                val layer = if (spec.extra) setOf(R.OpenHat, R.Perc2, R.Hat, R.Clap) else emptySet()
+                assertTrue("${style.name} $mood ${sc.label} $roles", roles.all { it in lines.keys || it == R.Ride || it in layer || (on808 && it == R.Bass808) })
             }
             // Cumulative over the first three (a line in a section is in every section after it); with a
             // Montée, what the Intro and the Montée play is in the Drop, and the Montée has no kick; a rap
@@ -591,8 +594,11 @@ class StarterWizardTest {
         val (bass, pad) = p.instrumentTracks
         val channels = p.mixer.channels
         assertEquals(EffectType.VINYL.ordinal, channels[InstrumentTrack.mixerChannel(pad.id)].inserts[0].type)
-        // S5: the style's pump on the bass is the Musique bus's one duck under the kick's sound (its lows), not a pump of its own.
-        assertEquals(emptyList<Insert>(), channels[InstrumentTrack.mixerChannel(bass.id)].inserts.filter { it.type != 0 })
+        // S5: the style's pump on the bass is the Musique bus's one duck under the kick's sound (its lows), not a pump of its own;
+        // G0: only its low cut (a flat EQ) on its strip.
+        val bassFx = channels[InstrumentTrack.mixerChannel(bass.id)].inserts.filter { it.type != 0 }
+        assertEquals(listOf(EffectType.PARAM_EQ.ordinal), bassFx.map { it.type })
+        assertEquals(30f, RoleMix.lowCutHz(channels[InstrumentTrack.mixerChannel(bass.id)])!!, 1f)
         val bus = p.mixer.musicBus!!
         assertTrue(InstrumentTrack.mixerChannel(bass.id) in bus.members)
         assertEquals(FxPresets.byId("pump")!!.inserts[0].params[0] * WizardMix.BASS_PUMP_TO_LOW, bus.lowDepth, 1e-6f)

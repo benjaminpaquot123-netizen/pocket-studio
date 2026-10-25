@@ -313,7 +313,8 @@ class JourneyTest {
     private fun export(rhythm: RhythmViewModel, extension: String): File {
         val started = System.currentTimeMillis()
         j.tap("export")
-        uiOrVm("export", { rhythm.export.value.running || rhythm.export.value.files.any { it.lastModified() >= started - 2000 } }) { rhythm.exportWav() }
+        // A file of this format only: the M4A exported just before is seconds old too.
+        uiOrVm("export", { rhythm.export.value.running || rhythm.export.value.files.any { it.extension == extension && it.lastModified() >= started - 2000 } }) { rhythm.exportWav() }
         var lastLog = 0L
         val finished = runCatching {
             waitFor("the $extension export", 300) {

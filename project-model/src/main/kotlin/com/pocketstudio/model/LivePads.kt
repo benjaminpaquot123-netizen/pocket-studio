@@ -64,7 +64,7 @@ data class LivePads(
 val Project.sampleFiles: Set<String> get() =
     (allScenes.flatMap { s -> s.drums.lanes.mapNotNull { it.sample?.file } } +
         drums.lanes.mapNotNull { it.sample?.file } + live.clips.mapNotNull { it?.file } +
-        audioTracks.mapNotNull { it.clip?.file } + instrumentTracks.mapNotNull { it.sampled.file }).toSet()
+        audioTracks.mapNotNull { it.clip?.file } + allTrackSounds.mapNotNull { it.sampled.file }).toSet()
 
 /**
  * The project without the sounds [files] (missing from an imported .zip): a drum pad goes back to
@@ -83,6 +83,7 @@ fun Project.withoutSounds(files: Set<String>): Project {
             t.mapTakes { c -> c.takeIf { it.file !in files } }
         },
         sampled = sampled.cleaned(),
-        tracks = tracks.map { it.copy(sampled = it.sampled.cleaned()) },
+        tracks = tracks.map { it.copy(sampled = it.sampled.cleaned(), layers = it.layers.map { l -> l.copy(sound = l.sound.copy(sampled = l.sound.sampled.cleaned())) }) },
+        synthLayers = synthLayers.map { l -> l.copy(sound = l.sound.copy(sampled = l.sound.sampled.cleaned())) },
     ).sanitized()
 }

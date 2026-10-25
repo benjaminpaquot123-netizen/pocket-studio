@@ -835,5 +835,8 @@
   "Écrêteur doux": "Soft clipper",
   "Marge": "Margin",
   "Arrondit les crêtes qui dépassent le niveau du son : plus dense, sans pomper. Parfait sur une basse, avant l'OTT.": "Rounds off the peaks that stick out over the sound's level: denser, without pumping. Perfect on a bass, before the OTT.",
-  "Réagit à": "Reacts to"
+  "Réagit à": "Reacts to",
+  "Corps": "Body",
+  "Air": "Air",
+  "Quatre sons par piste au maximum : retire une couche pour en ajouter une autre.": "Four sounds per track at most: remove a layer to add another one."
 }

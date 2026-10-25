@@ -140,6 +140,14 @@ data class Project(
      * the file), the assistant's songs follow and a song made by hand keeps its line.
      */
     @EncodeDefault(EncodeDefault.Mode.NEVER) val acidFollowChords: Boolean? = null,
+    /**
+     * The Guide's state in this song (docs/PLAN-GUIDE.md §4.1, [com.pocketstudio.model.guide.GuideState]):
+     * where it is, what was decided, refused, changed. It lives in the project, so a .zip, an import
+     * or a version restored carries it. Left out of the file while empty.
+     */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val guide: com.pocketstudio.model.guide.GuideState = com.pocketstudio.model.guide.GuideState.EMPTY,
+    /** G1b: the first instrument track's [InstrumentTrack.layers]; left out of the file when it has none. */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val synthLayers: List<TrackLayer> = emptyList(),
 ) {
     /** Sixteenths in a bar. */
     val stepsPerBar: Int get() = beatsPerBar * 4
@@ -184,6 +192,8 @@ data class Project(
         drumSeed = drumSeed.coerceIn(0, DrumChance.MAX_SEED),
         multi = multi.sanitized(),
         voice808 = voice808.copy(kind = PadVoice.BASS_808).sanitized(),
+        guide = guide.sanitized(),
+        synthLayers = Layers.sanitize(synthLayers),
     ).syncScenes().withFittedSampleRoots()
 
     companion object {
@@ -312,9 +322,15 @@ data class DrumPattern(
         return withHits(lane, lanes[lane].hits + (step to hit.copy(chance = chance.coerceIn(Hit.MIN_CHANCE, 100))))
     }
 
-    /** The pad's place in the stereo field, -1 (left) .. 1 (right). */
-    fun withPadPan(lane: Int, pan: Float): DrumPattern =
-        copy(lanes = lanes.toMutableList().also { it[lane] = it[lane].copy(pan = pan.coerceIn(-1f, 1f)) })
+    /**
+     * The pad's place in the stereo field, -1 (left) .. 1 (right), for every scene (a pad's pan is the
+     * song's). Near the middle it snaps to the centre, as the console's pan does (G0: a kick dragged
+     * off-centre by a finger is hard to bring back exactly).
+     */
+    fun withPadPan(lane: Int, pan: Float): DrumPattern {
+        val p = pan.coerceIn(-1f, 1f).let { if (kotlin.math.abs(it) < PAN_SNAP) 0f else it }
+        return copy(lanes = lanes.toMutableList().also { it[lane] = it[lane].copy(pan = p) })
+    }
 
     /** One hit's own pan and pitch (no hit: nothing changes). */
     fun withHitDetail(lane: Int, step: Int, pan: Float, pitch: Int): DrumPattern {
@@ -340,6 +356,8 @@ data class DrumPattern(
 
     companion object {
         const val PAD_COUNT = 16
+        /** A pad's pan this near the middle is the centre (the console's slider snaps the same). */
+        const val PAN_SNAP = 0.04f
         /** Hits a step can hold (×2 to ×8); the engine plays up to 4 until its roll command grows (phase 34, S3). */
         const val MAX_REPEATS = 8
         /** What the « Roulements » tool cycles through (×2, ×3, ×4; the long press offers the rest). */

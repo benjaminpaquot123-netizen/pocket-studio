@@ -81,8 +81,9 @@ android {
                 )
                 // The song bench (scripts/song-bench.sh): SongBenchExport records only when given -Pbench.out
                 // (LiveSongRecorder, scripts/live-bench.sh: with -Pbench.live; -Pbench.loop for the soak).
+                // (bench.sublayers=1: the bass music subs as layers of their bass, G1b SubLayers.)
                 // RealProjectsTest (docs/TESTS-REELS.md): -Preal.projects, -Preal.out, -Preal.live, -Preal.render.
-                for (key in listOf("bench.out", "bench.render", "bench.styles", "bench.live", "bench.seconds", "bench.loop", "real.projects", "real.out", "real.live", "real.render")) {
+                for (key in listOf("bench.out", "bench.render", "bench.styles", "bench.live", "bench.seconds", "bench.loop", "bench.sublayers", "real.projects", "real.out", "real.live", "real.render")) {
                     providers.gradleProperty(key).orNull?.let { value -> it.systemProperty("ps.$key", value) }
                 }
                 // Every style's song in one run (or every preview, PreviewLevelBench): more room than the tests need.

@@ -163,28 +163,37 @@ object SongShape {
         val riser: Riser = Riser.None,
         val bass: Boolean = true,
         val vocal: Boolean = false,
+        /** The last Drop's own scene (G0): the hook doubled and a drum layer more ([StarterWizard.withDropLayer]). */
+        val extra: Boolean = false,
     )
 
-    /** [scene] played for [bars] bars, as part of a stretch [sec]. */
-    data class Block(val scene: Int, val bars: Int, val sec: Sec)
+    /** What a block can leave out of its parts (their tracks muted there): the chords, the hook, the counter-melody, the vocal. */
+    enum class Layer { Pad, Lead, Counter, Vocal }
+
+    /** [scene] played for [bars] bars, as part of a stretch [sec], without its [mute] layers. */
+    data class Block(val scene: Int, val bars: Int, val sec: Sec, val mute: Set<Layer> = emptySet())
 
     /** The scenes of a song (the plan's first, then the variants) and the blocks that play them. */
     data class Shape(val scenes: List<SceneSpec>, val blocks: List<Block>, val spans: List<Span>) {
-        /** The song: each block's scene repeated over its bars ([barsOf]: a scene's length). */
-        fun parts(barsOf: (Int) -> Int): List<SongPart> {
+        /**
+         * The song: each block's scene repeated over its bars ([barsOf]: a scene's length), the tracks
+         * of its [Block.mute] layers muted there ([keysOf]: a layer's track keys).
+         */
+        fun parts(barsOf: (Int) -> Int, keysOf: (Layer) -> Set<String> = { emptySet() }): List<SongPart> {
             val out = ArrayList<SongPart>()
             for (b in blocks) {
                 var left = (b.bars / barsOf(b.scene).coerceAtLeast(1)).coerceAtLeast(1)
+                val muted = b.mute.flatMap(keysOf).toSet()
                 // Consecutive blocks of one scene make one part (as many as a part can repeat).
                 val last = out.lastOrNull()
-                if (last != null && last.scene == b.scene && last.repeats < SongPart.MAX_REPEATS) {
+                if (last != null && last.scene == b.scene && last.muted == muted && last.repeats < SongPart.MAX_REPEATS) {
                     val n = minOf(left, SongPart.MAX_REPEATS - last.repeats)
                     out[out.size - 1] = last.copy(repeats = last.repeats + n)
                     left -= n
                 }
                 while (left > 0) {
                     val n = left.coerceAtMost(SongPart.MAX_REPEATS)
-                    out += SongPart(b.scene, n)
+                    out += SongPart(b.scene, n, muted)
                     left -= n
                 }
             }
@@ -362,10 +371,29 @@ object SongShape {
                 .map { c -> if (c == content(1)) 1 else sceneOf(scenes[1].copy(label = numbered(verseLabel), content = c)) }
             else listOf(1)
         }
+        // G0: the last Drop's own scene (the hook doubled, a drum layer more). One scene only: with its accent
+        // (crash, impact, sub drop on its first beat) when a Drop opens on it (a single-block last Drop, a
+        // middle Drop of 16), then also where the last Drop's second 8 bars play it (a Drop hit again).
+        val dropSpans = spans.filter { it.sec == Sec.Drop }
+        val dropCount = dropSpans.size
+        val opensOnFinale = dropSpans.withIndex().any { (i, sp) ->
+            val n = sp.bars / 8
+            (n <= 1 && dropCount >= 2 && i == dropCount - 1) || (n == 2 && i in 1 until dropCount - 1)
+        }
+        val finale by lazy {
+            sceneOf(drop.copy(
+                label = numbered(dropLabel), version = Version.Chorus2, vocal = 2 in vocalIn || VOCAL_SECOND in vocalIn, extra = true,
+                accent = opensOnFinale && drop.accent, riser = if (opensOnFinale) drop.riser else Riser.None,
+            ))
+        }
+        val lean = style?.id in LEAN_DROP_STYLES && (Part.Pad in drop.content.parts || Part.Lead in drop.content.parts)
+        // A middle Drop of 8 bars breathes without its chords (without its hook when it has none).
+        val breathe = if (Part.Pad in drop.content.parts) setOf(Layer.Pad) else setOf(Layer.Lead, Layer.Counter)
+        var drops = 0
         val blocks = ArrayList<Block>()
         var verses = 0
         for (span in spans) {
-            fun add(scene: Int, bars: Int) { blocks += Block(scene, bars, span.sec) }
+            fun add(scene: Int, bars: Int, mute: Set<Layer> = emptySet()) { blocks += Block(scene, bars, span.sec, mute) }
             fun ladderOf(ladder: List<Int>) {
                 val n = span.bars / 8
                 for (k in 0 until n) add(ladder[(k * ladder.size / n).coerceAtMost(ladder.size - 1)], 8)
@@ -380,9 +408,23 @@ object SongShape {
                     add(leadB, span.bars - HALF_BARS)
                 } else add(leadB, span.bars)
                 Sec.Drop -> {
+                    // G0: no two Drops alike. The first opens on the bass and the beat alone in bass music
+                    // (its first 8 bars, when it has more); a middle one ends on the last Drop's scene (one
+                    // of 16 opens on it, one of 8 breathes without its chords); the last one answers each 8
+                    // with its own scene, fuller.
+                    val d = drops++
+                    val last = dropCount >= 2 && d == dropCount - 1
+                    val middle = d in 1 until dropCount - 1
                     val n = span.bars / 8
-                    if (n <= 1) add(2, span.bars)
-                    else for (k in 0 until n) add(if (k % 2 == 1) drop2 else if (k % 4 == 2) mute ?: 2 else 2, 8)
+                    if (n <= 1) add(if (last) finale else 2, span.bars, if (middle) breathe else emptySet())
+                    else for (k in 0 until n) {
+                        var scene = if (k % 2 == 1) drop2 else if (k % 4 == 2) mute ?: 2 else 2
+                        val muted = if (d == 0 && k == 0 && lean) LEAN else emptySet()
+                        if (last && k % 2 == 1) scene = finale
+                        if (middle && n >= 3 && k >= n / 2) scene = finale
+                        if (middle && n == 2 && k == 0) scene = finale
+                        add(scene, 8, muted)
+                    }
                 }
                 Sec.Fake -> if (fake >= 0) add(fake, span.bars)
                 Sec.Post -> add(post, span.bars)
@@ -391,6 +433,16 @@ object SongShape {
         }
         return Shape(scenes, blocks, spans)
     }
+
+    /**
+     * G0 (docs/hits/bass.md § 5, « Drop 1A »): the bass music styles whose first Drop opens on the
+     * bass and the beat alone for 8 bars (no chords, no hook, no counter-melody, no vocal). Liquid
+     * keeps its chords (they are the genre), jungle its ride and its Hoover.
+     */
+    val LEAN_DROP_STYLES = setOf("dnb", "neurofunk", "jump_up", "dubstep", "riddim")
+
+    /** What the lean opening of a Drop leaves out. */
+    val LEAN = setOf(Layer.Pad, Layer.Lead, Layer.Counter, Layer.Vocal)
 
     /** The section names the variants take (saved in French, translated at display). */
     const val MONTEE = "Montée"

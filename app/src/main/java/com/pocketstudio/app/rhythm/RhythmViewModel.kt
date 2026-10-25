@@ -113,6 +113,14 @@ import com.pocketstudio.model.takeParts
 import com.pocketstudio.model.liveStateOf
 import com.pocketstudio.model.songCurveCommands
 import com.pocketstudio.model.CurveCommand
+import com.pocketstudio.model.Layers
+import com.pocketstudio.model.addLayer
+import com.pocketstudio.model.allTrackSounds
+import com.pocketstudio.model.editLayer
+import com.pocketstudio.model.layersOf
+import com.pocketstudio.model.removeLayer
+import com.pocketstudio.model.setLayer
+import com.pocketstudio.model.subAsLayer
 import com.pocketstudio.model.hasPoints
 import com.pocketstudio.model.withPartScene
 import com.pocketstudio.model.sceneSteps
@@ -408,6 +416,33 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     )
     val project: StateFlow<Project> = session.project
 
+    /**
+     * The Guide (docs/PLAN-GUIDE.md): its analysis follows the project (debounced, off the main
+     * thread); its buttons edit through the session, one undo step each, then [afterGuideEdit].
+     * Made when its panel first asks for it.
+     */
+    val guide: com.pocketstudio.app.guide.GuideViewModel by lazy {
+        com.pocketstudio.app.guide.GuideViewModel(session, viewModelScope, onEdited = ::afterGuideEdit)
+    }
+
+    /** Engine updates the Guide's edits asked for (tests). */
+    internal var guideSyncs = 0
+        private set
+
+    /**
+     * After a Guide's step: nothing for the engine when only the Guide's own state changed (a card
+     * skipped, a note); otherwise what plays follows as after an undo (the mixer, the part playing
+     * with its muted tracks, the next part staged again), and more long effects than the engine
+     * holds are said (the Guide refuses to add them; one already over stays said).
+     */
+    private fun afterGuideEdit(before: Project) {
+        val now = project.value
+        if (now.copy(guide = before.guide) == before) return
+        guideSyncs++
+        followPlaybackAfterHistory(sceneHeard(), before.song)
+        warnLongFxOverLimit(before)
+    }
+
     private val _transport = MutableStateFlow(TransportUi())
     val transport: StateFlow<TransportUi> = _transport.asStateFlow()
 
@@ -554,6 +589,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun engineStarted() {
         liveInstruments.clear()
         liveMulti.clear()
+        pushedLayers.fill(null)
+        pushedStacks.clear()
         pushedVoices = null
         syncEngine()
     }
@@ -820,7 +857,225 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             pushNotes(t.notes, t.id)
         }
         pushInstrument(p)
+        for (id in 0 until InstrumentTrack.MAX) pushLayers(p, id)
         if (p === project.value) loadMultiBanks()
+    }
+
+    // --- G1b: a track's layers (Track.layers), more sounds playing its notes ---------------------
+
+    /**
+     * Every layer of track [id] to the engine: its sound (as a sound of its own, [Layers.soundIndex]),
+     * how it plays the track's notes, its strip ([Layers.channel]); the layers it does not have (or
+     * a track that is not there) are switched off and their strips emptied. Its General MIDI
+     * instrument comes with [pushInstrument]. Listening goes back to every sound ([soloLayer]).
+     */
+    private fun pushLayers(p: Project, id: Int) {
+        if (!NativeEngine.isAvailable) return
+        val layers = if (id == 0 || p.tracks.any { it.id == id }) p.track(id).layers else emptyList()
+        for (k in 0 until NativeEngine.LAYERS) {
+            val l = layers.getOrNull(k)
+            val ch = NativeEngine.layerChannel(id, k)
+            if (l == null) {
+                // Already off in the engine (this project never had it there): nothing to send.
+                if (!NativeEngine.isCapturing && pushedLayers[id * NativeEngine.LAYERS + k] == false) continue
+                NativeEngine.setLayer(id, k, NativeEngine.LAYER_ON, 0f)
+                NativeEngine.clearInserts(ch)
+                if (!NativeEngine.isCapturing) {
+                    // Its sample and its instrument's zones let go (up to 100 MB a pack), whatever project comes next.
+                    val none = com.pocketstudio.model.LayerSound().asTrack(NativeEngine.layerSound(id, k))
+                    pushSampledSound(none)
+                    pushMultiSound(none)
+                    pushedLayers[id * NativeEngine.LAYERS + k] = false
+                }
+                continue
+            }
+            pushLayer(p, id, k, l)
+        }
+        // An export hears every sound; live, a layer heard alone stays so while the stack is the same
+        // (an undo that moves or removes layers would shift the mask onto another one).
+        if (!NativeEngine.isCapturing) {
+            val stack = layers.map { it.sound to it.role }
+            if (pushedStacks[id] != stack) listening.remove(id)
+            pushedStacks[id] = stack
+        }
+        val present = (1 shl (layers.size + 1)) - 1
+        val mask = if (NativeEngine.isCapturing) NativeEngine.LISTEN_ALL
+        else listening[id]?.and(present)?.takeIf { it != 0 && it != present } ?: NativeEngine.LISTEN_ALL
+        if (!NativeEngine.isCapturing && mask == NativeEngine.LISTEN_ALL) listening.remove(id)
+        NativeEngine.setLayerListen(id, mask)
+    }
+
+    /** Layer [k] of track [id]: its sound, then how it plays and mixes, then on. */
+    private fun pushLayer(p: Project, id: Int, k: Int, l: com.pocketstudio.model.TrackLayer) {
+        val sound = l.sound.asTrack(NativeEngine.layerSound(id, k))
+        pushSynth(sound.synth, sound.id)
+        pushSampledSound(sound)
+        pushMultiSound(sound)
+        pushPlaitsSound(sound)
+        val ch = NativeEngine.layerChannel(id, k)
+        NativeEngine.setLayer(id, k, NativeEngine.LAYER_LOW, l.low.toFloat())
+        NativeEngine.setLayer(id, k, NativeEngine.LAYER_HIGH, l.high.toFloat())
+        NativeEngine.setLayer(id, k, NativeEngine.LAYER_TRANSPOSE, l.transpose.toFloat())
+        NativeEngine.setLayer(id, k, NativeEngine.LAYER_FINE, l.fine / 100f)
+        NativeEngine.setLayer(id, k, NativeEngine.LAYER_GAIN, l.engineGain)
+        NativeEngine.setLayer(id, k, NativeEngine.LAYER_THROUGH, if (l.throughTrackFx) 1f else 0f)
+        NativeEngine.setChannelPan(ch, l.pan)
+        NativeEngine.setChannelMute(ch, l.mute)
+        l.sends.forEachIndexed { bus, level -> NativeEngine.setSend(ch, bus, level) }
+        // Its effects in the strip's first slots, the others emptied (no scenes of their own: always on).
+        val inserts = (l.inserts + List(NativeEngine.INSERTS) { Insert() }).take(NativeEngine.INSERTS)
+        insertCommands(inserts, { slot, type -> NativeEngine.setInsertType(ch, slot, type) }) { slot, key, v -> NativeEngine.setInsertParam(ch, slot, key, v) }
+        NativeEngine.setLayer(id, k, NativeEngine.LAYER_ON, 1f)
+        if (!NativeEngine.isCapturing) pushedLayers[id * NativeEngine.LAYERS + k] = true
+    }
+
+    /** Each track's layers as last pushed live (their sounds and roles): a stack changed lets go of its listening. */
+    private val pushedStacks = HashMap<Int, List<Pair<com.pocketstudio.model.LayerSound, String>>>()
+
+    /** Which layers the live engine has on (null: not known, sent at the next push). */
+    private val pushedLayers = arrayOfNulls<Boolean>(InstrumentTrack.MAX * NativeEngine.LAYERS)
+
+    /** The tracks heard partly (« cette couche seule », « sans elle »): their listening mask, live only. */
+    private val listening = HashMap<Int, Int>()
+
+    /** Tests: what the live engine was last told of each track's listening (absent: every sound). */
+    internal fun listeningForTest(id: Int): Int = listening[id] ?: NativeEngine.LISTEN_ALL
+
+    /** Track [id]'s layers changed ([before]: as they were): what changed goes to the engine. */
+    private fun pushLayersChange(id: Int, before: List<com.pocketstudio.model.TrackLayer>) {
+        if (!NativeEngine.isAvailable) return
+        val p = project.value
+        val now = p.layersOf(id)
+        // Fewer or moved layers: the whole stack again (each layer's strip takes its place).
+        if (now.size != before.size || now.indices.any { now[it].sound != before[it].sound && now[it].role != before[it].role }) {
+            pushLayers(p, id)
+            pushInstrument(p)
+            loadTrackFonts()
+            loadMultiBanks()
+            return
+        }
+        now.forEachIndexed { k, l ->
+            val was = before[k]
+            if (l == was) return@forEachIndexed
+            if (l.sound != was.sound) {
+                pushLayer(p, id, k, l)
+                pushInstrument(p)
+                loadTrackFonts()
+                loadMultiBanks()
+                return@forEachIndexed
+            }
+            val ch = NativeEngine.layerChannel(id, k)
+            if (l.low != was.low) NativeEngine.setLayer(id, k, NativeEngine.LAYER_LOW, l.low.toFloat())
+            if (l.high != was.high) NativeEngine.setLayer(id, k, NativeEngine.LAYER_HIGH, l.high.toFloat())
+            if (l.transpose != was.transpose) NativeEngine.setLayer(id, k, NativeEngine.LAYER_TRANSPOSE, l.transpose.toFloat())
+            if (l.fine != was.fine) NativeEngine.setLayer(id, k, NativeEngine.LAYER_FINE, l.fine / 100f)
+            if (l.gainDb != was.gainDb) NativeEngine.setLayer(id, k, NativeEngine.LAYER_GAIN, l.engineGain)
+            if (l.throughTrackFx != was.throughTrackFx) NativeEngine.setLayer(id, k, NativeEngine.LAYER_THROUGH, if (l.throughTrackFx) 1f else 0f)
+            if (l.pan != was.pan) NativeEngine.setChannelPan(ch, l.pan)
+            if (l.mute != was.mute) NativeEngine.setChannelMute(ch, l.mute)
+            l.sends.forEachIndexed { bus, level -> if (was.sends.getOrNull(bus) != level) NativeEngine.setSend(ch, bus, level) }
+            if (l.inserts != was.inserts) {
+                val inserts = (l.inserts + List(NativeEngine.INSERTS) { Insert() }).take(NativeEngine.INSERTS)
+                insertCommands(inserts, { slot, type -> NativeEngine.setInsertType(ch, slot, type) }) { slot, key, v -> NativeEngine.setInsertParam(ch, slot, key, v) }
+            }
+        }
+    }
+
+    /** Track [id]'s layers as an edit (one undo step; slider drags merge into one per [key]). */
+    private fun editLayers(id: Int, key: String?, edit: (Project) -> Project?): Boolean {
+        if (!hasTrack(id)) return false
+        val before = project.value.layersOf(id)
+        var done = false
+        session.edit(key) { p -> edit(p)?.also { done = true } ?: p }
+        if (done) pushLayersChange(id, before)
+        return done
+    }
+
+    /** A new layer of [sound] on track [id] for [role] ([com.pocketstudio.model.LayerRole]): one undo step. False when it has three. */
+    fun addLayer(id: Int, sound: com.pocketstudio.model.LayerSound, role: String = "", label: String = ""): Boolean {
+        val ok = editLayers(id, null) { it.addLayer(id, sound, role, label) }
+        if (!ok && hasTrack(id)) _notice.value = tr("Quatre sons par piste au maximum : retire une couche pour en ajouter une autre.")
+        return ok
+    }
+
+    /** Layer [index] of track [id] removed: one undo step (« Annuler » brings it back). */
+    fun removeLayer(id: Int, index: Int) {
+        if (index !in project.value.layersOf(id).indices) return
+        listening.remove(id)
+        editLayers(id, null) { it.removeLayer(id, index) }
+    }
+
+    /** A setting of layer [index] of track [id] (null: as it is). A drag merges into one undo step per [key]. */
+    fun setLayer(
+        id: Int, index: Int, key: String? = null, gainDb: Float? = null, pan: Float? = null, low: Int? = null, high: Int? = null,
+        transpose: Int? = null, fine: Float? = null, mute: Boolean? = null, throughTrackFx: Boolean? = null,
+    ) {
+        if (index !in project.value.layersOf(id).indices) return
+        editLayers(id, key?.let { "layer-$id-$index-$it" }) { it.setLayer(id, index, gainDb, pan, low, high, transpose, fine, mute, throughTrackFx) }
+    }
+
+    /** Layer [index] of track [id] changed by [transform] (its sound, its effects…): one undo step per [key]. */
+    fun editLayer(id: Int, index: Int, key: String? = null, transform: (com.pocketstudio.model.TrackLayer) -> com.pocketstudio.model.TrackLayer) {
+        if (index !in project.value.layersOf(id).indices) return
+        editLayers(id, key?.let { "layer-$id-$index-$it" }) { it.editLayer(id, index, transform) }
+    }
+
+    /**
+     * Listening, live (saved nowhere): only layer [only] of track [id] ([Layers.OWN]: only its own
+     * sound), or every sound again (null). [without]: every sound but that one (« sans cette couche »).
+     */
+    fun soloLayer(id: Int, only: Int?, without: Boolean = false) {
+        if (!hasTrack(id)) return
+        val mask = when {
+            only == null -> NativeEngine.LISTEN_ALL
+            without -> Layers.without(only)
+            else -> Layers.only(only)
+        }
+        if (mask == NativeEngine.LISTEN_ALL) listening.remove(id) else listening[id] = mask
+        if (NativeEngine.isAvailable) NativeEngine.setLayerListen(id, mask)
+    }
+
+    /**
+     * « Écouter avec / sans cette couche », offline: [bars] bars of what plays (the part shown, or
+     * the loop), rendered twice by a private engine as an export renders it, with every sound of
+     * track [id] and without its layer [index] ([Layers.OWN]: without its own sound), the louder of
+     * the two brought down to the other's loudness (the same LUFS: the ear judges the sound, not the
+     * level). Interleaved stereo at [OfflineExport.SAMPLE_RATE]: (with, without); null when it cannot.
+     * Main thread (the description), the renders on a worker.
+     */
+    suspend fun renderLayerAB(id: Int, index: Int, bars: Int = 8): Pair<FloatArray, FloatArray>? {
+        val count = project.value.layersOf(id).size
+        if (!NativeEngine.isAvailable || count == 0 || (index != Layers.OWN && index !in 0 until count)) return null
+        // As an export: the sounds in first (no synth stand-in), then the part shown.
+        awaitSoundsLoaded()
+        val p = project.value
+        if (p.layersOf(id).size != count) return null
+        val frames = OfflineExport.framesFor(bars, p.tempoBpm, p.beatsPerBar)
+        suspend fun render(mask: Int): FloatArray? {
+            val job = finishOrRelease(Dispatchers.IO, OfflineExport::close) { OfflineExport() } ?: return null
+            try {
+                NativeEngine.captureInto(job) {
+                    syncEngine(p)
+                    NativeEngine.setMetronome(false)
+                    NativeEngine.setLayerListen(id, mask)
+                }
+                return withContext(Dispatchers.Default) { job.renderToArray(frames, 0) }.takeIf { it.isNotEmpty() }
+            } finally {
+                withContext(kotlinx.coroutines.NonCancellable + Dispatchers.Main) { job.close() }
+            }
+        }
+        val with = render(NativeEngine.LISTEN_ALL) ?: return null
+        val without = render(Layers.without(index)) ?: return null
+        return matchLoudness(with, without)
+    }
+
+    /** The bass music sub folded into its bass as its « Sub » layer (SubLayers): one undo step. False when it stays apart. */
+    fun foldSubIntoBass(sub: Int): Boolean {
+        val bass = com.pocketstudio.model.SubLayers.bassOf(project.value, sub) ?: return false
+        if (project.value.subAsLayer(bass, sub) == null) return false
+        session.edit { p -> p.subAsLayer(bass, sub) ?: p }
+        syncEngine()
+        return true
     }
 
     // --- Audio tracks: recorded or imported clips -----------------------------------------------
@@ -1555,9 +1810,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     // --- A sound played across the keys (track source 2) ----------------------------------------
 
-    private fun pushSampled(p: Project = project.value, id: Int = track) {
+    private fun pushSampled(p: Project = project.value, id: Int = track) = pushSampledSound(p.track(id))
+
+    /** [t]'s sampled sound to engine sound [t.id] (a track's own, or a layer's: [Layers.soundIndex]). */
+    private fun pushSampledSound(t: InstrumentTrack) {
         if (!NativeEngine.isAvailable) return
-        val t = p.track(id)
         t.sampled.engineValues().forEachIndexed { i, v -> NativeEngine.setTrackSampleParam(i, v, t.id) }
         NativeEngine.setTrackSample(t.id, t.sampled.file?.let { padSamples.native(it) })
     }
@@ -1673,9 +1930,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     // --- Plaits (Mutable Instruments) voice for the instrument tracks -------------------------
 
-    private fun pushPlaits(p: Project = project.value, id: Int = track) {
+    private fun pushPlaits(p: Project = project.value, id: Int = track) = pushPlaitsSound(p.track(id))
+
+    /** [t]'s Plaits settings and its source to engine sound [t.id]. */
+    private fun pushPlaitsSound(t: InstrumentTrack) {
         if (!NativeEngine.isAvailable) return
-        val t = p.track(id)
         t.plaits.engineValues().forEachIndexed { i, v -> NativeEngine.setPlaitsParam(i, v, t.id) }
         NativeEngine.setSynthEngine(t.engine, t.id)
     }
@@ -1704,9 +1963,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     val multiLoading: StateFlow<Set<String>> = _multiLoading.asStateFlow()
 
     /** Track [id]'s multizone instrument and 808 settings to the engine (a track whose instrument is not loaded yet plays its synth). */
-    private fun pushMulti(p: Project = project.value, id: Int = track) {
+    private fun pushMulti(p: Project = project.value, id: Int = track) = pushMultiSound(p.track(id))
+
+    /** [t]'s multizone instrument and 808 settings to engine sound [t.id] (a track's own, or a layer's). */
+    private fun pushMultiSound(t: InstrumentTrack) {
         if (!NativeEngine.isAvailable) return
-        val t = p.track(id)
         if (t.engine == InstrumentTrack.ENGINE_808) {
             com.pocketstudio.model.PadVoice.TRACK_808_PARAMS.forEach { param ->
                 NativeEngine.setTrack808Param(t.id, param, t.voice808.param(param) ?: com.pocketstudio.model.PadVoice.track808Default(param))
@@ -1793,6 +2054,14 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     multiBanks[pack] = bank
                     AppLog.add("Instrument « ${manifest?.name} » : ${bank.zones.size} zones, ${bank.instrument.memoryBytes / 1_000_000} Mo")
                     project.value.instrumentTracks.filter { it.engine == InstrumentTrack.ENGINE_MULTI && it.multi.pack == pack }.forEach { pushMulti(id = it.id) }
+                    // G1b: and the layers playing it (until now on their synth stand-in, live).
+                    project.value.instrumentTracks.forEach { t ->
+                        t.layers.forEachIndexed { k, l ->
+                            if (l.sound.engine == InstrumentTrack.ENGINE_MULTI && l.sound.multi.pack == pack) {
+                                pushMultiSound(l.sound.asTrack(NativeEngine.layerSound(t.id, k)))
+                            }
+                        }
+                    }
                 } finally {
                     loadingMulti -= pack
                     _multiLoading.value = loadingMulti.toSet()
@@ -4508,7 +4777,12 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         // The live engine only gets the tracks that change: a new instance cuts the notes held on
         // that track (an undo while playing must not). An export engine gets them all.
         val live = !NativeEngine.isCapturing
-        p.instrumentTracks.forEach { t ->
+        // G1b: the layers' sounds too (as sounds of their own), and the slots of the layers gone back to none.
+        val layerSounds = (0 until InstrumentTrack.MAX).flatMap { id ->
+            val layers = if (id == 0 || p.tracks.any { it.id == id }) p.track(id).layers else emptyList()
+            (0 until NativeEngine.LAYERS).map { k -> (layers.getOrNull(k)?.sound ?: com.pocketstudio.model.LayerSound()).asTrack(NativeEngine.layerSound(id, k)) }
+        }
+        (p.instrumentTracks + layerSounds).forEach { t ->
             val font = t.instrument?.let { fonts[it.bankId] }
             val index = t.instrument?.let { font?.indexOf(it.bank, it.program) } ?: -1
             val wanted = if (font != null && index >= 0) font to index else null to 0
@@ -4524,7 +4798,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** Opens the banks the tracks play that are on the phone but not in memory yet. */
     private fun loadTrackFonts() {
         val app = getApplication<Application>()
-        val wanted = project.value.instrumentTracks.mapNotNull { it.instrument?.bankId }.toSet()
+        val wanted = project.value.allTrackSounds.mapNotNull { it.instrument?.bankId }.toSet()
         wanted.filter { it !in fonts && it !in loadingBanks }.forEach { id ->
             val bank = InstrumentLibrary.bank(id)
             if (!InstrumentLibrary.isInstalled(app, bank)) return@forEach
@@ -4546,7 +4820,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     private fun releaseUnusedFonts() {
         // An export may be copying a font on its worker (TinySoundFont's count is not atomic).
         if (running != null || exportJob != null) return
-        val used = project.value.instrumentTracks.mapNotNull { it.instrument?.bankId }.toSet() + _bankId.value
+        val used = project.value.allTrackSounds.mapNotNull { it.instrument?.bankId }.toSet() + _bankId.value
         fonts.keys.filter { it !in used }.forEach { fonts.remove(it)?.close() }
     }
 
@@ -7686,6 +7960,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      */
     private suspend fun awaitSoundsLoaded() {
         samplesLoad?.join()
+        // The instruments the project plays (its tracks' and their layers') asked for first: a render
+        // started before anything looked for them (the project just opened, the stream not started
+        // yet) would find none being read and go ahead with the synth stand-in.
+        loadTrackFonts()
+        loadMultiBanks()
         var waited = 0
         while ((loadingBanks.isNotEmpty() || loadingMulti.isNotEmpty() || stemsJob?.isActive == true || remixStretchJob?.isActive == true || stretchJob?.isActive == true) &&
             waited++ < 300
@@ -8165,6 +8444,19 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
          * ignores them on an empty slot, and switching an effect on sends the slot again).
          */
         /** « Joue dans » as engine commands: each effect heard plays in [scene] or not (empty and switched-off slots: nothing). */
+        /**
+         * [a] and [b] (interleaved stereo at [OfflineExport.SAMPLE_RATE]) at the same integrated
+         * loudness: the louder one is brought down to the other's (never up: no clipping). Silence
+         * is left as it is.
+         */
+        internal fun matchLoudness(a: FloatArray, b: FloatArray): Pair<FloatArray, FloatArray> {
+            fun lufs(x: FloatArray) = Loudness.Meter(OfflineExport.SAMPLE_RATE, 2).apply { add(x, x.size / 2) }.integrated()
+            val la = lufs(a) ?: return a to b
+            val lb = lufs(b) ?: return a to b
+            val gain = Math.pow(10.0, -kotlin.math.abs(la - lb) / 20.0).toFloat()
+            return if (la > lb) FloatArray(a.size) { a[it] * gain } to b else a to FloatArray(b.size) { b[it] * gain }
+        }
+
         internal inline fun insertOnCommands(inserts: List<Insert>, scene: Int, on: (slot: Int, on: Boolean) -> Unit) {
             inserts.forEachIndexed { slot, ins -> if (ins.heardType != 0) on(slot, ins.playsIn(scene)) }
         }

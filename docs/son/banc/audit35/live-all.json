@@ -1,0 +1,372 @@
+{
+"acid_house": {
+"drive_max": 9.4,
+"ramp_s": 16,
+"st_start": -14.732,
+"st_ramp": -9.717,
+"limiter_min_db": -1.6,
+"drop_s": 66,
+"st_before_drop": -15.439,
+"st_drop": -10.004
+},
+"acid_techno": {
+"drive_max": 7.2,
+"ramp_s": 13,
+"st_start": -13.861,
+"st_ramp": -9.063,
+"limiter_min_db": -4.8,
+"drop_s": 113,
+"st_before_drop": -14.845,
+"st_drop": -9.156
+},
+"acidcore": {
+"drive_max": 2.7,
+"ramp_s": 14,
+"st_start": -10.673,
+"st_ramp": -9.91,
+"limiter_min_db": -6.3,
+"drop_s": 85,
+"st_before_drop": -15.707,
+"st_drop": -10.504
+},
+"afro_house": {
+"drive_max": 8.1,
+"ramp_s": 20,
+"st_start": -16.0,
+"st_ramp": -10.845,
+"limiter_min_db": -6.4,
+"drop_s": 64,
+"st_before_drop": -15.314,
+"st_drop": -9.317
+},
+"afrobeats": {
+"drive_max": 7.1,
+"ramp_s": 13,
+"st_start": -27.504,
+"st_ramp": -10.345,
+"limiter_min_db": -4.8,
+"drop_s": 38,
+"st_before_drop": -14.039,
+"st_drop": -9.259
+},
+"amapiano": {
+"drive_max": 12.6,
+"ramp_s": 19,
+"st_start": -19.417,
+"st_ramp": -11.14,
+"limiter_min_db": -7.3,
+"drop_s": 70,
+"st_before_drop": -15.13,
+"st_drop": -9.54
+},
+"boom_bap": {
+"drive_max": 6.1,
+"ramp_s": 12,
+"st_start": -19.708,
+"st_ramp": -14.163,
+"limiter_min_db": -6.1,
+"drop_s": 12,
+"st_before_drop": -17.371,
+"st_drop": -10.984
+},
+"deep_house": {
+"drive_max": 9.7,
+"ramp_s": 18,
+"st_start": -15.695,
+"st_ramp": -10.241,
+"limiter_min_db": -4.7,
+"drop_s": 66,
+"st_before_drop": -15.91,
+"st_drop": -9.554
+},
+"detroit": {
+"drive_max": 6.8,
+"ramp_s": 22,
+"st_start": -13.061,
+"st_ramp": -8.794,
+"limiter_min_db": -3.8,
+"drop_s": 124,
+"st_before_drop": -17.063,
+"st_drop": -9.741
+},
+"disco": {
+"drive_max": 8.4,
+"ramp_s": 24,
+"st_start": -15.483,
+"st_ramp": -9.979,
+"limiter_min_db": -6.1,
+"drop_s": 68,
+"st_before_drop": -16.438,
+"st_drop": -11.368
+},
+"dnb": {
+"drive_max": 13.9,
+"ramp_s": 19,
+"st_start": -18.436,
+"st_ramp": -11.405,
+"limiter_min_db": -5.4,
+"drop_s": 57,
+"st_before_drop": -16.416,
+"st_drop": -10.175
+},
+"drill": {
+"drive_max": 9.0,
+"ramp_s": 14,
+"st_start": -26.002,
+"st_ramp": -18.54,
+"limiter_min_db": -4.9,
+"drop_s": 15,
+"st_before_drop": -18.54,
+"st_drop": -7.686
+},
+"dubstep": {
+"drive_max": 15.1,
+"ramp_s": 20,
+"st_start": -20.39,
+"st_ramp": -12.504,
+"limiter_min_db": -5.6,
+"drop_s": 70,
+"st_before_drop": -16.761,
+"st_drop": -10.074
+},
+"gabber": {
+"drive_max": 10.5,
+"ramp_s": 16,
+"st_start": -16.632,
+"st_ramp": -8.703,
+"limiter_min_db": -8.5,
+"drop_s": 56,
+"st_before_drop": -16.604,
+"st_drop": -9.35
+},
+"grime": {
+"drive_max": 8.3,
+"ramp_s": 14,
+"st_start": -22.841,
+"st_ramp": -14.257,
+"limiter_min_db": -4.7,
+"drop_s": 15,
+"st_before_drop": -14.257,
+"st_drop": -10.034
+},
+"hard_techno": {
+"drive_max": 11.1,
+"ramp_s": 16,
+"st_start": -21.914,
+"st_ramp": -13.071,
+"limiter_min_db": -3.7,
+"drop_s": 104,
+"st_before_drop": -15.794,
+"st_drop": -11.858
+},
+"house": {
+"drive_max": 9.4,
+"ramp_s": 22,
+"st_start": -14.889,
+"st_ramp": -9.571,
+"limiter_min_db": -7.0,
+"drop_s": 64,
+"st_before_drop": -15.102,
+"st_drop": -9.597
+},
+"industrial_techno": {
+"drive_max": 5.1,
+"ramp_s": 11,
+"st_start": -12.866,
+"st_ramp": -9.929,
+"limiter_min_db": -4.2,
+"drop_s": 114,
+"st_before_drop": -13.987,
+"st_drop": -9.242
+},
+"jersey_club": {
+"drive_max": 9.1,
+"ramp_s": 15,
+"st_start": -22.495,
+"st_ramp": -14.482,
+"limiter_min_db": -6.1,
+"drop_s": 15,
+"st_before_drop": -15.855,
+"st_drop": -8.91
+},
+"jump_up": {
+"drive_max": 11.1,
+"ramp_s": 32,
+"st_start": -22.143,
+"st_ramp": -14.549,
+"limiter_min_db": -5.7,
+"drop_s": 57,
+"st_before_drop": -16.711,
+"st_drop": -11.619
+},
+"jungle": {
+"drive_max": 11.6,
+"ramp_s": 27,
+"st_start": -21.005,
+"st_ramp": -10.962,
+"limiter_min_db": -4.7,
+"drop_s": 95,
+"st_before_drop": -17.343,
+"st_drop": -9.202
+},
+"liquid_dnb": {
+"drive_max": 13.5,
+"ramp_s": 25,
+"st_start": -18.238,
+"st_ramp": -11.375,
+"limiter_min_db": -4.9,
+"drop_s": 57,
+"st_before_drop": -16.07,
+"st_drop": -9.928
+},
+"lofi": {
+"drive_max": 7.1,
+"ramp_s": 13,
+"st_start": -23.247,
+"st_ramp": -13.054,
+"limiter_min_db": -4.3,
+"drop_s": 13,
+"st_before_drop": -19.658,
+"st_drop": -8.777
+},
+"minimal": {
+"drive_max": 11.5,
+"ramp_s": 23,
+"st_start": -16.262,
+"st_ramp": -9.827,
+"limiter_min_db": -5.0,
+"drop_s": 122,
+"st_before_drop": -14.551,
+"st_drop": -10.132
+},
+"neurofunk": {
+"drive_max": 14.0,
+"ramp_s": 23,
+"st_start": -18.364,
+"st_ramp": -11.103,
+"limiter_min_db": -5.8,
+"drop_s": 57,
+"st_before_drop": -17.749,
+"st_drop": -10.882
+},
+"phonk": {
+"drive_max": 10.1,
+"ramp_s": 15,
+"st_start": -25.693,
+"st_ramp": -17.758,
+"limiter_min_db": -7.8,
+"drop_s": 16,
+"st_before_drop": -17.758,
+"st_drop": -7.679
+},
+"pop": {
+"drive_max": 5.5,
+"ramp_s": 11,
+"st_start": -15.317,
+"st_ramp": -12.885,
+"limiter_min_db": -4.9,
+"drop_s": 43,
+"st_before_drop": -13.785,
+"st_drop": -9.213
+},
+"reggaeton": {
+"drive_max": 6.9,
+"ramp_s": 13,
+"st_start": -19.292,
+"st_ramp": -12.034,
+"limiter_min_db": -6.1,
+"drop_s": 42,
+"st_before_drop": -14.909,
+"st_drop": -9.461
+},
+"retro_techno": {
+"drive_max": 9.2,
+"ramp_s": 31,
+"st_start": -14.817,
+"st_ramp": -10.004,
+"limiter_min_db": -6.1,
+"drop_s": 122,
+"st_before_drop": -17.876,
+"st_drop": -9.542
+},
+"riddim": {
+"drive_max": 15.5,
+"ramp_s": 20,
+"st_start": -21.83,
+"st_ramp": -15.008,
+"limiter_min_db": -6.0,
+"drop_s": 77,
+"st_before_drop": -14.083,
+"st_drop": -11.749
+},
+"speed_garage": {
+"drive_max": 10.4,
+"ramp_s": 21,
+"st_start": -15.479,
+"st_ramp": -10.024,
+"limiter_min_db": -5.4,
+"drop_s": 61,
+"st_before_drop": -17.739,
+"st_drop": -9.864
+},
+"synthwave": {
+"drive_max": 7.2,
+"ramp_s": 15,
+"st_start": -17.863,
+"st_ramp": -11.733,
+"limiter_min_db": -4.6,
+"drop_s": 38,
+"st_before_drop": -12.514,
+"st_drop": -9.472
+},
+"tech_house": {
+"drive_max": 8.7,
+"ramp_s": 14,
+"st_start": -18.891,
+"st_ramp": -12.212,
+"limiter_min_db": -8.3,
+"drop_s": 62,
+"st_before_drop": -16.234,
+"st_drop": -10.737
+},
+"techno": {
+"drive_max": 11.8,
+"ramp_s": 20,
+"st_start": -15.507,
+"st_ramp": -9.697,
+"limiter_min_db": -7.9,
+"drop_s": 118,
+"st_before_drop": -15.868,
+"st_drop": -9.595
+},
+"trance": {
+"drive_max": 12.3,
+"ramp_s": 20,
+"st_start": -17.33,
+"st_ramp": -9.891,
+"limiter_min_db": -5.7,
+"drop_s": 113,
+"st_before_drop": -14.204,
+"st_drop": -10.188
+},
+"trap": {
+"drive_max": 9.1,
+"ramp_s": 15,
+"st_start": -22.664,
+"st_ramp": -15.58,
+"limiter_min_db": -6.8,
+"drop_s": 15,
+"st_before_drop": -16.56,
+"st_drop": -7.852
+},
+"uk_garage": {
+"drive_max": 9.5,
+"ramp_s": 15,
+"st_start": -16.846,
+"st_ramp": -12.809,
+"limiter_min_db": -6.1,
+"drop_s": 45,
+"st_before_drop": -12.468,
+"st_drop": -10.213
+}
+}

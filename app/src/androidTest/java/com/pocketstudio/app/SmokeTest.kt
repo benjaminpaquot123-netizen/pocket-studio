@@ -219,8 +219,8 @@ class SmokeTest {
                 .fetchSemanticsNodes().mapNotNull { it.config.getOrNull(androidx.compose.ui.semantics.SemanticsProperties.TestTag) }
             throw AssertionError("no synth editor after $touches touches on track_0: selected=${rhythm.selectedTrack.value}, shown=${shown.joinToString(" ").take(3000)}")
         }
-        compose.onNodeWithTag("mode_notes").performClick()
-        compose.onNodeWithTag("piano_roll").assertExists()
+        compose.onNodeWithTag("mode_notes").performScrollTo().performClick()
+        compose.waitUntil(5_000) { compose.onAllNodesWithTag("piano_roll").fetchSemanticsNodes().isNotEmpty() }
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             rhythm.addNote(com.pocketstudio.model.Note(start = 0, length = 48, pitch = 60))
         }

@@ -10,8 +10,12 @@
 # Fails when ps_live flags a song (docs/son/BANC.md,
 # « Écoute en direct »): an unplanned fade, silence while the transport runs, a click, a NaN, the
 # live gain out of its range. Report: OUT/report.md; per style: OUT/log/<style>.txt and .csv.
+# « Basse au téléphone » (docs/hits/basses-qui-tapent.md § 8): each song is played a second time with
+# its basses alone (META bass, ps_live --solo), and the report gives what a phone keeps of them live:
+# their K-weighted level through a 4th-order high-pass at 300 Hz (and 200 Hz) against their own, the
+# median over the seconds they play (OUT/log/<style>.bass.csv).
 #
-#   scripts/live-bench.sh [--styles a,b,c] [--out DIR] [--seconds S (90)] [--no-record] [--loop L] [--sub-layers]
+#   scripts/live-bench.sh [--styles a,b,c] [--out DIR] [--seconds S (150)] [--no-record] [--loop L] [--sub-layers]
 #
 # --loop L: the soak (docs/TESTS-REELS.md): each song made about L seconds long (cut, or its parts again
 # after it) and looped for the S seconds; ps_live also flags a loop drifting from the others.
@@ -22,7 +26,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 OUT="$ROOT/build/live-bench"
 STYLES=""
-SECONDS_LIVE=90
+SECONDS_LIVE=150
 RECORD=1
 LOOP=""
 SUBLAYERS=""
@@ -64,14 +68,37 @@ export OUT TOOLS SECONDS_LIVE
 for f in "$OUT"/cmds/*.pslive; do
     s="$(basename "$f" .pslive)"
     if [ -z "$STYLES" ] || [[ ",$STYLES," == *",$s,"* ]]; then echo "$s"; fi
-done | xargs -P "$JOBS" -I{} sh -c '"$TOOLS/ps_live" --seconds "$SECONDS_LIVE" --csv "$OUT/log/{}.csv" "$OUT/cmds/{}.pslive" > "$OUT/log/{}.txt"; st=$?; [ $st = 0 ] || [ $st = 4 ] || { echo "FAILED: {} ($st)" >&2; exit 255; }'
+done | xargs -P "$JOBS" -I{} sh -c '"$TOOLS/ps_live" --seconds "$SECONDS_LIVE" --csv "$OUT/log/{}.csv" "$OUT/cmds/{}.pslive" > "$OUT/log/{}.txt"; st=$?; [ $st = 0 ] || [ $st = 4 ] || { echo "FAILED: {} ($st)" >&2; exit 255; }
+    bass="$(sed -n "s/^META bass //p" "$OUT/cmds/{}.pslive" | head -1)"
+    if [ -n "$bass" ]; then
+        "$TOOLS/ps_live" --quiet --seconds "$SECONDS_LIVE" --solo "$bass" --csv "$OUT/log/{}.bass.csv" "$OUT/cmds/{}.pslive" > /dev/null; st=$?
+        [ $st = 0 ] || [ $st = 4 ] || { echo "FAILED: {} bass ($st)" >&2; exit 255; }
+    fi'
 
 echo "== Report"
 python3 -I - "$OUT/log" "$OUT/report.md" <<'PY'
 import csv, glob, os, sys
 log, out = sys.argv[1], sys.argv[2]
 lines, bad = [], 0
+def phone(path):
+    """What a phone keeps of the basses played alone live: median over the seconds they play of their
+    K-weighted level through the 300 Hz (and 200 Hz) model against their own (dB)."""
+    if not os.path.exists(path):
+        return "–"
+    rows = [r for r in csv.DictReader(open(path)) if r.get("running") == "1" and "k300_db" in r]
+    if not rows:
+        return "–"
+    top = max(float(r["k_db"]) for r in rows)
+    if top < -70.0:
+        return "–"  # the basses never play in the seconds heard (a long intro)
+    heard = [r for r in rows if float(r["k_db"]) > top - 20.0]
+    def med(key):
+        v = sorted(float(r[key]) - float(r["k_db"]) for r in heard)
+        return v[len(v) // 2]
+    return f"{med('k300_db'):.1f} / {med('k200_db'):.1f}".replace("-", "−").replace(".", ",")
 for path in sorted(glob.glob(os.path.join(log, "*.csv"))):
+    if path.endswith(".bass.csv"):
+        continue
     style = os.path.basename(path)[:-4]
     rows = list(csv.DictReader(open(path)))
     text = open(path[:-4] + ".txt").read().splitlines()
@@ -81,12 +108,14 @@ for path in sorted(glob.glob(os.path.join(log, "*.csv"))):
     lane = [float(r["lane"]) for r in rows]
     bad += 1 if flags else 0
     lines.append(f"| {'ok' if not flags else '**à voir**'} | {style} | {min(drive):+.1f} .. {max(drive):+.1f} | {min(short):.1f} .. {max(short):.1f} | "
-                 f"{min(lane):.2f} | {len(flags)} | {'; '.join(flags[:3])} |")
+                 f"{min(lane):.2f} | {phone(path[:-4] + '.bass.csv')} | {len(flags)} | {'; '.join(flags[:3])} |")
 md = ["# Écoute en direct (ps_live)", "",
       f"{len(lines) - bad}/{len(lines)} styles sans alerte. Gain live = la cible de loudness (dB) ; niveau = court terme (3 s) pendant la lecture ;"
-      " courbe = la courbe du morceau sur la sortie générale (1 = pleine).", "",
-      "| | style | gain live (dB) | niveau (dBFS) | courbe min | alertes | premières alertes |",
-      "|---|---|---|---|---|---|---|"] + lines
+      " courbe = la courbe du morceau sur la sortie générale (1 = pleine) ; basse au téléphone = les basses jouées seules en direct,"
+      " leur sonie à travers un téléphone (passe-haut d'ordre 4 à 300 Hz / 200 Hz, pondération K) moins leur sonie pleine bande"
+      " (dB, médiane des secondes où elles jouent ; plus proche de 0, mieux elles passent ; cible ≥ −14 / −10).", "",
+      "| | style | gain live (dB) | niveau (dBFS) | courbe min | basse au téléphone (300 / 200 Hz) | alertes | premières alertes |",
+      "|---|---|---|---|---|---|---|---|"] + lines
 open(out, "w").write("\n".join(md) + "\n")
 print("\n".join(md))
 sys.exit(1 if bad else 0)

@@ -34,9 +34,10 @@ class GuideActionsTest {
 
     @Test
     fun anOptionChangesTheTrackAndTheHistoryKeepsTheValueBefore() {
-        assertTrue(song.strip("Sub").inserts.all { it.effect == EffectType.NONE })
+        // The assistant's Sub carries only « Basse audible » (the bass exciter, « des basses qui tapent »).
+        assertEquals(listOf(EffectType.BASS_EXCITER), song.strip("Sub").inserts.map { it.effect }.filter { it != EffectType.NONE })
         val p = GuideActions.apply(song, "fx.sub", "light", 1000L)
-        assertEquals(EffectType.SATURATION, p.strip("Sub").inserts.first().effect)
+        assertEquals(listOf(EffectType.BASS_EXCITER, EffectType.SATURATION), p.strip("Sub").inserts.map { it.effect }.filter { it != EffectType.NONE })
         assertEquals(GuideStatus.DONE, p.guide.statusOf("fx.sub"))
         assertEquals("light", p.guide.cards.getValue("fx.sub").option)
         val change = p.guide.history.single()
@@ -156,7 +157,10 @@ class GuideActionsTest {
         assertEquals(song.strip("Sub").inserts, back.strip("Sub").inserts)
         assertEquals(listOf(0.3f, 0f), back.strip("Sub").sends)
         val edited = sent.copy(mixer = sent.mixer.copy(channels = sent.mixer.channels.mapIndexed { i, c ->
-            if (i == ch) c.copy(inserts = c.inserts.toMutableList().also { it[0] = it[0].copy(params = listOf(0.9f) + it[0].params.drop(1)) }) else c
+            if (i == ch) c.copy(inserts = c.inserts.toMutableList().also { l ->
+                val k = l.indexOfFirst { it.effect == EffectType.SATURATION }
+                l[k] = l[k].copy(params = listOf(0.9f) + l[k].params.drop(1))
+            }) else c
         }))
         val refused = GuideActions.tryRevert(edited, id, 2000L)
         assertTrue(refused.problem != null)

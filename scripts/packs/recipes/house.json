@@ -260,7 +260,7 @@
    "rhythm": "..X..X....X..x....X..X....X-..x.",
    "voicing": "rootless9",
    "octave": 3,
-   "sound": "Piano électrique",
+   "sound": "Piano FM",
    "voice_lead": true
   },
   "bass": {
@@ -437,7 +437,7 @@
   "bass": {
    "pattern": "..Rr..Rr..Rr..RO..Rr..Rr..7r..5/..Rr..Rr..Rr..RO..Rr..3r..5r.O/R",
    "octave": 2,
-   "sound": "pack:tech_house:bass|Basse ronde",
+   "sound": "pack:tech_house:bass|Basse roulante",
    "glide": true,
    "sub": true
   },
@@ -602,7 +602,7 @@
    "rhythm": "...X..X....X..X....X--....X-..x.",
    "voicing": "rootless7",
    "octave": 4,
-   "sound": "Piano électrique",
+   "sound": "Rhodes FM",
    "voice_lead": true
   },
   "bass": {
@@ -910,7 +910,7 @@
   "bass": {
    "pattern": "R-......r.......",
    "octave": 2,
-   "sound": "Basse sub",
+   "sound": "Sub chaud",
    "glide": false
   },
   "lead": {
@@ -1091,7 +1091,7 @@
   "bass": {
    "pattern": "..R-.R....R-.R-...R-.R....R-.5-.",
    "octave": 2,
-   "sound": "Basse sub",
+   "sound": "Basse pluck",
    "glide": false
   },
   "lead": {
@@ -1413,7 +1413,7 @@
    "rhythm": "...X--..X...X......X--------....",
    "voicing": "rootless9",
    "octave": 3,
-   "sound": "Piano électrique",
+   "sound": "Rhodes FM",
    "voice_lead": true
   },
   "bass": {

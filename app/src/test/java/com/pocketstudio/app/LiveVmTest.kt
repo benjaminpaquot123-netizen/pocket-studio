@@ -596,9 +596,12 @@ class LiveVmTest {
             NativeEngine.sink = null
             com.pocketstudio.app.projects.CurrentProject.set(app, RhythmViewModel.PROJECT_ID)
         }
-        // One render per pad, each told « no target »; the live engine was told the style's.
-        assertTrue("${sink.renders.size} renders", sink.renders.size >= 2)
-        assertTrue("render targets ${sink.renders}", sink.renders.all { it == 0f })
+        // One render per pad, each told « no target »; the live engine was told the style's. S6 (G5): one
+        // more render may carry it, the live gain's estimate (the fullest Drop, at the song's target).
+        val pads = sink.renders.filter { it == 0f }
+        val targeted = sink.renders.filter { it != 0f }
+        assertTrue("${pads.size} pad renders", pads.size >= 2)
+        assertTrue("render targets ${sink.renders}", targeted.size <= 1 && targeted.all { t -> sink.live.any { it == t } })
         assertTrue("live targets ${sink.live}", sink.live.any { it != 0f })
     }
 }

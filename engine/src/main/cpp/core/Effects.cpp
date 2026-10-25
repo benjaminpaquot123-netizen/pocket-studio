@@ -60,6 +60,16 @@ void Biquad::highPass(float rate, float freq) {
     set((1 + cs) / 2, -(1 + cs), (1 + cs) / 2, 1 + alpha, -2 * cs, 1 - alpha);
 }
 
+void Biquad::lowPassQ(float rate, float freq, float q) {
+    const double w = 2 * kPi * freq / rate, cs = std::cos(w), alpha = std::sin(w) / (2 * q);
+    set((1 - cs) / 2, 1 - cs, (1 - cs) / 2, 1 + alpha, -2 * cs, 1 - alpha);
+}
+
+void Biquad::highPassQ(float rate, float freq, float q) {
+    const double w = 2 * kPi * freq / rate, cs = std::cos(w), alpha = std::sin(w) / (2 * q);
+    set((1 + cs) / 2, -(1 + cs), (1 + cs) / 2, 1 + alpha, -2 * cs, 1 - alpha);
+}
+
 void ParamEq::setParam(int p, float v) {
     if (p < 0 || p >= 4 || !std::isfinite(v)) return;
     p_[static_cast<size_t>(p)] = std::clamp(v, 0.0f, 1.0f);
@@ -1066,6 +1076,7 @@ void InsertSlot::prepare(float rate) {
     shifter_.prepare(rate);
     wobble_.prepare(rate);
     clipper_.prepare(rate);
+    exciter_.prepare(rate);
 }
 
 namespace {
@@ -1152,6 +1163,7 @@ void InsertSlot::resetState() {
         case FreqShiftFx: shifter_.reset(); break;
         case WobbleFx: wobble_.reset(); break;
         case ClipperFx: clipper_.reset(); break;
+        case BassExciterFx: exciter_.reset(); break;
         default: break;
     }
 }
@@ -1206,6 +1218,7 @@ void InsertSlot::setParam(int p, float v) {
         case FreqShiftFx: shifter_.setParam(p, v); break;
         case WobbleFx: wobble_.setParam(p, v); break;
         case ClipperFx: clipper_.setParam(p, v); break;
+        case BassExciterFx: exciter_.setParam(p, v); break;
         case EchoFx:
         case PingPongFx: if (echo_) echo_->setParam(p, v); break;
         case ReverbFx: if (reverb_) reverb_->setParam(p, v); break;
@@ -1240,6 +1253,7 @@ void InsertSlot::process(float* l, float* r, int n) {
         case FreqShiftFx: shifter_.process(l, r, n); break;
         case WobbleFx: wobble_.process(l, r, n); break;
         case ClipperFx: clipper_.process(l, r, n); break;
+        case BassExciterFx: exciter_.process(l, r, n); break;
         case EchoFx:
         case PingPongFx: if (echo_) echo_->process(l, r, n); break;
         case ReverbFx: if (reverb_) reverb_->process(l, r, n); break;

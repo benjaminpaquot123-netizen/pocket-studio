@@ -94,9 +94,11 @@ data class Project(
      */
     @EncodeDefault(EncodeDefault.Mode.NEVER) val padVoices: Map<Int, PadVoice> = emptyMap(),
     /**
-     * The instrument tracks' sound ([SOUND_V1] or [SOUND_V2], the engine's SetSoundVersion): since
-     * phase 34 (S4) the assistant's songs play their General MIDI instruments and stereo samples in
-     * stereo; the projects saved before keep them mono. Left out of the file at v1.
+     * The instrument tracks' sound ([SOUND_V1], [SOUND_V2] or [SOUND_V3], the engine's SetSoundVersion):
+     * since phase 34 (S4) the assistant's songs play their General MIDI instruments and stereo samples
+     * in stereo; since the leads chantier (lot 1, [SOUND_V3]) their Plaits FM voices follow the
+     * velocity too (louder when struck harder). The projects saved before keep theirs. Left out of
+     * the file at v1.
      */
     @EncodeDefault(EncodeDefault.Mode.NEVER) val soundVersion: Int = SOUND_V1,
     /**
@@ -184,8 +186,8 @@ data class Project(
         liveTake = liveTake.take(64),
         kitVersion = kitVersion.coerceIn(KIT_V1, KIT_V3),
         padVoices = PadVoice.sanitize(padVoices),
-        soundVersion = soundVersion.coerceIn(SOUND_V1, SOUND_V2),
-        mixVersion = mixVersion.coerceIn(MIX_V1, MIX_V2),
+        soundVersion = soundVersion.coerceIn(SOUND_V1, SOUND_V3),
+        mixVersion = mixVersion.coerceIn(MIX_V1, MIX_V3),
         style = style?.take(64)?.ifBlank { null },
         songVersions = songVersions.take(SongVersion.MAX).map { it.sanitized(this) },
         liveQuantumFine = liveQuantumFine.takeIf { it in LiveSlots.FINE_QUANTA } ?: 0,
@@ -205,9 +207,17 @@ data class Project(
         /** [soundVersion]: mono instrument tracks as always, and stereo ones (the assistant's songs since S4). */
         const val SOUND_V1 = 1
         const val SOUND_V2 = 2
+        /** The leads chantier, lot 1: as [SOUND_V2], and Plaits' six-operator FM voices louder the harder a note is struck. */
+        const val SOUND_V3 = 3
         /** [mixVersion]: the target on the whole song as always, and on its Drop (the assistant's songs since S5). */
         const val MIX_V1 = 1
         const val MIX_V2 = 2
+        /**
+         * « Des basses qui tapent » (docs/hits/basses-qui-tapent.md, P4): [MIX_V2] with the master's
+         * low cut at 25 Hz (the engine's MasterChain::setLowCut). Not given to the assistant's songs:
+         * on the bench it made the limiter take more off the Drop (docs/son/banc/apres-basses.md).
+         */
+        const val MIX_V3 = 3
         const val MIN_TEMPO = 40.0
         const val MAX_TEMPO = 300.0
         const val MAX_SWING = 0.75

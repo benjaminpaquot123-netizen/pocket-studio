@@ -558,6 +558,7 @@ fun AppRoot() {
                         chooseAcidSound = libraryVm::chooseAcidSound,
                         setAcidKnob = libraryVm::setAcidKnob,
                         choosePartSound = libraryVm::choosePartSound,
+                        chooseBassGrid = libraryVm::chooseBassGrid,
                         preview = libraryVm::preview,
                         download = libraryVm::downloadPack,
                         cancelDownload = libraryVm::cancelDownload,
@@ -1093,10 +1094,13 @@ fun AppRoot() {
             com.pocketstudio.model.DefaultNames.shown(readyProject.name),
             com.pocketstudio.app.export.shareSeconds(readyProject, com.pocketstudio.app.export.ShareSong.MIN_LOOP_BARS),
             readyProject.song.size, readyTransport.playing,
+            startsLater = com.pocketstudio.model.FirstListen.startsLater(readyProject),
         )
     }
     val songReadyActions = com.pocketstudio.app.onboarding.SongReadyActions(
-        listen = { if (rhythmVm.project.value.song.isNotEmpty()) rhythmVm.toggleSong() else rhythmVm.togglePlay() },
+        // Decision 2A (S6): about 8 bars before the first Drop; « Depuis le début » next to it.
+        listen = { if (rhythmVm.project.value.song.isNotEmpty()) rhythmVm.listenFromDrop() else rhythmVm.togglePlay() },
+        fromStart = { if (rhythmVm.project.value.song.isNotEmpty()) rhythmVm.listenFromStart() else rhythmVm.togglePlay() },
         changeSound = {
             readyDone()
             // The tune's track, and the sounds of its kind to pick from (one touch): the Synthé tab shows it behind.

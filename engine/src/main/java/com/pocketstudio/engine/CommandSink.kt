@@ -37,6 +37,9 @@ interface CommandSink {
     fun exportRenderFloat(target: Long, frames: Long, tailFrames: Long): FloatArray
     fun exportDestroy(target: Long)
 
+    /** [OfflineExport.report] of [target]'s last render, as the JNI lays it out (null: none). */
+    fun exportReport(target: Long): FloatArray? = null
+
     // The live engine's state, as the app polls it while playing (a test moves it on by hand).
     fun sceneSwaps(): Int = 0
     fun songStep(): Int = -1

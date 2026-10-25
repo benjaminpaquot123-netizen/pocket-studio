@@ -44,8 +44,11 @@ internal object WizardMix {
     private fun partDb(part: Part, held: Boolean): Float = when (part) {
         Part.Bass -> 2.5f
         Part.Lead -> -1f
-        Part.Pad -> if (held) -4f else -1f
+        Part.Pad -> if (held) HELD_PAD_DB else -1f
     }
+
+    /** A held pad's place in the part mix (dB). */
+    const val HELD_PAD_DB = -4f
 
     /** The master of a song the assistant makes: its layers balanced, it leaves the limiter a few dB of work. */
     const val MASTER_DB = -1f
@@ -280,7 +283,7 @@ internal object WizardMix {
     }
 
     /**
-     * S5, in [StarterWizard.build] just before [WideMix.apply] (which stays last): the assistant's song gets an
+     * S5, in [StarterWizard.build] just before [WideMix.apply] (then [withAudibleBass], last): the assistant's song gets an
      * honest mix ([Project.MIX_V2]: its loudness target aims at the Drop, the master chain takes
      * 3 LU at most there). One stage on the kick's transient (the drum bus and the master glue
      * slow and in RMS, the Punch at 10 ms); a soft clipper on the bass before its OTT; a real
@@ -395,7 +398,10 @@ internal object WizardMix {
             if (lane in lanes.indices && (lanes[lane].pan == PANS[role] || extra)) lanes[lane] = lanes[lane].copy(pan = pan)
         }
         p = withRisingMontees(p)
-        p = withSectionLevels(p, build = style.form == SongForm.Build, monteeTop = monteeTopDb(style), monteeFloor = monteeFloorDb(style))
+        p = withSectionLevels(
+            p, build = style.form == SongForm.Build, monteeTop = monteeTopDb(style), monteeFloor = monteeFloorDb(style),
+            groove = grooveDb(style), intro = introDb(style),
+        )
         p = p.copy(
             drums = p.drums.copy(lanes = lanes),
             scenes = p.scenes.map { sc ->
@@ -406,6 +412,106 @@ internal object WizardMix {
                 sidechainKey = if (hasKick) Mixer.padChannel(kick) else -1, musicBus = musicBus,
             ),
         )
+        return p
+    }
+
+    // --- « Des basses qui tapent » (docs/hits/basses-qui-tapent.md, P1 and P4) ---------------
+
+    /**
+     * The bass exciter's amount by style (« Basse audible », [EffectType.BASS_EXCITER]): hip-hop's
+     * 808s the most (0.5: they are almost a sine), club music and pop 0.35, bass music 0.25 (its mid
+     * layers already speak), the soft hip-hop 0.2; the analysis's own (§ 9) where it gives one.
+     */
+    private val EXCITER_BY_STYLE = mapOf(
+        "lofi" to 0.2f, "boom_bap" to 0.2f, "deep_house" to 0.3f, "disco" to 0.3f, "amapiano" to 0.4f, "liquid_dnb" to 0.25f,
+        "grime" to 0.3f, "reggaeton" to 0.4f, "afrobeats" to 0.35f, "synthwave" to 0.3f,
+    )
+
+    fun exciterAmount(style: Style): Float = (EXCITER_BY_STYLE[style.id] ?: when (style.family) {
+        "Hip-hop" -> 0.5f
+        "Bass music" -> 0.25f
+        else -> 0.35f
+    }) + if (style.id in PHONE_SHORT) PHONE_BUMP else 0f
+
+    /**
+     * S6 son (M11): the styles whose Drop still lost more than 4 LU through a phone's speaker on the
+     * S6 bench (lo-fi 8.1, boom bap 6.8, afro house 6.5…): their exciter [PHONE_BUMP] higher, for the
+     * new songs (a little more of the 300-800 Hz harmonics a phone plays).
+     */
+    private val PHONE_SHORT = setOf(
+        "acid_techno", "afro_house", "afrobeats", "amapiano", "boom_bap", "deep_house", "disco", "drill", "house", "jersey_club", "lofi",
+        "minimal", "phonk", "pop", "retro_techno", "speed_garage", "synthwave", "techno", "trap",
+    )
+    const val PHONE_BUMP = 0.1f
+
+    /** The exciter on a bass: [amount], its band under 110 Hz, its colour mostly even, its top at 600 Hz. */
+    fun bassExciter(amount: Float) = Insert(EffectType.BASS_EXCITER.ordinal, listOf(amount, 0.5f, 0.7f, 0.55f))
+
+    /**
+     * The 808 pad's low cut (the tracks' are [RoleMix]'s): 30 Hz, never over 0.7 x its lowest note (C1's
+     * 32.7 Hz keeps its fundamental: 23 Hz there), as RoleMix cuts a bass.
+     */
+    fun pad808LowCutHz(lowestHz: Float): Float = minOf(30f, 0.7f * lowestHz)
+
+    /** A flat parametric EQ whose « Coupe-bas » is at [hz]. */
+    fun lowCutEq(hz: Float) = Insert(EffectType.PARAM_EQ.ordinal, listOf(0.5f, 0.5f, 0.4f, RoleMix.lowCutValue(hz)))
+
+    /**
+     * « Des basses qui tapent », in [StarterWizard.build] last (after [WideMix.apply] and its
+     * [RoleMix]): what plays the bass (the bass tracks, the second bass, the Sub, the Sub drop, the 808's
+     * pad, a pack's sample as much as a synth) gets the bass exciter ([exciterAmount]: the phone hears
+     * its harmonics, the ear the note), before the strip's high-pass, clipper, OTT or pump (the clipper
+     * rounds what the exciter adds), its low cut moved in front of it. One owner per role for the low
+     * end: RoleMix's low cuts (a bass's adaptive one, under its lowest note; none on the Sub, a sine
+     * with no sub of its own; the Sub drop's saturation), the 808 pad's here ([pad808LowCutHz]). In a
+     * free slot only, moved by swaps so that the song's curves follow their effects. The song keeps
+     * [Project.MIX_V2]: the master's own low cut ([Project.MIX_V3]) cost the Drop 0.6 to 1.3 LU on the
+     * bench. The projects saved before keep their mix.
+     */
+    fun withAudibleBass(project: Project, style: Style, partOfTrack: Map<Int, Part>): Project {
+        var p = project
+        val amount = exciterAmount(style)
+        val tracks = partOfTrack.filterValues { it == Part.Bass }.keys + p.instrumentTracks.filter {
+            it.name in setOf(StarterWizard.BASS_SWITCH_TRACK, StarterWizard.SUB_TRACK, StarterWizard.SUB_DROP_TRACK)
+        }.map { it.id }
+        val pads808 = p.padVoices.filterValues { it.kind == PadVoice.BASS_808 }
+        val strips = tracks.filter { id -> p.instrumentTracks.any { it.id == id } }.map { InstrumentTrack.mixerChannel(it) } +
+            pads808.keys.map { Mixer.padChannel(it) }
+        val before = setOf(EffectType.FILTER.ordinal, EffectType.CLIPPER.ordinal, EffectType.OTT.ordinal, EffectType.PUMP.ordinal)
+        for (ch in strips.toSet()) {
+            if (ch !in p.mixer.channels.indices) continue
+            if (p.mixer.channels[ch].inserts.any { it.type == EffectType.BASS_EXCITER.ordinal }) continue
+            // The 808's pad: its own low cut (RoleMix treats the tracks only).
+            val lane = pads808.keys.firstOrNull { Mixer.padChannel(it) == ch }
+            if (lane != null && RoleMix.lowCutHz(p.mixer.channels[ch]) == null) {
+                val tune = pads808.getValue(lane).param(PadVoice.TUNE) ?: 36f
+                val hits = (listOf(p.drums) + p.allScenes.map { it.drums }).flatMap { it.lanes.getOrNull(lane)?.hits?.values.orEmpty() }
+                val lowest = tune + (hits.minOfOrNull { it.pitch } ?: 0)
+                p = p.withInsertedBefore(ch, lowCutEq(pad808LowCutHz(StudioDrums.hz(lowest.toInt()).toFloat())).sanitized(), before)
+            }
+            p = p.withInsertedBefore(ch, bassExciter(amount).sanitized(), before)
+            // Its low cut (RoleMix's EQ, put after the clipper) moved in front of it: no infra feeds its harmonics.
+            val now = p.mixer.channels[ch].inserts
+            val exciter = now.indexOfFirst { it.type == EffectType.BASS_EXCITER.ordinal }
+            val cut = now.indexOfFirst { it.type == EffectType.PARAM_EQ.ordinal && !it.bypass && it.params.getOrElse(3) { 0f } >= 0.01f }
+            if (exciter >= 0 && cut > exciter) for (k in cut downTo exciter + 1) p = p.withInsertsSwapped(ch, k, k - 1)
+        }
+        return p
+    }
+
+    /**
+     * [ins] on strip [ch] just before its first effect of a type in [types] (or in its first free slot):
+     * put in the free slot, then moved up one slot at a time with [withInsertsSwapped], so that the
+     * song's curves and MIDI knobs on the effects it passes follow them (a curve on the bass's filter
+     * must not end up on the exciter, or on the high-pass over its Sub). Unchanged without a free slot.
+     */
+    private fun Project.withInsertedBefore(ch: Int, ins: Insert, types: Set<Int>): Project {
+        val list = mixer.channels.getOrNull(ch)?.inserts ?: return this
+        val free = list.indexOfFirst { it.type == 0 }
+        if (free < 0) return this
+        var p = copy(mixer = mixer.copy(channels = mixer.channels.toMutableList().also { it[ch] = it[ch].copy(inserts = list.toMutableList().also { l -> l[free] = ins }).sanitized() }))
+        val at = list.indexOfFirst { it.type in types }
+        if (at in 0 until free) for (k in free downTo at + 1) p = p.withInsertsSwapped(ch, k, k - 1)
         return p
     }
 
@@ -548,9 +654,36 @@ internal object WizardMix {
     fun monteeFloorDb(style: Style): Float =
         monteeTopDb(style) + (if (style.form == SongForm.Build) BUILD_FROM_DB - BUILD_TOP_DB else MONTEE_FROM_DB - MONTEE_TOP_DB) - (MONTEE_DIP_DB[style.id] ?: 0f)
 
-    private fun sectionDb(stem: String): Float? = when (stem) {
-        "Groove", "Couplet" -> GROOVE_DB
-        "Break", "Pont" -> BREAK_DB
+    /**
+     * S6 son (M9): how much further under the Drop (or the Refrain) a style's Groove (or Couplet) sits,
+     * its Intro with it (dB): the Drop only 0.5 to 1.5 LU over its Groove after the master chain
+     * (median +1.8, 15 styles of 37 at +2), because the chain holds the Drop and leaves the Groove whole.
+     * Measured on the S6 bench so that the Drop lands about +2.5 LU over its Groove, exported.
+     */
+    private val GROOVE_TRIM_DB: Map<String, Float> = mapOf(
+        "acid_house" to 2.0f, "acid_techno" to 2.5f, "acidcore" to 2.5f, "afro_house" to 0.5f, "afrobeats" to 1.0f,
+        "boom_bap" to 0.5f, "deep_house" to 0.5f, "detroit" to 1.5f, "disco" to 0.5f, "drill" to 0.5f, "grime" to 0.5f,
+        "house" to 2.5f, "industrial_techno" to 0.5f, "jersey_club" to 1.5f, "jungle" to 1.0f, "minimal" to 1.0f,
+        "phonk" to 1.0f, "pop" to 0.5f, "reggaeton" to 1.0f, "retro_techno" to 1.0f, "synthwave" to 1.0f, "tech_house" to 2.0f,
+        "techno" to 1.0f, "trance" to 0.5f, "trap" to 1.0f, "uk_garage" to 1.5f,
+    )
+
+    /** [style]'s Groove (and Couplet) on the master fader (dB). */
+    fun grooveDb(style: Style): Float = GROOVE_DB - (GROOVE_TRIM_DB[style.id] ?: 0f)
+
+    /**
+     * [style]'s Intro on the master fader (dB): 0, or in club music as much lower as its Groove is (S6:
+     * an Intro as loud as the Groove, kept so); a rap or pop Intro is already well under its Refrain.
+     */
+    fun introDb(style: Style): Float = if (style.family in INTRO_WITH_GROOVE) -(GROOVE_TRIM_DB[style.id] ?: 0f) else 0f
+
+    private val INTRO_WITH_GROOVE = setOf("Techno", "House")
+
+    private fun sectionDb(stem: String, groove: Float = GROOVE_DB, intro: Float = 0f): Float? = when (stem) {
+        "Groove", "Couplet" -> groove
+        // Never over the Groove's level (a Groove brought lower takes its Break down with it).
+        "Break", "Pont" -> minOf(BREAK_DB, groove - 1f)
+        "Intro" -> intro.takeIf { it != 0f }
         else -> null
     }
 
@@ -567,7 +700,10 @@ internal object WizardMix {
         build: Boolean = false,
         monteeTop: Float = if (build) BUILD_TOP_DB else MONTEE_TOP_DB,
         monteeFloor: Float = monteeTop + if (build) BUILD_FROM_DB - BUILD_TOP_DB else MONTEE_FROM_DB - MONTEE_TOP_DB,
+        groove: Float = GROOVE_DB,
+        intro: Float = 0f,
     ): Project {
+        fun sectionDb(stem: String) = sectionDb(stem, groove, intro)
         val p = project
         if (p.song.isEmpty()) return p
         val b = p.beatsPerBar.coerceAtLeast(1)

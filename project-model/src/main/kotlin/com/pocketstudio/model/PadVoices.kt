@@ -22,7 +22,7 @@ data class PadVoice(
 ) {
     fun sanitized(): PadVoice = copy(
         kind = kind.coerceIn(BASS_808, RUMBLE),
-        params = params.filter { (k, v) -> k in TUNE..TONE && v.isFinite() }.mapValues { (k, v) -> v.coerceIn(range(k)) },
+        params = params.filter { (k, v) -> k in TUNE..DROP_TIME && v.isFinite() }.mapValues { (k, v) -> v.coerceIn(range(k)) },
     )
 
     /** A setting of this voice: its own value, or null (the engine's default). */
@@ -52,9 +52,22 @@ data class PadVoice(
         const val GLIDE = 4
         const val SUB = 5
         const val TONE = 6
+        /**
+         * « L'808 qui tape » (docs/hits/basses-qui-tapent.md, P2): the 808's version (0, or none: as
+         * before, the projects saved earlier keep it; 1: the punchy one), its attack's drop in
+         * semitones (0..36) and that drop's time constant in seconds (0.005..0.15). Version 1's
+         * « tone » is its 4th to 8th harmonics (heard on a phone), its drive over 0.75 a second clip.
+         */
+        const val VERSION = 7
+        const val PITCH_DROP = 8
+        const val DROP_TIME = 9
 
-        /** The settings an 808 track sends (the engine's Track808::Param; its tune is its notes'). */
-        val TRACK_808_PARAMS = listOf(DECAY, DRIVE, CLICK, GLIDE, TONE)
+        /**
+         * The settings an 808 track sends (the engine's Track808::Param; its tune is its notes'): its
+         * version and its drop too, so that an 808 made « qui tape » on a track (a layer, a pad's 808
+         * moved to a track) sounds as on its pad. A track without them plays version 0, as before.
+         */
+        val TRACK_808_PARAMS = listOf(DECAY, DRIVE, CLICK, GLIDE, TONE, VERSION, PITCH_DROP, DROP_TIME)
 
         /** An 808 track's setting when the track has none of its own (the engine's Track808::prepare: notes held up to 2.5 s). */
         fun track808Default(param: Int): Float = when (param) {
@@ -64,6 +77,9 @@ data class PadVoice(
             GLIDE -> 0.08f
             TONE -> 0.5f
             SUB -> 0.5f
+            // The engine's Studio::Settings: version 0 (its drop unused), a drop of 24 st over 25 ms.
+            PITCH_DROP -> 24f
+            DROP_TIME -> 0.025f
             else -> 0f
         }
 
@@ -75,6 +91,8 @@ data class PadVoice(
             TUNE -> 12f..400f
             DECAY -> 0.02f..2.5f
             GLIDE -> 0f..0.5f
+            PITCH_DROP -> 0f..36f
+            DROP_TIME -> 0.005f..0.15f
             else -> 0f..1f
         }
 

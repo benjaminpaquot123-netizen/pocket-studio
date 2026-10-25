@@ -16,7 +16,7 @@ class StyleSoundsTest {
     @Test
     fun aPackBassFallsBackToAGlidingSynthAndComesFirstWhenThePackIsThere() {
         val fallbacks = mapOf(
-            "tech_house" to "Basse ronde", "uk_garage" to "Basse ronde", "house" to "Basse ronde",
+            "tech_house" to "Basse roulante", "uk_garage" to "Basse ronde", "house" to "Basse ronde",
             "neurofunk" to "Basse qui parle", "techno" to "Basse analogique",
         )
         for ((id, synth) in fallbacks) {

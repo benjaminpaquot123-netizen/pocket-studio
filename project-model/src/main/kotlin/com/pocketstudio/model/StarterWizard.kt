@@ -275,6 +275,12 @@ object StarterWizard {
          */
         val counter: String? = null,
         val counterRhythm: String = "",
+        /**
+         * A pad of this library sound behind the chords (the leads chantier: liquid's Rhodes over a lush
+         * pad, docs/hits/leads-pros.md § 4.6): the chords' notes on a track of their own
+         * ([PAD_LAYER_TRACK]), [PAD_LAYER_DB] under them, playing wherever they play. Null: none.
+         */
+        val padLayer: String? = null,
         /** What the lead is: a singable hook, a riff, vocal chops or an arpeggio ([MelodyRules] judges each its own way). */
         val leadKind: LeadKind = LeadKind.Hook,
         /** The lead's tokens are degrees of the key, not of each bar's chord: the riff stays put while the chords move. */
@@ -289,6 +295,11 @@ object StarterWizard {
         val bassSwitch: String = "",
         /** The chords arpeggiated (synthwave, trance): the pad plays them one note at a time on this pattern. */
         val chordArp: ArpSpec? = null,
+        /**
+         * « Motifs de basse » (docs/hits/basses-qui-tapent.md § 4): the [BassPatterns] grid the bass plays
+         * instead of the recipe's line ([BassPatterns.styled]: [bassPattern] is then the grid's); "" = the recipe's.
+         */
+        val bassGrid: String = "",
         /** The chords inverted so that each moves as little as possible from the one before ([withChordRhythm]). */
         val chordVoiceLead: Boolean = false,
     ) {
@@ -514,6 +525,13 @@ object StarterWizard {
             }
         }
         val preferredPack = if (chosenPack != null) packs.take(1) else emptyList()
+        // « Des basses qui tapent » (P2): in the 808 styles the engine's 808 (the style's synth sound
+        // plays it, StudioDrums.bassOn808) comes first, the pack's 808 (a pure sine a phone barely
+        // plays) second.
+        if (part == Part.Bass && style.id in StudioDrums.BASS_808 && kit == null && preferredSynth.isNotEmpty()) {
+            val first = preferredSynth + preferredPack
+            return first + (all - first.toSet()) + (instruments - first.toSet()) + (packs - first.toSet())
+        }
         val preferred = listOfNotNull(kit).ifEmpty { listOfNotNull(styleInstrument).ifEmpty { preferredPack.ifEmpty { preferredSynth } } }
         return preferred + (all - preferred.toSet()) + (instruments - preferred.toSet()) + (packs - preferred.toSet()) +
             (preferredSynth - preferred.toSet() - all.toSet())
@@ -612,7 +630,11 @@ object StarterWizard {
      * the assistant instead of the style's; a line without a note is left out). The style's
      * effects go on what is used.
      */
-    fun build(style: Style, sounds: Map<Role, PadSample?>, mood: Mood? = null, parts: Map<Part, PartSound> = emptyMap(), acid: Boolean = true, chosenAcid: AcidPattern? = null): Project {
+    fun build(style: Style, sounds: Map<Role, PadSample?>, mood: Mood? = null, parts: Map<Part, PartSound> = emptyMap(), acid: Boolean = true, chosenAcid: AcidPattern? = null): Project =
+        build(style, sounds, mood, parts, acid, chosenAcid, audibleBass = true)
+
+    /** [build], with [audibleBass] false: the song as it is before [WizardMix.withAudibleBass] (BassesTest compares the two). */
+    internal fun build(style: Style, sounds: Map<Role, PadSample?>, mood: Mood?, parts: Map<Part, PartSound>, acid: Boolean, chosenAcid: AcidPattern?, audibleBass: Boolean): Project {
         val steps = drumSteps(style)
         val lanes = MutableList(DrumPattern.PAD_COUNT) { DrumLane() }
         for (line in style.lines) {
@@ -693,18 +715,23 @@ object StarterWizard {
         // The second bass sound of the second Drop: the same line on its own track, faded in there while the first fades out.
         val switchTrack = if (style.melody.bassSwitch.isBlank() || mainBass == null) null
         else withBassSwitchTrack(project, mainBass, style.melody.bassSwitch, glides(Part.Bass, style))?.let { (p, id) -> project = p; id }
+        // The pad behind the chords (liquid): their notes on a track of their own, playing where they play.
+        val chordsTrack = partOfTrack.entries.firstOrNull { it.value == Part.Pad }?.key
+        val padLayerTrack = style.melody.padLayer?.let { name -> chordsTrack?.let { withPadLayerTrack(project, it, name) } }?.let { (p, id) -> project = p; id }
         val plan = planFor(style, style.lines.map { it.role }.filter { it in sounds }.toSet(), partOfTrack.values.toSet() + listOfNotNull(Part.Bass.takeIf { bass808 != null }), withAcid)
         // The counter-melody: the lead's motif answered in its rests (or the chords in short hits), in the Drop (or the Refrain).
         val counterTrack = if (!plan.counter || mood == null) null
         else withCounterTrack(project, style, mood, leadVersions[Version.Chorus])?.let { (p, id) -> project = p; id }
         project = withEffects(project, style, sounds.keys, partOfTrack, withAcid, bass808 = bass808 != null)
         if (switchTrack != null && mainBass != null) project = withSameStrip(project, mainBass, switchTrack)
+        if (padLayerTrack != null && chordsTrack != null) project = withSameStrip(project, chordsTrack, padLayerTrack)
         if (subTrack != null) for (bass in listOfNotNull(mainBass, switchTrack)) project = withBassOverSub(project, bass)
         // The default mix (each line and part at its place), then what glues it (audit « corps »).
         project = WizardMix.withDrumMix(project, style, sounds)
         // The studio voices on their pads (the 808, the tuned kicks, the rumble), with their levels.
         project = withStudioVoices(project, style, sounds, bass808 != null)
         project = WizardMix.withPartMix(project, style, parts, partOfTrack, counterTrack)
+        if (padLayerTrack != null) project = withLayerLevel(project, padLayerTrack)
         project = WizardMix.withGlue(project, style, partOfTrack, sounds.isNotEmpty())
         // The « Montée » track: the noise that rises before each Drop and hits on its first beat.
         val riserTrack = if (!plan.riser) null else withRiserTrack(project, partOfTrack.isEmpty())?.let { (p, id) -> project = p; id }
@@ -726,7 +753,7 @@ object StarterWizard {
         val montee = if (plan.form != SongForm.Build) null else style.lines.filter { it.role in sounds }.associate { line ->
             line.role to if (line.role == plan.rollLine) rollHalf(0, rollTop(hits(line, steps), steps)) else hits(line.copy(pattern = line.build.ifEmpty { line.pattern }), BUILD_STEPS)
         }
-        val withSub = partOfTrack + listOfNotNull(subTrack, switchTrack).associateWith { Part.Bass }
+        val withSub = partOfTrack + listOfNotNull(subTrack, switchTrack).associateWith { Part.Bass } + listOfNotNull(padLayerTrack).associateWith { Part.Pad }
         val leadTrack = partOfTrack.entries.firstOrNull { it.value == Part.Lead }?.key
         val tracks = SongTracks(
             withSub, riser = riserTrack, counter = counterTrack, subDrop = subDropTrack, vocal = vocal?.first, vocalNotes = vocal?.second,
@@ -753,8 +780,10 @@ object StarterWizard {
         project = DrumArrangement.withFillsAndCrashes(project, shape, style, feel, DrumHumanizer.seed(style, mood), crash.second)
         // S5: an honest mix and master (WizardMix.honest).
         project = WizardMix.honest(project, style, partOfTrack)
-        // S4: wide and moving synths, their effects and curves (WideMix).
+        // S4: wide and moving synths, their effects and curves (WideMix), each track's role chain (RoleMix).
         project = WideMix.apply(project, style, partOfTrack)
+        // « Des basses qui tapent »: the basses heard on a phone (the bass exciter), after RoleMix's low cuts.
+        if (audibleBass) project = WizardMix.withAudibleBass(project, style, partOfTrack)
         return project.sanitized()
     }
 
@@ -1172,7 +1201,7 @@ object StarterWizard {
     private fun withSubTrack(project: Project, bass: Int, glide: Boolean): Pair<Project, Int>? {
         val added = project.addTrack(SUB_TRACK) ?: return null
         val id = added.tracks.last().id
-        val notes = added.track(bass).notes.let { clip -> clip.copy(notes = clip.notes.map { it.copy(pitch = (it.pitch - 12).coerceAtLeast(0)) }) }
+        val notes = added.track(bass).notes.let { clip -> clip.copy(notes = subNotes(clip.notes)) }
         var p = added.withTrack(added.track(id).copy(
             name = SUB_TRACK, engine = 0, instrument = null, notes = notes,
             synth = if (glide) SUB_SOUND.with(SynthPatch.GLIDE, BASS_GLIDE) else SUB_SOUND,
@@ -1183,6 +1212,17 @@ object StarterWizard {
         }))
         return p to id
     }
+
+    /** A bass note's sub: an octave down, never under Do1 (32.7 Hz; « des basses qui tapent »: nothing under 30 Hz). */
+    internal fun subPitch(bass: Int): Int = (bass - 12).let { if (it < 24) it + 12 else it }.coerceAtLeast(0)
+
+    /**
+     * The [SUB_TRACK]'s notes for a bass playing [bass]: one note at a time (a power chord's fifth and
+     * octave, « Motifs de basse », stay over the sub: the lowest note of each onset), each at [subPitch],
+     * in the order of their starts. [SubLayers] compares a sub with the same transformation.
+     */
+    fun subNotes(bass: List<Note>): List<Note> =
+        bass.groupBy { it.start }.values.map { same -> same.minBy { it.pitch } }.sortedBy { it.start }.map { it.copy(pitch = subPitch(it.pitch)) }
 
     /**
      * The bass above a sub layer: a high-pass at about 120 Hz in a free slot of its strip (after the
@@ -1216,6 +1256,36 @@ object StarterWizard {
             plaits = plaits ?: added.track(id).plaits,
         ))
         return p to id
+    }
+
+    /** The pad behind the chords ([Melody.padLayer]; saved in French, a default name). */
+    const val PAD_LAYER_TRACK = "Nappe"
+
+    /** The pad layer under the chords (dB): heard as air behind them, not as a second part. */
+    const val PAD_LAYER_DB = -12.5f
+
+    /** A new track [PAD_LAYER_TRACK] with the chords track [chords]'s notes and the library sound [name]; null when full or unknown. */
+    private fun withPadLayerTrack(project: Project, chords: Int, name: String): Pair<Project, Int>? {
+        val synth = SoundLibrary.SYNTH.firstOrNull { it.name == name }?.sound
+        val plaits = SoundLibrary.PLAITS.firstOrNull { it.name == name }?.sound
+        if (synth == null && plaits == null) return null
+        val added = project.addTrack(PAD_LAYER_TRACK) ?: return null
+        val id = added.tracks.last().id
+        val p = added.withTrack(added.track(id).copy(
+            name = PAD_LAYER_TRACK, engine = if (synth != null) 0 else 1, instrument = null, notes = added.track(chords).notes,
+            synth = synth ?: added.track(id).synth, plaits = plaits ?: added.track(id).plaits,
+        ))
+        return p to id
+    }
+
+    /** The pad layer [layer] [PAD_LAYER_DB] under the chords, as a held pad (the part mix's -4 dB) would sit. */
+    private fun withLayerLevel(project: Project, layer: Int): Project {
+        val t = project.track(layer)
+        val db = WizardMix.HELD_PAD_DB + PAD_LAYER_DB
+        return project.withTrack(when (t.engine) {
+            0 -> t.copy(synth = t.synth.with(SynthPatch.GAIN, SynthPatch.gainValue(SynthPatch.gainDb(t.synth.get(SynthPatch.GAIN)) + db)))
+            else -> t.copy(plaits = t.plaits.copy(gain = SynthPatch.gainValue(SynthPatch.gainDb(t.plaits.gain) + db)))
+        })
     }
 
     /** Track [to]'s strip as track [from]'s (its effects and sends: the second bass goes through the first's chain). */
@@ -1284,7 +1354,9 @@ object StarterWizard {
 
     /** [part] slides where its line says '/' in [style] (its synth's portamento, its sample's glide). */
     fun glides(part: Part, style: Style): Boolean = when (part) {
-        Part.Bass -> style.melody.bassGlide
+        // A « Motifs de basse » grid has no slide ('/'): its notes never overlap, but a power chord's
+        // three notes start together and a gliding synth would slide root -> octave instead of a chord.
+        Part.Bass -> style.melody.bassGlide && style.melody.bassGrid.isBlank()
         Part.Lead -> style.melody.leadGlide
         Part.Pad -> false
     }
@@ -1960,7 +2032,7 @@ object StarterWizard {
                 val tune = voice?.param(PadVoice.TUNE)?.toInt() ?: StudioDrums.tune808(full.harmony.root)
                 val glide = voice?.param(PadVoice.GLIDE)?.let { Math.round(it * 1000f) } ?: StudioDrums.glideMs(style)
                 val level = if (spec.base == 2) 1f else StudioDrums.OUTSIDE_DROP
-                set(Role.Bass808, StudioDrums.hits808(windowed(clip, spec, bass = true, chords = false), steps, tune, glide, level))
+                set(Role.Bass808, StudioDrums.hits808(windowed(clip, spec, bass = true, chords = false), steps, tune, glide, level, style.bpm.toFloat()))
             }
             // The roll: the snare (or the clap) over the Montée's 8 bars; a song's on its last bar.
             val rollRole = listOf(Role.Snare, Role.Clap).firstOrNull { it in c.lines } ?: Role.Hat.takeIf { it in c.lines && !club }
@@ -2073,7 +2145,7 @@ object StarterWizard {
             val family = sound?.family.orEmpty()
             when {
                 family == "Nappes" || family == "pad" -> "Nappe"
-                "piano" in name -> "Piano"
+                "piano" in name || "rhodes" in name -> "Piano"
                 "orgue" in name || "organ" in name -> "Orgue"
                 family == "Claviers" || family == "keys" -> "Clavier"
                 family == "stab" || isStabs(style.melody.chordRhythm) -> "Stabs"
@@ -2132,7 +2204,7 @@ object StarterWizard {
                         .withChordRhythm(degrees, harmony, "X---------------", Voicing.Seventh, 12 * (m.leadOctave + 1), velocity = 0.65f)
                 },
             )
-            Part.Bass -> MelodyBuilder.bass(style, mood, harmony)
+            Part.Bass -> MelodyBuilder.bass(style, mood, harmony).let { clip -> BassPatterns.of(style)?.let { BassPatterns.played(clip, it) } ?: clip }
         }
     }
 

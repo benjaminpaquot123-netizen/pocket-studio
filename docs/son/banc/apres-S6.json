@@ -1,0 +1,10381 @@
+{
+ "styles": {
+  "acid_house": {
+   "bands": {
+    "air": -17.55,
+    "high_mid": -12.02,
+    "low": -2.95,
+    "low_mid": -13.88,
+    "mid": -8.77,
+    "sub": -6.3
+   },
+   "clipped": 0,
+   "corr": 0.965,
+   "corr_below_120": 0.998,
+   "dc": 4e-06,
+   "drive_db": 6.858,
+   "drop_minus_break": 3.82,
+   "drop_minus_groove": 2.15,
+   "drop_minus_montee_end": [
+    1.96,
+    1.95
+   ],
+   "drop_start_lufs": [
+    -7.99,
+    -7.94
+   ],
+   "drop_variation": 0.5,
+   "end_dbfs": -33.31,
+   "export_lufs": -9.603,
+   "export_true_peak": -1.188,
+   "file": "acid_house.wav",
+   "infra_below_30": -24.04,
+   "intro_lufs": -10.31,
+   "intro_minus_main": -2.25,
+   "labels": {
+    "Break": -11.87,
+    "Drop": -8.06,
+    "Groove": -10.21,
+    "Intro": -10.32,
+    "Montée": -11.17
+   },
+   "loss_db": 2.21,
+   "loud_lufs": -8.02,
+   "lra": 3.78,
+   "lufs_i": -9.6,
+   "m4a_lufs": -9.89,
+   "m4a_true_peak": -1.52,
+   "m4a_true_peak_first": -1.52,
+   "main": "Drop",
+   "main_crest": 8.84,
+   "main_lufs": -8.06,
+   "main_true_peak": -1.19,
+   "mode": 1,
+   "mono_loss_lu": -0.11,
+   "montee_end_lufs": [
+    -9.95,
+    -9.9
+   ],
+   "montee_rise": [
+    2.41,
+    2.27
+   ],
+   "non_finite": 0,
+   "plr": 8.42,
+   "pre_drop_minus_break": 5.88,
+   "pre_drop_minus_groove": 4.3,
+   "pre_drop_minus_montee_end": [
+    3.76,
+    3.71
+   ],
+   "pre_intro_minus_main": -4.29,
+   "pre_lra": 5.95,
+   "pre_lufs_i": -15.19,
+   "pre_main_lufs": -12.71,
+   "pre_montee_rise": [
+    2.86,
+    2.72
+   ],
+   "render_loud_lufs": -8.025,
+   "sample_peak": -1.19,
+   "seconds": 192.0,
+   "sections": [
+    {
+     "label": "Intro",
+     "lufs": -10.17,
+     "seconds": 16.0,
+     "start": 0.0
+    },
+    {
+     "label": "Intro",
+     "lufs": -10.27,
+     "seconds": 14.0,
+     "start": 16.0
+    },
+    {
+     "label": "Intro",
+     "lufs": -12.87,
+     "seconds": 2.0,
+     "start": 30.0
+    },
+    {
+     "label": "Groove",
+     "lufs": -10.21,
+     "seconds": 16.0,
+     "start": 32.0
+    },
+    {
+     "label": "Montée",
+     "lufs": -11.35,
+     "seconds": 8.0,
+     "start": 48.0
+    },
+    {
+     "label": "Montée",
+     "lufs": -10.85,
+     "seconds": 8.0,
+     "start": 56.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.49,
+     "seconds": 2.0,
+     "start": 64.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.1,
+     "seconds": 12.0,
+     "start": 66.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.38,
+     "seconds": 2.0,
+     "start": 78.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.04,
+     "seconds": 14.0,
+     "start": 80.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.52,
+     "seconds": 2.0,
+     "start": 94.0
+    },
+    {
+     "label": "Break",
+     "lufs": -12.03,
+     "seconds": 2.0,
+     "start": 96.0
+    },
+    {
+     "label": "Break",
+     "lufs": -11.86,
+     "seconds": 14.0,
+     "start": 98.0
+    },
+    {
+     "label": "Montée",
+     "lufs": -11.6,
+     "seconds": 8.0,
+     "start": 112.0
+    },
+    {
+     "label": "Montée",
+     "lufs": -10.76,
+     "seconds": 8.0,
+     "start": 120.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.44,
+     "seconds": 2.0,
+     "start": 128.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.06,
+     "seconds": 12.0,
+     "start": 130.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.4,
+     "seconds": 2.0,
+     "start": 142.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.05,
+     "seconds": 14.0,
+     "start": 144.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.29,
+     "seconds": 2.0,
+     "start": 158.0
+    },
+    {
+     "label": "Intro",
+     "lufs": -10.32,
+     "seconds": 16.0,
+     "start": 160.0
+    },
+    {
+     "label": "Intro",
+     "lufs": -10.34,
+     "seconds": 16.0,
+     "start": 176.0
+    }
+   ],
+   "side_mid": -17.5,
+   "side_mid_below_120": -29.18,
+   "slope_db_oct": -4.62,
+   "style": "acid_house",
+   "sub_40_60": -6.33,
+   "target_gap": -0.02,
+   "target_lufs": -8.0,
+   "true_peak": -1.19,
+   "true_peak_bs1770": -1.08
+  },
+  "acid_techno": {
+   "bands": {
+    "air": -17.69,
+    "high_mid": -13.38,
+    "low": -2.88,
+    "low_mid": -14.12,
+    "mid": -12.31,
+    "sub": -4.93
+   },
+   "clipped": 0,
+   "corr": 0.982,
+   "corr_below_120": 0.998,
+   "dc": 0.0,
+   "drive_db": 8.14,
+   "drop_minus_break": 4.25,
+   "drop_minus_groove": 2.41,
+   "drop_minus_montee_end": [
+    1.83,
+    1.91
+   ],
+   "drop_start_lufs": [
+    -7.42,
+    -7.39
+   ],
+   "drop_variation": 0.5,
+   "end_dbfs": -36.9,
+   "export_lufs": -8.878,
+   "export_true_peak": -1.184,
+   "file": "acid_techno.wav",
+   "infra_below_30": -26.83,
+   "intro_lufs": -9.06,
+   "intro_minus_main": -1.4,
+   "labels": {
+    "Break": -11.9,
+    "Drop": -7.65,
+    "Groove": -10.06,
+    "Intro": -9.1,
+    "Montée": -10.33
+   },
+   "loss_db": 2.84,
+   "loud_lufs": -7.55,
+   "lra": 3.95,
+   "lufs_i": -8.88,
+   "m4a_lufs": -9.32,
+   "m4a_true_peak": -1.47,
+   "m4a_true_peak_first": -1.47,
+   "main": "Drop",
+   "main_crest": 7.89,
+   "main_lufs": -7.65,
+   "main_true_peak": -1.18,
+   "mode": 1,
+   "mono_loss_lu": -0.07,
+   "montee_end_lufs": [
+    -9.25,
+    -9.29
+   ],
+   "montee_rise": [
+    1.91,
+    1.87
+   ],
+   "non_finite": 0,
+   "plr": 7.69,
+   "pre_drop_minus_break": 6.73,
+   "pre_drop_minus_groove": 5.13,
+   "pre_drop_minus_montee_end": [
+    3.5,
+    3.49
+   ],
+   "pre_intro_minus_main": -4.22,
+   "pre_lra": 6.64,
+   "pre_lufs_i": -15.31,
+   "pre_main_lufs": -12.92,
+   "pre_montee_rise": [
+    2.7,
+    2.78
+   ],
+   "render_loud_lufs": -7.549,
+   "sample_peak": -1.18,
+   "seconds": 306.09,
+   "sections": [
+    {
+     "label": "Intro",
+     "lufs": -8.92,
+     "seconds": 27.83,
+     "start": 0.0
+    },
+    {
+     "label": "Intro",
+     "lufs": -9.1,
+     "seconds": 26.09,
+     "start": 27.83
+    },
+    {
+     "label": "Intro",
+     "lufs": -11.67,
+     "seconds": 1.74,
+     "start": 53.91
+    },
+    {
+     "label": "Groove",
+     "lufs": -11.11,
+     "seconds": 12.17,
+     "start": 55.65
+    },
+    {
+     "label": "Groove",
+     "lufs": -14.06,
+     "seconds": 1.74,
+     "start": 67.83
+    },
+    {
+     "label": "Groove",
+     "lufs": -9.49,
+     "seconds": 12.17,
+     "start": 69.57
+    },
+    {
+     "label": "Groove",
+     "lufs": -10.46,
+     "seconds": 1.74,
+     "start": 81.74
+    },
+    {
+     "label": "Groove",
+     "lufs": -9.55,
+     "seconds": 13.91,
+     "start": 83.48
+    },
+    {
+     "label": "Montée",
+     "lufs": -10.2,
+     "seconds": 6.96,
+     "start": 97.39
+    },
+    {
+     "label": "Montée",
+     "lufs": -10.09,
+     "seconds": 6.96,
+     "start": 104.35
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.49,
+     "seconds": 12.17,
+     "start": 111.3
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.57,
+     "seconds": 1.74,
+     "start": 123.48
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.61,
+     "seconds": 12.17,
+     "start": 125.22
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.55,
+     "seconds": 1.74,
+     "start": 137.39
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.59,
+     "seconds": 12.17,
+     "start": 139.13
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.72,
+     "seconds": 1.74,
+     "start": 151.3
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.61,
+     "seconds": 12.17,
+     "start": 153.04
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.59,
+     "seconds": 1.74,
+     "start": 165.22
+    },
+    {
+     "label": "Break",
+     "lufs": -11.82,
+     "seconds": 12.17,
+     "start": 166.96
+    },
+    {
+     "label": "Break",
+     "lufs": -12.11,
+     "seconds": 1.74,
+     "start": 179.13
+    },
+    {
+     "label": "Break",
+     "lufs": -12.0,
+     "seconds": 13.91,
+     "start": 180.87
+    },
+    {
+     "label": "Montée",
+     "lufs": -10.74,
+     "seconds": 6.96,
+     "start": 194.78
+    },
+    {
+     "label": "Montée",
+     "lufs": -10.12,
+     "seconds": 6.96,
+     "start": 201.74
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.46,
+     "seconds": 12.17,
+     "start": 208.7
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.63,
+     "seconds": 1.74,
+     "start": 220.87
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.6,
+     "seconds": 12.17,
+     "start": 222.61
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.61,
+     "seconds": 1.74,
+     "start": 234.78
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.59,
+     "seconds": 12.17,
+     "start": 236.52
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.54,
+     "seconds": 1.74,
+     "start": 248.7
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.64,
+     "seconds": 12.17,
+     "start": 250.43
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.62,
+     "seconds": 1.74,
+     "start": 262.61
+    },
+    {
+     "label": "Intro",
+     "lufs": -9.13,
+     "seconds": 27.83,
+     "start": 264.35
+    },
+    {
+     "label": "Intro",
+     "lufs": -9.23,
+     "seconds": 13.91,
+     "start": 292.17
+    }
+   ],
+   "side_mid": -20.37,
+   "side_mid_below_120": -30.83,
+   "slope_db_oct": -4.71,
+   "style": "acid_techno",
+   "sub_40_60": -4.95,
+   "target_gap": -0.05,
+   "target_lufs": -7.5,
+   "true_peak": -1.18,
+   "true_peak_bs1770": -1.07
+  },
+  "acidcore": {
+   "bands": {
+    "air": -14.89,
+    "high_mid": -12.65,
+    "low": -1.65,
+    "low_mid": -10.68,
+    "mid": -11.76,
+    "sub": -11.19
+   },
+   "clipped": 0,
+   "corr": 0.968,
+   "corr_below_120": 0.995,
+   "dc": 1e-06,
+   "drive_db": 2.76,
+   "drop_minus_break": 2.0,
+   "drop_minus_groove": 1.96,
+   "drop_minus_montee_end": [
+    1.93,
+    1.85,
+    1.91
+   ],
+   "drop_start_lufs": [
+    -7.86,
+    -7.92,
+    -7.9
+   ],
+   "drop_variation": 0.469,
+   "end_dbfs": -32.99,
+   "export_lufs": -8.74,
+   "export_true_peak": -1.191,
+   "file": "acidcore.wav",
+   "infra_below_30": -28.69,
+   "intro_lufs": -8.39,
+   "intro_minus_main": -0.41,
+   "labels": {
+    "Break": -9.98,
+    "Drop": -7.98,
+    "Groove": -9.94,
+    "Intro": -8.45,
+    "Montée": -11.09
+   },
+   "loss_db": 2.94,
+   "loud_lufs": -7.91,
+   "lra": 2.41,
+   "lufs_i": -8.74,
+   "m4a_lufs": -9.43,
+   "m4a_true_peak": -1.23,
+   "m4a_true_peak_first": -1.23,
+   "main": "Drop",
+   "main_crest": 8.97,
+   "main_lufs": -7.98,
+   "main_true_peak": -1.19,
+   "mode": 1,
+   "mono_loss_lu": -0.1,
+   "montee_end_lufs": [
+    -9.79,
+    -9.77,
+    -9.81
+   ],
+   "montee_rise": [],
+   "non_finite": 0,
+   "plr": 7.55,
+   "pre_drop_minus_break": 4.76,
+   "pre_drop_minus_groove": 4.41,
+   "pre_drop_minus_montee_end": [
+    4.63,
+    4.69,
+    4.71
+   ],
+   "pre_intro_minus_main": -1.69,
+   "pre_lra": 5.15,
+   "pre_lufs_i": -9.37,
+   "pre_main_lufs": -7.82,
+   "pre_montee_rise": [],
+   "render_loud_lufs": -7.913,
+   "sample_peak": -1.19,
+   "seconds": 280.22,
+   "sections": [
+    {
+     "label": "Intro",
+     "lufs": -8.39,
+     "seconds": 41.51,
+     "start": 0.0
+    },
+    {
+     "label": "Groove",
+     "lufs": -10.05,
+     "seconds": 9.08,
+     "start": 41.51
+    },
+    {
+     "label": "Groove",
+     "lufs": -9.6,
+     "seconds": 1.3,
+     "start": 50.59
+    },
+    {
+     "label": "Groove",
+     "lufs": -9.99,
+     "seconds": 9.08,
+     "start": 51.89
+    },
+    {
+     "label": "Groove",
+     "lufs": -9.71,
+     "seconds": 1.3,
+     "start": 60.97
+    },
+    {
+     "label": "Groove",
+     "lufs": -9.94,
+     "seconds": 10.38,
+     "start": 62.27
+    },
+    {
+     "label": "Montée",
+     "lufs": -11.3,
+     "seconds": 5.19,
+     "start": 72.65
+    },
+    {
+     "label": "Montée",
+     "lufs": -10.46,
+     "seconds": 5.19,
+     "start": 77.84
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.58,
+     "seconds": 1.3,
+     "start": 83.03
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.94,
+     "seconds": 7.78,
+     "start": 84.32
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.81,
+     "seconds": 1.3,
+     "start": 92.11
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.04,
+     "seconds": 9.08,
+     "start": 93.41
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.85,
+     "seconds": 1.3,
+     "start": 102.49
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.1,
+     "seconds": 1.3,
+     "start": 103.78
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.03,
+     "seconds": 7.78,
+     "start": 105.08
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.9,
+     "seconds": 1.3,
+     "start": 112.86
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.08,
+     "seconds": 9.08,
+     "start": 114.16
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.02,
+     "seconds": 1.3,
+     "start": 123.24
+    },
+    {
+     "label": "Break",
+     "lufs": -9.97,
+     "seconds": 20.76,
+     "start": 124.54
+    },
+    {
+     "label": "Montée",
+     "lufs": -11.82,
+     "seconds": 5.19,
+     "start": 145.3
+    },
+    {
+     "label": "Montée",
+     "lufs": -10.49,
+     "seconds": 5.19,
+     "start": 150.49
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.75,
+     "seconds": 1.3,
+     "start": 155.68
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.97,
+     "seconds": 7.78,
+     "start": 156.97
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.88,
+     "seconds": 1.3,
+     "start": 164.76
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.99,
+     "seconds": 9.08,
+     "start": 166.05
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.7,
+     "seconds": 1.3,
+     "start": 175.14
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.15,
+     "seconds": 1.3,
+     "start": 176.43
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.03,
+     "seconds": 7.78,
+     "start": 177.73
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.89,
+     "seconds": 1.3,
+     "start": 185.51
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.11,
+     "seconds": 9.08,
+     "start": 186.81
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.98,
+     "seconds": 1.3,
+     "start": 195.89
+    },
+    {
+     "label": "Break",
+     "lufs": -10.01,
+     "seconds": 10.38,
+     "start": 197.19
+    },
+    {
+     "label": "Montée",
+     "lufs": -11.88,
+     "seconds": 5.19,
+     "start": 207.57
+    },
+    {
+     "label": "Montée",
+     "lufs": -10.5,
+     "seconds": 5.19,
+     "start": 212.76
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.48,
+     "seconds": 1.3,
+     "start": 217.95
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.96,
+     "seconds": 7.78,
+     "start": 219.24
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.89,
+     "seconds": 1.3,
+     "start": 227.03
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.06,
+     "seconds": 9.08,
+     "start": 228.32
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.86,
+     "seconds": 1.3,
+     "start": 237.41
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.1,
+     "seconds": 1.3,
+     "start": 238.7
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.98,
+     "seconds": 7.78,
+     "start": 240.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.77,
+     "seconds": 1.3,
+     "start": 247.78
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.09,
+     "seconds": 9.08,
+     "start": 249.08
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.94,
+     "seconds": 1.3,
+     "start": 258.16
+    },
+    {
+     "label": "Intro",
+     "lufs": -8.6,
+     "seconds": 20.76,
+     "start": 259.46
+    }
+   ],
+   "side_mid": -17.81,
+   "side_mid_below_120": -25.87,
+   "slope_db_oct": -4.85,
+   "style": "acidcore",
+   "sub_40_60": -11.36,
+   "target_gap": -0.41,
+   "target_lufs": -7.5,
+   "true_peak": -1.19,
+   "true_peak_bs1770": -1.13
+  },
+  "afro_house": {
+   "bands": {
+    "air": -18.89,
+    "high_mid": -18.67,
+    "low": -1.24,
+    "low_mid": -9.76,
+    "mid": -14.51,
+    "sub": -11.09
+   },
+   "bass": {
+    "attack": 5.78,
+    "attack_spread": 10.75,
+    "harmonics": -4.94,
+    "kick_dip": -5.97,
+    "kicks": 58,
+    "lufs": -18.27,
+    "notes": 115,
+    "phone_200": -6.36,
+    "phone_300": -9.97,
+    "place_300": -8.25
+   },
+   "clipped": 0,
+   "corr": 0.962,
+   "corr_below_120": 1.0,
+   "dc": 0.0,
+   "drive_db": 5.415,
+   "drop_minus_break": 5.11,
+   "drop_minus_groove": 2.53,
+   "drop_minus_montee_end": [
+    3.63,
+    3.65
+   ],
+   "drop_start_lufs": [
+    -8.96,
+    -9.04
+   ],
+   "drop_variation": 0.875,
+   "end_dbfs": -40.14,
+   "exciter_lu": 0.06,
+   "export_lufs": -10.832,
+   "export_true_peak": -1.19,
+   "file": "afro_house.wav",
+   "infra_below_30": -26.01,
+   "intro_lufs": -11.25,
+   "intro_minus_main": -2.1,
+   "labels": {
+    "Break": -14.26,
+    "Drop": -9.16,
+    "Groove": -11.69,
+    "Intro": -11.28,
+    "Montée": -13.12
+   },
+   "lead_centroid_hz": 3337,
+   "lead_centroid_var": 31.24,
+   "loss_db": 0.71,
+   "loud_lufs": -9.02,
+   "lra": 5.25,
+   "lufs_i": -10.83,
+   "m4a_lufs": -10.2,
+   "m4a_true_peak": -1.62,
+   "m4a_true_peak_first": -1.62,
+   "main": "Drop",
+   "main_crest": 9.34,
+   "main_lufs": -9.16,
+   "main_true_peak": -1.19,
+   "mode": 1,
+   "mono_loss_lu": -0.12,
+   "montee_end_lufs": [
+    -12.59,
+    -12.69
+   ],
+   "montee_rise": [
+    4.43,
+    5.27
+   ],
+   "non_finite": 0,
+   "plr": 9.64,
+   "pre_drop_minus_break": 5.76,
+   "pre_drop_minus_groove": 3.18,
+   "pre_drop_minus_montee_end": [
+    4.57,
+    4.73
+   ],
+   "pre_intro_minus_main": -2.74,
+   "pre_lra": 5.88,
+   "pre_lufs_i": -15.88,
+   "pre_main_lufs": -13.9,
+   "pre_montee_rise": [
+    4.43,
+    5.27
+   ],
+   "render_loud_lufs": -9.019,
+   "sample_peak": -1.19,
+   "seconds": 188.85,
+   "sections": [
+    {
+     "label": "Intro",
+     "lufs": -11.27,
+     "seconds": 15.74,
+     "start": 0.0
+    },
+    {
+     "label": "Intro",
+     "lufs": -11.13,
+     "seconds": 13.77,
+     "start": 15.74
+    },
+    {
+     "label": "Intro",
+     "lufs": -12.74,
+     "seconds": 1.97,
+     "start": 29.51
+    },
+    {
+     "label": "Groove",
+     "lufs": -11.69,
+     "seconds": 15.74,
+     "start": 31.48
+    },
+    {
+     "label": "Montée",
+     "lufs": -11.71,
+     "seconds": 7.87,
+     "start": 47.21
+    },
+    {
+     "label": "Montée",
+     "lufs": -13.98,
+     "seconds": 7.87,
+     "start": 55.08
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.34,
+     "seconds": 1.97,
+     "start": 62.95
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.09,
+     "seconds": 11.8,
+     "start": 64.92
+    },
+    {
+     "label": "Drop",
+     "lufs": -10.56,
+     "seconds": 1.97,
+     "start": 76.72
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.11,
+     "seconds": 13.77,
+     "start": 78.69
+    },
+    {
+     "label": "Drop",
+     "lufs": -10.05,
+     "seconds": 1.97,
+     "start": 92.46
+    },
+    {
+     "label": "Break",
+     "lufs": -12.97,
+     "seconds": 1.97,
+     "start": 94.43
+    },
+    {
+     "label": "Break",
+     "lufs": -14.42,
+     "seconds": 13.77,
+     "start": 96.39
+    },
+    {
+     "label": "Montée",
+     "lufs": -12.69,
+     "seconds": 7.87,
+     "start": 110.16
+    },
+    {
+     "label": "Montée",
+     "lufs": -14.26,
+     "seconds": 7.87,
+     "start": 118.03
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.42,
+     "seconds": 1.97,
+     "start": 125.9
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.12,
+     "seconds": 11.8,
+     "start": 127.87
+    },
+    {
+     "label": "Drop",
+     "lufs": -10.43,
+     "seconds": 1.97,
+     "start": 139.67
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.09,
+     "seconds": 13.77,
+     "start": 141.64
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.98,
+     "seconds": 1.97,
+     "start": 155.41
+    },
+    {
+     "label": "Intro",
+     "lufs": -11.22,
+     "seconds": 15.74,
+     "start": 157.38
+    },
+    {
+     "label": "Intro",
+     "lufs": -11.45,
+     "seconds": 15.74,
+     "start": 173.11
+    }
+   ],
+   "side_mid": -17.15,
+   "side_mid_below_120": -38.37,
+   "slope_db_oct": -5.79,
+   "style": "afro_house",
+   "sub_40_60": -12.27,
+   "target_gap": -0.02,
+   "target_lufs": -9.0,
+   "true_peak": -1.19,
+   "true_peak_bs1770": -1.1
+  },
+  "afrobeats": {
+   "bands": {
+    "air": -23.38,
+    "high_mid": -18.41,
+    "low": -3.69,
+    "low_mid": -9.39,
+    "mid": -14.85,
+    "sub": -3.93
+   },
+   "bass": {
+    "attack": 4.74,
+    "attack_spread": 21.91,
+    "harmonics": -6.07,
+    "kick_dip": -0.17,
+    "kicks": 133,
+    "lufs": -13.57,
+    "notes": 63,
+    "phone_200": -6.22,
+    "phone_300": -10.93,
+    "place_300": -6.06
+   },
+   "clipped": 0,
+   "corr": 0.951,
+   "corr_below_120": 1.0,
+   "dc": 1e-06,
+   "drive_db": 4.583,
+   "drop_minus_break": null,
+   "drop_minus_groove": 2.05,
+   "drop_minus_montee_end": [],
+   "drop_start_lufs": [],
+   "drop_variation": 0.625,
+   "end_dbfs": -52.05,
+   "exciter_lu": 0.16,
+   "export_lufs": -10.565,
+   "export_true_peak": -1.184,
+   "file": "afrobeats.wav",
+   "infra_below_30": -27.95,
+   "intro_lufs": -19.15,
+   "intro_minus_main": -9.78,
+   "labels": {
+    "Couplet": -11.41,
+    "Intro": -19.24,
+    "Pont": -15.72,
+    "Post-refrain": -9.39,
+    "Pré-refrain": -11.67,
+    "Refrain": -9.37
+   },
+   "lead_centroid_hz": 3902,
+   "lead_centroid_var": 22.89,
+   "loss_db": 2.12,
+   "loud_lufs": -9.02,
+   "lra": 7.39,
+   "lufs_i": -10.56,
+   "m4a_lufs": -10.81,
+   "m4a_true_peak": -1.73,
+   "m4a_true_peak_first": -1.73,
+   "main": "Refrain",
+   "main_crest": 8.94,
+   "main_lufs": -9.37,
+   "main_true_peak": -1.19,
+   "mode": 1,
+   "mono_loss_lu": -0.18,
+   "montee_end_lufs": [],
+   "montee_rise": [],
+   "non_finite": 0,
+   "plr": 9.38,
+   "pre_drop_minus_break": null,
+   "pre_drop_minus_groove": 3.84,
+   "pre_drop_minus_montee_end": [],
+   "pre_intro_minus_main": -11.69,
+   "pre_lra": 9.49,
+   "pre_lufs_i": -13.56,
+   "pre_main_lufs": -12.04,
+   "pre_montee_rise": [],
+   "render_loud_lufs": -9.019,
+   "sample_peak": -1.18,
+   "seconds": 192.0,
+   "sections": [
+    {
+     "label": "Intro",
+     "lufs": -19.15,
+     "seconds": 9.14,
+     "start": 0.0
+    },
+    {
+     "label": "Couplet",
+     "lufs": -11.49,
+     "seconds": 18.29,
+     "start": 9.14
+    },
+    {
+     "label": "Pré-refrain",
+     "lufs": -11.7,
+     "seconds": 9.14,
+     "start": 27.43
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.74,
+     "seconds": 2.29,
+     "start": 36.57
+    },
+    {
+     "label": "Refrain",
+     "lufs": -9.5,
+     "seconds": 13.71,
+     "start": 38.86
+    },
+    {
+     "label": "Refrain",
+     "lufs": -10.43,
+     "seconds": 2.29,
+     "start": 52.57
+    },
+    {
+     "label": "Refrain",
+     "lufs": -9.16,
+     "seconds": 16.0,
+     "start": 54.86
+    },
+    {
+     "label": "Refrain",
+     "lufs": -9.55,
+     "seconds": 2.29,
+     "start": 70.86
+    },
+    {
+     "label": "Post-refrain",
+     "lufs": -9.39,
+     "seconds": 9.14,
+     "start": 73.14
+    },
+    {
+     "label": "Couplet",
+     "lufs": -11.31,
+     "seconds": 18.29,
+     "start": 82.29
+    },
+    {
+     "label": "Pré-refrain",
+     "lufs": -11.39,
+     "seconds": 9.14,
+     "start": 100.57
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.61,
+     "seconds": 2.29,
+     "start": 109.71
+    },
+    {
+     "label": "Refrain",
+     "lufs": -9.28,
+     "seconds": 13.71,
+     "start": 112.0
+    },
+    {
+     "label": "Refrain",
+     "lufs": -10.2,
+     "seconds": 2.29,
+     "start": 125.71
+    },
+    {
+     "label": "Pont",
+     "lufs": -14.41,
+     "seconds": 2.29,
+     "start": 128.0
+    },
+    {
+     "label": "Pont",
+     "lufs": -15.95,
+     "seconds": 16.0,
+     "start": 130.29
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.22,
+     "seconds": 2.29,
+     "start": 146.29
+    },
+    {
+     "label": "Refrain",
+     "lufs": -9.42,
+     "seconds": 13.71,
+     "start": 148.57
+    },
+    {
+     "label": "Refrain",
+     "lufs": -10.39,
+     "seconds": 2.29,
+     "start": 162.29
+    },
+    {
+     "label": "Refrain",
+     "lufs": -9.37,
+     "seconds": 16.0,
+     "start": 164.57
+    },
+    {
+     "label": "Refrain",
+     "lufs": -10.53,
+     "seconds": 2.29,
+     "start": 180.57
+    },
+    {
+     "label": "Intro",
+     "lufs": -19.51,
+     "seconds": 9.14,
+     "start": 182.86
+    }
+   ],
+   "side_mid": -15.99,
+   "side_mid_below_120": -40.67,
+   "slope_db_oct": -6.15,
+   "style": "afrobeats",
+   "sub_40_60": -4.73,
+   "target_gap": -0.02,
+   "target_lufs": -9.0,
+   "true_peak": -1.18,
+   "true_peak_bs1770": -1.1
+  },
+  "amapiano": {
+   "bands": {
+    "air": -18.7,
+    "high_mid": -17.91,
+    "low": -1.2,
+    "low_mid": -9.95,
+    "mid": -11.08,
+    "sub": -15.47
+   },
+   "bass": {
+    "attack": 7.78,
+    "attack_spread": 2.73,
+    "harmonics": -5.91,
+    "kick_dip": -11.17,
+    "kicks": 94,
+    "lufs": -15.91,
+    "notes": 118,
+    "phone_200": -7.32,
+    "phone_300": -10.75,
+    "place_300": -6.65
+   },
+   "clipped": 0,
+   "corr": 0.968,
+   "corr_below_120": 1.0,
+   "dc": 0.0,
+   "drive_db": 5.859,
+   "drop_minus_break": 9.54,
+   "drop_minus_groove": 4.58,
+   "drop_minus_montee_end": [
+    5.49,
+    5.75
+   ],
+   "drop_start_lufs": [
+    -9.37,
+    -9.3
+   ],
+   "drop_variation": 0.875,
+   "end_dbfs": -44.48,
+   "exciter_lu": 0.22,
+   "export_lufs": -11.823,
+   "export_true_peak": -1.19,
+   "file": "amapiano.wav",
+   "infra_below_30": -29.51,
+   "intro_lufs": -13.11,
+   "intro_minus_main": -3.74,
+   "labels": {
+    "Break": -18.91,
+    "Drop": -9.37,
+    "Groove": -13.95,
+    "Intro": -13.16,
+    "Montée": -15.99
+   },
+   "lead_centroid_hz": 1210,
+   "lead_centroid_var": 30.21,
+   "loss_db": 1.15,
+   "loud_lufs": -9.03,
+   "lra": 8.45,
+   "lufs_i": -11.82,
+   "m4a_lufs": -11.34,
+   "m4a_true_peak": -1.43,
+   "m4a_true_peak_first": -1.43,
+   "main": "Drop",
+   "main_crest": 9.88,
+   "main_lufs": -9.37,
+   "main_true_peak": -1.19,
+   "mode": 1,
+   "mono_loss_lu": -0.1,
+   "montee_end_lufs": [
+    -14.86,
+    -15.06
+   ],
+   "montee_rise": [
+    3.26,
+    3.27
+   ],
+   "non_finite": 0,
+   "plr": 10.63,
+   "pre_drop_minus_break": 10.67,
+   "pre_drop_minus_groove": 5.66,
+   "pre_drop_minus_montee_end": [
+    6.95,
+    7.13
+   ],
+   "pre_intro_minus_main": -4.78,
+   "pre_lra": 9.58,
+   "pre_lufs_i": -16.89,
+   "pre_main_lufs": -14.1,
+   "pre_montee_rise": [
+    3.26,
+    3.27
+   ],
+   "render_loud_lufs": -9.033,
+   "sample_peak": -1.19,
+   "seconds": 205.71,
+   "sections": [
+    {
+     "label": "Intro",
+     "lufs": -13.21,
+     "seconds": 17.14,
+     "start": 0.0
+    },
+    {
+     "label": "Intro",
+     "lufs": -13.11,
+     "seconds": 15.0,
+     "start": 17.14
+    },
+    {
+     "label": "Intro",
+     "lufs": -13.07,
+     "seconds": 2.14,
+     "start": 32.14
+    },
+    {
+     "label": "Groove",
+     "lufs": -13.95,
+     "seconds": 17.14,
+     "start": 34.29
+    },
+    {
+     "label": "Montée",
+     "lufs": -15.55,
+     "seconds": 8.57,
+     "start": 51.43
+    },
+    {
+     "label": "Montée",
+     "lufs": -15.92,
+     "seconds": 8.57,
+     "start": 60.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.3,
+     "seconds": 2.14,
+     "start": 68.57
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.12,
+     "seconds": 12.86,
+     "start": 70.71
+    },
+    {
+     "label": "Drop",
+     "lufs": -11.72,
+     "seconds": 2.14,
+     "start": 83.57
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.12,
+     "seconds": 15.0,
+     "start": 85.71
+    },
+    {
+     "label": "Drop",
+     "lufs": -10.81,
+     "seconds": 2.14,
+     "start": 100.71
+    },
+    {
+     "label": "Break",
+     "lufs": -20.17,
+     "seconds": 2.14,
+     "start": 102.86
+    },
+    {
+     "label": "Break",
+     "lufs": -18.68,
+     "seconds": 15.0,
+     "start": 105.0
+    },
+    {
+     "label": "Montée",
+     "lufs": -16.16,
+     "seconds": 8.57,
+     "start": 120.0
+    },
+    {
+     "label": "Montée",
+     "lufs": -16.08,
+     "seconds": 8.57,
+     "start": 128.57
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.23,
+     "seconds": 2.14,
+     "start": 137.14
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.11,
+     "seconds": 12.86,
+     "start": 139.29
+    },
+    {
+     "label": "Drop",
+     "lufs": -11.56,
+     "seconds": 2.14,
+     "start": 152.14
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.15,
+     "seconds": 15.0,
+     "start": 154.29
+    },
+    {
+     "label": "Drop",
+     "lufs": -10.79,
+     "seconds": 2.14,
+     "start": 169.29
+    },
+    {
+     "label": "Intro",
+     "lufs": -13.19,
+     "seconds": 17.14,
+     "start": 171.43
+    },
+    {
+     "label": "Intro",
+     "lufs": -13.54,
+     "seconds": 17.14,
+     "start": 188.57
+    }
+   ],
+   "side_mid": -17.94,
+   "side_mid_below_120": -40.56,
+   "slope_db_oct": -6.1,
+   "style": "amapiano",
+   "sub_40_60": -21.95,
+   "target_gap": -0.03,
+   "target_lufs": -9.0,
+   "true_peak": -1.19,
+   "true_peak_bs1770": -1.07
+  },
+  "boom_bap": {
+   "bands": {
+    "air": -19.38,
+    "high_mid": -16.52,
+    "low": -3.13,
+    "low_mid": -11.7,
+    "mid": -17.45,
+    "sub": -4.07
+   },
+   "bass": {
+    "attack": 4.06,
+    "attack_spread": 35.2,
+    "harmonics": -6.37,
+    "kick_dip": 0.13,
+    "kicks": 66,
+    "lufs": -13.75,
+    "notes": 52,
+    "phone_200": -6.86,
+    "phone_300": -12.14,
+    "place_300": -7.38
+   },
+   "clipped": 0,
+   "corr": 0.983,
+   "corr_below_120": 0.999,
+   "dc": 1e-06,
+   "drive_db": 2.72,
+   "drop_minus_break": null,
+   "drop_minus_groove": 2.32,
+   "drop_minus_montee_end": [],
+   "drop_start_lufs": [],
+   "drop_variation": 1.0,
+   "end_dbfs": -36.99,
+   "exciter_lu": 0.06,
+   "export_lufs": -11.893,
+   "export_true_peak": -1.186,
+   "file": "boom_bap.wav",
+   "infra_below_30": -25.23,
+   "intro_lufs": -16.76,
+   "intro_minus_main": -6.4,
+   "labels": {
+    "Couplet": -12.68,
+    "Intro": -16.91,
+    "Refrain": -10.36
+   },
+   "lead_centroid_hz": 1163,
+   "lead_centroid_var": 23.82,
+   "loss_db": 1.26,
+   "loud_lufs": -10.03,
+   "lra": 6.26,
+   "lufs_i": -11.89,
+   "m4a_lufs": -11.63,
+   "m4a_true_peak": -1.74,
+   "m4a_true_peak_first": -1.74,
+   "main": "Refrain",
+   "main_crest": 10.15,
+   "main_lufs": -10.36,
+   "main_true_peak": -1.19,
+   "mode": 1,
+   "mono_loss_lu": -0.05,
+   "montee_end_lufs": [],
+   "montee_rise": [],
+   "non_finite": 0,
+   "plr": 10.71,
+   "pre_drop_minus_break": null,
+   "pre_drop_minus_groove": 3.08,
+   "pre_drop_minus_montee_end": [],
+   "pre_intro_minus_main": -7.49,
+   "pre_lra": 7.33,
+   "pre_lufs_i": -13.64,
+   "pre_main_lufs": -11.8,
+   "pre_montee_rise": [],
+   "render_loud_lufs": -10.028,
+   "sample_peak": -1.19,
+   "seconds": 166.96,
+   "sections": [
+    {
+     "label": "Intro",
+     "lufs": -16.76,
+     "seconds": 10.43,
+     "start": 0.0
+    },
+    {
+     "label": "Refrain",
+     "lufs": -10.92,
+     "seconds": 2.61,
+     "start": 10.43
+    },
+    {
+     "label": "Refrain",
+     "lufs": -10.36,
+     "seconds": 15.65,
+     "start": 13.04
+    },
+    {
+     "label": "Refrain",
+     "lufs": -10.73,
+     "seconds": 2.61,
+     "start": 28.7
+    },
+    {
+     "label": "Couplet",
+     "lufs": -12.44,
+     "seconds": 20.87,
+     "start": 31.3
+    },
+    {
+     "label": "Couplet",
+     "lufs": -12.25,
+     "seconds": 10.43,
+     "start": 52.17
+    },
+    {
+     "label": "Couplet",
+     "lufs": -13.41,
+     "seconds": 10.43,
+     "start": 62.61
+    },
+    {
+     "label": "Refrain",
+     "lufs": -10.5,
+     "seconds": 2.61,
+     "start": 73.04
+    },
+    {
+     "label": "Refrain",
+     "lufs": -10.19,
+     "seconds": 15.65,
+     "start": 75.65
+    },
+    {
+     "label": "Refrain",
+     "lufs": -10.92,
+     "seconds": 2.61,
+     "start": 91.3
+    },
+    {
+     "label": "Couplet",
+     "lufs": -12.62,
+     "seconds": 20.87,
+     "start": 93.91
+    },
+    {
+     "label": "Couplet",
+     "lufs": -12.32,
+     "seconds": 10.43,
+     "start": 114.78
+    },
+    {
+     "label": "Couplet",
+     "lufs": -13.94,
+     "seconds": 10.43,
+     "start": 125.22
+    },
+    {
+     "label": "Refrain",
+     "lufs": -9.94,
+     "seconds": 2.61,
+     "start": 135.65
+    },
+    {
+     "label": "Refrain",
+     "lufs": -10.24,
+     "seconds": 15.65,
+     "start": 138.26
+    },
+    {
+     "label": "Refrain",
+     "lufs": -11.06,
+     "seconds": 2.61,
+     "start": 153.91
+    },
+    {
+     "label": "Intro",
+     "lufs": -17.17,
+     "seconds": 10.43,
+     "start": 156.52
+    }
+   ],
+   "side_mid": -20.75,
+   "side_mid_below_120": -35.84,
+   "slope_db_oct": -5.37,
+   "style": "boom_bap",
+   "sub_40_60": -5.16,
+   "target_gap": -0.03,
+   "target_lufs": -10.0,
+   "true_peak": -1.19,
+   "true_peak_bs1770": -1.09
+  },
+  "deep_house": {
+   "bands": {
+    "air": -18.23,
+    "high_mid": -21.54,
+    "low": -3.83,
+    "low_mid": -11.51,
+    "mid": -10.14,
+    "sub": -4.06
+   },
+   "bass": {
+    "attack": 2.72,
+    "attack_spread": 27.75,
+    "harmonics": -6.15,
+    "kick_dip": 1.13,
+    "kicks": 30,
+    "lufs": -16.19,
+    "notes": 108,
+    "phone_200": -6.77,
+    "phone_300": -11.29,
+    "place_300": -9.33
+   },
+   "clipped": 0,
+   "corr": 0.962,
+   "corr_below_120": 0.999,
+   "dc": 0.0,
+   "drive_db": 4.967,
+   "drop_minus_break": 4.18,
+   "drop_minus_groove": 2.63,
+   "drop_minus_montee_end": [
+    3.9,
+    4.32
+   ],
+   "drop_start_lufs": [
+    -9.11,
+    -8.92
+   ],
+   "drop_variation": 0.75,
+   "end_dbfs": -42.95,
+   "exciter_lu": 0.11,
+   "export_lufs": -11.023,
+   "export_true_peak": -1.188,
+   "file": "deep_house.wav",
+   "infra_below_30": -25.27,
+   "intro_lufs": -12.08,
+   "intro_minus_main": -2.94,
+   "labels": {
+    "Break": -13.32,
+    "Drop": -9.14,
+    "Groove": -11.77,
+    "Intro": -12.07,
+    "Montée": -13.21
+   },
+   "lead_centroid_hz": 892,
+   "lead_centroid_var": 32.28,
+   "loss_db": 1.08,
+   "loud_lufs": -9.03,
+   "lra": 4.66,
+   "lufs_i": -11.02,
+   "m4a_lufs": -10.36,
+   "m4a_true_peak": -1.78,
+   "m4a_true_peak_first": -1.78,
+   "main": "Drop",
+   "main_crest": 8.87,
+   "main_lufs": -9.14,
+   "main_true_peak": -1.19,
+   "mode": 1,
+   "mono_loss_lu": -0.14,
+   "montee_end_lufs": [
+    -13.01,
+    -13.24
+   ],
+   "montee_rise": [
+    4.31,
+    5.03
+   ],
+   "non_finite": 0,
+   "plr": 9.83,
+   "pre_drop_minus_break": 5.22,
+   "pre_drop_minus_groove": 3.55,
+   "pre_drop_minus_montee_end": [
+    5.01,
+    5.57
+   ],
+   "pre_intro_minus_main": -3.94,
+   "pre_lra": 5.78,
+   "pre_lufs_i": -15.39,
+   "pre_main_lufs": -13.06,
+   "pre_montee_rise": [
+    4.31,
+    5.03
+   ],
+   "render_loud_lufs": -9.033,
+   "sample_peak": -1.19,
+   "seconds": 192.0,
+   "sections": [
+    {
+     "label": "Intro",
+     "lufs": -12.26,
+     "seconds": 16.0,
+     "start": 0.0
+    },
+    {
+     "label": "Intro",
+     "lufs": -11.78,
+     "seconds": 14.0,
+     "start": 16.0
+    },
+    {
+     "label": "Intro",
+     "lufs": -13.58,
+     "seconds": 2.0,
+     "start": 30.0
+    },
+    {
+     "label": "Groove",
+     "lufs": -11.77,
+     "seconds": 16.0,
+     "start": 32.0
+    },
+    {
+     "label": "Montée",
+     "lufs": -11.6,
+     "seconds": 8.0,
+     "start": 48.0
+    },
+    {
+     "label": "Montée",
+     "lufs": -14.32,
+     "seconds": 8.0,
+     "start": 56.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.8,
+     "seconds": 2.0,
+     "start": 64.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.39,
+     "seconds": 12.0,
+     "start": 66.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -10.2,
+     "seconds": 2.0,
+     "start": 78.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.39,
+     "seconds": 14.0,
+     "start": 80.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.74,
+     "seconds": 2.0,
+     "start": 94.0
+    },
+    {
+     "label": "Break",
+     "lufs": -12.57,
+     "seconds": 2.0,
+     "start": 96.0
+    },
+    {
+     "label": "Break",
+     "lufs": -13.43,
+     "seconds": 14.0,
+     "start": 98.0
+    },
+    {
+     "label": "Montée",
+     "lufs": -12.68,
+     "seconds": 8.0,
+     "start": 112.0
+    },
+    {
+     "label": "Montée",
+     "lufs": -14.71,
+     "seconds": 8.0,
+     "start": 120.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.18,
+     "seconds": 2.0,
+     "start": 128.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.15,
+     "seconds": 12.0,
+     "start": 130.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.04,
+     "seconds": 2.0,
+     "start": 142.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.04,
+     "seconds": 14.0,
+     "start": 144.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.69,
+     "seconds": 2.0,
+     "start": 158.0
+    },
+    {
+     "label": "Intro",
+     "lufs": -11.84,
+     "seconds": 16.0,
+     "start": 160.0
+    },
+    {
+     "label": "Intro",
+     "lufs": -12.38,
+     "seconds": 16.0,
+     "start": 176.0
+    }
+   ],
+   "side_mid": -17.11,
+   "side_mid_below_120": -35.14,
+   "slope_db_oct": -5.97,
+   "style": "deep_house",
+   "sub_40_60": -4.14,
+   "target_gap": -0.03,
+   "target_lufs": -9.0,
+   "true_peak": -1.19,
+   "true_peak_bs1770": -1.09
+  },
+  "detroit": {
+   "bands": {
+    "air": -16.33,
+    "high_mid": -12.39,
+    "low": -4.09,
+    "low_mid": -13.5,
+    "mid": -9.18,
+    "sub": -4.41
+   },
+   "bass": {
+    "attack": 85.44,
+    "attack_spread": 43.25,
+    "harmonics": -5.31,
+    "kick_dip": -1.32,
+    "kicks": 108,
+    "lufs": -18.17,
+    "notes": 189,
+    "phone_200": -6.12,
+    "phone_300": -10.46,
+    "place_300": -12.96
+   },
+   "clipped": 0,
+   "corr": 0.972,
+   "corr_below_120": 1.0,
+   "dc": 0.0,
+   "drive_db": 5.834,
+   "drop_minus_break": 6.45,
+   "drop_minus_groove": 2.21,
+   "drop_minus_montee_end": [
+    2.54,
+    2.49
+   ],
+   "drop_start_lufs": [
+    -8.1,
+    -8.17
+   ],
+   "drop_variation": 0.531,
+   "end_dbfs": -44.01,
+   "exciter_lu": 0.03,
+   "export_lufs": -9.456,
+   "export_true_peak": -1.187,
+   "file": "detroit.wav",
+   "infra_below_30": -26.34,
+   "intro_lufs": -9.42,
+   "intro_minus_main": -1.29,
+   "labels": {
+    "Break": -14.58,
+    "Drop": -8.13,
+    "Groove": -10.34,
+    "Intro": -9.44,
+    "Montée": -12.35
+   },
+   "lead_centroid_hz": 1585,
+   "lead_centroid_var": 19.34,
+   "loss_db": 2.02,
+   "loud_lufs": -8.02,
+   "lra": 6.05,
+   "lufs_i": -9.46,
+   "m4a_lufs": -9.55,
+   "m4a_true_peak": -1.32,
+   "m4a_true_peak_first": -1.32,
+   "main": "Drop",
+   "main_crest": 8.61,
+   "main_lufs": -8.13,
+   "main_true_peak": -1.19,
+   "mode": 1,
+   "mono_loss_lu": -0.12,
+   "montee_end_lufs": [
+    -10.64,
+    -10.67
+   ],
+   "montee_rise": [
+    3.66,
+    3.81
+   ],
+   "non_finite": 0,
+   "plr": 8.27,
+   "pre_drop_minus_break": 8.44,
+   "pre_drop_minus_groove": 4.16,
+   "pre_drop_minus_montee_end": [
+    4.8,
+    4.66
+   ],
+   "pre_intro_minus_main": -3.13,
+   "pre_lra": 8.07,
+   "pre_lufs_i": -14.13,
+   "pre_main_lufs": -11.97,
+   "pre_montee_rise": [
+    3.66,
+    3.81
+   ],
+   "render_loud_lufs": -8.018,
+   "sample_peak": -1.19,
+   "seconds": 335.24,
+   "sections": [
+    {
+     "label": "Intro",
+     "lufs": -9.67,
+     "seconds": 15.24,
+     "start": 0.0
+    },
+    {
+     "label": "Intro",
+     "lufs": -9.71,
+     "seconds": 15.24,
+     "start": 15.24
+    },
+    {
+     "label": "Intro",
+     "lufs": -9.6,
+     "seconds": 15.24,
+     "start": 30.48
+    },
+    {
+     "label": "Intro",
+     "lufs": -8.71,
+     "seconds": 13.33,
+     "start": 45.71
+    },
+    {
+     "label": "Intro",
+     "lufs": -9.95,
+     "seconds": 1.9,
+     "start": 59.05
+    },
+    {
+     "label": "Groove",
+     "lufs": -10.5,
+     "seconds": 13.33,
+     "start": 60.95
+    },
+    {
+     "label": "Groove",
+     "lufs": -10.85,
+     "seconds": 1.9,
+     "start": 74.29
+    },
+    {
+     "label": "Groove",
+     "lufs": -10.34,
+     "seconds": 13.33,
+     "start": 76.19
+    },
+    {
+     "label": "Groove",
+     "lufs": -11.44,
+     "seconds": 1.9,
+     "start": 89.52
+    },
+    {
+     "label": "Groove",
+     "lufs": -10.13,
+     "seconds": 15.24,
+     "start": 91.43
+    },
+    {
+     "label": "Montée",
+     "lufs": -12.68,
+     "seconds": 7.62,
+     "start": 106.67
+    },
+    {
+     "label": "Montée",
+     "lufs": -12.0,
+     "seconds": 7.62,
+     "start": 114.29
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.09,
+     "seconds": 13.33,
+     "start": 121.9
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.04,
+     "seconds": 1.9,
+     "start": 135.24
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.06,
+     "seconds": 13.33,
+     "start": 137.14
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.42,
+     "seconds": 1.9,
+     "start": 150.48
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.13,
+     "seconds": 13.33,
+     "start": 152.38
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.02,
+     "seconds": 1.9,
+     "start": 165.71
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.09,
+     "seconds": 13.33,
+     "start": 167.62
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.39,
+     "seconds": 1.9,
+     "start": 180.95
+    },
+    {
+     "label": "Break",
+     "lufs": -14.42,
+     "seconds": 13.33,
+     "start": 182.86
+    },
+    {
+     "label": "Break",
+     "lufs": -14.58,
+     "seconds": 1.9,
+     "start": 196.19
+    },
+    {
+     "label": "Break",
+     "lufs": -14.73,
+     "seconds": 15.24,
+     "start": 198.1
+    },
+    {
+     "label": "Montée",
+     "lufs": -12.6,
+     "seconds": 7.62,
+     "start": 213.33
+    },
+    {
+     "label": "Montée",
+     "lufs": -12.06,
+     "seconds": 7.62,
+     "start": 220.95
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.17,
+     "seconds": 13.33,
+     "start": 228.57
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.09,
+     "seconds": 1.9,
+     "start": 241.9
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.29,
+     "seconds": 13.33,
+     "start": 243.81
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.61,
+     "seconds": 1.9,
+     "start": 257.14
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.1,
+     "seconds": 13.33,
+     "start": 259.05
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.14,
+     "seconds": 1.9,
+     "start": 272.38
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.26,
+     "seconds": 13.33,
+     "start": 274.29
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.41,
+     "seconds": 1.9,
+     "start": 287.62
+    },
+    {
+     "label": "Intro",
+     "lufs": -9.04,
+     "seconds": 15.24,
+     "start": 289.52
+    },
+    {
+     "label": "Intro",
+     "lufs": -9.6,
+     "seconds": 15.24,
+     "start": 304.76
+    },
+    {
+     "label": "Intro",
+     "lufs": -9.9,
+     "seconds": 15.24,
+     "start": 320.0
+    }
+   ],
+   "side_mid": -18.54,
+   "side_mid_below_120": -57.31,
+   "slope_db_oct": -3.91,
+   "style": "detroit",
+   "sub_40_60": -4.76,
+   "target_gap": -0.02,
+   "target_lufs": -8.0,
+   "true_peak": -1.19,
+   "true_peak_bs1770": -1.08
+  },
+  "disco": {
+   "bands": {
+    "air": -16.03,
+    "high_mid": -13.64,
+    "low": -3.09,
+    "low_mid": -6.77,
+    "mid": -10.65,
+    "sub": -8.54
+   },
+   "bass": {
+    "attack": 5.8,
+    "attack_spread": 3.73,
+    "harmonics": 12.46,
+    "kick_dip": 2.33,
+    "kicks": 106,
+    "lufs": -14.47,
+    "notes": 114,
+    "phone_200": -2.48,
+    "phone_300": -5.73,
+    "place_300": -4.54
+   },
+   "clipped": 0,
+   "corr": 0.948,
+   "corr_below_120": 1.0,
+   "dc": 0.0,
+   "drive_db": 3.551,
+   "drop_minus_break": 7.2,
+   "drop_minus_groove": 2.44,
+   "drop_minus_montee_end": [
+    2.77,
+    3.01
+   ],
+   "drop_start_lufs": [
+    -9.27,
+    -9.03
+   ],
+   "drop_variation": 1.0,
+   "end_dbfs": -45.46,
+   "exciter_lu": 0.03,
+   "export_lufs": -11.41,
+   "export_true_peak": -1.193,
+   "file": "disco.wav",
+   "infra_below_30": -24.86,
+   "intro_lufs": -12.98,
+   "intro_minus_main": -3.78,
+   "labels": {
+    "Break": -16.4,
+    "Drop": -9.2,
+    "Groove": -11.64,
+    "Intro": -12.98,
+    "Montée": -13.5
+   },
+   "lead_centroid_hz": 1839,
+   "lead_centroid_var": 14.74,
+   "loss_db": 0.79,
+   "loud_lufs": -9.02,
+   "lra": 6.45,
+   "lufs_i": -11.41,
+   "m4a_lufs": -10.89,
+   "m4a_true_peak": -1.38,
+   "m4a_true_peak_first": -1.38,
+   "main": "Drop",
+   "main_crest": 10.13,
+   "main_lufs": -9.2,
+   "main_true_peak": -1.19,
+   "mode": 1,
+   "mono_loss_lu": -0.17,
+   "montee_end_lufs": [
+    -12.04,
+    -12.05
+   ],
+   "montee_rise": [
+    4.33,
+    4.35
+   ],
+   "non_finite": 0,
+   "plr": 10.22,
+   "pre_drop_minus_break": 7.95,
+   "pre_drop_minus_groove": 3.11,
+   "pre_drop_minus_montee_end": [
+    3.55,
+    3.76
+   ],
+   "pre_intro_minus_main": -4.51,
+   "pre_lra": 7.28,
+   "pre_lufs_i": -14.5,
+   "pre_main_lufs": -12.0,
+   "pre_montee_rise": [
+    4.33,
+    4.35
+   ],
+   "render_loud_lufs": -9.019,
+   "sample_peak": -1.19,
+   "seconds": 198.62,
+   "sections": [
+    {
+     "label": "Intro",
+     "lufs": -12.93,
+     "seconds": 16.55,
+     "start": 0.0
+    },
+    {
+     "label": "Intro",
+     "lufs": -12.87,
+     "seconds": 14.48,
+     "start": 16.55
+    },
+    {
+     "label": "Intro",
+     "lufs": -15.05,
+     "seconds": 2.07,
+     "start": 31.03
+    },
+    {
+     "label": "Groove",
+     "lufs": -11.64,
+     "seconds": 16.55,
+     "start": 33.1
+    },
+    {
+     "label": "Montée",
+     "lufs": -13.32,
+     "seconds": 8.28,
+     "start": 49.66
+    },
+    {
+     "label": "Montée",
+     "lufs": -13.43,
+     "seconds": 8.28,
+     "start": 57.93
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.75,
+     "seconds": 2.07,
+     "start": 66.21
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.25,
+     "seconds": 12.41,
+     "start": 68.28
+    },
+    {
+     "label": "Drop",
+     "lufs": -11.03,
+     "seconds": 2.07,
+     "start": 80.69
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.09,
+     "seconds": 14.48,
+     "start": 82.76
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.26,
+     "seconds": 2.07,
+     "start": 97.24
+    },
+    {
+     "label": "Break",
+     "lufs": -14.76,
+     "seconds": 2.07,
+     "start": 99.31
+    },
+    {
+     "label": "Break",
+     "lufs": -16.65,
+     "seconds": 14.48,
+     "start": 101.38
+    },
+    {
+     "label": "Montée",
+     "lufs": -13.49,
+     "seconds": 8.28,
+     "start": 115.86
+    },
+    {
+     "label": "Montée",
+     "lufs": -13.43,
+     "seconds": 8.28,
+     "start": 124.14
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.09,
+     "seconds": 2.07,
+     "start": 132.41
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.24,
+     "seconds": 12.41,
+     "start": 134.48
+    },
+    {
+     "label": "Drop",
+     "lufs": -10.2,
+     "seconds": 2.07,
+     "start": 146.9
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.2,
+     "seconds": 14.48,
+     "start": 148.97
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.57,
+     "seconds": 2.07,
+     "start": 163.45
+    },
+    {
+     "label": "Intro",
+     "lufs": -12.95,
+     "seconds": 16.55,
+     "start": 165.52
+    },
+    {
+     "label": "Intro",
+     "lufs": -13.07,
+     "seconds": 16.55,
+     "start": 182.07
+    }
+   ],
+   "side_mid": -15.71,
+   "side_mid_below_120": -46.32,
+   "slope_db_oct": -5.14,
+   "style": "disco",
+   "sub_40_60": -8.58,
+   "target_gap": -0.02,
+   "target_lufs": -9.0,
+   "true_peak": -1.19,
+   "true_peak_bs1770": -1.06
+  },
+  "dnb": {
+   "bands": {
+    "air": -14.92,
+    "high_mid": -13.26,
+    "low": -4.21,
+    "low_mid": -8.02,
+    "mid": -9.36,
+    "sub": -5.77
+   },
+   "clipped": 0,
+   "corr": 0.885,
+   "corr_below_120": 1.0,
+   "dc": 3e-06,
+   "drive_db": 7.023,
+   "drop_minus_break": 4.29,
+   "drop_minus_groove": 5.95,
+   "drop_minus_montee_end": [
+    2.6,
+    2.73,
+    2.8
+   ],
+   "drop_start_lufs": [
+    -8.74,
+    -8.58,
+    -8.53
+   ],
+   "drop_variation": 0.531,
+   "end_dbfs": -32.86,
+   "export_lufs": -10.235,
+   "export_true_peak": -1.185,
+   "file": "dnb.wav",
+   "infra_below_30": -26.36,
+   "intro_lufs": -11.77,
+   "intro_minus_main": -3.11,
+   "labels": {
+    "Break": -12.95,
+    "Drop": -8.66,
+    "Intro": -11.8,
+    "Montée": -14.61
+   },
+   "lead_centroid_hz": 1015,
+   "lead_centroid_var": 13.8,
+   "loss_db": 3.02,
+   "loud_lufs": -8.56,
+   "lra": 5.27,
+   "lufs_i": -10.24,
+   "m4a_lufs": -10.99,
+   "m4a_true_peak": -1.37,
+   "m4a_true_peak_first": -1.37,
+   "main": "Drop",
+   "main_crest": 9.23,
+   "main_lufs": -8.66,
+   "main_true_peak": -1.18,
+   "mode": 1,
+   "mono_loss_lu": -0.34,
+   "montee_end_lufs": [
+    -11.35,
+    -11.31,
+    -11.32
+   ],
+   "montee_rise": [],
+   "non_finite": 0,
+   "plr": 9.05,
+   "pre_drop_minus_break": 7.14,
+   "pre_drop_minus_groove": 8.81,
+   "pre_drop_minus_montee_end": [
+    4.93,
+    5.7,
+    5.72
+   ],
+   "pre_intro_minus_main": -5.31,
+   "pre_lra": 8.01,
+   "pre_lufs_i": -14.96,
+   "pre_main_lufs": -12.83,
+   "pre_montee_rise": [],
+   "render_loud_lufs": -8.558,
+   "sample_peak": -1.19,
+   "seconds": 297.93,
+   "sections": [
+    {
+     "label": "Intro",
+     "lufs": -12.2,
+     "seconds": 11.03,
+     "start": 0.0
+    },
+    {
+     "label": "Intro",
+     "lufs": -12.28,
+     "seconds": 11.03,
+     "start": 11.03
+    },
+    {
+     "label": "Intro",
+     "lufs": -12.71,
+     "seconds": 11.03,
+     "start": 22.07
+    },
+    {
+     "label": "Intro",
+     "lufs": -10.82,
+     "seconds": 11.03,
+     "start": 33.1
+    },
+    {
+     "label": "Montée",
+     "lufs": -18.53,
+     "seconds": 5.52,
+     "start": 44.14
+    },
+    {
+     "label": "Montée",
+     "lufs": -12.46,
+     "seconds": 5.52,
+     "start": 49.66
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.8,
+     "seconds": 9.66,
+     "start": 55.17
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.32,
+     "seconds": 1.38,
+     "start": 64.83
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.77,
+     "seconds": 9.66,
+     "start": 66.21
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.32,
+     "seconds": 1.38,
+     "start": 75.86
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.74,
+     "seconds": 9.66,
+     "start": 77.24
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.97,
+     "seconds": 1.38,
+     "start": 86.9
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.56,
+     "seconds": 9.66,
+     "start": 88.28
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.93,
+     "seconds": 1.38,
+     "start": 97.93
+    },
+    {
+     "label": "Break",
+     "lufs": -13.0,
+     "seconds": 9.66,
+     "start": 99.31
+    },
+    {
+     "label": "Break",
+     "lufs": -12.56,
+     "seconds": 1.38,
+     "start": 108.97
+    },
+    {
+     "label": "Break",
+     "lufs": -13.01,
+     "seconds": 11.03,
+     "start": 110.34
+    },
+    {
+     "label": "Montée",
+     "lufs": -18.56,
+     "seconds": 5.52,
+     "start": 121.38
+    },
+    {
+     "label": "Montée",
+     "lufs": -12.43,
+     "seconds": 5.52,
+     "start": 126.9
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.6,
+     "seconds": 9.66,
+     "start": 132.41
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.97,
+     "seconds": 1.38,
+     "start": 142.07
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.61,
+     "seconds": 9.66,
+     "start": 143.45
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.07,
+     "seconds": 1.38,
+     "start": 153.1
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.65,
+     "seconds": 9.66,
+     "start": 154.48
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.73,
+     "seconds": 1.38,
+     "start": 164.14
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.62,
+     "seconds": 9.66,
+     "start": 165.52
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.04,
+     "seconds": 1.38,
+     "start": 175.17
+    },
+    {
+     "label": "Break",
+     "lufs": -12.92,
+     "seconds": 9.66,
+     "start": 176.55
+    },
+    {
+     "label": "Break",
+     "lufs": -12.16,
+     "seconds": 1.38,
+     "start": 186.21
+    },
+    {
+     "label": "Break",
+     "lufs": -13.02,
+     "seconds": 11.03,
+     "start": 187.59
+    },
+    {
+     "label": "Montée",
+     "lufs": -18.49,
+     "seconds": 5.52,
+     "start": 198.62
+    },
+    {
+     "label": "Montée",
+     "lufs": -12.45,
+     "seconds": 5.52,
+     "start": 204.14
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.54,
+     "seconds": 9.66,
+     "start": 209.66
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.11,
+     "seconds": 1.38,
+     "start": 219.31
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.65,
+     "seconds": 9.66,
+     "start": 220.69
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.1,
+     "seconds": 1.38,
+     "start": 230.34
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.64,
+     "seconds": 9.66,
+     "start": 231.72
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.53,
+     "seconds": 1.38,
+     "start": 241.38
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.58,
+     "seconds": 9.66,
+     "start": 242.76
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.15,
+     "seconds": 1.38,
+     "start": 252.41
+    },
+    {
+     "label": "Intro",
+     "lufs": -10.86,
+     "seconds": 11.03,
+     "start": 253.79
+    },
+    {
+     "label": "Intro",
+     "lufs": -12.6,
+     "seconds": 11.03,
+     "start": 264.83
+    },
+    {
+     "label": "Intro",
+     "lufs": -12.31,
+     "seconds": 11.03,
+     "start": 275.86
+    },
+    {
+     "label": "Intro",
+     "lufs": -12.86,
+     "seconds": 11.03,
+     "start": 286.9
+    }
+   ],
+   "side_mid": -12.15,
+   "side_mid_below_120": -38.52,
+   "slope_db_oct": -4.59,
+   "style": "dnb",
+   "sub_40_60": -7.02,
+   "target_gap": -1.06,
+   "target_lufs": -7.5,
+   "true_peak": -1.18,
+   "true_peak_bs1770": -1.04
+  },
+  "drill": {
+   "bands": {
+    "air": -20.01,
+    "high_mid": -17.22,
+    "low": -3.06,
+    "low_mid": -10.37,
+    "mid": -12.71,
+    "sub": -4.81
+   },
+   "bass": {
+    "attack": 2.4,
+    "attack_spread": 0.23,
+    "harmonics": -6.67,
+    "kick_dip": 0.79,
+    "kicks": 90,
+    "lufs": -13.61,
+    "notes": 24,
+    "phone_200": -5.92,
+    "phone_300": -8.64,
+    "place_300": -4.46
+   },
+   "clipped": 0,
+   "corr": 0.98,
+   "corr_below_120": 1.0,
+   "dc": 0.0,
+   "drive_db": 4.369,
+   "drop_minus_break": null,
+   "drop_minus_groove": 2.48,
+   "drop_minus_montee_end": [],
+   "drop_start_lufs": [],
+   "drop_variation": 0.5,
+   "end_dbfs": -41.17,
+   "exciter_lu": 0.03,
+   "export_lufs": -10.213,
+   "export_true_peak": -1.19,
+   "file": "drill.wav",
+   "infra_below_30": -25.19,
+   "intro_lufs": -17.4,
+   "intro_minus_main": -8.74,
+   "labels": {
+    "Couplet": -11.13,
+    "Intro": -17.41,
+    "Pont": -19.75,
+    "Refrain": -8.66
+   },
+   "lead_centroid_hz": 1208,
+   "lead_centroid_var": 25.05,
+   "loss_db": 0.4,
+   "loud_lufs": -8.58,
+   "lra": 9.28,
+   "lufs_i": -10.21,
+   "m4a_lufs": -10.15,
+   "m4a_true_peak": -1.66,
+   "m4a_true_peak_first": -1.66,
+   "main": "Refrain",
+   "main_crest": 8.48,
+   "main_lufs": -8.66,
+   "main_true_peak": -1.19,
+   "mode": 1,
+   "mono_loss_lu": -0.08,
+   "montee_end_lufs": [],
+   "montee_rise": [],
+   "non_finite": 0,
+   "plr": 9.02,
+   "pre_drop_minus_break": null,
+   "pre_drop_minus_groove": 2.89,
+   "pre_drop_minus_montee_end": [],
+   "pre_intro_minus_main": -9.17,
+   "pre_lra": 9.64,
+   "pre_lufs_i": -14.21,
+   "pre_main_lufs": -12.6,
+   "pre_montee_rise": [],
+   "render_loud_lufs": -8.577,
+   "sample_peak": -1.19,
+   "seconds": 175.77,
+   "sections": [
+    {
+     "label": "Intro",
+     "lufs": -17.4,
+     "seconds": 13.52,
+     "start": 0.0
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.15,
+     "seconds": 1.69,
+     "start": 13.52
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.77,
+     "seconds": 10.14,
+     "start": 15.21
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.44,
+     "seconds": 1.69,
+     "start": 25.35
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.74,
+     "seconds": 11.83,
+     "start": 27.04
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.65,
+     "seconds": 1.69,
+     "start": 38.87
+    },
+    {
+     "label": "Couplet",
+     "lufs": -11.11,
+     "seconds": 13.52,
+     "start": 40.56
+    },
+    {
+     "label": "Couplet",
+     "lufs": -11.09,
+     "seconds": 6.76,
+     "start": 54.08
+    },
+    {
+     "label": "Couplet",
+     "lufs": -11.38,
+     "seconds": 6.76,
+     "start": 60.85
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.26,
+     "seconds": 1.69,
+     "start": 67.61
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.73,
+     "seconds": 10.14,
+     "start": 69.3
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.53,
+     "seconds": 1.69,
+     "start": 79.44
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.74,
+     "seconds": 11.83,
+     "start": 81.13
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.63,
+     "seconds": 1.69,
+     "start": 92.96
+    },
+    {
+     "label": "Couplet",
+     "lufs": -11.09,
+     "seconds": 11.83,
+     "start": 94.65
+    },
+    {
+     "label": "Couplet",
+     "lufs": -11.13,
+     "seconds": 1.69,
+     "start": 106.48
+    },
+    {
+     "label": "Couplet",
+     "lufs": -11.09,
+     "seconds": 11.83,
+     "start": 108.17
+    },
+    {
+     "label": "Couplet",
+     "lufs": -11.53,
+     "seconds": 1.69,
+     "start": 120.0
+    },
+    {
+     "label": "Pont",
+     "lufs": -16.81,
+     "seconds": 1.69,
+     "start": 121.69
+    },
+    {
+     "label": "Pont",
+     "lufs": -20.22,
+     "seconds": 11.83,
+     "start": 123.38
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.19,
+     "seconds": 1.69,
+     "start": 135.21
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.73,
+     "seconds": 10.14,
+     "start": 136.9
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.35,
+     "seconds": 1.69,
+     "start": 147.04
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.69,
+     "seconds": 11.83,
+     "start": 148.73
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.59,
+     "seconds": 1.69,
+     "start": 160.56
+    },
+    {
+     "label": "Intro",
+     "lufs": -17.73,
+     "seconds": 13.52,
+     "start": 162.25
+    }
+   ],
+   "side_mid": -19.94,
+   "side_mid_below_120": -45.69,
+   "slope_db_oct": -5.36,
+   "style": "drill",
+   "sub_40_60": -5.56,
+   "target_gap": -0.08,
+   "target_lufs": -8.5,
+   "true_peak": -1.19,
+   "true_peak_bs1770": -1.07
+  },
+  "dubstep": {
+   "bands": {
+    "air": -16.45,
+    "high_mid": -15.57,
+    "low": -5.84,
+    "low_mid": -7.72,
+    "mid": -8.93,
+    "sub": -4.08
+   },
+   "clipped": 0,
+   "corr": 0.889,
+   "corr_below_120": 1.0,
+   "dc": 3e-06,
+   "drive_db": 8.794,
+   "drop_minus_break": 4.33,
+   "drop_minus_groove": 5.54,
+   "drop_minus_montee_end": [
+    1.82,
+    2.3,
+    2.32
+   ],
+   "drop_start_lufs": [
+    -9.17,
+    -8.68,
+    -8.7
+   ],
+   "drop_variation": 0.5,
+   "end_dbfs": -41.39,
+   "export_lufs": -10.408,
+   "export_true_peak": -1.184,
+   "file": "dubstep.wav",
+   "infra_below_30": -25.48,
+   "intro_lufs": -12.26,
+   "intro_minus_main": -3.41,
+   "labels": {
+    "Break": -13.18,
+    "Drop": -8.85,
+    "Intro": -12.02,
+    "Montée": -14.39
+   },
+   "lead_centroid_hz": 1471,
+   "lead_centroid_var": 28.72,
+   "loss_db": 2.99,
+   "loud_lufs": -8.69,
+   "lra": 6.39,
+   "lufs_i": -10.41,
+   "m4a_lufs": -11.12,
+   "m4a_true_peak": -1.46,
+   "m4a_true_peak_first": -1.46,
+   "main": "Drop",
+   "main_crest": 8.89,
+   "main_lufs": -8.85,
+   "main_true_peak": -1.18,
+   "mode": 1,
+   "mono_loss_lu": -0.39,
+   "montee_end_lufs": [
+    -10.99,
+    -10.98,
+    -11.02
+   ],
+   "montee_rise": [
+    3.53,
+    3.5,
+    3.47
+   ],
+   "non_finite": 0,
+   "plr": 9.22,
+   "pre_drop_minus_break": 7.11,
+   "pre_drop_minus_groove": 8.34,
+   "pre_drop_minus_montee_end": [
+    4.44,
+    5.35,
+    5.52
+   ],
+   "pre_intro_minus_main": -5.31,
+   "pre_lra": 8.56,
+   "pre_lufs_i": -16.9,
+   "pre_main_lufs": -14.84,
+   "pre_montee_rise": [
+    3.53,
+    3.5,
+    3.47
+   ],
+   "render_loud_lufs": -8.693,
+   "sample_peak": -1.19,
+   "seconds": 301.71,
+   "sections": [
+    {
+     "label": "Intro",
+     "lufs": -12.99,
+     "seconds": 13.71,
+     "start": 0.0
+    },
+    {
+     "label": "Intro",
+     "lufs": -13.06,
+     "seconds": 13.71,
+     "start": 13.71
+    },
+    {
+     "label": "Intro",
+     "lufs": -13.62,
+     "seconds": 13.71,
+     "start": 27.43
+    },
+    {
+     "label": "Intro",
+     "lufs": -10.82,
+     "seconds": 13.71,
+     "start": 41.14
+    },
+    {
+     "label": "Montée",
+     "lufs": -18.12,
+     "seconds": 6.86,
+     "start": 54.86
+    },
+    {
+     "label": "Montée",
+     "lufs": -12.33,
+     "seconds": 6.86,
+     "start": 61.71
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.39,
+     "seconds": 1.71,
+     "start": 68.57
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.36,
+     "seconds": 10.29,
+     "start": 70.29
+    },
+    {
+     "label": "Drop",
+     "lufs": -10.28,
+     "seconds": 1.71,
+     "start": 80.57
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.87,
+     "seconds": 12.0,
+     "start": 82.29
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.71,
+     "seconds": 1.71,
+     "start": 94.29
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.04,
+     "seconds": 1.71,
+     "start": 96.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.86,
+     "seconds": 10.29,
+     "start": 97.71
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.87,
+     "seconds": 1.71,
+     "start": 108.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.8,
+     "seconds": 12.0,
+     "start": 109.71
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.1,
+     "seconds": 1.71,
+     "start": 121.71
+    },
+    {
+     "label": "Break",
+     "lufs": -11.85,
+     "seconds": 1.71,
+     "start": 123.43
+    },
+    {
+     "label": "Break",
+     "lufs": -13.58,
+     "seconds": 10.29,
+     "start": 125.14
+    },
+    {
+     "label": "Break",
+     "lufs": -11.98,
+     "seconds": 1.71,
+     "start": 135.43
+    },
+    {
+     "label": "Break",
+     "lufs": -13.3,
+     "seconds": 13.71,
+     "start": 137.14
+    },
+    {
+     "label": "Montée",
+     "lufs": -18.06,
+     "seconds": 6.86,
+     "start": 150.86
+    },
+    {
+     "label": "Montée",
+     "lufs": -12.3,
+     "seconds": 6.86,
+     "start": 157.71
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.42,
+     "seconds": 1.71,
+     "start": 164.57
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.81,
+     "seconds": 10.29,
+     "start": 166.29
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.72,
+     "seconds": 1.71,
+     "start": 176.57
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.76,
+     "seconds": 12.0,
+     "start": 178.29
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.14,
+     "seconds": 1.71,
+     "start": 190.29
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.51,
+     "seconds": 1.71,
+     "start": 192.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.98,
+     "seconds": 10.29,
+     "start": 193.71
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.86,
+     "seconds": 1.71,
+     "start": 204.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.95,
+     "seconds": 12.0,
+     "start": 205.71
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.02,
+     "seconds": 1.71,
+     "start": 217.71
+    },
+    {
+     "label": "Break",
+     "lufs": -11.7,
+     "seconds": 1.71,
+     "start": 219.43
+    },
+    {
+     "label": "Break",
+     "lufs": -13.42,
+     "seconds": 12.0,
+     "start": 221.14
+    },
+    {
+     "label": "Montée",
+     "lufs": -18.08,
+     "seconds": 6.86,
+     "start": 233.14
+    },
+    {
+     "label": "Montée",
+     "lufs": -12.33,
+     "seconds": 6.86,
+     "start": 240.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.43,
+     "seconds": 1.71,
+     "start": 246.86
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.82,
+     "seconds": 10.29,
+     "start": 248.57
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.86,
+     "seconds": 1.71,
+     "start": 258.86
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.78,
+     "seconds": 12.0,
+     "start": 260.57
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.98,
+     "seconds": 1.71,
+     "start": 272.57
+    },
+    {
+     "label": "Intro",
+     "lufs": -10.77,
+     "seconds": 13.71,
+     "start": 274.29
+    },
+    {
+     "label": "Intro",
+     "lufs": -13.57,
+     "seconds": 13.71,
+     "start": 288.0
+    }
+   ],
+   "side_mid": -12.3,
+   "side_mid_below_120": -43.23,
+   "slope_db_oct": -4.31,
+   "style": "dubstep",
+   "sub_40_60": -4.64,
+   "target_gap": -1.19,
+   "target_lufs": -7.5,
+   "true_peak": -1.18,
+   "true_peak_bs1770": -1.05
+  },
+  "gabber": {
+   "bands": {
+    "air": -14.83,
+    "high_mid": -14.41,
+    "low": -5.63,
+    "low_mid": -6.7,
+    "mid": -8.08,
+    "sub": -5.44
+   },
+   "bass": {
+    "attack": null,
+    "attack_spread": null,
+    "harmonics": -13.26,
+    "kick_dip": 5.18,
+    "kicks": 9,
+    "lufs": -37.45,
+    "notes": 0,
+    "phone_200": -9.84,
+    "phone_300": -12.78,
+    "place_300": -33.25
+   },
+   "clipped": 0,
+   "corr": 0.895,
+   "corr_below_120": 0.999,
+   "dc": 3e-06,
+   "drive_db": 9.266,
+   "drop_minus_break": 3.22,
+   "drop_minus_groove": 4.95,
+   "drop_minus_montee_end": [
+    1.88,
+    1.96,
+    2.05
+   ],
+   "drop_start_lufs": [
+    -8.13,
+    -7.99,
+    -7.94
+   ],
+   "drop_variation": 0.5,
+   "end_dbfs": -38.5,
+   "exciter_lu": 0.0,
+   "export_lufs": -8.826,
+   "export_true_peak": -1.189,
+   "file": "gabber.wav",
+   "infra_below_30": -28.8,
+   "intro_lufs": -8.25,
+   "intro_minus_main": -0.2,
+   "labels": {
+    "Break": -11.27,
+    "Drop": -8.05,
+    "Intro": -8.3,
+    "Montée": -13.0
+   },
+   "lead_centroid_hz": 793,
+   "lead_centroid_var": 10.47,
+   "loss_db": 3.01,
+   "loud_lufs": -7.92,
+   "lra": 3.86,
+   "lufs_i": -8.83,
+   "m4a_lufs": -9.2,
+   "m4a_true_peak": -1.2,
+   "m4a_true_peak_first": -1.2,
+   "main": "Drop",
+   "main_crest": 8.56,
+   "main_lufs": -8.05,
+   "main_true_peak": -1.19,
+   "mode": 1,
+   "mono_loss_lu": -0.33,
+   "montee_end_lufs": [
+    -10.01,
+    -9.95,
+    -9.99
+   ],
+   "montee_rise": [],
+   "non_finite": 0,
+   "plr": 7.64,
+   "pre_drop_minus_break": 5.92,
+   "pre_drop_minus_groove": 7.74,
+   "pre_drop_minus_montee_end": [
+    4.35,
+    5.03,
+    5.03
+   ],
+   "pre_intro_minus_main": -2.61,
+   "pre_lra": 6.94,
+   "pre_lufs_i": -16.2,
+   "pre_main_lufs": -14.53,
+   "pre_montee_rise": [],
+   "render_loud_lufs": -7.919,
+   "sample_peak": -1.19,
+   "seconds": 296.23,
+   "sections": [
+    {
+     "label": "Intro",
+     "lufs": -8.25,
+     "seconds": 21.94,
+     "start": 0.0
+    },
+    {
+     "label": "Intro",
+     "lufs": -8.23,
+     "seconds": 21.94,
+     "start": 21.94
+    },
+    {
+     "label": "Montée",
+     "lufs": -17.04,
+     "seconds": 5.49,
+     "start": 43.89
+    },
+    {
+     "label": "Montée",
+     "lufs": -11.12,
+     "seconds": 5.49,
+     "start": 49.37
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.96,
+     "seconds": 1.37,
+     "start": 54.86
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.06,
+     "seconds": 8.23,
+     "start": 56.23
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.63,
+     "seconds": 1.37,
+     "start": 64.46
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.99,
+     "seconds": 9.6,
+     "start": 65.83
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.91,
+     "seconds": 1.37,
+     "start": 75.43
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.23,
+     "seconds": 1.37,
+     "start": 76.8
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.97,
+     "seconds": 8.23,
+     "start": 78.17
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.5,
+     "seconds": 1.37,
+     "start": 86.4
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.98,
+     "seconds": 9.6,
+     "start": 87.77
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.63,
+     "seconds": 1.37,
+     "start": 97.37
+    },
+    {
+     "label": "Break",
+     "lufs": -9.74,
+     "seconds": 1.37,
+     "start": 98.74
+    },
+    {
+     "label": "Break",
+     "lufs": -11.21,
+     "seconds": 8.23,
+     "start": 100.11
+    },
+    {
+     "label": "Break",
+     "lufs": -11.41,
+     "seconds": 1.37,
+     "start": 108.34
+    },
+    {
+     "label": "Break",
+     "lufs": -11.31,
+     "seconds": 10.97,
+     "start": 109.71
+    },
+    {
+     "label": "Montée",
+     "lufs": -16.73,
+     "seconds": 5.49,
+     "start": 120.69
+    },
+    {
+     "label": "Montée",
+     "lufs": -11.06,
+     "seconds": 5.49,
+     "start": 126.17
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.67,
+     "seconds": 1.37,
+     "start": 131.66
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.98,
+     "seconds": 8.23,
+     "start": 133.03
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.07,
+     "seconds": 1.37,
+     "start": 141.26
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.96,
+     "seconds": 9.6,
+     "start": 142.63
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.55,
+     "seconds": 1.37,
+     "start": 152.23
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.03,
+     "seconds": 1.37,
+     "start": 153.6
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.01,
+     "seconds": 8.23,
+     "start": 154.97
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.54,
+     "seconds": 1.37,
+     "start": 163.2
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.07,
+     "seconds": 9.6,
+     "start": 164.57
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.55,
+     "seconds": 1.37,
+     "start": 174.17
+    },
+    {
+     "label": "Break",
+     "lufs": -10.08,
+     "seconds": 1.37,
+     "start": 175.54
+    },
+    {
+     "label": "Break",
+     "lufs": -11.21,
+     "seconds": 8.23,
+     "start": 176.91
+    },
+    {
+     "label": "Break",
+     "lufs": -11.44,
+     "seconds": 1.37,
+     "start": 185.14
+    },
+    {
+     "label": "Break",
+     "lufs": -11.52,
+     "seconds": 10.97,
+     "start": 186.51
+    },
+    {
+     "label": "Montée",
+     "lufs": -16.8,
+     "seconds": 5.49,
+     "start": 197.49
+    },
+    {
+     "label": "Montée",
+     "lufs": -11.11,
+     "seconds": 5.49,
+     "start": 202.97
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.94,
+     "seconds": 1.37,
+     "start": 208.46
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.99,
+     "seconds": 8.23,
+     "start": 209.83
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.58,
+     "seconds": 1.37,
+     "start": 218.06
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.04,
+     "seconds": 9.6,
+     "start": 219.43
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.51,
+     "seconds": 1.37,
+     "start": 229.03
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.08,
+     "seconds": 1.37,
+     "start": 230.4
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.92,
+     "seconds": 8.23,
+     "start": 231.77
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.54,
+     "seconds": 1.37,
+     "start": 240.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.08,
+     "seconds": 9.6,
+     "start": 241.37
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.4,
+     "seconds": 1.37,
+     "start": 250.97
+    },
+    {
+     "label": "Intro",
+     "lufs": -8.29,
+     "seconds": 21.94,
+     "start": 252.34
+    },
+    {
+     "label": "Intro",
+     "lufs": -8.4,
+     "seconds": 21.94,
+     "start": 274.29
+    }
+   ],
+   "side_mid": -12.56,
+   "side_mid_below_120": -33.32,
+   "slope_db_oct": -4.42,
+   "style": "gabber",
+   "sub_40_60": -5.49,
+   "target_gap": -0.92,
+   "target_lufs": -7.0,
+   "true_peak": -1.19,
+   "true_peak_bs1770": -1.0
+  },
+  "grime": {
+   "bands": {
+    "air": -15.01,
+    "high_mid": -10.6,
+    "low": -4.77,
+    "low_mid": -11.58,
+    "mid": -8.07,
+    "sub": -4.99
+   },
+   "bass": {
+    "attack": 5.25,
+    "attack_spread": 2.66,
+    "harmonics": -6.39,
+    "kick_dip": -0.74,
+    "kicks": 116,
+    "lufs": -17.23,
+    "notes": 112,
+    "phone_200": -4.45,
+    "phone_300": -6.37,
+    "place_300": -8.83
+   },
+   "clipped": 0,
+   "corr": 0.945,
+   "corr_below_120": 1.0,
+   "dc": 0.0,
+   "drive_db": 4.839,
+   "drop_minus_break": null,
+   "drop_minus_groove": 2.31,
+   "drop_minus_montee_end": [],
+   "drop_start_lufs": [],
+   "drop_variation": 0.5,
+   "end_dbfs": -35.49,
+   "exciter_lu": 0.07,
+   "export_lufs": -10.286,
+   "export_true_peak": -1.186,
+   "file": "grime.wav",
+   "infra_below_30": -20.05,
+   "intro_lufs": -12.75,
+   "intro_minus_main": -3.9,
+   "labels": {
+    "Couplet": -11.17,
+    "Intro": -13.04,
+    "Pont": -16.28,
+    "Refrain": -8.86
+   },
+   "lead_centroid_hz": 3122,
+   "lead_centroid_var": 57.08,
+   "loss_db": 1.54,
+   "loud_lufs": -8.58,
+   "lra": 5.4,
+   "lufs_i": -10.29,
+   "m4a_lufs": -10.13,
+   "m4a_true_peak": -1.57,
+   "m4a_true_peak_first": -1.57,
+   "main": "Refrain",
+   "main_crest": 9.57,
+   "main_lufs": -8.86,
+   "main_true_peak": -1.18,
+   "mode": 1,
+   "mono_loss_lu": -0.23,
+   "montee_end_lufs": [],
+   "montee_rise": [],
+   "non_finite": 0,
+   "plr": 9.1,
+   "pre_drop_minus_break": null,
+   "pre_drop_minus_groove": 3.56,
+   "pre_drop_minus_montee_end": [],
+   "pre_intro_minus_main": -5.36,
+   "pre_lra": 6.95,
+   "pre_lufs_i": -14.07,
+   "pre_main_lufs": -12.24,
+   "pre_montee_rise": [],
+   "render_loud_lufs": -8.581,
+   "sample_peak": -1.19,
+   "seconds": 178.29,
+   "sections": [
+    {
+     "label": "Intro",
+     "lufs": -12.75,
+     "seconds": 13.71,
+     "start": 0.0
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.76,
+     "seconds": 1.71,
+     "start": 13.71
+    },
+    {
+     "label": "Refrain",
+     "lufs": -9.36,
+     "seconds": 10.29,
+     "start": 15.43
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.87,
+     "seconds": 1.71,
+     "start": 25.71
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.53,
+     "seconds": 12.0,
+     "start": 27.43
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.58,
+     "seconds": 1.71,
+     "start": 39.43
+    },
+    {
+     "label": "Couplet",
+     "lufs": -11.04,
+     "seconds": 13.71,
+     "start": 41.14
+    },
+    {
+     "label": "Couplet",
+     "lufs": -11.07,
+     "seconds": 6.86,
+     "start": 54.86
+    },
+    {
+     "label": "Couplet",
+     "lufs": -11.81,
+     "seconds": 6.86,
+     "start": 61.71
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.76,
+     "seconds": 1.71,
+     "start": 68.57
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.85,
+     "seconds": 10.29,
+     "start": 70.29
+    },
+    {
+     "label": "Refrain",
+     "lufs": -9.51,
+     "seconds": 1.71,
+     "start": 80.57
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.77,
+     "seconds": 12.0,
+     "start": 82.29
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.24,
+     "seconds": 1.71,
+     "start": 94.29
+    },
+    {
+     "label": "Couplet",
+     "lufs": -11.02,
+     "seconds": 12.0,
+     "start": 96.0
+    },
+    {
+     "label": "Couplet",
+     "lufs": -12.22,
+     "seconds": 1.71,
+     "start": 108.0
+    },
+    {
+     "label": "Couplet",
+     "lufs": -10.92,
+     "seconds": 12.0,
+     "start": 109.71
+    },
+    {
+     "label": "Couplet",
+     "lufs": -13.04,
+     "seconds": 1.71,
+     "start": 121.71
+    },
+    {
+     "label": "Pont",
+     "lufs": -17.11,
+     "seconds": 1.71,
+     "start": 123.43
+    },
+    {
+     "label": "Pont",
+     "lufs": -16.21,
+     "seconds": 12.0,
+     "start": 125.14
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.79,
+     "seconds": 1.71,
+     "start": 137.14
+    },
+    {
+     "label": "Refrain",
+     "lufs": -9.26,
+     "seconds": 10.29,
+     "start": 138.86
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.32,
+     "seconds": 1.71,
+     "start": 149.14
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.79,
+     "seconds": 12.0,
+     "start": 150.86
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.89,
+     "seconds": 1.71,
+     "start": 162.86
+    },
+    {
+     "label": "Intro",
+     "lufs": -13.46,
+     "seconds": 13.71,
+     "start": 164.57
+    }
+   ],
+   "side_mid": -15.52,
+   "side_mid_below_120": -39.96,
+   "slope_db_oct": -3.86,
+   "style": "grime",
+   "sub_40_60": -6.29,
+   "target_gap": -0.08,
+   "target_lufs": -8.5,
+   "true_peak": -1.18,
+   "true_peak_bs1770": -1.0
+  },
+  "hard_techno": {
+   "bands": {
+    "air": -13.19,
+    "high_mid": -13.5,
+    "low": -5.8,
+    "low_mid": -5.41,
+    "mid": -6.4,
+    "sub": -9.12
+   },
+   "bass": {
+    "attack": null,
+    "attack_spread": null,
+    "harmonics": -13.95,
+    "kick_dip": 4.63,
+    "kicks": 9,
+    "lufs": -36.82,
+    "notes": 0,
+    "phone_200": -10.32,
+    "phone_300": -13.42,
+    "place_300": -34.11
+   },
+   "clipped": 0,
+   "corr": 0.765,
+   "corr_below_120": 0.997,
+   "dc": 3e-06,
+   "drive_db": 8.427,
+   "drop_minus_break": 2.3,
+   "drop_minus_groove": 2.84,
+   "drop_minus_montee_end": [
+    3.08,
+    3.96,
+    3.93
+   ],
+   "drop_start_lufs": [
+    -9.64,
+    -8.8,
+    -8.79
+   ],
+   "drop_variation": 0.469,
+   "end_dbfs": -35.16,
+   "exciter_lu": 0.0,
+   "export_lufs": -10.43,
+   "export_true_peak": -1.188,
+   "file": "hard_techno.wav",
+   "infra_below_30": -26.6,
+   "intro_lufs": -12.62,
+   "intro_minus_main": -3.79,
+   "labels": {
+    "Break": -11.13,
+    "Drop": -8.83,
+    "Groove": -11.67,
+    "Intro": -12.6,
+    "Montée": -13.44
+   },
+   "lead_centroid_hz": 892,
+   "lead_centroid_var": 7.98,
+   "loss_db": 2.97,
+   "loud_lufs": -8.57,
+   "lra": 4.42,
+   "lufs_i": -10.43,
+   "m4a_lufs": -11.13,
+   "m4a_true_peak": -1.45,
+   "m4a_true_peak_first": -1.45,
+   "main": "Drop",
+   "main_crest": 10.29,
+   "main_lufs": -8.83,
+   "main_true_peak": -1.19,
+   "mode": 1,
+   "mono_loss_lu": -0.61,
+   "montee_end_lufs": [
+    -12.73,
+    -12.76,
+    -12.73
+   ],
+   "montee_rise": [],
+   "non_finite": 0,
+   "plr": 9.24,
+   "pre_drop_minus_break": 4.96,
+   "pre_drop_minus_groove": 4.63,
+   "pre_drop_minus_montee_end": [
+    5.74,
+    7.13,
+    7.05
+   ],
+   "pre_intro_minus_main": -4.46,
+   "pre_lra": 6.47,
+   "pre_lufs_i": -16.57,
+   "pre_main_lufs": -14.45,
+   "pre_montee_rise": [],
+   "render_loud_lufs": -8.569,
+   "sample_peak": -1.19,
+   "seconds": 358.4,
+   "sections": [
+    {
+     "label": "Intro",
+     "lufs": -13.04,
+     "seconds": 12.8,
+     "start": 0.0
+    },
+    {
+     "label": "Intro",
+     "lufs": -12.48,
+     "seconds": 12.8,
+     "start": 12.8
+    },
+    {
+     "label": "Intro",
+     "lufs": -12.51,
+     "seconds": 24.0,
+     "start": 25.6
+    },
+    {
+     "label": "Intro",
+     "lufs": -12.81,
+     "seconds": 1.6,
+     "start": 49.6
+    },
+    {
+     "label": "Groove",
+     "lufs": -12.46,
+     "seconds": 11.2,
+     "start": 51.2
+    },
+    {
+     "label": "Groove",
+     "lufs": -12.92,
+     "seconds": 1.6,
+     "start": 62.4
+    },
+    {
+     "label": "Groove",
+     "lufs": -11.95,
+     "seconds": 11.2,
+     "start": 64.0
+    },
+    {
+     "label": "Groove",
+     "lufs": -12.72,
+     "seconds": 1.6,
+     "start": 75.2
+    },
+    {
+     "label": "Groove",
+     "lufs": -10.78,
+     "seconds": 12.8,
+     "start": 76.8
+    },
+    {
+     "label": "Montée",
+     "lufs": -13.17,
+     "seconds": 6.4,
+     "start": 89.6
+    },
+    {
+     "label": "Montée",
+     "lufs": -13.78,
+     "seconds": 6.4,
+     "start": 96.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.65,
+     "seconds": 11.2,
+     "start": 102.4
+    },
+    {
+     "label": "Drop",
+     "lufs": -10.03,
+     "seconds": 1.6,
+     "start": 113.6
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.86,
+     "seconds": 11.2,
+     "start": 115.2
+    },
+    {
+     "label": "Drop",
+     "lufs": -10.27,
+     "seconds": 1.6,
+     "start": 126.4
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.79,
+     "seconds": 11.2,
+     "start": 128.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.71,
+     "seconds": 1.6,
+     "start": 139.2
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.6,
+     "seconds": 11.2,
+     "start": 140.8
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.53,
+     "seconds": 1.6,
+     "start": 152.0
+    },
+    {
+     "label": "Break",
+     "lufs": -11.19,
+     "seconds": 11.2,
+     "start": 153.6
+    },
+    {
+     "label": "Break",
+     "lufs": -10.92,
+     "seconds": 1.6,
+     "start": 164.8
+    },
+    {
+     "label": "Break",
+     "lufs": -11.06,
+     "seconds": 12.8,
+     "start": 166.4
+    },
+    {
+     "label": "Montée",
+     "lufs": -13.12,
+     "seconds": 6.4,
+     "start": 179.2
+    },
+    {
+     "label": "Montée",
+     "lufs": -13.69,
+     "seconds": 6.4,
+     "start": 185.6
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.81,
+     "seconds": 11.2,
+     "start": 192.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.55,
+     "seconds": 1.6,
+     "start": 203.2
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.58,
+     "seconds": 11.2,
+     "start": 204.8
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.59,
+     "seconds": 1.6,
+     "start": 216.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.6,
+     "seconds": 11.2,
+     "start": 217.6
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.6,
+     "seconds": 1.6,
+     "start": 228.8
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.63,
+     "seconds": 11.2,
+     "start": 230.4
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.56,
+     "seconds": 1.6,
+     "start": 241.6
+    },
+    {
+     "label": "Break",
+     "lufs": -11.16,
+     "seconds": 12.8,
+     "start": 243.2
+    },
+    {
+     "label": "Montée",
+     "lufs": -13.15,
+     "seconds": 6.4,
+     "start": 256.0
+    },
+    {
+     "label": "Montée",
+     "lufs": -13.74,
+     "seconds": 6.4,
+     "start": 262.4
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.77,
+     "seconds": 11.2,
+     "start": 268.8
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.63,
+     "seconds": 1.6,
+     "start": 280.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.6,
+     "seconds": 11.2,
+     "start": 281.6
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.52,
+     "seconds": 1.6,
+     "start": 292.8
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.83,
+     "seconds": 11.2,
+     "start": 294.4
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.67,
+     "seconds": 1.6,
+     "start": 305.6
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.63,
+     "seconds": 11.2,
+     "start": 307.2
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.42,
+     "seconds": 1.6,
+     "start": 318.4
+    },
+    {
+     "label": "Intro",
+     "lufs": -12.55,
+     "seconds": 25.6,
+     "start": 320.0
+    },
+    {
+     "label": "Intro",
+     "lufs": -12.78,
+     "seconds": 12.8,
+     "start": 345.6
+    }
+   ],
+   "side_mid": -8.77,
+   "side_mid_below_120": -28.27,
+   "slope_db_oct": -3.77,
+   "style": "hard_techno",
+   "sub_40_60": -9.24,
+   "target_gap": -2.57,
+   "target_lufs": -6.0,
+   "true_peak": -1.19,
+   "true_peak_bs1770": -0.89
+  },
+  "house": {
+   "bands": {
+    "air": -16.3,
+    "high_mid": -17.91,
+    "low": -3.05,
+    "low_mid": -9.79,
+    "mid": -11.6,
+    "sub": -5.44
+   },
+   "bass": {
+    "attack": 85.55,
+    "attack_spread": 48.26,
+    "harmonics": -3.57,
+    "kick_dip": -1.41,
+    "kicks": 67,
+    "lufs": -17.2,
+    "notes": 108,
+    "phone_200": -5.99,
+    "phone_300": -10.39,
+    "place_300": -9.45
+   },
+   "clipped": 0,
+   "corr": 0.97,
+   "corr_below_120": 1.0,
+   "dc": 3e-06,
+   "drive_db": 7.496,
+   "drop_minus_break": 9.08,
+   "drop_minus_groove": 2.23,
+   "drop_minus_montee_end": [
+    3.39,
+    3.53
+   ],
+   "drop_start_lufs": [
+    -8.46,
+    -8.44
+   ],
+   "drop_variation": 1.0,
+   "end_dbfs": -44.3,
+   "exciter_lu": 0.1,
+   "export_lufs": -10.143,
+   "export_true_peak": -1.182,
+   "file": "house.wav",
+   "infra_below_30": -24.62,
+   "intro_lufs": -10.35,
+   "intro_minus_main": -1.8,
+   "labels": {
+    "Break": -17.62,
+    "Drop": -8.54,
+    "Groove": -10.78,
+    "Intro": -10.36,
+    "Montée": -12.35
+   },
+   "lead_centroid_hz": 1045,
+   "lead_centroid_var": 31.18,
+   "loss_db": 2.96,
+   "loud_lufs": -8.44,
+   "lra": 6.44,
+   "lufs_i": -10.14,
+   "m4a_lufs": -10.78,
+   "m4a_true_peak": -1.64,
+   "m4a_true_peak_first": -1.64,
+   "main": "Drop",
+   "main_crest": 8.74,
+   "main_lufs": -8.54,
+   "main_true_peak": -1.18,
+   "mode": 1,
+   "mono_loss_lu": -0.11,
+   "montee_end_lufs": [
+    -11.85,
+    -11.97
+   ],
+   "montee_rise": [
+    4.31,
+    4.97
+   ],
+   "non_finite": 0,
+   "plr": 8.96,
+   "pre_drop_minus_break": 11.94,
+   "pre_drop_minus_groove": 4.96,
+   "pre_drop_minus_montee_end": [
+    6.52,
+    6.72
+   ],
+   "pre_intro_minus_main": -4.53,
+   "pre_lra": 9.29,
+   "pre_lufs_i": -15.79,
+   "pre_main_lufs": -13.15,
+   "pre_montee_rise": [
+    4.31,
+    4.97
+   ],
+   "render_loud_lufs": -8.444,
+   "sample_peak": -1.18,
+   "seconds": 188.85,
+   "sections": [
+    {
+     "label": "Intro",
+     "lufs": -10.3,
+     "seconds": 15.74,
+     "start": 0.0
+    },
+    {
+     "label": "Intro",
+     "lufs": -10.22,
+     "seconds": 13.77,
+     "start": 15.74
+    },
+    {
+     "label": "Intro",
+     "lufs": -12.59,
+     "seconds": 1.97,
+     "start": 29.51
+    },
+    {
+     "label": "Groove",
+     "lufs": -10.78,
+     "seconds": 15.74,
+     "start": 31.48
+    },
+    {
+     "label": "Montée",
+     "lufs": -10.97,
+     "seconds": 7.87,
+     "start": 47.21
+    },
+    {
+     "label": "Montée",
+     "lufs": -13.22,
+     "seconds": 7.87,
+     "start": 55.08
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.35,
+     "seconds": 13.77,
+     "start": 62.95
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.13,
+     "seconds": 1.97,
+     "start": 76.72
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.65,
+     "seconds": 13.77,
+     "start": 78.69
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.81,
+     "seconds": 1.97,
+     "start": 92.46
+    },
+    {
+     "label": "Break",
+     "lufs": -17.62,
+     "seconds": 15.74,
+     "start": 94.43
+    },
+    {
+     "label": "Montée",
+     "lufs": -11.88,
+     "seconds": 7.87,
+     "start": 110.16
+    },
+    {
+     "label": "Montée",
+     "lufs": -13.48,
+     "seconds": 7.87,
+     "start": 118.03
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.49,
+     "seconds": 13.77,
+     "start": 125.9
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.99,
+     "seconds": 1.97,
+     "start": 139.67
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.6,
+     "seconds": 13.77,
+     "start": 141.64
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.67,
+     "seconds": 1.97,
+     "start": 155.41
+    },
+    {
+     "label": "Intro",
+     "lufs": -10.31,
+     "seconds": 15.74,
+     "start": 157.38
+    },
+    {
+     "label": "Intro",
+     "lufs": -10.43,
+     "seconds": 15.74,
+     "start": 173.11
+    }
+   ],
+   "side_mid": -18.17,
+   "side_mid_below_120": -46.33,
+   "slope_db_oct": -5.42,
+   "style": "house",
+   "sub_40_60": -5.58,
+   "target_gap": -0.44,
+   "target_lufs": -8.0,
+   "true_peak": -1.18,
+   "true_peak_bs1770": -1.05
+  },
+  "industrial_techno": {
+   "bands": {
+    "air": -17.6,
+    "high_mid": -16.95,
+    "low": -3.31,
+    "low_mid": -10.48,
+    "mid": -7.98,
+    "sub": -6.08
+   },
+   "bass": {
+    "attack": null,
+    "attack_spread": null,
+    "harmonics": -15.65,
+    "kick_dip": 4.56,
+    "kicks": 2,
+    "lufs": -34.73,
+    "notes": 0,
+    "phone_200": -11.53,
+    "phone_300": -15.4,
+    "place_300": -34.61
+   },
+   "clipped": 0,
+   "corr": 0.952,
+   "corr_below_120": 0.997,
+   "dc": 0.0,
+   "drive_db": 4.401,
+   "drop_minus_break": 7.48,
+   "drop_minus_groove": 2.34,
+   "drop_minus_montee_end": [
+    3.14,
+    3.1
+   ],
+   "drop_start_lufs": [
+    -7.62,
+    -7.63
+   ],
+   "drop_variation": 0.719,
+   "end_dbfs": -36.84,
+   "exciter_lu": 0.0,
+   "export_lufs": -8.864,
+   "export_true_peak": -1.193,
+   "file": "industrial_techno.wav",
+   "infra_below_30": -29.61,
+   "intro_lufs": -8.58,
+   "intro_minus_main": -0.89,
+   "labels": {
+    "Break": -15.17,
+    "Drop": -7.69,
+    "Groove": -10.02,
+    "Intro": -8.53,
+    "Montée": -11.2
+   },
+   "lead_centroid_hz": 498,
+   "lead_centroid_var": 14.53,
+   "loss_db": 0.27,
+   "loud_lufs": -7.56,
+   "lra": 4.79,
+   "lufs_i": -8.86,
+   "m4a_lufs": -8.42,
+   "m4a_true_peak": -1.35,
+   "m4a_true_peak_first": -1.35,
+   "main": "Drop",
+   "main_crest": 7.97,
+   "main_lufs": -7.69,
+   "main_true_peak": -1.19,
+   "mode": 1,
+   "mono_loss_lu": -0.15,
+   "montee_end_lufs": [
+    -10.75,
+    -10.73
+   ],
+   "montee_rise": [
+    2.3,
+    2.22
+   ],
+   "non_finite": 0,
+   "plr": 7.67,
+   "pre_drop_minus_break": 7.75,
+   "pre_drop_minus_groove": 2.61,
+   "pre_drop_minus_montee_end": [
+    3.68,
+    3.69
+   ],
+   "pre_intro_minus_main": -1.15,
+   "pre_lra": 5.03,
+   "pre_lufs_i": -13.12,
+   "pre_main_lufs": -11.81,
+   "pre_montee_rise": [
+    2.3,
+    2.22
+   ],
+   "render_loud_lufs": -7.559,
+   "sample_peak": -1.19,
+   "seconds": 310.59,
+   "sections": [
+    {
+     "label": "Intro",
+     "lufs": -9.14,
+     "seconds": 14.12,
+     "start": 0.0
+    },
+    {
+     "label": "Intro",
+     "lufs": -8.44,
+     "seconds": 14.12,
+     "start": 14.12
+    },
+    {
+     "label": "Intro",
+     "lufs": -8.37,
+     "seconds": 14.12,
+     "start": 28.24
+    },
+    {
+     "label": "Intro",
+     "lufs": -8.32,
+     "seconds": 12.35,
+     "start": 42.35
+    },
+    {
+     "label": "Intro",
+     "lufs": -9.66,
+     "seconds": 1.76,
+     "start": 54.71
+    },
+    {
+     "label": "Groove",
+     "lufs": -10.13,
+     "seconds": 12.35,
+     "start": 56.47
+    },
+    {
+     "label": "Groove",
+     "lufs": -11.13,
+     "seconds": 1.76,
+     "start": 68.82
+    },
+    {
+     "label": "Groove",
+     "lufs": -9.9,
+     "seconds": 12.35,
+     "start": 70.59
+    },
+    {
+     "label": "Groove",
+     "lufs": -10.7,
+     "seconds": 1.76,
+     "start": 82.94
+    },
+    {
+     "label": "Groove",
+     "lufs": -9.93,
+     "seconds": 14.12,
+     "start": 84.71
+    },
+    {
+     "label": "Montée",
+     "lufs": -10.47,
+     "seconds": 7.06,
+     "start": 98.82
+    },
+    {
+     "label": "Montée",
+     "lufs": -11.69,
+     "seconds": 7.06,
+     "start": 105.88
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.42,
+     "seconds": 1.76,
+     "start": 112.94
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.56,
+     "seconds": 10.59,
+     "start": 114.71
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.2,
+     "seconds": 1.76,
+     "start": 125.29
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.59,
+     "seconds": 12.35,
+     "start": 127.06
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.47,
+     "seconds": 1.76,
+     "start": 139.41
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.53,
+     "seconds": 1.76,
+     "start": 141.18
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.99,
+     "seconds": 10.59,
+     "start": 142.94
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.16,
+     "seconds": 1.76,
+     "start": 153.53
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.6,
+     "seconds": 12.35,
+     "start": 155.29
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.36,
+     "seconds": 1.76,
+     "start": 167.65
+    },
+    {
+     "label": "Break",
+     "lufs": -13.57,
+     "seconds": 1.76,
+     "start": 169.41
+    },
+    {
+     "label": "Break",
+     "lufs": -15.27,
+     "seconds": 10.59,
+     "start": 171.18
+    },
+    {
+     "label": "Break",
+     "lufs": -14.06,
+     "seconds": 1.76,
+     "start": 181.76
+    },
+    {
+     "label": "Break",
+     "lufs": -15.47,
+     "seconds": 14.12,
+     "start": 183.53
+    },
+    {
+     "label": "Montée",
+     "lufs": -10.98,
+     "seconds": 7.06,
+     "start": 197.65
+    },
+    {
+     "label": "Montée",
+     "lufs": -11.65,
+     "seconds": 7.06,
+     "start": 204.71
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.51,
+     "seconds": 1.76,
+     "start": 211.76
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.57,
+     "seconds": 10.59,
+     "start": 213.53
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.22,
+     "seconds": 1.76,
+     "start": 224.12
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.55,
+     "seconds": 12.35,
+     "start": 225.88
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.45,
+     "seconds": 1.76,
+     "start": 238.24
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.48,
+     "seconds": 1.76,
+     "start": 240.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.95,
+     "seconds": 10.59,
+     "start": 241.76
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.23,
+     "seconds": 1.76,
+     "start": 252.35
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.56,
+     "seconds": 12.35,
+     "start": 254.12
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.4,
+     "seconds": 1.76,
+     "start": 266.47
+    },
+    {
+     "label": "Intro",
+     "lufs": -8.36,
+     "seconds": 14.12,
+     "start": 268.24
+    },
+    {
+     "label": "Intro",
+     "lufs": -8.37,
+     "seconds": 14.12,
+     "start": 282.35
+    },
+    {
+     "label": "Intro",
+     "lufs": -8.71,
+     "seconds": 14.12,
+     "start": 296.47
+    }
+   ],
+   "side_mid": -16.01,
+   "side_mid_below_120": -28.66,
+   "slope_db_oct": -5.19,
+   "style": "industrial_techno",
+   "sub_40_60": -6.11,
+   "target_gap": -0.06,
+   "target_lufs": -7.5,
+   "true_peak": -1.19,
+   "true_peak_bs1770": -1.05
+  },
+  "jersey_club": {
+   "bands": {
+    "air": -18.96,
+    "high_mid": -18.7,
+    "low": -5.15,
+    "low_mid": -10.87,
+    "mid": -8.38,
+    "sub": -3.59
+   },
+   "bass": {
+    "attack": 3.83,
+    "attack_spread": 0.7,
+    "harmonics": -8.45,
+    "kick_dip": 2.21,
+    "kicks": 209,
+    "lufs": -17.53,
+    "notes": 36,
+    "phone_200": -6.57,
+    "phone_300": -10.58,
+    "place_300": -11.09
+   },
+   "clipped": 0,
+   "corr": 0.963,
+   "corr_below_120": 1.0,
+   "dc": 0.0,
+   "drive_db": 6.408,
+   "drop_minus_break": null,
+   "drop_minus_groove": 2.11,
+   "drop_minus_montee_end": [],
+   "drop_start_lufs": [],
+   "drop_variation": 0.5,
+   "end_dbfs": -40.85,
+   "exciter_lu": 0.02,
+   "export_lufs": -9.989,
+   "export_true_peak": -1.183,
+   "file": "jersey_club.wav",
+   "infra_below_30": -24.57,
+   "intro_lufs": -13.88,
+   "intro_minus_main": -5.25,
+   "labels": {
+    "Couplet": -10.74,
+    "Intro": -14.22,
+    "Pont": -18.1,
+    "Refrain": -8.63
+   },
+   "lead_centroid_hz": 662,
+   "lead_centroid_var": 11.13,
+   "loss_db": 2.2,
+   "loud_lufs": -8.53,
+   "lra": 7.56,
+   "lufs_i": -9.98,
+   "m4a_lufs": -10.45,
+   "m4a_true_peak": -1.64,
+   "m4a_true_peak_first": -1.64,
+   "main": "Refrain",
+   "main_crest": 8.3,
+   "main_lufs": -8.63,
+   "main_true_peak": -1.18,
+   "mode": 1,
+   "mono_loss_lu": -0.13,
+   "montee_end_lufs": [],
+   "montee_rise": [],
+   "non_finite": 0,
+   "plr": 8.81,
+   "pre_drop_minus_break": null,
+   "pre_drop_minus_groove": 4.03,
+   "pre_drop_minus_montee_end": [],
+   "pre_intro_minus_main": -7.37,
+   "pre_lra": 9.74,
+   "pre_lufs_i": -14.75,
+   "pre_main_lufs": -12.92,
+   "pre_montee_rise": [],
+   "render_loud_lufs": -8.534,
+   "sample_peak": -1.19,
+   "seconds": 178.29,
+   "sections": [
+    {
+     "label": "Intro",
+     "lufs": -13.88,
+     "seconds": 13.71,
+     "start": 0.0
+    },
+    {
+     "label": "Refrain",
+     "lufs": -7.82,
+     "seconds": 1.71,
+     "start": 13.71
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.71,
+     "seconds": 10.29,
+     "start": 15.43
+    },
+    {
+     "label": "Refrain",
+     "lufs": -9.38,
+     "seconds": 1.71,
+     "start": 25.71
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.63,
+     "seconds": 12.0,
+     "start": 27.43
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.76,
+     "seconds": 1.71,
+     "start": 39.43
+    },
+    {
+     "label": "Couplet",
+     "lufs": -10.7,
+     "seconds": 13.71,
+     "start": 41.14
+    },
+    {
+     "label": "Couplet",
+     "lufs": -10.53,
+     "seconds": 6.86,
+     "start": 54.86
+    },
+    {
+     "label": "Couplet",
+     "lufs": -11.09,
+     "seconds": 6.86,
+     "start": 61.71
+    },
+    {
+     "label": "Refrain",
+     "lufs": -7.62,
+     "seconds": 1.71,
+     "start": 68.57
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.63,
+     "seconds": 10.29,
+     "start": 70.29
+    },
+    {
+     "label": "Refrain",
+     "lufs": -9.01,
+     "seconds": 1.71,
+     "start": 80.57
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.61,
+     "seconds": 12.0,
+     "start": 82.29
+    },
+    {
+     "label": "Refrain",
+     "lufs": -9.09,
+     "seconds": 1.71,
+     "start": 94.29
+    },
+    {
+     "label": "Couplet",
+     "lufs": -10.66,
+     "seconds": 12.0,
+     "start": 96.0
+    },
+    {
+     "label": "Couplet",
+     "lufs": -11.86,
+     "seconds": 1.71,
+     "start": 108.0
+    },
+    {
+     "label": "Couplet",
+     "lufs": -10.63,
+     "seconds": 12.0,
+     "start": 109.71
+    },
+    {
+     "label": "Couplet",
+     "lufs": -11.0,
+     "seconds": 1.71,
+     "start": 121.71
+    },
+    {
+     "label": "Pont",
+     "lufs": -15.54,
+     "seconds": 1.71,
+     "start": 123.43
+    },
+    {
+     "label": "Pont",
+     "lufs": -18.55,
+     "seconds": 12.0,
+     "start": 125.14
+    },
+    {
+     "label": "Refrain",
+     "lufs": -7.79,
+     "seconds": 1.71,
+     "start": 137.14
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.74,
+     "seconds": 10.29,
+     "start": 138.86
+    },
+    {
+     "label": "Refrain",
+     "lufs": -9.42,
+     "seconds": 1.71,
+     "start": 149.14
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.65,
+     "seconds": 12.0,
+     "start": 150.86
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.86,
+     "seconds": 1.71,
+     "start": 162.86
+    },
+    {
+     "label": "Intro",
+     "lufs": -14.62,
+     "seconds": 13.71,
+     "start": 164.57
+    }
+   ],
+   "side_mid": -17.18,
+   "side_mid_below_120": -46.86,
+   "slope_db_oct": -5.3,
+   "style": "jersey_club",
+   "sub_40_60": -4.66,
+   "target_gap": -0.03,
+   "target_lufs": -8.5,
+   "true_peak": -1.18,
+   "true_peak_bs1770": -1.01
+  },
+  "jump_up": {
+   "bands": {
+    "air": -12.72,
+    "high_mid": -11.07,
+    "low": -7.21,
+    "low_mid": -7.39,
+    "mid": -6.07,
+    "sub": -6.17
+   },
+   "clipped": 0,
+   "corr": 0.793,
+   "corr_below_120": 0.999,
+   "dc": 1.7e-05,
+   "drive_db": 8.369,
+   "drop_minus_break": 5.8,
+   "drop_minus_groove": 5.05,
+   "drop_minus_montee_end": [
+    1.57,
+    2.13,
+    2.07
+   ],
+   "drop_start_lufs": [
+    -9.28,
+    -8.68,
+    -8.75
+   ],
+   "drop_variation": 0.5,
+   "end_dbfs": -32.41,
+   "export_lufs": -10.717,
+   "export_true_peak": -1.179,
+   "file": "jump_up.wav",
+   "infra_below_30": -23.62,
+   "intro_lufs": -13.63,
+   "intro_minus_main": -4.77,
+   "labels": {
+    "Break": -14.65,
+    "Drop": -8.85,
+    "Intro": -13.57,
+    "Montée": -13.9
+   },
+   "lead_centroid_hz": 1076,
+   "lead_centroid_var": 29.09,
+   "loss_db": 3.01,
+   "loud_lufs": -8.72,
+   "lra": 6.47,
+   "lufs_i": -10.72,
+   "m4a_lufs": -11.43,
+   "m4a_true_peak": -1.36,
+   "m4a_true_peak_first": -1.36,
+   "main": "Drop",
+   "main_crest": 10.24,
+   "main_lufs": -8.85,
+   "main_true_peak": -1.19,
+   "mode": 1,
+   "mono_loss_lu": -0.53,
+   "montee_end_lufs": [
+    -10.85,
+    -10.81,
+    -10.82
+   ],
+   "montee_rise": [],
+   "non_finite": 0,
+   "plr": 9.54,
+   "pre_drop_minus_break": 8.7,
+   "pre_drop_minus_groove": 7.97,
+   "pre_drop_minus_montee_end": [
+    4.74,
+    5.25,
+    5.34
+   ],
+   "pre_intro_minus_main": -4.02,
+   "pre_lra": 9.31,
+   "pre_lufs_i": -16.28,
+   "pre_main_lufs": -14.31,
+   "pre_montee_rise": [],
+   "render_loud_lufs": -8.717,
+   "sample_peak": -1.18,
+   "seconds": 297.93,
+   "sections": [
+    {
+     "label": "Intro",
+     "lufs": -13.94,
+     "seconds": 11.03,
+     "start": 0.0
+    },
+    {
+     "label": "Intro",
+     "lufs": -13.16,
+     "seconds": 11.03,
+     "start": 11.03
+    },
+    {
+     "label": "Intro",
+     "lufs": -13.77,
+     "seconds": 22.07,
+     "start": 22.07
+    },
+    {
+     "label": "Montée",
+     "lufs": -17.56,
+     "seconds": 5.52,
+     "start": 44.14
+    },
+    {
+     "label": "Montée",
+     "lufs": -11.97,
+     "seconds": 5.52,
+     "start": 49.66
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.93,
+     "seconds": 1.38,
+     "start": 55.17
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.55,
+     "seconds": 8.28,
+     "start": 56.55
+    },
+    {
+     "label": "Drop",
+     "lufs": -10.4,
+     "seconds": 1.38,
+     "start": 64.83
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.03,
+     "seconds": 9.66,
+     "start": 66.21
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.67,
+     "seconds": 1.38,
+     "start": 75.86
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.76,
+     "seconds": 1.38,
+     "start": 77.24
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.83,
+     "seconds": 8.28,
+     "start": 78.62
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.95,
+     "seconds": 1.38,
+     "start": 86.9
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.75,
+     "seconds": 9.66,
+     "start": 88.28
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.46,
+     "seconds": 1.38,
+     "start": 97.93
+    },
+    {
+     "label": "Break",
+     "lufs": -12.25,
+     "seconds": 1.38,
+     "start": 99.31
+    },
+    {
+     "label": "Break",
+     "lufs": -14.96,
+     "seconds": 8.28,
+     "start": 100.69
+    },
+    {
+     "label": "Break",
+     "lufs": -14.14,
+     "seconds": 1.38,
+     "start": 108.97
+    },
+    {
+     "label": "Break",
+     "lufs": -14.88,
+     "seconds": 11.03,
+     "start": 110.34
+    },
+    {
+     "label": "Montée",
+     "lufs": -17.1,
+     "seconds": 5.52,
+     "start": 121.38
+    },
+    {
+     "label": "Montée",
+     "lufs": -11.87,
+     "seconds": 5.52,
+     "start": 126.9
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.83,
+     "seconds": 1.38,
+     "start": 132.41
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.87,
+     "seconds": 8.28,
+     "start": 133.79
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.04,
+     "seconds": 1.38,
+     "start": 142.07
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.84,
+     "seconds": 9.66,
+     "start": 143.45
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.41,
+     "seconds": 1.38,
+     "start": 153.1
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.43,
+     "seconds": 1.38,
+     "start": 154.48
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.88,
+     "seconds": 8.28,
+     "start": 155.86
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.14,
+     "seconds": 1.38,
+     "start": 164.14
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.76,
+     "seconds": 9.66,
+     "start": 165.52
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.35,
+     "seconds": 1.38,
+     "start": 175.17
+    },
+    {
+     "label": "Break",
+     "lufs": -12.45,
+     "seconds": 1.38,
+     "start": 176.55
+    },
+    {
+     "label": "Break",
+     "lufs": -14.97,
+     "seconds": 8.28,
+     "start": 177.93
+    },
+    {
+     "label": "Break",
+     "lufs": -14.02,
+     "seconds": 1.38,
+     "start": 186.21
+    },
+    {
+     "label": "Break",
+     "lufs": -14.88,
+     "seconds": 11.03,
+     "start": 187.59
+    },
+    {
+     "label": "Montée",
+     "lufs": -17.08,
+     "seconds": 5.52,
+     "start": 198.62
+    },
+    {
+     "label": "Montée",
+     "lufs": -11.9,
+     "seconds": 5.52,
+     "start": 204.14
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.02,
+     "seconds": 1.38,
+     "start": 209.66
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.89,
+     "seconds": 8.28,
+     "start": 211.03
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.02,
+     "seconds": 1.38,
+     "start": 219.31
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.75,
+     "seconds": 9.66,
+     "start": 220.69
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.28,
+     "seconds": 1.38,
+     "start": 230.34
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.61,
+     "seconds": 1.38,
+     "start": 231.72
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.83,
+     "seconds": 8.28,
+     "start": 233.1
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.21,
+     "seconds": 1.38,
+     "start": 241.38
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.76,
+     "seconds": 9.66,
+     "start": 242.76
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.28,
+     "seconds": 1.38,
+     "start": 252.41
+    },
+    {
+     "label": "Intro",
+     "lufs": -13.81,
+     "seconds": 22.07,
+     "start": 253.79
+    },
+    {
+     "label": "Intro",
+     "lufs": -13.13,
+     "seconds": 11.03,
+     "start": 275.86
+    },
+    {
+     "label": "Intro",
+     "lufs": -13.65,
+     "seconds": 11.03,
+     "start": 286.9
+    }
+   ],
+   "side_mid": -9.37,
+   "side_mid_below_120": -31.79,
+   "slope_db_oct": -3.64,
+   "style": "jump_up",
+   "sub_40_60": -6.42,
+   "target_gap": -1.22,
+   "target_lufs": -7.5,
+   "true_peak": -1.18,
+   "true_peak_bs1770": -0.97
+  },
+  "jungle": {
+   "bands": {
+    "air": -14.7,
+    "high_mid": -12.12,
+    "low": -3.4,
+    "low_mid": -9.42,
+    "mid": -10.77,
+    "sub": -6.07
+   },
+   "clipped": 0,
+   "corr": 0.891,
+   "corr_below_120": 1.0,
+   "dc": 1.1e-05,
+   "drive_db": 7.437,
+   "drop_minus_break": 5.39,
+   "drop_minus_groove": 2.04,
+   "drop_minus_montee_end": [
+    3.53,
+    4.13,
+    3.38
+   ],
+   "drop_start_lufs": [
+    -8.13,
+    -8.29,
+    -8.24
+   ],
+   "drop_variation": 0.5,
+   "end_dbfs": -37.67,
+   "export_lufs": -9.956,
+   "export_true_peak": -1.182,
+   "file": "jungle.wav",
+   "infra_below_30": -23.84,
+   "intro_lufs": -12.05,
+   "intro_minus_main": -3.78,
+   "labels": {
+    "Break": -13.65,
+    "Drop": -8.27,
+    "Groove": -10.31,
+    "Intro": -12.07,
+    "Montée": -12.57
+   },
+   "lead_centroid_hz": 887,
+   "lead_centroid_var": 13.2,
+   "loss_db": 2.96,
+   "loud_lufs": -8.11,
+   "lra": 5.39,
+   "lufs_i": -9.96,
+   "m4a_lufs": -10.64,
+   "m4a_true_peak": -1.29,
+   "m4a_true_peak_first": -1.29,
+   "main": "Drop",
+   "main_crest": 8.96,
+   "main_lufs": -8.27,
+   "main_true_peak": -1.18,
+   "mode": 1,
+   "mono_loss_lu": -0.31,
+   "montee_end_lufs": [
+    -11.66,
+    -12.43,
+    -11.62
+   ],
+   "montee_rise": [],
+   "non_finite": 0,
+   "plr": 8.78,
+   "pre_drop_minus_break": 8.24,
+   "pre_drop_minus_groove": 4.59,
+   "pre_drop_minus_montee_end": [
+    6.28,
+    7.08,
+    6.48
+   ],
+   "pre_intro_minus_main": -4.4,
+   "pre_lra": 8.31,
+   "pre_lufs_i": -15.0,
+   "pre_main_lufs": -12.83,
+   "pre_montee_rise": [],
+   "render_loud_lufs": -8.109,
+   "sample_peak": -1.18,
+   "seconds": 325.82,
+   "sections": [
+    {
+     "label": "Intro",
+     "lufs": -12.12,
+     "seconds": 23.27,
+     "start": 0.0
+    },
+    {
+     "label": "Intro",
+     "lufs": -12.1,
+     "seconds": 21.82,
+     "start": 23.27
+    },
+    {
+     "label": "Intro",
+     "lufs": -11.56,
+     "seconds": 1.45,
+     "start": 45.09
+    },
+    {
+     "label": "Groove",
+     "lufs": -11.77,
+     "seconds": 10.18,
+     "start": 46.55
+    },
+    {
+     "label": "Groove",
+     "lufs": -11.78,
+     "seconds": 1.45,
+     "start": 56.73
+    },
+    {
+     "label": "Groove",
+     "lufs": -9.82,
+     "seconds": 10.18,
+     "start": 58.18
+    },
+    {
+     "label": "Groove",
+     "lufs": -11.19,
+     "seconds": 1.45,
+     "start": 68.36
+    },
+    {
+     "label": "Groove",
+     "lufs": -9.52,
+     "seconds": 11.64,
+     "start": 69.82
+    },
+    {
+     "label": "Montée",
+     "lufs": -12.38,
+     "seconds": 5.82,
+     "start": 81.45
+    },
+    {
+     "label": "Montée",
+     "lufs": -12.57,
+     "seconds": 5.82,
+     "start": 87.27
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.19,
+     "seconds": 10.18,
+     "start": 93.09
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.84,
+     "seconds": 1.45,
+     "start": 103.27
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.22,
+     "seconds": 10.18,
+     "start": 104.73
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.2,
+     "seconds": 1.45,
+     "start": 114.91
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.25,
+     "seconds": 10.18,
+     "start": 116.36
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.06,
+     "seconds": 1.45,
+     "start": 126.55
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.25,
+     "seconds": 10.18,
+     "start": 128.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.02,
+     "seconds": 1.45,
+     "start": 138.18
+    },
+    {
+     "label": "Break",
+     "lufs": -13.18,
+     "seconds": 10.18,
+     "start": 139.64
+    },
+    {
+     "label": "Break",
+     "lufs": -13.43,
+     "seconds": 1.45,
+     "start": 149.82
+    },
+    {
+     "label": "Break",
+     "lufs": -14.06,
+     "seconds": 11.64,
+     "start": 151.27
+    },
+    {
+     "label": "Montée",
+     "lufs": -12.4,
+     "seconds": 5.82,
+     "start": 162.91
+    },
+    {
+     "label": "Montée",
+     "lufs": -12.92,
+     "seconds": 5.82,
+     "start": 168.73
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.29,
+     "seconds": 10.18,
+     "start": 174.55
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.88,
+     "seconds": 1.45,
+     "start": 184.73
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.06,
+     "seconds": 10.18,
+     "start": 186.18
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.9,
+     "seconds": 1.45,
+     "start": 196.36
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.12,
+     "seconds": 10.18,
+     "start": 197.82
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.96,
+     "seconds": 1.45,
+     "start": 208.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.17,
+     "seconds": 10.18,
+     "start": 209.45
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.02,
+     "seconds": 1.45,
+     "start": 219.64
+    },
+    {
+     "label": "Break",
+     "lufs": -13.69,
+     "seconds": 11.64,
+     "start": 221.09
+    },
+    {
+     "label": "Montée",
+     "lufs": -12.2,
+     "seconds": 5.82,
+     "start": 232.73
+    },
+    {
+     "label": "Montée",
+     "lufs": -12.55,
+     "seconds": 5.82,
+     "start": 238.55
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.19,
+     "seconds": 10.18,
+     "start": 244.36
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.7,
+     "seconds": 1.45,
+     "start": 254.55
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.28,
+     "seconds": 10.18,
+     "start": 256.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.62,
+     "seconds": 1.45,
+     "start": 266.18
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.22,
+     "seconds": 10.18,
+     "start": 267.64
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.59,
+     "seconds": 1.45,
+     "start": 277.82
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.09,
+     "seconds": 10.18,
+     "start": 279.27
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.22,
+     "seconds": 1.45,
+     "start": 289.45
+    },
+    {
+     "label": "Intro",
+     "lufs": -12.17,
+     "seconds": 23.27,
+     "start": 290.91
+    },
+    {
+     "label": "Intro",
+     "lufs": -12.1,
+     "seconds": 11.64,
+     "start": 314.18
+    }
+   ],
+   "side_mid": -12.38,
+   "side_mid_below_120": -38.52,
+   "slope_db_oct": -4.41,
+   "style": "jungle",
+   "sub_40_60": -6.73,
+   "target_gap": -0.61,
+   "target_lufs": -7.5,
+   "true_peak": -1.17,
+   "true_peak_bs1770": -0.99
+  },
+  "liquid_dnb": {
+   "bands": {
+    "air": -14.55,
+    "high_mid": -13.96,
+    "low": -3.78,
+    "low_mid": -10.52,
+    "mid": -9.48,
+    "sub": -5.22
+   },
+   "clipped": 0,
+   "corr": 0.939,
+   "corr_below_120": 1.0,
+   "dc": 1e-06,
+   "drive_db": 7.163,
+   "drop_minus_break": 4.5,
+   "drop_minus_groove": 5.36,
+   "drop_minus_montee_end": [
+    2.27,
+    2.28,
+    2.31
+   ],
+   "drop_start_lufs": [
+    -8.38,
+    -8.3,
+    -8.3
+   ],
+   "drop_variation": 0.531,
+   "end_dbfs": -32.64,
+   "export_lufs": -10.061,
+   "export_true_peak": -1.185,
+   "file": "liquid_dnb.wav",
+   "infra_below_30": -26.98,
+   "intro_lufs": -11.59,
+   "intro_minus_main": -3.19,
+   "labels": {
+    "Break": -12.9,
+    "Drop": -8.4,
+    "Intro": -11.64,
+    "Montée": -13.76
+   },
+   "lead_centroid_hz": 1716,
+   "lead_centroid_var": 26.32,
+   "loss_db": 2.99,
+   "loud_lufs": -8.24,
+   "lra": 5.21,
+   "lufs_i": -10.06,
+   "m4a_lufs": -10.82,
+   "m4a_true_peak": -1.24,
+   "m4a_true_peak_first": -1.24,
+   "main": "Drop",
+   "main_crest": 8.95,
+   "main_lufs": -8.4,
+   "main_true_peak": -1.18,
+   "mode": 1,
+   "mono_loss_lu": -0.19,
+   "montee_end_lufs": [
+    -10.65,
+    -10.58,
+    -10.61
+   ],
+   "montee_rise": [],
+   "non_finite": 0,
+   "plr": 8.88,
+   "pre_drop_minus_break": 7.46,
+   "pre_drop_minus_groove": 8.32,
+   "pre_drop_minus_montee_end": [
+    5.3,
+    5.31,
+    5.25
+   ],
+   "pre_intro_minus_main": -5.55,
+   "pre_lra": 8.16,
+   "pre_lufs_i": -14.77,
+   "pre_main_lufs": -12.6,
+   "pre_montee_rise": [],
+   "render_loud_lufs": -8.237,
+   "sample_peak": -1.19,
+   "seconds": 297.93,
+   "sections": [
+    {
+     "label": "Intro",
+     "lufs": -12.03,
+     "seconds": 11.03,
+     "start": 0.0
+    },
+    {
+     "label": "Intro",
+     "lufs": -12.33,
+     "seconds": 11.03,
+     "start": 11.03
+    },
+    {
+     "label": "Intro",
+     "lufs": -12.74,
+     "seconds": 11.03,
+     "start": 22.07
+    },
+    {
+     "label": "Intro",
+     "lufs": -10.16,
+     "seconds": 11.03,
+     "start": 33.1
+    },
+    {
+     "label": "Montée",
+     "lufs": -17.17,
+     "seconds": 5.52,
+     "start": 44.14
+    },
+    {
+     "label": "Montée",
+     "lufs": -11.78,
+     "seconds": 5.52,
+     "start": 49.66
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.44,
+     "seconds": 9.66,
+     "start": 55.17
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.81,
+     "seconds": 1.38,
+     "start": 64.83
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.51,
+     "seconds": 9.66,
+     "start": 66.21
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.51,
+     "seconds": 1.38,
+     "start": 75.86
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.49,
+     "seconds": 9.66,
+     "start": 77.24
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.2,
+     "seconds": 1.38,
+     "start": 86.9
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.53,
+     "seconds": 9.66,
+     "start": 88.28
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.51,
+     "seconds": 1.38,
+     "start": 97.93
+    },
+    {
+     "label": "Break",
+     "lufs": -12.89,
+     "seconds": 9.66,
+     "start": 99.31
+    },
+    {
+     "label": "Break",
+     "lufs": -12.67,
+     "seconds": 1.38,
+     "start": 108.97
+    },
+    {
+     "label": "Break",
+     "lufs": -13.0,
+     "seconds": 11.03,
+     "start": 110.34
+    },
+    {
+     "label": "Montée",
+     "lufs": -17.08,
+     "seconds": 5.52,
+     "start": 121.38
+    },
+    {
+     "label": "Montée",
+     "lufs": -11.71,
+     "seconds": 5.52,
+     "start": 126.9
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.46,
+     "seconds": 9.66,
+     "start": 132.41
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.29,
+     "seconds": 1.38,
+     "start": 142.07
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.49,
+     "seconds": 9.66,
+     "start": 143.45
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.25,
+     "seconds": 1.38,
+     "start": 153.1
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.28,
+     "seconds": 9.66,
+     "start": 154.48
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.39,
+     "seconds": 1.38,
+     "start": 164.14
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.43,
+     "seconds": 9.66,
+     "start": 165.52
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.78,
+     "seconds": 1.38,
+     "start": 175.17
+    },
+    {
+     "label": "Break",
+     "lufs": -12.92,
+     "seconds": 9.66,
+     "start": 176.55
+    },
+    {
+     "label": "Break",
+     "lufs": -12.99,
+     "seconds": 1.38,
+     "start": 186.21
+    },
+    {
+     "label": "Break",
+     "lufs": -12.91,
+     "seconds": 11.03,
+     "start": 187.59
+    },
+    {
+     "label": "Montée",
+     "lufs": -17.39,
+     "seconds": 5.52,
+     "start": 198.62
+    },
+    {
+     "label": "Montée",
+     "lufs": -11.72,
+     "seconds": 5.52,
+     "start": 204.14
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.42,
+     "seconds": 9.66,
+     "start": 209.66
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.23,
+     "seconds": 1.38,
+     "start": 219.31
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.37,
+     "seconds": 9.66,
+     "start": 220.69
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.23,
+     "seconds": 1.38,
+     "start": 230.34
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.56,
+     "seconds": 9.66,
+     "start": 231.72
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.07,
+     "seconds": 1.38,
+     "start": 241.38
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.38,
+     "seconds": 9.66,
+     "start": 242.76
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.33,
+     "seconds": 1.38,
+     "start": 252.41
+    },
+    {
+     "label": "Intro",
+     "lufs": -10.23,
+     "seconds": 11.03,
+     "start": 253.79
+    },
+    {
+     "label": "Intro",
+     "lufs": -12.73,
+     "seconds": 11.03,
+     "start": 264.83
+    },
+    {
+     "label": "Intro",
+     "lufs": -12.34,
+     "seconds": 11.03,
+     "start": 275.86
+    },
+    {
+     "label": "Intro",
+     "lufs": -12.52,
+     "seconds": 11.03,
+     "start": 286.9
+    }
+   ],
+   "side_mid": -15.05,
+   "side_mid_below_120": -42.14,
+   "slope_db_oct": -4.46,
+   "style": "liquid_dnb",
+   "sub_40_60": -5.39,
+   "target_gap": -0.24,
+   "target_lufs": -8.0,
+   "true_peak": -1.18,
+   "true_peak_bs1770": -1.0
+  },
+  "lofi": {
+   "bands": {
+    "air": -22.43,
+    "high_mid": -18.68,
+    "low": -2.77,
+    "low_mid": -12.88,
+    "mid": -17.36,
+    "sub": -4.2
+   },
+   "clipped": 0,
+   "corr": 0.991,
+   "corr_below_120": 1.0,
+   "dc": 0.0,
+   "drive_db": -1.059,
+   "drop_minus_break": null,
+   "drop_minus_groove": 2.73,
+   "drop_minus_montee_end": [],
+   "drop_start_lufs": [],
+   "drop_variation": 1.0,
+   "end_dbfs": -39.94,
+   "export_lufs": -13.956,
+   "export_true_peak": -1.195,
+   "file": "lofi.wav",
+   "infra_below_30": -24.55,
+   "intro_lufs": -20.5,
+   "intro_minus_main": -8.25,
+   "labels": {
+    "Couplet": -14.97,
+    "Intro": -20.75,
+    "Refrain": -12.25
+   },
+   "lead_centroid_hz": 662,
+   "lead_centroid_var": 23.35,
+   "loss_db": 0.07,
+   "loud_lufs": -12.07,
+   "lra": 8.02,
+   "lufs_i": -13.96,
+   "m4a_lufs": -13.89,
+   "m4a_true_peak": -2.01,
+   "m4a_true_peak_first": -2.01,
+   "main": "Refrain",
+   "main_crest": 11.75,
+   "main_lufs": -12.25,
+   "main_true_peak": -1.19,
+   "mode": 1,
+   "mono_loss_lu": -0.03,
+   "montee_end_lufs": [],
+   "montee_rise": [],
+   "non_finite": 0,
+   "plr": 12.76,
+   "pre_drop_minus_break": null,
+   "pre_drop_minus_groove": 2.8,
+   "pre_drop_minus_montee_end": [],
+   "pre_intro_minus_main": -8.34,
+   "pre_lra": 8.1,
+   "pre_lufs_i": -12.84,
+   "pre_main_lufs": -11.11,
+   "pre_montee_rise": [],
+   "render_loud_lufs": -12.07,
+   "sample_peak": -1.19,
+   "seconds": 182.86,
+   "sections": [
+    {
+     "label": "Intro",
+     "lufs": -20.5,
+     "seconds": 11.43,
+     "start": 0.0
+    },
+    {
+     "label": "Refrain",
+     "lufs": -11.78,
+     "seconds": 2.86,
+     "start": 11.43
+    },
+    {
+     "label": "Refrain",
+     "lufs": -12.27,
+     "seconds": 17.14,
+     "start": 14.29
+    },
+    {
+     "label": "Refrain",
+     "lufs": -13.31,
+     "seconds": 2.86,
+     "start": 31.43
+    },
+    {
+     "label": "Couplet",
+     "lufs": -14.79,
+     "seconds": 22.86,
+     "start": 34.29
+    },
+    {
+     "label": "Couplet",
+     "lufs": -14.7,
+     "seconds": 11.43,
+     "start": 57.14
+    },
+    {
+     "label": "Couplet",
+     "lufs": -16.06,
+     "seconds": 11.43,
+     "start": 68.57
+    },
+    {
+     "label": "Refrain",
+     "lufs": -12.14,
+     "seconds": 2.86,
+     "start": 80.0
+    },
+    {
+     "label": "Refrain",
+     "lufs": -12.26,
+     "seconds": 17.14,
+     "start": 82.86
+    },
+    {
+     "label": "Refrain",
+     "lufs": -12.67,
+     "seconds": 2.86,
+     "start": 100.0
+    },
+    {
+     "label": "Couplet",
+     "lufs": -14.73,
+     "seconds": 22.86,
+     "start": 102.86
+    },
+    {
+     "label": "Couplet",
+     "lufs": -14.74,
+     "seconds": 11.43,
+     "start": 125.71
+    },
+    {
+     "label": "Couplet",
+     "lufs": -16.15,
+     "seconds": 11.43,
+     "start": 137.14
+    },
+    {
+     "label": "Refrain",
+     "lufs": -12.12,
+     "seconds": 2.86,
+     "start": 148.57
+    },
+    {
+     "label": "Refrain",
+     "lufs": -12.19,
+     "seconds": 17.14,
+     "start": 151.43
+    },
+    {
+     "label": "Refrain",
+     "lufs": -13.23,
+     "seconds": 2.86,
+     "start": 168.57
+    },
+    {
+     "label": "Intro",
+     "lufs": -21.49,
+     "seconds": 11.43,
+     "start": 171.43
+    }
+   ],
+   "side_mid": -23.51,
+   "side_mid_below_120": -48.0,
+   "slope_db_oct": -5.74,
+   "style": "lofi",
+   "sub_40_60": -4.59,
+   "target_gap": -0.07,
+   "target_lufs": -12.0,
+   "true_peak": -1.19,
+   "true_peak_bs1770": -1.19
+  },
+  "minimal": {
+   "bands": {
+    "air": -20.61,
+    "high_mid": -18.43,
+    "low": -2.79,
+    "low_mid": -9.4,
+    "mid": -11.3,
+    "sub": -5.84
+   },
+   "clipped": 0,
+   "corr": 0.898,
+   "corr_below_120": 0.999,
+   "dc": 5e-06,
+   "drive_db": 8.428,
+   "drop_minus_break": 4.64,
+   "drop_minus_groove": 2.3,
+   "drop_minus_montee_end": [
+    2.74,
+    3.03
+   ],
+   "drop_start_lufs": [
+    -8.32,
+    -8.25
+   ],
+   "drop_variation": 0.719,
+   "end_dbfs": -42.58,
+   "export_lufs": -9.772,
+   "export_true_peak": -1.186,
+   "file": "minimal.wav",
+   "infra_below_30": -26.81,
+   "intro_lufs": -10.45,
+   "intro_minus_main": -2.14,
+   "labels": {
+    "Break": -12.95,
+    "Drop": -8.32,
+    "Groove": -10.62,
+    "Intro": -10.48,
+    "Montée": -11.52
+   },
+   "lead_centroid_hz": null,
+   "lead_centroid_var": null,
+   "loss_db": 2.98,
+   "loud_lufs": -8.24,
+   "lra": 4.65,
+   "lufs_i": -9.77,
+   "m4a_lufs": -10.36,
+   "m4a_true_peak": -1.35,
+   "m4a_true_peak_first": -1.35,
+   "main": "Drop",
+   "main_crest": 8.39,
+   "main_lufs": -8.32,
+   "main_true_peak": -1.19,
+   "mode": 1,
+   "mono_loss_lu": -0.32,
+   "montee_end_lufs": [
+    -11.06,
+    -11.28
+   ],
+   "montee_rise": [
+    5.45,
+    6.2
+   ],
+   "non_finite": 0,
+   "plr": 8.59,
+   "pre_drop_minus_break": 7.53,
+   "pre_drop_minus_groove": 5.18,
+   "pre_drop_minus_montee_end": [
+    6.23,
+    6.41
+   ],
+   "pre_intro_minus_main": -4.63,
+   "pre_lra": 7.55,
+   "pre_lufs_i": -16.31,
+   "pre_main_lufs": -13.82,
+   "pre_montee_rise": [
+    5.45,
+    6.2
+   ],
+   "render_loud_lufs": -8.239,
+   "sample_peak": -1.19,
+   "seconds": 330.0,
+   "sections": [
+    {
+     "label": "Intro",
+     "lufs": -10.47,
+     "seconds": 15.0,
+     "start": 0.0
+    },
+    {
+     "label": "Intro",
+     "lufs": -10.49,
+     "seconds": 15.0,
+     "start": 15.0
+    },
+    {
+     "label": "Intro",
+     "lufs": -10.4,
+     "seconds": 28.12,
+     "start": 30.0
+    },
+    {
+     "label": "Intro",
+     "lufs": -12.2,
+     "seconds": 1.88,
+     "start": 58.12
+    },
+    {
+     "label": "Groove",
+     "lufs": -12.03,
+     "seconds": 13.12,
+     "start": 60.0
+    },
+    {
+     "label": "Groove",
+     "lufs": -14.23,
+     "seconds": 1.88,
+     "start": 73.12
+    },
+    {
+     "label": "Groove",
+     "lufs": -9.88,
+     "seconds": 13.12,
+     "start": 75.0
+    },
+    {
+     "label": "Groove",
+     "lufs": -11.7,
+     "seconds": 1.88,
+     "start": 88.12
+    },
+    {
+     "label": "Groove",
+     "lufs": -10.05,
+     "seconds": 15.0,
+     "start": 90.0
+    },
+    {
+     "label": "Montée",
+     "lufs": -9.93,
+     "seconds": 7.5,
+     "start": 105.0
+    },
+    {
+     "label": "Montée",
+     "lufs": -12.69,
+     "seconds": 7.5,
+     "start": 112.5
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.76,
+     "seconds": 1.88,
+     "start": 120.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.33,
+     "seconds": 11.25,
+     "start": 121.88
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.05,
+     "seconds": 1.88,
+     "start": 133.12
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.29,
+     "seconds": 13.12,
+     "start": 135.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.8,
+     "seconds": 1.88,
+     "start": 148.12
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.02,
+     "seconds": 1.88,
+     "start": 150.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.23,
+     "seconds": 11.25,
+     "start": 151.88
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.84,
+     "seconds": 1.88,
+     "start": 163.12
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.28,
+     "seconds": 13.12,
+     "start": 165.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.54,
+     "seconds": 1.88,
+     "start": 178.12
+    },
+    {
+     "label": "Break",
+     "lufs": -10.59,
+     "seconds": 1.88,
+     "start": 180.0
+    },
+    {
+     "label": "Break",
+     "lufs": -12.79,
+     "seconds": 11.25,
+     "start": 181.88
+    },
+    {
+     "label": "Break",
+     "lufs": -12.68,
+     "seconds": 1.88,
+     "start": 193.12
+    },
+    {
+     "label": "Break",
+     "lufs": -13.42,
+     "seconds": 15.0,
+     "start": 195.0
+    },
+    {
+     "label": "Montée",
+     "lufs": -10.87,
+     "seconds": 7.5,
+     "start": 210.0
+    },
+    {
+     "label": "Montée",
+     "lufs": -13.06,
+     "seconds": 7.5,
+     "start": 217.5
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.77,
+     "seconds": 1.88,
+     "start": 225.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.31,
+     "seconds": 11.25,
+     "start": 226.88
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.82,
+     "seconds": 1.88,
+     "start": 238.12
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.28,
+     "seconds": 13.12,
+     "start": 240.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.64,
+     "seconds": 1.88,
+     "start": 253.12
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.09,
+     "seconds": 1.88,
+     "start": 255.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.27,
+     "seconds": 11.25,
+     "start": 256.88
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.85,
+     "seconds": 1.88,
+     "start": 268.12
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.26,
+     "seconds": 13.12,
+     "start": 270.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.74,
+     "seconds": 1.88,
+     "start": 283.12
+    },
+    {
+     "label": "Intro",
+     "lufs": -10.44,
+     "seconds": 30.0,
+     "start": 285.0
+    },
+    {
+     "label": "Intro",
+     "lufs": -10.68,
+     "seconds": 15.0,
+     "start": 315.0
+    }
+   ],
+   "side_mid": -12.65,
+   "side_mid_below_120": -33.51,
+   "slope_db_oct": -5.82,
+   "style": "minimal",
+   "sub_40_60": -5.89,
+   "target_gap": -0.24,
+   "target_lufs": -8.0,
+   "true_peak": -1.19,
+   "true_peak_bs1770": -0.93
+  },
+  "neurofunk": {
+   "bands": {
+    "air": -12.63,
+    "high_mid": -11.49,
+    "low": -5.91,
+    "low_mid": -9.11,
+    "mid": -12.91,
+    "sub": -3.57
+   },
+   "clipped": 0,
+   "corr": 0.939,
+   "corr_below_120": 1.0,
+   "dc": 6e-06,
+   "drive_db": 9.56,
+   "drop_minus_break": 7.9,
+   "drop_minus_groove": 5.87,
+   "drop_minus_montee_end": [
+    1.89,
+    2.1,
+    2.17
+   ],
+   "drop_start_lufs": [
+    -9.03,
+    -8.78,
+    -8.74
+   ],
+   "drop_variation": 0.531,
+   "end_dbfs": -33.69,
+   "export_lufs": -10.277,
+   "export_true_peak": -1.188,
+   "file": "neurofunk.wav",
+   "infra_below_30": -23.47,
+   "intro_lufs": -11.23,
+   "intro_minus_main": -2.32,
+   "labels": {
+    "Break": -16.8,
+    "Drop": -8.9,
+    "Intro": -11.25,
+    "Montée": -14.77
+   },
+   "lead_centroid_hz": 3269,
+   "lead_centroid_var": 19.02,
+   "loss_db": 2.98,
+   "loud_lufs": -8.77,
+   "lra": 9.43,
+   "lufs_i": -10.27,
+   "m4a_lufs": -11.11,
+   "m4a_true_peak": -1.28,
+   "m4a_true_peak_first": -1.28,
+   "main": "Drop",
+   "main_crest": 9.39,
+   "main_lufs": -8.9,
+   "main_true_peak": -1.19,
+   "mode": 1,
+   "mono_loss_lu": -0.19,
+   "montee_end_lufs": [
+    -10.91,
+    -10.88,
+    -10.91
+   ],
+   "montee_rise": [],
+   "non_finite": 0,
+   "plr": 9.09,
+   "pre_drop_minus_break": 10.67,
+   "pre_drop_minus_groove": 8.67,
+   "pre_drop_minus_montee_end": [
+    4.75,
+    5.34,
+    5.35
+   ],
+   "pre_intro_minus_main": -3.42,
+   "pre_lra": 12.46,
+   "pre_lufs_i": -17.23,
+   "pre_main_lufs": -15.66,
+   "pre_montee_rise": [],
+   "render_loud_lufs": -8.768,
+   "sample_peak": -1.19,
+   "seconds": 297.93,
+   "sections": [
+    {
+     "label": "Intro",
+     "lufs": -11.28,
+     "seconds": 11.03,
+     "start": 0.0
+    },
+    {
+     "label": "Intro",
+     "lufs": -11.22,
+     "seconds": 11.03,
+     "start": 11.03
+    },
+    {
+     "label": "Intro",
+     "lufs": -11.34,
+     "seconds": 22.07,
+     "start": 22.07
+    },
+    {
+     "label": "Montée",
+     "lufs": -20.68,
+     "seconds": 5.52,
+     "start": 44.14
+    },
+    {
+     "label": "Montée",
+     "lufs": -12.22,
+     "seconds": 5.52,
+     "start": 49.66
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.71,
+     "seconds": 1.38,
+     "start": 55.17
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.29,
+     "seconds": 8.28,
+     "start": 56.55
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.14,
+     "seconds": 1.38,
+     "start": 64.83
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.14,
+     "seconds": 9.66,
+     "start": 66.21
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.59,
+     "seconds": 1.38,
+     "start": 75.86
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.9,
+     "seconds": 1.38,
+     "start": 77.24
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.96,
+     "seconds": 8.28,
+     "start": 78.62
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.41,
+     "seconds": 1.38,
+     "start": 86.9
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.0,
+     "seconds": 9.66,
+     "start": 88.28
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.99,
+     "seconds": 1.38,
+     "start": 97.93
+    },
+    {
+     "label": "Break",
+     "lufs": -12.57,
+     "seconds": 1.38,
+     "start": 99.31
+    },
+    {
+     "label": "Break",
+     "lufs": -18.4,
+     "seconds": 8.28,
+     "start": 100.69
+    },
+    {
+     "label": "Break",
+     "lufs": -13.6,
+     "seconds": 1.38,
+     "start": 108.97
+    },
+    {
+     "label": "Break",
+     "lufs": -17.63,
+     "seconds": 11.03,
+     "start": 110.34
+    },
+    {
+     "label": "Montée",
+     "lufs": -20.7,
+     "seconds": 5.52,
+     "start": 121.38
+    },
+    {
+     "label": "Montée",
+     "lufs": -12.2,
+     "seconds": 5.52,
+     "start": 126.9
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.63,
+     "seconds": 1.38,
+     "start": 132.41
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.96,
+     "seconds": 8.28,
+     "start": 133.79
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.75,
+     "seconds": 1.38,
+     "start": 142.07
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.81,
+     "seconds": 9.66,
+     "start": 143.45
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.02,
+     "seconds": 1.38,
+     "start": 153.1
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.92,
+     "seconds": 1.38,
+     "start": 154.48
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.87,
+     "seconds": 8.28,
+     "start": 155.86
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.42,
+     "seconds": 1.38,
+     "start": 164.14
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.89,
+     "seconds": 9.66,
+     "start": 165.52
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.03,
+     "seconds": 1.38,
+     "start": 175.17
+    },
+    {
+     "label": "Break",
+     "lufs": -12.91,
+     "seconds": 1.38,
+     "start": 176.55
+    },
+    {
+     "label": "Break",
+     "lufs": -18.38,
+     "seconds": 8.28,
+     "start": 177.93
+    },
+    {
+     "label": "Break",
+     "lufs": -13.67,
+     "seconds": 1.38,
+     "start": 186.21
+    },
+    {
+     "label": "Break",
+     "lufs": -17.5,
+     "seconds": 11.03,
+     "start": 187.59
+    },
+    {
+     "label": "Montée",
+     "lufs": -20.67,
+     "seconds": 5.52,
+     "start": 198.62
+    },
+    {
+     "label": "Montée",
+     "lufs": -12.22,
+     "seconds": 5.52,
+     "start": 204.14
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.6,
+     "seconds": 1.38,
+     "start": 209.66
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.95,
+     "seconds": 8.28,
+     "start": 211.03
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.61,
+     "seconds": 1.38,
+     "start": 219.31
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.81,
+     "seconds": 9.66,
+     "start": 220.69
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.92,
+     "seconds": 1.38,
+     "start": 230.34
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.55,
+     "seconds": 1.38,
+     "start": 231.72
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.94,
+     "seconds": 8.28,
+     "start": 233.1
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.91,
+     "seconds": 1.38,
+     "start": 241.38
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.88,
+     "seconds": 9.66,
+     "start": 242.76
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.94,
+     "seconds": 1.38,
+     "start": 252.41
+    },
+    {
+     "label": "Intro",
+     "lufs": -11.33,
+     "seconds": 22.07,
+     "start": 253.79
+    },
+    {
+     "label": "Intro",
+     "lufs": -11.26,
+     "seconds": 11.03,
+     "start": 275.86
+    },
+    {
+     "label": "Intro",
+     "lufs": -11.69,
+     "seconds": 11.03,
+     "start": 286.9
+    }
+   ],
+   "side_mid": -15.04,
+   "side_mid_below_120": -45.61,
+   "slope_db_oct": -3.53,
+   "style": "neurofunk",
+   "sub_40_60": -3.65,
+   "target_gap": -1.27,
+   "target_lufs": -7.5,
+   "true_peak": -1.19,
+   "true_peak_bs1770": -0.97
+  },
+  "phonk": {
+   "bands": {
+    "air": -19.75,
+    "high_mid": -16.4,
+    "low": -4.23,
+    "low_mid": -9.98,
+    "mid": -10.03,
+    "sub": -4.15
+   },
+   "clipped": 0,
+   "corr": 0.99,
+   "corr_below_120": 1.0,
+   "dc": 1e-06,
+   "drive_db": 6.27,
+   "drop_minus_break": null,
+   "drop_minus_groove": 2.24,
+   "drop_minus_montee_end": [],
+   "drop_start_lufs": [],
+   "drop_variation": 0.5,
+   "end_dbfs": -42.29,
+   "export_lufs": -8.368,
+   "export_true_peak": -1.172,
+   "file": "phonk.wav",
+   "infra_below_30": -21.67,
+   "intro_lufs": -17.94,
+   "intro_minus_main": -10.88,
+   "labels": {
+    "Couplet": -9.31,
+    "Intro": -17.45,
+    "Pont": -20.02,
+    "Refrain": -7.06
+   },
+   "lead_centroid_hz": 1110,
+   "lead_centroid_var": 19.99,
+   "loss_db": 1.15,
+   "loud_lufs": -7.05,
+   "lra": 11.23,
+   "lufs_i": -8.38,
+   "m4a_lufs": -8.24,
+   "m4a_true_peak": -1.71,
+   "m4a_true_peak_first": -1.71,
+   "main": "Refrain",
+   "main_crest": 6.93,
+   "main_lufs": -7.06,
+   "main_true_peak": -1.17,
+   "mode": 1,
+   "mono_loss_lu": -0.04,
+   "montee_end_lufs": [],
+   "montee_rise": [],
+   "non_finite": 0,
+   "plr": 7.21,
+   "pre_drop_minus_break": null,
+   "pre_drop_minus_groove": 3.27,
+   "pre_drop_minus_montee_end": [],
+   "pre_intro_minus_main": -12.02,
+   "pre_lra": 12.35,
+   "pre_lufs_i": -13.55,
+   "pre_main_lufs": -12.18,
+   "pre_montee_rise": [],
+   "render_loud_lufs": -7.047,
+   "sample_peak": -1.17,
+   "seconds": 192.0,
+   "sections": [
+    {
+     "label": "Intro",
+     "lufs": -17.94,
+     "seconds": 14.77,
+     "start": 0.0
+    },
+    {
+     "label": "Refrain",
+     "lufs": -6.85,
+     "seconds": 1.85,
+     "start": 14.77
+    },
+    {
+     "label": "Refrain",
+     "lufs": -7.09,
+     "seconds": 11.08,
+     "start": 16.62
+    },
+    {
+     "label": "Refrain",
+     "lufs": -7.0,
+     "seconds": 1.85,
+     "start": 27.69
+    },
+    {
+     "label": "Refrain",
+     "lufs": -7.12,
+     "seconds": 12.92,
+     "start": 29.54
+    },
+    {
+     "label": "Refrain",
+     "lufs": -7.15,
+     "seconds": 1.85,
+     "start": 42.46
+    },
+    {
+     "label": "Couplet",
+     "lufs": -9.29,
+     "seconds": 14.77,
+     "start": 44.31
+    },
+    {
+     "label": "Couplet",
+     "lufs": -9.25,
+     "seconds": 7.38,
+     "start": 59.08
+    },
+    {
+     "label": "Couplet",
+     "lufs": -9.42,
+     "seconds": 7.38,
+     "start": 66.46
+    },
+    {
+     "label": "Refrain",
+     "lufs": -6.97,
+     "seconds": 1.85,
+     "start": 73.85
+    },
+    {
+     "label": "Refrain",
+     "lufs": -7.11,
+     "seconds": 11.08,
+     "start": 75.69
+    },
+    {
+     "label": "Refrain",
+     "lufs": -7.13,
+     "seconds": 1.85,
+     "start": 86.77
+    },
+    {
+     "label": "Refrain",
+     "lufs": -7.09,
+     "seconds": 12.92,
+     "start": 88.62
+    },
+    {
+     "label": "Refrain",
+     "lufs": -7.05,
+     "seconds": 1.85,
+     "start": 101.54
+    },
+    {
+     "label": "Couplet",
+     "lufs": -9.26,
+     "seconds": 12.92,
+     "start": 103.38
+    },
+    {
+     "label": "Couplet",
+     "lufs": -9.32,
+     "seconds": 1.85,
+     "start": 116.31
+    },
+    {
+     "label": "Couplet",
+     "lufs": -9.27,
+     "seconds": 12.92,
+     "start": 118.15
+    },
+    {
+     "label": "Couplet",
+     "lufs": -9.42,
+     "seconds": 1.85,
+     "start": 131.08
+    },
+    {
+     "label": "Pont",
+     "lufs": -14.88,
+     "seconds": 1.85,
+     "start": 132.92
+    },
+    {
+     "label": "Pont",
+     "lufs": -21.37,
+     "seconds": 12.92,
+     "start": 134.77
+    },
+    {
+     "label": "Refrain",
+     "lufs": -6.87,
+     "seconds": 1.85,
+     "start": 147.69
+    },
+    {
+     "label": "Refrain",
+     "lufs": -7.04,
+     "seconds": 11.08,
+     "start": 149.54
+    },
+    {
+     "label": "Refrain",
+     "lufs": -7.01,
+     "seconds": 1.85,
+     "start": 160.62
+    },
+    {
+     "label": "Refrain",
+     "lufs": -7.04,
+     "seconds": 12.92,
+     "start": 162.46
+    },
+    {
+     "label": "Refrain",
+     "lufs": -7.19,
+     "seconds": 1.85,
+     "start": 175.38
+    },
+    {
+     "label": "Intro",
+     "lufs": -17.38,
+     "seconds": 14.77,
+     "start": 177.23
+    }
+   ],
+   "side_mid": -23.1,
+   "side_mid_below_120": -44.69,
+   "slope_db_oct": -5.25,
+   "style": "phonk",
+   "sub_40_60": -4.3,
+   "target_gap": -0.05,
+   "target_lufs": -7.0,
+   "true_peak": -1.17,
+   "true_peak_bs1770": -1.01
+  },
+  "pop": {
+   "bands": {
+    "air": -18.12,
+    "high_mid": -15.42,
+    "low": -2.89,
+    "low_mid": -11.21,
+    "mid": -11.09,
+    "sub": -5.44
+   },
+   "clipped": 0,
+   "corr": 0.966,
+   "corr_below_120": 1.0,
+   "dc": 4e-06,
+   "drive_db": 3.784,
+   "drop_minus_break": null,
+   "drop_minus_groove": 2.41,
+   "drop_minus_montee_end": [],
+   "drop_start_lufs": [],
+   "drop_variation": 0.5,
+   "end_dbfs": -42.54,
+   "export_lufs": -10.343,
+   "export_true_peak": -1.187,
+   "file": "pop.wav",
+   "infra_below_30": -21.01,
+   "intro_lufs": -11.64,
+   "intro_minus_main": -2.41,
+   "labels": {
+    "Couplet": -11.63,
+    "Intro": -11.81,
+    "Pont": -17.15,
+    "Post-refrain": -9.28,
+    "Pré-refrain": -11.25,
+    "Refrain": -9.23
+   },
+   "lead_centroid_hz": 1364,
+   "lead_centroid_var": 16.74,
+   "loss_db": 1.22,
+   "loud_lufs": -9.04,
+   "lra": 3.08,
+   "lufs_i": -10.34,
+   "m4a_lufs": -10.32,
+   "m4a_true_peak": -1.42,
+   "m4a_true_peak_first": -1.42,
+   "main": "Refrain",
+   "main_crest": 9.24,
+   "main_lufs": -9.23,
+   "main_true_peak": -1.19,
+   "mode": 1,
+   "mono_loss_lu": -0.12,
+   "montee_end_lufs": [],
+   "montee_rise": [],
+   "non_finite": 0,
+   "plr": 9.16,
+   "pre_drop_minus_break": null,
+   "pre_drop_minus_groove": 3.47,
+   "pre_drop_minus_montee_end": [],
+   "pre_intro_minus_main": -3.2,
+   "pre_lra": 4.18,
+   "pre_lufs_i": -13.2,
+   "pre_main_lufs": -11.81,
+   "pre_montee_rise": [],
+   "render_loud_lufs": -9.035,
+   "sample_peak": -1.19,
+   "seconds": 206.9,
+   "sections": [
+    {
+     "label": "Intro",
+     "lufs": -11.64,
+     "seconds": 8.28,
+     "start": 0.0
+    },
+    {
+     "label": "Couplet",
+     "lufs": -11.6,
+     "seconds": 16.55,
+     "start": 8.28
+    },
+    {
+     "label": "Pré-refrain",
+     "lufs": -11.47,
+     "seconds": 8.28,
+     "start": 24.83
+    },
+    {
+     "label": "Pré-refrain",
+     "lufs": -11.05,
+     "seconds": 8.28,
+     "start": 33.1
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.65,
+     "seconds": 2.07,
+     "start": 41.38
+    },
+    {
+     "label": "Refrain",
+     "lufs": -9.25,
+     "seconds": 12.41,
+     "start": 43.45
+    },
+    {
+     "label": "Refrain",
+     "lufs": -9.58,
+     "seconds": 2.07,
+     "start": 55.86
+    },
+    {
+     "label": "Refrain",
+     "lufs": -9.32,
+     "seconds": 14.48,
+     "start": 57.93
+    },
+    {
+     "label": "Refrain",
+     "lufs": -9.56,
+     "seconds": 2.07,
+     "start": 72.41
+    },
+    {
+     "label": "Post-refrain",
+     "lufs": -9.28,
+     "seconds": 8.28,
+     "start": 74.48
+    },
+    {
+     "label": "Couplet",
+     "lufs": -11.68,
+     "seconds": 16.55,
+     "start": 82.76
+    },
+    {
+     "label": "Pré-refrain",
+     "lufs": -11.49,
+     "seconds": 8.28,
+     "start": 99.31
+    },
+    {
+     "label": "Pré-refrain",
+     "lufs": -10.93,
+     "seconds": 8.28,
+     "start": 107.59
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.7,
+     "seconds": 2.07,
+     "start": 115.86
+    },
+    {
+     "label": "Refrain",
+     "lufs": -9.19,
+     "seconds": 12.41,
+     "start": 117.93
+    },
+    {
+     "label": "Refrain",
+     "lufs": -9.35,
+     "seconds": 2.07,
+     "start": 130.34
+    },
+    {
+     "label": "Refrain",
+     "lufs": -9.34,
+     "seconds": 14.48,
+     "start": 132.41
+    },
+    {
+     "label": "Refrain",
+     "lufs": -9.52,
+     "seconds": 2.07,
+     "start": 146.9
+    },
+    {
+     "label": "Pont",
+     "lufs": -15.65,
+     "seconds": 2.07,
+     "start": 148.97
+    },
+    {
+     "label": "Pont",
+     "lufs": -17.37,
+     "seconds": 14.48,
+     "start": 151.03
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.42,
+     "seconds": 2.07,
+     "start": 165.52
+    },
+    {
+     "label": "Refrain",
+     "lufs": -9.28,
+     "seconds": 12.41,
+     "start": 167.59
+    },
+    {
+     "label": "Refrain",
+     "lufs": -9.59,
+     "seconds": 2.07,
+     "start": 180.0
+    },
+    {
+     "label": "Refrain",
+     "lufs": -9.2,
+     "seconds": 14.48,
+     "start": 182.07
+    },
+    {
+     "label": "Refrain",
+     "lufs": -9.65,
+     "seconds": 2.07,
+     "start": 196.55
+    },
+    {
+     "label": "Intro",
+     "lufs": -12.27,
+     "seconds": 8.28,
+     "start": 198.62
+    }
+   ],
+   "side_mid": -17.68,
+   "side_mid_below_120": -44.34,
+   "slope_db_oct": -5.14,
+   "style": "pop",
+   "sub_40_60": -7.1,
+   "target_gap": -0.04,
+   "target_lufs": -9.0,
+   "true_peak": -1.19,
+   "true_peak_bs1770": -1.04
+  },
+  "reggaeton": {
+   "bands": {
+    "air": -16.03,
+    "high_mid": -12.7,
+    "low": -3.36,
+    "low_mid": -9.5,
+    "mid": -9.18,
+    "sub": -6.5
+   },
+   "clipped": 0,
+   "corr": 0.926,
+   "corr_below_120": 1.0,
+   "dc": 1e-06,
+   "drive_db": 3.664,
+   "drop_minus_break": null,
+   "drop_minus_groove": 2.54,
+   "drop_minus_montee_end": [],
+   "drop_start_lufs": [],
+   "drop_variation": 0.5,
+   "end_dbfs": -38.16,
+   "export_lufs": -10.358,
+   "export_true_peak": -1.191,
+   "file": "reggaeton.wav",
+   "infra_below_30": -26.51,
+   "intro_lufs": -12.7,
+   "intro_minus_main": -3.53,
+   "labels": {
+    "Couplet": -11.7,
+    "Intro": -12.87,
+    "Pont": -15.47,
+    "Post-refrain": -9.08,
+    "Pré-refrain": -11.1,
+    "Refrain": -9.16
+   },
+   "lead_centroid_hz": 1806,
+   "lead_centroid_var": 18.84,
+   "loss_db": 0.76,
+   "loud_lufs": -9.02,
+   "lra": 4.53,
+   "lufs_i": -10.36,
+   "m4a_lufs": -10.01,
+   "m4a_true_peak": -1.57,
+   "m4a_true_peak_first": -1.57,
+   "main": "Refrain",
+   "main_crest": 9.79,
+   "main_lufs": -9.16,
+   "main_true_peak": -1.19,
+   "mode": 1,
+   "mono_loss_lu": -0.23,
+   "montee_end_lufs": [],
+   "montee_rise": [],
+   "non_finite": 0,
+   "plr": 9.17,
+   "pre_drop_minus_break": null,
+   "pre_drop_minus_groove": 3.23,
+   "pre_drop_minus_montee_end": [],
+   "pre_intro_minus_main": -4.24,
+   "pre_lra": 5.26,
+   "pre_lufs_i": -13.51,
+   "pre_main_lufs": -12.12,
+   "pre_montee_rise": [],
+   "render_loud_lufs": -9.022,
+   "sample_peak": -1.19,
+   "seconds": 210.0,
+   "sections": [
+    {
+     "label": "Intro",
+     "lufs": -12.7,
+     "seconds": 10.0,
+     "start": 0.0
+    },
+    {
+     "label": "Couplet",
+     "lufs": -11.7,
+     "seconds": 20.0,
+     "start": 10.0
+    },
+    {
+     "label": "Pré-refrain",
+     "lufs": -11.05,
+     "seconds": 10.0,
+     "start": 30.0
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.44,
+     "seconds": 2.5,
+     "start": 40.0
+    },
+    {
+     "label": "Refrain",
+     "lufs": -9.19,
+     "seconds": 15.0,
+     "start": 42.5
+    },
+    {
+     "label": "Refrain",
+     "lufs": -9.4,
+     "seconds": 2.5,
+     "start": 57.5
+    },
+    {
+     "label": "Refrain",
+     "lufs": -9.13,
+     "seconds": 17.5,
+     "start": 60.0
+    },
+    {
+     "label": "Refrain",
+     "lufs": -9.48,
+     "seconds": 2.5,
+     "start": 77.5
+    },
+    {
+     "label": "Post-refrain",
+     "lufs": -9.08,
+     "seconds": 10.0,
+     "start": 80.0
+    },
+    {
+     "label": "Couplet",
+     "lufs": -11.71,
+     "seconds": 20.0,
+     "start": 90.0
+    },
+    {
+     "label": "Pré-refrain",
+     "lufs": -11.08,
+     "seconds": 10.0,
+     "start": 110.0
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.58,
+     "seconds": 2.5,
+     "start": 120.0
+    },
+    {
+     "label": "Refrain",
+     "lufs": -9.39,
+     "seconds": 15.0,
+     "start": 122.5
+    },
+    {
+     "label": "Refrain",
+     "lufs": -10.16,
+     "seconds": 2.5,
+     "start": 137.5
+    },
+    {
+     "label": "Pont",
+     "lufs": -15.06,
+     "seconds": 2.5,
+     "start": 140.0
+    },
+    {
+     "label": "Pont",
+     "lufs": -15.53,
+     "seconds": 17.5,
+     "start": 142.5
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.59,
+     "seconds": 2.5,
+     "start": 160.0
+    },
+    {
+     "label": "Refrain",
+     "lufs": -9.19,
+     "seconds": 15.0,
+     "start": 162.5
+    },
+    {
+     "label": "Refrain",
+     "lufs": -9.34,
+     "seconds": 2.5,
+     "start": 177.5
+    },
+    {
+     "label": "Refrain",
+     "lufs": -9.12,
+     "seconds": 17.5,
+     "start": 180.0
+    },
+    {
+     "label": "Refrain",
+     "lufs": -9.34,
+     "seconds": 2.5,
+     "start": 197.5
+    },
+    {
+     "label": "Intro",
+     "lufs": -13.16,
+     "seconds": 10.0,
+     "start": 200.0
+    }
+   ],
+   "side_mid": -14.13,
+   "side_mid_below_120": -44.37,
+   "slope_db_oct": -4.42,
+   "style": "reggaeton",
+   "sub_40_60": -6.54,
+   "target_gap": -0.02,
+   "target_lufs": -9.0,
+   "true_peak": -1.19,
+   "true_peak_bs1770": -1.03
+  },
+  "retro_techno": {
+   "bands": {
+    "air": -15.93,
+    "high_mid": -13.57,
+    "low": -3.34,
+    "low_mid": -11.33,
+    "mid": -11.71,
+    "sub": -4.91
+   },
+   "clipped": 0,
+   "corr": 0.977,
+   "corr_below_120": 1.0,
+   "dc": 2e-06,
+   "drive_db": 7.709,
+   "drop_minus_break": 9.71,
+   "drop_minus_groove": 2.15,
+   "drop_minus_montee_end": [
+    2.65,
+    2.62
+   ],
+   "drop_start_lufs": [
+    -8.16,
+    -8.23
+   ],
+   "drop_variation": 0.438,
+   "end_dbfs": -38.53,
+   "export_lufs": -9.442,
+   "export_true_peak": -1.186,
+   "file": "retro_techno.wav",
+   "infra_below_30": -21.95,
+   "intro_lufs": -9.38,
+   "intro_minus_main": -1.22,
+   "labels": {
+    "Break": -17.88,
+    "Drop": -8.16,
+    "Groove": -10.32,
+    "Intro": -9.4,
+    "Montée": -12.57
+   },
+   "lead_centroid_hz": 926,
+   "lead_centroid_var": 50.33,
+   "loss_db": 2.7,
+   "loud_lufs": -8.04,
+   "lra": 6.48,
+   "lufs_i": -9.44,
+   "m4a_lufs": -10.12,
+   "m4a_true_peak": -1.57,
+   "m4a_true_peak_first": -1.57,
+   "main": "Drop",
+   "main_crest": 8.38,
+   "main_lufs": -8.16,
+   "main_true_peak": -1.19,
+   "mode": 1,
+   "mono_loss_lu": -0.1,
+   "montee_end_lufs": [
+    -10.81,
+    -10.86
+   ],
+   "montee_rise": [
+    3.88,
+    3.82
+   ],
+   "non_finite": 0,
+   "plr": 8.26,
+   "pre_drop_minus_break": 12.31,
+   "pre_drop_minus_groove": 4.48,
+   "pre_drop_minus_montee_end": [
+    5.67,
+    5.68
+   ],
+   "pre_intro_minus_main": -3.49,
+   "pre_lra": 9.11,
+   "pre_lufs_i": -15.41,
+   "pre_main_lufs": -13.28,
+   "pre_montee_rise": [
+    3.88,
+    3.82
+   ],
+   "render_loud_lufs": -8.044,
+   "sample_peak": -1.19,
+   "seconds": 330.0,
+   "sections": [
+    {
+     "label": "Intro",
+     "lufs": -9.35,
+     "seconds": 15.0,
+     "start": 0.0
+    },
+    {
+     "label": "Intro",
+     "lufs": -9.23,
+     "seconds": 15.0,
+     "start": 15.0
+    },
+    {
+     "label": "Intro",
+     "lufs": -9.4,
+     "seconds": 28.12,
+     "start": 30.0
+    },
+    {
+     "label": "Intro",
+     "lufs": -11.57,
+     "seconds": 1.88,
+     "start": 58.12
+    },
+    {
+     "label": "Groove",
+     "lufs": -10.86,
+     "seconds": 13.12,
+     "start": 60.0
+    },
+    {
+     "label": "Groove",
+     "lufs": -13.02,
+     "seconds": 1.88,
+     "start": 73.12
+    },
+    {
+     "label": "Groove",
+     "lufs": -10.19,
+     "seconds": 13.12,
+     "start": 75.0
+    },
+    {
+     "label": "Groove",
+     "lufs": -12.38,
+     "seconds": 1.88,
+     "start": 88.12
+    },
+    {
+     "label": "Groove",
+     "lufs": -9.7,
+     "seconds": 15.0,
+     "start": 90.0
+    },
+    {
+     "label": "Montée",
+     "lufs": -12.87,
+     "seconds": 7.5,
+     "start": 105.0
+    },
+    {
+     "label": "Montée",
+     "lufs": -12.19,
+     "seconds": 7.5,
+     "start": 112.5
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.12,
+     "seconds": 1.88,
+     "start": 120.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.17,
+     "seconds": 11.25,
+     "start": 121.88
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.33,
+     "seconds": 1.88,
+     "start": 133.12
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.2,
+     "seconds": 13.12,
+     "start": 135.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.86,
+     "seconds": 1.88,
+     "start": 148.12
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.23,
+     "seconds": 1.88,
+     "start": 150.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.1,
+     "seconds": 11.25,
+     "start": 151.88
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.39,
+     "seconds": 1.88,
+     "start": 163.12
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.18,
+     "seconds": 13.12,
+     "start": 165.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.89,
+     "seconds": 1.88,
+     "start": 178.12
+    },
+    {
+     "label": "Break",
+     "lufs": -13.95,
+     "seconds": 1.88,
+     "start": 180.0
+    },
+    {
+     "label": "Break",
+     "lufs": -18.72,
+     "seconds": 11.25,
+     "start": 181.88
+    },
+    {
+     "label": "Break",
+     "lufs": -18.11,
+     "seconds": 1.88,
+     "start": 193.12
+    },
+    {
+     "label": "Break",
+     "lufs": -17.97,
+     "seconds": 15.0,
+     "start": 195.0
+    },
+    {
+     "label": "Montée",
+     "lufs": -12.83,
+     "seconds": 7.5,
+     "start": 210.0
+    },
+    {
+     "label": "Montée",
+     "lufs": -12.21,
+     "seconds": 7.5,
+     "start": 217.5
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.2,
+     "seconds": 1.88,
+     "start": 225.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.12,
+     "seconds": 11.25,
+     "start": 226.88
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.49,
+     "seconds": 1.88,
+     "start": 238.12
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.15,
+     "seconds": 13.12,
+     "start": 240.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.77,
+     "seconds": 1.88,
+     "start": 253.12
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.22,
+     "seconds": 1.88,
+     "start": 255.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.13,
+     "seconds": 11.25,
+     "start": 256.88
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.35,
+     "seconds": 1.88,
+     "start": 268.12
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.24,
+     "seconds": 13.12,
+     "start": 270.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.89,
+     "seconds": 1.88,
+     "start": 283.12
+    },
+    {
+     "label": "Intro",
+     "lufs": -9.38,
+     "seconds": 30.0,
+     "start": 285.0
+    },
+    {
+     "label": "Intro",
+     "lufs": -9.5,
+     "seconds": 15.0,
+     "start": 315.0
+    }
+   ],
+   "side_mid": -19.27,
+   "side_mid_below_120": -44.74,
+   "slope_db_oct": -4.4,
+   "style": "retro_techno",
+   "sub_40_60": -6.32,
+   "target_gap": -0.04,
+   "target_lufs": -8.0,
+   "true_peak": -1.19,
+   "true_peak_bs1770": -1.02
+  },
+  "riddim": {
+   "bands": {
+    "air": -12.6,
+    "high_mid": -14.61,
+    "low": -6.23,
+    "low_mid": -9.0,
+    "mid": -7.65,
+    "sub": -4.38
+   },
+   "clipped": 0,
+   "corr": 0.895,
+   "corr_below_120": 0.999,
+   "dc": 7e-06,
+   "drive_db": 11.19,
+   "drop_minus_break": 4.35,
+   "drop_minus_groove": 6.0,
+   "drop_minus_montee_end": [
+    2.18,
+    2.16,
+    2.22
+   ],
+   "drop_start_lufs": [
+    -9.69,
+    -9.72,
+    -9.68
+   ],
+   "drop_variation": 0.5,
+   "end_dbfs": -40.69,
+   "export_lufs": -11.297,
+   "export_true_peak": -1.179,
+   "file": "riddim.wav",
+   "infra_below_30": -19.59,
+   "intro_lufs": -14.08,
+   "intro_minus_main": -4.22,
+   "labels": {
+    "Break": -14.21,
+    "Drop": -9.86,
+    "Faux drop": -10.13,
+    "Intro": -14.14,
+    "Montée": -15.86
+   },
+   "lead_centroid_hz": 103,
+   "lead_centroid_var": 0.04,
+   "loss_db": 2.97,
+   "loud_lufs": -9.69,
+   "lra": 7.38,
+   "lufs_i": -11.3,
+   "m4a_lufs": -12.0,
+   "m4a_true_peak": -1.42,
+   "m4a_true_peak_first": -1.42,
+   "main": "Drop",
+   "main_crest": 10.3,
+   "main_lufs": -9.86,
+   "main_true_peak": -1.16,
+   "mode": 1,
+   "mono_loss_lu": -0.3,
+   "montee_end_lufs": [
+    -11.87,
+    -11.88,
+    -11.9
+   ],
+   "montee_rise": [
+    4.06,
+    4.08,
+    4.03
+   ],
+   "non_finite": 0,
+   "plr": 10.13,
+   "pre_drop_minus_break": 6.74,
+   "pre_drop_minus_groove": 8.57,
+   "pre_drop_minus_montee_end": [
+    5.88,
+    5.76,
+    5.9
+   ],
+   "pre_intro_minus_main": -3.42,
+   "pre_lra": 8.41,
+   "pre_lufs_i": -19.88,
+   "pre_main_lufs": -18.48,
+   "pre_montee_rise": [
+    4.06,
+    4.08,
+    4.03
+   ],
+   "render_loud_lufs": -9.687,
+   "sample_peak": -1.18,
+   "seconds": 308.57,
+   "sections": [
+    {
+     "label": "Intro",
+     "lufs": -13.76,
+     "seconds": 13.71,
+     "start": 0.0
+    },
+    {
+     "label": "Intro",
+     "lufs": -13.78,
+     "seconds": 13.71,
+     "start": 13.71
+    },
+    {
+     "label": "Intro",
+     "lufs": -14.37,
+     "seconds": 27.43,
+     "start": 27.43
+    },
+    {
+     "label": "Montée",
+     "lufs": -22.26,
+     "seconds": 6.86,
+     "start": 54.86
+    },
+    {
+     "label": "Montée",
+     "lufs": -13.35,
+     "seconds": 6.86,
+     "start": 61.71
+    },
+    {
+     "label": "Faux drop",
+     "lufs": -7.82,
+     "seconds": 1.71,
+     "start": 68.57
+    },
+    {
+     "label": "Faux drop",
+     "lufs": -11.38,
+     "seconds": 5.14,
+     "start": 70.29
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.88,
+     "seconds": 1.71,
+     "start": 75.43
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.89,
+     "seconds": 10.29,
+     "start": 77.14
+    },
+    {
+     "label": "Drop",
+     "lufs": -10.3,
+     "seconds": 1.71,
+     "start": 87.43
+    },
+    {
+     "label": "Drop",
+     "lufs": -10.09,
+     "seconds": 12.0,
+     "start": 89.14
+    },
+    {
+     "label": "Drop",
+     "lufs": -10.61,
+     "seconds": 1.71,
+     "start": 101.14
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.91,
+     "seconds": 1.71,
+     "start": 102.86
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.92,
+     "seconds": 10.29,
+     "start": 104.57
+    },
+    {
+     "label": "Drop",
+     "lufs": -10.1,
+     "seconds": 1.71,
+     "start": 114.86
+    },
+    {
+     "label": "Drop",
+     "lufs": -10.01,
+     "seconds": 12.0,
+     "start": 116.57
+    },
+    {
+     "label": "Drop",
+     "lufs": -10.51,
+     "seconds": 1.71,
+     "start": 128.57
+    },
+    {
+     "label": "Break",
+     "lufs": -11.41,
+     "seconds": 1.71,
+     "start": 130.29
+    },
+    {
+     "label": "Break",
+     "lufs": -14.38,
+     "seconds": 10.29,
+     "start": 132.0
+    },
+    {
+     "label": "Break",
+     "lufs": -15.47,
+     "seconds": 1.71,
+     "start": 142.29
+    },
+    {
+     "label": "Break",
+     "lufs": -14.96,
+     "seconds": 13.71,
+     "start": 144.0
+    },
+    {
+     "label": "Montée",
+     "lufs": -22.33,
+     "seconds": 6.86,
+     "start": 157.71
+    },
+    {
+     "label": "Montée",
+     "lufs": -13.36,
+     "seconds": 6.86,
+     "start": 164.57
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.88,
+     "seconds": 1.71,
+     "start": 171.43
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.91,
+     "seconds": 10.29,
+     "start": 173.14
+    },
+    {
+     "label": "Drop",
+     "lufs": -10.12,
+     "seconds": 1.71,
+     "start": 183.43
+    },
+    {
+     "label": "Drop",
+     "lufs": -10.03,
+     "seconds": 12.0,
+     "start": 185.14
+    },
+    {
+     "label": "Drop",
+     "lufs": -10.32,
+     "seconds": 1.71,
+     "start": 197.14
+    },
+    {
+     "label": "Drop",
+     "lufs": -10.07,
+     "seconds": 1.71,
+     "start": 198.86
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.87,
+     "seconds": 10.29,
+     "start": 200.57
+    },
+    {
+     "label": "Drop",
+     "lufs": -10.11,
+     "seconds": 1.71,
+     "start": 210.86
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.81,
+     "seconds": 12.0,
+     "start": 212.57
+    },
+    {
+     "label": "Drop",
+     "lufs": -10.38,
+     "seconds": 1.71,
+     "start": 224.57
+    },
+    {
+     "label": "Break",
+     "lufs": -11.24,
+     "seconds": 1.71,
+     "start": 226.29
+    },
+    {
+     "label": "Break",
+     "lufs": -14.43,
+     "seconds": 12.0,
+     "start": 228.0
+    },
+    {
+     "label": "Montée",
+     "lufs": -22.26,
+     "seconds": 6.86,
+     "start": 240.0
+    },
+    {
+     "label": "Montée",
+     "lufs": -13.36,
+     "seconds": 6.86,
+     "start": 246.86
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.76,
+     "seconds": 1.71,
+     "start": 253.71
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.92,
+     "seconds": 10.29,
+     "start": 255.43
+    },
+    {
+     "label": "Drop",
+     "lufs": -10.04,
+     "seconds": 1.71,
+     "start": 265.71
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.85,
+     "seconds": 12.0,
+     "start": 267.43
+    },
+    {
+     "label": "Drop",
+     "lufs": -10.14,
+     "seconds": 1.71,
+     "start": 279.43
+    },
+    {
+     "label": "Intro",
+     "lufs": -14.67,
+     "seconds": 13.71,
+     "start": 281.14
+    },
+    {
+     "label": "Intro",
+     "lufs": -14.18,
+     "seconds": 13.71,
+     "start": 294.86
+    }
+   ],
+   "side_mid": -12.55,
+   "side_mid_below_120": -34.99,
+   "slope_db_oct": -3.7,
+   "style": "riddim",
+   "sub_40_60": -7.31,
+   "target_gap": -2.19,
+   "target_lufs": -7.5,
+   "true_peak": -1.16,
+   "true_peak_bs1770": -0.86
+  },
+  "speed_garage": {
+   "bands": {
+    "air": -16.03,
+    "high_mid": -15.65,
+    "low": -3.07,
+    "low_mid": -9.15,
+    "mid": -11.92,
+    "sub": -5.77
+   },
+   "clipped": 0,
+   "corr": 0.967,
+   "corr_below_120": 1.0,
+   "dc": 2.4e-05,
+   "drive_db": 7.234,
+   "drop_minus_break": 6.15,
+   "drop_minus_groove": 2.39,
+   "drop_minus_montee_end": [
+    2.63,
+    2.69
+   ],
+   "drop_start_lufs": [
+    -8.32,
+    -8.22
+   ],
+   "drop_variation": 1.0,
+   "end_dbfs": -43.98,
+   "export_lufs": -10.122,
+   "export_true_peak": -1.18,
+   "file": "speed_garage.wav",
+   "infra_below_30": -25.77,
+   "intro_lufs": -10.54,
+   "intro_minus_main": -2.26,
+   "labels": {
+    "Break": -14.44,
+    "Drop": -8.29,
+    "Groove": -10.67,
+    "Intro": -10.55,
+    "Montée": -13.38
+   },
+   "lead_centroid_hz": 567,
+   "lead_centroid_var": 7.93,
+   "loss_db": 3.0,
+   "loud_lufs": -8.19,
+   "lra": 6.58,
+   "lufs_i": -10.12,
+   "m4a_lufs": -10.87,
+   "m4a_true_peak": -1.44,
+   "m4a_true_peak_first": -1.44,
+   "main": "Drop",
+   "main_crest": 8.65,
+   "main_lufs": -8.29,
+   "main_true_peak": -1.18,
+   "mode": 1,
+   "mono_loss_lu": -0.11,
+   "montee_end_lufs": [
+    -10.96,
+    -10.9
+   ],
+   "montee_rise": [
+    4.18,
+    4.22
+   ],
+   "non_finite": 0,
+   "plr": 8.94,
+   "pre_drop_minus_break": 9.11,
+   "pre_drop_minus_groove": 4.69,
+   "pre_drop_minus_montee_end": [
+    5.84,
+    5.86
+   ],
+   "pre_intro_minus_main": -3.77,
+   "pre_lra": 9.43,
+   "pre_lufs_i": -15.15,
+   "pre_main_lufs": -12.54,
+   "pre_montee_rise": [
+    4.18,
+    4.22
+   ],
+   "render_loud_lufs": -8.186,
+   "sample_peak": -1.18,
+   "seconds": 177.23,
+   "sections": [
+    {
+     "label": "Intro",
+     "lufs": -10.51,
+     "seconds": 14.77,
+     "start": 0.0
+    },
+    {
+     "label": "Intro",
+     "lufs": -10.51,
+     "seconds": 12.92,
+     "start": 14.77
+    },
+    {
+     "label": "Intro",
+     "lufs": -11.95,
+     "seconds": 1.85,
+     "start": 27.69
+    },
+    {
+     "label": "Groove",
+     "lufs": -10.67,
+     "seconds": 14.77,
+     "start": 29.54
+    },
+    {
+     "label": "Montée",
+     "lufs": -14.59,
+     "seconds": 7.38,
+     "start": 44.31
+    },
+    {
+     "label": "Montée",
+     "lufs": -12.32,
+     "seconds": 7.38,
+     "start": 51.69
+    },
+    {
+     "label": "Drop",
+     "lufs": -7.9,
+     "seconds": 1.85,
+     "start": 59.08
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.42,
+     "seconds": 11.08,
+     "start": 60.92
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.68,
+     "seconds": 1.85,
+     "start": 72.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.29,
+     "seconds": 12.92,
+     "start": 73.85
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.77,
+     "seconds": 1.85,
+     "start": 86.77
+    },
+    {
+     "label": "Break",
+     "lufs": -12.04,
+     "seconds": 1.85,
+     "start": 88.62
+    },
+    {
+     "label": "Break",
+     "lufs": -14.77,
+     "seconds": 12.92,
+     "start": 90.46
+    },
+    {
+     "label": "Montée",
+     "lufs": -14.59,
+     "seconds": 7.38,
+     "start": 103.38
+    },
+    {
+     "label": "Montée",
+     "lufs": -12.29,
+     "seconds": 7.38,
+     "start": 110.77
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.16,
+     "seconds": 1.85,
+     "start": 118.15
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.24,
+     "seconds": 11.08,
+     "start": 120.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.75,
+     "seconds": 1.85,
+     "start": 131.08
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.24,
+     "seconds": 12.92,
+     "start": 132.92
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.76,
+     "seconds": 1.85,
+     "start": 145.85
+    },
+    {
+     "label": "Intro",
+     "lufs": -10.58,
+     "seconds": 14.77,
+     "start": 147.69
+    },
+    {
+     "label": "Intro",
+     "lufs": -10.66,
+     "seconds": 14.77,
+     "start": 162.46
+    }
+   ],
+   "side_mid": -17.72,
+   "side_mid_below_120": -42.81,
+   "slope_db_oct": -5.31,
+   "style": "speed_garage",
+   "sub_40_60": -6.63,
+   "target_gap": -0.19,
+   "target_lufs": -8.0,
+   "true_peak": -1.18,
+   "true_peak_bs1770": -1.03
+  },
+  "synthwave": {
+   "bands": {
+    "air": -17.96,
+    "high_mid": -14.22,
+    "low": -3.03,
+    "low_mid": -10.42,
+    "mid": -9.97,
+    "sub": -5.94
+   },
+   "clipped": 0,
+   "corr": 0.949,
+   "corr_below_120": 1.0,
+   "dc": 1e-06,
+   "drive_db": 5.531,
+   "drop_minus_break": null,
+   "drop_minus_groove": 2.08,
+   "drop_minus_montee_end": [],
+   "drop_start_lufs": [],
+   "drop_variation": 0.5,
+   "end_dbfs": -40.4,
+   "export_lufs": -9.434,
+   "export_true_peak": -1.192,
+   "file": "synthwave.wav",
+   "infra_below_30": -27.6,
+   "intro_lufs": -11.58,
+   "intro_minus_main": -3.22,
+   "labels": {
+    "Couplet": -10.43,
+    "Intro": -11.7,
+    "Pont": -15.51,
+    "Post-refrain": -8.37,
+    "Pré-refrain": -9.76,
+    "Refrain": -8.35
+   },
+   "lead_centroid_hz": 1715,
+   "lead_centroid_var": 16.38,
+   "loss_db": 1.54,
+   "loud_lufs": -8.09,
+   "lra": 4.64,
+   "lufs_i": -9.43,
+   "m4a_lufs": -9.59,
+   "m4a_true_peak": -1.49,
+   "m4a_true_peak_first": -1.49,
+   "main": "Refrain",
+   "main_crest": 8.74,
+   "main_lufs": -8.35,
+   "main_true_peak": -1.19,
+   "mode": 1,
+   "mono_loss_lu": -0.19,
+   "montee_end_lufs": [],
+   "montee_rise": [],
+   "non_finite": 0,
+   "plr": 8.24,
+   "pre_drop_minus_break": null,
+   "pre_drop_minus_groove": 3.54,
+   "pre_drop_minus_montee_end": [],
+   "pre_intro_minus_main": -4.79,
+   "pre_lra": 6.11,
+   "pre_lufs_i": -13.73,
+   "pre_main_lufs": -12.26,
+   "pre_montee_rise": [],
+   "render_loud_lufs": -8.086,
+   "sample_peak": -1.19,
+   "seconds": 192.0,
+   "sections": [
+    {
+     "label": "Intro",
+     "lufs": -11.58,
+     "seconds": 9.14,
+     "start": 0.0
+    },
+    {
+     "label": "Couplet",
+     "lufs": -10.43,
+     "seconds": 18.29,
+     "start": 9.14
+    },
+    {
+     "label": "Pré-refrain",
+     "lufs": -9.72,
+     "seconds": 9.14,
+     "start": 27.43
+    },
+    {
+     "label": "Refrain",
+     "lufs": -7.57,
+     "seconds": 2.29,
+     "start": 36.57
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.36,
+     "seconds": 13.71,
+     "start": 38.86
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.8,
+     "seconds": 2.29,
+     "start": 52.57
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.31,
+     "seconds": 16.0,
+     "start": 54.86
+    },
+    {
+     "label": "Refrain",
+     "lufs": -9.59,
+     "seconds": 2.29,
+     "start": 70.86
+    },
+    {
+     "label": "Post-refrain",
+     "lufs": -8.37,
+     "seconds": 9.14,
+     "start": 73.14
+    },
+    {
+     "label": "Couplet",
+     "lufs": -10.43,
+     "seconds": 18.29,
+     "start": 82.29
+    },
+    {
+     "label": "Pré-refrain",
+     "lufs": -9.73,
+     "seconds": 9.14,
+     "start": 100.57
+    },
+    {
+     "label": "Refrain",
+     "lufs": -7.59,
+     "seconds": 2.29,
+     "start": 109.71
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.32,
+     "seconds": 13.71,
+     "start": 112.0
+    },
+    {
+     "label": "Refrain",
+     "lufs": -9.59,
+     "seconds": 2.29,
+     "start": 125.71
+    },
+    {
+     "label": "Pont",
+     "lufs": -14.29,
+     "seconds": 2.29,
+     "start": 128.0
+    },
+    {
+     "label": "Pont",
+     "lufs": -15.58,
+     "seconds": 16.0,
+     "start": 130.29
+    },
+    {
+     "label": "Refrain",
+     "lufs": -7.62,
+     "seconds": 2.29,
+     "start": 146.29
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.34,
+     "seconds": 13.71,
+     "start": 148.57
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.68,
+     "seconds": 2.29,
+     "start": 162.29
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.37,
+     "seconds": 16.0,
+     "start": 164.57
+    },
+    {
+     "label": "Refrain",
+     "lufs": -9.28,
+     "seconds": 2.29,
+     "start": 180.57
+    },
+    {
+     "label": "Intro",
+     "lufs": -11.96,
+     "seconds": 9.14,
+     "start": 182.86
+    }
+   ],
+   "side_mid": -15.81,
+   "side_mid_below_120": -37.33,
+   "slope_db_oct": -4.93,
+   "style": "synthwave",
+   "sub_40_60": -5.96,
+   "target_gap": -0.09,
+   "target_lufs": -8.0,
+   "true_peak": -1.19,
+   "true_peak_bs1770": -1.05
+  },
+  "tech_house": {
+   "bands": {
+    "air": -15.14,
+    "high_mid": -16.23,
+    "low": -3.84,
+    "low_mid": -10.09,
+    "mid": -8.99,
+    "sub": -5.2
+   },
+   "clipped": 0,
+   "corr": 0.954,
+   "corr_below_120": 1.0,
+   "dc": 3.7e-05,
+   "drive_db": 6.913,
+   "drop_minus_break": 5.79,
+   "drop_minus_groove": 2.18,
+   "drop_minus_montee_end": [
+    2.88,
+    2.97
+   ],
+   "drop_start_lufs": [
+    -8.96,
+    -8.95
+   ],
+   "drop_variation": 0.875,
+   "end_dbfs": -44.49,
+   "export_lufs": -11.062,
+   "export_true_peak": -1.169,
+   "file": "tech_house.wav",
+   "infra_below_30": -22.3,
+   "intro_lufs": -12.87,
+   "intro_minus_main": -3.82,
+   "labels": {
+    "Break": -14.85,
+    "Drop": -9.05,
+    "Groove": -11.23,
+    "Intro": -12.8,
+    "Montée": -12.46
+   },
+   "lead_centroid_hz": 553,
+   "lead_centroid_var": 5.39,
+   "loss_db": 3.01,
+   "loud_lufs": -9.01,
+   "lra": 5.23,
+   "lufs_i": -11.06,
+   "m4a_lufs": -11.74,
+   "m4a_true_peak": -1.57,
+   "m4a_true_peak_first": -1.57,
+   "main": "Drop",
+   "main_crest": 9.53,
+   "main_lufs": -9.05,
+   "main_true_peak": -1.17,
+   "mode": 1,
+   "mono_loss_lu": -0.17,
+   "montee_end_lufs": [
+    -11.84,
+    -11.92
+   ],
+   "montee_rise": [
+    3.42,
+    3.77
+   ],
+   "non_finite": 0,
+   "plr": 9.89,
+   "pre_drop_minus_break": 8.72,
+   "pre_drop_minus_groove": 4.73,
+   "pre_drop_minus_montee_end": [
+    5.96,
+    6.19
+   ],
+   "pre_intro_minus_main": -5.22,
+   "pre_lra": 8.18,
+   "pre_lufs_i": -15.78,
+   "pre_main_lufs": -13.02,
+   "pre_montee_rise": [
+    3.42,
+    3.78
+   ],
+   "render_loud_lufs": -9.008,
+   "sample_peak": -1.17,
+   "seconds": 182.86,
+   "sections": [
+    {
+     "label": "Intro",
+     "lufs": -13.09,
+     "seconds": 15.24,
+     "start": 0.0
+    },
+    {
+     "label": "Intro",
+     "lufs": -12.61,
+     "seconds": 13.33,
+     "start": 15.24
+    },
+    {
+     "label": "Intro",
+     "lufs": -13.9,
+     "seconds": 1.9,
+     "start": 28.57
+    },
+    {
+     "label": "Groove",
+     "lufs": -11.23,
+     "seconds": 15.24,
+     "start": 30.48
+    },
+    {
+     "label": "Montée",
+     "lufs": -11.6,
+     "seconds": 7.62,
+     "start": 45.71
+    },
+    {
+     "label": "Montée",
+     "lufs": -12.91,
+     "seconds": 7.62,
+     "start": 53.33
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.04,
+     "seconds": 13.33,
+     "start": 60.95
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.71,
+     "seconds": 1.9,
+     "start": 74.29
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.05,
+     "seconds": 13.33,
+     "start": 76.19
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.21,
+     "seconds": 1.9,
+     "start": 89.52
+    },
+    {
+     "label": "Break",
+     "lufs": -14.85,
+     "seconds": 15.24,
+     "start": 91.43
+    },
+    {
+     "label": "Montée",
+     "lufs": -12.16,
+     "seconds": 7.62,
+     "start": 106.67
+    },
+    {
+     "label": "Montée",
+     "lufs": -13.08,
+     "seconds": 7.62,
+     "start": 114.29
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.02,
+     "seconds": 13.33,
+     "start": 121.9
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.26,
+     "seconds": 1.9,
+     "start": 135.24
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.06,
+     "seconds": 13.33,
+     "start": 137.14
+    },
+    {
+     "label": "Drop",
+     "lufs": -9.29,
+     "seconds": 1.9,
+     "start": 150.48
+    },
+    {
+     "label": "Intro",
+     "lufs": -12.7,
+     "seconds": 15.24,
+     "start": 152.38
+    },
+    {
+     "label": "Intro",
+     "lufs": -12.81,
+     "seconds": 15.24,
+     "start": 167.62
+    }
+   ],
+   "side_mid": -16.23,
+   "side_mid_below_120": -53.42,
+   "slope_db_oct": -5.13,
+   "style": "tech_house",
+   "sub_40_60": -5.32,
+   "target_gap": -1.01,
+   "target_lufs": -8.0,
+   "true_peak": -1.17,
+   "true_peak_bs1770": -1.01
+  },
+  "techno": {
+   "bands": {
+    "air": -18.37,
+    "high_mid": -16.93,
+    "low": -4.36,
+    "low_mid": -7.72,
+    "mid": -10.71,
+    "sub": -4.66
+   },
+   "clipped": 0,
+   "corr": 0.906,
+   "corr_below_120": 1.0,
+   "dc": 4e-06,
+   "drive_db": 7.416,
+   "drop_minus_break": 4.76,
+   "drop_minus_groove": 2.12,
+   "drop_minus_montee_end": [
+    2.46,
+    2.28
+   ],
+   "drop_start_lufs": [
+    -8.3,
+    -8.32
+   ],
+   "drop_variation": 0.75,
+   "end_dbfs": -40.98,
+   "export_lufs": -9.928,
+   "export_true_peak": -1.19,
+   "file": "techno.wav",
+   "infra_below_30": -26.11,
+   "intro_lufs": -10.97,
+   "intro_minus_main": -2.57,
+   "labels": {
+    "Break": -13.17,
+    "Drop": -8.4,
+    "Groove": -10.52,
+    "Intro": -11.01,
+    "Montée": -11.08
+   },
+   "lead_centroid_hz": 1213,
+   "lead_centroid_var": 29.2,
+   "loss_db": 2.97,
+   "loud_lufs": -8.37,
+   "lra": 4.19,
+   "lufs_i": -9.93,
+   "m4a_lufs": -10.59,
+   "m4a_true_peak": -1.52,
+   "m4a_true_peak_first": -1.52,
+   "main": "Drop",
+   "main_crest": 8.42,
+   "main_lufs": -8.4,
+   "main_true_peak": -1.19,
+   "mode": 1,
+   "mono_loss_lu": -0.3,
+   "montee_end_lufs": [
+    -10.76,
+    -10.6
+   ],
+   "montee_rise": [
+    3.03,
+    2.98
+   ],
+   "non_finite": 0,
+   "plr": 8.74,
+   "pre_drop_minus_break": 7.68,
+   "pre_drop_minus_groove": 4.77,
+   "pre_drop_minus_montee_end": [
+    5.66,
+    5.55
+   ],
+   "pre_intro_minus_main": -5.3,
+   "pre_lra": 7.14,
+   "pre_lufs_i": -15.49,
+   "pre_main_lufs": -12.89,
+   "pre_montee_rise": [
+    3.09,
+    3.04
+   ],
+   "render_loud_lufs": -8.365,
+   "sample_peak": -1.19,
+   "seconds": 320.0,
+   "sections": [
+    {
+     "label": "Intro",
+     "lufs": -10.99,
+     "seconds": 14.55,
+     "start": 0.0
+    },
+    {
+     "label": "Intro",
+     "lufs": -10.97,
+     "seconds": 14.55,
+     "start": 14.55
+    },
+    {
+     "label": "Intro",
+     "lufs": -10.95,
+     "seconds": 27.27,
+     "start": 29.09
+    },
+    {
+     "label": "Intro",
+     "lufs": -12.13,
+     "seconds": 1.82,
+     "start": 56.36
+    },
+    {
+     "label": "Groove",
+     "lufs": -12.26,
+     "seconds": 12.73,
+     "start": 58.18
+    },
+    {
+     "label": "Groove",
+     "lufs": -14.08,
+     "seconds": 1.82,
+     "start": 70.91
+    },
+    {
+     "label": "Groove",
+     "lufs": -10.05,
+     "seconds": 12.73,
+     "start": 72.73
+    },
+    {
+     "label": "Groove",
+     "lufs": -11.17,
+     "seconds": 1.82,
+     "start": 85.45
+    },
+    {
+     "label": "Groove",
+     "lufs": -9.5,
+     "seconds": 14.55,
+     "start": 87.27
+    },
+    {
+     "label": "Montée",
+     "lufs": -10.19,
+     "seconds": 7.27,
+     "start": 101.82
+    },
+    {
+     "label": "Montée",
+     "lufs": -11.8,
+     "seconds": 7.27,
+     "start": 109.09
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.4,
+     "seconds": 12.73,
+     "start": 116.36
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.82,
+     "seconds": 1.82,
+     "start": 129.09
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.44,
+     "seconds": 12.73,
+     "start": 130.91
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.74,
+     "seconds": 1.82,
+     "start": 143.64
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.37,
+     "seconds": 12.73,
+     "start": 145.45
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.71,
+     "seconds": 1.82,
+     "start": 158.18
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.34,
+     "seconds": 12.73,
+     "start": 160.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.44,
+     "seconds": 1.82,
+     "start": 172.73
+    },
+    {
+     "label": "Break",
+     "lufs": -12.56,
+     "seconds": 12.73,
+     "start": 174.55
+    },
+    {
+     "label": "Break",
+     "lufs": -12.8,
+     "seconds": 1.82,
+     "start": 187.27
+    },
+    {
+     "label": "Break",
+     "lufs": -13.76,
+     "seconds": 14.55,
+     "start": 189.09
+    },
+    {
+     "label": "Montée",
+     "lufs": -10.69,
+     "seconds": 7.27,
+     "start": 203.64
+    },
+    {
+     "label": "Montée",
+     "lufs": -11.69,
+     "seconds": 7.27,
+     "start": 210.91
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.36,
+     "seconds": 12.73,
+     "start": 218.18
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.64,
+     "seconds": 1.82,
+     "start": 230.91
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.43,
+     "seconds": 12.73,
+     "start": 232.73
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.54,
+     "seconds": 1.82,
+     "start": 245.45
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.39,
+     "seconds": 12.73,
+     "start": 247.27
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.56,
+     "seconds": 1.82,
+     "start": 260.0
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.44,
+     "seconds": 12.73,
+     "start": 261.82
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.52,
+     "seconds": 1.82,
+     "start": 274.55
+    },
+    {
+     "label": "Intro",
+     "lufs": -10.99,
+     "seconds": 29.09,
+     "start": 276.36
+    },
+    {
+     "label": "Intro",
+     "lufs": -11.2,
+     "seconds": 14.55,
+     "start": 305.45
+    }
+   ],
+   "side_mid": -13.06,
+   "side_mid_below_120": -36.44,
+   "slope_db_oct": -5.3,
+   "style": "techno",
+   "sub_40_60": -4.71,
+   "target_gap": -0.87,
+   "target_lufs": -7.5,
+   "true_peak": -1.19,
+   "true_peak_bs1770": -1.08
+  },
+  "trance": {
+   "bands": {
+    "air": -13.97,
+    "high_mid": -15.35,
+    "low": -4.75,
+    "low_mid": -7.52,
+    "mid": -7.58,
+    "sub": -6.22
+   },
+   "clipped": 0,
+   "corr": 0.803,
+   "corr_below_120": 0.999,
+   "dc": 2e-06,
+   "drive_db": 8.171,
+   "drop_minus_break": 1.7,
+   "drop_minus_groove": 2.46,
+   "drop_minus_montee_end": [
+    2.34,
+    2.56
+   ],
+   "drop_start_lufs": [
+    -8.37,
+    -8.24
+   ],
+   "drop_variation": 0.562,
+   "end_dbfs": -43.6,
+   "export_lufs": -9.775,
+   "export_true_peak": -1.186,
+   "file": "trance.wav",
+   "infra_below_30": -26.49,
+   "intro_lufs": -11.1,
+   "intro_minus_main": -2.77,
+   "labels": {
+    "Break": -10.04,
+    "Drop": -8.33,
+    "Groove": -10.79,
+    "Intro": -11.14,
+    "Montée": -11.52
+   },
+   "lead_centroid_hz": 1164,
+   "lead_centroid_var": 12.44,
+   "loss_db": 2.98,
+   "loud_lufs": -8.28,
+   "lra": 3.47,
+   "lufs_i": -9.78,
+   "m4a_lufs": -10.5,
+   "m4a_true_peak": -1.49,
+   "m4a_true_peak_first": -1.49,
+   "main": "Drop",
+   "main_crest": 9.1,
+   "main_lufs": -8.33,
+   "main_true_peak": -1.18,
+   "mode": 1,
+   "mono_loss_lu": -0.61,
+   "montee_end_lufs": [
+    -10.71,
+    -10.8
+   ],
+   "montee_rise": [
+    2.38,
+    2.28
+   ],
+   "non_finite": 0,
+   "plr": 8.59,
+   "pre_drop_minus_break": 4.34,
+   "pre_drop_minus_groove": 5.08,
+   "pre_drop_minus_montee_end": [
+    5.17,
+    5.38
+   ],
+   "pre_intro_minus_main": -4.95,
+   "pre_lra": 6.2,
+   "pre_lufs_i": -16.06,
+   "pre_main_lufs": -13.63,
+   "pre_montee_rise": [
+    2.39,
+    2.3
+   ],
+   "render_loud_lufs": -8.276,
+   "sample_peak": -1.19,
+   "seconds": 306.09,
+   "sections": [
+    {
+     "label": "Intro",
+     "lufs": -11.04,
+     "seconds": 27.83,
+     "start": 0.0
+    },
+    {
+     "label": "Intro",
+     "lufs": -11.07,
+     "seconds": 26.09,
+     "start": 27.83
+    },
+    {
+     "label": "Intro",
+     "lufs": -13.19,
+     "seconds": 1.74,
+     "start": 53.91
+    },
+    {
+     "label": "Groove",
+     "lufs": -11.81,
+     "seconds": 12.17,
+     "start": 55.65
+    },
+    {
+     "label": "Groove",
+     "lufs": -13.49,
+     "seconds": 1.74,
+     "start": 67.83
+    },
+    {
+     "label": "Groove",
+     "lufs": -10.79,
+     "seconds": 12.17,
+     "start": 69.57
+    },
+    {
+     "label": "Groove",
+     "lufs": -12.8,
+     "seconds": 1.74,
+     "start": 81.74
+    },
+    {
+     "label": "Groove",
+     "lufs": -9.75,
+     "seconds": 13.91,
+     "start": 83.48
+    },
+    {
+     "label": "Montée",
+     "lufs": -10.97,
+     "seconds": 6.96,
+     "start": 97.39
+    },
+    {
+     "label": "Montée",
+     "lufs": -11.69,
+     "seconds": 6.96,
+     "start": 104.35
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.39,
+     "seconds": 12.17,
+     "start": 111.3
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.24,
+     "seconds": 1.74,
+     "start": 123.48
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.4,
+     "seconds": 12.17,
+     "start": 125.22
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.14,
+     "seconds": 1.74,
+     "start": 137.39
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.38,
+     "seconds": 12.17,
+     "start": 139.13
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.05,
+     "seconds": 1.74,
+     "start": 151.3
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.4,
+     "seconds": 12.17,
+     "start": 153.04
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.19,
+     "seconds": 1.74,
+     "start": 165.22
+    },
+    {
+     "label": "Break",
+     "lufs": -10.1,
+     "seconds": 12.17,
+     "start": 166.96
+    },
+    {
+     "label": "Break",
+     "lufs": -9.49,
+     "seconds": 1.74,
+     "start": 179.13
+    },
+    {
+     "label": "Break",
+     "lufs": -10.06,
+     "seconds": 13.91,
+     "start": 180.87
+    },
+    {
+     "label": "Montée",
+     "lufs": -11.51,
+     "seconds": 6.96,
+     "start": 194.78
+    },
+    {
+     "label": "Montée",
+     "lufs": -11.73,
+     "seconds": 6.96,
+     "start": 201.74
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.29,
+     "seconds": 12.17,
+     "start": 208.7
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.15,
+     "seconds": 1.74,
+     "start": 220.87
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.37,
+     "seconds": 12.17,
+     "start": 222.61
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.23,
+     "seconds": 1.74,
+     "start": 234.78
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.37,
+     "seconds": 12.17,
+     "start": 236.52
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.1,
+     "seconds": 1.74,
+     "start": 248.7
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.38,
+     "seconds": 12.17,
+     "start": 250.43
+    },
+    {
+     "label": "Drop",
+     "lufs": -8.0,
+     "seconds": 1.74,
+     "start": 262.61
+    },
+    {
+     "label": "Intro",
+     "lufs": -11.12,
+     "seconds": 27.83,
+     "start": 264.35
+    },
+    {
+     "label": "Intro",
+     "lufs": -11.33,
+     "seconds": 13.91,
+     "start": 292.17
+    }
+   ],
+   "side_mid": -9.61,
+   "side_mid_below_120": -35.8,
+   "slope_db_oct": -4.64,
+   "style": "trance",
+   "sub_40_60": -6.28,
+   "target_gap": -0.28,
+   "target_lufs": -8.0,
+   "true_peak": -1.18,
+   "true_peak_bs1770": -1.01
+  },
+  "trap": {
+   "bands": {
+    "air": -18.88,
+    "high_mid": -16.41,
+    "low": -4.65,
+    "low_mid": -12.77,
+    "mid": -11.19,
+    "sub": -3.1
+   },
+   "clipped": 0,
+   "corr": 0.976,
+   "corr_below_120": 1.0,
+   "dc": 0.0,
+   "drive_db": 4.798,
+   "drop_minus_break": null,
+   "drop_minus_groove": 2.65,
+   "drop_minus_montee_end": [],
+   "drop_start_lufs": [],
+   "drop_variation": 0.5,
+   "end_dbfs": -42.67,
+   "export_lufs": -10.26,
+   "export_true_peak": -1.188,
+   "file": "trap.wav",
+   "infra_below_30": -24.9,
+   "intro_lufs": -14.78,
+   "intro_minus_main": -6.12,
+   "labels": {
+    "Couplet": -11.3,
+    "Intro": -15.09,
+    "Pont": -18.19,
+    "Refrain": -8.65
+   },
+   "lead_centroid_hz": 1994,
+   "lead_centroid_var": 34.66,
+   "loss_db": 0.95,
+   "loud_lufs": -8.53,
+   "lra": 7.36,
+   "lufs_i": -10.26,
+   "m4a_lufs": -10.06,
+   "m4a_true_peak": -1.45,
+   "m4a_true_peak_first": -1.45,
+   "main": "Refrain",
+   "main_crest": 8.08,
+   "main_lufs": -8.65,
+   "main_true_peak": -1.19,
+   "mode": 1,
+   "mono_loss_lu": -0.12,
+   "montee_end_lufs": [],
+   "montee_rise": [],
+   "non_finite": 0,
+   "plr": 9.07,
+   "pre_drop_minus_break": null,
+   "pre_drop_minus_groove": 3.59,
+   "pre_drop_minus_montee_end": [],
+   "pre_intro_minus_main": -7.08,
+   "pre_lra": 8.27,
+   "pre_lufs_i": -14.3,
+   "pre_main_lufs": -12.49,
+   "pre_montee_rise": [],
+   "render_loud_lufs": -8.529,
+   "sample_peak": -1.19,
+   "seconds": 178.29,
+   "sections": [
+    {
+     "label": "Intro",
+     "lufs": -14.78,
+     "seconds": 13.71,
+     "start": 0.0
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.24,
+     "seconds": 1.71,
+     "start": 13.71
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.83,
+     "seconds": 10.29,
+     "start": 15.43
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.18,
+     "seconds": 1.71,
+     "start": 25.71
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.76,
+     "seconds": 12.0,
+     "start": 27.43
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.3,
+     "seconds": 1.71,
+     "start": 39.43
+    },
+    {
+     "label": "Couplet",
+     "lufs": -11.27,
+     "seconds": 13.71,
+     "start": 41.14
+    },
+    {
+     "label": "Couplet",
+     "lufs": -11.28,
+     "seconds": 6.86,
+     "start": 54.86
+    },
+    {
+     "label": "Couplet",
+     "lufs": -11.49,
+     "seconds": 6.86,
+     "start": 61.71
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.23,
+     "seconds": 1.71,
+     "start": 68.57
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.81,
+     "seconds": 10.29,
+     "start": 70.29
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.38,
+     "seconds": 1.71,
+     "start": 80.57
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.76,
+     "seconds": 12.0,
+     "start": 82.29
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.24,
+     "seconds": 1.71,
+     "start": 94.29
+    },
+    {
+     "label": "Couplet",
+     "lufs": -11.39,
+     "seconds": 12.0,
+     "start": 96.0
+    },
+    {
+     "label": "Couplet",
+     "lufs": -10.71,
+     "seconds": 1.71,
+     "start": 108.0
+    },
+    {
+     "label": "Couplet",
+     "lufs": -11.38,
+     "seconds": 12.0,
+     "start": 109.71
+    },
+    {
+     "label": "Couplet",
+     "lufs": -10.85,
+     "seconds": 1.71,
+     "start": 121.71
+    },
+    {
+     "label": "Pont",
+     "lufs": -16.16,
+     "seconds": 1.71,
+     "start": 123.43
+    },
+    {
+     "label": "Pont",
+     "lufs": -18.49,
+     "seconds": 12.0,
+     "start": 125.14
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.19,
+     "seconds": 1.71,
+     "start": 137.14
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.83,
+     "seconds": 10.29,
+     "start": 138.86
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.24,
+     "seconds": 1.71,
+     "start": 149.14
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.75,
+     "seconds": 12.0,
+     "start": 150.86
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.36,
+     "seconds": 1.71,
+     "start": 162.86
+    },
+    {
+     "label": "Intro",
+     "lufs": -15.62,
+     "seconds": 13.71,
+     "start": 164.57
+    }
+   ],
+   "side_mid": -19.19,
+   "side_mid_below_120": -42.09,
+   "slope_db_oct": -4.87,
+   "style": "trap",
+   "sub_40_60": -4.79,
+   "target_gap": -0.03,
+   "target_lufs": -8.5,
+   "true_peak": -1.19,
+   "true_peak_bs1770": -0.99
+  },
+  "uk_garage": {
+   "bands": {
+    "air": -13.8,
+    "high_mid": -14.32,
+    "low": -3.28,
+    "low_mid": -10.59,
+    "mid": -8.17,
+    "sub": -6.94
+   },
+   "clipped": 0,
+   "corr": 0.969,
+   "corr_below_120": 1.0,
+   "dc": 9e-06,
+   "drive_db": 7.413,
+   "drop_minus_break": null,
+   "drop_minus_groove": 2.12,
+   "drop_minus_montee_end": [],
+   "drop_start_lufs": [],
+   "drop_variation": 0.5,
+   "end_dbfs": -35.47,
+   "export_lufs": -9.555,
+   "export_true_peak": -1.185,
+   "file": "uk_garage.wav",
+   "infra_below_30": -25.94,
+   "intro_lufs": -10.78,
+   "intro_minus_main": -2.22,
+   "labels": {
+    "Couplet": -10.68,
+    "Intro": -11.05,
+    "Pont": -16.9,
+    "Post-refrain": -8.61,
+    "Pré-refrain": -10.02,
+    "Refrain": -8.56
+   },
+   "lead_centroid_hz": 677,
+   "lead_centroid_var": 13.92,
+   "loss_db": 2.96,
+   "loud_lufs": -8.34,
+   "lra": 4.3,
+   "lufs_i": -9.55,
+   "m4a_lufs": -10.3,
+   "m4a_true_peak": -1.19,
+   "m4a_true_peak_first": -1.19,
+   "main": "Refrain",
+   "main_crest": 9.45,
+   "main_lufs": -8.56,
+   "main_true_peak": -1.19,
+   "mode": 1,
+   "mono_loss_lu": -0.13,
+   "montee_end_lufs": [],
+   "montee_rise": [],
+   "non_finite": 0,
+   "plr": 8.37,
+   "pre_drop_minus_break": null,
+   "pre_drop_minus_groove": 4.69,
+   "pre_drop_minus_montee_end": [],
+   "pre_intro_minus_main": -4.12,
+   "pre_lra": 6.33,
+   "pre_lufs_i": -14.66,
+   "pre_main_lufs": -13.08,
+   "pre_montee_rise": [],
+   "render_loud_lufs": -8.341,
+   "sample_peak": -1.19,
+   "seconds": 196.36,
+   "sections": [
+    {
+     "label": "Intro",
+     "lufs": -10.86,
+     "seconds": 12.73,
+     "start": 0.0
+    },
+    {
+     "label": "Intro",
+     "lufs": -10.53,
+     "seconds": 1.82,
+     "start": 12.73
+    },
+    {
+     "label": "Couplet",
+     "lufs": -10.7,
+     "seconds": 14.55,
+     "start": 14.55
+    },
+    {
+     "label": "Pré-refrain",
+     "lufs": -10.19,
+     "seconds": 7.27,
+     "start": 29.09
+    },
+    {
+     "label": "Pré-refrain",
+     "lufs": -9.78,
+     "seconds": 7.27,
+     "start": 36.36
+    },
+    {
+     "label": "Refrain",
+     "lufs": -7.45,
+     "seconds": 1.82,
+     "start": 43.64
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.72,
+     "seconds": 10.91,
+     "start": 45.45
+    },
+    {
+     "label": "Refrain",
+     "lufs": -9.16,
+     "seconds": 1.82,
+     "start": 56.36
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.41,
+     "seconds": 12.73,
+     "start": 58.18
+    },
+    {
+     "label": "Refrain",
+     "lufs": -9.37,
+     "seconds": 1.82,
+     "start": 70.91
+    },
+    {
+     "label": "Post-refrain",
+     "lufs": -8.61,
+     "seconds": 7.27,
+     "start": 72.73
+    },
+    {
+     "label": "Couplet",
+     "lufs": -10.65,
+     "seconds": 14.55,
+     "start": 80.0
+    },
+    {
+     "label": "Pré-refrain",
+     "lufs": -10.41,
+     "seconds": 7.27,
+     "start": 94.55
+    },
+    {
+     "label": "Pré-refrain",
+     "lufs": -9.7,
+     "seconds": 7.27,
+     "start": 101.82
+    },
+    {
+     "label": "Refrain",
+     "lufs": -7.56,
+     "seconds": 1.82,
+     "start": 109.09
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.69,
+     "seconds": 10.91,
+     "start": 110.91
+    },
+    {
+     "label": "Refrain",
+     "lufs": -9.39,
+     "seconds": 1.82,
+     "start": 121.82
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.57,
+     "seconds": 12.73,
+     "start": 123.64
+    },
+    {
+     "label": "Refrain",
+     "lufs": -9.41,
+     "seconds": 1.82,
+     "start": 136.36
+    },
+    {
+     "label": "Pont",
+     "lufs": -14.65,
+     "seconds": 1.82,
+     "start": 138.18
+    },
+    {
+     "label": "Pont",
+     "lufs": -17.21,
+     "seconds": 12.73,
+     "start": 140.0
+    },
+    {
+     "label": "Refrain",
+     "lufs": -7.62,
+     "seconds": 1.82,
+     "start": 152.73
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.71,
+     "seconds": 10.91,
+     "start": 154.55
+    },
+    {
+     "label": "Refrain",
+     "lufs": -9.4,
+     "seconds": 1.82,
+     "start": 165.45
+    },
+    {
+     "label": "Refrain",
+     "lufs": -8.53,
+     "seconds": 12.73,
+     "start": 167.27
+    },
+    {
+     "label": "Refrain",
+     "lufs": -9.45,
+     "seconds": 1.82,
+     "start": 180.0
+    },
+    {
+     "label": "Intro",
+     "lufs": -11.29,
+     "seconds": 14.55,
+     "start": 181.82
+    }
+   ],
+   "side_mid": -18.03,
+   "side_mid_below_120": -55.1,
+   "slope_db_oct": -4.85,
+   "style": "uk_garage",
+   "sub_40_60": -7.23,
+   "target_gap": -0.34,
+   "target_lufs": -8.0,
+   "true_peak": -1.19,
+   "true_peak_bs1770": -0.9
+  }
+ }
+}

@@ -26,7 +26,7 @@ Recipe syntax (one JSON object per style; one character per sixteenth, 16 = a ba
     sample slide), "sub": true (a clean sub layer: a « Sub » track plays the bass's notes an octave down with
     « Sub pur » wherever the bass plays: the jump up growl over its sine)};
     lead: "glide" too (a riff with '/': the rave hoover's dive)
-  chords: {"type": pad|stab|keys|none, "rhythm": "X-------x-------" ('X'/'x'/'o' hit strong/softer/soft, '-' held,
+  chords: {"layer": <preset> (a pad of that sound behind the chords, on a « Nappe » track: liquid's Rhodes), "type": pad|stab|keys|none, "rhythm": "X-------x-------" ('X'/'x'/'o' hit strong/softer/soft, '-' held,
     '.' rest; 16, 32 or 64 steps), "voicing" (triad, seventh, ninth, sus2, sus4, power, octave, single, rootless7,
     rootless9), "voice_lead": true (each chord inverted to move as little as possible from the one before),
     "arp": {"pattern": [indices into the chord's notes over two octaves], "gate": 0.25..1, "accent": every n
@@ -100,7 +100,7 @@ def _between(text, start, end):
 def code_lists():
     """The names the app knows, read from its code: a sound, preset or effect added there is accepted here."""
     library = _source("SoundLibrary.kt")
-    synth = _between(library, "val SYNTH:", "val ACID:")
+    synth = _between(library, "val SYNTH_V2:", "val ACID:")
     sounds = set(re.findall(r'NamedSound\("([^"]+)"', synth))
     global SOUND_FAMILY
     SOUND_FAMILY = dict(re.findall(r'NamedSound\("([^"]+)", "([^"]+)"', synth))
@@ -324,6 +324,8 @@ def style(r):
     counter = ctr.get("sound")
     check(counter is None or counter in PRESETS, f"{gid} counter: unknown sound {counter}")
     counter_rhythm = line(ctr["rhythm"], CHORD_CHARS, gid, "counter") if ctr.get("rhythm") else ""
+    pad_layer = c.get("layer")
+    check(pad_layer is None or pad_layer in PRESETS, f"{gid} chords layer: unknown sound {pad_layer}")
     check(not sub or "Sub pur" in PRESETS, f"{gid} bass: no « Sub pur » sound for the sub layer")
     check(not sub or int(b.get("octave", 2)) >= 2, f"{gid} bass: a sub layer an octave under a bass in octave 1 is inaudible")
     lead_glide = bool(l.get("glide", False))
@@ -461,6 +463,8 @@ def style(r):
         out.append(f"                counter = {kstr(counter)},")
         if counter_rhythm:
             out.append(f"                counterRhythm = {kstr(counter_rhythm)},")
+    if pad_layer:
+        out.append(f"                padLayer = {kstr(pad_layer)},")
     if lead_type in LEAD_KINDS and lead_type != "hook":
         out.append(f"                leadKind = LeadKind.{LEAD_KINDS[lead_type]},")
     if lead_on_key:

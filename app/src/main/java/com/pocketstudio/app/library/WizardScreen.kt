@@ -103,6 +103,8 @@ class WizardActions(
     val chooseAcidSound: (String) -> Unit = {},
     val setAcidKnob: (Int, Float) -> Unit = { _, _ -> },
     val choosePartSound: (StarterWizard.Part, StarterWizard.PartSound) -> Unit = { _, _ -> },
+    /** « Motifs de basse »: the bass's grid (null: the style's own line). */
+    val chooseBassGrid: (String?) -> Unit = {},
     val preview: (SoundRef) -> Unit = {},
     val download: (String) -> Unit = {},
     val cancelDownload: (String) -> Unit = {},
@@ -849,6 +851,43 @@ private fun PartStep(style: StarterWizard.Style, ui: WizardUi, packs: PacksUi, p
                 tr("Les sons des packs téléchargés sont en bas de la liste."),
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
         )
+    }
+    if (part == StarterWizard.Part.Bass) BassGridCard(style, ui, actions)
+}
+
+/**
+ * « Motifs de basse » (docs/hits/basses-qui-tapent.md § 4): the rolling basslines the bass can play
+ * instead of the style's own line, the style's own grids first (« Conseillé »), each heard at once.
+ */
+@Composable
+private fun BassGridCard(style: StarterWizard.Style, ui: WizardUi, actions: WizardActions) {
+    // Without the power chord where the bass glides (it would slide root -> octave).
+    val grids = com.pocketstudio.model.BassPatterns.offered(style)
+    val advised = com.pocketstudio.model.BassPatterns.advised(style.id)
+    NeonCard(modifier = Modifier.testTag("wizard_bass_grids")) {
+        SectionLabel(tr("Motifs de basse"), foldKey = "Motifs de basse")
+        TileGrid(grids.size + 1) { i, m ->
+            val grid = grids.getOrNull(i - 1)
+            SoundTile(
+                title = if (grid == null) tr("Celui du style") else tr(grid.name),
+                icon = Icons.Filled.GraphicEq, accent = Neon.Magenta,
+                selected = ui.bassGrid == grid?.id, onClick = { actions.chooseBassGrid(grid?.id) },
+                // A few plain words (one line on a phone's two columns); the advised ones are named below.
+                subtitle = if (grid == null) tr("La recette") else tr(grid.description),
+                modifier = m.testTag("wizard_bass_grid_$i"),
+            )
+        }
+        Text(
+            tr("Des lignes de basse « roulantes » : des notes courtes entre les coups de kick, qui galopent. Touche un motif pour l'entendre."),
+            style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
+        )
+        val first = grids.filter { it.id in advised }
+        if (first.isNotEmpty()) {
+            Text(
+                tr("Conseillés pour ce style : %s.", first.joinToString(", ") { tr(it.name) }),
+                style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
+            )
+        }
     }
 }
 

@@ -65,6 +65,9 @@ void Synth::prepare(int sampleRate) {
             // formant, vowel, mid layer, oversampling: all off.
             0.0f, 0.0f, 0.0f, kMonoBelowDefault, 0.0f, 0.0f, 0.0f,
             0.0f, 0.0f, 0.0f, 0.0f,
+            // « Des basses qui tapent »: no pitch envelope (its fall 22 ms), no phase reset, no velocity
+            // on the cutoff, the square sub without a floor, the mid layer at 250 Hz driven x3: as before.
+            0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.5f, 0.5f,
         };
         static_assert(sizeof(defaults) / sizeof(defaults[0]) == ParamCount, "a default for every parameter");
         for (int i = 0; i < ParamCount; ++i) params_[static_cast<size_t>(i)] = defaults[i];
@@ -141,7 +144,8 @@ int Synth::cycleBarsOf(float v) {
 bool Synth::plain() const {
     return param(Width) == 0.0f && param(OctaveDown) == 0.0f && param(Drive) == 0.0f && param(Lfo2Shape) == 0.0f &&
            (param(CycleDepth) == 0.0f || param(CycleBars) == 0.0f) && param(Formant) == 0.0f && param(MidLayer) == 0.0f &&
-           param(Oversample) <= 0.5f;
+           param(Oversample) <= 0.5f && param(PitchEnv) == 0.0f && param(VelocityCutoff) == 0.0f && param(SubShape) == 0.0f &&
+           param(SubFloor) <= 0.5f;
 }
 
 void Synth::setOversampled(bool on) {
@@ -185,7 +189,17 @@ void Synth::syncCycle(int step, int offset, int stepsPerBar) {
     stepsPerBar_ = std::max(1, stepsPerBar);
 }
 
+namespace {
+// The sub's wave (SubShape): the square as always, a triangle, a sine.
+uint8_t subWaveFor(float v) {
+    if (v >= 0.75f) return daisysp::Oscillator::WAVE_SIN;
+    if (v >= 0.25f) return daisysp::Oscillator::WAVE_POLYBLEP_TRI;
+    return daisysp::Oscillator::WAVE_POLYBLEP_SQUARE;
+}
+}  // namespace
+
 void Synth::updateVoiceSettings(Voice& v) {
+    v.sub.SetWaveform(subWaveFor(param(SubShape)));
     v.osc1.SetWaveform(waveFor(param(Osc1Wave)));
     v.low.SetWaveform(waveFor(param(Osc1Wave)));
     for (auto& u : v.unison) u.SetWaveform(waveFor(param(Osc1Wave)));
@@ -299,12 +313,22 @@ void Synth::applyEvent(const Event& e) {
         target->downL.clear_buffers();
         target->downR.clear_buffers();
     }
-    if (idle && param(Unison) > 0.0f) {
+    // PhaseReset: a voice that was silent (or under -50 dB) starts every oscillator at phase 0, so
+    // that each hit attacks alike (a jump there would click: a voice still sounding keeps its phases).
+    const bool restart = param(PhaseReset) > 0.5f && (idle || target->level < 0.003f);
+    if (restart) {
+        target->osc1.Reset(0.0f);
+        target->osc2.Reset(0.0f);
+        target->sub.Reset(0.0f);
+        target->low.Reset(0.0f);
+    }
+    if ((idle || restart) && param(Unison) > 0.0f) {
         // Unison voices start at spread phases, oscillator 1 included: wide from the first cycle,
         // the same level for every note.
         target->osc1.Reset(0.0f);
         for (size_t k = 0; k < target->unison.size(); ++k) target->unison[k].Reset(0.137f * static_cast<float>(k + 1));
     }
+    target->pitchEnv = 1.0f;
     target->ampEnv.Retrigger(false);
     target->filterEnv.Retrigger(false);
 }
@@ -596,6 +620,12 @@ void Synth::renderVoices(int from, int to) {
     const double stepFrames = std::max(1.0, beatFrames_ / 4.0);
     const bool square = std::lround(param(Lfo2Shape) * 3.0f) == 1;
     constexpr int kSub = Over ? 2 : 1;
+    // « Des basses qui tapent »: the pitch envelope (semitones at its top, its fall per control tick),
+    // the velocity on the cutoff, the sub's floor.
+    const float pitchSemis = param(PitchEnv) * kPitchEnvSemitones;
+    const float pitchCoef = std::exp(-static_cast<float>(kControlRate) / (pitchDecaySeconds(param(PitchDecay)) * static_cast<float>(sampleRate_)));
+    const float velCut = param(VelocityCutoff);
+    const bool subFloor = param(SubFloor) > 0.5f;
 
     for (int i = from; i < to; ++i) {
         while (eventCursor_ < eventCount_ && events_[static_cast<size_t>(eventCursor_)].offset <= i) {
@@ -642,15 +672,25 @@ void Synth::renderVoices(int from, int to) {
                     }
                     v.baseHz = 440.0f * std::pow(2.0f, (v.semis - 69.0f) / 12.0f);
                 }
-                const float hz = v.baseHz * bendRatio * std::pow(2.0f, vibratoSemis * lfo1 / 12.0f);
+                float pitchRatio = 1.0f;
+                if (pitchSemis > 0.0f) {
+                    pitchRatio = std::exp2(pitchSemis * v.pitchEnv * (1.0f / 12.0f));
+                    if (controlTick) v.pitchEnv *= pitchCoef;
+                }
+                const float hz = v.baseHz * pitchRatio * bendRatio * std::pow(2.0f, vibratoSemis * lfo1 / 12.0f);
                 v.osc1.SetFreq(hz * osc1Ratio);
                 for (size_t k = 0; k < v.unison.size(); ++k) v.unison[k].SetFreq(hz * ratios[k]);
-                v.osc2.SetFreq(hz * detuneRatio * octaveRatio);
-                v.sub.SetFreq(hz * 0.5f);
-                v.low.SetFreq(hz * 0.5f);
+                // SubFloor: oscillator 2 an octave down never under 30 Hz either (an octave up there).
+                const float osc2Ratio = subFloor && octaveRatio < 1.0f && v.baseHz * octaveRatio < kSubFloorHz ? 2.0f * octaveRatio : octaveRatio;
+                v.osc2.SetFreq(hz * detuneRatio * osc2Ratio);
+                // The sub an octave under the note, but never under 30 Hz with SubFloor (an octave up there).
+                const float subRatio = subFloor && v.baseHz * 0.5f < kSubFloorHz ? 1.0f : 0.5f;
+                v.sub.SetFreq(hz * subRatio);
+                v.low.SetFreq(hz * subRatio);
                 // The cycle's value at this tick (a voice starting between ticks keeps the last one).
                 if (controlTick) v.cycle = cycle;
-                const float fc = std::min(nyquistGuard, cutoffHz * std::pow(2.0f, envOctaves * fenv + sweepOctaves * lfo2 + v.cycle));
+                const float velOctaves = velCut > 0.0f ? std::clamp(2.0f * velCut * (v.velocity - 0.7f) / 0.3f, -2.0f * velCut, 2.0f * velCut) : 0.0f;
+                const float fc = std::min(nyquistGuard, cutoffHz * std::pow(2.0f, envOctaves * fenv + sweepOctaves * lfo2 + v.cycle + velOctaves));
                 v.ladder.SetFreq(fc);
                 v.svf.SetFreq(fc);
                 if constexpr (Wide) {
@@ -750,13 +790,16 @@ void Synth::postProcess(float* l, float* r, int n, bool wide) {
     // side: wide, and gone in mono's sum only as far as its side goes.
     const float layerTarget = param(MidLayer);
     if (layerTarget > 0.0f || layerNow_ > 0.0f) {
-        midHigh_.set(kMidLayerHz, 0.7071f, rate);
+        // Its frequency and drive (MidLayerHz, MidLayerDrive: 250 Hz and x3 at their defaults, as before).
+        const float layerHz = param(MidLayerHz) == 0.5f ? kMidLayerHz : midLayerHz(param(MidLayerHz));
+        const float layerDrive = param(MidLayerDrive) == 0.5f ? kMidLayerDrive : midLayerDrive(param(MidLayerDrive));
+        midHigh_.set(layerHz, 0.7071f, rate);
         const int delay = std::clamp(static_cast<int>(kMidDelaySeconds * rate), 1, static_cast<int>(midDelay_.size()) - 1);
         const SoftTanh shape;
-        const float comp = 1.0f / std::tanh(kMidLayerDrive * 0.5f);
+        const float comp = 1.0f / std::tanh(layerDrive * 0.5f);
         for (int i = 0; i < n; ++i) {
             const float m = 0.5f * (l[i] + r[i]);
-            const float y = midDrive_.process(midHigh_.high(m), kMidLayerDrive, 0.0f, shape) * comp * 0.5f;
+            const float y = midDrive_.process(midHigh_.high(m), layerDrive, 0.0f, shape) * comp * 0.5f;
             midDelay_[static_cast<size_t>(midDelayPos_)] = y;
             const float d = midDelay_[static_cast<size_t>((midDelayPos_ + static_cast<int>(midDelay_.size()) - delay) % static_cast<int>(midDelay_.size()))];
             midDelayPos_ = (midDelayPos_ + 1) % static_cast<int>(midDelay_.size());

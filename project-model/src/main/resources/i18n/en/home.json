@@ -374,5 +374,10 @@
   "Importer un projet": "Import a project",
   "Aucun projet pour l'instant : commence un nouveau morceau.": "No projects yet: start a new song.",
   "Corbeille (%d)": "Bin (%d)",
-  "gardés %d jours": "kept %d days"
+  "gardés %d jours": "kept %d days",
+  "Motifs de basse": "Bass patterns",
+  "Celui du style": "The style's own",
+  "La recette": "The recipe",
+  "Conseillés pour ce style : %s.": "Advised for this style: %s.",
+  "Des lignes de basse « roulantes » : des notes courtes entre les coups de kick, qui galopent. Touche un motif pour l'entendre.": "Rolling basslines: short notes between the kicks that gallop along. Tap a pattern to hear it."
 }

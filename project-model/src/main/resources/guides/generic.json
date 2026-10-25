@@ -1546,6 +1546,7 @@
    "FREQ_SHIFT": "Décale toutes les fréquences : un son étrange, métallique.",
    "TAPE_STOP": "Le disque qui ralentit jusqu'à l'arrêt.",
    "WOBBLE": "Un filtre qui s'ouvre et se ferme en rythme : le « wob ».",
+   "BASS_EXCITER": "Ajoute les harmoniques du grave : la basse s'entend aussi sur un téléphone, qui ne joue pas sous 150 Hz.",
    "CLIPPER": "Arrondit les crêtes qui dépassent le niveau du son : plus dense, sans pomper. Parfait sur une basse, avant l'OTT."
   },
   "bass": {

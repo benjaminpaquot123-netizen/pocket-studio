@@ -122,6 +122,8 @@ class StarterWizardTest {
                     listOfNotNull("Basse".takeIf { !on808 }, StarterWizard.trackName(P.Pad, parts[P.Pad], style), "Lead") +
                         listOfNotNull(
                             StarterWizard.SUB_TRACK.takeIf { style.melody.subBass }, StarterWizard.BASS_SWITCH_TRACK.takeIf { style.melody.bassSwitch.isNotBlank() },
+                            // The leads chantier: liquid's pad behind its Rhodes.
+                            StarterWizard.PAD_LAYER_TRACK.takeIf { style.melody.padLayer != null },
                             StarterWizard.COUNTER_TRACK.takeIf { style.melody.counter != null },
                             StarterWizard.RISER_TRACK.takeIf { riser },
                             // The vocal (all parts on: the chops have a hook to answer), then the sub drop under club music's Drops.
@@ -595,9 +597,9 @@ class StarterWizardTest {
         val channels = p.mixer.channels
         assertEquals(EffectType.VINYL.ordinal, channels[InstrumentTrack.mixerChannel(pad.id)].inserts[0].type)
         // S5: the style's pump on the bass is the Musique bus's one duck under the kick's sound (its lows), not a pump of its own;
-        // G0: only its low cut (a flat EQ) on its strip.
+        // G0: its low cut (a flat EQ); « des basses qui tapent »: the bass exciter (heard on a phone).
         val bassFx = channels[InstrumentTrack.mixerChannel(bass.id)].inserts.filter { it.type != 0 }
-        assertEquals(listOf(EffectType.PARAM_EQ.ordinal), bassFx.map { it.type })
+        assertEquals(listOf(EffectType.PARAM_EQ.ordinal, EffectType.BASS_EXCITER.ordinal), bassFx.map { it.type })
         assertEquals(30f, RoleMix.lowCutHz(channels[InstrumentTrack.mixerChannel(bass.id)])!!, 1f)
         val bus = p.mixer.musicBus!!
         assertTrue(InstrumentTrack.mixerChannel(bass.id) in bus.members)

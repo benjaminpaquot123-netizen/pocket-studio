@@ -404,6 +404,19 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** The open project (the last one used). Another project = a new ViewModel (see ProjectsViewModel). */
     val projectId: String = com.pocketstudio.app.projects.CurrentProject.get(app)
+    // S6 (G5), see estimateLiveDrive: declared before the init blocks that start it.
+    private var liveDriveJob: kotlinx.coroutines.Job? = null
+    /** What the drive was estimated for ([liveDriveKeyOf]); null: not yet. */
+    private var liveDriveKey: Int? = null
+    /** What an estimate was last tried for, found or not: a failed one is not tried again at each ▶. */
+    private var liveDriveTriedKey: Int? = null
+    /** The estimate given again with the song's own target, at ▶ (once per estimate). */
+    private var liveDrivePlayedKey: Int? = null
+    /** An export's own drive came in: an estimate does not take its place. */
+    private var liveDriveFromExport = false
+    /** The estimated drive (dB), for tests and the bug report's journal. */
+    @Volatile internal var liveDriveDb: Float? = null
+        private set
 
     val session: ProjectSession = ProjectSession(
         id = projectId,
@@ -2682,6 +2695,28 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         playSongFrom(0)
     }
 
+    /**
+     * « Écouter » on « Ton morceau est prêt ! » (decision 2A, S6): stopped, the song plays from about
+     * 8 bars before its first Drop (or Refrain, [com.pocketstudio.model.FirstListen.startPart]), on a
+     * part's start: the Drop after about 15 s, even in a techno whose Drop is two minutes in. Playing,
+     * it stops. A song without a Drop or Refrain plays from its start.
+     */
+    fun listenFromDrop() {
+        if (_transport.value.playing) {
+            toggleTransport()
+            return
+        }
+        val start = com.pocketstudio.model.FirstListen.startPart(project.value)
+        playStartsForTest?.add("listen $start")
+        if (start <= 0) toggleSong() else playSongPart(start)
+    }
+
+    /** « Depuis le début », next to « Écouter »: the whole song from its first bar (playing: from there again). */
+    fun listenFromStart() {
+        if (_transport.value.playing) toggleTransport()
+        toggleSong()
+    }
+
     /** The song was asked for (« Jouer le morceau », a part touched): « ⟳ Partie » goes off. */
     private fun loopPartOff() {
         _loopArmedBySelf.value = false
@@ -2733,6 +2768,14 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         applyAutomationState(project.value, project.value.automationBefore(index))
         heardScene = part.scene
         _sessionUi.value = SessionUi(songIndex = index)
+        // S6 (G5): another song made in this project is estimated again (applied when found); the drive
+        // found is given once more with the target syncEngine just sent (a target left by another
+        // project would have moved it).
+        estimateLiveDrive()
+        if (!liveDriveFromExport && liveDriveKey != null && liveDrivePlayedKey != liveDriveKey) {
+            liveDriveDb?.let { NativeEngine.setKnownDrive(it) }
+            liveDrivePlayedKey = liveDriveKey
+        }
         toggleTransport(countInBars, project.value.songStepOf(index))
         // The whole project just went to the engine: let the queue drain before the next scene.
         viewModelScope.launch {
@@ -7148,6 +7191,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (NativeEngine.isAvailable) NativeEngine.liveTrack = 0
         // The engine outlives a project: its loudness target forgets the last one's music.
         if (NativeEngine.isAvailable) NativeEngine.resetLoudnessEstimate()
+        // S6 (G5): the live gain this song's export will use, found before ▶ (in the background).
+        estimateLiveDrive()
         // The engine outlives a project: the keyboard's sustain, wheel and arpeggio of the last
         // one must not hold or arpeggiate this one's notes while its buttons show them off.
         for (id in 0 until InstrumentTrack.MAX) {
@@ -8064,6 +8109,79 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     @androidx.annotation.VisibleForTesting
     internal suspend fun awaitSoundsLoadedForTest() = awaitSoundsLoaded()
 
+    // --- S6 son (G5): « ce que j'entends = ce que j'envoie » -----------------------------------
+    // The live loudness gain used to start at 0 dB and rise for 11 to 32 s (an Intro 6.5 LU low, a
+    // first Drop 1.4 LU under the export). For an assistant's song whose target is on its Drop (mix
+    // version 2 and later), the drive is found offline as the export finds it (FirstListen.loudPart:
+    // the fullest Drop rendered on its own by a private engine, its loud part brought to the target
+    // within the chain's 3 LU) and given to the live engine before ▶ (NativeEngine.setKnownDrive: it
+    // glides there and is settled, coming down only on a loss past the cap). Projects aimed at the
+    // whole song (mix version 1) keep the live estimate as before.
+    // (its state is declared next to [projectId]: the init blocks start it)
+
+    private fun liveDriveWanted(p: Project) = p.mixVersion >= Project.MIX_V2 && p.song.isNotEmpty() && p.style != null
+
+    /** The song's shape as the estimate heard it: another song made here estimates again. */
+    private fun liveDriveKeyOf(p: Project): Int = java.util.Objects.hash(p.song, p.style, p.tempoBpm, p.mixVersion, p.allScenes.size)
+
+    /** Starts the estimate when this song has none yet (worker side; posted when found). */
+    private fun estimateLiveDrive() {
+        val p0 = project.value
+        if (!NativeEngine.isAvailable || !liveDriveWanted(p0) || liveDriveFromExport) return
+        if (liveDriveJob?.isActive == true || liveDriveKey == liveDriveKeyOf(p0) || liveDriveTriedKey == liveDriveKeyOf(p0)) return
+        // Dispatched (never run inside the constructor that may start it: the sounds' loaders come later).
+        liveDriveJob = viewModelScope.launch(Dispatchers.Main) {
+            awaitSoundsLoaded()
+            val p = project.value
+            if (!liveDriveWanted(p)) return@launch
+            val key = liveDriveKeyOf(p)
+            liveDriveTriedKey = key
+            val index = com.pocketstudio.model.FirstListen.loudPart(p)
+            val part = p.song.getOrNull(index) ?: return@launch
+            val frames = Math.round(com.pocketstudio.model.FirstListen.loudSteps(p, index) * 15.0 / p.tempoBpm * OfflineExport.SAMPLE_RATE)
+            val job = finishOrRelease(Dispatchers.Default, OfflineExport::close) { OfflineExport() } ?: return@launch
+            val report = try {
+                NativeEngine.captureInto(job) {
+                    // The part on its own, as ▶ plays it: the song's curves where it first plays.
+                    syncEngine(p.sceneView(part.scene))
+                    pushPart(p, part.scene, part)
+                    NativeEngine.setMetronome(false)
+                    applySongCurves(p, part.scene)
+                    NativeEngine.captureAt(0)
+                    NativeEngine.leaveSong()
+                    NativeEngine.captureAt(-1)
+                }
+                withContext(Dispatchers.Default) {
+                    job.renderToArray(frames, 0)
+                    job.report()
+                }
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                AppLog.add("Gain du direct : estimation impossible (${e.message})")
+                null
+            } finally {
+                withContext(kotlinx.coroutines.NonCancellable + Dispatchers.Main) { job.close() }
+            }
+            // Only a Drop-aimed render knows the loud part; an export that came in meanwhile wins.
+            val drive = report?.takeIf { it.loudLufs != null }?.driveDb?.toFloat() ?: return@launch
+            if (liveDriveFromExport) return@launch
+            liveDriveDb = drive
+            liveDriveKey = key
+            // Taken at once while the song plays; before ▶ the engine keeps it until the target comes on.
+            NativeEngine.setKnownDrive(drive)
+            if (_transport.value.playing) liveDrivePlayedKey = key
+            AppLog.add("Gain du direct : ${"%+.1f".format(drive)} dB (estimé sur « ${com.pocketstudio.model.video.VideoPlanner.partLabel(p, part.scene)} »)")
+        }
+    }
+
+    /** The live bench and tests: the estimate started (if any) is done. */
+    @androidx.annotation.VisibleForTesting
+    internal suspend fun awaitLiveDriveForTest() {
+        estimateLiveDrive()
+        liveDriveJob?.join()
+    }
+
     /** Tests: [pack] counts as an instrument still being read into memory (null: none any more). */
     @androidx.annotation.VisibleForTesting
     internal fun holdMultiLoading(pack: String?) {
@@ -8088,7 +8206,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         awaitSoundsLoaded()
         val p = project.value
         describe(job, p, song = p.song.isNotEmpty(), soloChannel = null)
-        NativeEngine.captureInto(job) { NativeEngine.setMasterCeiling(AacEncoder.CEILING_DBTP) }
+        NativeEngine.captureInto(job) {
+            NativeEngine.setMasterCeiling(AacEncoder.CEILING_DBTP)
+            // S6 (G6): as loud as the song's WAV (its drive searched at −1 dBTP).
+            if (p.mixVersion >= Project.MIX_V2) NativeEngine.setDriveCeiling(MASTER_CEILING_DBTP)
+        }
         // The sounds are in and the song described: the render itself starts (the stall watch arms here).
         onRenderStart()
         return withContext(Dispatchers.IO) { job.render(file, frames, 0L) }
@@ -8173,7 +8295,12 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                         val result = try {
                             // In the try: a describe that fails (a sound gone) still closes the private engine.
                             describe(job, p, song, solo, settings.limited, settings.masterFx)
-                            if (ceiling != null) NativeEngine.captureInto(job) { NativeEngine.setMasterCeiling(ceiling) }
+                            if (ceiling != null) NativeEngine.captureInto(job) {
+                                NativeEngine.setMasterCeiling(ceiling)
+                                // S6 (G6): a Drop-aimed song's M4A keeps its WAV's drive (searched at −1 dBTP), the
+                                // lower ceiling only limits: as loud as the WAV instead of 3 LU under it.
+                                if (p.mixVersion >= Project.MIX_V2) NativeEngine.setDriveCeiling(MASTER_CEILING_DBTP)
+                            }
                             running = job
                             val watch = com.pocketstudio.app.export.StallWatch()
                             poll = launch {
@@ -8229,7 +8356,12 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                         loss = report?.takeIf { it.driveDb != 0.0 }?.lossDb
                         // S5: the live target settles on the drive the whole song needed.
                         report?.takeIf { p.mixVersion >= Project.MIX_V2 && it.loudLufs != null && settings.what == ExportWhat.Song }
-                            ?.let { NativeEngine.setKnownDrive(it.driveDb.toFloat()) }
+                            ?.let {
+                                NativeEngine.setKnownDrive(it.driveDb.toFloat())
+                                // S6 (G5): the export's own drive, better than any estimate.
+                                liveDriveFromExport = true
+                                liveDriveDb = it.driveDb.toFloat()
+                            }
                     }
                     if (exportCancelled) {
                         wav.delete()
@@ -8498,6 +8630,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         private val AUDIO_EXTENSIONS = setOf("wav", "mp3", "flac", "m4a", "aac", "ogg", "opus", "aif", "aiff")
         /** After the last bar, releases, reverbs and echoes ring out until silent (−90 dBFS), ten seconds at most. */
         const val MAX_TAIL_FRAMES = 10L * OfflineExport.SAMPLE_RATE
+        /** The master limiter's ceiling of a WAV (dBTP, the engine's MasterChain::kDefaultCeilingDb): an M4A searches its drive there (S6). */
+        const val MASTER_CEILING_DBTP = -1f
         internal val STEM_LABELS = listOf("Batterie", "Basse", "Autres", "Voix")
 
         /** An export file's label ("batterie", "piste2-basse"…) as the progress line shows it. */

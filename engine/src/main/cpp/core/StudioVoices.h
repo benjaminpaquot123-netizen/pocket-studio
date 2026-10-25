@@ -100,13 +100,23 @@ struct Settings {
     float click = 0.5f;    // 0..1, the attack layer
     float glide = 0.08f;   // seconds, 808: slide between pitched hits
     float sub = 0.5f;      // 0..1, the kicks' sub layer
-    float tone = 0.2f;     // 0..1, the 808's octave and twelfth layer, the rumble's cut-off
+    float tone = 0.2f;     // 0..1, the 808's octave and twelfth layer (v2: its 4th to 8th harmonics), the rumble's cut-off
+    // « L'808 qui tape » (docs/hits/basses-qui-tapent.md, P2), appended: the 808's version, 0 as it
+    // was (the projects saved before keep their sound), 1 the punchy one: the attack starts `drop`
+    // semitones over the note and falls with a time constant of `dropTime` seconds, « tone » adds its
+    // 4th to 8th harmonics (heard on a phone), a drive over 0.75 adds a second, asymmetric clip.
+    float version = 0.0f;
+    float drop = 24.0f;      // semitones 0..36 (v2)
+    float dropTime = 0.025f; // seconds 0.005..0.15 (v2)
 };
 
 // The 808 bass: a sine body with a short pitch drop at the attack, a click, a saturation and an
-// octave / twelfth layer that give it its 60-250 Hz harmonics (heard on a phone), a long tuned
-// note (it holds, then falls), and a glide between pitched hits (legato: the phase runs on, the
-// pitch slides over the glide time).
+// octave / twelfth layer that give it its 60-250 Hz harmonics, a long tuned note (it holds, then
+// falls), and a glide between pitched hits (legato: the phase runs on, the pitch slides over the
+// glide time). Version 1 (Settings::version, « l'808 qui tape »): a drop of its own in semitones
+// and time (+24 st over 25 ms: the « boum »), its 4th to 8th harmonics for « tone » (the octave and
+// the twelfth stay under 200 Hz: a phone, which plays almost nothing there, never heard them), and a
+// second asymmetric clip for a hot drive (phonk).
 // Mono: below 120 Hz it is the same on both sides (the kit pans it to the centre).
 struct Bass808 {
     // State
@@ -114,6 +124,7 @@ struct Bass808 {
     float hz = 65.0f, targetHz = 65.0f, glideRatio = 1.0f;
     int glideLeft = 0;
     float pitchEnv = 0.0f;
+    float dropCoef = 0.9965f;  // v2: the drop's fall per frame (its time constant)
     float env = 0.0f, envTarget = 0.0f;
     float clickEnv = 0.0f;
     float ampCoef = 0.9999f;
@@ -133,6 +144,9 @@ struct Bass808 {
         holdLeft = static_cast<int>(0.6f * decay * static_cast<float>(sampleRate));
     }
     bool sounding() const { return env > 1e-4f || envTarget > 1e-4f; }
+    // Version 1: the 4th-8th harmonics' share at tone 1, the attack's lift at its start.
+    static constexpr float kUpper = 0.9f;
+    static constexpr float kPunch = 0.8f;
     static float shape(float x, float drive) {
         if (drive <= 0.0f) return x;
         const float g = 1.0f + 10.0f * drive;
@@ -156,6 +170,7 @@ struct Bass808 {
         glideLeft = 0;
         glideRatio = 1.0f;
         pitchEnv = 1.0f;
+        dropCoef = decayCoef(std::clamp(s.dropTime, 0.005f, 0.15f), sampleRate);
         env = envTarget = velocity;
         clickEnv = velocity * s.click;
     }
@@ -165,9 +180,13 @@ struct Bass808 {
             hz *= glideRatio;
             if (--glideLeft == 0) hz = targetHz;
         }
-        // The attack's drop: from 2.5 x the note down to it in about 25 ms.
-        const float f = hz * (1.0f + 1.5f * pitchEnv);
-        pitchEnv *= 0.9965f;  // ~ 12 ms time constant at 48 kHz (the drop is 10..30 ms on a real one)
+        const bool v2 = s.version >= 0.5f;
+        // The attack's drop. Version 0: from 2.5 x the note down to it, a time constant of 6 ms at
+        // 48 kHz (0.9965 a frame: gone in about 25 ms; its comment said 12 ms, the voice always had
+        // 6, and the projects saved with it keep it). Version 1: `drop` semitones over the note,
+        // falling with its own time constant (+24 st and 25 ms in trap: the « boum »).
+        const float f = v2 ? hz * std::exp2(std::clamp(s.drop, 0.0f, 36.0f) * pitchEnv * (1.0f / 12.0f)) : hz * (1.0f + 1.5f * pitchEnv);
+        pitchEnv *= v2 ? dropCoef : 0.9965f;
         phase += f / static_cast<float>(sampleRate);
         if (phase >= 1.0f) phase -= 1.0f;
         const float body = sineOf(phase);
@@ -189,7 +208,26 @@ struct Bass808 {
         // the octave and the twelfth in parallel, after it (inside it, the clipping would flatten
         // them again): what a phone, which plays nothing under 100 Hz, hears of an 808.
         const float tone = std::clamp(s.tone, 0.0f, 1.0f);
-        const float driven = shape(body * env, std::clamp(s.drive, 0.0f, 1.0f));
+        const float drive = std::clamp(s.drive, 0.0f, 1.0f);
+        if (v2) {
+            // A drive over 0.75 squares it off harder and asymmetrically (even harmonics too: phonk);
+            // « tone » adds the 4th to 8th harmonics (175-350 Hz for F1), following the note's level.
+            float driven = shape(body * env, drive);
+            if (drive > 0.75f) driven = softClip(driven, 4.0f * (drive - 0.75f));
+            // Each harmonic faded out as it nears 0.45 x the rate (a high note on its +36 semitone
+            // drop: its 8th would otherwise fold back down as aliasing).
+            const float top = 0.45f * static_cast<float>(sampleRate), fade = 1.0f / (0.05f * static_cast<float>(sampleRate));
+            auto under = [&](float k) { return std::clamp((top - k * f) * fade, 0.0f, 1.0f); };
+            const float upper = 0.55f * under(4.0f) * sineOf(4.0f * phase) + 0.45f * under(5.0f) * sineOf(5.0f * phase) +
+                                0.35f * under(6.0f) * sineOf(6.0f * phase) + 0.28f * under(7.0f) * sineOf(7.0f * phase) +
+                                0.22f * under(8.0f) * sineOf(8.0f * phase);
+            const float harmonics = tone * kUpper * upper * env;
+            // The attack lifted while the pitch drops (+5 dB at its start, gone with the drop): the
+            // first 5 to 40 ms louder than the note, the « boum » that hits (B5 >= +4 dB).
+            const float punch = 1.0f + kPunch * pitchEnv;
+            return (toneLp.low((driven + harmonics) * punch) + click) * (1.0f / (1.0f + kUpper * tone));
+        }
+        const float driven = shape(body * env, drive);
         const float harmonics = tone * (0.8f * sineOf(2.0f * phase) + 0.4f * sineOf(3.0f * phase)) * env;
         return (toneLp.low(driven + harmonics) + click) * (1.0f / (1.0f + 0.9f * tone));
     }

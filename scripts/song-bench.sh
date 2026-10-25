@@ -3,7 +3,7 @@
 # replayed through the engine core on Linux, measured, and summed up in a Markdown report.
 #
 #   scripts/song-bench.sh [--styles a,b,c] [--out DIR] [--ffmpeg] [--before FILE.json] [--no-record] [--jobs N]
-#                         [--premaster] [--m4a] [--keep-wav] [--kit3]
+#                         [--premaster] [--m4a] [--keep-wav] [--kit3] [--no-bass]
 #
 #   --styles   only these styles (ids of scripts/packs/recipes); default: all of them
 #   --out      work folder (default build/bench): cmds/ (.pscmd + samples), wav/, json/, render/ (ps_render's
@@ -15,13 +15,18 @@
 #   --title    the report's title line
 #   --premaster  also renders each song before the master chain (ps_render --no-limiter) and measures it:
 #              the arrangement's own section contrast, next to the exported one (json-pre/)
-#   --m4a      also renders each song as the app's M4A does (ceiling -2 dBTP), encodes it with ffmpeg's AAC
-#              at 256 kbit/s, decodes it and measures its true peak (json-m4a/). ffmpeg's « fast » coder: its
-#              default « twoloop » leaves isolated glitches up to +6 dB over the source on dense material
-#              (an encoder fault: the phone encodes with MediaCodec)
+#   --m4a      also renders each song as the app's M4A does (ceiling -2 dBTP standing for the WAV's -1, rendered
+#              again lower while the decoded file is over -1 dBTP), encodes it in AAC at 256 kbit/s with FDK AAC
+#              (fdkaac, Android's encoder family; S6) or else ffmpeg's « fast » coder, decodes it and measures it
+#              (json-m4a/). ffmpeg's default « twoloop » leaves isolated glitches up to +6 dB on dense material
 #   --keep-wav keeps the WAVs (by default each is deleted once measured: 37 long songs take about 4 GB;
 #              --ffmpeg keeps them for its cross-check)
 #   --kit3     renders the recordings with kit v3 (the line C 100 3.0 appended to a copy of each .pscmd)
+#   --no-bass  skips the bass pass. By default each song that names its basses (META bass) also renders
+#              them alone before the master chain (ps_render --no-limiter --solo), the whole song before it,
+#              the kick alone (META kick) and, when it has a bass exciter (« Basse audible »), the song before
+#              the master without it: ps_measure --bass reads what a phone keeps of the bass
+#              (docs/hits/basses-qui-tapent.md § 8, B1-B12)
 # Environment: GRADLE_ARGS (default --max-workers=1), CMAKE_EXTRA_ARGS (e.g. ccache), JOBS.
 # The rendered audio stays in the work folder: never commit it.
 set -euo pipefail
@@ -36,6 +41,7 @@ PREMASTER=0
 M4A=0
 KEEP=0
 KIT3=0
+BASS=1
 JOBS="${JOBS:-$(nproc 2>/dev/null || echo 2)}"
 while [ $# -gt 0 ]; do
     case "$1" in
@@ -50,6 +56,7 @@ while [ $# -gt 0 ]; do
         --m4a) M4A=1; shift ;;
         --keep-wav) KEEP=1; shift ;;
         --kit3) KIT3=1; shift ;;
+        --no-bass) BASS=0; shift ;;
         *) echo "unknown option $1" >&2; exit 1 ;;
     esac
 done
@@ -89,7 +96,7 @@ if [ "$KIT3" = 1 ]; then
         awk '/^RENDER /{print "AT -1"; print "C 100 3.0 0 0"} {print}' "$OUT/cmds/$s.pscmd" > "$OUT/cmds/$s.kit3"
     done
 fi
-export OUT TOOLS PREMASTER M4A KEEP KIT3
+export OUT TOOLS PREMASTER M4A KEEP KIT3 BASS
 # A recording that names its lead's mixer channel (META lead, S4) also renders the lead alone: the
 # report reads how much its brightness moves along the song (ps_measure --lead).
 list | xargs -P "$JOBS" -I{} sh -c '
@@ -101,9 +108,27 @@ list | xargs -P "$JOBS" -I{} sh -c '
         "$TOOLS/ps_render" --solo "$lead" "$cmd" "$OUT/wav/{}.lead.wav" || { echo "FAILED: {} (lead)" >&2; exit 255; }
         leadArgs="--lead $OUT/wav/{}.lead.wav"
     fi
-    "$TOOLS/ps_render" --report "$OUT/render/{}.json" "$cmd" "$OUT/wav/{}.wav" && "$TOOLS/ps_measure" "$OUT/wav/{}.wav" "$cmd" $leadArgs > "$OUT/json/{}.json" \
+    # The bass pass: the basses alone and the song before the master (with and without the exciter), the kick alone.
+    bass="$(sed -n "s/^META bass //p" "$cmd" | head -1)"
+    kick="$(sed -n "s/^META kick //p" "$cmd" | head -1)"
+    bassArgs=""
+    if [ "$BASS" = 1 ] && [ -n "$bass" ]; then
+        "$TOOLS/ps_render" --no-limiter --solo "$bass" "$cmd" "$OUT/wav/{}.bass.wav" \
+            && "$TOOLS/ps_render" --no-limiter "$cmd" "$OUT/wav/{}.pre-b.wav" || { echo "FAILED: {} (bass)" >&2; exit 255; }
+        bassArgs="--bass $OUT/wav/{}.bass.wav --pre $OUT/wav/{}.pre-b.wav"
+        if [ -n "$kick" ]; then
+            "$TOOLS/ps_render" --no-limiter --solo "$kick" "$cmd" "$OUT/wav/{}.kick.wav" || { echo "FAILED: {} (kick)" >&2; exit 255; }
+            bassArgs="$bassArgs --kick $OUT/wav/{}.kick.wav"
+        fi
+        # SetInsertType (33) of the bass exciter (InsertSlot::BassExciterFx, 29): the song without it too.
+        if grep -qE "^C 33 [^ ]+ [0-9]+ 29$" "$cmd"; then
+            "$TOOLS/ps_render" --no-limiter --no-exciter "$cmd" "$OUT/wav/{}.dry.wav" || { echo "FAILED: {} (dry)" >&2; exit 255; }
+            bassArgs="$bassArgs --dry $OUT/wav/{}.dry.wav"
+        fi
+    fi
+    "$TOOLS/ps_render" --report "$OUT/render/{}.json" "$cmd" "$OUT/wav/{}.wav" && "$TOOLS/ps_measure" "$OUT/wav/{}.wav" "$cmd" $leadArgs $bassArgs > "$OUT/json/{}.json" \
         || { echo "FAILED: {}" >&2; exit 255; }
-    rm -f "$OUT/wav/{}.lead.wav"
+    rm -f "$OUT/wav/{}.lead.wav" "$OUT/wav/{}.bass.wav" "$OUT/wav/{}.pre-b.wav" "$OUT/wav/{}.kick.wav" "$OUT/wav/{}.dry.wav"
     (cd "$OUT/wav" && sha256sum "{}.wav" > "$OUT/hash/{}.txt")
     [ "$KEEP" = 1 ] || rm -f "$OUT/wav/{}.wav"
     if [ "$PREMASTER" = 1 ]; then
@@ -112,21 +137,42 @@ list | xargs -P "$JOBS" -I{} sh -c '
         rm -f "$OUT/wav/{}.pre.wav"
     fi
     if [ "$M4A" = 1 ]; then
-        "$TOOLS/ps_render" --ceiling -2 "$cmd" "$OUT/wav/{}.m4a.wav" \
-            && ffmpeg -nostats -hide_banner -loglevel error -y -i "$OUT/wav/{}.m4a.wav" -c:a aac -aac_coder fast -b:a 256k "$OUT/wav/{}.m4a" \
-            && ffmpeg -nostats -hide_banner -loglevel error -y -i "$OUT/wav/{}.m4a" -c:a pcm_f32le "$OUT/wav/{}.dec.wav" \
-            && "$TOOLS/ps_measure" "$OUT/wav/{}.dec.wav" > "$OUT/json-m4a/{}.first.json" \
-            || { echo "FAILED: {} (m4a)" >&2; exit 255; }
-        # As the app does (AacEncoder.encodeChecked): over -1 dBTP decoded, encoded again lower (4 encodes at most).
-        cp "$OUT/json-m4a/{}.first.json" "$OUT/json-m4a/{}.json"
-        for again in 1 2 3; do
-            gain="$(python3 -I -c "import json,sys; t=json.load(open(sys.argv[1]))[\"true_peak\"]; g=float(sys.argv[2]); a=int(sys.argv[3]); print(g * 10 ** ((-1.5 - 0.5 * (a - 1) - t) / 20) if t > -1.0 else 0)" "$OUT/json-m4a/{}.json" "${gain:-1}" "$again")"
-            [ "$gain" = 0 ] && break
-            ffmpeg -nostats -hide_banner -loglevel error -y -i "$OUT/wav/{}.m4a.wav" -af "volume=$gain" -c:a aac -aac_coder fast -b:a 256k "$OUT/wav/{}.m4a" \
+        # S6: as the app (RhythmViewModel.renderMix, M4aGuard): the song rendered with its limiter at -2 dBTP,
+        # standing for its WAV (--drive-ceiling -1: the codec headroom off the peaks, not off the loudness),
+        # encoded, decoded; over -1 dBTP, rendered again with the limiter lower by the excess + 0.2 dB
+        # (3 renders at most), then encoded lower (the last resort). The encoder: FDK AAC (fdkaac, the
+        # family of the MediaCodec encoder of Android) when installed, else the « fast » coder of ffmpeg (which
+        # overshoots 2 to 4 dB more than the phone: the M4A comes out 2 LU too low).
+        enc() {
+            if command -v fdkaac > /dev/null; then
+                ffmpeg -nostats -hide_banner -loglevel error -y -i "$1" -af "volume=$3" -c:a pcm_s16le "$OUT/wav/{}.m4a16.wav" \
+                    && fdkaac -S -b 256000 -o "$2" "$OUT/wav/{}.m4a16.wav" && rm -f "$OUT/wav/{}.m4a16.wav"
+            else
+                ffmpeg -nostats -hide_banner -loglevel error -y -i "$1" -af "volume=$3" -c:a aac -aac_coder fast -b:a 256k "$2"
+            fi
+        }
+        ceiling=-2
+        for render in 1 2 3; do
+            "$TOOLS/ps_render" --ceiling "$ceiling" --drive-ceiling -1 "$cmd" "$OUT/wav/{}.m4a.wav" \
+                && enc "$OUT/wav/{}.m4a.wav" "$OUT/wav/{}.m4a" 1 \
                 && ffmpeg -nostats -hide_banner -loglevel error -y -i "$OUT/wav/{}.m4a" -c:a pcm_f32le "$OUT/wav/{}.dec.wav" \
                 && "$TOOLS/ps_measure" "$OUT/wav/{}.dec.wav" > "$OUT/json-m4a/{}.json" \
-                || { echo "FAILED: {} (m4a again)" >&2; exit 255; }
+                || { echo "FAILED: {} (m4a)" >&2; exit 255; }
+            [ "$render" = 1 ] && cp "$OUT/json-m4a/{}.json" "$OUT/json-m4a/{}.first.json"
+            ceiling="$(python3 -I -c "import json,sys; t=json.load(open(sys.argv[1]))[\"true_peak\"]; c=float(sys.argv[2]); print(round(c - (t + 1.0 + 0.2), 2) if t > -1.0 else \"ok\")" "$OUT/json-m4a/{}.json" "$ceiling")"
+            [ "$ceiling" = ok ] && break
         done
+        # Still over: this mix encoded lower (3 encodes at most).
+        if [ "$ceiling" != ok ]; then
+            for again in 1 2 3; do
+                gain="$(python3 -I -c "import json,sys; t=json.load(open(sys.argv[1]))[\"true_peak\"]; g=float(sys.argv[2]); print(g * 10 ** ((-1.3 - t) / 20) if t > -1.0 else 0)" "$OUT/json-m4a/{}.json" "${gain:-1}")"
+                [ "$gain" = 0 ] && break
+                enc "$OUT/wav/{}.m4a.wav" "$OUT/wav/{}.m4a" "$gain" \
+                    && ffmpeg -nostats -hide_banner -loglevel error -y -i "$OUT/wav/{}.m4a" -c:a pcm_f32le "$OUT/wav/{}.dec.wav" \
+                    && "$TOOLS/ps_measure" "$OUT/wav/{}.dec.wav" > "$OUT/json-m4a/{}.json" \
+                    || { echo "FAILED: {} (m4a again)" >&2; exit 255; }
+            done
+        fi
         rm -f "$OUT/wav/{}.m4a.wav" "$OUT/wav/{}.m4a" "$OUT/wav/{}.dec.wav"
     fi'
 cat $(ls "$OUT"/hash/*.txt | sort) > "$OUT/sha256.txt"

@@ -173,10 +173,14 @@ class DrumFeelTest {
             // The style's treatment of its bass is on the 808's pad.
             if (s.effects.any { it.target == Part.Bass.id }) assertTrue(id, p.mixer.channels[Mixer.padChannel(StudioDrums.LANE_808)].hasOwnFx())
         }
-        // A pack's 808 the user installed keeps its track (its sound), the studio 808 stays off.
+        // « Des basses qui tapent »: with the style's pack on the phone the engine's 808 still comes first,
+        // the pack's 808 second; chosen, the pack's 808 keeps its track (its sound), the studio 808 stays off.
         val trap = style("trap")
         val pack = PackManifest("trap", "Trap", sounds = listOf(PackSound("808_01.flac", "808", "808 1")))
-        val packed = StarterWizard.soundsFor(Part.Bass, trap, listOf(pack)).first()
+        val offered = StarterWizard.soundsFor(Part.Bass, trap, listOf(pack))
+        assertTrue(StudioDrums.bassOn808(trap, offered[0]))
+        val packed = offered[1]
+        assertTrue(packed.sampled != null)
         assertFalse(StudioDrums.bassOn808(trap, packed))
         // Elsewhere no 808 pad.
         for ((s, p) in songs) if (s.id !in StudioDrums.BASS_808) assertNull(s.id, p.padVoices[StudioDrums.LANE_808])

@@ -838,6 +838,11 @@ object NativeEngine {
     fun setMonoBass(hz: Float) = post(CMD_MASTER, hz, 7)
     /** S5 (mix version 2): the drive an export of this song found (dB): the live target settles there. */
     fun setKnownDrive(db: Float) = post(CMD_MASTER, db, 8)
+    /**
+     * S6 (an export engine only): the loudness target's drive searched as at this ceiling (dBTP; the
+     * WAV's −1), the music then limited at [setMasterCeiling]'s: an M4A as loud as its WAV. NaN: none.
+     */
+    fun setDriveCeiling(dbtp: Float) = post(CMD_MASTER, dbtp, 9)
     private external fun nativeInstallTrackSample(track: Int, handle: Long): Boolean
     private external fun exportInstallTrackSample(exportHandle: Long, track: Int, handle: Long)
     private external fun exportInstallAudioClip(exportHandle: Long, track: Int, handle: Long)

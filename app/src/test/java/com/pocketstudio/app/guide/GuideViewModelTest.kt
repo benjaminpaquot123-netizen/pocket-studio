@@ -50,6 +50,9 @@ class GuideViewModelTest {
 
     private fun Project.subStrip() = mixer.channels[InstrumentTrack.mixerChannel(instrumentTracks.first { it.name == "Sub" }.id)]
 
+    /** The Sub's strip with the Guide's saturation (after « Basse audible », the assistant's own effect there). */
+    private fun com.pocketstudio.model.Channel.saturated() = inserts.any { it.effect == EffectType.SATURATION }
+
     @Test
     fun theAnalysisFollowsTheProjectAndTheCardsAreOneUndoStepEach() {
         val vm = vmWith(jumpUp())
@@ -75,19 +78,19 @@ class GuideViewModelTest {
         // An option that changes the song: the sub gets its saturation (the engine follows); one undo takes it back with the card.
         val before = vm.project.value.subStrip()
         guide.apply("fx.sub", "light")
-        await("sub saturated") { vm.project.value.subStrip().inserts.first().effect == EffectType.SATURATION }
+        await("sub saturated") { vm.project.value.subStrip().saturated() }
         assertEquals(syncs + 1, vm.guideSyncs)
         await("sub undoable") { guide.ui.value.cards["fx.sub"]?.undoable == true }
         vm.undo()
         assertEquals(before, vm.project.value.subStrip())
         assertEquals(GuideStatus.TODO, vm.project.value.guide.statusOf("fx.sub"))
         vm.redo()
-        assertEquals(EffectType.SATURATION, vm.project.value.subStrip().inserts.first().effect)
+        assertTrue(vm.project.value.subStrip().saturated())
         // « Annuler mon choix » is a step of its own.
         guide.undoChoice("fx.sub")
         await("undone") { vm.project.value.subStrip() == before }
         vm.undo()
-        assertEquals(EffectType.SATURATION, vm.project.value.subStrip().inserts.first().effect)
+        assertTrue(vm.project.value.subStrip().saturated())
 
         // « Plus tard » and « Sauter »: one step each.
         guide.later("fx.drums")
@@ -112,7 +115,10 @@ class GuideViewModelTest {
         // The same effect changed by hand since.
         val ch = InstrumentTrack.mixerChannel(vm.project.value.instrumentTracks.first { it.name == "Sub" }.id)
         vm.session.edit { p -> p.copy(mixer = p.mixer.copy(channels = p.mixer.channels.mapIndexed { i, c ->
-            if (i == ch) c.copy(inserts = c.inserts.toMutableList().also { it[0] = it[0].copy(params = listOf(0.9f) + it[0].params.drop(1)) }) else c
+            if (i == ch) c.copy(inserts = c.inserts.toMutableList().also { l ->
+                val k = l.indexOfFirst { it.effect == EffectType.SATURATION }
+                l[k] = l[k].copy(params = listOf(0.9f) + l[k].params.drop(1))
+            }) else c
         })) }
         val edited = vm.project.value.subStrip()
         guide.undoChoice("fx.sub")

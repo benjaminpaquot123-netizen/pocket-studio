@@ -34,16 +34,25 @@ object SoundLibrary {
         "Basse growl" to 3f, "Reese DnB" to 3f, "Basse riddim" to 1.5f, "Basse neuro" to 5f, "Lead" to 2.5f, "Lead carré" to 1f, "Lead acide" to 6.5f, "Supersaw" to -2f, "Lead trance" to 1.5f,
         "Hoover" to 2.5f, "Nappe" to -3f, "Nappe chaude" to -4f, "Accords future bass" to -5f, "Cordes" to -4f, "Pluck" to 7f,
         "Pluck future" to 6f, "Arpège" to 7.5f, "Cloche" to 8.5f, "Orgue" to -2.5f, "Piano électrique" to 1.5f,
+        // « Des basses qui tapent » (docs/hits/basses-qui-tapent.md, P5): measured the same way against
+        // « Basse ronde » (scratchpad basses-calib/calib.py); « Sub chaud » stays as « Sub pur ».
+        "Basse roulante" to 4f, "Basse pluck" to 8f, "808 synthé" to 2f, "Donk" to 6f, "Sub chaud" to 0f,
     )
 
     /** [SYNTH_GAIN_DB] of the Plaits sounds. */
     val PLAITS_GAIN_DB: Map<String, Float> = mapOf(
         "Basse analogique" to 5f, "Basse pincée" to 26f, "Log drum" to 8.5f, "Lead filtré" to -2f, "Lead chiptune" to -5.5f,
-        "Voix robot" to 3.5f, "Nappe d'accords" to -5.5f, "Machine à cordes" to 2f, "Essaim" to 0.5f, "Piano FM" to 10.5f,
+        "Voix robot" to 3.5f, "Nappe d'accords" to -5.5f, "Machine à cordes" to 2f, "Essaim" to 0.5f, "Piano FM" to -3f,
+        "Rhodes FM" to -2f, "Vibraphone FM" to 5.7f, "Cloche FM" to 2.7f, "Stab métallique" to -3.5f,
         "Marimba" to 7f, "Cloche" to 5f,
     )
 
-    val SYNTH: List<NamedSound<SynthPatch>> = with(SynthPatch) {
+    /**
+     * The synth's sounds as they were until the leads chantier (lot 1): every project saved before
+     * keeps playing them (its patches are in its file) and [synthNameOf] still names them. [SYNTH]
+     * is what the library plays now.
+     */
+    val SYNTH_V2: List<NamedSound<SynthPatch>> = with(SynthPatch) {
         listOf(
             NamedSound("Basse ronde", "Basses", SynthPatch.PRESETS[0].second),
             NamedSound("Basse sub", "Basses", synth(OSC1_WAVE to 1f, OSC_MIX to 0f, SUB to 0.9f, CUTOFF to 0.3f, RESONANCE to 0.1f, FILTER_ENV to 0.2f, A_RELEASE to 0.15f)),
@@ -64,6 +73,18 @@ object SoundLibrary {
             NamedSound("Basse neuro", "Basses", WideMix.neuro(synth(OSC2_WAVE to 0.5f, OSC2_DETUNE to 0.7f, OSC_MIX to 0.5f, UNISON to 0.33f, UNISON_DETUNE to 0.25f, SUB to 0.4f, CUTOFF to 0.48f, RESONANCE to 0.5f, FILTER_ENV to 0.25f, F_DECAY to 0.25f, F_SUSTAIN to 0.3f, SWEEP to 0.6f, LFO2_RATE to 0.6f, LFO2_SYNC to syncValue(SYNC_EIGHTH), A_ATTACK to 0f, A_SUSTAIN to 1f, A_RELEASE to 0.12f))),
             // A clean sub under a growl: a triangle filtered into an almost pure sine, no movement.
             NamedSound("Sub pur", "Basses", synth(OSC1_WAVE to 1f, OSC_MIX to 0f, SUB to 0f, CUTOFF to 0.27f, RESONANCE to 0f, FILTER_ENV to 0f, A_ATTACK to 0f, A_SUSTAIN to 1f, A_RELEASE to 0.1f)),
+            // « Des basses qui tapent » (docs/hits/basses-qui-tapent.md § 5): the basses that hit. Each one
+            // restarts its oscillators at each hit (every attack alike) and its sub, a sine, never goes
+            // under 30 Hz. The rolling bass (a saw whose filter snaps shut in 36 ms, the velocity opening
+            // it: the « gallop » of techno and tech house), the plucked bass (no sustain, a 3-semitone
+            // « tok » at the attack), the synth 808 (a sine dropping 24 semitones over 25 ms, driven
+            // hard), the donk (a bouncing « boing », 18 semitones over 30 ms) and the warm sub (« Sub
+            // pur » saturated a little: its third harmonic, and every hit alike).
+            NamedSound("Basse roulante", "Basses", synth(OSC1_WAVE to 0f, OSC_MIX to 0f, SUB to 0.5f, SUB_SHAPE to 1f, SUB_FLOOR to 1f, CUTOFF to 0.34f, RESONANCE to 0.3f, FILTER_ENV to 0.55f, F_ATTACK to 0f, F_DECAY to 0.42f, F_SUSTAIN to 0f, A_ATTACK to 0f, A_DECAY to 0.5f, A_SUSTAIN to 0.6f, A_RELEASE to 0.2f, DRIVE to 0.35f, VELOCITY_CUTOFF to 0.5f, PHASE_RESET to 1f)),
+            NamedSound("Basse pluck", "Basses", synth(OSC1_WAVE to 0f, OSC_MIX to 0f, SUB to 0.4f, SUB_SHAPE to 1f, SUB_FLOOR to 1f, CUTOFF to 0.33f, RESONANCE to 0.35f, FILTER_ENV to 0.55f, F_DECAY to 0.45f, F_SUSTAIN to 0f, A_ATTACK to 0f, A_DECAY to 0.6f, A_SUSTAIN to 0f, A_RELEASE to 0.35f, PITCH_ENV to pitchEnvValue(3f), PITCH_DECAY to pitchDecayValue(10f), DRIVE to 0.3f, PHASE_RESET to 1f)),
+            NamedSound("808 synthé", "Basses", synth(OSC1_WAVE to 1f, OSC_MIX to 0f, SUB to 0f, CUTOFF to 0.4f, RESONANCE to 0f, FILTER_ENV to 0.5f, F_DECAY to 0.4f, F_SUSTAIN to 0f, A_ATTACK to 0f, A_DECAY to 0.8f, A_SUSTAIN to 0.35f, A_RELEASE to 0.4f, PITCH_ENV to pitchEnvValue(24f), PITCH_DECAY to pitchDecayValue(25f), DRIVE to 0.9f, PHASE_RESET to 1f)),
+            NamedSound("Donk", "Basses", synth(OSC1_WAVE to 1f, OSC_MIX to 0f, SUB to 0f, CUTOFF to 0.5f, RESONANCE to 0.1f, FILTER_ENV to 0.2f, F_DECAY to 0.4f, F_SUSTAIN to 0f, A_ATTACK to 0f, A_DECAY to 0.62f, A_SUSTAIN to 0f, A_RELEASE to 0.3f, PITCH_ENV to pitchEnvValue(18f), PITCH_DECAY to pitchDecayValue(30f), DRIVE to 0.5f, PHASE_RESET to 1f)),
+            NamedSound("Sub chaud", "Basses", synth(OSC1_WAVE to 1f, OSC_MIX to 0f, SUB to 0f, CUTOFF to 0.27f, RESONANCE to 0f, FILTER_ENV to 0f, A_ATTACK to 0f, A_SUSTAIN to 1f, A_RELEASE to 0.1f, DRIVE to 0.3f, PHASE_RESET to 1f)),
             NamedSound("Lead", "Leads", SynthPatch.PRESETS[1].second),
             NamedSound("Lead carré", "Leads", synth(OSC1_WAVE to 0.5f, OSC2_WAVE to 0.5f, OSC2_DETUNE to 0.52f, CUTOFF to 0.75f, RESONANCE to 0.2f, VIBRATO to 0.1f, LFO1_RATE to 0.5f)),
             NamedSound("Lead acide", "Leads", synth(CUTOFF to 0.28f, RESONANCE to 0.8f, FILTER_ENV to 0.8f, F_DECAY to 0.2f, F_SUSTAIN to 0f, A_RELEASE to 0.15f)),
@@ -83,7 +104,19 @@ object SoundLibrary {
             NamedSound("Sirène", "Effets", synth(SWEEP to 0.9f, LFO2_RATE to 0.5f, RESONANCE to 0.7f, CUTOFF to 0.5f, A_SUSTAIN to 1f)),
             NamedSound("Souffle", "Effets", synth(NOISE to 0.9f, OSC_MIX to 0.5f, CUTOFF to 0.6f, A_ATTACK to 0.3f, A_SUSTAIN to 1f, A_RELEASE to 0.6f, SWEEP to 0.4f, LFO2_RATE to 0.1f)),
         ).map { it.copy(sound = it.sound.with(GAIN, gainValue(SYNTH_GAIN_DB[it.name] ?: 0f))) }
+            // A bass's sub never under 30 Hz (« des basses qui tapent », P4: an octave-1 line's square sub
+            // fell to 23-31 Hz, which nothing plays and the limiter still hears): an octave up there only.
+            .map { if (it.category == "Basses" && it.sound.get(SUB) > 0f) it.copy(sound = it.sound.with(SUB_FLOOR, 1f)) else it }
     }
+
+    /**
+     * The synth's sounds: [SYNTH_V2] with its leads, pads, plucks and keys set as producers set them
+     * (the leads chantier, lot 1: [ProVoices]), the basses and effects unchanged.
+     */
+    val SYNTH: List<NamedSound<SynthPatch>> = SYNTH_V2.map(ProVoices::synth)
+
+    /** [PlaitsPatch.harmonics] of patch [index] (0..31) of a six-operator FM bank (Plaits' own mapping). */
+    fun dx(index: Int): Float = (index.coerceIn(0, 31) + 0.5f) / 32f / 1.02f
 
     val PLAITS: List<NamedSound<PlaitsPatch>> = listOf(
         NamedSound("Basse analogique", "Basses", PlaitsPatch(model = 8, harmonics = 0.3f, timbre = 0.35f, morph = 0.2f, decay = 0.35f)),
@@ -91,13 +124,21 @@ object SoundLibrary {
         NamedSound("Basse pincée", "Basses", PlaitsPatch(model = 19, harmonics = 0.3f, timbre = 0.3f, morph = 0.4f, decay = 0.4f)),
         // The amapiano log drum: Plaits' bass drum played on the notes, a tuned thud whose pitch drops.
         NamedSound("Log drum", "Basses", PlaitsPatch(model = 21, harmonics = 0.6f, timbre = 0.45f, morph = 0.55f, decay = 0.6f)),
-        NamedSound("Lead filtré", "Leads", PlaitsPatch(model = 0, harmonics = 0.6f, timbre = 0.6f, morph = 0.5f, decay = 0.7f)),
+        // The leads chantier: its filter half open (morph 0.7; at 0.5 the techno lead sat at 296 Hz, -19.9 dB of brightness).
+        NamedSound("Lead filtré", "Leads", PlaitsPatch(model = 0, harmonics = 0.6f, timbre = 0.6f, morph = 0.7f, decay = 0.7f)),
         NamedSound("Lead chiptune", "Leads", PlaitsPatch(model = 7, harmonics = 0.5f, timbre = 0.5f, morph = 0.3f, decay = 0.6f)),
         NamedSound("Voix robot", "Leads", PlaitsPatch(model = 11, harmonics = 0.4f, timbre = 0.6f, morph = 0.5f, decay = 0.7f)),
         NamedSound("Nappe d'accords", "Nappes", PlaitsPatch(model = 14, harmonics = 0.45f, timbre = 0.4f, morph = 0.5f, decay = 0.9f, release = 0.7f)),
         NamedSound("Machine à cordes", "Nappes", PlaitsPatch(model = 6, harmonics = 0.5f, timbre = 0.5f, morph = 0.6f, decay = 0.9f, release = 0.75f)),
         NamedSound("Essaim", "Nappes", PlaitsPatch(model = 16, harmonics = 0.5f, timbre = 0.4f, morph = 0.4f, decay = 0.9f, release = 0.8f)),
-        NamedSound("Piano FM", "Pluck", PlaitsPatch(model = 2, harmonics = 0.2f, timbre = 0.5f, morph = 0.5f, decay = 0.5f)),
+        // The DX7 voices of Plaits' six-operator banks (models 2 to 4, a patch every 1/32 of harmonics:
+        // [dx]). « Piano FM » played the bank's « BASS 1 » until the leads chantier: now « E.PIANO 1 ».
+        NamedSound("Piano FM", "Pluck", PlaitsPatch(model = 3, harmonics = dx(0), timbre = 0.5f, morph = 0.5f, decay = 0.5f)),
+        NamedSound("Rhodes FM", "Pluck", PlaitsPatch(model = 3, harmonics = dx(2), timbre = 0.5f, morph = 0.5f, decay = 0.5f)),
+        NamedSound("Vibraphone FM", "Pluck", PlaitsPatch(model = 3, harmonics = dx(18), timbre = 0.5f, morph = 0.5f, decay = 0.5f)),
+        NamedSound("Cloche FM", "Pluck", PlaitsPatch(model = 3, harmonics = dx(20), timbre = 0.5f, morph = 0.5f, decay = 0.5f)),
+        // Neurofunk's metallic answer: two operators at a ratio that is not a whole number, a short ping.
+        NamedSound("Stab métallique", "Leads", PlaitsPatch(model = 10, harmonics = 0.62f, timbre = 0.55f, morph = 0.35f, decay = 0.4f)),
         NamedSound("Marimba", "Pluck", PlaitsPatch(model = 20, harmonics = 0.3f, timbre = 0.35f, morph = 0.3f, decay = 0.45f)),
         NamedSound("Cloche", "Pluck", PlaitsPatch(model = 20, harmonics = 0.75f, timbre = 0.7f, morph = 0.7f, decay = 0.7f)),
         NamedSound("Grosse caisse", "Batterie", PlaitsPatch(model = 21, harmonics = 0.4f, timbre = 0.5f, morph = 0.4f, decay = 0.5f)),
@@ -130,12 +171,22 @@ object SoundLibrary {
      */
     fun synthNameOf(patch: SynthPatch, among: List<NamedSound<SynthPatch>> = SYNTH): String? {
         // The assistant's width and movement (S4: [SynthPatch.S4_PARAMS]) are its production, not the sound.
-        fun SynthPatch.identity() = SynthPatch.S4_PARAMS.fold(sanitized().with(SynthPatch.GAIN, 0.5f).with(SynthPatch.GLIDE, 0f)) { p, i ->
+        // The sub's 30 Hz floor too (a sound chosen before it had none).
+        fun SynthPatch.identity() = (SynthPatch.S4_PARAMS + SynthPatch.SUB_FLOOR).fold(sanitized().with(SynthPatch.GAIN, 0.5f).with(SynthPatch.GLIDE, 0f)) { p, i ->
             p.with(i, SynthPatch.DEFAULTS[i])
         }
         val wanted = patch.identity()
+        // A sound of the library before the leads chantier (a project saved earlier) keeps its name.
+        // Since that chantier the assistant also moves a lead's or a pad's cut-off with its notes
+        // (key tracking) and along the song: the same sound at another cut-off is still that sound.
+        fun SynthPatch.toneless() = with(SynthPatch.CUTOFF, 0f)
         return among.firstOrNull { it.sound.identity() == wanted }?.name
+            ?: SYNTH_V2.firstOrNull { it.sound.identity() == wanted }?.name?.takeIf { name -> among.any { it.name == name } }
+            ?: among.firstOrNull { it.sound.identity().toneless() == wanted.toneless() }?.name
     }
+
+    /** The library family (« Leads », « Nappes », « Pluck »…) of the synth sound [patch] plays, null when it is none of them. */
+    fun synthCategoryOf(patch: SynthPatch): String? = synthNameOf(patch)?.let { name -> SYNTH.firstOrNull { it.name == name }?.category }
 
     /**
      * The 303 [preset] taken by a 303 now sounding [current]: its tuning kept; its volume the

@@ -64,7 +64,41 @@ data class SynthPatch(val values: List<Float> = DEFAULTS) {
         const val MID_LAYER = 38
         /** Above 0.5: the oscillators oversampled (aliasing under -60 dB). */
         const val OVERSAMPLE = 39
-        const val PARAM_COUNT = 40
+
+        // « Des basses qui tapent » (docs/hits/basses-qui-tapent.md, P3; engine Synth.h), appended: at
+        // their defaults the sound is as before them (a project saved earlier takes these defaults).
+        /** The attack starts 0..48 semitones over the note and falls to it ([PITCH_DECAY]): the 808, the donk, the « wub ». */
+        const val PITCH_ENV = 40
+        /** That fall's time constant: 1..500 ms (500^v ms; 0.5: 22 ms). */
+        const val PITCH_DECAY = 41
+        /** Above 0.5: a note on a silent voice starts its oscillators at phase 0 (every hit attacks alike). */
+        const val PHASE_RESET = 42
+        /** The velocity opens the filter: ±2 octaves × this at velocity 1 / 0.4, none at 0.7. */
+        const val VELOCITY_CUTOFF = 43
+        /** The sub's wave: 0 square (as before), 0.5 triangle, 1 sine. */
+        const val SUB_SHAPE = 44
+        /** Above 0.5: the sub (and the octave-down copy) never under 30 Hz (an octave up there). */
+        const val SUB_FLOOR = 45
+        /** The mid layer's high-pass, 156..400 Hz (0.5: 250 Hz, as before), and its drive (0.5: x3, as before). */
+        const val MID_LAYER_HZ = 46
+        const val MID_LAYER_DRIVE = 47
+        const val PARAM_COUNT = 48
+
+        /** The parameters « des basses qui tapent » appended ([PITCH_ENV]..[MID_LAYER_DRIVE]). */
+        val BASS_PARAMS: IntRange = PITCH_ENV..MID_LAYER_DRIVE
+
+        /**
+         * [patch] as it was written before [BASS_PARAMS] when they are all at their defaults (its first
+         * [PITCH_ENV] values): what a frozen track's signature reads, so that it stays up to date.
+         */
+        fun beforeBassParams(patch: SynthPatch): SynthPatch =
+            if (patch.values.size > PITCH_ENV && BASS_PARAMS.all { patch.get(it) == DEFAULTS[it] }) SynthPatch(patch.values.take(PITCH_ENV)) else patch
+
+        /** [PITCH_DECAY] for a fall of [ms] milliseconds (1..500). */
+        fun pitchDecayValue(ms: Float): Float = (kotlin.math.ln(ms.coerceIn(1f, 500f)) / kotlin.math.ln(500f))
+
+        /** [PITCH_ENV] for a drop of [semitones] (0..48). */
+        fun pitchEnvValue(semitones: Float): Float = (semitones / 48f).coerceIn(0f, 1f)
 
         /** The parameters S4 added ([WIDTH]..[OVERSAMPLE]): production settings, not a sound's identity. */
         val S4_PARAMS: IntRange = WIDTH..OVERSAMPLE
@@ -115,6 +149,9 @@ data class SynthPatch(val values: List<Float> = DEFAULTS) {
             // formant and vowel, mid layer, oversampling: all off.
             0f, 0f, 0f, MONO_BELOW_DEFAULT, 0f, 0f, 0f,
             0f, 0f, 0f, 0f,
+            // « Des basses qui tapent »: no pitch envelope (its fall 22 ms), no phase reset, no velocity on
+            // the cutoff, the square sub without a floor, the mid layer at 250 Hz driven x3: as before.
+            0f, 0.5f, 0f, 0f, 0f, 0f, 0.5f, 0.5f,
         )
 
         /** Ready-made sounds: name -> patch. Waves: 0 = saw, 0.5 = square, 1 = triangle. */

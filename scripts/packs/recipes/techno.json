@@ -108,7 +108,7 @@
    "type": "riff",
    "pattern": "R-..O-..R-......r-..o-..R-..3-..",
    "arp_rate": 24,
-   "octave": 3,
+   "octave": 4,
    "sound": "Lead filtré"
   },
   "acid": {
@@ -288,7 +288,7 @@
    "type": "riff",
    "pattern": "R---..R---..O/R-R---..R---..3---",
    "arp_rate": 24,
-   "octave": 3,
+   "octave": 4,
    "sound": "pack:retro_techno:stab",
    "glide": true
   },
@@ -438,7 +438,7 @@
   "bass": {
    "pattern": "..R-..R...R-..R.",
    "octave": 1,
-   "sound": "Basse sub",
+   "sound": "Sub chaud",
    "glide": false
   },
   "lead": {
@@ -612,7 +612,7 @@
    "pattern": "R.3.R...5.3.R...R.3.R...5-------",
    "arp_rate": 24,
    "octave": 4,
-   "sound": "Cloche"
+   "sound": "Cloche FM"
   },
   "acid": {
    "use": false,
@@ -663,7 +663,7 @@
   ],
   "riser": true,
   "counter": {
-   "sound": "Piano électrique",
+   "sound": "Piano FM",
    "rhythm": "..x..x....x...x."
   }
  }

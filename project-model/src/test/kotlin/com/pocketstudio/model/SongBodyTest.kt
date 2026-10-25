@@ -40,7 +40,8 @@ class SongBodyTest {
         // Every playable sound has its calibration (the subs, the Plaits FM bass and the effects stay at 0 dB).
         val plain = setOf("Basse sub", "Sub pur", "Basse FM")
         for (s in SoundLibrary.SYNTH) if (s.category != "Effets" && s.name !in plain) {
-            assertEquals(s.name, SynthPatch.gainValue(SoundLibrary.SYNTH_GAIN_DB.getValue(s.name)), s.sound.get(SynthPatch.GAIN), 1e-6f)
+            // The leads chantier's sounds keep their loudness through their own change ([ProVoices.GAIN_DB]).
+            assertEquals(s.name, SynthPatch.gainValue(SoundLibrary.SYNTH_GAIN_DB.getValue(s.name) + (ProVoices.GAIN_DB[s.name] ?: 0f)), s.sound.get(SynthPatch.GAIN), 1e-6f)
         }
         for (s in SoundLibrary.PLAITS) if (s.category !in setOf("Effets", "Batterie") && s.name !in plain) {
             assertEquals(s.name, SynthPatch.gainValue(SoundLibrary.PLAITS_GAIN_DB.getValue(s.name)), s.sound.gain, 1e-6f)

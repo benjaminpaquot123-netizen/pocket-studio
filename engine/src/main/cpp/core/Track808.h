@@ -18,7 +18,7 @@ class Track808 {
 public:
     // DrumKit::VoiceParam (the pads' studio voice settings), append only. Tune is the pads' own
     // (a track's pitch is its notes'): ignored here.
-    enum Param : int { Tune = 0, Decay = 1, Drive = 2, Click = 3, Glide = 4, Sub = 5, Tone = 6, kParamCount };
+    enum Param : int { Tune = 0, Decay = 1, Drive = 2, Click = 3, Glide = 4, Sub = 5, Tone = 6, Version = 7, PitchDrop = 8, DropTime = 9, kParamCount };
     // The pad's level of the 808 (DrumKit kKindLevels).
     static constexpr float kLevel = 0.40f;
     static constexpr float kReleaseSeconds = 0.08f;
@@ -55,6 +55,9 @@ public:
             case Glide: settings_.glide = std::clamp(v, 0.0f, 0.5f); break;
             case Sub: settings_.sub = std::clamp(v, 0.0f, 1.0f); break;
             case Tone: settings_.tone = std::clamp(v, 0.0f, 1.0f); break;
+            case Version: settings_.version = v >= 0.5f ? 1.0f : 0.0f; break;
+            case PitchDrop: settings_.drop = std::clamp(v, 0.0f, 36.0f); break;
+            case DropTime: settings_.dropTime = std::clamp(v, 0.005f, 0.15f); break;
             default: break;
         }
     }

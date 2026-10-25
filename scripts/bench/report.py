@@ -20,6 +20,13 @@ render's mode 1) the target is the Drop's: the main section's loudness is compar
 cap is MAX_LOSS_DROP_DB; the songs of before keep the whole song's loudness and MAX_LOSS_DB. Since
 S5b, a Drop that lands less than DROP_OVER_MONTEE_MIN over the end of the Montée before it (its first
 4 bars against the Montée's last 2, ps_measure's drop_minus_montee_end) fails too. The CI fails on them.
+
+« Des basses qui tapent » (docs/hits/basses-qui-tapent.md § 8): the basses rendered alone (ps_measure
+--bass, the song bench's bass pass) heard through a phone-speaker model, targets B1 to B12. Blocking
+only the stable ones: what is under 30 Hz in the mix (B8, over -15 dB; -20 is the target), what the bass exciter adds to
+the whole song (B12) and the bass heard through an average phone (B2, the floor of a transition
+stage). The others (attack, its spread, the dip under the kick, the bass's place against the mix) are
+listed: their reading depends on the line (notes too short for an attack window, a kick-less intro).
 """
 import argparse
 import json
@@ -75,6 +82,25 @@ INTRO_UNDER_MAIN_MAX = 8.0
 # measure needs 4 bars longer than its two 3 s windows: none at 170 BPM and more, and a Montée's rise
 # swings 2 to 3 LU between styles of one family).
 MONTEE_RISE_MIN = 2.0
+# « Des basses qui tapent » (docs/hits/basses-qui-tapent.md § 8): B1/B2, the basses alone through a
+# 200/300 Hz phone (loss against their own full band); B4, their 200-800 Hz against 30-100 Hz; B5/B6,
+# their attack and its spread; B8, the mix's energy under 30 Hz; B9, the bass's dip under the kick;
+# B12, what the exciter adds to the song before the master.
+BASS_PHONE_200_MIN = -10.0
+BASS_PHONE_300_MIN = -14.0
+# B2's blocking floor during the transition (the target is BASS_PHONE_300_MIN).
+BASS_PHONE_300_HARD = -16.0
+BASS_HARMONICS_MIN = -14.0
+BASS_ATTACK_MIN = 2.0
+BASS_ATTACK_SPREAD_MAX = 0.5
+INFRA_MAX = -20.0
+# B8's blocking ceiling (the target is INFRA_MAX): the basses under 30 Hz are gone since « des basses qui
+# tapent » (subs floored at 30 Hz, 28 Hz low cuts), but acidcore's hard kick alone leaves -17.4 dB there
+# (before and after); the kick is another chantier. A bass falling under 30 Hz again (-3 to -13 dB before)
+# still fails.
+INFRA_HARD = -15.0
+KICK_DIP_MAX = -3.0
+EXCITER_MAX_LU = 1.0
 
 # G0: the smallest share of bars that differ between two Drops (Refrains) of a song (DropVariation.MIN).
 DROP_VARIATION_MIN = 0.25
@@ -113,6 +139,16 @@ METRICS = [
     ("dc", "Continu (moyenne absolue)", lambda m: m["dc"], "≤ 0,001", 4),
     ("drive_db", "Gain de la cible (dB)", lambda m: m.get("drive_db"), "–", 1),
     ("loss_db", "Perte dans la chaîne (LU)", lambda m: m.get("loss_db"), "≤ 3 (S5, au Drop ; 6 avant)", 1),
+    ("bass_phone_200", "B1 Basse au téléphone 200 Hz (dB)", lambda m: m["bass"]["phone_200"], "≥ −10", 1),
+    ("bass_phone_300", "B2 Basse au téléphone 300 Hz (dB)", lambda m: m["bass"]["phone_300"], "≥ −14", 1),
+    ("bass_place_300", "B3 Basse dans le mix au téléphone (LU)", lambda m: m["bass"]["place_300"], "≥ −10 hip-hop et bass music, ≥ −14 club", 1),
+    ("bass_harmonics", "B4 Harmoniques 200–800 / 30–100 Hz (dB)", lambda m: m["bass"]["harmonics"], "≥ −14", 1),
+    ("bass_attack", "B5 Attaque de la basse (dB)", lambda m: m["bass"]["attack"], "≥ +2 (808, pluck : +4)", 1),
+    ("bass_attack_spread", "B6 Régularité de l'attaque (dB)", lambda m: m["bass"]["attack_spread"], "≤ 0,5", 2),
+    ("sub_40_60", "B7 Sub 40–60 Hz du mix (dB rel.)", lambda m: m.get("sub_40_60"), "−6 à −3 (le garder)", 1),
+    ("infra_below_30", "B8 Infra < 30 Hz du mix (dB rel.)", lambda m: m.get("infra_below_30"), "≤ −20", 1),
+    ("bass_kick_dip", "B9 Creux de la basse sous le kick (dB)", lambda m: m["bass"]["kick_dip"], "≤ −6 club, ≤ −3 ailleurs", 1),
+    ("exciter_lu", "B12 Sonie ajoutée par l'exciteur (LU)", lambda m: m.get("exciter_lu"), "≤ +1", 2),
 ]
 BANDS = [("sub", "Sub < 60"), ("low", "Grave 60–250"), ("low_mid", "Bas-méd. 250–500"), ("mid", "Médium 0,5–2 k"),
          ("high_mid", "Haut-méd. 2–6 k"), ("air", "Air > 6 k")]
@@ -214,6 +250,32 @@ def criteria(styles):
     if any(m.get("drop_variation") is not None for m in styles.values()):
         add(f"Variation entre Drops ≥ {fr(DROP_VARIATION_MIN, 2)} (modèle : aucune paire de Drops identique)",
             lambda s, m: m.get("drop_variation") is None or m["drop_variation"] >= DROP_VARIATION_MIN)
+    # « Des basses qui tapent »: only the songs whose basses the bench rendered alone (a style without bass: –).
+    def bass(m, key):
+        return (m.get("bass") or {}).get(key)
+    if any(m.get("bass") for m in styles.values()):
+        add(f"B2 Basse au téléphone (300 Hz) ≥ {fr(BASS_PHONE_300_HARD, 0)} dB (cible {fr(BASS_PHONE_300_MIN, 0)})",
+            lambda s, m: bass(m, "phone_300") is None or bass(m, "phone_300") >= BASS_PHONE_300_HARD, hard=True)
+        add(f"B2 Basse au téléphone (300 Hz) ≥ {fr(BASS_PHONE_300_MIN, 0)} dB (la cible)",
+            lambda s, m: bass(m, "phone_300") is None or bass(m, "phone_300") >= BASS_PHONE_300_MIN)
+        add(f"B1 Basse au téléphone (200 Hz) ≥ {fr(BASS_PHONE_200_MIN, 0)} dB",
+            lambda s, m: bass(m, "phone_200") is None or bass(m, "phone_200") >= BASS_PHONE_200_MIN)
+        add(f"B4 Harmoniques de la basse ≥ {fr(BASS_HARMONICS_MIN, 0)} dB",
+            lambda s, m: bass(m, "harmonics") is None or bass(m, "harmonics") >= BASS_HARMONICS_MIN)
+        add(f"B5 Attaque de la basse ≥ +{fr(BASS_ATTACK_MIN, 0)} dB (notes assez longues pour la lire)",
+            lambda s, m: bass(m, "attack") is None or bass(m, "attack") >= BASS_ATTACK_MIN)
+        add(f"B6 Écart de l'attaque ≤ {fr(BASS_ATTACK_SPREAD_MAX, 1)} dB",
+            lambda s, m: bass(m, "attack_spread") is None or bass(m, "attack_spread") <= BASS_ATTACK_SPREAD_MAX)
+        add(f"B9 La basse s'efface sous le kick (≤ {fr(KICK_DIP_MAX, 0)} dB)",
+            lambda s, m: bass(m, "kick_dip") is None or bass(m, "kick_dip") <= KICK_DIP_MAX)
+    if any(m.get("infra_below_30") is not None for m in styles.values()):
+        add(f"B8 Rien sous 30 Hz : infra ≤ {fr(INFRA_HARD, 0)} dB du Drop (cible {fr(INFRA_MAX, 0)})",
+            lambda s, m: m.get("infra_below_30") is None or m["infra_below_30"] <= INFRA_HARD, hard=True)
+        add(f"B8 Rien sous 30 Hz : infra ≤ {fr(INFRA_MAX, 0)} dB du Drop (la cible)",
+            lambda s, m: m.get("infra_below_30") is None or m["infra_below_30"] <= INFRA_MAX)
+    if any(m.get("exciter_lu") is not None for m in styles.values()):
+        add(f"B12 L'exciteur ajoute au plus +{fr(EXCITER_MAX_LU, 0)} LU au morceau (avant master)",
+            lambda s, m: m.get("exciter_lu") is None or m["exciter_lu"] <= EXCITER_MAX_LU, hard=True)
     return out
 
 
@@ -348,6 +410,13 @@ def main():
                 detail = ", ".join(f"{s} ({fr(styles[s].get('m4a_true_peak'), 2)})" for s in failed)
             elif label.startswith("True peak"):
                 detail = ", ".join(f"{s} ({fr(styles[s]['true_peak'], 2)})" for s in failed)
+            elif label.startswith("B2") or label.startswith("B1") or label.startswith("B4") or label.startswith("B5") or label.startswith("B6") or label.startswith("B9"):
+                key = {"B1": "phone_200", "B2": "phone_300", "B4": "harmonics", "B5": "attack", "B6": "attack_spread", "B9": "kick_dip"}[label[:2]]
+                detail = ", ".join(f"{s} ({fr((styles[s].get('bass') or {}).get(key), 1)})" for s in failed)
+            elif label.startswith("B8"):
+                detail = ", ".join(f"{s} ({fr(styles[s].get('infra_below_30'), 1)})" for s in failed)
+            elif label.startswith("B12"):
+                detail = ", ".join(f"{s} ({fr(styles[s].get('exciter_lu'), 2, True)})" for s in failed)
             elif label.startswith("Continu"):
                 detail = ", ".join(f"{s} ({fr(styles[s]['dc'], 4)})" for s in failed)
             else:
@@ -422,6 +491,36 @@ def main():
         lines.append(f"| {s} | {fr(m['side_mid'], 1)}{was('side_mid', lambda x: x['side_mid'])} | {fr(m['corr'], 2)} | "
                      f"{fr(m['corr_below_120'], 3)} | {fr(m.get('lead_centroid_var'), 1)} | "
                      f"{fr(m['bands']['low'], 1)}{was('low', lambda x: x['bands']['low'])} |")
+
+    # « Des basses qui tapent »: the basses alone through the phone model, style by style.
+    if any(m.get("bass") for m in styles.values()):
+        lines += ["", "## Basse au téléphone (docs/hits/basses-qui-tapent.md § 8)", "",
+                  "Les basses du morceau (pistes de basse, Sub, Sub drop, pad de la 808 : `META bass`) rendues seules avant la chaîne "
+                  "master, au Drop (ou au Refrain), à travers un « téléphone » : passe-haut de Butterworth d'ordre 4 à 200 Hz (bon "
+                  "téléphone, B1) ou 300 Hz (téléphone moyen, B2), puis la pondération K. Perte de sonie contre la basse en pleine "
+                  "bande : plus proche de 0, mieux elle passe. B3 : la basse filtrée à 300 Hz contre le morceau filtré pareil. B4 : "
+                  "énergie 200–800 Hz contre 30–100 Hz. B5 : RMS 5 ms le plus fort des 40 premières ms d'une note contre la médiane "
+                  "80–250 ms (notes de 250 ms au moins). B7, B8 : le morceau exporté. B9 : RMS de la basse 0–50 ms après chaque kick "
+                  "contre 100–200 ms après. B12 : le morceau avant master avec l'exciteur contre sans.", "",
+                  "| Style | B1 tél. 200 | B2 tél. 300 | B3 place | B4 harm. | B5 attaque (notes) | B6 écart | B7 sub | B8 infra | B9 kick | B12 exciteur |",
+                  "|---|---|---|---|---|---|---|---|---|---|---|"]
+        for s, m in sorted(styles.items()):
+            b = m.get("bass") or {}
+            def bv(key, d=1, sign=False):
+                v = b.get(key)
+                old = ((before or {}).get(s, {}).get("bass") or {}).get(key) if before else None
+                if v is not None and old is not None and abs(v - old) >= 0.05:
+                    return f"{fr(v, d, sign)} ({fr(v - old, d, True)})"
+                return fr(v, d, sign)
+            def mv(key, d=1, sign=False):
+                v = m.get(key)
+                old = (before or {}).get(s, {}).get(key) if before else None
+                if v is not None and old is not None and abs(v - old) >= 0.05:
+                    return f"{fr(v, d, sign)} ({fr(v - old, d, True)})"
+                return fr(v, d, sign)
+            lines.append(f"| {s} | {bv('phone_200')} | {bv('phone_300')} | {bv('place_300')} | {bv('harmonics')} | "
+                         f"{bv('attack', 1, True)} ({b.get('notes', 0)}) | {bv('attack_spread', 2)} | {mv('sub_40_60')} | {mv('infra_below_30')} | "
+                         f"{bv('kick_dip', 1, True)} | {mv('exciter_lu', 2, True)} |")
 
     lines += ["", "## Défauts", "", "| Style | NaN | Écrêtés | DC | Fin (dBFS, 500 ms) | Durée (s) |", "|---|---|---|---|---|---|"]
     for s, m in sorted(styles.items()):

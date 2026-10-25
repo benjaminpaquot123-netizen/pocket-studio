@@ -354,6 +354,90 @@ void testS5NeverAllocates() {
 #endif
 }
 
+// S6 (G6): an M4A's render (ceiling -2) that stands for the WAV (-1, SetMaster 9): its loud part may
+// lose 1 LU more in the chain than the 3 LU cap, so it is pushed further than a plain -2 render (which
+// stops at the cap); its true peak under its own ceiling; the loss reported is the WAV's share of it.
+void testM4aKeepsTheWavLoudness() {
+    const int64_t frames = int64_t(kRate) * 90;
+    struct Run {
+        double loud;
+        float drive, loss, tp;
+    };
+    auto run = [&](float ceiling, float wavCeiling) {
+        ps::OfflineRenderer r(kRate);
+        prepareDropSong(r, -6.0f, true, true);  // dense and loud: the plain render stops at the cap
+        r.post({ps::CommandType::SetMaster, ceiling, 5});
+        if (std::isfinite(wavCeiling)) r.post({ps::CommandType::SetMaster, wavCeiling, 9});
+        const auto out = r.renderToBuffer(frames, 0);
+        return Run{r.report().loudLufs, r.report().driveDb, r.report().lossDb, static_cast<float>(toDb(independentTruePeak(out)))};
+    };
+    const Run wav = run(-1.0f, NAN), plain = run(-2.0f, NAN), m4a = run(-2.0f, -1.0f);
+    std::printf("  S6 M4A: WAV loud %.2f (drive %+.2f, loss %.2f); M4A plain %.2f (drive %+.2f, loss %.2f); as the WAV %.2f (drive %+.2f, loss %.2f, TP %.2f)\n",
+                wav.loud, double(wav.drive), double(wav.loss), plain.loud, double(plain.drive), double(plain.loss), m4a.loud, double(m4a.drive),
+                double(m4a.loss), double(m4a.tp));
+    CHECK(plain.loss >= ps::MasterChain::kMaxLossDropDb - 0.3f);  // the case this is about: at the cap
+    // Pushed further (on this held square pad the limiter gives almost nothing back: +0.03 LU; on the
+    // bench's songs +0.3 LU), never quieter, never over its own ceiling.
+    CHECK(m4a.drive > plain.drive + 0.5f);
+    CHECK(m4a.loud >= plain.loud - 0.05);
+    CHECK(m4a.loud < wav.loud);
+    CHECK(m4a.loss <= ps::MasterChain::kMaxLossDropDb + 0.1f);
+    CHECK(m4a.tp <= -2.0f);
+    ps::MasterChain chain;
+    chain.setDriveCeilingDb(-1.0f);
+    CHECK(chain.driveCeilingDb() == -1.0f);
+    chain.setDriveCeilingDb(NAN);
+    CHECK(std::isnan(chain.driveCeilingDb()));
+}
+
+// S6 (G5): the drive found offline before ▶ is given while the live engine has no target yet (the
+// app sends the target with ▶): it waits, is taken within 20 ms of the target coming on, and stays
+// settled (a quiet Intro does not raise it); another project forgets it.
+void testKnownDriveWaitsForTheTarget() {
+    ps::MasterChain chain;
+    chain.prepare(kRate);
+    chain.setMode(ps::MasterChain::Mode::Drop);
+    chain.setKnownDrive(6.0f);
+    std::vector<float> l(480), r(480);
+    auto run = [&](int blocks, float amp) {
+        for (int b = 0; b < blocks; ++b) {
+            for (int i = 0; i < 480; ++i) l[size_t(i)] = r[size_t(i)] = amp * std::sin(0.05f * float(b * 480 + i));
+            chain.process(l.data(), r.data(), nullptr, 480);
+        }
+    };
+    run(10, 0.05f);
+    std::printf("  S6 known drive: %.2f dB before the target\n", double(chain.driveDb()));
+    CHECK(chain.driveDb() == 0.0f);  // no target: nothing driven
+    chain.setTarget(-8.0f);
+    run(3, 0.05f);  // 30 ms
+    float peak = 0.0f;
+    for (float v : l) peak = std::max(peak, std::fabs(v));
+    std::printf("  S6 known drive: %.2f dB 30 ms after the target (output peak %.4f for 0.05 in)\n", double(chain.driveDb()), double(peak));
+    CHECK(std::fabs(chain.driveDb() - 6.0f) < 0.01f);
+    CHECK(std::fabs(peak / 0.05f - 1.995f) < 0.04f);  // the music itself is driven 6 dB already
+    run(4000, 0.02f);  // 40 s of a quiet part: the estimate would want far more
+    std::printf("  S6 known drive: %.2f dB after 40 s of a quiet part\n", double(chain.driveDb()));
+    CHECK(chain.driveDb() <= 6.0f + 0.01f);
+    // Another project: a drive waiting is forgotten.
+    ps::MasterChain other;
+    other.prepare(kRate);
+    other.setMode(ps::MasterChain::Mode::Drop);
+    other.setKnownDrive(9.0f);
+    other.resetEstimate();
+    other.setTarget(-8.0f);
+    for (int b = 0; b < 3; ++b) other.process(l.data(), r.data(), nullptr, 480);
+    CHECK(other.driveDb() == 0.0f);
+    // The app gives it again with ▶, the target just sent: still taken within 20 ms.
+    ps::MasterChain again;
+    again.prepare(kRate);
+    again.setMode(ps::MasterChain::Mode::Drop);
+    again.setKnownDrive(6.0f);
+    again.setTarget(-8.0f);
+    again.setKnownDrive(6.0f);
+    for (int b = 0; b < 3; ++b) again.process(l.data(), r.data(), nullptr, 480);
+    CHECK(std::fabs(again.driveDb() - 6.0f) < 0.01f);
+}
+
 }  // namespace mix_tests
 
 #define PS_MIX_TESTS                                                                \
@@ -361,5 +445,7 @@ void testS5NeverAllocates() {
     {"s5_music_bus_ducks_once", mix_tests::testMusicBusDucksOnce},                  \
     {"s5_soft_clipper", mix_tests::testSoftClipper},                                \
     {"s5_drop_target_export", mix_tests::testDropTargetExport},                     \
+    {"s6_m4a_keeps_the_wav_loudness", mix_tests::testM4aKeepsTheWavLoudness},         \
+    {"s6_known_drive_waits_for_the_target", mix_tests::testKnownDriveWaitsForTheTarget}, \
     {"s5_live_drop_drive_settles", mix_tests::testLiveDropDriveSettles},            \
     {"s5_never_allocates", mix_tests::testS5NeverAllocates},

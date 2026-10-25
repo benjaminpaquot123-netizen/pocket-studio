@@ -64,6 +64,20 @@ def main():
     check("DC over 1e-3 fails", code == 1 and "Continu" in err)
     code, err, _ = run([measure("house", non_finite=3)])
     check("a NaN fails", code == 1 and "NaN" in err)
+    # « Des basses qui tapent » (B2, B8, B12 block; the others are listed).
+    good_bass = {"lufs": -14.0, "phone_200": -8.0, "phone_300": -12.0, "place_300": -9.0, "harmonics": -10.0, "attack": 4.0,
+                 "attack_spread": 0.3, "notes": 12, "kick_dip": -6.0, "kicks": 30}
+    code, err, md = run([measure("house", bass=good_bass, infra_below_30=-25.0, sub_40_60=-5.0, exciter_lu=0.6)])
+    check("basses heard on a phone: exit 0", code == 0 and err == "")
+    check("the report has the phone table", "## Basse au téléphone" in md and "| house | −8,0 | −12,0 |" in md)
+    code, err, _ = run([measure("house", bass=dict(good_bass, phone_300=-22.0))])
+    check("a bass lost on a phone (B2 under -16) fails", code == 1 and "B2" in err and "house" in err)
+    code, err, _ = run([measure("house", bass=dict(good_bass, phone_300=-15.0, attack=1.0, kick_dip=0.0))])
+    check("B2 between -16 and -14, a soft attack, no dip: listed, not blocking", code == 0)
+    code, err, _ = run([measure("house", infra_below_30=-12.0)])
+    check("energy under 30 Hz (B8) fails", code == 1 and "B8" in err)
+    code, err, _ = run([measure("house", exciter_lu=1.6)])
+    check("an exciter that adds over 1 LU (B12) fails", code == 1 and "B12" in err)
     code, err, _ = run([measure("house", lufs_i=-10.0)])
     check("2 LU under the target fails", code == 1 and "Sonie" in err and "house" in err)
     # Under the target but the chain already took 6 LU off: capped, not broken.

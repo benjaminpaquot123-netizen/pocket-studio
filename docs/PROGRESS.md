@@ -1,17 +1,14 @@
 # Avancement
 
 ## Où on en est (2026-10-25)
-- `main` = PR #48 fusionnée (tests proches du réel : parcours émulateur, endurance, petit téléphone, vrais projets, nuit automatique). Audit 35 fait le 2026-10-24 : synthèse `docs/AUDIT-35.md`.
-- Benjamin a tout délégué (2026-10-25) : la file entière avance sans lui, réponses conseillées de l'audit (1A, 2A, 3A, 4A).
-- En cours : PR Guide #49 (G0 + G1a + G1b + docs de l'audit 35). Lot 2 remis par-dessus (branche locale `lot2-main`), envoyé dès la fusion du Guide.
+- `main` = lot 2 fusionné (#50) après Guide G0/G1 (#49) et tests réels (#48). Chaque fusion publie l'APK (consigne de Benjamin : publier dès que possible).
+- En cours : une PR qui réunit basses qui tapent, leads lot 1 et passe son S6 (chacun relu à neuf).
 
 ## Prochaine étape exacte
-1. **PR Guide** : CI verte, fusion.
-2. **Lot 2** (branche `lot2`, 24 commits sur `e0ff315`) : remis sur `main` après le Guide ; puis réactiver la prise au clavier en mode complet dans `JourneyTest` avec le rapport de prise du lot 2 (`lastTakeReport`). PR, fusion.
-3. **Basses** (branche `basses`, partie de `guide`) puis **Leads lot A** (`leads`, revue neuve à faire), chacun remis sur `main`, PR, fusion.
-4. **S6 son** : gain du direct calculé avant ▶, M4A au niveau du WAV, Drop − Groove ≥ +2, largeur, perte au haut-parleur ≤ 4 LU, banc direct jusqu'au premier Drop ; et décision 2A (« Écouter » 8 mesures avant le premier Drop, « Depuis le début » à côté).
-5. Refaire les mesures (AUDIT-35 § 4), extraits « après » pour Benjamin, un seul APK (décision 4A), `recette.json`.
-6. Guide G2 à G6, leads lots B à D, puis le chantier Play Store en dernier.
+1. CI verte de la PR son (basses + leads + S6), fusion, envoyer l'APK à Benjamin.
+2. Refaire les mesures (AUDIT-35 § 4), extraits « après » pour Benjamin, `recette.json` du jalon son.
+3. Restes S6 : largeur du Drop (chorus stéréo dans le moteur, versionné), perte au haut-parleur ≤ 4 LU, intros en direct à plus de 1 LU (11 styles).
+4. Guide G2 à G6, leads lots B à D, puis le chantier Play Store en dernier.
 
 **Phase 0 fusionnée le 2026-10-18, phase 1 fusionnée le 2026-10-19 (feu vert de Benjamin).** Phase en cours : 2 (sampler et notes).
 
@@ -180,6 +177,14 @@
   - son : banc de mesure (`docs/son/BANC.md`, 37 styles, rapport en CI), compresseur honnête (gain, auto, RMS, filtre des graves, mélange, réduction affichée), Saturation ouverte et à volume constant, kit v2 de l'assistant, chaîne master (écrêteur ClipOnly2 à 4×, limiteur true peak, bloqueur de continu), « Volume visé » Auto / Club / Streaming, LUFS et true peak en direct dans le Mixeur, export mastérisé en deux passes, M4A sous −2 dBTP, options 44,1 kHz / 16 bits, Saturation et Distorsion à 4× sans repliement.
 
 - Retours de recette sur l'aperçu (24/10) : le fondu puis le silence après ~15 s de lecture en direct venait du gain live de la cible de sonie (mode Drop), qui baissait sans fin (corrigé dans `MasterChain::estimateDrop`, tests `live_playback_keeps_its_level` et `drop_drive_stays_in_range`) ; nouvel outil « Écoute en direct » (`scripts/live-bench.sh`, `ps_live`, `LiveSongRecorder`, `LivePlaybackTest` sur émulateur ; docs/son/BANC.md), bloquant en CI sur les 37 styles ; « Ton morceau est prêt ! » se replie en barre pendant la lecture.
+
+- Chantier « des basses qui tapent » (branche `basses`, pas fusionnée, en attente de l'écoute de Benjamin) : exciteur
+  « Basse audible » sur toutes les basses de l'assistant, 808 du moteur v1 dans les 5 styles 808, réglages de basse du
+  synthé, 5 nouveaux sons, plancher des subs à 30 Hz, « Motifs de basse » (11 grilles), colonne « basse au téléphone »
+  du direct corrigée. Banc : basse au téléphone (300 Hz) −12,2 → −10,4 dB en médiane, 34 styles sur 34 au-dessus de
+  −16 dB (27 avant), sonie inchangée (docs/son/banc/apres-basses.md). Extraits d'écoute dans le scratchpad `ab-basses/`.
+  Rebasée sur `guide` ; relecture neuve faite (0 grave, 5 moyens corrigés avec tests, docs/REVIEW.md) ; banc refait
+  après (mêmes médianes, 37 sur 37 en direct), référence de la CI à jour.
 
 ## Historique des étapes (avant l'audit 35)
 1. Phases 16 à 21 fusionnées (#27 à #32). Phase 21 = du brouillon au morceau (scènes nommées, assistant en sections, morceau éditable, partage en un geste). Phase 22 (langues FR/EN/NL + tablette) : fusionnée (PR #33). Phases 23 et 24 fusionnées (#34, #35). Phase 25 (effets partout, 8 nouveaux effets, 8 effets par son, Synthé cohérent, scènes à glisser) : fusionnée (#36), Benjamin teste. Phases 26 et 27 fusionnées (#37, #38). Phase 28 (audit de chasse aux bugs par 5 pros : moteur, sauvegarde, Live, musique, appli Android ; corrections + relecture neuve) : fusionnée (#39). L'assistant fait déjà de vraies chansons de 2 min 20 à 3 min 30 par style (`MusicTheoryTest`). Phase 29 fusionnée (#40). Phase 30 (les 11 retours de docs/RETOURS.md : « Ce qui joue », automation mise en avant et plus facile, tête de lecture, chrono du morceau, styles en familles, projet ouvert supprimable, grande bibliothèque de sons + « Tout télécharger », acide au bon volume)  : fusionnée (#42). Phase 31 (retours du 22/10 au soir : ligne du temps de production plein écran, Live plein écran et effets, pads live remplis par l'assistant, automation avec échelle / « Voir le potard » / outil Zone, Nouveau projet redessiné, arrivée sur Morceau, guide en pages, Mixeur en haut) : fusionnée (#43). Phase 32 (retours du 23/10 : ligne du temps refaite — suivi fiable, en-têtes fixes, nouveau visuel —, pads live en plein écran avec boîte à effets, suppression de projet sans saut ni corbeille de vides, retour sur Mes projets, textes coupés sur tablette) : fusionnée (#44). Audit « morceau complet » (5 amateurs + 3 pros, docs/AUDIT-33.md), comptage des gestes, étude des autres applis et diagnostic son mesuré : plan d'action en 7 phases dans docs/PLAN-AMELIORATION.md. Phase 33 (« Finir son morceau » + son mesuré et honnête) : PR ouverte, relecture neuve faite, Benjamin teste avec `recette.json`. Phases 34 à 39 (36 comprise) faites en parallèle puis intégrées : son pro (S1 mélodies, S2 arrangement, S3 batterie et 808, S4 synthés larges, S5 mix et master honnêtes, S5b Drop au-dessus de la Montée), « une intention, un bouton », enregistrer sans peur, écrire comme un pro, instruments réels / 808 / export propre, glossaire / vidéo 9:16 / potards MIDI, nouvelle navigation à 5 espaces + Mode simple + Missions + « ? », chantier de finitions (8 pistes audio, geler 7 min, 303 qui suit les accords, boucles de 16 mesures). Relectures neuves faites (phase 34 ; 35–39 en trois volets), graves et moyens corrigés (docs/REVIEW.md). Une seule PR « Phases 34 à 39 » avec aperçu APK (demande de Benjamin). Fusionnées depuis : PR #46 (phases 34 à 39) et PR #47 (Signaler un bug + lot 1 des bugs de Benjamin). Audit 35 (3e vague, 2026-10-24) fait : docs/AUDIT-35.md. PROCHAINE ÉTAPE : voir « Où on en est » en tête de ce fichier ; ensuite l'APK (selon la réponse de Benjamin) et le chantier « prêt Play Store » (aubio, licences des packs, AAB, confidentialité). Restes : docs/RETOURS.md et la note de restes dans DECISIONS.

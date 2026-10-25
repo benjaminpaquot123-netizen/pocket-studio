@@ -301,11 +301,12 @@ fun SynthScreen(
             Column(Modifier.fillMaxSize().padding(8.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 tracks?.takeIf { it.showBar }?.let { TrackBar(it) }
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    // Lot 2 review: the switch takes what the other controls leave (filling the whole
-                    // row, it squeezed them to nothing and the row grew a blank 60 to 80 dp high).
-                    if (notes != null) ModeSwitch(showNotes, tracks, Modifier.weight(1f)) { showNotes = it }
+                    // Lot 2 review: the switch at its own width, the free room after it (filling the whole
+                    // row, it squeezed the others to nothing; weighted to what they left, on a small phone
+                    // lying down that was nothing, and « Notes » could not be touched).
+                    if (notes != null) ModeSwitch(showNotes, tracks, Modifier, fill = false) { showNotes = it }
                     if (tall && !chordPads) KeyLayoutChips(keyLayout, setKeyLayout, wideOctaves = landOctaves)
-                    if (notes == null) Box(Modifier.weight(1f))
+                    Box(Modifier.weight(1f))
                     ChordChip(chordKeys) { chordKeys = it }
                     ChordPadsChip(chordPads) { chordPads = it }
                     OctaveControl(octave, actions)
@@ -534,7 +535,12 @@ internal fun SoundCard(patch: SynthPatch, actions: SynthActions, advanced: Boole
 }
 
 @Composable
-private fun ModeSwitch(showNotes: Boolean, tracks: TracksUi?, modifier: Modifier = Modifier.fillMaxWidth(), onChange: (Boolean) -> Unit) {
+private fun ModeSwitch(
+    showNotes: Boolean, tracks: TracksUi?, modifier: Modifier = Modifier.fillMaxWidth(),
+    /** « Vider » pushed to the row's end (false: right after the chips, the row's other controls after it). */
+    fill: Boolean = true,
+    onChange: (Boolean) -> Unit,
+) {
     Row(modifier, horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
         FilterChip(selected = !showNotes, onClick = { onChange(false) }, label = { Text(tr("Clavier")) }, colors = chipColors(),
             modifier = Modifier.testTag("mode_keyboard"))
@@ -544,7 +550,7 @@ private fun ModeSwitch(showNotes: Boolean, tracks: TracksUi?, modifier: Modifier
         // synth out of a copied scene, or start again after trying sounds.
         val clear = tracks?.clear
         if (clear != null) {
-            androidx.compose.foundation.layout.Spacer(Modifier.weight(1f))
+            if (fill) androidx.compose.foundation.layout.Spacer(Modifier.weight(1f))
             TextButton(
                 onClick = { clear(tracks.selected) }, enabled = tracks.hasNotes(tracks.selected),
                 modifier = Modifier.testTag("track_clear_button")

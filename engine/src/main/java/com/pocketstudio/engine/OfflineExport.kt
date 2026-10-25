@@ -49,6 +49,14 @@ class OfflineExport : AutoCloseable {
         sink?.exportRenderFloat(handle, frames, tailFrames) ?: NativeEngine.exportRenderFloat(handle, frames, tailFrames)
 
     /**
+     * S7: renders as [renderToArray] does and keeps only the [report] (the live gain's estimate):
+     * no samples come back, nothing big on the Java heap. False if cancelled or failed. Worker thread.
+     */
+    fun renderForReport(frames: Long, tailFrames: Long): Boolean =
+        sink?.exportRenderReportOnly(handle, frames, tailFrames)
+            ?: (ExportResult.entries.getOrNull(NativeEngine.exportRenderReport(handle, frames, tailFrames)) == ExportResult.Ok)
+
+    /**
      * Mono at 48 kHz (the mean of both channels); empty if cancelled. Worker thread. Half the memory
      * of [renderToArray], and the stereo is never held in full (a long frozen track).
      */

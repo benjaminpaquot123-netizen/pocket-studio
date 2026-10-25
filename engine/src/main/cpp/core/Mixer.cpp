@@ -824,11 +824,14 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
     // click / test tone added after the drive. Without the limiter (a pre-master export) the peaks
     // over 0 dBFS stay as they are, delayed the same.
     bool directBlewUp = false;
+    // S7 (mix version 4, live): the master's fader here, before the chain, as in an export.
+    const bool preFader = faderBeforeChain_ && !chainBypass_;
+    const bool faderAtUnity = masterFader_.target() == 1.0f && masterFader_.current() == 1.0f;
     for (int i = 0; i < n; ++i) {
         float l = mL_[static_cast<size_t>(i)], r = mR_[static_cast<size_t>(i)];
         if (!std::isfinite(l)) l = 0.0f;
         if (!std::isfinite(r)) r = 0.0f;
-        const float master = masterGain_.next();
+        const float master = masterGain_.next() * (preFader && !faderAtUnity ? masterFader_.next() : 1.0f);
         outL_[static_cast<size_t>(i)] = l * master;
         outR_[static_cast<size_t>(i)] = r * master;
         if (direct) {
@@ -852,9 +855,8 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
         stats = chain_->process(outL_.data(), outR_.data(), direct ? click_.data() : nullptr, n);
     }
     float masterPeak = 0.0f;
-    const bool faderAtUnity = masterFader_.target() == 1.0f && masterFader_.current() == 1.0f;
     for (int i = 0; i < n; ++i) {
-        const float fader = faderAtUnity ? 1.0f : masterFader_.next();
+        const float fader = faderAtUnity || preFader ? 1.0f : masterFader_.next();
         const float l = outL_[static_cast<size_t>(i)] * fader, r = outR_[static_cast<size_t>(i)] * fader;
         masterPeak = std::max(masterPeak, std::max(std::fabs(l), std::fabs(r)));
         if (outChannels == 1) {

@@ -839,6 +839,11 @@ object NativeEngine {
     /** S5 (mix version 2): the drive an export of this song found (dB): the live target settles there. */
     fun setKnownDrive(db: Float) = post(CMD_MASTER, db, 8)
     /**
+     * S7 son (mix version 4): the level (LUFS, before the drive) of the loud part [setKnownDrive]'s drive
+     * was found on; sent before it. A loss past the cap on a part over 1 LU quieter does not move it. NaN: none.
+     */
+    fun setKnownLevel(lufs: Float) = post(CMD_MASTER, lufs, 10)
+    /**
      * S6 (an export engine only): the loudness target's drive searched as at this ceiling (dBTP; the
      * WAV's −1), the music then limited at [setMasterCeiling]'s: an M4A as loud as its WAV. NaN: none.
      */
@@ -961,6 +966,7 @@ object NativeEngine {
     external fun exportProgress(handle: Long): Float
     external fun exportRenderFloat(handle: Long, frames: Long, tail: Long): FloatArray
     external fun exportRenderFloatMono(handle: Long, frames: Long, tail: Long): FloatArray
+    external fun exportRenderReport(handle: Long, frames: Long, tail: Long): Int
     external fun exportCancel(handle: Long)
     external fun exportDestroy(handle: Long)
     private external fun nativePost(type: Int, value: Float, a: Int, b: Int): Boolean

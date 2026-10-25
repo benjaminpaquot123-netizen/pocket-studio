@@ -344,18 +344,28 @@ private:
 };
 
 // Stereo widener (mid/side). Params: width (0 mono .. 0.5 as is .. 1 twice as wide), bass in mono below
-// (0 off, else 40..300 Hz), -, -.
+// (0 off, else 40..300 Hz), spread (S7 son: 0 off, as always .. 1), -.
+// The spread makes a side out of the sound itself, so a mono pad or lead gets wide: its centre
+// high-passed at 250 Hz (two poles: the lows stay mono) through two short delays that sway slowly
+// (7-13 ms and 13-19 ms, 0.23 and 0.31 Hz: a stereo chorus), their difference added to the side.
+// L + R stays what it was (mono-compatible: a phone's mono speaker hears no comb). Its delay line is
+// preallocated (no allocation in process); at 0 the effect is bit for bit what it always was.
 class Widener {
 public:
     void prepare(float rate) { rate_ = rate; reset(); }
     void setParam(int p, float v);
-    void reset() { lowS_ = 0.0f; }
+    void reset();
     void process(float* l, float* r, int n);
+    static constexpr int kSpreadLen = 2048;  // 42 ms at 48 kHz: the longest tap (19 ms) at up to 96 kHz
 
 private:
     float rate_ = 48000;
     std::array<float, 4> p_{0.75f, 0.0f, 0.0f, 0.0f};
     float lowS_ = 0.0f;
+    std::array<float, kSpreadLen> line_{};
+    int write_ = 0;
+    float hp1_ = 0.0f, hp2_ = 0.0f;  // the spread's high-pass (two one-pole low-passes taken off)
+    double lfo1_ = 0.0, lfo2_ = 0.25;
 };
 
 // Bitcrusher: fewer bits and a lower sample rate. Params: bits (16..2), downsample (1..32x), mix, volume.

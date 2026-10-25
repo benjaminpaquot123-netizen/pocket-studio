@@ -825,18 +825,74 @@ void Tremolo::process(float* l, float* r, int n) {
 
 void Widener::setParam(int p, float v) { setClamped(p_, p, v); }
 
+void Widener::reset() {
+    lowS_ = 0.0f;
+    line_.fill(0.0f);
+    write_ = 0;
+    hp1_ = hp2_ = 0.0f;
+    lfo1_ = 0.0;
+    lfo2_ = 0.25;
+}
+
 void Widener::process(float* l, float* r, int n) {
     const float width = 2.0f * p_[0];
     const bool monoBass = p_[1] > 0.01f;
     const float coef = monoBass ? onePoleCoef(rate_, expMap(p_[1], 40.0f, 300.0f)) : 0.0f;
+    const float spread = std::clamp(p_[2], 0.0f, 1.0f);
+    if (spread < 0.005f) {
+        for (int i = 0; i < n; ++i) {
+            const float m = 0.5f * (l[i] + r[i]);
+            float s = 0.5f * (l[i] - r[i]);
+            if (monoBass) {
+                lowS_ += (s - lowS_) * coef;
+                s -= lowS_;  // the side's lows go: bass stays in the middle
+            }
+            s *= width;
+            l[i] = m + s;
+            r[i] = m - s;
+        }
+        return;
+    }
+    // The taps' delays in frames, read once a block (they sway at 0.23 and 0.31 Hz: a block of 96 to
+    // 1024 frames moves them by a fraction of a frame), interpolated linearly in between.
+    const float ms = rate_ / 1000.0f;
+    const float hpCoef = onePoleCoef(rate_, 250.0f);
+    const double inc1 = 0.23 * n / rate_, inc2 = 0.31 * n / rate_;
+    auto tapAt = [&](double phase, float centre, float swing) {
+        return std::clamp((centre + swing * static_cast<float>(std::sin(2.0 * kPi * phase))) * ms, 1.0f, static_cast<float>(kSpreadLen - 2));
+    };
+    const float d1a = tapAt(lfo1_, 10.0f, 3.0f), d2a = tapAt(lfo2_, 16.0f, 3.0f);
+    lfo1_ += inc1;
+    lfo2_ += inc2;
+    if (lfo1_ >= 1.0) lfo1_ -= 1.0;
+    if (lfo2_ >= 1.0) lfo2_ -= 1.0;
+    const float d1b = tapAt(lfo1_, 10.0f, 3.0f), d2b = tapAt(lfo2_, 16.0f, 3.0f);
+    const float step = n > 0 ? 1.0f / static_cast<float>(n) : 0.0f;
+    // 0.75 x the difference of two (nearly) uncorrelated taps: about as much side as centre at 1.
+    const float gain = 0.75f * spread;
+    auto read = [&](float delay) {
+        const float pos = static_cast<float>(write_) - delay;
+        const float wrapped = pos < 0.0f ? pos + static_cast<float>(kSpreadLen) : pos;
+        const int i0 = static_cast<int>(wrapped);
+        const float frac = wrapped - static_cast<float>(i0);
+        const int i1 = i0 + 1 < kSpreadLen ? i0 + 1 : 0;
+        return line_[static_cast<size_t>(i0)] + frac * (line_[static_cast<size_t>(i1)] - line_[static_cast<size_t>(i0)]);
+    };
     for (int i = 0; i < n; ++i) {
         const float m = 0.5f * (l[i] + r[i]);
         float s = 0.5f * (l[i] - r[i]);
         if (monoBass) {
             lowS_ += (s - lowS_) * coef;
-            s -= lowS_;  // the side's lows go: bass stays in the middle
+            s -= lowS_;
         }
-        s *= width;
+        hp1_ += (m - hp1_) * hpCoef;
+        const float h1 = m - hp1_;
+        hp2_ += (h1 - hp2_) * hpCoef;
+        line_[static_cast<size_t>(write_)] = h1 - hp2_;
+        const float t = static_cast<float>(i) * step;
+        const float made = read(d1a + t * (d1b - d1a)) - read(d2a + t * (d2b - d2a));
+        if (++write_ >= kSpreadLen) write_ = 0;
+        s = width * (s + gain * made);
         l[i] = m + s;
         r[i] = m - s;
     }

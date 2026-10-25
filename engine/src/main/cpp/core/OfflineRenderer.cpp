@@ -544,4 +544,15 @@ std::vector<float> OfflineRenderer::renderToBuffer(int64_t frames, int64_t tailF
     return out;
 }
 
+OfflineRenderer::Result OfflineRenderer::renderForReport(int64_t frames, int64_t tailFrames) {
+    std::vector<float> music;
+    Output output(sampleRate_, sampleRate_, frames, tailFrames, fadeOut_, [](float*, int) { return true; });
+    const Result r = render(frames, tailFrames, [&music, frames, tailFrames]() -> std::unique_ptr<Store> {
+        music.reserve(static_cast<size_t>((frames + tailFrames) * 2));
+        return std::make_unique<MemoryStore>(music);
+    }, output);
+    report_.sampleRate = sampleRate_;
+    return r;
+}
+
 }  // namespace ps

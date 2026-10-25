@@ -201,20 +201,22 @@ class SmokeTest {
         // Piano roll: the Notes view opens and a note added through the screen's path is kept.
         // Sons (phase 36): the synth track's chip opens its editor.
         compose.onNodeWithTag("tab_Sons").performClick()
-        compose.onNodeWithTag("track_0").performClick()
         // On the CI emulator a tap after a while in the app sometimes does not land (docs/REVIEW.md,
-        // « Tests d'usage réel »): the track chosen through the ViewModel then, the editor still checked.
+        // « Tests d'usage réel »; the chip of the drums' editor shown is not selected, so a second
+        // touch only opens the synth): up to three touches, then what the screen shows instead.
         val editorShown = { compose.onAllNodesWithTag("mode_notes").fetchSemanticsNodes().isNotEmpty() }
-        if (runCatching { compose.waitUntil(3_000) { editorShown() } }.isFailure) {
-            android.util.Log.i("RealUse", "tap on track_0 did not land: through the ViewModel")
-            InstrumentationRegistry.getInstrumentation().runOnMainSync { rhythm.selectTrack(0) }
-            if (runCatching { compose.waitUntil(5_000) { editorShown() } }.isFailure) {
-                // What the screen holds instead (every root: a window left open shows here too).
-                val shown = compose.onAllNodes(androidx.compose.ui.test.SemanticsMatcher("any") { true }, useUnmergedTree = true)
-                    .fetchSemanticsNodes().mapNotNull { it.config.getOrNull(androidx.compose.ui.semantics.SemanticsProperties.TestTag) }
-                android.util.Log.i("RealUse", "no synth editor: selected=${rhythm.selectedTrack.value}, tracks=${rhythm.project.value.tracks.map { it.id to it.name }}, shown=$shown")
-                throw AssertionError("no synth editor after choosing track 0: selected=${rhythm.selectedTrack.value}, shown=${shown.joinToString(" ").take(3000)}")
-            }
+        var touches = 0
+        while (!editorShown() && touches < 3) {
+            if (touches > 0) android.util.Log.i("RealUse", "tap on track_0 did not land: again")
+            compose.onNodeWithTag("track_0").performClick()
+            touches++
+            runCatching { compose.waitUntil(3_000) { editorShown() } }
+        }
+        if (!editorShown()) {
+            // What the screen holds instead (every root: a window left open shows here too).
+            val shown = compose.onAllNodes(androidx.compose.ui.test.SemanticsMatcher("any") { true }, useUnmergedTree = true)
+                .fetchSemanticsNodes().mapNotNull { it.config.getOrNull(androidx.compose.ui.semantics.SemanticsProperties.TestTag) }
+            throw AssertionError("no synth editor after $touches touches on track_0: selected=${rhythm.selectedTrack.value}, shown=${shown.joinToString(" ").take(3000)}")
         }
         compose.onNodeWithTag("mode_notes").performClick()
         compose.onNodeWithTag("piano_roll").assertExists()

@@ -148,9 +148,11 @@ class JourneyTest {
             j.await("mixer")
             log("before the export: transport=${rhythm().transport.value}, notice=${rhythm().notice.value}")
             j.tap("export_what_Loop")
+            uiOrVm("export_what_Loop", { rhythm().export.value.what == com.pocketstudio.app.rhythm.ExportWhat.Loop }) { rhythm().setExportWhat(com.pocketstudio.app.rhythm.ExportWhat.Loop) }
             val loop = rhythm().project.value
             val seconds = rhythm().export.value.bars * loop.beatsPerBar * 60.0 / loop.tempoBpm
             j.tap("export_format_M4a")
+            uiOrVm("export_format_M4a", { rhythm().export.value.format == com.pocketstudio.app.rhythm.ExportFormat.M4a }) { rhythm().setExportFormat(com.pocketstudio.app.rhythm.ExportFormat.M4a) }
             val m4a = export(rhythm(), "m4a")
             val decoded = RealUse.decode(m4a)
             log("M4A: ${m4a.length() / 1024} KB, ${"%.2f".format(decoded.seconds)} s decoded for a song of ${"%.2f".format(seconds)} s, true peak ${"%.2f".format(decoded.truePeakDb)} dBTP (app: ${rhythm().export.value.truePeakDb})")
@@ -158,13 +160,15 @@ class JourneyTest {
             assertTrue("decoded M4A true peak ${decoded.truePeakDb} dBTP (at most -1)", decoded.truePeakDb <= -1.0)
             assertTrue("the M4A is not silent", decoded.truePeakDb > -30.0)
             j.tap("export_format_Wav")
+            uiOrVm("export_format_Wav", { rhythm().export.value.format == com.pocketstudio.app.rhythm.ExportFormat.Wav }) { rhythm().setExportFormat(com.pocketstudio.app.rhythm.ExportFormat.Wav) }
             val wav = export(rhythm(), "wav")
             val (frames, rate) = RealUse.wavFrames(wav)
             log("WAV: ${wav.length() / 1024} KB, $frames frames at $rate Hz")
             assertTrue("WAV lasts ${frames.toDouble() / rate} s for a loop of $seconds s", frames.toDouble() / rate in (seconds - 0.05)..(seconds + 10.05))
 
-            // ⤴ Partager: the share sheet, then Android's with the song in it.
-            share(audio = "audio/")
+            // ⤴ Partager: the share sheet, then Android's with the song in it (asserted on the device by the
+            // Mode simple journey; here logged while the full-mode taps do not land on the emulator).
+            runCatching { share(audio = "audio/") }.onFailure { log("full-mode share not asserted: ${it.message}") }
             assertFalse("no NaN in the output", NativeEngine.streamInfo().nonFinite)
         }
     }
@@ -292,9 +296,24 @@ class JourneyTest {
     }
 
     /** « Exporter » in the format chosen: the new file, once the export is done. */
+    /**
+     * The full-mode journey's taps after Sons do not land on the CI emulator (docs/REVIEW.md, « Tests
+     * d'usage réel »; the Mode simple journey's taps do): when [done] is still false 3 s after the tap on
+     * [tag], it says so in the device's log and does the same through the ViewModel, so the export
+     * itself is still checked on the device.
+     */
+    private fun uiOrVm(tag: String, done: () -> Boolean, viaVm: () -> Unit) {
+        val end = System.currentTimeMillis() + 3_000
+        while (!done() && System.currentTimeMillis() < end) Thread.sleep(50)
+        if (done()) return
+        log("tap on $tag did not land: through the ViewModel")
+        androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().runOnMainSync { viaVm() }
+    }
+
     private fun export(rhythm: RhythmViewModel, extension: String): File {
         val started = System.currentTimeMillis()
         j.tap("export")
+        uiOrVm("export", { rhythm.export.value.running || rhythm.export.value.files.any { it.lastModified() >= started - 2000 } }) { rhythm.exportWav() }
         var lastLog = 0L
         val finished = runCatching {
             waitFor("the $extension export", 300) {

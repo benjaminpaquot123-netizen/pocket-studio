@@ -208,7 +208,8 @@ class SmokeTest {
         var touches = 0
         while (!editorShown() && touches < 3) {
             if (touches > 0) android.util.Log.i("RealUse", "tap on track_0 did not land: again")
-            compose.onNodeWithTag("track_0").performClick()
+            // Lot 2 put « Remix » in the bar: on a narrow screen the track's chip is past its right edge.
+            compose.onNodeWithTag("track_0").performScrollTo().performClick()
             touches++
             runCatching { compose.waitUntil(3_000) { editorShown() } }
         }

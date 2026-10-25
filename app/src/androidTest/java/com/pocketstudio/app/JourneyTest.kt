@@ -266,7 +266,8 @@ class JourneyTest {
         Thread.sleep((60_000.0 / p.tempoBpm).toLong())
         for (key in keys) {
             // A key out of sight (a small screen, the keyboard below the track's settings) is scrolled to first.
-            runCatching { if (!compose.onNodeWithTag(key).isDisplayed()) compose.onNodeWithTag(key).performScrollTo() }
+            // Always: a key half past the keyboard's edge counts as displayed, its centre off the screen.
+            runCatching { compose.onNodeWithTag(key).performScrollTo() }
             log("key $key at position %.3f, output latency %.0f ms".format(NativeEngine.playPosition(), Metrics.streamInfo.value.outputLatencyMs))
             // Low on the key: during a take the record bar's banner can lie over the top of the keys.
             compose.onNodeWithTag(key).performTouchInput { down(androidx.compose.ui.geometry.Offset(centerX, height * 0.85f)) }

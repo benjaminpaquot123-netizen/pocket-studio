@@ -1,5 +1,8 @@
 package com.pocketstudio.app.synth
 
+import com.pocketstudio.ui.ScaledAlertDialog
+import com.pocketstudio.ui.ScaledDropdownMenu
+
 import com.pocketstudio.model.i18n.tr
 
 import com.pocketstudio.ui.fadingHorizontalScroll
@@ -148,7 +151,7 @@ fun TrackBar(
                     }
                     if (selected) Icon(Icons.Filled.MoreVert, contentDescription = tr("Options de %s", com.pocketstudio.model.DefaultNames.shown(t.name)), Modifier.size(18.dp), tint = Neon.TextSecondary)
                 }
-                DropdownMenu(expanded = menuFor?.id == t.id, onDismissRequest = { menuFor = null }) {
+                ScaledDropdownMenu(expanded = menuFor?.id == t.id, onDismissRequest = { menuFor = null }) {
                     ui.changeSound?.let { change ->
                         DropdownMenuItem(text = { Text(tr("Changer le son")) }, onClick = { menuFor = null; change(t.id) }, modifier = Modifier.testTag("track_menu_sound"))
                     }
@@ -212,7 +215,7 @@ fun TrackBar(
     }
     renaming?.let { t ->
         var name by androidx.compose.runtime.saveable.rememberSaveable(t.id) { mutableStateOf(com.pocketstudio.model.DefaultNames.shown(t.name)) }
-        AlertDialog(
+        ScaledAlertDialog(
             onDismissRequest = { renamingId = null },
             title = { Text(tr("Renommer la piste")) },
             text = {
@@ -224,7 +227,7 @@ fun TrackBar(
         )
     }
     colouring?.let { t ->
-        AlertDialog(
+        ScaledAlertDialog(
             onDismissRequest = { colouringId = null },
             title = { Text(tr("Couleur de « %s »", com.pocketstudio.model.DefaultNames.shown(t.name))) },
             text = {

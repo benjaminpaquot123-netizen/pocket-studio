@@ -1,5 +1,7 @@
 package com.pocketstudio.app.library
 
+import com.pocketstudio.ui.ScaledAlertDialog
+
 import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.ui.fadingHorizontalScroll
 import com.pocketstudio.app.help.Glossary
@@ -293,7 +295,7 @@ private fun PackList(ui: LibraryUi, actions: LibraryActions) {
     }
     deleting?.let { id ->
         val name = (packs.index as? IndexState.Ready)?.index?.packs?.firstOrNull { it.id == id }?.name?.let { packName -> tr(packName) } ?: id
-        AlertDialog(
+        ScaledAlertDialog(
             onDismissRequest = { deleting = null },
             title = { Text(tr("Supprimer le pack ?")) },
             text = { Text(tr("Les sons de « %s » quittent l'appareil. Tes projets gardent ceux qu'ils utilisent ; pour les autres, il faudra retélécharger le pack.", name)) },
@@ -369,7 +371,7 @@ private fun AllPacksNews(ui: LibraryUi, actions: LibraryActions) {
 private fun DownloadAllDialog(ui: LibraryUi, complete: Boolean, onDismiss: () -> Unit, onConfirm: () -> Unit) {
     val entries = if (complete) ui.packs.toComplete else ui.packs.toDownload
     val size = mb(com.pocketstudio.model.PackCatalog.totalBytes(entries))
-    AlertDialog(
+    ScaledAlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(if (complete) tr("Tout compléter ?") else tr("Tout télécharger ?")) },
         text = {

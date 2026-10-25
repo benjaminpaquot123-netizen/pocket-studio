@@ -309,7 +309,7 @@ class OnboardingUiTest {
         var created = 0
         var ui by androidx.compose.runtime.mutableStateOf(houseUi(1))
         compose.setContent { PocketStudioTheme { WizardScreen(ui, PacksUi(IndexState.Unavailable), null, WizardActions(create = { created++ })) } }
-        compose.onNodeWithTag("wizard_create_now").assertTextEquals("Créer tout de suite (choix conseillés)").performClick()
+        compose.onNodeWithTag("wizard_create_now").assertTextEquals("Créer tout de suite avec les choix conseillés").performClick()
         assertEquals(1, created)
         compose.onNodeWithText("Étape 2 sur ${ui.lastStep + 1} · House").assertExists()
         // On the summary, « Créer le morceau » is the button: no shortcut twice.
@@ -319,7 +319,21 @@ class OnboardingUiTest {
         // No style yet: nothing to create.
         ui = WizardUi(open = true)
         compose.onNodeWithTag("wizard_create_now").assertDoesNotExist()
-        compose.onNodeWithText("Étape 1 sur", substring = true).assertExists()
+        // Lot 2: no « sur 13 » before the style (the count is the style's).
+        compose.onNodeWithText("Étape 1 : choisis un style").assertExists()
+        compose.onNodeWithText("Étape 1 sur", substring = true).assertDoesNotExist()
+    }
+
+    /** Lot 2: « Gamme Fa phrygienne · accords i–i–i–II » only for whoever asks for it. */
+    @Test
+    fun theMoodsScaleAndChordsAreForTheCurious() {
+        val ui = houseUi(1)
+        assertEquals(StarterWizard.Step.Mood, ui.current)
+        compose.setContent { PocketStudioTheme { WizardScreen(ui, PacksUi(IndexState.Unavailable), null, WizardActions()) } }
+        compose.onNodeWithTag("wizard_mood_theory", useUnmergedTree = true).assertDoesNotExist()
+        compose.onNodeWithText("Gamme", substring = true, useUnmergedTree = true).assertDoesNotExist()
+        compose.onNodeWithTag("wizard_mood_details").performScrollTo().performClick()
+        compose.onNodeWithTag("wizard_mood_theory", useUnmergedTree = true).assertExists()
     }
 
     @Test

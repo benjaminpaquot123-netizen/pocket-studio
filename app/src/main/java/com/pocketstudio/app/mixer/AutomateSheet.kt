@@ -2,6 +2,8 @@
 
 package com.pocketstudio.app.mixer
 
+import com.pocketstudio.ui.ScaledBottomSheet
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -68,7 +70,7 @@ fun AutomateLaneSheet(
     strips: List<StripInfo>, actions: AutomationActions, title: String, close: () -> Unit,
 ) {
     val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    ModalBottomSheet(onDismissRequest = close, sheetState = state, containerColor = Neon.Surface, modifier = Modifier.testTag("automate_sheet")) {
+    ScaledBottomSheet(onDismissRequest = close, sheetState = state, containerColor = Neon.Surface, modifier = Modifier.testTag("automate_sheet")) {
         AutomateLaneContent(lane, ui, channels, master, strips, actions, title, close)
     }
 }

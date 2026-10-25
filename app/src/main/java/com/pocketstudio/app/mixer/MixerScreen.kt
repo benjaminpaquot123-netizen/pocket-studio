@@ -264,15 +264,23 @@ private fun AutomationEntry(lanes: Int, show: () -> Unit, overview: () -> Unit) 
     }
 }
 
+/**
+ * The limiter's gain as read from the engine, made safe: 0 (nothing read yet, the engine closed)
+ * or a value that is not a number is « no limiting » (1), never « 214748368,0 dB » (lot 2).
+ */
+internal fun limiterGainRead(g: Float): Float = if (g.isFinite() && g > 0f) g.coerceAtMost(1f) else 1f
+
+/** Tenths of a dB the limiter holds the sound back, and whether it works hard: what its line shows. */
+internal fun limiterShown(raw: Float): Pair<Int, Boolean> {
+    val g = limiterGainRead(raw)
+    return (if (g < 0.98f) (-200 * log10(g)).roundToInt() else 0) to (g < 0.7f)
+}
+
 /** What the limiter does: composed again only when its words change, not at each meter reading. */
 @Composable
 private fun LimiterLine(gain: () -> Float) {
     val shown by androidx.compose.runtime.remember(gain) {
-        androidx.compose.runtime.derivedStateOf {
-            val g = gain()
-            // Tenths of a dB, and whether it works hard: what the line shows.
-            (if (g < 0.98f) (-200 * log10(g)).roundToInt() else 0) to (g < 0.7f)
-        }
+        androidx.compose.runtime.derivedStateOf { limiterShown(gain()) }
     }
     val (tenths, hard) = shown
     Text(
@@ -381,7 +389,8 @@ class HardLimiting {
     private var shown = false
 
     fun update(gain: Float, nowMs: Long): Boolean {
-        if (gain < HARD_GAIN) {
+        // Nothing read yet (0) is not a limiter holding everything back.
+        if (limiterGainRead(gain) < HARD_GAIN) {
             if (runStart < 0 || nowMs - lastHard > GAP_MS) runStart = nowMs
             lastHard = nowMs
         }

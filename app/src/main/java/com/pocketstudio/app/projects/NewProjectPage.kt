@@ -91,7 +91,8 @@ internal fun NewProjectPage(
             GuidedCard(busy) { leave(); actions.wizard() }
             SectionLabel(StarterGroup.Style.title, Modifier.padding(top = 12.dp))
             Text(
-                tr("Une touche, un morceau complet (environ 3 minutes), prêt à écouter."),
+                // Lot 2: the real lengths (a Techno lasts 5 to 6 minutes), each style says its own.
+                com.pocketstudio.app.library.StyleLengths.range().let { (from, to) -> tr("Une touche, un morceau complet de %1\$d à %2\$d minutes selon le style, prêt à écouter.", from, to) },
                 style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary,
             )
             quick.error?.let {
@@ -222,7 +223,7 @@ private fun QuickStyleCard(s: StarterWizard.Style, quick: QuickUi, actions: Proj
                 Row(Modifier.padding(end = 8.dp), verticalAlignment = Alignment.CenterVertically) {
                     Text(tr(s.name), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = if (preparing) Neon.Cyan else Neon.TextPrimary,
                         maxLines = 2, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
-                    Text("${s.bpm.roundToInt()} BPM", style = MaterialTheme.typography.labelMedium, color = color, maxLines = 1,
+                    Text("${s.bpm.roundToInt()} BPM · ${com.pocketstudio.app.library.StyleLengths.label(s)}", style = MaterialTheme.typography.labelMedium, color = color, maxLines = 1,
                         modifier = Modifier.padding(start = 8.dp).clip(RoundedCornerShape(50)).background(color.copy(alpha = 0.16f)).padding(horizontal = 8.dp, vertical = 2.dp))
                 }
                 if (preparing) {

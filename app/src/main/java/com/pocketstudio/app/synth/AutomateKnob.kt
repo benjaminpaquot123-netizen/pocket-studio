@@ -1,5 +1,7 @@
 package com.pocketstudio.app.synth
 
+import com.pocketstudio.ui.ScaledDropdownMenu
+
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material.icons.Icons
@@ -51,7 +53,7 @@ fun AutomatableKnob(automate: (() -> Unit)?, tag: String, modifier: Modifier = M
             .testTag(tag),
     ) {
         content()
-        DropdownMenu(expanded = open, onDismissRequest = { open = false }) {
+        ScaledDropdownMenu(expanded = open, onDismissRequest = { open = false }) {
             DropdownMenuItem(
                 text = { Text(label) },
                 leadingIcon = { Icon(Icons.AutoMirrored.Filled.ShowChart, contentDescription = null) },

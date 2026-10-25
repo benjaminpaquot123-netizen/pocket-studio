@@ -1,5 +1,8 @@
 package com.pocketstudio.app.live
 
+import com.pocketstudio.app.learn.spot
+import com.pocketstudio.ui.ScaledAlertDialog
+
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
@@ -451,7 +454,7 @@ private val PANEL_FOLDED = 56.dp
 /** « Finir la prise ? »: leaving the Live page during a take ends it (or drops it while armed). */
 @Composable
 private fun LeaveDuringTake(armed: Boolean, leave: () -> Unit, stay: () -> Unit) {
-    AlertDialog(
+    ScaledAlertDialog(
         onDismissRequest = stay,
         title = { Text(if (armed) tr("Annuler la prise ?") else tr("Finir la prise ?")) },
         text = {
@@ -484,17 +487,17 @@ private fun LiveTopBar(ui: LiveScreenUi, actions: LiveActions, leave: () -> Unit
         horizontalArrangement = Arrangement.spacedBy(if (compact) 4.dp else 6.dp),
     ) {
         if (compact) {
-            IconButton(onClick = leave, modifier = Modifier.size(48.dp).testTag("live_back")) {
+            IconButton(onClick = leave, modifier = Modifier.size(48.dp).testTag("live_back").spot("live_back", tr("Revenir"))) {
                 Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = tr("Retour"))
             }
         } else {
-            TextButton(onClick = leave, modifier = Modifier.testTag("live_back")) {
+            TextButton(onClick = leave, modifier = Modifier.testTag("live_back").spot("live_back", tr("Revenir"))) {
                 Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
                 Text(tr("Retour"), maxLines = 1)
             }
         }
         Box(
-            Modifier.size(48.dp).clip(CircleShape).clickable(onClick = actions.togglePlay).testTag("live_play")
+            Modifier.size(48.dp).clip(CircleShape).clickable(onClick = actions.togglePlay).testTag("live_play").spot("live_play", tr("Jouer la partie"))
                 .semantics { contentDescription = if (ui.playing) tr("Arrêter") else tr("Jouer") },
             contentAlignment = Alignment.Center,
         ) {
@@ -508,7 +511,8 @@ private fun LiveTopBar(ui: LiveScreenUi, actions: LiveActions, leave: () -> Unit
         Box(Modifier.weight(1f)) {
             Column(
                 Modifier.heightIn(min = 48.dp).clip(RoundedCornerShape(12.dp)).background(Neon.SurfaceHigh)
-                    .clickable { actions.setQuantum(next) }.padding(horizontal = if (compact) 8.dp else 10.dp, vertical = 4.dp).testTag("live_quantum"),
+                    .clickable { actions.setQuantum(next) }.padding(horizontal = if (compact) 8.dp else 10.dp, vertical = 4.dp).testTag("live_quantum")
+                    .spot("live_quantum", tr("Quand ça part")),
                 verticalArrangement = Arrangement.Center,
             ) {
                 Text(tr("Lancer à"), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)
@@ -565,7 +569,7 @@ internal fun RecordButton(take: TakeUi, record: () -> Unit) {
         Modifier.width(56.dp).heightIn(min = 48.dp).clip(RoundedCornerShape(12.dp))
             .background(if (take is TakeUi.Recording) Neon.Red.copy(alpha = 0.25f) else Color.Transparent)
             .clickable(enabled = take !is TakeUi.Writing, onClick = record)
-            .testTag("live_record").semantics { contentDescription = description },
+            .testTag("live_record").spot("live_record", tr("Enregistrer ta prise")).semantics { contentDescription = description },
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
@@ -596,7 +600,7 @@ internal fun TakeBanner(ui: LiveScreenUi, actions: LiveActions, showReady: Boole
     Row(
         Modifier.fillMaxWidth().heightIn(min = 48.dp)
             .background(if (take is TakeUi.Recording) Neon.Red.copy(alpha = 0.16f) else Neon.SurfaceHigh.copy(alpha = 0.6f))
-            .padding(horizontal = 10.dp, vertical = 4.dp).testTag("live_take"),
+            .padding(horizontal = 10.dp, vertical = 4.dp).testTag("live_take").spot("live_take", tr("Où va ta prise")),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
@@ -766,7 +770,7 @@ private fun LiveGrid(ui: LiveScreenUi, columns: List<LiveColumn>, actions: LiveA
             Column(Modifier.padding(horizontal = GRID_PAD_H, vertical = GRID_PAD_V).testTag("live_grid"), verticalArrangement = Arrangement.spacedBy(gap)) {
                 Row(horizontalArrangement = Arrangement.spacedBy(gap)) {
                     Box(Modifier.width(sceneWidth).height(header), contentAlignment = Alignment.BottomStart) {
-                        Text(tr("Parties"), style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary)
+                        Text(tr("Briques"), style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary)
                     }
                     ScrolledRow(h, gap) { columns.forEach { c -> ColumnHeader(c, c.key in ui.muted, cellW, header) { actions.toggleMute(c.key) } } }
                 }
@@ -826,7 +830,7 @@ private fun ScrolledRow(state: ScrollState, gap: Dp, content: @Composable () -> 
 private fun MuteButton(c: LiveColumn, muted: Boolean, toggleMute: () -> Unit, modifier: Modifier) {
     Box(
         modifier.clip(RoundedCornerShape(8.dp)).background(if (muted) Neon.Amber else Neon.SurfaceHigh)
-            .clickable(onClick = toggleMute).testTag("live_mute_${c.key}")
+            .clickable(onClick = toggleMute).testTag("live_mute_${c.key}").spot("live_mute_${c.key}", if (c.key == com.pocketstudio.model.SongPart.DRUMS) tr("Couper le son") else null)
             .semantics { contentDescription = if (muted) tr("Remettre le son de %s", c.name) else tr("Couper le son de %s", c.name) },
         contentAlignment = Alignment.Center,
     ) {
@@ -1023,6 +1027,12 @@ private fun StopButton(label: String, modifier: Modifier, waiting: Boolean, blin
                 if (waiting) m.drawBehind { drawRect(red.copy(alpha = 0.25f + 0.35f * blink.value)) } else m.background(Neon.SurfaceHigh)
             }
             .launchOnPress(press, retract, stop).testTag(tag)
+            // One id per control; the drums' ■ alone says what a track's ■ does (one label, not seven).
+            .spot(tag, when (tag) {
+                "live_stop_all" -> tr("Tout arrêter")
+                "live_stop_" + com.pocketstudio.model.SongPart.DRUMS -> tr("Arrêter cette piste")
+                else -> null
+            })
             .semantics { if (label == "■") contentDescription = tr("Arrêter la piste") },
         contentAlignment = Alignment.Center,
     ) {

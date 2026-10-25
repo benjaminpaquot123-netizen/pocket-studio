@@ -103,7 +103,11 @@ class RecordWithoutFearTest {
         vm.recordTake(TakeSource.KEYS)
         vm.recordTake(TakeSource.KEYS)
         assertNull(vm.noteTake.value)
-        assertTrue(vm.notice.value!!.contains("Rien"))
+        // Said by a line under the record button (« Rien n'a été joué »), no longer a window.
+        assertTrue(vm.takeEmpty.value)
+        assertNull(vm.notice.value)
+        vm.recordTake(TakeSource.KEYS)
+        assertTrue("the next take takes the line away", !vm.takeEmpty.value)
     }
 
     @Test

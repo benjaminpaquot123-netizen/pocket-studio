@@ -1,5 +1,9 @@
 package com.pocketstudio.app.midi
 
+import com.pocketstudio.ui.ScaledBottomSheet
+import com.pocketstudio.ui.ScaledDropdownMenu
+import com.pocketstudio.ui.ScaledPopup
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -178,7 +182,7 @@ private fun PanelRow(i: Int, slot: KnobSlot, hint: KnobHint, candidates: List<Kn
             var open by remember { mutableStateOf(false) }
             Box {
                 OutlinedButton(onClick = { open = true }, modifier = Modifier.heightIn(min = 48.dp).testTag("knob_change_$i")) { Text(tr("Changer"), maxLines = 1) }
-                DropdownMenu(expanded = open, onDismissRequest = { open = false }) {
+                ScaledDropdownMenu(expanded = open, onDismissRequest = { open = false }) {
                     DropdownMenuItem(text = { Text(tr("Choix de l'appli")) }, onClick = { open = false; actions.change(i, null) })
                     candidates.forEach { c ->
                         DropdownMenuItem(text = { Text(c.label) }, onClick = { open = false; actions.change(i, c.target) })
@@ -206,14 +210,14 @@ fun KnobOverlay(vm: KnobsViewModel, device: String?) {
     val h = hint ?: return
     if (vm.pinned) {
         val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-        ModalBottomSheet(onDismissRequest = vm::close, sheetState = state, containerColor = Neon.Surface) {
+        ScaledBottomSheet(onDismissRequest = vm::close, sheetState = state, containerColor = Neon.Surface) {
             KnobPanel(
                 h, vm.candidates(), enabled,
                 KnobPanelActions(change = vm::override, learn = vm::learn, reset = vm::reset, setEnabled = vm::setEnabled, close = vm::close),
             )
         }
     } else {
-        Popup(alignment = Alignment.BottomCenter, properties = PopupProperties(focusable = false)) {
+        ScaledPopup(alignment = Alignment.BottomCenter, properties = PopupProperties(focusable = false)) {
             Box(Modifier.navigationBarsPadding().padding(start = 12.dp, end = 12.dp, bottom = 92.dp)) {
                 KnobHintBar(h, open = { vm.open(device) })
             }

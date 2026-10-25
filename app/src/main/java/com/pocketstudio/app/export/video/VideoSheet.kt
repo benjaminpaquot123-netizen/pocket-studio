@@ -1,5 +1,7 @@
 package com.pocketstudio.app.export.video
 
+import com.pocketstudio.ui.ScaledBottomSheet
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -95,7 +97,7 @@ fun previewFrame(plan: VideoPlan, renderer: (VideoPlan, VideoLevels.Levels) -> V
 fun VideoSheet(ui: VideoSheetUi, actions: VideoSheetActions) {
     val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     // While the video is being made the sheet stays: a swipe would hide the progress, not stop it.
-    ModalBottomSheet(onDismissRequest = { if (!ui.run.running) actions.close() }, sheetState = state, containerColor = Neon.Surface) {
+    ScaledBottomSheet(onDismissRequest = { if (!ui.run.running) actions.close() }, sheetState = state, containerColor = Neon.Surface) {
         VideoSheetContent(ui, actions)
     }
 }

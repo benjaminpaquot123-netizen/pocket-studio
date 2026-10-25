@@ -1,5 +1,8 @@
 package com.pocketstudio.app.library
 
+import androidx.compose.foundation.layout.heightIn
+import com.pocketstudio.ui.ScaledAlertDialog
+
 import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.app.help.Glossary
 import androidx.compose.foundation.background
@@ -156,8 +159,9 @@ private fun WizardBody(ui: WizardUi, packs: PacksUi, playing: SoundRef?, actions
             Row(Modifier.fillMaxWidth().padding(start = 16.dp, end = 4.dp, top = 8.dp), verticalAlignment = Alignment.CenterVertically) {
                 Column(Modifier.weight(1f)) {
                     Text(tr("Nouveau morceau, pas à pas"), style = MaterialTheme.typography.titleLarge)
+                    // Lot 2: no « sur 13 » before a style is chosen (the count is the style's: 10 in Lo-fi).
                     Text(
-                        tr("Étape %d sur %d", ui.step + 1, total) + (style?.let { " · ${tr(it.name)}" } ?: ""),
+                        if (style == null) tr("Étape 1 : choisis un style") else tr("Étape %d sur %d", ui.step + 1, total) + " · ${tr(style.name)}",
                         style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.testTag("wizard_step"),
                     )
                 }
@@ -166,9 +170,9 @@ private fun WizardBody(ui: WizardUi, packs: PacksUi, playing: SoundRef?, actions
                     modifier = Modifier.testTag("wizard_close"),
                 ) { Icon(Icons.Filled.Close, contentDescription = tr("Fermer")) }
             }
-            StepProgress(ui.step + 1, total)
+            if (style != null) StepProgress(ui.step + 1, total)
             if (confirmClose) {
-                AlertDialog(
+                ScaledAlertDialog(
                     onDismissRequest = { confirmClose = false },
                     title = { Text(tr("Quitter sans créer le morceau ?")) },
                     text = { Text(tr("Tes choix seront perdus. Tu pourras le relancer depuis Mes projets › « Nouveau morceau guidé ».")) },
@@ -194,10 +198,12 @@ private fun WizardBody(ui: WizardUi, packs: PacksUi, playing: SoundRef?, actions
             }
             if (style != null && ui.step > 0 && ui.step < ui.lastStep) {
                 // The details are for whoever wants them: the advised choices are already made.
-                TextButton(
+                // Lot 2: a real button (a thin orange link was missed by every beginner).
+                androidx.compose.material3.FilledTonalButton(
                     onClick = actions.create, enabled = !ui.creating,
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp).testTag("wizard_create_now"),
-                ) { Text(if (ui.creating) tr("Préparation…") else tr("Créer tout de suite (choix conseillés)"), textAlign = TextAlign.Center) }
+                    colors = androidx.compose.material3.ButtonDefaults.filledTonalButtonColors(containerColor = Neon.Cyan.copy(alpha = 0.2f), contentColor = Neon.Cyan),
+                    modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).padding(horizontal = 12.dp).testTag("wizard_create_now"),
+                ) { Text(if (ui.creating) tr("Préparation…") else tr("Créer tout de suite avec les choix conseillés"), textAlign = TextAlign.Center) }
             }
             if (style != null && ui.step > 0) {
                 Row(Modifier.fillMaxWidth().padding(start = 12.dp, end = 12.dp, bottom = 12.dp, top = 4.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -634,9 +640,7 @@ private fun SummaryStep(ui: WizardUi, style: StarterWizard.Style) {
         if (mood == null) {
             Text(tr("Mélodie : aucune pour l'instant (la batterie seule)."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         } else {
-            Text(tr("Ambiance : %s · accords %s, gamme %s %s verrouillée.", tr(mood.label), StarterWizard.chordsLabel(style, mood), keyName(style.melody.root),
-                tr(StarterWizard.progressionOf(style, mood).first.label).lowercase()),
-                style = MaterialTheme.typography.bodyMedium)
+            Text(tr("Ambiance : %s. Le clavier ne joue que des notes qui vont ensemble.", tr(mood.label)), style = MaterialTheme.typography.bodyMedium)
             if (style.melody.acid != null) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(tr(StarterWizard.ScenePlan.ACID_TITLE), modifier = Modifier.weight(1f))
@@ -753,6 +757,7 @@ private fun MoodStep(style: StarterWizard.Style, mood: StarterWizard.Mood?, pack
     StylePacks(style, packs, actions)
     Text(tr("Touche une ambiance pour l'entendre : ses quatre accords, joués sur le rythme du style."),
         style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+    var details by rememberSaveable { mutableStateOf(false) }
     StarterWizard.Mood.entries.forEach { m ->
         val selected = m == mood
         NeonCard(accent = if (selected) Neon.Cyan else Neon.Outline, modifier = Modifier.clickable { actions.setMood(m) }.testTag("wizard_mood_${m.id}")) {
@@ -761,8 +766,11 @@ private fun MoodStep(style: StarterWizard.Style, mood: StarterWizard.Mood?, pack
                 Column(Modifier.weight(1f)) {
                     Text(tr(m.label), style = MaterialTheme.typography.titleMedium, color = if (selected) Neon.Cyan else Neon.TextPrimary)
                     Text(tr(m.description), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
-                    Text(tr("Gamme %s %s · accords %s", keyName(style.melody.root), tr(StarterWizard.progressionOf(style, m).first.label).lowercase(), StarterWizard.chordsLabel(style, m)),
-                        style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary)
+                    // Lot 2: the scale and the chords' numerals only for whoever asks (« Gamme Fa phrygienne · accords i–i–i–II » scared beginners).
+                    if (selected && details) {
+                        Text(tr("Gamme %s %s · accords %s", keyName(style.melody.root), tr(StarterWizard.progressionOf(style, m).first.label).lowercase(), StarterWizard.chordsLabel(style, m)),
+                            style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary, modifier = Modifier.testTag("wizard_mood_theory"))
+                    }
                 }
                 RadioButton(selected = selected, onClick = { actions.setMood(m) })
             }
@@ -778,6 +786,11 @@ private fun MoodStep(style: StarterWizard.Style, mood: StarterWizard.Mood?, pack
         }
     }
     if (style.melody.mood == mood) Text(tr("C'est l'ambiance conseillée pour %s.", tr(style.name)), style = MaterialTheme.typography.bodySmall, color = Neon.Acid)
+    if (mood != null) {
+        TextButton(onClick = { details = !details }, modifier = Modifier.testTag("wizard_mood_details")) {
+            Text(if (details) tr("Cacher la gamme et les accords") else tr("Pour les curieux : la gamme et les accords"))
+        }
+    }
 }
 
 /** One melodic part: what it does, use it or not, and its sound from the library (heard on its first bar). */

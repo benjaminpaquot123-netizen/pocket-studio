@@ -130,9 +130,10 @@ class JourneyTest {
             j.tap("track_${lead.id}")
             // The full-mode take is not asserted on the emulator yet: there the touches of the Sons keyboard
             // never reach the take (0 notes kept, while the Mode simple journey's take keeps its 4 in the same
-            // run, and the same path keeps them in Robolectric on 3 phone sizes). The take report of lot 2
-            // (« Prise keys : N touches … ») will say why; until then this step is logged, not asserted
-            // (docs/REVIEW.md, « Tests d'usage réel »). The Mode simple journey asserts the take on the device.
+            // run, and the same path keeps them in Robolectric on 3 phone sizes). The take report
+            // (« Prise keys : N touches … », logged below) tells keys that never reached the app from keys
+            // it dropped; until a run shows which, this step is logged, not asserted (docs/REVIEW.md,
+            // « Tests d'usage réel »). The Mode simple journey asserts the take on the device.
             runCatching { recordATakeInTime(rhythm()) }.onFailure { log("full-mode take not asserted: ${it.message}") }
             if (j.exists("take_keep")) j.tap("take_keep")
             // An empty take leaves the app's notice (a dialog) open: « Compris », as a user would.
@@ -276,11 +277,13 @@ class JourneyTest {
         j.tap("record_stop")
         if (runCatching { j.await("take_summary") }.isFailure) {
             log("notice: ${rhythm.notice.value}")
+            // The engine's word on the take: keys that reached it (touches) and the notes it kept.
+            log("take report: ${rhythm.lastTakeReport}")
             log("no take summary: phase=${rhythm.noteTake.value?.phase}, notes=${rhythm.noteTake.value?.notes}, record_start=${j.exists("record_start")}, keys shown=${keys.map { k -> runCatching { compose.onNodeWithTag(k).isDisplayed() }.getOrDefault(false) }}")
             throw IllegalStateException("no take summary after the take")
         }
         val take = rhythm.noteTake.value
-        log("take: ${take?.notes} notes")
+        log("take: ${take?.notes} notes; ${rhythm.lastTakeReport}")
         assertTrue("the take kept the keys played: ${take?.notes}", (take?.notes ?: 0) >= keys.size - 1)
         j.tap("take_in_time")
         if (j.exists("take_strength_100")) j.tap("take_strength_100")

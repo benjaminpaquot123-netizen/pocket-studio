@@ -2,6 +2,8 @@
 
 package com.pocketstudio.app.mixer
 
+import com.pocketstudio.ui.ScaledAlertDialog
+
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -944,7 +946,7 @@ private fun TargetPicker(
     used: Set<AutoTarget>, channels: List<Channel>, master: List<Insert>, strips: List<StripInfo>,
     pick: (AutoTarget) -> Unit, addFilter: (Int) -> Unit, dismiss: () -> Unit, preferred: Int = -1,
 ) {
-    AlertDialog(
+    ScaledAlertDialog(
         onDismissRequest = dismiss,
         properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false),
         modifier = Modifier.widthIn(max = 640.dp).fillMaxWidth().padding(horizontal = 10.dp).testTag("automation_picker"),

@@ -151,7 +151,7 @@ fun missionDone(m: Mission, p: Project, playing: Boolean, exporting: Boolean, st
 
 /** The card of the step shown: « Mission 3/6 », what to do, « Passer » and « Arrêter ». */
 @Composable
-fun MissionCard(m: Mission?, step: Int, simple: Boolean, skip: () -> Unit, stop: () -> Unit, modifier: Modifier = Modifier) {
+fun MissionCard(m: Mission?, step: Int, simple: Boolean, skip: () -> Unit, stop: () -> Unit, modifier: Modifier = Modifier, remix: (() -> Unit)? = null) {
     val total = Mission.entries.size
     Column(
         modifier.padding(horizontal = 12.dp, vertical = 88.dp).widthIn(max = 520.dp).fillMaxWidth()
@@ -162,7 +162,16 @@ fun MissionCard(m: Mission?, step: Int, simple: Boolean, skip: () -> Unit, stop:
         if (m == null) {
             Text(tr("Bravo, ton premier morceau est fait !"), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = Neon.Acid)
             Text(tr("Tu sais choisir un style, écouter, changer un son, enregistrer, arranger et partager."), style = MaterialTheme.typography.bodyMedium)
-            Button(onClick = stop, modifier = Modifier.heightIn(min = 48.dp).testTag("mission_done")) { Text(tr("Terminer")) }
+            // Lot 2: what comes next, the Remix (Benjamin wants it seen).
+            if (remix != null) {
+                Text(tr("Et maintenant ? Remixe une chanson que tu aimes : l'appli la sépare en batterie, basse, voix et le reste."), style = MaterialTheme.typography.bodyMedium)
+            }
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Button(onClick = stop, modifier = Modifier.heightIn(min = 48.dp).testTag("mission_done")) { Text(tr("Terminer")) }
+                if (remix != null) {
+                    androidx.compose.material3.OutlinedButton(onClick = remix, modifier = Modifier.heightIn(min = 48.dp).testTag("mission_remix")) { Text(tr("Remixer une chanson")) }
+                }
+            }
             return@Column
         }
         Row(verticalAlignment = Alignment.CenterVertically) {

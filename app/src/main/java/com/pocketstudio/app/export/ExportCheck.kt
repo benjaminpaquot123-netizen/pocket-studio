@@ -113,7 +113,7 @@ object M4aGuard {
 
     data class Run(val decodedPeakDb: Double?, val ceiling: Float, val gain: Float, val renders: Int, val encodings: Int)
 
-    /** What the guard is doing, for an honest progress line (« Compression M4A », « Vérification », « Nouvel essai 2/3 »…). */
+    /** What the guard is doing, for an honest progress line (« Compression M4A », « Vérification », « Réglage du volume final 2/3 »…). */
     data class Step(val kind: Kind, val attempt: Int, val of: Int) {
         enum class Kind { Encode, Check, Render }
 
@@ -126,9 +126,9 @@ object M4aGuard {
                 else -> tr("Réglage du volume : compression")
             }
             else -> when (kind) {
-                Kind.Render -> tr("Nouvel essai %1\$d/%2\$d : fabrication", attempt, of)
-                Kind.Encode -> tr("Nouvel essai %1\$d/%2\$d : compression", attempt, of)
-                Kind.Check -> tr("Nouvel essai %1\$d/%2\$d : vérification", attempt, of)
+                Kind.Render -> tr("Réglage du volume final %1\$d/%2\$d : fabrication", attempt, of)
+                Kind.Encode -> tr("Réglage du volume final %1\$d/%2\$d : compression", attempt, of)
+                Kind.Check -> tr("Réglage du volume final %1\$d/%2\$d : vérification", attempt, of)
             }
         }
     }

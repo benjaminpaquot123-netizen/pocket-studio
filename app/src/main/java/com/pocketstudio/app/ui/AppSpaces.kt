@@ -1,5 +1,7 @@
 package com.pocketstudio.app.ui
 
+import com.pocketstudio.ui.ScaledBottomSheet
+
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -87,7 +89,11 @@ import com.pocketstudio.ui.pillColors
  * instrument tracks alone.
  */
 @Composable
-internal fun SonsHeader(tab: AppTab, tracks: TracksUi, go: (AppTab) -> Unit, audioTracks: Int, simple: Boolean = false) {
+internal fun SonsHeader(
+    tab: AppTab, tracks: TracksUi, go: (AppTab) -> Unit, audioTracks: Int, simple: Boolean = false,
+    /** Lot 2: the Remix page of Sons › Voix is shown (its own chip is lit), and the way to it. */
+    remixShown: Boolean = false, openRemix: () -> Unit = {},
+) {
     val lying = androidx.compose.ui.platform.LocalConfiguration.current.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
     Box(Modifier.fillMaxWidth().background(lerp(Neon.Background, Color.Black, 0.06f)).padding(horizontal = 8.dp, vertical = if (lying) 2.dp else 4.dp)) {
         TrackBar(
@@ -105,13 +111,18 @@ internal fun SonsHeader(tab: AppTab, tracks: TracksUi, go: (AppTab) -> Unit, aud
                             1 -> tr("%d piste", 1)
                             else -> tr("%d pistes", audioTracks)
                         },
-                        Color(0xFFE57373), tab == AppTab.Audio, "sons_Audio",
+                        Color(0xFFE57373), tab == AppTab.Audio && !remixShown, "sons_Audio",
                     ) { go(AppTab.Audio) }
+                    // Benjamin (2026-10-24): the Remix « mis en avant », a chip of its own, one touch from Sons.
+                    EditorChip(tr("Remix"), tr("Séparer"), REMIX_COLOR, remixShown, "sons_Remix", onClick = openRemix)
                 }
             },
         )
     }
 }
+
+/** The Remix's colour (its chip in Sons, its card on « Que veux-tu faire ? »). */
+internal val REMIX_COLOR = Color(0xFFBA68C8)
 
 /** A chip of the Sons space for an editor that is not an instrument track (the drums, the acid, the audio tracks). */
 @Composable
@@ -197,7 +208,12 @@ internal fun plusEntries(
  * a tablet, the list on the left and the page on the right, the last one chosen at first).
  */
 @Composable
-internal fun PlusSpace(entries: List<PlusEntry>, page: ToolPage?, open: (ToolPage) -> Unit, back: () -> Unit, widePage: ToolPage, content: @Composable (ToolPage) -> Unit) {
+internal fun PlusSpace(
+    entries: List<PlusEntry>, page: ToolPage?, open: (ToolPage) -> Unit, back: () -> Unit, widePage: ToolPage,
+    /** Lot 2: the way back's word (the Mode simple has no Plus: « Retour »). */
+    backLabel: String? = null,
+    content: @Composable (ToolPage) -> Unit,
+) {
     BoxWithConstraints(Modifier.fillMaxSize().testTag("plus")) {
         if (maxWidth >= TWO_PANES_FROM) {
             val shown = page ?: widePage
@@ -221,8 +237,8 @@ internal fun PlusSpace(entries: List<PlusEntry>, page: ToolPage?, open: (ToolPag
                         .testTag("plus_back"),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = tr("Revenir à Plus"), tint = Neon.Cyan)
-                    Text(tr("Plus"), style = MaterialTheme.typography.labelLarge, color = Neon.Cyan, modifier = Modifier.padding(start = 6.dp))
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = backLabel ?: tr("Revenir à Plus"), tint = Neon.Cyan)
+                    Text(backLabel ?: tr("Plus"), style = MaterialTheme.typography.labelLarge, color = Neon.Cyan, modifier = Modifier.padding(start = 6.dp))
                     Text(" · " + page.label, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
                 Box(Modifier.weight(1f)) { content(page) }
@@ -309,7 +325,7 @@ fun SimpleTracksCard(tracks: List<SimpleTrack>, actions: SimpleTracksActions) {
 @Composable
 private fun SimpleTrackSheet(t: SimpleTrack, actions: SimpleTracksActions, close: () -> Unit) {
     val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    ModalBottomSheet(onDismissRequest = close, sheetState = state, containerColor = Neon.Surface, modifier = Modifier.testTag("simple_track_sheet")) {
+    ScaledBottomSheet(onDismissRequest = close, sheetState = state, containerColor = Neon.Surface, modifier = Modifier.testTag("simple_track_sheet")) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 24.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(t.name, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))

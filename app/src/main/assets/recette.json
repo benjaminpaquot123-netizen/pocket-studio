@@ -1,116 +1,91 @@
 {
-  "id": "phases34-39-son-studio-deux-gestes",
-  "milestone": "Phases 34 à 39 : un son de studio, et tout en deux gestes",
+  "id": "lot2-retours-audit35",
+  "milestone": "Lot 2 : Remix en vitrine, tablette à 130 %, pan du kick protégé",
   "items": [
     {
-      "id": "mode",
-      "title": "Premier lancement",
-      "hint": "Désinstalle puis réinstalle (ou Plus › Réglages › Mode) : choisis Mode complet puis essaie le Mode simple (Mon morceau · Rythme · Clavier · Envoyer). Rien ne se perd en changeant."
+      "id": "launch_choice",
+      "title": "« Que veux-tu faire ? »",
+      "hint": "Ferme l'appli, attends 30 min (ou redémarre le téléphone), rouvre-la : « Continuer » en grand, « Nouveau morceau », « Mes projets », « Remixer une chanson ». Rien ne joue avant ton choix ; le geste retour vaut « Continuer »."
     },
     {
-      "id": "spaces",
-      "title": "Les 5 espaces",
-      "hint": "Parcours Structure, Sons, Mix, Live, Plus. Dans Structure, double-toucher un bloc ouvre son éditeur ; toucher la règle joue depuis là."
+      "id": "zero_projects",
+      "title": "Zéro projet",
+      "hint": "Mes projets : supprime tous les projets, vide la corbeille. L'écran dit « Aucun projet pour l'instant » ; « Que veux-tu faire ? » n'a plus de « Continuer »."
     },
     {
-      "id": "missions",
-      "title": "Missions et « ? »",
-      "hint": "Plus › Missions : fais « Mon premier morceau ». Puis touche « ? » en haut : des étiquettes nomment les boutons ; un toucher les cache."
+      "id": "bug_report",
+      "title": "Signaler un bug",
+      "hint": "Appui long sur « ? » (ou ⋯ › Signaler un bug en Mode simple) : écris une phrase, regarde « Ce qui sera envoyé » (« 1 erreur » au singulier), puis Partager. Rien ne part tout seul."
+    },
+    {
+      "id": "export_steps",
+      "title": "Les étapes de l'export",
+      "hint": "⤴ › M4A › Partager sur un long morceau (Jump up) : la boîte dit chaque étape (« Compression M4A », « Vérification », parfois « Réglage du volume final 2/3 ») avec une barre, « Annuler » marche, et ça ne reste jamais bloqué."
+    },
+    {
+      "id": "remix_two",
+      "title": "Le Remix en deux gestes",
+      "hint": "Depuis « Que veux-tu faire ? » : « Remixer une chanson » (1 toucher). Depuis n'importe quel espace : Sons › « Remix » (2). Mode simple : ⋯ › « Remixer une chanson » (2), « ← Mon morceau » pour revenir. Sépare une chanson de ton téléphone."
+    },
+    {
+      "id": "kick_pan",
+      "title": "Le kick reste au centre",
+      "hint": "Sons › Batterie : fais plusieurs gestes retour depuis le bord gauche, à la hauteur de « Pan du pad ». Le kick reste au centre (aucun « G 100 » sur le pad). Puis glisse le rond du pan : « G 30 » s'affiche sur le pad ; deux touches sur le curseur le remettent au centre."
+    },
+    {
+      "id": "tablet_130",
+      "title": "Tablette à 130 %",
+      "hint": "Galaxy Tab, Réglages › Taille de l'interface 130 %, debout puis couchée : « Que veux-tu faire ? », la feuille d'un pad, « Prêt à partager ? », la boîte d'export et Signaler un bug sont à la même taille que l'écran derrière."
+    },
+    {
+      "id": "tablet_keys",
+      "title": "Clavier sur la tablette couchée",
+      "hint": "Tablette couchée, 100 % puis 130 %, Mode simple › Clavier : ● Enregistrer ma mélodie, joue, ■. Le clavier reste entier, la carte de la prise (Garder, Remettre en rythme, Refaire) est à côté."
+    },
+    {
+      "id": "tablet_pads",
+      "title": "Pads sur la tablette couchée",
+      "hint": "Tablette couchée, Sons › Batterie : les 4 rangées de pads et « Kit ▾ » tiennent sans défiler."
+    },
+    {
+      "id": "simple_melody",
+      "title": "Ma mélodie dans « Mélodie »",
+      "hint": "Mode simple › Clavier : la puce « Mélodie » est choisie d'office ; la prise y va (pas dans « Synthé »). La ligne dit « Tu as 4 mesures pour jouer ta mélodie »."
+    },
+    {
+      "id": "help_labels",
+      "title": "Les « ? » lisibles",
+      "hint": "Touche « ? » sur Mon morceau, Mix et Live : aucune étiquette ne se pose sur un autre bouton ; « Masquer les étiquettes » et « Signaler un bug » sont en bas."
+    },
+    {
+      "id": "kits_808",
+      "title": "Kits Trap et Drill",
+      "hint": "Sons › Batterie › « Kit ▾ » : « Trap (808) » et « Drill (808) » sans téléchargement ; la 808 joue sur le pad « Kick 2 » et glisse. Annuler remet l'ancien kit."
+    },
+    {
+      "id": "briques",
+      "title": "Briques et parties",
+      "hint": "Structure › Parties : la liste du morceau s'appelle « Parties », la grille A à H « Briques » (aussi dans le Lexique)."
+    },
+    {
+      "id": "wizard_words",
+      "title": "L'assistant en mots simples",
+      "hint": "Nouveau morceau guidé : « Étape 1 : choisis un style » (sans « sur 13 »), puis plus de « Gamme Fa phrygienne » sous les ambiances (« Pour les curieux » les montre) et un vrai bouton « Créer tout de suite avec les choix conseillés »."
+    },
+    {
+      "id": "live_full",
+      "title": "Pads live plein écran",
+      "hint": "Live › Pads › Plein écran, tablette debout et téléphone : « Tout couper » a son mot à côté de REC."
     },
     {
       "id": "song_sound",
-      "title": "Le son de l'assistant",
-      "hint": "Crée un morceau Techno puis Trap. Écoute : vraie mélodie qui revient, Montée qui monte, un temps de silence, Drop qui frappe plus fort ; la 808 glisse en Trap."
-    },
-    {
-      "id": "long_club",
-      "title": "Morceaux club longs",
-      "hint": "Un morceau Techno dure 5 à 6 minutes ; un morceau House environ 3 minutes."
-    },
-    {
-      "id": "part_sheet",
-      "title": "Feuille de partie",
-      "hint": "Structure : appui long sur une partie : Fill, Montée avant, Fondu de sortie, Fin, Énergie. Chaque action s'annule d'un coup."
-    },
-    {
-      "id": "kit_pad",
-      "title": "Kit et pads",
-      "hint": "Sons › Batterie : « Kit ▾ » change tout le kit ; appui long sur un pad pour son, volume, pan ; glisse le doigt pour peindre ; appui long sur un coup pour un roulement ×8 montant."
-    },
-    {
-      "id": "record",
-      "title": "Enregistrer une mélodie",
-      "hint": "Sons › Synthé : ● Enregistrer, décompte 4-3-2-1, joue, ■, puis « Remettre en rythme » (et « Comme joué » pour revenir)."
-    },
-    {
-      "id": "keep_played",
-      "title": "Garder ce que je viens de jouer",
-      "hint": "Joue quelques notes sans enregistrer, puis « Garder ce que je viens de jouer » : elles arrivent dans la piste."
-    },
-    {
-      "id": "voice",
-      "title": "Voix et prises",
-      "hint": "Sons › Voix : enregistre deux fois, choisis ta prise dans « Prises », essaie « Refaire mes. 5-8 » et « Recaler sur le tempo »."
-    },
-    {
-      "id": "live_versions",
-      "title": "Versions du morceau",
-      "hint": "Live : enregistre une prise, puis « Versions du morceau » › Ramener : l'ancien morceau revient."
-    },
-    {
-      "id": "chords",
-      "title": "Accords du morceau",
-      "hint": "Structure : bande des accords › choisis une grille, écoute, Appliquer. Annuler revient d'un coup. La 303 suit aussi."
-    },
-    {
-      "id": "clipboard",
-      "title": "Copier-coller",
-      "hint": "Piano roll : touche un numéro de mesure › Copier › va sur une autre piste › Coller."
-    },
-    {
-      "id": "poly",
-      "title": "Polyrythme et hasard",
-      "hint": "Batterie : « Ce pad boucle sur » 3 pas ; appui long sur un coup › 50 % : il ne joue pas à chaque fois, mais pareil à l'export."
-    },
-    {
-      "id": "freeze",
-      "title": "Geler la piste",
-      "hint": "Appui long sur une piste › Geler : elle devient de l'audio ; Dégeler la remet."
-    },
-    {
-      "id": "instruments",
-      "title": "Instruments réels",
-      "hint": "Changer le son d'une piste › Instruments réels : télécharge le Piano à queue, écoute ▶, joue au clavier."
-    },
-    {
-      "id": "track808",
-      "title": "Piste 808",
-      "hint": "Ajouter une piste › Basse 808 : joue deux notes liées, ça glisse."
-    },
-    {
-      "id": "export",
-      "title": "Export propre",
-      "hint": "⤴ › M4A : le rapport dit « ✓ Prêt à partager », la crête et combien les crêtes sont tassées."
-    },
-    {
-      "id": "video",
-      "title": "Vidéo 9:16",
-      "hint": "⤴ › Vidéo pour les réseaux · 30 s : regarde la vidéo dans ta galerie (temps d'export ?)."
-    },
-    {
-      "id": "glossary",
-      "title": "Glossaire",
-      "hint": "Plus › Les mots de la musique : écoute Sidechain et Réverbe (« Sans / Avec »)."
-    },
-    {
-      "id": "midi",
-      "title": "Potards MIDI",
-      "hint": "Si tu as un clavier MIDI à potards : sur Acide, tourne-les ; le petit rappel montre qui fait quoi."
+      "title": "Le son (à l'oreille)",
+      "hint": "Crée un morceau Techno puis Trap et écoute du début à la fin : rien ne baisse tout seul, la Montée monte, le Drop frappe, la 808 glisse."
     },
     {
       "id": "headphones",
-      "title": "Casque",
-      "hint": "Pendant la lecture d'une piste 808, débranche puis rebranche le casque : le son ne change pas."
+      "title": "Casque et Bluetooth",
+      "hint": "Branche puis débranche un casque pendant la lecture : le son passe de l'un à l'autre sans planter ; le rapport de bug dit la sortie."
     }
   ]
 }

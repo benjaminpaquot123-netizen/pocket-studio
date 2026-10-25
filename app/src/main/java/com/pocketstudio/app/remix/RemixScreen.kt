@@ -2,6 +2,8 @@
 
 package com.pocketstudio.app.remix
 
+import com.pocketstudio.ui.ScaledAlertDialog
+
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import com.pocketstudio.app.help.Glossary
@@ -300,7 +302,7 @@ private fun InProject(ui: RemixUi, actions: RemixActions) {
 private fun DeleteStemsDialog(set: StemSet, inProject: Boolean, onDelete: () -> Unit, onDismiss: () -> Unit) {
     val users = (listOfNotNull(tr("le projet ouvert").takeIf { inProject }) + set.usedBy.map { tr("« %s »", com.pocketstudio.model.DefaultNames.shown(it)) }).distinct()
     if (users.isNotEmpty()) {
-        AlertDialog(
+        ScaledAlertDialog(
             onDismissRequest = onDismiss,
             title = { Text(tr("Morceau utilisé")) },
             text = {
@@ -310,7 +312,7 @@ private fun DeleteStemsDialog(set: StemSet, inProject: Boolean, onDelete: () -> 
             modifier = Modifier.testTag("delete_stems_dialog"),
         )
     } else {
-        AlertDialog(
+        ScaledAlertDialog(
             onDismissRequest = onDismiss,
             title = { Text(tr("Supprimer ce morceau ?")) },
             text = { Text(tr("Les pistes séparées de « %s » seront effacées. Pour les retrouver, il faudra séparer la chanson à nouveau.", set.name)) },

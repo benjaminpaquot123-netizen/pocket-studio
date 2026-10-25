@@ -1,5 +1,7 @@
 package com.pocketstudio.app.settings
 
+import com.pocketstudio.ui.ScaledDialog
+
 import com.pocketstudio.model.i18n.tr
 import androidx.compose.foundation.background
 import androidx.compose.foundation.verticalScroll
@@ -90,7 +92,7 @@ fun GuideDialog(onClose: () -> Unit, pages: List<GuidePage> = GUIDE_PAGES, tag: 
     val p = pages[page.coerceIn(0, pages.lastIndex)]
     val last = page >= pages.lastIndex
     // A tap beside it does not close it for good (Retour does); its text scrolls, its buttons stay.
-    Dialog(onDismissRequest = onClose, properties = androidx.compose.ui.window.DialogProperties(dismissOnClickOutside = false)) {
+    ScaledDialog(onDismissRequest = onClose, properties = androidx.compose.ui.window.DialogProperties(dismissOnClickOutside = false)) {
         Card(colors = CardDefaults.cardColors(containerColor = Neon.Surface), shape = RoundedCornerShape(14.dp), modifier = Modifier.testTag(tag)) {
             Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text(p.title, style = MaterialTheme.typography.titleLarge, color = Neon.Cyan)

@@ -13,6 +13,11 @@ object Glossary {
         tr("Partie"),
         tr("Un petit bout de morceau (souvent 4 mesures) : la batterie, la basse et les notes que tu as écrites. Le morceau enchaîne les parties ; on passe de l'une à l'autre en touchant son carré, la suivante démarre à la fin de la mesure en cours."),
     )
+    /** Lot 2: the grid of A to H, apart from the song's parts. */
+    val BRICK: Help get() = Help(
+        tr("Brique"),
+        tr("Une des cases A à H de Structure › Parties : une boucle de batterie, de basse et de notes. Chaque partie du morceau joue une brique (le refrain peut rejouer la brique du couplet) ; changer une brique change toutes les parties qui la jouent."),
+    )
     val SONG: Help get() = Help(
         tr("Morceau"),
         tr("Les parties mises bout à bout, chacune répétée autant de fois que tu veux. Dans la ligne du temps, chaque carré allume ou coupe une piste dans une partie."),
@@ -324,7 +329,7 @@ object Glossary {
 
     /** Every term, in the order the Lexique shows them. */
     val ALL: List<Help> get() = listOf(
-        SCENE, SONG, TIMELINE, LIVE_PADS, LOOP, TEMPO, BAR, STEP, SWING, METRONOME, COUNT_IN, TIME_SIGNATURE,
+        SCENE, BRICK, SONG, TIMELINE, LIVE_PADS, LOOP, TEMPO, BAR, STEP, SWING, METRONOME, COUNT_IN, TIME_SIGNATURE,
         PAD, KIT, VELOCITY, PAN, PITCH, SAMPLE, ROLL, FIT_TEMPO, SLICE, ENVELOPE, CHOKE, SOUND_LIBRARY, SOUND_PACK,
         TRACK, SOURCE, PIANO_ROLL, SCALE, SCALE_LOCK, CHORD, PROGRESSION, ARPEGGIO, QUANTIZE, SYNTH, PLAITS, GENERAL_MIDI,
         UNISON, SAMPLED, ROOT_NOTE, GLIDE, ACID, FILTER, ACCENT_SLIDE, MIDI, MIDI_LEARN, BEND, SUSTAIN,

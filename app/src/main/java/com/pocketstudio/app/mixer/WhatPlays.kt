@@ -2,6 +2,8 @@
 
 package com.pocketstudio.app.mixer
 
+import com.pocketstudio.ui.ScaledAlertDialog
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -197,7 +199,7 @@ fun WhatPlaysDialog(
 ) {
     val groups = androidx.compose.runtime.remember(p, strips, scene, onlyCh) { whatPlaysGroups(p, scene, strips, onlyCh) }
     val trackName = onlyCh?.let { ch -> strips.firstOrNull { it.ch == ch }?.name?.let { com.pocketstudio.model.DefaultNames.shown(it) } }
-    AlertDialog(
+    ScaledAlertDialog(
         onDismissRequest = dismiss,
         properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false),
         modifier = Modifier.widthIn(max = 640.dp).fillMaxWidth().padding(horizontal = 10.dp).testTag("what_plays"),

@@ -33,6 +33,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -290,12 +291,21 @@ fun SynthScreen(
             // in the same order, as upright), and a wide three-octave keyboard stays under the
             // thumbs. A tablet lying down also has the room for the keyboard's layouts.
             val tall = maxHeight >= TALL_LANDSCAPE
+            // Lot 2 (audit 35, the Tab A11 lying down): the record bar and the take's card stand
+            // beside the keyboard, never above it: after a take they pushed the keys down to 60 dp,
+            // off the screen at 130 %. The keyboard keeps its height; two octaves when it is narrower.
+            val beside = record != null
+            val recordWidth = (maxWidth * 0.32f).coerceIn(240.dp, 340.dp)
+            val keysWidth = maxWidth - 16.dp - if (beside) recordWidth + 8.dp else 0.dp
+            val landOctaves = if (keysWidth >= LANDSCAPE_THREE_OCTAVES) 3 else 2
             Column(Modifier.fillMaxSize().padding(8.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 tracks?.takeIf { it.showBar }?.let { TrackBar(it) }
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    if (notes != null) ModeSwitch(showNotes, tracks) { showNotes = it }
-                    if (tall && !chordPads) KeyLayoutChips(keyLayout, setKeyLayout, wideOctaves = 3)
-                    Box(Modifier.weight(1f))
+                    // Lot 2 review: the switch takes what the other controls leave (filling the whole
+                    // row, it squeezed them to nothing and the row grew a blank 60 to 80 dp high).
+                    if (notes != null) ModeSwitch(showNotes, tracks, Modifier.weight(1f)) { showNotes = it }
+                    if (tall && !chordPads) KeyLayoutChips(keyLayout, setKeyLayout, wideOctaves = landOctaves)
+                    if (notes == null) Box(Modifier.weight(1f))
                     ChordChip(chordKeys) { chordKeys = it }
                     ChordPadsChip(chordPads) { chordPads = it }
                     OctaveControl(octave, actions)
@@ -304,11 +314,24 @@ fun SynthScreen(
                     play?.let { PlayPanel(it, playActions) }
                     SoundArea(Modifier) { SoundSections(patch, actions, instrument, browser, advanced, effects) { advanced = it } }
                 }
-                record?.invoke(true)
-                if (chordPads) {
-                    ChordPads(harmony, 12 * (octave + 1), actions.noteOn, actions.noteOff, height = keyboardHeight)
+                val keys: @Composable () -> Unit = {
+                    if (chordPads) {
+                        ChordPads(harmony, 12 * (octave + 1), actions.noteOn, actions.noteOff, height = keyboardHeight)
+                    } else {
+                        PlayKeys(keyLayout, octave, landOctaves, harmony, english, keyOn, keyOff, keyboardHeight)
+                    }
+                }
+                if (record != null) {
+                    // The keys' height for the row: the take's card scrolls beside them rather than push them off a phone lying down.
+                    Row(Modifier.fillMaxWidth().height(keyboardHeight).testTag("synth_keys_row"), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Box(Modifier.weight(1f)) { keys() }
+                        Column(
+                            Modifier.width(recordWidth).heightIn(max = keyboardHeight).verticalScroll(rememberScrollState()).testTag("synth_record_side"),
+                            verticalArrangement = Arrangement.Center,
+                        ) { record(true) }
+                    }
                 } else {
-                    PlayKeys(keyLayout, octave, 3, harmony, english, keyOn, keyOff, keyboardHeight)
+                    keys()
                 }
             }
         } else {
@@ -435,6 +458,9 @@ internal val TALL_LANDSCAPE = 440.dp
 /** From this width a screen held upright is a tablet's (an 8.7" one is 600 dp wide). */
 internal val TABLET_WIDTH = 600.dp
 
+/** Lying down, a keyboard at least this wide shows three octaves (narrower: two, keys still wide enough for a finger). */
+private val LANDSCAPE_THREE_OCTAVES = 600.dp
+
 /** 2 octaves / 1 octave / Gamme: the keyboard's layouts; the full piano says how many octaves it shows. */
 @Composable
 private fun KeyLayoutChips(keyLayout: KeyLayout, onKeyLayout: (KeyLayout) -> Unit, wideOctaves: Int) {
@@ -508,8 +534,8 @@ internal fun SoundCard(patch: SynthPatch, actions: SynthActions, advanced: Boole
 }
 
 @Composable
-private fun ModeSwitch(showNotes: Boolean, tracks: TracksUi?, onChange: (Boolean) -> Unit) {
-    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
+private fun ModeSwitch(showNotes: Boolean, tracks: TracksUi?, modifier: Modifier = Modifier.fillMaxWidth(), onChange: (Boolean) -> Unit) {
+    Row(modifier, horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
         FilterChip(selected = !showNotes, onClick = { onChange(false) }, label = { Text(tr("Clavier")) }, colors = chipColors(),
             modifier = Modifier.testTag("mode_keyboard"))
         FilterChip(selected = showNotes, onClick = { onChange(true) }, label = { Text(tr("Notes")) }, colors = chipColors(),

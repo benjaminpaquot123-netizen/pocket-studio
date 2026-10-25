@@ -1,5 +1,8 @@
 package com.pocketstudio.app.report
 
+import com.pocketstudio.ui.ScaledBottomSheet
+import com.pocketstudio.ui.ScaledPopup
+
 import android.graphics.Bitmap
 import android.view.View
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -292,7 +295,7 @@ private fun Thumb(shot: ShotUi, remove: (Long) -> Unit) {
 @Composable
 fun BugReportSheet(ui: BugReportUi, actions: BugReportActions) {
     val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    ModalBottomSheet(onDismissRequest = actions.close, sheetState = state, containerColor = Neon.Surface) {
+    ScaledBottomSheet(onDismissRequest = actions.close, sheetState = state, containerColor = Neon.Surface) {
         BugReportContent(ui, actions)
     }
 }
@@ -304,7 +307,7 @@ fun BugReportSheet(ui: BugReportUi, actions: BugReportActions) {
 @Composable
 fun CaptureChip(capture: () -> Unit, cancel: () -> Unit) {
     val lift = with(LocalDensity.current) { 96.dp.roundToPx() }
-    Popup(alignment = Alignment.BottomCenter, offset = IntOffset(0, -lift), properties = PopupProperties(focusable = false)) {
+    ScaledPopup(alignment = Alignment.BottomCenter, offset = IntOffset(0, -lift), properties = PopupProperties(focusable = false)) {
         CaptureChipContent(capture, cancel)
     }
 }
@@ -365,7 +368,15 @@ fun bugSummary(s: BugReportState, projectName: String?): List<String> = buildLis
     val stream = Metrics.streamInfo.value
     add(tr("Le son de la dernière minute : niveau, décrochages (%1\$d), son rouvert (%2\$d)", stream.xruns, stream.restarts))
     // journal.json holds them all (up to Journal.EVENTS); report.md shows the last BugReportText.EVENTS.
-    add(tr("Les %1\$d derniers écrans et gestes, et %2\$d erreurs", Journal.events.size, Journal.errors.size))
+    // Lot 2: « 1 erreurs » no more.
+    val errors = Journal.errors.size
+    add(
+        when (errors) {
+            0 -> tr("Les %d derniers écrans et gestes, et aucune erreur", Journal.events.size)
+            1 -> tr("Les %d derniers écrans et gestes, et 1 erreur", Journal.events.size)
+            else -> tr("Les %1\$d derniers écrans et gestes, et %2\$d erreurs", Journal.events.size, errors)
+        },
+    )
     // Always in report.md, ticked or not: said plainly.
     if (projectName != null) add(tr("Le nom et les réglages du projet ouvert (style, tempo, position)"))
     if (s.crash != null) add(tr("Le rapport du plantage de la dernière fois"))

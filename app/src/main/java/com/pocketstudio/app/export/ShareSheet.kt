@@ -2,6 +2,8 @@
 
 package com.pocketstudio.app.export
 
+import com.pocketstudio.ui.ScaledBottomSheet
+
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
@@ -268,7 +270,7 @@ class ShareSheetActions(
 fun ShareSheet(ui: ShareSheetUi, actions: ShareSheetActions) {
     // Opened whole: the « Partager » button is never below the fold.
     val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    ModalBottomSheet(onDismissRequest = actions.close, sheetState = state, containerColor = Neon.Surface) {
+    ScaledBottomSheet(onDismissRequest = actions.close, sheetState = state, containerColor = Neon.Surface) {
         ShareSheetContent(ui, actions)
     }
 }
@@ -364,7 +366,9 @@ fun ShareSheetContent(ui: ShareSheetUi, actions: ShareSheetActions, modifier: Mo
         TextButton(onClick = actions.otherExports, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("share_other")) {
             Column(Modifier.weight(1f)) {
                 Text(tr("Autres exports"), color = Neon.Cyan)
-                Text(tr("Piste par piste, MIDI, FLAC… dans Mix"), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                // Lot 2: the Mode simple has no Mix (the button takes it to the full mode).
+                Text(if (page) tr("Piste par piste, MIDI, FLAC… (passe en mode complet)") else tr("Piste par piste, MIDI, FLAC… dans Mix"),
+                    style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.testTag("share_other_where"))
             }
             Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = Neon.Cyan)
         }

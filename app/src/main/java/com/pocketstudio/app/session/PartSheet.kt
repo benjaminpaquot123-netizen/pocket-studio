@@ -2,6 +2,8 @@
 
 package com.pocketstudio.app.session
 
+import com.pocketstudio.ui.ScaledBottomSheet
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
@@ -198,7 +200,7 @@ class PartMoreActions(
 @Composable
 fun PartSheet(ui: PartSheetUi, onIntent: (PartIntent) -> Unit, close: () -> Unit, more: PartMoreActions? = null) {
     val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    ModalBottomSheet(onDismissRequest = close, sheetState = state, containerColor = Neon.Surface, modifier = Modifier.testTag("part_sheet")) {
+    ScaledBottomSheet(onDismissRequest = close, sheetState = state, containerColor = Neon.Surface, modifier = Modifier.testTag("part_sheet")) {
         PartSheetContent(ui, { close(); onIntent(it) }, close, more?.let { m ->
             PartMoreActions(
                 whatPlays = { close(); m.whatPlays() },

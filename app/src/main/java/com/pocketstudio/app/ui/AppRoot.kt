@@ -1,5 +1,14 @@
 package com.pocketstudio.app.ui
 
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import com.pocketstudio.ui.ScaledAlertDialog
+import com.pocketstudio.ui.ScaledBottomSheet
+import com.pocketstudio.ui.ScaledDialog
+
 import com.pocketstudio.model.partMarks
 import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.model.track
@@ -399,7 +408,7 @@ fun AppRoot() {
         val forTrack = libraryTrack
         val libProject by rhythmVm.project.collectAsStateWithLifecycle()
         val libTrack by rhythmVm.selectedTrack.collectAsStateWithLifecycle()
-        androidx.compose.ui.window.Dialog(
+        ScaledDialog(
             onDismissRequest = close,
             properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false),
         ) {
@@ -459,7 +468,7 @@ fun AppRoot() {
             } else {
                 com.pocketstudio.model.DefaultNames.shown(mixerStrips(fxProject).firstOrNull { it.ch == fxChannel }?.name ?: "Piste")
             }
-            androidx.compose.material3.AlertDialog(
+            ScaledAlertDialog(
                 onDismissRequest = { fxChannel = -1 },
                 // The whole width of the phone: everything seen at once, nothing to scroll for.
                 properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false),
@@ -521,7 +530,7 @@ fun AppRoot() {
         val packsUi by libraryVm.packs.collectAsStateWithLifecycle()
         val previewing by libraryVm.playing.collectAsStateWithLifecycle()
         val preparing by libraryVm.preparing.collectAsStateWithLifecycle()
-        androidx.compose.ui.window.Dialog(
+        ScaledDialog(
             onDismissRequest = libraryVm::closeWizard,
             properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false),
         ) {
@@ -590,7 +599,7 @@ fun AppRoot() {
             Unit
         }
         androidx.activity.compose.BackHandler { closeProjects() }
-        androidx.compose.ui.window.Dialog(
+        ScaledDialog(
             onDismissRequest = closeProjects,
             properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false),
         ) {
@@ -757,7 +766,7 @@ fun AppRoot() {
     val saveError by rhythmVm.session.lastSaveError.collectAsStateWithLifecycle()
     val notice by rhythmVm.notice.collectAsStateWithLifecycle()
     notice?.let { text ->
-        AlertDialog(
+        ScaledAlertDialog(
             onDismissRequest = rhythmVm::dismissNotice,
             confirmButton = { TextButton(onClick = rhythmVm::dismissNotice) { Text(tr("Compris")) } },
             dismissButton = if (rhythmVm.canUndoFavoriteDelete) {
@@ -791,7 +800,7 @@ fun AppRoot() {
     // A permission refused (twice, Android stops asking): say why nothing happens and where to allow it.
     var permissionHelp by rememberSaveable { mutableStateOf<String?>(null) }
     permissionHelp?.let { text ->
-        AlertDialog(
+        ScaledAlertDialog(
             onDismissRequest = { permissionHelp = null },
             text = { Text(text) },
             confirmButton = {
@@ -922,6 +931,19 @@ fun AppRoot() {
         tab = t
     }
     var toolPage by rememberSaveable { mutableStateOf<ToolPage?>(null) }
+    // Lot 2: the Remix (Sons › Voix, its second page), « mis en avant »: one touch from « Que veux-tu
+    // faire ? », a chip in Sons, a line of the Mode simple's « ⋯ ».
+    val openRemix: () -> Unit = { audioPage = 1; go(AppTab.Audio) }
+    // Lot 2: the Mode simple's Clavier records « ma mélodie » into the song's melody track (the
+    // first track, « Synthé », was shown before), once per visit: a track chosen there stays.
+    // Once per project (kept through a rotation): a track chosen there afterwards stays.
+    var melodyShownFor by rememberSaveable { mutableStateOf<String?>(null) }
+    LaunchedEffect(simple, tab) {
+        if (simple && tab == AppTab.Synthe && melodyShownFor != rhythmVm.projectId) {
+            melodyShownFor = rhythmVm.projectId
+            rhythmVm.melodyTrackId()?.let(rhythmVm::selectTrack)
+        }
+    }
     val goSpace: (Space) -> Unit = { sp ->
         when (sp) {
             Space.Structure -> go(AppTab.Morceau)
@@ -1025,6 +1047,7 @@ fun AppRoot() {
             resume = { if (noProject) leaveApp() else launch.choose() },
             newSong = { launch.choose(comeBack = true); projectsNewOnly = true; showProjects = true },
             projects = { launch.choose(comeBack = true); projectsNewOnly = false; showProjects = true },
+            remix = { launch.choose(); openRemix() },
             missions = {
                 launch.choose()
                 when {
@@ -1211,6 +1234,7 @@ fun AppRoot() {
                     // Mode simple: « Envoyer » is a tab; the rest of the app in « ⋯ ».
                     more = if (!simple) null else listOf(
                         TopMenuItem(tr("Live : jouer en direct"), "more_live", openLive),
+                        TopMenuItem(tr("Remixer une chanson"), "more_remix", openRemix),
                         TopMenuItem(tr("Mes projets"), "more_projects") { showProjects = true },
                         TopMenuItem(tr("Réglages"), "more_settings") { toolPage = ToolPage.Reglages; go(AppTab.Outils) },
                         TopMenuItem(tr("Aide et missions"), "more_help") { toolPage = ToolPage.Aide; go(AppTab.Outils) },
@@ -1256,16 +1280,29 @@ fun AppRoot() {
                     Modifier.fillMaxWidth().background(Neon.Surface).windowInsetsPadding(SIDE_INSETS).padding(start = 12.dp, end = 4.dp).testTag("take_loop_grown"),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
+                    // Lot 2: plain words (« boucle », « ↶ » meant nothing to a beginner); the Mode simple says only what it does.
                     Text(
-                        if (loopSong) tr("La boucle passe à 4 mesures pour ta prise, et cette partie aussi dans le morceau. ↶ en haut pour revenir à 1 mesure.")
-                        else tr("La boucle passe à 4 mesures pour ta prise : ta phrase ne se repliera pas sur une seule mesure. ↶ en haut pour revenir à 1 mesure."),
-                        style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(1f),
+                        when {
+                            simple -> tr("Tu as 4 mesures pour jouer ta mélodie, puis elle recommence.")
+                            loopSong -> tr("Ta prise peut durer 4 mesures : cette partie s'allonge à 4 mesures dans le morceau aussi. ↶ Annuler la remet à 1 mesure.")
+                            else -> tr("Ta prise peut durer 4 mesures, elle ne sera pas coupée après la première. ↶ Annuler la remet à 1 mesure.")
+                        },
+                        style = MaterialTheme.typography.bodySmall, maxLines = if (landscape) 2 else 4, overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f),
                     )
                     TextButton(onClick = rhythmVm::dismissTakeLoop) { Text(tr("Compris")) }
                 }
             }
             // A take started from the top bar on a tab without its own record bar: its count-in, its
             // counter and the choice after it (Garder, Remettre en rythme, Refaire), under the bar.
+            // A take that ended with nothing played, on a tab without its own record bar: said here.
+            val stripEmpty by rhythmVm.takeEmpty.collectAsStateWithLifecycle()
+            if (stripEmpty && tab !in RECORD_BAR_TABS) {
+                Text(
+                    tr("Rien n'a été joué pendant la prise."), style = MaterialTheme.typography.bodySmall, color = Neon.Amber,
+                    modifier = Modifier.fillMaxWidth().background(Neon.Surface).windowInsetsPadding(SIDE_INSETS).padding(horizontal = 12.dp, vertical = 6.dp).testTag("take_empty"),
+                )
+            }
             val stripTake by rhythmVm.noteTake.collectAsStateWithLifecycle()
             if (stripTake != null && tab !in RECORD_BAR_TABS) {
                 val source = stripTake?.source ?: takeSourceOf(tab)
@@ -1327,7 +1364,13 @@ fun AppRoot() {
             Box(Modifier.weight(1f).fillMaxHeight()) {
                 LiveRoute(
                     rhythmVm, lifecycleOwner, close = closeLive,
-                    under = { PositionStrip(rhythmVm, tempoOpen = tempoSheetOpen, setTempoOpen = { tempoSheetOpen = it }) },
+                    under = {
+                        // Lot 2: the « ? » on the Live page too (its bar replaces the one that carries it elsewhere).
+                        PositionStrip(
+                            rhythmVm, tempoOpen = tempoSheetOpen, setTempoOpen = { tempoSheetOpen = it },
+                            helpOn = helpLabels, toggleHelp = { helpLabels = !helpLabels }, reportBug = { reportBug("appui long sur « ? »") },
+                        )
+                    },
                     openEffects = { fxChannel = it },
                     padsActions = com.pocketstudio.app.session.LivePadsActions(
                         tap = rhythmVm::toggleLive,
@@ -1388,14 +1431,17 @@ fun AppRoot() {
                 Column(Modifier.fillMaxSize()) {
                 // Phase 36: the Sons space's tracks as chips above every editor (the Mode simple's
                 // Clavier: its instrument tracks alone; its Rythme: none).
-                if (tab in SONS_TABS && !(simple && tab == AppTab.Rythme)) {
+                // The Mode simple's Remix (from « ⋯ » or the opening): the page alone, a way back to the song.
+                val simpleRemix = simple && tab == AppTab.Audio
+                if (tab in SONS_TABS && !(simple && tab == AppTab.Rythme) && !simpleRemix) {
                     val hp by rhythmVm.project.collectAsStateWithLifecycle()
                     val hSelected by rhythmVm.selectedTrack.collectAsStateWithLifecycle()
                     val hFreezing by rhythmVm.freezing.collectAsStateWithLifecycle()
                     val hShown = if (hp.tracks.any { it.id == hSelected }) hSelected else 0
                     SonsHeader(
                         tab, tracksUiOf(hp, if (tab == AppTab.Synthe) hShown else -1, hFreezing, bar = true),
-                        go = { t -> go(t) }, audioTracks = hp.audioTracks.size, simple = simple,
+                        go = { t -> if (t == AppTab.Audio) audioPage = 0; go(t) }, audioTracks = hp.audioTracks.size, simple = simple,
+                        remixShown = tab == AppTab.Audio && audioPage == 1, openRemix = openRemix,
                     )
                 }
                 Box(Modifier.weight(1f)) {
@@ -1426,7 +1472,7 @@ WithPartHeader(rhythmVm) { partModifier ->
                                 record = {
                                     val bar = com.pocketstudio.app.record.recordBarUi(rhythmVm, tr("Enregistrer mes pads"), com.pocketstudio.app.record.TakeSource.PADS)
                                     // The pads' take and « Garder ce que je viens de jouer » only when they have something to say.
-                                    if (bar.take != null || bar.canKeepPlayed) {
+                                    if (bar.take != null || bar.canKeepPlayed || bar.empty) {
                                         com.pocketstudio.app.record.RecordBar(bar, com.pocketstudio.app.record.recordBarActions(rhythmVm, com.pocketstudio.app.record.TakeSource.PADS), compact = true)
                                     }
                                 },
@@ -1485,6 +1531,7 @@ WithPartHeader(rhythmVm) { partModifier ->
                                     selectPad = rhythmVm::selectPad,
                                     setPadVolume = rhythmVm::setPadVolume,
                                     setPadPanOf = rhythmVm::setPadPanOf,
+                                    padPanDone = rhythmVm::padPanDoneOf,
                                     togglePadMute = rhythmVm::togglePadMute,
                                     removeSampleOf = rhythmVm::removeSampleOf,
                                     padSounds = { lane -> padSoundOptions(lane, packsOnPhone).map { it.name } },
@@ -1918,11 +1965,24 @@ WithPartHeader(rhythmVm) { partModifier ->
                             }
                         }
                         AppTab.Audio -> Column {
+                            if (simpleRemix) {
+                                // The Mode simple has no Voix: the Remix alone, and back to the song.
+                                LaunchedEffect(Unit) { audioPage = 1 }
+                                androidx.activity.compose.BackHandler { go(AppTab.Morceau) }
+                                Row(Modifier.fillMaxWidth().background(Neon.Surface).padding(horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically) {
+                                    TextButton(onClick = { go(AppTab.Morceau) }, modifier = Modifier.heightIn(min = 48.dp).testTag("remix_back")) {
+                                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, modifier = Modifier.size(18.dp))
+                                        Text(" " + tr("Mon morceau"))
+                                    }
+                                    Text(tr("Remix"), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = Neon.Cyan)
+                                }
+                            } else {
                             // Scrollable: whole words on a small phone or with big text (never "Remi/x").
                             androidx.compose.material3.ScrollableTabRow(selectedTabIndex = audioPage, containerColor = Neon.Surface, contentColor = Neon.Cyan, edgePadding = 8.dp) {
                                 listOf(tr("Pistes audio"), tr("Remix"), tr("Accordeur"), tr("Générer")).forEachIndexed { i, label ->
                                     Tab(selected = audioPage == i, onClick = { audioPage = i }, text = { Text(label, maxLines = 1, softWrap = false) }, modifier = Modifier.testTag("audio_page_$i"))
                                 }
+                            }
                             }
                             if (audioPage == 3) {
                                 val installed by generateVm.installed.collectAsStateWithLifecycle()
@@ -2151,7 +2211,9 @@ WithPartHeader(rhythmVm) { partModifier ->
                             ),
                             page = toolPage,
                             open = { page -> toolPage = page; ToolPage.save(context, page) },
-                            back = { toolPage = null },
+                            // Lot 2: the Mode simple has no Plus: « ← Retour » goes back to the song.
+                            back = { toolPage = null; if (simple) go(AppTab.Morceau) },
+                            backLabel = if (simple) tr("Retour") else null,
                             widePage = ToolPage.load(context),
                         ) { shownPage ->
                             when (shownPage) {
@@ -2276,7 +2338,10 @@ WithPartHeader(rhythmVm) { partModifier ->
     } else if (missions.active && !showProjects && !wizardUi.open) {
         val m = missions.current
         com.pocketstudio.app.learn.SpotlightOverlay(spots, m?.targets(simple).orEmpty()) { modifier, _ ->
-            com.pocketstudio.app.learn.MissionCard(m, missions.step, simple, skip = { missions.next(skip = true) }, stop = missions::stop, modifier = modifier)
+            com.pocketstudio.app.learn.MissionCard(
+                m, missions.step, simple, skip = { missions.next(skip = true) }, stop = missions::stop, modifier = modifier,
+                remix = { missions.stop(); openRemix() },
+            )
         }
     }
     }
@@ -2298,7 +2363,7 @@ private fun LaunchPrompts(vm: MainViewModel) {
     when (val u = update) {
         is UpdateState.Available, is UpdateState.Failed -> {
             val info = if (u is UpdateState.Available) u.info else (u as UpdateState.Failed).info
-            AlertDialog(
+            ScaledAlertDialog(
                 onDismissRequest = { vm.dismissUpdate(remember = false) },
                 title = { Text(tr("Nouvelle version %s", info.versionName)) },
                 text = {
@@ -2312,7 +2377,7 @@ private fun LaunchPrompts(vm: MainViewModel) {
                 dismissButton = { TextButton(onClick = { vm.dismissUpdate() }) { Text(tr("Plus tard")) } },
             )
         }
-        is UpdateState.Downloading -> AlertDialog(
+        is UpdateState.Downloading -> ScaledAlertDialog(
             onDismissRequest = {},
             title = { Text(tr("Téléchargement…")) },
             text = { LinearProgressIndicator(progress = { u.progress }) },
@@ -2835,7 +2900,7 @@ internal fun SoundChooserSheet(vm: RhythmViewModel, track: Int, close: () -> Uni
     val project = remember(fullProject, track) { fullProject.viewOfTrack(track) }
     val name = fullProject.tracks.firstOrNull { it.id == track }?.name?.let { com.pocketstudio.model.DefaultNames.shown(it) } ?: tr("Synthé")
     val state = androidx.compose.material3.rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    androidx.compose.material3.ModalBottomSheet(onDismissRequest = close, sheetState = state, containerColor = Neon.Surface, modifier = Modifier.testTag("sound_chooser")) {
+    ScaledBottomSheet(onDismissRequest = close, sheetState = state, containerColor = Neon.Surface, modifier = Modifier.testTag("sound_chooser")) {
         Column(
             Modifier.fillMaxWidth().verticalScroll(androidx.compose.foundation.rememberScrollState()).padding(horizontal = 16.dp).padding(bottom = 24.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -2876,7 +2941,7 @@ internal fun AcidSoundSheet(vm: RhythmViewModel, close: () -> Unit) {
     val project by vm.project.collectAsStateWithLifecycle()
     val favorites by vm.favorites.collectAsStateWithLifecycle()
     val state = androidx.compose.material3.rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    androidx.compose.material3.ModalBottomSheet(onDismissRequest = close, sheetState = state, containerColor = Neon.Surface, modifier = Modifier.testTag("acid_sound_sheet")) {
+    ScaledBottomSheet(onDismissRequest = close, sheetState = state, containerColor = Neon.Surface, modifier = Modifier.testTag("acid_sound_sheet")) {
         Column(
             Modifier.fillMaxWidth().verticalScroll(androidx.compose.foundation.rememberScrollState()).padding(horizontal = 16.dp).padding(bottom = 24.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp),

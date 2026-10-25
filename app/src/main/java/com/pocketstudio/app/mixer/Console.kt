@@ -1,5 +1,7 @@
 package com.pocketstudio.app.mixer
 
+import com.pocketstudio.ui.ScaledBottomSheet
+
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -276,7 +278,7 @@ private fun StripSheet(
     val name = com.pocketstudio.model.DefaultNames.shown(info.name)
     val index = info.ch
     val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    ModalBottomSheet(onDismissRequest = close, sheetState = state, containerColor = Neon.Surface, modifier = Modifier.testTag("strip_sheet")) {
+    ScaledBottomSheet(onDismissRequest = close, sheetState = state, containerColor = Neon.Surface, modifier = Modifier.testTag("strip_sheet")) {
         Column(
             Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 16.dp).padding(bottom = 24.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -299,17 +301,13 @@ private fun StripSheet(
                 Text(tr("Panoramique"))
                 HelpDot(Glossary.PAN)
                 androidx.compose.foundation.layout.Spacer(Modifier.weight(1f))
-                val pan = (c.pan * 100).roundToInt()
-                Text(
-                    when {
-                        pan < -2 -> tr("Gauche %d", -pan)
-                        pan > 2 -> tr("Droite %d", pan)
-                        else -> tr("Centre")
-                    },
-                    style = MonoStyle, color = Neon.Cyan,
-                )
+                Text(consolePanLabel(c.pan), style = MonoStyle, color = Neon.Cyan)
             }
-            ProSlider(value = c.pan, onValueChange = { v -> actions.setPan(index, if (kotlin.math.abs(v) < 0.04f) 0f else v) }, valueRange = -1f..1f, modifier = Modifier.testTag("sheet_pan_$index"))
+            // Safe at the edge (a back swipe closes the sheet, it never pans), centre caught, two touches = centre.
+            com.pocketstudio.ui.PanSlider(
+                c.pan, { v -> actions.setPan(index, v) }, step = 0.01f, modifier = Modifier.testTag("sheet_pan_$index"),
+                label = tr("Panoramique"), stateLabel = ::consolePanLabel,
+            )
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedButton(onClick = openMoves, modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("strip_moves_$index")) {
                     Icon(Icons.Filled.GraphicEq, contentDescription = null, modifier = Modifier.size(18.dp))
@@ -323,5 +321,15 @@ private fun StripSheet(
             Text(tr("Effets"), style = MaterialTheme.typography.titleSmall, modifier = Modifier.testTag("effects_$index"))
             EffectsBox(index, c, actions)
         }
+    }
+}
+
+/** A strip's pan in words (« Gauche 30 », « Centre »): shown and said by TalkBack. */
+internal fun consolePanLabel(v: Float): String {
+    val pan = (v * 100).roundToInt()
+    return when {
+        pan < -2 -> tr("Gauche %d", -pan)
+        pan > 2 -> tr("Droite %d", pan)
+        else -> tr("Centre")
     }
 }

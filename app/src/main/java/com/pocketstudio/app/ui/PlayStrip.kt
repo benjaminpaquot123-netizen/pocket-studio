@@ -1,5 +1,7 @@
 package com.pocketstudio.app.ui
 
+import com.pocketstudio.ui.ScaledDropdownMenu
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.shape.CircleShape
@@ -263,7 +265,7 @@ private fun PositionLabel(ui: PlayStripUi, actions: PlayStripActions, modifier: 
                 if (pickable) Icon(Icons.Filled.ArrowDropDown, contentDescription = null, tint = color, modifier = Modifier.size(18.dp))
             }
         }
-        DropdownMenu(expanded = open, onDismissRequest = { open = false }, modifier = Modifier.testTag("play_from_menu")) {
+        ScaledDropdownMenu(expanded = open, onDismissRequest = { open = false }, modifier = Modifier.testTag("play_from_menu")) {
             Text(
                 tr("Jouer depuis…"), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
@@ -402,7 +404,7 @@ private fun HelpLabelsButton(on: Boolean, toggle: () -> Unit, reportBug: (() -> 
                     .semantics { toggleableState = androidx.compose.ui.state.ToggleableState(on) },
             )
             .semantics { contentDescription = tr("Étiqueter l'écran") }
-            .testTag("help_labels_button"),
+            .testTag("help_labels_button").spot("help_labels_button"),
         contentAlignment = Alignment.Center,
     ) {
         Box(

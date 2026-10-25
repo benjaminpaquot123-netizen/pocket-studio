@@ -117,3 +117,26 @@ fun songGuide(
     // A page left empty by this song (no roll, riser or counter-melody) is dropped.
     ).filter { it.lines.isNotEmpty() }
 }
+
+/**
+ * Lot 2: how long the song a style makes in one touch lasts (its recipe's lines and parts, the
+ * advised choices), said on « Nouveau projet » instead of « environ 3 minutes » (a Techno lasts 5
+ * to 6). Computed once per style.
+ */
+object StyleLengths {
+    private val cache = java.util.concurrent.ConcurrentHashMap<String, Double>()
+
+    fun seconds(style: StarterWizard.Style): Double = cache.getOrPut(style.id) {
+        val plan = StarterWizard.planFor(style, style.lines.map { it.role }.toSet(), StarterWizard.defaultParts(style), style.melody.acid != null)
+        StarterWizard.songSeconds(style, plan)
+    }
+
+    /** « 5 min 20 ». */
+    fun label(style: StarterWizard.Style): String = duration(seconds(style))
+
+    /** The shortest and the longest song of all the styles, in whole minutes (« 2 », « 6 »). */
+    fun range(): Pair<Int, Int> {
+        val all = StarterWizard.STYLES.map(::seconds)
+        return Math.floor(all.min() / 60.0).toInt().coerceAtLeast(1) to Math.ceil(all.max() / 60.0).toInt()
+    }
+}

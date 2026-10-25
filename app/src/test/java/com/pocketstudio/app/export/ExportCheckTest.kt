@@ -171,7 +171,7 @@ class ExportCheckTest {
         assertEquals(2, inTime.renders)
         assertEquals(listOf(M4aGuard.Step(M4aGuard.Step.Kind.Render, 2, 3)), asked)
         assertEquals(
-            listOf("Compression M4A", "Vérification", "Nouvel essai 2/3 : fabrication", "Nouvel essai 2/3 : compression", "Nouvel essai 2/3 : vérification"),
+            listOf("Compression M4A", "Vérification", "Réglage du volume final 2/3 : fabrication", "Réglage du volume final 2/3 : compression", "Réglage du volume final 2/3 : vérification"),
             steps,
         )
         // A further lowering past the budget: not tried, the gain actually encoded is the one told.

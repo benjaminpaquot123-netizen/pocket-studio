@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -44,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.ui.Neon
 import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.roundToInt
 
 /**
@@ -83,8 +85,11 @@ class SpotRegistry {
     }
 
     /** The labelled controls on the screen now, with their words. */
-    fun labelled(): List<Pair<Rect, String>> =
-        spots.values.mapNotNull { s -> s.label?.let { l -> s.rect.takeIf { it.width > 1f && it.height > 1f }?.let { it to l } } }
+    fun labelled(): List<Pair<Rect, String>> = labelledById().map { it.second to it.third }
+
+    /** [labelled] with each control's id. */
+    fun labelledById(): List<Triple<String, Rect, String>> =
+        spots.entries.mapNotNull { (id, s) -> s.label?.let { l -> s.rect.takeIf { it.width > 1f && it.height > 1f }?.let { Triple(id, it, l) } } }
 }
 
 val LocalSpots = staticCompositionLocalOf<SpotRegistry?> { null }
@@ -139,7 +144,9 @@ fun HelpLabelsOverlay(registry: SpotRegistry, hide: () -> Unit, reportBug: (() -
     var origin by remember { mutableStateOf(Offset.Zero) }
     // Read: the overlay follows the controls (a scroll, a rotation).
     registry.version.intValue
-    val items = registry.labelled().filter { (r, _) -> r.top >= origin.y - 1f }
+    val withIds = registry.labelledById().filter { (_, r, _) -> r.top >= origin.y - 1f }
+    val items = withIds.map { it.second to it.third }
+    val ids = withIds.associate { (id, r, l) -> (r to l) to id }
     val amber = Neon.Amber
     Box(Modifier.fillMaxSize().onGloballyPositioned { origin = it.boundsInWindow().topLeft }.testTag("help_labels")) {
         Canvas(Modifier.fillMaxSize()) {
@@ -151,67 +158,109 @@ fun HelpLabelsOverlay(registry: SpotRegistry, hide: () -> Unit, reportBug: (() -
                 )
             }
         }
-        // The hide chip in the middle of the screen, where no main control's label goes.
-        val chipW = with(LocalDensity.current) { 220.dp.toPx() }
-        val chipH = with(LocalDensity.current) { 56.dp.toPx() }
-        // « Signaler un bug » under it, where help is looked for (also a long press on « ? »).
-        val bugDrop = if (reportBug != null) with(LocalDensity.current) { BUG_CHIP_DROP.toPx() } else 0f
-        // The labels, top to bottom: under their control, else above, beside it; a label with no
-        // free place is left out rather than drawn over another one.
+        // Lot 2 (audit 35): the labels never sit on another control (« Mes projets » was on the
+        // tempo), never off the screen, and « Masquer » / « Signaler un bug » go to the bottom, just
+        // above the bar of the spaces, rather than over the middle of the screen.
+        // The bar of the spaces is a row: at least three « tab_ » on one line (the rail, lying down, is a column).
+        val bottomBarTop = registry.spots.entries
+            .filter { (id, s) -> id.startsWith("tab_") && s.rect.width > 1f }
+            .groupBy { (it.value.rect.top - origin.y).roundToInt() / 4 }
+            .filterValues { it.size >= 3 }
+            .map { (_, row) -> row.minOf { it.value.rect.top } - origin.y }
+        // Every control on the screen, labelled or not (the « ? » itself): a label stays off them.
+        val allSpots = registry.spots.entries.filter { it.value.rect.width > 1f && it.value.rect.height > 1f }
+            .map { it.key to it.value.rect.translate(-origin.x, -origin.y) }
         val sorted = remember(items) { items.sortedWith(compareBy({ it.first.top }, { it.first.left })) }
         Layout(
             content = {
-                sorted.forEach { (_, text) ->
+                sorted.forEach { item ->
                     Text(
-                        text, style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold, color = Color.Black,
+                        item.second, style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold, color = Color.Black,
                         maxLines = 2, overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.widthIn(max = 150.dp).background(Neon.Amber, RoundedCornerShape(8.dp)).padding(horizontal = 7.dp, vertical = 3.dp),
+                        modifier = Modifier.widthIn(max = 150.dp).background(Neon.Amber, RoundedCornerShape(8.dp)).padding(horizontal = 7.dp, vertical = 3.dp)
+                            .testTag("help_label_" + (ids[item] ?: "")),
                     )
+                }
+                // The way out (and « Signaler un bug », where help is looked for), last.
+                Row(horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp), modifier = Modifier.testTag("help_labels_actions")) {
+                    Text(
+                        tr("Masquer les étiquettes"), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = Neon.OnAccent,
+                        maxLines = 2, textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                        modifier = Modifier.widthIn(max = 200.dp).background(Neon.Cyan, RoundedCornerShape(20.dp)).clickable(onClick = hide)
+                            .padding(horizontal = 14.dp, vertical = 10.dp).testTag("help_labels_hide"),
+                    )
+                    if (reportBug != null) {
+                        Text(
+                            "🐞 " + tr("Signaler un bug"), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = Neon.TextPrimary,
+                            maxLines = 2, textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                            modifier = Modifier.widthIn(max = 200.dp).background(Neon.Surface, RoundedCornerShape(20.dp)).border(1.dp, Neon.Amber, RoundedCornerShape(20.dp))
+                                .clickable(onClick = { hide(); reportBug() }).padding(horizontal = 14.dp, vertical = 10.dp).testTag("help_labels_bug"),
+                        )
+                    }
                 }
             },
             modifier = Modifier.fillMaxSize(),
         ) { measurables, constraints ->
-            val placeables = measurables.map { it.measure(Constraints(maxWidth = constraints.maxWidth, maxHeight = constraints.maxHeight)) }
+            val loose = Constraints(maxWidth = constraints.maxWidth, maxHeight = constraints.maxHeight)
+            val placeables = measurables.dropLast(1).map { it.measure(loose) }
+            val chips = measurables.last().measure(loose)
             val width = constraints.maxWidth.toFloat()
             val height = constraints.maxHeight.toFloat()
+            val margin = 8.dp.toPx()
+            // Above the bottom bar when it is at the bottom (upright), else at the screen's bottom.
+            val barTop = bottomBarTop.filter { it > height / 2f }.minOrNull()
+            // A line of labels' room left between them and the bar: the bar's own labels go above it.
+            val labelRoom = if (barTop != null) (placeables.maxOfOrNull { it.height } ?: 0) + 2 * margin else 0f
+            val chipsBottom = ((barTop ?: height) - margin - labelRoom).coerceAtLeast(chips.height.toFloat())
+            // Small controls (not a whole screen's grid) the chips should not cover; with no bar (lying
+            // down), the bottom place that covers the least of them: middle, right or left.
+            val small = allSpots.map { it.second }.filter { it.width * it.height < width * height * 0.2f }
+            fun covered(c: Rect) = small.sumOf { o -> o.intersect(c).let { if (it.width > 0f && it.height > 0f) (it.width * it.height).toDouble() else 0.0 } }
+            val chipsTop = chipsBottom - chips.height
+            val chipsAt = listOf((width - chips.width) / 2f, width - margin - chips.width, margin)
+                .map { x -> Rect(x, chipsTop, x + chips.width, chipsBottom) }
+                .let { places -> if (barTop != null) places.first() else places.minBy(::covered) }
             val placed = ArrayList<Rect>()
-            placed += Rect(width / 2f - chipW / 2f, height / 2f - chipH / 2f, width / 2f + chipW / 2f, height / 2f + chipH / 2f + bugDrop)
+            placed += chipsAt
+            val controls = sorted.map { it.first.translate(-origin.x, -origin.y) }
+            val ownIds = sorted.map { ids[it] }
+            // The unlabelled controls too (the « ? »): kept clear like the others.
+            val others = allSpots.filter { (id, _) -> id !in ownIds }.map { it.second }
             val gap = 2.dp.toPx()
+            fun onScreen(c: Rect) = c.left >= 0f && c.top >= 0f && c.right <= width && c.bottom <= height
             val positions = placeables.mapIndexed { i, pl ->
-                val r = sorted[i].first.translate(-origin.x, -origin.y)
+                val r = controls[i]
                 val w = pl.width.toFloat()
                 val h = pl.height.toFloat()
-                fun fit(x: Float, y: Float) = Rect(x.coerceIn(0f, max(0f, width - w)), y.coerceIn(0f, max(0f, height - h)), 0f, 0f).let {
-                    Rect(it.left, it.top, it.left + w, it.top + h)
+                // Sideways a label may slide to stay on the screen, never up or down.
+                fun at(x: Float, y: Float): Rect {
+                    val left = x.coerceIn(0f, max(0f, width - w))
+                    return Rect(left, y, left + w, y + h)
                 }
-                val candidates = listOf(
-                    fit(r.center.x - w / 2f, r.bottom + gap),
-                    fit(r.center.x - w / 2f, r.top - gap - h),
-                    fit(r.right + gap, r.center.y - h / 2f),
-                    fit(r.left - gap - w, r.center.y - h / 2f),
-                    fit(r.left + 4.dp.toPx(), r.top + 4.dp.toPx()),
+                val around = listOf(
+                    at(r.center.x - w / 2f, r.bottom + gap),
+                    at(r.center.x - w / 2f, r.top - gap - h),
+                    at(r.left, r.bottom + gap),
+                    at(r.right - w, r.bottom + gap),
+                    at(r.right + gap, r.center.y - h / 2f),
+                    at(r.left - gap - w, r.center.y - h / 2f),
                 )
-                val spot = candidates.firstOrNull { c -> placed.none { it.overlaps(c) } }
+                // On its own control (its lower edge, inside it).
+                val inside = at(r.center.x - w / 2f, (r.bottom - h - 2.dp.toPx()).coerceAtLeast(r.top))
+                fun clearOfLabels(c: Rect) = onScreen(c) && placed.none { it.overlaps(c) }
+                // Free: over no other control at all.
+                fun free(c: Rect) = clearOfLabels(c) && controls.indices.none { j -> j != i && controls[j].overlaps(c) } && others.none { it.overlaps(c) }
+                // Else over a corner of another control at most: never on its middle, where its icon or word is.
+                fun middle(o: Rect) = o.deflate(min(o.width, o.height) * 0.3f)
+                fun light(c: Rect) = clearOfLabels(c) && controls.indices.none { j -> j != i && middle(controls[j]).overlaps(c) } && others.none { middle(it).overlaps(c) }
+                val spot = (around + inside).firstOrNull(::free) ?: (around + inside).firstOrNull(::light)
                 if (spot != null) placed += spot
                 spot?.let { it.left.roundToInt() to it.top.roundToInt() }
             }
             layout(constraints.maxWidth, constraints.maxHeight) {
                 placeables.forEachIndexed { i, pl -> positions[i]?.let { (x, y) -> pl.place(x, y) } }
+                chips.place(chipsAt.left.roundToInt(), chipsAt.top.roundToInt())
             }
-        }
-        Text(
-            tr("Masquer les étiquettes"), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = Neon.OnAccent,
-            modifier = Modifier.align(androidx.compose.ui.Alignment.Center)
-                .background(Neon.Cyan, RoundedCornerShape(20.dp)).clickable(onClick = hide)
-                .padding(horizontal = 16.dp, vertical = 12.dp).testTag("help_labels_hide"),
-        )
-        if (reportBug != null) {
-            Text(
-                "🐞 " + tr("Signaler un bug"), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = Neon.TextPrimary,
-                modifier = Modifier.align(androidx.compose.ui.Alignment.Center).offset(y = BUG_CHIP_DROP)
-                    .background(Neon.Surface, RoundedCornerShape(20.dp)).border(1.dp, Neon.Amber, RoundedCornerShape(20.dp))
-                    .clickable(onClick = { hide(); reportBug() }).padding(horizontal = 16.dp, vertical = 12.dp).testTag("help_labels_bug"),
-            )
         }
         if (items.isEmpty()) {
             Text(
@@ -260,5 +309,3 @@ private fun androidx.compose.foundation.layout.BoxScope.BoxLayoutHalf(target: Re
     }
 }
 
-/** How far under « Masquer les étiquettes » the « Signaler un bug » chip sits. */
-private val BUG_CHIP_DROP = 64.dp

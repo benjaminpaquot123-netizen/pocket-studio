@@ -1,5 +1,7 @@
 package com.pocketstudio.app.record
 
+import com.pocketstudio.ui.ScaledBottomSheet
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -70,7 +72,7 @@ class SongVersionsActions(
 @Composable
 fun SongVersionsSheet(p: Project, actions: SongVersionsActions) {
     val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    ModalBottomSheet(onDismissRequest = actions.close, sheetState = state, containerColor = Neon.Surface, modifier = Modifier.testTag("versions_sheet")) {
+    ScaledBottomSheet(onDismissRequest = actions.close, sheetState = state, containerColor = Neon.Surface, modifier = Modifier.testTag("versions_sheet")) {
         SongVersionsContent(p, versionRows(p), actions)
     }
 }

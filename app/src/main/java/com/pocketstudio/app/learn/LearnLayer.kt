@@ -1,5 +1,7 @@
 package com.pocketstudio.app.learn
 
+import com.pocketstudio.ui.ScaledDialog
+
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
@@ -54,7 +56,7 @@ fun LearnLayer(content: @Composable () -> Unit) {
         query?.let { q ->
             val playing by learnVm.playing.collectAsStateWithLifecycle()
             val close = { learnVm.stop(); query = null }
-            Dialog(onDismissRequest = close, properties = DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false)) {
+            ScaledDialog(onDismissRequest = close, properties = DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false)) {
                 GlossaryPage(q, playing, GlossaryActions(search = { query = it }, toggle = learnVm::toggle, close = close))
             }
         }

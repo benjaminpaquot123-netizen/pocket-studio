@@ -136,23 +136,26 @@ class JourneyTest {
             runCatching { recordATakeInTime(rhythm()) }.onFailure { log("full-mode take not asserted: ${it.message}") }
             if (j.exists("take_keep")) j.tap("take_keep")
 
-            // Mix › Exporter: the whole song as M4A, then as WAV.
+            // Mix › Exporter: the part in a loop as M4A, then as WAV (the whole 5-minute jump up song takes
+            // longer than 5 minutes to render on the CI's software emulator; the Mode simple journey exports
+            // a whole song).
             j.tap("tab_Mix")
             j.await("mixer")
-            val seconds = songSeconds(rhythm().project.value)
-            j.tap("export_what_Song")
+            j.tap("export_what_Loop")
+            val loop = rhythm().project.value
+            val seconds = rhythm().export.value.bars * loop.beatsPerBar * 60.0 / loop.tempoBpm
             j.tap("export_format_M4a")
             val m4a = export(rhythm(), "m4a")
             val decoded = RealUse.decode(m4a)
             log("M4A: ${m4a.length() / 1024} KB, ${"%.2f".format(decoded.seconds)} s decoded for a song of ${"%.2f".format(seconds)} s, true peak ${"%.2f".format(decoded.truePeakDb)} dBTP (app: ${rhythm().export.value.truePeakDb})")
-            assertTrue("M4A lasts ${decoded.seconds} s for a song of $seconds s", decoded.seconds >= seconds - 0.5 && decoded.seconds <= seconds + 10.5)
+            assertTrue("M4A lasts ${decoded.seconds} s for a loop of $seconds s", decoded.seconds >= seconds - 0.5 && decoded.seconds <= seconds + 10.5)
             assertTrue("decoded M4A true peak ${decoded.truePeakDb} dBTP (at most -1)", decoded.truePeakDb <= -1.0)
             assertTrue("the M4A is not silent", decoded.truePeakDb > -30.0)
             j.tap("export_format_Wav")
             val wav = export(rhythm(), "wav")
             val (frames, rate) = RealUse.wavFrames(wav)
             log("WAV: ${wav.length() / 1024} KB, $frames frames at $rate Hz")
-            assertTrue("WAV lasts ${frames.toDouble() / rate} s for a song of $seconds s", frames.toDouble() / rate in (seconds - 0.05)..(seconds + 10.05))
+            assertTrue("WAV lasts ${frames.toDouble() / rate} s for a loop of $seconds s", frames.toDouble() / rate in (seconds - 0.05)..(seconds + 10.05))
 
             // ⤴ Partager: the share sheet, then Android's with the song in it.
             share(audio = "audio/")

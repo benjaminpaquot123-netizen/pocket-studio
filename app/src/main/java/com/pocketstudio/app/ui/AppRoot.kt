@@ -1232,14 +1232,18 @@ fun AppRoot() {
         } else guideListen.toggle(card, option)
     }
     DisposableEffect(guideListen) { onDispose { guideListen.stop() } }
-    LaunchedEffect(guideOpen) { if (!guideOpen) guideListen.stop() }
+    // G4 review: a measure running stops with the panel (and when the music starts, below).
+    LaunchedEffect(guideOpen) { if (!guideOpen) { guideListen.stop(); guideVm.cancelMeasure() } }
     // G2 review: the « Sans / Avec » never plays under a take, the Live page or the song started (the
     // panel only hides there, it stays open).
     val guideQuietRec by rhythmVm.recording.collectAsStateWithLifecycle()
     val guideQuietTake by rhythmVm.audioRecording.collectAsStateWithLifecycle()
     val guideQuietPlaying = rhythmVm.transport.collectAsStateWithLifecycle().value.playing
     LaunchedEffect(guideQuietRec, guideQuietTake != null, showLive, guideQuietPlaying) {
-        if (guideQuietRec || guideQuietTake != null || showLive || guideQuietPlaying) guideListen.stop()
+        if (guideQuietRec || guideQuietTake != null || showLive || guideQuietPlaying) {
+            guideListen.stop()
+            guideVm.cancelMeasure()
+        }
     }
     val guideGo: (com.pocketstudio.app.guide.GuideGo) -> Unit = { g ->
         when (g) {

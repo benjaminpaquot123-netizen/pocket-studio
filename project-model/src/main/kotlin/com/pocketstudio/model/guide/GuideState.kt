@@ -257,6 +257,12 @@ data class GuideMeasures(
     @EncodeDefault(EncodeDefault.Mode.NEVER) val phoneDb: Float? = null,
     @OptIn(ExperimentalSerializationApi::class)
     @EncodeDefault(EncodeDefault.Mode.NEVER) val signature: Int = 0,
+    /**
+     * G4 review: only the tracks' levels follow the song as it is (a balance moved the faders): its
+     * loudness, sections and mono were cleared, the app measures them again.
+     */
+    @OptIn(ExperimentalSerializationApi::class)
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val partial: Boolean = false,
 ) {
     fun sanitized(): GuideMeasures = copy(
         at = at.coerceAtLeast(0L),

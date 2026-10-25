@@ -141,6 +141,8 @@ class GuideViewModel(
     private val measurer: (suspend (Project) -> com.pocketstudio.model.guide.GuideMeasures?)? = null,
     /** The song playing stops before a measure asked for (two things at once would load the phone). */
     private val pauseMusic: () -> Unit = {},
+    /** False while a take records: no measure then (G4 review: the phone is busy, the take comes first). */
+    private val canMeasure: () -> Boolean = { true },
 ) {
     private val _ui = MutableStateFlow(GuideUi())
     val ui: StateFlow<GuideUi> = _ui.asStateFlow()
@@ -156,6 +158,10 @@ class GuideViewModel(
 
     private val simple = MutableStateFlow(false)
     private val measuring = MutableStateFlow(false)
+    /** One measure at a time: a balance asked for while one runs waits for it (G4 review). */
+    private val measureLock = kotlinx.coroutines.sync.Mutex()
+    /** The measure running (or the balance waiting for one), cancelled when the music starts or the panel closes. */
+    @Volatile private var measureJob: Job? = null
 
     /** The last report, for the actions (null before the first analysis). */
     @Volatile private var report: GuideReport? = null
@@ -184,10 +190,11 @@ class GuideViewModel(
                 // The Mode simple folds the other stages under « Aller plus loin »: they come from the whole parcours.
                 val full = if (s) withContext(worker) { GuideAnalyzer.analyze(p, false, now) } else null
                 val fresh = withContext(worker) { isFresh(p) }
+                val levels = withContext(worker) { p.guide.measures?.let { it.signature != 0 && it.signature == com.pocketstudio.model.guide.GuideSignatures.sound(p) } == true }
                 analyses++
                 report = r
                 fullReport = full
-                _ui.value = uiOf(r, p, full, now).copy(measuring = busy, measured = fresh)
+                _ui.value = uiOf(r, p, full, now, levels).copy(measuring = busy, measured = fresh)
             }
         }
     }
@@ -213,12 +220,20 @@ class GuideViewModel(
             com.pocketstudio.model.guide.GuideAction.LISTEN -> return
         }
         if (option.action.needsMeasure && measurer != null) {
-            scope.launch {
+            if (!canMeasure()) {
+                _notices.tryEmit(tr("Le Guide écoutera le morceau après la prise."))
+                return
+            }
+            measureJob = scope.launch {
                 if (!measured()) {
                     pauseMusic()
+                    // A measure already running is waited for (not given up silently).
                     if (!measureNow()) return@launch
                 }
-                edit(cardId, "apply:$optionId") { GuideActions.tryApply(it, cardId, optionId, clock()) }
+                edit(cardId, "apply:$optionId", after = {
+                    // The faders moved: the song's loudness, its sections and mono are measured again.
+                    if (!measured()) measureNow(say = false)
+                }) { GuideActions.tryApply(it, cardId, optionId, clock()) }
             }
             return
         }
@@ -229,7 +244,7 @@ class GuideViewModel(
     private suspend fun measured(): Boolean = withContext(worker) { isFresh(session.project.value) }
 
     private fun isFresh(p: Project): Boolean =
-        p.guide.measures?.let { it.signature != 0 && it.signature == com.pocketstudio.model.guide.GuideSignatures.sound(p) } == true
+        p.guide.measures?.let { !it.partial && it.signature != 0 && it.signature == com.pocketstudio.model.guide.GuideSignatures.sound(p) } == true
 
     /**
      * G4: the song measured (each track alone, mono, phone, its sections), unless its measures are
@@ -237,16 +252,27 @@ class GuideViewModel(
      * The panel asks for it when a card of the levels shows, the music stopped.
      */
     fun measure() {
-        if (measurer == null || measuring.value) return
-        scope.launch { if (!measured()) measureNow(say = false) }
+        if (measurer == null || measuring.value || !canMeasure()) return
+        measureJob = scope.launch { if (!measured()) measureNow(say = false) }
     }
 
-    /** One measure now; false when it could not be taken (said in [notices] when [say]: asked for by a button). */
+    /** G4 review: the measure running (about 15 renders) stops: the music starts, the panel closes. */
+    fun cancelMeasure() {
+        measureJob?.cancel()
+        measureJob = null
+    }
+
+    /**
+     * One measure now, or the one running waited for; false when it could not be taken (said in
+     * [notices] when [say]: asked for by a button).
+     */
     private suspend fun measureNow(say: Boolean = true): Boolean {
         val m = measurer ?: return false
-        if (measuring.value) return false
+        measureLock.lock()
         measuring.value = true
         try {
+            // Taken meanwhile (the one this waited for): nothing more to do.
+            if (measured()) return true
             val p = session.project.value
             val measures = m(p)
             if (measures == null) {
@@ -261,6 +287,7 @@ class GuideViewModel(
             return true
         } finally {
             measuring.value = false
+            measureLock.unlock()
         }
     }
 
@@ -289,6 +316,7 @@ class GuideViewModel(
     /** Stops following the project (the screen that owns it is gone). */
     fun close() {
         job?.cancel()
+        cancelMeasure()
     }
 
     private fun cardOf(id: String): GuideCard? =
@@ -299,7 +327,7 @@ class GuideViewModel(
      * session's thread as one undo step: again on the project as it is when it changed meanwhile. A
      * problem it gives is said ([notices]); [onEdited] gets the project from before the step.
      */
-    private fun edit(cardId: String, what: String, transform: (Project) -> GuideOutcome) {
+    private fun edit(cardId: String, what: String, after: (suspend () -> Unit)? = null, transform: (Project) -> GuideOutcome) {
         scope.launch {
             val before = session.project.value
             val worked = withContext(worker) { transform(before) }
@@ -310,6 +338,7 @@ class GuideViewModel(
             session.edit(tag = GuideEdit(cardId, what)) { cur -> if (cur === now) out.project else cur }
             if (session.project.value !== now) onEdited(now)
             edits++
+            after?.invoke()
         }
     }
 
@@ -317,12 +346,13 @@ class GuideViewModel(
     @Volatile var edits = 0
         private set
 
-    private fun uiOf(r: GuideReport, p: Project, full: GuideReport? = null, now: Long = 0L): GuideUi {
+    /** [levels]: the tracks' levels were measured on the song as it is (G4 review: the balance is heard only then). */
+    private fun uiOf(r: GuideReport, p: Project, full: GuideReport? = null, now: Long = 0L, levels: Boolean = false): GuideUi {
         val undoable = p.guide.history.filter { !it.reverted }.map { it.card }.toSet()
         fun option(card: GuideCard, o: GuideProposal) = GuideOptionUi(
             o.id, guideText(o.label), guideText(o.why), o.value?.let(::guideText),
             o.action.spot.takeIf { o.action.type == com.pocketstudio.model.guide.GuideAction.OPEN }, p.guide.refusals.any { it.card == card.id && it.option == o.id },
-            edits = o.action.edits, heard = o.action.heard,
+            edits = o.action.edits, heard = o.action.heard && (o.action.type != com.pocketstudio.model.guide.GuideAction.BALANCE || levels),
             listen = o.action.name.takeIf { o.action.type == com.pocketstudio.model.guide.GuideAction.LISTEN },
         )
         val effects = effectsOf(r, p)

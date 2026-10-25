@@ -194,8 +194,8 @@ internal object GuideMoves {
 
     /**
      * Each measured track's fader moved toward its place ([GuideLevels.offsets], [GuideLevels.MAX_MOVE_DB]
-     * at most), and the measures moved with it: a fader changes the track's level by exactly that, so the
-     * analysis sees the balance done without measuring again.
+     * at most), and the tracks' measures moved with it: a fader changes the track's level by exactly that, so the
+     * analysis sees the balance done; the song's own loudness is cleared ([GuideMeasures.partial]).
      */
     fun balance(p: Project): Project {
         val facts = GuideFacts.of(p)
@@ -215,7 +215,10 @@ internal object GuideMoves {
         }
         if (mixer == p.mixer) return p
         val q = p.copy(mixer = mixer)
-        return q.copy(guide = q.guide.copy(measures = m.copy(tracks = tracks, signature = GuideSignatures.sound(q))))
+        // Only the tracks' levels are known after it (G4 review): the song's loudness, its sections and
+        // mono are left to measure again, so that the contrast and the headroom never read old numbers.
+        val kept = m.copy(tracks = tracks, integratedLufs = null, truePeakDb = null, sections = emptyMap(), monoLossDb = null, partial = true)
+        return q.copy(guide = q.guide.copy(measures = kept.copy(signature = GuideSignatures.sound(q))))
     }
 
     /** The lows in mono up to [MONO_HZ] and no widener past 100 % (« Resserrer »). */

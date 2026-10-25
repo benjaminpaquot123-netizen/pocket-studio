@@ -443,6 +443,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         com.pocketstudio.app.guide.GuideViewModel(
             session, viewModelScope, onEdited = ::afterGuideEdit, measurer = ::measureGuide,
             pauseMusic = { if (transport.value.playing) togglePlay() },
+            canMeasure = { !recording.value && audioRecording.value == null },
         )
     }
 

@@ -1,7 +1,7 @@
 {
  "format": 1,
  "style": "liquid_dnb",
- "version": 1,
+ "version": 2,
  "cards": [
   {
    "id": "frame.style",
@@ -647,15 +647,15 @@
    "target": "song",
    "kind": "review",
    "title": "Voilà ce que j'ai mis",
-   "why": "J'ai posé une chaîne d'effets sur chaque piste, sans rien dire. On les écoute une par une, avec et sans : tu gardes, tu règles ou tu retires.",
+   "why": "J'ai posé une chaîne d'effets sur chaque piste, sans rien dire. Les voici une par une, chacune avec son pourquoi : écoute sans puis avec, à volume égal, puis garde ou retire.",
    "applicable": [
     "fx:any"
    ],
    "proposals": [
     {
      "id": "keep",
-     "label": "Écouter piste par piste",
-     "why": "Une carte par piste : avec, sans, à volume égal.",
+     "label": "Tout garder",
+     "why": "Ce que tu n'as pas retiré reste tel quel.",
      "action": {
       "type": "keep"
      }
@@ -808,7 +808,7 @@
     "has:sub"
    ],
    "done": [
-    "fx:sub",
+    "colour:sub",
     "by_hand|changed:sub"
    ],
    "proposals": [
@@ -1099,11 +1099,22 @@
    ],
    "proposals": [
     {
-     "id": "keep",
-     "label": "Garder",
-     "why": "Ce qui est là sonne déjà juste : on n'y touche pas.",
+     "id": "lighten",
+     "label": "Alléger l'intro et la montée",
+     "why": "Les basses et la mélodie n'y jouent plus : elles arrivent au Drop.",
      "action": {
-      "type": "keep"
+      "type": "subtract",
+      "name": "lighten"
+     }
+    },
+    {
+     "id": "break",
+     "label": "Un Break tiré du Drop",
+     "why": "8 mesures du Drop sans le kick ni les basses, juste après lui : on respire avant la suite.",
+     "value": "8 mesures",
+     "action": {
+      "type": "subtract",
+      "name": "break"
      }
     },
     {
@@ -1317,6 +1328,15 @@
    ],
    "proposals": [
     {
+     "id": "sweep",
+     "label": "Ouvrir le filtre pour moi",
+     "why": "Sombre au début de chaque Montée, grand ouvert à sa fin, au repos quand le Drop tombe.",
+     "action": {
+      "type": "curve",
+      "name": "sweep"
+     }
+    },
+    {
      "id": "curve",
      "label": "Dessiner la courbe",
      "why": "Du fermé à l'ouvert, la dernière mesure tout en haut.",
@@ -1350,6 +1370,16 @@
    ],
    "proposals": [
     {
+     "id": "throw",
+     "label": "Lancer la réverbe pour moi",
+     "why": "Sur la mélodie, la dernière mesure de chaque phrase de 8 : la note s'envole dans la salle.",
+     "action": {
+      "type": "curve",
+      "name": "throw",
+      "target": "lead"
+     }
+    },
+    {
      "id": "keep",
      "label": "Garder ce que j'ai mis",
      "why": "Si la courbe est là, elle monte déjà en fin de phrase : écoute-la.",
@@ -1382,6 +1412,16 @@
    ],
    "proposals": [
     {
+     "id": "wave",
+     "label": "Faire respirer ces parties",
+     "why": "Sur les 4 dernières mesures de chacune, le filtre se ferme un peu puis se rouvre : la suite arrive.",
+     "value": "15 % de filtre",
+     "action": {
+      "type": "curve",
+      "name": "wave"
+     }
+    },
+    {
      "id": "curve",
      "label": "Voir les parties immobiles",
      "why": "Une courbe douce sur une piste de chacune.",
@@ -1402,6 +1442,50 @@
    "lexicon": "automation"
   },
   {
+   "id": "move.fills",
+   "stage": 5,
+   "target": "song",
+   "kind": "decide",
+   "title": "Un fill avant chaque Drop",
+   "why": "Un roulement de batterie sur la dernière mesure avant le Drop : l'oreille sent que ça arrive, et le retour frappe.",
+   "when": "La mesure juste avant le grand moment.",
+   "applicable": [
+    "peaks:1",
+    "has:kick"
+   ],
+   "done": [
+    "fills|cut"
+   ],
+   "proposals": [
+    {
+     "id": "fills",
+     "label": "Poser les fills pour moi",
+     "why": "Le roulement du style, sur la seconde moitié de la mesure ; le reste de la batterie continue.",
+     "action": {
+      "type": "fill"
+     }
+    },
+    {
+     "id": "pattern",
+     "label": "Taper mon propre fill",
+     "why": "Un roulement à toi, sur la dernière mesure.",
+     "action": {
+      "type": "open",
+      "spot": "rhythm.pattern"
+     }
+    },
+    {
+     "id": "keep",
+     "label": "Sans fill",
+     "why": "Une coupure nette fait aussi l'affaire.",
+     "action": {
+      "type": "keep"
+     }
+    }
+   ],
+   "lexicon": "fill"
+  },
+  {
    "id": "mix.balance",
    "stage": 6,
    "target": "song",
@@ -1412,9 +1496,18 @@
    "simpleTitle": "Le volume de chaque piste",
    "simpleWhy": "Le kick et la basse d'abord, le reste autour.",
    "done": [
-    "faders"
+    "balanced|faders"
    ],
    "proposals": [
+    {
+     "id": "balance",
+     "label": "Placer chaque piste pour moi",
+     "why": "J'écoute chaque piste seule au Drop, le kick en référence, et je remets à sa place celle qui s'en écarte de plus de 3 dB.",
+     "value": "± 3 dB",
+     "action": {
+      "type": "balance"
+     }
+    },
     {
      "id": "mixer",
      "label": "Régler les volumes",
@@ -1541,20 +1634,122 @@
    "lexicon": "break"
   },
   {
-   "id": "mix.checks",
+   "id": "mix.mono",
    "stage": 6,
    "target": "song",
    "kind": "check",
    "simple": true,
-   "title": "Les vérifications : mono, téléphone, référence",
-   "why": "Rien ne doit disparaître en mono ; sur le haut-parleur du téléphone, le kick et la basse doivent se deviner. Compare avec Netsky – Memory Lane (2010) au même volume : plus fort paraît toujours mieux.",
-   "simpleTitle": "Écouter partout",
-   "simpleWhy": "Au casque, sur le téléphone, et à côté d'un morceau que tu aimes.",
+   "title": "En mono, rien ne disparaît",
+   "why": "Une enceinte de soirée, un téléphone, une radio replient souvent la stéréo en un seul son : un son trop large ou à l'envers s'y efface.",
+   "simpleTitle": "Écouter en mono",
+   "simpleWhy": "Comme sur une seule enceinte : tout doit rester là.",
+   "done": [
+    "mono_ok"
+   ],
    "proposals": [
+    {
+     "id": "listen",
+     "label": "Écouter en mono",
+     "why": "Le Drop en stéréo, puis replié en mono : ce qui s'efface s'entend.",
+     "action": {
+      "type": "listen",
+      "name": "mono"
+     }
+    },
+    {
+     "id": "narrow",
+     "label": "Resserrer la stéréo",
+     "why": "Les graves en mono jusqu'à 150 Hz, aucun élargisseur au-delà de 100 %.",
+     "value": "150 Hz",
+     "action": {
+      "type": "mono"
+     }
+    },
     {
      "id": "keep",
      "label": "C'est vérifié",
-     "why": "Mono, téléphone et référence écoutés.",
+     "why": "Rien ne disparaît en mono.",
+     "action": {
+      "type": "keep"
+     }
+    }
+   ],
+   "lexicon": "mix"
+  },
+  {
+   "id": "mix.phone",
+   "stage": 6,
+   "target": "song",
+   "kind": "check",
+   "simple": true,
+   "title": "Sur le haut-parleur d'un téléphone",
+   "why": "Un téléphone ne joue rien sous 300 Hz : le kick et la basse doivent encore s'y deviner, par leurs harmoniques.",
+   "simpleTitle": "Écouter comme sur un téléphone",
+   "simpleWhy": "La plupart des gens l'écouteront là : la basse doit s'y entendre.",
+   "done": [
+    "phone_ok"
+   ],
+   "proposals": [
+    {
+     "id": "listen",
+     "label": "Écouter comme un téléphone",
+     "why": "Le Drop tel quel, puis sans rien sous 300 Hz, au même volume.",
+     "action": {
+      "type": "listen",
+      "name": "phone"
+     }
+    },
+    {
+     "id": "audible",
+     "label": "Une basse plus audible",
+     "why": "« Basse audible » sur la basse, un peu plus fort : ses harmoniques passent sur un petit haut-parleur.",
+     "value": "+15 %",
+     "action": {
+      "type": "nudge",
+      "target": "bass",
+      "effect": "BASS_EXCITER",
+      "param": 0,
+      "delta": 0.15,
+      "params": [
+       0.4
+      ]
+     }
+    },
+    {
+     "id": "keep",
+     "label": "C'est vérifié",
+     "why": "La basse se devine sur un téléphone.",
+     "action": {
+      "type": "keep"
+     }
+    }
+   ],
+   "lexicon": "bass"
+  },
+  {
+   "id": "mix.reference",
+   "stage": 6,
+   "target": "song",
+   "kind": "check",
+   "simple": true,
+   "title": "À côté d'un morceau que tu aimes",
+   "why": "Compare avec Netsky – Memory Lane (2010), ou un autre morceau du style, au même volume : plus fort paraît toujours mieux, alors on égalise d'abord.",
+   "simpleTitle": "À côté d'un morceau que tu aimes",
+   "simpleWhy": "Au même volume, pour comparer le son, pas la force.",
+   "proposals": [
+    {
+     "id": "listen",
+     "label": "Comparer à un morceau",
+     "why": "Choisis un fichier audio : ton Drop, puis son passage le plus fort, au même volume.",
+     "action": {
+      "type": "listen",
+      "name": "reference"
+     }
+    },
+    {
+     "id": "keep",
+     "label": "C'est vérifié",
+     "why": "Mon morceau tient la comparaison.",
      "action": {
       "type": "keep"
      }

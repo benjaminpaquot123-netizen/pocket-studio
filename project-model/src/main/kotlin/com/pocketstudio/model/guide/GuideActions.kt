@@ -10,7 +10,12 @@ import com.pocketstudio.model.LoudnessTarget
 import com.pocketstudio.model.Mixer
 import com.pocketstudio.model.MusicBus
 import com.pocketstudio.model.Project
+import com.pocketstudio.model.Scene
 import com.pocketstudio.model.SongPart
+import com.pocketstudio.model.allScenes
+import com.pocketstudio.model.removeSongPart
+import com.pocketstudio.model.songBars
+import com.pocketstudio.model.syncScenes
 import com.pocketstudio.model.StarterWizard
 import com.pocketstudio.model.TrackLayer
 import com.pocketstudio.model.Layers
@@ -54,6 +59,57 @@ object GuideActions {
     /** An alert's card ("alert.<fact>"): it comes back whenever its fact does, only « C'est voulu » is kept. */
     fun isAlert(cardId: String) = cardId.startsWith("alert.")
 
+    /**
+     * Option [optionId] of [card]: one of its own, or (a card of the effects, stage 3) one effect of
+     * « Voilà ce que j'ai mis » retired or put back ([dynamicOption]).
+     */
+    fun optionOf(p: Project, card: GuideCard, optionId: String): GuideProposal? =
+        (card.proposals + card.elsewhere).firstOrNull { it.id == optionId } ?: if (card.stage == 3) dynamicOption(p, optionId) else null
+
+    /** An option made for one effect of one track, not written in a parcours: "<verb>@<track key>@<slot or bus>". */
+    fun isDynamic(optionId: String) = optionId.count { it == '@' } == 2
+
+    /** « Retirer » effect [slot] of [track] (set aside, its settings kept). */
+    fun effectOff(track: String, slot: Int) = "off@$track@$slot"
+
+    /** « Remettre » it. */
+    fun effectOn(track: String, slot: Int) = "on@$track@$slot"
+
+    /** « Retirer » [track]'s send to bus [bus]. */
+    fun sendOff(track: String, bus: Int) = "dry@$track@$bus"
+
+    /** « Remettre » it at what it was before the Guide took it off ([sendOff]). */
+    fun sendOn(track: String, bus: Int) = "wet@$track@$bus"
+
+    /**
+     * The option [optionId] names ([effectOff], [effectOn], [sendOff], [sendOn]) on [p], or null when
+     * its track, slot or bus is not there (or a send was never taken off by the Guide).
+     */
+    fun dynamicOption(p: Project, optionId: String): GuideProposal? {
+        if (!isDynamic(optionId)) return null
+        val (verb, track, n) = optionId.split('@')
+        val i = n.toIntOrNull() ?: return null
+        if (p.guideTracks().none { it.key == track } && track != GuideTrack.MASTER) return null
+        val action = when (verb) {
+            "off", "on" -> {
+                if (i !in 0 until Mixer.INSERTS) return null
+                GuideAction(type = GuideAction.SLOT, track = track, param = i, value = if (verb == "off") 1f else 0f)
+            }
+            "dry" -> GuideAction(type = GuideAction.SEND, track = track, bus = i, value = 0f).takeIf { i in 0 until Buses.COUNT } ?: return null
+            "wet" -> {
+                val was = p.guide.history.lastOrNull { it.track == track && it.field == "$SEND$i" && !it.reverted && it.after == JsonPrimitive(0f) }
+                    ?.before?.let { (it as? JsonPrimitive)?.content?.toFloatOrNull() } ?: return null
+                GuideAction(type = GuideAction.SEND, track = track, bus = i, value = was)
+            }
+            else -> return null
+        }
+        val label = when (verb) {
+            "off", "dry" -> tr("Retirer")
+            else -> tr("Le remettre")
+        }
+        return GuideProposal(optionId, label, action = action)
+    }
+
     /** [apply]'s project only (the problem, if any, left aside). */
     fun apply(p: Project, cardId: String, optionId: String, at: Long, parcours: GuideParcours = GuideLibrary.forProject(p)): Project =
         tryApply(p, cardId, optionId, at, parcours).project
@@ -67,20 +123,23 @@ object GuideActions {
      */
     fun tryApply(p: Project, cardId: String, optionId: String, at: Long, parcours: GuideParcours = GuideLibrary.forProject(p)): GuideOutcome {
         val card = cardOf(p, cardId, parcours) ?: return GuideOutcome(p)
-        val option = (card.proposals + card.elsewhere).firstOrNull { it.id == optionId } ?: return GuideOutcome(p)
+        val option = optionOf(p, card, optionId) ?: return GuideOutcome(p)
         val action = option.action
-        if (action.type == GuideAction.OPEN) return GuideOutcome(p)
+        if (action.type == GuideAction.OPEN || action.type == GuideAction.LISTEN) return GuideOutcome(p)
+        if (action.type == GuideAction.BALANCE && GuideFacts.of(p).fresh == null) return GuideOutcome(p, tr("Il faut d'abord mesurer le morceau."))
         if (action.type == GuideAction.LATER) return GuideOutcome(later(p, card.id, at, parcours))
         val keys = if (isAlert(card.id)) GuideFacts.of(p).list.firstOrNull { it.id == card.id.removePrefix("alert.") }?.tracks else null
-        val edited = if (action.edits) perform(p, card, action, keys) else p
+        val edited = if (action.edits) perform(p, card, action, keys) ?: return GuideOutcome(p, tr("Plus de place pour une courbe : le morceau en a déjà 16.")) else p
         if (action.edits && edited == p) return GuideOutcome(p, tr("Rien à changer ici : la piste n'a pas cet effet ou il est déjà réglé."))
         edited.mixer.longFxOverLimit(p.mixer)?.let { return GuideOutcome(p, longFxLimitNotice(it)) }
-        val base = p.guide.withBase(p, parcours)
+        // The edit's own state (« Placer chaque piste » moves the measures with the faders), its baseline from before.
+        val base = edited.guide.withBase(p, parcours)
         val id = "c${base.nextChange}"
         val changes = changesBetween(p, edited, card.id, card.target, at, id)
         var state = base.withChanges(changes).copy(nextChange = base.nextChange + 1, step = card.id, lastUsed = maxOf(base.lastUsed, at))
-        // An alert is not ticked for good: it comes back when its fact does.
-        if (!isAlert(card.id)) state = state.withStatus(card.id, GuideStatus.DONE, at, option.id)
+        // An alert is not ticked for good: it comes back when its fact does; one effect of « Voilà ce que
+        // j'ai mis » retired or put back does not decide the whole card.
+        if (!isAlert(card.id) && !isDynamic(option.id)) state = state.withStatus(card.id, GuideStatus.DONE, at, option.id)
         if (action.type == GuideAction.REFUSE) state = state.withRefusal(card.id, "", at)
         state = state.copy(seen = seenAfter(state.seen, p, edited, card))
         return GuideOutcome(edited.copy(guide = state))
@@ -137,7 +196,16 @@ object GuideActions {
         }
         var q = p
         val gone = tr("Cette piste n'est plus là : rien à ramener.")
-        for (c in group.asReversed()) if (c.kind != GuideChange.LANE) q = withField(q, c.track, c.field, c.before) ?: return GuideOutcome(p, gone)
+        fun structural(c: GuideChange) = c.field.startsWith(PARTS) || c.field.startsWith(SCENE)
+        for (c in group.asReversed()) if (c.kind != GuideChange.LANE && !structural(c)) q = withField(q, c.track, c.field, c.before) ?: return GuideOutcome(p, gone)
+        // G4: the parts first (their curves follow them back), then the scenes made for them.
+        for (c in group.filter { it.field.startsWith(PARTS) }.asReversed()) q = partsBack(q, c) ?: return GuideOutcome(p, gone)
+        for (c in group.filter { it.field.startsWith(SCENE) }) q = sceneBack(q, c.field.removePrefix(SCENE).toInt()) ?: return GuideOutcome(p, gone)
+        for (c in group.filter { it.field == LANE_SET }.asReversed()) {
+            val now = json.decodeFromJsonElement(AutomationLane.serializer(), c.after!!)
+            val was = c.before?.let { json.decodeFromJsonElement(AutomationLane.serializer(), it) }
+            q = q.copy(automation = if (was == null) q.automation.filter { it.target != now.target } else q.automation.map { if (it.target == now.target) was else it })
+        }
         // The curves last, all at once: a chain shifted by one slot shifts back in one move.
         val moves = group.filter { it.field == LANE_TARGET }.associate { lane(it.after!!) to lane(it.before!!) }
         if (moves.isNotEmpty()) q = q.copy(automation = q.automation.map { l -> moves[l.target]?.let { l.copy(target = it) } ?: l })
@@ -148,6 +216,25 @@ object GuideActions {
         }
         val history = p.guide.history.map { if (it.id == id) it.copy(reverted = true) else it }
         return GuideOutcome(q.copy(guide = p.guide.copy(history = history, lastUsed = maxOf(p.guide.lastUsed, at))))
+    }
+
+    /** The parts of change [c] as they were: an added part taken out (what follows moves back, its curves too), parts cut put together again. */
+    private fun partsBack(p: Project, c: GuideChange): Project? {
+        val at = c.field.removePrefix(PARTS).toInt()
+        val was = json.decodeFromJsonElement(partList, c.before ?: return null)
+        val now = json.decodeFromJsonElement(partList, c.after ?: return null)
+        if (was.isEmpty() && now.size == 1) return p.removeSongPart(at)
+        val q = p.copy(song = p.song.take(at) + was + p.song.drop(at + now.size))
+        // Parts cut (a fill) last as long as the part they came from: anything else would move the curves.
+        return if (q.songBars == p.songBars) q else null
+    }
+
+    /** Scene [i] made by the Guide emptied again, once no part plays it. */
+    private fun sceneBack(p: Project, i: Int): Project? {
+        if (p.song.any { it.scene == i || i in it.play.values }) return null
+        val all = p.allScenes
+        if (i !in all.indices || i == p.scene) return null
+        return p.copy(scenes = all.mapIndexed { k, s -> if (k == i) Scene() else s }, automation = p.automation.map { it.copy(sceneValues = it.sceneValues - i) }).syncScenes()
     }
 
     /** A free note on the song (or on track [track]). */
@@ -188,11 +275,19 @@ object GuideActions {
         return all.filter { song.plays(it.key) }.ifEmpty { all }
     }
 
-    /** [a] on [p]: on the tracks of [keys] when given (an alert's own tracks), else on the role's. */
-    private fun perform(p: Project, card: GuideCard, a: GuideAction, keys: List<String>? = null): Project {
+    /** [a] on [p]: on the tracks of [keys] when given (an alert's own tracks), else on its track, else on the role's. Null: no room for a curve. */
+    private fun perform(p: Project, card: GuideCard, a: GuideAction, keys: List<String>? = null): Project? {
         val role = a.target.ifEmpty { card.target }
-        val targets = keys?.let { ks -> p.guideTracks().filter { it.key in ks } } ?: tracksOf(p, role)
+        val targets = keys?.let { ks -> p.guideTracks().filter { it.key in ks } }
+            ?: a.track.takeIf { it.isNotEmpty() }?.let { k -> p.guideTracks().filter { it.key == k } }
+            ?: tracksOf(p, role)
         return when (a.type) {
+            GuideAction.SLOT -> slot(p, a.track, a.param, (a.value ?: 1f) >= 0.5f)
+            GuideAction.SUBTRACT -> GuideMoves.subtract(p, a.name)
+            GuideAction.CURVE -> GuideMoves.curve(p, a.name, role)
+            GuideAction.FILL -> GuideMoves.fills(p)
+            GuideAction.BALANCE -> GuideMoves.balance(p)
+            GuideAction.MONO -> GuideMoves.mono(p)
             GuideAction.INSERT, GuideAction.NUDGE, GuideAction.CHAIN, GuideAction.BYPASS, GuideAction.SEND, GuideAction.VOLUME ->
                 targets.fold(p) { q, t -> onStrip(q, t, a) }
             GuideAction.PAN -> targets.fold(p) { q, t -> withPan(q, t, a.value ?: 0f) }
@@ -208,6 +303,19 @@ object GuideActions {
             GuideAction.UNSOLO -> p.copy(mixer = p.mixer.copy(channels = p.mixer.channels.map { if (it.solo) it.copy(solo = false) else it }))
             else -> p
         }
+    }
+
+    /** Effect [slot] of track [track] (the master's too) set aside ([off]) or heard again, its settings kept. */
+    private fun slot(p: Project, track: String, slot: Int, off: Boolean): Project {
+        val m = p.mixer
+        if (track == GuideTrack.MASTER) {
+            val ins = m.master.getOrNull(slot)?.takeIf { it.effect != EffectType.NONE } ?: return p
+            return p.copy(mixer = m.copy(master = m.master.toMutableList().also { it[slot] = ins.copy(bypass = off) }))
+        }
+        val t = p.guideTracks().firstOrNull { it.key == track } ?: return p
+        val c = strip(p, t) ?: return p
+        val ins = c.inserts.getOrNull(slot)?.takeIf { it.effect != EffectType.NONE } ?: return p
+        return withStrip(p, t.channel, c.copy(inserts = c.inserts.toMutableList().also { it[slot] = ins.copy(bypass = off) }))
     }
 
     private fun strip(p: Project, t: GuideTrack): Channel? = p.mixer.channels.getOrNull(t.channel)?.takeIf { t.channel != Mixer.MASTER }
@@ -448,29 +556,68 @@ object GuideActions {
         for (i in 0 until Mixer.INSERTS) if (before.mixer.master.getOrNull(i) != after.mixer.master.getOrNull(i)) add(GuideTrack.MASTER, GuideChange.INSERT, "$SLOT$i")
         add(GuideTrack.MASTER, GuideChange.VALUE, TARGET)
         add(GuideTrack.MASTER, GuideChange.VALUE, DUCKING)
+        add(GuideTrack.MASTER, GuideChange.VALUE, MONO_BASS)
         for (b in 0 until Buses.COUNT) for (k in 0 until Buses.PARAM_COUNT) {
             if (before.mixer.buses.getOrNull(b)?.getOrNull(k) != after.mixer.buses.getOrNull(b)?.getOrNull(k)) add(GuideTrack.bus(b), GuideChange.VALUE, "$PARAM$k")
         }
-        if (before.song != after.song && before.song.size == after.song.size) {
+        val onlyMutes = before.song.size == after.song.size && before.song.indices.all { before.song[it].copy(muted = emptySet()) == after.song[it].copy(muted = emptySet()) }
+        if (before.song != after.song && onlyMutes) {
             val track = tracksOf(before, target).firstOrNull()?.key ?: GuideTrack.MASTER
             for (i in before.song.indices) if (before.song[i].muted != after.song[i].muted) add(track, GuideChange.PART, "$MUTED$i:${before.song[i].scene}")
         }
-        if (before.automation != after.automation) {
+        // G4: parts added or cut (a Break made from the Drop, a fill): the parts that changed, as one setting.
+        val reshaped = before.song != after.song && !onlyMutes
+        if (reshaped) {
+            val a = before.song
+            val b = after.song
+            var head = 0
+            while (head < a.size && head < b.size && a[head] == b[head]) head++
+            var tail = 0
+            while (tail < a.size - head && tail < b.size - head && a[a.size - 1 - tail] == b[b.size - 1 - tail]) tail++
+            out += GuideChange(GuideTrack.MASTER, GuideChange.PART, "$PARTS$head", parts(a.subList(head, a.size - tail)), parts(b.subList(head, b.size - tail)), at, origin, cardId, id = id)
+        }
+        // The scenes it made for them, each one taken back when the parts go.
+        val sa = before.allScenes
+        val sb = after.allScenes
+        for (i in sb.indices) {
+            val was = sa.getOrNull(i)
+            if ((was == null || (was.isEmpty && was.label.isBlank())) && (!sb[i].isEmpty || sb[i].label.isNotBlank())) {
+                out += GuideChange(GuideTrack.MASTER, GuideChange.PART, "$SCENE$i", null, json.encodeToJsonElement(Scene.serializer(), sb[i]), at, origin, cardId, id = id)
+            }
+        }
+        // The curves follow the parts by themselves (their way back too): only a curve drawn is kept.
+        if (before.automation != after.automation && !reshaped) {
             if (before.automation.size == after.automation.size) {
                 for (i in before.automation.indices) {
                     val ta = before.automation[i].target
                     val tb = after.automation[i].target
                     if (ta != tb) out += GuideChange(GuideTrack.MASTER, GuideChange.LANE, LANE_TARGET, enc(ta), enc(tb), at, origin, cardId, id = id)
                 }
-            } else {
+            }
+            val targetsMoved = before.automation.size == after.automation.size && before.automation.indices.any { before.automation[it].target != after.automation[it].target }
+            if (!targetsMoved) {
                 val kept = after.automation.map { it.target }.toSet()
                 for (l in before.automation) if (l.target !in kept) {
                     out += GuideChange(GuideTrack.MASTER, GuideChange.LANE, LANE, json.encodeToJsonElement(AutomationLane.serializer(), l), null, at, origin, cardId, id = id)
+                }
+                // G4: a curve drawn or changed by the Guide (a filter that opens, a throw): its value before (none: it was not there).
+                for (l in after.automation) {
+                    val was = before.automation.firstOrNull { it.target == l.target }
+                    if (was != l) {
+                        out += GuideChange(
+                            GuideTrack.MASTER, GuideChange.LANE, LANE_SET, was?.let { json.encodeToJsonElement(AutomationLane.serializer(), it) },
+                            json.encodeToJsonElement(AutomationLane.serializer(), l), at, origin, cardId, id = id,
+                        )
+                    }
                 }
             }
         }
         return out
     }
+
+    private val partList = ListSerializer(SongPart.serializer())
+
+    private fun parts(list: List<SongPart>): JsonElement = json.encodeToJsonElement(partList, list)
 
     private fun enc(t: AutoTarget): JsonElement = json.encodeToJsonElement(AutoTarget.serializer(), t)
 
@@ -481,7 +628,15 @@ object GuideActions {
         when (c.field) {
             LANE_TARGET -> p.automation.any { it.target == lane(c.after!!) }
             LANE -> json.decodeFromJsonElement(AutomationLane.serializer(), c.before!!).target.let { t -> p.automation.none { it.target == t } }
-            else -> fieldValue(p, c.track, c.field) == c.after
+            LANE_SET -> json.decodeFromJsonElement(AutomationLane.serializer(), c.after!!).let { l -> p.automation.firstOrNull { it.target == l.target } == l }
+            else -> if (c.field.startsWith(PARTS)) {
+                val at = c.field.removePrefix(PARTS).toInt()
+                val now = json.decodeFromJsonElement(partList, c.after!!)
+                at + now.size <= p.song.size && p.song.subList(at, at + now.size) == now
+            } else if (c.field.startsWith(SCENE)) {
+                val i = c.field.removePrefix(SCENE).toInt()
+                p.scene != i && p.allScenes.getOrNull(i) == json.decodeFromJsonElement(Scene.serializer(), c.after!!)
+            } else fieldValue(p, c.track, c.field) == c.after
         }
     }.getOrDefault(false)
 
@@ -492,6 +647,8 @@ object GuideActions {
             track == GuideTrack.MASTER && field.startsWith(SLOT) -> return m.master.getOrNull(field.removePrefix(SLOT).toInt())?.let { json.encodeToJsonElement(Insert.serializer(), it) }
             field == TARGET -> return JsonPrimitive(m.target.name)
             field == DUCKING -> return json.encodeToJsonElement(Ducking.serializer(), Ducking(m.musicBus, m.sidechainKey))
+            field == MONO_BASS -> return JsonPrimitive(m.monoBassHz)
+            field.startsWith(PARTS) || field.startsWith(SCENE) || field == LANE_SET -> return null  // see [stillAfter], [tryRevert]
             track.startsWith("bus:") -> return m.buses.getOrNull(track.removePrefix("bus:").toInt())?.getOrNull(field.removePrefix(PARAM).toInt())?.let(::JsonPrimitive)
             field.startsWith(MUTED) -> {
                 val (i, scene) = field.removePrefix(MUTED).split(':').map { it.toInt() }
@@ -525,6 +682,7 @@ object GuideActions {
             }
             field == TARGET -> p.copy(mixer = m.copy(target = LoudnessTarget.valueOf((value as JsonPrimitive).content)))
             field == DUCKING -> json.decodeFromJsonElement(Ducking.serializer(), value!!).let { d -> p.copy(mixer = m.copy(musicBus = d.bus, sidechainKey = d.key)) }
+            field == MONO_BASS -> p.copy(mixer = m.copy(monoBassHz = float()))
             track.startsWith("bus:") -> {
                 val b = track.removePrefix("bus:").toInt()
                 val k = field.removePrefix(PARAM).toInt()
@@ -574,6 +732,14 @@ object GuideActions {
     const val MUTED = "muted:"
     const val LANE_TARGET = "laneTarget"
     const val LANE = "lane"
+    /** G4: a curve as the Guide drew it (its value before: none, or the curve it replaced). */
+    const val LANE_SET = "laneSet"
+    /** G4: the song's parts from that place on ("parts:3"): those that were there, those the Guide put. */
+    const val PARTS = "parts:"
+    /** G4: a scene the Guide made ("scene:7"), emptied again when its parts go. */
+    const val SCENE = "scene:"
+    /** G4: the master's mono below a frequency ([Mixer.monoBassHz]). */
+    const val MONO_BASS = "monoBass"
     /** G3: an instrument track's layers ([com.pocketstudio.model.InstrumentTrack.layers]), as one setting. */
     const val LAYERS = "layers"
     /** The « card » of the changes made by hand from a track's sheet ([withTrackEdit]): no card of the parcours. */

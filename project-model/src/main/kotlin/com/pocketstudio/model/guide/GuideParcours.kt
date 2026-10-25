@@ -111,7 +111,19 @@ data class GuideProposal(
  * - [COPY_CHAIN]: the target's inserts and sends copied to role [to];
  * - [UNSOLO]: every solo off; [REFUSE]: nothing changes, the card is refused for good (« C'est voulu »);
  *   [LATER]: nothing changes, the card is put off (« Plus tard »).
- * [target]: a role, empty for the card's own.
+ * G4 (docs/PLAN-GUIDE.md stages 3 to 6):
+ * - [SLOT]: effect slot [param] of track [track] heard ([value] 0) or set aside (1), its settings kept
+ *   (« Voilà ce que j'ai mis »: one effect retired or put back; never in a parcours file, see [GuideActions.dynamicOption]);
+ * - [SUBTRACT]: a new part made from the first peak with tracks taken out ([name] "intro": at the start,
+ *   only the drums and the chords; "break": after the first peak, without the drums and the basses);
+ * - [CURVE]: song curves ([name] "sweep": the filter opens over each Montée; "throw": the target's echo
+ *   or reverb thrown on the last bar of each phrase it plays; "wave": a gentle filter breath at the end of
+ *   each section where nothing moves);
+ * - [FILL]: a drum fill on the bar before each peak that has none;
+ * - [BALANCE]: each measured track's fader moved toward its role's place ([GuideLevels]);
+ * - [MONO]: the lows in mono up to 150 Hz and no widener past 100 %;
+ * - [LISTEN]: the app plays a check ([name] "mono", "phone", "reference"; no change here).
+ * [target]: a role, empty for the card's own; [track]: one track's key instead ([GuideTrack.key]).
  */
 @Serializable
 data class GuideAction(
@@ -130,9 +142,19 @@ data class GuideAction(
     val occurrence: Int = 0,
     val half: String = "",
     val inserts: List<GuideAction> = emptyList(),
+    val track: String = "",
 ) {
     /** It changes the project (not [KEEP] nor [OPEN]). */
-    val edits: Boolean get() = type != KEEP && type != OPEN && type != REFUSE && type != LATER
+    val edits: Boolean get() = type != KEEP && type != OPEN && type != REFUSE && type != LATER && type != LISTEN
+
+    /**
+     * Its change can be heard in the « Sans / Avec » (the first peak, 8 bars, at the same loudness): not the
+     * master's target (the levelled takes would sound the same), nor curves and parts elsewhere in the song.
+     */
+    val heard: Boolean get() = edits && type !in setOf(TARGET, CURVE, SUBTRACT, FILL)
+
+    /** The app measures the song before this action can act ([BALANCE] needs each track's level). */
+    val needsMeasure: Boolean get() = type == BALANCE
 
     companion object {
         const val KEEP = "keep"
@@ -154,7 +176,17 @@ data class GuideAction(
         const val UNSOLO = "unsolo"
         const val REFUSE = "refuse"
         const val LATER = "later"
-        val TYPES = setOf(KEEP, OPEN, INSERT, NUDGE, CHAIN, BYPASS, SEND, VOLUME, PAN, TARGET, DUCK, LOW_CUT, PANS, RETURNS, MUTE, COPY_CHAIN, UNSOLO, REFUSE, LATER)
+        const val SLOT = "slot"
+        const val SUBTRACT = "subtract"
+        const val CURVE = "curve"
+        const val FILL = "fill"
+        const val BALANCE = "balance"
+        const val MONO = "mono"
+        const val LISTEN = "listen"
+        val TYPES = setOf(
+            KEEP, OPEN, INSERT, NUDGE, CHAIN, BYPASS, SEND, VOLUME, PAN, TARGET, DUCK, LOW_CUT, PANS, RETURNS, MUTE, COPY_CHAIN, UNSOLO, REFUSE, LATER,
+            SUBTRACT, CURVE, FILL, BALANCE, MONO, LISTEN,
+        )
     }
 }
 

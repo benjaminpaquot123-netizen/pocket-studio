@@ -237,6 +237,11 @@ data class GuideNote(val text: String = "", val at: Long = 0L, val track: String
  * The song as last measured by the app (not by the analysis, which reads the project only): its
  * integrated loudness and true peak, and the short-term loudness of each section kind
  * ([GuideSections.Kind] name → LUFS). [at]: when, to tell a measure older than the last edit.
+ * G4: each track's loudness heard alone in the first peak ([tracks], [GuideTrack.key] → LUFS), what
+ * the mix loses folded to mono ([monoLossDb], LU, 0 = nothing), what a phone's speaker keeps of the
+ * kick and the basses ([phoneDb]: their energy over 300 Hz against their own, dB, nearer 0 is
+ * better), and the sound the measures were taken on ([signature], [GuideSignatures.sound]): another
+ * one means the song changed since, and the measures are left aside.
  */
 @Serializable
 data class GuideMeasures(
@@ -244,11 +249,22 @@ data class GuideMeasures(
     val integratedLufs: Float? = null,
     val truePeakDb: Float? = null,
     val sections: Map<String, Float> = emptyMap(),
+    @OptIn(ExperimentalSerializationApi::class)
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val tracks: Map<String, Float> = emptyMap(),
+    @OptIn(ExperimentalSerializationApi::class)
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val monoLossDb: Float? = null,
+    @OptIn(ExperimentalSerializationApi::class)
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val phoneDb: Float? = null,
+    @OptIn(ExperimentalSerializationApi::class)
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val signature: Int = 0,
 ) {
     fun sanitized(): GuideMeasures = copy(
         at = at.coerceAtLeast(0L),
         integratedLufs = integratedLufs?.takeIf { it.isFinite() }?.coerceIn(-90f, 10f),
         truePeakDb = truePeakDb?.takeIf { it.isFinite() }?.coerceIn(-90f, 24f),
         sections = sections.filterValues { it.isFinite() }.mapValues { it.value.coerceIn(-90f, 10f) }.entries.take(16).associate { it.key.take(16) to it.value },
+        tracks = tracks.filterValues { it.isFinite() }.mapValues { it.value.coerceIn(-90f, 10f) }.entries.take(48).associate { it.key.take(GuideState.MAX_ID) to it.value },
+        monoLossDb = monoLossDb?.takeIf { it.isFinite() }?.coerceIn(0f, 60f),
+        phoneDb = phoneDb?.takeIf { it.isFinite() }?.coerceIn(-90f, 0f),
     )
 }

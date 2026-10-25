@@ -1208,7 +1208,28 @@ fun AppRoot() {
             guideScope, project = { rhythmVm.project.value }, render = rhythmVm::renderGuideAB,
             player = com.pocketstudio.app.guide.PcmListenPlayer(),
             pauseMusic = { if (rhythmVm.transport.value.playing) rhythmVm.togglePlay() },
+            check = rhythmVm::renderGuideCheck,
         )
+    }
+    // G4: « À côté d'un morceau que tu aimes »: an audio file picked, then heard at the song's loudness.
+    val guideReference by rhythmVm.guideReference.collectAsStateWithLifecycle()
+    var guideReferenceFor by remember { mutableStateOf<Pair<String, String>?>(null) }
+    val pickGuideReference = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        val then = guideReferenceFor
+        guideReferenceFor = null
+        if (uri != null) guideScope.launch {
+            if (!rhythmVm.loadGuideReference(uri)) guideNotice = tr("Ce fichier ne se lit pas : choisis un autre morceau (MP3, M4A, WAV…).")
+            else if (then != null) guideListen.toggle(then.first, then.second)
+        }
+    }
+    val guideListenOrPick: (String, String) -> Unit = { card, option ->
+        val p = rhythmVm.project.value
+        val action = com.pocketstudio.model.guide.GuideActions.cardOf(p, card)?.let { com.pocketstudio.model.guide.GuideActions.optionOf(p, it, option) }?.action
+        if (action?.type == com.pocketstudio.model.guide.GuideAction.LISTEN && action.name == "reference" && rhythmVm.guideReference.value == null) {
+            guideListen.stop()
+            guideReferenceFor = card to option
+            runCatching { pickGuideReference.launch(arrayOf("audio/*")) }
+        } else guideListen.toggle(card, option)
     }
     DisposableEffect(guideListen) { onDispose { guideListen.stop() } }
     LaunchedEffect(guideOpen) { if (!guideOpen) guideListen.stop() }
@@ -1253,7 +1274,7 @@ fun AppRoot() {
         toggle = { guideOpen = !guideOpen; com.pocketstudio.app.report.Journal.action(if (guideOpen) "Guide ouvert" else "Guide replié") },
         apply = { card, option -> guideListen.stop(); guideNotice = null; guideVm.apply(card, option); if (guideSelected == card) guideSelected = null },
         open = { card, option -> guideListen.stop(); guideVm.apply(card, option) },
-        listen = guideListen::toggle,
+        listen = guideListenOrPick,
         later = { card -> guideListen.stop(); guideVm.later(card); guideSelected = null },
         skip = { card -> guideListen.stop(); guideVm.skip(card); guideSelected = null },
         refuse = { card -> guideListen.stop(); guideVm.skip(card, forever = true); guideSelected = null },
@@ -1261,6 +1282,11 @@ fun AppRoot() {
         select = { card -> guideListen.stop(); guideSelected = card },
         dismissNotice = { guideNotice = null },
         sheet = { key -> guideListen.stop(); trackSheetKey = key },
+        // Measured only with the music stopped and nothing recording (the renders load the phone).
+        measure = {
+            if (!rhythmVm.transport.value.playing && !rhythmVm.recording.value && rhythmVm.audioRecording.value == null) guideVm.measure()
+        },
+        pickReference = { guideListen.stop(); guideReferenceFor = null; runCatching { pickGuideReference.launch(arrayOf("audio/*")) } },
     )
     val studioBackground = Neon.Background
     androidx.compose.runtime.CompositionLocalProvider(com.pocketstudio.app.learn.LocalSpots provides spots) {
@@ -1446,6 +1472,7 @@ fun AppRoot() {
                             guideUi, guideSelected, listening, guideNotice, guideActions,
                             height = (config.screenHeightDp * share).dp.coerceAtLeast(200.dp),
                             modifier = if (landscape) Modifier.navigationBarsPadding() else Modifier,
+                            reference = guideReference?.name,
                         )
                     } else {
                         com.pocketstudio.app.guide.GuideBar(

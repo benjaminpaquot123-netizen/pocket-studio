@@ -1001,3 +1001,11 @@ Relecture neuve de la branche `basses` (rebasée sur `guide`) : 0 grave, 5 moyen
 - Corrigé aussi : la puce « Seule » d'une couche s'éteint quand la pile change (annuler, « Ramener »), comme le moteur.
 - Reste (mineur) : un « Ramener » refusé depuis la fiche ne s'affiche que dans le panneau du Guide ; une ligne d'historique peut regrouper plusieurs gestes de suite ; chaque image d'un glissé compare tout le morceau (≈ 1 ms sur un gros morceau) ; la fiche reste ouverte après un changement de projet ; « Annuler » n'est pas à portée depuis la fiche ; pas de test de copie entre pistes de natures différentes.
 - 2026-10-25 · Captures : `nav/mission_sound.png` dépend du moment où le Guide a fini de lire le morceau (barre « Guide » seule ou « Étape 1/22 … ») : capture instable, à rendre déterministe (attendre l'analyse du Guide avant la capture).
+
+## Guide G4 : points restants (2026-10-25)
+- Corrigé depuis les revues précédentes : fx.sub et fx.vocal ne se cochent plus avec un simple coupe-bas (détecteur `colour:`) ; les cartes dont le changement ne s'entend pas dans l'écoute n'ont plus de ▶ ; un « Ramener » refusé depuis la fiche s'affiche dans la fiche.
+- Reste : défaire un Break ajouté laisse parfois un point de courbe en plus, qui tient la même valeur (le son est le même, testé courbe par courbe) ; une scène créée puis défaite peut laisser l'effet « joue dans » qui la nommait.
+- Reste : les mesures (≈ 15 rendus courts) ne sont prises que musique arrêtée ; leur durée sur un vrai téléphone n'est pas mesurée ; la mesure automatique en échec ne dit rien (seul « Placer chaque piste » le dit).
+- Reste : le « throw » vise le lead, sinon la voix ou la nappe ; la respiration du filtre agit sur toute la sortie, pas sur une piste ; la balance ne règle que les instruments, la 303 et les pistes audio (pas les pads).
+- Reste : la référence n'est pas gardée avec le projet ; le rééchantillonnage est linéaire (pour comparer, pas pour mixer).
+- 2026-10-25 · Test `GuideViewModelTest.theEffectsAreListedAndTheBalanceIsMeasuredFirst` : a échoué une fois dans la suite complète en attendant l'écran (« mesures périmées ») ; l'attente vise maintenant le modèle directement.

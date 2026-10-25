@@ -93,6 +93,14 @@ open class GuideScreenshotTest {
     @Test fun simple() = shot("simple", simple = true) {
         tap("guide_bar"); tap("guide_further_toggle")
     }
+    /** G4: « Voilà ce que j'ai mis », effect by effect. */
+    @Test fun review() = shot("review") {
+        tap("guide_bar"); compose.onNodeWithTag("guide_effects").performScrollTo()
+    }
+    /** G4: a check of stage 6, the phone's speaker. */
+    @Test fun check() = shot("check") {
+        tap("guide_bar"); tap("guide_stage_6"); tap("guide_item_mix.phone")
+    }
     @Test fun spot() = shot("spot") {
         tap("guide_bar"); tap("guide_stage_0"); tap("guide_item_frame.form"); tap("guide_open_parts")
     }

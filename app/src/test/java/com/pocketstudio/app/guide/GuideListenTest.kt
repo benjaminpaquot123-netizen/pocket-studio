@@ -138,4 +138,50 @@ class GuideListenTest {
         await("failed again") { listen.state.value?.let { it.failed && renders == 2 } == true }
         scope.cancel()
     }
+    /** G4: a check of stage 6 is rendered by the app's own check, named by its takes, never cached; an effect retired is heard with it, then without. */
+    @Test
+    fun aCheckIsHeardByItsOwnTakesAndAnEffectRetiredIsHeardWithThenWithout() {
+        val scope = MainScope()
+        val p = jumpUp()
+        val checks = ArrayList<String>()
+        var renders = 0
+        val player = FakePlayer()
+        var takes: GuideCheckTakes? = GuideCheckTakes(tone(0.5f), tone(0.25f), matched = false)
+        val listen = GuideListen(
+            scope, project = { p },
+            render = { with, _ -> renders++; assertTrue(with !== p); tone(0.4f) to tone(0.4f) },
+            player = player, clock = { 0L },
+            check = { name, _ -> checks += name; takes },
+        )
+        listen.toggle("mix.mono", "listen")
+        await("mono") { listen.state.value?.preparing == false }
+        assertEquals(listOf("mono"), checks)
+        assertEquals(0, renders)
+        assertEquals(listOf("Stéréo", "Mono"), listen.state.value!!.labels)
+        assertFalse(listen.state.value!!.matched)
+        assertEquals(0.5f, player.played.single().data[0])
+        // Again: rendered again (the reference may have changed since).
+        listen.toggle("mix.mono", "listen")
+        listen.toggle("mix.mono", "listen")
+        await("mono again") { player.played.size == 2 }
+        assertEquals(2, checks.size)
+        // The reference: how much louder it was is said.
+        takes = GuideCheckTakes(tone(0.3f), tone(0.3f), matched = true, louderDb = 4.2f)
+        listen.toggle("mix.reference", "listen")
+        await("reference") { listen.state.value?.let { !it.preparing && it.option == "listen" && it.card == "mix.reference" } == true }
+        assertTrue(listen.state.value!!.note!!, listen.state.value!!.note!!.contains("4,2"))
+        assertEquals(listOf("Ton morceau", "La référence"), listen.state.value!!.labels)
+        // No take (no engine, no reference): said.
+        takes = null
+        listen.toggle("mix.phone", "listen")
+        await("failed") { listen.state.value?.failed == true }
+        // An effect of « Voilà ce que j'ai mis »: the song as it is, then without it.
+        val bass = GuideActions.cardOf(p, "fx.review")!!.let { "inst:" + p.instrumentTracks.first { t -> t.name == "Basse" }.id }
+        val slot = p.mixer.channels[InstrumentTrack.mixerChannel(p.instrumentTracks.first { it.name == "Basse" }.id)].inserts.indexOfFirst { it.effect != EffectType.NONE }
+        listen.toggle("fx.review", GuideActions.effectOff(bass, slot))
+        await("effect") { listen.state.value?.let { !it.preparing && it.card == "fx.review" } == true }
+        assertEquals(1, renders)
+        assertEquals(listOf("Avec l'effet", "Sans l'effet"), listen.state.value!!.labels)
+        scope.cancel()
+    }
 }

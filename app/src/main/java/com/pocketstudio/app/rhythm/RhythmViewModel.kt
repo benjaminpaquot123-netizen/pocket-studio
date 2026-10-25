@@ -440,7 +440,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * Made when its panel first asks for it.
      */
     val guide: com.pocketstudio.app.guide.GuideViewModel by lazy {
-        com.pocketstudio.app.guide.GuideViewModel(session, viewModelScope, onEdited = ::afterGuideEdit)
+        com.pocketstudio.app.guide.GuideViewModel(
+            session, viewModelScope, onEdited = ::afterGuideEdit, measurer = ::measureGuide,
+            pauseMusic = { if (transport.value.playing) togglePlay() },
+        )
     }
 
     /** Engine updates the Guide's edits asked for (tests). */
@@ -1137,17 +1140,103 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     suspend fun renderGuideAB(with: Project, without: Project, maxBars: Int = 8): Pair<FloatArray, FloatArray>? {
         if (!NativeEngine.isAvailable) return null
         awaitSoundsLoaded()
-        fun heard(p: Project): Pair<Project, Long> {
-            val part = com.pocketstudio.model.FirstListen.firstMain(p).coerceAtLeast(0)
-            val steps = p.song.getOrNull(part)?.let { p.partSteps(it) } ?: p.sceneSteps(p.scene)
-            val bars = (steps / p.stepsPerBar.coerceAtLeast(1)).coerceIn(1, maxBars)
-            return p.partHeard(part) to OfflineExport.framesFor(bars, p.tempoBpm, p.beatsPerBar)
-        }
-        val (w, wFrames) = heard(with)
-        val (wo, woFrames) = heard(without)
-        val a = renderOffline(w, wFrames) {} ?: return null
-        val b = renderOffline(wo, woFrames) {} ?: return null
+        val a = renderGuidePeak(with, maxBars) ?: return null
+        val b = renderGuidePeak(without, maxBars) ?: return null
         return matchLoudness(a, b)
+    }
+
+    /** The song's first Drop (else Refrain, else its first part, else the scene shown), up to [maxBars] bars, as the Guide's listenings hear it. */
+    private suspend fun renderGuidePeak(p: Project, maxBars: Int = 8): FloatArray? {
+        val part = com.pocketstudio.model.FirstListen.firstMain(p).coerceAtLeast(0)
+        val steps = p.song.getOrNull(part)?.let { p.partSteps(it) } ?: p.sceneSteps(p.scene)
+        val bars = (steps / p.stepsPerBar.coerceAtLeast(1)).coerceIn(1, maxBars)
+        return renderOffline(p.partHeard(part), OfflineExport.framesFor(bars, p.tempoBpm, p.beatsPerBar)) {}
+    }
+
+    /** G4: the reference the Guide compares the song with (« À côté d'un morceau que tu aimes »), kept while the app runs. */
+    private val _guideReference = MutableStateFlow<com.pocketstudio.app.guide.GuideReference?>(null)
+    val guideReference: StateFlow<com.pocketstudio.app.guide.GuideReference?> = _guideReference.asStateFlow()
+
+    /** An audio file picked as the reference: its loudest 16 s, decoded off the main thread. False when it does not read. */
+    suspend fun loadGuideReference(uri: Uri): Boolean {
+        val app = getApplication<Application>()
+        val name = withContext(Dispatchers.IO) { displayName(app, uri) }?.substringBeforeLast('.')?.takeIf { it.isNotBlank() } ?: tr("Morceau choisi")
+        val excerpt = runCatching {
+            withContext(Dispatchers.IO) { com.pocketstudio.app.guide.GuideChecks.loudestExcerpt(AudioDecoder.decode(app, uri), REFERENCE_SECONDS) }
+        }.getOrNull()?.takeIf { it.size >= 2 * OfflineExport.SAMPLE_RATE } ?: return false
+        _guideReference.value = com.pocketstudio.app.guide.GuideReference(name, excerpt)
+        return true
+    }
+
+    /**
+     * G4: a check of stage 6 heard (docs/PLAN-GUIDE.md §3.5): [name] "mono" (the first Drop in stereo,
+     * then folded to mono, as it is: what fades away is the point), "phone" (as it is, then through a
+     * phone's speaker, at the same loudness), "reference" (the Drop, then the reference's loudest
+     * passage, at the same loudness). Null when it cannot (no engine, no reference).
+     */
+    suspend fun renderGuideCheck(name: String, p: Project): com.pocketstudio.app.guide.GuideCheckTakes? {
+        if (!NativeEngine.isAvailable) return null
+        val ref = if (name == "reference") _guideReference.value ?: return null else null
+        awaitSoundsLoaded()
+        val peak = renderGuidePeak(p) ?: return null
+        val checks = com.pocketstudio.app.guide.GuideChecks
+        return withContext(Dispatchers.Default) {
+            when (name) {
+                "mono" -> com.pocketstudio.app.guide.GuideCheckTakes(peak, checks.mono(peak), matched = false)
+                "phone" -> matchLoudness(peak, checks.phone(peak)).let { (a, b) -> com.pocketstudio.app.guide.GuideCheckTakes(a, b, matched = true) }
+                "reference" -> {
+                    val diff = (checks.lufs(ref!!.excerpt) ?: 0.0) - (checks.lufs(peak) ?: 0.0)
+                    matchLoudness(peak, ref.excerpt).let { (a, b) -> com.pocketstudio.app.guide.GuideCheckTakes(a, b, matched = true, louderDb = diff.toFloat()) }
+                }
+                else -> null
+            }
+        }
+    }
+
+    /**
+     * G4: the Guide's measures of [p] (stage 6): the loudness of each kind of section (its last part,
+     * the master's target left out as the « Sans / Avec » does), each track heard alone in the first
+     * peak (the kick and the instruments), what the peak loses in mono, and what a phone's speaker keeps
+     * of the basses. A few short offline renders (8 s at most each, about 15 of them); null when it
+     * cannot (no engine, no song). Main thread (the descriptions), the renders on a worker.
+     */
+    suspend fun measureGuide(p: Project): com.pocketstudio.model.guide.GuideMeasures? {
+        if (!NativeEngine.isAvailable || p.song.isEmpty()) return null
+        awaitSoundsLoaded()
+        val song = com.pocketstudio.model.guide.GuideSong(p)
+        val roles = com.pocketstudio.model.guide.GuideRoles
+        val peakPart = song.sectionsOf(com.pocketstudio.model.guide.GuideSection.Kind.PEAK).firstOrNull()?.parts?.last()
+            ?: com.pocketstudio.model.FirstListen.firstMain(p).coerceAtLeast(0)
+        val barSeconds = p.beatsPerBar * 60.0 / p.tempoBpm
+        fun frames(part: Int, seconds: Double): Long {
+            val bars = minOf(song.partBars.getOrElse(part) { 1 }, maxOf(2, (seconds / barSeconds).toInt()))
+            return OfflineExport.framesFor(bars, p.tempoBpm, p.beatsPerBar)
+        }
+        val checks = com.pocketstudio.app.guide.GuideChecks
+        suspend fun lufsOf(view: Project, part: Int, seconds: Double): Float? =
+            renderOffline(view, frames(part, seconds)) {}?.let { a -> withContext(Dispatchers.Default) { checks.lufs(a)?.toFloat() } }
+        val sections = HashMap<String, Float>()
+        for (kind in song.sections.map { it.kind }.distinct()) {
+            val i = song.sectionsOf(kind).first().parts.last()
+            lufsOf(p.partHeard(i), i, MEASURE_SECONDS)?.let { sections[kind.name] = it }
+        }
+        val heard = p.partHeard(peakPart)
+        val full = renderOffline(heard, frames(peakPart, MEASURE_SECONDS)) {} ?: return null
+        val (integrated, mono) = withContext(Dispatchers.Default) { checks.lufs(full)?.toFloat() to checks.monoLossDb(full) }
+        // Each track alone: its strip soloed (a pad's own strip for the kick).
+        fun solo(channels: Set<Int>): Project = heard.copy(mixer = heard.mixer.copy(channels = heard.mixer.channels.mapIndexed { i, c -> c.copy(solo = i in channels) }))
+        val inPeak = (song.partStarts[peakPart] until song.partStarts[peakPart] + song.partBars[peakPart])
+        val tracks = song.tracks.filter { t -> inPeak.any { song.sounds(t.key, it) } }
+        val measured = tracks.filter { it.role == roles.KICK }.take(1) +
+            tracks.filter { it.key.startsWith("inst:") || it.key == com.pocketstudio.model.guide.GuideTrack.ACID || it.key.startsWith("audio:") }
+        val levels = HashMap<String, Float>()
+        for (t in measured) lufsOf(solo(setOf(t.channel)), peakPart, SOLO_SECONDS)?.let { levels[t.key] = it }
+        val lows = tracks.filter { it.role in setOf(roles.BASS, roles.SUB, roles.BASS2) }.map { it.channel }.toSet()
+        val phone = if (lows.isEmpty()) null else renderOffline(solo(lows), frames(peakPart, SOLO_SECONDS)) {}?.let { a -> withContext(Dispatchers.Default) { checks.phoneDb(a) } }
+        return com.pocketstudio.model.guide.GuideMeasures(
+            at = System.currentTimeMillis(), integratedLufs = integrated, sections = sections, tracks = levels, monoLossDb = mono, phoneDb = phone,
+            signature = withContext(Dispatchers.Default) { com.pocketstudio.model.guide.GuideSignatures.sound(p) },
+        )
     }
 
     /** [p] rendered offline for [frames] frames by a private engine, no metronome, [setup] said after it; null when it cannot. */
@@ -8770,6 +8859,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
          * loudness: the louder one is brought down to the other's (never up: no clipping). Silence
          * is left as it is.
          */
+        /** G4: the reference's loudest passage kept (s), each section measured over (s), each track alone over (s). */
+        const val REFERENCE_SECONDS = 16.0
+        const val MEASURE_SECONDS = 8.0
+        const val SOLO_SECONDS = 5.0
+
         internal fun matchLoudness(a: FloatArray, b: FloatArray): Pair<FloatArray, FloatArray> {
             fun lufs(x: FloatArray) = Loudness.Meter(OfflineExport.SAMPLE_RATE, 2).apply { add(x, x.size / 2) }.integrated()
             val la = lufs(a) ?: return a to b

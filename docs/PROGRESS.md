@@ -4,10 +4,11 @@
 - `main` = PR #51 (basses + leads lot 1 + S6) ; APK 220 envoyé à Benjamin avec les extraits avant / après (« C'est parfait »).
 - `main` = PR #52 (Guide G2 + S7 son), APK 222 compilé par l'agent et envoyé à Benjamin (consigne : compiler soi-même dès qu'un bloc est prêt, sans attendre GitHub).
 - En cours : PR Guide G3 (fiche de piste, éditeur de couches, historique), relue à neuf.
+- Fait (branche `g4`, pas encore relue à neuf) : Guide G4, les étapes 3 à 6 en vraies cartes (effets un par un, Break tiré du Drop, courbes et fills, niveaux mesurés, mono, téléphone, référence).
 
 ## Prochaine étape exacte
 1. CI verte de la PR G3, fusion ; APK compilé ici et envoyé à Benjamin.
-2. Guide G4 (étapes 3 à 6 en cartes), G5 (fusion des anciennes surfaces), G6 (vérification).
+2. Relecture neuve de G4 et fusion ; puis G5 (fusion des anciennes surfaces), G6 (vérification, dont la durée des mesures sur le téléphone).
 3. Restes son : largeur de deep house, dubstep, neurofunk, phonk ; intros en direct de riddim et jersey club ; restes de relecture S6/S7 (REVIEW.md).
 4. Leads lots B à D, puis le chantier Play Store en dernier.
 

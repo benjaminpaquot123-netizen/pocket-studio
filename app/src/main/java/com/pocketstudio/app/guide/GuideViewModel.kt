@@ -32,7 +32,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /** An option of a card as the panel shows it; [opens]: the screen it opens instead of changing the song (« Voir le réglage »). */
-data class GuideOptionUi(val id: String, val label: String, val why: String, val value: String?, val opens: String?, val refused: Boolean)
+data class GuideOptionUi(
+    val id: String, val label: String, val why: String, val value: String?, val opens: String?, val refused: Boolean,
+    /** It changes the song: it can be heard with and without before it is applied. */
+    val edits: Boolean = false,
+)
 
 /** A card as the panel shows it (texts in the interface's language, everyday words in the Mode simple). */
 data class GuideCardUi(
@@ -79,6 +83,12 @@ data class GuideUi(
     val sheets: List<GuideSheet> = emptyList(),
     val facts: List<GuideFact> = emptyList(),
     val simple: Boolean = false,
+    /** Where [next] is in the plan (from 1; 0: an alert, or nothing left), for « Étape 12/34 ». */
+    val step: Int = 0,
+    /** The Mode simple: the other stages, folded under « Aller plus loin » (empty in the full app). */
+    val further: List<GuideStageUi> = emptyList(),
+    /** The Guide was last used a day ago or more: its panel opens on « où on en est ». */
+    val back: Boolean = false,
 )
 
 /** A screen to open for an option (« Voir le réglage »): the spot ([com.pocketstudio.model.guide.GuideAction.spot]) and the track role. */
@@ -118,6 +128,7 @@ class GuideViewModel(
 
     /** The last report, for the actions (null before the first analysis). */
     @Volatile private var report: GuideReport? = null
+    @Volatile private var fullReport: GuideReport? = null
     private var job: Job? = null
 
     /** How many analyses ran (tests). */
@@ -137,10 +148,14 @@ class GuideViewModel(
                     session.editQuietly { GuideActions.withBaseline(it) }
                     return@collectLatest  // the edit brings the project round again
                 }
-                val r = withContext(worker) { GuideAnalyzer.analyze(p, s, clock()) }
+                val now = clock()
+                val r = withContext(worker) { GuideAnalyzer.analyze(p, s, now) }
+                // The Mode simple folds the other stages under « Aller plus loin »: they come from the whole parcours.
+                val full = if (s) withContext(worker) { GuideAnalyzer.analyze(p, false, now) } else null
                 analyses++
                 report = r
-                _ui.value = uiOf(r, p)
+                fullReport = full
+                _ui.value = uiOf(r, p, full, now)
             }
         }
     }
@@ -185,7 +200,7 @@ class GuideViewModel(
     }
 
     private fun cardOf(id: String): GuideCard? =
-        report?.status(id)?.card ?: GuideActions.cardOf(session.project.value, id)
+        report?.status(id)?.card ?: fullReport?.status(id)?.card ?: GuideActions.cardOf(session.project.value, id)
 
     /**
      * [transform] worked out on [worker] (the analysis it needs takes tens of ms), then written on the
@@ -210,25 +225,32 @@ class GuideViewModel(
     @Volatile var edits = 0
         private set
 
-    private fun uiOf(r: GuideReport, p: Project): GuideUi {
+    private fun uiOf(r: GuideReport, p: Project, full: GuideReport? = null, now: Long = 0L): GuideUi {
         val undoable = p.guide.history.filter { !it.reverted }.map { it.card }.toSet()
         fun option(card: GuideCard, o: GuideProposal) = GuideOptionUi(
             o.id, guideText(o.label), guideText(o.why), o.value?.let(::guideText),
             o.action.spot.takeIf { o.action.type == com.pocketstudio.model.guide.GuideAction.OPEN }, p.guide.refusals.any { it.card == card.id && it.option == o.id },
+            edits = o.action.edits,
         )
         fun cardUi(s: GuideCardStatus) = GuideCardUi(
             s.card.id, s.card.stage, s.card.target, s.card.kind, s.card.titleFor(r.simple), s.card.whyFor(r.simple),
             s.card.proposals.map { option(s.card, it) }.filter { !it.refused }, s.card.elsewhere.map { option(s.card, it) }, s.card.lexicon,
             s.status, s.alert, s.card.id in undoable,
         )
-        val applicable = r.cards.filter { it.applicable }
-        val plan = applicable.groupBy { it.card.stage }.toSortedMap().map { (stage, cs) ->
-            GuideStageUi(stage, GuideStages.title(stage), cs.map { GuidePlanItem(it.card.id, it.card.titleFor(r.simple), it.status, it.auto) })
+        fun planOf(cards: List<GuideCardStatus>, simple: Boolean) = cards.groupBy { it.card.stage }.toSortedMap().map { (stage, cs) ->
+            GuideStageUi(stage, GuideStages.title(stage), cs.map { GuidePlanItem(it.card.id, it.card.titleFor(simple), it.status, it.auto) })
         }
+        val applicable = r.cards.filter { it.applicable }
+        val plan = planOf(applicable, r.simple)
+        // The Mode simple's « Aller plus loin »: the stages it leaves out, as the full app has them.
+        val furtherCards = full?.cards?.filter { it.applicable && it.card.stage !in GuideStages.SIMPLE }.orEmpty()
+        val step = r.next?.let { n -> applicable.indexOfFirst { it.card.id == n.card.id } + 1 } ?: 0
+        val back = p.guide.lastUsed > 0 && now - p.guide.lastUsed >= GuideAnalyzer.DAY_MS
         return GuideUi(
             loading = false, header = r.header, summary = r.summary, percent = r.percent, done = r.done, total = r.applicable, toDecide = r.toDecide,
             next = r.next?.let(::cardUi), alerts = r.alerts.map(::cardUi), plan = plan,
-            cards = (r.alerts + applicable).associate { it.card.id to cardUi(it) }, sheets = r.sheets, facts = r.facts, simple = r.simple,
+            cards = (furtherCards + r.alerts + applicable).associate { it.card.id to cardUi(it) }, sheets = r.sheets, facts = r.facts, simple = r.simple,
+            step = step, further = planOf(furtherCards, false), back = back,
         )
     }
 

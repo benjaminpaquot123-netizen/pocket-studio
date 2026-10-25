@@ -2,6 +2,7 @@
 
 package com.pocketstudio.app.mixer
 
+import com.pocketstudio.app.learn.spot
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import com.pocketstudio.ui.WithHelp
@@ -209,9 +210,9 @@ fun MixerScreen(
         AutomationCard(
             automation.copy(focusLane = (focus as? Where.Lane)?.lane ?: -1), channels, master,
             automationActions.copy(overview = { overview(null) }), strips,
-            Modifier.bringIntoViewRequester(automationCard),
+            Modifier.bringIntoViewRequester(automationCard).spot("mixer_automation"),
         )
-        NeonCard(Modifier.bringIntoViewRequester(masterCard), accent = if (focus == Where.Master) Neon.Amber else Neon.Cyan) {
+        NeonCard(Modifier.bringIntoViewRequester(masterCard).spot("mixer_master"), accent = if (focus == Where.Master) Neon.Amber else Neon.Cyan) {
             SectionLabel(tr("Sortie générale"), help = Glossary.MASTER)
             // How loud it is, in a word and a number; the units are under « Détails » (MasterLoudnessPanel).
             LoudnessChip(loudness)

@@ -1174,6 +1174,65 @@ fun AppRoot() {
         go(AppTab.Mixeur)
         mixerFocus = com.pocketstudio.app.mixer.Where.Lane(lane)
     }
+    // Le Guide (docs/PLAN-GUIDE.md G2): its bar above the spaces, its panel opened from it (never
+    // over what is edited: it takes its own room), « Voir le réglage » lighting the control.
+    val guideVm = rhythmVm.guide
+    LaunchedEffect(guideVm, simple) { guideVm.setSimple(simple) }
+    var guideOpen by rememberSaveable { mutableStateOf(false) }
+    var guideSelected by rememberSaveable { mutableStateOf<String?>(null) }
+    var guideNotice by remember { mutableStateOf<String?>(null) }
+    // The controls « Voir le réglage » lights, the first one on the screen (null: none).
+    var guideSpot by remember { mutableStateOf<List<String>?>(null) }
+    val guideScope = rememberCoroutineScope()
+    val guideListen = remember(rhythmVm) {
+        com.pocketstudio.app.guide.GuideListen(
+            guideScope, project = { rhythmVm.project.value }, render = rhythmVm::renderGuideAB,
+            player = com.pocketstudio.app.guide.PcmListenPlayer(),
+            pauseMusic = { if (rhythmVm.transport.value.playing) rhythmVm.togglePlay() },
+        )
+    }
+    DisposableEffect(guideListen) { onDispose { guideListen.stop() } }
+    LaunchedEffect(guideOpen) { if (!guideOpen) guideListen.stop() }
+    val guideGo: (com.pocketstudio.app.guide.GuideGo) -> Unit = { g ->
+        when (g) {
+            is com.pocketstudio.app.guide.GuideGo.Tab -> {
+                g.audioPage?.let { audioPage = it }
+                if (g.partsView) { partsView = true; navPrefs.partsView = true }
+                go(g.tab)
+                g.mixer?.let { mixerFocus = it }
+                // The screen whole, its control lit: the panel folds (its card stays chosen, one touch away).
+                guideOpen = false
+                if (g.spots.isNotEmpty()) guideSpot = g.spots
+            }
+            com.pocketstudio.app.guide.GuideGo.Tempo -> tempoSheetOpen = true
+            com.pocketstudio.app.guide.GuideGo.Chords -> songChordsOpen = true
+            is com.pocketstudio.app.guide.GuideGo.Sound -> { rhythmVm.selectTrack(g.track); soundChooserTrack = g.track }
+            com.pocketstudio.app.guide.GuideGo.Kit -> kitSheetOpen = true
+            com.pocketstudio.app.guide.GuideGo.AcidSound -> acidSheetOpen = true
+            is com.pocketstudio.app.guide.GuideGo.Notes -> { rhythmVm.selectTrack(g.track); notesRequest++; go(AppTab.Synthe); guideOpen = false }
+            com.pocketstudio.app.guide.GuideGo.WhatPlays -> { overviewCh = -1; overviewScene = -1 }
+            com.pocketstudio.app.guide.GuideGo.Share -> showShare = true
+            com.pocketstudio.app.guide.GuideGo.Video -> showVideo = true
+        }
+    }
+    LaunchedEffect(guideVm) {
+        guideVm.opens.collect { o -> guideGo(com.pocketstudio.app.guide.GuideNav.go(o, rhythmVm.project.value, SettingsStore.state.value.simpleMode)) }
+    }
+    LaunchedEffect(guideVm) { guideVm.notices.collect { guideNotice = it } }
+    // A lit control goes dark by itself after a while, or as soon as the space changes.
+    LaunchedEffect(guideSpot) { if (guideSpot != null) { kotlinx.coroutines.delay(GUIDE_SPOT_MS); guideSpot = null } }
+    val guideActions = com.pocketstudio.app.guide.GuidePanelActions(
+        toggle = { guideOpen = !guideOpen; com.pocketstudio.app.report.Journal.action(if (guideOpen) "Guide ouvert" else "Guide replié") },
+        apply = { card, option -> guideListen.stop(); guideNotice = null; guideVm.apply(card, option); if (guideSelected == card) guideSelected = null },
+        open = { card, option -> guideListen.stop(); guideVm.apply(card, option) },
+        listen = guideListen::toggle,
+        later = { card -> guideListen.stop(); guideVm.later(card); guideSelected = null },
+        skip = { card -> guideListen.stop(); guideVm.skip(card); guideSelected = null },
+        refuse = { card -> guideListen.stop(); guideVm.skip(card, forever = true); guideSelected = null },
+        undo = { card -> guideListen.stop(); guideVm.undoChoice(card) },
+        select = { card -> guideListen.stop(); guideSelected = card },
+        dismissNotice = { guideNotice = null },
+    )
     val studioBackground = Neon.Background
     androidx.compose.runtime.CompositionLocalProvider(com.pocketstudio.app.learn.LocalSpots provides spots) {
     // A new mode draws every screen again (their names and words change; the project does not).
@@ -1342,6 +1401,29 @@ fun AppRoot() {
                         modifier = Modifier.windowInsetsPadding(SIDE_INSETS).padding(horizontal = 8.dp, vertical = 4.dp)
                             .then(if (landscape || showTimeline) Modifier.navigationBarsPadding() else Modifier),
                     )
+                }
+                // Le Guide: its bar, or its panel (a third of a phone's height, half a tablet's). It
+                // keeps quiet during a take, on the Live page and on the keyboard lying down, where
+                // every dp of height is a key's (§3.1: it is quiet while the keys are played).
+                val guideRecording by rhythmVm.recording.collectAsStateWithLifecycle()
+                val guideTake by rhythmVm.audioRecording.collectAsStateWithLifecycle()
+                if (!showLive && !liveImmersive && !showTimeline && !showLivePads && !guideRecording && guideTake == null && !(landscape && tab == AppTab.Synthe)) {
+                    val guideUi by guideVm.ui.collectAsStateWithLifecycle()
+                    if (guideOpen) {
+                        val listening by guideListen.state.collectAsStateWithLifecycle()
+                        val config = LocalConfiguration.current
+                        val share = if (config.smallestScreenWidthDp >= 600 || landscape) 0.5f else 0.4f
+                        com.pocketstudio.app.guide.GuidePanel(
+                            guideUi, guideSelected, listening, guideNotice, guideActions,
+                            height = (config.screenHeightDp * share).dp.coerceAtLeast(200.dp),
+                            modifier = if (landscape) Modifier.navigationBarsPadding() else Modifier,
+                        )
+                    } else {
+                        com.pocketstudio.app.guide.GuideBar(
+                            guideUi, open = false, toggle = guideActions.toggle,
+                            modifier = if (landscape) Modifier.navigationBarsPadding() else Modifier,
+                        )
+                    }
                 }
                 // Phase 36: the five spaces (or the Mode simple's four tabs); lying down, the rail on the side.
                 if (!landscape && !liveImmersive && !showTimeline && !showLivePads) SpaceBar(navEntries)
@@ -2339,6 +2421,11 @@ WithPartHeader(rhythmVm) { partModifier ->
     // Phase 36: « ? qui étiquette l'écran » over the screen, and the missions pointing at a control.
     if (helpLabels && !showProjects) {
         com.pocketstudio.app.learn.HelpLabelsOverlay(spots, hide = { helpLabels = false }, reportBug = { reportBug("étiquettes « ? »") })
+    } else if (guideSpot != null && !showProjects) {
+        // « Voir le réglage »: the control lit, a word of what it is for, gone at a touch.
+        com.pocketstudio.app.learn.SpotlightOverlay(spots, guideSpot.orEmpty()) { modifier, _ ->
+            com.pocketstudio.app.guide.GuideSpotCard(close = { guideSpot = null }, modifier = modifier)
+        }
     } else if (missions.active && !showProjects && !wizardUi.open) {
         val m = missions.current
         com.pocketstudio.app.learn.SpotlightOverlay(spots, m?.targets(simple).orEmpty()) { modifier, _ ->
@@ -2982,3 +3069,6 @@ internal fun simpleTracks(p: Project): List<SimpleTrack> {
         track(com.pocketstudio.model.SongPart.audio(t.id), com.pocketstudio.model.AudioTrack.mixerChannel(t.id), com.pocketstudio.model.DefaultNames.shown(t.name), com.pocketstudio.ui.trackColor(t.color))
     }
 }
+
+/** How long « Voir le réglage » keeps a control lit (it also goes at a touch on « Compris »). */
+private const val GUIDE_SPOT_MS = 8000L

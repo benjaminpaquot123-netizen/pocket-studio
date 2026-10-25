@@ -107,6 +107,7 @@ import com.pocketstudio.model.InstrumentTrack
 import com.pocketstudio.model.MidiMapping
 import com.pocketstudio.model.partView
 import com.pocketstudio.model.stemView
+import com.pocketstudio.model.partHeard
 import com.pocketstudio.model.partSteps
 import com.pocketstudio.model.writeTake
 import com.pocketstudio.model.takeParts
@@ -1074,22 +1075,47 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val p = project.value
         if (p.layersOf(id).size != count) return null
         val frames = OfflineExport.framesFor(bars, p.tempoBpm, p.beatsPerBar)
-        suspend fun render(mask: Int): FloatArray? {
-            val job = finishOrRelease(Dispatchers.IO, OfflineExport::close) { OfflineExport() } ?: return null
-            try {
-                NativeEngine.captureInto(job) {
-                    syncEngine(p)
-                    NativeEngine.setMetronome(false)
-                    NativeEngine.setLayerListen(id, mask)
-                }
-                return withContext(Dispatchers.Default) { job.renderToArray(frames, 0) }.takeIf { it.isNotEmpty() }
-            } finally {
-                withContext(kotlinx.coroutines.NonCancellable + Dispatchers.Main) { job.close() }
-            }
-        }
-        val with = render(NativeEngine.LISTEN_ALL) ?: return null
-        val without = render(Layers.without(index)) ?: return null
+        val with = renderOffline(p, frames) { NativeEngine.setLayerListen(id, NativeEngine.LISTEN_ALL) } ?: return null
+        val without = renderOffline(p, frames) { NativeEngine.setLayerListen(id, Layers.without(index)) } ?: return null
         return matchLoudness(with, without)
+    }
+
+    /**
+     * The Guide's « écouter avec / sans » (docs/PLAN-GUIDE.md §4.3): the song's first Drop (else
+     * Refrain; else its first part, else the scene shown) as [with] and as [without] play it, up to
+     * [maxBars] bars each, rendered offline as an export renders it, the louder brought down to the
+     * other's loudness. (with, without), interleaved stereo at [OfflineExport.SAMPLE_RATE]; null
+     * when it cannot (no engine). Main thread (the descriptions), the renders on a worker.
+     */
+    suspend fun renderGuideAB(with: Project, without: Project, maxBars: Int = 8): Pair<FloatArray, FloatArray>? {
+        if (!NativeEngine.isAvailable) return null
+        awaitSoundsLoaded()
+        fun heard(p: Project): Pair<Project, Long> {
+            val part = com.pocketstudio.model.FirstListen.firstMain(p).coerceAtLeast(0)
+            val steps = p.song.getOrNull(part)?.let { p.partSteps(it) } ?: p.sceneSteps(p.scene)
+            val bars = (steps / p.stepsPerBar.coerceAtLeast(1)).coerceIn(1, maxBars)
+            return p.partHeard(part) to OfflineExport.framesFor(bars, p.tempoBpm, p.beatsPerBar)
+        }
+        val (w, wFrames) = heard(with)
+        val (wo, woFrames) = heard(without)
+        val a = renderOffline(w, wFrames) {} ?: return null
+        val b = renderOffline(wo, woFrames) {} ?: return null
+        return matchLoudness(a, b)
+    }
+
+    /** [p] rendered offline for [frames] frames by a private engine, no metronome, [setup] said after it; null when it cannot. */
+    private suspend fun renderOffline(p: Project, frames: Long, setup: () -> Unit): FloatArray? {
+        val job = finishOrRelease(Dispatchers.IO, OfflineExport::close) { OfflineExport() } ?: return null
+        try {
+            NativeEngine.captureInto(job) {
+                syncEngine(p)
+                NativeEngine.setMetronome(false)
+                setup()
+            }
+            return withContext(Dispatchers.Default) { job.renderToArray(frames, 0) }.takeIf { it.isNotEmpty() }
+        } finally {
+            withContext(kotlinx.coroutines.NonCancellable + Dispatchers.Main) { job.close() }
+        }
     }
 
     /** The bass music sub folded into its bass as its « Sub » layer (SubLayers): one undo step. False when it stays apart. */

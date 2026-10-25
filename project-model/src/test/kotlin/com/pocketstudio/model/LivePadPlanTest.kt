@@ -14,6 +14,22 @@ class LivePadPlanTest {
         return StarterWizard.build(s, s.lines.associate { it.role to null }, s.melody.mood, parts)
     }
 
+    /** The Guide's A/B renders one part as the song plays it: its scene, its muted tracks silent, no loudness target. */
+    @Test
+    fun aPartHeardIsThatPartAsTheSongPlaysIt() {
+        val p = song("jump_up")
+        val i = p.song.indices.first { p.song[it].muted.isNotEmpty() }
+        val part = p.song[i]
+        val v = p.partHeard(i)
+        assertEquals(part.scene, v.scene)
+        assertEquals(LoudnessTarget.OFF, v.mixer.target)
+        if (!part.plays(SongPart.DRUMS)) assertTrue(v.drums.lanes.all { it.hits.isEmpty() })
+        val track = v.instrumentTracks.firstOrNull { !part.plays(SongPart.inst(it.id)) }
+        if (track != null) assertTrue(track.notes.notes.isEmpty())
+        // Out of the song: the scene shown.
+        assertEquals(p.scene, p.partHeard(p.song.size).scene)
+    }
+
     @Test
     fun everyStyleFillsItsPadsWithItsTracksThenTheWholeScene() {
         for (style in StarterWizard.STYLES) {

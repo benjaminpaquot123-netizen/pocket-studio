@@ -665,13 +665,14 @@ internal object WizardMix {
      * S6 son (M9): how much further under the Drop (or the Refrain) a style's Groove (or Couplet) sits,
      * its Intro with it (dB): the Drop only 0.5 to 1.5 LU over its Groove after the master chain
      * (median +1.8, 15 styles of 37 at +2), because the chain holds the Drop and leaves the Groove whole.
-     * Measured on the S6 bench so that the Drop lands about +2.5 LU over its Groove, exported.
+     * Measured on the S6 bench so that the Drop lands about +2.5 LU over its Groove, exported. S7
+     * (the spread, [Project.MIX_V4]): synthwave 1.0 → 1.5 (its wide Couplet read louder: +2.1 → +1.75 LU).
      */
     private val GROOVE_TRIM_DB: Map<String, Float> = mapOf(
         "acid_house" to 2.0f, "acid_techno" to 2.5f, "acidcore" to 2.5f, "afro_house" to 0.5f, "afrobeats" to 1.0f,
         "boom_bap" to 0.5f, "deep_house" to 0.5f, "detroit" to 1.5f, "disco" to 0.5f, "drill" to 0.5f, "grime" to 0.5f,
         "house" to 2.5f, "industrial_techno" to 0.5f, "jersey_club" to 1.5f, "jungle" to 1.0f, "minimal" to 1.0f,
-        "phonk" to 1.0f, "pop" to 0.5f, "reggaeton" to 1.0f, "retro_techno" to 1.0f, "synthwave" to 1.0f, "tech_house" to 2.0f,
+        "phonk" to 1.0f, "pop" to 0.5f, "reggaeton" to 1.0f, "retro_techno" to 1.0f, "synthwave" to 1.5f, "tech_house" to 2.0f,
         "techno" to 1.0f, "trance" to 0.5f, "trap" to 1.0f, "uk_garage" to 1.5f,
     )
 

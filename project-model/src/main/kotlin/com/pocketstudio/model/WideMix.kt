@@ -323,9 +323,10 @@ object WideMix {
     /**
      * The styles wide already (S6 bench: side/centre of the Drop −9.8 to −13.6 dB, the target −15 to
      * −9): their spread scaled down, or none (trance and hard techno, in range without it; at full
-     * spread they went to −6.6 and −7.4 dB, and lost 1.2 to 1.5 LU in mono).
+     * spread they went to −6.6 and −7.4 dB, and lost 1.2 to 1.5 LU in mono). Detroit (−18.6) went to
+     * −7.1 at full spread (its pads and 303 are its Drop).
      */
-    private val SPREAD_SCALE = mapOf("trance" to 0f, "hard_techno" to 0f, "reggaeton" to 0.55f, "jump_up" to 0.5f, "minimal" to 0.7f)
+    private val SPREAD_SCALE = mapOf("trance" to 0f, "hard_techno" to 0f, "reggaeton" to 0.55f, "jump_up" to 0.5f, "minimal" to 0.7f, "detroit" to 0.5f)
 
     fun spreadScale(style: Style): Float = SPREAD_SCALE[style.id] ?: 1f
 

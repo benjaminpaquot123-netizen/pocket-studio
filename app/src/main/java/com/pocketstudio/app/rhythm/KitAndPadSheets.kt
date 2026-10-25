@@ -2,6 +2,8 @@
 
 package com.pocketstudio.app.rhythm
 
+import com.pocketstudio.ui.ScaledBottomSheet
+
 import com.pocketstudio.app.learn.spot
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -64,7 +66,12 @@ data class KitChoice(val id: String, val name: String, val group: Int) {
  */
 fun kitName(p: Project): String {
     val samples = p.drums.lanes.mapNotNull { it.sample?.name }
-    if (samples.isEmpty()) return if (p.kitVersion >= Project.KIT_V2) tr("Studio") else tr("Classique")
+    if (samples.isEmpty()) return when {
+        // Lot 2: the kit with the 808 on its pad (« Trap (808) », « Drill (808) », the assistant's trap).
+        p.padVoices.values.any { it.kind == com.pocketstudio.model.PadVoice.BASS_808 } -> tr("Studio + 808")
+        p.kitVersion >= Project.KIT_V2 -> tr("Studio")
+        else -> tr("Classique")
+    }
     val kit = samples.map { it.substringBefore(" · ", "") }.toSet().singleOrNull()?.takeIf { it.isNotBlank() } ?: return tr("Perso")
     return DefaultNames.shownSample(samples.first()).substringBefore(" · ").ifBlank { kit }
 }
@@ -87,7 +94,7 @@ internal fun KitChip(name: String, onClick: () -> Unit, modifier: Modifier = Mod
 @Composable
 internal fun KitSheet(current: String, kits: List<KitChoice>, choose: (String) -> Unit, close: () -> Unit) {
     val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    ModalBottomSheet(onDismissRequest = close, sheetState = state, containerColor = Neon.Surface, modifier = Modifier.testTag("kit_sheet")) {
+    ScaledBottomSheet(onDismissRequest = close, sheetState = state, containerColor = Neon.Surface, modifier = Modifier.testTag("kit_sheet")) {
         KitSheetContent(current, kits, { close(); choose(it) }, close)
     }
 }
@@ -158,6 +165,8 @@ class PadSheetActions(
     val setVolume: (Float) -> Unit = {},
     val setPan: (Float) -> Unit = {},
     val toggleMute: () -> Unit = {},
+    /** The pan's gesture ended (one journal line). */
+    val panDone: () -> Unit = {},
 )
 
 /** A pad held: its sheet (another sound in one touch, its volume and pan, cut it). */
@@ -165,12 +174,12 @@ class PadSheetActions(
 @Composable
 internal fun PadSheet(ui: PadSheetUi, actions: PadSheetActions, close: () -> Unit) {
     val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    ModalBottomSheet(onDismissRequest = close, sheetState = state, containerColor = Neon.Surface, modifier = Modifier.testTag("pad_sheet")) {
+    ScaledBottomSheet(onDismissRequest = close, sheetState = state, containerColor = Neon.Surface, modifier = Modifier.testTag("pad_sheet")) {
         PadSheetContent(
             ui,
             PadSheetActions(
                 pickSound = { close(); actions.pickSound(it) }, origin = { close(); actions.origin() }, more = { close(); actions.more() },
-                setVolume = actions.setVolume, setPan = actions.setPan, toggleMute = actions.toggleMute,
+                setVolume = actions.setVolume, setPan = actions.setPan, toggleMute = actions.toggleMute, panDone = actions.panDone,
             ),
             close,
         )
@@ -202,11 +211,8 @@ fun PadSheetContent(ui: PadSheetUi, actions: PadSheetActions, close: () -> Unit)
             Text(percent((ui.volume / 0.8f * 100).roundToInt()), style = MonoStyle, color = Neon.Cyan)
         }
         ProSlider(value = ui.volume, onValueChange = actions.setVolume, modifier = Modifier.testTag("pad_volume"))
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(tr("Pan du pad"), Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
-            Text(panLabel(ui.pan), style = MonoStyle, color = Neon.Cyan)
-        }
-        ProSlider(value = ui.pan, onValueChange = { actions.setPan((it * 10).roundToInt() / 10f) }, valueRange = -1f..1f, steps = 19, modifier = Modifier.testTag("pad_pan"))
+        // Safe at the edge: a back swipe from the side closes the sheet, it never pans the pad.
+        PanRow(tr("Pan du pad"), ui.pan, onChange = actions.setPan, onEnd = actions.panDone, tag = "pad_pan")
         FilterChip(
             selected = ui.muted, onClick = actions.toggleMute, colors = pillColors(),
             label = { Text(if (ui.muted) tr("Pad coupé : touche pour l'entendre") else tr("Couper ce pad")) },

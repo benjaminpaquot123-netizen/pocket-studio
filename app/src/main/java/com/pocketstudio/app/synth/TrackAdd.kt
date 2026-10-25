@@ -1,5 +1,7 @@
 package com.pocketstudio.app.synth
 
+import com.pocketstudio.ui.ScaledDialog
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -34,7 +36,7 @@ import com.pocketstudio.ui.TileGrid
 /** "+ Piste": what the new track is for, in a window over the synth screen. */
 @Composable
 fun TrackAddDialog(onDismiss: () -> Unit, voice: (() -> Unit)? = null, simple: Boolean = false, onPick: (TrackKind?, Boolean) -> Unit) {
-    Dialog(onDismissRequest = onDismiss) {
+    ScaledDialog(onDismissRequest = onDismiss) {
         Surface(shape = RoundedCornerShape(20.dp), color = Neon.Surface, modifier = Modifier.widthIn(max = 520.dp)) {
             TrackAddChoices(onPick = onPick, onDismiss = onDismiss, modifier = Modifier.verticalScroll(rememberScrollState()), voice = voice, simple = simple)
         }

@@ -1,5 +1,7 @@
 package com.pocketstudio.app.onboarding
 
+import com.pocketstudio.ui.ScaledDialog
+
 import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -25,6 +27,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.Album
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Flag
 import androidx.compose.material.icons.filled.FolderOpen
@@ -211,6 +214,8 @@ class LaunchActions(
     /** « Nouveau morceau »: a style in one touch, the assistant, a demo or an empty project. */
     val newSong: () -> Unit = {},
     val projects: () -> Unit = {},
+    /** Lot 2: « Remixer une chanson »: the Remix (a song split into drums, bass, voice and the rest). */
+    val remix: () -> Unit = {},
     val missions: () -> Unit = {},
     /** The Mode simple (true) or every tool; the chooser stays. */
     val chooseMode: (Boolean) -> Unit = {},
@@ -220,7 +225,7 @@ class LaunchActions(
 @Composable
 fun LaunchChoice(show: Boolean, ui: LaunchUi, actions: LaunchActions) {
     if (!show) return
-    Dialog(
+    ScaledDialog(
         onDismissRequest = actions.resume,
         properties = DialogProperties(usePlatformDefaultWidth = false, dismissOnClickOutside = false),
     ) {
@@ -322,6 +327,11 @@ private fun OtherChoices(actions: LaunchActions) {
     Choice(
         Icons.Filled.FolderOpen, tr("Mes projets"), tr("Ouvrir un autre morceau, le copier ou le renommer."),
         Color(0xFF5BB8F5), actions.projects, "launch_projects",  // sky blue: green means "playing"
+    )
+    // Benjamin (2026-10-24): the Remix « mis en avant », one touch from here.
+    Choice(
+        Icons.Filled.Album, tr("Remixer une chanson"), tr("L'appli sépare une chanson en batterie, basse, voix et le reste : rejoue-la à ta façon."),
+        com.pocketstudio.app.ui.REMIX_COLOR, actions.remix, "launch_remix",
     )
 }
 

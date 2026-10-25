@@ -9,6 +9,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
@@ -83,6 +84,15 @@ class LivePadsFullScreenTest {
         compose.runOnUiThread { compose.activity.onBackPressedDispatcher.onBackPressed() }
         compose.onNodeWithTag("live_pads_full").assertDoesNotExist()
         compose.onNodeWithTag("live_pads").assertIsDisplayed()
+    }
+
+    /** Lot 2 (audit 35): narrow (a phone, the A11 upright with its margins), « Tout couper » keeps its word. */
+    @Test
+    fun toutCouperIsNamedOnANarrowScreen() {
+        show(mutableListOf())
+        compose.onNodeWithTag("live_pads_fullscreen").performClick()
+        compose.onNodeWithTag("live_pads_full_stop", useUnmergedTree = true)
+            .assert(androidx.compose.ui.test.hasAnyDescendant(androidx.compose.ui.test.hasText("Tout couper")))
     }
 
     @Test

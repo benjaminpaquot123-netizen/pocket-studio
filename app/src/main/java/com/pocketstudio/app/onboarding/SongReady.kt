@@ -1,5 +1,7 @@
 package com.pocketstudio.app.onboarding
 
+import com.pocketstudio.ui.ScaledDialog
+
 import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -115,7 +117,7 @@ fun SongReady(
     if (folded) return
     val done = songReadyDone(prefs, projectId, actions) { seen = true }
     // A touch outside is not a choice: only the cross, « Plus tard », Back or a big choice closes it.
-    Dialog(onDismissRequest = done.close, properties = DialogProperties(usePlatformDefaultWidth = false, dismissOnClickOutside = false)) {
+    ScaledDialog(onDismissRequest = done.close, properties = DialogProperties(usePlatformDefaultWidth = false, dismissOnClickOutside = false)) {
         Box(Modifier.fillMaxWidth().padding(horizontal = 12.dp), contentAlignment = Alignment.Center) {
             SongReadyCard(ui, done, Modifier.widthIn(max = 560.dp))
         }

@@ -1,5 +1,7 @@
 package com.pocketstudio.app.ui
 
+import com.pocketstudio.ui.ScaledDropdownMenu
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
@@ -325,7 +327,7 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
                 IconButton(onClick = { open = true }, modifier = Modifier.spot("top_more", tr("Plus de choix")).testTag("top_more")) {
                     Icon(Icons.Filled.MoreVert, contentDescription = tr("Plus de choix"), tint = Neon.TextPrimary)
                 }
-                DropdownMenu(expanded = open, onDismissRequest = { open = false }, modifier = Modifier.testTag("top_more_menu")) {
+                ScaledDropdownMenu(expanded = open, onDismissRequest = { open = false }, modifier = Modifier.testTag("top_more_menu")) {
                     more.forEach { item ->
                         DropdownMenuItem(text = { Text(item.label) }, onClick = { open = false; item.onClick() }, modifier = Modifier.testTag(item.tag))
                     }
@@ -368,7 +370,7 @@ private fun SceneChip(scene: SceneChipUi, full: Boolean, maxWidth: Dp, actions: 
             )
             Icon(Icons.Filled.ArrowDropDown, contentDescription = null, tint = Neon.Cyan, modifier = Modifier.size(20.dp))
         }
-        DropdownMenu(expanded = open, onDismissRequest = { open = false }, modifier = Modifier.testTag("scene_menu")) {
+        ScaledDropdownMenu(expanded = open, onDismissRequest = { open = false }, modifier = Modifier.testTag("scene_menu")) {
             Text(
                 tr("Partie à modifier"), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),

@@ -1,5 +1,7 @@
 package com.pocketstudio.app.session
 
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -255,7 +257,22 @@ private fun StageBar(
             )
         }
         record?.invoke()
-        StageButton(Icons.Filled.StopCircle, if (wide) tr("Tout couper") else null, tr("Tout couper"), lit = false, accent = Neon.Red, tag = "live_pads_full_stop", tint = Neon.Red, onClick = stopAll)
+        // Lot 2 (audit 35): never a second red circle without a word next to REC; narrow, the word goes under the icon (as REC's).
+        if (wide) {
+            StageButton(Icons.Filled.StopCircle, tr("Tout couper"), tr("Tout couper"), lit = false, accent = Neon.Red, tag = "live_pads_full_stop", tint = Neon.Red, onClick = stopAll)
+        } else {
+            Column(
+                Modifier.widthIn(min = 56.dp).heightIn(min = 48.dp).clip(RoundedCornerShape(12.dp))
+                    .clickable(role = Role.Button, onClickLabel = tr("Tout couper"), onClick = stopAll)
+                    .semantics { contentDescription = tr("Tout couper") }
+                    .padding(horizontal = 4.dp).testTag("live_pads_full_stop"),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+            ) {
+                Icon(Icons.Filled.StopCircle, contentDescription = null, tint = Neon.Red, modifier = Modifier.size(26.dp))
+                Text(tr("Tout couper"), style = MaterialTheme.typography.labelSmall, color = Neon.TextPrimary, maxLines = 1, softWrap = false)
+            }
+        }
         if (toggleFx != null) StageButton(Icons.Filled.Tune, tr("Effets"), tr("Effets"), lit = fxOpen, accent = Neon.Cyan, tag = "live_pads_fx_toggle", onClick = toggleFx)
     }
 }

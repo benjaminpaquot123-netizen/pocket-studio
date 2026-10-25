@@ -1,6 +1,7 @@
 package com.pocketstudio.app
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
@@ -200,9 +201,28 @@ class SmokeTest {
         // Piano roll: the Notes view opens and a note added through the screen's path is kept.
         // Sons (phase 36): the synth track's chip opens its editor.
         compose.onNodeWithTag("tab_Sons").performClick()
-        compose.onNodeWithTag("track_0").performClick()
+        // On the CI emulator a tap after a while in the app sometimes does not land (docs/REVIEW.md,
+        // « Tests d'usage réel »; the chip of the drums' editor shown is not selected, so a second
+        // touch only opens the synth): up to three touches, then what the screen shows instead.
+        val editorShown = { compose.onAllNodesWithTag("mode_notes").fetchSemanticsNodes().isNotEmpty() }
+        var touches = 0
+        while (!editorShown() && touches < 3) {
+            if (touches > 0) android.util.Log.i("RealUse", "tap on track_0 did not land: again")
+            // Lot 2 put « Remix » in the bar: on a narrow screen the track's chip is past its right edge.
+            runCatching { compose.onNodeWithTag("track_0").performScrollTo() }
+            compose.onNodeWithTag("track_0").performClick()
+            touches++
+            runCatching { compose.waitUntil(3_000) { editorShown() } }
+        }
+        if (!editorShown()) {
+            // What the screen holds instead (every root: a window left open shows here too).
+            val shown = compose.onAllNodes(androidx.compose.ui.test.SemanticsMatcher("any") { true }, useUnmergedTree = true)
+                .fetchSemanticsNodes().mapNotNull { it.config.getOrNull(androidx.compose.ui.semantics.SemanticsProperties.TestTag) }
+            throw AssertionError("no synth editor after $touches touches on track_0: selected=${rhythm.selectedTrack.value}, shown=${shown.joinToString(" ").take(3000)}")
+        }
+        runCatching { compose.onNodeWithTag("mode_notes").performScrollTo() }  // in a scrolling page or not, by layout
         compose.onNodeWithTag("mode_notes").performClick()
-        compose.onNodeWithTag("piano_roll").assertExists()
+        compose.waitUntil(5_000) { compose.onAllNodesWithTag("piano_roll").fetchSemanticsNodes().isNotEmpty() }
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             rhythm.addNote(com.pocketstudio.model.Note(start = 0, length = 48, pitch = 60))
         }

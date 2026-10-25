@@ -1101,7 +1101,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                 sounds[line.role] = null
                 continue
             }
-            val pcm = load(ref) ?: throw IllegalStateException(tr("son illisible : %s", option.name))
+            val pcm = load(ref) ?: throw IllegalStateException(tr("un son n'a pas pu être lu, réessaie"))
             val file = "${UUID.randomUUID().toString().take(12)}.wav"
             files[file] = pcm
             val sample = PadSample(file, option.name.substringBefore(" · ").take(40))
@@ -1112,7 +1112,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         // Pack sounds and kit voices played across the keys: copied into the project, set on their own note.
         val parts = chosen.mapValues { (_, sound) ->
             if (sound.packFile == null && sound.kitVoice == null) return@mapValues sound
-            val (pcm, root) = packPartSound(sound) ?: throw IllegalStateException(tr("son illisible : %s", tr(sound.name)))
+            val (pcm, root) = packPartSound(sound) ?: throw IllegalStateException(tr("un son n'a pas pu être lu, réessaie"))
             val file = "${UUID.randomUUID().toString().take(12)}.wav"
             files[file] = pcm
             sound.copy(sampled = sound.sampled!!.copy(file = file, root = root ?: 60f))

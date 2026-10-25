@@ -69,7 +69,9 @@ class Journey(private val compose: ComposeTestRule, private val log: (String) ->
         settled(tag, end)
         log("tap $tag")
         val node = compose.onNodeWithTag(tag)
-        if (!node.isDisplayed()) runCatching { node.performScrollTo() }
+        // Always into view: a node half past a scrolling row's edge counts as displayed, and a
+        // touch at its centre lands off the screen (Sons' chips on a narrow phone).
+        runCatching { node.performScrollTo() }
         node.performClick()
         runCatching { compose.waitForIdle() }
     }

@@ -2,6 +2,9 @@
 
 package com.pocketstudio.app.rhythm
 
+import com.pocketstudio.ui.ScaledAlertDialog
+import com.pocketstudio.ui.ScaledDropdownMenu
+
 import com.pocketstudio.app.learn.spot
 import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.model.i18n.percent
@@ -175,6 +178,8 @@ data class RhythmActions(
     /** Pad (lane)'s own volume (0.8 = the kit's level), pan (-1..1), cut. */
     val setPadVolume: (Int, Float) -> Unit = { _, _ -> },
     val setPadPanOf: (Int, Float) -> Unit = { _, _ -> },
+    /** Pad (lane)'s pan gesture ended (one journal line per gesture). */
+    val padPanDone: (Int) -> Unit = {},
     val togglePadMute: (Int) -> Unit = {},
     /** Pad (lane) back to the kit's own voice. */
     val removeSampleOf: (Int) -> Unit = {},
@@ -247,6 +252,7 @@ fun RhythmScreen(
             PadSheetActions(
                 pickSound = { actions.pickPadSound(lane, it) }, origin = { actions.removeSampleOf(lane) }, more = actions.openLibrary,
                 setVolume = { actions.setPadVolume(lane, it) }, setPan = { actions.setPadPanOf(lane, it) }, toggleMute = { actions.togglePadMute(lane) },
+                panDone = { actions.padPanDone(lane) },
             ),
             close = { padSheet = null },
         )
@@ -262,12 +268,23 @@ fun RhythmScreen(
         }
     }
     // On a tablet the pads stay on the left and the steps of the chosen pad on the right.
+    androidx.compose.foundation.layout.BoxWithConstraints(modifier.testTag("rhythm")) {
+    // Lot 2 (audit 35): a tablet lying down (the A11: 528 dp high) cut the fourth row of pads;
+    // there the pads are as high as the screen lets four rows and the kit's line fit.
+    // A tablet by the device (not by the dp left at 130 %, where the A11 lying down gets one column).
+    val tablet = androidx.compose.ui.platform.LocalContext.current.resources.configuration.smallestScreenWidthDp >= 600
+    val landscape = androidx.compose.ui.platform.LocalConfiguration.current.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
+    // Lying down: a tablet whatever its columns (one at 130 %), or a screen wide enough for two.
+    val lying = landscape && maxWidth > maxHeight && (tablet || maxWidth >= com.pocketstudio.ui.TWO_PANES_FROM)
+    // At least 48 dp on the glass: at 130 % that is 37 dp of the interface.
+    val minPad = 48.dp / com.pocketstudio.ui.LocalUiScale.current
+    val fitPad = if (lying) ((maxHeight - LYING_ROOM) / 4).coerceIn(minPad, 150.dp) else null
     com.pocketstudio.ui.AdaptivePanes(
-        modifier.testTag("rhythm"),
+        Modifier,
         spacing = 8.dp,
         first = {
             header(showGrid)
-            PadGrid(project, transport.selectedPad, live.litPads, actions.hitPad, onHold = hold, kitBar = kitBar)
+            PadGrid(project, transport.selectedPad, live.litPads, actions.hitPad, onHold = hold, kitBar = kitBar, fitHeight = fitPad)
             record?.invoke()
             GrooveCard(project, transport, actions)
         },
@@ -278,18 +295,26 @@ fun RhythmScreen(
         // The phone keeps its order: the steps right under lower pads, the first row of cells on screen.
         phone = {
             header(showGrid)
-            PadGrid(project, transport.selectedPad, live.litPads, actions.hitPad, compact = true, onHold = hold, kitBar = kitBar)
+            PadGrid(project, transport.selectedPad, live.litPads, actions.hitPad, compact = true, onHold = hold, kitBar = kitBar, fitHeight = fitPad)
             record?.invoke()
             steps()
             PadSoundCard(project, transport.selectedPad, padSound, actions)
             GrooveCard(project, transport, actions)
         },
     )
+    }
 }
+
+/** Lying down, what the pads' column holds besides four rows: its padding, the kit's line, the gaps. */
+private val LYING_ROOM = 24.dp + 24.dp + 48.dp + 8.dp
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun PadGrid(project: Project, selected: Int, lit: Set<Int>, onHit: (Int) -> Unit, compact: Boolean = false, onHold: (Int) -> Unit = {}, kitBar: @Composable () -> Unit = {}) {
+private fun PadGrid(
+    project: Project, selected: Int, lit: Set<Int>, onHit: (Int) -> Unit, compact: Boolean = false, onHold: (Int) -> Unit = {}, kitBar: @Composable () -> Unit = {},
+    /** Each pad's height, to fit the screen's height (a tablet lying down); null: from its width. */
+    fitHeight: androidx.compose.ui.unit.Dp? = null,
+) {
     val haptics = LocalHapticFeedback.current
     // A tablet held upright gets the one column too (600 dp wide): taller pads, not a phone's flat ones.
     val padHeight = if (androidx.compose.ui.platform.LocalConfiguration.current.smallestScreenWidthDp >= 600) TABLET_COLUMN_PAD_HEIGHT else PHONE_PAD_HEIGHT
@@ -305,7 +330,7 @@ private fun PadGrid(project: Project, selected: Int, lit: Set<Int>, onHit: (Int)
                     val hasFx = strip?.hasOwnFx() == true
                     DrumPad(
                         name = padName(project, lane), color = color, selected = lane == selected, lit = lane in lit, hasHits = hasHits, hasFx = hasFx,
-                        muted = strip?.mute == true,
+                        muted = strip?.mute == true, pan = project.drums.lanes[lane].pan,
                         onHit = {
                             haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                             onHit(lane)
@@ -315,8 +340,14 @@ private fun PadGrid(project: Project, selected: Int, lit: Set<Int>, onHit: (Int)
                             onHold(lane)
                         },
                         // On a phone, lower pads leave the first row of steps on screen.
-                        modifier = Modifier.weight(1f).then(if (compact) Modifier.height(padHeight) else Modifier).testTag("pad_$lane"),
-                        ratio = !compact,
+                        modifier = Modifier.weight(1f).then(
+                            when {
+                                fitHeight != null -> Modifier.height(fitHeight)
+                                compact -> Modifier.height(padHeight)
+                                else -> Modifier
+                            },
+                        ).testTag("pad_$lane"),
+                        ratio = !compact && fitHeight == null,
                     )
                 }
             }
@@ -352,7 +383,7 @@ internal fun padVoiceName(kind: Int): String = when (kind) {
  * coloured edge when chosen, a small press.
  */
 @Composable
-private fun DrumPad(name: String, color: Color, selected: Boolean, lit: Boolean, hasHits: Boolean, hasFx: Boolean, onHit: () -> Unit, modifier: Modifier, ratio: Boolean = true, muted: Boolean = false, onHold: () -> Unit = {}) {
+private fun DrumPad(name: String, color: Color, selected: Boolean, lit: Boolean, hasHits: Boolean, hasFx: Boolean, onHit: () -> Unit, modifier: Modifier, ratio: Boolean = true, muted: Boolean = false, onHold: () -> Unit = {}, pan: Float = 0f) {
     val shape = RoundedCornerShape(14.dp)
     val interaction = remember { MutableInteractionSource() }
     val pressed by interaction.collectIsPressedAsState()
@@ -400,12 +431,20 @@ private fun DrumPad(name: String, color: Color, selected: Boolean, lit: Boolean,
                     .clip(CircleShape).background(lerp(color, Color.White, 0.2f)),
             )
         }
-        // Effects of its own: a small badge in the corner.
-        if (hasFx) {
-            Text(
-                "FX", style = MaterialTheme.typography.labelSmall, color = Neon.OnAccent,
-                modifier = Modifier.align(Alignment.TopStart).padding(6.dp).clip(RoundedCornerShape(4.dp)).background(Neon.Cyan).padding(horizontal = 4.dp),
-            )
+        // Effects of its own, and a pan off the centre (« G 100 »): small badges in the corner, so
+        // a pad sent to one side is seen without opening it.
+        val panned = kotlin.math.abs(pan) > 0.05f
+        if (hasFx || panned) {
+            Row(Modifier.align(Alignment.TopStart).padding(6.dp), horizontalArrangement = Arrangement.spacedBy(3.dp)) {
+                if (hasFx) Text(
+                    "FX", style = MaterialTheme.typography.labelSmall, color = Neon.OnAccent,
+                    modifier = Modifier.clip(RoundedCornerShape(4.dp)).background(Neon.Cyan).padding(horizontal = 4.dp),
+                )
+                if (panned) Text(
+                    panLabel(pan), style = MaterialTheme.typography.labelSmall, color = Neon.TextPrimary, maxLines = 1, softWrap = false,
+                    modifier = Modifier.clip(RoundedCornerShape(4.dp)).background(Color.Black.copy(alpha = 0.45f)).padding(horizontal = 4.dp).testTag("pad_pan_badge"),
+                )
+            }
         }
         // The pad's colour as a strip along its bottom edge.
         Box(Modifier.align(Alignment.BottomCenter).padding(bottom = if (ratio) 6.dp else 4.dp).fillMaxWidth(0.4f).height(3.dp).clip(RoundedCornerShape(2.dp)).background(color.copy(alpha = 0.6f + 0.4f * glow)))
@@ -660,9 +699,7 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, playing: Boo
         }
         val pickedHit = hits[picked]?.takeIf { tool >= 2 }
         if (pickedHit != null && tool == 2) {
-            LabeledSlider(tr("Pan du coup %d", picked % per + 1), panLabel(pickedHit.pan), pickedHit.pan, -1f..1f, steps = 19) {
-                actions.setHitPan(picked, (it * 10).roundToInt() / 10f)
-            }
+            PanRow(tr("Pan du coup %d", picked % per + 1), pickedHit.pan, onChange = { actions.setHitPan(picked, it) }, tag = "hit_pan")
         }
         if (pickedHit != null && tool == 4) {
             LabeledSlider(tr("Force du coup %d", picked % per + 1), percent((pickedHit.velocity * 100).roundToInt()), pickedHit.velocity,
@@ -748,7 +785,7 @@ private fun RollMenu(
     chance: (Int) -> Unit = {},
 ) {
     val chips = pillColors()
-    DropdownMenu(expanded = true, onDismissRequest = close, modifier = Modifier.testTag("roll_menu")) {
+    ScaledDropdownMenu(expanded = true, onDismissRequest = close, modifier = Modifier.testTag("roll_menu")) {
         Column(Modifier.padding(horizontal = 12.dp, vertical = 4.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             Text(tr("Coup %d", beatStep), style = MaterialTheme.typography.titleSmall)
             Text(tr("Force"), style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary)
@@ -823,7 +860,7 @@ internal fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: 
         val volume = project.mixer.channels.getOrNull(com.pocketstudio.model.Mixer.padChannel(lane))?.volume ?: 0.8f
         LabeledSlider(tr("Volume du pad"), percent((volume / 0.8f * 100).roundToInt()), volume, 0f..1f) { actions.setPadVolume(lane, it) }
         val pan = project.drums.lanes[lane].pan
-        LabeledSlider(tr("Pan du pad"), panLabel(pan), pan, -1f..1f, steps = 19) { actions.setPadPan((it * 10).roundToInt() / 10f) }
+        PanRow(tr("Pan du pad"), pan, onChange = { actions.setPadPanOf(lane, it) }, onEnd = { actions.padPanDone(lane) }, tag = "pad_sound_pan")
         val info = sample?.let { ui.info[it.file] }
         val slicer = ui.slicer?.takeIf { sample != null && it.file == sample.file }
         if (sample != null && info != null && slicer != null) {
@@ -906,7 +943,7 @@ internal fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: 
                 }
                 if (capture > 0) {
                     val bars = capture
-                    AlertDialog(
+                    ScaledAlertDialog(
                         onDismissRequest = { capture = 0 },
                         title = { Text(tr("Capturer tout le morceau ?")) },
                         text = {
@@ -1023,6 +1060,22 @@ private fun semitones(n: Int) = when {
 
 private fun ms(seconds: Float) =
     if (seconds < 1f) "${(seconds * 1000).roundToInt()} ms" else tr("%.2f s", seconds)
+
+/**
+ * A pan's name, its value (« G 30 », « Centre ») and the [com.pocketstudio.ui.PanSlider] (tenths,
+ * safe at the screen's edge, two touches = centre).
+ */
+@Composable
+internal fun PanRow(label: String, pan: Float, onChange: (Float) -> Unit, onEnd: () -> Unit = {}, tag: String? = null) {
+    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        Text(label, Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
+        Text(panLabel(pan), style = MonoStyle, color = Neon.Cyan)
+    }
+    com.pocketstudio.ui.PanSlider(
+        pan, onChange, step = 0.1f, onGestureEnd = onEnd, modifier = if (tag != null) Modifier.testTag(tag) else Modifier,
+        label = label, stateLabel = ::panLabel,
+    )
+}
 
 @Composable
 private fun LabeledSlider(

@@ -2,6 +2,8 @@
 
 package com.pocketstudio.app.session
 
+import com.pocketstudio.ui.ScaledAlertDialog
+
 import com.pocketstudio.app.learn.spot
 import com.pocketstudio.model.i18n.tr
 import androidx.compose.foundation.BorderStroke
@@ -592,12 +594,14 @@ private fun PartRow(i: Int, part: SongPart, ui: SessionScreenUi, actions: Sessio
 @Composable
 private fun ScenesCard(ui: SessionScreenUi, actions: SessionActions, rename: (Int) -> Unit) {
     NeonCard {
-        SectionLabel(tr("Parties"), help = Glossary.SCENE)
+        // Lot 2: « Briques », the grid of A to H; « Parties » is the song's list (two « Parties » side by side before).
+        // Its foldKey stays the former title: a card folded before stays folded.
+        SectionLabel(tr("Briques"), help = Glossary.BRICK, foldKey = "Parties")
         Text(
             when {
-                ui.playing && ui.songIndex >= 0 && !ui.followSong -> tr("Touche une partie pour la modifier : le morceau continue de jouer.")
-                ui.playing -> tr("Touche une partie : elle prend le relais à la mesure suivante.")
-                else -> tr("Une partie = la batterie, l'acide et les notes. Touche-en une pour la modifier, maintiens et glisse pour la déplacer.")
+                ui.playing && ui.songIndex >= 0 && !ui.followSong -> tr("Touche une brique pour la modifier : le morceau continue de jouer.")
+                ui.playing -> tr("Touche une brique : elle prend le relais à la mesure suivante.")
+                else -> tr("Une brique = la batterie, l'acide et les notes d'une partie. Les parties du morceau en sont faites. Touche-en une pour la modifier, maintiens et glisse pour la déplacer.")
             },
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
         )
@@ -629,10 +633,10 @@ private fun ScenesCard(ui: SessionScreenUi, actions: SessionActions, rename: (In
         // sentence kept for TalkBack.
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             SceneAction(Icons.Filled.Edit, if (named) tr("Renommer") else tr("Nommer"),
-                if (named) tr("Renommer la partie %s", letter) else tr("Nommer la partie %s", letter), true, { rename(ui.current) }, "scene_rename", Modifier.weight(1f))
-            SceneAction(Icons.Filled.Add, tr("Nouvelle"), tr("Nouvelle partie vide"), true, actions.newScene, "scene_new", Modifier.weight(1f))
-            SceneAction(Icons.Filled.ContentCopy, tr("Dupliquer"), tr("Dupliquer la partie %s", letter), true, actions.duplicate, "scene_duplicate", Modifier.weight(1f))
-            SceneAction(Icons.Filled.DeleteSweep, tr("Vider"), tr("Vider la partie %s", letter), !empty, actions.clear, "scene_clear", Modifier.weight(1f))
+                if (named) tr("Renommer la brique %s", letter) else tr("Nommer la brique %s", letter), true, { rename(ui.current) }, "scene_rename", Modifier.weight(1f))
+            SceneAction(Icons.Filled.Add, tr("Nouvelle"), tr("Nouvelle brique vide"), true, actions.newScene, "scene_new", Modifier.weight(1f))
+            SceneAction(Icons.Filled.ContentCopy, tr("Dupliquer"), tr("Dupliquer la brique %s", letter), true, actions.duplicate, "scene_duplicate", Modifier.weight(1f))
+            SceneAction(Icons.Filled.DeleteSweep, tr("Vider"), tr("Vider la brique %s", letter), !empty, actions.clear, "scene_clear", Modifier.weight(1f))
         }
     }
 }
@@ -717,7 +721,7 @@ private fun SceneGrid(ui: SessionScreenUi, shown: Int, actions: SessionActions) 
 /** A scene dropped on another one: swap them, or replace it (Annuler brings it back), or nothing. */
 @Composable
 private fun MoveSceneDialog(from: Int, to: Int, ui: SessionScreenUi, onChoose: (replace: Boolean) -> Unit, onDismiss: () -> Unit) {
-    AlertDialog(
+    ScaledAlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(tr("Déplacer %s sur %s", ui.title(from), ui.title(to))) },
         text = {
@@ -842,7 +846,7 @@ private fun SceneButton(i: Int, ui: SessionScreenUi, actions: SessionActions, dr
 @Composable
 internal fun RenameSceneDialog(index: Int, current: String, onDone: (String) -> Unit, onDismiss: () -> Unit) {
     var name by remember(index) { mutableStateOf(current) }
-    AlertDialog(
+    ScaledAlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(tr("Nommer la partie %s", Scene.NAMES.getOrElse(index) { "?" })) },
         text = {
@@ -875,7 +879,7 @@ internal fun RenameSceneDialog(index: Int, current: String, onDone: (String) -> 
 /** Picks one of the scenes in use (to insert it in the song). */
 @Composable
 private fun ScenePickerDialog(title: String, ui: SessionScreenUi, onPick: (Int) -> Unit, onDismiss: () -> Unit) {
-    AlertDialog(
+    ScaledAlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(title) },
         text = {

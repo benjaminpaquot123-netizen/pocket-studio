@@ -744,6 +744,13 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     private val currentTrack: InstrumentTrack get() = project.value.track(track)
 
+    /**
+     * Lot 2: the track a melody goes to in the Mode simple (« ● Enregistrer ma mélodie »): the one
+     * named « Lead » or « Mélodie » (the assistant's lead, « + Piste › Mélodie »), the last such
+     * one; null when the song has none (the track shown stays).
+     */
+    fun melodyTrackId(): Int? = project.value.tracks.lastOrNull { isMelodyName(it.name) }?.id
+
     fun selectTrack(id: Int) {
         if (id == track) return
         heldNotes.clear()
@@ -4972,6 +4979,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun kitChoices(packs: List<com.pocketstudio.model.PackManifest>, lib: LibraryState): List<KitChoice> = buildList {
         add(KitChoice("builtin:${Project.KIT_V3}", tr("Studio"), KitChoice.BUILT_IN))
         add(KitChoice("builtin:${Project.KIT_V1}", tr("Classique"), KitChoice.BUILT_IN))
+        // Lot 2: trap and drill without a pack, the studio kit with the engine's 808 on its pad.
+        add(KitChoice("kit808:trap", tr("Trap (808)"), KitChoice.BUILT_IN))
+        add(KitChoice("kit808:drill", tr("Drill (808)"), KitChoice.BUILT_IN))
         (lib as? LibraryState.Ready)?.presets?.filter { it.bank == 128 }?.sortedBy { it.program }?.forEach { kit ->
             add(KitChoice("gm:${kit.program}", tr(kit.name), KitChoice.GM))
         }
@@ -5010,6 +5020,24 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 loadKit(kit, whole = true)
             }
             "pack" -> _packsOnPhone.value.firstOrNull { it.id == rest }?.let(::loadPackKit)
+            "kit808" -> {
+                if (com.pocketstudio.model.StudioDrums.with808Kit(project.value, rest) == null) return
+                session.edit { p -> com.pocketstudio.model.StudioDrums.with808Kit(p, rest) ?: p }
+                pushPads()
+                pushMixer()
+                if (NativeEngine.isAvailable) {
+                    NativeEngine.setKitVersion(Project.KIT_V3)
+                    pushPadVoices(project.value)
+                    NativeEngine.triggerPad(com.pocketstudio.model.StudioDrums.LANE_808, 0.9f)
+                }
+                val kitName = if (rest == "drill") tr("Drill (808)") else tr("Trap (808)")
+                // A « Basse 808 » track already plays the bass: said, so two 808s are not a surprise.
+                _done.value = if (project.value.tracks.any { it.engine == com.pocketstudio.model.InstrumentTrack.ENGINE_808 }) {
+                    tr("Fait : kit %s sur les 16 pads. Ta piste Basse 808 joue aussi : coupe-la si tu n'en veux qu'une.", kitName)
+                } else {
+                    tr("Fait : kit %s sur les 16 pads", kitName)
+                }
+            }
         }
     }
 
@@ -5729,7 +5757,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     // --- Mixer -----------------------------------------------------------------------------
 
-    private val _meters = MutableStateFlow(FloatArray(NativeEngine.METERS))
+    // The limiter's slot starts at 1 (no limiting): 0 read as a gain was « retenu de 214748368 dB » (lot 2).
+    private val _meters = MutableStateFlow(FloatArray(NativeEngine.METERS).also { it[NativeEngine.METER_LIMITER] = 1f })
     /** Peak per mixer channel (the master's at [MASTER]), the limiter gain, the master's level into the limiter. */
     val meters: StateFlow<FloatArray> = _meters.asStateFlow()
 
@@ -5756,7 +5785,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** Who reads the meters now: of the screens watching them (the mixer, an effects box), one polls. */
     private var meterPoller: Any? = null
-    private val meterPeaks = FloatArray(NativeEngine.METERS)
+    private val meterPeaks = FloatArray(NativeEngine.METERS).also { it[NativeEngine.METER_LIMITER] = 1f }
     private val meterFresh = FloatArray(NativeEngine.METERS)
     private val reductionShown = FloatArray(NativeEngine.INSERT_METERS)
     private val reductionFresh = FloatArray(NativeEngine.INSERT_METERS)
@@ -6368,14 +6397,35 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     fun recordNoteOn(pitch: Int, velocity: Float) {
         val id = track
-        val (scene, tick) = recordAt(LiveSlots.INST + id) { clipTicks(id, it) } ?: return
-        heldNotes[pitch] = HeldNote(tick, velocity, id, scene)
+        if (_noteTake.value != null && _recording.value) takeKeys++
+        val at = recordAt(LiveSlots.INST + id) { clipTicks(id, it) }
+        if (at == null) {
+            takeDropped { "key $pitch: ${whyNotRecorded()}" }
+            return
+        }
+        heldNotes[pitch] = HeldNote(at.second, velocity, id, at.first)
+    }
+
+    /** Why a gesture is not recorded now (the take's journal line). */
+    private fun whyNotRecorded(): String = when {
+        !_recording.value -> "not armed"
+        !_transport.value.playing -> "transport stopped"
+        else -> recordPosition()?.let { String.format(java.util.Locale.ROOT, "position %.2f (before the take's first step)", it) }
+            ?: "no position (engine ${if (NativeEngine.isAvailable) "on" else "off"})"
+    }
+
+    private fun takeDropped(why: () -> String) {
+        if (_noteTake.value == null || !_recording.value) return
+        if (takeDrops.size < 4) takeDrops += why()
     }
 
     fun recordNoteOff(pitch: Int) {
         // Written on the track and in the scene it started on, even if another one came meanwhile.
         val (start, velocity, id, scene) = heldNotes.remove(pitch) ?: return
-        if (project.value.instrumentTracks.none { it.id == id } || scene !in project.value.allScenes.indices) return
+        if (project.value.instrumentTracks.none { it.id == id } || scene !in project.value.allScenes.indices) {
+            takeDropped { "key $pitch: track $id or scene $scene gone" }
+            return
+        }
         val ticks = clipTicks(id, scene)
         val step = NoteClip.TICKS_PER_STEP
         // Released after a part change into another scene: held to its loop's end.
@@ -6470,6 +6520,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      */
     val noteTake: StateFlow<com.pocketstudio.app.record.NoteTakeUi?> = _noteTake.asStateFlow()
 
+    private val _takeEmpty = MutableStateFlow(false)
+    /** The last take ended with nothing played: « Rien n'a été joué » under its button, until the next one. */
+    val takeEmpty: StateFlow<Boolean> = _takeEmpty.asStateFlow()
+
     /** The notes the last take wrote, by (scene, track), as they are now in the project. */
     private var takeNotes: MutableMap<Pair<Int, Int>, List<Note>> = HashMap()
     /** The hits the last take added, as (scene, lane, step). */
@@ -6482,6 +6536,17 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     private var takeStartProject: Project? = null
     private var takeMetronomeOn = false
     private var takeAcidRecord = false
+    /** Keys pressed during the take, and those it could not keep with why (the first few): its journal line. */
+    private var takeKeys = 0
+    private val takeDrops = ArrayList<String>()
+
+    /**
+     * What the last take heard and kept, as its journal line says (« Prise clavier : 4 touches,
+     * 4 notes »; a key it could not keep, with why and where): a take that keeps nothing of keys
+     * played is told apart from one where nothing was played. Null before the first take.
+     */
+    var lastTakeReport: String? = null
+        private set
     private var takeWatch: kotlinx.coroutines.Job? = null
 
     /**
@@ -6497,10 +6562,13 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
         if (_audioRecording.value != null || performanceTaking) return
         keepNoteTake()
+        _takeEmpty.value = false
         takeNotes = HashMap()
         takeHits = ArrayList()
         takeReplaced = HashMap()
         takeReplacedHits = HashMap()
+        takeKeys = 0
+        takeDrops.clear()
         takeStartProject = project.value
         // The metronome during the take (Réglages › Son), given back as it was at its end.
         takeMetronomeOn = !_transport.value.metronome && com.pocketstudio.app.settings.SettingsStore.state.value.metronomeInTakes
@@ -6551,10 +6619,15 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         endTakeExtras()
         val notes = takeNotes.values.sumOf { it.size }
         val moves = ui.source == com.pocketstudio.app.record.TakeSource.ACID && before != null && before.automation != project.value.automation
+        val report = "Prise ${ui.source.name.lowercase()} : $takeKeys touches, $notes notes, ${takeHits.size} coups" +
+            if (takeDrops.isEmpty()) "" else " (non gardé : ${takeDrops.joinToString("; ")})"
+        lastTakeReport = report
+        AppLog.add(report)
         if (notes == 0 && takeHits.isEmpty() && !moves) {
-            // Nothing played: no card to answer, just said.
+            // Nothing played: no card to answer, a short line where the take was (not a window).
             _noteTake.value = null
-            _notice.value = tr("Rien n'a été enregistré : joue pendant que la prise tourne (après le décompte).")
+            _takeEmpty.value = true
+            com.pocketstudio.app.report.Journal.action(if (takeKeys == 0) "Prise vide : rien n'a été joué" else "Prise vide : $takeKeys touches non gardées")
             return
         }
         _noteTake.value = ui.copy(phase = com.pocketstudio.app.record.TakePhase.DONE, beatsLeft = 0, notes = notes, hits = takeHits.size, moves = moves)
@@ -7166,11 +7239,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /** The selected pad's place in the stereo field, -1..1 (a drag is one undo step). */
-    fun setPadPan(pan: Float) {
-        val lane = _transport.value.selectedPad
-        session.edit("pad-pan-$lane") { it.copy(drums = it.drums.withPadPan(lane, pan)) }
-        if (NativeEngine.isAvailable) NativeEngine.setPadPan(lane, project.value.drums.lanes[lane].pan)
-    }
+    fun setPadPan(pan: Float) = setPadPanOf(_transport.value.selectedPad, pan)
+
+    /** The selected pad's pan gesture ended (its journal line). */
+    fun padPanDone() = padPanDoneOf(_transport.value.selectedPad)
 
     /** Chooses pad [lane] without sounding it (its sheet opens on it, an appui long). */
     fun selectPad(lane: Int) {
@@ -7188,8 +7260,23 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** Pad [lane]'s place in the stereo field, -1..1 (a drag is one undo step). */
     fun setPadPanOf(lane: Int, pan: Float) {
         if (lane !in 0 until DrumPattern.PAD_COUNT) return
+        if (padPanFrom?.first != lane) padPanFrom = lane to project.value.drums.lanes[lane].pan
         session.edit("pad-pan-$lane") { it.copy(drums = it.drums.withPadPan(lane, pan)) }
         if (NativeEngine.isAvailable) NativeEngine.setPadPan(lane, project.value.drums.lanes[lane].pan)
+    }
+
+    /** Pad and pan when its pan gesture started: one journal line per gesture, from what to what. */
+    private var padPanFrom: Pair<Int, Float>? = null
+
+    /**
+     * Pad [lane]'s pan gesture ended: one line in the bug report's journal when it moved
+     * (« Pan du pad 1 · Kick : centre → G 100 »), so a pan nobody meant to touch shows there.
+     */
+    fun padPanDoneOf(lane: Int) {
+        val from = padPanFrom?.takeIf { it.first == lane }?.second ?: return
+        padPanFrom = null
+        val to = project.value.drums.lanes.getOrNull(lane)?.pan ?: return
+        if (from != to) com.pocketstudio.app.report.Journal.action("Pan du pad ${lane + 1} · ${padName(project.value, lane)} : ${journalPan(from)} → ${journalPan(to)}")
     }
 
     /** Pad [lane] silent or heard again (« Couper ce pad »); its hits stay. */
@@ -7300,6 +7387,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun undo() {
         // A take ends first: a live one then undoes in one step; a mic take keeps its track.
         if (_recording.value || _audioRecording.value != null || _takeSaving.value || performanceTaking) return
+        padPanFrom = null  // a pan gesture's start belongs to the project before the undo
         keepNoteTake()  // the card's notes may be gone
         val heard = sceneHeard()
         val before = project.value
@@ -7316,6 +7404,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     fun redo() {
         if (_recording.value || _audioRecording.value != null || _takeSaving.value || performanceTaking) return
+        padPanFrom = null
         keepNoteTake()
         val heard = sceneHeard()
         val before = project.value
@@ -8468,4 +8557,18 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             }
         }
     }
+}
+
+/** A pan as the journal says it, in French whatever the app's language (the report is read in French). */
+internal fun journalPan(pan: Float): String = when {
+    pan < -0.05f -> "G ${(-pan * 100).roundToInt()}"
+    pan > 0.05f -> "D ${(pan * 100).roundToInt()}"
+    else -> "centre"
+}
+
+/** A melody track's name, as saved (French) or translated: « Lead », « Mélodie », « Lead 2 »… */
+internal fun isMelodyName(name: String): Boolean {
+    val french = com.pocketstudio.model.i18n.I18n.frenchOf(name.trim())
+    val words = listOf("Lead", "Mélodie", com.pocketstudio.model.TrackKind.Melody.trackName)
+    return words.any { w -> french == w || french.startsWith("$w ") }
 }

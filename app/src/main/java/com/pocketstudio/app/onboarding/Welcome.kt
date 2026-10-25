@@ -1,5 +1,8 @@
 package com.pocketstudio.app.onboarding
 
+import com.pocketstudio.ui.ScaledAlertDialog
+import com.pocketstudio.ui.ScaledDialog
+
 import com.pocketstudio.model.i18n.tr
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -72,7 +75,7 @@ fun FirstLaunch(show: Boolean, actions: WelcomeActions, playDemo: () -> Unit, si
     // A project is being opened (the activity rebuilds then): the choices stay until it is.
     var leaving by remember { mutableStateOf(false) }
     if (show || leaving) {
-        Dialog(onDismissRequest = { leaving = false; demoReady = false; actions.later() }, properties = DialogProperties(usePlatformDefaultWidth = false, dismissOnClickOutside = false)) {
+        ScaledDialog(onDismissRequest = { leaving = false; demoReady = false; actions.later() }, properties = DialogProperties(usePlatformDefaultWidth = false, dismissOnClickOutside = false)) {
             Surface(color = Neon.Background, modifier = Modifier.fillMaxSize()) {
                 WelcomeScreen(
                     WelcomeActions(
@@ -88,7 +91,7 @@ fun FirstLaunch(show: Boolean, actions: WelcomeActions, playDemo: () -> Unit, si
             }
         }
     } else if (demoReady) {
-        AlertDialog(
+        ScaledAlertDialog(
             onDismissRequest = { demoReady = false },
             title = { Text(tr("Ta démo est prête")) },
             text = {

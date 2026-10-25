@@ -1,5 +1,7 @@
 package com.pocketstudio.app.export
 
+import com.pocketstudio.ui.ScaledAlertDialog
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -58,7 +60,7 @@ internal suspend fun shareWhileShown(lifecycle: androidx.lifecycle.Lifecycle, re
 @Composable
 fun ShareProgressDialog(export: ExportUi, cancel: () -> Unit, dismiss: () -> Unit, wav: Boolean = false) {
     val failed = !export.running && export.error != null
-    AlertDialog(
+    ScaledAlertDialog(
         onDismissRequest = { if (!export.running) dismiss() },
         title = { Text(if (failed) tr("Partage impossible") else tr("Je prépare ton morceau…")) },
         text = {

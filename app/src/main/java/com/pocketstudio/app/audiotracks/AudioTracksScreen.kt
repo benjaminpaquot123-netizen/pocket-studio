@@ -1,5 +1,8 @@
 package com.pocketstudio.app.audiotracks
 
+import com.pocketstudio.ui.ScaledAlertDialog
+import com.pocketstudio.ui.ScaledDropdownMenu
+
 import com.pocketstudio.ui.fadingHorizontalScroll
 import com.pocketstudio.app.help.Glossary
 import androidx.compose.foundation.BorderStroke
@@ -266,7 +269,7 @@ private fun RecordingCard(rec: AudioRecordingUi, track: AudioTrack?, ui: AudioTr
         }
     }
     if (confirm) {
-        AlertDialog(
+        ScaledAlertDialog(
             onDismissRequest = { confirm = false },
             title = { Text(tr("Jeter cette prise ?")) },
             text = { Text(tr("Elle dure %d s et ne sera pas gardée.", rec.seconds.roundToInt())) },
@@ -292,7 +295,7 @@ private fun TrackCard(t: AudioTrack, ui: AudioTracksUi, actions: AudioTracksActi
             Text(com.pocketstudio.model.DefaultNames.shown(t.name), style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f), maxLines = 1, overflow = TextOverflow.Ellipsis)
             Box {
                 IconButton(onClick = { menu = true }) { Icon(Icons.Filled.MoreVert, contentDescription = tr("Options de %s", t.name)) }
-                DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
+                ScaledDropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
                     DropdownMenuItem(text = { Text(tr("Renommer")) }, onClick = { menu = false; renaming = true })
                     DropdownMenuItem(text = { Text(tr("Couleur")) }, onClick = { menu = false; colouring = true })
                     if (t.clip != null) DropdownMenuItem(text = { Text(tr("Vider la piste")) }, onClick = { menu = false; actions.clear(t.id) })
@@ -325,7 +328,7 @@ private fun TrackCard(t: AudioTrack, ui: AudioTracksUi, actions: AudioTracksActi
     }
     if (renaming) {
         var name by rememberSaveable(t.id) { mutableStateOf(t.name) }
-        AlertDialog(
+        ScaledAlertDialog(
             onDismissRequest = { renaming = false },
             title = { Text(tr("Renommer la piste")) },
             text = { OutlinedTextField(value = name, onValueChange = { name = it.take(24) }, singleLine = true, label = { Text(tr("Nom")) }) },
@@ -334,7 +337,7 @@ private fun TrackCard(t: AudioTrack, ui: AudioTracksUi, actions: AudioTracksActi
         )
     }
     if (colouring) {
-        AlertDialog(
+        ScaledAlertDialog(
             onDismissRequest = { colouring = false },
             title = { Text(tr("Couleur de « %s »", t.name)) },
             text = {

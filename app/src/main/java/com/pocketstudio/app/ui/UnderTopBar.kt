@@ -90,5 +90,8 @@ fun UnderTopBar(
  * scene shown; the timeline the song).
  */
 @Composable
-fun PositionStrip(vm: RhythmViewModel, tempoOpen: Boolean, setTempoOpen: (Boolean) -> Unit) =
-    UnderTopBar(vm, tempoOpen, setTempoOpen, renaming = false, closeRename = {}, controls = false)
+fun PositionStrip(
+    vm: RhythmViewModel, tempoOpen: Boolean, setTempoOpen: (Boolean) -> Unit,
+    /** Lot 2: the « ? » on the Live page too (null: none). */
+    helpOn: Boolean? = null, toggleHelp: () -> Unit = {}, reportBug: (() -> Unit)? = null,
+) = UnderTopBar(vm, tempoOpen, setTempoOpen, renaming = false, closeRename = {}, controls = false, helpOn = helpOn, toggleHelp = toggleHelp, reportBug = reportBug)

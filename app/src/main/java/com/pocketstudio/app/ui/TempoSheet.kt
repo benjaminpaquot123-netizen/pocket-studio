@@ -1,5 +1,7 @@
 package com.pocketstudio.app.ui
 
+import com.pocketstudio.ui.ScaledBottomSheet
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -94,7 +96,7 @@ fun TempoSheet(tempoBpm: Double, actions: TempoActions, onClose: () -> Unit) {
     val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
     val close: () -> Unit = { scope.launch { state.hide() }.invokeOnCompletion { onClose() } }
-    ModalBottomSheet(onDismissRequest = onClose, sheetState = state, containerColor = Neon.Surface, modifier = Modifier.testTag("tempo_sheet")) {
+    ScaledBottomSheet(onDismissRequest = onClose, sheetState = state, containerColor = Neon.Surface, modifier = Modifier.testTag("tempo_sheet")) {
         TempoPad(tempoBpm, actions, close, Modifier.navigationBarsPadding())
     }
 }

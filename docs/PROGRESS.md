@@ -3,7 +3,7 @@
 ## Où on en est (2026-10-25)
 - `main` = PR #48 fusionnée (tests proches du réel : parcours émulateur, endurance, petit téléphone, vrais projets, nuit automatique). Audit 35 fait le 2026-10-24 : synthèse `docs/AUDIT-35.md`.
 - Benjamin a tout délégué (2026-10-25) : la file entière avance sans lui, réponses conseillées de l'audit (1A, 2A, 3A, 4A).
-- En cours : PR Guide (G0 + G1a + G1b + docs de l'audit 35, branche `guide` remise sur `main` en un seul commit).
+- En cours : PR Guide #49 (G0 + G1a + G1b + docs de l'audit 35). Lot 2 remis par-dessus (branche locale `lot2-main`), envoyé dès la fusion du Guide.
 
 ## Prochaine étape exacte
 1. **PR Guide** : CI verte, fusion.

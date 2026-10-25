@@ -68,7 +68,7 @@ fun HelpDot(help: Help, modifier: Modifier = Modifier, color: Color = Neon.TextS
 @Composable
 fun HelpDialog(help: Help, onDismiss: () -> Unit) {
     val listen = LocalHelpListen.current(help)
-    AlertDialog(
+    ScaledAlertDialog(
         onDismissRequest = onDismiss,
         confirmButton = { TextButton(onClick = onDismiss) { Text(tr("Compris")) } },
         dismissButton = listen?.let { play ->

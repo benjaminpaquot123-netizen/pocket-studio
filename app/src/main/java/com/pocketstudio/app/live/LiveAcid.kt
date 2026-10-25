@@ -92,7 +92,7 @@ fun LiveAcid(ui: LiveScreenUi, actions: LiveActions, modifier: Modifier) {
         AcidXy(ui, actions, padHeight)
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             BigSlider(tr("Enveloppe"), LiveAcidParams.ENV, value(LiveAcidParams.ENV), actions, Modifier.weight(1f))
-            BigSlider(tr("Decay"), LiveAcidParams.DECAY, value(LiveAcidParams.DECAY), actions, Modifier.weight(1f))
+            BigSlider(tr("Durée"), LiveAcidParams.DECAY, value(LiveAcidParams.DECAY), actions, Modifier.weight(1f))
         }
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             BigSlider(tr("Accent"), LiveAcidParams.ACCENT, value(LiveAcidParams.ACCENT), actions, Modifier.weight(1f))

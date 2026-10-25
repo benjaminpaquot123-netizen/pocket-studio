@@ -1,5 +1,8 @@
 package com.pocketstudio.app.projects
 
+import com.pocketstudio.ui.ScaledAlertDialog
+import com.pocketstudio.ui.ScaledDropdownMenu
+
 import com.pocketstudio.model.i18n.I18n
 import com.pocketstudio.model.i18n.Lang
 import com.pocketstudio.model.i18n.tr
@@ -208,7 +211,7 @@ fun ProjectsScreen(
     }
     renaming?.let { p ->
         var name by androidx.compose.runtime.saveable.rememberSaveable(p.id) { mutableStateOf(com.pocketstudio.model.DefaultNames.shown(p.name)) }
-        AlertDialog(
+        ScaledAlertDialog(
             onDismissRequest = { renamingId = null },
             title = { Text(tr("Renommer")) },
             text = {
@@ -225,7 +228,7 @@ fun ProjectsScreen(
         val all = which == EMPTY_ALL
         val item = ui.trash.firstOrNull { it.entry == which }
         if (!all && item == null) return@let  // restored or gone meanwhile
-        AlertDialog(
+        ScaledAlertDialog(
             onDismissRequest = { confirmingDelete = null },
             title = { Text(if (all) tr("Vider la corbeille ?") else tr("Supprimer définitivement ?")) },
             text = {
@@ -290,7 +293,7 @@ private fun ProjectCard(p: ProjectInfo, open: Boolean, now: Long, actions: Proje
                 IconButton(onClick = { menu = true }, modifier = Modifier.testTag("project_menu_${p.id}")) {
                     Icon(Icons.Filled.MoreVert, contentDescription = tr("Options de %s", com.pocketstudio.model.DefaultNames.shown(p.name)))
                 }
-                DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
+                ScaledDropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
                     DropdownMenuItem(text = { Text(tr("Renommer")) }, onClick = { menu = false; onRename() })
                     DropdownMenuItem(text = { Text(tr("Dupliquer")) }, onClick = { menu = false; actions.duplicate(p) })
                     DropdownMenuItem(text = { Text(tr("Envoyer / sauvegarder (.zip)")) }, onClick = { menu = false; actions.exportZip(p) })

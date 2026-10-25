@@ -32,6 +32,14 @@ class History<T>(initial: T, private val coalesceWindowMs: Long = 600) {
     fun push(next: T, coalesceKey: String? = null, nowMs: Long = System.currentTimeMillis(), tag: Any? = null): Boolean {
         if (next == current) return false
         val merge = coalesceKey != null && coalesceKey == lastKey && nowMs - lastTime <= coalesceWindowMs && canUndo
+        if (merge && undoStack.last().first == next) {
+            // The burst came back to where it started (a gesture taken back): no step left to undo.
+            undoStack.removeLast()
+            current = next
+            redoStack.clear()
+            lastKey = null
+            return true
+        }
         if (!merge) undoStack.addLast(current to tag)
         current = next
         redoStack.clear()

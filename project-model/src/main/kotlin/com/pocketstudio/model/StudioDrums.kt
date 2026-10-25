@@ -141,6 +141,28 @@ object StudioDrums {
      */
     fun level808Db(style: Style): Float = if (style.id == "jersey_club") -5f else -1f
 
+    /** Lot 2: the kits built in that put [style]'s 808 on its pad, by style id (« Kit ▾ » offers them, nothing to download). */
+    val KITS_808 = listOf("trap", "drill")
+
+    /**
+     * Lot 2 (audit 35, amateur 2): « Kit ▾ » › Trap or Drill without a pack: the studio kit on the
+     * 16 pads (their own sounds off), [styleId]'s 808 in the project's key on its pad (the second
+     * kick's) at its level; the other studio voices (a rumble) leave. Null: no such style.
+     */
+    fun with808Kit(project: Project, styleId: String): Project? {
+        val style = StarterWizard.style(styleId) ?: return null
+        val harmony = project.harmony.takeIf { it.scale != Scale.Off } ?: Harmony(style.melody.root)
+        val ch = Mixer.padChannel(LANE_808)
+        val channels = project.mixer.channels.toMutableList()
+        if (ch in channels.indices) channels[ch] = channels[ch].copy(volume = WizardMix.fader(level808Db(style))).sanitized()
+        return project.copy(
+            kitVersion = Project.KIT_V3,
+            drums = project.drums.copy(lanes = project.drums.lanes.map { it.copy(sample = null) }),
+            padVoices = mapOf(LANE_808 to voice808(style, harmony)),
+            mixer = project.mixer.copy(channels = channels),
+        )
+    }
+
     /** The rumble's pad fader, in dB: under the kick, it rolls between the hits (its voice alone at -17.5 LUFS). */
     const val RUMBLE_DB = -2f
 

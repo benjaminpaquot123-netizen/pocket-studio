@@ -66,6 +66,8 @@ class RecordBarUi(
     val canKeepPlayed: Boolean = false,
     /** False while another recording (the microphone, the Live page) is on. */
     val enabled: Boolean = true,
+    /** The last take ended with nothing played: said under the button. */
+    val empty: Boolean = false,
 )
 
 class RecordBarActions(
@@ -96,7 +98,14 @@ fun RecordBar(ui: RecordBarUi, actions: RecordBarActions, modifier: Modifier = M
 
 @Composable
 private fun IdleBar(ui: RecordBarUi, actions: RecordBarActions, modifier: Modifier, compact: Boolean) {
-    Row(modifier.fillMaxWidth().testTag("record_bar"), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+    Column(modifier.fillMaxWidth()) {
+    if (ui.empty) {
+        Text(
+            tr("Rien n'a été joué pendant la prise."), style = MaterialTheme.typography.bodySmall, color = Neon.Amber,
+            modifier = Modifier.padding(bottom = 4.dp).testTag("take_empty"),
+        )
+    }
+    Row(Modifier.fillMaxWidth().testTag("record_bar"), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
         Button(
             onClick = actions.record, enabled = ui.enabled,
             colors = ButtonDefaults.buttonColors(containerColor = Neon.Red, contentColor = Color.White),
@@ -116,6 +125,7 @@ private fun IdleBar(ui: RecordBarUi, actions: RecordBarActions, modifier: Modifi
                 WholeWordsText(" " + tr("Garder ce que je viens de jouer"), textAlign = TextAlign.Center)
             }
         }
+    }
     }
 }
 
@@ -225,6 +235,7 @@ private fun DoneCard(take: NoteTakeUi, actions: RecordBarActions, modifier: Modi
 @Composable
 fun recordBarUi(vm: com.pocketstudio.app.rhythm.RhythmViewModel, label: String, source: TakeSource): RecordBarUi {
     val take by vm.noteTake.collectAsStateWithLifecycle()
+    val empty by vm.takeEmpty.collectAsStateWithLifecycle()
     val canKeep by vm.canKeepPlayed.collectAsStateWithLifecycle()
     val mic by vm.audioRecording.collectAsStateWithLifecycle()
     val live by vm.take.collectAsStateWithLifecycle()
@@ -238,6 +249,7 @@ fun recordBarUi(vm: com.pocketstudio.app.rhythm.RhythmViewModel, label: String, 
         // The 303's take records its knobs: nothing played on keys or pads to keep there.
         canKeepPlayed = canKeep && source != TakeSource.ACID,
         enabled = mic == null && !live.running,
+        empty = empty,
     )
 }
 

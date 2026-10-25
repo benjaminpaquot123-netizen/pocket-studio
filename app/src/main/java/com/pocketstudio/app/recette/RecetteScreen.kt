@@ -1,5 +1,7 @@
 package com.pocketstudio.app.recette
 
+import com.pocketstudio.ui.ScaledAlertDialog
+
 import com.pocketstudio.model.i18n.tr
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -170,7 +172,7 @@ private fun StatusChip(label: String, selected: Boolean, color: androidx.compose
 private fun ProblemDialog(onDismiss: () -> Unit, onSend: (String) -> Unit) {
     // Kept when the phone turns: the words already typed are not lost.
     var text by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf("") }
-    AlertDialog(
+    ScaledAlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(tr("Signaler un problème")) },
         text = {

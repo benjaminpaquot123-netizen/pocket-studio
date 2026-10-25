@@ -1,5 +1,7 @@
 package com.pocketstudio.app.midi
 
+import com.pocketstudio.ui.ScaledDropdownMenu
+
 import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.model.NoteNames
 import com.pocketstudio.app.help.Glossary
@@ -149,7 +151,7 @@ private fun LearnCard(learn: LearnUi) {
             var open by remember { mutableStateOf(false) }
             Box {
                 OutlinedButton(onClick = { open = true }, modifier = Modifier.fillMaxWidth().testTag("midi_learn_add")) { Text(tr("Associer un bouton")) }
-                DropdownMenu(expanded = open, onDismissRequest = { open = false }) {
+                ScaledDropdownMenu(expanded = open, onDismissRequest = { open = false }) {
                     learn.targets.forEach { (label, key) ->
                         DropdownMenuItem(text = { Text(label) }, onClick = { open = false; learn.learn(key) })
                     }

@@ -2,6 +2,9 @@
 
 package com.pocketstudio.app.session
 
+import com.pocketstudio.ui.ScaledAlertDialog
+import com.pocketstudio.ui.ScaledDropdownMenu
+
 import com.pocketstudio.app.learn.spot
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animate
@@ -769,7 +772,7 @@ private fun ToolIcon(icon: ImageVector, description: String, tag: String, on: Bo
 /** The gestures, in a few short lines (the « ? » of the tool line). */
 @Composable
 private fun TimelineHelp(close: () -> Unit) {
-    AlertDialog(
+    ScaledAlertDialog(
         onDismissRequest = close,
         title = { Text(tr("Ligne du temps")) },
         text = {
@@ -1574,7 +1577,7 @@ private fun ClipMenuAt(m: ClipMenu, ui: TimelineUi, actions: TimelineActions, cl
     val songBar = (p.partSpans.getOrNull(m.part)?.start ?: 0) / p.stepsPerBar
     val cutAt = p.splitBar(m.part, m.bar.coerceAtLeast(1))
     Box(Modifier.offset { IntOffset(m.x.roundToInt(), m.y.roundToInt()) }.size(1.dp)) {
-        DropdownMenu(expanded = picking == null && !inserting && !sheet, onDismissRequest = close) {
+        ScaledDropdownMenu(expanded = picking == null && !inserting && !sheet, onDismissRequest = close) {
             val trackName = ui.rows.firstOrNull { it.key == key }?.name?.let(DefaultNames::shown)
             Text(
                 tr("Partie %d", m.part + 1) + " · " + p.sceneTitle(part.scene) + (trackName?.let { " · $it" } ?: ""),
@@ -1684,7 +1687,7 @@ private fun ClipMenuAt(m: ClipMenu, ui: TimelineUi, actions: TimelineActions, cl
 /** One of the scenes in use, picked (the one [current] marked). */
 @Composable
 private fun TimelineScenePicker(title: String, p: Project, current: Int, onPick: (Int) -> Unit, onDismiss: () -> Unit) {
-    AlertDialog(
+    ScaledAlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(title) },
         text = {

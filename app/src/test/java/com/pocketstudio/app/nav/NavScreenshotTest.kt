@@ -4,6 +4,8 @@ import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.longClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.isDisplayed
 import com.github.takahirom.roborazzi.ExperimentalRoborazziApi
@@ -84,6 +86,33 @@ open class NavScreenshotTest {
     @Test fun helpLabelsSons() = shot("help_labels_sons") { tap("tab_Sons"); tap("help_labels_button") }
     @Test fun helpLabelsMix() = shot("help_labels_mix") { tap("tab_Mix"); tap("help_labels_button") }
     @Test fun helpLabelsSimple() = shot("help_labels_simple", simple = true) { tap("help_labels_button") }
+
+    /** Lot 2: windows of their own (a sheet, the share sheet) at the interface size. */
+    @Test fun sheetPad() = shot("sheet_pad") {
+        tap("tab_Sons")
+        compose.onNodeWithTag("pad_0").performTouchInput { longClick() }
+        compose.waitForIdle()
+    }
+    @Test fun sheetShare() = shot("sheet_share") { tap("top_share") }
+
+    /** Lot 2 review: Sons › a track after a take (lying down: the take's card beside the keys). */
+    @Test fun sonsSynthTake() = shot("sons_synth_take") {
+        tap("tab_Sons")
+        tap("track_${h.trackId("Lead")}")
+        val vm = h.vm
+        vm.playingForTest = true
+        vm.recordTake(com.pocketstudio.app.record.TakeSource.KEYS)
+        for ((pitch, from, to) in listOf(Triple(60, 1.2, 2.9), Triple(64, 3.8, 5.0))) {
+            vm.recordPositionForTest = from
+            vm.playedClockForTest = from
+            vm.synthNoteOn(pitch, 0.8f)
+            vm.recordPositionForTest = to
+            vm.playedClockForTest = to
+            vm.synthNoteOff(pitch)
+        }
+        vm.recordTake(com.pocketstudio.app.record.TakeSource.KEYS)
+        compose.waitForIdle()
+    }
 }
 
 /** Réglages › Taille 130 % on a 411 dp phone, in French (screenshots/scale130/fr_nav_*). */
@@ -97,6 +126,7 @@ open class NavScale130ScreenshotTest : NavScreenshotTest() {
         val SCALED = setOf(
             "structure", "structure_parts", "sons", "sons_synth", "mix", "live", "plus", "simple_song", "simple_rhythm", "simple_keys",
             "simple_send", "welcome_mode", "mission_listen", "help_labels", "help_labels_simple", "launch", "launch_simple",
+            "sheet_pad", "sheet_share",
         )
     }
 }
@@ -131,5 +161,47 @@ class NavTabletLandscapeScreenshotTest : NavTabletScreenshotTest() {
 @Config(qualifiers = "w860dp-h400dp-land-xxhdpi")
 class NavPhoneLandscapeScreenshotTest : NavScreenshotTest() {
     override val prefix = "nav/land_"
-    override fun wanted(name: String) = name in setOf("structure", "sons", "sons_synth", "mix", "live", "plus", "simple_song", "simple_keys", "help_labels", "launch")
+    override fun wanted(name: String) = name in setOf("structure", "sons", "sons_synth", "sons_synth_take", "mix", "live", "plus", "simple_song", "simple_keys", "help_labels", "launch")
+}
+
+/**
+ * Lot 2: Benjamin's Galaxy Tab A11 (8.7", 1340 × 800 px, tvdpi) as the app really gets it, the
+ * status bar (24 dp) and the navigation bar (48 dp) taken: 600 × 934 dp upright
+ * (screenshots/tabA11/nav_*). The 11" classes above are not his tablet.
+ */
+@Config(qualifiers = "sw600dp-w600dp-h934dp-port-tvdpi")
+open class NavTabA11ScreenshotTest : NavScreenshotTest() {
+    override val prefix get() = "tabA11/${if (uiScale != 1f) "130_" else ""}nav_"
+    override fun wanted(name: String) = name in A11
+
+    companion object {
+        val A11 = setOf(
+            "structure", "structure_parts", "sons", "sons_synth", "mix", "live", "plus",
+            "simple_song", "simple_rhythm", "simple_keys", "simple_send", "launch", "sheet_pad", "sons_synth_take",
+        )
+    }
+}
+
+/** The same tablet lying down: 1006 × 528 dp (screenshots/tabA11/land_nav_*). */
+@Config(qualifiers = "sw600dp-w1006dp-h528dp-land-tvdpi")
+open class NavTabA11LandscapeScreenshotTest : NavTabA11ScreenshotTest() {
+    override val prefix get() = "tabA11/${if (uiScale != 1f) "130_" else ""}land_nav_"
+}
+
+/** The A11 upright at 130 % (its owner's size): a sheet open, the keyboard, the five spaces. */
+@Config(qualifiers = "sw600dp-w600dp-h934dp-port-tvdpi")
+class NavTabA11Scale130ScreenshotTest : NavTabA11ScreenshotTest() {
+    override val uiScale = 1.3f
+    override fun wanted(name: String) = name in A11_130
+
+    companion object {
+        val A11_130 = setOf("structure", "sons", "mix", "live", "plus", "simple_song", "simple_keys", "launch", "sheet_pad", "sheet_share")
+    }
+}
+
+/** The A11 lying down at 130 %. */
+@Config(qualifiers = "sw600dp-w1006dp-h528dp-land-tvdpi")
+class NavTabA11LandscapeScale130ScreenshotTest : NavTabA11LandscapeScreenshotTest() {
+    override val uiScale = 1.3f
+    override fun wanted(name: String) = name in NavTabA11Scale130ScreenshotTest.A11_130
 }

@@ -2,6 +2,9 @@
 
 package com.pocketstudio.app.session
 
+import com.pocketstudio.ui.ScaledBottomSheet
+import com.pocketstudio.ui.ScaledDropdownMenu
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -129,7 +132,7 @@ fun SongChordsRoute(vm: RhythmViewModel, close: () -> Unit) {
 @Composable
 fun SongChordsSheet(ui: SongChordsUi, actions: SongChordsActions, close: () -> Unit) {
     val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    ModalBottomSheet(onDismissRequest = close, sheetState = state, containerColor = Neon.Surface, modifier = Modifier.testTag("song_chords_sheet")) {
+    ScaledBottomSheet(onDismissRequest = close, sheetState = state, containerColor = Neon.Surface, modifier = Modifier.testTag("song_chords_sheet")) {
         SongChordsContent(ui, actions)
     }
 }
@@ -193,7 +196,7 @@ fun SongChordsContent(ui: SongChordsUi, actions: SongChordsActions) {
 private fun PartChords(part: ChordPartUi, choices: List<Pair<Int, String>>, actions: SongChordsActions) {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Text(
-            part.title + if (part.guessed) "  ·  " + tr("lus dans les notes") else "",
+            part.title + if (part.guessed) "  ·  " + tr("trouvés dans tes notes") else "",
             style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis,
         )
         FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -209,7 +212,7 @@ private fun PartChords(part: ChordPartUi, choices: List<Pair<Int, String>>, acti
                             .testTag("chord_${part.scene}_$bar"),
                         contentAlignment = Alignment.Center,
                     ) { Text(name, style = MaterialTheme.typography.titleSmall, color = Neon.TextPrimary, maxLines = 1) }
-                    DropdownMenu(expanded = open, onDismissRequest = { open = false }) {
+                    ScaledDropdownMenu(expanded = open, onDismissRequest = { open = false }) {
                         choices.forEach { (degree, chord) ->
                             DropdownMenuItem(
                                 text = { Text(chord) }, onClick = { open = false; actions.tryChord(part.scene, bar, degree) },

@@ -390,7 +390,9 @@ internal object WizardMix {
         val lanes = p.drums.lanes.toMutableList()
         for ((role, pan) in PANS_V2) {
             val lane = role.lane
-            if (lane in lanes.indices && lanes[lane].pan == PANS[role]) lanes[lane] = lanes[lane].copy(pan = pan)
+            // A line the style does not play (the last Drop's extra layer, G0) takes its place too.
+            val extra = lanes.getOrNull(lane)?.pan == 0f && style.lines.none { it.role == role }
+            if (lane in lanes.indices && (lanes[lane].pan == PANS[role] || extra)) lanes[lane] = lanes[lane].copy(pan = pan)
         }
         p = withRisingMontees(p)
         p = withSectionLevels(p, build = style.form == SongForm.Build, monteeTop = monteeTopDb(style), monteeFloor = monteeFloorDb(style))

@@ -1,0 +1,8 @@
+{"style":"techno","ch":6,"m":{"centroid_hz": 329, "pres": -9.3, "bright": -20.6, "mud": 13.5, "sm": -18.0, "level_db": -49.6}}
+{"style":"house","ch":6,"m":{"centroid_hz": 451, "pres": -15.9, "bright": -39.3, "mud": 15.9, "sm": -12.0, "level_db": -38.5}}
+{"style":"dnb","ch":6,"m":{"centroid_hz": 725, "pres": -3.6, "bright": -30.5, "mud": -0.4, "sm": -1.1, "level_db": -44.1}}
+{"style":"jump_up","ch":6,"m":{"centroid_hz": 23938, "pres": -29.7, "bright": 0.0, "mud": -0.0, "sm": -18.8, "level_db": -194.2}}
+{"style":"trance","ch":6,"m":{"centroid_hz": 638, "pres": -9.2, "bright": -12.2, "mud": 6.7, "sm": -5.9, "level_db": -12.0}}
+{"style":"liquid_dnb","ch":6,"m":{"centroid_hz": 694, "pres": -6.8, "bright": -20.0, "mud": 1.1, "sm": -8.9, "level_db": -14.8}}
+{"style":"trap","ch":5,"m":{"centroid_hz": 1337, "pres": -1.9, "bright": -18.6, "mud": -12.4, "sm": -5.5, "level_db": -13.2}}
+{"style":"dubstep","ch":6,"m":{"centroid_hz": 567, "pres": -7.9, "bright": -23.4, "mud": 6.1, "sm": -4.5, "level_db": -33.9}}

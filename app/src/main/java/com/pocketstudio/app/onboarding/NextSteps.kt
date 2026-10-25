@@ -5,6 +5,7 @@ import com.pocketstudio.app.ui.AppTab
 import com.pocketstudio.model.Channel
 import com.pocketstudio.model.Mixer
 import com.pocketstudio.model.Project
+import com.pocketstudio.model.RoleMix
 import com.pocketstudio.model.allScenes
 import com.pocketstudio.model.instrumentTracks
 
@@ -110,7 +111,10 @@ fun nextSteps(project: Project, marks: Set<StepGoal> = emptySet()): List<NextSte
     val voice = project.audioTracks.any { it.clip != null }
     val default = Channel()
     // The tracks' faders (the pads' own strips hold the assistant's balance of the kit, not the user's mix).
-    val mixed = Mixer.TRACK_STRIPS.mapNotNull { project.mixer.channels.getOrNull(it) }.any { it.volume != default.volume || it.pan != default.pan }
+    // An assistant's song pans its tracks itself (G0, RoleMix): those places are not the user's mix.
+    val assistantPans = if (project.style != null) RoleMix.PANS else emptySet()
+    val mixed = Mixer.TRACK_STRIPS.mapNotNull { project.mixer.channels.getOrNull(it) }
+        .any { it.volume != default.volume || (it.pan != default.pan && it.pan !in assistantPans) }
     // Made whole in one go (the assistant, a style): the way on is to listen, make it one's own, then share.
     val madeWhole = rhythm && (bass || melody) && song
     val steps = listOf(

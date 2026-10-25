@@ -146,7 +146,7 @@ int main(int argc, char** argv) {
             ps::Sample* s = sampleOf(id, line);
             if (op == "PAD") install(ps::CommandType::InstallSample, index, s);
             else if (op == "AUDIOCLIP") install(ps::CommandType::InstallAudioClip, index, s);
-            else install(ps::CommandType::InstallTrackSample, (std::clamp(index & 0xFF, 0, ps::kTracks - 1) << 16) | ((index >> 8) & 0xFFFF), s);  // | zone + 1 << 8: a multizone zone
+            else install(ps::CommandType::InstallTrackSample, (std::clamp(index & 0xFF, 0, ps::kSounds - 1) << 16) | ((index >> 8) & 0xFFFF), s);  // | zone + 1 << 8: a multizone zone
         } else if (op == "STEMS") {
             long id = 0;
             ls >> id;

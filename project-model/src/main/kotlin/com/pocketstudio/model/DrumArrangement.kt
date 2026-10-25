@@ -21,15 +21,19 @@ object DrumArrangement {
     /** The label of the one-bar scene that plays a crash (saved in French, translated at display). */
     const val CRASH_LABEL = "Crash"
 
-    private enum class Kind { Crash, Fill16, Fill8 }
+    internal enum class Kind { Crash, Fill16, Fill8 }
 
-    private data class Mark(val bar: Int, val kind: Kind)
+    internal data class Mark(val bar: Int, val kind: Kind, val sec: Sec)
 
     /** The song's stretches (consecutive blocks of one kind), with their first bar. */
     private data class Stretch(val sec: Sec, val start: Int, val bars: Int, val scenes: List<SongShape.Block>)
 
-    fun withFillsAndCrashes(project: Project, shape: SongShape.Shape, style: Style, feel: DrumHumanizer.Feel, seed: Long, crashLane: Int?): Project {
-        if (project.song.isEmpty() || project.allScenes.none { s -> s.drums.lanes.any { it.hits.isNotEmpty() } }) return project
+    /**
+     * The bars of [shape]'s song that get a crash or a fill (as the song has them, [crashLane] the
+     * cymbal's pad or none): the crashes first, then the fills at the 16, then at the 8 (the order the
+     * scenes are given in). Null when [shape]'s bars are not [songBars].
+     */
+    internal fun marks(shape: SongShape.Shape, crashLane: Int?, songBars: Int): List<Mark>? {
         val stretches = ArrayList<Stretch>()
         var bar = 0
         for (b in shape.blocks) {
@@ -38,7 +42,7 @@ object DrumArrangement {
             else stretches += Stretch(b.sec, bar, b.bars, listOf(b))
             bar += b.bars
         }
-        if (bar != project.songBars) return project
+        if (bar != songBars) return null
         // The bars of a block that rolls, cuts its bass or ends on silence are left as they are (the Montée, the fake drop).
         val quiet = HashSet<Int>()
         var at = 0
@@ -52,56 +56,92 @@ object DrumArrangement {
             val next = stretches.getOrNull(i + 1)?.sec
             // The crash: on the 1 of each 16 of a Drop (a Refrain), on the first beat of a fake drop and of a Break.
             val crashes = crashLane != null && (st.sec == Sec.Drop || st.sec == Sec.Fake || (st.sec == Sec.Break && st.bars >= 8))
-            if (crashes) for (k in 0 until st.bars step 16) if (st.sec == Sec.Drop || k == 0) marks += Mark(st.start + k, Kind.Crash)
+            if (crashes) for (k in 0 until st.bars step 16) if (st.sec == Sec.Drop || k == 0) marks += Mark(st.start + k, Kind.Crash, st.sec)
             if (st.sec == Sec.Outro || st.sec == Sec.Lead || st.sec == Sec.Fake) return@forEachIndexed
             for (k in 7 until st.bars step 8) {
                 val end = k == st.bars - 1
                 // Into a Montée or a Drop the song has its own transition; the Intro's layers come in every 8.
                 if (end && (next == Sec.Lead || next == Sec.Drop || next == Sec.Fake || next == null)) continue
                 if (st.sec == Sec.Intro && !end) continue
-                marks += Mark(st.start + k, if (end || (k + 1) % 16 == 0) Kind.Fill16 else Kind.Fill8)
+                marks += Mark(st.start + k, if (end || (k + 1) % 16 == 0) Kind.Fill16 else Kind.Fill8, st.sec)
             }
         }
-        val chosen = marks.filter { it.kind == Kind.Crash || it.bar !in quiet }.sortedBy { it.kind.ordinal }
-        if (chosen.isEmpty()) return project
+        return marks.filter { it.kind == Kind.Crash || it.bar !in quiet }.sortedBy { it.kind.ordinal }
+    }
 
+    fun withFillsAndCrashes(project: Project, shape: SongShape.Shape, style: Style, feel: DrumHumanizer.Feel, seed: Long, crashLane: Int?): Project {
+        if (project.song.isEmpty() || project.allScenes.none { s -> s.drums.lanes.any { it.hits.isNotEmpty() } }) return project
+        val marks = marks(shape, crashLane, project.songBars) ?: return project
+        if (marks.isEmpty()) return project
         // Each part's first bar, to find the drums a bar plays.
         val starts = project.song.runningFold(0) { acc, p -> acc + project.partSteps(p) / project.stepsPerBar }
         fun partAt(b: Int): Int = starts.indexOfLast { it <= b }.coerceIn(0, project.song.size - 1)
-
-        val scenes = project.allScenes.toMutableList()
-        val byContent = HashMap<DrumPattern, Int>()
-        val special = HashMap<Int, Int>()  // song bar -> the scene its drums play
         val sung = style.form.sung
-        for (m in chosen) {
-            val pi = partAt(m.bar)
-            val part = project.song[pi]
-            if (!part.plays(SongPart.DRUMS) || SongPart.DRUMS in part.play) continue
-            val source = scenes.getOrNull(part.scene)?.drums ?: continue
-            val spb = project.stepsPerBar
-            val loopBars = (source.steps / spb).coerceAtLeast(1)
-            val k = m.bar - starts[pi]
-            val inLoop = (part.fromBars(SongPart.DRUMS) + k) % loopBars
-            var lanes = source.lanes.map { lane ->
-                lane.copy(hits = lane.hits.filterKeys { it in inLoop * spb until (inLoop + 1) * spb }.mapKeys { it.key - inLoop * spb }, sample = null, pan = 0f)
-            }
-            if (lanes.all { it.hits.isEmpty() }) continue
-            val dice = DrumHumanizer.Dice(seed + 104729L * m.bar)
-            lanes = when (m.kind) {
-                Kind.Crash -> lanes.toMutableList().also { l ->
-                    val c = crashLane ?: return@also
-                    l[c] = l[c].copy(hits = l[c].hits + (0 to Hit(StarterWizard.CRASH_VELOCITY)))
+
+        /**
+         * The drum scenes of [order]'s crashes and fills (song bar -> scene), and how many found none.
+         * [share]: when the scenes run short, a crash or a fill plays one already made: the same fill as
+         * written (before the drummer's few milliseconds), else one of the same kind on the same bar of
+         * the same scene, else one of the same kind in the same kind of section (a Drop's fill in
+         * another Drop: the beat of that bar is its neighbour's, the fill is there).
+         */
+        fun allocate(order: List<Mark>, share: Boolean): Triple<List<Scene>, Map<Int, Int>, Int> {
+            val scenes = project.allScenes.toMutableList()
+            val byContent = HashMap<DrumPattern, Int>()
+            val byWritten = HashMap<DrumPattern, Int>()
+            val byTemplate = HashMap<Triple<Int, Int, Kind>, Int>()
+            val bySection = HashMap<Pair<Sec, Kind>, Int>()
+            val special = HashMap<Int, Int>()
+            var lost = 0
+            for (m in order) {
+                val pi = partAt(m.bar)
+                val part = project.song[pi]
+                if (!part.plays(SongPart.DRUMS) || SongPart.DRUMS in part.play) continue
+                val source = scenes.getOrNull(part.scene)?.drums ?: continue
+                val spb = project.stepsPerBar
+                val loopBars = (source.steps / spb).coerceAtLeast(1)
+                val k = m.bar - starts[pi]
+                val inLoop = (part.fromBars(SongPart.DRUMS) + k) % loopBars
+                val lanes = source.lanes.map { lane ->
+                    lane.copy(hits = lane.hits.filterKeys { it in inLoop * spb until (inLoop + 1) * spb }.mapKeys { it.key - inLoop * spb }, sample = null, pan = 0f)
                 }
-                Kind.Fill16 -> timed(DrumHumanizer.ending(lanes, spb, if (sung) DrumHumanizer.Ending.Hats else DrumHumanizer.Ending.Toms, beats = 2, sung = sung), spb - 8, feel, dice)
-                Kind.Fill8 -> timed(DrumHumanizer.ending(lanes, spb, DrumHumanizer.endingOf(feel, seed, m.bar / 8), beats = 2, sung = sung), spb - 8, feel, dice)
+                if (lanes.all { it.hits.isEmpty() }) continue
+                val dice = DrumHumanizer.Dice(seed + 104729L * m.bar)
+                val written = when (m.kind) {
+                    Kind.Crash -> lanes.toMutableList().also { l ->
+                        val c = crashLane ?: return@also
+                        l[c] = l[c].copy(hits = l[c].hits + (0 to Hit(StarterWizard.CRASH_VELOCITY)))
+                    }
+                    Kind.Fill16 -> DrumHumanizer.ending(lanes, spb, if (sung) DrumHumanizer.Ending.Hats else DrumHumanizer.Ending.Toms, beats = 2, sung = sung)
+                    Kind.Fill8 -> DrumHumanizer.ending(lanes, spb, DrumHumanizer.endingOf(feel, seed, m.bar / 8), beats = 2, sung = sung)
+                }
+                val key = DrumPattern(steps = spb, lanes = written)
+                val drums = if (m.kind == Kind.Crash) key else DrumPattern(steps = spb, lanes = timed(written, spb - 8, feel, dice))
+                val template = Triple(part.scene, inLoop, m.kind)
+                val full = scenes.size >= Scene.MAX - FREE_SLOTS
+                val slot = byContent[drums] ?: (if (share && full) byWritten[key] ?: byTemplate[template] ?: bySection[m.sec to m.kind] else null) ?: run {
+                    if (full) return@run null
+                    scenes += Scene(drums = drums, label = if (m.kind == Kind.Crash) CRASH_LABEL else PartIntents.FILL_LABEL)
+                    (scenes.size - 1).also {
+                        byContent[drums] = it
+                        byWritten.putIfAbsent(key, it)
+                        byTemplate.putIfAbsent(template, it)
+                        bySection.putIfAbsent(m.sec to m.kind, it)
+                    }
+                }
+                if (slot == null) lost++ else special[m.bar] = slot
             }
-            val drums = DrumPattern(steps = spb, lanes = lanes)
-            val slot = byContent[drums] ?: run {
-                if (scenes.size >= Scene.MAX - FREE_SLOTS) return@run null
-                scenes += Scene(drums = drums, label = if (m.kind == Kind.Crash) CRASH_LABEL else PartIntents.FILL_LABEL)
-                (scenes.size - 1).also { byContent[drums] = it }
-            } ?: continue
-            special[m.bar] = slot
+            return Triple(scenes, special, lost)
+        }
+
+        // As before G0 when the scenes are enough; else (G0 review: the long songs lost their fills at the 8)
+        // each kind of crash and fill in each kind of section gets its scene first, and the others share.
+        var (scenes, special, lost) = allocate(marks, share = false)
+        if (lost > 0) {
+            val firsts = marks.groupBy { it.sec to it.kind }.values.map { it.first() }
+            val shared = allocate(firsts + (marks - firsts.toSet()), share = true)
+            scenes = shared.first
+            special = shared.second
         }
         if (special.isEmpty()) return project
         val song = ArrayList<SongPart>()

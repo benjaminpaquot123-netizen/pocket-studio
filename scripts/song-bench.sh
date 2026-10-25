@@ -149,7 +149,7 @@ fi
 
 echo "== Report"
 python3 -I "$ROOT/scripts/bench/report.py" "$OUT/json" --out "$OUT/report.md" --json "$OUT/bench.json" \
-    --hashes "$OUT/sha256.txt" --renders "$OUT/render" ${BEFORE:+--before "$BEFORE"} ${TITLE:+--title "$TITLE"} \
+    --hashes "$OUT/sha256.txt" --renders "$OUT/render" --cmds "$OUT/cmds" ${BEFORE:+--before "$BEFORE"} ${TITLE:+--title "$TITLE"} \
     $([ "$PREMASTER" = 1 ] && echo --premaster "$OUT/json-pre") $([ "$M4A" = 1 ] && echo --m4a "$OUT/json-m4a") \
     $([ "$FFMPEG" = 1 ] && echo --ffmpeg "$OUT/ffmpeg.txt")
 echo "Report: $OUT/report.md"

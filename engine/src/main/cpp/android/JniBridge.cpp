@@ -369,7 +369,8 @@ JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportInstallAu
 // `track` | (zone + 1) << 8: a zone of the track's multizone instrument (phase 38); the plain
 // track index: its sampled source. A 16-bit (compact) sample may only go to a zone.
 static int32_t trackSampleArg(jint track) {
-    return (std::clamp<jint>(track & 0xFF, 0, ps::kTracks - 1) << 16) | ((track >> 8) & 0xFFFF);
+    // G1b: a layer's sound (ps::layerSound) as well as a track's.
+    return (std::clamp<jint>(track & 0xFF, 0, ps::kSounds - 1) << 16) | ((track >> 8) & 0xFFFF);
 }
 static bool refusedOnTrack(jint track, ps::Sample* s) { return s && s->compact() && ((track >> 8) & 0xFFFF) == 0; }
 
@@ -738,11 +739,11 @@ JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportDestroy(J
 // the limiter. Layout must match NativeEngine.METER_LIMITER / METER_MASTER_IN.
 JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_mixerMeters(JNIEnv* env, jobject, jfloatArray out) {
     auto& m = host().engine().mixer();
-    constexpr int kMeters = ps::Mixer::kChannels + 2;
+    constexpr int kMeters = ps::Mixer::kProjectChannels + 2;
     jfloat values[kMeters];
-    for (int ch = 0; ch < ps::Mixer::kChannels; ++ch) values[ch] = ch == ps::Mixer::kMaster ? m.takeMasterPeak() : m.takeChannelPeak(ch);
-    values[ps::Mixer::kChannels] = m.takeLimiterGain();
-    values[ps::Mixer::kChannels + 1] = m.takeMasterInputPeak();
+    for (int ch = 0; ch < ps::Mixer::kProjectChannels; ++ch) values[ch] = ch == ps::Mixer::kMaster ? m.takeMasterPeak() : m.takeChannelPeak(ch);
+    values[ps::Mixer::kProjectChannels] = m.takeLimiterGain();
+    values[ps::Mixer::kProjectChannels + 1] = m.takeMasterInputPeak();
     const int n = std::min(kMeters, static_cast<int>(env->GetArrayLength(out)));
     if (n > 0) env->SetFloatArrayRegion(out, 0, n, values);
 }
@@ -751,7 +752,7 @@ JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_mixerMeters(JNI
 // channel * 8 + slot), the deepest gain reduction of its compressor since the last reading, in dB (<= 0).
 JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_insertReductions(JNIEnv* env, jobject, jfloatArray out) {
     auto& m = host().engine().mixer();
-    constexpr int kMeters = ps::Mixer::kChannels * ps::Mixer::kInserts;
+    constexpr int kMeters = ps::Mixer::kProjectChannels * ps::Mixer::kInserts;
     jfloat values[kMeters];
     for (int i = 0; i < kMeters; ++i) values[i] = m.takeInsertReduction(i / ps::Mixer::kInserts, i % ps::Mixer::kInserts);
     const int n = std::min(kMeters, static_cast<int>(env->GetArrayLength(out)));

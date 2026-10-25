@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <array>
+#include <cmath>
 #include <cstdint>
 
 #include "MultiSampler.h"
@@ -19,6 +20,49 @@ namespace ps {
 // studio 808 or the subtractive synth). Everything is preallocated: real-time safe.
 struct InstrumentTrack {
     enum Source { SynthSource = 0, PlaitsSource = 1, SampledSource = 2, MultiSource = 3, Bass808Source = 4 };
+    // G1b, « une piste = une pile de couches »: up to kLayers more sounds (each an InstrumentTrack of
+    // its own, held by the engine) play this track's notes: the same note events (the sequencer's,
+    // the keyboard's, the arpeggiator's), kept to the layer's note range and transposed. The track's
+    // own sound is the first of its four. Each layer has its own mixer strip (Mixer::kFirstLayer),
+    // which feeds the track's strip. Everything is preallocated: real-time safe.
+    static constexpr int kLayers = 3;
+    struct Layer {
+        InstrumentTrack* sound = nullptr;  // set once by the engine (never null there)
+        bool on = false;
+        int low = 0, high = 127;  // the incoming notes it plays
+        int transpose = 0;        // semitones
+        float fine = 0.0f;        // semitones (a fine tune of -1..1, from cents)
+        // For each incoming note, the note it started on the layer (-1: none): its note-off goes
+        // there whatever the range or the transposition became meanwhile (no note hangs).
+        std::array<int8_t, 128> playing = minusOnes();
+        static std::array<int8_t, 128> minusOnes() {
+            std::array<int8_t, 128> a{};
+            a.fill(-1);
+            return a;
+        }
+    };
+    std::array<Layer, kLayers> layers{};
+    enum LayerParam { LayerOn = 0, LayerLow = 1, LayerHigh = 2, LayerTranspose = 3, LayerFine = 4 };
+    // SetLayer: real-time safe. A layer switched off lets its notes go (their release rings out).
+    void setLayer(int k, int param, float v) {
+        if (k < 0 || k >= kLayers || !std::isfinite(v)) return;
+        auto& l = layers[static_cast<size_t>(k)];
+        switch (param) {
+            case LayerOn:
+                if (l.on && v <= 0.5f) releaseLayer(l, 0);
+                l.on = v > 0.5f;
+                break;
+            case LayerLow: l.low = std::clamp(static_cast<int>(std::lround(v)), 0, 127); break;
+            case LayerHigh: l.high = std::clamp(static_cast<int>(std::lround(v)), 0, 127); break;
+            case LayerTranspose: l.transpose = std::clamp(static_cast<int>(std::lround(v)), -48, 48); break;
+            case LayerFine:
+                l.fine = std::clamp(v, -1.0f, 1.0f);
+                if (l.sound) l.sound->setExpression(Bend, bend_ + l.fine);
+                break;
+            default: break;
+        }
+    }
+    bool layerOn(int k) const { return k >= 0 && k < kLayers && layers[static_cast<size_t>(k)].on; }
     Synth synth;
     SoundFontPlayer instrument;
     PlaitsSynth plaits;
@@ -52,6 +96,17 @@ struct InstrumentTrack {
     // waits for a download).
     void noteOn(int n, float v, int at) {
         if (n >= 0 && n < 128) sustained[static_cast<size_t>(n)] = false;
+        if (n >= 0 && n < 128) {
+            for (auto& l : layers) {
+                // Transposed past the keyboard's ends: not played (two keys never share one layer note).
+                const int m = n + l.transpose;
+                if (!l.on || l.sound == nullptr || n < l.low || n > l.high || m < 0 || m > 127) continue;
+                auto& was = l.playing[static_cast<size_t>(n)];
+                if (was >= 0) l.sound->noteOff(was, at);
+                was = static_cast<int8_t>(m);
+                l.sound->noteOn(m, v, at);
+            }
+        }
         if (instrument.active()) instrument.noteOn(n, v, at);
         else if (source == PlaitsSource) plaits.noteOn(n, v, at);
         else if (source == SampledSource && sampled.active()) sampled.noteOn(n, v, at);
@@ -76,6 +131,10 @@ struct InstrumentTrack {
         sampled.allNotesOff();
         multi.allNotesOff();
         bass808.allNotesOff();
+        for (auto& l : layers) {
+            if (l.sound) l.sound->allNotesOff();
+            l.playing.fill(-1);
+        }
         sustained.fill(false);
         if (!keepArpKeys) arp.count = 0;
         arp.sounding = -1;
@@ -135,8 +194,13 @@ struct InstrumentTrack {
             case Bend:
                 synth.setBend(value); plaits.setBend(value); sampled.setBend(value); instrument.setBend(value);
                 multi.setBend(value); bass808.setBend(value);
+                bend_ = value;
+                for (auto& l : layers) if (l.sound) l.sound->setExpression(Bend, value + l.fine);
                 break;
-            case Mod: synth.setMod(value); plaits.setMod(value); break;
+            case Mod:
+                synth.setMod(value); plaits.setMod(value);
+                for (auto& l : layers) if (l.sound) l.sound->setExpression(Mod, value);
+                break;
             case Sustain:
                 sustain = value > 0.5f;
                 if (!sustain) {
@@ -268,7 +332,22 @@ struct InstrumentTrack {
     void render(float* out, int numFrames) { render(out, nullptr, numFrames); }
 
 private:
+    float bend_ = 0.0f;  // the track's bend, which the layers follow (plus their fine tune)
+    void releaseLayer(Layer& l, int at) {
+        for (auto& m : l.playing) {
+            if (m >= 0 && l.sound) l.sound->noteOff(m, at);
+            m = -1;
+        }
+    }
     void soundOff(int n, int at) {
+        if (n >= 0 && n < 128) {
+            for (auto& l : layers) {
+                auto& m = l.playing[static_cast<size_t>(n)];
+                if (m < 0) continue;
+                if (l.sound) l.sound->noteOff(m, at);
+                m = -1;
+            }
+        }
         // Note-offs go everywhere: a source switched while a key was held must not hang.
         instrument.noteOff(n, at);
         plaits.noteOff(n, at);

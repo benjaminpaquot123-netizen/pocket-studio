@@ -44,9 +44,12 @@ object Freeze {
         val notes = p.allScenes.map { s -> if (id == 0) s.synthNotes else s.trackNotes[id] }
         // From the text of the values, not their hashCode(): an enum's (the arpeggio's mode) changes
         // with every launch of the app, a frozen track would never be up to date again.
-        return listOf(p.song, p.tempoBpm, p.swing, p.beatsPerBar, notes, t.synth, t.plaits, t.instrument, t.sampled, t.engine,
+        // G1b: its layers too, only when it has some (a track frozen before them stays up to date).
+        return (listOf(p.song, p.tempoBpm, p.swing, p.beatsPerBar, notes, t.synth, t.plaits, t.instrument, t.sampled, t.engine,
             t.multi, t.voice808,
-            p.mixer.channels.getOrNull(InstrumentTrack.mixerChannel(id)), p.automation.filter { it.target.ch == InstrumentTrack.mixerChannel(id) }).toString().hashCode()
+            p.mixer.channels.getOrNull(InstrumentTrack.mixerChannel(id)), p.automation.filter { it.target.ch == InstrumentTrack.mixerChannel(id) }) +
+            // (their names and roles change nothing heard)
+            listOfNotNull(t.layers.takeIf { it.isNotEmpty() }?.map { it.copy(label = "", role = "") })).toString().hashCode()
     }
 
     /** Track [id] is frozen but the song (or the track) changed since: « regèle-la ». */

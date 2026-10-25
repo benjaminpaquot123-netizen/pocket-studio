@@ -102,6 +102,9 @@ object NativeEngine {
     // Phase 38: multizone instruments and the 808 on instrument tracks (Engine.h, numbered from 130).
     private const val CMD_TRACK_ZONE = 130
     private const val CMD_TRACK_808 = 131
+    // G1b: a track's layers (Engine.h, numbered from 140).
+    private const val CMD_LAYER = 140
+    private const val CMD_LAYER_LISTEN = 141
 
     // Rolls' velocity ramps (Engine.h SetDrumStepRoll).
     const val ROLL_RAMP_LEGACY = 0
@@ -206,6 +209,33 @@ object NativeEngine {
     /** Instrument tracks (the synth track is track 0). */
     const val TRACKS = 8
 
+    /**
+     * G1b: layers over each track's own sound (InstrumentTrack::kLayers). Layer [layer] of track
+     * [track] is sound [layerSound] for the sound commands ([setSynthEngine], [setSynthParam],
+     * [setPlaitsParam], [setInstrument], [setTrackSample], [setTrackSampleParam], [setTrackZone],
+     * [setTrackZoneParam], [setTrackMultiParam], [setTrack808Param]: their `track`), and mixer strip
+     * [layerChannel] for the mixer ones ([setChannelPan], [setChannelMute], [setSend], [setInsertType],
+     * [setInsertParam], [clearInserts]); [setLayer] says how it plays the track's notes.
+     */
+    const val LAYERS = 3
+    /** Every sound the sound commands address: the tracks' own, then their layers'. */
+    const val SOUNDS = TRACKS + TRACKS * LAYERS
+    fun layerSound(track: Int, layer: Int) = TRACKS + track.coerceIn(0, TRACKS - 1) * LAYERS + layer.coerceIn(0, LAYERS - 1)
+    /** A layer's own strip, after the project's [MIXER_CHANNELS] (never in its saved channel numbers). */
+    fun layerChannel(track: Int, layer: Int) = MIXER_CHANNELS + track.coerceIn(0, TRACKS - 1) * LAYERS + layer.coerceIn(0, LAYERS - 1)
+    // [setLayer]'s settings (InstrumentTrack::LayerParam, then Engine.h LayerMix).
+    const val LAYER_ON = 0         // 1: it plays the track's notes, 0: off (its notes let go, its release rings out)
+    const val LAYER_LOW = 1        // the lowest note of the track it plays (MIDI)
+    const val LAYER_HIGH = 2       // the highest
+    const val LAYER_TRANSPOSE = 3  // semitones -48..48
+    const val LAYER_FINE = 4       // -1..1 semitone
+    const val LAYER_GAIN = 5       // linear 0..4, after its effects
+    const val LAYER_THROUGH = 6    // 1: through the track's effects, 0: joining the track after them
+    /** The most notes a layer's synth plays at once (Engine.h kLayerVoices): a seventh steals one. */
+    const val LAYER_VOICES = 6
+    /** [setLayerListen]: every sound of the track heard (as mixed). Bit 0: its own sound, bit 1 + k: layer k. */
+    const val LISTEN_ALL = 15
+
     /** Audio tracks (AudioTracks::kTracks). */
     const val AUDIO_TRACKS = 8
 
@@ -220,6 +250,17 @@ object NativeEngine {
 
     // Synth commands name their track in bits 16..23 of `a` (see Engine.h).
     private fun onTrack(track: Int, a: Int) = (a and 0xFFFF) or (track.coerceIn(0, TRACKS - 1) shl 16)
+    // The sound commands: a track's own sound or a layer's ([layerSound]).
+    private fun onSound(sound: Int, a: Int) = (a and 0xFFFF) or (sound.coerceIn(0, SOUNDS - 1) shl 16)
+
+    /** Layer [layer] of track [track]: a [LAYER_ON]..[LAYER_THROUGH] setting. */
+    fun setLayer(track: Int, layer: Int, param: Int, value: Float) =
+        post(CMD_LAYER, value, (param and 0xFF) or (layer.coerceIn(0, LAYERS - 1) shl 8) or (track.coerceIn(0, TRACKS - 1) shl 16))
+    /**
+     * Which of track [track]'s sounds are heard, live (« écouter cette couche seule », « sans elle »):
+     * bit 0 its own sound, bit 1 + k its layer k; [LISTEN_ALL] as mixed. Each glides in or out.
+     */
+    fun setLayerListen(track: Int, mask: Int) = post(CMD_LAYER_LISTEN, (mask and LISTEN_ALL).toFloat(), track.coerceIn(0, TRACKS - 1))
 
     const val LANES = 16
     /** MultiSampler::kZones: the zones of one multizone instrument. */
@@ -380,7 +421,7 @@ object NativeEngine {
     fun synthNoteOn(note: Int, velocity: Float, track: Int = 0) = post(CMD_SYNTH_NOTE_ON, velocity, onTrack(track, note))
     fun synthNoteOff(note: Int, track: Int = 0) = post(CMD_SYNTH_NOTE_OFF, 0f, onTrack(track, note))
     /** [param] in Synth::Param order, [value] 0..1. */
-    fun setSynthParam(param: Int, value: Float, track: Int = 0) = post(CMD_SYNTH_PARAM, value, onTrack(track, param))
+    fun setSynthParam(param: Int, value: Float, track: Int = 0) = post(CMD_SYNTH_PARAM, value, onSound(track, param))
     /** Instrument track [track] (1..7) in use or not: a track not in use is silent and costs nothing. */
     fun setTrackOn(track: Int, on: Boolean) = post(CMD_TRACK_ON, if (on) 1f else 0f, track)
     fun synthAllOff() = post(CMD_SYNTH_ALL_OFF, 0f)
@@ -445,9 +486,9 @@ object NativeEngine {
      * The synth track's own voice: 0 subtractive, 1 Plaits, 2 a sample played across the keys ([setTrackSample]),
      * 3 a multizone instrument ([setTrackZone]; the synth while it has none), 4 the 808 ([setTrack808Param]).
      */
-    fun setSynthEngine(engine: Int, track: Int = 0) = post(CMD_SYNTH_ENGINE, 0f, onTrack(track, engine))
+    fun setSynthEngine(engine: Int, track: Int = 0) = post(CMD_SYNTH_ENGINE, 0f, onSound(track, engine))
     /** [param] in PlaitsSynth::Param order (0 model, 1 harmonics … 7 level), [value] 0..1. */
-    fun setPlaitsParam(param: Int, value: Float, track: Int = 0) = post(CMD_PLAITS_PARAM, value, onTrack(track, param))
+    fun setPlaitsParam(param: Int, value: Float, track: Int = 0) = post(CMD_PLAITS_PARAM, value, onSound(track, param))
     /** How many times a waiting scene took over since the engine started. */
     fun sceneSwaps(): Int = sink?.sceneSwaps() ?: nativeSceneSwaps()
     private external fun nativeSceneSwaps(): Int
@@ -745,7 +786,7 @@ object NativeEngine {
     }
 
     /** [param] in SampleInstrument::Param order (0 root note … 9 gain), in that parameter's unit. */
-    fun setTrackSampleParam(param: Int, value: Float, track: Int = 0) = post(CMD_TRACK_SAMPLE_PARAM, value, onTrack(track, param))
+    fun setTrackSampleParam(param: Int, value: Float, track: Int = 0) = post(CMD_TRACK_SAMPLE_PARAM, value, onSound(track, param))
 
     /**
      * Zone [zone] (0..511) of instrument track [track]'s multizone instrument plays [sample] (a
@@ -754,20 +795,20 @@ object NativeEngine {
     fun setTrackZone(track: Int, zone: Int, sample: NativeSample?) {
         val target = captureTarget
         // The JNI's track argument: the track, and the zone + 1 above it (0 would be the sampled source).
-        val packed = track.coerceIn(0, TRACKS - 1) or ((zone.coerceIn(0, MULTI_ZONES - 1) + 1) shl 8)
+        val packed = track.coerceIn(0, SOUNDS - 1) or ((zone.coerceIn(0, MULTI_ZONES - 1) + 1) shl 8)
         sink?.let { it.install(target, CommandSink.Install.TrackSample, packed, sample?.handle ?: 0L); return }
         if (target != 0L) exportInstallTrackSample(target, packed, sample?.handle ?: 0L)
         else nativeInstallTrackSample(packed, sample?.handle ?: 0L)
     }
 
     /** A zone's setting in MultiSampler::ZoneParam order (keys, velocities, root, gain, round robin, trigger, loop), in its unit. */
-    fun setTrackZoneParam(track: Int, zone: Int, param: Int, value: Float) = post(CMD_TRACK_ZONE, value, onTrack(track, param), zone.coerceIn(0, MULTI_ZONES - 1))
+    fun setTrackZoneParam(track: Int, zone: Int, param: Int, value: Float) = post(CMD_TRACK_ZONE, value, onSound(track, param), zone.coerceIn(0, MULTI_ZONES - 1))
 
     /** The multizone instrument's own settings, in MultiSampler::Param order (0 the zones in use … 5 release samples' decay). */
-    fun setTrackMultiParam(track: Int, param: Int, value: Float) = post(CMD_TRACK_ZONE, value, onTrack(track, param), -1)
+    fun setTrackMultiParam(track: Int, param: Int, value: Float) = post(CMD_TRACK_ZONE, value, onSound(track, param), -1)
 
     /** The track's 808 ([setSynthEngine] 4): a setting in DrumKit::VoiceParam order ([VOICE_DECAY] … [VOICE_TONE]; the tune is its notes'). */
-    fun setTrack808Param(track: Int, param: Int, value: Float) = post(CMD_TRACK_808, value, onTrack(track, param))
+    fun setTrack808Param(track: Int, param: Int, value: Float) = post(CMD_TRACK_808, value, onSound(track, param))
 
     /** Drum pad [pad] plays through its own mixer strip (its own effects) or straight into the drums'. */
     fun setPadStrip(pad: Int, on: Boolean) = post(CMD_PAD_STRIP, if (on) 1f else 0f, pad)
@@ -855,7 +896,7 @@ object NativeEngine {
     /** False when the live engine did not take it (queue full, stream not running). */
     fun setInstrument(font: SoundFont?, presetIndex: Int, track: Int = 0): Boolean {
         val target = captureTarget
-        val a = onTrack(track, presetIndex)
+        val a = onSound(track, presetIndex)
         sink?.let { s ->
             // Banks are not recorded: a sink only ever hears the track back to its synth.
             if (font != null) return false

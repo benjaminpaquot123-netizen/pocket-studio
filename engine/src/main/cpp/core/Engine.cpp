@@ -16,6 +16,12 @@ constexpr double kTwoPi = 6.28318530717958647692;
 
 Engine::Engine(int sampleRate) {
     frequency_.snap(440.0f);
+    for (int t = 0; t < kTracks; ++t) {
+        for (int k = 0; k < kLayers; ++k) {
+            tracks_[static_cast<size_t>(t)].layers[static_cast<size_t>(k)].sound = &sound(layerSound(t, k));
+            sound(layerSound(t, k)).synth.setVoiceLimit(kLayerVoices);
+        }
+    }
     resetSlots(0);
     for (int k = 0; k < kSlots; ++k) publishSlot(k);
     prepare(sampleRate);
@@ -52,6 +58,7 @@ void Engine::prepare(int sampleRate) {
     drums_.prepare(sampleRate);
     acid_.prepare(sampleRate);
     for (auto& t : tracks_) t.prepare(sampleRate);
+    for (auto& l : *layers_) l.prepare(sampleRate);
     tracks_[0].on = true;
     mixer_.prepare(sampleRate);
     stems_.prepare(sampleRate);
@@ -114,7 +121,8 @@ void Engine::applyCommand(const Command& command) {
                 drums_.resetNoise();
                 sampler_.resetRoundRobin();
                 mixer_.restartLfos();
-                for (auto& t : tracks_) {
+                for (int k = 0; k < kSounds; ++k) {
+                    auto& t = sound(k);
                     t.synth.restartLfos();
                     t.plaits.restartNoise();
                     t.multi.resetRoundRobin();
@@ -131,7 +139,7 @@ void Engine::applyCommand(const Command& command) {
             break;
         case CommandType::SetSoundVersion:
             if (std::isfinite(command.value)) {
-                for (auto& t : tracks_) t.setStereoSounds(command.value >= 1.5f);
+                for (int k = 0; k < kSounds; ++k) sound(k).setStereoSounds(command.value >= 1.5f);
             }
             break;
         case CommandType::SetSidechain:
@@ -193,26 +201,44 @@ void Engine::applyCommand(const Command& command) {
             else acid_.setLength(command.a);
             break;
         case CommandType::SetSynthEngine:
-            tracks_[static_cast<size_t>(trackOf(command.a))].setSource(trackArg(command.a));
+            sound(soundOf(command.a)).setSource(trackArg(command.a));
             break;
         case CommandType::InstallTrackSample: {
-            auto& t = tracks_[static_cast<size_t>(trackOf(command.a))];
+            auto& t = sound(soundOf(command.a));
             const int zone = trackArg(command.a) - 1;
             if (zone >= 0) t.multi.installZone(zone, command.sample);  // takes the reference
             else t.sampled.install(command.sample);
             break;
         }
         case CommandType::SetTrackZone: {
-            auto& t = tracks_[static_cast<size_t>(trackOf(command.a))];
+            auto& t = sound(soundOf(command.a));
             if (command.b < 0) t.multi.setParam(trackArg(command.a), command.value);
             else t.multi.setZoneParam(command.b, trackArg(command.a), command.value);
             break;
         }
         case CommandType::SetTrack808Param:
-            tracks_[static_cast<size_t>(trackOf(command.a))].bass808.setParam(trackArg(command.a), command.value);
+            sound(soundOf(command.a)).bass808.setParam(trackArg(command.a), command.value);
             break;
         case CommandType::SetTrackSampleParam:
-            tracks_[static_cast<size_t>(trackOf(command.a))].sampled.setParam(trackArg(command.a), command.value);
+            sound(soundOf(command.a)).sampled.setParam(trackArg(command.a), command.value);
+            break;
+        case CommandType::SetLayer: {
+            const int track = trackOf(command.a);
+            const int layer = (command.a >> 8) & 0xFF;
+            const int param = command.a & 0xFF;
+            if (layer >= kLayers || !std::isfinite(command.value)) break;
+            auto& t = tracks_[static_cast<size_t>(track)];
+            const int ch = Mixer::layerChannel(track, layer);
+            if (param == LayerGain) mixer_.setLayerGain(ch, command.value);
+            else if (param == LayerThrough) mixer_.setLayerThrough(ch, command.value > 0.5f);
+            else t.setLayer(layer, param, command.value);
+            if (param == InstrumentTrack::LayerOn && command.value > 0.5f) {
+                layerTail_[static_cast<size_t>(track * kLayers + layer)] = static_cast<int>(kLayerTailSeconds * static_cast<float>(sampleRate_));
+            }
+            break;
+        }
+        case CommandType::SetLayerListen:
+            if (std::isfinite(command.value)) mixer_.setLayerListen(std::clamp(command.a, 0, kTracks - 1), static_cast<int>(std::lround(command.value)));
             break;
         case CommandType::SetPadStrip:
             if (command.a >= 0 && command.a < kLanes) padStrip_[static_cast<size_t>(command.a)] = command.value > 0.5f;
@@ -286,7 +312,7 @@ void Engine::applyCommand(const Command& command) {
             break;
         case CommandType::SetPlaitsParam:
             if (trackArg(command.a) < PlaitsSynth::ParamCount) {
-                tracks_[static_cast<size_t>(trackOf(command.a))].plaits.setParam(static_cast<PlaitsSynth::Param>(trackArg(command.a)), command.value);
+                sound(soundOf(command.a)).plaits.setParam(static_cast<PlaitsSynth::Param>(trackArg(command.a)), command.value);
             }
             break;
         case CommandType::SetPerformance:
@@ -338,7 +364,7 @@ void Engine::applyCommand(const Command& command) {
             break;
         case CommandType::SynthParam:
             if (trackArg(command.a) < Synth::ParamCount) {
-                tracks_[static_cast<size_t>(trackOf(command.a))].synth.setParam(static_cast<Synth::Param>(trackArg(command.a)), command.value);
+                sound(soundOf(command.a)).synth.setParam(static_cast<Synth::Param>(trackArg(command.a)), command.value);
             }
             break;
         case CommandType::SynthAllOff:
@@ -566,7 +592,7 @@ void Engine::applyCommand(const Command& command) {
             stems_.setStartFrame(command.a);
             break;
         case CommandType::SetInstrument: {
-            auto& t = tracks_[static_cast<size_t>(trackOf(command.a))];
+            auto& t = sound(soundOf(command.a));
             // "No instrument" on a track that has none changes nothing: its synth notes keep sounding.
             if (command.font == nullptr && !t.instrument.active()) break;
             t.synth.allNotesOff();
@@ -772,6 +798,9 @@ void Engine::onStep(int offset, int step) {
         t.arpSync(offset, step, sequencer_.samplesPerStep());
         // The synth's slow cycle (CycleBars) counts the song's bars (the transport's outside the song).
         if (t.on) t.synth.syncCycle(songStep >= 0 ? songStep : step, offset, bar);
+        for (int j = 0; t.on && j < kLayers; ++j) {
+            if (layerTail_[static_cast<size_t>(k * kLayers + j)] > 0) sound(layerSound(k, j)).synth.syncCycle(songStep >= 0 ? songStep : step, offset, bar);
+        }
     }
     // The drums' own step; loop curves follow the scene's.
     const int drumsLocal = localOf(kSlotDrums, step);
@@ -1064,6 +1093,7 @@ int Engine::slotOfChannel(int ch) {
     if (ch == 2) return kSlotInst;
     if (ch == 3) return kSlotRemix;
     if (ch > Mixer::kMaster && ch < 12) return kSlotInst + (ch - Mixer::kMaster);
+    if (Mixer::isLayer(ch)) return slotOfChannel(Mixer::layerParent(ch));  // a layer's effects go with its track
     if (audioOfChannel(ch) >= 0) return audioSlot(audioOfChannel(ch));
     return -1;  // the master: it changes with a whole row only
 }
@@ -1241,6 +1271,46 @@ void Engine::applyAutomation(int patternStep, int songStep, int offset) {
     }
 }
 
+// G1b: each layer of a track in use (on, or its release still ringing) into its own strip, which
+// the mixer sums into the track's. A layer switched off fades out over the end of its tail.
+void Engine::renderLayers(const float** channels, const float** rights, int numFrames) {
+    const int fade = std::max(1, static_cast<int>(kLayerFadeMs * 0.001f * static_cast<float>(sampleRate_)));
+    for (int k = 0; k < kTracks; ++k) {
+        auto& t = tracks_[static_cast<size_t>(k)];
+        for (int j = 0; j < kLayers; ++j) {
+            const auto i = static_cast<size_t>(k * kLayers + j);
+            int& tail = layerTail_[i];
+            if (!t.on) {
+                tail = 0;
+                continue;
+            }
+            const bool on = t.layers[static_cast<size_t>(j)].on;
+            if (on) tail = std::max(tail, static_cast<int>(kLayerTailSeconds * static_cast<float>(sampleRate_)));
+            if (tail <= 0) continue;
+            auto& l = (*layers_)[i];
+            float* left = (*layerL_)[i].data();
+            float* right = (*layerR_)[i].data();
+            std::fill(left, left + numFrames, 0.0f);
+            const bool stereo = l.render(left, right, numFrames);
+            if (!on) {
+                // Its last frames glide to silence: whatever still rings is cut without a click.
+                for (int f = 0; f < numFrames; ++f) {
+                    const float g = std::clamp(static_cast<float>(tail - f) / static_cast<float>(fade), 0.0f, 1.0f);
+                    left[f] *= g;
+                    if (stereo) right[f] *= g;
+                }
+                tail -= numFrames;
+                if (tail <= 0) {
+                    tail = 0;
+                    l.allNotesOff();
+                }
+            }
+            channels[Mixer::layerChannel(k, j)] = left;
+            rights[Mixer::layerChannel(k, j)] = stereo ? right : nullptr;
+        }
+    }
+}
+
 void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
     float* direct = mix_.data();  // metronome + test tone: straight to the master
     float* drums = drumsBuf_.data();
@@ -1264,6 +1334,7 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
         playPosition_.store(from + sinceStep_ / sequencer_.samplesPerStep(), std::memory_order_relaxed);
         if (lastTransport_ >= 0) transportPosition_.store(lastTransport_ + sinceStep_ / sequencer_.samplesPerStep(), std::memory_order_relaxed);
     }
+    for (auto& l : *layers_) l.synth.setBeatFrames(sequencer_.samplesPerStep() * 4.0);
     for (auto& t : tracks_) {
         if (!t.on) continue;
         // The tempo-locked filter sweep follows the beat (a plain store when the tempo is unchanged).
@@ -1312,10 +1383,19 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
         mixer_.setKeyInput(nullptr, nullptr);
     }
     acid_.render(acid, numFrames);
+    // The multizone voices are shared by every track and layer playing one.
     int multiTracks = 0;
-    for (const auto& t : tracks_) multiTracks += t.on && t.source == InstrumentTrack::MultiSource && t.multi.active() ? 1 : 0;
+    for (int k = 0; k < kTracks; ++k) {
+        const auto& t = tracks_[static_cast<size_t>(k)];
+        if (!t.on) continue;
+        multiTracks += t.source == InstrumentTrack::MultiSource && t.multi.active() ? 1 : 0;
+        for (int j = 0; j < kLayers; ++j) {
+            const auto& l = (*layers_)[static_cast<size_t>(k * kLayers + j)];
+            multiTracks += layerTail_[static_cast<size_t>(k * kLayers + j)] > 0 && l.source == InstrumentTrack::MultiSource && l.multi.active() ? 1 : 0;
+        }
+    }
     const int multiLimit = std::min(MultiSampler::kVoices, kMultiVoices / std::max(1, multiTracks));
-    for (auto& t : tracks_) t.multi.setVoiceLimit(multiLimit);
+    for (int k = 0; k < kSounds; ++k) sound(k).multi.setVoiceLimit(multiLimit);
     for (int k = 0; k < kTracks; ++k) {
         auto& t = tracks_[static_cast<size_t>(k)];
         if (!t.on) continue;
@@ -1327,6 +1407,7 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
         channels[trackChannel(k)] = buf;
         rights[trackChannel(k)] = stereo ? bufR : nullptr;
     }
+    renderLayers(channels, rights, numFrames);
     stems_.render(stemsL, stemsR, numFrames);
     preview_.render(stemsL, stemsR, numFrames);
     clips_.setBeatFrames(sequencer_.samplesPerStep() * Sequencer::kStepsPerBeat);

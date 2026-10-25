@@ -1,0 +1,1525 @@
+{
+ "format": 1,
+ "style": "drill",
+ "version": 1,
+ "cards": [
+  {
+   "id": "frame.style",
+   "stage": 0,
+   "target": "song",
+   "kind": "decide",
+   "title": "Le style, le tempo et la tonalité",
+   "why": "Drill à 142 BPM : le style fixe les sons, la forme et la vitesse. Toutes les notes suivent la même gamme, rien ne sonne faux.",
+   "done": [
+    "style",
+    "key"
+   ],
+   "proposals": [
+    {
+     "id": "keep",
+     "label": "Garder 142 BPM",
+     "why": "Ce qui est là sonne déjà juste : on n'y touche pas.",
+     "action": {
+      "type": "keep"
+     }
+    },
+    {
+     "id": "tempo",
+     "label": "Changer le tempo",
+     "why": "Deux ou trois BPM suffisent à changer l'énergie.",
+     "action": {
+      "type": "open",
+      "spot": "tempo"
+     }
+    },
+    {
+     "id": "key",
+     "label": "Changer de tonalité",
+     "why": "Toutes les pistes suivent, rien ne sonne faux.",
+     "action": {
+      "type": "open",
+      "spot": "key"
+     }
+    }
+   ],
+   "lexicon": "tempo"
+  },
+  {
+   "id": "frame.form",
+   "stage": 0,
+   "target": "song",
+   "kind": "decide",
+   "title": "La durée et la grille de 8 mesures",
+   "why": "Tout change par 8 mesures (4, 8, 16, 32) : l'oreille sent venir chaque nouvelle partie. Sortir de la grille doit être voulu.",
+   "done": [
+    "form"
+   ],
+   "proposals": [
+    {
+     "id": "keep",
+     "label": "Garder",
+     "why": "Ce qui est là sonne déjà juste : on n'y touche pas.",
+     "action": {
+      "type": "keep"
+     }
+    },
+    {
+     "id": "parts",
+     "label": "Voir les parties",
+     "why": "Rallonger ou raccourcir une partie, toujours par 4 ou 8 mesures.",
+     "action": {
+      "type": "open",
+      "spot": "song.parts"
+     }
+    }
+   ],
+   "lexicon": "bar"
+  },
+  {
+   "id": "frame.destination",
+   "stage": 0,
+   "target": "song",
+   "kind": "decide",
+   "title": "Pour où : téléphone, streaming ou club ?",
+   "why": "Le volume visé change : vers −14 LUFS en streaming, −8 en club ; ce style vise −8,5 LUFS au refrain. Le moteur s'en charge.",
+   "done": [
+    "target"
+   ],
+   "proposals": [
+    {
+     "id": "auto",
+     "label": "Le style (auto)",
+     "why": "La cible du style, mesurée sur son refrain.",
+     "action": {
+      "type": "target",
+      "name": "AUTO"
+     }
+    },
+    {
+     "id": "streaming",
+     "label": "Streaming et téléphone",
+     "why": "−14 LUFS : là où les plateformes ramènent tout.",
+     "value": "−14 LUFS",
+     "action": {
+      "type": "target",
+      "name": "STREAMING"
+     }
+    },
+    {
+     "id": "club",
+     "label": "Club",
+     "why": "−8 LUFS : fort, pour les grosses enceintes.",
+     "value": "−8 LUFS",
+     "action": {
+      "type": "target",
+      "name": "CLUB"
+     }
+    }
+   ],
+   "lexicon": "master"
+  },
+  {
+   "id": "sound.kick",
+   "stage": 1,
+   "target": "kick",
+   "kind": "decide",
+   "simple": true,
+   "title": "Le kick : son, motif, où il joue",
+   "why": "Peu de coups de kick, jamais au même endroit d'une mesure à l'autre.",
+   "simpleTitle": "Le kick (le « boum »)",
+   "simpleWhy": "Le battement grave que tout le monde suit en tapant du pied.",
+   "when": "Au début, piste par piste : le kick d'abord.",
+   "applicable": [
+    "has:kick"
+   ],
+   "done": [
+    "has:kick"
+   ],
+   "proposals": [
+    {
+     "id": "keep",
+     "label": "Garder ce son",
+     "why": "Il tient son rôle : on passe au suivant.",
+     "action": {
+      "type": "keep"
+     }
+    },
+    {
+     "id": "other",
+     "label": "Autre idée de son",
+     "why": "Un autre son du même rôle, écouté avec le reste.",
+     "action": {
+      "type": "open",
+      "spot": "rhythm.kit",
+      "target": "kick"
+     }
+    },
+    {
+     "id": "where",
+     "label": "Où il joue",
+     "why": "Les parties où la piste joue : une case par partie.",
+     "action": {
+      "type": "open",
+      "spot": "song.parts",
+      "target": "kick"
+     }
+    }
+   ],
+   "elsewhere": [
+    {
+     "id": "favorite",
+     "label": "Garder ce son dans mes favoris",
+     "why": "Pour le retrouver dans un autre morceau.",
+     "action": {
+      "type": "open",
+      "spot": "sounds.favorite",
+      "target": "kick"
+     }
+    }
+   ],
+   "lexicon": "kick"
+  },
+  {
+   "id": "sound.snare",
+   "stage": 1,
+   "target": "snare",
+   "kind": "decide",
+   "simple": true,
+   "title": "La caisse claire et le clap",
+   "why": "Caisse claire sur le 3 de la 1re mesure, puis sur le 4 de la 2e : ce décalage fait tout le style.",
+   "simpleTitle": "Le « tchak » qui répond au kick",
+   "simpleWhy": "Sur les temps 2 et 4 : c'est lui qui fait avancer.",
+   "when": "Au début, piste par piste : le kick d'abord.",
+   "applicable": [
+    "has:snare"
+   ],
+   "done": [
+    "has:snare"
+   ],
+   "proposals": [
+    {
+     "id": "keep",
+     "label": "Garder ce son",
+     "why": "Il tient son rôle : on passe au suivant.",
+     "action": {
+      "type": "keep"
+     }
+    },
+    {
+     "id": "other",
+     "label": "Autre idée de son",
+     "why": "Un autre son du même rôle, écouté avec le reste.",
+     "action": {
+      "type": "open",
+      "spot": "rhythm.kit",
+      "target": "snare"
+     }
+    },
+    {
+     "id": "where",
+     "label": "Où il joue",
+     "why": "Les parties où la piste joue : une case par partie.",
+     "action": {
+      "type": "open",
+      "spot": "song.parts",
+      "target": "snare"
+     }
+    }
+   ],
+   "elsewhere": [
+    {
+     "id": "favorite",
+     "label": "Garder ce son dans mes favoris",
+     "why": "Pour le retrouver dans un autre morceau.",
+     "action": {
+      "type": "open",
+      "spot": "sounds.favorite",
+      "target": "snare"
+     }
+    }
+   ],
+   "lexicon": "snare"
+  },
+  {
+   "id": "sound.hats",
+   "stage": 1,
+   "target": "hats",
+   "kind": "decide",
+   "simple": true,
+   "title": "Les charleys et les percussions",
+   "why": "Charleys en « 3-3-2 » avec de petites rafales en triolets : ça sautille.",
+   "simpleTitle": "Les petits « tss » qui donnent la vitesse",
+   "simpleWhy": "Ils remplissent entre les coups ; plus doux une fois sur deux, ils respirent.",
+   "when": "Au début, piste par piste : le kick d'abord.",
+   "applicable": [
+    "has:hats"
+   ],
+   "done": [
+    "has:hats"
+   ],
+   "proposals": [
+    {
+     "id": "keep",
+     "label": "Garder ce son",
+     "why": "Il tient son rôle : on passe au suivant.",
+     "action": {
+      "type": "keep"
+     }
+    },
+    {
+     "id": "other",
+     "label": "Autre idée de son",
+     "why": "Un autre son du même rôle, écouté avec le reste.",
+     "action": {
+      "type": "open",
+      "spot": "rhythm.kit",
+      "target": "hats"
+     }
+    },
+    {
+     "id": "where",
+     "label": "Où il joue",
+     "why": "Les parties où la piste joue : une case par partie.",
+     "action": {
+      "type": "open",
+      "spot": "song.parts",
+      "target": "hats"
+     }
+    }
+   ],
+   "elsewhere": [
+    {
+     "id": "favorite",
+     "label": "Garder ce son dans mes favoris",
+     "why": "Pour le retrouver dans un autre morceau.",
+     "action": {
+      "type": "open",
+      "spot": "sounds.favorite",
+      "target": "hats"
+     }
+    }
+   ],
+   "lexicon": "hat"
+  },
+  {
+   "id": "sound.bass",
+   "stage": 1,
+   "target": "bass",
+   "kind": "decide",
+   "simple": true,
+   "title": "La 808 : la basse qui suit le kick",
+   "why": "C'est la 808 : elle tape avec le kick et glisse vers une note plus aiguë, une fois par mesure.",
+   "simpleTitle": "La basse",
+   "simpleWhy": "Le son grave qui fait bouger le corps, sur les notes des accords.",
+   "when": "Au début, piste par piste : le kick d'abord.",
+   "applicable": [
+    "has:bass"
+   ],
+   "done": [
+    "has:bass"
+   ],
+   "proposals": [
+    {
+     "id": "keep",
+     "label": "Garder ce son",
+     "why": "Il tient son rôle : on passe au suivant.",
+     "action": {
+      "type": "keep"
+     }
+    },
+    {
+     "id": "other",
+     "label": "Autre idée de son",
+     "why": "Un autre son du même rôle, écouté avec le reste.",
+     "action": {
+      "type": "open",
+      "spot": "sounds.track",
+      "target": "bass"
+     }
+    },
+    {
+     "id": "where",
+     "label": "Où il joue",
+     "why": "Les parties où la piste joue : une case par partie.",
+     "action": {
+      "type": "open",
+      "spot": "song.parts",
+      "target": "bass"
+     }
+    }
+   ],
+   "elsewhere": [
+    {
+     "id": "favorite",
+     "label": "Garder ce son dans mes favoris",
+     "why": "Pour le retrouver dans un autre morceau.",
+     "action": {
+      "type": "open",
+      "spot": "sounds.favorite",
+      "target": "bass"
+     }
+    }
+   ],
+   "lexicon": "808"
+  },
+  {
+   "id": "sound.pad",
+   "stage": 1,
+   "target": "pad",
+   "kind": "decide",
+   "simple": true,
+   "title": "La nappe : les accords tenus",
+   "why": "Des cordes froides en fond : elles arrivent au refrain pour rendre le tout plus dramatique.",
+   "simpleTitle": "Les accords",
+   "simpleWhy": "Ils posent l'ambiance, comme un tapis sous le morceau.",
+   "when": "Au début, piste par piste : le kick d'abord.",
+   "applicable": [
+    "has:pad"
+   ],
+   "done": [
+    "has:pad"
+   ],
+   "proposals": [
+    {
+     "id": "keep",
+     "label": "Garder ce son",
+     "why": "Il tient son rôle : on passe au suivant.",
+     "action": {
+      "type": "keep"
+     }
+    },
+    {
+     "id": "other",
+     "label": "Autre idée de son",
+     "why": "Un autre son du même rôle, écouté avec le reste.",
+     "action": {
+      "type": "open",
+      "spot": "sounds.track",
+      "target": "pad"
+     }
+    },
+    {
+     "id": "where",
+     "label": "Où il joue",
+     "why": "Les parties où la piste joue : une case par partie.",
+     "action": {
+      "type": "open",
+      "spot": "song.parts",
+      "target": "pad"
+     }
+    }
+   ],
+   "elsewhere": [
+    {
+     "id": "favorite",
+     "label": "Garder ce son dans mes favoris",
+     "why": "Pour le retrouver dans un autre morceau.",
+     "action": {
+      "type": "open",
+      "spot": "sounds.favorite",
+      "target": "pad"
+     }
+    }
+   ],
+   "lexicon": "pad"
+  },
+  {
+   "id": "sound.lead",
+   "stage": 1,
+   "target": "lead",
+   "kind": "decide",
+   "simple": true,
+   "title": "Le lead : le motif qu'on retient",
+   "why": "Une mélodie de piano froide et lente, avec beaucoup de vide : elle joue du début à la fin.",
+   "simpleTitle": "La mélodie",
+   "simpleWhy": "Le bout qu'on retient et qu'on chante.",
+   "when": "Au début, piste par piste : le kick d'abord.",
+   "applicable": [
+    "has:lead"
+   ],
+   "done": [
+    "has:lead"
+   ],
+   "proposals": [
+    {
+     "id": "keep",
+     "label": "Garder ce son",
+     "why": "Il tient son rôle : on passe au suivant.",
+     "action": {
+      "type": "keep"
+     }
+    },
+    {
+     "id": "other",
+     "label": "Autre idée de son",
+     "why": "Un autre son du même rôle, écouté avec le reste.",
+     "action": {
+      "type": "open",
+      "spot": "sounds.track",
+      "target": "lead"
+     }
+    },
+    {
+     "id": "where",
+     "label": "Où il joue",
+     "why": "Les parties où la piste joue : une case par partie.",
+     "action": {
+      "type": "open",
+      "spot": "song.parts",
+      "target": "lead"
+     }
+    }
+   ],
+   "elsewhere": [
+    {
+     "id": "favorite",
+     "label": "Garder ce son dans mes favoris",
+     "why": "Pour le retrouver dans un autre morceau.",
+     "action": {
+      "type": "open",
+      "spot": "sounds.favorite",
+      "target": "lead"
+     }
+    }
+   ],
+   "lexicon": "lead"
+  },
+  {
+   "id": "sound.riser",
+   "stage": 1,
+   "target": "riser",
+   "kind": "decide",
+   "simple": true,
+   "title": "Le souffle qui monte",
+   "why": "Un souffle qui frappe au début du refrain : l'oreille sait que ça arrive.",
+   "simpleTitle": "Le souffle avant le grand moment",
+   "simpleWhy": "Il annonce le grand moment.",
+   "when": "Au début, piste par piste : le kick d'abord.",
+   "applicable": [
+    "has:riser"
+   ],
+   "done": [
+    "has:riser"
+   ],
+   "proposals": [
+    {
+     "id": "keep",
+     "label": "Garder ce son",
+     "why": "Il tient son rôle : on passe au suivant.",
+     "action": {
+      "type": "keep"
+     }
+    },
+    {
+     "id": "other",
+     "label": "Autre idée de son",
+     "why": "Un autre son du même rôle, écouté avec le reste.",
+     "action": {
+      "type": "open",
+      "spot": "sounds.track",
+      "target": "riser"
+     }
+    },
+    {
+     "id": "where",
+     "label": "Où il joue",
+     "why": "Les parties où la piste joue : une case par partie.",
+     "action": {
+      "type": "open",
+      "spot": "song.parts",
+      "target": "riser"
+     }
+    }
+   ],
+   "elsewhere": [
+    {
+     "id": "favorite",
+     "label": "Garder ce son dans mes favoris",
+     "why": "Pour le retrouver dans un autre morceau.",
+     "action": {
+      "type": "open",
+      "spot": "sounds.favorite",
+      "target": "riser"
+     }
+    }
+   ],
+   "lexicon": "buildup"
+  },
+  {
+   "id": "layers.808",
+   "stage": 2,
+   "target": "bass",
+   "kind": "decide",
+   "title": "Un kick court par-dessus la 808",
+   "why": "Sur un téléphone la 808 disparaît : le claquant du kick la fait entendre.",
+   "applicable": [
+    "has:bass",
+    "has:kick"
+   ],
+   "done": [
+    "layered:808"
+   ],
+   "proposals": [
+    {
+     "id": "keep",
+     "label": "Garder",
+     "why": "Ce qui est là sonne déjà juste : on n'y touche pas.",
+     "action": {
+      "type": "keep"
+     }
+    },
+    {
+     "id": "kit",
+     "label": "Choisir le kick",
+     "why": "Un kick court, qui claque, sans grave à lui.",
+     "action": {
+      "type": "open",
+      "spot": "rhythm.kit",
+      "target": "kick"
+     }
+    }
+   ],
+   "lexicon": "808"
+  },
+  {
+   "id": "fx.review",
+   "stage": 3,
+   "target": "song",
+   "kind": "review",
+   "title": "Voilà ce que j'ai mis",
+   "why": "J'ai posé une chaîne d'effets sur chaque piste, sans rien dire. On les écoute une par une, avec et sans : tu gardes, tu règles ou tu retires.",
+   "applicable": [
+    "fx:any"
+   ],
+   "proposals": [
+    {
+     "id": "keep",
+     "label": "Écouter piste par piste",
+     "why": "Une carte par piste : avec, sans, à volume égal.",
+     "action": {
+      "type": "keep"
+     }
+    },
+    {
+     "id": "all",
+     "label": "Voir tout ce qui joue",
+     "why": "La liste complète des effets, envois et courbes.",
+     "action": {
+      "type": "open",
+      "spot": "mixer.whatplays"
+     }
+    }
+   ],
+   "lexicon": "mix"
+  },
+  {
+   "id": "fx.drums",
+   "stage": 3,
+   "target": "drums",
+   "kind": "review",
+   "title": "La batterie : du punch et de la colle",
+   "why": "Le kick et la caisse claire plus serrés (compresseur, un peu de saturation), puis toute la batterie collée par un compresseur léger.",
+   "when": "Une fois le son et le motif posés.",
+   "howMuch": "1 à 3 dB de réduction ; saturation à peine audible.",
+   "howOften": "Une chaîne pour tout le morceau.",
+   "applicable": [
+    "has:kick",
+    "fx:drums"
+   ],
+   "done": [
+    "changed:drums"
+   ],
+   "proposals": [
+    {
+     "id": "keep",
+     "label": "Garder",
+     "why": "Ce qui est là sonne déjà juste : on n'y touche pas.",
+     "action": {
+      "type": "keep"
+     }
+    },
+    {
+     "id": "softer",
+     "label": "Plus doux",
+     "why": "La colle travaille moins : plus de dynamique.",
+     "value": "1 dB de réduction",
+     "action": {
+      "type": "nudge",
+      "effect": "COMPRESSOR",
+      "param": 0,
+      "delta": 0.1
+     }
+    },
+    {
+     "id": "tighter",
+     "label": "Plus serré",
+     "why": "La batterie plus dense, elle claque plus.",
+     "value": "3 dB de réduction",
+     "action": {
+      "type": "nudge",
+      "effect": "COMPRESSOR",
+      "param": 0,
+      "delta": -0.1
+     }
+    }
+   ],
+   "elsewhere": [
+    {
+     "id": "favorite",
+     "label": "Garder ce kit dans mes favoris",
+     "why": "Pour le retrouver dans un autre morceau.",
+     "action": {
+      "type": "open",
+      "spot": "sounds.favorite",
+      "target": "drums"
+     }
+    }
+   ],
+   "lexicon": "compressor"
+  },
+  {
+   "id": "fx.bass",
+   "stage": 3,
+   "target": "bass",
+   "kind": "review",
+   "title": "La basse : Croustillant",
+   "why": "Juste un peu de grain pour donner du mordant.",
+   "when": "Une fois le son et le motif posés.",
+   "howMuch": "Point de départ, puis écoute : la basse au même volume avec et sans.",
+   "howOften": "Une chaîne pour tout le morceau.",
+   "applicable": [
+    "has:bass"
+   ],
+   "done": [
+    "changed:bass"
+   ],
+   "proposals": [
+    {
+     "id": "keep",
+     "label": "Garder",
+     "why": "Ce qui est là sonne déjà juste : on n'y touche pas.",
+     "action": {
+      "type": "keep"
+     }
+    },
+    {
+     "id": "grain",
+     "label": "Un peu de grain",
+     "why": "Une saturation légère : on l'entend aussi sur un téléphone.",
+     "value": "Drive 25 %",
+     "action": {
+      "type": "insert",
+      "effect": "SATURATION",
+      "params": [
+       0.25,
+       1.0,
+       1.0,
+       0.7,
+       1.0
+      ]
+     }
+    }
+   ],
+   "elsewhere": [
+    {
+     "id": "favorite",
+     "label": "Garder ce son dans mes favoris",
+     "why": "Pour le retrouver dans un autre morceau.",
+     "action": {
+      "type": "open",
+      "spot": "sounds.favorite",
+      "target": "bass"
+     }
+    }
+   ],
+   "lexicon": "saturation"
+  },
+  {
+   "id": "fx.sidechain",
+   "stage": 3,
+   "target": "bass",
+   "kind": "review",
+   "title": "La basse s'écarte quand le kick frappe",
+   "why": "Sinon les deux se battent dans le grave, surtout sur un téléphone. Toute la musique baisse un instant à chaque kick, le grave un peu plus.",
+   "when": "Une fois le son et le motif posés.",
+   "howMuch": "Ratio 3:1 à 6:1, attaque 0 à 10 ms, relâche 60 à 120 ms.",
+   "howOften": "Une chaîne pour tout le morceau.",
+   "applicable": [
+    "has:bass",
+    "has:kick"
+   ],
+   "done": [
+    "sidechain|changed:sidechain"
+   ],
+   "proposals": [
+    {
+     "id": "keep",
+     "label": "Garder",
+     "why": "Si la musique s'écarte déjà sous le kick, c'est réglé : écoute-la.",
+     "action": {
+      "type": "keep"
+     }
+    },
+    {
+     "id": "light",
+     "label": "Léger",
+     "why": "On le sent, on ne l'entend pas.",
+     "action": {
+      "type": "duck",
+      "value": 0.35
+     }
+    },
+    {
+     "id": "pump",
+     "label": "Qui pompe",
+     "why": "On l'entend respirer : l'effet « house ».",
+     "action": {
+      "type": "duck",
+      "value": 0.8
+     }
+    }
+   ],
+   "lexicon": "sidechain"
+  },
+  {
+   "id": "fx.pad",
+   "stage": 3,
+   "target": "pad",
+   "kind": "review",
+   "title": "Les accords : de la place et de l'espace",
+   "why": "Un coupe-bas vers 150 à 250 Hz laisse le grave à la basse ; la réverbe les met au fond, derrière le reste.",
+   "when": "Une fois le son et le motif posés.",
+   "howMuch": "Envoi réverbe −6 à −12 dB.",
+   "howOften": "Une chaîne pour tout le morceau.",
+   "applicable": [
+    "has:pad"
+   ],
+   "done": [
+    "changed:pad"
+   ],
+   "proposals": [
+    {
+     "id": "keep",
+     "label": "Garder",
+     "why": "Ce qui est là sonne déjà juste : on n'y touche pas.",
+     "action": {
+      "type": "keep"
+     }
+    },
+    {
+     "id": "further",
+     "label": "Plus loin",
+     "why": "Plus de réverbe : ils reculent.",
+     "action": {
+      "type": "send",
+      "bus": 0,
+      "delta": 0.1
+     }
+    },
+    {
+     "id": "closer",
+     "label": "Plus près",
+     "why": "Moins de réverbe : ils avancent.",
+     "action": {
+      "type": "send",
+      "bus": 0,
+      "delta": -0.1
+     }
+    }
+   ],
+   "elsewhere": [
+    {
+     "id": "favorite",
+     "label": "Garder ce son dans mes favoris",
+     "why": "Pour le retrouver dans un autre morceau.",
+     "action": {
+      "type": "open",
+      "spot": "sounds.favorite",
+      "target": "pad"
+     }
+    }
+   ],
+   "lexicon": "reverb"
+  },
+  {
+   "id": "fx.lead",
+   "stage": 3,
+   "target": "lead",
+   "kind": "review",
+   "title": "Le lead : écho et réverbe",
+   "why": "Un écho à la croche et une réverbe moyenne : il chante devant sans prendre toute la place.",
+   "when": "Une fois le son et le motif posés.",
+   "howMuch": "Envoi écho −9 dB, réverbe −12 dB.",
+   "howOften": "Une chaîne pour tout le morceau.",
+   "applicable": [
+    "has:lead"
+   ],
+   "done": [
+    "changed:lead"
+   ],
+   "proposals": [
+    {
+     "id": "keep",
+     "label": "Garder",
+     "why": "Ce qui est là sonne déjà juste : on n'y touche pas.",
+     "action": {
+      "type": "keep"
+     }
+    },
+    {
+     "id": "echo",
+     "label": "Plus d'écho",
+     "why": "Chaque note rebondit plus longtemps.",
+     "action": {
+      "type": "send",
+      "bus": 1,
+      "delta": 0.1
+     }
+    },
+    {
+     "id": "dry",
+     "label": "Plus sec",
+     "why": "Il reste net et proche.",
+     "action": {
+      "type": "send",
+      "bus": 1,
+      "delta": -0.1
+     }
+    }
+   ],
+   "elsewhere": [
+    {
+     "id": "favorite",
+     "label": "Garder ce son dans mes favoris",
+     "why": "Pour le retrouver dans un autre morceau.",
+     "action": {
+      "type": "open",
+      "spot": "sounds.favorite",
+      "target": "lead"
+     }
+    }
+   ],
+   "lexicon": "echo"
+  },
+  {
+   "id": "fx.sends",
+   "stage": 3,
+   "target": "sends",
+   "kind": "review",
+   "title": "Une réverbe et un écho pour tout le morceau",
+   "why": "Toutes les pistes partagent les mêmes : le morceau sonne dans une seule salle. Leur retour est coupé sous 200 Hz et au-dessus de 10 kHz, le grave reste net.",
+   "when": "Une fois le son et le motif posés.",
+   "howOften": "Créés une fois, partagés par toutes les pistes.",
+   "done": [
+    "changed:sends"
+   ],
+   "proposals": [
+    {
+     "id": "keep",
+     "label": "Garder",
+     "why": "Ce qui est là sonne déjà juste : on n'y touche pas.",
+     "action": {
+      "type": "keep"
+     }
+    },
+    {
+     "id": "clean",
+     "label": "Nettoyer les retours",
+     "why": "Coupe-bas 200 Hz et coupe-haut 10 kHz sur la réverbe et l'écho.",
+     "value": "200 Hz – 10 kHz",
+     "action": {
+      "type": "returns"
+     }
+    }
+   ],
+   "lexicon": "reverb"
+  },
+  {
+   "id": "fx.lowcut",
+   "stage": 3,
+   "target": "song",
+   "kind": "decide",
+   "title": "Un coupe-bas partout, sauf le kick et la basse",
+   "why": "Couper plutôt que monter : chaque piste laisse le grave au kick et à la basse. C'est l'effet n° 1 des pros.",
+   "when": "Une fois le son et le motif posés.",
+   "howMuch": "Accords 150–250 Hz, lead 200–300 Hz, voix 100–150 Hz.",
+   "howOften": "Une chaîne pour tout le morceau.",
+   "done": [
+    "lowcut",
+    "by_hand"
+   ],
+   "proposals": [
+    {
+     "id": "keep",
+     "label": "Garder ce que j'ai mis",
+     "why": "Chaque piste a déjà le sien : écoute-les, avec et sans.",
+     "action": {
+      "type": "keep"
+     }
+    },
+    {
+     "id": "all",
+     "label": "Sur les pistes qui n'en ont pas",
+     "why": "Chacune à la hauteur de son rôle.",
+     "action": {
+      "type": "lowCut"
+     }
+    }
+   ],
+   "lexicon": "filter"
+  },
+  {
+   "id": "arr.subtract",
+   "stage": 4,
+   "target": "song",
+   "kind": "decide",
+   "simple": true,
+   "title": "Le Refrain complet, puis on enlève",
+   "why": "L'intro, le couplet et le pont sont le refrain avec des pistes en moins : c'est ce qui donne envie de la suite.",
+   "simpleTitle": "On enlève pour faire monter l'envie",
+   "simpleWhy": "Le début joue moins de pistes que le grand moment.",
+   "done": [
+    "subtractive"
+   ],
+   "proposals": [
+    {
+     "id": "keep",
+     "label": "Garder",
+     "why": "Ce qui est là sonne déjà juste : on n'y touche pas.",
+     "action": {
+      "type": "keep"
+     }
+    },
+    {
+     "id": "parts",
+     "label": "Voir ce que joue chaque partie",
+     "why": "Une ligne par piste, une case par partie.",
+     "action": {
+      "type": "open",
+      "spot": "song.parts"
+     }
+    }
+   ],
+   "lexicon": "chorus"
+  },
+  {
+   "id": "arr.differ",
+   "stage": 4,
+   "target": "song",
+   "kind": "decide",
+   "simple": true,
+   "title": "Chaque refrain a sa surprise",
+   "why": "Le 2e refrain = le 1er + un élément : une couche, une basse qui change, un contre-chant, une piste qui attend la 2e moitié.",
+   "simpleTitle": "Le 2e refrain un peu différent",
+   "simpleWhy": "Sinon on a l'impression d'entendre deux fois la même chose.",
+   "applicable": [
+    "peaks:2"
+   ],
+   "done": [
+    "peaks_differ"
+   ],
+   "proposals": [
+    {
+     "id": "lead_waits",
+     "label": "Au 1er, le lead attend la 2e moitié",
+     "why": "Le 1er refrain commence plus nu, le lead arrive ensuite.",
+     "action": {
+      "type": "mute",
+      "target": "lead",
+      "section": "peak",
+      "occurrence": 0,
+      "half": "first"
+     }
+    },
+    {
+     "id": "pad_waits",
+     "label": "Au 1er, les accords attendent la 2e moitié",
+     "why": "Le grave et la batterie seuls d'abord : le refrain frappe plus.",
+     "action": {
+      "type": "mute",
+      "target": "pad",
+      "section": "peak",
+      "occurrence": 0,
+      "half": "first"
+     }
+    },
+    {
+     "id": "parts",
+     "label": "Je le fais moi-même",
+     "why": "Une couche, une variation, un contre-chant au 2e.",
+     "action": {
+      "type": "open",
+      "spot": "song.parts"
+     }
+    }
+   ],
+   "lexicon": "chorus"
+  },
+  {
+   "id": "arr.bass",
+   "stage": 4,
+   "target": "bass",
+   "kind": "decide",
+   "simple": true,
+   "title": "La basse change toutes les 8 à 16 mesures",
+   "why": "Une même boucle de 4 mesures répétée tout le refrain lasse : une variation, une octave, deux temps de silence en fin de 16.",
+   "simpleTitle": "La basse ne tourne pas toujours pareil",
+   "simpleWhy": "Un petit changement de temps en temps garde l'oreille éveillée.",
+   "applicable": [
+    "has:bass",
+    "peaks:1"
+   ],
+   "done": [
+    "bass_varies"
+   ],
+   "proposals": [
+    {
+     "id": "notes",
+     "label": "Varier la fin de la boucle",
+     "why": "Les mesures 5 à 8 autrement, un silence avant le retour.",
+     "action": {
+      "type": "open",
+      "spot": "notes.track",
+      "target": "bass"
+     }
+    },
+    {
+     "id": "later",
+     "label": "À l'oreille, plus tard",
+     "why": "Tu le régleras toi-même en écoutant.",
+     "action": {
+      "type": "later"
+     }
+    }
+   ],
+   "elsewhere": [
+    {
+     "id": "reuse",
+     "label": "Réutiliser ce motif ailleurs",
+     "why": "Le même motif, varié, dans une autre partie.",
+     "action": {
+      "type": "open",
+      "spot": "song.parts",
+      "target": "bass"
+     }
+    }
+   ],
+   "lexicon": "bass"
+  },
+  {
+   "id": "arr.cut",
+   "stage": 4,
+   "target": "song",
+   "kind": "decide",
+   "simple": true,
+   "title": "Une coupure juste avant le refrain",
+   "why": "Une mesure presque vide, ou deux temps de silence, juste avant : le retour du kick et de la basse claque.",
+   "simpleTitle": "Un petit silence avant le grand moment",
+   "simpleWhy": "Le retour paraît deux fois plus fort.",
+   "applicable": [
+    "peaks:1"
+   ],
+   "done": [
+    "cut"
+   ],
+   "proposals": [
+    {
+     "id": "parts",
+     "label": "Couper la dernière mesure",
+     "why": "La partie d'avant finit presque vide.",
+     "action": {
+      "type": "open",
+      "spot": "song.parts"
+     }
+    },
+    {
+     "id": "keep",
+     "label": "Enchaîner sans coupure",
+     "why": "Le style le veut parfois : tout d'un bloc.",
+     "action": {
+      "type": "keep"
+     }
+    }
+   ],
+   "lexicon": "chorus"
+  },
+  {
+   "id": "arr.yours",
+   "stage": 4,
+   "target": "song",
+   "kind": "review",
+   "simple": true,
+   "title": "Qu'est-ce qui rend ce refrain à toi ?",
+   "why": "Un détail à toi par partie : un son, un cri, un silence, un fill. Le Guide propose, c'est toi qui tranches.",
+   "simpleTitle": "Ta touche à toi",
+   "simpleWhy": "Un détail qui ne vient que de toi.",
+   "proposals": [
+    {
+     "id": "fill",
+     "label": "Un fill à moi",
+     "why": "Un roulement que tu tapes toi-même.",
+     "action": {
+      "type": "open",
+      "spot": "rhythm.pattern"
+     }
+    },
+    {
+     "id": "voice",
+     "label": "Ma voix ou un bruit à moi",
+     "why": "Enregistré, posé sur une mesure.",
+     "action": {
+      "type": "open",
+      "spot": "record.voice"
+     }
+    },
+    {
+     "id": "favorite",
+     "label": "Un son de mes favoris",
+     "why": "Celui que tu as gardé d'un autre morceau.",
+     "action": {
+      "type": "open",
+      "spot": "sounds.favorite"
+     }
+    }
+   ],
+   "lexicon": "fill"
+  },
+  {
+   "id": "move.throw",
+   "stage": 5,
+   "target": "song",
+   "kind": "decide",
+   "title": "La réverbe monte en fin de phrase",
+   "why": "Un envoi de réverbe ou d'écho qui monte sur la dernière mesure de chaque phrase, puis retombe : l'espace respire.",
+   "when": "En fin de phrase, toutes les 8 mesures.",
+   "done": [
+    "send_moves",
+    "by_hand|changed:lanes"
+   ],
+   "proposals": [
+    {
+     "id": "keep",
+     "label": "Garder ce que j'ai mis",
+     "why": "Si la courbe est là, elle monte déjà en fin de phrase : écoute-la.",
+     "action": {
+      "type": "keep"
+     }
+    },
+    {
+     "id": "curve",
+     "label": "Dessiner la courbe",
+     "why": "Sur le lead ou la voix, la dernière mesure de chaque phrase.",
+     "action": {
+      "type": "open",
+      "spot": "song.automation",
+      "target": "lead"
+     }
+    }
+   ],
+   "lexicon": "reverb"
+  },
+  {
+   "id": "move.sections",
+   "stage": 5,
+   "target": "song",
+   "kind": "decide",
+   "title": "Au moins une courbe par partie",
+   "why": "Une partie où rien ne bouge devient du papier peint, une nappe immobile s'oublie : 10 à 15 % de filtre sur quelques mesures suffisent. Deux courbes par piste au plus.",
+   "done": [
+    "sections_move"
+   ],
+   "proposals": [
+    {
+     "id": "curve",
+     "label": "Voir les parties immobiles",
+     "why": "Une courbe douce sur une piste de chacune.",
+     "action": {
+      "type": "open",
+      "spot": "song.automation"
+     }
+    },
+    {
+     "id": "later",
+     "label": "À l'oreille, plus tard",
+     "why": "Tu le régleras toi-même en écoutant.",
+     "action": {
+      "type": "later"
+     }
+    }
+   ],
+   "lexicon": "automation"
+  },
+  {
+   "id": "mix.balance",
+   "stage": 6,
+   "target": "song",
+   "kind": "decide",
+   "simple": true,
+   "title": "La balance : kick, basse, batterie, lead, le reste",
+   "why": "On règle dans cet ordre, avec les faders seuls : le mix doit déjà marcher avant les effets. Tous les faders sont encore à 0 dB.",
+   "simpleTitle": "Le volume de chaque piste",
+   "simpleWhy": "Le kick et la basse d'abord, le reste autour.",
+   "done": [
+    "faders"
+   ],
+   "proposals": [
+    {
+     "id": "mixer",
+     "label": "Régler les volumes",
+     "why": "Le kick en référence, chaque piste à sa place.",
+     "action": {
+      "type": "open",
+      "spot": "mixer.strip"
+     }
+    },
+    {
+     "id": "keep",
+     "label": "Ça sonne déjà juste",
+     "why": "Le mix de départ te convient.",
+     "action": {
+      "type": "keep"
+     }
+    }
+   ],
+   "lexicon": "mix"
+  },
+  {
+   "id": "mix.pans",
+   "stage": 6,
+   "target": "song",
+   "kind": "decide",
+   "simple": true,
+   "title": "La place de chaque piste dans la stéréo",
+   "why": "Le kick, la basse et la voix au centre ; les charleys, les percussions, les accords et les leads un peu sur les côtés.",
+   "simpleTitle": "Gauche, droite, centre",
+   "simpleWhy": "Chaque son à sa place : tout s'entend mieux.",
+   "done": [
+    "pans",
+    "by_hand|changed:pans"
+   ],
+   "proposals": [
+    {
+     "id": "keep",
+     "label": "Garder ces places",
+     "why": "Si les pistes sont déjà placées, écoute-les au casque : c'est réglé.",
+     "action": {
+      "type": "keep"
+     }
+    },
+    {
+     "id": "place",
+     "label": "Placer pour moi",
+     "why": "Le grave au centre, le reste un peu écarté.",
+     "action": {
+      "type": "pans"
+     }
+    }
+   ],
+   "lexicon": "mix"
+  },
+  {
+   "id": "mix.master",
+   "stage": 6,
+   "target": "master",
+   "kind": "review",
+   "simple": true,
+   "title": "Un master honnête",
+   "why": "La cible du style (−8,5 LUFS au refrain) et une chaîne qui travaille peu : 3 dB au plus. Plus fort, ça écrase et ça fatigue.",
+   "simpleTitle": "Le volume final",
+   "simpleWhy": "Fort comme les autres morceaux du style, sans écraser.",
+   "done": [
+    "master",
+    "by_hand|changed:master"
+   ],
+   "proposals": [
+    {
+     "id": "keep",
+     "label": "Garder",
+     "why": "Ce qui est là sonne déjà juste : on n'y touche pas.",
+     "action": {
+      "type": "keep"
+     }
+    },
+    {
+     "id": "master",
+     "label": "Voir le master",
+     "why": "La cible, la marge et ce que fait la chaîne.",
+     "action": {
+      "type": "open",
+      "spot": "mixer.master"
+     }
+    }
+   ],
+   "lexicon": "master"
+  },
+  {
+   "id": "mix.contrast",
+   "stage": 6,
+   "target": "song",
+   "kind": "decide",
+   "simple": true,
+   "title": "Le refrain plus fort que le pont",
+   "why": "Au moins 4 dB d'écart entre le pont et le refrain : sinon le refrain ne tombe pas.",
+   "applicable": [
+    "measured",
+    "break"
+   ],
+   "done": [
+    "contrast"
+   ],
+   "proposals": [
+    {
+     "id": "parts",
+     "label": "Alléger le pont",
+     "why": "Une piste de moins, ou son volume un peu plus bas.",
+     "action": {
+      "type": "open",
+      "spot": "song.parts"
+     }
+    },
+    {
+     "id": "later",
+     "label": "À l'oreille, plus tard",
+     "why": "Tu le régleras toi-même en écoutant.",
+     "action": {
+      "type": "later"
+     }
+    }
+   ],
+   "lexicon": "break"
+  },
+  {
+   "id": "mix.checks",
+   "stage": 6,
+   "target": "song",
+   "kind": "check",
+   "simple": true,
+   "title": "Les vérifications : mono, téléphone, référence",
+   "why": "Rien ne doit disparaître en mono ; sur le haut-parleur du téléphone, le kick et la basse doivent se deviner. Compare avec Central Cee – Doja (2022) au même volume : plus fort paraît toujours mieux.",
+   "simpleTitle": "Écouter partout",
+   "simpleWhy": "Au casque, sur le téléphone, et à côté d'un morceau que tu aimes.",
+   "proposals": [
+    {
+     "id": "keep",
+     "label": "C'est vérifié",
+     "why": "Mono, téléphone et référence écoutés.",
+     "action": {
+      "type": "keep"
+     }
+    },
+    {
+     "id": "later",
+     "label": "Plus tard",
+     "why": "À la fin, avant d'exporter.",
+     "action": {
+      "type": "later"
+     }
+    }
+   ],
+   "lexicon": "mix"
+  },
+  {
+   "id": "share.ready",
+   "stage": 7,
+   "target": "song",
+   "kind": "check",
+   "simple": true,
+   "title": "Prêt à partager ?",
+   "why": "Les dernières vérifications (rien de coupé par erreur, pas de solo oublié, pas de saturation), puis un M4A pour l'écouter partout ou une vidéo pour le montrer.",
+   "simpleTitle": "Partager le morceau",
+   "simpleWhy": "Un dernier coup d'œil, puis en fichier ou en vidéo.",
+   "proposals": [
+    {
+     "id": "check",
+     "label": "Lancer les vérifications",
+     "why": "Six points, chacun avec sa solution.",
+     "action": {
+      "type": "open",
+      "spot": "share.check"
+     }
+    },
+    {
+     "id": "export",
+     "label": "Exporter le M4A",
+     "why": "Le morceau entier, au volume du style.",
+     "action": {
+      "type": "open",
+      "spot": "share.export"
+     }
+    },
+    {
+     "id": "video",
+     "label": "Faire la vidéo",
+     "why": "Les pistes qui s'allument en rythme.",
+     "action": {
+      "type": "open",
+      "spot": "share.video"
+     }
+    }
+   ],
+   "elsewhere": [
+    {
+     "id": "keep",
+     "label": "C'est partagé",
+     "why": "Le morceau est parti : bravo.",
+     "action": {
+      "type": "keep"
+     }
+    }
+   ],
+   "lexicon": "master"
+  }
+ ],
+ "whys": {
+  "*": {
+   "EQ": "Enlève ce qui gêne, ajoute un peu de couleur.",
+   "COMPRESSOR": "Rapproche les passages forts et faibles : plus serré, plus présent.",
+   "SATURATION": "Un peu de grain : on l'entend mieux, même sur un téléphone.",
+   "CHORUS": "Épaissit et élargit le son.",
+   "FILTER": "Rend le son plus sourd ou plus brillant ; une courbe le fait bouger.",
+   "PUMP": "Le son se baisse à chaque kick puis remonte.",
+   "FLANGER": "Un balayage qui tourne, très années 70.",
+   "PHASER": "Un balayage doux qui tourne.",
+   "GATE": "Coupe le son sous un seuil : net entre les notes.",
+   "TREMOLO": "Le volume qui bat en rythme.",
+   "WIDENER": "Élargit le son dans la stéréo, le grave reste au centre.",
+   "BITCRUSHER": "Un son numérique, granuleux.",
+   "PARAM_EQ": "Une bande précise : creuser, monter, ou couper le bas.",
+   "ROBOT": "Une voix de robot, métallique.",
+   "WAH": "Le « wah » qui parle.",
+   "VINYL": "Le grain d'un vieux disque.",
+   "RADIO": "Fin et nasillard, comme une vieille radio.",
+   "CHOPPER": "Le son coupé en tranches, en rythme.",
+   "DISTORTION": "Le grain qui grogne et qui mord.",
+   "ECHO": "Chaque note se répète en rythme.",
+   "PING_PONG": "Chaque note rebondit à gauche et à droite.",
+   "REVERB": "L'espace autour du son.",
+   "AUTO_PAN": "Le son bouge de gauche à droite.",
+   "OTT": "Compresse en trois bandes : dense, gros, présent.",
+   "FREQ_SHIFT": "Décale toutes les fréquences : un son étrange, métallique.",
+   "TAPE_STOP": "Le disque qui ralentit jusqu'à l'arrêt.",
+   "WOBBLE": "Un filtre qui s'ouvre et se ferme en rythme : le « wob ».",
+   "CLIPPER": "Arrondit les crêtes qui dépassent le niveau du son : plus dense, sans pomper. Parfait sur une basse, avant l'OTT."
+  },
+  "bass": {
+   "FILTER": "Un passe-haut vers 80 Hz : le sub garde le tout grave.",
+   "PARAM_EQ": "+3 dB vers 120 Hz : le corps de la basse."
+  },
+  "pad": {
+   "FILTER": "Le filtre qui s'ouvre dans la Montée."
+  },
+  "riser": {
+   "FILTER": "Le souffle s'ouvre jusqu'au Drop."
+  },
+  "drums": {
+   "COMPRESSOR": "Colle la batterie : un seul instrument plutôt que des coups séparés."
+  },
+  "kick": {
+   "COMPRESSOR": "Le punch : plus serré, il claque."
+  },
+  "master": {
+   "OTT": "Un OTT léger : le morceau plus dense.",
+   "COMPRESSOR": "Une colle douce sur tout le morceau, 2 dB au plus."
+  }
+ }
+}

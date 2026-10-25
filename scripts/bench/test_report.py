@@ -22,7 +22,7 @@ def measure(style, **over):
     return m
 
 
-def run(measures, renders=None):
+def run(measures, renders=None, cmds=None):
     with tempfile.TemporaryDirectory() as d:
         os.mkdir(os.path.join(d, "json"))
         for m in measures:
@@ -36,6 +36,12 @@ def run(measures, renders=None):
                 with open(os.path.join(d, "render", style + ".json"), "w") as f:
                     json.dump(r, f)
             args += ["--renders", os.path.join(d, "render")]
+        if cmds:
+            os.mkdir(os.path.join(d, "cmds"))
+            for style, text in cmds.items():
+                with open(os.path.join(d, "cmds", style + ".pscmd"), "w") as f:
+                    f.write(text)
+            args += ["--cmds", os.path.join(d, "cmds")]
         p = subprocess.run(args, capture_output=True, text=True)
         return p.returncode, p.stderr.strip(), open(os.path.join(d, "r.md")).read() if os.path.exists(os.path.join(d, "r.md")) else ""
 
@@ -96,6 +102,13 @@ def main():
     # S5b: a Montée rising less than +2 LU over its last 4 bars is listed, not blocking.
     code, err, md = run([measure("house", montee_rise=[0.8, 2.6])])
     check("a Montée rising only +0.8 LU is listed, not blocking", code == 0 and "house (+0,8 / +2,6)" in md and "au moins +2 LU" in md)
+
+    # G0: the variation between Drops, read from the recordings' META line: listed, not blocking.
+    code, err, md = run([measure("jump_up"), measure("house")], cmds={
+        "jump_up": "PSCMD 1\nMETA style jump_up\nMETA drop_variation 0.08\nRENDER 1\n", "house": "META drop_variation 0.5\n"})
+    check("Drops too alike are listed, not blocking", code == 0 and "jump_up (0,08)" in md and "Variation entre Drops" in md)
+    code, err, md = run([measure("house")])
+    check("without recordings, no variation line", code == 0 and "Variation entre Drops ≥" not in md)
 
     print("ALL PASSED" if not failures else f"{failures} FAILURE(S)")
     sys.exit(1 if failures else 0)

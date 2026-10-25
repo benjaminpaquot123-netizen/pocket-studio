@@ -55,6 +55,10 @@ void Mixer::prepare(int sampleRate) {
     masterFader_.configure(rate, 10.0f);
     masterFader_.snap(masterFader_.target());
     drumsOwn_.configure(rate, 5.0f);
+    for (auto& own : trackOwn_) {
+        own.configure(rate, 5.0f);
+        own.snap(own.target());
+    }
     updateTargets();
     for (auto& s : strips_) {
         s.gainL.snap(s.gainL.target());
@@ -88,8 +92,26 @@ void Mixer::setMute(int ch, bool on) {
     updateTargets();
 }
 
+void Mixer::setLayerGain(int ch, float gain) {
+    if (!isLayer(ch)) return;
+    if (!clampSetting(strips_[static_cast<size_t>(ch)].linear, gain, 0.0f, 4.0f)) return;
+    updateTargets();
+}
+
+void Mixer::setLayerThrough(int ch, bool through) {
+    if (isLayer(ch)) through_[static_cast<size_t>(ch)] = through;
+}
+
+void Mixer::setLayerListen(int track, int mask) {
+    if (track < 0 || track >= kLayerTracks) return;
+    listen_[static_cast<size_t>(track)] = mask & 0xF;
+    trackOwn_[static_cast<size_t>(track)].setTarget((mask & 1) != 0 ? 1.0f : 0.0f);
+    updateTargets();
+}
+
 void Mixer::setSolo(int ch, bool on) {
-    if (ch < 0 || ch >= kChannels || ch == kMaster) return;
+    // A layer is heard alone through setLayerListen (its track's solo is the track's).
+    if (ch < 0 || ch >= kChannels || ch == kMaster || isLayer(ch)) return;
     strips_[static_cast<size_t>(ch)].solo = on;
     updateTargets();
 }
@@ -353,7 +375,7 @@ void Mixer::setMonoBass(float hz) {
 }
 
 void Mixer::setGroupMember(int ch, bool on) {
-    if (ch < 0 || ch >= kChannels || ch == kMaster || isPad(ch)) return;  // pads go through the drums
+    if (ch < 0 || ch >= kChannels || ch == kMaster || isPad(ch) || isLayer(ch)) return;  // pads go through the drums, layers through their track
     if (group_[static_cast<size_t>(ch)] == on) return;
     group_[static_cast<size_t>(ch)] = on;
     groupCount_ += on ? 1 : -1;
@@ -380,7 +402,9 @@ void Mixer::updateTargets() {
     // Solo: a track's strip, or a pad's (16..31). A soloed pad is heard through the drums' strip,
     // whose own sound (the pads without a strip of their own) then goes quiet, as do the other pads.
     bool anyTrackSolo = false, anyPadSolo = false;
-    for (size_t ch = 0; ch < strips_.size(); ++ch) (isPad(static_cast<int>(ch)) ? anyPadSolo : anyTrackSolo) |= strips_[ch].solo;
+    for (size_t ch = 0; ch < strips_.size(); ++ch) {
+        if (!isLayer(static_cast<int>(ch))) (isPad(static_cast<int>(ch)) ? anyPadSolo : anyTrackSolo) |= strips_[ch].solo;
+    }
     const bool anySolo = anyTrackSolo || anyPadSolo;
     const auto& drums = strips_[kDrums];
     const bool drumsAudible = !drums.mute && (!anySolo || drums.solo || anyPadSolo);
@@ -392,9 +416,19 @@ void Mixer::updateTargets() {
         // A pad's strip goes through the drums' one: heard when the drums are (its reverb too).
         const bool pad = isPad(static_cast<int>(ch));
         const bool padAudible = anyPadSolo ? (s.solo || drums.solo) : (!anySolo || drums.solo);
-        const bool audible = !s.mute && (pad ? !drums.mute && padAudible : ch == kDrums ? drumsAudible : (!anySolo || s.solo));
+        bool audible = !s.mute && (pad ? !drums.mute && padAudible : ch == kDrums ? drumsAudible : (!anySolo || s.solo));
+        // A layer: heard when its track is (its mute, its solo) and the track's listening takes it.
+        const bool layer = isLayer(static_cast<int>(ch));
+        float parentFader = 1.0f;
+        if (layer) {
+            const auto& parent = strips_[static_cast<size_t>(layerParent(static_cast<int>(ch)))];
+            const int k = (static_cast<int>(ch) - kFirstLayer) % kLayersPerTrack;
+            const bool listened = ((listen_[static_cast<size_t>(layerTrack(static_cast<int>(ch)))] >> (k + 1)) & 1) != 0;
+            audible = !s.mute && !parent.mute && (!anySolo || parent.solo) && listened;
+            parentFader = (parent.volume / 0.8f) * (parent.volume / 0.8f);
+        }
         // Fader: 0.8 = unity gain, 1.0 = +2 dB, quadratic below for a natural feel.
-        const float gain = audible ? (s.volume / 0.8f) * (s.volume / 0.8f) : 0.0f;
+        const float gain = audible ? (s.volume / 0.8f) * (s.volume / 0.8f) * s.linear : 0.0f;
         // Equal-power pan; centre = -3 dB per side, compensated so centre stays at unity.
         const float angle = (s.pan + 1.0f) * 0.25f * 3.14159265f;
         s.gainL.setTarget(gain * std::cos(angle) * 1.41421356f);
@@ -406,7 +440,7 @@ void Mixer::updateTargets() {
         for (size_t b = 0; b < s.send.size(); ++b) {
             // A throw: the send wide open for its beat.
             const float level = throws_[ch][b].on ? 1.0f : std::min(1.0f, s.send[b] + extra[b]);
-            s.sendGain[b].setTarget(level * level * (pad ? drumsFader : 1.0f));
+            s.sendGain[b].setTarget(level * level * (pad ? drumsFader : layer ? parentFader : 1.0f));
         }
     }
 }
@@ -558,6 +592,8 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
         }
     }
 
+    fedPre_.fill(false);
+    fedPost_.fill(false);
     std::array<float, kChannels> blockPeaks{};
     // The pads' strips first: the drums' strip then takes their sum along with the other pads.
     for (int k = 0; k < kChannels; ++k) {
@@ -586,10 +622,41 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
                 chR_[static_cast<size_t>(i)] = chR_[static_cast<size_t>(i)] * g + padsR_[static_cast<size_t>(i)];
             }
         }
+        // G1b: a track's layers join its own sound (the part of it heard: setLayerListen).
+        const int lt = stripTrack(ch);
+        if (lt >= 0) {
+            auto& own = trackOwn_[static_cast<size_t>(lt)];
+            if (own.target() < 1.0f || own.current() < 1.0f) {
+                for (int i = 0; i < n; ++i) {
+                    const float g = own.next();
+                    chL_[static_cast<size_t>(i)] *= g;
+                    chR_[static_cast<size_t>(i)] *= g;
+                }
+                if (own.target() >= 1.0f && own.current() > 0.99999f) own.snap(1.0f);
+            }
+            if (fedPre_[static_cast<size_t>(lt)]) {
+                const auto& pl = (*preL_)[static_cast<size_t>(lt)];
+                const auto& pr = (*preR_)[static_cast<size_t>(lt)];
+                for (int i = 0; i < n; ++i) {
+                    chL_[static_cast<size_t>(i)] += pl[static_cast<size_t>(i)];
+                    chR_[static_cast<size_t>(i)] += pr[static_cast<size_t>(i)];
+                }
+            }
+        }
         // What goes into the inserts and what comes out (an effect's tail): a swap fades if heard.
         float level = blockPeak(chL_.data(), chR_.data(), n);
         if (activeInserts_[static_cast<size_t>(ch)] > 0) {
             processInserts(ch, chL_.data(), chR_.data(), n);
+            level = std::max(level, blockPeak(chL_.data(), chR_.data(), n));
+        }
+        // The layers that pass the track's inserts by (a clean sub under a driven bass).
+        if (lt >= 0 && fedPost_[static_cast<size_t>(lt)]) {
+            const auto& pl = (*postL_)[static_cast<size_t>(lt)];
+            const auto& pr = (*postR_)[static_cast<size_t>(lt)];
+            for (int i = 0; i < n; ++i) {
+                chL_[static_cast<size_t>(i)] += pl[static_cast<size_t>(i)];
+                chR_[static_cast<size_t>(i)] += pr[static_cast<size_t>(i)];
+            }
             level = std::max(level, blockPeak(chL_.data(), chR_.data(), n));
         }
         stripLevel_[static_cast<size_t>(ch)] = level;
@@ -614,6 +681,20 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
         const bool toGroup = grouped && group_[static_cast<size_t>(ch)];
         float* toL = pad ? padsL_.data() : toGroup ? grpL_.data() : mL_.data();
         float* toR = pad ? padsR_.data() : toGroup ? grpR_.data() : mR_.data();
+        if (isLayer(ch)) {
+            // Into its track's strip (processed after every layer's: kFirstLayer > the tracks' strips
+            // in the order above), before or after the track's inserts.
+            const auto t = static_cast<size_t>(layerTrack(ch));
+            const bool pre = through_[static_cast<size_t>(ch)];
+            auto& fed = pre ? fedPre_[t] : fedPost_[t];
+            toL = (pre ? *preL_ : *postL_)[t].data();
+            toR = (pre ? *preR_ : *postR_)[t].data();
+            if (!fed) {
+                std::fill(toL, toL + n, 0.0f);
+                std::fill(toR, toR + n, 0.0f);
+                fed = true;
+            }
+        }
         for (int i = 0; i < n; ++i) {
             const float l = chL_[static_cast<size_t>(i)] * s.gainL.next();
             const float r = chR_[static_cast<size_t>(i)] * s.gainR.next();

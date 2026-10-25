@@ -1,0 +1,16 @@
+{"style":"techno","ch":6,"m":{"bars": 16, "of": 31, "centroid_hz": 296, "pres": -8.9, "bright": -19.9, "mud": 12.6, "sm": -13.0, "level_db": -11.1}}
+{"style":"house","ch":6,"m":{"bars": 9, "of": 16, "centroid_hz": 563, "pres": -8.2, "bright": -18.1, "mud": 7.1, "sm": -7.1, "level_db": -14.9}}
+{"style":"tech_house","ch":6,"m":{"bars": 8, "of": 15, "centroid_hz": 525, "pres": -18.9, "bright": -23.8, "mud": 17.4, "sm": -12.4, "level_db": -12.3}}
+{"style":"deep_house","ch":6,"m":{"bars": 6, "of": 16, "centroid_hz": 845, "pres": -5.2, "bright": -26.1, "mud": -3.0, "sm": -5.9, "level_db": -13.3}}
+{"style":"trance","ch":6,"m":{"bars": 32, "of": 32, "centroid_hz": 608, "pres": -9.1, "bright": -12.3, "mud": 7.2, "sm": -6.3, "level_db": -11.4}}
+{"style":"detroit","ch":6,"m":{"bars": 31, "of": 31, "centroid_hz": 584, "pres": -7.2, "bright": -20.4, "mud": 5.4, "sm": -7.5, "level_db": -14.4}}
+{"style":"minimal","ch":8,"m":{"bars": 1, "of": 32, "centroid_hz": 60, "pres": -46.0, "bright": -29.4, "mud": 63.2, "sm": -200.0, "level_db": -7.7}}
+{"style":"hard_techno","ch":5,"m":{"bars": 17, "of": 32, "centroid_hz": 594, "pres": -8.5, "bright": -12.8, "mud": 7.5, "sm": -6.4, "level_db": -10.7}}
+{"style":"dnb","ch":6,"m":{"bars": 16, "of": 31, "centroid_hz": 602, "pres": -8.4, "bright": -11.8, "mud": 6.4, "sm": -6.2, "level_db": -11.2}}
+{"style":"jump_up","ch":6,"m":{"bars": 15, "of": 31, "centroid_hz": 252, "pres": -18.2, "bright": -21.5, "mud": 20.3, "sm": -10.4, "level_db": -17.9}}
+{"style":"liquid_dnb","ch":6,"m":{"bars": 31, "of": 31, "centroid_hz": 618, "pres": -7.8, "bright": -19.6, "mud": 4.3, "sm": -8.0, "level_db": -14.1}}
+{"style":"neurofunk","ch":5,"m":{"bars": 15, "of": 31, "centroid_hz": 409, "pres": -11.5, "bright": -38.4, "mud": 12.2, "sm": -5.5, "level_db": -14.1}}
+{"style":"dubstep","ch":6,"m":{"bars": 16, "of": 31, "centroid_hz": 644, "pres": -9.3, "bright": -17.4, "mud": 6.8, "sm": -5.4, "level_db": -15.0}}
+{"style":"trap","ch":5,"m":{"bars": 15, "of": 15, "centroid_hz": 1278, "pres": -2.1, "bright": -18.6, "mud": -10.0, "sm": -5.4, "level_db": -13.2}}
+{"style":"synthwave","ch":6,"m":{"bars": 16, "of": 16, "centroid_hz": 963, "pres": -3.4, "bright": -15.9, "mud": -3.4, "sm": -9.3, "level_db": -12.3}}
+{"style":"pop","ch":6,"m":{"bars": 16, "of": 16, "centroid_hz": 507, "pres": -12.2, "bright": -16.3, "mud": 11.9, "sm": -8.1, "level_db": -14.2}}

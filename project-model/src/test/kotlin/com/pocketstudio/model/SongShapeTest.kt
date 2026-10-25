@@ -37,7 +37,8 @@ class SongShapeTest {
 
     /** The scenes of [this] song right before a Drop (or a Refrain), in order of the song. */
     private fun Project.beforeDrops(): List<Int> = song.zipWithNext().filter { (a, b) ->
-        allScenes[b.scene].label.let { it == "Drop" || it == "Refrain" || it == SongShape.FAKE_DROP } &&
+        // G0: a middle Drop may open on the last Drop's own scene (« Refrain 3 »).
+        allScenes[b.scene].label.let { it == SongShape.FAKE_DROP || Regex("""^(Drop|Refrain)( \d+)?$""").matches(it) } &&
             allScenes[a.scene].label.let { it.startsWith("Montée") || it.startsWith(SongShape.PRE_CHORUS) || it.startsWith("Couplet ") || it == SongShape.FAKE_DROP }
     }.map { it.first.scene }
 
@@ -213,8 +214,9 @@ class SongShapeTest {
         assertTrue("$counts", counts.zipWithNext().all { (a, b) -> b >= a } && counts.last() > counts.first())
         // The kick first, with its rumble (S3: on by default in techno).
         assertEquals(setOf(Role.Kick.lane, Role.Rumble.lane), lanes(p.allScenes[scenes.first()]))
-        // House: no mute, its 16-bar intro in two steps.
-        assertTrue(song(style("house")).allScenes.none { it.label == "Drop 3" })
+        // House: no mute (G0: its « Drop 3 » is the last Drop's own scene, a layer more, never one less).
+        val house = song(style("house"))
+        assertTrue(house.allScenes.filter { it.label.startsWith("Drop") }.all { lanes(it).size >= lanes(house.allScenes[2]).size })
     }
 
     @Test

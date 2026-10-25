@@ -36,8 +36,14 @@ data class InstrumentTrack(
     @EncodeDefault(EncodeDefault.Mode.NEVER) val multi: MultiPatch = MultiPatch(),
     /** The 808's settings when the track plays it (engine 4, phase 38); left out of the file at its defaults. */
     @EncodeDefault(EncodeDefault.Mode.NEVER) val voice808: PadVoice = PadVoice(PadVoice.BASS_808),
+    /**
+     * G1b: the sounds stacked over its own ([TrackLayer], [Layers.MAX] at most), playing its notes.
+     * Left out of the file when there are none: every track saved before has none and sounds as it did.
+     */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val layers: List<TrackLayer> = emptyList(),
 ) {
     fun sanitized(): InstrumentTrack = copy(
+        layers = Layers.sanitize(layers),
         name = name.take(MAX_NAME).ifBlank { "Piste ${id + 1}" },
         color = color.coerceIn(0, COLORS - 1),
         engine = engine.coerceIn(0, ENGINE_808),
@@ -84,7 +90,7 @@ val Project.instrumentTracks: List<InstrumentTrack> get() = listOf(track(0)) + t
 fun Project.track(id: Int): InstrumentTrack =
     if (id == 0) InstrumentTrack(
         0, synthTrackName, synthTrackColor, synthEngine, synth, plaits, instrument, synthNotes, sampled,
-        followChords = synthFollowChords, multi = multi, voice808 = voice808,
+        followChords = synthFollowChords, multi = multi, voice808 = voice808, layers = synthLayers,
     )
     else tracks.firstOrNull { it.id == id } ?: track(0)
 
@@ -93,7 +99,7 @@ fun Project.withTrack(t: InstrumentTrack): Project =
     if (t.id == 0) copy(
         synthTrackName = t.name, synthTrackColor = t.color, synthEngine = t.engine, synth = t.synth,
         plaits = t.plaits, instrument = t.instrument, synthNotes = t.notes, sampled = t.sampled, synthFollowChords = t.followChords,
-        multi = t.multi, voice808 = t.voice808,
+        multi = t.multi, voice808 = t.voice808, synthLayers = t.layers,
     )
     else copy(tracks = tracks.map { if (it.id == t.id) t else it })
 
@@ -106,7 +112,7 @@ fun Project.viewOfTrack(id: Int): Project {
     val t = tracks.firstOrNull { it.id == id } ?: return this
     return copy(
         synthEngine = t.engine, synth = t.synth, plaits = t.plaits, instrument = t.instrument, synthNotes = t.notes, sampled = t.sampled,
-        multi = t.multi, voice808 = t.voice808, synthFollowChords = t.followChords,
+        multi = t.multi, voice808 = t.voice808, synthFollowChords = t.followChords, synthLayers = t.layers,
     )
 }
 
@@ -239,6 +245,21 @@ internal fun Project.withFittedSampleRoots(): Project {
         val pitches = notes.map { it.pitch }.sorted()
         if (kotlin.math.abs(pitches[pitches.size / 2] - t.sampled.root) <= SampledPatch.OCTAVE_SLACK) continue
         p = p.withTrack(t.copy(sampled = t.sampled.copy(root = SampledPatch.fitRoot(t.sampled.root, notes))))
+    }
+    // G1b: a layer's sample likewise, in the octave of the notes it plays (its range, transposed).
+    for (t in p.instrumentTracks) {
+        if (t.layers.none { it.sound.engine == 2 && it.sound.sampled.file != null }) continue
+        val notes = allScenes.flatMap { s -> if (t.id == 0) s.synthNotes.notes else s.trackNotes[t.id]?.notes.orEmpty() }.ifEmpty { t.notes.notes }
+        val layers = t.layers.map { l ->
+            val sampled = l.sound.sampled
+            if (l.sound.engine != 2 || sampled.file == null) return@map l
+            val played = notes.filter { l.plays(it.pitch) }.map { it.copy(pitch = (it.pitch + l.transpose).coerceIn(0, 127)) }
+            if (played.isEmpty()) return@map l
+            val pitches = played.map { it.pitch }.sorted()
+            if (kotlin.math.abs(pitches[pitches.size / 2] - sampled.root) <= SampledPatch.OCTAVE_SLACK) l
+            else l.copy(sound = l.sound.copy(sampled = sampled.copy(root = SampledPatch.fitRoot(sampled.root, played))))
+        }
+        if (layers != t.layers) p = p.withTrack(t.copy(layers = layers))
     }
     return p
 }

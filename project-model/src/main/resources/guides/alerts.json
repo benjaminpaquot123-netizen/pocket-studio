@@ -1,0 +1,118 @@
+{
+ "format": 1,
+ "style": "alerts",
+ "version": 1,
+ "cards": [
+  {
+   "id": "alert.curves.too_long",
+   "stage": 6,
+   "target": "song",
+   "kind": "decide",
+   "title": "Des courbes dépassent la fin du morceau",
+   "why": "Le morceau a été raccourci et ses courbes n'ont pas suivi : un changement prévu au Drop tombe ailleurs.",
+   "proposals": [
+    {
+     "id": "curves",
+     "label": "Voir les courbes",
+     "why": "Chaque courbe partie par partie.",
+     "action": {
+      "type": "open",
+      "spot": "song.automation"
+     }
+    },
+    {
+     "id": "refuse",
+     "label": "C'est voulu",
+     "why": "Je ne te le redemanderai pas.",
+     "action": {
+      "type": "refuse"
+     }
+    }
+   ],
+   "lexicon": "automation"
+  },
+  {
+   "id": "alert.low.off_center",
+   "stage": 6,
+   "target": "song",
+   "kind": "decide",
+   "title": "Le grave n'est pas au centre",
+   "why": "Un kick ou une basse sur un côté s'entend mal et disparaît sur un téléphone.",
+   "proposals": [
+    {
+     "id": "centre",
+     "label": "Remettre au centre",
+     "why": "Le grave au milieu, comme partout.",
+     "action": {
+      "type": "pan",
+      "value": 0.0
+     }
+    },
+    {
+     "id": "refuse",
+     "label": "C'est voulu",
+     "why": "Je ne te le redemanderai pas.",
+     "action": {
+      "type": "refuse"
+     }
+    }
+   ],
+   "lexicon": "mix"
+  },
+  {
+   "id": "alert.mix.solo",
+   "stage": 6,
+   "target": "song",
+   "kind": "decide",
+   "title": "Un solo est resté allumé",
+   "why": "Les autres pistes ne s'entendent plus, ni à l'export.",
+   "proposals": [
+    {
+     "id": "unsolo",
+     "label": "Couper le solo",
+     "why": "Toutes les pistes s'entendent à nouveau.",
+     "action": {
+      "type": "unsolo"
+     }
+    },
+    {
+     "id": "keep",
+     "label": "Je l'écoute exprès",
+     "why": "Pense à le couper avant de partager.",
+     "action": {
+      "type": "keep"
+     }
+    }
+   ],
+   "lexicon": "mix"
+  },
+  {
+   "id": "alert.loudness.peak",
+   "stage": 6,
+   "target": "song",
+   "kind": "decide",
+   "title": "Le morceau sature",
+   "why": "Des crêtes dépassent la limite : ça craque sur certains lecteurs.",
+   "proposals": [
+    {
+     "id": "master",
+     "label": "Baisser le master",
+     "why": "Un ou deux dB suffisent.",
+     "action": {
+      "type": "open",
+      "spot": "mixer.master"
+     }
+    },
+    {
+     "id": "refuse",
+     "label": "C'est voulu",
+     "why": "Je ne te le redemanderai pas.",
+     "action": {
+      "type": "refuse"
+     }
+    }
+   ],
+   "lexicon": "master"
+  }
+ ]
+}

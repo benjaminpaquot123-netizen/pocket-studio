@@ -152,6 +152,8 @@ class I18nCatalogTest {
             "WhatPlays.kt: e.label",
             "WhatPlays.kt: Macros.NAMES[a.macro]",
             "WhatPlays.kt: side",  // a macro's end (Macros.ENDS, checked by ModelTextsTest)
+            // The Guide's cards and stages (guides/*.json, GuideStages: checked by GuideParcoursTest).
+            "GuideParcours.kt: fr",
             "DefaultNames.kt: COPY",
             "DefaultNames.kt: first",  // a stem label (DefaultNames.TEXTS) or a kit's preset name (shown as it is when unknown)
             "DefaultNames.kt: fr",

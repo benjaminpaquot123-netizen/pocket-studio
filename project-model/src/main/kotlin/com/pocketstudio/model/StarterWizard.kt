@@ -1731,7 +1731,7 @@ object StarterWizard {
     /** The song the assistant makes for [style] with [plan]: its sections and their variants ([SongShape]). */
     fun songOf(style: Style, plan: ScenePlan): List<SongPart> {
         val full = withVariants(style, plan)
-        return SongShape.shape(style, full).parts { sceneBars(style, full, it) }
+        return SongShape.shape(style, full).parts({ sceneBars(style, full, it) })
     }
 
     /** How long [style]'s song with [plan] lasts, in seconds. */
@@ -1974,6 +1974,8 @@ object StarterWizard {
             // The kick and the bass of the beat out of the last bars before a Drop; the last beat silent.
             if (spec.cutBars > 0) for (r in SongShape.BASS_LINES) set(r, lanes[r.lane].hits.filterKeys { it < steps - spec.cutBars * 16 })
             if (spec.silence) lanes = lanes.map { l -> l.copy(hits = l.hits.filterKeys { it < steps - 4 }) }
+            // G0: the last Drop's scene has a drum layer more (an open hat, a ride, a percussion or claps).
+            if (spec.extra && built == null) lanes = withDropLayer(lanes, steps, full.stepsPerBar)
             // The drummer: a « B » beat in the Drop's second scene, the phrase's own ending (3 or 4 of them
             // turn through the scenes), each hit played by hand. A Montée's roll and its silence stay as written.
             val seed = tracks.seed + 7919L * (index + 1)
@@ -2023,10 +2025,35 @@ object StarterWizard {
             scene = 0,
         )
         val bars = project.allScenes.map { (it.stepsFor(project.stepsPerBar) / project.stepsPerBar).coerceAtLeast(1) }
-        project = project.copy(song = shape.parts { bars.getOrElse(it) { 1 } })
+        // A block's muted layers: the tracks that play them (G0: the lean opening of a Drop, a Drop that breathes).
+        fun keysOf(layer: SongShape.Layer): Set<String> = when (layer) {
+            SongShape.Layer.Pad -> partOfTrack.filterValues { it == Part.Pad }.keys
+            SongShape.Layer.Lead -> partOfTrack.filterValues { it == Part.Lead }.keys
+            SongShape.Layer.Counter -> setOfNotNull(tracks.counter)
+            SongShape.Layer.Vocal -> setOfNotNull(tracks.vocal)
+        }.map { SongPart.inst(it) }.toSet()
+        project = project.copy(song = shape.parts({ bars.getOrElse(it) { 1 } }, ::keysOf))
         // Section names are saved in French and shown in the interface's language.
         shape.scenes.forEachIndexed { i, spec -> project = project.renameScene(i, spec.label) }
         return project
+    }
+
+    /**
+     * G0: the drum layer the last Drop adds ([SongShape.SceneSpec.extra]), on the first of these lines
+     * the scene leaves empty: the open hat on the off-beats, a percussion on the last sixteenth of each
+     * beat, else Énergie 4's hats and claps. Never the cymbal's pad (the crash of the kits without a
+     * ride: the song's, once every 16). Nothing over the phrase's last beat (its fill). [lanes]: a
+     * scene's beat of [steps] steps, bars of [stepsPerBar].
+     */
+    internal fun withDropLayer(lanes: List<DrumLane>, steps: Int, stepsPerBar: Int = 16): List<DrumLane> {
+        if (lanes.all { it.hits.isEmpty() }) return lanes
+        val until = if (steps >= WizardMix.PHRASE_STEPS) steps - 4 else steps
+        val options = listOf(
+            Role.OpenHat to (0 until until).filter { it % 4 == 2 }.associateWith { Hit(0.5f) },
+            Role.Perc2 to (0 until until).filter { it % 4 == 3 }.associateWith { Hit(0.45f) },
+        )
+        val (role, hits) = options.firstOrNull { (r, _) -> lanes.getOrNull(r.lane)?.hits?.isEmpty() == true } ?: return PartIntents.withExtraLayer(DrumPattern(steps = steps, lanes = lanes), stepsPerBar).lanes
+        return lanes.toMutableList().also { it[role.lane] = it[role.lane].copy(hits = hits) }
     }
 
     /** The crash's strength on the Drop's first beat. */

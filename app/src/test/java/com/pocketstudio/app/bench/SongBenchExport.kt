@@ -12,6 +12,7 @@ import com.pocketstudio.engine.ExportResult
 import com.pocketstudio.engine.NativeEngine
 import com.pocketstudio.engine.OfflineExport
 import com.pocketstudio.model.Project
+import com.pocketstudio.model.DropVariation
 import com.pocketstudio.model.InstrumentTrack
 import com.pocketstudio.model.StarterWizard
 import com.pocketstudio.model.leadTrackId
@@ -119,6 +120,8 @@ class SongBenchExport {
         ) + listOfNotNull(
             // S4: the lead's mixer channel, rendered alone by the bench (how its sound moves along the song).
             p.leadTrackId()?.let { "META lead ${InstrumentTrack.mixerChannel(it)}" },
+            // G0: how much the Drops differ (the model's, read by report.py: « Variation entre Drops »).
+            DropVariation.of(p)?.let { "META drop_variation ${"%.4f".format(java.util.Locale.ROOT, it)}" },
         ) + sections
     }
 }

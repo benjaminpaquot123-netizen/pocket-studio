@@ -1,14 +1,14 @@
 # Avancement
 
 ## Où on en est (2026-10-25)
-- `main` = lot 2 fusionné (#50) après Guide G0/G1 (#49) et tests réels (#48). Chaque fusion publie l'APK (consigne de Benjamin : publier dès que possible).
-- En cours : une PR qui réunit basses qui tapent, leads lot 1 et passe son S6 (chacun relu à neuf).
+- `main` = PR #51 (basses + leads lot 1 + S6) ; APK 220 envoyé à Benjamin avec les extraits avant / après (« C'est parfait »).
+- En cours : une PR qui réunit S7 son (largeur, téléphone, direct = export en version de mix 4) et le Guide G2 (barre et panneau, une carte à la fois), chacun relu à neuf.
 
 ## Prochaine étape exacte
-1. CI verte de la PR son (basses + leads + S6), fusion, envoyer l'APK à Benjamin.
-2. Refaire les mesures (AUDIT-35 § 4), extraits « après » pour Benjamin, `recette.json` du jalon son.
-3. Restes S6 : largeur du Drop (chorus stéréo dans le moteur, versionné), perte au haut-parleur ≤ 4 LU, intros en direct à plus de 1 LU (11 styles).
-4. Guide G2 à G6, leads lots B à D, puis le chantier Play Store en dernier.
+1. CI verte de la PR S7 + G2, fusion, un seul APK pour Benjamin.
+2. Guide G3 (fiche de piste à cinq colonnes, éditeur de couches), puis G4 (étapes 3 à 6 en cartes), G5 (fusion des anciennes surfaces), G6 (vérification).
+3. Restes son : largeur de deep house, dubstep, neurofunk, phonk ; intros en direct de riddim et jersey club ; restes de relecture S6/S7 (REVIEW.md).
+4. Leads lots B à D, puis le chantier Play Store en dernier.
 
 **Phase 0 fusionnée le 2026-10-18, phase 1 fusionnée le 2026-10-19 (feu vert de Benjamin).** Phase en cours : 2 (sampler et notes).
 

@@ -92,6 +92,8 @@ class GuideListen(
         val key = "$card/$option"
         job = scope.launch {
             val p = project()
+            // The takes of another song (or of this one before an edit) are let go: up to ~20 MB of sound.
+            if (cached?.second !== p) cached = null
             val hit = cached?.takeIf { it.first == key && it.second === p }?.third
             val rendered = hit ?: run {
                 val with = withContext(worker) { GuideActions.tryApply(p, card, option, clock()).project }
@@ -111,6 +113,11 @@ class GuideListen(
                 Rendered(Pcm(data, 2, OfflineExport.SAMPLE_RATE), starts).also { cached = Triple(key, p, it) }
             }
             if (_state.value?.let { it.card == card && it.option == option } != true) return@launch
+            // Rendered for a song that is no longer open: not played (G2 review).
+            if (project() !== p) {
+                _state.value = null
+                return@launch
+            }
             val started = player.play(rendered.pcm) { scope.launch { if (_state.value?.let { it.card == card && it.option == option } == true) clear() } }
             if (!started) {
                 _state.value = GuideListenUi(card, option, preparing = false, failed = true)

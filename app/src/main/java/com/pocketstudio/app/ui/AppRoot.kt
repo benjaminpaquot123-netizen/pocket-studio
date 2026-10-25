@@ -1193,6 +1193,14 @@ fun AppRoot() {
     }
     DisposableEffect(guideListen) { onDispose { guideListen.stop() } }
     LaunchedEffect(guideOpen) { if (!guideOpen) guideListen.stop() }
+    // G2 review: the « Sans / Avec » never plays under a take, the Live page or the song started (the
+    // panel only hides there, it stays open).
+    val guideQuietRec by rhythmVm.recording.collectAsStateWithLifecycle()
+    val guideQuietTake by rhythmVm.audioRecording.collectAsStateWithLifecycle()
+    val guideQuietPlaying = rhythmVm.transport.collectAsStateWithLifecycle().value.playing
+    LaunchedEffect(guideQuietRec, guideQuietTake != null, showLive, guideQuietPlaying) {
+        if (guideQuietRec || guideQuietTake != null || showLive || guideQuietPlaying) guideListen.stop()
+    }
     val guideGo: (com.pocketstudio.app.guide.GuideGo) -> Unit = { g ->
         when (g) {
             is com.pocketstudio.app.guide.GuideGo.Tab -> {

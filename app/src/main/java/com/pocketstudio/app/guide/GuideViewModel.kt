@@ -120,7 +120,8 @@ class GuideViewModel(
     /** The screens the options ask to open. */
     val opens: SharedFlow<GuideOpen> = _opens.asSharedFlow()
 
-    private val _notices = MutableSharedFlow<String>(replay = 1, extraBufferCapacity = 4)
+    // No replay: a notice closed does not come back after a rotation or on another song (G2 review).
+    private val _notices = MutableSharedFlow<String>(extraBufferCapacity = 4)
     /** What an action could not do, and why (« ce réglage a changé depuis… »), to show in a line. */
     val notices: SharedFlow<String> = _notices.asSharedFlow()
 

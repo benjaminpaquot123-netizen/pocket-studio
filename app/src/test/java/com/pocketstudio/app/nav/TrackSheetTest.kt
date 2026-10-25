@@ -8,6 +8,7 @@ import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.longClick
 import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
@@ -194,7 +195,11 @@ class TrackSheetTest {
         assertTrue(h.vm.project.value.guide.historyOf(GuideTrack.inst(lead)).isNotEmpty())
         h.vm.undo()
         assertEquals(p0.mixer.channels[InstrumentTrack.mixerChannel(lead)], h.vm.project.value.mixer.channels[InstrumentTrack.mixerChannel(lead)])
-        // The sheet is still there after the menu.
+        // The sheet is still there after the menu, no window over it, and its boxes still answer.
         compose.onNodeWithTag("track_sheet_title").performScrollTo().assertIsDisplayed()
+        assertTrue(compose.onAllNodesWithText("Compris").fetchSemanticsNodes().isEmpty())
+        compose.onNodeWithTag("track_sheet_part_$part").performScrollTo().performClick()
+        compose.waitForIdle()
+        assertFalse(h.vm.project.value.song[part].plays(key))
     }
 }

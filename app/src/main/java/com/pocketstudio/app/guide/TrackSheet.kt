@@ -696,6 +696,9 @@ internal fun LayersEditorRoute(vm: RhythmViewModel, track: Int, close: () -> Uni
     val layers = project.layersOf(track)
     // A layer heard alone that went away (removed, undone): every sound again.
     if (heard != null && heard != Layers.OWN && heard!! !in layers.indices) heard = null
+    // The stack changed (an undo, « Ramener »): the engine dropped the solo, the chip says so too.
+    val stack = layers.map { it.sound to it.role }
+    androidx.compose.runtime.LaunchedEffect(stack) { if (heard != null) heard = null }
     // Leaving: every sound heard again (listening is live only, saved nowhere).
     DisposableEffect(track) { onDispose { vm.soloLayer(track, null) } }
     val t = project.track(track)

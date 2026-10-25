@@ -769,7 +769,9 @@ fun AppRoot() {
     }
     val saveError by rhythmVm.session.lastSaveError.collectAsStateWithLifecycle()
     val notice by rhythmVm.notice.collectAsStateWithLifecycle()
-    notice?.let { text ->
+    // G3 review: a track's sheet or its layers show their notice in their own line, never a window
+    // over them that blocks every touch.
+    notice?.takeIf { trackSheetKey == null && layersTrack == null }?.let { text ->
         ScaledAlertDialog(
             onDismissRequest = rhythmVm::dismissNotice,
             confirmButton = { TextButton(onClick = rhythmVm::dismissNotice) { Text(tr("Compris")) } },
@@ -1069,7 +1071,7 @@ fun AppRoot() {
     // G3: a track's sheet; its layers and its sound open over it (the sheet waits underneath).
     trackSheetKey?.let { key ->
         com.pocketstudio.app.guide.TrackSheetRoute(
-            rhythmVm, key, close = { trackSheetKey = null },
+            rhythmVm, key, close = { trackSheetKey = null; rhythmVm.dismissNotice() },
             changeSound = { id -> rhythmVm.selectTrack(id); soundChooserTrack = id },
             layers = { id -> rhythmVm.selectTrack(id); layersTrack = id },
             effects = { ch -> fxChannel = ch },

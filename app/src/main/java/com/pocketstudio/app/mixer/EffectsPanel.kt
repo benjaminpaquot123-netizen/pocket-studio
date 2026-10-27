@@ -107,5 +107,5 @@ internal fun LabeledSlider(label: String, value: String, v: Float, tag: String, 
         Text(label, Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
         Text(value, style = MonoStyle, color = Neon.Cyan)
     }
-    ProSlider(value = v, onValueChange = onChange, modifier = Modifier.testTag(tag))
+    ProSlider(value = v, onValueChange = onChange, modifier = Modifier.testTag(tag), label = label, valueText = value)
 }

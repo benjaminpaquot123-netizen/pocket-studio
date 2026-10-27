@@ -49,6 +49,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.draw.shadow
@@ -151,7 +154,7 @@ fun LivePadsCard(ui: LivePadsUi, actions: LivePadsActions) {
                 }
             }
         }
-        ui.busy?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = Neon.Amber) }
+        ui.busy?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = Neon.Amber, modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite }) }
         if (ui.editing == null) {
             Row(Modifier.fillMaxWidth().height(androidx.compose.foundation.layout.IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedButton(onClick = { actions.edit(0) }, modifier = Modifier.weight(1f).fillMaxHeight().testTag("live_edit")) {

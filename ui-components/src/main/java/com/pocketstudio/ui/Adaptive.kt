@@ -26,6 +26,17 @@ import androidx.compose.ui.unit.dp
 val TWO_PANES_FROM: Dp = 760.dp
 
 /**
+ * Audit final (09): a box wider than high (a screen lying down) shows two panes from this width:
+ * the Galaxy Tab A11 lying down at 130 % leaves ~690 dp beside the rail, and one column there left
+ * the drum steps and half the console off the screen.
+ */
+val TWO_PANES_LYING_FROM: Dp = 640.dp
+
+/** Whether a box of this size shows two panes side by side. */
+fun twoPanes(width: Dp, height: Dp): Boolean =
+    width >= TWO_PANES_FROM || (width > height && width >= TWO_PANES_LYING_FROM)
+
+/**
  * A screen of cards: one scrolling column on a phone; on a wide screen (tablet) two columns side
  * by side, each scrolling on its own, [first] on the left and [second] on the right, so nothing
  * is stretched across the whole width.
@@ -41,7 +52,7 @@ fun AdaptivePanes(
     phone: (@Composable ColumnScope.() -> Unit)? = null,
 ) {
     BoxWithConstraints(modifier.fillMaxSize()) {
-        if (maxWidth >= TWO_PANES_FROM) {
+        if (twoPanes(maxWidth, maxHeight)) {
             Row(Modifier.fillMaxSize().padding(horizontal = padding / 2), horizontalArrangement = Arrangement.spacedBy(0.dp)) {
                 Column(
                     Modifier.weight(1f).fillMaxHeight().verticalScroll(rememberScrollState()).padding(padding / 2, padding),

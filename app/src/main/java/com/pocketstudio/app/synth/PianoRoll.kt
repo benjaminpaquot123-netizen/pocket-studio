@@ -61,6 +61,9 @@ import androidx.compose.ui.platform.LocalViewConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.customActions
+import androidx.compose.ui.semantics.semantics
 import com.pocketstudio.model.Note
 import com.pocketstudio.model.NoteEdits
 import com.pocketstudio.model.NoteClip
@@ -429,7 +432,7 @@ private fun VelocityLane(
     val stepPx = with(density) { stepWidth.toPx() }
     val barColor = Neon.Cyan
     val selColor = Neon.Acid
-    val lineColor = Neon.Outline
+    val lineColor = Neon.Outline.copy(alpha = 0.55f)
     // Latest values for the gesture without restarting it on every edit.
     val current by androidx.compose.runtime.rememberUpdatedState(clip to selection)
     Row(Modifier.fillMaxWidth().height(56.dp)) {
@@ -519,7 +522,7 @@ private fun Grid(
 
     val colors = GridColors(
         bg = Neon.Surface, black = Neon.Background, line = Neon.Outline.copy(alpha = 0.35f),
-        beat = Neon.Outline, bar = Neon.TextSecondary, note = Neon.Cyan, ghost = Neon.Magenta.copy(alpha = 0.28f),
+        beat = Neon.Outline.copy(alpha = 0.55f), bar = Neon.TextSecondary, note = Neon.Cyan, ghost = Neon.Magenta.copy(alpha = 0.28f),
         play = Neon.TextPrimary, outside = Color.Black.copy(alpha = 0.35f), rootRow = Neon.Cyan.copy(alpha = 0.10f),
     )
     val selColor = Neon.Acid
@@ -532,6 +535,11 @@ private fun Grid(
                 Modifier
                     .size(stepWidth * clip.steps, rowHeight * rows)
                     .testTag("piano_roll")
+                    // Audit final (22): the notes within TalkBack's reach (the grid is drawn).
+                    .semantics {
+                        contentDescription = tr("Grille des notes : %d notes", clip.notes.size)
+                        if (!locked) customActions = rollAccessibleActions(clip.notes, english, actions)
+                    }
                     .pointerInput(clip, newLength, harmony, chordMode, selectMode, selection, grid, stepPx, locked) {
                         fun pitchAt(y: Float) = (high - (y / rowPx).toInt()).coerceIn(low, high)
                         fun tickAt(x: Float) = (x / stepPx * TICK).toInt().coerceIn(0, clip.ticks - 1)
@@ -809,7 +817,10 @@ private fun RollKey(
         Modifier.size(width, height)
             .then(
                 if (keyOn == null) Modifier
-                else Modifier.pointerInput(pitch) {
+                else Modifier.playable(
+                    com.pocketstudio.model.NoteNames.withOctave(pitch, english),
+                    start = { currentOn?.invoke(pitch, 0.8f) }, stop = { currentOff?.invoke(pitch) },
+                ).pointerInput(pitch) {
                     awaitEachGesture {
                         awaitFirstDown(requireUnconsumed = false)
                         // The note stops with the pair that started it (a chord stops as a chord).
@@ -961,3 +972,21 @@ fun HarmonyPanel(harmony: Harmony, clip: NoteClip, actions: PianoRollActions, to
         }
     }
 }
+
+/** At most this many notes get TalkBack actions (three each), the first in time. */
+private const val ACCESSIBLE_NOTES = 40
+
+/** For TalkBack, each note (the first [ACCESSIBLE_NOTES]): remove it, a semitone up, a semitone down. */
+internal fun rollAccessibleActions(notes: List<Note>, english: Boolean, actions: PianoRollActions): List<androidx.compose.ui.semantics.CustomAccessibilityAction> =
+    notes.sortedWith(compareBy({ it.start }, { it.pitch })).take(ACCESSIBLE_NOTES).flatMap { n ->
+        val name = tr("%1\$s au pas %2\$d", com.pocketstudio.model.NoteNames.withOctave(n.pitch, english), n.start / NoteClip.TICKS_PER_STEP + 1)
+        listOf(
+            androidx.compose.ui.semantics.CustomAccessibilityAction(tr("Supprimer %s", name)) { actions.remove(n); true },
+            androidx.compose.ui.semantics.CustomAccessibilityAction(tr("%s : un demi-ton plus haut", name)) {
+                if (n.pitch < HIGH) actions.change(n, n.copy(pitch = n.pitch + 1)); true
+            },
+            androidx.compose.ui.semantics.CustomAccessibilityAction(tr("%s : un demi-ton plus bas", name)) {
+                if (n.pitch > LOW) actions.change(n, n.copy(pitch = n.pitch - 1)); true
+            },
+        )
+    }

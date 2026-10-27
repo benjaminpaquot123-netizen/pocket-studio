@@ -600,5 +600,5 @@ private fun LabeledSlider(label: String, value: String, position: Float, onChang
         Text(label, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
         Text(value, style = MonoStyle, color = Neon.Cyan)
     }
-    ProSlider(value = position.coerceIn(0f, 1f), onValueChange = onChange)
+    ProSlider(value = position.coerceIn(0f, 1f), onValueChange = onChange, label = label, valueText = value)
 }

@@ -81,6 +81,13 @@ internal val CONSOLE_STRIP_W = 76.dp
 /** The fader's own travel, at least (it grows with a big text size, never shrinks under a finger's reach). */
 internal val CONSOLE_FADER_H = 176.dp
 
+/** Audit final (09): what the console holds besides its faders (title, a strip's name, M S, dB, marks, padding). */
+internal val CONSOLE_ROOM = 240.dp
+
+/** The faders' height in a pane [height] high: lower lying down on a short screen (the A11 at 130 %). */
+internal fun consoleFaderHeight(height: Dp, lying: Boolean): Dp =
+    if (!lying || height == Dp.Infinity) CONSOLE_FADER_H else (height - CONSOLE_ROOM).coerceIn(80.dp, CONSOLE_FADER_H)
+
 /**
  * Phase 36: the console of the Mix space, every track's strip side by side as on a mixing desk:
  * its colour and name (a touch opens the strip's sheet: volume, pan, effects, curves, « Ce qui
@@ -90,6 +97,8 @@ internal val CONSOLE_FADER_H = 176.dp
 internal fun Console(
     strips: List<StripInfo>, channels: List<Channel>, meters: () -> FloatArray, actions: MixerActions,
     moves: Map<Int, Int>, openMoves: (Int) -> Unit, openCurves: (Int) -> Unit,
+    /** The faders' height; lower on a short screen lying down, the hint then left out. */
+    faderHeight: Dp = CONSOLE_FADER_H,
 ) {
     var sheetFor by rememberSaveable { mutableStateOf<Int?>(null) }
     Column(
@@ -101,7 +110,7 @@ internal fun Console(
             Text(tr("Console"), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = Neon.Cyan, modifier = Modifier.weight(1f))
             HelpDot(Glossary.MUTE_SOLO)
         }
-        Text(
+        if (faderHeight >= CONSOLE_FADER_H) Text(
             tr("Glisse un fader pour le volume ; touche le nom d'une piste pour ses effets et ses courbes."),
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.padding(horizontal = 12.dp),
         )
@@ -112,7 +121,7 @@ internal fun Console(
             strips.forEachIndexed { i, st ->
                 ConsoleStrip(
                     st, channels.getOrElse(st.ch) { Channel() }, { meters().getOrElse(st.ch) { 0f } }, actions, moves[st.ch] ?: 0,
-                    open = { sheetFor = st.ch }, first = i == 0,
+                    open = { sheetFor = st.ch }, first = i == 0, faderHeight = faderHeight,
                 )
             }
         }
@@ -133,7 +142,7 @@ internal fun Console(
 
 /** One strip: colour, name (a touch: its sheet), M S, the fader and its meter, the dB, its effects. */
 @Composable
-private fun ConsoleStrip(info: StripInfo, c: Channel, meter: () -> Float, actions: MixerActions, moves: Int, open: () -> Unit, first: Boolean) {
+private fun ConsoleStrip(info: StripInfo, c: Channel, meter: () -> Float, actions: MixerActions, moves: Int, open: () -> Unit, first: Boolean, faderHeight: Dp) {
     SideEffect { stripCompositions++ }
     val name = com.pocketstudio.model.DefaultNames.shown(info.name)
     val index = info.ch
@@ -163,7 +172,7 @@ private fun ConsoleStrip(info: StripInfo, c: Channel, meter: () -> Float, action
             ConsoleToggle("S", c.solo, Neon.Cyan, tr("Écouter la piste %s seule", name), "solo_$index") { actions.toggleSolo(index) }
         }
         VerticalFader(
-            c.volume, { actions.setVolume(index, it) }, meter, tr("Volume de %s", name), "volume_$index",
+            c.volume, { actions.setVolume(index, it) }, meter, tr("Volume de %s", name), "volume_$index", height = faderHeight,
             modifier = if (first) Modifier.spot("console_fader", tr("Glisse : volume")) else Modifier,
         )
         Text(faderDb(c.volume).replace(" dB", ""), style = MonoStyle.copy(fontSize = 12.sp), color = Neon.Cyan, maxLines = 1)

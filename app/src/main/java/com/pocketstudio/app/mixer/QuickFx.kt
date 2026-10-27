@@ -259,7 +259,7 @@ internal fun XyPad(
         }
     }
     val accent = Neon.Magenta
-    val grid = Neon.Outline
+    val grid = Neon.Outline.copy(alpha = 0.5f)
     val (dark, bright) = Macros.ENDS[Macros.COLOR].let { (a, b) -> tr(a) to tr(b) }
     val (low, high) = Macros.ENDS[yMacro].let { (a, b) -> tr(a) to tr(b) }
     XyLabelled(top = "↑ $high", left = "← $dark", bottom = "↓ $low", right = "$bright →") {

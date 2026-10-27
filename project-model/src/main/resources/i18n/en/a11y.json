@@ -1,0 +1,14 @@
+{
+  "Poser ou retirer": "Add or remove",
+  "Réglages du coup": "Hit settings",
+  "coup, force %d %%": "hit, strength %d %%",
+  "%d répétitions": "%d repeats",
+  "Jouer depuis la partie %d": "Play from part %d",
+  "%1$s, partie %2$d : allumer ou éteindre": "%1$s, part %2$d: turn on or off",
+  "%1$s, partie %2$d : ouvrir": "%1$s, part %2$d: open",
+  "Grille des notes : %d notes": "Note grid: %d notes",
+  "%1$s au pas %2$d": "%1$s at step %2$d",
+  "Supprimer %s": "Delete %s",
+  "%s : un demi-ton plus haut": "%s: a semitone up",
+  "%s : un demi-ton plus bas": "%s: a semitone down"
+}

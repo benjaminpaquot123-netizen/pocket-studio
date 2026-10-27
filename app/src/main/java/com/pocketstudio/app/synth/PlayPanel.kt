@@ -38,25 +38,45 @@ private val ARP_MODES: List<String> get() = listOf(tr("Montant"), tr("Descendant
  * arpeggiator (hold keys: their notes play one after the other, in time).
  */
 @Composable
-fun PlayPanel(play: PlayUi, actions: PlayActions) {
+fun PlayPanel(
+    play: PlayUi, actions: PlayActions,
+    /**
+     * Audit final (09): lying down, Bend, Modul., Sustain and Arpège on one line (the slot between
+     * the tools and the keys showed Bend alone on the A11 at 130 %).
+     */
+    compact: Boolean = false,
+) {
+    val bend: @Composable androidx.compose.foundation.layout.RowScope.() -> Unit = {
+        Text(tr("Bend"), style = MaterialTheme.typography.labelLarge, modifier = Modifier.width(52.dp))
+        ProSlider(
+            value = play.bend, onValueChange = actions.setBend, valueRange = -1f..1f,
+            onValueChangeFinished = { actions.setBend(0f) },  // a pitch wheel springs back
+            modifier = Modifier.weight(1f).testTag("bend"), label = tr("Bend"),
+        )
+    }
+    val mod: @Composable androidx.compose.foundation.layout.RowScope.() -> Unit = {
+        Text(tr("Modul."), style = MaterialTheme.typography.labelLarge, modifier = Modifier.width(52.dp))
+        ProSlider(value = play.mod, onValueChange = actions.setMod, modifier = Modifier.weight(1f).testTag("mod"), label = tr("Modul."))
+    }
+    val toggles: @Composable () -> Unit = {
+        FilterChip(selected = play.sustain, onClick = { actions.setSustain(!play.sustain) }, label = { Text(tr("Sustain")) },
+            modifier = Modifier.testTag("sustain"))
+        FilterChip(selected = play.arp.on, onClick = { actions.setArp(play.arp.copy(on = !play.arp.on)) }, label = { Text(tr("Arpège")) },
+            modifier = Modifier.testTag("arp"))
+    }
     Column(Modifier.fillMaxWidth().testTag("play_panel")) {
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            Text(tr("Bend"), style = MaterialTheme.typography.labelLarge, modifier = Modifier.width(52.dp))
-            ProSlider(
-                value = play.bend, onValueChange = actions.setBend, valueRange = -1f..1f,
-                onValueChangeFinished = { actions.setBend(0f) },  // a pitch wheel springs back
-                modifier = Modifier.weight(1f).testTag("bend"),
-            )
+        if (compact) {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                bend()
+                mod()
+                toggles()
+            }
+        } else {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp), content = bend)
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp), content = mod)
         }
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            Text(tr("Modul."), style = MaterialTheme.typography.labelLarge, modifier = Modifier.width(52.dp))
-            ProSlider(value = play.mod, onValueChange = actions.setMod, modifier = Modifier.weight(1f).testTag("mod"))
-        }
-        Row(Modifier.fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            FilterChip(selected = play.sustain, onClick = { actions.setSustain(!play.sustain) }, label = { Text(tr("Sustain")) },
-                modifier = Modifier.testTag("sustain"))
-            FilterChip(selected = play.arp.on, onClick = { actions.setArp(play.arp.copy(on = !play.arp.on)) }, label = { Text(tr("Arpège")) },
-                modifier = Modifier.testTag("arp"))
+        if (!compact || play.arp.on) Row(Modifier.fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            if (!compact) toggles()
             if (play.arp.on) {
                 RATES.forEach { (steps, label) ->
                     FilterChip(selected = play.arp.steps == steps, onClick = { actions.setArp(play.arp.copy(steps = steps)) }, label = { Text(label) })

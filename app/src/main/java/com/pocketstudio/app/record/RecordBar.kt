@@ -152,7 +152,7 @@ private fun RunningBar(ui: RecordBarUi, take: NoteTakeUi, actions: RecordBarActi
         } else {
             RecDot()
             Column(Modifier.weight(1f)) {
-                Text(tr("Enregistrement"), style = MaterialTheme.typography.titleMedium, color = Neon.Red)
+                Text(tr("Enregistrement"), style = MaterialTheme.typography.titleMedium, color = Neon.RedText)
                 Counter(ui.counter)
             }
         }

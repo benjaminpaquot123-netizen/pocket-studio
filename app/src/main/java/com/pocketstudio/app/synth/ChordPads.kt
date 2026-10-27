@@ -85,6 +85,7 @@ private fun ChordPadKey(pad: ChordPad, english: Boolean, modifier: Modifier, onN
             .clip(RoundedCornerShape(10.dp))
             .background(if (down) Neon.Cyan else if (home) Neon.SurfaceHigh else Neon.Surface)
             .border(1.dp, if (home) Neon.Cyan else Neon.Outline, RoundedCornerShape(10.dp))
+            .playable(pad.name(english), start = { pad.notes.forEach { onNoteOn(it, 0.8f) } }, stop = { pad.notes.forEach(onNoteOff) })
             .pointerInput(pad) {
                 detectTapGestures(onPress = {
                     down = true

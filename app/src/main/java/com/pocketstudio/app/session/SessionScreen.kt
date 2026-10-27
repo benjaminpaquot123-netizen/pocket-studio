@@ -474,7 +474,7 @@ private fun SongClock(ui: SessionScreenUi, totalBars: Int) {
     }
     val track = Neon.SurfaceHigh
     val done = Neon.Magenta
-    val tick = Neon.Outline
+    val tick = Neon.Outline.copy(alpha = 0.55f)
     val head = Neon.TextPrimary
     val starts = ui.partStarts
     androidx.compose.foundation.Canvas(Modifier.fillMaxWidth().height(14.dp).testTag("song_progress")) {

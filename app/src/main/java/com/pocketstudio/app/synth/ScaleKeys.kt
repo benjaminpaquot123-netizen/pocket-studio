@@ -122,6 +122,7 @@ private fun ScaleKey(
             .clip(shape)
             .background(Brush.verticalGradient(0f to lerp(face, Color.Black, 0.05f), 0.9f to face, 1f to lerp(face, Color.Black, 0.2f)))
             .border(1.dp, Color.Black.copy(alpha = 0.22f), shape)
+            .playable("$name ${note / 12 - 1}", start = { onNoteOn(note, 0.8f) }, stop = { onNoteOff(note) })
             .pointerInput(note) {
                 detectTapGestures(onPress = { at ->
                     down = true

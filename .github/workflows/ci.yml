@@ -6,8 +6,10 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# Read-only by default; only the publish job may write (releases). Third-party actions are pinned
+# by commit (the tag in the comment): a moved tag cannot run new code here.
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -25,7 +27,7 @@ jobs:
     name: Engine tests (Linux)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: false
       - name: Fetch submodules with retries (GitLab is sometimes overloaded)
@@ -38,7 +40,7 @@ jobs:
             echo "eigen: attempt $i failed, waiting"; sleep 30
           done
           if git submodule status | grep -q '^-'; then git submodule status; exit 1; fi
-      - uses: hendrikmuhs/ccache-action@v1.2
+      - uses: hendrikmuhs/ccache-action@5ebbd400eff9e74630f759d94ddd7b6c26299639 # v1.2.20
         with:
           key: engine-host
       - name: Run host tests
@@ -53,7 +55,7 @@ jobs:
           CXXFLAGS: -fsanitize=address,undefined -fno-sanitize-recover=all
           LDFLAGS: -fsanitize=address,undefined
         run: ./scripts/host-tests.sh
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: engine-renders
@@ -63,7 +65,7 @@ jobs:
     name: Separation tests (Linux)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: false
       - name: Fetch submodules with retries (GitLab is sometimes overloaded)
@@ -76,7 +78,7 @@ jobs:
             echo "eigen: attempt $i failed, waiting"; sleep 30
           done
           if git submodule status | grep -q '^-'; then git submodule status; exit 1; fi
-      - uses: actions/cache@v6
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: build/separation-cache
           key: separation-ort-1.31.0-htdemucs-v4-onnx-1
@@ -92,9 +94,10 @@ jobs:
     env:
       VERSION_CODE: ${{ github.run_number }}
       RELEASE_CHANNEL: ${{ github.event_name == 'push' && 'stable' || 'preview' }}
-      SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+      # No SIGNING_PASSWORD here: this job runs Gradle, its plugins and third-party actions. The APK
+      # leaves unsigned and the publish job signs it.
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: false
       - name: Fetch submodules with retries (GitLab is sometimes overloaded)
@@ -107,19 +110,25 @@ jobs:
             echo "eigen: attempt $i failed, waiting"; sleep 30
           done
           if git submodule status | grep -q '^-'; then git submodule status; exit 1; fi
-      - uses: actions/setup-java@v6
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
         with:
           distribution: temurin
           java-version: 21
-      - uses: android-actions/setup-android@v4
+      - uses: android-actions/setup-android@be39fa834029ff78f1a44aa3bb0819b8fc2bd8fd # v4.0.4
         with:
           packages: ${{ env.ANDROID_PLATFORM }} ${{ env.BUILD_TOOLS }} ndk;${{ env.NDK_VERSION }} cmake;${{ env.CMAKE_VERSION }}
-      - uses: hendrikmuhs/ccache-action@v1.2
+      - uses: hendrikmuhs/ccache-action@5ebbd400eff9e74630f759d94ddd7b6c26299639 # v1.2.20
         with:
           key: android-ndk
-      - uses: gradle/actions/setup-gradle@v6
+      - uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6.4.0
+      # The screenshots are compared with the committed ones (app/screenshots/, recorded locally):
+      # a difference does not fail the build (the runner may draw a pixel differently) but is
+      # flagged as a warning, with the images in the « screenshots-diff » artifact.
       - name: Unit tests and screenshots
-        run: ./gradlew :project-model:test :app:testDebugUnitTest :app:recordRoborazziDebug
+        run: ./gradlew :project-model:test :app:testDebugUnitTest :app:compareRoborazziDebug
+      - name: Screenshots that changed
+        if: always()
+        run: python3 -I scripts/screenshot-diff.py app/build/test-results/roborazzi/debug/results-summary.json
       # The song bench (docs/son/BANC.md) on a few styles: the app's real export recorded, replayed by
       # the engine on Linux, measured (LUFS and true peak checked against ffmpeg). Full run: all styles.
       - name: Song bench (5 styles)
@@ -133,7 +142,7 @@ jobs:
           python3 -I scripts/bench/test_report.py
           ./scripts/song-bench.sh --styles techno,house,trap,dnb,pop --ffmpeg --m4a --before docs/son/banc/apres-son8.json \
             --title "Banc de mesure du son (CI, 5 styles)"
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: song-bench
@@ -156,7 +165,7 @@ jobs:
           GRADLE_ARGS: --console=plain
           JOBS: 4
         run: ./scripts/live-bench.sh
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: live-bench
@@ -183,7 +192,7 @@ jobs:
           CMAKE_EXTRA_ARGS: -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
           GRADLE_ARGS: --console=plain
         run: ./scripts/soak.sh --minutes 10 --song 120 --out build/soak
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: real-use
@@ -194,20 +203,25 @@ jobs:
             build/soak/soak.md
             build/soak/log/
           if-no-files-found: ignore
-      - name: Build release APK
+      - name: Build release APK (unsigned, signed in the publish job)
         run: |
-          ./gradlew :app:assembleRelease
+          ./gradlew :app:assembleRelease -PunsignedRelease
           ./scripts/check-jni.sh
           mkdir -p dist
-          cp app/build/outputs/apk/release/app-release.apk dist/pocket-studio.apk
-      - uses: actions/upload-artifact@v7
+          cp app/build/outputs/apk/release/app-release-unsigned.apk dist/pocket-studio-unsigned.apk
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
         with:
-          name: screenshots
-          path: app/screenshots/
-      - uses: actions/upload-artifact@v7
+          name: screenshots-diff
+          path: |
+            app/build/outputs/roborazzi/
+            app/build/reports/roborazzi/
+            app/build/test-results/roborazzi/
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: apk
-          path: dist/pocket-studio.apk
+          path: dist/pocket-studio-unsigned.apk
 
   smoke:
     name: Emulator smoke test
@@ -217,7 +231,7 @@ jobs:
     # SmokeTest, LivePlaybackTest, JourneyTest (two users' paths) and a 2-minute EnduranceTest.
     timeout-minutes: 50
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: false
       - name: Fetch submodules with retries (GitLab is sometimes overloaded)
@@ -230,14 +244,14 @@ jobs:
             echo "eigen: attempt $i failed, waiting"; sleep 30
           done
           if git submodule status | grep -q '^-'; then git submodule status; exit 1; fi
-      - uses: actions/setup-java@v6
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
         with:
           distribution: temurin
           java-version: 21
-      - uses: android-actions/setup-android@v4
+      - uses: android-actions/setup-android@be39fa834029ff78f1a44aa3bb0819b8fc2bd8fd # v4.0.4
         with:
           packages: ${{ env.ANDROID_PLATFORM }} ${{ env.BUILD_TOOLS }} ndk;${{ env.NDK_VERSION }} cmake;${{ env.CMAKE_VERSION }}
-      - uses: gradle/actions/setup-gradle@v6
+      - uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6.4.0
       - name: Enable KVM
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
@@ -246,7 +260,7 @@ jobs:
       - name: Build test APKs
         run: ./gradlew -PemulatorAbi :app:assembleDebug :app:assembleDebugAndroidTest
       - name: Cache the emulator and its system image
-        uses: actions/cache@v6
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: |
             ${{ env.ANDROID_HOME }}/emulator
@@ -263,7 +277,7 @@ jobs:
           done
           exit 1
       - name: Run smoke test on emulator
-        uses: reactivecircus/android-emulator-runner@v2
+        uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0
         with:
           api-level: 35
           arch: x86_64
@@ -273,7 +287,7 @@ jobs:
           # Every androidTest (docs/TESTS-REELS.md), the endurance for 2 minutes; on failure, the
           # failing assertion and the app's errors right in the log.
           script: ./scripts/emulator-tests.sh --endurance 2
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: smoke-test-report
@@ -288,12 +302,15 @@ jobs:
     needs: [build, smoke, separation]
     # Forks and bots get no secrets: they build and test, but never publish.
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    # Releases: the only job that writes (and the only one with the signing secret, in one step).
+    permissions:
+      contents: write
     env:
       VERSION_CODE: ${{ github.run_number }}
       # Certificate of signing/release.p12; installs over previous versions only if it matches.
       EXPECTED_CERT_SHA256: f7b61d03e07c5514caa1d961acb400dc63d60659ae71cd4a2cbfb06eaf4dc646
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: false
       - name: Fetch submodules with retries (GitLab is sometimes overloaded)
@@ -306,12 +323,12 @@ jobs:
             echo "eigen: attempt $i failed, waiting"; sleep 30
           done
           if git submodule status | grep -q '^-'; then git submodule status; exit 1; fi
-      - uses: actions/download-artifact@v7
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: apk
           path: dist
-      - name: Check signing secret
-        if: github.event_name != 'workflow_dispatch'
+      # The secret lives in this step only: GitHub's apksigner, no third-party code, no Gradle.
+      - name: Sign the APK with the stable key
         env:
           SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
         run: |
@@ -319,6 +336,13 @@ jobs:
             echo "::error::Secret SIGNING_PASSWORD missing: the APK is not signed with the stable key, nothing is published."
             exit 1
           fi
+          TOOLS=$(ls -d "$ANDROID_HOME"/build-tools/*/ | sort -V | tail -1)
+          # AGP already aligns the unsigned APK (native libraries on 16 KB pages); only check it.
+          "$TOOLS/zipalign" -c -P 16 4 dist/pocket-studio-unsigned.apk || {
+            echo "::error::The unsigned APK is not aligned."; exit 1; }
+          "$TOOLS/apksigner" sign --ks signing/release.p12 --ks-type PKCS12 --ks-key-alias pocketstudio \
+            --ks-pass env:SIGNING_PASSWORD --key-pass env:SIGNING_PASSWORD \
+            --out dist/pocket-studio.apk dist/pocket-studio-unsigned.apk
       - name: Verify APK is signed with the stable key
         run: |
           APKSIGNER=$(ls -d "$ANDROID_HOME"/build-tools/*/apksigner | sort -V | tail -1)

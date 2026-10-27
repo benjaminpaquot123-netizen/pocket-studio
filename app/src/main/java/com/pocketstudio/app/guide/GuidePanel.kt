@@ -99,6 +99,10 @@ class GuidePanelActions(
     val pickReference: () -> Unit = {},
     /** G5 review: the « Sans / Avec » stops (a word's example starts: one sound at a time). */
     val stopListen: () -> Unit = {},
+    /** « ▶ Écouter seul » of card [card]: its sound alone, in a loop (again: it stops). */
+    val listenAlone: (card: String) -> Unit = {},
+    /** The card heard alone keeps « Écouter seul » going while it shows (the returned call lets go). */
+    val holdAlone: () -> (() -> Unit) = { {} },
 )
 
 /** The symbol of a card's status in the plan (« faite ✓, sautée ⟶, à revoir ↺ »). */
@@ -180,9 +184,15 @@ fun GuidePanel(
     modifier: Modifier = Modifier,
     /** G4: the reference's file name, when one is picked. */
     reference: String? = null,
+    /** The card whose sound is heard alone (« Écouter seul »), if any. */
+    aloneCard: String? = null,
+    /** The phone's « Supprimer les animations »: the window's edge stays still. */
+    reducedMotion: Boolean = com.pocketstudio.app.onboarding.animationsOff(androidx.compose.ui.platform.LocalContext.current),
 ) {
     val sized = if (height != null) modifier.fillMaxWidth().height(height) else modifier
-    Column(sized.background(Neon.Background).testTag("guide_panel")) {
+    // The window's edge beats softly (a double heartbeat), drawn only: the panel is not recomposed for it.
+    val beat = rememberGuideBeat(animated = !reducedMotion)
+    Column(sized.background(Neon.Background).guideEdge(beat, Neon.Cyan).testTag("guide_panel")) {
         GuideBar(ui, open = true, toggle = actions.toggle)
         val scroll = rememberScrollState()
         // Another card shown (decided, picked in the plan): back to the top, where the card is.
@@ -199,7 +209,7 @@ fun GuidePanel(
                 if (ui.loading) {
                     Text(tr("Le Guide lit ton morceau…"), color = Neon.TextSecondary, modifier = Modifier.testTag("guide_loading").semantics { liveRegion = LiveRegionMode.Polite })
                 } else {
-                    PanelBody(ui, selected, listen, actions, reference)
+                    PanelBody(ui, selected, listen, actions, reference, aloneCard)
                 }
                 Spacer(Modifier.height(8.dp))
             }
@@ -208,7 +218,7 @@ fun GuidePanel(
 }
 
 @Composable
-private fun PanelBody(ui: GuideUi, selected: String?, listen: GuideListenUi?, actions: GuidePanelActions, reference: String?) {
+private fun PanelBody(ui: GuideUi, selected: String?, listen: GuideListenUi?, actions: GuidePanelActions, reference: String?, aloneCard: String?) {
                 // The bar says the step and how far; « Où on en est » in full comes first only to welcome a
                 // return after days, else under the card (the decision stays in sight on a phone).
                 if (ui.back) WhereWeAre(ui)
@@ -217,7 +227,7 @@ private fun PanelBody(ui: GuideUi, selected: String?, listen: GuideListenUi?, ac
                     val picked = selected != null && shown.id != (ui.alerts.firstOrNull() ?: ui.next)?.id
                     // G4: a card of the levels needs the song's measures (each track alone, mono, phone).
                     androidx.compose.runtime.LaunchedEffect(shown.id, ui.measured) { if (shown.stage == 6 && !ui.measured) actions.measure() }
-                    GuideCard(shown, listen, actions, picked = picked, measuring = ui.measuring, reference = reference)
+                    GuideCard(shown, listen, actions, picked = picked, measuring = ui.measuring, reference = reference, alone = aloneCard == shown.id)
                 } else {
                     Text(ui.summary.firstOrNull() ?: tr("Tout est fait"), style = MaterialTheme.typography.titleMedium, modifier = Modifier.testTag("guide_all_done"))
                 }
@@ -300,8 +310,14 @@ private fun Progress(percent: Int) {
 fun GuideCard(
     card: GuideCardUi, listen: GuideListenUi?, actions: GuidePanelActions, modifier: Modifier = Modifier, picked: Boolean = false,
     measuring: Boolean = false, reference: String? = null,
+    /** Its sound is heard alone in a loop now (« Écouter seul »). */
+    alone: Boolean = false,
 ) {
     val learn = LocalLearn.current
+    // A card about one sound (chapter 1: the kick, the bass…): « Écouter seul » first, the loop kept while it shows.
+    // The effects' cards have their own « Sans / Avec ».
+    val canAlone = card.sheet != null && (card.stage == 1 || card.id.startsWith("sound."))
+    com.pocketstudio.app.rhythm.HoldAlone(alone, actions.holdAlone)
     NeonCard(modifier.testTag("guide_card_${card.id}"), accent = if (card.alert) Neon.Amber else Neon.Cyan) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
@@ -335,6 +351,33 @@ fun GuideCard(
         }
         val choices = card.options.filter { it.opens == null }
         val opens = (card.options + card.elsewhere).filter { it.opens != null }
+        // Owner's request: one sentence, the one thing to do now.
+        // Owner's request: one sentence, the one thing to do now; « Écouter seul » on its line.
+        val step = nextStep(card, choices, opens, canAlone, alone)
+        if (step != null || canAlone) {
+            Row(
+                Modifier.fillMaxWidth().padding(top = 2.dp), verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                if (step != null) {
+                    Row(Modifier.weight(1f).testTag("guide_next_step"), verticalAlignment = Alignment.Top) {
+                        Text("→", color = Neon.Acid, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, modifier = Modifier.width(22.dp))
+                        Text(step, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.SemiBold, color = Neon.TextPrimary)
+                    }
+                } else {
+                    Spacer(Modifier.weight(1f))
+                }
+                if (canAlone) com.pocketstudio.app.rhythm.AloneButton(alone, tr("Écouter seul"), card.sheetName, "guide_alone") { actions.listenAlone(card.id) }
+            }
+        }
+        if (canAlone) {
+            if (alone) {
+                Text(
+                    tr("Joue en boucle, tout seul : change le son pour comparer."), style = MaterialTheme.typography.bodySmall, color = Neon.Acid,
+                    modifier = Modifier.testTag("guide_alone_hint"),
+                )
+            }
+        }
         choices.forEachIndexed { i, o -> OptionRow(card.id, o, primary = i == 0, listen, actions) }
         // Under the decision (it stays two gestures away), effect by effect.
         if (card.effects.isNotEmpty()) EffectsList(card.id, card.effects, listen, actions)
@@ -360,8 +403,8 @@ fun GuideCard(
                         .testTag("guide_sheet"),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Text("↗", color = Neon.Cyan, style = MaterialTheme.typography.titleMedium, modifier = Modifier.width(24.dp))
-                    Text(tr("La fiche de la piste « %s »", card.sheetName), style = MaterialTheme.typography.bodyLarge, color = Neon.Cyan, fontWeight = FontWeight.SemiBold, modifier = Modifier.weight(1f))
+                    Text("↗", color = Neon.Cyan.copy(alpha = 0.75f), style = MaterialTheme.typography.titleSmall, modifier = Modifier.width(24.dp))
+                    Text(tr("La fiche de la piste « %s »", card.sheetName), style = MaterialTheme.typography.bodyMedium, color = Neon.Cyan.copy(alpha = 0.85f), modifier = Modifier.weight(1f))
                 }
             }
             opens.forEach { o ->
@@ -373,8 +416,8 @@ fun GuideCard(
                         .testTag("guide_open_${o.id}"),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Text("↗", color = Neon.Cyan, style = MaterialTheme.typography.titleMedium, modifier = Modifier.width(24.dp))
-                    Text(o.label, style = MaterialTheme.typography.bodyLarge, color = Neon.Cyan, fontWeight = FontWeight.SemiBold, modifier = Modifier.weight(1f))
+                    Text("↗", color = Neon.Cyan.copy(alpha = 0.75f), style = MaterialTheme.typography.titleSmall, modifier = Modifier.width(24.dp))
+                    Text(o.label, style = MaterialTheme.typography.bodyMedium, color = Neon.Cyan.copy(alpha = 0.85f), modifier = Modifier.weight(1f))
                 }
             }
         }
@@ -428,6 +471,22 @@ private fun WordLine(word: com.pocketstudio.model.learn.SoundWord, learn: com.po
     }
 }
 
+/**
+ * « À toi : … »: the one thing to do now on [card]: hear its sound alone first (a card about one
+ * sound), then its first choice; a card that only opens a screen: that screen. Null once settled.
+ */
+internal fun nextStep(card: GuideCardUi, choices: List<GuideOptionUi>, opens: List<GuideOptionUi>, canAlone: Boolean, alone: Boolean): String? {
+    if (card.status.settled) return null
+    val first = choices.firstOrNull()
+    return when {
+        canAlone && !alone -> tr("À toi : écoute ce son tout seul, puis décide.")
+        canAlone && first != null -> tr("À toi : il te plaît ? Touche « %s ».", first.label)
+        first != null -> tr("À toi : touche « %s ».", first.label)
+        opens.isNotEmpty() -> tr("À toi : touche « %s ».", opens.first().label)
+        else -> null
+    }
+}
+
 private fun statusWord(status: GuideStatus): String = when (status) {
     GuideStatus.DONE -> tr("fait")
     GuideStatus.DONE_ELSEWHERE -> tr("déjà en place")
@@ -465,9 +524,9 @@ private fun OptionRow(card: String, o: GuideOptionUi, primary: Boolean, listen: 
             }
             val shape = RoundedCornerShape(12.dp)
             Box(
-                Modifier.weight(1f).heightIn(min = 48.dp).clip(shape)
+                Modifier.weight(1f).heightIn(min = if (primary) 52.dp else 48.dp).clip(shape)
                     .background(if (primary) Neon.Cyan else Color.Transparent)
-                    .border(1.dp, if (primary) Neon.Cyan else Neon.Outline, shape)
+                    .border(1.dp, if (primary) Neon.Cyan else Neon.Outline.copy(alpha = 0.6f), shape)
                     // A check is heard, not applied: the option itself plays it.
                     .clickable(role = Role.Button) { if (o.listen != null) actions.listen(card, o.id) else actions.apply(card, o.id) }
                     .padding(horizontal = 12.dp, vertical = 8.dp)
@@ -475,7 +534,9 @@ private fun OptionRow(card: String, o: GuideOptionUi, primary: Boolean, listen: 
                 contentAlignment = Alignment.CenterStart,
             ) {
                 Text(
-                    o.label + (o.value?.let { " · $it" } ?: ""), style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.SemiBold,
+                    o.label + (o.value?.let { " · $it" } ?: ""),
+                    style = if (primary) MaterialTheme.typography.titleMedium else MaterialTheme.typography.bodyMedium,
+                    fontWeight = if (primary) FontWeight.Bold else FontWeight.Normal,
                     color = if (primary) Neon.OnAccent else Neon.TextPrimary,
                 )
             }

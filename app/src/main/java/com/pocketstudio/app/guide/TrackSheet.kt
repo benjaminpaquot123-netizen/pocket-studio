@@ -109,6 +109,8 @@ class TrackSheetActions(
     /** « Ramener » a line of the history (its group id). */
     val revert: (String) -> Unit = {},
     val dismissNotice: () -> Unit = {},
+    /** « ▶ Écouter seule »: the track alone in a loop (again: it stops); null: not offered. */
+    val listenAlone: (() -> Unit)? = null,
 )
 
 /** A track the chain can be copied to: its key and name. */
@@ -134,6 +136,8 @@ fun TrackSheet(
     now: Long = System.currentTimeMillis(),
     /** The Guide has not read the song yet. */
     loading: Boolean = sheet == null,
+    /** The track is heard alone in a loop now. */
+    alone: Boolean = false,
 ) {
     val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     ScaledBottomSheet(onDismissRequest = actions.close, sheetState = state, containerColor = Neon.Background, modifier = Modifier.testTag("track_sheet")) {
@@ -159,7 +163,7 @@ fun TrackSheet(
                         color = Neon.TextSecondary, modifier = Modifier.testTag("track_sheet_loading"),
                     )
                 } else {
-                    SoundColumn(sheet, actions)
+                    SoundColumn(sheet, actions, name, alone)
                     WhenColumn(sheet, partNames, actions)
                     ChainColumn(sheet, actions)
                     OftenColumn(sheet)
@@ -189,10 +193,13 @@ private fun SheetNotice(text: String, dismiss: () -> Unit) {
 /** « Son »: what plays and its layers; « Changer le son », « Couches ». */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun SoundColumn(sheet: GuideSheet, actions: TrackSheetActions) {
+private fun SoundColumn(sheet: GuideSheet, actions: TrackSheetActions, name: String, alone: Boolean) {
     NeonCard(Modifier.testTag("track_sheet_sound")) {
         SectionLabel(tr("Son"), foldKey = "sheet.sound")
-        Text(sheet.sound.label, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold, color = Neon.TextPrimary)
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(sheet.sound.label, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold, color = Neon.TextPrimary, modifier = Modifier.weight(1f))
+            actions.listenAlone?.let { com.pocketstudio.app.rhythm.AloneButton(alone, tr("Écouter seule"), name, "track_sheet_alone", toggle = it) }
+        }
         if (sheet.sound.layers.isNotEmpty()) {
             Text(
                 tr("Avec ses couches : %s", sheet.sound.layers.joinToString(" · ")), style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary,
@@ -426,6 +433,10 @@ internal fun TrackSheetRoute(
     val targets = tracks.filter { it.key != key && it.channel != com.pocketstudio.model.Mixer.MASTER && it.key != GuideTrack.DRUMS && it.key.startsWith("pad:") == pad }
         .map { SheetTarget(it.key, DefaultNames.shown(it.name)) }
     val partKey = GuideTrack.partKey(key)
+    val aloneTarget = remember(key) { com.pocketstudio.app.rhythm.AloneTarget.ofKey(key) }
+    val alone by vm.alone.collectAsStateWithLifecycle()
+    // The sheet keeps « Écouter seule » going (its sound changed from here is heard in the loop).
+    com.pocketstudio.app.rhythm.HoldAlone(true, vm::holdAlone)
     TrackSheet(
         name = DefaultNames.shown(track.name),
         sheet = guide.sheets.firstOrNull { it.track.key == key },
@@ -433,6 +444,7 @@ internal fun TrackSheetRoute(
         targets = targets,
         notice = guideNotice ?: notice,
         loading = guide.loading,
+        alone = alone?.target == aloneTarget,
         actions = TrackSheetActions(
             close = close,
             changeSound = inst?.let { id -> { changeSound(id) } },
@@ -444,6 +456,7 @@ internal fun TrackSheetRoute(
             copyTo = { to -> vm.copyChain(key, to) },
             revert = { id -> vm.guide.revert(id) },
             dismissNotice = { guideNotice = null; vm.dismissNotice() },
+            listenAlone = if (aloneTarget.isEmpty) null else ({ vm.toggleAlone(aloneTarget) }),
         ),
     )
 }

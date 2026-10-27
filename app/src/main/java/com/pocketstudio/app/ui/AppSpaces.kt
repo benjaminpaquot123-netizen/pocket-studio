@@ -42,6 +42,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material.icons.filled.ToggleOn
 import androidx.compose.material.icons.filled.VolumeUp
+import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
@@ -272,8 +273,17 @@ private fun PlusRow(e: PlusEntry, selected: Boolean, onClick: () -> Unit) {
 
 // --- Mode simple: « Mon morceau »'s tracks --------------------------------------------------------------
 
-/** A track of « Mes pistes » (Mode simple): [key] as the song knows it, its mixer channel, its name in everyday words. */
-class SimpleTrack(val key: String, val ch: Int, val name: String, val color: Color, val volume: Float, val mute: Boolean, val solo: Boolean)
+/** A drum sound of « Mes pistes »'s Batterie (Mode simple): its pad and its name. */
+class SimplePad(val lane: Int, val name: String)
+
+/**
+ * A track of « Mes pistes » (Mode simple): [key] as the song knows it, its mixer channel, its name in
+ * everyday words; [pads]: the drums' own sounds (the Batterie only), each heard alone too.
+ */
+class SimpleTrack(
+    val key: String, val ch: Int, val name: String, val color: Color, val volume: Float, val mute: Boolean, val solo: Boolean,
+    val pads: List<SimplePad> = emptyList(),
+)
 
 class SimpleTracksActions(
     /** « Changer le son » of the track (the kit for the drums). */
@@ -281,52 +291,74 @@ class SimpleTracksActions(
     val setVolume: (Int, Float) -> Unit = { _, _ -> },
     val toggleMute: (Int) -> Unit = {},
     val toggleSolo: (Int) -> Unit = {},
-)
+    /** « ▶ Écouter seule » of a track (its song key): alone in a loop at once, or stopped. */
+    val listenAlone: (String) -> Unit = {},
+    /** « ▶ Écouter seul » of one of the drums' sounds (its pad). */
+    val listenPadAlone: (Int) -> Unit = {},
+    /** « Mes pistes » keeps « Écouter seul » going while it shows (the returned call lets go). */
+    val holdAlone: () -> (() -> Unit) = { {} },
+) {
+    companion object {
+        /** [com.pocketstudio.app.rhythm.AloneListen.from] of a sound heard alone from « Mes pistes ». */
+        const val FROM = "tracks"
+    }
+}
 
 /**
  * « Mes pistes » under the song (Mode simple): a touch on a track's name changes its sound (the
- * kit for the drums); 🔊 opens its sheet (volume, « Couper », « Écouter seule »).
+ * kit for the drums); next to it, « ▶ Écouter seule » (the track alone in a loop, at once) and its
+ * fader (its sheet: volume, « Couper »; the Batterie's sheet lists its sounds, each heard alone).
+ * [listening]: what is heard alone now, and from where.
  */
 @Composable
-fun SimpleTracksCard(tracks: List<SimpleTrack>, actions: SimpleTracksActions) {
+fun SimpleTracksCard(tracks: List<SimpleTrack>, actions: SimpleTracksActions, listening: com.pocketstudio.app.rhythm.AloneListen? = null) {
     var sheetFor by rememberSaveable { mutableStateOf<String?>(null) }
+    val alone = listening?.target
+    // Started here, it goes on while « Mes pistes » shows (another screen, a Guide card: it stops).
+    com.pocketstudio.app.rhythm.HoldAlone(listening?.from == SimpleTracksActions.FROM, actions.holdAlone)
+    fun trackAlone(t: SimpleTrack) = alone != null && alone == com.pocketstudio.app.rhythm.AloneTarget.ofSongKey(t.key)
+    fun padAlone(lane: Int) = alone != null && alone.channels.isEmpty() && alone.pads == setOf(lane)
     NeonCard(Modifier.testTag("simple_tracks")) {
         SectionLabel(tr("Mes pistes"))
-        Text(tr("Touche le nom d'une piste pour changer son son ; 🔊 pour son volume."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+        Text(tr("Touche le nom d'une piste pour changer son son ; ▶ pour l'écouter seule."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         tracks.forEachIndexed { i, t ->
             if (i > 0) HorizontalDivider(color = Neon.Outline.copy(alpha = 0.5f))
-            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp)) {
                 Box(Modifier.size(12.dp).background(t.color, CircleShape))
-                Row(
+                Column(
                     Modifier.weight(1f).heightIn(min = 48.dp).clip(RoundedCornerShape(8.dp))
                         .clickable(role = Role.Button, onClickLabel = tr("Changer le son de %s", t.name)) { actions.changeSound(t.key) }
-                        .padding(horizontal = 10.dp)
+                        .padding(horizontal = 6.dp)
                         .spot("simple_track_${t.key}", if (i == 0) tr("Changer le son") else null)
                         .testTag("simple_track_${t.key}"),
-                    verticalAlignment = Alignment.CenterVertically,
+                    verticalArrangement = Arrangement.Center,
                 ) {
-                    Text(t.name, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f, fill = false))
-                    Text("  " + tr("Changer le son"), style = MaterialTheme.typography.labelMedium, color = Neon.Cyan, maxLines = 1)
+                    Text(t.name, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text(
+                        if (t.mute) tr("coupée") else tr("Changer le son"), style = MaterialTheme.typography.labelMedium,
+                        color = if (t.mute) Neon.Amber else Neon.Cyan, maxLines = 1, overflow = TextOverflow.Ellipsis,
+                    )
                 }
-                if (t.mute) Text(tr("coupée"), style = MaterialTheme.typography.labelSmall, color = Neon.Amber)
+                com.pocketstudio.app.rhythm.AloneButton(trackAlone(t), tr("Écouter seule"), t.name, "simple_alone_${t.key}") { actions.listenAlone(t.key) }
+                // A fader, not a loudspeaker (owner, APK 224: the 🔊 looked like « play » and stayed silent).
                 IconButton(onClick = { sheetFor = t.key }, modifier = Modifier.spot("simple_volume_${t.key}").testTag("simple_volume_${t.key}")) {
-                    Icon(Icons.Filled.VolumeUp, contentDescription = tr("Volume de %s", t.name), tint = if (t.mute) Neon.Amber else Neon.TextSecondary)
+                    Icon(Icons.Filled.Tune, contentDescription = tr("Volume de %s", t.name), tint = if (t.mute) Neon.Amber else Neon.TextPrimary)
                 }
             }
         }
     }
     sheetFor?.let { key ->
         val t = tracks.firstOrNull { it.key == key }
-        if (t == null) sheetFor = null else SimpleTrackSheet(t, actions) { sheetFor = null }
+        if (t == null) sheetFor = null else SimpleTrackSheet(t, trackAlone(t), actions, ::padAlone) { sheetFor = null }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun SimpleTrackSheet(t: SimpleTrack, actions: SimpleTracksActions, close: () -> Unit) {
+private fun SimpleTrackSheet(t: SimpleTrack, alone: Boolean, actions: SimpleTracksActions, padAlone: (Int) -> Boolean, close: () -> Unit) {
     val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     ScaledBottomSheet(onDismissRequest = close, sheetState = state, containerColor = Neon.Surface, modifier = Modifier.testTag("simple_track_sheet")) {
-        Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 24.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        Column(Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 16.dp).padding(bottom = 24.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(t.name, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
                 TextButton(onClick = close) { Text(tr("Fermer")) }
@@ -336,9 +368,22 @@ private fun SimpleTrackSheet(t: SimpleTrack, actions: SimpleTracksActions, close
                 Text(com.pocketstudio.app.mixer.faderDb(t.volume), style = MonoStyle, color = Neon.Cyan)
             }
             ProSlider(value = t.volume, onValueChange = { actions.setVolume(t.ch, it) }, modifier = Modifier.testTag("simple_track_volume"))
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                FilterChip(selected = t.mute, onClick = { actions.toggleMute(t.ch) }, label = { Text(tr("Couper")) }, colors = pillColors(Neon.Amber), modifier = Modifier.testTag("simple_track_mute"))
-                FilterChip(selected = t.solo, onClick = { actions.toggleSolo(t.ch) }, label = { Text(tr("Écouter seule")) }, colors = pillColors(), modifier = Modifier.testTag("simple_track_solo"))
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                // « Écouter seule » plays at once (the loop of the part, the track alone): no ▶ to find first.
+                com.pocketstudio.app.rhythm.AloneButton(alone, tr("Écouter seule"), t.name, "simple_track_solo") { actions.listenAlone(t.key) }
+                FilterChip(selected = t.mute, onClick = { actions.toggleMute(t.ch) }, label = { Text(tr("Couper")) }, colors = pillColors(Neon.Amber), modifier = Modifier.heightIn(min = 48.dp).testTag("simple_track_mute"))
+                // A solo kept in the song by an older version: one touch takes it off.
+                if (t.solo) FilterChip(selected = true, onClick = { actions.toggleSolo(t.ch) }, label = { Text(tr("Seule ✓")) }, colors = pillColors(), modifier = Modifier.heightIn(min = 48.dp).testTag("simple_track_kept_solo"))
+            }
+            // The Batterie: each of its sounds heard alone (the kick, the clap, the hats…).
+            if (t.pads.isNotEmpty()) {
+                Text(tr("Ses sons, un par un"), style = MaterialTheme.typography.titleSmall, modifier = Modifier.padding(top = 4.dp))
+                t.pads.forEach { pad ->
+                    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                        Text(pad.name, style = MaterialTheme.typography.bodyLarge, color = Neon.TextPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
+                        com.pocketstudio.app.rhythm.AloneButton(padAlone(pad.lane), tr("Écouter seul"), pad.name, "simple_pad_alone_${pad.lane}") { actions.listenPadAlone(pad.lane) }
+                    }
+                }
             }
             TextButton(onClick = { close(); actions.changeSound(t.key) }, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
                 Icon(Icons.Filled.GraphicEq, contentDescription = null)

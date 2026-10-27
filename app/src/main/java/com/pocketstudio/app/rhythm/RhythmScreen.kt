@@ -190,6 +190,9 @@ data class RhythmActions(
     /** Sounds of the pad's kind its sheet offers (names), and one of them put on pad (lane). */
     val padSounds: (Int) -> List<String> = { emptyList() },
     val pickPadSound: (Int, Int) -> Unit = { _, _ -> },
+    /** « ▶ Écouter seul » of a pad (its sheet): alone in a loop, or stopped. */
+    val listenPadAlone: ((Int) -> Unit)? = null,
+    val holdAlone: () -> (() -> Unit) = { {} },
     /** « Kit ▾ »: the list is about to show (packs read again), and a kit chosen (whole kit, one undo step). */
     val openKits: () -> Unit = {},
     val chooseKit: (String) -> Unit = {},
@@ -241,6 +244,8 @@ fun RhythmScreen(
     /** Audit final: the sheet of pad [openPad] asked for from outside (the Guide's « Autre idée de son » of the kick), then [padOpened]. */
     openPad: Int? = null,
     padOpened: () -> Unit = {},
+    /** The pads heard alone now (« Écouter seul »). */
+    alonePads: Set<Int> = emptySet(),
 ) {
     // A pad held (its sheet) and the kit list.
     var padSheet by rememberSaveable { mutableStateOf<Int?>(null) }
@@ -266,11 +271,12 @@ fun RhythmScreen(
     }
     padSheet?.let { lane ->
         PadSheet(
-            padSheetUi(project, lane, remember(lane, project.drums.lanes[lane].sample) { actions.padSounds(lane) }),
+            padSheetUi(project, lane, remember(lane, project.drums.lanes[lane].sample) { actions.padSounds(lane) }, alone = lane in alonePads),
             PadSheetActions(
                 pickSound = { actions.pickPadSound(lane, it) }, origin = { actions.removeSampleOf(lane) }, more = actions.openLibrary,
                 setVolume = { actions.setPadVolume(lane, it) }, setPan = { actions.setPadPanOf(lane, it) }, toggleMute = { actions.togglePadMute(lane) },
                 panDone = { actions.padPanDone(lane) },
+                listenAlone = actions.listenPadAlone?.let { f -> { f(lane) } }, holdAlone = actions.holdAlone,
             ),
             close = { padSheet = null },
         )

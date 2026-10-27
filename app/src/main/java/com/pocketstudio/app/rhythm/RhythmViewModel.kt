@@ -6409,6 +6409,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (c.inserts != before.inserts) pushInserts(ch, c.inserts)
         c.sends.forEachIndexed { bus, level -> if (before.sends.getOrNull(bus) != level) NativeEngine.setSend(ch, bus, level) }
         c.macros.forEachIndexed { m, v -> if (before.macros.getOrNull(m) != v) NativeEngine.setMacro(ch, m, v) }
+        if (c.mute != before.mute || c.solo != before.solo) applyAlone()
     }
 
     private fun pushMixer(p: Project = project.value) {
@@ -6447,6 +6448,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         p.mixer.buses.forEachIndexed { bus, params -> params.forEachIndexed { k, v -> NativeEngine.setBusParam(bus, k, v) } }
         // Pads with effects of their own go through their strip, the others straight into the drums.
         (0 until DrumPattern.PAD_COUNT).forEach { NativeEngine.setPadStrip(it, it in pads) }
+        // « Écouter seul » playing: its solos again over the project's.
+        applyAlone()
     }
 
     /**
@@ -6490,6 +6493,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             c.macros.forEachIndexed { m, v -> NativeEngine.setMacro(ch, m, v) }
         }
         NativeEngine.setPadStrip(ch - Mixer.FIRST_PAD, c.routesPad())
+        applyAlone()
     }
 
     private fun pushInserts(ch: Int, inserts: List<Insert>) {
@@ -7637,6 +7641,12 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val playing = !t.playing
         if (!playing) {
             _loopArmedBySelf.value = false
+            // ■ ends « Écouter seul » too: the sync below gives the engine the project's mixer back.
+            _alone.value?.let { a ->
+                _alone.value = null
+                aloneCheck?.cancel()
+                releaseAlone(a)
+            }
             // A take ends before the transport does: its last launches are read while they still count.
             endPerformanceOnStop()
             // Stopped during the song: ▶ goes on from the part it stopped in (the song's end sets the start again).
@@ -7677,6 +7687,132 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** Stops the transport if it plays (opening the assistant: its previews must not play over the song). */
     fun stop() {
         if (_transport.value.playing) togglePlay()
+    }
+
+    // --- « Écouter seul » (bug report, APK 224): one sound alone, in a loop ------------------------
+
+    private val _alone = MutableStateFlow<AloneListen?>(null)
+    /** What is heard alone in a loop (null: nothing). Never in the project: no undo step, nothing saved. */
+    val alone: StateFlow<AloneListen?> = _alone.asStateFlow()
+
+    /** Screens that keep [alone] going ([holdAlone]); none left: it stops after [ALONE_GRACE_MS]. */
+    private var aloneHolds = 0
+    private var aloneCheck: kotlinx.coroutines.Job? = null
+
+    /**
+     * « ▶ Écouter seul » of [target]: the scene where it plays loops with only it heard (a drum
+     * pad alone inside the kit, a track alone); touched again, it stops and everything is heard as
+     * the project says. Another target while one plays: that one instead. The song playing stops
+     * first. Only the engine changes (temporary solos): the project, its undo and its file never do.
+     */
+    fun toggleAlone(target: AloneTarget, from: String = "") {
+        val now = _alone.value
+        if (now != null && now.target == target) {
+            stopAlone()
+            return
+        }
+        if (target.isEmpty) return
+        if (now != null) {
+            // Another sound: the same loop goes on, heard through the new one.
+            _alone.value = AloneListen(target, from)
+            releaseAlone(now)
+            if (NativeEngine.isAvailable) pushMixer()
+            return
+        }
+        if (_transport.value.playing) toggleTransport()
+        val scene = target.sceneIn(project.value)
+        // The loop is the scene where the sound plays: shown, as a touch on a part would (not an edit).
+        if (scene != project.value.scene) {
+            session.showQuietly { it.switchScene(scene) }
+            if (NativeEngine.isAvailable) syncEngine()
+        }
+        _alone.value = AloneListen(target, from)
+        applyAlone()
+        heardScene = project.value.scene
+        if (NativeEngine.isAvailable) applySongCurves(project.value, project.value.scene)
+        playStartsForTest?.add("alone ${project.value.scene}")
+        toggleTransport(songStep = aloneSongStep())
+    }
+
+    /** « ■ Arrêter »: the loop stops and the engine hears the project's own mutes and solos again. */
+    fun stopAlone() {
+        val a = _alone.value ?: return
+        _alone.value = null
+        aloneCheck?.cancel()
+        releaseAlone(a)
+        // Stopping syncs the engine with the project (its mixer included); stopped already: the mixer alone.
+        if (_transport.value.playing) toggleTransport() else if (NativeEngine.isAvailable) pushMixer()
+    }
+
+    /**
+     * The solos [a] put on strips the project does not use (a pad without a strip of its own): taken
+     * off before the mixer is pushed again, which only speaks of the strips in use.
+     */
+    private fun releaseAlone(a: AloneListen) {
+        if (!NativeEngine.isAvailable || NativeEngine.isCapturing) return
+        a.target.channels.forEach { if (it < NativeEngine.MIXER_CHANNELS) NativeEngine.setChannelSolo(it, false) }
+        a.target.pads.forEach { lane ->
+            NativeEngine.setChannelSolo(Mixer.padChannel(lane), false)
+            NativeEngine.setPadStrip(lane, false)
+        }
+    }
+
+    /** A screen showing « Écouter seul » (a Guide card, a sheet) keeps it going until the returned release. */
+    fun holdAlone(): () -> Unit {
+        aloneHolds++
+        aloneCheck?.cancel()
+        var released = false
+        return {
+            if (!released) {
+                released = true
+                aloneHolds = (aloneHolds - 1).coerceAtLeast(0)
+                if (aloneHolds == 0 && _alone.value != null) {
+                    aloneCheck?.cancel()
+                    // A moment's grace: the Guide's « Autre idée de son » folds a card and opens a sheet.
+                    aloneCheck = viewModelScope.launch {
+                        kotlinx.coroutines.delay(ALONE_GRACE_MS)
+                        if (aloneHolds == 0) stopAlone()
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * The engine's solos for [alone] (after every mixer push while it plays, never in an export):
+     * every other strip unsoloed, the sound's strips unmuted; a pad goes through its own strip (as
+     * neutral as the drums' when the project gives it none: its sound is unchanged) and is soloed
+     * there, so the rest of the kit goes quiet.
+     */
+    private fun applyAlone() {
+        val a = _alone.value ?: return
+        if (!NativeEngine.isAvailable || NativeEngine.isCapturing) return
+        val t = a.target
+        val p = project.value
+        for (ch in Mixer.TRACK_STRIPS) {
+            if (ch == MASTER || ch >= NativeEngine.MIXER_CHANNELS) continue
+            val heard = ch in t.channels || (ch == 0 && t.pads.isNotEmpty())
+            // The drums' strip is never soloed for a pad: a soloed drums strip lets every pad through.
+            NativeEngine.setChannelSolo(ch, ch in t.channels)
+            if (heard) NativeEngine.setChannelMute(ch, false)
+        }
+        for (lane in 0 until DrumPattern.PAD_COUNT) {
+            val ch = Mixer.padChannel(lane)
+            if (ch >= NativeEngine.MIXER_CHANNELS) continue
+            if (lane in t.pads) {
+                val c = p.mixer.channels.getOrNull(ch) ?: com.pocketstudio.model.Channel()
+                NativeEngine.setChannelVolume(ch, c.volume)
+                NativeEngine.setChannelPan(ch, c.pan)
+                pushInserts(ch, c.inserts)
+                c.sends.forEachIndexed { bus, level -> NativeEngine.setSend(ch, bus, level) }
+                c.macros.forEachIndexed { m, v -> NativeEngine.setMacro(ch, m, v) }
+                NativeEngine.setChannelMute(ch, false)
+                NativeEngine.setPadStrip(lane, true)
+                NativeEngine.setChannelSolo(ch, true)
+            } else {
+                NativeEngine.setChannelSolo(ch, false)
+            }
+        }
     }
 
     /** True while the activity is on screen; set by the UI. */
@@ -9161,6 +9297,12 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             else -> Unit
         }
         performance = null
+        // « Écouter seul »: the engine outlives this project, its temporary solos must not (a pad
+        // strip left soloed would silence the next project's drums).
+        _alone.value?.let { a ->
+            _alone.value = null
+            releaseAlone(a)
+        }
         // The last edits (after the flush of ON_STOP, or never flushed) reach the disk all the same;
         // a save being written is waited for too (the next screen, or a trash, waits for these).
         if (!session.settled) ClosingSaves.launch { session.flush() }
@@ -9238,6 +9380,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
         /** How long the sound and mix stay unchanged before the live gain is estimated again (watchSoundForLiveDrive). */
         const val LIVE_DRIVE_SETTLE_MS = 1500L
+        /** « Écouter seul »: how long it waits for another screen to hold it (a card folds, a sheet opens). */
+        const val ALONE_GRACE_MS = 700L
         internal val STEM_LABELS = listOf("Batterie", "Basse", "Autres", "Voix")
 
         /** An export file's label ("batterie", "piste2-basse"…) as the progress line shows it. */

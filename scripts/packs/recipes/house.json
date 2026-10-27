@@ -330,7 +330,7 @@
   "drop": [
    "perc2"
   ],
-  "riser": true
+  "transition": "light"
  },
  {
   "id": "tech_house",
@@ -445,7 +445,7 @@
    "type": "chops",
    "pattern": "R..R......R.....................R..R......R...........r..r......",
    "arp_rate": 24,
-   "octave": 4,
+   "octave": 5,
    "sound": "pack:vocal_chops:vocal"
   },
   "acid": {
@@ -616,7 +616,7 @@
    "type": "chops",
    "pattern": "..R..5..................r..3......R..5..................r..3.R..",
    "arp_rate": 24,
-   "octave": 4,
+   "octave": 5,
    "sound": "pack:vocal_chops:vocal"
   },
   "acid": {
@@ -762,7 +762,7 @@
    "type": "chops",
    "pattern": "R.......R..R..........r.......r.",
    "arp_rate": 24,
-   "octave": 4,
+   "octave": 5,
    "sound": "pack:vocal_chops:vocal"
   },
   "acid": {
@@ -1092,7 +1092,8 @@
    "pattern": "..R-.R....R-.R-...R-.R....R-.5-.",
    "octave": 2,
    "sound": "Basse pluck",
-   "glide": false
+   "glide": false,
+   "sub": true
   },
   "lead": {
    "type": "riff",
@@ -1322,7 +1323,7 @@
   "drop": [
    "perc2"
   ],
-  "riser": true
+  "transition": "light"
  },
  {
   "id": "amapiano",
@@ -1334,7 +1335,7 @@
   "description_fr": "La house sud-africaine plus lente : une basse qui rebondit comme un tambour de bois (le « log drum ») et un piano jazzy.",
   "bpm": 112,
   "swing": 0.2,
-  "root": "C",
+  "root": "G",
   "drums": [
    {
     "role": "kick",
@@ -1420,7 +1421,8 @@
    "pattern": "..R-.R-O-.R-.5-...R-.R-..O-..R5-..R-.R-O-.R-.5-......5-..R--.3-.",
    "octave": 2,
    "sound": "Log drum",
-   "glide": false
+   "glide": false,
+   "sub": true
   },
   "lead": {
    "type": "riff",

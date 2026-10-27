@@ -499,8 +499,9 @@ int main(int argc, char** argv) {
     // centroid movement; --bass the basses alone (ps_render --no-limiter --solo <META bass>) through
     // a phone model (B1-B6), with --pre (the whole song before the master chain) their place in it
     // through the phone (B3), with --kick (the kick alone) the bass's dip under it (B9), with --dry
-    // (the song before the master without the bass exciter) what the exciter adds (B12).
-    std::string leadPath, bassPath, kickPath, prePath, dryPath;
+    // (the song before the master without the bass exciter) what the exciter adds (B12), with
+    // --bass-free (the basses alone, not ducked: ps_render --no-duck) the dip read against them.
+    std::string leadPath, bassPath, kickPath, prePath, dryPath, bassFreePath;
     std::vector<char*> args{argv[0]};
     for (int i = 1; i < argc; ++i) {
         if (!std::strcmp(argv[i], "--lead") && i + 1 < argc) leadPath = argv[++i];
@@ -508,6 +509,7 @@ int main(int argc, char** argv) {
         else if (!std::strcmp(argv[i], "--kick") && i + 1 < argc) kickPath = argv[++i];
         else if (!std::strcmp(argv[i], "--pre") && i + 1 < argc) prePath = argv[++i];
         else if (!std::strcmp(argv[i], "--dry") && i + 1 < argc) dryPath = argv[++i];
+        else if (!std::strcmp(argv[i], "--bass-free") && i + 1 < argc) bassFreePath = argv[++i];
         else args.push_back(argv[i]);
     }
     argc = static_cast<int>(args.size());
@@ -751,6 +753,27 @@ int main(int argc, char** argv) {
                                 if (farSq > 1e-12 && nearSq > 1e-14) dips.push_back(db((nearSq / 50) / (farSq / 100)));
                             }
                         }
+                        // Audit final (lot son): read against the same basses not ducked, the dip is the duck's
+                        // alone: a note that starts on the kick (a growl's filter attack) no longer reads as a
+                        // bass that rises under it (0-50 ms against 100-200 ms after the kick did).
+                        Audio freeBass;
+                        if (!bassFreePath.empty() && readWav(bassFreePath.c_str(), freeBass) && freeBass.frames() > 0) {
+                            dips.clear();
+                            for (auto [s0, e0] : mainRanges) {
+                                const auto kr = rmsEnvelope(kick, s0, e0);
+                                const auto br = rmsEnvelope(bass, s0, e0);
+                                const auto fr = rmsEnvelope(freeBass, s0, e0);
+                                for (int64_t k : onsets(kr)) {
+                                    if (k + 50 > static_cast<int64_t>(std::min(br.size(), fr.size()))) continue;
+                                    double duckedSq = 0, freeSq = 0;
+                                    for (int64_t q = k; q < k + 50; ++q) {
+                                        duckedSq += br[static_cast<size_t>(q)] * br[static_cast<size_t>(q)];
+                                        freeSq += fr[static_cast<size_t>(q)] * fr[static_cast<size_t>(q)];
+                                    }
+                                    if (freeSq > 1e-12) dips.push_back(db(std::max(duckedSq, 1e-14) / freeSq));
+                                }
+                            }
+                        }
                         m.kicks = static_cast<int>(dips.size());
                         if (!dips.empty()) m.kickDip = median(dips);
                     }
@@ -804,7 +827,10 @@ int main(int argc, char** argv) {
         // bars minus that of the Montée's last 2 (its silent last beat left out); a fake drop between
         // them is skipped (the real Drop is the one that must land). About 3 s each, the short-term
         // window. Benjamin's A/B test found Montées that ended louder than their Drop.
-        std::vector<double> landings, ends, starts;
+        // Audit final (lot son): the same through an average phone's speaker (4th-order high-pass at
+        // 300 Hz, then the K-weighting): the Drop must fall there too, not only under 120 Hz, where a
+        // phone plays nothing (dubstep's Drop landed -1 dB under its Montée's end there, +2.8 full band).
+        std::vector<double> landings, ends, starts, phoneLandings;
         for (size_t i = 0; i < sections.size() && beat > 0; ++i) {
             const auto& s = sections[i];
             const bool last = i + 1 == sections.size() || owner[i + 1] != owner[i];
@@ -820,11 +846,14 @@ int main(int argc, char** argv) {
             const double hi = loudness(a, {{dropFrom, dropTo}}).lufs, lo = loudness(a, {{endFrom, endTo}}).lufs;
             if (std::isfinite(hi) && std::isfinite(lo) && hi > -70 && lo > -70) {
                 landings.push_back(hi - lo);
+                const double phHi = phonePower(a, {{dropFrom, dropTo}}, 300), phLo = phonePower(a, {{endFrom, endTo}}, 300);
+                if (phHi > 1e-12 && phLo > 1e-12) phoneLandings.push_back(db(phHi / phLo));
                 ends.push_back(lo);
                 starts.push_back(hi);
             }
         }
         list("drop_minus_montee_end", landings);
+        list("drop_minus_montee_end_phone", phoneLandings);
         list("montee_end_lufs", ends);
         list("drop_start_lufs", starts);
     }

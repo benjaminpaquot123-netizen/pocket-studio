@@ -104,7 +104,9 @@ class HonestMixTest {
                 assertEquals(id, WizardMix.RISER_REST, riser.songValues[from]!!, 1e-6f)
                 assertEquals(id, WizardMix.RISER_PEAK, riser.songValues[end * b - 2]!!, 1e-6f)
                 assertEquals(id, WizardMix.RISER_REST, riser.songValues[end * b]!!, 1e-6f)
-                assertEquals(id, WizardMix.DRUMS_PEAK, drums.songValues[end * b - 2]!!, 1e-6f)
+                // Final audit (report 10): a Build's roll is not lifted (on a phone the Drop has to land over it).
+                val peak = if (StarterWizard.style(id)!!.form == StarterWizard.SongForm.Build) 0.8f else WizardMix.DRUMS_PEAK
+                assertEquals(id, peak, drums.songValues[end * b - 2]!!, 1e-6f)
                 assertEquals(id, 0.8f, drums.songValues[end * b]!!, 1e-6f)
             }
             assertTrue(id, p.automation.size <= AutomationLane.MAX_LANES)

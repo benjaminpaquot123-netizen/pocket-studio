@@ -261,6 +261,11 @@ internal object WizardMix {
 
     /** Bass music: the sub a little lower and the bass's body lifted (60-250 Hz, the band that is short). */
     const val BASS_MUSIC_SUB_DB = -2f
+    /**
+     * Final audit (report 10): a style's Sub further down: the neurofunk's bass talks in the mids, its
+     * Drop had the lowest of the family (0.5-2 kHz at −12.3 dB against the whole, the median −9.1).
+     */
+    private val SUB_TRIM_DB = mapOf("neurofunk" to -3f)
     val BASS_BODY = Insert(EffectType.PARAM_EQ.ordinal, listOf(0.2594f, 0.5833f, 0.2416f, 0f))  // +3 dB at 120 Hz, Q 0.7
 
     /** Styles whose basses keep their whole crest (no clipper): the dynamic hip-hop. */
@@ -277,10 +282,16 @@ internal object WizardMix {
     fun musicDuck(style: Style, padPump: Float): Triple<Float, Float, Float> = when {
         style.id in OWN_PUMP -> Triple(0f, 0.5f, 0.3f)
         style.family in setOf("House", "Techno") -> Triple(padPump.coerceIn(0.2f, 0.45f), 0.6f, 0.35f)
-        style.family == "Bass music" -> Triple(0.12f, 0.55f, 0.25f)
+        // Final audit (report 10): the basses out of the kick's way, short (0.55 and 93 ms before: the bass
+        // alone dipped less than 3 dB under the kick, read against itself not ducked).
+        style.family == "Bass music" -> Triple(0.12f, BASS_MUSIC_LOW_DUCK, BASS_MUSIC_DUCK_RELEASE)
         style.family == "Hip-hop" -> Triple(0f, 0.3f, 0.25f)
         else -> Triple(padPump.coerceAtMost(0.35f), 0.4f, 0.3f)
     }
+
+    /** Bass music's low duck under the kick (the « Musique » bus's low depth) and its release (0.19: about 80 ms). */
+    const val BASS_MUSIC_LOW_DUCK = 0.8f
+    const val BASS_MUSIC_DUCK_RELEASE = 0.19f
 
     /**
      * S5, in [StarterWizard.build] just before [WideMix.apply] (then [withAudibleBass], last): the assistant's song gets an
@@ -357,7 +368,7 @@ internal object WizardMix {
                 val free = channels[ch].inserts.indexOfFirst { it.type == 0 }
                 if (free >= 0) channels[ch] = channels[ch].copy(inserts = channels[ch].inserts.toMutableList().also { it[free] = BASS_BODY }).sanitized()
             }
-            p.instrumentTracks.filter { it.name == StarterWizard.SUB_TRACK }.forEach { p = p.louder(it.id, BASS_MUSIC_SUB_DB) }
+            p.instrumentTracks.filter { it.name == StarterWizard.SUB_TRACK }.forEach { p = p.louder(it.id, BASS_MUSIC_SUB_DB + (SUB_TRIM_DB[style.id] ?: 0f)) }
         }
         // The sidechain: the kick's pad is the key; the Musique bus ducks once.
         val kick = Role.Kick.lane
@@ -397,7 +408,7 @@ internal object WizardMix {
             val extra = lanes.getOrNull(lane)?.pan == 0f && style.lines.none { it.role == role }
             if (lane in lanes.indices && (lanes[lane].pan == PANS[role] || extra)) lanes[lane] = lanes[lane].copy(pan = pan)
         }
-        p = withRisingMontees(p)
+        p = withRisingMontees(p, drumsPeak = if (style.form == SongForm.Build || style.id in PHONE_FLAT_ROLL) 0.8f else DRUMS_PEAK)
         p = withSectionLevels(
             p, build = style.form == SongForm.Build, monteeTop = monteeTopDb(style), monteeFloor = monteeFloorDb(style),
             groove = grooveDb(style), intro = introDb(style), breakTrim = BREAK_SPREAD_TRIM_DB + (BREAK_LAYER_TRIM_DB[style.id] ?: 0f),
@@ -529,6 +540,12 @@ internal object WizardMix {
      * density and its velocity do the rest), back at 0 dB on the Drop. S5b: +3 dB before.
      */
     const val DRUMS_PEAK = 0.85f
+    /**
+     * Final audit (report 10): the Montées whose roll does not come up on the drums' fader (a Build's, and
+     * these): on a phone the roll, all over 300 Hz, was what the Drop had to land over.
+     */
+    private val PHONE_FLAT_ROLL = setOf("jungle")
+
     /** Bars of the rise: the Montée's last 4. */
     const val RISE_BARS = 4
     /** Curves WideMix still adds after this (lead reverb, wobble, vowel): room kept for them. */
@@ -566,7 +583,7 @@ internal object WizardMix {
      * (the roll) by 1 dB; both fall back on the Drop's first beat. Song
      * curves (per beat, song only), as many as fit beside WideMix's.
      */
-    fun withRisingMontees(project: Project): Project {
+    fun withRisingMontees(project: Project, drumsPeak: Float = DRUMS_PEAK): Project {
         val runs = monteeRuns(project)
         if (runs.isEmpty()) return project
         val p = project
@@ -587,7 +604,7 @@ internal object WizardMix {
         if (riser != null) {
             lanes += rising(AutoTarget(AutoTarget.VOLUME, InstrumentTrack.mixerChannel(riser.id)), RISER_REST, RISER_PEAK)
         }
-        lanes += rising(AutoTarget(AutoTarget.VOLUME, 0), 0.8f, DRUMS_PEAK)
+        lanes += rising(AutoTarget(AutoTarget.VOLUME, 0), 0.8f, drumsPeak)
         val room = AutomationLane.MAX_LANES - WIDE_LANES - p.automation.count { l -> lanes.none { it.target == l.target } }
         if (room <= 0) return project
         val kept = p.automation.filterNot { l -> lanes.any { it.target == l.target } }
@@ -648,15 +665,21 @@ internal object WizardMix {
      * higher: a Montée that ends 4 to 8 LU under its Drop (the sparse house claps) falls flat.
      */
     private val MONTEE_TRIM_DB = mapOf(
-        "acid_house" to -0.5f, "acid_techno" to 0f, "acidcore" to -3f, "afro_house" to 2f, "amapiano" to 2f, "deep_house" to 2f,
-        "detroit" to -3f, "disco" to -1f, "hard_techno" to -1.5f, "industrial_techno" to 1f, "jungle" to -2.5f, "minimal" to 2f,
+        "acid_house" to -0.5f, "acid_techno" to 0f, "acidcore" to -3f, "afro_house" to 2f, "amapiano" to 2f, "deep_house" to 0.5f,
+        "detroit" to -3f, "disco" to -1f, "hard_techno" to -1.5f, "industrial_techno" to 1f, "jungle" to -4f, "minimal" to 0f,
         "retro_techno" to -3.5f, "speed_garage" to -3.5f,
-        "dnb" to -1f, "dubstep" to -1.5f, "gabber" to -1f, "jump_up" to -1f, "liquid_dnb" to -0.5f, "neurofunk" to -2.5f, "riddim" to -4f,
+        "dnb" to -1f, "dubstep" to -2f, "gabber" to -1f, "jump_up" to -1f, "liquid_dnb" to -0.5f, "neurofunk" to -2.5f, "riddim" to -4f,
     )
 
     /** The top of [style]'s Montée on the master fader (dB): its form's, its own trim on it, never over the Drop's. */
     fun monteeTopDb(style: Style): Float =
-        ((if (style.form == SongForm.Build) BUILD_TOP_DB else MONTEE_TOP_DB) + (MONTEE_TRIM_DB[style.id] ?: 0f)).coerceIn(-9f, 0f)
+        ((if (style.form == SongForm.Build) BUILD_TOP_DB + BUILD_PHONE_TRIM_DB else MONTEE_TOP_DB) + (MONTEE_TRIM_DB[style.id] ?: 0f)).coerceIn(-9f, 0f)
+
+    /**
+     * Final audit (report 10): a Build's Montée (bass music, its roll and its noise all over 300 Hz) this much
+     * lower again, top and floor: on a phone, which plays nothing under 120 Hz, the Drop landed under its end.
+     */
+    const val BUILD_PHONE_TRIM_DB = -2f
 
     /**
      * S5b: how much deeper than its form's a style's Montée starts its climb (dB): the acid styles,
@@ -691,7 +714,14 @@ internal object WizardMix {
      * [style]'s Intro on the master fader (dB): 0, or in club music as much lower as its Groove is (S6:
      * an Intro as loud as the Groove, kept so); a rap or pop Intro is already well under its Refrain.
      */
-    fun introDb(style: Style): Float = if (style.family in INTRO_WITH_GROOVE) -(GROOVE_TRIM_DB[style.id] ?: 0f) else 0f
+    fun introDb(style: Style): Float = when {
+        // Final audit (lot son, report 11): a techno Intro at the Groove's own level. 2 dB over it, the
+        // Intro's end came out louder than the Groove's first bars (techno −11.1 against −12.4 LUFS,
+        // industrial −8.2 against −10.0; acidcore's Intro 0.3 LU under its Drop).
+        style.family == "Techno" -> grooveDb(style)
+        style.family in INTRO_WITH_GROOVE -> -(GROOVE_TRIM_DB[style.id] ?: 0f)
+        else -> 0f
+    }
 
     private val INTRO_WITH_GROOVE = setOf("Techno", "House")
 

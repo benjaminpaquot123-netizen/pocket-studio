@@ -194,8 +194,9 @@ class AcidcoreTest {
             val lane = p.automation.firstOrNull { it.target == AutoTarget.acid(0) }
             assertNotNull(id, lane)
             val curve = lane!!.songCurve(p.songBars)
-            assertTrue(id, curve.max() - curve.min() in 0.2f..0.45f)
-            assertTrue(id, curve.all { it in 0.2f..0.7f })
+            // Final audit (report 11): wider since the 303 plays its phrases and opens through each Montée.
+            assertTrue(id, curve.max() - curve.min() in 0.2f..0.6f)
+            assertTrue(id, curve.all { it in 0.15f..0.85f })
         }
         // Without the 303, no curve for it.
         val s = style("acid_techno")

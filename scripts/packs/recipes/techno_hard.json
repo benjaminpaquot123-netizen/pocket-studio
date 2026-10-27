@@ -321,6 +321,26 @@
      0.5,
      0.5
     ]
+   },
+   {
+    "on": "chords",
+    "insert": "PARAM_EQ",
+    "params": [
+     0.392,
+     0.4167,
+     0.2416,
+     0.0
+    ]
+   },
+   {
+    "on": "lead",
+    "insert": "PARAM_EQ",
+    "params": [
+     0.392,
+     0.4167,
+     0.2416,
+     0.0
+    ]
    }
   ],
   "notes": "Modern hard techno runs 145-160 BPM (150 is the common middle). Schranz roots: compressed 909 percussion loops (the 3-step perc loop against the 4/4), a clap roll every 2 bars. The signature low end is the rolling bass (three 16ths between the kicks) pumped by the kick; the kick gets the punch preset (compressor + saturation), harder than techno, cleaner than gabber. The harmonic part is a hoover stab in octaves (3-3-2-ish), not chords. Supersaw lead (hard trance) off by default. References verified on the web (2024); 'Marco Leckbert – Schranz Will Never Die' could not be verified and was dropped.",
@@ -477,6 +497,16 @@
      0.5,
      0.5,
      0.5
+    ]
+   },
+   {
+    "on": "chords",
+    "insert": "PARAM_EQ",
+    "params": [
+     0.392,
+     0.4167,
+     0.2416,
+     0.0
     ]
    }
   ],
@@ -826,11 +856,11 @@
   "drop": [
    "perc2"
   ],
-  "riser": true,
   "counter": {
    "sound": "Cloche",
    "rhythm": "......x.......x."
-  }
+  },
+  "transition": "light"
  },
  {
   "id": "trance",

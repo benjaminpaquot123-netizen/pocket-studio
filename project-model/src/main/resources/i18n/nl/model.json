@@ -62,7 +62,6 @@
   "Bruit filtré": "Gefilterde ruis",
   "Bulle": "Bubbel",
   "C'est elle, le refrain : deux notes courtes juste après chaque coup de grosse caisse, qui se baissent à chaque coup (l'effet « pompe »). À la fin de la deuxième mesure, elle glisse vers l'aigu.": "Zij is het refrein: twee korte noten vlak na elke kick, die bij elke klap wegduiken (het ‘pomp’-effect). Aan het eind van de tweede maat glijdt ze omhoog.",
-  "C'est la 808 : elle tape avec le kick et glisse vers une note plus aiguë, une fois par mesure.": "Dit is de 808: hij slaat met de kick mee en glijdt één keer per maat naar een hogere noot.",
   "C'est la 808 : une basse très grave qui tape avec le kick, puis glisse vers l'aigu.": "Dit is de 808: een heel diepe bas die met de kick meeslaat en dan omhoog glijdt.",
   "C'est la 808, saturée pour qu'elle gronde : elle tape avec le kick et glisse à la fin de la mesure.": "Dit is de 808, vervormd zodat hij gromt: hij slaat met de kick mee en glijdt aan het eind van de maat.",
   "C'est le dembow, le cœur du style : la caisse claire tape juste avant les temps 2 et 4, puis juste après.": "Dit is de dembow, het hart van de stijl: de snare slaat net voor tel 2 en 4, en dan net erna.",
@@ -237,7 +236,6 @@
   "Hoover": "Hoover",
   "House": "House",
   "Hurleur": "Huiler",
-  "Ici, pas de mélodie : le lead est une deuxième basse qui fait « wob wob » et répond à la première dans ses silences. C'est le jeu « question, réponse » du jump up.": "Geen melodie hier: de lead is een tweede bas die « wob wob » doet en de eerste beantwoordt in zijn stiltes. Dat is het « vraag en antwoord » van jump-up.",
   "Il bouge de gauche à droite et s'épaissit : parfait pour une nappe ou des accords.": "Het beweegt van links naar rechts en wordt voller: perfect voor een pad of akkoorden.",
   "Immobile": "Statisch",
   "Intro": "Intro",
@@ -288,7 +286,6 @@
   "La techno la plus noire : des bruits de métal et de machines, comme une usine, sur un kick saturé qui gronde.": "De zwartste techno: metaal- en machinegeluiden, als een fabriek, op een vervormde, rommelende kick.",
   "La toute première techno, née à Detroit : des cordes mélancoliques et funky sur une boîte à rythmes qui roule.": "De allereerste techno, geboren in Detroit: melancholische, funky strijkers op een rollende drumcomputer.",
   "La trap version sombre, de Londres à Paris : une 808 qui glisse, une caisse claire décalée et des hi-hats qui sautillent.": "De donkere kant van trap, van Londen tot Parijs: een glijdende 808, een verschoven snare en huppelende hi-hats.",
-  "La vedette : une basse grasse qui grogne, comme en dubstep. Elle frappe avec le kick, se tait avant la caisse claire pour laisser répondre la deuxième basse, puis glisse vers l'aigu. Une piste « Sub » la double une octave plus bas : le grave qu'on sent dans le ventre.": "De ster: een vette, grommende bas, zoals in dubstep. Hij slaat mee met de kick, zwijgt vóór de snare zodat de tweede bas kan antwoorden, en glijdt dan omhoog. Een « Sub »-spoor speelt hem een octaaf lager mee: het laag dat je in je buik voelt.",
   "La « wobble » : un filtre s'ouvre et se ferme en rythme sur chaque note tenue, ça fait « wob wob ». À la fin, elle monte d'une note, juste assez pour faire frissonner.": "De ‘wobble’: een filter gaat in de maat open en dicht op elke aangehouden noot, dat doet ‘wob wob’. Aan het eind gaat ze één noot omhoog, net genoeg voor een rilling.",
   "Large et vivant": "Breed en levendig",
   "Large, flottant, stéréo : idéal pour une nappe.": "Breed, zwevend, stereo: ideaal voor een pad.",
@@ -881,5 +878,8 @@
   "Stéréo": "Stereo",
   "Voix rap": "Rapstem",
   "Devant la prod : coupe-bas, compresseur qui tient chaque mot, un peu de présence et une petite pièce.": "Voor de beat: low-cut, een compressor die elk woord vasthoudt, wat presence en een kleine ruimte.",
-  "Coupe-bas à 120 Hz et un compresseur doux : la voix reste nette et ne se noie pas.": "Low-cut op 120 Hz en een zachte compressor: de stem blijft helder en verdrinkt niet."
+  "Coupe-bas à 120 Hz et un compresseur doux : la voix reste nette et ne se noie pas.": "Low-cut op 120 Hz en een zachte compressor: de stem blijft helder en verdrinkt niet.",
+  "C'est la 808 : elle tape avec chaque coup de kick, puis glisse d'une note à l'autre, plusieurs fois sur deux mesures.": "Dit is de 808: hij slaat mee met elke kick en glijdt dan van de ene noot naar de andere, een paar keer per twee maten.",
+  "Ici, pas de mélodie : le lead est un « hoover » de rave, quelques notes qui hurlent dans les silences de la basse. C'est le jeu « question, réponse » du jump up.": "Geen melodie hier: de lead is een rave-« hoover », een paar noten die gillen in de stiltes van de bas. Dat is het « vraag en antwoord » van jump-up.",
+  "La vedette : une basse grasse qui grogne, comme en dubstep. Elle frappe avec le kick, se tait avant la caisse claire pour laisser répondre le hoover, puis glisse vers l'aigu. Une piste « Sub » la double une octave plus bas : le grave qu'on sent dans le ventre.": "De ster: een vette, grommende bas, zoals in dubstep. Hij slaat mee met de kick, zwijgt vóór de snare zodat de hoover kan antwoorden, en glijdt dan omhoog. Een « Sub »-spoor speelt hem een octaaf lager mee: het laag dat je in je buik voelt."
 }

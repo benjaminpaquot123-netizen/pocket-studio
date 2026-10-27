@@ -2,7 +2,7 @@
 // RecordingSink during SongBenchExport) through the engine core's OfflineRenderer, exactly as the
 // JNI export bridge (engine/src/main/cpp/android/JniBridge.cpp) does, and writes the result.
 //
-//   ps_render [--no-limiter] [--as-app] [--solo <channel>[,<channel>...]] [--no-exciter] [--ceiling <dBTP>] [--drive-ceiling <dBTP>] [--report <file.json>] <in.pscmd> <out>
+//   ps_render [--no-limiter] [--as-app] [--solo <channel>[,<channel>...]] [--no-exciter] [--no-duck] [--ceiling <dBTP>] [--drive-ceiling <dBTP>] [--report <file.json>] <in.pscmd> <out>
 //
 // RENDER wav: <out> is a WAV file, 32-bit float at 48 kHz by default (no dither: byte-identical
 //   runs); --as-app writes what the app writes (the FORMAT line: 44.1 kHz, 16 or 24 bits dithered).
@@ -12,6 +12,8 @@
 // several (comma-separated): those together (the song's basses: META bass).
 // --no-exciter: every « Basse audible » (the bass exciter, InsertSlot::BassExciterFx) left out, the rest
 // as recorded: what the exciter adds to the song (the bench's B12).
+// --no-duck: the « Musique » bus not ducked under the kick (its depths at 0), no pump on any strip, the rest as recorded: the
+// basses alone this way are what the bench's B9 reads their dip against.
 // --ceiling: the master limiter's ceiling (what the app sets for an M4A: -2).
 // --drive-ceiling: (S6) the drive searched as at this ceiling, the music then limited at --ceiling
 //   (what the app sets for an M4A of a Drop-aimed song: -1, the WAV's).
@@ -75,7 +77,7 @@ bool readFloats(const std::string& path, std::vector<float>& out) {
 int main(int argc, char** argv) {
     bool noLimiter = false, asApp = false;
     std::vector<int> solo;
-    bool noExciter = false;
+    bool noExciter = false, noDuck = false;
     float ceiling = NAN, driveCeiling = NAN;
     std::string reportPath;
     std::vector<std::string> files;
@@ -88,13 +90,14 @@ int main(int argc, char** argv) {
             while (std::getline(list, ch, ',')) if (!ch.empty()) solo.push_back(std::atoi(ch.c_str()));
         }
         else if (!std::strcmp(argv[i], "--no-exciter")) noExciter = true;
+        else if (!std::strcmp(argv[i], "--no-duck")) noDuck = true;
         else if (!std::strcmp(argv[i], "--report") && i + 1 < argc) reportPath = argv[++i];
         else if (!std::strcmp(argv[i], "--ceiling") && i + 1 < argc) ceiling = std::strtof(argv[++i], nullptr);
         else if (!std::strcmp(argv[i], "--drive-ceiling") && i + 1 < argc) driveCeiling = std::strtof(argv[++i], nullptr);
         else files.emplace_back(argv[i]);
     }
     if (files.size() != 2) {
-        std::fprintf(stderr, "usage: ps_render [--no-limiter] [--as-app] [--solo <channel>[,...]] [--no-exciter] [--ceiling <dBTP>] [--drive-ceiling <dBTP>] [--report <file.json>] <in.pscmd> <out>\n");
+        std::fprintf(stderr, "usage: ps_render [--no-limiter] [--as-app] [--solo <channel>[,...]] [--no-exciter] [--no-duck] [--ceiling <dBTP>] [--drive-ceiling <dBTP>] [--report <file.json>] <in.pscmd> <out>\n");
         return 1;
     }
     std::ifstream in(files[0]);
@@ -136,7 +139,12 @@ int main(int argc, char** argv) {
             int32_t a = 0, b = 0;
             if (!(ls >> type >> value >> a >> b)) fail(line, "bad command");
             if (noExciter && type == static_cast<int>(ps::CommandType::SetInsertType) && b == ps::InsertSlot::BassExciterFx) b = ps::InsertSlot::None;
-            renderer.post({static_cast<ps::CommandType>(type), std::strtof(value.c_str(), nullptr), a, b});
+            // --no-duck: a strip's own pump (the 808's pad under the kick) left out too.
+            if (noDuck && type == static_cast<int>(ps::CommandType::SetInsertType) && b == ps::InsertSlot::Pump) b = ps::InsertSlot::None;
+            float v = std::strtof(value.c_str(), nullptr);
+            // SetSidechain 1 and 2: the Musique bus's depth and low depth (Engine.cpp).
+            if (noDuck && type == static_cast<int>(ps::CommandType::SetSidechain) && (a == 1 || a == 2)) v = 0.0f;
+            renderer.post({static_cast<ps::CommandType>(type), v, a, b});
         } else if (op == "AT") {
             long long frame = -1;
             ls >> frame;

@@ -50,6 +50,9 @@ Recipe syntax (one JSON object per style; one character per sixteenth, 16 = a ba
   "fake_drop": true (club music): a fake drop before the first Drop (riddim): the Drop's beat without its bass,
     a beat of silence, then the real one.
   "rewind": true (club music): the record pulled back (a tape stop on the master) before the second Drop (jungle).
+  "transition": "light" (club music, no riser): the Montée of house and techno that do not build like EDM (deep house,
+    minimal, Detroit, disco): no noise, no sub drop, no silent beat, the kick out of its last bar only, a one-bar drum
+    fill, the whole mix's low-pass closing over it and open again on the Drop.
   "vocal": answer|stab|shout|crush: a « Voix » track sung by the built-in voice (« Voix robot »): chops that
     answer the hook in its rests (house, garage, jersey), a stab every 4 bars (trap), an MC's shout in each
     Drop's second half (drum & bass), a crushed hit every 2 bars (phonk).
@@ -382,6 +385,10 @@ def style(r):
     check(drop is None or form != "build", f"{gid}: the Montée already holds the kick and the bass back for the Drop")
     fake_drop = bool(r.get("fake_drop", False))
     rewind = bool(r.get("rewind", False))
+    light = r.get("transition", "full")
+    check(light in ("full", "light"), f"{gid}: transition full or light, got {light}")
+    light = light == "light"
+    check(not light or (club and form != "build" and not riser), f"{gid}: a light transition needs the club form without a riser")
     check(not (fake_drop or rewind) or club or form == "build", f"{gid}: a fake drop or a rewind needs the club form")
     vocal = r.get("vocal")
     check(vocal is None or vocal in VOCALS, f"{gid}: vocal {vocal} ({sorted(VOCALS)})")
@@ -502,6 +509,8 @@ def style(r):
         out.append("            fakeDrop = true,")
     if rewind:
         out.append("            rewind = true,")
+    if light:
+        out.append("            lightBuild = true,")
     if vocal:
         out.append(f"            vocal = Vocal.{VOCALS[vocal]},")
     out.append("        ),")

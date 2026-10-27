@@ -177,7 +177,8 @@ object SoundLibrary {
         // The assistant's width and movement (S4: [SynthPatch.S4_PARAMS]) are its production, not the sound.
         // The sub's 30 Hz floor too (a sound chosen before it had none), and the touch and attack of the
         // leads chantier's lots B to D ([SynthPatch.LEAD_PARAMS]: a sound chosen before them is the same sound).
-        fun SynthPatch.identity() = (SynthPatch.S4_PARAMS + SynthPatch.SUB_FLOOR + SynthPatch.LEAD_PARAMS).fold(sanitized().with(SynthPatch.GAIN, 0.5f).with(SynthPatch.GLIDE, 0f)) { p, i ->
+        // The mid layer's drive too (the final audit's bass music Drop, WideMix.phoneMids: its layer is S4's).
+        fun SynthPatch.identity() = (SynthPatch.S4_PARAMS + SynthPatch.SUB_FLOOR + SynthPatch.MID_LAYER_DRIVE + SynthPatch.LEAD_PARAMS).fold(sanitized().with(SynthPatch.GAIN, 0.5f).with(SynthPatch.GLIDE, 0f)) { p, i ->
             p.with(i, SynthPatch.DEFAULTS[i])
         }
         val wanted = patch.identity()

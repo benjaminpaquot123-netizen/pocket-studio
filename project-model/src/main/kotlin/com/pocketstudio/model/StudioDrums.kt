@@ -97,9 +97,21 @@ object StudioDrums {
                 PadVoice.KICK_STUDIO,
                 if (style.id in SOFT_KICK) mapOf(PadVoice.TUNE to tune, PadVoice.CLICK to 0.25f) else mapOf(PadVoice.TUNE to tune),
             )
+            // Final audit (report 12): the kick of an 808 style in the 808's key (it played the kit's 52 Hz over an
+            // 808 in F, 43.7 Hz: two low notes beating in each hit), shorter so the 808 carries the low end.
+            style.id in BASS_808 -> PadVoice(PadVoice.KICK_STUDIO, mapOf(PadVoice.TUNE to tune, PadVoice.DECAY to KICK_808_DECAY))
             else -> null
         }?.sanitized()
     }
+
+    /** The studio kick's decay over an 808 (s; its own 0.25 a little shorter: the 808 is the low end that rings). */
+    const val KICK_808_DECAY = 0.2f
+
+    /**
+     * Final audit (report 12): the 808's pad ducked under the kick (a pump on its strip, keyed by the kick's
+     * sound since S5): depth, release (about 70 ms). The Musique bus takes no pad; this is its low end's place.
+     */
+    val PUMP_808: Insert get() = Insert(EffectType.PUMP.ordinal, listOf(0.5f, 0.15f, 0f)).sanitized()
 
     /** The rumble under [style]'s kick: tuned with it, rolling for about a beat, a little dirty. */
     fun rumbleVoice(style: Style, harmony: Harmony): PadVoice = PadVoice(

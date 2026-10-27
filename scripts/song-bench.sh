@@ -27,7 +27,7 @@
 #   --no-bass  skips the bass pass. By default each song that names its basses (META bass) also renders
 #              them alone before the master chain (ps_render --no-limiter --solo), the whole song before it,
 #              the kick alone (META kick) and, when it has a bass exciter (« Basse audible »), the song before
-#              the master without it: ps_measure --bass reads what a phone keeps of the bass
+#              the master without it, and (audit final) the basses alone not ducked, for B9: ps_measure --bass reads what a phone keeps of the bass
 #              (docs/hits/basses-qui-tapent.md § 8, B1-B12)
 # Environment: GRADLE_ARGS (default --max-workers=1), CMAKE_EXTRA_ARGS (e.g. ccache), JOBS.
 # The rendered audio stays in the work folder: never commit it.
@@ -122,7 +122,9 @@ list | xargs -P "$JOBS" -I{} sh -c '
         bassArgs="--bass $OUT/wav/{}.bass.wav --pre $OUT/wav/{}.pre-b.wav"
         if [ -n "$kick" ]; then
             "$TOOLS/ps_render" --no-limiter --solo "$kick" "$cmd" "$OUT/wav/{}.kick.wav" || { echo "FAILED: {} (kick)" >&2; exit 255; }
-            bassArgs="$bassArgs --kick $OUT/wav/{}.kick.wav"
+            # B9 read against the same basses not ducked (audit final, lot son): the duck alone, whatever the notes do.
+            "$TOOLS/ps_render" --no-limiter --no-duck --solo "$bass" "$cmd" "$OUT/wav/{}.bassfree.wav" || { echo "FAILED: {} (bass, not ducked)" >&2; exit 255; }
+            bassArgs="$bassArgs --kick $OUT/wav/{}.kick.wav --bass-free $OUT/wav/{}.bassfree.wav"
         fi
         # SetInsertType (33) of the bass exciter (InsertSlot::BassExciterFx, 29): the song without it too.
         if grep -qE "^C 33 [^ ]+ [0-9]+ 29$" "$cmd"; then
@@ -132,7 +134,7 @@ list | xargs -P "$JOBS" -I{} sh -c '
     fi
     "$TOOLS/ps_render" --report "$OUT/render/{}.json" "$cmd" "$OUT/wav/{}.wav" && "$TOOLS/ps_measure" "$OUT/wav/{}.wav" "$cmd" $leadArgs $bassArgs > "$OUT/json/{}.json" \
         || { echo "FAILED: {}" >&2; exit 255; }
-    rm -f "$OUT/wav/{}.lead.wav" "$OUT/wav/{}.bass.wav" "$OUT/wav/{}.pre-b.wav" "$OUT/wav/{}.kick.wav" "$OUT/wav/{}.dry.wav"
+    rm -f "$OUT/wav/{}.lead.wav" "$OUT/wav/{}.bass.wav" "$OUT/wav/{}.bassfree.wav" "$OUT/wav/{}.pre-b.wav" "$OUT/wav/{}.kick.wav" "$OUT/wav/{}.dry.wav"
     (cd "$OUT/wav" && sha256sum "{}.wav" > "$OUT/hash/{}.txt")
     [ "$KEEP" = 1 ] || rm -f "$OUT/wav/{}.wav"
     if [ "$PREMASTER" = 1 ]; then

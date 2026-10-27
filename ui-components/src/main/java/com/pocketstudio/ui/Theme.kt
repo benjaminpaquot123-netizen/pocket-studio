@@ -43,7 +43,7 @@ object Palettes {
     val Dark = Palette(
         isDark = true,
         background = Color(0xFF0E1116), surface = Color(0xFF181C24), surfaceHigh = Color(0xFF232833),
-        outline = Color(0xFF2C3341), accent = Color(0xFF5BD6E3), playing = Color(0xFFF07AC0),
+        outline = Color(0xFF646D7D), accent = Color(0xFF5BD6E3), playing = Color(0xFFF07AC0),
         good = Color(0xFF9ED36A), warning = Color(0xFFF2B84B), bad = Color(0xFFEF6F7E),
         textPrimary = Color(0xFFEEF1F6), textSecondary = Color(0xFF9CA6B6), onAccent = Color(0xFF0B0D10),
     )
@@ -55,7 +55,8 @@ object Palettes {
     val Studio = Palette(
         isDark = true,
         background = Color(0xFF2B2F35), surface = Color(0xFF41464E), surfaceHigh = Color(0xFF50565F),
-        outline = Color(0xFF5A616B), accent = Color(0xFFFF9F43), playing = Color(0xFF6EE07A),
+        // Audit final (22): borders of buttons and fields reach 3:1 on the panels (#5A616B was 1.5:1).
+        outline = Color(0xFF8C949F), accent = Color(0xFFFF9F43), playing = Color(0xFF6EE07A),
         good = Color(0xFF8FE07A), warning = Color(0xFFFFD166), bad = Color(0xFFFF6B6B),
         // Secondary text and red text reach 4.5:1 on the lighter panels (dialogs, rows).
         textPrimary = Color(0xFFF6F7F9), textSecondary = Color(0xFFC8CDD5), onAccent = Color(0xFF1C1E22),
@@ -112,7 +113,8 @@ private fun colorScheme(p: Palette) = (if (p.isDark) darkColorScheme() else ligh
     surfaceContainerHigh = p.surfaceHigh,
     surfaceContainerHighest = p.surfaceHigh,
     outline = p.outline,
-    outlineVariant = p.outline,
+    // Dividers stay quiet (the outline itself is for borders that must be seen).
+    outlineVariant = p.outline.copy(alpha = 0.45f),
     error = p.bad,
 )
 
@@ -140,10 +142,11 @@ private val typography = Typography().run {
         titleSmall = titleSmall.inter(FontWeight.SemiBold, 0f),
         bodyLarge = bodyLarge.inter(FontWeight.Normal, 0f),
         bodyMedium = bodyMedium.inter(FontWeight.Normal, 0f),
-        bodySmall = bodySmall.inter(FontWeight.Normal, 0.1f),
+        // Audit final (20 M15): the smallest styles a step larger (12, 12 and 11 sp were hard to read).
+        bodySmall = bodySmall.inter(FontWeight.Normal, 0.1f).copy(fontSize = 13.sp, lineHeight = 18.sp),
         labelLarge = labelLarge.inter(FontWeight.SemiBold, 0.1f),
-        labelMedium = labelMedium.inter(FontWeight.SemiBold, 0.3f),
-        labelSmall = labelSmall.inter(FontWeight.Bold, 1.3f),
+        labelMedium = labelMedium.inter(FontWeight.SemiBold, 0.2f).copy(fontSize = 13.sp, lineHeight = 18.sp),
+        labelSmall = labelSmall.inter(FontWeight.Bold, 0.8f).copy(fontSize = 12.sp, lineHeight = 16.sp),
     )
 }
 
@@ -157,7 +160,7 @@ private val shapes = Shapes(
 )
 
 /** Numbers that change (tempo, decibels, times): tabular figures, so they do not jiggle. */
-val MonoStyle = TextStyle(fontFamily = Inter, fontWeight = FontWeight.SemiBold, fontSize = 13.sp, fontFeatureSettings = "tnum")
+val MonoStyle = TextStyle(fontFamily = Inter, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, fontFeatureSettings = "tnum")
 
 @Composable
 fun PocketStudioTheme(palette: Palette = Palettes.Studio, content: @Composable () -> Unit) {

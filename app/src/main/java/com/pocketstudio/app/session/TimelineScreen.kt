@@ -13,6 +13,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.MutatePriority
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.ScrollableState
 import androidx.compose.foundation.gestures.awaitEachGesture
@@ -123,6 +124,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.customActions
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextLayoutResult
@@ -447,6 +449,17 @@ internal class TimelineScroller(private val view: TimelineView, private val scop
 }
 
 /** Where a touch on the grid landed: part [part], on a track ([key]) or a curve ([lane]), [bar] bars into the part. */
+/** For TalkBack, every clip of the grid: turn it on or off, open it (the touches the grid takes). */
+internal fun timelineActions(rows: List<TimelineRow>, parts: Int, actions: TimelineActions): List<androidx.compose.ui.semantics.CustomAccessibilityAction> =
+    rows.flatMap { r ->
+        (0 until parts).flatMap { part ->
+            listOf(
+                androidx.compose.ui.semantics.CustomAccessibilityAction(tr("%1\$s, partie %2\$d : allumer ou éteindre", r.name, part + 1)) { actions.togglePartTrack(part, r.key); true },
+                androidx.compose.ui.semantics.CustomAccessibilityAction(tr("%1\$s, partie %2\$d : ouvrir", r.name, part + 1)) { actions.openEditor(part, r.key); true },
+            )
+        }
+    }
+
 internal data class TimelineHit(val part: Int, val key: String?, val lane: Int?, val bar: Int)
 
 /**
@@ -943,7 +956,7 @@ private fun TrackHeader(p: Project, row: TimelineRow, color: Color, height: Dp, 
         val buttons: @Composable () -> Unit = {
             if (ch != null && channel != null) {
                 Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    MuteSolo("M", channel.mute, Neon.Amber, tr("Couper la piste %s", name), "timeline_mute_${row.key}") { actions.toggleMute(ch) }
+                    MuteSolo("M", channel.mute, Neon.Red, tr("Couper la piste %s", name), "timeline_mute_${row.key}") { actions.toggleMute(ch) }
                     MuteSolo("S", channel.solo, Neon.Cyan, tr("Écouter la piste %s seule", name), "timeline_solo_${row.key}") { actions.toggleSolo(ch) }
                 }
             }
@@ -964,10 +977,12 @@ private fun TrackHeader(p: Project, row: TimelineRow, color: Color, height: Dp, 
 
 @Composable
 private fun MuteSolo(letter: String, on: Boolean, color: Color, description: String, tag: String, toggle: () -> Unit) {
+    // Audit final (20 M5, 22): a little larger (Compose widens the touch to 48 dp around it), and
+    // TalkBack says whether it is on.
     Box(
-        Modifier.size(width = 36.dp, height = 28.dp).clip(RoundedCornerShape(6.dp))
+        Modifier.size(width = 40.dp, height = 32.dp).clip(RoundedCornerShape(6.dp))
             .background(if (on) color else Neon.SurfaceHigh)
-            .clickable(onClick = toggle)
+            .toggleable(value = on, role = androidx.compose.ui.semantics.Role.Switch, onValueChange = { toggle() })
             .semantics { contentDescription = description }
             .testTag(tag),
         contentAlignment = Alignment.Center,
@@ -1085,7 +1100,12 @@ private fun TimelineRuler(
             .then(pinch)
             .spot("timeline_ruler", tr("Jouer · appui long : Fill"))
             .testTag("timeline_ruler")
-            .semantics { contentDescription = tr("Règle des mesures : touche pour jouer à partir d'une partie") },
+            .semantics {
+                contentDescription = tr("Règle des mesures : touche pour jouer à partir d'une partie")
+                customActions = (0 until latestUi.project.song.size).map { i ->
+                    androidx.compose.ui.semantics.CustomAccessibilityAction(tr("Jouer depuis la partie %d", i + 1)) { latestActions.playPart(i); true }
+                }
+            },
     ) {
         val stepPx = view.barPx / view.stepsPerBar
         val x0 = view.scrollX
@@ -1271,7 +1291,11 @@ private fun TimelineGrid(
                 .then(pinch)
                 .spot("timeline_grid", tr("2 touches : ouvrir"))
                 .testTag("timeline_grid")
-                .semantics { contentDescription = tr("Ligne du temps : %1\$d parties, %2\$d pistes", p.song.size, ui.rows.size) },
+                .semantics {
+                    contentDescription = tr("Ligne du temps : %1\$d parties, %2\$d pistes", p.song.size, ui.rows.size)
+                    // Audit final (22): each clip within TalkBack's reach (the grid is drawn, not made of nodes).
+                    customActions = timelineActions(ui.rows, p.song.size, latestActions)
+                },
         ) {
             val stepPx = view.barPx / view.stepsPerBar
             val x0 = view.scrollX

@@ -238,7 +238,7 @@ class NavTabA11Scale130ScreenshotTest : NavTabA11ScreenshotTest() {
     override fun wanted(name: String) = name in A11_130
 
     companion object {
-        val A11_130 = setOf("structure", "sons", "mix", "live", "plus", "simple_song", "simple_keys", "launch", "sheet_pad", "sheet_share")
+        val A11_130 = setOf("structure", "sons", "sons_synth", "mix", "live", "plus", "simple_song", "simple_keys", "launch", "sheet_pad", "sheet_share")
     }
 }
 

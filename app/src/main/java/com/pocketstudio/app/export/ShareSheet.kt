@@ -281,9 +281,14 @@ fun ShareSheet(ui: ShareSheetUi, actions: ShareSheetActions) {
  */
 @Composable
 fun ShareSheetContent(ui: ShareSheetUi, actions: ShareSheetActions, modifier: Modifier = Modifier, page: Boolean = false) {
+    // Audit final (09): « Partager » stays in a footer under what scrolls, never below the fold (the
+    // A11 lying down at 130 % cut it in half at the screen's bottom).
     Column(
-        modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 20.dp).padding(top = if (page) 12.dp else 0.dp, bottom = 12.dp)
-            .then(if (page) Modifier else Modifier.navigationBarsPadding()).testTag("share_sheet"),
+        modifier.fillMaxWidth().padding(bottom = 12.dp).then(if (page) Modifier else Modifier.navigationBarsPadding()).testTag("share_sheet"),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+    Column(
+        Modifier.fillMaxWidth().weight(1f, fill = false).verticalScroll(rememberScrollState()).padding(horizontal = 20.dp).padding(top = if (page) 12.dp else 0.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -352,13 +357,6 @@ fun ShareSheetContent(ui: ShareSheetUi, actions: ShareSheetActions, modifier: Mo
                 )
             }
         }
-        Button(
-            onClick = actions.share, enabled = ui.name.isNotBlank() && !ui.running,
-            modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).spot("share_go", tr("Partager")).testTag("share_go"),
-        ) {
-            Icon(Icons.Filled.IosShare, contentDescription = null, modifier = Modifier.size(20.dp))
-            Text("  " + tr("Partager"), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-        }
         OutlinedButton(onClick = actions.video, enabled = !ui.running, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("share_video")) {
             Icon(Icons.Filled.Movie, contentDescription = null, modifier = Modifier.size(18.dp))
             Text("  " + tr("Vidéo pour les réseaux · 30 s"), maxLines = 2, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
@@ -371,6 +369,14 @@ fun ShareSheetContent(ui: ShareSheetUi, actions: ShareSheetActions, modifier: Mo
                     style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.testTag("share_other_where"))
             }
             Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = Neon.Cyan)
+        }
+    }
+        Button(
+            onClick = actions.share, enabled = ui.name.isNotBlank() && !ui.running,
+            modifier = Modifier.padding(horizontal = 20.dp).fillMaxWidth().heightIn(min = 56.dp).spot("share_go", tr("Partager")).testTag("share_go"),
+        ) {
+            Icon(Icons.Filled.IosShare, contentDescription = null, modifier = Modifier.size(20.dp))
+            Text("  " + tr("Partager"), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
         }
     }
 }

@@ -198,12 +198,16 @@ fun MixerScreen(
         automation.lanes.groupingBy { it.target.ch.takeIf { _ -> it.target.kind != com.pocketstudio.model.AutoTarget.BUS_PARAM && it.target.kind != com.pocketstudio.model.AutoTarget.LIVE } ?: -1 }.eachCount()
     }
     // On a tablet the channel strips stay on the left; the master, buses, automation and export on the right.
-    com.pocketstudio.ui.AdaptivePanes(modifier.testTag("mixer"), first = {
+    val lyingDown = androidx.compose.ui.platform.LocalConfiguration.current.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
+    androidx.compose.foundation.layout.BoxWithConstraints(modifier) {
+    val faderHeight = consoleFaderHeight(maxHeight, lyingDown && maxWidth > maxHeight)
+    com.pocketstudio.ui.AdaptivePanes(Modifier.testTag("mixer"), first = {
         // Phase 36: the console first, every fader in sight; automation and « Ce qui joue » right under it.
         Console(
             strips, channels, meters, actions, lanesOn,
             openMoves = { ch -> overview(ch) },
             openCurves = { ch -> preferChannel(ch); scope.launch { automationCard.bringIntoView() } },
+            faderHeight = faderHeight,
         )
         AutomationEntry(automation.lanes.size, show = { scope.launch { automationCard.bringIntoView() } }, overview = { overview(null) })
     }, second = {
@@ -233,6 +237,7 @@ fun MixerScreen(
         androidx.compose.foundation.layout.Box(Modifier.bringIntoViewRequester(busesCard)) { BusesCard(buses, actions) }
         ExportCard(export, actions, hasSong, Modifier.bringIntoViewRequester(exportCard))
     })
+    }
 }
 
 /** Automation near the top of the mixer: how many curves move, a touch to them, a touch to « Ce qui joue ». */

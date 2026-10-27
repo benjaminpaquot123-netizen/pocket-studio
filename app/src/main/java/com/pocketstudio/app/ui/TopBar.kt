@@ -275,7 +275,8 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
         }
         // Record: a red dot, pulsing and glowing while armed.
         val blink = rememberInfiniteTransition(label = "rec")
-        val alpha by blink.animateFloat(1f, 0.35f, infiniteRepeatable(tween(500), RepeatMode.Reverse), label = "recAlpha")
+        // Audit final (22): towards full, so with animations turned off (the scale at 0) the dot stays plain.
+        val alpha by blink.animateFloat(0.35f, 1f, infiniteRepeatable(tween(500), RepeatMode.Reverse), label = "recAlpha")
         IconButton(onClick = actions.toggleRecord, modifier = Modifier.spot("top_record", tr("Enregistrer")).testTag("top_record")) {
             Box(
                 Modifier.size(30.dp).clip(CircleShape)
@@ -396,7 +397,7 @@ private fun SceneChip(scene: SceneChipUi, full: Boolean, maxWidth: Dp, actions: 
                     modifier = Modifier.testTag("scene_pick_$i"),
                 )
             }
-            HorizontalDivider(color = Neon.Outline)
+            HorizontalDivider(color = Neon.Outline.copy(alpha = 0.45f))
             DropdownMenuItem(
                 text = { Text(tr("Nouvelle partie vide")) },
 

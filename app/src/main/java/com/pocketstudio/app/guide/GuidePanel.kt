@@ -51,7 +51,9 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
@@ -191,7 +193,7 @@ fun GuidePanel(
             ) {
                 if (notice != null) NoticeLine(notice, actions.dismissNotice)
                 if (ui.loading) {
-                    Text(tr("Le Guide lit ton morceau…"), color = Neon.TextSecondary, modifier = Modifier.testTag("guide_loading"))
+                    Text(tr("Le Guide lit ton morceau…"), color = Neon.TextSecondary, modifier = Modifier.testTag("guide_loading").semantics { liveRegion = LiveRegionMode.Polite })
                 } else {
                     PanelBody(ui, selected, listen, actions, reference)
                 }
@@ -225,7 +227,9 @@ private fun PanelBody(ui: GuideUi, selected: String?, listen: GuideListenUi?, ac
 private fun NoticeLine(text: String, dismiss: () -> Unit) {
     Row(
         Modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp)).background(Neon.Amber.copy(alpha = 0.18f)).border(1.dp, Neon.Amber, RoundedCornerShape(10.dp))
-            .padding(start = 10.dp).testTag("guide_notice"),
+            .padding(start = 10.dp).testTag("guide_notice")
+            // Audit final (22): TalkBack reads what the Guide could not do when it shows.
+            .semantics { liveRegion = LiveRegionMode.Polite },
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(text, style = MaterialTheme.typography.bodyMedium, color = Neon.TextPrimary, modifier = Modifier.weight(1f).padding(vertical = 8.dp))

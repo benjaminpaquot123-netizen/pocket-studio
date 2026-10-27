@@ -85,6 +85,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.material3.AlertDialog
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.draw.shadow
@@ -262,9 +265,9 @@ fun RhythmScreen(
     val gridRequester = remember { androidx.compose.foundation.relocation.BringIntoViewRequester() }
     val scope = androidx.compose.runtime.rememberCoroutineScope()
     val showGrid: () -> Unit = { scope.launch { gridRequester.bringIntoView() } }
-    val steps: @Composable () -> Unit = {
+    val steps: @Composable (cellMax: androidx.compose.ui.unit.Dp) -> Unit = { cellMax ->
         Box(Modifier.bringIntoViewRequester(gridRequester)) {
-            StepGrid(project, transport.selectedPad, live.currentStep, transport.playing, actions, live.absoluteStep)
+            StepGrid(project, transport.selectedPad, live.currentStep, transport.playing, actions, live.absoluteStep, cellMax = cellMax)
         }
     }
     // On a tablet the pads stay on the left and the steps of the chosen pad on the right.
@@ -279,6 +282,12 @@ fun RhythmScreen(
     // At least 48 dp on the glass: at 130 % that is 37 dp of the interface.
     val minPad = 48.dp / com.pocketstudio.ui.LocalUiScale.current
     val fitPad = if (lying) ((maxHeight - LYING_ROOM) / 4).coerceIn(minPad, 150.dp) else null
+    // Audit final (09): a tablet held upright in one column (the A11, more so at 130 %) left the
+    // second row of steps under the fold: the pads give up height down to 48 dp on the glass, and
+    // the cells keep a phone's height.
+    val upright = tablet && !landscape && !com.pocketstudio.ui.twoPanes(maxWidth, maxHeight)
+    val cellMax = if (upright) UPRIGHT_CELL else 110.dp
+    val uprightPad = if (upright) ((maxHeight - UPRIGHT_ROOM) / 4).coerceIn(minPad, TABLET_COLUMN_PAD_HEIGHT) else null
     com.pocketstudio.ui.AdaptivePanes(
         Modifier,
         spacing = 8.dp,
@@ -289,15 +298,15 @@ fun RhythmScreen(
             GrooveCard(project, transport, actions)
         },
         second = {
-            steps()
+            steps(cellMax)
             PadSoundCard(project, transport.selectedPad, padSound, actions)
         },
         // The phone keeps its order: the steps right under lower pads, the first row of cells on screen.
         phone = {
             header(showGrid)
-            PadGrid(project, transport.selectedPad, live.litPads, actions.hitPad, compact = true, onHold = hold, kitBar = kitBar, fitHeight = fitPad)
+            PadGrid(project, transport.selectedPad, live.litPads, actions.hitPad, compact = true, onHold = hold, kitBar = kitBar, fitHeight = fitPad ?: uprightPad)
             record?.invoke()
-            steps()
+            steps(cellMax)
             PadSoundCard(project, transport.selectedPad, padSound, actions)
             GrooveCard(project, transport, actions)
         },
@@ -307,6 +316,12 @@ fun RhythmScreen(
 
 /** Lying down, what the pads' column holds besides four rows: its padding, the kit's line, the gaps. */
 private val LYING_ROOM = 24.dp + 24.dp + 48.dp + 8.dp
+
+/** Upright on a tablet, under the pads: the kit's line, the steps' card with its title and two rows of cells. */
+private val UPRIGHT_ROOM = 316.dp
+
+/** A step cell's height at most on an upright tablet. */
+private val UPRIGHT_CELL = 50.dp
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -453,7 +468,11 @@ private fun DrumPad(name: String, color: Color, selected: Boolean, lit: Boolean,
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun StepGrid(project: Project, lane: Int, currentStep: Int, playing: Boolean, actions: RhythmActions, absoluteStep: Int = -1) {
+private fun StepGrid(
+    project: Project, lane: Int, currentStep: Int, playing: Boolean, actions: RhythmActions, absoluteStep: Int = -1,
+    /** A cell's height at most. */
+    cellMax: androidx.compose.ui.unit.Dp = 110.dp,
+) {
     val haptics = LocalHapticFeedback.current
     val hits = project.drums.lanes[lane].hits
     // Phase 37: the pad's own loop (a polyrhythm); the cells past it are kept but not played.
@@ -584,7 +603,7 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, playing: Boo
                     Box(
                         modifier = Modifier
                             .weight(1f)
-                            .aspectRatioAtMost(0.8f, 110.dp)
+                            .aspectRatioAtMost(0.8f, cellMax)
                             .alpha(if (pastLoop) 0.3f else 1f)
                             .then(if (playing && velocity != null) Modifier.shadow(10.dp, cell, ambientColor = color, spotColor = color) else Modifier)
                             .clip(cell)
@@ -612,6 +631,8 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, playing: Boo
                                     }
                                 } else {
                                     Modifier.combinedClickable(
+                                        onClickLabel = tr("Poser ou retirer"),
+                                        onLongClickLabel = tr("Réglages du coup"),
                                         onClick = {
                                             // A loop shorter than the page (an older length): its end is not editable.
                                             if (step < project.drums.steps) {
@@ -630,6 +651,11 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, playing: Boo
                                     )
                                 },
                             )
+                            // Audit final (22): TalkBack says the step and what is on it.
+                            .semantics(mergeDescendants = true) {
+                                contentDescription = tr("Pas %d", step % per + 1)
+                                stateDescription = stepState(hit)
+                            }
                             .testTag("step_$step"),
                         contentAlignment = Alignment.BottomCenter,
                     ) {
@@ -652,15 +678,19 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, playing: Boo
                                 hit?.chance?.takeIf { it < 100 }?.let { percent(it) },
                             ).joinToString(" ")
                             if (mark.isNotEmpty()) {
-                                Text(mark, style = MaterialTheme.typography.labelSmall, color = Color(0xFF1E2023),
-                                    modifier = Modifier.align(Alignment.TopCenter).padding(top = 2.dp))
+                                // Audit final (22): on its own dark backing, readable over the hit's colour
+                                // as over the empty top of a soft hit (dark ink there was 1.3:1).
+                                Text(mark, style = MaterialTheme.typography.labelSmall, color = Neon.TextPrimary,
+                                    modifier = Modifier.align(Alignment.TopCenter).padding(top = 2.dp)
+                                        .background(Color.Black.copy(alpha = 0.6f), RoundedCornerShape(4.dp)).padding(horizontal = 3.dp))
                             }
                         }
                         if (isBeat) {
                             Text(
                                 "${(step % per) / 4 + 1}",
                                 style = MaterialTheme.typography.labelSmall,
-                                color = Neon.TextSecondary,
+                                // Over a hit's colour, dark ink (grey there was 1.0 to 1.5:1).
+                                color = if (velocity != null) Color(0xFF1E2023) else Neon.TextSecondary,
                                 modifier = Modifier.padding(bottom = 2.dp),
                             )
                         }
@@ -1050,6 +1080,13 @@ internal fun panLabel(pan: Float): String = when {
     else -> tr("Centre")
 }
 
+/** What TalkBack says of a step: empty, or a hit with its force and its repeats. */
+internal fun stepState(hit: com.pocketstudio.model.Hit?): String {
+    if (hit == null) return tr("vide")
+    val force = tr("coup, force %d %%", (hit.velocity * 100).roundToInt())
+    return if (hit.repeats > 1) force + ", " + tr("%d répétitions", hit.repeats) else force
+}
+
 private fun panShort(pan: Float) = if (pan < 0f) tr("G") else tr("D")
 
 private fun semitones(n: Int) = when {
@@ -1090,7 +1127,7 @@ private fun LabeledSlider(
         Text(label, Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
         Text(value, style = MonoStyle, color = Neon.Cyan)
     }
-    ProSlider(value = v.coerceIn(range), onValueChange = onChange, valueRange = range, steps = steps)
+    ProSlider(value = v.coerceIn(range), onValueChange = onChange, valueRange = range, steps = steps, label = label, valueText = value)
 }
 
 @Composable

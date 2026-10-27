@@ -47,19 +47,20 @@ val LocalHelpListen = androidx.compose.runtime.staticCompositionLocalOf<(Help) -
 fun HelpDot(help: Help, modifier: Modifier = Modifier, color: Color = Neon.TextSecondary) {
     // Kept when the screen turns (a dialog that vanished on rotation would look like a bug).
     var open by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(false) }
-    val ink = color.copy(alpha = 0.55f)
-    // The touch target is larger than the drawn circle.
+    // Audit final (22): readable (4.5:1 on the panels; 0.55 gave 3:1) and a little larger. The touch
+    // target is larger than the drawn circle: Compose widens a small target's touch to 48 dp.
+    val ink = color.copy(alpha = 0.85f)
     Box(
         modifier
             .clip(CircleShape)
-            .clickable { open = true }
-            .padding(4.dp)
+            .clickable(role = androidx.compose.ui.semantics.Role.Button) { open = true }
+            .padding(5.dp)
             .semantics { contentDescription = tr("Qu'est-ce que « %s » ?", help.term) }
             .testTag("help_${help.term}"),
         contentAlignment = Alignment.Center,
     ) {
-        Box(Modifier.size(15.dp).border(1.dp, ink, CircleShape), contentAlignment = Alignment.Center) {
-            Text("?", color = ink, fontSize = 10.sp, lineHeight = 10.sp, fontWeight = FontWeight.Bold)
+        Box(Modifier.size(18.dp).border(1.dp, ink, CircleShape), contentAlignment = Alignment.Center) {
+            Text("?", color = ink, fontSize = 12.sp, lineHeight = 12.sp, fontWeight = FontWeight.Bold)
         }
     }
     if (open) HelpDialog(help) { open = false }

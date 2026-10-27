@@ -357,7 +357,7 @@ internal fun LiveXyPad(
     val onDouble by rememberUpdatedState(doubleTap)
     val lastUp = remember { longArrayOf(0L) }
     val lastAt = remember { arrayOf(Offset.Zero) }
-    val grid = Neon.Outline
+    val grid = Neon.Outline.copy(alpha = 0.5f)
     val haze = Neon.Cyan
     SideEffect { liveXyPadCompositions++ }
     ShowsSpectrum()

@@ -68,6 +68,8 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.style.TextAlign
@@ -239,7 +241,9 @@ private fun SectionTitle(text: String, color: Color, folded: Boolean?, subtle: B
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         if (subtle) Box(Modifier.size(8.dp).clip(CircleShape).background(color))
         else Box(Modifier.width(3.dp).height(12.dp).clip(RoundedCornerShape(2.dp)).background(color))
-        Text(text.uppercase(), style = MaterialTheme.typography.labelSmall, color = if (subtle) Neon.TextSecondary else lerp(color, Neon.TextPrimary, 0.25f))
+        // Audit final (22): a title TalkBack can jump to.
+        Text(text.uppercase(), style = MaterialTheme.typography.labelSmall, color = if (subtle) Neon.TextSecondary else lerp(color, Neon.TextPrimary, 0.25f),
+            modifier = Modifier.semantics { heading() })
         if (folded != null) {
             // A small open "v", turned to ">" when folded: there, not shouting.
             Canvas(Modifier.size(12.dp).rotate(turn)) {
@@ -372,6 +376,9 @@ fun ProSlider(
     steps: Int = 0,
     onValueChangeFinished: (() -> Unit)? = null,
     accent: Color = Neon.Cyan,
+    /** Audit final (22): what TalkBack calls the slider and says of its value (instead of a bare %). */
+    label: String? = null,
+    valueText: String? = null,
 ) {
     val interaction = remember { MutableInteractionSource() }
     val pressed by interaction.collectIsPressedAsState()
@@ -383,7 +390,13 @@ fun ProSlider(
     Slider(
         value = value,
         onValueChange = onValueChange,
-        modifier = modifier,
+        modifier = modifier.then(
+            if (label == null && valueText == null) Modifier
+            else Modifier.semantics {
+                label?.let { contentDescription = it }
+                valueText?.let { stateDescription = it }
+            },
+        ),
         enabled = enabled,
         valueRange = valueRange,
         steps = steps,

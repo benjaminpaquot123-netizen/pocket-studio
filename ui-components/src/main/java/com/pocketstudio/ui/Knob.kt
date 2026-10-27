@@ -20,7 +20,10 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.semantics.CustomAccessibilityAction
 import androidx.compose.ui.semantics.ProgressBarRangeInfo
+import androidx.compose.ui.semantics.customActions
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.progressBarRangeInfo
 import androidx.compose.ui.semantics.semantics
@@ -63,6 +66,7 @@ fun Knob(
     val current by rememberUpdatedState(value)
     val change by rememberUpdatedState(onValueChange)
     val haptics = LocalHapticFeedback.current
+    val resetLabel = com.pocketstudio.model.i18n.tr("Remettre comme au départ")
     Column(modifier, horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(0.dp)) {
         Canvas(
             Modifier.size(size)
@@ -70,6 +74,9 @@ fun Knob(
                 .semantics {
                     contentDescription = label
                     progressBarRangeInfo = ProgressBarRangeInfo(value, 0f..1f)
+                    // Audit final (22): the value as shown, and the double tap's reset as an action.
+                    valueText?.let { stateDescription = it }
+                    customActions = listOf(CustomAccessibilityAction(resetLabel) { change(default); true })
                     setProgress { v -> change(v.coerceIn(0f, 1f)); true }
                 }
                 .pointerInput(Unit) {
@@ -109,9 +116,9 @@ fun Knob(
         // A narrow knob (a tablet pane, a big interface size): the label shrinks a little rather
         // than lose its last letters (« Accordag »).
         WholeWordsText(
-            label, color = colors.label, style = androidx.compose.ui.text.TextStyle(fontSize = 11.sp), fontWeight = FontWeight.Medium,
+            label, color = colors.label, style = androidx.compose.ui.text.TextStyle(fontSize = 12.sp), fontWeight = FontWeight.Medium,
             textAlign = TextAlign.Center, maxLines = 1, minScale = 0.75f,
         )
-        if (valueText != null) Text(valueText, color = colors.value, fontSize = 11.sp, textAlign = TextAlign.Center, maxLines = 1)
+        if (valueText != null) Text(valueText, color = colors.value, fontSize = 12.sp, textAlign = TextAlign.Center, maxLines = 1)
     }
 }

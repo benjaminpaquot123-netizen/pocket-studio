@@ -573,10 +573,10 @@ private fun LayerCard(i: Int, l: TrackLayer, alone: Boolean, actions: LayersEdit
             OutlinedButton(onClick = { actions.remove(i) }, modifier = Modifier.heightIn(min = 48.dp).testTag("layer_remove_$i")) { Text(tr("Retirer")) }
         }
         LabeledSlider(tr("Volume"), formatDb(l.gainDb), "layer_gain_$i") {
-            ProSlider(l.gainDb.coerceIn(GAIN_MIN, GAIN_MAX), { actions.setGain(i, (it * 2).roundToInt() / 2f) }, valueRange = GAIN_MIN..GAIN_MAX, modifier = Modifier.fillMaxWidth().testTag("layer_gain_slider_$i"))
+            ProSlider(l.gainDb.coerceIn(GAIN_MIN, GAIN_MAX), { actions.setGain(i, (it * 2).roundToInt() / 2f) }, valueRange = GAIN_MIN..GAIN_MAX, modifier = Modifier.fillMaxWidth().testTag("layer_gain_slider_$i"), label = tr("Volume"), valueText = formatDb(l.gainDb))
         }
         LabeledSlider(tr("Place"), formatPan(l.pan), "layer_pan_$i") {
-            ProSlider(l.pan, { actions.setPan(i, if (kotlin.math.abs(it) < 0.04f) 0f else (it * 100).roundToInt() / 100f) }, valueRange = -1f..1f, modifier = Modifier.fillMaxWidth().testTag("layer_pan_slider_$i"))
+            ProSlider(l.pan, { actions.setPan(i, if (kotlin.math.abs(it) < 0.04f) 0f else (it * 100).roundToInt() / 100f) }, valueRange = -1f..1f, modifier = Modifier.fillMaxWidth().testTag("layer_pan_slider_$i"), label = tr("Place"), valueText = formatPan(l.pan))
         }
         val octave = (l.transpose / 12f).roundToInt()
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {

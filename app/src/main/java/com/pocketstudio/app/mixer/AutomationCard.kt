@@ -784,7 +784,7 @@ private fun CurveEditor(
     var dragTo by remember { mutableStateOf<Pair<Int, Float>?>(null) }
     val color = Neon.Amber
     val ghost = Neon.Amber.copy(alpha = 0.25f)
-    val grid = Neon.Outline
+    val grid = Neon.Outline.copy(alpha = 0.5f)
     val head = Neon.Acid
     val back = Neon.SurfaceHigh.copy(alpha = 0.5f)
     val ramping = Neon.Cyan

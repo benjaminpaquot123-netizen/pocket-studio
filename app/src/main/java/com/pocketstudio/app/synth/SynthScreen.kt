@@ -219,14 +219,19 @@ fun SynthScreen(
     // « Gamme et accords » can send the user down to the track's sound (it is not set note by note).
     val soundRequester = remember { BringIntoViewRequester() }
     val scope = rememberCoroutineScope()
+    val deviceLandscape = androidx.compose.ui.platform.LocalConfiguration.current.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
     BoxWithConstraints(modifier.fillMaxSize().testTag("synth")) {
         val keyboardHeight = (maxHeight * 0.45f).coerceIn(110.dp, 220.dp)
-        val landscape = maxWidth > maxHeight
+        // Audit final (09): the device lying down, not only the box wider than high. An A11 upright
+        // at 130 %, or any phone upright with the Guide's panel open, gave a box wider than high and
+        // the lying-down branch squeezed two octaves into ~18 dp keys.
+        val landscape = deviceLandscape && maxWidth > maxHeight
         // A tablet held upright (an 8.7" one is 600 dp wide): taller keys, and in Notes mode a
         // keyboard under the piano roll to hear and record notes while they are seen.
         val tabletUpright = !landscape && (tablet || maxWidth >= TABLET_WIDTH)
         val rollHeight = when {
-            landscape -> (maxHeight - 140.dp).coerceAtLeast(160.dp)
+            // Audit final (09): lying down, the grid takes the height (the tools above scroll away).
+            landscape -> (maxHeight - 64.dp).coerceAtLeast(160.dp)
             // Room left for the keyboard under it (once the tools above are scrolled away).
             tabletUpright -> (maxHeight - 480.dp).coerceIn(300.dp, 640.dp)
             else -> 380.dp
@@ -312,7 +317,7 @@ fun SynthScreen(
                     OctaveControl(octave, actions)
                 }
                 Column(Modifier.weight(1f).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(if (tall) 10.dp else 8.dp)) {
-                    play?.let { PlayPanel(it, playActions) }
+                    play?.let { PlayPanel(it, playActions, compact = true) }
                     SoundArea(Modifier) { SoundSections(patch, actions, instrument, browser, advanced, effects) { advanced = it } }
                 }
                 val keys: @Composable () -> Unit = {
@@ -714,6 +719,7 @@ private fun Key(
             .clip(shape)
             .background(face)
             .border(1.dp, if (isBlack) Color.Black.copy(alpha = 0.6f) else Color.Black.copy(alpha = 0.22f), shape)
+            .playable(com.pocketstudio.app.acid.noteName(note, com.pocketstudio.app.settings.SettingsStore.state.value.englishNotes) + " " + (note / 12 - 1), enabled = !locked, start = { onNoteOn(note, 0.8f) }, stop = { onNoteOff(note) })
             .pointerInput(note, locked) {
                 if (locked) return@pointerInput
                 detectTapGestures(onPress = { at ->

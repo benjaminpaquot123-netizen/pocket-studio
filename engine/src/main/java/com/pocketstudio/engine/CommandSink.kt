@@ -46,6 +46,8 @@ interface CommandSink {
     // The live engine's state, as the app polls it while playing (a test moves it on by hand).
     fun sceneSwaps(): Int = 0
     fun songStep(): Int = -1
+    /** [NativeEngine.monitorTrack] (null: the sink does not say). */
+    fun monitorTrack(): Int? = null
     fun currentStep(): Int = -1
     fun absoluteStep(): Int = -1
     fun playPosition(): Double = -1.0

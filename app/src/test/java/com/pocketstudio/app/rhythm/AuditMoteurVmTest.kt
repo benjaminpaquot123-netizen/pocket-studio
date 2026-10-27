@@ -114,6 +114,17 @@ class AuditMoteurVmTest {
         assertEquals(0, sink.modes.last { it.first == 0 }.second shr 8)
     }
 
+    /** Revue neuve (MINEUR 6): a late tap launches on the line it missed by at most a beat, even over Bluetooth at a fast tempo. */
+    @Test
+    fun theLaunchGraceIsAtMostABeat() {
+        // 450 ms of Bluetooth at 174 BPM, launches every 2 bars (32 steps): about 6 steps before, 4 now.
+        assertEquals(4.0, RhythmViewModel.launchGrace(450.0, 174.0, 32), 1e-9)
+        // A wired output at 120 BPM: its own latency, untouched.
+        assertEquals((20.0 + RhythmViewModel.LAUNCH_GRACE_MS) / 1000.0 * 120.0 / 15.0, RhythmViewModel.launchGrace(20.0, 120.0, 16), 1e-9)
+        // Launches every beat: half of it.
+        assertEquals(2.0, RhythmViewModel.launchGrace(250.0, 174.0, 4), 1e-9)
+    }
+
     private companion object {
         const val CMD_SIDECHAIN = 102
         const val CMD_AUTOMATION_MODE = 58

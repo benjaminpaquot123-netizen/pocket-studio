@@ -247,28 +247,30 @@ class GuideJourneyTest {
 
         // Audit final: the style's lesson, its sounds one by one (« Garder ce son »).
         await("the sounds") { !ui().loading && ui().next != null && ui().next!!.id != "start.arrange" }
+        // Each card waited for, kept once (one change), then waited for until the analysis has moved
+        // past it: waiting on a stale `ui().next` (the analysis runs 300 ms after the edit settles)
+        // spun on the card just kept, or waited a full minute for a card already gone (revue neuve, MOYEN 2).
+        val kept = LinkedHashMap<String, Int>()
         while (ui().next?.stage == 1) {
             val id = ui().next!!.id
-            // The analysis may settle meanwhile and move on (this card no longer next): take the new one.
-            if (runCatching { onCard(id) }.isFailure) {
-                if (ui().next?.id != id) continue
-                onCard(id)
-            }
-            // « Garder ce son » of this very card (the next one may already be up in its place); the
-            // panel may be redrawn under the finger: tried again then.
+            check(id !in kept) { "$id offered again after being kept: $kept" }
+            onCard(id)
+            val edits = vm().guide.edits
+            // « Garder ce son » of this very card; the panel may be redrawn under the finger: tried again then.
             val keep = androidx.compose.ui.test.hasTestTag("guide_option_keep") and androidx.compose.ui.test.hasAnyAncestor(androidx.compose.ui.test.hasTestTag("guide_card_$id"))
-            var kept = false
-            repeat(5) {
-                if (!kept && ui().next?.id == id && status(id) != GuideStatus.DONE) {
-                    kept = runCatching {
-                        compose.onNode(keep).apply { if (!isDisplayed()) performScrollTo() }.performClick()
-                        compose.waitForIdle()
-                    }.isSuccess
-                    if (!kept) await("the card $id again", seconds = 10) { !ui().loading && (ui().next?.id != id || matches("guide_card_$id") > 0) }
+            run {
+                repeat(5) {
+                    if (status(id) == GuideStatus.DONE) return@run
+                    runCatching { compose.onNode(keep).apply { if (!isDisplayed()) performScrollTo() }.performClick(); compose.waitForIdle() }
+                    if (status(id) != GuideStatus.DONE) await("the card $id again", seconds = 10) { status(id) == GuideStatus.DONE || shown("guide_card_$id") }
                 }
             }
-            await("$id kept") { status(id) == GuideStatus.DONE || ui().next?.id != id }
+            await("$id passed") { status(id) == GuideStatus.DONE && !ui().loading && ui().next?.id != id }
+            kept[id] = vm().guide.edits - edits
         }
+        assertTrue("the style's sounds: $kept", kept.size >= 3)
+        // One change per card: « Garder » never applied twice, nor on the card after it.
+        assertTrue("one change per card: $kept", kept.values.all { it == 1 })
         // The stages: « Voilà ce que j'ai mis » first (the assistant's chains, effect by effect).
         onCard("fx.review")
         compose.onNodeWithTag("guide_effects").assertExists()

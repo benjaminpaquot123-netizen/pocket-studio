@@ -262,8 +262,8 @@ class ControllerTest {
         // A knob: a control change for the app, and a line in the monitor.
         midi.receiveForTest(byteArrayOf(0xB0.toByte(), 74, 33))
         assertEquals(MidiCommand.Control(0, 74, 33), got.last())
-        ShadowLooper.idleMainLooper()
-        assertTrue(midi.state.value.monitor.first().contains("74"))
+        ShadowLooper.idleMainLooper(MidiViewModel.MONITOR_MS, java.util.concurrent.TimeUnit.MILLISECONDS)
+        assertTrue(midi.monitor.value.first().contains("74"))
         assertEquals("minilab3", midi.state.value.controller?.profile?.id)
         // « Apprendre mes pads »: notes are heard, not played.
         midi.learnPads(true)
@@ -274,6 +274,43 @@ class ControllerTest {
         midi.pads = PadMap(null, listOf(Controllers.packPad(0, 60)))
         midi.receiveForTest(byteArrayOf(0x90.toByte(), 60, 90))
         assertEquals(MidiCommand.Pad(0, 90 / 127f), got.last())
+        scope.cancel()
+    }
+
+    /** Revue neuve (MOYEN 5): the pitch bend wheel (hundreds of messages a second) leaves the app's state alone; the monitor follows, a few times a second. */
+    @Test
+    fun aPitchBendWheelDoesNotChurnTheMidiState() {
+        val midi = MidiViewModel(app)
+        midi.receiveForTest(byteArrayOf(0x99.toByte(), 36, 100))
+        ShadowLooper.idleMainLooper(MidiViewModel.MONITOR_MS, java.util.concurrent.TimeUnit.MILLISECONDS)
+        val before = midi.state.value
+        var monitors = 0
+        val scope = CoroutineScope(Dispatchers.Unconfined)
+        scope.launch { midi.monitor.collect { monitors++ } }
+        for (i in 0 until 200) midi.receiveForTest(byteArrayOf(0xE0.toByte(), (i and 0x7F).toByte(), 64))
+        assertTrue(before === midi.state.value)
+        ShadowLooper.idleMainLooper(MidiViewModel.MONITOR_MS, java.util.concurrent.TimeUnit.MILLISECONDS)
+        assertTrue("monitor published $monitors times", monitors <= 3)
+        assertEquals(MidiViewModel.MONITOR, midi.monitor.value.size)
+        assertTrue(midi.monitor.value.first(), midi.monitor.value.first().contains("Pitch"))
+        scope.cancel()
+    }
+
+    /** Revue neuve (MOYEN 6): channel 10 notes outside the MiniLab's pads (GM kick 35, crash 57) still reach the drums and the take. */
+    @Test
+    fun channelTenNotesOutsideThePadsStillPlay() {
+        val midi = MidiViewModel(app)
+        val got = ArrayList<MidiCommand>()
+        val scope = CoroutineScope(Dispatchers.Unconfined)
+        scope.launch { midi.commands.collect { got += it } }
+        midi.receiveForTest(byteArrayOf(0x99.toByte(), 35, 100))
+        assertEquals(MidiCommand.Note(9, 35, 100 / 127f, true), got.lastOrNull())
+        midi.receiveForTest(byteArrayOf(0x99.toByte(), 57, 80))
+        assertEquals(MidiCommand.Note(9, 57, 80 / 127f, true), got.lastOrNull())
+        // Pads taught on another channel: a channel 10 note none of them has plays too.
+        midi.pads = PadMap(null, listOf(Controllers.packPad(0, 60)))
+        midi.receiveForTest(byteArrayOf(0x99.toByte(), 38, 90))
+        assertEquals(MidiCommand.Note(9, 38, 90 / 127f, true), got.lastOrNull())
         scope.cancel()
     }
 }

@@ -725,6 +725,13 @@ object NativeEngine {
     fun setMonitor(track: Int, gain: Float = 1f) = post(CMD_MONITOR, gain.coerceIn(0f, 2f), track.coerceIn(-1, 7))
 
     /**
+     * The audio track [setMonitor] sends the microphone to as the engine has it now (-1: none): the
+     * engine cuts it when the output reopens (headphones unplugged). Null: not known (no engine).
+     */
+    fun monitorTrack(): Int? = sink.let { if (it != null) it.monitorTrack() else if (loaded) nativeMonitorTrack() else null }
+    private external fun nativeMonitorTrack(): Int
+
+    /**
      * Punch-in: audio track [track]'s clip plays until step [step] (of the song when [song], else of
      * the track's part), then stays silent until the recording ends. Posted after [recordStart].
      */

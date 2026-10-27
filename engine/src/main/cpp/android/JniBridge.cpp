@@ -541,6 +541,11 @@ JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_clipStates(JNIE
     env->SetIntArrayRegion(out, 0, n, states);
 }
 
+// The audio track whose microphone is sent back now (-1: none, also once the output reopened). Any thread.
+JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeMonitorTrack(JNIEnv*, jobject) {
+    return static_cast<jint>(host().engine().monitorTrack());
+}
+
 JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeSceneSwaps(JNIEnv*, jobject) {
     return static_cast<jint>(host().engine().sceneSwaps());
 }

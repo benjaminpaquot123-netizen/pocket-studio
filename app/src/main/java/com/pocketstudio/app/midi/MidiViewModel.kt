@@ -50,8 +50,6 @@ data class MidiUi(
     val sendClock: Boolean = false,
     /** The controller connected: its name and the profile the app found for it (null: none connected). */
     val controller: ControllerInfo? = null,
-    /** The last messages received, newest first (« Contrôleur MIDI »'s monitor). */
-    val monitor: List<String> = emptyList(),
     /** « Apprendre mes pads »: the pads heard so far (null: not learning). */
     val learningPads: Int? = null,
 )
@@ -92,6 +90,18 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
 
     private val _state = MutableStateFlow(MidiUi(available = manager != null))
     val state: StateFlow<MidiUi> = _state.asStateFlow()
+
+    // Revue neuve (MOYEN 5): the monitor apart from [state] (a pitch bend wheel sends hundreds of
+    // messages a second), shown at most every [MONITOR_MS], read by « Contrôleur MIDI » alone.
+    private val monitorLines = ArrayDeque<String>()
+    private val monitorPosted = java.util.concurrent.atomic.AtomicBoolean(false)
+    private val _monitor = MutableStateFlow<List<String>>(emptyList())
+    /** The last messages received, newest first (« Contrôleur MIDI »'s monitor). */
+    val monitor: StateFlow<List<String>> = _monitor.asStateFlow()
+    private val publishMonitor = Runnable {
+        monitorPosted.set(false)
+        _monitor.value = synchronized(monitorLines) { monitorLines.toList() }
+    }
 
     private val _commands = MutableSharedFlow<MidiCommand>(extraBufferCapacity = 256)
     val commands: SharedFlow<MidiCommand> = _commands.asSharedFlow()
@@ -228,7 +238,9 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
         if (profile != null) AppLog.add("MIDI : profil ${profile.id}")
         val name = nameOf(d.info)
         pads = PadMap(profile)  // the user's own pads come from the settings (the app sets them)
-        _state.update { it.copy(connected = id, last = null, clockBpm = null, controller = ControllerInfo(name, kindOf(d.info), profile), monitor = emptyList()) }
+        _state.update { it.copy(connected = id, last = null, clockBpm = null, controller = ControllerInfo(name, kindOf(d.info), profile)) }
+        synchronized(monitorLines) { monitorLines.clear() }
+        _monitor.value = emptyList()
         greet(profile)
         refresh(autoConnect = false)
     }
@@ -284,7 +296,11 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
 
     /** A message for the monitor, newest first, the last [MONITOR] kept. */
     private fun monitor(text: String) {
-        _state.update { it.copy(monitor = (listOf(text) + it.monitor).take(MONITOR)) }
+        synchronized(monitorLines) {
+            monitorLines.addFirst(text)
+            while (monitorLines.size > MONITOR) monitorLines.removeLast()
+        }
+        if (monitorPosted.compareAndSet(false, true)) main.postDelayed(publishMonitor, MONITOR_MS)
     }
 
     fun setFollowClock(on: Boolean) {
@@ -423,6 +439,12 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
                 return
             }
             if (channel == DRUM_CHANNEL) {
+                // Revue neuve (MOYEN 6): a channel 10 note none of the pads has (GM kick 35, crashes,
+                // pads set to another bank) plays and records as before profiles: a drum note.
+                if (NativeEngine.isAvailable && note in FIRST_PAD_NOTE until FIRST_PAD_NOTE + NativeEngine.LANES) {
+                    NativeEngine.liveTriggerPad(note - FIRST_PAD_NOTE, v)
+                }
+                _commands.tryEmit(MidiCommand.Note(channel, note, v, true))
                 show(tr("Note %s (pads)", noteLabel(note)))
                 return
             }
@@ -530,6 +552,7 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     override fun onCleared() {
+        main.removeCallbacks(publishMonitor)
         // Another project opened within the ten seconds: the timer is cancelled with the scope,
         // so the search (battery, and this ViewModel kept by its callback) stops here.
         stopScan()
@@ -541,6 +564,8 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
         const val DRUM_CHANNEL = 9
         /** Lines kept in the monitor. */
         const val MONITOR = 10
+        /** The monitor shown at most this often (ms). */
+        const val MONITOR_MS = 100L
         const val FIRST_PAD_NOTE = 36  // General MIDI kick: pad 1
         const val CC_ALL_SOUND_OFF = 120
         const val CC_ALL_NOTES_OFF = 123

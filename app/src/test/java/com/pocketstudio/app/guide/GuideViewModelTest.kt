@@ -110,6 +110,22 @@ class GuideViewModelTest {
         assertEquals(GuideStatus.LATER, vm.project.value.guide.statusOf("fx.drums"))
     }
 
+    /** Revue neuve (MOYEN 1): « Garder ce son » touched twice before the panel moves on is one change, one undo step. */
+    @Test
+    fun keepTouchedTwiceIsOneUndoStep() {
+        val vm = vmWith(jumpUp())
+        val guide = vm.guide
+        await("first analysis") { !guide.ui.value.loading && guide.ui.value.next?.id == "sound.kick" }
+        val edits = guide.edits
+        guide.apply("sound.kick", "keep")
+        await("kept") { vm.project.value.guide.statusOf("sound.kick") == GuideStatus.DONE }
+        guide.apply("sound.kick", "keep")
+        await("next card") { !guide.ui.value.loading && guide.ui.value.next?.id != "sound.kick" }
+        assertEquals(edits + 1, guide.edits)
+        vm.undo()
+        assertEquals(GuideStatus.TODO, vm.project.value.guide.statusOf("sound.kick"))
+    }
+
     /**
      * Audit final (23 #1, #3, #13): the style's lesson first (its kick), the step and the % count the same cards,
      * and the melody rules the analysis checks are said on the lead's card.

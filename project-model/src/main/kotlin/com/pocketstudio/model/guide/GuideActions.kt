@@ -128,6 +128,9 @@ object GuideActions {
         if (action.type == GuideAction.OPEN || action.type == GuideAction.LISTEN) return GuideOutcome(p)
         if (action.type == GuideAction.BALANCE && GuideFacts.of(p).fresh == null) return GuideOutcome(p, tr("Il faut d'abord mesurer le morceau."))
         if (action.type == GuideAction.LATER) return GuideOutcome(later(p, card.id, at, parcours))
+        // Revue neuve (MOYEN 1): an option that changes nothing on a card already decided from the Guide (a
+        // second tap on « Garder » before the panel moves on) is no new change, undo step nor save.
+        if (!action.edits && action.type != GuideAction.REFUSE && !isAlert(card.id) && p.guide.statusOf(card.id) == GuideStatus.DONE) return GuideOutcome(p)
         val keys = if (isAlert(card.id)) GuideFacts.of(p).list.firstOrNull { it.id == card.id.removePrefix("alert.") }?.tracks else null
         val edited = if (action.edits) perform(p, card, action, keys) ?: return GuideOutcome(p, tr("Plus de place pour une courbe : le morceau en a déjà 16.")) else p
         if (action.edits && edited == p) return GuideOutcome(p, tr("Rien à changer ici : la piste n'a pas cet effet ou il est déjà réglé."))

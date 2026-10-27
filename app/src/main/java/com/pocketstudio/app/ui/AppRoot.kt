@@ -36,6 +36,8 @@ import com.pocketstudio.app.report.AppLog
 import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -776,9 +778,11 @@ fun AppRoot() {
         playDemo = { if (rhythmVm.project.value.song.isNotEmpty()) rhythmVm.toggleSong() else rhythmVm.togglePlay() },
     )
     // Réglages › Écran toujours allumé: only while the music plays.
-    val screenTransport by rhythmVm.transport.collectAsStateWithLifecycle()
+    // Revue neuve (MOYEN 7): only whether it plays is read here (not each change of the transport).
+    val screenPlaying by remember(rhythmVm) { rhythmVm.transport.map { it.playing }.distinctUntilChanged() }
+        .collectAsStateWithLifecycle(rhythmVm.transport.value.playing)
     val screenPads by rhythmVm.padsAlone.collectAsStateWithLifecycle()
-    val musicPlays = screenTransport.playing || screenPads  // live pads play without ▶ too
+    val musicPlays = screenPlaying || screenPads  // live pads play without ▶ too
     LaunchedEffect(musicPlays, settings.keepScreenOn) {
         val window = context.findActivity()?.window ?: return@LaunchedEffect
         val flag = android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
@@ -891,9 +895,11 @@ fun AppRoot() {
     val notificationPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { }
     var notificationsAsked by rememberSaveable { mutableStateOf(false) }
     val anyRecording by rhythmVm.recording.collectAsStateWithLifecycle()
-    val anyTake by rhythmVm.audioRecording.collectAsStateWithLifecycle()
-    LaunchedEffect(anyRecording || anyTake != null) {
-        if (!(anyRecording || anyTake != null) || notificationsAsked || android.os.Build.VERSION.SDK_INT < 33) return@LaunchedEffect
+    // Revue neuve (MOYEN 7): whether a take runs, not its level every 50 ms.
+    val anyTake by remember(rhythmVm) { rhythmVm.audioRecording.map { it != null }.distinctUntilChanged() }
+        .collectAsStateWithLifecycle(rhythmVm.audioRecording.value != null)
+    LaunchedEffect(anyRecording || anyTake) {
+        if (!(anyRecording || anyTake) || notificationsAsked || android.os.Build.VERSION.SDK_INT < 33) return@LaunchedEffect
         notificationsAsked = true
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
             notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
@@ -949,6 +955,7 @@ fun AppRoot() {
     // The controller connected: its profile and its own pads (as « Apprendre mes pads » kept them).
     LaunchedEffect(Unit) {
         kotlinx.coroutines.flow.combine(midiVm.state, knobsVm.settings) { m, s -> m.controller to s }
+            .distinctUntilChanged()
             .collect { (c, s) ->
                 knobsVm.setController(c?.name, c?.profile)
                 midiVm.pads = com.pocketstudio.app.midi.PadMap(c?.profile, c?.name?.let { s.pads[it] })
@@ -1088,23 +1095,8 @@ fun AppRoot() {
     val controllerScreen = com.pocketstudio.app.midi.KnobScreen.of(tab.name, showLive, liveTab, showLivePads)
     com.pocketstudio.app.midi.KnobScreenFollower(knobsVm, controllerScreen)
     LaunchedEffect(controllerScreen) { midiVm.padsToDrums = !controllerScreen.isLive }
-    run {
-        val m by midiVm.state.collectAsStateWithLifecycle()
-        val name = m.controller?.name ?: m.sources.firstOrNull { it.id == m.connected }?.name
-        com.pocketstudio.app.midi.KnobOverlay(knobsVm, name)
-        val knobSettings by knobsVm.settings.collectAsStateWithLifecycle()
-        val flash by knobsVm.flash.collectAsStateWithLifecycle()
-        var legendOpen by rememberSaveable { mutableStateOf(false) }
-        // The small legend: while a controller is connected, outside its own settings page.
-        if (m.controller != null && knobSettings.legend && !(tab == AppTab.Outils && toolPage == ToolPage.Midi)) {
-            val project by rhythmVm.project.collectAsStateWithLifecycle()
-            val rows = remember(controllerScreen, project, knobSettings, m.controller) { knobsVm.legend(controllerScreen) }
-            com.pocketstudio.app.midi.ControllerLegendOverlay(
-                m.controller?.profile?.name?.removePrefix("Arturia ") ?: m.controller?.name.orEmpty(), controllerScreen, rows, legendOpen,
-            ) { legendOpen = !legendOpen }
-        }
-        flash?.let { com.pocketstudio.app.midi.ControllerFlash(it) }
-    }
+    // Revue neuve (MOYEN 5): its own restartable scope, so a MIDI message recomposes the overlays, not the app.
+    ControllerOverlays(midiVm, knobsVm, rhythmVm, controllerScreen, onMidiPage = tab == AppTab.Outils && toolPage == ToolPage.Midi)
     val closeLivePads = {
         if (!showLive) rhythmVm.leaveLiveEndingTake()
         showLivePads = false
@@ -1358,14 +1350,18 @@ fun AppRoot() {
     // G2 review: the « Sans / Avec » never plays under a take, the Live page or the song started (the
     // panel only hides there, it stays open).
     val guideQuietRec by rhythmVm.recording.collectAsStateWithLifecycle()
-    val guideQuietTake by rhythmVm.audioRecording.collectAsStateWithLifecycle()
-    val guideQuietPlaying = rhythmVm.transport.collectAsStateWithLifecycle().value.playing
+    // Revue neuve (MOYEN 7): only whether a take runs and the song plays (the take's level comes every
+    // 50 ms, the transport often): the whole app is not recomposed for them.
+    val guideQuietTaking by remember(rhythmVm) { rhythmVm.audioRecording.map { it != null }.distinctUntilChanged() }
+        .collectAsStateWithLifecycle(rhythmVm.audioRecording.value != null)
+    val guideQuietPlaying by remember(rhythmVm) { rhythmVm.transport.map { it.playing }.distinctUntilChanged() }
+        .collectAsStateWithLifecycle(rhythmVm.transport.value.playing)
     // Le Guide keeps quiet during a take, on the Live page and on the keyboard lying down, where every dp is a key's
     // (§3.1); lying down, its panel opens on the side ([guideSide]).
-    val guideShown = !showLive && !liveImmersive && !showTimeline && !showLivePads && !guideQuietRec && guideQuietTake == null && !(landscape && tab == AppTab.Synthe)
+    val guideShown = !showLive && !liveImmersive && !showTimeline && !showLivePads && !guideQuietRec && !guideQuietTaking && !(landscape && tab == AppTab.Synthe)
     val guideSide = guideShown && guideOpen && landscape
-    LaunchedEffect(guideQuietRec, guideQuietTake != null, showLive, guideQuietPlaying) {
-        if (guideQuietRec || guideQuietTake != null || showLive || guideQuietPlaying) {
+    LaunchedEffect(guideQuietRec, guideQuietTaking, showLive, guideQuietPlaying) {
+        if (guideQuietRec || guideQuietTaking || showLive || guideQuietPlaying) {
             guideListen.stop()
             learn.stop()
             guideVm.cancelMeasure()
@@ -2637,7 +2633,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                             val rows = remember(legendScreen, project, knobSettings, midi.controller) { knobsVm.legend(legendScreen) }
                                             com.pocketstudio.app.midi.ControllerCard(
                                                 com.pocketstudio.app.midi.ControllerCardUi(
-                                                    controller = midi.controller, monitor = midi.monitor, screen = legendScreen, legend = rows,
+                                                    controller = midi.controller, monitor = midiVm.monitor.collectAsStateWithLifecycle().value, screen = legendScreen, legend = rows,
                                                     legendOn = knobSettings.legend, customized = name != null && knobSettings.customized(name),
                                                     learningPads = midi.learningPads, learningControl = learningControl,
                                                 ),
@@ -3386,3 +3382,31 @@ internal fun simpleAudioTitle(page: Int): String = when (page) {
 
 /** Lying down, the Guide's panel takes this share of the width, on the side (audit final). */
 private const val GUIDE_SIDE_SHARE = 0.38f
+
+/** The controller's overlays above the app: the knob overlay, the small legend and the flash. */
+@Composable
+private fun ControllerOverlays(
+    midiVm: MidiViewModel,
+    knobsVm: com.pocketstudio.app.midi.KnobsViewModel,
+    rhythmVm: RhythmViewModel,
+    controllerScreen: com.pocketstudio.app.midi.KnobScreen,
+    onMidiPage: Boolean,
+) {
+    // Only what is shown here: the controller and its name (not each message received).
+    fun shownOf(m: com.pocketstudio.app.midi.MidiUi) = m.controller to (m.controller?.name ?: m.sources.firstOrNull { it.id == m.connected }?.name)
+    val shown by remember(midiVm) { midiVm.state.map(::shownOf).distinctUntilChanged() }.collectAsStateWithLifecycle(shownOf(midiVm.state.value))
+    val (controller, name) = shown
+    com.pocketstudio.app.midi.KnobOverlay(knobsVm, name)
+    val knobSettings by knobsVm.settings.collectAsStateWithLifecycle()
+    val flash by knobsVm.flash.collectAsStateWithLifecycle()
+    var legendOpen by rememberSaveable { mutableStateOf(false) }
+    // The small legend: while a controller is connected, outside its own settings page.
+    if (controller != null && knobSettings.legend && !onMidiPage) {
+        val project by rhythmVm.project.collectAsStateWithLifecycle()
+        val rows = remember(controllerScreen, project, knobSettings, controller) { knobsVm.legend(controllerScreen) }
+        com.pocketstudio.app.midi.ControllerLegendOverlay(
+            controller.profile?.name?.removePrefix("Arturia ") ?: controller.name, controllerScreen, rows, legendOpen,
+        ) { legendOpen = !legendOpen }
+    }
+    flash?.let { com.pocketstudio.app.midi.ControllerFlash(it) }
+}

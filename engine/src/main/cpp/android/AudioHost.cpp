@@ -140,7 +140,11 @@ void AudioHost::restoreOutputLocked() {
         return;
     }
     engine_.prepare(output_->getSampleRate());
-    output_->requestStart();
+    // Revue neuve (MINEUR 1): a stream that does not start is not left open as if alive.
+    if (output_->requestStart() != oboe::Result::OK) {
+        closeLocked();
+        scheduleReviveLocked();
+    }
 }
 
 bool AudioHost::start() {

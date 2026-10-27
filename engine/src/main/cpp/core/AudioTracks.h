@@ -38,6 +38,7 @@ public:
     void setParam(int track, int param, float value);
     // A track switched off (by the song part playing) does not start again; a sounding pass fades.
     void setOn(int track, bool on);
+    bool on(int track) const { return track >= 0 && track < kTracks && tracks_[static_cast<size_t>(track)].on; }
     // A sequencer step: `local` counts from the scene start, `songStep` from the song start.
     // `samplesPerStep` and `swing` (fraction of a step that odd sequencer steps are late; song step
     // 0 is sequencer step `songOrigin`) place a song clip picked up in its middle exactly where it

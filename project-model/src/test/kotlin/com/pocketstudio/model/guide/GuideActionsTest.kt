@@ -90,6 +90,15 @@ class GuideActionsTest {
         assertEquals(song, GuideActions.apply(song, "nope", "keep", 1000L))
     }
 
+    /** Revue neuve (MOYEN 1): « Garder » tapped twice is one change, not two (no undo step, no new timestamp). */
+    @Test
+    fun keepingTwiceIsKeepingOnce() {
+        val once = GuideActions.apply(song, "fx.review", "keep", 1000L)
+        assertEquals(GuideStatus.DONE, once.guide.statusOf("fx.review"))
+        assertEquals(once, GuideActions.apply(once, "fx.review", "keep", 5000L))
+        assertEquals(once, GuideActions.apply(once, "fx.review", "keep", 1000L))
+    }
+
     @Test
     fun theMixOptionsDoWhatTheySay() {
         // The pans: the low end in the centre, the others apart.

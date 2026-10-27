@@ -1822,6 +1822,12 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * howl) nor in Bluetooth (far too late to sing with).
      */
     private fun updateMonitor(id: Int) {
+        // Revue neuve (MOYEN 4): the engine cut the voice when its output reopened (the headphones
+        // unplugged, the speaker now): on again only if the outputs, read again, still say headphones.
+        if (monitorOn && NativeEngine.monitorTrack() == -1) {
+            monitorOn = false
+            com.pocketstudio.app.audio.Headphones.refresh()
+        }
         val wanted = com.pocketstudio.app.settings.SettingsStore.state.value.monitorVoice &&
             com.pocketstudio.app.audio.Headphones.state.value == com.pocketstudio.app.audio.Listening.Wired
         if (wanted == monitorOn) return
@@ -1849,6 +1855,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         stopMonitor()
         if (_transport.value.playing) togglePlay()
         endTakeMute()
+        // Revue neuve (MOYEN 3): the clip the punch silenced sounds again whatever becomes of the take
+        // (too short, silent, lost, failed); a punch kept is pushed again once placed.
+        if (punch != null) pushAudio()
         if (request == null) return
         // Written into the project outside this screen: closing the app now keeps the take.
         val written = TakeVault.app.finish(request)
@@ -1955,11 +1964,14 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         recordPoll?.cancel()
         _audioRecording.value = null
         recordingSong = false
+        val punched = takePlan?.punch != null
         takePlan = null
         stopMonitor()
         if (_transport.value.playing) togglePlay()
         endTakeMute()
         TakeVault.app.discard(handle)
+        // Revue neuve (MOYEN 3): the clip the punch silenced sounds again (after the take's end).
+        if (punched) pushAudio()
     }
 
     /** Clip edits: a new sound file each time, so Annuler brings the previous one back. */
@@ -4226,7 +4238,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      */
     private fun launchGraceSteps(): Double {
         val latencyMs = Metrics.streamInfo.value.outputLatencyMs.takeIf { it > 0 } ?: 0.0
-        return ((latencyMs + LAUNCH_GRACE_MS) / 1000.0 * project.value.tempoBpm / 15.0).coerceAtMost(launchSteps() / 2.0)
+        return launchGrace(latencyMs, project.value.tempoBpm, launchSteps())
     }
 
     /** The steps a launch waits for now: « Lancer à », whole bars during a take (it writes whole-bar parts). */
@@ -9200,6 +9212,14 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         const val TAKE_PARTS_WARNING = 8
         /** A launch tapped this long (ms) after its line, beyond the output latency, still goes on it. */
         const val LAUNCH_GRACE_MS = 60.0
+
+        /**
+         * [launchGraceSteps] for an output [latencyMs] late, at [bpm], launches every [launchSteps]:
+         * at most half the quantum, and (revue neuve, MINEUR 6) at most a beat, so a late tap with a
+         * Bluetooth output at a fast tempo never starts a scene half a bar in.
+         */
+        internal fun launchGrace(latencyMs: Double, bpm: Double, launchSteps: Int): Double =
+            ((latencyMs + LAUNCH_GRACE_MS) / 1000.0 * bpm / 15.0).coerceAtMost(launchSteps / 2.0).coerceAtMost(4.0)
         const val TAKE_BARS_WARNING = 16
         /** Stems export: one render per mixer channel. */
         /** A song automation lane spans at least this many bars (the song can be shorter or empty). */

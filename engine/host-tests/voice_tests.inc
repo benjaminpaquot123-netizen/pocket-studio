@@ -183,10 +183,100 @@ void testPunchMutesTheClipFromItsStep() {
     engine.collectGarbage();
 }
 
+// Revue neuve (MOYEN 3): a punch whose take is not kept (too short, silent, lost, failed) leaves the
+// clip sounding again at the take's end, with no word from the app.
+void testFailedPunchGivesTheClipBack() {
+    ps::Engine engine(kRate);
+    std::vector<float> tone(size_t(kRate) * 4);
+    for (size_t i = 0; i < tone.size(); ++i) tone[i] = 0.5f * static_cast<float>(std::sin(2.0 * 3.14159265358979 * 220.0 * double(i) / kRate));
+    ps::Command clip{ps::CommandType::InstallAudioClip, 0.0f, 0};
+    clip.sample = ps::Sample::create(tone.data(), int(tone.size()), 1, kRate, kRate);
+    engine.post(clip);
+    engine.post({ps::CommandType::SetAudioClipParam, 64.0f, 0, ps::AudioTracks::LoopSteps});
+    ps::RecordBuffer buffer(kRate * 4);
+    ps::Command arm{ps::CommandType::RecordArm, 0.0f, 1};
+    arm.record = &buffer;
+    engine.post(arm);
+    engine.post({ps::CommandType::RecordMuteAt, 0.0f, 0, 8});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    render(engine, 6000 * 12, 100);
+    engine.mixer().takeChannelPeak(ps::audioChannel(0));
+    render(engine, 6000 * 2, 100);
+    CHECK(engine.mixer().takeChannelPeak(ps::audioChannel(0)) < 1e-4f);  // muted from step 8
+    // The take stops and is thrown away: no SetAudioOn follows.
+    engine.post({ps::CommandType::RecordStop, 0.0f});
+    engine.post({ps::CommandType::SetTransport, 0.0f, 0});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    render(engine, 6000 * 10, 100);
+    CHECK(engine.mixer().takeChannelPeak(ps::audioChannel(0)) > 0.2f);
+    // A track the part had switched off before the punch stays off.
+    ps::RecordBuffer second(kRate * 4);
+    ps::Command again{ps::CommandType::RecordArm, 0.0f, 1};
+    again.record = &second;
+    engine.post({ps::CommandType::SetAudioOn, 0.0f, 0});
+    engine.post({ps::CommandType::SetTransport, 0.0f, 0});
+    engine.post(again);
+    engine.post({ps::CommandType::RecordMuteAt, 0.0f, 0, 8});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    render(engine, 6000 * 12, 100);
+    engine.post({ps::CommandType::RecordStop, 0.0f});
+    engine.post({ps::CommandType::SetTransport, 0.0f, 0});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    render(engine, 6000 * 2, 100);
+    engine.mixer().takeChannelPeak(ps::audioChannel(0));
+    render(engine, 6000 * 8, 100);
+    CHECK(engine.mixer().takeChannelPeak(ps::audioChannel(0)) < 1e-4f);
+    engine.post({ps::CommandType::SetTransport, 0.0f, 0});
+    engine.post({ps::CommandType::InstallAudioClip, 0.0f, 0});
+    render(engine, 512, 256);
+    engine.collectGarbage();
+}
+
+// Revue neuve (MOYEN 4): the output reopened (headphones unplugged, the speaker now): the voice is
+// no longer sent back, and the app can see it to turn it on again for headphones.
+void testReopenedOutputCutsTheMonitor() {
+    std::vector<float> out(256 * 2), in(256, 0.5f);
+    auto feed = [&](ps::Engine& e, int blocks) {
+        float peak = 0.0f;
+        for (int k = 0; k < blocks; ++k) {
+            for (int i = 0; i < 256; ++i) in[size_t(i)] = (i % 2) ? 0.5f : -0.5f;
+            e.process(in.data(), 256, 1, out.data(), 256, 2);
+            for (float v : out) peak = std::max(peak, std::fabs(v));
+        }
+        return peak;
+    };
+    ps::Engine engine(kRate);
+    ps::RecordBuffer buffer(kRate * 4);
+    ps::Command arm{ps::CommandType::RecordArm, 0.0f, 1};
+    arm.record = &buffer;
+    engine.post(arm);
+    engine.post({ps::CommandType::SetMonitor, 1.0f, 0});
+    feed(engine, 10);
+    CHECK(engine.monitorTrack() == 0);
+    CHECK(feed(engine, 20) > 0.1f);
+    engine.prepare(kRate);  // the stream reopened (no audio thread meanwhile)
+    CHECK(engine.monitorTrack() == -1);
+    feed(engine, 20);  // the strip's tail
+    CHECK(feed(engine, 40) < 1e-3f);
+    // A SetMonitor still queued when the output reopens is cut too.
+    engine.post({ps::CommandType::SetMonitor, 1.0f, 0});
+    engine.prepare(kRate);
+    CHECK(engine.monitorTrack() == -1);
+    // Turned on again by the app (headphones still there): heard.
+    engine.post({ps::CommandType::SetMonitor, 1.0f, 0});
+    feed(engine, 10);
+    CHECK(engine.monitorTrack() == 0 && feed(engine, 20) > 0.1f);
+    engine.post({ps::CommandType::RecordStop, 0.0f});
+    feed(engine, 4);
+    CHECK(!engine.hasNonFinite());
+}
+
 }  // namespace voice_tests
 
 #define PS_VOICE_TESTS \
     {"voice_take_start_ignores_bursts", voice_tests::testTakeStartIgnoresMicrophoneBursts}, \
     {"voice_preroll_keeps_anacrusis", voice_tests::testPrerollKeepsWhatCameBeforeTheOne}, \
     {"voice_monitor_on_its_track", voice_tests::testMonitorHearsTheMicrophoneOnItsTrack}, \
-    {"voice_punch_mutes_from_its_step", voice_tests::testPunchMutesTheClipFromItsStep},
+    {"voice_punch_mutes_from_its_step", voice_tests::testPunchMutesTheClipFromItsStep}, \
+    {"voice_failed_punch_gives_clip_back", voice_tests::testFailedPunchGivesTheClipBack}, \
+    {"voice_reopen_cuts_monitor", voice_tests::testReopenedOutputCutsTheMonitor},

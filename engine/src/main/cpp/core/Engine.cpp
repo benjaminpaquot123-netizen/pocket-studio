@@ -46,6 +46,11 @@ void Engine::prepare(int sampleRate) {
     while (commands_.pop(command)) {
         if (command.type != CommandType::StartLatencyTest) applyCommand(command);
     }
+    // Revue neuve (MOYEN 4): a reopened output may be the speaker now (headphones unplugged): the
+    // voice is no longer sent back until the app, seeing it off, turns it on again for headphones.
+    monitorTrack_ = -1;
+    monitorRead_ = monitorCount_ = 0;
+    monitorHeard_.store(-1, std::memory_order_relaxed);
     sampleRate_ = sampleRate;
     frequency_.configure(static_cast<float>(sampleRate), 20.0f);
     gain_.configure(static_cast<float>(sampleRate), 10.0f);
@@ -283,9 +288,11 @@ void Engine::applyCommand(const Command& command) {
                 if (monitorTrack_ != command.a) monitorRead_ = monitorCount_ = 0;
                 monitorTrack_ = command.a;
             }
+            monitorHeard_.store(monitorTrack_, std::memory_order_relaxed);
             monitorGain_ = std::isfinite(command.value) ? std::clamp(command.value, 0.0f, 2.0f) : 1.0f;
             break;
         case CommandType::RecordMuteAt:
+            restorePunchMute();
             muteTrack_ = command.a >= 0 && command.a < AudioTracks::kTracks ? command.a : -1;
             muteFrom_ = command.b;
             muteSong_ = command.value > 0.5f;
@@ -294,6 +301,8 @@ void Engine::applyCommand(const Command& command) {
             if (command.a >= 0 && command.a < AudioTracks::kTracks) {
                 if (staging_) staged_.audioOn[static_cast<size_t>(command.a)] = command.value > 0.5f;
                 else audio_.setOn(command.a, command.value > 0.5f);
+                // During a punch the app's word is what the take's end gives back (the next step mutes again).
+                if (command.a == muteTrack_ && muteApplied_ && !staging_) muteWasOn_ = command.value > 0.5f;
             }
             break;
         case CommandType::SetBeatsPerBar:
@@ -830,7 +839,13 @@ void Engine::onStep(int offset, int step) {
     // (whatever the part playing says) until the recording ends.
     if (muteTrack_ >= 0 && record_) {
         const int at = muteSong_ ? songStep : audioLocals[static_cast<size_t>(muteTrack_)];
-        if (at >= muteFrom_) audio_.setOn(muteTrack_, false);
+        if (at >= muteFrom_) {
+            if (!muteApplied_) {
+                muteApplied_ = true;
+                muteWasOn_ = audio_.on(muteTrack_);
+            }
+            audio_.setOn(muteTrack_, false);
+        }
     }
     audio_.onStep(offset, audioLocals, songStep, sequencer_.samplesPerStep(), sequencer_.swing(), songStart_);
     for (int k = 0; k < kTracks; ++k) {
@@ -1629,7 +1644,16 @@ void Engine::finishRecording() {
     recordStartOut_ = -1;
     recordFrom_ = -1;
     prerollWritten_ = 0;
+    restorePunchMute();
+}
+
+// Revue neuve (MOYEN 3): whatever becomes of the take (too short, silent, lost, failed), the clip
+// the punch silenced sounds again as it did before; a punch kept is then pushed by the app.
+void Engine::restorePunchMute() {
+    if (muteTrack_ >= 0 && muteApplied_ && muteWasOn_) audio_.setOn(muteTrack_, true);
     muteTrack_ = -1;
+    muteApplied_ = false;
+    muteWasOn_ = false;
 }
 
 void Engine::writePreroll(float v) {

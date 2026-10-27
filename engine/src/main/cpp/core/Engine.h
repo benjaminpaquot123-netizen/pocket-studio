@@ -384,6 +384,9 @@ public:
     // How busy the audio thread is: the time process() takes over the time its frames last,
     // smoothed over about half a second (1 = no time to spare: the sound starts to crackle).
     float cpuLoad() const { return cpuLoad_.load(std::memory_order_relaxed); }
+    // The audio track whose microphone is sent back (SetMonitor), -1 none: cut again by prepare()
+    // when the output reopens. Any thread.
+    int monitorTrack() const { return monitorHeard_.load(std::memory_order_relaxed); }
     uint64_t framesRendered() const { return frames_.load(std::memory_order_relaxed); }
     // Highest absolute sample since the last call.
     float takePeak() { return peak_.exchange(0.0f, std::memory_order_acq_rel); }
@@ -570,11 +573,15 @@ private:
     std::array<float, kMonitorFifo> monitorFifo_{};
     int monitorRead_ = 0, monitorCount_ = 0;
     int monitorTrack_ = -1;
+    std::atomic<int> monitorHeard_{-1};  // monitorTrack_ for the UI thread
     float monitorGain_ = 1.0f;
     bool monitoring() const { return monitorTrack_ >= 0 && record_ != nullptr; }
     // RecordMuteAt.
     int muteTrack_ = -1, muteFrom_ = 0;
     bool muteSong_ = false;
+    // The punch's mute has started (`muteWasOn_`: the track sounded just before), undone at the take's end.
+    bool muteApplied_ = false, muteWasOn_ = false;
+    void restorePunchMute();
     Automation automation_;
     // `local`: the step from the scene's start (loop curves with a length of their own).
     void applyAutomation(int patternStep, int songStep, int offset, int local);

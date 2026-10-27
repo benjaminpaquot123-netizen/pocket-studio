@@ -16,6 +16,12 @@ object Headphones {
     private val _state = MutableStateFlow(Listening.Speaker)
     val state: StateFlow<Listening> = _state.asStateFlow()
     private var watching = false
+    private var read: (() -> Unit)? = null
+
+    /** The outputs read again now (the engine saw its output reopen before the device callback came). */
+    fun refresh() {
+        read?.invoke()
+    }
 
     private val BLUETOOTH = setOf(
         AudioDeviceInfo.TYPE_BLUETOOTH_A2DP, AudioDeviceInfo.TYPE_BLUETOOTH_SCO, AudioDeviceInfo.TYPE_HEARING_AID,
@@ -41,6 +47,7 @@ object Headphones {
         fun update() {
             _state.value = classify(audio.getDevices(AudioManager.GET_DEVICES_OUTPUTS).map { it.type })
         }
+        read = ::update
         // A device change also wakes the engine's revival when the sound was cut and could not
         // come back yet (audit 13 M3): a headset that took seconds to connect is heard at once.
         audio.registerAudioDeviceCallback(object : AudioDeviceCallback() {

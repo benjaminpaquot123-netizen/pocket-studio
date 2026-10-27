@@ -11,6 +11,7 @@ import com.pocketstudio.ui.ScaledAlertDialog
 import com.pocketstudio.ui.ScaledBottomSheet
 import com.pocketstudio.ui.ScaledDialog
 
+import com.pocketstudio.model.guide.guideTracks
 import com.pocketstudio.model.partMarks
 import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.model.track
@@ -1163,6 +1164,9 @@ fun AppRoot() {
     if (acidSheetOpen) AcidSoundSheet(rhythmVm, close = { acidSheetOpen = false })
     val simpleTracksActions = SimpleTracksActions(
         changeSound = trackSound, setVolume = rhythmVm::setChannelVolume, toggleMute = rhythmVm::toggleMute, toggleSolo = rhythmVm::toggleSolo,
+        listenAlone = { key -> rhythmVm.toggleAlone(com.pocketstudio.app.rhythm.AloneTarget.ofSongKey(key), from = SimpleTracksActions.FROM) },
+        listenPadAlone = { lane -> rhythmVm.toggleAlone(com.pocketstudio.app.rhythm.AloneTarget.ofKey(com.pocketstudio.model.guide.GuideTrack.pad(lane)), from = SimpleTracksActions.FROM) },
+        holdAlone = rhythmVm::holdAlone,
     )
     val learn = com.pocketstudio.app.learn.LocalLearn.current
     // G5: « Mon premier morceau » (the old Missions): its first cards, in the Guide. Audit final: on a new song,
@@ -1312,6 +1316,8 @@ fun AppRoot() {
     var guideSpot by remember { mutableStateOf<List<String>?>(null) }
     // Audit final: a pad's sheet the Guide asks for (the Rythme tab opens it, then forgets the request).
     var guidePad by remember { mutableStateOf<Int?>(null) }
+    // The tab the Guide's « Autre idée de son » just went to (« Écouter seul » goes on there).
+    var aloneTabByGuide by remember { mutableStateOf<AppTab?>(null) }
     val guideScope = rememberCoroutineScope()
     val guideListen = remember(rhythmVm) {
         com.pocketstudio.app.guide.GuideListen(
@@ -1390,7 +1396,7 @@ fun AppRoot() {
             is com.pocketstudio.app.guide.GuideGo.Layers -> { melodyShownFor = rhythmVm.projectId; rhythmVm.selectTrack(g.track); layersTrack = g.track }
             com.pocketstudio.app.guide.GuideGo.Kit -> kitSheetOpen = true
             // Audit final: one pad's sound (the kick's « Autre idée de son »), on the Rythme tab.
-            is com.pocketstudio.app.guide.GuideGo.Pad -> { go(AppTab.Rythme); guidePad = g.lane }
+            is com.pocketstudio.app.guide.GuideGo.Pad -> { if (tab != AppTab.Rythme) aloneTabByGuide = AppTab.Rythme; go(AppTab.Rythme); guidePad = g.lane }
             com.pocketstudio.app.guide.GuideGo.AcidSound -> acidSheetOpen = true
             // Audit final: « Générer une basse acide » makes the line (a song without one), then offers its sounds.
             com.pocketstudio.app.guide.GuideGo.AcidGenerate -> {
@@ -1461,7 +1467,24 @@ fun AppRoot() {
             if (!rhythmVm.transport.value.playing && !rhythmVm.recording.value && rhythmVm.audioRecording.value == null) guideVm.measure()
         },
         pickReference = { guideListen.stop(); guideReferenceFor = null; runCatching { pickGuideReference.launch(arrayOf("audio/*")) } },
+        // « ▶ Écouter seul » (bug report, APK 224): the card's sound alone, looped by the engine (one sound at a time).
+        listenAlone = { card ->
+            guideListen.stop()
+            learn.stop()
+            val role = guideVm.ui.value.cards[card]?.target
+            if (role != null) rhythmVm.toggleAlone(com.pocketstudio.app.rhythm.AloneTarget.ofRole(rhythmVm.project.value, role), from = "card:$card")
+        },
+        holdAlone = rhythmVm::holdAlone,
     )
+    val aloneNow by rhythmVm.alone.collectAsStateWithLifecycle()
+    val aloneCard = aloneNow?.from?.takeIf { it.startsWith("card:") }?.removePrefix("card:")
+    // The sheets where a sound is changed keep « Écouter seul » going (« Autre idée de son » opens them).
+    com.pocketstudio.app.rhythm.HoldAlone(kitSheetOpen || acidSheetOpen || soundChooserTrack != null || layersTrack != null, rhythmVm::holdAlone)
+    // Another screen (a tab, Mes projets, the Live page, the timeline, the library): « Écouter seul » stops.
+    // The Guide's own « Autre idée de son » goes to the Rythme tab on purpose: that change keeps it.
+    LaunchedEffect(tab, showProjects, showLive, showTimeline, showLivePads, showLibrary) {
+        if (aloneTabByGuide == tab) aloneTabByGuide = null else rhythmVm.stopAlone()
+    }
     val studioBackground = Neon.Background
     androidx.compose.runtime.CompositionLocalProvider(com.pocketstudio.app.learn.LocalSpots provides spots) {
     // A new mode draws every screen again (their names and words change; the project does not).
@@ -1647,6 +1670,7 @@ fun AppRoot() {
                             height = (config.screenHeightDp * share).dp.coerceAtLeast(200.dp),
                             modifier = if (landscape) Modifier.navigationBarsPadding() else Modifier,
                             reference = guideReference?.name,
+                            aloneCard = aloneCard,
                         )
                     } else {
                         com.pocketstudio.app.guide.GuideBar(
@@ -1797,6 +1821,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                 },
                                 openPad = guidePad,
                                 padOpened = { guidePad = null },
+                                alonePads = rhythmVm.alone.collectAsStateWithLifecycle().value?.target?.takeIf { it.channels.isEmpty() }?.pads.orEmpty(),
                                 project = project,
                                 transport = transport,
                                 live = live,
@@ -1856,6 +1881,12 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                     togglePadMute = rhythmVm::togglePadMute,
                                     removeSampleOf = rhythmVm::removeSampleOf,
                                     padSounds = { lane -> padSoundOptions(lane, packsOnPhone).map { it.name } },
+                                    listenPadAlone = { lane ->
+                                        val a = rhythmVm.alone.value
+                                        if (a != null && a.target.channels.isEmpty() && lane in a.target.pads) rhythmVm.stopAlone()
+                                        else rhythmVm.toggleAlone(com.pocketstudio.app.rhythm.AloneTarget.ofKey(com.pocketstudio.model.guide.GuideTrack.pad(lane)))
+                                    },
+                                    holdAlone = rhythmVm::holdAlone,
                                     pickPadSound = { lane, i ->
                                         padSoundOptions(lane, packsOnPhone).getOrNull(i)?.let { option ->
                                             rhythmVm.dismissSampleError()
@@ -2243,7 +2274,10 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                 arrangeOnly = !simpleView,
                                 simple = simpleView,
                                 top = top,
-                                tracks = if (simpleView) ({ SimpleTracksCard(simpleTracks(project), simpleTracksActions) }) else null,
+                                tracks = if (simpleView) ({
+                                    val alone by rhythmVm.alone.collectAsStateWithLifecycle()
+                                    SimpleTracksCard(simpleTracks(project), simpleTracksActions, alone)
+                                }) else null,
                                 live = LivePadsUi(
                                     pads = project.live,
                                     states = liveStates,
@@ -2705,6 +2739,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                     sideUi, guideSelected, sideListening, guideNotice, guideActions, height = null,
                     modifier = Modifier.width((LocalConfiguration.current.screenWidthDp * GUIDE_SIDE_SHARE).dp.coerceIn(280.dp, 440.dp)).fillMaxHeight().navigationBarsPadding(),
                     reference = guideReference?.name,
+                    aloneCard = aloneCard,
                 )
             }
         }
@@ -3344,13 +3379,17 @@ internal fun AcidSoundSheet(vm: RhythmViewModel, close: () -> Unit) {
  */
 internal fun simpleTracks(p: Project): List<SimpleTrack> {
     val channels = p.mixer.channels
-    fun track(key: String, ch: Int, name: String, color: Color): SimpleTrack {
+    fun track(key: String, ch: Int, name: String, color: Color, pads: List<SimplePad> = emptyList()): SimpleTrack {
         val c = channels.getOrNull(ch) ?: com.pocketstudio.model.Channel()
-        return SimpleTrack(key, ch, name, color, c.volume, c.mute, c.solo)
+        return SimpleTrack(key, ch, name, color, c.volume, c.mute, c.solo, pads)
     }
     val acidPlays = p.allScenes.any { s -> s.acid.steps.take(s.acid.length.coerceAtLeast(0)).any { it.gate } }
+    // The drums' own sounds (the pads with hits), each heard alone from the Batterie's line.
+    val pads = p.guideTracks().filter { it.key.startsWith("pad:") }.mapNotNull { t ->
+        t.key.removePrefix("pad:").toIntOrNull()?.let { SimplePad(it, com.pocketstudio.model.DefaultNames.shown(t.name)) }
+    }
     return listOfNotNull(
-        track(com.pocketstudio.model.SongPart.DRUMS, 0, tr("Batterie"), com.pocketstudio.app.live.DRUMS_COLOR),
+        track(com.pocketstudio.model.SongPart.DRUMS, 0, tr("Batterie"), com.pocketstudio.app.live.DRUMS_COLOR, pads),
         if (acidPlays) track(com.pocketstudio.model.SongPart.ACID, 1, tr("Basse acide"), Color(0xFF81C784)) else null,
     ) + p.instrumentTracks.map { t ->
         track(com.pocketstudio.model.SongPart.inst(t.id), com.pocketstudio.model.InstrumentTrack.mixerChannel(t.id), com.pocketstudio.model.DefaultNames.shown(t.name), com.pocketstudio.ui.trackColor(t.color))

@@ -150,11 +150,13 @@ data class PadSheetUi(
     val hasSample: Boolean,
     /** Sounds of the pad's kind to put on it in one touch (the kit's voices, the packs'). */
     val sounds: List<String> = emptyList(),
+    /** The pad is heard alone in a loop now (« Écouter seul »). */
+    val alone: Boolean = false,
 )
 
-fun padSheetUi(p: Project, lane: Int, sounds: List<String>): PadSheetUi {
+fun padSheetUi(p: Project, lane: Int, sounds: List<String>, alone: Boolean = false): PadSheetUi {
     val strip = p.mixer.channels.getOrNull(Mixer.padChannel(lane))
-    return PadSheetUi(lane, padName(p, lane), strip?.volume ?: 0.8f, p.drums.lanes[lane].pan, strip?.mute == true, p.drums.lanes[lane].sample != null, sounds)
+    return PadSheetUi(lane, padName(p, lane), strip?.volume ?: 0.8f, p.drums.lanes[lane].pan, strip?.mute == true, p.drums.lanes[lane].sample != null, sounds, alone)
 }
 
 /** Callbacks of a pad's sheet. */
@@ -167,6 +169,10 @@ class PadSheetActions(
     val toggleMute: () -> Unit = {},
     /** The pan's gesture ended (one journal line). */
     val panDone: () -> Unit = {},
+    /** « ▶ Écouter seul »: this pad alone in a loop (again: it stops); null: not offered. */
+    val listenAlone: (() -> Unit)? = null,
+    /** The sheet keeps « Écouter seul » going while it shows (the returned call lets go). */
+    val holdAlone: () -> (() -> Unit) = { {} },
 )
 
 /** A pad held: its sheet (another sound in one touch, its volume and pan, cut it). */
@@ -174,12 +180,15 @@ class PadSheetActions(
 @Composable
 internal fun PadSheet(ui: PadSheetUi, actions: PadSheetActions, close: () -> Unit) {
     val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    HoldAlone(true, actions.holdAlone)
     ScaledBottomSheet(onDismissRequest = close, sheetState = state, containerColor = Neon.Surface, modifier = Modifier.testTag("pad_sheet")) {
         PadSheetContent(
             ui,
             PadSheetActions(
-                pickSound = { close(); actions.pickSound(it) }, origin = { close(); actions.origin() }, more = { close(); actions.more() },
+                // Heard alone: the sheet stays, so each sound is compared in the loop.
+                pickSound = { if (!ui.alone) close(); actions.pickSound(it) }, origin = { if (!ui.alone) close(); actions.origin() }, more = { close(); actions.more() },
                 setVolume = actions.setVolume, setPan = actions.setPan, toggleMute = actions.toggleMute, panDone = actions.panDone,
+                listenAlone = actions.listenAlone,
             ),
             close,
         )
@@ -195,6 +204,8 @@ fun PadSheetContent(ui: PadSheetUi, actions: PadSheetActions, close: () -> Unit)
                 maxLines = 2, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f).testTag("pad_sheet_title"))
             TextButton(onClick = close, modifier = Modifier.testTag("pad_sheet_close")) { Text(tr("Fermer")) }
         }
+        actions.listenAlone?.let { AloneButton(ui.alone, tr("Écouter seul"), ui.name, "pad_alone", toggle = it) }
+        if (ui.alone) Text(tr("Joue en boucle, tout seul : change le son pour comparer."), style = MaterialTheme.typography.bodySmall, color = Neon.Acid)
         Text(tr("Son"), style = MaterialTheme.typography.titleSmall)
         FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp), maxItemsInEachRow = 2) {
             if (ui.hasSample) SoundTile(tr("Son d'origine"), "pad_sound_origin", Modifier.weight(1f), actions.origin)

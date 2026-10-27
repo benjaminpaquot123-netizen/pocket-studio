@@ -7969,6 +7969,7 @@ void testCommandBudgetPerCallback() {
 #include "restes_tests.inc"
 #include "review3539_tests.inc"
 #include "leads_tests.inc"
+#include "analysis_tests.inc"
 #include "livefade_tests.inc"
 #include "layers_tests.inc"
 #include "basses_tests.inc"
@@ -8074,6 +8075,10 @@ int main(int argc, char** argv) {
         {"sound_calibration_gain", testSoundCalibrationGain},
         {"plaits_two_threads", testPlaitsOnTwoThreads},
         {"tempo_and_key", testTempoAndKeyDetection},
+        {"onsets_vs_aubio", testOnsetsMatchAubio},
+        {"tempo_vs_aubio", testTempoMatchesAubio},
+        {"key_vs_aubio", testKeyMatchesAubio},
+        {"analysis_edge_cases", testAnalysisEdgeCases},
         {"stems_follow_transport", testStemsPlayInStepWithTheTransport},
         {"live_pads", testLivePadsLoopOnTheBeat},
         {"instrument_tracks", testInstrumentTracks},

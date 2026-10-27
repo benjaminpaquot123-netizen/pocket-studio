@@ -92,7 +92,7 @@ class LiveSongRecorder {
                 sink.mark("PSCMD 1\nRATE 48000\nMETA style ${style.id}")
                 // In a store of its own: cleared after its song (its coroutines and its sounds let go).
                 val store = ViewModelStore()
-                val vm = ViewModelProvider(store, ViewModelProvider.AndroidViewModelFactory.getInstance(app))[RhythmViewModel::class.java]
+                val vm = ViewModelProvider(store, ViewModelProvider.AndroidViewModelFactory(app))[RhythmViewModel::class.java]
                 var loaded = false
                 CoroutineScope(Dispatchers.Main).launch { vm.awaitSoundsLoadedForTest(); loaded = true }
                 waitFor("the sounds of ${style.id}") { loaded }

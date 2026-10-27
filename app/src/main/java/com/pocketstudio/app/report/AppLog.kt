@@ -33,7 +33,7 @@ object AppLog {
     fun previous(dir: File, maxLines: Int = 40): String =
         runCatching {
             // Crash reports go to a public issue: song and file names (between « ») stay on the phone.
-            File(dir, "applog-previous.txt").readLines().takeLast(maxLines).joinToString("\n").replace(Regex("«[^»]*»"), "«…»")
+            LogTail.forPublicIssue(File(dir, "applog-previous.txt").readLines().takeLast(maxLines).joinToString("\n"))
         }.getOrDefault("")
 
     fun add(message: String) {

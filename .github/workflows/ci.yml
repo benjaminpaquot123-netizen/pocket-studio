@@ -341,7 +341,7 @@ jobs:
           "$TOOLS/zipalign" -c -P 16 4 dist/pocket-studio-unsigned.apk || {
             echo "::error::The unsigned APK is not aligned."; exit 1; }
           "$TOOLS/apksigner" sign --ks signing/release.p12 --ks-type PKCS12 --ks-key-alias pocketstudio \
-            --ks-pass env:SIGNING_PASSWORD --key-pass env:SIGNING_PASSWORD \
+            --ks-pass env:SIGNING_PASSWORD --key-pass env:SIGNING_PASSWORD --v2-signing-enabled true \
             --out dist/pocket-studio.apk dist/pocket-studio-unsigned.apk
       - name: Verify APK is signed with the stable key
         run: |

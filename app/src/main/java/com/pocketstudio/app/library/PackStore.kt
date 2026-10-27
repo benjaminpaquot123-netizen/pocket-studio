@@ -25,6 +25,8 @@ object PackStore {
     private const val RELEASES = "https://github.com/benjaminpaquot123-netizen/pocket-studio/releases/download/"
     private const val BASE = "$RELEASES$RELEASE/"
     const val CATALOGUE = RELEASES + "sons-packs/index.json"
+    /** Where the packs are downloaded from (a test points it at a stand-in server). */
+    internal var releasesBase = RELEASES
     private const val CATALOGUE_MAX = 1_000_000
 
     /** The list of packs the Packs workflow published (53: styles, machines, current sounds); null would mean none published yet. */
@@ -101,7 +103,7 @@ object PackStore {
     }
 
     /** Where [entry]'s zip is: its own release, or the pinned index's. */
-    fun url(entry: PackEntry) = RELEASES + entry.release.ifEmpty { RELEASE } + "/" + entry.file
+    fun url(entry: PackEntry) = releasesBase + entry.release.ifEmpty { RELEASE } + "/" + entry.file
 
     /**
      * An instrument's preview, heard before its pack is downloaded (checked by SHA-256, kept in

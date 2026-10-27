@@ -41,6 +41,8 @@ class RemixViewModel(app: Application) : AndroidViewModel(app) {
     private var previewJob: kotlinx.coroutines.Job? = null
 
     init {
+        // A separation Android stopped mid-way (the app was closed for memory) is said, not lost.
+        SeparationJob.recover(app)
         viewModelScope.launch {
             // Refresh the list and the model flag whenever a job ends (and once at start).
             SeparationJob.state.collect { if (!it.busy) refresh() }
@@ -80,7 +82,22 @@ class RemixViewModel(app: Application) : AndroidViewModel(app) {
 
     fun cancel() = SeparationService.cancel(getApplication())
 
-    fun dismiss() = SeparationJob.dismiss()
+    fun dismiss() {
+        // An interrupted song not started again: its read access is given back.
+        (state.value as? SeparationState.Interrupted)?.uri?.let { uri ->
+            runCatching { getApplication<Application>().contentResolver.releasePersistableUriPermission(Uri.parse(uri), android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION) }
+        }
+        SeparationJob.dismiss()
+    }
+
+    /** « Relancer » after an interruption: the same song again (its read access was kept). */
+    fun retry() {
+        val s = state.value as? SeparationState.Interrupted ?: return
+        val uri = s.uri ?: return
+        stop()
+        SeparationJob.dismiss()
+        SeparationService.separate(getApplication(), Uri.parse(uri), s.name)
+    }
 
     /** Plays the four stems of [set] together, apart from the project (all on by default). */
     fun playAll(set: StemSet) {

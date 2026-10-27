@@ -106,22 +106,25 @@ class SeparationService : Service() {
                     } catch (_: AudioDecoder.CancelledException) {
                         SeparationState.Idle
                     } catch (e: AudioDecoder.TooLongException) {
-                        SeparationState.Failed(tr("Morceau trop long (%d min) : %d minutes au maximum.", (e.seconds / 60).roundToInt(), MAX_SECONDS / 60))
+                        SeparationState.Failed(tooLong(e.seconds))
                     } catch (e: IOException) {
                         AppLog.add("Séparation : ${e.message}")
                         SeparationState.Failed(tr("Échec : %s.", e.message ?: tr("erreur de lecture ou de réseau")))
                     } catch (_: OutOfMemoryError) {
+                        AppLog.add("Séparation : mémoire Java insuffisante")
                         SeparationState.Failed(tr("Mémoire insuffisante : essaie un morceau plus court."))
                     } catch (e: Exception) {
                         // Codec errors, revoked file access…: report, never crash the app mid-job.
                         AppLog.add("Séparation : ${e.javaClass.simpleName} ${e.message}")
                         SeparationState.Failed(tr("Ce fichier n'a pas pu être lu (%s).", e.javaClass.simpleName))
                     } finally {
+                        SeparationJob.clearRunning(this@SeparationService)
                         if (uri != null) {
                             runCatching { contentResolver.releasePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION) }
                         }
                     }
                     SeparationJob.set(end)
+                    if (end is SeparationState.Failed) AppLog.add("Séparation : échec affiché « ${end.message} »")
                     notifyEnd(end)
                     withContext(Dispatchers.Main) { finish() }
                 }
@@ -166,13 +169,14 @@ class SeparationService : Service() {
     private fun ensureModel() {
         if (SeparationModel.isInstalled(this)) return
         SeparationJob.set(SeparationState.DownloadingModel(0f))
+        // A cut connection keeps what came: the next try asks for the rest only (174 MB).
         VerifiedDownload.fetch(SeparationModel.SPEC, SeparationModel.file(this), { p ->
             SeparationJob.set(SeparationState.DownloadingModel(p))
             progress(tr("Téléchargement du modèle"), p)
-        }, cancelled::get)
+        }, cancelled::get, resume = true)
     }
 
-    /** Files already there (checked by size) are kept: a cut download resumes file by file. */
+    /** Files already there (checked by size) are kept, and a cut file resumes where it stopped. */
     private fun downloadGeneration() {
         val specs = GenerationModel.SPECS
         var done = 0L
@@ -184,21 +188,23 @@ class SeparationService : Service() {
                     val total = (done + p * spec.sizeBytes) / GenerationModel.TOTAL_BYTES
                     GenerationJob.set(ModelDownload.Running(total))
                     progress(tr("Téléchargement du modèle de génération"), total)
-                }, cancelled::get)
+                }, cancelled::get, resume = true)
             }
             done += spec.sizeBytes
         }
     }
 
     private fun separate(uri: Uri, name: String): SeparationState {
-        if (!Demucs.isAvailable) return SeparationState.Failed(tr("La séparation n'est pas disponible sur cet appareil."))
+        if (!work.available) return SeparationState.Failed(tr("La séparation n'est pas disponible sur cet appareil."))
         if (GenerationJob.generating.get()) return SeparationState.Failed(tr("Une génération de son est en cours : relance quand elle sera finie."))
         SeparationJob.set(SeparationState.Decoding(name))
+        // Found on the next start if Android stops the app meanwhile (cleared when the job ends).
+        SeparationJob.markRunning(this, name, uri.toString())
         progress(tr("Lecture de « %s »", name), null)
         StemStore.prune(this)
-        val work = File(cacheDir, "separation").apply { deleteRecursively(); mkdirs() }
+        val dir = File(cacheDir, "separation").apply { deleteRecursively(); mkdirs() }
         try {
-            val raw = AudioDecoder.decodeToFile(this, uri, File(work, "input.raw"), MAX_SECONDS.toDouble(), cancelled::get)
+            val raw = work.decode(this, uri, File(dir, "input.raw"), MAX_SECONDS.toDouble(), cancelled::get)
             if (raw.seconds < 1.0) return SeparationState.Failed(tr("Son trop court (1 seconde au minimum)."))
             val key = (VerifiedDownload.sha256(raw.file) + "|${raw.channels}|${raw.sampleRate}|${SeparationModel.VERSION}")
                 .let { VerifiedDownload.sha256Of(it) }.take(24)
@@ -210,13 +216,12 @@ class SeparationService : Service() {
                 return SeparationState.Failed(tr("Stockage plein : il faut %d Mo libres.", needed / 1_000_000))
             }
             // The model needs about 2.6 GB while it runs (measured), plus the song and its stems.
-            val memory = android.app.ActivityManager.MemoryInfo()
-            getSystemService(android.app.ActivityManager::class.java).getMemoryInfo(memory)
+            val availMem = work.availableMemory(this)
             val neededRam = RemixMemory.needed(raw.seconds)
-            AppLog.add("Séparation : mémoire libre ${memory.availMem / 1_000_000} Mo, besoin ~${neededRam / 1_000_000} Mo")
-            if (memory.availMem < neededRam) {
+            AppLog.add("Séparation : mémoire libre ${availMem / 1_000_000} Mo, besoin ~${neededRam / 1_000_000} Mo")
+            if (availMem < neededRam) {
                 return SeparationState.Failed(
-                    tr("Pas assez de mémoire libre (%.1f Go, il en faut %.1f). Ferme des applis ou prends un morceau plus court.", memory.availMem / 1e9, neededRam / 1e9),
+                    tr("Pas assez de mémoire libre (%.1f Go, il en faut %.1f). Ferme des applis ou prends un morceau plus court.", availMem / 1e9, neededRam / 1e9),
                 )
             }
             // A corrupt model could crash ONNX Runtime: check it each time (a second or two).
@@ -227,23 +232,35 @@ class SeparationService : Service() {
             val part = File(final.parentFile, "$key.part").apply { deleteRecursively() }
             SeparationJob.set(SeparationState.Separating(name, 0f))
             AppLog.add("Séparation : modèle lancé (${raw.seconds.roundToInt()} s, ${raw.channels} canaux, ${raw.sampleRate} Hz)")
-            val result = Demucs.separateFile(SeparationModel.file(this), raw.file, raw.channels, raw.sampleRate, part) { p ->
+            val (result, why) = work.separate(SeparationModel.file(this), raw, part) { p ->
                 SeparationJob.set(SeparationState.Separating(name, p))
                 progress(tr("Séparation de « %s »", name), p)
                 !cancelled.get()
             }
             if (result != SeparationResult.Ok) {
                 part.deleteRecursively()
+                // The model's own words (an ONNX Runtime error…) reach the bug report.
+                if (result != SeparationResult.Cancelled) AppLog.add("Séparation : le modèle a échoué (${result.name}) : ${why.ifBlank { "sans détail" }}")
                 return when (result) {
                     SeparationResult.Cancelled -> SeparationState.Idle
                     SeparationResult.BadInput -> SeparationState.Failed(tr("Son illisible."))
                     SeparationResult.IoError -> SeparationState.Failed(tr("Écriture impossible (stockage plein ou mémoire insuffisante)."))
+                    SeparationResult.OutOfMemory -> SeparationState.Failed(tr("Mémoire insuffisante pendant la séparation : ferme des applis ou prends un morceau plus court."))
                     else -> SeparationState.Failed(tr("Le modèle de séparation a échoué."))
                 }
             }
+            // « Annuler » touched once the model was done: nothing is kept (audit 02 M12).
+            if (cancelled.get()) {
+                part.deleteRecursively()
+                return SeparationState.Idle
+            }
             SeparationJob.set(SeparationState.Analysing(name))
             progress(tr("Tempo et tonalité de « %s »", name), null)
-            val info = analyse(part)
+            val info = work.analyse(part)
+            if (cancelled.get()) {
+                part.deleteRecursively()
+                return SeparationState.Idle
+            }
             final.deleteRecursively()
             if (!part.renameTo(final)) throw IOException(tr("écriture impossible"))
             val set = StemStore.commit(final, name, raw.seconds, info)
@@ -251,18 +268,10 @@ class SeparationService : Service() {
             AppLog.add("Séparation : « $name » (${raw.seconds.roundToInt()} s) terminée")
             return SeparationState.Done(set)
         } finally {
-            work.deleteRecursively()
+            dir.deleteRecursively()
         }
     }
 
-    // Tempo from the drums alone, key from bass + other: each is cleaner than the full mix.
-    private fun analyse(dir: File): SongInfo {
-        if (!NativeEngine.isAvailable) return SongInfo()
-        val tempo = NativeEngine.analyzeTempo(File(dir, "drums.wav").absolutePath)
-        val key = NativeEngine.analyzeKey(arrayOf(File(dir, "bass.wav").absolutePath, File(dir, "other.wav").absolutePath))
-        val root = key[0].toInt().takeIf { it in 0..11 }
-        return SongInfo(tempo[0].toDouble(), tempo[2].toDouble(), root, key[1] > 0.5f)
-    }
 
     private fun progress(title: String, fraction: Float?) {
         val percent = fraction?.let { (it * 100).roundToInt() } ?: -1
@@ -293,8 +302,10 @@ class SeparationService : Service() {
     private fun canNotify() = Build.VERSION.SDK_INT < 33 ||
         ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
 
+    // Touching the notification opens the Remix page (MainActivity reads the extra).
     private fun openApp() = PendingIntent.getActivity(
-        this, 0, Intent(this, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), PendingIntent.FLAG_IMMUTABLE,
+        this, 0, Intent(this, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP).putExtra(EXTRA_OPEN, OPEN_REMIX),
+        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
     )
 
     private fun notification(title: String, fraction: Float?): Notification {
@@ -326,9 +337,60 @@ class SeparationService : Service() {
         else -> ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
     }
 
+    /**
+     * The heavy work, behind a seam so that tests run the service with a stand-in (no codec, no
+     * model): decoding the song, the model, the tempo and key, the free memory.
+     */
+    internal interface Work {
+        val available: Boolean
+        fun decode(context: Context, uri: Uri, target: File, maxSeconds: Double, isCancelled: () -> Boolean): AudioDecoder.RawAudio
+        /** The model's result, and its own words when it failed (for the bug log). */
+        fun separate(model: File, raw: AudioDecoder.RawAudio, outDir: File, progress: Demucs.Progress): Pair<SeparationResult, String>
+        fun analyse(dir: File): SongInfo
+        fun availableMemory(context: Context): Long
+    }
+
+    private object RealWork : Work {
+        override val available get() = Demucs.isAvailable
+
+        override fun decode(context: Context, uri: Uri, target: File, maxSeconds: Double, isCancelled: () -> Boolean) =
+            AudioDecoder.decodeToFile(context, uri, target, maxSeconds, isCancelled)
+
+        override fun separate(model: File, raw: AudioDecoder.RawAudio, outDir: File, progress: Demucs.Progress): Pair<SeparationResult, String> {
+            val result = Demucs.separateFile(model, raw.file, raw.channels, raw.sampleRate, outDir, progress)
+            return result to if (result == SeparationResult.Ok) "" else Demucs.lastMessage()
+        }
+
+        // Tempo from the drums alone, key from bass + other: each is cleaner than the full mix.
+        override fun analyse(dir: File): SongInfo {
+            if (!NativeEngine.isAvailable) return SongInfo()
+            val tempo = NativeEngine.analyzeTempo(File(dir, "drums.wav").absolutePath)
+            val key = NativeEngine.analyzeKey(arrayOf(File(dir, "bass.wav").absolutePath, File(dir, "other.wav").absolutePath))
+            val root = key[0].toInt().takeIf { it in 0..11 }
+            return SongInfo(tempo[0].toDouble(), tempo[2].toDouble(), root, key[1] > 0.5f)
+        }
+
+        override fun availableMemory(context: Context): Long {
+            val memory = android.app.ActivityManager.MemoryInfo()
+            context.getSystemService(android.app.ActivityManager::class.java).getMemoryInfo(memory)
+            return memory.availMem
+        }
+    }
+
     companion object {
         /** Whole songs; 7 minutes need about 3.9 GB free (the model, then the song and its stems: see RemixMemory). */
         const val MAX_SECONDS = 7 * 60
+        /** The work done (a test swaps in a stand-in). */
+        @Volatile internal var work: Work = RealWork
+        /** MainActivity's extra: [OPEN_REMIX] shows the Remix page. */
+        const val EXTRA_OPEN = "open"
+        const val OPEN_REMIX = "remix"
+
+        /** « Morceau trop long (7:42) : 7 minutes au maximum. » */
+        fun tooLong(seconds: Double): String {
+            val s = seconds.roundToInt()
+            return tr("Morceau trop long (%s) : %d minutes au maximum.", "%d:%02d".format(s / 60, s % 60), MAX_SECONDS / 60)
+        }
         private const val CHANNEL_ID = "separation"
         private const val NOTIFICATION_ID = 3
         private const val DONE_NOTIFICATION_ID = 4

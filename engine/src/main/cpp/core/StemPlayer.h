@@ -79,6 +79,8 @@ public:
 
     bool loaded() const { return bundle_ != nullptr; }
     bool playing() const { return playing_; }
+    // Something may sound in the next render(): playing, about to start, or a bundle fading out.
+    bool active() const { return playing_ || pendingStart_ >= 0 || out_.bundle != nullptr; }
     // Song position in frames (UI). -1 when stopped.
     int64_t position() const { return position_.load(std::memory_order_relaxed); }
 

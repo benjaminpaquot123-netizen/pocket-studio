@@ -91,6 +91,8 @@ class RemixActions(
     val pickSong: () -> Unit = {},
     val cancel: () -> Unit = {},
     val dismiss: () -> Unit = {},
+    /** Starts again the separation Android stopped ([SeparationState.Interrupted]). */
+    val retry: () -> Unit = {},
     /** Listening: all four stems of a song together, apart from the project. */
     val playAll: (StemSet) -> Unit = {},
     /** Listening: one stem on or off, the others keep playing. */
@@ -157,6 +159,15 @@ private fun RemixStart(ui: RemixUi, actions: RemixActions) {
             else -> {
                 if (s is SeparationState.Failed) {
                     Text(s.message, color = Neon.Amber, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.testTag("remix_error"))
+                }
+                // Android stopped the app mid-separation: said, with the same song one touch away.
+                if (s is SeparationState.Interrupted) {
+                    Text(s.message, color = Neon.Amber, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.testTag("remix_interrupted"))
+                    if (s.uri != null && ui.memoryProblem == null) {
+                        OutlinedButton(onClick = actions.retry, modifier = Modifier.fillMaxWidth().testTag("remix_retry")) {
+                            Text(tr("Relancer « %s »", s.name))
+                        }
+                    }
                 }
                 // Said before the model's download, not after it: no song can be separated here now.
                 if (ui.memoryProblem != null) {

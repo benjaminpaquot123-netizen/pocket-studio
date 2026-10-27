@@ -29,6 +29,7 @@ class MainActivity : ComponentActivity() {
         // Ask the system to keep CPU clocks stable instead of bursting and throttling.
         runCatching { window.setSustainedPerformanceMode(true) }
         SettingsStore.load(this)
+        if (savedInstanceState == null) openAsked(intent)
         val folds = FoldPrefs(this)
         setContent {
             val settings by SettingsStore.state.collectAsState()
@@ -54,6 +55,19 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
+        }
+    }
+
+    override fun onNewIntent(intent: android.content.Intent) {
+        super.onNewIntent(intent)
+        openAsked(intent)
+    }
+
+    /** The separation's notification: « touche pour l'ouvrir » shows the Remix page. */
+    private fun openAsked(intent: android.content.Intent?) {
+        if (intent?.getStringExtra(com.pocketstudio.app.remix.SeparationService.EXTRA_OPEN) == com.pocketstudio.app.remix.SeparationService.OPEN_REMIX) {
+            intent.removeExtra(com.pocketstudio.app.remix.SeparationService.EXTRA_OPEN)  // not again on a rotation
+            com.pocketstudio.app.remix.SeparationJob.requestOpen()
         }
     }
 

@@ -10,7 +10,8 @@ namespace ps {
 // Splits a song into stems with HT-Demucs v4 (ONNX, via demucs.onnx). Heavy: minutes of CPU
 // and hundreds of MB; run on a worker thread, never near the audio engine.
 struct SeparationResult {
-    enum Code { Ok, ModelError, Cancelled, IoError, BadInput };
+    // Append only: the app reads the code by its position (SeparationResult in Demucs.kt).
+    enum Code { Ok, ModelError, Cancelled, IoError, BadInput, OutOfMemory };
     Code code = Ok;
     std::string message;
 };

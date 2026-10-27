@@ -12,6 +12,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import com.pocketstudio.model.addAudioTrack
 import com.pocketstudio.model.audioEndBars
+import com.pocketstudio.model.exportEndBars
 import com.pocketstudio.model.withAudioTrack
 
 class ShareSongTest {
@@ -88,7 +89,24 @@ class ShareSongTest {
         val ch = com.pocketstudio.model.AudioTrack.mixerChannel(0)
         val muted = later.copy(mixer = later.mixer.copy(channels = later.mixer.channels.mapIndexed { i, c -> if (i == ch) c.copy(mute = true) else c }))
         assertEquals(0, muted.audioEndBars())
-        assertEquals(64, ShareSong.loopBars(4, audioBars = 90))
+        // A long voice runs past the 64 bars of a loop (audit 02 G1), up to the longest export.
+        assertEquals(90, ShareSong.loopBars(4, audioBars = 90))
+        assertEquals(com.pocketstudio.app.rhythm.RhythmViewModel.MAX_LONG_EXPORT_BARS, ShareSong.loopBars(4, audioBars = 99_999))
+    }
+
+    @Test
+    fun aRemixedSongIsSharedAndExportedToItsEnd() {
+        // Audit 02 G1: a 3:30 song at 120 BPM played along, no Structure: 105 bars, not 8 (16 s).
+        val p = com.pocketstudio.model.Project(tempoBpm = 120.0, remix = com.pocketstudio.model.Remix("abc", "Chanson", songBpm = 120.0, seconds = 210.0))
+        val end = p.exportEndBars()
+        assertEquals(105, end)
+        val share = ShareSong.settings(hasSong = false, sceneBars = 4, audioBars = end)
+        assertEquals(105, share.bars)
+        // The export card's « La scène » too, until a length is picked; a length picked stays.
+        assertEquals(105, ExportUi().forProject(sceneBars = 4, hasSong = false, audioBars = end).bars)
+        assertEquals(8, ExportUi(bars = 8, barsChosen = true).forProject(sceneBars = 4, hasSong = false, audioBars = end).bars)
+        // A scene longer than the song stays whole.
+        assertEquals(16, ExportUi().forProject(sceneBars = 16, hasSong = false, audioBars = 10).bars)
     }
 
     @Test

@@ -129,7 +129,6 @@
   "Mon morceau": "My song",
   "Monter l'effet": "Move the effect up",
   "Morceau": "Song",
-  "Morceau trop long (%d min) : %d minutes au maximum.": "Song too long (%d min): %d minutes max.",
   "Morceau utilisé": "Song in use",
   "Morceau vide : la courbe suit les mesures depuis le début de la lecture.": "Empty song: the curve follows the bars from the start of playback.",
   "Muet": "Mute",
@@ -354,5 +353,9 @@
   "Transposée de %s demi-tons.": "Transposed by %s semitones.",
   "Coupée pour l'instant.": "Muted for now.",
   "Ses effets : %s.": "Its effects: %s.",
-  "Basse+": "Bass+"
+  "Basse+": "Bass+",
+  "Morceau trop long (%s) : %d minutes au maximum.": "Song too long (%s): %d minutes max.",
+  "La séparation de « %s » a été interrompue : Android a fermé l'appli (souvent par manque de mémoire).": "Splitting “%s” was interrupted: Android closed the app (often for lack of memory).",
+  "Relancer « %s »": "Restart “%s”",
+  "Mémoire insuffisante pendant la séparation : ferme des applis ou prends un morceau plus court.": "Not enough memory while splitting: close some apps or pick a shorter song."
 }

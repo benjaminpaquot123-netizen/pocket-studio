@@ -791,6 +791,7 @@ fun AppRoot() {
         latencyVm.cancel()
         // A sound being tried (the line looping with the beat) stops when the app is left.
         libraryVm.stopPreview()
+        remixVm.pause()
         rhythmVm.visible = false
         rhythmVm.synthAllOff()
         rhythmVm.stopRecording()  // never keep the microphone open in the background
@@ -969,6 +970,14 @@ fun AppRoot() {
     // Lot 2: the Remix (Sons › Voix, its second page), « mis en avant »: one touch from « Que veux-tu
     // faire ? », a chip in Sons, a line of the Mode simple's « ⋯ ».
     val openRemix: () -> Unit = { audioPage = 1; go(AppTab.Audio) }
+    // The separation's notification touched: its Remix page (audit 02 M5).
+    val remixAsked by com.pocketstudio.app.remix.SeparationJob.openRemix.collectAsStateWithLifecycle()
+    LaunchedEffect(remixAsked) {
+        if (remixAsked) {
+            com.pocketstudio.app.remix.SeparationJob.openHandled()
+            openRemix()
+        }
+    }
     // Lot 2: the Mode simple's Clavier records « ma mélodie » into the song's melody track (the
     // first track, « Synthé », was shown before), once per visit: a track chosen there stays.
     // Once per project (kept through a rotation): a track chosen there afterwards stays.
@@ -2294,6 +2303,11 @@ WithPartHeader(rhythmVm) { partModifier ->
                             val remixMemoryNever by remixVm.memoryNever.collectAsStateWithLifecycle()
                             // The free memory changes: read again each time the Remix page is shown.
                             LaunchedEffect(Unit) { remixVm.checkMemory() }
+                            // « Écouter » belongs to this page: leaving it stops the song (audit 02 M6),
+                            // never mixed into the project played elsewhere. Turning the phone keeps it.
+                            DisposableEffect(Unit) {
+                                onDispose { if (context.findActivity()?.isChangingConfigurations != true) remixVm.stop() }
+                            }
                             val remixLoading by rhythmVm.remixLoading.collectAsStateWithLifecycle()
                             val remixStretching by rhythmVm.remixStretching.collectAsStateWithLifecycle()
                             val overview by rhythmVm.stemOverview.collectAsStateWithLifecycle()
@@ -2346,7 +2360,9 @@ WithPartHeader(rhythmVm) { partModifier ->
                                         }
                                     },
                                     clearRemix = rhythmVm::clearRemix,
-                                    togglePlay = rhythmVm::togglePlay,
+                                    // The project's ▶ and « Écouter » never sound together.
+                                    togglePlay = { remixVm.pause(); rhythmVm.togglePlay() },
+                                    retry = remixVm::retry,
                                     setStartBar = rhythmVm::setRemixStartBar,
                                     setStemVolume = rhythmVm::setStemVolume,
                                     toggleStemMute = rhythmVm::toggleStemMute,

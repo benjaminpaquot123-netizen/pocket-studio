@@ -161,7 +161,7 @@ import com.pocketstudio.model.withTake
 import com.pocketstudio.model.takeForgets
 import com.pocketstudio.model.withTakes
 import com.pocketstudio.model.addAudioTrack
-import com.pocketstudio.model.audioEndBars
+import com.pocketstudio.model.exportEndBars
 import com.pocketstudio.model.audioPlays
 import com.pocketstudio.model.removeAudioTrack
 import com.pocketstudio.model.withAudioTrack
@@ -258,7 +258,10 @@ data class ExportUi(
     val barsChosen: Boolean = false,
     /** The current scene's length in bars (offered among the lengths). */
     val sceneBars: Int = 4,
-    /** The bar where the audio clips heard end (« Partager » without a song lasts at least that long). */
+    /**
+     * The bar where the audio clips heard and the remix's song end (« Partager » without a song,
+     * and « La scène » until a length is picked, last at least that long).
+     */
     val audioBars: Int = 0,
     /** The whole song when the project has one, the scene otherwise, until the user picks. */
     val what: ExportWhat = ExportWhat.Loop,
@@ -310,18 +313,24 @@ data class ExportUi(
         )
     }
 
-    /** These settings for a scene [sceneBars] long: its length is the default. */
-    fun forScene(sceneBars: Int): ExportUi = copy(sceneBars = sceneBars, bars = if (barsChosen) bars else sceneBars)
+    /**
+     * These settings for a scene [sceneBars] long whose audio clips and remix end on bar [audioBars]:
+     * the longer of the two is the default (a remix is exported to its end, not cut after the scene).
+     */
+    fun forScene(sceneBars: Int, audioBars: Int = 0): ExportUi = copy(
+        sceneBars = sceneBars, audioBars = audioBars,
+        bars = if (barsChosen) bars else maxOf(sceneBars, audioBars.coerceAtMost(RhythmViewModel.MAX_LONG_EXPORT_BARS)),
+    )
 
     /** These settings for a project: the scene's length, the song if there is one, the fade that goes with it. */
-    fun forProject(sceneBars: Int, hasSong: Boolean): ExportUi {
+    fun forProject(sceneBars: Int, hasSong: Boolean, audioBars: Int = 0): ExportUi {
         val w = if (whatChosen) what else if (hasSong) ExportWhat.Song else ExportWhat.Loop
         val f = when {
             w == ExportWhat.Stems -> ExportFade.None
             fadeChosen -> fade
             else -> defaultFade(w)
         }
-        return forScene(sceneBars).copy(what = w, fade = f)
+        return forScene(sceneBars, audioBars).copy(what = w, fade = f)
     }
 
     /** No limiter was asked for (« Sans limiteur », or separate tracks without the master). */
@@ -4718,6 +4727,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     private var stems: NativeStems? = null
     private var stemsId: String? = null
+    /** Length in seconds of the stems loaded ([stemsId]): the export's end for a project saved before it kept it. */
+    private val remixSeconds = MutableStateFlow(0.0)
     // The song stretched to the project's tempo (Remix.followTempo), and what it was made for.
     private var stretched: NativeStems? = null
     private var stretchedFor: Pair<String?, Double>? = null
@@ -4889,6 +4900,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             val old = stems
             stems = loaded
             stemsId = id
+            remixSeconds.value = loaded.frames.toDouble() / OfflineExport.SAMPLE_RATE
+            // A project saved before the remix kept its length learns it (not an undo step).
+            if (wanted.seconds <= 0) session.editQuietly { p -> if (p.remix.setId == id) p.copy(remix = p.remix.copy(seconds = remixSeconds.value)) else p }
             pushRemix()
             old?.close()  // the engine keeps its own reference until it lets go
             _stemOverview.value = withContext(Dispatchers.Default) {
@@ -4905,7 +4919,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             p.copy(
                 tempoBpm = if (info.bpm > 0) info.bpm else p.tempoBpm,
                 harmony = info.root?.let { Harmony(it, if (info.minor) Scale.Minor else Scale.Major) } ?: p.harmony,
-                remix = Remix(set.id, set.name, info.bpm, info.firstBeat),
+                remix = Remix(set.id, set.name, info.bpm, info.firstBeat, seconds = set.seconds),
             )
         }
         StemStore.pin(getApplication(), set.id)
@@ -8099,14 +8113,19 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     private val _export = MutableStateFlow(ExportUi())
     /** The export settings, « La scène » as long as the current scene unless a length was picked. */
-    val export: StateFlow<ExportUi> = combine(_export, project) { e, p -> e.forProject(sceneBars(p), p.song.isNotEmpty()).copy(audioBars = p.audioEndBars()) }
+    val export: StateFlow<ExportUi> = combine(_export, project, remixSeconds) { e, p, _ -> e.forProject(sceneBars(p), p.song.isNotEmpty(), exportEnd(p)) }
         .stateIn(viewModelScope, SharingStarted.Eagerly, ExportUi().forProject(sceneBars(project.value), project.value.song.isNotEmpty()))
     private var running: OfflineExport? = null
 
     private fun sceneBars(p: Project) = (p.currentSceneContent().stepsFor(p.stepsPerBar) / p.stepsPerBar).coerceIn(1, MAX_EXPORT_BARS)
 
+    /** Where the audio clips and the remix's song end (its length from the stems loaded when the project does not know it). */
+    private fun exportEnd(p: Project): Int =
+        p.exportEndBars(p.remix.seconds.takeIf { it > 0 } ?: remixSeconds.value.takeIf { stemsId == p.remix.setId } ?: 0.0)
+
     fun setExportBars(bars: Int) {
-        _export.value = _export.value.copy(bars = bars.coerceIn(1, MAX_EXPORT_BARS), barsChosen = true)
+        val max = maxOf(MAX_EXPORT_BARS, exportEnd(project.value).coerceAtMost(MAX_LONG_EXPORT_BARS))
+        _export.value = _export.value.copy(bars = bars.coerceIn(1, max), barsChosen = true)
     }
 
     fun setExportWhat(what: ExportWhat) {
@@ -8182,7 +8201,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 }
             }
             val now = project.value
-            startExport(com.pocketstudio.app.export.ShareSong.settings(now.song.isNotEmpty(), sceneBars(now), now.audioEndBars(), format), share = true)
+            startExport(com.pocketstudio.app.export.ShareSong.settings(now.song.isNotEmpty(), sceneBars(now), exportEnd(now), format), share = true)
         }
     }
 
@@ -8469,7 +8488,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      */
     fun exportWav() {
         val p = project.value
-        startExport(_export.value.forProject(sceneBars(p), p.song.isNotEmpty()), share = false)
+        startExport(_export.value.forProject(sceneBars(p), p.song.isNotEmpty(), exportEnd(p)), share = false)
     }
 
     /** Renders with [settings] (the card's, or « Partager mon morceau »'s with [share]). */
@@ -8875,6 +8894,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         /** A take lasts 5 minutes at most (a whole song: 57 MB of mono float in memory). */
         const val MAX_AUDIO_SECONDS = 300
         const val MAX_EXPORT_BARS = 64
+        /** A loop export may run on to the end of an audio clip or of the remix's song, up to this. */
+        const val MAX_LONG_EXPORT_BARS = 1024
         private val AUDIO_EXTENSIONS = setOf("wav", "mp3", "flac", "m4a", "aac", "ogg", "opus", "aif", "aiff")
         /** After the last bar, releases, reverbs and echoes ring out until silent (−90 dBFS), ten seconds at most. */
         const val MAX_TAIL_FRAMES = 10L * OfflineExport.SAMPLE_RATE

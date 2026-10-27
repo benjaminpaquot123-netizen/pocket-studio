@@ -1,5 +1,7 @@
 package com.pocketstudio.app.synth
 
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.graphicsLayer
 import com.pocketstudio.model.i18n.tr
 
 import com.pocketstudio.ui.fadingHorizontalScroll
@@ -141,8 +143,16 @@ fun PianoRoll(
     frozen: Boolean = false,
     /** Sixteenths in a bar of the time signature (12 in 3/4): copies, pastes and the ruler count in its bars. */
     stepsPerBar: Int = 16,
+    /** The play position read where it is drawn (audit 16: the grid is not redrawn at each step); null: [playStep]. */
+    playStepOf: (() -> Int)? = null,
 ) {
     val barSteps = stepsPerBar.coerceIn(1, NoteClip.MAX_STEPS)
+    val givenStep by androidx.compose.runtime.rememberUpdatedState(playStep)
+    val stepOf: () -> Int = remember(playStepOf) { playStepOf ?: { givenStep } }
+    // The bar playing, followed only when it changes (a paste goes on it), not at each step.
+    val playBar by remember(stepOf, clip.steps, barSteps) {
+        androidx.compose.runtime.derivedStateOf { stepOf().let { if (it >= 0) (it % clip.steps) / barSteps else -1 } }
+    }
     val barTicks = barSteps * NoteClip.TICKS_PER_STEP
     var newSteps by rememberSaveable { mutableIntStateOf(2) }
     var chordMode by rememberSaveable { mutableStateOf(false) }
@@ -223,7 +233,7 @@ fun PianoRoll(
                 Text(tr("Piste gelée : elle joue son rendu audio dans le morceau. « Dégeler » (menu de la piste) pour modifier ses notes."),
                     style = MaterialTheme.typography.bodySmall, color = Neon.Amber, modifier = Modifier.testTag("roll_frozen"))
             }
-            val pasteBar = if (playStep >= 0) (playStep % clip.steps) / barSteps else targetBar.coerceIn(0, NoteClip.MAX_STEPS / barSteps - 1)
+            val pasteBar = if (playBar >= 0) playBar else targetBar.coerceIn(0, NoteClip.MAX_STEPS / barSteps - 1)
             val paste: () -> NoteEdits.Result? = {
                 board?.let { b ->
                     NoteEdits.pasteOnBar(clip, b, pasteBar, barTicks).also { r ->
@@ -256,7 +266,7 @@ fun PianoRoll(
                 selection = NoteEdits.inBar(clip, bar, barTicks)
             }
             Grid(
-                clip, if (showGhosts) ghosts else emptyList(), playStep, newSteps * TICK, actions, gridHeight, harmony, chordMode,
+                clip, if (showGhosts) ghosts else emptyList(), stepOf, newSteps * TICK, actions, gridHeight, harmony, chordMode,
                 hScroll, stepWidth, grid, selectMode, selection, select = { selection = it }, apply = apply,
                 rowHeight = if (tablet) TABLET_ROW else ROW, keysWidth = keysWidth, allNames = tablet, keyOn = keyOn, keyOff = keyOff,
                 locked = frozen,
@@ -458,7 +468,7 @@ private fun VelocityLane(
 private fun Grid(
     clip: NoteClip,
     ghosts: List<Note>,
-    playStep: Int,
+    playStep: () -> Int,
     newLength: Int,
     actions: PianoRollActions,
     height: androidx.compose.ui.unit.Dp,
@@ -684,11 +694,18 @@ private fun Grid(
                     drawRect(selColor.copy(alpha = 0.15f), tl, sz)
                     drawRect(selColor, tl, sz, style = Stroke(2f))
                 }
-                if (playStep >= 0) {
-                    val x = (playStep % clip.steps) * stepPx
-                    drawLine(colors.play, Offset(x, 0f), Offset(x, size.height), 2f)
-                }
             }
+            // The play line on a layer of its own, read as it is drawn: the grid under it is not
+            // drawn again at each step (audit 16).
+            androidx.compose.foundation.layout.Spacer(
+                Modifier.matchParentSize().graphicsLayer().drawBehind {
+                    val step = playStep()
+                    if (step >= 0) {
+                        val x = (step % clip.steps) * stepPx
+                        drawLine(colors.play, Offset(x, 0f), Offset(x, size.height), 2f)
+                    }
+                },
+            )
         }
     }
 }

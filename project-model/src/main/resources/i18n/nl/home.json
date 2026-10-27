@@ -379,5 +379,18 @@
   "Celui du style": "Die van de stijl",
   "La recette": "Het recept",
   "Conseillés pour ce style : %s.": "Aangeraden voor deze stijl: %s.",
-  "Des lignes de basse « roulantes » : des notes courtes entre les coups de kick, qui galopent. Touche un motif pour l'entendre.": "Rollende baslijnen: korte noten tussen de kicks die galopperen. Tik op een patroon om het te horen."
+  "Des lignes de basse « roulantes » : des notes courtes entre les coups de kick, qui galopent. Touche un motif pour l'entendre.": "Rollende baslijnen: korte noten tussen de kicks die galopperen. Tik op een patroon om het te horen.",
+  "Pocket Studio s'est fermé deux fois en ouvrant « %s ». Le projet est gardé tel quel : rouvre-le depuis Mes projets, ou commence un projet vide.": "Pocket Studio sloot twee keer af bij het openen van ‘%s’. Het project blijft zoals het is: open het opnieuw via Mijn projecten, of begin een leeg project.",
+  "Ouverture du projet…": "Project openen…",
+  "une sauvegarde est encore en cours, réessaie dans un instant": "er wordt nog opgeslagen, probeer het zo opnieuw",
+  "Copie faite : « %s ». Touche-la pour l'ouvrir.": "Kopie gemaakt: ‘%s’. Tik erop om hem te openen.",
+  "Ce fichier ne peut pas être relu. Envoie-le tel quel pour le faire réparer : il n'est jamais effacé tout seul.": "Dit bestand kan niet gelezen worden. Stuur het zoals het is op om het te laten repareren: het wordt nooit vanzelf gewist.",
+  "Envoyer le fichier brut (.zip)": "Ruw bestand versturen (.zip)",
+  "Copie d'avant cette séance": "Kopie van vóór deze sessie",
+  "Copie d'avant la dernière séance": "Kopie van vóór de laatste sessie",
+  "Pas assez de mémoire libre pour ouvrir cette banque de sons (il faut environ %d Mo). Ferme des applis, ou choisis une banque plus légère.": "Niet genoeg vrij geheugen om deze klankbank te openen (er is ongeveer %d MB nodig). Sluit wat apps, of kies een lichtere bank.",
+  "aucune version d'avant": "geen eerdere versie",
+  "%s (avant la séance)": "%s (vóór de sessie)",
+  "Sauvegarde impossible (%s). Tes dernières modifications ne sont pas encore sauvegardées : l'appli réessaie à la prochaine modification.": "Opslaan mislukt (%s). Je laatste wijzigingen zijn nog niet opgeslagen: de app probeert het opnieuw bij je volgende wijziging.",
+  "Le projet n'a pas pu être sauvegardé (%s) : il reste ouvert, réessaie dans un instant.": "Het project kon niet worden opgeslagen (%s): het blijft open, probeer het zo opnieuw."
 }

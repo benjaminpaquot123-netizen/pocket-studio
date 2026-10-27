@@ -379,5 +379,18 @@
   "Celui du style": "The style's own",
   "La recette": "The recipe",
   "Conseillés pour ce style : %s.": "Advised for this style: %s.",
-  "Des lignes de basse « roulantes » : des notes courtes entre les coups de kick, qui galopent. Touche un motif pour l'entendre.": "Rolling basslines: short notes between the kicks that gallop along. Tap a pattern to hear it."
+  "Des lignes de basse « roulantes » : des notes courtes entre les coups de kick, qui galopent. Touche un motif pour l'entendre.": "Rolling basslines: short notes between the kicks that gallop along. Tap a pattern to hear it.",
+  "Pocket Studio s'est fermé deux fois en ouvrant « %s ». Le projet est gardé tel quel : rouvre-le depuis Mes projets, ou commence un projet vide.": "Pocket Studio closed twice while opening “%s”. The project is kept as it is: open it again from My projects, or start an empty project.",
+  "Ouverture du projet…": "Opening the project…",
+  "une sauvegarde est encore en cours, réessaie dans un instant": "a save is still running, try again in a moment",
+  "Copie faite : « %s ». Touche-la pour l'ouvrir.": "Copy made: “%s”. Tap it to open it.",
+  "Ce fichier ne peut pas être relu. Envoie-le tel quel pour le faire réparer : il n'est jamais effacé tout seul.": "This file can't be read. Send it as it is to get it repaired: it is never deleted on its own.",
+  "Envoyer le fichier brut (.zip)": "Send the raw file (.zip)",
+  "Copie d'avant cette séance": "Copy from before this session",
+  "Copie d'avant la dernière séance": "Copy from before the last session",
+  "Pas assez de mémoire libre pour ouvrir cette banque de sons (il faut environ %d Mo). Ferme des applis, ou choisis une banque plus légère.": "Not enough free memory to open this sound bank (it needs about %d MB). Close some apps, or choose a lighter bank.",
+  "aucune version d'avant": "no earlier version",
+  "%s (avant la séance)": "%s (before the session)",
+  "Sauvegarde impossible (%s). Tes dernières modifications ne sont pas encore sauvegardées : l'appli réessaie à la prochaine modification.": "Couldn't save (%s). Your latest changes aren't saved yet: the app tries again at your next change.",
+  "Le projet n'a pas pu être sauvegardé (%s) : il reste ouvert, réessaie dans un instant.": "The project couldn't be saved (%s): it stays open, try again in a moment."
 }

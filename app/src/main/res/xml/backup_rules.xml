@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- The cloud backup's content on older Android: the same as data_extraction_rules.xml (cloud-backup). -->
 <full-backup-content>
-    <include domain="file" path="projects/" />
+    <include domain="file" path="projects-backup/" />
     <include domain="file" path="favorites.json" />
     <include domain="sharedpref" path="settings.xml" />
     <include domain="sharedpref" path="projects.xml" />

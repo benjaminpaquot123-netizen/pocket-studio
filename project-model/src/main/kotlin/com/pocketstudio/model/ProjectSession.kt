@@ -65,7 +65,13 @@ class ProjectSession(
      * its changes are no longer [unsaved] but not on disk yet: a screen closing then still
      * [flush]es, which waits for it).
      */
-    val settled: Boolean get() = !_unsaved.value && !saveLock.isLocked
+    val settled: Boolean get() = !_unsaved.value && !saveLock.isLocked && !viewPending
+
+    /** A change of what is shown alone ([showQuietly]) not on disk yet: the next save or [flush] writes it. */
+    @Volatile private var viewPending = false
+
+    /** The file as it was when the project opened is kept once, before this session's first save. */
+    private var openingKept = false
 
     /**
      * Applies [transform] to the project. Same [coalesceKey] in a quick burst = one undo step.
@@ -82,6 +88,19 @@ class ProjectSession(
         if (next == history.current) return
         history.replace(next)
         publish()
+    }
+
+    /**
+     * Like [editQuietly], for a change of what is shown alone (the part the screens follow while
+     * the song plays): not written on its own (audit 16: a whole save each time a part came
+     * round); the next save, or [flush] (the app in the background), takes it with it.
+     */
+    fun showQuietly(transform: (Project) -> Project) {
+        val next = apply(transform)
+        if (next == history.current) return
+        history.replace(next)
+        _project.value = history.current
+        viewPending = true
     }
 
     /**
@@ -140,6 +159,10 @@ class ProjectSession(
     /** Writes any pending change now; false when the save failed (the change is still waiting). */
     suspend fun flush(): Boolean {
         pendingSave?.cancel()
+        if (viewPending && !dirty) {
+            dirtySince = clock()
+            dirty = true
+        }
         return saveNow()
     }
 
@@ -166,12 +189,20 @@ class ProjectSession(
         if (!dirty) return@withLock true
         if (!persist) {
             dirty = false
+            viewPending = false
             return@withLock true
         }
         val snapshot = history.current.let { p -> saveAs?.invoke(p) ?: p }
         dirty = false
+        viewPending = false
         try {
-            withContext(io) { store.save(id, snapshot) }
+            withContext(io) {
+                if (!openingKept) {
+                    store.keepOpening(id)
+                    openingKept = true
+                }
+                store.save(id, snapshot)
+            }
             _lastSaveError.value = null
             true
         } catch (e: CancellationException) {

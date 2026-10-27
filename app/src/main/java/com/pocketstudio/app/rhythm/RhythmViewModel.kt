@@ -391,7 +391,7 @@ data class TransportUi(
  * The engine never reads the project directly: it receives small commands.
  */
 class RhythmViewModel(app: Application) : AndroidViewModel(app) {
-    private val store = ProjectStore(File(app.filesDir, "projects"))
+    private val store = ProjectOpening.projectStore(app)
 
     /** A one-off message for the user (e.g. an unreadable project was set aside). Declared before `session`. */
     private val _notice = MutableStateFlow<String?>(null)
@@ -427,9 +427,26 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     @Volatile internal var liveDriveLevel: Float = Float.NaN
         private set
 
+    /**
+     * The project as read before the screens were made ([ProjectOpening.prepare], off the main
+     * thread); read here only when nothing was (the tests, a screen made another way), the saves
+     * of a screen just closed waited for 3 s at most in all.
+     */
+    private val opened: OpenedProject = (
+        ProjectOpening.take(projectId) ?: run {
+            val deadline = System.currentTimeMillis() + 3000
+            TakeVault.app.awaitIdleBlocking(3000)
+            ClosingSaves.awaitIdleBlocking((deadline - System.currentTimeMillis()).coerceAtLeast(0))
+            ProjectOpener(projectId, store, journals).open()
+        }
+    ).also { o -> o.notice?.let { _notice.value = it } }
+
+    /** True when the app opened on no project because the last one crashed it twice as it opened. */
+    val rescued: Boolean get() = opened.rescued
+
     val session: ProjectSession = ProjectSession(
         id = projectId,
-        initial = loadOrCreate(),
+        initial = opened.project,
         store = store,
         scope = viewModelScope,
         io = Dispatchers.IO,
@@ -500,82 +517,6 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             val lit = (0 until NativeEngine.LANES).filter { litUntil[it] > now }.toSet()
             _live.value = LiveUi(NativeEngine.currentStep(), lit, NativeEngine.absoluteStep(), NativeEngine.songStep())
             kotlinx.coroutines.delay(33)
-        }
-    }
-
-    private fun loadOrCreate(): Project {
-        if (com.pocketstudio.app.projects.CurrentProject.isNone(projectId)) return starterProject()
-        try {
-            // A take of the app closed a moment ago may still be being written, its last edits saved.
-            TakeVault.app.awaitIdleBlocking(3000)
-            ClosingSaves.awaitIdleBlocking(3000)
-            val loaded = runBlocking(Dispatchers.IO) { store.load(projectId) }
-            if (loaded != null) return withWaitingLiveTake(withWaitingTakes(loaded))
-        } catch (e: Exception) {
-            AppLog.add("Projet illisible : ${e.message} / ${e.cause?.message}")
-            // Never let the first autosave overwrite files we could not read: move them aside.
-            val aside = File(store.folder(projectId).parentFile, "$projectId-illisible-${System.currentTimeMillis()}")
-            val moved = store.folder(projectId).renameTo(aside)
-            _notice.value = if (moved) {
-                tr("Le projet n'a pas pu être relu. Il est mis de côté (%s) et un nouveau projet commence.", aside.name)
-            } else {
-                tr("Le projet n'a pas pu être relu ; un nouveau projet commence.")
-            }
-        }
-        return starterProject()
-    }
-
-    /**
-     * Takes finished while the app was closing ([TakeVault]) put on their tracks, saved with the
-     * project, then forgotten. The project as loaded when that fails (they wait for next time).
-     */
-    private fun withWaitingTakes(loaded: Project): Project {
-        val folder = store.folder(projectId)
-        val takes = runCatching { PendingTakes.read(folder) }.getOrElse { emptyList() }
-        if (takes.isEmpty()) return loaded
-        val p = loaded.withTakes(takes).sanitized()
-        return try {
-            runBlocking(Dispatchers.IO) {
-                if (p != loaded) store.save(projectId, p)
-                PendingTakes.clear(folder, takes)
-            }
-            if (p != loaded) {
-                AppLog.add("Prise récupérée : ${takes.size}")
-                _notice.value = tr("Ta dernière prise a été gardée : elle est sur sa piste audio.")
-            }
-            p
-        } catch (e: Exception) {
-            AppLog.add("Prise en attente : ${e.message}")
-            loaded
-        }
-    }
-
-    /**
-     * A Live take the app could not finish (closed or killed while it recorded, see [keepTakeJournal])
-     * written into the song as it was played up to there, saved, then forgotten; the project as
-     * loaded when it is another project's, already in the song ([Project.liveTake]: a journal
-     * left by a kill after its take was saved) or that fails (an unreadable journal is dropped).
-     */
-    private fun withWaitingLiveTake(loaded: Project): Project {
-        // After the writes of the screen that closed (the writer keeps their order).
-        val journal = journals.read(projectId) ?: return loaded
-        if (journal.projectId != projectId) return loaded  // another project's: when it opens
-        val written = loaded.writeJournal(journal, projectId)
-        return try {
-            if (written.parts > 0) runBlocking(Dispatchers.IO) { store.save(projectId, written.project) }
-            // Only once the song holding it is on disk (a kill before: written at the next opening).
-            journals.drop(projectId, journal.takeId.ifEmpty { null })
-            if (written.parts > 0) {
-                AppLog.add("Prise Live récupérée : ${written.parts} parties")
-                _notice.value = tr("Ta prise Live a été gardée : elle est dans le morceau (%d parties).", written.parts)
-                written.project
-            } else {
-                if (written.already) AppLog.add("Prise Live déjà dans le morceau : journal effacé")
-                loaded
-            }
-        } catch (e: Exception) {
-            AppLog.add("Prise Live en attente : ${e.message}")
-            loaded
         }
     }
 
@@ -1467,7 +1408,16 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val missing = padSamples.missing(project.value.sampleFiles)
         if (missing.isEmpty()) return
         viewModelScope.launch {
-            val prepared = runCatching { withContext(Dispatchers.IO) { padSamples.reload(missing) } }.getOrElse { emptyList() }
+            // Audit 17: the screen gone meanwhile (another project opened), what was read is freed
+            // and nothing of this project reaches the engine (the cancellation is not swallowed).
+            val prepared = try {
+                finishOrRelease(Dispatchers.IO, { list: List<PadSamples.Prepared> -> list.forEach { it.native.close() } }) { padSamples.reload(missing) }
+                    ?: emptyList()
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                emptyList()
+            }
             // Meanwhile the project may have moved on (« Prise précédente » touched twice): a sound
             // it no longer uses, or one another reload already brought back, is freed at once.
             val used = project.value.sampleFiles
@@ -1477,6 +1427,15 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             pushAudio()
             project.value.instrumentTracks.forEach { pushSampled(id = it.id) }
         }
+    }
+
+    /** [read] on the IO threads; null when it fails, but a cancellation goes on (never taken for a failure). */
+    private suspend fun <T> readOrNull(read: () -> T): T? = try {
+        withContext(Dispatchers.IO) { read() }
+    } catch (e: kotlinx.coroutines.CancellationException) {
+        throw e
+    } catch (e: Exception) {
+        null
     }
 
     /** An audio file from the phone onto audio track [id]. */
@@ -2081,7 +2040,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         // Another sound is still being prepared for the keyboard: this touch waits for it.
         if (_trackSoundBusy.value == BUSY_TRACK_SOUND) return false
         viewModelScope.launch {
-            val pcm = runCatching { withContext(Dispatchers.IO) { padSamples.read(s.file) } }.getOrNull()
+            val pcm = readOrNull { padSamples.read(s.file) }
             if (pcm == null || pcm.frames == 0) {
                 if (_trackSoundBusy.value != BUSY_TRACK_SOUND) _trackSoundBusy.value = tr("Ce son n'a pas pu être lu.")
                 return@launch
@@ -2104,7 +2063,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             val app = getApplication<Application>()
             val name = PadSamples.nameFrom(displayName(app, uri))
-            val pcm = runCatching { withContext(Dispatchers.IO) { AudioDecoder.decode(app, uri) } }.getOrNull()
+            val pcm = readOrNull { AudioDecoder.decode(app, uri) }
             if (pcm == null || PadSamples.isSilent(pcm)) {
                 if (_trackSoundBusy.value != BUSY_TRACK_SOUND) _trackSoundBusy.value = tr("Ce fichier n'a pas pu être lu.")
                 return@launch
@@ -2938,7 +2897,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (index !in song.indices || !NativeEngine.isAvailable) return
         val part = song[index]
         // Playing is not an edit: no undo step for the screens going to the part's scene.
-        if (_followSong.value) session.editQuietly { it.switchScene(part.scene) }
+        if (_followSong.value) session.showQuietly { it.switchScene(part.scene) }
         syncEngine()
         pushPart(project.value, part.scene, part)  // the part's scene without its muted tracks
         applyAutomationState(project.value, project.value.automationBefore(index))
@@ -2990,7 +2949,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val ui = _sessionUi.value
         if (ui.pending != null && NativeEngine.sceneSwaps() != swapsSeen) {
             swapsSeen = NativeEngine.sceneSwaps()
-            ui.pending.let { now -> if (screensFollow(ui)) session.editQuietly { it.switchScene(now) } }
+            ui.pending.let { now -> if (screensFollow(ui)) session.showQuietly { it.switchScene(now) } }
         }
     }
 
@@ -3146,7 +3105,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         _liveGrid.value = gridOfPart(song.getOrNull(index)?.takeIf { it.scene == now }, now, liveTransportStep(), slotStatesNow())
         stagedFrom.fill(null)
         // The engine already plays it: only the screens follow (no undo step).
-        if (screensFollow(ui)) session.editQuietly { it.switchScene(now) }
+        if (screensFollow(ui)) session.showQuietly { it.switchScene(now) }
         // Edits held for this scene ("rester sur ma scène") that the waiting copy missed: it plays now.
         if (restageJob?.isActive == true && now == project.value.scene) {
             restageJob?.cancel()
@@ -5043,6 +5002,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         wanted.filter { it !in fonts && it !in loadingBanks }.forEach { id ->
             val bank = InstrumentLibrary.bank(id)
             if (!InstrumentLibrary.isInstalled(app, bank)) return@forEach
+            InstrumentLibrary.memoryShortfall(app, bank)?.let { needed ->
+                AppLog.add("Banque ${bank.name} non ouverte : mémoire libre insuffisante")
+                _notice.value = bankMemoryMessage(needed)
+                return@forEach
+            }
             loadingBanks += id
             viewModelScope.launch {
                 val font = withContext(Dispatchers.IO) {
@@ -5056,6 +5020,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             }
         }
     }
+
+    private fun bankMemoryMessage(needed: Long) =
+        tr("Pas assez de mémoire libre pour ouvrir cette banque de sons (il faut environ %d Mo). Ferme des applis, ou choisis une banque plus légère.", (needed / 1_000_000).toInt())
 
     /** Closes banks nobody plays or browses any more (the engine keeps its own instances). */
     private fun releaseUnusedFonts() {
@@ -5084,6 +5051,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val app = getApplication<Application>()
         if (!InstrumentLibrary.isInstalled(app, bank)) {
             _library.value = LibraryState.Missing
+            return
+        }
+        InstrumentLibrary.memoryShortfall(app, bank)?.let { needed ->
+            AppLog.add("Banque ${bank.name} non ouverte : mémoire libre insuffisante")
+            _library.value = LibraryState.Failed(bankMemoryMessage(needed))
             return
         }
         _library.value = LibraryState.Loading
@@ -6755,9 +6727,23 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (NativeEngine.isAvailable) NativeEngine.setSynthParam(index, project.value.track(id).synth.get(index), id)
     }
 
+    /**
+     * A sound of the synth's list on the selected track. Audit 01 (G1): a track played by a sound
+     * file, a pack's instrument, the 808 or a General MIDI instrument goes to the synth too (in
+     * the same undo step), or the sound chosen would never be heard.
+     */
     fun applySynthPreset(patch: SynthPatch) {
-        editTrack { it.copy(synth = patch) }
+        val other = currentTrack.engine != InstrumentTrack.ENGINE_SYNTH || currentTrack.instrument != null
+        editTrack { it.copy(synth = patch, engine = InstrumentTrack.ENGINE_SYNTH, instrument = null) }
         pushSynth(currentTrack.synth)
+        if (other) {
+            pushInstrument()
+            pushSampled()
+            pushMulti()
+            pushPlaits()
+            releaseUnusedFonts()
+            releaseUnusedMulti()
+        }
     }
 
     // --- Phase 35: « ● Enregistrer » in each editor, what comes after a take, the last bars played --
@@ -7698,7 +7684,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
         val ui = _sessionUi.value
         // Staying on a scene during the song: the screens keep the scene the step brought back.
-        if (screensFollow(ui) && project.value.scene != heard && heard in project.value.allScenes.indices) session.editQuietly { it.switchScene(heard) }
+        if (screensFollow(ui) && project.value.scene != heard && heard in project.value.allScenes.indices) session.showQuietly { it.switchScene(heard) }
         if (ui.songIndex >= 0) {
             val index = followSongIndex(project.value.song, ui.songIndex, heard)
             if (index < 0) {

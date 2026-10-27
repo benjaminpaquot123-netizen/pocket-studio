@@ -16,6 +16,10 @@ data class ProjectInfo(
     val bars: Int,
     val scenes: Int,
     val hasRemix: Boolean,
+    /** Its file could not be read: it is never opened (that would set it aside again), only sent as it is. */
+    val unreadable: Boolean = false,
+    /** « La version d'avant la dernière séance » is kept ([ProjectCatalog.restoreOpening]). */
+    val hasOpening: Boolean = false,
 )
 
 /** A project .zip brought in: the new project's [id], and the sounds it named but did not hold (left out). */
@@ -27,8 +31,8 @@ data class ImportedProject(val id: String, val missingSounds: Int = 0)
  * [stems]: where separated songs live (`stems/<set id>/`), so a remix's .zip carries its song.
  * Blocking file work: call it off the main thread.
  */
-class ProjectCatalog(private val root: File, private val trash: File, private val stems: File? = null) {
-    val store = ProjectStore(root)
+class ProjectCatalog(private val root: File, private val trash: File, private val stems: File? = null, private val backup: File? = null) {
+    val store = ProjectStore(root, backup)
 
     fun list(): List<ProjectInfo> = store.list().mapNotNull { info(it) }.sortedByDescending { it.modified }
 
@@ -37,9 +41,48 @@ class ProjectCatalog(private val root: File, private val trash: File, private va
         val modified = listOf(File(dir, ProjectStore.MAIN), File(dir, ProjectStore.BACKUP)).filter { it.exists() }.maxOfOrNull { it.lastModified() }
             ?: return null
         val p = runCatching { store.load(id) }.getOrNull()
-            ?: return ProjectInfo(id, tr("Projet illisible"), modified, 0.0, 0, 0, false)
+            ?: return ProjectInfo(id, tr("Projet illisible"), modified, 0.0, 0, 0, false, unreadable = true)
         val scene = p.currentSceneContent()
-        return ProjectInfo(id, p.name, modified, p.tempoBpm, scene.stepsFor(p.stepsPerBar) / p.stepsPerBar, p.allScenes.size, p.remix.setId != null)
+        return ProjectInfo(
+            id, p.name, modified, p.tempoBpm, scene.stepsFor(p.stepsPerBar) / p.stepsPerBar, p.allScenes.size, p.remix.setId != null,
+            hasOpening = File(dir, ProjectStore.OPENING).isFile,
+        )
+    }
+
+    /**
+     * A project's folder as it is on the phone (its files, read or not, and its sounds) as a .zip:
+     * the only way out for a project the app cannot read (« Envoyer le fichier brut »), to be
+     * repaired elsewhere. Nothing is decoded.
+     */
+    @Throws(IOException::class)
+    fun exportRawZip(id: String, out: java.io.OutputStream) {
+        val dir = store.folder(id)
+        if (!dir.isDirectory) throw IOException(tr("projet introuvable"))
+        java.util.zip.ZipOutputStream(out.buffered()).use { zip ->
+            zip.setLevel(java.util.zip.Deflater.BEST_SPEED)
+            dir.walkTopDown().filter { it.isFile }.sortedBy { it.path }.forEach { f ->
+                zip.putFile(f.relativeTo(dir).invariantSeparatorsPath, f)
+            }
+        }
+    }
+
+    /**
+     * « La version d'avant la dernière séance » of [id] ([ProjectStore.keepOpening]) as a new
+     * project named [name] (its sounds copied): nothing is replaced. Returns the new id.
+     */
+    @Throws(IOException::class)
+    fun restoreOpening(id: String, name: String): String {
+        val before = store.loadOpening(id) ?: throw IOException(tr("aucune version d'avant"))
+        val copy = newId()
+        try {
+            val samples = File(store.folder(id), SAMPLES)
+            if (samples.isDirectory) samples.copyRecursively(File(store.folder(copy), SAMPLES), overwrite = true)
+            store.save(copy, before.copy(name = name.take(MAX_NAME)).sanitized())
+        } catch (e: Exception) {
+            store.folder(copy).deleteRecursively()
+            throw if (e is IOException) e else IOException(tr("copie impossible"), e)
+        }
+        return copy
     }
 
     /**
@@ -95,6 +138,8 @@ class ProjectCatalog(private val root: File, private val trash: File, private va
             if (!from.copyRecursively(File(trash, entry), overwrite = true)) throw IOException(tr("copie impossible"))
             from.deleteRecursively()
         }
+        // A phone restored from the cloud backup does not bring a deleted project back.
+        store.forgetMirror(id)
         return entry
     }
 
@@ -106,7 +151,35 @@ class ProjectCatalog(private val root: File, private val trash: File, private va
         val wanted = entry.substringBefore('@')
         val id = if (store.folder(wanted).exists()) newId() else wanted
         if (!from.renameTo(store.folder(id))) throw IOException(tr("restauration impossible"))
+        store.refreshMirror(id)
         return id
+    }
+
+    /**
+     * The projects of the cloud backup's copies ([ProjectStore] `backup`) that this phone does not
+     * have (a phone set up again from Android's backup, which holds no sounds): each one written
+     * back without its sounds (its pads back to the kit's). Never one in the list or the trash.
+     * Returns how many came back.
+     */
+    fun restoreFromBackup(): Int {
+        val dir = backup ?: return 0
+        val known = knownIds()
+        var restored = 0
+        dir.listFiles().orEmpty().filter { it.isFile && it.name.endsWith(ProjectStore.MIRROR) }.forEach { f ->
+            val id = f.name.removeSuffix(ProjectStore.MIRROR)
+            if (id in known || !PadSample(id, "").isSafe) return@forEach
+            val read = runCatching {
+                java.util.zip.GZIPInputStream(f.inputStream()).bufferedReader(Charsets.UTF_8).use { ProjectJson.decode(it.readText()) }.sanitized()
+            }.getOrNull() ?: return@forEach
+            runCatching { store.save(id, read.withoutSounds(read.sampleFiles)) }.onSuccess { restored++ }
+        }
+        return restored
+    }
+
+    /** A copy for the cloud backup of each project that has none (saved before the copies existed). */
+    fun mirrorMissing() {
+        val dir = backup ?: return
+        store.list().forEach { id -> if (!File(dir, "$id${ProjectStore.MIRROR}").exists()) store.refreshMirror(id) }
     }
 
     /** The projects in the trash, most recently deleted first (each one can be [restore]d). */
@@ -185,11 +258,18 @@ class ProjectCatalog(private val root: File, private val trash: File, private va
         root.listFiles().orEmpty().filter { it.isDirectory }.map { it.name }.toSet() +
             trash.listFiles().orEmpty().filter { it.isDirectory }.map { it.name.substringBefore('@') }
 
-    /** Forgets trashed projects older than [maxAgeMs]. */
+    /**
+     * Forgets trashed projects older than [maxAgeMs]. Never a project set aside as unreadable
+     * (`-illisible-` in its id) nor one whose file cannot be read: it may be the only copy of
+     * someone's work, to be repaired; only « Supprimer définitivement » removes it.
+     */
     fun purgeTrash(maxAgeMs: Long, now: Long = System.currentTimeMillis()) {
+        val bin = ProjectStore(trash)
         trash.listFiles()?.forEach { f ->
             val at = f.name.substringAfterLast('@').toLongOrNull() ?: return@forEach
-            if (now - at > maxAgeMs) f.deleteRecursively()
+            if (now - at <= maxAgeMs) return@forEach
+            if (f.name.contains(UNREADABLE) || runCatching { bin.load(f.name) }.isFailure) return@forEach
+            f.deleteRecursively()
         }
     }
 
@@ -351,6 +431,11 @@ class ProjectCatalog(private val root: File, private val trash: File, private va
          */
         const val MAX_PROJECT_JSON = 32L * 1024 * 1024
         const val MAX_ZIP_TOTAL = 2048L * 1024 * 1024
+        /** In the folder name of a project the app could not read and set aside (`<id>-illisible-<time>`). */
+        const val UNREADABLE = "-illisible-"
+
+        /** The name of « the version before the session » of a project named [name] (see [DefaultNames]). */
+        fun beforeSessionName(name: String): String = DefaultNames.BEFORE_SESSION.format(name.take(MAX_NAME - 20))
         private val SET_ID = Regex("\"setId\"\\s*:\\s*\"([^\"]+)\"")
     }
 }

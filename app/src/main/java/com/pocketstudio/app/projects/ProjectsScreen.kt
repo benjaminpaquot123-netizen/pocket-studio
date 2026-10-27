@@ -96,6 +96,10 @@ class ProjectsActions(
     val duplicate: (ProjectInfo) -> Unit = {},
     /** Share the project and its sounds as a .zip. */
     val exportZip: (ProjectInfo) -> Unit = {},
+    /** A project the app cannot read: its files as they are, as a .zip to send. */
+    val exportRaw: (ProjectInfo) -> Unit = {},
+    /** « La version d'avant la séance » as a new project. */
+    val restoreOpening: (ProjectInfo) -> Unit = {},
     val importZip: () -> Unit = {},
     val delete: (ProjectInfo) -> Unit = {},
     val undoDelete: () -> Unit = {},
@@ -259,7 +263,14 @@ private fun ProjectCard(p: ProjectInfo, open: Boolean, now: Long, actions: Proje
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(containerColor = Neon.Surface),
         border = BorderStroke(if (open) 2.dp else 1.dp, if (open) Neon.Acid else Neon.Outline),
-        modifier = Modifier.fillMaxWidth().clickable { if (!open) actions.open(p) else (actions.resume ?: actions.back)() }.testTag("project_${p.id}"),
+        // An unreadable project is never opened (that would set it aside once more): its menu instead.
+        modifier = Modifier.fillMaxWidth().clickable {
+            when {
+                p.unreadable -> menu = true
+                !open -> actions.open(p)
+                else -> (actions.resume ?: actions.back)()
+            }
+        }.testTag("project_${p.id}"),
     ) {
         Row(Modifier.padding(start = 14.dp, top = 10.dp, bottom = 10.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
@@ -272,7 +283,12 @@ private fun ProjectCard(p: ProjectInfo, open: Boolean, now: Long, actions: Proje
                             modifier = Modifier.padding(start = 10.dp).testTag("project_open_badge"))
                     }
                 }
-                Text(
+                if (p.unreadable) {
+                    Text(
+                        tr("Ce fichier ne peut pas être relu. Envoie-le tel quel pour le faire réparer : il n'est jamais effacé tout seul."),
+                        style = MaterialTheme.typography.bodySmall, color = Neon.Amber,
+                    )
+                } else Text(
                     listOfNotNull(
                         whenText(p.modified, now),
                         if (p.tempoBpm > 0) "${p.tempoBpm.toInt()} BPM" else null,
@@ -294,9 +310,24 @@ private fun ProjectCard(p: ProjectInfo, open: Boolean, now: Long, actions: Proje
                     Icon(Icons.Filled.MoreVert, contentDescription = tr("Options de %s", com.pocketstudio.model.DefaultNames.shown(p.name)))
                 }
                 ScaledDropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
-                    DropdownMenuItem(text = { Text(tr("Renommer")) }, onClick = { menu = false; onRename() })
-                    DropdownMenuItem(text = { Text(tr("Dupliquer")) }, onClick = { menu = false; actions.duplicate(p) })
-                    DropdownMenuItem(text = { Text(tr("Envoyer / sauvegarder (.zip)")) }, onClick = { menu = false; actions.exportZip(p) })
+                    if (p.unreadable) {
+                        DropdownMenuItem(
+                            text = { Text(tr("Envoyer le fichier brut (.zip)")) },
+                            onClick = { menu = false; actions.exportRaw(p) },
+                            modifier = Modifier.testTag("project_raw_${p.id}"),
+                        )
+                    } else {
+                        DropdownMenuItem(text = { Text(tr("Renommer")) }, onClick = { menu = false; onRename() })
+                        DropdownMenuItem(text = { Text(tr("Dupliquer")) }, onClick = { menu = false; actions.duplicate(p) })
+                        DropdownMenuItem(text = { Text(tr("Envoyer / sauvegarder (.zip)")) }, onClick = { menu = false; actions.exportZip(p) })
+                        if (p.hasOpening) {
+                            DropdownMenuItem(
+                                text = { Text(if (open) tr("Copie d'avant cette séance") else tr("Copie d'avant la dernière séance")) },
+                                onClick = { menu = false; actions.restoreOpening(p) },
+                                modifier = Modifier.testTag("project_opening_${p.id}"),
+                            )
+                        }
+                    }
                     DropdownMenuItem(
                         text = { Text(tr("Supprimer")) },
                         enabled = !busy,

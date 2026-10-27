@@ -1,5 +1,7 @@
 package com.pocketstudio.app.ui
 
+import com.pocketstudio.app.report.isStorageFull
+import com.pocketstudio.app.report.forUser
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.foundation.layout.heightIn
@@ -273,17 +275,24 @@ private tailrec fun android.content.Context.findActivity(): androidx.activity.Co
 @Composable
 fun AppRoot() {
     val context = LocalContext.current
-    val mainVm: MainViewModel = viewModel()
+    // The app's own ViewModels outlive a change of project (AppViewModels); the others are the project's.
+    val mainVm: MainViewModel = com.pocketstudio.app.projects.appViewModel()
     val studioVm: StudioViewModel = viewModel()
     val latencyVm: LatencyViewModel = viewModel()
-    val recetteVm: RecetteViewModel = viewModel()
-    val midiVm: MidiViewModel = viewModel()
+    val recetteVm: RecetteViewModel = com.pocketstudio.app.projects.appViewModel()
+    val midiVm: MidiViewModel = com.pocketstudio.app.projects.appViewModel()
     val rhythmVm: RhythmViewModel = viewModel()
+    // The screens ran a moment on the project opened: it did not crash the app as it opened (ProjectOpening).
+    LaunchedEffect(rhythmVm) {
+        androidx.compose.runtime.withFrameNanos { }
+        kotlinx.coroutines.delay(3000)
+        com.pocketstudio.app.rhythm.ProjectOpening.settled(context)
+    }
     // Phase 39: the controller's first eight knobs follow the screen shown.
     val knobsVm: com.pocketstudio.app.midi.KnobsViewModel = viewModel()
     remember(knobsVm, rhythmVm) { knobsVm.attach(com.pocketstudio.app.midi.rhythmKnobHost(rhythmVm)) }
-    val remixVm: RemixViewModel = viewModel()
-    val generateVm: com.pocketstudio.app.generate.GenerateViewModel = viewModel()
+    val remixVm: RemixViewModel = com.pocketstudio.app.projects.appViewModel()
+    val generateVm: com.pocketstudio.app.generate.GenerateViewModel = com.pocketstudio.app.projects.appViewModel()
     val libraryVm: com.pocketstudio.app.library.SoundLibraryViewModel = viewModel()
     // « Signaler un bug »: opened from Plus, the Mode simple's ⋯, a long press on « ? » and the crash banner.
     val bugVm: com.pocketstudio.app.report.BugReportViewModel = viewModel()
@@ -404,8 +413,11 @@ fun AppRoot() {
             rhythmVm.keepTake()  // a microphone take in progress lands on its track first
             rhythmVm.flushNow()
             // Not saved (a full phone): stay here rather than reopen this project without its latest edits.
-            if (rhythmVm.session.lastSaveError.value != null) {
-                Toast.makeText(context, tr("Le projet n'a pas pu être sauvegardé (appareil plein ?) : libère de la place avant d'en ouvrir un autre."), Toast.LENGTH_LONG).show()
+            val failed = rhythmVm.session.lastSaveError.value
+            if (failed != null) {
+                val text = if (failed.isStorageFull()) tr("Le projet n'a pas pu être sauvegardé (appareil plein ?) : libère de la place avant d'en ouvrir un autre.")
+                    else tr("Le projet n'a pas pu être sauvegardé (%s) : il reste ouvert, réessaie dans un instant.", failed.forUser())
+                Toast.makeText(context, text, Toast.LENGTH_LONG).show()
                 return@launch
             }
             showProjects = deleteAfter != null  // remembered across the rebuild
@@ -692,6 +704,10 @@ fun AppRoot() {
                                 WavExporter.share(context, listOf(file), tr("Envoyer le projet"))
                             }
                         },
+                        exportRaw = { p ->
+                            projectsVm.exportRaw(p) { file -> WavExporter.share(context, listOf(file), tr("Envoyer le projet")) }
+                        },
+                        restoreOpening = projectsVm::restoreOpening,
                         importZip = { pickProjectZip.launch(arrayOf("application/zip", "application/x-zip-compressed", "application/octet-stream")) },
                         // The open project too (an assistant's song included): another one opens first
                         // (the latest, else a new blank one), then it goes to the trash.
@@ -1414,8 +1430,14 @@ fun AppRoot() {
                 )
             }
             if (saveError != null) {
+                // Audit 14: a full phone said as such, any other failure with its own words.
+                val error = saveError
                 Text(
-                    tr("Sauvegarde impossible (mémoire pleine ?). Tes dernières modifications ne sont pas encore sauvegardées. Pour faire de la place : Mes projets › Corbeille › Vider la corbeille."),
+                    if (error == null || error.isStorageFull()) {
+                        tr("Sauvegarde impossible (mémoire pleine ?). Tes dernières modifications ne sont pas encore sauvegardées. Pour faire de la place : Mes projets › Corbeille › Vider la corbeille.")
+                    } else {
+                        tr("Sauvegarde impossible (%s). Tes dernières modifications ne sont pas encore sauvegardées : l'appli réessaie à la prochaine modification.", error.forUser())
+                    },
                     color = Color.Black,
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.fillMaxWidth().background(Neon.Amber).windowInsetsPadding(SIDE_INSETS).padding(8.dp)
@@ -1609,7 +1631,7 @@ fun AppRoot() {
                         AppTab.Rythme -> {
                             val project by rhythmVm.project.collectAsStateWithLifecycle()
                             val transport by rhythmVm.transport.collectAsStateWithLifecycle()
-                            val live by rhythmVm.live.collectAsStateWithLifecycle()
+                            val liveState = rhythmVm.live.collectAsStateWithLifecycle()
                             val canUndo by rhythmVm.session.canUndo.collectAsStateWithLifecycle()
                             val canRedo by rhythmVm.session.canRedo.collectAsStateWithLifecycle()
                             val take by rhythmVm.audioRecording.collectAsStateWithLifecycle()
@@ -1624,6 +1646,7 @@ fun AppRoot() {
                                 lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollLive() }
                             }
 WithPartHeader(rhythmVm) { partModifier ->
+                            WithLive(liveState) { live ->
                                                         RhythmScreen(
                                 modifier = partModifier,
                                 record = {
@@ -1716,11 +1739,12 @@ WithPartHeader(rhythmVm) { partModifier ->
                                 kits = rhythmVm.kitChoices(packsOnPhone, kitLibrary),
                             )
                             }
+                            }
                         }
                         AppTab.Acide -> {
                             val project by rhythmVm.project.collectAsStateWithLifecycle()
                             val transport by rhythmVm.transport.collectAsStateWithLifecycle()
-                            val live by rhythmVm.live.collectAsStateWithLifecycle()
+                            val liveState = rhythmVm.live.collectAsStateWithLifecycle()
                             val selected by rhythmVm.selectedAcidStep.collectAsStateWithLifecycle()
                             LaunchedEffect(Unit) {
                                 lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollLive() }
@@ -1728,6 +1752,7 @@ WithPartHeader(rhythmVm) { partModifier ->
                             val favorites by rhythmVm.favorites.collectAsStateWithLifecycle()
                             val automationRecording by rhythmVm.automationRecord.collectAsStateWithLifecycle()
 WithPartHeader(rhythmVm) { partModifier ->
+                            WithLive(liveState) { live ->
                                                         AcidScreen(
                                 modifier = partModifier,
                                 record = {
@@ -1764,6 +1789,7 @@ WithPartHeader(rhythmVm) { partModifier ->
                                 browser = acidSoundBrowser(rhythmVm, project, favorites),
                             )
                             }
+                            }
                         }
                         AppTab.Synthe -> {
                             DisposableEffect(Unit) { onDispose { rhythmVm.synthAllOff() } }
@@ -1774,7 +1800,7 @@ WithPartHeader(rhythmVm) { partModifier ->
                             val shownTrack = if (fullProject.tracks.any { it.id == selectedTrack }) selectedTrack else 0
                             val playUi by rhythmVm.play.collectAsStateWithLifecycle()
                             val octave by rhythmVm.keyboardOctave.collectAsStateWithLifecycle()
-                            val live by rhythmVm.live.collectAsStateWithLifecycle()
+                            val liveState = rhythmVm.live.collectAsStateWithLifecycle()
                             val library by rhythmVm.library.collectAsStateWithLifecycle()
                             val trackSoundMessage by rhythmVm.trackSoundBusy.collectAsStateWithLifecycle()
                             val bankId by rhythmVm.bankId.collectAsStateWithLifecycle()
@@ -1817,7 +1843,9 @@ WithPartHeader(rhythmVm) { partModifier ->
                                     stepsPerBar = project.stepsPerBar,
                                     clip = project.synthNotes,
                                     ghosts = NoteClip.ghostsOf(project.acid, project.synthNotes.steps),
-                                    playStep = live.absoluteStep,
+                                    playStep = -1,
+                                    // Read where the play line is drawn, not here (audit 16: the tab redrawn at each step).
+                                    playStepOf = { liveState.value.absoluteStep },
                                     actions = PianoRollActions(
                                         add = rhythmVm::addNote,
                                         remove = rhythmVm::removeNote,
@@ -3133,3 +3161,13 @@ internal fun simpleTracks(p: Project): List<SimpleTrack> {
 
 /** How long « Voir le réglage » keeps a control lit (it also goes at a touch on « Compris »). */
 private const val GUIDE_SPOT_MS = 8000L
+
+/**
+ * [content] with the engine's position ([RhythmViewModel.live], new about 30 times a second) read
+ * in a scope of its own: the tab around it (its other states, its actions) is not recomposed at
+ * each step (audit 16).
+ */
+@Composable
+private fun WithLive(state: androidx.compose.runtime.State<com.pocketstudio.app.rhythm.LiveUi>, content: @Composable (com.pocketstudio.app.rhythm.LiveUi) -> Unit) {
+    content(state.value)
+}

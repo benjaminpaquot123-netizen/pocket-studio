@@ -25,7 +25,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Album
+import androidx.compose.material.icons.filled.Bolt
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.FolderOpen
+import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.PlayArrow
@@ -41,6 +45,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -61,10 +68,11 @@ import com.pocketstudio.ui.SectionLabel
 import kotlin.math.roundToInt
 
 /**
- * « Nouveau projet »: the guided song first and standing out, then the assistant's styles (the same
- * list, families and order; every family folded at first, a colour and an icon each) made whole in
- * one touch or opened step by step, then the other starters: the starting beat, the demos (a play
- * button each, to hear them without opening a project) and the empty project under their headings.
+ * « Nouveau projet »: three big choices, one sentence each (Benjamin, 2026-10-27): « J'apprends »
+ * (the tutorial, Facile or Pro, then the style), « Fais-moi un morceau » (the assistant, then the
+ * Guide), « Je pars de zéro » (an empty project). Everything else (a style's song in one touch,
+ * the starting beat, the demos, the Remix, an import) waits folded under « Autres façons de
+ * commencer » (open while a song is being prepared).
  */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -77,6 +85,17 @@ internal fun NewProjectPage(
     val busy = quick.creating != null
     // Leaving the page ends a demo still playing.
     DisposableEffect(Unit) { onDispose { actions.stopDemo() } }
+    var learning by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(false) }
+    if (learning) {
+        androidx.activity.compose.BackHandler { learning = false }
+        com.pocketstudio.app.tuto.TutoChooser(
+            start = { style, level -> learning = false; leave(); actions.learn(style, level) },
+            close = { learning = false },
+            simple = com.pocketstudio.app.settings.SettingsStore.state.value.simpleMode,
+        )
+        return
+    }
+    var others by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(false) }
     Column(Modifier.fillMaxSize().padding(horizontal = 12.dp, vertical = 8.dp).testTag("new_project"), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = close, enabled = !busy, modifier = Modifier.testTag("new_project_back")) {
@@ -86,81 +105,111 @@ internal fun NewProjectPage(
         }
         Column(
             Modifier.weight(1f).verticalScroll(rememberScrollState()).testTag("new_project_list"),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            GuidedCard(busy) { leave(); actions.wizard() }
-            SectionLabel(StarterGroup.Style.title, Modifier.padding(top = 12.dp))
-            Text(
-                // Lot 2: the real lengths (a Techno lasts 5 to 6 minutes), each style says its own.
-                com.pocketstudio.app.library.StyleLengths.range().let { (from, to) -> tr("Une touche, un morceau complet de %1\$d à %2\$d minutes selon le style, prêt à écouter.", from, to) },
-                style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary,
-            )
-            quick.error?.let {
-                Text(it, color = Neon.Amber, style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.fillMaxWidth().clickable(onClick = actions.dismissQuickError).testTag("quick_error"))
+            BigChoice(Icons.Filled.School, tr("J'apprends"), tr("Tu fais tout le morceau toi-même, étape par étape : je t'explique et je vérifie."),
+                Neon.Acid, !busy, "start_learn") { learning = true }
+            BigChoice(Icons.Filled.Bolt, tr("Fais-moi un morceau"), tr("Choisis un style : l'assistant fait le morceau, le Guide t'aide à le finir."),
+                Neon.Cyan, !busy, "starter_wizard") { leave(); actions.wizard() }
+            BigChoice(Icons.Filled.Edit, tr("Je pars de zéro"), tr("Un projet vide : à toi de jouer."),
+                Neon.Amber, !busy, "start_empty") {
+                starters.indexOfFirst { it.group == StarterGroup.Empty }.takeIf { it >= 0 }?.let { leave(); actions.create(it) }
             }
-            // The assistant's families, all folded at first (but the one of a song being prepared): one touch on a style makes its song.
-            com.pocketstudio.app.library.StyleFamilies("quick", style = { QuickStyleCard(it, quick, actions) },
-                open = setOfNotNull(StarterWizard.STYLES.find { it.id == quick.creating }?.family),
-                calm = com.pocketstudio.app.settings.SettingsStore.state.value.simpleMode)
-            // The other starters under their headings (the starting beat closes the styles' group).
-            StarterGroup.entries.forEach { group ->
-                val inGroup = starters.withIndex().filter { it.value.group == group }
-                if (inGroup.isEmpty()) return@forEach
-                if (group != StarterGroup.Style) SectionLabel(group.title, Modifier.padding(top = 12.dp))
-                var demo = 0
-                inGroup.forEach { (i, s) ->
-                    if (group == StarterGroup.Demo) {
-                        // The demos keep the order of Demos.ALL: their position in the group is their index there.
-                        DemoRow(s, demo, quick, actions)
-                        demo++
-                    } else {
-                        StarterRow(s, if (group == StarterGroup.Empty) Icons.Filled.Add else Icons.Filled.GraphicEq, !busy) { leave(); actions.create(i) }
-                    }
-                }
+            val open = others || busy || quick.error != null
+            TextButton(onClick = { others = !others }, enabled = !busy, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("start_others")) {
+                Text((if (open) "▾ " else "▸ ") + tr("Autres façons de commencer"), color = Neon.TextSecondary, style = MaterialTheme.typography.titleSmall)
             }
+            if (open) OtherStarts(starters, quick, actions, busy, leave)
         }
     }
 }
 
-/** The guided song: the page's main action, filled with the accent and bigger than the rest. */
+/** A big choice of the page: a round icon, a title and one sentence. */
 @Composable
-private fun GuidedCard(busy: Boolean, onClick: () -> Unit) {
-    val shape = RoundedCornerShape(16.dp)
-    val accent = Neon.Cyan
+private fun BigChoice(icon: ImageVector, title: String, line: String, accent: androidx.compose.ui.graphics.Color, enabled: Boolean, tag: String, onClick: () -> Unit) {
+    val shape = RoundedCornerShape(18.dp)
     Row(
-        Modifier.fillMaxWidth().clip(shape)
-            .background(Brush.horizontalGradient(listOf(accent.copy(alpha = 0.34f), accent.copy(alpha = 0.10f))))
+        Modifier.fillMaxWidth().heightIn(min = 96.dp).clip(shape)
+            .background(Brush.horizontalGradient(listOf(accent.copy(alpha = 0.26f), accent.copy(alpha = 0.08f))))
             .border(1.5.dp, accent.copy(alpha = 0.8f), shape)
-            .clickable(enabled = !busy, onClick = onClick)
-            .padding(16.dp).testTag("starter_wizard"),
+            .clickable(enabled = enabled, onClick = onClick)
+            .padding(16.dp).testTag(tag),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Box(Modifier.size(48.dp).clip(CircleShape).background(accent), contentAlignment = Alignment.Center) {
-            Icon(Icons.Filled.AutoAwesome, contentDescription = null, tint = Neon.OnAccent, modifier = Modifier.size(28.dp))
+        Box(Modifier.size(52.dp).clip(CircleShape).background(accent), contentAlignment = Alignment.Center) {
+            Icon(icon, contentDescription = null, tint = Neon.OnAccent, modifier = Modifier.size(30.dp))
         }
         Column(Modifier.weight(1f).padding(horizontal = 14.dp)) {
-            Text(tr("Nouveau morceau guidé"), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = Neon.TextPrimary)
-            Text(tr("Idéal pour débuter : je t'explique chaque son."), style = MaterialTheme.typography.bodyMedium, color = Neon.TextPrimary.copy(alpha = 0.8f))
+            Text(title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = Neon.TextPrimary)
+            Text(line, style = MaterialTheme.typography.bodyMedium, color = Neon.TextPrimary.copy(alpha = 0.8f))
         }
         Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = accent)
     }
 }
 
+/**
+ * « Autres façons de commencer »: the assistant's styles (the same list, families and order;
+ * every family folded at first) made whole in one touch or opened step by step, the starting
+ * beat, the demos (a play button each), the Remix and an import.
+ */
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun OtherStarts(starters: List<ProjectStarter>, quick: QuickUi, actions: ProjectsActions, busy: Boolean, leave: () -> Unit) {
+    SectionLabel(StarterGroup.Style.title, Modifier.padding(top = 4.dp))
+    Text(
+        // Lot 2: the real lengths (a Techno lasts 5 to 6 minutes), each style says its own.
+        com.pocketstudio.app.library.StyleLengths.range().let { (from, to) -> tr("Une touche, un morceau complet de %1\$d à %2\$d minutes selon le style, prêt à écouter.", from, to) },
+        style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary,
+    )
+    quick.error?.let {
+        Text(it, color = Neon.Amber, style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.fillMaxWidth().clickable(onClick = actions.dismissQuickError).testTag("quick_error"))
+    }
+    // The assistant's families, all folded at first (but the one of a song being prepared): one touch on a style makes its song.
+    com.pocketstudio.app.library.StyleFamilies("quick", style = { QuickStyleCard(it, quick, actions) },
+        open = setOfNotNull(StarterWizard.STYLES.find { it.id == quick.creating }?.family),
+        calm = com.pocketstudio.app.settings.SettingsStore.state.value.simpleMode)
+    // The other starters under their headings (the starting beat closes the styles' group; the empty project is above).
+    StarterGroup.entries.filter { it != StarterGroup.Empty }.forEach { group ->
+        val inGroup = starters.withIndex().filter { it.value.group == group }
+        if (inGroup.isEmpty()) return@forEach
+        if (group != StarterGroup.Style) SectionLabel(group.title, Modifier.padding(top = 12.dp))
+        var demo = 0
+        inGroup.forEach { (i, s) ->
+            if (group == StarterGroup.Demo) {
+                // The demos keep the order of Demos.ALL: their position in the group is their index there.
+                DemoRow(s, demo, quick, actions)
+                demo++
+            } else {
+                StarterRow(s, Icons.Filled.GraphicEq, !busy) { leave(); actions.create(i) }
+            }
+        }
+    }
+    actions.remix?.let { remix ->
+        StarterRow(tr("Remixer une chanson"), tr("L'appli sépare une chanson en batterie, basse, voix et le reste : rejoue-la à ta façon."), "remix",
+            Icons.Filled.Album, !busy) { leave(); remix() }
+    }
+    StarterRow(tr("Importer un projet (.zip)"), tr("Un projet envoyé depuis un autre téléphone."), "import", Icons.Filled.FolderOpen, !busy) { actions.importZip() }
+}
+
 /** A simple starter (the starting beat, the empty project): an icon, its name, a line, a chevron. */
 @Composable
-private fun StarterRow(s: ProjectStarter, icon: ImageVector, enabled: Boolean, onClick: () -> Unit) {
+private fun StarterRow(s: ProjectStarter, icon: ImageVector, enabled: Boolean, onClick: () -> Unit) =
+    StarterRow(tr(s.title), tr(s.description), s.tag, icon, enabled, onClick)
+
+@Composable
+private fun StarterRow(title: String, description: String, tag: String, icon: ImageVector, enabled: Boolean, onClick: () -> Unit) {
     Card(
         colors = CardDefaults.cardColors(containerColor = Neon.SurfaceHigh),
-        modifier = Modifier.fillMaxWidth().clickable(enabled = enabled, onClick = onClick).testTag("starter_${s.tag}"),
+        modifier = Modifier.fillMaxWidth().clickable(enabled = enabled, onClick = onClick).testTag("starter_$tag"),
     ) {
         Row(Modifier.padding(12.dp).heightIn(min = 40.dp), verticalAlignment = Alignment.CenterVertically) {
             Box(Modifier.size(40.dp).clip(RoundedCornerShape(10.dp)).background(Neon.Cyan.copy(alpha = 0.16f)), contentAlignment = Alignment.Center) {
                 Icon(icon, contentDescription = null, tint = Neon.Cyan, modifier = Modifier.size(22.dp))
             }
             Column(Modifier.weight(1f).padding(horizontal = 12.dp)) {
-                Text(tr(s.title), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-                Text(tr(s.description), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                Text(title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                Text(description, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, maxLines = 2, overflow = TextOverflow.Ellipsis)
             }
             Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = Neon.TextSecondary)
         }

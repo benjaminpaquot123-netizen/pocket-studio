@@ -674,6 +674,10 @@ private fun StepGrid(
                             .testTag("step_$step"),
                         contentAlignment = Alignment.BottomCenter,
                     ) {
+                        // « Tuto de A à Z »: a cell of the step's target, still empty, drawn dotted.
+                        if (velocity == null && com.pocketstudio.app.tuto.TutoHints.cells?.let { (l, cells) -> l == lane && step in cells } == true) {
+                            com.pocketstudio.app.tuto.TutoHintCell(color)
+                        }
                         // The hit fills the cell up to its strength.
                         if (velocity != null) {
                             Box(

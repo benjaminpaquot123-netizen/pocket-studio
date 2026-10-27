@@ -280,7 +280,7 @@ class ProjectCatalog(private val root: File, private val trash: File, private va
                 }
             }
             // Cleaned first: only plain file names count (a path like ../x is dropped here).
-            val read = (project ?: throw IOException(tr("ce .zip n'est pas un projet Pocket Studio"))).sanitized()
+            val read = (project ?: throw IOException(tr("ce .zip n'est pas un projet BenStudio"))).sanitized()
             val missing = read.sampleFiles.filterNot { File(dir, "$SAMPLES/$it").isFile }.toSet()
             val p = if (missing.isEmpty()) read else read.withoutSounds(missing)
             store.save(id, p)

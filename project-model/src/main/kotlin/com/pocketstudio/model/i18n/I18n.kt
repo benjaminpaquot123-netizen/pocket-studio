@@ -4,8 +4,15 @@ import kotlinx.serialization.json.Json
 import java.util.Locale
 import java.util.concurrent.ConcurrentHashMap
 
-/** The languages of the interface; French is the app's own language and the default. */
-enum class Lang(val code: String, val nativeName: String) {
+/**
+ * The languages of the interface; French is the app's own language (its texts are the keys).
+ *
+ * Adding a language: one entry here (its BCP 47 [code], its name in itself, [rtl] for a language
+ * written right to left) and its catalog folder `i18n/<code>/` (the [I18n.AREAS] files). Nothing
+ * else: the picker lists every entry, the phone's language picks it at the first launch, and a
+ * right-to-left one turns the text screens around while the musical ones stay left to right.
+ */
+enum class Lang(val code: String, val nativeName: String, val rtl: Boolean = false) {
     FR("fr", "Français"),
     EN("en", "English"),
     NL("nl", "Nederlands");
@@ -14,6 +21,20 @@ enum class Lang(val code: String, val nativeName: String) {
 
     companion object {
         fun of(code: String?): Lang = entries.firstOrNull { it.code == code } ?: FR
+
+        /**
+         * The interface language for a phone set to [locale]: the same language and region first
+         * (pt-BR), then the same language (fr-BE, nl-BE, en-GB), else English, the most widely read
+         * of the others (French stays the app's default only for French phones).
+         */
+        fun forLocale(locale: Locale): Lang {
+            val language = locale.language.lowercase(Locale.ROOT)
+            fun languageOf(l: Lang) = l.locale.language.lowercase(Locale.ROOT)
+            return entries.firstOrNull { languageOf(it) == language && it.locale.country.isNotEmpty() && it.locale.country.equals(locale.country, ignoreCase = true) }
+                ?: entries.firstOrNull { languageOf(it) == language && it.locale.country.isEmpty() }
+                ?: entries.firstOrNull { languageOf(it) == language }
+                ?: EN
+        }
     }
 }
 
@@ -26,7 +47,7 @@ object I18n {
     /** One translation file per area and language (they are merged). */
     val AREAS = listOf(
         "common", "home", "rhythm", "song", "synth", "audio", "mixer", "tools", "model", "finish", "master", "parts", "record",
-        "write", "instruments", "learn", "nav", "bugreport", "guide",
+        "write", "instruments", "learn", "nav", "bugreport", "guide", "brand",
     )
 
     @Volatile

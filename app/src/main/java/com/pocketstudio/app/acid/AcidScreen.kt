@@ -182,7 +182,7 @@ private fun StepGrid(
     actions: AcidActions,
     english: Boolean,
     setEnglish: (Boolean) -> Unit,
-) {
+) = com.pocketstudio.ui.LeftToRight {
     val playStep = if (currentStep >= 0) currentStep % acid.length else -1
     val pages = (acid.length + AcidPattern.STEPS_PER_PAGE - 1) / AcidPattern.STEPS_PER_PAGE
     var page by rememberSaveable { mutableIntStateOf(0) }

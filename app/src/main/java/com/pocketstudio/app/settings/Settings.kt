@@ -56,7 +56,7 @@ data class AppSettings(
     /** The first-steps guide was seen (it opens at the first launch). */
     val guideSeen: Boolean = false,
     val keyLayout: KeyLayout = KeyLayout.TwoOctaves,
-    /** Language of the interface (French unless chosen). */
+    /** Language of the interface (the phone's at the first start, see [SettingsStore.adoptPhoneLanguage]). */
     val language: Lang = Lang.FR,
     /** A light vibration on each beat while the Live page plays (off: it can annoy). */
     val liveBeatHaptics: Boolean = false,
@@ -138,6 +138,17 @@ object SettingsStore {
             .putStringSet("favouriteFx", HashSet(s.favouriteFx))
             .putBoolean("simpleMode", s.simpleMode)
             .apply()
+    }
+
+    /**
+     * The first start on this phone: the interface takes the phone's language when the app has
+     * it (French on a French phone, Dutch on a Belgian Dutch one), English otherwise, with the
+     * notes named the way that language does. Once chosen (or on any later start) nothing changes.
+     */
+    fun adoptPhoneLanguage(context: Context, locale: java.util.Locale) {
+        if (context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).contains("language")) return
+        val lang = Lang.forLocale(locale)
+        update(context) { it.copy(language = lang, englishNotes = lang != Lang.FR) }
     }
 
     /** Ready-made effect [id] starred, or no longer. */

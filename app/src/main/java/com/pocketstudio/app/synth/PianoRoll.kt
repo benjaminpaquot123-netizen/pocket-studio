@@ -141,7 +141,7 @@ fun PianoRoll(
     frozen: Boolean = false,
     /** Sixteenths in a bar of the time signature (12 in 3/4): copies, pastes and the ruler count in its bars. */
     stepsPerBar: Int = 16,
-) {
+) = com.pocketstudio.ui.LeftToRight {
     val barSteps = stepsPerBar.coerceIn(1, NoteClip.MAX_STEPS)
     val barTicks = barSteps * NoteClip.TICKS_PER_STEP
     var newSteps by rememberSaveable { mutableIntStateOf(2) }

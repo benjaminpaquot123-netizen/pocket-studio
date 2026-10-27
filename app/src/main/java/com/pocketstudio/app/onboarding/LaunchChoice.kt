@@ -259,7 +259,10 @@ fun LaunchScreen(ui: LaunchUi, actions: LaunchActions) {
                 verticalArrangement = Arrangement.spacedBy(if (wide) 12.dp else 16.dp, if (wide) Alignment.CenterVertically else Alignment.Top),
             ) {
                 Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                    Text("Pocket Studio", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = Neon.Cyan)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        BenStudioMark(40.dp, glow = false)
+                        BenStudioWordmark(sizeSp = 18)
+                    }
                     Text(tr("Que veux-tu faire ?"), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
                 }
                 if (!ui.hasProject) {

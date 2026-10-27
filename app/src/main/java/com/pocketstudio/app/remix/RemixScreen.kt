@@ -406,7 +406,7 @@ private fun clock(frames: Long): String {
 
 /** A stem's waveform: played part bright, playhead in white, start point in green. Tap to move the start. */
 @Composable
-private fun Waveform(peaks: FloatArray, playhead: Float, start: Float, dimmed: Boolean, onTap: (Float) -> Unit, modifier: Modifier = Modifier) {
+private fun Waveform(peaks: FloatArray, playhead: Float, start: Float, dimmed: Boolean, onTap: (Float) -> Unit, modifier: Modifier = Modifier) = com.pocketstudio.ui.LeftToRight {
     val bright = if (dimmed) Neon.TextSecondary.copy(alpha = 0.4f) else Neon.Cyan
     val dark = bright.copy(alpha = 0.35f)
     val head = Neon.TextPrimary

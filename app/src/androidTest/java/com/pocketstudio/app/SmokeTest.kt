@@ -28,16 +28,31 @@ import org.junit.runner.RunWith
 /** Emulator smoke test run by CI: the app starts, plays, and every space opens without crashing. */
 @RunWith(AndroidJUnit4::class)
 class SmokeTest {
+    /** A French phone (the emulator's is American: a first start would take English), before the app starts. */
     @get:Rule(order = 0)
-    val mic: GrantPermissionRule = GrantPermissionRule.grant(android.Manifest.permission.RECORD_AUDIO)
+    val french = org.junit.rules.TestRule { base, _ ->
+        object : org.junit.runners.model.Statement() {
+            override fun evaluate() {
+                val app = InstrumentationRegistry.getInstrumentation().targetContext
+                val prefs = app.getSharedPreferences("settings", 0)
+                if (!prefs.contains("language")) prefs.edit().putString("language", "fr").commit()
+                base.evaluate()
+            }
+        }
+    }
 
     @get:Rule(order = 1)
+    val mic: GrantPermissionRule = GrantPermissionRule.grant(android.Manifest.permission.RECORD_AUDIO)
+
+    @get:Rule(order = 2)
     val compose = createAndroidComposeRule<MainActivity>()
 
     @Test
     fun appStartsPlaysAndNavigates() {
         assertTrue("native engine must load", NativeEngine.isAvailable)
         compose.waitUntil(10_000) { NativeEngine.streamInfo().let { it.running && it.callbacks > 0 } }
+        // The opening (BrandIntro) first: it covers the app for about a second.
+        compose.waitUntil(10_000) { compose.onAllNodesWithTag("intro").fetchSemanticsNodes().isEmpty() }
         // First launch: the welcome choices open; the five spaces (not the Mode simple, phase 36), then
         // "later" keeps the starter beat.
         compose.waitForIdle()

@@ -647,7 +647,7 @@ fun Keyboard(
     topC: Boolean = false,
     /** The name written at the bottom of a white key, if any. */
     label: (Int) -> String? = { null },
-) {
+) = com.pocketstudio.ui.LeftToRight {
     val whiteCount = 7 * octaves + if (topC) 1 else 0
     BoxWithConstraints(Modifier.fillMaxWidth().height(height).testTag(tag)) {
         val whiteWidth = maxWidth / whiteCount

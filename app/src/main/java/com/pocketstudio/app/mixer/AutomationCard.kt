@@ -445,7 +445,7 @@ fun AutomationCard(
 internal fun LaneBlock(
     i: Int, lane: AutomationLane, ui: AutomationUi, channels: List<Channel>, master: List<Insert>,
     strips: List<StripInfo>, actions: AutomationActions,
-) {
+) = com.pocketstudio.ui.LeftToRight {
     val focus = remember { BringIntoViewRequester() }
     LaunchedEffect(ui.focusLane) { if (ui.focusLane == i) focus.bringIntoView() }
     val lit = ui.focusLane == i

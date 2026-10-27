@@ -145,7 +145,7 @@ class ExportService : Service() {
             DONE_NOTIFICATION_ID,
             NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_notification)
-                .setContentTitle("Pocket Studio")
+                .setContentTitle("BenStudio")
                 .setContentText(text)
                 .setContentIntent(openApp(this))
                 .setAutoCancel(true)

@@ -741,7 +741,8 @@ fun AppRoot() {
     // Phase 36: a first launch starts in the Mode simple (the welcome says so, one touch changes it).
     LaunchedEffect(Unit) { if (!SettingsStore.state.value.guideSeen && !SettingsStore.state.value.simpleMode) SettingsStore.update(context) { it.copy(simpleMode = true) } }
     com.pocketstudio.app.onboarding.FirstLaunch(
-        show = !settings.guideSeen,
+        // After the opening (BrandIntro): a window would cover it.
+        show = !settings.guideSeen && !com.pocketstudio.app.onboarding.Intro.playing,
         simple = settings.simpleMode,
         actions = com.pocketstudio.app.onboarding.WelcomeActions(
             chooseMode = { v -> SettingsStore.update(context) { it.copy(simpleMode = v) } },
@@ -1080,7 +1081,7 @@ fun AppRoot() {
         go(AppTab.Morceau)
         guideOpen = true
     }
-    com.pocketstudio.app.onboarding.LaunchChooser(launch, rhythmVm, projectsVm, show = launch.open && settings.guideSeen, simple = simple,
+    com.pocketstudio.app.onboarding.LaunchChooser(launch, rhythmVm, projectsVm, show = launch.open && settings.guideSeen && !com.pocketstudio.app.onboarding.Intro.playing, simple = simple,
         hasProject = !noProject,
         actions = com.pocketstudio.app.onboarding.LaunchActions(
             // No project to continue: Retour leaves the app (« Mes projets » would only lead back here).

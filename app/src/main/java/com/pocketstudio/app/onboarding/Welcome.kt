@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -118,9 +119,17 @@ fun WelcomeScreen(actions: WelcomeActions, simple: Boolean = true) {
             Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 20.dp, vertical = 28.dp).testTag("welcome"),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            Text("Pocket Studio", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold, color = Neon.Cyan)
-            // The language first: French is ticked, the other ones are one tap away.
-            com.pocketstudio.app.settings.LanguagePicker()
+            // The language on top (the phone's is already chosen), one touch away.
+            com.pocketstudio.app.settings.LanguagePicker(Modifier.align(Alignment.End))
+            // Who we are: the mark, the name, one line.
+            Row(Modifier.fillMaxWidth().testTag("welcome_brand"), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                // The pads take half of the mark's box: the box overflows a smaller slot.
+                Box(Modifier.size(60.dp), contentAlignment = Alignment.Center) { BenStudioMark(120.dp, Modifier.requiredSize(120.dp)) }
+                Column(Modifier.weight(1f)) {
+                    BenStudioWordmark(sizeSp = 28)
+                    Text(tr("Ton studio de musique, dans ta poche."), style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary)
+                }
+            }
             // Phase 36: how the app is laid out, before anything (Réglages changes it later, nothing is lost).
             ModeChoice(simple, actions.chooseMode)
             Text(tr("Bienvenue ! Fais ta musique sur ton appareil. Par quoi on commence ?"), style = MaterialTheme.typography.bodyLarge)

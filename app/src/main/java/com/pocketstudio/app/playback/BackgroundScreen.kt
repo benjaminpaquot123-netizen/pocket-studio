@@ -125,7 +125,7 @@ fun BackgroundScreen(
                 NeonCard(accent = Neon.Amber) {
                     SectionLabel(tr("3. Réglage Honor"), color = Neon.Amber)
                     Text(
-                        tr("Paramètres › Batterie › Lancement d'applications › Pocket Studio : désactive « Gérer automatiquement », puis laisse les trois interrupteurs allumés."),
+                        tr("Paramètres › Batterie › Lancement d'applications › BenStudio : désactive « Gérer automatiquement », puis laisse les trois interrupteurs allumés."),
                         style = MaterialTheme.typography.bodyMedium,
                     )
                     OutlinedButton(onClick = onAppSettings, modifier = Modifier.fillMaxWidth()) { Text(tr("Ouvrir les réglages de l'appli")) }

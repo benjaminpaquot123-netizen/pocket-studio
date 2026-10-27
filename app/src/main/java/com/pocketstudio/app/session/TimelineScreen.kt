@@ -835,7 +835,7 @@ private fun timelinePalette(): TimelinePalette {
 private fun TimelineBody(
     ui: TimelineUi, actions: TimelineActions, view: TimelineView, scroller: TimelineScroller, showLanes: Boolean, tall: Boolean,
     headerW: Dp, minPx: Float, maxPx: Float, modifier: Modifier,
-) {
+) = com.pocketstudio.ui.LeftToRight {
     val p = ui.project
     val spans = remember(p) { p.partSpans }
     val lines = remember(ui.rows, ui.lanes, showLanes) { timelineLines(ui.rows, ui.lanes, showLanes) }

@@ -60,6 +60,8 @@ class Journey(private val compose: ComposeTestRule, private val log: (String) ->
      * crossfade), the leaving one still holds a copy of the button: the touch waits for one only.
      */
     fun tap(tag: String, timeoutMs: Long = 15_000) {
+        // The opening (BrandIntro, about a second) covers the app at each start: a touch would only skip it.
+        awaitGone("intro", timeoutMs)
         await(tag, timeoutMs)
         val end = System.currentTimeMillis() + timeoutMs
         while (runCatching { compose.onAllNodesWithTag(tag).fetchSemanticsNodes().size }.getOrDefault(0) != 1) {

@@ -56,6 +56,8 @@ object RealUse {
             val name = f.name.removeSuffix(".xml")
             app.getSharedPreferences(name, 0).edit().clear().commit()
         }
+        // A French phone (the emulator's is American: the first start would take English).
+        app.getSharedPreferences("settings", 0).edit().putString("language", "fr").commit()
         com.pocketstudio.app.settings.SettingsStore.forgetForTests()
         com.pocketstudio.app.settings.SettingsStore.load(app)
         com.pocketstudio.app.onboarding.LaunchRule.askAtStartForTest = true

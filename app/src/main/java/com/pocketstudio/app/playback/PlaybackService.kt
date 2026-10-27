@@ -38,7 +38,7 @@ import com.pocketstudio.model.i18n.tr
 
 /** What the phone shows while the app plays: the project, its tempo, and whether it records. */
 data class PlaybackStatus(
-    val title: String = "Pocket Studio",
+    val title: String = "BenStudio",
     val bpm: Double = 0.0,
     /** Live recording or a microphone take (the notification becomes a live activity). */
     val recording: Boolean = false,
@@ -47,7 +47,7 @@ data class PlaybackStatus(
     /** A microphone take: the service also holds the microphone (it keeps hearing, screen off). */
     val microphone: Boolean = false,
 ) {
-    val subtitle: String get() = if (bpm > 0) "Pocket Studio · ${Math.round(bpm)} BPM" else "Pocket Studio"
+    val subtitle: String get() = if (bpm > 0) "BenStudio · ${Math.round(bpm)} BPM" else "BenStudio"
 }
 
 /**

@@ -39,7 +39,7 @@ class GuidePage(val title: String, val lines: List<String>)
 /** The first-steps guide, in the interface's language. */
 val GUIDE_PAGES: List<GuidePage> get() = listOf(
     GuidePage(
-        tr("Bienvenue dans Pocket Studio"),
+        tr("Bienvenue dans BenStudio"),
         listOf(
             tr("Fais de la musique avec ton appareil : des rythmes, une basse acide, un synthé, et même le remix de tes morceaux préférés."),
             tr("Tout est sauvegardé tout seul, à chaque geste."),

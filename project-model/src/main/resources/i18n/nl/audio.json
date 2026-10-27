@@ -90,5 +90,8 @@
   "▶ Depuis ma prise": "▶ Vanaf mijn opname",
   "● Enregistrement": "● Opname",
   "● Prise au micro": "● Microfoonopname",
-  "✓ fait": "✓ klaar"
+  "✓ fait": "✓ klaar",
+  "M'entendre dans le casque": "Mezelf horen in de koptelefoon",
+  "En Bluetooth, ta voix reviendrait trop tard dans le casque : elle n'y revient qu'avec des écouteurs filaires.": "Via bluetooth zou je stem te laat terugkomen: je hoort jezelf alleen met bedrade oortjes.",
+  "Décompte : %d… la prise commence sur le premier temps": "Aftellen: %d… de opname begint op de eerste tel"
 }

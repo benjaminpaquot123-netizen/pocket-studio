@@ -264,10 +264,12 @@ open class ScreenshotTest {
         )
         com.pocketstudio.app.audiotracks.AudioTracksScreen(
             com.pocketstudio.app.audiotracks.AudioTracksUi(
-                tracks, recording = com.pocketstudio.app.rhythm.AudioRecordingUi(1, waiting = false, seconds = 3.4f, level = 0.6f),
+                // Counting in with wired headphones: the beats left and « M'entendre dans le casque ».
+                tracks, recording = com.pocketstudio.app.rhythm.AudioRecordingUi(1, waiting = true, level = 0.2f, beatsLeft = 3),
                 info = mapOf("v.wav" to com.pocketstudio.app.rhythm.SampleInfo(7.6, peaks)),
                 sceneTitle = "B · Couplet",
-                listening = com.pocketstudio.app.audio.Listening.Speaker,
+                listening = com.pocketstudio.app.audio.Listening.Wired,
+                monitor = true,
             ),
             com.pocketstudio.app.audiotracks.AudioTracksActions(),
         )

@@ -67,6 +67,8 @@ data class AppSettings(
      * words, instead of the five spaces. Only how the project is shown: switching never changes it.
      */
     val simpleMode: Boolean = false,
+    /** « M'entendre dans le casque »: the voice comes back in wired headphones during a take (off by default). */
+    val monitorVoice: Boolean = false,
 ) {
     companion object {
         val UI_SCALES = listOf(0.85f, 1f, 1.15f, 1.3f)
@@ -106,6 +108,7 @@ object SettingsStore {
             liveBeatHaptics = p.getBoolean("liveBeatHaptics", d.liveBeatHaptics),
             favouriteFx = p.getStringSet("favouriteFx", d.favouriteFx)?.toSet() ?: d.favouriteFx,
             simpleMode = p.getBoolean("simpleMode", d.simpleMode),
+            monitorVoice = p.getBoolean("monitorVoice", d.monitorVoice),
         )
         I18n.lang = _state.value.language
         I18n.everyday = _state.value.simpleMode
@@ -137,6 +140,7 @@ object SettingsStore {
             // A copy: SharedPreferences must not keep the set it is given.
             .putStringSet("favouriteFx", HashSet(s.favouriteFx))
             .putBoolean("simpleMode", s.simpleMode)
+            .putBoolean("monitorVoice", s.monitorVoice)
             .apply()
     }
 

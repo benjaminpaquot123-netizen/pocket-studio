@@ -105,6 +105,9 @@ object NativeEngine {
     // G1b: a track's layers (Engine.h, numbered from 140).
     private const val CMD_LAYER = 140
     private const val CMD_LAYER_LISTEN = 141
+    // Final audit, voice (Engine.h, from 142): monitoring and the punch-in's mute.
+    private const val CMD_MONITOR = 142
+    private const val CMD_RECORD_MUTE_AT = 143
 
     // Rolls' velocity ramps (Engine.h SetDrumStepRoll).
     const val ROLL_RAMP_LEGACY = 0
@@ -708,6 +711,18 @@ object NativeEngine {
     fun setAudioOn(track: Int, on: Boolean) = post(CMD_AUDIO_ON, if (on) 1f else 0f, track)
 
     /**
+     * « M'entendre dans le casque »: while a take is armed or running, the microphone is heard on
+     * audio track [track]'s strip (its volume and effects); -1: off.
+     */
+    fun setMonitor(track: Int, gain: Float = 1f) = post(CMD_MONITOR, gain.coerceIn(0f, 2f), track.coerceIn(-1, 7))
+
+    /**
+     * Punch-in: audio track [track]'s clip plays until step [step] (of the song when [song], else of
+     * the track's part), then stays silent until the recording ends. Posted after [recordStart].
+     */
+    fun recordMuteAt(track: Int, step: Int, song: Boolean) = post(CMD_RECORD_MUTE_AT, if (song) 1f else 0f, track, step)
+
+    /**
      * Automation lane [lane]: 0 loop, 1 per scene, 2 song ([songPoints] values sent with
      * [setAutomationSong]: a point per bar, or per beat with [perBeat]; [held]: each point holds
      * until the next instead of sliding).
@@ -768,10 +783,12 @@ object NativeEngine {
 
     /**
      * Opens the microphone and arms a recording of at most [seconds] (0 = microphone unavailable).
-     * [onStart]: it begins exactly on the transport's first step (after the count-in).
+     * [onStart]: it begins exactly on the transport's first step (after the count-in), and the last
+     * [prerollFrames] heard before it are kept in front of the take (what [recordFinish] returns
+     * starts with them; zeros where the count-in was shorter).
      */
-    external fun recordStart(onStart: Boolean, seconds: Int): Long
-    /** [state 0 waiting, 1 recording, 2 finished; frames recorded; input peak]. */
+    external fun recordStart(onStart: Boolean, seconds: Int, prerollFrames: Int): Long
+    /** [state 0 waiting, 1 recording, 2 finished; frames recorded (the pre-roll left out); input peak]. */
     external fun recordStatus(handle: Long): FloatArray
     /** Stops, frees the recording and returns it (mono, 48 kHz); null if the engine did not let go. */
     external fun recordFinish(handle: Long): FloatArray?

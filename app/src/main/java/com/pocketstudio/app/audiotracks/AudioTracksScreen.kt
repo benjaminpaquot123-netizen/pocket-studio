@@ -103,6 +103,8 @@ class AudioTracksUi(
     val sceneTitles: List<String> = emptyList(),
     /** The song step each song part starts on (where a song clip sits). */
     val partStarts: List<Int> = emptyList(),
+    /** « M'entendre dans le casque » is chosen (it works with wired headphones only). */
+    val monitor: Boolean = false,
 )
 
 class AudioTracksActions(
@@ -144,6 +146,8 @@ class AudioTracksActions(
     val realign: (Int) -> Unit = {},
     /** « Refaire mes. A-B »: track, first bar, last bar (of the song for a song clip, else of the part). */
     val punch: (Int, Int, Int) -> Unit = { _, _, _ -> },
+    /** « M'entendre dans le casque » on or off. */
+    val setMonitor: (Boolean) -> Unit = {},
 )
 
 private val LOOP_BARS = listOf(1, 2, 4, 8, 16)
@@ -208,6 +212,25 @@ private fun ListeningAdvice(listening: Listening) {
     }
 }
 
+/**
+ * « M'entendre dans le casque »: with wired headphones, the voice comes back in them during the
+ * take (with the track's effects). Never on the speaker (it would howl); in Bluetooth, too late.
+ */
+@Composable
+private fun MonitorChoice(ui: AudioTracksUi, actions: AudioTracksActions) {
+    when (ui.listening) {
+        Listening.Wired -> FilterChip(
+            selected = ui.monitor, onClick = { actions.setMonitor(!ui.monitor) },
+            label = { Text(tr("M'entendre dans le casque")) }, colors = pillColors(), modifier = Modifier.testTag("audio_monitor"),
+        )
+        Listening.Bluetooth -> if (ui.monitor) Text(
+            tr("En Bluetooth, ta voix reviendrait trop tard dans le casque : elle n'y revient qu'avec des écouteurs filaires."),
+            style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
+        )
+        Listening.Speaker -> Unit
+    }
+}
+
 /** « Enregistrer sur »: the scene shown, or the whole song (from a part). */
 @Composable
 private fun TargetCard(ui: AudioTracksUi, actions: AudioTracksActions) {
@@ -239,6 +262,7 @@ private fun TargetCard(ui: AudioTracksUi, actions: AudioTracksActions) {
             Text(tr("La partie %s tourne en boucle ; ta prise joue une fois à chaque passage de cette partie.", ui.sceneTitle), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         }
         ListeningAdvice(ui.listening)
+        MonitorChoice(ui, actions)
     }
 }
 
@@ -249,7 +273,11 @@ private fun RecordingCard(rec: AudioRecordingUi, track: AudioTrack?, ui: AudioTr
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Icon(Icons.Filled.FiberManualRecord, contentDescription = null, tint = Neon.Red)
             Text(
-                if (rec.waiting) tr("Décompte… la prise commence sur le premier temps") else tr("Enregistrement : %.1f s", rec.seconds),
+                when {
+                    !rec.waiting -> tr("Enregistrement : %.1f s", rec.seconds)
+                    rec.beatsLeft > 0 -> tr("Décompte : %d… la prise commence sur le premier temps", rec.beatsLeft)
+                    else -> tr("Décompte… la prise commence sur le premier temps")
+                },
                 style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f),
             )
         }
@@ -257,6 +285,7 @@ private fun RecordingCard(rec: AudioRecordingUi, track: AudioTrack?, ui: AudioTr
         Text(listOfNotNull(track?.name?.let { com.pocketstudio.model.DefaultNames.shown(it) }, tr("sur %s", where)).joinToString(" · "), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         LevelMeter(rec.level)
         ListeningAdvice(ui.listening)
+        MonitorChoice(ui, actions)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Button(onClick = actions.stop, colors = ButtonDefaults.buttonColors(containerColor = Neon.Red), modifier = Modifier.weight(1f).testTag("audio_stop")) {
                 Text(tr("Arrêter et garder"))
@@ -492,7 +521,10 @@ private fun ClipEditor(id: Int, clip: AudioClip, info: SampleInfo?, color: andro
         OutlinedButton(onClick = { actions.playFrom(id) }, modifier = Modifier.testTag("audio_play_from_$id")) { Text(tr("▶ Depuis ma prise")) }
     }
     PunchRow(id, clip, ui, actions)
-    LabeledSlider(tr("Volume"), percent((clip.gain * 100).roundToInt()), clip.gain / 2f) { actions.setGain(id, it * 2f) }
+    // Up to ×4 (+12 dB) for a quiet voice; 100 % stays in the middle (03 G2).
+    LabeledSlider(tr("Volume"), percent((clip.gain * 100).roundToInt()), kotlin.math.sqrt(clip.gain / AudioClip.MAX_GAIN)) {
+        actions.setGain(id, AudioClip.MAX_GAIN * it * it)
+    }
     LabeledSlider(tr("Fondu au début"), "${String.format(I18n.lang.locale, "%.2f", clip.fadeIn)} s", clip.fadeIn / 2f) { actions.setFadeIn(id, it * 2f) }
     LabeledSlider(tr("Fondu à la fin"), "${String.format(I18n.lang.locale, "%.2f", clip.fadeOut)} s", clip.fadeOut / 2f) { actions.setFadeOut(id, it * 2f) }
     // « Décaler la prise »: a fine nudge (5 ms) or a big one (50 ms, a Bluetooth delay) when

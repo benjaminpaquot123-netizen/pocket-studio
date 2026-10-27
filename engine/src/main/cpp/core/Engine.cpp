@@ -267,13 +267,28 @@ void Engine::applyCommand(const Command& command) {
             record_ = command.record;
             if (record_) {
                 recordOnStart_ = command.a == 1;
-                record_->written.store(0, std::memory_order_relaxed);
+                // Recording right away: nothing before it to keep.
+                recordRunning_ = !recordOnStart_;
+                record_->written.store(recordRunning_ ? record_->preroll : 0, std::memory_order_relaxed);
                 record_->state.store(recordOnStart_ ? 0 : 1, std::memory_order_release);
-                recordSkip_ = recordOnStart_ ? -1 : 0;
             }
             break;
         case CommandType::RecordStop:
             finishRecording();
+            break;
+        case CommandType::SetMonitor:
+            if (command.a < 0 || command.a >= AudioTracks::kTracks) {
+                monitorTrack_ = -1;
+            } else {
+                if (monitorTrack_ != command.a) monitorRead_ = monitorCount_ = 0;
+                monitorTrack_ = command.a;
+            }
+            monitorGain_ = std::isfinite(command.value) ? std::clamp(command.value, 0.0f, 2.0f) : 1.0f;
+            break;
+        case CommandType::RecordMuteAt:
+            muteTrack_ = command.a >= 0 && command.a < AudioTracks::kTracks ? command.a : -1;
+            muteFrom_ = command.b;
+            muteSong_ = command.value > 0.5f;
             break;
         case CommandType::SetAudioOn:
             if (command.a >= 0 && command.a < AudioTracks::kTracks) {
@@ -768,7 +783,7 @@ void Engine::onStep(int offset, int step) {
         stems_.start(offset);
         if (record_ && recordOnStart_) {
             recordOnStart_ = false;
-            recordSkip_ = offset;
+            recordStartOut_ = blockOut_ + offset;
             record_->state.store(1, std::memory_order_release);
         }
     }
@@ -801,6 +816,12 @@ void Engine::onStep(int offset, int step) {
     const int songStep = inSong_ ? step - songStart_ : -1;
     std::array<int, AudioTracks::kTracks> audioLocals{};
     for (int k = 0; k < AudioTracks::kTracks; ++k) audioLocals[static_cast<size_t>(k)] = localOf(audioSlot(k), step);
+    // A punch-in: the clip being redone is heard up to the first bar sung again, then silent
+    // (whatever the part playing says) until the recording ends.
+    if (muteTrack_ >= 0 && record_) {
+        const int at = muteSong_ ? songStep : audioLocals[static_cast<size_t>(muteTrack_)];
+        if (at >= muteFrom_) audio_.setOn(muteTrack_, false);
+    }
     audio_.onStep(offset, audioLocals, songStep, sequencer_.samplesPerStep(), sequencer_.swing(), songStart_);
     for (int k = 0; k < kTracks; ++k) {
         auto& t = tracks_[static_cast<size_t>(k)];
@@ -1442,12 +1463,25 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
             rs[k] = audioR_[static_cast<size_t>(k)].data();
             std::fill(lefts[k], lefts[k] + numFrames, 0.0f);
             std::fill(rs[k], rs[k] + numFrames, 0.0f);
-            if (audio_.has(k)) {
+            if (audio_.has(k) || (monitoring() && k == monitorTrack_)) {
                 channels[audioChannel(k)] = lefts[k];
                 rights[audioChannel(k)] = rs[k];
             }
         }
         audio_.render(lefts, rs, numFrames);
+        // The singer hears the microphone on the strip of the track being recorded (its effects).
+        if (monitoring()) {
+            float* l = lefts[monitorTrack_];
+            float* r = rs[monitorTrack_];
+            const int n = std::min(numFrames, monitorCount_);
+            for (int i = 0; i < n; ++i) {
+                const float v = monitorGain_ * monitorFifo_[static_cast<size_t>(monitorRead_)];
+                monitorRead_ = (monitorRead_ + 1) % kMonitorFifo;
+                l[i] += v;
+                r[i] += v;
+            }
+            monitorCount_ -= n;
+        }
     }
     mixer_.process(channels, rights, direct, output, numFrames, outputChannels);
 }
@@ -1465,19 +1499,48 @@ void Engine::process(const float* input, int numInputFrames, int inputChannels,
         applyCommand(command);
     }
 
+    // How the microphone lines up with the output (see align_): measured before this callback's input.
+    const int64_t outBase = outTotal_;
+    if (input && inputChannels > 0) {
+        const double gap = static_cast<double>(inTotal_ - outBase);
+        align_ = alignKnown_ ? std::max(gap, align_ - kAlignDecay * numFrames) : gap;
+        alignKnown_ = true;
+        inTotal_ += std::max(0, numInputFrames);
+    } else {
+        alignKnown_ = false;  // no microphone (being reopened): learnt again when it is back
+    }
+    outTotal_ += numFrames;
     if (meter_.state() == RoundTripMeter::State::Running) {
         meter_.process(input, numInputFrames, inputChannels, output, numFrames, outputChannels);
         gain_.snap(0.0f);
     } else {
+        // The microphone heard on its track (monitoring): queued for the blocks below.
+        if (monitoring() && input && inputChannels > 0) {
+            for (int i = 0; i < numInputFrames; ++i) {
+                if (monitorCount_ == kMonitorFifo) {
+                    monitorRead_ = (monitorRead_ + 1) % kMonitorFifo;
+                    --monitorCount_;
+                }
+                monitorFifo_[static_cast<size_t>((monitorRead_ + monitorCount_) % kMonitorFifo)] = input[i * inputChannels];
+                ++monitorCount_;
+            }
+            // Never let it lag: what waits beyond the backlog (and a callback) goes.
+            const int keep = kMonitorBacklog + numFrames;
+            if (monitorCount_ > keep) {
+                monitorRead_ = (monitorRead_ + monitorCount_ - keep) % kMonitorFifo;
+                monitorCount_ = keep;
+            }
+        } else if (!monitoring()) {
+            monitorRead_ = monitorCount_ = 0;
+        }
         // Fixed-size scratch buffers: render long callbacks in chunks.
         for (int done = 0; done < numFrames;) {
             const int n = std::min(kMaxBlock, numFrames - done);
-            const bool waiting = record_ && recordOnStart_;
+            blockOut_ = outBase + done;
             renderBlock(output + done * outputChannels, n, outputChannels);
-            if (waiting && !recordOnStart_) recordSkip_ += done;  // started in this chunk
             done += n;
         }
-        recordInput(input, numInputFrames, inputChannels, numFrames);
+        recordInput(input, numInputFrames, inputChannels, numFrames, outBase);
         // Microphone (tuner): whatever arrived this callback.
         if (input && inputChannels > 0) {
             for (int i = 0; i < numInputFrames; ++i) scopeWrite(micScope_, micScopeAt_, input[i * inputChannels]);
@@ -1524,29 +1587,64 @@ void Engine::finishRecording() {
     if (record_) record_->state.store(2, std::memory_order_release);
     record_ = nullptr;
     recordOnStart_ = false;
-    recordSkip_ = -1;
+    recordRunning_ = false;
+    recordStartOut_ = -1;
+    recordFrom_ = -1;
+    prerollWritten_ = 0;
+    muteTrack_ = -1;
 }
 
-void Engine::recordInput(const float* input, int numInputFrames, int inputChannels, int numFrames) {
-    if (!record_ || recordOnStart_) return;
+void Engine::writePreroll(float v) {
+    const int64_t size = record_->preroll;
+    if (size <= 0) return;
+    record_->data[static_cast<size_t>(prerollWritten_ % size)] = v;
+    ++prerollWritten_;
+}
+
+void Engine::recordInput(const float* input, int numInputFrames, int inputChannels, int numFrames, int64_t outBase) {
+    if (!record_) return;
+    const bool hasInput = input && inputChannels > 0;
+    if (recordOnStart_) {
+        // Counting in: only the pre-roll ring keeps it.
+        if (hasInput) for (int i = 0; i < numInputFrames; ++i) writePreroll(input[i * inputChannels]);
+        return;
+    }
     const int64_t capacity = static_cast<int64_t>(record_->data.size());
     int64_t at = record_->written.load(std::memory_order_relaxed);
     float peak = 0.0f;
-    if (input && inputChannels > 0) {
-        // The microphone frames of this callback, from where the recording started (first channel).
-        const int from = recordSkip_ > 0 ? std::min(recordSkip_, numInputFrames) : 0;
-        for (int i = from; i < numInputFrames && at < capacity; ++i) {
+    auto begin = [&]() {
+        recordRunning_ = true;
+        const int64_t size = record_->preroll;
+        record_->prerollHead.store(size > 0 ? prerollWritten_ % size : 0, std::memory_order_relaxed);
+        at = size;
+    };
+    if (hasInput) {
+        const int64_t inBase = inTotal_ - std::max(0, numInputFrames);
+        // The first step's output frame, on the microphone's clock.
+        if (!recordRunning_ && recordFrom_ < 0 && recordStartOut_ >= 0) recordFrom_ = recordStartOut_ + std::llround(align_);
+        for (int i = 0; i < numInputFrames; ++i) {
             const float v = input[i * inputChannels];
+            if (!recordRunning_) {
+                if (inBase + i < recordFrom_) {
+                    writePreroll(v);
+                    continue;
+                }
+                begin();
+            }
+            if (at >= capacity) break;
             record_->data[static_cast<size_t>(at++)] = v;
             peak = std::max(peak, std::fabs(v));
         }
     } else {
         // No microphone this callback (the audio rerouted mid-take and it is being reopened):
         // silence for as long as the transport ran, so what is sung afterwards stays in time.
-        const int from = recordSkip_ > 0 ? std::min(recordSkip_, numFrames) : 0;
+        int from = 0;
+        if (!recordRunning_) {
+            from = recordStartOut_ >= 0 ? static_cast<int>(std::clamp<int64_t>(recordStartOut_ - outBase, 0, numFrames)) : 0;
+            begin();
+        }
         for (int i = from; i < numFrames && at < capacity; ++i) record_->data[static_cast<size_t>(at++)] = 0.0f;
     }
-    recordSkip_ = 0;
     record_->peak.store(peak, std::memory_order_relaxed);
     record_->written.store(at, std::memory_order_release);
     if (at >= capacity) finishRecording();

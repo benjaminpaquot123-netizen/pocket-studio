@@ -90,5 +90,8 @@
   "▶ Depuis ma prise": "▶ From my take",
   "● Enregistrement": "● Recording",
   "● Prise au micro": "● Mic take",
-  "✓ fait": "✓ done"
+  "✓ fait": "✓ done",
+  "M'entendre dans le casque": "Hear myself in the headphones",
+  "En Bluetooth, ta voix reviendrait trop tard dans le casque : elle n'y revient qu'avec des écouteurs filaires.": "Over Bluetooth your voice would come back too late: you only hear yourself with wired headphones.",
+  "Décompte : %d… la prise commence sur le premier temps": "Count-in: %d… the take starts on the first beat"
 }

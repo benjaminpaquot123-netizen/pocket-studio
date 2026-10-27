@@ -158,6 +158,7 @@ import com.pocketstudio.model.automationBefore
 import com.pocketstudio.model.songStepOf
 import com.pocketstudio.model.takeStart
 import com.pocketstudio.model.withTake
+import com.pocketstudio.model.withFirstTakeLevel
 import com.pocketstudio.model.takeForgets
 import com.pocketstudio.model.withTakes
 import com.pocketstudio.model.addAudioTrack
@@ -209,7 +210,8 @@ sealed interface LibraryState {
 }
 
 /** A microphone take on an audio track: [waiting] during the count-in; [song]: over the whole song. */
-data class AudioRecordingUi(val track: Int, val waiting: Boolean = true, val seconds: Float = 0f, val level: Float = 0f, val song: Boolean = false)
+/** A microphone take in progress; [beatsLeft]: beats of count-in still to come (0 once it records). */
+data class AudioRecordingUi(val track: Int, val waiting: Boolean = true, val seconds: Float = 0f, val level: Float = 0f, val song: Boolean = false, val beatsLeft: Int = 0)
 
 /** Where the next microphone take goes: the scene shown, or the whole song from part [fromPart]. */
 data class RecordTarget(val song: Boolean = false, val fromPart: Int = 0)
@@ -1401,7 +1403,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** « Décaler la prise » in ms (5 ms steps, ±300), sample-accurate in the engine. */
     fun setAudioOffset(id: Int, ms: Float) = editClip(id, "audio-offset-$id") {
-        it.copy(offsetMs = (Math.round(ms / AudioClip.OFFSET_STEP_MS) * AudioClip.OFFSET_STEP_MS).coerceIn(-AudioClip.MAX_OFFSET_MS, AudioClip.MAX_OFFSET_MS))
+        it.withOffset((Math.round(ms / AudioClip.OFFSET_STEP_MS) * AudioClip.OFFSET_STEP_MS).coerceIn(-AudioClip.MAX_OFFSET_MS, AudioClip.MAX_OFFSET_MS))
     }
 
     /**
@@ -1660,8 +1662,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             val bars = if (songPart >= 0) maxOf(64, p.songBars - p.songStepOf(songPart) / p.stepsPerBar) else 64
             val seconds = minOf(MAX_AUDIO_SECONDS, (bars * p.stepsPerBar * 15.0 / p.tempoBpm).toInt() + 1)
             // A microphone opened while the project closes is closed again, not left armed.
+            // Two beats of the count-in kept in front of the take: a word sung ahead of the « 1 »
+            // (03 M1). A punch keeps only its own bars.
+            val preroll = if (punch == null) prerollFrames(p.tempoBpm) else 0
             val handle = finishOrRelease(Dispatchers.IO, { h: Long -> TakeVault.app.discard(h) }) {
-                NativeEngine.recordStart(onStart = true, seconds = seconds)
+                NativeEngine.recordStart(onStart = true, seconds = seconds, prerollFrames = preroll)
             } ?: 0L
             if (_audioRecording.value?.track != id) {  // cancelled meanwhile
                 TakeVault.app.discard(handle)
@@ -1675,11 +1680,20 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             }
             TakeVault.app.opened(handle)
             recordHandle = handle
+            takePreroll = preroll
             // The output the take is heard on now (a headset unplugged later must not change it).
             takeLatencyMs = Metrics.recordLatencyMs()
-            // The previous take of this track stays silent (no double voice, nothing in the microphone).
-            takeMuted = id
-            NativeEngine.setAudioOn(id, false)
+            if (punch != null) {
+                // A punch-in: the take is heard up to the first bar sung again, as in a studio (03 M4).
+                NativeEngine.recordMuteAt(id, punch.from, punch.clip.song)
+            } else {
+                // The previous take of this track stays silent (no double voice, nothing in the microphone).
+                takeMuted = id
+                NativeEngine.setAudioOn(id, false)
+            }
+            monitorOn = false
+            updateMonitor(id)
+            // The microphone needs at least a bar to start on time (and to keep what is sung before the « 1 »).
             val countIn = com.pocketstudio.app.settings.SettingsStore.state.value.recordCountIn.coerceAtLeast(1)
             if (songPart >= 0) {
                 recordingSong = true
@@ -1696,7 +1710,13 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 while (true) {
                     val st = NativeEngine.recordStatus(handle)
                     val ui = _audioRecording.value ?: break
-                    _audioRecording.value = ui.copy(waiting = st[0] < 0.5f, seconds = st[1] / OfflineExport.SAMPLE_RATE.toFloat(), level = st[2])
+                    // Headphones unplugged (or the choice changed): the voice in the headphones follows.
+                    updateMonitor(id)
+                    val waiting = st[0] < 0.5f
+                    // The beats of count-in left, as the editors' takes show them (03 M6).
+                    val pos = if (waiting) NativeEngine.playPosition() else 0.0
+                    val beatsLeft = if (waiting && pos < 0) kotlin.math.ceil(-pos / 4.0).toInt().coerceAtLeast(1) else 0
+                    _audioRecording.value = ui.copy(waiting = waiting, seconds = st[1] / OfflineExport.SAMPLE_RATE.toFloat(), level = st[2], beatsLeft = beatsLeft)
                     // A punch-in ends by itself a beat after its last bar.
                     val punchEnd = punch?.let { (it.until - anchor.from + 4) * 15.0 / p.tempoBpm * OfflineExport.SAMPLE_RATE }
                     if (punchEnd != null && st[0] > 0.5f && st[1] >= punchEnd) {
@@ -1738,7 +1758,37 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             waiting = waiting,
             replaces = plan.replaces,
             scene = plan.scene,
+            prerollFrames = takePreroll,
+            // Sung ahead of the « 1 »: a song take from its anchor may start up to two beats
+            // earlier. A scene clip cannot (before its scene's first step is the previous pass).
+            leadInSteps = if (plan.punch == null && plan.anchor.song && plan.start == plan.anchor.from) minOf(8, plan.start) else 0,
         )
+    }
+
+    /** Frames of count-in kept in front of a take at [bpm]: two beats (at most 4 s). */
+    private fun prerollFrames(bpm: Double): Int =
+        (2 * 60.0 / bpm.coerceAtLeast(30.0) * OfflineExport.SAMPLE_RATE).toInt().coerceAtMost(4 * OfflineExport.SAMPLE_RATE)
+
+    private var takePreroll = 0
+    private var monitorOn = false
+
+    /**
+     * « M'entendre dans le casque » (03 G1): during a take on track [id], the voice comes back in
+     * wired headphones (or USB), through the track's effects. Never on the speaker (it would
+     * howl) nor in Bluetooth (far too late to sing with).
+     */
+    private fun updateMonitor(id: Int) {
+        val wanted = com.pocketstudio.app.settings.SettingsStore.state.value.monitorVoice &&
+            com.pocketstudio.app.audio.Headphones.state.value == com.pocketstudio.app.audio.Listening.Wired
+        if (wanted == monitorOn) return
+        monitorOn = wanted
+        NativeEngine.setMonitor(if (wanted) id else -1)
+    }
+
+    private fun stopMonitor() {
+        if (!monitorOn) return
+        monitorOn = false
+        NativeEngine.setMonitor(-1)
     }
 
     /** Ends the take: the song stops and the recording becomes the track's clip (Annuler possible). */
@@ -1752,6 +1802,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val request = if (handle != 0L) takeRequest(handle, ui.waiting) else null
         val punch = takePlan?.punch
         takePlan = null
+        stopMonitor()
         if (_transport.value.playing) togglePlay()
         endTakeMute()
         if (request == null) return
@@ -1777,7 +1828,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         // On its track and saved first: whatever fails afterwards (memory for the engine's copy),
         // the take is in the project, and its sound comes back from its file.
         val forgotten = project.value.takeForgets(r.take)
-        session.edit { it.withTake(r.take) }
+        // The track's first take: brought to a usual voice level, « Voix claire » on a bare strip
+        // (03 G2; one undo step with the take). A retake keeps the volume chosen.
+        val first = project.value.audioTracks.firstOrNull { it.id == r.take.track }?.clip == null
+        val gain = if (first) withContext(Dispatchers.Default) { AudioEdits.voiceLevelGain(r.pcm, AudioClip.MAX_GAIN) } else 1f
+        session.edit { p -> p.withTake(r.take).let { if (first) it.withFirstTakeLevel(r.take.track, r.take.file, gain) else it } }
         // The ninth take: the oldest leaves the take picker (its sound waits a week aside; Annuler brings it back).
         if (forgotten != null) {
             AppLog.add("Prise : la plus ancienne (${forgotten.file}) quitte les prises gardées")
@@ -1816,8 +1871,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             val before = padSamples.read(old.file)
             AudioEdits.punch(
                 before, r.pcm,
-                oldAt = Math.round(old.start * perStep) + old.offsetFrames(rate),
-                newAt = Math.round(r.take.start * perStep),
+                oldAt = AudioEdits.punchOldAt(old, perStep, rate),
+                newAt = AudioEdits.punchNewAt(old, r.take.start, perStep, rate),
                 from = Math.round(punch.from * perStep), until = Math.round(punch.until * perStep),
             )
         }
@@ -1857,6 +1912,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         _audioRecording.value = null
         recordingSong = false
         takePlan = null
+        stopMonitor()
         if (_transport.value.playing) togglePlay()
         endTakeMute()
         TakeVault.app.discard(handle)

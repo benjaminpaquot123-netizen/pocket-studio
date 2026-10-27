@@ -54,6 +54,13 @@ class TakeVault(
         val replaces: String? = null,
         /** A scene take: the scene it was recorded on (see [PendingTake.scene]). */
         val scene: Int? = null,
+        /** Frames of count-in kept in front of the recording (NativeEngine.recordStart). */
+        val prerollFrames: Int = 0,
+        /**
+         * Sixteenths the clip may start before [start] when something was sung just before the
+         * « 1 » (an anacrusis, 03 M1): kept, the clip then starts that many whole eighths earlier.
+         */
+        val leadInSteps: Int = 0,
     )
 
     sealed interface Outcome {
@@ -115,15 +122,23 @@ class TakeVault(
 
     private fun store(r: Request): Outcome {
         val audio = finishTake(r.handle) ?: return Outcome.Lost
-        val keep = keptRange(audio.size, r.latencyFrames, r.cutFrames, r.sampleRate) ?: return if (r.waiting && audio.size < r.sampleRate / 10) Outcome.Nothing else Outcome.TooShort
-        if (isSilent(audio, keep)) return Outcome.Silent
+        val preroll = r.prerollFrames.coerceIn(0, audio.size)
+        val plain = keptRange(audio.size, r.latencyFrames, r.cutFrames, r.sampleRate, preroll) ?: return if (r.waiting && audio.size - preroll < r.sampleRate / 10) Outcome.Nothing else Outcome.TooShort
+        if (isSilent(audio, plain)) return Outcome.Silent
+        // Sung ahead of the « 1 »: the clip starts whole eighths earlier with it.
+        val eighth = 30.0 / r.bpm * r.sampleRate
+        val eighths = if (r.leadInSteps >= 2 && r.bpm > 0.0) {
+            leadInEighths(audio, plain.first, minOf(plain.first, Math.round(r.leadInSteps / 2 * eighth).toInt()), eighth, plain, r.sampleRate)
+        } else 0
+        val keep = (plain.first - Math.round(eighths * eighth).toInt()).coerceAtLeast(0)..plain.last
         val samples = File(r.projectFolder, "samples").apply { mkdirs() }
         val file = "${UUID.randomUUID().toString().take(12)}.wav"
         val wav = File(samples, file)
         // Straight from the engine's copy: no second copy of a long take in memory.
         FloatWav.write(wav, audio, keep.first, keep.last + 1, 1, r.sampleRate)
         val seconds = (keep.last + 1 - keep.first).toDouble() / r.sampleRate
-        val take = PendingTake(r.track, file, r.name.take(40), seconds, r.bpm, r.song, r.start, r.replaces, scene = r.scene)
+        val take = PendingTake(r.track, file, r.name.take(40), seconds, r.bpm, r.song, r.start - 2 * eighths, r.replaces, scene = r.scene)
+        if (eighths > 0) AppLog.add("Prise : ${eighths} croche(s) chantée(s) avant le premier temps gardée(s)")
         PendingTakes.write(r.projectFolder, take)
         AppLog.add("Prise écrite : ${"%.1f".format(seconds)} s")
         return Outcome.Saved(take) { FloatWav.read(wav) }
@@ -140,14 +155,54 @@ class TakeVault(
         val app: TakeVault by lazy { TakeVault({ com.pocketstudio.engine.NativeEngine.recordFinish(it) }) }
 
         /**
-         * The frames of a recording of [size] kept: after the [latencyFrames] (at most half of
-         * it) and the [cutFrames]; null when less than a tenth of a second would be left.
+         * The frames of a recording of [size] kept: after the [prerollFrames], the [latencyFrames]
+         * (at most half of the rest) and the [cutFrames]; null when less than a tenth of a second
+         * would be left.
          */
-        fun keptRange(size: Int, latencyFrames: Int, cutFrames: Int, sampleRate: Int = 48000): IntRange? {
-            if (size < sampleRate / 10) return null
-            val from = latencyFrames.coerceIn(0, size / 2).toLong() + cutFrames.coerceAtLeast(0)
+        fun keptRange(size: Int, latencyFrames: Int, cutFrames: Int, sampleRate: Int = 48000, prerollFrames: Int = 0): IntRange? {
+            val rest = size - prerollFrames.coerceIn(0, size)
+            if (rest < sampleRate / 10) return null
+            val from = (size - rest).toLong() + latencyFrames.coerceIn(0, rest / 2) + cutFrames.coerceAtLeast(0)
             if (size - from < sampleRate / 10) return null
             return from.toInt() until size
+        }
+
+        /**
+         * Whole eighths (of [eighthFrames]) worth keeping before frame [one] (the « 1 » as heard):
+         * the voice that runs up to it from at most [maxFrames] before, gaps of a consonant
+         * allowed. A click of the count-in, or breath noise, never counts: the sound must be loud
+         * (against the take, [take]) and last at least 40 ms. 0: nothing sung before the « 1 ».
+         */
+        fun leadInEighths(audio: FloatArray, one: Int, maxFrames: Int, eighthFrames: Double, take: IntRange, sampleRate: Int = 48000): Int {
+            if (maxFrames <= 0 || one <= 0 || eighthFrames <= 0.0) return 0
+            val window = (sampleRate / 100).coerceAtLeast(1)  // 10 ms
+            var peak = 0f
+            for (i in take) peak = maxOf(peak, abs(audio[i]))
+            val threshold = maxOf(0.12f * peak, 0.01f)  // about -18 dB under the take, never under -40 dBFS
+            fun loud(end: Int): Boolean {
+                var top = 0f
+                for (i in maxOf(0, end - window) until end) top = maxOf(top, abs(audio[i]))
+                return top >= threshold
+            }
+            val lowest = maxOf(0, one - maxFrames)
+            var onset = one
+            var quiet = 0
+            var end = one
+            while (end - window >= lowest) {
+                if (loud(end)) {
+                    onset = end - window
+                    quiet = 0
+                } else if (++quiet * window > sampleRate * 6 / 100) {
+                    break  // more than 60 ms of silence: what came before is not the phrase
+                }
+                end -= window
+            }
+            val sung = one - onset
+            if (sung < sampleRate * 4 / 100) return 0
+            // A little room before the first sound, in whole eighths, as far as was recorded.
+            val wanted = sung + sampleRate / 50
+            val most = (maxFrames / eighthFrames).toInt()
+            return kotlin.math.ceil(wanted / eighthFrames).toInt().coerceIn(0, most)
         }
 
         /** No sound above -80 dB in [range] of [audio] (a microphone that stayed shut). */

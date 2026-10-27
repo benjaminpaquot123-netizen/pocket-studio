@@ -197,12 +197,19 @@ enum class CommandType : uint8_t {
                            // note (MIDI), transpose (semitones), fine (-1..1 semitone), gain (linear 0..4, after its
                            // effects), through (1: into the track's inserts, 0: after them)
     SetLayerListen = 141,  // a: track, value: mask of its sounds heard (bit 0 its own, bit 1 + k layer k; 15 = all, as mixed)
+    // Audit final (voice): while a recording is armed or running, the microphone is heard on audio
+    // track a's strip (its volume, effects and sends), value: gain (0..2); a < 0: off.
+    SetMonitor = 142,
+    // Punch-in: audio track a's clip goes silent from step b on (value 1: a song step, 0: the
+    // track's own step), until the recording ends. a < 0: none.
+    RecordMuteAt = 143,
 };
 static_assert(static_cast<int>(CommandType::SetPadVoiceParam) < 100, "the commands in order must stay under SetKitVersion");
 static_assert(static_cast<int>(CommandType::SetDrumStepOffset) == 80, "NativeEngine.kt numbers the phase 34 commands from 80");
 static_assert(static_cast<int>(CommandType::SetDrumLaneSteps) == 120, "NativeEngine.kt numbers the phase 37 commands from 120");
 static_assert(static_cast<int>(CommandType::SetTrackZone) == 130, "NativeEngine.kt numbers the phase 38 commands from 130");
 static_assert(static_cast<int>(CommandType::SetLayer) == 140, "NativeEngine.kt numbers the G1b commands from 140");
+static_assert(static_cast<int>(CommandType::SetMonitor) == 142, "NativeEngine.kt numbers the voice commands from 142");
 
 // The live grid's slots: one per track, each playing its own scene's part from its own start.
 enum Slot : int {
@@ -531,10 +538,36 @@ private:
     // Microphone recording (audio tracks).
     RecordBuffer* record_ = nullptr;
     bool recordOnStart_ = false;  // waiting for the transport's first step
-    int recordSkip_ = -1;         // input frames to skip in this callback (recording just started), -1 = none
+    bool recordRunning_ = false;  // the take itself is being written (after its pre-roll)
+    // Output frame where the first step fell (-1: not yet), then the input frame the take starts on.
+    int64_t recordStartOut_ = -1;
+    int64_t recordFrom_ = -1;
+    int64_t prerollWritten_ = 0;  // input frames written into the pre-roll ring so far
+    // Input and output frames since the engine started, and how the two line up: the largest
+    // (input before this callback - output before it) seen lately. The microphone arrives in
+    // bursts unrelated to the output callbacks: the largest gap is the one with no burst still
+    // waiting, so takes start on the same microphone frame whatever the bursts (13 M5).
+    int64_t inTotal_ = 0;
+    int64_t outTotal_ = 0;
+    int64_t blockOut_ = 0;  // output frame of the block being rendered
+    double align_ = 0.0;
+    bool alignKnown_ = false;
+    static constexpr double kAlignDecay = 0.001;  // frames of drift allowed per output frame
     void finishRecording();
+    void writePreroll(float v);
     // No input (nullptr) while recording writes `numFrames` of silence: the take stays in time.
-    void recordInput(const float* input, int numInputFrames, int inputChannels, int numFrames);
+    void recordInput(const float* input, int numInputFrames, int inputChannels, int numFrames, int64_t outBase);
+    // Monitoring (SetMonitor): the microphone through a small FIFO into an audio track's strip.
+    static constexpr int kMonitorFifo = 8192;
+    static constexpr int kMonitorBacklog = 2048;  // more waiting than this: the oldest goes (latency)
+    std::array<float, kMonitorFifo> monitorFifo_{};
+    int monitorRead_ = 0, monitorCount_ = 0;
+    int monitorTrack_ = -1;
+    float monitorGain_ = 1.0f;
+    bool monitoring() const { return monitorTrack_ >= 0 && record_ != nullptr; }
+    // RecordMuteAt.
+    int muteTrack_ = -1, muteFrom_ = 0;
+    bool muteSong_ = false;
     Automation automation_;
     void applyAutomation(int patternStep, int songStep, int offset);
     std::array<std::atomic<float>, kScopeFrames> outScope_{}, micScope_{};

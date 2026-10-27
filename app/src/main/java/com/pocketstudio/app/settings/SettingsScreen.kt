@@ -103,6 +103,9 @@ fun SettingsScreen(s: AppSettings, version: String, actions: SettingsActions) {
                     FilterChip(selected = s.recordCountIn == bars, onClick = { actions.update { it.copy(recordCountIn = bars) } }, label = { Text(label) }, colors = chip)
                 }
             }
+            if (s.recordCountIn == 0) {
+                Text(tr("Pour le micro, le décompte dure quand même 1 mesure : ta prise commence pile sur le temps."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+            }
             FilterChip(
                 selected = s.metronomeInTakes, onClick = { actions.update { it.copy(metronomeInTakes = !it.metronomeInTakes) } },
                 label = { Text(tr("Métronome pendant les prises")) }, colors = chip, modifier = Modifier.testTag("metronome_in_takes"),

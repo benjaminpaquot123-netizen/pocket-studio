@@ -114,6 +114,17 @@ object FxPresets {
         // The jump up growl (phase 29): folded back for a metallic grit, then squashed in three bands.
         FxPreset("growl", "Growl", "Une basse qui grogne : saturée jusqu'au métal et écrasée en trois bandes, grasse comme en dubstep.", "Saleté",
             listOf(fx(EffectType.DISTORTION, 0.55f, 0.6f, 0.8f, 0.75f), fx(EffectType.OTT, 0.75f, 0.5f, 0.75f, 0.7f))),
+        // A recorded voice (final audit, 03 G2/G3): the guides' « Voix claire », and the rap one.
+        FxPreset("voice_clear", "Voix claire", "Coupe-bas à 120 Hz et un compresseur doux : la voix reste nette et ne se noie pas.", "Ambiance",
+            listOf(fx(EffectType.PARAM_EQ, 0.5f, 0.5f, 0.4f, 0.5566f), fx(EffectType.COMPRESSOR, 0.55f, 0.3f, 0.35f, 0.35f, 0f, 1f, 1f, 0.3f, 1f))),
+        // Low cut 100 Hz and +3 dB of presence at 3.5 kHz, 4:1 from -20 dB (5 ms, 120 ms, its own
+        // make-up), a small room with 30 ms of pre-delay: every word stays clear in front of the beat.
+        FxPreset("voice_rap", "Voix rap", "Devant la prod : coupe-bas, compresseur qui tient chaque mot, un peu de présence et une petite pièce.", "Ambiance",
+            listOf(
+                fx(EffectType.PARAM_EQ, 0.7477f, 0.5833f, 0.343f, 0.5f),
+                fx(EffectType.COMPRESSOR, 0.5f, 0.4628f, 0.5852f, 0.4857f, 0f, 1f, 1f, 0.3f, 1f),
+                fx(EffectType.REVERB, 0.3f, 0.6f, 0.15f, 0.12f),
+            )),
     )
 
     fun byId(id: String) = (ALL + NONE).firstOrNull { it.id == id }
@@ -127,7 +138,7 @@ object FxPresets {
         SoundKind.KEYS -> listOf("small_room", "warm_vinyl", "lofi_tape", "wide_alive", "dub_deep")
         SoundKind.DRUMS -> listOf("punch", "edm_pump", "crunch", "lofi_tape", "small_room", "rumble")
         SoundKind.ACID -> listOf("dub_deep", "fat_bass", "wob_dubstep", "crunch", "jet", "pump")
-        SoundKind.AUDIO -> listOf("small_room", "dub_deep", "radio", "phone", "cathedral")
+        SoundKind.AUDIO -> listOf(VOICE_RAP, VOICE_CLEAR, "small_room", "dub_deep", "radio", "phone", "cathedral")
     }.mapNotNull { byId(it) }
 
     /**
@@ -140,6 +151,9 @@ object FxPresets {
 
     /** The rumble's preset (see [suggestedFor]). */
     const val RUMBLE = "rumble"
+    /** The recorded voice's presets; « Voix claire » goes on a voice track's first take (see Project.withTake callers). */
+    const val VOICE_CLEAR = "voice_clear"
+    const val VOICE_RAP = "voice_rap"
 }
 
 /** What a sound is for, to offer the right ready-made effects first. */

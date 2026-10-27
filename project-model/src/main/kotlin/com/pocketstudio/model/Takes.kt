@@ -43,7 +43,7 @@ data class PendingTake(
 
 /**
  * [take] on its track: a retake keeps the previous clip's volume, fades, start and « Décaler la
- * prise »; only what depends on its length (the loop, the seconds) and its tempo are new. A new
+ * prise » (its manual part, [AudioClip.manualOffsetMs]); only what depends on its length (the loop, the seconds) and its tempo are new. A new
  * scene take plays once per part. Nothing changes when the take is already there, or when the
  * track has moved on since the take began (another clip than [PendingTake.replaces]: a newer take
  * is never replaced by an older one); a track removed meanwhile comes back.
@@ -71,6 +71,10 @@ fun Project.withTake(take: PendingTake): Project {
         once = if (sameAnchor) previous!!.once else !take.song,
         bpm = take.bpm,
         scene = if (take.song) null else take.scene,
+        // « Décaler la prise » corrects the latency: the new take needs it too. What a cut of the
+        // old take left in its offset belonged to that recording only.
+        offsetMs = previous?.manualOffsetMs ?: 0f,
+        nudgeMs = null,
     )
     // The take it replaces stays one touch away (« Prise précédente »), the older ones in the take picker.
     val kept = if (previous != null) listOf(previous) + track.otherTakes else track.otherTakes
@@ -164,3 +168,22 @@ object PendingTakes {
 
 /** [takes] put on their tracks, in order. */
 fun Project.withTakes(takes: List<PendingTake>): Project = takes.fold(this) { p, t -> p.withTake(t) }
+
+/**
+ * The first take of audio track [track] (its clip, [file], replaced none): its volume set to
+ * [gain] (the take brought to a usual voice level, AudioEdits.voiceLevelGain) and, when the
+ * track's strip has no effect yet, « Voix claire » on it (a low cut and a gentle compressor:
+ * the voice stays in front of the beat; 03 G2). Sends, macros and fader stay. Unchanged when
+ * the track no longer plays [file].
+ */
+fun Project.withFirstTakeLevel(track: Int, file: String, gain: Float): Project {
+    val t = audioTracks.firstOrNull { it.id == track } ?: return this
+    val clip = t.clip?.takeIf { it.file == file } ?: return this
+    val ch = AudioTrack.mixerChannel(track)
+    val strip = mixer.channels.getOrNull(ch)
+    val chain = FxPresets.byId(FxPresets.VOICE_CLEAR)
+    val p = withAudioTrack(t.copy(clip = clip.copy(gain = gain.takeIf { it.isFinite() }?.coerceIn(0f, AudioClip.MAX_GAIN) ?: clip.gain)))
+    if (strip == null || chain == null || strip.inserts.any { it.effect != EffectType.NONE }) return p
+    val voiced = strip.copy(inserts = strip.withFx(chain).inserts).sanitized()
+    return p.copy(mixer = p.mixer.copy(channels = p.mixer.channels.mapIndexed { i, c -> if (i == ch) voiced else c }))
+}

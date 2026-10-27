@@ -309,7 +309,7 @@ fun SimpleTracksCard(tracks: List<SimpleTrack>, actions: SimpleTracksActions) {
                     Text("  " + tr("Changer le son"), style = MaterialTheme.typography.labelMedium, color = Neon.Cyan, maxLines = 1)
                 }
                 if (t.mute) Text(tr("coupée"), style = MaterialTheme.typography.labelSmall, color = Neon.Amber)
-                IconButton(onClick = { sheetFor = t.key }, modifier = Modifier.testTag("simple_volume_${t.key}")) {
+                IconButton(onClick = { sheetFor = t.key }, modifier = Modifier.spot("simple_volume_${t.key}").testTag("simple_volume_${t.key}")) {
                     Icon(Icons.Filled.VolumeUp, contentDescription = tr("Volume de %s", t.name), tint = if (t.mute) Neon.Amber else Neon.TextSecondary)
                 }
             }

@@ -35,6 +35,8 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.node.currentValueOf
+import androidx.compose.ui.relocation.bringIntoView
+import kotlinx.coroutines.launch
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.testTag
@@ -78,6 +80,17 @@ class SpotRegistry {
         }
     }
 
+    /**
+     * Audit final: control [id] (a prefix with « * ») scrolled into view when it is on the screen's page but
+     * out of sight; false when no such control is there (yet).
+     */
+    fun reveal(id: String): Boolean {
+        val match = if (id.endsWith("*")) spots.entries.firstOrNull { it.key.startsWith(id.dropLast(1)) }?.value else spots[id]
+        val node = match?.owner as? SpotNode ?: return false
+        node.reveal()
+        return true
+    }
+
     /** Where control [id] is in the window (null: not on the screen). A [id] ending with « * » matches a prefix. */
     fun find(id: String): Rect? {
         val match = if (id.endsWith("*")) spots.entries.firstOrNull { it.key.startsWith(id.dropLast(1)) }?.value else spots[id]
@@ -110,7 +123,7 @@ private data class SpotElement(val id: String, val label: String?) : androidx.co
     }
 }
 
-private class SpotNode(var id: String, var label: String?) : Modifier.Node(),
+internal class SpotNode(var id: String, var label: String?) : Modifier.Node(),
     androidx.compose.ui.node.GlobalPositionAwareModifierNode,
     androidx.compose.ui.node.CompositionLocalConsumerModifierNode {
     private var registry: SpotRegistry? = null
@@ -122,6 +135,11 @@ private class SpotNode(var id: String, var label: String?) : Modifier.Node(),
 
     fun leave() {
         registry?.remove(id, this)
+    }
+
+    /** Scrolled into view by whatever scrolls around it. */
+    fun reveal() {
+        if (isAttached) coroutineScope.launch { runCatching { bringIntoView() } }
     }
 
     override fun onDetach() {
@@ -282,6 +300,13 @@ fun SpotlightOverlay(registry: SpotRegistry, targets: List<String>, card: @Compo
         onDispose { registry.watching = false }
     }
     var origin by remember { mutableStateOf(Offset.Zero) }
+    // Audit final: the control pointed at may be under the fold (« Le morceau » under the tracks): scrolled to first.
+    androidx.compose.runtime.LaunchedEffect(targets) {
+        repeat(REVEAL_TRIES) {
+            if (targets.any { registry.reveal(it) }) return@LaunchedEffect
+            kotlinx.coroutines.delay(REVEAL_WAIT_MS)
+        }
+    }
     registry.version.intValue
     val target = targets.firstNotNullOfOrNull { registry.find(it) }?.translate(-origin.x, -origin.y)
     val amber = Neon.Amber
@@ -299,6 +324,10 @@ fun SpotlightOverlay(registry: SpotRegistry, targets: List<String>, card: @Compo
         BoxLayoutHalf(target) { top -> card(Modifier.align(if (top) androidx.compose.ui.Alignment.TopCenter else androidx.compose.ui.Alignment.BottomCenter), top) }
     }
 }
+
+/** The screen just opened may take a few frames to put its controls: tried this many times, this far apart. */
+private const val REVEAL_TRIES = 10
+private const val REVEAL_WAIT_MS = 100L
 
 @Composable
 private fun androidx.compose.foundation.layout.BoxScope.BoxLayoutHalf(target: Rect?, content: @Composable androidx.compose.foundation.layout.BoxScope.(Boolean) -> Unit) {

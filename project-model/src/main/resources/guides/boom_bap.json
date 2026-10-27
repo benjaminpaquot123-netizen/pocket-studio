@@ -133,7 +133,8 @@
     "has:kick"
    ],
    "done": [
-    "has:kick"
+    "has:kick",
+    "by_hand|changed:kick"
    ],
    "proposals": [
     {
@@ -194,7 +195,8 @@
     "has:snare"
    ],
    "done": [
-    "has:snare"
+    "has:snare",
+    "by_hand|changed:snare"
    ],
    "proposals": [
     {
@@ -255,7 +257,8 @@
     "has:hats"
    ],
    "done": [
-    "has:hats"
+    "has:hats",
+    "by_hand|changed:hats"
    ],
    "proposals": [
     {
@@ -316,7 +319,8 @@
     "has:bass"
    ],
    "done": [
-    "has:bass"
+    "has:bass",
+    "by_hand|changed:bass"
    ],
    "proposals": [
     {
@@ -377,7 +381,8 @@
     "has:pad"
    ],
    "done": [
-    "has:pad"
+    "has:pad",
+    "by_hand|changed:pad"
    ],
    "proposals": [
     {
@@ -438,7 +443,8 @@
     "has:lead"
    ],
    "done": [
-    "has:lead"
+    "has:lead",
+    "by_hand|changed:lead"
    ],
    "proposals": [
     {
@@ -643,7 +649,8 @@
     "has:kick"
    ],
    "done": [
-    "sidechain|changed:sidechain"
+    "sidechain",
+    "by_hand|changed:sidechain"
    ],
    "proposals": [
     {
@@ -741,9 +748,9 @@
    "target": "lead",
    "kind": "review",
    "title": "Le lead : écho et réverbe",
-   "why": "Un écho à la croche et une réverbe moyenne : il chante devant sans prendre toute la place.",
+   "why": "Un écho en rythme et une réverbe moyenne : il chante devant sans prendre toute la place.",
    "when": "Une fois le son et le motif posés.",
-   "howMuch": "Envoi écho −9 dB, réverbe −12 dB.",
+   "howMuch": "L'écho s'entend entre les notes sans les couvrir ; la réverbe reste en retrait.",
    "howOften": "Une chaîne pour tout le morceau.",
    "applicable": [
     "has:lead"
@@ -1086,6 +1093,14 @@
       "type": "open",
       "spot": "sounds.favorite"
      }
+    },
+    {
+     "id": "done",
+     "label": "C'est fait",
+     "why": "Tu l'as fait de ton côté : on passe à la suite.",
+     "action": {
+      "type": "keep"
+     }
     }
    ],
    "lexicon": "fill"
@@ -1230,7 +1245,7 @@
    "simpleTitle": "Le volume de chaque piste",
    "simpleWhy": "Le kick et la basse d'abord, le reste autour.",
    "done": [
-    "balanced|faders"
+    "balanced"
    ],
    "proposals": [
     {

@@ -329,5 +329,9 @@
   "Joue dans 1 partie sur %d.": "Speelt in 1 van de %d delen.",
   "1 étape de plus": "1 stap meer",
   "Place (pan)": "Plek (pan)",
-  "Courbes (automation)": "Curven (automation)"
+  "Courbes (automation)": "Curven (automation)",
+  "Acide : ta ligne 303 joue dans %s. Dans Sons › Acide (mode complet), touche un pas pour la changer et tourne « Coupure » pour la faire crier.": "Acid: je 303-lijn speelt in %s. Tik in Klanken › Acid (volledige modus) op een stap om hem te veranderen en draai aan ‘Cutoff’ om hem te laten gillen.",
+  "Acide : ta ligne 303 joue dans %s. Dans Sons › Acide (mode complet), touche un pas pour la changer. La coupure s'ouvre toute seule le long du morceau : pour la tourner toi-même, garde le doigt sur « Coupure ».": "Acid: je 303-lijn speelt in %s. Tik in Klanken › Acid (volledige modus) op een stap om hem te veranderen. De cutoff gaat vanzelf open in de loop van het nummer: om hem zelf te draaien, houd je vinger op ‘Cutoff’.",
+  "déjà en place": "al op zijn plaats",
+  "Chapitre %1$d · %2$s": "Hoofdstuk %1$d · %2$s"
 }

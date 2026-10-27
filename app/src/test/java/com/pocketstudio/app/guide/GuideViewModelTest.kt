@@ -35,6 +35,12 @@ class GuideViewModelTest {
             StarterWizard.defaultParts(style).associateWith { StarterWizard.soundsFor(it, style).first() })
     }
 
+    /** Audit final: the style's sound cards (stage 1, shown first now) already decided: the song goes on to its effects. */
+    private fun soundsKept(p: Project): Project {
+        val ids = com.pocketstudio.model.guide.GuideLibrary.forProject(p).cards.filter { it.stage == 1 }.map { it.id }
+        return p.copy(guide = ids.fold(p.guide) { g, id -> g.withStatus(id, GuideStatus.DONE, System.currentTimeMillis(), "keep") })
+    }
+
     private fun vmWith(p: Project): RhythmViewModel {
         File(app.filesDir, "projects").deleteRecursively()
         return RhythmViewModel(app).also { vm -> vm.session.edit { p } }
@@ -57,14 +63,14 @@ class GuideViewModelTest {
 
     @Test
     fun theAnalysisFollowsTheProjectAndTheCardsAreOneUndoStepEach() {
-        val vm = vmWith(jumpUp())
+        val vm = vmWith(soundsKept(jumpUp()))
         val guide = vm.guide
         await("first analysis") { !guide.ui.value.loading && guide.ui.value.next != null }
         val ui = guide.ui.value
         assertEquals("fx.review", ui.next!!.id)
         assertEquals(3, ui.summary.size)
         assertTrue(ui.header, ui.header.contains("Jump up DnB"))
-        assertTrue(ui.percent in 30..55)
+        assertTrue("${ui.percent}", ui.percent in 30..70)
         assertTrue(ui.plan.isNotEmpty() && ui.plan.first().settled)
         assertTrue(ui.sheets.any { it.track.name == "Basse" })
         // The chains as the Guide first saw them, kept quietly (no undo step for it).
@@ -102,6 +108,41 @@ class GuideViewModelTest {
         vm.undo()
         assertEquals(GuideStatus.TODO, vm.project.value.guide.statusOf("fx.bass"))
         assertEquals(GuideStatus.LATER, vm.project.value.guide.statusOf("fx.drums"))
+    }
+
+    /**
+     * Audit final (23 #1, #3, #13): the style's lesson first (its kick), the step and the % count the same cards,
+     * and the melody rules the analysis checks are said on the lead's card.
+     */
+    @Test
+    fun theStylesSoundsComeFirstAndTheStepAgreesWithThePercent() {
+        val vm = vmWith(jumpUp())
+        val guide = vm.guide
+        await("first analysis") { !guide.ui.value.loading && guide.ui.value.next != null }
+        val ui = guide.ui.value
+        assertEquals("sound.kick", ui.next!!.id)
+        val settled = ui.plan.sumOf { s -> s.items.count { it.status.settled } }
+        assertEquals(settled + 1, ui.step)
+        assertEquals(ui.total - ui.toDecide, settled)
+        assertEquals(Math.round(100f * settled / ui.total), ui.percent)
+        val lead = ui.cards.getValue("sound.lead")
+        assertTrue(lead.heard.toString(), lead.heard.any { "mélodie" in it })
+    }
+
+    /** Audit final (23 #6, #7): a song made by hand hears its own tempo; « Qu'est-ce qui rend ce Drop à toi ? » can be done. */
+    @Test
+    fun aSongMadeByHandSaysItsTempoAndYourTouchCanBeDone() {
+        val vm = vmWith(Project(name = "À la main", tempoBpm = 95.0).let { it.copy(drums = it.drums.toggle(0, 0).toggle(0, 8)) })
+        val guide = vm.guide
+        await("first analysis") { !guide.ui.value.loading }
+        val frame = guide.ui.value.cards.getValue("frame.style")
+        assertTrue(frame.why, frame.why.contains("95 BPM"))
+        assertTrue(frame.options.toString(), frame.options.any { it.label == "Garder 95 BPM" })
+        assertTrue(guide.ui.value.cards.values.none { c -> "{bpm}" in c.why || "120" in c.why || c.options.any { "{bpm}" in it.label } })
+        // An effects card only for a track that has effects.
+        assertTrue(guide.ui.value.cards["fx.bass"] == null)
+        guide.apply("arr.yours", "done")
+        await("your touch") { vm.project.value.guide.statusOf("arr.yours") == GuideStatus.DONE }
     }
 
     /** Review G2: a choice that cannot come back without erasing a later edit is refused, and said. */

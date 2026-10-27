@@ -96,7 +96,11 @@ open class GuideScreenshotTest {
         tap("guide_bar"); tap("guide_further_toggle")
     }
     /** G4: « Voilà ce que j'ai mis », effect by effect. */
-    @Test fun review() = shot("review") {
+    @Test fun review() = shot("review", project = jumpUp().let { p ->
+        // Audit final: the style's sound cards (shown first now) already decided, the song on « Voilà ce que j'ai mis ».
+        val ids = com.pocketstudio.model.guide.GuideLibrary.forProject(p).cards.filter { it.stage == 1 }.map { it.id }
+        p.copy(guide = ids.fold(p.guide) { g, id -> g.withStatus(id, com.pocketstudio.model.guide.GuideStatus.DONE, System.currentTimeMillis(), "keep") })
+    }) {
         tap("guide_bar"); compose.onNodeWithTag("guide_effects").performScrollTo()
     }
     /** G4: a check of stage 6, the phone's speaker. */

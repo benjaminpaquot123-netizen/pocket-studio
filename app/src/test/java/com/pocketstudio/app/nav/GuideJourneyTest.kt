@@ -164,7 +164,8 @@ class GuideJourneyTest {
 
     /** The Guide's next card is [card], on screen in its panel. */
     private fun onCard(card: String) {
-        await("the card $card") { !ui().loading && ui().next?.id == card && shown("guide_card_$card") }
+        runCatching { await("the card $card") { !ui().loading && ui().next?.id == card && shown("guide_card_$card") } }
+            .onFailure { throw IllegalStateException("the card $card: next is ${ui().next?.id}", it) }
     }
 
     /** The song stopped (« Écouter » starts it; the Guide's « Sans / Avec » never plays over it). */
@@ -242,6 +243,14 @@ class GuideJourneyTest {
         tap("guide_later")
         await("arrange later") { status("start.arrange") == GuideStatus.LATER }
 
+        // Audit final: the style's lesson, its sounds one by one (« Garder ce son »).
+        await("the sounds") { !ui().loading && ui().next != null && ui().next!!.id != "start.arrange" }
+        while (ui().next?.stage == 1) {
+            val id = ui().next!!.id
+            onCard(id)
+            tap("guide_option_keep")
+            await("$id kept") { status(id) == GuideStatus.DONE }
+        }
         // The stages: « Voilà ce que j'ai mis » first (the assistant's chains, effect by effect).
         onCard("fx.review")
         compose.onNodeWithTag("guide_effects").assertExists()

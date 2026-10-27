@@ -42,7 +42,12 @@ class GuideParcoursTest {
     fun everyCardHasTwoOrThreeOptionsWithKnownActionsAndDetectors() {
         val spots = mutableSetOf<String>()
         for (p in all + generic + alerts + common) for (c in p.cards) {
-            assertTrue("${p.style}/${c.id}: ${c.proposals.size} options", c.proposals.size in 2..3)
+            // « C'est fait » (audit final) comes on top of a card whose options all open a screen.
+            val choices = c.proposals.filterNot { it.label == "C'est fait" }
+            assertTrue("${p.style}/${c.id}: ${c.proposals.size} options", choices.size in 2..3)
+            if (c.done.isEmpty() && choices.all { it.action.type == GuideAction.OPEN }) {
+                assertTrue("${p.style}/${c.id}: no way to tick it", (c.proposals + c.elsewhere).any { it.action.type == GuideAction.KEEP })
+            }
             assertTrue("${p.style}/${c.id}", c.kind in setOf(GuideCard.DECIDE, GuideCard.REVIEW, GuideCard.CHECK))
             assertTrue("${p.style}/${c.id}", c.target == GuideRoles.SONG || c.target in GuideRoles.ORDER)
             assertTrue("${p.style}/${c.id}: lexicon ${c.lexicon}", c.lexicon.isEmpty() || SoundGlossary.ALL.any { it.key == c.lexicon })
@@ -109,7 +114,17 @@ class GuideParcoursTest {
         assertTrue(jump.card("arr.differ")!!.proposals.first().label.contains("lead"))
         assertTrue(trap.card("mix.contrast")!!.proposals.first().label.contains("pont"))
         // The sidechain: kept as it is when the song already ducks.
-        assertEquals(listOf("sidechain|changed:sidechain"), jump.card("fx.sidechain")!!.done)
+        // Audit final: the ducking the assistant put is to hear (decided), not ticked by itself.
+        assertEquals(listOf("sidechain", "by_hand|changed:sidechain"), jump.card("fx.sidechain")!!.done)
+        // The style's sound cards are shown on its own song (decided, or the track changed by hand).
+        assertEquals(listOf("has:kick", "by_hand|changed:kick"), jump.card("sound.kick")!!.done)
+        // « Plus d'écho » of the lead no longer promises a send level the song does not have.
+        assertTrue(jump.card("fx.lead")!!.howMuch.orEmpty().none { it.isDigit() })
+        // « Poser ma voix » says what it does (the robot is not replaced by itself).
+        assertTrue(jump.card("sound.vocal")!!.proposals.none { it.why.contains("à la place") })
+        assertEquals("sounds.track", jump.card("sound.vocal")!!.proposals.first { it.id == "other" }.action.spot)
+        // The chords' wait in the first Drop offered once (arr.pad has it).
+        assertTrue(jump.card("arr.differ")!!.proposals.none { it.id == "pad_waits" })
     }
 
     /**

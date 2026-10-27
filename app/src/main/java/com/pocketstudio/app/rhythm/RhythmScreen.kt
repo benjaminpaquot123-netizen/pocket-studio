@@ -237,11 +237,18 @@ fun RhythmScreen(
      * polyrhythm, sample editing (envelope, choke group, slices), import or capture, no effects.
      */
     simple: Boolean = false,
+    /** Audit final: the sheet of pad [openPad] asked for from outside (the Guide's « Autre idée de son » of the kick), then [padOpened]. */
+    openPad: Int? = null,
+    padOpened: () -> Unit = {},
 ) {
     // A pad held (its sheet) and the kit list.
     var padSheet by rememberSaveable { mutableStateOf<Int?>(null) }
     var kitSheet by rememberSaveable { mutableStateOf(false) }
     val hold: (Int) -> Unit = { lane -> actions.selectPad(lane); padSheet = lane }
+    androidx.compose.runtime.LaunchedEffect(openPad) {
+        openPad?.takeIf { it in project.drums.lanes.indices }?.let(hold)
+        if (openPad != null) padOpened()
+    }
     val kit = kitName(project)
     val kitBar: @Composable () -> Unit = {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {

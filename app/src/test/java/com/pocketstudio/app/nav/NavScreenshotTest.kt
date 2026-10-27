@@ -115,10 +115,10 @@ open class NavScreenshotTest {
     @Test fun welcomeMode() = shot("welcome_mode", firstLaunch = true)
     @Test fun launch() = shot("launch", launchChoice = true)
     @Test fun launchSimple() = shot("launch_simple", simple = true, launchChoice = true)
-    /** G5: « Mon premier morceau » (Plus): the Guide's first cards, where the Missions were. */
+    /** G5: « Mon premier morceau » (Plus): audit final, a new song from the assistant (the open one stays as it is). */
     @Test fun guideFirst() = shot("guide_first") {
         tap("tab_Plus"); compose.onNodeWithTag("plus_missions").performScrollTo(); tap("plus_missions")
-        awaitGuide("guide_panel")
+        awaitGuide("wizard")
     }
     /** G5: a song just made: the Guide opens on « Ton morceau est prêt ». */
     @Test fun guideReady() = shot("guide_ready") {

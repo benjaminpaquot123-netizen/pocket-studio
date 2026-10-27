@@ -339,5 +339,10 @@
   "Ce guide se retrouve dans ⋮ › Aide et premiers pas.": "This guide is in ⋮ › Help and first steps.",
   "%1$s : environ %2$s.": "%1$s: about %2$s.",
   "Quatre briques": "Four blocks",
-  "Trois briques": "Three blocks"
+  "Trois briques": "Three blocks",
+  "Ta voix : enregistre-la par-dessus le morceau (Sons › Audio en mode complet ; mets des écouteurs, sinon le micro entend la musique).": "Your voice: record it over the song (Sounds › Audio in full mode; wear headphones, or the mic will hear the music).",
+  "Filtres : certains sons s'ouvrent et se ferment tout seuls le long du morceau (Mix › Courbes, en mode complet).": "Filters: some sounds open and close by themselves along the song (Mix › Curves, in full mode).",
+  "Structure (Mon morceau en Mode simple) : touche une partie (Intro, Couplet ou Refrain) pour l'afficher, la renommer ou la dupliquer pour en faire un Pont ou une Fin.": "Structure (My song in simple mode): tap a part (Intro, Verse or Chorus) to show it, rename it or duplicate it to make a Bridge or an Ending.",
+  "Clavier (Sons › Synthé en mode complet) : joue au clavier pour essayer des notes par-dessus le rythme.": "Keyboard (Sounds › Synth in full mode): play the keyboard to try notes over the beat.",
+  "Clavier (Sons › Synthé en mode complet) : joue au clavier, il reste dans la gamme du morceau : aucune fausse note possible.": "Keyboard (Sounds › Synth in full mode): play the keyboard, it stays in the song's scale: no wrong notes possible."
 }

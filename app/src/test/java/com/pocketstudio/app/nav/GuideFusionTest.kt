@@ -135,14 +135,13 @@ class GuideFusionTest {
     fun monPremierMorceauFromTheLaunchStartsTheGuideNotTheMissions() {
         h.start(launchChoice = true)
         h.awaitTag("launch_missions")
+        val before = h.vm.project.value.guide.start
         tap("launch_missions")
         assertFalse(shown("launch"))
-        assertEquals(GuideStart.FIRST, h.vm.project.value.guide.start)
-        await("panel") { shown("guide_panel") }
+        // Audit final (01 M8): a song is open: a new one, from the assistant; the open song is not turned into a first song.
+        h.awaitTag("wizard")
+        assertEquals(before, h.vm.project.value.guide.start)
         noOldSurface()
-        // A song made by hand with three parts: « Choisis un style » is done there, its first steps follow.
-        await("analysis") { h.vm.guide.ui.value.cards["start.style"] != null }
-        assertEquals(GuideStatus.DONE_ELSEWHERE, h.vm.guide.ui.value.cards.getValue("start.style").status)
     }
 
     @Test
